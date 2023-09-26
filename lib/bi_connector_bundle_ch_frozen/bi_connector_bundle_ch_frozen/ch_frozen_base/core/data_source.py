@@ -8,7 +8,7 @@ from typing import (
     Optional,
 )
 
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 from dl_core import exc
 from dl_core.data_source import StandardSQLDataSource
 from dl_core.data_source.sql import SubselectDataSource
@@ -60,7 +60,7 @@ class ClickHouseFrozenDataSourceBase(ClickHouseTemplatedSubselectDataSource, Cli
         return self._spec
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_CH_FROZEN_SUBSELECT,
             SOURCE_TYPE_CH_FROZEN_SOURCE,
@@ -69,7 +69,7 @@ class ClickHouseFrozenDataSourceBase(ClickHouseTemplatedSubselectDataSource, Cli
 
 class ClickHouseFrozenSubselectDataSourceBase(SubselectDataSource):
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_CH_FROZEN_SUBSELECT,
             SOURCE_TYPE_CH_FROZEN_SOURCE,

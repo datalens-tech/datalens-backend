@@ -2,7 +2,7 @@ from typing import ClassVar
 
 import attr
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.fields import ResultSchema
 import dl_formula.core.nodes as formula_nodes
 from dl_query_processing.compilation.primitives import CompiledFormulaInfo
@@ -17,7 +17,7 @@ from dl_query_processing.multi_query.splitters.query_fork import QueryForkQueryS
 @attr.s
 class BitrixGDSMultiQuerySplitter(PrefilteredFieldMultiQuerySplitter):
     expr_names: ClassVar[set[str]] = {"between", ">", ">=", "<", "<=", "=="}
-    data_types: ClassVar[set[BIType]] = {BIType.datetime, BIType.date, BIType.genericdatetime}
+    data_types: ClassVar[set[UserDataType]] = {UserDataType.datetime, UserDataType.date, UserDataType.genericdatetime}
 
     result_schema: ResultSchema = attr.ib(kw_only=True)
 

@@ -15,8 +15,8 @@ import attr
 
 from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from dl_constants.enums import (
-    BIType,
     FileProcessingStatus,
+    UserDataType,
 )
 from dl_core.aio.web_app_services.gsheets import (
     Range,
@@ -84,7 +84,7 @@ async def _values_data_iter(
     sheets_client: GSheetsClient,
     spreadsheet_id: str,
     sheet_sample: Sheet,
-    user_types: list[BIType | str],
+    user_types: list[UserDataType | str],
     raw_schema_body: list[SchemaColumn],
 ) -> AsyncIterator[list]:
     """
@@ -136,8 +136,8 @@ async def _values_data_iter(
         for idx, (col, new_user_type) in enumerate(zip(raw_schema_body, new_user_types)):
             # fall back to string
             if new_user_type == "time":
-                new_user_type = BIType.string
-            if new_user_type != col.user_type and new_user_type == BIType.string:
+                new_user_type = UserDataType.string
+            if new_user_type != col.user_type and new_user_type == UserDataType.string:
                 raw_schema_body[idx] = raw_schema_body[idx].clone(user_type=new_user_type)
 
         for row in sheet_portion_values:
@@ -261,9 +261,9 @@ class DownloadGSheetTask(BaseExecutorTask[task_interface.DownloadGSheetTask, Fil
                                 has_header = src.file_source_settings.first_line_is_header
                             assert has_header is not None
 
-                            orig_user_types: list[BIType | str] = []
+                            orig_user_types: list[UserDataType | str] = []
                             for idx, col in enumerate(raw_schema_body):
-                                if col.user_type == BIType.string and sheet_sample.col_is_time(idx, has_header):
+                                if col.user_type == UserDataType.string and sheet_sample.col_is_time(idx, has_header):
                                     orig_user_types.append("time")
                                 else:
                                     orig_user_types.append(col.user_type)

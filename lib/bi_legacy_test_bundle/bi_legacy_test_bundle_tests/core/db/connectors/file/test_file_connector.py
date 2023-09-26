@@ -10,8 +10,8 @@ from dl_connector_bundle_chs3.file.core.data_source import FileS3DataSource
 from dl_connector_bundle_chs3.file.core.data_source_spec import FileS3DataSourceSpec
 from dl_connector_bundle_chs3.file.core.us_connection import FileS3Connection
 from dl_constants.enums import (
-    BIType,
     FileProcessingStatus,
+    UserDataType,
 )
 from dl_core.base_models import DefaultConnectionRef
 from dl_core.db import SchemaColumn
@@ -57,17 +57,17 @@ def test_build_from_clause(default_sync_usm, saved_file_connection):
         SchemaColumn(
             name="c1",
             native_type=ClickHouseNativeType(conn_type=CONNECTION_TYPE_FILE, name="Int64"),
-            user_type=BIType.integer,
+            user_type=UserDataType.integer,
         ),
         SchemaColumn(
             name="c2",
             native_type=ClickHouseNativeType(conn_type=CONNECTION_TYPE_FILE, name="String"),
-            user_type=BIType.string,
+            user_type=UserDataType.string,
         ),
         SchemaColumn(
             name="c3",
             native_type=ClickHouseNativeType(conn_type=CONNECTION_TYPE_FILE, name="Int64"),
-            user_type=BIType.integer,
+            user_type=UserDataType.integer,
         ),
     ]
     default_sync_usm.ensure_entry_preloaded(DefaultConnectionRef(conn_id=saved_file_connection.uuid))

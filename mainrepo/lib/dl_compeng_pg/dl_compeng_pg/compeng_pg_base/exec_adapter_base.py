@@ -17,7 +17,7 @@ from sqlalchemy.engine.default import DefaultDialect
 from sqlalchemy.sql.base import Executable
 
 from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
 from dl_core.data_processing.streaming import AsyncChunkedBase
 from dl_core.db.sa_types import make_sa_type
@@ -54,7 +54,7 @@ class PostgreSQLExecAdapterAsync(Generic[_CONN_TV], ProcessorDbExecAdapterBase, 
         """Execute a DDL statement"""
         await self._execute(query)
 
-    def _make_sa_table(self, table_name: str, names: Sequence[str], user_types: Sequence[BIType]) -> sa.Table:
+    def _make_sa_table(self, table_name: str, names: Sequence[str], user_types: Sequence[UserDataType]) -> sa.Table:
         assert len(names) == len(user_types)
         columns = [
             sa.Column(name=name, type_=make_sa_type(native_type=self._tt.type_user_to_native(user_t=user_t)))
@@ -67,7 +67,7 @@ class PostgreSQLExecAdapterAsync(Generic[_CONN_TV], ProcessorDbExecAdapterBase, 
         *,
         table_name: str,
         names: Sequence[str],
-        user_types: Sequence[BIType],
+        user_types: Sequence[UserDataType],
     ) -> sa.sql.selectable.TableClause:
         """Create table in database"""
 
@@ -91,7 +91,7 @@ class PostgreSQLExecAdapterAsync(Generic[_CONN_TV], ProcessorDbExecAdapterBase, 
         *,
         table_name: str,
         names: Sequence[str],
-        user_types: Sequence[BIType],
+        user_types: Sequence[UserDataType],
         data: AsyncChunkedBase,
     ) -> None:
         """,,,"""

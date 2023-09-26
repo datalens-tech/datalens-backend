@@ -17,7 +17,7 @@ from dl_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
 from dl_connector_clickhouse.core.clickhouse_base.ch_commons import create_column_sql
 from dl_connector_clickhouse.core.clickhouse_base.data_source import ClickHouseDataSourceBase
 from dl_constants.enums import (
-    CreateDSFrom,
+    DataSourceType,
     FileProcessingStatus,
 )
 from dl_core import exc
@@ -46,7 +46,7 @@ class BaseFileS3DataSource(ClickHouseDataSourceBase):
     _quoter: Optional[Quoter] = None
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         raise NotImplementedError
 
     @property

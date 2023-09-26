@@ -6,7 +6,7 @@ from typing import (
     Iterable,
 )
 
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 from dl_core.base_models import SourceFilterSpec
 
 from bi_connector_bundle_ch_filtered.base.core.data_source import ClickHouseFilteredDataSourceBase
@@ -35,7 +35,7 @@ class ClickHouseGeoFilteredDataSource(ClickHouseFilteredDataSourceBase):
         return super().get_filters(service_registry)
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_CH_GEO_FILTERED_TABLE,
         }

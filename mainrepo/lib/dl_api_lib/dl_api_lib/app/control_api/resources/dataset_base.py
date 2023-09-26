@@ -33,9 +33,9 @@ from dl_api_lib.utils.rls import FieldRLSSerializer
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
-    BIType,
     ConnectionType,
     ManagedBy,
+    UserDataType,
 )
 from dl_constants.exc import (
     DEFAULT_ERR_CODE_API_PREFIX,
@@ -246,7 +246,7 @@ class DatasetResource(BIResource):
                     casts=CASTS_BY_TYPE.get(user_type, []),
                     filter_operations=sfm.get_supported_filters(dialect=funcs_dialect, user_type=user_type),
                 )
-                for user_type in BIType
+                for user_type in UserDataType
             ],
         )
 

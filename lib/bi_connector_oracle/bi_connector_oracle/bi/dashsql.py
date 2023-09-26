@@ -5,12 +5,12 @@ from dl_api_connector.dashsql import (
     DefaultDashSQLParamLiteralizer,
     TValueBase,
 )
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 
 
 class OracleDashSQLParamLiteralizer(DefaultDashSQLParamLiteralizer):
-    def get_sa_type(self, bi_type: BIType, value_base: TValueBase) -> TypeEngine:
-        if bi_type == BIType.string:
+    def get_sa_type(self, bi_type: UserDataType, value_base: TValueBase) -> TypeEngine:
+        if bi_type == UserDataType.string:
             # See also: bi_formula/definitions/literals.py
             value_lst = [value_base] if isinstance(value_base, str) else value_base
             max_len = max(len(val) for val in value_lst)

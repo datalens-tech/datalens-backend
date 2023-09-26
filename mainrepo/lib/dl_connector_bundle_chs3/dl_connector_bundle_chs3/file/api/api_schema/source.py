@@ -8,7 +8,7 @@ from marshmallow import (
 
 from dl_connector_bundle_chs3.chs3_base.api.api_schema.connection import BaseFileSourceSchema
 from dl_connector_bundle_chs3.file.core.us_connection import FileS3Connection
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 
 
 class FileSourceColumnTypeSchema(Schema):
@@ -16,7 +16,7 @@ class FileSourceColumnTypeSchema(Schema):
         unknown = RAISE
 
     name = fields.String()
-    user_type = fields.Enum(BIType)
+    user_type = fields.Enum(UserDataType)
 
 
 class FileSourceSchema(BaseFileSourceSchema):

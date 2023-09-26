@@ -1,7 +1,7 @@
 import datetime
 from typing import Optional
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.db.conversion_base import (
     TypeCaster,
     TypeTransformer,
@@ -75,23 +75,23 @@ class GSheetsGenericDatetimeTypeCaster(TypeCaster):
 class GSheetsTypeTransformer(TypeTransformer):
     conn_type = CONNECTION_TYPE_GSHEETS
     native_to_user_map = {
-        # make_native_type(CONNECTION_TYPE_GSHEETS, 'number'): BIType.integer,
-        make_native_type(CONNECTION_TYPE_GSHEETS, "number"): BIType.float,
-        make_native_type(CONNECTION_TYPE_GSHEETS, "string"): BIType.string,
-        make_native_type(CONNECTION_TYPE_GSHEETS, "date"): BIType.date,
-        make_native_type(CONNECTION_TYPE_GSHEETS, "datetime"): BIType.genericdatetime,
-        make_native_type(CONNECTION_TYPE_GSHEETS, "boolean"): BIType.boolean,
-        # make_native_type(CONNECTION_TYPE_GSHEETS, 'unsupported'): BIType.unsupported,
+        # make_native_type(CONNECTION_TYPE_GSHEETS, 'number'): UserDataType.integer,
+        make_native_type(CONNECTION_TYPE_GSHEETS, "number"): UserDataType.float,
+        make_native_type(CONNECTION_TYPE_GSHEETS, "string"): UserDataType.string,
+        make_native_type(CONNECTION_TYPE_GSHEETS, "date"): UserDataType.date,
+        make_native_type(CONNECTION_TYPE_GSHEETS, "datetime"): UserDataType.genericdatetime,
+        make_native_type(CONNECTION_TYPE_GSHEETS, "boolean"): UserDataType.boolean,
+        # make_native_type(CONNECTION_TYPE_GSHEETS, 'unsupported'): UserDataType.unsupported,
     }
     user_to_native_map = dict(
         [(bi_type, native_type) for native_type, bi_type in native_to_user_map.items()]
         + [
-            (BIType.datetime, make_native_type(CONNECTION_TYPE_GSHEETS, "datetime")),
+            (UserDataType.datetime, make_native_type(CONNECTION_TYPE_GSHEETS, "datetime")),
         ]
     )
     casters = {
         **TypeTransformer.casters,
-        BIType.date: GSheetsDateTypeCaster(),
-        BIType.datetime: GSheetsDatetimeTypeCaster(),
-        BIType.genericdatetime: GSheetsGenericDatetimeTypeCaster(),
+        UserDataType.date: GSheetsDateTypeCaster(),
+        UserDataType.datetime: GSheetsDatetimeTypeCaster(),
+        UserDataType.genericdatetime: GSheetsGenericDatetimeTypeCaster(),
     }

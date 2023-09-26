@@ -5,8 +5,8 @@ from dl_api_client.dsmaker.primitives import (
 )
 from dl_constants.enums import (
     BinaryJoinOperator,
-    BIType,
     CalcMode,
+    UserDataType,
 )
 
 
@@ -17,18 +17,18 @@ def test_field_condition_operators():
     field_1 = ResultField(
         title="field_1",
         id="12345",
-        data_type=BIType.string,
-        initial_data_type=BIType.string,
-        cast=BIType.string,
+        data_type=UserDataType.string,
+        initial_data_type=UserDataType.string,
+        cast=UserDataType.string,
         calc_mode=CalcMode.direct,
         source="column_1",
     )
     field_2 = ResultField(
         title="field_2",
         id="67890",
-        data_type=BIType.string,
-        initial_data_type=BIType.string,
-        cast=BIType.string,
+        data_type=UserDataType.string,
+        initial_data_type=UserDataType.string,
+        cast=UserDataType.string,
         calc_mode=CalcMode.direct,
         source="column_2",
     )

@@ -9,8 +9,8 @@ import marshmallow as ma
 from marshmallow_oneofschema import OneOfSchema
 
 from dl_constants.enums import (
-    BIType,
     FileProcessingStatus,
+    UserDataType,
 )
 from dl_core.db.elements import SchemaColumn
 from dl_core.db.native_type_schema import OneOfNativeTypeSchema
@@ -46,7 +46,7 @@ class RawSchemaColumnSchema(ma.Schema):
 
     native_type = ma.fields.Nested(OneOfNativeTypeSchema, allow_none=True, load_default=None)
 
-    user_type = ma.fields.Enum(BIType)
+    user_type = ma.fields.Enum(UserDataType)
     description = ma.fields.String(dump_default="", allow_none=True, load_default="")
     has_auto_aggregation = ma.fields.Boolean(dump_default=False, allow_none=True, load_default=False)
     lock_aggregation = ma.fields.Boolean(dump_default=False, allow_none=True, load_default=False)
@@ -87,7 +87,7 @@ class SourceInfoSchemaBase(ma.Schema):
     class RawSchemaColumnSchemaShorten(ma.Schema):
         name = ma.fields.String()
         title = ma.fields.String()
-        user_type = ma.fields.Enum(BIType)
+        user_type = ma.fields.Enum(UserDataType)
 
     source_id = ma.fields.String()
     title = ma.fields.String()
@@ -124,7 +124,7 @@ class CSVSettingsOptionsSchema(ma.Schema):
 class OptionsSchema(ma.Schema):
     class ColumnsOptionsSchema(ma.Schema):
         name = ma.fields.String()
-        user_type = ma.fields.List(ma.fields.Enum(BIType))
+        user_type = ma.fields.List(ma.fields.Enum(UserDataType))
 
     data_settings = ma.fields.Nested(CSVSettingsOptionsSchema)
     columns = ma.fields.Nested(ColumnsOptionsSchema, many=True)

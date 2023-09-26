@@ -4,7 +4,7 @@ from typing import Any
 
 import marshmallow.fields as ma_fields
 
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 from dl_core.base_models import InternalMaterializationConnectionRef
 from dl_core.data_source.type_mapping import get_data_source_class
 from dl_core.data_source_spec.base import DataSourceSpec
@@ -38,7 +38,7 @@ class DataSourceSpecStorageSchema(BaseStorageSchema):  # noqa
         load_default=list,
         allow_none=True,
     )
-    created_from = DynamicEnumField(CreateDSFrom, attribute="source_type")
+    created_from = DynamicEnumField(DataSourceType, attribute="source_type")
 
     def pre_process_input_data(self, data: dict[str, Any]) -> dict:
         data = data.copy()
@@ -63,7 +63,7 @@ class DataSourceSpecStorageSchema(BaseStorageSchema):  # noqa
         return data
 
     def push_ctx(self, data: dict):  # type: ignore  # TODO: fix
-        dsrc_cls = get_data_source_class(CreateDSFrom[data["created_from"]])
+        dsrc_cls = get_data_source_class(DataSourceType[data["created_from"]])
         self.context[CtxKey.ds_conn_type] = dsrc_cls.conn_type
 
     def pop_ctx(self, data: dict):  # type: ignore  # TODO: fix

@@ -11,8 +11,8 @@ import sqlalchemy as sa
 import ydb.sqlalchemy as ydb_sa
 
 from dl_constants.enums import (
-    BIType,
     ConnectionType,
+    UserDataType,
 )
 from dl_core.db.conversion_base import (
     TypeTransformer,
@@ -27,9 +27,9 @@ if TYPE_CHECKING:
 class YQLTypeTransformerBase(TypeTransformer):
     conn_type: ClassVar[ConnectionType]
 
-    _base_type_map: Dict[BIType, Tuple[SATypeSpec, ...]] = {
+    _base_type_map: Dict[UserDataType, Tuple[SATypeSpec, ...]] = {
         # Note: first SA type is used as the default.
-        BIType.integer: (
+        UserDataType.integer: (
             sa.BIGINT,
             sa.SMALLINT,
             sa.INTEGER,
@@ -37,43 +37,43 @@ class YQLTypeTransformerBase(TypeTransformer):
             ydb_sa.types.UInt64,
             ydb_sa.types.UInt8,
         ),
-        BIType.float: (
+        UserDataType.float: (
             sa.FLOAT,
             sa.REAL,
             sa.NUMERIC,
             # see also: DOUBLE_PRECISION,
         ),
-        BIType.boolean: (sa.BOOLEAN,),
-        BIType.string: (
+        UserDataType.boolean: (sa.BOOLEAN,),
+        UserDataType.string: (
             sa.TEXT,
             sa.CHAR,
             sa.VARCHAR,
             # see also: ENUM,
         ),
         # see also: UUID
-        BIType.date: (sa.DATE,),
-        BIType.datetime: (
+        UserDataType.date: (sa.DATE,),
+        UserDataType.datetime: (
             sa.DATETIME,
             sa.TIMESTAMP,
         ),
-        BIType.genericdatetime: (
+        UserDataType.genericdatetime: (
             sa.DATETIME,
             sa.TIMESTAMP,
         ),
-        BIType.unsupported: (sa.sql.sqltypes.NullType,),  # Actually the default, so should not matter much.
+        UserDataType.unsupported: (sa.sql.sqltypes.NullType,),  # Actually the default, so should not matter much.
     }
-    _extra_type_map: Dict[BIType, SATypeSpec] = {  # user-to-native only
-        BIType.geopoint: sa.TEXT,
-        BIType.geopolygon: sa.TEXT,
-        BIType.uuid: sa.TEXT,  # see also: UUID
-        BIType.markup: sa.TEXT,
+    _extra_type_map: Dict[UserDataType, SATypeSpec] = {  # user-to-native only
+        UserDataType.geopoint: sa.TEXT,
+        UserDataType.geopolygon: sa.TEXT,
+        UserDataType.uuid: sa.TEXT,  # see also: UUID
+        UserDataType.markup: sa.TEXT,
     }
 
     native_to_user_map = {
         make_native_type(ConnectionType.unknown, sa_type): bi_type
         for bi_type, sa_types in _base_type_map.items()
         for sa_type in sa_types
-        if bi_type != BIType.datetime
+        if bi_type != UserDataType.datetime
     }
     user_to_native_map = {
         **{

@@ -17,8 +17,8 @@ from sqlalchemy_metrika_api.api_info.appmetrica import AppMetricaFieldsNamespace
 from sqlalchemy_metrika_api.api_info.metrika import MetrikaApiCounterSource
 
 from dl_constants.enums import (
-    BIType,
     ConnectionType,
+    UserDataType,
 )
 from dl_core import exc
 from dl_core.db import (
@@ -166,8 +166,8 @@ class MetrikaApiConnection(MetrikaBaseMixin, ExecutorBasedMixin, ConnectionBase)
             cls.get_api_fields_info().metrica_fields_namespaces[metrica_namespace], []
         )
 
-        def user_type_converter(type_name: str) -> BIType:
-            return BIType[type_name] if type_name != "datetime" else BIType.genericdatetime
+        def user_type_converter(type_name: str) -> UserDataType:
+            return UserDataType[type_name] if type_name != "datetime" else UserDataType.genericdatetime
 
         raw_schema = tuple(
             SchemaColumn(

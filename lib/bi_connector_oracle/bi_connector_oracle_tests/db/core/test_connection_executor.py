@@ -7,7 +7,7 @@ import pytest
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.connection_models.common_models import DBIdent
 from dl_core_testing.testcases.connection_executor import (
     DefaultAsyncConnectionExecutorTestSuite,
@@ -43,14 +43,14 @@ class OracleSyncAsyncConnectionExecutorCheckBase(
         assert db_version is not None
         assert "." in db_version
 
-    def get_schemas_for_type_recognition(self) -> dict[str, Sequence[tuple[TypeEngine, BIType]]]:
+    def get_schemas_for_type_recognition(self) -> dict[str, Sequence[tuple[TypeEngine, UserDataType]]]:
         return {
             "standard_types_the_oracle_way": [
-                (sa.Numeric(16, 0), BIType.integer),
-                (sa.Numeric(16, 8), BIType.float),
-                (sa.String(length=256), BIType.string),
-                (sa.Date(), BIType.genericdatetime),
-                (sa.DateTime(), BIType.genericdatetime),
+                (sa.Numeric(16, 0), UserDataType.integer),
+                (sa.Numeric(16, 8), UserDataType.float),
+                (sa.String(length=256), UserDataType.string),
+                (sa.Date(), UserDataType.genericdatetime),
+                (sa.DateTime(), UserDataType.genericdatetime),
             ],
         }
 

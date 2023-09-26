@@ -6,7 +6,7 @@ from dl_connector_greenplum.core.constants import (
     SOURCE_TYPE_GP_TABLE,
 )
 from dl_connector_postgresql.core.postgresql_base.query_compiler import PostgreSQLQueryCompiler
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 from dl_core.data_source.sql import (
     BaseSQLDataSource,
     StandardSchemaSQLDataSource,
@@ -20,7 +20,7 @@ class GreenplumDataSourceMixin(BaseSQLDataSource):
     conn_type = CONNECTION_TYPE_GREENPLUM
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in (SOURCE_TYPE_GP_TABLE, SOURCE_TYPE_GP_SUBSELECT)
 
 

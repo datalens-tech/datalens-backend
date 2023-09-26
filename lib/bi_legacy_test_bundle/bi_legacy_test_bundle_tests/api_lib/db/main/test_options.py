@@ -13,7 +13,7 @@ from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TY
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
+    UserDataType,
 )
 
 from bi_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
@@ -49,7 +49,7 @@ def test_basic(api_v1, ch_data_source_settings, ch_other_data_source_settings):
     assert WhereClauseOperation.EQ.name in options["data_types"]["items"][0]["filter_operations"]
     for item in options["data_types"]["items"]:
         assert set(item["aggregations"]) == set(
-            x.name for x in BI_TYPE_AGGREGATIONS[BIType[item["type"]]] if x != AggregationFunction.none
+            x.name for x in BI_TYPE_AGGREGATIONS[UserDataType[item["type"]]] if x != AggregationFunction.none
         )
 
     # Regular functions
@@ -94,13 +94,13 @@ def test_fields(api_v1, ch_data_source_settings, ch_other_data_source_settings):
 
     # Casts
     assert set(_f_opt("bool")["casts"]) == {
-        BIType.boolean.name,
-        BIType.integer.name,
-        BIType.float.name,
-        BIType.string.name,
+        UserDataType.boolean.name,
+        UserDataType.integer.name,
+        UserDataType.float.name,
+        UserDataType.string.name,
     }
     assert set(_f_opt("markup")["casts"]) == {
-        BIType.markup.name,
+        UserDataType.markup.name,
     }
 
 

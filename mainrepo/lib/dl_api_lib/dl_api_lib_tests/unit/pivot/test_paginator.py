@@ -15,12 +15,12 @@ from dl_api_lib.query.formalization.pivot_legend import (
     PivotMeasureRoleSpec,
 )
 from dl_constants.enums import (
-    BIType,
     FieldType,
     OrderDirection,
     PivotHeaderRole,
     PivotItemType,
     PivotRole,
+    UserDataType,
 )
 from dl_query_processing.legend.field_legend import (
     FieldObjSpec,
@@ -52,31 +52,31 @@ def test_paginate():
                 legend_item_id=liid_ctgry,
                 obj=FieldObjSpec(id=fid_ctgry, title="Category"),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
             LegendItem(
                 legend_item_id=liid_city,
                 obj=FieldObjSpec(id=fid_city, title="City"),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
             LegendItem(
                 legend_item_id=liid_mnames,
                 obj=MeasureNameObjSpec(),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
             LegendItem(
                 legend_item_id=liid_sales,
                 obj=FieldObjSpec(id=fid_sales, title="Sales"),
                 field_type=FieldType.MEASURE,
-                data_type=BIType.integer,
+                data_type=UserDataType.integer,
             ),
             LegendItem(
                 legend_item_id=liid_profit,
                 obj=FieldObjSpec(id=fid_profit, title="Profit"),
                 field_type=FieldType.MEASURE,
-                data_type=BIType.integer,
+                data_type=UserDataType.integer,
             ),
         ]
     )

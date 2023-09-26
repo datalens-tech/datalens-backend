@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 from dl_core.data_source.sql import (
     BaseSQLDataSource,
     StandardSchemaSQLDataSource,
@@ -26,7 +26,7 @@ class MSSQLDataSourceMixin(BaseSQLDataSource):
     conn_type = CONNECTION_TYPE_MSSQL
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in (SOURCE_TYPE_MSSQL_TABLE, SOURCE_TYPE_MSSQL_SUBSELECT)
 
 

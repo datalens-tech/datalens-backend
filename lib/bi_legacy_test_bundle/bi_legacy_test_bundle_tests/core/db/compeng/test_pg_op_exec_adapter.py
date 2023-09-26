@@ -17,7 +17,7 @@ import pytest
 from dl_compeng_pg.compeng_aiopg.exec_adapter_aiopg import AiopgExecAdapter
 from dl_compeng_pg.compeng_asyncpg.exec_adapter_asyncpg import AsyncpgExecAdapter
 from dl_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.data_processing.streaming import AsyncChunked
 from dl_core.utils import make_id
 
@@ -33,7 +33,7 @@ async def get_active_queries(pg_adapter: PostgreSQLExecAdapterAsync) -> List[Dic
     )
     queries_resp = await pg_adapter.fetch_data_from_select(
         query=active_queries_query,
-        user_types=[BIType.string] * len(columns),
+        user_types=[UserDataType.string] * len(columns),
         chunk_size=100,
         query_id=make_id(),
     )
@@ -60,13 +60,13 @@ class BaseTestPGOpExecAdapter(metaclass=abc.ABCMeta):
 
     async def table_exists(self, pg_adapter: PostgreSQLExecAdapterAsync, table_name: str) -> bool:
         query = f"SELECT EXISTS (SELECT table_name from information_schema.tables WHERE table_name = '{table_name}')"
-        return await pg_adapter.scalar(query=query, user_type=BIType.boolean)
+        return await pg_adapter.scalar(query=query, user_type=UserDataType.boolean)
 
     @pytest.mark.asyncio
     async def test_create_drop_table(self, pg_adapter: PostgreSQLExecAdapterAsync):
         table_name = f"table_{uuid.uuid4()}"
         names = ["id", "value"]
-        user_types = [BIType.integer, BIType.string]
+        user_types = [UserDataType.integer, UserDataType.string]
         assert not await self.table_exists(pg_adapter=pg_adapter, table_name=table_name)
         await pg_adapter.create_table(table_name=table_name, names=names, user_types=user_types)
         assert await self.table_exists(pg_adapter=pg_adapter, table_name=table_name)
@@ -79,7 +79,7 @@ class BaseTestPGOpExecAdapter(metaclass=abc.ABCMeta):
 
         table_name = f"table_{uuid.uuid4()}"
         names = ["int_value", "str_value", "bool_value"]
-        user_types = [BIType.integer, BIType.string, BIType.boolean]
+        user_types = [UserDataType.integer, UserDataType.string, UserDataType.boolean]
 
         raw_data = [
             # 5 chunks X 1000 rows
@@ -117,7 +117,9 @@ class BaseTestPGOpExecAdapter(metaclass=abc.ABCMeta):
         assert attempts > self.max_size
         for attempt in range(attempts):
             async with self.make_pg_adapter(compeng_pg_dsn=compeng_pg_dsn) as pg_adapter:
-                await pg_adapter.create_table(table_name=table_name, names=["int_value"], user_types=[BIType.integer])
+                await pg_adapter.create_table(
+                    table_name=table_name, names=["int_value"], user_types=[UserDataType.integer]
+                )
 
 
 class TestAiopgOpRunner(BaseTestPGOpExecAdapter):

@@ -18,7 +18,7 @@ from dl_connector_snowflake.core.data_source_spec import (
     SnowFlakeTableDataSourceSpec,
 )
 from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 from dl_core.connection_models import (
     TableDefinition,
     TableIdent,
@@ -46,7 +46,7 @@ class SnowFlakeDataSourceMixin(BaseSQLDataSource):
         return ConnectionSQLSnowFlake
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in (SOURCE_TYPE_SNOWFLAKE_TABLE, SOURCE_TYPE_SNOWFLAKE_SUBSELECT)
 
 

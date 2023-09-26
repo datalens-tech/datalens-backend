@@ -6,7 +6,7 @@ from typing import (
 )
 
 from dl_constants.enums import (
-    CreateDSFrom,
+    DataSourceType,
     JoinType,
 )
 from dl_core.connection_models import (
@@ -30,7 +30,7 @@ class BitrixGDSDataSource(PseudoSQLDataSource):
         return None
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type == SOURCE_TYPE_BITRIX_GDS
 
     def get_table_definition(self) -> TableDefinition:

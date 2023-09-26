@@ -11,7 +11,7 @@ import attr
 
 from dl_constants.enums import (
     ConnectionType,
-    CreateDSFrom,
+    DataSourceType,
 )
 from dl_core.base_models import ConnectionRef
 from dl_core.data_source_spec.base import DataSourceSpec
@@ -88,7 +88,7 @@ class MigrationKeyMappingItem:
 
 @attr.s(frozen=True)
 class MigrationSpec:
-    source_type: CreateDSFrom = attr.ib(kw_only=True)
+    source_type: DataSourceType = attr.ib(kw_only=True)
     dto_cls: Type[DataSourceMigrationInterface] = attr.ib(kw_only=True)
     dsrc_spec_cls: Type[DataSourceSpec] = attr.ib(kw_only=True)
     migration_mapping_items: tuple[MigrationKeyMappingItem, ...] = attr.ib(kw_only=True)

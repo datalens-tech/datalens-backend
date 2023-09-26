@@ -4,14 +4,14 @@ from typing import Optional
 
 import attr
 
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 from dl_core.base_models import ConnectionRef
 from dl_core.db.elements import SchemaColumn
 
 
 @attr.s
 class DataSourceSpec:
-    source_type: CreateDSFrom = attr.ib(kw_only=True)
+    source_type: DataSourceType = attr.ib(kw_only=True)
     connection_ref: Optional[ConnectionRef] = attr.ib(kw_only=True, default=None)
     raw_schema: Optional[list[SchemaColumn]] = attr.ib(kw_only=True, default=None)
     data_dump_id: Optional[str] = attr.ib(kw_only=True, default=None)

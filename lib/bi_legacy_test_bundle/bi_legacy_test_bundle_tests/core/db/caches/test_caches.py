@@ -25,9 +25,9 @@ from dl_api_commons.reporting.profiler import (
     DefaultReportingProfiler,
 )
 from dl_constants.enums import (
-    BIType,
     DataSourceRole,
     SelectorType,
+    UserDataType,
 )
 from dl_core.data_processing.cache.engine import (
     EntityCacheEngineAsync,
@@ -314,7 +314,7 @@ def test_us_dataset_cache_engine_integration(
                 expression=sa.literal_column("val"),
                 avatar_ids=[avatar_id],
                 alias="val",
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
         ],
     )
@@ -451,7 +451,7 @@ def test_locked_cache(
                 expression=sa.literal_column(f"id * {random_key_int}"),
                 avatar_ids=[avatar_id],
                 alias="id",
-                user_type=BIType.integer,
+                user_type=UserDataType.integer,
             ),
         ],
     )

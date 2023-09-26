@@ -36,10 +36,10 @@ from dl_api_commons.client.base import (
 )
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
     CalcMode,
     FieldType,
     ManagedBy,
+    UserDataType,
 )
 
 
@@ -90,7 +90,7 @@ class SingleAvatarDatasetBuilder:
         self,
         *,
         id: str,
-        data_type: BIType,
+        data_type: UserDataType,
         src: Optional[str] = None,
         f_type: Optional[FieldType] = None,
         aggregation: Optional[AggregationFunction] = None,
@@ -136,7 +136,7 @@ class SingleAvatarDatasetBuilder:
         self,
         *,
         id: str,
-        data_type: BIType,
+        data_type: UserDataType,
         formula: str,
         f_type: Optional[FieldType] = None,
         aggregation: Optional[AggregationFunction] = None,
@@ -208,7 +208,7 @@ class SingleAvatarDatasetBuilder:
 class _ChartExtraFormulaField:
     id: str
     title: str
-    data_type: BIType
+    data_type: UserDataType
     formula: str
     f_type: FieldType
     aggregation: AggregationFunction
@@ -262,7 +262,7 @@ class ChartBuilder(metaclass=abc.ABCMeta):
         *,
         id: str,
         title: Optional[str] = None,
-        data_type: BIType,
+        data_type: UserDataType,
         formula: str,
         f_type: Optional[FieldType] = None,
         aggregation: Optional[AggregationFunction] = None,

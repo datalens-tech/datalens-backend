@@ -18,8 +18,8 @@ from bi_external_api.domain import external as ext
 from bi_external_api.domain.internal import datasets
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
     CalcMode,
+    UserDataType,
 )
 
 
@@ -33,11 +33,11 @@ class DatasetFieldConverter:
         return ext.Aggregation[agg.name]
 
     @classmethod
-    def convert_data_type_ext_to_int(cls, data_type: ext.FieldType) -> BIType:
-        return BIType[data_type.name]
+    def convert_data_type_ext_to_int(cls, data_type: ext.FieldType) -> UserDataType:
+        return UserDataType[data_type.name]
 
     @classmethod
-    def convert_data_type_int_to_ext(cls, data_type: BIType) -> ext.FieldType:
+    def convert_data_type_int_to_ext(cls, data_type: UserDataType) -> ext.FieldType:
         return ext.FieldType[data_type.name]
 
     @classmethod

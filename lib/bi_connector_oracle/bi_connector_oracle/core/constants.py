@@ -5,15 +5,15 @@ from enum import (
 
 from dl_constants.enums import (
     ConnectionType,
-    CreateDSFrom,
+    DataSourceType,
     SourceBackendType,
 )
 
 
 BACKEND_TYPE_ORACLE = SourceBackendType.declare("ORACLE")
 CONNECTION_TYPE_ORACLE = ConnectionType.declare("oracle")
-SOURCE_TYPE_ORACLE_TABLE = CreateDSFrom.declare("ORACLE_TABLE")
-SOURCE_TYPE_ORACLE_SUBSELECT = CreateDSFrom.declare("ORACLE_SUBSELECT")
+SOURCE_TYPE_ORACLE_TABLE = DataSourceType.declare("ORACLE_TABLE")
+SOURCE_TYPE_ORACLE_SUBSELECT = DataSourceType.declare("ORACLE_SUBSELECT")
 
 
 @unique

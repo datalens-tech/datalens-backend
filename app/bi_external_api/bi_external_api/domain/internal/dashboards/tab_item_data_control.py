@@ -11,7 +11,7 @@ from bi_external_api.attrs_model_mapper import ModelDescriptor
 from bi_external_api.attrs_model_mapper.base import AttribDescriptor
 from bi_external_api.domain.internal.charts import DatasetFieldType
 from bi_external_api.structs.singleormultistring import SingleOrMultiString
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 
 from .. import charts
 from ..dl_common import (
@@ -67,7 +67,7 @@ class DatasetControlSource(CommonGuidedControlSource):
     datasetFieldId: str = attr.ib()
     # Actually next fields should be filled by ext API. But sometimes they are non returned by dash-api
     datasetFieldType: Optional[DatasetFieldType] = attr.ib(default=None)
-    fieldType: Optional[BIType] = attr.ib(default=None)
+    fieldType: Optional[UserDataType] = attr.ib(default=None)
 
     ignore_not_declared_fields = True
 

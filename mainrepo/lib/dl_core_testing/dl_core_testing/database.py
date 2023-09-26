@@ -19,8 +19,8 @@ import sqlalchemy as sa
 from sqlalchemy.sql.type_api import TypeEngine
 
 from dl_constants.enums import (
-    BIType,
     ConnectionType,
+    UserDataType,
 )
 from dl_core.db import (
     get_type_transformer,
@@ -59,7 +59,7 @@ class Db(DbBase[CoreDbConfig]):
         self,
         expr: sa.sql.ClauseElement,
         from_: Optional[sa.sql.ClauseElement] = None,
-        user_t: Optional[BIType] = None,
+        user_t: Optional[UserDataType] = None,
     ) -> Any:
         value = self.base_eval(expr, from_=from_)
         if user_t is not None:
@@ -118,23 +118,23 @@ class DbTable(DbTableBase):
 @attr.s()
 class C:
     name: str = attr.ib()
-    user_type: BIType = attr.ib()
+    user_type: UserDataType = attr.ib()
     nullable: Optional[bool] = attr.ib(default=None)
     _sa_type: TypeEngine = attr.ib(default=None)
     _vg: Callable[[int, datetime.datetime], Any] = attr.ib(default=None)
 
     DEFAULT_VALUE_GENERATORS = {
-        BIType.string: lambda rn, **kwargs: f"str_value_{rn}",
-        BIType.integer: lambda rn, **kwargs: rn,
-        BIType.float: lambda rn, **kwargs: rn + (rn / 10),
-        BIType.date: lambda rn, ts, **kwargs: ts.date() + datetime.timedelta(days=rn),
-        BIType.datetime: lambda rn, ts, **kwargs: ts + datetime.timedelta(days=rn / math.pi),
-        BIType.genericdatetime: lambda rn, ts, **kwargs: ts + datetime.timedelta(days=rn / math.pi),
-        BIType.boolean: lambda rn, **kwargs: bool(int(rn) % 2),
-        BIType.uuid: lambda rn, **kwargs: str(uuid.UUID(int=rn)),
-        BIType.array_int: lambda rn, **kwargs: [rn * idx for idx in range(5)],
-        BIType.array_str: lambda rn, **kwargs: [f"str_{str(rn * idx)}" for idx in range(5)],
-        BIType.array_float: lambda rn, **kwargs: [float(rn * idx) * 1.1 for idx in range(5)],
+        UserDataType.string: lambda rn, **kwargs: f"str_value_{rn}",
+        UserDataType.integer: lambda rn, **kwargs: rn,
+        UserDataType.float: lambda rn, **kwargs: rn + (rn / 10),
+        UserDataType.date: lambda rn, ts, **kwargs: ts.date() + datetime.timedelta(days=rn),
+        UserDataType.datetime: lambda rn, ts, **kwargs: ts + datetime.timedelta(days=rn / math.pi),
+        UserDataType.genericdatetime: lambda rn, ts, **kwargs: ts + datetime.timedelta(days=rn / math.pi),
+        UserDataType.boolean: lambda rn, **kwargs: bool(int(rn) % 2),
+        UserDataType.uuid: lambda rn, **kwargs: str(uuid.UUID(int=rn)),
+        UserDataType.array_int: lambda rn, **kwargs: [rn * idx for idx in range(5)],
+        UserDataType.array_str: lambda rn, **kwargs: [f"str_{str(rn * idx)}" for idx in range(5)],
+        UserDataType.array_float: lambda rn, **kwargs: [float(rn * idx) * 1.1 for idx in range(5)],
     }
 
     @attr.s(auto_attribs=True, frozen=True)
@@ -165,34 +165,34 @@ class C:
 
     @classmethod
     def int_value(cls, name: str = "int_value"):  # type: ignore  # TODO: fix
-        return cls(name, BIType.integer)
+        return cls(name, UserDataType.integer)
 
     @classmethod
     def datetime_value(cls, name: str = "datetime_value"):  # type: ignore  # TODO: fix
-        return cls(name, BIType.datetime)
+        return cls(name, UserDataType.datetime)
 
     @classmethod
     def full_house(cls) -> list[C]:
         return [
-            cls("string_value", BIType.string, nullable=False),
-            cls("n_string_value", BIType.string, nullable=True),
-            cls("int_value", BIType.integer, nullable=False),
-            cls("n_int_value", BIType.integer, nullable=True),
-            cls("float_value", BIType.float),
-            cls("datetime_value", BIType.genericdatetime, nullable=False),
-            cls("n_datetime_value", BIType.genericdatetime, nullable=True),
-            cls("date_value", BIType.date),
-            cls("boolean_value", BIType.boolean),
-            cls("uuid_value", BIType.uuid),
+            cls("string_value", UserDataType.string, nullable=False),
+            cls("n_string_value", UserDataType.string, nullable=True),
+            cls("int_value", UserDataType.integer, nullable=False),
+            cls("n_int_value", UserDataType.integer, nullable=True),
+            cls("float_value", UserDataType.float),
+            cls("datetime_value", UserDataType.genericdatetime, nullable=False),
+            cls("n_datetime_value", UserDataType.genericdatetime, nullable=True),
+            cls("date_value", UserDataType.date),
+            cls("boolean_value", UserDataType.boolean),
+            cls("uuid_value", UserDataType.uuid),
             # Not included: arrays, geopoint, geopolygon, markup (not db-types, generally).
         ]
 
     @classmethod
     def array_columns(cls):  # type: ignore  # TODO: fix
         return [
-            cls("array_int_value", BIType.array_int),
-            cls("array_str_value", BIType.array_str),
-            cls("array_float_value", BIType.array_float),
+            cls("array_int_value", UserDataType.array_int),
+            cls("array_str_value", UserDataType.array_str),
+            cls("array_float_value", UserDataType.array_float),
         ]
 
 

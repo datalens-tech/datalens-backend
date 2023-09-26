@@ -20,7 +20,7 @@ from sqlalchemy.dialects.postgresql import pypostgresql
 from dl_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
 from dl_connector_postgresql.core.postgresql_base.error_transformer import make_async_pg_error_transformer
 from dl_connector_postgresql.core.postgresql_base.utils import compile_pg_query
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.connectors.base.error_transformer import DbErrorTransformer
 from dl_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
 from dl_core.data_processing.streaming import (
@@ -86,7 +86,7 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
         self,
         *,
         query: Union[str, sa.sql.selectable.Select],
-        user_types: Sequence[BIType],
+        user_types: Sequence[UserDataType],
         chunk_size: int,
         joint_dsrc_info: Optional[PreparedMultiFromInfo] = None,
         query_id: str,
@@ -119,7 +119,7 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
         *,
         table_name: str,
         names: Sequence[str],
-        user_types: Sequence[BIType],
+        user_types: Sequence[UserDataType],
         data: AsyncChunkedBase,
     ) -> None:
         """Insert data into a table."""

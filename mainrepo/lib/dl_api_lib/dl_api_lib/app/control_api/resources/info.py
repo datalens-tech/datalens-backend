@@ -16,8 +16,8 @@ from dl_api_lib.exc import UnsupportedForEntityType
 from dl_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
 from dl_api_lib.schemas.main import BadRequestResponseSchema
 from dl_constants.enums import (
-    BIType,
     ConnectionType,
+    UserDataType,
 )
 from dl_core.exc import EntityUsageNotAllowed
 from dl_core.us_dataset import Dataset
@@ -56,7 +56,14 @@ class FieldTypeCollection(BIResource):
             "types": [
                 {"name": k.name, "aggregations": [x.name for x in v]}
                 for k, v in BI_TYPE_AGGREGATIONS.items()
-                if k not in (BIType.uuid, BIType.markup, BIType.datetimetz, BIType.datetime, BIType.unsupported)
+                if k
+                not in (
+                    UserDataType.uuid,
+                    UserDataType.markup,
+                    UserDataType.datetimetz,
+                    UserDataType.datetime,
+                    UserDataType.unsupported,
+                )
             ]
         }
 

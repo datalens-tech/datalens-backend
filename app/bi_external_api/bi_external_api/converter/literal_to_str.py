@@ -10,7 +10,7 @@ from bi_external_api.converter.converter_exc import (
     NotSupportedYet,
 )
 from bi_external_api.domain.internal import datasets
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 
 
 _DEFAULT_VALUE_TV = TypeVar("_DEFAULT_VALUE_TV", bound=datasets.DefaultValue)
@@ -81,16 +81,16 @@ class DefaultValueConverterExtStringValue:
         DefaultValueToStringCodecInteger,
         DefaultValueToStringCodecFloat,
     )
-    map_bi_type_to_codec_cls: ClassVar[dict[BIType, Type[DefaultValueToStringCodec]]] = {
+    map_bi_type_to_codec_cls: ClassVar[dict[UserDataType, Type[DefaultValueToStringCodec]]] = {
         codec_cls.DEFAULT_VALUE_CLS.type: codec_cls for codec_cls in all_codecs
     }
 
     @classmethod
-    def _make_not_supported_exc(cls, bi_type: BIType) -> NotSupportedYet:
+    def _make_not_supported_exc(cls, bi_type: UserDataType) -> NotSupportedYet:
         return NotSupportedYet(f"dataset parameters with type: {bi_type.name}")
 
     @classmethod
-    def convert_ext_to_int(cls, bi_type: BIType, ext_value: str) -> datasets.DefaultValue:
+    def convert_ext_to_int(cls, bi_type: UserDataType, ext_value: str) -> datasets.DefaultValue:
         try:
             codec_cls: Type[DefaultValueToStringCodec] = cls.map_bi_type_to_codec_cls[bi_type]
         except KeyError:

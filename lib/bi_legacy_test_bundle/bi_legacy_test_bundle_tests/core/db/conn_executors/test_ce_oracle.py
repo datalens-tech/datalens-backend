@@ -9,7 +9,7 @@ from bi_legacy_test_bundle_tests.core.common_ce import (
     ErrorTestSet,
     SelectDataTestSet,
 )
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core import exc
 from dl_core.connection_executors import ConnExecutorQuery
 from dl_core.connection_models import (
@@ -54,7 +54,7 @@ class TestOracleExecutor(BaseConnExecutorSet):
             db,
             rows=10,
             columns=[
-                C("str_val", BIType.string, sa_type=or_types.NVARCHAR2(255), vg=lambda rn, **kwargs: str(rn)),
+                C("str_val", UserDataType.string, sa_type=or_types.NVARCHAR2(255), vg=lambda rn, **kwargs: str(rn)),
             ],
         )
         yield SelectDataTestSet(
@@ -70,16 +70,16 @@ class TestOracleExecutor(BaseConnExecutorSet):
     @pytest.fixture()
     def all_supported_types_test_case(self, db):
         columns_data = [
-            self.CD("my_integer", or_types.NUMBER(), BIType.integer, nt_name_str="integer"),
-            self.CD("my_number", or_types.NUMBER(10, 5), BIType.float),
-            self.CD("my_float", or_types.BINARY_FLOAT(), BIType.float),
-            self.CD("my_double", or_types.BINARY_DOUBLE(), BIType.float),
-            self.CD("my_char", or_types.CHAR(), BIType.string),
-            self.CD("my_nchar", sa.NCHAR(), BIType.string),
-            self.CD("my_varchar", or_types.VARCHAR2(100), BIType.string, nt_name_str="varchar"),
-            self.CD("my_nvarchar", or_types.NVARCHAR2(100), BIType.string),
-            self.CD("my_date", or_types.DATE(), BIType.genericdatetime),
-            self.CD("my_timestamp", or_types.TIMESTAMP(), BIType.genericdatetime),
+            self.CD("my_integer", or_types.NUMBER(), UserDataType.integer, nt_name_str="integer"),
+            self.CD("my_number", or_types.NUMBER(10, 5), UserDataType.float),
+            self.CD("my_float", or_types.BINARY_FLOAT(), UserDataType.float),
+            self.CD("my_double", or_types.BINARY_DOUBLE(), UserDataType.float),
+            self.CD("my_char", or_types.CHAR(), UserDataType.string),
+            self.CD("my_nchar", sa.NCHAR(), UserDataType.string),
+            self.CD("my_varchar", or_types.VARCHAR2(100), UserDataType.string, nt_name_str="varchar"),
+            self.CD("my_nvarchar", or_types.NVARCHAR2(100), UserDataType.string),
+            self.CD("my_date", or_types.DATE(), UserDataType.genericdatetime),
+            self.CD("my_timestamp", or_types.TIMESTAMP(), UserDataType.genericdatetime),
         ]
 
         table = db.table_from_columns(cd.to_sa_col() for cd in columns_data)

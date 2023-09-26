@@ -23,7 +23,7 @@ from dl_connector_chyt.core.constants import (
 from dl_connector_chyt.core.dto import CHYTDTO
 from dl_connector_chyt.core.settings import CHYTConnectorSettings
 from dl_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 from dl_core.base_models import (
     ConnCacheableDataModelMixin,
     ConnSubselectDataModelMixin,
@@ -56,10 +56,10 @@ class BaseConnectionCHYT(
     is_always_user_source: ClassVar[bool] = True
     settings_type = CHYTConnectorSettings
 
-    chyt_table_source_type: ClassVar[CreateDSFrom]
-    chyt_table_list_source_type: ClassVar[CreateDSFrom]
-    chyt_table_range_source_type: ClassVar[CreateDSFrom]
-    chyt_subselect_source_type: ClassVar[CreateDSFrom]
+    chyt_table_source_type: ClassVar[DataSourceType]
+    chyt_table_list_source_type: ClassVar[DataSourceType]
+    chyt_table_range_source_type: ClassVar[DataSourceType]
+    chyt_subselect_source_type: ClassVar[DataSourceType]
 
     @attr.s(kw_only=True)
     class DataModel(ConnCacheableDataModelMixin, ConnSubselectDataModelMixin, ConnectionBase.DataModel):

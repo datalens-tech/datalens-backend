@@ -5,8 +5,8 @@ from sqlalchemy.engine.url import make_url
 
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from dl_constants.enums import (
-    BIType,
     RawSQLLevel,
+    UserDataType,
 )
 from dl_core_testing.connection import make_saved_connection
 from dl_core_testing.database import (
@@ -52,8 +52,8 @@ def table_for_cached_dataset(db_def_cache_tests_pg):
         db_def_cache_tests_pg,
         rows=int(1e2),
         columns=[
-            C("id", BIType.integer, vg=lambda rn, **kwargs: rn),
-            C("val", BIType.string, vg=lambda rn, **kwargs: "ST:{}".format(rn)),
+            C("id", UserDataType.integer, vg=lambda rn, **kwargs: rn),
+            C("val", UserDataType.string, vg=lambda rn, **kwargs: "ST:{}".format(rn)),
         ],
     )
     yield tbl

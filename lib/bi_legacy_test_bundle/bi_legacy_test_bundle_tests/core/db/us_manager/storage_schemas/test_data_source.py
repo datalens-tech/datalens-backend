@@ -12,8 +12,8 @@ from dl_connector_postgresql.core.postgresql.constants import (
 )
 from dl_connector_postgresql.core.postgresql.data_source import PostgreSQLDataSource
 from dl_constants.enums import (
-    BIType,
     ConnectionType,
+    UserDataType,
 )
 from dl_core import data_source
 from dl_core.base_models import DefaultConnectionRef
@@ -33,7 +33,7 @@ from dl_core.us_manager.us_manager_sync import SyncUSManager
 
 
 def common_col(
-    name: str, ut: BIType, nt: str, conn_type: ConnectionType, nt_cls=CommonNativeType, **nt_kwargs
+    name: str, ut: UserDataType, nt: str, conn_type: ConnectionType, nt_cls=CommonNativeType, **nt_kwargs
 ) -> SchemaColumn:
     return SchemaColumn(
         name=name,
@@ -47,7 +47,7 @@ def common_col(
 
 
 def ch_col(
-    name: str, ut: BIType, nt: str, conn_type=CONNECTION_TYPE_CLICKHOUSE, nt_cls=ClickHouseNativeType, **nt_kwargs
+    name: str, ut: UserDataType, nt: str, conn_type=CONNECTION_TYPE_CLICKHOUSE, nt_cls=ClickHouseNativeType, **nt_kwargs
 ) -> SchemaColumn:
     return common_col(name=name, ut=ut, nt=nt, conn_type=conn_type, nt_cls=nt_cls, **nt_kwargs)
 
@@ -68,7 +68,7 @@ _DS_FACTORY = {
             db_name="some_db",
             table_name="some_user_table",
             data_dump_id=None,
-            raw_schema=rs_for(CONNECTION_TYPE_CLICKHOUSE, ch_col("pk", BIType.integer, "uint64")),
+            raw_schema=rs_for(CONNECTION_TYPE_CLICKHOUSE, ch_col("pk", UserDataType.integer, "uint64")),
         ),
     ),
     "ch_postgres": lambda usm: PostgreSQLDataSource(
@@ -82,7 +82,8 @@ _DS_FACTORY = {
             table_name="some_user_table",
             data_dump_id=None,
             raw_schema=rs_for(
-                CONNECTION_TYPE_POSTGRES, common_col("pk", BIType.integer, "bigint", conn_type=CONNECTION_TYPE_POSTGRES)
+                CONNECTION_TYPE_POSTGRES,
+                common_col("pk", UserDataType.integer, "bigint", conn_type=CONNECTION_TYPE_POSTGRES),
             ),
         ),
     ),

@@ -1,9 +1,9 @@
 from bi_legacy_test_bundle_tests.api_lib.utils import make_dataset_with_tree
 from dl_api_lib.query.formalization.query_formalizer import SimpleQuerySpecFormalizer
 from dl_constants.enums import (
-    BIType,
     FieldRole,
     FieldType,
+    UserDataType,
 )
 from dl_query_processing.compilation.specs import ArrayPrefixSelectWrapperSpec
 from dl_query_processing.enums import SelectValueType
@@ -32,14 +32,14 @@ def test_tree_in_query_formalizer(api_v1, clickhouse_db, default_sync_usm, conne
             items=[
                 LegendItem(
                     legend_item_id=0,
-                    data_type=BIType.integer,
+                    data_type=UserDataType.integer,
                     obj=FieldObjSpec(id=field_int.id, title=field_int.title),
                     field_type=FieldType.DIMENSION,
                     role_spec=RowRoleSpec(role=FieldRole.row),
                 ),
                 LegendItem(
                     legend_item_id=1,
-                    data_type=BIType.tree_str,
+                    data_type=UserDataType.tree_str,
                     obj=FieldObjSpec(id=field_tree.id, title=field_tree.title),
                     field_type=FieldType.DIMENSION,
                     role_spec=TreeRoleSpec(

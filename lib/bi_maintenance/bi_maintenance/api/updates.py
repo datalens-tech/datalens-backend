@@ -45,10 +45,10 @@ from dl_api_lib.request_model.data import (
 )
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
     CalcMode,
-    CreateDSFrom,
     DataSourceRole,
+    DataSourceType,
+    UserDataType,
 )
 from dl_core.base_models import DefaultConnectionRef
 from dl_core.components.accessor import DatasetComponentAccessor
@@ -82,7 +82,7 @@ class SimpleDatasetUpdateGen:
         title: str,
         formula: Optional[str] = None,
         source: Optional[str] = None,
-        cast: Optional[BIType] = None,
+        cast: Optional[UserDataType] = None,
         aggregation: AggregationFunction = AggregationFunction.none,
         default_value: Optional[BIValue] = None,
         value_constraint: Optional[ParameterValueConstraint] = None,
@@ -119,7 +119,7 @@ class SimpleDatasetUpdateGen:
     def update_source_as_subselect(
         self,
         id: str,
-        source_type: CreateDSFrom,
+        source_type: DataSourceType,
         subsql: str,
     ) -> AddUpdateSourceAction:
         assert source_type.name.endswith("_SUBSELECT"), "Must be a *_SUBSELECT source type"

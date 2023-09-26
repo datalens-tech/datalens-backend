@@ -18,7 +18,7 @@ from dl_connector_chyt.core.data_source_spec import (
     CHYTTableListDataSourceSpec,
     CHYTTableRangeDataSourceSpec,
 )
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 from dl_core.connectors.base.data_source_migration import (
     DataSourceMigrationInterface,
     MigrationKeyMappingItem,
@@ -41,10 +41,10 @@ class CHYTTableRangeDSMI(DataSourceMigrationInterface):
 
 
 class BaseCHYTDataSourceMigrator(DefaultSQLDataSourceMigrator):
-    table_list_source_type: ClassVar[Optional[CreateDSFrom]]
+    table_list_source_type: ClassVar[Optional[DataSourceType]]
     table_list_dsrc_spec_cls: ClassVar[Optional[Type[DataSourceSpec]]]
 
-    table_range_source_type: ClassVar[Optional[CreateDSFrom]]
+    table_range_source_type: ClassVar[Optional[DataSourceType]]
     table_range_dsrc_spec_cls: ClassVar[Optional[Type[DataSourceSpec]]]
 
     def get_migration_specs(self) -> list[MigrationSpec]:

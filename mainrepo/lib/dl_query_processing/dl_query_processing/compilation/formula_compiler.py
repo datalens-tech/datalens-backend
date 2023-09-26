@@ -28,12 +28,12 @@ import uuid
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
-    BIType,
     CalcMode,
     ConditionPartCalcMode,
     FieldType,
     ManagedBy,
     OrderDirection,
+    UserDataType,
 )
 from dl_core.components.ids import (
     AvatarId,
@@ -203,7 +203,7 @@ class FieldProcessingStageManager:
     def get_data_type(self, field: BIField, stage: ProcessingStage) -> DataType:
         return self._data_types[field.guid][stage]
 
-    def get_user_type(self, field: BIField, stage: ProcessingStage) -> BIType:
+    def get_user_type(self, field: BIField, stage: ProcessingStage) -> UserDataType:
         return FORMULA_TO_BI_TYPES[self.get_data_type(field=field, stage=stage)]
 
     def raise_if_any(self, field: BIField, stage: ProcessingStage) -> None:
@@ -302,28 +302,28 @@ def _unsupported_cast(typename):  # type: ignore  # TODO: fix
 
 
 _SUPPORTED_CASTS_FUNCTIONS = {
-    BIType.boolean: "bool",
-    BIType.date: "date",
-    BIType.datetime: "datetime",
-    BIType.genericdatetime: "genericdatetime",
-    BIType.float: "float",
-    BIType.integer: "int",
-    BIType.geopoint: "geopoint",
-    BIType.geopolygon: "geopolygon",
-    BIType.string: "str",
-    BIType.markup: "markup",
+    UserDataType.boolean: "bool",
+    UserDataType.date: "date",
+    UserDataType.datetime: "datetime",
+    UserDataType.genericdatetime: "genericdatetime",
+    UserDataType.float: "float",
+    UserDataType.integer: "int",
+    UserDataType.geopoint: "geopoint",
+    UserDataType.geopolygon: "geopolygon",
+    UserDataType.string: "str",
+    UserDataType.markup: "markup",
 }
 _CAST_FUNCTIONS = {
-    bi_type: _SUPPORTED_CASTS_FUNCTIONS.get(bi_type) or _unsupported_cast(bi_type.name) for bi_type in BIType
+    bi_type: _SUPPORTED_CASTS_FUNCTIONS.get(bi_type) or _unsupported_cast(bi_type.name) for bi_type in UserDataType
 }
 _ALLOWED_PARAMETER_TYPES = {
-    BIType.string,
-    BIType.integer,
-    BIType.float,
-    BIType.boolean,
-    BIType.date,
-    BIType.datetime,
-    BIType.genericdatetime,
+    UserDataType.string,
+    UserDataType.integer,
+    UserDataType.float,
+    UserDataType.boolean,
+    UserDataType.date,
+    UserDataType.datetime,
+    UserDataType.genericdatetime,
 }
 
 
@@ -824,7 +824,7 @@ class FormulaCompiler:
         self,
         formula_obj: formula_nodes.Formula,
         current_dtype: DataType,
-        cast: Optional[BIType],
+        cast: Optional[UserDataType],
     ) -> formula_nodes.Formula:
         """Apply a type cast to given expression"""
 
@@ -838,7 +838,7 @@ class FormulaCompiler:
         self,
         formula_obj: formula_nodes.Formula,
         current_dtype: DataType,
-        cast: Optional[BIType],
+        cast: Optional[UserDataType],
     ) -> formula_nodes.Formula:
         return self._apply_cast(formula_obj=formula_obj, current_dtype=current_dtype, cast=cast)
 
@@ -963,14 +963,14 @@ class FormulaCompiler:
         """Return boolean flag indicating whether the field is valid."""
         return not self.get_field_errors(field)
 
-    def get_field_initial_data_type(self, field: BIField) -> Optional[BIType]:
+    def get_field_initial_data_type(self, field: BIField) -> Optional[UserDataType]:
         """Return automatically determined data type of given field before cast and aggregation"""
         self._require_field_formula_preparation(field)
         return self._stage_manager.get_user_type(field=field, stage=ProcessingStage.substitution)
 
-    def get_field_final_data_type(self, field: BIField) -> Optional[BIType]:
+    def get_field_final_data_type(self, field: BIField) -> Optional[UserDataType]:
         """
-        Return automatically determined user data type (``BIType``)
+        Return automatically determined user data type (``UserDataType``)
         of given field after cast and aggregation
         """
         self._require_field_formula_preparation(field)
@@ -984,7 +984,7 @@ class FormulaCompiler:
         self._require_field_formula_preparation(field)
         return self._stage_manager.get_data_type(field=field, stage=ProcessingStage.aggregation)
 
-    def get_field_type(self, field: BIField) -> Optional[BIType]:
+    def get_field_type(self, field: BIField) -> Optional[UserDataType]:
         """Return automatically determined field type"""
         self._require_field_formula_preparation(field)
         return self._field_types.get(field.guid, FieldType.DIMENSION)  # type: ignore  # TODO: fix

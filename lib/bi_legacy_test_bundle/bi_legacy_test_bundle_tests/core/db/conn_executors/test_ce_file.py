@@ -15,7 +15,7 @@ from bi_legacy_test_bundle_tests.core.common_ce_ch import BaseClickHouseTestSet
 from dl_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
 from dl_connector_bundle_chs3.chs3_gsheets.core.connection_executors import GSheetsFileS3AsyncAdapterConnExecutor
 from dl_connector_bundle_chs3.file.core.connection_executors import FileS3AsyncAdapterConnExecutor
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core import exc
 from dl_core.connection_executors import ConnExecutorQuery
 from dl_core_testing.database import (
@@ -69,7 +69,7 @@ class BaseTestFileS3AsyncAdapterExecutor(BaseClickHouseTestSet):
             db,
             rows=10,
             columns=[
-                C("str_val", BIType.string, vg=lambda rn, **kwargs: str(rn)),
+                C("str_val", UserDataType.string, vg=lambda rn, **kwargs: str(rn)),
             ],
         )
 

@@ -13,7 +13,7 @@ from dl_api_lib_testing.data_api_base import (
     StandardizedDataApiTestBase,
 )
 from dl_constants.enums import (
-    BIType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_core_testing.database import (
@@ -65,16 +65,16 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         filter_op: WhereClauseOperation,
     ) -> None:
         columns = [
-            C("int_value", BIType.integer, vg=lambda rn, **kwargs: rn),
-            C("array_int_value", BIType.array_int, vg=lambda rn, **kwargs: [i for i in reversed(range(rn))]),
+            C("int_value", UserDataType.integer, vg=lambda rn, **kwargs: rn),
+            C("array_int_value", UserDataType.array_int, vg=lambda rn, **kwargs: [i for i in reversed(range(rn))]),
             C(
                 "array_str_value",
-                BIType.array_str,
+                UserDataType.array_str,
                 vg=lambda rn, **kwargs: [str(i) if i != 5 else None for i in reversed(range(rn))],
             ),
             C(
                 "array_float_value",
-                BIType.array_float,
+                UserDataType.array_float,
                 vg=lambda rn, **kwargs: [i / 100.0 for i in reversed(range(rn))],
             ),
         ]
@@ -163,15 +163,15 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         is_numeric: bool,
     ) -> None:
         columns = [
-            C("int_value", BIType.integer, vg=lambda rn, **kwargs: 3),
-            C("str_value", BIType.string, vg=lambda rn, **kwargs: "3"),
-            C("float_value", BIType.float, vg=lambda rn, **kwargs: 0.03),
-            C("none_value", BIType.float, vg=lambda rn, **kwargs: None),
-            C("array_int_value", BIType.array_int, vg=lambda rn, **kwargs: [i for i in reversed(range(rn))]),
-            C("array_str_value", BIType.array_str, vg=lambda rn, **kwargs: [str(i) for i in reversed(range(rn))]),
+            C("int_value", UserDataType.integer, vg=lambda rn, **kwargs: 3),
+            C("str_value", UserDataType.string, vg=lambda rn, **kwargs: "3"),
+            C("float_value", UserDataType.float, vg=lambda rn, **kwargs: 0.03),
+            C("none_value", UserDataType.float, vg=lambda rn, **kwargs: None),
+            C("array_int_value", UserDataType.array_int, vg=lambda rn, **kwargs: [i for i in reversed(range(rn))]),
+            C("array_str_value", UserDataType.array_str, vg=lambda rn, **kwargs: [str(i) for i in reversed(range(rn))]),
             C(
                 "array_float_value",
-                BIType.array_float,
+                UserDataType.array_float,
                 vg=lambda rn, **kwargs: [i / 100.0 if i != 5 else None for i in reversed(range(rn))],
             ),
         ]
@@ -214,7 +214,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         ds.result_schema[new_field_name] = ds.field(
             formula=f"IF [{data_api_test_params.date_field}] > DATE('2020-01-01') THEN 1 ELSE 2 END"
         )
-        ds.result_schema[new_field_name].cast = BIType.float
+        ds.result_schema[new_field_name].cast = UserDataType.float
         result_resp = self.get_result(ds, data_api, field_names=(data_api_test_params.date_field, new_field_name))
         assert result_resp.status_code == 200, result_resp.json
 
@@ -334,7 +334,7 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, Regulat
         data_api: SyncHttpDataApiV2,
     ) -> None:
         columns = [
-            C(name="date_val", user_type=BIType.date, nullable=True),
+            C(name="date_val", user_type=UserDataType.date, nullable=True),
         ]
         data = [
             {"date_val": datetime.date(2002, 1, 2)},

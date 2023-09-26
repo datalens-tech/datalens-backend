@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 from dl_constants.enums import (
     ConnectionType,
-    CreateDSFrom,
+    DataSourceType,
     JoinType,
 )
 from dl_core.connection_models import (
@@ -35,7 +35,7 @@ class GSheetsDataSource(BaseSQLDataSource):
         return None
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type == SOURCE_TYPE_GSHEETS
 
     def get_sql_source(self, alias: Optional[str] = None) -> Any:

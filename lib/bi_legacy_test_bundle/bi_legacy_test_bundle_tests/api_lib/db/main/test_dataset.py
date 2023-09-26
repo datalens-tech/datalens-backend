@@ -26,8 +26,8 @@ from dl_connector_postgresql.core.postgresql.constants import (
 )
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
     CalcMode,
+    UserDataType,
 )
 from dl_testing.utils import (
     get_log_record,
@@ -43,7 +43,7 @@ from bi_connector_mysql.core.constants import SOURCE_TYPE_MYSQL_SUBSELECT
 from bi_connector_oracle.core.constants import SOURCE_TYPE_ORACLE_TABLE
 
 
-def _get_index_for_type(dataset: Dataset, type: BIType) -> int:
+def _get_index_for_type(dataset: Dataset, type: UserDataType) -> int:
     i = 0
     for i, field in enumerate(dataset.result_schema):
         if field.cast == type:
@@ -236,7 +236,7 @@ def test_get_preview(client, data_api_v1, static_dataset_id):
 
 def test_get_preview_with_sum_of_ints(api_v1, data_api_v1, static_dataset_id):
     ds = api_v1.load_dataset(dataset=Dataset(id=static_dataset_id)).dataset
-    i = _get_index_for_type(ds, BIType.integer)
+    i = _get_index_for_type(ds, UserDataType.integer)
     ds = api_v1.apply_updates(
         dataset=ds, updates=[ds.result_schema[i].update(aggregaion=AggregationFunction.sum.name)]
     ).dataset
@@ -248,7 +248,7 @@ def test_get_preview_with_sum_of_ints(api_v1, data_api_v1, static_dataset_id):
 def test_aggregation_sum(api_v1, data_api_v1, static_dataset_id):
     ds = api_v1.load_dataset(dataset=Dataset(id=static_dataset_id)).dataset
     old_len = len(ds.result_schema)
-    i = _get_index_for_type(ds, BIType.float)
+    i = _get_index_for_type(ds, UserDataType.float)
     ds.result_schema["new_field"] = ds.field(
         avatar_id=ds.source_avatars[0].id,
         source=ds.result_schema[i].title,
@@ -266,7 +266,7 @@ def test_aggregation_sum(api_v1, data_api_v1, static_dataset_id):
 
 def test_simple_formula(api_v1, data_api_v1, static_dataset_id):
     ds = api_v1.load_dataset(dataset=Dataset(id=static_dataset_id)).dataset
-    i = _get_index_for_type(ds, BIType.float)
+    i = _get_index_for_type(ds, UserDataType.float)
     field = ds.result_schema[i]
     formula = f"[{field.title}] * 2"
     ds.result_schema[f"Doubled {field.title}"] = ds.field(formula=formula)
@@ -314,7 +314,7 @@ def test_formula_with_string(api_v1, data_api_v1, static_dataset_id):
     ds = api_v1.load_dataset(dataset=Dataset(id=static_dataset_id)).dataset
     ds.result_schema["Test"] = ds.field(
         formula="[Order ID]in ('US-2017-158946')",
-        cast=BIType.integer,
+        cast=UserDataType.integer,
     )
     ds = api_v1.apply_updates(dataset=ds).dataset
     preview_resp = data_api_v1.get_preview(dataset=ds)
@@ -323,7 +323,7 @@ def test_formula_with_string(api_v1, data_api_v1, static_dataset_id):
 
 def test_aggregation_on_formula(api_v1, data_api_v1, static_dataset_id):
     ds = api_v1.load_dataset(dataset=Dataset(id=static_dataset_id)).dataset
-    i = _get_index_for_type(ds, BIType.float)
+    i = _get_index_for_type(ds, UserDataType.float)
     field = ds.result_schema[i]
     ds.result_schema[f"Doubled {field.title}"] = ds.field(
         formula=f"[{field.title}] * 2",

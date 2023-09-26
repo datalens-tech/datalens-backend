@@ -11,10 +11,10 @@ from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Conn
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import SOURCE_TYPE_GSHEETS_V2
 from dl_connector_bundle_chs3.file.core.constants import SOURCE_TYPE_FILE_S3_TABLE
 from dl_constants.enums import (
-    BIType,
-    CreateDSFrom,
     DataSourceRole,
+    DataSourceType,
     FileProcessingStatus,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_core.db import SchemaColumn
@@ -37,7 +37,7 @@ def test_chs3_connection_params(request):
     ],
     ids=["file", "gsheets"],
 )
-def test_chs3_connections(request) -> tuple[str, CreateDSFrom]:
+def test_chs3_connections(request) -> tuple[str, DataSourceType]:
     conn_id, source_type = request.param
     conn_id = request.getfixturevalue(conn_id)
     return conn_id, source_type
@@ -519,9 +519,9 @@ def test_update_dataset_source(client, default_sync_usm, api_v1, clickhouse_tabl
         id="source_1_id",
         role=DataSourceRole.origin,
         raw_schema=[
-            SchemaColumn(title="field1", name="string", user_type=BIType.string),
-            SchemaColumn(title="field2", name="date", user_type=BIType.date),
-            SchemaColumn(title="field3", name="integer", user_type=BIType.integer),
+            SchemaColumn(title="field1", name="string", user_type=UserDataType.string),
+            SchemaColumn(title="field2", name="date", user_type=UserDataType.date),
+            SchemaColumn(title="field3", name="integer", user_type=UserDataType.integer),
         ],
     )
     us_manager.save(conn)

@@ -1,5 +1,5 @@
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 
 
-SOURCE_TYPE_CH_FROZEN_SOURCE = CreateDSFrom.declare("CH_FROZEN_SOURCE")
-SOURCE_TYPE_CH_FROZEN_SUBSELECT = CreateDSFrom.declare("CH_FROZEN_SUBSELECT")
+SOURCE_TYPE_CH_FROZEN_SOURCE = DataSourceType.declare("CH_FROZEN_SOURCE")
+SOURCE_TYPE_CH_FROZEN_SUBSELECT = DataSourceType.declare("CH_FROZEN_SUBSELECT")

@@ -21,7 +21,7 @@ from dl_connector_postgresql.core.postgresql.constants import (
     SOURCE_TYPE_PG_TABLE,
 )
 from dl_constants.enums import (
-    CreateDSFrom,
+    DataSourceType,
     ManagedBy,
 )
 
@@ -57,7 +57,7 @@ _DSRC_T = TypeVar("_DSRC_T", bound="DataSource")
 @ModelDescriptor(is_abstract=True, children_type_discriminator_attr_name="source_type")
 @attr.s(kw_only=True, frozen=True)
 class DataSource(Generic[_PARAMS_T], DatasetAPIBaseModel):
-    source_type: ClassVar[CreateDSFrom]
+    source_type: ClassVar[DataSourceType]
 
     id: str = attr.ib()
     title: str = attr.ib()

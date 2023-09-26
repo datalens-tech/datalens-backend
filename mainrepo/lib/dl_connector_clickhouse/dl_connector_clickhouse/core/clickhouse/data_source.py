@@ -10,14 +10,14 @@ from dl_connector_clickhouse.core.clickhouse_base.data_source import (
     ClickHouseDataSourceBase,
     CommonClickHouseSubselectDataSource,
 )
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 
 
 class ClickHouseDataSource(ClickHouseDataSourceBase):
     conn_type = CONNECTION_TYPE_CLICKHOUSE
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_CH_TABLE,
             SOURCE_TYPE_CH_SUBSELECT,
@@ -30,7 +30,7 @@ class ClickHouseSubselectDataSource(ActualClickHouseBaseMixin, CommonClickHouseS
     conn_type = CONNECTION_TYPE_CLICKHOUSE
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_CH_TABLE,
             SOURCE_TYPE_CH_SUBSELECT,

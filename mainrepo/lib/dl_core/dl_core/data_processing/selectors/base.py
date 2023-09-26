@@ -15,8 +15,8 @@ if TYPE_CHECKING:
     from sqlalchemy.sql.selectable import Select
 
     from dl_constants.enums import (
-        BIType,
         DataSourceRole,
+        UserDataType,
     )
     from dl_core.data_processing.cache.primitives import BIQueryCacheOptions
     from dl_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
@@ -35,7 +35,7 @@ class BIQueryExecutionContext:
     query: Select
     compiled_query: str  # for logs only
     target_connection: ExecutorBasedMixin
-    requested_bi_types: List[BIType]
+    requested_bi_types: List[UserDataType]
     result_col_names: Sequence[str]
     target_db_name: Optional[str] = attr.ib(default=None)
     cache_options: Optional[BIQueryCacheOptions] = attr.ib(default=None)

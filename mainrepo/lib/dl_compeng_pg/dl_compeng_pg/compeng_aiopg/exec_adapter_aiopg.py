@@ -16,7 +16,7 @@ from sqlalchemy.sql.base import Executable
 from sqlalchemy.sql.selectable import Select
 
 from dl_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
 from dl_core.data_processing.streaming import (
     AsyncChunked,
@@ -50,7 +50,7 @@ class AiopgExecAdapter(PostgreSQLExecAdapterAsync[aiopg.sa.SAConnection]):  # no
         self,
         *,
         query: Union[Select, str],
-        user_types: Sequence[BIType],
+        user_types: Sequence[UserDataType],
         chunk_size: int,
         joint_dsrc_info: Optional[PreparedMultiFromInfo] = None,
         query_id: str,
@@ -80,7 +80,7 @@ class AiopgExecAdapter(PostgreSQLExecAdapterAsync[aiopg.sa.SAConnection]):  # no
         *,
         table_name: str,
         names: Sequence[str],
-        user_types: Sequence[BIType],
+        user_types: Sequence[UserDataType],
         data: AsyncChunkedBase,
     ) -> None:
         """Insert data into a table."""

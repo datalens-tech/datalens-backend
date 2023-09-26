@@ -23,7 +23,7 @@ from dl_app_tools.profiling_base import (
     GenericProfiler,
     generic_profiler,
 )
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core import converter_types_cast
 from dl_core.aio.web_app_services.gsheets import (
     Cell,
@@ -308,7 +308,7 @@ _TYPE_GROUP_STRING = 4
 
 @attr.s(frozen=True)
 class ParsingDataType:
-    bi_type: BIType = attr.ib()
+    bi_type: UserDataType = attr.ib()
     type: Any = attr.ib()
     order: int = attr.ib()
     group: int = attr.ib()
@@ -318,18 +318,22 @@ class ParsingDataType:
     format_desc: str = attr.ib(default=None)
 
 
-_NONE_PARSING_DATA_TYPE = ParsingDataType(bi_type=BIType.string, type=str, order=-2, group=_TYPE_GROUP_NONE)
+_NONE_PARSING_DATA_TYPE = ParsingDataType(bi_type=UserDataType.string, type=str, order=-2, group=_TYPE_GROUP_NONE)
 _BOOLEAN_PARSING_DATA_TYPE = ParsingDataType(
-    bi_type=BIType.boolean, type=bool, order=-1, cast_func=converter_types_cast._to_boolean, group=_TYPE_GROUP_BOOLEAN
+    bi_type=UserDataType.boolean,
+    type=bool,
+    order=-1,
+    cast_func=converter_types_cast._to_boolean,
+    group=_TYPE_GROUP_BOOLEAN,
 )
 _INTEGER_PARSING_DATA_TYPE = ParsingDataType(
-    bi_type=BIType.integer, type=int, order=0, cast_func=converter_types_cast._to_int, group=_TYPE_GROUP_NUMBER
+    bi_type=UserDataType.integer, type=int, order=0, cast_func=converter_types_cast._to_int, group=_TYPE_GROUP_NUMBER
 )
 _FLOAT_PARSING_DATA_TYPE = ParsingDataType(
-    bi_type=BIType.float, type=float, order=1, cast_func=converter_types_cast._to_float, group=_TYPE_GROUP_NUMBER
+    bi_type=UserDataType.float, type=float, order=1, cast_func=converter_types_cast._to_float, group=_TYPE_GROUP_NUMBER
 )
 _DATE_PARSING_DATA_TYPE = ParsingDataType(
-    bi_type=BIType.date,
+    bi_type=UserDataType.date,
     order=2,
     type=datetime.date,
     cast_func=converter_types_cast._to_date,
@@ -337,14 +341,14 @@ _DATE_PARSING_DATA_TYPE = ParsingDataType(
     group=_TYPE_GROUP_DATETIME,
 )
 _DATETIME_PARSING_DATA_TYPE = ParsingDataType(
-    bi_type=BIType.genericdatetime,
+    bi_type=UserDataType.genericdatetime,
     order=3,
     type=datetime.datetime,
     cast_func=converter_types_cast._to_datetime,
     check_func=_check_datetime_re,
     group=_TYPE_GROUP_DATETIME,
 )
-_STRING_PARSING_DATA_TYPE = ParsingDataType(bi_type=BIType.string, type=str, order=4, group=_TYPE_GROUP_STRING)
+_STRING_PARSING_DATA_TYPE = ParsingDataType(bi_type=UserDataType.string, type=str, order=4, group=_TYPE_GROUP_STRING)
 
 ALLOWED_DATA_TYPES = (
     _INTEGER_PARSING_DATA_TYPE,
@@ -458,13 +462,13 @@ def merge_column_types(header_types: TColumnTypes, column_types: TColumnTypes, h
 
 def raw_schema_to_column_types(raw_schema: list[SchemaColumn]) -> TColumnTypes:
     bi_type_to_parsing_data_type_map = {
-        BIType.integer: _INTEGER_PARSING_DATA_TYPE,
-        BIType.float: _FLOAT_PARSING_DATA_TYPE,
-        BIType.date: _DATE_PARSING_DATA_TYPE,
-        BIType.genericdatetime: _DATETIME_PARSING_DATA_TYPE,
-        BIType.datetime: _DATETIME_PARSING_DATA_TYPE,
-        BIType.string: _STRING_PARSING_DATA_TYPE,
-        BIType.boolean: _BOOLEAN_PARSING_DATA_TYPE,
+        UserDataType.integer: _INTEGER_PARSING_DATA_TYPE,
+        UserDataType.float: _FLOAT_PARSING_DATA_TYPE,
+        UserDataType.date: _DATE_PARSING_DATA_TYPE,
+        UserDataType.genericdatetime: _DATETIME_PARSING_DATA_TYPE,
+        UserDataType.datetime: _DATETIME_PARSING_DATA_TYPE,
+        UserDataType.string: _STRING_PARSING_DATA_TYPE,
+        UserDataType.boolean: _BOOLEAN_PARSING_DATA_TYPE,
     }
     column_types = {}
     for col_index, col in enumerate(raw_schema):

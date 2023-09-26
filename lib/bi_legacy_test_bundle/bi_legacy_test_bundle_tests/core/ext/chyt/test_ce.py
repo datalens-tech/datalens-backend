@@ -24,9 +24,9 @@ from bi_legacy_test_bundle_tests.core.fixtures_ce import (  # noqa: F401
 )
 from dl_api_commons.base_models import RequestContextInfo
 from dl_constants.enums import (
-    BIType,
     ConnectionType,
     IndexKind,
+    UserDataType,
 )
 from dl_core import exc
 from dl_core.connection_executors import ConnExecutorQuery
@@ -129,11 +129,11 @@ class BaseCHYTTestSet(CHLikeBaseTestSet):
     def all_supported_types_test_case(self):
         cd = functools.partial(self._ch_cd, ct=self.connection_type)
         col_data = [
-            cd("hit_type", None, BIType.boolean, nullable=False, nt_name="ytboolean"),
-            cd("count", None, BIType.integer, nullable=False, nt_name="uint64"),
-            cd("week", None, BIType.string, nullable=True, nt_name="string"),
-            cd("is_turbo", None, BIType.boolean, nullable=False, nt_name="ytboolean"),
-            cd("count_distinct", None, BIType.integer, nullable=False, nt_name="uint64"),
+            cd("hit_type", None, UserDataType.boolean, nullable=False, nt_name="ytboolean"),
+            cd("count", None, UserDataType.integer, nullable=False, nt_name="uint64"),
+            cd("week", None, UserDataType.string, nullable=True, nt_name="string"),
+            cd("is_turbo", None, UserDataType.boolean, nullable=False, nt_name="ytboolean"),
+            cd("count_distinct", None, UserDataType.integer, nullable=False, nt_name="uint64"),
         ]
 
         return self.TypeDiscoveryTestCase(

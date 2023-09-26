@@ -5,7 +5,7 @@ from http import HTTPStatus
 import pytest
 
 from dl_api_client.dsmaker.primitives import Dataset
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 
 
 def test_update_id_field(api_v1, static_dataset_id):
@@ -35,7 +35,7 @@ def test_update_id_field(api_v1, static_dataset_id):
 def test_update_id_field_collision(api_v1, static_dataset_id):
     ds = api_v1.load_dataset(dataset=Dataset(id=static_dataset_id)).dataset
 
-    first_field, second_field = [f for f in ds.result_schema if f.data_type == BIType.date][0:2]
+    first_field, second_field = [f for f in ds.result_schema if f.data_type == UserDataType.date][0:2]
     with pytest.raises(AssertionError):
         api_v1.apply_updates(
             dataset=ds,
@@ -81,7 +81,7 @@ def test_update_non_valid_id_field(api_v1, static_dataset_id, new_id):
 
 def test_update_id_field_with_component_errors(api_v1, static_dataset_id):
     ds = api_v1.load_dataset(dataset=Dataset(id=static_dataset_id)).dataset
-    a_field = [f for f in ds.result_schema if f.cast == BIType.float][0]
+    a_field = [f for f in ds.result_schema if f.cast == UserDataType.float][0]
     ds_resp = api_v1.apply_updates(
         dataset=ds,
         updates=[

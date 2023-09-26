@@ -14,9 +14,9 @@ from dl_connector_bundle_chs3.chs3_base.core.testing.utils import create_s3_nati
 from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from dl_constants.enums import (
-    BIType,
     DataSourceRole,
     FileProcessingStatus,
+    UserDataType,
 )
 from dl_core.db import SchemaColumn
 from dl_core.services_registry.file_uploader_client_factory import (
@@ -39,9 +39,9 @@ class FileUploaderClientMockup(FileUploaderClient):
     # In reality we already receive json-serialized values for the preview from the source,
     # so tune the value generators here as well
     _VALUE_GENERATORS = {
-        BIType.date: lambda rn, ts, **kwargs: (ts.date() + datetime.timedelta(days=rn)).isoformat(),
-        BIType.datetime: lambda rn, ts, **kwargs: (ts + datetime.timedelta(days=rn / math.pi)).isoformat(),
-        BIType.genericdatetime: lambda rn, ts, **kwargs: (ts + datetime.timedelta(days=rn / math.pi)).isoformat(),
+        UserDataType.date: lambda rn, ts, **kwargs: (ts.date() + datetime.timedelta(days=rn)).isoformat(),
+        UserDataType.datetime: lambda rn, ts, **kwargs: (ts + datetime.timedelta(days=rn / math.pi)).isoformat(),
+        UserDataType.genericdatetime: lambda rn, ts, **kwargs: (ts + datetime.timedelta(days=rn / math.pi)).isoformat(),
     }
 
     async def get_preview(self, src: FileSourceDesc) -> SourcePreview:
@@ -59,16 +59,16 @@ class FileUploaderClientMockup(FileUploaderClient):
         return SourceInternalParams(
             preview_id=src.preview_id,
             raw_schema=[
-                SchemaColumn(title="string_value", name="string_value", user_type=BIType.string),
-                SchemaColumn(title="n_string_value", name="n_string_value", user_type=BIType.string),
-                SchemaColumn(title="int_value", name="int_value", user_type=BIType.integer),
-                SchemaColumn(title="n_int_value", name="n_int_value", user_type=BIType.integer),
-                SchemaColumn(title="float_value", name="float_value", user_type=BIType.float),
-                SchemaColumn(title="datetime_value", name="datetime_value", user_type=BIType.datetime),
-                SchemaColumn(title="n_datetime_value", name="n_datetime_value", user_type=BIType.datetime),
-                SchemaColumn(title="date_value", name="date_value", user_type=BIType.date),
-                SchemaColumn(title="boolean_value", name="boolean_value", user_type=BIType.boolean),
-                SchemaColumn(title="uuid_value", name="uuid_value", user_type=BIType.uuid),
+                SchemaColumn(title="string_value", name="string_value", user_type=UserDataType.string),
+                SchemaColumn(title="n_string_value", name="n_string_value", user_type=UserDataType.string),
+                SchemaColumn(title="int_value", name="int_value", user_type=UserDataType.integer),
+                SchemaColumn(title="n_int_value", name="n_int_value", user_type=UserDataType.integer),
+                SchemaColumn(title="float_value", name="float_value", user_type=UserDataType.float),
+                SchemaColumn(title="datetime_value", name="datetime_value", user_type=UserDataType.datetime),
+                SchemaColumn(title="n_datetime_value", name="n_datetime_value", user_type=UserDataType.datetime),
+                SchemaColumn(title="date_value", name="date_value", user_type=UserDataType.date),
+                SchemaColumn(title="boolean_value", name="boolean_value", user_type=UserDataType.boolean),
+                SchemaColumn(title="uuid_value", name="uuid_value", user_type=UserDataType.uuid),
             ],
         )
 
@@ -216,8 +216,8 @@ def clickhouse_table_with_date32(clickhouse_db, request):
     return make_table(
         clickhouse_db,
         columns=[
-            C(name="date32_val_1", user_type=BIType.date, nullable=True, sa_type=ch_types.Date32),
-            C(name="date32_val_2", user_type=BIType.date, nullable=True, sa_type=ch_types.Date32),
+            C(name="date32_val_1", user_type=UserDataType.date, nullable=True, sa_type=ch_types.Date32),
+            C(name="date32_val_2", user_type=UserDataType.date, nullable=True, sa_type=ch_types.Date32),
         ],
         data=[
             {"date32_val_1": datetime.date(1963, 4, 2), "date32_val_2": datetime.date(1963, 4, 1)},
@@ -263,8 +263,8 @@ def add_raw_schema_to_saved_connection_return_id(us_manager, conn_id):
         role=DataSourceRole.origin,
         status=FileProcessingStatus.ready,
         raw_schema=[
-            SchemaColumn(title="field1", name="string", user_type=BIType.string),
-            SchemaColumn(title="field2", name="date", user_type=BIType.date),
+            SchemaColumn(title="field1", name="string", user_type=UserDataType.string),
+            SchemaColumn(title="field2", name="date", user_type=UserDataType.date),
         ],
         s3_filename="my_file_1_1.native",
     )
@@ -280,16 +280,16 @@ def add_raw_schema_to_saved_connection_return_id(us_manager, conn_id):
         role=DataSourceRole.origin,
         status=FileProcessingStatus.ready,
         raw_schema=[
-            SchemaColumn(title="string_value", name="string_value", user_type=BIType.string),
-            SchemaColumn(title="n_string_value", name="n_string_value", user_type=BIType.string),
-            SchemaColumn(title="int_value", name="int_value", user_type=BIType.integer),
-            SchemaColumn(title="n_int_value", name="n_int_value", user_type=BIType.integer),
-            SchemaColumn(title="float_value", name="float_value", user_type=BIType.float),
-            SchemaColumn(title="datetime_value", name="datetime_value", user_type=BIType.genericdatetime),
-            SchemaColumn(title="n_datetime_value", name="n_datetime_value", user_type=BIType.genericdatetime),
-            SchemaColumn(title="date_value", name="date_value", user_type=BIType.date),
-            SchemaColumn(title="boolean_value", name="boolean_value", user_type=BIType.boolean),
-            SchemaColumn(title="uuid_value", name="uuid_value", user_type=BIType.uuid),
+            SchemaColumn(title="string_value", name="string_value", user_type=UserDataType.string),
+            SchemaColumn(title="n_string_value", name="n_string_value", user_type=UserDataType.string),
+            SchemaColumn(title="int_value", name="int_value", user_type=UserDataType.integer),
+            SchemaColumn(title="n_int_value", name="n_int_value", user_type=UserDataType.integer),
+            SchemaColumn(title="float_value", name="float_value", user_type=UserDataType.float),
+            SchemaColumn(title="datetime_value", name="datetime_value", user_type=UserDataType.genericdatetime),
+            SchemaColumn(title="n_datetime_value", name="n_datetime_value", user_type=UserDataType.genericdatetime),
+            SchemaColumn(title="date_value", name="date_value", user_type=UserDataType.date),
+            SchemaColumn(title="boolean_value", name="boolean_value", user_type=UserDataType.boolean),
+            SchemaColumn(title="uuid_value", name="uuid_value", user_type=UserDataType.uuid),
         ],
         s3_filename="my_file_2_1.native",
     )
@@ -298,8 +298,8 @@ def add_raw_schema_to_saved_connection_return_id(us_manager, conn_id):
         role=DataSourceRole.origin,
         status=FileProcessingStatus.ready,
         raw_schema=[
-            SchemaColumn(title="date32_val_1", name="date32_val_1", user_type=BIType.date),
-            SchemaColumn(title="date32_val_2", name="date32_val_2", user_type=BIType.date),
+            SchemaColumn(title="date32_val_1", name="date32_val_1", user_type=UserDataType.date),
+            SchemaColumn(title="date32_val_2", name="date32_val_2", user_type=UserDataType.date),
         ],
         s3_filename="with_date32.native",
     )

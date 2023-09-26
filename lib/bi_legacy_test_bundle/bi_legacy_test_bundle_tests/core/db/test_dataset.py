@@ -23,7 +23,6 @@ from dl_connector_postgresql.core.postgresql.constants import (
 )
 from dl_constants.enums import (
     BinaryJoinOperator,
-    BIType,
     DataSourceCreatedVia,
     DataSourceRole,
     IndexKind,
@@ -31,6 +30,7 @@ from dl_constants.enums import (
     ManagedBy,
     OrderDirection,
     SelectorType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_core import exc
@@ -138,9 +138,9 @@ def test_main_data_source(
     coltypes = {col.name: col.user_type for col in schema}
     # TODO: per-conntype type fallbacks and `almost_equal`ers.
     coltype_fallbacks = {
-        BIType.boolean: [BIType.integer],
-        BIType.uuid: [BIType.string],
-        BIType.date: [BIType.genericdatetime],
+        UserDataType.boolean: [UserDataType.integer],
+        UserDataType.uuid: [UserDataType.string],
+        UserDataType.date: [UserDataType.genericdatetime],
     }
 
     def _make_expected_coltype_with_fallback(actual, expected):
@@ -230,7 +230,7 @@ def test_data_source_cache_settings_non_mat_con_various_ds(
     cache_opts = cache_opts_builder.get_cache_options(
         role=DataSourceRole.origin,
         query=sa.select([sa.literal(1)]),
-        user_types=[BIType.integer],
+        user_types=[UserDataType.integer],
         joint_dsrc_info=_build_source(
             dataset=dataset,
             role=DataSourceRole.origin,
@@ -283,7 +283,7 @@ def test_cache_settings_bleeding_edge(
     cache_opts = cache_opts_builder.get_cache_options(
         role=DataSourceRole.origin,
         query=sa.select([sa.literal(1)]),
-        user_types=[BIType.integer],
+        user_types=[UserDataType.integer],
         joint_dsrc_info=_build_source(
             dataset=dataset,
             role=DataSourceRole.origin,
@@ -376,7 +376,7 @@ def test_select_data(
     test_data = make_sample_data()
     test_data_col0 = [row["int_value"] for row in test_data]
 
-    def make_expr(expression: ClauseElement, alias: str, user_type: BIType) -> ExpressionCtx:
+    def make_expr(expression: ClauseElement, alias: str, user_type: UserDataType) -> ExpressionCtx:
         return ExpressionCtx(
             expression=expression,
             avatar_ids=[avatar_id],
@@ -388,7 +388,7 @@ def test_select_data(
     role = DataSourceRole.origin
 
     bi_query = BIQuery(
-        select_expressions=[make_expr(int_value, "col1", BIType.integer)],
+        select_expressions=[make_expr(int_value, "col1", UserDataType.integer)],
     )
     data_fetcher = DataFetcher(
         service_registry=sr,
@@ -403,20 +403,20 @@ def test_select_data(
     assert col0_data == col0_data_expected
 
     bi_query = BIQuery(
-        select_expressions=[make_expr(sa.func.sum(int_value), "col1", BIType.integer)],
-        group_by_expressions=[make_expr(int_value % sa.literal(5), "col2", BIType.integer)],
+        select_expressions=[make_expr(sa.func.sum(int_value), "col1", UserDataType.integer)],
+        group_by_expressions=[make_expr(int_value % sa.literal(5), "col2", UserDataType.integer)],
     )
     data_stream = await_sync(data_fetcher.get_data_stream_async(role=role, bi_query=bi_query))
     col0_data = {row[0] for row in to_sync_iterable(data_stream.data.items)}
     col0_data_expected = {sum(val) for val in simple_groupby((val % 5, val) for val in test_data_col0).values()}
     assert col0_data == col0_data_expected
 
-    select_expr_ctx = make_expr(sa.func.sum(int_value), "new_val", BIType.integer)
+    select_expr_ctx = make_expr(sa.func.sum(int_value), "new_val", UserDataType.integer)
     bi_query = BIQuery(
         select_expressions=[select_expr_ctx],
-        group_by_expressions=[make_expr(int_value % sa.literal(5), str(uuid.uuid4()), BIType.integer)],
-        dimension_filters=[make_expr(int_value > 2, str(uuid.uuid4()), BIType.boolean)],
-        measure_filters=[make_expr(sa.func.sum(int_value) < 12, str(uuid.uuid4()), BIType.integer)],
+        group_by_expressions=[make_expr(int_value % sa.literal(5), str(uuid.uuid4()), UserDataType.integer)],
+        dimension_filters=[make_expr(int_value > 2, str(uuid.uuid4()), UserDataType.boolean)],
+        measure_filters=[make_expr(sa.func.sum(int_value) < 12, str(uuid.uuid4()), UserDataType.integer)],
         order_by_expressions=[
             attrs_evolve_to_subclass(cls=OrderByExpressionCtx, inst=select_expr_ctx),
         ],
@@ -432,12 +432,12 @@ def test_select_data(
     )
     assert col0_data == col0_data_expected
 
-    select_expr_ctx = make_expr(sa.func.sum(int_value), "new_val", BIType.integer)
+    select_expr_ctx = make_expr(sa.func.sum(int_value), "new_val", UserDataType.integer)
     bi_query = BIQuery(
         select_expressions=[select_expr_ctx],
-        group_by_expressions=[make_expr(int_value % sa.literal(5), str(uuid.uuid4()), BIType.integer)],
-        dimension_filters=[make_expr(int_value > 2, str(uuid.uuid4()), BIType.integer)],
-        measure_filters=[make_expr(sa.func.sum(int_value) < 12, str(uuid.uuid4()), BIType.integer)],
+        group_by_expressions=[make_expr(int_value % sa.literal(5), str(uuid.uuid4()), UserDataType.integer)],
+        dimension_filters=[make_expr(int_value > 2, str(uuid.uuid4()), UserDataType.integer)],
+        measure_filters=[make_expr(sa.func.sum(int_value) < 12, str(uuid.uuid4()), UserDataType.integer)],
         order_by_expressions=[
             attrs_evolve_to_subclass(cls=OrderByExpressionCtx, inst=select_expr_ctx),
         ],
@@ -456,7 +456,7 @@ def test_select_data(
     assert col0_data == col0_data_expected
 
     bi_query = BIQuery(
-        select_expressions=[make_expr(int_value, str(uuid.uuid4()), BIType.integer)],
+        select_expressions=[make_expr(int_value, str(uuid.uuid4()), UserDataType.integer)],
     )
     data_stream = await_sync(
         data_fetcher.get_data_stream_async(
@@ -469,7 +469,7 @@ def test_select_data(
     assert 0 < len(list(data)) <= 100
 
     bi_query = BIQuery(
-        select_expressions=[make_expr(int_value, str(uuid.uuid4()), BIType.integer)],
+        select_expressions=[make_expr(int_value, str(uuid.uuid4()), UserDataType.integer)],
         limit=3,
     )
     data_stream = await_sync(
@@ -483,7 +483,7 @@ def test_select_data(
     assert len(list(data)) == 3
 
     bi_query = BIQuery(
-        select_expressions=[make_expr(int_value, str(uuid.uuid4()), BIType.integer)],
+        select_expressions=[make_expr(int_value, str(uuid.uuid4()), UserDataType.integer)],
     )
     with pytest.raises(exc.ResultRowCountLimitExceeded):
         data_stream = await_sync(
@@ -497,7 +497,7 @@ def test_select_data(
             pass
 
     bi_query = BIQuery(
-        select_expressions=[make_expr(int_value, str(uuid.uuid4()), BIType.integer)],
+        select_expressions=[make_expr(int_value, str(uuid.uuid4()), UserDataType.integer)],
         limit=20,
     )
     with pytest.raises(exc.ResultRowCountLimitExceeded):
@@ -530,7 +530,7 @@ def test_select_data_chs3(default_sync_usm, saved_chs3_dataset, default_async_se
                 expression=int_value,
                 avatar_ids=[avatar_id],
                 alias="col1",
-                user_type=BIType.integer,
+                user_type=UserDataType.integer,
             ),
         ],
     )
@@ -558,7 +558,7 @@ def test_select_data_with_output_cast(default_sync_usm, db_table, saved_dataset,
         select_expressions=[
             ExpressionCtx(
                 expression=int_value,
-                user_type=BIType.integer,
+                user_type=UserDataType.integer,
                 avatar_ids=[avatar_id],
                 alias="col1",
             ),
@@ -576,7 +576,7 @@ def test_select_data_with_output_cast(default_sync_usm, db_table, saved_dataset,
         select_expressions=[
             ExpressionCtx(
                 expression=int_value,
-                user_type=BIType.boolean,
+                user_type=UserDataType.boolean,
                 avatar_ids=[avatar_id],
                 alias="col1",
             )
@@ -598,7 +598,7 @@ def test_select_data_group_by_formula_field(default_sync_usm, db_table, saved_da
         expression=sa.literal_column("string_value", type_=sa.String)
         .concat(sa.bindparam("param_1", type_=sa.String))
         .params({"param_1": "_test"}),
-        user_type=BIType.string,
+        user_type=UserDataType.string,
         avatar_ids=[avatar_id],
         alias="col1",
     )
@@ -630,7 +630,7 @@ def test_select_data_group_by_const(default_sync_usm, db_table, saved_dataset, d
 
     expr = ExpressionCtx(
         expression=sa.literal(42),
-        user_type=BIType.integer,
+        user_type=UserDataType.integer,
         avatar_ids=[avatar_id],
         alias="col1",
     )
@@ -658,7 +658,7 @@ def test_select_data_distinct(default_sync_usm, db_table, saved_dataset, default
     test_data = make_sample_data()
     test_data_col0 = [row["int_value"] for row in test_data]
 
-    def make_expr(expression: ClauseElement, alias: str, user_type: BIType) -> ExpressionCtx:
+    def make_expr(expression: ClauseElement, alias: str, user_type: UserDataType) -> ExpressionCtx:
         return ExpressionCtx(expression=expression, avatar_ids=[avatar_id], alias=alias, user_type=user_type)
 
     int_value = sa.literal_column(ds_wrapper.quote("int_value", role=DataSourceRole.origin))
@@ -668,11 +668,11 @@ def test_select_data_distinct(default_sync_usm, db_table, saved_dataset, default
 
     sel_value = int_value % 3
     bi_query = BIQuery(
-        select_expressions=[make_expr(sel_value, "sel_value", BIType.integer)],
+        select_expressions=[make_expr(sel_value, "sel_value", UserDataType.integer)],
         order_by_expressions=[
             attrs_evolve_to_subclass(
                 cls=OrderByExpressionCtx,
-                inst=make_expr(sel_value, "sel_value", BIType.integer),
+                inst=make_expr(sel_value, "sel_value", UserDataType.integer),
             )
         ],
         distinct=True,
@@ -689,12 +689,12 @@ def test_select_data_distinct(default_sync_usm, db_table, saved_dataset, default
 
     sel_value = sa.func.sum(int_value) % 3
     bi_query = BIQuery(
-        select_expressions=[make_expr(sel_value, "sel_value", BIType.integer)],
-        group_by_expressions=[make_expr(int_value % 2, "other_value", BIType.integer)],
+        select_expressions=[make_expr(sel_value, "sel_value", UserDataType.integer)],
+        group_by_expressions=[make_expr(int_value % 2, "other_value", UserDataType.integer)],
         order_by_expressions=[
             attrs_evolve_to_subclass(
                 cls=OrderByExpressionCtx,
-                inst=make_expr(sel_value, "sel_value", BIType.integer),
+                inst=make_expr(sel_value, "sel_value", UserDataType.integer),
             ),
         ],
         distinct=True,
@@ -797,7 +797,7 @@ def test_select_data_single_source_avatar(
                 expression=int_value,
                 avatar_ids=[avatar_id],
                 alias="col1",
-                user_type=BIType.integer,
+                user_type=UserDataType.integer,
             ),
         ],
     )
@@ -838,7 +838,7 @@ def test_order_by_w_nulls(
                     expression=nullable_int_value,
                     avatar_ids=[avatar_id],
                     alias="col1",
-                    user_type=BIType.integer,
+                    user_type=UserDataType.integer,
                 ),
             ],
             order_by_expressions=[
@@ -847,7 +847,7 @@ def test_order_by_w_nulls(
                     expression=nullable_int_value,
                     avatar_ids=[avatar_id],
                     alias="col1",
-                    user_type=BIType.integer,
+                    user_type=UserDataType.integer,
                 ),
             ],
         )
@@ -921,13 +921,13 @@ class TestPGEnforceCollate(SomeSelectTestBase):
                             expression=sa.func.lower(sa.literal_column("n_string_value")),
                             avatar_ids=[avatar_id],
                             alias="str_l",
-                            user_type=BIType.string,
+                            user_type=UserDataType.string,
                         ),
                         ExpressionCtx(
                             expression=sa.func.upper(sa.literal_column("n_string_value")),
                             avatar_ids=[avatar_id],
                             alias="str_u",
-                            user_type=BIType.string,
+                            user_type=UserDataType.string,
                         ),
                     ],
                     limit=9,
@@ -958,13 +958,13 @@ class TestSelectDataCHSubselect(SomeSelectTestBase):
                         expression=sa.literal_column("number"),
                         avatar_ids=[avatar_id],
                         alias="col1",
-                        user_type=BIType.integer,
+                        user_type=UserDataType.integer,
                     ),
                     ExpressionCtx(
                         expression=sa.literal_column("str"),
                         avatar_ids=[avatar_id],
                         alias="col2",
-                        user_type=BIType.string,
+                        user_type=UserDataType.string,
                     ),
                 ],
                 limit=9,
@@ -1090,7 +1090,7 @@ def test_select_data_multiple_source_avatars(
         JoinOnExpressionCtx(
             expression=col(ds_wrapper, comment_avatar_id, "from_id") == col(ds_wrapper, from_user_avatar_id, "id"),
             avatar_ids=[comment_avatar_id, from_user_avatar_id],
-            user_type=BIType.boolean,
+            user_type=UserDataType.boolean,
             join_type=JoinType.inner,
             left_id=comment_avatar_id,
             right_id=from_user_avatar_id,
@@ -1098,7 +1098,7 @@ def test_select_data_multiple_source_avatars(
         JoinOnExpressionCtx(
             expression=col(ds_wrapper, comment_avatar_id, "to_id") == col(ds_wrapper, to_user_avatar_id, "id"),
             avatar_ids=[comment_avatar_id, to_user_avatar_id],
-            user_type=BIType.boolean,
+            user_type=UserDataType.boolean,
             join_type=JoinType.inner,
             left_id=comment_avatar_id,
             right_id=to_user_avatar_id,
@@ -1106,7 +1106,7 @@ def test_select_data_multiple_source_avatars(
         JoinOnExpressionCtx(
             expression=col(ds_wrapper, comment_avatar_id, "post_id") == col(ds_wrapper, post_avatar_id, "id"),
             avatar_ids=[comment_avatar_id, post_avatar_id],
-            user_type=BIType.boolean,
+            user_type=UserDataType.boolean,
             join_type=JoinType.inner,
             left_id=comment_avatar_id,
             right_id=post_avatar_id,
@@ -1114,7 +1114,7 @@ def test_select_data_multiple_source_avatars(
         JoinOnExpressionCtx(
             expression=col(ds_wrapper, post_avatar_id, "author_id") == col(ds_wrapper, author_avatar_id, "id"),
             avatar_ids=[post_avatar_id, author_avatar_id],
-            user_type=BIType.boolean,
+            user_type=UserDataType.boolean,
             join_type=JoinType.inner,
             left_id=post_avatar_id,
             right_id=author_avatar_id,
@@ -1135,61 +1135,61 @@ def test_select_data_multiple_source_avatars(
                 expression=col(ds_wrapper, comment_avatar_id, "id"),
                 avatar_ids=[comment_avatar_id],
                 alias="col1",
-                user_type=BIType.integer,
+                user_type=UserDataType.integer,
             ),
             ExpressionCtx(
                 expression=col(ds_wrapper, post_avatar_id, "text"),
                 avatar_ids=[post_avatar_id],
                 alias="col2",
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
             ExpressionCtx(
                 expression=sa.literal("by", type_=sa.String),
                 avatar_ids=[],
                 alias="col3",
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
             ExpressionCtx(
                 expression=col(ds_wrapper, author_avatar_id, "name"),
                 avatar_ids=[author_avatar_id],
                 alias="col4",
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
             ExpressionCtx(
                 expression=sa.literal("> comment >", type_=sa.String),
                 avatar_ids=[],
                 alias="col5",
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
             ExpressionCtx(
                 expression=col(ds_wrapper, comment_avatar_id, "text"),
                 avatar_ids=[comment_avatar_id],
                 alias="col6",
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
             ExpressionCtx(
                 expression=sa.literal("from", type_=sa.String),
                 avatar_ids=[],
                 alias="col7",
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
             ExpressionCtx(
                 expression=col(ds_wrapper, from_user_avatar_id, "name"),
                 avatar_ids=[from_user_avatar_id],
                 alias="col8",
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
             ExpressionCtx(
                 expression=sa.literal("to", type_=sa.String),
                 avatar_ids=[],
                 alias="col9",
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
             ExpressionCtx(
                 expression=col(ds_wrapper, to_user_avatar_id, "name"),
                 avatar_ids=[to_user_avatar_id],
                 alias="col10",
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
         ],
         order_by_expressions=[
@@ -1197,31 +1197,31 @@ def test_select_data_multiple_source_avatars(
                 expression=col(ds_wrapper, comment_avatar_id, "id"),
                 avatar_ids=[comment_avatar_id],
                 alias="col1",
-                user_type=BIType.integer,
+                user_type=UserDataType.integer,
             ),
             OrderByExpressionCtx(
                 expression=sa.literal("by", type_=sa.String),
                 avatar_ids=[],
                 alias="col3",
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
             OrderByExpressionCtx(
                 expression=sa.literal("> comment >", type_=sa.String),
                 avatar_ids=[],
                 alias="col5",
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
             OrderByExpressionCtx(
                 expression=sa.literal("from", type_=sa.String),
                 avatar_ids=[],
                 alias="col7",
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
             OrderByExpressionCtx(
                 expression=sa.literal("to", type_=sa.String),
                 avatar_ids=[],
                 alias="col9",
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
         ],
     )
@@ -1258,19 +1258,19 @@ def test_select_data_multiple_source_avatars(
             expression=col(ds_wrapper, author_avatar_id, "name"),
             alias="col1",
             avatar_ids=[author_avatar_id],
-            user_type=BIType.string,
+            user_type=UserDataType.string,
         ),
         ExpressionCtx(
             expression=col(ds_wrapper, from_user_avatar_id, "name"),
             alias="col2",
             avatar_ids=[from_user_avatar_id],
-            user_type=BIType.string,
+            user_type=UserDataType.string,
         ),
         ExpressionCtx(
             expression=col(ds_wrapper, to_user_avatar_id, "name"),
             alias="col3",
             avatar_ids=[to_user_avatar_id],
-            user_type=BIType.string,
+            user_type=UserDataType.string,
         ),
     ]
     bi_query = BIQuery(select_expressions=col_expr_contexts, group_by_expressions=col_expr_contexts)
@@ -1293,7 +1293,7 @@ def test_select_data_multiple_source_avatars(
                 expression=col(ds_wrapper, from_user_avatar_id, "name"),
                 alias="col2",
                 avatar_ids=[from_user_avatar_id],
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
         ],
         group_by_expressions=[
@@ -1301,25 +1301,25 @@ def test_select_data_multiple_source_avatars(
                 expression=col(ds_wrapper, post_avatar_id, "text"),
                 alias="col0",
                 avatar_ids=[post_avatar_id],
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
             ExpressionCtx(
                 expression=col(ds_wrapper, author_avatar_id, "name"),
                 alias="col1",
                 avatar_ids=[author_avatar_id],
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
             ExpressionCtx(
                 expression=col(ds_wrapper, from_user_avatar_id, "name"),
                 alias="col2",
                 avatar_ids=[from_user_avatar_id],
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
             ExpressionCtx(
                 expression=col(ds_wrapper, to_user_avatar_id, "name"),
                 alias="col3",
                 avatar_ids=[to_user_avatar_id],
-                user_type=BIType.string,
+                user_type=UserDataType.string,
             ),
         ],
     )
@@ -1559,15 +1559,15 @@ def test_create_result_schema_field(default_sync_usm, saved_ch_dataset, app_requ
     column = SchemaColumn(
         name="int_value",
         title="int_value",
-        user_type=BIType.integer,
+        user_type=UserDataType.integer,
         nullable=True,
         native_type=ClickHouseNativeType.normalize_name_and_create(conn_type=CONNECTION_TYPE_CLICKHOUSE, name="int64"),
         source_id=dataset.get_single_data_source_id(),
     )
     field_data = dataset.create_result_schema_field(column=column)
     assert field_data["title"] == "int_value"
-    assert field_data["cast"] == BIType.integer.name
-    assert field_data["data_type"] == BIType.integer.name
+    assert field_data["cast"] == UserDataType.integer.name
+    assert field_data["data_type"] == UserDataType.integer.name
 
     ds_wrapper = EditableDatasetTestWrapper(dataset=dataset, us_manager=us_manager)
     ds_wrapper.set_result_schema(ResultSchema([BIField.make(**field_data)]))
@@ -1605,7 +1605,7 @@ def _check_schematized_table_dataset(sync_usm, connection, table, service_regist
             ExpressionCtx(
                 expression=int_value,
                 avatar_ids=[avatar_id],
-                user_type=BIType.integer,
+                user_type=UserDataType.integer,
                 alias="col1",
             )
         ],
@@ -1697,7 +1697,7 @@ def test_cross_db_multisource_dataset(
     join_on_expressions = [
         JoinOnExpressionCtx(
             expression=col(ds_wrapper, this_avatar_id, "int_value") == col(ds_wrapper, other_avatar_id, "int_value"),
-            user_type=BIType.boolean,
+            user_type=UserDataType.boolean,
             avatar_ids=[this_avatar_id, other_avatar_id],
             left_id=this_avatar_id,
             right_id=other_avatar_id,
@@ -1713,13 +1713,13 @@ def test_cross_db_multisource_dataset(
                 expression=col(ds_wrapper, this_avatar_id, "int_value"),
                 avatar_ids=[this_avatar_id],
                 alias="col1",
-                user_type=BIType.integer,
+                user_type=UserDataType.integer,
             ),
             ExpressionCtx(
                 expression=col(ds_wrapper, other_avatar_id, "int_value"),
                 avatar_ids=[other_avatar_id],
                 alias="col2",
-                user_type=BIType.integer,
+                user_type=UserDataType.integer,
             ),
         ],
         order_by_expressions=[
@@ -1727,7 +1727,7 @@ def test_cross_db_multisource_dataset(
                 expression=col(ds_wrapper, this_avatar_id, "int_value"),
                 avatar_ids=[this_avatar_id],
                 alias="col1",
-                user_type=BIType.integer,
+                user_type=UserDataType.integer,
             ),
         ],
     )
@@ -1814,7 +1814,7 @@ def test_join_type(
             JoinOnExpressionCtx(
                 expression=col(ds_wrapper, avatar_1_id, "int_value") == col(ds_wrapper, avatar_2_id, "int_value"),
                 avatar_ids=[avatar_1_id, avatar_2_id],
-                user_type=BIType.boolean,
+                user_type=UserDataType.boolean,
                 left_id=avatar_1_id,
                 right_id=avatar_2_id,
                 join_type=join_type,
@@ -1841,13 +1841,13 @@ def test_join_type(
                     expression=col(ds_wrapper, avatar_1_id, "int_value"),
                     avatar_ids=[avatar_1_id],
                     alias="col1",
-                    user_type=BIType.integer,
+                    user_type=UserDataType.integer,
                 ),
                 ExpressionCtx(
                     expression=col(ds_wrapper, avatar_2_id, "int_value"),
                     avatar_ids=[avatar_2_id],
                     alias="col2",
-                    user_type=BIType.integer,
+                    user_type=UserDataType.integer,
                 ),
             ],
             order_by_expressions=[
@@ -1856,7 +1856,7 @@ def test_join_type(
                         col(ds_wrapper, avatar_1_id, "int_value"), col(ds_wrapper, avatar_2_id, "int_value")
                     ),
                     avatar_ids=[avatar_1_id, avatar_2_id],
-                    user_type=BIType.integer,
+                    user_type=UserDataType.integer,
                 ),
             ],
         )
@@ -1992,7 +1992,7 @@ def test_select_data_use_subquery(
             expression=(
                 col(ds_wrapper, info.avatar_ids[0], "int_value") == col(ds_wrapper, info.avatar_ids[1], "int_value")
             ),
-            user_type=BIType.boolean,
+            user_type=UserDataType.boolean,
             avatar_ids=info.avatar_ids,
             left_id=info.avatar_ids[0],
             right_id=info.avatar_ids[1],
@@ -2012,13 +2012,13 @@ def test_select_data_use_subquery(
 
     expr_ctx_1 = ExpressionCtx(
         expression=col(ds_wrapper, info.avatar_ids[0], "datetime_value"),
-        user_type=BIType.datetime,
+        user_type=UserDataType.datetime,
         avatar_ids=[info.avatar_ids[0]],
         alias=str(uuid.uuid4()),
     )
     expr_ctx_2 = ExpressionCtx(
         expression=col(ds_wrapper, info.avatar_ids[1], "datetime_value"),
-        user_type=BIType.datetime,
+        user_type=UserDataType.datetime,
         avatar_ids=[info.avatar_ids[1]],
         alias=str(uuid.uuid4()),
     )
@@ -2059,7 +2059,7 @@ def test_manage_obligatory_filters(default_sync_usm, saved_ch_dataset, app_reque
     column = SchemaColumn(
         name="int_value",
         title="int_value",
-        user_type=BIType.integer,
+        user_type=UserDataType.integer,
         nullable=True,
         native_type=ClickHouseNativeType.normalize_name_and_create(conn_type=CONNECTION_TYPE_CLICKHOUSE, name="int64"),
         source_id=dataset.get_single_data_source_id(),

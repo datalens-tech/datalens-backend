@@ -20,7 +20,7 @@ from bi_legacy_test_bundle_tests.api_lib.utils import (
 )
 from dl_api_lib.enums import USPermissionKind
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.united_storage_client import UStorageClientBase
 from dl_core_testing.database import (
     C,
@@ -86,8 +86,8 @@ def two_clickhouse_tables(clickhouse_db) -> Tuple[DbTable, DbTable]:
 def two_clickhouse_tables_w_const_columns(clickhouse_db) -> Tuple[DbTable, DbTable]:
     """Two basic table for ClickHouse"""
     columns = [
-        C(name="id", user_type=BIType.integer, vg=lambda rn, **kwargs: rn),
-        C(name="const", user_type=BIType.integer, vg=lambda rn, **kwargs: 8),
+        C(name="id", user_type=UserDataType.integer, vg=lambda rn, **kwargs: rn),
+        C(name="const", user_type=UserDataType.integer, vg=lambda rn, **kwargs: 8),
     ]
     return make_table(clickhouse_db, columns=columns), make_table(clickhouse_db, columns=columns)
 

@@ -8,7 +8,7 @@ from typing import (
 
 from marshmallow import fields
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.db import SchemaColumn
 from dl_core.db.native_type_schema import OneOfNativeTypeSchema
 from dl_core.us_manager.storage_schemas.base import (
@@ -25,7 +25,7 @@ class DataSourceRawSchemaEntryStorageSchema(BaseStorageSchema[SchemaColumn]):
     title = fields.String(required=False, allow_none=True)
     description = fields.String(required=False, allow_none=True)
 
-    type = fields.Enum(BIType, attribute="user_type")
+    type = fields.Enum(UserDataType, attribute="user_type")
     nullable = fields.Boolean(required=False, allow_none=True)
 
     lock_aggregation = fields.Boolean(required=False, allow_none=True)

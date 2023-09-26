@@ -1,7 +1,7 @@
 import sqlalchemy as sa
 from sqlalchemy.dialects import mysql as my_types
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.db.conversion_base import (
     TypeTransformer,
     make_native_type,
@@ -14,11 +14,11 @@ class MySQLTypeTransformer(TypeTransformer):
     conn_type = CONNECTION_TYPE_MYSQL
     native_to_user_map = {
         **{
-            make_native_type(CONNECTION_TYPE_MYSQL, t): BIType.integer  # type: ignore  # TODO: fix
+            make_native_type(CONNECTION_TYPE_MYSQL, t): UserDataType.integer  # type: ignore  # TODO: fix
             for t in (my_types.TINYINT, my_types.SMALLINT, my_types.MEDIUMINT, my_types.INTEGER, my_types.BIGINT)
         },
         **{
-            make_native_type(CONNECTION_TYPE_MYSQL, t): BIType.float  # type: ignore  # TODO: fix
+            make_native_type(CONNECTION_TYPE_MYSQL, t): UserDataType.float  # type: ignore  # TODO: fix
             for t in (
                 my_types.FLOAT,
                 my_types.DOUBLE,
@@ -26,9 +26,9 @@ class MySQLTypeTransformer(TypeTransformer):
                 my_types.DECIMAL,
             )
         },
-        make_native_type(CONNECTION_TYPE_MYSQL, my_types.BIT): BIType.boolean,
+        make_native_type(CONNECTION_TYPE_MYSQL, my_types.BIT): UserDataType.boolean,
         **{
-            make_native_type(CONNECTION_TYPE_MYSQL, t): BIType.string
+            make_native_type(CONNECTION_TYPE_MYSQL, t): UserDataType.string
             for t in (
                 my_types.TINYBLOB,
                 my_types.BLOB,
@@ -40,25 +40,25 @@ class MySQLTypeTransformer(TypeTransformer):
                 my_types.TEXT,
             )
         },
-        make_native_type(CONNECTION_TYPE_MYSQL, my_types.DATE): BIType.date,
+        make_native_type(CONNECTION_TYPE_MYSQL, my_types.DATE): UserDataType.date,
         **{
-            make_native_type(CONNECTION_TYPE_MYSQL, t): BIType.genericdatetime  # type: ignore  # TODO: fix
+            make_native_type(CONNECTION_TYPE_MYSQL, t): UserDataType.genericdatetime  # type: ignore  # TODO: fix
             for t in (my_types.DATETIME, my_types.TIMESTAMP)
         },
-        make_native_type(CONNECTION_TYPE_MYSQL, my_types.ENUM): BIType.string,
-        make_native_type(CONNECTION_TYPE_MYSQL, sa.sql.sqltypes.NullType): BIType.unsupported,
+        make_native_type(CONNECTION_TYPE_MYSQL, my_types.ENUM): UserDataType.string,
+        make_native_type(CONNECTION_TYPE_MYSQL, sa.sql.sqltypes.NullType): UserDataType.unsupported,
     }
     user_to_native_map = {
-        BIType.integer: make_native_type(CONNECTION_TYPE_MYSQL, my_types.BIGINT),
-        BIType.float: make_native_type(CONNECTION_TYPE_MYSQL, my_types.DOUBLE),
-        BIType.boolean: make_native_type(CONNECTION_TYPE_MYSQL, my_types.BIT),
-        BIType.string: make_native_type(CONNECTION_TYPE_MYSQL, my_types.VARCHAR),
-        BIType.date: make_native_type(CONNECTION_TYPE_MYSQL, my_types.DATE),
-        BIType.datetime: make_native_type(CONNECTION_TYPE_MYSQL, my_types.DATETIME),
-        BIType.genericdatetime: make_native_type(CONNECTION_TYPE_MYSQL, my_types.DATETIME),
-        BIType.geopoint: make_native_type(CONNECTION_TYPE_MYSQL, my_types.VARCHAR),
-        BIType.geopolygon: make_native_type(CONNECTION_TYPE_MYSQL, my_types.VARCHAR),
-        BIType.uuid: make_native_type(CONNECTION_TYPE_MYSQL, my_types.VARCHAR),
-        BIType.markup: make_native_type(CONNECTION_TYPE_MYSQL, my_types.VARCHAR),
-        BIType.unsupported: make_native_type(CONNECTION_TYPE_MYSQL, sa.sql.sqltypes.NullType),
+        UserDataType.integer: make_native_type(CONNECTION_TYPE_MYSQL, my_types.BIGINT),
+        UserDataType.float: make_native_type(CONNECTION_TYPE_MYSQL, my_types.DOUBLE),
+        UserDataType.boolean: make_native_type(CONNECTION_TYPE_MYSQL, my_types.BIT),
+        UserDataType.string: make_native_type(CONNECTION_TYPE_MYSQL, my_types.VARCHAR),
+        UserDataType.date: make_native_type(CONNECTION_TYPE_MYSQL, my_types.DATE),
+        UserDataType.datetime: make_native_type(CONNECTION_TYPE_MYSQL, my_types.DATETIME),
+        UserDataType.genericdatetime: make_native_type(CONNECTION_TYPE_MYSQL, my_types.DATETIME),
+        UserDataType.geopoint: make_native_type(CONNECTION_TYPE_MYSQL, my_types.VARCHAR),
+        UserDataType.geopolygon: make_native_type(CONNECTION_TYPE_MYSQL, my_types.VARCHAR),
+        UserDataType.uuid: make_native_type(CONNECTION_TYPE_MYSQL, my_types.VARCHAR),
+        UserDataType.markup: make_native_type(CONNECTION_TYPE_MYSQL, my_types.VARCHAR),
+        UserDataType.unsupported: make_native_type(CONNECTION_TYPE_MYSQL, sa.sql.sqltypes.NullType),
     }

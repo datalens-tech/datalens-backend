@@ -9,7 +9,7 @@ from dl_connector_chyt.core.data_source import (
     BaseCHYTTableSubselectDataSource,
     CHYTTokenAuthDataSourceMixin,
 )
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 
 from bi_connector_chyt_internal.core.constants import (
     CONNECTION_TYPE_CH_OVER_YT,
@@ -29,7 +29,7 @@ class CHYTInternalTokenAuthDataSourceMixin(CHYTTokenAuthDataSourceMixin):
     conn_type = CONNECTION_TYPE_CH_OVER_YT
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_CHYT_TABLE,
             SOURCE_TYPE_CHYT_TABLE_LIST,
@@ -60,7 +60,7 @@ class CHYTUserAuthMixin:
     conn_type = CONNECTION_TYPE_CH_OVER_YT_USER_AUTH
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_CHYT_USER_AUTH_TABLE,
             SOURCE_TYPE_CHYT_USER_AUTH_TABLE_LIST,

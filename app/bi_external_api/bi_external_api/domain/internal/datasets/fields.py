@@ -8,10 +8,10 @@ import attr
 from bi_external_api.attrs_model_mapper import ModelDescriptor
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
     CalcMode,
     FieldType,
     ManagedBy,
+    UserDataType,
 )
 
 from ..dl_common.base import DatasetAPIBaseModel
@@ -31,7 +31,7 @@ class ResultSchemaField(DatasetAPIBaseModel):
     aggregation: AggregationFunction = attr.ib()
     formula: Optional[str] = attr.ib(default=None)
     guid_formula: Optional[str] = attr.ib(default=None)
-    cast: BIType = attr.ib()
+    cast: UserDataType = attr.ib()
     avatar_id: Optional[str] = attr.ib(default=None)
     default_value: Optional[DefaultValue] = attr.ib(default=None)
 
@@ -72,8 +72,8 @@ class ResultSchemaField(DatasetAPIBaseModel):
 class ResultSchemaFieldFull(ResultSchemaField):
     type: FieldType = attr.ib()
 
-    data_type: BIType = attr.ib()
-    initial_data_type: BIType = attr.ib()
+    data_type: UserDataType = attr.ib()
+    initial_data_type: UserDataType = attr.ib()
 
     has_auto_aggregation: bool = attr.ib()
     lock_aggregation: bool = attr.ib()

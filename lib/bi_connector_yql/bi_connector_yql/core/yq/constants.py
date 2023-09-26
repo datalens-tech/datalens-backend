@@ -1,6 +1,6 @@
 from dl_constants.enums import (
     ConnectionType,
-    CreateDSFrom,
+    DataSourceType,
     SourceBackendType,
 )
 
@@ -9,5 +9,5 @@ BACKEND_TYPE_YQ = SourceBackendType.declare("YQ")
 
 CONNECTION_TYPE_YQ = ConnectionType.declare("yq")
 
-SOURCE_TYPE_YQ_TABLE = CreateDSFrom.declare("YQ_TABLE")
-SOURCE_TYPE_YQ_SUBSELECT = CreateDSFrom.declare("YQ_SUBSELECT")
+SOURCE_TYPE_YQ_TABLE = DataSourceType.declare("YQ_TABLE")
+SOURCE_TYPE_YQ_SUBSELECT = DataSourceType.declare("YQ_SUBSELECT")

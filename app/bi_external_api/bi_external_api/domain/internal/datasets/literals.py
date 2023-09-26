@@ -3,19 +3,19 @@ from typing import ClassVar
 import attr
 
 from bi_external_api.attrs_model_mapper import ModelDescriptor
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 
 
 @ModelDescriptor(is_abstract=True, children_type_discriminator_attr_name="type")
 @attr.s(frozen=True)
 class DefaultValue:
-    type: ClassVar[BIType]
+    type: ClassVar[UserDataType]
 
 
 @ModelDescriptor()
 @attr.s()
 class DefaultValueString(DefaultValue):
-    type = BIType.string
+    type = UserDataType.string
 
     value: str = attr.ib()
 
@@ -23,7 +23,7 @@ class DefaultValueString(DefaultValue):
 @ModelDescriptor()
 @attr.s()
 class DefaultValueInteger(DefaultValue):
-    type = BIType.integer
+    type = UserDataType.integer
 
     value: int = attr.ib()
 
@@ -31,7 +31,7 @@ class DefaultValueInteger(DefaultValue):
 @ModelDescriptor()
 @attr.s()
 class DefaultValueFloat(DefaultValue):
-    type = BIType.float
+    type = UserDataType.float
 
     value: float = attr.ib()
 

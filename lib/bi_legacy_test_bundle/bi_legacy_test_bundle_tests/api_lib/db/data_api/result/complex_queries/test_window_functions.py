@@ -20,8 +20,8 @@ from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_constants.enums import (
-    BIType,
     OrderDirection,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_core_testing.database import (
@@ -692,10 +692,10 @@ def test_null_dimensions(api_v1, data_api_v2, clickhouse_db, connection_id):
         {"id": 6, "city": None, "category": "Furniture", "sales": 100000},
     ]
     columns = [
-        C("id", BIType.integer, vg=lambda rn, **kwargs: raw_data[rn]["id"]),
-        C("city", BIType.string, vg=lambda rn, **kwargs: raw_data[rn]["city"]),
-        C("category", BIType.string, vg=lambda rn, **kwargs: raw_data[rn]["category"]),
-        C("sales", BIType.integer, vg=lambda rn, **kwargs: raw_data[rn]["sales"]),
+        C("id", UserDataType.integer, vg=lambda rn, **kwargs: raw_data[rn]["id"]),
+        C("city", UserDataType.string, vg=lambda rn, **kwargs: raw_data[rn]["city"]),
+        C("category", UserDataType.string, vg=lambda rn, **kwargs: raw_data[rn]["category"]),
+        C("sales", UserDataType.integer, vg=lambda rn, **kwargs: raw_data[rn]["sales"]),
     ]
     db_table = make_table(db, columns=columns, rows=len(raw_data))
 

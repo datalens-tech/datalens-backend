@@ -1,6 +1,6 @@
 from dl_constants.enums import (
-    BIType,
     RawSQLLevel,
+    UserDataType,
 )
 
 
@@ -31,16 +31,16 @@ RANGE_DATASET_DSRC_PARAMS = dict(
 SUBSELECT_DSRC_PARAMS = dict(subsql=DATA_SOURCE_TEST_QUERY)
 
 SAMPLE_TABLE_SIMPLIFIED_SCHEMA = [
-    ("APIKey", BIType.integer),
-    ("SessionType", BIType.integer),
-    ("EventType", BIType.integer),
-    ("UUID", BIType.string),
-    ("PublisherName", BIType.string),
-    ("DeviceIDHash", BIType.integer),
-    ("DeviceID", BIType.string),
-    ("StartTime", BIType.string),
-    ("StartDate", BIType.string),
-    ("DeviceIDSessionIDHash", BIType.integer),
-    ("PublisherID", BIType.integer),
-    ("extra", BIType.integer),
+    ("APIKey", UserDataType.integer),
+    ("SessionType", UserDataType.integer),
+    ("EventType", UserDataType.integer),
+    ("UUID", UserDataType.string),
+    ("PublisherName", UserDataType.string),
+    ("DeviceIDHash", UserDataType.integer),
+    ("DeviceID", UserDataType.string),
+    ("StartTime", UserDataType.string),
+    ("StartDate", UserDataType.string),
+    ("DeviceIDSessionIDHash", UserDataType.integer),
+    ("PublisherID", UserDataType.integer),
+    ("extra", UserDataType.integer),
 ]

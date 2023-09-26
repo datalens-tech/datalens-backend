@@ -1,7 +1,7 @@
 import pytest
 
 from dl_connector_chyt.core.data_source_spec import CHYTSubselectDataSourceSpec
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
 from dl_core_testing.testcases.data_source import DefaultDataSourceTestClass
 
@@ -24,7 +24,7 @@ from bi_connector_chyt_internal_tests.ext.core.base import (
 
 
 SAMPLE_TABLE_SCHEMA_SUPERSTORE_CHYTIZED = [
-    (name, user_type if user_type != BIType.date else BIType.string)
+    (name, user_type if user_type != UserDataType.date else UserDataType.string)
     for name, user_type in TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema
 ]
 
@@ -40,7 +40,7 @@ class TestCHYTDataSource(
     DSRC_CLS = CHYTInternalTableSubselectDataSource
     source_type = SOURCE_TYPE_CHYT_SUBSELECT
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return SAMPLE_TABLE_SCHEMA_SUPERSTORE_CHYTIZED
 
     @pytest.fixture(scope="class")
@@ -62,7 +62,7 @@ class TestCHYTUserAuthDataSource(
     DSRC_CLS = CHYTUserAuthTableSubselectDataSource
     source_type = SOURCE_TYPE_CHYT_USER_AUTH_SUBSELECT
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return SAMPLE_TABLE_SCHEMA_SUPERSTORE_CHYTIZED
 
     @pytest.fixture(scope="class")

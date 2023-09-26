@@ -27,7 +27,7 @@ from dl_api_client.dsmaker.shortcuts.result_data import (
     get_regular_result_data,
 )
 from dl_constants.enums import (
-    BIType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_core_testing.database import (
@@ -1045,10 +1045,10 @@ def test_bug_bi_3425(api_v1, data_api_v2, clickhouse_db, connection_id):
         {"id": 21, "city": "Detroit", "category": "Furniture", "sales": 1000000},
     ]
     columns = [
-        C("id", BIType.integer, vg=lambda rn, **kwargs: raw_data[rn]["id"]),
-        C("city", BIType.string, vg=lambda rn, **kwargs: raw_data[rn]["city"]),
-        C("category", BIType.string, vg=lambda rn, **kwargs: raw_data[rn]["category"]),
-        C("sales", BIType.integer, vg=lambda rn, **kwargs: raw_data[rn]["sales"]),
+        C("id", UserDataType.integer, vg=lambda rn, **kwargs: raw_data[rn]["id"]),
+        C("city", UserDataType.string, vg=lambda rn, **kwargs: raw_data[rn]["city"]),
+        C("category", UserDataType.string, vg=lambda rn, **kwargs: raw_data[rn]["category"]),
+        C("sales", UserDataType.integer, vg=lambda rn, **kwargs: raw_data[rn]["sales"]),
     ]
     db_table = make_table(db, columns=columns, rows=len(raw_data))
 
@@ -1120,10 +1120,10 @@ def test_null_dimensions(api_v1, data_api_v2, any_db, any_db_saved_connection):
         {"id": 6, "city": None, "category": "Furniture", "sales": 100000},
     ]
     columns = [
-        C("id", BIType.integer, vg=lambda rn, **kwargs: raw_data[rn]["id"]),
-        C("city", BIType.string, vg=lambda rn, **kwargs: raw_data[rn]["city"]),
-        C("category", BIType.string, vg=lambda rn, **kwargs: raw_data[rn]["category"]),
-        C("sales", BIType.integer, vg=lambda rn, **kwargs: raw_data[rn]["sales"]),
+        C("id", UserDataType.integer, vg=lambda rn, **kwargs: raw_data[rn]["id"]),
+        C("city", UserDataType.string, vg=lambda rn, **kwargs: raw_data[rn]["city"]),
+        C("category", UserDataType.string, vg=lambda rn, **kwargs: raw_data[rn]["category"]),
+        C("sales", UserDataType.integer, vg=lambda rn, **kwargs: raw_data[rn]["sales"]),
     ]
     db_table = make_table(db, columns=columns, rows=len(raw_data))
 

@@ -124,7 +124,7 @@ def _generate_complex_ch_types(
         make_native_type(conn_type, ch_types.Array(ch_types.String)): partial(
             _make_ch_array, inner_typecls=ch_types.String
         ),
-        # For the `BIType.unsupported`; should only be filled with `NULL`s in materialization.
+        # For the `UserDataType.unsupported`; should only be filled with `NULL`s in materialization.
         # See also: `dl_core.data_source.sql.BaseSQLDataSource._make_raw_column_select`
         make_native_type(conn_type, sa.sql.sqltypes.NullType): ch_fallback_type_gen,
     }

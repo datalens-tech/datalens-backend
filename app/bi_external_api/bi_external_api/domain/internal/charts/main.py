@@ -10,7 +10,7 @@ from bi_external_api.attrs_model_mapper import ModelDescriptor
 from bi_external_api.attrs_model_mapper.base import AttribDescriptor
 from bi_external_api.structs.mappings import FrozenStrMapping
 from dl_constants.enums import (
-    BIType,
+    UserDataType,
     WhereClauseOperation,
 )
 
@@ -136,7 +136,7 @@ class ExtraSettings(DatasetAPIBaseModel):
 @attr.s(frozen=True, kw_only=True, auto_attribs=True)
 class ChartField(DatasetAPIBaseModel):
     # TODO FIX: Frontend team was ask to load this field during chart processing. Will be removed in near future
-    data_type: Optional[BIType]
+    data_type: Optional[UserDataType]
     # originalTitle?: string;
     # fields?: V2Field[];
     # TODO FIX: Frontend team was ask to load this field during chart processing. Will be removed in near future

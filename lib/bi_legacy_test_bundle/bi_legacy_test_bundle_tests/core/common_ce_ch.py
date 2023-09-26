@@ -15,8 +15,8 @@ from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectO
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 from dl_constants.enums import (
-    BIType,
     IndexKind,
+    UserDataType,
 )
 from dl_core import exc
 from dl_core.connection_executors import ConnExecutorQuery
@@ -63,9 +63,9 @@ class CHLikeBaseTestSet(BaseConnExecutorSet):
             ConnExecutorQuery(
                 "select 1, 1, 1",
                 user_types=[
-                    BIType.boolean,
-                    BIType.float,
-                    BIType.integer,
+                    UserDataType.boolean,
+                    UserDataType.float,
+                    UserDataType.integer,
                 ],
             )
         )
@@ -166,23 +166,23 @@ class BaseClickHouseTestSet(CHLikeBaseTestSet):
         cd = self._ch_cd
 
         columns_data = [
-            cd("my_int_8", ch_types.Nullable(ch_types.Int8()), BIType.integer, nt_name="int8"),
-            cd("my_int_16", ch_types.Nullable(ch_types.Int16()), BIType.integer, nt_name="int16"),
-            cd("my_int_32", ch_types.Nullable(ch_types.Int32()), BIType.integer, nt_name="int32"),
-            cd("my_int_64", ch_types.Nullable(ch_types.Int64()), BIType.integer, nt_name="int64"),
-            cd("my_uint_8", ch_types.Nullable(ch_types.UInt8()), BIType.integer, nt_name="uint8"),
-            cd("my_uint_16", ch_types.Nullable(ch_types.UInt16()), BIType.integer, nt_name="uint16"),
-            cd("my_uint_32", ch_types.Nullable(ch_types.UInt32()), BIType.integer, nt_name="uint32"),
-            cd("my_uint_64", ch_types.Nullable(ch_types.UInt64()), BIType.integer, nt_name="uint64"),
-            cd("my_float_32", ch_types.Nullable(ch_types.Float32()), BIType.float, nt_name="float32"),
-            cd("my_float_64", ch_types.Nullable(ch_types.Float64()), BIType.float, nt_name="float64"),
-            cd("my_string", ch_types.Nullable(ch_types.String()), BIType.string, nt_name="string"),
+            cd("my_int_8", ch_types.Nullable(ch_types.Int8()), UserDataType.integer, nt_name="int8"),
+            cd("my_int_16", ch_types.Nullable(ch_types.Int16()), UserDataType.integer, nt_name="int16"),
+            cd("my_int_32", ch_types.Nullable(ch_types.Int32()), UserDataType.integer, nt_name="int32"),
+            cd("my_int_64", ch_types.Nullable(ch_types.Int64()), UserDataType.integer, nt_name="int64"),
+            cd("my_uint_8", ch_types.Nullable(ch_types.UInt8()), UserDataType.integer, nt_name="uint8"),
+            cd("my_uint_16", ch_types.Nullable(ch_types.UInt16()), UserDataType.integer, nt_name="uint16"),
+            cd("my_uint_32", ch_types.Nullable(ch_types.UInt32()), UserDataType.integer, nt_name="uint32"),
+            cd("my_uint_64", ch_types.Nullable(ch_types.UInt64()), UserDataType.integer, nt_name="uint64"),
+            cd("my_float_32", ch_types.Nullable(ch_types.Float32()), UserDataType.float, nt_name="float32"),
+            cd("my_float_64", ch_types.Nullable(ch_types.Float64()), UserDataType.float, nt_name="float64"),
+            cd("my_string", ch_types.Nullable(ch_types.String()), UserDataType.string, nt_name="string"),
             # Note: `Nullable(LowCardinality(String))` is actually not allowed:
             # "Nested type LowCardinality(String) cannot be inside Nullable type"
             cd(
                 "my_string_lowcardinality",
                 ch_types.LowCardinality(ch_types.Nullable(ch_types.String())),
-                BIType.string,
+                UserDataType.string,
                 nt=ClickHouseNativeType(
                     conn_type=CONNECTION_TYPE_CLICKHOUSE, name="string", nullable=True, lowcardinality=True
                 ),
@@ -190,21 +190,21 @@ class BaseClickHouseTestSet(CHLikeBaseTestSet):
             cd(
                 "my_string_lowcardinality_nn",
                 ch_types.LowCardinality(ch_types.String()),
-                BIType.string,
+                UserDataType.string,
                 nt=ClickHouseNativeType(
                     conn_type=CONNECTION_TYPE_CLICKHOUSE, name="string", nullable=False, lowcardinality=True
                 ),
             ),
-            cd("my_enum8", ch_types.Enum8(my_enum8), BIType.string, nt_name="string", nullable=False),
-            cd("my_enum16", ch_types.Enum16(my_enum16), BIType.string, nt_name="string", nullable=False),
+            cd("my_enum8", ch_types.Enum8(my_enum8), UserDataType.string, nt_name="string", nullable=False),
+            cd("my_enum16", ch_types.Enum16(my_enum16), UserDataType.string, nt_name="string", nullable=False),
             # not nullable so we can check 0000-00-00
-            cd("my_date", ch_types.Date(), BIType.date, nt_name="date", nullable=False),
-            cd("my_date32", ch_types.Date32(), BIType.date, nt_name="date", nullable=False),
+            cd("my_date", ch_types.Date(), UserDataType.date, nt_name="date", nullable=False),
+            cd("my_date32", ch_types.Date32(), UserDataType.date, nt_name="date", nullable=False),
             # not nullable so we can check 0000-00-00 00:00:00
             cd(
                 "my_datetime",
                 ch_types.DateTime(),
-                BIType.genericdatetime,
+                UserDataType.genericdatetime,
                 nt=ClickHouseDateTimeWithTZNativeType(
                     conn_type=CONNECTION_TYPE_CLICKHOUSE,
                     name="datetimewithtz",
@@ -217,7 +217,7 @@ class BaseClickHouseTestSet(CHLikeBaseTestSet):
             cd(
                 "my_datetimewithtz",
                 ch_types.DateTimeWithTZ("Europe/Moscow"),
-                BIType.genericdatetime,
+                UserDataType.genericdatetime,
                 nt=ClickHouseDateTimeWithTZNativeType(
                     conn_type=CONNECTION_TYPE_CLICKHOUSE,
                     name="datetimewithtz",
@@ -230,7 +230,7 @@ class BaseClickHouseTestSet(CHLikeBaseTestSet):
             cd(
                 "my_datetime64",
                 ch_types.DateTime64(6),
-                BIType.genericdatetime,
+                UserDataType.genericdatetime,
                 nt=ClickHouseDateTime64WithTZNativeType(
                     conn_type=CONNECTION_TYPE_CLICKHOUSE,
                     name="datetime64withtz",
@@ -244,7 +244,7 @@ class BaseClickHouseTestSet(CHLikeBaseTestSet):
             cd(
                 "my_datetime64withtz",
                 ch_types.DateTime64WithTZ(6, "Europe/Moscow"),
-                BIType.genericdatetime,
+                UserDataType.genericdatetime,
                 nt=ClickHouseDateTime64WithTZNativeType(
                     conn_type=CONNECTION_TYPE_CLICKHOUSE,
                     name="datetime64withtz",
@@ -255,8 +255,8 @@ class BaseClickHouseTestSet(CHLikeBaseTestSet):
                     explicit_timezone=True,
                 ),
             ),
-            cd("my_decimal", ch_types.Decimal(8, 4), BIType.float, nt_name="float", nullable=False),
-            cd("my_bool", ch_types.Nullable(ch_types.Bool()), BIType.boolean, nt_name="bool"),
+            cd("my_decimal", ch_types.Decimal(8, 4), UserDataType.float, nt_name="float", nullable=False),
+            cd("my_bool", ch_types.Nullable(ch_types.Bool()), UserDataType.boolean, nt_name="bool"),
         ]
 
         return self.TypeDiscoveryTestCase(

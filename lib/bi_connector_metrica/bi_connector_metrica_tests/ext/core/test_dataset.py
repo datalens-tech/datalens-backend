@@ -4,8 +4,8 @@ from sqlalchemy_metrika_api.api_info.appmetrica import AppMetricaFieldsNamespace
 from sqlalchemy_metrika_api.api_info.metrika import MetrikaApiCounterSource
 
 from dl_constants.enums import (
-    BIType,
     DataSourceRole,
+    UserDataType,
 )
 from dl_core.dataset_capabilities import DatasetCapabilities
 from dl_core.query.bi_query import BIQuery
@@ -79,7 +79,7 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
                     ),
                     avatar_ids=[avatar_id],
                     alias="col1",
-                    user_type=BIType.datetime,
+                    user_type=UserDataType.datetime,
                 ),  # is a dimension
                 ExpressionCtx(
                     expression=sa.literal_column(
@@ -87,7 +87,7 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
                     ),
                     avatar_ids=[avatar_id],
                     alias="col2",
-                    user_type=BIType.integer,
+                    user_type=UserDataType.integer,
                 ),  # is a measure
             ],
             group_by_expressions=[
@@ -97,7 +97,7 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
                     ),
                     avatar_ids=[avatar_id],
                     alias="col1",
-                    user_type=BIType.datetime,
+                    user_type=UserDataType.datetime,
                 ),
             ],
         )
@@ -126,7 +126,7 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
                     ),
                     avatar_ids=[avatar_id],
                     alias="col1",
-                    user_type=BIType.datetime,
+                    user_type=UserDataType.datetime,
                 ),  # is a dimension
             ],
             order_by_expressions=[
@@ -136,7 +136,7 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
                     ),
                     avatar_ids=[avatar_id],
                     alias="col1",
-                    user_type=BIType.datetime,
+                    user_type=UserDataType.datetime,
                 ),
             ],
             distinct=True,
@@ -167,7 +167,7 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
                     ),
                     avatar_ids=[avatar_id],
                     alias="col1",
-                    user_type=BIType.datetime,
+                    user_type=UserDataType.datetime,
                 ),  # is a dimension
                 ExpressionCtx(
                     expression=sa.literal_column(
@@ -175,7 +175,7 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
                     ),
                     avatar_ids=[avatar_id],
                     alias="col2",
-                    user_type=BIType.integer,
+                    user_type=UserDataType.integer,
                 ),  # is a measure
             ],
             group_by_expressions=[
@@ -185,7 +185,7 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
                     ),
                     avatar_ids=[avatar_id],
                     alias="col1",
-                    user_type=BIType.datetime,
+                    user_type=UserDataType.datetime,
                 ),
             ],
             dimension_filters=[
@@ -194,7 +194,7 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
                         ("Nizhny Novgorod Oblast'", "'m'a'n'y'q'u'o't'e's'")
                     ),
                     avatar_ids=[avatar_id],
-                    user_type=BIType.boolean,
+                    user_type=UserDataType.boolean,
                 ),
             ],
         )
@@ -267,7 +267,7 @@ class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[App
                     expression=sa.literal_column(dataset_wrapper.quote("ym:ts:date", role=DataSourceRole.origin)),
                     avatar_ids=[avatar_id],
                     alias="col1",
-                    user_type=BIType.datetime,
+                    user_type=UserDataType.datetime,
                 ),  # is a dimension
                 ExpressionCtx(
                     expression=sa.literal_column(
@@ -275,7 +275,7 @@ class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[App
                     ),
                     avatar_ids=[avatar_id],
                     alias="col2",
-                    user_type=BIType.integer,
+                    user_type=UserDataType.integer,
                 ),  # is a measure
             ],
             group_by_expressions=[
@@ -283,7 +283,7 @@ class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[App
                     expression=sa.literal_column(dataset_wrapper.quote("ym:ts:date", role=DataSourceRole.origin)),
                     avatar_ids=[avatar_id],
                     alias="col1",
-                    user_type=BIType.datetime,
+                    user_type=UserDataType.datetime,
                 ),
             ],
         )

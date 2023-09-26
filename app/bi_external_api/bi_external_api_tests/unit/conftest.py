@@ -6,8 +6,8 @@ from bi_external_api.domain.internal import datasets
 from bi_external_api.testings import SingleAvatarDatasetBuilder
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from dl_constants.enums import (
-    BIType,
     FieldType,
+    UserDataType,
 )
 
 
@@ -26,12 +26,12 @@ PG_1_DS = (
     SingleAvatarDatasetBuilder()
     .summary(id="pg_conn_1_ds_ID", name="pg_conn_1_ds_NAME", wb_id=WB_ID)
     .fake_pg_table(PG_CONN.summary.id)
-    .df(id="id", data_type=BIType.string)
-    .df(id="date", data_type=BIType.date)
-    .df(id="customer", data_type=BIType.string)
-    .df(id="amount", data_type=BIType.float)
-    .df(id="position", data_type=BIType.string)
-    .ff(id="amount_sum", formula="SUM([amount])", data_type=BIType.float, f_type=FieldType.MEASURE)
+    .df(id="id", data_type=UserDataType.string)
+    .df(id="date", data_type=UserDataType.date)
+    .df(id="customer", data_type=UserDataType.string)
+    .df(id="amount", data_type=UserDataType.float)
+    .df(id="position", data_type=UserDataType.string)
+    .ff(id="amount_sum", formula="SUM([amount])", data_type=UserDataType.float, f_type=FieldType.MEASURE)
     .build_dataset_instance()
 )
 

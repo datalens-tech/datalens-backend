@@ -1,8 +1,8 @@
 import pytest
 
 from dl_constants.enums import (
-    BIType,
     RawSQLLevel,
+    UserDataType,
 )
 from dl_core.data_source_spec.sql import (
     StandardSchemaSQLDataSourceSpec,
@@ -28,9 +28,9 @@ from bi_connector_oracle_tests.db.config import SUBSELECT_QUERY_FULL
 from bi_connector_oracle_tests.db.core.base import BaseOracleTestClass
 
 
-def _update_utype_for_oracle(user_type: BIType) -> BIType:
-    if user_type == BIType.date:
-        return BIType.genericdatetime
+def _update_utype_for_oracle(user_type: UserDataType) -> UserDataType:
+    if user_type == UserDataType.date:
+        return UserDataType.genericdatetime
     return user_type
 
 
@@ -59,7 +59,7 @@ class TestOracleTableDataSource(
         )
         return dsrc_spec
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(SAMPLE_TABLE_SCHEMA_SUPERSTORE_ORACLIZED)
 
 
@@ -83,7 +83,7 @@ class TestOracleSubselectDataSource(
         )
         return dsrc_spec
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(SAMPLE_TABLE_SCHEMA_SUPERSTORE_ORACLIZED)
 
 

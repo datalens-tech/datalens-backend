@@ -18,10 +18,10 @@ from dl_api_lib.query.formalization.raw_specs import (
 )
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
     CalcMode,
     FieldType,
     ManagedBy,
+    UserDataType,
 )
 from dl_core.fields import CalculationSpec
 from dl_core.values import BIValue
@@ -81,7 +81,7 @@ class UpdateField(FieldBase):
     lock_aggregation: Optional[bool] = attr.ib(default=None)
     formula: Optional[str] = attr.ib(default=None)
     guid_formula: Optional[str] = attr.ib(default=None)
-    cast: Optional[BIType] = attr.ib(default=None)
+    cast: Optional[UserDataType] = attr.ib(default=None)
     avatar_id: Optional[str] = attr.ib(default=None)
     new_id: Optional[str] = attr.ib(default=None)
     default_value: Optional[BIValue] = attr.ib(default=None)

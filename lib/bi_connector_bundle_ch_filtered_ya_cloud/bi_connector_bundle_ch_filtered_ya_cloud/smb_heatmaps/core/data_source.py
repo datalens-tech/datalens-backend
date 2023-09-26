@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from typing import ClassVar
 
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 
 from bi_connector_bundle_ch_filtered.base.core.data_source import ClickHouseTemplatedSubselectDataSource
 from bi_connector_bundle_ch_filtered_ya_cloud.smb_heatmaps.core.constants import (
@@ -21,7 +21,7 @@ class ClickHouseSMBHeatmapsDataSource(ClickHouseTemplatedSubselectDataSource):
     conn_type = CONNECTION_TYPE_SMB_HEATMAPS
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_CH_SMB_HEATMAPS_TABLE,
         }

@@ -31,10 +31,10 @@ from dl_api_lib.enums import WhereClauseOperation
 from dl_connector_clickhouse.core.clickhouse.data_source import ClickHouseDataSource
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
     ComponentType,
     JoinType,
     TopLevelComponentId,
+    UserDataType,
 )
 from dl_core_testing.database import (
     C,
@@ -1129,12 +1129,12 @@ def test_resolve_old_fields_for_new_source_in_avatar(api_v1, ch_data_source_sett
     ds.sources["old_source"] = ds.source(**ch_data_source_settings, created_=True)  # bypass generation of raw_schema
     ds.sources["new_source"] = ds.source(**new_dsrc_settings, created_=True)
     ds.sources["old_source"].raw_schema = [
-        ds.col(name="first_col", title="First Col", user_type=BIType.string, native_type=_chnt(name="string")),
-        ds.col(name="second_col", title="Second Col", user_type=BIType.string, native_type=_chnt(name="string")),
+        ds.col(name="first_col", title="First Col", user_type=UserDataType.string, native_type=_chnt(name="string")),
+        ds.col(name="second_col", title="Second Col", user_type=UserDataType.string, native_type=_chnt(name="string")),
     ]
     ds.sources["new_source"].raw_schema = [
-        ds.col(name="new_second", title="Second Col", user_type=BIType.string, native_type=_chnt(name="string")),
-        ds.col(name="new_first", title="First Col", user_type=BIType.string, native_type=_chnt(name="string")),
+        ds.col(name="new_second", title="Second Col", user_type=UserDataType.string, native_type=_chnt(name="string")),
+        ds.col(name="new_first", title="First Col", user_type=UserDataType.string, native_type=_chnt(name="string")),
     ]
     ds.source_avatars["avatar"] = ds.sources["old_source"].avatar()
     ds = api_v1.apply_updates(dataset=ds).dataset
@@ -1155,9 +1155,9 @@ def test_resolve_old_fields_for_updated_old_source(api_v1, ch_data_source_settin
     )
     ds.sources["source"] = ds.source(**old_dsrc_settings, created_=True)  # bypass generation of raw_schema
     ds.sources["source"].raw_schema = [
-        ds.col(name="first_col", title="Order ID", user_type=BIType.string, native_type=_chnt(name="string")),
-        ds.col(name="second_col", title="Category", user_type=BIType.string, native_type=_chnt(name="string")),
-        ds.col(name="third_col", title="Unknown", user_type=BIType.string, native_type=_chnt(name="string")),
+        ds.col(name="first_col", title="Order ID", user_type=UserDataType.string, native_type=_chnt(name="string")),
+        ds.col(name="second_col", title="Category", user_type=UserDataType.string, native_type=_chnt(name="string")),
+        ds.col(name="third_col", title="Unknown", user_type=UserDataType.string, native_type=_chnt(name="string")),
     ]
     ds.source_avatars["avatar"] = ds.sources["source"].avatar()
     ds.result_schema["My Formula"] = ds.field(formula="[third_col]")
@@ -1272,8 +1272,8 @@ def test_type_autoupdate_for_multiple_fields(api_v1, ch_data_source_settings):
     ds = ds_resp.dataset
 
     ds = api_v1.apply_updates(dataset=ds, updates=[ds.result_schema["my_date"].update(cast="datetime")]).dataset
-    assert ds.result_schema["my_date_dependent_1"].cast == BIType.genericdatetime
-    assert ds.result_schema["my_date_dependent_2"].cast == BIType.genericdatetime
+    assert ds.result_schema["my_date_dependent_1"].cast == UserDataType.genericdatetime
+    assert ds.result_schema["my_date_dependent_2"].cast == UserDataType.genericdatetime
 
 
 def test_formula_recursion(api_v1, static_dataset_id):
@@ -1789,7 +1789,7 @@ def test_add_component_with_reserved_name(api_v1, static_dataset_id):
 def test_clone_field(api_v1, static_dataset_id):
     ds = api_v1.load_dataset(dataset=Dataset(id=static_dataset_id)).dataset
 
-    first_field = [f for f in ds.result_schema if f.data_type == BIType.date][0]
+    first_field = [f for f in ds.result_schema if f.data_type == UserDataType.date][0]
     ds_resp = api_v1.apply_updates(
         dataset=ds,
         updates=[
@@ -1819,7 +1819,7 @@ def test_clone_field(api_v1, static_dataset_id):
                     "guid": str(uuid.uuid4()),
                     "from_guid": first_field.id,
                     "title": str(uuid.uuid4()),
-                    "cast": BIType.integer.name,
+                    "cast": UserDataType.integer.name,
                     "aggregation": AggregationFunction.sum.name,
                 },
             }
@@ -1830,7 +1830,7 @@ def test_clone_field(api_v1, static_dataset_id):
 
     new_field = ds.result_schema[0]
     assert new_field.source == first_field.source and new_field.formula == first_field.formula
-    assert new_field.cast == BIType.integer
+    assert new_field.cast == UserDataType.integer
     assert new_field.aggregation == AggregationFunction.sum
 
 
@@ -1942,4 +1942,4 @@ def test_formula_null(api_v1, static_dataset_id):
     ds.result_schema["Null Field"] = ds.field(avatar_id="nonexistent", formula="NULL")
     ds_resp = api_v1.apply_updates(dataset=ds, fail_ok=True)
     assert ds_resp.status_code == HTTPStatus.OK
-    assert ds_resp.dataset.result_schema["Null Field"].data_type == BIType.string
+    assert ds_resp.dataset.result_schema["Null Field"].data_type == UserDataType.string

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 
 from bi_connector_bundle_ch_filtered.base.core.data_source import ClickHouseTemplatedSubselectDataSource
 from bi_connector_bundle_ch_filtered.usage_tracking.core.constants import (
@@ -22,7 +22,7 @@ class UsageTrackingDataSource(ClickHouseTemplatedSubselectDataSource):
     conn_type = CONNECTION_TYPE_USAGE_TRACKING
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_CH_USAGE_TRACKING_TABLE,
         }

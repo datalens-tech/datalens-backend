@@ -17,7 +17,7 @@ from dl_api_lib_testing.client import (
     TestClientConverterAiohttpToFlask,
     WrappedAioSyncApiClient,
 )
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 
 from bi_connector_chyt_internal.core.constants import (
     SOURCE_TYPE_CHYT_SUBSELECT,
@@ -182,10 +182,10 @@ def _get_chyt_dataset(src_kwargs, request, client, api_v1, conn_id):
 
 
 class BaseTestDatasetChyt:
-    table_source_type: ClassVar[CreateDSFrom]
-    table_list_source_type: ClassVar[CreateDSFrom]
-    table_range_source_type: ClassVar[CreateDSFrom]
-    subselect_source_type: ClassVar[CreateDSFrom]
+    table_source_type: ClassVar[DataSourceType]
+    table_list_source_type: ClassVar[DataSourceType]
+    table_range_source_type: ClassVar[DataSourceType]
+    subselect_source_type: ClassVar[DataSourceType]
 
     @pytest.mark.external_ipv6
     def test_dataset_create_chyt(self, dataset):

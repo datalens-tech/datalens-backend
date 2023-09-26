@@ -15,7 +15,7 @@ from dl_api_lib_testing.connector.data_api_suites import (
 from dl_api_lib_testing.data_api_base import DataApiTestParams
 from dl_connector_postgresql_tests.db.api.base import PostgreSQLDataApiTestBase
 from dl_constants.enums import (
-    BIType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_core_testing.database import (
@@ -155,7 +155,7 @@ class TestPostgreSQLDataDistinct(PostgreSQLDataApiTestBase, DefaultConnectorData
         data_api: SyncHttpDataApiV2,
     ) -> None:
         columns = [
-            C(name="bigint_value", user_type=BIType.integer, vg=lambda rn, **kwargs: 10000002877 + rn),
+            C(name="bigint_value", user_type=UserDataType.integer, vg=lambda rn, **kwargs: 10000002877 + rn),
         ]
         db_table = make_table(db, columns=columns)
         params = self.get_dataset_params(dataset_params, db_table)

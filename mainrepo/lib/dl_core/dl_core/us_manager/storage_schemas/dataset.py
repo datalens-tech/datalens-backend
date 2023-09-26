@@ -17,7 +17,6 @@ from marshmallow_oneofschema import OneOfSchema
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
-    BIType,
     CalcMode,
     ConditionPartCalcMode,
     FieldType,
@@ -27,6 +26,7 @@ from dl_constants.enums import (
     ParameterValueConstraintType,
     RLSPatternType,
     RLSSubjectType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_core import multisource
@@ -175,7 +175,7 @@ class RLSSchema(DefaultStorageSchema):
 
 
 class BaseValueSchema(DefaultStorageSchema):
-    type = ma_fields.Enum(BIType)
+    type = ma_fields.Enum(UserDataType)
     value = ma_fields.Field()
 
 
@@ -262,22 +262,22 @@ class TreeStrValueSchema(BaseValueSchema):
 class ValueSchema(OneOfSchema):
     type_field = "type"
     type_schemas = {
-        BIType.string.name: StringValueSchema,
-        BIType.integer.name: IntegerValueSchema,
-        BIType.float.name: FloatValueSchema,
-        BIType.date.name: DateValueSchema,
-        BIType.datetime.name: DateTimeValueSchema,
-        BIType.datetimetz.name: DateTimeTZValueSchema,
-        BIType.genericdatetime.name: GenericDateTimeValueSchema,
-        BIType.boolean.name: BooleanValueSchema,
-        BIType.geopoint.name: GeoPointValueSchema,
-        BIType.geopolygon.name: GeoPolygonValueSchema,
-        BIType.uuid.name: UuidValueSchema,
-        BIType.markup.name: MarkupValueSchema,
-        BIType.array_str.name: ArrayStrValueSchema,
-        BIType.array_int.name: ArrayIntValueSchema,
-        BIType.array_float.name: ArrayFloatValueSchema,
-        BIType.tree_str.name: TreeStrValueSchema,
+        UserDataType.string.name: StringValueSchema,
+        UserDataType.integer.name: IntegerValueSchema,
+        UserDataType.float.name: FloatValueSchema,
+        UserDataType.date.name: DateValueSchema,
+        UserDataType.datetime.name: DateTimeValueSchema,
+        UserDataType.datetimetz.name: DateTimeTZValueSchema,
+        UserDataType.genericdatetime.name: GenericDateTimeValueSchema,
+        UserDataType.boolean.name: BooleanValueSchema,
+        UserDataType.geopoint.name: GeoPointValueSchema,
+        UserDataType.geopolygon.name: GeoPolygonValueSchema,
+        UserDataType.uuid.name: UuidValueSchema,
+        UserDataType.markup.name: MarkupValueSchema,
+        UserDataType.array_str.name: ArrayStrValueSchema,
+        UserDataType.array_int.name: ArrayIntValueSchema,
+        UserDataType.array_float.name: ArrayFloatValueSchema,
+        UserDataType.tree_str.name: TreeStrValueSchema,
     }
 
     def get_obj_type(self, obj: BIValue) -> str:
@@ -360,9 +360,9 @@ class ResultSchemaStorageSchema(DefaultStorageSchema):
         type = ma_fields.Enum(FieldType)
         hidden = ma_fields.Boolean()
         description = ma_fields.String()
-        cast = ma_fields.Enum(BIType, allow_none=True)
-        initial_data_type = ma_fields.Enum(BIType, allow_none=True)
-        data_type = ma_fields.Enum(BIType, allow_none=True)
+        cast = ma_fields.Enum(UserDataType, allow_none=True)
+        initial_data_type = ma_fields.Enum(UserDataType, allow_none=True)
+        data_type = ma_fields.Enum(UserDataType, allow_none=True)
         valid = ma_fields.Boolean(allow_none=True)
         has_auto_aggregation = ma_fields.Boolean(allow_none=True)
         lock_aggregation = ma_fields.Boolean(allow_none=True)

@@ -17,8 +17,8 @@ from dl_connector_postgresql.formula.constants import PostgreSQLDialect
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
-    BIType,
     FieldType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_core.db import SchemaColumn
@@ -62,10 +62,10 @@ def new_id() -> str:
 
 
 _TYPE_NAME_TO_USER_TYPE = {
-    "Int32": BIType.integer,
-    "String": BIType.string,
-    "Date": BIType.date,
-    "Datetime": BIType.genericdatetime,
+    "Int32": UserDataType.integer,
+    "String": UserDataType.string,
+    "Date": UserDataType.date,
+    "Datetime": UserDataType.genericdatetime,
 }
 
 
@@ -291,11 +291,11 @@ class TestCasts(CompilerTestBase):
     def _make_fields(self):
         return [
             self._make_field("f1"),
-            self._make_field("f2", source="f1", cast=BIType.integer),
-            self._make_field("f3", source="f1", cast=BIType.integer, aggregation=AggregationFunction.avg),
-            self._make_field("f4", formula="[f1]", cast=BIType.integer),
-            self._make_field("f5", formula="[f1]", cast=BIType.integer, aggregation=AggregationFunction.avg),
-            self._make_field("f6", formula="[f2]", cast=BIType.string),
+            self._make_field("f2", source="f1", cast=UserDataType.integer),
+            self._make_field("f3", source="f1", cast=UserDataType.integer, aggregation=AggregationFunction.avg),
+            self._make_field("f4", formula="[f1]", cast=UserDataType.integer),
+            self._make_field("f5", formula="[f1]", cast=UserDataType.integer, aggregation=AggregationFunction.avg),
+            self._make_field("f6", formula="[f2]", cast=UserDataType.string),
         ]
 
     def test_casts(self, prepared):

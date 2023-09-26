@@ -11,8 +11,8 @@ from dl_connector_clickhouse.core.clickhouse.data_source import (
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from dl_connector_clickhouse_tests.db.core.base import BaseClickHouseTestClass
 from dl_constants.enums import (
-    BIType,
     RawSQLLevel,
+    UserDataType,
 )
 from dl_core.data_source_spec.sql import (
     StandardSQLDataSourceSpec,
@@ -41,7 +41,7 @@ class TestClickHouseTableDataSource(
         )
         return dsrc_spec
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)
 
 
@@ -65,5 +65,5 @@ class TestClickHouseSubselectDataSource(
         )
         return dsrc_spec
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)

@@ -23,7 +23,7 @@ import attr
 from sqlalchemy import sql as sasql
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_constants.exc import DLBaseException
 from dl_constants.types import TBIDataValue
 from dl_core.connection_executors.models.common import RemoteQueryExecutorData
@@ -62,7 +62,7 @@ class ExecutionMode(enum.Enum):
 @attr.s
 class ConnExecutorQuery:
     query: Union[sasql.Select, str] = attr.ib()
-    user_types: Optional[List[BIType]] = attr.ib(default=None)
+    user_types: Optional[List[UserDataType]] = attr.ib(default=None)
     debug_compiled_query: Optional[str] = attr.ib(default=None)
     chunk_size: Optional[int] = attr.ib(default=None)
     connector_specific_params: Optional[Dict[str, TJSONExt]] = attr.ib(default=None)
@@ -122,7 +122,7 @@ class ConnExecutorBase(metaclass=abc.ABCMeta):
             LOGGER.exception("Exception during request context info comparision")
             return False
 
-    def cast_row_to_output(self, row: Sequence, user_types: Optional[Sequence[BIType]]) -> Sequence[TBIDataValue]:
+    def cast_row_to_output(self, row: Sequence, user_types: Optional[Sequence[UserDataType]]) -> Sequence[TBIDataValue]:
         if user_types is None:
             return row
 
@@ -150,7 +150,7 @@ class ConnExecutorBase(metaclass=abc.ABCMeta):
                 if require_all:
                     raise
                 LOGGER.warning("Unable to detect type of field: %s", raw_column_info)
-                user_type = BIType.unsupported
+                user_type = UserDataType.unsupported
 
             schema_col = SchemaColumn(
                 name=raw_column_info.name,

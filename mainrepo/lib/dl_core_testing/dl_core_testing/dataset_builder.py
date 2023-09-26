@@ -7,8 +7,8 @@ import attr
 
 from dl_constants.enums import (
     BinaryJoinOperator,
-    CreateDSFrom,
     DataSourceRole,
+    DataSourceType,
 )
 from dl_core.base_models import DefaultConnectionRef
 from dl_core.data_source.base import DataSource
@@ -33,7 +33,7 @@ from dl_core_testing.dataset_wrappers import EditableDatasetTestWrapper
 @attr.s(frozen=True)
 class DataSourceCreationSpec:
     connection: ConnectionBase = attr.ib(kw_only=True)
-    source_type: CreateDSFrom = attr.ib(kw_only=True)
+    source_type: DataSourceType = attr.ib(kw_only=True)
     dsrc_params: dict = attr.ib(kw_only=True)
 
 

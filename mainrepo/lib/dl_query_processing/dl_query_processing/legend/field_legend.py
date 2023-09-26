@@ -14,13 +14,13 @@ from typing import (
 import attr
 
 from dl_constants.enums import (
-    BIType,
     FieldRole,
     FieldType,
     FieldVisibility,
     LegendItemType,
     OrderDirection,
     RangeType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_constants.internal_constants import (
@@ -115,7 +115,7 @@ class LegendItem:
     legend_item_id: int = attr.ib(kw_only=True)
     obj: ObjSpec = attr.ib(kw_only=True)
     role_spec: RoleSpec = attr.ib(kw_only=True, factory=RoleSpec)
-    data_type: BIType = attr.ib(kw_only=True)
+    data_type: UserDataType = attr.ib(kw_only=True)
     field_type: FieldType = attr.ib(kw_only=True)
     block_id: Optional[int] = attr.ib(kw_only=True, default=None)
 

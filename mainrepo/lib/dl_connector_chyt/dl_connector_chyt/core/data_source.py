@@ -31,8 +31,8 @@ from dl_connector_clickhouse.core.clickhouse_base.data_source import (
     CommonClickHouseSubselectDataSource,
 )
 from dl_constants.enums import (
-    BIType,
-    CreateDSFrom,
+    DataSourceType,
+    UserDataType,
 )
 from dl_core import exc
 from dl_core.connection_models.common_models import (
@@ -140,7 +140,7 @@ class BaseCHYTTableFuncDataSource(BaseCHYTSpecialDataSource, abc.ABC):
                         SchemaColumn(
                             name=key,
                             title=key,
-                            user_type=BIType.string,
+                            user_type=UserDataType.string,
                             native_type=ClickHouseNativeType.normalize_name_and_create(
                                 conn_type=self.conn_type, name="string"
                             ),
@@ -271,7 +271,7 @@ class CHYTTokenAuthDataSourceMixin:
     conn_type = CONNECTION_TYPE_CHYT
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
             SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,

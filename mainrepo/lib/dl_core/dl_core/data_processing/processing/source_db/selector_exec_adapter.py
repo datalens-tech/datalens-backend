@@ -9,7 +9,7 @@ from typing import (
 
 import attr
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.data_processing.prepared_components.default_manager import DefaultPreparedComponentManager
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
 from dl_core.data_processing.selectors.dataset_base import DatasetDataSelectorAsyncBase
@@ -53,7 +53,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
     def _make_query_res_info(
         self,
         query: Union[str, Select],
-        user_types: Sequence[BIType],
+        user_types: Sequence[UserDataType],
     ) -> QueryAndResultInfo:
         query_res_info = QueryAndResultInfo(
             query=query,  # type: ignore  # TODO: fix
@@ -69,7 +69,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         self,
         *,
         query: Union[str, Select],
-        user_types: Sequence[BIType],
+        user_types: Sequence[UserDataType],
         chunk_size: int,
         joint_dsrc_info: Optional[PreparedMultiFromInfo] = None,
         query_id: str,
@@ -92,7 +92,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         *,
         query_id: str,
         query: Union[str, Select],
-        user_types: Sequence[BIType],
+        user_types: Sequence[UserDataType],
         joint_dsrc_info: Optional[PreparedMultiFromInfo] = None,
     ) -> Optional[LocalKeyRepresentation]:
         selector = self._selector

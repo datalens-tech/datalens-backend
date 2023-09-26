@@ -12,12 +12,12 @@ import attr
 
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
-    CreateDSFrom,
     DataSourceCreatedVia,
     DataSourceRole,
+    DataSourceType,
     FieldType,
     ManagedBy,
+    UserDataType,
 )
 from dl_core import multisource
 from dl_core.base_models import (
@@ -113,7 +113,7 @@ class Dataset(USEntry):
     def find_data_source_configuration(  # type: ignore  # TODO: fix
         self,
         connection_id: Optional[str],
-        created_from: Optional[CreateDSFrom] = None,
+        created_from: Optional[DataSourceType] = None,
         title: Optional[str] = None,
         parameters: Optional[dict] = None,
     ) -> Optional[str]:
@@ -169,7 +169,7 @@ class Dataset(USEntry):
         guid = field_id_generator.make_field_id(title=title)
 
         hidden = False
-        if column.user_type == BIType.unsupported:
+        if column.user_type == UserDataType.unsupported:
             # Auto-hide because it's unselectable.
             hidden = True
 

@@ -32,9 +32,9 @@ class ConnectionClickhouseFrozenBase(ConnectionCHFilteredHardcodedDataBase[CHFro
     @property
     def raw_sql_level(self) -> RawSQLLevel:
         # NOTE
-        # This could be a class variable, but CreateDSFrom is strictly bound to the datasource class, which
+        # This could be a class variable, but DataSourceType is strictly bound to the datasource class, which
         # in turn is bound to the connection class.
-        # This means that we can't create a subclass of this class and continue using same CreateDSFrom –
+        # This means that we can't create a subclass of this class and continue using same DataSourceType –
         # they all should point to this class.
         # In other words, we can't inherit from this class to change frozen connectors' behaviour for now.
         return self._connector_settings.RAW_SQL_LEVEL

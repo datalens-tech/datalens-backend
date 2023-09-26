@@ -17,10 +17,10 @@ from dl_api_commons.reporting.profiler import (
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 from dl_constants.enums import (
-    BIType,
     DataSourceRole,
     ProcessorType,
     QueryType,
+    UserDataType,
 )
 from dl_core.data_processing.cache.primitives import (
     DataKeyPart,
@@ -59,7 +59,7 @@ class TestCompengCache:
         ds_wrapper = DatasetTestWrapper(dataset=dataset, us_manager=us_manager)
 
         names = ["int_value", "str_value"]
-        user_types = [BIType.integer, BIType.string]
+        user_types = [UserDataType.integer, UserDataType.string]
 
         def get_operations(coeff: int) -> List[BaseOp]:
             """
@@ -83,12 +83,12 @@ class TestCompengCache:
                             ExpressionCtx(
                                 expression=sa.literal_column(names[0]) * sa.literal(coeff),
                                 alias="value_1",
-                                user_type=BIType.integer,
+                                user_type=UserDataType.integer,
                             ),
                             ExpressionCtx(
                                 expression=sa.literal_column(names[1]),
                                 alias="value_2",
-                                user_type=BIType.string,
+                                user_type=UserDataType.string,
                             ),
                         ],
                     ),

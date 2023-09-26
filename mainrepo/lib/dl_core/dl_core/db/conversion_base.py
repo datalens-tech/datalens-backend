@@ -23,8 +23,8 @@ from typing import (
 import pytz
 
 from dl_constants.enums import (
-    BIType,
     ConnectionType,
+    UserDataType,
 )
 from dl_core import (
     converter_types_cast,
@@ -219,33 +219,33 @@ class LowercaseTypeCaster(TypeCaster):
 
 class TypeTransformer:
     conn_type: ClassVar[ConnectionType]
-    native_to_user_map: ClassVar[dict[GenericNativeType, BIType]] = {}
-    user_to_native_map: ClassVar[dict[BIType, GenericNativeType]] = {}
-    casters: ClassVar[dict[BIType, TypeCaster]] = {
-        BIType.integer: IntegerTypeCaster(),
-        BIType.float: FloatTypeCaster(),
-        BIType.boolean: BooleanTypeCaster(),
-        BIType.string: StringTypeCaster(),
-        BIType.date: DateTypeCaster(),
-        BIType.datetime: DatetimeTypeCaster(),
-        BIType.datetimetz: DatetimeTZTypeCaster(),
-        BIType.genericdatetime: GenericDatetimeTypeCaster(),
-        BIType.geopoint: StringTypeCaster(),
-        BIType.geopolygon: StringTypeCaster(),
-        BIType.uuid: StringTypeCaster(),
-        BIType.markup: StringTypeCaster(),
-        BIType.array_int: ArrayIntTypeCaster(),
-        BIType.array_float: ArrayFloatTypeCaster(),
-        BIType.array_str: ArrayStrTypeCaster(),
-        BIType.tree_str: ArrayStrTypeCaster(),  # Same as array
-        BIType.unsupported: UnsupportedCaster(),
+    native_to_user_map: ClassVar[dict[GenericNativeType, UserDataType]] = {}
+    user_to_native_map: ClassVar[dict[UserDataType, GenericNativeType]] = {}
+    casters: ClassVar[dict[UserDataType, TypeCaster]] = {
+        UserDataType.integer: IntegerTypeCaster(),
+        UserDataType.float: FloatTypeCaster(),
+        UserDataType.boolean: BooleanTypeCaster(),
+        UserDataType.string: StringTypeCaster(),
+        UserDataType.date: DateTypeCaster(),
+        UserDataType.datetime: DatetimeTypeCaster(),
+        UserDataType.datetimetz: DatetimeTZTypeCaster(),
+        UserDataType.genericdatetime: GenericDatetimeTypeCaster(),
+        UserDataType.geopoint: StringTypeCaster(),
+        UserDataType.geopolygon: StringTypeCaster(),
+        UserDataType.uuid: StringTypeCaster(),
+        UserDataType.markup: StringTypeCaster(),
+        UserDataType.array_int: ArrayIntTypeCaster(),
+        UserDataType.array_float: ArrayFloatTypeCaster(),
+        UserDataType.array_str: ArrayStrTypeCaster(),
+        UserDataType.tree_str: ArrayStrTypeCaster(),  # Same as array
+        UserDataType.unsupported: UnsupportedCaster(),
     }
 
     def type_native_to_user(
         self,
         native_t: GenericNativeType,
-        user_t: Optional[BIType] = None,
-    ) -> BIType:
+        user_t: Optional[UserDataType] = None,
+    ) -> UserDataType:
         if user_t is not None:
             # original UT is given, try to validate against NT.
             # read as 'native type might have been made from the provided user type'.
@@ -268,7 +268,9 @@ class TypeTransformer:
         """
         return native_t  # no known conversion
 
-    def type_user_to_native(self, user_t: BIType, native_t: Optional[GenericNativeType] = None) -> GenericNativeType:
+    def type_user_to_native(
+        self, user_t: UserDataType, native_t: Optional[GenericNativeType] = None
+    ) -> GenericNativeType:
         if native_t is not None:
             # original NT is given, try to do a direct conversion
 
@@ -296,12 +298,12 @@ class TypeTransformer:
         return result
 
     @classmethod
-    def cast_for_input(cls, value: Any, user_t: BIType) -> Any:
+    def cast_for_input(cls, value: Any, user_t: UserDataType) -> Any:
         """Prepare value for insertion into the database"""
         return cls.casters[user_t].cast_for_input(value=value)
 
     @classmethod
-    def cast_for_output(cls, value: Any, user_t: Optional[BIType] = None) -> Any:
+    def cast_for_output(cls, value: Any, user_t: Optional[UserDataType] = None) -> Any:
         """Convert value from DB to Python value conforming to given ``user_t``"""
         if user_t is None:
             return value

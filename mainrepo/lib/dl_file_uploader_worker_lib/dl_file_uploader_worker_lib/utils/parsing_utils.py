@@ -19,8 +19,8 @@ from dl_app_tools.profiling_base import generic_profiler
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from dl_constants.enums import (
-    BIType,
     ConnectionType,
+    UserDataType,
 )
 from dl_core.aio.web_app_services.gsheets import Sheet
 from dl_core.components.ids import (
@@ -180,7 +180,7 @@ def result_column_types_to_raw_schema(
 
     raw_schema: list[SchemaColumn] = []
     for col in column_types:
-        user_type = getattr(BIType, col["cast"])  # type: ignore  # TODO: FIX
+        user_type = getattr(UserDataType, col["cast"])  # type: ignore  # TODO: FIX
         title: str = col["title"]  # type: ignore  # TODO: FIX
         sch_col = SchemaColumn(
             name=field_id_gen.make_field_id(col),

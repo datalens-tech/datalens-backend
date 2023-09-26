@@ -11,8 +11,8 @@ import pytest
 import sqlalchemy as sa
 
 from dl_constants.enums import (
-    CreateDSFrom,
     DataSourceRole,
+    DataSourceType,
 )
 from dl_core.data_processing.stream_base import DataStream
 from dl_core.query.bi_query import BIQuery
@@ -36,7 +36,7 @@ _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 
 class BaseDatasetTestClass(BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):
-    source_type: ClassVar[CreateDSFrom]
+    source_type: ClassVar[DataSourceType]
 
     @pytest.fixture(scope="function")
     def dataset_table(self, sample_table: DbTable) -> DbTable:

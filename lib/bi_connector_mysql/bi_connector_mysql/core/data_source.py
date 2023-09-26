@@ -7,7 +7,7 @@ from typing import (
 )
 
 from dl_constants.enums import (
-    CreateDSFrom,
+    DataSourceType,
     JoinType,
 )
 from dl_core.data_source.sql import (
@@ -39,7 +39,7 @@ class MySQLDataSourceMixin(BaseSQLDataSource):
     conn_type = CONNECTION_TYPE_MYSQL
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in (SOURCE_TYPE_MYSQL_TABLE, SOURCE_TYPE_MYSQL_SUBSELECT)
 
 

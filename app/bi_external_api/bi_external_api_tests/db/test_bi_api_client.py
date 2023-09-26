@@ -13,9 +13,9 @@ from bi_testing_ya.api_wrappers import Req
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
     CalcMode,
     ManagedBy,
+    UserDataType,
 )
 
 
@@ -119,16 +119,16 @@ async def test_dataset_actions_single_source(bi_ext_api_test_env_bi_api_control_
 @pytest.mark.parametrize(
     "bi_type,param_default_value",
     [
-        [BIType.string, datasets.DefaultValueString("DEFAULT!!!!")],
-        [BIType.integer, datasets.DefaultValueInteger(1)],
-        [BIType.float, datasets.DefaultValueFloat(1.5)],
+        [UserDataType.string, datasets.DefaultValueString("DEFAULT!!!!")],
+        [UserDataType.integer, datasets.DefaultValueInteger(1)],
+        [UserDataType.float, datasets.DefaultValueFloat(1.5)],
     ],
 )
 @pytest.mark.asyncio
 async def test_dataset_with_parameter_round_trip(
     bi_ext_api_test_env_bi_api_control_plane_client,
     pg_connection,
-    bi_type: BIType,
+    bi_type: UserDataType,
     param_default_value: datasets.DefaultValue,
 ):
     int_api_cli = bi_ext_api_test_env_bi_api_control_plane_client
@@ -173,7 +173,7 @@ DS_VALIDATION_ERRORS_TEST_CASES = (
                 hidden=False,
                 description="",
                 aggregation=AggregationFunction.none,
-                cast=BIType.string,
+                cast=UserDataType.string,
                 avatar_id="N/A",
             ),
         ],
@@ -204,7 +204,7 @@ DS_VALIDATION_ERRORS_TEST_CASES = (
     #             hidden=False,
     #             description="",
     #             aggregation=AggregationFunction.none,
-    #             cast=BIType.integer,
+    #             cast=UserDataType.integer,
     #             avatar_id="N/A",
     #         ),
     #         datasets.ResultSchemaField(
@@ -218,7 +218,7 @@ DS_VALIDATION_ERRORS_TEST_CASES = (
     #             hidden=False,
     #             description="",
     #             aggregation=AggregationFunction.none,
-    #             cast=BIType.float,
+    #             cast=UserDataType.float,
     #             avatar_id="",
     #         ),
     #     ],
@@ -248,7 +248,7 @@ DS_VALIDATION_ERRORS_TEST_CASES = (
                 hidden=False,
                 description="",
                 aggregation=AggregationFunction.none,
-                cast=BIType.string,
+                cast=UserDataType.string,
                 avatar_id="N/A",
             ),
         ],

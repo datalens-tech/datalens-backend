@@ -30,7 +30,7 @@ if TYPE_CHECKING:
     from sqlalchemy.engine.default import DefaultDialect
     from sqlalchemy.sql import Select
 
-    from dl_constants.enums import BIType
+    from dl_constants.enums import UserDataType
     from dl_constants.types import TJSONExt
     from dl_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
     from dl_core.data_processing.stream_base import DataStreamBase
@@ -168,7 +168,7 @@ class SelectorCacheOptionsBuilder(CacheOptionsBuilderBase):
         role: DataSourceRole,
         joint_dsrc_info: PreparedMultiFromInfo,
         query: Select,
-        user_types: list[BIType],
+        user_types: list[UserDataType],
         dataset: Dataset,
     ) -> BIQueryCacheOptions:
         """Returns cache key, TTL for new entries, refresh TTL flag"""
@@ -211,7 +211,7 @@ class SelectorCacheOptionsBuilder(CacheOptionsBuilderBase):
         self,
         joint_dsrc_info: PreparedMultiFromInfo,
         compiled_query: str,
-        user_types: list[BIType],
+        user_types: list[UserDataType],
         data_dump_id: str,
         is_bleeding_edge_user: bool,
     ) -> LocalKeyRepresentation:

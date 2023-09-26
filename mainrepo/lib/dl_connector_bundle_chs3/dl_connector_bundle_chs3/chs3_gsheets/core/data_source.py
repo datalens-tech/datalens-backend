@@ -8,7 +8,7 @@ from dl_connector_bundle_chs3.chs3_gsheets.core.constants import (
 )
 from dl_constants.enums import (
     ComponentErrorLevel,
-    CreateDSFrom,
+    DataSourceType,
 )
 from dl_core import exc
 from dl_core.reporting.notifications import get_notification_record
@@ -18,7 +18,7 @@ class GSheetsFileS3DataSource(BaseFileS3DataSource):
     conn_type = CONNECTION_TYPE_GSHEETS_V2
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_GSHEETS_V2,
         }

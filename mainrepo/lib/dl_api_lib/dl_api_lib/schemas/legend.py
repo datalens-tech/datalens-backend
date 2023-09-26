@@ -5,13 +5,13 @@ from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
 
 from dl_constants.enums import (
-    BIType,
     FieldRole,
     FieldType,
     FieldVisibility,
     LegendItemType,
     OrderDirection,
     RangeType,
+    UserDataType,
 )
 from dl_model_tools.schema.base import BaseSchema
 from dl_query_processing.legend.field_legend import RoleSpec
@@ -80,7 +80,7 @@ class LegendItemSchema(BaseSchema):
     id = ma_fields.String()
     title = ma_fields.String()
     role_spec = ma_fields.Nested(RoleSpecSchema)
-    data_type = ma_fields.Enum(BIType)
+    data_type = ma_fields.Enum(UserDataType)
     field_type = ma_fields.Enum(FieldType)
     item_type = ma_fields.Enum(LegendItemType)
 

@@ -3,32 +3,32 @@ import abc
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.exc import DashSQLError
 
 
 TValueBase = str | list[str] | tuple[str, ...]
 
-BI_TYPE_TO_SA_TYPE: dict[BIType, TypeEngine] = {
-    BIType.string: sa.TEXT(),
-    BIType.integer: sa.BIGINT(),
-    BIType.float: sa.FLOAT(),
-    BIType.date: sa.DATE(),
-    BIType.datetime: sa.DATETIME(),
-    BIType.boolean: sa.BOOLEAN(),
-    BIType.datetimetz: sa.DATETIME(timezone=True),
-    BIType.genericdatetime: sa.DATETIME(),
+BI_TYPE_TO_SA_TYPE: dict[UserDataType, TypeEngine] = {
+    UserDataType.string: sa.TEXT(),
+    UserDataType.integer: sa.BIGINT(),
+    UserDataType.float: sa.FLOAT(),
+    UserDataType.date: sa.DATE(),
+    UserDataType.datetime: sa.DATETIME(),
+    UserDataType.boolean: sa.BOOLEAN(),
+    UserDataType.datetimetz: sa.DATETIME(timezone=True),
+    UserDataType.genericdatetime: sa.DATETIME(),
 }
 
 
 class DashSQLParamLiteralizer(abc.ABC):
     @abc.abstractmethod
-    def get_sa_type(self, bi_type: BIType, value_base: TValueBase) -> TypeEngine:
+    def get_sa_type(self, bi_type: UserDataType, value_base: TValueBase) -> TypeEngine:
         raise NotImplementedError
 
 
 class DefaultDashSQLParamLiteralizer(DashSQLParamLiteralizer):
-    def get_sa_type(self, bi_type: BIType, value_base: TValueBase) -> TypeEngine:
+    def get_sa_type(self, bi_type: UserDataType, value_base: TValueBase) -> TypeEngine:
         try:
             sa_type = BI_TYPE_TO_SA_TYPE[bi_type]
             return sa_type

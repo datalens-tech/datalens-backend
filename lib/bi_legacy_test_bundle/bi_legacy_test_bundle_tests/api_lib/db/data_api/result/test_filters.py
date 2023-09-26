@@ -8,7 +8,7 @@ from bi_legacy_test_bundle_tests.api_lib.utils import data_source_settings_from_
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_constants.enums import (
-    BIType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_core_testing.database import (
@@ -72,10 +72,10 @@ def test_array_len_filters(api_v1, data_api_v1, clickhouse_db, connection_id):
     data_api = data_api_v1
     db = clickhouse_db
     columns = [
-        C("int_value", BIType.integer, vg=lambda rn, **kwargs: rn),
-        C("array_int_value", BIType.array_int, vg=lambda rn, **kwargs: [i for i in range(rn)]),
-        C("array_str_value", BIType.array_str, vg=lambda rn, **kwargs: [str(i) for i in range(rn)]),
-        C("array_float_value", BIType.array_float, vg=lambda rn, **kwargs: [i / 100.0 for i in range(rn)]),
+        C("int_value", UserDataType.integer, vg=lambda rn, **kwargs: rn),
+        C("array_int_value", UserDataType.array_int, vg=lambda rn, **kwargs: [i for i in range(rn)]),
+        C("array_str_value", UserDataType.array_str, vg=lambda rn, **kwargs: [str(i) for i in range(rn)]),
+        C("array_float_value", UserDataType.array_float, vg=lambda rn, **kwargs: [i / 100.0 for i in range(rn)]),
     ]
     db_table = make_table_with_arrays(db, columns=columns)
     ds = Dataset()
@@ -126,10 +126,14 @@ def test_array_startswith_filter(api_v1, data_api_v1, clickhouse_db, connection_
     data_api = data_api_v1
     db = clickhouse_db
     columns = [
-        C("int_value", BIType.integer, vg=lambda rn, **kwargs: rn),
-        C("array_int_value", BIType.array_int, vg=lambda rn, **kwargs: [i for i in reversed(range(rn))]),
-        C("array_str_value", BIType.array_str, vg=lambda rn, **kwargs: [str(i) for i in reversed(range(rn))]),
-        C("array_float_value", BIType.array_float, vg=lambda rn, **kwargs: [i / 100.0 for i in reversed(range(rn))]),
+        C("int_value", UserDataType.integer, vg=lambda rn, **kwargs: rn),
+        C("array_int_value", UserDataType.array_int, vg=lambda rn, **kwargs: [i for i in reversed(range(rn))]),
+        C("array_str_value", UserDataType.array_str, vg=lambda rn, **kwargs: [str(i) for i in reversed(range(rn))]),
+        C(
+            "array_float_value",
+            UserDataType.array_float,
+            vg=lambda rn, **kwargs: [i / 100.0 for i in reversed(range(rn))],
+        ),
     ]
     db_table = make_table_with_arrays(db, columns=columns)
     ds = Dataset()

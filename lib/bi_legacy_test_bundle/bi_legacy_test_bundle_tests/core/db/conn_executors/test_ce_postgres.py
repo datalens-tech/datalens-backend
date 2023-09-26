@@ -16,7 +16,7 @@ from bi_legacy_test_bundle_tests.core.db.conn_executors.test_base import (
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from dl_connector_postgresql.core.postgresql.dto import PostgresConnDTO
 from dl_connector_postgresql.core.postgresql_base.connection_executors import PostgresConnExecutor
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.connection_models import (
     ConnDTO,
     SATextTableDefinition,
@@ -55,20 +55,20 @@ class TestPostgresExecutor(BaseSchemaSupportedExecutorSet):
         enum_type.create(bind=db.get_current_connection())
 
         columns_data = [
-            self.CD("my_smallint", pg_types.SMALLINT(), BIType.integer),
-            self.CD("my_integer", pg_types.INTEGER(), BIType.integer),
-            self.CD("my_bigint", pg_types.BIGINT(), BIType.integer),
-            self.CD("my_real", pg_types.REAL(), BIType.float),
-            self.CD("my_double", pg_types.DOUBLE_PRECISION(), BIType.float),
-            self.CD("my_numeric", pg_types.NUMERIC(), BIType.float),
-            self.CD("my_boolean", pg_types.BOOLEAN(), BIType.boolean),
-            self.CD("my_char", pg_types.CHAR(), BIType.string),
-            self.CD("my_varchar", pg_types.VARCHAR(100), BIType.string),
-            self.CD("my_text", pg_types.TEXT(), BIType.string),
-            self.CD("my_date", pg_types.DATE(), BIType.date),
-            self.CD("my_timestamp_notz", pg_types.TIMESTAMP(timezone=False), BIType.genericdatetime),
-            self.CD("my_timestamp_wtz", pg_types.TIMESTAMP(timezone=True), BIType.genericdatetime),
-            self.CD("my_enum", enum_type, BIType.string),
+            self.CD("my_smallint", pg_types.SMALLINT(), UserDataType.integer),
+            self.CD("my_integer", pg_types.INTEGER(), UserDataType.integer),
+            self.CD("my_bigint", pg_types.BIGINT(), UserDataType.integer),
+            self.CD("my_real", pg_types.REAL(), UserDataType.float),
+            self.CD("my_double", pg_types.DOUBLE_PRECISION(), UserDataType.float),
+            self.CD("my_numeric", pg_types.NUMERIC(), UserDataType.float),
+            self.CD("my_boolean", pg_types.BOOLEAN(), UserDataType.boolean),
+            self.CD("my_char", pg_types.CHAR(), UserDataType.string),
+            self.CD("my_varchar", pg_types.VARCHAR(100), UserDataType.string),
+            self.CD("my_text", pg_types.TEXT(), UserDataType.string),
+            self.CD("my_date", pg_types.DATE(), UserDataType.date),
+            self.CD("my_timestamp_notz", pg_types.TIMESTAMP(timezone=False), UserDataType.genericdatetime),
+            self.CD("my_timestamp_wtz", pg_types.TIMESTAMP(timezone=True), UserDataType.genericdatetime),
+            self.CD("my_enum", enum_type, UserDataType.string),
         ]
 
         table = db.table_from_columns(cd.to_sa_col() for cd in columns_data)

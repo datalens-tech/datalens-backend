@@ -8,9 +8,9 @@ import uuid
 
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from dl_constants.enums import (
-    BIType,
     DataSourceRole,
     ManagedBy,
+    UserDataType,
 )
 from dl_core.data_source.collection import DataSourceCollection
 from dl_core.data_source_spec.collection import DataSourceCollectionSpec
@@ -21,8 +21,8 @@ from dl_core.db.elements import SchemaColumn
 def test_resolve_role(saved_ch_connection, default_sync_usm):
     us_manager = default_sync_usm
     default_raw_schema = (
-        SchemaColumn(title="col1", name="name1", user_type=BIType.integer),
-        SchemaColumn(title="col2", name="name2", user_type=BIType.integer),
+        SchemaColumn(title="col1", name="name1", user_type=UserDataType.integer),
+        SchemaColumn(title="col2", name="name2", user_type=UserDataType.integer),
     )
     outdated_raw_schema = default_raw_schema[:1]
     DEFAULT = "__default__"

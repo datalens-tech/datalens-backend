@@ -5,14 +5,14 @@ from dl_connector_bundle_chs3.file.core.constants import (
     CONNECTION_TYPE_FILE,
     SOURCE_TYPE_FILE_S3_TABLE,
 )
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 
 
 class FileS3DataSource(BaseFileS3DataSource):
     conn_type = CONNECTION_TYPE_FILE
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_FILE_S3_TABLE,
         }

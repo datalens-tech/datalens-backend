@@ -57,17 +57,17 @@ from dl_api_client.dsmaker.primitives import (
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
-    BIType,
     CalcMode,
     ComponentErrorLevel,
     ComponentType,
     ConditionPartCalcMode,
-    CreateDSFrom,
+    DataSourceType,
     FieldType,
     JoinConditionType,
     JoinType,
     ManagedBy,
     ParameterValueConstraintType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
@@ -157,22 +157,22 @@ class ValueSchema(OneOfSchemaWithDumpLoadHooks):
     CONTEXT_KEY = "bi_value_type"
     type_field = "type"
     type_schemas = {
-        BIType.string.name: StringValueSchema,
-        BIType.integer.name: IntegerValueSchema,
-        BIType.float.name: FloatValueSchema,
-        BIType.date.name: DateValueSchema,
-        BIType.datetime.name: DateTimeValueSchema,
-        BIType.datetimetz.name: DateTimeTZValueSchema,
-        BIType.genericdatetime.name: GenericDateTimeValueSchema,
-        BIType.boolean.name: BooleanValueSchema,
-        BIType.geopoint.name: GeoPointValueSchema,
-        BIType.geopolygon.name: GeoPolygonValueSchema,
-        BIType.uuid.name: UuidValueSchema,
-        BIType.markup.name: MarkupValueSchema,
-        BIType.array_str.name: ArrayStrValueSchema,
-        BIType.array_int.name: ArrayIntValueSchema,
-        BIType.array_float.name: ArrayFloatValueSchema,
-        BIType.tree_str.name: TreeStrParameterValue,
+        UserDataType.string.name: StringValueSchema,
+        UserDataType.integer.name: IntegerValueSchema,
+        UserDataType.float.name: FloatValueSchema,
+        UserDataType.date.name: DateValueSchema,
+        UserDataType.datetime.name: DateTimeValueSchema,
+        UserDataType.datetimetz.name: DateTimeTZValueSchema,
+        UserDataType.genericdatetime.name: GenericDateTimeValueSchema,
+        UserDataType.boolean.name: BooleanValueSchema,
+        UserDataType.geopoint.name: GeoPointValueSchema,
+        UserDataType.geopolygon.name: GeoPolygonValueSchema,
+        UserDataType.uuid.name: UuidValueSchema,
+        UserDataType.markup.name: MarkupValueSchema,
+        UserDataType.array_str.name: ArrayStrValueSchema,
+        UserDataType.array_int.name: ArrayIntValueSchema,
+        UserDataType.array_float.name: ArrayFloatValueSchema,
+        UserDataType.tree_str.name: TreeStrParameterValue,
     }
 
     @pre_load(pass_many=False)
@@ -227,10 +227,10 @@ class ResultFieldSchema(DefaultSchema[ResultField]):
     hidden = ma_fields.Boolean(load_default=False)
     description = ma_fields.String()
     formula = ma_fields.String(load_default="")
-    initial_data_type = ma_fields.Enum(BIType, allow_none=True)
-    cast = ma_fields.Enum(BIType)
+    initial_data_type = ma_fields.Enum(UserDataType, allow_none=True)
+    cast = ma_fields.Enum(UserDataType)
     type = ma_fields.Enum(FieldType, readonly=True)
-    data_type = ma_fields.Enum(BIType, allow_none=True)
+    data_type = ma_fields.Enum(UserDataType, allow_none=True)
     valid = ma_fields.Boolean(allow_none=True)
     avatar_id = ma_fields.String(allow_none=True)
     aggregation = ma_fields.Enum(AggregationFunction, load_default=AggregationFunction.none.name)
@@ -280,7 +280,7 @@ class ColumnSchema(DefaultSchema[Column]):
     name = ma_fields.String()
     title = ma_fields.String()
     native_type = ma_fields.Dict(allow_none=True)
-    user_type = ma_fields.Enum(BIType)
+    user_type = ma_fields.Enum(UserDataType)
     description = ma_fields.String(dump_default="", allow_none=True)
     has_auto_aggregation = ma_fields.Boolean(dump_default=False, allow_none=True)
     lock_aggregation = ma_fields.Boolean(dump_default=False, allow_none=True)
@@ -293,7 +293,7 @@ class DataSourceSchema(DefaultSchema[DataSource]):
     id = ma_fields.String()
     title = ma_fields.String()
     connection_id = ma_fields.String(allow_none=True)
-    source_type = DynamicEnumField(CreateDSFrom)
+    source_type = DynamicEnumField(DataSourceType)
     raw_schema = ma_fields.Nested(ColumnSchema, allow_none=True, required=False, many=True)
     index_info_set = ma_fields.List(ma_fields.Dict, allow_none=True)
     parameters = ma_fields.Dict()

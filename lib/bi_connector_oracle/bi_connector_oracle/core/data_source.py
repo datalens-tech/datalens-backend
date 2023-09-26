@@ -6,7 +6,7 @@ from typing import (
     Optional,
 )
 
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 from dl_core.data_source.sql import (
     BaseSQLDataSource,
     StandardSchemaSQLDataSource,
@@ -32,7 +32,7 @@ class OracleDataSourceMixin(BaseSQLDataSource):
     conn_type = CONNECTION_TYPE_ORACLE
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in (SOURCE_TYPE_ORACLE_TABLE, SOURCE_TYPE_ORACLE_SUBSELECT)
 
 

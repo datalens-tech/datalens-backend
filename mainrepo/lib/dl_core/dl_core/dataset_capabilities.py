@@ -17,8 +17,8 @@ import attr
 
 from dl_constants.enums import (
     ConnectionType,
-    CreateDSFrom,
     DataSourceRole,
+    DataSourceType,
     JoinType,
     SourceBackendType,
 )
@@ -42,7 +42,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize=200)
-def get_compatible_source_types(source_type: CreateDSFrom) -> FrozenSet[CreateDSFrom]:
+def get_compatible_source_types(source_type: DataSourceType) -> FrozenSet[DataSourceType]:
     """Return frozen set of data source types compatible with ``ds_type``"""
 
     raw_comp_types = frozenset(list_registered_source_types())
@@ -56,7 +56,7 @@ def get_compatible_source_types(source_type: CreateDSFrom) -> FrozenSet[CreateDS
     return frozenset(compat_types)
 
 
-_SOURCE_CONNECTION_COMPATIBILITY: Dict[CreateDSFrom, FrozenSet[ConnectionType]] = {}
+_SOURCE_CONNECTION_COMPATIBILITY: Dict[DataSourceType, FrozenSet[ConnectionType]] = {}
 
 
 def _populate_compatibility_map():  # type: ignore  # TODO: fix
@@ -68,7 +68,7 @@ def _populate_compatibility_map():  # type: ignore  # TODO: fix
 
 
 @lru_cache(maxsize=100)
-def get_conn_types_compatible_with_src_types(source_types: FrozenSet[CreateDSFrom]) -> FrozenSet[ConnectionType]:
+def get_conn_types_compatible_with_src_types(source_types: FrozenSet[DataSourceType]) -> FrozenSet[ConnectionType]:
     if not _SOURCE_CONNECTION_COMPATIBILITY:
         _populate_compatibility_map()
     assert _SOURCE_CONNECTION_COMPATIBILITY
@@ -129,7 +129,7 @@ class DatasetCapabilities:
     def source_can_be_added(
         self,
         connection_id: Optional[str],
-        created_from: CreateDSFrom,
+        created_from: DataSourceType,
         ignore_source_ids: Optional[Collection[str]] = None,
     ) -> bool:
         """
@@ -156,7 +156,7 @@ class DatasetCapabilities:
     def get_compatible_source_types(
         self,
         ignore_source_ids: Optional[Collection[str]] = None,
-    ) -> FrozenSet[CreateDSFrom]:
+    ) -> FrozenSet[DataSourceType]:
         """Return a frozen set of source types compatible with dataset's current state"""
 
         ignore_source_ids = ignore_source_ids or ()

@@ -15,8 +15,8 @@ from bi_external_api.domain.internal.dl_common import (
 )
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
     CalcMode,
+    UserDataType,
 )
 
 
@@ -202,7 +202,7 @@ _AD_HOC_FIELDS_TEST_CASES = [
             formula="[The Num] * 2",
             guid_formula="[num] * 2",
             aggregation=AggregationFunction.none,
-            cast=BIType.float,
+            cast=UserDataType.float,
             **_UPD_CF_DFT_KW,
         ),
     ),
@@ -223,7 +223,7 @@ _AD_HOC_FIELDS_TEST_CASES = [
             formula="[The Num] * 2",
             guid_formula="[num] * 2",
             aggregation=AggregationFunction.none,
-            cast=BIType.float,
+            cast=UserDataType.float,
             **_UPD_CF_DFT_KW,
         ),
     ),
@@ -244,7 +244,7 @@ _AD_HOC_FIELDS_TEST_CASES = [
             formula="",
             guid_formula="",
             aggregation=AggregationFunction.none,
-            cast=BIType.integer,
+            cast=UserDataType.integer,
             **_UPD_CF_DFT_KW,
         ),
     ),

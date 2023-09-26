@@ -21,7 +21,7 @@ from dl_api_connector.api_schema.source_base import (
     DataSourceBaseSchema,
     DataSourceTemplateBaseSchema,
 )
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 
 
 class DataSourceSchema(OneOfSchema):
@@ -65,11 +65,11 @@ class DataSourceTemplateResponseSchema(OneOfSchema):
         return obj[self.type_field].name
 
 
-def register_source_api_schema(source_type: CreateDSFrom, schema_cls: Type[DataSourceBaseSchema]) -> None:
+def register_source_api_schema(source_type: DataSourceType, schema_cls: Type[DataSourceBaseSchema]) -> None:
     DataSourceSchema.type_schemas[source_type.name] = schema_cls
 
 
 def register_source_template_api_schema(
-    source_type: CreateDSFrom, schema_cls: Type[DataSourceTemplateBaseSchema]
+    source_type: DataSourceType, schema_cls: Type[DataSourceTemplateBaseSchema]
 ) -> None:
     DataSourceTemplateResponseSchema.type_schemas[source_type.name] = schema_cls

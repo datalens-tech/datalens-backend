@@ -16,8 +16,8 @@ from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 from dl_connector_snowflake_tests.ext.config import SAMPLE_TABLE_SIMPLIFIED_SCHEMA
 from dl_connector_snowflake_tests.ext.core.base import BaseSnowFlakeTestClass
 from dl_constants.enums import (
-    BIType,
     RawSQLLevel,
+    UserDataType,
 )
 from dl_core_testing.testcases.data_source import DefaultDataSourceTestClass
 
@@ -42,7 +42,7 @@ class TestSnowFlakeTableDataSource(
         )
         return dsrc_spec
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return SAMPLE_TABLE_SIMPLIFIED_SCHEMA
 
 
@@ -66,5 +66,5 @@ class TestSnowFlakeSubselectDataSoure(
         )
         return dsrc_spec
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return SAMPLE_TABLE_SIMPLIFIED_SCHEMA

@@ -29,10 +29,10 @@ from bi_external_api.enums import ExtAPIType
 from bi_external_api.structs.mappings import FrozenStrMapping
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
     CalcMode,
     FieldType,
     ManagedBy,
+    UserDataType,
     WhereClauseOperation,
 )
 
@@ -59,7 +59,7 @@ class AdHocPack:
     def create(
         cls,
         ext_f: ext.DatasetField,
-        data_type: BIType,
+        data_type: UserDataType,
         field_type: FieldType,
         int_agg: AggregationFunction = AggregationFunction.none,
         guid_formula: Optional[str] = None,
@@ -139,7 +139,7 @@ class ChartTestCase:
     def cf_measure_names(self) -> charts.ChartField:
         return charts.ChartField(
             type=charts.DatasetFieldType.PSEUDO,
-            data_type=BIType.string,
+            data_type=UserDataType.string,
             title="Measure Names",
         )
 
@@ -147,7 +147,7 @@ class ChartTestCase:
     def cf_measure_values(self) -> charts.ChartField:
         return charts.ChartField(
             type=charts.DatasetFieldType.PSEUDO,
-            data_type=BIType.float,
+            data_type=UserDataType.float,
             title="Measure Values",
         )
 
@@ -167,7 +167,7 @@ class ChartTestCase:
         cls,
         field_id: str,
         filter_value: list[str],
-        data_type: BIType,
+        data_type: UserDataType,
         field_type: FieldType,
         filter_operation: charts.FilterOperation,
     ) -> charts.FieldFilter:
@@ -258,7 +258,7 @@ class ChartTestCase:
                 cast=ext.FieldType.float,
                 description=None,
             ),
-            data_type=BIType.float,
+            data_type=UserDataType.float,
             field_type=FieldType.MEASURE,
             guid_formula="AVG([amount])",  # since test setup uses same names for field id and title
         )
@@ -273,7 +273,7 @@ class ChartTestCase:
                 cast=ext.FieldType.integer,
                 description=None,
             ),
-            data_type=BIType.integer,
+            data_type=UserDataType.integer,
             field_type=FieldType.MEASURE,
             guid_formula="COUNTD([date])",
         )
@@ -411,7 +411,7 @@ CASES: list[ChartTestCase] = [
                 filter_value=["2023-06-12T00:00:00.000Z"],
                 filter_operation=charts.FilterOperation(WhereClauseOperation.EQ),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.date,
+                data_type=UserDataType.date,
             )
         ],
     ),

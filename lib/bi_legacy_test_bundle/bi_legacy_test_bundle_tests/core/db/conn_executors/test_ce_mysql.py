@@ -7,7 +7,7 @@ from bi_legacy_test_bundle_tests.core.common_ce import (
     BaseConnExecutorSet,
     SelectDataTestSet,
 )
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.connection_executors.common_base import (
     ConnExecutorQuery,
     ExecutionMode,
@@ -44,7 +44,7 @@ class TestMySQLSyncAdapterExecutor(BaseConnExecutorSet):
             db,
             rows=10,
             columns=[
-                C("str_val", BIType.string, sa_type=my_types.VARCHAR(256), vg=lambda rn, **kwargs: str(rn)),
+                C("str_val", UserDataType.string, sa_type=my_types.VARCHAR(256), vg=lambda rn, **kwargs: str(rn)),
             ],
         )
         yield SelectDataTestSet(
@@ -60,28 +60,28 @@ class TestMySQLSyncAdapterExecutor(BaseConnExecutorSet):
     @pytest.fixture()
     def all_supported_types_test_case(self, db):
         columns_data = [
-            self.CD("my_tinyint", my_types.TINYINT(), BIType.integer),
-            self.CD("my_smallint", my_types.SMALLINT(), BIType.integer),
-            self.CD("my_mediumint", my_types.MEDIUMINT(), BIType.integer),
-            self.CD("my_integer", my_types.INTEGER(), BIType.integer),
-            self.CD("my_bigint", my_types.BIGINT(), BIType.integer),
-            self.CD("my_float", my_types.FLOAT(), BIType.float),
-            self.CD("my_double", my_types.DOUBLE(), BIType.float),
-            self.CD("my_numeric", my_types.NUMERIC(), BIType.float, nt_name_str="decimal"),
-            self.CD("my_decimal", my_types.DECIMAL(), BIType.float),
-            self.CD("my_bit", my_types.BIT(1), BIType.boolean),
-            self.CD("my_tinyblob", my_types.TINYBLOB(), BIType.string),
-            self.CD("my_blob", my_types.BLOB(), BIType.string),
-            self.CD("my_binary", my_types.BINARY(), BIType.string),
-            self.CD("my_varbinary", my_types.VARBINARY(100), BIType.string),
-            self.CD("my_char", my_types.CHAR(), BIType.string),
-            self.CD("my_varchar", my_types.VARCHAR(100), BIType.string),
-            self.CD("my_tinytext", my_types.TINYTEXT(), BIType.string),
-            self.CD("my_text", my_types.TEXT(), BIType.string),
-            self.CD("my_date", my_types.DATE(), BIType.date),
-            self.CD("my_timestamp", my_types.TIMESTAMP(), BIType.genericdatetime),
-            self.CD("my_datetime", my_types.DATETIME(), BIType.genericdatetime),
-            self.CD("my_enum", my_types.ENUM("a", "b", "c", name="some_enum"), BIType.string),
+            self.CD("my_tinyint", my_types.TINYINT(), UserDataType.integer),
+            self.CD("my_smallint", my_types.SMALLINT(), UserDataType.integer),
+            self.CD("my_mediumint", my_types.MEDIUMINT(), UserDataType.integer),
+            self.CD("my_integer", my_types.INTEGER(), UserDataType.integer),
+            self.CD("my_bigint", my_types.BIGINT(), UserDataType.integer),
+            self.CD("my_float", my_types.FLOAT(), UserDataType.float),
+            self.CD("my_double", my_types.DOUBLE(), UserDataType.float),
+            self.CD("my_numeric", my_types.NUMERIC(), UserDataType.float, nt_name_str="decimal"),
+            self.CD("my_decimal", my_types.DECIMAL(), UserDataType.float),
+            self.CD("my_bit", my_types.BIT(1), UserDataType.boolean),
+            self.CD("my_tinyblob", my_types.TINYBLOB(), UserDataType.string),
+            self.CD("my_blob", my_types.BLOB(), UserDataType.string),
+            self.CD("my_binary", my_types.BINARY(), UserDataType.string),
+            self.CD("my_varbinary", my_types.VARBINARY(100), UserDataType.string),
+            self.CD("my_char", my_types.CHAR(), UserDataType.string),
+            self.CD("my_varchar", my_types.VARCHAR(100), UserDataType.string),
+            self.CD("my_tinytext", my_types.TINYTEXT(), UserDataType.string),
+            self.CD("my_text", my_types.TEXT(), UserDataType.string),
+            self.CD("my_date", my_types.DATE(), UserDataType.date),
+            self.CD("my_timestamp", my_types.TIMESTAMP(), UserDataType.genericdatetime),
+            self.CD("my_datetime", my_types.DATETIME(), UserDataType.genericdatetime),
+            self.CD("my_enum", my_types.ENUM("a", "b", "c", name="some_enum"), UserDataType.string),
         ]
 
         table = db.table_from_columns(cd.to_sa_col() for cd in columns_data)

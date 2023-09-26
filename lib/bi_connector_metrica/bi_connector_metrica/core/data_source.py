@@ -11,7 +11,7 @@ from typing import (
     Tuple,
 )
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core import exc
 from dl_core.data_source.sql import PseudoSQLDataSource
 from dl_core.db import (
@@ -74,12 +74,12 @@ class MetrikaApiDataSource(PseudoSQLDataSource):
         except StopIteration:
             raise exc.InvalidColumnError("Invalid field name")
 
-        if column.user_type not in (BIType.date, BIType.datetime, BIType.genericdatetime):
+        if column.user_type not in (UserDataType.date, UserDataType.datetime, UserDataType.genericdatetime):
             raise exc.InvalidColumnError("Invalid field for value range")
 
         creation_date = self.connection.data.counter_creation_date
         now = datetime.datetime.utcnow()
-        if column.user_type in (BIType.datetime, BIType.genericdatetime):
+        if column.user_type in (UserDataType.datetime, UserDataType.genericdatetime):
             min_value = datetime.datetime(creation_date.year, creation_date.month, creation_date.day)
             max_value = now
         else:

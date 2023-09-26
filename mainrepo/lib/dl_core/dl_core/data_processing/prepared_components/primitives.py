@@ -11,8 +11,8 @@ from typing import (
 import attr
 
 from dl_constants.enums import (
-    BIType,
     JoinType,
+    UserDataType,
 )
 from dl_core.connectors.base.query_compiler import QueryCompiler
 from dl_core.query.bi_query import SqlSourceType
@@ -69,4 +69,4 @@ class PreparedSingleFromInfo(PreparedFromInfo):
     id: str = attr.ib(kw_only=True)
     alias: str = attr.ib(kw_only=True)
     col_names: Sequence[str] = attr.ib(kw_only=True)
-    user_types: Sequence[BIType] = attr.ib(kw_only=True)
+    user_types: Sequence[UserDataType] = attr.ib(kw_only=True)

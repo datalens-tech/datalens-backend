@@ -1,8 +1,8 @@
 import pytest
 
 from dl_constants.enums import (
-    BIType,
     RawSQLLevel,
+    UserDataType,
 )
 from dl_core.data_source_spec.sql import (
     StandardSchemaSQLDataSourceSpec,
@@ -48,7 +48,7 @@ class TestMSSQLTableDataSource(
         )
         return dsrc_spec
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)
 
 
@@ -72,8 +72,8 @@ class TestMSSQLSubselectDataSource(
         )
         return dsrc_spec
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
-        remapped_types = {BIType.date: BIType.string}
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
+        remapped_types = {UserDataType.date: UserDataType.string}
         expected_schema = [
             # MSSQL cannot identify dates in sub-queries correctly
             (name, remapped_types.get(user_type, user_type))
@@ -109,6 +109,6 @@ class TestMSSQLSubselectByView(
         # representing date/datetime type as a string type.
         if schema_col.native_type.name in ("date", "datetime2", "datetimeoffset"):
             schema_col = schema_col.clone(
-                user_type=BIType.string, native_type=schema_col.native_type.clone(name="nvarchar")
+                user_type=UserDataType.string, native_type=schema_col.native_type.clone(name="nvarchar")
             )
         return schema_col

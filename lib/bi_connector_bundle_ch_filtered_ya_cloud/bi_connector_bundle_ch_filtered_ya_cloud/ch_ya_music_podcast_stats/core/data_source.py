@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from typing import ClassVar
 
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 
 from bi_connector_bundle_ch_filtered.base.core.data_source import ClickHouseTemplatedSubselectDataSource
 from bi_connector_bundle_ch_filtered_ya_cloud.ch_ya_music_podcast_stats.core.constants import (
@@ -25,7 +25,7 @@ class ClickHouseYaMusicPodcastStatsDataSource(ClickHouseTemplatedSubselectDataSo
     conn_type = CONNECTION_TYPE_CH_YA_MUSIC_PODCAST_STATS
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_CH_YA_MUSIC_PODCAST_STATS_TABLE,
         }

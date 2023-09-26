@@ -20,7 +20,7 @@ from bi_external_api.domain.internal.datasets import (
     ResultSchemaField,
     ResultSchemaFieldFull,
 )
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 
 
 @attr.s()
@@ -67,7 +67,7 @@ class ModifiedDatasetFieldResolver:
             )
 
     def get_chart_field(self, id: str) -> charts.ChartField:
-        data_type: Optional[BIType]
+        data_type: Optional[UserDataType]
         field_type: Optional[charts.DatasetFieldType]
         title: str
 
@@ -205,13 +205,13 @@ class MultiDatasetFieldResolver:
         if isinstance(ext_cf_src, ext.MeasureNames):
             return charts.ChartField(
                 type=charts.DatasetFieldType.PSEUDO,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
                 title="Measure Names",
             )
         if isinstance(ext_cf_src, ext.MeasureValues):
             return charts.ChartField(
                 type=charts.DatasetFieldType.PSEUDO,
-                data_type=BIType.float,
+                data_type=UserDataType.float,
                 title="Measure Values",
             )
         raise AssertionError("Unexpected type of chart field source")

@@ -9,8 +9,8 @@ from dl_api_lib.connection_forms.registry import CONN_FORM_FACTORY_BY_TYPE
 from dl_api_lib.enums import BI_TYPE_AGGREGATIONS
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
     ConnectionType,
+    UserDataType,
 )
 
 from bi_connector_yql.core.yq.constants import CONNECTION_TYPE_YQ
@@ -25,13 +25,20 @@ def test_get_field_types_info(client):
     expected = set(
         item.name
         for item in BI_TYPE_AGGREGATIONS
-        if item not in (BIType.uuid, BIType.markup, BIType.datetimetz, BIType.datetime, BIType.unsupported)
+        if item
+        not in (
+            UserDataType.uuid,
+            UserDataType.markup,
+            UserDataType.datetimetz,
+            UserDataType.datetime,
+            UserDataType.unsupported,
+        )
     )
     assert names == expected
 
     for api_record in resp_data["types"]:
         aggs = set(AggregationFunction[x] for x in api_record["aggregations"])
-        expected = set(BI_TYPE_AGGREGATIONS[BIType[api_record["name"]]])
+        expected = set(BI_TYPE_AGGREGATIONS[UserDataType[api_record["name"]]])
         assert aggs == expected
 
 

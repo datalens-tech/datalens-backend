@@ -20,7 +20,7 @@ from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib.enums import DatasetAction
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from dl_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TABLE
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core_testing.database import (
     C,
     Db,
@@ -70,7 +70,7 @@ def _make_dataset_for_replacing(
 
     columns = C.full_house()
     # TODO: fix the uuid column behavior.
-    columns = [col for col in columns if col.user_type != BIType.uuid]
+    columns = [col for col in columns if col.user_type != UserDataType.uuid]
     old_table_1 = make_table(db=old_db, schema=old_schema, name=table_name_1, columns=columns)
     if new_db:
         # with the same name
@@ -209,9 +209,9 @@ def make_dataset_with_tree(
         rows = len(array_data)
 
     columns = [
-        C("const_value", BIType.integer, vg=lambda rn, **kwargs: 0),
-        C("int_value", BIType.integer, vg=lambda rn, **kwargs: rn),
-        C("array_str_value", BIType.tree_str, vg=lambda rn, **kwargs: array_callable(rn)),
+        C("const_value", UserDataType.integer, vg=lambda rn, **kwargs: 0),
+        C("int_value", UserDataType.integer, vg=lambda rn, **kwargs: rn),
+        C("array_str_value", UserDataType.tree_str, vg=lambda rn, **kwargs: array_callable(rn)),
         *additional_columns,
     ]
     db_table = make_table_with_arrays(db, columns=columns, rows=rows)

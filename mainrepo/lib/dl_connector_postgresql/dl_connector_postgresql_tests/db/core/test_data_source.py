@@ -12,8 +12,8 @@ from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPost
 from dl_connector_postgresql_tests.db.config import SUBSELECT_QUERY_FULL
 from dl_connector_postgresql_tests.db.core.base import BasePostgreSQLTestClass
 from dl_constants.enums import (
-    BIType,
     RawSQLLevel,
+    UserDataType,
 )
 from dl_core.data_source_spec.sql import (
     StandardSchemaSQLDataSourceSpec,
@@ -46,7 +46,7 @@ class TestPostgreSQLTableDataSource(
         )
         return dsrc_spec
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)
 
 
@@ -70,7 +70,7 @@ class TestPostgreSQLSubselectDataSource(
         )
         return dsrc_spec
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)
 
 

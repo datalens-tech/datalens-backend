@@ -16,11 +16,11 @@ from dl_api_lib.query.formalization.pivot_legend import (
     PivotMeasureRoleSpec,
 )
 from dl_constants.enums import (
-    BIType,
     FieldRole,
     FieldType,
     PivotItemType,
     PivotRole,
+    UserDataType,
 )
 from dl_query_processing.legend.field_legend import (
     FieldObjSpec,
@@ -48,28 +48,28 @@ def test_data_cell_converter():
                 role_spec=RowRoleSpec(role=FieldRole.row),
                 obj=FieldObjSpec(id="1", title="Category"),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
             LegendItem(
                 legend_item_id=liid_city,
                 role_spec=RowRoleSpec(role=FieldRole.row),
                 obj=FieldObjSpec(id="1", title="City"),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
             LegendItem(
                 legend_item_id=liid_sales,
                 role_spec=RowRoleSpec(role=FieldRole.row),
                 obj=FieldObjSpec(id="1", title="Sales"),
                 field_type=FieldType.MEASURE,
-                data_type=BIType.float,
+                data_type=UserDataType.float,
             ),
             LegendItem(
                 legend_item_id=liid_profit,
                 role_spec=RowRoleSpec(role=FieldRole.row),
                 obj=FieldObjSpec(id="1", title="Profit"),
                 field_type=FieldType.MEASURE,
-                data_type=BIType.float,
+                data_type=UserDataType.float,
             ),
         ],
     )
@@ -537,7 +537,7 @@ def test_data_cell_converter_with_dicts():
                 role_spec=RowRoleSpec(role=FieldRole.row),
                 obj=FieldObjSpec(id="1", title="City"),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
         ],
     )

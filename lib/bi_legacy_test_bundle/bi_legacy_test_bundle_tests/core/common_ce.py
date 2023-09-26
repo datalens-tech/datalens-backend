@@ -22,8 +22,8 @@ from sqlalchemy.sql.type_api import TypeEngine
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_constants.enums import (
-    BIType,
     ConnectionType,
+    UserDataType,
 )
 from dl_core import exc
 from dl_core.connection_executors import (
@@ -210,7 +210,7 @@ class BaseConnExecutorSupport:
                 db,
                 rows=10,
                 columns=[
-                    C("str_val", BIType.string, vg=lambda rn, **kwargs: str(rn)),
+                    C("str_val", UserDataType.string, vg=lambda rn, **kwargs: str(rn)),
                 ],
             )
             yield SelectDataTestSet(
@@ -227,7 +227,7 @@ class BaseConnExecutorSupport:
                 db,
                 rows=10,
                 columns=[
-                    C("str_val", BIType.string, vg=lambda rn, **kwargs: str(rn)),
+                    C("str_val", UserDataType.string, vg=lambda rn, **kwargs: str(rn)),
                 ],
             )
             yield SelectDataTestSet(
@@ -262,7 +262,7 @@ class BaseConnExecutorSupport:
         cn: str
         sa_type: Optional[TypeEngine]
         # Expected data
-        ut_bi_type: BIType
+        ut_bi_type: UserDataType
         ut_nullable: bool = True
         nt_name_str: Optional[str] = None
         nt: Optional[GenericNativeType] = None
@@ -356,7 +356,7 @@ class BaseConnExecutorSupport:
                 TableIdent(table_name="random_table_name", schema_name=None, db_name=None), False
             )
         elif param == "exists":
-            tbl = make_table(db, rows=0, columns=[C("str_val", BIType.integer)])
+            tbl = make_table(db, rows=0, columns=[C("str_val", UserDataType.integer)])
             yield self.TableExistsTestCase(
                 TableIdent(table_name=tbl.name, schema_name=tbl.schema, db_name=tbl.db.name), True
             )

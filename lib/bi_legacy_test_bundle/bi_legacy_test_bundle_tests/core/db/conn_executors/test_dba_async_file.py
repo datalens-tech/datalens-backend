@@ -13,7 +13,7 @@ from dl_api_commons.base_models import RequestContextInfo
 from dl_connector_bundle_chs3.chs3_base.core.adapter import BaseAsyncFileS3Adapter
 from dl_connector_bundle_chs3.chs3_base.core.target_dto import BaseFileS3ConnTargetDTO
 from dl_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core import exc
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core_testing.database import (
@@ -53,8 +53,8 @@ class TestAsyncFileS3Adapter:
             db,
             rows=1000,
             columns=[
-                C(raw_schema[0].name, BIType.string, vg=lambda rn, **kwargs: str(rn)),
-                C(raw_schema[1].name, BIType.integer, vg=lambda rn, **kwargs: rn),
+                C(raw_schema[0].name, UserDataType.string, vg=lambda rn, **kwargs: str(rn)),
+                C(raw_schema[1].name, UserDataType.integer, vg=lambda rn, **kwargs: rn),
             ],
         )
         yield tbl

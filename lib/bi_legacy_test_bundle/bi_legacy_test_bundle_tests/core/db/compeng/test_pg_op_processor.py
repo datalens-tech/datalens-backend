@@ -20,7 +20,7 @@ from dl_compeng_pg.compeng_asyncpg.pool_asyncpg import AsyncpgPoolWrapper
 from dl_compeng_pg.compeng_asyncpg.processor_asyncpg import AsyncpgOperationProcessor
 from dl_compeng_pg.compeng_pg_base.pool_base import BasePgPoolWrapper
 from dl_compeng_pg.compeng_pg_base.processor_base import PostgreSQLOperationProcessor
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.data_processing.processing.operation import (
     CalcOp,
     DownloadOp,
@@ -45,7 +45,7 @@ class PGOpRunnerTestBase:
     @pytest.mark.asyncio
     async def test_upload_calc_calc_download(self, pg_op_processor):
         names = ["int_value", "str_value", "dt_value", "gdt_value"]
-        user_types = [BIType.integer, BIType.string, BIType.datetime, BIType.genericdatetime]
+        user_types = [UserDataType.integer, UserDataType.string, UserDataType.datetime, UserDataType.genericdatetime]
         now = datetime.now(tz=timezone.utc)
         input_data = [
             [
@@ -86,18 +86,18 @@ class PGOpRunnerTestBase:
                             ExpressionCtx(
                                 expression=sa.func.MAX(sa.literal_column(names[0])),
                                 alias="value_1",
-                                user_type=BIType.integer,
+                                user_type=UserDataType.integer,
                             ),
                             ExpressionCtx(
                                 expression=sa.func.MIN(sa.literal_column(names[1])),
                                 alias="value_2",
-                                user_type=BIType.string,
+                                user_type=UserDataType.string,
                             ),
                         ],
                         group_by_expressions=[
                             ExpressionCtx(
                                 expression=(sa.literal_column(names[0]) / 100) * 100,
-                                user_type=BIType.integer,
+                                user_type=UserDataType.integer,
                             ),
                         ],
                     ),
@@ -114,13 +114,13 @@ class PGOpRunnerTestBase:
                                     sa.literal_column("value_2").concat("_").concat(sa.literal_column("value_1"))
                                 ),
                                 alias="combined_value",
-                                user_type=BIType.string,
+                                user_type=UserDataType.string,
                             ),
                         ],
                         order_by_expressions=[
                             OrderByExpressionCtx(
                                 expression=sa.literal_column("value_1"),
-                                user_type=BIType.string,
+                                user_type=UserDataType.string,
                             ),
                         ],
                     ),

@@ -11,9 +11,9 @@ import shortuuid
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
-    BIType,
     FieldType,
     ManagedBy,
+    UserDataType,
 )
 from dl_core.components.dependencies.field_avatar import FieldAvatarDependencyManager
 from dl_core.components.dependencies.field_deep import FieldDeepInterDependencyManager
@@ -67,9 +67,9 @@ def make_direct_field(field_id: FieldId, avatar_id: Optional[AvatarId]) -> BIFie
         title=shortuuid.uuid(),
         type=FieldType.DIMENSION,
         aggregation=AggregationFunction.none,
-        initial_data_type=BIType.integer,
-        cast=BIType.integer,
-        data_type=BIType.integer,
+        initial_data_type=UserDataType.integer,
+        cast=UserDataType.integer,
+        data_type=UserDataType.integer,
         has_auto_aggregation=False,
         lock_aggregation=False,
         valid=True,
@@ -87,9 +87,9 @@ def make_formula_field(field_id: FieldId) -> BIField:
         title=shortuuid.uuid(),
         type=FieldType.DIMENSION,
         aggregation=AggregationFunction.none,
-        initial_data_type=BIType.integer,
-        cast=BIType.integer,
-        data_type=BIType.integer,
+        initial_data_type=UserDataType.integer,
+        cast=UserDataType.integer,
+        data_type=UserDataType.integer,
         has_auto_aggregation=False,
         lock_aggregation=False,
         valid=True,

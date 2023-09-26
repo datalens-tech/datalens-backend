@@ -6,7 +6,7 @@ import pytest
 from dl_api_commons.base_models import RequestContextInfo
 from dl_connector_clickhouse.core.clickhouse.testing.exec_factory import ClickHouseExecutorFactory
 from dl_connector_clickhouse.core.clickhouse_base.adapters import AsyncClickHouseAdapter
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core import exc
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core_testing.database import (
@@ -33,8 +33,8 @@ class TestAsyncClickHouseAdapter:
             db,
             rows=1000,
             columns=[
-                C("str_val", BIType.string, vg=lambda rn, **kwargs: str(rn)),
-                C("int_val", BIType.integer, vg=lambda rn, **kwargs: rn),
+                C("str_val", UserDataType.string, vg=lambda rn, **kwargs: str(rn)),
+                C("int_val", UserDataType.integer, vg=lambda rn, **kwargs: rn),
             ],
         )
         yield tbl

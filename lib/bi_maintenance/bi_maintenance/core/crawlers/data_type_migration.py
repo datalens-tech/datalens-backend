@@ -19,7 +19,7 @@ ALLOWED_CONNECTIONS = ("file", "gsheets_v2")
 
 
 class DataTypeMigrationCrawler(USEntryCrawler, metaclass=abc.ABCMeta):
-    _data_type_map: dict[str, str] = attr.ib(factory=dict)  # usually BIType.name
+    _data_type_map: dict[str, str] = attr.ib(factory=dict)  # usually UserDataType.name
 
 
 @attr.s

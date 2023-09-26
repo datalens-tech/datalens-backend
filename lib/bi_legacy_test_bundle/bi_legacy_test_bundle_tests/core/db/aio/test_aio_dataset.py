@@ -17,9 +17,9 @@ from dl_connector_postgresql.core.postgresql.constants import SOURCE_TYPE_PG_TAB
 from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
 from dl_constants.enums import (
-    BIType,
     DataSourceRole,
     ManagedBy,
+    UserDataType,
 )
 from dl_core import exc
 from dl_core.components.editor import DatasetComponentEditor
@@ -46,7 +46,7 @@ from dl_core_testing.utils import SROptions
 PG_TT = PostgreSQLTypeTransformer()
 
 
-def _make_schema_column(name: str, user_type: BIType) -> SchemaColumn:
+def _make_schema_column(name: str, user_type: UserDataType) -> SchemaColumn:
     return SchemaColumn(
         name=name,
         title=name,
@@ -95,14 +95,14 @@ async def test_dataset_async_select_data(
 
     cg = C.array_data_getter(data)
     columns = [
-        C("date", BIType.date, vg=cg[0]),
-        C("event_code", BIType.string, vg=cg[1]),
-        C("event_count", BIType.integer, vg=cg[2]),
+        C("date", UserDataType.date, vg=cg[0]),
+        C("event_code", UserDataType.string, vg=cg[1]),
+        C("event_count", UserDataType.integer, vg=cg[2]),
     ]
     raw_schema = [
-        _make_schema_column("date", BIType.date),
-        _make_schema_column("event_code", BIType.string),
-        _make_schema_column("event_count", BIType.integer),
+        _make_schema_column("date", UserDataType.date),
+        _make_schema_column("event_code", UserDataType.string),
+        _make_schema_column("event_count", UserDataType.integer),
     ]
 
     orig_table = make_table(
@@ -128,7 +128,7 @@ async def test_dataset_async_select_data(
     ds_editor.add_avatar(avatar_id=avatar_id, source_id=dsrc_id, title="My Avatar")
     await us_manager.save(dataset)
 
-    def make_expr(expression: ClauseElement, alias: str, user_type: BIType) -> ExpressionCtx:
+    def make_expr(expression: ClauseElement, alias: str, user_type: UserDataType) -> ExpressionCtx:
         return ExpressionCtx(
             expression=expression,
             avatar_ids=[avatar_id],
@@ -146,18 +146,18 @@ async def test_dataset_async_select_data(
     await dce.invalidate_all()
     bi_query = BIQuery(
         select_expressions=[
-            make_expr(sa.literal_column("date"), "date", BIType.date),
-            make_expr(sa.literal_column("event_code"), "event_code", BIType.string),
-            make_expr(sa.literal_column("event_count"), "event_count", BIType.integer),
+            make_expr(sa.literal_column("date"), "date", UserDataType.date),
+            make_expr(sa.literal_column("event_code"), "event_code", UserDataType.string),
+            make_expr(sa.literal_column("event_count"), "event_count", UserDataType.integer),
         ],
         order_by_expressions=[
             attrs_evolve_to_subclass(
                 cls=OrderByExpressionCtx,
-                inst=make_expr(sa.literal_column("date"), "date", BIType.date),
+                inst=make_expr(sa.literal_column("date"), "date", UserDataType.date),
             ),
             attrs_evolve_to_subclass(
                 cls=OrderByExpressionCtx,
-                inst=make_expr(sa.literal_column("event_code"), "event_code", BIType.string),
+                inst=make_expr(sa.literal_column("event_code"), "event_code", UserDataType.string),
             ),
         ],
     )

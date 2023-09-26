@@ -11,7 +11,7 @@ from multidict import CIMultiDict
 import pytest
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.database import (
     C,
@@ -65,7 +65,7 @@ class CHYTTestSetup(BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):
         # FIXME: Do this via a "smart" dispenser
         columns = [
             # Note: dates are stored as strings
-            C(name=name, user_type=user_type if user_type != BIType.date else BIType.string)
+            C(name=name, user_type=user_type if user_type != UserDataType.date else UserDataType.string)
             for name, user_type in TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema
         ]
         return make_table(

@@ -10,8 +10,8 @@ from botocore.exceptions import ClientError
 import pytest
 
 from dl_constants.enums import (
-    BIType,
     FileProcessingStatus,
+    UserDataType,
 )
 from dl_file_uploader_lib import exc
 from dl_file_uploader_lib.enums import (
@@ -69,11 +69,11 @@ async def test_parse_file_task(
     assert dsrc.status == FileProcessingStatus.ready
     assert dsrc.title == "test_file.csv"
     assert [sch.user_type for sch in dsrc.raw_schema] == [
-        BIType.string,
-        BIType.integer,
-        BIType.float,
-        BIType.date,
-        BIType.genericdatetime,
+        UserDataType.string,
+        UserDataType.integer,
+        UserDataType.float,
+        UserDataType.date,
+        UserDataType.genericdatetime,
     ]
     assert [sch.name for sch in dsrc.raw_schema] == ["f1", "f2", "f3", "data", "data_i_vremya"]
     assert [sch.title for sch in dsrc.raw_schema] == ["f1", "f2", "f3", "Дата", "Дата и время"]

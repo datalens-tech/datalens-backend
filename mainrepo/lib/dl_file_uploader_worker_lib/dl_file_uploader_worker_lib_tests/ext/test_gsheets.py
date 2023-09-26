@@ -7,8 +7,8 @@ import pytest
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from dl_constants.enums import (
-    BIType,
     FileProcessingStatus,
+    UserDataType,
 )
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core_testing.connection import make_conn_key
@@ -37,13 +37,13 @@ from dl_task_processor.state import wait_task
 LOGGER = logging.getLogger(__name__)
 
 
-# BIType aliases
-STR = BIType.string
-INT = BIType.integer
-F = BIType.float
-D = BIType.date
-DT = BIType.genericdatetime
-B = BIType.boolean
+# UserDataType aliases
+STR = UserDataType.string
+INT = UserDataType.integer
+F = UserDataType.float
+D = UserDataType.date
+DT = UserDataType.genericdatetime
+B = UserDataType.boolean
 
 SPREADHEET_ID = "1rnUFa7AiSKD5O80IKCvMy2cSZvLU1kRw9dxbtZbDMWc"
 
@@ -252,14 +252,14 @@ async def test_download_gsheet_task(
     elaborate_source = df.sources[TEST_SHEET_TITLES_INDICES["elaborate"]]
     actual_user_types = [col.user_type for col in elaborate_source.raw_schema]
     expected_user_types = [
-        BIType.integer,
-        BIType.date,
-        BIType.float,
-        BIType.string,
-        BIType.boolean,
-        BIType.genericdatetime,
-        BIType.string,
-        BIType.string,
+        UserDataType.integer,
+        UserDataType.date,
+        UserDataType.float,
+        UserDataType.string,
+        UserDataType.boolean,
+        UserDataType.genericdatetime,
+        UserDataType.string,
+        UserDataType.string,
     ]
     assert actual_user_types == expected_user_types
 
@@ -291,7 +291,7 @@ async def test_parse_gsheet(
     assert elaborate_source_no_types.status == FileProcessingStatus.ready
 
     actual_user_types = [col.user_type for col in elaborate_source_no_types.raw_schema]
-    expected_user_types = [BIType.string] * 10
+    expected_user_types = [UserDataType.string] * 10
     assert actual_user_types == expected_user_types
 
     preview = await DataSourcePreview.get(manager=redis_model_manager, obj_id=elaborate_source_no_types.preview_id)
@@ -384,7 +384,7 @@ async def assert_parsing_results(
     assert file_source_settings.first_line_is_header == has_header_expected
     if not has_header_expected:
         # mixed header => everything is string
-        assert all(col.user_type == BIType.string for col in dsrc.raw_schema)
+        assert all(col.user_type == UserDataType.string for col in dsrc.raw_schema)
         assert len(preview.preview_data) == sheet_len
     else:
         # set header => correct type

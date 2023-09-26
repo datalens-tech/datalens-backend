@@ -9,7 +9,7 @@ import pytest
 import shortuuid
 from sqlalchemy.types import TypeEngine
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.connection_models.common_models import (
     DBIdent,
     TableIdent,
@@ -50,5 +50,5 @@ class CHYTCommonSyncAsyncConnectionExecutorCheckBase(
     def check_db_version(self, db_version: Optional[str]) -> None:
         pass
 
-    def get_schemas_for_type_recognition(self) -> dict[str, Sequence[tuple[TypeEngine, BIType]]]:
+    def get_schemas_for_type_recognition(self) -> dict[str, Sequence[tuple[TypeEngine, UserDataType]]]:
         return {}
