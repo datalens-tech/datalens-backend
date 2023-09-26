@@ -20,6 +20,7 @@ locals {
       },
       cloud_api_endpoint = var.cloud_api_endpoint
       use_internal_ca    = var.use_internal_ca
+      network_policy     = var.network_policy
     },
     var.upload_fqdn == null ? {} : {
       uploadBalancer = {

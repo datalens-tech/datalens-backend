@@ -42,4 +42,6 @@ module "integration_tests" {
   us_lb_main_base_url = var.us_host
 
   sa_secrets_lockbox_id = var.integration_tests_sa_secrets_lockbox_id
+
+  network_policy = module.constants.env_data.k8s_use_cilium
 }

@@ -80,3 +80,7 @@ variable "us_lb_main_base_url" {
 variable "sa_secrets_lockbox_id" {
   type = string
 }
+
+variable "network_policy" {
+  type = bool
+}
