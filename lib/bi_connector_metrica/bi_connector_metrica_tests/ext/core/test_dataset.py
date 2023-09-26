@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pytest
 import sqlalchemy as sa
 from sqlalchemy_metrika_api.api_info.appmetrica import AppMetricaFieldsNamespaces
@@ -45,6 +47,7 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
     test_params = RegulatedTestParams(
         mark_tests_failed={
             DefaultDatasetTestSuite.test_get_param_hash: "",  # TODO: FIXME
+            DefaultDatasetTestSuite.test_simple_select_from_subquery: "Not allowed for Metrica",
         },
     )
 
@@ -54,22 +57,18 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
             db_name=MetrikaApiCounterSource.hits.name,
         )
 
-    def test_get_param_hash(self):
-        pytest.skip()  # FIXME
-
-    def test_simple_select(self):
-        pytest.skip()  # FIXME
-
-    def test_simple_select_from_subquery(self):
-        pytest.skip()  # FIXME
-
-    def test_select_data(
+    def _check_simple_select(
         self,
         dataset_wrapper: DatasetTestWrapper,
         saved_dataset: Dataset,
-        conn_async_service_registry: ServicesRegistry,
+        async_service_registry: ServicesRegistry,
         sync_us_manager: SyncUSManager,
+        result_cnt: int,
+        limit: Optional[int] = None,
+        from_subquery: bool = False,
+        subquery_limit: Optional[int] = None,
     ) -> None:
+        assert limit is not None or (from_subquery and subquery_limit is not None)
         avatar_id = dataset_wrapper.get_root_avatar_strict().id
         bi_query = BIQuery(
             select_expressions=[
@@ -100,15 +99,18 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
                     user_type=UserDataType.datetime,
                 ),
             ],
+            limit=limit,
         )
 
         data = self.fetch_data(
             saved_dataset=saved_dataset,
-            service_registry=conn_async_service_registry,
+            service_registry=async_service_registry,
             sync_us_manager=sync_us_manager,
             bi_query=bi_query,
+            from_subquery=from_subquery,
+            subquery_limit=subquery_limit,
         )
-        assert len(list(data.data)) > 1
+        assert len(list(data.data)) == result_cnt
 
     def test_select_data_distinct(
         self,
@@ -235,6 +237,7 @@ class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[App
     test_params = RegulatedTestParams(
         mark_tests_failed={
             DefaultDatasetTestSuite.test_get_param_hash: "",  # TODO: FIXME
+            DefaultDatasetTestSuite.test_simple_select_from_subquery: "Not allowed for AppMetrica",
         },
     )
 
@@ -244,30 +247,28 @@ class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[App
             db_name=AppMetricaFieldsNamespaces.installs.name,
         )
 
-    def test_get_param_hash(self):
-        pytest.skip()  # FIXME
-
-    def test_simple_select(self):
-        pytest.skip()  # FIXME
-
-    def test_simple_select_from_subquery(self):
-        pytest.skip()  # FIXME
-
-    def test_select_data(
+    def _check_simple_select(
         self,
         dataset_wrapper: DatasetTestWrapper,
         saved_dataset: Dataset,
-        conn_async_service_registry: ServicesRegistry,
+        async_service_registry: ServicesRegistry,
         sync_us_manager: SyncUSManager,
+        result_cnt: int,
+        limit: Optional[int] = None,
+        from_subquery: bool = False,
+        subquery_limit: Optional[int] = None,
     ) -> None:
+        assert limit is not None or (from_subquery and subquery_limit is not None)
         avatar_id = dataset_wrapper.get_root_avatar_strict().id
         bi_query = BIQuery(
             select_expressions=[
                 ExpressionCtx(
-                    expression=sa.literal_column(dataset_wrapper.quote("ym:ts:date", role=DataSourceRole.origin)),
+                    expression=sa.literal_column(
+                        dataset_wrapper.quote("ym:ts:regionCityName", role=DataSourceRole.origin)
+                    ),
                     avatar_ids=[avatar_id],
                     alias="col1",
-                    user_type=UserDataType.datetime,
+                    user_type=UserDataType.string,
                 ),  # is a dimension
                 ExpressionCtx(
                     expression=sa.literal_column(
@@ -280,18 +281,23 @@ class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[App
             ],
             group_by_expressions=[
                 ExpressionCtx(
-                    expression=sa.literal_column(dataset_wrapper.quote("ym:ts:date", role=DataSourceRole.origin)),
+                    expression=sa.literal_column(
+                        dataset_wrapper.quote("ym:ts:regionCityName", role=DataSourceRole.origin)
+                    ),
                     avatar_ids=[avatar_id],
                     alias="col1",
-                    user_type=UserDataType.datetime,
+                    user_type=UserDataType.string,
                 ),
             ],
+            limit=limit,
         )
 
         data = self.fetch_data(
             saved_dataset=saved_dataset,
-            service_registry=conn_async_service_registry,
+            service_registry=async_service_registry,
             sync_us_manager=sync_us_manager,
             bi_query=bi_query,
+            from_subquery=from_subquery,
+            subquery_limit=subquery_limit,
         )
-        assert len(list(data.data)) > 1
+        assert len(list(data.data)) == result_cnt

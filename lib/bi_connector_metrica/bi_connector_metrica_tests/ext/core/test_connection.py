@@ -3,6 +3,7 @@ from sqlalchemy_metrika_api.api_info.metrika import MetrikaApiCounterSource
 from dl_core.us_connection_base import DataSourceTemplate
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
+from dl_testing.regulated_test import RegulatedTestParams
 
 from bi_connector_metrica.core.constants import SOURCE_TYPE_METRICA_API
 from bi_connector_metrica.core.us_connection import MetrikaApiConnection
@@ -10,11 +11,13 @@ from bi_connector_metrica_tests.ext.core.base import BaseMetricaTestClass
 
 
 class TestMetricaConnection(BaseMetricaTestClass, DefaultConnectionTestClass[MetrikaApiConnection]):
-    def check_saved_connection(self, conn: MetrikaApiConnection, params: dict) -> None:
-        pass
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultConnectionTestClass.test_connection_test: "in Metrica, you can't run constant queries like SELECT 1",
+        }
+    )
 
-    def test_connection_test(self, saved_connection: MetrikaApiConnection) -> None:
-        # in Metrica, you can't run constant queries like SELECT 1
+    def check_saved_connection(self, conn: MetrikaApiConnection, params: dict) -> None:
         pass
 
     def test_make_connection(
