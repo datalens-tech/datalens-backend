@@ -27,4 +27,5 @@ TABLE_SPEC_SAMPLE_SUPERSTORE = FixtureTableSpec(
         ("state", UserDataType.string),
         ("sub_category", UserDataType.string),
     ),
+    nullable=False,
 )

@@ -65,6 +65,7 @@ class CsvTableDumper:
         raw_csv_data: str,
         table_schema: Sequence[tuple[str, UserDataType]],
         table_name_prefix: Optional[str] = None,
+        nullable: bool = True,
     ) -> DbTable:
         table_name_prefix = table_name_prefix or "table_"
         if not table_name_prefix.endswith("_"):
@@ -81,7 +82,7 @@ class CsvTableDumper:
             return _value_gen
 
         columns = [
-            C(name=name, user_type=user_type, vg=_value_gen_factory(_col_idx=col_idx))  # type: ignore
+            C(name=name, user_type=user_type, vg=_value_gen_factory(_col_idx=col_idx), nullable=nullable)  # type: ignore
             for col_idx, (name, user_type) in enumerate(table_schema)
         ]
 

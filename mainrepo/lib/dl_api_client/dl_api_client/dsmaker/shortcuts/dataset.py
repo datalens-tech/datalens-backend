@@ -17,7 +17,7 @@ from dl_api_client.dsmaker.primitives import (
 
 def _add_anything_to_dataset(
     *,
-    api_v1: SyncHttpDatasetApiV1,
+    control_api: SyncHttpDatasetApiV1,
     dataset: Optional[Dataset] = None,
     dataset_id: Optional[str] = None,
     updater: Callable[[Dataset], Dataset],
@@ -26,25 +26,25 @@ def _add_anything_to_dataset(
 ) -> Dataset:
     if dataset is None:
         assert dataset_id is not None
-        ds = api_v1.load_dataset(dataset=Dataset(id=dataset_id)).dataset
+        ds = control_api.load_dataset(dataset=Dataset(id=dataset_id)).dataset
     else:
         ds = dataset
 
     ds = updater(ds)
 
-    ds_resp = api_v1.apply_updates(dataset=ds, fail_ok=True)
+    ds_resp = control_api.apply_updates(dataset=ds, fail_ok=True)
     assert ds_resp.status_code == exp_status, ds_resp.response_errors
     ds = ds_resp.dataset
 
     if save:
-        ds = api_v1.save_dataset(ds).dataset
+        ds = control_api.save_dataset(ds).dataset
 
     return ds
 
 
 def add_formulas_to_dataset(
     *,
-    api_v1: SyncHttpDatasetApiV1,
+    api_v1: SyncHttpDatasetApiV1,  # FIXME: Rename to control_api
     dataset: Optional[Dataset] = None,
     dataset_id: Optional[str] = None,
     formulas: Dict[str, str],
@@ -57,7 +57,7 @@ def add_formulas_to_dataset(
         return ds
 
     return _add_anything_to_dataset(
-        api_v1=api_v1,
+        control_api=api_v1,
         dataset=dataset,
         dataset_id=dataset_id,
         updater=_add_formulas,
@@ -68,7 +68,7 @@ def add_formulas_to_dataset(
 
 def add_parameters_to_dataset(
     *,
-    api_v1: SyncHttpDatasetApiV1,
+    api_v1: SyncHttpDatasetApiV1,  # FIXME: Rename to control_api
     dataset: Optional[Dataset] = None,
     dataset_id: Optional[str] = None,
     parameters: Dict[str, Tuple[ParameterValue, Optional[ParameterValueConstraint]]],
@@ -83,7 +83,7 @@ def add_parameters_to_dataset(
         return ds
 
     return _add_anything_to_dataset(
-        api_v1=api_v1,
+        control_api=api_v1,
         dataset=dataset,
         dataset_id=dataset_id,
         updater=_add_parameters,
@@ -94,7 +94,7 @@ def add_parameters_to_dataset(
 
 def create_basic_dataset(
     *,
-    api_v1: SyncHttpDatasetApiV1,
+    api_v1: SyncHttpDatasetApiV1,  # FIXME: Rename to control_api
     connection_id: str,
     data_source_settings: Dict[str, Any],
     formulas: Optional[Dict[str, str]] = None,
