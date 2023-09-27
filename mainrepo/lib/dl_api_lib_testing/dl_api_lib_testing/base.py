@@ -5,7 +5,6 @@ from typing import (
     ClassVar,
     Generator,
     Optional,
-    Type,
 )
 
 from flask.app import Flask
@@ -51,7 +50,6 @@ class ApiTestBase(abc.ABC):
     Base class defining the basic fixtures of bi-api tests
     """
 
-    control_api_app_factory_cls: ClassVar[Type[ControlApiAppFactory]] = TestingControlApiAppFactory
     bi_compeng_pg_on: ClassVar[bool] = True
 
     @pytest.fixture(scope="function", autouse=True)
@@ -137,7 +135,7 @@ class ApiTestBase(abc.ABC):
 
     @pytest.fixture(scope="function")
     def control_api_app_factory(self, control_api_app_settings: ControlApiAppSettings) -> ControlApiAppFactory:
-        return self.control_api_app_factory_cls(settings=control_api_app_settings)
+        return TestingControlApiAppFactory(settings=control_api_app_settings)
 
     @pytest.fixture(scope="function")
     def control_api_app(

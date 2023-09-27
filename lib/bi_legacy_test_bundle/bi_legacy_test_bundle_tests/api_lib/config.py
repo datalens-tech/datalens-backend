@@ -171,7 +171,6 @@ _CONNECTOR_WHITELIST = [
     "appmetrica_api",
     "ch_billing_analytics",
     "monitoring",
-    "solomon",
     "usage_tracking",
     "bitrix_gds",
     "ch_ya_music_podcast_stats",

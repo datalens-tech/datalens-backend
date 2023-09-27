@@ -2,7 +2,6 @@ params:
   BITRIX_TOKEN: {getter: $osenv, key: BITRIX_TOKEN}
   BITRIX_PARTNERS_TOKEN: { getter: $osenv, key: BITRIX_PARTNERS_TOKEN }
   BITRIX_DATALENS_TOKEN: { getter: $osenv, key: BITRIX_DATALENS_TOKEN }
-  ROBOT_STATBOX_KAPPA_PASSWORD: {getter: $osenv, key: ROBOT_STATBOX_KAPPA_PASSWORD}
   YQ_CLOUD_PREPROD_SVCACC_KEY_DATA: {getter: $osenv, key: YQ_CLOUD_PREPROD_SVCACC_KEY_DATA}
   METRIKA_OAUTH: {getter: $osenv, key: METRIKA_OAUTH}
   YT_OAUTH: {getter: $osenv, key: YT_OAUTH}

@@ -1,9 +1,7 @@
 import abc
 from typing import (
     Any,
-    ClassVar,
     Generator,
-    Type,
 )
 
 import pytest
@@ -18,17 +16,20 @@ from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 from bi_defaults.yenv_type import AppType
 from bi_testing_ya.iam_mock import apply_iam_services_mock
 from dl_api_lib.app.control_api.app import ControlApiAppFactory
+from dl_api_lib.app_settings import ControlApiAppSettings
 from dl_api_lib_testing.base import ApiTestBase
 from dl_configs.rqe import RQEConfig
 from dl_core.utils import attrs_evolve_to_subclass
 
 
 class ApiTestPrivateBase(ApiTestBase, abc.ABC):
-    control_api_app_factory_cls: ClassVar[Type[ControlApiAppFactory]] = TestingControlApiAppFactoryPrivate
-
     @pytest.fixture(scope="function")
     def iam_services_mock(self, monkeypatch: Any) -> Generator[IAMServicesMockFacade, None, None]:
         yield from apply_iam_services_mock(monkeypatch)
+
+    @pytest.fixture(scope="function")
+    def control_api_app_factory(self, control_api_app_settings: ControlApiAppSettings) -> ControlApiAppFactory:
+        return TestingControlApiAppFactoryPrivate(settings=control_api_app_settings)
 
     @pytest.fixture(scope="function")
     def control_api_app_settings(  # type: ignore[override]

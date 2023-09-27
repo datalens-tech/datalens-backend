@@ -45,7 +45,10 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-
+#[datalens.pytest.ext]
+#root_dir = "bi_connector_solomon_tests/"
+#target_path = "ext"
+#labels = ["ext"]
 
 [datalens.pytest.unit]
 root_dir = "bi_connector_solomon_tests/"

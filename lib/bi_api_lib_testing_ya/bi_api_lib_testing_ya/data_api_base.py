@@ -1,8 +1,4 @@
 import abc
-from typing import (
-    ClassVar,
-    Type,
-)
 
 import pytest
 
@@ -16,13 +12,16 @@ from bi_api_lib_ya.app_settings import (
 from bi_cloud_integration.iam_mock import IAMServicesMockFacade
 from bi_defaults.yenv_type import AppType
 from dl_api_lib.app.data_api.app import DataApiAppFactory
+from dl_api_lib.app_settings import DataApiAppSettings
 from dl_api_lib_testing.data_api_base import DataApiTestBase
 from dl_configs.rqe import RQEConfig
 from dl_core.utils import attrs_evolve_to_subclass
 
 
 class DataApiTestPrivateBase(DataApiTestBase, ApiTestPrivateBase, metaclass=abc.ABCMeta):
-    data_api_app_factory_cls: ClassVar[Type[DataApiAppFactory]] = TestingDataApiAppFactoryPrivate
+    @pytest.fixture(scope="function")
+    def data_api_app_factory(self, data_api_app_settings: DataApiAppSettings) -> DataApiAppFactory:
+        return TestingDataApiAppFactoryPrivate(settings=data_api_app_settings)
 
     @pytest.fixture(scope="function")
     def data_api_app_settings(  # type: ignore[override]

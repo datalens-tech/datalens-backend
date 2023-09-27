@@ -39,25 +39,6 @@ def yt_token(env_param_getter):
     return env_param_getter.get_str_value("YT_OAUTH")
 
 
-@pytest.fixture(scope="session")
-def int_cookie(env_param_getter):
-    import requests
-
-    password = env_param_getter.get_str_value("ROBOT_STATBOX_KAPPA_PASSWORD")
-
-    url = "https://passport.yandex-team.ru/auth"
-    payload = f"login=robot-statbox-kappa&passwd={password}"
-    headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
-    }
-
-    with requests.Session() as s:
-        s.request("POST", url, headers=headers, data=payload)
-        cookies = s.cookies.get_dict()
-
-    return "; ".join(f"{k}={v}" for k, v in cookies.items())
-
-
 @pytest.fixture
 def tvm_info(tvm_secret_reader):
     tvm_info_str = tvm_secret_reader.get_tvm_info_str()
@@ -95,16 +76,6 @@ def public_ch_over_yt_user_auth_headers(app, yt_token):
     }
 
 
-@pytest.fixture
-def solomon_connection_params(app):
-    return dict(
-        type="solomon",
-        dir_path="tests/connections",
-        name="solomon_{}".format(get_random_str()),
-        host="solomon.yandex.net",
-    )
-
-
 def _get_public_ch_over_yt_connection_id(app, client, connection_params, request):
     resp = client.post("/api/v1/connections", data=json.dumps(connection_params), content_type="application/json")
     assert resp.status_code == 200, resp.json
@@ -137,23 +108,6 @@ def _get_public_ch_over_yt_second_connection_id(app, client, connection_params, 
         # token (some second token)
     )
     resp = client.post("/api/v1/connections", data=json.dumps(params), content_type="application/json")
-    assert resp.status_code == 200, resp.json
-    conn_id = resp.json["id"]
-
-    def teardown():
-        client.delete("/api/v1/connections/{}".format(conn_id))
-
-    request.addfinalizer(teardown)
-
-    return conn_id
-
-
-@pytest.fixture(scope="function")
-def solomon_subselectable_connection_id(app, client, request, solomon_connection_params):
-    resp = client.post(
-        "/api/v1/connections", data=json.dumps(solomon_connection_params), content_type="application/json"
-    )
-
     assert resp.status_code == 200, resp.json
     conn_id = resp.json["id"]
 

@@ -1,0 +1,3 @@
+params:
+  ROBOT_STATBOX_KAPPA_PASSWORD: {getter: $osenv, key: ROBOT_STATBOX_KAPPA_PASSWORD}
+  TVM_CLIENT_SECRET: {getter: $osenv, key: TVM_CLIENT_SECRET}  # sec-01ec8d1x4ckxq3h1byrh7wk5ax
