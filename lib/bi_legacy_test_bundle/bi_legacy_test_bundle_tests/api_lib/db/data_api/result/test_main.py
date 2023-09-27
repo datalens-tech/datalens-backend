@@ -146,47 +146,6 @@ def test_incomplete_field_ref(client, data_api_v2, static_dataset_id, ref_type):
     }
 
 
-def test_calcmode_formula_without_formula_field(client, data_api_v1_5, static_dataset_id):
-    dataset_id = static_dataset_id
-
-    guid = str(uuid.uuid4())
-    batch = [
-        {
-            "action": "add_field",
-            "field": {
-                "guid": guid,
-                "title": "abc",
-                "calc_mode": "formula",
-                "description": "",
-                "strict": False,
-                "hidden": False,
-                "cast": "float",
-            },
-        }
-    ]
-    req_data = {
-        "fields": [
-            {
-                "ref": {
-                    "type": "id",
-                    "id": guid,
-                },
-            }
-        ],
-        "updates": batch,
-    }
-
-    r = data_api_v1_5.get_response_for_dataset_result(dataset_id=dataset_id, raw_body=req_data)
-
-    assert r.status_code == 400
-    assert r.json == {
-        "code": "ERR.DS_API.FORMULA.PARSE.UNEXPECTED_EOF.EMPTY_FORMULA",
-        "debug": {},
-        "details": {},
-        "message": "Empty formula",
-    }
-
-
 def test_get_dataset_version_result_field_with_dependencies(api_v1, data_api_all_v, static_dataset_id):
     data_api = data_api_all_v
     ds = api_v1.load_dataset(dataset=Dataset(id=static_dataset_id)).dataset
@@ -406,14 +365,6 @@ def test_get_result_filtered_by_measure_of_formula(client, data_api_v1, static_d
     r = data_api_v1.get_response_for_dataset_result(dataset_id=dataset_id, raw_body=req_data)
 
     assert r.status_code == 200
-
-
-def test_get_nonexisting_field(data_api_v1, static_dataset_id):
-    dataset_id = static_dataset_id
-    random_uuid = str(uuid.uuid4())
-    r = data_api_v1.get_response_for_dataset_result(dataset_id=dataset_id, raw_body={"columns": [random_uuid]})
-    assert r.status_code == HTTPStatus.BAD_REQUEST
-    assert r.json["code"] == "ERR.DS_API.FIELD.NOT_FOUND"
 
 
 def test_filter_by_nonexistent_field(client, data_api_v1, static_dataset_id):
@@ -755,13 +706,6 @@ def test_ch_parameterized_function_in_query(api_v1, data_api_v1, dataset_id):
     result_data = result_resp.data
     data_rows = result_data["Data"]
     assert len(data_rows) > 1
-
-
-def test_empty_query(api_v1, data_api_v1, dataset_id):
-    ds = api_v1.load_dataset(dataset=Dataset(id=dataset_id)).dataset
-    result_resp = data_api_v1.get_result(dataset=ds, fields=[], group_by=[], fail_ok=True)
-    assert result_resp.status_code == HTTPStatus.BAD_REQUEST
-    assert result_resp.bi_status_code == "ERR.DS_API.EMPTY_QUERY"
 
 
 def test_join_optimization(connection_id, api_v1, data_api_v1, two_clickhouse_tables_w_const_columns):

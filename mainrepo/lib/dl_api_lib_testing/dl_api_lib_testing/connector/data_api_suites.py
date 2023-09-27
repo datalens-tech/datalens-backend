@@ -6,7 +6,10 @@ import pytest
 
 from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
-from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import (
+    Dataset,
+    WhereClause,
+)
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib_testing.data_api_base import (
     DataApiTestParams,
@@ -319,6 +322,28 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, Regulat
         ds = saved_dataset
 
         distinct_resp = self.get_distinct(ds, data_api, field_name=data_api_test_params.distinct_field)
+        distinct_rows = get_data_rows(distinct_resp)
+        min_distinct_row_cnt = 10  # just an arbitrary number
+        assert len(distinct_rows) > min_distinct_row_cnt
+        values = [row[0] for row in distinct_rows]
+        assert len(set(values)) == len(values), "Values are not unique"
+
+    def test_distinct_with_nonexistent_filter(
+        self,
+        saved_dataset: Dataset,
+        data_api_test_params: DataApiTestParams,
+        data_api: SyncHttpDataApiV2,
+    ) -> None:
+        ds = saved_dataset
+
+        distinct_resp = data_api.get_distinct(
+            dataset=ds,
+            field=ds.find_field(title=data_api_test_params.distinct_field),
+            filters=[WhereClause(column="idontexist", operation=WhereClauseOperation.EQ, values=[0])],
+            ignore_nonexistent_filters=True,
+        )
+        assert distinct_resp.status_code == 200, distinct_resp.json
+
         distinct_rows = get_data_rows(distinct_resp)
         min_distinct_row_cnt = 10  # just an arbitrary number
         assert len(distinct_rows) > min_distinct_row_cnt
