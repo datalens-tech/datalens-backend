@@ -4,7 +4,7 @@ app:
 docker_images_info:
   bi_api:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-api-tier-1
-    tag: "0.2001.0"
+    tag: "0.2041.0"
   control_api:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/yc-control-api
   data_api:
@@ -21,13 +21,13 @@ docker_images_info:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-rqe-ext-sync
   dls:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/yc-dls
-    tag: "1.287"
+    tag: "1.288"
   file_uploader_api:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/yc-file-uploader-api
-    tag: "0.115.0"
+    tag: "0.2041.0"
   file_uploader_worker:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/yc-file-uploader-worker
-    tag: "0.144.0"
+    tag: "0.2041.0"
   file_secure_reader:
     repo: cr.cloud-preprod.yandex.net/crta0bkj59h30lbm28vu/bi-file-secure-reader
     tag: "0.14.0"
