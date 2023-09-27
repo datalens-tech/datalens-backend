@@ -39,8 +39,6 @@ from dl_query_processing.utils.datetime import parse_datetime
 
 LOGGER = logging.getLogger(__name__)
 
-USE_DATE_TO_DATETIME_CONV = os.environ.get("USE_DATE_TO_DATETIME_CONV", "1") == "1"
-
 
 _FILTER_PARAMS_TV = TypeVar("_FILTER_PARAMS_TV", bound="FilterParams")
 
@@ -404,6 +402,5 @@ class MainFilterFormulaCompiler(FilterFormulaCompiler):
     def _custom_filter_cast(self, filter_params: FilterParams) -> FilterParams:
         filter_params = self._mangle_containment_filter(filter_params)
         filter_params = self._mangle_array_filter(filter_params)
-        if USE_DATE_TO_DATETIME_CONV:
-            filter_params = self._mangle_date_filter(filter_params)
+        filter_params = self._mangle_date_filter(filter_params)
         return filter_params

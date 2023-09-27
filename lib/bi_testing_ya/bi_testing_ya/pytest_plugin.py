@@ -88,18 +88,6 @@ def secret_datalens_test_data(dl_env: DLEnv) -> dict[str, Any]:
     return get_secret(DATALENS_TEST_DATA_YAV_KEY, use_ssh_auth=True)
 
 
-# CI-safe secrets
-
-
-@pytest.fixture(scope="session")
-def ci_safe_yav_token() -> Optional[str]:
-    """
-    YAV token to access CI safe secrets.
-    Actually, this token will be available to any user in Arcadia as far as any secret that can be fetched with it.
-    """
-    return os.environ.get("YAV_TOKEN")
-
-
 # External systems
 EXT_SYS_REQUISITES_MAP = {
     DLEnv.cloud_preprod: InstallationsMap.ext_testing,
