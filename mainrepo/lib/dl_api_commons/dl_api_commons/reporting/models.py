@@ -27,6 +27,7 @@ class QueryExecutionStartReportingRecord(QueryExecutionReportingRecord):
     connection_type: ConnectionType
     conn_reporting_data: dict
     query: str  # SQL query
+    workbook_id: Optional[str]
 
 
 @attr.s(frozen=True, auto_attribs=True)

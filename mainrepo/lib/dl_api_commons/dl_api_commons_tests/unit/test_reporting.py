@@ -37,6 +37,7 @@ _DEFAULT_START_RECORD_TS_0 = QueryExecutionStartReportingRecord(
     },
     query_type=QueryType.external,
     query="SELECT 1",
+    workbook_id="wb_123",
 )
 
 _DEFAULT_REPORT_FIELDS_FROM_START = dict(
@@ -46,6 +47,7 @@ _DEFAULT_REPORT_FIELDS_FROM_START = dict(
     host="8.8.8.8",
     query_type=QueryType.external.name,
     query="SELECT 1",
+    workbook_id="wb_123",
 )
 
 _CHYT_START_RECORD_TS_0 = QueryExecutionStartReportingRecord(
@@ -60,6 +62,7 @@ _CHYT_START_RECORD_TS_0 = QueryExecutionStartReportingRecord(
     },
     query_type=QueryType.external,
     query="SELECT 1",
+    workbook_id=None,
 )
 
 _CHYT_REPORT_FIELDS_FROM_START = dict(
@@ -70,6 +73,7 @@ _CHYT_REPORT_FIELDS_FROM_START = dict(
     clique_alias="*ch_my_clique",
     query_type=QueryType.external.name,
     query="SELECT 1",
+    workbook_id=None,
 )
 
 
@@ -225,6 +229,7 @@ def test_db_query_report_generation(case_name, records_seq, expected_query_data,
         "chart_id",
         "chart_kind",
         "response_status_code",
+        "workbook_id",
     )
     if "chyt" in case_name:
         required_extras += (

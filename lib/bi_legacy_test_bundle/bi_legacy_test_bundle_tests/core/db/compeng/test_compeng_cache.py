@@ -22,6 +22,7 @@ from dl_constants.enums import (
     QueryType,
     UserDataType,
 )
+from dl_core.base_models import WorkbookEntryLocation
 from dl_core.data_processing.cache.primitives import (
     DataKeyPart,
     LocalKeyRepresentation,
@@ -129,6 +130,9 @@ class TestCompengCache:
                 username="",
             )
             reporting = sr.get_reporting_registry()
+            workbook_id = (
+                dataset.entry_key.workbook_id if isinstance(dataset.entry_key, WorkbookEntryLocation) else None
+            )
             reporting.save_reporting_record(
                 QueryExecutionStartReportingRecord(
                     timestamp=time.time(),
@@ -138,6 +142,7 @@ class TestCompengCache:
                     connection_type=CONNECTION_TYPE_CLICKHOUSE,
                     dataset_id=dataset.uuid,
                     conn_reporting_data=dto.conn_reporting_data(),
+                    workbook_id=workbook_id,
                 )
             )
             input_stream = DataStreamAsync(
