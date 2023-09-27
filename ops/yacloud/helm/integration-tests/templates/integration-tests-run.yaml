@@ -21,6 +21,14 @@ spec:
           readOnly: true
         - name: internal-cert
           mountPath: /etc/ssl/certs
+      securityContext:
+        allowPrivilegeEscalation: false
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        capabilities:
+          drop:
+            - all
   volumes:
     - name: integration-test-secrets
       secret:
