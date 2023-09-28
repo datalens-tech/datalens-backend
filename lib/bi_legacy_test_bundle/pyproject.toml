@@ -89,7 +89,7 @@ labels = ["fat"]
 
 [datalens.pytest.core_db_part_2]
 root_dir = "bi_legacy_test_bundle_tests/core/db/"
-target_path = "connectors maintenance services_registry us_manager"
+target_path = "maintenance services_registry us_manager"
 compose_file_base = "docker-compose.core"
 labels = ["fat"]
 
