@@ -250,7 +250,8 @@ jobs:
             GOOGLE_API_KEY="${{ secrets.EXT_GOOGLE_API_KEY }}" \
             BITRIX_TOKEN="${{ secrets.EXT_BITRIX_TOKEN }}" \
             BITRIX_PARTNERS_TOKEN="${{ secrets.EXT_BITRIX_PARTNERS_TOKEN }}" \
-            BITRIX_DATALENS_TOKEN="${{ secrets.EXT_BITRIX_DATALENS_TOKEN }}"
+            BITRIX_DATALENS_TOKEN="${{ secrets.EXT_BITRIX_DATALENS_TOKEN }}" \
+            METRIKA_OAUTH="${{ secrets.EXT_METRIKA_OAUTH }}"
       - name: Stop compose if provided
         if: always()  # yes! always
         run: bash /data/ops/ci/stop_compose.sh "${{ matrix.value }}"  "${{ job.container.network }}"  "${{ env.compose_prj }}"

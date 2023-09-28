@@ -58,7 +58,10 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-
+[datalens.pytest.ext]
+root_dir = "bi_connector_metrica_tests/"
+target_path = "ext"
+labels = ["ext_public"]
 
 [datalens.pytest.unit]
 root_dir = "bi_connector_metrica_tests/"

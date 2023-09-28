@@ -45,9 +45,11 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
     source_type = SOURCE_TYPE_METRICA_API
 
     test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultDatasetTestSuite.test_simple_select_from_subquery: "Not allowed for Metrica",
+        },
         mark_tests_failed={
             DefaultDatasetTestSuite.test_get_param_hash: "",  # TODO: FIXME
-            DefaultDatasetTestSuite.test_simple_select_from_subquery: "Not allowed for Metrica",
         },
     )
 
@@ -235,9 +237,11 @@ class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[App
     source_type = SOURCE_TYPE_APPMETRICA_API
 
     test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultDatasetTestSuite.test_simple_select_from_subquery: "Not allowed for AppMetrica",
+        },
         mark_tests_failed={
             DefaultDatasetTestSuite.test_get_param_hash: "",  # TODO: FIXME
-            DefaultDatasetTestSuite.test_simple_select_from_subquery: "Not allowed for AppMetrica",
         },
     )
 

@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from typing import TypeVar
+import asyncio
+from typing import (
+    Generator,
+    TypeVar,
+)
 
 import pytest
 import sqlalchemy_metrika_api
@@ -25,18 +29,21 @@ from bi_connector_metrica.core.us_connection import (
     AppMetricaApiConnection,
     MetrikaApiConnection,
 )
-import bi_connector_metrica_tests.ext.config as common_test_config
-import bi_connector_metrica_tests.ext.core.config as test_config
+import bi_connector_metrica_tests.ext.config as test_config
 
 
 _CONN_TV = TypeVar("_CONN_TV", MetrikaApiConnection, AppMetricaApiConnection)
 
 
 class MetricaTestSetup(BaseConnectionTestClass[_CONN_TV]):
-    """
-    Metrica has a completely external DB, so we need to skip
-    DB initialization steps
-    """
+    @pytest.fixture(autouse=True)
+    # FIXME: This fixture is a temporary solution for failing core tests when they are run together with api tests
+    def loop(self, event_loop: asyncio.AbstractEventLoop) -> Generator[asyncio.AbstractEventLoop, None, None]:
+        asyncio.set_event_loop(event_loop)
+        yield event_loop
+        # Attempt to cover an old version of pytest-asyncio:
+        # https://github.com/pytest-dev/pytest-asyncio/commit/51d986cec83fdbc14fa08015424c79397afc7ad9
+        asyncio.set_event_loop_policy(None)
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
@@ -50,14 +57,14 @@ class MetricaTestSetup(BaseConnectionTestClass[_CONN_TV]):
     @pytest.fixture(scope="function", autouse=True)
     def shrink_metrika_default_date_period(self, monkeypatch):
         """
-        To reduce load to Metrika API and tests run time.
+        To reduce load for Metrika API and tests run time.
         """
         monkeypatch.setattr(sqlalchemy_metrika_api.base, "DEFAULT_DATE_PERIOD", 3)
 
 
 class BaseMetricaTestClass(MetricaTestSetup[MetrikaApiConnection]):
     conn_type = CONNECTION_TYPE_METRICA_API
-    core_test_config = common_test_config.CORE_TEST_CONFIG
+    core_test_config = test_config.CORE_TEST_CONFIG
 
     @pytest.fixture(scope="function")
     def connection_creation_params(self, metrica_token: str) -> dict:
@@ -77,7 +84,7 @@ class BaseMetricaTestClass(MetricaTestSetup[MetrikaApiConnection]):
 
 class BaseAppMetricaTestClass(MetricaTestSetup[AppMetricaApiConnection]):
     conn_type = CONNECTION_TYPE_APPMETRICA_API
-    core_test_config = common_test_config.CORE_TEST_CONFIG
+    core_test_config = test_config.CORE_TEST_CONFIG
 
     @pytest.fixture(scope="function")
     def connection_creation_params(self, metrica_token: str) -> dict:

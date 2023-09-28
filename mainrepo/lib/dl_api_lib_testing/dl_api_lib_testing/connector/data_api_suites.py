@@ -279,6 +279,23 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
 
 
 class DefaultConnectorDataGroupByFormulaTestSuite(StandardizedDataApiTestBase, RegulatedTestCase):
+    def test_ordered_result(
+        self,
+        saved_dataset: Dataset,
+        data_api_test_params: DataApiTestParams,
+        data_api: SyncHttpDataApiV2,
+    ) -> None:
+        ds = saved_dataset
+        grouped_resp = self.get_result_ordered(
+            ds, data_api,
+            field_names=(data_api_test_params.two_dims[0], data_api_test_params.distinct_field),
+            order_by=(data_api_test_params.distinct_field,),
+        )
+        grouped_rows = get_data_rows(grouped_resp)
+
+        min_row_cnt = 10  # just an arbitrary number
+        assert len(grouped_rows) > min_row_cnt
+
     def test_complex_result(
         self,
         saved_dataset: Dataset,
@@ -286,10 +303,10 @@ class DefaultConnectorDataGroupByFormulaTestSuite(StandardizedDataApiTestBase, R
         data_api: SyncHttpDataApiV2,
     ) -> None:
         ds = saved_dataset
-        ds.result_schema["CityNameLength"] = ds.field(formula=f"LEN([{data_api_test_params.distinct_field}])")
+        ds.result_schema["LengthField"] = ds.field(formula=f"LEN([{data_api_test_params.distinct_field}])")
 
         grouped_resp = self.get_result_ordered(
-            ds, data_api, field_names=(data_api_test_params.two_dims[0], "CityNameLength"), order_by=("CityNameLength",)
+            ds, data_api, field_names=(data_api_test_params.two_dims[0], "LengthField"), order_by=("LengthField",)
         )
         grouped_rows = get_data_rows(grouped_resp)
 
