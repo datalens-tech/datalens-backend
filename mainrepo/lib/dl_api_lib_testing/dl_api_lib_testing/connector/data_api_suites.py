@@ -399,7 +399,7 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, Regulat
 
 
 class DefaultConnectorDataPreviewTestSuite(StandardizedDataApiTestBase, RegulatedTestCase):
-    def test_basic_distinct(
+    def test_basic_preview(
         self,
         saved_dataset: Dataset,
         data_api: SyncHttpDataApiV2,

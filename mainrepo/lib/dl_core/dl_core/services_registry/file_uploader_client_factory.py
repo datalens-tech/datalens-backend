@@ -52,7 +52,7 @@ class GSheetsFileSourceDesc(FileSourceDesc):
 @attr.s(frozen=True)
 class SourceInternalParams:
     preview_id: str = attr.ib()
-    raw_schema: list[RawSchemaType] = attr.ib()
+    raw_schema: RawSchemaType = attr.ib()
 
 
 @attr.s(frozen=True)

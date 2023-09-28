@@ -512,37 +512,6 @@ def test_select_data(
             assert row
 
 
-def test_select_data_chs3(default_sync_usm, saved_chs3_dataset, default_async_service_registry):
-    us_manager = default_sync_usm
-    dataset = us_manager.get_by_id(saved_chs3_dataset.uuid, expected_type=Dataset)
-    ds_wrapper = DatasetTestWrapper(dataset=dataset, us_manager=us_manager)
-    us_manager.load_dependencies(dataset)
-
-    test_data = make_sample_data()
-    test_data_col = [row["int_value"] for row in test_data]
-
-    role = DataSourceRole.origin
-    int_value = sa.literal_column(ds_wrapper.quote("int_value", role=role))
-    avatar_id = ds_wrapper.get_root_avatar_strict().id
-    bi_query = BIQuery(
-        select_expressions=[
-            ExpressionCtx(
-                expression=int_value,
-                avatar_ids=[avatar_id],
-                alias="col1",
-                user_type=UserDataType.integer,
-            ),
-        ],
-    )
-    data_fetcher = DataFetcher(
-        service_registry=default_async_service_registry,
-        dataset=dataset,
-        us_manager=us_manager,
-    )
-    data = list(data_fetcher.get_data_stream(role=role, bi_query=bi_query).data)
-    assert {row[0] for row in data} == set(test_data_col)
-
-
 def test_select_data_with_output_cast(default_sync_usm, db_table, saved_dataset, default_async_service_registry):
     # check this for all dialects because it might have dialect-specific issues
     us_manager = default_sync_usm

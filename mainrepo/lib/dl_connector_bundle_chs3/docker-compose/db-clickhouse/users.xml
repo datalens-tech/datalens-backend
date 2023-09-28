@@ -1,0 +1,42 @@
+<yandex>
+    <profiles>
+        <!-- Default settings -->
+        <default>
+            <!-- The maximum number of threads when running a single query. -->
+            <max_threads>8</max_threads>
+        </default>
+    </profiles>
+    <quotas>
+        <default>
+            <!-- Restrictions for a time period. You can set many intervals with different restrictions. -->
+            <interval>
+                <!-- Length of the interval. -->
+                <duration>3600</duration>
+                <!-- Unlimited. Just collect data for the specified time interval. -->
+                <queries>0</queries>
+                <errors>0</errors>
+                <result_rows>0</result_rows>
+                <read_rows>0</read_rows>
+                <execution_time>0</execution_time>
+            </interval>
+        </default>
+    </quotas>
+    <users>
+        <default>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <password></password>
+            <profile>default</profile>
+            <quota>default</quota>
+        </default>
+        <datalens>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <password>qwerty</password>
+            <profile>default</profile>
+            <quota>default</quota>
+        </datalens>
+    </users>
+</yandex>

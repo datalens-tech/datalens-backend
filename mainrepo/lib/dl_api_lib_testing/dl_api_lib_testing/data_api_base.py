@@ -85,7 +85,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             BI_COMPENG_PG_ON=cls.bi_compeng_pg_on,
             BI_COMPENG_PG_URL=bi_test_config.bi_compeng_pg_url,
             FIELD_ID_GENERATOR_TYPE=FieldIdGeneratorType.suffix,
-            FILE_UPLOADER_BASE_URL="http://127.0.0.1:9999",  # fake url
+            FILE_UPLOADER_BASE_URL=f"{bi_test_config.file_uploader_api_host}:{bi_test_config.file_uploader_api_port}",
             FILE_UPLOADER_MASTER_TOKEN="qwerty",
         )  # type: ignore
 

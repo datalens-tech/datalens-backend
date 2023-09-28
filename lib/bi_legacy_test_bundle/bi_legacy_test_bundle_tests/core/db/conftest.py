@@ -15,18 +15,6 @@ from bi_legacy_test_bundle_tests.core.conftest import (  # noqa: F401
 )
 from bi_testing_ya.sql_queries import CH_QUERY_FULL
 from dl_configs.settings_submodels import S3Settings
-from dl_connector_bundle_chs3.chs3_base.core.testing.utils import create_s3_native_from_ch_table
-from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from dl_connector_bundle_chs3.chs3_gsheets.core.constants import (
-    CONNECTION_TYPE_GSHEETS_V2,
-    SOURCE_TYPE_GSHEETS_V2,
-)
-from dl_connector_bundle_chs3.chs3_gsheets.core.testing.connection import make_saved_gsheets_v2_connection
-from dl_connector_bundle_chs3.file.core.constants import (
-    CONNECTION_TYPE_FILE,
-    SOURCE_TYPE_FILE_S3_TABLE,
-)
-from dl_connector_bundle_chs3.file.core.testing.connection import make_saved_file_connection
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_SUBSELECT
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
@@ -169,22 +157,6 @@ async def s3_bucket(s3_client) -> str:
     bucket_name = "bi-file-uploader"
     await create_s3_bucket(s3_client, bucket_name)
     yield bucket_name
-
-
-@pytest.fixture()
-async def s3_native_from_ch_table(s3_client, s3_bucket, s3_settings, clickhouse_table):
-    filename = "my_file.native"
-    tbl_schema = (
-        "string_value Nullable(String), n_string_value Nullable(String), int_value Nullable(Int64), "
-        "n_int_value Nullable(Int64), float_value Nullable(Float64), datetime_value Nullable(DateTime), "
-        "n_datetime_value Nullable(DateTime), date_value Nullable(Date), boolean_value Nullable(UInt8), "
-        "uuid_value Nullable(UUID)"
-    )  # TODO: update DbTable to serve some sort of schema
-    create_s3_native_from_ch_table(filename, s3_bucket, s3_settings, clickhouse_table, tbl_schema)
-
-    yield filename
-
-    await s3_client.delete_object(Bucket=s3_bucket, Key=filename)
 
 
 # ####### Databases #######
@@ -395,30 +367,6 @@ def testlocal_saved_connection(default_sync_usm, postgres_db):
 
 
 @pytest.fixture(scope="function")
-def saved_file_connection(default_sync_usm, clickhouse_table, s3_native_from_ch_table):
-    conn = make_saved_file_connection(default_sync_usm, clickhouse_table, s3_native_from_ch_table)
-    yield conn
-    default_sync_usm.delete(conn)
-
-
-@pytest.fixture(scope="function")
-def saved_gsheets_v2_connection(default_sync_usm, clickhouse_table, s3_native_from_ch_table):
-    conn = make_saved_gsheets_v2_connection(default_sync_usm, clickhouse_table, s3_native_from_ch_table)
-    yield conn
-    default_sync_usm.delete(conn)
-
-
-@pytest.fixture(
-    scope="function",
-    params=["saved_file_connection", "saved_gsheets_v2_connection"],
-    ids=["file", "gsheets"],
-)
-def saved_chs3_connection(request, default_sync_usm, clickhouse_table, s3_native_from_ch_table):
-    conn = request.getfixturevalue(request.param)
-    yield conn
-
-
-@pytest.fixture(scope="function")
 def another_saved_connection(default_sync_usm, db, app_context):
     conn = make_saved_connection(default_sync_usm, db)
     yield conn
@@ -599,23 +547,6 @@ def saved_ch_dataset_per_func(default_sync_usm, clickhouse_table, saved_ch_conne
         default_sync_usm,
         db_table=clickhouse_table,
         connection=saved_ch_connection,
-    )
-    default_sync_usm.save(dataset)
-    yield dataset
-    default_sync_usm.delete(dataset)
-
-
-@pytest.fixture(scope="function")
-def saved_chs3_dataset(default_sync_usm, clickhouse_table, saved_chs3_connection: BaseFileS3Connection, app_context):
-    conn_type_to_source_type_map = {
-        CONNECTION_TYPE_FILE: SOURCE_TYPE_FILE_S3_TABLE,
-        CONNECTION_TYPE_GSHEETS_V2: SOURCE_TYPE_GSHEETS_V2,
-    }
-    dataset = make_dataset(
-        default_sync_usm,
-        connection=saved_chs3_connection,
-        created_from=conn_type_to_source_type_map[saved_chs3_connection.conn_type],
-        dsrc_params=dict(origin_source_id=saved_chs3_connection.data.sources[0].id),
     )
     default_sync_usm.save(dataset)
     yield dataset

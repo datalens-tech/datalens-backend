@@ -23,6 +23,7 @@ from bi_legacy_test_bundle_tests.core.fixtures_ce import (  # noqa: F401
     sync_remote_query_executor,
 )
 from dl_api_commons.base_models import RequestContextInfo
+from dl_connector_chyt.core import exc as chyt_exc
 from dl_constants.enums import (
     ConnectionType,
     IndexKind,
@@ -109,7 +110,7 @@ class BaseCHYTTestSet(CHLikeBaseTestSet):
             ),
             "unschematized": ErrorTestSet(
                 query=ConnExecutorQuery("SELECT * FROM `//home/yandexbi/datalens-back/bi_test_data/unschematized`"),
-                expected_err_cls=exc.CHYTTableHasNoSchema,
+                expected_err_cls=chyt_exc.CHYTTableHasNoSchema,
             ),
         }[request.param]
 

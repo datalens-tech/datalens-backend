@@ -10,9 +10,7 @@ def create_s3_native_from_ch_table(
     s3_settings: S3Settings,
     clickhouse_table: DbTable,
     tbl_schema: str,
-    double_data: bool = False,
 ) -> None:
-    # FIXME: Move to chs3 connectors
     tbl = clickhouse_table
     db = clickhouse_table.db
     s3_tbl_func = s3_tbl_func_maker(s3_settings)
@@ -34,9 +32,7 @@ def create_s3_native_from_ch_table(
         ),
         filename=filename,
         file_fmt="Native",
-        schema_line=tbl_schema,  # TODO: update DbTable to serve some sort of schema
+        schema_line=tbl_schema,
     )
     insert_stmt = f"INSERT INTO FUNCTION {s3_tbl_func_for_db} SELECT * FROM {tbl.db.quote(tbl.name)}"
-    if double_data:
-        insert_stmt += f" UNION ALL SELECT * FROM {tbl.db.quote(tbl.name)}"
     db.execute(insert_stmt)
