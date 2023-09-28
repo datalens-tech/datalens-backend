@@ -22,10 +22,6 @@ class LogicError(DLBaseException):
     pass
 
 
-class ObligatoryFilterMissing(DLBaseException):
-    err_code = DLBaseException.err_code + ["OBLIG_FILTER_MISSING"]
-
-
 class InvalidGroupByConfiguration(DLBaseException):
     err_code = DLBaseException.err_code + ["INVALID_GROUP_BY_CONFIGURATION"]
     default_message = "Invalid GROUP BY configuration."

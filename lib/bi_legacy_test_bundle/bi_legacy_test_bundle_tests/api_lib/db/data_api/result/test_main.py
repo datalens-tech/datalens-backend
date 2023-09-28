@@ -437,51 +437,6 @@ def test_multisource_dataset(api_v1, data_api_v1, static_connection_id, three_cl
     assert titles == {"int_value", "int_value (1)", "datetime_value (1)", "int_value (2)"}
 
 
-def test_obligatory_filter_check(api_v1: SyncHttpDatasetApiV1, data_api_v1, ch_data_source_settings):
-    ds = Dataset()
-    ds.sources["source_1"] = ds.source(**ch_data_source_settings)
-    ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
-    ds = api_v1.apply_updates(dataset=ds).dataset
-    ds = api_v1.save_dataset(dataset=ds).dataset
-    category_field = ds.result_schema[0]
-
-    req_data = {
-        "columns": [ds.result_schema[0].id, ds.result_schema[1].id],
-        "where": [dict(column=category_field.id, operation="EQ", values=["Office Supplies"])],
-        "ignore_nonexistent_filters": True,
-    }
-
-    r = data_api_v1.get_response_for_dataset_result(dataset_id=ds.id, raw_body=req_data)
-    assert r.status_code == 200
-
-    filter_id = str(uuid.uuid4())
-    ds = api_v1.apply_updates(
-        dataset=ds,
-        updates=[
-            ObligatoryFilter(
-                id=filter_id,
-                field_guid=category_field.id,
-                default_filters=[
-                    WhereClause(column=category_field.id, operation=WhereClauseOperation.IN, values=["Furniture"]),
-                ],
-            ).add()
-        ],
-    ).dataset
-    ds = api_v1.save_dataset(dataset=ds).dataset
-
-    r = data_api_v1.get_response_for_dataset_result(dataset_id=ds.id, raw_body=req_data)
-    assert r.status_code == HTTPStatus.OK
-
-    r = data_api_v1.get_response_for_dataset_result(
-        dataset_id=ds.id,
-        raw_body={"columns": [ds.result_schema[0].id, ds.result_schema[1].id]},
-    )
-    # # Obligatory filters check was disabled (https://st.yandex-team.ru/BI-2483)
-    # assert r.status_code == HTTPStatus.BAD_REQUEST
-    # assert r.json['code'] == 'ERR.DS_API.OBLIG_FILTER_MISSING'
-    assert r.status_code == HTTPStatus.OK
-
-
 def test_filter_error(api_v1, data_api_v1, dataset_id):
     ds = api_v1.load_dataset(dataset=Dataset(id=dataset_id)).dataset
     ds.result_schema["New bool"] = ds.field(formula='"P" = "NP"')  # just a bool field
