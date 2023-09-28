@@ -101,3 +101,8 @@ ext public: This designation applies to a targets requiring public internet acce
 
 ext private: Similarly, this category is reserved for targets requiring access to the private resources.
 
+
+## Setting up secrets for tests
+In order to run tests with secrets in CI (assuming env param getter is configured ([example](https://github.com/datalens-tech/datalens-backend/blob/612d4ec2ad3c181850cdce25602fb8093bca1ff2/lib/dl_connector_bigquery/dl_connector_bigquery_tests/ext/conftest.py#L22-L25))) along with the config file (see example [params.yml](https://github.com/datalens-tech/datalens-backend/blob/612d4ec2ad3c181850cdce25602fb8093bca1ff2/lib/dl_connector_bigquery/dl_connector_bigquery_tests/ext/params.yml) for bigquery tests), do the following:
+- Add new secrets to the repository (`Settings -> Secrets and variables -> Actions -> New repository secret`), the names of the secrets are not essential here
+- Pass all the added secrets as additional arguments to the run tests step in suitable workflows ([example](https://github.com/datalens-tech/datalens-backend-private/blob/2a182b4e45d089feac02fcb3f46b16ad1a86b4b7/.github/workflows/main.yml#L250)) – the name of the argument should be the same as the `key` value in params.yml (# TODO change link to an open source example when we have one)
