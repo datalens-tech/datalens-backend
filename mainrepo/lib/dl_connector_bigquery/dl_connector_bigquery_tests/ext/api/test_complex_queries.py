@@ -1,0 +1,6 @@
+from dl_api_lib_testing.connector.complex_queries import DefaultBasicComplexQueryTestSuite
+from dl_connector_bigquery_tests.ext.api.base import BigQueryDataApiTestBase
+
+
+class TestBigQueryBasicComplexQueries(BigQueryDataApiTestBase, DefaultBasicComplexQueryTestSuite):
+    pass
