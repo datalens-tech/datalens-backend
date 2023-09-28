@@ -12,7 +12,7 @@ from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_connector_greenplum.api.i18n.localizer import CONFIGS as BI_CONNECTOR_GREENPLUM_CONFIGS
 
-from bi_connector_greenplum_mdb.bi.connection_form.form_config import GreenplumMDBConnectionFormFactory
+from bi_connector_greenplum_mdb.api.connection_form.form_config import GreenplumMDBConnectionFormFactory
 from bi_connector_mdb_base.core.settings import MDBConnectorSettings
 
 

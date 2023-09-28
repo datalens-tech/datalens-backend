@@ -34,8 +34,8 @@ datalens-db-testing = {path = "../../mainrepo/lib/dl_db_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-ydb = "bi_connector_yql.bi.ydb.connector:YDBApiConnector"
-yq = "bi_connector_yql.bi.yq.connector:YQApiConnector"
+ydb = "bi_connector_yql.api.ydb.connector:YDBApiConnector"
+yq = "bi_connector_yql.api.yq.connector:YQApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 ydb = "bi_connector_yql.core.ydb.connector:YDBCoreConnector"
@@ -85,6 +85,6 @@ strict_optional = true
 
 [datalens.i18n.domains]
 bi_connector_yql = [
-    {path = "bi_connector_yql/bi"},
+    {path = "bi_connector_yql/api"},
     {path = "bi_connector_yql/core"},
 ]

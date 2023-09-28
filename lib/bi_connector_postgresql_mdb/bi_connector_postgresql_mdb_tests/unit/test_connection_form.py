@@ -13,7 +13,7 @@ from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_connector_postgresql.api.i18n.localizer import CONFIGS as BI_CONNECTOR_POSTGRESQL_CONFIGS
 
 from bi_connector_mdb_base.core.settings import MDBConnectorSettings
-from bi_connector_postgresql_mdb.bi.connection_form.form_config import PostgreSQLMDBConnectionFormFactory
+from bi_connector_postgresql_mdb.api.connection_form.form_config import PostgreSQLMDBConnectionFormFactory
 
 
 class TestPostgresMDBConnectionForm(ConnectionFormTestBase):

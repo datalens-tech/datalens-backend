@@ -29,7 +29,7 @@ datalens-db-testing = {path = "../../mainrepo/lib/dl_db_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-oracle = "bi_connector_oracle.bi.connector:OracleApiConnector"
+oracle = "bi_connector_oracle.api.connector:OracleApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 oracle = "bi_connector_oracle.core.connector:OracleCoreConnector"
@@ -84,7 +84,7 @@ strict_optional = true
 
 [datalens.i18n.domains]
 bi_connector_oracle = [
-    {path = "bi_connector_oracle/bi"},
+    {path = "bi_connector_oracle/api"},
     {path = "bi_connector_oracle/core"},
 ]
 dl_formula_ref_bi_connector_oracle = [

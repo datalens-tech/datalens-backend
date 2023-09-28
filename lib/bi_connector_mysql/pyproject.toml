@@ -29,7 +29,7 @@ datalens-db-testing = {path = "../../mainrepo/lib/dl_db_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-mysql = "bi_connector_mysql.bi.connector:MySQLApiConnector"
+mysql = "bi_connector_mysql.api.connector:MySQLApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 mysql = "bi_connector_mysql.core.connector:MySQLCoreConnector"
@@ -78,7 +78,7 @@ strict_optional = true
 
 [datalens.i18n.domains]
 bi_connector_mysql = [
-    {path = "bi_connector_mysql/bi"},
+    {path = "bi_connector_mysql/api"},
     {path = "bi_connector_mysql/core"},
 ]
 dl_formula_ref_bi_connector_mysql = [

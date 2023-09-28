@@ -20,7 +20,7 @@ datalens-core = {path = "../../mainrepo/lib/dl_core"}
 datalens-core-testing = {path = "../../mainrepo/lib/dl_core_testing"}
 
 [tool.poetry.plugins."dl_api_lib.connectors"]
-usage_tracking_ya_team = "bi_connector_usage_tracking_ya_team.bi.connector:UsageTrackingYaTeamApiConnector"
+usage_tracking_ya_team = "bi_connector_usage_tracking_ya_team.api.connector:UsageTrackingYaTeamApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 usage_tracking_ya_team = "bi_connector_usage_tracking_ya_team.core.connector:UsageTrackingYaTeamCoreConnector"
@@ -58,6 +58,6 @@ strict_optional = true
 
 [datalens.i18n.domains]
 bi_connector_usage_tracking_ya_team = [
-    {path = "bi_connector_usage_tracking_ya_team/bi"},
+    {path = "bi_connector_usage_tracking_ya_team/api"},
     {path = "bi_connector_usage_tracking_ya_team/core"},
 ]

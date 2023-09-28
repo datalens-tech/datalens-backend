@@ -21,7 +21,7 @@ from dl_i18n.localizer_base import Localizer
 from dl_utils.utils import DataKey
 
 from bi_connector_mdb_base.core.base_models import ConnMDBDataModelMixin
-from bi_connector_yql.bi.yql_base.i18n.localizer import Translatable
+from bi_connector_yql.api.yql_base.i18n.localizer import Translatable
 from bi_connector_yql.core.ydb.constants import (
     SOURCE_TYPE_YDB_SUBSELECT,
     SOURCE_TYPE_YDB_TABLE,

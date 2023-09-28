@@ -41,7 +41,7 @@ from dl_core.logging_config import hook_configure_logging
 
 
 def register_local_apis() -> None:
-    from bi_connector_metrica.bi import bi_api_handler  # noqa
+    from bi_connector_metrica.api import bi_api_handler  # noqa
 
 
 def create_app(

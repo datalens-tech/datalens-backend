@@ -3,11 +3,11 @@ import pytest
 from dl_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIGS
 from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
 
-from bi_connector_metrica.bi.connection_form.form_config import (
+from bi_connector_metrica.api.connection_form.form_config import (
     AppMetricaAPIConnectionFormFactory,
     MetricaAPIConnectionFormFactory,
 )
-from bi_connector_metrica.bi.i18n.localizer import CONFIGS as BI_CONNECTOR_METRICA_CONFIGS
+from bi_connector_metrica.api.i18n.localizer import CONFIGS as BI_CONNECTOR_METRICA_CONFIGS
 from bi_connector_metrica.core.settings import (
     AppmetricaConnectorSettings,
     MetricaConnectorSettings,

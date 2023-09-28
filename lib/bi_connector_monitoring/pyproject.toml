@@ -25,7 +25,7 @@ datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-monitoring = "bi_connector_monitoring.bi.connector:MonitoringApiConnector"
+monitoring = "bi_connector_monitoring.api.connector:MonitoringApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 monitoring = "bi_connector_monitoring.core.connector:MonitoringCoreConnector"
@@ -65,6 +65,6 @@ strict_optional = true
 
 [datalens.i18n.domains]
 bi_connector_monitoring = [
-    {path = "bi_connector_monitoring/bi"},
+    {path = "bi_connector_monitoring/api"},
     {path = "bi_connector_monitoring/core"},
 ]

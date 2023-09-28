@@ -28,7 +28,7 @@ datalens-db-testing = {path = "../../mainrepo/lib/dl_db_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-mssql = "bi_connector_mssql.bi.connector:MSSQLApiConnector"
+mssql = "bi_connector_mssql.api.connector:MSSQLApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 mssql = "bi_connector_mssql.core.connector:MSSQLCoreConnector"
@@ -87,7 +87,7 @@ ignore_missing_imports = true
 
 [datalens.i18n.domains]
 bi_connector_mssql = [
-    {path = "bi_connector_mssql/bi"},
+    {path = "bi_connector_mssql/api"},
     {path = "bi_connector_mssql/core"},
 ]
 dl_formula_ref_bi_connector_mssql = [

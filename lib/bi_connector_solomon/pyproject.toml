@@ -27,7 +27,7 @@ datalens-core = {path = "../../mainrepo/lib/dl_core"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
-solomon = "bi_connector_solomon.bi.connector:SolomonApiConnector"
+solomon = "bi_connector_solomon.api.connector:SolomonApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 solomon = "bi_connector_solomon.core.connector:SolomonCoreConnector"
@@ -67,6 +67,6 @@ ignore_missing_imports = true
 
 [datalens.i18n.domains]
 bi_connector_solomon = [
-    {path = "bi_connector_solomon/bi"},
+    {path = "bi_connector_solomon/api"},
     {path = "bi_connector_solomon/core"},
 ]
