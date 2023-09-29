@@ -9,6 +9,8 @@ from dl_api_connector.connector import (
     ApiConnector,
     ApiSourceDefinition,
 )
+from dl_api_lib.query.registry import MQMFactorySettingItem
+from dl_constants.enums import QueryProcessingMode
 from dl_query_processing.multi_query.factory import SimpleFieldSplitterMultiQueryMutatorFactory
 
 from bi_connector_gsheets.api.api_schema.connection import GSheetsConnectionSchema
@@ -42,7 +44,12 @@ class GSheetsApiConnector(ApiConnector):
     formula_dialect_name = DIALECT_NAME_GSHEETS
     connection_definitions = (GSheetsApiConnectionDefinition,)
     source_definitions = (GSheetsApiSourceDefinition,)
-    default_multi_query_mutator_factory_cls = SimpleFieldSplitterMultiQueryMutatorFactory
+    multi_query_mutation_factories = (
+        MQMFactorySettingItem(
+            query_proc_mode=QueryProcessingMode.basic,
+            factory_cls=SimpleFieldSplitterMultiQueryMutatorFactory,
+        ),
+    )
     is_forkable = False
     is_compeng_executable = True
     filter_formula_compiler_cls = GSheetsFilterFormulaCompiler

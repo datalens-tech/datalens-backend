@@ -9,6 +9,8 @@ from dl_api_connector.connector import (
     ApiConnector,
     ApiSourceDefinition,
 )
+from dl_api_lib.query.registry import MQMFactorySettingItem
+from dl_constants.enums import QueryProcessingMode
 
 from bi_connector_bitrix_gds.api.api_schema.connection import BitrixGDSConnectionSchema
 from bi_connector_bitrix_gds.api.connection_form.form_config import BitrixGDSConnectionFormFactory
@@ -40,7 +42,12 @@ class BitrixGDSApiConnectionDefinition(ApiConnectionDefinition):
 class BitrixGDSApiConnector(ApiConnector):
     core_connector_cls = BitrixGDSCoreConnector
     formula_dialect_name = DIALECT_NAME_BITRIX
-    default_multi_query_mutator_factory_cls = BitrixGDSMultiQueryMutatorFactory
+    multi_query_mutation_factories = (
+        MQMFactorySettingItem(
+            query_proc_mode=QueryProcessingMode.basic,
+            factory_cls=BitrixGDSMultiQueryMutatorFactory,
+        ),
+    )
     connection_definitions = (BitrixGDSApiConnectionDefinition,)
     source_definitions = (BitrixGDSApiSourceDefinition,)
     is_forkable = False

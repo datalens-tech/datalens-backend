@@ -34,7 +34,7 @@ class DefaultMultiQueryMutatorFactory(MultiQueryMutatorFactoryBase):
 
 
 @attr.s
-class DefaultNativeWFMultiQueryMutatorFactory(MultiQueryMutatorFactoryBase):
+class NoCompengMultiQueryMutatorFactory(MultiQueryMutatorFactoryBase):
     def get_mutators(self) -> list[MultiQueryMutatorBase]:
         return [
             SplitterMultiQueryMutator(

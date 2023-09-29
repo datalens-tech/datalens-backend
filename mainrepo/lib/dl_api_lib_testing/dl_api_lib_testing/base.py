@@ -34,7 +34,10 @@ from dl_api_lib_testing.client import FlaskSyncApiClient
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.rqe import RQEConfig
-from dl_constants.enums import ConnectionType
+from dl_constants.enums import (
+    ConnectionType,
+    QueryProcessingMode,
+)
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_sync import SyncUSManager
@@ -51,6 +54,7 @@ class ApiTestBase(abc.ABC):
     """
 
     bi_compeng_pg_on: ClassVar[bool] = True
+    query_processing_mode: ClassVar[QueryProcessingMode] = QueryProcessingMode.basic
 
     @pytest.fixture(scope="function", autouse=True)
     def preload(self):
@@ -119,6 +123,7 @@ class ApiTestBase(abc.ABC):
             REDIS_ARQ=redis_setting_maker.get_redis_settings_arq(),
             FILE_UPLOADER_BASE_URL="http://127.0.0.1:9999",  # fake url
             FILE_UPLOADER_MASTER_TOKEN="qwerty",
+            QUERY_PROCESSING_MODE=cls.query_processing_mode,
         )
         return settings
 

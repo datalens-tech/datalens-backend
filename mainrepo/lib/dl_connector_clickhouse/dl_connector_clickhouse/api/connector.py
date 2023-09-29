@@ -9,6 +9,7 @@ from dl_api_connector.connector import (
     ApiConnector,
     ApiSourceDefinition,
 )
+from dl_api_lib.query.registry import MQMFactorySettingItem
 from dl_connector_clickhouse.api.api_schema.connection import ClickHouseConnectionSchema
 from dl_connector_clickhouse.api.connection_form.form_config import ClickHouseConnectionFormFactory
 from dl_connector_clickhouse.api.connection_info import ClickHouseConnectionInfoProvider
@@ -19,7 +20,12 @@ from dl_connector_clickhouse.core.clickhouse.connector import (
     ClickHouseSubselectCoreSourceDefinition,
     ClickHouseTableCoreSourceDefinition,
 )
-from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
+from dl_connector_clickhouse.formula.constants import (
+    DIALECT_NAME_CLICKHOUSE,
+    ClickHouseDialect,
+)
+from dl_constants.enums import QueryProcessingMode
+from dl_query_processing.multi_query.factory import NoCompengMultiQueryMutatorFactory
 
 
 class ClickHouseApiTableSourceDefinition(ApiSourceDefinition):
@@ -50,3 +56,10 @@ class ClickHouseApiConnector(ApiConnector):
     )
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
     translation_configs = frozenset(CONFIGS)
+    multi_query_mutation_factories = ApiConnector.multi_query_mutation_factories + (
+        MQMFactorySettingItem(
+            query_proc_mode=QueryProcessingMode.native_wf,
+            dialects=ClickHouseDialect.and_above(ClickHouseDialect.CLICKHOUSE_22_10).to_list(),
+            factory_cls=NoCompengMultiQueryMutatorFactory,
+        ),
+    )

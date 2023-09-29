@@ -35,7 +35,6 @@ from bi_api_lib_ya.app_settings import (
     MDBSettings,
     YCAuthSettings,
 )
-from bi_api_lib_ya.query_registry import register_for_connectors_with_native_wf
 from bi_defaults.yenv_type import AppType
 from bi_legacy_test_bundle_tests.api_lib.app_async import create_app as create_app_async
 from bi_legacy_test_bundle_tests.api_lib.app_sync import create_app as create_app_sync
@@ -98,6 +97,7 @@ from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TY
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from dl_constants.enums import (
     ConnectionType,
+    QueryProcessingMode,
     RawSQLLevel,
 )
 from dl_core.components.ids import FieldIdGeneratorType
@@ -177,12 +177,6 @@ except AttributeError:
 
 def pytest_configure(config):  # noqa
     os.environ["ALLOW_SUBQUERY_IN_PREVIEW"] = "1"
-    os.environ["NATIVE_WF_POSTGRESQL"] = "1"
-    os.environ["NATIVE_WF_MYSQL"] = "1"
-    # os.environ['NATIVE_WF_CLICKHOUSE'] = '1'  # FIXME: Implement RANK_PERCENTILE for CLICKHOUSE
-
-    # Need to re-run it so that new factories are registered as a result of the updated os.environ
-    register_for_connectors_with_native_wf()  # FIXME: Remove this after removing the NATIVE_WF_* switches
 
     common_pytest_configure(
         use_jaeger_tracer=env_var_definitions.use_jaeger_tracer(),

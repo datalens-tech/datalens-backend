@@ -383,3 +383,9 @@ class NotificationType(DynamicEnum):
 class ConnectorAvailability(Enum):
     free = "free"
     whitelist = "whitelist"
+
+
+class QueryProcessingMode(DynamicEnum):
+    basic = AutoEnumValue()
+    no_compeng = AutoEnumValue()
+    native_wf = AutoEnumValue()

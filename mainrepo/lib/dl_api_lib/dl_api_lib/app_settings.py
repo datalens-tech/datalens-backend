@@ -21,7 +21,10 @@ from dl_configs.settings_loaders.meta_definition import (
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 from dl_configs.settings_submodels import RedisSettings
 from dl_configs.utils import split_by_comma
-from dl_constants.enums import USAuthMode
+from dl_constants.enums import (
+    QueryProcessingMode,
+    USAuthMode,
+)
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_formula.parser.factory import ParserType
 
@@ -130,6 +133,12 @@ class AppSettings:
     )
 
     DEFAULT_LOCALE: Optional[str] = "en"
+
+    QUERY_PROCESSING_MODE: QueryProcessingMode = s_attrib(  # type: ignore
+        "QUERY_PROCESSING_MODE",
+        env_var_converter=lambda s: QueryProcessingMode[s.lower()],
+        missing=QueryProcessingMode.basic,
+    )
 
 
 @attr.s(frozen=True)

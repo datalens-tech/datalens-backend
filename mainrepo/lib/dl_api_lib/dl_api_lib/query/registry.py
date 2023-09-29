@@ -4,7 +4,12 @@ from typing import (
     Type,
 )
 
-from dl_constants.enums import SourceBackendType
+import attr
+
+from dl_constants.enums import (
+    QueryProcessingMode,
+    SourceBackendType,
+)
 from dl_core.fields import ResultSchema
 from dl_formula.core.dialect import DialectCombo
 from dl_query_processing.compilation.filter_compiler import (
@@ -65,31 +70,53 @@ def register_is_compeng_executable(backend_type: SourceBackendType, is_compeng_e
         _IS_COMPENG_EXECUTABLE_BACKEND_TYPE[backend_type] = is_compeng_executable
 
 
-_MQM_FACTORY_REGISTRY: dict[tuple[SourceBackendType, Optional[DialectCombo]], Type[MultiQueryMutatorFactoryBase]] = {}
+@attr.s(frozen=True, auto_attribs=True, kw_only=True)
+class MQMFactoryKey:
+    query_proc_mode: QueryProcessingMode
+    backend_type: SourceBackendType
+    dialect: Optional[DialectCombo]
+
+
+@attr.s(frozen=True, auto_attribs=True, kw_only=True)
+class MQMFactorySettingItem:
+    query_proc_mode: QueryProcessingMode
+    factory_cls: Type[MultiQueryMutatorFactoryBase]
+    dialects: Collection[Optional[DialectCombo]] = attr.ib(default=(None,))
+
+
+_MQM_FACTORY_REGISTRY: dict[MQMFactoryKey, Type[MultiQueryMutatorFactoryBase]] = {}
 
 
 def get_multi_query_mutator_factory(
+    query_proc_mode: QueryProcessingMode,
     backend_type: SourceBackendType,
     dialect: DialectCombo,
     result_schema: ResultSchema,
-) -> MultiQueryMutatorFactoryBase:
+) -> Optional[MultiQueryMutatorFactoryBase]:
     factory_cls = _MQM_FACTORY_REGISTRY.get(
-        (backend_type, dialect),  # First try with exact dialect
+        # First try with exact dialect
+        MQMFactoryKey(query_proc_mode=query_proc_mode, backend_type=backend_type, dialect=dialect),
         _MQM_FACTORY_REGISTRY.get(
-            (backend_type, None),  # Then try without the dialect, just the backend
+            # Then try without the dialect, just the backend
+            MQMFactoryKey(query_proc_mode=query_proc_mode, backend_type=backend_type, dialect=None),
             DefaultMultiQueryMutatorFactory,  # If still nothing, then use the default
         ),
     )
+
+    if factory_cls is None:
+        return None
+
     return factory_cls(result_schema=result_schema)
 
 
 def register_multi_query_mutator_factory_cls(
+    query_proc_mode: QueryProcessingMode,
     backend_type: SourceBackendType,
     dialects: Collection[Optional[DialectCombo]],
     factory_cls: Type[MultiQueryMutatorFactoryBase],
 ) -> None:
     for dialect in dialects:
-        key = (backend_type, dialect)
+        key = MQMFactoryKey(query_proc_mode=query_proc_mode, backend_type=backend_type, dialect=dialect)
         if key in _MQM_FACTORY_REGISTRY:
             assert _MQM_FACTORY_REGISTRY[key] is factory_cls
         else:
