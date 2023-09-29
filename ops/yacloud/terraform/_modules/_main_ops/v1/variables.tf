@@ -128,6 +128,7 @@ variable "clickhouse_logs_settings" {
       subnet_id = string
     }))
     secret_id = string
+    version   = string
   })
 }
 

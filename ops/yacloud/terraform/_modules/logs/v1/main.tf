@@ -30,7 +30,7 @@ locals {
   clickhouse_backend_logs_database   = "backend_logs"
   clickhouse_usage_tracking_database = "usage_tracking"
   clickhouse_backend_app_logs_table  = "app_logs"
-  clickhouse_version                 = "22.8"
+  clickhouse_version                 = var.clickhouse_settings.version
 }
 
 data "yandex_lockbox_secret_version" "clickhouse_passwords" {

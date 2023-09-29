@@ -54,6 +54,7 @@ module "main" {
       module.subinfra_data.ops_locations[2]
     ],
     secret_id = "bcnj190e8n80imo45dk0"
+    version   = "22.8"
   }
 
   enable_sentry = true

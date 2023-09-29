@@ -54,6 +54,7 @@ module "main" {
       module.subinfra_data.ops_locations[2]
     ],
     secret_id = "bcnj190e8n80imo45dk0"
+    version   = "23.8"
   }
 
   enable_sentry = true
@@ -121,4 +122,3 @@ module "cloud_logging" {
   k8s_cluster_id     = module.infra_data.k8s_cluster.id
   cloud_api_endpoint = module.constants.env_data.cloud_api_endpoint
 }
-

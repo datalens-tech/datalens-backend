@@ -13,6 +13,7 @@ variable "clickhouse_settings" {
       zone      = string
       subnet_id = string
     }))
+    version = string
   })
 }
 

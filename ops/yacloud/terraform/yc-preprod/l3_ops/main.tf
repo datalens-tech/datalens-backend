@@ -89,6 +89,7 @@ module "main" {
     network_id    = module.constants.env_data.network_id
     ch_hosts      = [module.subinfra_data.ops_locations[1]]
     secret_id     = "fc3bai9r30l9pdi78dv6"
+    version       = "22.8"
   }
   console_base_url = "https://console-preprod.cloud.yandex.ru"
 
@@ -104,4 +105,3 @@ module "main" {
   }
   enable_cloud_logs = true
 }
-
