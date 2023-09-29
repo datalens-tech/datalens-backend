@@ -287,7 +287,8 @@ class DefaultConnectorDataGroupByFormulaTestSuite(StandardizedDataApiTestBase, R
     ) -> None:
         ds = saved_dataset
         grouped_resp = self.get_result_ordered(
-            ds, data_api,
+            ds,
+            data_api,
             field_names=(data_api_test_params.two_dims[0], data_api_test_params.distinct_field),
             order_by=(data_api_test_params.distinct_field,),
         )

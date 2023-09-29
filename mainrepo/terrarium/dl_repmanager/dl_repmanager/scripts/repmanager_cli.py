@@ -5,6 +5,7 @@ import difflib
 import os
 from pathlib import Path
 from pprint import pprint
+import sys
 from typing import Optional
 
 import attr
@@ -32,6 +33,7 @@ from dl_repmanager.repository_manager import (
     RepositoryManager,
 )
 from dl_repmanager.repository_navigator import RepositoryNavigator
+from dl_repmanager.scripts.cli_base import CliToolBase
 from dl_repmanager.scripts.package_meta_cli import (
     DlPackageMetaTool,
     add_package_commands,
@@ -60,9 +62,13 @@ def _entity_ref_list_type(value: str | list[EntityReference]) -> list[EntityRefe
     return value
 
 
+_CWD = Path.cwd()
+
+
 def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="DL Repository Management CLI")
     parser.add_argument("--config", help="Specify configuration file", default=DEFAULT_CONFIG_FILE_NAME)
+    parser.add_argument("--base-path", type=Path, help="Base repository path", default=_CWD)
     parser.add_argument("--fs-editor", help="Override the FS editor type")
     parser.add_argument("--dry-run", action="store_true", help="Force usage of virtual FS editor")
 
@@ -234,11 +240,8 @@ def make_parser() -> argparse.ArgumentParser:
     return parser
 
 
-_BASE_DIR = Path.cwd()
-
-
 @attr.s
-class DlRepManagerTool:
+class DlRepManagerTool(CliToolBase):
     repository_env: RepoEnvironment = attr.ib(kw_only=True)
     package_index: PackageIndex = attr.ib(kw_only=True)
     repository_manager: RepositoryManager = attr.ib(kw_only=True)
@@ -246,8 +249,8 @@ class DlRepManagerTool:
     py_prj_editor: PyPrjEditor = attr.ib(kw_only=True)
 
     @classmethod
-    def validate_env(cls) -> None:
-        """Validate that the tool is being run correctly"""
+    def get_parser(cls) -> argparse.ArgumentParser:
+        return make_parser()
 
     def init(self, package_name: str, package_type: str) -> None:
         self.repository_manager.init_package(package_module_name=package_name, package_type=package_type)
@@ -412,14 +415,11 @@ class DlRepManagerTool:
             )
 
     @classmethod
-    def run(cls, args: argparse.Namespace) -> None:
-        config_file_name = args.config
-
-        fs_editor_type = args.fs_editor if not args.dry_run else "virtual"
+    def initialize(cls, base_path: Path, config_file_name: str, fs_editor_type: str) -> DlRepManagerTool:
         repository_env = RepoEnvironmentLoader(
             config_file_name=config_file_name,
             override_fs_editor_type=fs_editor_type,
-        ).load_env(base_path=_BASE_DIR)
+        ).load_env(base_path=base_path)
 
         index_builder = PackageIndexBuilder(repository_env=repository_env)
         package_index = index_builder.build_index()
@@ -441,8 +441,14 @@ class DlRepManagerTool:
                 package_index=package_index,
             ),
         )
+        return tool
 
-        tool.validate_env()
+    @classmethod
+    def run_parsed_args(cls, args: argparse.Namespace) -> None:
+        config_file_name = args.config
+        base_path = args.base_path
+        fs_editor_type = args.fs_editor if not args.dry_run else "virtual"
+        tool = cls.initialize(base_path=base_path, config_file_name=config_file_name, fs_editor_type=fs_editor_type)
 
         match args.command:
             case "init":
@@ -486,8 +492,7 @@ class DlRepManagerTool:
 
 def main() -> None:
     setup_basic_logging()
-    parser = make_parser()
-    DlRepManagerTool.run(parser.parse_args())
+    DlRepManagerTool.run(sys.argv)
 
 
 if __name__ == "__main__":

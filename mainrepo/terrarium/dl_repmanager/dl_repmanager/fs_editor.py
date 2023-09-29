@@ -79,15 +79,15 @@ class FilesystemEditor(abc.ABC):
     def _iter_files(
         self,
         path: Path,
-        mask_blacklist: Collection[re.Pattern] = (),
+        exclude_masks: Collection[re.Pattern] = (),
     ) -> Generator[Path, None, None]:
         for file_path in path.rglob("*/"):
             if file_path.is_file():
-                matches_blacklist = False
-                for mask in mask_blacklist:
+                matches_exclude_mask = False
+                for mask in exclude_masks:
                     if mask.match(str(file_path)):
-                        matches_blacklist = True
-                if matches_blacklist:
+                        matches_exclude_mask = True
+                if matches_exclude_mask:
                     continue
 
                 yield file_path
@@ -97,9 +97,9 @@ class FilesystemEditor(abc.ABC):
         old_text: str,
         new_text: str,
         path: Path,
-        mask_blacklist: Collection[re.Pattern] = (),
+        exclude_masks: Collection[re.Pattern] = (),
     ) -> None:
-        for file_path in self._iter_files(path=path, mask_blacklist=mask_blacklist):
+        for file_path in self._iter_files(path=path, exclude_masks=exclude_masks):
             self.replace_text_in_file(file_path, old_text=old_text, new_text=new_text)
 
     @final
@@ -108,19 +108,19 @@ class FilesystemEditor(abc.ABC):
         old_text: str,
         new_text: str,
         path: Path,
-        mask_blacklist: Collection[re.Pattern] = (),
+        exclude_masks: Collection[re.Pattern] = (),
     ) -> None:
         self._validate_paths(path)
-        self._replace_text_in_dir(old_text=old_text, new_text=new_text, path=path, mask_blacklist=mask_blacklist)
+        self._replace_text_in_dir(old_text=old_text, new_text=new_text, path=path, exclude_masks=exclude_masks)
 
     def _replace_regex_in_dir(
         self,
         path: Path,
         regex: re.Pattern,
         repl: Callable[[re.Match], str],
-        mask_blacklist: Collection[re.Pattern] = (),
+        exclude_masks: Collection[re.Pattern] = (),
     ) -> None:
-        for file_path in self._iter_files(path=path, mask_blacklist=mask_blacklist):
+        for file_path in self._iter_files(path=path, exclude_masks=exclude_masks):
             self.replace_regex_in_file(file_path, regex=regex, repl=repl)
 
     @final
@@ -129,10 +129,10 @@ class FilesystemEditor(abc.ABC):
         path: Path,
         regex: re.Pattern,
         repl: Callable[[re.Match], str],
-        mask_blacklist: Collection[re.Pattern] = (),
+        exclude_masks: Collection[re.Pattern] = (),
     ) -> None:
         self._validate_paths(path)
-        self._replace_regex_in_dir(path=path, regex=regex, repl=repl, mask_blacklist=mask_blacklist)
+        self._replace_regex_in_dir(path=path, regex=regex, repl=repl, exclude_masks=exclude_masks)
 
     @abc.abstractmethod
     def _copy_path(self, src_path: Path, dst_path: Path) -> None:

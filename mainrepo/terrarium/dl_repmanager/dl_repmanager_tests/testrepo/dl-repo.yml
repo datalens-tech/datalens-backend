@@ -1,0 +1,18 @@
+dl_repo:
+  fs_editor: default
+
+  default_boilerplate_path: lib/testing_pkg_boilerplate
+
+  package_types:
+    - type: lib
+      root_path: lib
+      tags:
+        - main_dependency_group
+
+  custom_package_map: {}
+  metapackages: []
+  plugins:
+    - type: dependency_registration
+
+  edit_exclude_masks:
+    - ".*/__pycache__"

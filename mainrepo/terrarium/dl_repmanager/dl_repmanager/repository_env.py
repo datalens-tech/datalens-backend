@@ -8,14 +8,15 @@ The file should have a structure similar to this:
       include:
         - core_repo/dl-repo.yml
 
+      default_boilerplate_path: lib/dl_package_boilerplate
+
       package_types:
         - type: lib
           root_path: lib
-          boilerplate_path: lib/dl_package_boilerplate
 
         - type: app
           root_path: app
-          boilerplate_path: lib/dl_package_boilerplate
+          boilerplate_path: app/app_package_boilerplate
           tags:
             - own_dependency_group
 
@@ -29,6 +30,9 @@ The file should have a structure similar to this:
 
       plugins:
         - type: dependency_registration
+
+      edit_exclude_masks:
+        - ".*\\.mo",
 
 
 Description of the sections:
@@ -46,6 +50,7 @@ Description of the sections:
 from __future__ import annotations
 
 from pathlib import Path
+import re
 from typing import (
     TYPE_CHECKING,
     Iterable,
@@ -99,6 +104,7 @@ class RepoEnvironment:
     custom_package_map: dict[str, str] = attr.ib(kw_only=True, factory=dict)
     fs_editor: FilesystemEditor = attr.ib(kw_only=True)
     plugin_configs: list[PluginConfig] = attr.ib(kw_only=True, factory=list)
+    edit_exclude_masks: frozenset[re.Pattern] = attr.ib(kw_only=True, default=frozenset())
 
     def iter_package_abs_dirs(self) -> Iterable[tuple[str, Path]]:
         return sorted(
@@ -136,6 +142,16 @@ class RepoEnvironment:
     def get_metapackage_spec(self, metapackage_name: str) -> MetaPackageSpec:
         return self.metapackages[metapackage_name]
 
+    def get_edit_exclude_masks(self) -> frozenset[re.Pattern]:
+        return self.edit_exclude_masks
+        return tuple(
+            re.compile(pattern_str)
+            for pattern_str in (
+                r".*\.mo",
+                r".*\.xlsx",
+            )
+        )
+
 
 _DEFAULT_FS_EDITOR_TYPE = "default"
 
@@ -148,6 +164,7 @@ class ConfigContents:
     custom_package_map: dict[str, str] = attr.ib(kw_only=True, factory=dict)
     fs_editor_type: Optional[str] = attr.ib(kw_only=True, default=_DEFAULT_FS_EDITOR_TYPE)
     plugin_configs: list[PluginConfig] = attr.ib(kw_only=True, factory=list)
+    edit_exclude_masks: frozenset[re.Pattern] = attr.ib(kw_only=True, default=frozenset())
 
 
 def discover_config(base_path: Path, config_file_name: str) -> Path:
@@ -171,13 +188,19 @@ class RepoEnvironmentLoader:
 
         base_path = config_path.parent
         env_settings = config_data.get("dl_repo", {})
+
+        default_boilerplate_path_str: Optional[str] = env_settings.get("default_boilerplate_path")
+
         package_types: dict[str, PackageTypeConfig] = {}
         for package_type_data in env_settings.get("package_types", ()):
             package_type = package_type_data["type"]
+            boilerplate_path_str = package_type_data.get("boilerplate_path", default_boilerplate_path_str)
+            if boilerplate_path_str is None:
+                raise ValueError("Boilerplate must be specified in package type or default")
             pkg_type_config = PackageTypeConfig(
                 home_repo_path=base_path,
                 path=base_path / package_type_data["root_path"],
-                boilerplate_path=base_path / package_type_data["boilerplate_path"],
+                boilerplate_path=base_path / boilerplate_path_str,
                 tags=frozenset(package_type_data.get("tags", ())),
             )
             package_types[package_type] = pkg_type_config
@@ -200,6 +223,10 @@ class RepoEnvironmentLoader:
             )
             plugin_configs.append(plugin_config)
 
+        edit_exclude_masks: set[re.Pattern] = set()
+        for edit_exclude_masks_item_str in env_settings.get("edit_exclude_masks", ()):
+            edit_exclude_masks.add(re.compile(edit_exclude_masks_item_str))
+
         custom_package_map: dict[str, str] = dict(env_settings.get("custom_package_map", {}))
 
         fs_editor_type: Optional[str] = env_settings.get("fs_editor")
@@ -209,6 +236,7 @@ class RepoEnvironmentLoader:
             package_types = dict(included_config_contents.package_types, **package_types)
             metapackages = dict(included_config_contents.metapackages, **metapackages)
             custom_package_map = dict(included_config_contents.custom_package_map, **custom_package_map)
+            edit_exclude_masks |= included_config_contents.edit_exclude_masks
             fs_editor_type = fs_editor_type or included_config_contents.fs_editor_type
 
         # FS editor and plugins are loaded only from the top-level config
@@ -219,6 +247,7 @@ class RepoEnvironmentLoader:
             custom_package_map=custom_package_map,
             fs_editor_type=fs_editor_type,
             plugin_configs=plugin_configs,
+            edit_exclude_masks=frozenset(edit_exclude_masks),
         )
 
     def _load_from_yaml_file(self, config_path: Path) -> RepoEnvironment:
@@ -236,6 +265,7 @@ class RepoEnvironmentLoader:
             metapackages=config_contents.metapackages,
             custom_package_map=config_contents.custom_package_map,
             plugin_configs=config_contents.plugin_configs,
+            edit_exclude_masks=config_contents.edit_exclude_masks,
             fs_editor=get_fs_editor(
                 fs_editor_type=fs_editor_type,
                 base_path=base_path,

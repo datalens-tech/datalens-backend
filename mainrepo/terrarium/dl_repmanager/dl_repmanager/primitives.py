@@ -135,8 +135,8 @@ class PackageInfo(_Clonable):
 
     @property
     def single_test_dir(self) -> str:
-        assert len(self.module_names) == 1
-        return self.module_names[0]
+        assert len(self.test_dirs) == 1
+        return self.test_dirs[0]
 
     @property
     def reg_entity_ref(self) -> EntityReference:

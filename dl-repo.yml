@@ -6,35 +6,32 @@ dl_repo:
 
   fs_editor: git
 
+  default_boilerplate_path: mainrepo/lib/dl_package_boilerplate
+
   package_types:
     - type: lib_ya  # Main libraries (internal repo)
       root_path: lib
-      boilerplate_path: mainrepo/lib/dl_package_boilerplate
       tags:
         - main_dependency_group
 
     - type: ops_ya
       root_path: ops
-      boilerplate_path: mainrepo/lib/dl_package_boilerplate
       tags:
         - main_dependency_group
 
     - type: app_ya
       root_path: app
-      boilerplate_path: mainrepo/lib/dl_package_boilerplate
       tags:
         - main_dependency_group
         - own_dependency_group
 
     - type: app_yc
       root_path: app_yc
-      boilerplate_path: mainrepo/lib/dl_package_boilerplate
       tags:
         - own_dependency_group
 
     - type: app_nebius
       root_path: app_nebius
-      boilerplate_path: mainrepo/lib/dl_package_boilerplate
       tags:
         - own_dependency_group
 
