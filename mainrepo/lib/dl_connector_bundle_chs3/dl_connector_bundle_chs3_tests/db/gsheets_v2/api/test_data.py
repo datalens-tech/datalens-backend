@@ -72,7 +72,7 @@ class TestGSheetsFileS3DataResult(GSheetsFileS3DataApiTestBase, CHS3DataResultTe
 
         # trigger data update by setting the data update time in the connection to N minutes ago
         data_updated_at = conn.data.oldest_data_update_time() - datetime.timedelta(
-            seconds=GSheetsFileS3ConnectionLifecycleManager.STALE_THRESHOLD_SECONDS + 60  # just in case
+            seconds=GSheetsFileS3ConnectionLifecycleManager.STALE_THRESHOLD_SECONDS + 60,  # just in case
         )
         for src in conn.data.sources:
             src.data_updated_at = data_updated_at
@@ -142,7 +142,9 @@ class TestGSheetsFileS3DataResult(GSheetsFileS3DataApiTestBase, CHS3DataResultTe
     ) -> None:
         conn = sync_us_manager.get_by_id(saved_connection_id, GSheetsFileS3Connection)
 
-        long_long_ago = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=31)
+        long_long_ago = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
+            seconds=GSheetsFileS3ConnectionLifecycleManager.STALE_THRESHOLD_SECONDS + 60,  # just in case
+        )
         err_details = {"error": "details", "request-id": "637"}
         conn.data.component_errors.add_error(
             id=conn.data.sources[0].id,

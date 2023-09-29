@@ -35,6 +35,12 @@ dl_repo:
       tags:
         - own_dependency_group
 
+    - type: app_ya_team
+      root_path: app_ya_team
+      boilerplate_path: mainrepo/lib/dl_package_boilerplate
+      tags:
+        - own_dependency_group
+
   metapackages:
     - name: ops_ci
       toml: ops/ci/pyproject.toml

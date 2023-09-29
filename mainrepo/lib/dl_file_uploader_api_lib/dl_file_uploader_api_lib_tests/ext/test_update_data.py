@@ -7,6 +7,7 @@ import uuid
 import pytest
 
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from dl_connector_bundle_chs3.chs3_gsheets.core.lifecycle import GSheetsFileS3ConnectionLifecycleManager
 from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from dl_constants.enums import (
     FileProcessingStatus,
@@ -27,7 +28,9 @@ LOGGER = logging.getLogger(__name__)
 async def saved_gsheets_v2_connection(loop, bi_context, default_async_usm_per_test, s3_persistent_bucket, s3_client):
     us_manager = default_async_usm_per_test
     conn_name = "gsheets_v2 test conn {}".format(uuid.uuid4())
-    long_long_ago = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=31)
+    long_long_ago = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
+        seconds=GSheetsFileS3ConnectionLifecycleManager.STALE_THRESHOLD_SECONDS + 60,  # just in case
+    )
 
     dummy_raw_schema = [SchemaColumn("dummy_column", user_type=UserDataType.string)]
     data = GSheetsFileS3Connection.DataModel(

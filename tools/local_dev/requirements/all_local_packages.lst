@@ -8,6 +8,10 @@ app/bi_rqe_ext_sync
 app/bi_rqe_int_sync
 app_nebius/control_api
 app_nebius/data_api
+app_ya_team/control_api
+app_ya_team/data_api
+app_ya_team/file_uploader_api
+app_ya_team/file_uploader_worker
 app_yc/app_yc_control_api
 app_yc/app_yc_data_api
 app_yc/app_yc_data_api_sec_embeds

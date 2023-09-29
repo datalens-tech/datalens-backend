@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "app-ya-team-file-uploader-api"
+version = "0.0.0"
+description = ""
+authors = ["Aleksei Konstantinov <konstasa@yandex-team.ru>"]
+packages = [{include = "file_uploader_api"}]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+gunicorn = ">=20.1.0"
+python = ">=3.10, <3.12"
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
+bi-defaults = {path = "../../lib/bi_defaults"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-file-uploader-api-lib = {path = "../../mainrepo/lib/dl_file_uploader_api_lib"}
+yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[datalens_ci]
+skip_test = true
+
+[[tool.poetry.source]]
+name = "ya"
+url = "https://pypi.yandex-team.ru/simple/"
+priority = "default"
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

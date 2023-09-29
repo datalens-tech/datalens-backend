@@ -3,8 +3,8 @@ from typing import (
     Sequence,
 )
 
-from file_uploader_api.app_settings import FileUploaderAPISettingsNebius
 import attr
+from file_uploader_api.app_settings import FileUploaderAPISettingsNebius
 
 from bi_api_commons_ya_cloud.aio.middlewares.yc_auth import YCAuthService
 from bi_api_commons_ya_cloud.constants import YcTokenHeaderMode

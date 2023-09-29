@@ -202,13 +202,15 @@ class CHYTMirroringConfig(SettingsBase):
 
 
 @attr.s(frozen=True)
-class AppSettingsInternal(AppSettings):
+class AppSettingsYT(AppSettings):
+    MDB: MDBSettings = s_attrib("MDB", missing_factory=MDBSettings)  # type: ignore
+
     DLS_HOST: str = s_attrib("DLS_HOST", fallback_cfg_key="DATALENS_API_LB_DLS_BASE_URL", missing=None)  # type: ignore
     DLS_API_KEY: Optional[str] = s_attrib("DLS_API_KEY", missing=None)  # type: ignore
 
 
 @attr.s(frozen=True)
-class ControlApiAppSettingsInternal(AppSettingsInternal):
+class ControlApiAppSettingsYT(AppSettingsYT, ControlApiAppSettings):
     BLACKBOX_RETRY_PARAMS: dict[str, Any] = s_attrib(  # type: ignore
         "BLACKBOX_RETRY_TIMEOUT", env_var_converter=json.loads, missing_factory=dict
     )
@@ -216,5 +218,5 @@ class ControlApiAppSettingsInternal(AppSettingsInternal):
 
 
 @attr.s(frozen=True)
-class DataApiAppSettingsInternal(AppSettingsInternal):
+class DataApiAppSettingsYT(AppSettingsYT, DataApiAppSettings):
     CHYT_MIRRORING: Optional[CHYTMirroringConfig] = s_attrib("DL_CHYT_MIRRORING", enabled_key_name="ON", missing=None)  # type: ignore

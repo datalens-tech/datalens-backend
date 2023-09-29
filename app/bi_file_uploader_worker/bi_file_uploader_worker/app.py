@@ -9,6 +9,7 @@ from bi_defaults.environments import (
     InstallationsMap,
 )
 from bi_defaults.yenv_type import YEnvFallbackConfigResolver
+from bi_file_uploader_worker import app_version
 from bi_file_uploader_worker.app_factory import DefaultFileUploaderWorkerFactory
 from bi_file_uploader_worker.app_settings import DefaultFileUploaderWorkerSettings
 from dl_api_commons.sentry_config import (
@@ -57,7 +58,7 @@ def run_standalone_worker() -> None:
         app_name="bi_file_uploader_worker",
     )
     if settings.SENTRY_DSN is not None:
-        configure_sentry(SentryConfig(dsn=settings.SENTRY_DSN))
+        configure_sentry(SentryConfig(dsn=settings.SENTRY_DSN, release=app_version))
     worker_task = loop.create_task(worker.start())
     try:
         loop.run_forever()
@@ -77,7 +78,7 @@ def run_health_check() -> None:
         app_name="bi_file_uploader_worker_health_check",
     )
     if settings.SENTRY_DSN is not None:
-        configure_sentry(SentryConfig(dsn=settings.SENTRY_DSN))
+        configure_sentry(SentryConfig(dsn=settings.SENTRY_DSN, release=app_version))
     worker = DefaultFileUploaderWorkerFactory(settings=settings).create_worker()
     health_checker = HealthChecker(worker)
     loop.run_until_complete(health_checker.check())

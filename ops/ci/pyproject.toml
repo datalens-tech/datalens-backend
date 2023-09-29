@@ -285,6 +285,18 @@ nebius_file_uploader_api = {path = "../../app_nebius/file_uploader_api"}
 [tool.poetry.group.nebius_file_uploader_worker.dependencies]
 nebius_file_uploader_worker = {path = "../../app_nebius/file_uploader_worker"}
 
+[tool.poetry.group.app_ya_team_control_api.dependencies]
+app-ya-team-control-api = {path = "../../app_ya_team/control_api"}
+
+[tool.poetry.group.app_ya_team_data_api.dependencies]
+app-ya-team-data-api = {path = "../../app_ya_team/data_api"}
+
+[tool.poetry.group.app_ya_team_file_uploader_api.dependencies]
+app-ya-team-file-uploader-api = {path = "../../app_ya_team/file_uploader_api"}
+
+[tool.poetry.group.app_ya_team_file_uploader_worker.dependencies]
+app-ya-team-file-uploader-worker = {path = "../../app_ya_team/file_uploader_worker"}
+
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.3.0"

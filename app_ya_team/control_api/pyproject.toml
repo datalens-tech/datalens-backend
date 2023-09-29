@@ -1,0 +1,69 @@
+[tool.poetry]
+name = "app-ya-team-control-api"
+version = "0.0.0"
+description = ""
+authors = ["Aleksei Konstantinov <konstasa@yandex-team.ru>"]
+packages = [{include = "control_api"}]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+blinker = ">=1.5"
+certifi-yandex = ">=2021.10.08"
+Flask = ">=2.0.3"
+python = ">=3.10, <3.12"
+raven = ">=6.10.0"
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
+datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}
+bi-defaults = {path = "../../lib/bi_defaults"}
+bi-maintenance = {path = "../../lib/bi_maintenance"}
+bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
+yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}
+yandex-bi-service-registry-ya-team = {path = "../../lib/bi_service_registry_ya_team"}
+datalens-connector-clickhouse = {path = "../../mainrepo/lib/dl_connector_clickhouse"}
+datalens-connector-postgresql = {path = "../../mainrepo/lib/dl_connector_postgresql"}
+datalens-connector-greenplum = {path = "../../mainrepo/lib/dl_connector_greenplum"}
+datalens-connector-promql = {path = "../../mainrepo/lib/dl_connector_promql"}
+datalens-connector-bigquery = {path = "../../mainrepo/lib/dl_connector_bigquery"}
+datalens-connector-snowflake = {path = "../../mainrepo/lib/dl_connector_snowflake"}
+datalens-connector-bundle-chs3 = {path = "../../mainrepo/lib/dl_connector_bundle_chs3"}
+yandex-bi-connector-chyt-internal = {path = "../../lib/bi_connector_chyt_internal"}
+yandex-bi-connector-gsheets = {path = "../../lib/bi_connector_gsheets"}
+yandex-bi-connector-metrica = {path = "../../lib/bi_connector_metrica"}
+yandex-bi-connector-mssql = {path = "../../lib/bi_connector_mssql"}
+yandex-bi-connector-mysql = {path = "../../lib/bi_connector_mysql"}
+yandex-bi-connector-oracle = {path = "../../lib/bi_connector_oracle"}
+bi-connector-solomon = {path = "../../lib/bi_connector_solomon"}
+yandex-bi-connector-usage-tracking-ya-team = {path = "../../lib/bi_connector_usage_tracking_ya_team"}
+yandex-bi-connector-yql = {path = "../../lib/bi_connector_yql"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[datalens_ci]
+skip_test = true
+
+[[tool.poetry.source]]
+name = "ya"
+url = "https://pypi.yandex-team.ru/simple/"
+priority = "default"
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[datalens.i18n.domains]
+control_api = [
+    {path = "control_api"},
+]

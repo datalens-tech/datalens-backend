@@ -163,6 +163,46 @@ target "app_bi_api" {
   dockerfile = "Dockerfile.tier1"
 }
 
+target "app_ya_team_control_api" {
+  pull       = false
+  contexts = {
+    bake_ctx_base_img = "target:base_tier_1"
+    bake_ctx_src_lib  = "target:src_lib"
+  }
+  context    = "${PROJECT_ROOT}/app_ya_team/control_api"
+  dockerfile = "Dockerfile"
+}
+
+target "app_ya_team_data_api" {
+  pull       = false
+  contexts = {
+    bake_ctx_base_img = "target:base_tier_1"
+    bake_ctx_src_lib  = "target:src_lib"
+  }
+  context    = "${PROJECT_ROOT}/app_ya_team/data_api"
+  dockerfile = "Dockerfile"
+}
+
+target "app_ya_team_file_uploader_api" {
+  pull     = false
+  contexts = {
+    bake_ctx_base_img = "target:base_tier_1"
+    bake_ctx_src_lib  = "target:src_lib"
+  }
+  context    = "${PROJECT_ROOT}/app_ya_team/file_uploader_api"
+  dockerfile = "Dockerfile"
+}
+
+target "app_ya_team_file_uploader_worker" {
+  pull     = false
+  contexts = {
+    bake_ctx_base_img = "target:base_tier_1"
+    bake_ctx_src_lib  = "target:src_lib"
+  }
+  context    = "${PROJECT_ROOT}/app_ya_team/file_uploader_worker"
+  dockerfile = "Dockerfile"
+}
+
 target "app_yc_control_api" {
   pull     = false
   contexts = {
