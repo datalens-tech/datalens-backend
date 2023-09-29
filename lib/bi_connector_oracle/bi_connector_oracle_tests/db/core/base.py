@@ -1,9 +1,11 @@
 import asyncio
 from typing import Generator
+import uuid
 
 import pytest
 
 from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.database import Db
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 from bi_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
@@ -26,7 +28,7 @@ class BaseOracleTestClass(BaseConnectionTestClass[ConnectionSQLOracle]):
         asyncio.set_event_loop_policy(None)
 
     @pytest.fixture(scope="class")
-    def db_url(self, initdb_ready) -> str:
+    def db_url(self) -> str:
         return test_config.DB_CORE_URL
 
     @pytest.fixture(scope="function")
@@ -40,11 +42,18 @@ class BaseOracleTestClass(BaseConnectionTestClass[ConnectionSQLOracle]):
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
 
+    @pytest.fixture(scope="class")
+    def _empty_table(self, db: Db) -> None:
+        # So that template listings are not empty
+        table_name = f"t_{uuid.uuid4().hex[:6]}"
+        db.execute(f'CREATE TABLE datalens.{table_name} ("value" VARCHAR2(255))')
+
     @pytest.fixture(scope="function")
     def saved_connection(
         self,
         sync_us_manager: SyncUSManager,
         connection_creation_params: dict,
+        _empty_table,
     ) -> ConnectionSQLOracle:
         conn = make_oracle_saved_connection(sync_usm=sync_us_manager, **connection_creation_params)
         return conn

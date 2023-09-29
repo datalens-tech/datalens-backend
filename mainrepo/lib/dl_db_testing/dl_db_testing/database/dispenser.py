@@ -23,19 +23,34 @@ _DB_CONFIG_TV = TypeVar("_DB_CONFIG_TV", bound=DbConfig)
 _DB_TV = TypeVar("_DB_TV", bound=DbBase)
 
 
+@attr.s
 class DbDispenserBase(abc.ABC, Generic[_DB_CONFIG_TV, _DB_TV]):
+    _wait_on_init: bool = attr.ib(kw_only=True, default=True)
+    _default_reconnect_timeout: int = attr.ib(kw_only=True, default=600)
+
     @abc.abstractmethod
     def make_database(self, db_config: _DB_CONFIG_TV) -> _DB_TV:
         raise NotImplementedError
 
+    def wait_for_db(self, db: _DB_TV, reconnect_timeout: Optional[int] = None) -> None:
+        if reconnect_timeout is None:
+            reconnect_timeout = self._default_reconnect_timeout
+        wait_for(name=f"test_db_{db.config}", condition=db.test, timeout=reconnect_timeout)
+
+    def initialize_db(self, db: _DB_TV) -> None:
+        if self._wait_on_init:
+            if not db.test():
+                self.wait_for_db(db=db)
+
     def get_database(self, db_config: _DB_CONFIG_TV) -> _DB_TV:
-        return self.make_database(db_config)
+        db = self.make_database(db_config)
+        self.initialize_db(db)
+        return db
 
 
 @attr.s
 class ReInitableDbDispenser(DbDispenserBase[_DB_CONFIG_TV, _DB_TV], Generic[_DB_CONFIG_TV, _DB_TV]):
     _max_reinit_count: int = attr.ib(kw_only=True, default=4)
-    _default_reconnect_timeout: int = attr.ib(kw_only=True, default=600)
     _db_cache: Dict[_DB_CONFIG_TV, _DB_TV] = attr.ib(init=False, factory=dict)
     _reinit_hooks: Dict[_DB_CONFIG_TV, Callable[[], None]] = attr.ib(init=False, factory=dict)
     _db_reinit_counts: Dict[_DB_CONFIG_TV, int] = attr.ib(init=False, factory=lambda: defaultdict(lambda: 0))
@@ -60,13 +75,10 @@ class ReInitableDbDispenser(DbDispenserBase[_DB_CONFIG_TV, _DB_TV], Generic[_DB_
             return False
 
         if not db.test():
-            if reconnect_timeout is None:
-                reconnect_timeout = self._default_reconnect_timeout
-            assert reconnect_timeout is not None
             # DB is unavailable, so re-initialize the DB is possible
             reinit_hook()
             # Wait until it comes up
-            wait_for(name=f"test_db_{db_config}", condition=db.test, timeout=reconnect_timeout)
+            self.wait_for_db(db=db, reconnect_timeout=reconnect_timeout)
             self._db_reinit_counts[db_config] += 1
             return True
 

@@ -1,6 +1,6 @@
+from copy import deepcopy
 import json
 import uuid
-from copy import deepcopy
 
 import pytest
 

@@ -15,5 +15,5 @@ class OracleTestBase(FormulaConnectorTestBase):
     null_casts_to_number = True
 
     @pytest.fixture(scope="class")
-    def db_url(self, initdb_ready) -> str:
+    def db_url(self) -> str:
         return DB_URLS[self.dialect]

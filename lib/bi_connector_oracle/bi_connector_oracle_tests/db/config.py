@@ -19,7 +19,6 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
 
 COMPOSE_PROJECT_NAME = os.environ.get("COMPOSE_PROJECT_NAME", "bi_connector_oracle")
 ORACLE_CONTAINER_LABEL = "db-oracle"
-INIT_DB_PORT = get_test_container_hostport("init-db", fallback_port=51802).port
 
 
 class CoreConnectionSettings:
@@ -63,6 +62,10 @@ from (
 _DB_URL = (
     f'oracle://datalens:qwerty@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={get_test_container_hostport("db-oracle", fallback_port=51800).host})'
     f'(PORT={get_test_container_hostport("db-oracle", fallback_port=51800).port}))(CONNECT_DATA=(SERVICE_NAME={CoreConnectionSettings.DB_NAME})))'
+)
+SYSDBA_URL = (
+    f'oracle://sys:qwerty@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={get_test_container_hostport("db-oracle", fallback_port=51800).host})'
+    f'(PORT={get_test_container_hostport("db-oracle", fallback_port=51800).port}))(CONNECT_DATA=(SERVICE_NAME={CoreConnectionSettings.DB_NAME})))?mode=sysdba'
 )
 DB_CORE_URL = _DB_URL
 DB_URLS = {
