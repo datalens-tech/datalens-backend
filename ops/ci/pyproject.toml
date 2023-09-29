@@ -89,7 +89,7 @@ jaeger-client = "==4.8.0"
 pytest = "==7.2.2"
 tornado = "==6.2"
 yandex-passport-vault-client = "==1.5.2"
-cryptography = "==3.3.2"
+cryptography = "==38.0.4"
 typeguard = "==2.13.3"
 flask-sqlalchemy = "==2.5.1"
 marshmallow-sqlalchemy = "==0.25.0"
@@ -279,13 +279,18 @@ nebius_control_api = {path = "../../app_nebius/control_api"}
 [tool.poetry.group.nebius_data_api.dependencies]
 nebius_data_api = {path = "../../app_nebius/data_api"}
 
+[tool.poetry.group.nebius_file_uploader_api.dependencies]
+nebius_file_uploader_api = {path = "../../app_nebius/file_uploader_api"}
+
+[tool.poetry.group.nebius_file_uploader_worker.dependencies]
+nebius_file_uploader_worker = {path = "../../app_nebius/file_uploader_worker"}
+
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.3.0"
 ruff = "==0.0.267"
 ipdb = "==0.13.13"
 mysqlclient = "==1.4.6"
-psycopg2 = "==2.8.6"
 pyodbc = "==4.0.35"
 pytest = "==7.2.2"
 python-dateutil = "==2.8.2"
@@ -395,7 +400,6 @@ oracledb =  {ignore = true}
 pandas = {name = "pandas-stubs", version="1.5.3.230321"}
 platformdirs =  {ignore = true}
 poetry =  {ignore = true}
-psycopg2 =  {ignore = true}
 psycopg2-binary =  {name = "types-psycopg2"}
 pyjwt =  {ignore = true}
 pyodbc =  {ignore = true}

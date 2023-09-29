@@ -330,3 +330,31 @@ target "app_nebius_data_api" {
   context    = "${PROJECT_ROOT}/app_nebius/data_api"
   dockerfile = "../Dockerfile.nebius_app"
 }
+
+target "app_nebius_file_uploader_api" {
+  pull = false
+  args = {
+    APP_NAME = "file_uploader_api"
+  }
+  contexts = {
+    bake_ctx_base_img = "target:base_focal_tier_1"
+    bake_ctx_src_lib  = "target:src_lib"
+    certs = "${PROJECT_ROOT}/ops/docker-base-images/bi_base_mess/certs"
+  }
+  context    = "${PROJECT_ROOT}/app_nebius/file_uploader_api"
+  dockerfile = "../Dockerfile.nebius_app"
+}
+
+target "app_nebius_file_uploader_worker" {
+  pull = false
+  args = {
+    APP_NAME = "file_uploader_worker"
+  }
+  contexts = {
+    bake_ctx_base_img = "target:base_focal_tier_1"
+    bake_ctx_src_lib  = "target:src_lib"
+    certs = "${PROJECT_ROOT}/ops/docker-base-images/bi_base_mess/certs"
+  }
+  context    = "${PROJECT_ROOT}/app_nebius/file_uploader_worker"
+  dockerfile = "./Dockerfile"
+}

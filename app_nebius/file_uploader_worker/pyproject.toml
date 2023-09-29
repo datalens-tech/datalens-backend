@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "nebius_file_uploader_worker"
+version = "0.0.0"
+description = ""
+authors = ["Datalens Backendovich <datalens-dev@nebius.com>"]
+packages = [{include = "file_uploader_worker"}]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+aiohttp = ">=3.8.1"
+attrs = ">=22.2.0"
+datalens-version-ya = {path = "../../lib/dl_version_ya"}
+bi-defaults = {path = "../../lib/bi_defaults"}
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+datalens-file-uploader-worker-lib = {path = "../../mainrepo/lib/dl_file_uploader_worker_lib"}
+datalens-task-processor = {path = "../../mainrepo/lib/dl_task_processor"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[datalens_ci]
+skip_test = true
+
+[[tool.poetry.source]]
+name = "ya"
+url = "https://pypi.yandex-team.ru/simple/"
+priority = "default"
+
+[tool.poetry.scripts]
+file-uploader-worker = "app_yc_file_uploader_worker.app:run_standalone_worker"
+file-uploader-worker-health-check = "app_yc_file_uploader_worker.app:run_health_check"
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
