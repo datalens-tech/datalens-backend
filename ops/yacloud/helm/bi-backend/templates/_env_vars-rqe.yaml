@@ -2,3 +2,24 @@
 - name: RQE_CACHES_ON
   value: {{ .Values.enabled_features.rqe_caches | ternary "1" "0" | quote }}
 {{ end }}
+
+{{- define "env_vars-rqe-configuration" }}
+- name: RQE_EXT_ASYNC_HOST
+  value: "rqe-dataset-api-async.bi-backend.svc.cluster.local"
+- name: RQE_EXT_ASYNC_PORT
+  value: "80"
+- name: LOCAL_RQE_EXT_ASYNC
+  value: "0"
+- name: RQE_EXT_SYNC_HOST
+  value: "rqe-dataset-api-sync.bi-backend.svc.cluster.local"
+- name: RQE_EXT_SYNC_PORT
+  value: "80"
+- name: LOCAL_RQE_EXT_SYNC
+  value: "0"
+- name: RQE_INT_SYNC_HOST
+  value: "127.0.0.1"
+- name: RQE_INT_SYNC_PORT
+  value: "9874"
+- name: LOCAL_RQE_INT_SYNC
+  value: "0"
+{{ end }}

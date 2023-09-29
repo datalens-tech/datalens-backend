@@ -130,25 +130,43 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: rqe-dataset-api
+  name: rqe-dataset-api-async
   annotations:
     yandex.cloud/yandex-only: "true"
 spec:
   selector:
-    app: rqe-dataset-api
+    app: rqe-dataset-api-async
   type: NodePort
   ipFamilyPolicy: PreferDualStack
   ipFamilies:
     - IPv6
     - IPv4
   ports:
-    - name: http-sync-rqe
-      port: 9876
-      targetPort: 9876
+    - name: http
+      port: 80
+      targetPort: 8080
       protocol: TCP
-    - name: http-async-rqe
-      port: 9877
-      targetPort: 9877
+  internalTrafficPolicy: Local
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rqe-dataset-api-sync
+  annotations:
+    yandex.cloud/yandex-only: "true"
+spec:
+  selector:
+    app: rqe-dataset-api-sync
+  type: NodePort
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
       protocol: TCP
   internalTrafficPolicy: Local
 {{ end }}

@@ -24,6 +24,8 @@ spec:
       annotations:
         injector.tumblr.com/request: {{ ternary (ternary "jaeger,nginx_v2" "jaeger,nginx" (eq .Values.enabled_features.rootless_mode true)) "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
     spec:
+      affinity:
+        {{- include "pod_affinity-preferred_rqe" . | indent 8}}
       containers:
         - name: main
           image: "{{ .Values.docker_images_info.embedded_data_api.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
@@ -63,24 +65,7 @@ spec:
             - name: BI_COMPENG_PG_URL
               value: "postgresql://postgres@localhost:5432/postgres"
             {{ if .Values.enabled_features.network_policy}}
-            - name: RQE_EXT_ASYNC_HOST
-              value: "rqe-dataset-api.bi-backend.svc.cluster.local"
-            - name: RQE_EXT_ASYNC_PORT
-              value: "9877"
-            - name: LOCAL_RQE_EXT_ASYNC
-              value: "0"
-            - name: RQE_EXT_SYNC_HOST
-              value: "rqe-dataset-api.bi-backend.svc.cluster.local"
-            - name: RQE_EXT_SYNC_PORT
-              value: "9876"
-            - name: LOCAL_RQE_EXT_SYNC
-              value: "0"
-            - name: RQE_INT_SYNC_HOST
-              value: "127.0.0.1"
-            - name: RQE_INT_SYNC_PORT
-              value: "9874"
-            - name: LOCAL_RQE_INT_SYNC
-              value: "0"
+            {{- include "env_vars-rqe-configuration" . | indent 12 }}
             {{ end }}
           resources:
             requests:

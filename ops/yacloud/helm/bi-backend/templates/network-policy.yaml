@@ -7,7 +7,7 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      app: rqe-dataset-api
+      policy: rqe-dataset-api
   egress:
     {{ if .Values.host_allow }}
     {{- range splitList "," .Values.host_allow }}

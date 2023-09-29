@@ -1,0 +1,14 @@
+{{- define "pod_affinity-preferred_rqe" }}
+podAffinity:
+  preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - rqe-data-api-sync  {{/* TODO: should be AND instead of OR */}}
+                - rqe-data-api-async
+        topologyKey: "kubernetes.io/hostname"
+{{ end }}

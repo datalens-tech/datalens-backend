@@ -4,22 +4,23 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: rqe-dataset-api
+  name: rqe-dataset-api-async
   labels:
-    app: rqe-dataset-api
+    app: rqe-dataset-api-async
 spec:
-  replicas: {{ add .Values.scaling.rqe_dataset_api.desired | default 1 }}
+  replicas: {{ .Values.scaling.rqe_dataset_api.desired | default 1 }}  {{/* TODO: number of api nodes */}}
   strategy:
     rollingUpdate:
       maxSurge: {{ .Values.scaling.dataset_data_api.max_surge }}
       maxUnavailable: {{ .Values.scaling.dataset_data_api.max_unavailable }}
   selector:
     matchLabels:
-      app: rqe-dataset-api
+      app: rqe-dataset-api-async
   template:
     metadata:
       labels:
-        app: rqe-dataset-api
+        app: rqe-dataset-api-async
+        policy: rqe-dataset-api
       annotations:
         injector.tumblr.com/request: jaeger-agent
     spec:
@@ -27,16 +28,14 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       affinity:
-        podAffinity:
+        nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: app
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: {{ .Values.node_selection_options.node_selector_key }}
                     operator: In
                     values:
-                      - dataset-data-api
-                      - public-dataset-api
-              topologyKey: "kubernetes.io/hostname"
+                      - {{ .Values.node_selection_options.rqe_dataset_api.taint_toleration }}
       containers:
         - name: rqe-ext-async
           image: "{{ .Values.docker_images_info.rqe_ext_async.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
@@ -46,7 +45,7 @@ spec:
             {{- include "env_vars-rqe" . | indent 12 }}
             {{- include "secrets-rqe" . | indent 12}}
             - name: RQE_EXT_ASYNC_PORT
-              value: "9877"
+              value: "8080"
             - name: BISYS_USE_IPV6
               value: "0"
             {{- $sentry_targs := dict "sentry_enabled" .Values.sentry_enabled "sentry_dsn" .Values.sentry_dsns.dataset_data_api }}
@@ -57,20 +56,64 @@ spec:
               memory: {{.Values.app_resources.rqe_dataset_api.ram}}
           readinessProbe:
             httpGet:
-              port: 9877
+              port: 8080
               scheme: "HTTP"
               path: "/ping"
             initialDelaySeconds: 60
             periodSeconds: 10
           startupProbe:
             httpGet:
-              port: 9877
+              port: 8080
               scheme: "HTTP"
               path: "/ping"
             failureThreshold: 30
             periodSeconds: 10
           securityContext:
             {{- include "security-context-common" . | indent 12}}
+      tolerations:
+        - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
+          operator: "Equal"
+          value: "{{ .Values.node_selection_options.rqe_dataset_api.taint_toleration }}"
+          effect: "NoSchedule"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: rqe-dataset-api-sync
+  labels:
+    app: rqe-dataset-api-sync
+spec:
+  replicas: {{ .Values.scaling.rqe_dataset_api.desired | default 1 }}  {{/* TODO: number of api nodes */}}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.scaling.dataset_data_api.max_surge }}
+      maxUnavailable: {{ .Values.scaling.dataset_data_api.max_unavailable }}
+  selector:
+    matchLabels:
+      app: rqe-dataset-api-sync
+  template:
+    metadata:
+      labels:
+        app: rqe-dataset-api-sync
+        policy: rqe-dataset-api
+      annotations:
+        injector.tumblr.com/request: jaeger-agent
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: {{ .Values.node_selection_options.node_selector_key }}
+                    operator: In
+                    values:
+                      - {{ .Values.node_selection_options.rqe_dataset_api.taint_toleration }}
+      containers:
         - name: rqe-ext-sync
           image: "{{ .Values.docker_images_info.rqe_ext_sync.repo }}:{{ .Values.docker_images_info.bi_api.tag }}"
           env:
@@ -81,7 +124,7 @@ spec:
             - name: SNOWFLAKE_CABUNDLE_PATH
               value: "/etc/ssl/certs/ca-certificates.crt"
             - name: RQE_EXT_SYNC_PORT
-              value: "9876"
+              value: "8080"
             - name: BISYS_USE_IPV6
               value: "0"
             {{- include "env_vars-sentry" $sentry_targs | indent 12 }}
@@ -91,14 +134,14 @@ spec:
               memory: {{.Values.app_resources.rqe_dataset_api.ram}}
           readinessProbe:
             httpGet:
-              port: 9876
+              port: 8080
               scheme: "HTTP"
               path: "/ping"
             initialDelaySeconds: 60
             periodSeconds: 10
           startupProbe:
             httpGet:
-              port: 9876
+              port: 8080
               scheme: "HTTP"
               path: "/ping"
             failureThreshold: 30
