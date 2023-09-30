@@ -2,11 +2,18 @@ import json
 
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
+from dl_testing.regulated_test import RegulatedTestParams
 
 from bi_connector_bundle_ch_filtered_ya_cloud_tests.db.ch_geo_filtered.api.base import CHGeoFilteredConnectionTestBase
 
 
 class TestCHGeoFilteredSQLConnection(CHGeoFilteredConnectionTestBase, DefaultConnectorConnectionTestSuite):
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultConnectorConnectionTestSuite.test_cache_ttl_sec_override: "Unavailable for CHGeoFiltered",
+        }
+    )
+
     def test_get_update_delete_ch_geo_filtered_connection(
         self, control_api_sync_client: SyncHttpClientBase, saved_connection_id: str
     ):

@@ -5,12 +5,19 @@ import shortuuid
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
 from dl_constants.enums import ConnectionType
+from dl_testing.regulated_test import RegulatedTestParams
 
 from bi_connector_bundle_ch_filtered.base.core.settings import CHFrozenConnectorSettings
 from bi_connector_bundle_ch_frozen_tests.db.api.base import CHFrozenConnectionTestBase
 
 
 class TestCHFrozenConnection(CHFrozenConnectionTestBase, DefaultConnectorConnectionTestSuite):
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultConnectorConnectionTestSuite.test_cache_ttl_sec_override: "Unavailable for frozen connectors",
+        }
+    )
+
     def test_sources(
         self,
         control_api_sync_client: SyncHttpClientBase,

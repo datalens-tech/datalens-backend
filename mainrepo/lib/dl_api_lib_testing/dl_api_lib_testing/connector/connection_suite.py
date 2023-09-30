@@ -20,3 +20,26 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
             data=json.dumps({}),
         )
         assert resp.status_code == 200, resp.json
+
+    def test_cache_ttl_sec_override(
+        self, control_api_sync_client: SyncHttpClientBase, saved_connection_id: str
+    ) -> None:
+        resp = control_api_sync_client.get(
+            url=f"/api/v1/connections/{saved_connection_id}",
+        )
+        assert resp.status_code == 200, resp.json
+        assert resp.json["cache_ttl_sec"] is None, resp.json
+
+        cache_ttl_override = 100500
+        resp = control_api_sync_client.put(
+            url=f"/api/v1/connections/{saved_connection_id}",
+            content_type="application/json",
+            data=json.dumps({"cache_ttl_sec": cache_ttl_override}),
+        )
+        assert resp.status_code == 200, resp.json
+
+        resp = control_api_sync_client.get(
+            url=f"/api/v1/connections/{saved_connection_id}",
+        )
+        assert resp.status_code == 200, resp.json
+        assert resp.json["cache_ttl_sec"] == cache_ttl_override, resp.json

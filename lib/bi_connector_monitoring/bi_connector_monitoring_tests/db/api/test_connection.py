@@ -1,11 +1,13 @@
-import pytest
-
-from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
+from dl_testing.regulated_test import RegulatedTestParams
 
 from bi_connector_monitoring_tests.db.api.base import MonitoringConnectionTestBase
 
 
 class TestMonitoringConnection(MonitoringConnectionTestBase, DefaultConnectorConnectionTestSuite):
-    def test_test_connection(self, control_api_sync_client: SyncHttpClientBase, saved_connection_id: str) -> None:
-        pytest.skip("won't work with fake connection parameters")
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultConnectorConnectionTestSuite.test_cache_ttl_sec_override: "Unavailable for Monitoring",
+            DefaultConnectorConnectionTestSuite.test_test_connection: "Won't work with fake connection parameters",
+        }
+    )

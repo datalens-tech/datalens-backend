@@ -22,6 +22,7 @@ class CHS3ConnectionTestSuite(
     test_params = RegulatedTestParams(
         mark_tests_skipped={
             DefaultConnectorConnectionTestSuite.test_test_connection: "Not implemented",
+            DefaultConnectorConnectionTestSuite.test_cache_ttl_sec_override: "Unavailable for CHS3 connectors",
         },
     )
 

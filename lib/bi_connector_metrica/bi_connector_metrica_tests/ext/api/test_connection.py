@@ -19,6 +19,7 @@ class TestMetricaConnection(MetricaConnectionTestBase, DefaultConnectorConnectio
     test_params = RegulatedTestParams(
         mark_tests_skipped={
             DefaultConnectorConnectionTestSuite.test_test_connection: "Doesn't work for Metrica",
+            DefaultConnectorConnectionTestSuite.test_cache_ttl_sec_override: "Unavailable for Metrica",
         }
     )
 
@@ -61,5 +62,6 @@ class TestAppMetricaConnection(AppMetricaConnectionTestBase, DefaultConnectorCon
     test_params = RegulatedTestParams(
         mark_tests_skipped={
             DefaultConnectorConnectionTestSuite.test_test_connection: "Doesn't work for AppMetrica",
+            DefaultConnectorConnectionTestSuite.test_cache_ttl_sec_override: "Unavailable for AppMetrica",
         }
     )
