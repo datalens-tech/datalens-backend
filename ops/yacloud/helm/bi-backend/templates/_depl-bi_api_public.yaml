@@ -22,6 +22,7 @@ spec:
       labels:
         app: public-dataset-api
       annotations:
+        {{- include "app_configs-api-annotations" .Values | indent 8 }}
         injector.tumblr.com/request: {{ ternary (ternary "jaeger,nginx_v2" "jaeger,nginx" (eq .Values.enabled_features.rootless_mode true)) "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
     spec:
       affinity:
@@ -80,6 +81,7 @@ spec:
             {{ if .Values.enabled_features.network_policy}}
             {{- include "env_vars-rqe-configuration" . | indent 12 }}
             {{ end }}
+            {{- include "app_configs-api-env" .Values | indent 12 }}
           resources:
             requests:
               cpu: {{ .Values.app_resources.public_dataset_api.cpu }}
@@ -102,6 +104,7 @@ spec:
             {{- include "security-context-data-api" . | indent 12}}
           volumeMounts:
             {{- include "cert-bundle_vol-mount" . | indent 12 }}
+            {{- include "app_configs-api-volumes-mount" .Values | indent 12 }}
         - name: postgres
           image: "{{ .Values.docker_images_info.docker_repo }}/postgres:12"
           imagePullPolicy: "IfNotPresent"
@@ -162,6 +165,7 @@ spec:
           configMap:
             name: compeng-init
             defaultMode: 0777
+        {{- include "app_configs-api-volumes" .Values | indent 8 }}
         {{- include "cert-internal_vol" . | indent 8 }}
         {{- include "cert-bundle_vol" . | indent 8 }}
       tolerations:

@@ -29,6 +29,7 @@ variable "enabled_features" {
     mutation_caches    = bool
     network_policy     = bool
     rootless_mode      = bool
+    app_configs        = bool
   })
 }
 

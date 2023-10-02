@@ -1,0 +1,505 @@
+---
+BI_API_CONNECTOR_WHITELIST:
+- clickhouse_mdb
+- postgresql_mdb
+- mysql_mdb
+- ydb
+- chyt
+- greenplum_mdb
+- mssql
+- oracle
+- bigquery
+- snowflake
+- promql
+- ch_frozen_bumpy_roads
+- ch_frozen_covid
+- ch_frozen_demo
+- ch_frozen_dtp
+- ch_frozen_gkh
+- ch_frozen_samples
+- ch_frozen_transparency
+- ch_frozen_weather
+- ch_frozen_horeca
+- file
+- gsheets_v2
+- yq
+- metrica_api
+- appmetrica_api
+- ch_billing_analytics
+- monitoring
+- usage_tracking
+- bitrix_gds
+- ch_ya_music_podcast_stats
+- moysklad
+- equeo
+- kontur_market
+- market_couriers
+- schoolbook
+- smb_heatmaps
+BLACKBOX_NAME: Mimino
+CONNECTORS:
+  CHYT:
+    CONN_CHYT_DEFAULT_CLIQUE: '*ch_public'
+    CONN_CHYT_FORBIDDEN_CLIQUES: []
+    CONN_CHYT_PUBLIC_CLIQUES: []
+    connector_name: {}
+  CH_BILLING_ANALYTICS:
+    CONN_BILLING_ALLOWED_TABLES: []
+    CONN_BILLING_DB_MAME: billing
+    CONN_BILLING_HOST: rc1a-rvwp0jt22z68ybre.mdb.cloud-preprod.yandex.net,rc1b-6kjlsmsl0l7u5308.mdb.cloud-preprod.yandex.net,rc1b-xtsv1236xrz6gd20.mdb.cloud-preprod.yandex.net,rc1c-ct03ung4rmxwqg7f.mdb.cloud-preprod.yandex.net
+    CONN_BILLING_PORT: 8443
+    CONN_BILLING_SUBSELECT_TEMPLATES:
+    - sql_query: "\nSELECT\n    dimensions.billing_account_name AS billing_account_name,\n\
+        \    dimensions.billing_account_name_id AS billing_account_name_id,\n    report.billing_account_id\
+        \ AS billing_account_id,\n    report.usage_date AS usage_date,\n    report.resource_id\
+        \ AS resource_id,\n    report.folder_id AS folder_id,\n    dimensions.folder_name\
+        \ AS folder_name,\n    dimensions.folder_name_id AS folder_name_id,\n    report.cloud_id\
+        \ AS cloud_id,\n    dimensions.cloud_name AS cloud_name,\n    dimensions.cloud_name_id\
+        \ AS cloud_name_id,\n    report.cost AS cost,\n    report.credit AS credit,\n\
+        \    report.total AS total,\n    report.monetary_grant_credit AS monetary_grant_credit,\n\
+        \    report.cud_credit AS cud_credit,\n    report.misc_credit AS misc_credit,\n\
+        \    report.volume_incentive_credit AS volume_incentive_credit,\n    report.pricing_quantity\
+        \ AS pricing_quantity,\n    report.pricing_unit AS pricing_unit,\n    report.cud_compensated_pricing_quantity\
+        \ AS cud_compensated_pricing_quantity,\n    report.currency AS currency,\n\
+        \    report.labels_hash AS labels_hash,\n    report.sku_id AS sku_id,\n  \
+        \  report.sku_name_ru AS sku_name_ru,\n    report.sku_name_en AS sku_name_en,\n\
+        \    report.sku_service_id AS sku_service_id,\n    report.sku_service_name\
+        \ AS sku_service_name\nFROM billing.billing_reportd AS report\nLEFT JOIN\n\
+        (\n    SELECT\n        account.billing_account_id AS billing_account_id,\n\
+        \        cloud.cloud_id AS cloud_id,\n        folder.folder_id AS folder_id,\n\
+        \        account.billing_account_name AS billing_account_name,\n        account.billing_account_name_id\
+        \ AS billing_account_name_id,\n        folder.folder_name AS folder_name,\n\
+        \        folder.folder_name_id AS folder_name_id,\n        cloud.cloud_name\
+        \ AS cloud_name,\n        cloud.cloud_name_id AS cloud_name_id\n    FROM\n\
+        \    (\n        SELECT\n            billing_account_id,\n            anyLast(billing_account_name)\
+        \ AS billing_account_name,\n            anyLast(billing_account_name_id) AS\
+        \ billing_account_name_id\n        FROM billing.billing_account_name_d AS\
+        \ account\n        PREWHERE billing_account_id IN :billing_account_id_list\n\
+        \        GROUP BY billing_account_id\n    ) AS account\n    LEFT JOIN\n  \
+        \  (\n        SELECT\n            billing_account_id,\n            cloud_id,\n\
+        \            anyLast(cloud_name) AS cloud_name,\n            anyLast(cloud_name_id)\
+        \ AS cloud_name_id\n        FROM billing.cloud_name_d AS cloud\n        PREWHERE\
+        \ billing_account_id IN :billing_account_id_list\n        GROUP BY billing_account_id,\
+        \ cloud_id\n    ) AS cloud ON account.billing_account_id = cloud.billing_account_id\n\
+        \    LEFT JOIN\n    (\n        SELECT\n            billing_account_id,\n \
+        \           cloud_id,\n            folder_id,\n            anyLast(folder_name)\
+        \ AS folder_name,\n            anyLast(folder_name_id) AS folder_name_id\n\
+        \        FROM billing.folder_name_d AS folder\n        PREWHERE billing_account_id\
+        \ IN :billing_account_id_list\n        GROUP BY billing_account_id, cloud_id,\
+        \ folder_id\n    ) AS folder ON account.billing_account_id = folder.billing_account_id\
+        \ AND cloud.cloud_id = folder.cloud_id\n) AS dimensions USING (billing_account_id,\
+        \ cloud_id, folder_id)\nPREWHERE billing_account_id IN :billing_account_id_list\n\
+        SETTINGS join_use_nulls = 1, distributed_product_mode = 'local'\n"
+      title: billing_report
+    - sql_query: "\nSELECT\n  report_with_dimensions.*,\n  label_key,\n  label_value\n\
+        FROM (\n  SELECT\n    dimensions.billing_account_name AS billing_account_name,\n\
+        \    dimensions.billing_account_name_id AS billing_account_name_id,\n    report.billing_account_id\
+        \ AS billing_account_id,\n    report.usage_date AS usage_date,\n    report.resource_id\
+        \ AS resource_id,\n    report.folder_id AS folder_id,\n    dimensions.folder_name\
+        \ AS folder_name,\n    dimensions.folder_name_id AS folder_name_id,\n    report.cloud_id\
+        \ AS cloud_id,\n    dimensions.cloud_name AS cloud_name,\n    dimensions.cloud_name_id\
+        \ AS cloud_name_id,\n    report.cost AS cost,\n    report.credit AS credit,\n\
+        \    report.total AS total,\n    report.monetary_grant_credit AS monetary_grant_credit,\n\
+        \    report.cud_credit AS cud_credit,\n    report.misc_credit AS misc_credit,\n\
+        \    report.volume_incentive_credit AS volume_incentive_credit,\n    report.pricing_quantity\
+        \ AS pricing_quantity,\n    report.pricing_unit AS pricing_unit,\n    report.cud_compensated_pricing_quantity\
+        \ AS cud_compensated_pricing_quantity,\n    report.currency AS currency,\n\
+        \    report.labels_hash AS labels_hash,\n    report.sku_id AS sku_id,\n  \
+        \  report.sku_name_ru AS sku_name_ru,\n    report.sku_name_en AS sku_name_en,\n\
+        \    report.sku_service_id AS sku_service_id,\n    report.sku_service_name\
+        \ AS sku_service_name\nFROM billing.billing_reportd AS report\nLEFT JOIN\n\
+        (\n    SELECT\n        account.billing_account_id AS billing_account_id,\n\
+        \        cloud.cloud_id AS cloud_id,\n        folder.folder_id AS folder_id,\n\
+        \        account.billing_account_name AS billing_account_name,\n        account.billing_account_name_id\
+        \ AS billing_account_name_id,\n        folder.folder_name AS folder_name,\n\
+        \        folder.folder_name_id AS folder_name_id,\n        cloud.cloud_name\
+        \ AS cloud_name,\n        cloud.cloud_name_id AS cloud_name_id\n    FROM\n\
+        \    (\n        SELECT\n            billing_account_id,\n            anyLast(billing_account_name)\
+        \ AS billing_account_name,\n            anyLast(billing_account_name_id) AS\
+        \ billing_account_name_id\n        FROM billing.billing_account_name_d AS\
+        \ account\n        PREWHERE billing_account_id IN :billing_account_id_list\n\
+        \        GROUP BY billing_account_id\n    ) AS account\n    LEFT JOIN\n  \
+        \  (\n        SELECT\n            billing_account_id,\n            cloud_id,\n\
+        \            anyLast(cloud_name) AS cloud_name,\n            anyLast(cloud_name_id)\
+        \ AS cloud_name_id\n        FROM billing.cloud_name_d AS cloud\n        PREWHERE\
+        \ billing_account_id IN :billing_account_id_list\n        GROUP BY billing_account_id,\
+        \ cloud_id\n    ) AS cloud ON account.billing_account_id = cloud.billing_account_id\n\
+        \    LEFT JOIN\n    (\n        SELECT\n            billing_account_id,\n \
+        \           cloud_id,\n            folder_id,\n            anyLast(folder_name)\
+        \ AS folder_name,\n            anyLast(folder_name_id) AS folder_name_id\n\
+        \        FROM billing.folder_name_d AS folder\n        PREWHERE billing_account_id\
+        \ IN :billing_account_id_list\n        GROUP BY billing_account_id, cloud_id,\
+        \ folder_id\n    ) AS folder ON account.billing_account_id = folder.billing_account_id\
+        \ AND cloud.cloud_id = folder.cloud_id\n) AS dimensions USING (billing_account_id,\
+        \ cloud_id, folder_id)\nPREWHERE billing_account_id IN :billing_account_id_list\n\
+        ) as report_with_dimensions\nLEFT JOIN (\n  SELECT DISTINCT *\n  FROM billing.labels_mapd\
+        \ as l\n  PREWHERE billing_account_id IN :billing_account_id_list\n) as labels\n\
+        USING (billing_account_id, usage_date, labels_hash)\nSETTINGS join_use_nulls\
+        \ = 1, distributed_product_mode = 'local'\n"
+      title: billing_report_with_labels
+    CONN_BILLING_USERNAME: datalens
+    CONN_BILLING_USE_MANAGED_NETWORK: true
+    connector_name: {}
+  CH_YA_MUSIC_PODCAST_STATS:
+    CONN_MUSIC_ALLOWED_TABLES: []
+    CONN_MUSIC_DB_MAME: music
+    CONN_MUSIC_HOST: rc1a-2pq5rc6042voc1qz.mdb.yandexcloud.net,rc1b-bxkl9g3xyl0vqh5q.mdb.yandexcloud.net,rc1c-4fvx578tidghynm0.mdb.yandexcloud.net
+    CONN_MUSIC_PORT: 8443
+    CONN_MUSIC_SUBSELECT_TEMPLATES:
+    - sql_query: "\nSELECT\n    streams_t.age_segment as age_segment,\n    streams_t.album_id\
+        \ as album_id,\n    streams_t.album_name as album_name,\n    streams_t.auth\
+        \ as auth,\n    streams_t.city as city,\n    streams_t.client_type as client_type,\n\
+        \    streams_t.country as country,\n    streams_t.stream_date as stream_date,\n\
+        \    streams_t.stream_datetime as stream_datetime,\n    streams_t.gender as\
+        \ gender,\n    streams_t.longplay as longplay,\n    streams_t.new_puid as\
+        \ new_puid,\n    streams_t.new_uid as new_uid,\n    streams_t.platform as\
+        \ platform,\n    streams_t.play_percent as play_percent,\n    streams_t.play_time\
+        \ as play_time,\n    streams_t.publications_date as publications_date,\n \
+        \   streams_t.region as region,\n    streams_t.track_id as track_id,\n   \
+        \ streams_t.track_name as track_name,\n\n    :passport_user_id as author_puid\n\
+        FROM\n    music.Streams_Table streams_t\nWHERE streams_t.album_id IN (\n \
+        \   SELECT album_id\n    FROM music.authors_podcasts\n    WHERE author_puid\
+        \ = :passport_user_id\n)\nSETTINGS join_use_nulls = 1\n"
+      title: Streams
+    - sql_query: "\nSELECT\n    subs.age_segment as age_segment,\n    subs.album_id\
+        \ as album_id,\n    subs.album_name as album_name,\n    subs.city as city,\n\
+        \    subs.country as country,\n    subs.`date` as `date`,\n    subs.gender\
+        \ as gender,\n    subs.likes_growth as likes_growth,\n    subs.likes_total\
+        \ as likes_total,\n    subs.region as region,\n\n    :passport_user_id as\
+        \ author_puid\nFROM\n    music.Subscribers_Table subs\nWHERE subs.album_id\
+        \ IN (\n    SELECT album_id\n    FROM music.authors_podcasts\n    WHERE author_puid\
+        \ = :passport_user_id\n)\nSETTINGS join_use_nulls = 1\n"
+      title: Subscribers
+    CONN_MUSIC_USERNAME: datalens_podcast_connection_user
+    CONN_MUSIC_USE_MANAGED_NETWORK: false
+    connector_name: {}
+  EQUEO:
+    CONN_EQUEO_HOST: rc1a-0k8s9imssp6h7vmi.mdb.yandexcloud.net
+    CONN_EQUEO_PORT: 8443
+    CONN_EQUEO_USERNAME: datalens
+    CONN_EQUEO_USE_MANAGED_NETWORK: true
+    connector_name: {}
+  FILE:
+    CONN_FILE_CH_HOST: rc1a-qr19go7vdcaukxsd.mdb.cloud-preprod.yandex.net,rc1c-8afsacczmoytzlo5.mdb.cloud-preprod.yandex.net
+    CONN_FILE_CH_PORT: 8443
+    CONN_FILE_CH_USERNAME: dl_file_conn
+    connector_name: {}
+  KONTUR_MARKET:
+    CONN_KONTUR_MARKET_HOST: rc1a-b1poaasd36s83dqp.mdb.yandexcloud.net
+    CONN_KONTUR_MARKET_PORT: 8443
+    CONN_KONTUR_MARKET_USERNAME: datalens
+    CONN_KONTUR_MARKET_USE_MANAGED_NETWORK: true
+    connector_name: {}
+  MARKET_COURIERS:
+    CONN_MARKET_COURIERS_ALLOWED_TABLES: []
+    CONN_MARKET_COURIERS_DB_MAME: tpl_partner_info
+    CONN_MARKET_COURIERS_HOST: rc1b-vsqgf0n3qa54stsp.mdb.yandexcloud.net
+    CONN_MARKET_COURIERS_PORT: 8443
+    CONN_MARKET_COURIERS_SUBSELECT_TEMPLATES:
+    - sql_query: "\nSELECT\n    bench_canceled,\n    bench_perenos,\n    cancelled_client,\n\
+        \    cancelled_mk,\n    capacity,\n    car,\n    cnt_fl_perenos_client,\n\
+        \    cnt_orders_accepted,\n    cnt_orders_accepted_no_client,\n    cnt_orders_dt,\n\
+        \    cnt_perenos_mk,\n    company_id,\n    company_name,\n    courier_name,\n\
+        \    fact_dt,\n    fst_shift_date,\n    id_cou,\n    last_shift_date,\n  \
+        \  not_accepted,\n    on_time,\n    order_dost_chisl,\n    order_vikup_chisl,\n\
+        \    order_znam,\n    parcel_volume,\n    region_detail,\n    reit,\n    service_name,\n\
+        \    sorting_center_id,\n    task_accepted_no_client,\n    task_actually_on_time,\n\
+        \    task_cancelled_by_client,\n    task_cancelled_by_courier,\n    task_cancelled_by_courier_support,\n\
+        \    task_cancelled_by_system,\n    task_on_time,\n    task_perenos_by_client,\n\
+        \    task_perenos_by_client_no_contact,\n    task_perenos_by_client_refused,\n\
+        \    task_perenos_by_client_wrong,\n    task_perenos_by_courier,\n    task_perenos_by_courier_support,\n\
+        \    task_perenos_by_system,\n    user_shift_id,\n    user_shift_number\n\
+        FROM tpl_partner_info.cour_rating AS tbl\nJOIN tpl_partner_info.partner_uid_mapping\
+        \ AS mapping\n    ON mapping.id = tbl.company_id\nWHERE mapping.uid = :passport_user_id\n"
+      title: Courier Rating
+    - sql_query: "\nSELECT\n    cancelled_client,\n    cancelled_mk,\n    cnt_fl_perenos_client,\n\
+        \    cnt_orders_accepted,\n    cnt_orders_accepted_no_client,\n    cnt_orders_dt,\n\
+        \    cnt_perenos_mk,\n    cnt_shifts,\n    cnt_yes,\n    company_id,\n   \
+        \ company_name,\n    extra,\n    fact_dt,\n    not_accepted,\n    on_time,\n\
+        \    penalty,\n    service_name,\n    sorting_center_id,\n    task_accepted_no_client,\n\
+        \    task_cancelled_by_courier,\n    task_on_time,\n    task_perenos_by_courier,\n\
+        \    total,\n    totalReward\nFROM tpl_partner_info.kpi_partner AS tbl\nJOIN\
+        \ tpl_partner_info.partner_uid_mapping AS mapping\n    ON mapping.id = tbl.company_id\n\
+        WHERE mapping.uid = :passport_user_id\n"
+      title: KPI Partner
+    - sql_query: "\nSELECT\n    company_id,\n    company_name,\n    fake_flag,\n \
+        \   flag_no_shift,\n    main_task_status,\n    name,\n    shift_date,\n  \
+        \  shift_id,\n    shift_status,\n    sorting_center_id,\n    sorting_center_name,\n\
+        \    transport_capacity,\n    transport_name,\n    transport_type,\n    transport_type_id,\n\
+        \    user_id,\n    user_shift_id,\n    user_shift_status,\n    user_status,\n\
+        \    user_status_change_time,\n    warehouse_area_leave_time\nFROM tpl_partner_info.nevihod\
+        \ AS tbl\nJOIN tpl_partner_info.partner_uid_mapping AS mapping\n    ON mapping.id\
+        \ = tbl.company_id\nWHERE mapping.uid = :passport_user_id\n"
+      title: Nevyhod
+    - sql_query: "\nSELECT\n    account_created,\n    company_id,\n    company_name,\n\
+        \    courier,\n    course,\n    course_id,\n    firstshift,\n    kiosk_id,\n\
+        \    lastshift,\n    maxstage,\n    passed,\n    routing_vehicle_type,\n \
+        \   sc,\n    sc_id,\n    score,\n    session_id,\n    session_status,\n  \
+        \  status,\n    transport_type_id,\n    updated,\n    user_id\nFROM tpl_partner_info.obychaemost\
+        \ AS tbl\nJOIN tpl_partner_info.partner_uid_mapping AS mapping\n    ON mapping.id\
+        \ = tbl.company_id\nWHERE mapping.uid = :passport_user_id\n"
+      title: Obuchaemost
+    - sql_query: "\nSELECT\n    DO_130,\n    courier_company_id,\n    courier_company_name,\n\
+        \    courier_name,\n    courier_shift_date,\n    courier_task_finished_at,\n\
+        \    courier_task_status,\n    delivery_service_name,\n    dropoff_address,\n\
+        \    dropoff_name,\n    dropoff_phone_number,\n    item_id,\n    item_name,\n\
+        \    item_price,\n    merchand_partner_id,\n    merchant_shipment_date,\n\
+        \    order_creation_date,\n    order_id,\n    sc_110_chp,\n    sc_name,\n\
+        \    transport_type_name,\n    vehicle_type\nFROM tpl_partner_info.dropoff_orders\
+        \ AS tbl\nJOIN tpl_partner_info.partner_uid_mapping AS mapping\n    ON mapping.id\
+        \ = tbl.courier_company_id\nWHERE mapping.uid = :passport_user_id\n"
+      title: Dropoff Orders
+    CONN_MARKET_COURIERS_USERNAME: datalens
+    CONN_MARKET_COURIERS_USE_MANAGED_NETWORK: false
+    connector_name: {}
+  MONITORING:
+    CONN_MONITORING_HOST: monitoring.api.cloud-preprod.yandex.net
+    connector_name: {}
+  MOYSKLAD:
+    CONN_MOYSKLAD_HOST: rc1a-247svhto6jy5iymw.mdb.cloud-preprod.yandex.net
+    CONN_MOYSKLAD_PORT: 8443
+    CONN_MOYSKLAD_USERNAME: moysklad_test_db_user
+    CONN_MOYSKLAD_USE_MANAGED_NETWORK: true
+    connector_name: {}
+  SCHOOLBOOK:
+    CONN_SCHOOLBOOK_ALLOWED_TABLES: []
+    CONN_SCHOOLBOOK_DB_MAME: pelican_db_prod_db
+    CONN_SCHOOLBOOK_HOST: vla-ws8isxcg383rpugb.db.yandex.net,sas-0vu6ols4s7prltlm.db.yandex.net,man-c4i8hlp8hp0qkmfo.db.yandex.net
+    CONN_SCHOOLBOOK_PORT: 8443
+    CONN_SCHOOLBOOK_SUBSELECT_TEMPLATES:
+    - sql_query: "\nSELECT\n    *\nFROM\n    pelican_db_prod_db.test_view_4\nWHERE\
+        \ teacher_puid = :passport_user_id\n"
+      title: Stats
+    CONN_SCHOOLBOOK_USERNAME: datalens
+    CONN_SCHOOLBOOK_USE_MANAGED_NETWORK: false
+    connector_name: {}
+  SMB_HEATMAPS:
+    CONN_SMB_HEATMAPS_ALLOWED_TABLES: []
+    CONN_SMB_HEATMAPS_DB_MAME: smb_autorecommendation
+    CONN_SMB_HEATMAPS_HOST: rc1b-hm51k5geb4dwn2uk.mdb.yandexcloud.net
+    CONN_SMB_HEATMAPS_PORT: 8443
+    CONN_SMB_HEATMAPS_SUBSELECT_TEMPLATES:
+    - sql_query: "\nSELECT\n    base.city_ru,\n    base.coords,\n    base.district_name,\n\
+        \    base.polygon_name,\n    demand_and_supply.polygon_id,\n    demand_and_supply.polygon_type,\n\
+        \    demand_and_supply.rubric_name,\n    demand_and_supply.demand,\n    demand_and_supply.demand_to_supply_to_city,\n\
+        \    demand_and_supply.supply,\n    demand_and_supply.top_companies,\n   \
+        \ demand_and_supply.top_queries\nFROM\n    smb_geo_heat_maps.polygon_base\
+        \ AS base\nINNER JOIN\n    smb_geo_heat_maps.geoadv_geoproduct_intermediate_demand_and_supply\
+        \ AS demand_and_supply\nUSING (polygon_id, polygon_type)\nWHERE :passport_user_id\
+        \ IN (select passport_uid from smb_geo_heat_maps.client_map)\nSETTINGS join_use_nulls\
+        \ = 1\n"
+      title: Heatmaps
+    CONN_SMB_HEATMAPS_USERNAME: datalens-autorecom
+    CONN_SMB_HEATMAPS_USE_MANAGED_NETWORK: false
+    connector_name: {}
+  USAGE_TRACKING:
+    CONN_USAGE_TRACKING_ALLOWED_TABLES: []
+    CONN_USAGE_TRACKING_DB_NAME: usage_tracking
+    CONN_USAGE_TRACKING_HOST: rc1a-sj4j1pnhotgffpn1.mdb.cloud-preprod.yandex.net,rc1c-2g6441917n15umos.mdb.cloud-preprod.yandex.net
+    CONN_USAGE_TRACKING_PORT: 8443
+    CONN_USAGE_TRACKING_REQUIRED_IAM_ROLE: datalens.instances.admin
+    CONN_USAGE_TRACKING_SUBSELECT_TEMPLATES:
+    - sql_query: "\nSELECT\n    *\nFROM usage_tracking.usage_tracking\nWHERE folder_id\
+        \ = :tenant_id\n"
+      title: Usage Tracking
+    CONN_USAGE_TRACKING_USERNAME: datalens
+    CONN_USAGE_TRACKING_USE_MANAGED_NETWORK: true
+    connector_name: {}
+  YQ:
+    CONN_YQ_DB_NAME: /root/default
+    CONN_YQ_HOST: grpcs://grpc.yandex-query.cloud-preprod.yandex.net
+    CONN_YQ_PORT: 2135
+    connector_name: {}
+CONNECTOR_AVAILABILITY:
+  sections:
+  - connectors:
+    - availability: free
+      conn_type: clickhouse
+    - availability: free
+      conn_type: postgres
+    - availability: free
+      conn_type: mysql
+    - availability: free
+      conn_type: ydb
+    - availability: free
+      conn_type: chyt
+    - availability: free
+      conn_type: greenplum
+    - availability: free
+      conn_type: mssql
+    - availability: free
+      conn_type: oracle
+    - availability: free
+      conn_type: bigquery
+    - availability: free
+      conn_type: snowflake
+    - availability: free
+      conn_type: promql
+    - availability: free
+      conn_type: ch_frozen_bumpy_roads
+    - availability: free
+      conn_type: ch_frozen_covid
+    - availability: free
+      conn_type: ch_frozen_demo
+    - availability: free
+      conn_type: ch_frozen_dtp
+    - availability: free
+      conn_type: ch_frozen_gkh
+    - availability: free
+      conn_type: ch_frozen_samples
+    - availability: free
+      conn_type: ch_frozen_transparency
+    - availability: free
+      conn_type: ch_frozen_weather
+    - availability: free
+      conn_type: ch_frozen_horeca
+    title_translatable:
+      domain: app_yc_control_api
+      text: section_title-db
+  - connectors:
+    - availability: free
+      conn_type: file
+    - availability: free
+      conn_type: gsheets_v2
+    - availability: free
+      conn_type: yq
+    - availability: free
+      conn_type: metrika_api
+    - availability: free
+      conn_type: appmetrica_api
+    - availability: free
+      conn_type: ch_billing_analytics
+    - availability: free
+      conn_type: monitoring
+    - availability: free
+      conn_type: usage_tracking
+    title_translatable:
+      domain: app_yc_control_api
+      text: section_title-files_and_services
+  - connectors:
+    - availability: free
+      conn_type: bitrix24
+    - availability: free
+      conn_type: ch_ya_music_podcast_stats
+    - availability: free
+      conn_type: moysklad
+    - availability: free
+      conn_type: equeo
+    - availability: free
+      conn_type: kontur_market
+    - availability: free
+      conn_type: market_couriers
+    - availability: free
+      conn_type: schoolbook_journal
+    - availability: free
+      conn_type: smb_heatmaps
+    title_translatable:
+      domain: app_yc_control_api
+      text: section_title-partner
+  uncategorized: []
+  visible_connectors: []
+CORE_CONNECTOR_WHITELIST:
+- clickhouse_mdb
+- postgresql_mdb
+- mysql_mdb
+- ydb
+- chyt
+- greenplum_mdb
+- mssql
+- oracle
+- bigquery
+- snowflake
+- promql
+- ch_frozen_bumpy_roads
+- ch_frozen_covid
+- ch_frozen_demo
+- ch_frozen_dtp
+- ch_frozen_gkh
+- ch_frozen_samples
+- ch_frozen_transparency
+- ch_frozen_weather
+- ch_frozen_horeca
+- file
+- gsheets_v2
+- yq
+- metrica_api
+- appmetrica_api
+- ch_billing_analytics
+- monitoring
+- usage_tracking
+- bitrix_gds
+- ch_ya_music_podcast_stats
+- moysklad
+- equeo
+- kontur_market
+- market_couriers
+- schoolbook
+- smb_heatmaps
+CORS_ALLOWED_HEADERS:
+- Content-Type
+- X-Request-ID
+- X-YaCloud-FolderId
+- X-YaCloud-SubjectToken
+- X-DL-TenantId
+- X-CSRF-Token
+CORS_ALLOWED_ORIGINS:
+- '*'
+CORS_EXPOSE_HEADERS:
+- X-Request-ID
+CSRF_HEADER_NAME: X-CSRF-Token
+CSRF_METHODS:
+- POST
+- PUT
+- DELETE
+CSRF_TIME_LIMIT: 43200
+DATALENS_API_LB_DLS_BASE_URL: https://dls.datalens.cloud-preprod.yandex.net
+DATALENS_API_LB_MAIN_BASE_URL: https://back.datalens.cloud-preprod.yandex.net
+DATALENS_API_LB_UPLOADS_BASE_URL: https://upload.datalens-preprod.yandex.ru
+DATALENS_API_LB_UPLOADS_STATUS_URL: https://back.datalens.cloud-preprod.yandex.net/file-uploader
+ENABLE_REGULAR_S3_LC_RULES_CLEANUP: true
+FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME: bi-file-uploader
+FILE_UPLOADER_S3_TMP_BUCKET_NAME: bi-file-uploader-tmp
+PING_URL_MATERIALIZER: https://back.datalens.cloud-preprod.yandex.net/materializer/ping
+PING_URL_S3: http://s3.mdst.yandex.net/ping
+PING_URL_UNITED_STORAGE: https://us-dl.private-api.ycp.cloud-preprod.yandex.net
+REDIS_CACHES_CLUSTER_NAME: caches
+REDIS_CACHES_DB: 1
+REDIS_CACHES_HOSTS:
+- rc1b-3kj6zsk0l243g6m9.mdb.cloud-preprod.yandex.net
+REDIS_CACHES_PORT: 26379
+REDIS_CACHES_SSL: null
+REDIS_FILE_UPLOADER_DATA_DB: 9
+REDIS_FILE_UPLOADER_TASKS_DB: 11
+REDIS_MUTATIONS_CACHES_DB: 2
+REDIS_PERSISTENT_CLUSTER_NAME: misc
+REDIS_PERSISTENT_HOSTS:
+- rc1a-xz1b4vdkidicxyi0.mdb.cloud-preprod.yandex.net
+REDIS_PERSISTENT_MODE: 1
+REDIS_PERSISTENT_PORT: 26379
+REDIS_PERSISTENT_SSL: null
+REDIS_RQE_CACHES_CLUSTER_NAME: rqecaches
+REDIS_RQE_CACHES_DB: 1
+REDIS_RQE_CACHES_HOSTS:
+- rc1b-zbbvgpj1d83x05qq.mdb.cloud-preprod.yandex.net
+REDIS_RQE_CACHES_PORT: 6379
+REDIS_RQE_CACHES_SSL: null
+REDIS_TEST_PROJECT_WORKER_TASKS_DB: 11
+S3_ENDPOINT_URL: https://storage.cloud-preprod.yandex.net
+SENTRY_DSN_DATASET_API: https://c46c94cd48a846ed8f4d7af83258ca9f@sentry.stat.yandex-team.ru/393
+SENTRY_DSN_FILE_UPLOADER_API: https://c501b388e7884ad2a6f1ffbf85cd5a85@sentry.stat.yandex-team.ru/553
+SENTRY_DSN_FILE_UPLOADER_WORKER: https://ef57d44f4c534367a85a5ebd95481a72@sentry.stat.yandex-team.ru/551
+SENTRY_DSN_PUBLIC_DATASET_API: https://3be7025678354200848954c3c2909ab8@sentry.stat.yandex-team.ru/432
+SENTRY_DSN_SEC_EMBEDS_DATASET_API: https://bf28348c503f4638b3a550714e04058c@sentry.stat.yandex-team.ru/584
+SENTRY_ENABLED: true
+US_BASE_URL: https://us-dl.private-api.ycp.cloud-preprod.yandex.net
+US_HOST: https://us-dl.private-api.ycp.cloud-preprod.yandex.net
+YC_API_ENDPOINT_IAM: iam.private-api.cloud-preprod.yandex.net:4283
+YC_API_ENDPOINT_RM: rm.private-api.cloud-preprod.yandex.net:4284
+YC_AS_ENDPOINT: as.private-api.cloud-preprod.yandex.net:4286
+YC_AUTHORIZE_PERMISSION: datalens.instances.use
+YC_BILLING_HOST: https://billing.private-api.cloud-preprod.yandex.net:16465
+YC_DEPLOYMENT_CLOUD_ID: aoee4gvsepbo0ah4i2j6
+YC_DEPLOYMENT_FOLDER_ID: aoevv1b69su5144mlro3
+YC_MDB_API_ENDPOINT: mdb-internal-api.private-api.cloud-preprod.yandex.net:443
+YC_SS_ENDPOINT: ss.private-api.cloud-preprod.yandex.net:8655
+YC_TS_ENDPOINT: ts.private-api.cloud-preprod.yandex.net:4282

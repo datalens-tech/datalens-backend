@@ -22,6 +22,7 @@ spec:
       labels:
         app: file-uploader-api
       annotations:
+        {{- include "app_configs-file-uploader-api-annotations" .Values | indent 8 }}
         injector.tumblr.com/request: {{ ternary (ternary "jaeger,nginx_v2" "jaeger,nginx" (eq .Values.enabled_features.rootless_mode true)) "jaeger-agent" (eq .Values.tls_to_backends true) | quote }}
     spec:
       securityContext:
@@ -65,6 +66,7 @@ spec:
                 secretKeyRef:
                   name: common-secrets
                   key: IAM_INTERACTION_SERVICE_ACCOUNT_KEY_DATA
+            {{- include "app_configs-file-uploader-api-env" .Values | indent 12 }}
           resources:
             requests:
               cpu: {{ .Values.app_resources.file_uploader_api.cpu }}
@@ -82,6 +84,7 @@ spec:
           {{ end }}
           volumeMounts:
             {{- include "cert-bundle_vol-mount" . | indent 12 }}
+          {{- include "app_configs-file-uploader-api-volumes-mount" .Values | indent 12 }}
       volumes:
         - name: init-scripts
           configMap:
@@ -118,6 +121,7 @@ spec:
       labels:
         app: file-uploader-worker
       annotations:
+        {{- include "app_configs-file-uploader-worker-annotations" .Values | indent 8 }}
         injector.tumblr.com/request: jaeger-agent
     spec:
       securityContext:
@@ -152,6 +156,7 @@ spec:
               value: "8"
             {{- $sentry_targs := dict "sentry_enabled" .Values.sentry_enabled "sentry_dsn" .Values.sentry_dsns.file_uploader_worker }}
             {{- include "env_vars-sentry" $sentry_targs | indent 12 }}
+            {{- include "app_configs-file-uploader-worker-env" .Values | indent 12 }}
           resources:
             requests:
               cpu: {{ .Values.app_resources.file_uploader_worker.cpu }}
@@ -176,6 +181,7 @@ spec:
           {{ end }}
           volumeMounts:
             {{- include "cert-bundle_vol-mount" . | indent 12 }}
+            {{- include "app_configs-file-uploader-worker-volumes-mount" .Values | indent 12 }}
       volumes:
         - name: init-scripts
           configMap:
@@ -186,6 +192,8 @@ spec:
           configMap:
             name: nginx-data-v2
         {{- include "cert-bundle_vol" . | indent 8 }}
+        {{- include "app_configs-file-uploader-api-volumes" .Values | indent 8 }}
+        {{- include "app_configs-file-uploader-worker-volumes" .Values | indent 8 }}
       tolerations:
         - key: "{{ .Values.node_selection_options.taint_toleration_key }}"
           operator: "Equal"

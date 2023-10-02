@@ -1,0 +1,27 @@
+{{- define "app_configs-api-annotations" }}
+{{ if .enabled_features.app_configs }}
+checksum/api-config: "{{ .app_config_hashes.api }}"
+{{ end }}
+{{ end }}
+
+{{- define "app_configs-api-env" }}
+{{ if .enabled_features.app_configs }}
+- name: CONFIG_PATH
+  value: "/etc/dl_configs/v1/api.yaml"
+{{ end }}
+{{ end }}
+
+{{- define "app_configs-api-volumes-mount" }}
+{{ if .enabled_features.app_configs }}
+- mountPath: "/etc/dl_configs/v1"
+  name: app-configs-v1
+{{ end }}
+{{ end }}
+
+{{- define "app_configs-api-volumes" }}
+{{ if .enabled_features.app_configs }}
+- name: app-configs-v1
+  configMap:
+    name: app-configs-v1
+{{ end }}
+{{ end }}

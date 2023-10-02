@@ -1,0 +1,27 @@
+{{- define "app_configs-file-uploader-api-annotations" }}
+{{ if .enabled_features.app_configs }}
+checksum/api-config: "{{ .app_config_hashes.file_uploader_api }}"
+{{ end }}
+{{ end }}
+
+{{- define "app_configs-file-uploader-api-env" }}
+{{ if .enabled_features.app_configs }}
+- name: CONFIG_PATH
+  value: "/etc/dl_configs/v1/file_uploader_api.yaml"
+{{ end }}
+{{ end }}
+
+{{- define "app_configs-file-uploader-api-volumes-mount" }}
+{{ if .enabled_features.app_configs }}
+- mountPath: "/etc/dl_configs/v1"
+  name: app-configs-v1
+{{ end }}
+{{ end }}
+
+{{- define "app_configs-file-uploader-api-volumes" }}
+{{ if .enabled_features.app_configs }}
+- name: app-configs-v1
+  configMap:
+    name: app-configs-v1
+{{ end }}
+{{ end }}

@@ -1,0 +1,27 @@
+{{- define "app_configs-file-uploader-worker-annotations" }}
+{{ if .enabled_features.app_configs }}
+checksum/api-config: "{{ .app_config_hashes.file_uploader_worker }}"
+{{ end }}
+{{ end }}
+
+{{- define "app_configs-file-uploader-worker-env" }}
+{{ if .enabled_features.app_configs }}
+- name: CONFIG_PATH
+  value: "/etc/dl_configs/v1/file_uploader_worker.yaml"
+{{ end }}
+{{ end }}
+
+{{- define "app_configs-file-uploader-worker-volumes-mount" }}
+{{ if .enabled_features.app_configs }}
+- mountPath: "/etc/dl_configs/v1"
+  name: app-configs-v1
+{{ end }}
+{{ end }}
+
+{{- define "app_configs-file-uploader-worker-volumes" }}
+{{ if .enabled_features.app_configs }}
+- name: app-configs-v1
+  configMap:
+    name: app-configs-v1
+{{ end }}
+{{ end }}

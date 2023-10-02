@@ -4,8 +4,12 @@ from __future__ import annotations
 
 import json
 import subprocess
+import logging
 
 import requests
+
+
+LOGGER = logging.getLogger()
 
 
 def read_deny_config() -> dict[str, list]:
@@ -27,24 +31,26 @@ def read_deny_config() -> dict[str, list]:
 
 def get_hbf_macros(macros_name: str) -> list[str]:
     hbf_hosts = ["vla.hbf.yandex.net", "sas.hbf.yandex.net", "myt.hbf.yandex.net"]
+    last_exception = None
     for host in hbf_hosts:
         try:
             return _get_hbf_macros_from_perdc_balancer(macros_name, hbf_host=host)
-        except requests.exceptions.RequestException:
-            pass
+        except requests.exceptions.RequestException as e:
+            last_exception = e
+            LOGGER.exception(e)
 
-    raise Exception("All hbf hosts seem to be down")
+    raise Exception("All hbf hosts seem to be down") from last_exception
 
 
 def _get_hbf_macros_from_perdc_balancer(macros_name: str, hbf_host: str) -> list[str]:
     session = requests.Session()
     session.mount("https://", requests.adapters.HTTPAdapter(max_retries=10))
     r = session.get(
-        "https://{hbf_host}/macros/{macros_name}".format(macros_name=macros_name, hbf_host=hbf_host), timeout=10
+        "https://{hbf_host}/macros/{macros_name}".format(macros_name=macros_name, hbf_host=hbf_host),
+        timeout=10,
     )
     r.raise_for_status()
-    result = r.json()
-    return result
+    return r.json()
 
 
 def process_macros_list(macros_list: list[str]) -> list[str]:

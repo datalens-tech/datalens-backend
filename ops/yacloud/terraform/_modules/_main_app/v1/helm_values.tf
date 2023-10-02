@@ -30,6 +30,11 @@ resource "local_file" "helm_values_bi_back" {
             }
           }
         )
+        app_config_hashes = var.enabled_features.app_configs == true ? {
+          api                  = module.app_configs[0].api_config_hash
+          file_uploader_api    = module.app_configs[0].file_uploader_api_config_hash
+          file_uploader_worker = module.app_configs[0].file_uploader_worker_hash
+        } : null,
         apps_to_run            = module.constants.env_data.apps_to_run
         enabled_features       = var.enabled_features
         app_resources          = var.app_resources
