@@ -7,6 +7,7 @@ import attr
 
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.environments import is_setting_applicable
+from dl_configs.enums import RedisMode
 from dl_configs.settings_loaders.meta_definition import (
     required,
     s_attrib,
@@ -21,7 +22,7 @@ def _make_redis_persistent_settings(cfg: Any, db: int) -> Optional[RedisSettings
     # TODO: move this values to a separate key
     return (
         RedisSettings(  # type: ignore
-            MODE=cfg.REDIS_PERSISTENT_MODE,  # type: ignore
+            MODE=RedisMode(cfg.REDIS_PERSISTENT_MODE),  # type: ignore
             CLUSTER_NAME=cfg.REDIS_PERSISTENT_CLUSTER_NAME,  # type: ignore
             HOSTS=cfg.REDIS_PERSISTENT_HOSTS,  # type: ignore
             PORT=cfg.REDIS_PERSISTENT_PORT,  # type: ignore
@@ -38,12 +39,20 @@ def _make_redis_persistent_settings(cfg: Any, db: int) -> Optional[RedisSettings
 class FileUploaderBaseSettings:
     REDIS_APP: RedisSettings = s_attrib(  # type: ignore
         "REDIS_APP",
-        fallback_factory=(lambda cfg: _make_redis_persistent_settings(cfg=cfg, db=cfg.REDIS_FILE_UPLOADER_DATA_DB)),
+        fallback_factory=(
+            lambda cfg: _make_redis_persistent_settings(
+                cfg=cfg, db=cfg.REDIS_FILE_UPLOADER_DATA_DB
+            )
+        ),
     )
 
     REDIS_ARQ: RedisSettings = s_attrib(  # type: ignore
         "REDIS_ARQ",
-        fallback_factory=(lambda cfg: _make_redis_persistent_settings(cfg=cfg, db=cfg.REDIS_FILE_UPLOADER_TASKS_DB)),
+        fallback_factory=(
+            lambda cfg: _make_redis_persistent_settings(
+                cfg=cfg, db=cfg.REDIS_FILE_UPLOADER_TASKS_DB
+            )
+        ),
     )
 
     S3: S3Settings = s_attrib(  # type: ignore
