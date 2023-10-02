@@ -41,5 +41,3 @@ RUN pip install --index-url https://pypi.yandex-team.ru/simple --no-deps --ignor
 EXPOSE ${GUNICORN_LISTEN_PORT}
 
 WORKDIR /src/$APP_DIR
-
-ENTRYPOINT ["/etc/service/data_api/run"]

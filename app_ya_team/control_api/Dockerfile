@@ -33,5 +33,3 @@ RUN pip install --index-url https://pypi.yandex-team.ru/simple --no-deps --ignor
 EXPOSE ${HTTP_BIND_PORT}
 
 WORKDIR /src/$APP_DIR
-
-ENTRYPOINT ["/etc/service/control_api/run"]

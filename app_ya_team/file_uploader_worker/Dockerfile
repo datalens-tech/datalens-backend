@@ -22,5 +22,3 @@ RUN pip install -r requirements.txt
 
 # Entrypoint
 WORKDIR /src/$APP_DIR
-
-ENTRYPOINT ["/etc/service/file_uploader_worker/run"]

@@ -29,5 +29,3 @@ RUN pip install -r requirements.txt
 EXPOSE ${GUNICORN_LISTEN_PORT}
 
 WORKDIR /src/$APP_DIR
-
-ENTRYPOINT ["/etc/service/file_uploader_api/run"]
