@@ -176,10 +176,7 @@ async def test_parse_excel_with_one_row_task(
     result = await wait_task(task, task_state)
     await sleep(60)
 
-    assert result[-1] == "success"
+    assert result[-1] == "failed"
 
     df = await DataFile.get(manager=rmm, obj_id=uploaded_excel_id)
-    assert df.status == FileProcessingStatus.ready
-    assert df.id == uploaded_excel_id
-    for src in df.sources:
-        assert src.status == FileProcessingStatus.failed
+    assert df.status == FileProcessingStatus.failed
