@@ -492,7 +492,7 @@ class DlRepManagerTool(CliToolBase):
 
 def main() -> None:
     setup_basic_logging()
-    DlRepManagerTool.run(sys.argv)
+    DlRepManagerTool.run(sys.argv[1:])
 
 
 if __name__ == "__main__":

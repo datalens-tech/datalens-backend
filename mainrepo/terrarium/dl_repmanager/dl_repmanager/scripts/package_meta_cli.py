@@ -174,7 +174,7 @@ class DlPackageMetaTool(CliToolBase):
 def main() -> None:
     setup_basic_logging()
     try:
-        DlPackageMetaTool.run(sys.argv)
+        DlPackageMetaTool.run(sys.argv[1:])
     except InconsistentStateError:
         log.exception("Project inconsistent state discovered during cli command run.")
         sys.exit(1)
