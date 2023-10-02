@@ -17,7 +17,7 @@ from typing import (
 import attr
 
 from dl_api_commons.headers import normalize_header_name
-from dl_app_tools import log
+from dl_app_tools.log import context
 
 
 LOGGER = logging.getLogger(__name__)
@@ -340,4 +340,4 @@ class LogRequestLoggingContextController(RequestLoggingContextController):
         if key in self.allowed_keys:
             # Each request assumed to be executed in individual ContextVars context so we don't need to pop it back
             # see `bi_core.flask_utils.context_var_middleware`
-            log.context.put_to_context(key, value)
+            context.put_to_context(key, value)
