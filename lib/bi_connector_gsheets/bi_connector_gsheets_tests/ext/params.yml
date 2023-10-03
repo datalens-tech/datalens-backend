@@ -1,0 +1,2 @@
+params:
+  TVM_CLIENT_SECRET: {getter: $osenv, key: TVM_CLIENT_SECRET}  # sec-01ec8d1x4ckxq3h1byrh7wk5ax

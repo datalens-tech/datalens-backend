@@ -1,0 +1,42 @@
+version: '3.7'
+
+x-constants:
+  US_MASTER_TOKEN: &c-us-master-token "AC1ofiek8coB"
+
+services:
+  # COMPENG
+  db-postgres-13:
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-postgres-13
+    environment:
+      POSTGRES_DB: "test_data"
+      POSTGRES_USER: "datalens"
+      POSTGRES_PASSWORD: "qwerty"
+    ports:
+     - "52302:5432"
+
+  # INFRA
+  pg-us:
+    build:
+      context: ../../mainrepo/lib/testenv-common/images
+      dockerfile: Dockerfile.pg-us
+    environment:
+      POSTGRES_DB: us-db-ci_purgeable
+      POSTGRES_USER: us
+      POSTGRES_PASSWORD: us
+    ports:
+      - "51910:5432"
+
+  us:
+    build:
+      context: ../testenv_common_private/images
+      dockerfile: Dockerfile.us-single-tenant
+    depends_on:
+      - pg-us
+    environment:
+      POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
+      AUTH_POLICY: "required"
+      MASTER_TOKEN: *c-us-master-token
+    ports:
+      - "51911:80"

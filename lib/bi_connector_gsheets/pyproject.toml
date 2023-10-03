@@ -38,6 +38,8 @@ gsheets = "bi_connector_gsheets.formula.connector:GSheetsFormulaConnector"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
+datalens-compeng-pg = {path = "../../mainrepo/lib/dl_compeng_pg"}
+datalens-connector-postgresql = {path = "../../mainrepo/lib/dl_connector_postgresql"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -50,7 +52,10 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-
+# [datalens.pytest.ext]
+# root_dir = "bi_connector_gsheets_tests/"
+# target_path = "ext"
+# labels = ["ext_private"]  # mostly public except for a gozora test
 
 [datalens.pytest.unit]
 root_dir = "bi_connector_gsheets_tests/"
