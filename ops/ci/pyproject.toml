@@ -126,7 +126,7 @@ yandex-bi-connector-bundle-ch-frozen = {path = "../../lib/bi_connector_bundle_ch
 yandex-bi-dls-client = {path = "../../lib/bi_dls_client"}
 yandex-bi-connector-bundle-ch-filtered = {path = "../../lib/bi_connector_bundle_ch_filtered"}
 yandex-bi-connector-monitoring = {path = "../../lib/bi_connector_monitoring"}
-service-registry-nebius = {path = "../../lib/bi_service_registry_nebius"}
+bi-service-registry-nebius = {path = "../../lib/bi_service_registry_nebius"}
 yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
 yandex-bi-service-registry-ya-team = {path = "../../lib/bi_service_registry_ya_team"}
 yandex-bi-api-commons-ya-team = {path = "../../lib/bi_api_commons_ya_team"}

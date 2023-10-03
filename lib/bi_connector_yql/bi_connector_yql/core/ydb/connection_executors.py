@@ -8,7 +8,7 @@ from typing import (
 
 import attr
 
-from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
+from bi_cloud_integration.service_registry_cloud import BaseCloudServiceRegistry
 from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 
 from bi_connector_yql.core.ydb.adapter import YDBAdapter
@@ -32,7 +32,7 @@ class YDBAsyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[YDBAdapter]):
             services_registry = self._services_registry  # Do not use. To be deprecated. Somehow.
             if services_registry is None:
                 raise Exception("`services_registry` is not available")
-            yc_sr = services_registry.get_installation_specific_service_registry(YCServiceRegistry)
+            yc_sr = services_registry.get_installation_specific_service_registry(BaseCloudServiceRegistry)
             yc_ts_client = await yc_sr.get_yc_ts_client()
             if yc_ts_client is None:
                 raise Exception("`yc_ts_client` is not available")

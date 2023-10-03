@@ -40,7 +40,7 @@ datalens-model-tools = {path = "../../mainrepo/lib/dl_model_tools"}
 datalens-api-lib = {path = "../../mainrepo/lib/dl_api_lib"}
 datalens-connector-bigquery = {path = "../../mainrepo/lib/dl_connector_bigquery"}
 datalens-version-ya = {path = "../../lib/dl_version_ya"}
-service-registry-nebius = {path = "../../lib/bi_service_registry_nebius"}
+bi-service-registry-nebius = {path = "../../lib/bi_service_registry_nebius"}
 
 [build-system]
 requires = ["poetry-core"]

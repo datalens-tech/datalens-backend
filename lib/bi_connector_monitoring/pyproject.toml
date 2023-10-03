@@ -14,7 +14,7 @@ aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.12"
-yandex-bi-service-registry-ya-cloud = {path = "../../lib/bi_service_registry_ya_cloud"}
+yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
 datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
 datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
 datalens-i18n = {path = "../../mainrepo/lib/dl_i18n"}

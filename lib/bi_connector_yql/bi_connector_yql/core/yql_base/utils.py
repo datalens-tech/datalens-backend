@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from bi_api_commons_ya_cloud.models import IAMAuthData
 from bi_cloud_integration.exc import YCPermissionDenied
 from bi_cloud_integration.model import IAMResource
-from bi_service_registry_ya_cloud.yc_service_registry import YCServiceRegistry
+from bi_cloud_integration.service_registry_cloud import BaseCloudServiceRegistry
 from dl_api_commons.base_models import RequestContextInfo
 from dl_core import exc
 
@@ -26,7 +26,7 @@ async def validate_service_account_id(
         raise exc.PlatformPermissionRequired("Need to be iam-authenticated to use a service account")
     iam_token = auth_data.iam_token
 
-    yc_sr = services_registry.get_installation_specific_service_registry(YCServiceRegistry)
+    yc_sr = services_registry.get_installation_specific_service_registry(BaseCloudServiceRegistry)
     as_cli = await yc_sr.get_yc_as_client()
     if not as_cli:
         raise Exception("YC Access Service client is not available")
