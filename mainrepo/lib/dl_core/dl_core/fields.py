@@ -113,7 +113,7 @@ class FormulaCalculationSpec(CalculationSpec):
 
     mode = CalcMode.formula
 
-    # The formula itself. Parsed and handled mostly by the bi_formula package.
+    # The formula itself. Parsed and handled mostly by the dl_formula package.
     # In this formula other fields are referred to exclusively by title,
     # Use empty string (`''`) for non-formula fields.
     formula: str = attr.ib(kw_only=True, default="")

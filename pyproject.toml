@@ -22,7 +22,7 @@ force-exclude= '''
   # The following are specific to Black, you probably don't want those.
   mainrepo/lib/redis-cache-lock
   | mainrepo/lib/clickhouse-sqlalchemy
-  | mainrepo/lib/bi_formula/bi_formula/parser/antlr/gen
+  | mainrepo/lib/dl_formula/dl_formula/parser/antlr/gen
   | lib/yc_apis_proto_stubs
   | lib/dc_public_api_proto_stubs
 )/
@@ -34,7 +34,7 @@ profile = "black"
 skip_glob = [
   "mainrepo/lib/redis-cache-lock/*",
   "mainrepo/lib/clickhouse-sqlalchemy/*",
-  "mainrepo/lib/bi_formula/bi_formula/parser/antlr/gen/*",
+  "mainrepo/lib/dl_formula/dl_formula/parser/antlr/gen/*",
   "lib/yc_apis_proto_stubs/*",
   "lib/dc_public_api_proto_stubs/*",
   "tools/local_dev/.tools_venv*",
@@ -98,7 +98,7 @@ exclude = [
   "tools_venv",
   "mainrepo/lib/redis-cache-lock/**",
   "mainrepo/lib/clickhouse-sqlalchemy/**",
-  "mainrepo/lib/bi_formula/bi_formula/parser/antlr/gen/**",
+  "mainrepo/lib/dl_formula/dl_formula/parser/antlr/gen/**",
   "lib/yc_apis_proto_stubs/**",
   "lib/dc_public_api_proto_stubs/**",
 ]

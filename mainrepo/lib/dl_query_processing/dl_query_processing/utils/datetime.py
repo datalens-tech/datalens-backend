@@ -9,7 +9,7 @@ def parse_datetime(value: str) -> datetime.datetime:
     """
     Parse an ISO8601 datetime value, e.g. from API parameters.
 
-    See also: `bi_formula.utils.datetime.parse_dt_string`
+    See also: `dl_formula.utils.datetime.parse_dt_string`
 
     >>> parse_datetime('2020-01-02T03:04:05')
     datetime.datetime(2020, 1, 2, 3, 4, 5)

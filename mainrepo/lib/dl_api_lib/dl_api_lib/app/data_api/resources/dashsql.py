@@ -248,8 +248,8 @@ class DashSQLView(BaseView):
         need_permission_on_entry(conn, USPermissionKind.execute)
 
         # TODO: instead of this, use something like:
-        #     formula_dialect = bi_formula.core.dialect.from_name_and_version(conn.get_dialect().name)
-        #     bindparam = bi_formula.definitions.literals.literal(parsed_value, formula_dialect)
+        #     formula_dialect = dl_formula.core.dialect.from_name_and_version(conn.get_dialect().name)
+        #     bindparam = dl_formula.definitions.literals.literal(parsed_value, formula_dialect)
         # (but account for `expanding`)
         conn_type = conn.conn_type
         param_objs = None
