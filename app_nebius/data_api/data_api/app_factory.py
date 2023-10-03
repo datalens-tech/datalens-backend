@@ -89,7 +89,6 @@ class DataApiSRFactoryBuilderNebius(SRFactoryBuilder[BaseAppSettings]):
             )
             if sa_creds_settings
             else None,
-            blackbox_name=settings.BLACKBOX_NAME,
         )
 
     def _get_entity_usage_checker(self, settings: BaseAppSettings) -> Optional[EntityUsageChecker]:
