@@ -20,10 +20,10 @@ vars:
 
   # Files changed since last commit
   CHANGED_PY_SINGLE_LINE:
-    sh: cd {{.ROOT_DIR}} &&  echo $(git diff --relative --name-only HEAD | grep '\.py$' )
+    sh: cd {{.ROOT_DIR}} &&  echo $(git diff --relative --diff-filter=ACMRT --name-only HEAD | grep '\.py$' )
 
   CHANGED_PYPROJECT_SINGLE_LINE:
-    sh: cd {{.ROOT_DIR}} &&  echo $(git diff --relative --name-only HEAD | grep 'pyproject.toml$' )
+    sh: cd {{.ROOT_DIR}} &&  echo $(git diff --relative --diff-filter=ACMRT --name-only HEAD | grep 'pyproject.toml$' )
 
   DO_RUFF_FIX: "false"
 

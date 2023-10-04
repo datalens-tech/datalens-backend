@@ -425,10 +425,10 @@ jobs:
       - run: git config --global --add safe.directory .
       - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
       - run: |
-          TARGET=$(bash /data/mainrepo/ci/gh_list_changes.sh ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
+          TARGET=$(DIFF_FILTER=ACMRT bash /data/mainrepo/ci/gh_list_changes.sh ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
           echo $TARGET
       - run: |
-          TARGET=$(bash /data/mainrepo/ci/gh_list_changes.sh ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
+          TARGET=$(DIFF_FILTER=ACMRT bash /data/mainrepo/ci/gh_list_changes.sh ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
           echo $TARGET
           task cq:check_target -- "$TARGET"
           task cq:check_target_strict  -- "$TARGET" 1>/dev/null 2>/dev/null
