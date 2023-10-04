@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "datalens-version-ya"
-version = "0.2048.0"
+version = "0.2049.0"
 description = ""
 authors = ["Package Author <bipackageauthor@yandex-team.ru>"]
 packages = [{include = "dl_version_ya"}]
