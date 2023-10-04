@@ -1274,6 +1274,25 @@ type = "directory"
 url = "../../lib/bi_maintenance"
 
 [[package]]
+name = "bi-service-registry-base-cloud"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-core = {path = "../../mainrepo/lib/dl_core"}
+yandex-bi-api-commons-ya-cloud = {path = "../../lib/bi_api_commons_ya_cloud"}
+yandex-bi-cloud-integration = {path = "../../lib/bi_cloud_integration"}
+
+[package.source]
+type = "directory"
+url = "../../lib/bi_service_registry_base_cloud"
+
+[[package]]
 name = "bi-service-registry-nebius"
 version = "0.0.1"
 description = ""
@@ -1284,6 +1303,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+bi-service-registry-base-cloud = {path = "../../lib/bi_service_registry_base_cloud"}
 datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
 datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
 datalens-core = {path = "../../mainrepo/lib/dl_core"}
@@ -3252,7 +3272,7 @@ url = "../../mainrepo/lib/dl_utils"
 
 [[package]]
 name = "datalens-version"
-version = "0.2046.0"
+version = "0.2048.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -3265,7 +3285,7 @@ url = "../../mainrepo/lib/dl_version"
 
 [[package]]
 name = "datalens-version-ya"
-version = "0.2046.0"
+version = "0.2048.0"
 description = ""
 optional = false
 python-versions = ">=3.10, <3.12"
@@ -8008,13 +8028,13 @@ reference = "ya"
 
 [[package]]
 name = "traitlets"
-version = "5.10.0"
+version = "5.10.1"
 description = "Traitlets Python configuration system"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "traitlets-5.10.0-py3-none-any.whl", hash = "sha256:417745a96681fbb358e723d5346a547521f36e9bd0d50ba7ab368fff5d67aa54"},
-    {file = "traitlets-5.10.0.tar.gz", hash = "sha256:f584ea209240466e66e91f3c81aa7d004ba4cf794990b0c775938a1544217cd1"},
+    {file = "traitlets-5.10.1-py3-none-any.whl", hash = "sha256:07ab9c5bf8a0499fd7b088ba51be899c90ffc936ffc797d7b6907fc516bcd116"},
+    {file = "traitlets-5.10.1.tar.gz", hash = "sha256:db9c4aa58139c3ba850101913915c042bdba86f7c8a0dda1c6f7f92c5da8e542"},
 ]
 
 [package.extras]
@@ -9128,6 +9148,7 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
+bi-service-registry-base-cloud = {path = "../../lib/bi_service_registry_base_cloud"}
 datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
 datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
 datalens-app-tools = {path = "../../mainrepo/lib/dl_app_tools"}
@@ -9266,6 +9287,7 @@ develop = false
 attrs = ">=22.2.0"
 bi-api-lib-ya = {path = "../../lib/bi_api_lib_ya"}
 bi-connector-mdb-base = {path = "../../lib/bi_connector_mdb_base"}
+bi-service-registry-base-cloud = {path = "../../lib/bi_service_registry_base_cloud"}
 datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
 datalens-api-connector = {path = "../../mainrepo/lib/dl_api_connector"}
 datalens-configs = {path = "../../mainrepo/lib/dl_configs"}
@@ -9702,6 +9724,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+bi-service-registry-base-cloud = {path = "../../lib/bi_service_registry_base_cloud"}
 datalens-api-commons = {path = "../../mainrepo/lib/dl_api_commons"}
 datalens-constants = {path = "../../mainrepo/lib/dl_constants"}
 datalens-core = {path = "../../mainrepo/lib/dl_core"}
@@ -10130,4 +10153,4 @@ reference = "ya"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "89a8385847ca9ff472773ec146905c91a4f489eff1c97273ae8ee903f958f5a5"
+content-hash = "74cb8f6049b32b48d6b4a427362adc47bf29addce7aafa3e3bfca75838ecdade"

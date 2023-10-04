@@ -1,0 +1,1 @@
+# bi_service_registry_base_cloud

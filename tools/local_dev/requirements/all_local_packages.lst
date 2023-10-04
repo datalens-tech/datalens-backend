@@ -51,6 +51,7 @@ lib/bi_formula_ref_nebius
 lib/bi_formula_ref_ya
 lib/bi_legacy_test_bundle
 lib/bi_maintenance
+lib/bi_service_registry_base_cloud
 lib/bi_service_registry_nebius
 lib/bi_service_registry_ya_cloud
 lib/bi_service_registry_ya_team

@@ -4,7 +4,7 @@ import attr
 
 from bi_blackbox_client.client import BlackboxClient
 from bi_cloud_integration.sa_creds import SACredsRetrieverFactory
-from bi_cloud_integration.service_registry_cloud import BaseCloudServiceRegistry
+from bi_service_registry_base_cloud.service_registry import BaseCloudServiceRegistry
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.utils import FutureRef

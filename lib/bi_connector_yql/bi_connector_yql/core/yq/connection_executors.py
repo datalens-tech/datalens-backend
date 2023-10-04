@@ -9,7 +9,7 @@ from typing import (
 import attr
 
 from bi_cloud_integration.model import IAMServiceAccount
-from bi_cloud_integration.service_registry_cloud import BaseCloudServiceRegistry
+from bi_service_registry_base_cloud.service_registry import BaseCloudServiceRegistry
 from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 
 from bi_connector_yql.core.yq.adapter import YQAdapter

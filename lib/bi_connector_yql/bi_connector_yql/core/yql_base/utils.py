@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from bi_api_commons_ya_cloud.models import IAMAuthData
 from bi_cloud_integration.exc import YCPermissionDenied
 from bi_cloud_integration.model import IAMResource
-from bi_cloud_integration.service_registry_cloud import BaseCloudServiceRegistry
+from bi_service_registry_base_cloud.service_registry import BaseCloudServiceRegistry
 from dl_api_commons.base_models import RequestContextInfo
 from dl_core import exc
 
