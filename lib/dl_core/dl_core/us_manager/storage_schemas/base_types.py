@@ -9,8 +9,8 @@ from marshmallow import (
 )
 
 from dl_constants.enums import (
-    BIType,
     ConnectionType,
+    UserDataType,
 )
 from dl_core.db.elements import SchemaColumn
 from dl_core.db.native_type import GenericNativeType
@@ -33,7 +33,7 @@ class SchemaColumnStorageSchema(Schema):
 
     name = fields.String(allow_none=False)
     title = fields.String(allow_none=True)
-    user_type = fields.Enum(BIType, by_value=False)
+    user_type = fields.Enum(UserDataType, by_value=False)
     nullable = fields.Boolean()
     native_type = fields.Nested(NativeTypeSchema, allow_none=True)
     source_id = fields.String(allow_none=True)

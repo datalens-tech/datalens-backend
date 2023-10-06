@@ -3,11 +3,12 @@ from __future__ import annotations
 from _socket import gaierror
 import psycopg2
 
+from dl_core.exc import SourceHostNotKnownError
+
 from dl_connector_postgresql.core.postgresql_base.error_transformer import (
     make_async_pg_error_transformer,
     sync_pg_db_error_transformer,
 )
-from dl_core.exc import SourceHostNotKnownError
 
 
 NAME_OR_SERVICE_NOT_KNOWN_MSG = """

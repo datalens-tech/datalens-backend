@@ -92,7 +92,16 @@ check_untyped_defs = true
 strict_optional = true
 
 [[tool.mypy.overrides]]
-module = ["aiodns.*", "aiogoogle.*", "anyascii.*", "lz4.*", "marshmallow_oneofschema.*", "raven.*"]
+module = [
+    "aiodns.*",
+    "aiogoogle.*",
+    "anyascii.*",
+    "lz4.*",
+    "marshmallow_oneofschema.*",
+    "raven.*",
+    "types_aiobotocore_s3.*",
+    "mypy_boto3_s3.*"
+]
 ignore_missing_imports = true
 
 [datalens.i18n.domains]

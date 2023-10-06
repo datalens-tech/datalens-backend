@@ -5,16 +5,13 @@ from dl_api_lib_testing.connector.data_api_suites import (
     DefaultConnectorDataRangeTestSuite,
     DefaultConnectorDataResultTestSuite,
 )
-from dl_connector_greenplum_tests.db.api.base import GreenplumDataApiTestBase
 from dl_testing.regulated_test import RegulatedTestParams
+
+from dl_connector_greenplum_tests.db.api.base import GreenplumDataApiTestBase
 
 
 class TestGreenplumDataResult(GreenplumDataApiTestBase, DefaultConnectorDataResultTestSuite):
-    test_params = RegulatedTestParams(
-        mark_tests_failed={
-            DefaultConnectorDataResultTestSuite.test_array_not_contains_filter: "BI-4951",  # TODO: FIXME
-        }
-    )
+    pass
 
 
 class TestGreenplumDataGroupBy(GreenplumDataApiTestBase, DefaultConnectorDataGroupByFormulaTestSuite):

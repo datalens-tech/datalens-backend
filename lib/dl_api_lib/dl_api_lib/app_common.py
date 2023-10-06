@@ -179,5 +179,6 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
             connector_availability=self._get_connector_availability(settings),
             inst_specific_sr_factory=self._get_inst_specific_sr_factory(settings),
             force_non_rqe_mode=settings.RQE_FORCE_OFF,
+            query_proc_mode=settings.QUERY_PROCESSING_MODE,
         )
         return sr_factory

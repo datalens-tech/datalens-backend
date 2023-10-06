@@ -7,12 +7,6 @@ from typing import (
 
 import attr
 
-from dl_connector_bigquery.core.constants import (
-    CONNECTION_TYPE_BIGQUERY,
-    SOURCE_TYPE_BIGQUERY_SUBSELECT,
-    SOURCE_TYPE_BIGQUERY_TABLE,
-)
-from dl_connector_bigquery.core.dto import BigQueryConnDTO
 from dl_core.base_models import (
     ConnCacheableDataModelMixin,
     ConnectionDataModelBase,
@@ -26,6 +20,13 @@ from dl_core.us_connection_base import (
 )
 from dl_i18n.localizer_base import Localizer
 from dl_utils.utils import DataKey
+
+from dl_connector_bigquery.core.constants import (
+    CONNECTION_TYPE_BIGQUERY,
+    SOURCE_TYPE_BIGQUERY_SUBSELECT,
+    SOURCE_TYPE_BIGQUERY_TABLE,
+)
+from dl_connector_bigquery.core.dto import BigQueryConnDTO
 
 
 class ConnectionSQLBigQuery(ConnectionSQL):

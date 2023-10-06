@@ -13,9 +13,6 @@ import sqlalchemy as sa
 from sqlalchemy.engine import Engine
 from sqlalchemy.sql.type_api import TypeEngine
 
-from dl_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
-from dl_connector_snowflake.core.error_transformer import snowflake_error_transformer
-from dl_connector_snowflake.core.target_dto import SnowFlakeConnTargetDTO
 from dl_core.connection_executors.adapters.adapters_base_sa import BaseSAAdapter
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_executors.models.db_adapter_data import (
@@ -27,6 +24,10 @@ from dl_core.connection_models.common_models import (
     SATextTableDefinition,
 )
 from dl_core.db.native_type import SATypeSpec
+
+from dl_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
+from dl_connector_snowflake.core.error_transformer import snowflake_error_transformer
+from dl_connector_snowflake.core.target_dto import SnowFlakeConnTargetDTO
 
 
 def construct_creator_func(target_dto: SnowFlakeConnTargetDTO) -> Callable:

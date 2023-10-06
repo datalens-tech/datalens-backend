@@ -3,9 +3,10 @@ import re
 import pytest
 import sqlalchemy.exc as sa_exc
 
+from dl_formula_testing.testcases.base import FormulaConnectorTestBase
+
 from dl_connector_bigquery.db_testing.engine_wrapper import BigQueryDbEngineConfig
 from dl_connector_bigquery.formula.constants import BigQueryDialect as D
-from dl_formula_testing.testcases.base import FormulaConnectorTestBase
 
 
 class BigQueryTestBase(FormulaConnectorTestBase):

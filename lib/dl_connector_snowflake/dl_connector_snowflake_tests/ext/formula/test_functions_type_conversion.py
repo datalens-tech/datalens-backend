@@ -1,4 +1,3 @@
-from dl_connector_snowflake_tests.ext.formula.base import SnowFlakeTestBase  # noqa
 from dl_formula_testing.testcases.functions_type_conversion import (
     DefaultBoolTypeFunctionFormulaConnectorTestSuite,
     DefaultDateTypeFunctionFormulaConnectorTestSuite,
@@ -7,6 +6,8 @@ from dl_formula_testing.testcases.functions_type_conversion import (
     DefaultIntTypeFunctionFormulaConnectorTestSuite,
     DefaultStrTypeFunctionFormulaConnectorTestSuite,
 )
+
+from dl_connector_snowflake_tests.ext.formula.base import SnowFlakeTestBase  # noqa
 
 
 # STR

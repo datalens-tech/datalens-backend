@@ -9,9 +9,7 @@ from typing import (
 
 from clickhouse_sqlalchemy import types as ch_types
 
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.db.conversion_base import (
     BooleanTypeCaster,
     DatetimeTypeCaster,
@@ -22,6 +20,9 @@ from dl_core.db.conversion_base import (
     make_int,
     make_native_type,
 )
+
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 
 
 def make_int_cleanup_spaces(value: Any) -> Optional[int]:
@@ -102,24 +103,24 @@ class BooleanFileTypeCaster(BooleanTypeCaster):
 class FileTypeTransformer(ClickHouseTypeTransformer):
     casters = {
         **ClickHouseTypeTransformer.casters,
-        BIType.integer: IntegerFileTypeCaster(),
-        BIType.float: FloatFileTypeCaster(),
-        BIType.date: DateFileTypeCaster(),
-        BIType.datetime: DatetimeFileTypeCaster(),
-        BIType.datetimetz: DatetimeTZFileTypeCaster(),
-        BIType.genericdatetime: GenericDatetimeFileTypeCaster(),
-        BIType.boolean: BooleanFileTypeCaster(),
+        UserDataType.integer: IntegerFileTypeCaster(),
+        UserDataType.float: FloatFileTypeCaster(),
+        UserDataType.date: DateFileTypeCaster(),
+        UserDataType.datetime: DatetimeFileTypeCaster(),
+        UserDataType.datetimetz: DatetimeTZFileTypeCaster(),
+        UserDataType.genericdatetime: GenericDatetimeFileTypeCaster(),
+        UserDataType.boolean: BooleanFileTypeCaster(),
     }
 
     user_to_native_map = {
         **ClickHouseTypeTransformer.user_to_native_map,
-        BIType.datetime: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.DateTime64),
-        BIType.genericdatetime: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.DateTime64),
-        BIType.date: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.Date32),
+        UserDataType.datetime: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.DateTime64),
+        UserDataType.genericdatetime: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.DateTime64),
+        UserDataType.date: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.Date32),
     }
 
     @classmethod
-    def cast_for_input(cls, value: Any, user_t: BIType) -> Any:
+    def cast_for_input(cls, value: Any, user_t: UserDataType) -> Any:
         """Prepare value for insertion into the database"""
         if value == "" or value is None:
             return None

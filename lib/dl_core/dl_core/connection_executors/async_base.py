@@ -28,7 +28,7 @@ from dl_core.db import SchemaInfo
 
 
 if TYPE_CHECKING:
-    from dl_constants.enums import BIType
+    from dl_constants.enums import UserDataType
     from dl_constants.types import TBIDataTable
     from dl_core.connection_models.common_models import (
         DBIdent,
@@ -46,7 +46,7 @@ class AsyncExecutionResult:
     cursor_info: dict = attr.ib()
     result: AsyncIterable[TBIDataTable] = attr.ib()  # iterable of tables (chunks)
     # for `autodetect_user_types` result
-    user_types: Optional[List[BIType]] = attr.ib(default=None)
+    user_types: Optional[List[UserDataType]] = attr.ib(default=None)
     # DB-specific result. Should be mutable, and get filled after `result` is consumed.
     result_footer: dict = attr.ib(factory=dict)
 

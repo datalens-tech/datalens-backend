@@ -1,5 +1,19 @@
 import pytest
 
+from dl_constants.enums import (
+    RawSQLLevel,
+    UserDataType,
+)
+from dl_core.data_source_spec.sql import (
+    StandardSchemaSQLDataSourceSpec,
+    SubselectDataSourceSpec,
+)
+from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
+from dl_core_testing.testcases.data_source import (
+    DataSourceTestByViewClass,
+    DefaultDataSourceTestClass,
+)
+
 from dl_connector_postgresql.core.postgresql.constants import (
     SOURCE_TYPE_PG_SUBSELECT,
     SOURCE_TYPE_PG_TABLE,
@@ -11,19 +25,6 @@ from dl_connector_postgresql.core.postgresql.data_source import (
 from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 from dl_connector_postgresql_tests.db.config import SUBSELECT_QUERY_FULL
 from dl_connector_postgresql_tests.db.core.base import BasePostgreSQLTestClass
-from dl_constants.enums import (
-    BIType,
-    RawSQLLevel,
-)
-from dl_core.data_source_spec.sql import (
-    StandardSchemaSQLDataSourceSpec,
-    SubselectDataSourceSpec,
-)
-from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
-from dl_core_testing.testcases.data_source import (
-    DataSourceTestByViewClass,
-    DefaultDataSourceTestClass,
-)
 
 
 class TestPostgreSQLTableDataSource(
@@ -46,7 +47,7 @@ class TestPostgreSQLTableDataSource(
         )
         return dsrc_spec
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)
 
 
@@ -70,7 +71,7 @@ class TestPostgreSQLSubselectDataSource(
         )
         return dsrc_spec
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)
 
 

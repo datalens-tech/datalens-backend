@@ -4,10 +4,11 @@ from typing import List
 
 import attr
 
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+
 from dl_connector_bigquery.core.adapters import BigQueryDefaultAdapter
 from dl_connector_bigquery.core.dto import BigQueryConnDTO
 from dl_connector_bigquery.core.target_dto import BigQueryConnTargetDTO
-from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 
 
 @attr.s(cmp=False, hash=False)

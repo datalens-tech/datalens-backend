@@ -3,11 +3,6 @@ from typing import Generator
 
 import pytest
 
-from dl_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY
-from dl_connector_bigquery.core.testing.connection import make_bigquery_saved_connection
-from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
-from dl_connector_bigquery.db_testing.engine_wrapper import BigQueryDbEngineConfig
-import dl_connector_bigquery_tests.ext.config as test_config
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.database import (
     C,
@@ -17,6 +12,12 @@ from dl_core_testing.database import (
 )
 from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
+
+from dl_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY
+from dl_connector_bigquery.core.testing.connection import make_bigquery_saved_connection
+from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
+from dl_connector_bigquery.db_testing.engine_wrapper import BigQueryDbEngineConfig
+import dl_connector_bigquery_tests.ext.config as test_config
 
 
 class BaseBigQueryTestClass(BaseConnectionTestClass[ConnectionSQLBigQuery]):

@@ -4,10 +4,11 @@ import logging
 
 import attr
 
-from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from dl_connector_bundle_chs3.file.core.constants import SOURCE_TYPE_FILE_S3_TABLE
 from dl_constants.enums import DataSourceRole
 from dl_core.services_registry.file_uploader_client_factory import FileSourceDesc
+
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
+from dl_connector_bundle_chs3.file.core.constants import SOURCE_TYPE_FILE_S3_TABLE
 
 
 LOGGER = logging.getLogger(__name__)

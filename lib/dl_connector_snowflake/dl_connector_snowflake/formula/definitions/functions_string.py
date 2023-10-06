@@ -1,12 +1,13 @@
 import sqlalchemy as sa
 
-from dl_connector_snowflake.formula.constants import SnowFlakeDialect as D
 from dl_formula.definitions.base import (
     TranslationVariant,
     TranslationVariantWrapped,
 )
 import dl_formula.definitions.functions_string as base
 from dl_formula.shortcuts import n
+
+from dl_connector_snowflake.formula.constants import SnowFlakeDialect as D
 
 
 V = TranslationVariant.make
@@ -43,6 +44,9 @@ DEFINITIONS_STRING = [
         ]
     ),
     base.FuncContainsNonString.for_dialect(D.SNOWFLAKE),
+    # notcontains
+    base.FuncNotContainsNonConst.for_dialect(D.SNOWFLAKE),
+    base.FuncNotContainsNonString.for_dialect(D.SNOWFLAKE),
     # endswith
     base.FuncEndswithNonString.for_dialect(D.SNOWFLAKE),
     base.FuncEndswithNonConst(variants=[V(D.SNOWFLAKE, sa.func.ENDSWITH)]),

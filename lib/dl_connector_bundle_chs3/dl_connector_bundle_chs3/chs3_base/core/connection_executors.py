@@ -3,11 +3,11 @@ import attr
 from dl_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
 from dl_connector_bundle_chs3.chs3_base.core.target_dto import BaseFileS3ConnTargetDTO
 from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
-from dl_connector_clickhouse.core.clickhouse_base.connection_executors import ClickHouseAsyncAdapterConnExecutor
+from dl_connector_clickhouse.core.clickhouse_base.connection_executors import AsyncClickHouseConnExecutor
 
 
 @attr.s(cmp=False, hash=False)
-class BaseFileS3AsyncAdapterConnExecutor(ClickHouseAsyncAdapterConnExecutor):
+class BaseFileS3AsyncAdapterConnExecutor(AsyncClickHouseConnExecutor):
     _conn_dto: BaseFileS3ConnDTO = attr.ib()
     _conn_options: CHConnectOptions = attr.ib()
 

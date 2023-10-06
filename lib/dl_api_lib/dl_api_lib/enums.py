@@ -11,7 +11,7 @@ from enum import (
 from typing import Set
 
 from dl_constants.enums import (
-    BIType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_constants.enums import AggregationFunction as ag
@@ -54,98 +54,119 @@ _FILT_ARRAY = (
 )
 
 FILTERS_BY_TYPE = {
-    BIType.datetime: _FILT_NULL | _FILT_COMMON,
-    BIType.datetimetz: _FILT_NULL | _FILT_COMMON,
-    BIType.genericdatetime: _FILT_NULL | _FILT_COMMON,
-    BIType.date: _FILT_NULL | _FILT_COMMON,
-    BIType.boolean: _FILT_NULL | _FILT_MINIMAL,
-    BIType.integer: _FILT_NULL | _FILT_COMMON | _FILT_STR,
-    BIType.float: _FILT_NULL | _FILT_COMMON,
-    BIType.string: _FILT_NULL | _FILT_COMMON | _FILT_STR,
-    BIType.geopoint: _FILT_NULL | _FILT_MINIMAL,
-    BIType.geopolygon: _FILT_NULL | _FILT_MINIMAL,
-    BIType.uuid: _FILT_NULL | _FILT_COMMON | _FILT_STR,
+    UserDataType.datetime: _FILT_NULL | _FILT_COMMON,
+    UserDataType.datetimetz: _FILT_NULL | _FILT_COMMON,
+    UserDataType.genericdatetime: _FILT_NULL | _FILT_COMMON,
+    UserDataType.date: _FILT_NULL | _FILT_COMMON,
+    UserDataType.boolean: _FILT_NULL | _FILT_MINIMAL,
+    UserDataType.integer: _FILT_NULL | _FILT_COMMON | _FILT_STR,
+    UserDataType.float: _FILT_NULL | _FILT_COMMON,
+    UserDataType.string: _FILT_NULL | _FILT_COMMON | _FILT_STR,
+    UserDataType.geopoint: _FILT_NULL | _FILT_MINIMAL,
+    UserDataType.geopolygon: _FILT_NULL | _FILT_MINIMAL,
+    UserDataType.uuid: _FILT_NULL | _FILT_COMMON | _FILT_STR,
     # intentionally not supporting comparison between markups:
     # it has too much dependency on internal optimizations.
-    BIType.markup: _FILT_NULL,
-    BIType.unsupported: _FILT_NULL,
-    BIType.array_float: _FILT_ARRAY,
-    BIType.array_int: _FILT_ARRAY,
-    BIType.array_str: _FILT_ARRAY,
-    BIType.tree_str: _FILT_ARRAY,
+    UserDataType.markup: _FILT_NULL,
+    UserDataType.unsupported: _FILT_NULL,
+    UserDataType.array_float: _FILT_ARRAY,
+    UserDataType.array_int: _FILT_ARRAY,
+    UserDataType.array_str: _FILT_ARRAY,
+    UserDataType.tree_str: _FILT_ARRAY,
 }
 
 CASTS_BY_TYPE = {
-    BIType.datetime: [
-        BIType.genericdatetime,
-        BIType.datetime,
-        BIType.date,
-        BIType.string,
-        BIType.integer,
-        BIType.float,
-        BIType.boolean,
+    UserDataType.datetime: [
+        UserDataType.genericdatetime,
+        UserDataType.datetime,
+        UserDataType.date,
+        UserDataType.string,
+        UserDataType.integer,
+        UserDataType.float,
+        UserDataType.boolean,
     ],
-    BIType.datetimetz: [
-        BIType.datetimetz,
-        BIType.genericdatetime,
-        BIType.date,
-        BIType.string,
-        BIType.integer,
-        BIType.float,
-        BIType.boolean,
+    UserDataType.datetimetz: [
+        UserDataType.datetimetz,
+        UserDataType.genericdatetime,
+        UserDataType.date,
+        UserDataType.string,
+        UserDataType.integer,
+        UserDataType.float,
+        UserDataType.boolean,
     ],
-    BIType.genericdatetime: [
-        BIType.genericdatetime,
-        BIType.date,
-        BIType.string,
-        BIType.integer,
-        BIType.float,
-        BIType.boolean,
+    UserDataType.genericdatetime: [
+        UserDataType.genericdatetime,
+        UserDataType.date,
+        UserDataType.string,
+        UserDataType.integer,
+        UserDataType.float,
+        UserDataType.boolean,
     ],
-    BIType.date: [BIType.date, BIType.genericdatetime, BIType.string, BIType.integer, BIType.float, BIType.boolean],
-    BIType.boolean: [BIType.boolean, BIType.integer, BIType.float, BIType.string],
-    BIType.integer: [BIType.integer, BIType.float, BIType.string, BIType.boolean, BIType.date, BIType.genericdatetime],
-    BIType.float: [BIType.float, BIType.integer, BIType.string, BIType.boolean, BIType.date, BIType.genericdatetime],
-    BIType.string: [
-        BIType.string,
-        BIType.date,
-        BIType.genericdatetime,
-        BIType.boolean,
-        BIType.integer,
-        BIType.float,
-        BIType.geopoint,
-        BIType.geopolygon,
+    UserDataType.date: [
+        UserDataType.date,
+        UserDataType.genericdatetime,
+        UserDataType.string,
+        UserDataType.integer,
+        UserDataType.float,
+        UserDataType.boolean,
     ],
-    BIType.geopoint: [BIType.geopoint, BIType.string],
-    BIType.geopolygon: [BIType.geopolygon, BIType.string],
-    BIType.uuid: [BIType.uuid, BIType.string],
-    BIType.markup: [BIType.markup],
-    BIType.unsupported: [BIType.unsupported],  # `, BIType.string` would be too implicit.
-    BIType.array_float: [BIType.array_float, BIType.string],
-    BIType.array_int: [BIType.array_int, BIType.string],
-    BIType.array_str: [BIType.array_str, BIType.string],
-    BIType.tree_str: [BIType.tree_str],
+    UserDataType.boolean: [UserDataType.boolean, UserDataType.integer, UserDataType.float, UserDataType.string],
+    UserDataType.integer: [
+        UserDataType.integer,
+        UserDataType.float,
+        UserDataType.string,
+        UserDataType.boolean,
+        UserDataType.date,
+        UserDataType.genericdatetime,
+    ],
+    UserDataType.float: [
+        UserDataType.float,
+        UserDataType.integer,
+        UserDataType.string,
+        UserDataType.boolean,
+        UserDataType.date,
+        UserDataType.genericdatetime,
+    ],
+    UserDataType.string: [
+        UserDataType.string,
+        UserDataType.date,
+        UserDataType.genericdatetime,
+        UserDataType.boolean,
+        UserDataType.integer,
+        UserDataType.float,
+        UserDataType.geopoint,
+        UserDataType.geopolygon,
+    ],
+    UserDataType.geopoint: [UserDataType.geopoint, UserDataType.string],
+    UserDataType.geopolygon: [UserDataType.geopolygon, UserDataType.string],
+    UserDataType.uuid: [UserDataType.uuid, UserDataType.string],
+    UserDataType.markup: [UserDataType.markup],
+    UserDataType.unsupported: [UserDataType.unsupported],  # `, UserDataType.string` would be too implicit.
+    UserDataType.array_float: [UserDataType.array_float, UserDataType.string],
+    UserDataType.array_int: [UserDataType.array_int, UserDataType.string],
+    UserDataType.array_str: [UserDataType.array_str, UserDataType.string],
+    UserDataType.tree_str: [UserDataType.tree_str],
 }
 
 _AGG_BASIC = [ag.none, ag.count]
 BI_TYPE_AGGREGATIONS = {
-    BIType.string: _AGG_BASIC + [ag.countunique],
-    BIType.integer: _AGG_BASIC + [ag.sum, ag.avg, ag.min, ag.max, ag.countunique],
-    BIType.float: _AGG_BASIC + [ag.sum, ag.avg, ag.min, ag.max, ag.countunique],
-    BIType.date: _AGG_BASIC + [ag.min, ag.max, ag.countunique, ag.avg],
-    BIType.datetime: _AGG_BASIC + [ag.min, ag.max, ag.countunique, ag.avg],
-    BIType.datetimetz: _AGG_BASIC + [ag.min, ag.max, ag.countunique, ag.avg],
-    BIType.genericdatetime: _AGG_BASIC + [ag.min, ag.max, ag.countunique],  # TODO: 'avg'?
-    BIType.boolean: _AGG_BASIC + [],
-    BIType.geopoint: _AGG_BASIC + [],
-    BIType.geopolygon: _AGG_BASIC + [],
-    BIType.uuid: _AGG_BASIC + [ag.countunique],
-    BIType.markup: _AGG_BASIC + [],  # TODO: 'any'
-    BIType.unsupported: [ag.none],  # only explicit formula-based processing is allowed
-    BIType.array_float: _AGG_BASIC + [ag.countunique],
-    BIType.array_int: _AGG_BASIC + [ag.countunique],
-    BIType.array_str: _AGG_BASIC + [ag.countunique],
-    BIType.tree_str: _AGG_BASIC + [ag.countunique],
+    UserDataType.string: _AGG_BASIC + [ag.countunique],
+    UserDataType.integer: _AGG_BASIC + [ag.sum, ag.avg, ag.min, ag.max, ag.countunique],
+    UserDataType.float: _AGG_BASIC + [ag.sum, ag.avg, ag.min, ag.max, ag.countunique],
+    UserDataType.date: _AGG_BASIC + [ag.min, ag.max, ag.countunique, ag.avg],
+    UserDataType.datetime: _AGG_BASIC + [ag.min, ag.max, ag.countunique, ag.avg],
+    UserDataType.datetimetz: _AGG_BASIC + [ag.min, ag.max, ag.countunique, ag.avg],
+    UserDataType.genericdatetime: _AGG_BASIC + [ag.min, ag.max, ag.countunique],  # TODO: 'avg'?
+    UserDataType.boolean: _AGG_BASIC + [],
+    UserDataType.geopoint: _AGG_BASIC + [],
+    UserDataType.geopolygon: _AGG_BASIC + [],
+    UserDataType.uuid: _AGG_BASIC + [ag.countunique],
+    UserDataType.markup: _AGG_BASIC + [],  # TODO: 'any'
+    UserDataType.unsupported: [ag.none],  # only explicit formula-based processing is allowed
+    UserDataType.array_float: _AGG_BASIC + [ag.countunique],
+    UserDataType.array_int: _AGG_BASIC + [ag.countunique],
+    UserDataType.array_str: _AGG_BASIC + [ag.countunique],
+    UserDataType.tree_str: _AGG_BASIC + [ag.countunique],
 }
 
 

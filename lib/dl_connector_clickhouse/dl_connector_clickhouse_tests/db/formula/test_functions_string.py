@@ -1,12 +1,13 @@
 import sqlalchemy as sa
 
-from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
 from dl_formula.core import nodes
 from dl_formula.core.datatype import DataType
 from dl_formula.translation import ext_nodes
 from dl_formula.translation.context import TranslationCtx
 from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.functions_string import DefaultStringFunctionFormulaConnectorTestSuite
+
+from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
 
 
 class StringFunctionClickHouseTestSuite(DefaultStringFunctionFormulaConnectorTestSuite):

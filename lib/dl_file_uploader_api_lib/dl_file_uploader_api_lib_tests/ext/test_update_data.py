@@ -6,11 +6,9 @@ import uuid
 
 import pytest
 
-from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
-from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from dl_constants.enums import (
-    BIType,
     FileProcessingStatus,
+    UserDataType,
 )
 from dl_core.db import SchemaColumn
 from dl_core.us_manager.us_manager_async import AsyncUSManager
@@ -18,6 +16,10 @@ from dl_core_testing.connection import make_conn_key
 from dl_file_uploader_api_lib_tests.req_builder import ReqBuilder
 from dl_file_uploader_lib import exc
 from dl_testing.s3_utils import s3_file_exists
+
+from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from dl_connector_bundle_chs3.chs3_gsheets.core.lifecycle import GSheetsFileS3ConnectionLifecycleManager
+from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 
 
 LOGGER = logging.getLogger(__name__)
@@ -27,9 +29,11 @@ LOGGER = logging.getLogger(__name__)
 async def saved_gsheets_v2_connection(loop, bi_context, default_async_usm_per_test, s3_persistent_bucket, s3_client):
     us_manager = default_async_usm_per_test
     conn_name = "gsheets_v2 test conn {}".format(uuid.uuid4())
-    long_long_ago = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=31)
+    long_long_ago = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
+        seconds=GSheetsFileS3ConnectionLifecycleManager.STALE_THRESHOLD_SECONDS + 60,  # just in case
+    )
 
-    dummy_raw_schema = [SchemaColumn("dummy_column", user_type=BIType.string)]
+    dummy_raw_schema = [SchemaColumn("dummy_column", user_type=UserDataType.string)]
     data = GSheetsFileS3Connection.DataModel(
         sources=[
             GSheetsFileS3Connection.FileDataSource(  # this is a valid source

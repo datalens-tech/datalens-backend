@@ -2,9 +2,10 @@ import os
 
 import attr
 
-import dl_connector_greenplum as package
 from dl_i18n.localizer_base import Translatable as BaseTranslatable
 from dl_i18n.localizer_base import TranslationConfig
+
+import dl_connector_greenplum as package
 
 
 DOMAIN = f"{package.__name__}"

@@ -1,10 +1,11 @@
 import sqlalchemy_bigquery._types as bq_types
 
-from dl_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY as CT_BQ
 from dl_core.db.sa_types_base import (
     make_native_type,
     simple_instantiator,
 )
+
+from dl_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY as CT_BQ
 
 
 SQLALCHEMY_BIGQUERY_TYPES = {

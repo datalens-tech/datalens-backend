@@ -23,9 +23,9 @@ import dl_api_lib.schemas.data
 import dl_api_lib.schemas.main
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_constants.enums import (
-    BIType,
     FieldRole,
     FieldType,
+    UserDataType,
 )
 from dl_query_processing.enums import (
     EmptyQueryMode,
@@ -130,7 +130,7 @@ class DatasetResultView(DatasetDataBaseView, abc.ABC):
                 updated_item = item.clone(
                     obj=PlaceholderObjSpec(),
                     role_spec=TemplateRoleSpec(role=FieldRole.template, template=None),
-                    data_type=BIType.string,
+                    data_type=UserDataType.string,
                 )
             else:
                 assert isinstance(item.obj, FieldObjSpec)

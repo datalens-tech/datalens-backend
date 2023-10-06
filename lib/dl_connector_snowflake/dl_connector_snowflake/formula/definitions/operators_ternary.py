@@ -1,5 +1,6 @@
-from dl_connector_snowflake.formula.constants import SnowFlakeDialect as D
 import dl_formula.definitions.operators_ternary as base
+
+from dl_connector_snowflake.formula.constants import SnowFlakeDialect as D
 
 
 DEFINITIONS_TERNARY = [

@@ -1,8 +1,7 @@
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql as pg_types
 
-from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.db.conversion_base import (
     TypeTransformer,
     UTCDatetimeTypeCaster,
@@ -10,6 +9,8 @@ from dl_core.db.conversion_base import (
     make_native_type,
 )
 from dl_sqlalchemy_postgres.base import CITEXT
+
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 
 
 PG_TYPES_INT = frozenset((pg_types.SMALLINT, pg_types.INTEGER, pg_types.BIGINT))
@@ -23,47 +24,47 @@ class PostgreSQLTypeTransformer(TypeTransformer):
         **TypeTransformer.casters,  # type: ignore  # TODO: fix
         # Preliminary asyncpg-related hack: before inserting, make all datetimes UTC-naive.
         # A correct fix would require different BI-types for naive/aware datetimes.
-        BIType.datetime: UTCDatetimeTypeCaster(),
-        BIType.genericdatetime: UTCTimezoneDatetimeTypeCaster(),
+        UserDataType.datetime: UTCDatetimeTypeCaster(),
+        UserDataType.genericdatetime: UTCTimezoneDatetimeTypeCaster(),
     }
     native_to_user_map = {
-        **{make_native_type(CONNECTION_TYPE_POSTGRES, t): BIType.integer for t in PG_TYPES_INT},  # type: ignore  # TODO: fix
-        **{make_native_type(CONNECTION_TYPE_POSTGRES, t): BIType.float for t in PG_TYPES_FLOAT},
-        make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.BOOLEAN): BIType.boolean,
-        **{make_native_type(CONNECTION_TYPE_POSTGRES, t): BIType.string for t in PG_TYPES_STRING},
-        make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.DATE): BIType.date,
-        make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.TIMESTAMP): BIType.genericdatetime,
-        make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.UUID): BIType.uuid,
-        make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ENUM): BIType.string,
+        **{make_native_type(CONNECTION_TYPE_POSTGRES, t): UserDataType.integer for t in PG_TYPES_INT},  # type: ignore  # TODO: fix
+        **{make_native_type(CONNECTION_TYPE_POSTGRES, t): UserDataType.float for t in PG_TYPES_FLOAT},
+        make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.BOOLEAN): UserDataType.boolean,
+        **{make_native_type(CONNECTION_TYPE_POSTGRES, t): UserDataType.string for t in PG_TYPES_STRING},
+        make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.DATE): UserDataType.date,
+        make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.TIMESTAMP): UserDataType.genericdatetime,
+        make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.UUID): UserDataType.uuid,
+        make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ENUM): UserDataType.string,
         **{
-            make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(typecls)): BIType.array_int
+            make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(typecls)): UserDataType.array_int
             for typecls in PG_TYPES_INT
         },
         **{
-            make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(typecls)): BIType.array_float
+            make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(typecls)): UserDataType.array_float
             for typecls in PG_TYPES_FLOAT
         },
         **{
-            make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(typecls)): BIType.array_str
+            make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(typecls)): UserDataType.array_str
             for typecls in PG_TYPES_STRING
         },
-        make_native_type(CONNECTION_TYPE_POSTGRES, sa.sql.sqltypes.NullType): BIType.unsupported,
+        make_native_type(CONNECTION_TYPE_POSTGRES, sa.sql.sqltypes.NullType): UserDataType.unsupported,
     }
     user_to_native_map = {
-        BIType.integer: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.BIGINT),
-        BIType.float: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.DOUBLE_PRECISION),
-        BIType.boolean: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.BOOLEAN),
-        BIType.string: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.TEXT),
-        BIType.date: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.DATE),
-        BIType.datetime: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.TIMESTAMP),
-        BIType.genericdatetime: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.TIMESTAMP),
-        BIType.geopoint: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.TEXT),
-        BIType.geopolygon: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.TEXT),
-        BIType.uuid: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.UUID),
-        BIType.markup: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.TEXT),
-        BIType.array_int: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(pg_types.BIGINT)),
-        BIType.array_float: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(pg_types.DOUBLE_PRECISION)),
-        BIType.array_str: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(pg_types.TEXT)),
-        BIType.tree_str: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(pg_types.TEXT)),
-        BIType.unsupported: make_native_type(CONNECTION_TYPE_POSTGRES, sa.sql.sqltypes.NullType),
+        UserDataType.integer: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.BIGINT),
+        UserDataType.float: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.DOUBLE_PRECISION),
+        UserDataType.boolean: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.BOOLEAN),
+        UserDataType.string: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.TEXT),
+        UserDataType.date: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.DATE),
+        UserDataType.datetime: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.TIMESTAMP),
+        UserDataType.genericdatetime: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.TIMESTAMP),
+        UserDataType.geopoint: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.TEXT),
+        UserDataType.geopolygon: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.TEXT),
+        UserDataType.uuid: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.UUID),
+        UserDataType.markup: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.TEXT),
+        UserDataType.array_int: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(pg_types.BIGINT)),
+        UserDataType.array_float: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(pg_types.DOUBLE_PRECISION)),
+        UserDataType.array_str: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(pg_types.TEXT)),
+        UserDataType.tree_str: make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(pg_types.TEXT)),
+        UserDataType.unsupported: make_native_type(CONNECTION_TYPE_POSTGRES, sa.sql.sqltypes.NullType),
     }

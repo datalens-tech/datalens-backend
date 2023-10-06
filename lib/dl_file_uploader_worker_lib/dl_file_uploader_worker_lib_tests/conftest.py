@@ -4,10 +4,9 @@ import asyncio
 import logging
 import os
 import sys
+from typing import TYPE_CHECKING
 
-import aiobotocore.client
 import attr
-import botocore.client
 import pytest
 import redis.asyncio
 
@@ -22,7 +21,6 @@ from dl_configs.settings_submodels import (
     RedisSettings,
     S3Settings,
 )
-from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 from dl_core.loader import load_core_lib
 from dl_core.services_registry.top_level import DummyServiceRegistry
 from dl_core.united_storage_client import USAuthContextMaster
@@ -64,7 +62,14 @@ from dl_testing.s3_utils import (
 )
 from dl_testing.utils import wait_for_initdb
 
+from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
+
 from .config import TestingUSConfig
+
+
+if TYPE_CHECKING:
+    from mypy_boto3_s3.client import S3Client as SyncS3Client
+    from types_aiobotocore_s3 import S3Client as AsyncS3Client
 
 
 LOGGER = logging.getLogger(__name__)
@@ -260,13 +265,13 @@ def task_processor_client(request, task_processor_arq_client, task_processor_loc
 
 
 @pytest.fixture(scope="function")
-async def s3_client(s3_settings) -> aiobotocore.client.AioBaseClient:
+async def s3_client(s3_settings) -> AsyncS3Client:
     async with create_s3_client(s3_settings) as client:
         yield client
 
 
 @pytest.fixture(scope="function")
-def s3_client_sync(s3_settings) -> botocore.client.BaseClient:
+def s3_client_sync(s3_settings) -> SyncS3Client:
     return create_sync_s3_client(s3_settings)
 
 

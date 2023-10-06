@@ -22,7 +22,7 @@ import attr
 from typing_extensions import final
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core import exc
 from dl_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
 from dl_core.connection_executors.adapters.async_adapters_base import (
@@ -238,7 +238,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
     async def _execute_query(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:
         return await self._target_dba.execute(query)
 
-    def _autodetect_user_types(self, raw_cursor_info: dict) -> Optional[List[BIType]]:
+    def _autodetect_user_types(self, raw_cursor_info: dict) -> Optional[List[UserDataType]]:
         db_types = raw_cursor_info.get("db_types")
         if not db_types:
             return None
@@ -246,7 +246,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
 
         result = []
         for native_type in db_types:
-            bi_type = BIType.unsupported
+            bi_type = UserDataType.unsupported
 
             if native_type:
                 try:

@@ -1,6 +1,7 @@
+from dl_formula_testing.testcases.dialect import DefaultDialectFormulaConnectorTestSuite
+
 from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
-from dl_formula_testing.testcases.dialect import DefaultDialectFormulaConnectorTestSuite
 
 
 class DialectClickHouseTestSuite(DefaultDialectFormulaConnectorTestSuite):

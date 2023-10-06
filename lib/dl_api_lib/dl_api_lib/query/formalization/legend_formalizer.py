@@ -29,11 +29,11 @@ from dl_api_lib.query.formalization.raw_specs import (
     RawTreeRoleSpec,
 )
 from dl_constants.enums import (
-    BIType,
     CalcMode,
     FieldRole,
     FieldType,
     ManagedBy,
+    UserDataType,
     WhereClauseOperation,
 )
 import dl_core.exc as core_exc
@@ -62,7 +62,7 @@ from dl_utils.utils import enum_not_none
 
 DATA_TYPES_SUPPORTING_TREE = frozenset(
     {
-        BIType.tree_str,
+        UserDataType.tree_str,
     }
 )
 
@@ -159,7 +159,7 @@ class LegendFormalizer(abc.ABC):
                 obj=MeasureNameObjSpec(),
                 block_id=item_spec.block_id,
                 role_spec=role_spec,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
                 field_type=FieldType.DIMENSION,
             )
         elif isinstance(item_spec.ref, PlaceholderRef):
@@ -168,7 +168,7 @@ class LegendFormalizer(abc.ABC):
                 obj=PlaceholderObjSpec(),
                 block_id=item_spec.block_id,
                 role_spec=role_spec,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
                 field_type=FieldType.DIMENSION,
             )
         else:
@@ -439,7 +439,7 @@ class PivotLegendFormalizer(LegendFormalizer):
                     obj=MeasureNameObjSpec(),
                     # using `row` here would corrupt the expected structure, so use `info`
                     role_spec=RoleSpec(role=FieldRole.info),
-                    data_type=BIType.string,
+                    data_type=UserDataType.string,
                     field_type=FieldType.DIMENSION,
                 )
             )
@@ -453,7 +453,7 @@ class PivotLegendFormalizer(LegendFormalizer):
                     obj=DimensionNameObjSpec(),
                     # using `row` here would corrupt the expected structure, so use `info`
                     role_spec=RoleSpec(role=FieldRole.info),
-                    data_type=BIType.string,
+                    data_type=UserDataType.string,
                     field_type=FieldType.DIMENSION,
                 )
             )

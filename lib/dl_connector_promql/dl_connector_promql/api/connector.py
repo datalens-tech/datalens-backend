@@ -9,6 +9,7 @@ from dl_api_connector.connector import (
     ApiConnector,
     ApiSourceDefinition,
 )
+
 from dl_connector_promql.api.api_schema.connection import PromQLConnectionSchema
 from dl_connector_promql.api.connection_form.form_config import PromQLConnectionFormFactory
 from dl_connector_promql.api.connection_info import PromQLConnectionInfoProvider

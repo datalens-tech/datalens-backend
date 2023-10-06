@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
     Optional,
 )
 
@@ -14,6 +13,7 @@ from dl_api_lib.service_registry.dataset_validator_factory import DefaultDataset
 from dl_api_lib.service_registry.field_id_generator_factory import FieldIdGeneratorFactory
 from dl_api_lib.service_registry.service_registry import DefaultApiServiceRegistry
 from dl_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
+from dl_constants.enums import QueryProcessingMode
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_core.services_registry.sr_factories import DefaultSRFactory
 from dl_core.services_registry.top_level import ServicesRegistry
@@ -38,12 +38,13 @@ class DefaultApiSRFactory(DefaultSRFactory[DefaultApiServiceRegistry]):
     _localizer_factory: Optional[LocalizerFactory] = attr.ib(default=None)
     _localizer_fallback: Optional[Localizer] = attr.ib(default=None)
     _connector_availability: Optional[ConnectorAvailabilityConfig] = attr.ib(default=None)
+    _query_proc_mode: QueryProcessingMode = attr.ib(kw_only=True, default=QueryProcessingMode.basic)
 
     def additional_sr_constructor_kwargs(
         self,
         request_context_info: RequestContextInfo,
         sr_ref: FutureRef[ServicesRegistry],
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return dict(
             default_formula_parser_type=self._default_formula_parser_type,
             dataset_validator_factory=DefaultDatasetValidatorFactory(
@@ -56,4 +57,5 @@ class DefaultApiSRFactory(DefaultSRFactory[DefaultApiServiceRegistry]):
             localizer_factory=self._localizer_factory,
             localizer_fallback=self._localizer_fallback,
             connector_availability=self._connector_availability,
+            query_proc_mode=self._query_proc_mode,
         )

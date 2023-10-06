@@ -10,7 +10,10 @@ from typing import (
 
 import attr
 
-from dl_core.connection_models import ConnDTO
+from dl_core.connection_models import (
+    ConnDTO,
+    ConnectOptions,
+)
 
 
 LOGGER = logging.getLogger(__name__)
@@ -33,7 +36,7 @@ class ConnectionSecurityManager(metaclass=abc.ABCMeta):
     db_domain_manager: DBDomainManager = attr.ib(factory=DBDomainManager)
 
     @abc.abstractmethod
-    def is_safe_connection(self, conn_dto: ConnDTO) -> bool:
+    def is_safe_connection(self, conn_dto: ConnDTO, conn_options: ConnectOptions) -> bool:
         """
         Must return False if connection is potentially unsafe and should be executed in isolated environment.
         """
@@ -56,7 +59,7 @@ class ConnectionSafetyChecker(metaclass=abc.ABCMeta):
         cls._DTO_TYPES.update(dto_classes)
 
     @abc.abstractmethod
-    def is_safe_connection(self, conn_dto: ConnDTO) -> bool:
+    def is_safe_connection(self, conn_dto: ConnDTO, conn_options: ConnectOptions) -> bool:
         raise NotImplementedError
 
 
@@ -66,7 +69,7 @@ class InsecureConnectionSafetyChecker(ConnectionSafetyChecker):
 
     _DTO_TYPES: ClassVar[set[Type[ConnDTO]]] = set()
 
-    def is_safe_connection(self, conn_dto: ConnDTO) -> bool:
+    def is_safe_connection(self, conn_dto: ConnDTO, conn_options: ConnectOptions) -> bool:
         return True
 
 
@@ -76,7 +79,7 @@ class NonUserInputConnectionSafetyChecker(ConnectionSafetyChecker):
 
     _DTO_TYPES: ClassVar[set[Type[ConnDTO]]] = set()
 
-    def is_safe_connection(self, conn_dto: ConnDTO) -> bool:
+    def is_safe_connection(self, conn_dto: ConnDTO, conn_options: ConnectOptions) -> bool:
         if type(conn_dto) in self._DTO_TYPES:
             LOGGER.info("%r in safe DTO types", type(conn_dto))
             return True
@@ -87,8 +90,10 @@ class NonUserInputConnectionSafetyChecker(ConnectionSafetyChecker):
 class GenericConnectionSecurityManager(ConnectionSecurityManager, metaclass=abc.ABCMeta):
     conn_sec_checkers: list[ConnectionSafetyChecker] = attr.ib()
 
-    def is_safe_connection(self, conn_dto: ConnDTO) -> bool:
-        return any(conn_sec_checker.is_safe_connection(conn_dto) for conn_sec_checker in self.conn_sec_checkers)
+    def is_safe_connection(self, conn_dto: ConnDTO, conn_options: ConnectOptions) -> bool:
+        return any(
+            conn_sec_checker.is_safe_connection(conn_dto, conn_options) for conn_sec_checker in self.conn_sec_checkers
+        )
 
 
 @attr.s(kw_only=True)

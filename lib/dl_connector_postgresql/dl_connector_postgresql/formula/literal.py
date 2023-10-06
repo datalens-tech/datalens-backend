@@ -9,13 +9,14 @@ import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as sa_postgresql
 from sqlalchemy.sql.sqltypes import Integer
 
-from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 from dl_formula.connectors.base.literal import (
     Literal,
     Literalizer,
     TypeDefiningCast,
 )
 from dl_formula.core.dialect import DialectCombo
+
+from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
 
 PG_SMALLINT_MIN = -32768

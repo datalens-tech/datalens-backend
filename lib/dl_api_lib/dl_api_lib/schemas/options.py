@@ -8,10 +8,10 @@ from dl_api_lib.enums import WhereClauseOperation
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
-    BIType,
     ConnectionType,
-    CreateDSFrom,
+    DataSourceType,
     JoinType,
+    UserDataType,
 )
 from dl_model_tools.schema.base import BaseSchema
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
@@ -31,9 +31,9 @@ class PreviewSchema(BaseSchema):
 
 class DataTypesSchema(BaseSchema):
     class DataTypeListItemSchema(BaseSchema):
-        type = ma_fields.Enum(BIType)
+        type = ma_fields.Enum(UserDataType)
         aggregations = ma_fields.List(ma_fields.Enum(AggregationFunction))
-        casts = ma_fields.List(ma_fields.Enum(BIType))
+        casts = ma_fields.List(ma_fields.Enum(UserDataType))
         filter_operations = ma_fields.List(ma_fields.Enum(WhereClauseOperation))
 
     items = ma_fields.List(ma_fields.Nested(DataTypeListItemSchema))
@@ -42,7 +42,7 @@ class DataTypesSchema(BaseSchema):
 class FieldsSchema(BaseSchema):
     class FieldListItemSchema(BaseSchema):
         guid = ma_fields.String()
-        casts = ma_fields.List(ma_fields.Enum(BIType))
+        casts = ma_fields.List(ma_fields.Enum(UserDataType))
         aggregations = ma_fields.List(ma_fields.Enum(AggregationFunction))
 
     items = ma_fields.List(ma_fields.Nested(FieldListItemSchema))
@@ -63,7 +63,7 @@ class ConnectionsSchema(BaseSchema):
 
 
 class CompatSourceTypeListItemSchema(BaseSchema):
-    source_type = DynamicEnumField(CreateDSFrom)
+    source_type = DynamicEnumField(DataSourceType)
 
 
 class SourcesSchema(BaseSchema):

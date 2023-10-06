@@ -6,9 +6,10 @@ from dl_configs.connectors_settings import ConnectorsConfigType
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 from dl_configs.settings_submodels import GoogleAppSettings
+from dl_file_uploader_lib.settings import FileUploaderBaseSettings
+
 from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 from dl_connector_bundle_chs3.file.core.settings import file_s3_settings_fallback
-from dl_file_uploader_lib.settings import FileUploaderBaseSettings
 
 
 @attr.s(frozen=True)

@@ -1,6 +1,6 @@
 from dl_constants.enums import (
     ConnectionType,
-    CreateDSFrom,
+    DataSourceType,
 )
 from dl_core.connectors.base.connector import (
     CoreConnectionDefinition,
@@ -13,7 +13,7 @@ from dl_core.us_manager.storage_schemas.connection import BaseConnectionDataStor
 
 
 CONNECTION_TYPE_TESTING = ConnectionType.declare("testing")
-SOURCE_TYPE_TESTING = CreateDSFrom.declare("TESTING")
+SOURCE_TYPE_TESTING = DataSourceType.declare("TESTING")
 
 
 class TestingConnection(ConnectionBase):

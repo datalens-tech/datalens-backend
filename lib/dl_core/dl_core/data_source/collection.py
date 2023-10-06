@@ -11,9 +11,9 @@ from typing import (
 import attr
 
 from dl_constants.enums import (
-    CreateDSFrom,
     DataSourceCollectionType,
     DataSourceRole,
+    DataSourceType,
     JoinType,
     ManagedBy,
 )
@@ -96,7 +96,7 @@ class DataSourceCollectionBase:
         return self.get_connection_id()
 
     @property
-    def source_type(self) -> CreateDSFrom:
+    def source_type(self) -> DataSourceType:
         return self.get_strict().spec.source_type
 
     def supports_join_type(

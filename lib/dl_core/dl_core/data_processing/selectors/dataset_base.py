@@ -18,6 +18,7 @@ from dl_api_commons.reporting.models import (
 )
 from dl_constants.enums import DataSourceRole
 from dl_core import utils
+from dl_core.base_models import WorkbookEntryLocation
 from dl_core.data_processing.selectors.base import (
     BIQueryExecutionContext,
     DataSelectorAsyncBase,
@@ -64,6 +65,9 @@ class DatasetDataSelectorAsyncBase(DataSelectorAsyncBase, metaclass=abc.ABCMeta)
         query_execution_ctx: BIQueryExecutionContext,
     ) -> None:
         connection = query_execution_ctx.target_connection
+        workbook_id = (
+            connection.entry_key.workbook_id if isinstance(connection.entry_key, WorkbookEntryLocation) else None
+        )
         report = QueryExecutionStartReportingRecord(
             timestamp=time.time(),
             query_id=query_execution_ctx.query_id,
@@ -75,6 +79,7 @@ class DatasetDataSelectorAsyncBase(DataSelectorAsyncBase, metaclass=abc.ABCMeta)
             connection_type=connection.conn_type,
             conn_reporting_data=connection.get_conn_dto().conn_reporting_data(),
             query=query_execution_ctx.compiled_query,
+            workbook_id=workbook_id,
         )
         self.reporting_registry.save_reporting_record(report=report)
 

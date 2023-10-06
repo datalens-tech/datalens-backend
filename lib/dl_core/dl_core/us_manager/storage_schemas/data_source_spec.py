@@ -7,7 +7,7 @@ from typing import (
 
 from marshmallow_oneofschema import OneOfSchema
 
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 from dl_core.data_source_spec.base import DataSourceSpec
 from dl_core.us_manager.storage_schemas.data_source_spec_base import DataSourceSpecStorageSchema
 
@@ -22,5 +22,5 @@ class GenericDataSourceSpecStorageSchema(OneOfSchema):
         return obj.source_type.name
 
 
-def register_data_source_schema(source_type: CreateDSFrom, schema_cls: Type[DataSourceSpecStorageSchema]) -> None:
+def register_data_source_schema(source_type: DataSourceType, schema_cls: Type[DataSourceSpecStorageSchema]) -> None:
     GenericDataSourceSpecStorageSchema.type_schemas[source_type.name] = schema_cls

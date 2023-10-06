@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import attr
 
-from dl_connector_promql.core.constants import CONNECTION_TYPE_PROMQL
 from dl_core.connection_models.dto_defs import DefaultSQLDTO
+
+from dl_connector_promql.core.constants import CONNECTION_TYPE_PROMQL
 
 
 @attr.s(frozen=True)

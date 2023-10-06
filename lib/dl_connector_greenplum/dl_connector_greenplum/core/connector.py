@@ -1,3 +1,12 @@
+from dl_core.connectors.base.connector import (
+    CoreConnectionDefinition,
+    CoreConnector,
+)
+from dl_core.connectors.sql_base.connector import (
+    SQLSubselectCoreSourceDefinitionBase,
+    SQLTableCoreSourceDefinitionBase,
+)
+
 from dl_connector_greenplum.core.constants import (
     BACKEND_TYPE_GREENPLUM,
     CONNECTION_TYPE_GREENPLUM,
@@ -19,14 +28,6 @@ from dl_connector_postgresql.core.postgresql_base.connection_executors import (
 )
 from dl_connector_postgresql.core.postgresql_base.sa_types import SQLALCHEMY_POSTGRES_TYPES
 from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
-from dl_core.connectors.base.connector import (
-    CoreConnectionDefinition,
-    CoreConnector,
-)
-from dl_core.connectors.sql_base.connector import (
-    SQLSubselectCoreSourceDefinitionBase,
-    SQLTableCoreSourceDefinitionBase,
-)
 
 
 class GreenplumCoreConnectionDefinition(CoreConnectionDefinition):

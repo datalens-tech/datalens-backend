@@ -165,6 +165,24 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval('CONTAINS_ANY([arr_str_value], ARRAY("123", NULL))', from_=data_table)
         assert dbe.eval('CONTAINS_ANY(ARRAY("cde"), [arr_str_value])', from_=data_table)
 
+    def test_array_not_contains(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        assert not dbe.eval("NOTCONTAINS(ARRAY(1, 2, 3), 1)", from_=data_table)
+        assert not dbe.eval("NOTCONTAINS(ARRAY(1.1, 2.2, 3.3), 3.3)", from_=data_table)
+        assert not dbe.eval('NOTCONTAINS(ARRAY("a", "b", "c"), "a")', from_=data_table)
+        assert dbe.eval('NOTCONTAINS(ARRAY("a", "b", "c"), "d")', from_=data_table)
+        assert not dbe.eval('NOTCONTAINS(ARRAY("a", NULL, "c"), NULL)', from_=data_table)
+        assert dbe.eval("NOTCONTAINS(ARRAY(1.1, 2.2, 3.3), NULL)", from_=data_table)
+        assert not dbe.eval("NOTCONTAINS([arr_int_value], 23)", from_=data_table)
+        assert dbe.eval("NOTCONTAINS([arr_int_value], 24)", from_=data_table)
+        assert not dbe.eval('NOTCONTAINS([arr_str_value], "cde")', from_=data_table)
+        assert not dbe.eval("NOTCONTAINS([arr_str_value], NULL)", from_=data_table)
+
+        assert not dbe.eval("NOTCONTAINS([arr_str_value], GET_ITEM([arr_str_value], 1))", from_=data_table)
+        assert not dbe.eval("NOTCONTAINS([arr_str_value], GET_ITEM([arr_str_value], 2))", from_=data_table)
+        assert not dbe.eval("NOTCONTAINS([arr_str_value], GET_ITEM([arr_str_value], 3))", from_=data_table)
+        assert not dbe.eval("NOTCONTAINS([arr_str_value], GET_ITEM([arr_str_value], 4))", from_=data_table)
+        assert not dbe.eval("NOTCONTAINS([arr_str_value], GET_ITEM([arr_str_value], 4))", from_=data_table)
+
     def test_array_slice(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         assert dbe.eval("SLICE([arr_int_value], 2, 2)", from_=data_table) == dbe.eval(
             "ARRAY(23, 456)", from_=data_table

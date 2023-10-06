@@ -8,13 +8,14 @@ from typing import (
 
 import attr
 
+from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+
 from dl_connector_postgresql.core.postgresql_base.adapters_postgres import PostgresAdapter
 from dl_connector_postgresql.core.postgresql_base.async_adapters_postgres import AsyncPostgresAdapter
 from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 from dl_connector_postgresql.core.postgresql_base.dto import PostgresConnDTOBase
 from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
-from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
-from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 
 
 _BASE_POSTGRES_ADAPTER_TV = TypeVar("_BASE_POSTGRES_ADAPTER_TV", bound=CommonBaseDirectAdapter)

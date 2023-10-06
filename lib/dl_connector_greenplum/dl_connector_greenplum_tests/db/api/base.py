@@ -4,6 +4,10 @@ from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
 from dl_api_lib_testing.dataset_base import DatasetTestBase
+from dl_constants.enums import RawSQLLevel
+from dl_core_testing.database import DbTable
+from dl_core_testing.testcases.service_base import ServiceFixtureTextClass
+
 from dl_connector_greenplum.core.constants import (
     CONNECTION_TYPE_GREENPLUM,
     SOURCE_TYPE_GP_TABLE,
@@ -14,9 +18,6 @@ from dl_connector_greenplum_tests.db.config import (
     CORE_TEST_CONFIG,
     DB_CORE_URL,
 )
-from dl_constants.enums import RawSQLLevel
-from dl_core_testing.database import DbTable
-from dl_core_testing.testcases.service_base import ServiceFixtureTextClass
 
 
 class GreenplumConnectionTestBase(ConnectionTestBase, ServiceFixtureTextClass):

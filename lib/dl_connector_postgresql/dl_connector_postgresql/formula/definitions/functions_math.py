@@ -3,7 +3,6 @@ from typing import ClassVar
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 
-from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 from dl_formula.core.datatype import DataType
 from dl_formula.definitions.args import ArgTypeSequence
 from dl_formula.definitions.base import TranslationVariant
@@ -12,6 +11,8 @@ from dl_formula.definitions.literals import (
     Literal,
     un_literal,
 )
+
+from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
 
 V = TranslationVariant.make

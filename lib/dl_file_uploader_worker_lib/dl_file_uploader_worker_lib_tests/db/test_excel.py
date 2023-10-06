@@ -4,8 +4,8 @@ import logging
 import pytest
 
 from dl_constants.enums import (
-    BIType,
     FileProcessingStatus,
+    UserDataType,
 )
 from dl_file_uploader_lib.redis_model.models import (
     DataFile,
@@ -46,31 +46,31 @@ async def test_parse_excel_task(
     assert dsrc.status == FileProcessingStatus.ready
     assert dsrc.title == "data.xlsx – Orders"
     assert [sch.user_type for sch in dsrc.raw_schema] == [
-        BIType.integer,
-        BIType.string,
-        BIType.genericdatetime,
-        BIType.genericdatetime,
-        BIType.string,
-        BIType.string,
-        BIType.string,
-        BIType.string,
-        BIType.string,
-        BIType.string,
-        BIType.string,
-        BIType.string,
-        BIType.string,
-        BIType.string,
-        BIType.string,
-        BIType.string,
-        BIType.string,
-        BIType.string,
-        BIType.float,
-        BIType.integer,
-        BIType.float,
-        BIType.float,
-        BIType.float,
-        BIType.string,
-        BIType.float,
+        UserDataType.integer,
+        UserDataType.string,
+        UserDataType.genericdatetime,
+        UserDataType.genericdatetime,
+        UserDataType.string,
+        UserDataType.string,
+        UserDataType.string,
+        UserDataType.string,
+        UserDataType.string,
+        UserDataType.string,
+        UserDataType.string,
+        UserDataType.string,
+        UserDataType.string,
+        UserDataType.string,
+        UserDataType.string,
+        UserDataType.string,
+        UserDataType.string,
+        UserDataType.string,
+        UserDataType.float,
+        UserDataType.integer,
+        UserDataType.float,
+        UserDataType.float,
+        UserDataType.float,
+        UserDataType.string,
+        UserDataType.float,
     ]
     assert [sch.name for sch in dsrc.raw_schema] == [
         "row",
@@ -156,3 +156,27 @@ async def test_parse_excel_task(
         "Medium",
         "39.24",
     ]
+
+
+@pytest.mark.asyncio
+async def test_parse_excel_with_one_row_task(
+    task_processor_client,
+    task_state,
+    s3_client,
+    redis_model_manager,
+    uploaded_excel_with_one_row_id,
+    reader_app,
+):
+    uploaded_excel_id = uploaded_excel_with_one_row_id
+    rmm = redis_model_manager
+    df = await DataFile.get(manager=rmm, obj_id=uploaded_excel_id)
+    assert df.status == FileProcessingStatus.in_progress
+
+    task = await task_processor_client.schedule(ProcessExcelTask(file_id=uploaded_excel_id))
+    result = await wait_task(task, task_state)
+    await sleep(60)
+
+    assert result[-1] == "failed"
+
+    df = await DataFile.get(manager=rmm, obj_id=uploaded_excel_id)
+    assert df.status == FileProcessingStatus.failed

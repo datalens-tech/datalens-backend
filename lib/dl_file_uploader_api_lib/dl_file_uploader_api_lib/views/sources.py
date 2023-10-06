@@ -13,10 +13,9 @@ from dl_api_commons.aiohttp.aiohttp_wrappers import (
     RequiredResource,
     RequiredResourceCommon,
 )
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from dl_constants.enums import (
-    BIType,
     FileProcessingStatus,
+    UserDataType,
 )
 from dl_core.db import get_type_transformer
 from dl_core.db.elements import SchemaColumn
@@ -40,6 +39,8 @@ from dl_file_uploader_lib.redis_model.models.models import (
     UserSourceProperties,
 )
 from dl_file_uploader_task_interface.tasks import ParseFileTask
+
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
 LOGGER = logging.getLogger(__name__)
@@ -75,26 +76,26 @@ class SourceStatusView(FileUploaderBaseView):
         )
 
 
-def get_compatible_user_type(user_type: Optional[BIType]) -> tuple[BIType, ...]:
-    compatible_types: dict[Optional[BIType], tuple[BIType, ...]] = {
-        BIType.string: (BIType.string,),
-        BIType.integer: (
-            BIType.integer,
-            BIType.float,
-            BIType.string,
+def get_compatible_user_type(user_type: Optional[UserDataType]) -> tuple[UserDataType, ...]:
+    compatible_types: dict[Optional[UserDataType], tuple[UserDataType, ...]] = {
+        UserDataType.string: (UserDataType.string,),
+        UserDataType.integer: (
+            UserDataType.integer,
+            UserDataType.float,
+            UserDataType.string,
         ),
-        BIType.float: (
-            BIType.float,
-            BIType.string,
+        UserDataType.float: (
+            UserDataType.float,
+            UserDataType.string,
         ),
-        BIType.date: (
-            BIType.date,
-            BIType.genericdatetime,
-            BIType.string,
+        UserDataType.date: (
+            UserDataType.date,
+            UserDataType.genericdatetime,
+            UserDataType.string,
         ),
-        BIType.genericdatetime: (
-            BIType.genericdatetime,
-            BIType.string,
+        UserDataType.genericdatetime: (
+            UserDataType.genericdatetime,
+            UserDataType.string,
         ),
     }
     return compatible_types.get(user_type, tuple())
@@ -113,7 +114,7 @@ def cast_preview_data(
 
 
 def get_raw_schema_with_overrides(raw_schema: RawSchemaType, schema_overrides: RawSchemaType) -> RawSchemaType:
-    orig_column_types_by_name: dict[str, BIType] = {sch.name: sch.user_type for sch in raw_schema}
+    orig_column_types_by_name: dict[str, UserDataType] = {sch.name: sch.user_type for sch in raw_schema}
     column_type_overrides = dict()
     for col in schema_overrides:
         col_name = col.name

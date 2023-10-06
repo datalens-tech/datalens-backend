@@ -3,14 +3,15 @@ from typing import Any
 
 import pytest
 
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.database import CoreDbConfig
+from dl_core_testing.testcases.connection import BaseConnectionTestClass
+
 from dl_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
 from dl_connector_snowflake.core.testing.connection import make_snowflake_saved_connection
 from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 from dl_connector_snowflake.db_testing.engine_wrapper import SnowFlakeDbEngineConfig
 import dl_connector_snowflake_tests.ext.config as test_config  # noqa
-from dl_core.us_manager.us_manager_sync import SyncUSManager
-from dl_core_testing.database import CoreDbConfig
-from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 
 class BaseSnowFlakeTestClass(BaseConnectionTestClass[ConnectionSQLSnowFlake]):

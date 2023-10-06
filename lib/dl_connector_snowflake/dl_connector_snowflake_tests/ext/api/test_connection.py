@@ -2,10 +2,18 @@ import json
 import uuid
 
 from dl_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
+from dl_testing.regulated_test import RegulatedTestParams
+
 from dl_connector_snowflake_tests.ext.api.base import SnowFlakeConnectionTestBase
 
 
 class TestSnowFlakeConnection(SnowFlakeConnectionTestBase, DefaultConnectorConnectionTestSuite):
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultConnectorConnectionTestSuite.test_cache_ttl_sec_override: "Unavailable for SnowFlake",
+        }
+    )
+
     def test_connection_parameters_tester(self, client, connection_params):
         params = {
             "type": "snowflake",

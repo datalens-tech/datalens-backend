@@ -1,17 +1,17 @@
+from __future__ import annotations
+
 import io
 import json
 from typing import (
+    TYPE_CHECKING,
+    BinaryIO,
     Iterator,
     NamedTuple,
     Optional,
 )
 
-import botocore.client
 from clickhouse_sqlalchemy.quoting import Quoter
 
-from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from dl_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
-from dl_connector_clickhouse.core.clickhouse_base.ch_commons import create_column_sql
 from dl_core.db import (
     SchemaColumn,
     get_type_transformer,
@@ -27,6 +27,14 @@ from dl_file_uploader_lib.redis_model.models.models import (
     SpreadsheetFileSourceSettings,
 )
 from dl_file_uploader_worker_lib.utils.parsing_utils import get_csv_raw_data_iterator
+
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
+from dl_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
+from dl_connector_clickhouse.core.clickhouse_base.ch_commons import create_column_sql
+
+
+if TYPE_CHECKING:
+    from mypy_boto3_s3.client import S3Client as SyncS3Client
 
 
 def make_s3_table_func_sql_source(
@@ -63,7 +71,7 @@ class S3Object(NamedTuple):
 
 
 def copy_from_s3_to_s3(
-    s3_sync_cli: botocore.client.BaseClient,
+    s3_sync_cli: SyncS3Client,
     src_file: S3Object,
     dst_file: S3Object,
     file_type: FileType,
@@ -72,7 +80,7 @@ def copy_from_s3_to_s3(
     raw_schema: list[SchemaColumn],
 ) -> None:
     s3_sync_resp = s3_sync_cli.get_object(Bucket=src_file.bucket, Key=src_file.key)
-    s3_data_stream = s3_sync_resp["Body"]
+    s3_data_stream: BinaryIO = s3_sync_resp["Body"]  # type: ignore  # TODO: fix
 
     def spreadsheet_data_iter() -> Iterator[dict]:
         fieldnames = tuple(sch.name for sch in raw_schema)

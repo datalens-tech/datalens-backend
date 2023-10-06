@@ -2,10 +2,11 @@ from datetime import datetime
 from typing import Optional
 import uuid
 
-from dl_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
-from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 from dl_constants.enums import RawSQLLevel
 from dl_core.us_manager.us_manager_sync import SyncUSManager
+
+from dl_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
+from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 
 
 def make_snowflake_saved_connection(

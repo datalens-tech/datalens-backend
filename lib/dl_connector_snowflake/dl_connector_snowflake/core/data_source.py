@@ -8,17 +8,7 @@ from typing import (
     Type,
 )
 
-from dl_connector_snowflake.core.constants import (
-    CONNECTION_TYPE_SNOWFLAKE,
-    SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
-    SOURCE_TYPE_SNOWFLAKE_TABLE,
-)
-from dl_connector_snowflake.core.data_source_spec import (
-    SnowFlakeSubselectDataSourceSpec,
-    SnowFlakeTableDataSourceSpec,
-)
-from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 from dl_core.connection_models import (
     TableDefinition,
     TableIdent,
@@ -33,6 +23,17 @@ from dl_core.data_source.sql import (
 from dl_core.db import SchemaInfo
 from dl_core.utils import sa_plain_text
 
+from dl_connector_snowflake.core.constants import (
+    CONNECTION_TYPE_SNOWFLAKE,
+    SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
+    SOURCE_TYPE_SNOWFLAKE_TABLE,
+)
+from dl_connector_snowflake.core.data_source_spec import (
+    SnowFlakeSubselectDataSourceSpec,
+    SnowFlakeTableDataSourceSpec,
+)
+from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
+
 
 if TYPE_CHECKING:
     from dl_core.connection_executors.sync_base import SyncConnExecutorBase
@@ -46,7 +47,7 @@ class SnowFlakeDataSourceMixin(BaseSQLDataSource):
         return ConnectionSQLSnowFlake
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in (SOURCE_TYPE_SNOWFLAKE_TABLE, SOURCE_TYPE_SNOWFLAKE_SUBSELECT)
 
 

@@ -401,6 +401,7 @@ class UStorageClientBase:
         type_=None,
         hidden=None,
         links=None,
+        mode="publish",
         unversioned_data=None,
         **kwargs,
     ) -> RequestData:
@@ -424,6 +425,7 @@ class UStorageClientBase:
                 "recursion": True,
                 "hidden": hidden,
                 "links": links,
+                "mode": mode,
                 **kwargs,
             },
         )
@@ -723,7 +725,6 @@ class UStorageClient(UStorageClientBase):
         data: Optional[dict[str, Any]] = None,
         unversioned_data: Optional[dict[str, Any]] = None,
         meta: Optional[dict[str, str]] = None,
-        mode: str = "save",
         lock: Optional[str] = None,
         hidden: Optional[bool] = None,
         links: Optional[dict[str, Any]] = None,
@@ -734,7 +735,6 @@ class UStorageClient(UStorageClientBase):
                 data=data,
                 unversioned_data=unversioned_data,
                 meta=meta,
-                mode=mode,
                 lock=lock,
                 hidden=hidden,
                 links=links,

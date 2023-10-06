@@ -24,8 +24,8 @@ from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_constants.enums import (
     ConnectionState,
     ConnectionType,
-    CreateDSFrom,
     DataSourceRole,
+    DataSourceType,
     RawSQLLevel,
 )
 from dl_core import connection_models
@@ -81,7 +81,7 @@ class DataSourceTemplate(NamedTuple):
     title: str
     group: list[str]
     # main properties
-    source_type: CreateDSFrom
+    source_type: DataSourceType
     connection_id: str
     # type-specific
     parameters: dict
@@ -107,8 +107,8 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     scope: ClassVar[str] = "connection"  # type: ignore  # TODO: fix
 
     conn_type: ConnectionType
-    source_type: ClassVar[Optional[CreateDSFrom]] = None
-    allowed_source_types: ClassVar[Optional[frozenset[CreateDSFrom]]] = None
+    source_type: ClassVar[Optional[DataSourceType]] = None
+    allowed_source_types: ClassVar[Optional[frozenset[DataSourceType]]] = None
     allow_dashsql: ClassVar[bool] = False
     allow_cache: ClassVar[bool] = False
     is_always_internal_source: ClassVar[bool] = False
@@ -177,7 +177,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         return self.data.data_export_forbidden if hasattr(self.data, "data_export_forbidden") else False
 
     @classmethod
-    def get_provided_source_types(cls) -> frozenset[CreateDSFrom]:
+    def get_provided_source_types(cls) -> frozenset[DataSourceType]:
         if cls.allowed_source_types is not None:
             return cls.allowed_source_types
         if cls.source_type is not None:
@@ -440,7 +440,7 @@ class SubselectMixin:
 
     def _make_subselect_templates(
         self,
-        source_type: CreateDSFrom,
+        source_type: DataSourceType,
         localizer: Localizer,
         title: str = "SQL",
         field_doc_key: str = "ANY_SUBSELECT/subsql",

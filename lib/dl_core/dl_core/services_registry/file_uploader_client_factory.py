@@ -21,7 +21,7 @@ from dl_api_commons.aiohttp.aiohttp_client import (
     THeaders,
 )
 from dl_constants.api_constants import DLHeadersCommon
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.db.elements import SchemaColumn
 from dl_core.db.native_type_schema import OneOfNativeTypeSchema
 from dl_utils.aio import await_sync
@@ -52,7 +52,7 @@ class GSheetsFileSourceDesc(FileSourceDesc):
 @attr.s(frozen=True)
 class SourceInternalParams:
     preview_id: str = attr.ib()
-    raw_schema: list[RawSchemaType] = attr.ib()
+    raw_schema: RawSchemaType = attr.ib()
 
 
 @attr.s(frozen=True)
@@ -67,7 +67,7 @@ class RawSchemaColumnSchema(ma.Schema):
 
     native_type = ma.fields.Nested(OneOfNativeTypeSchema, allow_none=True)
 
-    user_type = ma.fields.Enum(BIType)
+    user_type = ma.fields.Enum(UserDataType)
     description = ma.fields.String(dump_default="", allow_none=True)
     has_auto_aggregation = ma.fields.Boolean(dump_default=False, allow_none=True)
     lock_aggregation = ma.fields.Boolean(dump_default=False, allow_none=True)

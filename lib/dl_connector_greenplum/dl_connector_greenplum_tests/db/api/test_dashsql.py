@@ -2,6 +2,7 @@ from aiohttp.test_utils import TestClient
 import pytest
 
 from dl_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
+
 from dl_connector_greenplum_tests.db.api.base import GreenplumDashSQLConnectionTest
 from dl_connector_greenplum_tests.db.config import DASHSQL_QUERY
 

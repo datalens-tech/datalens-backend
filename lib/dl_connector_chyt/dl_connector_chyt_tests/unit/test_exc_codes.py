@@ -1,8 +1,9 @@
-from dl_connector_chyt.core import exc
 from dl_constants.exc import (
     DEFAULT_ERR_CODE_API_PREFIX,
     GLOBAL_ERR_PREFIX,
 )
+
+from dl_connector_chyt.core import exc
 
 
 def exc_cls_to_code(exc_cls: exc.CHYTQueryError | exc.CHYTCliqueError) -> str:

@@ -30,6 +30,7 @@ def configure_sentry(cfg: SentryConfig, extra_integrations: Sequence[Any] = ()) 
     # from sentry_sdk.integrations.logging import LoggingIntegration
     sentry_sdk.init(
         dsn=cfg.dsn,
+        release=cfg.release,
         default_integrations=False,
         before_send=cleanup_common_secret_data,
         integrations=[

@@ -7,12 +7,13 @@ from typing import (
 
 import attr
 
-from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.us_connection_base import (
     ClassicConnectionSQL,
     ConnectionBase,
 )
+
+from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 
 
 class ConnectionPostgreSQLBase(ClassicConnectionSQL):

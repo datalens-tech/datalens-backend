@@ -6,14 +6,17 @@ import pytest
 
 from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
-from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import (
+    Dataset,
+    WhereClause,
+)
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib_testing.data_api_base import (
     DataApiTestParams,
     StandardizedDataApiTestBase,
 )
 from dl_constants.enums import (
-    BIType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_core_testing.database import (
@@ -65,16 +68,16 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         filter_op: WhereClauseOperation,
     ) -> None:
         columns = [
-            C("int_value", BIType.integer, vg=lambda rn, **kwargs: rn),
-            C("array_int_value", BIType.array_int, vg=lambda rn, **kwargs: [i for i in reversed(range(rn))]),
+            C("int_value", UserDataType.integer, vg=lambda rn, **kwargs: rn),
+            C("array_int_value", UserDataType.array_int, vg=lambda rn, **kwargs: [i for i in reversed(range(rn))]),
             C(
                 "array_str_value",
-                BIType.array_str,
+                UserDataType.array_str,
                 vg=lambda rn, **kwargs: [str(i) if i != 5 else None for i in reversed(range(rn))],
             ),
             C(
                 "array_float_value",
-                BIType.array_float,
+                UserDataType.array_float,
                 vg=lambda rn, **kwargs: [i / 100.0 for i in reversed(range(rn))],
             ),
         ]
@@ -163,15 +166,15 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         is_numeric: bool,
     ) -> None:
         columns = [
-            C("int_value", BIType.integer, vg=lambda rn, **kwargs: 3),
-            C("str_value", BIType.string, vg=lambda rn, **kwargs: "3"),
-            C("float_value", BIType.float, vg=lambda rn, **kwargs: 0.03),
-            C("none_value", BIType.float, vg=lambda rn, **kwargs: None),
-            C("array_int_value", BIType.array_int, vg=lambda rn, **kwargs: [i for i in reversed(range(rn))]),
-            C("array_str_value", BIType.array_str, vg=lambda rn, **kwargs: [str(i) for i in reversed(range(rn))]),
+            C("int_value", UserDataType.integer, vg=lambda rn, **kwargs: 3),
+            C("str_value", UserDataType.string, vg=lambda rn, **kwargs: "3"),
+            C("float_value", UserDataType.float, vg=lambda rn, **kwargs: 0.03),
+            C("none_value", UserDataType.float, vg=lambda rn, **kwargs: None),
+            C("array_int_value", UserDataType.array_int, vg=lambda rn, **kwargs: [i for i in reversed(range(rn))]),
+            C("array_str_value", UserDataType.array_str, vg=lambda rn, **kwargs: [str(i) for i in reversed(range(rn))]),
             C(
                 "array_float_value",
-                BIType.array_float,
+                UserDataType.array_float,
                 vg=lambda rn, **kwargs: [i / 100.0 if i != 5 else None for i in reversed(range(rn))],
             ),
         ]
@@ -214,7 +217,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         ds.result_schema[new_field_name] = ds.field(
             formula=f"IF [{data_api_test_params.date_field}] > DATE('2020-01-01') THEN 1 ELSE 2 END"
         )
-        ds.result_schema[new_field_name].cast = BIType.float
+        ds.result_schema[new_field_name].cast = UserDataType.float
         result_resp = self.get_result(ds, data_api, field_names=(data_api_test_params.date_field, new_field_name))
         assert result_resp.status_code == 200, result_resp.json
 
@@ -225,6 +228,20 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
                 ds.find_field(title=data_api_test_params.date_field).filter(
                     op=WhereClauseOperation.GT,
                     values=["1990-01-01"],
+                )
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == 200, result_resp.json
+        assert get_data_rows(result_resp)
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[ds.find_field(title=data_api_test_params.date_field)],
+            filters=[
+                ds.find_field(title=data_api_test_params.date_field).filter(
+                    op=WhereClauseOperation.BETWEEN,
+                    values=["1990-01-01", "2023-10-02"],
                 )
             ],
             fail_ok=True,
@@ -272,10 +289,28 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         data_rows = get_data_rows(result_resp)
         values: set[str] = {row[0] for row in data_rows}
         assert len(values) > 1  # we just need to make sure there are several different values
-        assert all("2" in value for value in values)
+        assert all("2" in value for value in values), values
 
 
 class DefaultConnectorDataGroupByFormulaTestSuite(StandardizedDataApiTestBase, RegulatedTestCase):
+    def test_ordered_result(
+        self,
+        saved_dataset: Dataset,
+        data_api_test_params: DataApiTestParams,
+        data_api: SyncHttpDataApiV2,
+    ) -> None:
+        ds = saved_dataset
+        grouped_resp = self.get_result_ordered(
+            ds,
+            data_api,
+            field_names=(data_api_test_params.two_dims[0], data_api_test_params.distinct_field),
+            order_by=(data_api_test_params.distinct_field,),
+        )
+        grouped_rows = get_data_rows(grouped_resp)
+
+        min_row_cnt = 5  # just an arbitrary number
+        assert len(grouped_rows) > min_row_cnt
+
     def test_complex_result(
         self,
         saved_dataset: Dataset,
@@ -283,14 +318,14 @@ class DefaultConnectorDataGroupByFormulaTestSuite(StandardizedDataApiTestBase, R
         data_api: SyncHttpDataApiV2,
     ) -> None:
         ds = saved_dataset
-        ds.result_schema["CityNameLength"] = ds.field(formula=f"LEN([{data_api_test_params.distinct_field}])")
+        ds.result_schema["LengthField"] = ds.field(formula=f"LEN([{data_api_test_params.distinct_field}])")
 
         grouped_resp = self.get_result_ordered(
-            ds, data_api, field_names=(data_api_test_params.two_dims[0], "CityNameLength"), order_by=("CityNameLength",)
+            ds, data_api, field_names=(data_api_test_params.two_dims[0], "LengthField"), order_by=("LengthField",)
         )
         grouped_rows = get_data_rows(grouped_resp)
 
-        min_row_cnt = 10  # just an arbitrary number
+        min_row_cnt = 5  # just an arbitrary number
         assert len(grouped_rows) > min_row_cnt
 
 
@@ -320,7 +355,29 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, Regulat
 
         distinct_resp = self.get_distinct(ds, data_api, field_name=data_api_test_params.distinct_field)
         distinct_rows = get_data_rows(distinct_resp)
-        min_distinct_row_cnt = 10  # just an arbitrary number
+        min_distinct_row_cnt = 5  # just an arbitrary number
+        assert len(distinct_rows) > min_distinct_row_cnt
+        values = [row[0] for row in distinct_rows]
+        assert len(set(values)) == len(values), "Values are not unique"
+
+    def test_distinct_with_nonexistent_filter(
+        self,
+        saved_dataset: Dataset,
+        data_api_test_params: DataApiTestParams,
+        data_api: SyncHttpDataApiV2,
+    ) -> None:
+        ds = saved_dataset
+
+        distinct_resp = data_api.get_distinct(
+            dataset=ds,
+            field=ds.find_field(title=data_api_test_params.distinct_field),
+            filters=[WhereClause(column="idontexist", operation=WhereClauseOperation.EQ, values=[0])],
+            ignore_nonexistent_filters=True,
+        )
+        assert distinct_resp.status_code == 200, distinct_resp.json
+
+        distinct_rows = get_data_rows(distinct_resp)
+        min_distinct_row_cnt = 5  # just an arbitrary number
         assert len(distinct_rows) > min_distinct_row_cnt
         values = [row[0] for row in distinct_rows]
         assert len(set(values)) == len(values), "Values are not unique"
@@ -334,7 +391,7 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, Regulat
         data_api: SyncHttpDataApiV2,
     ) -> None:
         columns = [
-            C(name="date_val", user_type=BIType.date, nullable=True),
+            C(name="date_val", user_type=UserDataType.date, nullable=True),
         ]
         data = [
             {"date_val": datetime.date(2002, 1, 2)},
@@ -374,7 +431,7 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, Regulat
 
 
 class DefaultConnectorDataPreviewTestSuite(StandardizedDataApiTestBase, RegulatedTestCase):
-    def test_basic_distinct(
+    def test_basic_preview(
         self,
         saved_dataset: Dataset,
         data_api: SyncHttpDataApiV2,

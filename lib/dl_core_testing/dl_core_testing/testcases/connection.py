@@ -17,11 +17,13 @@ from dl_core.us_connection_base import (
     ConnectionBase,
     DataSourceTemplate,
 )
+from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.database import (
     Db,
     DbTable,
 )
+from dl_core_testing.fixtures.primitives import FixtureTableSpec
 from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
 from dl_core_testing.testcases.service_base import (
     DbServiceFixtureTextClass,
@@ -47,6 +49,10 @@ class BaseConnectionTestClass(
     @pytest.fixture(scope="function")
     def sync_us_manager(self, conn_default_sync_us_manager: SyncUSManager) -> SyncUSManager:
         return conn_default_sync_us_manager
+
+    @pytest.fixture(scope="function")
+    def async_us_manager(self, conn_default_async_us_manager: AsyncUSManager) -> AsyncUSManager:
+        return conn_default_async_us_manager
 
     @abc.abstractmethod
     @pytest.fixture(scope="function")
@@ -83,8 +89,12 @@ class BaseConnectionTestClass(
         return factory
 
     @pytest.fixture(scope="class")
-    def sample_table(self, db: Db) -> DbTable:
-        return self.db_table_dispenser.get_csv_table(db=db, spec=TABLE_SPEC_SAMPLE_SUPERSTORE)
+    def sample_table_spec(self) -> FixtureTableSpec:
+        return TABLE_SPEC_SAMPLE_SUPERSTORE
+
+    @pytest.fixture(scope="class")
+    def sample_table(self, sample_table_spec: FixtureTableSpec, db: Db) -> DbTable:
+        return self.db_table_dispenser.get_csv_table(db=db, spec=sample_table_spec)
 
 
 class DefaultConnectionTestClass(RegulatedTestCase, BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):

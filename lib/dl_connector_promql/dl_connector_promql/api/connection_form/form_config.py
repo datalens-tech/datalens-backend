@@ -18,6 +18,7 @@ from dl_api_connector.form_config.models.common import CommonFieldName
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
+
 from dl_connector_promql.api.connection_info import PromQLConnectionInfoProvider
 
 

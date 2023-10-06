@@ -4,8 +4,9 @@ import typing
 
 import attr
 
-from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 from dl_core.connection_models.dto_defs import DefaultSQLDTO
+
+from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 
 
 @attr.s(frozen=True)

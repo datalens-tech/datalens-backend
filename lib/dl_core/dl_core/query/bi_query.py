@@ -16,7 +16,7 @@ from sqlalchemy.sql.selectable import (
     Select,
 )
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.query.expression import (
     ExpressionCtx,
     OrderByExpressionCtx,
@@ -62,5 +62,5 @@ class BIQuery:
 @attr.s
 class QueryAndResultInfo:
     query: Select = attr.ib(kw_only=True)
-    user_types: List[BIType] = attr.ib(kw_only=True)
+    user_types: List[UserDataType] = attr.ib(kw_only=True)
     col_names: List[str] = attr.ib(kw_only=True)

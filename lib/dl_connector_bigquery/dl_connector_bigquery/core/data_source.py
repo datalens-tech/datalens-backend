@@ -5,18 +5,7 @@ from typing import (
     Optional,
 )
 
-from dl_connector_bigquery.core.constants import (
-    CONNECTION_TYPE_BIGQUERY,
-    SOURCE_TYPE_BIGQUERY_SUBSELECT,
-    SOURCE_TYPE_BIGQUERY_TABLE,
-)
-from dl_connector_bigquery.core.data_source_spec import (
-    BigQuerySubselectDataSourceSpec,
-    BigQueryTableDataSourceSpec,
-)
-from dl_connector_bigquery.core.query_compiler import BigQueryQueryCompiler
-from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 from dl_core.connection_models import (
     TableDefinition,
     TableIdent,
@@ -30,12 +19,24 @@ from dl_core.data_source.sql import (
 )
 from dl_core.utils import sa_plain_text
 
+from dl_connector_bigquery.core.constants import (
+    CONNECTION_TYPE_BIGQUERY,
+    SOURCE_TYPE_BIGQUERY_SUBSELECT,
+    SOURCE_TYPE_BIGQUERY_TABLE,
+)
+from dl_connector_bigquery.core.data_source_spec import (
+    BigQuerySubselectDataSourceSpec,
+    BigQueryTableDataSourceSpec,
+)
+from dl_connector_bigquery.core.query_compiler import BigQueryQueryCompiler
+from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
+
 
 class BigQueryDataSourceMixin(BaseSQLDataSource):
     conn_type = CONNECTION_TYPE_BIGQUERY
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in (SOURCE_TYPE_BIGQUERY_TABLE, SOURCE_TYPE_BIGQUERY_SUBSELECT)
 
 

@@ -1,8 +1,9 @@
 from marshmallow import fields
 
-from dl_connector_bundle_chs3.chs3_base.core.data_source_spec import BaseFileS3DataSourceSpec
 from dl_constants.enums import FileProcessingStatus
 from dl_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
+
+from dl_connector_bundle_chs3.chs3_base.core.data_source_spec import BaseFileS3DataSourceSpec
 
 
 class BaseFileS3DataSourceSpecStorageSchema(SQLDataSourceSpecStorageSchema):

@@ -13,9 +13,9 @@ from typing import (
 import attr
 
 from dl_constants.enums import (
-    CreateDSFrom,
     DataSourceCreatedVia,
     DataSourceRole,
+    DataSourceType,
     JoinType,
     ManagedBy,
 )
@@ -125,7 +125,7 @@ class DatasetComponentEditor:
         *,
         source_id: str,
         role: DataSourceRole = DataSourceRole.origin,
-        created_from: CreateDSFrom,
+        created_from: DataSourceType,
         connection_id: Optional[str] = None,
         title: Optional[str] = None,
         raw_schema: Optional[list[SchemaColumn]] = None,
@@ -170,7 +170,7 @@ class DatasetComponentEditor:
         source_id: str,
         role: Optional[DataSourceRole] = None,
         connection_id: Optional[str] = None,
-        created_from: Optional[CreateDSFrom] = None,
+        created_from: Optional[DataSourceType] = None,
         raw_schema: Optional[list] = None,
         index_info_set: Optional[FrozenSet[IndexInfo]] = None,
         **parameters: Any,

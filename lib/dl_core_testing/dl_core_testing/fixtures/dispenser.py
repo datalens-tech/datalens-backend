@@ -23,7 +23,9 @@ class DbCsvTableDispenser:
     def _make_new_csv_table(self, db: Db, spec: FixtureTableSpec) -> DbTable:
         dumper = CsvTableDumper(db=db)
         db_table = dumper.make_table_from_csv(
-            raw_csv_data=self._get_raw_csv_data(spec.csv_name), table_schema=spec.table_schema
+            raw_csv_data=self._get_raw_csv_data(spec.csv_name),
+            table_schema=spec.table_schema,
+            nullable=spec.nullable,
         )
         if db.config not in self._tables:
             self._tables[db.config] = {}

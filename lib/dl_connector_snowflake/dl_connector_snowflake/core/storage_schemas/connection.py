@@ -1,13 +1,14 @@
 from marshmallow import fields as ma_fields
 from marshmallow.validate import Regexp
 
-from dl_connector_snowflake.core.constants import ACCOUNT_NAME_RE
-from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 from dl_core.us_manager.storage_schemas.connection import (
     BaseConnectionDataStorageSchema,
     CacheableConnectionDataSchemaMixin,
     SubselectConnectionDataSchemaMixin,
 )
+
+from dl_connector_snowflake.core.constants import ACCOUNT_NAME_RE
+from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 
 
 class SnowFlakeConnectionDataStorageSchema(

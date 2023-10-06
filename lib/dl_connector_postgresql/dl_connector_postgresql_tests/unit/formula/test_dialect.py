@@ -1,6 +1,7 @@
+from dl_formula_testing.testcases.dialect import DefaultDialectFormulaConnectorTestSuite
+
 from dl_connector_postgresql.formula.constants import DIALECT_NAME_POSTGRESQL
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
-from dl_formula_testing.testcases.dialect import DefaultDialectFormulaConnectorTestSuite
 
 
 class DialectPostgreSQLTestSuite(DefaultDialectFormulaConnectorTestSuite):

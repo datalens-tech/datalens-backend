@@ -6,7 +6,7 @@ from typing import (
 
 import attr
 
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 from dl_core.connectors.base.data_source_migration import (
     DataSourceMigrationInterface,
     MigrationKeyMappingItem,
@@ -37,11 +37,11 @@ class SQLSubselectDSMI(DataSourceMigrationInterface):
 
 
 class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
-    table_source_type: ClassVar[Optional[CreateDSFrom]] = None
+    table_source_type: ClassVar[Optional[DataSourceType]] = None
     table_dsrc_spec_cls: ClassVar[Optional[Type[DataSourceSpec]]] = StandardSQLDataSourceSpec
     with_db_name: ClassVar[bool] = False
 
-    subselect_source_type: ClassVar[Optional[CreateDSFrom]] = None
+    subselect_source_type: ClassVar[Optional[DataSourceType]] = None
     subselect_dsrc_spec_cls: ClassVar[Optional[Type[DataSourceSpec]]] = SubselectDataSourceSpec
 
     default_schema_name: ClassVar[Optional[str]] = None

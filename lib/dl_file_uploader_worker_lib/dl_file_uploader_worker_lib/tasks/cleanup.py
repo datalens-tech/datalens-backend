@@ -9,9 +9,6 @@ import attr
 from botocore.exceptions import ClientError
 from redis.asyncio.lock import Lock as RedisLock
 
-from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from dl_constants.enums import DataSourceRole
 from dl_core.us_entry import USMigrationEntry
 from dl_file_uploader_lib.enums import RenameTenantStatus
@@ -33,6 +30,10 @@ from dl_task_processor.task import (
     Success,
     TaskResult,
 )
+
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
+from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
 LOGGER = logging.getLogger(__name__)

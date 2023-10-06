@@ -10,8 +10,8 @@ from botocore.exceptions import ClientError
 import pytest
 
 from dl_constants.enums import (
-    BIType,
     FileProcessingStatus,
+    UserDataType,
 )
 from dl_file_uploader_lib import exc
 from dl_file_uploader_lib.enums import (
@@ -69,11 +69,11 @@ async def test_parse_file_task(
     assert dsrc.status == FileProcessingStatus.ready
     assert dsrc.title == "test_file.csv"
     assert [sch.user_type for sch in dsrc.raw_schema] == [
-        BIType.string,
-        BIType.integer,
-        BIType.float,
-        BIType.date,
-        BIType.genericdatetime,
+        UserDataType.string,
+        UserDataType.integer,
+        UserDataType.float,
+        UserDataType.date,
+        UserDataType.genericdatetime,
     ]
     assert [sch.name for sch in dsrc.raw_schema] == ["f1", "f2", "f3", "data", "data_i_vremya"]
     assert [sch.title for sch in dsrc.raw_schema] == ["f1", "f2", "f3", "Дата", "Дата и время"]
@@ -153,7 +153,6 @@ async def test_parse_10mb_file_task(
     assert df.status == FileProcessingStatus.ready
 
 
-# @pytest.mark.skip(reason='Some US problem in CI.')  # TODO
 @pytest.mark.asyncio
 async def test_save_source_task(
     task_processor_client,
@@ -190,7 +189,6 @@ async def test_save_source_task(
     assert conn1.get_file_source_by_id(source.id).status == FileProcessingStatus.ready
 
 
-# @pytest.mark.skip(reason='Some US problem in CI.')  # TODO
 @pytest.mark.asyncio
 async def test_save_source_task_on_replace(
     task_processor_client,
@@ -391,7 +389,6 @@ async def test_regular_bucket_lifecycle_cleanup_task(
     assert new_n_lc_rules == 1
 
 
-# @pytest.mark.skip(reason='Some US problem in CI.')  # TODO
 @pytest.mark.asyncio
 async def test_datetime64(
     task_processor_client,
@@ -459,7 +456,6 @@ async def test_datetime64(
     assert conn.get_file_source_by_id(source.id).status == FileProcessingStatus.ready
 
 
-# @pytest.mark.skip(reason='Some US problem in CI.')  # TODO
 @pytest.mark.asyncio
 async def test_datetime_tz(
     task_processor_client,

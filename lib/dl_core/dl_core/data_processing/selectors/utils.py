@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 from dl_constants.enums import (
     DataSourceRole,
-    QueryType,
+    ReportingQueryType,
 )
 import dl_core.exc as exc
 from dl_core.query.bi_query import BIQuery
@@ -61,12 +61,12 @@ def get_value_range_query(expression: ExpressionCtx, dimension_filters: Sequence
     )
 
 
-def get_query_type(connection: ConnectionBase, conn_sec_mgr: ConnectionSecurityManager) -> QueryType:
+def get_query_type(connection: ConnectionBase, conn_sec_mgr: ConnectionSecurityManager) -> ReportingQueryType:
     if connection.is_always_internal_source:
-        return QueryType.internal
+        return ReportingQueryType.internal
 
     if isinstance(connection, ClassicConnectionSQL):
         if conn_sec_mgr.is_internal_connection(connection.get_conn_dto()):
-            return QueryType.internal
+            return ReportingQueryType.internal
 
-    return QueryType.external
+    return ReportingQueryType.external

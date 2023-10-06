@@ -62,7 +62,7 @@ module = "pytz.tzinfo.*"
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = "sqlalchemy_metrika_api.*"
+module = "dl_sqlalchemy_metrica_api.*"
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]

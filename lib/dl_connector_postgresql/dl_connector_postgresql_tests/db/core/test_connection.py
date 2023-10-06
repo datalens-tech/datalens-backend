@@ -5,16 +5,17 @@ from typing import TypeVar
 
 import pytest
 
-from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
-from dl_connector_postgresql_tests.db.core.base import (
-    BasePostgreSQLTestClass,
-    BaseSslPostgreSQLTestClass,
-)
 from dl_core.us_connection_base import (
     ConnectionSQL,
     DataSourceTemplate,
 )
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
+
+from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
+from dl_connector_postgresql_tests.db.core.base import (
+    BasePostgreSQLTestClass,
+    BaseSslPostgreSQLTestClass,
+)
 
 
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionSQL)

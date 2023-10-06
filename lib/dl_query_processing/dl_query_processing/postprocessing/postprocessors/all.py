@@ -10,7 +10,7 @@ from typing import (
     Sequence,
 )
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_formula.core.datatype import DataType
 from dl_query_processing.postprocessing.postprocessors.datetime import (
     make_postprocess_datetimetz,
@@ -42,16 +42,16 @@ def postprocess_array(value: Optional[Iterable[Any]]) -> Optional[Iterable[Optio
 
 
 TYPE_PROCESSORS = {
-    BIType.datetime: postprocess_datetime,
-    # parametrized: BIType.datetimetz
-    BIType.genericdatetime: postprocess_genericdatetime,
-    BIType.geopoint: postprocess_geopoint,
-    BIType.geopolygon: postprocess_geopolygon,
-    BIType.markup: postprocess_markup,
-    BIType.array_int: postprocess_array,
-    BIType.array_float: postprocess_array,
-    BIType.array_str: postprocess_array,
-    BIType.tree_str: postprocess_array,
+    UserDataType.datetime: postprocess_datetime,
+    # parametrized: UserDataType.datetimetz
+    UserDataType.genericdatetime: postprocess_genericdatetime,
+    UserDataType.geopoint: postprocess_geopoint,
+    UserDataType.geopolygon: postprocess_geopolygon,
+    UserDataType.markup: postprocess_markup,
+    UserDataType.array_int: postprocess_array,
+    UserDataType.array_float: postprocess_array,
+    UserDataType.array_str: postprocess_array,
+    UserDataType.tree_str: postprocess_array,
 }
 
 
@@ -65,7 +65,7 @@ def get_type_processor(field_type_info: Optional[DetailedType]) -> Callable[[Any
         return result  # type: ignore  # TODO: fix
 
     # Parmetrized
-    if field_type_info.data_type == BIType.datetimetz:
+    if field_type_info.data_type == UserDataType.datetimetz:
         assert field_type_info.formula_data_type == DataType.DATETIMETZ
         assert field_type_info.formula_data_type_params
         assert field_type_info.formula_data_type_params.timezone

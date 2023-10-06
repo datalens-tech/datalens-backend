@@ -1,5 +1,5 @@
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core_testing.configuration import DefaultCoreTestConfiguration
 from dl_testing.containers import get_test_container_hostport
 
@@ -19,27 +19,27 @@ DB_DSN = "snowflake://does@not/matter"
 # todo: maybe support also certificates and store them in sec storage, to avoid refresh token updates
 
 SAMPLE_TABLE_SIMPLIFIED_SCHEMA = [
-    ("Category", BIType.string),
-    ("City", BIType.string),
-    ("Country", BIType.string),
-    ("Customer ID", BIType.string),
-    ("Customer Name", BIType.string),
-    ("Discount", BIType.float),
-    ("Order Date", BIType.date),
-    ("Order ID", BIType.string),
-    ("Postal Code", BIType.integer),
-    ("Product ID", BIType.string),
-    ("Product Name", BIType.string),
-    ("Profit", BIType.float),
-    ("Quantity", BIType.integer),
-    ("Region", BIType.string),
-    ("Row ID", BIType.integer),
-    ("Sales", BIType.float),
-    ("Segment", BIType.string),
-    ("Ship Date", BIType.date),
-    ("Ship Mode", BIType.string),
-    ("State", BIType.string),
-    ("Sub-Category", BIType.string),
+    ("Category", UserDataType.string),
+    ("City", UserDataType.string),
+    ("Country", UserDataType.string),
+    ("Customer ID", UserDataType.string),
+    ("Customer Name", UserDataType.string),
+    ("Discount", UserDataType.float),
+    ("Order Date", UserDataType.date),
+    ("Order ID", UserDataType.string),
+    ("Postal Code", UserDataType.integer),
+    ("Product ID", UserDataType.string),
+    ("Product Name", UserDataType.string),
+    ("Profit", UserDataType.float),
+    ("Quantity", UserDataType.integer),
+    ("Region", UserDataType.string),
+    ("Row ID", UserDataType.integer),
+    ("Sales", UserDataType.float),
+    ("Segment", UserDataType.string),
+    ("Ship Date", UserDataType.date),
+    ("Ship Mode", UserDataType.string),
+    ("State", UserDataType.string),
+    ("Sub-Category", UserDataType.string),
 ]
 
 

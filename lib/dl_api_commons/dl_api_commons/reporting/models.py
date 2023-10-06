@@ -11,7 +11,7 @@ from dl_api_commons.reporting.records import ReportingRecord
 from dl_constants.enums import (
     ConnectionType,
     NotificationLevel,
-    QueryType,
+    ReportingQueryType,
 )
 
 
@@ -23,10 +23,11 @@ class QueryExecutionReportingRecord(ReportingRecord):
 @attr.s(frozen=True, auto_attribs=True)
 class QueryExecutionStartReportingRecord(QueryExecutionReportingRecord):
     dataset_id: Optional[str]
-    query_type: Optional[QueryType]
+    query_type: Optional[ReportingQueryType]
     connection_type: ConnectionType
     conn_reporting_data: dict
     query: str  # SQL query
+    workbook_id: Optional[str]
 
 
 @attr.s(frozen=True, auto_attribs=True)

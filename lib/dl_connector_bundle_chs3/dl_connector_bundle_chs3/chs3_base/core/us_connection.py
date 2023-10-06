@@ -13,10 +13,6 @@ from typing import (
 import attr
 import xxhash
 
-from dl_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
-from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
-from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
-from dl_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 from dl_constants.enums import (
     DataSourceRole,
     FileProcessingStatus,
@@ -40,6 +36,11 @@ from dl_core.utils import (
     make_user_auth_headers,
     parse_comma_separated_hosts,
 )
+
+from dl_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
+from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
+from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
+from dl_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 
 
 if TYPE_CHECKING:

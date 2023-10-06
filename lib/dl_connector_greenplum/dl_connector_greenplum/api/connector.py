@@ -9,6 +9,7 @@ from dl_api_connector.connector import (
     ApiConnector,
     ApiSourceDefinition,
 )
+
 from dl_connector_greenplum.api.api_schema.connection import GreenplumConnectionSchema
 from dl_connector_greenplum.api.connection_form.form_config import GreenplumConnectionFormFactory
 from dl_connector_greenplum.api.connection_info import GreenplumConnectionInfoProvider

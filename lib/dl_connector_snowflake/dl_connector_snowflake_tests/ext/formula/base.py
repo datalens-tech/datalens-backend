@@ -3,6 +3,8 @@ from typing import Callable
 
 import pytest
 
+from dl_formula_testing.testcases.base import FormulaConnectorTestBase
+
 from dl_connector_snowflake.auth import SFAuthProvider
 from dl_connector_snowflake.core.adapters import construct_creator_func
 from dl_connector_snowflake.core.dto import SnowFlakeConnDTO
@@ -10,7 +12,6 @@ from dl_connector_snowflake.core.target_dto import SnowFlakeConnTargetDTO
 from dl_connector_snowflake.db_testing.engine_wrapper import SnowFlakeDbEngineConfig
 from dl_connector_snowflake.formula.constants import SnowFlakeDialect as D
 import dl_connector_snowflake_tests.ext.config as test_config  # noqa
-from dl_formula_testing.testcases.base import FormulaConnectorTestBase
 
 
 class SnowFlakeTestBase(FormulaConnectorTestBase):

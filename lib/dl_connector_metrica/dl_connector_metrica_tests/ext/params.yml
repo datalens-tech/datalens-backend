@@ -1,0 +1,2 @@
+params:
+  METRIKA_OAUTH: {getter: $osenv, key: METRIKA_OAUTH}

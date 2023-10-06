@@ -21,6 +21,7 @@ from dl_formula.definitions.flags import ContextFlag
 from dl_formula.definitions.functions_string import (
     FuncContains,
     FuncLen,
+    FuncNotContains,
     FuncStartswith,
 )
 from dl_formula.definitions.literals import un_literal
@@ -28,6 +29,7 @@ from dl_formula.definitions.type_strategy import (
     Fixed,
     FromArgs,
 )
+from dl_formula.shortcuts import n
 from dl_formula.translation.context import TranslationCtx
 
 
@@ -236,6 +238,21 @@ class FuncArrayContains(FuncContains):
         ArgTypeSequence([DataType.ARRAY_INT, DataType.INTEGER]),
         ArgTypeSequence([DataType.ARRAY_FLOAT, DataType.FLOAT]),
         ArgTypeSequence([DataType.ARRAY_STR, DataType.STRING]),
+    ]
+
+
+class FuncArrayNotContains(FuncNotContains):
+    arg_names = ["array", "value"]
+    argument_types = [
+        ArgTypeSequence([DataType.ARRAY_INT, DataType.INTEGER]),
+        ArgTypeSequence([DataType.ARRAY_FLOAT, DataType.FLOAT]),
+        ArgTypeSequence([DataType.ARRAY_STR, DataType.STRING]),
+    ]
+    variants = [
+        VW(
+            D.DUMMY,
+            lambda arr, val: n.not_(n.func.CONTAINS(arr, val)),
+        ),
     ]
 
 
@@ -581,6 +598,8 @@ DEFINITIONS_ARRAY = [
     FuncStringArrayFromStringArray,
     # contains
     FuncArrayContains,
+    # notcontains
+    FuncArrayNotContains,
     # contains_all
     FuncArrayContainsAll,
     # contains_any

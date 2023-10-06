@@ -2,15 +2,18 @@ from __future__ import annotations
 
 import logging
 from typing import (
+    TYPE_CHECKING,
     ClassVar,
     Optional,
 )
 
-from aiobotocore.client import AioBaseClient
-import botocore.client
+
+if TYPE_CHECKING:
+    from types_aiobotocore_s3 import S3Client as AsyncS3Client
+    from mypy_boto3_s3.client import S3Client as SyncS3Client
+
 import ujson as json
 
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from dl_constants.enums import ConnectionType
 from dl_core.data_sink import (
     DataSink,
@@ -26,6 +29,8 @@ from dl_core.raw_data_streaming.stream import (
     SimpleUntypedDataStream,
 )
 from dl_file_uploader_lib import exc
+
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
 LOGGER = logging.getLogger(__name__)
@@ -44,7 +49,7 @@ class S3JsonEachRowFileDataSink(DataSink):
     def __init__(  # type: ignore
         self,
         bi_schema: list[SchemaColumn],
-        s3: botocore.client.BaseClient,
+        s3: SyncS3Client,
         s3_key: str,
         bucket_name: str,
     ):
@@ -73,6 +78,7 @@ class S3JsonEachRowFileDataSink(DataSink):
 
     def finalize(self) -> None:
         LOGGER.info(f"Completing S3 multipart upload. {self._part_number - 1} parts were uploaded.")
+        assert self._upload_id is not None
         if self._multipart_upload_started:
             if self._part_tags:
                 self._s3.complete_multipart_upload(
@@ -87,6 +93,7 @@ class S3JsonEachRowFileDataSink(DataSink):
     def cleanup(self) -> None:
         if self._multipart_upload_started:
             LOGGER.info("Aborting S3 multipart upload,")
+            assert self._upload_id is not None
             self._s3.abort_multipart_upload(
                 Bucket=self._bucket_name,
                 Key=self._s3_key,
@@ -100,6 +107,7 @@ class S3JsonEachRowFileDataSink(DataSink):
 
     def _dump_data_batch(self, batch: list[bytes], progress: int) -> None:
         LOGGER.info(f"Dumping {len(batch)} data rows into s3 file {self._s3_key}.")
+        assert self._upload_id is not None
         part_resp = self._s3.upload_part(
             Bucket=self._bucket_name,
             Key=self._s3_key,
@@ -150,7 +158,7 @@ class S3JsonEachRowFileDataSink(DataSink):
 class S3JsonEachRowUntypedFileDataSink(S3JsonEachRowFileDataSink):
     def __init__(  # type: ignore
         self,
-        s3: botocore.client.BaseClient,
+        s3: SyncS3Client,
         s3_key: str,
         bucket_name: str,
     ):
@@ -180,7 +188,7 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
     _part_number: int = 1
     _multipart_upload_started: bool = False
 
-    def __init__(self, s3: AioBaseClient, s3_key: str, bucket_name: str):
+    def __init__(self, s3: AsyncS3Client, s3_key: str, bucket_name: str):
         self._s3 = s3
         self._s3_key = s3_key
         self._bucket_name = bucket_name
@@ -205,6 +213,7 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
     async def finalize(self) -> None:
         if self._multipart_upload_started:
             LOGGER.info(f"Completing S3 multipart upload. {self._part_number - 1} parts were uploaded.")
+            assert self._upload_id is not None
             await self._s3.complete_multipart_upload(
                 Bucket=self._bucket_name,
                 Key=self._s3_key,
@@ -219,6 +228,7 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
     async def cleanup(self) -> None:
         if self._multipart_upload_started:
             LOGGER.exception("Aborting S3 multipart upload,")
+            assert self._upload_id is not None
             await self._s3.abort_multipart_upload(
                 Bucket=self._bucket_name,
                 Key=self._s3_key,
@@ -232,6 +242,7 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
 
     async def _dump_data_batch(self, batch: list[bytes], progress: int) -> None:
         LOGGER.info(f"Dumping {len(batch)} data rows into s3 file {self._s3_key}.")
+        assert self._upload_id is not None
         batch_to_write = self._prepare_chunk_body(batch)
         part_resp = await self._s3.upload_part(
             Bucket=self._bucket_name,

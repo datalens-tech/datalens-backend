@@ -13,8 +13,8 @@ from typing import (
 import attr
 
 from dl_constants.enums import (
-    BIType,
     IndexKind,
+    UserDataType,
 )
 from dl_core.db.native_type import GenericNativeType
 from dl_utils.utils import get_type_full_name
@@ -41,7 +41,7 @@ class SchemaColumn(_SchemaColumn):
         cls,
         name: str,
         title: Optional[str] = None,
-        user_type: Optional[Union[BIType, str]] = None,
+        user_type: Optional[Union[UserDataType, str]] = None,
         nullable: Optional[bool] = True,
         native_type: Optional[GenericNativeType] = None,
         source_id: Any = None,
@@ -51,7 +51,7 @@ class SchemaColumn(_SchemaColumn):
     ):
         title = title or name
         if isinstance(user_type, str):
-            user_type = BIType[user_type]
+            user_type = UserDataType[user_type]
         has_auto_aggregation = has_auto_aggregation if has_auto_aggregation is not None else False
         return super().__new__(
             cls,

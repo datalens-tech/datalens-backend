@@ -3,11 +3,6 @@ from typing import Generator
 
 import pytest
 
-from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
-from dl_connector_clickhouse.core.clickhouse.testing.connection import make_clickhouse_saved_connection
-from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
@@ -18,6 +13,12 @@ from dl_core_testing.dataset_builder import (
 )
 from dl_core_testing.testcases.dataset import BaseDatasetTestClass
 import dl_core_tests.db.config as test_config
+
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
+from dl_connector_clickhouse.core.clickhouse.testing.connection import make_clickhouse_saved_connection
+from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
 
 
 class DefaultCoreTestClass(BaseDatasetTestClass[ConnectionClickhouse]):

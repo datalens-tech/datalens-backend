@@ -26,12 +26,11 @@ import attr
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
-    BIType,
     CalcMode,
     ComponentErrorLevel,
     ComponentType,
     ConditionPartCalcMode,
-    CreateDSFrom,
+    DataSourceType,
     FieldRole,
     FieldType,
     FieldVisibility,
@@ -45,6 +44,7 @@ from dl_constants.enums import (
     QueryBlockPlacementType,
     QueryItemRefType,
     RangeType,
+    UserDataType,
     WhereClauseOperation,
 )
 
@@ -215,7 +215,7 @@ class Container(Generic[_ITEM_TV]):
 @attr.s
 class DataSource(ApiProxyObject):
     connection_id: str = attr.ib(default=None)
-    source_type: Optional[CreateDSFrom] = attr.ib(default=None, converter=CreateDSFrom.normalize)
+    source_type: Optional[DataSourceType] = attr.ib(default=None, converter=DataSourceType.normalize)
     parameters: dict = attr.ib(default=None)
     raw_schema: list = attr.ib(factory=list)
     index_info_set: Optional[list] = attr.ib(default=None)
@@ -331,7 +331,7 @@ class _Column:
     # use attr.s on superclass of the "real" class so that comparison methods from ConditionMakerMixin are used
     title: str = attr.ib(default=None)
     name: str = attr.ib(default=None)
-    user_type: Optional[BIType] = attr.ib(default=None, converter=BIType.normalize)
+    user_type: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)
     native_type: Optional[dict] = attr.ib(default=None)
     nullable: bool = attr.ib(default=True)
     description: str = attr.ib(default="")
@@ -369,88 +369,88 @@ _INNER_TYPE = TypeVar("_INNER_TYPE")
 
 @attr.s
 class ParameterValue(Generic[_INNER_TYPE]):
-    type: BIType
+    type: UserDataType
     value: _INNER_TYPE = attr.ib()
 
 
 @attr.s
 class StringParameterValue(ParameterValue[str]):
-    type: BIType = BIType.string
+    type: UserDataType = UserDataType.string
 
 
 @attr.s
 class IntegerParameterValue(ParameterValue[int]):
-    type: BIType = BIType.integer
+    type: UserDataType = UserDataType.integer
 
 
 @attr.s
 class FloatParameterValue(ParameterValue[float]):
-    type: BIType = BIType.float
+    type: UserDataType = UserDataType.float
 
 
 @attr.s
 class DateParameterValue(ParameterValue[date]):
-    type: BIType = BIType.date
+    type: UserDataType = UserDataType.date
 
 
 @attr.s
 class DateTimeParameterValue(ParameterValue[datetime]):
-    type: BIType = BIType.datetime
+    type: UserDataType = UserDataType.datetime
 
 
 @attr.s
 class DateTimeTZParameterValue(ParameterValue[datetime]):
-    type: BIType = BIType.datetimetz
+    type: UserDataType = UserDataType.datetimetz
 
 
 @attr.s
 class GenericDateTimeParameterValue(ParameterValue[datetime]):
-    type: BIType = BIType.genericdatetime
+    type: UserDataType = UserDataType.genericdatetime
 
 
 @attr.s
 class BooleanParameterValue(ParameterValue[bool]):
-    type: BIType = BIType.boolean
+    type: UserDataType = UserDataType.boolean
 
 
 @attr.s
 class GeoPointParameterValue(ParameterValue[List[Union[int, float]]]):
-    type: BIType = BIType.geopoint
+    type: UserDataType = UserDataType.geopoint
 
 
 @attr.s
 class GeoPolygonParameterValue(ParameterValue[List[List[List[Union[int, float]]]]]):
-    type: BIType = BIType.geopolygon
+    type: UserDataType = UserDataType.geopolygon
 
 
 @attr.s
 class UuidParameterValue(ParameterValue[str]):
-    type: BIType = BIType.uuid
+    type: UserDataType = UserDataType.uuid
 
 
 @attr.s
 class MarkupParameterValue(ParameterValue[str]):
-    type: BIType = BIType.markup
+    type: UserDataType = UserDataType.markup
 
 
 @attr.s
 class ArrayStrParameterValue(ParameterValue[List[str]]):
-    type: BIType = BIType.array_str
+    type: UserDataType = UserDataType.array_str
 
 
 @attr.s
 class ArrayIntParameterValue(ParameterValue[List[int]]):
-    type: BIType = BIType.array_int
+    type: UserDataType = UserDataType.array_int
 
 
 @attr.s
 class ArrayFloatParameterValue(ParameterValue[List[float]]):
-    type: BIType = BIType.array_float
+    type: UserDataType = UserDataType.array_float
 
 
 @attr.s
 class TreeStrParameterValue(ParameterValue[List[str]]):
-    type: BIType = BIType.tree_str
+    type: UserDataType = UserDataType.tree_str
 
 
 @attr.s
@@ -517,9 +517,9 @@ class _ResultField(ApiProxyObject):
     hidden: bool = attr.ib(default=False)
     description: str = attr.ib(default="")
     formula: str = attr.ib(default="")
-    initial_data_type: Optional[BIType] = attr.ib(default=None, converter=BIType.normalize)
-    cast: Optional[BIType] = attr.ib(default=None, converter=BIType.normalize)
-    data_type: Optional[BIType] = attr.ib(default=None, converter=BIType.normalize)
+    initial_data_type: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)
+    cast: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)
+    data_type: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)
     valid: bool = attr.ib(default=True)
     has_auto_aggregation: bool = attr.ib(default=False)
     lock_aggregation: bool = attr.ib(default=False)
@@ -728,7 +728,7 @@ class LegendItem(LegendItemBase):  # noqa
     legend_item_id: int = attr.ib(kw_only=True)  # redefine as strictly not None
     id: str = attr.ib(kw_only=True)
     title: str = attr.ib(kw_only=True)
-    data_type: BIType = attr.ib(kw_only=True)
+    data_type: UserDataType = attr.ib(kw_only=True)
     field_type: FieldType = attr.ib(kw_only=True)
     item_type: LegendItemType = attr.ib(kw_only=True)
 

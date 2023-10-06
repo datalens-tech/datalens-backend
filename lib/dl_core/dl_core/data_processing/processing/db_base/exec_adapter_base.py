@@ -20,7 +20,7 @@ from dl_core.utils import make_id
 
 
 if TYPE_CHECKING:
-    from dl_constants.enums import BIType
+    from dl_constants.enums import UserDataType
     from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
     from dl_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
 
@@ -39,7 +39,7 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         self,
         *,
         query: Union[Select, str],
-        user_types: Sequence[BIType],
+        user_types: Sequence[UserDataType],
         chunk_size: int,
         joint_dsrc_info: Optional[PreparedMultiFromInfo] = None,
         query_id: str,
@@ -50,7 +50,7 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         """
         raise NotImplementedError
 
-    async def scalar(self, query: Union[str, Select], user_type: BIType) -> TBIDataValue:
+    async def scalar(self, query: Union[str, Select], user_type: UserDataType) -> TBIDataValue:
         """Execute a statement returning a scalar value."""
         data_stream = await self._execute_and_fetch(
             query_id=make_id(),
@@ -67,7 +67,7 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         self,
         *,
         query: Union[str, sa.sql.selectable.Select],
-        user_types: Sequence[BIType],
+        user_types: Sequence[UserDataType],
         chunk_size: Optional[int] = None,
         joint_dsrc_info: Optional[PreparedMultiFromInfo] = None,
         query_id: str,
@@ -90,7 +90,7 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         *,
         query_id: str,
         query: Union[str, Select],
-        user_types: Sequence[BIType],
+        user_types: Sequence[UserDataType],
         joint_dsrc_info: Optional[PreparedMultiFromInfo] = None,
     ) -> Optional[LocalKeyRepresentation]:
         return None

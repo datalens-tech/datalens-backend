@@ -1,9 +1,10 @@
 import sqlalchemy as sa
 
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_string as base
 from dl_formula.shortcuts import n
+
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 
 V = TranslationVariant.make
@@ -48,6 +49,10 @@ DEFINITIONS_STRING = [
         ]
     ),
     base.FuncContainsNonString.for_dialect(D.CLICKHOUSE),
+    # notcontains
+    base.FuncNotContainsConst.for_dialect(D.CLICKHOUSE),
+    base.FuncNotContainsNonConst.for_dialect(D.CLICKHOUSE),
+    base.FuncNotContainsNonString.for_dialect(D.CLICKHOUSE),
     # endswith
     base.FuncEndswithNonConst(
         variants=[

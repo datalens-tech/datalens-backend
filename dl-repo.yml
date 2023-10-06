@@ -3,20 +3,19 @@
 dl_repo:
   fs_editor: git
 
+  default_boilerplate_path: lib/dl_package_boilerplate
+
   package_types:
     - type: terrarium  # Repository tools
       root_path: terrarium
-      boilerplate_path: lib/dl_package_boilerplate
 
     - type: lib  # Main libraries
       root_path: lib
-      boilerplate_path: lib/dl_package_boilerplate
       tags:
         - main_dependency_group
 
     - type: app  # Apps
       root_path: app
-      boilerplate_path: lib/dl_package_boilerplate
       tags:
         - main_dependency_group
         - own_dependency_group
@@ -40,3 +39,8 @@ dl_repo:
 
   plugins:
     - type: dependency_registration
+
+  edit_exclude_masks:  # Files at paths that match these patterns (via re.match) will not be edited
+    - ".*\\.mo"
+    - ".*\\.xlsx"
+    - ".*/__pycache__"

@@ -1,13 +1,14 @@
 import marshmallow.fields as ma_fields
 
-from dl_connector_bigquery.core.data_source_spec import (
-    BigQuerySubselectDataSourceSpec,
-    BigQueryTableDataSourceSpec,
-)
 from dl_core.us_manager.storage_schemas.data_source_spec_base import (
     BaseSQLDataSourceSpecStorageSchema,
     SubselectSQLDataSourceSpecStorageSchemaMixin,
     TableSQLDataSourceSpecStorageSchemaMixin,
+)
+
+from dl_connector_bigquery.core.data_source_spec import (
+    BigQuerySubselectDataSourceSpec,
+    BigQueryTableDataSourceSpec,
 )
 
 

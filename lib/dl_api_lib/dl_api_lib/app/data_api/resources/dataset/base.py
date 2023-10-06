@@ -408,8 +408,7 @@ class DatasetDataBaseView(BaseView):
         post_paginator = paginator.get_post_paginator()
         block_legend = pre_paginator.pre_paginate(block_legend=block_legend)
 
-        concurrency_limit = int(os.environ.get("DATASET_CONCURRENCY_LIMIT", 5))
-        runner = ConcurrentTaskRunner(concurrency_limit=concurrency_limit)
+        runner = ConcurrentTaskRunner()
         for block_spec in block_legend.blocks:
             await runner.schedule(self.execute_query(block_spec=block_spec))
         executed_queries = await runner.finalize()

@@ -1,11 +1,12 @@
 import sqlalchemy as sa
 
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_formula.definitions.base import (
     TranslationVariant,
     TranslationVariantWrapped,
 )
 import dl_formula.definitions.conditional_blocks as base
+
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 
 V = TranslationVariant.make

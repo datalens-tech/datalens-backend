@@ -22,6 +22,9 @@ class ApiTestEnvironmentConfiguration:
 
     bi_compeng_pg_url: str = attr.ib(default="")
 
+    file_uploader_api_host: str = attr.ib(default="http://127.0.0.1")
+    file_uploader_api_port: int = attr.ib(default=9999)
+
     redis_host: str = attr.ib(default="")
     redis_port: int = attr.ib(default=6379)
     redis_password: str = attr.ib(default="")

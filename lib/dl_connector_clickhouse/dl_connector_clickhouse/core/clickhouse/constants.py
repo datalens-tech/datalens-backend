@@ -1,5 +1,5 @@
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 
 
-SOURCE_TYPE_CH_TABLE = CreateDSFrom.declare("CH_TABLE")
-SOURCE_TYPE_CH_SUBSELECT = CreateDSFrom.declare("CH_SUBSELECT")
+SOURCE_TYPE_CH_TABLE = DataSourceType.declare("CH_TABLE")
+SOURCE_TYPE_CH_SUBSELECT = DataSourceType.declare("CH_SUBSELECT")

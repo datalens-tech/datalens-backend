@@ -21,12 +21,12 @@ import attr
 
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
     CalcMode,
     FieldType,
     ManagedBy,
     ParameterValueConstraintType,
     TopLevelComponentId,
+    UserDataType,
 )
 from dl_core.components.ids import FieldId
 from dl_core.exc import FieldNotFound
@@ -113,7 +113,7 @@ class FormulaCalculationSpec(CalculationSpec):
 
     mode = CalcMode.formula
 
-    # The formula itself. Parsed and handled mostly by the bi_formula package.
+    # The formula itself. Parsed and handled mostly by the dl_formula package.
     # In this formula other fields are referred to exclusively by title,
     # Use empty string (`''`) for non-formula fields.
     formula: str = attr.ib(kw_only=True, default="")
@@ -201,11 +201,11 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
     # - direct: it corresponds to the user_type of the referenced raw_schema column;
     # - formula: automatically derived from the formula;
     # - parameter: defined by the user.
-    initial_data_type: Optional[BIType]
+    initial_data_type: Optional[UserDataType]
 
     # redefines the data type in `initial_data_type`, is set by the user.
     # For parameter calc_mode, it is the same as `initial_data_type`.
-    cast: Optional[BIType]
+    cast: Optional[UserDataType]
 
     # An explicitly set aggregation (via UI).
     # Value "none" corresponds to no aggregation.
@@ -213,7 +213,7 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
     aggregation: AggregationFunction
 
     # The data type automatically determined after the aggregation is applied
-    data_type: Optional[BIType]
+    data_type: Optional[UserDataType]
 
     # Flag indicates that the field is automatically aggregated
     # and an explicit aggregation (`aggregation` attribute) is not applicable.
@@ -249,9 +249,9 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
         type: Union[FieldType, str, None] = None,
         hidden: bool = False,
         description: str = "",
-        cast: Union[BIType, str, None] = None,
-        initial_data_type: Union[BIType, str, None] = None,
-        data_type: Union[BIType, str, None] = None,
+        cast: Union[UserDataType, str, None] = None,
+        initial_data_type: Union[UserDataType, str, None] = None,
+        data_type: Union[UserDataType, str, None] = None,
         valid: Optional[bool] = None,
         has_auto_aggregation: bool = False,
         lock_aggregation: bool = False,
@@ -276,9 +276,9 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
             type = FieldType.DIMENSION
         assert type is not None
 
-        cast = BIType.normalize(cast)
-        initial_data_type = BIType.normalize(initial_data_type)
-        data_type = BIType.normalize(data_type)
+        cast = UserDataType.normalize(cast)
+        initial_data_type = UserDataType.normalize(initial_data_type)
+        data_type = UserDataType.normalize(data_type)
         valid = valid if valid is not None else True
         managed_by = ManagedBy.normalize(managed_by) or ManagedBy.user
 

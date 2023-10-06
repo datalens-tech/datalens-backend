@@ -155,5 +155,9 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
             if dfile is None:
                 return Retry(attempts=3)
             else:
+                dfile.status = FileProcessingStatus.failed
+                exc_to_save = ex if isinstance(ex, exc.DLFileUploaderBaseError) else exc.ParseFailed()
+                dfile.error = FileProcessingError.from_exception(exc_to_save)
+                await dfile.save()
                 return Fail()
         return Success()

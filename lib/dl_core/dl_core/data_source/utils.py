@@ -8,13 +8,13 @@ from typing import (
 
 import xxhash
 
-from dl_constants.enums import CreateDSFrom
+from dl_constants.enums import DataSourceType
 
 
 _IGNORE_IN_HASH = frozenset(("db_version",))
 
 
-def get_parameters_hash(source_type: CreateDSFrom, connection_id: Optional[str], **parameters: Any) -> str:
+def get_parameters_hash(source_type: DataSourceType, connection_id: Optional[str], **parameters: Any) -> str:
     data = (
         source_type,
         connection_id,

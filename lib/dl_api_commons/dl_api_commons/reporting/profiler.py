@@ -149,6 +149,7 @@ class DefaultReportingProfiler(ReportingProfiler):
             chart_id=x_dl_context.get(DLContextKey.CHART_ID),
             chart_kind=x_dl_context.get(DLContextKey.CHART_KIND),
             response_status_code=response_status_code,
+            workbook_id=start_record.workbook_id,
             **start_record.conn_reporting_data,
         )
         # TODO FIX: Change logger
