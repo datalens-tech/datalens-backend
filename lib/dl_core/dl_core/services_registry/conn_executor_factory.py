@@ -178,9 +178,10 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
         self, conn: ExecutorBasedMixin, executor_cls: Type[AsyncConnExecutorBase]
     ) -> Tuple[ExecutionMode, Optional[RemoteQueryExecutorData]]:
         conn_dto = conn.get_conn_dto()
+        conn_options = conn.get_conn_options()
         ce_cls = self.get_async_conn_executor_cls(conn)
 
-        if not self.conn_sec_mgr.is_safe_connection(conn_dto):
+        if not self.conn_sec_mgr.is_safe_connection(conn_dto, conn_options):
             # Only RQE mode with external RQE supported for unsafe connection
             if ExecutionMode.RQE not in executor_cls.supported_exec_mode:
                 raise CEFactoryError(

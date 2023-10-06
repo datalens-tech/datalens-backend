@@ -13,7 +13,7 @@ from typing import (
 import attr
 import shortuuid
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core_testing.database import (
     C,
     Db,
@@ -42,29 +42,30 @@ def _datetime_or_none(v: Optional[str]) -> Optional[datetime.datetime]:
 class CsvTableDumper:
     db: Db = attr.ib(kw_only=True)
 
-    _PY_CONVERTERS_BY_BITYPE: ClassVar[dict[BIType, Callable[[Optional[str]], Any]]] = {
-        BIType.string: lambda v: v,
-        BIType.integer: _int_or_none,
-        BIType.float: _float_or_none,
-        BIType.date: _date_or_none,
-        BIType.datetime: _datetime_or_none,
+    _PY_CONVERTERS_BY_BITYPE: ClassVar[dict[UserDataType, Callable[[Optional[str]], Any]]] = {
+        UserDataType.string: lambda v: v,
+        UserDataType.integer: _int_or_none,
+        UserDataType.float: _float_or_none,
+        UserDataType.date: _date_or_none,
+        UserDataType.datetime: _datetime_or_none,
     }
 
-    def _convert_value(self, value: Optional[str], user_type: BIType) -> Any:
+    def _convert_value(self, value: Optional[str], user_type: UserDataType) -> Any:
         return self._PY_CONVERTERS_BY_BITYPE[user_type](value)
 
-    def _convert_row(self, row: Sequence[Optional[str]], type_schema: Sequence[BIType]) -> list[Any]:
+    def _convert_row(self, row: Sequence[Optional[str]], type_schema: Sequence[UserDataType]) -> list[Any]:
         return [self._convert_value(v, t) for v, t in zip(row, type_schema)]
 
-    def _load_table_data(self, raw_csv_data: str, type_schema: Sequence[BIType]) -> list[list[Any]]:
+    def _load_table_data(self, raw_csv_data: str, type_schema: Sequence[UserDataType]) -> list[list[Any]]:
         reader = csv.reader(io.StringIO(raw_csv_data))
         return [self._convert_row(row=row, type_schema=type_schema) for row in reader]
 
     def make_table_from_csv(
         self,
         raw_csv_data: str,
-        table_schema: Sequence[tuple[str, BIType]],
+        table_schema: Sequence[tuple[str, UserDataType]],
         table_name_prefix: Optional[str] = None,
+        nullable: bool = True,
     ) -> DbTable:
         table_name_prefix = table_name_prefix or "table_"
         if not table_name_prefix.endswith("_"):
@@ -81,7 +82,7 @@ class CsvTableDumper:
             return _value_gen
 
         columns = [
-            C(name=name, user_type=user_type, vg=_value_gen_factory(_col_idx=col_idx))  # type: ignore
+            C(name=name, user_type=user_type, vg=_value_gen_factory(_col_idx=col_idx), nullable=nullable)  # type: ignore
             for col_idx, (name, user_type) in enumerate(table_schema)
         ]
 

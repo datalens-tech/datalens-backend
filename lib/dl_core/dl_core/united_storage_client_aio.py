@@ -207,7 +207,7 @@ class UStorageClientAIO(UStorageClientBase):
         return await self._request(rq_data)
 
     async def update_entry(  # type: ignore  # TODO: fix
-        self, entry_id, data=None, unversioned_data=None, meta=None, mode="publish", lock=None, hidden=None, links=None
+        self, entry_id, data=None, unversioned_data=None, meta=None, lock=None, hidden=None, links=None
     ):
         return await self._request(
             self._req_data_update_entry(
@@ -215,7 +215,6 @@ class UStorageClientAIO(UStorageClientBase):
                 data=data,
                 unversioned_data=unversioned_data,
                 meta=meta,
-                mode=mode,
                 lock=lock,
                 hidden=hidden,
                 links=links,

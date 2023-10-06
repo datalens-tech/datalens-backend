@@ -1,8 +1,9 @@
 import sqlalchemy as sa
 
-from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_special as base
+
+from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
 
 V = TranslationVariant.make

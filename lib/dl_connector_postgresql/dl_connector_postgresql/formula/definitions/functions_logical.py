@@ -1,12 +1,13 @@
 import sqlalchemy as sa
 
-from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 from dl_formula.definitions.base import (
     TranslationVariant,
     TranslationVariantWrapped,
 )
 import dl_formula.definitions.functions_logical as base
 from dl_formula.shortcuts import n
+
+from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
 
 V = TranslationVariant.make

@@ -40,8 +40,8 @@ from dl_api_lib.schemas.values import (
 )
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
     CalcMode,
+    UserDataType,
 )
 from dl_model_tools.schema.base import (
     BaseSchema,
@@ -77,7 +77,7 @@ class UpdateFieldActionSchema(FieldActionBaseSchema, DefaultValidateSchema[Field
         aggregation = ma_fields.Enum(AggregationFunction)
         formula = ma_fields.String()
         guid_formula = ma_fields.String()
-        cast = ma_fields.Enum(BIType, allow_none=True)
+        cast = ma_fields.Enum(UserDataType, allow_none=True)
         avatar_id = ma_fields.String(allow_none=True)
         new_id = ma_fields.String(allow_none=True)
         default_value = ma_fields.Nested(ValueSchema, allow_none=True)
@@ -109,7 +109,7 @@ class CloneFieldActionSchema(FieldActionBaseSchema, DefaultValidateSchema[FieldA
         title = ma_fields.String()
         from_guid = ma_fields.String()
         aggregation = ma_fields.Enum(AggregationFunction, allow_none=True)
-        cast = ma_fields.Enum(BIType, allow_none=True)
+        cast = ma_fields.Enum(UserDataType, allow_none=True)
 
     field = ma_fields.Nested(CloneFieldSchema, required=True)
 

@@ -1,5 +1,12 @@
 import pytest
 
+from dl_constants.enums import (
+    RawSQLLevel,
+    UserDataType,
+)
+from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
+from dl_core_testing.testcases.data_source import DefaultDataSourceTestClass
+
 from dl_connector_bigquery.core.constants import (
     SOURCE_TYPE_BIGQUERY_SUBSELECT,
     SOURCE_TYPE_BIGQUERY_TABLE,
@@ -14,12 +21,6 @@ from dl_connector_bigquery.core.data_source_spec import (
 )
 from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
 from dl_connector_bigquery_tests.ext.core.base import BaseBigQueryTestClass
-from dl_constants.enums import (
-    BIType,
-    RawSQLLevel,
-)
-from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
-from dl_core_testing.testcases.data_source import DefaultDataSourceTestClass
 
 
 class TestBigQueryTableDataSource(
@@ -41,7 +42,7 @@ class TestBigQueryTableDataSource(
         )
         return dsrc_spec
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)
 
 
@@ -65,5 +66,5 @@ class TestBigQuerySubselectDataSource(
         )
         return dsrc_spec
 
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)

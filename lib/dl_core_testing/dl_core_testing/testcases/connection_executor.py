@@ -18,7 +18,7 @@ import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.connection_models.common_models import (
     DBIdent,
@@ -132,14 +132,14 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
     ) -> None:
         assert not sync_connection_executor.is_table_exists(nonexistent_table_ident)
 
-    def get_schemas_for_type_recognition(self) -> dict[str, Sequence[tuple[TypeEngine, BIType]]]:
+    def get_schemas_for_type_recognition(self) -> dict[str, Sequence[tuple[TypeEngine, UserDataType]]]:
         return {
             "standard_types": [
-                (sa.Integer(), BIType.integer),
-                (sa.Float(), BIType.float),
-                (sa.String(length=256), BIType.string),
-                (sa.Date(), BIType.date),
-                (sa.DateTime(), BIType.genericdatetime),
+                (sa.Integer(), UserDataType.integer),
+                (sa.Float(), UserDataType.float),
+                (sa.String(length=256), UserDataType.string),
+                (sa.Date(), UserDataType.date),
+                (sa.DateTime(), UserDataType.genericdatetime),
             ],
         }
 

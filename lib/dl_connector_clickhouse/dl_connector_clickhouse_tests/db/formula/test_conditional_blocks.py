@@ -1,7 +1,8 @@
-from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
 from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.conditional_blocks import DefaultConditionalBlockFormulaConnectorTestSuite
 from dl_formula_testing.util import to_str
+
+from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
 
 
 class ConditionalBlockClickHouseTestSuite(DefaultConditionalBlockFormulaConnectorTestSuite):

@@ -5,8 +5,6 @@ import pytest
 import pytz
 import sqlalchemy as sa
 
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
-from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
 import dl_formula.core.exc as exc
 from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.base import FormulaConnectorTestBase
@@ -28,6 +26,9 @@ from dl_formula_testing.util import (
     to_str,
     utc_ts,
 )
+
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
+from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
 
 
 # STR

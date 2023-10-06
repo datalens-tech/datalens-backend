@@ -9,9 +9,10 @@ from dl_api_connector.api_schema.connection_mixins import (
 )
 from dl_api_connector.api_schema.connection_sql import ClassicSQLConnectionSchema
 from dl_api_connector.api_schema.extras import FieldExtra
+import dl_core.marshmallow as core_ma_fields
+
 from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
-import dl_core.marshmallow as core_ma_fields
 
 
 class PostgreSQLConnectionSchema(

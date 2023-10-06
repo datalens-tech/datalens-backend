@@ -14,7 +14,6 @@ from dl_api_lib.query.formalization.query_formalizer import SimpleQuerySpecForma
 from dl_api_lib.query.formalization.query_formalizer_base import QuerySpecFormalizerBase
 from dl_api_lib.query.registry import (
     get_compeng_dialect,
-    get_multi_query_mutator_factory,
     is_compeng_enabled,
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
@@ -236,13 +235,12 @@ class DatasetBaseWrapper:
 
     def make_multi_query_mutators(self) -> Sequence[MultiQueryMutatorBase]:
         backend_type = self.get_backend_type()
-        factory = get_multi_query_mutator_factory(
+        mqm_factory_factory = self._service_registry.get_multi_query_mutator_factory_factory()
+        return mqm_factory_factory.get_multi_query_mutators(
             backend_type=backend_type,
+            dataset=self._ds,
             dialect=self.dialect,
-            result_schema=self._ds.result_schema,
         )
-        mutators = factory.get_mutators()
-        return mutators
 
     def make_multi_query_translator(self) -> MultiLevelQueryTranslator:
         assert self.inspect_env is not None

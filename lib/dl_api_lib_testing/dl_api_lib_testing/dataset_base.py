@@ -2,13 +2,10 @@ import abc
 from typing import Generator
 
 import pytest
-import shortuuid
 
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_testing.connection_base import ConnectionTestBase
-from dl_core.base_models import PathEntryLocation
-from dl_core.us_manager.us_manager_sync import SyncUSManager
 
 
 class DatasetTestBase(ConnectionTestBase, metaclass=abc.ABCMeta):
@@ -48,31 +45,3 @@ class DatasetTestBase(ConnectionTestBase, metaclass=abc.ABCMeta):
         )
         yield ds
         control_api.delete_dataset(dataset_id=ds.id, fail_ok=False)
-
-    def test_invalid_dataset_id(
-        self,
-        control_api: SyncHttpDatasetApiV1,
-        saved_connection_id: str,
-        dataset_params: dict,
-        conn_default_sync_us_manager: SyncUSManager,
-    ) -> None:
-        usm = conn_default_sync_us_manager
-        us_client = usm._us_client
-        path = PathEntryLocation(shortuuid.uuid())
-        dash = us_client.create_entry(scope="dash", key=path)
-        dash_id = dash["entryId"]
-        ds = self.make_basic_dataset(
-            control_api=control_api,
-            connection_id=saved_connection_id,
-            dataset_params=dataset_params,
-        )
-        dataset_id = ds.id
-
-        resp = control_api.client.get("/api/v1/datasets/{}/versions/draft".format(dataset_id))
-        assert resp.status_code == 200
-
-        resp = control_api.client.get("/api/v1/datasets/{}/versions/draft".format(saved_connection_id))
-        assert resp.status_code == 404
-
-        resp = control_api.client.get("/api/v1/datasets/{}/versions/draft".format(dash_id))
-        assert resp.status_code == 404

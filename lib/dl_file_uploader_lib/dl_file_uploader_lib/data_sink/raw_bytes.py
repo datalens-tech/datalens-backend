@@ -2,18 +2,22 @@ from __future__ import annotations
 
 import logging
 from typing import (
+    TYPE_CHECKING,
     AsyncIterator,
     ClassVar,
     Optional,
 )
 
-from aiobotocore.client import AioBaseClient
 
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+if TYPE_CHECKING:
+    from types_aiobotocore_s3 import S3Client
+
 from dl_constants.enums import ConnectionType
 from dl_core.data_sink import DataSinkAsync
 from dl_core.raw_data_streaming.stream import AsyncDataStreamBase
 from dl_file_uploader_lib import exc
+
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
 LOGGER = logging.getLogger(__name__)
@@ -52,7 +56,7 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
     _chunks_saved: int = 0
     _bytes_saved: int = 0
 
-    def __init__(self, s3: AioBaseClient, s3_key: str, bucket_name: str):
+    def __init__(self, s3: S3Client, s3_key: str, bucket_name: str):
         self._s3 = s3
         self._s3_key = s3_key
         self._bucket_name = bucket_name
@@ -75,6 +79,7 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
     async def finalize(self) -> None:
         if self._multipart_upload_started:
             LOGGER.info(f"Completing S3 multipart upload. {self._part_number - 1} parts were uploaded.")
+            assert self._upload_id is not None
             await self._s3.complete_multipart_upload(
                 Bucket=self._bucket_name,
                 Key=self._s3_key,
@@ -89,6 +94,7 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
     async def cleanup(self) -> None:
         if self._multipart_upload_started:
             LOGGER.exception("Aborting S3 multipart upload,")
+            assert self._upload_id is not None
             await self._s3.abort_multipart_upload(
                 Bucket=self._bucket_name,
                 Key=self._s3_key,
@@ -99,6 +105,7 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
 
     async def _dump_data_batch(self, batch: bytes, progress: int) -> None:
         LOGGER.info(f"Dumping {len(batch)} data rows into s3 file {self._s3_key}.")
+        assert self._upload_id is not None
         part_resp = await self._s3.upload_part(
             Bucket=self._bucket_name,
             Key=self._s3_key,

@@ -7,7 +7,6 @@ import tempfile
 
 import pytest
 
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 import dl_formula_ref
 from dl_formula_ref.config import (
     _CONFIGS_BY_VERSION,
@@ -18,6 +17,8 @@ from dl_formula_ref.scripts.formula_doc import (
     parser,
 )
 from dl_formula_testing.tool_runner import ToolRunner
+
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 
 
 @pytest.fixture(scope="module")

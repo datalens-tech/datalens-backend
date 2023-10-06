@@ -22,8 +22,8 @@ from dl_api_client.dsmaker.shortcuts.tree import make_request_legend_items_for_t
 from dl_api_lib_testing.helpers.data_source import data_source_settings_from_table
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 from dl_constants.enums import (
-    BIType,
     FieldRole,
+    UserDataType,
 )
 from dl_core_testing.database import (
     C,
@@ -70,10 +70,10 @@ TREE_DATA = [
 
 def make_tree_dataset(db: Db, connection_id: str, control_api: SyncHttpDatasetApiV1) -> Dataset:
     columns = [
-        C("id", BIType.integer, vg=lambda rn, **kwargs: TREE_DATA[rn]["id"]),
-        C("dept", BIType.array_str, vg=lambda rn, **kwargs: TREE_DATA[rn]["dept"]),
-        C("salary", BIType.integer, vg=lambda rn, **kwargs: TREE_DATA[rn]["salary"]),
-        C("is_person", BIType.integer, vg=lambda rn, **kwargs: TREE_DATA[rn]["is_person"]),
+        C("id", UserDataType.integer, vg=lambda rn, **kwargs: TREE_DATA[rn]["id"]),
+        C("dept", UserDataType.array_str, vg=lambda rn, **kwargs: TREE_DATA[rn]["dept"]),
+        C("salary", UserDataType.integer, vg=lambda rn, **kwargs: TREE_DATA[rn]["salary"]),
+        C("is_person", UserDataType.integer, vg=lambda rn, **kwargs: TREE_DATA[rn]["is_person"]),
     ]
     db_table = make_table(db, columns=columns, rows=len(TREE_DATA))
     ds = Dataset()

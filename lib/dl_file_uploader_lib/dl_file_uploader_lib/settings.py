@@ -6,6 +6,7 @@ from typing import (
 import attr
 
 from dl_configs.crypto_keys import CryptoKeysConfig
+from dl_configs.enums import RedisMode
 from dl_configs.environments import is_setting_applicable
 from dl_configs.settings_loaders.meta_definition import (
     required,
@@ -21,7 +22,7 @@ def _make_redis_persistent_settings(cfg: Any, db: int) -> Optional[RedisSettings
     # TODO: move this values to a separate key
     return (
         RedisSettings(  # type: ignore
-            MODE=cfg.REDIS_PERSISTENT_MODE,  # type: ignore
+            MODE=RedisMode(cfg.REDIS_PERSISTENT_MODE),  # type: ignore
             CLUSTER_NAME=cfg.REDIS_PERSISTENT_CLUSTER_NAME,  # type: ignore
             HOSTS=cfg.REDIS_PERSISTENT_HOSTS,  # type: ignore
             PORT=cfg.REDIS_PERSISTENT_PORT,  # type: ignore

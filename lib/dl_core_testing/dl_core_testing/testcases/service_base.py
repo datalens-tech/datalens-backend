@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import abc
 from typing import (
+    Any,
     ClassVar,
     NamedTuple,
     Optional,
@@ -24,6 +25,7 @@ from dl_core.services_registry.top_level import (
 )
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.mutation_cache.usentry_mutation_cache_factory import DefaultUSEntryMutationCacheFactory
+from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core.utils import FutureRef
 from dl_core_testing.configuration import CoreTestEnvironmentConfigurationBase
@@ -71,6 +73,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
         self,
         conn_exec_factory_async_env: bool,
         conn_bi_context: RequestContextInfo,
+        **kwargs: Any,
     ) -> ServicesRegistry:
         sr_future_ref: FutureRef[ServicesRegistry] = FutureRef()
         service_registry = DefaultServicesRegistry(
@@ -93,6 +96,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
                 if self.inst_specific_sr_factory is not None
                 else None
             ),
+            **kwargs,
         )
         sr_future_ref.fulfill(service_registry)
         return service_registry
@@ -138,6 +142,22 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
         us_manager = SyncUSManager(
             bi_context=conn_bi_context,
             services_registry=conn_default_service_registry,
+            us_base_url=conn_us_config.us_base_url,
+            us_auth_context=conn_us_config.us_auth_context,
+            crypto_keys_config=conn_us_config.us_crypto_keys_config,
+        )
+        return us_manager
+
+    @pytest.fixture(scope="class")
+    def conn_default_async_us_manager(
+        self,
+        conn_us_config: USConfig,
+        conn_bi_context: RequestContextInfo,
+        conn_async_service_registry: ServicesRegistry,
+    ) -> AsyncUSManager:
+        us_manager = AsyncUSManager(
+            bi_context=conn_bi_context,
+            services_registry=conn_async_service_registry,
             us_base_url=conn_us_config.us_base_url,
             us_auth_context=conn_us_config.us_auth_context,
             crypto_keys_config=conn_us_config.us_crypto_keys_config,

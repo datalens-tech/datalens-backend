@@ -1,8 +1,9 @@
+from dl_core.connectors.sql_base.data_source_migration import DefaultSQLDataSourceMigrator
+
 from dl_connector_postgresql.core.postgresql.constants import (
     SOURCE_TYPE_PG_SUBSELECT,
     SOURCE_TYPE_PG_TABLE,
 )
-from dl_core.connectors.sql_base.data_source_migration import DefaultSQLDataSourceMigrator
 
 
 class PostgreSQLDataSourceMigrator(DefaultSQLDataSourceMigrator):

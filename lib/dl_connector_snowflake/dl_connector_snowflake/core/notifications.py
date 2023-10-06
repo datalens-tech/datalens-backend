@@ -1,6 +1,7 @@
-from dl_connector_snowflake.core.constants import NOTIF_TYPE_SF_REFRESH_TOKEN_SOON_TO_EXPIRE
 from dl_constants.enums import NotificationLevel
 from dl_core.reporting.notifications import BaseNotification
+
+from dl_connector_snowflake.core.constants import NOTIF_TYPE_SF_REFRESH_TOKEN_SOON_TO_EXPIRE
 
 
 class SnowflakeRefreshTokenSoonToExpire(BaseNotification):

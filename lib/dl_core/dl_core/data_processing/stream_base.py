@@ -12,7 +12,7 @@ import attr
 
 
 if TYPE_CHECKING:
-    from dl_constants.enums import BIType
+    from dl_constants.enums import UserDataType
     from dl_constants.types import TBIDataRow
     from dl_core.components.ids import AvatarId
     from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 class AbstractStream:
     id: str = attr.ib(kw_only=True)
     names: Sequence[str] = attr.ib(kw_only=True)
-    user_types: Sequence[BIType] = attr.ib(kw_only=True)
+    user_types: Sequence[UserDataType] = attr.ib(kw_only=True)
 
 
 @attr.s

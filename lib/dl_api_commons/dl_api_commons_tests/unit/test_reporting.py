@@ -16,7 +16,7 @@ from dl_api_commons.reporting.registry import DefaultReportingRegistry
 from dl_constants.api_constants import DLContextKey
 from dl_constants.enums import (
     ConnectionType,
-    QueryType,
+    ReportingQueryType,
 )
 
 
@@ -35,8 +35,9 @@ _DEFAULT_START_RECORD_TS_0 = QueryExecutionStartReportingRecord(
         "connection_id": "conn_123",
         "host": "8.8.8.8",
     },
-    query_type=QueryType.external,
+    query_type=ReportingQueryType.external,
     query="SELECT 1",
+    workbook_id="wb_123",
 )
 
 _DEFAULT_REPORT_FIELDS_FROM_START = dict(
@@ -44,8 +45,9 @@ _DEFAULT_REPORT_FIELDS_FROM_START = dict(
     connection_id="conn_123",
     connection_type=CONNECTION_TYPE_TEST.name,
     host="8.8.8.8",
-    query_type=QueryType.external.name,
+    query_type=ReportingQueryType.external.name,
     query="SELECT 1",
+    workbook_id="wb_123",
 )
 
 _CHYT_START_RECORD_TS_0 = QueryExecutionStartReportingRecord(
@@ -58,8 +60,9 @@ _CHYT_START_RECORD_TS_0 = QueryExecutionStartReportingRecord(
         "cluster": "my_cluster",
         "clique_alias": "*ch_my_clique",
     },
-    query_type=QueryType.external,
+    query_type=ReportingQueryType.external,
     query="SELECT 1",
+    workbook_id=None,
 )
 
 _CHYT_REPORT_FIELDS_FROM_START = dict(
@@ -68,8 +71,9 @@ _CHYT_REPORT_FIELDS_FROM_START = dict(
     connection_type=CONNECTION_TYPE_CHYT_TEST.name,
     cluster="my_cluster",
     clique_alias="*ch_my_clique",
-    query_type=QueryType.external.name,
+    query_type=ReportingQueryType.external.name,
     query="SELECT 1",
+    workbook_id=None,
 )
 
 
@@ -225,6 +229,7 @@ def test_db_query_report_generation(case_name, records_seq, expected_query_data,
         "chart_id",
         "chart_kind",
         "response_status_code",
+        "workbook_id",
     )
     if "chyt" in case_name:
         required_extras += (

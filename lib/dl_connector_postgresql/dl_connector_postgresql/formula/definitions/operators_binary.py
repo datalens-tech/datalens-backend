@@ -1,10 +1,11 @@
 import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as sa_postgresql
 
-from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 from dl_formula.definitions.base import TranslationVariant
 from dl_formula.definitions.common_datetime import DAY_SEC
 import dl_formula.definitions.operators_binary as base
+
+from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
 
 V = TranslationVariant.make

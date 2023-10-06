@@ -56,7 +56,6 @@ EXCEPTION_CODES = {
     exc.RLSConfigParsingError: status.BAD_REQUEST,
     common_exc.RLSSubjectNotFound: status.BAD_REQUEST,
     exc.FeatureNotAvailable: status.BAD_REQUEST,
-    dl_query_processing.exc.ObligatoryFilterMissing: status.BAD_REQUEST,
     dl_query_processing.exc.FilterError: status.BAD_REQUEST,
     exc.UnsupportedForEntityType: status.BAD_REQUEST,
     common_exc.SourceAvatarNotFound: status.BAD_REQUEST,

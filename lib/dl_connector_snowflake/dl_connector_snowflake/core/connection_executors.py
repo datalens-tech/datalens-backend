@@ -5,15 +5,16 @@ from typing import TypeVar
 
 import attr
 
+from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+from dl_core.reporting.notifications import get_notification_record
+
 from dl_connector_snowflake.auth import SFAuthProvider
 from dl_connector_snowflake.core.adapters import SnowFlakeDefaultAdapter
 from dl_connector_snowflake.core.constants import NOTIF_TYPE_SF_REFRESH_TOKEN_SOON_TO_EXPIRE
 from dl_connector_snowflake.core.dto import SnowFlakeConnDTO
 from dl_connector_snowflake.core.exc import SnowflakeRefreshTokenInvalid
 from dl_connector_snowflake.core.target_dto import SnowFlakeConnTargetDTO
-from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
-from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
-from dl_core.reporting.notifications import get_notification_record
 
 
 LOGGER = logging.getLogger(__name__)

@@ -35,7 +35,7 @@ if TYPE_CHECKING:
 
     from dl_constants.enums import (
         ConnectionType,
-        CreateDSFrom,
+        DataSourceType,
     )
     from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
     from dl_core.connection_executors.async_base import AsyncConnExecutorBase
@@ -47,7 +47,7 @@ if TYPE_CHECKING:
 
 
 class CoreSourceDefinition(abc.ABC):
-    source_type: ClassVar[CreateDSFrom]
+    source_type: ClassVar[DataSourceType]
     source_cls: ClassVar[Type[DataSource]] = DataSource  # type: ignore
     source_spec_cls: ClassVar[Type[DataSourceSpec]] = DataSourceSpec
     us_storage_schema_cls: ClassVar[Type[DataSourceSpecStorageSchema]] = DataSourceSpecStorageSchema

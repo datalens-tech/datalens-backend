@@ -6,7 +6,6 @@ from typing import (
     Generator,
     Iterable,
     NamedTuple,
-    Type,
 )
 
 from aiohttp import web
@@ -49,7 +48,6 @@ class DataApiTestParams(NamedTuple):
 
 
 class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
-    data_api_app_factory_cls: ClassVar[Type[DataApiAppFactory]] = TestingDataApiAppFactory
     mutation_caches_on: ClassVar[bool] = True
     data_caches_on: ClassVar[bool] = True
 
@@ -87,7 +85,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             BI_COMPENG_PG_ON=cls.bi_compeng_pg_on,
             BI_COMPENG_PG_URL=bi_test_config.bi_compeng_pg_url,
             FIELD_ID_GENERATOR_TYPE=FieldIdGeneratorType.suffix,
-            FILE_UPLOADER_BASE_URL="http://127.0.0.1:9999",  # fake url
+            FILE_UPLOADER_BASE_URL=f"{bi_test_config.file_uploader_api_host}:{bi_test_config.file_uploader_api_port}",
             FILE_UPLOADER_MASTER_TOKEN="qwerty",
         )  # type: ignore
 
@@ -103,12 +101,15 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
         )
 
     @pytest.fixture(scope="function")
+    def data_api_app_factory(self, data_api_app_settings: DataApiAppSettings) -> DataApiAppFactory:
+        return TestingDataApiAppFactory(settings=data_api_app_settings)
+
+    @pytest.fixture(scope="function")
     def data_api_app(
         self,
-        data_api_app_settings: DataApiAppSettings,
+        data_api_app_factory: DataApiAppFactory,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> web.Application:
-        data_api_app_factory = self.data_api_app_factory_cls(settings=data_api_app_settings)
         return data_api_app_factory.create_app(
             connectors_settings=connectors_settings,
         )

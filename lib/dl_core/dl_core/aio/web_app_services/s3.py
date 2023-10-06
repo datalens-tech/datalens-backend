@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import logging
 from typing import (
+    TYPE_CHECKING,
     Any,
     ClassVar,
 )
@@ -8,8 +11,12 @@ from aiobotocore.client import AioBaseClient
 from aiobotocore.session import get_session
 from aiohttp import web
 import attr
-import botocore.client
-import botocore.session
+import boto3
+
+
+if TYPE_CHECKING:
+    from mypy_boto3_s3.client import S3Client as SyncS3Client
+    from types_aiobotocore_s3 import S3Client as AsyncS3Client
 
 
 LOGGER = logging.getLogger(__name__)
@@ -26,8 +33,12 @@ class S3Service:
     tmp_bucket_name: str = attr.ib()
     persistent_bucket_name: str = attr.ib()
 
-    client: AioBaseClient = attr.ib(init=False, repr=False, hash=False, cmp=False)
+    _client: AioBaseClient = attr.ib(init=False, repr=False, hash=False, cmp=False)
     _client_init_params: dict[str, Any] = attr.ib(init=False, repr=False, hash=False, cmp=False)
+
+    @property
+    def client(self) -> AsyncS3Client:
+        return self._client  # type: ignore
 
     @classmethod
     def get_full_app_key(cls) -> str:
@@ -50,12 +61,12 @@ class S3Service:
         )
 
         session = get_session()
-        client = await session._create_client(**self._client_init_params)  # noqa
-        self.client = await client.__aenter__()
+        client = session.create_client(**self._client_init_params)
+        self._client = await client.__aenter__()
 
     async def tear_down(self) -> None:
         LOGGER.info("Tear down S3 service")
-        await self.client.close()
+        await self._client.close()
 
     @classmethod
     def get_app_instance(cls, app: web.Application) -> "S3Service":
@@ -65,10 +76,10 @@ class S3Service:
 
         return service
 
-    def get_client(self) -> AioBaseClient:
+    def get_client(self) -> AsyncS3Client:
         return self.client
 
-    def get_sync_client(self) -> botocore.client.BaseClient:
-        session = botocore.session.get_session()
-        client = session.create_client(**self._client_init_params)
+    def get_sync_client(self) -> SyncS3Client:
+        session = boto3.session.Session()
+        client = session.client(**self._client_init_params)
         return client

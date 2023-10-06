@@ -34,7 +34,6 @@ from dl_api_client.dsmaker.primitives import (
     TreeRoleSpec,
 )
 from dl_constants.enums import (
-    BIType,
     FieldRole,
     FieldType,
     FieldVisibility,
@@ -46,6 +45,7 @@ from dl_constants.enums import (
     QueryBlockPlacementType,
     QueryItemRefType,
     RangeType,
+    UserDataType,
     WhereClauseOperation,
 )
 
@@ -184,7 +184,7 @@ class LegendItemSchema(DefaultSchema[LegendItem]):
     id = ma_fields.String()
     title = ma_fields.String()
     role_spec = ma_fields.Nested(RoleSpecSchema)
-    data_type = ma_fields.Enum(BIType)
+    data_type = ma_fields.Enum(UserDataType)
     field_type = ma_fields.Enum(FieldType)
     item_type = ma_fields.Enum(LegendItemType)
 

@@ -1,5 +1,6 @@
-from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
 from dl_formula_testing.testcases.functions_markup import DefaultMarkupFunctionFormulaConnectorTestSuite
+
+from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
 
 
 class TestMarkupFunctionClickHouse_21_8(ClickHouse_21_8TestBase, DefaultMarkupFunctionFormulaConnectorTestSuite):

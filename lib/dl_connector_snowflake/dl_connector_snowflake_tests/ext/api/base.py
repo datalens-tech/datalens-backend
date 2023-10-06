@@ -6,6 +6,7 @@ from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
 from dl_api_lib_testing.dataset_base import DatasetTestBase
+
 from dl_connector_snowflake.core.constants import (
     CONNECTION_TYPE_SNOWFLAKE,
     SOURCE_TYPE_SNOWFLAKE_TABLE,

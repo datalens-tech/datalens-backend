@@ -9,8 +9,9 @@ from typing import (
 
 import attr
 
-from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 from dl_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO
+
+from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 
 
 if TYPE_CHECKING:

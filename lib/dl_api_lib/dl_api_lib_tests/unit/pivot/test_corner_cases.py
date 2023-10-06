@@ -14,10 +14,10 @@ from dl_api_lib.query.formalization.pivot_legend import (
     PivotMeasureRoleSpec,
 )
 from dl_constants.enums import (
-    BIType,
     FieldType,
     PivotItemType,
     PivotRole,
+    UserDataType,
 )
 import dl_query_processing.exc
 from dl_query_processing.legend.field_legend import (
@@ -41,19 +41,19 @@ def test_pivot_empty_data():
                 legend_item_id=liid_ctgry,
                 obj=FieldObjSpec(id=fid_ctgry, title="Category"),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
             LegendItem(
                 legend_item_id=liid_city,
                 obj=FieldObjSpec(id=fid_city, title="City"),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
             LegendItem(
                 legend_item_id=liid_sales,
                 obj=FieldObjSpec(id=fid_sales, title="Sales"),
                 field_type=FieldType.MEASURE,
-                data_type=BIType.integer,
+                data_type=UserDataType.integer,
             ),
         ]
     )
@@ -115,19 +115,19 @@ def test_pivot_duplicate_dimension_values():
                 legend_item_id=liid_ctgry,
                 obj=FieldObjSpec(id=fid_ctgry, title="Category"),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
             LegendItem(
                 legend_item_id=liid_city,
                 obj=FieldObjSpec(id=fid_city, title="City"),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
             LegendItem(
                 legend_item_id=liid_sales,
                 obj=FieldObjSpec(id=fid_sales, title="Sales"),
                 field_type=FieldType.MEASURE,
-                data_type=BIType.integer,
+                data_type=UserDataType.integer,
             ),
         ]
     )
@@ -201,25 +201,25 @@ def test_pivot_only_row_dims_multiple_measures():
                 legend_item_id=liid_city,
                 obj=FieldObjSpec(id=fid_city, title="City"),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
             LegendItem(
                 legend_item_id=liid_mnames,
                 obj=MeasureNameObjSpec(),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
             LegendItem(
                 legend_item_id=liid_sales,
                 obj=FieldObjSpec(id=fid_sales, title="Sales"),
                 field_type=FieldType.MEASURE,
-                data_type=BIType.integer,
+                data_type=UserDataType.integer,
             ),
             LegendItem(
                 legend_item_id=liid_profit,
                 obj=FieldObjSpec(id=fid_profit, title="Profit"),
                 field_type=FieldType.MEASURE,
-                data_type=BIType.integer,
+                data_type=UserDataType.integer,
             ),
         ]
     )
@@ -348,25 +348,25 @@ def test_pivot_only_column_dims_multiple_measures():
                 legend_item_id=liid_city,
                 obj=FieldObjSpec(id=fid_city, title="City"),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
             LegendItem(
                 legend_item_id=liid_mnames,
                 obj=MeasureNameObjSpec(),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
             LegendItem(
                 legend_item_id=liid_sales,
                 obj=FieldObjSpec(id=fid_sales, title="Sales"),
                 field_type=FieldType.MEASURE,
-                data_type=BIType.integer,
+                data_type=UserDataType.integer,
             ),
             LegendItem(
                 legend_item_id=liid_profit,
                 obj=FieldObjSpec(id=fid_profit, title="Profit"),
                 field_type=FieldType.MEASURE,
-                data_type=BIType.integer,
+                data_type=UserDataType.integer,
             ),
         ]
     )
@@ -490,7 +490,7 @@ def test_pivot_only_row_dims_no_measures():
                 legend_item_id=liid_city,
                 obj=FieldObjSpec(id=fid_city, title="City"),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
         ]
     )
@@ -556,7 +556,7 @@ def test_pivot_only_column_dims_no_measures():
                 legend_item_id=liid_city,
                 obj=FieldObjSpec(id=fid_city, title="City"),
                 field_type=FieldType.DIMENSION,
-                data_type=BIType.string,
+                data_type=UserDataType.string,
             ),
         ]
     )

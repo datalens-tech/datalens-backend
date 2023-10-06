@@ -189,6 +189,35 @@ class FuncContainsNonString(FuncContains):
     ]
 
 
+class FuncNotContains(StringFunction):
+    name = "notcontains"
+    arg_names = ["string", "substring"]
+    arg_cnt = 2
+    return_type = Fixed(DataType.BOOLEAN)
+    return_flags = ContextFlag.IS_CONDITION
+    variants = [
+        VW(D.DUMMY, lambda x, y: n.not_(n.func.CONTAINS(x, y))),
+    ]
+
+
+class FuncNotContainsConst(FuncNotContains):
+    argument_types = [
+        ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),
+    ]
+
+
+class FuncNotContainsNonConst(FuncNotContains):
+    argument_types = [
+        ArgTypeSequence([DataType.STRING, DataType.STRING]),
+    ]
+
+
+class FuncNotContainsNonString(FuncNotContains):
+    argument_types = [
+        ArgTypeSequence([NON_STR_CONTAINMENT_TYPES, DataType.STRING]),
+    ]
+
+
 class FuncIContains(StringFunction):
     name = "icontains"
     arg_names = ["string", "substring"]
@@ -688,6 +717,10 @@ DEFINITIONS_STRING = [
     FuncContainsConst,
     FuncContainsNonConst,
     FuncContainsNonString,
+    # notcontains
+    FuncNotContainsConst,
+    FuncNotContainsNonConst,
+    FuncNotContainsNonString,
     # endswith
     FuncEndswithConst,
     FuncEndswithNonConst,

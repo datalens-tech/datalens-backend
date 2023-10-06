@@ -37,7 +37,7 @@ class _Normalizable(Generic[_ENUM_TYPE]):
 
 
 @unique
-class BIType(_Normalizable["BIType"], Enum):
+class UserDataType(_Normalizable["UserDataType"], Enum):
     string = auto()
     integer = auto()
     float = auto()
@@ -216,12 +216,12 @@ class WhereClauseOperation(Enum):
     BETWEEN = "between"
 
 
-class CreateDSFrom(DynamicEnum):
+class DataSourceType(DynamicEnum):
     @classmethod
-    def normalize(cls, value: CreateDSFrom | str | None) -> Optional[CreateDSFrom]:
+    def normalize(cls, value: DataSourceType | str | None) -> Optional[DataSourceType]:
         # FIXME: Remove this hack (used only in dsmaker)
         if isinstance(value, str):
-            value = CreateDSFrom(value)
+            value = DataSourceType(value)
         return value
 
 
@@ -262,7 +262,7 @@ class RLSPatternType(Enum):
     userid = "userid"
 
 
-class QueryType(Enum):
+class ReportingQueryType(Enum):
     internal = "internal"
     external = "external"
 
@@ -383,3 +383,9 @@ class NotificationType(DynamicEnum):
 class ConnectorAvailability(Enum):
     free = "free"
     whitelist = "whitelist"
+
+
+class QueryProcessingMode(DynamicEnum):
+    basic = AutoEnumValue()
+    no_compeng = AutoEnumValue()
+    native_wf = AutoEnumValue()

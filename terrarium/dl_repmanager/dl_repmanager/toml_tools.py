@@ -107,8 +107,10 @@ class TOMLWriter(TOMLReaderBase):
         section = self.get_section(section_name)
         section[key] = value
 
-    def set_array_value(self, section_name: str, key: str, value: Sequence[str]) -> None:
+    def set_array_value(self, section_name: str, key: str, value: Sequence[str | dict]) -> None:
         section = self.get_section(section_name)
+        if not all(isinstance(item, (str, dict)) for item in value):
+            raise TypeError(f"Invalid item type in value {value}")
         array = tomlkit.array()
         array.extend(value)
         section[key] = array

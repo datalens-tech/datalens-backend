@@ -1,24 +1,25 @@
 from __future__ import annotations
 
+from dl_constants.enums import (
+    ComponentErrorLevel,
+    DataSourceType,
+)
+from dl_core import exc
+from dl_core.reporting.notifications import get_notification_record
+
 from dl_connector_bundle_chs3.chs3_base.core.data_source import BaseFileS3DataSource
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import (
     CONNECTION_TYPE_GSHEETS_V2,
     NOTIF_TYPE_GSHEETS_V2_DATA_UPDATE_FAILURE,
     SOURCE_TYPE_GSHEETS_V2,
 )
-from dl_constants.enums import (
-    ComponentErrorLevel,
-    CreateDSFrom,
-)
-from dl_core import exc
-from dl_core.reporting.notifications import get_notification_record
 
 
 class GSheetsFileS3DataSource(BaseFileS3DataSource):
     conn_type = CONNECTION_TYPE_GSHEETS_V2
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_GSHEETS_V2,
         }

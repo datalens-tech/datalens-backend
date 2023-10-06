@@ -1,8 +1,6 @@
 import pytest
 
-from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
-from dl_connector_bigquery_tests.ext.core.base import BaseBigQueryTestClass
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.connection_models.common_models import DBIdent
 from dl_core_testing.database import (
     C,
@@ -14,6 +12,9 @@ from dl_core_testing.testcases.connection_executor import (
     DefaultSyncConnectionExecutorTestSuite,
 )
 from dl_testing.regulated_test import RegulatedTestParams
+
+from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
+from dl_connector_bigquery_tests.ext.core.base import BaseBigQueryTestClass
 
 
 class BigQuerySyncAsyncConnectionExecutorCheckBase(
@@ -34,9 +35,9 @@ class BigQuerySyncAsyncConnectionExecutorCheckBase(
             for col_spec in C.full_house()
             if col_spec.user_type
             not in (
-                BIType.uuid,  # UUID is not supported
-                BIType.datetime,
-                BIType.genericdatetime,  # datetimes with fractional seconds are not supported  # FIXME
+                UserDataType.uuid,  # UUID is not supported
+                UserDataType.datetime,
+                UserDataType.genericdatetime,  # datetimes with fractional seconds are not supported  # FIXME
             )
         ]
 

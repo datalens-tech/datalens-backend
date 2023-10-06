@@ -1,9 +1,10 @@
 import sqlalchemy as sa
 
-from dl_connector_snowflake.formula.constants import SnowFlakeDialect as D
 from dl_formula.definitions.base import TranslationVariant
 from dl_formula.definitions.common import raw_sql
 import dl_formula.definitions.functions_datetime as base
+
+from dl_connector_snowflake.formula.constants import SnowFlakeDialect as D
 
 
 V = TranslationVariant.make

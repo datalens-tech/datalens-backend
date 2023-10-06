@@ -5,7 +5,6 @@ from typing import (
     ClassVar,
     Generator,
     Optional,
-    Type,
 )
 
 from flask.app import Flask
@@ -14,8 +13,12 @@ import pytest
 
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
-from dl_api_commons.base_models import TenantCommon
+from dl_api_commons.base_models import (
+    RequestContextInfo,
+    TenantCommon,
+)
 from dl_api_lib.app.control_api.app import ControlApiAppFactory
+from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import (
     ControlApiAppSettings,
     ControlApiAppTestingsSettings,
@@ -31,8 +34,13 @@ from dl_api_lib_testing.client import FlaskSyncApiClient
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.rqe import RQEConfig
-from dl_constants.enums import ConnectionType
+from dl_constants.enums import (
+    ConnectionType,
+    QueryProcessingMode,
+)
 from dl_core.components.ids import FieldIdGeneratorType
+from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.configuration import CoreTestEnvironmentConfigurationBase
 from dl_core_testing.flask_utils import (
     FlaskTestClient,
@@ -45,8 +53,8 @@ class ApiTestBase(abc.ABC):
     Base class defining the basic fixtures of bi-api tests
     """
 
-    control_api_app_factory_cls: ClassVar[Type[ControlApiAppFactory]] = TestingControlApiAppFactory
     bi_compeng_pg_on: ClassVar[bool] = True
+    query_processing_mode: ClassVar[QueryProcessingMode] = QueryProcessingMode.basic
 
     @pytest.fixture(scope="function", autouse=True)
     def preload(self):
@@ -115,6 +123,7 @@ class ApiTestBase(abc.ABC):
             REDIS_ARQ=redis_setting_maker.get_redis_settings_arq(),
             FILE_UPLOADER_BASE_URL="http://127.0.0.1:9999",  # fake url
             FILE_UPLOADER_MASTER_TOKEN="qwerty",
+            QUERY_PROCESSING_MODE=cls.query_processing_mode,
         )
         return settings
 
@@ -130,16 +139,19 @@ class ApiTestBase(abc.ABC):
         )
 
     @pytest.fixture(scope="function")
+    def control_api_app_factory(self, control_api_app_settings: ControlApiAppSettings) -> ControlApiAppFactory:
+        return TestingControlApiAppFactory(settings=control_api_app_settings)
+
+    @pytest.fixture(scope="function")
     def control_api_app(
         self,
         environment_readiness: None,
-        control_api_app_settings: ControlApiAppSettings,
+        control_api_app_factory: ControlApiAppFactory,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> Generator[Flask, None, None]:
         """Session-wide test `Flask` application."""
 
-        control_app_factory = self.control_api_app_factory_cls(settings=control_api_app_settings)
-        app = control_app_factory.create_app(
+        app = control_api_app_factory.create_app(
             connectors_settings=connectors_settings,
             testing_app_settings=ControlApiAppTestingsSettings(fake_tenant=TenantCommon()),
             close_loop_after_request=False,
@@ -172,3 +184,26 @@ class ApiTestBase(abc.ABC):
     @pytest.fixture(scope="function")
     def control_api(self, control_api_sync_client: SyncHttpClientBase) -> SyncHttpDatasetApiV1:
         return SyncHttpDatasetApiV1(client=control_api_sync_client)
+
+    @pytest.fixture(scope="function")
+    def sync_us_manager(
+        self,
+        core_test_config: CoreTestEnvironmentConfigurationBase,
+        control_api_app_factory: ControlApiAppFactory,
+        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        control_api_app_settings: ControlApiAppSettings,
+    ) -> SyncUSManager:
+        bi_context = RequestContextInfo.create_empty()
+        us_config = core_test_config.get_us_config()
+        us_manager = SyncUSManager(
+            bi_context=bi_context,
+            services_registry=control_api_app_factory.get_sr_factory(
+                conn_opts_factory=ConnOptionsMutatorsFactory(),
+                connectors_settings=connectors_settings,
+                settings=control_api_app_settings,
+            ).make_service_registry(request_context_info=bi_context),
+            us_base_url=us_config.us_host,
+            us_auth_context=USAuthContextMaster(us_config.us_master_token),
+            crypto_keys_config=core_test_config.get_crypto_keys_config(),
+        )
+        return us_manager

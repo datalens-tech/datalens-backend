@@ -13,9 +13,8 @@ from dl_api_lib_testing.connector.data_api_suites import (
     DefaultConnectorDataResultTestSuite,
 )
 from dl_api_lib_testing.data_api_base import DataApiTestParams
-from dl_connector_postgresql_tests.db.api.base import PostgreSQLDataApiTestBase
 from dl_constants.enums import (
-    BIType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_core_testing.database import (
@@ -29,14 +28,10 @@ from dl_core_testing.dataset import data_source_settings_from_table
 from dl_sqlalchemy_postgres.base import CITEXT
 from dl_testing.regulated_test import RegulatedTestParams
 
+from dl_connector_postgresql_tests.db.api.base import PostgreSQLDataApiTestBase
+
 
 class TestPostgreSQLDataResult(PostgreSQLDataApiTestBase, DefaultConnectorDataResultTestSuite):
-    test_params = RegulatedTestParams(
-        mark_tests_failed={
-            DefaultConnectorDataResultTestSuite.test_array_not_contains_filter: "BI-4951",  # TODO: FIXME
-        }
-    )
-
     def test_isnull(
         self, saved_dataset: Dataset, data_api_test_params: DataApiTestParams, data_api: SyncHttpDataApiV2
     ) -> None:
@@ -155,7 +150,7 @@ class TestPostgreSQLDataDistinct(PostgreSQLDataApiTestBase, DefaultConnectorData
         data_api: SyncHttpDataApiV2,
     ) -> None:
         columns = [
-            C(name="bigint_value", user_type=BIType.integer, vg=lambda rn, **kwargs: 10000002877 + rn),
+            C(name="bigint_value", user_type=UserDataType.integer, vg=lambda rn, **kwargs: 10000002877 + rn),
         ]
         db_table = make_table(db, columns=columns)
         params = self.get_dataset_params(dataset_params, db_table)

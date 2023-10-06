@@ -15,7 +15,7 @@ from typing import (
 
 import attr
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.components.ids import (
     AvatarId,
     FieldId,
@@ -38,7 +38,7 @@ from dl_query_processing.enums import ExecutionLevel
 
 class DetailedType(NamedTuple):
     field_id: str
-    data_type: BIType
+    data_type: UserDataType
     # TODO: native_type: Optional[GenericNativeType] = None
     formula_data_type: Optional[DataType] = None
     formula_data_type_params: Optional[DataTypeParams] = None

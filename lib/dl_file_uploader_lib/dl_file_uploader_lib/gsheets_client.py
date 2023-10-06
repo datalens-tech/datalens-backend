@@ -39,7 +39,7 @@ from aiohttp.typedefs import StrOrURL
 import attr
 from yarl import URL
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.aio.web_app_services.gsheets import (
     Cell,
     GSheetsSettings,
@@ -159,22 +159,22 @@ class AiohttpGSheetsSession(AiohttpSession):
         return resp
 
 
-def make_type(value: Any, user_type: BIType | str) -> Any:
+def make_type(value: Any, user_type: UserDataType | str) -> Any:
     if value is None or value == "":
         return None
-    if user_type == BIType.integer:
+    if user_type == UserDataType.integer:
         if isinstance(value, str):  # overflow
             return None
         return int(value)
-    if user_type == BIType.float:
+    if user_type == UserDataType.float:
         if isinstance(value, str):  # overflow
             return None
         return float(value)
-    if user_type == BIType.boolean:
+    if user_type == UserDataType.boolean:
         return bool(value)
-    if user_type in (BIType.date, BIType.genericdatetime, BIType.datetime, BIType.datetimetz):
+    if user_type in (UserDataType.date, UserDataType.genericdatetime, UserDataType.datetime, UserDataType.datetimetz):
         actual_dt = GSHEETS_EPOCH + datetime.timedelta(days=value)
-        if user_type == BIType.date:
+        if user_type == UserDataType.date:
             dt_str = actual_dt.strftime("%Y-%m-%d")
         else:
             dt_str = actual_dt.strftime("%Y-%m-%d %H:%M:%S")
@@ -185,7 +185,7 @@ def make_type(value: Any, user_type: BIType | str) -> Any:
         hours, remainder = divmod(time_value.total_seconds(), 3600)
         minutes, seconds = divmod(remainder, 60)
         return f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}"
-    if user_type == BIType.string:
+    if user_type == UserDataType.string:
         return str(value)
 
     raise ValueError(f"Type {user_type} is not supported here")
@@ -227,8 +227,8 @@ class GSheetsClient:
         await self._aiogoogle.__aexit__(*args)
 
     def _process_values(
-        self, raw_values: list[list[Any]], user_types: list[BIType | str]
-    ) -> Tuple[list[list[Any]], list[BIType | str]]:
+        self, raw_values: list[list[Any]], user_types: list[UserDataType | str]
+    ) -> Tuple[list[list[Any]], list[UserDataType | str]]:
         """
         Tries to convert values to passed BITypes and falls back to string when fails to do so
         But the fallback happens only on return, i.e. it tries to convert all values to the original passed type
@@ -246,7 +246,7 @@ class GSheetsClient:
                 try:
                     raw_values[row_idx][col_idx] = make_type(value, user_type)
                 except (ValueError, TypeError):
-                    new_user_types[col_idx] = BIType.string
+                    new_user_types[col_idx] = UserDataType.string
                     raw_values[row_idx][col_idx] = str(value)
                 except OverflowError:
                     raw_values[row_idx][col_idx] = None
@@ -571,8 +571,8 @@ class GSheetsClient:
         return sheet
 
     async def get_single_values_range(
-        self, spreadsheet_id: str, range: Range, user_types: list[BIType | str]
-    ) -> Tuple[list[list[Any]], list[BIType | str]]:
+        self, spreadsheet_id: str, range: Range, user_types: list[UserDataType | str]
+    ) -> Tuple[list[list[Any]], list[UserDataType | str]]:
         resp_json = await self._request_values(spreadsheet_id=spreadsheet_id, range=str(range))
 
         raw_values = resp_json.get("values", [])

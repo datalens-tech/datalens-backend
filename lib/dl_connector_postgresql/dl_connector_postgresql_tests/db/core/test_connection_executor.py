@@ -10,13 +10,7 @@ import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
-from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
-from dl_connector_postgresql_tests.db.config import CoreConnectionSettings
-from dl_connector_postgresql_tests.db.core.base import (
-    BasePostgreSQLTestClass,
-    BaseSslPostgreSQLTestClass,
-)
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.connection_executors import AsyncConnExecutorBase
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.connection_models.common_models import (
@@ -31,6 +25,13 @@ from dl_core_testing.testcases.connection_executor import (
 )
 from dl_sqlalchemy_postgres.base import CITEXT
 from dl_testing.regulated_test import RegulatedTestParams
+
+from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
+from dl_connector_postgresql_tests.db.config import CoreConnectionSettings
+from dl_connector_postgresql_tests.db.core.base import (
+    BasePostgreSQLTestClass,
+    BaseSslPostgreSQLTestClass,
+)
 
 
 class PostgreSQLSyncAsyncConnectionExecutorCheckBase(
@@ -51,15 +52,15 @@ class PostgreSQLSyncAsyncConnectionExecutorCheckBase(
         assert db_version is not None
         assert "." in db_version
 
-    def get_schemas_for_type_recognition(self) -> dict[str, Sequence[tuple[TypeEngine, BIType]]]:
+    def get_schemas_for_type_recognition(self) -> dict[str, Sequence[tuple[TypeEngine, UserDataType]]]:
         return {
             "types_postgres": [
-                (sa.Integer(), BIType.integer),
-                (sa.Float(), BIType.float),
-                (sa.String(length=256), BIType.string),
-                (sa.Date(), BIType.date),
-                (sa.DateTime(), BIType.genericdatetime),
-                (CITEXT(), BIType.string),
+                (sa.Integer(), UserDataType.integer),
+                (sa.Float(), UserDataType.float),
+                (sa.String(length=256), UserDataType.string),
+                (sa.Date(), UserDataType.date),
+                (sa.DateTime(), UserDataType.genericdatetime),
+                (CITEXT(), UserDataType.string),
             ],
         }
 

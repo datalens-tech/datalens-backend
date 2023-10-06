@@ -316,11 +316,10 @@ class RepositoryManager:
             new_tests_path = new_pkg_dir / package_test_dir
             self.fs_editor.move_path(old_path=old_tests_path, new_path=new_tests_path)
 
+        # Masks for files that should not be edited
+        edit_exclude_masks = self.repository_env.get_edit_exclude_masks()
+
         # Replace all package name occurrences with the given name
-        mask_blacklist = (
-            re.compile(r".*\.mo"),
-            re.compile(r".*\.xlsx"),
-        )
         all_zipped_modules = itertools.chain(
             zip(old_package_info.module_names, new_package_info.module_names),
             zip(old_package_info.test_dirs, new_package_info.test_dirs),
@@ -338,7 +337,7 @@ class RepositoryManager:
                 regex=regex,
                 repl=repl,
                 path=new_pkg_dir,
-                mask_blacklist=mask_blacklist,
+                exclude_masks=edit_exclude_masks,
             )
 
         # add `-` to the regex
@@ -351,7 +350,7 @@ class RepositoryManager:
             regex=regex,
             repl=repl,
             path=new_pkg_dir,
-            mask_blacklist=mask_blacklist,
+            exclude_masks=edit_exclude_masks,
         )
 
     def change_package_type(self, package_module_name: str, new_package_type: str) -> PackageInfo:

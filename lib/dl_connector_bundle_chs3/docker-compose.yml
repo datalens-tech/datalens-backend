@@ -1,0 +1,57 @@
+version: '3.7'
+
+x-constants:
+  US_MASTER_TOKEN: &c-us-master-token "AC1ofiek8coB"
+  REDIS_PASSWORD: &c-redis-password "AwockEuvavDyinmeakmiRiopanbesBepsensUrdIz5"
+
+
+services:
+  redis:
+    image: "bitnami/redis:5.0.8@sha256:3127620da977815556439a9dc347fff89432a79b6bb6e93a16f20ac4a34ce337"
+    environment:
+      REDIS_PASSWORD: *c-redis-password
+    ports:
+      - 52604:6379
+
+  db-clickhouse:
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-clickhouse-22-10
+    ports:
+      - 52610:8123
+      - 52611:9000
+
+  s3-storage:
+    build:
+      context: ../testenv-common/images
+      dockerfile: Dockerfile.s3-storage
+    command: bash /data/entrypoint.sh
+    environment:
+      S3BACKEND: "mem"
+      REMOTE_MANAGEMENT_DISABLE: 1
+    ports:
+      - 52620:8000
+
+  pg-us:
+    build:
+      context: ../testenv-common/images
+      dockerfile: Dockerfile.pg-us
+    environment:
+      POSTGRES_DB: us-db-ci_purgeable
+      POSTGRES_USER: us
+      POSTGRES_PASSWORD: us
+    ports:
+      - 52609:5432
+
+  us:
+    build:
+      context: ../testenv-common/images
+      dockerfile: Dockerfile.us
+    ports:
+      - 52600:80
+    depends_on:
+      - pg-us
+    environment:
+      POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
+      AUTH_POLICY: "required"
+      MASTER_TOKEN: *c-us-master-token

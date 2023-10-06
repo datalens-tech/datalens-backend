@@ -10,7 +10,6 @@ import attr
 from redis.asyncio.lock import Lock as RedisLock
 import shortuuid
 
-from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from dl_constants.enums import (
     DataSourceRole,
     FileProcessingStatus,
@@ -48,6 +47,8 @@ from dl_task_processor.task import (
     TaskResult,
 )
 from dl_utils.aio import ContextVarExecutor
+
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 
 
 LOGGER = logging.getLogger(__name__)

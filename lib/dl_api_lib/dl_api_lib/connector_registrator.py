@@ -51,11 +51,13 @@ class ApiConnectorRegistrator:
         # backend_type-related stuff - TODO: Move to a separate entity
         backend_type = connector.core_connector_cls.backend_type
         register_dialect_name(backend_type=backend_type, dialect_name=connector.formula_dialect_name)
-        register_multi_query_mutator_factory_cls(
-            backend_type=backend_type,
-            dialects=(None,),
-            factory_cls=connector.default_multi_query_mutator_factory_cls,
-        )
+        for mqm_setting_item in connector.multi_query_mutation_factories:
+            register_multi_query_mutator_factory_cls(
+                query_proc_mode=mqm_setting_item.query_proc_mode,
+                backend_type=backend_type,
+                dialects=mqm_setting_item.dialects,
+                factory_cls=mqm_setting_item.factory_cls,
+            )
         register_is_forkable_source(backend_type=backend_type, is_forkable=connector.is_forkable)
         register_is_compeng_executable(backend_type=backend_type, is_compeng_executable=connector.is_compeng_executable)
         register_filter_formula_compiler_cls(

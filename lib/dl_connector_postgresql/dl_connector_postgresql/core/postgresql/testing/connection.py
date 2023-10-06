@@ -4,10 +4,11 @@ from typing import (
 )
 import uuid
 
-from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
-from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 from dl_constants.enums import RawSQLLevel
 from dl_core.us_manager.us_manager_sync import SyncUSManager
+
+from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 
 
 def make_postgresql_saved_connection(

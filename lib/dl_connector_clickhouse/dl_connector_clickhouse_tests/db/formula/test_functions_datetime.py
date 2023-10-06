@@ -1,8 +1,9 @@
+from dl_formula_testing.testcases.functions_datetime import DefaultDateTimeFunctionFormulaConnectorTestSuite
+
 from dl_connector_clickhouse_tests.db.formula.base import (
     ClickHouse_21_8TestBase,
     ClickHouse_22_10TestBase,
 )
-from dl_formula_testing.testcases.functions_datetime import DefaultDateTimeFunctionFormulaConnectorTestSuite
 
 
 class DateTimeFunctionClickHouseTestSuite(DefaultDateTimeFunctionFormulaConnectorTestSuite):

@@ -7,7 +7,6 @@ from typing import (
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from dl_core.connectors.base.lifecycle import ConnectionLifecycleManager
 from dl_file_uploader_task_interface.tasks import (
     DeleteFileTask,
@@ -15,6 +14,8 @@ from dl_file_uploader_task_interface.tasks import (
 )
 from dl_task_processor.processor import TaskProcessor
 from dl_utils.aio import await_sync
+
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 
 
 LOGGER = logging.getLogger(__name__)

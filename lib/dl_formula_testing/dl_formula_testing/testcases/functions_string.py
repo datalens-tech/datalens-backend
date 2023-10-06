@@ -196,6 +196,22 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval('CONTAINS(#2019-03-04#, "019")')
         assert dbe.eval('CONTAINS(#2019-03-04T12:34:56#, "019")')
 
+    def test_notcontains_simple(self, dbe: DbEvaluator, forced_literal_use: Any) -> None:
+        assert not dbe.eval('NOTCONTAINS("Lorem ipsum", "ips")')
+        assert dbe.eval('NOTCONTAINS("Lorem ipsum", "abc")')
+        assert not dbe.eval('NOTCONTAINS(__LIT__("Lorem ipsum"), __LIT__("ips"))')
+        assert dbe.eval('NOTCONTAINS(__LIT__("Lorem ipsum"), __LIT__("abc"))')
+        assert not dbe.eval('NOTCONTAINS("Lorem %ipsum", "em %ip")')
+        assert not dbe.eval('NOTCONTAINS(__LIT__("Lorem %ipsum"), __LIT__("em %ip"))')
+        assert not dbe.eval('NOTCONTAINS("Карл у Клары украл кораллы", "Клары")')
+        assert not dbe.eval('NOTCONTAINS(__LIT__("Карл у Клары украл кораллы"), __LIT__("Клары"))')
+        # Non-string
+        assert not dbe.eval('NOTCONTAINS(123456, "234")')
+        assert dbe.eval('NOTCONTAINS(123456, "432")')
+        assert not dbe.eval('NOTCONTAINS(TRUE, "ru")')
+        assert not dbe.eval('NOTCONTAINS(#2019-03-04#, "019")')
+        assert not dbe.eval('NOTCONTAINS(#2019-03-04T12:34:56#, "019")')
+
     @pytest.mark.parametrize("value_fl,pattern_fl,expected", CONTAINS_TESTS)
     def test_contains_extended(
         self,
@@ -217,6 +233,29 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         # var:
         statement = "CONTAINS(__LIT__({}), __LIT__({}))".format(value_fl, pattern_fl)
         assert dbe.eval(statement) is expected, (statement, expected)
+
+    @pytest.mark.parametrize("value_fl,pattern_fl,expected", CONTAINS_TESTS)
+    def test_notcontains_extended(
+        self,
+        dbe: DbEvaluator,
+        data_table: sa.Table,
+        forced_literal_use: Any,
+        value_fl: str,
+        pattern_fl: str,
+        expected: bool,
+    ) -> None:
+        if self.empty_str_is_null and pattern_fl == '""':
+            # hopeless?
+            return
+
+        # const:
+        statement = "NOTCONTAINS(__LIT__({}), {})".format(value_fl, pattern_fl)
+        a = dbe.eval(statement)
+        assert dbe.eval(statement) is not expected, (statement, expected)
+
+        # var:
+        statement = "NOTCONTAINS(__LIT__({}), __LIT__({}))".format(value_fl, pattern_fl)
+        assert dbe.eval(statement) is not expected, (statement, expected)
 
     def test_icontains_simple(self, dbe: DbEvaluator, forced_literal_use: Any) -> None:
         assert dbe.eval('ICONTAINS("Lorem ipsum", "IPS")')

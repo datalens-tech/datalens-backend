@@ -21,7 +21,6 @@ from dl_api_lib.query.formalization.avatar_tools import normalize_explicit_avata
 from dl_api_lib.query.formalization.field_resolver import FieldResolver
 from dl_api_lib.query.formalization.query_formalizer_base import QuerySpecFormalizerBase
 from dl_constants.enums import (
-    BIType,
     CalcMode,
     DataSourceRole,
     FieldRole,
@@ -29,6 +28,7 @@ from dl_constants.enums import (
     OrderDirection,
     RangeType,
     RLSSubjectType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_core.components.accessor import DatasetComponentAccessor
@@ -363,7 +363,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
             )
 
     def _ensure_not_unsupported_type(self, field: BIField) -> None:
-        if field.cast == BIType.unsupported:
+        if field.cast == UserDataType.unsupported:
             raise dl_query_processing.exc.LogicError(f"Cannot select fields of unsupported type: {field.title}")
 
     def validate_select_field(self, block_spec: BlockSpec, field: BIField) -> None:

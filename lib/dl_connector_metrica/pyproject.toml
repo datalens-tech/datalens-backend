@@ -1,0 +1,78 @@
+[tool.poetry]
+name = "datalens-connector-metrica"
+version = "0.0.1"
+description = ""
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_connector_metrica"}]
+license = "Apache 2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+marshmallow = ">=3.19.0"
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-utils = {path = "../dl_utils"}
+datalens-constants = {path = "../dl_constants"}
+datalens-formula-ref = {path = "../dl_formula_ref"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-formula = {path = "../dl_formula"}
+datalens-configs = {path = "../dl_configs"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-core = {path = "../dl_core"}
+datalens-sqlalchemy-metrica-api = {path = "../dl_sqlalchemy_metrica_api"}
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."dl_api_lib.connectors"]
+appmetrica_api = "dl_connector_metrica.api.connector:AppMetricaApiApiConnector"
+metrica_api = "dl_connector_metrica.api.connector:MetricaApiApiConnector"
+
+[tool.poetry.plugins."dl_core.connectors"]
+appmetrica_api = "dl_connector_metrica.core.connector:AppMetricaApiCoreConnector"
+metrica_api = "dl_connector_metrica.core.connector:MetricaApiCoreConnector"
+
+[tool.poetry.plugins."dl_formula.connectors"]
+metrica = "dl_connector_metrica.formula.connector:MetricaFormulaConnector"
+
+[tool.poetry.plugins."dl_formula_ref.plugins"]
+metrica = "dl_connector_metrica.formula_ref.plugin:MetricaFormulaRefPlugin"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+datalens-formula-testing = {path = "../dl_formula_testing"}
+datalens-testing = {path = "../dl_testing"}
+datalens-core-testing = {path = "../dl_core_testing"}
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[datalens.pytest.ext]
+root_dir = "dl_connector_metrica_tests/"
+target_path = "ext"
+labels = ["ext_public"]
+
+[datalens.pytest.unit]
+root_dir = "dl_connector_metrica_tests/"
+target_path = "unit"
+skip_compose = "true"
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[datalens.i18n.domains]
+dl_connector_metrica = [
+    {path = "dl_connector_metrica/api"},
+    {path = "dl_connector_metrica/core"},
+]

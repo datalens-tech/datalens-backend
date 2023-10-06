@@ -2,14 +2,15 @@ from __future__ import annotations
 
 from typing import ClassVar
 
+from dl_core.us_connection_base import DataSourceTemplate
+from dl_i18n.localizer_base import Localizer
+
 from dl_connector_postgresql.core.postgresql.constants import (
     SOURCE_TYPE_PG_SUBSELECT,
     SOURCE_TYPE_PG_TABLE,
 )
 from dl_connector_postgresql.core.postgresql.dto import PostgresConnDTO
 from dl_connector_postgresql.core.postgresql_base.us_connection import ConnectionPostgreSQLBase
-from dl_core.us_connection_base import DataSourceTemplate
-from dl_i18n.localizer_base import Localizer
 
 
 class ConnectionPostgreSQL(ConnectionPostgreSQLBase):

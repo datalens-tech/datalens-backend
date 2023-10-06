@@ -13,11 +13,6 @@ from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMid
 from dl_api_connector.api_schema.component_errors import ComponentErrorListSchema
 from dl_api_connector.api_schema.connection_base import ConnectionSchema
 from dl_api_connector.api_schema.extras import FieldExtra
-from dl_connector_bundle_chs3.chs3_base.api.api_schema.source import (
-    BaseFileSourceSchema,
-    ReplaceFileSourceSchema,
-)
-from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from dl_constants.exc import (
     DEFAULT_ERR_CODE_API_PREFIX,
     GLOBAL_ERR_PREFIX,
@@ -28,6 +23,12 @@ from dl_core.utils import (
     make_user_auth_cookies,
     make_user_auth_headers,
 )
+
+from dl_connector_bundle_chs3.chs3_base.api.api_schema.source import (
+    BaseFileSourceSchema,
+    ReplaceFileSourceSchema,
+)
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 
 
 class BaseFileS3ConnectionSchema(ConnectionSchema):

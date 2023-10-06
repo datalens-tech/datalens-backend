@@ -55,8 +55,8 @@ from dl_constants.enums import (
     ComponentErrorLevel,
     ComponentType,
     ConnectionType,
-    CreateDSFrom,
     DataSourceRole,
+    DataSourceType,
     ManagedBy,
     TopLevelComponentId,
 )
@@ -1448,7 +1448,7 @@ class DatasetValidator(DatasetBaseWrapper):
         old_connection: Optional[ConnectionBase],
         new_connection: ConnectionBase,
         dsrc: DataSource,
-    ) -> tuple[dict, CreateDSFrom]:
+    ) -> tuple[dict, DataSourceType]:
         old_conn_type: ConnectionType
         if old_connection is not None:
             old_conn_type = old_connection.conn_type

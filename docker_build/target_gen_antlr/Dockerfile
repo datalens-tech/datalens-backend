@@ -11,7 +11,7 @@ RUN apk add --no-cache sed python3 py3-pip
 RUN pip install pycodestyle==2.10.0 autopep8==2.0.2 autoflake isort
 
 ENV AUTOGEN_DIR=/gen
-ENV ANTLR_PY_PACKAGE="bi_formula.parser.antlr.gen"
+ENV ANTLR_PY_PACKAGE="dl_formula.parser.antlr.gen"
 
 COPY --from=src . /src
 

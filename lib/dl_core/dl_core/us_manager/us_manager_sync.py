@@ -161,9 +161,6 @@ class SyncUSManager(USManagerBase):
         except Exception:
             LOGGER.exception("Error during post-delete hook execution for entry %s", entry.uuid)
 
-    def publish(self, entry: USEntry) -> None:
-        self._us_client.update_entry(entry.uuid, data=entry.data, mode="publish")  # type: ignore  # TODO: fix
-
     @overload
     def get_by_id(self, entry_id: str, expected_type: type(None) = None) -> USEntry:  # type: ignore  # TODO: fix
         pass

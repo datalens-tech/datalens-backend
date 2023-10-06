@@ -7,6 +7,7 @@ from dl_api_connector.connector import (
     ApiConnector,
     ApiSourceDefinition,
 )
+
 from dl_connector_bigquery.api.api_schema.connection import BigQueryConnectionSchema
 from dl_connector_bigquery.api.api_schema.source import (
     BigQueryTableDataSourceSchema,

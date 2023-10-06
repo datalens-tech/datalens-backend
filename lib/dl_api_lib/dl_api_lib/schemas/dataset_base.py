@@ -33,10 +33,10 @@ from dl_api_lib.schemas.values import (
 )
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
     CalcMode,
     FieldType,
     ManagedBy,
+    UserDataType,
 )
 from dl_core.fields import (
     BIField,
@@ -93,10 +93,10 @@ class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
     guid = ma_fields.String()
     hidden = ma_fields.Boolean(load_default=False)
     description = ma_fields.String()
-    initial_data_type = ma_fields.Enum(BIType, allow_none=True)
-    cast = ma_fields.Enum(BIType)
+    initial_data_type = ma_fields.Enum(UserDataType, allow_none=True)
+    cast = ma_fields.Enum(UserDataType)
     type = ma_fields.Enum(FieldType, readonly=True)
-    data_type = ma_fields.Enum(BIType, allow_none=True)
+    data_type = ma_fields.Enum(UserDataType, allow_none=True)
     valid = ma_fields.Boolean(allow_none=True)
 
     # this will be flattened on dump and un-flattened before load

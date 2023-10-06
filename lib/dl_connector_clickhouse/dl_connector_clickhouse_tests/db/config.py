@@ -2,9 +2,10 @@ import os
 from typing import ClassVar
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_core_testing.configuration import DefaultCoreTestConfiguration
 from dl_testing.containers import get_test_container_hostport
+
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 
 # Infra settings

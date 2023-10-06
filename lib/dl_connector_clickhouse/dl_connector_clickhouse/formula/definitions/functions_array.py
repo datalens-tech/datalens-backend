@@ -2,10 +2,11 @@ from clickhouse_sqlalchemy import types as ch_types
 from clickhouse_sqlalchemy.ext.clauses import Lambda
 import sqlalchemy as sa
 
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_array as base
 from dl_formula.definitions.literals import un_literal
+
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 
 V = TranslationVariant.make
@@ -180,6 +181,8 @@ DEFINITIONS_ARRAY = [
             V(D.CLICKHOUSE, sa.func.has),
         ]
     ),
+    # notcontains
+    base.FuncArrayNotContains.for_dialect(D.CLICKHOUSE),
     # contains_all
     base.FuncArrayContainsAll(
         variants=[

@@ -13,7 +13,7 @@ from typing_extensions import Literal
 
 from dl_constants.enums import (
     ConnectionType,
-    QueryType,
+    ReportingQueryType,
 )
 
 
@@ -40,7 +40,7 @@ class DbQueryExecutionReport:
     cache_full_hit: bool
 
     # not in action fields:
-    query_type: QueryType
+    query_type: ReportingQueryType
     is_public: bool
 
     def convert_for_logging_extras(self, value) -> Union[str, int, bool, None]:  # type: ignore  # TODO: fix

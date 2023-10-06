@@ -14,25 +14,9 @@ import urllib.parse
 import attr
 import sqlalchemy as sa
 
-from dl_connector_chyt.core.constants import (
-    CONNECTION_TYPE_CHYT,
-    SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
-    SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
-    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
-    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
-)
-from dl_connector_chyt.core.data_source_spec import (
-    CHYTTableDataSourceSpec,
-    CHYTTableListDataSourceSpec,
-    CHYTTableRangeDataSourceSpec,
-)
-from dl_connector_clickhouse.core.clickhouse_base.data_source import (
-    ClickHouseBaseMixin,
-    CommonClickHouseSubselectDataSource,
-)
 from dl_constants.enums import (
-    BIType,
-    CreateDSFrom,
+    DataSourceType,
+    UserDataType,
 )
 from dl_core import exc
 from dl_core.connection_models.common_models import (
@@ -54,6 +38,23 @@ from dl_sqlalchemy_chyt import (
     CHYTTablesConcat,
     CHYTTablesRange,
     CHYTTableSubselect,
+)
+
+from dl_connector_chyt.core.constants import (
+    CONNECTION_TYPE_CHYT,
+    SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
+    SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
+)
+from dl_connector_chyt.core.data_source_spec import (
+    CHYTTableDataSourceSpec,
+    CHYTTableListDataSourceSpec,
+    CHYTTableRangeDataSourceSpec,
+)
+from dl_connector_clickhouse.core.clickhouse_base.data_source import (
+    ClickHouseBaseMixin,
+    CommonClickHouseSubselectDataSource,
 )
 
 
@@ -140,7 +141,7 @@ class BaseCHYTTableFuncDataSource(BaseCHYTSpecialDataSource, abc.ABC):
                         SchemaColumn(
                             name=key,
                             title=key,
-                            user_type=BIType.string,
+                            user_type=UserDataType.string,
                             native_type=ClickHouseNativeType.normalize_name_and_create(
                                 conn_type=self.conn_type, name="string"
                             ),
@@ -271,7 +272,7 @@ class CHYTTokenAuthDataSourceMixin:
     conn_type = CONNECTION_TYPE_CHYT
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
             SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
             SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,

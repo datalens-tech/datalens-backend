@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import attr
 
-from dl_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY
 from dl_core.connection_models.dto_defs import ConnDTO
 from dl_core.utils import secrepr
+
+from dl_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY
 
 
 @attr.s(frozen=True)

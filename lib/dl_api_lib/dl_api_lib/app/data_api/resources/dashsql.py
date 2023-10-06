@@ -28,8 +28,8 @@ import dl_api_lib.schemas.main
 from dl_api_lib.utils.base import need_permission_on_entry
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_constants.enums import (
-    BIType,
     ConnectionType,
+    UserDataType,
 )
 from dl_core.backend_types import get_backend_type
 from dl_core.data_processing.dashsql import (
@@ -61,20 +61,20 @@ if TYPE_CHECKING:
 TRowProcessor = Callable[[TRow], TRow]
 
 
-def parse_value(value: Optional[str], bi_type: BIType) -> Any:
+def parse_value(value: Optional[str], bi_type: UserDataType) -> Any:
     if value is None:
         return None
-    if bi_type == BIType.string:
+    if bi_type == UserDataType.string:
         return value
-    if bi_type == BIType.integer:
+    if bi_type == UserDataType.integer:
         return int(value)
-    if bi_type == BIType.float:
+    if bi_type == UserDataType.float:
         return float(value)
-    if bi_type == BIType.date:
+    if bi_type == UserDataType.date:
         return datetime.datetime.strptime(value, "%Y-%m-%d").date()
-    if bi_type == BIType.datetime:
+    if bi_type == UserDataType.datetime:
         return parse_datetime(value)
-    if bi_type == BIType.boolean:
+    if bi_type == UserDataType.boolean:
         if value == "true":
             return True
         if value == "false":
@@ -88,7 +88,7 @@ def make_param_obj(name: str, param: dict, conn_type: ConnectionType) -> BindPar
     value_base: TValueBase = param["value"]
 
     try:
-        bi_type = BIType[type_name]
+        bi_type = UserDataType[type_name]
     except KeyError:
         raise DashSQLError(f"Unknown type name {type_name!r}")
 
@@ -248,8 +248,8 @@ class DashSQLView(BaseView):
         need_permission_on_entry(conn, USPermissionKind.execute)
 
         # TODO: instead of this, use something like:
-        #     formula_dialect = bi_formula.core.dialect.from_name_and_version(conn.get_dialect().name)
-        #     bindparam = bi_formula.definitions.literals.literal(parsed_value, formula_dialect)
+        #     formula_dialect = dl_formula.core.dialect.from_name_and_version(conn.get_dialect().name)
+        #     bindparam = dl_formula.definitions.literals.literal(parsed_value, formula_dialect)
         # (but account for `expanding`)
         conn_type = conn.conn_type
         param_objs = None

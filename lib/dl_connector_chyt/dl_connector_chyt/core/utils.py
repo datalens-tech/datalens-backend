@@ -5,13 +5,14 @@ from typing import (
     Type,
 )
 
+from dl_core import exc
+from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
+
 from dl_connector_chyt.core import exc as chyt_exc
 from dl_connector_clickhouse.core.clickhouse_base.ch_commons import (
     ClickHouseBaseUtils,
     ParsedErrorMsg,
 )
-from dl_core import exc
-from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 
 
 LOGGER = logging.getLogger(__name__)

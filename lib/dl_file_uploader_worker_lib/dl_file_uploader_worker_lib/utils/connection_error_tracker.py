@@ -5,7 +5,6 @@ from typing import Optional
 import attr
 import redis.asyncio
 
-from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from dl_constants.enums import (
     ComponentErrorLevel,
     ComponentType,
@@ -21,6 +20,8 @@ from dl_file_uploader_task_interface.tasks import (
     TaskExecutionMode,
 )
 from dl_task_processor.processor import TaskProcessor
+
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 
 
 LOGGER = logging.getLogger(__name__)

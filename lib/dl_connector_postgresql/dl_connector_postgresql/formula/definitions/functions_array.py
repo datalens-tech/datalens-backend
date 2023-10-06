@@ -7,8 +7,6 @@ from sqlalchemy.sql.elements import (
 )
 from sqlalchemy.sql.type_api import TypeEngine
 
-from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
-from dl_connector_postgresql.formula.definitions.common import PG_INT_64_TO_CHAR_FMT
 from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_array as base
 from dl_formula.definitions.literals import (
@@ -16,6 +14,9 @@ from dl_formula.definitions.literals import (
     un_literal,
 )
 from dl_formula.shortcuts import n
+
+from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
+from dl_connector_postgresql.formula.definitions.common import PG_INT_64_TO_CHAR_FMT
 
 
 V = TranslationVariant.make
@@ -29,6 +30,19 @@ def _array_contains(array: ClauseElement, value: ClauseElement) -> ClauseElement
     else:
         return n.func.IF(
             n.func.ISNULL(value.self_group()), array != sa.func.array_remove(array, None), value == sa.func.ANY(array)
+        )
+
+
+def _array_notcontains(array: ClauseElement, value: ClauseElement) -> ClauseElement:
+    if isinstance(value, Null):
+        return array == sa.func.array_remove(array, None)
+    elif is_literal(value):
+        return value != sa.func.ALL(sa.func.array_remove(array, None))
+    else:
+        return n.func.IF(
+            n.func.ISNULL(value.self_group()),
+            array == sa.func.array_remove(array, None),
+            value != sa.func.ALL(sa.func.array_remove(array, None)),
         )
 
 
@@ -135,6 +149,12 @@ DEFINITIONS_ARRAY = [
     base.FuncArrayContains(
         variants=[
             V(D.POSTGRESQL, _array_contains),
+        ]
+    ),
+    # notcontains
+    base.FuncArrayNotContains(
+        variants=[
+            V(D.POSTGRESQL, _array_notcontains),
         ]
     ),
     # contains_all

@@ -1,10 +1,11 @@
 from clickhouse_sqlalchemy.drivers.base import ClickHouseDialect as SAClickHouseDialect
 
+from dl_formula.connectors.base.connector import FormulaConnector
+
 from dl_connector_clickhouse.formula.constants import ClickHouseDialect as ClickHouseDialectNS
 from dl_connector_clickhouse.formula.definitions.all import DEFINITIONS
 from dl_connector_clickhouse.formula.literal import ClickHouseLiteralizer
 from dl_connector_clickhouse.formula.type_constructor import ClickHouseTypeConstructor
-from dl_formula.connectors.base.connector import FormulaConnector
 
 
 class ClickHouseFormulaConnector(FormulaConnector):

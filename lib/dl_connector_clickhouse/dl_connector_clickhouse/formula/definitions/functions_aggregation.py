@@ -2,7 +2,6 @@ import clickhouse_sqlalchemy.ext.clauses as chsq_clauses
 import sqlalchemy as sa
 from sqlalchemy.sql import ClauseElement
 
-from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 from dl_formula.definitions.base import TranslationVariant
 from dl_formula.definitions.common import quantile_value
 import dl_formula.definitions.functions_aggregation as base
@@ -11,6 +10,8 @@ from dl_formula.definitions.literals import (
     un_literal,
 )
 from dl_formula.shortcuts import n
+
+from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 
 V = TranslationVariant.make

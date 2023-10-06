@@ -6,10 +6,6 @@ import pytz
 import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
 
-from dl_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase,
-    PostgreSQL_9_4TestBase,
-)
 import dl_formula.core.exc as exc
 from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.functions_type_conversion import (
@@ -28,6 +24,11 @@ from dl_formula_testing.util import (
     as_tz,
     dt_strip,
     to_str,
+)
+
+from dl_connector_postgresql_tests.db.formula.base import (
+    PostgreSQL_9_3TestBase,
+    PostgreSQL_9_4TestBase,
 )
 
 

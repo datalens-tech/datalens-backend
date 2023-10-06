@@ -14,7 +14,7 @@ from typing import (
 
 import attr
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 
 
 _INNER_TYPE = TypeVar("_INNER_TYPE")
@@ -22,85 +22,85 @@ _INNER_TYPE = TypeVar("_INNER_TYPE")
 
 @attr.s(frozen=True)
 class BIValue(Generic[_INNER_TYPE]):
-    type: ClassVar[BIType]
+    type: ClassVar[UserDataType]
     value: _INNER_TYPE = attr.ib()
 
 
 @attr.s(frozen=True)
 class StringValue(BIValue[str]):
-    type: ClassVar[BIType] = BIType.string
+    type: ClassVar[UserDataType] = UserDataType.string
 
 
 @attr.s(frozen=True)
 class IntegerValue(BIValue[int]):
-    type: ClassVar[BIType] = BIType.integer
+    type: ClassVar[UserDataType] = UserDataType.integer
 
 
 @attr.s(frozen=True)
 class FloatValue(BIValue[float]):
-    type: ClassVar[BIType] = BIType.float
+    type: ClassVar[UserDataType] = UserDataType.float
 
 
 @attr.s(frozen=True)
 class DateValue(BIValue[date]):
-    type: ClassVar[BIType] = BIType.date
+    type: ClassVar[UserDataType] = UserDataType.date
 
 
 @attr.s(frozen=True)
 class DateTimeValue(BIValue[datetime]):
-    type: ClassVar[BIType] = BIType.datetime
+    type: ClassVar[UserDataType] = UserDataType.datetime
 
 
 @attr.s(frozen=True)
 class DateTimeTZValue(BIValue[datetime]):
-    type: ClassVar[BIType] = BIType.datetimetz
+    type: ClassVar[UserDataType] = UserDataType.datetimetz
 
 
 @attr.s(frozen=True)
 class GenericDateTimeValue(BIValue[datetime]):
-    type: ClassVar[BIType] = BIType.genericdatetime
+    type: ClassVar[UserDataType] = UserDataType.genericdatetime
 
 
 @attr.s(frozen=True)
 class BooleanValue(BIValue[bool]):
-    type: ClassVar[BIType] = BIType.boolean
+    type: ClassVar[UserDataType] = UserDataType.boolean
 
 
 @attr.s(frozen=True)
 class GeoPointValue(BIValue[List[Union[int, float]]]):
-    type: ClassVar[BIType] = BIType.geopoint
+    type: ClassVar[UserDataType] = UserDataType.geopoint
 
 
 @attr.s(frozen=True)
 class GeoPolygonValue(BIValue[List[List[List[Union[int, float]]]]]):
-    type: ClassVar[BIType] = BIType.geopolygon
+    type: ClassVar[UserDataType] = UserDataType.geopolygon
 
 
 @attr.s(frozen=True)
 class UuidValue(BIValue[str]):
-    type: ClassVar[BIType] = BIType.uuid
+    type: ClassVar[UserDataType] = UserDataType.uuid
 
 
 @attr.s(frozen=True)
 class MarkupValue(BIValue[str]):
-    type: ClassVar[BIType] = BIType.markup
+    type: ClassVar[UserDataType] = UserDataType.markup
 
 
 @attr.s(frozen=True)
 class ArrayStrValue(BIValue[List[str]]):
-    type: ClassVar[BIType] = BIType.array_str
+    type: ClassVar[UserDataType] = UserDataType.array_str
 
 
 @attr.s(frozen=True)
 class TreeStrValue(BIValue[List[str]]):
-    type: ClassVar[BIType] = BIType.tree_str
+    type: ClassVar[UserDataType] = UserDataType.tree_str
 
 
 @attr.s(frozen=True)
 class ArrayIntValue(BIValue[List[int]]):
-    type: ClassVar[BIType] = BIType.array_int
+    type: ClassVar[UserDataType] = UserDataType.array_int
 
 
 @attr.s(frozen=True)
 class ArrayFloatValue(BIValue[List[float]]):
-    type: ClassVar[BIType] = BIType.array_float
+    type: ClassVar[UserDataType] = UserDataType.array_float

@@ -15,7 +15,7 @@ import uuid
 import pytest
 import shortuuid
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.connection_models import TableIdent
 from dl_core.connectors.base.data_source_migration import (
     DataSourceMigrationInterface,
@@ -89,7 +89,7 @@ class DefaultDataSourceTestClass(
         assert result
 
     @abc.abstractmethod
-    def get_expected_simplified_schema(self) -> list[tuple[str, BIType]]:
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         raise NotImplementedError
 
     def test_get_raw_schema(

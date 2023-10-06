@@ -4,6 +4,7 @@ from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
 from dl_api_lib_testing.dataset_base import DatasetTestBase
+
 from dl_connector_bigquery.core.constants import (
     CONNECTION_TYPE_BIGQUERY,
     SOURCE_TYPE_BIGQUERY_TABLE,

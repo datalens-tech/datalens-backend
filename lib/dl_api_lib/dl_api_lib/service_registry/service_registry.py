@@ -11,8 +11,13 @@ import attr
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.service_registry.field_id_generator_factory import FieldIdGeneratorFactory
 from dl_api_lib.service_registry.formula_parser_factory import FormulaParserFactory
+from dl_api_lib.service_registry.multi_query_mutator_factory import (
+    DefaultSRMultiQueryMutatorFactory,
+    SRMultiQueryMutatorFactory,
+)
 from dl_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
 from dl_api_lib.utils.rls import BaseSubjectResolver
+from dl_constants.enums import QueryProcessingMode
 from dl_core.services_registry.top_level import (
     DefaultServicesRegistry,
     ServicesRegistry,
@@ -58,6 +63,10 @@ class ApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
     def get_connector_availability(self) -> ConnectorAvailabilityConfig:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def get_multi_query_mutator_factory_factory(self) -> SRMultiQueryMutatorFactory:
+        raise NotImplementedError
+
 
 @attr.s
 class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  # noqa
@@ -69,6 +78,7 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
     _localizer_factory: Optional[LocalizerFactory] = attr.ib(kw_only=True, default=None)
     _localizer_fallback: Optional[Localizer] = attr.ib(kw_only=True, default=None)
     _connector_availability: Optional[ConnectorAvailabilityConfig] = attr.ib(kw_only=True, default=None)
+    _query_proc_mode: QueryProcessingMode = attr.ib(kw_only=True, default=QueryProcessingMode.basic)
 
     @_formula_parser_factory.default  # noqa
     def _default_formula_parser_factory(self) -> FormulaParserFactory:
@@ -108,6 +118,9 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
     def get_connector_availability(self) -> ConnectorAvailabilityConfig:
         assert self._connector_availability is not None
         return self._connector_availability
+
+    def get_multi_query_mutator_factory_factory(self) -> SRMultiQueryMutatorFactory:
+        return DefaultSRMultiQueryMutatorFactory(query_proc_mode=self._query_proc_mode)
 
     def close(self) -> None:
         if self._formula_parser_factory is not None:

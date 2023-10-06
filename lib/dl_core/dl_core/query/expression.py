@@ -17,8 +17,8 @@ if TYPE_CHECKING:
     from sqlalchemy.sql.elements import ClauseElement
 
     from dl_constants.enums import (
-        BIType,
         JoinType,
+        UserDataType,
     )
     from dl_core.components.ids import AvatarId
 
@@ -30,7 +30,7 @@ _EXPRESSION_CTX_TV = TypeVar("_EXPRESSION_CTX_TV", bound="ExpressionCtx")
 class ExpressionCtx:
     expression: ClauseElement
     avatar_ids: Optional[Sequence[str]] = None  # TODO: make required
-    user_type: Optional[BIType] = None
+    user_type: Optional[UserDataType] = None
     alias: Optional[str] = None
     original_field_id: Optional[Any] = None
 

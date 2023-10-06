@@ -39,8 +39,6 @@ from dl_query_processing.utils.datetime import parse_datetime
 
 LOGGER = logging.getLogger(__name__)
 
-USE_DATE_TO_DATETIME_CONV = os.environ.get("USE_DATE_TO_DATETIME_CONV", "1") == "1"
-
 
 _FILTER_PARAMS_TV = TypeVar("_FILTER_PARAMS_TV", bound="FilterParams")
 
@@ -111,9 +109,7 @@ class FilterFormulaCompiler:
         WhereClauseOperation.IENDSWITH: FilterDefinition(arg_cnt=1, callable=n.func.IENDSWITH),
         WhereClauseOperation.CONTAINS: FilterDefinition(arg_cnt=1, callable=n.func.CONTAINS),
         WhereClauseOperation.ICONTAINS: FilterDefinition(arg_cnt=1, callable=n.func.ICONTAINS),
-        WhereClauseOperation.NOTCONTAINS: FilterDefinition(
-            arg_cnt=1, callable=lambda f, val: n.not_(n.func.CONTAINS(f, val))
-        ),
+        WhereClauseOperation.NOTCONTAINS: FilterDefinition(arg_cnt=1, callable=n.func.NOTCONTAINS),
         WhereClauseOperation.NOTICONTAINS: FilterDefinition(
             arg_cnt=1, callable=lambda f, val: n.not_(n.func.ICONTAINS(f, val))
         ),
@@ -404,6 +400,5 @@ class MainFilterFormulaCompiler(FilterFormulaCompiler):
     def _custom_filter_cast(self, filter_params: FilterParams) -> FilterParams:
         filter_params = self._mangle_containment_filter(filter_params)
         filter_params = self._mangle_array_filter(filter_params)
-        if USE_DATE_TO_DATETIME_CONV:
-            filter_params = self._mangle_date_filter(filter_params)
+        filter_params = self._mangle_date_filter(filter_params)
         return filter_params

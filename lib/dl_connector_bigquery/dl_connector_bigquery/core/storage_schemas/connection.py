@@ -1,11 +1,12 @@
 from marshmallow import fields as ma_fields
 
-from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
 from dl_core.us_manager.storage_schemas.connection import (
     BaseConnectionDataStorageSchema,
     CacheableConnectionDataSchemaMixin,
     SubselectConnectionDataSchemaMixin,
 )
+
+from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
 
 
 class BigQueryConnectionDataStorageSchema(

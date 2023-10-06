@@ -1,3 +1,9 @@
+from dl_core.connectors.base.connector import (
+    CoreConnectionDefinition,
+    CoreConnector,
+    CoreSourceDefinition,
+)
+
 from dl_connector_snowflake.core.adapters import SnowFlakeDefaultAdapter
 from dl_connector_snowflake.core.connection_executors import SnowFlakeSyncConnExecutor
 from dl_connector_snowflake.core.constants import (
@@ -23,11 +29,6 @@ from dl_connector_snowflake.core.storage_schemas.data_source_spec import (
 )
 from dl_connector_snowflake.core.type_transformer import SnowFlakeTypeTransformer
 from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
-from dl_core.connectors.base.connector import (
-    CoreConnectionDefinition,
-    CoreConnector,
-    CoreSourceDefinition,
-)
 
 
 class SnowFlakeCoreConnectionDefinition(CoreConnectionDefinition):

@@ -4,9 +4,11 @@ import asyncio
 import logging
 import os
 import sys
-from typing import Any
+from typing import (
+    TYPE_CHECKING,
+    Any,
+)
 
-import aiobotocore.client
 import aiohttp.pytest_plugin
 import aiohttp.test_utils
 import aiohttp.web
@@ -34,7 +36,6 @@ from dl_configs.settings_submodels import (
     RedisSettings,
     S3Settings,
 )
-from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.loader import load_core_lib
 from dl_core.services_registry.top_level import DummyServiceRegistry
@@ -68,7 +69,13 @@ from dl_testing.s3_utils import (
 )
 from dl_testing.utils import wait_for_initdb
 
+from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
+
 from .config import TestingUSConfig
+
+
+if TYPE_CHECKING:
+    from types_aiobotocore_s3 import S3Client as AsyncS3Client
 
 
 LOGGER = logging.getLogger(__name__)
@@ -222,7 +229,7 @@ def fu_client(bi_file_uploader_app) -> DLCommonAPIClient:
 
 
 @pytest.fixture(scope="function")
-async def s3_client(s3_settings) -> aiobotocore.client.AioBaseClient:
+async def s3_client(s3_settings) -> AsyncS3Client:
     async with create_s3_client(s3_settings) as client:
         yield client
 

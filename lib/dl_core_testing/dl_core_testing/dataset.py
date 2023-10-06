@@ -8,9 +8,9 @@ from typing import (
 import uuid
 
 from dl_constants.enums import (
-    CreateDSFrom,
     DataSourceCreatedVia,
     DataSourceRole,
+    DataSourceType,
 )
 from dl_core.us_connection import get_connection_class
 from dl_core.us_connection_base import ExecutorBasedMixin
@@ -38,7 +38,7 @@ def make_dataset(  # type: ignore  # TODO: fix
     db_table: Optional[DbTable] = None,
     schema_name: Optional[str] = None,
     table_name: Optional[str] = None,
-    created_from: Optional[CreateDSFrom] = None,
+    created_from: Optional[DataSourceType] = None,
     db_name: Optional[str] = None,
     yt_path: Optional[str] = None,
     yt_cluster: Optional[str] = None,
@@ -104,7 +104,7 @@ def make_dataset(  # type: ignore  # TODO: fix
     return dataset
 
 
-def get_created_from(db: Db) -> CreateDSFrom:
+def get_created_from(db: Db) -> DataSourceType:
     conn_cls = get_connection_class(conn_type=db.conn_type)
     source_type = conn_cls.source_type
     assert source_type is not None

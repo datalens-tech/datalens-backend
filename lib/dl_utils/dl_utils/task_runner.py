@@ -6,7 +6,6 @@ from typing import (
     Any,
     Awaitable,
     Iterable,
-    List,
 )
 
 
@@ -33,7 +32,7 @@ class ImmediateTaskRunner(TaskRunner):
 
 class ConcurrentTaskRunner(TaskRunner):
     def __init__(self, concurrency_limit: int = 5) -> None:
-        self._tasks: List[Awaitable] = []
+        self._tasks: list[Awaitable] = []
         self._sem = asyncio.Semaphore(concurrency_limit)
 
     async def _semaphore_wrapper(self, awaitable: Awaitable) -> Any:

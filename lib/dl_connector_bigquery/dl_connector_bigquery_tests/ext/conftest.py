@@ -3,13 +3,14 @@ import os
 import pytest
 
 from dl_api_lib_testing.initialization import initialize_api_lib_test
+from dl_formula_testing.forced_literal import forced_literal_use
+from dl_testing.env_params.generic import GenericEnvParamGetter
+
 from dl_connector_bigquery.testing.secrets import (
     BigQuerySecretReader,
     BigQuerySecretReaderBase,
 )
 from dl_connector_bigquery_tests.ext.config import API_TEST_CONFIG
-from dl_formula_testing.forced_literal import forced_literal_use
-from dl_testing.env_params.generic import GenericEnvParamGetter
 
 
 pytest_plugins = ("aiohttp.pytest_plugin",)  # and it, in turn, includes 'pytest_asyncio.plugin'

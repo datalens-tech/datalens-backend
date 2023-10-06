@@ -17,7 +17,7 @@ import attr
 
 from dl_constants.enums import (
     ConnectionType,
-    CreateDSFrom,
+    DataSourceType,
     JoinType,
 )
 from dl_core.base_models import (
@@ -125,7 +125,7 @@ class DataSource(metaclass=abc.ABCMeta):
         pass
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         raise NotImplementedError
 
     def get_parameters(self) -> dict:
@@ -240,5 +240,5 @@ class DataSource(metaclass=abc.ABCMeta):
 
 class IncompatibleDataSourceMixin(DataSource):
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return False

@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "datalens-sqlalchemy-bitrix"
+version = "0.0.1"
+description = "DataLens Bitrix SQLAlchemy Dialect"
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_sqlalchemy_bitrix"}]
+license = "Apache 2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[tool.poetry.plugins."sqlalchemy.dialects"]
+bi_bitrix = "dl_sqlalchemy_bitrix.base:BitrixDialect"
+
+[tool.poetry.group.tests.dependencies]
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["dl_sqlalchemy_bitrix_tests/unit"]
+
+[datalens.pytest.unit]
+root_dir = "dl_sqlalchemy_bitrix_tests/"
+target_path = "unit"
+skip_compose = "true"
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true

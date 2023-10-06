@@ -30,6 +30,7 @@ from dl_repmanager.repository_env import (
     DEFAULT_CONFIG_FILE_NAME,
     discover_config,
 )
+from dl_repmanager.scripts.cli_base import CliToolBase
 
 
 log = logging.getLogger(__name__)
@@ -80,14 +81,15 @@ def add_package_commands(package_subparsers: argparse._SubParsersAction) -> None
 
 
 @attr.s
-class DlPackageMetaTool:
+class DlPackageMetaTool(CliToolBase):
     fs_editor: FilesystemEditor = attr.ib(kw_only=True)
     package_path: Path = attr.ib(kw_only=True)
     meta_reader: PackageMetaReader = attr.ib(kw_only=True)
     meta_writer: PackageMetaWriter = attr.ib(kw_only=True)
 
-    def validate_env(cls) -> None:
-        """Validate that the tool is being run correctly"""
+    @classmethod
+    def get_parser(cls) -> argparse.ArgumentParser:
+        return make_parser()
 
     def list_i18n_domains(self) -> None:
         for domain_spec in sorted(self.meta_reader.get_i18n_domains(), key=lambda spec: spec.domain_name):
@@ -122,7 +124,7 @@ class DlPackageMetaTool:
         self.meta_writer.toml_writer.set_array_value(section_name=toml_section, key=toml_key, value=arr_value)
 
     @classmethod
-    def run(cls, args: argparse.Namespace) -> None:
+    def run_parsed_args(cls, args: argparse.Namespace) -> None:
         package_path = cast(Path, args.package_path)
         fs_editor = DefaultFilesystemEditor(base_path=package_path)
         cls.run_for_package_path(
@@ -171,9 +173,8 @@ class DlPackageMetaTool:
 
 def main() -> None:
     setup_basic_logging()
-    parser = make_parser()
     try:
-        DlPackageMetaTool.run(parser.parse_args())
+        DlPackageMetaTool.run(sys.argv[1:])
     except InconsistentStateError:
         log.exception("Project inconsistent state discovered during cli command run.")
         sys.exit(1)

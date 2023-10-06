@@ -17,7 +17,6 @@ _CONNECT_OPTIONS_TV = TypeVar("_CONNECT_OPTIONS_TV", bound="ConnectOptions")
 class ConnectOptions:
     rqe_total_timeout: Optional[int] = attr.ib(default=None)
     rqe_sock_read_timeout: Optional[int] = attr.ib(default=None)
-    use_managed_network: bool = attr.ib(default=True)  # TODO: temporary - remove in favor of MDBConnectOptionsMixin
     fetch_table_indexes: bool = attr.ib(default=False)
     pass_db_messages_to_user: bool = attr.ib(default=False)
     pass_db_query_to_user: bool = attr.ib(default=False)

@@ -5,14 +5,8 @@ from typing import (
     FrozenSet,
 )
 
-from dl_connector_postgresql.core.postgresql.constants import (
-    CONNECTION_TYPE_POSTGRES,
-    SOURCE_TYPE_PG_SUBSELECT,
-    SOURCE_TYPE_PG_TABLE,
-)
-from dl_connector_postgresql.core.postgresql_base.query_compiler import PostgreSQLQueryCompiler
 from dl_constants.enums import (
-    CreateDSFrom,
+    DataSourceType,
     JoinType,
 )
 from dl_core.data_source.sql import (
@@ -20,6 +14,13 @@ from dl_core.data_source.sql import (
     StandardSchemaSQLDataSource,
     SubselectDataSource,
 )
+
+from dl_connector_postgresql.core.postgresql.constants import (
+    CONNECTION_TYPE_POSTGRES,
+    SOURCE_TYPE_PG_SUBSELECT,
+    SOURCE_TYPE_PG_TABLE,
+)
+from dl_connector_postgresql.core.postgresql_base.query_compiler import PostgreSQLQueryCompiler
 
 
 class PostgreSQLDataSourceMixin(BaseSQLDataSource):
@@ -36,7 +37,7 @@ class PostgreSQLDataSourceMixin(BaseSQLDataSource):
     conn_type = CONNECTION_TYPE_POSTGRES
 
     @classmethod
-    def is_compatible_with_type(cls, source_type: CreateDSFrom) -> bool:
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in (SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT)
 
 

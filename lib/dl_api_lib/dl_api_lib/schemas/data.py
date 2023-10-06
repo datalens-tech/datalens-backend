@@ -55,7 +55,6 @@ from dl_api_lib.schemas.filter import WhereSchema
 from dl_api_lib.schemas.legend import LegendItemSchema
 from dl_api_lib.schemas.pivot import RequestPivotSpecSchema
 from dl_constants.enums import (
-    BIType,
     CalcMode,
     FieldRole,
     FieldType,
@@ -65,6 +64,7 @@ from dl_constants.enums import (
     QueryBlockPlacementType,
     QueryItemRefType,
     RangeType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_core.constants import DataAPILimits
@@ -122,7 +122,7 @@ class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema, DatasetContentSc
 class FieldsResponseFieldSchema(BaseSchema):
     title = ma_fields.String()
     guid = ma_fields.String()
-    data_type = ma_fields.Enum(BIType)
+    data_type = ma_fields.Enum(UserDataType)
     hidden = ma_fields.Boolean()
     type = ma_fields.Enum(FieldType)
     calc_mode = ma_fields.Enum(CalcMode)

@@ -7,6 +7,9 @@ from typing import (
 
 import attr
 
+from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
+from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+
 from dl_connector_clickhouse.core.clickhouse_base.adapters import (
     AsyncClickHouseAdapter,
     ClickHouseAdapter,
@@ -14,15 +17,13 @@ from dl_connector_clickhouse.core.clickhouse_base.adapters import (
 from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
 from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 from dl_connector_clickhouse.core.clickhouse_base.target_dto import ClickHouseConnTargetDTO
-from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
-from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 
 
 _BASE_CLICKHOUSE_ADAPTER_TV = TypeVar("_BASE_CLICKHOUSE_ADAPTER_TV", bound=CommonBaseDirectAdapter)
 
 
 @attr.s(cmp=False, hash=False)
-class BaseClickHouseConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_CLICKHOUSE_ADAPTER_TV]):
+class _BaseClickHouseConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_CLICKHOUSE_ADAPTER_TV]):
     _conn_dto: ClickHouseConnDTO = attr.ib()
     _conn_options: CHConnectOptions = attr.ib()
 
@@ -65,10 +66,10 @@ class BaseClickHouseConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_CLICKHOUSE_
 
 
 @attr.s(cmp=False, hash=False)
-class ClickHouseSyncAdapterConnExecutor(BaseClickHouseConnExecutor[ClickHouseAdapter]):
+class ClickHouseConnExecutor(_BaseClickHouseConnExecutor[ClickHouseAdapter]):
     TARGET_ADAPTER_CLS = ClickHouseAdapter
 
 
 @attr.s(cmp=False, hash=False)
-class ClickHouseAsyncAdapterConnExecutor(BaseClickHouseConnExecutor[AsyncClickHouseAdapter]):
+class AsyncClickHouseConnExecutor(_BaseClickHouseConnExecutor[AsyncClickHouseAdapter]):
     TARGET_ADAPTER_CLS = AsyncClickHouseAdapter

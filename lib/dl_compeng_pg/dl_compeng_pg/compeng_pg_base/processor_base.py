@@ -15,7 +15,7 @@ import attr
 from dl_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
 from dl_compeng_pg.compeng_pg_base.op_executors import UploadOpExecutorAsync
 from dl_compeng_pg.compeng_pg_base.pool_base import BasePgPoolWrapper
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 from dl_core.data_processing.processing.context import OpExecutionContext
 from dl_core.data_processing.processing.db_base.op_executors import (
     CalcOpExecutorAsync,
@@ -58,7 +58,7 @@ class PostgreSQLOperationProcessor(
 
     async def ping(self) -> Optional[int]:
         assert self._pgex_adapter is not None
-        result = await self._pgex_adapter.scalar("select 1", user_type=BIType.integer)
+        result = await self._pgex_adapter.scalar("select 1", user_type=UserDataType.integer)
         assert result is None or isinstance(result, int)
         return result
 

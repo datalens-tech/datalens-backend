@@ -1,29 +1,29 @@
 from __future__ import annotations
 
-from dl_constants.enums import BIType
+from dl_constants.enums import UserDataType
 
 
 _BI_TO_YQL = {
-    BIType.string: "String",
-    BIType.integer: "Int64",
-    BIType.float: "Double",
-    BIType.date: "Date",
-    BIType.datetime: "Datetime",
-    BIType.datetimetz: "DatetimeTZ",
-    BIType.genericdatetime: "GenericDatetime",
-    BIType.boolean: "Bool",
-    BIType.geopoint: "GeoPoint",
-    BIType.geopolygon: "GeoPolygon",
-    BIType.uuid: "UUID",
-    BIType.markup: "Markup",
-    BIType.array_str: "ArrayStr",
-    BIType.array_int: "ArrayInt",
-    BIType.array_float: "ArrayFloat",
-    BIType.tree_str: "TreeStr",
-    # Should not ever be in the output: `BIType.unsupported`
+    UserDataType.string: "String",
+    UserDataType.integer: "Int64",
+    UserDataType.float: "Double",
+    UserDataType.date: "Date",
+    UserDataType.datetime: "Datetime",
+    UserDataType.datetimetz: "DatetimeTZ",
+    UserDataType.genericdatetime: "GenericDatetime",
+    UserDataType.boolean: "Bool",
+    UserDataType.geopoint: "GeoPoint",
+    UserDataType.geopolygon: "GeoPolygon",
+    UserDataType.uuid: "UUID",
+    UserDataType.markup: "Markup",
+    UserDataType.array_str: "ArrayStr",
+    UserDataType.array_int: "ArrayInt",
+    UserDataType.array_float: "ArrayFloat",
+    UserDataType.tree_str: "TreeStr",
+    # Should not ever be in the output: `UserDataType.unsupported`
 }
 
 
 # TODO: Legacy stuff. Should be removed with data-api-v1
-def bi_to_yql(bi_type: BIType) -> str:
+def bi_to_yql(bi_type: UserDataType) -> str:
     return _BI_TO_YQL[bi_type]

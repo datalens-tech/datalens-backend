@@ -15,13 +15,13 @@ from marshmallow_oneofschema import OneOfSchema
 
 from dl_constants.enums import (
     BinaryJoinOperator,
-    BIType,
     ConditionPartCalcMode,
-    CreateDSFrom,
+    DataSourceType,
     IndexKind,
     JoinConditionType,
     JoinType,
     ManagedBy,
+    UserDataType,
 )
 from dl_core.db import (
     IndexInfo,
@@ -49,7 +49,7 @@ class RawSchemaColumnSchema(BaseSchema):
 
     native_type = ma_fields.Nested(OneOfNativeTypeSchema, allow_none=True)
 
-    user_type = ma_fields.Enum(BIType)
+    user_type = ma_fields.Enum(UserDataType)
     description = ma_fields.String(dump_default="", allow_none=True)
     has_auto_aggregation = ma_fields.Boolean(dump_default=False, allow_none=True)
     lock_aggregation = ma_fields.Boolean(dump_default=False, allow_none=True)
@@ -100,7 +100,7 @@ class SubselectParametersSchema(SimpleParametersSchema):
 class DataSourceCommonSchema(BaseSchema):
     title = ma_fields.String(required=True)
     connection_id = ma_fields.String(allow_none=True)
-    source_type = DynamicEnumField(CreateDSFrom)
+    source_type = DynamicEnumField(DataSourceType)
     raw_schema = ma_fields.Nested(RawSchemaColumnSchema, many=True, allow_none=True)
     index_info_set = FrozenSetField(
         ma_fields.Nested(IndexInfoSchema),

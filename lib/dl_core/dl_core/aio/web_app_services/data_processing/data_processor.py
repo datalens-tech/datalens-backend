@@ -41,9 +41,9 @@ class DataProcessorService(metaclass=abc.ABCMeta):
         await self.initialize()
 
     async def tear_down_hook(self, target_app: web.Application) -> None:
-        LOGGER.info("Tear down {type(self).__name__} data processor service...")
+        LOGGER.info(f"Tear down {type(self).__name__} data processor service...")
         await self.tear_down(target_app)
-        LOGGER.info("Tear down {type(self).__name__} data processor service: done.")
+        LOGGER.info(f"Tear down {type(self).__name__} data processor service: done.")
 
     async def tear_down(self, target_app: web.Application) -> None:
         await self.finalize()

@@ -118,6 +118,36 @@ async def uploaded_excel_id(uploaded_excel) -> str:
 
 
 @pytest.fixture(scope="function")
+async def uploaded_excel_with_one_row(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_model_manager) -> DataFile:
+    filename = "one_row_table.xlsx"
+    data_file_desc = DataFile(
+        manager=redis_model_manager,
+        filename=filename,
+        file_type=FileType.xlsx,
+        status=FileProcessingStatus.in_progress,
+    )
+
+    dirname = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(dirname, filename)
+
+    with open(path, "rb") as fd:
+        await s3_client.put_object(
+            ACL="private",
+            Bucket=s3_tmp_bucket,
+            Key=data_file_desc.s3_key,
+            Body=fd.read(),
+        )
+
+    await data_file_desc.save()
+    yield data_file_desc
+
+
+@pytest.fixture(scope="function")
+async def uploaded_excel_with_one_row_id(uploaded_excel_with_one_row) -> str:
+    yield uploaded_excel_with_one_row.id
+
+
+@pytest.fixture(scope="function")
 def reader_app(loop, secure_reader):
     current_app = create_reader_app()
     runner = aiohttp.web.AppRunner(current_app)

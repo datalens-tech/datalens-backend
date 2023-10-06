@@ -4,8 +4,9 @@ from typing import ClassVar
 
 import attr
 
-from dl_connector_promql.core.dto import PromQLConnDTO
 from dl_core.us_connection_base import ClassicConnectionSQL
+
+from dl_connector_promql.core.dto import PromQLConnDTO
 
 
 class PromQLConnection(ClassicConnectionSQL):

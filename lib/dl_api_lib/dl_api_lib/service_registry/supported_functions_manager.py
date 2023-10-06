@@ -14,7 +14,7 @@ from dl_api_lib.query.registry import (
 )
 from dl_constants.enums import (
     AggregationFunction,
-    BIType,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_formula.core.dialect import DialectCombo
@@ -47,7 +47,7 @@ class SupportedFunctionsManager:
     _operation_registry: OperationRegistry = attr.ib(default=OPERATION_REGISTRY)
 
     @method_lru(maxsize=1000)
-    def get_supported_filters(self, dialect: DialectCombo, user_type: BIType) -> list[WhereClauseOperation]:
+    def get_supported_filters(self, dialect: DialectCombo, user_type: UserDataType) -> list[WhereClauseOperation]:
         return [
             op
             for op in self._get_supported_filters_for_dialect(dialect=dialect)
@@ -55,7 +55,7 @@ class SupportedFunctionsManager:
         ]
 
     @method_lru(maxsize=1000)
-    def get_supported_aggregations(self, dialect: DialectCombo, user_type: BIType) -> list[AggregationFunction]:
+    def get_supported_aggregations(self, dialect: DialectCombo, user_type: UserDataType) -> list[AggregationFunction]:
         supported_func_names = set(
             name
             for name, *_ in self._get_supported_functions(

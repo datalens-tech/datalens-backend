@@ -4,10 +4,11 @@ from typing import (
 )
 import uuid
 
-from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_constants.enums import RawSQLLevel
 from dl_core.us_manager.us_manager_sync import SyncUSManager
+
+from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
 
 def make_clickhouse_saved_connection(

@@ -105,7 +105,6 @@ class MockedUStorageClient(UStorageClient):
         data: Optional[Dict[str, Any]] = None,
         unversioned_data: Optional[Dict[str, Any]] = None,
         meta: Optional[Dict[str, str]] = None,
-        mode: str = "save",
         lock: Optional[str] = None,
         hidden: Optional[bool] = None,
         links: Optional[Dict[str, Any]] = None,

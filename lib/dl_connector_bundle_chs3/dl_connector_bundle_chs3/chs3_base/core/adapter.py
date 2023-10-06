@@ -8,16 +8,17 @@ from typing import (
 from aiohttp import ClientResponse
 import attr
 
+from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from dl_core.connection_models import (
+    DBIdent,
+    TableIdent,
+)
+
 from dl_connector_bundle_chs3.chs3_base.core.target_dto import BaseFileS3ConnTargetDTO
 from dl_connector_clickhouse.core.clickhouse_base.adapters import BaseAsyncClickHouseAdapter
 from dl_connector_clickhouse.core.clickhouse_base.ch_commons import (
     ClickHouseBaseUtils,
     get_ch_settings,
-)
-from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
-from dl_core.connection_models import (
-    DBIdent,
-    TableIdent,
 )
 
 

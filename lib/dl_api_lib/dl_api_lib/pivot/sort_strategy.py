@@ -28,10 +28,10 @@ from dl_api_lib.pivot.primitives import (
     MeasureNameValue,
 )
 from dl_constants.enums import (
-    BIType,
     FieldRole,
     OrderDirection,
     PivotRole,
+    UserDataType,
 )
 
 
@@ -165,9 +165,9 @@ class BaseSortValueNormalizer(SortValueNormalizer):
         assert len(data_types) == 1, "Only single data type is supported within a pivot dimension"
         data_type = next(iter(data_types))
         # Normalize numbers for correct sorting
-        if data_type is BIType.integer:
+        if data_type is UserDataType.integer:
             return int
-        if data_type is BIType.float:
+        if data_type is UserDataType.float:
             return float
 
         return None
