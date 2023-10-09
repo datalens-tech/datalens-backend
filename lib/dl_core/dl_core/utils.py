@@ -229,12 +229,6 @@ class FutureRef(Generic[_FUTURE_REF_TV]):
         return fr
 
 
-# TODO FIX: try to load in generic ways
-def get_eqe_secret_key() -> bytes:
-    effective_env = remap_env(os.environ)
-    return effective_env.get("RQE_SECRET_KEY", "").encode()
-
-
 def make_id() -> str:
     return shortuuid.uuid()
 
