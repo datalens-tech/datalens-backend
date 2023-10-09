@@ -273,7 +273,8 @@ def async_qe_main() -> None:
         LOGGER.exception("rqe-async args error: %r", err)
         sys.exit(-1)
         raise  # just-in-case
-    hmac_key = (settings.HMAC_KEY or settings.HMAC_KEY_LEGACY or "").encode()
-    if not hmac_key:
+
+    hmac_key = settings.HMAC_KEY or settings.HMAC_KEY_LEGACY
+    if hmac_key is None:
         raise Exception("No `hmac_key` set.")
-    web.run_app(create_async_qe_app(hmac_key), host=args.host, port=args.port, print=LOGGER.info)
+    web.run_app(create_async_qe_app(hmac_key.encode()), host=args.host, port=args.port, print=LOGGER.info)

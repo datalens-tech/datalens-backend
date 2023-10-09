@@ -240,8 +240,8 @@ def _handle_exception(err: Exception) -> Tuple[flask.Response, int]:
 
 def create_sync_app() -> flask.Flask:
     settings = load_settings_from_env_with_fallback(RQESettings)
-    hmac_key = (settings.HMAC_KEY or settings.HMAC_KEY_LEGACY or "").encode()
-    if not hmac_key:
+    hmac_key = settings.HMAC_KEY or settings.HMAC_KEY_LEGACY
+    if hmac_key is None:
         raise Exception("No `hmac_key` set.")
 
     load_core_lib(core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST))
@@ -265,7 +265,7 @@ def create_sync_app() -> flask.Flask:
     ).set_up(app)
     profiling_middleware.set_up(app, accept_outer_stages=True)
     BodySignatureValidator(
-        hmac_key=hmac_key,
+        hmac_key=hmac_key.encode(),
     ).set_up(app)
 
     app.add_url_rule("/ping", view_func=ping_view)
