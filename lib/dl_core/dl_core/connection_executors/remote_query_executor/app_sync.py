@@ -27,6 +27,7 @@ from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
     use_jaeger_tracer,
 )
+from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
 from dl_core import profiling_middleware
 from dl_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
 from dl_core.connection_executors.models.constants import HEADER_BODY_SIGNATURE
@@ -40,10 +41,13 @@ from dl_core.connection_executors.remote_query_executor.commons import (
     SUPPORTED_ADAPTER_CLS,
 )
 from dl_core.connection_executors.remote_query_executor.crypto import get_hmac_hex_digest
+from dl_core.connection_executors.remote_query_executor.settings import RQESettings
 from dl_core.enums import RQEEventType
-from dl_core.loader import load_core_lib
+from dl_core.loader import (
+    CoreLibraryConfig,
+    load_core_lib,
+)
 from dl_core.logging_config import hook_configure_logging as _hook_configure_logging
-from dl_core.utils import get_eqe_secret_key
 
 
 if TYPE_CHECKING:
@@ -234,12 +238,13 @@ def _handle_exception(err: Exception) -> Tuple[flask.Response, int]:
         return flask.jsonify(ActionSerializer().serialize_exc(err)), 500
 
 
-def create_sync_app(hmac_key: Optional[bytes] = None) -> flask.Flask:
-    hmac_key = hmac_key or get_eqe_secret_key()
-    assert isinstance(hmac_key, bytes)
-    # Can't check `hmc_key` for nonemptiness here because this happens on import.
+def create_sync_app() -> flask.Flask:
+    settings = load_settings_from_env_with_fallback(RQESettings)
+    hmac_key = settings.RQE_SECRET_KEY
+    if hmac_key is None:
+        raise Exception("No `hmac_key` set.")
 
-    load_core_lib()
+    load_core_lib(core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST))
 
     app = flask.Flask(__name__)
     TracingMiddleware(
@@ -260,7 +265,7 @@ def create_sync_app(hmac_key: Optional[bytes] = None) -> flask.Flask:
     ).set_up(app)
     profiling_middleware.set_up(app, accept_outer_stages=True)
     BodySignatureValidator(
-        hmac_key=hmac_key,
+        hmac_key=hmac_key.encode(),
     ).set_up(app)
 
     app.add_url_rule("/ping", view_func=ping_view)

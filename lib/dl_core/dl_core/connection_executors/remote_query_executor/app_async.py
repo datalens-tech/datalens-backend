@@ -23,6 +23,7 @@ from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
     use_jaeger_tracer,
 )
+from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
 from dl_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
 from dl_core.connection_executors.adapters.async_adapters_base import (
     AsyncDBAdapter,
@@ -47,10 +48,13 @@ from dl_core.connection_executors.remote_query_executor.commons import (
 )
 from dl_core.connection_executors.remote_query_executor.crypto import get_hmac_hex_digest
 from dl_core.connection_executors.remote_query_executor.error_handler_rqe import RQEErrorHandler
+from dl_core.connection_executors.remote_query_executor.settings import RQESettings
 from dl_core.enums import RQEEventType
-from dl_core.loader import load_core_lib
+from dl_core.loader import (
+    CoreLibraryConfig,
+    load_core_lib,
+)
 from dl_core.logging_config import configure_logging
-from dl_core.utils import get_eqe_secret_key
 from dl_utils.aio import ContextVarExecutor
 
 
@@ -219,11 +223,7 @@ def body_signature_validation_middleware(hmac_key: bytes) -> AIOHTTPMiddleware:
     return actual_middleware
 
 
-def create_async_qe_app(hmac_key: Optional[bytes] = None) -> web.Application:
-    hmac_key = hmac_key or get_eqe_secret_key()
-    if not hmac_key:
-        raise Exception("No `hmac_key` set.")
-    assert isinstance(hmac_key, bytes)
+def create_async_qe_app(hmac_key: bytes) -> web.Application:
     req_id_service = RequestId(
         header_name=HEADER_REQUEST_ID,
         accept_logging_ctx=True,
@@ -260,7 +260,10 @@ def async_qe_main() -> None:
         use_jaeger_tracer=use_jaeger_tracer(),
         jaeger_service_name=jaeger_service_name_env_aware("bi-rqe-async"),
     )
-    load_core_lib()
+
+    settings = load_settings_from_env_with_fallback(RQESettings)
+    load_core_lib(core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST))
+
     try:
         parser = argparse.ArgumentParser(description="Process some integers.")
         parser.add_argument("--host", type=str)
@@ -270,4 +273,8 @@ def async_qe_main() -> None:
         LOGGER.exception("rqe-async args error: %r", err)
         sys.exit(-1)
         raise  # just-in-case
-    web.run_app(create_async_qe_app(), host=args.host, port=args.port, print=LOGGER.info)
+
+    hmac_key = settings.RQE_SECRET_KEY
+    if hmac_key is None:
+        raise Exception("No `hmac_key` set.")
+    web.run_app(create_async_qe_app(hmac_key.encode()), host=args.host, port=args.port, print=LOGGER.info)
