@@ -11,16 +11,6 @@ class RQESettings:
     CORE_CONNECTOR_WHITELIST: Optional[list[str]] = s_attrib(  # type: ignore
         "CORE_CONNECTOR_WHITELIST",
         env_var_converter=lambda s: list(split_by_comma(s)),
-        fallback_cfg_key="RQE_CORE_CONNECTOR_WHITELIST",
         missing=None,
     )
-    HMAC_KEY: Optional[str] = s_attrib(  # type: ignore
-        "HMAC_KEY",
-        fallback_cfg_key="RQE_SECRET_KEY",
-        missing=None,
-    )
-    HMAC_KEY_LEGACY: Optional[str] = s_attrib(  # type: ignore  # TODO: migrate to HMAC_KEY; see remap_env
-        "HMAC_KEY_LEGACY",
-        fallback_cfg_key="EXT_QUERY_EXECUTER_SECRET_KEY",
-        missing=None,
-    )
+    RQE_SECRET_KEY: Optional[str] = s_attrib("RQE_SECRET_KEY", missing=None)  # type: ignore

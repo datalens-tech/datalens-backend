@@ -240,7 +240,7 @@ def _handle_exception(err: Exception) -> Tuple[flask.Response, int]:
 
 def create_sync_app() -> flask.Flask:
     settings = load_settings_from_env_with_fallback(RQESettings)
-    hmac_key = settings.HMAC_KEY or settings.HMAC_KEY_LEGACY
+    hmac_key = settings.RQE_SECRET_KEY
     if hmac_key is None:
         raise Exception("No `hmac_key` set.")
 

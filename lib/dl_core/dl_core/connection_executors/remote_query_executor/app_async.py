@@ -274,7 +274,7 @@ def async_qe_main() -> None:
         sys.exit(-1)
         raise  # just-in-case
 
-    hmac_key = settings.HMAC_KEY or settings.HMAC_KEY_LEGACY
+    hmac_key = settings.RQE_SECRET_KEY
     if hmac_key is None:
         raise Exception("No `hmac_key` set.")
     web.run_app(create_async_qe_app(hmac_key.encode()), host=args.host, port=args.port, print=LOGGER.info)
