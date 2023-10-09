@@ -87,6 +87,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             FIELD_ID_GENERATOR_TYPE=FieldIdGeneratorType.suffix,
             FILE_UPLOADER_BASE_URL=f"{bi_test_config.file_uploader_api_host}:{bi_test_config.file_uploader_api_port}",
             FILE_UPLOADER_MASTER_TOKEN="qwerty",
+            QUERY_PROCESSING_MODE=cls.query_processing_mode,
         )  # type: ignore
 
     @pytest.fixture(scope="function")
