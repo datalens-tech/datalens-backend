@@ -13,4 +13,4 @@ class RQESettings:
         env_var_converter=lambda s: list(split_by_comma(s)),
         missing=None,
     )
-    RQE_SECRET_KEY: Optional[str] = s_attrib("RQE_SECRET_KEY", missing=None)  # type: ignore
+    RQE_SECRET_KEY: Optional[str] = s_attrib("RQE_SECRET_KEY", missing=None, sensitive=True)  # type: ignore
