@@ -79,7 +79,6 @@ cchardet = "==2.1.7"
 dnspython = "==2.2.1"
 lz4 = "==4.3.2"
 [tool.poetry.group.ci.dependencies]
-boto3 = ">=1.24.59"  # TODO FIX: This is used in tests in some packages. Try to fix with dependency in relevant packages
 #
 # All apps should be listed here. This group is installed for CI & local development
 #
