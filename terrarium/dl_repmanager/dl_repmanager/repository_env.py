@@ -144,13 +144,6 @@ class RepoEnvironment:
 
     def get_edit_exclude_masks(self) -> frozenset[re.Pattern]:
         return self.edit_exclude_masks
-        return tuple(
-            re.compile(pattern_str)
-            for pattern_str in (
-                r".*\.mo",
-                r".*\.xlsx",
-            )
-        )
 
 
 _DEFAULT_FS_EDITOR_TYPE = "default"

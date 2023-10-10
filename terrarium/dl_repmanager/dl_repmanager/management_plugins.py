@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import abc
+import contextlib
 import os
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
+    Generator,
     Type,
 )
 
@@ -87,68 +89,85 @@ class CommonToolingRepositoryManagementPlugin(RepositoryManagementPlugin):
 
 @attr.s
 class MainTomlRepositoryManagementPlugin(RepositoryManagementPlugin):
-    _metapackage_name: str = attr.ib(init=False)
+    _metapackages_by_package_type: dict[str, list[str]] = attr.ib(init=False)
 
-    @_metapackage_name.default
-    def _make_metapackage_name(self) -> str:
-        return self.config_data["metapackage"]
+    @_metapackages_by_package_type.default
+    def _make_metapackages_by_package_type(self) -> dict[str, list[str]]:
+        result: dict[str, list[str]] = {}
+        for metapkg_config in self.config_data["metapackages"]:
+            for package_type in metapkg_config["package_types"]:
+                if package_type not in result:
+                    result[package_type] = []
+                result[package_type].append(metapkg_config["name"])
+        return result
 
-    @property
-    def _metapackage_path(self) -> Path:
-        return self.repository_env.get_metapackage_spec(self._metapackage_name).toml_path
+    def _get_metapackage_paths(self, package_type: str) -> list[Path]:
+        metapackage_names = self._metapackages_by_package_type.get(package_type, ())
+        return [
+            self.repository_env.get_metapackage_spec(metapackage_name).toml_path
+            for metapackage_name in metapackage_names
+        ]
 
-    def _get_path_for_toml(self, package_info: PackageInfo) -> Path:
-        toml_abs_dir = (self.base_path / self._metapackage_path).parent
+    def _get_path_for_toml(self, metapackage_path: Path, package_info: PackageInfo) -> Path:
+        toml_abs_dir = (self.base_path / metapackage_path).parent
         return package_info.get_relative_path(toml_abs_dir)
 
-    def _register_main(self, toml_writer: TOMLWriter, package_info: PackageInfo) -> None:
-        package_path_for_toml = self._get_path_for_toml(package_info)
+    def _register_main(self, metapackage_path: Path, package_info: PackageInfo) -> None:
+        package_path_for_toml = self._get_path_for_toml(metapackage_path=metapackage_path, package_info=package_info)
         package_dep_table = tomlkit.inline_table()
         package_dep_table.add("path", str(package_path_for_toml))
-        toml_writer.get_editable_section("tool.poetry.group.ci.dependencies").add(
-            package_info.package_reg_name, package_dep_table
-        )
+        with self._metapackage_toml_writer(metapackage_path=metapackage_path) as toml_writer:
+            section = toml_writer.get_editable_section("tool.poetry.group.ci.dependencies")
+            section[package_info.package_reg_name] = package_dep_table
 
-    def _unregister_main(self, toml_writer: TOMLWriter, package_info: PackageInfo):
-        with toml_writer.suppress_non_existent_key():
-            toml_writer.get_editable_section("tool.poetry.dependencies").remove(package_info.package_reg_name)
-        with toml_writer.suppress_non_existent_key():
-            toml_writer.get_editable_section("tool.poetry.group.dev.dependencies").remove(package_info.package_reg_name)
-        with toml_writer.suppress_non_existent_key():
-            toml_writer.get_editable_section("tool.poetry.group.ci.dependencies").remove(package_info.package_reg_name)
+    def _unregister_main(self, metapackage_path: Path, package_info: PackageInfo):
+        with self._metapackage_toml_writer(metapackage_path=metapackage_path) as toml_writer:
+            with toml_writer.suppress_non_existent_key():
+                toml_writer.get_editable_section("tool.poetry.dependencies").remove(package_info.package_reg_name)
+            with toml_writer.suppress_non_existent_key():
+                toml_writer.get_editable_section("tool.poetry.group.dev.dependencies").remove(
+                    package_info.package_reg_name
+                )
+            with toml_writer.suppress_non_existent_key():
+                toml_writer.get_editable_section("tool.poetry.group.ci.dependencies").remove(
+                    package_info.package_reg_name
+                )
 
-    def _register_app(self, toml_writer: TOMLWriter, package_info: PackageInfo) -> None:
-        package_path_for_toml = self._get_path_for_toml(package_info)
+    def _register_app(self, metapackage_path: Path, package_info: PackageInfo) -> None:
+        package_path_for_toml = self._get_path_for_toml(metapackage_path=metapackage_path, package_info=package_info)
         package_base_name = package_info.abs_path.name
         package_dep_table = tomlkit.inline_table()
         package_dep_table.add("path", str(package_path_for_toml))
-        section = toml_writer.add_section(f"tool.poetry.group.app_{package_base_name}.dependencies")
-        section.add(package_info.package_reg_name, package_dep_table)
-        section.add(tomlkit.nl())
+        with self._metapackage_toml_writer(metapackage_path=metapackage_path) as toml_writer:
+            section = toml_writer.add_section(f"tool.poetry.group.app_{package_base_name}.dependencies")
+            section.add(package_info.package_reg_name, package_dep_table)
+            section.add(tomlkit.nl())
 
-    def _unregister_app(self, toml_writer: TOMLWriter, package_info: PackageInfo) -> None:
+    def _unregister_app(self, metapackage_path: Path, package_info: PackageInfo) -> None:
         package_base_name = package_info.abs_path.name
-        toml_writer.delete_section(f"tool.poetry.group.app_{package_base_name}.dependencies")
+        with self._metapackage_toml_writer(metapackage_path=metapackage_path) as toml_writer:
+            toml_writer.delete_section(f"tool.poetry.group.app_{package_base_name}.dependencies")
+
+    @contextlib.contextmanager
+    def _metapackage_toml_writer(self, metapackage_path: Path) -> Generator[TOMLWriter, None, None]:
+        toml_path = self.base_path / metapackage_path
+        toml_io_factory = TOMLIOFactory(fs_editor=self.fs_editor)
+        with toml_io_factory.toml_writer(toml_path) as toml_writer:
+            yield toml_writer
 
     def register_package(self, package_info: PackageInfo) -> None:
-        toml_path = self.base_path / self._metapackage_path
-
-        toml_io_factory = TOMLIOFactory(fs_editor=self.fs_editor)
-        with toml_io_factory.toml_writer(toml_path) as toml_writer:
+        for metapackage_path in self._get_metapackage_paths(package_type=package_info.package_type):
             if "main_dependency_group" in self.repository_env.get_tags(package_info.package_type):
-                self._register_main(toml_writer=toml_writer, package_info=package_info)
+                self._register_main(metapackage_path=metapackage_path, package_info=package_info)
             if "own_dependency_group" in self.repository_env.get_tags(package_info.package_type):
-                self._register_app(toml_writer=toml_writer, package_info=package_info)
+                self._register_app(metapackage_path=metapackage_path, package_info=package_info)
 
     def unregister_package(self, package_info: PackageInfo) -> None:
-        toml_path = self.base_path / self._metapackage_path
-
-        toml_io_factory = TOMLIOFactory(fs_editor=self.fs_editor)
-        with toml_io_factory.toml_writer(toml_path) as toml_writer:
+        for metapackage_path in self._get_metapackage_paths(package_type=package_info.package_type):
             if "main_dependency_group" in self.repository_env.get_tags(package_info.package_type):
-                self._unregister_main(toml_writer=toml_writer, package_info=package_info)
+                self._unregister_main(metapackage_path=metapackage_path, package_info=package_info)
             if "own_dependency_group" in self.repository_env.get_tags(package_info.package_type):
-                self._unregister_app(toml_writer=toml_writer, package_info=package_info)
+                self._unregister_app(metapackage_path=metapackage_path, package_info=package_info)
 
 
 @attr.s
