@@ -107,6 +107,7 @@ class SourceInfoSchema(FileTypeOneOfSchema):
         FileType.csv.name: SourceInfoSchemaBase,
         FileType.gsheets.name: SourceInfoSchemaGSheets,
         FileType.xlsx.name: SourceInfoSchemaBase,
+        FileType.yadocuments.name: SourceInfoSchemaBase,
     }
 
 
