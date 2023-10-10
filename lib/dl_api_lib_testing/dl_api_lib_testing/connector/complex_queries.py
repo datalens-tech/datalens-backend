@@ -1,4 +1,5 @@
 from collections import defaultdict
+import functools
 from http import HTTPStatus
 from typing import Iterable
 
@@ -70,7 +71,7 @@ class DefaultBasicExtAggregationTestSuite(DataApiTestBase, DatasetTestBase, DbSe
             assert float(row[3]) == pytest.approx(sum_by_city[row[0]])
             assert float(row[4]) == pytest.approx(sum_by_category[row[1]])
 
-    def test_null_dimensions(self, control_api, data_api, db, saved_connection_id):
+    def test_null_dimensions(self, request, control_api, data_api, db, saved_connection_id):
         connection_id = saved_connection_id
 
         raw_data = [
@@ -88,6 +89,7 @@ class DefaultBasicExtAggregationTestSuite(DataApiTestBase, DatasetTestBase, DbSe
             C("sales", UserDataType.integer, vg=lambda rn, **kwargs: raw_data[rn]["sales"]),
         ]
         db_table = make_table(db, columns=columns, rows=len(raw_data))
+        request.addfinalizer(functools.partial(db.drop_table, db_table.table))
 
         ds = Dataset()
         ds.sources["source_1"] = ds.source(connection_id=connection_id, **data_source_settings_from_table(db_table))
@@ -165,12 +167,14 @@ class DefaultBasicExtAggregationTestSuite(DataApiTestBase, DatasetTestBase, DbSe
 
     def test_total_lod_2(
         self,
+        request,
         control_api,
         data_api,
         saved_connection_id,
         db,
     ):
         db_table = make_table(db=db)
+        request.addfinalizer(functools.partial(db.drop_table, db_table.table))
         ds = create_basic_dataset(
             api_v1=control_api,
             connection_id=saved_connection_id,
@@ -213,12 +217,14 @@ class DefaultBasicExtAggregationTestSuite(DataApiTestBase, DatasetTestBase, DbSe
 
     def test_lod_in_order_by(
         self,
+        request,
         control_api,
         data_api,
         saved_connection_id,
         db,
     ):
         db_table = make_table(db=db)
+        request.addfinalizer(functools.partial(db.drop_table, db_table.table))
 
         data_api = data_api
         ds = create_basic_dataset(
@@ -258,8 +264,9 @@ class DefaultBasicExtAggregationTestSuite(DataApiTestBase, DatasetTestBase, DbSe
 
 
 class DefaultBasicLookupFunctionTestSuite(DataApiTestBase, DatasetTestBase, DbServiceFixtureTextClass):
-    def test_ago_any_db(self, saved_connection_id, control_api, data_api, db):
+    def test_ago_any_db(self, request, saved_connection_id, control_api, data_api, db):
         db_table = make_table(db=db)
+        request.addfinalizer(functools.partial(db.drop_table, db_table.table))
         ds = create_basic_dataset(
             api_v1=control_api,
             connection_id=saved_connection_id,
@@ -287,8 +294,9 @@ class DefaultBasicLookupFunctionTestSuite(DataApiTestBase, DatasetTestBase, DbSe
 
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=2, day_offset=2)
 
-    def test_triple_ago_any_db(self, saved_connection_id, control_api, data_api, db):
+    def test_triple_ago_any_db(self, request, saved_connection_id, control_api, data_api, db):
         db_table = make_table(db)
+        request.addfinalizer(functools.partial(db.drop_table, db_table.table))
         ds = create_basic_dataset(
             api_v1=control_api,
             connection_id=saved_connection_id,
@@ -322,10 +330,17 @@ class DefaultBasicLookupFunctionTestSuite(DataApiTestBase, DatasetTestBase, DbSe
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=3, day_offset=2)
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=4, day_offset=3)
 
-    def test_ago_any_db_multisource(self, saved_connection_id, control_api, data_api, db):
+    def test_ago_any_db_multisource(self, request, saved_connection_id, control_api, data_api, db):
         connection_id = saved_connection_id
         table_1 = make_table(db)
         table_2 = make_table(db)
+
+        def teardown(db, *tables):
+            for table in tables:
+                db.drop_table(table)
+
+        request.addfinalizer(functools.partial(teardown, db, table_1.table, table_2.table))
+
         ds = Dataset()
         ds.sources["source_1"] = ds.source(
             connection_id=connection_id,
@@ -369,8 +384,9 @@ class DefaultBasicLookupFunctionTestSuite(DataApiTestBase, DatasetTestBase, DbSe
 
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=2, day_offset=2)
 
-    def test_nested_ago(self, saved_connection_id, control_api, data_api, db):
+    def test_nested_ago(self, request, saved_connection_id, control_api, data_api, db):
         db_table = make_table(db)
+        request.addfinalizer(functools.partial(db.drop_table, db_table.table))
         ds = create_basic_dataset(
             api_v1=control_api,
             connection_id=saved_connection_id,
@@ -404,8 +420,9 @@ class DefaultBasicLookupFunctionTestSuite(DataApiTestBase, DatasetTestBase, DbSe
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=3, day_offset=2)
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=4, day_offset=3)
 
-    def test_month_ago_for_shorter_month(self, db, saved_connection_id, control_api, data_api):
+    def test_month_ago_for_shorter_month(self, request, db, saved_connection_id, control_api, data_api):
         any_db_table_200 = make_table(db, rows=200)
+        request.addfinalizer(functools.partial(db.drop_table, any_db_table_200.table))
 
         # FIXME
         # if any_db.conn_type == CONNECTION_TYPE_ORACLE:

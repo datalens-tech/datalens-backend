@@ -1,4 +1,5 @@
 import datetime
+import functools
 import json
 from typing import Any
 
@@ -60,6 +61,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
 
     def _test_contains(
         self,
+        request,
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
@@ -82,6 +84,8 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
             ),
         ]
         db_table = make_table(db, columns=columns)
+        request.addfinalizer(functools.partial(db.drop_table, db_table.table))
+
         params = self.get_dataset_params(dataset_params, db_table)
         ds = self.make_basic_dataset(control_api, connection_id=saved_connection_id, dataset_params=params)
 
@@ -156,6 +160,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
     @for_features(array_support)
     def test_array_contains_field(
         self,
+        request,
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
@@ -179,6 +184,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
             ),
         ]
         db_table = make_table(db, columns=columns)
+        request.addfinalizer(functools.partial(db.drop_table, db_table.table))
         params = self.get_dataset_params(dataset_params, db_table)
         ds = self.make_basic_dataset(control_api, connection_id=saved_connection_id, dataset_params=params)
 
@@ -384,6 +390,7 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, Regulat
 
     def test_date_filter_distinct(
         self,
+        request,
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
@@ -398,6 +405,8 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, Regulat
             {"date_val": datetime.date(2023, 4, 2)},
         ]
         db_table = make_table(db, columns=columns, data=data)
+        request.addfinalizer(functools.partial(db.drop_table, db_table.table))
+
         params = self.get_dataset_params(dataset_params, db_table)
         ds = self.make_basic_dataset(control_api, connection_id=saved_connection_id, dataset_params=params)
 

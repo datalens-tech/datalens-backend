@@ -143,6 +143,15 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
     def sample_table_spec(self) -> FixtureTableSpec:
         return attr.evolve(TABLE_SPEC_SAMPLE_SUPERSTORE, nullable=True)
 
+    def _get_s3_func_schema_for_table(self, table: DbTable) -> str:
+        field_id_gen = get_field_id_generator(self.conn_type)
+        tbl_schema = ", ".join(
+            "{} {}".format(field_id_gen.make_field_id(dict(title=col.name, index=idx)), col.type.compile())
+            for idx, col in enumerate(table.table.columns)
+        )
+        tbl_schema = tbl_schema.replace("()", "")  # String() -> String: type arguments are not needed here
+        return tbl_schema
+
     @pytest.fixture(scope="function")
     async def sample_s3_file(
         self,
@@ -153,13 +162,7 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
     ) -> AsyncGenerator[str, None]:
         filename = f"my_file_{uuid.uuid4()}.native"
 
-        field_id_gen = get_field_id_generator(self.conn_type)
-        tbl_schema = ", ".join(
-            "{} {}".format(field_id_gen.make_field_id(dict(title=col.name, index=idx)), col.type.compile())
-            for idx, col in enumerate(sample_table.table.columns)
-        )
-        tbl_schema = tbl_schema.replace("()", "")  # String() -> String: type arguments are not needed here
-
+        tbl_schema = self._get_s3_func_schema_for_table(sample_table)
         create_s3_native_from_ch_table(filename, s3_bucket, s3_settings, sample_table, tbl_schema)
 
         yield filename
