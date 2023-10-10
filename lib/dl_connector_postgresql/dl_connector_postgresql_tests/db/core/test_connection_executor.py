@@ -53,6 +53,7 @@ class PostgreSQLSyncAsyncConnectionExecutorCheckBase(
         db.execute("CREATE EXTENSION IF NOT EXISTS CITEXT;")
 
 
+@pytest.mark.usefixtures("enabled_citext_extension")
 class TestPostgreSQLSyncConnectionExecutor(
     PostgreSQLSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite[ConnectionPostgreSQL],
@@ -89,15 +90,6 @@ class TestPostgreSQLSyncConnectionExecutor(
                 self.CD(pg_types.ENUM("var1", "var2", name=str(uuid.uuid4())), UserDataType.string),
             ],
         }
-
-    @pytest.mark.usefixtures("enabled_citext_extension")
-    def test_type_recognition(
-        self,
-        request,
-        db: Db,
-        sync_connection_executor: SyncConnExecutorBase,
-    ) -> None:
-        super().test_type_recognition(request, db, sync_connection_executor)
 
 
 class TestPostgreSQLAsyncConnectionExecutor(
