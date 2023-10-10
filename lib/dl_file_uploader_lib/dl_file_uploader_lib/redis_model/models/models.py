@@ -103,6 +103,16 @@ class GSheetsUserSourceProperties(UserSourceProperties):
 
 
 @attr.s(init=True, kw_only=True)
+class YaDocumentsUserSourceProperties(UserSourceProperties):
+    file_type: FileType = attr.ib(default=FileType.yadocuments)
+
+    private_path: Optional[str] = attr.ib(default=None)
+    public_link: Optional[str] = attr.ib(default=None)
+
+    oauth_token: Optional[str] = attr.ib(default=None)
+
+
+@attr.s(init=True, kw_only=True)
 class UserSourceDataSourceProperties:
     file_type: FileType = attr.ib()
 
