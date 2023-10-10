@@ -131,12 +131,6 @@ datalens-file-uploader-worker-lib = {path = "../lib/dl_file_uploader_worker_lib"
 datalens-connector-bigquery = {path = "../lib/dl_connector_bigquery"}
 datalens-task-processor = {path = "../lib/dl_task_processor"}
 
-#
-# This section defines dependencies groups per app.
-# To export/install specific app without other dependencies - use `--only` flag
-# Group naming convention: `app_${APP_FOLDER_NAME}`
-#
-
 [tool.poetry.group.dev.dependencies]
 black = "==23.3.0"
 ruff = "==0.0.267"
@@ -162,6 +156,18 @@ pandas = "==1.5.3"
 platformdirs = "==3.8.0"
 clize = "==5.0.0"
 poetry = "==1.5.0"
+
+#
+# This section defines dependencies groups per app.
+# To export/install specific app without other dependencies - use `--only` flag
+# Group naming convention: `app_${APP_FOLDER_NAME}`
+#
+
+[tool.poetry.group.app_dl_os_control_api.dependencies]
+datalens-control-api = {path = "../app/dl_control_api"}
+
+[tool.poetry.group.app_dl_os_data_api.dependencies]
+datalens-data-api = {path = "../app/dl_data_api"}
 
 [build-system]
 requires = ["poetry-core"]
@@ -340,9 +346,3 @@ secretstorage = {ignore = true}
 tzdata = {ignore = true}
 xattr = {ignore = true}
 appnope = {ignore = true}
-
-[tool.poetry.group.app_dl_os_control_api.dependencies]
-datalens-control-api = {path = "../app/dl_control_api"}
-
-[tool.poetry.group.app_dl_os_data_api.dependencies]
-datalens-data-api = {path = "../app/dl_data_api"}

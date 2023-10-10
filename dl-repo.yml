@@ -5,6 +5,9 @@ dl_repo:
 
   default_boilerplate_path: lib/dl_package_boilerplate
 
+  default_registration_metapackages:
+    - main_mpkg
+
   package_types:
     - type: terrarium  # Repository tools
       root_path: terrarium
@@ -35,9 +38,17 @@ dl_repo:
     sentry_sdk: sentry-sdk
     snowflake: snowflake-connector-python
 
-  metapackages: []
+  metapackages:
+    - name: main_mpkg
+      toml: metapkg/pyproject.toml
 
   plugins:
+    - type: toml_registration
+      config:
+        metapackages:
+          - name: main_mpkg
+            package_types: ["lib", "app"]
+
     - type: dependency_registration
 
   edit_exclude_masks:  # Files at paths that match these patterns (via re.match) will not be edited
