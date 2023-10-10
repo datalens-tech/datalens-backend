@@ -11,6 +11,7 @@ from typing import (
 )
 
 import aiogoogle
+import aiohttp
 import attr
 
 from dl_constants.enums import (
@@ -26,6 +27,10 @@ from dl_core.raw_data_streaming.stream import SimpleUntypedAsyncDataStream
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_file_uploader_lib import exc
 from dl_file_uploader_lib.data_sink.json_each_row import S3JsonEachRowUntypedFileAsyncDataSink
+from dl_file_uploader_lib.data_sink.raw_bytes import (
+    RawBytesAsyncDataStream,
+    S3RawFileAsyncDataSink,
+)
 from dl_file_uploader_lib.gsheets_client import (
     GSheetsClient,
     GSheetsOAuth2,
@@ -39,7 +44,9 @@ from dl_file_uploader_lib.redis_model.models import (
     GSheetsFileSourceSettings,
     GSheetsUserSourceDataSourceProperties,
     GSheetsUserSourceProperties,
+    YaDocsUserSourceProperties,
 )
+from dl_file_uploader_lib.yadocuments_client import YaDocumentsClient
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
 from dl_file_uploader_task_interface.tasks import TaskExecutionMode
@@ -339,4 +346,81 @@ class DownloadGSheetTask(BaseExecutorTask[task_interface.DownloadGSheetTask, Fil
                 return Fail()
         finally:
             await usm.close()
+        return Success()
+
+
+@attr.s
+class DownloadYaDocumentsTask(BaseExecutorTask[task_interface.DownloadYaDocumentsTask, FileUploaderTaskContext]):
+    cls_meta = task_interface.DownloadYaDocumentsTask
+
+    async def run(self) -> TaskResult:
+        dfile: Optional[DataFile] = None
+        redis = self._ctx.redis_service.get_redis()
+
+        try:
+            rmm = RedisModelManager(redis=redis, crypto_keys_config=self._ctx.crypto_keys_config)
+            dfile = await DataFile.get(manager=rmm, obj_id=self.meta.file_id)
+            assert dfile is not None
+
+            assert isinstance(dfile.user_source_properties, YaDocsUserSourceProperties)
+
+            yadocs_client = YaDocumentsClient()
+
+            if dfile.user_source_properties.public_link is not None:
+                spreadsheet_ref = yadocs_client.get_spreadsheet_public(link=dfile.user_source_properties.public_link)
+                spreadsheet_meta = yadocs_client.get_spreadsheet_public_meta(
+                    link=dfile.user_source_properties.public_link
+                )
+
+            elif (
+                dfile.user_source_properties.private_path is not None
+                and dfile.user_source_properties.oauth_token is not None
+            ):
+                spreadsheet_ref = yadocs_client.get_spreadsheet_private(
+                    path=dfile.user_source_properties.private_path, token=dfile.user_source_properties.oauth_token
+                )
+                spreadsheet_meta = yadocs_client.get_spreadsheet_private_meta(
+                    path=dfile.user_source_properties.private_path, token=dfile.user_source_properties.oauth_token
+                )
+            else:
+                raise exc.DLFileUploaderBaseError()
+            dfile.filename = spreadsheet_meta["name"]
+
+            s3 = self._ctx.s3_service
+
+            async def _chunk_iter(chunk_size: int = 10 * 1024 * 1024):
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(spreadsheet_ref) as response:
+                        assert response.status == 200
+                        while True:
+                            chunk = await response.content.read(chunk_size)
+                            if chunk:
+                                LOGGER.debug(f"Received chunk of {len(chunk)} bytes.")
+                                yield chunk
+                            else:
+                                LOGGER.info("Empty chunk received.")
+                                break
+
+            data_stream = RawBytesAsyncDataStream(data_iter=_chunk_iter())
+            async with S3RawFileAsyncDataSink(
+                s3=s3.client,
+                s3_key=dfile.s3_key,
+                bucket_name=s3.tmp_bucket_name,
+            ) as data_sink:
+                await data_sink.dump_data_stream(data_stream)
+
+            await dfile.save()
+            LOGGER.info(f'Uploaded file "{dfile.filename}".')
+
+        except Exception as ex:
+            LOGGER.exception(ex)
+            if dfile is None:
+                return Retry(attempts=3)
+            else:
+                dfile.status = FileProcessingStatus.failed
+                exc_to_save = ex if isinstance(ex, exc.DLFileUploaderBaseError) else exc.DownloadFailed()
+                dfile.error = FileProcessingError.from_exception(exc_to_save)
+                await dfile.save()
+
+                return Fail()
         return Success()
