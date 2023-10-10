@@ -90,12 +90,12 @@ class TestPostgreSQLSyncConnectionExecutor(
             ],
         }
 
+    @pytest.mark.usefixtures("enabled_citext_extension")
     def test_type_recognition(
         self,
         request,
         db: Db,
         sync_connection_executor: SyncConnExecutorBase,
-        enabled_citext_extension,
     ) -> None:
         super().test_type_recognition(request, db, sync_connection_executor)
 
