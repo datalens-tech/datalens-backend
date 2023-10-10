@@ -57,14 +57,19 @@ class RQEConfigurationMaker:
 
     @contextlib.contextmanager
     def sync_rqe_netloc_subprocess_cm(self) -> Generator[RQEBaseURL, None, None]:
+        whitelist = self.bi_test_config.core_test_config.get_core_library_config().core_connector_ep_names
+        env = dict(
+            EXT_QUERY_EXECUTER_SECRET_KEY=self.bi_test_config.ext_query_executer_secret_key,
+            DEV_LOGGING="1",
+        )
+        if whitelist:
+            env["CORE_CONNECTOR_WHITELIST"] = ",".join(whitelist)
+
         with WSGIRunner(
             module="dl_core.bin.query_executor_sync",
             callable="app",
             ping_path="/ping",
-            env=dict(
-                EXT_QUERY_EXECUTER_SECRET_KEY=self.bi_test_config.ext_query_executer_secret_key,
-                DEV_LOGGING="1",
-            ),
+            env=env,
         ) as runner:
             yield RQEBaseURL(  # type: ignore  # TODO: fix compatibility of models using `s_attrib` with mypy
                 host=runner.bind_addr,
