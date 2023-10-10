@@ -4,19 +4,15 @@ from typing import (
     Optional,
     Sequence,
 )
+import uuid
 
 import pytest
-import shortuuid
-import sqlalchemy as sa
-from sqlalchemy.types import TypeEngine
+from sqlalchemy.dialects import postgresql as pg_types
 
 from dl_constants.enums import UserDataType
 from dl_core.connection_executors import AsyncConnExecutorBase
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-from dl_core.connection_models.common_models import (
-    DBIdent,
-    TableIdent,
-)
+from dl_core.connection_models.common_models import DBIdent
 from dl_core_testing.database import Db
 from dl_core_testing.testcases.connection_executor import (
     DefaultAsyncConnectionExecutorTestSuite,
@@ -52,39 +48,9 @@ class PostgreSQLSyncAsyncConnectionExecutorCheckBase(
         assert db_version is not None
         assert "." in db_version
 
-    def get_schemas_for_type_recognition(self) -> dict[str, Sequence[tuple[TypeEngine, UserDataType]]]:
-        return {
-            "types_postgres": [
-                (sa.Integer(), UserDataType.integer),
-                (sa.Float(), UserDataType.float),
-                (sa.String(length=256), UserDataType.string),
-                (sa.Date(), UserDataType.date),
-                (sa.DateTime(), UserDataType.genericdatetime),
-                (CITEXT(), UserDataType.string),
-            ],
-        }
-
     @pytest.fixture(scope="function")
     def enabled_citext_extension(self, db: Db) -> None:
         db.execute("CREATE EXTENSION IF NOT EXISTS CITEXT;")
-
-    def test_type_recognition(
-        self, db: Db, sync_connection_executor: SyncConnExecutorBase, enabled_citext_extension
-    ) -> None:
-        for schema_name, type_schema in sorted(self.get_schemas_for_type_recognition().items()):
-            columns = [
-                sa.Column(name=f"c_{shortuuid.uuid().lower()}", type_=sa_type) for sa_type, user_type in type_schema
-            ]
-            sa_table = db.table_from_columns(columns=columns)
-            db.create_table(sa_table)
-            table_def = TableIdent(db_name=db.name, schema_name=sa_table.schema, table_name=sa_table.name)
-            detected_columns = sync_connection_executor.get_table_schema_info(table_def=table_def).schema
-            assert len(detected_columns) == len(type_schema), f"Incorrect number of columns in schema {schema_name}"
-            for col_idx, ((_sa_type, user_type), detected_col) in enumerate(zip(type_schema, detected_columns)):
-                assert detected_col.user_type == user_type, (
-                    f"Incorrect user type detected for schema {schema_name} col #{col_idx}: "
-                    f"expected {user_type.name}, got {detected_col.user_type.name}"
-                )
 
 
 class TestPostgreSQLSyncConnectionExecutor(
@@ -96,6 +62,42 @@ class TestPostgreSQLSyncConnectionExecutor(
             DefaultAsyncConnectionExecutorTestSuite.test_table_exists: "",  # TODO: FIXME
         },
     )
+
+    def get_schemas_for_type_recognition(self) -> dict[str, Sequence[DefaultSyncConnectionExecutorTestSuite.CD]]:
+        return {
+            "types_postgres_number": [
+                self.CD(pg_types.SMALLINT(), UserDataType.integer),
+                self.CD(pg_types.INTEGER(), UserDataType.integer),
+                self.CD(pg_types.BIGINT(), UserDataType.integer),
+                self.CD(pg_types.REAL(), UserDataType.float),
+                self.CD(pg_types.DOUBLE_PRECISION(), UserDataType.float),
+                self.CD(pg_types.NUMERIC(), UserDataType.float),
+            ],
+            "types_postgres_string": [
+                self.CD(pg_types.CHAR(), UserDataType.string),
+                self.CD(pg_types.VARCHAR(100), UserDataType.string),
+                self.CD(pg_types.TEXT(), UserDataType.string),
+                self.CD(CITEXT(), UserDataType.string),
+            ],
+            "types_postgres_date": [
+                self.CD(pg_types.DATE(), UserDataType.date),
+                self.CD(pg_types.TIMESTAMP(timezone=False), UserDataType.genericdatetime),
+                self.CD(pg_types.TIMESTAMP(timezone=True), UserDataType.genericdatetime),
+            ],
+            "types_postgres_other": [
+                self.CD(pg_types.BOOLEAN(), UserDataType.boolean),
+                self.CD(pg_types.ENUM("var1", "var2", name=str(uuid.uuid4())), UserDataType.string),
+            ],
+        }
+
+    def test_type_recognition(
+        self,
+        request,
+        db: Db,
+        sync_connection_executor: SyncConnExecutorBase,
+        enabled_citext_extension,
+    ) -> None:
+        super().test_type_recognition(request, db, sync_connection_executor)
 
 
 class TestPostgreSQLAsyncConnectionExecutor(

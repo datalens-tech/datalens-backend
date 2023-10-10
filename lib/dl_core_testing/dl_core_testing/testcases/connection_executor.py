@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import functools
 from typing import (
     TYPE_CHECKING,
     AsyncGenerator,
     Callable,
+    ClassVar,
     Generator,
     Generic,
     Optional,
@@ -13,16 +15,27 @@ from typing import (
     TypeVar,
 )
 
+import attr
 import pytest
 import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
-from dl_constants.enums import UserDataType
+from dl_constants.enums import (
+    ConnectionType,
+    UserDataType,
+)
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.connection_models.common_models import (
     DBIdent,
+    SATextTableDefinition,
+    SchemaIdent,
     TableIdent,
+)
+from dl_core.db.native_type import (
+    CommonNativeType,
+    GenericNativeType,
+    norm_native_type,
 )
 import dl_core.exc as core_exc
 from dl_core.us_connection_base import ConnectionBase
@@ -84,7 +97,9 @@ class DefaultSyncAsyncConnectionExecutorCheckBase(BaseConnectionExecutorTestClas
 
     @pytest.fixture(scope="function")
     def db_table(self, db: Db, db_table_columns: list[C]) -> DbTable:
-        return make_table(db, columns=db_table_columns)
+        db_table = make_table(db, columns=db_table_columns)
+        yield db_table
+        db.drop_table(db_table.table)
 
     @pytest.fixture(scope="function")
     def nonexistent_table_ident(self, existing_table_ident: TableIdent) -> TableIdent:
@@ -117,6 +132,22 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
     def test_test(self, sync_connection_executor: SyncConnExecutorBase) -> None:
         sync_connection_executor.test()
 
+    def test_get_table_names(
+        self,
+        sample_table: DbTable,
+        db: Db,
+        sync_connection_executor: SyncConnExecutorBase,
+    ):
+        # at the moment, checks that sample table is listed among the others
+
+        tables = [sample_table]
+        expected_table_names = set(table.name for table in tables)
+
+        actual_tables = sync_connection_executor.get_tables(SchemaIdent(db_name=db.name, schema_name=None))
+        actual_table_names = [tid.table_name for tid in actual_tables]
+
+        assert set(actual_table_names).issuperset(expected_table_names)
+
     def test_table_exists(
         self,
         sync_connection_executor: SyncConnExecutorBase,
@@ -132,33 +163,57 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
     ) -> None:
         assert not sync_connection_executor.is_table_exists(nonexistent_table_ident)
 
-    def get_schemas_for_type_recognition(self) -> dict[str, Sequence[tuple[TypeEngine, UserDataType]]]:
+    @attr.s(frozen=True)
+    class CD:
+        sa_type: TypeEngine = attr.ib()
+        # Expected data
+        user_type: UserDataType = attr.ib()
+        nullable: bool = attr.ib(default=True)
+        nt_name: Optional[str] = attr.ib(default=None)
+        nt: Optional[GenericNativeType] = attr.ib(default=None)
+
+        def get_expected_native_type(self, conn_type: ConnectionType) -> GenericNativeType:
+            return self.nt or CommonNativeType(
+                conn_type=conn_type,
+                name=norm_native_type(self.nt_name if self.nt_name is not None else self.sa_type),
+                nullable=self.nullable,
+            )
+
+    def get_schemas_for_type_recognition(self) -> dict[str, Sequence[CD]]:
         return {
             "standard_types": [
-                (sa.Integer(), UserDataType.integer),
-                (sa.Float(), UserDataType.float),
-                (sa.String(length=256), UserDataType.string),
-                (sa.Date(), UserDataType.date),
-                (sa.DateTime(), UserDataType.genericdatetime),
+                self.CD(sa.Integer(), UserDataType.integer),
+                self.CD(sa.Float(), UserDataType.float),
+                self.CD(sa.String(length=256), UserDataType.string),
+                self.CD(sa.Date(), UserDataType.date),
+                self.CD(sa.DateTime(), UserDataType.genericdatetime),
             ],
         }
 
-    def test_type_recognition(self, db: Db, sync_connection_executor: SyncConnExecutorBase) -> None:
-        for schema_name, type_schema in sorted(self.get_schemas_for_type_recognition().items()):
+    def test_type_recognition(self, request, db: Db, sync_connection_executor: SyncConnExecutorBase) -> None:
+        for schema_name, type_schema in self.get_schemas_for_type_recognition().items():
             columns = [
-                sa.Column(name=f"c_{shortuuid.uuid().lower()}", type_=sa_type) for sa_type, user_type in type_schema
+                sa.Column(name=f"c_{shortuuid.uuid().lower()}", type_=column_data.sa_type)
+                for column_data in type_schema
             ]
             sa_table = db.table_from_columns(columns=columns)
+
             db.create_table(sa_table)
+            request.addfinalizer(functools.partial(db.drop_table, sa_table))
+
             detected_columns = sync_connection_executor.get_table_schema_info(
                 table_def=TableIdent(db_name=db.name, schema_name=sa_table.schema, table_name=sa_table.name)
             ).schema
             assert len(detected_columns) == len(type_schema), f"Incorrect number of columns in schema {schema_name}"
-            for col_idx, ((_sa_type, user_type), detected_col) in enumerate(zip(type_schema, detected_columns)):
-                assert detected_col.user_type == user_type, (
+            for col_idx, (expected_col, detected_col) in enumerate(zip(type_schema, detected_columns)):
+                assert detected_col.user_type == expected_col.user_type, (
                     f"Incorrect user type detected for schema {schema_name} col #{col_idx}: "
-                    f"expected {user_type.name}, got {detected_col.user_type.name}"
+                    f"expected {expected_col.user_type.name}, got {detected_col.user_type.name}"
                 )
+                expected_native_type = expected_col.get_expected_native_type(self.conn_type)
+                assert (
+                    detected_col.native_type == expected_native_type
+                ), f"Incorrect native type detected for schema {schema_name} col #{col_idx}: expected {repr(expected_native_type)}, got {repr(detected_col.native_type)}"
 
     def test_simple_select(self, sync_connection_executor: SyncConnExecutorBase) -> None:
         query = ConnExecutorQuery(query=sa.select([sa.literal(1)]))
@@ -183,15 +238,25 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
             for _i in range(5):
                 sync_connection_executor.execute(ConnExecutorQuery(query=query_for_session_check))
 
+    subselect_query_for_schema_test: ClassVar[str] = "(SELECT 1 AS num) AS source"
+
+    @pytest.mark.parametrize("case", ["table", "subselect"])
     def test_get_table_schema_info(
         self,
+        case: str,
         sync_connection_executor: SyncConnExecutorBase,
         existing_table_ident: TableIdent,
         db_table: DbTable,
     ) -> None:
         # Just tests that the adapter can successfully retrieve the schema.
         # Data source tests check this in more detail
-        detected_columns = sync_connection_executor.get_table_schema_info(table_def=existing_table_ident).schema
+        table_def = {
+            "table": existing_table_ident,
+            "subselect": SATextTableDefinition(
+                text=sa.sql.elements.TextClause(self.subselect_query_for_schema_test),
+            ),
+        }[case]
+        detected_columns = sync_connection_executor.get_table_schema_info(table_def=table_def).schema
         assert len(detected_columns) > 0
 
     def test_get_table_schema_info_for_nonexistent_table(
@@ -238,6 +303,40 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
         result = await anext(aiter((await async_connection_executor.execute(query)).result))
         assert len(result) == 1
         assert result[0] == (1,)
+
+    async def test_select_data(self, sample_table: DbTable, async_connection_executor: AsyncConnExecutorBase) -> None:
+        n_rows = 3
+        result = await async_connection_executor.execute(
+            ConnExecutorQuery(
+                query=sa.select(columns=sample_table.table.columns)
+                .select_from(sample_table.table)
+                .order_by(sample_table.table.columns[0])
+                .limit(n_rows),
+                chunk_size=6,
+            )
+        )
+        rows = await result.get_all()
+        assert len(rows) == n_rows
+
+    async def test_cast_row_to_output(
+        self,
+        sample_table: DbTable,
+        async_connection_executor: AsyncConnExecutorBase,
+    ) -> None:
+        result = await async_connection_executor.execute(
+            ConnExecutorQuery(
+                sa.select(columns=[sa.literal(1), sa.literal(2), sa.literal(3)])
+                .select_from(sample_table.table)
+                .limit(1),
+                user_types=[
+                    UserDataType.boolean,
+                    UserDataType.float,
+                    UserDataType.integer,
+                ],
+            )
+        )
+        rows = await result.get_all()
+        assert rows == [(True, 2.0, 3)], rows
 
     async def test_error_on_select_from_nonexistent_source(
         self,
