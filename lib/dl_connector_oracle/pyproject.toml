@@ -1,0 +1,91 @@
+
+[tool.poetry]
+name = "datalens-connector-oracle"
+version = "0.0.1"
+description = ""
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_connector_oracle"}]
+license = "Apache 2.0"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+marshmallow = ">=3.19.0"
+oracledb = ">=1.3.1"
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-constants = {path = "../dl_constants"}
+datalens-formula-ref = {path = "../dl_formula_ref"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-formula = {path = "../dl_formula"}
+datalens-configs = {path = "../dl_configs"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-core = {path = "../dl_core"}
+datalens-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
+datalens-db-testing = {path = "../dl_db_testing"}
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."dl_api_lib.connectors"]
+oracle = "dl_connector_oracle.api.connector:OracleApiConnector"
+
+[tool.poetry.plugins."dl_core.connectors"]
+oracle = "dl_connector_oracle.core.connector:OracleCoreConnector"
+
+[tool.poetry.plugins."dl_db_testing.connectors"]
+oracle = "dl_connector_oracle.db_testing.connector:OracleDbTestingConnector"
+
+[tool.poetry.plugins."dl_formula.connectors"]
+oracle = "dl_connector_oracle.formula.connector:OracleFormulaConnector"
+
+[tool.poetry.plugins."dl_formula_ref.plugins"]
+oracle = "dl_connector_oracle.formula_ref.plugin:OracleFormulaRefPlugin"
+
+[tool.poetry.group]
+[tool.poetry.group.tests.dependencies]
+oracledb = ">=1.3.1"
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+datalens-api-lib-testing = {path = "../dl_api_lib_testing"}
+datalens-formula-testing = {path = "../dl_formula_testing"}
+datalens-testing = {path = "../dl_testing"}
+datalens-core-testing = {path = "../dl_core_testing"}
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["dl_connector_oracle_tests/db", "dl_connector_oracle_tests/unit"]
+
+
+
+[datalens.pytest.db]
+root_dir = "dl_connector_oracle_tests/"
+target_path = "db"
+labels = ["fat"]
+
+[datalens.pytest.unit]
+root_dir = "dl_connector_oracle_tests/"
+target_path = "unit"
+skip_compose = "true"
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[datalens.i18n.domains]
+dl_connector_oracle = [
+    {path = "dl_connector_oracle/api"},
+    {path = "dl_connector_oracle/core"},
+]
+dl_formula_ref_dl_connector_oracle = [
+    {path = "dl_connector_oracle/formula_ref"},
+]
