@@ -130,6 +130,7 @@ datalens-db-testing = {path = "../lib/dl_db_testing"}
 datalens-file-uploader-worker-lib = {path = "../lib/dl_file_uploader_worker_lib"}
 datalens-connector-bigquery = {path = "../lib/dl_connector_bigquery"}
 datalens-task-processor = {path = "../lib/dl_task_processor"}
+datalens-connector-oracle = {path = "../lib/dl_connector_oracle"}
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.3.0"
