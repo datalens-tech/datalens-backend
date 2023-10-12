@@ -65,7 +65,6 @@ skip_compose = "true"
 [datalens.pytest.db]
 root_dir = "dl_api_lib_tests/"
 target_path = "db"
-labels = ["fat"]
 
 [tool.poetry.scripts]
 bi-core-rqe-async = "dl_core.connection_executors.remote_query_executor.app_async:async_qe_main"
