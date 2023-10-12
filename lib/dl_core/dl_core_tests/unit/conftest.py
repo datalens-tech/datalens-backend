@@ -3,9 +3,6 @@ import asyncio
 import pytest
 
 
-pytest_plugins = ("aiohttp.pytest_plugin",)  # and it, in turn, includes 'pytest_asyncio.plugin'
-
-
 @pytest.fixture
 def loop(event_loop):
     asyncio.set_event_loop(event_loop)
