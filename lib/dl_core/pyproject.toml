@@ -84,7 +84,6 @@ skip_compose = "true"
 [datalens.pytest.db]
 root_dir = "dl_core_tests/"
 target_path = "db"
-labels = ["fat"]
 
 [tool.mypy]
 warn_unused_configs = true
