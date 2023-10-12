@@ -18,7 +18,7 @@ class FileType(Enum):
     csv = "csv"
     gsheets = "gsheets"
     xlsx = "xlsx"
-    yadocuments = "yadocuments"
+    yadocs = "yadocs"
 
 
 class CSVEncoding(Enum):
