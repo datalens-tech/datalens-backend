@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 import logging
 from typing import Optional
 
@@ -8,20 +7,21 @@ import aiohttp
 import attr
 
 from dl_constants.enums import FileProcessingStatus
-
 from dl_file_uploader_lib import exc
 from dl_file_uploader_lib.data_sink.raw_bytes import (
     RawBytesAsyncDataStream,
     S3RawFileAsyncDataSink,
 )
-
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import (
     DataFile,
     FileProcessingError,
     YaDocsUserSourceProperties,
 )
-from dl_file_uploader_lib.yadocs_client import YaDocsClient, yadocs_error_to_file_uploader_exception
+from dl_file_uploader_lib.yadocs_client import (
+    YaDocsClient,
+    yadocs_error_to_file_uploader_exception,
+)
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
 from dl_task_processor.task import (
@@ -87,7 +87,7 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
             dfile.filename = spreadsheet_meta["name"]
             s3 = self._ctx.s3_service
 
-            async def _chunk_iter(chunk_size: int = 10 * 1024 * 1024):
+            async def _chunk_iter(chunk_size: int = 10 * 1024 * 1024) -> None:
                 async with aiohttp.ClientSession() as session:
                     async with session.get(spreadsheet_ref) as resp:
                         if resp.status != 200:

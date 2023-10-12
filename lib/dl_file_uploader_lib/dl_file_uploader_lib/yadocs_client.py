@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any
 
 from aiohttp.client import (
@@ -44,7 +46,7 @@ class YaDocsClient:
             raise yadocs_error_to_file_uploader_exception(resp.status, await resp.json())
         return (await resp.json())["href"]
 
-    async def get_spreadsheet_public_meta(self, link: str) -> ClientResponse:
+    async def get_spreadsheet_public_meta(self, link: str) -> dict[str, Any]:
         resp = await self.session.get(
             f"{self.hostname}/public/resources/?public_key={link}",
             headers=self.headers,
@@ -63,7 +65,7 @@ class YaDocsClient:
             raise yadocs_error_to_file_uploader_exception(resp.status, await resp.json())
         return (await resp.json())["href"]
 
-    async def get_spreadsheet_private_meta(self, path: str, token: str) -> ClientResponse:
+    async def get_spreadsheet_private_meta(self, path: str, token: str) -> dict[str, Any]:
         headers_with_token = self._create_headers_with_token(token)
         resp = await self.session.get(
             f"{self.hostname}/resources/?path={path}",
