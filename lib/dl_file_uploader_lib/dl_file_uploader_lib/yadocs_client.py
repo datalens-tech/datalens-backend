@@ -1,6 +1,5 @@
 from typing import Any
 
-import aiohttp
 from aiohttp.client import (
     ClientResponse,
     ClientSession,
