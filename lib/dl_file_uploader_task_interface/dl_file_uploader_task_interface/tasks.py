@@ -30,12 +30,17 @@ class DownloadGSheetTask(BaseTaskMeta):
 
 @attr.s
 <<<<<<< HEAD
+<<<<<<< HEAD
 class DownloadYaDocsTask(BaseTaskMeta):
     name = TaskName("download_yadocs")
 =======
 class DownloadYaDocumentsTask(BaseTaskMeta):
     name = TaskName("download_yadocuments")
 >>>>>>> 3774068a (Download yadocs task)
+=======
+class DownloadYaDocsTask(BaseTaskMeta):
+    name = TaskName("download_yadocs")
+>>>>>>> ab5a41d1 (Fix issues)
 
     file_id: str = attr.ib()
 
