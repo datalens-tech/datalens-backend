@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import logging
-from typing import Optional
+from typing import (
+    AsyncGenerator,
+    Optional,
+)
 
 import aiohttp
 import attr
@@ -87,7 +90,7 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
             dfile.filename = spreadsheet_meta["name"]
             s3 = self._ctx.s3_service
 
-            async def _chunk_iter(chunk_size: int = 10 * 1024 * 1024) -> None:
+            async def _chunk_iter(chunk_size: int = 10 * 1024 * 1024) -> AsyncGenerator[bytes, None]:
                 async with aiohttp.ClientSession() as session:
                     async with session.get(spreadsheet_ref) as resp:
                         if resp.status != 200:
