@@ -2,6 +2,7 @@ import abc
 from typing import (
     ClassVar,
     Generic,
+    Optional,
     Type,
     TypeVar,
 )
@@ -31,7 +32,8 @@ class BaseAsyncAdapterTestClass(BaseConnectionExecutorTestClass, Generic[_TARGET
 
     @pytest.fixture
     async def target_conn_dto(self, async_connection_executor: AsyncConnExecutorBase) -> _TARGET_DTO_TV:
-        return next(iter(await async_connection_executor._make_target_conn_dto_pool()))  # noqa
+        target_conn_dto_pool = await async_connection_executor._make_target_conn_dto_pool()  # noqa
+        return next(iter(target_conn_dto_pool))
 
     def _make_dba(self, target_dto: _TARGET_DTO_TV, rci: RequestContextInfo) -> AsyncDirectDBAdapter:
         return self.ASYNC_ADAPTER_CLS.create(
@@ -40,12 +42,30 @@ class BaseAsyncAdapterTestClass(BaseConnectionExecutorTestClass, Generic[_TARGET
             default_chunk_size=10,
         )
 
-    test_debug_query_with_default_value: ClassVar[bool] = False
+    async def _test_pass_db_query_to_user(
+        self,
+        pass_db_query_to_user: Optional[bool],
+        query_to_send: str,
+        expected_query: Optional[str],
+        conn_bi_context: RequestContextInfo,
+        target_conn_dto: _TARGET_DTO_TV,
+    ):
+        debug_query = expected_query
+
+        target_conn_dto = target_conn_dto.clone(port="65535")  # not the actual db port to raise connect error
+        if pass_db_query_to_user is not None:
+            target_conn_dto = target_conn_dto.clone(pass_db_query_to_user=pass_db_query_to_user)
+
+        dba = self._make_dba(target_conn_dto, conn_bi_context)
+
+        with pytest.raises(exc.SourceConnectError) as exception_info:
+            await dba.execute(DBAdapterQuery(query=query_to_send, debug_compiled_query=debug_query))
+
+        assert exception_info.value.query == expected_query, exception_info.value.query
 
     @pytest.mark.parametrize(
         "pass_db_query_to_user, expected_query",
         (
-            (None, None),
             (False, None),
             (True, "select 1 from <hidden>"),
         ),
@@ -57,23 +77,23 @@ class BaseAsyncAdapterTestClass(BaseConnectionExecutorTestClass, Generic[_TARGET
         conn_bi_context: RequestContextInfo,
         target_conn_dto: _TARGET_DTO_TV,
     ) -> None:
-        if pass_db_query_to_user is None and not self.test_debug_query_with_default_value:
-            pytest.skip(f"Skipping the test with no value override ({self.test_debug_query_with_default_value=})")
-
         query_to_send = "select 1 from very_secret_table"
-        debug_query = "select 1 from <hidden>"
-
-        target_conn_dto = target_conn_dto.clone(
-            port="65535",  # not the actual db port to raise connect error
-            pass_db_query_to_user=pass_db_query_to_user,
+        await self._test_pass_db_query_to_user(
+            pass_db_query_to_user, query_to_send, expected_query, conn_bi_context, target_conn_dto
         )
 
-        dba = self._make_dba(target_conn_dto, conn_bi_context)
-
-        with pytest.raises(exc.SourceConnectError) as exception_info:
-            await dba.execute(DBAdapterQuery(query=query_to_send, debug_compiled_query=debug_query))
-
-        assert exception_info.value.query == expected_query, exception_info.value.query
+    async def test_default_pass_db_query_to_user(
+        self,
+        conn_bi_context: RequestContextInfo,
+        target_conn_dto: _TARGET_DTO_TV,
+    ) -> None:
+        await self._test_pass_db_query_to_user(
+            pass_db_query_to_user=None,
+            query_to_send="select 1 from very_secret_table",
+            expected_query=None,
+            conn_bi_context=conn_bi_context,
+            target_conn_dto=target_conn_dto,
+        )
 
     async def test_timeout(
         self,

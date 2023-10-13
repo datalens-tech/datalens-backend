@@ -10,4 +10,3 @@ class TestAsyncFileS3Adapter(
     BaseAsyncAdapterTestClass[BaseFileS3ConnTargetDTO],
 ):
     ASYNC_ADAPTER_CLS = AsyncFileS3Adapter
-    test_debug_query_with_default_value = True
