@@ -59,6 +59,25 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
 
         assert pytest.approx(total_sum_1) == total_sum_2
 
+    def test_duplicated_expressions(
+        self,
+        saved_dataset: Dataset,
+        data_api_test_params: DataApiTestParams,
+        data_api: SyncHttpDataApiV2,
+    ) -> None:
+        ds = saved_dataset
+        # yes, they are identical
+        ds.result_schema["Measure 1"] = ds.field(formula=f"SUM([{data_api_test_params.summable_field}])")
+        ds.result_schema["Measure 2"] = ds.field(formula=f"SUM([{data_api_test_params.summable_field}])")
+
+        result_resp = self.get_result(ds, data_api, field_names=(
+            "Measure 1", "Measure 2", data_api_test_params.two_dims[0]
+        ))
+        rows = get_data_rows(result_resp)
+        min_row_cnt = 2  # just an arbitrary number
+        assert len(rows) > min_row_cnt
+        assert all(row[0] == row[1] for row in rows)
+
     def _test_contains(
         self,
         request,
