@@ -75,11 +75,12 @@ jobs:
         fetch-depth: 0
     - run: git config --global --add safe.directory .
     - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
-    - run: git fetch origin main
+      # FIXME: Remove this before merging!!!!!!!!!!!!!!!!
+    - run: git fetch origin use-dlgit-diff
     - name: Get packages affected by changes in the current commit
       id: get_affected
       run: |
-        TARGET_DATA=$(bash /src/ci/gh_list_changes.sh ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
+        TARGET_DATA=$(. /venv/bin/activate && dl-git diff-paths --base ${{ github.event.pull_request.base.sha }} --head ${{ github.event.pull_request.head.sha }})
         echo "$TARGET_DATA" > /tmp/targets.json
         cat /tmp/targets.json
         . /venv/bin/activate && detect-affected-packages \
