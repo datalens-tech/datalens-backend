@@ -274,7 +274,10 @@ class AsyncPostgresAdapter(
         # and exclude STRINGS because of our BI ENUMS (it's strings)
         # in asyncpg we can skip type annotations for strings, it should work like in psycopg
         compiled_query, params = compile_pg_query(q, self._dialect, exclude_types={DBAPIMock.ENUM, DBAPIMock.STRING})
-        debug_query = make_debug_query(compiled_query, params)
+        debug_query = None
+        if self._target_dto.pass_db_query_to_user:
+            debug_query = query.debug_compiled_query or make_debug_query(compiled_query, params)
+
         with self.handle_execution_error(debug_query), self.execution_context():
             async with self._get_connection(query.db_name) as conn:
                 # prepare works only inside a transaction

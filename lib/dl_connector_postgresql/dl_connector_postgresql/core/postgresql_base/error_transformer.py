@@ -51,6 +51,7 @@ def make_async_pg_error_transformer() -> DbErrorTransformer:
         ((asyncpg_exc.FDWTableNotFoundError, None), PostgresSourceDoesNotExistError),  # todo: test for this error
         ((asyncpg_exc.SyntaxOrAccessError, None), exc.DatabaseOperationalError),
         ((TimeoutError, None), exc.SourceConnectError),
+        ((OSError, "Connect call failed"), exc.SourceConnectError),
         ((OSError, "Name or service not known"), exc.SourceHostNotKnownError),
     )
     return ChainedDbErrorTransformer([make_rule_from_descr(d) for d in rule_descriptions])
