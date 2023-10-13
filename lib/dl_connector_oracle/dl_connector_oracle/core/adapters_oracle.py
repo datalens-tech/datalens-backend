@@ -30,6 +30,7 @@ from dl_connector_oracle.core.target_dto import OracleConnTargetDTO
 
 
 class OracleConnLineConstructor(ClassicSQLConnLineConstructor[OracleConnTargetDTO]):
+    """"""
     def _get_dsn_params(
         self,
         safe_db_symbols: Tuple[str, ...] = (),
