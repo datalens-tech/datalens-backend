@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 
-from dl_repmanager.logging import setup_basic_logging
+from dl_cli_tools.logging import setup_basic_logging
 from dl_repmanager.metapkg_scoped_sync import sync_scoped_metapkg
 
 
