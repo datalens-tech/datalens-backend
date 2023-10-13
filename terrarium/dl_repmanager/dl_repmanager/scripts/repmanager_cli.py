@@ -10,8 +10,9 @@ from typing import Optional
 
 import attr
 
+from dl_cli_tools.cli_base import CliToolBase
+from dl_cli_tools.logging import setup_basic_logging
 from dl_repmanager.git_manager import GitManager
-from dl_repmanager.logging import setup_basic_logging
 from dl_repmanager.metapkg_manager import MetaPackageManager
 from dl_repmanager.package_index import (
     PackageIndex,
@@ -33,7 +34,6 @@ from dl_repmanager.repository_manager import (
     RepositoryManager,
 )
 from dl_repmanager.repository_navigator import RepositoryNavigator
-from dl_repmanager.scripts.cli_base import CliToolBase
 from dl_repmanager.scripts.package_meta_cli import (
     DlPackageMetaTool,
     add_package_commands,

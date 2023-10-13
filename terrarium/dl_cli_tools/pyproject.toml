@@ -1,10 +1,10 @@
 
 [tool.poetry]
-name = "datalens-package-boilerplate"
+name = "datalens-cli-tools"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_package_boilerplate"}]
+packages = [{include = "dl_cli_tools"}]
 license = "Apache 2.0"
 readme = "README.md"
 
@@ -26,6 +26,8 @@ requires = [
 minversion = "6.0"
 addopts = "-ra"
 testpaths = []
+
+
 
 [datalens_ci]
 skip_test = true

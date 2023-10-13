@@ -5,9 +5,6 @@ dl_repo:
 
   default_boilerplate_path: lib/dl_package_boilerplate
 
-  default_registration_metapackages:
-    - main_mpkg
-
   package_types:
     - type: terrarium  # Repository tools
       root_path: terrarium

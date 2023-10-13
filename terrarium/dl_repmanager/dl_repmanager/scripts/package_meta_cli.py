@@ -8,6 +8,8 @@ from typing import cast
 
 import attr
 
+from dl_cli_tools.cli_base import CliToolBase
+from dl_cli_tools.logging import setup_basic_logging
 from dl_repmanager.exceptions import (
     InconsistentStateError,
     PackageMetaCliError,
@@ -16,7 +18,6 @@ from dl_repmanager.fs_editor import (
     DefaultFilesystemEditor,
     FilesystemEditor,
 )
-from dl_repmanager.logging import setup_basic_logging
 from dl_repmanager.mypy_stubs_sync import (
     RequirementsPathProvider,
     stubs_sync,
@@ -30,7 +31,6 @@ from dl_repmanager.repository_env import (
     DEFAULT_CONFIG_FILE_NAME,
     discover_config,
 )
-from dl_repmanager.scripts.cli_base import CliToolBase
 
 
 log = logging.getLogger(__name__)

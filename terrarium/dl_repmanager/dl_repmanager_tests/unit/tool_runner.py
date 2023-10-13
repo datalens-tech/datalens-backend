@@ -1,33 +1,13 @@
-from contextlib import redirect_stdout
-import io
 from pathlib import Path
-from typing import (
-    ClassVar,
-    Type,
-)
 
 import attr
 
-from dl_repmanager.scripts.cli_base import CliToolBase
+from dl_cli_tools.testing.tool_runner import (
+    CliResult,
+    CliRunner,
+)
 from dl_repmanager.scripts.package_meta_cli import DlPackageMetaTool
 from dl_repmanager.scripts.repmanager_cli import DlRepManagerTool
-
-
-@attr.s(frozen=True)
-class CliResult:
-    stdout: str = attr.ib(kw_only=True)
-
-
-class CliRunner:
-    cli_cls: ClassVar[Type[CliToolBase]]
-
-    def run_with_args(self, argv: list[str]) -> CliResult:
-        with redirect_stdout(io.StringIO()) as out_stream:
-            self.cli_cls.run(argv)
-
-        assert isinstance(out_stream, io.StringIO)
-        result = CliResult(stdout=out_stream.getvalue())
-        return result
 
 
 @attr.s
