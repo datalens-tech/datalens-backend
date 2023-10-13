@@ -29,6 +29,13 @@ class DownloadGSheetTask(BaseTaskMeta):
 
 
 @attr.s
+class DownloadYaDocsTask(BaseTaskMeta):
+    name = TaskName("download_yadocs")
+
+    file_id: str = attr.ib()
+
+
+@attr.s
 class ParseFileTask(BaseTaskMeta):
     name = TaskName("parse_file")
 

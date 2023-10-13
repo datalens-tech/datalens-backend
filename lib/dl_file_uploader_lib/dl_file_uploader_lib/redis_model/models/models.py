@@ -103,6 +103,19 @@ class GSheetsUserSourceProperties(UserSourceProperties):
 
 
 @attr.s(init=True, kw_only=True)
+class YaDocsUserSourceProperties(UserSourceProperties):
+    file_type: FileType = attr.ib(default=FileType.yadocs)
+
+    private_path: Optional[str] = attr.ib(default=None)
+    public_link: Optional[str] = attr.ib(default=None)
+
+    oauth_token: Optional[str] = attr.ib(default=None, repr=False)
+
+    def get_secret_keys(self) -> set[DataKey]:
+        return {DataKey(parts=("oauth_token",))}
+
+
+@attr.s(init=True, kw_only=True)
 class UserSourceDataSourceProperties:
     file_type: FileType = attr.ib()
 

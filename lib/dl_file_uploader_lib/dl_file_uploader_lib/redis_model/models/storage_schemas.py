@@ -35,6 +35,7 @@ from dl_file_uploader_lib.redis_model.models import (
     GSheetsUserSourceDataSourceProperties,
     GSheetsUserSourceProperties,
     RenameTenantStatusModel,
+    YaDocsUserSourceProperties,
 )
 
 
@@ -151,9 +152,19 @@ class GSheetsUserSourcePropertiesSchema(UserSourcePropertiesBaseSchema):
     spreadsheet_id = fields.String()
 
 
+class YaDocsUserSourcePropertiesSchema(UserSourcePropertiesBaseSchema):
+    class Meta(BaseSchema.Meta):
+        target = YaDocsUserSourceProperties
+
+    private_path = fields.String(allow_none=True)
+    public_link = fields.String(allow_none=True)
+    oauth_token = fields.String(allow_none=True)
+
+
 class UserSourcePropertiesSchema(FileTypeOneOfSchema):
     type_schemas: dict[str, Type[UserSourcePropertiesBaseSchema]] = {
         FileType.gsheets.name: GSheetsUserSourcePropertiesSchema,
+        FileType.yadocs.name: YaDocsUserSourcePropertiesSchema,
     }
 
 
