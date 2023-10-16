@@ -253,7 +253,7 @@ def create_async_qe_app(hmac_key: bytes) -> web.Application:
     return app
 
 
-def async_qe_main() -> None:
+def get_configured_qe_app() -> web.Application:
     configure_logging(
         app_name="rqe-async",
         app_prefix=None,  # not useful with `append_local_req_id=False`.
@@ -264,6 +264,14 @@ def async_qe_main() -> None:
     settings = load_settings_from_env_with_fallback(RQESettings)
     load_core_lib(core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST))
 
+    hmac_key = settings.RQE_SECRET_KEY
+    if hmac_key is None:
+        raise Exception("No `hmac_key` set.")
+
+    return create_async_qe_app(hmac_key.encode())
+
+
+def async_qe_main() -> None:
     try:
         parser = argparse.ArgumentParser(description="Process some integers.")
         parser.add_argument("--host", type=str)
@@ -274,7 +282,5 @@ def async_qe_main() -> None:
         sys.exit(-1)
         raise  # just-in-case
 
-    hmac_key = settings.RQE_SECRET_KEY
-    if hmac_key is None:
-        raise Exception("No `hmac_key` set.")
-    web.run_app(create_async_qe_app(hmac_key.encode()), host=args.host, port=args.port, print=LOGGER.info)
+    app = get_configured_qe_app()
+    web.run_app(app, host=args.host, port=args.port, print=LOGGER.info)
