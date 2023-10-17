@@ -39,13 +39,14 @@ If the path is inside a submodule, then the submodule is considered to be the ro
 
 ## Commands
 
-### diff-paths
+### range-diff-paths
 
 List files that have changed between two given revisions including the changes in all submodules
 
 ```
-dl-git diff-paths --base <base> --head <head>
-dl-git diff-paths --base <base> --head <head> --absolute
+dl-git range-diff-paths --base <base> --head <head>
+dl-git range-diff-paths --base <base> --head <head> --absolute
+dl-git range-diff-paths --base <base> --head <head> --only-added-commits
 ```
 
 Here `base` and `head` can be a commit ID, branch name, `HEAD~3` or any similar notation
@@ -58,3 +59,17 @@ dl-git diff-paths
 
 The `--absolute` option makes the tool print absolute paths.
 By default they are printed relative to the repository root.
+
+The `--only-added-commits` option makes the tool inspect only commits
+that have been added in the head version.
+
+### list-diff-paths
+
+List files that have changed in commits passed on as input
+
+```
+echo <commit-id> | dl-git list-diff-paths
+echo <commit-id>> | dl-git list-diff-paths --absolute
+```
+
+Option `--absolute` has the same meaning as in `range-diff-paths`.
