@@ -3,6 +3,10 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+from typing import (
+    Iterable,
+    Optional,
+)
 
 import clize
 import tomlkit
@@ -21,13 +25,22 @@ def get_mypy_targets(pkg_dir: Path) -> list[str]:
     return [pkg_dir.name]
 
 
-def main(root: Path, targets_file: Path) -> None:
-    targets: list[str] = json.load(open(targets_file))
+def get_targets(root: Path) -> Iterable[str]:
+    for path in root.rglob("*/pyproject.toml"):
+        yield str(path.parent)
+
+
+def main(root: Path, targets_file: Path = None) -> None:  # type: ignore
+    # clize can't recognize type annotation "Optional"
+    if targets_file is not None:
+        paths: Iterable[str] = json.load(open(targets_file))
+    else:
+        paths: Iterable[str] = get_targets(root)
     failed_list: list[str] = []
     mypy_cache_dir = Path("/tmp/mypy_cache")
     mypy_cache_dir.mkdir(exist_ok=True)
-    for target in targets:
-        pkg_dir = root / target
+    for path in paths:
+        pkg_dir = root / path
         run_args = ["mypy", f"--cache-dir={mypy_cache_dir}"]
         targets = get_mypy_targets(pkg_dir)
         print(f"Cmd: {run_args}; cwd={pkg_dir}")
@@ -35,7 +48,7 @@ def main(root: Path, targets_file: Path) -> None:
             run_args.extend(targets)
             run_exit_code = subprocess.run(" ".join(run_args), shell=True, cwd=str(pkg_dir)).returncode
             if run_exit_code != 0:
-                failed_list.append(target)
+                failed_list.append(path)
         else:
             print(f"mypy config not found in {pkg_dir}/pyproject.toml, skipped")
 
