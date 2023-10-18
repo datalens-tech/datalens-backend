@@ -88,6 +88,10 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
                     return Success()
 
             dfile.filename = spreadsheet_meta["name"]
+            xslx_suffix = ".xlsx"
+            if not dfile.filename.endswith(xslx_suffix):
+                raise exc.UnsupportedDocument
+
             s3 = self._ctx.s3_service
 
             async def _chunk_iter(chunk_size: int = 10 * 1024 * 1024) -> AsyncGenerator[bytes, None]:

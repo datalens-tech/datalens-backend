@@ -108,9 +108,14 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                     sheet_data_source.error = FileProcessingError.from_exception(exc.EmptyDocument())
                     sheet_data_source.status = FileProcessingStatus.failed
                 else:
-                    has_header, raw_schema, raw_schema_header, raw_schema_body = guess_header_and_schema_excel(
-                        sheetdata
-                    )
+                    try:
+                        has_header, raw_schema, raw_schema_header, raw_schema_body = guess_header_and_schema_excel(
+                            sheetdata
+                        )
+                    except Exception as ex:
+                        sheet_data_source.status = FileProcessingStatus.failed
+                        exc_to_save = ex if isinstance(ex, exc.DLFileUploaderBaseError) else exc.ParseFailed()
+                        sheet_data_source.error = FileProcessingError.from_exception(exc_to_save)
                 sheet_settings = None
 
                 if sheet_data_source.is_applicable:

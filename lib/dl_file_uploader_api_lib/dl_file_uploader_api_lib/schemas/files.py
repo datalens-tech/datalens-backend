@@ -22,6 +22,14 @@ def validate_authorized(data: dict) -> None:
         )
 
 
+def validate_docs_data(data):
+    if not ((data["public_link"] is None) ^ (data["private_path"] is None)):
+        raise ValueError("Expected exactly one of [`private_path`, `public_link`] to be specified")
+    if data["public_link"] is None:
+        if data["private_path"] is None or data["oauth_token"] is None:
+            raise ma.ValidationError("Both path and token must be provided for private files")
+
+
 class FileLinkRequestSchema(BaseRequestSchema):
     type = ma.fields.Enum(FileType, required=True)
     url = ma.fields.String(required=True)
@@ -32,6 +40,17 @@ class FileLinkRequestSchema(BaseRequestSchema):
     @ma.validates_schema(skip_on_field_errors=True)
     def validate_object(self, data: dict, **kwargs: Any) -> None:
         validate_authorized(data)
+
+
+class FileDocumentsRequestSchema(BaseRequestSchema):
+    # connection_id = ma.fields.String(load_default=None, allow_none=True)
+    private_path = ma.fields.String(load_default=None, allow_none=True)
+    oauth_token = ma.fields.String(load_default=None, allow_none=True)
+    public_link = ma.fields.String(load_default=None, allow_none=True)
+
+    @ma.validates_schema(skip_on_field_errors=True)
+    def validate_object(self, data: dict, **kwargs: Any) -> None:
+        validate_docs_data(data)
 
 
 class FileUploadResponseSchema(ma.Schema):

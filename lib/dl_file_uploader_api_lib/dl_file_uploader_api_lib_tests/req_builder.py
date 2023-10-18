@@ -76,6 +76,26 @@ class ReqBuilder:
         )
 
     @classmethod
+    def upload_documents(
+        cls,
+        public_link: Optional[str] = None,
+        private_path: Optional[str] = None,
+        oauth_token: Optional[str] = None,
+        *,
+        require_ok: bool = True,
+    ) -> Req:
+        return Req(
+            method="post",
+            url="/api/v2/documents",
+            data_json={
+                "public_link": public_link,
+                "private_path": private_path,
+                "oauth_token": oauth_token,
+            },
+            require_ok=require_ok,
+        )
+
+    @classmethod
     def file_status(cls, file_id: str) -> Req:
         return Req(
             method="get",

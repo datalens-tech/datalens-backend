@@ -19,7 +19,10 @@ from dl_api_commons.aiohttp.aiohttp_wrappers import (
     RequiredResourceCommon,
 )
 from dl_constants.enums import FileProcessingStatus
-from dl_file_uploader_api_lib.data_file_preparer import gsheets_data_file_preparer
+from dl_file_uploader_api_lib.data_file_preparer import (
+    gsheets_data_file_preparer,
+    yadocs_data_file_preparer,
+)
 from dl_file_uploader_api_lib.schemas import files as files_schemas
 from dl_file_uploader_api_lib.views.base import FileUploaderBaseView
 from dl_file_uploader_lib.common_locks import get_update_connection_source_lock
@@ -38,6 +41,7 @@ from dl_file_uploader_lib.redis_model.models import (
 )
 from dl_file_uploader_task_interface.tasks import (
     DownloadGSheetTask,
+    DownloadYaDocsTask,
     ParseFileTask,
     ProcessExcelTask,
     TaskExecutionMode,
@@ -155,6 +159,56 @@ class LinksView(FileUploaderBaseView):
             )
         )
         LOGGER.info(f"Scheduled DownloadGSheetTask for file_id {df.id}")
+
+        return web.json_response(
+            files_schemas.FileUploadResponseSchema().dump({"file_id": df.id, "title": df.filename}),
+            status=HTTPStatus.CREATED,
+        )
+
+
+class DocumentsView(FileUploaderBaseView):
+    REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResource]] = frozenset()  # Don't skip CSRF check
+
+    FILE_TYPE_TO_DATA_FILE_PREPARER_MAP: dict[
+        FileType, Callable[[str, RedisModelManager, Optional[str]], Awaitable[DataFile]]
+    ] = {
+        FileType.yadocs: yadocs_data_file_preparer,
+    }
+
+    async def post(self) -> web.StreamResponse:
+        req_data = await self._load_post_request_schema_data(files_schemas.FileDocumentsRequestSchema)
+
+        file_type = FileType.yadocs
+
+        rmm = self.dl_request.get_redis_model_manager()
+
+        oauth_token: Optional[str] = req_data["oauth_token"]
+        public_link: Optional[str] = req_data["public_link"]
+        private_path: Optional[str] = req_data["private_path"]
+
+        df = await self.FILE_TYPE_TO_DATA_FILE_PREPARER_MAP[file_type](
+            oauth_token=oauth_token,
+            private_path=private_path,
+            public_link=public_link,
+            redis_model_manager=rmm,
+        )
+
+        LOGGER.info(f"Data file id: {df.id}")
+        await df.save()
+
+        task_processor = self.dl_request.get_task_processor()
+        await task_processor.schedule(DownloadYaDocsTask(file_id=df.id))
+        LOGGER.info(f"Scheduled DownloadGSheetTask for file_id {df.id}")
+
+        df = await DataFile.get(manager=rmm, obj_id=df.id)
+        if df.status == FileProcessingStatus.failed:
+            return web.json_response(
+                files_schemas.FileUploadResponseSchema().dump({"file_id": df.id, "title": df.filename}),
+                status=HTTPStatus.OK,
+            )
+
+        await task_processor.schedule(ProcessExcelTask(file_id=df.id))
+        LOGGER.info(f"Scheduled ProcessExcelTask for file_id {df.id}")
 
         return web.json_response(
             files_schemas.FileUploadResponseSchema().dump({"file_id": df.id, "title": df.filename}),

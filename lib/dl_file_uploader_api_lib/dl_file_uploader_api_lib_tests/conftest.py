@@ -402,3 +402,8 @@ def reader_app(loop, secure_reader):
     loop.run_until_complete(runner.setup())
     site = aiohttp.web.UnixSite(runner, path=secure_reader.SOCKET)
     return loop.run_until_complete(site.start())
+
+
+@pytest.fixture(scope="session")
+def ya_docs_oauth_token(env_param_getter):
+    return env_param_getter.get_str_value("YA_DOCS_API_KEY")
