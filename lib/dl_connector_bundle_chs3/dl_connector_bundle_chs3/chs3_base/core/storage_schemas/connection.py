@@ -15,6 +15,7 @@ class BaseFileConnectionSourceStorageSchema(DefaultStorageSchema):
     preview_id = fields.String(allow_none=True, load_default=None)
     title = fields.String()
     s3_filename = fields.String(allow_none=True, load_default=None)
+    s3_filename_suffix = fields.String(allow_none=True, load_default=None)
     raw_schema = fields.Nested(SchemaColumnStorageSchema, many=True, allow_none=True, load_default=None)
     status = fields.Enum(FileProcessingStatus)
 

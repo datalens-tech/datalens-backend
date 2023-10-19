@@ -23,7 +23,7 @@ from dl_file_uploader_lib.redis_model.models import (
 )
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
-from dl_file_uploader_worker_lib.tasks.save import _make_source_s3_filename
+from dl_file_uploader_worker_lib.tasks.save import make_source_s3_filename_suffix
 from dl_task_processor.task import (
     BaseExecutorTask,
     Retry,
@@ -267,11 +267,12 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
                                         continue
 
                                     old_fname_parts = old_s3_filename.split("_")
-                                    if len(old_fname_parts) == 2 and old_fname_parts[0] and old_fname_parts[1]:
+                                    if len(old_fname_parts) >= 2 and all(part for part in old_fname_parts):
                                         # assume that first part is old tenant id
                                         old_tenants.add(old_fname_parts[0])
 
-                                    new_s3_filename = _make_source_s3_filename(tenant_id)
+                                    s3_filename_suffix = make_source_s3_filename_suffix()
+                                    new_s3_filename = conn.get_full_s3_filename(s3_filename_suffix)
                                     await s3_client.copy_object(
                                         CopySource=dict(
                                             Bucket=s3_service.persistent_bucket_name,
@@ -291,6 +292,7 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
                                         source.id,
                                         role=DataSourceRole.origin,
                                         s3_filename=new_s3_filename,
+                                        s3_filename_suffix=s3_filename_suffix,
                                     )
 
                                 if conn_changed:

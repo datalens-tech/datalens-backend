@@ -59,6 +59,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
         "file_id",
         "title",
         "s3_filename",
+        "s3_filename_suffix",
         "status",
         "preview_id",
     )
@@ -71,6 +72,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
         preview_id: Optional[str] = attr.ib(default=None)
         status: FileProcessingStatus = attr.ib(default=FileProcessingStatus.in_progress)
         s3_filename: Optional[str] = attr.ib(default=None)
+        s3_filename_suffix: Optional[str] = attr.ib(default=None)
         raw_schema: Optional[list[SchemaColumn]] = attr.ib(factory=list[SchemaColumn])
 
         def str_for_hash(self) -> str:
@@ -80,6 +82,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
                     self.file_id,
                     self.title,
                     str(self.s3_filename),
+                    str(self.s3_filename_suffix),
                     self.status.name,
                 ]
             )
@@ -118,6 +121,12 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
     @property
     def s3_secret_access_key(self) -> str:
         return self._connector_settings.SECRET_ACCESS_KEY
+
+    def get_full_s3_filename(self, s3_filename_suffix: Optional[str]) -> Optional[str]:
+        if s3_filename_suffix is None:
+            return None
+        assert self.uuid and self.raw_tenant_id
+        return "_".join((self.raw_tenant_id, self.uuid, s3_filename_suffix))
 
     def get_conn_dto(self) -> BaseFileS3ConnDTO:  # type: ignore
         cs = self._connector_settings

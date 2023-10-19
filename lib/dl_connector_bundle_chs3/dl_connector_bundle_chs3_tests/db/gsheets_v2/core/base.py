@@ -30,7 +30,7 @@ class BaseGSheetsFileS3TestClass(BaseCHS3TestClass[GSheetsFileS3Connection]):
             id=str(uuid.uuid4()),
             file_id=str(uuid.uuid4()),
             title=sample_s3_file,
-            s3_filename=sample_s3_file,
+            s3_filename_suffix=sample_s3_file,
             raw_schema=raw_schema,
             status=FileProcessingStatus.ready,
         )

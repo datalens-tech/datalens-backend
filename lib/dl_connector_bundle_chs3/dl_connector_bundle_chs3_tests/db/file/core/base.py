@@ -30,7 +30,7 @@ class BaseFileS3TestClass(BaseCHS3TestClass[FileS3Connection]):
             id=str(uuid.uuid4()),
             file_id=str(uuid.uuid4()),
             title=sample_s3_file,
-            s3_filename=sample_s3_file,
+            s3_filename_suffix=sample_s3_file,
             raw_schema=raw_schema,
             status=FileProcessingStatus.ready,
             column_types=[{"name": col[0], "user_type": col[1].name} for col in sample_table_spec.table_schema],

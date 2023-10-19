@@ -40,6 +40,7 @@ class FileS3Connection(BaseFileS3Connection):
             raw_schema=orig_src.raw_schema,
             file_id=orig_src.file_id,
             s3_filename=orig_src.s3_filename,
+            s3_filename_suffix=orig_src.s3_filename_suffix,
             status=orig_src.status,
             preview_id=orig_src.preview_id,
         )

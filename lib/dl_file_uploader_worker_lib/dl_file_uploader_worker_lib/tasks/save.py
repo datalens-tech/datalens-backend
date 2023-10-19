@@ -54,8 +54,8 @@ from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Conn
 LOGGER = logging.getLogger(__name__)
 
 
-def _make_source_s3_filename(tenant_id: str) -> str:
-    return f"{tenant_id}_{shortuuid.uuid()}"
+def make_source_s3_filename_suffix() -> str:
+    return str(shortuuid.uuid())
 
 
 def _make_tmp_source_s3_filename(source_id: str) -> str:
@@ -185,7 +185,9 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                         raw_schema_override if raw_schema_override is not None else conn_raw_schema,
                     )
 
-                    new_s3_filename = _make_source_s3_filename(tenant_id=self.meta.tenant_id)
+                    s3_filename_suffix = make_source_s3_filename_suffix()
+                    new_s3_filename = conn.get_full_s3_filename(s3_filename_suffix)
+                    assert new_s3_filename
 
                     def _construct_insert_from_select_query(for_debug: bool = False) -> str:
                         src_sql = make_s3_table_func_sql_source(
@@ -262,6 +264,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                             dst_source_id,
                             role=DataSourceRole.origin,
                             s3_filename=new_s3_filename,
+                            s3_filename_suffix=s3_filename_suffix,
                             status=FileProcessingStatus.ready,
                             preview_id=preview.id,
                             **extra_dsrc_params,
