@@ -158,6 +158,9 @@ class PackageMetaWriter(PackageMetaReader):
                 section[k] = v
         return changes
 
+    def update_package_name(self, new_name: str) -> None:
+        self.toml_writer.set_text_value(section_name=self._SECTION_NAME_MAIN, key="name", value=new_name)
+
 
 @attr.s
 class PackageMetaIOFactory:

@@ -4,7 +4,6 @@ from pathlib import Path
 import re
 from typing import (
     Callable,
-    Collection,
     Mapping,
     Optional,
     Sequence,
@@ -14,6 +13,7 @@ import attr
 
 from dl_repmanager.fs_editor import FilesystemEditor
 from dl_repmanager.package_index import PackageIndex
+from dl_repmanager.package_meta_reader import PackageMetaIOFactory
 from dl_repmanager.package_reference import PackageReference
 from dl_repmanager.primitives import (
     LocaleDomainSpec,
@@ -340,18 +340,10 @@ class RepositoryManager:
                 exclude_masks=edit_exclude_masks,
             )
 
-        # add `-` to the regex
-        regex, repl = self._make_regex_and_repl_for_sub(
-            old_str=old_package_info.package_reg_name,
-            new_str=new_package_info.package_reg_name,
-            allow_dash=False,
-        )
-        self.fs_editor.replace_regex_in_dir(
-            regex=regex,
-            repl=repl,
-            path=new_pkg_dir,
-            exclude_masks=edit_exclude_masks,
-        )
+        # Update reg name
+        pkg_meta_io_factory = PackageMetaIOFactory(fs_editor=self.fs_editor)
+        with pkg_meta_io_factory.package_meta_writer(file_path=new_package_info.toml_path) as pkg_meta_writer:
+            pkg_meta_writer.update_package_name(new_name=new_package_info.package_reg_name)
 
     def change_package_type(self, package_module_name: str, new_package_type: str) -> PackageInfo:
         old_package_info = self.package_index.get_package_info_from_module_name(package_module_name)
