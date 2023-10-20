@@ -50,6 +50,7 @@ from dl_core.multisource import (
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.local_cache import USEntryBuffer
 from dl_core.us_manager.us_manager import USManagerBase
+from dl_core.connection_executors.adapters.common_base import get_dialect_for_conn_type
 
 
 @attr.s
@@ -219,8 +220,8 @@ class DatasetTestWrapper:
 
     def quote(self, value: str, role: DataSourceRole) -> str:
         sql_dsrc = self.get_sql_data_source_strict(source_id=self._dataset.get_single_data_source_id(), role=role)
-        dialect = sql_dsrc.get_dialect()
-        return dialect.identifier_preparer.quote(value)
+        sa_dialect = get_dialect_for_conn_type(conn_type=sql_dsrc.conn_type)
+        return sa_dialect.identifier_preparer.quote(value)
 
     def resolve_source_role(self, for_preview: bool = False) -> DataSourceRole:
         return self._ds_capabilities.resolve_source_role(for_preview=for_preview)

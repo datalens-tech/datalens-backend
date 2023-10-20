@@ -33,6 +33,7 @@ from dl_core.db import (
 )
 from dl_core.us_connection import get_connection_class
 from dl_core.us_connection_base import ConnectionBase
+from dl_core.connectors.base.query_compiler import QueryCompiler
 
 
 if TYPE_CHECKING:
@@ -70,6 +71,7 @@ class DataSource(metaclass=abc.ABCMeta):
     default_chunk_row_count: ClassVar[int] = 10000
     chunk_size_bytes: ClassVar[int] = 3 * 1024**2
 
+    compiler_cls: Type[QueryCompiler] = QueryCompiler
     conn_type: ClassVar[ConnectionType]  # TODO unbind DataSource and Connection classes BI-4083
 
     # TODO FIX: Remove ASAP

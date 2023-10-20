@@ -1,4 +1,5 @@
 from clickhouse_sqlalchemy.orm.query import Query as CHQuery
+from dl_connector_clickhouse.core.clickhouse_base.query_compiler import ClickHouseQueryCompiler
 
 from dl_core.connections_security.base import (
     ConnSecuritySettings,
@@ -30,3 +31,4 @@ class BaseFileS3CoreConnector(CoreConnector):
         {ConnSecuritySettings(NonUserInputConnectionSafetyChecker, frozenset({BaseFileS3ConnDTO}))}
     )
     query_cls = CHQuery
+    compiler_cls = ClickHouseQueryCompiler

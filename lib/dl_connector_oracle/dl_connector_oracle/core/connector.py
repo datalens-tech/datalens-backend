@@ -24,6 +24,7 @@ from dl_connector_oracle.core.sa_types import SQLALCHEMY_ORACLE_TYPES
 from dl_connector_oracle.core.storage_schemas.connection import ConnectionSQLOracleDataStorageSchema
 from dl_connector_oracle.core.type_transformer import OracleServerTypeTransformer
 from dl_connector_oracle.core.us_connection import ConnectionSQLOracle
+from dl_connector_oracle.core.query_compiler import OracleQueryCompiler
 
 
 class OracleCoreConnectionDefinition(CoreConnectionDefinition):
@@ -56,3 +57,4 @@ class OracleCoreConnector(CoreConnector):
     )
     rqe_adapter_classes = frozenset({OracleDefaultAdapter})
     sa_types = SQLALCHEMY_ORACLE_TYPES
+    compiler_cls = OracleQueryCompiler

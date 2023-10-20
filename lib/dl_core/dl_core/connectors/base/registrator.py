@@ -30,6 +30,7 @@ from dl_core.services_registry.conn_executor_factory import (
 from dl_core.us_connection import register_connection_class
 from dl_core.us_manager.storage_schemas.connection_schema_registry import register_connection_schema
 from dl_core.us_manager.storage_schemas.data_source_spec import register_data_source_schema
+from dl_core.data_processing.query_compiler_registry import register_sa_query_compiler_cls
 
 
 if TYPE_CHECKING:
@@ -97,10 +98,14 @@ class CoreConnectorRegistrator:
             conn_sec_settings.security_checker_cls.register_dto_types(dto_types)
         for adapter_cls in connector.rqe_adapter_classes:
             register_adapter_class(adapter_cls=adapter_cls)
-        register_sa_query_cls(backend_type=connector.backend_type, query_cls=connector.query_cls)
         register_query_fail_exceptions(exception_classes=connector.query_fail_exceptions)
         for notification_cls in connector.notification_classes:
             register_notification()(notification_cls)  # it is a parameterized decorator
+
+        # backend_type-dependent properties
+        backend_type = connector.backend_type
+        register_sa_query_cls(backend_type=backend_type, query_cls=connector.query_cls)
+        register_sa_query_compiler_cls(backend_type=backend_type, sa_query_compiler_cls=connector.compiler_cls)
 
         connector.registration_hook()  # for custom actions
 
