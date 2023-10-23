@@ -25,6 +25,7 @@ from dl_core.base_models import (
 )
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.editor import DatasetComponentEditor
+from dl_core.connection_executors.adapters.common_base import get_dialect_for_conn_type
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.data_source.base import DataSource
 from dl_core.data_source.collection import (
@@ -219,8 +220,8 @@ class DatasetTestWrapper:
 
     def quote(self, value: str, role: DataSourceRole) -> str:
         sql_dsrc = self.get_sql_data_source_strict(source_id=self._dataset.get_single_data_source_id(), role=role)
-        dialect = sql_dsrc.get_dialect()
-        return dialect.identifier_preparer.quote(value)
+        sa_dialect = get_dialect_for_conn_type(conn_type=sql_dsrc.conn_type)
+        return sa_dialect.identifier_preparer.quote(value)
 
     def resolve_source_role(self, for_preview: bool = False) -> DataSourceRole:
         return self._ds_capabilities.resolve_source_role(for_preview=for_preview)

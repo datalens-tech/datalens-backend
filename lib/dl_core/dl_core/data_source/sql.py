@@ -9,12 +9,10 @@ from typing import (
     Callable,
     ClassVar,
     Optional,
-    Type,
 )
 
 import attr
 import sqlalchemy as sa
-from sqlalchemy.engine.default import DefaultDialect
 
 from dl_constants.enums import JoinType
 from dl_core import exc
@@ -24,7 +22,6 @@ from dl_core.connection_models import (
     TableDefinition,
     TableIdent,
 )
-from dl_core.connectors.base.query_compiler import QueryCompiler
 from dl_core.data_source.base import (
     DataSource,
     DbInfo,
@@ -77,7 +74,6 @@ class BaseSQLDataSource(DataSource):
             JoinType.left,
         }
     )
-    compiler_cls: Type[QueryCompiler] = QueryCompiler
 
     # Instance attrs
     _exists: Optional[bool] = attr.ib(default=None, init=False, eq=False, hash=False)
@@ -128,9 +124,6 @@ class BaseSQLDataSource(DataSource):
             self._exists = self._check_existence(conn_executor_factory=conn_executor_factory)
         return self._exists
 
-    def get_dialect(self) -> DefaultDialect:
-        return self.connection.get_dialect()
-
     def quote(self, value) -> sa.sql.quoted_name:  # type: ignore  # TODO: fix  # subclass of str
         return self.connection.quote(value)
 
@@ -138,7 +131,7 @@ class BaseSQLDataSource(DataSource):
         raise NotImplementedError()
 
     def get_table_definition(self) -> TableDefinition:
-        """Should returns TableDefinition which will be used to fetch schema info from DB"""
+        """Should return TableDefinition which will be used to fetch schema info from DB"""
         raise NotImplementedError()
 
     def get_schema_info(self, conn_executor_factory: Callable[[], SyncConnExecutorBase]) -> SchemaInfo:
@@ -146,11 +139,6 @@ class BaseSQLDataSource(DataSource):
         conn_executor = conn_executor_factory()
         schema_info = conn_executor.get_table_schema_info(table_def)
         return self._postprocess_raw_schema_from_db(schema_info)
-
-    def get_query_compiler(self) -> QueryCompiler:
-        return self.compiler_cls(
-            dialect=self.get_dialect(),
-        )
 
     def _get_db_version(self, conn_executor_factory: Callable[[], SyncConnExecutorBase]) -> Optional[str]:
         conn_executor = conn_executor_factory()
