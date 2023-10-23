@@ -14,6 +14,7 @@ from dl_core.connectors.base.connector import (
 from dl_core.connectors.base.dashsql import register_custom_dash_sql_key_names
 from dl_core.connectors.base.data_source_migration import register_data_source_migrator
 from dl_core.connectors.settings.registry import register_connector_settings_class
+from dl_core.data_processing.query_compiler_registry import register_sa_query_compiler_cls
 from dl_core.data_source.type_mapping import register_data_source_class
 from dl_core.data_source_spec.type_mapping import register_data_source_spec_class
 from dl_core.db.conversion_base import register_type_transformer_class
@@ -97,10 +98,14 @@ class CoreConnectorRegistrator:
             conn_sec_settings.security_checker_cls.register_dto_types(dto_types)
         for adapter_cls in connector.rqe_adapter_classes:
             register_adapter_class(adapter_cls=adapter_cls)
-        register_sa_query_cls(backend_type=connector.backend_type, query_cls=connector.query_cls)
         register_query_fail_exceptions(exception_classes=connector.query_fail_exceptions)
         for notification_cls in connector.notification_classes:
             register_notification()(notification_cls)  # it is a parameterized decorator
+
+        # backend_type-dependent properties
+        backend_type = connector.backend_type
+        register_sa_query_cls(backend_type=backend_type, query_cls=connector.query_cls)
+        register_sa_query_compiler_cls(backend_type=backend_type, sa_query_compiler_cls=connector.compiler_cls)
 
         connector.registration_hook()  # for custom actions
 

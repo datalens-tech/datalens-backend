@@ -43,6 +43,7 @@ from dl_connector_chyt.core.storage_schemas.data_source_spec import (
 )
 from dl_connector_chyt.core.type_transformer import CHYTTypeTransformer
 from dl_connector_chyt.core.us_connection import ConnectionCHYTToken
+from dl_connector_clickhouse.core.clickhouse_base.query_compiler import ClickHouseQueryCompiler
 
 
 class CHYTCoreConnectionDefinition(CoreConnectionDefinition):
@@ -101,3 +102,4 @@ class CHYTCoreConnector(CoreConnector):
         }
     )
     query_cls = CHQuery
+    compiler_cls = ClickHouseQueryCompiler

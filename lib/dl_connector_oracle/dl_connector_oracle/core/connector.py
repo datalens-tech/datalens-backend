@@ -20,6 +20,7 @@ from dl_connector_oracle.core.data_source import (
     OracleSubselectDataSource,
 )
 from dl_connector_oracle.core.data_source_migration import OracleDataSourceMigrator
+from dl_connector_oracle.core.query_compiler import OracleQueryCompiler
 from dl_connector_oracle.core.sa_types import SQLALCHEMY_ORACLE_TYPES
 from dl_connector_oracle.core.storage_schemas.connection import ConnectionSQLOracleDataStorageSchema
 from dl_connector_oracle.core.type_transformer import OracleServerTypeTransformer
@@ -56,3 +57,4 @@ class OracleCoreConnector(CoreConnector):
     )
     rqe_adapter_classes = frozenset({OracleDefaultAdapter})
     sa_types = SQLALCHEMY_ORACLE_TYPES
+    compiler_cls = OracleQueryCompiler

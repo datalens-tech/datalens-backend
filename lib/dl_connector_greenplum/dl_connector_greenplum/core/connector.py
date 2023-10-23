@@ -26,6 +26,7 @@ from dl_connector_postgresql.core.postgresql_base.connection_executors import (
     AsyncPostgresConnExecutor,
     PostgresConnExecutor,
 )
+from dl_connector_postgresql.core.postgresql_base.query_compiler import PostgreSQLQueryCompiler
 from dl_connector_postgresql.core.postgresql_base.sa_types import SQLALCHEMY_POSTGRES_TYPES
 from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
 
@@ -60,3 +61,4 @@ class GreenplumCoreConnector(CoreConnector):
     )
     rqe_adapter_classes = frozenset({PostgresAdapter, AsyncPostgresAdapter})
     sa_types = SQLALCHEMY_POSTGRES_TYPES
+    compiler_cls = PostgreSQLQueryCompiler
