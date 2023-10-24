@@ -70,9 +70,9 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         ds.result_schema["Measure 1"] = ds.field(formula=f"SUM([{data_api_test_params.summable_field}])")
         ds.result_schema["Measure 2"] = ds.field(formula=f"SUM([{data_api_test_params.summable_field}])")
 
-        result_resp = self.get_result(ds, data_api, field_names=(
-            "Measure 1", "Measure 2", data_api_test_params.two_dims[0]
-        ))
+        result_resp = self.get_result(
+            ds, data_api, field_names=("Measure 1", "Measure 2", data_api_test_params.two_dims[0])
+        )
         rows = get_data_rows(result_resp)
         min_row_cnt = 2  # just an arbitrary number
         assert len(rows) > min_row_cnt
@@ -80,7 +80,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
 
     def _test_contains(
         self,
-        request,
+        request: pytest.FixtureRequest,
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
@@ -142,6 +142,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
     @for_features(array_support)
     def test_array_contains_filter(
         self,
+        request: pytest.FixtureRequest,
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
@@ -149,12 +150,13 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         data_api: SyncHttpDataApiV2,
     ) -> None:
         self._test_contains(
-            db, saved_connection_id, dataset_params, control_api, data_api, WhereClauseOperation.CONTAINS
+            request, db, saved_connection_id, dataset_params, control_api, data_api, WhereClauseOperation.CONTAINS
         )
 
     @for_features(array_support)
     def test_array_not_contains_filter(
         self,
+        request: pytest.FixtureRequest,
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
@@ -162,7 +164,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         data_api: SyncHttpDataApiV2,
     ) -> None:
         self._test_contains(
-            db, saved_connection_id, dataset_params, control_api, data_api, WhereClauseOperation.NOTCONTAINS
+            request, db, saved_connection_id, dataset_params, control_api, data_api, WhereClauseOperation.NOTCONTAINS
         )
 
     @pytest.mark.parametrize(
@@ -179,7 +181,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
     @for_features(array_support)
     def test_array_contains_field(
         self,
-        request,
+        request: pytest.FixtureRequest,
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
@@ -409,7 +411,7 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, Regulat
 
     def test_date_filter_distinct(
         self,
-        request,
+        request: pytest.FixtureRequest,
         db: Db,
         saved_connection_id: str,
         dataset_params: dict,
