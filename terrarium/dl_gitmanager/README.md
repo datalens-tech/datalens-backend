@@ -47,12 +47,13 @@ List files that have changed between two given revisions including the changes i
 dl-git range-diff-paths --base <base> --head <head>
 dl-git range-diff-paths --base <base> --head <head> --absolute
 dl-git range-diff-paths --base <base> --head <head> --only-added-commits
+dl-git range-diff-paths --base <base> --head <head> --without-deleted-files
 ```
 
 Here `base` and `head` can be a commit ID, branch name, `HEAD~3` or any similar notation
 that is usually accepted by git.
 These arguments are optional. By default `head` is `HEAD` and `base` is `HEAD~1`.
-Thgis means you can use the following command to see the diff of the last commit in the current branch:
+This means you can use the following command to see the diff of the last commit in the current branch:
 ```
 dl-git diff-paths
 ```
@@ -63,13 +64,16 @@ By default they are printed relative to the repository root.
 The `--only-added-commits` option makes the tool inspect only commits
 that have been added in the head version.
 
+The `--without-deleted-files` option makes the tool omit deleted (non-existent) files in the resulting list.
+
 ### list-diff-paths
 
 List files that have changed in commits passed on as input
 
 ```
 echo <commit-id> | dl-git list-diff-paths
-echo <commit-id>> | dl-git list-diff-paths --absolute
+echo <commit-id> | dl-git list-diff-paths --absolute
+echo <commit-id> | dl-git list-diff-paths --without-deleted-files
 ```
 
-Option `--absolute` has the same meaning as in `range-diff-paths`.
+Options `--absolute` and `--without-deleted-files` have the same meaning as in `range-diff-paths`.

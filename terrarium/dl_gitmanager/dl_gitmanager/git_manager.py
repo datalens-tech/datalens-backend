@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import (
     Collection,
@@ -114,7 +115,9 @@ class GitManager:
             for _, diff_item in submodule_manager._iter_list_diffs(commits=sm_commits_for_all_commits):
                 yield submodule_base_path, diff_item
 
-    def _collect_paths_from_diffs(self, diff_iterable: Iterable[tuple[Path, Diff]]) -> list[str]:
+    def _collect_paths_from_diffs(
+        self, diff_iterable: Iterable[tuple[Path, Diff]], without_deleted: bool = False
+    ) -> list[str]:
         result: set[str] = set()
         for base_path, diff_item in diff_iterable:
             if diff_item.a_path:
@@ -122,15 +125,26 @@ class GitManager:
             if diff_item.b_path:
                 result.add(str(base_path / diff_item.b_path))
 
+        if without_deleted:
+            result = {path for path in result if os.path.exists(path)}
+
         return sorted(result)
 
-    def get_range_diff_paths(self, base: str, head: str, absolute: bool = False) -> list[str]:
+    def get_range_diff_paths(
+        self, base: str, head: str, absolute: bool = False, without_deleted: bool = False
+    ) -> list[str]:
         return self._collect_paths_from_diffs(
-            diff_iterable=self._iter_range_diffs(base=base, head=head, absolute=absolute)
+            diff_iterable=self._iter_range_diffs(base=base, head=head, absolute=absolute),
+            without_deleted=without_deleted,
         )
 
-    def get_list_diff_paths(self, commits: Collection[str], absolute: bool = False) -> list[str]:
-        return self._collect_paths_from_diffs(diff_iterable=self._iter_list_diffs(commits=commits, absolute=absolute))
+    def get_list_diff_paths(
+        self, commits: Collection[str], absolute: bool = False, without_deleted: bool = False
+    ) -> list[str]:
+        return self._collect_paths_from_diffs(
+            diff_iterable=self._iter_list_diffs(commits=commits, absolute=absolute),
+            without_deleted=without_deleted,
+        )
 
     def get_all_ancestor_commits(self, commit: str) -> set[str]:
         result: set[str] = {commit}
