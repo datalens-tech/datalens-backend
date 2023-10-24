@@ -122,9 +122,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
     def s3_secret_access_key(self) -> str:
         return self._connector_settings.SECRET_ACCESS_KEY
 
-    def get_full_s3_filename(self, s3_filename_suffix: Optional[str]) -> Optional[str]:
-        if s3_filename_suffix is None:
-            return None
+    def get_full_s3_filename(self, s3_filename_suffix: str) -> str:
         assert self.uuid and self.raw_tenant_id
         return "_".join((self.raw_tenant_id, self.uuid, s3_filename_suffix))
 
