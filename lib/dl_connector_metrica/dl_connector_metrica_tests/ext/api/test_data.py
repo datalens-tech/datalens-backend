@@ -19,6 +19,7 @@ class TestMetricaDataResult(MetricaDataApiTestBase, DefaultConnectorDataResultTe
     test_params = RegulatedTestParams(
         mark_tests_skipped={
             DefaultConnectorDataResultTestSuite.test_basic_result: "Metrica doesn't support SUM",
+            DefaultConnectorDataResultTestSuite.test_duplicated_expressions: "Metrica doesn't support SUM",
             DefaultConnectorDataResultTestSuite.test_dates: "Metrica doesn't support DATE",
             DefaultConnectorDataResultTestSuite.test_get_result_with_string_filter_operations_for_numbers: "Metrica doesn't support ICONTAINS",
         },
