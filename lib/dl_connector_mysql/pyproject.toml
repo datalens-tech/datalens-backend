@@ -1,0 +1,86 @@
+
+[tool.poetry]
+name = "datalens-connector-mysql"
+version = "0.0.1"
+description = ""
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_connector_mysql"}]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+aiomysql = ">=0.1.1"
+attrs = ">=22.2.0"
+pymysql = ">=1.1.0"
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-constants = {path = "../dl_constants"}
+datalens-formula-ref = {path = "../dl_formula_ref"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-formula = {path = "../dl_formula"}
+datalens-configs = {path = "../dl_configs"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-core = {path = "../dl_core"}
+datalens-app-tools = {path = "../dl_app_tools"}
+datalens-db-testing = {path = "../dl_db_testing"}
+datalens-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."dl_api_lib.connectors"]
+mysql = "dl_connector_mysql.api.connector:MySQLApiConnector"
+
+[tool.poetry.plugins."dl_core.connectors"]
+mysql = "dl_connector_mysql.core.connector:MySQLCoreConnector"
+
+[tool.poetry.plugins."dl_db_testing.connectors"]
+mysql = "dl_connector_mysql.db_testing.connector:MySQLDbTestingConnector"
+
+[tool.poetry.plugins."dl_formula.connectors"]
+mysql = "dl_connector_mysql.formula.connector:MySQLFormulaConnector"
+
+[tool.poetry.plugins."dl_formula_ref.plugins"]
+mysql = "dl_connector_mysql.formula_ref.plugin:MySQLFormulaRefPlugin"
+
+[tool.poetry.group]
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+pymysql = ">=1.1.0"
+datalens-api-lib-testing = {path = "../dl_api_lib_testing"}
+datalens-formula-testing = {path = "../dl_formula_testing"}
+datalens-testing = {path = "../dl_testing"}
+datalens-core-testing = {path = "../dl_core_testing"}
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = ["dl_connector_mysql_tests/db", "dl_connector_mysql_tests/unit"]
+
+
+
+[datalens.pytest.local]
+root_dir = "dl_connector_mysql_tests/"
+target_path = "db unit"
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[datalens.i18n.domains]
+dl_connector_mysql = [
+    {path = "dl_connector_mysql/api"},
+    {path = "dl_connector_mysql/core"},
+]
+dl_formula_ref_dl_connector_mysql = [
+    {path = "dl_connector_mysql/formula_ref"},
+]

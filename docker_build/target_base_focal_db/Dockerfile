@@ -6,10 +6,6 @@ RUN apt-get update \
     && apt-get install -y --fix-missing \
         # For Oracle
         libaio1 \
-        # For MySQL
-        libmysqlclient21=8.0.19-0ubuntu5 \
-        libmysqlclient-dev=8.0.19-0ubuntu5 \
-        default-libmysqlclient-dev \
         # For MSSQL
         freetds-dev tdsodbc unixodbc unixodbc-dev libtcmalloc-minimal4 \
         # For Postgres

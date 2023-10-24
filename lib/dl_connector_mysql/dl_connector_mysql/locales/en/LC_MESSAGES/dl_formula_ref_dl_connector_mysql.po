@@ -1,0 +1,17 @@
+# Copyright (c) 2023 YANDEX LLC <datalens-opensource@yandex-team.ru>
+# This file is distributed under the same license as the DataLens package.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: datalens-opensource@yandex-team.ru\n"
+"POT-Creation-Date: 2023-09-22 08:10+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+msgid "`MySQL` version `5.7`"
+msgstr ""
+
+msgid "`MySQL` version `8.0.12`"
+msgstr ""
