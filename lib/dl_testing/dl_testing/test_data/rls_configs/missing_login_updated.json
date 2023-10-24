@@ -1,0 +1,58 @@
+[
+    {
+        "allowed_value": "Москва",
+        "subject": {
+            "subject_id": "1120000000019416",
+            "subject_type": "user",
+            "subject_name": "user2"
+        }
+    },
+    {
+        "allowed_value": "Москва",
+        "subject": {
+            "subject_id": "1120000000000529",
+            "subject_type": "user",
+            "subject_name": "user1"
+        }
+    },
+    {
+        "allowed_value": "Самара",
+        "subject": {
+            "subject_id": "1120000000001001",
+            "subject_type": "user",
+            "subject_name": "user3"
+        }
+    },
+    {
+        "allowed_value": "Самара",
+        "subject": {
+            "subject_id": "1120000000000529",
+            "subject_type": "user",
+            "subject_name": "user1"
+        }
+    },
+    {
+        "allowed_value": "Самара",
+        "subject": {
+            "subject_id": "",
+            "subject_type": "notfound",
+            "subject_name": "!FAILED_someuser"
+        }
+    },
+    {
+        "allowed_value": "Омск",
+        "subject": {
+            "subject_id": "1120000000000251",
+            "subject_type": "user",
+            "subject_name": "user5"
+        }
+    },
+    {
+        "allowed_value": "Омск",
+        "subject": {
+            "subject_id": "1120000000000251",
+            "subject_type": "user",
+            "subject_name": "pg"
+        }
+    }
+]

@@ -1,0 +1,3 @@
+'Москва': user2, user1
+'Самара': user3, !FAILED_someuser, user1
+'Омск': user5, pg
