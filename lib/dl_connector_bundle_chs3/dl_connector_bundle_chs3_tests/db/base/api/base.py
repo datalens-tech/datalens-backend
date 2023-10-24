@@ -106,7 +106,7 @@ class CHS3ConnectionApiTestBase(BaseCHS3TestClass[FILE_CONN_TV], ConnectionTestB
             for src in conn.data.sources:
                 src.status = sample_file_data_source.status
                 src.raw_schema = sample_file_data_source.raw_schema
-                src.s3_filename = sample_file_data_source.s3_filename
+                src.s3_filename_suffix = sample_file_data_source.s3_filename_suffix
             sync_us_manager.save(conn)
             yield conn_id
 

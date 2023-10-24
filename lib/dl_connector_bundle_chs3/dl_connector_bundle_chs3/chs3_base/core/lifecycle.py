@@ -35,16 +35,23 @@ class FileConnTaskScheduler:
             source_to_del = (src.id for src in conn._saved_sources or [])
         for src_id in source_to_del:
             source = conn.get_saved_source_by_id(src_id)
-            if source.s3_filename is None:
+
+            if source.s3_filename_suffix is not None:
+                s3_filename = conn.get_full_s3_filename(source.s3_filename_suffix)
+            else:
+                # TODO: Remove this fallback after old connections migration to s3_filename_suffix
+                s3_filename = source.s3_filename
+
+            if s3_filename is None:
                 LOGGER.warning(f"Cannot schedule file deletion for source_id {source.id} - s3_filename not set")
                 continue
             task = DeleteFileTask(
-                s3_filename=source.s3_filename,
+                s3_filename=s3_filename,
                 preview_id=source.preview_id,
             )
             task_instance = await_sync(self._task_processor.schedule(task))
             LOGGER.info(
-                f"Scheduled task DeleteFileTask for source_id {source.id}, filename {source.s3_filename}. "
+                f"Scheduled task DeleteFileTask for source_id {source.id}, filename {s3_filename}. "
                 f"instance_id: {task_instance.instance_id}"
             )
 

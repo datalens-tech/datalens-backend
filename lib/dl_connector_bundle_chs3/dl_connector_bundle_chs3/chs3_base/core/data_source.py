@@ -117,7 +117,11 @@ class BaseFileS3DataSource(ClickHouseDataSourceBase):
         origin_src = self._get_origin_src()
         status = origin_src.status
         raw_schema = self.spec.raw_schema
-        s3_filename = origin_src.s3_filename
+        if origin_src.s3_filename_suffix is not None:
+            s3_filename = self.connection.get_full_s3_filename(origin_src.s3_filename_suffix)
+        else:
+            # TODO: Remove this fallback after old connections migration to s3_filename_suffix
+            s3_filename = origin_src.s3_filename
 
         self._handle_component_errors()
 

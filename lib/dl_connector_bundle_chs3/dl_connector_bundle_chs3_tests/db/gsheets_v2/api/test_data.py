@@ -109,6 +109,7 @@ class TestGSheetsFileS3DataResult(GSheetsFileS3DataApiTestBase, CHS3DataResultTe
             conn.data.sources[0].id,
             role=DataSourceRole.origin,
             s3_filename=None,
+            s3_filename_suffix=None,
             status=FileProcessingStatus.failed,
             preview_id=None,
             data_updated_at=datetime.datetime.now(datetime.timezone.utc),

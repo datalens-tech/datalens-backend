@@ -65,7 +65,7 @@ class CHS3TableDataSourceTestBase(
         expected = (
             f"s3("
             f"'{self.connection_settings.S3_ENDPOINT}/{self.connection_settings.BUCKET}/"
-            f"{sample_file_data_source.s3_filename}', "
+            f"{sample_file_data_source.s3_filename_suffix}', "
             f"'key_id_{replace_secret}', 'secret_key_{replace_secret}', 'Native', "
             f"'c1 Nullable(Int64)')"
         )

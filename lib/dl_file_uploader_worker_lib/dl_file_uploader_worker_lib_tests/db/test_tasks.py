@@ -39,6 +39,8 @@ from dl_file_uploader_task_interface.tasks import (
 from dl_file_uploader_worker_lib.utils import parsing_utils
 from dl_task_processor.state import wait_task
 
+from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
+
 from .utils import create_file_connection
 
 
@@ -617,8 +619,10 @@ async def test_rename_tenant_files(
     usm = default_async_usm_per_test
     conn = await usm.get_by_id(saved_file_connection_id)
     source = conn.data.sources[0]
-    assert source.s3_filename
-    s3_obj = await s3_client.get_object(Bucket=s3_persistent_bucket, Key=source.s3_filename)
+    assert source.s3_filename_suffix
+    s3_obj = await s3_client.get_object(
+        Bucket=s3_persistent_bucket, Key=conn.get_full_s3_filename(source.s3_filename_suffix)
+    )
     s3_data = await s3_obj["Body"].read()
     preview_set = PreviewSet(redis=redis_model_manager._redis, id=conn.raw_tenant_id)
     ps_vals = {_ async for _ in preview_set.sscan_iter()}
@@ -630,10 +634,13 @@ async def test_rename_tenant_files(
     assert result[-1] == "success"
 
     updated_conn = await usm.get_by_id(saved_file_connection_id)
+    assert isinstance(conn, BaseFileS3Connection)
     updated_source = updated_conn.get_file_source_by_id(source.id)
-    assert updated_source.s3_filename
-    assert updated_source.s3_filename.startswith(new_tenant_id)
-    updated_s3_obj = await s3_client.get_object(Bucket=s3_persistent_bucket, Key=updated_source.s3_filename)
+    assert updated_source.s3_filename_suffix
+    assert updated_source.s3_filename_suffix != source.s3_filename_suffix
+    assert updated_source.s3_filename and updated_source.s3_filename.startswith(updated_conn.raw_tenant_id)
+    new_s3_filename = updated_conn.get_full_s3_filename(updated_source.s3_filename_suffix)
+    updated_s3_obj = await s3_client.get_object(Bucket=s3_persistent_bucket, Key=new_s3_filename)
     updated_s3_obj_data = await updated_s3_obj["Body"].read()
     assert s3_data == updated_s3_obj_data
 
