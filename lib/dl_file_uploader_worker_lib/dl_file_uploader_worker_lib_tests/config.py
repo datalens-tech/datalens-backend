@@ -6,6 +6,9 @@ from dl_configs.crypto_keys import (
 )
 
 
+CONNECTOR_WHITELIST = ["clickhouse", "file", "gsheets_v2"]
+
+
 @attr.s(kw_only=True)
 class TestingUSConfig:
     master_token: str = attr.ib(default="AC1ofiek8coB")

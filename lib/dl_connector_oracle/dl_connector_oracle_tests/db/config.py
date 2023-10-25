@@ -15,6 +15,7 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     host_us_pg=get_test_container_hostport("pg-us", fallback_port=51810).host,
     port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=51810).port,
     us_master_token="AC1ofiek8coB",
+    core_connector_ep_names=["oracle"],
 )
 
 COMPOSE_PROJECT_NAME = os.environ.get("COMPOSE_PROJECT_NAME", "dl_connector_oracle")
