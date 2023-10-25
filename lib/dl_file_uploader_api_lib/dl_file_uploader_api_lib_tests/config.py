@@ -6,6 +6,9 @@ from dl_configs.crypto_keys import (
 )
 
 
+CONNECTOR_WHITELIST = ["clickhouse", "file", "gsheets_v2"]
+
+
 @attr.s(kw_only=True)
 class TestingUSConfig:
     container_name: str = attr.ib(default="bi_file_uploader_api_us-tests")

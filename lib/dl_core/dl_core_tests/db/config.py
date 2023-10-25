@@ -11,6 +11,7 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     host_us_pg=get_test_container_hostport("pg-us", fallback_port=50309).host,
     port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=50309).port,
     us_master_token="AC1ofiek8coB",
+    core_connector_ep_names=["clickhouse"],
 )
 
 
