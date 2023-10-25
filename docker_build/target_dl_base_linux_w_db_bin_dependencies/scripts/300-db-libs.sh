@@ -4,5 +4,4 @@ export DEBIAN_FRONTEND=noninteractive
 
 apt-get install --yes \
   libpq-dev \
-  clickhouse-client \
-  libmysqlclient-dev
+  clickhouse-client

@@ -58,7 +58,7 @@ oracledb = "==1.3.1"
 yarl = "==1.8.2"
 googleapis-common-protos = "==1.59.1"
 grpcio = "==1.45.0rc1"
-mysqlclient = "==1.4.6"
+pymysql = "==1.1.0"
 pyodbc = "==4.0.35"
 ciso8601 = "==2.2.0"
 redis = "==4.5.1"
@@ -131,12 +131,14 @@ datalens-file-uploader-worker-lib = {path = "../lib/dl_file_uploader_worker_lib"
 datalens-connector-bigquery = {path = "../lib/dl_connector_bigquery"}
 datalens-task-processor = {path = "../lib/dl_task_processor"}
 datalens-connector-oracle = {path = "../lib/dl_connector_oracle"}
+datalens-connector-mysql = {path = "../lib/dl_connector_mysql"}
+datalens-sqlalchemy-mysql = {path = "../lib/dl_sqlalchemy_mysql"}
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.3.0"
 ruff = "==0.0.267"
 ipdb = "==0.13.13"
-mysqlclient = "==1.4.6"
+pymysql = "==1.1.0"
 psycopg2 = "==2.8.6"
 pyodbc = "==4.0.35"
 pytest = "==7.2.2"
@@ -230,7 +232,7 @@ lz4 =  {ignore = true}
 marshmallow =  {ignore = true}
 marshmallow-oneofschema =  {ignore = true}
 more-itertools =  {ignore = true}
-mysqlclient =  {ignore = true}
+pymysql =  {ignore = true}
 openpyxl =  {ignore = true}
 oracledb =  {ignore = true}
 pandas = {name = "pandas-stubs", version="1.5.3.230321"}
