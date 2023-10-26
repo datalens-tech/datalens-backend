@@ -219,3 +219,60 @@ jobs:
             ./report/**/*.xml
           event_name: ${{ github.event.workflow_run.event }}
           report_individual_runs: "true"
+
+  codestyle_all_without_ruff:
+    runs-on: [self-hosted, linux, light]
+    needs: gh_build_image
+    container:
+      # until https://github.com/github/docs/issues/25520 is resolved, using vars
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: 'Cleanup build folder'
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - run: |
+          task cq:check_dir -- .
+          task cq:check_dir_strict -- .
+        env:
+          VENV_PATH: /venv
+          SKIP_RUFF: true
+
+  codestyle_changed_without_ruff:
+    runs-on: [ self-hosted, linux, light ]
+    needs: gh_build_image
+    container:
+      # until https://github.com/github/docs/issues/25520 is resolved, using vars
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: 'Cleanup build folder'
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+      # https://github.com/actions/runner-images/issues/6775
+      - run: git config --global --add safe.directory .
+      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
+      - run: |
+          TARGET=$(. /venv/bin/activate && dl-git range-diff-paths --only-added-commits --base ${{ github.event.pull_request.base.sha }} --head ${{ github.event.pull_request.head.sha }})
+          echo $TARGET
+          task cq:check_target -- "$TARGET"
+          task cq:check_target_strict  -- "$TARGET" 1>/dev/null 2>/dev/null
+        env:
+          VENV_PATH: /venv
+          SKIP_RUFF: true
+          TEST_TARGET_OVERRIDE: ${{ github.event.inputs.test_targets }}
