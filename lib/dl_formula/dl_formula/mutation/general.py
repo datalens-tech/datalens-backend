@@ -53,7 +53,7 @@ class ConvertBlocksToFunctionsMutation(FormulaMutation):
         node: nodes.FormulaItem,
         parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> bool:
-        return isinstance(node, nodes.IfBlock) or isinstance(node, nodes.IfBlock)
+        return isinstance(node, nodes.IfBlock) or isinstance(node, nodes.CaseBlock)
 
     def _make_replacement_for_if_block(self, node: nodes.IfBlock) -> nodes.FuncCall:
         args: list[nodes.FormulaItem] = [
