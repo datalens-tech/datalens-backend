@@ -42,7 +42,7 @@ services:
 
   us:
     build:
-      context: ../testenv_common_private/images
+      context: ../testenv-common/images
       dockerfile: Dockerfile.us-single-tenant
     depends_on:
       - pg-us
