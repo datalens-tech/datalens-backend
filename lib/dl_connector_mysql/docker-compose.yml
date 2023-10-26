@@ -7,7 +7,7 @@ services:
   db-mysql-5-7:
     # the earliest version supported by DL
     # image: "mysql:5.7"
-    image: "mysql:5.7@sha256:e857469c4d22da38abe1f1b60a0e0bf7b0a5812f6bea1e247e375aa1701db925"
+    image: "mysql:5.7@sha256:188121394576d05aedb5daf229403bf58d4ee16e04e81828e4d43b72bd227bc2"
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "1"
       MYSQL_DATABASE: "test_data"

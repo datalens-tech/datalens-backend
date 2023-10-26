@@ -1,5 +1,5 @@
 # the earliest version supported by DL
 # FROM mysql:8.0.12
-FROM mysql:8.0.12@sha256:8fdc47e9ccb8112a62148032ae70484e3453b628ab6fe02bccf159e2966b750e
+FROM mysql:8.0.12@sha256:ee1e8adfcefbc1dadf8bc01350b6b6ba9c6925d45e02371edf56e13b780f0e5a
 
 COPY db-mysql/docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
