@@ -4,7 +4,10 @@ import pytest
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
-from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
+from dl_api_lib_testing.data_api_base import (
+    DataApiTestParams,
+    StandardizedDataApiTestBase,
+)
 from dl_api_lib_testing.dataset_base import DatasetTestBase
 
 from dl_connector_snowflake.core.constants import (
@@ -60,4 +63,14 @@ class SnowFlakeDatasetTestBase(SnowFlakeConnectionTestBase, DatasetTestBase):
 
 
 class SnowFlakeDataApiTestBase(SnowFlakeDatasetTestBase, StandardizedDataApiTestBase):
-    pass
+    bi_compeng_pg_on = False
+
+    @pytest.fixture(scope="class")
+    def data_api_test_params(self) -> DataApiTestParams:
+        return DataApiTestParams(
+            two_dims=("Category", "City"),
+            summable_field="Sales",
+            range_field="Sales",
+            distinct_field="City",
+            date_field="Order Date",
+        )

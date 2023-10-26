@@ -55,7 +55,7 @@ def get_test_container_hostport(
     else:
         try:
             with open(file_path) as dcyml:
-                docker_compose_yml = yaml.load(dcyml)
+                docker_compose_yml = yaml.safe_load(dcyml)
         except FileNotFoundError:
             if fallback_port is not None:
                 return HostPort(host="127.0.0.1", port=fallback_port)

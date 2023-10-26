@@ -15,7 +15,7 @@ readme = "README.rst"
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
 python = ">=3.10, <3.12"
-redis = ">=4.5.1"
+redis = ">=4.5.4"
 
 [tool.poetry.group.tests.dependencies]
 [build-system]

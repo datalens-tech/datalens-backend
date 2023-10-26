@@ -9,7 +9,7 @@ license = "Apache 2.0"
 
 
 [tool.poetry.dependencies]
-flask = ">=2.0.3"
+flask = ">=2.2.5"
 python = ">=3.10, <3.12"
 [build-system]
 requires = ["poetry-core"]

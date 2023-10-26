@@ -7,7 +7,6 @@ import sys
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
     Type,
     Union,
 )

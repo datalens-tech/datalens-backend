@@ -1,5 +1,9 @@
+import asyncio
 import datetime
-from typing import Any
+from typing import (
+    Any,
+    Generator,
+)
 
 import pytest
 
@@ -18,6 +22,15 @@ class BaseSnowFlakeTestClass(BaseConnectionTestClass[ConnectionSQLSnowFlake]):
     conn_type = CONNECTION_TYPE_SNOWFLAKE
     core_test_config = test_config.CORE_TEST_CONFIG
     engine_config_cls = SnowFlakeDbEngineConfig
+
+    @pytest.fixture(autouse=True)
+    # FIXME: This fixture is a temporary solution for failing core tests when they are run together with api tests
+    def loop(self, event_loop: asyncio.AbstractEventLoop) -> Generator[asyncio.AbstractEventLoop, None, None]:
+        asyncio.set_event_loop(event_loop)
+        yield event_loop
+        # Attempt to cover an old version of pytest-asyncio:
+        # https://github.com/pytest-dev/pytest-asyncio/commit/51d986cec83fdbc14fa08015424c79397afc7ad9
+        asyncio.set_event_loop_policy(None)
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:

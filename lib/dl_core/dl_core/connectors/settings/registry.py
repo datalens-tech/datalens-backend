@@ -17,7 +17,7 @@ def register_connector_settings_class(
     fallback: SettingsFallbackType,
 ) -> None:
     if (registered_settings_class := CONNECTORS_SETTINGS_CLASSES.get(conn_type)) is not None:
-        assert registered_settings_class == settings_class
+        assert registered_settings_class == settings_class, f"{registered_settings_class} vs {settings_class}"
         assert CONNECTORS_SETTINGS_FALLBACKS[conn_type] == fallback
     else:
         assert conn_type not in CONNECTORS_SETTINGS_FALLBACKS
