@@ -168,7 +168,7 @@ class AsyncPostgresAdapter(
     async def create_conn_pool(self, db_name_from_query: str) -> asyncpg.Pool:
         db_name = self.get_db_name_for_query(db_name_from_query)
         conn_line = self.get_conn_line(db_name=db_name)
-        return await asyncpg.create_pool(conn_line, statement_cache_size=0)
+        return await asyncpg.create_pool(conn_line, min_size=1, statement_cache_size=0)
 
     @asynccontextmanager
     async def _get_connection(self, db_name_from_query: str) -> AsyncIterator[asyncpg.Connection]:
