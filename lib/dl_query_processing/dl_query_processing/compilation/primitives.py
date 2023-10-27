@@ -22,7 +22,10 @@ from dl_constants.enums import (
     OrderDirection,
 )
 import dl_formula.core.nodes as formula_nodes
-from dl_query_processing.compilation.query_meta import QueryMetaInfo
+from dl_query_processing.compilation.query_meta import (
+    QueryElementExtract,
+    QueryMetaInfo,
+)
 from dl_query_processing.enums import (
     ExecutionLevel,
     QueryPart,
@@ -45,6 +48,17 @@ class CompiledFormulaInfo:
     alias: Optional[str] = attr.ib()
     avatar_ids: Set[str] = attr.ib(factory=set)
     original_field_id: Optional[str] = attr.ib(default=None)
+
+    @property
+    def extract(self) -> QueryElementExtract:
+        return QueryElementExtract(
+            values=(
+                self.formula_obj.extract,
+                self.alias,
+                frozenset(self.avatar_ids),
+                self.original_field_id,
+            ),
+        )
 
     @property
     def not_none_alias(self) -> str:
@@ -96,6 +110,18 @@ class CompiledOrderByFormulaInfo(CompiledFormulaInfo):  # noqa
 
     direction: OrderDirection = attr.ib(kw_only=True)
 
+    @property
+    def extract(self) -> QueryElementExtract:
+        return QueryElementExtract(
+            values=(
+                self.formula_obj.extract,
+                self.alias,
+                frozenset(self.avatar_ids),
+                self.original_field_id,
+                self.direction,
+            ),
+        )
+
 
 @attr.s(slots=True, frozen=True)
 class CompiledJoinOnFormulaInfo(CompiledFormulaInfo):  # noqa
@@ -109,6 +135,20 @@ class CompiledJoinOnFormulaInfo(CompiledFormulaInfo):  # noqa
     right_id: str = attr.ib(kw_only=True)
     join_type: JoinType = attr.ib(kw_only=True)
 
+    @property
+    def extract(self) -> QueryElementExtract:
+        return QueryElementExtract(
+            values=(
+                self.formula_obj.extract,
+                self.alias,
+                frozenset(self.avatar_ids),
+                self.original_field_id,
+                self.left_id,
+                self.right_id,
+                self.join_type.name,
+            ),
+        )
+
 
 _FROM_OBJ_TV = TypeVar("_FROM_OBJ_TV", bound="FromObject")
 
@@ -121,12 +161,31 @@ class FromColumn:
     def clone(self, **updates: Any) -> FromColumn:
         return attr.evolve(self, **updates)
 
+    @property
+    def extract(self) -> QueryElementExtract:
+        return QueryElementExtract(
+            values=(
+                self.id,
+                self.name,
+            ),
+        )
+
 
 @attr.s(frozen=True)
 class FromObject:
     id: str = attr.ib(kw_only=True)
     alias: str = attr.ib(kw_only=True)
     columns: tuple[FromColumn, ...] = attr.ib(kw_only=True)
+
+    @property
+    def extract(self) -> QueryElementExtract:
+        return QueryElementExtract(
+            values=(
+                self.id,
+                self.alias,
+                tuple(col.extract for col in self.columns),
+            ),
+        )
 
     def clone(self: _FROM_OBJ_TV, **updates: Any) -> _FROM_OBJ_TV:
         return attr.evolve(self, **updates)
@@ -136,6 +195,15 @@ class FromObject:
 class JoinedFromObject:
     root_from_id: Optional[str] = attr.ib(kw_only=True, default=None)
     froms: Sequence[FromObject] = attr.ib(kw_only=True, default=())
+
+    @property
+    def extract(self) -> QueryElementExtract:
+        return QueryElementExtract(
+            values=(
+                self.root_from_id,
+                tuple(from_obj.extract for from_obj in self.froms),
+            ),
+        )
 
     def iter_ids(self) -> Iterable[str]:
         return (from_obj.id for from_obj in self.froms)
@@ -174,6 +242,24 @@ class CompiledQuery:
     limit: Optional[int] = attr.ib(kw_only=True, default=None)
     offset: Optional[int] = attr.ib(kw_only=True, default=None)
     meta: QueryMetaInfo = attr.ib(kw_only=True, factory=QueryMetaInfo)
+
+    @property
+    def extract(self) -> QueryElementExtract:
+        return QueryElementExtract(
+            values=(
+                self.id,
+                self.level_type.name,
+                tuple(formula.extract for formula in self.select),
+                tuple(formula.extract for formula in self.group_by),
+                tuple(formula.extract for formula in self.filters),
+                tuple(formula.extract for formula in self.order_by),
+                tuple(formula.extract for formula in self.join_on),
+                self.joined_from.extract,
+                self.limit,
+                self.offset,
+                self.meta.extract,
+            ),
+        )
 
     def get_complexity(self) -> int:
         return sum(formula.complexity for formula in self.all_formulas)
@@ -262,6 +348,12 @@ _MULTI_QUERY_TV = TypeVar("_MULTI_QUERY_TV", bound="CompiledMultiQueryBase")
 
 @attr.s(frozen=True)
 class CompiledMultiQueryBase(abc.ABC):
+    @property
+    def extract(self) -> QueryElementExtract:
+        return QueryElementExtract(
+            values=(tuple(query.extract for query in sorted(self.iter_queries(), key=lambda query: query.id)),),
+        )
+
     @abc.abstractmethod
     def iter_queries(self) -> Iterable[CompiledQuery]:
         raise NotImplementedError

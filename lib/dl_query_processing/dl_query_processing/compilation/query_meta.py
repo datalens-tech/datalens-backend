@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import (
     Any,
+    Hashable,
+    NamedTuple,
     Optional,
     TypeVar,
 )
@@ -13,6 +15,10 @@ from dl_query_processing.enums import (
     EmptyQueryMode,
     QueryType,
 )
+
+
+class QueryElementExtract(NamedTuple):
+    values: tuple[Optional[Hashable], ...]
 
 
 _QUERY_META_TV = TypeVar("_QUERY_META_TV", bound="QueryMetaInfo")
@@ -27,6 +33,20 @@ class QueryMetaInfo:
     from_subquery: bool = attr.ib(kw_only=True, default=False)
     subquery_limit: int = attr.ib(kw_only=True, default=None)
     empty_query_mode: EmptyQueryMode = attr.ib(kw_only=True, default=EmptyQueryMode.error)
+
+    @property
+    def extract(self) -> QueryElementExtract:
+        return QueryElementExtract(
+            values=(
+                self.query_type.name,
+                tuple(self.phantom_select_ids),
+                tuple(self.field_order) if self.field_order is not None else None,
+                self.row_count_hard_limit,
+                self.from_subquery,
+                self.subquery_limit,
+                self.empty_query_mode.name,
+            ),
+        )
 
     @property
     def result_field_ids(self) -> list[str]:

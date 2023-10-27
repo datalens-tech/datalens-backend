@@ -7,6 +7,7 @@ from enum import (
 )
 from typing import (
     FrozenSet,
+    Hashable,
     Optional,
 )
 
@@ -100,6 +101,9 @@ class DataTypeParams:
 
     timezone: Optional[str] = attr.ib(default=None)
     # Other possible cases: decimal precision, datetime sub-second precision, nullable, enum values.
+
+    def as_primitive(self) -> tuple[Optional[Hashable]]:
+        return (self.timezone,)
 
 
 _AUTOCAST_FROM_TYPES = OrderedDict(
