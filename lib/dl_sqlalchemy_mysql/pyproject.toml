@@ -5,7 +5,7 @@ version = "0.3"
 description = "DL MySQL SQLAlchemy Dialect"
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_sqlalchemy_mysql"}]
-license = "MIT"
+license = "Apache 2.0"
 
 
 [tool.poetry.dependencies]
