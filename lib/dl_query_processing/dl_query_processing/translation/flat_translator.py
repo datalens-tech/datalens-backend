@@ -251,6 +251,7 @@ class FlatQueryTranslator:
             offset=compiled_flat_query.offset,
             column_list=column_list,
             meta=translated_meta,
+            extract=compiled_flat_query.extract,
         )
 
     def get_collected_stats(self) -> TranslationStats:

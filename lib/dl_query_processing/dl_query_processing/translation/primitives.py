@@ -32,7 +32,10 @@ from dl_formula.core.datatype import (
     DataTypeParams,
 )
 from dl_query_processing.compilation.primitives import FromObject
-from dl_query_processing.compilation.query_meta import QueryMetaInfo
+from dl_query_processing.compilation.query_meta import (
+    QueryElementExtract,
+    QueryMetaInfo,
+)
 from dl_query_processing.enums import ExecutionLevel
 
 
@@ -43,6 +46,17 @@ class DetailedType(NamedTuple):
     formula_data_type: Optional[DataType] = None
     formula_data_type_params: Optional[DataTypeParams] = None
 
+    @property
+    def extract(self) -> QueryElementExtract:
+        return QueryElementExtract(
+            values=(
+                self.field_id,
+                self.data_type.name,
+                self.formula_data_type.name if self.formula_data_type is not None else None,
+                self.formula_data_type_params.as_primitive() if self.formula_data_type is not None else None,
+            )
+        )
+
 
 _META_TV = TypeVar("_META_TV", bound="TranslatedQueryMetaInfo")
 
@@ -50,6 +64,17 @@ _META_TV = TypeVar("_META_TV", bound="TranslatedQueryMetaInfo")
 @attr.s
 class TranslatedQueryMetaInfo(QueryMetaInfo):
     detailed_types: Optional[list[Optional[DetailedType]]] = attr.ib(kw_only=True, factory=list)  # type: ignore
+
+    @property
+    def extract(self) -> QueryElementExtract:
+        return QueryElementExtract(
+            values=(
+                *super().extract,
+                (dt.extract if dt is not None else None for dt in self.detailed_types)
+                if self.detailed_types is not None
+                else None,
+            )
+        )
 
     @classmethod
     def from_comp_meta(
@@ -107,6 +132,8 @@ class TranslatedFlatQuery:
     column_list: list[SchemaColumn] = attr.ib(kw_only=True)
     meta: TranslatedQueryMetaInfo = attr.ib(kw_only=True, factory=TranslatedQueryMetaInfo)
 
+    extract: QueryElementExtract = attr.ib(kw_only=True)
+
     def is_empty(self) -> bool:
         return not self.select
 
@@ -116,6 +143,12 @@ _TRANS_MULTI_QUERY_TV = TypeVar("_TRANS_MULTI_QUERY_TV", bound="TranslatedMultiQ
 
 @attr.s(frozen=True)
 class TranslatedMultiQueryBase(abc.ABC):
+    @property
+    def extract(self) -> QueryElementExtract:
+        return QueryElementExtract(
+            values=(tuple(query.extract for query in sorted(self.iter_queries(), key=lambda query: query.id)),),
+        )
+
     @abc.abstractmethod
     def iter_queries(self) -> Iterable[TranslatedFlatQuery]:
         raise NotImplementedError
