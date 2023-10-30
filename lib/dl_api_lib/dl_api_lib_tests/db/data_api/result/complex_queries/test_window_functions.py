@@ -29,7 +29,7 @@ from dl_query_processing.compilation.primitives import CompiledMultiQueryBase
 from dl_query_processing.enums import ExecutionLevel
 
 
-class TestBasicLookupFunctions(DefaultApiTestBase, DefaultBasicWindowFunctionTestSuite):
+class TestBasicWindowFunctions(DefaultApiTestBase, DefaultBasicWindowFunctionTestSuite):
     def test_winfunc_lod_combination(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(
             api_v1=control_api,
