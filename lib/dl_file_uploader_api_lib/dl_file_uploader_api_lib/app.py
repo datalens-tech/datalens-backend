@@ -24,7 +24,10 @@ from dl_core.aio.metrics_view import MetricsView
 from dl_core.aio.middlewares.master_key import master_key_middleware
 from dl_core.aio.ping_view import PingView
 from dl_core.aio.web_app_services.s3 import S3Service
-from dl_core.loader import load_core_lib
+from dl_core.loader import (
+    CoreLibraryConfig,
+    load_core_lib,
+)
 from dl_file_uploader_api_lib.aiohttp_services.arq_redis import ArqRedisService
 from dl_file_uploader_api_lib.aiohttp_services.crypto import CryptoService
 from dl_file_uploader_api_lib.aiohttp_services.error_handler import FileUploaderErrorHandler
@@ -59,7 +62,8 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
         )
 
     def create_app(self, app_version: str) -> web.Application:
-        load_core_lib()
+        core_conn_whitelist = ["clickhouse", "file", "gsheets_v2"]
+        load_core_lib(core_lib_config=CoreLibraryConfig(core_connector_ep_names=core_conn_whitelist))
 
         if (secret_sentry_dsn := self._settings.SENTRY_DSN) is not None:
             self.set_up_sentry(secret_sentry_dsn, app_version)
