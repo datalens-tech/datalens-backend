@@ -31,10 +31,11 @@ from dl_core_testing.testcases.service_base import DbServiceFixtureTextClass
 from dl_testing.regulated_test import (
     Feature,
     for_features,
+    RegulatedTestCase,
 )
 
 
-class DefaultBasicExtAggregationTestSuite(DataApiTestBase, DatasetTestBase, DbServiceFixtureTextClass):
+class DefaultBasicExtAggregationTestSuite(RegulatedTestCase, DataApiTestBase, DatasetTestBase, DbServiceFixtureTextClass):
     def test_lod_fixed_single_dim_in_two_dim_query(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(
             api_v1=control_api,
@@ -263,7 +264,7 @@ class DefaultBasicExtAggregationTestSuite(DataApiTestBase, DatasetTestBase, DbSe
         assert ordered_data_rows == data_rows
 
 
-class DefaultBasicLookupFunctionTestSuite(DataApiTestBase, DatasetTestBase, DbServiceFixtureTextClass):
+class DefaultBasicLookupFunctionTestSuite(RegulatedTestCase, DataApiTestBase, DatasetTestBase, DbServiceFixtureTextClass):
     def test_ago_any_db(self, request, saved_connection_id, control_api, data_api, db):
         db_table = make_table(db=db)
         request.addfinalizer(functools.partial(db.drop_table, db_table.table))
@@ -459,7 +460,7 @@ class DefaultBasicLookupFunctionTestSuite(DataApiTestBase, DatasetTestBase, DbSe
         assert len(data_rows) == 1
 
 
-class DefaultBasicWindowFunctionTestSuite(DataApiTestBase, DatasetTestBase, DbServiceFixtureTextClass):
+class DefaultBasicWindowFunctionTestSuite(RegulatedTestCase, DataApiTestBase, DatasetTestBase, DbServiceFixtureTextClass):
     feature_window_functions = Feature("window_functions")
 
     @for_features(feature_window_functions)
