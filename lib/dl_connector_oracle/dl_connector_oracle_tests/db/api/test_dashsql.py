@@ -2,9 +2,13 @@ from aiohttp.test_utils import TestClient
 import pytest
 
 from dl_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
+from dl_testing.test_data.sql_queries import DASHSQL_EXAMPLE_PARAMS
 
 from dl_connector_oracle_tests.db.api.base import OracleDashSQLConnectionTest
-from dl_connector_oracle_tests.db.config import SUBSELECT_QUERY_FULL
+from dl_connector_oracle_tests.db.config import (
+    QUERY_WITH_PARAMS,
+    SUBSELECT_QUERY_FULL,
+)
 
 
 class TestOracleDashSQL(OracleDashSQLConnectionTest, DefaultDashSQLTestSuite):
@@ -86,3 +90,12 @@ class TestOracleDashSQL(OracleDashSQLConnectionTest, DefaultDashSQLTestSuite):
             "genericdatetime",
             "genericdatetime",
         ]
+
+    @pytest.mark.asyncio
+    async def test_result_with_params(self, data_api_lowlevel_aiohttp_client: TestClient, saved_connection_id: str):
+        await self.get_dashsql_response(
+            data_api_aio=data_api_lowlevel_aiohttp_client,
+            conn_id=saved_connection_id,
+            query=QUERY_WITH_PARAMS,
+            params=DASHSQL_EXAMPLE_PARAMS,
+        )
