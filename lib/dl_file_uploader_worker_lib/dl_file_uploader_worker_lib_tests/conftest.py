@@ -42,6 +42,10 @@ from dl_file_uploader_worker_lib.settings import (
 )
 from dl_file_uploader_worker_lib.tasks import REGISTRY
 from dl_file_uploader_worker_lib.testing.app_factory import TestingFileUploaderWorkerFactory
+from dl_file_uploader_worker_lib_tests.config import (
+    CONNECTOR_WHITELIST,
+    TestingUSConfig,
+)
 from dl_task_processor.arq_wrapper import (
     create_arq_redis_settings,
     create_redis_pool,
@@ -66,11 +70,6 @@ from dl_testing.s3_utils import (
 from dl_testing.utils import wait_for_initdb
 
 from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
-
-from dl_file_uploader_worker_lib_tests.config import (
-    CONNECTOR_WHITELIST,
-    TestingUSConfig,
-)
 
 
 if TYPE_CHECKING:

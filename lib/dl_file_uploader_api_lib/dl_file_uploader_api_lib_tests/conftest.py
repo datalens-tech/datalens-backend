@@ -52,6 +52,10 @@ from dl_file_secure_reader_lib.app import create_app as create_reader_app
 from dl_file_uploader_api_lib.app import FileUploaderApiAppFactory
 from dl_file_uploader_api_lib.dl_request import FileUploaderDLRequest
 from dl_file_uploader_api_lib.settings import FileUploaderAPISettings
+from dl_file_uploader_api_lib_tests.config import (
+    CONNECTOR_WHITELIST,
+    TestingUSConfig,
+)
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 from dl_file_uploader_worker_lib.settings import (
@@ -73,11 +77,6 @@ from dl_testing.s3_utils import (
 from dl_testing.utils import wait_for_initdb
 
 from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
-
-from dl_file_uploader_api_lib_tests.config import (
-    CONNECTOR_WHITELIST,
-    TestingUSConfig,
-)
 
 
 if TYPE_CHECKING:
