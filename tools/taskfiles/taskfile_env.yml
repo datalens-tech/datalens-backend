@@ -22,7 +22,7 @@ tasks:
         $PYTHON -m venv $VENV_PATH
         . $VENV_PATH/bin/activate
         pip install -r requirements-localhost.txt
-        pip install -e $(realpath  ../terrarium/dl_repmanager) $(realpath ../terrarium/bi_ci) $(realpath ../terrarium/dl_gitmanager)
+        cd ../terrarium/metapkg/ && poetry install --with ci
     status:
       - test -f $VENV_PATH/bin/activate
     # todo: deal with ci to skip ensure_venv

@@ -11,7 +11,7 @@ COPY --from=src_terrarium . .
 
 # Install repmanager to access metadata in pyproject.toml
 RUN ls -l terrarium
-RUN pip install terrarium/dl_repmanager
+RUN cd terrarium/metapkg/ && poetry install --with ci
 
 # Prepare a config file for babel. It's always the same, no ponit in storing in in packages
 RUN echo "[python: **.py]\n[jinja2: **.jinja]" > babel_.ini
