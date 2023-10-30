@@ -18,6 +18,7 @@ from dl_constants.enums import (
 )
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.ids import AvatarId
+from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
 from dl_core.data_processing.prepared_components.default_manager import DefaultPreparedComponentManager
 from dl_core.data_processing.processing.operation import (
     CalcOp,
@@ -26,6 +27,7 @@ from dl_core.data_processing.processing.operation import (
 )
 from dl_core.data_processing.selectors.base import DataSelectorAsyncBase
 from dl_core.data_processing.stream_base import (
+    DataRequestMetaInfo,
     DataSourceVS,
     DataStream,
     DataStreamAsync,
@@ -89,6 +91,7 @@ class DataFetcher:
         prep_src_info = prep_component_manager.get_prepared_source(
             avatar_id=avatar_id, alias=alias, from_subquery=from_subquery, subquery_limit=subquery_limit
         )
+        data_key = LocalKeyRepresentation().extend(part_type="avatar_id", part_content=avatar_id)
         return DataSourceVS(
             id=stream_id,
             alias=alias,
@@ -96,6 +99,9 @@ class DataFetcher:
             names=prep_src_info.col_names,
             user_types=prep_src_info.user_types,
             prep_src_info=prep_src_info,
+            data_key=data_key,
+            meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),
+            preparation_callback=None,
         )
 
     async def get_data_stream_async(
@@ -109,6 +115,7 @@ class DataFetcher:
         join_on_expressions: Collection[JoinOnExpressionCtx] = (),
         from_subquery: bool = False,
         subquery_limit: Optional[int] = None,
+        allow_cache_usage: bool = True,
     ) -> DataStreamAsync:
         if root_avatar_id is None:
             root_avatar_id = self._ds_accessor.get_root_avatar_strict().id
@@ -122,6 +129,7 @@ class DataFetcher:
             selector_type=self._selector_type,
             role=role,
             us_entry_buffer=self._us_entry_buffer,
+            allow_cache_usage=allow_cache_usage,
         )
         streams = [
             self._get_avatar_virtual_data_stream(
@@ -146,6 +154,7 @@ class DataFetcher:
                 result_id="res",
                 bi_query=bi_query,
                 alias="res",
+                data_key_data="__qwerty",  # just a random hashable
             ),
             DownloadOp(
                 source_stream_id="calc_0",
@@ -173,6 +182,7 @@ class DataFetcher:
         join_on_expressions: Collection[JoinOnExpressionCtx] = (),
         from_subquery: bool = False,
         subquery_limit: Optional[int] = None,
+        allow_cache_usage: bool = True,
     ) -> DataStream:
         async_data_stream = await_sync(
             self.get_data_stream_async(
@@ -184,6 +194,7 @@ class DataFetcher:
                 join_on_expressions=join_on_expressions,
                 from_subquery=from_subquery,
                 subquery_limit=subquery_limit,
+                allow_cache_usage=allow_cache_usage,
             )
         )
         return DataStream(

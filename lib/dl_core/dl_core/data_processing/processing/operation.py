@@ -4,6 +4,7 @@ from typing import (
     AbstractSet,
     ClassVar,
     Collection,
+    Hashable,
     Optional,
     Tuple,
     Type,
@@ -79,6 +80,7 @@ class CalcOp(SingleSourceOp):
     result_id: AvatarId = attr.ib(kw_only=True)
     bi_query: BIQuery = attr.ib(kw_only=True)
     alias: str = attr.ib(kw_only=True)
+    data_key_data: Hashable = attr.ib(kw_only=True)
 
 
 # To be implemented:

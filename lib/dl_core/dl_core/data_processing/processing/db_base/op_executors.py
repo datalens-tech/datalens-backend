@@ -1,14 +1,15 @@
 from __future__ import annotations
 
+import asyncio
 from functools import wraps
 import logging
 from typing import (
     Awaitable,
     Callable,
-    List,
 )
 
 import attr
+import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.sql.selectable import (
     Alias,
@@ -16,9 +17,9 @@ from sqlalchemy.sql.selectable import (
     Subquery,
 )
 
+from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
 from dl_core.data_processing.prepared_components.primitives import (
     PreparedFromInfo,
-    PreparedMultiFromInfo,
     PreparedSingleFromInfo,
 )
 from dl_core.data_processing.processing.context import OpExecutionContext
@@ -30,6 +31,7 @@ from dl_core.data_processing.processing.operation import (
     JoinOp,
     MultiSourceOp,
     SingleSourceOp,
+    UploadOp,
 )
 from dl_core.data_processing.source_builder import SqlSourceBuilder
 from dl_core.data_processing.stream_base import (
@@ -100,34 +102,36 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
             query = query.original
 
         assert isinstance(query, Select), f"Got type {type(query).__name__} for query, expected Select"
+        joint_dsrc_info = source_stream.prep_src_info.clone(sql_source=query)
 
         query_debug_str = compile_query_for_debug(query=query, dialect=query_compiler.dialect)
         LOGGER.info(f"Going to database with SQL query:\n{query_debug_str}")
 
-        joint_dsrc_info = PreparedMultiFromInfo(
-            sql_source=query,
-            data_source_list=source_stream.prep_src_info.data_source_list,  # type: ignore  # TODO: fix
-            db_name=source_stream.prep_src_info.db_name,
-            connect_args=source_stream.prep_src_info.connect_args,
-            query_compiler=source_stream.prep_src_info.query_compiler,
-            supported_join_types=source_stream.prep_src_info.supported_join_types,
-            pass_db_query_to_user=source_stream.prep_src_info.pass_db_query_to_user,
-            target_connection_ref=source_stream.prep_src_info.target_connection_ref,
-        )  # FIXME: replace usage with prep_src_info
-
         query_id = make_id()
+        data_key = source_stream.data_key
+
+        self.db_ex_adapter.pre_query_execute(
+            query_id=query_id,
+            compiled_query=query_debug_str,
+            target_connection_ref=joint_dsrc_info.target_connection_ref,
+        )
+
         data = await self.db_ex_adapter.fetch_data_from_select(
             query=query,
             user_types=source_stream.user_types,
             joint_dsrc_info=joint_dsrc_info,
             query_id=query_id,
+            ctx=self.ctx,
+            data_key=data_key,
+            preparation_callback=source_stream.prepare,
         )
 
         if op.row_count_hard_limit is not None:
             data = data.limit(op.row_count_hard_limit)
 
-        data_key = self.db_ex_adapter.get_data_key(
-            query=query, user_types=source_stream.user_types, joint_dsrc_info=joint_dsrc_info, query_id=query_id
+        self.db_ex_adapter.post_query_execute(
+            query_id=query_id,
+            exec_exception=None,  # FIXME
         )
 
         pass_db_query_to_user = joint_dsrc_info.pass_db_query_to_user
@@ -178,13 +182,15 @@ class CalcOpExecutorAsync(OpExecutorAsync):
 
         LOGGER.info(f"Generated lazy query: {query_debug_str}")
 
-        names = []
-        user_types = []
-        for expr_ctx in op.bi_query.select_expressions:
-            assert expr_ctx.alias is not None
-            assert expr_ctx.user_type is not None
-            names.append(expr_ctx.alias)
-            user_types.append(expr_ctx.user_type)
+        names = op.bi_query.get_names()
+        user_types = op.bi_query.get_user_types()
+
+        data_key = self.db_ex_adapter.get_data_key(
+            query=query,
+            user_types=source_stream.user_types,
+            from_info=from_info,
+            base_key=source_stream.data_key,
+        )
 
         alias = op.alias
         prep_src_info = PreparedSingleFromInfo(
@@ -208,6 +214,9 @@ class CalcOpExecutorAsync(OpExecutorAsync):
             prep_src_info=prep_src_info,
             names=prep_src_info.col_names,
             user_types=user_types,
+            data_key=data_key,
+            meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),
+            preparation_callback=source_stream.prepare,
         )
 
 
@@ -216,11 +225,21 @@ class JoinOpExecutorAsync(OpExecutorAsync):
     async def execute(self, op: BaseOp) -> JointDataSourceVS:  # type: ignore  # TODO: fix
         assert isinstance(op, JoinOp)
 
-        prepared_sources: List[PreparedSingleFromInfo] = []
+        prepared_sources: list[PreparedSingleFromInfo] = []
+        data_key = LocalKeyRepresentation()
+        callbacks: list[Callable[[], Awaitable[None]]] = []
         for stream_id in op.source_stream_ids:
             stream = self.ctx.get_stream(stream_id=stream_id)
             assert isinstance(stream, DataSourceVS)
             prepared_sources.append(stream.prep_src_info)
+            data_key = data_key.multi_extend(*stream.data_key.key_parts)
+            callbacks.append(stream.prepare)
+
+        async def joint_preparation_callback() -> None:
+            # Can't perform them simultaneously with one connection,
+            # so iterate and run one by one
+            for cb in callbacks:
+                await cb()
 
         source_builder = SqlSourceBuilder()
 
@@ -231,5 +250,70 @@ class JoinOpExecutorAsync(OpExecutorAsync):
             use_empty_source=op.use_empty_source,
         )
         return JointDataSourceVS(
-            id=op.dest_stream_id, names=[], user_types=[], joint_dsrc_info=joint_dsrc_info  # not used  # not used
+            id=op.dest_stream_id,
+            names=[],
+            user_types=[],
+            joint_dsrc_info=joint_dsrc_info,  # not used  # not used
+            meta=DataRequestMetaInfo(
+                data_source_list=joint_dsrc_info.data_source_list,
+            ),
+            data_key=data_key,
+            preparation_callback=joint_preparation_callback,
+        )
+
+
+class UploadOpExecutorAsync(OpExecutorAsync):
+    """Dumps incoming stream to a database table"""
+
+    @log_op  # type: ignore  # TODO: fix
+    async def execute(self, op: BaseOp) -> DataSourceVS:  # type: ignore  # TODO: fix
+        assert isinstance(op, UploadOp)
+
+        source_stream = self.ctx.get_stream(op.source_stream_id)
+        assert isinstance(source_stream, DataStreamAsync)
+
+        table_name = shortuuid.uuid()
+
+        async def upload_data() -> None:
+            LOGGER.info(f"Uploading to table {table_name}")
+            await self.db_ex_adapter.create_table(
+                table_name=table_name,
+                names=source_stream.names,
+                user_types=source_stream.user_types,
+            )
+            await self.db_ex_adapter.insert_data_into_table(
+                table_name=table_name,
+                names=source_stream.names,
+                user_types=source_stream.user_types,
+                data=source_stream.data,
+            )
+
+        alias = op.alias
+        sql_source = sa.alias(sa.table(table_name), alias)
+
+        prep_src_info = PreparedSingleFromInfo(
+            id=op.result_id,
+            alias=alias,
+            query_compiler=self.db_ex_adapter.get_query_compiler(),
+            sql_source=sql_source,
+            col_names=source_stream.names,
+            user_types=source_stream.user_types,
+            data_source_list=tuple(source_stream.meta.data_source_list),
+            supported_join_types=self.db_ex_adapter.get_supported_join_types(),
+            db_name=None,
+            connect_args={},
+            pass_db_query_to_user=False,
+            target_connection_ref=None,
+        )
+
+        return DataSourceVS(
+            id=op.dest_stream_id,
+            result_id=prep_src_info.id,
+            prep_src_info=prep_src_info,
+            names=prep_src_info.col_names,
+            user_types=prep_src_info.user_types,
+            alias=op.alias,
+            data_key=source_stream.data_key,
+            meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),
+            preparation_callback=upload_data,
         )

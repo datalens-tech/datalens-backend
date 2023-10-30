@@ -6,6 +6,7 @@ from typing import (
     Collection,
     Optional,
     Sequence,
+    TypeVar,
 )
 
 import attr
@@ -23,6 +24,9 @@ if TYPE_CHECKING:
     import dl_core.data_source
 
 
+_PREP_FROM_TV = TypeVar("_PREP_FROM_TV", bound="PreparedFromInfo")
+
+
 @attr.s(frozen=True)
 class PreparedFromInfo:
     """
@@ -36,7 +40,7 @@ class PreparedFromInfo:
     sql_source: Optional[SqlSourceType] = attr.ib(kw_only=True)
     query_compiler: QueryCompiler = attr.ib(kw_only=True)
     supported_join_types: Collection[JoinType] = attr.ib(kw_only=True)
-    data_source_list: Optional[tuple[dl_core.data_source.BaseSQLDataSource, ...]] = attr.ib(kw_only=True)
+    data_source_list: Optional[tuple[dl_core.data_source.DataSource, ...]] = attr.ib(kw_only=True)
     db_name: Optional[str] = attr.ib(kw_only=True)
     connect_args: dict[str, Any] = attr.ib(kw_only=True)
     pass_db_query_to_user: bool = attr.ib(kw_only=True)
@@ -49,6 +53,9 @@ class PreparedFromInfo:
     def non_null_sql_source(self) -> SqlSourceType:
         assert self.sql_source is not None
         return self.sql_source
+
+    def clone(self: _PREP_FROM_TV, **kwargs: Any) -> _PREP_FROM_TV:
+        return attr.evolve(self, **kwargs)
 
 
 @attr.s(frozen=True)

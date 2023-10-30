@@ -38,7 +38,7 @@ from dl_core.utils import make_id
 if TYPE_CHECKING:
     from dl_api_commons.reporting.registry import ReportingRegistry
     from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
-    from dl_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
+    from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
     from dl_core.data_processing.types import TValuesChunkStream
     from dl_core.services_registry import ServicesRegistry
     from dl_core.us_dataset import Dataset
@@ -132,7 +132,7 @@ class DatasetDataSelectorAsyncBase(DataSelectorAsyncBase, metaclass=abc.ABCMeta)
         query_id: Optional[str] = None,
         role: DataSourceRole,
         query_res_info: QueryAndResultInfo,
-        joint_dsrc_info: PreparedMultiFromInfo,
+        joint_dsrc_info: PreparedFromInfo,
         row_count_hard_limit: Optional[int] = None,
         stream_id: Optional[str] = None,
     ) -> DataStreamAsync:
@@ -180,7 +180,6 @@ class DatasetDataSelectorAsyncBase(DataSelectorAsyncBase, metaclass=abc.ABCMeta)
                 meta=DataRequestMetaInfo(
                     query_id=query_id,
                     query=query_execution_ctx.compiled_query,
-                    is_materialized=role != DataSourceRole.origin,
                     data_source_list=data_source_list,
                 ),
                 data_key=data_key,
@@ -200,7 +199,7 @@ class DatasetDataSelectorAsyncBase(DataSelectorAsyncBase, metaclass=abc.ABCMeta)
         query_id: str,
         query_res_info: QueryAndResultInfo,
         role: DataSourceRole,
-        joint_dsrc_info: PreparedMultiFromInfo,
+        joint_dsrc_info: PreparedFromInfo,
     ) -> BIQueryExecutionContext:
         compiled_query = utils.compile_query_for_debug(query_res_info.query, joint_dsrc_info.query_compiler.dialect)
         LOGGER.info(f"SQL query for dataset: {compiled_query}")

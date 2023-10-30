@@ -19,7 +19,7 @@ if TYPE_CHECKING:
         UserDataType,
     )
     from dl_core.data_processing.cache.primitives import BIQueryCacheOptions
-    from dl_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
+    from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
     from dl_core.data_processing.stream_base import DataStreamAsync
     from dl_core.query.bi_query import QueryAndResultInfo
     from dl_core.us_connection_base import ExecutorBasedMixin
@@ -50,7 +50,7 @@ class DataSelectorAsyncBase(abc.ABC):
         query_id: Optional[str] = None,
         role: DataSourceRole,
         query_res_info: QueryAndResultInfo,
-        joint_dsrc_info: PreparedMultiFromInfo,
+        joint_dsrc_info: PreparedFromInfo,
         row_count_hard_limit: Optional[int] = None,
         stream_id: Optional[str] = None,
     ) -> DataStreamAsync:

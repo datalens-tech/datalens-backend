@@ -24,6 +24,7 @@ from dl_api_commons.reporting.registry import ReportingRegistry
 from dl_configs.enums import RequiredService
 from dl_constants.enums import ProcessorType
 from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
+from dl_core.services_registry.data_processor_factory import DefaultDataProcessorFactory
 from dl_core.services_registry.file_uploader_client_factory import (
     FileUploaderClientFactory,
     FileUploaderSettings,
@@ -159,6 +160,10 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
             connectors_settings=self.connectors_settings,
             reporting_registry=reporting_registry,
             selector_factory=DefaultSelectorFactory(
+                services_registry_ref=sr_ref,
+                is_bleeding_edge_user=self.is_bleeding_edge_user(request_context_info),
+            ),
+            data_processor_factory=DefaultDataProcessorFactory(
                 services_registry_ref=sr_ref,
                 is_bleeding_edge_user=self.is_bleeding_edge_user(request_context_info),
             ),

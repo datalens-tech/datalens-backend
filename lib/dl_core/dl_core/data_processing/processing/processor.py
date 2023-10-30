@@ -19,7 +19,9 @@ from dl_api_commons.reporting.models import (
     DataProcessingEndReportingRecord,
     DataProcessingStartReportingRecord,
 )
+from dl_core.data_processing.cache.utils import DatasetOptionsBuilder
 from dl_core.data_processing.processing.context import OpExecutionContext
+from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
 from dl_core.data_processing.processing.operation import (
     BaseOp,
     MultiSourceOp,
@@ -32,8 +34,8 @@ from dl_core.data_processing.stream_base import (
 
 
 if TYPE_CHECKING:
-    from dl_api_commons.reporting.registry import ReportingRegistry  # noqa
-    from dl_core.services_registry import ServicesRegistry  # noqa
+    from dl_api_commons.reporting.registry import ReportingRegistry
+    from dl_core.services_registry import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -42,7 +44,30 @@ LOGGER = logging.getLogger(__name__)
 _OP_PROC_TV = TypeVar("_OP_PROC_TV", bound="OperationProcessorAsyncBase")
 
 
+@attr.s
 class OperationProcessorAsyncBase(abc.ABC):
+    _service_registry: ServicesRegistry = attr.ib(kw_only=True)  # Service registry override
+    _reporting_enabled: bool = attr.ib(kw_only=True, default=True)
+    _cache_options_builder: DatasetOptionsBuilder = attr.ib(init=False)
+    _db_ex_adapter: Optional[ProcessorDbExecAdapterBase] = attr.ib(init=False, default=None)
+
+    def __attrs_post_init__(self) -> None:
+        self._cache_options_builder = self._make_cache_options_builder()
+        self._db_ex_adapter = self._make_db_ex_adapter()
+
+    @abc.abstractmethod
+    def _make_cache_options_builder(self) -> DatasetOptionsBuilder:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def _make_db_ex_adapter(self) -> Optional[ProcessorDbExecAdapterBase]:
+        raise NotImplementedError
+
+    @property
+    def db_ex_adapter(self) -> ProcessorDbExecAdapterBase:
+        assert self._db_ex_adapter is not None
+        return self._db_ex_adapter
+
     @abc.abstractmethod
     async def ping(self) -> Optional[int]:
         """Check processor readiness"""
@@ -168,18 +193,13 @@ class OperationProcessorAsyncBase(abc.ABC):
 
         return result
 
-
-@attr.s
-class SROperationProcessorAsyncBase(OperationProcessorAsyncBase):
-    _service_registry: "ServicesRegistry" = attr.ib(default=None, kw_only=True)  # Service registry override
+    @property
+    def service_registry(self) -> ServicesRegistry:
+        assert self._service_registry is not None
+        return self._service_registry
 
     @property
-    def service_registry(self) -> "ServicesRegistry":
-        if self._service_registry is not None:
-            return self._service_registry
-
-    @property
-    def _reporting_registry(self) -> "ReportingRegistry":
+    def _reporting_registry(self) -> ReportingRegistry:
         return self.service_registry.get_reporting_registry()
 
     def _save_start_exec_reporting_record(self, ctx: OpExecutionContext) -> None:

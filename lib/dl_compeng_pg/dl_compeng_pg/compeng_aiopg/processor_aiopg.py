@@ -9,13 +9,18 @@ from dl_compeng_pg.compeng_pg_base.processor_base import PostgreSQLOperationProc
 
 
 @attr.s
-class AiopgOperationProcessor(PostgreSQLOperationProcessor[AiopgExecAdapter, AiopgPoolWrapper, aiopg.sa.SAConnection]):
+class AiopgOperationProcessor(PostgreSQLOperationProcessor[AiopgPoolWrapper, aiopg.sa.SAConnection]):
     async def start(self) -> None:
         self._pg_conn = await self._pg_pool.pool.acquire()
-        self._pgex_adapter = AiopgExecAdapter(conn=self._pg_conn)  # type: ignore  # TODO: fix
+        self._db_ex_adapter = AiopgExecAdapter(
+            service_registry=self.service_registry,
+            reporting_enabled=self._reporting_enabled,
+            conn=self._pg_conn,
+            cache_options_builder=self._cache_options_builder,
+        )  # type: ignore  # TODO: fix
 
     async def end(self) -> None:
-        self._pgex_adapter = None
+        self._db_ex_adapter = None
         if self._pg_conn is not None:
             await self._pg_conn.close()
         self._pg_conn = None

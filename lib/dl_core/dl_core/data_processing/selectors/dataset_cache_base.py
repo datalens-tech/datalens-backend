@@ -10,7 +10,7 @@ from dl_constants.enums import DataSourceRole
 from dl_core.data_processing.cache.exc import CachePreparationFailed
 from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
 from dl_core.data_processing.cache.utils import SelectorCacheOptionsBuilder
-from dl_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
+from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
 from dl_core.data_processing.selectors.base import BIQueryExecutionContext
 from dl_core.data_processing.selectors.dataset_base import DatasetDataSelectorAsyncBase
 from dl_core.query.bi_query import QueryAndResultInfo
@@ -53,7 +53,7 @@ class DatasetCacheCommonDataSelectorAsyncBase(DatasetDataSelectorAsyncBase, meta
         query_id: str,
         query_res_info: QueryAndResultInfo,
         role: DataSourceRole,
-        joint_dsrc_info: PreparedMultiFromInfo,
+        joint_dsrc_info: PreparedFromInfo,
     ) -> BIQueryExecutionContext:
         q_exec_ctx: BIQueryExecutionContext = super().build_query_execution_ctx(
             query_id=query_id,
@@ -69,6 +69,7 @@ class DatasetCacheCommonDataSelectorAsyncBase(DatasetDataSelectorAsyncBase, meta
                     query=q_exec_ctx.query,
                     user_types=q_exec_ctx.requested_bi_types,
                     dataset=self.dataset,
+                    data_key=LocalKeyRepresentation(),
                 )
 
                 return attr.evolve(

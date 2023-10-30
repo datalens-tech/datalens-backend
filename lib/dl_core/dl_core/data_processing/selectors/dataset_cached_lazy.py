@@ -12,7 +12,7 @@ import attr
 
 from dl_constants.enums import DataSourceRole
 from dl_core.data_processing.selectors.base import BIQueryExecutionContext
-from dl_core.data_processing.selectors.dataset_cached import CachedDatasetDataSelectorAsync
+from dl_core.data_processing.selectors.db import DatasetDbDataSelectorAsync
 from dl_core.data_processing.streaming import (
     AsyncChunked,
     AsyncChunkedBase,
@@ -28,7 +28,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @attr.s
-class LazyCachedDatasetDataSelectorAsync(CachedDatasetDataSelectorAsync):
+class LazyCachedDatasetDataSelectorAsync(DatasetDbDataSelectorAsync):
     """
     Lazy asynchronous cached dataset data selector
     """

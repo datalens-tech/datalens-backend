@@ -3,6 +3,7 @@ from __future__ import annotations
 import abc
 import logging
 from typing import (
+    TYPE_CHECKING,
     ClassVar,
     Type,
     TypeVar,
@@ -12,7 +13,11 @@ from typing import (
 from aiohttp import web
 import attr
 
-from dl_core.data_processing.processing.processor import OperationProcessorAsyncBase
+from dl_core.data_processing.processing.db_base.processor_base import ExecutorBasedOperationProcessor
+
+
+if TYPE_CHECKING:
+    from dl_core.services_registry.top_level import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -65,7 +70,11 @@ class DataProcessorService(metaclass=abc.ABCMeta):
         return service
 
     @abc.abstractmethod
-    def get_data_processor(self) -> OperationProcessorAsyncBase:
+    def get_data_processor(
+        self,
+        service_registry: ServicesRegistry,
+        reporting_enabled: bool,
+    ) -> ExecutorBasedOperationProcessor:
         raise NotImplementedError
 
     @classmethod

@@ -32,8 +32,8 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
     """
 
     _dataset: Dataset = attr.ib(kw_only=True)
-    _role: DataSourceRole = attr.ib(kw_only=True)
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
+    _role: DataSourceRole = attr.ib(kw_only=True, default=DataSourceRole.origin)
     _ds_accessor: DatasetComponentAccessor = attr.ib(init=False)
     _dsrc_coll_factory: DataSourceCollectionFactory = attr.ib(init=False)
 
