@@ -1,8 +1,8 @@
 import json
 import pkgutil
 
-import dl_api_lib_testing.test_data
 from dl_api_lib.utils.rls import FieldRLSSerializer
+import dl_api_lib_testing.test_data
 from dl_constants.enums import RLSSubjectType
 from dl_core.rls import (
     BaseSubjectResolver,
