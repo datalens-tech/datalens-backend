@@ -8,4 +8,5 @@ class CleanupRequestSchema(BaseRequestSchema):
 
 
 class RenameFilesRequestSchema(BaseRequestSchema):
+    old_tenant_id = ma.fields.String(allow_none=True, load_default=None)
     tenant_id = ma.fields.String(required=True)
