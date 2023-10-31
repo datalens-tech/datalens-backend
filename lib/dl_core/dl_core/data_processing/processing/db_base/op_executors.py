@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 from functools import wraps
 import logging
 from typing import (
@@ -55,6 +54,9 @@ class OpExecutorAsync:
     ctx: OpExecutionContext = attr.ib()
     db_ex_adapter: ProcessorDbExecAdapterBase = attr.ib()
 
+    def make_data_key(self, op: BaseOp) -> LocalKeyRepresentation:
+        raise NotImplementedError
+
     async def execute(self, op: BaseOp) -> AbstractStream:
         raise NotImplementedError
 
@@ -81,14 +83,18 @@ def log_op(
 class DownloadOpExecutorAsync(OpExecutorAsync):
     """Loads data from a database table"""
 
+    def make_data_key(self, op: BaseOp) -> LocalKeyRepresentation:
+        source_stream = self.ctx.get_stream(op.source_stream_id)
+        return source_stream.data_key
+
     @log_op  # type: ignore  # TODO: fix
     async def execute(self, op: BaseOp) -> DataStreamAsync:  # type: ignore  # TODO: fix
         assert isinstance(op, DownloadOp)
 
         source_stream = self.ctx.get_stream(op.source_stream_id)
         assert isinstance(source_stream, DataSourceVS)
-        query_compiler = source_stream.prep_src_info.query_compiler
 
+        query_compiler = source_stream.prep_src_info.query_compiler
         query = source_stream.prep_src_info.sql_source
         if isinstance(query, Alias):
             # Unwrap Alias:
@@ -108,7 +114,6 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
         LOGGER.info(f"Going to database with SQL query:\n{query_debug_str}")
 
         query_id = make_id()
-        data_key = source_stream.data_key
 
         self.db_ex_adapter.pre_query_execute(
             query_id=query_id,
@@ -122,7 +127,7 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
             joint_dsrc_info=joint_dsrc_info,
             query_id=query_id,
             ctx=self.ctx,
-            data_key=data_key,
+            data_key=source_stream.data_key,
             preparation_callback=source_stream.prepare,
         )
 
@@ -138,6 +143,7 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
         data_source_list = source_stream.prep_src_info.data_source_list or ()
         assert data_source_list is not None
 
+        data_key = self.make_data_key(op=op)
         return DataStreamAsync(
             id=op.dest_stream_id,
             names=source_stream.names,
@@ -159,12 +165,7 @@ class CalcOpExecutorAsync(OpExecutorAsync):
     The real calculation is done when the data is fetched.
     """
 
-    @log_op  # type: ignore  # TODO: fix
-    async def execute(self, op: BaseOp) -> DataSourceVS:  # type: ignore  # TODO: fix
-        assert isinstance(op, CalcOp)
-
-        source_stream = self.ctx.get_stream(op.source_stream_id)
-
+    def get_from_info_from_stream(self, source_stream: AbstractStream) -> PreparedFromInfo:
         from_info: PreparedFromInfo
         if isinstance(source_stream, DataSourceVS):
             from_info = source_stream.prep_src_info
@@ -172,7 +173,33 @@ class CalcOpExecutorAsync(OpExecutorAsync):
             from_info = source_stream.joint_dsrc_info
         else:
             raise TypeError(f"Type {type(source_stream).__name__} is not supported as a source for CalcOp")
+        return from_info
 
+    def make_data_key(self, op: BaseOp) -> LocalKeyRepresentation:
+        assert isinstance(op, CalcOp)
+        source_stream = self.ctx.get_stream(op.source_stream_id)
+        from_info = self.get_from_info_from_stream(source_stream=source_stream)
+        query_compiler = from_info.query_compiler
+        query = query_compiler.compile_select(
+            bi_query=op.bi_query,
+            sql_source=from_info.sql_source,
+        )
+        data_key = self.db_ex_adapter.get_data_key(
+            query=query,
+            user_types=source_stream.user_types,
+            from_info=from_info,
+            base_key=source_stream.data_key,
+        )
+        return data_key
+
+    @log_op  # type: ignore  # TODO: fix
+    async def execute(self, op: BaseOp) -> DataSourceVS:  # type: ignore  # TODO: fix
+        assert isinstance(op, CalcOp)
+
+        source_stream = self.ctx.get_stream(op.source_stream_id)
+        assert isinstance(source_stream, DataSourceVS)
+
+        from_info = self.get_from_info_from_stream(source_stream=source_stream)
         query_compiler = from_info.query_compiler
         query = query_compiler.compile_select(
             bi_query=op.bi_query,
@@ -184,13 +211,6 @@ class CalcOpExecutorAsync(OpExecutorAsync):
 
         names = op.bi_query.get_names()
         user_types = op.bi_query.get_user_types()
-
-        data_key = self.db_ex_adapter.get_data_key(
-            query=query,
-            user_types=source_stream.user_types,
-            from_info=from_info,
-            base_key=source_stream.data_key,
-        )
 
         alias = op.alias
         prep_src_info = PreparedSingleFromInfo(
@@ -207,6 +227,8 @@ class CalcOpExecutorAsync(OpExecutorAsync):
             pass_db_query_to_user=from_info.pass_db_query_to_user,
             target_connection_ref=from_info.target_connection_ref,
         )
+
+        data_key = self.make_data_key(op=op)
         return DataSourceVS(
             id=op.dest_stream_id,
             alias=op.alias,
@@ -221,18 +243,26 @@ class CalcOpExecutorAsync(OpExecutorAsync):
 
 
 class JoinOpExecutorAsync(OpExecutorAsync):
+    def make_data_key(self, op: BaseOp) -> LocalKeyRepresentation:
+        assert isinstance(op, JoinOp)
+
+        data_key = LocalKeyRepresentation()
+        for stream_id in op.source_stream_ids:
+            stream = self.ctx.get_stream(stream_id=stream_id)
+            data_key = data_key.multi_extend(*stream.data_key.key_parts)
+
+        return data_key
+
     @log_op  # type: ignore  # TODO: fix
     async def execute(self, op: BaseOp) -> JointDataSourceVS:  # type: ignore  # TODO: fix
         assert isinstance(op, JoinOp)
 
         prepared_sources: list[PreparedSingleFromInfo] = []
-        data_key = LocalKeyRepresentation()
         callbacks: list[Callable[[], Awaitable[None]]] = []
         for stream_id in op.source_stream_ids:
             stream = self.ctx.get_stream(stream_id=stream_id)
             assert isinstance(stream, DataSourceVS)
             prepared_sources.append(stream.prep_src_info)
-            data_key = data_key.multi_extend(*stream.data_key.key_parts)
             callbacks.append(stream.prepare)
 
         async def joint_preparation_callback() -> None:
@@ -243,6 +273,7 @@ class JoinOpExecutorAsync(OpExecutorAsync):
 
         source_builder = SqlSourceBuilder()
 
+        data_key = self.make_data_key(op=op)
         joint_dsrc_info = source_builder.build_source(
             root_avatar_id=op.root_avatar_id,
             prepared_sources=prepared_sources,
@@ -264,6 +295,12 @@ class JoinOpExecutorAsync(OpExecutorAsync):
 
 class UploadOpExecutorAsync(OpExecutorAsync):
     """Dumps incoming stream to a database table"""
+
+    def make_data_key(self, op: BaseOp) -> LocalKeyRepresentation:
+        assert isinstance(op, UploadOp)
+
+        source_stream = self.ctx.get_stream(op.source_stream_id)
+        return source_stream.data_key
 
     @log_op  # type: ignore  # TODO: fix
     async def execute(self, op: BaseOp) -> DataSourceVS:  # type: ignore  # TODO: fix
@@ -306,6 +343,7 @@ class UploadOpExecutorAsync(OpExecutorAsync):
             target_connection_ref=None,
         )
 
+        data_key = self.make_data_key(op=op)
         return DataSourceVS(
             id=op.dest_stream_id,
             result_id=prep_src_info.id,
@@ -313,7 +351,7 @@ class UploadOpExecutorAsync(OpExecutorAsync):
             names=prep_src_info.col_names,
             user_types=prep_src_info.user_types,
             alias=op.alias,
-            data_key=source_stream.data_key,
+            data_key=data_key,
             meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),
             preparation_callback=upload_data,
         )
