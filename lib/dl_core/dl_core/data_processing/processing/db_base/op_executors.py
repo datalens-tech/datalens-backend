@@ -35,6 +35,7 @@ from dl_core.data_processing.processing.operation import (
 from dl_core.data_processing.source_builder import SqlSourceBuilder
 from dl_core.data_processing.stream_base import (
     AbstractStream,
+    AsyncVirtualStream,
     DataRequestMetaInfo,
     DataSourceVS,
     DataStreamAsync,
@@ -197,7 +198,7 @@ class CalcOpExecutorAsync(OpExecutorAsync):
         assert isinstance(op, CalcOp)
 
         source_stream = self.ctx.get_stream(op.source_stream_id)
-        assert isinstance(source_stream, DataSourceVS)
+        assert isinstance(source_stream, AsyncVirtualStream)
 
         from_info = self.get_from_info_from_stream(source_stream=source_stream)
         query_compiler = from_info.query_compiler
