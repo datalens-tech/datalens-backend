@@ -106,7 +106,7 @@ class CleanupTenantFilePreviewsTask(BaseTaskMeta):
     tenant_id: str = attr.ib()
 
 
-@attr.s
+@attr.s(kw_only=True)
 class RenameTenantFilesTask(BaseTaskMeta):
     name = TaskName("rename_tenant_files_task")
 
