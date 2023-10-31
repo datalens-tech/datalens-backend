@@ -24,9 +24,7 @@ if TYPE_CHECKING:
     )
     from dl_core.data_processing.cache.primitives import BIQueryCacheOptions
     from dl_core.data_processing.types import TJSONExtChunkStream
-    import dl_core.data_source  # noqa
-    from dl_core.services_registry import ServicesRegistry  # noqa
-    import dl_core.us_dataset  # noqa
+    from dl_core.services_registry import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -171,6 +169,7 @@ class CacheProcessingHelper:
             await cem.finalize(
                 result=result_as_list,
             )
+            LOGGER.info("Saved to cache")
         except Exception:
             LOGGER.error("Error during finalizing cache (after a generate success)", exc_info=True)
 

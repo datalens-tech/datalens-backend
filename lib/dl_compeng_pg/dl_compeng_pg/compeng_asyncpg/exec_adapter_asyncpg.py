@@ -5,6 +5,8 @@ import logging
 from typing import (
     TYPE_CHECKING,
     AsyncGenerator,
+    Awaitable,
+    Callable,
     ClassVar,
     Generator,
     Optional,
@@ -20,7 +22,9 @@ from sqlalchemy.dialects.postgresql import pypostgresql
 from dl_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
 from dl_constants.enums import UserDataType
 from dl_core.connectors.base.error_transformer import DbErrorTransformer
-from dl_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
+from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
+from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
+from dl_core.data_processing.processing.context import OpExecutionContext
 from dl_core.data_processing.streaming import (
     AsyncChunked,
     AsyncChunkedBase,
@@ -89,10 +93,16 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
         query: Union[str, sa.sql.selectable.Select],
         user_types: Sequence[UserDataType],
         chunk_size: int,
-        joint_dsrc_info: Optional[PreparedMultiFromInfo] = None,
+        joint_dsrc_info: Optional[PreparedFromInfo] = None,
         query_id: str,
+        ctx: OpExecutionContext,
+        data_key: LocalKeyRepresentation,
+        preparation_callback: Optional[Callable[[], Awaitable[None]]],
     ) -> AsyncChunked[list[TBIDataValue]]:
         query_text, params = self._compile_query(query)
+
+        if preparation_callback is not None:
+            await preparation_callback()
 
         async def chunked_data_gen() -> AsyncGenerator[list[list[TBIDataValue]], None]:
             """Fetch data in chunks"""

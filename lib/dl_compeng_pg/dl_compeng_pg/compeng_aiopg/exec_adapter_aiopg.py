@@ -4,6 +4,8 @@ import logging
 from typing import (
     TYPE_CHECKING,
     AsyncGenerator,
+    Awaitable,
+    Callable,
     ClassVar,
     Optional,
     Sequence,
@@ -17,7 +19,9 @@ from sqlalchemy.sql.selectable import Select
 
 from dl_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
 from dl_constants.enums import UserDataType
-from dl_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
+from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
+from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
+from dl_core.data_processing.processing.context import OpExecutionContext
 from dl_core.data_processing.streaming import (
     AsyncChunked,
     AsyncChunkedBase,
@@ -49,12 +53,18 @@ class AiopgExecAdapter(PostgreSQLExecAdapterAsync[aiopg.sa.SAConnection]):  # no
     async def _execute_and_fetch(
         self,
         *,
-        query: Union[Select, str],
+        query: Select | str,
         user_types: Sequence[UserDataType],
         chunk_size: int,
-        joint_dsrc_info: Optional[PreparedMultiFromInfo] = None,
+        joint_dsrc_info: Optional[PreparedFromInfo] = None,
         query_id: str,
+        ctx: OpExecutionContext,
+        data_key: LocalKeyRepresentation,
+        preparation_callback: Optional[Callable[[], Awaitable[None]]],
     ) -> AsyncChunkedBase[Sequence[TBIDataValue]]:
+        if preparation_callback is not None:
+            await preparation_callback()
+
         async def chunked_data_gen() -> AsyncGenerator[list[list[TBIDataValue]], None]:
             """Fetch data in chunks"""
 

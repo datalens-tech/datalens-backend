@@ -17,6 +17,7 @@ from sqlalchemy.engine.default import DefaultDialect
 from sqlalchemy.sql.base import Executable
 
 from dl_constants.enums import UserDataType
+from dl_core.connectors.base.query_compiler import QueryCompiler
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
 from dl_core.data_processing.streaming import AsyncChunkedBase
 from dl_core.db.sa_types import make_sa_type
@@ -69,13 +70,12 @@ class PostgreSQLExecAdapterAsync(Generic[_CONN_TV], ProcessorDbExecAdapterBase, 
         table_name: str,
         names: Sequence[str],
         user_types: Sequence[UserDataType],
-    ) -> sa.sql.selectable.TableClause:
+    ) -> None:
         """Create table in database"""
 
         table = self._make_sa_table(table_name=table_name, names=names, user_types=user_types)
         self._log.info(f"Creating PG processor table {table_name}: {table}")
         await self._execute_ddl(sa.schema.CreateTable(table))
-        return table
 
     async def _drop_table(self, table_name: str) -> None:
         await self._execute_ddl(sa.schema.DropTable(sa.table(table_name)))  # type: ignore
@@ -96,3 +96,6 @@ class PostgreSQLExecAdapterAsync(Generic[_CONN_TV], ProcessorDbExecAdapterBase, 
         data: AsyncChunkedBase,
     ) -> None:
         """,,,"""
+
+    def get_query_compiler(self) -> QueryCompiler:
+        return QueryCompiler(dialect=self.dialect)

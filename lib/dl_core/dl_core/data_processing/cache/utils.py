@@ -19,6 +19,7 @@ from dl_core.data_processing.cache.primitives import (
     DataKeyPart,
     LocalKeyRepresentation,
 )
+from dl_core.query.bi_query import QueryAndResultInfo
 from dl_core.serialization import hashable_dumps
 from dl_core.us_connection_base import (
     ConnectionBase,
@@ -32,7 +33,7 @@ if TYPE_CHECKING:
 
     from dl_constants.enums import UserDataType
     from dl_constants.types import TJSONExt
-    from dl_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
+    from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
     from dl_core.data_processing.stream_base import DataStreamBase
     from dl_core.data_source.base import DataSource
     from dl_core.us_dataset import Dataset
@@ -84,34 +85,14 @@ class CacheOptionsBuilderBase:
         )
 
     @staticmethod
-    def config_to_ttl_info(
-        ttl_config: CacheTTLConfig,
-        is_materialized: bool,
-        data_source_list: Optional[Collection[DataSource]] = None,
-    ) -> CacheTTLInfo:
-        ttl_info = CacheTTLInfo(
+    def config_to_ttl_info(ttl_config: CacheTTLConfig) -> CacheTTLInfo:
+        return CacheTTLInfo(
             ttl_sec=ttl_config.ttl_sec_direct,
             refresh_ttl_on_read=False,
         )
 
-        if not is_materialized:
-            return ttl_info
-        if data_source_list is None:
-            return ttl_info
-
-        data_dump_id_list = [dsrc.data_dump_id for dsrc in data_source_list]
-        if not all(data_dump_id_list):
-            return ttl_info
-
-        # Materialized
-        return ttl_info.clone(
-            ttl_sec=ttl_config.ttl_sec_materialized,
-            refresh_ttl_on_read=True,
-        )
-
     def get_cache_ttl_info(
         self,
-        is_materialized: bool,
         data_source_list: Collection[DataSource],
         # For future use
         dataset: Optional[Dataset] = None,  # noqa
@@ -124,22 +105,64 @@ class CacheOptionsBuilderBase:
             connection=actual_connection,
             dataset=dataset,
         )
-        return self.config_to_ttl_info(
-            ttl_config=ttl_config,
-            is_materialized=is_materialized,
-            data_source_list=data_source_list,
-        )
+        return self.config_to_ttl_info(ttl_config=ttl_config)
+
+    def get_data_key(
+        self,
+        *,
+        query_res_info: QueryAndResultInfo,
+        from_info: Optional[PreparedFromInfo] = None,
+        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
+    ) -> Optional[LocalKeyRepresentation]:
+        return base_key
 
 
 @attr.s
-class CacheOptionsBuilderDataProcessor(CacheOptionsBuilderBase):
+class DatasetOptionsBuilder(CacheOptionsBuilderBase):
+    cache_enabled: bool = attr.ib(kw_only=True, default=True)
+
+    def get_cache_options(
+        self,
+        joint_dsrc_info: PreparedFromInfo,
+        query: Select,
+        user_types: list[UserDataType],
+        dataset: Dataset,
+        data_key: LocalKeyRepresentation,
+        role: DataSourceRole = DataSourceRole.origin,
+    ) -> BIQueryCacheOptions:
+        raise NotImplementedError
+
+
+@attr.s
+class CompengOptionsBuilder(DatasetOptionsBuilder):  # TODO: Move to compeng package
+    cache_enabled: bool = attr.ib(kw_only=True, default=True)
+
+    def get_cache_options(
+        self,
+        joint_dsrc_info: PreparedFromInfo,
+        query: Select,
+        user_types: list[UserDataType],
+        dataset: Dataset,
+        data_key: LocalKeyRepresentation,
+        role: DataSourceRole = DataSourceRole.origin,
+    ) -> BIQueryCacheOptions:
+        ttl_info = self.get_cache_ttl_info(
+            data_source_list=joint_dsrc_info.data_source_list,
+            dataset=dataset,
+        )
+        return BIQueryCacheOptions(
+            cache_enabled=self.cache_enabled,
+            key=data_key,
+            ttl_sec=ttl_info.ttl_sec,
+            refresh_ttl_on_read=ttl_info.refresh_ttl_on_read,
+        )
+
     def get_cache_options_for_stream(
         self,
         stream: DataStreamBase,
         dataset: Optional[Dataset] = None,
     ) -> BIQueryCacheOptions:
         ttl_info = self.get_cache_ttl_info(
-            is_materialized=stream.meta.is_materialized,
             data_source_list=stream.meta.data_source_list,
             dataset=dataset,
         )
@@ -154,45 +177,37 @@ class CacheOptionsBuilderDataProcessor(CacheOptionsBuilderBase):
 
 
 @attr.s
-class SelectorCacheOptionsBuilder(CacheOptionsBuilderBase):
+class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
     _is_bleeding_edge_user: bool = attr.ib(default=False)
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
 
-    def get_cache_enabled(self, joint_dsrc_info: PreparedMultiFromInfo) -> bool:
+    def get_cache_enabled(self, joint_dsrc_info: PreparedFromInfo) -> bool:
         assert joint_dsrc_info.data_source_list is not None
         cache_enabled = all(dsrc.cache_enabled for dsrc in joint_dsrc_info.data_source_list)
         return cache_enabled
 
     def get_cache_options(
         self,
-        role: DataSourceRole,
-        joint_dsrc_info: PreparedMultiFromInfo,
+        joint_dsrc_info: PreparedFromInfo,
         query: Select,
         user_types: list[UserDataType],
         dataset: Dataset,
+        data_key: LocalKeyRepresentation,
+        role: DataSourceRole = DataSourceRole.origin,
     ) -> BIQueryCacheOptions:
         """Returns cache key, TTL for new entries, refresh TTL flag"""
-
-        merged_data_dump_id = "N/A"
-        assert joint_dsrc_info.data_source_list is not None
-        if role != DataSourceRole.origin:
-            data_dump_id_list = [dsrc.data_dump_id for dsrc in joint_dsrc_info.data_source_list]
-            if all(data_dump_id_list):
-                merged_data_dump_id = "+".join(data_dump_id_list)  # type: ignore
 
         compiled_query = self.get_query_str_for_cache(
             query=query,
             dialect=joint_dsrc_info.query_compiler.dialect,
         )
         local_key_rep: Optional[LocalKeyRepresentation] = self.make_data_select_cache_key(
-            joint_dsrc_info=joint_dsrc_info,
+            from_info=joint_dsrc_info,
             compiled_query=compiled_query,
             user_types=user_types,
-            data_dump_id=merged_data_dump_id,
             is_bleeding_edge_user=self._is_bleeding_edge_user,
         )
         ttl_info = self.get_cache_ttl_info(
-            is_materialized=role != DataSourceRole.origin,
             data_source_list=joint_dsrc_info.data_source_list,
             dataset=dataset,
         )
@@ -209,33 +224,52 @@ class SelectorCacheOptionsBuilder(CacheOptionsBuilderBase):
 
     def make_data_select_cache_key(
         self,
-        joint_dsrc_info: PreparedMultiFromInfo,
+        from_info: PreparedFromInfo,
         compiled_query: str,
         user_types: list[UserDataType],
-        data_dump_id: str,
         is_bleeding_edge_user: bool,
+        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
     ) -> LocalKeyRepresentation:
-        assert joint_dsrc_info.target_connection_ref is not None
-        target_connection = self._us_entry_buffer.get_entry(joint_dsrc_info.target_connection_ref)
+        assert from_info.target_connection_ref is not None
+        target_connection = self._us_entry_buffer.get_entry(from_info.target_connection_ref)
         assert isinstance(target_connection, ConnectionBase)
         connection_id = target_connection.uuid
         assert connection_id is not None
 
-        local_key_rep = target_connection.get_cache_key_part()
-        if joint_dsrc_info.db_name is not None:
+        local_key_rep = base_key.multi_extend(*target_connection.get_cache_key_part().key_parts)
+        if from_info.db_name is not None:
             # FIXME: Replace with key parts for every participating dsrc
             # For now db_name will be duplicated in some source types
             # (one from connection, one from source)
-            local_key_rep = local_key_rep.extend(part_type="db_name", part_content=joint_dsrc_info.db_name)
+            local_key_rep = local_key_rep.extend(part_type="db_name", part_content=from_info.db_name)
         local_key_rep = local_key_rep.extend(part_type="query", part_content=str(compiled_query))
         local_key_rep = local_key_rep.extend(part_type="user_types", part_content=tuple(user_types or ()))
-        local_key_rep = local_key_rep.extend(part_type="data_dump_id", part_content=data_dump_id or "N/A")
         local_key_rep = local_key_rep.extend(
             part_type="is_bleeding_edge_user",
             part_content=is_bleeding_edge_user,
         )
 
         return local_key_rep
+
+    def get_data_key(
+        self,
+        *,
+        query_res_info: QueryAndResultInfo,
+        from_info: Optional[PreparedFromInfo] = None,
+        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
+    ) -> Optional[LocalKeyRepresentation]:
+        compiled_query = self.get_query_str_for_cache(
+            query=query_res_info.query,
+            dialect=from_info.query_compiler.dialect,
+        )
+        data_key: Optional[LocalKeyRepresentation] = self.make_data_select_cache_key(
+            base_key=base_key,
+            from_info=from_info,
+            compiled_query=compiled_query,
+            user_types=query_res_info.user_types,
+            is_bleeding_edge_user=self._is_bleeding_edge_user,
+        )
+        return data_key
 
 
 @attr.s
@@ -252,12 +286,13 @@ class DashSQLCacheOptionsBuilder(CacheOptionsBuilderBase):
         params: TJSONExt,
         db_params: dict[str, str],
         connector_specific_params: TJSONExt,
+        data_key: LocalKeyRepresentation = LocalKeyRepresentation(),
     ) -> BIQueryCacheOptions:
         cache_enabled = self.get_cache_enabled(conn=conn)
         ttl_config = self.get_actual_ttl_config(connection=conn, dataset=None)
-        ttl_info = self.config_to_ttl_info(ttl_config, is_materialized=False, data_source_list=None)
+        ttl_info = self.config_to_ttl_info(ttl_config)
 
-        local_key_rep: Optional[LocalKeyRepresentation] = conn.get_cache_key_part()
+        local_key_rep: LocalKeyRepresentation = data_key.multi_extend(*conn.get_cache_key_part().key_parts)
         local_key_rep = local_key_rep.multi_extend(
             DataKeyPart(part_type="query", part_content=query_text),
             DataKeyPart(part_type="params", part_content=hashable_dumps(params)),

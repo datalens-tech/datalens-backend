@@ -9,6 +9,7 @@ from dl_compeng_pg.compeng_aiopg.processor_aiopg import AiopgOperationProcessor
 from dl_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgService
 from dl_compeng_pg.compeng_pg_base.pool_base import BasePgPoolWrapper
 from dl_core.data_processing.processing.processor import OperationProcessorAsyncBase
+from dl_core.services_registry.top_level import ServicesRegistry
 
 
 @attr.s
@@ -16,5 +17,13 @@ class AiopgCompEngService(CompEngPgService[AiopgPoolWrapper]):
     def _get_pool_wrapper_cls(self) -> Type[BasePgPoolWrapper]:
         return AiopgPoolWrapper
 
-    def get_data_processor(self) -> OperationProcessorAsyncBase:
-        return AiopgOperationProcessor(pg_pool=self.pool)
+    def get_data_processor(
+        self,
+        service_registry: ServicesRegistry,
+        reporting_enabled: bool,
+    ) -> OperationProcessorAsyncBase:
+        return AiopgOperationProcessor(
+            service_registry=service_registry,
+            pg_pool=self.pool,
+            reporting_enabled=reporting_enabled,
+        )

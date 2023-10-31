@@ -11,7 +11,7 @@ from typing import (
 import attr
 
 from dl_constants.enums import ProcessorType
-from dl_core.data_processing.processing.processor import OperationProcessorAsyncBase
+from dl_core.data_processing.processing.db_base.processor_base import ExecutorBasedOperationProcessor
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.local_cache import USEntryBuffer
 from dl_core.utils import FutureRef
@@ -40,8 +40,9 @@ class DataProcessorFactory(metaclass=abc.ABCMeta):
         *,
         us_entry_buffer: USEntryBuffer,
         allow_cache_usage: bool = True,
+        reporting_enabled: bool = True,
         **kwargs: Any,
-    ) -> OperationProcessorAsyncBase:
+    ) -> ExecutorBasedOperationProcessor:
         pass
 
     @abc.abstractmethod
@@ -51,7 +52,7 @@ class DataProcessorFactory(metaclass=abc.ABCMeta):
 
 @attr.s(frozen=True)
 class BaseClosableDataProcessorFactory(DataProcessorFactory):
-    _created_data_processors: list[OperationProcessorAsyncBase] = attr.ib(factory=list, init=False)
+    _created_data_processors: list[ExecutorBasedOperationProcessor] = attr.ib(factory=list, init=False)
 
     async def get_data_processor(
         self,
@@ -60,13 +61,15 @@ class BaseClosableDataProcessorFactory(DataProcessorFactory):
         *,
         us_entry_buffer: USEntryBuffer,
         allow_cache_usage: bool = True,
+        reporting_enabled: bool = True,
         **kwargs: Any,
-    ) -> OperationProcessorAsyncBase:
+    ) -> ExecutorBasedOperationProcessor:
         processor = self._create_data_processor(
             dataset,
             processor_type,
             us_entry_buffer=us_entry_buffer,
             allow_cache_usage=allow_cache_usage,
+            reporting_enabled=reporting_enabled,
             **kwargs,
         )
         self._created_data_processors.append(processor)
@@ -74,7 +77,6 @@ class BaseClosableDataProcessorFactory(DataProcessorFactory):
         await processor.start()
         return processor
 
-    @abc.abstractmethod
     def _create_data_processor(  # type: ignore  # TODO: fix
         self,
         dataset: Dataset,
@@ -82,12 +84,13 @@ class BaseClosableDataProcessorFactory(DataProcessorFactory):
         *,
         us_entry_buffer: USEntryBuffer,
         allow_cache_usage: bool = True,
+        reporting_enabled: bool = True,
         **kwargs,
-    ) -> OperationProcessorAsyncBase:
-        pass
+    ) -> ExecutorBasedOperationProcessor:
+        raise NotImplementedError
 
     async def close_async(self) -> None:
-        async def close_processor(s: "OperationProcessorAsyncBase") -> None:
+        async def close_processor(s: ExecutorBasedOperationProcessor) -> None:
             # noinspection PyBroadException
             try:
                 await s.end()

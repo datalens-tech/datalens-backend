@@ -39,6 +39,9 @@ class BIQueryCacheOptions:
     ttl_sec: int
     refresh_ttl_on_read: bool
 
+    def clone(self, **kwargs: Any) -> BIQueryCacheOptions:
+        return attr.evolve(self, **kwargs)
+
 
 class DataKeyPart(NamedTuple):
     part_type: str
@@ -87,6 +90,7 @@ class LocalKeyRepresentation:
         return self._key_parts_hash
 
     def extend(self, part_type: str, part_content: Hashable) -> LocalKeyRepresentation:
+        assert part_content is not None
         new_part = DataKeyPart(part_type=part_type, part_content=part_content)
         return LocalKeyRepresentation(key_parts=self.key_parts + (new_part,))
 

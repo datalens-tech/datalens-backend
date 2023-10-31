@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import time
 from typing import (
     TYPE_CHECKING,
+    Awaitable,
+    Callable,
     Optional,
     Sequence,
     Union,
@@ -9,20 +12,28 @@ from typing import (
 
 import attr
 
+from dl_api_commons.reporting.models import (
+    QueryExecutionCacheInfoReportingRecord,
+    QueryExecutionEndReportingRecord,
+    QueryExecutionStartReportingRecord,
+)
 from dl_constants.enums import UserDataType
+from dl_core.base_models import WorkbookEntryLocation
 from dl_core.data_processing.prepared_components.default_manager import DefaultPreparedComponentManager
+from dl_core.data_processing.processing.context import OpExecutionContext
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
-from dl_core.data_processing.selectors.dataset_base import DatasetDataSelectorAsyncBase
-from dl_core.query.bi_query import QueryAndResultInfo
+from dl_core.data_processing.selectors.utils import get_query_type
+from dl_core.us_connection_base import ExecutorBasedMixin
 
 
 if TYPE_CHECKING:
     from sqlalchemy.sql.selectable import Select
 
     from dl_constants.enums import DataSourceRole
+    from dl_core.base_models import ConnectionRef
     from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
     from dl_core.data_processing.prepared_components.manager_base import PreparedComponentManagerBase
-    from dl_core.data_processing.prepared_components.primitives import PreparedMultiFromInfo
+    from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
     from dl_core.data_processing.selectors.base import DataSelectorAsyncBase
     from dl_core.data_processing.types import TValuesChunkStream
     from dl_core.us_dataset import Dataset
@@ -50,32 +61,23 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         assert self._prep_component_manager is not None
         return self._prep_component_manager
 
-    def _make_query_res_info(
-        self,
-        query: Union[str, Select],
-        user_types: Sequence[UserDataType],
-    ) -> QueryAndResultInfo:
-        query_res_info = QueryAndResultInfo(
-            query=query,  # type: ignore  # TODO: fix
-            user_types=list(user_types),
-            # This is basically legacy and will be removed.
-            # col_names are not really used anywhere, just passed around a lot.
-            # So we generate random ones here
-            col_names=[f"col_{i}" for i in range(len(user_types))],
-        )
-        return query_res_info
-
     async def _execute_and_fetch(
         self,
         *,
         query: Union[str, Select],
         user_types: Sequence[UserDataType],
         chunk_size: int,
-        joint_dsrc_info: Optional[PreparedMultiFromInfo] = None,
+        joint_dsrc_info: Optional[PreparedFromInfo] = None,
         query_id: str,
+        ctx: OpExecutionContext,
+        data_key: LocalKeyRepresentation,
+        preparation_callback: Optional[Callable[[], Awaitable[None]]],
     ) -> TValuesChunkStream:
         assert not isinstance(query, str), "String queries are not supported by source DB processor"
         assert joint_dsrc_info is not None, "joint_dsrc_info is required for source DB processor"
+
+        if preparation_callback is not None:
+            await preparation_callback()
 
         query_res_info = self._make_query_res_info(query=query, user_types=user_types)
         data_stream = await self._selector.get_data_stream(
@@ -87,22 +89,67 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         )
         return data_stream.data
 
-    def get_data_key(
+    def _save_start_exec_reporting_record(
         self,
-        *,
         query_id: str,
-        query: Union[str, Select],
-        user_types: Sequence[UserDataType],
-        joint_dsrc_info: Optional[PreparedMultiFromInfo] = None,
-    ) -> Optional[LocalKeyRepresentation]:
-        selector = self._selector
-        assert isinstance(selector, DatasetDataSelectorAsyncBase)
-        query_res_info = self._make_query_res_info(query=query, user_types=user_types)
-        query_execution_ctx = selector.build_query_execution_ctx(
-            query_res_info=query_res_info,
-            joint_dsrc_info=joint_dsrc_info,  # type: ignore  # TODO: fix
-            role=self._role,
-            query_id=query_id,
+        compiled_query: str,
+        target_connection_ref: Optional[ConnectionRef],
+    ) -> None:
+        assert target_connection_ref is not None
+        target_connection = self._us_entry_buffer.get_entry(entry_id=target_connection_ref)
+        assert isinstance(target_connection, ExecutorBasedMixin)
+
+        workbook_id = (
+            target_connection.entry_key.workbook_id
+            if isinstance(target_connection.entry_key, WorkbookEntryLocation)
+            else None
         )
-        data_key = selector.get_data_key(query_execution_ctx=query_execution_ctx)
-        return data_key
+        dataset_id = self._dataset.uuid
+        record = QueryExecutionStartReportingRecord(
+            timestamp=time.time(),
+            query_id=query_id,
+            dataset_id=dataset_id,
+            query_type=get_query_type(
+                connection=target_connection,
+                conn_sec_mgr=self._service_registry.get_conn_executor_factory().conn_security_manager,
+            ),
+            connection_type=target_connection.conn_type,
+            conn_reporting_data=target_connection.get_conn_dto().conn_reporting_data(),
+            query=compiled_query,
+            workbook_id=workbook_id,
+        )
+        self.add_reporting_record(record)
+
+    def _save_end_exec_reporting_record(self, query_id: str, exec_exception: Optional[Exception]) -> None:
+        record = QueryExecutionEndReportingRecord(
+            timestamp=time.time(),
+            query_id=query_id,
+            exception=exec_exception,
+        )
+        self.add_reporting_record(record)
+
+    def _save_query_exec_cache_info_reporting_record(self, query_id: str, cache_full_hit: bool) -> None:
+        query_exec_cache_record = QueryExecutionCacheInfoReportingRecord(
+            query_id=query_id,
+            cache_full_hit=cache_full_hit,
+            timestamp=time.time(),
+        )
+        self.add_reporting_record(query_exec_cache_record)
+
+    def pre_query_execute(
+        self,
+        query_id: str,
+        compiled_query: str,
+        target_connection_ref: Optional[ConnectionRef],
+    ) -> None:
+        self._save_start_exec_reporting_record(
+            query_id=query_id,
+            compiled_query=compiled_query,
+            target_connection_ref=target_connection_ref,
+        )
+
+    def post_query_execute(self, query_id: str, exec_exception: Optional[Exception]) -> None:
+        self._save_end_exec_reporting_record(query_id=query_id, exec_exception=exec_exception)
+
+    def post_cache_usage(self, query_id: str, cache_full_hit: bool) -> None:
+        self._save_query_exec_cache_info_reporting_record(query_id=query_id, cache_full_hit=cache_full_hit)

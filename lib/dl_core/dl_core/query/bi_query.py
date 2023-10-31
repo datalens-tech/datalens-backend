@@ -2,10 +2,8 @@ from __future__ import annotations
 
 from itertools import chain
 from typing import (
-    List,
     Optional,
     Sequence,
-    Set,
     Union,
 )
 
@@ -37,7 +35,21 @@ class BIQuery:
     limit: Optional[int] = None
     offset: Optional[int] = None
 
-    def get_required_avatar_ids(self) -> Set[str]:
+    def get_names(self) -> list[str]:
+        names: list[str] = []
+        for expr_ctx in self.select_expressions:
+            assert expr_ctx.alias is not None
+            names.append(expr_ctx.alias)
+        return names
+
+    def get_user_types(self) -> list[UserDataType]:
+        user_types: list[UserDataType] = []
+        for expr_ctx in self.select_expressions:
+            assert expr_ctx.user_type is not None
+            user_types.append(expr_ctx.user_type)
+        return user_types
+
+    def get_required_avatar_ids(self) -> set[str]:
         """Collect source avatar references from all expressions in the query."""
 
         return set(
@@ -62,5 +74,5 @@ class BIQuery:
 @attr.s
 class QueryAndResultInfo:
     query: Select = attr.ib(kw_only=True)
-    user_types: List[UserDataType] = attr.ib(kw_only=True)
-    col_names: List[str] = attr.ib(kw_only=True)
+    user_types: list[UserDataType] = attr.ib(kw_only=True)
+    col_names: list[str] = attr.ib(kw_only=True)

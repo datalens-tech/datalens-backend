@@ -35,7 +35,7 @@ class SelectorFactory(metaclass=abc.ABCMeta):
         selector_type: SelectorType,
         *,
         us_entry_buffer: USEntryBuffer,
-        allow_cache_usage: bool = True,
+        allow_cache_usage: bool = True,  # TODO: Remove cache from selectors
     ) -> DatasetDataSelectorAsyncBase:
         pass
 
@@ -65,7 +65,12 @@ class BaseClosableSelectorFactory(SelectorFactory, metaclass=abc.ABCMeta):
         us_entry_buffer: USEntryBuffer,
         allow_cache_usage: bool = True,
     ) -> DatasetDataSelectorAsyncBase:
-        selector = self._create_dataset_selector(dataset, selector_type, us_entry_buffer=us_entry_buffer)
+        selector = self._create_dataset_selector(
+            dataset=dataset,
+            selector_type=selector_type,
+            us_entry_buffer=us_entry_buffer,
+            allow_cache_usage=allow_cache_usage,
+        )
         self._created_dataset_selectors.append(selector)
 
         return selector
@@ -116,8 +121,8 @@ class DefaultSelectorFactory(BaseClosableSelectorFactory):
             return LazyCachedDatasetDataSelectorAsync(  # type: ignore  # TODO: fix
                 dataset=dataset,
                 service_registry=self.services_registry,
-                allow_cache_usage=allow_cache_usage,
-                is_bleeding_edge_user=self._is_bleeding_edge_user,
+                # allow_cache_usage=allow_cache_usage,
+                # is_bleeding_edge_user=self._is_bleeding_edge_user,
                 us_entry_buffer=us_entry_buffer,
             )
         else:

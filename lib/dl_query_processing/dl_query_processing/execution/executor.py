@@ -21,6 +21,7 @@ from dl_constants.enums import (
 )
 from dl_constants.types import TBIDataRow
 from dl_core.components.ids import AvatarId
+from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
 from dl_core.data_processing.prepared_components.default_manager import DefaultPreparedComponentManager
 from dl_core.data_processing.processing.operation import (
     BaseOp,
@@ -32,6 +33,7 @@ from dl_core.data_processing.processing.operation import (
 from dl_core.data_processing.processing.processor import OperationProcessorAsyncBase
 from dl_core.data_processing.stream_base import (
     AbstractStream,
+    DataRequestMetaInfo,
     DataSourceVS,
     DataStreamAsync,
 )
@@ -234,6 +236,7 @@ class QueryExecutor(QueryExecutorBase):
                 alias=translated_flat_query.alias,
                 bi_query=bi_query,
                 dest_stream_id=result_to_stream_id_map[result_id],
+                data_key_data=translated_flat_query.extract,
             )
             assert isinstance(op, CalcOp)  # for typing
             operations.append(op)
@@ -298,6 +301,7 @@ class QueryExecutor(QueryExecutorBase):
                 subquery_limit=subquery_limit,
             )
             result_id = avatar_id
+            data_key = LocalKeyRepresentation().extend(part_type="avatar_id", part_content=avatar_id)
             stream = DataSourceVS(
                 id=make_id(),
                 alias=alias,
@@ -305,6 +309,9 @@ class QueryExecutor(QueryExecutorBase):
                 names=prep_src_info.col_names,
                 user_types=prep_src_info.user_types,
                 prep_src_info=prep_src_info,
+                data_key=data_key,
+                meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),
+                preparation_callback=None,
             )
             streams_by_result_id[result_id] = stream
             stream_aliases[stream.id] = stream.alias
