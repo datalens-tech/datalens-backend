@@ -22,7 +22,7 @@ tasks:
         $PYTHON -m venv $VENV_PATH
         . $VENV_PATH/bin/activate
         pip install -r requirements-localhost.txt
-        cd ../terrarium/metapkg/ && poetry install --with ci
+        cd ../terrarium/metapkg/ && poetry install
     status:
       - test -f $VENV_PATH/bin/activate
     # todo: deal with ci to skip ensure_venv

@@ -11,7 +11,7 @@ COPY --from=src_terrarium . .
 
 # Install repmanager to access metadata in pyproject.toml
 RUN ls -l terrarium
-RUN cd terrarium/metapkg/ && poetry install --with ci
+RUN cd terrarium/metapkg/ && poetry install
 
 # For each domain -> for each locale -> generate
 RUN for domain_pair in $(dl-package --package-path=. list-i18n-domains) ; do \

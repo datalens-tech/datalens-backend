@@ -8,8 +8,6 @@ packages = [{include = "dl_terrarium_metpkg"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
-
-[tool.poetry.group.ci.dependencies]
 bi-ci = {path = "../bi_ci"}
 datalens-cli-tools = {path = "../dl_cli_tools"}
 datalens-gitmanager = {path = "../dl_gitmanager"}
