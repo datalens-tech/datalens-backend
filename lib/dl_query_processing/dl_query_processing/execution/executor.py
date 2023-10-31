@@ -17,7 +17,6 @@ import attr
 from dl_constants.enums import (
     DataSourceRole,
     ProcessorType,
-    SelectorType,
 )
 from dl_constants.types import TBIDataRow
 from dl_core.components.ids import AvatarId
@@ -68,7 +67,6 @@ class SourceDbBaseSourceInfo:
 @attr.s
 class QueryExecutor(QueryExecutorBase):
     _dataset: Dataset = attr.ib(kw_only=True)
-    _selector_type: SelectorType = attr.ib(kw_only=True)
     _compeng_processor_type: ProcessorType = attr.ib(kw_only=True)
     _source_db_processor_type: ProcessorType = attr.ib(kw_only=True)
     _allow_cache_usage: bool = attr.ib(kw_only=True)
@@ -97,7 +95,6 @@ class QueryExecutor(QueryExecutorBase):
             processor_type=self._source_db_processor_type,
             allow_cache_usage=self._allow_cache_usage,
             role=role,
-            selector_type=self._selector_type,
         )
 
     async def _get_data_processor(

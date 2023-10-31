@@ -11,10 +11,8 @@ from typing import (
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_constants.enums import SelectorType
 from dl_core.data_processing.selectors.dataset_base import DatasetDataSelectorAsyncBase
-from dl_core.data_processing.selectors.dataset_cached import CachedDatasetDataSelectorAsync
-from dl_core.data_processing.selectors.dataset_cached_lazy import LazyCachedDatasetDataSelectorAsync
+from dl_core.data_processing.selectors.db import DatasetDbDataSelectorAsync
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.local_cache import USEntryBuffer
 from dl_core.utils import FutureRef
@@ -32,7 +30,6 @@ class SelectorFactory(metaclass=abc.ABCMeta):
     def get_dataset_selector(
         self,
         dataset: Dataset,
-        selector_type: SelectorType,
         *,
         us_entry_buffer: USEntryBuffer,
         allow_cache_usage: bool = True,  # TODO: Remove cache from selectors
@@ -60,14 +57,12 @@ class BaseClosableSelectorFactory(SelectorFactory, metaclass=abc.ABCMeta):
     def get_dataset_selector(
         self,
         dataset: Dataset,
-        selector_type: SelectorType,
         *,
         us_entry_buffer: USEntryBuffer,
         allow_cache_usage: bool = True,
     ) -> DatasetDataSelectorAsyncBase:
         selector = self._create_dataset_selector(
             dataset=dataset,
-            selector_type=selector_type,
             us_entry_buffer=us_entry_buffer,
             allow_cache_usage=allow_cache_usage,
         )
@@ -79,7 +74,6 @@ class BaseClosableSelectorFactory(SelectorFactory, metaclass=abc.ABCMeta):
     def _create_dataset_selector(
         self,
         dataset: Dataset,
-        selector_type: SelectorType,
         *,
         us_entry_buffer: USEntryBuffer,
         allow_cache_usage: bool = True,
@@ -104,26 +98,14 @@ class DefaultSelectorFactory(BaseClosableSelectorFactory):
     def _create_dataset_selector(
         self,
         dataset: Dataset,
-        selector_type: SelectorType,
         *,
         us_entry_buffer: USEntryBuffer,
         allow_cache_usage: bool = True,
     ) -> DatasetDataSelectorAsyncBase:
-        if selector_type == SelectorType.CACHED:
-            return CachedDatasetDataSelectorAsync(  # type: ignore  # TODO: fix
-                dataset=dataset,
-                service_registry=self.services_registry,
-                allow_cache_usage=allow_cache_usage,
-                is_bleeding_edge_user=self._is_bleeding_edge_user,
-                us_entry_buffer=us_entry_buffer,
-            )
-        elif selector_type == SelectorType.CACHED_LAZY:
-            return LazyCachedDatasetDataSelectorAsync(  # type: ignore  # TODO: fix
+        return DatasetDbDataSelectorAsync(
                 dataset=dataset,
                 service_registry=self.services_registry,
                 # allow_cache_usage=allow_cache_usage,
                 # is_bleeding_edge_user=self._is_bleeding_edge_user,
                 us_entry_buffer=us_entry_buffer,
             )
-        else:
-            raise NotImplementedError(f"Creation of selector with type {selector_type} is not supported")

@@ -20,7 +20,6 @@ from dl_constants.enums import (
     CalcMode,
     DataSourceRole,
     ProcessorType,
-    SelectorType,
 )
 from dl_core.fields import BIField
 from dl_core.us_connection_base import ClassicConnectionSQL
@@ -130,7 +129,6 @@ class DatasetView(DatasetBaseWrapper):
 
     _SOURCE_DB_PROCESSOR_TYPE = ProcessorType.SOURCE_DB
     _COMPENG_PROCESSOR_TYPE = ProcessorType.ASYNCPG
-    _SELECTOR_TYPE = SelectorType.CACHED_LAZY
 
     _verbose_logging = True
 
@@ -180,7 +178,6 @@ class DatasetView(DatasetBaseWrapper):
             avatar_alias_mapper=self._avatar_alias_mapper,
             compeng_processor_type=self._COMPENG_PROCESSOR_TYPE,
             source_db_processor_type=self._SOURCE_DB_PROCESSOR_TYPE,
-            selector_type=self._SELECTOR_TYPE,
             allow_cache_usage=allow_cache_usage,
             us_manager=self._us_manager,
             compeng_semaphore=self._compeng_semaphore,

@@ -326,11 +326,6 @@ class RangeType(Enum):
     max = "max"
 
 
-class SelectorType(Enum):
-    CACHED = auto()
-    CACHED_LAZY = auto()
-
-
 class ProcessorType(Enum):
     SOURCE_DB = auto()
     ASYNCPG = auto()
