@@ -49,6 +49,9 @@ class GitManagerTool(CliToolBase):
         range_diff_paths_parser.add_argument(
             "--only-added-commits", action="store_true", help="Inspect only commits that are added in head"
         )
+        range_diff_paths_parser.add_argument(
+            "--without-deleted-files", action="store_true", help="Omit deleted files in the resulting list"
+        )
 
         subparsers.add_parser(
             "list-diff-paths",
@@ -58,18 +61,26 @@ class GitManagerTool(CliToolBase):
 
         return parser
 
-    def range_diff_paths(self, base: str, head: Optional[str], absolute: bool, only_added_commits: bool) -> None:
+    def range_diff_paths(
+        self, base: str, head: Optional[str], absolute: bool, only_added_commits: bool, without_deleted: bool = False
+    ) -> None:
         diff_name_list: list[str]
         if only_added_commits:
             commits = self.git_manager.get_missing_commits(base=base, head=head)
-            diff_name_list = self.git_manager.get_list_diff_paths(commits=commits, absolute=absolute)
+            diff_name_list = self.git_manager.get_list_diff_paths(
+                commits=commits, absolute=absolute, without_deleted=without_deleted
+            )
         else:
-            diff_name_list = self.git_manager.get_range_diff_paths(base=base, head=head, absolute=absolute)
+            diff_name_list = self.git_manager.get_range_diff_paths(
+                base=base, head=head, absolute=absolute, without_deleted=without_deleted
+            )
         print("\n".join(diff_name_list))
 
-    def list_diff_paths(self, absolute: bool) -> None:
+    def list_diff_paths(self, absolute: bool, without_deleted: bool = False) -> None:
         commits = [line.strip() for line in self.input_text_io if line.strip()]
-        diff_name_list = self.git_manager.get_list_diff_paths(commits=commits, absolute=absolute)
+        diff_name_list = self.git_manager.get_list_diff_paths(
+            commits=commits, absolute=absolute, without_deleted=without_deleted
+        )
         print("\n".join(diff_name_list))
 
     @classmethod
@@ -86,10 +97,14 @@ class GitManagerTool(CliToolBase):
         match args.command:
             case "range-diff-paths":
                 tool.range_diff_paths(
-                    base=args.base, head=args.head, absolute=args.absolute, only_added_commits=args.only_added_commits
+                    base=args.base,
+                    head=args.head,
+                    absolute=args.absolute,
+                    only_added_commits=args.only_added_commits,
+                    without_deleted=args.without_deleted_files,
                 )
             case "list-diff-paths":
-                tool.list_diff_paths(absolute=args.absolute)
+                tool.list_diff_paths(absolute=args.absolute, without_deleted=args.without_deleted_files)
             case _:
                 raise RuntimeError(f"Got unknown command: {args.command}")
 
