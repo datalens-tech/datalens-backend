@@ -3,7 +3,10 @@ from datetime import (
     timedelta,
 )
 import logging
-from typing import Any
+from typing import (
+    Any,
+    Optional,
+)
 
 import attr
 from botocore.exceptions import ClientError
@@ -211,7 +214,8 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
 
     async def run(self) -> TaskResult:
         tenant_id = self.meta.tenant_id
-        LOGGER.info(f"RenameTenantFilesTask. Moving to {tenant_id}")
+        old_tenant_id = self.meta.old_tenant_id
+        LOGGER.info(f"RenameTenantFilesTask. Moving to {tenant_id} (old_tenant_id = {old_tenant_id})")
 
         rmm = RedisModelManager(
             redis=self._ctx.redis_service.get_redis(),
@@ -256,23 +260,38 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
                                 assert isinstance(conn, BaseFileS3Connection)
                                 conn_changed = False
                                 for source in conn.data.sources:
-                                    old_s3_filename = source.s3_filename
-                                    if old_s3_filename is None:
+                                    if source.s3_filename is None and source.s3_filename_suffix is None:
                                         LOGGER.info(
                                             f"Cannot rename file for source_id {source.id} - s3_filename not set"
                                         )
                                         continue
-                                    if old_s3_filename.startswith(tenant_id):
-                                        LOGGER.info(f"File is already tagged with the new tenant: {old_s3_filename}")
+
+                                    old_s3_filename: str
+                                    if source.s3_filename:
+                                        old_s3_filename = source.s3_filename
+                                    else:
+                                        assert old_tenant_id
+                                        old_s3_filename = "_".join(
+                                            (old_tenant_id, conn.uuid, source.s3_filename_suffix)
+                                        )
+
+                                    if not old_tenant_id:
+                                        old_fname_parts = old_s3_filename.split("_")
+                                        if len(old_fname_parts) >= 2 and all(part for part in old_fname_parts):
+                                            # assume that first part is old tenant id
+                                            old_tenant_id = old_fname_parts[0]
+                                    old_tenants.add(old_tenant_id)
+
+                                    s3_filename_suffix = (
+                                        source.s3_filename_suffix
+                                        if source.s3_filename_suffix is not None
+                                        else make_source_s3_filename_suffix()
+                                    )
+                                    new_s3_filename = conn.get_full_s3_filename(s3_filename_suffix)
+                                    if old_s3_filename == new_s3_filename:
+                                        LOGGER.info(f"The file already has the correct name: {new_s3_filename}")
                                         continue
 
-                                    old_fname_parts = old_s3_filename.split("_")
-                                    if len(old_fname_parts) >= 2 and all(part for part in old_fname_parts):
-                                        # assume that first part is old tenant id
-                                        old_tenants.add(old_fname_parts[0])
-
-                                    s3_filename_suffix = make_source_s3_filename_suffix()
-                                    new_s3_filename = conn.get_full_s3_filename(s3_filename_suffix)
                                     await s3_client.copy_object(
                                         CopySource=dict(
                                             Bucket=s3_service.persistent_bucket_name,

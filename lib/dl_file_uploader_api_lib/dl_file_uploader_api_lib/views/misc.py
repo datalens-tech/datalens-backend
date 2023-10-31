@@ -68,12 +68,13 @@ class RenameTenantFilesView(FileUploaderBaseView):
     async def post(self) -> web.StreamResponse:
         req_data = await self._load_post_request_schema_data(misc_schemas.RenameFilesRequestSchema)
         tenant_id = req_data["tenant_id"]
+        old_tenant_id = req_data["old_tenant_id"]
 
         rmm = self.dl_request.get_redis_model_manager()
         await RenameTenantStatusModel(manager=rmm, id=tenant_id, status=RenameTenantStatus.scheduled).save()
 
         task_processor = self.dl_request.get_task_processor()
-        await task_processor.schedule(RenameTenantFilesTask(tenant_id=tenant_id))
-        LOGGER.info(f"Scheduled RenameTenantFilesTask for tenant_id {tenant_id}")
+        await task_processor.schedule(RenameTenantFilesTask(tenant_id=tenant_id, old_tenant_id=old_tenant_id))
+        LOGGER.info(f"Scheduled RenameTenantFilesTask for tenant_id {tenant_id} (old_tenant_id = {old_tenant_id})")
 
         return web.Response()
