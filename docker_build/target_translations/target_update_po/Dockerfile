@@ -15,7 +15,7 @@ RUN pip install terrarium/dl_repmanager
 
 # Prepare a config file for babel. It's always the same, no ponit in storing in in packages
 RUN echo "[python: **.py]\n[jinja2: **.jinja]" > babel_.ini
-RUN pip install Babel pytz
+RUN pip install Babel pytz jinja2
 
 # For each domain -> for each locale -> generate raw .po, merge it into the existing .po
 RUN for domain_pair in $(dl-package --package-path=. list-i18n-domains) ; do \

@@ -21,20 +21,14 @@ from dl_formula.core.dialect import DialectCombo
 from dl_formula.core.dialect import StandardDialect as D
 from dl_formula_ref.audience import Audience
 from dl_formula_ref.i18n.registry import get_localizer
-from dl_formula_ref.paths import (
-    FileLink,
-    PathRenderer,
-)
+from dl_formula_ref.paths import PathRenderer
 from dl_formula_ref.primitives import RawFunc
 from dl_formula_ref.reference import FuncReference
 from dl_formula_ref.registry.aliased_res import (
     AliasedResourceRegistryBase,
     SimpleAliasedResourceRegistry,
 )
-from dl_formula_ref.registry.note import (
-    CrosslinkNote,
-    ParameterizedNote,
-)
+from dl_formula_ref.registry.note import ParameterizedNote
 from dl_formula_ref.registry.registry import RefFunctionKey
 from dl_formula_ref.registry.signature_base import (
     FunctionSignature,
@@ -45,6 +39,7 @@ from dl_formula_ref.rendered import (
     LocalizedFuncArg,
     RenderedFunc,
     RenderedMultiAudienceFunc,
+    RenderedNote,
 )
 from dl_formula_ref.rich_text.expander import MacroExpander
 from dl_formula_ref.rich_text.helpers import get_human_data_type_list
@@ -124,34 +119,34 @@ class FuncRenderer:
     _rt_env: RichTextRenderEnvironment = attr.ib(kw_only=True)
     _example_rend_config: DataExampleRendererConfig = attr.attrib(kw_only=True)
 
-    def render_text(self, text: ParameterizedText) -> str:
-        if not text:
+    def render_text(self, param_text: ParameterizedText) -> str:
+        if not param_text:
             return ""
-        text_translated = text.clone(text=translate(text.text, locale=self._locale))
-        text_str = text_translated.format()
         translation_callable = get_localizer(self._locale).translate
         relative_path_renderer = self._path_renderer.child(self._context_path)
         resources = self._resource_overrides + self._raw_func.resources
         expander = MacroExpander(
-            resources=resources,
+            resources=param_text.resources + resources,
             args=self._raw_func.args,
             translation_callable=translation_callable,
             func_link_provider=relative_path_renderer.get_func_link,
             cat_link_provider=relative_path_renderer.get_cat_link,
         )
-        rich_text = expander.expand_text(text_str)
+        rich_text = expander.expand_text(param_text.text)
         result = self._rt_renderer.render(rich_text, env=self._rt_env)
         return result
 
-    def render_note(self, note: ParameterizedNote) -> ParameterizedNote:
-        text = self.render_text(note.param_text)
-        return note.clone(param_text=ParameterizedText(text=text))
+    def _as_param_text(self, text: str, params: Optional[dict[str, str]] = None) -> ParameterizedText:
+        return ParameterizedText.from_str(text=text, params=params or {})
 
-    def render_crosslink_note(self, note: CrosslinkNote) -> ParameterizedNote:
+    def render_note(self, note: ParameterizedNote) -> RenderedNote:
         text = self.render_text(note.param_text)
-        refs_list = ",".join(self.render_text(ParameterizedText(text=ref)) for ref in note.ref_list)
-        new_text = text + refs_list + "."
-        return note.clone(param_text=ParameterizedText(text=new_text))
+        return RenderedNote(
+            text=text,
+            formatting=note.formatting,
+            level=note.level,
+            type=note.type,
+        )
 
     def make_keywords(self) -> list[str]:
         gtext = get_localizer(self._locale).translate
@@ -167,7 +162,9 @@ class FuncRenderer:
                 FunctionSignature(
                     title=sign.title,
                     body=sign.body,
-                    description=[self.render_text(ParameterizedText(text=desc_part)) for desc_part in sign.description],
+                    description=[
+                        self.render_text(self._as_param_text(text=desc_part)) for desc_part in sign.description
+                    ],
                 )
                 for sign in self._raw_func.signature_coll.signatures
             ],
@@ -205,7 +202,7 @@ class FuncRenderer:
             if key.category.name != self._func_key.category_name
         ]
 
-    def get_counterpart_crosslink_note_and_refs(self, func_ref: FuncReference) -> Optional[CrosslinkNote]:
+    def get_counterpart_crosslink_note_and_refs(self, func_ref: FuncReference) -> Optional[ParameterizedNote]:
         counterpart_keys = self.get_counterpart_keys(func_ref=func_ref)
         if not counterpart_keys:
             return None
@@ -219,13 +216,16 @@ class FuncRenderer:
             )
             for key in counterpart_keys
         ]
+        root_text = "{text:also_in_other_categories}" + ",".join(counterpart_refs_list) + "."
 
-        note = CrosslinkNote(
-            param_text=ParameterizedText(
-                text=ALSO_IN_OTHER_CATEGORIES,
-                params={"func_name": self._func_key.name.upper()},
+        note = ParameterizedNote(
+            param_text=self._as_param_text(
+                text=root_text,
+                params={
+                    "func_name": self._func_key.name.upper(),
+                    "also_in_other_categories": ALSO_IN_OTHER_CATEGORIES,
+                },
             ),
-            ref_list=counterpart_refs_list,
         )
 
         return note
@@ -245,10 +245,10 @@ class FuncRenderer:
             short_title=self._raw_func.get_short_title(locale=self._locale),
             category_name=self._raw_func.category.name or "",
             human_category=human_category(category=self._raw_func.category.name, locale=self._locale),
-            category_description=self.render_text(ParameterizedText(text=self._raw_func.category.description)),
+            category_description=self.render_text(self._as_param_text(text=self._raw_func.category.description)),
             category_keywords=self.make_keywords(),
             args=args,
-            description=self.render_text(ParameterizedText(text=self._raw_func.description)),
+            description=self.render_text(self._as_param_text(text=self._raw_func.description)),
             dialects=self._raw_func.dialects,
             human_dialects=human_dialects(dialects=self._raw_func.dialects, locale=self._locale),
             top_notes=[self.render_note(w) for w in self._raw_func.top_notes],
@@ -257,7 +257,7 @@ class FuncRenderer:
             examples=examples,
             signature_coll=signature_coll,
             locale=self._locale,
-            crosslink_note=self.render_crosslink_note(crosslink_note) if crosslink_note is not None else None,
+            crosslink_note=self.render_note(crosslink_note) if crosslink_note is not None else None,
         )
 
 
@@ -277,6 +277,10 @@ class FuncRefRenderer:
     @_rt_env.default
     def _rt_env_default(self) -> RichTextRenderEnvironment:
         return RichTextRenderEnvironment(block_conditions=self._block_conditions)
+
+    @property
+    def path_renderer(self) -> PathRenderer:
+        return self._path_renderer
 
     def render_func(self, func_key: RefFunctionKey, raw_func: RawFunc) -> RenderedFunc:
         func_file_path = self._path_renderer.get_func_path(func_key=func_key)
