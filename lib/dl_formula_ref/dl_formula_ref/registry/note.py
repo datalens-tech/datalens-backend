@@ -51,4 +51,4 @@ class ParameterizedNote:
 
 @attr.s(frozen=True)
 class CrosslinkNote(ParameterizedNote):
-    ref_list: List[str] = attr.ib(kw_only=True, default=list())
+    ref_list: list[str] = attr.ib(kw_only=True, default=list())
