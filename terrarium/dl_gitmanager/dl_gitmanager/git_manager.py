@@ -12,6 +12,9 @@ from git.diff import Diff
 from git.repo.base import Repo as GitRepo
 
 
+MAX_HISTORY_DEPTH = 300
+
+
 @attr.s
 class GitManager:
     git_repo: GitRepo = attr.ib(kw_only=True)
@@ -133,7 +136,7 @@ class GitManager:
         return self._collect_paths_from_diffs(diff_iterable=self._iter_list_diffs(commits=commits, absolute=absolute))
 
     def get_all_ancestor_commits(self, commit: str) -> set[str]:
-        commits = [commit.hexsha for commit in self.git_repo.iter_commits(commit)]
+        commits = [commit.hexsha for commit in self.git_repo.iter_commits(commit, max_count=MAX_HISTORY_DEPTH)]
         return set(commits)
 
     def get_missing_commits(self, base: str, head: str) -> set[str]:
