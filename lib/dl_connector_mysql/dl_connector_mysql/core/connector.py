@@ -24,6 +24,7 @@ from dl_connector_mysql.core.data_source import (
     MySQLSubselectDataSource,
 )
 from dl_connector_mysql.core.data_source_migration import MySQLDataSourceMigrator
+from dl_connector_mysql.core.query_compiler import MySQLQueryCompiler
 from dl_connector_mysql.core.sa_types import SQLALCHEMY_MYSQL_TYPES
 from dl_connector_mysql.core.storage_schemas.connection import ConnectionMySQLDataStorageSchema
 from dl_connector_mysql.core.type_transformer import MySQLTypeTransformer
@@ -60,3 +61,4 @@ class MySQLCoreConnector(CoreConnector):
     )
     rqe_adapter_classes = frozenset({MySQLAdapter, AsyncMySQLAdapter})
     sa_types = SQLALCHEMY_MYSQL_TYPES
+    compiler_cls = MySQLQueryCompiler

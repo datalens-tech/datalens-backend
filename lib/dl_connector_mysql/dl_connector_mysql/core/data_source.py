@@ -37,6 +37,7 @@ class MySQLDataSourceMixin(BaseSQLDataSource):
     )
 
     conn_type = CONNECTION_TYPE_MYSQL
+    compiler_cls = MySQLQueryCompiler
 
     @classmethod
     def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
@@ -45,8 +46,6 @@ class MySQLDataSourceMixin(BaseSQLDataSource):
 
 class MySQLDataSource(MySQLDataSourceMixin, StandardSQLDataSource):
     """MySQL table"""
-
-    compiler_cls = MySQLQueryCompiler
 
 
 class MySQLSubselectDataSource(MySQLDataSourceMixin, SubselectDataSource):
