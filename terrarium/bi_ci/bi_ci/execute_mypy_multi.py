@@ -5,7 +5,6 @@ import subprocess
 import sys
 from typing import (
     Iterable,
-    Optional,
 )
 
 import clize
@@ -13,21 +12,25 @@ import tomlkit
 from tomlkit.exceptions import NonExistentKey
 
 
+PYPROJECT_TOML = "pyproject.toml"
+
+
 def get_mypy_targets(pkg_dir: Path) -> list[str]:
     try:
-        with open(pkg_dir / "pyproject.toml") as fh:
+        with open(pkg_dir / PYPROJECT_TOML) as fh:
             meta = tomlkit.load(fh)
             return meta["datalens"]["meta"]["mypy"]["targets"]
     except NonExistentKey:
         pass
 
     # fallback to the same name defaults
-    return [pkg_dir.name]
+    dirname = pkg_dir.name or ""
+    return [dirname]
 
 
 def get_targets(root: Path) -> Iterable[str]:
-    for path in root.rglob("*/pyproject.toml"):
-        yield str(path.parent)
+    for path in root.rglob(f"*{PYPROJECT_TOML}"):
+        yield str(path.parent).replace(PYPROJECT_TOML, "")
 
 
 def main(root: Path, targets_file: Path = None) -> None:  # type: ignore
