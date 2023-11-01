@@ -7,12 +7,9 @@ import json
 import os
 from typing import (
     Collection,
-    Dict,
     Iterable,
-    List,
     Optional,
     Sequence,
-    Tuple,
 )
 
 import attr
@@ -105,7 +102,7 @@ class ReferenceDocGenerator:
 
     _gen_config: RefDocGeneratorConfig = attr.ib(init=False)
     _func_ref: FuncReference = attr.ib(init=False)
-    _renderers_by_tmpl: Dict[Tuple[FuncPathTemplate, CatPathTemplate], FuncRenderer] = attr.ib(init=False, factory=dict)
+    _renderers_by_tmpl: dict[tuple[FuncPathTemplate, CatPathTemplate], FuncRenderer] = attr.ib(init=False, factory=dict)
     _jinja_env: jinja2.Environment = attr.ib(init=False)
 
     def __attrs_post_init__(self) -> None:
@@ -114,6 +111,9 @@ class ReferenceDocGenerator:
             scopes_by_audience=self._gen_config.function_scopes, supported_dialects=self._gen_config.supported_dialects
         )
         self._jinja_env = get_jinja_env(self._gen_config)
+
+    def func_ref(self) -> FuncReference:
+        return self._func_ref
 
     def _get_renderer(self, doc_config: FuncDocTemplateConfig) -> FuncRenderer:
         path_renderer = PathRenderer(
@@ -147,9 +147,9 @@ class ReferenceDocGenerator:
 
     def _render_funcs(
         self,
-        raw_funcs: List[RawMultiAudienceFunc],
+        raw_funcs: list[RawMultiAudienceFunc],
         doc_config: FuncDocTemplateConfig,
-    ) -> List[RenderedMultiAudienceFunc]:
+    ) -> list[RenderedMultiAudienceFunc]:
         func_doc_structs = []
         for raw_func in raw_funcs:
             func_key = RefFunctionKey.normalized(name=raw_func.name, category_name=raw_func.category.name)
@@ -172,8 +172,8 @@ class ReferenceDocGenerator:
                 print(full_path)
 
     def _group_raw_funcs_by_category(
-        self, raw_funcs: List[RawMultiAudienceFunc]
-    ) -> Dict[str, List[RawMultiAudienceFunc]]:
+        self, raw_funcs: list[RawMultiAudienceFunc]
+    ) -> dict[str, list[RawMultiAudienceFunc]]:
         funcs_by_category = defaultdict(list)
         for func in raw_funcs:
             funcs_by_category[func.category.name].append(func)
@@ -231,7 +231,7 @@ class ReferenceDocGenerator:
         context_path: str,
         title: str,
         description: str,
-        rend_funcs: List[RenderedMultiAudienceFunc],
+        rend_funcs: list[RenderedMultiAudienceFunc],
         in_category: bool,
         meta_title: str = "",
         meta_description: str = "",
@@ -415,7 +415,7 @@ class ReferenceDocGenerator:
 
         return None
 
-    def _get_func_source_info(self, name: str) -> Tuple[str, int]:
+    def _get_func_source_info(self, name: str) -> tuple[str, int]:
         """Get file name and line number for given function"""
         func_cls = self._get_func_base_class(name)
         assert func_cls is not None
@@ -424,23 +424,23 @@ class ReferenceDocGenerator:
         lineno = inspect.getsourcelines(func_cls)[1]
         return filename, lineno
 
-    def _load_db_config(self) -> Dict[DialectCombo, Db]:
-        with open(self._gen_config.db_config_file) as config_file:
+    def generate_example_data(self, db_config_path: str, output_path: str, default_dialect: DialectCombo) -> None:
+        # TODO: Move out of this class
+        with open(db_config_path) as config_file:
             raw_config: dict = json.load(config_file)
-        return {
+
+        db_by_dialect = {
             get_dialect_from_str(d_name): make_db_from_config(
                 make_db_config(dialect=get_dialect_from_str(d_name), url=d_url)
             )
             for d_name, d_url in raw_config.items()
         }
 
-    def generate_example_data(self) -> None:
         raw_funcs = self._func_ref.as_list()
-        db_by_dialect = self._load_db_config()
         preparer = DataPreparer(
-            storage_filename=self._gen_config.example_data_file,
+            storage_filename=output_path,
             db_by_dialect=db_by_dialect,
-            default_example_dialect=self._gen_config.default_example_dialect,
+            default_example_dialect=default_dialect,
         )
         examples: list[ExampleBase]
         for multi_func in raw_funcs:

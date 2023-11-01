@@ -45,8 +45,8 @@ root_dir = "dl_formula_ref_tests/"
 target_path = "db"
 
 [tool.poetry.scripts]
-bi-formula-ref-doc = "dl_formula_ref.scripts.formula_doc:main"
-bi-formula-ref-exdata = "dl_formula_ref.scripts.example_data:main"
+dl-formula-ref-doc = "dl_formula_ref.scripts.formula_doc:main"
+dl-formula-ref-exdata = "dl_formula_ref.scripts.example_data:main"
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_formula_ref.plugins"]
