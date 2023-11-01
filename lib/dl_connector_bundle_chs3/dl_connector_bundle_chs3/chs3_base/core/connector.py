@@ -13,6 +13,7 @@ from dl_core.connectors.base.connector import (
 from dl_connector_bundle_chs3.chs3_base.core.constants import BACKEND_TYPE_CHS3
 from dl_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
 from dl_connector_bundle_chs3.chs3_base.core.type_transformer import FileTypeTransformer
+from dl_connector_clickhouse.core.clickhouse_base.query_compiler import ClickHouseQueryCompiler
 
 
 class BaseFileS3CoreConnectionDefinition(CoreConnectionDefinition):
@@ -30,3 +31,4 @@ class BaseFileS3CoreConnector(CoreConnector):
         {ConnSecuritySettings(NonUserInputConnectionSafetyChecker, frozenset({BaseFileS3ConnDTO}))}
     )
     query_cls = CHQuery
+    compiler_cls = ClickHouseQueryCompiler

@@ -89,6 +89,8 @@ class BigQuerySubselectDataSource(BigQueryDataSourceMixin, SubselectDataSource):
     BigQuery subselect
     """
 
+    compiler_cls = BigQueryQueryCompiler
+
     @property
     def spec(self) -> BigQuerySubselectDataSourceSpec:
         assert isinstance(self._spec, BigQuerySubselectDataSourceSpec)

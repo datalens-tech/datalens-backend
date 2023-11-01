@@ -24,6 +24,7 @@ from dl_core.base_models import (
     ConnectionRef,
     SourceFilterSpec,
 )
+from dl_core.connectors.base.query_compiler import QueryCompiler
 from dl_core.data_source_spec.base import DataSourceSpec
 from dl_core.db import (
     IndexInfo,
@@ -70,6 +71,7 @@ class DataSource(metaclass=abc.ABCMeta):
     default_chunk_row_count: ClassVar[int] = 10000
     chunk_size_bytes: ClassVar[int] = 3 * 1024**2
 
+    compiler_cls: Type[QueryCompiler] = QueryCompiler
     conn_type: ClassVar[ConnectionType]  # TODO unbind DataSource and Connection classes BI-4083
 
     # TODO FIX: Remove ASAP
