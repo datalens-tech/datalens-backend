@@ -88,8 +88,8 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
                     return Success()
 
             dfile.filename = spreadsheet_meta["name"]
-            xslx_suffix = ".xlsx"
-            if not dfile.filename.endswith(xslx_suffix):
+            xlsx_suffix = ".xlsx"
+            if not dfile.filename.endswith(xlsx_suffix):
                 raise exc.UnsupportedDocument
 
             s3 = self._ctx.s3_service
