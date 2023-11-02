@@ -200,16 +200,6 @@ class DocumentsView(FileUploaderBaseView):
         await task_processor.schedule(DownloadYaDocsTask(file_id=df.id))
         LOGGER.info(f"Scheduled DownloadGSheetTask for file_id {df.id}")
 
-        df = await DataFile.get(manager=rmm, obj_id=df.id)
-        if df.status == FileProcessingStatus.failed:
-            return web.json_response(
-                files_schemas.FileUploadResponseSchema().dump({"file_id": df.id, "title": df.filename}),
-                status=HTTPStatus.OK,
-            )
-
-        await task_processor.schedule(ProcessExcelTask(file_id=df.id))
-        LOGGER.info(f"Scheduled ProcessExcelTask for file_id {df.id}")
-
         return web.json_response(
             files_schemas.FileUploadResponseSchema().dump({"file_id": df.id, "title": df.filename}),
             status=HTTPStatus.CREATED,

@@ -5,7 +5,11 @@ import pytest
 
 from dl_constants.enums import FileProcessingStatus
 from dl_file_uploader_api_lib_tests.req_builder import ReqBuilder
-from dl_file_uploader_lib.redis_model.models import DataFile, YaDocsUserSourceProperties, GSheetsUserSourceProperties
+from dl_file_uploader_lib.redis_model.models import (
+    DataFile,
+    GSheetsUserSourceProperties,
+    YaDocsUserSourceProperties,
+)
 
 
 LOGGER = logging.getLogger(__name__)
@@ -96,7 +100,7 @@ async def test_yadocuments_not_found(
 ):
     public_link_nonexisten = "https://disk.yandex.ru/i/fffffffff"
     resp = await fu_client.make_request(ReqBuilder.upload_documents(public_link=public_link_nonexisten))
-    assert resp.status == 200
+    assert resp.status == 201
     file_id = resp.json["file_id"]
 
     await asyncio.sleep(2)
@@ -118,7 +122,7 @@ async def test_documents_unsupported(
 ):
     public_link_to_docs = "https://disk.yandex.ru/i/ros0GDegLEpyew"
     resp = await fu_client.make_request(ReqBuilder.upload_documents(public_link=public_link_to_docs))
-    assert resp.status == 200
+    assert resp.status == 201
     file_id = resp.json["file_id"]
 
     await asyncio.sleep(2)
