@@ -60,7 +60,7 @@ from dl_formula_ref.rendered import (
     RenderedMultiAudienceFunc,
 )
 from dl_formula_ref.rendering import (
-    FuncRenderer,
+    FuncRefRenderer,
     human_category,
     human_dialect,
 )
@@ -102,7 +102,9 @@ class ReferenceDocGenerator:
 
     _gen_config: RefDocGeneratorConfig = attr.ib(init=False)
     _func_ref: FuncReference = attr.ib(init=False)
-    _renderers_by_tmpl: dict[tuple[FuncPathTemplate, CatPathTemplate], FuncRenderer] = attr.ib(init=False, factory=dict)
+    _renderers_by_tmpl: dict[tuple[FuncPathTemplate, CatPathTemplate], FuncRefRenderer] = attr.ib(
+        init=False, factory=dict
+    )
     _jinja_env: jinja2.Environment = attr.ib(init=False)
 
     def __attrs_post_init__(self) -> None:
@@ -112,10 +114,7 @@ class ReferenceDocGenerator:
         )
         self._jinja_env = get_jinja_env(self._gen_config)
 
-    def func_ref(self) -> FuncReference:
-        return self._func_ref
-
-    def _get_renderer(self, doc_config: FuncDocTemplateConfig) -> FuncRenderer:
+    def _get_ref_renderer(self, doc_config: FuncDocTemplateConfig) -> FuncRefRenderer:
         path_renderer = PathRenderer(
             func_ref=self._func_ref,
             func_path_template=doc_config.func_file_path,
@@ -123,7 +122,7 @@ class ReferenceDocGenerator:
         )
         key = (doc_config.func_file_path, doc_config.cat_file_path)
         if key not in self._renderers_by_tmpl:
-            self._renderers_by_tmpl[key] = FuncRenderer(
+            self._renderers_by_tmpl[key] = FuncRefRenderer(
                 func_ref=self._func_ref,
                 locale=self._locale,
                 example_rend_config=DataExampleRendererConfig(
@@ -142,7 +141,7 @@ class ReferenceDocGenerator:
         func_key: RefFunctionKey,
         doc_config: FuncDocTemplateConfig,
     ) -> RenderedMultiAudienceFunc:
-        renderer = self._get_renderer(doc_config=doc_config)
+        renderer = self._get_ref_renderer(doc_config=doc_config)
         return renderer.render_multi_func_func(func_key=func_key)
 
     def _render_funcs(
@@ -183,7 +182,7 @@ class ReferenceDocGenerator:
         trans = get_localizer(self._locale).translate
         doc_config = self._gen_config.func_doc_configs[FuncDocConfigVersion.overview_shortcut]
         raw_funcs = self._func_ref.as_list()
-        renderer = self._get_renderer(doc_config=doc_config)
+        renderer = self._get_ref_renderer(doc_config=doc_config)
         funcs_by_category = self._group_raw_funcs_by_category(raw_funcs=raw_funcs)
         global_audiences = set(self._gen_config.function_scopes.keys())
 
@@ -240,7 +239,7 @@ class ReferenceDocGenerator:
         trans = get_localizer(self._locale).translate
         template = self._jinja_env.get_template(self._gen_config.doc_list_template)
         doc_config = self._gen_config.func_doc_configs[FuncDocConfigVersion.overview_shortcut]
-        renderer = self._get_renderer(doc_config=doc_config)
+        renderer = self._get_ref_renderer(doc_config=doc_config)
         relative_path_renderer = renderer.path_renderer.child(context_path)
 
         def make_link(func: RenderedFunc) -> str:
@@ -308,7 +307,7 @@ class ReferenceDocGenerator:
             ),
         )
         doc_config = self._gen_config.func_doc_configs[FuncDocConfigVersion.overview_shortcut]
-        renderer = self._get_renderer(doc_config=doc_config)
+        renderer = self._get_ref_renderer(doc_config=doc_config)
         relative_path_renderer = renderer.path_renderer.child(context_path)
 
         scopes = self._gen_config.function_scopes.get(

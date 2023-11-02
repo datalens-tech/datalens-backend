@@ -44,3 +44,8 @@ def get_localizer(locale: str):
         default_domain=DOMAIN,
     )
     return localizer
+
+
+@attr.s
+class FormulaRefTranslatable(Translatable):
+    domain = attr.ib(kw_only=True, default=DOMAIN)

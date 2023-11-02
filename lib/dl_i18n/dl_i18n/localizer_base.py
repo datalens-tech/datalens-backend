@@ -20,7 +20,10 @@ LOGGER = logging.getLogger(__name__)
 @attr.s
 class Translatable:
     _s: str = attr.ib()
-    domain: str = attr.ib()
+    domain: str = attr.ib(kw_only=True)
+
+    def __bool__(self) -> bool:
+        return bool(self._s)
 
     def to_text(self) -> str:
         return self._s

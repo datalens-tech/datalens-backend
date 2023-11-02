@@ -1,6 +1,5 @@
 # Copyright (c) 2023 YANDEX LLC <datalens-opensource@yandex-team.ru>
 # This file is distributed under the same license as the DataLens package.
-
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -25,20 +24,20 @@ msgstr "Обзор"
 msgid "Function Availability"
 msgstr "Поддержка функций"
 
-msgid "Arguments ({args}) must be of the same type."
-msgstr "Тип аргументов ({args}) должен совпадать."
+msgid "Arguments ({text:args}) must be of the same type."
+msgstr "Тип аргументов ({text:args}) должен совпадать."
 
-msgid "Only constant values are accepted for the arguments ({args})."
-msgstr "Значения аргументов ({args}) должны быть константами."
+msgid "Only constant values are accepted for the arguments ({text:args})."
+msgstr "Значения аргументов ({text:args}) должны быть константами."
 
-msgid "Function `{func_name}` is also found in the following categories: "
-msgstr "Функция `{func_name}` также доступна в следующих категориях: "
+msgid "Function `{text:func_name}` is also found in the following categories: "
+msgstr "Функция `{text:func_name}` также доступна в следующих категориях: "
 
 msgid "Depends on argument types"
 msgstr "Зависит от типов аргументов"
 
-msgid "Same type as ({args})"
-msgstr "Совпадает с типом аргументов ({args})"
+msgid "Same type as ({text:args})"
+msgstr "Совпадает с типом аргументов ({text:args})"
 
 msgid "Any"
 msgstr "Любой"
@@ -504,8 +503,8 @@ msgid ""
 "dimensions being used, and operates over positional offsets specified in "
 "_rows_, while time series functions use specific values and value offsets in "
 "date/time units like days, hours or seconds. This makes them sensitive to "
-"missing values in data. As a result of this `AGO(SUM([Sales]), [Date], \"year"
-"\")` will return `NULL` if the same-date row for the previous year is "
+"missing values in data. As a result of this `AGO(SUM([Sales]), [Date], "
+"\"year\")` will return `NULL` if the same-date row for the previous year is "
 "missing.\n"
 "{text:time_series_syntax}\n"
 msgstr ""

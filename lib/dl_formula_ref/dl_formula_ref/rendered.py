@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Iterable,
-    List,
     NamedTuple,
     Optional,
     Set,
@@ -11,11 +10,15 @@ from typing import (
 
 import attr
 
+from dl_formula_ref.primitives import (
+    NoteLevel,
+    NoteType,
+)
+
 
 if TYPE_CHECKING:
     from dl_formula.core.dialect import DialectCombo
     from dl_formula_ref.audience import Audience
-    from dl_formula_ref.primitives import ParameterizedNote
     from dl_formula_ref.registry.arg_base import FuncArg
     from dl_formula_ref.registry.signature_base import FunctionSignatureCollection
 
@@ -30,6 +33,14 @@ class LocalizedFuncArg(NamedTuple):
         return self.arg.name
 
 
+@attr.s
+class RenderedNote:
+    text: str = attr.ib(kw_only=True)
+    level: NoteLevel = attr.ib(kw_only=True, default=NoteLevel.info)
+    formatting: bool = attr.ib(kw_only=True, default=True)
+    type: NoteType = attr.ib(kw_only=True, default=NoteType.REGULAR)
+
+
 class RenderedFunc(NamedTuple):
     # The content (e.g. cross-reference links) is path dependent,
     # and so is the rendered function, so tha t is why it contains its own path
@@ -41,21 +52,21 @@ class RenderedFunc(NamedTuple):
     category_name: str
     human_category: str
     category_description: str
-    category_keywords: List[str]
-    args: List[LocalizedFuncArg]
+    category_keywords: list[str]
+    args: list[LocalizedFuncArg]
     dialects: Set[DialectCombo]
-    human_dialects: List[str]
+    human_dialects: list[str]
     description: str
-    top_notes: List[ParameterizedNote]
-    bottom_notes: List[ParameterizedNote]
+    top_notes: list[RenderedNote]
+    bottom_notes: list[RenderedNote]
     return_type: str
-    examples: List[str]
+    examples: list[str]
     signature_coll: FunctionSignatureCollection
     locale: str
-    crosslink_note: Optional[ParameterizedNote]
+    crosslink_note: Optional[RenderedNote]
 
     @property
-    def const_args(self) -> List[LocalizedFuncArg]:
+    def const_args(self) -> list[LocalizedFuncArg]:
         return [a for a in self.args if a.arg.is_const]
 
     @property

@@ -1,25 +1,29 @@
 from __future__ import annotations
 
-from typing import (
-    Any,
-    Dict,
-)
+from typing import Optional
 
 import attr
+
+from dl_formula_ref.i18n.registry import FormulaRefTranslatable
+from dl_formula_ref.registry.aliased_res import (
+    AliasedResourceRegistryBase,
+    AliasedTextResource,
+    SimpleAliasedResourceRegistry,
+)
+from dl_i18n.localizer_base import Translatable
 
 
 @attr.s(frozen=True)
 class ParameterizedText:
-    text: str = attr.ib(kw_only=True)
-    params: Dict[str, str] = attr.ib(kw_only=True, factory=dict)
+    text: Translatable = attr.ib(kw_only=True)
+    resources: AliasedResourceRegistryBase = attr.ib(kw_only=True, factory=SimpleAliasedResourceRegistry)
 
-    def format(self) -> str:
-        if not self.params:
-            return self.text
-        return self.text.format(**self.params)
+    def __bool__(self) -> bool:
+        return bool(self.text)
 
-    def __str__(self) -> str:
-        return self.format()
-
-    def clone(self, **kwargs: Any) -> ParameterizedText:
-        return attr.evolve(self, **kwargs)
+    @classmethod
+    def from_str(cls, text: str, params: Optional[dict[str, str]] = None) -> ParameterizedText:
+        resources = SimpleAliasedResourceRegistry(
+            resources={key: AliasedTextResource(body=value) for key, value in (params or {}).items()},
+        )
+        return cls(text=FormulaRefTranslatable(s=text), resources=resources)

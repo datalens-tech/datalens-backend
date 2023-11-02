@@ -3,7 +3,6 @@ from __future__ import annotations
 from enum import Enum
 from typing import (
     Any,
-    List,
     NamedTuple,
 )
 
@@ -40,15 +39,3 @@ class ParameterizedNote:
     level: NoteLevel = attr.ib(kw_only=True, default=NoteLevel.info)
     formatting: bool = attr.ib(kw_only=True, default=True)
     type: NoteType = attr.ib(kw_only=True, default=NoteType.REGULAR)
-
-    @property
-    def text(self) -> str:
-        return self.param_text.format()
-
-    def clone(self, **kwargs: Any) -> ParameterizedNote:
-        return attr.evolve(self, **kwargs)
-
-
-@attr.s(frozen=True)
-class CrosslinkNote(ParameterizedNote):
-    ref_list: List[str] = attr.ib(kw_only=True, default=list())

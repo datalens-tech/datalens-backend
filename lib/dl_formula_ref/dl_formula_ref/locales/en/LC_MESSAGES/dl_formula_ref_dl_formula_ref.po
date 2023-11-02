@@ -1,11 +1,10 @@
 # Copyright (c) 2023 YANDEX LLC <datalens-opensource@yandex-team.ru>
 # This file is distributed under the same license as the DataLens package.
-
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: datalens-opensource@yandex-team.ru\n"
-"POT-Creation-Date: 2023-09-15 14:28+0000\n"
+"POT-Creation-Date: 2023-11-01 14:19+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,19 +24,19 @@ msgstr ""
 msgid "Function Availability"
 msgstr ""
 
-msgid "Arguments ({args}) must be of the same type."
+msgid "Arguments ({text:args}) must be of the same type."
 msgstr ""
 
-msgid "Only constant values are accepted for the arguments ({args})."
+msgid "Only constant values are accepted for the arguments ({text:args})."
 msgstr ""
 
-msgid "Function `{func_name}` is also found in the following categories: "
+msgid "Function `{text:func_name}` is also found in the following categories: "
 msgstr ""
 
 msgid "Depends on argument types"
 msgstr ""
 
-msgid "Same type as ({args})"
+msgid "Same type as ({text:args})"
 msgstr ""
 
 msgid "Any"
@@ -337,8 +336,9 @@ msgstr ""
 msgid "aggregate functions,aggregations,aggregate data,level of detail,lod"
 msgstr ""
 
+#, fuzzy
 msgid "https://en.wikipedia.org/wiki/ISO_8601"
-msgstr ""
+msgstr "https://en.wikipedia.org/wiki/Unix_time"
 
 msgid ""
 "Markup functions are used for creating marked up text (hypertext) from "
@@ -368,8 +368,8 @@ msgid ""
 "dimensions being used, and operates over positional offsets specified in "
 "_rows_, while time series functions use specific values and value offsets in "
 "date/time units like days, hours or seconds. This makes them sensitive to "
-"missing values in data. As a result of this `AGO(SUM([Sales]), [Date], \"year"
-"\")` will return `NULL` if the same-date row for the previous year is "
+"missing values in data. As a result of this `AGO(SUM([Sales]), [Date], "
+"\"year\")` will return `NULL` if the same-date row for the previous year is "
 "missing.\n"
 "{text:time_series_syntax}\n"
 msgstr ""

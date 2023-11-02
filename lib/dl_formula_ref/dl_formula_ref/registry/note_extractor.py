@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    TYPE_CHECKING,
-    List,
-)
+from typing import TYPE_CHECKING
 
 from dl_formula_ref.registry.arg_common import TypeStrategyInspector
 from dl_formula_ref.registry.note import (
@@ -25,11 +22,11 @@ class DefaultNoteExtractor(NoteExtractorBase):
         self,
         item: _registry_base.FunctionDocRegistryItem,
         env: GenerationEnvironment,
-    ) -> List[ParameterizedNote]:
+    ) -> list[ParameterizedNote]:
         # explicitly defined notes
         notes = [
             ParameterizedNote(
-                param_text=ParameterizedText(text=note.text),
+                param_text=ParameterizedText.from_str(text=note.text),
                 level=note.level,
                 formatting=note.formatting,
                 type=NoteType.REGULAR,
@@ -56,7 +53,7 @@ class DefaultNoteExtractor(NoteExtractorBase):
             notes.insert(
                 0,
                 ParameterizedNote(
-                    param_text=ParameterizedText(
+                    param_text=ParameterizedText.from_str(
                         text=CONST_TYPE_NOTE,
                         params=dict(args=", ".join([f"`{a.name}`" for a in args if a.is_const])),
                     ),

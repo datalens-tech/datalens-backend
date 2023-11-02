@@ -89,7 +89,7 @@ class TypeStrategyInspector:
         strategies = list({id(defn.return_type): defn.return_type for defn in def_list}.values())
         inf_args = any(defn.arg_cnt is None for defn in def_list)
         note = None
-        ret_type_str: ParameterizedText = ParameterizedText(text="")
+        ret_type_str: ParameterizedText = ParameterizedText.from_str(text="")
 
         # deduplicate const and non-const types
         fixed_types = set()
@@ -107,13 +107,13 @@ class TypeStrategyInspector:
         if len(strategies) == 1:
             ret_type_strat = strategies[0]
             if isinstance(ret_type_strat, Fixed):
-                ret_type_str = ParameterizedText(text=type_macro(ret_type_strat.type.non_const_type))
+                ret_type_str = ParameterizedText.from_str(text=type_macro(ret_type_strat.type.non_const_type))
             elif isinstance(ret_type_strat, FromArgs):
                 common_type_args_str = cls._extract_common_type_args_str(ret_type_strat, inf_args, args)
-                ret_type_str = ParameterizedText(text=FROM_ARGS, params=dict(args=common_type_args_str))
+                ret_type_str = ParameterizedText.from_str(text=FROM_ARGS, params=dict(args=common_type_args_str))
                 if "," in common_type_args_str:  # FromArgs strategy is used for more than 1 argument
                     # a note about args that they must have the same type
-                    note = ParameterizedText(text=COMMON_TYPE_NOTE, params=dict(args=common_type_args_str))
+                    note = ParameterizedText.from_str(text=COMMON_TYPE_NOTE, params=dict(args=common_type_args_str))
 
         else:
             resolved_ret_type = False
@@ -123,10 +123,10 @@ class TypeStrategyInspector:
                 ret_types = ret_types - {DataType.NULL}  # ignore NULL
                 if len(ret_types) == 1:
                     # We still have just one possible return type (with NULL ignored)
-                    ret_type_str = ParameterizedText(text=type_macro(next(iter(ret_types))))
+                    ret_type_str = ParameterizedText.from_str(text=type_macro(next(iter(ret_types))))
                     resolved_ret_type = True
 
             if not resolved_ret_type:
-                ret_type_str = ParameterizedText(text=DEPENDS_ON_ARGS)
+                ret_type_str = ParameterizedText.from_str(text=DEPENDS_ON_ARGS)
 
         return TypeInfo(ret_type_str=ret_type_str, arg_note=note)
