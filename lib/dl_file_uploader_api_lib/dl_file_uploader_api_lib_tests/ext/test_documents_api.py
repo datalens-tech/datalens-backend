@@ -7,7 +7,6 @@ from dl_constants.enums import FileProcessingStatus
 from dl_file_uploader_api_lib_tests.req_builder import ReqBuilder
 from dl_file_uploader_lib.redis_model.models import (
     DataFile,
-    GSheetsUserSourceProperties,
     YaDocsUserSourceProperties,
 )
 

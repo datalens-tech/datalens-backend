@@ -39,7 +39,6 @@ from dl_file_uploader_lib.redis_model.models import (
     GSheetsFileSourceSettings,
     GSheetsUserSourceDataSourceProperties,
     GSheetsUserSourceProperties,
-    YaDocsUserSourceProperties,
 )
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
