@@ -140,7 +140,7 @@ class GitManager:
         return commits
 
     def get_missing_commits(self, base: str, head: str) -> set[str]:
-        commits = {commit.hexsha for commit in self.git_repo.iter_commits(f"{base}...{head}")}
+        commits = {commit.hexsha for commit in self.git_repo.iter_commits(f"{base}..{head}")}
         return commits
 
     def get_submodule_manager(self, submodule_name: str) -> GitManager:
