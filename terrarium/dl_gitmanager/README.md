@@ -54,7 +54,7 @@ that is usually accepted by git.
 These arguments are optional. By default `head` is `HEAD` and `base` is `HEAD~1`.
 Thgis means you can use the following command to see the diff of the last commit in the current branch:
 ```
-dl-git diff-paths
+dl-git range-diff-paths
 ```
 
 The `--absolute` option makes the tool print absolute paths.
@@ -69,7 +69,7 @@ List files that have changed in commits passed on as input
 
 ```
 echo <commit-id> | dl-git list-diff-paths
-echo <commit-id>> | dl-git list-diff-paths --absolute
+echo <commit-id> | dl-git list-diff-paths --absolute
 ```
 
 Option `--absolute` has the same meaning as in `range-diff-paths`.
