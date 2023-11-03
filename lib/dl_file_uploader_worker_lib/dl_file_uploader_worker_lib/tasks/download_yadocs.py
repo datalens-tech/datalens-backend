@@ -46,6 +46,7 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
     async def run(self) -> TaskResult:
         dfile: Optional[DataFile] = None
         redis = self._ctx.redis_service.get_redis()
+        task_processor = self._ctx.make_task_processor(self._request_id)
 
         try:
             rmm = RedisModelManager(redis=redis, crypto_keys_config=self._ctx.crypto_keys_config)
@@ -88,6 +89,10 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
                     return Success()
 
             dfile.filename = spreadsheet_meta["name"]
+            xlsx_suffix = ".xlsx"
+            if not dfile.filename.endswith(xlsx_suffix):
+                raise exc.UnsupportedDocument
+
             s3 = self._ctx.s3_service
 
             async def _chunk_iter(chunk_size: int = 10 * 1024 * 1024) -> AsyncGenerator[bytes, None]:
@@ -114,6 +119,9 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
 
             await dfile.save()
             LOGGER.info(f'Uploaded file "{dfile.filename}".')
+
+            await task_processor.schedule(task_interface.ProcessExcelTask(file_id=dfile.id))
+            LOGGER.info(f"Scheduled ProcessExcelTask for file_id {dfile.id}")
 
         except Exception as ex:
             LOGGER.exception(ex)

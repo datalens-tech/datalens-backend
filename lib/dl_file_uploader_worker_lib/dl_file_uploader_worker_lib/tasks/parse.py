@@ -44,6 +44,7 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
         FileType.csv: CSVFileParser,
         FileType.gsheets: SpreadsheetFileParser,
         FileType.xlsx: SpreadsheetFileParser,
+        FileType.yadocs: SpreadsheetFileParser,
     }
 
     async def run(self) -> TaskResult:
