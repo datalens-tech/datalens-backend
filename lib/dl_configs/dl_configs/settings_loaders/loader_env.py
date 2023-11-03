@@ -488,11 +488,15 @@ class EnvSettingsLoader:
                 else:
                     raise SettingsLoadingException(f"Unexpected signature of fallback factory for {field}")
 
-            elif cls.is_sub_settings_field(field) and default is not None and default is not NOT_SET:
-                field_default = getattr(default, field_name)
-
             else:
-                field_default = NOT_SET
+                field_default = getattr(fallback_cfg, field_s_meta.name, NOT_SET)
+                if (
+                    field_default is NOT_SET
+                    and cls.is_sub_settings_field(field)
+                    and default is not None
+                    and default is not NOT_SET
+                ):
+                    field_default = getattr(default, field_name)
 
             child_extractor: SDictExtractor
 

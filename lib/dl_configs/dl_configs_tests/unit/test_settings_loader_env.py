@@ -812,3 +812,26 @@ def test_file_mapping(temp_file_factory):
             b=b_value,
         ),
     )
+
+
+def test_default_cfg_key_name(temp_file_factory):
+    @attr.s(frozen=True)
+    class Settings:
+        TEST_KEY: str = s_attrib("TEST_KEY", missing="default_value")  # type: ignore
+
+    class Fallback:
+        TEST_KEY = "test_value"
+
+    perform_loader_env_check(
+        {},
+        fallback_env=Fallback,
+        expected_settings=Settings(
+            TEST_KEY="test_value",
+        ),
+    )
+    perform_loader_env_check(
+        {},
+        expected_settings=Settings(
+            TEST_KEY="default_value",
+        ),
+    )
