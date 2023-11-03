@@ -17,11 +17,10 @@ import pytest
 import shortuuid
 
 from dl_configs.settings_loaders.common import SDict
-from dl_configs.settings_loaders.fallback_cfg_resolver import ConstantFallbackConfigResolver, ObjectLikeConfig
+from dl_configs.settings_loaders.fallback_cfg_resolver import ConstantFallbackConfigResolver
 from dl_configs.settings_loaders.loader_env import (
     ConfigFieldMissing,
     EnvSettingsLoader,
-    NOT_SET,
 )
 from dl_configs.settings_loaders.meta_definition import (
     required,
