@@ -17,10 +17,11 @@ import pytest
 import shortuuid
 
 from dl_configs.settings_loaders.common import SDict
-from dl_configs.settings_loaders.fallback_cfg_resolver import ConstantFallbackConfigResolver
+from dl_configs.settings_loaders.fallback_cfg_resolver import ConstantFallbackConfigResolver, ObjectLikeConfig
 from dl_configs.settings_loaders.loader_env import (
     ConfigFieldMissing,
     EnvSettingsLoader,
+    NOT_SET,
 )
 from dl_configs.settings_loaders.meta_definition import (
     required,
@@ -810,5 +811,24 @@ def test_file_mapping(temp_file_factory):
         TypedSettings(
             a=a_value,
             b=b_value,
+        ),
+    )
+
+
+def test_default_cfg_key_name(temp_file_factory):
+    @attr.s(frozen=True)
+    class Settings:
+        TEST_KEY: str = s_attrib(  # type: ignore
+            "TEST_KEY",
+        )
+
+    class Fallback:
+        TEST_KEY = "test_value"
+
+    perform_loader_env_check(
+        {},
+        fallback_env=Fallback,
+        expected_settings=Settings(
+            TEST_KEY="test_value",
         ),
     )
