@@ -134,6 +134,7 @@ datalens-task-processor = {path = "../lib/dl_task_processor"}
 datalens-connector-oracle = {path = "../lib/dl_connector_oracle"}
 datalens-connector-mysql = {path = "../lib/dl_connector_mysql"}
 datalens-sqlalchemy-mysql = {path = "../lib/dl_sqlalchemy_mysql"}
+datalens-maintenance = {path = "../lib/dl_maintenance"}
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.3.0"
