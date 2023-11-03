@@ -106,7 +106,6 @@ class UStorageClientAIO(UStorageClientBase):
             return self._request_data.json  # type: ignore  # TODO: fix
 
     _session: aiohttp.ClientSession
-    DEFAULT_SSL_CONTEXT = ssl.create_default_context(cafile=get_root_certificates_path())
 
     def __init__(
         self,
@@ -129,9 +128,11 @@ class UStorageClientAIO(UStorageClientBase):
         self._retry_intervals = (0.5, 1.0, 1.1, 2.0, 2.2)
         self._retry_codes = {408, 429, 500, 502, 503, 504}
 
+        ssl_context = ssl.create_default_context(cafile=get_root_certificates_path())
+
         self._session = aiohttp.ClientSession(
             cookies=self._cookies,
-            connector=aiohttp.TCPConnector(ssl_context=self.DEFAULT_SSL_CONTEXT),
+            connector=aiohttp.TCPConnector(ssl_context=ssl_context),
             headers={
                 **self._default_headers,
             },
