@@ -136,11 +136,12 @@ class GitManager:
         return self._collect_paths_from_diffs(diff_iterable=self._iter_list_diffs(commits=commits, absolute=absolute))
 
     def get_all_ancestor_commits(self, commit: str) -> set[str]:
-        commits = [commit.hexsha for commit in self.git_repo.iter_commits(commit, max_count=MAX_HISTORY_DEPTH)]
-        return set(commits)
+        commits = {commit.hexsha for commit in self.git_repo.iter_commits(commit, max_count=MAX_HISTORY_DEPTH)}
+        return commits
 
     def get_missing_commits(self, base: str, head: str) -> set[str]:
-        return self.get_all_ancestor_commits(head) - self.get_all_ancestor_commits(base)
+        commits = {commit.hexsha for commit in self.git_repo.iter_commits(f"{base}..{head}")}
+        return commits
 
     def get_submodule_manager(self, submodule_name: str) -> GitManager:
         submodule_dict = {sm.name: sm for sm in self.git_repo.submodules}
