@@ -3,9 +3,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
-from typing import (
-    Iterable,
-)
+from typing import Iterable
 
 import clize
 import tomlkit
