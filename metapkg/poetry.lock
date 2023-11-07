@@ -1424,6 +1424,34 @@ type = "directory"
 url = "../lib/dl_connector_metrica"
 
 [[package]]
+name = "datalens-connector-mssql"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-configs = {path = "../dl_configs"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-db-testing = {path = "../dl_db_testing"}
+datalens-formula = {path = "../dl_formula"}
+datalens-formula-ref = {path = "../dl_formula_ref"}
+datalens-i18n = {path = "../dl_i18n"}
+datalens-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
+pyodbc = ">=4.0.35"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_connector_mssql"
+
+[[package]]
 name = "datalens-connector-mysql"
 version = "0.0.1"
 description = ""
@@ -6299,4 +6327,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "a3b22cceddc48663da18969232e937b9ead9c954511b658b9b1ed6cf238827cd"
+content-hash = "635660602d7db2e63190e4eea32a7ef2cab1cd4d1c0b96651dd9d295a180599d"
