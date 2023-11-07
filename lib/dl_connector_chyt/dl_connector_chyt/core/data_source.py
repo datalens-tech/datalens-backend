@@ -96,14 +96,16 @@ class BaseCHYTTableDataSource(CHYTDataSourceBaseMixin, TableSQLDataSourceMixin, 
 
     @property
     def default_title(self) -> str:
-        return self.spec.table_name.split("/")[-1]  # type: ignore  # TODO: fix
+        assert self.spec.table_name is not None
+        return self.spec.table_name.split("/")[-1]
 
     @require_table_name
     def get_sql_source(self, alias: Optional[str] = None) -> Any:
         if alias:
             return sa.alias(self.get_sql_source(), name=alias)
         path = self.spec.table_name
-        path = self.normalize_path(path)  # type: ignore  # TODO: fix
+        assert path is not None
+        path = self.normalize_path(path)
         return sa.table(path)
 
     @require_table_name
