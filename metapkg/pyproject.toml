@@ -14,19 +14,19 @@ aiopg = "==1.4.0"
 anyascii = "==0.3.2"
 attrs = "==22.2.0"
 arq = "==0.25.0"
-certifi = "==2022.12.7"
+certifi = "==2023.7.22"
 openpyxl = "==3.0.10"
 aiobotocore = "==2.4.2"
 aiogoogle = "==5.2.0"
 marshmallow = "==3.19.0"
 sentry-sdk = "==1.15.0"
-pyyaml = "==5.3.1"
+pyyaml = "==6.0.1"
 SQLAlchemy = "==1.4.46, <2.0"
 gunicorn = "==20.1.0"
 shortuuid = "==1.0.11"
 sqlalchemy = "==1.4.46, <2.0"
-Flask = "==2.0.3"
-Werkzeug = "==2.0.3"
+Flask = "==2.2.5"
+Werkzeug = "==2.2.3"
 flask-marshmallow = "==0.14.0"
 flask-restx = "==1.1.0"
 graphviz = "==0.17"
@@ -34,21 +34,21 @@ ipdb = "==0.13.13"
 ipython = "==8.10.0"
 marshmallow-oneofschema = "==3.0.1"
 pandas = "==1.5.3"
-pyopenssl = "==22.1.0"
+pyopenssl = "==23.2.0"
 python-dateutil = "==2.8.2"
 raven = "==6.10.0"
 requests = "==2.28.2"
 tabulate = "==0.9.0"
 async-timeout = "==4.0.2"
 psycopg2-binary = "==2.9.6"
-pyjwt = "==2.3.0"
+pyjwt = "==2.4.0"
 pytz = "==2022.7.1"
 ujson = "==1.35"
-werkzeug = "==2.0.3"
+werkzeug = "==2.2.3"
 xxhash = "==3.2.0"
 asyncpg = "==0.27.0"
-flask = "==2.0.3"
-snowflake-connector-python = "==2.9.0"
+flask = "==2.2.5"
+snowflake-connector-python = "==3.1.0"
 snowflake-sqlalchemy = "==1.4.6"
 clickhouse-driver = "==0.2.5"
 dill = "==0.3.6"
@@ -62,7 +62,8 @@ protobuf = "==4.24.3"
 pymysql = "==1.1.0"
 pyodbc = "==4.0.35"
 ciso8601 = "==2.2.0"
-redis = "==4.5.1"
+aiomysql = "==0.2.0"
+redis = "==4.5.4"
 Babel = "==2.12.1"
 jinja2 = "==3.1.2"
 opentracing = "==2.4.0"
@@ -71,14 +72,20 @@ typing-extensions = "==4.5.0"
 aiodns = "==3.0.0"
 jaeger-client = "==4.8.0"
 pytest = "==7.2.2"
-tornado = "==6.2"
-cryptography = "==38.0.4"
+tornado = "==6.3.3"
+cryptography = "==41.0.4"
 typeguard = "==2.13.3"
 more-itertools = "==9.1.0"
 aiochclient = "==2.2.0"
 cchardet = "==2.1.7"
 dnspython = "==2.2.1"
 lz4 = "==4.3.2"
+sqlalchemy-bigquery = "==1.6.1"
+google-cloud-bigquery = "==3.10.0"
+google-cloud-bigquery-storage = "==2.19.0"
+google-resumable-media = "==2.5.0"
+google-cloud-core = "==2.3.2"
+
 [tool.poetry.group.ci.dependencies]
 #
 # All apps should be listed here. This group is installed for CI & local development
@@ -131,6 +138,10 @@ datalens-db-testing = {path = "../lib/dl_db_testing"}
 datalens-file-uploader-worker-lib = {path = "../lib/dl_file_uploader_worker_lib"}
 datalens-connector-bigquery = {path = "../lib/dl_connector_bigquery"}
 datalens-task-processor = {path = "../lib/dl_task_processor"}
+datalens-sqlalchemy-metrica-api = {path = "../lib/dl_sqlalchemy_metrica_api"}
+datalens-connector-metrica = {path = "../lib/dl_connector_metrica"}
+datalens-sqlalchemy-bitrix = {path = "../lib/dl_sqlalchemy_bitrix"}
+datalens-connector-bitrix-gds = {path = "../lib/dl_connector_bitrix_gds"}
 datalens-connector-oracle = {path = "../lib/dl_connector_oracle"}
 datalens-connector-mysql = {path = "../lib/dl_connector_mysql"}
 datalens-sqlalchemy-mysql = {path = "../lib/dl_sqlalchemy_mysql"}
@@ -140,13 +151,11 @@ datalens-maintenance = {path = "../lib/dl_maintenance"}
 black = "==23.3.0"
 ruff = "==0.0.267"
 ipdb = "==0.13.13"
-pymysql = "==1.1.0"
-psycopg2 = "==2.8.6"
 pyodbc = "==4.0.35"
 pytest = "==7.2.2"
 python-dateutil = "==2.8.2"
 pytest-asyncio = "==0.21.0"
-uwsgi = "==2.0.21"
+uwsgi = "==2.0.22"
 shortuuid = "==1.0.11"
 sentry-sdk = "==1.15.0"
 babel = "==2.12.1"
@@ -200,6 +209,7 @@ strict_optional = true
 aiochclient = {ignore = true}
 aiodns = {ignore = true}
 aiogoogle =  {ignore = true}
+aiomysql =  {ignore = true}
 aiopg =  {ignore = true}
 antlr4-python3-runtime =  {ignore = true}
 arq =  {ignore = true}
@@ -235,15 +245,14 @@ lz4 =  {ignore = true}
 marshmallow =  {ignore = true}
 marshmallow-oneofschema =  {ignore = true}
 more-itertools =  {ignore = true}
-pymysql =  {ignore = true}
 openpyxl =  {ignore = true}
 oracledb =  {ignore = true}
 pandas = {name = "pandas-stubs", version="1.5.3.230321"}
 platformdirs =  {ignore = true}
 poetry =  {ignore = true}
-psycopg2 =  {ignore = true}
 psycopg2-binary =  {name = "types-psycopg2"}
 pyjwt =  {ignore = true}
+pymysql = {ignore = true}
 pyodbc =  {ignore = true}
 pytest =  {ignore = true}
 pytest-asyncio =  {ignore = true}
@@ -287,6 +296,11 @@ exceptiongroup = {ignore = true}
 executing = {ignore = true}
 filelock = {ignore = true}
 frozenlist = {ignore = true}
+"google-api-core[grpc]" = {ignore = true}
+google-cloud-bigquery = {ignore = true}
+google-cloud-bigquery-storage = {ignore = true}
+google-cloud-core = {ignore = true}
+google-resumable-media = {ignore = true}
 hiredis = {ignore = true}
 idna = {ignore = true}
 importlib-metadata = {ignore = true}
@@ -330,6 +344,7 @@ requests-toolbelt = {ignore = true}
 rsa = {ignore = true}
 shellingham = {ignore = true}
 sigtools = {ignore = true}
+sqlalchemy-bigquery = {ignore = true}
 sqlparse = {ignore = true}
 stack-data = {ignore = true}
 threadloop = {ignore = true}

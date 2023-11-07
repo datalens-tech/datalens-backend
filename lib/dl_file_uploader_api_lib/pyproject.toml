@@ -18,7 +18,7 @@ gunicorn = ">=20.1.0"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 python = ">=3.10, <3.12"
-redis = ">=4.5.1"
+redis = ">=4.5.4"
 sentry-sdk = ">=1.15.0"
 datalens-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
 datalens-api-commons = {path = "../dl_api_commons"}
@@ -32,7 +32,7 @@ datalens-task-processor = {path = "../dl_task_processor"}
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
-uwsgi = ">=2.0.21"
+uwsgi = ">=2.0.22"
 datalens-file-secure-reader-lib = {path = "../dl_file_secure_reader_lib"}
 datalens-testing = {path = "../dl_testing"}
 datalens-core-testing = {path = "../dl_core_testing"}

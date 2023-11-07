@@ -86,7 +86,7 @@ def schematic_request(  # type: ignore  # TODO: fix
 
         @wraps(f)
         def wrapper(*args, **kwargs):  # type: ignore  # TODO: fix
-            body = request.get_json()
+            body = request.get_json() if body_schema is not None else None
 
             if LOGGER.isEnabledFor(logging.INFO):
                 dbg_body_data = mask_sensitive_fields_by_name_in_json_recursive(body)

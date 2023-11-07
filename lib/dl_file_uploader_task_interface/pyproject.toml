@@ -26,7 +26,7 @@ datalens-task-processor = {path = "../dl_task_processor"}
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
-uwsgi = ">=2.0.21"
+uwsgi = ">=2.0.22"
 datalens-testing = {path = "../dl_testing"}
 datalens-core = {path = "../dl_core"}
 

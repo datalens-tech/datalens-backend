@@ -12,7 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 aiohttp = ">=3.8.1"
 attrs = ">=22.2.0"
-flask = ">=2.0.3"
+flask = ">=2.2.5"
 ipdb = ">=0.13.13"
 marshmallow = ">=3.19.0"
 multidict = ">=4.0"
