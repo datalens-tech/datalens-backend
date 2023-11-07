@@ -1,8 +1,11 @@
+import pytest
+
 from dl_api_client.dsmaker.primitives import ResultField
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 from dl_constants.enums import (
     AggregationFunction,
     CalcMode,
+    RawSQLLevel,
 )
 
 
@@ -74,3 +77,58 @@ class TestResultErrors(DefaultApiTestBase):
         assert result_resp.status_code == 400
         assert result_resp.bi_status_code == "ERR.DS_API.INVALID_GROUP_BY_CONFIGURATION"
         assert result_resp.json["message"] == "Invalid parameter disable_group_by for dataset with measure fields"
+
+    @pytest.mark.asyncio
+    async def test_disallowed_dashsql(self, data_api_lowlevel_aiohttp_client, saved_connection_id):
+        client = data_api_lowlevel_aiohttp_client
+        conn_id = saved_connection_id
+        req_data = {"sql_query": "select 1, 2, 3"}
+
+        resp = await client.post(f"/api/v1/connections/{conn_id}/dashsql", json=req_data)
+        resp_data = await resp.json()
+        assert resp.status == 400
+        assert resp_data["code"] == "ERR.DS_API.CONNECTION_CONFIG.DASHSQL_NOT_ALLOWED"
+
+
+class TestDashSQLErrors(DefaultApiTestBase):
+    raw_sql_level = RawSQLLevel.dashsql
+
+    @pytest.mark.asyncio
+    async def test_invalid_param_value(self, data_api_lowlevel_aiohttp_client, saved_connection_id):
+        client = data_api_lowlevel_aiohttp_client
+        conn_id = saved_connection_id
+        req_data = {
+            "sql_query": r"SELECT {{date}}",
+            "params": {
+                "date": {
+                    "type_name": "date",
+                    "value": "Invalid date",
+                },
+            },
+        }
+
+        resp = await client.post(f"/api/v1/connections/{conn_id}/dashsql", json=req_data)
+        resp_data = await resp.json()
+        assert resp.status == 400
+        assert resp_data["code"] == "ERR.DS_API.DASHSQL"
+        assert resp_data["message"] == "Unsupported value for type 'date': 'Invalid date'"
+
+    @pytest.mark.asyncio
+    async def test_invalid_param_format(self, data_api_lowlevel_aiohttp_client, saved_connection_id):
+        client = data_api_lowlevel_aiohttp_client
+        conn_id = saved_connection_id
+        req_data = {
+            "sql_query": r"SELECT 'some_{{value}}'",
+            "params": {
+                "value": {
+                    "type_name": "string",
+                    "value": "value",
+                },
+            },
+        }
+
+        resp = await client.post(f"/api/v1/connections/{conn_id}/dashsql", json=req_data)
+        resp_data = await resp.json()
+        assert resp.status == 400
+        assert resp_data["code"] == "ERR.DS_API.DB.WRONG_QUERY_PARAMETERIZATION"
+        assert resp_data["message"] == "Wrong query parameterization. Parameter was not found"

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import ClassVar
+
 import pytest
 
 from dl_api_client.dsmaker.primitives import Dataset
@@ -12,6 +14,7 @@ from dl_api_lib_tests.db.config import (
     DB_CORE_URL,
     CoreConnectionSettings,
 )
+from dl_constants.enums import RawSQLLevel
 
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
@@ -23,6 +26,8 @@ class DefaultApiTestBase(DataApiTestBase, DatasetTestBase, ConnectionTestBase):
 
     bi_compeng_pg_on = True
     conn_type = CONNECTION_TYPE_CLICKHOUSE
+
+    raw_sql_level: ClassVar[RawSQLLevel] = RawSQLLevel.off
 
     @pytest.fixture(scope="class")
     def bi_test_config(self) -> ApiTestEnvironmentConfiguration:
@@ -48,6 +53,7 @@ class DefaultApiTestBase(DataApiTestBase, DatasetTestBase, ConnectionTestBase):
             port=CoreConnectionSettings.PORT,
             username=CoreConnectionSettings.USERNAME,
             password=CoreConnectionSettings.PASSWORD,
+            raw_sql_level=self.raw_sql_level.value,
         )
 
     @pytest.fixture(scope="class")
