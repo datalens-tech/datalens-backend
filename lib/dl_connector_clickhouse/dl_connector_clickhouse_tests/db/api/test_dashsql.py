@@ -42,6 +42,11 @@ class TestClickHouseDashSQL(ClickHouseDashSQLConnectionTest, DefaultDashSQLTestS
 
     @pytest.mark.asyncio
     async def test_invalid_alias(self, data_api_lowlevel_aiohttp_client: TestClient, saved_connection_id: str):
+        """
+        Clickhouse doesn't support unicode aliases
+        https://clickhouse.com/docs/en/sql-reference/syntax#identifiers
+        """
+
         resp = await self.get_dashsql_response(
             data_api_aio=data_api_lowlevel_aiohttp_client,
             conn_id=saved_connection_id,
