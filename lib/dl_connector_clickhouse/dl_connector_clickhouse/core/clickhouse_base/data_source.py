@@ -48,7 +48,7 @@ class ClickHouseBaseMixin(BaseSQLDataSource):
     compiler_cls = ClickHouseQueryCompiler
 
     def get_connect_args(self) -> dict:
-        return dict(super().get_connect_args(), server_version=self.db_version or self.default_server_version)  # type: ignore  # TODO: fix  # noqa
+        return dict(super().get_connect_args(), server_version=self.db_version or self.default_server_version)
 
 
 class ActualClickHouseBaseMixin(ClickHouseBaseMixin):
@@ -59,5 +59,5 @@ class ActualClickHouseBaseMixin(ClickHouseBaseMixin):
     conn_type = CONNECTION_TYPE_CLICKHOUSE
 
 
-class ClickHouseDataSourceBase(ActualClickHouseBaseMixin, StandardSQLDataSource, metaclass=abc.ABCMeta):  # type: ignore  # TODO: fix
+class ClickHouseDataSourceBase(ActualClickHouseBaseMixin, StandardSQLDataSource, metaclass=abc.ABCMeta):
     """ClickHouse table. Might not work correctly for views."""

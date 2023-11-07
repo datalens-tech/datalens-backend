@@ -17,6 +17,7 @@ from sqlalchemy.sql import schema as sa_schema
 
 from dl_core import exc
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
+from dl_core.connectors.base.error_transformer import DBExcKWArgs
 from dl_core.db import (
     SchemaColumn,
     make_sa_type,
@@ -187,11 +188,12 @@ def create_column_sql(
 ) -> str:
     native_type = tt.type_user_to_native(user_t=col.user_type, native_t=col.native_type)
 
+    nullable: Optional[bool]
     if partition_fields and col.name in partition_fields:
         # Partition column cannot be nullable. Enforcing it in here.
         nullable = False
     else:
-        nullable = None  # type: ignore  # TODO: fix
+        nullable = None
 
     if nullable is not None:
         native_type = native_type.as_common().clone(nullable=nullable)
@@ -204,7 +206,10 @@ def create_column_sql(
     return sa_ddl_obj.string
 
 
-def ensure_db_message(exc_cls, kw):  # type: ignore  # TODO: fix
+def ensure_db_message(
+    exc_cls: Type[exc.DatabaseQueryError],
+    kw: DBExcKWArgs,
+) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
     db_message = kw.get("db_message")
     details = kw.get("details")
     if db_message and details is not None and not details.get("db_message"):

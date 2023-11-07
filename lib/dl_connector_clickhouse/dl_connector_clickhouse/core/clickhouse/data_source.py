@@ -25,7 +25,7 @@ class ClickHouseDataSource(ClickHouseDataSourceBase):
         }
 
 
-class ClickHouseSubselectDataSource(ActualClickHouseBaseMixin, CommonClickHouseSubselectDataSource):  # type: ignore  # TODO: fix
+class ClickHouseSubselectDataSource(ActualClickHouseBaseMixin, CommonClickHouseSubselectDataSource):
     """Clickhouse subselect"""
 
     conn_type = CONNECTION_TYPE_CLICKHOUSE
