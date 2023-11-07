@@ -396,7 +396,7 @@ _ORDERED_WFUNC_NOTES = [
 ]
 
 
-def _make_rfunc_examples(func: str) -> List[DataExample]:
+def _make_rfunc_examples(func: str) -> list[DataExample]:
     func = func.upper()
     examples = [
         DataExample(
@@ -411,9 +411,9 @@ def _make_rfunc_examples(func: str) -> List[DataExample]:
                     [
                         ("City", "[City]"),
                         ("Order Sum", "[Order Sum]"),
-                        (f"{func} 1", f'{func}([Order Sum], "desc")'),
+                        (f"{func} 1", f'{func}([Order Sum], "desc" ORDER BY [City])'),
                         (f"{func} 2", f'{func}([Order Sum], "asc" ORDER BY [City] DESC)'),
-                        (f"{func} 3", f"{func}([Order Sum] ORDER BY [Order Sum])"),
+                        (f"{func} 3", f"{func}([Order Sum] ORDER BY [Order Sum], [City])"),
                     ],
                 ],
                 override_formula_fields=[
@@ -571,9 +571,9 @@ def _make_mfunc_examples(func: str) -> List[DataExample]:
                     [
                         ("City", "[City]"),
                         ("Order Sum", "[Order Sum]"),
-                        (f"{func} 1", f"{func}([Order Sum], 1)"),
-                        (f"{func} 2", f"{func}([Order Sum], -2)"),
-                        (f"{func} 3", f"{func}([Order Sum], 1, 1)"),
+                        (f"{func} 1", f"{func}([Order Sum], 1 ORDER BY [City])"),
+                        (f"{func} 2", f"{func}([Order Sum], -2 ORDER BY [City])"),
+                        (f"{func} 3", f"{func}([Order Sum], 1, 1 ORDER BY [City])"),
                     ],
                 ],
                 override_formula_fields=[
@@ -631,9 +631,9 @@ def _make_mfunc_examples(func: str) -> List[DataExample]:
                     ("City", "[City]"),
                     ("Category", "[Category]"),
                     ("Order Sum", "SUM([Orders])"),
-                    (f"{func} 1", f"{func}(SUM([Orders]), 1 TOTAL)"),
-                    (f"{func} 2", f"{func}(SUM([Orders]), 1 WITHIN [City])"),
-                    (f"{func} 3", f"{func}(SUM([Orders]), 1 AMONG [City])"),
+                    (f"{func} 1", f"{func}(SUM([Orders]), 1 TOTAL ORDER BY [City])"),
+                    (f"{func} 2", f"{func}(SUM([Orders]), 1 WITHIN [City] ORDER BY [City])"),
+                    (f"{func} 3", f"{func}(SUM([Orders]), 1 AMONG [City] ORDER BY [City])"),
                 ],
             ),
         ),
@@ -775,8 +775,8 @@ def _make_lag_examples(func: str) -> List[DataExample]:
                     [
                         ("City", "[City]"),
                         ("Order Sum", "[Order Sum]"),
-                        (f"{func} 1", f"{func}([Order Sum], 1)"),
-                        (f"{func} 2", f"{func}([Order Sum], -2)"),
+                        (f"{func} 1", f"{func}([Order Sum], 1 ORDER BY [City])"),
+                        (f"{func} 2", f"{func}([Order Sum], -2 ORDER BY [City])"),
                     ],
                 ],
                 override_formula_fields=[
