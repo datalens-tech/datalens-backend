@@ -1,5 +1,7 @@
 import pytest
 
+from dl_constants.enums import RawSQLLevel
+
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
@@ -30,7 +32,12 @@ class ClickHouseConnectionTestBase(BaseClickHouseTestClass, ConnectionTestBase):
             port=CoreConnectionSettings.PORT,
             username=CoreConnectionSettings.USERNAME,
             password=CoreConnectionSettings.PASSWORD,
+            **(dict(raw_sql_level=self.raw_sql_level.value) if self.raw_sql_level is not None else {}),
         )
+
+
+class ClickHouseDashSQLConnectionTest(ClickHouseConnectionTestBase):
+    raw_sql_level = RawSQLLevel.dashsql
 
 
 class ClickHouseDatasetTestBase(ClickHouseConnectionTestBase, DatasetTestBase):

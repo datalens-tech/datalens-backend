@@ -50,6 +50,47 @@ class CoreSslConnectionSettings:
     PASSWORD: ClassVar[str] = "qwerty"
 
 
+DASHSQL_QUERY = r"""
+select
+    arrayJoin([11, 22, NULL]) as a,
+    [33, 44] as b,
+    toDateTime('2020-01-02 03:04:05', 'UTC') + a as ts
+"""
+DASHSQL_QUERY_FULL = r"""
+select
+    arrayJoin(range(7)) as number,
+    'test' || toString(number) as str,
+    cast(number as Int64) as num_int64,
+    cast(number as Int32) as num_int32,
+    cast(number as Int16) as num_int16,
+    cast(number as Int8) as num_int8,
+    cast(number as UInt64) as num_uint64,
+    cast(number as UInt32) as num_uint32,
+    cast(number as UInt16) as num_uint16,
+    cast(number as Nullable(UInt8)) as num_uint8_n,
+    cast(number as Nullable(Date)) as num_date,
+    cast(number as Nullable(DateTime)) as num_datetime,
+    cast(number as Float64) as num_float64,
+    cast(number as Nullable(Float32)) as num_float32_n,
+    cast(number as Decimal(3, 3)) as num_decimal,
+    cast(number as String) as num_string,
+    cast('bcc3de04-d31a-4e17-8485-8ef423f646be' as UUID) as num_uuid,
+    cast(number as IPv4) as num_ipv4,
+    cast('20:43:ff::40:1bc' as IPv6) as num_ipv6,
+    cast(toString(number) as FixedString(10)) as num_fixedstring,
+    cast(number as Enum8('a'=0, 'b'=1, 'c'=2, 'd'=3, 'e'=4, 'f'=5, 'g'=6)) as num_enum8,
+    cast(number as Enum16('a'=0, 'b'=1, 'c'=2, 'd'=3, 'e'=4, 'f'=5, 'g'=6)) as num_enum16,
+    (number, 'x') as num_tuple,
+    [number, -2] as num_intarray,
+    [toString(number), '-2'] as num_strarray,
+    cast(toString(number) as LowCardinality(Nullable(String))) as num_lc,
+    cast(number as DateTime('Pacific/Chatham')) as num_dt_tz,
+    cast(number as DateTime64(6)) as num_dt64,
+    cast(number as DateTime64(6, 'America/New_York')) as num_dt64_tz
+limit 10
+"""
+
+
 DB_URLS = {
     D.CLICKHOUSE_21_8: f"clickhouse://datalens:qwerty@"
     f'{get_test_container_hostport("db-clickhouse-21-8", fallback_port=52202).as_pair()}/test_data',
