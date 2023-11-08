@@ -179,19 +179,33 @@ class CalcOpExecutorAsync(OpExecutorAsync):
     def make_data_key(self, op: BaseOp) -> LocalKeyRepresentation:
         assert isinstance(op, CalcOp)
         source_stream = self.ctx.get_stream(op.source_stream_id)
+
+        # TODO: Remove legacy version
+
+        # Legacy procedure
         from_info = self.get_from_info_from_stream(source_stream=source_stream)
         query_compiler = from_info.query_compiler
         query = query_compiler.compile_select(
             bi_query=op.bi_query,
             sql_source=from_info.sql_source,
         )
-        data_key = self.db_ex_adapter.get_data_key(
+        legacy_data_key = self.db_ex_adapter.get_data_key(
             query=query,
             user_types=source_stream.user_types,
             from_info=from_info,
             base_key=source_stream.data_key,
         )
-        return data_key
+
+        # New procedure
+        new_data_key = source_stream.data_key.extend("query", op.data_key_data)
+
+        LOGGER.info(
+            f"Preliminary cache key info for query: "
+            f"legacy key: {legacy_data_key.key_parts_hash} ; "
+            f"new key: {new_data_key.key_parts_hash}"
+        )
+
+        return legacy_data_key
 
     @log_op  # type: ignore  # TODO: fix
     async def execute(self, op: BaseOp) -> DataSourceVS:  # type: ignore  # TODO: fix

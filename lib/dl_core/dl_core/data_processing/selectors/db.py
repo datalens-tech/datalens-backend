@@ -29,6 +29,7 @@ if TYPE_CHECKING:
 @attr.s
 class DatasetDbDataSelectorAsync(DatasetDataSelectorAsyncBase):
     """Async selector that fetches data from the database"""
+
     # TODO: Merge all selector logic into data processors
 
     _active_queries: list[BIQueryExecutionContext] = attr.ib(init=False, factory=list)

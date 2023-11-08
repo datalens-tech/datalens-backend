@@ -71,9 +71,6 @@ class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         # Resolve TTL info and save BIQueryCacheOptions object
         cache_options = self._cache_options_builder.get_cache_options(
             joint_dsrc_info=joint_dsrc_info,
-            query=query,
-            user_types=list(user_types),
-            dataset=self._dataset,
             data_key=data_key,
         )
 

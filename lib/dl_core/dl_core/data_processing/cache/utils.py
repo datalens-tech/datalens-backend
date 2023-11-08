@@ -50,7 +50,6 @@ class CacheOptionsBuilderBase:
     def get_actual_ttl_config(
         self,
         connection: ConnectionBase,
-        dataset: Optional[Dataset] = None,
     ) -> CacheTTLConfig:
         ctc = self.default_ttl_config
 
@@ -90,19 +89,13 @@ class CacheOptionsBuilderBase:
             refresh_ttl_on_read=False,
         )
 
-    def get_cache_ttl_info(
-        self,
-        data_source_list: Collection[DataSource],
-        # For future use
-        dataset: Optional[Dataset] = None,  # noqa
-    ) -> CacheTTLInfo:
+    def get_cache_ttl_info(self, data_source_list: Collection[DataSource]) -> CacheTTLInfo:
         # TODO FIX: Assert that there is no connection divergence or migrate to joint data source info
         assert data_source_list, "Cannot generate cache options for empty source list"
         actual_connection = next(iter({dsrc.connection for dsrc in data_source_list}))
 
         ttl_config = self.get_actual_ttl_config(
             connection=actual_connection,
-            dataset=dataset,
         )
         return self.config_to_ttl_info(ttl_config=ttl_config)
 
@@ -123,11 +116,7 @@ class DatasetOptionsBuilder(CacheOptionsBuilderBase):
     def get_cache_options(
         self,
         joint_dsrc_info: PreparedFromInfo,
-        query: Select,
-        user_types: list[UserDataType],
-        dataset: Dataset,
         data_key: LocalKeyRepresentation,
-        role: DataSourceRole = DataSourceRole.origin,
     ) -> BIQueryCacheOptions:
         raise NotImplementedError
 
@@ -139,16 +128,9 @@ class CompengOptionsBuilder(DatasetOptionsBuilder):  # TODO: Move to compeng pac
     def get_cache_options(
         self,
         joint_dsrc_info: PreparedFromInfo,
-        query: Select,
-        user_types: list[UserDataType],
-        dataset: Dataset,
         data_key: LocalKeyRepresentation,
-        role: DataSourceRole = DataSourceRole.origin,
     ) -> BIQueryCacheOptions:
-        ttl_info = self.get_cache_ttl_info(
-            data_source_list=joint_dsrc_info.data_source_list,
-            dataset=dataset,
-        )
+        ttl_info = self.get_cache_ttl_info(data_source_list=joint_dsrc_info.data_source_list)
         return BIQueryCacheOptions(
             cache_enabled=self.cache_enabled,
             key=data_key,
@@ -170,35 +152,15 @@ class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
     def get_cache_options(
         self,
         joint_dsrc_info: PreparedFromInfo,
-        query: Select,
-        user_types: list[UserDataType],
-        dataset: Dataset,
         data_key: LocalKeyRepresentation,
-        role: DataSourceRole = DataSourceRole.origin,
     ) -> BIQueryCacheOptions:
         """Returns cache key, TTL for new entries, refresh TTL flag"""
 
-        compiled_query = self.get_query_str_for_cache(
-            query=query,
-            dialect=joint_dsrc_info.query_compiler.dialect,
-        )
-        local_key_rep: Optional[LocalKeyRepresentation] = self.make_data_select_cache_key(
-            from_info=joint_dsrc_info,
-            compiled_query=compiled_query,
-            user_types=user_types,
-            is_bleeding_edge_user=self._is_bleeding_edge_user,
-        )
-        ttl_info = self.get_cache_ttl_info(
-            data_source_list=joint_dsrc_info.data_source_list,
-            dataset=dataset,
-        )
+        ttl_info = self.get_cache_ttl_info(data_source_list=joint_dsrc_info.data_source_list)
         cache_enabled = self.get_cache_enabled(joint_dsrc_info=joint_dsrc_info)
-        if not cache_enabled:
-            local_key_rep = None
-
         return BIQueryCacheOptions(
             cache_enabled=cache_enabled,
-            key=local_key_rep,
+            key=data_key if cache_enabled else None,
             ttl_sec=ttl_info.ttl_sec,
             refresh_ttl_on_read=ttl_info.refresh_ttl_on_read,
         )
@@ -270,7 +232,7 @@ class DashSQLCacheOptionsBuilder(CacheOptionsBuilderBase):
         data_key: LocalKeyRepresentation = LocalKeyRepresentation(),
     ) -> BIQueryCacheOptions:
         cache_enabled = self.get_cache_enabled(conn=conn)
-        ttl_config = self.get_actual_ttl_config(connection=conn, dataset=None)
+        ttl_config = self.get_actual_ttl_config(connection=conn)
         ttl_info = self.config_to_ttl_info(ttl_config)
 
         local_key_rep: LocalKeyRepresentation = data_key.multi_extend(*conn.get_cache_key_part().key_parts)
