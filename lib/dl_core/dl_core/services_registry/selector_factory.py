@@ -103,9 +103,9 @@ class DefaultSelectorFactory(BaseClosableSelectorFactory):
         allow_cache_usage: bool = True,
     ) -> DatasetDataSelectorAsyncBase:
         return DatasetDbDataSelectorAsync(
-                dataset=dataset,
-                service_registry=self.services_registry,
-                # allow_cache_usage=allow_cache_usage,
-                # is_bleeding_edge_user=self._is_bleeding_edge_user,
-                us_entry_buffer=us_entry_buffer,
-            )
+            dataset=dataset,
+            service_registry=self.services_registry,
+            # allow_cache_usage=allow_cache_usage,
+            # is_bleeding_edge_user=self._is_bleeding_edge_user,
+            us_entry_buffer=us_entry_buffer,
+        )

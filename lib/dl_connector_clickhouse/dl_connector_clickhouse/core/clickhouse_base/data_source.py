@@ -15,7 +15,6 @@ from dl_core.data_source.sql import (
 )
 
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-from dl_connector_clickhouse.core.clickhouse_base.query_compiler import ClickHouseQueryCompiler
 
 
 if TYPE_CHECKING:
@@ -45,7 +44,6 @@ class ClickHouseBaseMixin(BaseSQLDataSource):
             JoinType.right,
         }
     )
-    compiler_cls = ClickHouseQueryCompiler
 
     def get_connect_args(self) -> dict:
         return dict(super().get_connect_args(), server_version=self.db_version or self.default_server_version)

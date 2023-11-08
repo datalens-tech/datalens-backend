@@ -12,12 +12,9 @@ from dl_connector_greenplum.core.constants import (
     SOURCE_TYPE_GP_SUBSELECT,
     SOURCE_TYPE_GP_TABLE,
 )
-from dl_connector_postgresql.core.postgresql_base.query_compiler import PostgreSQLQueryCompiler
 
 
 class GreenplumDataSourceMixin(BaseSQLDataSource):
-    compiler_cls = PostgreSQLQueryCompiler
-
     conn_type = CONNECTION_TYPE_GREENPLUM
 
     @classmethod
