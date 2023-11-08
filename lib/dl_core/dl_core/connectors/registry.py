@@ -1,4 +1,8 @@
-from typing import Type
+from typing import (
+    Collection,
+    Optional,
+    Type,
+)
 
 import attr
 
@@ -15,9 +19,9 @@ class CoreConnectorEntrypointManager(EntrypointClassManager[CoreConnector]):
     entrypoint_group_name = attr.ib(init=False, default=_CONNECTOR_EP_GROUP)
 
 
-def get_all_connectors() -> dict[str, Type[CoreConnector]]:
+def get_all_connectors(ep_filter: Optional[Collection[str]] = None) -> dict[str, Type[CoreConnector]]:
     ep_mgr = CoreConnectorEntrypointManager()
-    return ep_mgr.get_all_ep_classes()
+    return ep_mgr.get_all_ep_classes(ep_filter)
 
 
 def get_connector_cls(name: str) -> Type[CoreConnector]:
