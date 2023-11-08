@@ -5,17 +5,25 @@ from typing import (
     Type,
 )
 
+import attr
+
 import dl_formula as package
 from dl_formula.connectors.base.connector import FormulaConnector
 from dl_formula.connectors.registration import CONN_REG_FORMULA
+from dl_utils.entrypoints import EntrypointClassManager
 
 
 _CONNECTOR_EP_GROUP = f"{package.__name__}.connectors"
 
 
-def _get_all_ep_connectors() -> dict[str, Type[FormulaConnector]]:
-    entrypoints = list(metadata.entry_points().select(group=_CONNECTOR_EP_GROUP))  # type: ignore
-    return {ep.name: ep.load() for ep in entrypoints}
+@attr.s
+class FormulaConnectorEntrypointManager(EntrypointClassManager[FormulaConnector]):
+    entrypoint_group_name = attr.ib(init=False, default=_CONNECTOR_EP_GROUP)
+
+
+def _get_all_ep_connectors(ep_filter: Optional[Collection[str]] = None) -> dict[str, Type[FormulaConnector]]:
+    ep_mgr = FormulaConnectorEntrypointManager()
+    return ep_mgr.get_all_ep_classes(ep_filter)
 
 
 def load_all_connectors() -> None:
@@ -23,8 +31,5 @@ def load_all_connectors() -> None:
 
 
 def register_all_connectors(connector_ep_names: Optional[Collection[str]] = None) -> None:
-    connectors = _get_all_ep_connectors()
-    for ep_name, connector_cls in sorted(connectors.items()):
-        if connector_ep_names is not None and ep_name not in connector_ep_names:
-            continue
+    for ep_name, connector_cls in sorted(_get_all_ep_connectors(connector_ep_names).items()):
         CONN_REG_FORMULA.register_connector(connector_cls)

@@ -14,7 +14,6 @@ from typing import (
     Generator,
     Iterable,
     List,
-    NoReturn,
     Optional,
     Tuple,
     Type,
