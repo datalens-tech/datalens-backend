@@ -52,7 +52,8 @@ class PingReadyView(BaseView):
     async def is_pg_ready(self) -> bool:
         compeng: CompEngPgService = CompEngPgService.get_app_instance(self.request.app)
         processor = compeng.get_data_processor(
-            service_registry=self.dl_request.services_registry, reporting_enabled=False,
+            service_registry=self.dl_request.services_registry,
+            reporting_enabled=False,
         )
 
         try:

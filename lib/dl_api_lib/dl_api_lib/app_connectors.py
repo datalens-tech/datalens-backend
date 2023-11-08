@@ -25,8 +25,6 @@ class ApiConnectorEntrypointManager(EntrypointClassManager[ApiConnector]):
 
 
 def register_all_connectors(connector_ep_names: Optional[Collection[str]] = None) -> None:
-    connectors = ApiConnectorEntrypointManager().get_all_ep_classes()
+    connectors = ApiConnectorEntrypointManager().get_all_ep_classes(connector_ep_names)
     for ep_name, connector_cls in sorted(connectors.items()):
-        if connector_ep_names is not None and ep_name not in connector_ep_names:
-            continue
         CONN_REG_BI_API.register_connector(connector_cls)
