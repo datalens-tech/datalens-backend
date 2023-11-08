@@ -14,7 +14,6 @@ import attr
 from dl_constants.enums import (
     DataSourceRole,
     ProcessorType,
-    SelectorType,
 )
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.ids import AvatarId
@@ -25,7 +24,6 @@ from dl_core.data_processing.processing.operation import (
     DownloadOp,
     JoinOp,
 )
-from dl_core.data_processing.selectors.base import DataSelectorAsyncBase
 from dl_core.data_processing.stream_base import (
     DataRequestMetaInfo,
     DataSourceVS,
@@ -47,9 +45,7 @@ from dl_utils.aio import (
 @attr.s
 class DataFetcher:
     _dataset: Dataset = attr.ib(kw_only=True)
-    _selector: Optional[DataSelectorAsyncBase] = attr.ib(kw_only=True, default=None)
     _service_registry: Optional[ServicesRegistry] = attr.ib(kw_only=True, default=None)
-    _selector_type: SelectorType = attr.ib(kw_only=True, default=SelectorType.CACHED)
     _us_manager: Optional[USManagerBase] = attr.ib(kw_only=True, default=None)  # FIXME: Legacy; remove
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
     _ds_accessor: DatasetComponentAccessor = attr.ib(init=False)
@@ -63,16 +59,6 @@ class DataFetcher:
     @_ds_accessor.default
     def _make_ds_accessor(self) -> DatasetComponentAccessor:
         return DatasetComponentAccessor(dataset=self._dataset)
-
-    def __attrs_post_init__(self) -> None:
-        if self._selector is None:
-            assert self._service_registry is not None
-            sel_factory = self._service_registry.get_selector_factory()
-            self._selector = sel_factory.get_dataset_selector(
-                dataset=self._dataset,
-                selector_type=self._selector_type,
-                us_entry_buffer=self._us_entry_buffer,
-            )
 
     def _get_avatar_virtual_data_stream(
         self,
@@ -126,7 +112,6 @@ class DataFetcher:
         data_processor = await dp_factory.get_data_processor(
             dataset=self._dataset,
             processor_type=ProcessorType.SOURCE_DB,
-            selector_type=self._selector_type,
             role=role,
             us_entry_buffer=self._us_entry_buffer,
             allow_cache_usage=allow_cache_usage,

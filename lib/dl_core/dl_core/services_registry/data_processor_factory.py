@@ -11,7 +11,6 @@ import attr
 from dl_constants.enums import (
     DataSourceRole,
     ProcessorType,
-    SelectorType,
 )
 from dl_core.data_processing.processing.cache.processor import CacheOperationProcessor
 from dl_core.data_processing.processing.db_base.processor_base import ExecutorBasedOperationProcessor
@@ -37,16 +36,13 @@ class SourceDataProcessorFactory(BaseClosableDataProcessorFactory):
         allow_cache_usage: bool = True,
         reporting_enabled: bool = True,
         # SOURCE_DB-specific
-        selector_type: Optional[SelectorType] = None,
         role: Optional[DataSourceRole] = None,
         **kwargs: Any,
     ) -> ExecutorBasedOperationProcessor:
-        assert selector_type is not None
         assert role is not None
         selector_factory = self.services_registry.get_selector_factory()
         selector = selector_factory.get_dataset_selector(
             dataset=dataset,
-            selector_type=selector_type,
             allow_cache_usage=False,  # Use data processor-level cache
             us_entry_buffer=us_entry_buffer,
         )

@@ -34,7 +34,6 @@ if TYPE_CHECKING:
     from dl_constants.enums import UserDataType
     from dl_constants.types import TJSONExt
     from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
-    from dl_core.data_processing.stream_base import DataStreamBase
     from dl_core.data_source.base import DataSource
     from dl_core.us_dataset import Dataset
     from dl_core.us_manager.local_cache import USEntryBuffer
@@ -153,24 +152,6 @@ class CompengOptionsBuilder(DatasetOptionsBuilder):  # TODO: Move to compeng pac
         return BIQueryCacheOptions(
             cache_enabled=self.cache_enabled,
             key=data_key,
-            ttl_sec=ttl_info.ttl_sec,
-            refresh_ttl_on_read=ttl_info.refresh_ttl_on_read,
-        )
-
-    def get_cache_options_for_stream(
-        self,
-        stream: DataStreamBase,
-        dataset: Optional[Dataset] = None,
-    ) -> BIQueryCacheOptions:
-        ttl_info = self.get_cache_ttl_info(
-            data_source_list=stream.meta.data_source_list,
-            dataset=dataset,
-        )
-        key = stream.data_key
-        cache_enabled = key is not None
-        return BIQueryCacheOptions(
-            cache_enabled=cache_enabled,
-            key=key,
             ttl_sec=ttl_info.ttl_sec,
             refresh_ttl_on_read=ttl_info.refresh_ttl_on_read,
         )
