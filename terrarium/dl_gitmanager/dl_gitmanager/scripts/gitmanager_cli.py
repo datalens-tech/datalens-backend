@@ -50,26 +50,15 @@ class GitManagerTool(CliToolBase):
             "--only-added-commits", action="store_true", help="Inspect only commits that are added in head"
         )
 
-        subparsers.add_parser(
-            "list-diff-paths",
-            parents=[base_head_parser, absolute_parser],
-            help="List file paths with changes given as commit list",
-        )
-
         return parser
 
     def range_diff_paths(self, base: str, head: Optional[str], absolute: bool, only_added_commits: bool) -> None:
-        diff_name_list: list[str]
-        if only_added_commits:
-            commits = self.git_manager.get_missing_commits(base=base, head=head)
-            diff_name_list = self.git_manager.get_list_diff_paths(commits=commits, absolute=absolute)
-        else:
-            diff_name_list = self.git_manager.get_range_diff_paths(base=base, head=head, absolute=absolute)
-        print("\n".join(diff_name_list))
-
-    def list_diff_paths(self, absolute: bool) -> None:
-        commits = [line.strip() for line in self.input_text_io if line.strip()]
-        diff_name_list = self.git_manager.get_list_diff_paths(commits=commits, absolute=absolute)
+        diff_name_list = self.git_manager.get_range_diff_paths(
+            base=base,
+            head=head,
+            absolute=absolute,
+            only_missing_commits=only_added_commits,
+        )
         print("\n".join(diff_name_list))
 
     @classmethod
@@ -86,10 +75,11 @@ class GitManagerTool(CliToolBase):
         match args.command:
             case "range-diff-paths":
                 tool.range_diff_paths(
-                    base=args.base, head=args.head, absolute=args.absolute, only_added_commits=args.only_added_commits
+                    base=args.base,
+                    head=args.head,
+                    absolute=args.absolute,
+                    only_added_commits=args.only_added_commits,
                 )
-            case "list-diff-paths":
-                tool.list_diff_paths(absolute=args.absolute)
             case _:
                 raise RuntimeError(f"Got unknown command: {args.command}")
 

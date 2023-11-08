@@ -31,9 +31,6 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-[datalens_ci]
-skip_test = true
-
 [tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true

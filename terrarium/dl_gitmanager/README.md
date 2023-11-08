@@ -62,14 +62,3 @@ By default they are printed relative to the repository root.
 
 The `--only-added-commits` option makes the tool inspect only commits
 that have been added in the head version.
-
-### list-diff-paths
-
-List files that have changed in commits passed on as input
-
-```
-echo <commit-id> | dl-git list-diff-paths
-echo <commit-id> | dl-git list-diff-paths --absolute
-```
-
-Option `--absolute` has the same meaning as in `range-diff-paths`.
