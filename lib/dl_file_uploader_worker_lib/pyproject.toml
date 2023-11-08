@@ -53,7 +53,6 @@ testpaths = ["dl_file_uploader_worker_lib_tests/db", "dl_file_uploader_worker_li
 [datalens.pytest.local]
 root_dir = "dl_file_uploader_worker_lib_tests/"
 target_path = "db unit"
-labels = ["fat"]
 
 [datalens.pytest.ext]
 root_dir = "dl_file_uploader_worker_lib_tests/"
