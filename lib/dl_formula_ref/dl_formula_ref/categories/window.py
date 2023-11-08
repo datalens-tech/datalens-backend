@@ -1,6 +1,5 @@
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.aliased_res import (
-    AliasedLinkResource,
     AliasedTableResource,
     AliasedTextResource,
     SimpleAliasedResourceRegistry,
