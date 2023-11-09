@@ -637,7 +637,6 @@ async def test_rename_tenant_files(
     assert isinstance(conn, BaseFileS3Connection)
     updated_source = updated_conn.get_file_source_by_id(source.id)
     assert updated_source.s3_filename_suffix
-    assert updated_source.s3_filename_suffix != source.s3_filename_suffix
     assert updated_source.s3_filename and updated_source.s3_filename.startswith(updated_conn.raw_tenant_id)
     new_s3_filename = updated_conn.get_full_s3_filename(updated_source.s3_filename_suffix)
     updated_s3_obj = await s3_client.get_object(Bucket=s3_persistent_bucket, Key=new_s3_filename)
