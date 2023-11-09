@@ -49,6 +49,13 @@ class GSheetsFileSourceDesc(FileSourceDesc):
     first_line_is_header: Optional[bool] = attr.ib()
 
 
+@attr.s(frozen=True, kw_only=True)
+class YaDocsFileSourceDesc(FileSourceDesc):
+    public_link: Optional[str] = attr.ib()
+    private_path: Optional[str] = attr.ib()
+    first_line_is_header: Optional[bool] = attr.ib()
+
+
 @attr.s(frozen=True)
 class SourceInternalParams:
     preview_id: str = attr.ib()
@@ -178,7 +185,7 @@ class FileUploaderClient(BIAioHTTPClient):
     async def update_connection_data_internal(
         self,
         conn_id: str,
-        sources: list[GSheetsFileSourceDesc],
+        sources: list[GSheetsFileSourceDesc | YaDocsFileSourceDesc],
         authorized: bool,
         tenant_id: Optional[str],
     ) -> None:
