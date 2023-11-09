@@ -62,7 +62,7 @@ class StandaloneControlApiAppFactory(ControlApiAppFactory[ControlApiAppSettings]
         testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     ) -> EnvSetupResult:
         us_auth_mode: USAuthMode
-        from dl_core.flask_utils.trust_auth import TrustAuthService
+        from dl_api_commons.flask.middlewares.trust_auth import TrustAuthService
 
         TrustAuthService(
             fake_user_id="_user_id_",
