@@ -147,6 +147,8 @@ datalens-connector-mysql = {path = "../lib/dl_connector_mysql"}
 datalens-sqlalchemy-mysql = {path = "../lib/dl_sqlalchemy_mysql"}
 datalens-maintenance = {path = "../lib/dl_maintenance"}
 datalens-connector-mssql = {path = "../lib/dl_connector_mssql"}
+datalens-attrs-model-mapper = {path = "../lib/dl_attrs_model_mapper"}
+datalens-attrs-model-mapper-doc-tools = {path = "../lib/dl_attrs_model_mapper_doc_tools"}
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.3.0"
