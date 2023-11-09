@@ -7,10 +7,10 @@ from dl_constants.enums import (
 from dl_core import exc
 from dl_core.reporting.notifications import get_notification_record
 
+from dl_connector_bundle_chs3.chs3_base.core.constants import NOTIF_TYPE_DATA_UPDATE_FAILURE
 from dl_connector_bundle_chs3.chs3_base.core.data_source import BaseFileS3DataSource
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import (
     CONNECTION_TYPE_GSHEETS_V2,
-    NOTIF_TYPE_GSHEETS_V2_DATA_UPDATE_FAILURE,
     SOURCE_TYPE_GSHEETS_V2,
 )
 
@@ -44,7 +44,7 @@ class GSheetsFileS3DataSource(BaseFileS3DataSource):
                 # may be generalized in the future
                 reporting_registry.save_reporting_record(
                     get_notification_record(
-                        NOTIF_TYPE_GSHEETS_V2_DATA_UPDATE_FAILURE,
+                        NOTIF_TYPE_DATA_UPDATE_FAILURE,
                         err_code=".".join(single_error.code),
                         request_id=single_error.details.get("request-id"),
                     )

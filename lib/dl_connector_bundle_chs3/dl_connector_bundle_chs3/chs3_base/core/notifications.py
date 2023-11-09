@@ -3,10 +3,7 @@ from typing import Optional
 from dl_constants.enums import NotificationLevel
 from dl_core.reporting.notifications import BaseNotification
 
-from dl_connector_bundle_chs3.chs3_base.core.constants import (
-    NOTIF_TYPE_DATA_UPDATE_FAILURE,
-    NOTIF_TYPE_STALE_DATA,
-)
+from constants import NOTIF_TYPE_STALE_DATA, NOTIF_TYPE_DATA_UPDATE_FAILURE
 
 
 class StaleDataNotification(BaseNotification):

@@ -23,7 +23,7 @@ from dl_constants.enums import (
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_testing.regulated_test import RegulatedTestParams
 
-from dl_connector_bundle_chs3.chs3_gsheets.core.constants import NOTIF_TYPE_GSHEETS_V2_STALE_DATA
+from dl_connector_bundle_chs3.chs3_base.core.constants import NOTIF_TYPE_STALE_DATA
 from dl_connector_bundle_chs3.chs3_gsheets.core.lifecycle import GSheetsFileS3ConnectionLifecycleManager
 from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from dl_connector_bundle_chs3_tests.db.base.api.data import CHS3DataResultTestSuite
@@ -66,7 +66,7 @@ class TestGSheetsFileS3DataResult(GSheetsFileS3DataApiTestBase, CHS3DataResultTe
         # it is not time to update data yet, so we expect no data updates or corresponding notifications
         notifications = get_notifications_from_result_resp()
         assert all(
-            notification["locator"] != NOTIF_TYPE_GSHEETS_V2_STALE_DATA.value for notification in notifications
+            notification["locator"] != NOTIF_TYPE_STALE_DATA.value for notification in notifications
         ), notifications
         conn = sync_us_manager.get_by_id(saved_connection_id, GSheetsFileS3Connection)
         assert conn.data.sources[0].data_updated_at == data_updated_at_orig
@@ -82,7 +82,7 @@ class TestGSheetsFileS3DataResult(GSheetsFileS3DataApiTestBase, CHS3DataResultTe
         # now notifications should be there, as well as connection sources should be updated
         notifications = get_notifications_from_result_resp()
         assert any(
-            notification["locator"] == NOTIF_TYPE_GSHEETS_V2_STALE_DATA.value for notification in notifications
+            notification["locator"] == NOTIF_TYPE_STALE_DATA.value for notification in notifications
         ), notifications
         conn = sync_us_manager.get_by_id(saved_connection_id, GSheetsFileS3Connection)
         assert conn.data.sources[0].data_updated_at != data_updated_at

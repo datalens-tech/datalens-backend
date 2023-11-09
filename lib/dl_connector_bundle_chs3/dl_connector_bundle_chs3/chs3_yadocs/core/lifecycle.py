@@ -9,8 +9,8 @@ from dl_core.utils import (
     make_user_auth_headers,
 )
 
+from dl_connector_bundle_chs3.chs3_base.core.constants import NOTIF_TYPE_STALE_DATA
 from dl_connector_bundle_chs3.chs3_base.core.lifecycle import BaseFileS3ConnectionLifecycleManager
-from dl_connector_bundle_chs3.chs3_yadocs.core.constants import NOTIF_TYPE_YADOCS_STALE_DATA
 from dl_connector_bundle_chs3.chs3_yadocs.core.us_connection import YaDocsFileS3Connection
 
 
@@ -40,7 +40,7 @@ class YaDocsFileS3ConnectionLifecycleManager(
             and (dt_now - data_updated_at_all).total_seconds() >= self.STALE_THRESHOLD_SECONDS
         ):
             reporting_registry = self._service_registry.get_reporting_registry()
-            reporting_registry.save_reporting_record(get_notification_record(NOTIF_TYPE_YADOCS_STALE_DATA))
+            reporting_registry.save_reporting_record(get_notification_record(NOTIF_TYPE_STALE_DATA))
 
         data_updated_at = data.oldest_data_update_time(exclude_statuses={FileProcessingStatus.in_progress})
         if data_updated_at is None or (dt_now - data_updated_at).total_seconds() < self.STALE_THRESHOLD_SECONDS:
