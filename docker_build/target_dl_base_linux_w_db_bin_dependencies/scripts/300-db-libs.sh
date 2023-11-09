@@ -2,6 +2,6 @@
 set -eu
 export DEBIAN_FRONTEND=noninteractive
 
-apt-get install --yes \
-  libpq-dev \
-  clickhouse-client
+apt-get install --yes --fix-missing \
+  # For MSSQL
+  freetds-dev tdsodbc unixodbc unixodbc-dev libtcmalloc-minimal4
