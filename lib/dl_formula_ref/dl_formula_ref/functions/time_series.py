@@ -1,4 +1,5 @@
 from dl_formula_ref.categories.time_series import CATEGORY_TIME_SERIES
+from dl_formula_ref.i18n.registry import FormulaRefTranslatable as Translatable
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.example import SimpleExample
@@ -9,7 +10,11 @@ _ = get_gettext()
 
 
 _NOTES_TIME_SERIES = [
-    Note(_("The first argument must be a measure (aggregated expression), otherwise an " "error will be raised.")),
+    Note(
+        Translatable(
+            "The first argument must be a measure (aggregated expression), otherwise an " "error will be raised."
+        )
+    ),
 ]
 
 FUNCTION_AGO = FunctionDocRegistryItem(

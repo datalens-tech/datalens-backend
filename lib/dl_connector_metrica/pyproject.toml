@@ -76,3 +76,6 @@ dl_connector_metrica = [
     {path = "dl_connector_metrica/api"},
     {path = "dl_connector_metrica/core"},
 ]
+dl_formula_ref_dl_connector_metrica = [
+    {path = "dl_connector_metrica/formula_ref"},
+]

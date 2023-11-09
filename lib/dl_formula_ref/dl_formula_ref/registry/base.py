@@ -11,6 +11,7 @@ from typing import (
 import attr
 
 from dl_formula.core.dialect import DialectCombo
+from dl_formula_ref.function_extension import FunctionExtension
 from dl_formula_ref.registry.aliased_res import (
     AliasedResourceRegistryBase,
     SimpleAliasedResourceRegistry,
@@ -166,3 +167,11 @@ class FunctionDocRegistryItem:
 
     def get_args(self, env: GenerationEnvironment) -> List[_arg_base.FuncArg]:
         return self._arg_extractor.get_args(self, env=env)
+
+    def extend(self, dialect: DialectCombo, notes: tuple[Note, ...]) -> FunctionExtension:
+        return FunctionExtension(
+            function_name=self.name,
+            category_name=self.category_name,
+            dialect_combo=dialect,
+            notes=notes,
+        )

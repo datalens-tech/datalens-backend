@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+from functools import reduce
 import inspect
 from itertools import chain
 import logging
+from operator import ior
 import re
 from typing import (
     Any,
+    Collection,
     Generator,
     NamedTuple,
     Optional,
@@ -281,6 +284,19 @@ def register_dialect_namespace(dialect_ns: Type[DialectNamespace]) -> None:
             assert _NAMED_DIALECT_COMBOS[name] == combo
         except KeyError:
             _NAMED_DIALECT_COMBOS[name] = combo
+
+
+def dialect_combo_is_supported(supported: DialectCombo | Collection[DialectCombo], current: DialectCombo) -> bool:
+    supported_dcombo: DialectCombo
+    if not isinstance(supported, DialectCombo):
+        supported_dcombo = reduce(ior, supported)  # bitwise "or" (|) of the collection's elements
+    else:
+        supported_dcombo = supported
+
+    if supported_dcombo & StandardDialect.ANY:
+        return True
+
+    return supported_dcombo & current == current
 
 
 def get_dialect_combos() -> list[DialectCombo]:

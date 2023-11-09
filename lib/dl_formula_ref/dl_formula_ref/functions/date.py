@@ -6,6 +6,7 @@ from dl_formula_ref.examples.config import (
     ExampleConfig,
     ExampleSource,
 )
+from dl_formula_ref.i18n.registry import FormulaRefTranslatable as Translatable
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.example import (
@@ -52,7 +53,8 @@ FUNCTION_DATEADD = FunctionDocRegistryItem(
     ),
     notes=[
         Note(
-            _("For all sources except {dialects:CLICKHOUSE}, {arg:2} takes " "only constant values."),
+            # FIXME: Connectorize dialect mentions (https://github.com/datalens-tech/datalens-backend/issues/81)
+            Translatable("For all sources except {dialects:CLICKHOUSE}, {arg:2} takes " "only constant values."),
         ),
     ],
     examples=[
@@ -162,14 +164,6 @@ FUNCTION_DATETRUNC = FunctionDocRegistryItem(
         '- `"quarter"`;\n'
         '- `"year"`.'
     ),
-    notes=[
-        Note(
-            _(
-                "The function with three arguments is only available for the sources "
-                "{dialects:CLICKHOUSE_21_8} or higher."
-            ),
-        ),
-    ],
     examples=[
         SimpleExample(example_str)
         for example_str in (
@@ -297,11 +291,6 @@ FUNCTION_NOW = FunctionDocRegistryItem(
     name="now",
     category=CATEGORY_DATE,
     description=_("Returns the current date and time, depending on the data source and " "connection type."),
-    notes=[
-        Note(
-            _("On {dialects:YQL}, the function always returns the UTC date and time."),
-        ),
-    ],
     examples=[
         SimpleExample("NOW() = #2019-01-23 12:53:07#"),
     ],

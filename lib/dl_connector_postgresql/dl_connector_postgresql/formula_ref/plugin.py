@@ -1,5 +1,7 @@
+from dl_formula_ref.functions.array import FUNCTION_UNNEST
 from dl_formula_ref.functions.type_conversion import DbCastExtension
 from dl_formula_ref.plugins.base.plugin import FormulaRefPlugin
+from dl_formula_ref.registry.note import Note
 
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect
 from dl_connector_postgresql.formula.definitions.functions_type import FuncDbCastPostgreSQLBase
@@ -28,3 +30,17 @@ class PostgresSQLFormulaRefPlugin(FormulaRefPlugin):
             (PostgreSQLDialect.NON_COMPENG_POSTGRESQL, "varchar"): Translatable("Alias for `character varying`"),
         },
     )
+    function_extensions = [
+        FUNCTION_UNNEST.extend(
+            dialect=PostgreSQLDialect.NON_COMPENG_POSTGRESQL,
+            notes=(
+                Note(
+                    Translatable(
+                        "{dialects: POSTGRESQL} doesn't allow filtering fields containing the UNNEST "
+                        "function. If the data source is {dialects: POSTGRESQL}, do not use such "
+                        "fields in selectors."
+                    )
+                ),
+            ),
+        ),
+    ]

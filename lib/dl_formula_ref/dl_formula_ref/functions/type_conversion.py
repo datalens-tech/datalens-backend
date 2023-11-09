@@ -9,6 +9,7 @@ from dl_formula.definitions.functions_type import (
     WhitelistTypeSpec,
 )
 from dl_formula_ref.categories.type_conversion import CATEGORY_TYPE_CONVERSION
+from dl_formula_ref.i18n.registry import FormulaRefTranslatable as Translatable
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.aliased_res import (
     AliasedResource,
@@ -22,7 +23,7 @@ from dl_formula_ref.registry.note import (
     Note,
     NoteLevel,
 )
-from dl_i18n.localizer_base import Translatable
+from dl_i18n.localizer_base import Translatable as BaseTranslatable
 
 
 _ = get_gettext()
@@ -41,20 +42,8 @@ FUNCTION_DATE = FunctionDocRegistryItem(
     ),
     notes=[
         Note(
-            _("Argument {arg:1} is available only for {dialects:CLICKHOUSE} " "sources."),
-        ),
-        Note(
-            _(
-                "For {dialects:CLICKHOUSE} data sources, numeric {arg:0} values less than or "
-                "equal to `65535` are interpreted as the number of days (not seconds, like in "
-                "all other cases) since January 1st 1970. This is the result of the behavior "
-                "of available {dialects:CLICKHOUSE} functions.\n"
-                "\n"
-                "One way to surpass this is to use the following formula: "
-                "`DATE(DATETIME([value]))`. The result is more consistent, but is likely to "
-                "be much slower."
-            ),
-            level=NoteLevel.warning,
+            # FIXME: Connectorize dialect mentions (https://github.com/datalens-tech/datalens-backend/issues/81)
+            Translatable("Argument {arg:1} is available only for {dialects:CLICKHOUSE} " "sources."),
         ),
     ],
     examples=[
@@ -76,7 +65,7 @@ FUNCTION_DATETIME = FunctionDocRegistryItem(
     ),
     notes=[
         Note(
-            _("Argument {arg:1} is available only for {dialects:CLICKHOUSE} " "sources."),
+            Translatable("Argument {arg:1} is available only for {dialects:CLICKHOUSE} " "sources."),
         ),
     ],
     examples=[
@@ -202,7 +191,7 @@ FUNCTION_STR = FunctionDocRegistryItem(
     ],
     notes=[
         Note(
-            _(
+            Translatable(
                 "If an array is passed (only for {dialects:CLICKHOUSE|POSTGRESQL} sources), the conversion is "
                 "performed by a function in the source database and results may vary for different data sources. "
                 "For consistent results use {ref:ARR_STR}."
@@ -296,17 +285,17 @@ def _make_type_macro_from_dtype_spec(data_type_spec: DataTypeSpec) -> str:
         raise TypeError(type(data_type_spec))
 
 
-def _get_comment_for_type(dialect: DialectCombo, native_type_name: str) -> str | Translatable:
+def _get_comment_for_type(dialect: DialectCombo, native_type_name: str) -> str | BaseTranslatable:
     return _DB_CAST_TYPE_COMMENTS.get((dialect, native_type_name), "")
 
 
 @attr.s
 class DbCastExtension:
     type_whitelists: dict[DialectCombo, dict[DataType, list[WhitelistTypeSpec]]] = attr.ib(kw_only=True, factory=dict)
-    type_comments: dict[tuple[DialectCombo, str], str | Translatable] = attr.ib(kw_only=True, factory=dict)
+    type_comments: dict[tuple[DialectCombo, str], str | BaseTranslatable] = attr.ib(kw_only=True, factory=dict)
 
 
-_DB_CAST_TYPE_COMMENTS: dict[tuple[DialectCombo, str], str | Translatable] = {}
+_DB_CAST_TYPE_COMMENTS: dict[tuple[DialectCombo, str], str | BaseTranslatable] = {}
 _DB_CAST_WHITELIST: dict[DialectCombo, dict[DataType, list[WhitelistTypeSpec]]] = {}
 
 
