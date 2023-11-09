@@ -151,6 +151,7 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         from_info: Optional[PreparedFromInfo] = None,
         base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
     ) -> Optional[LocalKeyRepresentation]:
+        # TODO: Remove this method
         query_res_info = self._make_query_res_info(query=query, user_types=user_types)
         data_key = self._cache_options_builder.get_data_key(
             from_info=from_info,
