@@ -10,6 +10,7 @@ import aiohttp
 import attr
 
 from dl_constants.enums import FileProcessingStatus
+from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_file_uploader_lib import exc
 from dl_file_uploader_lib.data_sink.raw_bytes import (
     RawBytesAsyncDataStream,
@@ -35,8 +36,32 @@ from dl_task_processor.task import (
     TaskResult,
 )
 
+from dl_connector_bundle_chs3.chs3_yadocs.core.us_connection import YaDocsFileS3Connection
+
 
 LOGGER = logging.getLogger(__name__)
+
+
+class NoToken(Exception):
+    pass
+
+
+async def _get_yadocs_oauth_token(
+    dfile_token: Optional[str],
+    conn_id: Optional[str],
+    usm: AsyncUSManager,
+) -> Optional[str]:
+    if dfile_token is not None:  # if there is a token in dfile, then use it
+        oauth_token = dfile_token
+    elif conn_id is not None:  # otherwise, use the one from the connection
+        conn: YaDocsFileS3Connection = await usm.get_by_id(conn_id, YaDocsFileS3Connection)
+        if conn.data.oauth_token is None:
+            raise NoToken()
+        oauth_token = conn.data.oauth_token
+    else:
+        raise NoToken()
+
+    return oauth_token
 
 
 @attr.s
@@ -47,6 +72,7 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
         dfile: Optional[DataFile] = None
         redis = self._ctx.redis_service.get_redis()
         task_processor = self._ctx.make_task_processor(self._request_id)
+        usm = self._ctx.get_async_usm()
 
         try:
             rmm = RedisModelManager(redis=redis, crypto_keys_config=self._ctx.crypto_keys_config)
@@ -54,6 +80,15 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
             assert dfile is not None
 
             assert isinstance(dfile.user_source_properties, YaDocsUserSourceProperties)
+
+            oauth_token: Optional[str] = None
+            if self.meta.authorized:
+                try:
+                    dfile_token = dfile.user_source_properties.oauth_token
+                    oauth_token = await _get_yadocs_oauth_token(dfile_token, self.meta.connection_id, usm)
+                except NoToken:
+                    LOGGER.error("Authorized call but no token found in either DataFile or connection, failing task")
+                    return Fail()
 
             async with aiohttp.ClientSession() as session:
                 yadocs_client = YaDocsClient(session)
@@ -66,17 +101,14 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
                             link=dfile.user_source_properties.public_link
                         )
 
-                    elif (
-                        dfile.user_source_properties.private_path is not None
-                        and dfile.user_source_properties.oauth_token is not None
-                    ):
+                    elif dfile.user_source_properties.private_path is not None and oauth_token is not None:
                         spreadsheet_ref = await yadocs_client.get_spreadsheet_private_ref(
                             path=dfile.user_source_properties.private_path,
-                            token=dfile.user_source_properties.oauth_token,
+                            token=oauth_token,
                         )
                         spreadsheet_meta = await yadocs_client.get_spreadsheet_private_meta(
                             path=dfile.user_source_properties.private_path,
-                            token=dfile.user_source_properties.oauth_token,
+                            token=oauth_token,
                         )
                     else:
                         raise exc.DLFileUploaderBaseError()
@@ -91,7 +123,9 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
             dfile.filename = spreadsheet_meta["name"]
             xlsx_suffix = ".xlsx"
             if not dfile.filename.endswith(xlsx_suffix):
-                raise exc.UnsupportedDocument
+                raise exc.UnsupportedDocument(
+                    details={"reason": f"Supported file extensions are: '.xlsx'. Got {dfile.filename}"}
+                )
 
             s3 = self._ctx.s3_service
 

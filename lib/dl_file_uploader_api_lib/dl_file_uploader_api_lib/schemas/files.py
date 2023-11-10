@@ -26,8 +26,10 @@ def validate_docs_data(data):
     if not ((data["public_link"] is None) ^ (data["private_path"] is None)):
         raise ValueError("Expected exactly one of [`private_path`, `public_link`] to be specified")
     if data["public_link"] is None:
-        if data["private_path"] is None or data["oauth_token"] is None:
-            raise ma.ValidationError("Both path and token must be provided for private files")
+        if data["private_path"] is None:
+            raise ma.ValidationError("'private_path' must be provided for private files")
+        elif data["oauth_token"] is None and data["connection_id"] is None:
+            raise ma.ValidationError("Expected `oauth_token` or `connection_id` to be specified")
 
 
 class FileLinkRequestSchema(BaseRequestSchema):
@@ -43,10 +45,11 @@ class FileLinkRequestSchema(BaseRequestSchema):
 
 
 class FileDocumentsRequestSchema(BaseRequestSchema):
-    # connection_id = ma.fields.String(load_default=None, allow_none=True)
+    connection_id = ma.fields.String(load_default=None, allow_none=True)
     private_path = ma.fields.String(load_default=None, allow_none=True)
     oauth_token = ma.fields.String(load_default=None, allow_none=True)
     public_link = ma.fields.String(load_default=None, allow_none=True)
+    authorized = ma.fields.Boolean(required=True)
 
     @ma.validates_schema(skip_on_field_errors=True)
     def validate_object(self, data: dict, **kwargs: Any) -> None:

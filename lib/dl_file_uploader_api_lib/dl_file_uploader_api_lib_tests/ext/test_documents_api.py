@@ -54,7 +54,7 @@ async def test_yadocuments_private_file(
 ):
     private_path = "test private table.xlsx"
     resp = await fu_client.make_request(
-        ReqBuilder.upload_documents(private_path=private_path, oauth_token=ya_docs_oauth_token)
+        ReqBuilder.upload_documents(private_path=private_path, oauth_token=ya_docs_oauth_token, authorized=True)
     )
     assert resp.status == 201
     file_id = resp.json["file_id"]

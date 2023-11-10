@@ -28,7 +28,7 @@ async def test_download_yadocs_task(
     )
     await df.save()
 
-    task = await task_processor_client.schedule(DownloadYaDocsTask(file_id=df.id))
+    task = await task_processor_client.schedule(DownloadYaDocsTask(file_id=df.id, authorized=False))
     result = await wait_task(task, task_state)
 
     assert result[-1] == "success"
