@@ -185,6 +185,8 @@ class DocumentsView(FileUploaderBaseView):
         oauth_token: Optional[str] = req_data["oauth_token"]
         public_link: Optional[str] = req_data["public_link"]
         private_path: Optional[str] = req_data["private_path"]
+        connection_id: Optional[str] = req_data["connection_id"]
+        authorized: bool = req_data["authorized"]
 
         df = await self.FILE_TYPE_TO_DATA_FILE_PREPARER_MAP[file_type](
             oauth_token=oauth_token,
@@ -198,7 +200,7 @@ class DocumentsView(FileUploaderBaseView):
 
         task_processor = self.dl_request.get_task_processor()
         await task_processor.schedule(DownloadYaDocsTask(file_id=df.id))
-        LOGGER.info(f"Scheduled DownloadGSheetTask for file_id {df.id}")
+        LOGGER.info(f"Scheduled DownloadYaDocsTask for file_id {df.id}")
 
         return web.json_response(
             files_schemas.FileUploadResponseSchema().dump({"file_id": df.id, "title": df.filename}),

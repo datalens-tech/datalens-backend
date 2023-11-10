@@ -33,6 +33,8 @@ class DownloadYaDocsTask(BaseTaskMeta):
     name = TaskName("download_yadocs")
 
     file_id: str = attr.ib()
+    authorized: bool = attr.ib()
+    connection_id: Optional[str] = attr.ib(default=None)
 
 
 @attr.s
