@@ -46,7 +46,7 @@ class NoToken(Exception):
     pass
 
 
-def _get_yadocs_oauth_token(
+async def _get_yadocs_oauth_token(
     dfile_token: Optional[str],
     conn_id: Optional[str],
     usm: AsyncUSManager,
@@ -81,10 +81,11 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
 
             assert isinstance(dfile.user_source_properties, YaDocsUserSourceProperties)
 
+            oauth_token: Optional[str] = None
             if self.meta.authorized:
                 try:
                     dfile_token = dfile.user_source_properties.oauth_token
-                    auth = await _get_yadocs_oauth_token(dfile_token, self.meta.connection_id, usm)
+                    oauth_token = await _get_yadocs_oauth_token(dfile_token, self.meta.connection_id, usm)
                 except NoToken:
                     LOGGER.error("Authorized call but no token found in either DataFile or connection, failing task")
                     return Fail()
@@ -100,17 +101,14 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
                             link=dfile.user_source_properties.public_link
                         )
 
-                    elif (
-                        dfile.user_source_properties.private_path is not None
-                        and dfile.user_source_properties.oauth_token is not None
-                    ):
+                    elif dfile.user_source_properties.private_path is not None and oauth_token is not None:
                         spreadsheet_ref = await yadocs_client.get_spreadsheet_private_ref(
                             path=dfile.user_source_properties.private_path,
-                            token=dfile.user_source_properties.oauth_token,
+                            token=oauth_token,
                         )
                         spreadsheet_meta = await yadocs_client.get_spreadsheet_private_meta(
                             path=dfile.user_source_properties.private_path,
-                            token=dfile.user_source_properties.oauth_token,
+                            token=oauth_token,
                         )
                     else:
                         raise exc.DLFileUploaderBaseError()

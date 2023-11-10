@@ -199,7 +199,13 @@ class DocumentsView(FileUploaderBaseView):
         await df.save()
 
         task_processor = self.dl_request.get_task_processor()
-        await task_processor.schedule(DownloadYaDocsTask(file_id=df.id))
+        await task_processor.schedule(
+            DownloadYaDocsTask(
+                file_id=df.id,
+                authorized=authorized,
+                connection_id=connection_id,
+            )
+        )
         LOGGER.info(f"Scheduled DownloadYaDocsTask for file_id {df.id}")
 
         return web.json_response(

@@ -49,6 +49,7 @@ class FileDocumentsRequestSchema(BaseRequestSchema):
     private_path = ma.fields.String(load_default=None, allow_none=True)
     oauth_token = ma.fields.String(load_default=None, allow_none=True)
     public_link = ma.fields.String(load_default=None, allow_none=True)
+    authorized = ma.fields.Boolean(required=True)
 
     @ma.validates_schema(skip_on_field_errors=True)
     def validate_object(self, data: dict, **kwargs: Any) -> None:

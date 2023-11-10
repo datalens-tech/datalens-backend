@@ -81,6 +81,7 @@ class ReqBuilder:
         public_link: Optional[str] = None,
         private_path: Optional[str] = None,
         oauth_token: Optional[str] = None,
+        authorized: bool = False,
         *,
         require_ok: bool = True,
     ) -> Req:
@@ -91,6 +92,7 @@ class ReqBuilder:
                 "public_link": public_link,
                 "private_path": private_path,
                 "oauth_token": oauth_token,
+                "authorized": authorized,
             },
             require_ok=require_ok,
         )
