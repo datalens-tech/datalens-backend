@@ -3,6 +3,10 @@ from dl_connector_bundle_chs3.chs3_base.core.connector import (
     BaseFileS3CoreConnector,
     BaseFileS3TableCoreSourceDefinition,
 )
+from dl_connector_bundle_chs3.chs3_base.core.notifications import (
+    DataUpdateFailureNotification,
+    StaleDataNotification,
+)
 from dl_connector_bundle_chs3.chs3_yadocs.core.adapter import AsyncYaDocsFileS3Adapter
 from dl_connector_bundle_chs3.chs3_yadocs.core.connection_executors import YaDocsFileS3AsyncAdapterConnExecutor
 from dl_connector_bundle_chs3.chs3_yadocs.core.constants import (
@@ -12,10 +16,6 @@ from dl_connector_bundle_chs3.chs3_yadocs.core.constants import (
 from dl_connector_bundle_chs3.chs3_yadocs.core.data_source import YaDocsFileS3DataSource
 from dl_connector_bundle_chs3.chs3_yadocs.core.data_source_spec import YaDocsFileS3DataSourceSpec
 from dl_connector_bundle_chs3.chs3_yadocs.core.lifecycle import YaDocsFileS3ConnectionLifecycleManager
-from dl_connector_bundle_chs3.chs3_yadocs.core.notifications import (
-    DataUpdateFailureNotification,
-    StaleDataNotification,
-)
 from dl_connector_bundle_chs3.chs3_yadocs.core.settings import YaDocsFileS3SettingDefinition
 from dl_connector_bundle_chs3.chs3_yadocs.core.storage_schemas.connection import YaDocsFileConnectionDataStorageSchema
 from dl_connector_bundle_chs3.chs3_yadocs.core.storage_schemas.data_source_spec import (
