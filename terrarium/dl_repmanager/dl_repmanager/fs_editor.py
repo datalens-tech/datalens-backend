@@ -17,6 +17,7 @@ from typing import (
 )
 
 import attr
+from git import Repo as GitRepo
 
 
 @attr.s(frozen=True)
@@ -234,7 +235,23 @@ class DefaultFilesystemEditor(FilesystemEditor):
 class GitFilesystemEditor(DefaultFilesystemEditor):
     """An FS editor that buses git to move files and directories"""
 
+    def _validate_paths_in_same_repo(self, *paths: Path) -> None:
+        root_paths = {GitRepo(path, search_parent_directories=True).working_tree_dir for path in paths}
+        if len(root_paths):
+            raise RuntimeError(
+                "Cross-repository operations are not supported for GitFilesystemEditor. Use `--fs-editor default`"
+            )
+
+    def _find_existing_parent(self, path: Path) -> Path:
+        assert path.is_absolute()
+        while not path.exists():
+            if path.parent == path:
+                break
+            path = path.parent
+        return path
+
     def _move_path(self, old_path: Path, new_path: Path) -> None:
+        self._validate_paths_in_same_repo(old_path, self._find_existing_parent(new_path))
         cwd = Path.cwd()
         rel_old_path = Path(os.path.relpath(old_path, cwd))
         rel_new_path = Path(os.path.relpath(new_path, cwd))
