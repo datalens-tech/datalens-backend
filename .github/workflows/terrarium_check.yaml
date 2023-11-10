@@ -1,0 +1,73 @@
+name: terrarium_check
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+
+jobs:
+  pytest:
+    runs-on: [ self-hosted, linux ]
+    container:
+      image: "python:3.11.0"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        value:
+          - bi_ci
+          - dl_repmanager
+    name: "🐊[pytest] ${{ matrix.value }}"
+    steps:
+      - name: 'Cleanup build folder'
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
+      - name: Setup common tools
+        run: pip install --no-input poetry pytest
+      - name: Install dependencies
+        run: | 
+          cd "terrarium/${{ matrix.value }}"
+          pip install --no-input .
+      - name: Pytest
+        run: | 
+          cd "terrarium/${{ matrix.value }}"
+          pytest .
+
+  mypu:
+    runs-on: [ self-hosted, linux ]
+    container:
+      image: "python:3.11.0"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        value:
+          - bi_ci
+          - dl_repmanager
+    name: "🐊[mypy] ${{ matrix.value }}"
+    steps:
+      - name: 'Cleanup build folder'
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
+      - name: Setup common tools
+        run: pip install --no-input poetry mypy
+      - name: Install dependencies
+        run: | 
+          cd "terrarium/${{ matrix.value }}"
+          pip install --no-input .
+      - name: Mypy
+        run: | 
+          cd "terrarium/${{ matrix.value }}"
+          mypy .
