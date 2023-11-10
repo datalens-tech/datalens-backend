@@ -43,6 +43,7 @@ from dl_file_uploader_worker_lib.utils.converter_parsing_utils import (
 )
 
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from dl_connector_bundle_chs3.chs3_yadocs.core.constants import CONNECTION_TYPE_YADOCS
 from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
@@ -160,10 +161,17 @@ class GSheetsFieldIdGenerator(FileUploaderFieldIdGenerator):
         return idx_to_alphabet_notation(field["index"])  # type: ignore  # TODO: FIX
 
 
+@attr.s
+class YaDocsFieldIdGenerator(FileUploaderFieldIdGenerator):
+    def _make_id(self, field: converter_parsing_utils.TResultColumn) -> str:
+        return idx_to_alphabet_notation(field["index"])  # type: ignore  # TODO: FIX
+
+
 def get_field_id_generator(conn_type: ConnectionType) -> FileUploaderFieldIdGenerator:
     field_id_gen_cls_map: dict[ConnectionType, Type[FileUploaderFieldIdGenerator]] = {
         CONNECTION_TYPE_FILE: FileFieldIdGenerator,
         CONNECTION_TYPE_GSHEETS_V2: GSheetsFieldIdGenerator,
+        CONNECTION_TYPE_YADOCS: YaDocsFieldIdGenerator,
     }
 
     if conn_type not in field_id_gen_cls_map:

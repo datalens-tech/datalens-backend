@@ -24,16 +24,16 @@ from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_testing.regulated_test import RegulatedTestParams
 
 from dl_connector_bundle_chs3.chs3_base.core.constants import NOTIF_TYPE_STALE_DATA
-from dl_connector_bundle_chs3.chs3_gsheets.core.lifecycle import GSheetsFileS3ConnectionLifecycleManager
-from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
+from dl_connector_bundle_chs3.chs3_yadocs.core.lifecycle import YaDocsFileS3ConnectionLifecycleManager
+from dl_connector_bundle_chs3.chs3_yadocs.core.us_connection import YaDocsFileS3Connection
 from dl_connector_bundle_chs3_tests.db.base.api.data import CHS3DataResultTestSuite
-from dl_connector_bundle_chs3_tests.db.gsheets_v2.api.base import GSheetsFileS3DataApiTestBase
+from dl_connector_bundle_chs3_tests.db.yadocs.api.base import YaDocsFileS3DataApiTestBase
 
 
-class TestGSheetsFileS3DataResult(GSheetsFileS3DataApiTestBase, CHS3DataResultTestSuite):
+class TestYaDocsFileS3DataResult(YaDocsFileS3DataApiTestBase, CHS3DataResultTestSuite):
     test_params = RegulatedTestParams(
         mark_features_skipped={
-            DefaultConnectorDataResultTestSuite.array_support: "GSheets V2 connector doesn't support arrays",
+            DefaultConnectorDataResultTestSuite.array_support: "YaDocs connector doesn't support arrays",
         },
     )
 
@@ -50,7 +50,7 @@ class TestGSheetsFileS3DataResult(GSheetsFileS3DataApiTestBase, CHS3DataResultTe
         ds = saved_dataset
 
         # prepare connection sources: set updated time to the current moment
-        conn = sync_us_manager.get_by_id(saved_connection_id, GSheetsFileS3Connection)
+        conn = sync_us_manager.get_by_id(saved_connection_id, YaDocsFileS3Connection)
         dt_now = datetime.datetime.now(datetime.timezone.utc)
         data_updated_at_orig = dt_now
         for src in conn.data.sources:
@@ -68,12 +68,12 @@ class TestGSheetsFileS3DataResult(GSheetsFileS3DataApiTestBase, CHS3DataResultTe
         assert all(
             notification["locator"] != NOTIF_TYPE_STALE_DATA.value for notification in notifications
         ), notifications
-        conn = sync_us_manager.get_by_id(saved_connection_id, GSheetsFileS3Connection)
+        conn = sync_us_manager.get_by_id(saved_connection_id, YaDocsFileS3Connection)
         assert conn.data.sources[0].data_updated_at == data_updated_at_orig
 
         # trigger data update by setting the data update time in the connection to N minutes ago
         data_updated_at = conn.data.oldest_data_update_time() - datetime.timedelta(
-            seconds=GSheetsFileS3ConnectionLifecycleManager.STALE_THRESHOLD_SECONDS + 60,  # just in case
+            seconds=YaDocsFileS3ConnectionLifecycleManager.STALE_THRESHOLD_SECONDS + 60,  # just in case
         )
         for src in conn.data.sources:
             src.data_updated_at = data_updated_at
@@ -84,7 +84,7 @@ class TestGSheetsFileS3DataResult(GSheetsFileS3DataApiTestBase, CHS3DataResultTe
         assert any(
             notification["locator"] == NOTIF_TYPE_STALE_DATA.value for notification in notifications
         ), notifications
-        conn = sync_us_manager.get_by_id(saved_connection_id, GSheetsFileS3Connection)
+        conn = sync_us_manager.get_by_id(saved_connection_id, YaDocsFileS3Connection)
         assert conn.data.sources[0].data_updated_at != data_updated_at
 
     def test_component_error(
@@ -96,7 +96,7 @@ class TestGSheetsFileS3DataResult(GSheetsFileS3DataApiTestBase, CHS3DataResultTe
         data_api: SyncHttpDataApiV2,
         data_api_test_params: DataApiTestParams,
     ) -> None:
-        conn = sync_us_manager.get_by_id(saved_connection_id, GSheetsFileS3Connection)
+        conn = sync_us_manager.get_by_id(saved_connection_id, YaDocsFileS3Connection)
         err_details = {"error": "details", "request-id": "637"}
         conn.data.component_errors.add_error(
             id=conn.data.sources[0].id,
@@ -142,10 +142,10 @@ class TestGSheetsFileS3DataResult(GSheetsFileS3DataApiTestBase, CHS3DataResultTe
         data_api_test_params: DataApiTestParams,
         mock_file_uploader_api,
     ) -> None:
-        conn = sync_us_manager.get_by_id(saved_connection_id, GSheetsFileS3Connection)
+        conn = sync_us_manager.get_by_id(saved_connection_id, YaDocsFileS3Connection)
 
         long_long_ago = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
-            seconds=GSheetsFileS3ConnectionLifecycleManager.STALE_THRESHOLD_SECONDS + 60,  # just in case
+            seconds=YaDocsFileS3ConnectionLifecycleManager.STALE_THRESHOLD_SECONDS + 60,  # just in case
         )
         err_details = {"error": "details", "request-id": "637"}
         conn.data.component_errors.add_error(
@@ -170,19 +170,19 @@ class TestGSheetsFileS3DataResult(GSheetsFileS3DataApiTestBase, CHS3DataResultTe
         assert result_resp.status_code == HTTPStatus.OK, result_resp.json
         assert len(result_resp.json["notifications"]) == 2
         assert "Reason: FILE.CUSTOM_FILE_ERROR, Request-ID: 637" in result_resp.json["notifications"][0]["message"]
-        conn = sync_us_manager.get_by_id(saved_connection_id, GSheetsFileS3Connection)
+        conn = sync_us_manager.get_by_id(saved_connection_id, YaDocsFileS3Connection)
         assert conn.data.sources[0].data_updated_at > long_long_ago  # data update was triggered
 
 
-class TestGSheetsFileS3DataGroupBy(GSheetsFileS3DataApiTestBase, DefaultConnectorDataGroupByFormulaTestSuite):
+class TestYaDocsFileS3DataGroupBy(YaDocsFileS3DataApiTestBase, DefaultConnectorDataGroupByFormulaTestSuite):
     pass
 
 
-class TestGSheetsFileS3DataRange(GSheetsFileS3DataApiTestBase, DefaultConnectorDataRangeTestSuite):
+class TestYaDocsFileS3DataRange(YaDocsFileS3DataApiTestBase, DefaultConnectorDataRangeTestSuite):
     pass
 
 
-class TestGSheetsFileDataDistinct(GSheetsFileS3DataApiTestBase, DefaultConnectorDataDistinctTestSuite):
+class YaDocsSheetsFileDataDistinct(YaDocsFileS3DataApiTestBase, DefaultConnectorDataDistinctTestSuite):
     test_params = RegulatedTestParams(
         mark_tests_failed={
             DefaultConnectorDataDistinctTestSuite.test_date_filter_distinct: "FIXME",
@@ -190,5 +190,5 @@ class TestGSheetsFileDataDistinct(GSheetsFileS3DataApiTestBase, DefaultConnector
     )
 
 
-class TestGSheetsFileS3DataPreview(GSheetsFileS3DataApiTestBase, DefaultConnectorDataPreviewTestSuite):
+class TestYaDocsFileS3DataPreview(YaDocsFileS3DataApiTestBase, DefaultConnectorDataPreviewTestSuite):
     pass

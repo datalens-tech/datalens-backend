@@ -11,22 +11,22 @@ from dl_core.utils import (
 
 from dl_connector_bundle_chs3.chs3_base.core.constants import NOTIF_TYPE_STALE_DATA
 from dl_connector_bundle_chs3.chs3_base.core.lifecycle import BaseFileS3ConnectionLifecycleManager
-from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
+from dl_connector_bundle_chs3.chs3_yadocs.core.us_connection import YaDocsFileS3Connection
 
 
-class GSheetsFileS3ConnectionLifecycleManager(
+class YaDocsFileS3ConnectionLifecycleManager(
     BaseFileS3ConnectionLifecycleManager,
-    ConnectionLifecycleManager[GSheetsFileS3Connection],
+    ConnectionLifecycleManager[YaDocsFileS3Connection],
 ):
-    ENTRY_CLS = GSheetsFileS3Connection
+    ENTRY_CLS = YaDocsFileS3Connection
 
     STALE_THRESHOLD_SECONDS: ClassVar[int] = 30 * 60
 
     async def post_exec_async_hook(self) -> None:
         await super().post_exec_async_hook()
 
-        assert isinstance(self.entry, GSheetsFileS3Connection)
-        assert isinstance(self.entry.data, GSheetsFileS3Connection.DataModel)
+        assert isinstance(self.entry, YaDocsFileS3Connection)
+        assert isinstance(self.entry.data, YaDocsFileS3Connection.DataModel)
         data = self.entry.data
 
         if not data.refresh_enabled:

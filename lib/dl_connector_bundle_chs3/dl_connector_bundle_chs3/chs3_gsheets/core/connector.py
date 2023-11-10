@@ -3,6 +3,10 @@ from dl_connector_bundle_chs3.chs3_base.core.connector import (
     BaseFileS3CoreConnector,
     BaseFileS3TableCoreSourceDefinition,
 )
+from dl_connector_bundle_chs3.chs3_base.core.notifications import (
+    DataUpdateFailureNotification,
+    StaleDataNotification,
+)
 from dl_connector_bundle_chs3.chs3_gsheets.core.adapter import AsyncGSheetsFileS3Adapter
 from dl_connector_bundle_chs3.chs3_gsheets.core.connection_executors import GSheetsFileS3AsyncAdapterConnExecutor
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import (
@@ -12,10 +16,6 @@ from dl_connector_bundle_chs3.chs3_gsheets.core.constants import (
 from dl_connector_bundle_chs3.chs3_gsheets.core.data_source import GSheetsFileS3DataSource
 from dl_connector_bundle_chs3.chs3_gsheets.core.data_source_spec import GSheetsFileS3DataSourceSpec
 from dl_connector_bundle_chs3.chs3_gsheets.core.lifecycle import GSheetsFileS3ConnectionLifecycleManager
-from dl_connector_bundle_chs3.chs3_gsheets.core.notifications import (
-    DataUpdateFailureNotification,
-    StaleDataNotification,
-)
 from dl_connector_bundle_chs3.chs3_gsheets.core.settings import GSheetsFileS3SettingDefinition
 from dl_connector_bundle_chs3.chs3_gsheets.core.storage_schemas.connection import GSheetsFileConnectionDataStorageSchema
 from dl_connector_bundle_chs3.chs3_gsheets.core.storage_schemas.data_source_spec import (

@@ -4,13 +4,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: datalens-opensource@yandex-team.ru\n"
-"POT-Creation-Date: 2023-09-22 08:14+0000\n"
+"POT-Creation-Date: 2023-11-09 14:12+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "label_connector-gsheets_v2"
 msgstr "Google Sheets"
+
+msgid "label_connector-yadocs"
+msgstr "Яндекс Документы"
 
 msgid "label_connector-file"
 msgstr "Файлы"
