@@ -7,26 +7,7 @@ requires = [
 [datalens.meta.mypy]
 targets = ["bi_ci"]
 
-[datalens.pytest.ext_private]
-# just a placeholder to run at least one pytest
-root_dir = "bi_ci_tests/"
-target_path = "dummy_ext"
-labels = ["ext_private"]
-
-[datalens.pytest.ext_public]
-# just a placeholder to run at least one pytest
-root_dir = "bi_ci_tests/"
-target_path = "dummy_ext"
-labels = ["ext_public"]
-
-[datalens.pytest.fat]
-# just a placeholder to run at least one pytest
-root_dir = "bi_ci_tests/"
-target_path = "dummy_fat"
-labels = ["fat"]
-
 [datalens.pytest.unit]
-# just a placeholder to run at least one pytest
 root_dir = "bi_ci_tests/"
 target_path = "unit"
 
@@ -47,6 +28,7 @@ python = ">=3.10, <3.12"
 tomlkit = ">=0.11.8"
 clize = ">=5.0.0"
 poetry = ">=1.5.0"
+pyyaml = ">=6.0.1"
 
 [tool.poetry.scripts]
 detect-affected-packages = "bi_ci.detect_affected_packages:main"
@@ -60,7 +42,7 @@ execute-mypy-multi = "bi_ci.execute_mypy_multi:cmd"
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra"
-testpaths = ["bi_ci_tests"]
+testpaths = ["bi_ci_tests/unit"]
 
 [tool.mypy]
 warn_unused_configs = true
