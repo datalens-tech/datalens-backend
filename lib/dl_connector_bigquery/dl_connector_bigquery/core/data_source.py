@@ -28,7 +28,6 @@ from dl_connector_bigquery.core.data_source_spec import (
     BigQuerySubselectDataSourceSpec,
     BigQueryTableDataSourceSpec,
 )
-from dl_connector_bigquery.core.query_compiler import BigQueryQueryCompiler
 from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
 
 
@@ -44,8 +43,6 @@ class BigQueryTableDataSource(BigQueryDataSourceMixin, TableSQLDataSourceMixin, 
     """
     BigQuery table
     """
-
-    compiler_cls = BigQueryQueryCompiler
 
     @property
     def spec(self) -> BigQueryTableDataSourceSpec:
@@ -88,8 +85,6 @@ class BigQuerySubselectDataSource(BigQueryDataSourceMixin, SubselectDataSource):
     """
     BigQuery subselect
     """
-
-    compiler_cls = BigQueryQueryCompiler
 
     @property
     def spec(self) -> BigQuerySubselectDataSourceSpec:

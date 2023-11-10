@@ -20,15 +20,12 @@ from dl_connector_oracle.core.constants import (
     SOURCE_TYPE_ORACLE_SUBSELECT,
     SOURCE_TYPE_ORACLE_TABLE,
 )
-from dl_connector_oracle.core.query_compiler import OracleQueryCompiler
 
 
 LOGGER = logging.getLogger(__name__)
 
 
 class OracleDataSourceMixin(BaseSQLDataSource):
-    compiler_cls = OracleQueryCompiler
-
     conn_type = CONNECTION_TYPE_ORACLE
 
     @classmethod

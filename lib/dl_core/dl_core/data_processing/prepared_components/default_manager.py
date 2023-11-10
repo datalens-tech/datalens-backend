@@ -11,11 +11,13 @@ import sqlalchemy as sa
 from sqlalchemy.sql.selectable import FromClause
 
 from dl_constants.enums import DataSourceRole
+from dl_core.backend_types import get_backend_type
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.ids import AvatarId
 from dl_core.constants import DataAPILimits
 from dl_core.data_processing.prepared_components.manager_base import PreparedComponentManagerBase
 from dl_core.data_processing.prepared_components.primitives import PreparedSingleFromInfo
+from dl_core.data_processing.query_compiler_registry import get_sa_query_compiler_cls
 from dl_core.data_source.collection import DataSourceCollectionFactory
 import dl_core.data_source.sql
 import dl_core.exc as exc
@@ -80,7 +82,12 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
         columns = get_columns()
         col_names = [col.name for col in columns]
         from_subquery = from_subquery and dsrc.supports_preview_from_subquery
-        query_compiler = dsrc.get_query_compiler()
+        connection = dsrc.connection
+        conn_type = connection.conn_type
+        backend_type = get_backend_type(conn_type=conn_type)
+        sa_dialect = connection.get_dialect()
+        query_compiler_cls = get_sa_query_compiler_cls(backend_type=backend_type)
+        query_compiler = query_compiler_cls(dialect=sa_dialect)
 
         sql_source: FromClause
         if from_subquery:

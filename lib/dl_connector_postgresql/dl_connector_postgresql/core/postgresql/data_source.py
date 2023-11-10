@@ -20,11 +20,9 @@ from dl_connector_postgresql.core.postgresql.constants import (
     SOURCE_TYPE_PG_SUBSELECT,
     SOURCE_TYPE_PG_TABLE,
 )
-from dl_connector_postgresql.core.postgresql_base.query_compiler import PostgreSQLQueryCompiler
 
 
 class PostgreSQLDataSourceMixin(BaseSQLDataSource):
-    compiler_cls = PostgreSQLQueryCompiler
     supported_join_types: ClassVar[FrozenSet[JoinType]] = frozenset(
         {
             JoinType.inner,

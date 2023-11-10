@@ -21,7 +21,6 @@ from dl_connector_mysql.core.constants import (
     SOURCE_TYPE_MYSQL_SUBSELECT,
     SOURCE_TYPE_MYSQL_TABLE,
 )
-from dl_connector_mysql.core.query_compiler import MySQLQueryCompiler
 
 
 LOGGER = logging.getLogger(__name__)
@@ -37,7 +36,6 @@ class MySQLDataSourceMixin(BaseSQLDataSource):
     )
 
     conn_type = CONNECTION_TYPE_MYSQL
-    compiler_cls = MySQLQueryCompiler
 
     @classmethod
     def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:

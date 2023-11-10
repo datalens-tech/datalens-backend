@@ -147,11 +147,6 @@ class BaseSQLDataSource(DataSource):
         schema_info = conn_executor.get_table_schema_info(table_def)
         return self._postprocess_raw_schema_from_db(schema_info)
 
-    def get_query_compiler(self) -> QueryCompiler:
-        return self.compiler_cls(
-            dialect=self.get_dialect(),
-        )
-
     def _get_db_version(self, conn_executor_factory: Callable[[], SyncConnExecutorBase]) -> Optional[str]:
         conn_executor = conn_executor_factory()
         return conn_executor.get_db_version(
