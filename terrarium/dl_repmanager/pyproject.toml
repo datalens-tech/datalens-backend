@@ -17,8 +17,12 @@ tomlkit = "==0.11.8"
 requests = ">=2.31.0"
 datalens-cli-tools = {path = "../dl_cli_tools"}
 
-[tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
+[tool.poetry.group.pytest.dependencies]
+pytest = ">=7.4.3"
+
+[tool.poetry.group.mypy.dependencies]
+types_PyYAML = "*"
+mypy = ">= 1.7.0"
 
 [build-system]
 requires = ["poetry-core"]

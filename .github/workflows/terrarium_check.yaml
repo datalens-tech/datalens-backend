@@ -29,19 +29,18 @@ jobs:
           rm -rf ./.??* || true
       - name: Checkout code
         uses: actions/checkout@v4
-      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
       - name: Setup common tools
-        run: pip install --no-input poetry pytest
+        run: pip install --no-input poetry
       - name: Install dependencies
         run: | 
           cd "terrarium/${{ matrix.value }}"
-          pip install --no-input .
+          poetry -v install --with pytest --without mypy
       - name: Pytest
         run: | 
           cd "terrarium/${{ matrix.value }}"
-          pytest .
+          poetry run pytest .
 
-  mypu:
+  mypy:
     runs-on: [ self-hosted, linux ]
     container:
       image: "python:3.11.0"
@@ -60,14 +59,13 @@ jobs:
           rm -rf ./.??* || true
       - name: Checkout code
         uses: actions/checkout@v4
-      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
       - name: Setup common tools
-        run: pip install --no-input poetry mypy
+        run: pip install --no-input poetry
       - name: Install dependencies
         run: | 
           cd "terrarium/${{ matrix.value }}"
-          pip install --no-input .
+          poetry -v install --with mypy --without pytest
       - name: Mypy
         run: | 
           cd "terrarium/${{ matrix.value }}"
-          mypy .
+          poetry run mypy .

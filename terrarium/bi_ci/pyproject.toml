@@ -30,8 +30,12 @@ clize = ">=5.0.0"
 poetry = ">=1.5.0"
 pyyaml = ">=6.0.1"
 
+[tool.poetry.group.pytest.dependencies]
+pytest = ">=7.4.3"
+
 [tool.poetry.group.mypy.dependencies]
 types_PyYAML = "*"
+mypy = ">= 1.7.0"
 
 [tool.poetry.scripts]
 detect-affected-packages = "bi_ci.detect_affected_packages:main"
