@@ -49,7 +49,7 @@ def gen_pkg_dirs(cfg: Config) -> Iterator[Path]:
                 yield item
 
 
-def get_reverse_dependencies(direct_dependency: dict[str, list[str]]):
+def get_reverse_dependencies(direct_dependency: dict[str, list[str]]) -> dict[str, list[str]]:
     reverse_ref = defaultdict(list)
     for pkg in direct_dependency:
         for dep in direct_dependency[pkg]:
@@ -57,11 +57,10 @@ def get_reverse_dependencies(direct_dependency: dict[str, list[str]]):
     return reverse_ref
 
 
-def get_leafs(dependencies):
+def get_leafs(dependencies: dict[str, list[str]]) -> set[str]:
     all_values = []
     for deps in dependencies.values():
         all_values.extend(deps)
-    all_values = set(all_values)
     leafs = set(all_values) - set([k for k in dependencies.keys() if len(dependencies[k]) > 0])
     return leafs
 
@@ -133,8 +132,9 @@ def process(
         to_test = set()
 
         for pkg in direct_affected:
-            to_test.add(pkg.self_pkg_name)
-            to_test.update(affection_map.get(pkg.self_pkg_name, {}))
+            if pkg.self_pkg_name:
+                to_test.add(pkg.self_pkg_name)
+                to_test.update(affection_map.get(pkg.self_pkg_name, {}))
 
     return [pkg_by_ref[k] for k in to_test]
 

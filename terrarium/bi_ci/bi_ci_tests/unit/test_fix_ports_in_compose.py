@@ -4,7 +4,11 @@ from shutil import copyfile
 from bi_ci.fix_ports_in_compose import remove_ports_from_docker_compose
 
 
-def test_remove_ports_from_docker_compose(tmpdir, sample_compose_src, sample_compose_expected):
+def test_remove_ports_from_docker_compose(
+    tmpdir: Path,
+    sample_compose_src: str,
+    sample_compose_expected: Path,
+):
     tmp_src = Path(tmpdir) / "docker-compose.yml"
     tmp_dst = Path(tmpdir) / "docker-compose-modified.yml"
 

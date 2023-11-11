@@ -17,7 +17,7 @@ def get_mypy_targets(pkg_dir: Path) -> list[str]:
     try:
         with open(pkg_dir / PYPROJECT_TOML) as fh:
             meta = tomlkit.load(fh)
-            return meta["datalens"]["meta"]["mypy"]["targets"]
+            return meta["datalens"]["meta"]["mypy"]["targets"]  # type: ignore
     except NonExistentKey:
         pass
 
@@ -33,10 +33,11 @@ def get_targets(root: Path) -> Iterable[str]:
 
 def main(root: Path, targets_file: Path = None) -> None:  # type: ignore
     # clize can't recognize type annotation "Optional"
+    paths: Iterable[str]
     if targets_file is not None:
-        paths: Iterable[str] = json.load(open(targets_file))
+        paths = json.load(open(targets_file))
     else:
-        paths: Iterable[str] = get_targets(root)
+        paths = get_targets(root)
     failed_list: list[str] = []
     mypy_cache_dir = Path("/tmp/mypy_cache")
     mypy_cache_dir.mkdir(exist_ok=True)
