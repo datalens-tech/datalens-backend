@@ -1,5 +1,6 @@
 from dl_formula.core.datatype import DataType
 from dl_formula_ref.categories.string import CATEGORY_STRING
+from dl_formula_ref.i18n.registry import FormulaRefTranslatable as Translatable
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.example import SimpleExample
@@ -258,7 +259,7 @@ FUNCTION_SUBSTR = FunctionDocRegistryItem(
 )
 
 _REGEXP_NOTES = [
-    Note(_("See the documentation of the data source to clarify the regular expression syntax.")),
+    Note(Translatable("See the documentation of the data source to clarify the regular expression syntax.")),
 ]
 
 FUNCTION_REGEXP_EXTRACT = FunctionDocRegistryItem(
@@ -343,6 +344,7 @@ FUNCTION_SPACE = FunctionDocRegistryItem(
 FUNCTION_SPLIT = FunctionDocRegistryItem(
     name="split",
     category=CATEGORY_STRING,
+    # FIXME: Connectorize dialect mentions (https://github.com/datalens-tech/datalens-backend/issues/81)
     description=_(
         "Returns a substring from {arg:0} using the {arg:1} delimiter character to "
         "divide the string into a sequence of {arg:2} parts. Delimiter is a comma by "

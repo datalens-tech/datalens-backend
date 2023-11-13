@@ -26,3 +26,9 @@ msgstr ""
 
 msgid "Alias for `character varying`"
 msgstr ""
+
+msgid ""
+"{dialects: POSTGRESQL} doesn't allow filtering fields containing the UNNEST "
+"function. If the data source is {dialects: POSTGRESQL}, do not use such "
+"fields in selectors."
+msgstr ""

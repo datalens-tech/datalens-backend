@@ -1,11 +1,10 @@
 import pytest
 
-from dl_constants.enums import RawSQLLevel
-
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
 from dl_api_lib_testing.dataset_base import DatasetTestBase
+from dl_constants.enums import RawSQLLevel
 
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE

@@ -1,4 +1,5 @@
 from dl_formula_ref.categories.operator import CATEGORY_OPERATOR
+from dl_formula_ref.i18n.registry import FormulaRefTranslatable as Translatable
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.aliased_res import (
     AliasedTableResource,
@@ -248,12 +249,6 @@ FUNCTION_OP_PLUS = FunctionDocRegistryItem(
             "#2019-01-06 03# + 2.5 = #2019-01-08 15:00:00#",
         )
     ],
-    notes=[
-        Note(
-            level=NoteLevel.warning,
-            text=_("{dialects: METRIKAAPI} does not support string concatenation."),
-        )
-    ],
 )
 
 FUNCTION_OP_MINUS = FunctionDocRegistryItem(
@@ -366,14 +361,6 @@ FUNCTION_OP_COMPARISON = FunctionDocRegistryItem(
         internal_name="op_comparison",
     ),
     description=_("Compares the value {arg:0} with the value {arg:1}."),
-    notes=[
-        Note(
-            _(
-                "Due to implementation details of the {type:FLOAT} type in {dialects:CLICKHOUSE} sources "
-                "it is recommended to use the {ref:COMPARE} function instead of comparison operators for this type."
-            ),
-        )
-    ],
     signature_gen=TemplatedSignatureGenerator(
         signature_templates=(
             SignatureTemplate(title=_("Equality"), body="{1} = {2}"),

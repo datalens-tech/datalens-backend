@@ -6,6 +6,7 @@ from dl_formula_ref.examples.config import (
     ExampleConfig,
     ExampleSource,
 )
+from dl_formula_ref.i18n.registry import FormulaRefTranslatable as Translatable
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.aliased_res import (
     AliasedTableResource,
@@ -387,7 +388,7 @@ def _make_simple_order_by_examples(func: str) -> List[DataExample]:
 _ORDERED_WFUNC_NOTES = [
     Note(
         level=NoteLevel.warning,
-        text=_(
+        text=Translatable(
             "The sorting order is based on the fields listed in the sorting section of "
             "the chart and in the `ORDER BY` clause. First, `ORDER BY` fields are used, "
             "and then they are complemented by the fields from the chart."

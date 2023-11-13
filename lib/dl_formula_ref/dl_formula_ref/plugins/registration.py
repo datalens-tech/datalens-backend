@@ -1,6 +1,7 @@
 from typing import Type
 
 from dl_formula_ref.config import register_config_version
+from dl_formula_ref.function_extension import register_function_extension
 from dl_formula_ref.functions.type_conversion import register_db_cast_extension
 from dl_formula_ref.i18n.registry import register_translation_configs
 from dl_formula_ref.plugins.base.plugin import FormulaRefPlugin
@@ -21,6 +22,9 @@ class FormulaRefPluginRegistrator:
         register_translation_configs(plugin_cls.translation_configs)
         register_compeng_support_dialects(plugin_cls.compeng_support_dialects)
         register_db_cast_extension(plugin_cls.db_cast_extension)
+
+        for func_ext in plugin_cls.function_extensions:
+            register_function_extension(func_ext)
 
 
 FORMULA_REF_PLUGIN_REG = FormulaRefPluginRegistrator()

@@ -4,6 +4,7 @@ from dl_formula_ref.examples.config import (
     ExampleConfig,
     ExampleSource,
 )
+from dl_formula_ref.i18n.registry import FormulaRefTranslatable as Translatable
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.example import (
@@ -114,7 +115,9 @@ FUNCTION_ARRAY = FunctionDocRegistryItem(
     category=CATEGORY_ARRAY,
     description=_("Returns an array containing the passed values."),
     notes=[
-        Note(_("All passed values must be of the same type or `NULL`. At least one value must be non-`NULL`.")),
+        Note(
+            Translatable("All passed values must be of the same type or `NULL`. At least one value must be non-`NULL`.")
+        ),
     ],
     examples=[
         SimpleExample("ARRAY(1, 2, NULL, 3)"),
@@ -127,15 +130,6 @@ FUNCTION_UNNEST = FunctionDocRegistryItem(
     name="unnest",
     category=CATEGORY_ARRAY,
     description=_("Expands the {arg:0} array expression to a set of rows."),
-    notes=[
-        Note(
-            _(
-                "{dialects: POSTGRESQL} doesn't allow filtering fields containing the UNNEST "
-                "function. If the data source is {dialects: POSTGRESQL}, do not use such "
-                "fields in selectors."
-            )
-        ),
-    ],
     examples=[
         DataExample(
             example_config=ExampleConfig(
@@ -404,7 +398,7 @@ FUNCTION_REPLACE = FunctionDocRegistryItem(
 )
 
 ARRAY_AGGREGATION_FUNCTIONS_NOTE = Note(
-    _(
+    Translatable(
         "This function cannot work with arrays with `Nullable` items. To remove `NULL` items from the array,"
         " use {ref:ARR_REMOVE} or {ref:array/REPLACE}."
     )

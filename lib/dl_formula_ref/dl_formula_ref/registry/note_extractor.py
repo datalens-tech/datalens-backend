@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from dl_formula_ref.function_extension import get_function_extension_notes
 from dl_formula_ref.registry.arg_common import TypeStrategyInspector
 from dl_formula_ref.registry.note import (
     NoteType,
@@ -24,14 +25,20 @@ class DefaultNoteExtractor(NoteExtractorBase):
         env: GenerationEnvironment,
     ) -> list[ParameterizedNote]:
         # explicitly defined notes
+        # - from function definition
+        # - from extensions
+        raw_notes = [
+            *item.get_explicit_notes(env=env),
+            *get_function_extension_notes(category=item.category_name, name=item.name, env=env),
+        ]
         notes = [
             ParameterizedNote(
-                param_text=ParameterizedText.from_str(text=note.text),
+                param_text=ParameterizedText(text=note.text),
                 level=note.level,
                 formatting=note.formatting,
                 type=NoteType.REGULAR,
             )
-            for note in item.get_explicit_notes(env=env)
+            for note in raw_notes
         ]
         args = item.get_args(env=env)
 

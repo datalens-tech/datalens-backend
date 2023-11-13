@@ -26,3 +26,12 @@ msgstr "Алиас для `character`"
 
 msgid "Alias for `character varying`"
 msgstr "Алиас для `character varying`"
+
+msgid ""
+"{dialects: POSTGRESQL} doesn't allow filtering fields containing the UNNEST "
+"function. If the data source is {dialects: POSTGRESQL}, do not use such "
+"fields in selectors."
+msgstr ""
+"{dialects: POSTGRESQL} запрещает фильтрацию по полям, содержащим функцию "
+"`UNNEST`. Не используйте такие поля для создания селектора, если источник "
+"данных — {dialects: POSTGRESQL}."
