@@ -30,6 +30,13 @@ clize = ">=5.0.0"
 poetry = ">=1.5.0"
 pyyaml = ">=6.0.1"
 
+[tool.poetry.group.pytest.dependencies]
+pytest = ">=7.4.3"
+
+[tool.poetry.group.mypy.dependencies]
+types_PyYAML = "*"
+mypy = ">= 1.7.0"
+
 [tool.poetry.scripts]
 detect-affected-packages = "bi_ci.detect_affected_packages:main"
 run-tests = "bi_ci.run_tests:runner_cli"
@@ -49,3 +56,9 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+exclude = [
+    "^bi_ci_tests/",  # TOML's double-quoted strings require escaping backslashes
+]
+[tool.black]
+line-length = 120
+target-version = ['py310']

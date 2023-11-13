@@ -51,7 +51,7 @@ def split_tests(
 
         if pytest_targets:
             for section in pytest_targets.keys():
-                spec = toml_data["datalens"]["pytest"][section]
+                spec = pytest_targets.get("section", {})
                 # supporting only a single label for now
                 for category in spec.get("labels", []):
                     split_result[category].append((package_path, section))
