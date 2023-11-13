@@ -5,5 +5,5 @@
 set -eu
 
 export LC_ALL=C
-IMG_HASH_DOCKER_IMAGE_DIR="$(find $ROOT_DIR/metapkg  -type f -print0   | sort -z | xargs -0 sha1sum -z | sha1sum  | cut -d \  -f1)"
+IMG_HASH_DOCKER_IMAGE_DIR="$(find $ROOT_DIR/metapkg $ROOT_DIR/docker_build -type f -print0   | sort -z | xargs -0 sha1sum -z | sha1sum  | cut -d \  -f1)"
 echo "rebuild_flag:8:$IMG_HASH_DOCKER_IMAGE_DIR" | sha1sum | cut -d \  -f1

@@ -6,7 +6,7 @@ description = "BI MSSQL SQLAlchemy Dialect"
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_sqlalchemy_mssql"}]
 license = "Apache 2.0"
-readme = "README.rst"
+readme = "README.md"
 
 
 [tool.poetry.dependencies]
