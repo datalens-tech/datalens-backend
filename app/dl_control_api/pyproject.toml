@@ -11,8 +11,6 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
 Flask = ">=2.2.5"
-blinker = ">=1.5"
-raven = ">=6.10.0"
 datalens-version = {path = "../../lib/dl_version"}
 datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
 datalens-utils = {path = "../../lib/dl_utils"}

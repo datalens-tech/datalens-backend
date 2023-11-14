@@ -18,8 +18,7 @@ marshmallow = ">=3.19.0"
 multidict = ">=4.0"
 opentracing = ">=2.4.0"
 python = ">=3.10, <3.12"
-raven = ">=6.10.0"
-sentry-sdk = ">=1.15.0"
+sentry-sdk = {extras = ["flask"], version = ">=1.15.0"}
 typing-extensions = ">=4.5.0"
 datalens-utils = {path = "../dl_utils"}
 datalens-constants = {path = "../dl_constants"}

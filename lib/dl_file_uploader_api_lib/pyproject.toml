@@ -19,7 +19,6 @@ marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 python = ">=3.10, <3.12"
 redis = ">=4.5.4"
-sentry-sdk = ">=1.15.0"
 datalens-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-file-uploader-lib = {path = "../dl_file_uploader_lib"}
