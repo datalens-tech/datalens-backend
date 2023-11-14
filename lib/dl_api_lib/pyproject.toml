@@ -19,7 +19,6 @@ marshmallow-oneofschema = ">=3.0.1"
 more-itertools = ">=9.1.0"
 pandas = ">=1.5.3"
 python = ">=3.10, <3.12"
-sentry-sdk = ">=1.15.0"
 werkzeug = ">=2.2.3"
 statcommons = {path = "../statcommons"}
 datalens-api-commons = {path = "../dl_api_commons"}
