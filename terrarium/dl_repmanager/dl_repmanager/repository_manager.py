@@ -111,7 +111,7 @@ class RepositoryManager:
 
     def _unregister_package(self, package_info: PackageInfo) -> None:
         for mng_plugin in self.repository_env.get_plugins(package_index=self.package_index):
-            mng_plugin.register_package(package_info=package_info)
+            mng_plugin.unregister_package(package_info=package_info)
 
     def _re_register_package(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:
         for mng_plugin in self.repository_env.get_plugins(package_index=self.package_index):

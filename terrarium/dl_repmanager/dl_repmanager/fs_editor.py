@@ -241,7 +241,7 @@ class GitFilesystemEditor(DefaultFilesystemEditor):
         subprocess.run(f'git add "{rel_old_path}" && git mv "{rel_old_path}" "{rel_new_path}"', shell=True)
 
     def _remove_path(self, path: Path) -> None:
-        result = subprocess.run(f'git rm "{path}"', shell=True)
+        result = subprocess.run(f'git rm -r "{path}"', shell=True)
         if result.returncode != 0:
             super()._remove_path(path)
 
