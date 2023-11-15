@@ -4,8 +4,8 @@ import uuid
 
 import pytest
 
-from dl_api_lib_testing.data_api_base import DataApiTestParams
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_lib_testing.data_api_base import DataApiTestParams
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 
 

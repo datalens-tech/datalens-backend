@@ -152,6 +152,7 @@ datalens-attrs-model-mapper-doc-tools = {path = "../lib/dl_attrs_model_mapper_do
 [tool.poetry.group.dev.dependencies]
 black = "==23.3.0"
 ruff = "==0.0.267"
+isort = "==5.12.0"
 ipdb = "==0.13.13"
 pyodbc = "==4.0.35"
 pytest = "==7.2.2"
