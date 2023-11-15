@@ -996,7 +996,7 @@ class TestBasicExtendedAggregations(DefaultApiTestBase, DefaultBasicExtAggregati
         dim_values = [row[0] for row in data_rows]
         assert len(dim_values) == len(set(dim_values)), "Dimension values are not unique"
 
-    @pytest.xfail("FIXME: datalens-tech/datalens-backend#98")  # FIXME
+    @pytest.xfail("FIXME: https://github.com/datalens-tech/datalens-backend/issues/98")  # FIXME
     def test_fixed_with_unknown_field(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(
             api_v1=control_api,
