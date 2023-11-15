@@ -120,6 +120,12 @@ def make_parser() -> argparse.ArgumentParser:
         help="New name of the package",
     )
 
+    subparsers.add_parser(
+        "rm",
+        parents=[package_name_parser],
+        help="Remove package",
+    )
+
     move_code_parser = subparsers.add_parser(
         "rename-module",
         parents=[old_new_import_names_parser],
@@ -268,6 +274,9 @@ class DlRepManagerTool(CliToolBase):
 
     def ch_package_type(self, package_name: str, package_type: str) -> None:
         self.repository_manager.change_package_type(package_module_name=package_name, new_package_type=package_type)
+
+    def rm(self, package_name: str) -> None:
+        self.repository_manager.remove_package(package_module_name=package_name)
 
     def package_list(self, package_type: str, mask: str, base_path: Path) -> None:
         for package_info in self.package_index.list_package_infos(package_type=package_type):
@@ -459,6 +468,8 @@ class DlRepManagerTool(CliToolBase):
                 tool.rename(package_name=args.package_name, new_package_name=args.new_package_name)
             case "ch-package-type":
                 tool.ch_package_type(package_name=args.package_name, package_type=args.package_type)
+            case "rm":
+                tool.rm(package_name=args.package_name)
             case "package-list":
                 tool.package_list(package_type=args.package_type, mask=args.mask, base_path=Path(args.base_path))
             case "rename-module":

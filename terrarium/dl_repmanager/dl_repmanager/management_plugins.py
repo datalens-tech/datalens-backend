@@ -193,7 +193,20 @@ class DependencyReregistrationRepositoryManagementPlugin(RepositoryManagementPlu
         pass
 
     def unregister_package(self, package_info: PackageInfo) -> None:
-        pass  # FIXME: Remove package from dependencies
+        package_meta_io_factory = PackageMetaIOFactory(fs_editor=self.fs_editor)
+
+        # Scan other packages to see if they are dependent on this one and update these dependency entries
+        for other_package_info in self.package_index.list_package_infos():
+            if other_package_info == package_info:
+                continue
+
+            for section_name in other_package_info.requirement_lists:
+                if other_package_info.is_dependent_on(package_info, section_name=section_name):
+                    with package_meta_io_factory.package_meta_writer(other_package_info.toml_path) as pkg_meta_writer:
+                        pkg_meta_writer.remove_requirement_item(
+                            section_name=section_name,
+                            item_name=package_info.package_reg_name,
+                        )
 
     def re_register_package(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:
         package_meta_io_factory = PackageMetaIOFactory(fs_editor=self.fs_editor)
