@@ -995,3 +995,22 @@ class TestBasicExtendedAggregations(DefaultApiTestBase, DefaultBasicExtAggregati
         data_rows = get_data_rows(result_resp)
         dim_values = [row[0] for row in data_rows]
         assert len(dim_values) == len(set(dim_values)), "Dimension values are not unique"
+
+    @pytest.xfail("FIXME: datalens-tech/datalens-backend#98")  # FIXME
+    def test_fixed_with_unknown_field(self, control_api, data_api, saved_dataset):
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            formulas={
+                "sales sum fx unknown": "SUM([sales] FIXED [unknown])",
+            },
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="sales sum fx unknown"),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
