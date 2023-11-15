@@ -1,0 +1,100 @@
+[tool.poetry]
+name = "datalens_backend_root_package"
+version = "0.1.0"
+description = "Aux pyproject.toml for the common project properties"
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+license = "Apache 2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core"
+]
+
+[tool.black]
+line-length = 120
+target-version = ['py310']
+force-exclude= '''
+/(
+  # The following are specific to Black, you probably don't want those.
+  lib/redis-cache-lock
+  | lib/clickhouse-sqlalchemy
+  | lib/dl_formula/dl_formula/parser/antlr/gen
+)/
+'''
+
+[tool.isort]
+line_length = 120
+profile = "black"
+skip_glob = [
+  "lib/redis-cache-lock/*",
+  "lib/clickhouse-sqlalchemy/*",
+  "lib/dl_formula/dl_formula/parser/antlr/gen/*",
+]
+multi_line_output = 3
+force_grid_wrap = 2
+lines_after_imports = 2
+include_trailing_comma = true
+force_sort_within_sections = true
+sections = [
+  "FUTURE",
+  "STDLIB",
+  "THIRDPARTY",
+  "FIRSTPARTY",
+  "CONNECTORS",
+  "LOCALFOLDER"
+]
+known_first_party = [
+  "bi_*",
+  "dl_*",
+  "dc_*"
+]
+known_connectors = [
+  "bi_connector_*",
+  "dl_connector_*"
+]
+
+[tool.ruff]
+line-length = 120
+force-exclude = true
+select = [
+  # Pyflakes
+  "F",
+  # Bugbear
+  "B"
+]
+ignore = [
+  "E501",  # line lengh, should be checked and fixed by black
+  "F401",  # unused imports
+]
+exclude = [
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".git-rewrite",
+  ".hg",
+  ".mypy_cache",
+  ".nox",
+  ".pants.d",
+  ".pytype",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "venv",
+  "tools_venv",
+  "lib/redis-cache-lock/**",
+  "lib/clickhouse-sqlalchemy/**",
+  "lib/dl_formula/dl_formula/parser/antlr/gen/**",
+]
