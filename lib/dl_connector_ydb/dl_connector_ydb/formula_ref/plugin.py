@@ -17,8 +17,6 @@ class YQLFormulaRefPlugin(FormulaRefPlugin):
     function_extensions = [
         FUNCTION_NOW.extend(
             dialect=YqlDialect.YDB,
-            notes=(
-                Note(Translatable("On {dialects:YQL}, the function always returns the UTC date and time.")),
-            ),
+            notes=(Note(Translatable("On {dialects:YQL}, the function always returns the UTC date and time.")),),
         ),
     ]
