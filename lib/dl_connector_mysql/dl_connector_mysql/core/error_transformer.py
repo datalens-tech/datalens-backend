@@ -36,6 +36,16 @@ def is_table_does_not_exist_sync_error() -> ExcMatchCondition:
     return _
 
 
+def is_source_connect_async_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        if isinstance(exc, pymysql.OperationalError):
+            if len(exc.args) >= 2 and exc.args[0] == 2003:
+                return True
+            return False
+
+    return _
+
+
 class AsyncMysqlChainedDbErrorTransformer(error_transformer.ChainedDbErrorTransformer):
     @staticmethod
     def _get_error_kw(
@@ -53,6 +63,10 @@ class AsyncMysqlChainedDbErrorTransformer(error_transformer.ChainedDbErrorTransf
 
 async_mysql_db_error_transformer: DbErrorTransformer = AsyncMysqlChainedDbErrorTransformer(
     (
+        Rule(
+            when=is_source_connect_async_error(),
+            then_raise=exc.SourceConnectError,
+        ),
         Rule(
             when=is_table_does_not_exist_async_error(),
             then_raise=MysqlSourceDoesNotExistError,
