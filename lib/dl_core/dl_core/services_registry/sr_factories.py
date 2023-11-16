@@ -37,7 +37,10 @@ from dl_core.services_registry.top_level import (
 )
 from dl_core.us_manager.mutation_cache.usentry_mutation_cache_factory import USEntryMutationCacheFactory
 from dl_core.utils import FutureRef
-from dl_task_processor.processor import ARQTaskProcessorFactory
+from dl_task_processor.processor import (
+    ARQTaskProcessorFactory,
+    TaskProcessorFactory,
+)
 
 
 if TYPE_CHECKING:
@@ -54,6 +57,7 @@ if TYPE_CHECKING:
     from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
     from dl_core.services_registry.typing import ConnectOptionsFactory
     from dl_core.us_connection_base import ExecutorBasedMixin
+    from dl_utils.aio import ContextVarExecutor
 
 
 LOGGER = logging.getLogger(__name__)
@@ -100,8 +104,16 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
     rqe_caches_settings: Optional[RQECachesSetting] = attr.ib(default=None)
     required_services: set[RequiredService] = attr.ib(factory=set)
     inst_specific_sr_factory: Optional[InstallationSpecificServiceRegistryFactory] = attr.ib(default=None)
+    task_processor_factory: Optional[TaskProcessorFactory] = attr.ib()
+    tpe: Optional[ContextVarExecutor] = attr.ib(default=None)
 
     service_registry_cls: ClassVar[Type[SERVICE_REGISTRY_TV]] = DefaultServicesRegistry  # type: ignore  # TODO: fix
+
+    @task_processor_factory.default
+    def _make_task_processor_factory(self) -> Optional[TaskProcessorFactory]:
+        if self.redis_pool_settings:
+            return ARQTaskProcessorFactory(redis_pool_settings=self.redis_pool_settings)
+        return None
 
     def is_bleeding_edge_user(self, request_context_info: RequestContextInfo) -> bool:
         return request_context_info.user_name in self.bleeding_edge_users
@@ -116,7 +128,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
             LOGGER.info("ATTENTION! It's bleeding edge user")
         return DefaultConnExecutorFactory(
             async_env=self.async_env,
-            tpe=None,
+            tpe=self.tpe,
             conn_sec_mgr=self.env_manager_factory.make_security_manager(),
             rqe_config=self.rqe_config,
             services_registry_ref=sr_ref,  # type: ignore  # TODO: fix
@@ -172,11 +184,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
             )
             if self.file_uploader_settings
             else None,
-            task_processor_factory=ARQTaskProcessorFactory(
-                redis_pool_settings=self.redis_pool_settings,
-            )
-            if self.redis_pool_settings
-            else None,
+            task_processor_factory=self.task_processor_factory,
             rqe_caches_settings=self.rqe_caches_settings,
             required_services=self.required_services,
             inst_specific_sr=(
