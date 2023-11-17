@@ -29,7 +29,7 @@ def _make_legend() -> Legend:
         items=[
             LegendItem(
                 legend_item_id=0,
-                obj=FieldObjSpec(id='guid', title='title'),
+                obj=FieldObjSpec(id="guid", title="title"),
                 role_spec=RowRoleSpec(role=FieldRole.row),
                 field_type=FieldType.DIMENSION,
                 data_type=UserDataType.unsupported,
