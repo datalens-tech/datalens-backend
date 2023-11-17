@@ -1,6 +1,6 @@
 # Working with the KB
 
-This KB is mostly `Markdown`, but it has embedded charts.
+This KB is mostly `Markdown`, but it has embedded PlantUML charts.
 These usually don't work out-of-the-box and might require a little additional configuration.
 
 To check the correect rendering of embedded charts open [this file](test_embeds.md).
@@ -22,5 +22,6 @@ It should work now.
 ## Obsidian
 
 - Install the `Obsidian` app
-- Install the PlantUML plugin in Obsidian.
+- Install and enable the PlantUML plugin in Obsidian.
   You might need to configure the path to the dot executable.
+- Open the kb folder as a vault
