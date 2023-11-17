@@ -146,11 +146,17 @@ class AsyncMySQLAdapter(
 
         chunk_size = db_adapter_query.get_effective_chunk_size(self._default_chunk_size)
         query = db_adapter_query.query
+        debug_compiled_query = db_adapter_query.debug_compiled_query
         escape_percent = not db_adapter_query.is_dashsql_query  # DON'T escape only for dashsql
         compiled_query, compiled_query_parameters = compile_mysql_query(
             query, dialect=self._dialect, escape_percent=escape_percent
         )
-        debug_query = query if isinstance(query, str) else compile_query_for_debug(query, self._dialect)
+        debug_query = None
+        if self._target_dto.pass_db_query_to_user:
+            if debug_compiled_query is not None:
+                debug_query = debug_compiled_query
+            else:
+                debug_query = query if isinstance(query, str) else compile_query_for_debug(query, self._dialect)
 
         with self.handle_execution_error(debug_query):
             async with self._get_connection(db_adapter_query.db_name) as conn:
