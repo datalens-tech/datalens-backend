@@ -5,7 +5,7 @@ import attr
 from dl_i18n.localizer_base import Translatable as BaseTranslatable
 from dl_i18n.localizer_base import TranslationConfig
 
-import bi_connector_ydb as package
+import dl_connector_ydb as package
 
 
 DOMAIN = f"dl_formula_ref_{package.__name__}"
