@@ -14,13 +14,13 @@ pip install -Ue <path-to-package>
 
 Show the main help message
 
-```
+```bash
 dl-git --help
 dl-git --h
 ```
 
 The `--help` (`-h`) option can also be used for any command:
-```
+```bash
 dl-git <command> --help
 ```
 
@@ -43,7 +43,7 @@ If the path is inside a submodule, then the submodule is considered to be the ro
 
 List files that have changed between two given revisions including the changes in all submodules
 
-```
+```bash
 dl-git range-diff-paths --base <base> --head <head>
 dl-git range-diff-paths --base <base> --head <head> --absolute
 dl-git range-diff-paths --base <base> --head <head> --only-added-commits
@@ -53,7 +53,7 @@ Here `base` and `head` can be a commit ID, branch name, `HEAD~3` or any similar 
 that is usually accepted by git.
 These arguments are optional. By default `head` is `HEAD` and `base` is `HEAD~1`.
 Thgis means you can use the following command to see the diff of the last commit in the current branch:
-```
+```bash
 dl-git range-diff-paths
 ```
 
