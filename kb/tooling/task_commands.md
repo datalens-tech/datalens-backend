@@ -11,6 +11,8 @@ task <task_name>
 
 ### Environment (`env:`)
 
+Working with the testing/development environment.
+
 - `task env:devenv`:
   Create development/testing environment (run it from a package dir)
 - `task env:devenv-d`:
@@ -20,6 +22,8 @@ task <task_name>
 
 
 ### Generation (`gen:`)
+
+Generating files to be used from the code.
 
 - `task gen:antlr`:
   (Re-)generate ANTLR code files for formula
@@ -31,7 +35,7 @@ task <task_name>
 
 ### Code quality (`cq:`)
 
-Experimental tasks to check and fix source files. 
+Checking and fixing source files. 
  
 - `task cq:fix_changed`:
   Apply all auto-fixes
