@@ -18,8 +18,8 @@ from dl_core.connection_models import TableIdent
 from dl_core.connectors.base.error_transformer import DBExcKWArgs
 from dl_core.utils import (
     get_current_w3c_tracing_headers,
-    make_url,
 )
+from dl_utils.utils import make_url
 from dl_utils.aio import await_sync
 
 from dl_connector_chyt.core.constants import CONNECTION_TYPE_CHYT

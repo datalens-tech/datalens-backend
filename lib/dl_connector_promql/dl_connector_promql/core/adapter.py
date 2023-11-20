@@ -29,7 +29,7 @@ from dl_core.connection_executors.adapters.async_adapters_aiohttp import Aiohttp
 from dl_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
 from dl_core.db.native_type import GenericNativeType
 from dl_core.exc import DatabaseQueryError
-from dl_core.utils import make_url
+from dl_utils.utils import make_url
 
 from dl_connector_promql.core.constants import CONNECTION_TYPE_PROMQL
 

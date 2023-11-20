@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import ipaddress
 import logging
-import os
 import re
 from typing import (
     Any,
@@ -42,23 +41,10 @@ from dl_api_commons.utils import (
     stringify_dl_cookies,
     stringify_dl_headers,
 )
-from dl_configs.settings_loaders.env_remap import remap_env
 from dl_constants.api_constants import DLHeadersCommon
 
 
 LOGGER = logging.getLogger(__name__)
-
-
-def make_url(
-    protocol: str,
-    host: str,
-    port: int,
-    path: Optional[str] = None,
-) -> str:
-    # TODO FIX: Sanitize/use urllib
-    if path is None:
-        path = ""
-    return f"{protocol}://{host}:{port}/{path.lstrip('/')}"
 
 
 def get_requests_session() -> requests.Session:

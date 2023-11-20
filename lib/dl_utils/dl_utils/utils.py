@@ -221,3 +221,15 @@ def time_it_cm(label: str) -> Generator[None, None, None]:
     delta = time() - t0
     if delta >= 0.01:
         print(f"Time elapsed for {label}: {delta}")
+
+
+def make_url(
+    protocol: str,
+    host: str,
+    port: int,
+    path: Optional[str] = None,
+) -> str:
+    # TODO FIX: Sanitize/use urllib
+    if path is None:
+        path = ""
+    return f"{protocol}://{host}:{port}/{path.lstrip('/')}"

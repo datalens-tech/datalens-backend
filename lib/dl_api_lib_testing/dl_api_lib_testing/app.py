@@ -98,33 +98,6 @@ class RQEConfigurationMaker:
             )
 
 
-@attr.s
-class RedisSettingMaker:
-    bi_test_config: ApiTestEnvironmentConfiguration = attr.ib(kw_only=True)
-
-    def get_redis_settings(self, db: int) -> RedisSettings:
-        return RedisSettings(  # type: ignore  # TODO: fix compatibility of models using `s_attrib` with mypy
-            MODE=RedisMode.single_host,
-            CLUSTER_NAME="",
-            HOSTS=(self.bi_test_config.redis_host,),
-            PORT=self.bi_test_config.redis_port,
-            DB=db,
-            PASSWORD=self.bi_test_config.redis_password,
-        )
-
-    def get_redis_settings_default(self) -> RedisSettings:
-        return self.get_redis_settings(self.bi_test_config.redis_db_default)
-
-    def get_redis_settings_cache(self) -> RedisSettings:
-        return self.get_redis_settings(self.bi_test_config.redis_db_cache)
-
-    def get_redis_settings_mutation(self) -> RedisSettings:
-        return self.get_redis_settings(self.bi_test_config.redis_db_mutation)
-
-    def get_redis_settings_arq(self) -> RedisSettings:
-        return self.get_redis_settings(self.bi_test_config.redis_db_arq)
-
-
 class TestingSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
     def _get_required_services(self, settings: AppSettings) -> set[RequiredService]:
         return {RequiredService.RQE_INT_SYNC, RequiredService.RQE_EXT_SYNC}

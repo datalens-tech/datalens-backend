@@ -21,10 +21,7 @@ from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib.app.data_api.app import DataApiAppFactory
 from dl_api_lib.app_settings import DataApiAppSettings
-from dl_api_lib_testing.app import (
-    RedisSettingMaker,
-    TestingDataApiAppFactory,
-)
+from dl_api_lib_testing.app import TestingDataApiAppFactory
 from dl_api_lib_testing.base import ApiTestBase
 from dl_api_lib_testing.client import (
     TestClientConverterAiohttpToFlask,
@@ -67,7 +64,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
     ) -> DataApiAppSettings:
         core_test_config = bi_test_config.core_test_config
         us_config = core_test_config.get_us_config()
-        redis_setting_maker = RedisSettingMaker(bi_test_config=bi_test_config)
+        redis_setting_maker = core_test_config.get_redis_setting_maker()
 
         return DataApiAppSettings(
             SENTRY_ENABLED=False,

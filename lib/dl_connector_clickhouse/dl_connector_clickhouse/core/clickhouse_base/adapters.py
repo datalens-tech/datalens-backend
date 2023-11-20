@@ -63,7 +63,7 @@ from dl_core.db.native_type import (
     GenericNativeType,
     norm_native_type,
 )
-from dl_core.utils import make_url
+from dl_utils.utils import make_url
 
 from dl_connector_clickhouse.core.clickhouse_base.ch_commons import (
     ClickHouseBaseUtils,

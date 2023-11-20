@@ -25,14 +25,6 @@ class ApiTestEnvironmentConfiguration:
     file_uploader_api_host: str = attr.ib(default="http://127.0.0.1")
     file_uploader_api_port: int = attr.ib(default=9999)
 
-    redis_host: str = attr.ib(default="")
-    redis_port: int = attr.ib(default=6379)
-    redis_password: str = attr.ib(default="")
-    redis_db_default: int = attr.ib(default=0)
-    redis_db_cache: int = attr.ib(default=1)
-    redis_db_mutation: int = attr.ib(default=2)
-    redis_db_arq: int = attr.ib(default=11)
-
     connector_availability_settings: ConnectorAvailabilityConfigSettings = attr.ib(
         factory=ConnectorAvailabilityConfigSettings,
     )
