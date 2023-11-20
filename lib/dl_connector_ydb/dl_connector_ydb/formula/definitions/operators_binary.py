@@ -104,7 +104,7 @@ DEFINITIONS_BINARY = [
     # /
     base.BinaryDivInt(
         variants=[
-            # See also: https://yql.yandex-team.ru/docs/ydb/?singlePage=true#_syntax_pragma_classicdivision
+            # See also: https://ydb.tech/en/docs/yql/reference/syntax/pragma#classicdivision
             V(D.YQL, lambda x, y: sa.cast(x, sa.FLOAT) / y),
         ]
     ),

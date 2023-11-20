@@ -144,12 +144,10 @@ DEFINITIONS_STRING = [
     ),
     # regexp_extract
     # TODO: YQL
-    # https://yql.yandex-team.ru/docs/ydb/udf/list/hyperscan
-    # Problem:
-    # “По умолчанию все функции работают в однобайтовом режиме, но если
-    # регулярное выражение является валидной UTF-8 строкой, но не является
-    # валидной ASCII строкой, — автоматически включается режим UTF-8.”
-    # Problem: can't use higher-order functions yet.
+    # https://ydb.tech/en/docs/yql/reference/udf/list/hyperscan
+    # Problem: "By default, all functions work in the single-byte mode.
+    # However, if the regular expression is a valid UTF-8 string but is not a valid ASCII string,
+    # the UTF-8 mode is enabled automatically." However, we can't use higher-order functions yet.
     # replace
     base.FuncReplace(
         variants=[

@@ -170,7 +170,7 @@ DEFINITIONS_DATETIME = [
     # today
     base.FuncToday(
         variants=[
-            V(D.YQL, sa.func.CurrentUtcDate),  # https://yql.yandex-team.ru/docs/ydb/misc/not_yet_supported
+            V(D.YQL, sa.func.CurrentUtcDate),  # https://ydb.tech/en/docs/yql/reference/syntax/not_yet_supported#now
         ]
     ),
     # week
