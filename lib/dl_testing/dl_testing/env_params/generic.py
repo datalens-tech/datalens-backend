@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 import attr
 import yaml
 
@@ -12,7 +14,7 @@ class GenericEnvParamGetter(EnvParamGetter):
     _loader: EnvParamGetterLoader = attr.ib(init=False, factory=EnvParamGetterLoader)
     _key_mapping: dict[str, tuple[str, str]] = attr.ib(init=False, factory=dict)  # key -> (getter_name, remapped_key)
 
-    def get_str_value(self, key: str) -> str:
+    def get_str_value(self, key: str) -> Optional[str]:
         getter_name, remapped_key = self._key_mapping[key]
         getter = self._loader.get_getter(getter_name)
         value = getter.get_str_value(remapped_key)

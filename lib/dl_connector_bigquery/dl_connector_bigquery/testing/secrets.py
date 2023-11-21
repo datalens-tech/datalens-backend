@@ -36,11 +36,11 @@ class BigQuerySecretReader(BigQuerySecretReaderBase):
 
     @_project_config.default
     def _make_project_config(self) -> dict:
-        return self._env_param_getter.get_json_value(self.KEY_CONFIG)
+        return self._env_param_getter.get_json_value_strict(self.KEY_CONFIG)
 
     @property
     def project_config(self) -> dict:
         return self._project_config
 
     def get_creds(self) -> str:
-        return self._env_param_getter.get_str_value(self.KEY_CREDS)
+        return self._env_param_getter.get_str_value_strict(self.KEY_CREDS)

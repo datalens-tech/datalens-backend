@@ -1,6 +1,7 @@
 from typing import (
     ClassVar,
     Mapping,
+    Optional,
     Sequence,
 )
 
@@ -40,7 +41,7 @@ class EnvParamGetterLoader:
         getter.initialize(config={})
         self._getters[name] = getter
 
-    def _resolve_setting_item(self, setting: dict, requirement_getter: EnvParamGetter) -> str:
+    def _resolve_setting_item(self, setting: dict, requirement_getter: EnvParamGetter) -> Optional[str]:
         if setting["type"] == "value":
             return setting["value"]
         if setting["type"] == "param":
