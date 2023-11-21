@@ -1637,6 +1637,36 @@ type = "directory"
 url = "../lib/dl_connector_snowflake"
 
 [[package]]
+name = "datalens-connector-ydb"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-configs = {path = "../dl_configs"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-core-testing = {path = "../dl_core_testing"}
+datalens-db-testing = {path = "../dl_db_testing"}
+datalens-formula = {path = "../dl_formula"}
+datalens-formula-ref = {path = "../dl_formula_ref"}
+datalens-i18n = {path = "../dl_i18n"}
+grpcio = ">=1.45.0rc1"
+marshmallow = ">=3.19.0"
+sqlalchemy = ">=1.4.46, <2.0"
+ydb = ">=3.5.1"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_connector_ydb"
+
+[[package]]
 name = "datalens-constants"
 version = "0.0.1"
 description = ""
@@ -6345,6 +6375,26 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [[package]]
+name = "ydb"
+version = "3.5.2"
+description = "YDB Python SDK"
+optional = false
+python-versions = "*"
+files = [
+    {file = "ydb-3.5.2-py2.py3-none-any.whl", hash = "sha256:0ef3ae929c8267e18ce56a6a8979b3712a953fe2254e12909aa422b89637902a"},
+    {file = "ydb-3.5.2.tar.gz", hash = "sha256:7e698843468a81976e5dd8b3d4324e02bf41a763a18eab2648d4401c95481c67"},
+]
+
+[package.dependencies]
+aiohttp = "<4"
+grpcio = ">=1.42.0"
+packaging = "*"
+protobuf = ">=3.13.0,<5.0.0"
+
+[package.extras]
+yc = ["yandexcloud"]
+
+[[package]]
 name = "zipp"
 version = "3.17.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
@@ -6362,4 +6412,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "3f5b4176287c0aa8efe9c53345031cba496ae1f93dd6d93c2ce5aef496b5240f"
+content-hash = "2dc00c341f5ceda1eff986f55a7448dc6f236ff4ec02efc16a1be9991351fafd"
