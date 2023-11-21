@@ -1,0 +1,86 @@
+
+[tool.poetry]
+name = "datalens-connector-ydb"
+version = "0.0.1"
+description = ""
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_connector_ydb"}]
+license = "Apache 2.0"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+grpcio = ">=1.45.0rc1"
+marshmallow = ">=3.19.0"
+python = ">=3.10, <3.12"
+sqlalchemy = ">=1.4.46, <2.0"
+ydb = ">=3.5.1"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-api-connector = {path = "../dl_api_connector"}
+datalens-configs = {path = "../dl_configs"}
+datalens-constants = {path = "../dl_constants"}
+datalens-core = {path = "../dl_core"}
+datalens-core-testing = {path = "../dl_core_testing"}
+datalens-db-testing = {path = "../dl_db_testing"}
+datalens-formula = {path = "../dl_formula"}
+datalens-formula-ref = {path = "../dl_formula_ref"}
+datalens-i18n = {path = "../dl_i18n"}
+
+[tool.poetry.plugins]
+[tool.poetry.plugins."dl_api_lib.connectors"]
+ydb = "dl_connector_ydb.api.ydb.connector:YDBApiConnector"
+
+[tool.poetry.plugins."dl_core.connectors"]
+ydb = "dl_connector_ydb.core.ydb.connector:YDBCoreConnector"
+
+[tool.poetry.plugins."dl_db_testing.connectors"]
+yql = "dl_connector_ydb.db_testing.connector:YQLDbTestingConnector"
+
+[tool.poetry.plugins."dl_formula.connectors"]
+yql = "dl_connector_ydb.formula.connector:YQLFormulaConnector"
+
+[tool.poetry.plugins."dl_formula_ref.plugins"]
+yql = "dl_connector_ydb.formula_ref.plugin:YQLFormulaRefPlugin"
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+datalens-formula-testing = {path = "../dl_formula_testing"}
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+
+
+[datalens.pytest.db]
+root_dir = "dl_connector_ydb_tests/"
+target_path = "db"
+compose_file_base = "docker-compose"
+
+[datalens.pytest.unit]
+root_dir = "dl_connector_ydb_tests/"
+target_path = "unit"
+skip_compose = "true"
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[datalens.i18n.domains]
+dl_connector_ydb = [
+    {path = "dl_connector_ydb/api"},
+    {path = "dl_connector_ydb/core"},
+]
+dl_formula_ref_dl_connector_ydb = [
+    {path = "dl_connector_ydb/formula_ref"},
+]
