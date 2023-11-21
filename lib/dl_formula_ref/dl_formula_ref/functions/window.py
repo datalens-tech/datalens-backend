@@ -1,6 +1,7 @@
 from typing import List
 
 from dl_formula.core.datatype import DataType
+from dl_formula.inspect.function import supports_ordering
 from dl_formula_ref.categories.window import CATEGORY_WINDOW
 from dl_formula_ref.examples.config import (
     ExampleConfig,
@@ -52,6 +53,7 @@ _SOURCE_SALES_DATA_1 = ExampleSource(
 
 
 def _make_standard_window_examples(func: str) -> List[DataExample]:
+    order_by_str = " ORDER BY [City], [Category]" if supports_ordering(name=func.lower(), is_window=True) else ""
     func = func.upper()
     examples = [
         DataExample(
@@ -67,9 +69,9 @@ def _make_standard_window_examples(func: str) -> List[DataExample]:
                         ("City", "[City]"),
                         ("Category", "[Category]"),
                         ("Order Sum", "[Order Sum]"),
-                        (f"{func} 1", f"{func}([Order Sum] TOTAL)"),
-                        (f"{func} 2", f"{func}([Order Sum] WITHIN [City])"),
-                        (f"{func} 3", f"{func}([Order Sum] WITHIN [Category])"),
+                        (f"{func} 1", f"{func}([Order Sum] TOTAL{order_by_str})"),
+                        (f"{func} 2", f"{func}([Order Sum] WITHIN [City]{order_by_str})"),
+                        (f"{func} 3", f"{func}([Order Sum] WITHIN [Category]{order_by_str})"),
                     ],
                 ],
                 override_formula_fields=[
@@ -623,17 +625,17 @@ def _make_mfunc_examples(func: str) -> List[DataExample]:
                         ("City", "[City]"),
                         ("Category", "[Category]"),
                         ("Order Sum", "[Order Sum]"),
-                        (f"{func} 1", f"{func}([Order Sum], 1 TOTAL)"),
-                        (f"{func} 2", f"{func}([Order Sum], 1 WITHIN [City])"),
-                        (f"{func} 3", f"{func}([Order Sum], 1 WITHIN [Category])"),
+                        (f"{func} 1", f"{func}([Order Sum], 1 TOTAL ORDER BY [City], [Category])"),
+                        (f"{func} 2", f"{func}([Order Sum], 1 WITHIN [City] ORDER BY [Category])"),
+                        (f"{func} 3", f"{func}([Order Sum], 1 WITHIN [Category] ORDER BY [City])"),
                     ],
                 ],
                 override_formula_fields=[
                     ("City", "[City]"),
                     ("Category", "[Category]"),
                     ("Order Sum", "SUM([Orders])"),
-                    (f"{func} 1", f"{func}(SUM([Orders]), 1 TOTAL ORDER BY [City])"),
-                    (f"{func} 2", f"{func}(SUM([Orders]), 1 WITHIN [City] ORDER BY [City])"),
+                    (f"{func} 1", f"{func}(SUM([Orders]), 1 TOTAL ORDER BY [City], [Category])"),
+                    (f"{func} 2", f"{func}(SUM([Orders]), 1 WITHIN [City] ORDER BY [Category])"),
                     (f"{func} 3", f"{func}(SUM([Orders]), 1 AMONG [City] ORDER BY [City])"),
                 ],
             ),
