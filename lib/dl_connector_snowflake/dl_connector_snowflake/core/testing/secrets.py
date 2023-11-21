@@ -64,17 +64,17 @@ class SnowFlakeSecretReader(SnowFlakeSecretReaderBase):
 
     @_project_config.default
     def _make_project_config(self) -> dict:
-        return self._env_param_getter.get_json_value(self.KEY_CONFIG)
+        return self._env_param_getter.get_json_value_strict(self.KEY_CONFIG)
 
     @property
     def project_config(self) -> dict:
         return self._project_config
 
     def get_client_secret(self) -> str:
-        return self._env_param_getter.get_str_value(self.KEY_CLIENT_SECRET)
+        return self._env_param_getter.get_str_value_strict(self.KEY_CLIENT_SECRET)
 
     def get_refresh_token_expired(self) -> str:
-        return self._env_param_getter.get_str_value(self.KEY_REFRESH_TOKEN_EXPIRED)
+        return self._env_param_getter.get_str_value_strict(self.KEY_REFRESH_TOKEN_EXPIRED)
 
     def get_refresh_token_x(self) -> str:
-        return self._env_param_getter.get_str_value(self.KEY_REFRESH_TOKEN_X)
+        return self._env_param_getter.get_str_value_strict(self.KEY_REFRESH_TOKEN_X)
