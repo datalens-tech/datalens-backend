@@ -148,6 +148,7 @@ datalens-maintenance = {path = "../lib/dl_maintenance"}
 datalens-connector-mssql = {path = "../lib/dl_connector_mssql"}
 datalens-attrs-model-mapper = {path = "../lib/dl_attrs_model_mapper"}
 datalens-attrs-model-mapper-doc-tools = {path = "../lib/dl_attrs_model_mapper_doc_tools"}
+datalens-connector-ydb = {path = "../lib/dl_connector_ydb"}
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.3.0"
