@@ -13,7 +13,7 @@ def init_redis_service(settings: FileUploaderBaseSettings) -> RedisBaseService:
     if settings.REDIS_APP.MODE == RedisMode.single_host:
         assert len(settings.REDIS_APP.HOSTS) == 1
         redis_service = SingleHostSimpleRedisService(
-            url=settings.REDIS_APP.as_url(),
+            url=settings.REDIS_APP.as_single_host_url(),
             password=settings.REDIS_APP.PASSWORD,
             instance_kind=RedisInstanceKind.persistent,
             ssl=settings.REDIS_APP.SSL,

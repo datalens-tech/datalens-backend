@@ -247,7 +247,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
             if self._settings.CACHES_REDIS.MODE == RedisMode.single_host:
                 redis_server_single_host = SingleHostSimpleRedisService(
                     instance_kind=RedisInstanceKind.caches,
-                    url=self._settings.CACHES_REDIS.as_url(),
+                    url=self._settings.CACHES_REDIS.as_single_host_url(),
                     password=self._settings.CACHES_REDIS.PASSWORD,
                     ssl=self._settings.CACHES_REDIS.SSL,
                 )
@@ -272,7 +272,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
             if self._settings.MUTATIONS_REDIS.MODE == RedisMode.single_host:
                 mutations_redis_server_single_host = SingleHostSimpleRedisService(
                     instance_kind=RedisInstanceKind.mutations,
-                    url=self._settings.MUTATIONS_REDIS.as_url(),
+                    url=self._settings.MUTATIONS_REDIS.as_single_host_url(),
                     password=self._settings.MUTATIONS_REDIS.PASSWORD,
                     ssl=self._settings.MUTATIONS_REDIS.SSL,
                 )

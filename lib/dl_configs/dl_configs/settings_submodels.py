@@ -26,7 +26,7 @@ class RedisSettings(SettingsBase):
     PASSWORD: str = s_attrib("PASSWORD", sensitive=True, missing=None)
     SSL: Optional[bool] = s_attrib("SSL", missing=None)
 
-    def as_url(self) -> str:
+    def as_single_host_url(self) -> str:
         return make_url(
             protocol="rediss" if self.SSL else "redis",
             host=self.HOSTS[0],
