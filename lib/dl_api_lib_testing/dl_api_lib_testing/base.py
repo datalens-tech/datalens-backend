@@ -26,7 +26,6 @@ from dl_api_lib.app_settings import (
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.loader import preload_api_lib
 from dl_api_lib_testing.app import (
-    RedisSettingMaker,
     RQEConfigurationMaker,
     TestingControlApiAppFactory,
 )
@@ -104,7 +103,7 @@ class ApiTestBase(abc.ABC):
         core_test_config = bi_test_config.core_test_config
         us_config = core_test_config.get_us_config()
 
-        redis_setting_maker = RedisSettingMaker(bi_test_config=bi_test_config)
+        redis_setting_maker = core_test_config.get_redis_setting_maker()
 
         settings = ControlApiAppSettings(
             CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig.from_settings(

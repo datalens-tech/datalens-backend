@@ -35,7 +35,6 @@ from dl_app_tools.profiling_base import (
     generic_profiler_async,
 )
 from dl_core import exc as common_exc
-from dl_core import utils
 from dl_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
 from dl_core.connection_executors.adapters.async_adapters_base import (
     AsyncDBAdapter,
@@ -62,6 +61,7 @@ from dl_core.connection_executors.qe_serializer import dba_actions as dba_action
 from dl_core.connection_executors.remote_query_executor.crypto import get_hmac_hex_digest
 from dl_core.connection_models.conn_options import ConnectOptions
 from dl_core.enums import RQEEventType
+from dl_utils.utils import make_url
 
 
 if TYPE_CHECKING:
@@ -147,14 +147,14 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
 
         url: str
         if self._use_sync_rqe:
-            url = utils.make_url(
+            url = make_url(
                 protocol=qe.sync_protocol,
                 host=qe.sync_host,
                 port=qe.sync_port,
                 path=rel_path,
             )
         else:
-            url = utils.make_url(
+            url = make_url(
                 protocol=qe.async_protocol,
                 host=qe.async_host,
                 port=qe.async_port,

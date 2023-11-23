@@ -18,7 +18,6 @@ from dl_api_commons.base_models import (
     RequestContextInfo,
     TenantCommon,
 )
-from dl_api_lib_testing.app import RedisSettingMaker
 from dl_configs.settings_submodels import S3Settings
 from dl_constants.enums import DataSourceType
 from dl_core.db import (
@@ -26,6 +25,7 @@ from dl_core.db import (
     get_type_transformer,
 )
 from dl_core.services_registry import ServicesRegistry
+from dl_core_testing.configuration import RedisSettingMaker
 from dl_core_testing.database import DbTable
 from dl_core_testing.fixtures.primitives import FixtureTableSpec
 from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
@@ -89,8 +89,8 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
 
     @pytest.fixture(scope="session")
     def redis_setting_maker(self) -> RedisSettingMaker:
-        bi_test_config = test_config.API_TEST_CONFIG
-        return RedisSettingMaker(bi_test_config=bi_test_config)
+        core_test_config = test_config.CORE_TEST_CONFIG
+        return core_test_config.get_redis_setting_maker()
 
     @pytest.fixture(scope="session")
     def s3_settings(self) -> S3Settings:

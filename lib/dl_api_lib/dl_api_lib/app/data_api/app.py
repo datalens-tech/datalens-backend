@@ -71,7 +71,6 @@ from dl_core.aio.web_app_services.redis import (
     RedisSentinelService,
     SingleHostSimpleRedisService,
 )
-from dl_core.utils import make_url
 
 
 LOGGER = logging.getLogger(__name__)
@@ -248,12 +247,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
             if self._settings.CACHES_REDIS.MODE == RedisMode.single_host:
                 redis_server_single_host = SingleHostSimpleRedisService(
                     instance_kind=RedisInstanceKind.caches,
-                    url=make_url(
-                        protocol="rediss" if self._settings.CACHES_REDIS.SSL else "redis",
-                        host=self._settings.CACHES_REDIS.HOSTS[0],
-                        port=self._settings.CACHES_REDIS.PORT,
-                        path=str(self._settings.CACHES_REDIS.DB),
-                    ),
+                    url=self._settings.CACHES_REDIS.as_single_host_url(),
                     password=self._settings.CACHES_REDIS.PASSWORD,
                     ssl=self._settings.CACHES_REDIS.SSL,
                 )
@@ -278,12 +272,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
             if self._settings.MUTATIONS_REDIS.MODE == RedisMode.single_host:
                 mutations_redis_server_single_host = SingleHostSimpleRedisService(
                     instance_kind=RedisInstanceKind.mutations,
-                    url=make_url(
-                        protocol="rediss" if self._settings.MUTATIONS_REDIS.SSL else "redis",
-                        host=self._settings.MUTATIONS_REDIS.HOSTS[0],
-                        port=self._settings.MUTATIONS_REDIS.PORT,
-                        path=str(self._settings.MUTATIONS_REDIS.DB),
-                    ),
+                    url=self._settings.MUTATIONS_REDIS.as_single_host_url(),
                     password=self._settings.MUTATIONS_REDIS.PASSWORD,
                     ssl=self._settings.MUTATIONS_REDIS.SSL,
                 )

@@ -6,6 +6,7 @@ from dl_configs.enums import RedisMode
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 from dl_configs.utils import split_by_comma
+from dl_utils.utils import make_url
 
 
 def redis_mode_env_var_converter(env_value: str) -> RedisMode:
@@ -24,6 +25,14 @@ class RedisSettings(SettingsBase):
     DB: int = s_attrib("DB")
     PASSWORD: str = s_attrib("PASSWORD", sensitive=True, missing=None)
     SSL: Optional[bool] = s_attrib("SSL", missing=None)
+
+    def as_single_host_url(self) -> str:
+        return make_url(
+            protocol="rediss" if self.SSL else "redis",
+            host=self.HOSTS[0],
+            port=self.PORT,
+            path=str(self.DB),
+        )
 
 
 @attr.s(frozen=True)
