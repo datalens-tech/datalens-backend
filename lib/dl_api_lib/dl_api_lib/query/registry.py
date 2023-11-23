@@ -98,7 +98,6 @@ def get_multi_query_mutator_factory(
     dialect: DialectCombo,
     result_schema: ResultSchema,
 ) -> MultiQueryMutatorFactoryBase:
-
     prioritized_keys = (
         # First try with exact dialect and mode (exact match)
         MQMFactoryKey(query_proc_mode=query_proc_mode, backend_type=backend_type, dialect=dialect),
