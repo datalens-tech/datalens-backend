@@ -16,18 +16,17 @@ from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.rqe import RQEConfig
 from dl_constants.enums import ConnectionType
-from dl_core.connections_security.base import InsecureConnectionSecurityManager
-from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
+from dl_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
-from dl_core.services_registry.top_level import (
-    DefaultServicesRegistry,
-    ServicesRegistry,
+from dl_core.services_registry.sr_factories import (
+    DefaultSRFactory,
+    SRFactory,
 )
+from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.mutation_cache.usentry_mutation_cache_factory import DefaultUSEntryMutationCacheFactory
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
-from dl_core.utils import FutureRef
 from dl_core_testing.configuration import CoreTestEnvironmentConfigurationBase
 from dl_core_testing.database import (
     CoreDbConfig,
@@ -37,6 +36,10 @@ from dl_core_testing.database import (
 from dl_core_testing.fixtures.dispenser import DbCsvTableDispenser
 from dl_db_testing.database.engine_wrapper import DbEngineConfig
 from dl_utils.aio import ContextVarExecutor
+from dl_task_processor.processor import (
+    DummyTaskProcessorFactory,
+    TaskProcessorFactory,
+)
 
 
 class USConfig(NamedTuple):
@@ -69,44 +72,48 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
     def conn_exec_factory_async_env(self) -> bool:
         return False
 
-    def service_registry_factory(
+    def make_service_registry_factory(
+            self,
+            async_env: bool,
+            task_processor_factory: TaskProcessorFactory = DummyTaskProcessorFactory(),
+    ) -> SRFactory:
+        return DefaultSRFactory(
+            async_env=async_env,
+            rqe_config=RQEConfig.get_default(),  # Not used because RQE is disabled
+            connectors_settings={self.conn_type: self.connection_settings} if self.connection_settings else {},
+            inst_specific_sr_factory=self.inst_specific_sr_factory,
+            env_manager_factory=InsecureEnvManagerFactory(),
+            force_non_rqe_mode=True,
+            tpe=ContextVarExecutor(),
+            task_processor_factory=task_processor_factory,
+        )
+
+    def make_service_registry(
         self,
         conn_exec_factory_async_env: bool,
         conn_bi_context: RequestContextInfo,
+        task_processor_factory: TaskProcessorFactory = DummyTaskProcessorFactory(),
         **kwargs: Any,
     ) -> ServicesRegistry:
-        sr_future_ref: FutureRef[ServicesRegistry] = FutureRef()
-        service_registry = DefaultServicesRegistry(
-            rci=conn_bi_context,
+        sr_factory = self.make_service_registry_factory(
+            async_env=conn_exec_factory_async_env,
+            task_processor_factory=task_processor_factory,
+        )
+        return sr_factory.make_service_registry(
+            request_context_info=conn_bi_context,
             mutations_cache_factory=DefaultUSEntryMutationCacheFactory(),
             reporting_registry=DefaultReportingRegistry(
                 rci=conn_bi_context,
             ),
-            conn_exec_factory=DefaultConnExecutorFactory(
-                async_env=conn_exec_factory_async_env,
-                force_non_rqe_mode=True,
-                rqe_config=RQEConfig.get_default(),  # Not used because RQE is disabled
-                services_registry_ref=sr_future_ref,
-                conn_sec_mgr=InsecureConnectionSecurityManager(),
-                tpe=ContextVarExecutor(),
-            ),
-            connectors_settings={self.conn_type: self.connection_settings} if self.connection_settings else {},
-            inst_specific_sr=(
-                self.inst_specific_sr_factory.get_inst_specific_sr(sr_future_ref)
-                if self.inst_specific_sr_factory is not None
-                else None
-            ),
             **kwargs,
         )
-        sr_future_ref.fulfill(service_registry)
-        return service_registry
 
     @pytest.fixture(scope="session")
     def conn_sync_service_registry(
         self,
         conn_bi_context: RequestContextInfo,
     ) -> ServicesRegistry:
-        return self.service_registry_factory(
+        return self.make_service_registry(
             conn_exec_factory_async_env=False,
             conn_bi_context=conn_bi_context,
         )
@@ -116,7 +123,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
         self,
         conn_bi_context: RequestContextInfo,
     ) -> ServicesRegistry:
-        return self.service_registry_factory(
+        return self.make_service_registry(
             conn_exec_factory_async_env=True,
             conn_bi_context=conn_bi_context,
         )

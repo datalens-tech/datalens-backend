@@ -110,7 +110,7 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
         conn_bi_context: RequestContextInfo,
         task_processor_factory: TaskProcessorFactory,
     ) -> ServicesRegistry:
-        return self.service_registry_factory(
+        return self.make_service_registry(
             conn_exec_factory_async_env=False,
             conn_bi_context=conn_bi_context,
             task_processor_factory=task_processor_factory,
@@ -122,7 +122,7 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
         conn_bi_context: RequestContextInfo,
         task_processor_factory: TaskProcessorFactory,
     ) -> ServicesRegistry:
-        return self.service_registry_factory(
+        return self.make_service_registry(
             conn_exec_factory_async_env=True,
             conn_bi_context=conn_bi_context,
             task_processor_factory=task_processor_factory,
