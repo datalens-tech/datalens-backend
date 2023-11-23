@@ -138,6 +138,20 @@ class CompengOptionsBuilder(DatasetOptionsBuilder):  # TODO: Move to compeng pac
             refresh_ttl_on_read=ttl_info.refresh_ttl_on_read,
         )
 
+    def get_data_key(
+        self,
+        *,
+        query_res_info: QueryAndResultInfo,
+        from_info: Optional[PreparedFromInfo] = None,
+        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
+    ) -> Optional[LocalKeyRepresentation]:
+        # TODO: Remove after switching to new cache keys
+        compiled_query = self.get_query_str_for_cache(
+            query=query_res_info.query,
+            dialect=from_info.query_compiler.dialect,
+        )
+        return base_key.extend(part_type="query", part_content=compiled_query)
+
 
 @attr.s
 class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
@@ -173,6 +187,8 @@ class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
         is_bleeding_edge_user: bool,
         base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
     ) -> LocalKeyRepresentation:
+        # TODO: Remove after switching to new cache keys,
+        #  but put the db_name + target_connection.get_cache_key_part() parts somewhere
         assert from_info.target_connection_ref is not None
         target_connection = self._us_entry_buffer.get_entry(from_info.target_connection_ref)
         assert isinstance(target_connection, ConnectionBase)
@@ -201,6 +217,7 @@ class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
         from_info: Optional[PreparedFromInfo] = None,
         base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
     ) -> Optional[LocalKeyRepresentation]:
+        # TODO: Remove after switching to new cache keys
         compiled_query = self.get_query_str_for_cache(
             query=query_res_info.query,
             dialect=from_info.query_compiler.dialect,
