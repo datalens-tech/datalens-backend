@@ -54,7 +54,7 @@ class FileUploaderContextFab(BaseContextFabric):
     _tenant_resolver: TenantResolver = attr.ib(factory=lambda: CommonTenantResolver())
 
     async def make(self) -> FileUploaderTaskContext:
-        core_conn_whitelist = ["clickhouse", "file", "gsheets_v2"]
+        core_conn_whitelist = ["clickhouse", "file", "gsheets_v2", "docs"]
         load_core_lib(core_lib_config=CoreLibraryConfig(core_connector_ep_names=core_conn_whitelist))
 
         redis_service = init_redis_service(self._settings)

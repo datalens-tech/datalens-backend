@@ -1,5 +1,6 @@
 import os
 
+import aiohttp.web
 import pytest
 
 from dl_configs.crypto_keys import get_dummy_crypto_keys_config
@@ -7,6 +8,7 @@ from dl_configs.settings_submodels import (
     GoogleAppSettings,
     S3Settings,
 )
+from dl_file_secure_reader_lib.app import create_app as create_reader_app
 from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 from dl_testing.env_params.generic import GenericEnvParamGetter
 
@@ -51,3 +53,12 @@ def file_uploader_worker_settings(
         SECURE_READER=secure_reader,
     )
     yield settings
+
+
+@pytest.fixture(scope="function")
+def reader_app(loop, secure_reader):
+    current_app = create_reader_app()
+    runner = aiohttp.web.AppRunner(current_app)
+    loop.run_until_complete(runner.setup())
+    site = aiohttp.web.UnixSite(runner, path=secure_reader.SOCKET)
+    return loop.run_until_complete(site.start())

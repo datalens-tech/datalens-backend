@@ -34,12 +34,12 @@ datalens-task-processor = {path = "../dl_task_processor"}
 [tool.poetry.plugins."dl_api_lib.connectors"]
 file = "dl_connector_bundle_chs3.file.api.connector:FileS3ApiConnector"
 gsheets_v2 = "dl_connector_bundle_chs3.chs3_gsheets.api.connector:GSheetsFileS3ApiConnector"
-yadocs = "dl_connector_bundle_chs3.chs3_yadocs.api.connector:YaDocsFileS3ApiConnector"
+docs = "dl_connector_bundle_chs3.chs3_yadocs.api.connector:YaDocsFileS3ApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 file = "dl_connector_bundle_chs3.file.core.connector:FileS3CoreConnector"
 gsheets_v2 = "dl_connector_bundle_chs3.chs3_gsheets.core.connector:GSheetsFileS3CoreConnector"
-yadocs = "dl_connector_bundle_chs3.chs3_yadocs.core.connector:YaDocsFileS3CoreConnector"
+docs = "dl_connector_bundle_chs3.chs3_yadocs.core.connector:YaDocsFileS3CoreConnector"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
@@ -63,9 +63,9 @@ target_path = "file"
 root_dir = "dl_connector_bundle_chs3_tests/db"
 target_path = "gsheets_v2"
 
-[datalens.pytest.db_yadocs]
+[datalens.pytest.db_docs]
 root_dir = "dl_connector_bundle_chs3_tests/db"
-target_path = "yadocs"
+target_path = "docs"
 
 [tool.mypy]
 warn_unused_configs = true

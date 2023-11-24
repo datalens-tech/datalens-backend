@@ -30,6 +30,9 @@ from dl_file_uploader_lib.redis_model.models import (
     GSheetsUserSourceDataSourceProperties,
     GSheetsUserSourceProperties,
     PreviewSet,
+    YaDocsFileSourceSettings,
+    YaDocsUserSourceDataSourceProperties,
+    YaDocsUserSourceProperties,
 )
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
@@ -106,6 +109,23 @@ def _get_conn_specific_dsrc_params(dfile: DataFile, src: DataSource) -> dict[str
         kwargs.update(
             dict(
                 spreadsheet_id=user_source_properties.spreadsheet_id,
+                sheet_id=user_source_dsrc_properties.sheet_id,
+                first_line_is_header=file_source_settings.first_line_is_header,
+            )
+        )
+
+    if dfile.file_type == FileType.yadocs:
+        file_source_settings = src.file_source_settings
+        assert isinstance(file_source_settings, YaDocsFileSourceSettings)
+        user_source_properties = dfile.user_source_properties
+        assert isinstance(user_source_properties, YaDocsUserSourceProperties)
+        user_source_dsrc_properties = src.user_source_dsrc_properties
+        assert isinstance(user_source_dsrc_properties, YaDocsUserSourceDataSourceProperties)
+
+        kwargs.update(
+            dict(
+                public_link=user_source_properties.public_link,
+                private_path=user_source_properties.private_path,
                 sheet_id=user_source_dsrc_properties.sheet_id,
                 first_line_is_header=file_source_settings.first_line_is_header,
             )

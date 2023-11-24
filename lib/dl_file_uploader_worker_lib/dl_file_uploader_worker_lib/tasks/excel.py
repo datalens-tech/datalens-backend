@@ -1,7 +1,10 @@
 import asyncio
+from collections import defaultdict
+import itertools
 import logging
 import ssl
 from typing import (
+    Iterable,
     Iterator,
     Optional,
 )
@@ -15,15 +18,20 @@ from dl_core.db import SchemaColumn
 from dl_core.raw_data_streaming.stream import SimpleUntypedDataStream
 from dl_file_uploader_lib import exc
 from dl_file_uploader_lib.data_sink.json_each_row import S3JsonEachRowUntypedFileDataSink
+from dl_file_uploader_lib.enums import FileType
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import (
     DataFile,
     DataSource,
     ExcelFileSourceSettings,
     FileProcessingError,
+    YaDocsFileSourceSettings,
+    YaDocsUserSourceDataSourceProperties,
 )
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
+from dl_file_uploader_task_interface.tasks import TaskExecutionMode
+from dl_file_uploader_worker_lib.utils.connection_error_tracker import FileConnectionDataSourceErrorTracker
 from dl_file_uploader_worker_lib.utils.parsing_utils import guess_header_and_schema_excel
 from dl_task_processor.task import (
     BaseExecutorTask,
@@ -45,6 +53,12 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
 
     async def run(self) -> TaskResult:
         dfile: Optional[DataFile] = None
+        sources_to_update_by_sheet_id: dict[int, list[DataSource]] = defaultdict(list)
+        usm = self._ctx.get_async_usm()
+        task_processor = self._ctx.make_task_processor(self._request_id)
+        redis = self._ctx.redis_service.get_redis()
+        connection_error_tracker = FileConnectionDataSourceErrorTracker(usm, task_processor, redis, self._request_id)
+
         try:
             LOGGER.info(f"ProcessExcelTask. File: {self.meta.file_id}")
             loop = asyncio.get_running_loop()
@@ -56,7 +70,9 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
 
             s3 = self._ctx.s3_service
 
-            dfile.sources = []
+            if self.meta.exec_mode == TaskExecutionMode.BASIC:
+                dfile.sources = []
+            assert dfile.sources is not None
 
             s3_resp = await s3.client.get_object(
                 Bucket=s3.tmp_bucket_name,
@@ -87,6 +103,9 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                     ) as resp:
                         file_data = await resp.json()
 
+            for src in dfile.sources:
+                sources_to_update_by_sheet_id[src.user_source_dsrc_properties.sheet_id].append(src)
+
             for spreadsheet in file_data:
                 sheetname = spreadsheet["sheetname"]
                 sheetdata = spreadsheet["data"]
@@ -95,63 +114,109 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                 raw_schema: list[SchemaColumn] = []
                 raw_schema_header: list[SchemaColumn] = []
                 raw_schema_body: list[SchemaColumn] = []
-                source_title = f"{dfile.filename} – {sheetname}"
-                sheet_data_source = DataSource(
-                    title=source_title,
-                    raw_schema=raw_schema,
-                    status=source_status,
-                    error=None,
-                )
-                dfile.sources.append(sheet_data_source)
+
+                if self.meta.exec_mode == TaskExecutionMode.BASIC:
+                    source_title = f"{dfile.filename} – {sheetname}"
+                    if dfile.file_type == FileType.yadocs:
+                        sheet_data_sources = [
+                            DataSource(
+                                title=source_title,
+                                raw_schema=raw_schema,
+                                status=source_status,
+                                user_source_dsrc_properties=YaDocsUserSourceDataSourceProperties(sheet_id=sheetname),
+                                error=None,
+                            )
+                        ]
+                    else:
+                        sheet_data_sources = [
+                            DataSource(
+                                title=source_title,
+                                raw_schema=raw_schema,
+                                status=source_status,
+                                error=None,
+                            )
+                        ]
+                    dfile.sources.extend(sheet_data_sources)
+                else:
+                    if sheetname not in sources_to_update_by_sheet_id:
+                        continue
+                    sheet_data_sources = sources_to_update_by_sheet_id.pop(sheetname)
 
                 if not sheetdata:
-                    sheet_data_source.error = FileProcessingError.from_exception(exc.EmptyDocument())
-                    sheet_data_source.status = FileProcessingStatus.failed
+                    for src in sheet_data_sources:
+                        src.error = FileProcessingError.from_exception(exc.EmptyDocument())
+                        src.status = FileProcessingStatus.failed
+                        connection_error_tracker.add_error(src.id, src.error)
                 else:
                     try:
                         has_header, raw_schema, raw_schema_header, raw_schema_body = guess_header_and_schema_excel(
                             sheetdata
                         )
                     except Exception as ex:
-                        sheet_data_source.status = FileProcessingStatus.failed
-                        exc_to_save = ex if isinstance(ex, exc.DLFileUploaderBaseError) else exc.ParseFailed()
-                        sheet_data_source.error = FileProcessingError.from_exception(exc_to_save)
+                        for src in sheet_data_sources:
+                            src.status = FileProcessingStatus.failed
+                            exc_to_save = ex if isinstance(ex, exc.DLFileUploaderBaseError) else exc.ParseFailed()
+                            src.error = FileProcessingError.from_exception(exc_to_save)
+                            connection_error_tracker.add_error(src.id, src.error)
                 sheet_settings = None
 
-                if sheet_data_source.is_applicable:
+                for src in sheet_data_sources:
+                    if src.is_applicable:
+                        if self.meta.exec_mode != TaskExecutionMode.BASIC:
+                            assert src.file_source_settings is not None
+                            has_header = src.file_source_settings.first_line_is_header
+                        assert has_header is not None
 
-                    def data_iter() -> Iterator[list]:
-                        row_iter = iter(sheetdata)
-                        for row in row_iter:
-                            values = [cell["value"] for cell in row]
-                            yield values
+                        def data_iter() -> Iterator[list]:
+                            row_iter = iter(sheetdata)
+                            for row in row_iter:
+                                values = [cell["value"] for cell in row]
+                                yield values
 
-                    data_stream = SimpleUntypedDataStream(
-                        data_iter=data_iter(),
-                        rows_to_copy=None,  # TODO
-                    )
-                    with S3JsonEachRowUntypedFileDataSink(
-                        s3=s3.get_sync_client(),
-                        s3_key=sheet_data_source.s3_key,
-                        bucket_name=s3.tmp_bucket_name,
-                    ) as data_sink:
-                        data_sink.dump_data_stream(data_stream)
+                        data_stream = SimpleUntypedDataStream(
+                            data_iter=data_iter(),
+                            rows_to_copy=None,  # TODO
+                        )
+                        with S3JsonEachRowUntypedFileDataSink(
+                            s3=s3.get_sync_client(),
+                            s3_key=src.s3_key,
+                            bucket_name=s3.tmp_bucket_name,
+                        ) as data_sink:
+                            data_sink.dump_data_stream(data_stream)
 
-                    assert has_header is not None
-                    sheet_settings = ExcelFileSourceSettings(
-                        first_line_is_header=has_header,
-                        raw_schema_header=raw_schema_header,
-                        raw_schema_body=raw_schema_body,
-                    )
+                        assert has_header is not None
+                        if dfile.file_type == FileType.yadocs:
+                            sheet_settings = YaDocsFileSourceSettings(
+                                first_line_is_header=has_header,
+                                raw_schema_header=raw_schema_header,
+                                raw_schema_body=raw_schema_body,
+                            )
+                        else:
+                            sheet_settings = ExcelFileSourceSettings(
+                                first_line_is_header=has_header,
+                                raw_schema_header=raw_schema_header,
+                                raw_schema_body=raw_schema_body,
+                            )
+                    src.raw_schema = raw_schema
+                    src.file_source_settings = sheet_settings
 
-                sheet_data_source.raw_schema = raw_schema
-                sheet_data_source.file_source_settings = sheet_settings
+            not_found_sources: Iterable[DataSource] = itertools.chain(*sources_to_update_by_sheet_id.values())
+            for src in not_found_sources:
+                src.error = FileProcessingError.from_exception(exc.DocumentNotFound())
+                src.status = FileProcessingStatus.failed
+                connection_error_tracker.add_error(src.id, src.error)
 
+            await connection_error_tracker.finalize(self.meta.exec_mode, self.meta.connection_id)
             await dfile.save()
             LOGGER.info("DataFile object saved.")
 
             task_processor = self._ctx.make_task_processor(self._request_id)
-            parse_file_task = task_interface.ParseFileTask(file_id=dfile.id)
+            parse_file_task = task_interface.ParseFileTask(
+                file_id=dfile.id,
+                tenant_id=self.meta.tenant_id,
+                connection_id=self.meta.connection_id,
+                exec_mode=self.meta.exec_mode,
+            )
             await task_processor.schedule(parse_file_task)
             LOGGER.info(f"Scheduled ParseFileTask for file_id {dfile.id}")
 
@@ -164,5 +229,12 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                 exc_to_save = ex if isinstance(ex, exc.DLFileUploaderBaseError) else exc.ParseFailed()
                 dfile.error = FileProcessingError.from_exception(exc_to_save)
                 await dfile.save()
+
+                for src in dfile.sources or ():
+                    connection_error_tracker.add_error(src.id, dfile.error)
+                await connection_error_tracker.finalize(self.meta.exec_mode, self.meta.connection_id)
+
                 return Fail()
+        finally:
+            await usm.close()
         return Success()

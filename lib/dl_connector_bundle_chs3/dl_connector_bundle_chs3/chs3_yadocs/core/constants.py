@@ -4,5 +4,5 @@ from dl_constants.enums import (
 )
 
 
-CONNECTION_TYPE_YADOCS = ConnectionType.declare("docs")
-SOURCE_TYPE_YADOCS = DataSourceType.declare("YADOCS")
+CONNECTION_TYPE_DOCS = ConnectionType.declare("docs")
+SOURCE_TYPE_DOCS = DataSourceType.declare("DOCS")

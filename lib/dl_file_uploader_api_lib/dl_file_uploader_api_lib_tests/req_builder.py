@@ -13,6 +13,7 @@ from dl_constants.api_constants import (
 )
 
 from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
+from dl_connector_bundle_chs3.chs3_yadocs.core.us_connection import YaDocsFileS3Connection
 
 
 class ReqBuilder:
@@ -167,12 +168,36 @@ class ReqBuilder:
     @classmethod
     def update_conn_data(
         cls,
-        connection: GSheetsFileS3Connection,
+        connection: GSheetsFileS3Connection | YaDocsFileS3Connection,
         save: bool,
+        file_type: Optional[str] = "gsheets",
         *,
         require_ok: bool = True,
     ) -> Req:
         sources_desc = [src.get_desc() for src in connection.data.sources]
+        sources = list()
+        if file_type == "gsheets":
+            sources = [
+                dict(
+                    id=src_desc.source_id,
+                    title=src_desc.title,
+                    spreadsheet_id=src_desc.spreadsheet_id,
+                    sheet_id=src_desc.sheet_id,
+                    first_line_is_header=src_desc.first_line_is_header,
+                )
+                for src_desc in sources_desc
+            ]
+        elif file_type == "yadocs":
+            sources = [
+                dict(
+                    id=src_desc.source_id,
+                    title=src_desc.title,
+                    public_link=src_desc.public_link,
+                    sheet_id=src_desc.sheet_id,
+                    first_line_is_header=src_desc.first_line_is_header,
+                )
+                for src_desc in sources_desc
+            ]
         return Req(
             method="post",
             url="/api/v2/update_connection_data",
@@ -180,16 +205,8 @@ class ReqBuilder:
                 "connection_id": connection.uuid,
                 "authorized": False,
                 "save": save,
-                "sources": [
-                    dict(
-                        id=src_desc.source_id,
-                        title=src_desc.title,
-                        spreadsheet_id=src_desc.spreadsheet_id,
-                        sheet_id=src_desc.sheet_id,
-                        first_line_is_header=src_desc.first_line_is_header,
-                    )
-                    for src_desc in sources_desc
-                ],
+                "type": file_type,
+                "sources": sources,
             },
             require_ok=require_ok,
         )

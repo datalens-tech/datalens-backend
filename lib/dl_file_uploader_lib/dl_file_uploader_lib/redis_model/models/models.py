@@ -82,6 +82,11 @@ class GSheetsFileSourceSettings(SpreadsheetFileSourceSettings):
 
 
 @attr.s(init=True, kw_only=True)
+class YaDocsFileSourceSettings(SpreadsheetFileSourceSettings):
+    file_type: FileType = attr.ib(default=FileType.yadocs)
+
+
+@attr.s(init=True, kw_only=True)
 class ExcelFileSourceSettings(SpreadsheetFileSourceSettings):
     file_type: FileType = attr.ib(default=FileType.xlsx)
 
@@ -125,6 +130,13 @@ class GSheetsUserSourceDataSourceProperties(UserSourceDataSourceProperties):
     file_type: FileType = attr.ib(default=FileType.gsheets)
 
     sheet_id: int = attr.ib()
+
+
+@attr.s(init=True, kw_only=True)
+class YaDocsUserSourceDataSourceProperties(UserSourceDataSourceProperties):
+    file_type: FileType = attr.ib(default=FileType.yadocs)
+
+    sheet_id: str = attr.ib()
 
 
 @attr.s(init=True, kw_only=True)

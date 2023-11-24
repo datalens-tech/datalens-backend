@@ -37,6 +37,7 @@ class DownloadYaDocsTask(BaseTaskMeta):
 
     tenant_id: Optional[str] = attr.ib(default=None)
     connection_id: Optional[str] = attr.ib(default=None)
+    exec_mode: TaskExecutionMode = attr.ib(default=TaskExecutionMode.BASIC)
 
 
 @attr.s
@@ -58,6 +59,9 @@ class ProcessExcelTask(BaseTaskMeta):
     name = TaskName("process_excel")
 
     file_id: str = attr.ib()
+    exec_mode: Optional[TaskExecutionMode] = attr.ib(default=TaskExecutionMode.BASIC)
+    tenant_id: Optional[str] = attr.ib(default=None)
+    connection_id: Optional[str] = attr.ib(default=None)
 
 
 @attr.s
