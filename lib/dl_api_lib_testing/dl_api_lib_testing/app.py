@@ -13,10 +13,7 @@ from dl_api_lib.app.control_api.app import ControlApiAppFactory
 from dl_api_lib.app.control_api.app import EnvSetupResult as ControlApiEnvSetupResult
 from dl_api_lib.app.data_api.app import DataApiAppFactory
 from dl_api_lib.app.data_api.app import EnvSetupResult as DataApiEnvSetupResult
-from dl_api_lib.app_common import (
-    SRFactoryBuilder,
-    StandaloneServiceRegistryFactory,
-)
+from dl_api_lib.app_common import SRFactoryBuilder
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import (
     AppSettings,
@@ -27,26 +24,33 @@ from dl_api_lib.app_settings import (
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_configs.connectors_settings import ConnectorSettingsBase
-from dl_configs.enums import (
-    RedisMode,
-    RequiredService,
-)
+from dl_configs.enums import RequiredService
 from dl_configs.rqe import (
     RQEBaseURL,
     RQEConfig,
 )
-from dl_configs.settings_submodels import RedisSettings
 from dl_constants.enums import (
     ConnectionType,
+    RLSSubjectType,
     USAuthMode,
 )
 from dl_core.aio.middlewares.services_registry import services_registry_middleware
 from dl_core.aio.middlewares.us_manager import service_us_manager_middleware
 from dl_core.data_processing.cache.primitives import CacheTTLConfig
+from dl_core.rls import (
+    RLS_FAILED_USER_NAME_PREFIX,
+    BaseSubjectResolver,
+    RLSSubject,
+)
+from dl_core.services_registry import ServicesRegistry
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
-from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
+from dl_core.services_registry.inst_specific_sr import (
+    InstallationSpecificServiceRegistry,
+    InstallationSpecificServiceRegistryFactory,
+)
 from dl_core.services_registry.rqe_caches import RQECachesSetting
+from dl_core.utils import FutureRef
 from dl_core_testing.app_test_workarounds import TestEnvManagerFactory
 from dl_core_testing.fixture_server_runner import WSGIRunner
 
@@ -98,6 +102,32 @@ class RQEConfigurationMaker:
             )
 
 
+@attr.s
+class TestingSubjectResolver(BaseSubjectResolver):
+    def get_subjects_by_names(self, names: list[str]) -> list[RLSSubject]:
+        """Mock resolver. Considers a user real if his name starts with 'user'"""
+        return [
+            RLSSubject(
+                subject_id="",
+                subject_type=RLSSubjectType.user if name.startswith("user") else RLSSubjectType.notfound,
+                subject_name=name if name.startswith("user") else RLS_FAILED_USER_NAME_PREFIX + name,
+            )
+            for name in names
+        ]
+
+
+@attr.s
+class TestingServiceRegistry(InstallationSpecificServiceRegistry):
+    async def get_subject_resolver(self) -> BaseSubjectResolver:
+        return TestingSubjectResolver()
+
+
+@attr.s
+class TestingServiceRegistryFactory(InstallationSpecificServiceRegistryFactory):
+    def get_inst_specific_sr(self, sr_ref: FutureRef[ServicesRegistry]) -> TestingServiceRegistry:
+        return TestingServiceRegistry(service_registry_ref=sr_ref)
+
+
 class TestingSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
     def _get_required_services(self, settings: AppSettings) -> set[RequiredService]:
         return {RequiredService.RQE_INT_SYNC, RequiredService.RQE_EXT_SYNC}
@@ -109,7 +139,7 @@ class TestingSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
         self,
         settings: AppSettings,
     ) -> Optional[InstallationSpecificServiceRegistryFactory]:
-        return StandaloneServiceRegistryFactory()
+        return TestingServiceRegistryFactory()
 
     def _get_entity_usage_checker(self, settings: AppSettings) -> Optional[EntityUsageChecker]:
         return None
