@@ -8,13 +8,16 @@ from dl_api_lib_testing.rls import (
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 
 
-class TestDataset(DefaultApiTestBase):
+class TestRLS(DefaultApiTestBase):
     @staticmethod
     def add_rls_to_dataset(control_api, dataset, rls_config):
         field_guid = dataset.result_schema[0].id
         dataset.rls = {field_guid: rls_config}
         resp = control_api.save_dataset(dataset, fail_ok=True)
         return field_guid, resp
+
+    def test_dataset_without_configured_rls(self, saved_dataset):
+        assert all(rls_value == "" for rls_value in saved_dataset.rls.values())
 
     @pytest.mark.parametrize("case", RLS_CONFIG_CASES, ids=[c["name"] for c in RLS_CONFIG_CASES])
     def test_create_and_update_rls(self, control_api, saved_dataset, case):
