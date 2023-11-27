@@ -172,7 +172,6 @@ jobs:
           path: /report/
           retention-days: 1
 
-
   mypy:
     runs-on: [ self-hosted, linux, light ]
     needs: router
