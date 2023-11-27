@@ -62,7 +62,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
         )
 
     def create_app(self, app_version: str) -> web.Application:
-        core_conn_whitelist = ["clickhouse", "file", "gsheets_v2", "docs"]
+        core_conn_whitelist = ["clickhouse", "file", "gsheets_v2"]
         load_core_lib(core_lib_config=CoreLibraryConfig(core_connector_ep_names=core_conn_whitelist))
 
         if (secret_sentry_dsn := self._settings.SENTRY_DSN) is not None:
