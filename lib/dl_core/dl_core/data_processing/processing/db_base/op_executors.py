@@ -187,7 +187,10 @@ class CalcOpExecutorAsync(OpExecutorAsync):
         query_compiler = from_info.query_compiler
         query = query_compiler.compile_select(
             bi_query=op.bi_query,
-            sql_source=from_info.sql_source,
+            # The info about the real source is already contained in the previous key parts,
+            # and, also, we want to avoid the randomized table names (in compeng) to appear in the key.
+            # So just use a fake table here.
+            sql_source=sa.table("table"),
         )
         legacy_data_key = self.db_ex_adapter.get_data_key(
             query=query,
