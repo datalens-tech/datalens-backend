@@ -156,6 +156,11 @@ jobs:
         run: |
           bash /src/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}" \
             WE_ARE_IN_CI=1
+        env:
+          GOOGLE_API_KEY: "${{ secrets.EXT_GOOGLE_API_KEY }}"
+          BITRIX_TOKEN: "${{ secrets.EXT_BITRIX_TOKEN }}"
+          BITRIX_DATALENS_TOKEN: "${{ secrets.EXT_BITRIX_DATALENS_TOKEN }}"
+          METRIKA_OAUTH: "${{ secrets.EXT_METRIKA_OAUTH }}"
       - name: Stop compose if provided
         # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always
