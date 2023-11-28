@@ -8,6 +8,7 @@ import sqlalchemy as sa
 
 from dl_constants.enums import (
     DataSourceRole,
+    DataSourceType,
     JoinType,
     UserDataType,
 )
@@ -239,6 +240,9 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
     def _check_supported_join_types(self, supp_join_types: AbstractSet[JoinType]) -> None:
         assert not supp_join_types
 
+    def _check_compatible_source_types(self, compat_source_types: AbstractSet[DataSourceType]) -> None:
+        assert not compat_source_types
+
     def _allow_adding_sources(self, dataset: Dataset) -> bool:
         return False
 
@@ -257,6 +261,9 @@ class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[App
 
     def _check_supported_join_types(self, supp_join_types: AbstractSet[JoinType]) -> None:
         assert not supp_join_types
+
+    def _check_compatible_source_types(self, compat_source_types: AbstractSet[DataSourceType]) -> None:
+        assert not compat_source_types
 
     def _allow_adding_sources(self, dataset: Dataset) -> bool:
         return False
