@@ -25,10 +25,10 @@ class GitManager:
     def get_root_path(self) -> Path:
         return Path(self.git_repo.working_tree_dir)
 
-    def _get_commit_obj(self, commit_specifier: str) -> Commit:
+    def get_commit_obj(self, commit_specifier: str) -> Commit:
         return self.git_repo.commit(commit_specifier)
 
-    def _iter_commits(self, base: str, head: str, only_missing_commits: bool) -> Iterable[Commit]:
+    def iter_commits(self, base: str, head: str, only_missing_commits: bool) -> Iterable[Commit]:
         if only_missing_commits:
             return self.git_repo.iter_commits(f"{base}..{head}")
         else:
@@ -51,13 +51,13 @@ class GitManager:
         only_missing_commits: bool = False,
     ) -> Generator[tuple[Path, Diff], None, None]:
         # Get commit objects
-        base_commit = self._get_commit_obj(base)
-        head_commit = self._get_commit_obj(head)
+        base_commit = self.get_commit_obj(base)
+        head_commit = self.get_commit_obj(head)
 
         base_path = self.get_root_path() if absolute else self.path_prefix
 
         # Iter commits:
-        for commit_obj in self._iter_commits(base=base, head=head, only_missing_commits=only_missing_commits):
+        for commit_obj in self.iter_commits(base=base, head=head, only_missing_commits=only_missing_commits):
             for diff_item in self._iter_diffs_from_commit(commit_obj):
                 yield base_path, diff_item
 
