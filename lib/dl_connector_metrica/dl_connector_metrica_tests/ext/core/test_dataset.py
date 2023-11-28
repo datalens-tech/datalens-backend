@@ -1,10 +1,14 @@
-from typing import Optional
+from typing import (
+    AbstractSet,
+    Optional,
+)
 
 import pytest
 import sqlalchemy as sa
 
 from dl_constants.enums import (
     DataSourceRole,
+    JoinType,
     UserDataType,
 )
 from dl_core.dataset_capabilities import DatasetCapabilities
@@ -232,6 +236,12 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
         finally:
             sync_us_manager.delete(testing_conn)
 
+    def _check_supported_join_types(self, supp_join_types: AbstractSet[JoinType]) -> None:
+        assert not supp_join_types
+
+    def _allow_adding_sources(self, dataset: Dataset) -> bool:
+        return False
+
 
 class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[AppMetricaApiConnection]):
     source_type = SOURCE_TYPE_APPMETRICA_API
@@ -244,6 +254,12 @@ class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[App
             DefaultDatasetTestSuite.test_get_param_hash: "",  # TODO: FIXME
         },
     )
+
+    def _check_supported_join_types(self, supp_join_types: AbstractSet[JoinType]) -> None:
+        assert not supp_join_types
+
+    def _allow_adding_sources(self, dataset: Dataset) -> bool:
+        return False
 
     @pytest.fixture(scope="function")
     def dsrc_params(self) -> dict:

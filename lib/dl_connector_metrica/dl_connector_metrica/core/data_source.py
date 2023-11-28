@@ -11,7 +11,10 @@ from typing import (
     Tuple,
 )
 
-from dl_constants.enums import UserDataType
+from dl_constants.enums import (
+    DataSourceType,
+    UserDataType,
+)
 from dl_core import exc
 from dl_core.data_source.sql import PseudoSQLDataSource
 from dl_core.db import (
@@ -22,6 +25,8 @@ from dl_core.db import (
 from dl_connector_metrica.core.constants import (
     CONNECTION_TYPE_APPMETRICA_API,
     CONNECTION_TYPE_METRICA_API,
+    SOURCE_TYPE_APPMETRICA_API,
+    SOURCE_TYPE_METRICA_API,
 )
 from dl_connector_metrica.core.us_connection import MetrikaApiConnection
 
@@ -88,6 +93,14 @@ class MetrikaApiDataSource(PseudoSQLDataSource):
 
         return min_value, max_value
 
+    @classmethod
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
+        return source_type == SOURCE_TYPE_METRICA_API
+
 
 class AppMetrikaApiDataSource(MetrikaApiDataSource):
     conn_type = CONNECTION_TYPE_APPMETRICA_API
+
+    @classmethod
+    def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
+        return source_type == SOURCE_TYPE_APPMETRICA_API
