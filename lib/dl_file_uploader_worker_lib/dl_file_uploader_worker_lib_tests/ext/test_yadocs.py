@@ -18,6 +18,7 @@ async def test_download_yadocs_task(
     s3_client,
     redis_model_manager,
     s3_tmp_bucket,
+    reader_app,
 ):
     df = DataFile(
         filename="",

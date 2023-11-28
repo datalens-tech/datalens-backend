@@ -35,6 +35,8 @@ from dl_file_uploader_lib.redis_model.models import (
     GSheetsUserSourceDataSourceProperties,
     GSheetsUserSourceProperties,
     RenameTenantStatusModel,
+    YaDocsFileSourceSettings,
+    YaDocsUserSourceDataSourceProperties,
     YaDocsUserSourceProperties,
 )
 
@@ -123,6 +125,15 @@ class GSheetsFileSourceSettingsSchema(FileSourceSettingsBaseSchema):
     raw_schema_body = fields.Nested(SchemaColumnStorageSchema, many=True)
 
 
+class YaDocsFileSourceSettingsSchema(FileSourceSettingsBaseSchema):
+    class Meta(BaseSchema.Meta):
+        target = YaDocsFileSourceSettings
+
+    first_line_is_header = fields.Boolean()
+    raw_schema_header = fields.Nested(SchemaColumnStorageSchema, many=True)
+    raw_schema_body = fields.Nested(SchemaColumnStorageSchema, many=True)
+
+
 class ExcelFileSourceSettingsSchema(FileSourceSettingsBaseSchema):
     class Meta(BaseSchema.Meta):
         target = ExcelFileSourceSettings
@@ -137,6 +148,7 @@ class FileSourceSettingsSchema(FileTypeOneOfSchema):
         FileType.csv.name: CSVFileSourceSettingsSchema,
         FileType.gsheets.name: GSheetsFileSourceSettingsSchema,
         FileType.xlsx.name: ExcelFileSourceSettingsSchema,
+        FileType.yadocs.name: YaDocsFileSourceSettingsSchema,
     }
 
 
@@ -179,9 +191,17 @@ class GSheetsUserSourceDataSourcePropertiesSchema(UserSourceDataSourceProperties
     sheet_id = fields.Integer()
 
 
+class YaDocsUserSourceDataSourcePropertiesSchema(UserSourceDataSourcePropertiesBaseSchema):
+    class Meta(BaseSchema.Meta):
+        target = YaDocsUserSourceDataSourceProperties
+
+    sheet_id = fields.String()
+
+
 class UserSourceDataSourcePropertiesSchema(FileTypeOneOfSchema):
     type_schemas: dict[str, Type[UserSourceDataSourcePropertiesBaseSchema]] = {
         FileType.gsheets.name: GSheetsUserSourceDataSourcePropertiesSchema,
+        FileType.yadocs.name: YaDocsUserSourceDataSourcePropertiesSchema,
     }
 
 

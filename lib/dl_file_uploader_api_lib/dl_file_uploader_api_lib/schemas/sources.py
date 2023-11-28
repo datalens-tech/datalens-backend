@@ -102,12 +102,18 @@ class SourceInfoSchemaGSheets(SourceInfoSchemaBase):
     spreadsheet_id = ma.fields.String()
 
 
+class SourceInfoSchemaYaDocs(SourceInfoSchemaBase):
+    sheet_id = ma.fields.String()
+    private_path = ma.fields.String(allow_none=True)
+    public_link = ma.fields.String(allow_none=True)
+
+
 class SourceInfoSchema(FileTypeOneOfSchema):
     type_schemas: dict[str, Type[SourceInfoSchemaBase]] = {
         FileType.csv.name: SourceInfoSchemaBase,
         FileType.gsheets.name: SourceInfoSchemaGSheets,
         FileType.xlsx.name: SourceInfoSchemaBase,
-        FileType.yadocs.name: SourceInfoSchemaBase,
+        FileType.yadocs.name: SourceInfoSchemaYaDocs,
     }
 
 

@@ -12,4 +12,5 @@ class YaDocsFileSourceSchema(BaseFileSourceSchema):
 
     public_link = fields.String(dump_only=True)
     private_path = fields.String(dump_only=True)
+    sheet_id = fields.String(dump_only=True)
     first_line_is_header = fields.Boolean(dump_only=True)
