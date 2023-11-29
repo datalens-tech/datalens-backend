@@ -8,6 +8,8 @@ from typing import (
     Type,
 )
 
+from sqlalchemy.sql.elements import ClauseElement
+
 from dl_constants.enums import DataSourceType
 from dl_core.connection_models import (
     TableDefinition,
@@ -92,7 +94,7 @@ class SnowFlakeTableDataSource(SnowFlakeDataSourceMixin, TableSQLDataSourceMixin
         return super(SnowFlakeTableDataSource, self).get_schema_info(conn_executor_factory=conn_executor_factory)
 
     @require_table_name
-    def get_sql_source(self, alias: Optional[str] = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         q = self.quote
         alias_str = "" if alias is None else f" AS {q(alias)}"
         return sa_plain_text(f"{q(self.db_name)}.{q(self.schema_name)}.{q(self.table_name)}{alias_str}")
