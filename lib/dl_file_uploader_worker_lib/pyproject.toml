@@ -57,7 +57,7 @@ target_path = "db unit"
 [datalens.pytest.ext]
 root_dir = "dl_file_uploader_worker_lib_tests/"
 target_path = "ext"
-labels = ["ext"]
+labels = ["ext_public"]
 
 [tool.mypy]
 warn_unused_configs = true
