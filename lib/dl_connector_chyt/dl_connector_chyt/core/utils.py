@@ -47,6 +47,7 @@ class CHYTUtils(ClickHouseBaseUtils):
         r"Clique (?P<clique>\*\S+) is not running": chyt_exc.CHYTCliqueIsNotRunning,
         r"Clique (?P<clique>\*\S+) is suspended": chyt_exc.CHYTCliqueIsSuspended,
         r"Invalid clique specification": chyt_exc.CHYTCliqueNotExists,
+        r"Error parsing GUID \"(?P<clique>\S+)\"": chyt_exc.CHYTCliqueGuidParsingError,
         r"Authentication failed": chyt_exc.CHYTAuthError,
     }
 
