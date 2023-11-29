@@ -1,8 +1,27 @@
+import re
 from typing import Optional
 
 from marshmallow import fields as ma_fields
+from marshmallow import validate as ma_validate
 
 from dl_api_connector.api_schema.extras import FieldExtra
+
+
+def alias_string_field(
+    attribute: str,
+    required: bool = True,
+    bi_extra: FieldExtra = FieldExtra(editable=True),
+) -> ma_fields.String:
+    def validate(value: str):
+        if re.match("^\*", value) is None:
+            raise ma_validate.ValidationError("Click alias name should start with asterisk (*)")
+
+    return ma_fields.String(
+        attribute=attribute,
+        required=required,
+        bi_extra=bi_extra,
+        validate=validate,
+    )
 
 
 def cache_ttl_field(
