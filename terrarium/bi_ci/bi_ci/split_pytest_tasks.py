@@ -23,7 +23,7 @@ labels = ["fat"]
 DEFAULT_MODE = "base"
 
 
-def format_output(name: str, sections: list[tuple[pathlib.Path, str]]) -> str:
+def format_output(name: str, sections: list[tuple[str, str]]) -> str:
     data = [f"{path}:{target}" for path, target in sections]
 
     return f"{name}={json.dumps(data)}"
@@ -51,11 +51,12 @@ def read_pytest_targets(path: pathlib.Path) -> typing.Optional[dict[str, typing.
 
 
 def get_package_tests(
-    package_path: pathlib.Path,
+    root_path: pathlib.Path,
+    package_path: str,
     requested_mode: str,
-) -> typing.Generator[tuple[pathlib.Path, str], None, None]:
+) -> typing.Generator[tuple[str, str], None, None]:
     try:
-        pytest_targets = read_pytest_targets(package_path / "pyproject.toml")
+        pytest_targets = read_pytest_targets(root_path / package_path / "pyproject.toml")
     except FileNotFoundError:
         return
 
@@ -68,10 +69,11 @@ def get_package_tests(
 
 
 def get_default_package_tests(
-    package_path: pathlib.Path,
-) -> typing.Generator[tuple[pathlib.Path, str], None, None]:
+    root_path: pathlib.Path,
+    package_path: str,
+) -> typing.Generator[tuple[str, str], None, None]:
     try:
-        pytest_targets = read_pytest_targets(package_path / "pyproject.toml")
+        pytest_targets = read_pytest_targets(root_path / package_path / "pyproject.toml")
     except FileNotFoundError:
         return
 
@@ -89,12 +91,12 @@ def get_tests(
     requested_mode: str,
     root_dir: pathlib.Path,
     test_targets_json_path: pathlib.Path,
-) -> typing.Generator[tuple[pathlib.Path, str], None, None]:
+) -> typing.Generator[tuple[str, str], None, None]:
     for package_path in read_package_paths(test_targets_json_path):
         if requested_mode == DEFAULT_MODE:
-            yield from get_default_package_tests(root_dir / package_path)
+            yield from get_default_package_tests(root_dir, package_path)
         else:
-            yield from get_package_tests(root_dir / package_path, requested_mode)
+            yield from get_package_tests(root_dir, package_path, requested_mode)
 
 
 def split_tests(
