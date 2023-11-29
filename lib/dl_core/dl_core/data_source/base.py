@@ -25,6 +25,10 @@ from dl_core.base_models import (
     SourceFilterSpec,
 )
 from dl_core.connectors.base.query_compiler import QueryCompiler
+from dl_core.data_processing.cache.primitives import (
+    DataKeyPart,
+    LocalKeyRepresentation,
+)
 from dl_core.data_source_spec.base import DataSourceSpec
 from dl_core.db import (
     IndexInfo,
@@ -238,6 +242,16 @@ class DataSource(metaclass=abc.ABCMeta):
     @property
     def data_export_forbidden(self) -> bool:
         return self.connection.data_export_forbidden
+
+    def get_cache_key_part(self) -> LocalKeyRepresentation:
+        local_key_rep = self.connection.get_cache_key_part()
+        local_key_rep = local_key_rep.multi_extend(
+            DataKeyPart(
+                part_type="data_source_sql",
+                part_content=self.get_sql_source(),
+            ),
+        )
+        return local_key_rep
 
 
 class IncompatibleDataSourceMixin(DataSource):

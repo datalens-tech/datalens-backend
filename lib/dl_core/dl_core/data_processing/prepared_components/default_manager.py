@@ -107,6 +107,9 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
         target_connection = self._us_entry_buffer.get_entry(target_connection_ref)
         assert isinstance(target_connection, ConnectionBase)
 
+        data_key = dsrc.get_cache_key_part()
+        data_key = data_key.extend(part_type="avatar_id", part_content=avatar_id)
+
         prep_src_info = PreparedSingleFromInfo(
             id=avatar_id,
             alias=alias,
@@ -120,5 +123,6 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
             connect_args=dsrc.get_connect_args(),
             pass_db_query_to_user=target_connection.pass_db_query_to_user,
             target_connection_ref=target_connection_ref,
+            data_key=data_key,
         )
         return prep_src_info

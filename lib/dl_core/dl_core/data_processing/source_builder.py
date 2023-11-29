@@ -23,6 +23,7 @@ from sqlalchemy.sql.elements import ClauseElement
 from dl_constants.enums import JoinType
 from dl_core import exc
 from dl_core.components.ids import AvatarId
+from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
 from dl_core.data_processing.prepared_components.primitives import (
     PreparedMultiFromInfo,
     PreparedSingleFromInfo,
@@ -195,6 +196,10 @@ class SqlSourceBuilder:
                 f"used: {used_avatar_ids}"
             )
 
+        data_key = LocalKeyRepresentation()
+        for prep_src_info in prepared_sources:
+            data_key = data_key.multi_extend(*prep_src_info.data_key.key_parts)
+
         joint_source: Optional[SqlSourceType] = None
         if not use_empty_source:
             joint_source = self.build_from_avatar_join_info(
@@ -212,5 +217,6 @@ class SqlSourceBuilder:
             supported_join_types=frozenset(JoinType),  # TODO: determine this honestly
             pass_db_query_to_user=pass_db_query_to_user,
             target_connection_ref=first_prep_source.target_connection_ref,
+            data_key=data_key,
         )
         return joint_dsrc_info
