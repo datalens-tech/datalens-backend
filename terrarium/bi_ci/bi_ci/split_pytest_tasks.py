@@ -1,5 +1,5 @@
-import json
 import functools
+import json
 import pathlib
 import typing
 
@@ -90,7 +90,6 @@ def get_tests(
     root_dir: pathlib.Path,
     test_targets_json_path: pathlib.Path,
 ) -> typing.Generator[tuple[pathlib.Path, str], None, None]:
-
     for package_path in read_package_paths(test_targets_json_path):
         if requested_mode == DEFAULT_MODE:
             yield from get_default_package_tests(root_dir / package_path)
