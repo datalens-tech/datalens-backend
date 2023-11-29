@@ -55,9 +55,6 @@ class OpExecutorAsync:
     ctx: OpExecutionContext = attr.ib()
     db_ex_adapter: ProcessorDbExecAdapterBase = attr.ib()
 
-    def make_data_key(self, op: BaseOp) -> LocalKeyRepresentation:
-        raise NotImplementedError
-
     async def execute(self, op: BaseOp) -> AbstractStream:
         raise NotImplementedError
 
@@ -83,10 +80,6 @@ def log_op(
 
 class DownloadOpExecutorAsync(OpExecutorAsync):
     """Loads data from a database table"""
-
-    def make_data_key(self, op: BaseOp) -> LocalKeyRepresentation:
-        source_stream = self.ctx.get_stream(op.source_stream_id)
-        return source_stream.data_key
 
     @log_op  # type: ignore  # TODO: fix
     async def execute(self, op: BaseOp) -> DataStreamAsync:  # type: ignore  # TODO: fix
@@ -144,7 +137,7 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
         data_source_list = source_stream.prep_src_info.data_source_list or ()
         assert data_source_list is not None
 
-        data_key = self.make_data_key(op=op)
+        data_key = source_stream.data_key
         return DataStreamAsync(
             id=op.dest_stream_id,
             names=source_stream.names,
@@ -230,6 +223,8 @@ class CalcOpExecutorAsync(OpExecutorAsync):
         names = op.bi_query.get_names()
         user_types = op.bi_query.get_user_types()
 
+        data_key = self.make_data_key(op=op)
+
         alias = op.alias
         prep_src_info = PreparedSingleFromInfo(
             id=op.result_id,
@@ -244,9 +239,9 @@ class CalcOpExecutorAsync(OpExecutorAsync):
             connect_args=from_info.connect_args,
             pass_db_query_to_user=from_info.pass_db_query_to_user,
             target_connection_ref=from_info.target_connection_ref,
+            data_key=data_key,
         )
 
-        data_key = self.make_data_key(op=op)
         return DataSourceVS(
             id=op.dest_stream_id,
             alias=op.alias,
@@ -261,16 +256,6 @@ class CalcOpExecutorAsync(OpExecutorAsync):
 
 
 class JoinOpExecutorAsync(OpExecutorAsync):
-    def make_data_key(self, op: BaseOp) -> LocalKeyRepresentation:
-        assert isinstance(op, JoinOp)
-
-        data_key = LocalKeyRepresentation()
-        for stream_id in op.source_stream_ids:
-            stream = self.ctx.get_stream(stream_id=stream_id)
-            data_key = data_key.multi_extend(*stream.data_key.key_parts)
-
-        return data_key
-
     @log_op  # type: ignore  # TODO: fix
     async def execute(self, op: BaseOp) -> JointDataSourceVS:  # type: ignore  # TODO: fix
         assert isinstance(op, JoinOp)
@@ -291,13 +276,13 @@ class JoinOpExecutorAsync(OpExecutorAsync):
 
         source_builder = SqlSourceBuilder()
 
-        data_key = self.make_data_key(op=op)
         joint_dsrc_info = source_builder.build_source(
             root_avatar_id=op.root_avatar_id,
             prepared_sources=prepared_sources,
             join_on_expressions=op.join_on_expressions,
             use_empty_source=op.use_empty_source,
         )
+        data_key = joint_dsrc_info.data_key
         return JointDataSourceVS(
             id=op.dest_stream_id,
             names=[],
@@ -346,6 +331,8 @@ class UploadOpExecutorAsync(OpExecutorAsync):
         alias = op.alias
         sql_source = sa.alias(sa.table(table_name), alias)
 
+        data_key = self.make_data_key(op=op)
+
         prep_src_info = PreparedSingleFromInfo(
             id=op.result_id,
             alias=alias,
@@ -359,9 +346,9 @@ class UploadOpExecutorAsync(OpExecutorAsync):
             connect_args={},
             pass_db_query_to_user=False,
             target_connection_ref=None,
+            data_key=data_key,
         )
 
-        data_key = self.make_data_key(op=op)
         return DataSourceVS(
             id=op.dest_stream_id,
             result_id=prep_src_info.id,

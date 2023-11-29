@@ -195,12 +195,7 @@ class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
         connection_id = target_connection.uuid
         assert connection_id is not None
 
-        local_key_rep = base_key.multi_extend(*target_connection.get_cache_key_part().key_parts)
-        if from_info.db_name is not None:
-            # FIXME: Replace with key parts for every participating dsrc
-            # For now db_name will be duplicated in some source types
-            # (one from connection, one from source)
-            local_key_rep = local_key_rep.extend(part_type="db_name", part_content=from_info.db_name)
+        local_key_rep = base_key
         local_key_rep = local_key_rep.extend(part_type="query", part_content=str(compiled_query))
         local_key_rep = local_key_rep.extend(part_type="user_types", part_content=tuple(user_types or ()))
         local_key_rep = local_key_rep.extend(
