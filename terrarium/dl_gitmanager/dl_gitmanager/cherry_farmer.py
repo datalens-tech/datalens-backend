@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
+import datetime
 from enum import (
     Enum,
     unique,
@@ -177,6 +178,8 @@ class CherryFarmer:
         message: Optional[str] = None,
         timestamp: Optional[int] = None,
     ) -> None:
+        if message == "":
+            message = f"Set to state {state.name!r} at {datetime.datetime.utcnow().isoformat()}"
         self._state.mark(commit_id=commit_id, state=state, message=message, timestamp=timestamp)
 
     def search_pick_suggestion(

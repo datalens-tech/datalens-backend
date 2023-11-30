@@ -121,10 +121,15 @@ dl-cherry-farmer show --src-branch <branch> --dst-branch <branch> --all
 ```
 
 Here `--src-branch` and `--dst-branch` are the names of the branches that you want to compare
-With `--new` new (not picked and not ignored commits) will be shown.
-With `--picked` picked commits will be shown.
-With `--ignored` ignored commits will be shown.
-With `-a` or `--all` all commits will be shown.
+
+Several options control which commits to show:
+- `--new`: new (not picked and not ignored commits) will be shown.
+- `--picked`: picked commits will be shown.
+- `--ignored`: ignored commits will be shown.
+- `-a` or `--all`: all commits will be shown.
+
+If none of these is specified, then `--new` is assumed.
+
 
 ### iter
 
@@ -132,16 +137,30 @@ Iterate over all commits in diff and pick or ignore them interactively
 
 ```bash
 dl-cherry-farmer show --src-branch <branch> --dst-branch <branch>
-dl-cherry-farmer show --src-branch <branch> --dst-branch <branch> --all
+dl-cherry-farmer show --src-branch <branch> --dst-branch <branch> --new
+dl-cherry-farmer show --src-branch <branch> --dst-branch <branch> --one
 ```
 
-All options are the same as for the `show` command.
+Accepts the same options as does the `show` command, but has some additional ones:
+- `--one`: instead of iterating over all commits show just one and quit after it is handled.
+
+The tool will ask for a new state and message for each commit.
+If the message is not specified, a default one will be generated.
+
+To skip an un-picked commit (and not mark it as `ignored` or `picked`) use the state `new`.
+
 
 ### mark
 
+Non-interactive command for marking commits.
+
 ```bash
-dl-cherry-farmer mark --commit <commit_id> --state <state>
+dl-cherry-farmer mark --commit <commit> --state <state>
+dl-cherry-farmer mark --commit <commit> --state <state> -m <message>
+dl-cherry-farmer mark --commit <commit> --state <state> --message <message>
 ```
 
-Here `commid_id` should be a valid commit ID, and `state` is the state to be set for this commit.
+Here `commit` should be a valid commit ID, and `state` is the state to be set for this commit.
 If `--state new` is specified, then the info about this commit is simply deleted from the saved state.
+Use `-m` or `--message` to specify a pick message (will be saved in the state file).
+If the message is not specified, a default one will be generated.

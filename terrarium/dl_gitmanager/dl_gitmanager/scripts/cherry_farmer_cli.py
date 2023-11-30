@@ -61,7 +61,7 @@ class GitManagerTool(CliToolBase):
         commit_parser.add_argument("--commit", help="Commit ID", required=True)
 
         message_parser = argparse.ArgumentParser(add_help=False)
-        message_parser.add_argument("-m", "--message", help="Message")
+        message_parser.add_argument("-m", "--message", help="Message", default="")
 
         state_parser = argparse.ArgumentParser(add_help=False)
         state_parser.add_argument(
@@ -96,16 +96,19 @@ class GitManagerTool(CliToolBase):
             parents=[src_dst_branch_parser, commit_type_flag_parser],
             help="List file paths with changes given as commit range",
         )
+
         subparsers.add_parser(
             "mark",
             parents=[commit_parser, state_parser, message_parser],
             help="Mark commit as picked/ignored/new",
         )
-        subparsers.add_parser(
+
+        iter_parser = subparsers.add_parser(
             "iter",
             parents=[src_dst_branch_parser, commit_type_flag_parser],
             help="Iterate over commits and pick them interactively",
         )
+        iter_parser.add_argument("--one", action="store_true", help="Show only one commit and quit after handling it.")
 
         return parser
 
@@ -120,7 +123,7 @@ class GitManagerTool(CliToolBase):
 
         if not result:
             # no flags means "all"
-            return self._get_states(all=True)
+            return self._get_states(new=True)
 
         return result
 
@@ -187,7 +190,14 @@ class GitManagerTool(CliToolBase):
         return state, message
 
     def iter_(
-        self, src_branch: str, dst_branch: Optional[str], picked: bool, ignored: bool, new: bool, all: bool
+        self,
+        src_branch: str,
+        dst_branch: Optional[str],
+        picked: bool,
+        ignored: bool,
+        new: bool,
+        all: bool,
+        one: bool,
     ) -> None:
         states = self._get_states(picked=picked, ignored=ignored, new=new, all=all)
         for commit_state_item in self.cherry_farmer.iter_diff_commits(
@@ -214,6 +224,9 @@ class GitManagerTool(CliToolBase):
                 message=message,
                 timestamp=commit_state_item.saved_state.timestamp,
             )
+            if one:
+                # quit after just one handled commit
+                break
 
     @classmethod
     def initialize(cls, cherry_farmer: CherryFarmer) -> GitManagerTool:
@@ -255,6 +268,7 @@ class GitManagerTool(CliToolBase):
                         ignored=args.ignored,
                         new=args.new,
                         all=args.all,
+                        one=args.one,
                     )
                 case _:
                     raise RuntimeError(f"Got unknown command: {args.command}")
