@@ -30,6 +30,7 @@ from dl_api_commons.base_models import (
 from dl_api_commons.logging import mask_sensitive_fields_by_name_in_json_recursive
 from dl_api_commons.tracing import get_current_tracing_headers
 from dl_api_commons.utils import (
+    get_retriable_requests_session,
     stringify_dl_cookies,
     stringify_dl_headers,
 )
@@ -41,7 +42,6 @@ from dl_constants.api_constants import (
 from dl_core.base_models import EntryLocation
 from dl_core.enums import USApiType
 import dl_core.exc as exc
-from dl_core.utils import get_retriable_requests_session
 
 
 LOGGER = logging.getLogger(__name__)
