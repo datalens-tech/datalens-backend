@@ -5,6 +5,8 @@ from typing import (
     Optional,
 )
 
+from sqlalchemy.sql.elements import ClauseElement
+
 from dl_constants.enums import DataSourceType
 from dl_core.data_source.sql import (
     StandardSQLDataSource,
@@ -33,7 +35,7 @@ class YDBTableDataSource(YDBDataSourceMixin, StandardSQLDataSource):
     """YDB table"""
 
     @require_table_name
-    def get_sql_source(self, alias: Optional[str] = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         # cross-db joins are not supported
         assert not self.db_name or self.db_name == self.connection.db_name
 

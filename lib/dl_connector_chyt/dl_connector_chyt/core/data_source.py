@@ -13,6 +13,7 @@ import urllib.parse
 
 import attr
 import sqlalchemy as sa
+from sqlalchemy.sql.elements import ClauseElement
 
 from dl_constants.enums import (
     DataSourceType,
@@ -100,7 +101,7 @@ class BaseCHYTTableDataSource(CHYTDataSourceBaseMixin, TableSQLDataSourceMixin, 
         return self.spec.table_name.split("/")[-1]
 
     @require_table_name
-    def get_sql_source(self, alias: Optional[str] = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         if alias:
             return sa.alias(self.get_sql_source(), name=alias)
         path = self.spec.table_name
@@ -122,7 +123,7 @@ class BaseCHYTSpecialDataSource(CHYTDataSourceBaseMixin, BaseSQLDataSource, abc.
     def default_title(self) -> str:
         raise NotImplementedError
 
-    def get_sql_source(self, alias: Optional[str] = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         raise NotImplementedError
 
     def get_table_definition(self) -> TableDefinition:
@@ -184,7 +185,7 @@ class BaseCHYTTableListDataSource(BaseCHYTTableFuncDataSource, abc.ABC):
             table_names=self.spec.table_names,
         )
 
-    def get_sql_source(self, alias: Optional[str] = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         if not self.spec.table_names:
             raise exc.TableNameNotConfiguredError
         table_names = self.normalize_tables_paths(self.spec.table_names)
@@ -231,7 +232,7 @@ class BaseCHYTTableRangeDataSource(BaseCHYTTableFuncDataSource, abc.ABC):
             range_to=self.range_to or "",
         )
 
-    def get_sql_source(self, alias: Optional[str] = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         if not self.directory_path:
             raise exc.TableNameNotConfiguredError
         path = self.directory_path
@@ -256,7 +257,7 @@ class BaseCHYTTableSubselectDataSource(BaseCHYTSpecialDataSource, CommonClickHou
             subsql=self.subsql,
         )
 
-    def get_sql_source(self, alias: Optional[str] = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         if not self.connection.is_subselect_allowed:
             raise exc.SubselectNotAllowed()
 
