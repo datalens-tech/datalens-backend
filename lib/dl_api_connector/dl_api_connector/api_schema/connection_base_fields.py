@@ -14,7 +14,7 @@ def alias_string_field(
 ) -> ma_fields.String:
     def validate(value: str):
         if re.match("^\*", value) is None:
-            raise ma_validate.ValidationError("Click alias name should start with asterisk (*)")
+            raise ma_validate.ValidationError("Clique alias name must begin with an asterisk (*)")
 
     return ma_fields.String(
         attribute=attribute,
