@@ -28,9 +28,10 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra"
-testpaths = ["dl_sqlalchemy_postgres_tests/unit"]
-
-
+testpaths = [
+    "dl_sqlalchemy_postgres_tests/unit",
+    "dl_sqlalchemy_postgres_tests/db",
+]
 
 [tool.mypy]
 warn_unused_configs = true
