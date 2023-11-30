@@ -349,7 +349,7 @@ class StandardSQLDataSource(
         )
 
 
-class PseudoSQLDataSource(StandardSQLDataSource, IncompatibleDataSourceMixin):
+class PseudoSQLDataSource(IncompatibleDataSourceMixin, StandardSQLDataSource):
     supported_join_types: ClassVar[frozenset[JoinType]] = frozenset()
     supports_schema_update: ClassVar[bool] = False
 
