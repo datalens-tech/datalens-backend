@@ -9,18 +9,38 @@ from dl_query_processing.postprocessing.postprocessors.markup import (
 def _test_markup_postprocessing_i(cls, check_nodes=True):
     MPP = cls()
     formulated = MPP.n_concat(
-        'url: "', MPP.n_url("col1", "col2"), '"; "', MPP.n_i(MPP.n_b(MPP.n_url("col3", "col4"))), '"', ""
+        'url: "',
+        MPP.n_url("col1", "col2"),
+        '"; "',
+        MPP.n_i(MPP.n_b(MPP.n_url("col3", "col4"))),
+        '"',
+        "",
+        MPP.n_br(),
+        MPP.n_cl(MPP.n_sz("col2", "L"), "#dddddd"),
     )
     if MPP._dbg:
         print("formulated:", formulated)
     assert formulated
     if check_nodes:
-        expected = ("c", 'url: "', ("a", "col1", "col2"), '"; "', ("i", ("b", ("a", "col3", "col4"))), '"', "")
+        expected = (
+            "c",
+            'url: "',
+            ("a", "col1", "col2"),
+            '"; "',
+            ("i", ("b", ("a", "col3", "col4"))),
+            '"',
+            "",
+            ("br",),
+            ("cl", ("sz", "col2", "L"), "#dddddd"),
+        )
         assert formulated == expected
     dumped = MPP.dump(formulated)
     if MPP._dbg:
         print("dumped:", repr(dumped))
-    assert dumped == '(c "url: """ (a "col1" "col2") """; """ (i (b (a "col3" "col4"))) """" "")'
+    assert (
+        dumped
+        == '(c "url: """ (a "col1" "col2") """; """ (i (b (a "col3" "col4"))) """" "" (br ) (cl (sz "col2" "L") "#dddddd"))'
+    )
     parsed = MPP.parse(dumped)
     if MPP._dbg:
         print("parsed:    ", parsed)
@@ -44,6 +64,12 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
             },
             {"type": "text", "content": '"'},
             {"type": "text", "content": ""},
+            {"type": "br"},
+            {
+                "type": "color",
+                "color": "#dddddd",
+                "content": {"type": "size", "size": "L", "content": {"type": "text", "content": "col2"}},
+            },
         ],
     }
     assert verbalized == expected

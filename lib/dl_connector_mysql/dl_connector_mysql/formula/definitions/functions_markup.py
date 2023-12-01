@@ -17,4 +17,10 @@ DEFINITIONS_MARKUP = [
     base.ConcatMultiMarkup.for_dialect(D.MYSQL),
     # url
     base.FuncUrl.for_dialect(D.MYSQL),
+    # size
+    base.FuncSize.for_dialect(D.MYSQL),
+    # color
+    base.FuncColor.for_dialect(D.MYSQL),
+    # br
+    base.FuncBr.for_dialect(D.MYSQL),
 ]

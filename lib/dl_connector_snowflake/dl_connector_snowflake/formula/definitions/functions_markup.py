@@ -17,4 +17,10 @@ DEFINITIONS_MARKUP = [
     base.ConcatMultiMarkup.for_dialect(D.SNOWFLAKE),
     # url
     base.FuncUrl.for_dialect(D.SNOWFLAKE),
+    # size
+    base.FuncSize.for_dialect(D.SNOWFLAKE),
+    # color
+    base.FuncColor.for_dialect(D.SNOWFLAKE),
+    # br
+    base.FuncBr.for_dialect(D.SNOWFLAKE),
 ]

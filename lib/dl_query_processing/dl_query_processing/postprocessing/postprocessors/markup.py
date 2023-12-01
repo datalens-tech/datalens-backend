@@ -29,6 +29,9 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
     node_url: ClassVar[str] = "a"
     node_i: ClassVar[str] = "i"
     node_b: ClassVar[str] = "b"
+    node_sz: ClassVar[str] = "sz"
+    node_cl: ClassVar[str] = "cl"
+    node_br: ClassVar[str] = "br"
 
     _node_cls: ClassVar[Type[_NODE_TV]]
 
@@ -95,6 +98,15 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
 
     def n_b(self, child: NodeInput) -> _NODE_TV:
         return self._make_node(self.node_b, self._proc_arg(child))
+
+    def n_sz(self, child: NodeInput, size: str) -> _NODE_TV:
+        return self._make_node(self.node_sz, self._proc_arg(child), str(size))
+
+    def n_cl(self, child: NodeInput, color: str) -> _NODE_TV:
+        return self._make_node(self.node_cl, self._proc_arg(child), str(color))
+
+    def n_br(self) -> _NODE_TV:
+        return self._make_node(self.node_br)
 
     # Node-structure into a string
 
@@ -229,6 +241,9 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
         node_url: dict(name="url", argnames=("url", "content")),
         node_i: dict(name="italics", arg="content"),
         node_b: dict(name="bold", arg="content"),
+        node_sz: dict(name="size", argnames=("content", "size")),
+        node_cl: dict(name="color", argnames=("content", "color")),
+        node_br: dict(name="br"),
     }
 
     def _argcount_mismatch(self, node, **kwargs):  # type: ignore  # TODO: fix
@@ -249,11 +264,25 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
 
         if funcname == self.node_concat:
             return dict(type="concat", children=[self._verbalize_i(arg) for arg in funcargs])
-        if funcname == self.node_url:
+        if funcname in (self.node_url,):  # self.node_cl, self.node_sz):
             if len(funcargs) != 2:
                 return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
             url, content = funcargs
             return dict(type="url", url=url, content=self._verbalize_i(content))
+        if funcname == self.node_cl:
+            if len(funcargs) != 2:
+                return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
+            content, color = funcargs
+            return dict(type="color", color=color, content=self._verbalize_i(content))
+        if funcname == self.node_sz:
+            if len(funcargs) != 2:
+                return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
+            content, size = funcargs
+            return dict(type="size", size=size, content=self._verbalize_i(content))
+        if funcname == self.node_br:
+            if len(funcargs) != 0:
+                return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
+            return dict(type="br")
         if funcname in (self.node_i, self.node_b):
             if len(funcargs) != 1:
                 return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=1)

@@ -17,4 +17,10 @@ DEFINITIONS_MARKUP = [
     base.ConcatMultiMarkup.for_dialect(D.YQL),
     # url
     base.FuncUrl.for_dialect(D.YQL),
+    # size
+    base.FuncSize.for_dialect(D.YQL),
+    # color
+    base.FuncColor.for_dialect(D.YQL),
+    # br
+    base.FuncBr.for_dialect(D.YQL),
 ]

@@ -17,4 +17,10 @@ DEFINITIONS_MARKUP = [
     base.ConcatMultiMarkup.for_dialect(D.BIGQUERY),
     # url
     base.FuncUrl.for_dialect(D.BIGQUERY),
+    # size
+    base.FuncSize.for_dialect(D.BIGQUERY),
+    # color
+    base.FuncColor.for_dialect(D.BIGQUERY),
+    # br
+    base.FuncBr.for_dialect(D.BIGQUERY),
 ]
