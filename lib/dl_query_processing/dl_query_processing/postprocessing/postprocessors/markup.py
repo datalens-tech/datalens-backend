@@ -264,7 +264,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
 
         if funcname == self.node_concat:
             return dict(type="concat", children=[self._verbalize_i(arg) for arg in funcargs])
-        if funcname in (self.node_url,):  # self.node_cl, self.node_sz):
+        if funcname == self.node_url:
             if len(funcargs) != 2:
                 return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
             url, content = funcargs
