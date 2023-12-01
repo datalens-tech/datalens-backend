@@ -34,7 +34,7 @@ def validate_authorized_yadocs(data: dict) -> None:
         )
 
 
-def validate_docs_data(data):
+def validate_yadocs_data(data):
     if not ((data["public_link"] is None) ^ (data["private_path"] is None)):
         raise ValueError("Expected exactly one of [`private_path`, `public_link`] to be specified")
     if data["public_link"] is None and data["oauth_token"] is None and data["connection_id"] is None:
@@ -62,7 +62,7 @@ class FileDocumentsRequestSchema(BaseRequestSchema):
 
     @ma.validates_schema(skip_on_field_errors=True)
     def validate_object(self, data: dict, **kwargs: Any) -> None:
-        validate_docs_data(data)
+        validate_yadocs_data(data)
 
 
 class FileUploadResponseSchema(ma.Schema):

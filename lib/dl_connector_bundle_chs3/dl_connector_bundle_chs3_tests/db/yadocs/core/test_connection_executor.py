@@ -3,7 +3,7 @@ from dl_connector_bundle_chs3_tests.db.base.core.connection_executor import (
     CHS3AsyncConnectionExecutorTestBase,
     CHS3SyncConnectionExecutorTestBase,
 )
-from dl_connector_bundle_chs3_tests.db.docs.core.base import BaseYaDocsFileS3TestClass
+from dl_connector_bundle_chs3_tests.db.yadocs.core.base import BaseYaDocsFileS3TestClass
 
 
 class TestYaDocsFileS3SyncConnectionExecutor(

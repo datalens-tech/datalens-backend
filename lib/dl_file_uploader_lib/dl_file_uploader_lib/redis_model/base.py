@@ -149,7 +149,7 @@ class RedisSetManager(metaclass=abc.ABCMeta):
 
     def sscan_iter(self) -> AsyncIterator:
         """
-        Note: according to redis docs (https://redis.io/commands/scan/#scan-guarantees),
+        Note: according to redis yadocs (https://redis.io/commands/scan/#scan-guarantees),
         may return some entries more than once, the client should handle this behaviour on its side.
         """
 

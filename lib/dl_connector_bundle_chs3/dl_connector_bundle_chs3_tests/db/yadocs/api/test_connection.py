@@ -10,7 +10,7 @@ from dl_testing.utils import get_log_record
 
 from dl_connector_bundle_chs3.chs3_yadocs.core.us_connection import YaDocsFileS3Connection
 from dl_connector_bundle_chs3_tests.db.base.api.connection import CHS3ConnectionTestSuite
-from dl_connector_bundle_chs3_tests.db.docs.api.base import YaDocsFileS3ApiConnectionTestBase
+from dl_connector_bundle_chs3_tests.db.yadocs.api.base import YaDocsFileS3ApiConnectionTestBase
 
 
 class TestYaDocsFileS3Connection(YaDocsFileS3ApiConnectionTestBase, CHS3ConnectionTestSuite[YaDocsFileS3Connection]):

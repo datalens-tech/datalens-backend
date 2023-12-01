@@ -11,7 +11,7 @@ from dl_connector_bundle_chs3.chs3_yadocs.core.us_connection import YaDocsFileS3
 from dl_connector_bundle_chs3_tests.db.base.api.base import CHS3ConnectionApiTestBase
 from dl_connector_bundle_chs3_tests.db.base.api.data import CHS3DataApiTestBase
 from dl_connector_bundle_chs3_tests.db.base.api.dataset import CHS3DatasetTestBase
-from dl_connector_bundle_chs3_tests.db.docs.core.base import BaseYaDocsFileS3TestClass
+from dl_connector_bundle_chs3_tests.db.yadocs.core.base import BaseYaDocsFileS3TestClass
 
 
 LOGGER = logging.getLogger(__name__)

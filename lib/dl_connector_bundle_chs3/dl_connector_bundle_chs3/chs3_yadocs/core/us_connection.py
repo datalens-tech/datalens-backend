@@ -17,15 +17,15 @@ from dl_core.services_registry.file_uploader_client_factory import YaDocsFileSou
 from dl_utils.utils import DataKey
 
 from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from dl_connector_bundle_chs3.chs3_yadocs.core.constants import SOURCE_TYPE_DOCS
+from dl_connector_bundle_chs3.chs3_yadocs.core.constants import SOURCE_TYPE_YADOCS
 
 
 LOGGER = logging.getLogger(__name__)
 
 
 class YaDocsFileS3Connection(BaseFileS3Connection):
-    source_type = SOURCE_TYPE_DOCS
-    allowed_source_types = frozenset((SOURCE_TYPE_DOCS,))
+    source_type = SOURCE_TYPE_YADOCS
+    allowed_source_types = frozenset((SOURCE_TYPE_YADOCS,))
 
     editable_data_source_parameters: ClassVar[
         tuple[str, ...]
