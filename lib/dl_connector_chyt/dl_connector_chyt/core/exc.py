@@ -33,6 +33,15 @@ class CHYTCliqueNotExists(CHYTCliqueError):
     default_message = "Invalid clique specification. Probably, clique does not exists."
 
 
+class CHYTCliqueGuidParsingError(CHYTCliqueError):
+    err_code = CHYTCliqueError.err_code + ["INVALID_GUID"]
+    default_message = "Invalid clique guid."
+    formatting_messages = {
+        frozenset({"clique"}): "Unable to parse clique GUID {clique}. Make sure that GUID conforms to "
+        'a pattern "*<click_name>"'
+    }
+
+
 class CHYTCliqueAccessDenied(CHYTCliqueError):
     err_code = CHYTCliqueError.err_code + ["ACCESS_DENIED"]
     default_message = "Access to clique was denied."
