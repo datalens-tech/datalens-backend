@@ -53,7 +53,7 @@ FUNCTION_SIZE = FunctionDocRegistryItem(
 FUNCTION_BR = FunctionDocRegistryItem(
     name="br",
     category=CATEGORY_MARKUP,
-    description=_("Stylizes the passed text with the passed size."),
+    description=_("Adds a line break."),
 )
 
 FUNCTIONS_MARKUP = [
