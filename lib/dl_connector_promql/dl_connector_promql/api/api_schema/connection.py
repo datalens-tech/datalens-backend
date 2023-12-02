@@ -1,5 +1,13 @@
 from __future__ import annotations
 
+import re
+from typing import (
+    Any,
+    Mapping,
+    Optional,
+)
+
+from marshmallow import ValidationError
 from marshmallow import fields as ma_fields
 
 from dl_api_connector.api_schema.connection_base import ConnectionMetaMixin

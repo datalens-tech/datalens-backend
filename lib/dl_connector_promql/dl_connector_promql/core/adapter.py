@@ -179,7 +179,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
                 message=f"Unexpected API response body: {err.args[0]}",
                 db_message=data["data"]["result"][:100],
                 query=dba_query.debug_compiled_query,
-            )
+            ) from err
 
     @staticmethod
     def make_exc(  # TODO:  Move to ErrorTransformer

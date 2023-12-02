@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from typing import ClassVar
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 import attr
 
