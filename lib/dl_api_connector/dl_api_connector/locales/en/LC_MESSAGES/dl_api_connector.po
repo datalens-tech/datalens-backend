@@ -15,6 +15,9 @@ msgstr "Hostname"
 msgid "field_port"
 msgstr "Port"
 
+msgid "field_path"
+msgstr "Path URL"
+
 msgid "field_username"
 msgstr "Username"
 

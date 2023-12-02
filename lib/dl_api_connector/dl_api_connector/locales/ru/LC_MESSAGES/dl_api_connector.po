@@ -15,6 +15,9 @@ msgstr "Имя хоста"
 msgid "field_port"
 msgstr "Порт"
 
+msgid "field_path"
+msgstr "Путь url"
+
 msgid "field_username"
 msgstr "Имя пользователя"
 

@@ -16,6 +16,7 @@ class PromQLConnection(ClassicConnectionSQL):
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
+        path: Optional[str] = attr.ib(default=None)
         secure: bool = attr.ib(default=False)
 
     def get_conn_dto(self) -> PromQLConnDTO:
@@ -23,6 +24,7 @@ class PromQLConnection(ClassicConnectionSQL):
             conn_id=self.uuid,
             host=self.data.host,
             port=self.data.port,
+            path=self.data.path,
             username=self.data.username,
             password=self.data.password,
             db_name=self.data.db_name or "",

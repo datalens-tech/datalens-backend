@@ -59,6 +59,7 @@ class SyncPromQLClient:
         self._session.close()
 
     def _request(self, method, endpoint, **kwargs):
+        # check endpoint values because it can change final url 
         url = urljoin(self._base_url, endpoint)
         return self._session.request(method, url, **kwargs)
 
