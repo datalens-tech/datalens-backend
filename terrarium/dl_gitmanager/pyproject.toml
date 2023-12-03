@@ -13,10 +13,12 @@ readme = "README.md"
 attrs = ">=22.2.0"
 python = ">=3.10, <3.12"
 gitpython = ">=3.1.37"
+colorama = ">=0.4.3"
 datalens-cli-tools = {path = "../dl_cli_tools"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
@@ -25,6 +27,7 @@ requires = [
 
 [tool.poetry.scripts]
 dl-git = "dl_gitmanager.scripts.gitmanager_cli:main"
+dl-cherry-farmer = "dl_gitmanager.scripts.cherry_farmer_cli:main"
 
 [tool.pytest.ini_options]
 minversion = "6.0"

@@ -19,6 +19,8 @@ from .models import (
     RenameTenantStatusModel,
     SourceNotFoundError,
     SpreadsheetFileSourceSettings,
+    YaDocsFileSourceSettings,
+    YaDocsUserSourceDataSourceProperties,
     YaDocsUserSourceProperties,
 )
 from .storage_schemas import (
@@ -47,7 +49,9 @@ __all__ = (
     "EmptySourcesError",
     "RenameTenantStatusModel",
     "PreviewSet",
+    "YaDocsFileSourceSettings",
     "YaDocsUserSourceProperties",
+    "YaDocsUserSourceDataSourceProperties",
 )
 
 

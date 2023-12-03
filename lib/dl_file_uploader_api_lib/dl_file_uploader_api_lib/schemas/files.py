@@ -1,8 +1,12 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import (
+    Any,
+    Type,
+)
 
 import marshmallow as ma
+from marshmallow_oneofschema import OneOfSchema
 
 from dl_constants.enums import FileProcessingStatus
 from dl_file_uploader_api_lib.schemas.base import BaseRequestSchema
@@ -14,7 +18,7 @@ from dl_file_uploader_lib import exc
 from dl_file_uploader_lib.enums import FileType
 
 
-def validate_authorized(data: dict) -> None:
+def validate_authorized_gsheets(data: dict) -> None:
     if data["authorized"] and data["refresh_token"] is None and data["connection_id"] is None:
         raise ma.ValidationError(
             "Either refresh_token or connection_id must be provided when authorized is true",
@@ -22,14 +26,19 @@ def validate_authorized(data: dict) -> None:
         )
 
 
+def validate_authorized_yadocs(data: dict) -> None:
+    if data["authorized"] and data["oauth_token"] is None and data["connection_id"] is None:
+        raise ma.ValidationError(
+            "Either oauth_token or connection_id must be provided when authorized is true",
+            "authorized",
+        )
+
+
 def validate_docs_data(data):
     if not ((data["public_link"] is None) ^ (data["private_path"] is None)):
         raise ValueError("Expected exactly one of [`private_path`, `public_link`] to be specified")
-    if data["public_link"] is None:
-        if data["private_path"] is None:
-            raise ma.ValidationError("'private_path' must be provided for private files")
-        elif data["oauth_token"] is None and data["connection_id"] is None:
-            raise ma.ValidationError("Expected `oauth_token` or `connection_id` to be specified")
+    if data["public_link"] is None and data["oauth_token"] is None and data["connection_id"] is None:
+        raise ma.ValidationError("Expected `oauth_token` or `connection_id` to be specified")
 
 
 class FileLinkRequestSchema(BaseRequestSchema):
@@ -41,7 +50,7 @@ class FileLinkRequestSchema(BaseRequestSchema):
 
     @ma.validates_schema(skip_on_field_errors=True)
     def validate_object(self, data: dict, **kwargs: Any) -> None:
-        validate_authorized(data)
+        validate_authorized_gsheets(data)
 
 
 class FileDocumentsRequestSchema(BaseRequestSchema):
@@ -90,24 +99,59 @@ class FileSourcesResultSchema(ma.Schema):
     sources = ma.fields.Nested(SourceShortInfoSchema, many=True)
 
 
-class UpdateConnectionDataRequestSchema(BaseRequestSchema):
-    class UpdateConnectionDataSourceSchema(BaseRequestSchema):
-        id = ma.fields.String()
-        title = ma.fields.String()
-        spreadsheet_id = ma.fields.String(load_default=None)
-        sheet_id = ma.fields.Integer(load_default=None)
-        first_line_is_header = ma.fields.Boolean(load_default=None)
+class FileTypeOneOfSchema(OneOfSchema):
+    class Meta:
+        unknown = ma.EXCLUDE
 
+    type_field_remove = False
+
+    def get_obj_type(self, obj: dict[str, Any]) -> str:
+        type_field = obj[self.type_field] if isinstance(obj, dict) else getattr(obj, self.type_field)
+        assert isinstance(type_field, FileType)
+        return type_field.name
+
+    def get_data_type(self, data):
+        data_type = data.get(self.type_field)
+        if self.type_field not in data:
+            data[self.type_field] = FileType.gsheets.value
+            data_type = FileType.gsheets.value
+        if self.type_field in data and self.type_field_remove:
+            data.pop(self.type_field)
+        return data_type
+
+
+class UpdateConnectionDataSourceSchemaBase(BaseRequestSchema):
+    id = ma.fields.String()
+    title = ma.fields.String()
+    first_line_is_header = ma.fields.Boolean(load_default=None)
+
+
+class UpdateConnectionDataSourceSchemaGSheets(UpdateConnectionDataSourceSchemaBase):
+    spreadsheet_id = ma.fields.String(load_default=None)
+    sheet_id = ma.fields.Integer(load_default=None)
+
+
+class UpdateConnectionDataSourceSchemaYaDocs(UpdateConnectionDataSourceSchemaBase):
+    public_link = ma.fields.String(load_default=None)
+    private_path = ma.fields.String(load_default=None)
+    sheet_id = ma.fields.String(load_default=None)
+
+
+class UpdateConnectionDataRequestSchemaBase(BaseRequestSchema):
+    type = ma.fields.Enum(FileType)
     connection_id = ma.fields.String(allow_none=True, load_default=None)
-    refresh_token = ma.fields.String(allow_none=True, load_default=None)
     authorized = ma.fields.Boolean(required=True)
     save = ma.fields.Boolean(load_default=False)
-    sources = ma.fields.Nested(UpdateConnectionDataSourceSchema, many=True)
     tenant_id = ma.fields.String(allow_none=True, load_default=None)
+
+
+class UpdateConnectionDataRequestSchemaGSheets(UpdateConnectionDataRequestSchemaBase):
+    refresh_token = ma.fields.String(allow_none=True, load_default=None)
+    sources = ma.fields.Nested(UpdateConnectionDataSourceSchemaGSheets, many=True)
 
     @ma.validates_schema(skip_on_field_errors=True)
     def validate_object(self, data: dict, **kwargs: Any) -> None:
-        validate_authorized(data)
+        validate_authorized_gsheets(data)
 
         incomplete_sources: list[dict[str, str]] = []
         for src in data["sources"]:
@@ -125,6 +169,43 @@ class UpdateConnectionDataRequestSchema(BaseRequestSchema):
                     incomplete_sources=incomplete_sources,
                 )
             )
+
+
+class UpdateConnectionDataRequestSchemaYaDocs(UpdateConnectionDataRequestSchemaBase):
+    oauth_token = ma.fields.String(allow_none=True, load_default=None)
+    sources = ma.fields.Nested(UpdateConnectionDataSourceSchemaYaDocs, many=True)
+
+    @ma.validates_schema(skip_on_field_errors=True)
+    def validate_object(self, data: dict, **kwargs: Any) -> None:
+        validate_authorized_yadocs(data)
+
+        incomplete_sources: list[dict[str, str]] = []
+        for src in data["sources"]:
+            if (
+                (src["public_link"] is None and src["private_path"] is None)
+                or src["sheet_id"] is None
+                or src["first_line_is_header"] is None
+            ):
+                incomplete_sources.append(
+                    dict(
+                        source_id=src["id"],
+                        title=src["title"],
+                    )
+                )
+
+        if incomplete_sources:
+            raise exc.CannotUpdateDataError(
+                details=dict(
+                    incomplete_sources=incomplete_sources,
+                )
+            )
+
+
+class UpdateConnectionDataRequestSchema(FileTypeOneOfSchema):
+    type_schemas: dict[str, Type[UpdateConnectionDataRequestSchemaBase]] = {
+        FileType.gsheets.name: UpdateConnectionDataRequestSchemaGSheets,
+        FileType.yadocs.name: UpdateConnectionDataRequestSchemaYaDocs,
+    }
 
 
 class UpdateConnectionDataResultSchema(ma.Schema):

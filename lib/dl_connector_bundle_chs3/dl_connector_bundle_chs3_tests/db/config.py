@@ -11,7 +11,7 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     host_us_pg=get_test_container_hostport("pg-us", fallback_port=52610).host,
     port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=52610).port,
     us_master_token="AC1ofiek8coB",
-    core_connector_ep_names=["clickhouse", "file", "gsheets_v2", "yadocs"],
+    core_connector_ep_names=["clickhouse", "file", "gsheets_v2", "docs"],
     redis_host=get_test_container_hostport("redis", fallback_port=52604).host,
     redis_port=get_test_container_hostport("redis", fallback_port=52604).port,
     redis_password="AwockEuvavDyinmeakmiRiopanbesBepsensUrdIz5",
@@ -37,7 +37,7 @@ DB_CH_URL = (
 S3_ENDPOINT_URL = f"http://{get_test_container_hostport('s3-storage', fallback_port=52620).as_pair()}"
 
 API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
-    api_connector_ep_names=["clickhouse", "file", "gsheets_v2", "yadocs"],
+    api_connector_ep_names=["clickhouse", "file", "gsheets_v2", "docs"],
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key="_some_test_secret_key_",
 )

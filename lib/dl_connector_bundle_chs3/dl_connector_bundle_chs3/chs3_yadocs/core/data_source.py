@@ -10,18 +10,18 @@ from dl_core.reporting.notifications import get_notification_record
 from dl_connector_bundle_chs3.chs3_base.core.constants import NOTIF_TYPE_DATA_UPDATE_FAILURE
 from dl_connector_bundle_chs3.chs3_base.core.data_source import BaseFileS3DataSource
 from dl_connector_bundle_chs3.chs3_yadocs.core.constants import (
-    CONNECTION_TYPE_YADOCS,
-    SOURCE_TYPE_YADOCS,
+    CONNECTION_TYPE_DOCS,
+    SOURCE_TYPE_DOCS,
 )
 
 
 class YaDocsFileS3DataSource(BaseFileS3DataSource):
-    conn_type = CONNECTION_TYPE_YADOCS
+    conn_type = CONNECTION_TYPE_DOCS
 
     @classmethod
     def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in {
-            SOURCE_TYPE_YADOCS,
+            SOURCE_TYPE_DOCS,
         }
 
     def _handle_component_errors(self) -> None:

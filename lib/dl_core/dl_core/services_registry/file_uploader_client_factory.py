@@ -54,6 +54,7 @@ class YaDocsFileSourceDesc(FileSourceDesc):
     public_link: Optional[str] = attr.ib()
     private_path: Optional[str] = attr.ib()
     first_line_is_header: Optional[bool] = attr.ib()
+    sheet_id: Optional[str] = attr.ib()
 
 
 @attr.s(frozen=True)

@@ -77,7 +77,6 @@ class DataFetcher:
         prep_src_info = prep_component_manager.get_prepared_source(
             avatar_id=avatar_id, alias=alias, from_subquery=from_subquery, subquery_limit=subquery_limit
         )
-        data_key = LocalKeyRepresentation().extend(part_type="avatar_id", part_content=avatar_id)
         return DataSourceVS(
             id=stream_id,
             alias=alias,
@@ -85,7 +84,7 @@ class DataFetcher:
             names=prep_src_info.col_names,
             user_types=prep_src_info.user_types,
             prep_src_info=prep_src_info,
-            data_key=data_key,
+            data_key=prep_src_info.data_key,
             meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),
             preparation_callback=None,
         )

@@ -65,6 +65,10 @@ RLS_CONFIG_CASES = [
 MAIN_TEST_CASE = RLS_CONFIG_CASES[0]
 
 
+def config_to_comparable(conf: str):
+    return set((line.split(": ")[0], ",".join(sorted(line.split(": ")[1]))) for line in conf.strip().split("\n"))
+
+
 def check_text_config_to_rls_entries(case: dict, subject_resolver: BaseSubjectResolver) -> None:
     field_guid, config, expected_rls_entries = case["field_guid"], case["config"], case["rls_entries"]
     entries = FieldRLSSerializer.from_text_config(config, field_guid, subject_resolver=subject_resolver)

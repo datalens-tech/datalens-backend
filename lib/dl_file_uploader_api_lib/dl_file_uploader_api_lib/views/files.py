@@ -38,6 +38,9 @@ from dl_file_uploader_lib.redis_model.models import (
     GSheetsFileSourceSettings,
     GSheetsUserSourceDataSourceProperties,
     GSheetsUserSourceProperties,
+    YaDocsFileSourceSettings,
+    YaDocsUserSourceDataSourceProperties,
+    YaDocsUserSourceProperties,
 )
 from dl_file_uploader_task_interface.tasks import (
     DownloadGSheetTask,
@@ -242,7 +245,7 @@ class UpdateConnectionDataView(FileUploaderBaseView):
         rmm = self.dl_request.get_redis_model_manager()
         redis = self.dl_request.get_persistent_redis()
 
-        dfile_by_spreadsheet: dict[str, DataFile] = {}
+        dfile_by_source_properties: dict[str, DataFile] = {}
         for src in sources:
             source_lock_key, source_lock_token = get_update_connection_source_lock(src["id"])
             LOGGER.info(f"Acquiring redis lock {source_lock_key}")
@@ -253,38 +256,78 @@ class UpdateConnectionDataView(FileUploaderBaseView):
                 continue
             LOGGER.info(f"Lock {source_lock_key} acquired")
 
-            if src["spreadsheet_id"] not in dfile_by_spreadsheet:
-                dfile_by_spreadsheet[src["spreadsheet_id"]] = DataFile(
-                    user_id=DataFile.system_user_id if self._is_internal else None,  # filled from rci when None
-                    manager=rmm,
-                    filename="TITLE",
-                    status=FileProcessingStatus.in_progress,
-                    file_type=FileType.gsheets,
-                    sources=[],
-                    user_source_properties=GSheetsUserSourceProperties(
-                        spreadsheet_id=src["spreadsheet_id"],
-                        refresh_token=req_data["refresh_token"],
+            if req_data["type"] == FileType.gsheets:
+                if src["spreadsheet_id"] not in dfile_by_source_properties:
+                    dfile_by_source_properties[src["spreadsheet_id"]] = DataFile(
+                        user_id=DataFile.system_user_id if self._is_internal else None,  # filled from rci when None
+                        manager=rmm,
+                        filename="TITLE",
+                        status=FileProcessingStatus.in_progress,
+                        file_type=FileType.gsheets,
+                        sources=[],
+                        user_source_properties=GSheetsUserSourceProperties(
+                            spreadsheet_id=src["spreadsheet_id"],
+                            refresh_token=req_data["refresh_token"],
+                        ),
+                    )
+                LOGGER.info(f'Data file id: {dfile_by_source_properties[src["spreadsheet_id"]].id}')
+
+                sheet_data_source = DataSource(
+                    id=src["id"],
+                    title=src["title"],
+                    raw_schema=[],
+                    file_source_settings=GSheetsFileSourceSettings(
+                        first_line_is_header=src["first_line_is_header"],
+                        raw_schema_header=[],
+                        raw_schema_body=[],
                     ),
+                    user_source_dsrc_properties=GSheetsUserSourceDataSourceProperties(
+                        sheet_id=src["sheet_id"],
+                    ),
+                    status=FileProcessingStatus.in_progress,
+                    error=None,
                 )
-            LOGGER.info(f'Data file id: {dfile_by_spreadsheet[src["spreadsheet_id"]].id}')
 
-            sheet_data_source = DataSource(
-                id=src["id"],
-                title=src["title"],
-                raw_schema=[],
-                file_source_settings=GSheetsFileSourceSettings(
-                    first_line_is_header=src["first_line_is_header"],
-                    raw_schema_header=[],
-                    raw_schema_body=[],
-                ),
-                user_source_dsrc_properties=GSheetsUserSourceDataSourceProperties(
-                    sheet_id=src["sheet_id"],
-                ),
-                status=FileProcessingStatus.in_progress,
-                error=None,
-            )
+                dfile_by_source_properties[src["spreadsheet_id"]].sources.append(sheet_data_source)  # type: ignore
 
-            dfile_by_spreadsheet[src["spreadsheet_id"]].sources.append(sheet_data_source)  # type: ignore
+            elif req_data["type"] == FileType.yadocs:
+                filled_source_property = "public_link" if src["public_link"] is not None else "private_path"
+
+                if (src["public_link"] is None or src["public_link"] not in dfile_by_source_properties) and (
+                    src["private_path"] is None or src["private_path"] not in dfile_by_source_properties
+                ):
+                    dfile_by_source_properties[src[filled_source_property]] = DataFile(
+                        user_id=DataFile.system_user_id if self._is_internal else None,  # filled from rci when None
+                        manager=rmm,
+                        filename="TITLE",
+                        status=FileProcessingStatus.in_progress,
+                        file_type=FileType.yadocs,
+                        sources=[],
+                        user_source_properties=YaDocsUserSourceProperties(
+                            private_path=src["private_path"],
+                            public_link=src["public_link"],
+                            oauth_token=req_data["oauth_token"],
+                        ),
+                    )
+                LOGGER.info(f"Data file id: {dfile_by_source_properties[src[filled_source_property]].id}")
+
+                sheet_data_source = DataSource(
+                    id=src["id"],
+                    title=src["title"],
+                    raw_schema=[],
+                    file_source_settings=YaDocsFileSourceSettings(
+                        first_line_is_header=src["first_line_is_header"],
+                        raw_schema_header=[],
+                        raw_schema_body=[],
+                    ),
+                    user_source_dsrc_properties=YaDocsUserSourceDataSourceProperties(
+                        sheet_id=src["sheet_id"],
+                    ),
+                    status=FileProcessingStatus.in_progress,
+                    error=None,
+                )
+
+                dfile_by_source_properties[src[filled_source_property]].sources.append(sheet_data_source)  # type: ignore
 
         task_processor = self.dl_request.get_task_processor()
         exec_mode = TaskExecutionMode.UPDATE_AND_SAVE if req_data["save"] else TaskExecutionMode.UPDATE_NO_SAVE
@@ -294,21 +337,32 @@ class UpdateConnectionDataView(FileUploaderBaseView):
             assert self.dl_request.rci.tenant is not None
             tenant_id = self.dl_request.rci.tenant.get_tenant_id()
         assert tenant_id is not None
-        for dfile in dfile_by_spreadsheet.values():
+        for dfile in dfile_by_source_properties.values():
             await dfile.save()
 
-            download_gsheet_task = DownloadGSheetTask(
-                file_id=dfile.id,
-                authorized=req_data["authorized"],
-                tenant_id=tenant_id,
-                connection_id=req_data["connection_id"],
-                exec_mode=exec_mode,
-            )
-            await task_processor.schedule(download_gsheet_task)
-            LOGGER.info(f"Scheduled DownloadGSheetTask for file_id {dfile.id} (update connection)")
+            if req_data["type"] == FileType.gsheets:
+                download_gsheet_task = DownloadGSheetTask(
+                    file_id=dfile.id,
+                    authorized=req_data["authorized"],
+                    tenant_id=tenant_id,
+                    connection_id=req_data["connection_id"],
+                    exec_mode=exec_mode,
+                )
+                await task_processor.schedule(download_gsheet_task)
+                LOGGER.info(f"Scheduled DownloadGSheetTask for file_id {dfile.id} (update connection)")
+            elif req_data["type"] == FileType.yadocs:
+                download_yadocs_task = DownloadYaDocsTask(
+                    file_id=dfile.id,
+                    authorized=req_data["authorized"],
+                    tenant_id=tenant_id,
+                    connection_id=req_data["connection_id"],
+                    exec_mode=exec_mode,
+                )
+                await task_processor.schedule(download_yadocs_task)
+                LOGGER.info(f"Scheduled DownloadYaDocsTask for file_id {dfile.id} (update connection)")
 
         return web.json_response(
-            files_schemas.UpdateConnectionDataResultSchema().dump(dict(files=dfile_by_spreadsheet.values()))
+            files_schemas.UpdateConnectionDataResultSchema().dump(dict(files=dfile_by_source_properties.values()))
         )
 
 

@@ -7,8 +7,8 @@ from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.fixtures.primitives import FixtureTableSpec
 
 from dl_connector_bundle_chs3.chs3_yadocs.core.constants import (
-    CONNECTION_TYPE_YADOCS,
-    SOURCE_TYPE_YADOCS,
+    CONNECTION_TYPE_DOCS,
+    SOURCE_TYPE_DOCS,
 )
 from dl_connector_bundle_chs3.chs3_yadocs.core.testing.connection import make_saved_yadocs_connection
 from dl_connector_bundle_chs3.chs3_yadocs.core.us_connection import YaDocsFileS3Connection
@@ -16,8 +16,8 @@ from dl_connector_bundle_chs3_tests.db.base.core.base import BaseCHS3TestClass
 
 
 class BaseYaDocsFileS3TestClass(BaseCHS3TestClass[YaDocsFileS3Connection]):
-    conn_type = CONNECTION_TYPE_YADOCS
-    source_type = SOURCE_TYPE_YADOCS
+    conn_type = CONNECTION_TYPE_DOCS
+    source_type = SOURCE_TYPE_DOCS
 
     @pytest.fixture(scope="function")
     def sample_file_data_source(

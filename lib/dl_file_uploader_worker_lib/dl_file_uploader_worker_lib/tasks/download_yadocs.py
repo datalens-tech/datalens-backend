@@ -28,6 +28,8 @@ from dl_file_uploader_lib.yadocs_client import (
 )
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
+from dl_file_uploader_task_interface.tasks import TaskExecutionMode
+from dl_file_uploader_worker_lib.utils.connection_error_tracker import FileConnectionDataSourceErrorTracker
 from dl_task_processor.task import (
     BaseExecutorTask,
     Fail,
@@ -73,7 +75,7 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
         redis = self._ctx.redis_service.get_redis()
         task_processor = self._ctx.make_task_processor(self._request_id)
         usm = self._ctx.get_async_usm()
-
+        connection_error_tracker = FileConnectionDataSourceErrorTracker(usm, task_processor, redis, self._request_id)
         try:
             rmm = RedisModelManager(redis=redis, crypto_keys_config=self._ctx.crypto_keys_config)
             dfile = await DataFile.get(manager=rmm, obj_id=self.meta.file_id)
@@ -117,7 +119,14 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
                     download_error = FileProcessingError.from_exception(e)
                     dfile.status = FileProcessingStatus.failed
                     dfile.error = download_error
+                    if self.meta.exec_mode != TaskExecutionMode.BASIC:
+                        for src in dfile.sources:
+                            src.status = FileProcessingStatus.failed
+                            src.error = download_error
+                            connection_error_tracker.add_error(src.id, src.error)
                     await dfile.save()
+
+                    await connection_error_tracker.finalize(self.meta.exec_mode, self.meta.connection_id)
                     return Success()
 
             dfile.filename = spreadsheet_meta["name"]
@@ -154,7 +163,14 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
             await dfile.save()
             LOGGER.info(f'Uploaded file "{dfile.filename}".')
 
-            await task_processor.schedule(task_interface.ProcessExcelTask(file_id=dfile.id))
+            await task_processor.schedule(
+                task_interface.ProcessExcelTask(
+                    file_id=dfile.id,
+                    tenant_id=self.meta.tenant_id,
+                    connection_id=self.meta.connection_id,
+                    exec_mode=self.meta.exec_mode,
+                )
+            )
             LOGGER.info(f"Scheduled ProcessExcelTask for file_id {dfile.id}")
 
         except Exception as ex:

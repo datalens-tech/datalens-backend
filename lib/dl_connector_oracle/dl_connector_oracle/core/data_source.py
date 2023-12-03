@@ -6,6 +6,8 @@ from typing import (
     Optional,
 )
 
+from sqlalchemy.sql.elements import ClauseElement
+
 from dl_constants.enums import DataSourceType
 from dl_core.data_source.sql import (
     BaseSQLDataSource,
@@ -37,7 +39,7 @@ class OracleDataSource(OracleDataSourceMixin, StandardSchemaSQLDataSource):
     """Oracle table"""
 
     @require_table_name
-    def get_sql_source(self, alias: Optional[str] = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         q = self.quote
         alias_str = "" if alias is None else f" {q(alias)}"
         schema_str = "" if self.schema_name is None else f"{q(self.schema_name)}."

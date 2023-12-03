@@ -16,6 +16,7 @@ from dl_constants.enums import (
     UserDataType,
 )
 from dl_core.connectors.base.query_compiler import QueryCompiler
+from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
 from dl_core.query.bi_query import SqlSourceType
 
 
@@ -45,6 +46,7 @@ class PreparedFromInfo:
     connect_args: dict[str, Any] = attr.ib(kw_only=True)
     pass_db_query_to_user: bool = attr.ib(kw_only=True)
     target_connection_ref: Optional[ConnectionRef] = attr.ib(kw_only=True)
+    data_key: LocalKeyRepresentation = attr.ib(kw_only=True)
 
     def supports_join_type(self, join_type: JoinType) -> bool:
         return join_type in self.supported_join_types

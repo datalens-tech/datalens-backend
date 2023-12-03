@@ -10,6 +10,7 @@ from typing import (
 )
 
 from clickhouse_sqlalchemy.quoting import Quoter
+from sqlalchemy.sql.elements import ClauseElement
 
 from dl_constants.enums import (
     DataSourceType,
@@ -113,7 +114,7 @@ class BaseFileS3DataSource(ClickHouseDataSourceBase):
     def _handle_component_errors(self) -> None:
         pass
 
-    def get_sql_source(self, alias: Optional[str] = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         origin_src = self._get_origin_src()
         status = origin_src.status
         raw_schema = self.spec.raw_schema

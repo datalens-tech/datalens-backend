@@ -6,7 +6,7 @@ from dl_configs.crypto_keys import (
 )
 
 
-CONNECTOR_WHITELIST = ["clickhouse", "file", "gsheets_v2"]
+CONNECTOR_WHITELIST = ["clickhouse", "file", "gsheets_v2", "docs"]
 
 
 @attr.s(kw_only=True)

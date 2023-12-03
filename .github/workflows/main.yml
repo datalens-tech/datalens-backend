@@ -102,6 +102,7 @@ jobs:
     outputs:
       split_base: ${{ steps.get_split.outputs.split_base }}
       split_fat: ${{ steps.get_split.outputs.split_fat }}
+      split_ext_public: ${{ steps.get_split.outputs.split_ext_public }}
     steps:
       - name: 'Cleanup build folder'
         run: |
@@ -118,6 +119,7 @@ jobs:
           . /venv/bin/activate && echo '${{ needs.router.outputs.affected }}' >> /tmp/dl_test_targets.json
           split-pytest-tasks base /src /tmp/dl_test_targets.json | tee -a >> "$GITHUB_OUTPUT"
           split-pytest-tasks fat /src /tmp/dl_test_targets.json | tee -a >> "$GITHUB_OUTPUT"
+          split-pytest-tasks ext_public /src /tmp/dl_test_targets.json | tee -a >> "$GITHUB_OUTPUT"
 
   run_tests_base:
     runs-on: [ self-hosted, linux, light ]
@@ -167,6 +169,109 @@ jobs:
           path: /report/
           retention-days: 1
 
+  run_tests_fat:
+    runs-on: [ self-hosted, linux, fat ]
+    name: "🐍[pytest][fat]${{ matrix.value }}"
+    needs: pytest_split
+    if: ${{ needs.pytest_split.outputs.split_fat != '[]' }}
+    permissions:
+      packages: write
+      contents: read
+    container:
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
+      options: -v /var/run/docker.sock:/var/run/docker.sock
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    strategy:
+      fail-fast: false
+      matrix:
+        value: ${{fromJson(needs.pytest_split.outputs.split_fat)}}
+    steps:
+      - run: echo "Going to run tests for  ${{ matrix.value }}"
+      - run: mkdir /report
+      - run: echo "Running py tests for ${{ matrix.value }}"
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: "ghcr.io"
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo compose_path="/src/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
+      - run: cd "${{ env.compose_path }}" && echo compose_prj="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_ENV"
+      # We need to set custom compose project name to ensure "unique" container names in the host docker env
+      - name: run bash script with all logic for starting compose and running tests
+        run: |
+          bash /src/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}" \
+            WE_ARE_IN_CI=1
+      - name: Stop compose if provided
+        # We could not put this into bash script, since job could be cancelled by user request
+        if: always()  # yes! always
+        run: bash /src/ci/stop_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+      - uses: actions/upload-artifact@v3
+        if: "!cancelled()"
+        with:
+          name: "pytest_reports_${{ env.compose_prj }}"
+          path: /report/
+          retention-days: 1
+
+  run_tests_ext_public:
+    # using light runners for now, TBD: change when we have ext_public
+    runs-on: [ self-hosted, linux, light ]
+    name: "🐍[pytest][ext_public]${{ matrix.value }}"
+    needs: pytest_split
+    if: ${{ needs.pytest_split.outputs.split_ext_public != '[]' }}
+    permissions:
+      packages: write
+      contents: read
+    container:
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
+      options: -v /var/run/docker.sock:/var/run/docker.sock
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    strategy:
+      fail-fast: false
+      matrix:
+        value: ${{fromJson(needs.pytest_split.outputs.split_ext_public)}}
+    steps:
+      - run: echo "Going to run tests for  ${{ matrix.value }}"
+      - run: mkdir /report
+      - run: echo "Running py tests for ${{ matrix.value }}"
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: "ghcr.io"
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo compose_path="/src/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
+      - run: cd "${{ env.compose_path }}" && echo compose_prj="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_ENV"
+      # We need to set custom compose project name to ensure "unique" container names in the host docker env
+      - name: run bash script with all logic for starting compose and running tests
+        run: |
+          bash /src/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}" \
+            WE_ARE_IN_CI=1
+        env:
+          GOOGLE_API_KEY: "${{ secrets.EXT_GOOGLE_API_KEY }}"
+          BITRIX_TOKEN: "${{ secrets.EXT_BITRIX_TOKEN }}"
+          BITRIX_DATALENS_TOKEN: "${{ secrets.EXT_BITRIX_DATALENS_TOKEN }}"
+          METRIKA_OAUTH: "${{ secrets.EXT_METRIKA_OAUTH }}"
+          YA_DOCS_API_KEY: "${{ secrets.EXT_YA_DOCS_API_KEY }}"
+      - name: Stop compose if provided
+        # We could not put this into bash script, since job could be cancelled by user request
+        if: always()  # yes! always
+        run: bash /src/ci/stop_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+      - uses: actions/upload-artifact@v3
+        if: "!cancelled()"
+        with:
+          name: "pytest_reports_${{ env.compose_prj }}"
+          path: /report/
+          retention-days: 1
+
   mypy:
     runs-on: [ self-hosted, linux, light ]
     needs: router
@@ -199,7 +304,7 @@ jobs:
 
   publish-result:
     runs-on: [self-hosted, linux ]
-    needs: [ "run_tests_base" ] # , "run_tests_fat" ]
+    needs: [ "run_tests_base", "run_tests_fat", "run_tests_ext_public" ]
     if: "!cancelled() && ${{ github.event.inputs.run_mypy_only != 'true' }}"
     permissions:
       contents: read
@@ -244,35 +349,3 @@ jobs:
         env:
           VENV_PATH: /venv
           SKIP_RUFF: true
-
-  codestyle_changed_without_ruff:
-    runs-on: [ self-hosted, linux, light ]
-    needs: gh_build_image
-    container:
-      # until https://github.com/github/docs/issues/25520 is resolved, using vars
-      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: 'Cleanup build folder'
-        run: |
-          rm -rf ./* || true
-          rm -rf ./.??* || true
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          submodules: true
-      # https://github.com/actions/runner-images/issues/6775
-      - run: git config --global --add safe.directory .
-      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
-      - run: |
-          TARGET=$(. /venv/bin/activate && dl-git range-diff-paths --only-added-commits --base ${{ github.event.pull_request.base.sha }} --head ${{ github.event.pull_request.head.sha }})
-          echo $TARGET
-          task cq:check_target -- "$TARGET"
-          task cq:check_target_strict  -- "$TARGET" 1>/dev/null 2>/dev/null
-        env:
-          VENV_PATH: /venv
-          SKIP_RUFF: true
-          TEST_TARGET_OVERRIDE: ${{ github.event.inputs.test_targets }}

@@ -14,6 +14,7 @@ from typing import (
 )
 
 import attr
+from sqlalchemy.sql.elements import ClauseElement
 
 from dl_constants.enums import (
     ConnectionType,
@@ -25,6 +26,10 @@ from dl_core.base_models import (
     SourceFilterSpec,
 )
 from dl_core.connectors.base.query_compiler import QueryCompiler
+from dl_core.data_processing.cache.primitives import (
+    DataKeyPart,
+    LocalKeyRepresentation,
+)
 from dl_core.data_source_spec.base import DataSourceSpec
 from dl_core.db import (
     IndexInfo,
@@ -188,12 +193,13 @@ class DataSource(metaclass=abc.ABCMeta):
     def saved_index_info_set(self) -> Optional[frozenset[IndexInfo]]:
         return None
 
-    def get_sql_source(self, alias: Optional[str] = None) -> Any:
+    @abc.abstractmethod
+    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         """
         Return something that can be used in a ``select_from`` ``SQLAlchemy`` clause for fetching data.
         Optionally assign the source an alias that can be used in the query to refer to it.
         """
-        return None
+        raise NotImplementedError()
 
     def source_exists(
         self,
@@ -238,6 +244,16 @@ class DataSource(metaclass=abc.ABCMeta):
     @property
     def data_export_forbidden(self) -> bool:
         return self.connection.data_export_forbidden
+
+    def get_cache_key_part(self) -> LocalKeyRepresentation:
+        local_key_rep = self.connection.get_cache_key_part()
+        local_key_rep = local_key_rep.multi_extend(
+            DataKeyPart(
+                part_type="data_source_sql",
+                part_content=self.get_sql_source().compile(compile_kwargs={"literal_binds": True}).string,
+            ),
+        )
+        return local_key_rep
 
 
 class IncompatibleDataSourceMixin(DataSource):

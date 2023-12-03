@@ -5,6 +5,8 @@ from typing import (
     Optional,
 )
 
+from sqlalchemy.sql.elements import ClauseElement
+
 from dl_constants.enums import DataSourceType
 from dl_core.connection_models import (
     TableDefinition,
@@ -75,7 +77,7 @@ class BigQueryTableDataSource(BigQueryDataSourceMixin, TableSQLDataSourceMixin, 
         )
 
     @require_table_name
-    def get_sql_source(self, alias: Optional[str] = None) -> Any:
+    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         q = self.quote
         alias_str = "" if alias is None else f" AS {q(alias)}"
         return sa_plain_text(f"{q(self.db_name)}" f".{q(self.spec.dataset_name)}" f".{q(self.table_name)}{alias_str}")

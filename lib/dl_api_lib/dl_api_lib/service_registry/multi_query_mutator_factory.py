@@ -1,4 +1,5 @@
 import abc
+import logging
 from typing import Sequence
 
 import attr
@@ -12,6 +13,9 @@ from dl_core.us_dataset import Dataset
 from dl_formula.core.dialect import DialectCombo
 from dl_query_processing.multi_query.factory import MultiQueryMutatorFactoryBase
 from dl_query_processing.multi_query.mutators.base import MultiQueryMutatorBase
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class SRMultiQueryMutatorFactory(abc.ABC):
@@ -51,14 +55,10 @@ class DefaultSRMultiQueryMutatorFactory(SRMultiQueryMutatorFactory):
             dialect=dialect,
             result_schema=dataset.result_schema,
         )
-        if factory is None:
-            # Try again for the basic mode
-            factory = get_multi_query_mutator_factory(
-                query_proc_mode=QueryProcessingMode.basic,
-                backend_type=backend_type,
-                dialect=dialect,
-                result_schema=dataset.result_schema,
-            )
-
-        assert factory is not None
+        LOGGER.info(
+            f"Resolved MQM factory for backend_type {backend_type.name} "
+            f"and dialect {dialect.common_name_and_version} "
+            f"in {self._query_proc_mode.name} mode "
+            f"to {type(factory).__name__}"
+        )
         return factory

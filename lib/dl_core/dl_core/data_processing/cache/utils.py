@@ -138,6 +138,20 @@ class CompengOptionsBuilder(DatasetOptionsBuilder):  # TODO: Move to compeng pac
             refresh_ttl_on_read=ttl_info.refresh_ttl_on_read,
         )
 
+    def get_data_key(
+        self,
+        *,
+        query_res_info: QueryAndResultInfo,
+        from_info: Optional[PreparedFromInfo] = None,
+        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
+    ) -> Optional[LocalKeyRepresentation]:
+        # TODO: Remove after switching to new cache keys
+        compiled_query = self.get_query_str_for_cache(
+            query=query_res_info.query,
+            dialect=from_info.query_compiler.dialect,
+        )
+        return base_key.extend(part_type="query", part_content=compiled_query)
+
 
 @attr.s
 class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
@@ -173,18 +187,15 @@ class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
         is_bleeding_edge_user: bool,
         base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
     ) -> LocalKeyRepresentation:
+        # TODO: Remove after switching to new cache keys,
+        #  but put the db_name + target_connection.get_cache_key_part() parts somewhere
         assert from_info.target_connection_ref is not None
         target_connection = self._us_entry_buffer.get_entry(from_info.target_connection_ref)
         assert isinstance(target_connection, ConnectionBase)
         connection_id = target_connection.uuid
         assert connection_id is not None
 
-        local_key_rep = base_key.multi_extend(*target_connection.get_cache_key_part().key_parts)
-        if from_info.db_name is not None:
-            # FIXME: Replace with key parts for every participating dsrc
-            # For now db_name will be duplicated in some source types
-            # (one from connection, one from source)
-            local_key_rep = local_key_rep.extend(part_type="db_name", part_content=from_info.db_name)
+        local_key_rep = base_key
         local_key_rep = local_key_rep.extend(part_type="query", part_content=str(compiled_query))
         local_key_rep = local_key_rep.extend(part_type="user_types", part_content=tuple(user_types or ()))
         local_key_rep = local_key_rep.extend(
@@ -201,6 +212,7 @@ class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
         from_info: Optional[PreparedFromInfo] = None,
         base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
     ) -> Optional[LocalKeyRepresentation]:
+        # TODO: Remove after switching to new cache keys
         compiled_query = self.get_query_str_for_cache(
             query=query_res_info.query,
             dialect=from_info.query_compiler.dialect,

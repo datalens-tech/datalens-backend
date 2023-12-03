@@ -1,6 +1,7 @@
 from typing import (
     Collection,
     Optional,
+    Sequence,
     Type,
 )
 
@@ -87,25 +88,42 @@ class MQMFactorySettingItem:
 _MQM_FACTORY_REGISTRY: dict[MQMFactoryKey, Type[MultiQueryMutatorFactoryBase]] = {}
 
 
+def _get_default_mqm_factory_cls() -> Type[MultiQueryMutatorFactoryBase]:
+    return DefaultMultiQueryMutatorFactory
+
+
 def get_multi_query_mutator_factory(
     query_proc_mode: QueryProcessingMode,
     backend_type: SourceBackendType,
     dialect: DialectCombo,
     result_schema: ResultSchema,
-) -> Optional[MultiQueryMutatorFactoryBase]:
-    factory_cls = _MQM_FACTORY_REGISTRY.get(
-        # First try with exact dialect
+) -> MultiQueryMutatorFactoryBase:
+    prioritized_keys = (
+        # First try with exact dialect and mode (exact match)
         MQMFactoryKey(query_proc_mode=query_proc_mode, backend_type=backend_type, dialect=dialect),
-        _MQM_FACTORY_REGISTRY.get(
-            # Then try without the dialect, just the backend
-            MQMFactoryKey(query_proc_mode=query_proc_mode, backend_type=backend_type, dialect=None),
-            DefaultMultiQueryMutatorFactory,  # If still nothing, then use the default
-        ),
+        # Now the fallbacks begin...
+        # Try without the dialect (all dialects within backend), just the backend and mode
+        MQMFactoryKey(query_proc_mode=query_proc_mode, backend_type=backend_type, dialect=None),
+        # Fall back to `basic` mode (but still within the backend type)
+        # First try with the specific dialect
+        MQMFactoryKey(query_proc_mode=QueryProcessingMode.basic, backend_type=backend_type, dialect=dialect),
+        # If still nothing, try without specifying the dialect (all dialects within backend)
+        MQMFactoryKey(query_proc_mode=QueryProcessingMode.basic, backend_type=backend_type, dialect=None),
     )
 
-    if factory_cls is None:
-        return None
+    # Now iterate over all of these combinations IN THAT VERY ORDER(!)
+    factory_cls: Optional[Type[MultiQueryMutatorFactoryBase]] = None
+    for key in prioritized_keys:
+        factory_cls = _MQM_FACTORY_REGISTRY.get(key)
+        if factory_cls is not None:
+            break  # found something
 
+    if factory_cls is None:
+        # Not found for any of the combinations
+        # Use the ultimate default
+        factory_cls = _get_default_mqm_factory_cls()
+
+    assert factory_cls is not None
     return factory_cls(result_schema=result_schema)
 
 

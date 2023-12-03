@@ -8,6 +8,9 @@ Tool for advanced/.custom git operations
 pip install -Ue <path-to-package>
 ```
 
+
+# dl-git
+
 ## Common options
 
 ### --help
@@ -29,7 +32,7 @@ dl-git <command> --help
 Optional. Specify custom repository path
 
 ```
-dl-git --repo-path <command> <args>
+dl-git --repo-path <path> <command> <args>
 ```
 
 By default CWD is used.
@@ -62,3 +65,83 @@ By default they are printed relative to the repository root.
 
 The `--only-added-commits` option makes the tool inspect only commits
 that have been added in the head version.
+
+
+# dl-cherry-farmer
+
+## Common options
+
+### --help
+
+Show the main help message
+
+```bash
+dl-git --help
+dl-git --h
+```
+
+The `--help` (`-h`) option can also be used for any command:
+```bash
+dl-git <command> --help
+```
+
+### --repo-path
+
+Optional. Specify custom repository path
+
+```
+dl-cherry-farmer --repo-path <command> <args>
+```
+
+By default CWD is used.
+The tool first looks for the repository at the given path, and then, if not found,
+it starts a recursive search upwards, toward the path root. If no repository is found, an error is raised.
+If the path is inside a submodule, then the submodule is considered to be the root repo.
+
+### --state-file
+
+Optional. Specify path to cherry-farmer's state file
+
+```
+dl-cherry-farmer --state-file <path>  <command> <args>
+```
+
+By default `./cherry_farmer.json` is used.
+
+## Commands
+
+### show
+
+```bash
+dl-cherry-farmer show --src-branch <branch> --dst-branch <branch>
+dl-cherry-farmer show --src-branch <branch> --dst-branch <branch> --new
+dl-cherry-farmer show --src-branch <branch> --dst-branch <branch> --ignored
+dl-cherry-farmer show --src-branch <branch> --dst-branch <branch> --picked
+dl-cherry-farmer show --src-branch <branch> --dst-branch <branch> --all
+```
+
+Here `--src-branch` and `--dst-branch` are the names of the branches that you want to compare
+With `--new` new (not picked and not ignored commits) will be shown.
+With `--picked` picked commits will be shown.
+With `--ignored` ignored commits will be shown.
+With `-a` or `--all` all commits will be shown.
+
+### iter
+
+Iterate over all commits in diff and pick or ignore them interactively
+
+```bash
+dl-cherry-farmer show --src-branch <branch> --dst-branch <branch>
+dl-cherry-farmer show --src-branch <branch> --dst-branch <branch> --all
+```
+
+All options are the same as for the `show` command.
+
+### mark
+
+```bash
+dl-cherry-farmer mark --commit <commit_id> --state <state>
+```
+
+Here `commid_id` should be a valid commit ID, and `state` is the state to be set for this commit.
+If `--state new` is specified, then the info about this commit is simply deleted from the saved state.

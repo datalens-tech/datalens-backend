@@ -575,6 +575,7 @@ async def test_save_source_task(
     downloaded_gsheet_file_id,
     default_async_usm_per_test,
     s3_tmp_bucket,
+    s3_persistent_bucket,
 ):
     file_id = downloaded_gsheet_file_id
     usm = default_async_usm_per_test

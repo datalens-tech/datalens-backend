@@ -58,7 +58,7 @@ labels = ["fat"]
 [datalens.pytest.ext]
 root_dir = "dl_file_uploader_api_lib_tests/"
 target_path = "ext"
-labels = ["ext"]
+labels = ["ext_public"]
 
 [tool.mypy]
 warn_unused_configs = true

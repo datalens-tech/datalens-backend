@@ -17,21 +17,22 @@ from dl_core.services_registry.file_uploader_client_factory import YaDocsFileSou
 from dl_utils.utils import DataKey
 
 from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
-from dl_connector_bundle_chs3.chs3_yadocs.core.constants import SOURCE_TYPE_YADOCS
+from dl_connector_bundle_chs3.chs3_yadocs.core.constants import SOURCE_TYPE_DOCS
 
 
 LOGGER = logging.getLogger(__name__)
 
 
 class YaDocsFileS3Connection(BaseFileS3Connection):
-    source_type = SOURCE_TYPE_YADOCS
-    allowed_source_types = frozenset((SOURCE_TYPE_YADOCS,))
+    source_type = SOURCE_TYPE_DOCS
+    allowed_source_types = frozenset((SOURCE_TYPE_DOCS,))
 
     editable_data_source_parameters: ClassVar[
         tuple[str, ...]
     ] = BaseFileS3Connection.editable_data_source_parameters + (
         "public_link",
         "private_path",
+        "sheet_id",
         "first_line_is_header",
         "data_updated_at",
     )
@@ -40,6 +41,7 @@ class YaDocsFileS3Connection(BaseFileS3Connection):
     class FileDataSource(BaseFileS3Connection.FileDataSource):
         public_link: Optional[str] = attr.ib(default=None)
         private_path: Optional[str] = attr.ib(default=None)
+        sheet_id: Optional[str] = attr.ib(default=None)
         first_line_is_header: Optional[bool] = attr.ib(default=None)
         data_updated_at: datetime.datetime = attr.ib(factory=lambda: datetime.datetime.now(datetime.timezone.utc))
 
@@ -54,6 +56,7 @@ class YaDocsFileS3Connection(BaseFileS3Connection):
                     self.s3_filename_suffix,
                     raw_schema,
                     self.status,
+                    self.sheet_id,
                     self.public_link,
                     self.private_path,
                 )
@@ -65,6 +68,7 @@ class YaDocsFileS3Connection(BaseFileS3Connection):
                     super().str_for_hash(),
                     str(self.public_link),
                     str(self.private_path),
+                    str(self.sheet_id),
                 ]
             )
 
@@ -77,6 +81,7 @@ class YaDocsFileS3Connection(BaseFileS3Connection):
                 preview_id=self.preview_id,
                 public_link=self.public_link,
                 private_path=self.private_path,
+                sheet_id=self.sheet_id,
                 first_line_is_header=self.first_line_is_header,
             )
 
@@ -124,6 +129,7 @@ class YaDocsFileS3Connection(BaseFileS3Connection):
             first_line_is_header=orig_src.first_line_is_header,
             public_link=orig_src.public_link,
             private_path=orig_src.private_path,
+            sheet_id=orig_src.sheet_id,
         )
 
     @property
