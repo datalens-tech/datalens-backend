@@ -18,7 +18,6 @@ class Connection:
             port=port,
         )
         if path is not None:
-            path = path.lstrip("/")
             if not path.endswith("/"):
                 path += "/"
             base_url = urljoin(base_url, path)
