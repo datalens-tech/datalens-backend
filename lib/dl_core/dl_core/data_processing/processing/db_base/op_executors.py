@@ -313,8 +313,15 @@ class UploadOpExecutorAsync(OpExecutorAsync):
         assert isinstance(source_stream, DataStreamAsync)
 
         table_name = shortuuid.uuid()
+        executed = False
 
         async def upload_data() -> None:
+            nonlocal executed
+
+            if executed:
+                LOGGER.info(f"Skipping upload to table {table_name} as it was already executed")
+                return
+
             LOGGER.info(f"Uploading to table {table_name}")
             await self.db_ex_adapter.create_table(
                 table_name=table_name,
@@ -327,6 +334,7 @@ class UploadOpExecutorAsync(OpExecutorAsync):
                 user_types=source_stream.user_types,
                 data=source_stream.data,
             )
+            executed = True
 
         alias = op.alias
         sql_source = sa.alias(sa.table(table_name), alias)
