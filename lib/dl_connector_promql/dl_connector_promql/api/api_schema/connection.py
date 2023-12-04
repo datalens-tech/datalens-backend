@@ -25,17 +25,19 @@ class DBPathField(ma_fields.String):
     """
 
     @staticmethod
-    def _validate_path_str(user_path_str: str,) -> None:
-        path_re=re.compile(r"^(([a-zA-Z0-9-_:]+)?(/[a-zA-Z0-9-_:]+)*)/?$")
+    def _validate_path_str(
+        user_path_str: str,
+    ) -> None:
+        path_re = re.compile(r"^(([a-zA-Z0-9-_:]+)?(/[a-zA-Z0-9-_:]+)*)/?$")
         if not path_re.match(user_path_str):
             raise ValidationError("Path in the wrong format")
 
     def _deserialize(self, value: Any, attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any) -> Any:
         user_path_str = super()._deserialize(value, attr, data, **kwargs)
         self._validate_path_str(user_path_str)
-        user_path_str = user_path_str.lstrip('/')
-        if not user_path_str.endswith('/'):
-            user_path_str += '/'
+        user_path_str = user_path_str.lstrip("/")
+        if not user_path_str.endswith("/"):
+            user_path_str += "/"
         return user_path_str
 
 

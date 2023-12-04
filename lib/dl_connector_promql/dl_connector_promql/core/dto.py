@@ -11,5 +11,5 @@ from dl_connector_promql.core.constants import CONNECTION_TYPE_PROMQL
 class PromQLConnDTO(DefaultSQLDTO):
     conn_type = CONNECTION_TYPE_PROMQL
 
-    path: str =  attr.ib(kw_only=True)
+    path: str = attr.ib(kw_only=True)
     protocol: str = attr.ib(kw_only=True)
