@@ -58,6 +58,25 @@ class RowConstructor:
             ]
         )
 
+    def path_row(
+        self,
+        default_value: Optional[str] = None,
+        display_conditions: Optional[TDisplayConditions] = None,
+        label_help_text: Optional[str] = None,
+    ) -> C.CustomizableRow:
+        text = self._localizer.translate(Translatable("field_path"))
+        return C.CustomizableRow(
+            items=[
+                C.LabelRowItem(text=text, display_conditions=display_conditions, help_text=label_help_text),
+                C.InputRowItem(
+                    name=CommonFieldName.path,
+                    width="l",
+                    default_value=default_value,
+                    display_conditions=display_conditions,
+                ),
+            ]
+        )
+
     def username_row(
         self,
         label_text: BaseTranslatable = Translatable("field_username"),

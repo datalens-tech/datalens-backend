@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+import logging
 from urllib.parse import urljoin
 
 import requests
@@ -10,6 +11,9 @@ from .errors import (
     InterfaceError,
     NotSupportedError,
 )
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 def rebuild_prometheus_data(data):
@@ -59,6 +63,8 @@ class SyncPromQLClient:
         self._session.close()
 
     def _request(self, method, endpoint, **kwargs):
+        if endpoint.startswith("/"):
+            LOGGER.warning(f"Endpoint '{endpoint}' starts with '/' that can effect final url")
         url = urljoin(self._base_url, endpoint)
         return self._session.request(method, url, **kwargs)
 

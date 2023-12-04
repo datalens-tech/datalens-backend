@@ -41,6 +41,7 @@ class FormFieldName(Enum):
 class CommonFieldName(FormFieldName):
     host = "host"
     port = "port"
+    path = "path"
     username = "username"
     password = "password"
     db_name = "db_name"

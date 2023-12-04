@@ -70,6 +70,7 @@ class PromQLConnLineConstructor(ClassicSQLConnLineConstructor["PromQLConnTargetD
 
     def _get_dsn_query_params(self) -> dict:
         return {
+            "path": self._target_dto.path,
             "protocol": self._target_dto.protocol,
         }
 
@@ -108,6 +109,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
             protocol=self._target_dto.protocol,
             host=self._target_dto.host,
             port=self._target_dto.port,
+            path=self._target_dto.path,
         )
 
     def get_session_auth(self) -> Optional[BasicAuth]:
@@ -177,7 +179,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
                 message=f"Unexpected API response body: {err.args[0]}",
                 db_message=data["data"]["result"][:100],
                 query=dba_query.debug_compiled_query,
-            )
+            ) from err
 
     @staticmethod
     def make_exc(  # TODO:  Move to ErrorTransformer

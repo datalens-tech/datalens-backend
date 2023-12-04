@@ -34,6 +34,7 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
             items=[
                 FormFieldApiSchema(name=CommonFieldName.host, required=True),
                 FormFieldApiSchema(name=CommonFieldName.port, required=True),
+                FormFieldApiSchema(name=CommonFieldName.path),
                 FormFieldApiSchema(name=CommonFieldName.username),
                 FormFieldApiSchema(name=CommonFieldName.password),
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
@@ -52,6 +53,7 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
             items=[
                 FormFieldApiSchema(name=CommonFieldName.host, required=True),
                 FormFieldApiSchema(name=CommonFieldName.port, required=True),
+                FormFieldApiSchema(name=CommonFieldName.path),
                 FormFieldApiSchema(name=CommonFieldName.username),
                 FormFieldApiSchema(name=CommonFieldName.password),
                 FormFieldApiSchema(name=CommonFieldName.secure, type="boolean"),
@@ -64,6 +66,7 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
             rows=[
                 rc.host_row(),
                 rc.port_row(),
+                rc.path_row(),
                 rc.username_row(),
                 rc.password_row(self.mode),
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),

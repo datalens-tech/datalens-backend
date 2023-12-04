@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from urllib.parse import urljoin
+
 from .cli import SyncPromQLClient
 from .cursor import Cursor
 
@@ -7,12 +9,18 @@ from .cursor import Cursor
 class Connection:
     dl_promql_cli_cls = SyncPromQLClient
 
-    def __init__(self, host, port, username=None, password=None, protocol="http", cli_cls=None, **conn_kwargs):
+    def __init__(
+        self, host, port, username=None, password=None, protocol="http", path=None, cli_cls=None, **conn_kwargs
+    ):
         base_url = "{protocol}://{host}:{port}".format(
             protocol=protocol,
             host=host,
             port=port,
         )
+        if path is not None:
+            if not path.endswith("/"):
+                path += "/"
+            base_url = urljoin(base_url, path)
         self.cli = self._create_cli(
             cli_cls=(cli_cls or self.dl_promql_cli_cls),
             base_url=base_url,
