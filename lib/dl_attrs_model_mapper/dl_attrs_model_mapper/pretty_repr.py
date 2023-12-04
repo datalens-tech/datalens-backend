@@ -11,6 +11,7 @@ from typing import (
 )
 
 import attr
+from dynamic_enum import DynamicEnum
 
 from dl_attrs_model_mapper.structs.mappings import FrozenMappingStrToStrOrStrSeq
 from dl_attrs_model_mapper.structs.singleormultistring import SingleOrMultiString
@@ -96,6 +97,10 @@ class Renderer:
     @_get_lines_internal.register
     def _get_lines_internal_enum(self, model: enum.Enum) -> list[str]:
         return [f"{self.get_type_str(type(model))}.{model.name}"]
+
+    @_get_lines_internal.register
+    def _get_lines_internal_dyn_enum(self, model: DynamicEnum) -> list[str]:
+        return [f'{self.get_type_str(type(model))}("{model.name}")']
 
     @_get_lines_internal.register
     def _get_lines_internal_list(self, model: list) -> list[str]:
