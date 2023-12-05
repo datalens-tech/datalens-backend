@@ -26,6 +26,7 @@ from dl_formula.definitions.registry import (
 )
 from dl_formula.definitions.scope import Scope
 from dl_formula.inspect.expression import iter_operation_calls
+from dl_formula.mutation.registry import get_mutation_functions_names
 from dl_query_processing.compilation.filter_compiler import FilterFormulaCompiler
 from dl_query_processing.compilation.formula_compiler import FormulaCompiler
 from dl_utils.func_tools import method_lru
@@ -85,17 +86,13 @@ class SupportedFunctionsManager:
         else:
             compeng_supp_funcs = []
 
+        mutation_functions_names = get_mutation_functions_names(dialect)
+
         supported_function_names = sorted(
-            {
-                func[0]
-                for func in chain.from_iterable(
-                    (
-                        native_supp_funcs,
-                        compeng_supp_funcs,
-                    )
-                )
-            }
+            {func[0] for func in chain.from_iterable((native_supp_funcs, compeng_supp_funcs))}
+            | set(mutation_functions_names)
         )
+
         return supported_function_names
 
     @property

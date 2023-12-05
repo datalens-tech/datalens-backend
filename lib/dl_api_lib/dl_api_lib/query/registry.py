@@ -1,7 +1,6 @@
 from typing import (
     Collection,
     Optional,
-    Sequence,
     Type,
 )
 
@@ -12,7 +11,7 @@ from dl_constants.enums import (
     SourceBackendType,
 )
 from dl_core.fields import ResultSchema
-from dl_formula.core.dialect import DialectCombo
+from dl_formula.core.dialect import DialectCombo, DialectName
 from dl_query_processing.compilation.filter_compiler import (
     FilterFormulaCompiler,
     MainFilterFormulaCompiler,
@@ -158,3 +157,17 @@ def register_compeng_dialect(dialect: DialectCombo) -> None:
         _COMPENG_DIALECT.add(dialect)
     else:
         assert next(iter(_COMPENG_DIALECT)) == dialect
+
+
+_IS_FORKABLE_DIALECT: dict[DialectName, bool] = {}
+
+
+def is_forkable_dialect(dialect: DialectCombo):
+    return _IS_FORKABLE_DIALECT.get(dialect.common_name, _IS_FORKABLE_DEFAULT)
+
+
+def register_forkable_dialect_name(dialect_name: DialectName, is_forkable: bool):
+    try:
+        assert _IS_FORKABLE_DIALECT[dialect_name] is is_forkable
+    except KeyError:
+        _IS_FORKABLE_DIALECT[dialect_name] = is_forkable
