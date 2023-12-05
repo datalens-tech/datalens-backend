@@ -99,7 +99,7 @@ class TestOracleSubselectByView(
 
     raw_sql_level = RawSQLLevel.subselect
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def initial_data_source_spec(self) -> SubselectDataSourceSpec:
         dsrc_spec = SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_ORACLE_SUBSELECT,
