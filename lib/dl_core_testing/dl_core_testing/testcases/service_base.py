@@ -51,7 +51,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
     connection_settings: ClassVar[Optional[ConnectorSettingsBase]] = None
     inst_specific_sr_factory: ClassVar[Optional[InstallationSpecificServiceRegistryFactory]] = None
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def conn_us_config(self) -> USConfig:
         us_env_config = self.core_test_config.get_us_config()
         return USConfig(
@@ -60,12 +60,12 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             us_crypto_keys_config=self.core_test_config.get_crypto_keys_config(),
         )
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def conn_bi_context(self) -> RequestContextInfo:
         bi_context = RequestContextInfo.create_empty()
         return bi_context
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def conn_exec_factory_async_env(self) -> bool:
         return False
 
@@ -101,7 +101,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
         sr_future_ref.fulfill(service_registry)
         return service_registry
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def conn_sync_service_registry(
         self,
         conn_bi_context: RequestContextInfo,
@@ -111,7 +111,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             conn_bi_context=conn_bi_context,
         )
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def conn_async_service_registry(
         self,
         conn_bi_context: RequestContextInfo,
@@ -121,7 +121,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             conn_bi_context=conn_bi_context,
         )
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def conn_default_service_registry(
         self,
         conn_exec_factory_async_env: bool,

@@ -121,7 +121,7 @@ class DefaultSyncAsyncConnectionExecutorCheckBase(BaseConnectionExecutorTestClas
 
 
 class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorCheckBase[_CONN_TV], Generic[_CONN_TV]):
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def conn_exec_factory_async_env(self) -> bool:
         return False
 
@@ -269,7 +269,7 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
 
 
 class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorCheckBase[_CONN_TV], Generic[_CONN_TV]):
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def conn_exec_factory_async_env(self) -> bool:
         return True
 
