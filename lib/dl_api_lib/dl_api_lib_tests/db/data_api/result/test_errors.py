@@ -1,10 +1,17 @@
 import pytest
 
-from dl_api_client.dsmaker.primitives import ResultField
+from dl_api_client.dsmaker.primitives import (
+    RequestLegendItem,
+    RequestLegendItemRef,
+    ResultField,
+    RoleSpec,
+)
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 from dl_constants.enums import (
     AggregationFunction,
     CalcMode,
+    FieldRole,
+    QueryItemRefType,
     RawSQLLevel,
 )
 
@@ -19,6 +26,23 @@ class TestResultErrors(DefaultApiTestBase):
         result_resp = data_api.get_result(dataset=saved_dataset, fields=[ResultField(title="unknown")], fail_ok=True)
         assert result_resp.status_code == 400
         assert result_resp.bi_status_code == "ERR.DS_API.FIELD.NOT_FOUND"
+
+    @pytest.mark.parametrize("ref_type", (QueryItemRefType.id, QueryItemRefType.title))
+    def test_incomplete_field_ref(self, saved_dataset, data_api, ref_type):
+        error_msg = f"{{'fields': {{0: {{'ref': {{'{ref_type.value}': ['Missing data for required field.']}}}}}}}}"
+        result_resp = data_api.get_result(
+            dataset=saved_dataset,
+            fields=[
+                RequestLegendItem(
+                    ref=RequestLegendItemRef(type=ref_type),
+                    role_spec=RoleSpec(role=FieldRole.row),
+                ),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == 400
+        assert result_resp.bi_status_code == "ERR.DS_API"
+        assert result_resp.json["message"] == error_msg
 
     def test_calcmode_formula_without_formula_field(self, saved_dataset, data_api):
         ds = saved_dataset
@@ -88,6 +112,13 @@ class TestResultErrors(DefaultApiTestBase):
         resp_data = await resp.json()
         assert resp.status == 400
         assert resp_data["code"] == "ERR.DS_API.CONNECTION_CONFIG.DASHSQL_NOT_ALLOWED"
+
+    def test_dataset_with_deleted_connection(self, saved_dataset, saved_connection_id, data_api, sync_us_manager):
+        sync_us_manager.delete(sync_us_manager.get_by_id(saved_connection_id))
+        result_resp = data_api.get_result(dataset=saved_dataset, fields=[saved_dataset.result_schema[0]], fail_ok=True)
+        assert result_resp.status_code == 400
+        assert result_resp.bi_status_code == "ERR.DS_API.REFERENCED_ENTRY_NOT_FOUND"
+        assert result_resp.json["message"] == f"Referenced connection {saved_connection_id} was deleted"
 
 
 class TestDashSQLErrors(DefaultApiTestBase):
