@@ -97,7 +97,7 @@ def deployed_repo(repo_src: Path) -> Generator[Path, None, None]:
 
 
 class RepmanagerTestingBase:
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def repo_path(self) -> Generator[Path, None, None]:
         with deployed_repo(REPO_PATH) as repo_path:
             yield repo_path

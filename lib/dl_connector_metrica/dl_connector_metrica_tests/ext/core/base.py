@@ -36,7 +36,7 @@ _CONN_TV = TypeVar("_CONN_TV", MetrikaApiConnection, AppMetricaApiConnection)
 
 
 class MetricaTestSetup(BaseConnectionTestClass[_CONN_TV]):
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(scope="function", autouse=True)
     # FIXME: This fixture is a temporary solution for failing core tests when they are run together with api tests
     def loop(self, event_loop: asyncio.AbstractEventLoop) -> Generator[asyncio.AbstractEventLoop, None, None]:
         asyncio.set_event_loop(event_loop)
