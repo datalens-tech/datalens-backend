@@ -72,23 +72,6 @@ class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
         result: list[MigrationSpec] = []
         if self.table_source_type is not None:
             assert self.table_dsrc_spec_cls is not None
-            result.append(
-                MigrationSpec(
-                    source_type=self.table_source_type,
-                    dto_cls=SQLTableDSMI,
-                    dsrc_spec_cls=self.table_dsrc_spec_cls,
-                    migration_mapping_items=(
-                        MigrationKeyMappingItem(
-                            migration_dto_key="schema_name",
-                            source_spec_key="schema_name",
-                            custom_export_resolver=self._resolve_schema_name_for_export,
-                            custom_import_resolver=self._resolve_schema_name_for_import,
-                        ),
-                        MigrationKeyMappingItem(migration_dto_key="table_name", source_spec_key="table_name"),
-                    ),
-                )
-            )
-
             if self.with_db_name:
                 result.append(
                     MigrationSpec(
@@ -97,6 +80,23 @@ class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
                         dsrc_spec_cls=self.table_dsrc_spec_cls,
                         migration_mapping_items=(
                             MigrationKeyMappingItem(migration_dto_key="db_name", source_spec_key="db_name"),
+                            MigrationKeyMappingItem(
+                                migration_dto_key="schema_name",
+                                source_spec_key="schema_name",
+                                custom_export_resolver=self._resolve_schema_name_for_export,
+                                custom_import_resolver=self._resolve_schema_name_for_import,
+                            ),
+                            MigrationKeyMappingItem(migration_dto_key="table_name", source_spec_key="table_name"),
+                        ),
+                    )
+                )
+            else:
+                result.append(
+                    MigrationSpec(
+                        source_type=self.table_source_type,
+                        dto_cls=SQLTableDSMI,
+                        dsrc_spec_cls=self.table_dsrc_spec_cls,
+                        migration_mapping_items=(
                             MigrationKeyMappingItem(
                                 migration_dto_key="schema_name",
                                 source_spec_key="schema_name",
