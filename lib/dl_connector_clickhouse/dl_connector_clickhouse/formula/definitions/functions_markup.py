@@ -17,4 +17,10 @@ DEFINITIONS_MARKUP = [
     base.ConcatMultiMarkup.for_dialect(D.CLICKHOUSE),
     # url
     base.FuncUrl.for_dialect(D.CLICKHOUSE),
+    # size
+    base.FuncSize.for_dialect(D.CLICKHOUSE),
+    # color
+    base.FuncColor.for_dialect(D.CLICKHOUSE),
+    # br
+    base.FuncBr.for_dialect(D.CLICKHOUSE),
 ]

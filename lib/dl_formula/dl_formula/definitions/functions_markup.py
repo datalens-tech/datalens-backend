@@ -241,6 +241,38 @@ class ConcatMultiMarkup(FuncMarkup):
     variants = make_variants("c")
 
 
+class FuncColor(FuncMarkup):
+    name = "color"
+    arg_cnt = 2
+    arg_names = ["text", "color"]
+    argument_types = [
+        # color( markup|str, str)
+        ArgTypeSequence([MARKUP_EFFECTIVELY, DataType.STRING]),
+    ]
+    variants = make_variants("cl")
+
+    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
+
+
+class FuncSize(FuncMarkup):
+    name = "size"
+    arg_cnt = 2
+    arg_names = ["text", "size"]
+    argument_types = [
+        # size( markup|str, str)
+        ArgTypeSequence([MARKUP_EFFECTIVELY, DataType.STRING]),
+    ]
+    variants = make_variants("sz")
+    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
+
+
+class FuncBr(FuncMarkup):
+    name = "br"
+    arg_cnt = 0
+    variants = make_variants("br")
+    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
+
+
 DEFINITIONS_MARKUP = [
     # +
     BinaryPlusMarkup,
@@ -255,4 +287,10 @@ DEFINITIONS_MARKUP = [
     ConcatMultiMarkup,
     # url
     FuncUrl,
+    # size
+    FuncSize,
+    # color
+    FuncColor,
+    # br
+    FuncBr,
 ]

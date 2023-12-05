@@ -17,4 +17,10 @@ DEFINITIONS_MARKUP = [
     base.ConcatMultiMarkup.for_dialect(D.ORACLE),
     # url
     base.FuncUrl.for_dialect(D.ORACLE),
+    # size
+    base.FuncSize.for_dialect(D.ORACLE),
+    # color
+    base.FuncColor.for_dialect(D.ORACLE),
+    # br
+    base.FuncBr.for_dialect(D.ORACLE),
 ]

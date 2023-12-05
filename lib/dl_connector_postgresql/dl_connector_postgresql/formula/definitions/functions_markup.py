@@ -17,4 +17,10 @@ DEFINITIONS_MARKUP = [
     base.ConcatMultiMarkup.for_dialect(D.POSTGRESQL),
     # url
     base.FuncUrl.for_dialect(D.POSTGRESQL),
+    # size
+    base.FuncSize.for_dialect(D.POSTGRESQL),
+    # color
+    base.FuncColor.for_dialect(D.POSTGRESQL),
+    # br
+    base.FuncBr.for_dialect(D.POSTGRESQL),
 ]

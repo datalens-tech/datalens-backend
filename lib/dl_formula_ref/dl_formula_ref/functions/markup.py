@@ -37,9 +37,31 @@ FUNCTION_MARKUP = FunctionDocRegistryItem(
     ],
 )
 
+FUNCTION_COLOR = FunctionDocRegistryItem(
+    name="color",
+    category=CATEGORY_MARKUP,
+    description=_("Stylizes the passed text with the passed color."),
+)
+
+
+FUNCTION_SIZE = FunctionDocRegistryItem(
+    name="size",
+    category=CATEGORY_MARKUP,
+    description=_("Stylizes the passed text with the passed size."),
+)
+
+FUNCTION_BR = FunctionDocRegistryItem(
+    name="br",
+    category=CATEGORY_MARKUP,
+    description=_("Adds a line break."),
+)
+
 FUNCTIONS_MARKUP = [
     FUNCTION_BOLD,
     FUNCTION_ITALIC,
     FUNCTION_URL,
     FUNCTION_MARKUP,
+    FUNCTION_COLOR,
+    FUNCTION_SIZE,
+    FUNCTION_BR,
 ]
