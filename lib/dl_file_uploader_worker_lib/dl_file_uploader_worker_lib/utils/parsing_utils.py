@@ -43,7 +43,7 @@ from dl_file_uploader_worker_lib.utils.converter_parsing_utils import (
 )
 
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
-from dl_connector_bundle_chs3.chs3_yadocs.core.constants import CONNECTION_TYPE_DOCS
+from dl_connector_bundle_chs3.chs3_yadocs.core.constants import CONNECTION_TYPE_YADOCS
 from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
@@ -171,7 +171,7 @@ def get_field_id_generator(conn_type: ConnectionType) -> FileUploaderFieldIdGene
     field_id_gen_cls_map: dict[ConnectionType, Type[FileUploaderFieldIdGenerator]] = {
         CONNECTION_TYPE_FILE: FileFieldIdGenerator,
         CONNECTION_TYPE_GSHEETS_V2: GSheetsFieldIdGenerator,
-        CONNECTION_TYPE_DOCS: YaDocsFieldIdGenerator,
+        CONNECTION_TYPE_YADOCS: YaDocsFieldIdGenerator,
     }
 
     if conn_type not in field_id_gen_cls_map:
@@ -275,7 +275,7 @@ def merge_raw_schemas_spreadsheet(
     conn_type_map: dict[FileType, ConnectionType] = {
         FileType.xlsx: CONNECTION_TYPE_FILE,
         FileType.gsheets: CONNECTION_TYPE_GSHEETS_V2,
-        FileType.yadocs: CONNECTION_TYPE_DOCS,
+        FileType.yadocs: CONNECTION_TYPE_YADOCS,
     }
     col_types_header = raw_schema_to_column_types(header_rs)
     col_types_body = raw_schema_to_column_types(body_rs)

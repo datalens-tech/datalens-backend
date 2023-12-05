@@ -36,7 +36,7 @@ from dl_task_processor.task import (
 
 from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
-from dl_connector_bundle_chs3.chs3_yadocs.core.constants import CONNECTION_TYPE_DOCS
+from dl_connector_bundle_chs3.chs3_yadocs.core.constants import CONNECTION_TYPE_YADOCS
 from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
@@ -232,7 +232,7 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
             s3_file_based_conn_types = (
                 CONNECTION_TYPE_FILE,
                 CONNECTION_TYPE_GSHEETS_V2,
-                CONNECTION_TYPE_DOCS,
+                CONNECTION_TYPE_YADOCS,
             )
 
             redis = self._ctx.redis_service.get_redis()

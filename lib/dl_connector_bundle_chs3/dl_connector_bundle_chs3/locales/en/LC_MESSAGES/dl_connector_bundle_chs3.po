@@ -12,7 +12,7 @@ msgstr ""
 msgid "label_connector-gsheets_v2"
 msgstr "Google Sheets"
 
-msgid "label_connector-docs"
+msgid "label_connector-yadocs"
 msgstr "Yandex Documents"
 
 msgid "label_connector-file"

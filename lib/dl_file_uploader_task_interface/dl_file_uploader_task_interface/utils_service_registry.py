@@ -20,7 +20,7 @@ from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_file_uploader_worker_lib.settings import FileUploaderConnectorsSettings
 
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
-from dl_connector_bundle_chs3.chs3_yadocs.core.constants import CONNECTION_TYPE_DOCS
+from dl_connector_bundle_chs3.chs3_yadocs.core.constants import CONNECTION_TYPE_YADOCS
 from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
 
@@ -49,7 +49,7 @@ def create_sr_factory_from_env_vars(connectors_settings: FileUploaderConnectorsS
     connectors_settings = {
         CONNECTION_TYPE_FILE: connectors_settings.FILE,
         CONNECTION_TYPE_GSHEETS_V2: connectors_settings.FILE,
-        CONNECTION_TYPE_DOCS: connectors_settings.FILE,
+        CONNECTION_TYPE_YADOCS: connectors_settings.FILE,
     }
     return DefaultSRFactory(
         rqe_config=rqe_config_from_env(),

@@ -6,4 +6,4 @@ from dl_connector_bundle_chs3.chs3_base.api.i18n.localizer import Translatable
 
 
 class YaDocsFileS3ConnectionInfoProvider(ConnectionInfoProvider):
-    title_translatable = Translatable("label_connector-docs")
+    title_translatable = Translatable("label_connector-yadocs")

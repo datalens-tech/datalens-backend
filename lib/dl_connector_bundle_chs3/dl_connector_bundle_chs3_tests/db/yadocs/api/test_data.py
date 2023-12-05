@@ -27,7 +27,7 @@ from dl_connector_bundle_chs3.chs3_base.core.constants import NOTIF_TYPE_STALE_D
 from dl_connector_bundle_chs3.chs3_yadocs.core.lifecycle import YaDocsFileS3ConnectionLifecycleManager
 from dl_connector_bundle_chs3.chs3_yadocs.core.us_connection import YaDocsFileS3Connection
 from dl_connector_bundle_chs3_tests.db.base.api.data import CHS3DataResultTestSuite
-from dl_connector_bundle_chs3_tests.db.docs.api.base import YaDocsFileS3DataApiTestBase
+from dl_connector_bundle_chs3_tests.db.yadocs.api.base import YaDocsFileS3DataApiTestBase
 
 
 class TestYaDocsFileS3DataResult(YaDocsFileS3DataApiTestBase, CHS3DataResultTestSuite):

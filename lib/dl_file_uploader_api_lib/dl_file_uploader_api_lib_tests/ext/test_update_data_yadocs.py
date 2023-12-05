@@ -20,7 +20,7 @@ from dl_testing.s3_utils import s3_file_exists
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from dl_connector_bundle_chs3.chs3_gsheets.core.lifecycle import GSheetsFileS3ConnectionLifecycleManager
 from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
-from dl_connector_bundle_chs3.chs3_yadocs.core.constants import CONNECTION_TYPE_DOCS
+from dl_connector_bundle_chs3.chs3_yadocs.core.constants import CONNECTION_TYPE_YADOCS
 from dl_connector_bundle_chs3.chs3_yadocs.core.lifecycle import YaDocsFileS3ConnectionLifecycleManager
 from dl_connector_bundle_chs3.chs3_yadocs.core.us_connection import YaDocsFileS3Connection
 
@@ -31,7 +31,7 @@ LOGGER = logging.getLogger(__name__)
 @pytest.fixture(scope="function")
 async def saved_yadocs_connection(loop, bi_context, default_async_usm_per_test, s3_persistent_bucket, s3_client):
     us_manager = default_async_usm_per_test
-    conn_name = "docs test conn {}".format(uuid.uuid4())
+    conn_name = "yadocs test conn {}".format(uuid.uuid4())
     long_long_ago = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
         seconds=YaDocsFileS3ConnectionLifecycleManager.STALE_THRESHOLD_SECONDS + 60,  # just in case
     )
@@ -116,7 +116,7 @@ async def saved_yadocs_connection(loop, bi_context, default_async_usm_per_test, 
     conn = YaDocsFileS3Connection.create_from_dict(
         data,
         ds_key=make_conn_key("connections", conn_name),
-        type_=CONNECTION_TYPE_DOCS.name,
+        type_=CONNECTION_TYPE_YADOCS.name,
         meta={"title": conn_name, "state": "saved"},
         us_manager=us_manager,
     )

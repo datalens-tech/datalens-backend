@@ -10,8 +10,8 @@ from dl_connector_bundle_chs3.chs3_base.core.notifications import (
 from dl_connector_bundle_chs3.chs3_yadocs.core.adapter import AsyncYaDocsFileS3Adapter
 from dl_connector_bundle_chs3.chs3_yadocs.core.connection_executors import YaDocsFileS3AsyncAdapterConnExecutor
 from dl_connector_bundle_chs3.chs3_yadocs.core.constants import (
-    CONNECTION_TYPE_DOCS,
-    SOURCE_TYPE_DOCS,
+    CONNECTION_TYPE_YADOCS,
+    SOURCE_TYPE_YADOCS,
 )
 from dl_connector_bundle_chs3.chs3_yadocs.core.data_source import YaDocsFileS3DataSource
 from dl_connector_bundle_chs3.chs3_yadocs.core.data_source_spec import YaDocsFileS3DataSourceSpec
@@ -26,7 +26,7 @@ from dl_connector_clickhouse.core.clickhouse_base.adapters import ClickHouseAdap
 
 
 class YaDocsFileS3CoreConnectionDefinition(BaseFileS3CoreConnectionDefinition):
-    conn_type = CONNECTION_TYPE_DOCS
+    conn_type = CONNECTION_TYPE_YADOCS
     connection_cls = YaDocsFileS3Connection
     us_storage_schema_cls = YaDocsFileConnectionDataStorageSchema
     sync_conn_executor_cls = YaDocsFileS3AsyncAdapterConnExecutor
@@ -37,7 +37,7 @@ class YaDocsFileS3CoreConnectionDefinition(BaseFileS3CoreConnectionDefinition):
 
 
 class YaDocsFileS3TableCoreSourceDefinition(BaseFileS3TableCoreSourceDefinition):
-    source_type = SOURCE_TYPE_DOCS
+    source_type = SOURCE_TYPE_YADOCS
     source_cls = YaDocsFileS3DataSource
     source_spec_cls = YaDocsFileS3DataSourceSpec
     us_storage_schema_cls = YaDocsFileS3DataSourceSpecStorageSchema
