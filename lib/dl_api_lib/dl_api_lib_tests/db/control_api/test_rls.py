@@ -1,5 +1,14 @@
 import pytest
 
+from dl_api_commons.base_models import RequestContextInfo
+from dl_api_lib.dataset.view import DatasetView
+from dl_api_lib.query.formalization.block_formalizer import BlockFormalizer
+from dl_api_lib.query.formalization.legend_formalizer import ResultLegendFormalizer
+from dl_api_lib.query.formalization.raw_specs import (
+    IdFieldRef,
+    RawQuerySpecUnion,
+    RawSelectFieldSpec,
+)
 from dl_api_lib_testing.rls import (
     RLS_CONFIG_CASES,
     config_to_comparable,
@@ -59,3 +68,34 @@ class TestRLS(DefaultApiTestBase):
         assert rls_resp.bi_status_code == "ERR.DS_API.RLS.PARSE"
         assert rls_resp.json["message"] == "RLS: Parsing failed at line 2"
         assert rls_resp.json["details"] == {"description": "Wrong format"}
+
+    def test_rls_filter_expr(self, control_api, saved_dataset, sync_us_manager):
+        config = load_rls_config("dl_api_lib_test_config")
+        field_a, field_b = saved_dataset.result_schema[0].id, saved_dataset.result_schema[1].id
+        saved_dataset.rls = {field_a: config, field_b: config}
+        control_api.save_dataset(saved_dataset, fail_ok=False)
+
+        ds = sync_us_manager.get_by_id(saved_dataset.id)
+        sync_us_manager.load_dependencies(ds)
+
+        rci = RequestContextInfo(user_id="user1")
+        raw_query_spec_union = RawQuerySpecUnion(
+            select_specs=[
+                RawSelectFieldSpec(ref=IdFieldRef(id=field_a)),
+                RawSelectFieldSpec(ref=IdFieldRef(id=field_b)),
+            ],
+        )
+        legend = ResultLegendFormalizer(dataset=ds).make_legend(raw_query_spec_union=raw_query_spec_union)
+        block_legend = BlockFormalizer(dataset=ds).make_block_legend(
+            raw_query_spec_union=raw_query_spec_union, legend=legend
+        )
+        ds_view = DatasetView(
+            ds,
+            us_manager=sync_us_manager,
+            block_spec=block_legend.blocks[0],
+            rci=rci,
+        )
+
+        exec_info = ds_view.build_exec_info()
+        src_query = next(iter(exec_info.translated_multi_query.iter_queries()))
+        assert len(src_query.where) == 2  # field_a in ... and field_b in ...

@@ -105,15 +105,29 @@ class RQEConfigurationMaker:
 @attr.s
 class TestingSubjectResolver(BaseSubjectResolver):
     def get_subjects_by_names(self, names: list[str]) -> list[RLSSubject]:
-        """Mock resolver. Considers a user real if his name starts with 'user'"""
-        return [
-            RLSSubject(
-                subject_id="",
-                subject_type=RLSSubjectType.user if name.startswith("user") else RLSSubjectType.notfound,
-                subject_name=name if name.startswith("user") else RLS_FAILED_USER_NAME_PREFIX + name,
-            )
-            for name in names
-        ]
+        """
+        Mock resolver. Considers a user real if the name starts with a 'user' or
+        if it's equals to '_the_tests_asyncapp_user_name_'
+        """
+        subjects = []
+        for name in names:
+            if name == "_the_tests_asyncapp_user_name_":
+                subjects.append(
+                    RLSSubject(
+                        subject_id="_the_tests_asyncapp_user_id_",
+                        subject_type=RLSSubjectType.user,
+                        subject_name=name,
+                    )
+                )
+            else:
+                subjects.append(
+                    RLSSubject(
+                        subject_id="",
+                        subject_type=RLSSubjectType.user if name.startswith("user") else RLSSubjectType.notfound,
+                        subject_name=name if name.startswith("user") else RLS_FAILED_USER_NAME_PREFIX + name,
+                    )
+                )
+        return subjects
 
 
 @attr.s
