@@ -11,7 +11,10 @@ from dl_constants.enums import (
     SourceBackendType,
 )
 from dl_core.fields import ResultSchema
-from dl_formula.core.dialect import DialectCombo, DialectName
+from dl_formula.core.dialect import (
+    DialectCombo,
+    DialectName,
+)
 from dl_query_processing.compilation.filter_compiler import (
     FilterFormulaCompiler,
     MainFilterFormulaCompiler,
