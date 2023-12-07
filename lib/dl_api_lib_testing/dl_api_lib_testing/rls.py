@@ -62,7 +62,6 @@ RLS_CONFIG_CASES = [
         rls_entries_updated=load_rls("missing_login_updated.json"),
     ),
 ]
-MAIN_TEST_CASE = RLS_CONFIG_CASES[0]
 
 
 def config_to_comparable(conf: str):
