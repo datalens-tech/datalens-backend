@@ -261,7 +261,7 @@ class FieldLine(DocUnit):
     nullable: bool
     required: bool
 
-    description: Optional[MText] = None
+    description: Optional[DocText] = None
     type_ref: Optional[str] = None
 
     def _get_type_md(self, render_ctx: RenderContext) -> str:
@@ -286,10 +286,13 @@ class FieldLine(DocUnit):
     def render_md(self, render_ctx: RenderContext) -> Sequence[str]:
         path = ".".join(f"`{part}`" for part in self.path)
 
+        description_txt: str = ""
+        description = self.description
+        if description is not None:
+            description_txt = "\n".join(description.render_md(render_ctx))
+
         return [
-            f"{path}"
-            f" | {self._get_type_md(render_ctx)}"
-            f" | {render_ctx.localized_m_text(self.description) or ''}".rstrip(" ").replace("\n", "<br>")
+            f"{path}" f" | {self._get_type_md(render_ctx)}" f" | {description_txt}".rstrip(" ").replace("\n", "<br>")
         ]
 
 
