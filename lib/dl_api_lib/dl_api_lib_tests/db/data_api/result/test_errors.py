@@ -103,7 +103,7 @@ class TestResultErrors(DefaultApiTestBase):
 
         eq_resp = data_api.get_result(
             dataset=ds,
-            fields=[ds.result_schema[0]],
+            fields=[field],
             filters=[field.filter(filter_name.upper(), values=filter_values)],
             fail_ok=True,
         )
