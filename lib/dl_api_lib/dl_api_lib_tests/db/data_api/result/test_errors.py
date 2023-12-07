@@ -88,6 +88,26 @@ class TestResultErrors(DefaultApiTestBase):
         assert result_resp.status_code == 400
         assert result_resp.bi_status_code == "ERR.DS_API.FIELD.NOT_FOUND"
 
+    @pytest.mark.parametrize(("filter_name", "filter_values"), (
+        ("eq", []),
+        ("isnull", [None]),
+    ))
+    def test_invalid_argument_count_filter_error(self, saved_dataset, data_api, filter_name, filter_values):
+        ds = saved_dataset
+        field = ds.result_schema[0]
+        expected_count = 1 if filter_name == "eq" else 0
+        error_msg = f"Invalid argument count for {filter_name}: expected {expected_count}, got {len(filter_values)}"
+
+        eq_resp = data_api.get_result(
+            dataset=ds,
+            fields=[ds.result_schema[0]],
+            filters=[field.filter(filter_name.upper(), values=filter_values)],
+            fail_ok=True
+        )
+        assert eq_resp.status_code == 400
+        assert eq_resp.bi_status_code == "ERR.DS_API.FILTER.ARGUMENT_COUNT_ERROR"
+        assert eq_resp.json["message"] == error_msg
+
     def test_invalid_group_by_configuration(self, saved_dataset, data_api):
         ds = saved_dataset
         ds.result_schema["Measure"] = ds.field(title="Measure", aggregation=AggregationFunction.sum)

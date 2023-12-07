@@ -225,7 +225,11 @@ class FilterFormulaCompiler:
         if add_arg_cnt is None:  # for list lookup operations (IN, NOT IN)
             args = [formula_nodes.ExpressionList.make(*args_nodes)]
         else:
-            args = args_nodes[:add_arg_cnt]  # type: ignore  # TODO: fix
+            if len(args_nodes) != add_arg_cnt:
+                raise dl_query_processing.exc.FilterArgumentCountError(
+                    f"Invalid argument count for {operation.value}: expected {add_arg_cnt}, got {len(args_nodes)}"
+                )
+            args = args_nodes  # type: ignore  # TODO: fix
 
         # 3. Create formula object
         formula_obj = formula_nodes.Formula.make(expr=expr_callable(field_formula_obj.expr, *args))
