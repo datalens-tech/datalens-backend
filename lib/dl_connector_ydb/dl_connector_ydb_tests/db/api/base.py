@@ -30,7 +30,7 @@ from dl_connector_ydb_tests.db.config import (
 
 
 class YDBConnectionTestBase(ConnectionTestBase):
-    bi_compeng_pg_on = False
+    compeng_enabled = False
     conn_type = CONNECTION_TYPE_YDB
 
     @pytest.fixture(scope="class")
@@ -77,7 +77,7 @@ class YDBDatasetTestBase(YDBConnectionTestBase, DatasetTestBase):
 
 
 class YDBDataApiTestBase(YDBDatasetTestBase, StandardizedDataApiTestBase):
-    mutation_caches_on = False
+    mutation_caches_enabled = False
 
     @pytest.fixture(scope="class")
     def data_api_test_params(self) -> DataApiTestParams:

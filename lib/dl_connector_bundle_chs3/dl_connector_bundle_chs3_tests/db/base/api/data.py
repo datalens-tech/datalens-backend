@@ -24,7 +24,7 @@ from dl_connector_bundle_chs3_tests.db.base.core.base import FILE_CONN_TV
 
 
 class CHS3DataApiTestBase(CHS3DatasetTestBase[FILE_CONN_TV], StandardizedDataApiTestBase, metaclass=abc.ABCMeta):
-    mutation_caches_on = False
+    mutation_caches_enabled = False
 
 
 class CHS3DataResultTestSuite(

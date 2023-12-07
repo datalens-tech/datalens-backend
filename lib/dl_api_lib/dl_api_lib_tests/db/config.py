@@ -14,6 +14,12 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     port_us_pg_5432=get_test_container_hostport("db-postgres", fallback_port=52509).port,
     us_master_token="AC1ofiek8coB",
     core_connector_ep_names=["clickhouse", "postgresql"],
+    compeng_url=(
+        f"postgresql://us:us@"
+        f'{get_test_container_hostport("db-postgres", fallback_port=52509).as_pair()}/us-db-ci_purgeable'
+    ),
+    redis_host=get_test_container_hostport("redis-caches").host,
+    redis_port=get_test_container_hostport("redis-caches", fallback_port=52505).port,
 )
 
 
@@ -35,8 +41,4 @@ API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
     api_connector_ep_names=["clickhouse", "postgresql"],
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key="_some_test_secret_key_",
-    bi_compeng_pg_url=(
-        f"postgresql://us:us@"
-        f'{get_test_container_hostport("db-postgres", fallback_port=52509).as_pair()}/us-db-ci_purgeable'
-    ),
 )

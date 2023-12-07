@@ -20,8 +20,6 @@ class ApiTestEnvironmentConfiguration:
 
     mutation_cache_enabled: bool = attr.ib(default=True)
 
-    bi_compeng_pg_url: str = attr.ib(default="")
-
     file_uploader_api_host: str = attr.ib(default="http://127.0.0.1")
     file_uploader_api_port: int = attr.ib(default=9999)
 

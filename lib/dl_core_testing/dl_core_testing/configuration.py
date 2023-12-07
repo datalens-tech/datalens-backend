@@ -80,6 +80,10 @@ class CoreTestEnvironmentConfigurationBase(abc.ABC):
     def get_redis_setting_maker(self) -> RedisSettingMaker:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def get_compeng_url(self) -> str:
+        raise NotImplementedError
+
 
 # These are used only for creation of local environments in tests, not actual external ones
 DEFAULT_FERNET_KEY = "h1ZpilcYLYRdWp7Nk8X1M1kBPiUi8rdjz9oBfHyUKIk="
@@ -103,6 +107,8 @@ class DefaultCoreTestConfiguration(CoreTestEnvironmentConfigurationBase):
     redis_db_cache: int = attr.ib(default=1)
     redis_db_mutation: int = attr.ib(default=2)
     redis_db_arq: int = attr.ib(default=11)
+
+    compeng_url: str = attr.ib(default="")
 
     def get_us_config(self) -> UnitedStorageConfiguration:
         return UnitedStorageConfiguration(
@@ -129,3 +135,6 @@ class DefaultCoreTestConfiguration(CoreTestEnvironmentConfigurationBase):
         return CoreLibraryConfig(
             core_connector_ep_names=self.core_connector_ep_names,
         )
+
+    def get_compeng_url(self) -> str:
+        return self.compeng_url

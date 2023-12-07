@@ -95,7 +95,7 @@ class BitrixSmartTablesDatasetTestBase(BitrixDatalensConnectionTestBase, Dataset
 
 
 class BitrixDataApiTestBase(BitrixDatasetTestBase, StandardizedDataApiTestBase):
-    mutation_caches_on = False
+    mutation_caches_enabled = False
 
     @pytest.fixture(scope="class")
     def data_api_test_params(self) -> DataApiTestParams:
@@ -109,4 +109,4 @@ class BitrixDataApiTestBase(BitrixDatasetTestBase, StandardizedDataApiTestBase):
 
 
 class BitrixSmartTablesDataApiTestBase(BitrixSmartTablesDatasetTestBase, StandardizedDataApiTestBase):
-    mutation_caches_on = False
+    mutation_caches_enabled = False

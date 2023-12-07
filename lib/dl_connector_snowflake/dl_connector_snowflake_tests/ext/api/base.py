@@ -63,7 +63,7 @@ class SnowFlakeDatasetTestBase(SnowFlakeConnectionTestBase, DatasetTestBase):
 
 
 class SnowFlakeDataApiTestBase(SnowFlakeDatasetTestBase, StandardizedDataApiTestBase):
-    bi_compeng_pg_on = False
+    compeng_enabled = False
 
     @pytest.fixture(scope="class")
     def data_api_test_params(self) -> DataApiTestParams:

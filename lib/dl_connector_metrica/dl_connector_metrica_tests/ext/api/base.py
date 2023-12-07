@@ -29,7 +29,7 @@ from dl_connector_metrica_tests.ext.core.base import (
 
 class MetricaConnectionTestBase(BaseMetricaTestClass, ConnectionTestBase):
     conn_type = CONNECTION_TYPE_METRICA_API
-    bi_compeng_pg_on = False
+    compeng_enabled = False
 
     @pytest.fixture(scope="class")
     def bi_test_config(self) -> ApiTestEnvironmentConfiguration:
@@ -56,7 +56,7 @@ class MetricaDatasetTestBase(MetricaConnectionTestBase, DatasetTestBase):
 
 
 class MetricaDataApiTestBase(MetricaDatasetTestBase, StandardizedDataApiTestBase):
-    mutation_caches_on = False
+    mutation_caches_enabled = False
 
     @pytest.fixture(scope="class")
     def data_api_test_params(self) -> DataApiTestParams:
@@ -71,7 +71,7 @@ class MetricaDataApiTestBase(MetricaDatasetTestBase, StandardizedDataApiTestBase
 
 class AppMetricaConnectionTestBase(BaseAppMetricaTestClass, ConnectionTestBase):
     conn_type = CONNECTION_TYPE_APPMETRICA_API
-    bi_compeng_pg_on = False
+    compeng_enabled = False
 
     @pytest.fixture(scope="class")
     def bi_test_config(self) -> ApiTestEnvironmentConfiguration:

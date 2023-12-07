@@ -19,7 +19,7 @@ from dl_connector_postgresql_tests.db.core.base import BasePostgreSQLTestClass
 
 class PostgreSQLConnectionTestBase(BasePostgreSQLTestClass, ConnectionTestBase):
     conn_type = CONNECTION_TYPE_POSTGRES
-    bi_compeng_pg_on = False
+    compeng_enabled = False
 
     @pytest.fixture(scope="class")
     def bi_test_config(self) -> ApiTestEnvironmentConfiguration:
@@ -54,4 +54,4 @@ class PostgreSQLDatasetTestBase(PostgreSQLConnectionTestBase, DatasetTestBase):
 
 
 class PostgreSQLDataApiTestBase(PostgreSQLDatasetTestBase, StandardizedDataApiTestBase):
-    mutation_caches_on = False
+    mutation_caches_enabled = False
