@@ -88,10 +88,13 @@ class TestResultErrors(DefaultApiTestBase):
         assert result_resp.status_code == 400
         assert result_resp.bi_status_code == "ERR.DS_API.FIELD.NOT_FOUND"
 
-    @pytest.mark.parametrize(("filter_name", "filter_values"), (
-        ("eq", []),
-        ("isnull", [None]),
-    ))
+    @pytest.mark.parametrize(
+        ("filter_name", "filter_values"),
+        (
+            ("eq", []),
+            ("isnull", [None]),
+        ),
+    )
     def test_invalid_argument_count_filter_error(self, saved_dataset, data_api, filter_name, filter_values):
         ds = saved_dataset
         field = ds.result_schema[0]
@@ -102,7 +105,7 @@ class TestResultErrors(DefaultApiTestBase):
             dataset=ds,
             fields=[ds.result_schema[0]],
             filters=[field.filter(filter_name.upper(), values=filter_values)],
-            fail_ok=True
+            fail_ok=True,
         )
         assert eq_resp.status_code == 400
         assert eq_resp.bi_status_code == "ERR.DS_API.FILTER.ARGUMENT_COUNT_ERROR"
