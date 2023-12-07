@@ -15,6 +15,10 @@ from typing import (
 
 import pytest
 
+from dl_api_commons.reporting.profiler import (
+    PROFILING_LOG_NAME,
+    QUERY_PROFILING_ENTRY,
+)
 from dl_testing.containers import get_test_container_hostport
 from dl_testing.shared_testing_constants import RUN_DEVHOST_TESTS
 from dl_utils.wait import wait_for
@@ -105,3 +109,15 @@ def override_env_cm(to_set: dict[str, str], purge: bool = False):
 
         for k, v in preserved.items():
             os.environ[k] = v
+
+
+def _is_profiling_record(rec) -> bool:
+    return rec.name == PROFILING_LOG_NAME and rec.msg == QUERY_PROFILING_ENTRY
+
+
+def get_dump_request_profile_records(caplog, single: bool = False):
+    return get_log_record(
+        caplog,
+        predicate=_is_profiling_record,
+        single=single,
+    )

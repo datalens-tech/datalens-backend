@@ -15,7 +15,7 @@ from dl_connector_bigquery_tests.ext.core.base import BaseBigQueryTestClass
 
 class BigQueryConnectionTestBase(BaseBigQueryTestClass, ConnectionTestBase):
     conn_type = CONNECTION_TYPE_BIGQUERY
-    bi_compeng_pg_on = False
+    compeng_enabled = False
 
     @pytest.fixture(scope="class")
     def bi_test_config(self) -> ApiTestEnvironmentConfiguration:
@@ -42,4 +42,4 @@ class BigQueryDatasetTestBase(BigQueryConnectionTestBase, DatasetTestBase):
 
 
 class BigQueryDataApiTestBase(BigQueryDatasetTestBase, StandardizedDataApiTestBase):
-    mutation_caches_on = False
+    mutation_caches_enabled = False

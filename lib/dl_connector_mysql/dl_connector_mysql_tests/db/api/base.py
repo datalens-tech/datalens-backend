@@ -19,7 +19,7 @@ from dl_connector_mysql_tests.db.core.base import BaseMySQLTestClass
 
 class MySQLConnectionTestBase(BaseMySQLTestClass, ConnectionTestBase):
     conn_type = CONNECTION_TYPE_MYSQL
-    bi_compeng_pg_on = False
+    compeng_enabled = False
 
     @pytest.fixture(scope="class")
     def bi_test_config(self) -> ApiTestEnvironmentConfiguration:
@@ -54,4 +54,4 @@ class MySQLDatasetTestBase(MySQLConnectionTestBase, DatasetTestBase):
 
 
 class MySQLDataApiTestBase(MySQLDatasetTestBase, StandardizedDataApiTestBase):
-    mutation_caches_on = False
+    mutation_caches_enabled = False

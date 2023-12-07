@@ -24,7 +24,7 @@ from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngine
 class DefaultApiTestBase(DataApiTestBase, DatasetTestBase, ConnectionTestBase):
     """The knowledge that this is a ClickHouse connector should not go beyond this class"""
 
-    bi_compeng_pg_on = True
+    compeng_enabled = True
     conn_type = CONNECTION_TYPE_CLICKHOUSE
 
     raw_sql_level: ClassVar[RawSQLLevel] = RawSQLLevel.off

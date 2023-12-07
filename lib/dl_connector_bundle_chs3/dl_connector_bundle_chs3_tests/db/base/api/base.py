@@ -66,7 +66,7 @@ class FileUploaderClientMockup(FileUploaderClient):
 
 
 class CHS3ConnectionApiTestBase(BaseCHS3TestClass[FILE_CONN_TV], ConnectionTestBase, metaclass=abc.ABCMeta):
-    bi_compeng_pg_on = False
+    compeng_enabled = False
 
     @pytest.fixture(scope="class")
     def bi_test_config(self) -> ApiTestEnvironmentConfiguration:

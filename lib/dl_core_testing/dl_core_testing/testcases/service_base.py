@@ -1,21 +1,32 @@
 from __future__ import annotations
 
 import abc
+import contextlib
 from typing import (
     Any,
+    AsyncGenerator,
+    Callable,
     ClassVar,
     NamedTuple,
     Optional,
 )
 
 import pytest
+from redis.asyncio import Redis
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.reporting.registry import DefaultReportingRegistry
+from dl_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.rqe import RQEConfig
-from dl_constants.enums import ConnectionType
+from dl_configs.settings_submodels import RedisSettings
+from dl_constants.enums import (
+    ConnectionType,
+    ProcessorType,
+)
+from dl_core.aio.web_app_services.data_processing.data_processor import DataProcessorService
+from dl_core.aio.web_app_services.data_processing.factory import make_compeng_service
 from dl_core.connections_security.base import InsecureConnectionSecurityManager
 from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
@@ -50,6 +61,8 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
     core_test_config: ClassVar[CoreTestEnvironmentConfigurationBase]
     connection_settings: ClassVar[Optional[ConnectorSettingsBase]] = None
     inst_specific_sr_factory: ClassVar[Optional[InstallationSpecificServiceRegistryFactory]] = None
+    data_caches_enabled: ClassVar[bool] = False
+    compeng_enabled: ClassVar[bool] = False
 
     @pytest.fixture(scope="session")
     def conn_us_config(self) -> USConfig:
@@ -69,10 +82,66 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
     def conn_exec_factory_async_env(self) -> bool:
         return False
 
+    @contextlib.asynccontextmanager
+    async def _make_redis(self, redis_settings: RedisSettings) -> AsyncGenerator[Redis, None]:
+        redis_client = Redis(
+            host=redis_settings.HOSTS[0],
+            port=redis_settings.PORT,
+            db=redis_settings.DB,
+            password=redis_settings.PASSWORD,
+        )
+        try:
+            yield redis_client
+        finally:
+            await redis_client.close()
+            await redis_client.connection_pool.disconnect()
+
+    @pytest.fixture(scope="function")
+    async def caches_redis_client_factory(self) -> Optional[Callable[[bool], Redis]]:
+        if not self.data_caches_enabled:
+            yield None
+
+        else:
+            redis_settings = self.core_test_config.get_redis_setting_maker().get_redis_settings_cache()
+            async with self._make_redis(redis_settings=redis_settings) as redis_client:
+                try:
+                    yield lambda *args: redis_client
+                finally:
+                    await redis_client.close()
+                    await redis_client.connection_pool.disconnect()
+
+    @pytest.fixture(scope="function")
+    async def data_processor_service_factory(
+        self,
+    ) -> AsyncGenerator[Optional[Callable[[ProcessorType], DataProcessorService]], None]:
+        """
+        PG CompEng pool fixture.
+
+        Can only work properly in `db` tests, but should probably be okay to
+        instantiate without it.
+        """
+
+        if not self.compeng_enabled:
+            yield None
+
+        else:
+            compeng_type = ProcessorType.ASYNCPG
+            processor = make_compeng_service(
+                processor_type=compeng_type,
+                config=CompEngPgConfig(url=self.core_test_config.get_compeng_url()),
+            )
+            await processor.initialize()
+            try:
+                yield (lambda *args: processor)
+            finally:
+                await processor.finalize()
+
     def service_registry_factory(
         self,
         conn_exec_factory_async_env: bool,
         conn_bi_context: RequestContextInfo,
+        caches_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
+        data_processor_service_factory: Optional[Callable[[bool], DataProcessorService]] = None,
         **kwargs: Any,
     ) -> ServicesRegistry:
         sr_future_ref: FutureRef[ServicesRegistry] = FutureRef()
@@ -96,6 +165,8 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
                 if self.inst_specific_sr_factory is not None
                 else None
             ),
+            caches_redis_client_factory=caches_redis_client_factory,
+            data_processor_service_factory=data_processor_service_factory,
             **kwargs,
         )
         sr_future_ref.fulfill(service_registry)
@@ -109,12 +180,14 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
         return self.service_registry_factory(
             conn_exec_factory_async_env=False,
             conn_bi_context=conn_bi_context,
+            caches_redis_client_factory=None,
         )
 
     @pytest.fixture(scope="session")
     def conn_async_service_registry(
         self,
         conn_bi_context: RequestContextInfo,
+        # caches_redis_client_factory: Optional[Callable[[bool], Redis]],  # FIXME: switch to function scope to use
     ) -> ServicesRegistry:
         return self.service_registry_factory(
             conn_exec_factory_async_env=True,

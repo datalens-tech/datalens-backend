@@ -45,8 +45,8 @@ class DataApiTestParams(NamedTuple):
 
 
 class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
-    mutation_caches_on: ClassVar[bool] = True
-    data_caches_on: ClassVar[bool] = True
+    mutation_caches_enabled: ClassVar[bool] = True
+    data_caches_enabled: ClassVar[bool] = True
 
     @pytest.fixture
     def loop(self, event_loop: asyncio.AbstractEventLoop) -> Generator[asyncio.AbstractEventLoop, None, None]:
@@ -72,15 +72,15 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             US_MASTER_TOKEN=us_config.us_master_token,
             CRYPTO_KEYS_CONFIG=core_test_config.get_crypto_keys_config(),
             # TODO FIX: Configure caches
-            CACHES_ON=cls.data_caches_on,
+            CACHES_ON=cls.data_caches_enabled,
             SAMPLES_CH_HOSTS=(),
             RQE_CONFIG=rqe_config_subprocess,
             BI_API_CONNECTOR_WHITELIST=bi_test_config.get_api_library_config().api_connector_ep_names,
             CORE_CONNECTOR_WHITELIST=core_test_config.get_core_library_config().core_connector_ep_names,
-            MUTATIONS_CACHES_ON=cls.mutation_caches_on,
+            MUTATIONS_CACHES_ON=cls.mutation_caches_enabled,
             CACHES_REDIS=redis_setting_maker.get_redis_settings_cache(),
-            BI_COMPENG_PG_ON=cls.bi_compeng_pg_on,
-            BI_COMPENG_PG_URL=bi_test_config.bi_compeng_pg_url,
+            BI_COMPENG_PG_ON=cls.compeng_enabled,
+            BI_COMPENG_PG_URL=core_test_config.get_compeng_url(),
             FIELD_ID_GENERATOR_TYPE=FieldIdGeneratorType.suffix,
             FILE_UPLOADER_BASE_URL=f"{bi_test_config.file_uploader_api_host}:{bi_test_config.file_uploader_api_port}",
             FILE_UPLOADER_MASTER_TOKEN="qwerty",

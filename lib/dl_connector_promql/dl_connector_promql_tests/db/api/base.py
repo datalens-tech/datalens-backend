@@ -20,7 +20,7 @@ from dl_connector_promql_tests.db.config import (
 
 
 class PromQLConnectionTestBase(ConnectionTestBase):
-    bi_compeng_pg_on = False
+    compeng_enabled = False
     conn_type = CONNECTION_TYPE_PROMQL
 
     @pytest.fixture(scope="class")

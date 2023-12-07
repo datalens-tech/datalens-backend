@@ -52,7 +52,7 @@ class ApiTestBase(abc.ABC):
     Base class defining the basic fixtures of bi-api tests
     """
 
-    bi_compeng_pg_on: ClassVar[bool] = True
+    compeng_enabled: ClassVar[bool] = True
     query_processing_mode: ClassVar[QueryProcessingMode] = QueryProcessingMode.basic
 
     @pytest.fixture(scope="function", autouse=True)
@@ -115,8 +115,8 @@ class ApiTestBase(abc.ABC):
             BI_API_CONNECTOR_WHITELIST=bi_test_config.get_api_library_config().api_connector_ep_names,
             CORE_CONNECTOR_WHITELIST=core_test_config.get_core_library_config().core_connector_ep_names,
             RQE_CONFIG=rqe_config_subprocess,
-            BI_COMPENG_PG_ON=cls.bi_compeng_pg_on,
-            BI_COMPENG_PG_URL=bi_test_config.bi_compeng_pg_url,
+            BI_COMPENG_PG_ON=cls.compeng_enabled,
+            BI_COMPENG_PG_URL=core_test_config.get_compeng_url(),
             DO_DSRC_IDX_FETCH=True,
             FIELD_ID_GENERATOR_TYPE=FieldIdGeneratorType.suffix,
             REDIS_ARQ=redis_setting_maker.get_redis_settings_arq(),

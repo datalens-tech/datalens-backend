@@ -11,7 +11,13 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     host_us_pg=get_test_container_hostport("pg-us", fallback_port=50309).host,
     port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=50309).port,
     us_master_token="AC1ofiek8coB",
-    core_connector_ep_names=["clickhouse"],
+    core_connector_ep_names=["clickhouse", "postgresql"],
+    compeng_url=(
+        f"postgresql://us:us@"
+        f'{get_test_container_hostport("pg-us", fallback_port=50309).as_pair()}/us-db-ci_purgeable'
+    ),
+    redis_host=get_test_container_hostport("redis-caches").host,
+    redis_port=get_test_container_hostport("redis-caches", fallback_port=50305).port,
 )
 
 
