@@ -244,7 +244,8 @@ class OptimizeConstFuncMutation(FormulaMutation):
     class IfFuncOptimizer(ConstFuncOptimizer):
         def can_optimize(self, node: nodes.FuncCall) -> bool:
             assert node.name == "if"
-            assert len(node.args) % 2 == 1
+            if len(node.args) % 2 == 0:
+                return False  # incorrect formula, skip
             for cond_arg in node.args[:-1:2]:  # excluding the last one (the "else" part) with a step of 2
                 if isinstance(cond_arg, nodes.BaseLiteral):
                     return True
@@ -281,7 +282,8 @@ class OptimizeConstFuncMutation(FormulaMutation):
     class CaseFuncOptimizer(ConstFuncOptimizer):
         def can_optimize(self, node: nodes.FuncCall) -> bool:
             assert node.name == "case"
-            assert len(node.args) % 2 == 0 and len(node.args) >= 2
+            if len(node.args) % 2 == 1 or len(node.args) < 2:
+                return False  # incorrect formula, skip
             if isinstance(node.args[0], nodes.BaseLiteral):
                 # the CASE expression needs to be a const for the optimization
                 for when_arg in node.args[1:-1:2]:
