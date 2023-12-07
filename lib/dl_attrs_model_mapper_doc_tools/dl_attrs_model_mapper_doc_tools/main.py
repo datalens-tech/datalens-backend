@@ -4,6 +4,7 @@ from typing import (
     Sequence,
     Type,
 )
+import urllib.parse
 
 import attr
 import yaml
@@ -25,9 +26,11 @@ from dl_attrs_model_mapper_doc_tools.domain import (
     AmmOperation,
     AmmOperationExample,
 )
+from dl_attrs_model_mapper_doc_tools.md_link_extractor import process_links
 from dl_attrs_model_mapper_doc_tools.render_units import (
     ClassDoc,
     DocHeader,
+    DocLink,
     DocSection,
     DocText,
     DocUnit,
@@ -51,8 +54,34 @@ class Docs:
     _dedicated_class_docs: list[ClassDoc] = attr.ib(factory=list)
     _operations: list[tuple[AmmOperation, OperationDoc]] = attr.ib(factory=list)
 
+    _process_doc_links: bool = attr.ib(default=False)
+    _doc_links_map: dict[str, str] = attr.ib(factory=dict[str, str])
+
+    def adopt_doc_link(self, doc_link: DocLink) -> Optional[DocLink]:
+        parsed_href = urllib.parse.urlparse(doc_link.href)
+        if parsed_href.scheme != "visdocs":
+            return None
+
+        if doc_link.href not in self._doc_links_map:
+            raise ValueError(f"Mapping for visualization docs URL is not registered: {doc_link.href}")
+        return DocLink(text=doc_link.text, href=self._doc_links_map[doc_link.href])
+
+    def handle_text_from_spec(self, m_txt: Optional[MText]) -> Optional[DocText]:
+        if not self._process_doc_links:
+            return DocText(m_txt) if m_txt else None
+
+        if m_txt is None:
+            return None
+
+        en_txt: Optional[str] = m_txt.en
+        if en_txt is None:
+            return None
+
+        return DocText(process_links(en_txt, self.adopt_doc_link))
+
     def field_to_doc_lines(self, field: AmmField, path: Sequence[str]) -> Sequence[FieldLine]:
         cp = field.common_props
+        description: Optional[DocText] = self.handle_text_from_spec(field.common_props.description)
 
         if isinstance(field, AmmScalarField):
             scalar_type = field.scalar_type
@@ -71,7 +100,7 @@ class Docs:
                         type_text=type_text,
                         nullable=cp.allow_none,
                         required=cp.required,
-                        description=field.common_props.description,
+                        description=description,
                     )
                 )
             ]
@@ -86,7 +115,7 @@ class Docs:
                 type_ref=nested_schema_doc_file_path,
                 nullable=cp.allow_none,
                 required=cp.required,
-                description=field.common_props.description,
+                description=description,
             )
             if nested_schema_doc_file_path is not None:
                 return [main_line]
@@ -107,7 +136,7 @@ class Docs:
                     type_text="list",
                     nullable=cp.allow_none,
                     required=cp.required,
-                    description=field.common_props.description,
+                    description=description,
                 ),
                 *self.field_to_doc_lines(field.item, next_path),
             ]
