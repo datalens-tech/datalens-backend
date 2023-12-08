@@ -23,6 +23,7 @@ from dl_connector_chyt.api.connection_form.form_config import CHYTConnectionForm
 from dl_connector_chyt.api.connection_info import CHYTConnectionInfoProvider
 from dl_connector_chyt.api.i18n.localizer import CONFIGS
 from dl_connector_chyt.core.connector import (
+    CHYTCoreBackendDefinition,
     CHYTCoreConnectionDefinition,
     CHYTCoreConnector,
     CHYTTableCoreSourceDefinition,
@@ -30,7 +31,7 @@ from dl_connector_chyt.core.connector import (
     CHYTTableRangeCoreSourceDefinition,
     CHYTTableSubselectCoreSourceDefinition,
 )
-from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
+from dl_connector_clickhouse.api.connector import ClickHouseApiBackendDefinition
 
 
 class CHYTApiConnectionDefinition(ApiConnectionDefinition):
@@ -64,9 +65,12 @@ class CHYTSubselectApiSourceDefinition(ApiSourceDefinition):
     template_api_schema_cls = SubselectDataSourceTemplateSchema
 
 
+class CHYTApiBackendDefinition(ClickHouseApiBackendDefinition):
+    core_backend_definition = CHYTCoreBackendDefinition
+
+
 class CHYTApiConnector(ApiConnector):
-    core_connector_cls = CHYTCoreConnector
-    formula_dialect_name = DIALECT_NAME_CLICKHOUSE
+    backend_definition = CHYTApiBackendDefinition
     connection_definitions = (CHYTApiConnectionDefinition,)
     source_definitions = (
         CHYTTableApiSourceDefinition,

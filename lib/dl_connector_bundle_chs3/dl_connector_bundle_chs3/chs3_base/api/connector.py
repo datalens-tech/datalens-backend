@@ -17,7 +17,7 @@ from dl_connector_bundle_chs3.chs3_base.core.connector import (
     BaseFileS3CoreConnector,
     BaseFileS3TableCoreSourceDefinition,
 )
-from dl_connector_clickhouse.formula.constants import DIALECT_NAME_CLICKHOUSE
+from dl_connector_clickhouse.api.connector import ClickHouseApiBackendDefinition
 
 
 class BaseFileS3TableApiSourceDefinition(ApiSourceDefinition):
@@ -32,8 +32,7 @@ class BaseFileS3ApiConnectionDefinition(ApiConnectionDefinition):
 
 
 class BaseFileS3ApiConnector(ApiConnector):
-    core_connector_cls = BaseFileS3CoreConnector
-    formula_dialect_name = DIALECT_NAME_CLICKHOUSE
+    backend_definition = ClickHouseApiBackendDefinition
     connection_definitions = (BaseFileS3ApiConnectionDefinition,)
     source_definitions = (BaseFileS3TableApiSourceDefinition,)
     translation_configs = frozenset(CONFIGS)

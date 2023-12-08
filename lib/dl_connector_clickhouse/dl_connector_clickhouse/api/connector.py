@@ -5,6 +5,7 @@ from dl_api_connector.api_schema.source_base import (
     SubselectDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
+    ApiBackendDefinition,
     ApiConnectionDefinition,
     ApiConnector,
     ApiSourceDefinition,
@@ -23,6 +24,7 @@ from dl_connector_clickhouse.core.clickhouse.connector import (
     ClickHouseSubselectCoreSourceDefinition,
     ClickHouseTableCoreSourceDefinition,
 )
+from dl_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreBackendDefinition
 from dl_connector_clickhouse.formula.constants import (
     DIALECT_NAME_CLICKHOUSE,
     ClickHouseDialect,
@@ -48,19 +50,23 @@ class ClickHouseApiConnectionDefinition(ApiConnectionDefinition):
     form_factory_cls = ClickHouseConnectionFormFactory
 
 
-class ClickHouseApiConnector(ApiConnector):
-    core_connector_cls = ClickHouseCoreConnector
-    connection_definitions = (ClickHouseApiConnectionDefinition,)
-    source_definitions = (
-        ClickHouseApiTableSourceDefinition,
-        ClickHouseApiSubselectSourceDefinition,
-    )
+class ClickHouseApiBackendDefinition(ApiBackendDefinition):
+    core_backend_definition = ClickHouseCoreBackendDefinition
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
-    translation_configs = frozenset(CONFIGS)
-    multi_query_mutation_factories = ApiConnector.multi_query_mutation_factories + (
+    multi_query_mutation_factories = ApiBackendDefinition.multi_query_mutation_factories + (
         MQMFactorySettingItem(
             query_proc_mode=QueryProcessingMode.native_wf,
             dialects=ClickHouseDialect.and_above(ClickHouseDialect.CLICKHOUSE_22_10).to_list(),
             factory_cls=NoCompengMultiQueryMutatorFactory,
         ),
     )
+
+
+class ClickHouseApiConnector(ApiConnector):
+    backend_definition = ClickHouseApiBackendDefinition
+    connection_definitions = (ClickHouseApiConnectionDefinition,)
+    source_definitions = (
+        ClickHouseApiTableSourceDefinition,
+        ClickHouseApiSubselectSourceDefinition,
+    )
+    translation_configs = frozenset(CONFIGS)

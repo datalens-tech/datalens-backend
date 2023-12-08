@@ -5,6 +5,7 @@ from dl_api_connector.api_schema.source_base import (
     SubselectDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
+    ApiBackendDefinition,
     ApiConnectionDefinition,
     ApiConnector,
     ApiSourceDefinition,
@@ -16,6 +17,7 @@ from dl_connector_oracle.api.connection_info import OracleConnectionInfoProvider
 from dl_connector_oracle.api.dashsql import OracleDashSQLParamLiteralizer
 from dl_connector_oracle.api.i18n.localizer import CONFIGS
 from dl_connector_oracle.core.connector import (
+    OracleCoreBackendDefinition,
     OracleCoreConnectionDefinition,
     OracleCoreConnector,
     OracleSubselectCoreSourceDefinition,
@@ -43,13 +45,17 @@ class OracleApiConnectionDefinition(ApiConnectionDefinition):
     form_factory_cls = OracleConnectionFormFactory
 
 
+class OracleApiBackendDefinition(ApiBackendDefinition):
+    core_backend_definition = OracleCoreBackendDefinition
+    formula_dialect_name = DIALECT_NAME_ORACLE
+
+
 class OracleApiConnector(ApiConnector):
-    core_connector_cls = OracleCoreConnector
     connection_definitions = (OracleApiConnectionDefinition,)
+    backend_definition = OracleApiBackendDefinition
     source_definitions = (
         OracleApiTableSourceDefinition,
         OracleApiSubselectSourceDefinition,
     )
-    formula_dialect_name = DIALECT_NAME_ORACLE
     translation_configs = frozenset(CONFIGS)
     dashsql_literalizer_cls = OracleDashSQLParamLiteralizer

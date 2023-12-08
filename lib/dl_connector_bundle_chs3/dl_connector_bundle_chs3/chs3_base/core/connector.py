@@ -5,6 +5,7 @@ from dl_core.connections_security.base import (
     NonUserInputConnectionSafetyChecker,
 )
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,
@@ -25,10 +26,14 @@ class BaseFileS3TableCoreSourceDefinition(CoreSourceDefinition):
     pass
 
 
-class BaseFileS3CoreConnector(CoreConnector):
+class CHS3CoreBackendDefinition(CoreBackendDefinition):  # TODO: Why not just use CH??
     backend_type = BACKEND_TYPE_CHS3
+    query_cls = CHQuery
+    compiler_cls = ClickHouseQueryCompiler
+
+
+class BaseFileS3CoreConnector(CoreConnector):
+    backend_definition = CHS3CoreBackendDefinition
     conn_security = frozenset(
         {ConnSecuritySettings(NonUserInputConnectionSafetyChecker, frozenset({BaseFileS3ConnDTO}))}
     )
-    query_cls = CHQuery
-    compiler_cls = ClickHouseQueryCompiler

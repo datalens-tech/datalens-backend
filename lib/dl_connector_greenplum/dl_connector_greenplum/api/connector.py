@@ -15,12 +15,13 @@ from dl_connector_greenplum.api.connection_form.form_config import GreenplumConn
 from dl_connector_greenplum.api.connection_info import GreenplumConnectionInfoProvider
 from dl_connector_greenplum.api.i18n.localizer import CONFIGS
 from dl_connector_greenplum.core.connector import (
+    GreenplumCoreBackendDefinition,
     GreenplumCoreConnectionDefinition,
     GreenplumCoreConnector,
     GreenplumSubselectCoreSourceDefinition,
     GreenplumTableCoreSourceDefinition,
 )
-from dl_connector_postgresql.formula.constants import DIALECT_NAME_POSTGRESQL
+from dl_connector_postgresql.api.connector import PostgreSQLApiBackendDefinition
 
 
 class GreenplumApiTableSourceDefinition(ApiSourceDefinition):
@@ -42,12 +43,15 @@ class GreenplumApiConnectionDefinition(ApiConnectionDefinition):
     form_factory_cls = GreenplumConnectionFormFactory
 
 
+class GreenplumApiBackendDefinition(PostgreSQLApiBackendDefinition):
+    core_backend_definition = GreenplumCoreBackendDefinition
+
+
 class GreenplumApiConnector(ApiConnector):
-    core_connector_cls = GreenplumCoreConnector
+    backend_definition = GreenplumApiBackendDefinition
     connection_definitions = (GreenplumApiConnectionDefinition,)
     source_definitions = (
         GreenplumApiTableSourceDefinition,
         GreenplumApiSubselectSourceDefinition,
     )
-    formula_dialect_name = DIALECT_NAME_POSTGRESQL
     translation_configs = frozenset(CONFIGS)

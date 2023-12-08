@@ -1,4 +1,5 @@
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
 )
@@ -48,8 +49,13 @@ class OracleSubselectCoreSourceDefinition(SQLSubselectCoreSourceDefinitionBase):
     source_cls = OracleSubselectDataSource
 
 
-class OracleCoreConnector(CoreConnector):
+class OracleCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_ORACLE
+    compiler_cls = OracleQueryCompiler
+
+
+class OracleCoreConnector(CoreConnector):
+    backend_definition = OracleCoreBackendDefinition
     connection_definitions = (OracleCoreConnectionDefinition,)
     source_definitions = (
         OracleTableCoreSourceDefinition,
@@ -57,4 +63,3 @@ class OracleCoreConnector(CoreConnector):
     )
     rqe_adapter_classes = frozenset({OracleDefaultAdapter})
     sa_types = SQLALCHEMY_ORACLE_TYPES
-    compiler_cls = OracleQueryCompiler

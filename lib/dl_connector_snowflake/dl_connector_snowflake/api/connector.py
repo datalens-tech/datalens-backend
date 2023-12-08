@@ -1,4 +1,5 @@
 from dl_api_connector.connector import (
+    ApiBackendDefinition,
     ApiConnectionDefinition,
     ApiConnector,
     ApiSourceDefinition,
@@ -13,6 +14,7 @@ from dl_connector_snowflake.api.connection_form.form_config import SnowFlakeConn
 from dl_connector_snowflake.api.connection_info import SnowflakeConnectionInfoProvider
 from dl_connector_snowflake.api.i18n.localizer import CONFIGS
 from dl_connector_snowflake.core.connector import (
+    SnowflakeCoreBackendDefinition,
     SnowFlakeCoreConnectionDefinition,
     SnowFlakeCoreConnector,
     SnowFlakeCoreTableSourceDefinition,
@@ -33,9 +35,13 @@ class SnowFlakeApiConnectionDefinition(ApiConnectionDefinition):
     form_factory_cls = SnowFlakeConnectionFormFactory
 
 
+class SnowFlakeApiBackendDefinition(ApiBackendDefinition):
+    core_backend_definition = SnowflakeCoreBackendDefinition
+    formula_dialect_name = DIALECT_NAME_SNOWFLAKE
+
+
 class SnowFlakeApiConnector(ApiConnector):
-    core_connector_cls = SnowFlakeCoreConnector
+    backend_definition = SnowFlakeApiBackendDefinition
     connection_definitions = (SnowFlakeApiConnectionDefinition,)
     source_definitions = (SnowFlakeApiTableSourceDefinition,)
-    formula_dialect_name = DIALECT_NAME_SNOWFLAKE
     translation_configs = frozenset(CONFIGS)

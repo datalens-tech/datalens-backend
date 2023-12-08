@@ -5,6 +5,7 @@ from dl_api_connector.api_schema.source_base import (
     SubselectDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
+    ApiBackendDefinition,
     ApiConnectionDefinition,
     ApiConnector,
     ApiSourceDefinition,
@@ -15,6 +16,7 @@ from dl_connector_mssql.api.connection_form.form_config import MSSQLConnectionFo
 from dl_connector_mssql.api.connection_info import MSSQLConnectionInfoProvider
 from dl_connector_mssql.api.i18n.localizer import CONFIGS
 from dl_connector_mssql.core.connector import (
+    MSSQLCoreBackendDefinition,
     MSSQLCoreConnectionDefinition,
     MSSQLCoreConnector,
     MSSQLSubselectCoreSourceDefinition,
@@ -42,12 +44,16 @@ class MSSQLApiConnectionDefinition(ApiConnectionDefinition):
     form_factory_cls = MSSQLConnectionFormFactory
 
 
+class MSSQLApiBackendDefinition(ApiBackendDefinition):
+    core_backend_definition = MSSQLCoreBackendDefinition
+    formula_dialect_name = DIALECT_NAME_MSSQLSRV
+
+
 class MSSQLApiConnector(ApiConnector):
-    core_connector_cls = MSSQLCoreConnector
+    backend_definition = MSSQLApiBackendDefinition
     connection_definitions = (MSSQLApiConnectionDefinition,)
     source_definitions = (
         MSSQLApiTableSourceDefinition,
         MSSQLApiSubselectSourceDefinition,
     )
-    formula_dialect_name = DIALECT_NAME_MSSQLSRV
     translation_configs = frozenset(CONFIGS)

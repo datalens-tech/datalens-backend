@@ -5,6 +5,7 @@ from dl_api_connector.api_schema.source import (
     register_source_template_api_schema,
 )
 from dl_api_connector.connector import (
+    ApiBackendDefinition,
     ApiConnectionDefinition,
     ApiConnector,
     ApiSourceDefinition,
@@ -47,29 +48,36 @@ class ApiConnectorRegistrator:
             register_connection_form_factory_cls(conn_type=conn_type, factory_cls=conn_def.form_factory_cls)
 
     @classmethod
-    def register_connector(cls, connector: Type[ApiConnector]) -> None:
-        # backend_type-related stuff - TODO: Move to a separate entity
-        backend_type = connector.core_connector_cls.backend_type
-        register_dialect_name(backend_type=backend_type, dialect_name=connector.formula_dialect_name)
-        for mqm_setting_item in connector.multi_query_mutation_factories:
+    def register_backend_definition(cls, backend_def: Type[ApiBackendDefinition]) -> None:
+        backend_type = backend_def.core_backend_definition.backend_type
+        register_dialect_name(backend_type=backend_type, dialect_name=backend_def.formula_dialect_name)
+        for mqm_setting_item in backend_def.multi_query_mutation_factories:
             register_multi_query_mutator_factory_cls(
                 query_proc_mode=mqm_setting_item.query_proc_mode,
                 backend_type=backend_type,
                 dialects=mqm_setting_item.dialects,
                 factory_cls=mqm_setting_item.factory_cls,
             )
-        register_forkable_dialect_name(dialect_name=connector.formula_dialect_name, is_forkable=connector.is_forkable)
-        register_is_compeng_executable(backend_type=backend_type, is_compeng_executable=connector.is_compeng_executable)
+        register_forkable_dialect_name(
+            dialect_name=backend_def.formula_dialect_name,
+            is_forkable=backend_def.is_forkable,
+        )
+        register_is_compeng_executable(
+            backend_type=backend_type,
+            is_compeng_executable=backend_def.is_compeng_executable,
+        )
         register_filter_formula_compiler_cls(
             backend_type=backend_type,
-            filter_compiler_cls=connector.filter_formula_compiler_cls,
+            filter_compiler_cls=backend_def.filter_formula_compiler_cls,
         )
         register_dash_sql_param_literalizer_cls(
             backend_type=backend_type,
-            literalizer_cls=connector.dashsql_literalizer_cls,
+            literalizer_cls=backend_def.dashsql_literalizer_cls,
         )
 
-        # everything else
+    @classmethod
+    def register_connector(cls, connector: Type[ApiConnector]) -> None:
+        cls.register_backend_definition(backend_def=connector.backend_definition)
         for source_def in connector.source_definitions:
             cls.register_source_definition(source_def=source_def)
         for conn_def in connector.connection_definitions:

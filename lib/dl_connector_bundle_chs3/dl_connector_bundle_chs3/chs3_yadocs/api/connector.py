@@ -25,6 +25,5 @@ class YaDocsFileS3ApiConnectionDefinition(BaseFileS3ApiConnectionDefinition):
 
 
 class YaDocsFileS3ApiConnector(BaseFileS3ApiConnector):
-    core_connector_cls = YaDocsFileS3CoreConnector
     connection_definitions = (YaDocsFileS3ApiConnectionDefinition,)
     source_definitions = (YaDocsFileS3TableApiSourceDefinition,)

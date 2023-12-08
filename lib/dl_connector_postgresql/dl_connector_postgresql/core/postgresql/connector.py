@@ -1,4 +1,5 @@
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
 )
@@ -52,8 +53,13 @@ class PostgreSQLSubselectCoreSourceDefinition(SQLSubselectCoreSourceDefinitionBa
     source_cls = PostgreSQLSubselectDataSource
 
 
-class PostgreSQLCoreConnector(CoreConnector):
+class PostgreSQLCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_POSTGRES
+    compiler_cls = PostgreSQLQueryCompiler
+
+
+class PostgreSQLCoreConnector(CoreConnector):
+    backend_definition = PostgreSQLCoreBackendDefinition
     connection_definitions = (PostgreSQLCoreConnectionDefinition,)
     source_definitions = (
         PostgreSQLTableCoreSourceDefinition,
@@ -61,4 +67,3 @@ class PostgreSQLCoreConnector(CoreConnector):
     )
     rqe_adapter_classes = frozenset({PostgresAdapter, AsyncPostgresAdapter})
     sa_types = SQLALCHEMY_POSTGRES_TYPES
-    compiler_cls = PostgreSQLQueryCompiler

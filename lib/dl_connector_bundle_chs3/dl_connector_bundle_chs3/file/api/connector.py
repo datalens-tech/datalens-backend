@@ -25,6 +25,5 @@ class FileS3ApiConnectionDefinition(BaseFileS3ApiConnectionDefinition):
 
 
 class FileS3ApiConnector(BaseFileS3ApiConnector):
-    core_connector_cls = FileS3CoreConnector
     connection_definitions = (FileS3ApiConnectionDefinition,)
     source_definitions = (FileS3TableApiSourceDefinition,)

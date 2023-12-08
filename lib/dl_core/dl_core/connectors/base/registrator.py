@@ -3,10 +3,12 @@ from typing import (
     Type,
 )
 
+from dl_constants.enums import SourceBackendType
 from dl_core.backend_types import register_connection_backend_type
 from dl_core.connection_executors.adapters.common_base import register_dialect_string
 from dl_core.connection_executors.remote_query_executor.commons import register_adapter_class
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,
@@ -57,7 +59,7 @@ class CoreConnectorRegistrator:
     def register_connection_definition(
         cls,
         conn_def: Type[CoreConnectionDefinition],
-        connector: Type[CoreConnector],
+        backend_type: SourceBackendType,
     ) -> None:
         register_connection_class(
             new_conn_cls=conn_def.connection_cls,
@@ -65,7 +67,7 @@ class CoreConnectorRegistrator:
             conn_type=conn_def.conn_type,
             lifecycle_manager_cls=conn_def.lifecycle_manager_cls,
         )
-        register_connection_backend_type(conn_type=conn_def.conn_type, backend_type=connector.backend_type)
+        register_connection_backend_type(conn_type=conn_def.conn_type, backend_type=backend_type)
         register_connection_schema(conn_cls=conn_def.connection_cls, schema_cls=conn_def.us_storage_schema_cls)  # type: ignore
         register_type_transformer_class(conn_type=conn_def.conn_type, tt_cls=conn_def.type_transformer_cls)  # type: ignore
         if conn_def.sync_conn_executor_cls is not None:
@@ -87,11 +89,22 @@ class CoreConnectorRegistrator:
         register_custom_dash_sql_key_names(conn_type=conn_def.conn_type, key_names=conn_def.custom_dashsql_key_names)
 
     @classmethod
+    def register_backend_definition(cls, backend_def: Type[CoreBackendDefinition]) -> None:
+        register_sa_query_cls(backend_type=backend_def.backend_type, query_cls=backend_def.query_cls)
+        register_sa_query_compiler_cls(
+            backend_type=backend_def.backend_type,
+            sa_query_compiler_cls=backend_def.compiler_cls,
+        )
+
+    @classmethod
     def register_connector(cls, connector: Type[CoreConnector]) -> None:
+        backend_def = connector.backend_definition
+        cls.register_backend_definition(backend_def=backend_def)
         for source_def in connector.source_definitions:
             cls.register_source_definition(source_def=source_def)
         for conn_def in connector.connection_definitions:
-            cls.register_connection_definition(conn_def=conn_def, connector=connector)
+            cls.register_connection_definition(conn_def=conn_def, backend_type=backend_def.backend_type)
+
         register_sa_types(connector.sa_types or {})
         for conn_sec_settings in connector.conn_security:  # type: ConnSecuritySettings
             dto_types = conn_sec_settings.dtos
@@ -101,11 +114,6 @@ class CoreConnectorRegistrator:
         register_query_fail_exceptions(exception_classes=connector.query_fail_exceptions)
         for notification_cls in connector.notification_classes:
             register_notification()(notification_cls)  # it is a parameterized decorator
-
-        # backend_type-dependent properties
-        backend_type = connector.backend_type
-        register_sa_query_cls(backend_type=backend_type, query_cls=connector.query_cls)
-        register_sa_query_compiler_cls(backend_type=backend_type, sa_query_compiler_cls=connector.compiler_cls)
 
         connector.registration_hook()  # for custom actions
 
