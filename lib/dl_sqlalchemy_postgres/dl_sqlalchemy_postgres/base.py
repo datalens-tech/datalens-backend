@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 import logging
+import typing
 from typing import (
     Any,
     Optional,
@@ -129,7 +130,7 @@ class BIPGDialectBasic(UPSTREAM):
     forced_server_version_string: str | None = None
     error_server_version_info: tuple[int, ...] = (9, 3)
 
-    def connect(self, *cargs, **cparams):
+    def connect(self, *cargs: typing.Any, **cparams: typing.Any):
         self.forced_server_version_string = cparams.pop("server_version", self.forced_server_version_string)
         return super().connect(*cargs, **cparams)
 
