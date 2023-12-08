@@ -29,8 +29,8 @@ from dl_maintenance.core.common import MaintenanceEnvironmentManagerBase
 
 
 if TYPE_CHECKING:
-    from dl_constants.enums import ConnectionType
     from dl_configs.connectors_settings import ConnectorSettingsBase
+    from dl_constants.enums import ConnectionType
     from dl_core.services_registry.sr_factories import SRFactory
 
 
