@@ -41,10 +41,11 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
     }
 
     def get_connect_args(self) -> dict:
-        return {
-            "sslmode": "require" if self._target_dto.ssl_enable else "prefer",
-            "sslrootcert": self.get_ssl_cert_path(self._target_dto.ssl_ca),
-        }
+        return dict(
+            super().get_connect_args(),
+            sslmode="require" if self._target_dto.ssl_enable else "prefer",
+            sslrootcert=self.get_ssl_cert_path(self._target_dto.ssl_ca),
+        )
 
     def get_engine_kwargs(self) -> dict:
         result: Dict = {}

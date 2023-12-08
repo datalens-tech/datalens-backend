@@ -4,6 +4,8 @@ from contextlib import contextmanager
 import http.client
 import logging
 import os
+import socket
+import time
 from typing import (
     Any,
     Callable,
@@ -59,6 +61,23 @@ def wait_for_initdb(initdb_port, initdb_host=None, timeout=900, require: bool = 
         timeout=timeout,
         require=require,
     )
+
+
+def wait_for_port(host: str, port: int, period_seconds: int = 1, timeout_seconds: int = 10):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    time_start = time.time()
+
+    while time.time() - time_start < timeout_seconds:
+        try:
+            sock.connect((host, port))
+            sock.close()
+            LOGGER.info(f"{host}:{port} is available")
+            return
+        except socket.error:
+            LOGGER.warning(f"Waiting for {host}:{port} to become available")
+            time.sleep(period_seconds)
+
+    raise Exception(f"Timeout waiting for {host}:{port} to become available")
 
 
 @overload

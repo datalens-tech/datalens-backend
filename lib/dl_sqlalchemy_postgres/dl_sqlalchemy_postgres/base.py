@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import datetime
+import logging
+import typing
 from typing import (
     Any,
     Optional,
@@ -11,6 +13,9 @@ from sqlalchemy.dialects.postgresql.psycopg2 import PGDialect_psycopg2 as UPSTRE
 from sqlalchemy.sql import sqltypes
 
 from dl_sqlalchemy_common.base import CompilerPrettyMixin
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class CITEXT(sqltypes.TEXT):
@@ -122,6 +127,22 @@ class BIPGDialectBasic(UPSTREAM):
     type_compiler = BICustomPGTypeCompiler
     statement_compiler = BIPGCompilerBasic
     ischema_names = bi_pg_ischema_names
+    forced_server_version_string: str | None = None
+    error_server_version_info: tuple[int, ...] = (9, 3)
+
+    def connect(self, *cargs: typing.Any, **cparams: typing.Any):
+        self.forced_server_version_string = cparams.pop("server_version", self.forced_server_version_string)
+        return super().connect(*cargs, **cparams)
+
+    def _get_server_version_info(self, connection) -> tuple[int, ...]:
+        if self.forced_server_version_string is not None:
+            return tuple(int(part) for part in self.forced_server_version_string.split("."))
+
+        try:
+            return super()._get_server_version_info(connection)
+        except Exception:
+            LOGGER.exception("Failed to get server version info, assuming %s", self.error_server_version_info)
+            return self.error_server_version_info
 
 
 class BIPGDialect(BIPGDialectBasic):
