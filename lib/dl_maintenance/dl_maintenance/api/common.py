@@ -29,6 +29,8 @@ from dl_maintenance.core.common import MaintenanceEnvironmentManagerBase
 
 
 if TYPE_CHECKING:
+    from dl_constants.enums import ConnectionType
+    from dl_configs.connectors_settings import ConnectorSettingsBase
     from dl_core.services_registry.sr_factories import SRFactory
 
 
@@ -48,6 +50,12 @@ class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
         )
         return settings
 
+    def get_connector_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:
+        return load_connectors_settings_from_env_with_fallback(
+            settings_registry=CONNECTORS_SETTINGS_CLASSES,
+            fallbacks=CONNECTORS_SETTINGS_FALLBACKS,
+        )
+
     def get_sr_factory(self, is_async_env: bool) -> Optional[SRFactory]:
         assert self._app_factory_cls is not None
         conn_opts_factory = ConnOptionsMutatorsFactory()
@@ -55,9 +63,6 @@ class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
         sr_factory = self._app_factory_cls(settings=settings).get_sr_factory(  # type: ignore
             settings=settings,
             conn_opts_factory=conn_opts_factory,
-            connectors_settings=load_connectors_settings_from_env_with_fallback(
-                settings_registry=CONNECTORS_SETTINGS_CLASSES,
-                fallbacks=CONNECTORS_SETTINGS_FALLBACKS,
-            ),
+            connectors_settings=self.get_connector_settings(),
         )
         return sr_factory
