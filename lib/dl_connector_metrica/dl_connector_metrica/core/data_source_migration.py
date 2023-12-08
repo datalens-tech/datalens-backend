@@ -8,6 +8,7 @@ from dl_connector_metrica.core.constants import (
 
 class MetricaApiDataSourceMigrator(DefaultSQLDataSourceMigrator):
     table_source_type = SOURCE_TYPE_METRICA_API
+    with_db_name = True
 
 
 class AppMetricaApiDataSourceMigrator(DefaultSQLDataSourceMigrator):
