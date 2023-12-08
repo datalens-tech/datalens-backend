@@ -38,6 +38,9 @@ class PostgreSQLDataSourceMixin(BaseSQLDataSource):
     def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         return source_type in (SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT)
 
+    def get_connect_args(self) -> dict:
+        return dict(super().get_connect_args(), server_version=self.db_version)
+
 
 class PostgreSQLDataSource(PostgreSQLDataSourceMixin, StandardSchemaSQLDataSource):
     """PG table"""
