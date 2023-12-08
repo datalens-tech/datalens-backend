@@ -43,21 +43,6 @@ def register_filter_formula_compiler_cls(
         _FILTER_FORMULA_COMPILER_BY_BACKEND[backend_type] = filter_compiler_cls
 
 
-_IS_FORKABLE_BACKEND_TYPE: dict[SourceBackendType, bool] = {}
-_IS_FORKABLE_DEFAULT = True
-
-
-def is_forkable_source(backend_type: SourceBackendType) -> bool:
-    return _IS_FORKABLE_BACKEND_TYPE.get(backend_type, _IS_FORKABLE_DEFAULT)
-
-
-def register_is_forkable_source(backend_type: SourceBackendType, is_forkable: bool) -> None:
-    try:
-        assert _IS_FORKABLE_BACKEND_TYPE[backend_type] is is_forkable
-    except KeyError:
-        _IS_FORKABLE_BACKEND_TYPE[backend_type] = is_forkable
-
-
 _IS_COMPENG_EXECUTABLE_BACKEND_TYPE: dict[SourceBackendType, bool] = {}
 _IS_COMPENG_EXECUTABLE_DEFAULT = False
 
@@ -163,6 +148,7 @@ def register_compeng_dialect(dialect: DialectCombo) -> None:
 
 
 _IS_FORKABLE_DIALECT: dict[DialectName, bool] = {}
+_IS_FORKABLE_DEFAULT = True
 
 
 def is_forkable_dialect(dialect: DialectCombo):
