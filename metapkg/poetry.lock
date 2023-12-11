@@ -1698,6 +1698,7 @@ datalens-app-tools = {path = "../../lib/dl_app_tools"}
 datalens-connector-chyt = {path = "../../lib/dl_connector_chyt"}
 datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
 datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
+datalens-connector-ydb = {path = "../../lib/dl_connector_ydb"}
 datalens-core = {path = "../../lib/dl_core"}
 datalens-model-tools = {path = "../../lib/dl_model_tools"}
 datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
@@ -1817,6 +1818,7 @@ datalens-app-tools = {path = "../../lib/dl_app_tools"}
 datalens-connector-chyt = {path = "../../lib/dl_connector_chyt"}
 datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
 datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
+datalens-connector-ydb = {path = "../../lib/dl_connector_ydb"}
 datalens-core = {path = "../../lib/dl_core"}
 datalens-model-tools = {path = "../../lib/dl_model_tools"}
 datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}

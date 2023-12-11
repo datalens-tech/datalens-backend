@@ -12,6 +12,7 @@ from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
 
 @attr.s(frozen=True)
 class YDBConnectorSettings(ConnectorSettingsBase):
+    MANAGED_OAUTH_ROW: Optional[str] = False
     DEFAULT_HOST_VALUE: Optional[str] = s_attrib("DEFAULT_HOST_VALUE", missing=None)  # type: ignore
 
 
