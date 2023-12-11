@@ -64,14 +64,15 @@ class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
     ) -> Optional[str]:
         assert attr_name == "schema_name"
         schema_name: Optional[str] = getattr(migration_dto, attr_name, None)
-        if schema_name == self.default_schema_name:
-            schema_name = None
+        if schema_name is None:
+            schema_name = self.default_schema_name
         return schema_name
 
     def get_migration_specs(self) -> list[MigrationSpec]:
         result: list[MigrationSpec] = []
         if self.table_source_type is not None:
             assert self.table_dsrc_spec_cls is not None
+
             if self.with_db_name:
                 result.append(
                     MigrationSpec(
@@ -90,23 +91,23 @@ class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
                         ),
                     )
                 )
-            else:
-                result.append(
-                    MigrationSpec(
-                        source_type=self.table_source_type,
-                        dto_cls=SQLTableDSMI,
-                        dsrc_spec_cls=self.table_dsrc_spec_cls,
-                        migration_mapping_items=(
-                            MigrationKeyMappingItem(
-                                migration_dto_key="schema_name",
-                                source_spec_key="schema_name",
-                                custom_export_resolver=self._resolve_schema_name_for_export,
-                                custom_import_resolver=self._resolve_schema_name_for_import,
-                            ),
-                            MigrationKeyMappingItem(migration_dto_key="table_name", source_spec_key="table_name"),
+
+            result.append(
+                MigrationSpec(
+                    source_type=self.table_source_type,
+                    dto_cls=SQLTableDSMI,
+                    dsrc_spec_cls=self.table_dsrc_spec_cls,
+                    migration_mapping_items=(
+                        MigrationKeyMappingItem(
+                            migration_dto_key="schema_name",
+                            source_spec_key="schema_name",
+                            custom_export_resolver=self._resolve_schema_name_for_export,
+                            custom_import_resolver=self._resolve_schema_name_for_import,
                         ),
-                    )
+                        MigrationKeyMappingItem(migration_dto_key="table_name", source_spec_key="table_name"),
+                    ),
                 )
+            )
 
         if self.subselect_source_type is not None:
             assert self.subselect_dsrc_spec_cls is not None
