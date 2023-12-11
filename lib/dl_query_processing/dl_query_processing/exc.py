@@ -60,6 +60,11 @@ class MeasureFilterUnsupportedError(FilterError):
     default_message = "Measure filter is unsupported for this type of query"
 
 
+class FilterArgumentCountError(FilterError):
+    err_code = FilterError.err_code + ["ARGUMENT_COUNT_ERROR"]
+    default_message = "Invalid argument count for filter"
+
+
 class ParameterError(DLBaseException):
     err_code = DLBaseException.err_code + ["PARAMETER"]
     default_message = "Invalid parameter"
