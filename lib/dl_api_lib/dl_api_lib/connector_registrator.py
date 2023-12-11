@@ -18,8 +18,8 @@ from dl_api_lib.i18n.registry import register_translation_configs
 from dl_api_lib.query.registry import (
     register_compeng_dialect,
     register_filter_formula_compiler_cls,
+    register_forkable_dialect_name,
     register_is_compeng_executable,
-    register_is_forkable_source,
     register_multi_query_mutator_factory_cls,
 )
 from dl_api_lib.schemas.connection import register_sub_schema_class
@@ -58,7 +58,7 @@ class ApiConnectorRegistrator:
                 dialects=mqm_setting_item.dialects,
                 factory_cls=mqm_setting_item.factory_cls,
             )
-        register_is_forkable_source(backend_type=backend_type, is_forkable=connector.is_forkable)
+        register_forkable_dialect_name(dialect_name=connector.formula_dialect_name, is_forkable=connector.is_forkable)
         register_is_compeng_executable(backend_type=backend_type, is_compeng_executable=connector.is_compeng_executable)
         register_filter_formula_compiler_cls(
             backend_type=backend_type,

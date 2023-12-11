@@ -1,7 +1,6 @@
 from typing import (
     Collection,
     Optional,
-    Sequence,
     Type,
 )
 
@@ -12,7 +11,10 @@ from dl_constants.enums import (
     SourceBackendType,
 )
 from dl_core.fields import ResultSchema
-from dl_formula.core.dialect import DialectCombo
+from dl_formula.core.dialect import (
+    DialectCombo,
+    DialectName,
+)
 from dl_query_processing.compilation.filter_compiler import (
     FilterFormulaCompiler,
     MainFilterFormulaCompiler,
@@ -39,21 +41,6 @@ def register_filter_formula_compiler_cls(
         assert _FILTER_FORMULA_COMPILER_BY_BACKEND[backend_type] is filter_compiler_cls
     except KeyError:
         _FILTER_FORMULA_COMPILER_BY_BACKEND[backend_type] = filter_compiler_cls
-
-
-_IS_FORKABLE_BACKEND_TYPE: dict[SourceBackendType, bool] = {}
-_IS_FORKABLE_DEFAULT = True
-
-
-def is_forkable_source(backend_type: SourceBackendType) -> bool:
-    return _IS_FORKABLE_BACKEND_TYPE.get(backend_type, _IS_FORKABLE_DEFAULT)
-
-
-def register_is_forkable_source(backend_type: SourceBackendType, is_forkable: bool) -> None:
-    try:
-        assert _IS_FORKABLE_BACKEND_TYPE[backend_type] is is_forkable
-    except KeyError:
-        _IS_FORKABLE_BACKEND_TYPE[backend_type] = is_forkable
 
 
 _IS_COMPENG_EXECUTABLE_BACKEND_TYPE: dict[SourceBackendType, bool] = {}
@@ -158,3 +145,18 @@ def register_compeng_dialect(dialect: DialectCombo) -> None:
         _COMPENG_DIALECT.add(dialect)
     else:
         assert next(iter(_COMPENG_DIALECT)) == dialect
+
+
+_IS_FORKABLE_DIALECT: dict[DialectName, bool] = {}
+_IS_FORKABLE_DEFAULT = True
+
+
+def is_forkable_dialect(dialect: DialectCombo):
+    return _IS_FORKABLE_DIALECT.get(dialect.common_name, _IS_FORKABLE_DEFAULT)
+
+
+def register_forkable_dialect_name(dialect_name: DialectName, is_forkable: bool):
+    try:
+        assert _IS_FORKABLE_DIALECT[dialect_name] is is_forkable
+    except KeyError:
+        _IS_FORKABLE_DIALECT[dialect_name] = is_forkable
