@@ -73,11 +73,19 @@ class ColumnRegistry:
             )
         return result
 
+    def _generate_column_id(self, avatar_id: str, col_idx: int) -> str:
+        """Generate a unique ID in a reproducible manner"""
+        if "#" in avatar_id:
+            # If for some reason contains "#" (which it really shouldn't),
+            # then go with a random ID, but this will effectively disable caches
+            return make_id()
+        return f"{avatar_id}#{col_idx}"
+
     def register_avatar(self, avatar_id: AvatarId, source_id: SourceId) -> None:
         self._avatar_source_map[avatar_id] = source_id
-        for col in self._db_columns:
+        for col_idx, col in enumerate(self._db_columns):
             if col.source_id == source_id:
-                column_id = make_id()
+                column_id = self._generate_column_id(avatar_id=avatar_id, col_idx=col_idx)
                 self._column_ids[(avatar_id, col.name)] = column_id
                 self._columns[column_id] = AvatarColumn(
                     id=column_id,
