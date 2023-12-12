@@ -23,6 +23,10 @@ from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
 
 from dl_connector_greenplum.api.connection_info import GreenplumConnectionInfoProvider
+from dl_connector_postgresql.api.connection_form.form_config import (
+    PostgreSQLFieldName,
+    PostgresRowConstructor,
+)
 
 
 class GreenplumConnectionFormFactory(ConnectionFormFactory):
@@ -39,6 +43,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
                 ),
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
+                FormFieldApiSchema(name=PostgreSQLFieldName.enforce_collate),
                 FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
             ],
         )
@@ -76,6 +81,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
         edit_api_schema: FormActionApiSchema,
         check_api_schema: FormActionApiSchema,
         rc: RowConstructor,
+        postgres_rc: PostgresRowConstructor,
     ) -> ConnectionForm:
         return ConnectionForm(
             title=GreenplumConnectionInfoProvider.get_title(self._localizer),
@@ -89,6 +95,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
                     C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
                     rc.raw_sql_level_row(),
                     rc.collapse_advanced_settings_row(),
+                    postgres_rc.enforce_collate_row(),
                     rc.data_export_forbidden_row(),
                 ]
             ),
@@ -105,6 +112,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
+        postgres_rc = PostgresRowConstructor(localizer=self._localizer)
 
         host_section: list[FormRow] = [rc.host_row()]
         username_section: list[FormRow] = [rc.username_row()]
@@ -122,4 +130,5 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
             edit_api_schema=edit_api_schema,
             check_api_schema=check_api_schema,
             rc=rc,
+            postgres_rc=postgres_rc,
         )

@@ -6,7 +6,10 @@ from typing import (
     Sequence,
 )
 
+import attr
+
 from dl_api_commons.base_models import TenantDef
+from dl_api_connector.form_config.models import rows as C
 from dl_api_connector.form_config.models.api_schema import (
     FormActionApiSchema,
     FormApiSchema,
@@ -21,10 +24,11 @@ from dl_api_connector.form_config.models.common import (
     CommonFieldName,
     FormFieldName,
 )
-import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_api_connector.i18n.localizer import Translatable
 from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_i18n.localizer_base import Localizer
 
 from dl_connector_postgresql.api.connection_info import PostgreSQLConnectionInfoProvider
 from dl_connector_postgresql.api.i18n.localizer import Translatable
@@ -34,6 +38,40 @@ from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceColl
 @unique
 class PostgreSQLFieldName(FormFieldName):
     enforce_collate = "enforce_collate"
+
+
+@attr.s
+class PostgresRowConstructor:
+    _localizer: Localizer = attr.ib()
+
+    def enforce_collate_row(self) -> C.CustomizableRow:
+        return C.CustomizableRow(
+            items=[
+                C.LabelRowItem(
+                    text=self._localizer.translate(Translatable("field_enforce-collate")),
+                    display_conditions={CommonFieldName.advanced_settings: "opened"},
+                ),
+                C.RadioButtonRowItem(
+                    name=PostgreSQLFieldName.enforce_collate,
+                    options=[
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_enforce-collate-auto")),
+                            value=PGEnforceCollateMode.auto.value,
+                        ),
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_enforce-collate-off")),
+                            value=PGEnforceCollateMode.off.value,
+                        ),
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_enforce-collate-on")),
+                            value=PGEnforceCollateMode.on.value,
+                        ),
+                    ],
+                    default_value=PGEnforceCollateMode.auto.value,
+                    display_conditions={CommonFieldName.advanced_settings: "opened"},
+                ),
+            ]
+        )
 
 
 class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
@@ -86,6 +124,7 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
         edit_api_schema: FormActionApiSchema,
         check_api_schema: FormActionApiSchema,
         rc: RowConstructor,
+        postgres_rc: PostgresRowConstructor,
     ) -> ConnectionForm:
         return ConnectionForm(
             title=PostgreSQLConnectionInfoProvider.get_title(self._localizer),
@@ -99,33 +138,7 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
                     C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
                     rc.raw_sql_level_row(),
                     rc.collapse_advanced_settings_row(),
-                    C.CustomizableRow(
-                        items=[
-                            C.LabelRowItem(
-                                text=self._localizer.translate(Translatable("field_enforce-collate")),
-                                display_conditions={CommonFieldName.advanced_settings: "opened"},
-                            ),
-                            C.RadioButtonRowItem(
-                                name=PostgreSQLFieldName.enforce_collate,
-                                options=[
-                                    C.SelectableOption(
-                                        text=self._localizer.translate(Translatable("value_enforce-collate-auto")),
-                                        value=PGEnforceCollateMode.auto.value,
-                                    ),
-                                    C.SelectableOption(
-                                        text=self._localizer.translate(Translatable("value_enforce-collate-off")),
-                                        value=PGEnforceCollateMode.off.value,
-                                    ),
-                                    C.SelectableOption(
-                                        text=self._localizer.translate(Translatable("value_enforce-collate-on")),
-                                        value=PGEnforceCollateMode.on.value,
-                                    ),
-                                ],
-                                default_value=PGEnforceCollateMode.auto.value,
-                                display_conditions={CommonFieldName.advanced_settings: "opened"},
-                            ),
-                        ]
-                    ),
+                    postgres_rc.enforce_collate_row(),
                     *rc.ssl_rows(
                         enabled_name=CommonFieldName.ssl_enable,
                         enabled_help_text=self._localizer.translate(Translatable("label_postgres-ssl-enabled-tooltip")),
@@ -147,6 +160,7 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
+        postgres_rc = PostgresRowConstructor(localizer=self._localizer)
 
         host_section = [rc.host_row()]
         username_section = [rc.username_row()]
@@ -164,4 +178,5 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
             edit_api_schema=edit_api_schema,
             check_api_schema=check_api_schema,
             rc=rc,
+            postgres_rc=postgres_rc,
         )

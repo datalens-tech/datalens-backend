@@ -9,7 +9,15 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/
 #chmod 755 /etc/apt/keyrings
 #chmod a+r /etc/apt/keyrings/docker.gpg
 
-echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu jammy stable" > /etc/apt/sources.list.d/docker.list
+case $(arch) in
+"aarch64"|"arm64")
+    arch="arm64"
+    ;;
+*)
+    arch="amd64"
+    ;;
+esac
+echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu jammy stable" > /etc/apt/sources.list.d/docker.list
 
 apt-get update
 # apt-get install --yes  docker-ce-cli docker-compose-plugin
