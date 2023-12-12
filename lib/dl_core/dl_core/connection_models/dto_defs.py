@@ -1,14 +1,18 @@
 from __future__ import annotations
 
 from typing import (
+    Any,
     ClassVar,
-    List,
     Optional,
+    TypeVar,
 )
 
 import attr
 
 from dl_constants.enums import ConnectionType
+
+
+_CONN_DTO_TV = TypeVar("_CONN_DTO_TV")
 
 
 @attr.s(frozen=True)
@@ -22,6 +26,9 @@ class ConnDTO:
             connection_id=self.conn_id,
         )
 
+    def clone(self: _CONN_DTO_TV, **kwargs: Any) -> _CONN_DTO_TV:
+        return attr.evolve(self, **kwargs)
+
 
 @attr.s(frozen=True)
 class DefaultSQLDTO(ConnDTO):  # noqa
@@ -32,7 +39,7 @@ class DefaultSQLDTO(ConnDTO):  # noqa
     username: str = attr.ib(kw_only=True)
     password: str = attr.ib(repr=False, kw_only=True)
 
-    def get_all_hosts(self) -> List[str]:
+    def get_all_hosts(self) -> list[str]:
         return list(self.multihosts) if self.multihosts else [self.host] if self.host else []
 
     def conn_reporting_data(self) -> dict:

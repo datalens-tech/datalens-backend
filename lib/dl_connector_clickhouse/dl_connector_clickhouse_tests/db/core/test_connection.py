@@ -7,8 +7,10 @@ import pytest
 from dl_core.us_connection_base import DataSourceTemplate
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 
+from dl_connector_clickhouse.core.clickhouse.constants import DEFAULT_CLICKHOUSE_USER
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from dl_connector_clickhouse_tests.db.core.base import (
+    BaseClickHouseDefaultUserTestClass,
     BaseClickHouseTestClass,
     BaseSslClickHouseTestClass,
 )
@@ -40,6 +42,15 @@ class TestClickHouseConnection(
         # Make sure
         tmpl_db_names = {dsrc_tmpl.group[0] for dsrc_tmpl in dsrc_templates}
         assert "system" not in tmpl_db_names
+
+
+class TestClickHouseDefaultUserConnection(BaseClickHouseDefaultUserTestClass, TestClickHouseConnection):
+    def check_saved_connection(self, conn: ConnectionClickhouse, params: dict) -> None:
+        assert conn.uuid is not None
+        assert conn.data.db_name == params["db_name"]
+        assert conn.data.username is None
+        assert conn.data.secure is False
+        assert conn.data.ssl_ca is None
 
 
 @pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")
