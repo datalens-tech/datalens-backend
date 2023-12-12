@@ -1,4 +1,5 @@
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
 )
@@ -52,8 +53,13 @@ class MySQLSubselectCoreSourceDefinition(SQLSubselectCoreSourceDefinitionBase):
     source_cls = MySQLSubselectDataSource
 
 
-class MySQLCoreConnector(CoreConnector):
+class MySQLCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_MYSQL
+    compiler_cls = MySQLQueryCompiler
+
+
+class MySQLCoreConnector(CoreConnector):
+    backend_definition = MySQLCoreBackendDefinition
     connection_definitions = (MySQLCoreConnectionDefinition,)
     source_definitions = (
         MySQLTableCoreSourceDefinition,
@@ -61,4 +67,3 @@ class MySQLCoreConnector(CoreConnector):
     )
     rqe_adapter_classes = frozenset({MySQLAdapter, AsyncMySQLAdapter})
     sa_types = SQLALCHEMY_MYSQL_TYPES
-    compiler_cls = MySQLQueryCompiler

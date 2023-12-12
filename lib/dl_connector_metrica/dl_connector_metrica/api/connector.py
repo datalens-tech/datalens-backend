@@ -3,6 +3,7 @@ from dl_api_connector.api_schema.source_base import (
     SQLDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
+    ApiBackendDefinition,
     ApiConnectionDefinition,
     ApiConnector,
     ApiSourceDefinition,
@@ -23,9 +24,11 @@ from dl_connector_metrica.api.connection_info import (
 from dl_connector_metrica.api.filter_compiler import MetricaApiFilterFormulaCompiler
 from dl_connector_metrica.api.i18n.localizer import CONFIGS
 from dl_connector_metrica.core.connector import (
+    AppMetricaApiCoreBackendDefinition,
     AppMetricaApiCoreConnectionDefinition,
     AppMetricaApiCoreConnector,
     AppMetricaApiCoreSourceDefinition,
+    MetricaApiCoreBackendDefinition,
     MetricaApiCoreConnectionDefinition,
     MetricaApiCoreConnector,
     MetricaApiCoreSourceDefinition,
@@ -47,12 +50,16 @@ class MetricaApiApiConnectionDefinition(ApiConnectionDefinition):
     form_factory_cls = MetricaAPIConnectionFormFactory
 
 
+class MetricaApiApiBackendDefinition(ApiBackendDefinition):
+    core_backend_definition = MetricaApiCoreBackendDefinition
+    formula_dialect_name = DIALECT_NAME_METRICAAPI
+    filter_formula_compiler_cls = MetricaApiFilterFormulaCompiler
+
+
 class MetricaApiApiConnector(ApiConnector):
-    core_connector_cls = MetricaApiCoreConnector
+    backend_definition = MetricaApiApiBackendDefinition
     connection_definitions = (MetricaApiApiConnectionDefinition,)
     source_definitions = (MetricaApiFilteredApiTableSourceDefinition,)
-    filter_formula_compiler_cls = MetricaApiFilterFormulaCompiler
-    formula_dialect_name = DIALECT_NAME_METRICAAPI
     translation_configs = frozenset(CONFIGS)
 
 
@@ -70,10 +77,14 @@ class AppMetricaApiApiConnectionDefinition(ApiConnectionDefinition):
     form_factory_cls = AppMetricaAPIConnectionFormFactory
 
 
+class AppMetricaApiApiBackendDefinition(ApiBackendDefinition):
+    core_backend_definition = AppMetricaApiCoreBackendDefinition
+    formula_dialect_name = DIALECT_NAME_METRICAAPI
+    filter_formula_compiler_cls = MetricaApiFilterFormulaCompiler
+
+
 class AppMetricaApiApiConnector(ApiConnector):
-    core_connector_cls = AppMetricaApiCoreConnector
+    backend_definition = AppMetricaApiApiBackendDefinition
     connection_definitions = (AppMetricaApiApiConnectionDefinition,)
     source_definitions = (AppMetricaApiFilteredApiTableSourceDefinition,)
-    filter_formula_compiler_cls = MetricaApiFilterFormulaCompiler
-    formula_dialect_name = DIALECT_NAME_METRICAAPI
     translation_configs = frozenset(CONFIGS)

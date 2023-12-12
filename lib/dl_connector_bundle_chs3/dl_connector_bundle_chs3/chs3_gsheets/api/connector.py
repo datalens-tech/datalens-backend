@@ -25,6 +25,5 @@ class GSheetsFileS3ApiConnectionDefinition(BaseFileS3ApiConnectionDefinition):
 
 
 class GSheetsFileS3ApiConnector(BaseFileS3ApiConnector):
-    core_connector_cls = GSheetsFileS3CoreConnector
     connection_definitions = (GSheetsFileS3ApiConnectionDefinition,)
     source_definitions = (GSheetsFileS3TableApiSourceDefinition,)

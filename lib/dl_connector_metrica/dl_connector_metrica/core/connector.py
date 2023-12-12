@@ -5,6 +5,7 @@ from dl_core.connections_security.base import (
     NonUserInputConnectionSafetyChecker,
 )
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,
@@ -76,8 +77,12 @@ class MetricaApiCoreSourceDefinition(CoreSourceDefinition):
     us_storage_schema_cls = SQLDataSourceSpecStorageSchema
 
 
-class MetricaApiCoreConnector(CoreConnector):
+class MetricaApiCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_METRICA_API
+
+
+class MetricaApiCoreConnector(CoreConnector):
+    backend_definition = MetricaApiCoreBackendDefinition
     connection_definitions = (MetricaApiCoreConnectionDefinition,)
     source_definitions = (MetricaApiCoreSourceDefinition,)
     rqe_adapter_classes = frozenset({MetricaAPIDefaultAdapter})
@@ -108,8 +113,12 @@ class AppMetricaApiCoreSourceDefinition(CoreSourceDefinition):
     us_storage_schema_cls = SQLDataSourceSpecStorageSchema
 
 
-class AppMetricaApiCoreConnector(CoreConnector):
+class AppMetricaApiCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_APPMETRICA_API
+
+
+class AppMetricaApiCoreConnector(CoreConnector):
+    backend_definition = AppMetricaApiCoreBackendDefinition
     connection_definitions = (AppMetricaApiCoreConnectionDefinition,)
     source_definitions = (AppMetricaApiCoreSourceDefinition,)
     rqe_adapter_classes = frozenset({AppMetricaAPIDefaultAdapter})

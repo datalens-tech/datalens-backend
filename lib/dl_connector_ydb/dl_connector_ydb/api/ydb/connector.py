@@ -5,6 +5,7 @@ from dl_api_connector.api_schema.source_base import (
     SubselectDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
+    ApiBackendDefinition,
     ApiConnectionDefinition,
     ApiConnector,
     ApiSourceDefinition,
@@ -15,6 +16,7 @@ from dl_connector_ydb.api.ydb.connection_form.form_config import YDBConnectionFo
 from dl_connector_ydb.api.ydb.connection_info import YDBConnectionInfoProvider
 from dl_connector_ydb.api.ydb.i18n.localizer import CONFIGS
 from dl_connector_ydb.core.ydb.connector import (
+    YDBCoreBackendDefinition,
     YDBCoreConnectionDefinition,
     YDBCoreConnector,
     YDBCoreSourceDefinition,
@@ -42,12 +44,16 @@ class YDBApiConnectionDefinition(ApiConnectionDefinition):
     form_factory_cls = YDBConnectionFormFactory
 
 
+class YDBApiBackendDefinition(ApiBackendDefinition):
+    core_backend_definition = YDBCoreBackendDefinition
+    formula_dialect_name = DIALECT_NAME_YDB
+
+
 class YDBApiConnector(ApiConnector):
-    core_connector_cls = YDBCoreConnector
+    backend_definition = YDBApiBackendDefinition
     connection_definitions = (YDBApiConnectionDefinition,)
     source_definitions = (
         YDBApiTableSourceDefinition,
         YDBApiSubselectSourceDefinition,
     )
-    formula_dialect_name = DIALECT_NAME_YDB
     translation_configs = frozenset(CONFIGS)

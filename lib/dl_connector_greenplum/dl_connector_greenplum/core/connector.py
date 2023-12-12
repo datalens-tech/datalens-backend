@@ -1,4 +1,5 @@
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
 )
@@ -52,8 +53,13 @@ class GreenplumSubselectCoreSourceDefinition(SQLSubselectCoreSourceDefinitionBas
     source_cls = GreenplumSubselectDataSource
 
 
-class GreenplumCoreConnector(CoreConnector):
+class GreenplumCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_GREENPLUM
+    compiler_cls = PostgreSQLQueryCompiler
+
+
+class GreenplumCoreConnector(CoreConnector):
+    backend_definition = GreenplumCoreBackendDefinition
     connection_definitions = (GreenplumCoreConnectionDefinition,)
     source_definitions = (
         GreenplumTableCoreSourceDefinition,
@@ -61,4 +67,3 @@ class GreenplumCoreConnector(CoreConnector):
     )
     rqe_adapter_classes = frozenset({PostgresAdapter, AsyncPostgresAdapter})
     sa_types = SQLALCHEMY_POSTGRES_TYPES
-    compiler_cls = PostgreSQLQueryCompiler

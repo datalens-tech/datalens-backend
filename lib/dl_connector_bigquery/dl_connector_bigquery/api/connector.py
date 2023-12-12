@@ -3,6 +3,7 @@ from dl_api_connector.api_schema.source_base import (
     SubselectDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
+    ApiBackendDefinition,
     ApiConnectionDefinition,
     ApiConnector,
     ApiSourceDefinition,
@@ -17,6 +18,7 @@ from dl_connector_bigquery.api.connection_form.form_config import BigQueryConnec
 from dl_connector_bigquery.api.connection_info import BigQueryConnectionInfoProvider
 from dl_connector_bigquery.api.i18n.localizer import CONFIGS
 from dl_connector_bigquery.core.connector import (
+    BigQueryCoreBackendDefinition,
     BigQueryCoreConnectionDefinition,
     BigQueryCoreConnector,
     BigQueryCoreSubselectSourceDefinition,
@@ -44,12 +46,16 @@ class BigQueryApiConnectionDefinition(ApiConnectionDefinition):
     form_factory_cls = BigQueryConnectionFormFactory
 
 
+class BigQueryApiBackendDefinition(ApiBackendDefinition):
+    core_backend_definition = BigQueryCoreBackendDefinition
+    formula_dialect_name = DIALECT_NAME_BIGQUERY
+
+
 class BigQueryApiConnector(ApiConnector):
-    core_connector_cls = BigQueryCoreConnector
+    backend_definition = BigQueryApiBackendDefinition
     source_definitions = (
         BigQueryApiTableSourceDefinition,
         BigQueryApiSubselectSourceDefinition,
     )
     connection_definitions = (BigQueryApiConnectionDefinition,)
-    formula_dialect_name = DIALECT_NAME_BIGQUERY
     translation_configs = frozenset(CONFIGS)

@@ -1,6 +1,7 @@
 import pyodbc
 
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
 )
@@ -50,8 +51,13 @@ class MSSQLSubselectCoreSourceDefinition(SQLSubselectCoreSourceDefinitionBase):
     source_cls = MSSQLSubselectDataSource
 
 
-class MSSQLCoreConnector(CoreConnector):
+class MSSQLCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_MSSQL
+    compiler_cls = MSSQLQueryCompiler
+
+
+class MSSQLCoreConnector(CoreConnector):
+    backend_definition = MSSQLCoreBackendDefinition
     connection_definitions = (MSSQLCoreConnectionDefinition,)
     source_definitions = (
         MSSQLTableCoreSourceDefinition,
@@ -60,4 +66,3 @@ class MSSQLCoreConnector(CoreConnector):
     rqe_adapter_classes = frozenset({MSSQLDefaultAdapter})
     sa_types = SQLALCHEMY_MSSQL_TYPES
     query_fail_exceptions = frozenset({pyodbc.Error})
-    compiler_cls = MSSQLQueryCompiler

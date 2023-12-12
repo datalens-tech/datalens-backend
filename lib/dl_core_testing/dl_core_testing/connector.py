@@ -3,6 +3,7 @@ from dl_constants.enums import (
     DataSourceType,
 )
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,
@@ -41,5 +42,6 @@ class TestingCoreConnectionDefinition(CoreConnectionDefinition):
 
 
 class TestingCoreConnector(CoreConnector):
+    backend_definition = CoreBackendDefinition
     connection_definitions = (TestingCoreConnectionDefinition,)
     source_definitions = (TestingCoreSourceDefinition,)

@@ -5,6 +5,7 @@ from dl_api_connector.api_schema.source_base import (
     SQLDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
+    ApiBackendDefinition,
     ApiConnectionDefinition,
     ApiConnector,
     ApiSourceDefinition,
@@ -20,6 +21,7 @@ from dl_connector_bitrix_gds.api.filter_compiler import BitrixGDSFilterFormulaCo
 from dl_connector_bitrix_gds.api.i18n.localizer import CONFIGS
 from dl_connector_bitrix_gds.api.multi_query import BitrixGDSMultiQueryMutatorFactory
 from dl_connector_bitrix_gds.core.connector import (
+    BitrixGDSCoreBackendDefinition,
     BitrixGDSCoreConnectionDefinition,
     BitrixGDSCoreConnector,
     BitrixGDSCoreSourceDefinition,
@@ -40,8 +42,8 @@ class BitrixGDSApiConnectionDefinition(ApiConnectionDefinition):
     info_provider_cls = BitrixGDSConnectionInfoProvider
 
 
-class BitrixGDSApiConnector(ApiConnector):
-    core_connector_cls = BitrixGDSCoreConnector
+class BitrixGDSApiBackendDefinition(ApiBackendDefinition):
+    core_backend_definition = BitrixGDSCoreBackendDefinition
     formula_dialect_name = DIALECT_NAME_BITRIX
     multi_query_mutation_factories = (
         MQMFactorySettingItem(
@@ -53,9 +55,13 @@ class BitrixGDSApiConnector(ApiConnector):
             factory_cls=NoCompengMultiQueryMutatorFactory,
         ),
     )
-    connection_definitions = (BitrixGDSApiConnectionDefinition,)
-    source_definitions = (BitrixGDSApiSourceDefinition,)
     is_forkable = False
     is_compeng_executable = True
     filter_formula_compiler_cls = BitrixGDSFilterFormulaCompiler
+
+
+class BitrixGDSApiConnector(ApiConnector):
+    backend_definition = BitrixGDSApiBackendDefinition
+    connection_definitions = (BitrixGDSApiConnectionDefinition,)
+    source_definitions = (BitrixGDSApiSourceDefinition,)
     translation_configs = frozenset(CONFIGS)

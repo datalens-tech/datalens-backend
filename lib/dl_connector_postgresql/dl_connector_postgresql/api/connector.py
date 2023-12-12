@@ -5,6 +5,7 @@ from dl_api_connector.api_schema.source_base import (
     SubselectDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
+    ApiBackendDefinition,
     ApiConnectionDefinition,
     ApiConnector,
     ApiSourceDefinition,
@@ -18,6 +19,7 @@ from dl_connector_postgresql.api.connection_form.form_config import PostgreSQLCo
 from dl_connector_postgresql.api.connection_info import PostgreSQLConnectionInfoProvider
 from dl_connector_postgresql.api.i18n.localizer import CONFIGS
 from dl_connector_postgresql.core.postgresql.connector import (
+    PostgreSQLCoreBackendDefinition,
     PostgreSQLCoreConnectionDefinition,
     PostgreSQLCoreConnector,
     PostgreSQLSubselectCoreSourceDefinition,
@@ -48,20 +50,24 @@ class PostgreSQLApiConnectionDefinition(ApiConnectionDefinition):
     form_factory_cls = PostgreSQLConnectionFormFactory
 
 
-class PostgreSQLApiConnector(ApiConnector):
-    core_connector_cls = PostgreSQLCoreConnector
-    connection_definitions = (PostgreSQLApiConnectionDefinition,)
-    source_definitions = (
-        PostgreSQLApiTableSourceDefinition,
-        PostgreSQLApiSubselectSourceDefinition,
-    )
+class PostgreSQLApiBackendDefinition(ApiBackendDefinition):
+    core_backend_definition = PostgreSQLCoreBackendDefinition
     formula_dialect_name = DIALECT_NAME_POSTGRESQL
-    translation_configs = frozenset(CONFIGS)
-    compeng_dialect = PostgreSQLDialect.COMPENG
-    multi_query_mutation_factories = ApiConnector.multi_query_mutation_factories + (
+    multi_query_mutation_factories = ApiBackendDefinition.multi_query_mutation_factories + (
         MQMFactorySettingItem(
             query_proc_mode=QueryProcessingMode.native_wf,
             dialects=PostgreSQLDialect.and_above(PostgreSQLDialect.POSTGRESQL_9_4).to_list(),
             factory_cls=NoCompengMultiQueryMutatorFactory,
         ),
     )
+
+
+class PostgreSQLApiConnector(ApiConnector):
+    backend_definition = PostgreSQLApiBackendDefinition
+    connection_definitions = (PostgreSQLApiConnectionDefinition,)
+    source_definitions = (
+        PostgreSQLApiTableSourceDefinition,
+        PostgreSQLApiSubselectSourceDefinition,
+    )
+    translation_configs = frozenset(CONFIGS)
+    compeng_dialect = PostgreSQLDialect.COMPENG

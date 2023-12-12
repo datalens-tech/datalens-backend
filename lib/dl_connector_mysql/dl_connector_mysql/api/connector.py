@@ -5,6 +5,7 @@ from dl_api_connector.api_schema.source_base import (
     SubselectDataSourceTemplateSchema,
 )
 from dl_api_connector.connector import (
+    ApiBackendDefinition,
     ApiConnectionDefinition,
     ApiConnector,
     ApiSourceDefinition,
@@ -18,6 +19,7 @@ from dl_connector_mysql.api.connection_form.form_config import MySQLConnectionFo
 from dl_connector_mysql.api.connection_info import MySQLConnectionInfoProvider
 from dl_connector_mysql.api.i18n.localizer import CONFIGS
 from dl_connector_mysql.core.connector import (
+    MySQLCoreBackendDefinition,
     MySQLCoreConnectionDefinition,
     MySQLCoreConnector,
     MySQLSubselectCoreSourceDefinition,
@@ -48,19 +50,23 @@ class MySQLApiConnectionDefinition(ApiConnectionDefinition):
     form_factory_cls = MySQLConnectionFormFactory
 
 
-class MySQLApiConnector(ApiConnector):
-    core_connector_cls = MySQLCoreConnector
-    connection_definitions = (MySQLApiConnectionDefinition,)
-    source_definitions = (
-        MySQLApiTableSourceDefinition,
-        MySQLApiSubselectSourceDefinition,
-    )
+class MySQLApiBackendDefinition(ApiBackendDefinition):
+    core_backend_definition = MySQLCoreBackendDefinition
     formula_dialect_name = DIALECT_NAME_MYSQL
-    translation_configs = frozenset(CONFIGS)
-    multi_query_mutation_factories = ApiConnector.multi_query_mutation_factories + (
+    multi_query_mutation_factories = ApiBackendDefinition.multi_query_mutation_factories + (
         MQMFactorySettingItem(
             query_proc_mode=QueryProcessingMode.native_wf,
             dialects=MySQLDialect.and_above(MySQLDialect.MYSQL_8_0_12).to_list(),
             factory_cls=NoCompengMultiQueryMutatorFactory,
         ),
     )
+
+
+class MySQLApiConnector(ApiConnector):
+    backend_definition = MySQLApiBackendDefinition
+    connection_definitions = (MySQLApiConnectionDefinition,)
+    source_definitions = (
+        MySQLApiTableSourceDefinition,
+        MySQLApiSubselectSourceDefinition,
+    )
+    translation_configs = frozenset(CONFIGS)

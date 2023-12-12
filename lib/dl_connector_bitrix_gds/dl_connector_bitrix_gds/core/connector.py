@@ -1,4 +1,5 @@
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,
@@ -36,8 +37,12 @@ class BitrixGDSCoreSourceDefinition(CoreSourceDefinition):
     us_storage_schema_cls = SQLDataSourceSpecStorageSchema
 
 
-class BitrixGDSCoreConnector(CoreConnector):
+class BitrixGDSCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_BITRIX_GDS
+
+
+class BitrixGDSCoreConnector(CoreConnector):
+    backend_definition = BitrixGDSCoreBackendDefinition
     connection_definitions = (BitrixGDSCoreConnectionDefinition,)
     source_definitions = (BitrixGDSCoreSourceDefinition,)
     rqe_adapter_classes = frozenset({BitrixGDSDefaultAdapter})

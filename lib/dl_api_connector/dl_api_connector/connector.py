@@ -20,6 +20,7 @@ from dl_api_connector.form_config.models.base import ConnectionFormFactory
 from dl_api_lib.query.registry import MQMFactorySettingItem
 from dl_constants.enums import QueryProcessingMode
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,
@@ -53,8 +54,9 @@ class ApiConnectionDefinition(abc.ABC):
     form_factory_cls: ClassVar[Optional[Type[ConnectionFormFactory]]] = None
 
 
-class ApiConnector(abc.ABC):
-    # backend_type-bound properties - TODO: move to a separate entity
+class ApiBackendDefinition(abc.ABC):
+    core_backend_definition: Type[CoreBackendDefinition]
+
     formula_dialect_name: ClassVar[DialectName] = DialectName.DUMMY
     multi_query_mutation_factories: tuple[MQMFactorySettingItem, ...] = (
         MQMFactorySettingItem(
@@ -70,8 +72,10 @@ class ApiConnector(abc.ABC):
     is_compeng_executable: ClassVar[bool] = False
     filter_formula_compiler_cls: ClassVar[Type[FilterFormulaCompiler]] = MainFilterFormulaCompiler
     dashsql_literalizer_cls: ClassVar[Type[DashSQLParamLiteralizer]] = DefaultDashSQLParamLiteralizer
-    # others
-    core_connector_cls: ClassVar[Type[CoreConnector]]
+
+
+class ApiConnector(abc.ABC):
+    backend_definition: Type[ApiBackendDefinition]
     connection_definitions: ClassVar[Tuple[Type[ApiConnectionDefinition], ...]] = ()
     source_definitions: ClassVar[Tuple[Type[ApiSourceDefinition], ...]] = ()
     translation_configs: ClassVar[frozenset[TranslationConfig]] = frozenset()

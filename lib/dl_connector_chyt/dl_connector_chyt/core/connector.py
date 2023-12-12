@@ -1,6 +1,7 @@
 from clickhouse_sqlalchemy.orm.query import Query as CHQuery
 
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,
@@ -86,8 +87,18 @@ class CHYTTableSubselectCoreSourceDefinition(CoreSourceDefinition):
     us_storage_schema_cls = CHYTSubselectDataSourceSpecStorageSchema
 
 
-class CHYTCoreConnector(CoreConnector):
+class CHYTTableSubselectCoreSourceDefinition(CoreSourceDefinition):
+    source_type = SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT
+
+
+class CHYTCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_CHYT
+    query_cls = CHQuery
+    compiler_cls = ClickHouseQueryCompiler
+
+
+class CHYTCoreConnector(CoreConnector):
+    backend_definition = CHYTCoreBackendDefinition
     connection_definitions = (CHYTCoreConnectionDefinition,)
     source_definitions = (
         CHYTTableCoreSourceDefinition,
@@ -101,5 +112,3 @@ class CHYTCoreConnector(CoreConnector):
             AsyncCHYTAdapter,
         }
     )
-    query_cls = CHQuery
-    compiler_cls = ClickHouseQueryCompiler

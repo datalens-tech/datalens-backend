@@ -1,4 +1,5 @@
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,
@@ -55,8 +56,12 @@ class SnowFlakeCoreSubselectSourceDefinition(CoreSourceDefinition):
     us_storage_schema_cls = SnowFlakeSubselectDataSourceSpecStorageSchema
 
 
-class SnowFlakeCoreConnector(CoreConnector):
+class SnowflakeCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_SNOWFLAKE
+
+
+class SnowFlakeCoreConnector(CoreConnector):
+    backend_definition = SnowflakeCoreBackendDefinition
     connection_definitions = (SnowFlakeCoreConnectionDefinition,)
     source_definitions = (
         SnowFlakeCoreTableSourceDefinition,

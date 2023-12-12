@@ -1,6 +1,7 @@
 from ydb.sqlalchemy import register_dialect as yql_register_dialect
 
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,
@@ -58,15 +59,19 @@ class YDBCoreSubselectSourceDefinition(CoreSourceDefinition):
     us_storage_schema_cls = SubselectDataSourceSpecStorageSchema
 
 
-class YDBCoreConnector(CoreConnector):
+class YDBCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_YDB
+    compiler_cls = YQLQueryCompiler
+
+
+class YDBCoreConnector(CoreConnector):
+    backend_definition = YDBCoreBackendDefinition
     connection_definitions = (YDBCoreConnectionDefinition,)
     source_definitions = (
         YDBCoreSourceDefinition,
         YDBCoreSubselectSourceDefinition,
     )
     rqe_adapter_classes = frozenset({YDBAdapter})
-    compiler_cls = YQLQueryCompiler
 
     @classmethod
     def registration_hook(cls) -> None:

@@ -1,4 +1,5 @@
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,
@@ -55,9 +56,13 @@ class BigQueryCoreSubselectSourceDefinition(CoreSourceDefinition):
     us_storage_schema_cls = BigQuerySubselectDataSourceSpecStorageSchema
 
 
-class BigQueryCoreConnector(CoreConnector):
+class BigQueryCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_BIGQUERY
     compiler_cls = BigQueryQueryCompiler
+
+
+class BigQueryCoreConnector(CoreConnector):
+    backend_definition = BigQueryCoreBackendDefinition
     connection_definitions = (BigQueryCoreConnectionDefinition,)
     source_definitions = (
         BigQueryCoreTableSourceDefinition,

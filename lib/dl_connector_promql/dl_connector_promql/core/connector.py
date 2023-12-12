@@ -1,4 +1,5 @@
 from dl_core.connectors.base.connector import (
+    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,
@@ -39,8 +40,12 @@ class PromQLCoreSourceDefinition(CoreSourceDefinition):
     source_cls = PromQLDataSource
 
 
-class PromQLCoreConnector(CoreConnector):
+class PromQLCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_PROMQL
+
+
+class PromQLCoreConnector(CoreConnector):
+    backend_definition = PromQLCoreBackendDefinition
     connection_definitions = (PromQLCoreConnectionDefinition,)
     source_definitions = (PromQLCoreSourceDefinition,)
     rqe_adapter_classes = frozenset({AsyncPromQLAdapter, PromQLAdapter})
