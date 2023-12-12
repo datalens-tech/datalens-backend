@@ -237,7 +237,7 @@ class GitFilesystemEditor(DefaultFilesystemEditor):
 
     def _validate_paths_in_same_repo(self, *paths: Path) -> None:
         root_paths = {GitRepo(path, search_parent_directories=True).working_tree_dir for path in paths}
-        if len(root_paths):
+        if len(root_paths) > 1:
             raise RuntimeError(
                 "Cross-repository operations are not supported for GitFilesystemEditor. Use `--fs-editor default`"
             )
