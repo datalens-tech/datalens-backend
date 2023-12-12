@@ -22,6 +22,7 @@ from dl_connector_greenplum.core.connector import (
     GreenplumTableCoreSourceDefinition,
 )
 from dl_connector_postgresql.api.connector import PostgreSQLApiBackendDefinition
+from dl_connector_postgresql.api.i18n.localizer import CONFIGS as BI_CONNECTOR_POSTGRESQL_CONFIGS
 
 
 class GreenplumApiTableSourceDefinition(ApiSourceDefinition):
@@ -54,4 +55,4 @@ class GreenplumApiConnector(ApiConnector):
         GreenplumApiTableSourceDefinition,
         GreenplumApiSubselectSourceDefinition,
     )
-    translation_configs = frozenset(CONFIGS)
+    translation_configs = frozenset(CONFIGS) | frozenset(BI_CONNECTOR_POSTGRESQL_CONFIGS)
