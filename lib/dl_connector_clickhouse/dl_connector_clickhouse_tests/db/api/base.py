@@ -35,6 +35,16 @@ class ClickHouseConnectionTestBase(BaseClickHouseTestClass, ConnectionTestBase):
         )
 
 
+class ClickHouseConnectionDefaultUserTestBase(ClickHouseConnectionTestBase):
+    @pytest.fixture(scope="class")
+    def connection_params(self) -> dict:
+        return dict(
+            db_name=CoreConnectionSettings.DB_NAME,
+            host=CoreConnectionSettings.HOST,
+            port=CoreConnectionSettings.PORT,
+        )
+
+
 class ClickHouseDashSQLConnectionTest(ClickHouseConnectionTestBase):
     raw_sql_level = RawSQLLevel.dashsql
 

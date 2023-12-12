@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from marshmallow import fields as ma_fields
+
 from dl_api_connector.api_schema.connection_base import ConnectionMetaMixin
+from dl_api_connector.api_schema.connection_base_fields import secret_string_field
 from dl_api_connector.api_schema.connection_mixins import (
     DataExportForbiddenMixin,
     RawSQLLevelMixin,
@@ -17,6 +20,14 @@ class ClickHouseConnectionSchema(
 ):
     TARGET_CLS = ConnectionClickhouse
     ALLOW_MULTI_HOST = True
+
+    username = ma_fields.String(attribute="data.username", allow_none=True, bi_extra=FieldExtra(editable=True))
+    password = secret_string_field(
+        attribute="data.password",
+        required=False,
+        allow_none=True,
+        bi_extra=FieldExtra(editable=True),
+    )
 
     secure = core_ma_fields.OnOffField(attribute="data.secure", bi_extra=FieldExtra(editable=True))
     ssl_ca = core_ma_fields.Base64StringField(

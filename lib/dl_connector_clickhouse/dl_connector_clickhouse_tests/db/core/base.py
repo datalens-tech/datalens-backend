@@ -58,6 +58,16 @@ class BaseClickHouseTestClass(BaseConnectionTestClass[ConnectionClickhouse]):
         return conn
 
 
+class BaseClickHouseDefaultUserTestClass(BaseClickHouseTestClass):
+    @pytest.fixture(scope="function")
+    def connection_creation_params(self) -> dict:
+        return dict(
+            db_name=test_config.CoreConnectionSettings.DB_NAME,
+            host=test_config.CoreConnectionSettings.HOST,
+            port=test_config.CoreConnectionSettings.PORT,
+        )
+
+
 class BaseSslClickHouseTestClass(BaseClickHouseTestClass):
     @pytest.fixture(autouse=True)
     def clear_ssl_folder(self):
