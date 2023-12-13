@@ -201,7 +201,7 @@ class CalcOpExecutorAsync(OpExecutorAsync):
             f"new key: {new_data_key.key_parts_hash}"
         )
 
-        return legacy_data_key
+        return new_data_key
 
     @log_op  # type: ignore  # TODO: fix
     async def execute(self, op: BaseOp) -> DataSourceVS:  # type: ignore  # TODO: fix
