@@ -87,10 +87,6 @@ class CHYTTableSubselectCoreSourceDefinition(CoreSourceDefinition):
     us_storage_schema_cls = CHYTSubselectDataSourceSpecStorageSchema
 
 
-class CHYTTableSubselectCoreSourceDefinition(CoreSourceDefinition):
-    source_type = SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT
-
-
 class CHYTCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_CHYT
     query_cls = CHQuery
