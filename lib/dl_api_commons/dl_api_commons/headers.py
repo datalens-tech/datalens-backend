@@ -20,6 +20,7 @@ DEFAULT_RCI_PLAIN_HEADERS = (
     "User-Agent",
     "X-DL-Folder-ID",
     DLHeadersCommon.TENANT_ID.value,
+    DLHeadersCommon.WORKBOOK_ID.value,
     "Referer",
     "X-Chart-Id",
     "X-Dash-Id",
