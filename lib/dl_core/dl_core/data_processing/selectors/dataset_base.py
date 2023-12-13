@@ -16,9 +16,9 @@ from dl_api_commons.reporting.models import (
     QueryExecutionEndReportingRecord,
     QueryExecutionStartReportingRecord,
 )
+from dl_constants.api_constants import DLHeadersCommon
 from dl_constants.enums import DataSourceRole
 from dl_core import utils
-from dl_core.base_models import WorkbookEntryLocation
 from dl_core.data_processing.selectors.base import (
     BIQueryExecutionContext,
     DataSelectorAsyncBase,
@@ -65,9 +65,7 @@ class DatasetDataSelectorAsyncBase(DataSelectorAsyncBase, metaclass=abc.ABCMeta)
         query_execution_ctx: BIQueryExecutionContext,
     ) -> None:
         connection = query_execution_ctx.target_connection
-        workbook_id = (
-            connection.entry_key.workbook_id if isinstance(connection.entry_key, WorkbookEntryLocation) else None
-        )
+        workbook_id = self.service_registry.rci.plain_headers.get(DLHeadersCommon.WORKBOOK_ID)
         report = QueryExecutionStartReportingRecord(
             timestamp=time.time(),
             query_id=query_execution_ctx.query_id,
