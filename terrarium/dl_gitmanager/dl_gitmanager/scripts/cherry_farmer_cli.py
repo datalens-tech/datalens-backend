@@ -123,7 +123,8 @@ class GitManagerTool(CliToolBase):
 
         if not result:
             # no flags means "all"
-            return self._get_states(new=True)
+            return self._get_states(new=True, picked=False, ignored=False, all=False)
+            # was: return self._get_states(new=True)
 
         return result
 
@@ -147,9 +148,7 @@ class GitManagerTool(CliToolBase):
 {Style.RESET_ALL}"""
         print(text)
 
-    def show(
-        self, src_branch: str, dst_branch: Optional[str], picked: bool, ignored: bool, new: bool, all: bool
-    ) -> None:
+    def show(self, src_branch: str, dst_branch: str, picked: bool, ignored: bool, new: bool, all: bool) -> None:
         states = self._get_states(picked=picked, ignored=ignored, new=new, all=all)
         for commit_state_item in self.cherry_farmer.iter_diff_commits(
             src_branch=src_branch,
@@ -192,7 +191,7 @@ class GitManagerTool(CliToolBase):
     def iter_(
         self,
         src_branch: str,
-        dst_branch: Optional[str],
+        dst_branch: str,
         picked: bool,
         ignored: bool,
         new: bool,
