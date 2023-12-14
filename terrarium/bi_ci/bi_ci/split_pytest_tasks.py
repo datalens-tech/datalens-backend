@@ -55,9 +55,13 @@ def get_package_tests(
     package_path: str,
     requested_mode: str,
 ) -> typing.Generator[tuple[str, str], None, None]:
+    pytest_targets: dict | None = {}
     try:
         pytest_targets = read_pytest_targets(root_path / package_path / "pyproject.toml")
     except FileNotFoundError:
+        return
+
+    if pytest_targets is None:
         return
 
     for section in pytest_targets.keys():
@@ -72,13 +76,15 @@ def get_default_package_tests(
     root_path: pathlib.Path,
     package_path: str,
 ) -> typing.Generator[tuple[str, str], None, None]:
+    pytest_targets: dict | None = {}
     try:
         pytest_targets = read_pytest_targets(root_path / package_path / "pyproject.toml")
     except FileNotFoundError:
         return
 
-    if len(pytest_targets) == 0:
+    if not pytest_targets or len(pytest_targets) == 0:
         yield package_path, "__default__"
+        return
 
     for section, spec in pytest_targets.items():
         labels = spec.get("labels", [])
