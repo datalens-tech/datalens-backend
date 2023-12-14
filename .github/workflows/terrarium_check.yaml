@@ -52,8 +52,8 @@ jobs:
       matrix:
         value:
           - bi_ci
-          - dc_cli_tools
-          - dc_gitmanager
+          - dl_cli_tools
+          - dl_gitmanager
           - dl_repmanager
     name: "🐊[mypy] ${{ matrix.value }}"
     steps:
