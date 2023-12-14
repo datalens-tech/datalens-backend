@@ -342,7 +342,10 @@ class DlRepManagerTool(CliToolBase):
         tests: bool = False,
     ) -> None:
         """Compares imports and requirements of a package"""
-        (extra_import_specs, extra_req_specs,) = self.repository_manager.compare_imports_and_requirements(
+        (
+            extra_import_specs,
+            extra_req_specs,
+        ) = self.repository_manager.compare_imports_and_requirements(
             package_name,
             ignore_prefix=ignore_prefix,
             tests=tests,
