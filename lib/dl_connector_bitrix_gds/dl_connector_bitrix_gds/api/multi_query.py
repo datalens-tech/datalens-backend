@@ -22,9 +22,8 @@ class BitrixGDSMultiQuerySplitter(PrefilteredFieldMultiQuerySplitter):
     result_schema: ResultSchema = attr.ib(kw_only=True)
 
     def is_pre_filter(self, formula: CompiledFormulaInfo) -> bool:
-        assert formula.original_field_id is not None
         expr = formula.formula_obj.expr
-        if not isinstance(expr, formula_nodes.OperationCall):
+        if not isinstance(expr, formula_nodes.OperationCall) or formula.original_field_id is None:
             return False
         field = self.result_schema.by_guid(formula.original_field_id)
         if field.data_type in self.data_types and expr.name in self.expr_names:
