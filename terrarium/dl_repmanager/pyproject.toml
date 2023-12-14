@@ -23,6 +23,7 @@ pytest = ">=7.4.3"
 
 [tool.poetry.group.mypy.dependencies]
 types_PyYAML = "*"
+types-requests = "*"
 mypy = ">= 1.7.0"
 
 [build-system]

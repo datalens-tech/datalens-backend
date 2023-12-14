@@ -154,7 +154,11 @@ def make_parser() -> argparse.ArgumentParser:
         help="List all packages of a given type",
     )
     package_list_parser.add_argument("--mask", help="Formatting mask")
-    package_list_parser.add_argument("--base-path", default=".", help="Base path for formatting relative package paths")
+    package_list_parser.add_argument(
+        "--base-path",
+        default=".",
+        help="Base path for formatting relative package paths",
+    )
 
     subparsers.add_parser(
         "import-list",
@@ -201,7 +205,10 @@ def make_parser() -> argparse.ArgumentParser:
         help="Poetry dependency group to check",
     )
     compare_resulting_dependencies.add_argument(
-        "--base-rev", type=str, default="origin/trunk", help="git revision to compare with"
+        "--base-rev",
+        type=str,
+        default="origin/trunk",
+        help="git revision to compare with",
     )
 
     entities_parser = argparse.ArgumentParser(add_help=False)
@@ -221,7 +228,12 @@ def make_parser() -> argparse.ArgumentParser:
         parents=[entities_parser],
         help="Resolve repository entities from one type to another",
     )
-    resolve_parser.add_argument("--to-type", type=_entity_ref_type_type, required=True, help="Output entity type")
+    resolve_parser.add_argument(
+        "--to-type",
+        type=_entity_ref_type_type,
+        required=True,
+        help="Output entity type",
+    )
 
     search_imports_parser = subparsers.add_parser(
         "search-imports",
@@ -229,7 +241,10 @@ def make_parser() -> argparse.ArgumentParser:
         help="Search imports of of one set of entities in another",
     )
     search_imports_parser.add_argument(
-        "--imported", type=_entity_ref_list_type, required=True, help="List of imported entites to search for"
+        "--imported",
+        type=_entity_ref_list_type,
+        required=True,
+        help="List of imported entites to search for",
     )
 
     recurse_packages_parser = subparsers.add_parser(
@@ -320,9 +335,14 @@ class DlRepManagerTool(CliToolBase):
             for req_item in req_list.req_specs:
                 print(f"    {req_item.pretty()}")
 
-    def check_requirements(self, package_name: str, ignore_prefix: Optional[str] = None, tests: bool = False) -> None:
+    def check_requirements(
+        self,
+        package_name: str,
+        ignore_prefix: Optional[str] = None,
+        tests: bool = False,
+    ) -> None:
         """Compares imports and requirements of a package"""
-        extra_import_specs, extra_req_specs = self.repository_manager.compare_imports_and_requirements(
+        (extra_import_specs, extra_req_specs,) = self.repository_manager.compare_imports_and_requirements(
             package_name,
             ignore_prefix=ignore_prefix,
             tests=tests,
@@ -341,10 +361,10 @@ class DlRepManagerTool(CliToolBase):
         if not extra_req_specs and not extra_import_specs:
             print("Requirements are in sync with imports")
 
-    def ensure_mypy_common(self, metapackage_name: str):
+    def ensure_mypy_common(self, metapackage_name: str) -> None:
         self.py_prj_editor.update_mypy_common(metapackage_name=metapackage_name)
 
-    def compare_resulting_deps(self, base_revision: str, group: str):
+    def compare_resulting_deps(self, base_revision: str, group: str) -> None:
         repo_root = self.py_prj_editor.base_path
         main_git_mgr = GitManager(repo_root)
 
@@ -457,21 +477,35 @@ class DlRepManagerTool(CliToolBase):
         config_file_name = args.config
         base_path = args.base_path
         fs_editor_type = args.fs_editor if not args.dry_run else "virtual"
-        tool = cls.initialize(base_path=base_path, config_file_name=config_file_name, fs_editor_type=fs_editor_type)
+        tool = cls.initialize(
+            base_path=base_path,
+            config_file_name=config_file_name,
+            fs_editor_type=fs_editor_type,
+        )
 
         match args.command:
             case "init":
                 tool.init(package_name=args.package_name, package_type=args.package_type)
             case "copy":
-                tool.copy(package_name=args.package_name, from_package_name=args.from_package_name)
+                tool.copy(
+                    package_name=args.package_name,
+                    from_package_name=args.from_package_name,
+                )
             case "rename":
-                tool.rename(package_name=args.package_name, new_package_name=args.new_package_name)
+                tool.rename(
+                    package_name=args.package_name,
+                    new_package_name=args.new_package_name,
+                )
             case "ch-package-type":
                 tool.ch_package_type(package_name=args.package_name, package_type=args.package_type)
             case "rm":
                 tool.rm(package_name=args.package_name)
             case "package-list":
-                tool.package_list(package_type=args.package_type, mask=args.mask, base_path=Path(args.base_path))
+                tool.package_list(
+                    package_type=args.package_type,
+                    mask=args.mask,
+                    base_path=Path(args.base_path),
+                )
             case "rename-module":
                 tool.rename_module(
                     old_import_name=args.old_import_name,
@@ -485,7 +519,9 @@ class DlRepManagerTool(CliToolBase):
                 tool.req_list(package_name=args.package_name)
             case "req-check":
                 tool.check_requirements(
-                    package_name=args.package_name, ignore_prefix=args.ignore_prefix, tests=args.tests
+                    package_name=args.package_name,
+                    ignore_prefix=args.ignore_prefix,
+                    tests=args.tests,
                 )
             case "ensure-mypy-common":
                 tool.ensure_mypy_common(metapackage_name=args.metapackage)

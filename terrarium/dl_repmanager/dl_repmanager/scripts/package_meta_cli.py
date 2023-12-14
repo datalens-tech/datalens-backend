@@ -148,7 +148,12 @@ class DlPackageMetaTool(CliToolBase):
             package_meta_io_factory.package_meta_reader(toml_path) as meta_reader,
             package_meta_io_factory.package_meta_writer(toml_path) as meta_writer,
         ):
-            tool = cls(fs_editor=fs_editor, package_path=package_path, meta_reader=meta_reader, meta_writer=meta_writer)
+            tool = cls(
+                fs_editor=fs_editor,
+                package_path=package_path,
+                meta_reader=meta_reader,
+                meta_writer=meta_writer,
+            )
 
             match package_command:
                 case "list-i18n-domains":
@@ -161,11 +166,15 @@ class DlPackageMetaTool(CliToolBase):
                     tool.rm_path(src_path=args.src_path)
                 case "set-meta-text":
                     tool.set_meta_text(
-                        toml_section=args.toml_section, toml_key=args.toml_key, toml_value=args.toml_value
+                        toml_section=args.toml_section,
+                        toml_key=args.toml_key,
+                        toml_value=args.toml_value,
                     )
                 case "set-meta-array":
                     tool.set_meta_array(
-                        toml_section=args.toml_section, toml_key=args.toml_key, toml_value=args.toml_value
+                        toml_section=args.toml_section,
+                        toml_key=args.toml_key,
+                        toml_value=args.toml_value,
                     )
                 case _:
                     raise RuntimeError(f"Got unknown command: {args.command}")
