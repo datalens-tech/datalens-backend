@@ -18,7 +18,7 @@ from dl_repmanager.requirements_tools import (
 log = logging.getLogger(__name__)
 
 
-def _strip_version(raw: str):
+def _strip_version(raw: str) -> str:
     return raw.strip().split(" ;")[0]
 
 
@@ -33,7 +33,7 @@ def mb_types_name(name: str, override: dict | None = None) -> str | None:
             return guessed_name
 
 
-def process_one(requirement: PipRequirement, override: dict | None = None):
+def process_one(requirement: PipRequirement, override: dict | None = None) -> tuple[str, str] | None:
     guessed_name = f"types-{requirement.name}"
     cleaned_version = requirement.cleaned_version
 
@@ -84,7 +84,7 @@ def check_if_exists_in_pypi(name: str, version: str) -> bool:
 class RequirementsPathProvider:
     base_path: Path = attr.ib()
     external_requirements_rel_py: Path = attr.ib(default=Path("ops/ci/docker_image_base_ci"))
-    external_requirements_file_names: tuple[str] = attr.ib(
+    external_requirements_file_names: tuple[str, ...] = attr.ib(
         default=(
             "requirements_external.txt",
             "requirements_conflicting.txt",
@@ -107,7 +107,7 @@ def stubs_sync(
     meta_writer: PackageMetaWriter,
     path_provider: RequirementsPathProvider,
     dry_run: bool = True,
-):
+) -> None:
     log.info(f"Starting mypy stubs sync. Dry run: {dry_run}")
 
     requirements: dict[str, PipRequirement] = {}
@@ -128,18 +128,17 @@ def stubs_sync(
         result = process_one(req, override)
         if result:
             types_name, types_version = result
-            if (
-                types_name not in annotations_requirements
-                or annotations_requirements.get(types_name).cleaned_version != types_version
-            ):
+            existing_requirement = annotations_requirements.get(types_name)
+            if existing_requirement is None or existing_requirement.cleaned_version != types_version:
                 annotations_to_add[types_name] = PipRequirement(name=name, raw_version=types_version)
+
         else:
             log.debug(f"Could not find a types pkg for {name}")
             mb_name = mb_types_name(name, override)
-            if not annotations_requirements.get(mb_name) and name not in overrides_map:
+            if mb_name and not annotations_requirements.get(mb_name) and name not in overrides_map:
                 packages_to_ignore.append(name)
 
-            if annotations_requirements.get(mb_name) and name not in ignore_pkg_set:
+            if mb_name and annotations_requirements.get(mb_name) and name not in ignore_pkg_set:
                 log.warning(
                     f"{name} and types package {mb_name} listed in requirements." f" Pypi does not have such packages"
                 )

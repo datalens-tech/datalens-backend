@@ -52,7 +52,7 @@ class GitManagerTool(CliToolBase):
 
         return parser
 
-    def range_diff_paths(self, base: str, head: Optional[str], absolute: bool, only_added_commits: bool) -> None:
+    def range_diff_paths(self, base: str, head: str, absolute: bool, only_added_commits: bool) -> None:
         diff_name_list = self.git_manager.get_range_diff_paths(
             base=base,
             head=head,

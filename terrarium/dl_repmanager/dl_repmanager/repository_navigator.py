@@ -201,7 +201,10 @@ class RepositoryNavigator:
 
                 if to_ref_type == EntityReferenceType.path:
                     result = set()
-                    for module_name in (*package_info.module_names, *package_info.test_dirs):
+                    for module_name in (
+                        *package_info.module_names,
+                        *package_info.test_dirs,
+                    ):
                         result.update(
                             self.resolve_entity_to_type(
                                 entity_ref=EntityReference(
@@ -234,10 +237,17 @@ class RepositoryNavigator:
 
                 path_to_package_type_and_rel: dict[Path, tuple[str, Path, Path]] = {}
                 for path in paths:
-                    for package_type, pkg_type_dir in self.repository_env.iter_package_abs_dirs():
+                    for (
+                        package_type,
+                        pkg_type_dir,
+                    ) in self.repository_env.iter_package_abs_dirs():
                         try:
                             rel_path = path.relative_to(pkg_type_dir)
-                            path_to_package_type_and_rel[path] = (package_type, pkg_type_dir, rel_path)
+                            path_to_package_type_and_rel[path] = (
+                                package_type,
+                                pkg_type_dir,
+                                rel_path,
+                            )
                         except ValueError:
                             pass
 
@@ -248,7 +258,11 @@ class RepositoryNavigator:
                     }
 
                 path_to_package_info: dict[Path, PackageInfo] = {}
-                for path, (package_type, pkg_type_dir, rel_path) in path_to_package_type_and_rel.items():
+                for path, (
+                    package_type,
+                    pkg_type_dir,
+                    rel_path,
+                ) in path_to_package_type_and_rel.items():
                     package_abs_path = pkg_type_dir / rel_path.parts[0]
                     package_info = self.package_index.get_package_info_from_path(package_abs_path)
                     path_to_package_info[path] = package_info

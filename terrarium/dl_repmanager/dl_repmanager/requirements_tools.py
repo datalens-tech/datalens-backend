@@ -7,7 +7,7 @@ import attr
 log = logging.getLogger(__name__)
 
 
-def _strip_version(raw: str):
+def _strip_version(raw: str) -> str:
     return raw.strip().split(" ;")[0]
 
 
@@ -17,7 +17,7 @@ class PipRequirement:
     raw_version: str = attr.ib()
 
     @property
-    def cleaned_version(self):
+    def cleaned_version(self) -> str:
         cleaned_version = _strip_version(self.raw_version)
         if cleaned_version.startswith("=="):
             cleaned_version = cleaned_version[2:]
@@ -46,7 +46,7 @@ class PipRequirementsIO:
                     log.warning(f"Failed to parse {line} from file {self.path}")
         return result
 
-    def write_updates(self, to_update: dict[str, PipRequirement]):
+    def write_updates(self, to_update: dict[str, PipRequirement]) -> None:
         requirements = self.read_existing(gather_all=True)
         requirements.update(to_update)
         with open(self.path, "wt") as fh:

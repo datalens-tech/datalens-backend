@@ -23,6 +23,8 @@ class GitManager:
     path_prefix: Path = attr.ib(kw_only=True, default=Path("."))
 
     def get_root_path(self) -> Path:
+        if self.git_repo.working_tree_dir is None:
+            raise RuntimeError("No working tree dir")
         return Path(self.git_repo.working_tree_dir)
 
     def get_commit_obj(self, commit_specifier: str) -> Commit:

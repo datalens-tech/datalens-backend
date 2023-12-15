@@ -1,8 +1,12 @@
-from dl_repmanager_tests.unit.base import RepmanagerCliTestBase
+from dl_repmanager_tests.unit.base import (
+    RepmanagerCliTestBase,
+    Repo,
+)
+from dl_repmanager_tests.unit.tool_runner import RepoCliRunner
 
 
 class TestRepoCli(RepmanagerCliTestBase):
-    def test_init(self, repo, repo_cli) -> None:
+    def test_init(self, repo: Repo, repo_cli: RepoCliRunner) -> None:
         package_name = self.generate_package_name()
         repo_cli.run_with_args(["init", "--package-type", "lib", "--package-name", package_name])
         repo = repo.reload()

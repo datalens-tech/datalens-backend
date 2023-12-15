@@ -255,7 +255,10 @@ class GitFilesystemEditor(DefaultFilesystemEditor):
         cwd = Path.cwd()
         rel_old_path = Path(os.path.relpath(old_path, cwd))
         rel_new_path = Path(os.path.relpath(new_path, cwd))
-        subprocess.run(f'git add "{rel_old_path}" && git mv "{rel_old_path}" "{rel_new_path}"', shell=True)
+        subprocess.run(
+            f'git add "{rel_old_path}" && git mv "{rel_old_path}" "{rel_new_path}"',
+            shell=True,
+        )
 
     def _remove_path(self, path: Path) -> None:
         result = subprocess.run(f'git rm -r "{path}"', shell=True)

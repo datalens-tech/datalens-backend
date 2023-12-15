@@ -145,9 +145,12 @@ class CherryFarmer:
                 timestamp=commit_obj.committed_date,
             )
 
+        message = commit_obj.message
+        if isinstance(message, bytes):
+            message = message.decode()
         return CommitRuntimeStateItem(
             saved_state=commit_saved_state_item,
-            commit_message=commit_obj.message,
+            commit_message=message,
         )
 
     def iter_diff_commits(

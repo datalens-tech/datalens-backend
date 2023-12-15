@@ -53,7 +53,9 @@ class PackageMetaReader:
         module_names = tuple(pkg["include"] for pkg in self._get_main_section()["packages"])  # type: ignore
         return module_names
 
-    def get_package_type(self) -> Optional[str]:  # FIXME: remove `Optional` after it is added to all toml files
+    def get_package_type(
+        self,
+    ) -> Optional[str]:  # FIXME: remove `Optional` after it is added to all toml files
         package_reg_name = self._get_meta_section().get("package_type")
         assert package_reg_name is None or isinstance(package_reg_name, str)
         return package_reg_name
@@ -111,7 +113,7 @@ class PackageMetaWriter(PackageMetaReader):
             section = self.toml_writer.get_editable_section(section_name)
             section.remove(item_name)
 
-    def _get_item_opt(self, section_name: str, item_name) -> Optional[dict[str, Any]]:
+    def _get_item_opt(self, section_name: str, item_name: str) -> Optional[dict[str, Any]]:
         items = [item for item in self.iter_requirement_items(section_name=section_name) if item["name"] == item_name]
         if not items:
             return None
@@ -134,7 +136,7 @@ class PackageMetaWriter(PackageMetaReader):
             package_dep_table.add("path", str(new_path))
             section.add(new_item_name, package_dep_table)
 
-    def add_mypy_overrides_ignore(self, pkg_names: list[str]):
+    def add_mypy_overrides_ignore(self, pkg_names: list[str]) -> None:
         with self.toml_writer.suppress_non_existent_key():
             section = self.toml_writer.get_editable_section(f"{self._SECTION_NAME_META}.mypy_stubs_packages_override")
             for name in pkg_names:
