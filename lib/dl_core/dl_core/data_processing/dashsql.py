@@ -338,9 +338,7 @@ class DashSQLCachedSelector(DashSQLSelector):
         assert conn_id
 
         service_registry = self._service_registry
-        workbook_id = (
-            service_registry.rci.plain_headers.get(DLHeadersCommon.WORKBOOK_ID)
-        )
+        workbook_id = service_registry.rci.plain_headers.get(DLHeadersCommon.WORKBOOK_ID)
         reporting_registry = service_registry.get_reporting_registry()
 
         reporting_registry.save_reporting_record(
