@@ -123,9 +123,8 @@ class GitManagerTool(CliToolBase):
 
         if not result:
             # no flags means "all"
-            return self._get_states(new=True, picked=False, ignored=False, all=False)
-            # was: return self._get_states(new=True)
-
+            return self._get_states(new=True, picked=False, ignored=False, all=True)
+            
         return result
 
     def _print_commit_state(self, commit_state_item: CommitRuntimeStateItem) -> None:
