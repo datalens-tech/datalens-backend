@@ -1,5 +1,10 @@
-from typing import List
+from contextlib import asynccontextmanager
+from typing import (
+    AsyncIterator,
+    List,
+)
 
+import asyncpg
 import sqlalchemy as sa
 
 from dl_core.connection_executors.models.db_adapter_data import RawSchemaInfo
@@ -72,3 +77,20 @@ class AsyncGreenplumAdapter(AsyncPostgresAdapter):
 
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
         raise NotImplementedError()
+
+    @asynccontextmanager
+    async def _query_preparation_context(self, connection: asyncpg.Connection) -> AsyncIterator[None]:
+        async with super()._query_preparation_context(connection):
+            db_version = await connection.fetchval("SELECT version()")
+            if "greenplum" not in db_version.lower():
+                # to keep compatibility with postgres
+                yield
+            else:
+                gp_recursive_cte_initial = await connection.fetchval("SHOW gp_recursive_cte")
+                if gp_recursive_cte_initial == "off":
+                    await connection.execute("SET gp_recursive_cte = on")
+
+                yield
+
+                if gp_recursive_cte_initial == "off":
+                    await connection.execute("SET gp_recursive_cte = off")
