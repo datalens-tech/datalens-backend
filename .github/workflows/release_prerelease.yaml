@@ -62,9 +62,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - image_name: "dl-control-api"
+          - image_name: "datalens-control-api"
             bake_target: "dl_control_api"
-          - image_name: "dl-data-api"
+          - image_name: "datalens-data-api"
             bake_target: "dl_data_api"
     container:
       image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
@@ -74,7 +74,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     env:
       version: "${{ needs.get_version.outputs.version }}"
-      cr_url: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}"
+      cr_url: "ghcr.io/${{ github.repository_owner }}"
 
     steps:
     - name: Log in to the Container registry

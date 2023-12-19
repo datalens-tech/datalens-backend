@@ -24,8 +24,8 @@ jobs:
     strategy:
       matrix:
         image_name:
-        - "dl-control-api"
-        - "dl-data-api"
+        - "datalens-control-api"
+        - "datalens-data-api"
     container:
       image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
       options: -v /var/run/docker.sock:/var/run/docker.sock
@@ -33,8 +33,8 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     env:
-      cr_url: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}"
-      image_url_rc: "$ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ matrix.image_name }}:${{ github.event.inputs.version }}rc1"
+      cr_url: "ghcr.io/${{ github.repository_owner }}"
+      image_url_rc: "$ghcr.io/${{ github.repository_owner }}/${{ matrix.image_name }}:${{ github.event.inputs.version }}rc1"
 
     steps:
     - name: Log in to the Container registry
