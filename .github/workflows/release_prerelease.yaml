@@ -34,6 +34,7 @@ jobs:
     steps:
     - name: Checkout code
       id: checkout
+      if: ${{ github.event.inputs.version == '' }}
       uses: actions/checkout@v2
       with:
         ref: "${{ github.event.inputs.branch }}"
