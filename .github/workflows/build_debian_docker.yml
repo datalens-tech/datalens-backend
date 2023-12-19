@@ -9,9 +9,10 @@ jobs:
   build:
     runs-on: [ self-hosted, linux ]
     permissions:
+      contents: read
       packages: write
     env:
-      CR_TAG_BASE: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}"
+      image_url_base: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}"
 
     steps:
       - name: Checkout code
@@ -22,7 +23,7 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.CR_TAG_BASE }}
+          registry: ${{ env.image_url_base }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -31,4 +32,4 @@ jobs:
         with:
           context: docker_build/debian_docker
           push: true
-          tags: "${{ env.CR_TAG_BASE }}/debian_docker:latest"
+          tags: "${{ env.image_url_base }}/debian_docker:latest"
