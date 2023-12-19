@@ -20,7 +20,7 @@ on:
         default: "main"
       with_release:
         type: boolean
-        description: "Create green release aswell"
+        description: "Create green release as well"
         default: false
 
 jobs:
