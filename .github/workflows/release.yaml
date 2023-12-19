@@ -24,26 +24,17 @@ jobs:
     strategy:
       matrix:
         image_name:
-        - "dl-control-api"
-        - "dl-data-api"
-    container:
-      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
-      options: -v /var/run/docker.sock:/var/run/docker.sock
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        - "datalens-control-api"
+        - "datalens-data-api"
     env:
-      cr_url: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}"
-      image_url_base: "${{ env.cr_url }}/${{ matrix.image_name }}"
-      image_url_release: "${{ env.image_url_base }}:${{ github.event.inputs.version }}"
-      image_url_rc: "${{ env.image_url_base }}:${{ github.event.inputs.version }}rc1"
-      image_url_latest: "${{ env.image_url_base }}:latest"
+      cr_url: "ghcr.io/${{ github.repository_owner }}"
+      image_url_rc: "ghcr.io/${{ github.repository_owner }}/${{ matrix.image_name }}:${{ github.event.inputs.version }}rc1"
 
     steps:
     - name: Log in to the Container registry
       uses: docker/login-action@v2
       with:
-        registry: ${{ env.CR_TAG_BASE }}
+        registry: ${{ env.cr_url }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -57,15 +48,10 @@ jobs:
       id: push_image
       run: |
         echo "Pushing release image"
-        docker tag ${{ env.image_url_rc }} ${{ env.image_url_release }}
-        docker push ${{ env.image_url_release }}
-
-    - name: Push latest tag
-      if: ${{ github.event.inputs.make_latest == 'true' }}
-      run: |
-        echo "Pushing latest image"
-        docker tag ${{ env.image_url_rc }} ${{ env.image_url_latest }}
-        docker push ${{ env.image_url_latest }}
+        docker tag "${{ env.image_url_rc }}" "${{ env.image_tag }}"
+        docker push "${{ env.image_tag }}"
+      env:
+        image_tag: "${{ env.cr_url }}/${{ matrix.image_name }}:${{ github.event.inputs.version }}"
 
   release:
     name: "Create release"
