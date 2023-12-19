@@ -34,6 +34,12 @@ jobs:
         image_name:
         - "dl-control-api"
         - "dl-data-api"
+    container:
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
+      options: -v /var/run/docker.sock:/var/run/docker.sock
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     env:
       cr_url: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}"
       image_url_base: "${{ env.cr_url }}/${{ matrix.image_name }}"
