@@ -1,0 +1,43 @@
+version: 3
+
+vars:
+  repo: datalens-tech/datalens-backend
+
+tasks:
+  prerelease:
+    cmds:
+      - gh workflow run "release_prerelease.yaml" 
+          --repo {{.repo}} 
+          --ref main 
+          {{ if .version }}--field version="{{.version}}"{{ end }}
+          {{ if .version_shift }}--field version_shift="{{.version_shift}}"{{ end }}
+          --field branch="{{.branch}}"
+          --field with_release="{{.with_release}}"
+    vars:
+        version_shift: '{{default "minor" .version_shift}}'
+        branch: '{{default "main" .branch}}'
+        with_release: '{{default "false" .with_release}}'
+
+  release:
+    requires:
+      vars: [version]
+    cmds:
+      - gh workflow run "release.yaml"
+          --repo {{.repo}}
+          --ref main
+          -f version={{.version}}
+          -f make_latest={{.make_latest}}
+          -f draft={{.draft}}
+    vars:
+        make_latest: '{{default "false" .make_latest}}'
+        draft: '{{default "false" .draft}}'
+
+  create_hotfix:
+    requires:
+      vars: [version, commits]
+    cmds:
+      - gh workflow run "release_create_hotfix_branch.yaml"
+          --repo {{.repo}}
+          --ref main
+          -f version={{.version}}
+          -f cherry_pick_commits="{{.commits}}"

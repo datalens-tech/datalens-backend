@@ -1,0 +1,80 @@
+name: "🩹 Create Release Hotfix Branch"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: "Version to use as hotfix base, patch version will be increased"
+      cherry_pick_commits:
+        type: string
+        description: "Commits to cherry pick, separated by space"
+
+jobs:
+  create_release_hotfix_branch:
+    name: "Create Release Hotfix"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      branch: "release/${{ github.event.inputs.version }}"
+    steps:
+
+    - name: Checkout code
+      id: checkout
+      uses: actions/checkout@v2
+      with:
+        ref: "${{ env.branch }}"
+        fetch-depth: 0
+
+    - name: Create hotfix branch
+      id: create_branch
+      working-directory: .github/.scripts
+      run: |
+        version=${{ github.event.inputs.version }}
+        hotfix_version=$(./shift_version.sh ${version} patch)
+        hotfix_branch="release/${hotfix_version}"
+        
+        git checkout -b ${hotfix_branch} "${{ env.branch }}"
+        git push origin ${hotfix_branch}
+        
+        echo "hotfix_version=${hotfix_version}" >> $GITHUB_OUTPUT
+        echo "hotfix_branch=${hotfix_branch}" >> $GITHUB_OUTPUT
+
+    - name: Create hotfix PR Branch
+      id: create_pr_branch
+      run: |
+        hotfix_pr_branch="hotfix/${{ steps.create_branch.outputs.hotfix_version }}"
+        
+        git checkout -b ${hotfix_pr_branch} ${{ steps.create_branch.outputs.hotfix_branch }}
+        git push origin ${hotfix_pr_branch}
+        
+        echo "hotfix_pr_branch=${hotfix_pr_branch}" >> $GITHUB_OUTPUT
+
+    - name: Setup git user
+      id: setup_git_user
+      if: ${{ github.event.inputs.cherry_pick_commits != '' }}
+      run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+    - name: Cherry pick commits
+      id: cherry_pick
+      if: ${{ github.event.inputs.cherry_pick_commits != '' }}
+      run: |
+        git cherry-pick ${{ github.event.inputs.cherry_pick_commits }}
+        git push origin ${{ steps.create_pr_branch.outputs.hotfix_pr_branch }}
+
+    - name: Create pull request
+      id: create_pull_request
+      if: ${{ github.event.inputs.cherry_pick_commits != '' }}
+      run: |
+        gh pr create \
+          --repo ${{ github.repository_owner }}/${{ github.event.repository.name }} \
+          --base ${{ steps.create_branch.outputs.hotfix_branch }} \
+          --head ${{ steps.create_pr_branch.outputs.hotfix_pr_branch }} \
+          --title "Hotfix ${{ steps.create_branch.outputs.hotfix_version }}" \
+          --body "Hotfix ${{ steps.create_branch.outputs.hotfix_version }}"
+      env:
+        GH_TOKEN: ${{ github.token }}
