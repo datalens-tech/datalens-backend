@@ -6,7 +6,10 @@ from typing import Optional
 import flask
 from flask import request
 from flask_restx import Api
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import (
+    BadRequest,
+    UnavailableForLegalReasons,
+)
 
 from dl_api_commons.access_control_common import AuthFailureError
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
@@ -39,6 +42,12 @@ def handle_us_error(error):  # type: ignore
         resp.status_code,
     )
     return {"message": text}, resp.status_code
+
+
+@API.errorhandler(UnavailableForLegalReasons)
+def handle_us_read_only_mode_error(error):  # type: ignore
+    # flask_restx doesn't support HTTP 451, so we have to handle it manually
+    return error.data, 451
 
 
 @API.errorhandler(BadRequest)
