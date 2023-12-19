@@ -486,7 +486,14 @@ class DefaultConnectorDataCacheTestSuite(StandardizedDataApiTestBase, RegulatedT
         db: Db,
         saved_connection_id: str,
     ):
-        # This used to behave incorrectly in MySQL
+        """
+        There used to problems with the generation of cache keys for MySQL.
+        This test makes sure that cache keys for queries with different and repeated constants
+        are generated and used correctly in all the main connectors.
+        """
+
+        assert self.data_caches_enabled, "Cache should be enabled for this test"
+
         db_table = make_table(db)
         ds = Dataset()
         ds.sources["source_1"] = ds.source(
