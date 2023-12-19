@@ -1,0 +1,87 @@
+name: "🚀🟡 Prerelease"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: "Version to release"
+      version_shift:
+        type: choice
+        description: "Version shift, used if version is not specified"
+        options:
+          - "major"
+          - "minor"
+          - "patch"
+        default: "minor"
+      branch:
+        type: string
+        description: "Target branch to release"
+        default: "main"
+      with_release:
+        type: boolean
+        description: "Create green release as well"
+        default: false
+
+jobs:
+  release:
+    name: "Create prerelease"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        id: checkout
+        uses: actions/checkout@v2
+        with:
+          ref: "${{ github.event.inputs.branch }}"
+          fetch-depth: 0
+
+      - name: Get version
+        id: get_version
+        working-directory: .github/.scripts
+        run: |
+          version=${{ github.event.inputs.version }}
+          if [[ -z "${version}" ]]; then
+              latest_tag=$(git describe --tags --abbrev=0)
+              latest_version="${latest_tag%rc*}"
+              echo "Latest version is ${latest_version}"
+              version=$(./shift_version.sh ${latest_version} ${{ github.event.inputs.version_shift }})
+          fi
+          release_branch="release/${version}"
+          tag_name="${version}rc1"
+          
+          echo "version=${version}" >> $GITHUB_OUTPUT
+          echo "release_branch=${release_branch}" >> $GITHUB_OUTPUT
+          echo "tag_name=${tag_name}" >> $GITHUB_OUTPUT
+
+      - name: Create and push release branch
+        id: create_branch
+        if: ${{ github.event.inputs.branch != steps.get_version.outputs.release_branch }}
+        run: |
+          git branch ${{ steps.get_version.outputs.release_branch }}
+          git push origin ${{ steps.get_version.outputs.release_branch }}
+
+      - name: Create prerelease
+        id: create_prerelease
+        run: |
+          gh release create \
+            --repo ${{ github.repository_owner }}/${{ github.event.repository.name }} \
+            ${{ steps.get_version.outputs.tag_name }} \
+            --target ${{ steps.get_version.outputs.release_branch }} \
+            --prerelease \
+            --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Create release
+        id: create_release
+        if: ${{ github.event.inputs.with_release == 'true' }}
+        run: |
+          gh release create \
+            --repo ${{ github.repository_owner }}/${{ github.event.repository.name }} \
+            ${{ steps.get_version.outputs.version }} \
+            --target ${{ steps.get_version.outputs.release_branch }} \
+            --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}

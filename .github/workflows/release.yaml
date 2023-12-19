@@ -1,0 +1,47 @@
+name: "🚀🟢 Release"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: "Version to release"
+      make_latest:
+        type: boolean
+        description: "Make latest"
+        default: true
+      draft:
+        type: boolean
+        description: "Is draft"
+        default: false
+
+jobs:
+  release:
+    name: "Create release"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      branch: "release/${{ github.event.inputs.version }}"
+    steps:
+
+    - name: Checkout code
+      id: checkout
+      uses: actions/checkout@v2
+      with:
+        ref: "${{ env.branch }}"
+        fetch-depth: 0
+
+    - name: Create release
+      id: create_release
+      working-directory: .github/.scripts
+      run: |
+        gh release create \
+          --repo ${{ github.repository_owner }}/${{ github.event.repository.name }} \
+          ${{ github.event.inputs.version }} \
+          --target ${{ env.branch }} \
+          ${{ github.event.inputs.make_latest == 'true' && '--latest' || '' }} \
+          ${{ github.event.inputs.draft == 'true' && '--draft' || '' }} \
+          --generate-notes
+      env:
+        GH_TOKEN: ${{ github.token }}
