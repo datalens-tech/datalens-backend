@@ -1,1 +1,2 @@
-Collection of independent helping py packages used in dev and testings, nothing related to production.
+Collection of helper Python packages used in development, testing and repository management,
+nothing related to production.

@@ -38,6 +38,8 @@ dl_repo:
   metapackages:
     - name: main_mpkg
       toml: metapkg/pyproject.toml
+    - name: terrarium_mpkg
+      toml: terrarium/pyproject.toml
 
   plugins:
     - type: toml_registration
@@ -45,6 +47,8 @@ dl_repo:
         metapackages:
           - name: main_mpkg
             package_types: ["lib", "app"]
+          - name: terrarium_mpkg
+            package_types: ["terrarium"]
 
     - type: dependency_registration
 
