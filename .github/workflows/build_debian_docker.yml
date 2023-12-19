@@ -4,6 +4,12 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "04 05 * * 6" # every Saturday at 05:04
+  push:
+    branches:
+      - master
+    paths:
+      - "docker_build/debian_docker/**"
+      - ".github/workflows/build_debian_docker.yml"
 
 jobs:
   build:
@@ -12,12 +18,16 @@ jobs:
       contents: read
       packages: write
     env:
+      job_path: "build_debian_docker"
+      dockerfile_folder_path: "docker_build/debian_docker"
       image_url_base: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}"
+      image_tag: "debian_docker:latest"
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          path: ${{ env.job_path }}
           fetch-depth: 0
 
       - name: Login to GitHub Container Registry
@@ -30,6 +40,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: docker_build/debian_docker
+          context: "${{ env.job_path }}/${{ env.dockerfile_folder_path }}"
           push: true
-          tags: "${{ env.image_url_base }}/debian_docker:latest"
+          tags: "${{ env.image_url_base }}/${{ env.image_tag }}"
