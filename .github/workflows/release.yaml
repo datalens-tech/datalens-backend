@@ -48,10 +48,10 @@ jobs:
       id: push_image
       run: |
         echo "Pushing release image"
-        docker tag ${{ env.image_url_rc }} ${{ env.image_tag }}
-        docker push ${{ env.image_tag }}
+        docker tag "${{ env.image_url_rc }}" "${{ env.image_tag }}"
+        docker push "${{ env.image_tag }}"
       env:
-        image_tag: "$${{ env.cr_url }}/${{ matrix.image_name }}:${{ github.event.inputs.version }}"
+        image_tag: "${{ env.cr_url }}/${{ matrix.image_name }}:${{ github.event.inputs.version }}"
 
   release:
     name: "Create release"
