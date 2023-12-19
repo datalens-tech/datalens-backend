@@ -34,7 +34,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     env:
       cr_url: "ghcr.io/${{ github.repository_owner }}"
-      image_url_rc: "$ghcr.io/${{ github.repository_owner }}/${{ matrix.image_name }}:${{ github.event.inputs.version }}rc1"
+      image_url_rc: "ghcr.io/${{ github.repository_owner }}/${{ matrix.image_name }}:${{ github.event.inputs.version }}rc1"
 
     steps:
     - name: Log in to the Container registry
