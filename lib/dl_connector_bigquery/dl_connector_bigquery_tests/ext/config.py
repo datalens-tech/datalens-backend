@@ -11,6 +11,8 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=51609).port,
     us_master_token="AC1ofiek8coB",
     core_connector_ep_names=["bigquery"],
+    redis_host=get_test_container_hostport("redis-caches").host,
+    redis_port=get_test_container_hostport("redis-caches", fallback_port=51612).port,
 )
 
 

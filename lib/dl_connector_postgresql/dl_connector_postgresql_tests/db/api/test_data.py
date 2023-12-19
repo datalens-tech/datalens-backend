@@ -6,6 +6,7 @@ from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib_testing.connector.data_api_suites import (
+    DefaultConnectorDataCacheTestSuite,
     DefaultConnectorDataDistinctTestSuite,
     DefaultConnectorDataGroupByFormulaTestSuite,
     DefaultConnectorDataPreviewTestSuite,
@@ -175,3 +176,7 @@ class TestPostgreSQLDataDistinct(PostgreSQLDataApiTestBase, DefaultConnectorData
 
 class TestPostgreSQLDataPreview(PostgreSQLDataApiTestBase, DefaultConnectorDataPreviewTestSuite):
     pass
+
+
+class TestPostgreSQLDataCache(PostgreSQLDataApiTestBase, DefaultConnectorDataCacheTestSuite):
+    data_caches_enabled = True

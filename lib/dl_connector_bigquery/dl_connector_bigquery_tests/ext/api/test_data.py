@@ -1,4 +1,5 @@
 from dl_api_lib_testing.connector.data_api_suites import (
+    DefaultConnectorDataCacheTestSuite,
     DefaultConnectorDataDistinctTestSuite,
     DefaultConnectorDataGroupByFormulaTestSuite,
     DefaultConnectorDataPreviewTestSuite,
@@ -32,3 +33,7 @@ class TestBigQueryDataDistinct(BigQueryDataApiTestBase, DefaultConnectorDataDist
 
 class TestBigQueryDataPreview(BigQueryDataApiTestBase, DefaultConnectorDataPreviewTestSuite):
     pass
+
+
+class TestBigQueryDataCache(BigQueryDataApiTestBase, DefaultConnectorDataCacheTestSuite):
+    data_caches_enabled = True

@@ -1,4 +1,5 @@
 from dl_api_lib_testing.connector.data_api_suites import (
+    DefaultConnectorDataCacheTestSuite,
     DefaultConnectorDataDistinctTestSuite,
     DefaultConnectorDataGroupByFormulaTestSuite,
     DefaultConnectorDataPreviewTestSuite,
@@ -32,3 +33,7 @@ class TestMSSQLDataDistinct(MSSQLDataApiTestBase, DefaultConnectorDataDistinctTe
 
 class TestMSSQLDataPreview(MSSQLDataApiTestBase, DefaultConnectorDataPreviewTestSuite):
     pass
+
+
+class TestMSSQLDataCache(MSSQLDataApiTestBase, DefaultConnectorDataCacheTestSuite):
+    data_caches_enabled = True

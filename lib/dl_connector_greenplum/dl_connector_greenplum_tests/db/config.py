@@ -11,6 +11,8 @@ CORE_TEST_CONFIG = DefaultCoreTestConfiguration(
     port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=51910).port,
     us_master_token="AC1ofiek8coB",
     core_connector_ep_names=["greenplum", "postgresql"],
+    redis_host=get_test_container_hostport("redis-caches").host,
+    redis_port=get_test_container_hostport("redis-caches", fallback_port=51912).port,
 )
 
 DB_CORE_URL = f'bi_postgresql://datalens:qwerty@{get_test_container_hostport("db-postgres-13", fallback_port=52301).as_pair()}/test_data'
