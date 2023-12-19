@@ -95,6 +95,9 @@ jobs:
         image_name="${{ matrix.image_name }}"
         bake_target="${image_name//-/_}"
         
+        echo "Building image ${image_name}"
+        echo "Bake target ${bake_target}"
+        
         ./run-project-bake "${bake_target}" \
           --push \
           --set "${bake_target}.tags=${{ env.image_url_rc }}"
