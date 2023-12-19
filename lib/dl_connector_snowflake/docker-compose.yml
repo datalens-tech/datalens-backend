@@ -29,3 +29,11 @@ services:
       MASTER_TOKEN: *c-us-master-token
     ports:
      - "51700:80"
+
+  redis-caches:
+    # image: "bitnami/redis:5.0.8"
+    image: "bitnami/redis:5.0.8@sha256:3127620da977815556439a9dc347fff89432a79b6bb6e93a16f20ac4a34ce337"
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+     - "51712:6379"

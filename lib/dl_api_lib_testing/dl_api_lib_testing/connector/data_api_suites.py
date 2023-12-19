@@ -1,5 +1,6 @@
 import datetime
 import functools
+from http import HTTPStatus
 import json
 from typing import Any
 
@@ -16,6 +17,7 @@ from dl_api_lib_testing.data_api_base import (
     DataApiTestParams,
     StandardizedDataApiTestBase,
 )
+from dl_api_lib_testing.helpers.data_source import data_source_settings_from_table
 from dl_constants.enums import (
     UserDataType,
     WhereClauseOperation,
@@ -472,3 +474,74 @@ class DefaultConnectorDataPreviewTestSuite(StandardizedDataApiTestBase, Regulate
         preview_rows = get_data_rows(preview_resp)
         min_preview_row_cnt = 10  # just an arbitrary number
         assert len(preview_rows) > min_preview_row_cnt
+
+
+class DefaultConnectorDataCacheTestSuite(StandardizedDataApiTestBase, RegulatedTestCase):
+    data_caches_enabled = True
+
+    def test_cache_with_filter_with_constants(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        db: Db,
+        saved_connection_id: str,
+    ):
+        # This used to behave incorrectly in MySQL
+        db_table = make_table(db)
+        ds = Dataset()
+        ds.sources["source_1"] = ds.source(
+            connection_id=saved_connection_id,
+            **data_source_settings_from_table(table=db_table),
+        )
+        ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
+        ds.result_schema["another_field"] = ds.field(
+            formula='CASE [int_value] WHEN 3 THEN "PT" WHEN 4 THEN "PT" ELSE "NOT PT" END',
+        )
+        ds = control_api.apply_updates(dataset=ds).dataset
+        ds = control_api.save_dataset(dataset=ds).dataset
+
+        result_resp_first = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="int_value"),
+            ],
+            filters=[
+                ds.find_field(title="another_field").filter(op=WhereClauseOperation.IN, values=["PT"]),
+                ds.find_field(title="int_value").filter(op=WhereClauseOperation.IN, values=["3"]),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp_first.status_code == HTTPStatus.OK, result_resp_first.json
+        data_rows = get_data_rows(result_resp_first)
+        assert data_rows == [["3"]]
+
+        result_resp_second = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="int_value"),
+            ],
+            filters=[
+                ds.find_field(title="another_field").filter(op=WhereClauseOperation.IN, values=["PT"]),
+                ds.find_field(title="int_value").filter(op=WhereClauseOperation.IN, values=["4"]),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp_second.status_code == HTTPStatus.OK, result_resp_second.json
+        data_rows = get_data_rows(result_resp_second)
+        assert data_rows == [["4"]]  # here is [['3']] now
+
+        # Now delete the table to make sure cache is used
+        db_table.db.drop_table(db_table.table)
+
+        result_resp_second = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="int_value"),
+            ],
+            filters=[
+                ds.find_field(title="another_field").filter(op=WhereClauseOperation.IN, values=["PT"]),
+                ds.find_field(title="int_value").filter(op=WhereClauseOperation.IN, values=["4"]),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp_second.status_code == HTTPStatus.OK, result_resp_second.json

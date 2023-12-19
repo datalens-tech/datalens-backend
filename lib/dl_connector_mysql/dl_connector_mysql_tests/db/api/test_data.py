@@ -5,6 +5,7 @@ from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib_testing.connector.data_api_suites import (
+    DefaultConnectorDataCacheTestSuite,
     DefaultConnectorDataDistinctTestSuite,
     DefaultConnectorDataGroupByFormulaTestSuite,
     DefaultConnectorDataPreviewTestSuite,
@@ -82,3 +83,7 @@ class TestMySQLDataPreview(MySQLDataApiTestBase, DefaultConnectorDataPreviewTest
         assert preview_resp.status_code == 200
         preview_data = preview_resp.data
         assert all(row["data"][0].count("%") == 1 for row in preview_data["result_data"][0]["rows"])
+
+
+class TestMySQLDataCache(MySQLDataApiTestBase, DefaultConnectorDataCacheTestSuite):
+    data_caches_enabled = True

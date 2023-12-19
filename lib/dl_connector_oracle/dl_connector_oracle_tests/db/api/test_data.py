@@ -1,4 +1,5 @@
 from dl_api_lib_testing.connector.data_api_suites import (
+    DefaultConnectorDataCacheTestSuite,
     DefaultConnectorDataDistinctTestSuite,
     DefaultConnectorDataGroupByFormulaTestSuite,
     DefaultConnectorDataPreviewTestSuite,
@@ -37,3 +38,7 @@ class TestOracleDataDistinct(OracleDataApiTestBase, DefaultConnectorDataDistinct
 
 class TestOracleDataPreview(OracleDataApiTestBase, DefaultConnectorDataPreviewTestSuite):
     pass
+
+
+class TestOracleDataCache(OracleDataApiTestBase, DefaultConnectorDataCacheTestSuite):
+    data_caches_enabled = True

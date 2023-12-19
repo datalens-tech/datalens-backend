@@ -1,11 +1,11 @@
 from dl_api_lib_testing.connector.data_api_suites import (
+    DefaultConnectorDataCacheTestSuite,
     DefaultConnectorDataDistinctTestSuite,
     DefaultConnectorDataGroupByFormulaTestSuite,
     DefaultConnectorDataPreviewTestSuite,
     DefaultConnectorDataRangeTestSuite,
     DefaultConnectorDataResultTestSuite,
 )
-from dl_testing.regulated_test import RegulatedTestParams
 
 from dl_connector_greenplum_tests.db.api.base import GreenplumDataApiTestBase
 
@@ -28,3 +28,7 @@ class TestGreenplumDataDistinct(GreenplumDataApiTestBase, DefaultConnectorDataDi
 
 class TestGreenplumDataPreview(GreenplumDataApiTestBase, DefaultConnectorDataPreviewTestSuite):
     pass
+
+
+class TestGreenplumDataCache(GreenplumDataApiTestBase, DefaultConnectorDataCacheTestSuite):
+    data_caches_enabled = True
