@@ -93,7 +93,7 @@ jobs:
       working-directory: docker_build
       run: |
         image_name="${{ matrix.image_name }}"
-        bake_target="${image_name//-/_}"
+        bake_target="${image_name//"-"/"_"}"
         
         echo "Building image ${image_name}"
         echo "Bake target ${bake_target}"
