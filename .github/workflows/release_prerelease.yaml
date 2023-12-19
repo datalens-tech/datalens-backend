@@ -61,9 +61,11 @@ jobs:
       packages: write
     strategy:
       matrix:
-        image_name:
-        - "dl-control-api"
-        - "dl-data-api"
+        include:
+          - image_name: "dl-control-api"
+            bake_target: "dl_control_api"
+          - image_name: "dl-data-api"
+            bake_target: "dl_data_api"
     container:
       image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
       options: -v /var/run/docker.sock:/var/run/docker.sock
@@ -92,11 +94,7 @@ jobs:
     - name: Build image
       working-directory: docker_build
       run: |
-        image_name="${{ matrix.image_name }}"
-        bake_target=$(sed "s/-/_/g" <<< "$image_name")
-        
-        echo "Building image ${image_name}"
-        echo "Bake target ${bake_target}"
+        bake_target=${{ matrix.bake_target }}
         
         ./run-project-bake "${bake_target}" \
           --push \
