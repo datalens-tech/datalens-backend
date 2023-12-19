@@ -59,15 +59,6 @@ jobs:
       env:
         image_tag: "$${{ env.cr_url }}/${{ matrix.image_name }}:${{ github.event.inputs.version }}"
 
-    - name: Push latest tag
-      if: ${{ github.event.inputs.make_latest == 'true' }}
-      run: |
-        echo "Pushing latest image"
-        docker tag ${{ env.image_url_rc }} ${{ env.image_tag }}
-        docker push ${{ env.image_tag }}
-      env:
-        image_tag: "$${{ env.cr_url }}/${{ matrix.image_name }}:latest"
-
   release:
     name: "Create release"
     needs: [push_images]
