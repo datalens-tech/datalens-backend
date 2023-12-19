@@ -24,8 +24,38 @@ on:
         default: false
 
 jobs:
+  get_version:
+    name: "Get version"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+    - name: Checkout code
+      id: checkout
+      uses: actions/checkout@v2
+      with:
+        ref: "${{ github.event.inputs.branch }}"
+        fetch-depth: 0
+
+    - name: Get version
+      id: get_version
+      working-directory: .github/.scripts
+      run: |
+        version=${{ github.event.inputs.version }}
+        if [[ -z "${version}" ]]; then
+            latest_tag=$(git describe --tags --abbrev=0)
+            latest_version="${latest_tag%rc*}"
+            echo "Latest version is ${latest_version}"
+            version=$(./shift_version.sh ${latest_version} ${{ github.event.inputs.version_shift }})
+        fi
+
+        echo "version=${version}" >> $GITHUB_OUTPUT
+
   build_images:
     name: "Build images"
+    needs: [get_version]
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -41,16 +71,14 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     env:
+      version: "${{ needs.get_version.outputs.version }}"
       cr_url: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}"
-      image_url_base: "${{ env.cr_url }}/${{ matrix.image_name }}"
-      image_url_rc: "${{ env.image_url_base }}:${{ github.event.inputs.version }}rc1"
-      image_url_release: "${{ env.image_url_base }}:${{ github.event.inputs.version }}"
 
     steps:
     - name: Log in to the Container registry
       uses: docker/login-action@v2
       with:
-        registry: ${{ env.CR_TAG_BASE }}
+        registry: ${{ env.cr_url }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -58,7 +86,7 @@ jobs:
       id: checkout
       uses: actions/checkout@v2
       with:
-        ref: "${{ env.branch }}"
+        ref: "${{ github.event.inputs.branch }}"
         fetch-depth: 0
 
     - name: Build image
@@ -71,13 +99,19 @@ jobs:
           --push \
           --set "${bake_target}.tags=${{ env.image_url_rc }}"
           ${{ github.event.inputs.with_release == 'true' && '--set "${bake_target}.tags=${{ env.image_url_release }}"' || '' }}
+      env:
+        image_url_rc: "${{ env.cr_url }}/${{ matrix.image_name }}:${{ env.version }}rc1"
+        image_url_release: "${{ env.cr_url }}/${{ matrix.image_name }}:${{ env.version }}"
 
   release:
     name: "Create prerelease"
-    needs: [build_images]
+    needs: [build_images, get_version]
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      version: "${{ needs.get_version.outputs.version }}"
+      release_branch: "release/${{ needs.get_version.outputs.version }}"
     steps:
       - name: Checkout code
         id: checkout
@@ -86,42 +120,25 @@ jobs:
           ref: "${{ github.event.inputs.branch }}"
           fetch-depth: 0
 
-      - name: Get version
-        id: get_version
-        working-directory: .github/.scripts
-        run: |
-          version=${{ github.event.inputs.version }}
-          if [[ -z "${version}" ]]; then
-              latest_tag=$(git describe --tags --abbrev=0)
-              latest_version="${latest_tag%rc*}"
-              echo "Latest version is ${latest_version}"
-              version=$(./shift_version.sh ${latest_version} ${{ github.event.inputs.version_shift }})
-          fi
-          release_branch="release/${version}"
-          tag_name="${version}rc1"
-          
-          echo "version=${version}" >> $GITHUB_OUTPUT
-          echo "release_branch=${release_branch}" >> $GITHUB_OUTPUT
-          echo "tag_name=${tag_name}" >> $GITHUB_OUTPUT
-
       - name: Create and push release branch
         id: create_branch
-        if: ${{ github.event.inputs.branch != steps.get_version.outputs.release_branch }}
+        if: ${{ github.event.inputs.branch != env.release_branch }}
         run: |
-          git branch ${{ steps.get_version.outputs.release_branch }}
-          git push origin ${{ steps.get_version.outputs.release_branch }}
+          git branch ${{ env.release_branch }}
+          git push origin ${{ env.release_branch }}
 
       - name: Create prerelease
         id: create_prerelease
         run: |
           gh release create \
             --repo ${{ github.repository_owner }}/${{ github.event.repository.name }} \
-            ${{ steps.get_version.outputs.tag_name }} \
-            --target ${{ steps.get_version.outputs.release_branch }} \
+            ${{ env.release_tag }} \
+            --target ${{ env.release_branch }} \
             --prerelease \
             --generate-notes
         env:
           GH_TOKEN: ${{ github.token }}
+          release_tag: "${{ env.version }}rc1"
 
       - name: Create release
         id: create_release
@@ -129,8 +146,9 @@ jobs:
         run: |
           gh release create \
             --repo ${{ github.repository_owner }}/${{ github.event.repository.name }} \
-            ${{ steps.get_version.outputs.version }} \
-            --target ${{ steps.get_version.outputs.release_branch }} \
+            ${{ env.release_tag }} \
+            --target ${{ env.release_branch }} \
             --generate-notes
         env:
           GH_TOKEN: ${{ github.token }}
+          release_tag: "${{ env.version }}"
