@@ -42,14 +42,13 @@ jobs:
 
     - name: Get version
       id: get_version
-      working-directory: .github/.scripts
       run: |
         version=${{ github.event.inputs.version }}
         if [[ -z "${version}" ]]; then
             latest_tag=$(git describe --tags --abbrev=0)
             latest_version="${latest_tag%rc*}"
             echo "Latest version is ${latest_version}"
-            version=$(./shift_version.sh ${latest_version} ${{ github.event.inputs.version_shift }})
+            version=$(.github/.scripts/shift_version.sh ${latest_version} ${{ github.event.inputs.version_shift }})
         fi
 
         echo "version=${version}" >> $GITHUB_OUTPUT
