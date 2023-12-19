@@ -540,7 +540,7 @@ class DefaultConnectorDataCacheTestSuite(StandardizedDataApiTestBase, RegulatedT
         # Now delete the table to make sure cache is used
         db_table.db.drop_table(db_table.table)
 
-        result_resp_second = data_api.get_result(
+        result_resp_third = data_api.get_result(
             dataset=ds,
             fields=[
                 ds.find_field(title="int_value"),
@@ -551,4 +551,5 @@ class DefaultConnectorDataCacheTestSuite(StandardizedDataApiTestBase, RegulatedT
             ],
             fail_ok=True,
         )
-        assert result_resp_second.status_code == HTTPStatus.OK, result_resp_second.json
+        assert result_resp_third.status_code == HTTPStatus.OK, result_resp_second.json
+        assert get_data_rows(result_resp_third) == get_data_rows(result_resp_second)
