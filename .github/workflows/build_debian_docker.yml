@@ -1,0 +1,34 @@
+name: "🐳 Build Debian Docker image"
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "04 05 * * 6" # every Saturday at 05:04
+
+jobs:
+  build:
+    runs-on: [ self-hosted, linux ]
+    permissions:
+      packages: write
+    env:
+      CR_TAG_BASE: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.CR_TAG_BASE }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: docker_build/debian_docker
+          push: true
+          tags: "${{ env.CR_TAG_BASE }}/debian_docker:latest"

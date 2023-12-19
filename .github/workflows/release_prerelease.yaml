@@ -24,8 +24,51 @@ on:
         default: false
 
 jobs:
+  build_images:
+    name: "Build images"
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        image_name:
+        - "dl-control-api"
+        - "dl-data-api"
+    env:
+      cr_url: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}"
+      image_url_base: "${{ env.cr_url }}/${{ matrix.image_name }}"
+      image_url_rc: "${{ env.image_url_base }}:${{ github.event.inputs.version }}rc1"
+      image_url_release: "${{ env.image_url_base }}:${{ github.event.inputs.version }}"
+
+    steps:
+    - name: Log in to the Container registry
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.CR_TAG_BASE }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Checkout code
+      id: checkout
+      uses: actions/checkout@v2
+      with:
+        ref: "${{ env.branch }}"
+        fetch-depth: 0
+
+    - name: Build image
+      working-directory: docker_build
+      run: |
+        image_name="${{ matrix.image_name }}"
+        bake_target="${image_name/-/_}" # replace - with _
+        
+        ./run-project-bake "${bake_target}" \
+          --push \
+          --set "${bake_target}.tags=${{ env.image_url_rc }}"
+          ${{ github.event.inputs.with_release == 'true' && '--set "${bake_target}.tags=${{ env.image_url_release }}"' || '' }}
+
   release:
     name: "Create prerelease"
+    needs: [build_images]
     runs-on: ubuntu-latest
     permissions:
       contents: write
