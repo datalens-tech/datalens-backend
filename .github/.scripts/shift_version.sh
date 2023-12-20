@@ -14,12 +14,12 @@ if [[ -z $version_shift ]]; then
     exit 1;
 fi
 
-if [[ ! $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    echo "ERROR: Version must be in format X.Y.Z, found $version, exiting..."
+if [[ ! $version =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "ERROR: Version must be in format vX.Y.Z, found $version, exiting..."
     exit 1;
 fi
 
-major=$(echo "$version" | cut -d. -f1)
+major=$(echo "$version" | cut -d. -f1 | cut -dv -f2)
 minor=$(echo "$version" | cut -d. -f2)
 patch=$(echo "$version" | cut -d. -f3)
 
@@ -42,4 +42,4 @@ case "$version_shift" in
         ;;
 esac
 
-echo "${major}.${minor}.${patch}"
+echo "v${major}.${minor}.${patch}"

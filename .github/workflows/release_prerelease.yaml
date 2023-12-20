@@ -5,7 +5,7 @@ on:
     inputs:
       version:
         type: string
-        description: "Version to release"
+        description: "Version to release, in format 'vX.Y.Z'"
       version_shift:
         type: choice
         description: "Version shift, used if version is not specified"
@@ -46,9 +46,14 @@ jobs:
         version=${{ github.event.inputs.version }}
         if [[ -z "${version}" ]]; then
             latest_tag=$(git describe --tags --abbrev=0)
-            latest_version="${latest_tag%rc*}"
+            latest_version="${latest_tag%-rc.*}"
             echo "Latest version is ${latest_version}"
             version=$(.github/.scripts/shift_version.sh ${latest_version} ${{ github.event.inputs.version_shift }})
+        fi
+        
+        if [[ ! $version =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "ERROR: Version must be in format vX.Y.Z, found $version, exiting..."
+            exit 1;
         fi
 
         echo "version=${version}" >> $GITHUB_OUTPUT
@@ -101,7 +106,7 @@ jobs:
           --set "${bake_target}.tags=${{ env.image_url_rc }}"
           ${{ github.event.inputs.with_release == 'true' && '--set "${bake_target}.tags=${{ env.image_url_release }}"' || '' }}
       env:
-        image_url_rc: "${{ env.cr_url }}/${{ matrix.image_name }}:${{ env.version }}rc1"
+        image_url_rc: "${{ env.cr_url }}/${{ matrix.image_name }}:${{ env.version }}-rc.1"
         image_url_release: "${{ env.cr_url }}/${{ matrix.image_name }}:${{ env.version }}"
 
   release:
@@ -139,7 +144,7 @@ jobs:
             --generate-notes
         env:
           GH_TOKEN: ${{ github.token }}
-          release_tag: "${{ env.version }}rc1"
+          release_tag: "${{ env.version }}-rc.1"
 
       - name: Create release
         id: create_release

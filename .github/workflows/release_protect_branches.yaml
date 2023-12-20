@@ -36,7 +36,7 @@ jobs:
             exit 1;
           fi
           
-          if [[ -n $(git tag -l "${version}rc*") ]]; then
-            echo "Release candidate tag ${version}rc* already exists, thus this branch cannot be changed."
+          if [[ -n $(git tag -l "${version}-rc.*") ]]; then
+            echo "Release candidate tag ${version}-rc.* already exists, thus this branch cannot be changed."
             exit 1;
           fi

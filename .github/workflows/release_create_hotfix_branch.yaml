@@ -5,7 +5,7 @@ on:
     inputs:
       version:
         type: string
-        description: "Version to use as hotfix base, patch version will be increased"
+        description: "Version to use as hotfix base, patch version will be increased, in format 'vX.Y.Z'"
       cherry_pick_commits:
         type: string
         description: "Commits to cherry pick, separated by space"
