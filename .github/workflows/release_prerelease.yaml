@@ -50,6 +50,11 @@ jobs:
             echo "Latest version is ${latest_version}"
             version=$(.github/.scripts/shift_version.sh ${latest_version} ${{ github.event.inputs.version_shift }})
         fi
+        
+        if [[ ! $version =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "ERROR: Version must be in format vX.Y.Z, found $version, exiting..."
+            exit 1;
+        fi
 
         echo "version=${version}" >> $GITHUB_OUTPUT
 
