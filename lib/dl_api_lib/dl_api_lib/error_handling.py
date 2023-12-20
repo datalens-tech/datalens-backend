@@ -45,6 +45,7 @@ EXCEPTION_CODES = {
     common_exc.USPermissionCheckError: 530,
     common_exc.USLockUnacquiredException: status.LOCKED,
     common_exc.USBadRequestException: status.BAD_REQUEST,
+    common_exc.USReadOnlyModeEnabledException: status.UNAVAILABLE_FOR_LEGAL_REASONS,
     common_exc.USIncorrectTenantIdException: status.CONFLICT,
     common_exc.QueryConstructorError: status.BAD_REQUEST,
     common_exc.ResultRowCountLimitExceeded: status.BAD_REQUEST,
