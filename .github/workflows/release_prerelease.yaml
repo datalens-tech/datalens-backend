@@ -100,14 +100,15 @@ jobs:
       working-directory: docker_build
       run: |
         bake_target=${{ matrix.bake_target }}
+        version="${{ env.version }}"
+        image_version="${version#"v"}"
+        image_url_rc="${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}-rc.1"
+        image_url_release="${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}"
         
         ./run-project-bake "${bake_target}" \
           --push \
-          --set "${bake_target}.tags=${{ env.image_url_rc }}"
-          ${{ github.event.inputs.with_release == 'true' && '--set "${bake_target}.tags=${{ env.image_url_release }}"' || '' }}
-      env:
-        image_url_rc: "${{ env.cr_url }}/${{ matrix.image_name }}:${{ env.version }}-rc.1"
-        image_url_release: "${{ env.cr_url }}/${{ matrix.image_name }}:${{ env.version }}"
+          --set "${bake_target}.tags=${image_url_rc}"
+          ${{ github.event.inputs.with_release == 'true' && '--set "${bake_target}.tags=${image_url_release}"' || '' }}
 
   release:
     name: "Create prerelease"
