@@ -61,6 +61,7 @@ jobs:
     env:
       branch: "release/${{ github.event.inputs.version }}"
 
+    steps:
     - name: Checkout code
       id: checkout
       uses: actions/checkout@v2
@@ -68,7 +69,6 @@ jobs:
         ref: "${{ env.branch }}"
         fetch-depth: 0
 
-    steps:
     - name: Create release
       id: create_release
       working-directory: .github/.scripts
