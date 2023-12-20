@@ -5,7 +5,7 @@ on:
     inputs:
       version:
         type: string
-        description: "Version to release"
+        description: "Version to release, in format 'vX.Y.Z'"
       make_latest:
         type: boolean
         description: "Make latest"
@@ -28,7 +28,7 @@ jobs:
         - "datalens-data-api"
     env:
       cr_url: "ghcr.io/${{ github.repository_owner }}"
-      image_url_rc: "ghcr.io/${{ github.repository_owner }}/${{ matrix.image_name }}:${{ github.event.inputs.version }}rc1"
+      image_url_rc: "ghcr.io/${{ github.repository_owner }}/${{ matrix.image_name }}:${{ github.event.inputs.version }}-rc.1"
 
     steps:
     - name: Log in to the Container registry
@@ -63,13 +63,6 @@ jobs:
       branch: "release/${{ github.event.inputs.version }}"
 
     steps:
-    - name: Checkout code
-      id: checkout
-      uses: actions/checkout@v2
-      with:
-        ref: "${{ env.branch }}"
-        fetch-depth: 0
-
     - name: Create release
       id: create_release
       working-directory: .github/.scripts
