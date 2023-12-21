@@ -23,7 +23,6 @@ FROM
 WHERE
     pg_namespace.nspname not like 'pg_%'
     AND pg_namespace.nspname not like 'gp_%'
-    AND pg_namespace.nspname not like 'mdb_%'
     AND pg_namespace.nspname != 'session_state'
     AND pg_namespace.nspname != 'information_schema'
     AND pg_class.relkind in ('m', 'p', 'r', 'v')
@@ -36,7 +35,6 @@ GP_LIST_SCHEMA_NAMES = """
 SELECT nspname FROM pg_namespace
 WHERE nspname NOT LIKE 'pg_%'
 AND nspname NOT LIKE 'gp_%'
-AND nspname NOT LIKE 'mdb_%'
 AND nspname != 'session_state'
 AND nspname != 'information_schema'
 ORDER BY nspname

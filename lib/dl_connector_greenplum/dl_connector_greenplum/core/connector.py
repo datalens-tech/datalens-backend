@@ -1,3 +1,4 @@
+from dl_connector_greenplum.core.connection_executors import GreenplumConnExecutor, AsyncGreenplumConnExecutor
 from dl_core.connectors.base.connector import (
     CoreBackendDefinition,
     CoreConnectionDefinition,
@@ -25,10 +26,6 @@ from dl_connector_greenplum.core.adapters import (
     AsyncGreenplumAdapter,
     GreenplumAdapter,
 )
-from dl_connector_postgresql.core.postgresql_base.connection_executors import (
-    AsyncPostgresConnExecutor,
-    PostgresConnExecutor,
-)
 from dl_connector_postgresql.core.postgresql_base.query_compiler import PostgreSQLQueryCompiler
 from dl_connector_postgresql.core.postgresql_base.sa_types import SQLALCHEMY_POSTGRES_TYPES
 from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
@@ -39,8 +36,8 @@ class GreenplumCoreConnectionDefinition(CoreConnectionDefinition):
     connection_cls = GreenplumConnection
     us_storage_schema_cls = GreenplumConnectionDataStorageSchema
     type_transformer_cls = PostgreSQLTypeTransformer
-    sync_conn_executor_cls = PostgresConnExecutor
-    async_conn_executor_cls = AsyncPostgresConnExecutor
+    sync_conn_executor_cls = GreenplumConnExecutor
+    async_conn_executor_cls = AsyncGreenplumConnExecutor
     dialect_string = "bi_postgresql"
     data_source_migrator_cls = GreenPlumDataSourceMigrator
 
