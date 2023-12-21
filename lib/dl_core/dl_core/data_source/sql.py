@@ -294,12 +294,6 @@ class DbSQLDataSourceMixin(BaseSQLDataSource):
         assert isinstance(self._spec, DbSQLDataSourceSpec)
         return self._spec.db_name or getattr(self.connection, "db_name", None)
 
-    def get_parameters(self) -> dict:
-        return dict(
-            super().get_parameters(),
-            db_name=self.db_name,
-        )
-
 
 @attr.s
 class TableSQLDataSourceMixin(BaseSQLDataSource):
