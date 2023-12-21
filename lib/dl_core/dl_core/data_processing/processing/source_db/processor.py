@@ -13,7 +13,6 @@ from dl_core.data_processing.cache.utils import (
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
 from dl_core.data_processing.processing.db_base.processor_base import ExecutorBasedOperationProcessor
 from dl_core.data_processing.processing.source_db.selector_exec_adapter import SourceDbExecAdapter
-from dl_core.data_processing.selectors.base import DataSelectorAsyncBase
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.local_cache import USEntryBuffer
 
@@ -22,7 +21,6 @@ from dl_core.us_manager.local_cache import USEntryBuffer
 class SourceDbOperationProcessor(ExecutorBasedOperationProcessor):
     _role: DataSourceRole = attr.ib(kw_only=True)
     _dataset: Dataset = attr.ib(kw_only=True)
-    _selector: DataSelectorAsyncBase = attr.ib(kw_only=True)
     _row_count_hard_limit: Optional[int] = attr.ib(kw_only=True, default=None)
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
     _is_bleeding_edge_user: bool = attr.ib(default=False)
@@ -41,7 +39,6 @@ class SourceDbOperationProcessor(ExecutorBasedOperationProcessor):
             reporting_enabled=self._reporting_enabled,
             role=self._role,
             dataset=self._dataset,
-            selector=self._selector,
             row_count_hard_limit=self._row_count_hard_limit,
             us_entry_buffer=self._us_entry_buffer,
             cache_options_builder=self._cache_options_builder,

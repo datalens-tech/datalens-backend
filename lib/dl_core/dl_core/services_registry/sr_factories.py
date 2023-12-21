@@ -30,7 +30,6 @@ from dl_core.services_registry.file_uploader_client_factory import (
     FileUploaderSettings,
 )
 from dl_core.services_registry.rqe_caches import RQECachesSetting
-from dl_core.services_registry.selector_factory import DefaultSelectorFactory
 from dl_core.services_registry.top_level import (
     DefaultServicesRegistry,
     ServicesRegistry,
@@ -159,10 +158,6 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
             data_processor_service_factory=data_processor_service_factory,
             connectors_settings=self.connectors_settings,
             reporting_registry=reporting_registry,
-            selector_factory=DefaultSelectorFactory(
-                services_registry_ref=sr_ref,
-                is_bleeding_edge_user=self.is_bleeding_edge_user(request_context_info),
-            ),
             data_processor_factory=DefaultDataProcessorFactory(
                 services_registry_ref=sr_ref,
                 is_bleeding_edge_user=self.is_bleeding_edge_user(request_context_info),
