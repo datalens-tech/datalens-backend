@@ -21,8 +21,10 @@ from dl_connector_greenplum.core.data_source import (
 from dl_connector_greenplum.core.data_source_migration import GreenPlumDataSourceMigrator
 from dl_connector_greenplum.core.storage_schemas.connection import GreenplumConnectionDataStorageSchema
 from dl_connector_greenplum.core.us_connection import GreenplumConnection
-from dl_connector_postgresql.core.postgresql_base.adapters_postgres import PostgresAdapter
-from dl_connector_postgresql.core.postgresql_base.async_adapters_postgres import AsyncPostgresAdapter
+from dl_connector_greenplum.core.adapters import (
+    AsyncGreenplumAdapter,
+    GreenplumAdapter,
+)
 from dl_connector_postgresql.core.postgresql_base.connection_executors import (
     AsyncPostgresConnExecutor,
     PostgresConnExecutor,
@@ -65,5 +67,5 @@ class GreenplumCoreConnector(CoreConnector):
         GreenplumTableCoreSourceDefinition,
         GreenplumSubselectCoreSourceDefinition,
     )
-    rqe_adapter_classes = frozenset({PostgresAdapter, AsyncPostgresAdapter})
+    rqe_adapter_classes = frozenset({GreenplumAdapter, AsyncGreenplumAdapter})
     sa_types = SQLALCHEMY_POSTGRES_TYPES
