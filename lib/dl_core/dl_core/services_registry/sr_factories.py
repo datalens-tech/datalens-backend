@@ -37,6 +37,7 @@ from dl_core.services_registry.top_level import (
 from dl_core.us_manager.mutation_cache.usentry_mutation_cache_factory import USEntryMutationCacheFactory
 from dl_core.utils import FutureRef
 from dl_task_processor.processor import ARQTaskProcessorFactory
+from dl_utils.aio import ContextVarExecutor
 
 
 if TYPE_CHECKING:
@@ -115,7 +116,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
             LOGGER.info("ATTENTION! It's bleeding edge user")
         return DefaultConnExecutorFactory(
             async_env=self.async_env,
-            tpe=None,
+            tpe=ContextVarExecutor(),
             conn_sec_mgr=self.env_manager_factory.make_security_manager(),
             rqe_config=self.rqe_config,
             services_registry_ref=sr_ref,  # type: ignore  # TODO: fix

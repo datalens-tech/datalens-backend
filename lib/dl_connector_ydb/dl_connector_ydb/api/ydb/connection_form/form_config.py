@@ -28,6 +28,7 @@ from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
 
 from dl_connector_ydb.api.ydb.connection_info import YDBConnectionInfoProvider
+from dl_connector_ydb.api.ydb.i18n.localizer import Translatable
 from dl_connector_ydb.core.ydb.settings import YDBConnectorSettings
 
 
@@ -53,7 +54,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
             if connector_settings.MANAGED_OAUTH_ROW
             else C.CustomizableRow(
                 items=[
-                    C.LabelRowItem(text="OAuth"),
+                    C.LabelRowItem(text=self._localizer.translate(Translatable("field_oauth_row"))),
                     C.InputRowItem(
                         name=CommonFieldName.token,
                         width="l",
@@ -131,7 +132,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         common_api_schema_items.append(
             FormFieldApiSchema(
                 name=CommonFieldName.token,
-                required=self.mode == ConnectionFormMode.create,
+                required=self.mode == ConnectionFormMode.create and connector_settings.MANAGED_OAUTH_ROW,
             )
         )
         edit_api_schema.items.extend(common_api_schema_items)
