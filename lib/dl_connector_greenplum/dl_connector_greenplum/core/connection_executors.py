@@ -1,7 +1,10 @@
-from dl_connector_greenplum.core.adapters import GreenplumAdapter, AsyncGreenplumAdapter
+from dl_connector_greenplum.core.adapters import (
+    AsyncGreenplumAdapter,
+    GreenplumAdapter,
+)
 from dl_connector_postgresql.core.postgresql_base.connection_executors import (
-    PostgresConnExecutor,
     AsyncPostgresConnExecutor,
+    PostgresConnExecutor,
 )
 
 
