@@ -21,6 +21,7 @@ from dl_constants.enums import (
     DataSourceType,
     JoinType,
 )
+from dl_constants.exc import DLBaseException
 from dl_core.base_models import (
     ConnectionRef,
     SourceFilterSpec,
@@ -156,6 +157,18 @@ class DataSource(metaclass=abc.ABCMeta):
             self._connection = loaded_conn
 
         return self._connection
+
+    def get_connection_attr(self, attr_name: str, strict: bool = False) -> Any:
+        try:
+            if strict:
+                return getattr(self.connection, attr_name)
+            else:
+                return getattr(self.connection, attr_name, None)
+        except DLBaseException as e:
+            if strict:
+                raise
+            LOGGER.warning(f"Error while getting {attr_name} from connection: {str(e)}")
+            return None
 
     @property
     def connection_ref(self) -> ConnectionRef:
