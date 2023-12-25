@@ -305,14 +305,12 @@ jobs:
   publish-result:
     runs-on: [self-hosted, linux ]
     needs: [ "run_tests_base", "run_tests_fat", "run_tests_ext_public" ]
-    env:
-      REPORTABLE_STATUSES: ${{ fromJSON('["success", "failure", "skipped"]')}}
     if: |
       !cancelled() &&
       github.event.inputs.run_mypy_only != 'true' && 
-      contains(vars.REPORTABLE_STATUSES, needs.run_tests_base.result) &&
-      contains(vars.REPORTABLE_STATUSES, needs.run_tests_fat.result) &&
-      contains(vars.REPORTABLE_STATUSES, needs.run_tests_ext_public.result)
+      contains(fromJSON('["success", "failure", "skipped"]'), needs.run_tests_base.result) &&
+      contains(fromJSON('["success", "failure", "skipped"]'), needs.run_tests_fat.result) &&
+      contains(fromJSON('["success", "failure", "skipped"]'), needs.run_tests_ext_public.result)
     permissions:
       contents: read
       issues: read
@@ -320,10 +318,6 @@ jobs:
       pull-requests: write
     container: docker:latest
     steps:
-      - name: echo
-        run: echo "${{ github.event.inputs.run_mypy_only }}"
-      - name: echo
-        run: echo "${{ vars.REPORTABLE_STATUSES }}" && echo "${{ env.REPORTABLE_STATUSES }}"
       - uses: actions/download-artifact@v3
         with:
           path: ./report/
