@@ -307,6 +307,7 @@ jobs:
     needs: [ "run_tests_base", "run_tests_fat", "run_tests_ext_public" ]
     if: |
       !cancelled() &&
+      github.event.inputs.run_mypy_only != 'true' && 
       contains(fromJSON('["success", "failure", "skipped"]'), needs.run_tests_base.result) &&
       contains(fromJSON('["success", "failure", "skipped"]'), needs.run_tests_fat.result) &&
       contains(fromJSON('["success", "failure", "skipped"]'), needs.run_tests_ext_public.result)
