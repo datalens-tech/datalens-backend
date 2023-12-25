@@ -89,7 +89,7 @@ ORDER BY nspname
 PG_LIST_VIEW_NAMES = """
 SELECT c.relname FROM pg_class c
 JOIN pg_namespace n ON n.oid = c.relnamespace
-WHERE n.nspname = :schema AND c.relkind IN 'v', 'm'
+WHERE n.nspname = :schema AND c.relkind IN ('v', 'm')
 """
 
 
@@ -326,7 +326,7 @@ class AsyncPostgresAdapter(
             sa.bindparam(
                 "schema",
                 schema_ident.schema_name,
-                type=sa.types.Unicode,
+                type_=sa.types.Unicode,
             )
         )
         result = await self.execute(DBAdapterQuery(query))
