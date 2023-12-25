@@ -318,9 +318,11 @@ jobs:
     container: docker:latest
     steps:
       - name: echo
-        run: echo "${{ cancelled() }}"
+        if: cancelled()
+        run: echo cancelled
       - name: echo
-        run: echo "${{ success() }}"
+        if: success()
+        run: echo success
       - run: echo "${{ needs.run_tests_fat.result }}"
       - uses: actions/download-artifact@v3
         with:
