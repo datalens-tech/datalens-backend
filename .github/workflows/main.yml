@@ -317,12 +317,12 @@ jobs:
       pull-requests: write
     container: docker:latest
     steps:
-      - name: echo
-        if: cancelled()
-        run: echo cancelled
-      - name: echo
-        if: success()
-        run: echo success
+      # - name: echo
+      #   if: cancelled()
+      #   run: echo cancelled
+      # - name: echo
+      #   if: success()
+      #   run: echo success
       - run: echo "${{ needs.run_tests_fat.result }}"
       - uses: actions/download-artifact@v3
         with:
