@@ -26,6 +26,7 @@ class TestAsyncPostgreSQLAdapter(
         tables = await self._make_dba(target_conn_dto, conn_bi_context).get_tables(
             SchemaIdent(db_name="test_data", schema_name=None)
         )
+        # check
 
         assert [f"{t.schema_name}.{t.table_name}" for t in tables] == [
             "test_data.sample",
