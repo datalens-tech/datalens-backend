@@ -306,7 +306,10 @@ jobs:
     runs-on: [self-hosted, linux ]
     needs: [ "run_tests_base", "run_tests_fat", "run_tests_ext_public" ]
     if: |
-      always()
+      always() &&
+      contains(["success", "failure", "skipped"], needs.run_tests_base.result) &&
+      contains(["success", "failure", "skipped"], needs.run_tests_fat.result) &&
+      contains(["success", "failure", "skipped"], needs.run_tests_ext_public.result)
     permissions:
       contents: read
       issues: read
@@ -314,8 +317,10 @@ jobs:
       pull-requests: write
     container: docker:latest
     steps:
-      # - run: echo "${{ cancelled() }}"
-      # - run: echo "${{ success() }}"
+      - name: echo
+        run: echo "${{ cancelled() }}"
+      - name: echo
+        run: echo "${{ success() }}"
       - run: echo "${{ needs.run_tests_fat.result }}"
       - uses: actions/download-artifact@v3
         with:
