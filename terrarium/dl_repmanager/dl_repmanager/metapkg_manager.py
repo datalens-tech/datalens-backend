@@ -68,21 +68,24 @@ class MetaPackageManager:
         section[pkg_spec.package_name] = pkg_spec.to_toml_value()
 
     def list_poetry_groups(self) -> list[str]:
-        return list(self._toml["tool"]["poetry"]["group"].keys())
+        return list(self._toml["tool"]["poetry"]["group"].keys())  # type: ignore
 
     def remove_poetry_group(self, name: str) -> None:
-        del self._toml["tool"]["poetry"]["group"][name]
+        del self._toml["tool"]["poetry"]["group"][name]  # type: ignore
 
     def list_mypy_stubs_override(self) -> list[str]:
-        mypy_section = self._toml["datalens"]["meta"]["mypy_stubs_packages_override"]
-        return list(mypy_section.keys())
+        mypy_section = self._toml["datalens"]["meta"]["mypy_stubs_packages_override"]  # type: ignore
+        if mypy_section:
+            return list(mypy_section.keys())  # type: ignore
+        return []
 
     def remove_mypy_stubs_override(self, name: str) -> None:
-        mypy_section = self._toml["datalens"]["meta"]["mypy_stubs_packages_override"]
-        del mypy_section[name]
+        mypy_section = self._toml["datalens"]["meta"]["mypy_stubs_packages_override"]  # type: ignore
+        if mypy_section:
+            del mypy_section[name]  # type: ignore
 
     def remove_package_sources_section(self) -> None:
-        del self._toml["tool"]["poetry"]["source"]
+        del self._toml["tool"]["poetry"]["source"]  # type: ignore
 
     @staticmethod
     def get_dependencies_section_name(group: Optional[str]) -> str:
@@ -155,7 +158,12 @@ class MetaPackageManager:
 
     def run_poetry_lock(self, suppress_stdout: bool = False) -> None:
         stdout_target = subprocess.DEVNULL if suppress_stdout else None
-        subprocess.run(["poetry", "lock", "--no-update"], cwd=self.dir_path, check=True, stdout=stdout_target)
+        subprocess.run(
+            ["poetry", "lock", "--no-update"],
+            cwd=self.dir_path,
+            check=True,
+            stdout=stdout_target,
+        )
 
     def save(self) -> None:
         file_path = self.dir_path / "pyproject.toml"

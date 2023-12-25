@@ -260,6 +260,14 @@ class USPermissionCheckError(USReqException):
         return "US permission check error"
 
 
+class USReadOnlyModeEnabledException(USReqException):
+    err_code = USReqException.err_code + ["READ_ONLY"]
+
+    @property
+    def message(self) -> str:
+        return "The service is currently in read-only mode"
+
+
 class USBadRequestException(USReqException):
     err_code = USReqException.err_code + ["BAD_REQUEST"]
 

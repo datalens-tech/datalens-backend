@@ -10,11 +10,13 @@ import attr
 from dl_api_lib.loader import ApiLibraryConfig
 from dl_configs.connector_availability import ConnectorAvailabilityConfigSettings
 from dl_core_testing.configuration import CoreTestEnvironmentConfigurationBase
+from dl_formula_testing.configuration import FormulaTestEnvironmentConfiguration
 
 
 @attr.s(kw_only=True)
 class ApiTestEnvironmentConfiguration:
-    core_test_config: CoreTestEnvironmentConfigurationBase = attr.ib()
+    core_test_config: CoreTestEnvironmentConfigurationBase = attr.ib(factory=CoreTestEnvironmentConfigurationBase)
+    formula_test_config: FormulaTestEnvironmentConfiguration = attr.ib(factory=FormulaTestEnvironmentConfiguration)
 
     ext_query_executer_secret_key: str = attr.ib()
 

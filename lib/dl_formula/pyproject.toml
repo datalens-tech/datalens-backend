@@ -26,7 +26,7 @@ dynamic-enum = {path = "../dynamic_enum"}
 pytest = ">=7.2.2"
 pyodbc = ">=4.0.35"
 python-dateutil = ">=2.8.2"
-
+datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 
 [[tool.mypy.overrides]]
 module = "ciso8601"

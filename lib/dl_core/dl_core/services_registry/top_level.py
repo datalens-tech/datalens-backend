@@ -28,10 +28,6 @@ from dl_core.services_registry.data_processor_factory import DefaultDataProcesso
 from dl_core.services_registry.data_processor_factory_base import BaseClosableDataProcessorFactory
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistry
 from dl_core.services_registry.rqe_caches import RQECachesSetting
-from dl_core.services_registry.selector_factory import (
-    DefaultSelectorFactory,
-    SelectorFactory,
-)
 from dl_core.us_manager.mutation_cache.engine_factory import (
     DefaultMutationCacheEngineFactory,
     MutationCacheEngineFactory,
@@ -94,10 +90,6 @@ class ServicesRegistry(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def get_compute_executor(self) -> ComputeExecutor:
-        pass
-
-    @abc.abstractmethod
-    def get_selector_factory(self) -> SelectorFactory:
         pass
 
     @abc.abstractmethod
@@ -165,7 +157,6 @@ class DefaultServicesRegistry(ServicesRegistry):  # type: ignore  # TODO: fix
     _conn_exec_factory: Optional[ConnExecutorFactory] = attr.ib(default=None)
     _caches_redis_client_factory: Optional[Callable[[bool], Optional[redis.asyncio.Redis]]] = attr.ib(default=None)
     _compute_executor: ComputeExecutor = attr.ib()
-    _selector_factory: SelectorFactory = attr.ib()
     _cache_engine_factory: CacheEngineFactory = attr.ib()
     _mutation_cache_engine_factory: MutationCacheEngineFactory = attr.ib(default=None)
     _data_processor_service_factory: Optional[Callable[[ProcessorType], DataProcessorService]] = attr.ib(default=None)
@@ -180,10 +171,6 @@ class DefaultServicesRegistry(ServicesRegistry):  # type: ignore  # TODO: fix
     @_compute_executor.default  # noqa
     def _default_compute_executor(self) -> ComputeExecutor:
         return ComputeExecutorTPE()  # type: ignore  # Incompatible return value type (got "ComputeExecutorTPE", expected "ComputeExecutor")
-
-    @_selector_factory.default  # noqa
-    def _default_selector_factory(self) -> SelectorFactory:
-        return DefaultSelectorFactory(services_registry_ref=FutureRef.fulfilled(self))
 
     @_cache_engine_factory.default  # noqa
     def _default_cache_engine_factory(self) -> CacheEngineFactory:
@@ -225,9 +212,6 @@ class DefaultServicesRegistry(ServicesRegistry):  # type: ignore  # TODO: fix
 
     def get_compute_executor(self) -> ComputeExecutor:
         return self._compute_executor
-
-    def get_selector_factory(self) -> SelectorFactory:
-        return self._selector_factory
 
     def get_cache_engine_factory(self) -> Optional[CacheEngineFactory]:  # type: ignore  # TODO: fix
         return self._cache_engine_factory
@@ -288,10 +272,6 @@ class DefaultServicesRegistry(ServicesRegistry):  # type: ignore  # TODO: fix
             # Processor factory must be closed before selectors
             # because processors might use selectors while closing
             await self._data_processor_factory.close_async()
-        if self._selector_factory is not None:
-            # Should not parallelize with selectors factory closing
-            # because its selectors may use CE in closing procedure
-            await self._selector_factory.close_async()
         if self._conn_exec_factory is not None:
             await self._conn_exec_factory.close_async()
         if self._task_processor_factory is not None:
@@ -336,9 +316,6 @@ class DummyServiceRegistry(ServicesRegistry):
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
     def get_compute_executor(self) -> ComputeExecutor:
-        raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
-
-    def get_selector_factory(self) -> SelectorFactory:
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
     def get_cache_engine_factory(self) -> Optional[CacheEngineFactory]:  # type: ignore  # TODO: fix

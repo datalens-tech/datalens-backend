@@ -40,16 +40,9 @@ class SourceDataProcessorFactory(BaseClosableDataProcessorFactory):
         **kwargs: Any,
     ) -> ExecutorBasedOperationProcessor:
         assert role is not None
-        selector_factory = self.services_registry.get_selector_factory()
-        selector = selector_factory.get_dataset_selector(
-            dataset=dataset,
-            allow_cache_usage=False,  # Use data processor-level cache
-            us_entry_buffer=us_entry_buffer,
-        )
         processor = SourceDbOperationProcessor(
             service_registry=self.services_registry,
             dataset=dataset,
-            selector=selector,
             role=role,
             us_entry_buffer=us_entry_buffer,
             is_bleeding_edge_user=self._is_bleeding_edge_user,

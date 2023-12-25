@@ -24,7 +24,7 @@ def sync_scoped_metapkg(
     prevent_prune_for_deps: Sequence[str],
     remove_private_pypi: bool = False,
     use_target_lock: bool = False,
-):
+) -> None:
     def is_local_package_in_scope(dep_from_scoped_pkg: LocalReqPackageSpec) -> bool:
         for package_dir in package_dirs_to_include:
             if dep_from_scoped_pkg.path.is_relative_to(package_dir):

@@ -16,8 +16,12 @@ gitpython = ">=3.1.37"
 colorama = ">=0.4.3"
 datalens-cli-tools = {path = "../dl_cli_tools"}
 
-[tool.poetry.group.tests.dependencies]
+[tool.poetry.group.pytest.dependencies]
 pytest = ">=7.2.2"
+
+[tool.poetry.group.mypy.dependencies]
+mypy = ">= 1.7.0"
+types-colorama = "*"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -39,3 +43,6 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+exclude = [
+    "^dl_gitmanager_tests/",
+]

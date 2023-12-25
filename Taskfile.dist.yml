@@ -20,3 +20,7 @@ includes:
   gen:
     taskfile: tools/taskfiles/taskfile_gen.yml
     dir: tools
+
+  release:
+    taskfile: tools/taskfiles/taskfile_release.yaml
+    dir: tools

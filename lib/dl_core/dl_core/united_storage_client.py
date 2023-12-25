@@ -245,6 +245,7 @@ class UStorageClientBase:
         (409, re.compile("The entry already exists"), exc.USAlreadyExistsException),
         (409, None, exc.USIncorrectTenantIdException),
         (423, None, exc.USLockUnacquiredException),
+        (451, None, exc.USReadOnlyModeEnabledException),
         (530, None, exc.USPermissionCheckError),
     ]
 

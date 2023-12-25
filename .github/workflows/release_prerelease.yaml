@@ -1,0 +1,161 @@
+name: "🚀🟡 Prerelease"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: "Version to release, in format 'vX.Y.Z'"
+      version_shift:
+        type: choice
+        description: "Version shift, used if version is not specified"
+        options:
+          - "major"
+          - "minor"
+          - "patch"
+        default: "minor"
+      branch:
+        type: string
+        description: "Target branch to release"
+        default: "main"
+      with_release:
+        type: boolean
+        description: "Create green release as well"
+        default: false
+
+jobs:
+  get_version:
+    name: "Get version"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+    - name: Checkout code
+      id: checkout
+      if: ${{ github.event.inputs.version == '' }}
+      uses: actions/checkout@v2
+      with:
+        ref: "${{ github.event.inputs.branch }}"
+        fetch-depth: 0
+
+    - name: Get version
+      id: get_version
+      run: |
+        version=${{ github.event.inputs.version }}
+        if [[ -z "${version}" ]]; then
+            latest_tag=$(git describe --tags --abbrev=0)
+            latest_version="${latest_tag%-rc.*}"
+            echo "Latest version is ${latest_version}"
+            version=$(.github/.scripts/shift_version.sh ${latest_version} ${{ github.event.inputs.version_shift }})
+        fi
+        
+        if [[ ! $version =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "ERROR: Version must be in format vX.Y.Z, found $version, exiting..."
+            exit 1;
+        fi
+
+        echo "version=${version}" >> $GITHUB_OUTPUT
+
+  build_images:
+    name: "Build images"
+    needs: [get_version]
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - image_name: "datalens-control-api"
+            bake_target: "dl_control_api"
+          - image_name: "datalens-data-api"
+            bake_target: "dl_data_api"
+    container:
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
+      options: -v /var/run/docker.sock:/var/run/docker.sock
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      version: "${{ needs.get_version.outputs.version }}"
+      cr_url: "ghcr.io/${{ github.repository_owner }}"
+
+    steps:
+    - name: Log in to the Container registry
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.cr_url }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Checkout code
+      id: checkout
+      uses: actions/checkout@v2
+      with:
+        ref: "${{ github.event.inputs.branch }}"
+        fetch-depth: 0
+
+    - name: Build image
+      working-directory: docker_build
+      run: |
+        bake_target=${{ matrix.bake_target }}
+        version="${{ env.version }}"
+        image_version="${version#"v"}"
+        image_url_rc="${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}-rc.1"
+        image_url_release="${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}"
+        
+        ./run-project-bake "${bake_target}" \
+          --push \
+          --set "${bake_target}.tags=${image_url_rc}"
+          ${{ github.event.inputs.with_release == 'true' && '--set "${bake_target}.tags=${image_url_release}"' || '' }}
+
+  release:
+    name: "Create prerelease"
+    needs: [build_images, get_version]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      version: "${{ needs.get_version.outputs.version }}"
+      release_branch: "release/${{ needs.get_version.outputs.version }}"
+    steps:
+      - name: Checkout code
+        id: checkout
+        uses: actions/checkout@v2
+        with:
+          ref: "${{ github.event.inputs.branch }}"
+          fetch-depth: 0
+
+      - name: Create and push release branch
+        id: create_branch
+        if: ${{ github.event.inputs.branch != env.release_branch }}
+        run: |
+          git branch ${{ env.release_branch }}
+          git push origin ${{ env.release_branch }}
+
+      - name: Create prerelease
+        id: create_prerelease
+        run: |
+          gh release create \
+            --repo ${{ github.repository_owner }}/${{ github.event.repository.name }} \
+            ${{ env.release_tag }} \
+            --target ${{ env.release_branch }} \
+            --prerelease \
+            --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          release_tag: "${{ env.version }}-rc.1"
+
+      - name: Create release
+        id: create_release
+        if: ${{ github.event.inputs.with_release == 'true' }}
+        run: |
+          gh release create \
+            --repo ${{ github.repository_owner }}/${{ github.event.repository.name }} \
+            ${{ env.release_tag }} \
+            --target ${{ env.release_branch }} \
+            --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          release_tag: "${{ env.version }}"

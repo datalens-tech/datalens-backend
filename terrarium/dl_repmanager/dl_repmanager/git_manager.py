@@ -6,9 +6,9 @@ import attr
 
 
 @attr.s()
-class GitManager:
+class GitManager:  # type:ignore
     _path: Path = attr.ib()
-    _suppress_stdout_on_run = attr.ib(default=True)
+    _suppress_stdout_on_run: bool = attr.ib(default=True)
 
     def _run_git(
         self,
