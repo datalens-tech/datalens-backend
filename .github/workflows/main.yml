@@ -318,6 +318,8 @@ jobs:
     container: docker:latest
     steps:
       - name: echo
+        run: echo "${{ github.event.inputs.run_mypy_only }}"
+      - name: echo
         if: cancelled()
         run: echo cancelled
       - name: echo
