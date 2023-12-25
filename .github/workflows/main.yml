@@ -4,9 +4,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-env:
-  REPORTABLE_STATUSES: fromJSON('["success", "failure", "skipped"]')
-
 on:
   pull_request:
   workflow_dispatch:
@@ -308,6 +305,8 @@ jobs:
   publish-result:
     runs-on: [self-hosted, linux ]
     needs: [ "run_tests_base", "run_tests_fat", "run_tests_ext_public" ]
+    env:
+      REPORTABLE_STATUSES: fromJSON('["success", "failure", "skipped"]')
     if: |
       !cancelled() &&
       github.event.inputs.run_mypy_only != 'true' && 
@@ -324,12 +323,7 @@ jobs:
       - name: echo
         run: echo "${{ github.event.inputs.run_mypy_only }}"
       - name: echo
-        if: cancelled()
-        run: echo cancelled
-      - name: echo
-        if: success()
-        run: echo success
-      - run: echo "${{ needs.run_tests_fat.result }}"
+        run: echo "${{ vars.REPORTABLE_STATUSES }}" && echo "${{ env.REPORTABLE_STATUSES }}"
       - uses: actions/download-artifact@v3
         with:
           path: ./report/
