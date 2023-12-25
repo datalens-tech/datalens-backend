@@ -4,6 +4,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+env:
+  REPORTABLE_STATUSES: fromJSON('["success", "failure", "skipped"]')
+
 on:
   pull_request:
   workflow_dispatch:
@@ -304,8 +307,6 @@ jobs:
 
   publish-result:
     runs-on: [self-hosted, linux ]
-    env:
-      REPORTABLE_STATUSES: fromJSON('["success", "failure", "skipped"]')
     needs: [ "run_tests_base", "run_tests_fat", "run_tests_ext_public" ]
     if: |
       !cancelled() &&
