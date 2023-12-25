@@ -360,11 +360,18 @@ WHERE
     pg_namespace.nspname not like 'pg_%'
     AND pg_namespace.nspname != 'information_schema'
     AND pg_class.relkind in ('m', 'p', 'r', 'v')
+    AND NOT COALESCE((row_to_json(pg_class)->>'relispartition')::boolean, false)
 ORDER BY schema, name
 """.strip().replace(
     "\n", "  "
 )
-# NOTE: there's also `AND NOT pg_class.relispartition` in postgresql>=10
+# NOTE: pg_class.relispartition` field exists only for postgresql>=10, so for postgresql<10 support json is used here
+PG_LIST_TABLE_NAMES = """
+SELECT c.relname FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname = :schema  AND c.relkind in ('r', 'p')
+AND NOT COALESCE((row_to_json(c)->>'relispartition')::boolean, false);
+"""
 
 
 @attr.s(cmp=False)

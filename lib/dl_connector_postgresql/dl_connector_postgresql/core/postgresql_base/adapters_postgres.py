@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import itertools
 import typing
 from typing import (
     TYPE_CHECKING,
@@ -21,6 +22,7 @@ from dl_core.connection_models.common_models import TableIdent
 from dl_connector_postgresql.core.postgresql_base.adapters_base_postgres import (
     OID_KNOWLEDGE,
     PG_LIST_SOURCES_ALL_SCHEMAS_SQL,
+    PG_LIST_TABLE_NAMES,
     BasePostgresAdapter,
 )
 from dl_connector_postgresql.core.postgresql_base.error_transformer import sync_pg_db_error_transformer
@@ -39,6 +41,9 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
     execution_options = {
         "stream_results": True,
     }
+
+    _LIST_ALL_TABLES_QUERY = PG_LIST_SOURCES_ALL_SCHEMAS_SQL
+    _LIST_TABLE_NAMES_QUERY = PG_LIST_TABLE_NAMES
 
     def get_connect_args(self) -> dict:
         return dict(
@@ -70,16 +75,22 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
                 stack.close()
 
     def _get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+        db_name = schema_ident.db_name
+        db_engine = self.get_db_engine(db_name)
+
         if schema_ident.schema_name is not None:
             # For a single schema, plug into the common SA code.
             # (might not be ever used)
-            return super()._get_tables(schema_ident)
 
-        assert schema_ident.schema_name is None
-        db_name = schema_ident.db_name
-        db_engine = self.get_db_engine(db_name)
-        query = PG_LIST_SOURCES_ALL_SCHEMAS_SQL
-        result = db_engine.execute(sa.text(query))
+            db_engine = self.get_db_engine(schema_ident.db_name)
+            table_list = db_engine.execute(sa.text(self._LIST_TABLE_NAMES_QUERY))
+            view_list = sa.inspect(db_engine).get_view_names(schema=schema_ident.schema_name)
+
+            result = ((schema_ident.schema_name, name) for name in itertools.chain(table_list, view_list))
+        else:
+            assert schema_ident.schema_name is None
+            result = db_engine.execute(sa.text(self._LIST_ALL_TABLES_QUERY))
+
         return [
             TableIdent(
                 db_name=db_name,
