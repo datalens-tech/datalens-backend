@@ -311,9 +311,9 @@ jobs:
     if: |
       !cancelled() &&
       github.event.inputs.run_mypy_only != 'true' && 
-      contains(env.REPORTABLE_STATUSES, needs.run_tests_base.result) &&
-      contains(env.REPORTABLE_STATUSES, needs.run_tests_fat.result) &&
-      contains(env.REPORTABLE_STATUSES, needs.run_tests_ext_public.result)
+      contains(vars.REPORTABLE_STATUSES, needs.run_tests_base.result) &&
+      contains(vars.REPORTABLE_STATUSES, needs.run_tests_fat.result) &&
+      contains(vars.REPORTABLE_STATUSES, needs.run_tests_ext_public.result)
     permissions:
       contents: read
       issues: read
