@@ -17,6 +17,7 @@ class TestMSSQLDashSQL(MSSQLDashSQLConnectionTest, DefaultDashSQLTestSuite):
         )
 
         resp_data = await resp.json()
+        print(resp_data)
         assert resp_data[0]["event"] == "metadata", resp_data
         assert resp_data[0]["data"]["names"] == [
             "number",
