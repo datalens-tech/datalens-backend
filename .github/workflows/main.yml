@@ -314,9 +314,9 @@ jobs:
       pull-requests: write
     container: docker:latest
     steps:
-      - run: echo "${{ cancelled() }}"
-      - run: echo "${{ success() }}"
-      - run: echo "${{ needs.run_tests_fat.result }}"
+      # - run: echo "${{ cancelled() }}"
+      # - run: echo "${{ success() }}"
+      # - run: echo "${{ needs.run_tests_fat.result }}"
       - uses: actions/download-artifact@v3
         with:
           path: ./report/
