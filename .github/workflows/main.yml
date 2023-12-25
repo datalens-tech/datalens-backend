@@ -307,9 +307,9 @@ jobs:
     needs: [ "run_tests_base", "run_tests_fat", "run_tests_ext_public" ]
     if: |
       always() &&
-      contains(["success", "failure", "skipped"], needs.run_tests_base.result) &&
-      contains(["success", "failure", "skipped"], needs.run_tests_fat.result) &&
-      contains(["success", "failure", "skipped"], needs.run_tests_ext_public.result)
+      contains(fromJSON('["success", "failure", "skipped"]'), needs.run_tests_base.result) &&
+      contains(fromJSON('["success", "failure", "skipped"]'), needs.run_tests_fat.result) &&
+      contains(fromJSON('["success", "failure", "skipped"]'), needs.run_tests_ext_public.result)
     permissions:
       contents: read
       issues: read
