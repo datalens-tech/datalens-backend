@@ -6,7 +6,7 @@ from typing import (
     Dict,
     Iterable,
     Optional,
-    Union,
+    Sequence,
 )
 
 from arq import Worker as _ArqWorker
@@ -31,7 +31,7 @@ CONTEXT_KEY = "bi_context"
 class WorkerSettings:
     # we should not allow forever-fail tasks because it can stop the whole system
     # but (if you really want it) you can provide float('inf')
-    retry_hard_limit: Union[int, float] = attr.ib(default=100)
+    retry_hard_limit: int = attr.ib(default=100)
     job_timeout: int = attr.ib(default=600)  # seconds
     health_check_interval: int = attr.ib(default=30)
     health_check_suffix: str = attr.ib(default="bihealthcheck")
@@ -44,7 +44,7 @@ class ArqWorker:
     _redis_settings: RedisSettings = attr.ib()
     _worker_settings: WorkerSettings = attr.ib()
     _arq_worker: _ArqWorker = attr.ib(default=None)
-    _cron_tasks: Iterable[CronTask] = attr.ib(default=[])
+    _cron_tasks: Sequence[CronTask] = attr.ib(default=[])
 
     @property
     def health_check_key(self) -> str:
@@ -55,18 +55,16 @@ class ArqWorker:
         self._arq_worker = _ArqWorker(
             # let's trick strange typing in arq
             # everybody does it o_O
-            **{
-                "functions": [arq_base_task],
-                "on_startup": self.start_executor,
-                "on_shutdown": self.stop_executor,
-                "max_tries": self._worker_settings.retry_hard_limit,
-                "job_timeout": timedelta(seconds=self._worker_settings.job_timeout),
-                "retry_jobs": True,
-                "health_check_key": self.health_check_key,
-                "handle_signals": False,
-                "health_check_interval": self._worker_settings.health_check_interval,
-                "cron_jobs": self._cron_tasks,
-            },
+            functions=[arq_base_task],  # type: ignore[list-item]
+            on_startup=self.start_executor,
+            on_shutdown=self.stop_executor,
+            max_tries=self._worker_settings.retry_hard_limit,
+            job_timeout=timedelta(seconds=self._worker_settings.job_timeout),
+            retry_jobs=True,
+            health_check_key=self.health_check_key,
+            handle_signals=False,
+            health_check_interval=self._worker_settings.health_check_interval,
+            cron_jobs=self._cron_tasks,
             redis_pool=redis_pool,
         )
         await self._arq_worker.main()

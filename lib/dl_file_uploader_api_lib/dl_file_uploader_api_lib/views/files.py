@@ -172,12 +172,6 @@ class LinksView(FileUploaderBaseView):
 class DocumentsView(FileUploaderBaseView):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResource]] = frozenset()  # Don't skip CSRF check
 
-    FILE_TYPE_TO_DATA_FILE_PREPARER_MAP: dict[
-        FileType, Callable[[str, RedisModelManager, Optional[str]], Awaitable[DataFile]]
-    ] = {
-        FileType.yadocs: yadocs_data_file_preparer,
-    }
-
     async def post(self) -> web.StreamResponse:
         req_data = await self._load_post_request_schema_data(files_schemas.FileDocumentsRequestSchema)
 
@@ -191,7 +185,7 @@ class DocumentsView(FileUploaderBaseView):
         connection_id: Optional[str] = req_data["connection_id"]
         authorized: bool = req_data["authorized"]
 
-        df = await self.FILE_TYPE_TO_DATA_FILE_PREPARER_MAP[file_type](
+        df = await yadocs_data_file_preparer(
             oauth_token=oauth_token,
             private_path=private_path,
             public_link=public_link,

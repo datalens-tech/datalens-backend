@@ -119,7 +119,7 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
                     download_error = FileProcessingError.from_exception(e)
                     dfile.status = FileProcessingStatus.failed
                     dfile.error = download_error
-                    if self.meta.exec_mode != TaskExecutionMode.BASIC:
+                    if self.meta.exec_mode != TaskExecutionMode.BASIC and dfile.sources is not None:
                         for src in dfile.sources:
                             src.status = FileProcessingStatus.failed
                             src.error = download_error

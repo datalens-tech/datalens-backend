@@ -273,6 +273,8 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
                                         old_s3_filename = source.s3_filename
                                     else:
                                         assert old_tenant_id
+                                        assert conn.uuid
+                                        assert source.s3_filename_suffix
                                         old_s3_filename = "_".join(
                                             (old_tenant_id, conn.uuid, source.s3_filename_suffix)
                                         )
@@ -282,6 +284,7 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
                                         if len(old_fname_parts) >= 2 and all(part for part in old_fname_parts):
                                             # assume that first part is old tenant id
                                             old_tenant_id = old_fname_parts[0]
+                                    assert old_tenant_id
                                     old_tenants.add(old_tenant_id)
 
                                     s3_filename_suffix = (
