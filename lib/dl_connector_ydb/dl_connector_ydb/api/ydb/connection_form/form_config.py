@@ -45,25 +45,10 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         ]
 
     def _get_default_db_section(self, rc: RowConstructor, connector_settings: YDBConnectorSettings) -> list[FormRow]:
-        oauth_row = (
-            C.OAuthTokenRow(
-                name=CommonFieldName.token,
-                fake_value="******" if self.mode == ConnectionFormMode.edit else None,
-                application=YDBOAuthApplication.ydb,
-            )
-            if connector_settings.MANAGED_OAUTH_ROW
-            else C.CustomizableRow(
-                items=[
-                    C.LabelRowItem(text=self._localizer.translate(Translatable("field_oauth_row"))),
-                    C.InputRowItem(
-                        name=CommonFieldName.token,
-                        width="l",
-                        default_value="" if self.mode == ConnectionFormMode.create else None,
-                        fake_value="******" if self.mode == ConnectionFormMode.edit else None,
-                        control_props=C.InputRowItem.Props(type="password"),
-                    ),
-                ]
-            )
+        oauth_row = C.OAuthTokenRow(
+            name=CommonFieldName.token,
+            fake_value="******" if self.mode == ConnectionFormMode.edit else None,
+            application=YDBOAuthApplication.ydb,
         )
         return [
             oauth_row,
@@ -132,7 +117,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         common_api_schema_items.append(
             FormFieldApiSchema(
                 name=CommonFieldName.token,
-                required=self.mode == ConnectionFormMode.create and connector_settings.MANAGED_OAUTH_ROW,
+                required=self.mode == ConnectionFormMode.create and connector_settings.HAS_AUTH,
             )
         )
         edit_api_schema.items.extend(common_api_schema_items)

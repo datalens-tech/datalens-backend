@@ -19,12 +19,12 @@ from dl_core.connectors.settings.primitives import (
 
 @attr.s(frozen=True)
 class YDBConnectorSettings(ConnectorSettingsBase):
-    MANAGED_OAUTH_ROW: Optional[bool] = s_attrib("MANAGED_OAUTH_ROW", missing=True)  # type: ignore
+    HAS_AUTH: Optional[bool] = s_attrib("HAS_AUTH", missing=True)  # type: ignore
     DEFAULT_HOST_VALUE: Optional[str] = s_attrib("DEFAULT_HOST_VALUE", missing=None)  # type: ignore
 
 
 class ConnectorsDataYDBBase(ConnectorsDataBase):
-    MANAGED_OAUTH_ROW: ClassVar[Optional[bool]] = True
+    HAS_AUTH: ClassVar[Optional[bool]] = True
 
     @classmethod
     def connector_name(cls) -> str:
@@ -39,7 +39,7 @@ def ydb_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, Connector
     )
     if cfg is None:
         return {}
-    return dict(YDB=YDBConnectorSettings(MANAGED_OAUTH_ROW=cfg.MANAGED_OAUTH_ROW))  # type: ignore
+    return dict(YDB=YDBConnectorSettings(HAS_AUTH=cfg.HAS_AUTH))  # type: ignore
 
 
 class YDBSettingDefinition(ConnectorSettingsDefinition):
