@@ -136,7 +136,7 @@ class TestCompengCache(DefaultCoreTestClass):
                 username="",
             )
             reporting = sr.get_reporting_registry()
-            workbook_id = sr.rci.plain_headers.get(DLHeadersCommon.WORKBOOK_ID)
+            workbook_id = sr.rci.workbook_id
             reporting.save_reporting_record(
                 QueryExecutionStartReportingRecord(
                     timestamp=time.time(),
