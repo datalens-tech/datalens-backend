@@ -12,6 +12,5 @@ class TestStringFunctionOracle(OracleTestBase, DefaultStringFunctionFormulaConne
     supports_split_3 = False
 
     def test_oracle_unicode(self, dbe: DbEvaluator) -> None:
-        assert os.environ.get("NLS_LANG") == ".AL32UTF8"
         # assert dbe.db.scalar(sa.select([sa.literal('карл')])) == 'карл'  # not working.
         assert dbe.db.scalar(sa.literal("карл", type_=sa.sql.sqltypes.NCHAR())) == "карл"

@@ -429,11 +429,6 @@ class DefaultBasicLookupFunctionTestSuite(
         any_db_table_200 = make_table(db, rows=200)
         request.addfinalizer(functools.partial(db.drop_table, any_db_table_200.table))
 
-        # FIXME
-        # if any_db.conn_type == CONNECTION_TYPE_ORACLE:
-        #     # Oracle cannot add a month to 2021-01-31 (2021-02-31 doesn't exist)
-        #     pytest.skip()
-
         ds = create_basic_dataset(
             api_v1=control_api,
             connection_id=saved_connection_id,
