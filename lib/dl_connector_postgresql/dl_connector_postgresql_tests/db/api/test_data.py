@@ -104,6 +104,7 @@ class TestPostgreSQLDataResult(PostgreSQLDataApiTestBase, DefaultConnectorDataRe
         table = db.table_from_columns(
             [sa.Column(name="citext_value", type_=CITEXT)],
         )
+        # TODO: clean up created tables after test finish
         db.create_table(table)
         db_table = DbTable(db=db, table=table)  # type: ignore  # TODO: fix
         db_table.insert(
