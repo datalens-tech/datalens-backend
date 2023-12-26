@@ -65,6 +65,7 @@ class AsyncUSManager(USManagerBase):
             auth_ctx=us_auth_context,
             context_request_id=bi_context.request_id if bi_context is not None else None,
             context_forwarded_for=bi_context.forwarder_for,
+            context_workbook_id=bi_context.workbook_id,
         )
 
         super().__init__(
