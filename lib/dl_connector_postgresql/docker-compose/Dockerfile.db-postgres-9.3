@@ -4,4 +4,4 @@ FROM postgres:9.3-alpine@sha256:028cb3bc3792c307a490864b5deecfaec9027cef4aad16d3
 
 COPY db-postgres/data /common-data
 
-COPY db-postgres/initdb.d/* /docker-entrypoint-initdb.d/
+COPY db-postgres/initdb.d/01_prepare_db.sql /docker-entrypoint-initdb.d/
