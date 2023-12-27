@@ -13,6 +13,7 @@ jobs:
         id: return_dispatch
         with:
           token: ${{ github.token }}
+          ref: main
           repo: datalens-ui
           owner: datalens-tech
           workflow: e2e_tests.yml
