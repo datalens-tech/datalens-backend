@@ -1,0 +1,31 @@
+name: "Run E2E"
+
+on:
+  pull_request:
+
+jobs:
+  run_e2e_workflow:
+    name: "Run E2E workflow and get a result"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch an action and get the run ID
+        uses: codex-/return-dispatch@v1
+        id: return_dispatch
+        with:
+          token: ${{ github.token }}
+          repo: datalens-ui
+          owner: datalens-tech
+          workflow: e2e_tests.yml
+          workflow_inputs:
+            control-api: 0.2040.0
+            data-api: 0.2040.0
+          workflow_timeout_seconds: 1200
+
+      - name: Await Run ID ${{ steps.return_dispatch.outputs.run_id }}
+        uses: codex-/await-remote-run@v1.0.0
+        with:
+          token: ${{ github.token }}
+          repo: return-dispatch
+          owner: codex-
+          run_id: ${{ steps.return_dispatch.outputs.run_id }}
+          run_timeout_seconds: 1200
