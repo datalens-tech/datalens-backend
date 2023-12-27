@@ -28,6 +28,7 @@ from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
 
 from dl_connector_ydb.api.ydb.connection_info import YDBConnectionInfoProvider
+from dl_connector_ydb.api.ydb.i18n.localizer import Translatable
 from dl_connector_ydb.core.ydb.settings import YDBConnectorSettings
 
 
@@ -44,12 +45,13 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         ]
 
     def _get_default_db_section(self, rc: RowConstructor, connector_settings: YDBConnectorSettings) -> list[FormRow]:
+        oauth_row = C.OAuthTokenRow(
+            name=CommonFieldName.token,
+            fake_value="******" if self.mode == ConnectionFormMode.edit else None,
+            application=YDBOAuthApplication.ydb,
+        )
         return [
-            C.OAuthTokenRow(
-                name=CommonFieldName.token,
-                fake_value="******" if self.mode == ConnectionFormMode.edit else None,
-                application=YDBOAuthApplication.ydb,
-            ),
+            oauth_row,
             rc.host_row(default_value=connector_settings.DEFAULT_HOST_VALUE),
             rc.port_row(default_value="2135"),
             rc.db_name_row(),
@@ -113,7 +115,10 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         common_api_schema_items = self._get_base_common_api_schema_items(names_source=CommonFieldName)
         db_section_rows = self._get_default_db_section(rc=rc, connector_settings=connector_settings)
         common_api_schema_items.append(
-            FormFieldApiSchema(name=CommonFieldName.token, required=self.mode == ConnectionFormMode.create)
+            FormFieldApiSchema(
+                name=CommonFieldName.token,
+                required=self.mode == ConnectionFormMode.create and connector_settings.HAS_AUTH,
+            )
         )
         edit_api_schema.items.extend(common_api_schema_items)
 

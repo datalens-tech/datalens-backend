@@ -12,6 +12,9 @@ msgstr ""
 msgid "label_connector-ydb"
 msgstr "YDB"
 
+msgid "field_oauth_row"
+msgstr "OAuth-токен"
+
 msgid "source_templates-tab_title-table"
 msgstr "Таблица"
 
