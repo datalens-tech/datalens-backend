@@ -24,7 +24,7 @@ jobs:
       - name: Output the run URL
         run: |
           URL=https://github.com/datalens-tech/datalens-ui/actions/runs/${{ steps.return_dispatch.outputs.run_id }}
-          echo "::notice 𝔼❷𝔼 workflow URL::$URL"
+          echo "::notice title=𝔼❷𝔼 workflow URL::$URL"
 
       - name: Await Run ID ${{ steps.return_dispatch.outputs.run_id }}
         uses: codex-/await-remote-run@v1.0.0
