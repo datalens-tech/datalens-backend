@@ -25,7 +25,7 @@ jobs:
         uses: codex-/await-remote-run@v1.0.0
         with:
           token: ${{ github.token }}
-          repo: return-dispatch
-          owner: codex-
+          repo: datalens-ui
+          owner: datalens-tech
           run_id: ${{ steps.return_dispatch.outputs.run_id }}
           run_timeout_seconds: 1200
