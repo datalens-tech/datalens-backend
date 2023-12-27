@@ -27,7 +27,12 @@ class TestAsyncPostgreSQLAdapter(
             SchemaIdent(db_name="test_data", schema_name=None)
         )
 
-        assert [f"{t.schema_name}.{t.table_name}" for t in tables] == [
+        assert [
+            f"{t.schema_name}.{t.table_name}"
+            for t in tables
+            if t.schema_name != "public"  # skip public schema because it contains garbage tables from other tests
+            # TODO: clean up tables created in other tests
+        ] == [
             "test_data.sample",
             "test_data_partitions.sample_partition",
         ]

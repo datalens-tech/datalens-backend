@@ -15,4 +15,4 @@ RUN chown 70:70 /etc/ssl/private/server.key && \
 
 COPY db-postgres/data /common-data
 
-COPY db-postgres/initdb.d/* /docker-entrypoint-initdb.d/
+COPY db-postgres/initdb.d/01_prepare_db.sql /docker-entrypoint-initdb.d/
