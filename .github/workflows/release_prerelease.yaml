@@ -64,6 +64,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
+    outputs:
+      image-version: ${{ steps.build_image.outputs.image-version }}
     strategy:
       matrix:
         include:
@@ -97,6 +99,7 @@ jobs:
         fetch-depth: 0
 
     - name: Build image
+      id: build_image
       working-directory: docker_build
       run: |
         bake_target=${{ matrix.bake_target }}
@@ -109,6 +112,8 @@ jobs:
           --push \
           --set "${bake_target}.tags=${image_url_rc}"
           ${{ github.event.inputs.with_release == 'true' && '--set "${bake_target}.tags=${image_url_release}"' || '' }}
+
+        echo "image-version=${image_version}" >> $GITHUB_OUTPUT
 
   release:
     name: "Create prerelease"
@@ -159,3 +164,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           release_tag: "${{ env.version }}"
+
+  run_e2e_tests:
+    name: "Run E2E tests"
+    needs: [ build_images, get_version ]
+    uses: datalens-tech/datalens-backend/.github/workflows/run_e2e.yml@main
+    with:
+      image-version: "{{ needs.build_images.outputs.image-version }}"
+    secrets: inherit

@@ -1,7 +1,16 @@
-name: "Run E2E"
+name: "Run E2E tests"
 
 on:
-  pull_request:
+  workflow_call:
+    inputs:
+      image-version:
+        type: string
+        description: "Version for the control-api and data-api images"
+  workflow_dispatch:
+    inputs:  # yep, exactly the same: https://github.com/orgs/community/discussions/39357
+      image-version:
+        type: string
+        description: "Version for the control-api and data-api images"
 
 jobs:
   run_e2e_workflow:
@@ -18,7 +27,9 @@ jobs:
           owner: datalens-tech
           workflow: e2e_tests.yml
           # https://github.com/Codex-/return-dispatch/issues/203
-          workflow_inputs: '{"control-api": "0.2040.0", "data-api": "0.2040.0"}'
+          workflow_inputs: >
+            '{"control-api": "{{ github.event.inputs.image-version }}",
+              "data-api": "{{ github.event.inputs.image-version }}"}'
           workflow_timeout_seconds: 1800
 
       - name: Output the run URL
