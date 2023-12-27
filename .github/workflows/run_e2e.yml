@@ -17,7 +17,7 @@ jobs:
           repo: datalens-ui
           owner: datalens-tech
           workflow: e2e_tests.yml
-          workflow_inputs: '{"control-api": 0.2040.0, "data-api": "0.2040.0"}'
+          workflow_inputs: '{"control-api": "0.2040.0", "data-api": "0.2040.0"}'
           workflow_timeout_seconds: 1200
 
       - name: Await Run ID ${{ steps.return_dispatch.outputs.run_id }}
