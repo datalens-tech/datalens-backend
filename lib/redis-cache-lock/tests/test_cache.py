@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, AsyncGenerator, Callable
 
 import pytest
 
+from dl_testing.containers import get_test_container_hostport
 from redis_cache_lock.main import RedisCacheLock
 from redis_cache_lock.redis_utils import make_simple_cli_acm
 from redis_cache_lock.utils import HistoryHolder, wrap_generate_func
@@ -18,15 +19,13 @@ if TYPE_CHECKING:
 
 
 @pytest.fixture
-async def cli_acm() -> TClientACM:
-    return make_simple_cli_acm("redis://localhost")
+def cli_acm() -> TClientACM:
+    return make_simple_cli_acm(f"redis://{get_test_container_hostport('redis', fallback_port=52504).as_pair()}")
 
 
 def lock_mgr(cli_acm, **kwargs) -> RedisCacheLock:
     def log_func(msg, details):
-        logging.debug(
-            "RedisCacheLock: %s, %s",
-            msg, ", ".join(f"{key}={val!r}" for key, val in details.items()))
+        logging.debug("RedisCacheLock: %s, %s", msg, ", ".join(f"{key}={val!r}" for key, val in details.items()))
 
     logs = HistoryHolder(func=log_func)
     tasks = []
@@ -98,7 +97,8 @@ async def test_minimal_lock(lock_mgr_gen):
     count = 5
     key = str(uuid.uuid4())
 
-    lock_mgr = lock_mgr_gen(key=key)
+    lock_mgr_gen_func = await anext(lock_mgr_gen)
+    lock_mgr = lock_mgr_gen_func(key=key)
     gen = CounterGenerate()
 
     for idx in range(count):
@@ -124,14 +124,12 @@ async def test_sync_lock(lock_mgr_gen):
     count = 7
     key = str(uuid.uuid4())
 
-    mgrs = [lock_mgr_gen(key=key) for _ in range(count)]
+    lock_mgr_gen_func = await anext(lock_mgr_gen)
+    mgrs = [lock_mgr_gen_func(key=key) for _ in range(count)]
     gen = CounterGenerate()
 
     results = await asyncio.gather(
-        *[
-            lock_mgr.generate_with_lock(generate_func=gen.generate_func)
-            for lock_mgr in mgrs
-        ],
+        *[lock_mgr.generate_with_lock(generate_func=gen.generate_func) for lock_mgr in mgrs],
     )
 
     assert results
@@ -148,14 +146,12 @@ async def test_sync_long_lock(lock_mgr_gen):
     count = 7
     key = str(uuid.uuid4())
 
-    mgrs = [lock_mgr_gen(key=key) for _ in range(count)]
+    lock_mgr_gen_func = await anext(lock_mgr_gen)
+    mgrs = [lock_mgr_gen_func(key=key) for _ in range(count)]
     gen = CounterGenerate(sleep_time=5)
 
     results = await asyncio.gather(
-        *[
-            lock_mgr.generate_with_lock(generate_func=gen.generate_func)
-            for lock_mgr in mgrs
-        ],
+        *[lock_mgr.generate_with_lock(generate_func=gen.generate_func) for lock_mgr in mgrs],
     )
 
     assert results
