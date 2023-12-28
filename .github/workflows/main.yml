@@ -124,6 +124,7 @@ jobs:
   run_tests_base:
     runs-on: [ self-hosted, linux, light ]
     name: "🐍[pytest]${{ matrix.value }}"
+    timeout-minutes: 60
     needs: pytest_split
     if: ${{ needs.pytest_split.outputs.split_base != '[]' }}
     permissions:
@@ -172,6 +173,7 @@ jobs:
   run_tests_fat:
     runs-on: [ self-hosted, linux, fat ]
     name: "🐍[pytest][fat]${{ matrix.value }}"
+    timeout-minutes: 60
     needs: pytest_split
     if: ${{ needs.pytest_split.outputs.split_fat != '[]' }}
     permissions:
@@ -221,6 +223,7 @@ jobs:
     # using light runners for now, TBD: change when we have ext_public
     runs-on: [ self-hosted, linux, light ]
     name: "🐍[pytest][ext_public]${{ matrix.value }}"
+    timeout-minutes: 60
     needs: pytest_split
     if: ${{ needs.pytest_split.outputs.split_ext_public != '[]' }}
     permissions:
