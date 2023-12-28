@@ -16,6 +16,9 @@ jobs:
   run_e2e_workflow:
     name: "Run E2E workflow and get a result"
     runs-on: ubuntu-latest
+    env:
+      IMAGE_VERSION: "${{ github.event.inputs.image-version }}"
+      TIMEOUT: 1800
     steps:
       - name: Dispatch an action and get the run ID
         uses: codex-/return-dispatch@v1
@@ -27,8 +30,8 @@ jobs:
           owner: datalens-tech
           workflow: e2e_tests.yml
           # https://github.com/Codex-/return-dispatch/issues/203
-          workflow_inputs: '{"control-api": "$IMAGE_VERSION", "data-api": "$IMAGE_VERSION"}'
-          workflow_timeout_seconds: 1800
+          workflow_inputs: '{"control-api": "${{ env.IMAGE_VERSION }}", "data-api": "${{ env.IMAGE_VERSION }}"}'
+          workflow_timeout_seconds: ${{ env.TIMEOUT }}
 
       - name: Output the run URL
         run: |
@@ -42,6 +45,4 @@ jobs:
           repo: datalens-ui
           owner: datalens-tech
           run_id: ${{ steps.return_dispatch.outputs.run_id }}
-          run_timeout_seconds: 1800
-    env:
-      IMAGE_VERSION: "${{ github.event.inputs.image-version }}"
+          run_timeout_seconds: $TIMEOUT
