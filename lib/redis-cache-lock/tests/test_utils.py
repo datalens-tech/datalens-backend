@@ -32,10 +32,7 @@ async def test_cache_share():
 
     count = 20
     results = await asyncio.gather(
-        *[
-            some_generate_with_cache(caches=caches, key=f"kk{idx // 4}")
-            for idx in range(count)
-        ],
+        *[some_generate_with_cache(caches=caches, key=f"kk{idx // 4}") for idx in range(count)],
     )
     # While usually the `some_generate` is called `count` times, there is,
     # technically, no guarantee, as it depends on the ordering.
