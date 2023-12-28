@@ -16,10 +16,11 @@ python = ">=3.10, <3.12"
 redis = ">=4.5.4"
 
 [tool.poetry.group.tests.dependencies]
+datalens-testing = {path = "../dl_testing"}
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-datalens-testing = {path = "../dl_testing"}
 
 [tool.pytest.ini_options]
 minversion = "6.0"
