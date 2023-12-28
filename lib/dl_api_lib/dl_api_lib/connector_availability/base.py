@@ -28,6 +28,7 @@ from dl_configs.utils import conn_type_set_env_var_converter
 from dl_constants.enums import (
     ConnectionType,
     ConnectorAvailability,
+    ConnectorVisibility,
 )
 from dl_i18n.localizer_base import Localizer
 
@@ -83,6 +84,11 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
+    def visibility_mode(self) -> str:
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
     def alias(self) -> str:
         raise NotImplementedError
 
@@ -103,6 +109,7 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
     def as_dict(self, localizer: Localizer) -> dict[str, Any]:
         return dict(
             hidden=self.hidden,
+            visibility_mode=self.visibility_mode,
             alias=self.alias,
             conn_type=self.conn_type_str,
             title=self.get_title(localizer),
@@ -115,6 +122,7 @@ class Connector(ConnectorBase):
     """Represents an actual connection type"""
 
     _hidden: bool = attr.ib(init=False, default=False)
+    _visibility_mode: ConnectorVisibility = attr.ib(default=ConnectorVisibility.free, converter=ConnectorVisibility)
     conn_type: ConnectionType = attr.ib(
         converter=lambda v: ConnectionType(v) if not isinstance(v, ConnectionType) else v
     )
@@ -125,11 +133,16 @@ class Connector(ConnectorBase):
         return cls(
             conn_type=ConnectionType(settings.conn_type),
             availability=settings.availability,
+            visibility_mode=settings.visibility_mode,
         )
 
     @property
     def hidden(self) -> bool:
         return self._hidden
+
+    @property
+    def visibility_mode(self) -> ConnectorVisibility:
+        return self._visibility_mode
 
     @property
     def alias(self) -> str:

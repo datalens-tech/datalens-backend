@@ -3,7 +3,10 @@ from typing import Optional
 import attr
 
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
-from dl_constants.enums import ConnectorAvailability
+from dl_constants.enums import (
+    ConnectorAvailability,
+    ConnectorVisibility,
+)
 
 
 @attr.s(kw_only=True)
@@ -21,6 +24,7 @@ class ConnectorBaseSettings(SettingsBase):
 class ConnectorSettings(ConnectorBaseSettings):
     conn_type: str = attr.ib()
     availability: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free)
+    visibility_mode: ConnectorVisibility = attr.ib(default=ConnectorVisibility.free)
 
 
 @attr.s(kw_only=True)

@@ -94,6 +94,13 @@ class FieldVisibility(Enum):
 
 
 @unique
+class ConnectorVisibility(Enum):
+    free = "free"
+    hidden = "hidden"
+    uncreatable = "uncreatable"
+
+
+@unique
 class PivotRole(Enum):
     pivot_row = "pivot_row"
     pivot_column = "pivot_column"
