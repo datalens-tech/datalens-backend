@@ -45,4 +45,4 @@ jobs:
           repo: datalens-ui
           owner: datalens-tech
           run_id: ${{ steps.return_dispatch.outputs.run_id }}
-          run_timeout_seconds: $TIMEOUT
+          run_timeout_seconds: ${{ env.TIMEOUT }}
