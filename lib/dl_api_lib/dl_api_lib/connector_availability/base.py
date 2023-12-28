@@ -84,7 +84,7 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
-    def visibility_mode(self) -> str:
+    def visibility_mode(self) -> ConnectorVisibility:
         raise NotImplementedError
 
     @property
@@ -175,6 +175,10 @@ class ConnectorContainer(ConnectorBase):
     @property
     def hidden(self) -> bool:
         return all(connector.hidden for connector in self.includes)
+
+    @property
+    def visibility_mode(self) -> ConnectorVisibility:
+        return ConnectorVisibility.free
 
     @property
     def alias(self) -> str:
