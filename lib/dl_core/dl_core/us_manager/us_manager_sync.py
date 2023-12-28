@@ -84,6 +84,7 @@ class SyncUSManager(USManagerBase):
             auth_ctx=self._us_auth_context,
             context_request_id=self._bi_context.request_id if self._bi_context is not None else None,
             context_forwarded_for=self._bi_context.forwarder_for,
+            context_workbook_id=self._bi_context.workbook_id,
         )
 
     def clone(self, **kwargs):  # type: ignore  # TODO: fix

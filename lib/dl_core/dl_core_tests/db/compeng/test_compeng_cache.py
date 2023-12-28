@@ -13,6 +13,7 @@ from dl_api_commons.reporting.profiler import (
     PROFILING_LOG_NAME,
     DefaultReportingProfiler,
 )
+from dl_constants.api_constants import DLHeadersCommon
 from dl_constants.enums import (
     DataSourceRole,
     ProcessorType,
@@ -135,9 +136,7 @@ class TestCompengCache(DefaultCoreTestClass):
                 username="",
             )
             reporting = sr.get_reporting_registry()
-            workbook_id = (
-                dataset.entry_key.workbook_id if isinstance(dataset.entry_key, WorkbookEntryLocation) else None
-            )
+            workbook_id = sr.rci.workbook_id
             reporting.save_reporting_record(
                 QueryExecutionStartReportingRecord(
                     timestamp=time.time(),

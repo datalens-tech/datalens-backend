@@ -267,6 +267,7 @@ class UStorageClientBase:
         timeout: int = 30,
         context_request_id: Optional[str] = None,
         context_forwarded_for: Optional[str] = None,
+        context_workbook_id: Optional[str] = None,
     ):
         self.host = host
         self.prefix = auth_ctx.get_default_prefix() if prefix is None else prefix
@@ -281,6 +282,8 @@ class UStorageClientBase:
         self._default_headers = self._auth_ctx_to_default_headers(auth_ctx)
         if context_forwarded_for is not None:
             self._default_headers[DLHeadersCommon.FORWARDED_FOR.value] = context_forwarded_for
+        if context_workbook_id is not None:
+            self._default_headers[DLHeadersCommon.WORKBOOK_ID.value] = context_workbook_id
         # Initial cookies for HTTP session
         self._cookies = self._auth_ctx_to_cookies(auth_ctx)
         # Headers that might be changed during lifecycle e.g. Folder ID
@@ -636,6 +639,7 @@ class UStorageClient(UStorageClientBase):
         timeout: int = 30,
         context_request_id: Optional[str] = None,
         context_forwarded_for: Optional[str] = None,
+        context_workbook_id: Optional[str] = None,
     ):
         super().__init__(
             host=host,
@@ -644,6 +648,7 @@ class UStorageClient(UStorageClientBase):
             timeout=timeout,
             context_request_id=context_request_id,
             context_forwarded_for=context_forwarded_for,
+            context_workbook_id=context_workbook_id,
         )
 
         self._session = get_retriable_requests_session()
