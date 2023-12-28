@@ -40,7 +40,6 @@ from dl_constants.enums import (
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_sync import SyncUSManager
-from dl_core_testing.configuration import CoreTestEnvironmentConfigurationBase
 from dl_core_testing.flask_utils import (
     FlaskTestClient,
     FlaskTestResponse,
@@ -63,13 +62,6 @@ class ApiTestBase(abc.ABC):
     @abc.abstractmethod
     def bi_test_config(self) -> ApiTestEnvironmentConfiguration:
         raise NotImplementedError
-
-    @pytest.fixture(scope="class")
-    def core_test_config(
-        self,
-        bi_test_config: ApiTestEnvironmentConfiguration,
-    ) -> CoreTestEnvironmentConfigurationBase:
-        return bi_test_config.core_test_config
 
     @pytest.fixture(scope="class")
     def connectors_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:
@@ -187,13 +179,15 @@ class ApiTestBase(abc.ABC):
     @pytest.fixture(scope="function")
     def sync_us_manager(
         self,
-        core_test_config: CoreTestEnvironmentConfigurationBase,
+        bi_test_config: ApiTestEnvironmentConfiguration,
         control_api_app_factory: ControlApiAppFactory,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
         control_api_app_settings: ControlApiAppSettings,
     ) -> SyncUSManager:
+        core_test_config = bi_test_config.core_test_config
         bi_context = RequestContextInfo.create_empty()
         us_config = core_test_config.get_us_config()
+
         us_manager = SyncUSManager(
             bi_context=bi_context,
             services_registry=control_api_app_factory.get_sr_factory(

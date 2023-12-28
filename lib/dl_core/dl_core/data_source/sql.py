@@ -292,7 +292,11 @@ class DbSQLDataSourceMixin(BaseSQLDataSource):
     @property
     def db_name(self) -> Optional[str]:
         assert isinstance(self._spec, DbSQLDataSourceSpec)
-        return self._spec.db_name or getattr(self.connection, "db_name", None)
+        if self._spec.db_name:
+            return self._spec.db_name
+        db_name = self.get_connection_attr("db_name")
+        assert db_name is None or isinstance(db_name, str)
+        return db_name
 
     def get_parameters(self) -> dict:
         return dict(
@@ -308,7 +312,11 @@ class TableSQLDataSourceMixin(BaseSQLDataSource):
     @property
     def table_name(self) -> Optional[str]:
         assert isinstance(self._spec, TableSQLDataSourceSpec)
-        return self._spec.table_name or getattr(self.connection, "table_name", None)
+        if self._spec.table_name:
+            return self._spec.table_name
+        table_name = self.get_connection_attr("table_name")
+        assert table_name is None or isinstance(table_name, str)
+        return table_name
 
     def get_parameters(self) -> dict:
         return dict(
