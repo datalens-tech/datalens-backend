@@ -77,10 +77,20 @@ jobs:
     - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
     - run: git fetch origin main
     - name: Extract base commit
-      run: if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then result=$(git rev-parse origin/main); else result="${{ github.event.pull_request.base.sha }}"; fi && echo "result=$result" >> $GITHUB_OUTPUT
+      run: |
+        result="${{ github.event.pull_request.base.sha }}"
+        if [ -z "$result" ]; then
+            result=$(git rev-parse origin/main)
+        fi
+        echo "result=$result" >> $GITHUB_OUTPUT
       id: extract_base_commit
     - name: Extract head commit
-      run: if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then result=$(git rev-parse HEAD); else result="${{ github.event.pull_request.head.sha }}"; fi && echo "result=$result" >> $GITHUB_OUTPUT
+      run: |
+        result="${{ github.event.pull_request.head.sha }}"
+        if [ -z "$result" ]; then
+            result=$(git rev-parse HEAD)
+        fi
+        echo "result=$result" >> $GITHUB_OUTPUT
       id: extract_head_commit
     - name: Get packages affected by changes in the current commit
       id: get_affected
