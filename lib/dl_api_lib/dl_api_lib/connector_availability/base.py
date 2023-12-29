@@ -131,7 +131,9 @@ class Connector(ConnectorBase):
         return cls(
             conn_type=ConnectionType(settings.conn_type),
             availability=settings.availability,
-            visibility_mode=settings.visibility_mode,
+            visibility_mode=settings.visibility_mode
+            if hasattr(settings, "visibility_mode")
+            else ConnectorVisibility.free,
         )
 
     @property
