@@ -56,6 +56,7 @@ jobs:
             exit 1;
         fi
 
+        echo "::notice title=Will prerelease the following version::$version"
         echo "version=${version}" >> $GITHUB_OUTPUT
 
   build_images:
@@ -170,5 +171,5 @@ jobs:
     needs: [ build_images, get_version ]
     uses: datalens-tech/datalens-backend/.github/workflows/run_e2e.yml@main
     with:
-      image-version: "{{ needs.build_images.outputs.image-version }}"
+      image_version: ${{ needs.build_images.outputs.image-version }}
     secrets: inherit
