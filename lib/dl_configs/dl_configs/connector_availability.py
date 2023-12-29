@@ -3,10 +3,7 @@ from typing import Optional
 import attr
 
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
-from dl_constants.enums import (
-    ConnectorAvailability,
-    ConnectorVisibility,
-)
+from dl_constants.enums import ConnectorAvailability
 
 
 @attr.s(kw_only=True)
