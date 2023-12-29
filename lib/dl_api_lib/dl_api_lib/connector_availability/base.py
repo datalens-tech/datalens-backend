@@ -77,14 +77,12 @@ class Section(LocalizedSerializable):
 
 @attr.s(kw_only=True)
 class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
-    @property
-    @abc.abstractmethod
-    def hidden(self) -> bool:
-        raise NotImplementedError
+    def __init__(self):
+        self.visibility_mode = None
 
     @property
     @abc.abstractmethod
-    def visibility_mode(self) -> ConnectorVisibility:
+    def hidden(self) -> bool:
         raise NotImplementedError
 
     @property
@@ -109,7 +107,7 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
     def as_dict(self, localizer: Localizer) -> dict[str, Any]:
         return dict(
             hidden=self.hidden,
-            visibility_mode=self.visibility_mode,
+            visibility_mode=self.visibility_mode.value,
             alias=self.alias,
             conn_type=self.conn_type_str,
             title=self.get_title(localizer),
@@ -122,11 +120,11 @@ class Connector(ConnectorBase):
     """Represents an actual connection type"""
 
     _hidden: bool = attr.ib(init=False, default=False)
-    _visibility_mode: ConnectorVisibility = attr.ib(default=ConnectorVisibility.free, converter=ConnectorVisibility)
     conn_type: ConnectionType = attr.ib(
         converter=lambda v: ConnectionType(v) if not isinstance(v, ConnectionType) else v
     )
     availability: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free, converter=ConnectorAvailability)
+    visibility_mode: ConnectorVisibility = attr.ib(default=ConnectorVisibility.free, converter=ConnectorVisibility)
 
     @classmethod
     def from_settings(cls, settings: ConnectorSettings) -> Connector:
@@ -139,10 +137,6 @@ class Connector(ConnectorBase):
     @property
     def hidden(self) -> bool:
         return self._hidden
-
-    @property
-    def visibility_mode(self) -> ConnectorVisibility:
-        return self._visibility_mode
 
     @property
     def alias(self) -> str:
@@ -171,14 +165,11 @@ class ConnectorContainer(ConnectorBase):
     _alias: str = attr.ib()
     includes: list[Connector] = attr.ib(validator=attr.validators.min_len(1))  # type: ignore
     title_translatable: Translatable = attr.ib()
+    visibility_mode: ConnectorVisibility = ConnectorVisibility.free
 
     @property
     def hidden(self) -> bool:
         return all(connector.hidden for connector in self.includes)
-
-    @property
-    def visibility_mode(self) -> ConnectorVisibility:
-        return ConnectorVisibility.free
 
     @property
     def alias(self) -> str:
