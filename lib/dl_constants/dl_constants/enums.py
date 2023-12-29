@@ -94,13 +94,6 @@ class FieldVisibility(Enum):
 
 
 @unique
-class ConnectorVisibility(Enum):
-    free = "free"
-    hidden = "hidden"
-    uncreatable = "uncreatable"
-
-
-@unique
 class PivotRole(Enum):
     pivot_row = "pivot_row"
     pivot_column = "pivot_column"
@@ -384,7 +377,8 @@ class NotificationType(DynamicEnum):
 
 class ConnectorAvailability(Enum):
     free = "free"
-    whitelist = "whitelist"
+    hidden = "hidden"
+    uncreatable = "uncreatable"
 
 
 class QueryProcessingMode(DynamicEnum):

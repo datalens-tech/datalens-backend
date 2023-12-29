@@ -28,7 +28,6 @@ from dl_configs.utils import conn_type_set_env_var_converter
 from dl_constants.enums import (
     ConnectionType,
     ConnectorAvailability,
-    ConnectorVisibility,
 )
 from dl_i18n.localizer_base import Localizer
 
@@ -77,8 +76,7 @@ class Section(LocalizedSerializable):
 
 @attr.s(kw_only=True)
 class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
-    def __init__(self):
-        self.visibility_mode = None
+    visibility_mode: ConnectorAvailability = None
 
     @property
     @abc.abstractmethod
@@ -123,17 +121,15 @@ class Connector(ConnectorBase):
     conn_type: ConnectionType = attr.ib(
         converter=lambda v: ConnectionType(v) if not isinstance(v, ConnectionType) else v
     )
-    availability: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free, converter=ConnectorAvailability)
-    visibility_mode: ConnectorVisibility = attr.ib(default=ConnectorVisibility.free, converter=ConnectorVisibility)
+    visibility_mode: ConnectorAvailability = attr.ib(
+        default=ConnectorAvailability.free, converter=ConnectorAvailability
+    )
 
     @classmethod
     def from_settings(cls, settings: ConnectorSettings) -> Connector:
         return cls(
             conn_type=ConnectionType(settings.conn_type),
-            availability=settings.availability,
-            visibility_mode=settings.visibility_mode
-            if hasattr(settings, "visibility_mode")
-            else ConnectorVisibility.free,
+            visibility_mode=settings.availability,
         )
 
     @property
@@ -167,7 +163,7 @@ class ConnectorContainer(ConnectorBase):
     _alias: str = attr.ib()
     includes: list[Connector] = attr.ib(validator=attr.validators.min_len(1))  # type: ignore
     title_translatable: Translatable = attr.ib()
-    visibility_mode: ConnectorVisibility = attr.ib(default=ConnectorVisibility.free)
+    visibility_mode: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free)
 
     @property
     def hidden(self) -> bool:
@@ -250,4 +246,4 @@ class ConnectorAvailabilityConfig(SettingsBase):
             LOGGER.warning("Connector %s is not available in current env", conn_type.name)
             return False
 
-        return conn_options.availability == ConnectorAvailability.free
+        return conn_options.visibility_mode == ConnectorAvailability.free
