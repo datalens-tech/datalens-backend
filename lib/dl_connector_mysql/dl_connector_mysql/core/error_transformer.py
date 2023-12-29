@@ -41,7 +41,7 @@ def is_source_connect_async_error() -> ExcMatchCondition:
         if isinstance(exc, pymysql.OperationalError):
             if len(exc.args) >= 2 and exc.args[0] == 2003:
                 return True
-            return False
+        return False
 
     return _
 

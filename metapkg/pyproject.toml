@@ -218,7 +218,7 @@ aiopg =  {ignore = true}
 antlr4-python3-runtime =  {ignore = true}
 arq =  {ignore = true}
 async-timeout =  {ignore = true}
-asyncpg =  {ignore = true}
+asyncpg =  {name = "asyncpg-stubs"}
 attrs =  {ignore = true}
 babel =  {ignore = true}
 black =  {ignore = true}
