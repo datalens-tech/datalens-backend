@@ -114,7 +114,7 @@ jobs:
           --set "${bake_target}.tags=${image_url_rc}"
           ${{ github.event.inputs.with_release == 'true' && '--set "${bake_target}.tags=${image_url_release}"' || '' }}
 
-        echo "image-version=${image_version}" >> $GITHUB_OUTPUT
+        echo "image-version=${image_version}-rc.1" >> $GITHUB_OUTPUT
 
   release:
     name: "Create prerelease"
