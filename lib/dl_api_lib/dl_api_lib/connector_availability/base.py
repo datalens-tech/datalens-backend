@@ -167,7 +167,7 @@ class ConnectorContainer(ConnectorBase):
     _alias: str = attr.ib()
     includes: list[Connector] = attr.ib(validator=attr.validators.min_len(1))  # type: ignore
     title_translatable: Translatable = attr.ib()
-    visibility_mode: ConnectorVisibility = ConnectorVisibility.free
+    visibility_mode: ConnectorVisibility = attr.ib(default=ConnectorVisibility.free)
 
     @property
     def hidden(self) -> bool:
