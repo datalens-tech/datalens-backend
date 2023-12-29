@@ -122,7 +122,10 @@ class BaseTestPGOpExecAdapter(DefaultCoreTestClass):
 
         queries_after = await get_active_queries(pg_adapter)
         new_queries = [q for q in queries_after if q not in queries_before]
-        assert not new_queries, "should have no new active queries"
+        print(f"{queries_before=}")
+        print(f"{queries_after=}")
+        print(f"{new_queries=}")
+        assert not new_queries, f"found {len(new_queries)} active queries, there should be none"
 
         if not isinstance(pg_adapter, AsyncpgExecAdapter):
             # FIXME (asyncpg): cannot DROP TABLE "table_8df53688-8f9b-4a6a-a281-cdf954075f3a"
@@ -137,7 +140,7 @@ class BaseTestPGOpExecAdapter(DefaultCoreTestClass):
         table_name = str(uuid.uuid4())
         attempts = 10
         assert attempts > self.max_size
-        for attempt in range(attempts):
+        for _attempt in range(attempts):
             async with self.make_pg_adapter(
                 service_registry=service_registry,
                 compeng_pg_dsn=compeng_pg_dsn,
