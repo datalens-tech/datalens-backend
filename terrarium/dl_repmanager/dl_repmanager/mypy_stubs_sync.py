@@ -84,12 +84,7 @@ def check_if_exists_in_pypi(name: str, version: str) -> bool:
 class RequirementsPathProvider:
     base_path: Path = attr.ib()
     external_requirements_rel_py: Path = attr.ib(default=Path("ops/ci/docker_image_base_ci"))
-    external_requirements_file_names: tuple[str, ...] = attr.ib(
-        default=(
-            "requirements_external.txt",
-            "requirements_conflicting.txt",
-        )
-    )
+    external_requirements_file_names: tuple[str, ...] = attr.ib(default=("requirements_external.txt",))
     mypy_requirements_rel_path: Path = attr.ib(default=Path("ops/ci/docker_image_ci_mypy/requirements_types.txt"))
 
     def get_mypy_path(self) -> Path:
@@ -145,7 +140,9 @@ def stubs_sync(
 
     if len(packages_to_ignore) + len(annotations_to_add) > 0:
         log.info(f"Need to add (or replace) in requirement_types.txt {len(annotations_to_add)} records")
+        log.info(f"{annotations_to_add=}")
         log.info(f"Need to add ignores to the pyproject.toml: {len(packages_to_ignore)} records")
+        log.info(f"{packages_to_ignore=}")
 
         if not dry_run:
             annotations_io.write_updates(annotations_to_add)

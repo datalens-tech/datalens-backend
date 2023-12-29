@@ -26,7 +26,6 @@ from dl_api_connector.form_config.models.common import (
 )
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_api_connector.i18n.localizer import Translatable
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_i18n.localizer_base import Localizer
 
