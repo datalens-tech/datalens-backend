@@ -92,6 +92,7 @@ class BaseTestPGOpExecAdapter(DefaultCoreTestClass):
 
     @pytest.mark.asyncio
     async def test_insert_fetch(self, pg_adapter: PostgreSQLExecAdapterAsync):
+        print("I'm here to trigger tests")
         queries_before = await get_active_queries(pg_adapter)
 
         table_name = f"table_{uuid.uuid4()}"
