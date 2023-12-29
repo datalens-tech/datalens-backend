@@ -24,7 +24,6 @@ class ConnectorBaseSettings(SettingsBase):
 class ConnectorSettings(ConnectorBaseSettings):
     conn_type: str = attr.ib()
     availability: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free)
-    visibility_mode: ConnectorVisibility = attr.ib(default=ConnectorVisibility.free)
 
 
 @attr.s(kw_only=True)
