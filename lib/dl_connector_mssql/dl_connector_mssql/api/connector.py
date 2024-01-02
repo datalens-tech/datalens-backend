@@ -18,7 +18,6 @@ from dl_connector_mssql.api.i18n.localizer import CONFIGS
 from dl_connector_mssql.core.connector import (
     MSSQLCoreBackendDefinition,
     MSSQLCoreConnectionDefinition,
-    MSSQLCoreConnector,
     MSSQLSubselectCoreSourceDefinition,
     MSSQLTableCoreSourceDefinition,
 )
