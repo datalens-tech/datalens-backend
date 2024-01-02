@@ -59,7 +59,7 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
 
     source_type: ClassVar[DataSourceType]
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def event_loop(self):
         """Avoid spontaneous event loop closes between tests"""
         loop = asyncio.get_event_loop()
@@ -83,16 +83,16 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
     def engine_config(self, db_url: str, engine_params: dict) -> ClickhouseDbEngineConfig:
         return ClickhouseDbEngineConfig(url=db_url, engine_params=engine_params)
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def conn_bi_context(self) -> RequestContextInfo:
         return RequestContextInfo(tenant=TenantCommon())
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def redis_setting_maker(self) -> RedisSettingMaker:
         core_test_config = test_config.CORE_TEST_CONFIG
         return core_test_config.get_redis_setting_maker()
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def s3_settings(self) -> S3Settings:
         return S3Settings(
             ENDPOINT_URL=test_config.S3_ENDPOINT_URL,
@@ -100,11 +100,11 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
             SECRET_ACCESS_KEY=self.connection_settings.SECRET_ACCESS_KEY,
         )
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def task_processor_factory(self) -> TaskProcessorFactory:
         return DummyTaskProcessorFactory()
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def conn_sync_service_registry(
         self,
         conn_bi_context: RequestContextInfo,
@@ -116,7 +116,7 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
             task_processor_factory=task_processor_factory,
         )
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def conn_async_service_registry(
         self,
         conn_bi_context: RequestContextInfo,
