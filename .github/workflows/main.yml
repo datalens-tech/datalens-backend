@@ -30,7 +30,7 @@ jobs:
       image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
       options: -v /var/run/docker.sock:/var/run/docker.sock
       credentials:
-        username: ${{ github.actor }}
+        username: ${{ github.triggering_actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     env:
       REPO_OWNER: ${{ github.repository_owner }}
@@ -41,7 +41,7 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: "ghcr.io"
-          username: ${{ github.actor }}
+          username: ${{ github.triggering_actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Cleanup build folder'
         run: |
