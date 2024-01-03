@@ -20,6 +20,7 @@ from dl_api_commons.aiohttp.aiohttp_client import (
     PredefinedIntervalsRetrier,
 )
 from dl_api_commons.tracing import get_current_tracing_headers
+from dl_app_tools.profiling_base import GenericProfiler
 from dl_configs.utils import get_root_certificates_path
 from dl_core.base_models import EntryLocation
 from dl_core.exc import (
@@ -146,30 +147,31 @@ class UStorageClientAIO(UStorageClientBase):
         tracing_headers = get_current_tracing_headers()
         start = time.monotonic()
 
-        async with BIAioHTTPClient(
-            base_url="/".join([self.host, self.prefix]),
-            session=self._session,
-            retrier=PredefinedIntervalsRetrier(
-                retry_intervals=self._retry_intervals,
-                retry_codes=self._retry_codes,
-                retry_methods={"GET", "POST", "PUT", "DELETE"},  # TODO: really retry all of them?..
-            ),
-            raise_for_status=False,
-            close_session_on_exit=False,
-        ) as bi_http_client:
-            async with bi_http_client.request(
-                method=request_data.method,
-                path=request_data.relative_url,
-                params=request_data.params,
-                json_data=request_data.json,
-                read_timeout_sec=self.timeout,  # TODO: total timeout
-                conn_timeout_sec=1,
-                headers={
-                    **self._extra_headers,
-                    **tracing_headers,
-                },
-            ) as response:
-                content = await response.read()
+        with GenericProfiler("us-client-request"):
+            async with BIAioHTTPClient(
+                base_url="/".join([self.host, self.prefix]),
+                session=self._session,
+                retrier=PredefinedIntervalsRetrier(
+                    retry_intervals=self._retry_intervals,
+                    retry_codes=self._retry_codes,
+                    retry_methods={"GET", "POST", "PUT", "DELETE"},  # TODO: really retry all of them?..
+                ),
+                raise_for_status=False,
+                close_session_on_exit=False,
+            ) as bi_http_client:
+                async with bi_http_client.request(
+                    method=request_data.method,
+                    path=request_data.relative_url,
+                    params=request_data.params,
+                    json_data=request_data.json,
+                    read_timeout_sec=self.timeout,  # TODO: total timeout
+                    conn_timeout_sec=1,
+                    headers={
+                        **self._extra_headers,
+                        **tracing_headers,
+                    },
+                ) as response:
+                    content = await response.read()
 
         end = time.monotonic()
 
