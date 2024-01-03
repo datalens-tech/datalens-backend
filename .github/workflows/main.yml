@@ -42,7 +42,7 @@ jobs:
         with:
           registry: "ghcr.io"
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.ROBOT_GITHUB_WRITE_PACKAGES_TOKEN }}
       - name: 'Cleanup build folder'
         run: |
           rm -rf ./* || true
