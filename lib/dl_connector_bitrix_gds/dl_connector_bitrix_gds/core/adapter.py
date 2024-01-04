@@ -321,7 +321,6 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
                     title=col["id"],
                     nullable=True,
                     native_type=CommonNativeType(
-                        conn_type=self.conn_type,
                         name=columns_type.get(col["id"], "string"),
                         nullable=True,
                     ),

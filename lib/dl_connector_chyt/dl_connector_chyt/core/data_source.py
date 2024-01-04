@@ -145,9 +145,7 @@ class BaseCHYTTableFuncDataSource(BaseCHYTSpecialDataSource, abc.ABC):
                             name=key,
                             title=key,
                             user_type=UserDataType.string,
-                            native_type=ClickHouseNativeType.normalize_name_and_create(
-                                conn_type=self.conn_type, name="string"
-                            ),
+                            native_type=ClickHouseNativeType.normalize_name_and_create(name="string"),
                             nullable=False,
                         )
                         for key in ("$table_path", "$table_name", "$table_index")

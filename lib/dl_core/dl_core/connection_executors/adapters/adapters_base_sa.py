@@ -330,7 +330,6 @@ class BaseSAAdapter(
                 title=column.get("title"),
                 nullable=column.get("nullable", True),  # To be deprecated.
                 native_type=CommonNativeType.normalize_name_and_create(
-                    conn_type=self.conn_type,
                     name=self.normalize_sa_col_type(column["type"]),
                     nullable=column.get("nullable", True),
                 ),

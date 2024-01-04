@@ -8,8 +8,6 @@ from dl_core.db.sa_types_base import (
     simple_instantiator,
 )
 
-from dl_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
-
 
 SQLALCHEMY_MYSQL_BASE_TYPES = (
     my_types.TINYINT,
@@ -43,11 +41,11 @@ SQLALCHEMY_MYSQL_LENGTHED_TYPES = (
 )
 SQLALCHEMY_MYSQL_TYPES = {
     **{
-        make_native_type(CONNECTION_TYPE_MYSQL, typecls): simple_instantiator(typecls)
+        make_native_type(typecls): simple_instantiator(typecls)
         for typecls in SQLALCHEMY_MYSQL_BASE_TYPES
     },
     **{
-        make_native_type(CONNECTION_TYPE_MYSQL, typecls): lengthed_instantiator(typecls)
+        make_native_type(typecls): lengthed_instantiator(typecls)
         for typecls in SQLALCHEMY_MYSQL_LENGTHED_TYPES
     },
 }

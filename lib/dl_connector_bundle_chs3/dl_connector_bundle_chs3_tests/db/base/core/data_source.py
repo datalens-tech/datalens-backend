@@ -54,7 +54,7 @@ class CHS3TableDataSourceTestBase(
         data_source._spec.raw_schema = [  # leaving one column to simplify the test
             SchemaColumn(
                 name="c1",
-                native_type=GenericNativeType(conn_type=self.conn_type, name="Int64"),
+                native_type=GenericNativeType(name="Int64"),
                 user_type=UserDataType.integer,
             ),
         ]

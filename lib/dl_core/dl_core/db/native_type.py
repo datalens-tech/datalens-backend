@@ -12,8 +12,6 @@ from typing import (
 import attr
 from sqlalchemy.types import TypeEngine
 
-from dl_constants.enums import ConnectionType
-
 
 SATypeSpec = Union[Type[TypeEngine], TypeEngine, str, None]
 
@@ -47,24 +45,21 @@ class GenericNativeType:
     """
 
     native_type_class_name: ClassVar[str] = "generic_native_type"
-    conn_type: ConnectionType = attr.ib()
     name: str = attr.ib()
 
     @classmethod
     def normalize_name_and_create(
         cls: Type[_GENERIC_NATIVE_TYPE_TV],
-        conn_type: ConnectionType,
         name: SATypeSpec,
     ) -> _GENERIC_NATIVE_TYPE_TV:
         normalized_name = norm_native_type(name)
         return cls(
-            conn_type=conn_type,
             name=normalized_name,  # type: ignore  # TODO: fix
         )
 
     @property
     def as_generic(self) -> GenericNativeType:  # for subclasses
-        return GenericNativeType(conn_type=self.conn_type, name=self.name)
+        return GenericNativeType(name=self.name)
 
     def as_common(self, default_nullable=True) -> CommonNativeType:  # type: ignore  # TODO: fix
         """
@@ -72,7 +67,7 @@ class GenericNativeType:
         CommonNativeType object with the specified `nullable` value; for
         CommonNativeType objects does nothing.
         """
-        return CommonNativeType(conn_type=self.conn_type, name=self.name, nullable=default_nullable)
+        return CommonNativeType(name=self.name, nullable=default_nullable)
 
     def clone(self: _GENERIC_NATIVE_TYPE_TV, **kwargs: Any) -> _GENERIC_NATIVE_TYPE_TV:
         return attr.evolve(self, **kwargs)
@@ -89,13 +84,11 @@ class CommonNativeType(GenericNativeType):
     @classmethod
     def normalize_name_and_create(
         cls: Type[_COMMON_NATIVE_TYPE_TV],
-        conn_type: ConnectionType,
         name: SATypeSpec,
         nullable: bool = True,
     ) -> _COMMON_NATIVE_TYPE_TV:
         normalized_name = norm_native_type(name)
         return cls(
-            conn_type=conn_type,
             name=normalized_name,  # type: ignore  # TODO: fix
             nullable=nullable,
         )

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    ClassVar,
     Dict,
     Tuple,
 )
@@ -10,10 +9,7 @@ from typing import (
 import sqlalchemy as sa
 import ydb.sqlalchemy as ydb_sa
 
-from dl_constants.enums import (
-    ConnectionType,
-    UserDataType,
-)
+from dl_constants.enums import UserDataType
 from dl_core.db.conversion_base import (
     TypeTransformer,
     make_native_type,
@@ -24,9 +20,7 @@ if TYPE_CHECKING:
     from dl_core.db.native_type import SATypeSpec
 
 
-class YQLTypeTransformerBase(TypeTransformer):
-    conn_type: ClassVar[ConnectionType]
-
+class YQLTypeTransformer(TypeTransformer):
     _base_type_map: Dict[UserDataType, Tuple[SATypeSpec, ...]] = {
         # Note: first SA type is used as the default.
         UserDataType.integer: (
@@ -70,15 +64,15 @@ class YQLTypeTransformerBase(TypeTransformer):
     }
 
     native_to_user_map = {
-        make_native_type(ConnectionType.unknown, sa_type): bi_type
+        make_native_type(sa_type): bi_type
         for bi_type, sa_types in _base_type_map.items()
         for sa_type in sa_types
         if bi_type != UserDataType.datetime
     }
     user_to_native_map = {
         **{
-            bi_type: make_native_type(ConnectionType.unknown, sa_types[0])
+            bi_type: make_native_type(sa_types[0])
             for bi_type, sa_types in _base_type_map.items()
         },
-        **{bi_type: make_native_type(ConnectionType.unknown, sa_type) for bi_type, sa_type in _extra_type_map.items()},
+        **{bi_type: make_native_type(sa_type) for bi_type, sa_type in _extra_type_map.items()},
     }

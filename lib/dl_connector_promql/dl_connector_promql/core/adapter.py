@@ -232,10 +232,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
         )
 
     def _promql_type_name_to_native_type(self, type_name: str) -> GenericNativeType:
-        return GenericNativeType.normalize_name_and_create(
-            conn_type=self.conn_type,
-            name=type_name,
-        )
+        return GenericNativeType.normalize_name_and_create(name=type_name)
 
     async def test(self) -> None:
         await self._session.get(

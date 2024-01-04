@@ -82,7 +82,6 @@ class TestClickHouseSyncConnectionExecutor(
                 else self.sa_type
             )
             return self.nt or ClickHouseNativeType(
-                conn_type=conn_type,
                 name=norm_native_type(self.nt_name if self.nt_name is not None else actual_type),
                 nullable=isinstance(self.sa_type, ch_types.Nullable),  # note: self.nullable is not taken into account
                 lowcardinality=False,
@@ -116,7 +115,6 @@ class TestClickHouseSyncConnectionExecutor(
                     ch_types.LowCardinality(ch_types.Nullable(ch_types.String())),
                     UserDataType.string,
                     nt=ClickHouseNativeType(
-                        conn_type=self.conn_type,
                         name="string",
                         nullable=True,
                         lowcardinality=True,
@@ -126,7 +124,6 @@ class TestClickHouseSyncConnectionExecutor(
                     ch_types.LowCardinality(ch_types.String()),
                     UserDataType.string,
                     nt=ClickHouseNativeType(
-                        conn_type=self.conn_type,
                         name="string",
                         nullable=False,
                         lowcardinality=True,
@@ -142,7 +139,6 @@ class TestClickHouseSyncConnectionExecutor(
                     ch_types.DateTime(),
                     UserDataType.genericdatetime,
                     nt=ClickHouseDateTimeWithTZNativeType(
-                        conn_type=self.conn_type,
                         name="datetimewithtz",
                         nullable=False,
                         lowcardinality=False,
@@ -154,7 +150,6 @@ class TestClickHouseSyncConnectionExecutor(
                     ch_types.DateTimeWithTZ("Europe/Moscow"),
                     UserDataType.genericdatetime,
                     nt=ClickHouseDateTimeWithTZNativeType(
-                        conn_type=self.conn_type,
                         name="datetimewithtz",
                         nullable=False,
                         lowcardinality=False,
@@ -166,7 +161,6 @@ class TestClickHouseSyncConnectionExecutor(
                     ch_types.DateTime64(6),
                     UserDataType.genericdatetime,
                     nt=ClickHouseDateTime64WithTZNativeType(
-                        conn_type=self.conn_type,
                         name="datetime64withtz",
                         nullable=False,
                         lowcardinality=False,
@@ -179,7 +173,6 @@ class TestClickHouseSyncConnectionExecutor(
                     ch_types.DateTime64WithTZ(6, "Europe/Moscow"),
                     UserDataType.genericdatetime,
                     nt=ClickHouseDateTime64WithTZNativeType(
-                        conn_type=self.conn_type,
                         name="datetime64withtz",
                         nullable=False,
                         lowcardinality=False,

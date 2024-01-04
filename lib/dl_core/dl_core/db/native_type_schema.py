@@ -23,7 +23,6 @@ from marshmallow import (
 )
 from marshmallow_oneofschema import OneOfSchema
 
-from dl_constants.enums import ConnectionType
 from dl_core.db.native_type import (
     ClickHouseDateTime64NativeType,
     ClickHouseDateTime64WithTZNativeType,
@@ -33,7 +32,6 @@ from dl_core.db.native_type import (
     GenericNativeType,
     LengthedNativeType,
 )
-from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 
 LOGGER = logging.getLogger(__name__)
@@ -59,7 +57,7 @@ class GenericNativeTypeSchema(NativeTypeSchemaBase[GenericNativeType]):
     """
 
     TARGET_CLS = GenericNativeType
-    conn_type = DynamicEnumField(ConnectionType)
+
     name = fields.String()
 
 
@@ -143,10 +141,7 @@ class OneOfNativeTypeSchema(OneOfNativeTypeSchemaBase):
             # probably a normal case until the transition is done.
             # LOGGER.info("OneOfNativeTypeSchema loading from an str")
 
-            from dl_core.us_manager.storage_schemas.base import CtxKey
-
-            ds_conn_type = self.context.get("ds_conn_type") or self.context[CtxKey.ds_conn_type]
-            return GenericNativeType(conn_type=ds_conn_type, name=value)
+            return GenericNativeType(name=value)
 
         if isinstance(value, GenericNativeType):
             raise Exception("OneOfNativeTypeSchema loading an obj")

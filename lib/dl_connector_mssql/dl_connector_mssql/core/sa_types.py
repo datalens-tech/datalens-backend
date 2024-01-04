@@ -5,8 +5,6 @@ from dl_core.db.sa_types_base import (
     simple_instantiator,
 )
 
-from dl_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
-
 
 SQLALCHEMY_MSSQL_BASE_TYPES = (
     ms_types.TINYINT,
@@ -32,6 +30,6 @@ SQLALCHEMY_MSSQL_BASE_TYPES = (
     ms_types.UNIQUEIDENTIFIER,
 )
 SQLALCHEMY_MSSQL_TYPES = {
-    make_native_type(CONNECTION_TYPE_MSSQL, typecls): simple_instantiator(typecls)
+    make_native_type(typecls): simple_instantiator(typecls)
     for typecls in SQLALCHEMY_MSSQL_BASE_TYPES
 }
