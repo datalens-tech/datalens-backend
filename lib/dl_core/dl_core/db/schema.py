@@ -33,11 +33,7 @@ def are_raw_schemas_same(first: Optional[List[SchemaColumn]], second: Optional[L
             or not ntypes_arent_none
             and col_1.native_type != col_2.native_type
             # or native types have different names (only for different db (conn) types)
-            or (
-                ntypes_arent_none
-                and col_1.native_type.conn_type == col_2.native_type.conn_type
-                and col_1.native_type.name != col_2.native_type.name
-            )
+            or ntypes_arent_none and col_1.native_type.name != col_2.native_type.name
         ):
             return False
 

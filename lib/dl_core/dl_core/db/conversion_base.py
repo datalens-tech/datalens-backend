@@ -218,7 +218,6 @@ class LowercaseTypeCaster(TypeCaster):
 
 
 class TypeTransformer:
-    conn_type: ClassVar[ConnectionType]
     native_to_user_map: ClassVar[dict[GenericNativeType, UserDataType]] = {}
     user_to_native_map: ClassVar[dict[UserDataType, GenericNativeType]] = {}
     casters: ClassVar[dict[UserDataType, TypeCaster]] = {

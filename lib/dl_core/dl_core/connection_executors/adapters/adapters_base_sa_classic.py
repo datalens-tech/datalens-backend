@@ -199,7 +199,6 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
             native_type = self._cursor_column_to_native_type(cursor_col, require=False)
             if native_type is None:
                 native_type = CommonNativeType.normalize_name_and_create(
-                    conn_type=self.conn_type,
                     name=self.normalize_sa_col_type(sa.sql.sqltypes.NullType),  # type: ignore  # TODO: fix
                     nullable=True,
                 )
