@@ -2416,6 +2416,23 @@ type = "directory"
 url = "../lib/dl_version"
 
 [[package]]
+name = "datalens-yt-client"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+shortuuid = ">=1.0.11"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_yt_client"
+
+[[package]]
 name = "decorator"
 version = "5.1.1"
 description = "Decorators for Humans"
@@ -6414,4 +6431,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "2dc00c341f5ceda1eff986f55a7448dc6f236ff4ec02efc16a1be9991351fafd"
+content-hash = "6508a87ae56645ea74d4f39072297bc4fe42a8fddba022a13998a62f4d7d63b5"
