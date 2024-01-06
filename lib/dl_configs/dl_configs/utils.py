@@ -8,7 +8,7 @@ from typing import (
 from dl_constants.enums import ConnectionType
 
 
-ROOT_CERTIFICATES_FILENAME = "/etc/ssl/certs/ca-certificates.crt"
+DEFAULT_ROOT_CERTIFICATES_FILENAME = "/etc/ssl/certs/ca-certificates.crt"
 TEMP_ROOT_CERTIFICATES_FOLDER_PATH = "/tmp/ssl/certs/"
 
 
@@ -24,13 +24,13 @@ def validate_one_of(valid_values: Container[_T]) -> Callable[[_T], _T]:
     return validator
 
 
-def get_root_certificates() -> bytes:
-    with open(get_root_certificates_path(), "rb") as fobj:
+def get_root_certificates(path: str = DEFAULT_ROOT_CERTIFICATES_FILENAME) -> bytes:
+    with open(path, "rb") as fobj:
         return fobj.read()
 
 
 def get_root_certificates_path() -> str:
-    return ROOT_CERTIFICATES_FILENAME
+    return DEFAULT_ROOT_CERTIFICATES_FILENAME
 
 
 def get_temp_root_certificates_folder_path() -> str:

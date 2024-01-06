@@ -57,6 +57,8 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
             auth=self.get_session_auth(),
             headers=self.get_session_headers(),
             connector=self.create_aiohttp_connector(
+                # TODO: pass ca_data through *DTO
+                # https://github.com/datalens-tech/datalens-backend/issues/233
                 ssl_context=ssl.create_default_context(cafile=get_root_certificates_path())
             ),
         )

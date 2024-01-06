@@ -47,6 +47,7 @@ from dl_core_testing.database import (
 )
 from dl_core_testing.fixtures.dispenser import DbCsvTableDispenser
 from dl_db_testing.database.engine_wrapper import DbEngineConfig
+from dl_testing.utils import get_root_certificates
 from dl_utils.aio import ContextVarExecutor
 
 
@@ -77,6 +78,10 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
     def conn_bi_context(self) -> RequestContextInfo:
         bi_context = RequestContextInfo.create_empty()
         return bi_context
+
+    @pytest.fixture(scope="session")
+    def ca_data(self) -> bytes:
+        return get_root_certificates()
 
     @pytest.fixture(scope="session")
     def conn_exec_factory_async_env(self) -> bool:
@@ -227,6 +232,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
         conn_us_config: USConfig,
         conn_bi_context: RequestContextInfo,
         conn_async_service_registry: ServicesRegistry,
+        ca_data: bytes,
     ) -> AsyncUSManager:
         us_manager = AsyncUSManager(
             bi_context=conn_bi_context,
@@ -234,6 +240,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             us_base_url=conn_us_config.us_base_url,
             us_auth_context=conn_us_config.us_auth_context,
             crypto_keys_config=conn_us_config.us_crypto_keys_config,
+            ca_data=ca_data,
         )
         return us_manager
 

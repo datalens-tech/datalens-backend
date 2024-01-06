@@ -50,13 +50,13 @@ class YaDocsFileS3ConnectionLifecycleManager(
         rci = self._us_manager.bi_context
         headers = make_user_auth_headers(rci=rci)
         cookies = make_user_auth_cookies(rci=rci)
-        fu_client = fu_client_factory.get_client(headers=headers, cookies=cookies)
 
         sources = [src.get_desc() for src in data.sources]
         assert self.entry.uuid is not None
-        await fu_client.update_connection_data_internal(
-            conn_id=self.entry.uuid,
-            sources=sources,
-            authorized=self.entry.authorized,
-            tenant_id=rci.tenant.get_tenant_id() if rci.tenant is not None else None,
-        )
+        async with fu_client_factory.get_client(headers=headers, cookies=cookies) as fu_client:
+            await fu_client.update_connection_data_internal(
+                conn_id=self.entry.uuid,
+                sources=sources,
+                authorized=self.entry.authorized,
+                tenant_id=rci.tenant.get_tenant_id() if rci.tenant is not None else None,
+            )

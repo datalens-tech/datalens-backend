@@ -44,6 +44,10 @@ from dl_core_testing.flask_utils import (
     FlaskTestClient,
     FlaskTestResponse,
 )
+from dl_testing.utils import (
+    get_root_certificates,
+    get_root_certificates_path,
+)
 
 
 class ApiTestBase(abc.ABC):
@@ -115,6 +119,7 @@ class ApiTestBase(abc.ABC):
             FILE_UPLOADER_BASE_URL="http://127.0.0.1:9999",  # fake url
             FILE_UPLOADER_MASTER_TOKEN="qwerty",
             QUERY_PROCESSING_MODE=cls.query_processing_mode,
+            CA_FILE_PATH=get_root_certificates_path(),
         )
         return settings
 
@@ -128,6 +133,10 @@ class ApiTestBase(abc.ABC):
             bi_test_config=bi_test_config,
             rqe_config_subprocess=rqe_config_subprocess,
         )
+
+    @pytest.fixture(scope="function")
+    def ca_data(self) -> bytes:
+        return get_root_certificates()
 
     @pytest.fixture(scope="function")
     def control_api_app_factory(self, control_api_app_settings: ControlApiAppSettings) -> ControlApiAppFactory:
@@ -183,6 +192,7 @@ class ApiTestBase(abc.ABC):
         control_api_app_factory: ControlApiAppFactory,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
         control_api_app_settings: ControlApiAppSettings,
+        ca_data: bytes,
     ) -> SyncUSManager:
         core_test_config = bi_test_config.core_test_config
         bi_context = RequestContextInfo.create_empty()
@@ -194,6 +204,7 @@ class ApiTestBase(abc.ABC):
                 conn_opts_factory=ConnOptionsMutatorsFactory(),
                 connectors_settings=connectors_settings,
                 settings=control_api_app_settings,
+                ca_data=ca_data,
             ).make_service_registry(request_context_info=bi_context),
             us_base_url=us_config.us_host,
             us_auth_context=USAuthContextMaster(us_config.us_master_token),

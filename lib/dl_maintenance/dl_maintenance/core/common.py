@@ -9,6 +9,7 @@ from typing import (
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
+from dl_configs.utils import get_root_certificates
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
@@ -35,13 +36,19 @@ class MaintenanceEnvironmentManagerBase:
             master_token=app_settings.US_MASTER_TOKEN,
         )
 
-    def get_sr_factory(self, is_async_env: bool) -> Optional[SRFactory]:
+    def get_sr_factory(self, ca_data: bytes, is_async_env: bool) -> Optional[SRFactory]:
         return None
+
+    def get_ca_data(self) -> bytes:
+        settings = self.get_app_settings()
+        ca_data = get_root_certificates(path=settings.CA_FILE_PATH)
+        return ca_data
 
     def get_usm_from_env(self, use_sr_factory: bool = True, is_async_env: bool = True) -> SyncUSManager:
         us_config = self.get_us_config()
+        ca_data = self.get_ca_data()
         rci = RequestContextInfo.create_empty()
-        sr_factory = self.get_sr_factory(is_async_env=is_async_env) if use_sr_factory else None
+        sr_factory = self.get_sr_factory(is_async_env=is_async_env, ca_data=ca_data) if use_sr_factory else None
         service_registry = sr_factory.make_service_registry(rci) if sr_factory is not None else None
 
         return SyncUSManager(
@@ -53,8 +60,9 @@ class MaintenanceEnvironmentManagerBase:
 
     def get_async_usm_from_env(self, use_sr_factory: bool = True) -> AsyncUSManager:
         us_config = self.get_us_config()
+        ca_data = self.get_ca_data()
         rci = RequestContextInfo.create_empty()
-        sr_factory = self.get_sr_factory(is_async_env=True) if use_sr_factory else None
+        sr_factory = self.get_sr_factory(is_async_env=True, ca_data=ca_data) if use_sr_factory else None
         service_registry = sr_factory.make_service_registry(rci) if sr_factory is not None else None
 
         return AsyncUSManager(
@@ -62,4 +70,5 @@ class MaintenanceEnvironmentManagerBase:
             us_auth_context=USAuthContextMaster(us_master_token=us_config.master_token),
             bi_context=rci,
             services_registry=service_registry,
+            ca_data=ca_data,
         )

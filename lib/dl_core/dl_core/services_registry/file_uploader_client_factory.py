@@ -210,6 +210,14 @@ class FileUploaderClient(BIAioHTTPClient):
     def close_sync(self) -> None:
         return await_sync(self.close())
 
+    async def __aenter__(self) -> FileUploaderClient:
+        return self
+
+    async def __aexit__(
+        self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+    ) -> None:
+        await self.close()
+
     def __enter__(self) -> FileUploaderClient:
         return self
 
@@ -228,6 +236,7 @@ class FileUploaderSettings:
 @attr.s
 class FileUploaderClientFactory:
     _file_uploader_settings: FileUploaderSettings = attr.ib()
+    _ca_data: bytes = attr.ib()
 
     _file_uploader_client_cls: ClassVar[Type[FileUploaderClient]] = FileUploaderClient  # tests mockup point
 
@@ -243,5 +252,5 @@ class FileUploaderClientFactory:
             base_url=self._file_uploader_settings.base_url,
             headers=full_headers,
             cookies=cookies.copy() if cookies is not None else {},
-            session=None,
+            ca_data=self._ca_data,
         )

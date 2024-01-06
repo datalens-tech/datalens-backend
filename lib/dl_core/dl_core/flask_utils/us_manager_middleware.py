@@ -30,6 +30,7 @@ class USManagerFlaskMiddleware:
         )
     )
     crypto_keys_config: CryptoKeysConfig = attr.ib(repr=False)
+    ca_data: bytes = attr.ib()
     us_master_token: Optional[str] = attr.ib(default=None, repr=False)
     us_public_token: Optional[str] = attr.ib(default=None, repr=False)
 
@@ -41,6 +42,7 @@ class USManagerFlaskMiddleware:
             crypto_keys_config=self.crypto_keys_config,
             us_master_token=self.us_master_token,
             us_public_token=self.us_public_token,
+            ca_data=self.ca_data,
         )
 
     def bind_us_managers_to_request(self) -> None:
