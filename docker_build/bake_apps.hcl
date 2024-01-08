@@ -1,7 +1,7 @@
 target "dl_control_api" {
   pull     = false
   contexts = {
-    bake_ctx_base_img = "target:base_focal_db"
+    bake_ctx_base_img = "target:base_jammy_db"
     bake_ctx_src_lib  = "target:dl_src_lib"
     bake_ctx_metapkg  = "target:dl_src_metapkg"
   }
@@ -12,7 +12,7 @@ target "dl_control_api" {
 target "dl_data_api" {
   pull     = false
   contexts = {
-    bake_ctx_base_img = "target:base_focal_db"
+    bake_ctx_base_img = "target:base_jammy_db"
     bake_ctx_src_lib  = "target:dl_src_lib"
     bake_ctx_metapkg  = "target:dl_src_metapkg"
   }
@@ -20,13 +20,13 @@ target "dl_data_api" {
   dockerfile = "Dockerfile"
 }
 
-target "base_focal_db" {
-  context  = "target_base_focal_db"
+target "base_jammy_db" {
+  context  = "target_base_jammy_db"
   contexts = {
-    bake_ctx_base_img = "target:base_focal"
+    bake_ctx_base_img = "target:base_jammy"
   }
 }
 
-target "base_focal" {
-  context = "target_base_focal"
+target "base_jammy" {
+  context = "target_base_jammy"
 }
