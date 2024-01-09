@@ -43,3 +43,13 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         )
         assert resp.status_code == 200, resp.json
         assert resp.json["cache_ttl_sec"] == cache_ttl_override, resp.json
+
+    def test_connection_options(self, control_api_sync_client: SyncHttpClientBase, saved_connection_id: str) -> None:
+        resp = control_api_sync_client.get(
+            url=f"/api/v1/connections/{saved_connection_id}",
+        )
+        assert resp.status_code == 200, resp.json
+        assert isinstance(resp.json["options"]["allow_dashsql_usage"], bool)
+        assert isinstance(resp.json["options"]["allow_dataset_usage"], bool)
+        assert len(resp.json["options"]["dashsql_query_types"]) > 0
+        assert any([qt["dashsql_query_type"] == "classic_query" for qt in resp.json["options"]["dashsql_query_types"]])
