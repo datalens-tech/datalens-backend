@@ -27,7 +27,8 @@ from dl_api_lib.schemas.connection import (
     GenericConnectionSchema,
 )
 from dl_api_lib.utils import need_permission_on_entry
-from dl_constants.enums import ConnectionType as ct, DashSQLQueryType
+from dl_constants.enums import ConnectionType as ct
+from dl_constants.enums import DashSQLQueryType
 from dl_constants.exc import DLBaseException
 from dl_core.data_source.type_mapping import get_data_source_class
 from dl_core.data_source_merge_tools import make_spec_from_dict

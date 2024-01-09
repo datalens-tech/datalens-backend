@@ -23,10 +23,10 @@ from dl_api_commons.reporting.models import NotificationReportingRecord
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_constants.enums import (
     ConnectionType,
+    DashSQLQueryType,
     DataSourceRole,
     DataSourceType,
     RawSQLLevel,
-    DashSQLQueryType,
 )
 from dl_core import connection_models
 from dl_core.base_models import (

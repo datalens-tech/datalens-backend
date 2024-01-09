@@ -5,14 +5,14 @@ from typing import (
     ClassVar,
 )
 
-from marshmallow import fields as ma_fields
 from marshmallow import Schema
+from marshmallow import fields as ma_fields
 
 from dl_api_connector.api_schema.top_level import USEntryBaseSchema
 from dl_constants.enums import ConnectionType as CT
+from dl_constants.enums import DashSQLQueryType
 from dl_core.us_connection_base import ConnectionBase
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
-from dl_constants.enums import DashSQLQueryType
 
 
 class ConnectionSchema(USEntryBaseSchema):
