@@ -246,4 +246,4 @@ class ConnectorAvailabilityConfig(SettingsBase):
             LOGGER.warning("Connector %s is not available in current env", conn_type.name)
             return False
 
-        return conn_options.visibility_mode == ConnectorAvailability.free
+        return conn_options.visibility_mode != ConnectorAvailability.uncreatable
