@@ -23,7 +23,9 @@ on:
 jobs:
   gh_build_image:
     runs-on: [ self-hosted, linux ]
-    permissions: write-all
+    permissions: 
+      packages: read
+      contents: read
     container:
       image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
       options: -v /var/run/docker.sock:/var/run/docker.sock
@@ -39,8 +41,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: "ghcr.io"
-          username: ${{ github.triggering_actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: USERNAME
+          password: ${{ secrets.WRITE_PACKAGES_TOKEN }}
       - name: 'Cleanup build folder'
         run: |
           rm -rf ./* || true
