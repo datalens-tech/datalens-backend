@@ -23,7 +23,7 @@ on:
 jobs:
   gh_build_image:
     runs-on: [ self-hosted, linux ]
-    permissions: 
+    permissions:
       packages: read
       contents: read
     container:
