@@ -37,7 +37,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.WRITE_PACKAGES_TOKEN }}
         run: |
-          /bin/bash echo "${GITHUB_TOKEN}" | docker login ghcr.io -u USERNAME --password-stdin
+          /bin/bash .github/.scripts/login_docker.sh
       - name: 'Cleanup build folder'
         run: |
           rm -rf ./* || true
