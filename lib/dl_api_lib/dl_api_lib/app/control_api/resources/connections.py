@@ -3,11 +3,13 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
+import attr
 from flask import request
 from flask_restx import abort
 from marshmallow import ValidationError as MValidationError
 
 from dl_api_commons.flask.middlewares.logging_context import put_to_request_context
+from dl_api_connector.api_schema.connection_base import ConnectionOptionsSchema
 from dl_api_connector.api_schema.extras import (
     CreateMode,
     EditMode,
@@ -25,7 +27,7 @@ from dl_api_lib.schemas.connection import (
     GenericConnectionSchema,
 )
 from dl_api_lib.utils import need_permission_on_entry
-from dl_constants.enums import ConnectionType as ct
+from dl_constants.enums import ConnectionType as ct, DashSQLQueryType
 from dl_constants.exc import DLBaseException
 from dl_core.data_source.type_mapping import get_data_source_class
 from dl_core.data_source_merge_tools import make_spec_from_dict
@@ -143,8 +145,43 @@ class ConnectionsList(BIResource):
         return {"id": conn.uuid}
 
 
+@attr.s(frozen=True)
+class DashSQLQueryTypeInfo:
+    dashsql_query_type: DashSQLQueryType = attr.ib(kw_only=True)
+    dashsql_query_type_label: str = attr.ib(kw_only=True)  # How the value should be displayed in the UI
+    # TODO: more info about what this query type entails/requires (e.g. form type or structure)
+
+
+@attr.s(frozen=True)
+class ConnectionOptions:
+    allow_dashsql_usage: bool = attr.ib(kw_only=True)
+    allow_dataset_usage: bool = attr.ib(kw_only=True)
+    dashsql_query_types: list[DashSQLQueryTypeInfo] = attr.ib(kw_only=True)
+
+
 @ns.route("/<connection_id>")
 class ConnectionItem(BIResource):
+    @classmethod
+    def _make_options_data(
+        cls,
+        conn: ConnectionBase,
+        # service_registry: ApiServiceRegistry,
+    ) -> ConnectionOptions:
+        dashsql_query_type_info_list: list[DashSQLQueryTypeInfo] = []
+        for dsql_qt in sorted(conn.get_supported_dashsql_query_types(), key=lambda qt: qt.name):
+            dashsql_query_type_info = DashSQLQueryTypeInfo(
+                dashsql_query_type=dsql_qt,
+                # FIXME: This should probably be a localized human-readable label
+                dashsql_query_type_label=dsql_qt.name,
+            )
+            dashsql_query_type_info_list.append(dashsql_query_type_info)
+
+        return ConnectionOptions(
+            allow_dashsql_usage=conn.is_dashsql_allowed,
+            allow_dataset_usage=conn.is_dataset_allowed,
+            dashsql_query_types=dashsql_query_type_info_list,
+        )
+
     @put_to_request_context(endpoint_code="ConnectionGet")
     @schematic_request(
         ns=ns,
@@ -157,6 +194,7 @@ class ConnectionItem(BIResource):
         need_permission_on_entry(conn, USPermissionKind.read)
 
         result = GenericConnectionSchema(context=self.get_schema_ctx(EditMode.edit)).dump(conn)
+        result.update(options=ConnectionOptionsSchema().dump(self._make_options_data(conn)))
         return result
 
     @put_to_request_context(endpoint_code="ConnectionDelete")
