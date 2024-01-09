@@ -35,6 +35,10 @@ jobs:
         username: ${{ github.triggering_actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: 'Cleanup build folder'
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
       - name: Checkout code
         uses: actions/checkout@v4
       - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
@@ -44,10 +48,6 @@ jobs:
           registry: "ghcr.io"
           username: ${{ github.triggering_actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: 'Cleanup build folder'
-        run: |
-          rm -rf ./* || true
-          rm -rf ./.??* || true
       - name: Build and push
         env:
           REPO_OWNER: ${{ github.repository_owner }}
