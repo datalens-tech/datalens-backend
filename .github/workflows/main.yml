@@ -38,11 +38,10 @@ jobs:
       GIT_SHA: "${{ github.sha }}"
     steps:
       - name: Log in to the Container registry
-        uses: docker/login-action@v2
-        with:
-          registry: "ghcr.io"
-          username: USERNAME
-          password: ${{ secrets.WRITE_PACKAGES_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.WRITE_PACKAGES_TOKEN }}
+        run: |
+          docker login ghcr.io -u USERNAME --password "${GITHUB_TOKEN}"
       - name: 'Cleanup build folder'
         run: |
           rm -rf ./* || true
