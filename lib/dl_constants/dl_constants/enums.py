@@ -377,7 +377,8 @@ class NotificationType(DynamicEnum):
 
 class ConnectorAvailability(Enum):
     free = "free"
-    whitelist = "whitelist"
+    hidden = "hidden"
+    uncreatable = "uncreatable"
 
 
 class QueryProcessingMode(DynamicEnum):
