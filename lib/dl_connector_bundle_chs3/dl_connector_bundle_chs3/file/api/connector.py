@@ -9,7 +9,6 @@ from dl_connector_bundle_chs3.file.api.api_schema.connection import FileS3Connec
 from dl_connector_bundle_chs3.file.api.connection_info import FileS3ConnectionInfoProvider
 from dl_connector_bundle_chs3.file.core.connector import (
     FileS3CoreConnectionDefinition,
-    FileS3CoreConnector,
     FileS3TableCoreSourceDefinition,
 )
 

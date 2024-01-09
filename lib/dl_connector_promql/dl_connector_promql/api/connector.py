@@ -18,7 +18,6 @@ from dl_connector_promql.api.i18n.localizer import CONFIGS
 from dl_connector_promql.core.connector import (
     PromQLCoreBackendDefinition,
     PromQLCoreConnectionDefinition,
-    PromQLCoreConnector,
     PromQLCoreSourceDefinition,
 )
 

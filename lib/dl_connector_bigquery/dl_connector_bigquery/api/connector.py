@@ -20,7 +20,6 @@ from dl_connector_bigquery.api.i18n.localizer import CONFIGS
 from dl_connector_bigquery.core.connector import (
     BigQueryCoreBackendDefinition,
     BigQueryCoreConnectionDefinition,
-    BigQueryCoreConnector,
     BigQueryCoreSubselectSourceDefinition,
     BigQueryCoreTableSourceDefinition,
 )

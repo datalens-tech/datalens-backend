@@ -17,7 +17,6 @@ from dl_connector_greenplum.api.i18n.localizer import CONFIGS
 from dl_connector_greenplum.core.connector import (
     GreenplumCoreBackendDefinition,
     GreenplumCoreConnectionDefinition,
-    GreenplumCoreConnector,
     GreenplumSubselectCoreSourceDefinition,
     GreenplumTableCoreSourceDefinition,
 )

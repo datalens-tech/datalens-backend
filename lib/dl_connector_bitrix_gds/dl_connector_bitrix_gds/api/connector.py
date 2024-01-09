@@ -23,7 +23,6 @@ from dl_connector_bitrix_gds.api.multi_query import BitrixGDSMultiQueryMutatorFa
 from dl_connector_bitrix_gds.core.connector import (
     BitrixGDSCoreBackendDefinition,
     BitrixGDSCoreConnectionDefinition,
-    BitrixGDSCoreConnector,
     BitrixGDSCoreSourceDefinition,
 )
 from dl_connector_bitrix_gds.formula.constants import DIALECT_NAME_BITRIX

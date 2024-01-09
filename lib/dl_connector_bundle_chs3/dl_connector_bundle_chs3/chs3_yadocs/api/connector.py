@@ -9,7 +9,6 @@ from dl_connector_bundle_chs3.chs3_yadocs.api.api_schema.connection import YaDoc
 from dl_connector_bundle_chs3.chs3_yadocs.api.connection_info import YaDocsFileS3ConnectionInfoProvider
 from dl_connector_bundle_chs3.chs3_yadocs.core.connector import (
     YaDocsFileS3CoreConnectionDefinition,
-    YaDocsFileS3CoreConnector,
     YaDocsFileS3TableCoreSourceDefinition,
 )
 

@@ -16,7 +16,6 @@ from dl_connector_snowflake.api.i18n.localizer import CONFIGS
 from dl_connector_snowflake.core.connector import (
     SnowflakeCoreBackendDefinition,
     SnowFlakeCoreConnectionDefinition,
-    SnowFlakeCoreConnector,
     SnowFlakeCoreTableSourceDefinition,
 )
 from dl_connector_snowflake.formula.constants import DIALECT_NAME_SNOWFLAKE

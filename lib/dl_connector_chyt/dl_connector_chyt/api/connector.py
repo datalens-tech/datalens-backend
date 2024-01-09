@@ -25,7 +25,6 @@ from dl_connector_chyt.api.i18n.localizer import CONFIGS
 from dl_connector_chyt.core.connector import (
     CHYTCoreBackendDefinition,
     CHYTCoreConnectionDefinition,
-    CHYTCoreConnector,
     CHYTTableCoreSourceDefinition,
     CHYTTableListCoreSourceDefinition,
     CHYTTableRangeCoreSourceDefinition,

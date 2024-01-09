@@ -14,7 +14,6 @@ from dl_connector_bundle_chs3.chs3_base.api.api_schema.source import (
 from dl_connector_bundle_chs3.chs3_base.api.i18n.localizer import CONFIGS
 from dl_connector_bundle_chs3.chs3_base.core.connector import (
     BaseFileS3CoreConnectionDefinition,
-    BaseFileS3CoreConnector,
     BaseFileS3TableCoreSourceDefinition,
 )
 from dl_connector_clickhouse.api.connector import ClickHouseApiBackendDefinition

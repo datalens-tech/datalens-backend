@@ -19,7 +19,6 @@ from dl_connector_oracle.api.i18n.localizer import CONFIGS
 from dl_connector_oracle.core.connector import (
     OracleCoreBackendDefinition,
     OracleCoreConnectionDefinition,
-    OracleCoreConnector,
     OracleSubselectCoreSourceDefinition,
     OracleTableCoreSourceDefinition,
 )
