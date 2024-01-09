@@ -6,6 +6,8 @@ concurrency:
 
 on:
   pull_request_target:
+    types: labeled
+  pull_request:
   workflow_dispatch:
     inputs:
       test_targets:
