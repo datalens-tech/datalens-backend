@@ -33,6 +33,9 @@ jobs:
         username: ${{ github.triggering_actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
       - name: Log in to the Container registry
         env:
           GITHUB_TOKEN: ${{ secrets.WRITE_PACKAGES_TOKEN }}
@@ -42,9 +45,6 @@ jobs:
         run: |
           rm -rf ./* || true
           rm -rf ./.??* || true
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
       - name: Build and push
         env:
           REPO_OWNER: ${{ github.repository_owner }}
