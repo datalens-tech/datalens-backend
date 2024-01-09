@@ -76,11 +76,14 @@ class Section(LocalizedSerializable):
 
 @attr.s(kw_only=True)
 class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
-    visibility_mode: ConnectorAvailability = None
-
     @property
     @abc.abstractmethod
     def hidden(self) -> bool:
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def visibility_mode(self) -> ConnectorAvailability:
         raise NotImplementedError
 
     @property
@@ -121,20 +124,22 @@ class Connector(ConnectorBase):
     conn_type: ConnectionType = attr.ib(
         converter=lambda v: ConnectionType(v) if not isinstance(v, ConnectionType) else v
     )
-    visibility_mode: ConnectorAvailability = attr.ib(
-        default=ConnectorAvailability.free, converter=ConnectorAvailability
-    )
+    availability: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free, converter=ConnectorAvailability)
 
     @classmethod
     def from_settings(cls, settings: ConnectorSettings) -> Connector:
         return cls(
             conn_type=ConnectionType(settings.conn_type),
-            visibility_mode=settings.availability,
+            availability=settings.availability,
         )
 
     @property
     def hidden(self) -> bool:
         return self._hidden
+
+    @property
+    def visibility_mode(self) -> ConnectorAvailability:
+        return self.availability
 
     @property
     def alias(self) -> str:
@@ -163,11 +168,14 @@ class ConnectorContainer(ConnectorBase):
     _alias: str = attr.ib()
     includes: list[Connector] = attr.ib(validator=attr.validators.min_len(1))  # type: ignore
     title_translatable: Translatable = attr.ib()
-    visibility_mode: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free)
 
     @property
     def hidden(self) -> bool:
         return all(connector.hidden for connector in self.includes)
+
+    @property
+    def visibility_mode(self) -> ConnectorAvailability:
+        return ConnectorAvailability.free
 
     @property
     def alias(self) -> str:
