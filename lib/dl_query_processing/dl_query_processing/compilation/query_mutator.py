@@ -21,6 +21,7 @@ from dl_formula.inspect.expression import (
     contains_extended_aggregations,
     contains_lookup_functions,
     get_toplevel_dimension_set,
+    is_bound_only_to,
     is_window_expression,
 )
 from dl_formula.mutation.general import (
@@ -269,6 +270,15 @@ class OptimizingQueryMutator(QueryMutator):
                 ]
             )
             compiled_query = mutator.mutate_query(compiled_query)
+
+        # Don't group by unbound expressions (ones that don't refer to source fields)
+        compiled_query = compiled_query.clone(
+            group_by=[
+                group_by_item
+                for group_by_item in compiled_query.group_by
+                if not is_bound_only_to(group_by_item.formula_obj, NodeSet())
+            ]
+        )
 
         filter_mutator = IgnoreFormulaAtomicQueryMutator(ignore_formula_checks=[formula_is_true])
         compiled_query = filter_mutator.mutate_query(compiled_query)
