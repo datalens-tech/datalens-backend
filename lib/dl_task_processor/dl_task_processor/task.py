@@ -2,6 +2,7 @@ import abc
 from collections.abc import Iterable
 import enum
 from typing import (
+    Any,
     ClassVar,
     Generic,
     NewType,
@@ -56,12 +57,9 @@ class TaskInstance:
     request_id: Optional[str] = attr.ib(default=None)
 
 
+@attr.s
 class BaseTaskMeta(metaclass=abc.ABCMeta):
     name: ClassVar[TaskName]
-
-    def __init__(self, *args, **kwargs) -> None:
-        # lets trick typing
-        pass
 
     def get_params(self, with_name: bool = False) -> dict:
         if with_name:
@@ -119,7 +117,7 @@ class Retry(TaskResult):
 
 @attr.s
 class BaseExecutorTask(Generic[_BASE_TASK_META_TV, _BASE_TASK_CONTEXT_TV], metaclass=abc.ABCMeta):
-    cls_meta: ClassVar[Type[_BASE_TASK_META_TV]]
+    cls_meta: ClassVar[Type[_BASE_TASK_META_TV]]  # type: ignore[misc]  # TODO: fix
     meta: _BASE_TASK_META_TV = attr.ib()
     _ctx: _BASE_TASK_CONTEXT_TV = attr.ib()
     _instance_id: InstanceID = attr.ib()
@@ -154,7 +152,7 @@ class BaseExecutorTask(Generic[_BASE_TASK_META_TV, _BASE_TASK_CONTEXT_TV], metac
 
 @attr.s
 class TaskRegistry:
-    _tasks: dict[TaskName, BaseExecutorTask] = attr.ib()
+    _tasks: dict[TaskName, Type[BaseExecutorTask]] = attr.ib()
 
     @classmethod
     def create(cls, tasks: Iterable[Type[BaseExecutorTask]]) -> "TaskRegistry":
@@ -163,7 +161,7 @@ class TaskRegistry:
         ) == sorted(list(set([t.name() for t in tasks]))), "Some tasks has the same name"
         return cls(tasks={task.name(): task for task in tasks})
 
-    def get_task(self, name: TaskName) -> BaseExecutorTask:
+    def get_task(self, name: TaskName) -> Type[BaseExecutorTask]:
         return self._tasks[name]
 
     def get_task_meta(self, name: TaskName) -> Type[BaseTaskMeta]:

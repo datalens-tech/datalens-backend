@@ -25,6 +25,7 @@ from dl_file_uploader_lib.redis_model.models import (
     DataSource,
     ExcelFileSourceSettings,
     FileProcessingError,
+    FileSourceSettings,
     YaDocsFileSourceSettings,
     YaDocsUserSourceDataSourceProperties,
 )
@@ -53,7 +54,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
 
     async def run(self) -> TaskResult:
         dfile: Optional[DataFile] = None
-        sources_to_update_by_sheet_id: dict[int, list[DataSource]] = defaultdict(list)
+        sources_to_update_by_sheet_id: dict[str, list[DataSource]] = defaultdict(list)
         usm = self._ctx.get_async_usm()
         task_processor = self._ctx.make_task_processor(self._request_id)
         redis = self._ctx.redis_service.get_redis()
@@ -104,6 +105,9 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                         file_data = await resp.json()
 
             for src in dfile.sources:
+                # sources can be pre-filled only during update, which can happen only to document at the moment
+                # TODO needs refactoring
+                assert isinstance(src.user_source_dsrc_properties, YaDocsUserSourceDataSourceProperties)
                 sources_to_update_by_sheet_id[src.user_source_dsrc_properties.sheet_id].append(src)
 
             for spreadsheet in file_data:
@@ -158,7 +162,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                             exc_to_save = ex if isinstance(ex, exc.DLFileUploaderBaseError) else exc.ParseFailed()
                             src.error = FileProcessingError.from_exception(exc_to_save)
                             connection_error_tracker.add_error(src.id, src.error)
-                sheet_settings = None
+                sheet_settings: Optional[FileSourceSettings] = None
 
                 for src in sheet_data_sources:
                     if src.is_applicable:

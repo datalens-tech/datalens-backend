@@ -44,8 +44,8 @@ CronTask: TypeAlias = _CronJob
 class ArqCronWrapper:
     _task: BaseTaskMeta = attr.ib()
     __qualname__ = "ArqCronWrapper"
-    # because of asyncio.iscoroutinefunction in the arq core
-    _is_coroutine = asyncio.coroutines._is_coroutine
+    # special asyncio marker; because of asyncio.iscoroutinefunction in the arq core
+    _is_coroutine = asyncio.coroutines._is_coroutine  # type: ignore
 
     async def __call__(self, ctx: Dict[Any, Any], *args: Any, **kwargs: Any) -> Any:  # pragma: no cover
         return await arq_base_task(
@@ -86,7 +86,7 @@ def create_arq_redis_settings(settings: _BIRedisSettings) -> ArqRedisSettings:
             port=settings.PORT,
             password=settings.PASSWORD,
             database=settings.DB,
-            ssl=settings.SSL,
+            ssl=settings.SSL or False,
         )
     elif settings.MODE == RedisMode.sentinel:
         redis_targets = [(host, settings.PORT) for host in settings.HOSTS]
@@ -96,7 +96,7 @@ def create_arq_redis_settings(settings: _BIRedisSettings) -> ArqRedisSettings:
             sentinel=True,
             sentinel_master=settings.CLUSTER_NAME,
             database=settings.DB,
-            ssl=settings.SSL,
+            ssl=settings.SSL or False,
         )
     else:
         raise ValueError(f"Unknown redis mode {settings.MODE}")
@@ -132,7 +132,6 @@ def make_cron_task(task: BaseTaskMeta, schedule: CronSchedule) -> CronTask:
 
 async def arq_base_task(context: Dict, params: Dict) -> None:
     LOGGER.info("Run arq task with params %s", params)
-    context[EXECUTOR_KEY]: Executor
     # transition
     # i'll delete it later
     if "task_params" in params:
@@ -156,7 +155,8 @@ async def arq_base_task(context: Dict, params: Dict) -> None:
             instance_id=instance_id,
             attempt=context["job_try"] - 1,  # it starts from 1 o_O
         )
-    job_result = await context[EXECUTOR_KEY].run_job(task_instance)
+    executor: Executor = context[EXECUTOR_KEY]
+    job_result = await executor.run_job(task_instance)
     if isinstance(job_result, Retry):
         # https://arq-docs.helpmanual.io/#retrying-jobs-and-cancellation
         raise ArqRetry(
