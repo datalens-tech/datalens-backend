@@ -32,10 +32,6 @@ jobs:
       credentials:
         username: ${{ github.triggering_actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    env:
-      REPO_OWNER: ${{ github.repository_owner }}
-      REPO_NAME: ${{ github.event.repository.name }}
-      GIT_SHA: "${{ github.sha }}"
     steps:
       - name: Log in to the Container registry
         env:
@@ -49,7 +45,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
-      - run: |
+      - name: Build and push
+        env:
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          GIT_SHA: "${{ github.sha }}"
+        run: |
           export ROOT_DIR="$(realpath .)"
           /bin/bash ci/build_naive.sh
 
