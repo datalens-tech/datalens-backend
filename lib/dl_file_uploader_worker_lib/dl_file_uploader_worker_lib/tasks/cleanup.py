@@ -6,6 +6,7 @@ import logging
 from typing import (
     Any,
     Optional,
+    cast,
 )
 
 import attr
@@ -273,15 +274,17 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
                                         old_s3_filename = source.s3_filename
                                     else:
                                         assert old_tenant_id
-                                        old_s3_filename = "_".join(
-                                            [old_tenant_id, conn.uuid, source.s3_filename_suffix]
-                                        )
+                                        uuid = cast(str, conn.uuid)
+                                        old_tenant_id = cast(str, old_tenant_id)
+                                        old_s3_filename = "_".join([old_tenant_id, uuid, source.s3_filename_suffix])
 
                                     if not old_tenant_id:
                                         old_fname_parts = old_s3_filename.split("_")
                                         if len(old_fname_parts) >= 2 and all(part for part in old_fname_parts):
                                             # assume that first part is old tenant id
                                             old_tenant_id = old_fname_parts[0]
+
+                                    old_tenant_id = cast(str, old_tenant_id)
                                     old_tenants.add(old_tenant_id)
 
                                     s3_filename_suffix = (

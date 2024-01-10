@@ -34,7 +34,7 @@ def validate_authorized_yadocs(data: dict) -> None:
         )
 
 
-def validate_yadocs_data(data) -> None:
+def validate_yadocs_data(data: dict) -> None:
     if not ((data["public_link"] is None) ^ (data["private_path"] is None)):
         raise ValueError("Expected exactly one of [`private_path`, `public_link`] to be specified")
     if data["public_link"] is None and data["oauth_token"] is None and data["connection_id"] is None:
@@ -110,7 +110,7 @@ class FileTypeOneOfSchema(OneOfSchema):
         assert isinstance(type_field, FileType)
         return type_field.name
 
-    def get_data_type(self, data: dict) -> str:
+    def get_data_type(self, data: dict):  # type: ignore
         data_type = data.get(self.type_field)
         if self.type_field not in data:
             data[self.type_field] = FileType.gsheets.value
