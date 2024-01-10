@@ -183,3 +183,42 @@ async def test_parse_excel_with_one_row_task(
     assert df.id == uploaded_excel_id
     for src in df.sources:
         assert src.status == FileProcessingStatus.failed
+
+
+@pytest.mark.asyncio
+async def test_parse_excel_non_string_header(
+    task_processor_client,
+    task_state,
+    s3_client,
+    redis_model_manager,
+    uploaded_excel_no_header_id,
+    reader_app,
+):
+    rmm = redis_model_manager
+    df = await DataFile.get(manager=rmm, obj_id=uploaded_excel_no_header_id)
+    assert df.status == FileProcessingStatus.in_progress
+
+    task = await task_processor_client.schedule(ProcessExcelTask(file_id=uploaded_excel_no_header_id))
+    result = await wait_task(task, task_state)
+    await sleep(60)
+    assert result[-1] == "success"
+
+    df = await DataFile.get(manager=rmm, obj_id=uploaded_excel_no_header_id)
+    assert df.id == uploaded_excel_no_header_id
+    assert df.status == FileProcessingStatus.ready
+
+    assert len(df.sources) == 1
+    dsrc = df.sources[0]
+    assert dsrc.status == FileProcessingStatus.ready
+    assert dsrc.title == "no_header.xlsx – Sheet1"
+    assert [sch.user_type for sch in dsrc.raw_schema] == [
+        UserDataType.integer,
+        UserDataType.integer,
+        UserDataType.integer,
+    ]
+    assert [sch.name for sch in dsrc.raw_schema] == ["a", "b", "c"]
+    assert [sch.title for sch in dsrc.raw_schema] == ["A", "B", "C"]
+
+    preview = await DataSourcePreview.get(manager=rmm, obj_id=dsrc.preview_id)
+    assert preview.id == dsrc.preview_id
+    assert preview.preview_data[0] == ["1", "2", "3"]
