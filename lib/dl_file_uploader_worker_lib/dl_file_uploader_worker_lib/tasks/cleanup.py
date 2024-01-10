@@ -253,7 +253,7 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
                         )
                         async for conn_placeholder in conn_iter:
                             async with usm.locked_entry_cm(
-                                conn_placeholder.uuid,
+                                conn_placeholder.uuid,  # type: ignore # TODO: fix?
                                 expected_type=BaseFileS3Connection,
                                 wait_timeout_sec=10,
                                 duration_sec=300,
@@ -274,7 +274,7 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
                                     else:
                                         assert old_tenant_id
                                         old_s3_filename = "_".join(
-                                            (old_tenant_id, conn.uuid, source.s3_filename_suffix)
+                                            [old_tenant_id, conn.uuid, source.s3_filename_suffix]
                                         )
 
                                     if not old_tenant_id:

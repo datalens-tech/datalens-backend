@@ -120,7 +120,7 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
                     dfile.status = FileProcessingStatus.failed
                     dfile.error = download_error
                     if self.meta.exec_mode != TaskExecutionMode.BASIC:
-                        for src in dfile.sources:
+                        for src in dfile.sources or []:
                             src.status = FileProcessingStatus.failed
                             src.error = download_error
                             connection_error_tracker.add_error(src.id, src.error)
@@ -129,13 +129,14 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
                     await connection_error_tracker.finalize(self.meta.exec_mode, self.meta.connection_id)
                     return Success()
 
-            dfile.filename = spreadsheet_meta["name"]
+            filename: str = spreadsheet_meta["name"]
             xlsx_suffix = ".xlsx"
-            if not dfile.filename.endswith(xlsx_suffix):
+            if not filename.endswith(xlsx_suffix):
                 raise exc.UnsupportedDocument(
-                    details={"reason": f"Supported file extensions are: '.xlsx'. Got {dfile.filename}"}
+                    details={"reason": f"Supported file extensions are: '.xlsx'. Got {filename}"}
                 )
 
+            dfile.filename = filename
             s3 = self._ctx.s3_service
 
             async def _chunk_iter(chunk_size: int = 10 * 1024 * 1024) -> AsyncGenerator[bytes, None]:
