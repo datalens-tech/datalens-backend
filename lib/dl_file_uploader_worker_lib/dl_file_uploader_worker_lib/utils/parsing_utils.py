@@ -152,7 +152,7 @@ class FileUploaderFieldIdGenerator(metaclass=abc.ABCMeta):
 @attr.s
 class FileFieldIdGenerator(FileUploaderFieldIdGenerator):
     def _make_id(self, field: converter_parsing_utils.TResultColumn) -> str:
-        return make_readable_field_id(field["title"], ID_VALID_SYMBOLS, ID_LENGTH)  # type: ignore  # TODO: FIX
+        return make_readable_field_id(str(field["title"]), ID_VALID_SYMBOLS, ID_LENGTH)
 
 
 @attr.s
