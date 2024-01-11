@@ -173,7 +173,7 @@ class DocumentsView(FileUploaderBaseView):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResource]] = frozenset()  # Don't skip CSRF check
 
     FILE_TYPE_TO_DATA_FILE_PREPARER_MAP: dict[
-        FileType, Callable[[str, RedisModelManager, Optional[str]], Awaitable[DataFile]]
+        FileType, Callable[[Optional[str], Optional[str], Optional[str], RedisModelManager], Awaitable[DataFile]]
     ] = {
         FileType.yadocs: yadocs_data_file_preparer,
     }
@@ -191,12 +191,7 @@ class DocumentsView(FileUploaderBaseView):
         connection_id: Optional[str] = req_data["connection_id"]
         authorized: bool = req_data["authorized"]
 
-        df = await self.FILE_TYPE_TO_DATA_FILE_PREPARER_MAP[file_type](
-            oauth_token=oauth_token,
-            private_path=private_path,
-            public_link=public_link,
-            redis_model_manager=rmm,
-        )
+        df = await self.FILE_TYPE_TO_DATA_FILE_PREPARER_MAP[file_type](oauth_token, private_path, public_link, rmm)
 
         LOGGER.info(f"Data file id: {df.id}")
         await df.save()

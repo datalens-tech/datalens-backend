@@ -12,4 +12,6 @@ chmod +r /usr/share/keyrings/clickhouse-keyring.gpg
 echo "deb [signed-by=/usr/share/keyrings/clickhouse-keyring.gpg] https://packages.clickhouse.com/deb stable main" | tee \
     /etc/apt/sources.list.d/clickhouse.list
 
+echo "deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse" >> /etc/apt/sources.list  # tmp, for MSSQL
+
 apt-get --yes update

@@ -76,10 +76,26 @@ jobs:
     - run: git config --global --add safe.directory .
     - run: git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
     - run: git fetch origin main
+    - name: Extract base commit
+      run: |
+        result="${{ github.event.pull_request.base.sha }}"
+        if [ -z "$result" ]; then
+            result=$(git rev-parse origin/main)
+        fi
+        echo "result=$result" >> $GITHUB_OUTPUT
+      id: extract_base_commit
+    - name: Extract head commit
+      run: |
+        result="${{ github.event.pull_request.head.sha }}"
+        if [ -z "$result" ]; then
+            result=$(git rev-parse HEAD)
+        fi
+        echo "result=$result" >> $GITHUB_OUTPUT
+      id: extract_head_commit
     - name: Get packages affected by changes in the current commit
       id: get_affected
       run: |
-        TARGET_DATA=$(. /venv/bin/activate && dl-git range-diff-paths --only-added-commits --base ${{ github.event.pull_request.base.sha }} --head ${{ github.event.pull_request.head.sha }})
+        TARGET_DATA=$(. /venv/bin/activate && dl-git range-diff-paths --only-added-commits --base ${{ steps.extract_base_commit.outputs.result }} --head ${{ steps.extract_head_commit.outputs.result }})
         echo "$TARGET_DATA" > /tmp/targets.json
         cat /tmp/targets.json
         . /venv/bin/activate && detect-affected-packages \

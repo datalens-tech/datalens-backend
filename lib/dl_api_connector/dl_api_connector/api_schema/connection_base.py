@@ -5,11 +5,12 @@ from typing import (
     ClassVar,
 )
 
+from marshmallow import Schema
 from marshmallow import fields as ma_fields
 
 from dl_api_connector.api_schema.top_level import USEntryBaseSchema
-from dl_constants.enums import ConnectionState
 from dl_constants.enums import ConnectionType as CT
+from dl_constants.enums import DashSQLQueryType
 from dl_core.us_connection_base import ConnectionBase
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
@@ -50,10 +51,6 @@ class ConnectionSchema(USEntryBaseSchema):
             type_=ct.name,
             permissions_mode=data["permissions_mode"],
             initial_permissions=data["initial_permissions"],
-            meta=dict(
-                # TODO CONSIDER: May be do it in handler?
-                state=ConnectionState.saved.name
-            ),
         )
 
         return ret
@@ -66,3 +63,14 @@ class ConnectionMetaMixin(ConnectionSchema):
     """
 
     meta = ma_fields.Dict(dump_only=True)  # In ConnectionBase.as_dict() meta was included
+
+
+class DashSQLQueryTypeInfo(Schema):
+    dashsql_query_type = DynamicEnumField(DashSQLQueryType, dump_only=True)
+    dashsql_query_type_label = ma_fields.String(dump_only=True)
+
+
+class ConnectionOptionsSchema(Schema):
+    allow_dashsql_usage = ma_fields.Boolean(dump_only=True)
+    allow_dataset_usage = ma_fields.Boolean(dump_only=True)
+    dashsql_query_types = ma_fields.Nested(DashSQLQueryTypeInfo(), dump_only=True, many=True)

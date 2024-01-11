@@ -25,6 +25,7 @@ from dl_file_uploader_lib.redis_model.models import (
     DataSource,
     ExcelFileSourceSettings,
     FileProcessingError,
+    FileSourceSettings,
     YaDocsFileSourceSettings,
     YaDocsUserSourceDataSourceProperties,
 )
@@ -158,7 +159,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                             exc_to_save = ex if isinstance(ex, exc.DLFileUploaderBaseError) else exc.ParseFailed()
                             src.error = FileProcessingError.from_exception(exc_to_save)
                             connection_error_tracker.add_error(src.id, src.error)
-                sheet_settings = None
+                sheet_settings: Optional[FileSourceSettings] = None
 
                 for src in sheet_data_sources:
                     if src.is_applicable:

@@ -88,27 +88,36 @@ async def uploaded_10mb_file_id(s3_tmp_bucket, s3_persistent_bucket, s3_client, 
 
 
 @pytest.fixture(scope="function")
-async def uploaded_excel(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_model_manager) -> DataFile:
-    filename = "data.xlsx"
-    data_file_desc = DataFile(
-        manager=redis_model_manager,
-        filename=filename,
-        file_type=FileType.xlsx,
-        status=FileProcessingStatus.in_progress,
-    )
-
-    dirname = os.path.dirname(os.path.abspath(__file__))
-    path = os.path.join(dirname, filename)
-
-    with open(path, "rb") as fd:
-        await s3_client.put_object(
-            ACL="private",
-            Bucket=s3_tmp_bucket,
-            Key=data_file_desc.s3_key,
-            Body=fd.read(),
+async def uploaded_excel_file(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_model_manager):
+    async def uploader(filename: str) -> DataFile:
+        data_file_desc = DataFile(
+            manager=redis_model_manager,
+            filename=filename,
+            file_type=FileType.xlsx,
+            status=FileProcessingStatus.in_progress,
         )
 
-    await data_file_desc.save()
+        dirname = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(dirname, "data", filename)
+
+        with open(path, "rb") as fd:
+            await s3_client.put_object(
+                ACL="private",
+                Bucket=s3_tmp_bucket,
+                Key=data_file_desc.s3_key,
+                Body=fd.read(),
+            )
+
+        await data_file_desc.save()
+        return data_file_desc
+
+    yield uploader
+
+
+@pytest.fixture(scope="function")
+async def uploaded_excel(uploaded_excel_file) -> DataFile:
+    filename = "data.xlsx"
+    data_file_desc = await uploaded_excel_file(filename)
     yield data_file_desc
 
 
@@ -118,33 +127,27 @@ async def uploaded_excel_id(uploaded_excel) -> str:
 
 
 @pytest.fixture(scope="function")
-async def uploaded_excel_with_one_row(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_model_manager) -> DataFile:
+async def uploaded_excel_with_one_row(uploaded_excel_file) -> DataFile:
     filename = "one_row_table.xlsx"
-    data_file_desc = DataFile(
-        manager=redis_model_manager,
-        filename=filename,
-        file_type=FileType.xlsx,
-        status=FileProcessingStatus.in_progress,
-    )
-
-    dirname = os.path.dirname(os.path.abspath(__file__))
-    path = os.path.join(dirname, filename)
-
-    with open(path, "rb") as fd:
-        await s3_client.put_object(
-            ACL="private",
-            Bucket=s3_tmp_bucket,
-            Key=data_file_desc.s3_key,
-            Body=fd.read(),
-        )
-
-    await data_file_desc.save()
+    data_file_desc = await uploaded_excel_file(filename)
     yield data_file_desc
 
 
 @pytest.fixture(scope="function")
 async def uploaded_excel_with_one_row_id(uploaded_excel_with_one_row) -> str:
     yield uploaded_excel_with_one_row.id
+
+
+@pytest.fixture(scope="function")
+async def uploaded_excel_no_header(uploaded_excel_file) -> DataFile:
+    filename = "no_header.xlsx"
+    data_file_desc = await uploaded_excel_file(filename)
+    yield data_file_desc
+
+
+@pytest.fixture(scope="function")
+async def uploaded_excel_no_header_id(uploaded_excel_no_header) -> str:
+    yield uploaded_excel_no_header.id
 
 
 @pytest.fixture(scope="function")

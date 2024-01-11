@@ -83,6 +83,11 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
+    def visibility_mode(self) -> ConnectorAvailability:
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
     def alias(self) -> str:
         raise NotImplementedError
 
@@ -103,6 +108,7 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
     def as_dict(self, localizer: Localizer) -> dict[str, Any]:
         return dict(
             hidden=self.hidden,
+            visibility_mode=self.visibility_mode.value,
             alias=self.alias,
             conn_type=self.conn_type_str,
             title=self.get_title(localizer),
@@ -130,6 +136,10 @@ class Connector(ConnectorBase):
     @property
     def hidden(self) -> bool:
         return self._hidden
+
+    @property
+    def visibility_mode(self) -> ConnectorAvailability:
+        return self.availability
 
     @property
     def alias(self) -> str:
@@ -162,6 +172,10 @@ class ConnectorContainer(ConnectorBase):
     @property
     def hidden(self) -> bool:
         return all(connector.hidden for connector in self.includes)
+
+    @property
+    def visibility_mode(self) -> ConnectorAvailability:
+        return ConnectorAvailability.free
 
     @property
     def alias(self) -> str:
@@ -240,4 +254,4 @@ class ConnectorAvailabilityConfig(SettingsBase):
             LOGGER.warning("Connector %s is not available in current env", conn_type.name)
             return False
 
-        return conn_options.availability == ConnectorAvailability.free
+        return conn_options.visibility_mode != ConnectorAvailability.uncreatable

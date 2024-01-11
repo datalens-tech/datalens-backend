@@ -6,7 +6,6 @@ from __future__ import annotations
 
 from enum import (
     Enum,
-    IntEnum,
     auto,
     unique,
 )
@@ -225,15 +224,6 @@ class DataSourceType(DynamicEnum):
         return value
 
 
-@unique
-class ConnectionState(IntEnum):
-    new = 0
-    parsing_error = 1
-    unvalidated = 2
-    saved = 3
-    error = 4
-
-
 class DataSourceRole(Enum):
     origin = "origin"
     sample = "sample"
@@ -339,6 +329,11 @@ class RawSQLLevel(Enum):
     dashsql = "dashsql"  # unwrapped raw SQL with `execute` permissions
 
 
+class DashSQLQueryType(DynamicEnum):
+    classic_query = AutoEnumValue()
+    # Connector-specific query types should be defined as "<connector_name>_<query_type>"
+
+
 @unique
 class NotificationStatus(Enum):
     OK = "OK"
@@ -377,7 +372,8 @@ class NotificationType(DynamicEnum):
 
 class ConnectorAvailability(Enum):
     free = "free"
-    whitelist = "whitelist"
+    hidden = "hidden"
+    uncreatable = "uncreatable"
 
 
 class QueryProcessingMode(DynamicEnum):
