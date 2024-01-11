@@ -130,6 +130,9 @@ jobs:
           rm -rf ./.??* || true
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
       - name: Fix dubious ownership
         run: .github/.scripts/git_config_save_directory.sh
         env:
@@ -157,6 +160,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
+        ref: ${{ github.event.pull_request.head.sha }}
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
         fetch-depth: 0
     - name: Fix dubious ownership
       run: .github/.scripts/git_config_save_directory.sh
@@ -246,6 +251,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 1
       - name: Fix dubious ownership
         run: .github/.scripts/git_config_save_directory.sh
