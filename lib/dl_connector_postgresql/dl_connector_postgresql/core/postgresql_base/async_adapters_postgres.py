@@ -31,6 +31,8 @@ from dl_constants.types import (
     TBIDataRow,
 )
 from dl_core import exc
+from dl_core.connection_executors.adapters.adapter_actions.base import AsyncDBVersionAdapterAction
+from dl_core.connection_executors.adapters.adapter_actions.db_version import AsyncDBVersionAdapterActionViaFunctionQuery
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import ClassicSQLConnLineConstructor
 from dl_core.connection_executors.adapters.async_adapters_base import (
     AsyncCache,
@@ -39,7 +41,6 @@ from dl_core.connection_executors.adapters.async_adapters_base import (
 )
 from dl_core.connection_executors.adapters.mixins import (
     SATypeTransformer,
-    WithAsyncGetDBVersion,
     WithDatabaseNameOverride,
 )
 from dl_core.connection_executors.adapters.sa_utils import make_debug_query
@@ -99,7 +100,6 @@ WHERE n.nspname = :schema AND c.relkind IN ('v', 'm')
 # right now we have to implement some logic in our code
 @attr.s(cmp=False, kw_only=True)
 class AsyncPostgresAdapter(
-    WithAsyncGetDBVersion,
     WithDatabaseNameOverride,
     AsyncDirectDBAdapter,
     BasePostgresAdapter,
@@ -131,6 +131,9 @@ class AsyncPostgresAdapter(
     _LIST_SCHEMA_NAMES_QUERY = PG_LIST_SCHEMA_NAMES
     _LIST_TABLE_NAMES_QUERY = PG_LIST_TABLE_NAMES
     _LIST_VIEW_NAMES_QUERY = PG_LIST_VIEW_NAMES
+
+    def _make_async_db_version_action(self) -> AsyncDBVersionAdapterAction:
+        return AsyncDBVersionAdapterActionViaFunctionQuery(async_adapter=self)
 
     @property
     def _dialect(self) -> AsyncBIPGDialect:
