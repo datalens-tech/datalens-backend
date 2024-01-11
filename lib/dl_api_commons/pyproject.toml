@@ -16,8 +16,8 @@ flask = ">=2.2.5"
 ipdb = ">=0.13.13"
 marshmallow = ">=3.19.0"
 multidict = ">=4.0"
-opentracing = ">=2.4.0"
-python = ">=3.10, <3.12"
+opentracing = "==2.4.0"
+python = ">=3.10, <3.13"
 sentry-sdk = {version = ">=1.15.0", extras = ["flask"]}
 typing-extensions = ">=4.5.0"
 datalens-utils = {path = "../dl_utils"}
