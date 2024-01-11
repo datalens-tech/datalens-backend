@@ -5,7 +5,6 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  pull_request:  # TODO: remove after merge BI-5174
   pull_request_target:
     types:
       - opened
@@ -448,7 +447,7 @@ jobs:
     name: Test results
     runs-on: ubuntu-22.04
 
-    needs: [ check-skip-tests-label, run_tests_base, run_tests_fat, run_tests_ext_public ]
+    needs: [ check-skip-tests-label, pytest_split, run_tests_base, run_tests_fat, run_tests_ext_public ]
     if: ${{ always() }}
 
     steps:
@@ -457,6 +456,7 @@ jobs:
           skip_tests=${{ needs.check-skip-tests-label.outputs.result }}
           [[ $skip_tests == "true" ]] && exit 0
 
+          [[ ${{ needs.pytest_split.result }} != "success" ]] && exit 1
           result_base=${{ needs.run_tests_base.result }}
           [[ $result_base != "success" && $result_base != "skipped" ]] && exit 1
           result_fat=${{ needs.run_tests_fat.result }}
