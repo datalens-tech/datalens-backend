@@ -24,7 +24,7 @@ dynamic-enum = {path = "../dynamic_enum"}
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
-pyodbc = ">=4.0.35"
+pyodbc = ">=5.0.1"
 python-dateutil = ">=2.8.2"
 datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 
