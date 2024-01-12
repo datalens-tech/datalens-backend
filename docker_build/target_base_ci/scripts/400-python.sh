@@ -11,7 +11,9 @@ do
    apt-get update || sleep "$y" ;
 done
 
-apt-get install -y python3.12 python3.12-dev python3-pip python3.12-venv || sleep "$y" ;
-
+apt-get install -y install -y python3.12 python3.12-dev python3-venv || sleep "$y" ;
 
 ln -sf python3.12 /usr/bin/python && ln -sf python3.12 /usr/bin/python3
+
+curl -sS https://bootstrap.pypa.io/get-pip.py | python3
+python3 -m pip install --upgrade pip
