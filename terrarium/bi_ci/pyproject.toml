@@ -24,7 +24,7 @@ license = "Apache 2.0"
 packages = [{include = "bi_ci"}]
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 tomlkit = ">=0.11.8"
 clize = ">=5.0.0"
 poetry = ">=1.5.0"

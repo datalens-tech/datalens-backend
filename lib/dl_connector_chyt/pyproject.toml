@@ -11,9 +11,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
-aiochclient = ">=2.2.0"
+aiochclient = ">=2.5.1"
 marshmallow = ">=3.19.0"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 sqlalchemy = ">=1.4.51, <2.0"
 datalens-api-commons = {path = "../dl_api_commons"}

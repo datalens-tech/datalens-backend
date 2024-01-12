@@ -12,7 +12,7 @@ readme = "README.rst"
 [tool.poetry.dependencies]
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 datalens-utils = {path = "../dl_utils"}
 datalens-configs = {path = "../dl_configs"}
 datalens-app-tools = {path = "../dl_app_tools"}

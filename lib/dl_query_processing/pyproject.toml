@@ -12,7 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
 ciso8601 = ">=2.2.0"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 pytz = ">=2022.7.1"
 datalens-utils = {path = "../dl_utils"}
 datalens-constants = {path = "../dl_constants"}

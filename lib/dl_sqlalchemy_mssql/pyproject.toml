@@ -11,7 +11,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 pyodbc = ">=5.0.1"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 sqlalchemy = ">=1.4.51, <2.0"
 datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 

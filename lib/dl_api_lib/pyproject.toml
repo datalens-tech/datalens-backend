@@ -18,7 +18,7 @@ marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 more-itertools = ">=9.1.0"
 pandas = ">=2.1.4"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 werkzeug = ">=2.2.3"
 statcommons = {path = "../statcommons"}
 datalens-api-commons = {path = "../dl_api_commons"}

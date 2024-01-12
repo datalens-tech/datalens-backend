@@ -12,7 +12,7 @@ readme = "README.rst"
 [tool.poetry.dependencies]
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 # TODO FIX: Really depends. Realize how to break circular dependency
 # datalens-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 datalens-api-commons = {path = "../dl_api_commons"}

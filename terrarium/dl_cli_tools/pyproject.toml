@@ -11,7 +11,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 
 
 [tool.poetry.group.pytest.dependencies]
