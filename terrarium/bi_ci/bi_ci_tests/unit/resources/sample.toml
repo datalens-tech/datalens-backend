@@ -40,7 +40,7 @@ split-on-trailing-comma = true
 
 [tool.black]
 line-length = 140
-target-version = ['py310']
+target-version = ['py312']
 
 [tool.poetry.scripts]
 print-deps = "datalens_local_dev.get_submodules:print_project_dependencies"

@@ -25,7 +25,7 @@ packages = [{include = "bi_ci"}]
 
 [tool.poetry.dependencies]
 python = ">=3.12, <3.13"
-tomlkit = ">=0.11.8"
+tomlkit = ">=0.12.3"
 clize = ">=5.0.0"
 poetry = ">=1.7.1"
 pyyaml = ">=6.0.1"
@@ -61,4 +61,4 @@ exclude = [
 ]
 [tool.black]
 line-length = 120
-target-version = ['py310']
+target-version = ['py312']

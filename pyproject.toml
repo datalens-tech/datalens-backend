@@ -17,7 +17,7 @@ requires = [
 
 [tool.black]
 line-length = 120
-target-version = ['py310']
+target-version = ['py312']
 force-exclude= '''
 /(
   # The following are specific to Black, you probably don't want those.
