@@ -24,10 +24,12 @@ RUN mkdir -p /install
 COPY install_py_312.sh /install/install_py_312.sh
 
 RUN bash /install/install_py_312.sh
-RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12
-RUN python3 -m pip install -U pip
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install --upgrade setuptools
 # TODO FIX: try to install j2cli to dedicated venv & make symlink in /usr/local/bin
-RUN python3 -m pip install poetry==1.5.0 j2cli==0.3.10
+RUN python3 -m pip install poetry==1.7.1 j2cli==0.3.10
 
 RUN curl "https://storage.yandexcloud.net/cloud-certs/CA.pem" > /usr/local/share/ca-certificates/yandex-cloud-ca.crt
 RUN update-ca-certificates

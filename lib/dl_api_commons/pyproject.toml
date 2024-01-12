@@ -10,7 +10,7 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-aiohttp = ">=3.8.1"
+aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
 flask = ">=2.2.5"
 ipdb = ">=0.13.13"
