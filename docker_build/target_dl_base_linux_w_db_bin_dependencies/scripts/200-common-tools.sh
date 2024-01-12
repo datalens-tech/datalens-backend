@@ -19,5 +19,4 @@ apt-get install --yes \
   nano \
   zip \
   unzip \
-  gpg \
-  build-essential
+  gpg 
