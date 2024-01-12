@@ -13,7 +13,7 @@ jobs:
   pytest:
     runs-on: [ self-hosted, linux ]
     container:
-      image: "python:3.11.0"
+      image: "python:3.12.0"
 
     strategy:
       fail-fast: false
@@ -45,7 +45,7 @@ jobs:
   mypy:
     runs-on: [ self-hosted, linux ]
     container:
-      image: "python:3.11.0"
+      image: "python:3.12.0"
 
     strategy:
       fail-fast: false
