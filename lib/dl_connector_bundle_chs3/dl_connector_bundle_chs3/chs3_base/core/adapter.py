@@ -8,7 +8,7 @@ from typing import (
 from aiohttp import ClientResponse
 import attr
 
-from dl_core.connection_executors.adapters.adapter_actions.base import AsyncDBVersionAdapterAction
+from dl_core.connection_executors.adapters.adapter_actions.async_base import AsyncDBVersionAdapterAction
 from dl_core.connection_executors.adapters.adapter_actions.db_version import AsyncDBVersionAdapterActionEmptyString
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_models import (

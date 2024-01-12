@@ -24,7 +24,7 @@ import sqlalchemy as sa
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_configs.utils import get_root_certificates_path
 from dl_constants.types import TBIChunksGen
-from dl_core.connection_executors.adapters.adapter_actions.base import AsyncDBVersionAdapterAction
+from dl_core.connection_executors.adapters.adapter_actions.async_base import AsyncDBVersionAdapterAction
 from dl_core.connection_executors.adapters.adapter_actions.db_version import AsyncDBVersionAdapterActionViaFunctionQuery
 from dl_core.connection_executors.adapters.async_adapters_base import (
     AsyncCache,

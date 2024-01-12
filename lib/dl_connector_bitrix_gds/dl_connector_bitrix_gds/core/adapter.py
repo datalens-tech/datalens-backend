@@ -21,7 +21,7 @@ from sqlalchemy.sql.elements import TypeCoerce
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_constants.enums import ConnectionType
 from dl_core.aio.web_app_services.redis import RedisConnParams
-from dl_core.connection_executors.adapters.adapter_actions.base import AsyncDBVersionAdapterAction
+from dl_core.connection_executors.adapters.adapter_actions.async_base import AsyncDBVersionAdapterAction
 from dl_core.connection_executors.adapters.adapter_actions.db_version import AsyncDBVersionAdapterActionNone
 from dl_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
 from dl_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult

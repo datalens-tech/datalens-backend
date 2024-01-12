@@ -7,7 +7,7 @@ from typing import (
 
 import attr
 
-from dl_core.connection_executors.adapters.adapter_actions.base import AsyncDBVersionAdapterAction
+from dl_core.connection_executors.adapters.adapter_actions.async_base import AsyncDBVersionAdapterAction
 from dl_core.connection_executors.adapters.sa_utils import get_db_version_query
 from dl_core.connection_models import DBIdent
 

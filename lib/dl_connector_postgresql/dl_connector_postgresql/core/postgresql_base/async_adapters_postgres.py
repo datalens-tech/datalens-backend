@@ -31,7 +31,7 @@ from dl_constants.types import (
     TBIDataRow,
 )
 from dl_core import exc
-from dl_core.connection_executors.adapters.adapter_actions.base import AsyncDBVersionAdapterAction
+from dl_core.connection_executors.adapters.adapter_actions.async_base import AsyncDBVersionAdapterAction
 from dl_core.connection_executors.adapters.adapter_actions.db_version import AsyncDBVersionAdapterActionViaFunctionQuery
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import ClassicSQLConnLineConstructor
 from dl_core.connection_executors.adapters.async_adapters_base import (

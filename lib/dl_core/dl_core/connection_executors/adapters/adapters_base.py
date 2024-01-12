@@ -15,6 +15,20 @@ from typing import (
 import attr
 from typing_extensions import final
 
+from dl_core.connection_executors.adapters.adapter_actions.sync_base import (
+    SyncDBVersionAdapterAction,
+    SyncDBVersionAdapterActionNotImplemented,
+    SyncSchemaNamesAdapterAction,
+    SyncSchemaNamesAdapterActionNotImplemented,
+    SyncTableExistsActionNotImplemented,
+    SyncTableExistsAdapterAction,
+    SyncTableInfoAdapterAction,
+    SyncTableInfoAdapterActionNotImplemented,
+    SyncTableNamesAdapterAction,
+    SyncTableNamesAdapterActionNotImplemented,
+    SyncTestAdapterAction,
+    SyncTestAdapterActionNotImplemented,
+)
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
@@ -60,6 +74,72 @@ _TARGET_DTO_TV = TypeVar("_TARGET_DTO_TV", bound="ConnTargetDTO")
 
 
 class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc.ABCMeta):
+    # Adapter action fields
+    _sync_db_version_action: SyncDBVersionAdapterAction = attr.ib(init=False)
+    _sync_schema_names_action: SyncSchemaNamesAdapterAction = attr.ib(init=False)
+    _sync_table_names_action: SyncTableNamesAdapterAction = attr.ib(init=False)
+    _sync_test_action: SyncTestAdapterAction = attr.ib(init=False)
+    _sync_table_info_action: SyncTableInfoAdapterAction = attr.ib(init=False)
+    _sync_table_exists_action: SyncTableExistsAdapterAction = attr.ib(init=False)
+
+    # Action defaults
+
+    @_sync_db_version_action.default
+    @final
+    def __make_default_sync_db_version_action(self) -> SyncDBVersionAdapterAction:
+        return self._make_sync_db_version_action()
+
+    @_sync_schema_names_action.default
+    @final
+    def __make_sync_schema_names_action(self) -> SyncSchemaNamesAdapterAction:
+        return self._make_sync_schema_names_action()
+
+    @_sync_table_names_action.default
+    @final
+    def __make_sync_table_names_action(self) -> SyncTableNamesAdapterAction:
+        return self._make_sync_table_names_action()
+
+    @_sync_test_action.default
+    @final
+    def __make_sync_test_action(self) -> SyncTestAdapterAction:
+        return self._make_sync_test_action()
+
+    @_sync_table_info_action.default
+    @final
+    def __make_sync_test_action(self) -> SyncTableInfoAdapterAction:
+        return self._make_sync_table_info_action()
+
+    @_sync_table_exists_action.default
+    @final
+    def __make_sync_table_exists_action(self) -> SyncTableExistsAdapterAction:
+        return self._make_sync_table_exists_action()
+
+    # Action factory methods
+
+    def _make_sync_db_version_action(self) -> SyncDBVersionAdapterAction:
+        # Redefine this method to enable `get_db_version`
+        return SyncDBVersionAdapterActionNotImplemented()
+
+    def _make_sync_schema_names_action(self) -> SyncSchemaNamesAdapterAction:
+        # Redefine this method to enable `get_schema_names`
+        return SyncSchemaNamesAdapterActionNotImplemented()
+
+    def _make_sync_table_names_action(self) -> SyncTableNamesAdapterAction:
+        # Redefine this method to enable `get_table_names`
+        return SyncTableNamesAdapterActionNotImplemented()
+
+    def _make_sync_test_action(self) -> SyncTestAdapterAction:
+        # Redefine this method to enable `test`
+        return SyncTestAdapterActionNotImplemented()
+
+    def _make_sync_table_info_action(self) -> SyncTableInfoAdapterAction:
+        # Redefine this method to enable `get_table_info`
+        return SyncTableInfoAdapterActionNotImplemented()
+
+    def _make_sync_table_exists_action(self) -> SyncTableExistsAdapterAction:
+        # Redefine this method to enable `is_table_exists`
+        return SyncTableExistsActionNotImplemented()
+
     @abc.abstractmethod
     def execute_by_steps(self, db_adapter_query: DBAdapterQuery) -> Generator[ExecutionStep, None, None]:
         pass
@@ -89,25 +169,23 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
             raw_cursor_info=cursor_info_step,
         )
 
-    @abc.abstractmethod
     def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
-        pass
+        return self._sync_db_version_action.run_db_version_action(db_ident=db_ident)
 
-    @abc.abstractmethod
-    def get_schema_names(self, db_ident: DBIdent) -> List[str]:
-        pass
+    def get_schema_names(self, db_ident: DBIdent) -> list[str]:
+        return self._sync_schema_names_action.run_schema_names_action(db_ident=db_ident)
 
-    @abc.abstractmethod
-    def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
-        pass
+    def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+        return self._sync_table_names_action.run_table_names_action(schema_ident=schema_ident)
 
-    @abc.abstractmethod
     def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
-        pass
+        return self._sync_table_info_action.run_table_info_action(
+            table_def=table_def,
+            fetch_idx_info=fetch_idx_info,
+        )
 
-    @abc.abstractmethod
     def is_table_exists(self, table_ident: TableIdent) -> bool:
-        pass
+        return self._sync_table_exists_action.run_table_exists_action(table_ident=table_ident)
 
     @abc.abstractmethod
     def close(self) -> None:

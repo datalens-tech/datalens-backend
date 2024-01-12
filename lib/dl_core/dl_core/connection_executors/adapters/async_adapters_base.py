@@ -16,7 +16,7 @@ from typing import (
 
 import attr
 
-from dl_core.connection_executors.adapters.adapter_actions.base import (
+from dl_core.connection_executors.adapters.adapter_actions.async_base import (
     AsyncDBVersionAdapterAction,
     AsyncDBVersionAdapterActionNotImplemented,
     AsyncSchemaNamesAdapterAction,
