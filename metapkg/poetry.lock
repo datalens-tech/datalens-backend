@@ -6261,4 +6261,4 @@ yc = ["yandexcloud"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12, <3.13"
-content-hash = "7aaf4fa089f418dad3a16b4af5db048f8d0c3d11c8e0b0e7887063d53faadaae"
+content-hash = "70c29abce5477ef7e3d8259784bb98ba4710cfaf57f322d0dd47986a5cddc8c2"
