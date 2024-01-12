@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 set -exu
+# set noninteractive installation
+export DEBIAN_FRONTEND=noninteractive
 
 add-apt-repository -y ppa:deadsnakes/ppa
 
