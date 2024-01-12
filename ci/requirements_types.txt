@@ -2,8 +2,8 @@ asyncpg-stubs==0.27.0
 boto3-stubs==1.24.59
 botocore-stubs==1.27.59
 grpc-stubs==1.53.0.2
-mypy==1.5.1
-pandas-stubs==1.5.3.230321
+mypy==1.7.0
+pandas-stubs==2.1.4.231227
 types-PyMySQL==1.1.0
 types-Pygments==2.15.0.2
 types-aiobotocore==2.4.2
