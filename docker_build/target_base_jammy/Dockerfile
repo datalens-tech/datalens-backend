@@ -12,7 +12,7 @@ RUN apt-get update \
     && apt-get install -y --fix-missing \
         curl dnsutils iputils-ping jq less telnet unzip vim \
         # For some python libraries
-        libssl-dev libcurl4-openssl-dev libpcre3-dev libpcre3 libyaml-dev libffi-dev \
+        libssl-dev libcurl4-openssl-dev libpcre3-dev libpcre3 libyaml-dev libffi-dev build-essential \
     && rm -f /etc/ssh/ssh_host_*_key \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -25,7 +25,6 @@ COPY install_py_312.sh /install/install_py_312.sh
 
 RUN bash /install/install_py_312.sh
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3
-RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install --upgrade setuptools
 # TODO FIX: try to install j2cli to dedicated venv & make symlink in /usr/local/bin
