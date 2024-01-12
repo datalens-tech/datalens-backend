@@ -1,6 +1,6 @@
 # todo: use dev group from ops/ci/pyproject.toml
 
-poetry==1.5.1
+poetry==1.7.1
 clize==5.0.0
 black==23.3.0
 ruff==0.0.287
