@@ -1,14 +1,14 @@
-asyncpg-stubs==0.27.0
+asyncpg-stubs==0.29.0
 boto3-stubs==1.24.59
 botocore-stubs==1.27.59
-grpc-stubs==1.53.0.2
+grpc-stubs==1.53.0.5
 mypy==1.7.0
 pandas-stubs==2.1.4.231227
 types-PyMySQL==1.1.0
 types-Pygments==2.15.0.2
 types-aiobotocore==2.4.2
 types-aiofiles==23.1.0
-types-cffi==1.15.1
+types-cffi==1.16.0
 types-colorama==0.4.6
 types-cryptography==3.3.2
 types-decorator==5.1.1
