@@ -654,12 +654,6 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
     async def test(self) -> None:
         await self.execute(DBAdapterQuery("select 1"))
 
-    async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
-        raise NotImplementedError()
-
-    async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
-        raise NotImplementedError()
-
     async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         raise NotImplementedError()
 

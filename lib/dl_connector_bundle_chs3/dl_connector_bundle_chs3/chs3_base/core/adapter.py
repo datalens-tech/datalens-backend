@@ -8,6 +8,8 @@ from typing import (
 from aiohttp import ClientResponse
 import attr
 
+from dl_core.connection_executors.adapters.adapter_actions.async_base import AsyncDBVersionAdapterAction
+from dl_core.connection_executors.adapters.adapter_actions.db_version import AsyncDBVersionAdapterActionEmptyString
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_models import (
     DBIdent,
@@ -34,11 +36,11 @@ class BaseAsyncFileS3Adapter(BaseAsyncClickHouseAdapter):
     ch_utils = FileS3Utils
     _target_dto: BaseFileS3ConnTargetDTO = attr.ib()  # type: ignore  # TODO: FIX
 
+    def _make_async_db_version_action(self) -> AsyncDBVersionAdapterAction:
+        return AsyncDBVersionAdapterActionEmptyString()
+
     async def is_table_exists(self, table_ident: TableIdent) -> bool:  # type: ignore
         return True
-
-    async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:  # type: ignore
-        return ""
 
     def get_request_params(self, dba_q: DBAdapterQuery) -> Dict[str, str]:
         return dict(

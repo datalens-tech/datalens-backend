@@ -11,16 +11,11 @@ from typing import (
     Tuple,
 )
 
+import attr
 from sqlalchemy.sql.type_api import TypeEngine
 
 from dl_constants.enums import ConnectionType
-from dl_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
-from dl_core.connection_executors.adapters.sa_utils import get_db_version_query
-from dl_core.connection_executors.models.db_adapter_data import (
-    DBAdapterQuery,
-    ExecutionStepCursorInfo,
-)
-from dl_core.connection_models import DBIdent
+from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo
 from dl_core.db.native_type import (
     CommonNativeType,
     SATypeSpec,
@@ -86,18 +81,6 @@ class SATypeTransformer(SAColumnTypeNormalizer):
             # returns `nullable=True` for all known cases (for PG and MySQL).
             nullable=nullable,
         )
-
-
-class WithAsyncGetDBVersion:
-    @abc.abstractmethod
-    async def execute(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:
-        pass
-
-    async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
-        result = await self.execute(get_db_version_query(db_ident))
-        async for row in result.get_all_rows():
-            return str(row[0])
-        return None
 
 
 class WithCursorInfo:

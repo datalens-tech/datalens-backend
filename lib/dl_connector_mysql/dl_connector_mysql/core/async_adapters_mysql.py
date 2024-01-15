@@ -24,13 +24,14 @@ import sqlalchemy as sa
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_configs.utils import get_root_certificates_path
 from dl_constants.types import TBIChunksGen
+from dl_core.connection_executors.adapters.adapter_actions.async_base import AsyncDBVersionAdapterAction
+from dl_core.connection_executors.adapters.adapter_actions.db_version import AsyncDBVersionAdapterActionViaFunctionQuery
 from dl_core.connection_executors.adapters.async_adapters_base import (
     AsyncCache,
     AsyncDirectDBAdapter,
     AsyncRawExecutionResult,
 )
 from dl_core.connection_executors.adapters.mixins import (
-    WithAsyncGetDBVersion,
     WithDatabaseNameOverride,
     WithMinimalCursorInfo,
     WithNoneRowConverters,
@@ -45,7 +46,6 @@ from dl_core.connection_executors.models.db_adapter_data import (
 )
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from dl_core.connection_models import (
-    DBIdent,
     SchemaIdent,
     TableDefinition,
     TableIdent,
@@ -66,7 +66,6 @@ _DBA_ASYNC_MYSQL_TV = TypeVar("_DBA_ASYNC_MYSQL_TV", bound="AsyncMySQLAdapter")
 
 @attr.s(cmp=False, kw_only=True)
 class AsyncMySQLAdapter(
-    WithAsyncGetDBVersion,
     WithDatabaseNameOverride,
     WithNoneRowConverters,
     ETBasedExceptionMaker,
@@ -79,12 +78,16 @@ class AsyncMySQLAdapter(
     _default_chunk_size: int = attr.ib()
 
     _engines: AsyncCache[aiomysql.sa.Engine] = attr.ib(default=attr.Factory(AsyncCache))
+
     _error_transformer = async_mysql_db_error_transformer
 
     EXTRA_EXC_CLS = (
         OperationalError,
         ProgrammingError,
     )
+
+    def _make_async_db_version_action(self) -> AsyncDBVersionAdapterAction:
+        return AsyncDBVersionAdapterActionViaFunctionQuery(async_adapter=self)
 
     @property
     def _dialect(self) -> sa.engine.default.DefaultDialect:
@@ -216,9 +219,6 @@ class AsyncMySQLAdapter(
 
     async def test(self) -> None:
         await self.execute(DBAdapterQuery("SELECT 1"))
-
-    async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
-        raise NotImplementedError()
 
     async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         raise NotImplementedError()
