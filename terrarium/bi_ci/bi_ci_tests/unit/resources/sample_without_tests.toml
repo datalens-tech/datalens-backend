@@ -22,7 +22,7 @@ jinja2 = "^3.1.2"
 
 [tool.poetry.group.dev.dependencies]
 # jupyter = "^1.0.0"
-mypy = "1.4.0"
+mypy = "1.7.0"
 black = "23.3.0"
 ruff = "0.0.267"
 ipdb = "0.13.13"
