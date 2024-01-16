@@ -9,7 +9,7 @@ license = "Apache 2.0"
 
 
 [tool.poetry.dependencies]
-oracledb = "==2.0.1"
+oracledb = "==2.0.0"
 python = ">=3.12, <3.13"
 sqlalchemy = ">=1.4.51, <2.0"
 datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
