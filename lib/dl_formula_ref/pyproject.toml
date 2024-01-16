@@ -21,7 +21,7 @@ datalens-formula = {path = "../dl_formula"}
 [tool.poetry.group.tests.dependencies]
 babel = ">=2.12.1"
 pytest = ">=7.2.2"
-psycopg2-binary = ">=2.9.6"
+psycopg2-binary = ">=2.9.9"
 datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 
 [build-system]

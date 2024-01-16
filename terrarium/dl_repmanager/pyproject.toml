@@ -14,7 +14,7 @@ frozendict = ">=2.3.8"
 gitpython = ">=3.1.37"
 python = ">=3.12, <3.13"
 pyyaml = ">=6.0.1"
-tomlkit = "==0.11.8"
+tomlkit = "==0.12.3"
 requests = ">=2.31.0"
 datalens-cli-tools = {path = "../dl_cli_tools"}
 

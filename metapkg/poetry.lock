@@ -847,7 +847,7 @@ files = []
 develop = false
 
 [package.dependencies]
-clickhouse-driver = ">=0.2.5"
+clickhouse-driver = ">=0.2.6"
 dill = ">=0.3.6"
 pytz = ">=2022.7.1"
 requests = ">=2.28.2"
@@ -1215,7 +1215,7 @@ datalens-i18n = {path = "../dl_i18n"}
 datalens-model-tools = {path = "../dl_model_tools"}
 datalens-testing = {path = "../dl_testing"}
 datalens-utils = {path = "../dl_utils"}
-google-api-core = ">=2.11.1"
+google-api-core = ">=2.15.0"
 google-auth = ">=2.21.0"
 google-cloud-bigquery = "==3.14.1"
 google-cloud-bigquery-storage = "==2.24.0"
@@ -1514,7 +1514,7 @@ datalens-formula-ref = {path = "../dl_formula_ref"}
 datalens-i18n = {path = "../dl_i18n"}
 datalens-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 marshmallow = ">=3.19.0"
-psycopg2-binary = ">=2.9.6"
+psycopg2-binary = ">=2.9.9"
 python-dateutil = ">=2.8.2"
 sqlalchemy = ">=1.4.51, <2.0"
 
@@ -1735,7 +1735,7 @@ datalens-testing = {path = "../dl_testing"}
 datalens-utils = {path = "../dl_utils"}
 Flask = ">=2.2.5"
 marshmallow = ">=3.19.0"
-psycopg2-binary = ">=2.9.6"
+psycopg2-binary = ">=2.9.9"
 pytest = ">=7.2.2"
 requests = ">=2.28.2"
 shortuuid = ">=1.0.11"
@@ -2174,7 +2174,7 @@ develop = false
 [package.dependencies]
 python-dateutil = ">=2.8.2"
 requests = ">=2.28.2"
-SQLAlchemy = ">=1.4.51,<2.0"
+sqlalchemy = ">=1.4.51, <2.0"
 
 [package.source]
 type = "directory"
@@ -2246,7 +2246,7 @@ develop = false
 [package.dependencies]
 asyncpg = ">=0.29.0"
 datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
-psycopg2-binary = ">=2.9.6"
+psycopg2-binary = ">=2.9.9"
 sqlalchemy = ">=1.4.51, <2.0"
 
 [package.source]
@@ -2303,7 +2303,7 @@ develop = false
 aiobotocore = ">=2.4.2"
 attrs = ">=22.2.0"
 datalens-utils = {path = "../dl_utils"}
-psycopg2-binary = ">=2.9.6"
+psycopg2-binary = ">=2.9.9"
 pytest = ">=7.2.2"
 python-dotenv = ">=1.0.0"
 pyyaml = ">=6.0.1"
@@ -5626,13 +5626,13 @@ twisted = ["twisted"]
 
 [[package]]
 name = "tomlkit"
-version = "0.11.8"
+version = "0.12.3"
 description = "Style preserving TOML library"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "tomlkit-0.11.8-py3-none-any.whl", hash = "sha256:8c726c4c202bdb148667835f68d68780b9a003a9ec34167b6c673b38eff2a171"},
-    {file = "tomlkit-0.11.8.tar.gz", hash = "sha256:9330fc7faa1db67b541b28e62018c17d20be733177d290a13b24c62d1614e0c3"},
+    {file = "tomlkit-0.12.3-py3-none-any.whl", hash = "sha256:b0a645a9156dc7cb5d3a1f0d4bab66db287fcb8e0430bdd4664a095ea16414ba"},
+    {file = "tomlkit-0.12.3.tar.gz", hash = "sha256:75baf5012d06501f07bee5bf8e801b9f343e7aac5a92581f20f80ce632e6b5a4"},
 ]
 
 [[package]]
@@ -6241,4 +6241,4 @@ yc = ["yandexcloud"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12, <3.13"
-content-hash = "9e71b539331036bb890dfcaa620d3abe2f4788ab75de774bd30f3e41dbdd15d1"
+content-hash = "c1992c03b1c34bb8d6b058818c0d3ffd84dbbef98a95c8ae904659f80c256cc1"
