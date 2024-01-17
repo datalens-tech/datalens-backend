@@ -1,11 +1,6 @@
 from __future__ import annotations
 
 import abc
-from enum import (
-    Enum,
-    auto,
-    unique,
-)
 from itertools import count
 from typing import (
     TYPE_CHECKING,
@@ -25,7 +20,10 @@ from dl_api_lib.pivot.pandas.data_frame import (
     PdPivotDataFrame,
     PdVSeriesPivotDataFrame,
 )
-from dl_api_lib.pivot.primitives import DataCellVector
+from dl_api_lib.pivot.primitives import (
+    DataCellVector,
+    SortAxis,
+)
 from dl_api_lib.query.formalization.pivot_legend import (
     PivotDimensionRoleSpec,
     PivotMeasureRoleSpec,
@@ -43,12 +41,6 @@ if TYPE_CHECKING:
         PivotHeader,
         PivotMeasureSortingSettings,
     )
-
-
-@unique
-class SortAxis(Enum):
-    columns = auto()
-    rows = auto()
 
 
 _PD_AXIS_MAP = {

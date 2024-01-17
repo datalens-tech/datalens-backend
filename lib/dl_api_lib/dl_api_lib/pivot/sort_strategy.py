@@ -27,6 +27,11 @@ from dl_api_lib.pivot.primitives import (
     DataCellVector,
     MeasureNameValue,
 )
+from dl_api_lib.pivot.sort_helpers import (
+    NORMAL_LEAST_NULL_VALUE,
+    TOTAL_GREATEST_NULL_VALUE,
+    TOTAL_LEAST_NULL_VALUE,
+)
 from dl_constants.enums import (
     FieldRole,
     OrderDirection,
@@ -50,89 +55,6 @@ _PD_AXIS_MAP = {
     SortAxis.columns: 1,
     SortAxis.rows: 0,
 }
-
-
-class OrderableNullValueBase(abc.ABC):
-    """
-    An orderable, hashable and immutable value that can be used
-    instead of ``None`` when sorting something.
-    """
-
-    __slots__ = ("weight",)
-
-    weight: int
-
-    def __init__(self, weight: int = 0):
-        super().__setattr__("weight", weight)
-
-    def __setattr__(self, key: str, value: Any) -> None:
-        raise AttributeError(f"{type(self).__name__} is immutable")
-
-    def __hash__(self) -> int:
-        return 0
-
-    def __eq__(self, other: Any) -> bool:
-        return type(other) is type(self) and other.weight == self.weight
-
-    def __ne__(self, other: Any) -> bool:
-        return type(other) is not type(self) or other.weight != self.weight
-
-    @abc.abstractmethod
-    def __gt__(self, other: Any) -> bool:
-        raise NotImplementedError()
-
-    @abc.abstractmethod
-    def __ge__(self, other: Any) -> bool:
-        raise NotImplementedError()
-
-    @abc.abstractmethod
-    def __lt__(self, other: Any) -> bool:
-        raise NotImplementedError()
-
-    @abc.abstractmethod
-    def __le__(self, other: Any) -> bool:
-        raise NotImplementedError()
-
-
-class LeastNullValue(OrderableNullValueBase):
-    """A null/None placeholder that is less than everything else."""
-
-    __slots__ = ()
-
-    def __gt__(self, other: Any) -> bool:
-        return isinstance(other, type(self)) and self.weight > other.weight
-
-    def __ge__(self, other: Any) -> bool:
-        return isinstance(other, type(self)) and self.weight >= other.weight
-
-    def __lt__(self, other: Any) -> bool:
-        return not isinstance(other, type(self)) or self.weight < other.weight
-
-    def __le__(self, other: Any) -> bool:
-        return not isinstance(other, type(self)) or self.weight <= other.weight
-
-
-class GreatestNullValue(OrderableNullValueBase):
-    """A null/None placeholder that is greater than everything else."""
-
-    __slots__ = ()
-
-    def __gt__(self, other: Any) -> bool:
-        return not isinstance(other, type(self)) or self.weight > other.weight
-
-    def __ge__(self, other: Any) -> bool:
-        return not isinstance(other, type(self)) or self.weight >= other.weight
-
-    def __lt__(self, other: Any) -> bool:
-        return isinstance(other, type(self)) and self.weight < other.weight
-
-    def __le__(self, other: Any) -> bool:
-        return isinstance(other, type(self)) and self.weight <= other.weight
-
-
-NORMAL_LEAST_NULL_VALUE = LeastNullValue()
-TOTAL_GREATEST_NULL_VALUE = GreatestNullValue(1)
-TOTAL_LEAST_NULL_VALUE = LeastNullValue(-1)
 
 
 @attr.s
