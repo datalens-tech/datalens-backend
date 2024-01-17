@@ -12,17 +12,12 @@ from dl_api_connector.api_schema.source_base import (
     DataSourceTemplateBaseSchema,
 )
 from dl_api_connector.connection_info import ConnectionInfoProvider
-from dl_api_connector.dashsql import (
-    DashSQLParamLiteralizer,
-    DefaultDashSQLParamLiteralizer,
-)
 from dl_api_connector.form_config.models.base import ConnectionFormFactory
 from dl_api_lib.query.registry import MQMFactorySettingItem
 from dl_constants.enums import QueryProcessingMode
 from dl_core.connectors.base.connector import (
     CoreBackendDefinition,
     CoreConnectionDefinition,
-    CoreConnector,
     CoreSourceDefinition,
 )
 from dl_formula.core.dialect import (
@@ -71,7 +66,6 @@ class ApiBackendDefinition(abc.ABC):
     is_forkable: ClassVar[bool] = True
     is_compeng_executable: ClassVar[bool] = False
     filter_formula_compiler_cls: ClassVar[Type[FilterFormulaCompiler]] = MainFilterFormulaCompiler
-    dashsql_literalizer_cls: ClassVar[Type[DashSQLParamLiteralizer]] = DefaultDashSQLParamLiteralizer
 
 
 class ApiConnector(abc.ABC):

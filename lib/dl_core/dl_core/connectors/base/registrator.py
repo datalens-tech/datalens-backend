@@ -16,6 +16,7 @@ from dl_core.connectors.base.connector import (
 from dl_core.connectors.base.dashsql import register_custom_dash_sql_key_names
 from dl_core.connectors.base.data_source_migration import register_data_source_migrator
 from dl_core.connectors.settings.registry import register_connector_settings_class
+from dl_core.dashsql.registry import register_dash_sql_param_literalizer_cls
 from dl_core.data_processing.query_compiler_registry import register_sa_query_compiler_cls
 from dl_core.data_source.type_mapping import register_data_source_class
 from dl_core.data_source_spec.type_mapping import register_data_source_spec_class
@@ -90,10 +91,15 @@ class CoreConnectorRegistrator:
 
     @classmethod
     def register_backend_definition(cls, backend_def: Type[CoreBackendDefinition]) -> None:
-        register_sa_query_cls(backend_type=backend_def.backend_type, query_cls=backend_def.query_cls)
+        backend_type = backend_def.backend_type
+        register_sa_query_cls(backend_type=backend_type, query_cls=backend_def.query_cls)
         register_sa_query_compiler_cls(
-            backend_type=backend_def.backend_type,
+            backend_type=backend_type,
             sa_query_compiler_cls=backend_def.compiler_cls,
+        )
+        register_dash_sql_param_literalizer_cls(
+            backend_type=backend_type,
+            literalizer_cls=backend_def.dashsql_literalizer_cls,
         )
 
     @classmethod

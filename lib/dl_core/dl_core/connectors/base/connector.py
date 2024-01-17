@@ -24,6 +24,10 @@ from dl_core.connectors.base.lifecycle import (
 )
 from dl_core.connectors.base.query_compiler import QueryCompiler
 from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
+from dl_core.dashsql.literalizer import (
+    DashSQLParamLiteralizer,
+    DefaultDashSQLParamLiteralizer,
+)
 from dl_core.data_source.base import DataSource
 from dl_core.data_source_spec.base import DataSourceSpec
 from dl_core.us_manager.storage_schemas.data_source_spec_base import DataSourceSpecStorageSchema
@@ -71,6 +75,7 @@ class CoreBackendDefinition(abc.ABC):
     backend_type: ClassVar[SourceBackendType] = SourceBackendType.NONE
     compiler_cls: ClassVar[Type[QueryCompiler]] = QueryCompiler
     query_cls: ClassVar[Type[Query]] = Query
+    dashsql_literalizer_cls: ClassVar[Type[DashSQLParamLiteralizer]] = DefaultDashSQLParamLiteralizer
 
 
 class CoreConnector(abc.ABC):
