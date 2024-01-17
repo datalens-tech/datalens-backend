@@ -10,6 +10,7 @@ import attr
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from dl_api_lib.pivot.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.enums import RedisMode
 from dl_configs.environments import is_setting_applicable
@@ -22,6 +23,7 @@ from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 from dl_configs.settings_submodels import RedisSettings
 from dl_configs.utils import split_by_comma
 from dl_constants.enums import (
+    DataPivotEngineType,
     QueryProcessingMode,
     USAuthMode,
 )
@@ -138,6 +140,12 @@ class AppSettings:
         "QUERY_PROCESSING_MODE",
         env_var_converter=lambda s: QueryProcessingMode[s.lower()],
         missing=QueryProcessingMode.basic,
+    )
+
+    PIVOT_ENGINE_TYPE: DataPivotEngineType = s_attrib(  # type: ignore
+        "PIVOT_ENGINE_TYPE",
+        env_var_converter=lambda s: DataPivotEngineType[s.lower()],
+        missing=PIVOT_ENGINE_TYPE_PANDAS,  # TODO: Switch to another default
     )
 
 

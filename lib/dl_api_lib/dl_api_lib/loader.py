@@ -6,6 +6,7 @@ from typing import (
 import attr
 
 from dl_api_lib.app_connectors import register_all_connectors
+from dl_api_lib.pivot.plugin_registration import register_all_pivot_engine_plugins
 from dl_core.loader import (
     CoreLibraryConfig,
     load_core_lib,
@@ -30,6 +31,7 @@ def preload_api_lib() -> None:
 
     preload_bi_core()
     preload_bi_formula()
+    register_all_pivot_engine_plugins()
 
 
 def load_api_lib(api_lib_config: ApiLibraryConfig = ApiLibraryConfig()) -> None:
