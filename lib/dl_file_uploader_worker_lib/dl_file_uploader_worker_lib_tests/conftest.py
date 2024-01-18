@@ -7,6 +7,7 @@ import sys
 from typing import TYPE_CHECKING
 
 import attr
+from clickhouse_driver import connect as connect_ch
 import pytest
 import redis.asyncio
 
@@ -14,7 +15,6 @@ from dl_api_commons.base_models import (
     RequestContextInfo,
     TenantCommon,
 )
-from clickhouse_driver import connect as connect_ch
 from dl_configs.crypto_keys import get_dummy_crypto_keys_config
 from dl_configs.enums import RedisMode
 from dl_configs.settings_submodels import (
