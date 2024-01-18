@@ -14,6 +14,7 @@ from dl_api_commons.base_models import (
     RequestContextInfo,
     TenantCommon,
 )
+from clickhouse_driver import connect as connect_ch
 from dl_configs.crypto_keys import get_dummy_crypto_keys_config
 from dl_configs.enums import RedisMode
 from dl_configs.settings_submodels import (
@@ -360,3 +361,37 @@ def default_async_usm_per_test(bi_context, prepare_us, us_config):
         bi_context=bi_context,
         services_registry=DummyServiceRegistry(rci=rci),
     )
+
+
+@pytest.fixture(scope="function")
+async def chs3_conn():
+    with connect_ch(
+        host=get_test_container_hostport("db-clickhouse", original_port=9000).host,
+        port=get_test_container_hostport("db-clickhouse", original_port=9000).port,
+        user="datalens",
+        password="qwerty",
+        secure=False,
+    ) as ch_conn:
+        yield ch_conn
+
+
+@pytest.fixture(scope="function")
+async def read_chs3_file(chs3_conn, connectors_settings):
+    def reader(s3_filename):
+        c_file = connectors_settings.FILE
+        with chs3_conn.cursor() as cursor:
+            cursor.execute(
+                f"""
+                    SELECT *
+                    FROM s3(
+                        '{c_file.S3_ENDPOINT}/{c_file.BUCKET}/{s3_filename}',
+                        '{c_file.ACCESS_KEY_ID}',
+                        '{c_file.SECRET_ACCESS_KEY}',
+                        'Native'
+                    ) AS t1
+                """
+            )
+            res = cursor.fetchall()
+        return res
+
+    yield reader

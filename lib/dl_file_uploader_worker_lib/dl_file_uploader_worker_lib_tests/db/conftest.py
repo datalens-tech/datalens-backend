@@ -24,31 +24,39 @@ LOGGER = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope="function")
-async def uploaded_file(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_model_manager) -> DataFile:
+async def upload_file(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_model_manager):
+    async def uploader(csv_data: bytes) -> DataFile:
+        data_file_desc = DataFile(
+            manager=redis_model_manager,
+            filename="test_file.csv",
+            file_type=FileType.csv,
+            size=len(csv_data),
+            status=FileProcessingStatus.in_progress,
+        )
+        await s3_client.put_object(
+            ACL="private",
+            Bucket=s3_tmp_bucket,
+            Key=data_file_desc.s3_key,
+            Body=csv_data,
+        )
+
+        await data_file_desc.save()
+        return data_file_desc
+
+    yield uploader
+
+
+@pytest.fixture(scope="function")
+async def uploaded_file(upload_file) -> DataFile:
     csv_data = f"""f1,f2,f3,Дата,Дата и время
 qwe,123,45.9,2021-02-04,2021-02-04 12:00:00
 asd,345,47.9,2021-02-05,2021-02-05 14:01:00
 zxc,456,"49,9",2021-02-06,2021-02-06 11:59:00
 zxc,456,,,2021-02-06 11:59:00
-{'zxc'*35000},456,49.9,2021-02-06,""".encode(
+{'zxc' * 35000},456,49.9,2021-02-06,""".encode(
         "utf-8"
     )
-
-    data_file_desc = DataFile(
-        manager=redis_model_manager,
-        filename="test_file.csv",
-        file_type=FileType.csv,
-        size=len(csv_data),
-        status=FileProcessingStatus.in_progress,
-    )
-    await s3_client.put_object(
-        ACL="private",
-        Bucket=s3_tmp_bucket,
-        Key=data_file_desc.s3_key,
-        Body=csv_data,
-    )
-
-    await data_file_desc.save()
+    data_file_desc = await upload_file(csv_data)
     yield data_file_desc
 
 
@@ -63,6 +71,25 @@ async def uploaded_file_id(uploaded_file) -> str:
 @pytest.fixture(scope="function")
 async def another_uploaded_file_id(another_uploaded_file) -> str:
     yield another_uploaded_file.id
+
+
+@pytest.fixture(scope="function")
+async def uploaded_file_dt(upload_file) -> DataFile:
+    csv_data = f"""Date time
+13.10.2023 21:02:36
+13.10.2023 10:38:48
+12.10.2023 20:47:22
+12.10.2023 20:46:24
+12.10.2023 20:44:19""".encode(
+        "utf-8"
+    )
+    data_file_desc = await upload_file(csv_data)
+    yield data_file_desc
+
+
+@pytest.fixture(scope="function")
+async def uploaded_file_dt_id(uploaded_file_dt) -> str:
+    yield uploaded_file_dt.id
 
 
 @pytest.fixture(scope="function")
