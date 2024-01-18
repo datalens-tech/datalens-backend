@@ -61,13 +61,13 @@ def make_date(value: Any) -> Optional[datetime.date]:
     return None
 
 
-def make_datetime(value: Any, day_first: None | bool = None) -> Optional[datetime.datetime]:
+def make_datetime(value: Any) -> Optional[datetime.datetime]:
     if isinstance(value, datetime.datetime):
         return value
     if isinstance(value, datetime.date):
         return datetime.datetime(value.year, value.month, value.day)
     if isinstance(value, str):
-        return converter_types_cast._to_datetime(value, day_first)
+        return converter_types_cast._to_datetime(value)
     return None
 
 

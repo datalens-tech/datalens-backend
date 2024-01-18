@@ -62,7 +62,17 @@ def _make_datetime(value: Any) -> Optional[datetime.datetime]:
     # %Y-%m-%dT%H:%M:%S.%f
     # %d.%m.%Y %H:%M:%S.%f
     # see dl_file_uploader_worker_lib.utils.converter_parsing_utils._check_datetime_re
-    return make_datetime(value, day_first=True)
+
+    if isinstance(value, str):
+        for f in ("%d.%m.%Y %H:%M:%S.%f", "%d.%m.%Y %H:%M:%S"):
+            try:
+                dt = datetime.datetime.strptime(value, f)
+            except ValueError:
+                pass
+            else:
+                return dt
+
+    return make_datetime(value)
 
 
 class IntegerFileTypeCaster(TypeCaster):
