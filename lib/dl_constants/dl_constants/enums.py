@@ -380,3 +380,7 @@ class QueryProcessingMode(DynamicEnum):
     basic = AutoEnumValue()
     no_compeng = AutoEnumValue()
     native_wf = AutoEnumValue()
+
+
+class DataPivotEngineType(DynamicEnum):
+    pass

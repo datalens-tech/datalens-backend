@@ -11,7 +11,6 @@ from dl_api_lib.app.data_api.resources.base import (
     requires,
 )
 from dl_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
-from dl_api_lib.pivot.pandas.transformer import PdPivotTransformer
 from dl_api_lib.query.formalization.pivot_formalizer import PivotFormalizer
 from dl_api_lib.query.formalization.pivot_legend import PivotLegend
 from dl_api_lib.request_model.normalization.drm_normalizer_pivot import PivotRequestModelNormalizer
@@ -116,7 +115,8 @@ class DatasetPivotView(DatasetDataBaseView):
         with GenericProfiler(f"{self.profiler_prefix}-{pivot_op_name}-transform-full"):
             legend_data = dl_api_lib.schemas.legend.LegendSchema().dump(legend)
             LOGGER.info("Pivot legend", extra=dict(legend=legend_data))
-            transformer = PdPivotTransformer(legend=legend, pivot_legend=pivot_legend)
+            transformer_factory = self.api_service_registry.get_pivot_transformer_factory()
+            transformer = transformer_factory.get_transformer(legend=legend, pivot_legend=pivot_legend)
             with GenericProfiler(f"{self.profiler_prefix}-{pivot_op_name}-transform"):
                 pivot_table = transformer.pivot(rows=merged_stream.rows)
 
