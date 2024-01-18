@@ -364,12 +364,12 @@ def default_async_usm_per_test(bi_context, prepare_us, us_config):
 
 
 @pytest.fixture(scope="function")
-async def chs3_conn():
+async def chs3_conn(connectors_settings):
     with connect_ch(
         host=get_test_container_hostport("db-clickhouse", original_port=9000).host,
         port=get_test_container_hostport("db-clickhouse", original_port=9000).port,
-        user="datalens",
-        password="qwerty",
+        user=connectors_settings.FILE.USERNAME,
+        password=connectors_settings.FILE.PASSWORD,
         secure=False,
     ) as ch_conn:
         yield ch_conn
