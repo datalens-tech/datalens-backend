@@ -29,6 +29,7 @@ from dl_api_commons.reporting.models import (
 )
 from dl_constants.types import TJSONExt  # not under `TYPE_CHECKING`, need to define new type aliases.
 from dl_core import exc
+from dl_core.base_models import WorkbookEntryLocation
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.connectors.base.dashsql import get_custom_dash_sql_key_names
 from dl_core.data_processing.cache.processing_helper import (
@@ -338,7 +339,9 @@ class DashSQLCachedSelector(DashSQLSelector):
         assert conn_id
 
         service_registry = self._service_registry
-        workbook_id = service_registry.rci.workbook_id
+        workbook_id = service_registry.rci.workbook_id or (
+            self.conn.entry_key.workbook_id if isinstance(self.conn.entry_key, WorkbookEntryLocation) else None
+        )
         reporting_registry = service_registry.get_reporting_registry()
 
         reporting_registry.save_reporting_record(
