@@ -29,7 +29,7 @@ types-pytest-lazy-fixture==0.6.3
 types-python-dateutil==2.8.2
 types-pytz==2022.7.1
 types-pywin32==306
-types-redis==5.0.1
+types-redis==4.6.0.11
 types-requests==2.28.2
 types-s3transfer==0.6.2
 types-setuptools==68.0.0
