@@ -3,8 +3,9 @@ Information about the outside context for all environments.
 
 All the classes (instead of dicts) for static checking.
 """
-
 from __future__ import annotations
+
+from typing import Any
 
 
 def is_setting_applicable(cfg: object, key: str):
@@ -15,7 +16,8 @@ def is_setting_applicable(cfg: object, key: str):
 
 
 class LegacyDefaults:
-    pass
+    def __setattr__(self, key: Any, value: Any):
+        return super().__setattr__(key, value)
 
 
 class BaseInstallationsMap:

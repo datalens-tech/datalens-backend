@@ -48,9 +48,6 @@ class ObjectLikeConfig(Mapping):
     def __getitem__(self, key: Any) -> Any:
         return self._get_key(key)
 
-    def __setattr__(self, key: Any, value: Any):
-        super().__setattr__(key, value)
-
     @classmethod
     def from_dict(cls, data: dict, path: Optional[list] = None) -> "ObjectLikeConfig":
         if path is None:
