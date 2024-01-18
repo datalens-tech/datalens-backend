@@ -16,8 +16,9 @@ def is_setting_applicable(cfg: object, key: str):
 
 
 class LegacyDefaults:
-    def __setattr__(self, key: Any, value: Any):
-        return super().__setattr__(key, value)
+    def __getattr__(self, item: Any) -> Any:
+        # only for type checker
+        return getattr(self, item)
 
 
 class BaseInstallationsMap:
