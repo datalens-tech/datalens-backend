@@ -18,7 +18,7 @@ gunicorn = ">=20.1.0"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 python = ">=3.12, <3.13"
-redis = ">=4.5.4"
+redis = ">=5.0.1"
 datalens-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-file-uploader-lib = {path = "../dl_file_uploader_lib"}

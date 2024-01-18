@@ -16,7 +16,7 @@ botocore = ">=1.27.59,<1.27.60"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 python = ">=3.12, <3.13"
-redis = ">=4.5.4"
+redis = ">=5.0.1"
 ujson = ">=1.35"
 yarl = "==1.9.4"
 datalens-api-commons = {path = "../dl_api_commons"}
