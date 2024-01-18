@@ -56,8 +56,8 @@ def _to_date(value: str, formats: Optional[Iterable[str]] = None) -> datetime.da
     return dt.date()
 
 
-def _to_datetime(value: str) -> datetime.datetime:
-    dt = dateutil.parser.parse(value)
+def _to_datetime(value: str, day_first: None | bool = None) -> datetime.datetime:
+    dt = dateutil.parser.parse(value, dayfirst=day_first)
     return dt
 
 

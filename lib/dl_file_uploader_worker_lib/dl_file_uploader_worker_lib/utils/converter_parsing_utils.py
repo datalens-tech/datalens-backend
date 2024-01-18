@@ -31,6 +31,8 @@ from dl_core.aio.web_app_services.gsheets import (
 )
 from dl_core.db import SchemaColumn
 
+from dl_connector_bundle_chs3.chs3_base.core.type_transformer import DatetimeFileCommonTypeCaster
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -125,7 +127,7 @@ DATETIME_REGEXES = {
 
 
 @lru_cache(2**15)
-def _check_datetime_re(value):  # type: ignore  # TODO: fix
+def _check_datetime_re(value: str) -> None | str:
     if not value:
         return None
     for desc, re_expr in DATETIME_REGEXES.items():
@@ -287,7 +289,7 @@ $
 
 
 @lru_cache(2**15)
-def _check_date_re(value):  # type: ignore  # TODO: fix
+def _check_date_re(value: str) -> None | str:
     if not value:
         return None
     for desc, re_expr in date_re.items():
@@ -344,7 +346,7 @@ _DATETIME_PARSING_DATA_TYPE = ParsingDataType(
     bi_type=UserDataType.genericdatetime,
     order=3,
     type=datetime.datetime,
-    cast_func=converter_types_cast._to_datetime,
+    cast_func=DatetimeFileCommonTypeCaster.cast_func,
     check_func=_check_datetime_re,
     group=_TYPE_GROUP_DATETIME,
 )
@@ -365,7 +367,7 @@ TResultTypes = list[TResultColumn]
 
 
 @lru_cache(2**20)
-def guess_cell_type(value, start_order: int = 0) -> ParsingDataType:  # type: ignore  # TODO: fix
+def guess_cell_type(value: None | str, start_order: int = 0) -> ParsingDataType:
     if value is None or value == "":
         return _NONE_PARSING_DATA_TYPE
 
@@ -425,7 +427,7 @@ def _choose_new_cell_type(new_type: ParsingDataType, prev_type: ParsingDataType)
         return _STRING_PARSING_DATA_TYPE
 
 
-def generate_column_hash_name():  # type: ignore  # TODO: fix
+def generate_column_hash_name() -> str:
     return "f" + uuid4().hex[:16]
 
 
@@ -630,7 +632,7 @@ def make_excel_result_types(
     types: TColumnTypes,
     has_header: bool,
 ) -> TResultTypes:
-    def get_value(value):  # type: ignore
+    def get_value(value) -> str:
         return value.get("value")
 
     result_types = []
