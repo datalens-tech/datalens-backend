@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+from enum import (
+    Enum,
+    auto,
+    unique,
+)
 from typing import (
     Hashable,
     NamedTuple,
@@ -116,3 +121,9 @@ MeasureValues = tuple[Optional[DataCellVector], ...]
 class DataRow(NamedTuple):
     header: PivotHeader
     values: MeasureValues
+
+
+@unique
+class SortAxis(Enum):
+    columns = auto()
+    rows = auto()
