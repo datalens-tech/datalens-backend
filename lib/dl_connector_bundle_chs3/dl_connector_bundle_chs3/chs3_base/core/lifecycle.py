@@ -36,6 +36,7 @@ class FileConnTaskScheduler:
         for src_id in source_to_del:
             source = conn.get_saved_source_by_id(src_id)
 
+            s3_filename: str | None
             if source.s3_filename_suffix is not None:
                 s3_filename = conn.get_full_s3_filename(source.s3_filename_suffix)
             else:
