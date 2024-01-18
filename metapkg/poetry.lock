@@ -989,7 +989,7 @@ marshmallow = ">=3.19.0"
 multidict = ">=4.0"
 opentracing = "==2.4.0"
 sentry-sdk = {version = ">=1.15.0", extras = ["flask"]}
-typing-extensions = ">=4.5.0"
+typing-extensions = ">=4.9.0"
 
 [package.source]
 type = "directory"
@@ -1187,7 +1187,7 @@ datalens-constants = {path = "../dl_constants"}
 datalens-utils = {path = "../dl_utils"}
 dynamic-enum = {path = "../dynamic_enum"}
 pyyaml = ">=6.0.1"
-typeguard = ">=2.13.3"
+typeguard = "==4.1.5"
 
 [package.source]
 type = "directory"
@@ -1622,7 +1622,7 @@ develop = false
 
 [package.dependencies]
 dynamic-enum = {path = "../dynamic_enum"}
-typing-extensions = ">=4.5.0"
+typing-extensions = ">=4.9.0"
 
 [package.source]
 type = "directory"
@@ -1704,7 +1704,7 @@ requests = ">=2.28.2"
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.51, <2.0"
 statcommons = {path = "../statcommons"}
-typing-extensions = ">=4.5.0"
+typing-extensions = ">=4.9.0"
 uwsgi = ">=2.0.23"
 Werkzeug = ">=2.2.3"
 xxhash = ">=3.2.0"
@@ -5693,18 +5693,18 @@ files = [
 
 [[package]]
 name = "typeguard"
-version = "2.13.3"
+version = "4.1.5"
 description = "Run-time type checker for Python"
 optional = false
-python-versions = ">=3.5.3"
+python-versions = ">=3.8"
 files = [
-    {file = "typeguard-2.13.3-py3-none-any.whl", hash = "sha256:5e3e3be01e887e7eafae5af63d1f36c849aaa94e3a0112097312aabfa16284f1"},
-    {file = "typeguard-2.13.3.tar.gz", hash = "sha256:00edaa8da3a133674796cf5ea87d9f4b4c367d77476e185e80251cc13dfbb8c4"},
+    {file = "typeguard-4.1.5-py3-none-any.whl", hash = "sha256:8923e55f8873caec136c892c3bed1f676eae7be57cdb94819281b3d3bc9c0953"},
+    {file = "typeguard-4.1.5.tar.gz", hash = "sha256:ea0a113bbc111bcffc90789ebb215625c963411f7096a7e9062d4e4630c155fd"},
 ]
 
 [package.extras]
-doc = ["sphinx-autodoc-typehints (>=1.2.0)", "sphinx-rtd-theme"]
-test = ["mypy", "pytest", "typing-extensions"]
+doc = ["Sphinx (>=7)", "packaging", "sphinx-autodoc-typehints (>=1.2.0)"]
+test = ["coverage[toml] (>=7)", "mypy (>=1.2.0)", "pytest (>=7)"]
 
 [[package]]
 name = "types-pyyaml"
@@ -6241,4 +6241,4 @@ yc = ["yandexcloud"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12, <3.13"
-content-hash = "acbbb0757102c9605938eb85a48c4894f9648f6de22b45b2c2f29166aa98e534"
+content-hash = "1e60b4e3087b29d0018b64776b74c2eab8c99b0deda6f7e01cf3b82acc111901"

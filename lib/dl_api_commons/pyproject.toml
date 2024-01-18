@@ -19,7 +19,7 @@ multidict = ">=4.0"
 opentracing = "==2.4.0"
 python = ">=3.12, <3.13"
 sentry-sdk = {version = ">=1.15.0", extras = ["flask"]}
-typing-extensions = ">=4.5.0"
+typing-extensions = ">=4.9.0"
 datalens-utils = {path = "../dl_utils"}
 datalens-constants = {path = "../dl_constants"}
 datalens-configs = {path = "../dl_configs"}
