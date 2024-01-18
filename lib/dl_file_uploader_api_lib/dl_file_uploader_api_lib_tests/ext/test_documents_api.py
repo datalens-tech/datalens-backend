@@ -42,6 +42,14 @@ async def test_yadocuments_public_file(
         assert sheet_src.status == FileProcessingStatus.ready
         assert sheet_src.error is None
 
+    for src in df.sources:
+        resp = await fu_client.make_request(ReqBuilder.source_info(file_id, src.id))
+        assert resp.status == 200
+        source = resp.json["source"]
+        assert source["public_link"]
+        assert source["sheet_id"]
+        assert source["is_valid"]
+
 
 @pytest.mark.asyncio
 async def test_yadocuments_private_file(
