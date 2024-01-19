@@ -3,6 +3,10 @@ from typing import (
     Sequence,
 )
 
+from aiomysql.sa.result import (
+    ResultMetaData,
+    ResultProxy,
+)
 import pytest
 from sqlalchemy.dialects import mysql as mysql_types
 
@@ -26,7 +30,7 @@ class MySQLSyncAsyncConnectionExecutorCheckBase(
 ):
     test_params = RegulatedTestParams(
         mark_tests_failed={
-            DefaultAsyncConnectionExecutorTestSuite.test_closing_sql_sessions: "",  # TODO: FIXME
+            DefaultAsyncConnectionExecutorTestSuite.test_closing_sql_sessions: "Not implemented",  # TODO: FIXME
         },
     )
 
@@ -82,6 +86,43 @@ class TestMySQLAsyncConnectionExecutor(
     MySQLSyncAsyncConnectionExecutorCheckBase,
     DefaultAsyncConnectionExecutorTestSuite[ConnectionMySQL],
 ):
+    @pytest.fixture(autouse=True, scope="function")
+    def mock_aiomysql_prepare(self, monkeypatch):
+        """
+        Replace for
+        https://github.com/aio-libs/aiomysql/blob/83aa96e12b1b3f2bd373f60a9c585b6e73f40f52/aiomysql/sa/result.py#L253
+        The ResultProxy._prepare creates destructor for an internal cursor object by `self._weak = weakref.ref(self, callback)`
+        However, there's an issue where it attempts to execute a task in a potentially closed event loop,
+        leading to strange behavior:
+        1. Datalens reads all data from ReadProxy and finish the test
+        2. fixture event_loop closes the loop
+        3. GC deletes old objects -> runs weakref's callbacks
+        2. the cursor's callback creates coroutine Cursor.close
+        3. the cursor's callback tries to run this coroutine in the old loop (2)
+        4. the old loop generates exception, but the coroutine is still here
+        5. asyncio generates warning
+        5. aiohttp-pytest-plugin transforms warning to exception
+
+        There is no way to control a weakref's callback, and also we can't delete a weakref.
+        Anyway, aiomysql closes cursor along with engine and connection ->
+        skipping a destructor in tests doesn't sound like a terrible idea
+        """
+
+        async def _prepare(self, *args, **kwargs):
+            cursor = self._cursor
+            self._weak = None
+            if cursor.description is not None:
+                self._metadata = ResultMetaData(self, cursor.description)
+            else:
+                self._metadata = None
+                await self.close()
+
+        monkeypatch.setattr(
+            ResultProxy,
+            "_prepare",
+            _prepare,
+        )
+
     test_params = RegulatedTestParams(
         mark_tests_skipped={
             DefaultAsyncConnectionExecutorTestSuite.test_table_exists: "Not implemented",
