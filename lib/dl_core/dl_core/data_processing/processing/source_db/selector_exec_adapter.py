@@ -169,7 +169,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         target_connection = self._us_entry_buffer.get_entry(entry_id=target_connection_ref)
         assert isinstance(target_connection, ExecutorBasedMixin)
 
-        workbook_id = (
+        workbook_id = self._service_registry.rci.workbook_id or (
             target_connection.entry_key.workbook_id
             if isinstance(target_connection.entry_key, WorkbookEntryLocation)
             else None
