@@ -53,7 +53,6 @@ class DLArqWorker(Worker):
             f"{datetime.now():%b-%d %H:%M:%S} j_complete={self.jobs_complete} j_failed={self.jobs_failed} "
             f"j_retried={self.jobs_retried} j_ongoing={pending_tasks} queued={queued}"
         )
-        LOGGER.info(f"Going to set HC value for {int(self.health_check_record_ttl * 1000)} ms")
         await self.pool.psetex(  # type: ignore[no-untyped-call]
             self.health_check_key, int(self.health_check_record_ttl * 1000), info.encode()
         )
