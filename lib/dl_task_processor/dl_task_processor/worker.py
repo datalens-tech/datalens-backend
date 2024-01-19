@@ -13,7 +13,6 @@ from typing import (
     Sequence,
 )
 
-from arq import Worker
 from arq.connections import RedisSettings
 from arq.typing import SecondsTimedelta
 from arq.utils import to_seconds
@@ -28,6 +27,7 @@ from dl_task_processor.arq_wrapper import (
 )
 from dl_task_processor.context import BaseContextFabric
 from dl_task_processor.executor import ExecutorFabric
+from dl_task_processor.upstream_worker import Worker
 
 
 LOGGER = logging.getLogger(__name__)
@@ -70,10 +70,10 @@ class WorkerSettings:
     # but (if you really want it) you can provide float('inf')
     retry_hard_limit: int = attr.ib(default=100)
     job_timeout: int = attr.ib(default=600)  # seconds
-    health_check_interval: int = attr.ib(default=30)
-    health_check_record_ttl: int = attr.ib(  # ttl should always be greater than job timeout
+    health_check_interval: int = attr.ib(default=30)  # how often the HC record is set
+    health_check_record_ttl: int = attr.ib(  # ttl should generally be greater than the HC interval with a margin
         default=attr.Factory(
-            lambda self: self.job_timeout + self.health_check_interval * 2,  # just to be safe
+            lambda self: self.health_check_interval * 3,  # just to be safe
             takes_self=True,
         ),
     )

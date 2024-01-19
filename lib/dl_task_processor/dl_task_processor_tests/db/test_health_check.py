@@ -50,10 +50,8 @@ async def test_health_check_ttl(task_processor_arq_worker, task_processor_client
     await asyncio.sleep(6)
 
     is_ok = await HealthChecker(worker=task_processor_arq_worker).is_ok()
-    if worker_settings.health_check_record_ttl == worker_settings.health_check_interval + 1:
-        assert not is_ok
-    else:
-        assert is_ok
+    assert is_ok
+    # ^ bad health_check_* arguments balance does not affect HC => making sure that worker's main loop is non-blocking
     await asyncio.sleep(5)  # just to let all tasks to finish, they can interfere with other tests
 
 
