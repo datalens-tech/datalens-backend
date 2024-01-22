@@ -12,11 +12,9 @@ from clickhouse_sqlalchemy import types as ch_types
 from dl_constants.enums import UserDataType
 from dl_core.db.conversion_base import (
     BooleanTypeCaster,
-    DatetimeTypeCaster,
-    DatetimeTZTypeCaster,
     DateTypeCaster,
-    GenericDatetimeTypeCaster,
     TypeCaster,
+    make_datetime,
     make_int,
     make_native_type,
 )
@@ -56,6 +54,27 @@ def make_boolean(value: Any) -> Optional[bool]:
     return bool(value)
 
 
+def _make_datetime(value: Any) -> Optional[datetime.datetime]:
+    # should parse formats like:
+    # %Y-%m-%d %H:%M:%S.%f
+    # %Y-%m-%d %H:%M:%S.%f+timezone
+    # %Y-%m-%dT%H:%M:%S.%f+timezone
+    # %Y-%m-%dT%H:%M:%S.%f
+    # %d.%m.%Y %H:%M:%S.%f
+    # see dl_file_uploader_worker_lib.utils.converter_parsing_utils._check_datetime_re
+
+    if isinstance(value, str):
+        for f in ("%d.%m.%Y %H:%M:%S.%f", "%d.%m.%Y %H:%M:%S"):
+            try:
+                dt = datetime.datetime.strptime(value, f)
+            except ValueError:
+                pass
+            else:
+                return dt
+
+    return make_datetime(value)
+
+
 class IntegerFileTypeCaster(TypeCaster):
     def _cast_for_input(self, value: Any) -> Any:
         return make_int_cleanup_spaces(value)
@@ -71,9 +90,13 @@ class DateFileTypeCaster(DateTypeCaster):
         return DateTypeCaster.cast_func(value).isoformat()  # type: ignore
 
 
-class DatetimeFileTypeCaster(DatetimeTypeCaster):
+class DatetimeFileCommonTypeCaster(TypeCaster):
+    cast_func = _make_datetime
+
+
+class DatetimeFileTypeCaster(DatetimeFileCommonTypeCaster):
     def _cast_for_input(self, value: Any) -> Any:
-        dt: Optional[datetime.datetime] = DatetimeTypeCaster.cast_func(value)
+        dt: Optional[datetime.datetime] = DatetimeFileCommonTypeCaster.cast_func(value)
         if dt is not None:
             if dt.tzinfo is not None and dt.utcoffset() is not None:
                 dt = dt.replace(tzinfo=None) - dt.utcoffset()  # type: ignore
@@ -81,14 +104,14 @@ class DatetimeFileTypeCaster(DatetimeTypeCaster):
         return None
 
 
-class DatetimeTZFileTypeCaster(DatetimeTZTypeCaster):
+class DatetimeTZFileTypeCaster(DatetimeFileCommonTypeCaster):
     def _cast_for_input(self, value: Any) -> Any:
-        return DatetimeTZTypeCaster.cast_func(value).isoformat()  # type: ignore
+        return None if (dt := DatetimeFileCommonTypeCaster.cast_func(value)) is None else dt.isoformat()
 
 
-class GenericDatetimeFileTypeCaster(GenericDatetimeTypeCaster):
+class GenericDatetimeFileTypeCaster(DatetimeFileCommonTypeCaster):
     def _cast_for_input(self, value: Any) -> Any:
-        dt: Optional[datetime.datetime] = GenericDatetimeTypeCaster.cast_func(value)
+        dt: Optional[datetime.datetime] = DatetimeFileCommonTypeCaster.cast_func(value)
         if dt is not None:
             if dt.tzinfo is not None and dt.utcoffset() is not None:
                 dt = dt.replace(tzinfo=None) - dt.utcoffset()  # type: ignore
