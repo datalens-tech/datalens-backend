@@ -167,7 +167,7 @@ class PdPivotSorterBase(PivotSorter):
         normalizer = self._measure_sort_strategy.get_normalizer(
             pivot_item_id=sorting_piid, direction=settings.direction
         )
-        sorting_key = sorting_key.map(normalizer.normalize_vector_value).argsort()
+        sorting_key = sorting_key.map(normalizer.normalize_vector_value).values.argsort()
         if settings.direction == OrderDirection.desc:
             sorting_key = sorting_key[::-1]
         if self._has_total(self._complementary_axis(axis)):
