@@ -67,7 +67,6 @@ class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
         elif isinstance(err, web.HTTPSuccessful):
             raise  # noqa
         else:
-            self.maybe_debug_catch(err)
             try:
                 # TODO CONSIDER: Validate that response is serializable
                 err_data = self._classify_error(err, request)
@@ -94,16 +93,6 @@ class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
                     ),
                     err_data,
                 )
-
-    def maybe_debug_catch(self, err):  # type: ignore  # TODO: fix
-        if os.environ.get("BI_ERR_PDB"):
-            sys.last_traceback = err.__traceback__
-            import traceback
-
-            traceback.print_exc()
-            import ipdb
-
-            ipdb.pm()
 
     def log_error_http_response(  # type: ignore  # TODO: fix
         self,

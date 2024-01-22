@@ -27,7 +27,6 @@ from dl_api_lib.error_handling import (
     status,
 )
 from dl_api_lib.schemas.main import get_api_model
-from dl_utils.utils import maybe_postmortem
 
 
 LOGGER = logging.getLogger(__name__)
@@ -153,7 +152,6 @@ def schematic_request(  # type: ignore  # TODO: fix
                 if error_code is None:
                     error_code = status.INTERNAL_SERVER_ERROR
                     LOGGER.exception("Caught an exception in request handler")
-                    maybe_postmortem(ei=ei)
                 else:
                     LOGGER.info("Regular exception fired", exc_info=True)
 
