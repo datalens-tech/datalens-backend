@@ -1,11 +1,11 @@
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
-from dl_api_connector.dashsql import (
+from dl_constants.enums import UserDataType
+from dl_core.dashsql.literalizer import (
     DefaultDashSQLParamLiteralizer,
     TValueBase,
 )
-from dl_constants.enums import UserDataType
 
 
 class OracleDashSQLParamLiteralizer(DefaultDashSQLParamLiteralizer):

@@ -163,6 +163,7 @@ async def test_save_source_task(
     redis_model_manager,
     uploaded_file_id,
     default_async_usm_per_test,
+    read_chs3_file,
 ):
     usm = default_async_usm_per_test
     task = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_file_id))
@@ -189,6 +190,54 @@ async def test_save_source_task(
 
     conn1 = await usm.get_by_id(conn.uuid)
     assert conn1.get_file_source_by_id(source.id).status == FileProcessingStatus.ready
+
+
+@pytest.mark.asyncio
+async def test_save_source_task_dt(
+    task_processor_client,
+    task_state,
+    s3_client,
+    redis_model_manager,
+    uploaded_file_dt_id,
+    default_async_usm_per_test,
+    read_chs3_file,
+):
+    usm = default_async_usm_per_test
+    task = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_file_dt_id))
+    result = await wait_task(task, task_state)
+    assert result[-1] == "success"
+
+    df = await DataFile.get(manager=redis_model_manager, obj_id=uploaded_file_dt_id)
+    source = df.sources[0]
+    assert source.status == FileProcessingStatus.ready
+
+    conn = await create_file_connection(usm, df.id, source.id, source.raw_schema)
+    assert conn.get_file_source_by_id(source.id).status == FileProcessingStatus.in_progress
+
+    task_save = await task_processor_client.schedule(
+        SaveSourceTask(
+            tenant_id="common",
+            file_id=uploaded_file_dt_id,
+            src_source_id=source.id,
+            dst_source_id=source.id,
+            connection_id=conn.uuid,
+        )
+    )
+    await wait_task(task_save, task_state)
+
+    conn1 = await usm.get_by_id(conn.uuid)
+    file = conn1.get_file_source_by_id(source.id)
+    assert file.status == FileProcessingStatus.ready
+
+    res = read_chs3_file(file.s3_filename)
+
+    assert [str(r) for r, in res] == [
+        "2023-10-13 21:02:36",
+        "2023-10-13 10:38:48",
+        "2023-10-12 20:47:22",
+        "2023-10-12 20:46:24",
+        "2023-10-12 20:44:19",
+    ]
 
 
 @pytest.mark.asyncio

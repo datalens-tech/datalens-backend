@@ -19,6 +19,7 @@ from dl_api_lib.i18n.registry import (
     LOCALIZATION_CONFIGS,
     register_translation_configs,
 )
+from dl_api_lib.pivot.plugin_registration import get_pivot_transformer_factory_cls
 from dl_api_lib.service_registry.sr_factory import DefaultApiSRFactory
 from dl_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
 from dl_configs.connectors_settings import ConnectorSettingsBase
@@ -160,6 +161,9 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
             localization_factory.get_for_locale(locale=settings.DEFAULT_LOCALE) if settings.DEFAULT_LOCALE else None
         )
 
+        pivot_transformer_factory_cls = get_pivot_transformer_factory_cls(pivot_engine_type=settings.PIVOT_ENGINE_TYPE)
+        pivot_transformer_factory = pivot_transformer_factory_cls()
+
         sr_factory = DefaultApiSRFactory(
             async_env=self._is_async_env,
             rqe_config=settings.RQE_CONFIG,
@@ -186,5 +190,6 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
             force_non_rqe_mode=settings.RQE_FORCE_OFF,
             query_proc_mode=settings.QUERY_PROCESSING_MODE,
             ca_data=ca_data,
+            pivot_transformer_factory=pivot_transformer_factory,
         )
         return sr_factory

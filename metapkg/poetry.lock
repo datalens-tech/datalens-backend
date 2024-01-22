@@ -1804,6 +1804,23 @@ type = "directory"
 url = "../lib/dl_core_testing"
 
 [[package]]
+name = "datalens-dashsql"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.12"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-constants = {path = "../../lib/dl_constants"}
+
+[package.source]
+type = "directory"
+url = "../lib/dl_dashsql"
+
+[[package]]
 name = "datalens-data-api"
 version = "0.0.0"
 description = ""
@@ -6415,4 +6432,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "2dc00c341f5ceda1eff986f55a7448dc6f236ff4ec02efc16a1be9991351fafd"
+content-hash = "6a310e617837fd5d355e2fa56b957947859f8e600f0172969ecb19fcfaed1709"

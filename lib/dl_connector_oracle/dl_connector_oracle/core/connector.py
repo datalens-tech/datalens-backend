@@ -16,6 +16,7 @@ from dl_connector_oracle.core.constants import (
     SOURCE_TYPE_ORACLE_SUBSELECT,
     SOURCE_TYPE_ORACLE_TABLE,
 )
+from dl_connector_oracle.core.dashsql import OracleDashSQLParamLiteralizer
 from dl_connector_oracle.core.data_source import (
     OracleDataSource,
     OracleSubselectDataSource,
@@ -52,6 +53,7 @@ class OracleSubselectCoreSourceDefinition(SQLSubselectCoreSourceDefinitionBase):
 class OracleCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_ORACLE
     compiler_cls = OracleQueryCompiler
+    dashsql_literalizer_cls = OracleDashSQLParamLiteralizer
 
 
 class OracleCoreConnector(CoreConnector):

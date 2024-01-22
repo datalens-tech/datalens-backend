@@ -14,12 +14,10 @@ from dl_api_connector.connector import (
 from dl_connector_oracle.api.api_schema.connection import OracleConnectionSchema
 from dl_connector_oracle.api.connection_form.form_config import OracleConnectionFormFactory
 from dl_connector_oracle.api.connection_info import OracleConnectionInfoProvider
-from dl_connector_oracle.api.dashsql import OracleDashSQLParamLiteralizer
 from dl_connector_oracle.api.i18n.localizer import CONFIGS
 from dl_connector_oracle.core.connector import (
     OracleCoreBackendDefinition,
     OracleCoreConnectionDefinition,
-    OracleCoreConnector,
     OracleSubselectCoreSourceDefinition,
     OracleTableCoreSourceDefinition,
 )
@@ -58,4 +56,3 @@ class OracleApiConnector(ApiConnector):
         OracleApiSubselectSourceDefinition,
     )
     translation_configs = frozenset(CONFIGS)
-    dashsql_literalizer_cls = OracleDashSQLParamLiteralizer
