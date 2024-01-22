@@ -64,7 +64,7 @@ class TestArrayFunctionClickHouse_21_8(ClickHouse_21_8TestBase, ArrayFunctionCli
 
         assert dbe.eval(f"{bi_func}(ARRAY({bi_inp_int}))", from_=data_table) == eval_func(inp_int)
         assert dbe.eval(f"{bi_func}(REPLACE([arr_int_value], NULL, 1))", from_=data_table) == eval_func((0, 23, 456, 1))
-        assert dbe.eval(f"{bi_func}(ARRAY({bi_inp_float}))", from_=data_table) == eval_func(inp_float)
+        assert dbe.eval(f"{bi_func}(ARRAY({bi_inp_float}))", from_=data_table) == pytest.approx(eval_func(inp_float))
         assert dbe.eval(f"{bi_func}(REPLACE([arr_float_value], NULL, 1))", from_=data_table) == eval_func(
             (0, 45, 0.123, 1)
         )
