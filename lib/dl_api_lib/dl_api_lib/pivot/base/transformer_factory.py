@@ -7,7 +7,7 @@ from dl_api_lib.pivot.hashable_packing import (
     FastJsonHashableValuePacker,
     HashableValuePackerBase,
 )
-from dl_api_lib.query.formalization.pivot_legend import PivotLegend
+from dl_api_lib.pivot.pivot_legend import PivotLegend
 from dl_query_processing.legend.field_legend import Legend
 
 

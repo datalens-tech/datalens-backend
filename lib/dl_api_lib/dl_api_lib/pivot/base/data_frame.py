@@ -14,7 +14,11 @@ from typing import (
 
 import attr
 
-from dl_api_lib.pivot.primitives import PivotHeaderInfo
+from dl_api_lib.pivot.primitives import (
+    DataCellVector,
+    PivotHeaderInfo,
+    SortAxis,
+)
 from dl_constants.enums import (
     FieldRole,
     PivotHeaderRole,
@@ -34,15 +38,22 @@ _PIVOT_DATA_FRAME_TV = TypeVar("_PIVOT_DATA_FRAME_TV", bound="PivotDataFrame")
 
 @attr.s
 class PivotDataFrame(abc.ABC):
-    headers_info: dict[tuple, PivotHeaderInfo] = attr.ib(default=attr.Factory(lambda: defaultdict(PivotHeaderInfo)))
+    headers_info: dict[tuple[DataCellVector, ...], PivotHeaderInfo] = attr.ib(
+        default=attr.Factory(lambda: defaultdict(PivotHeaderInfo))
+    )
 
     @abc.abstractmethod
-    def iter_columns(self) -> Generator[PivotHeader, None, None]:
+    def iter_column_headers(self) -> Generator[PivotHeader, None, None]:
         raise NotImplementedError
 
     @abc.abstractmethod
     def iter_row_headers(self) -> Generator[PivotHeader, None, None]:
         raise NotImplementedError
+
+    def iter_axis_headers(self, axis: SortAxis) -> Generator[PivotHeader, None, None]:
+        if axis == SortAxis.columns:
+            return self.iter_column_headers()
+        return self.iter_row_headers()
 
     @abc.abstractmethod
     def iter_rows(self) -> Generator[tuple[PivotHeader, MeasureValues], None, None]:
@@ -62,6 +73,6 @@ class PivotDataFrame(abc.ABC):
 
     def populate_headers_info(self, legend: Legend) -> None:
         total_liids = {item.legend_item_id for item in legend.list_for_role(FieldRole.template)}
-        for header in chain(self.iter_columns(), map(itemgetter(0), self.iter_rows())):
+        for header in chain(self.iter_column_headers(), map(itemgetter(0), self.iter_rows())):
             if any(value.main_legend_item_id in total_liids for value in header.values):
                 header.info.role_spec.role = PivotHeaderRole.total

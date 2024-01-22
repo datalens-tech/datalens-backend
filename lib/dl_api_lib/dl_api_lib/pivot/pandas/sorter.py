@@ -5,7 +5,6 @@ from itertools import count
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Generator,
     Optional,
     Sequence,
     Union,
@@ -20,13 +19,13 @@ from dl_api_lib.pivot.pandas.data_frame import (
     PdPivotDataFrame,
     PdVSeriesPivotDataFrame,
 )
+from dl_api_lib.pivot.pivot_legend import (
+    PivotDimensionRoleSpec,
+    PivotMeasureRoleSpec,
+)
 from dl_api_lib.pivot.primitives import (
     DataCellVector,
     SortAxis,
-)
-from dl_api_lib.query.formalization.pivot_legend import (
-    PivotDimensionRoleSpec,
-    PivotMeasureRoleSpec,
 )
 from dl_constants.enums import (
     OrderDirection,
@@ -74,13 +73,8 @@ class PdPivotSorterBase(PivotSorter):
     def _complementary_axis(axis: SortAxis) -> SortAxis:
         return next(iter(set(SortAxis) - {axis}))
 
-    def _get_pd_index(self, axis: SortAxis) -> Generator[PivotHeader, None, None]:
-        if axis == SortAxis.columns:
-            return self._pivot_dframe.iter_columns()
-        return self._pivot_dframe.iter_row_headers()
-
     def _has_total(self, axis: SortAxis) -> bool:
-        index = self._get_pd_index(axis)
+        index = self._pivot_dframe.iter_axis_headers(axis)
         total_count = sum(header.info.role_spec.role == PivotHeaderRole.total for header in index)
         if total_count > 1:
             raise exc.PivotSortingWithSubtotalsIsNotAllowed()
@@ -141,7 +135,7 @@ class PdPivotSorterBase(PivotSorter):
     def _sort_by_measure(self, axis: SortAxis, sorting_piid: int, settings: PivotMeasureSortingSettings) -> None:
         sorting_idx: Optional[int] = None
 
-        for idx, header in enumerate(self._get_pd_index(axis)):
+        for idx, header in enumerate(self._pivot_dframe.iter_axis_headers(axis)):
             if header.compare_sorting_settings(settings):
                 if sorting_idx is None:
                     sorting_idx = idx
@@ -177,7 +171,10 @@ class PdPivotSorterBase(PivotSorter):
             sorting_settings = cast(PivotMeasureRoleSpec, pivot_item.role_spec).sorting
             if sorting_settings is None:
                 continue
-            for axis, settings in zip(SortAxis, [sorting_settings.column, sorting_settings.row]):
+            for axis, settings in zip(
+                [SortAxis.columns, SortAxis.rows],
+                [sorting_settings.column, sorting_settings.row],
+            ):
                 if settings is not None:
                     self._sort_by_measure(axis, pivot_item.pivot_item_id, settings)
 

@@ -13,8 +13,8 @@ from dl_api_lib.pivot.sort_strategy import (
 
 if TYPE_CHECKING:
     from dl_api_lib.pivot.base.data_frame import PivotDataFrame
+    from dl_api_lib.pivot.pivot_legend import PivotLegend
     from dl_api_lib.pivot.sort_strategy import SortValueStrategy
-    from dl_api_lib.query.formalization.pivot_legend import PivotLegend
     from dl_query_processing.legend.field_legend import Legend
 
 
