@@ -30,6 +30,11 @@ RUN python3 -m pip install --upgrade setuptools
 # TODO FIX: try to install j2cli to dedicated venv & make symlink in /usr/local/bin
 RUN python3 -m pip install poetry==1.7.1 j2cli==0.3.10
 
+# TODO FIX: Remove pandas install from github repository after pandas removing
+RUN mkdir datalens_wheels_latest
+RUN curl -sL https://github.com/datalens-tech/datalens-wheels/archive/refs/tags/0.2.0.tar.gz | tar xfz - -C datalens_wheels_latest/
+RUN python3 -m pip install datalens_wheels_latest/datalens-wheels-0.2.0/pandas_binary/pandas-2.0.3-cp312-cp312-linux_x86_64.whl
+
 RUN curl "https://storage.yandexcloud.net/cloud-certs/CA.pem" > /usr/local/share/ca-certificates/yandex-cloud-ca.crt
 RUN update-ca-certificates
 

@@ -1749,6 +1749,23 @@ type = "directory"
 url = "../lib/dl_core_testing"
 
 [[package]]
+name = "datalens-dashsql"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.12, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-constants = {path = "../../lib/dl_constants"}
+
+[package.source]
+type = "directory"
+url = "../lib/dl_dashsql"
+
+[[package]]
 name = "datalens-data-api"
 version = "0.0.0"
 description = ""
@@ -6260,4 +6277,4 @@ yc = ["yandexcloud"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12, <3.13"
-content-hash = "fb54b0e043931668447226dd653a4afa82fe04ab37694da4248670843cef3b65"
+content-hash = "2da55f54b5e9bc7ee09adc85f3f133b1325495700b9f346fd50d1597afdc3e64"
