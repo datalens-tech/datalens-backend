@@ -119,6 +119,12 @@ class DatasetDataBaseView(BaseView):
         """
         return self.dl_request.app_wrapper.allow_notifications
 
+    @property
+    def api_service_registry(self) -> ApiServiceRegistry:
+        service_registry = self.dl_request.services_registry
+        assert isinstance(service_registry, ApiServiceRegistry)
+        return service_registry
+
     @asynccontextmanager  # type: ignore  # TODO: fix
     async def default_query_execution_cm_stack(
         self,

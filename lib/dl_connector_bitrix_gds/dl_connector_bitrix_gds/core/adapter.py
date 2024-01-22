@@ -21,6 +21,8 @@ from sqlalchemy.sql.elements import TypeCoerce
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_constants.enums import ConnectionType
 from dl_core.aio.web_app_services.redis import RedisConnParams
+from dl_core.connection_executors.adapters.adapter_actions.async_base import AsyncDBVersionAdapterAction
+from dl_core.connection_executors.adapters.adapter_actions.db_version import AsyncDBVersionAdapterActionNone
 from dl_core.connection_executors.adapters.async_adapters_aiohttp import AiohttpDBAdapter
 from dl_core.connection_executors.adapters.async_adapters_base import AsyncRawExecutionResult
 from dl_core.connection_executors.models.db_adapter_data import (
@@ -91,6 +93,9 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
     _error_transformer = bitrix_error_transformer
 
     EXTRA_EXC_CLS = (json.JSONDecodeError,)
+
+    def _make_async_db_version_action(self) -> AsyncDBVersionAdapterAction:
+        return AsyncDBVersionAdapterActionNone()
 
     def __attrs_post_init__(self) -> None:
         super().__attrs_post_init__()
@@ -257,12 +262,6 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             raw_cursor_info=dict(cols=rd["cols"]),
             raw_chunk_generator=chunk_gen(),
         )
-
-    async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
-        return None  # Not Applicable
-
-    async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
-        raise NotImplementedError()
 
     async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         known_general_tables = BITRIX_TABLES_MAP.keys()

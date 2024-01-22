@@ -9,6 +9,7 @@ from typing import (
 import attr
 
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from dl_api_lib.pivot.base.transformer_factory import PivotTransformerFactory
 from dl_api_lib.service_registry.dataset_validator_factory import DefaultDatasetValidatorFactory
 from dl_api_lib.service_registry.field_id_generator_factory import FieldIdGeneratorFactory
 from dl_api_lib.service_registry.service_registry import DefaultApiServiceRegistry
@@ -39,6 +40,7 @@ class DefaultApiSRFactory(DefaultSRFactory[DefaultApiServiceRegistry]):
     _localizer_fallback: Optional[Localizer] = attr.ib(default=None)
     _connector_availability: Optional[ConnectorAvailabilityConfig] = attr.ib(default=None)
     _query_proc_mode: QueryProcessingMode = attr.ib(kw_only=True, default=QueryProcessingMode.basic)
+    _pivot_transformer_factory: Optional[PivotTransformerFactory] = attr.ib(kw_only=True, default=None)
 
     def additional_sr_constructor_kwargs(
         self,
@@ -58,4 +60,5 @@ class DefaultApiSRFactory(DefaultSRFactory[DefaultApiServiceRegistry]):
             localizer_fallback=self._localizer_fallback,
             connector_availability=self._connector_availability,
             query_proc_mode=self._query_proc_mode,
+            pivot_transformer_factory=self._pivot_transformer_factory,
         )

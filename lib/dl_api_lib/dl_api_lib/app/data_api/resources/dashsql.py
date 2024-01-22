@@ -16,13 +16,11 @@ import uuid
 from aiohttp import web
 
 from dl_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
-from dl_api_connector.dashsql import TValueBase
 from dl_api_lib.app.data_api.resources.base import (
     BaseView,
     RequiredResourceDSAPI,
     requires,
 )
-from dl_api_lib.dashsql.registry import get_dash_sql_param_literalizer
 from dl_api_lib.enums import USPermissionKind
 import dl_api_lib.schemas.main
 from dl_api_lib.utils.base import need_permission_on_entry
@@ -32,6 +30,8 @@ from dl_constants.enums import (
     UserDataType,
 )
 from dl_core.backend_types import get_backend_type
+from dl_core.dashsql.literalizer import TValueBase
+from dl_core.dashsql.registry import get_dash_sql_param_literalizer
 from dl_core.data_processing.dashsql import (
     BindParamInfo,
     DashSQLCachedSelector,

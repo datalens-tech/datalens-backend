@@ -89,3 +89,7 @@ ignore_missing_imports = true
 dl_api_lib = [
     {path = "dl_api_lib"},
 ]
+
+[tool.poetry.plugins."dl_api_lib.pivot_engine_plugins"]
+# TODO: Move to separate package
+pandas = "dl_api_lib.pivot.pandas.plugin:PandasPivotEnginePlugin"

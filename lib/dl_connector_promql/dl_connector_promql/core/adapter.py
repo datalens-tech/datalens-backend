@@ -242,12 +242,6 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
             url=urljoin(self._url, "-/ready"),
         )
 
-    async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
-        raise NotImplementedError()
-
-    async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
-        raise NotImplementedError()
-
     async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         raise NotImplementedError()
 

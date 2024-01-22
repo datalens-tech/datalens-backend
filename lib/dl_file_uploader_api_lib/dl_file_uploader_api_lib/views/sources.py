@@ -37,6 +37,8 @@ from dl_file_uploader_lib.redis_model.models.models import (
     GSheetsUserSourceDataSourceProperties,
     GSheetsUserSourceProperties,
     UserSourceProperties,
+    YaDocsUserSourceDataSourceProperties,
+    YaDocsUserSourceProperties,
 )
 from dl_file_uploader_task_interface.tasks import ParseFileTask
 
@@ -154,6 +156,13 @@ class SourceInfoView(FileUploaderBaseView):
             assert isinstance(user_source_properties, GSheetsUserSourceProperties)
             extra["spreadsheet_id"] = user_source_properties.spreadsheet_id
             assert isinstance(source.user_source_dsrc_properties, GSheetsUserSourceDataSourceProperties)
+            extra["sheet_id"] = source.user_source_dsrc_properties.sheet_id
+
+        if file_type == FileType.yadocs:
+            assert isinstance(user_source_properties, YaDocsUserSourceProperties)
+            extra["private_path"] = user_source_properties.private_path
+            extra["public_link"] = user_source_properties.public_link
+            assert isinstance(source.user_source_dsrc_properties, YaDocsUserSourceDataSourceProperties)
             extra["sheet_id"] = source.user_source_dsrc_properties.sheet_id
 
         source_resp = dict(

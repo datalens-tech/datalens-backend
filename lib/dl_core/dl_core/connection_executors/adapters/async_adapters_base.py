@@ -11,10 +11,25 @@ from typing import (
     Generic,
     Optional,
     TypeVar,
+    final,
 )
 
 import attr
 
+from dl_core.connection_executors.adapters.adapter_actions.async_base import (
+    AsyncDBVersionAdapterAction,
+    AsyncDBVersionAdapterActionNotImplemented,
+    AsyncSchemaNamesAdapterAction,
+    AsyncSchemaNamesAdapterActionNotImplemented,
+    AsyncTableExistsActionNotImplemented,
+    AsyncTableExistsAdapterAction,
+    AsyncTableInfoAdapterAction,
+    AsyncTableInfoAdapterActionNotImplemented,
+    AsyncTableNamesAdapterAction,
+    AsyncTableNamesAdapterActionNotImplemented,
+    AsyncTestAdapterAction,
+    AsyncTestAdapterActionNotImplemented,
+)
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
@@ -73,34 +88,104 @@ class AsyncCache(Generic[_CACHE_TV]):
 _DBA_TV = TypeVar("_DBA_TV", bound="AsyncDBAdapter")
 
 
+@attr.s
 class AsyncDBAdapter(metaclass=abc.ABCMeta):
-    @abc.abstractmethod
+    """
+    This class is a composition of implementations of various data source actions.
+    Each action is defined in a separate class, which should initialized in the
+    corresponding action factory method.
+    """
+
+    # Adapter action fields
+    _async_db_version_action: AsyncDBVersionAdapterAction = attr.ib(init=False)
+    _async_schema_names_action: AsyncSchemaNamesAdapterAction = attr.ib(init=False)
+    _async_table_names_action: AsyncTableNamesAdapterAction = attr.ib(init=False)
+    _async_test_action: AsyncTestAdapterAction = attr.ib(init=False)
+    _async_table_info_action: AsyncTableInfoAdapterAction = attr.ib(init=False)
+    _async_table_exists_action: AsyncTableExistsAdapterAction = attr.ib(init=False)
+
+    # Action defaults
+
+    @_async_db_version_action.default
+    @final
+    def __make_default_async_db_version_action(self) -> AsyncDBVersionAdapterAction:
+        return self._make_async_db_version_action()
+
+    @_async_schema_names_action.default
+    @final
+    def __make_async_schema_names_action(self) -> AsyncSchemaNamesAdapterAction:
+        return self._make_async_schema_names_action()
+
+    @_async_table_names_action.default
+    @final
+    def __make_async_table_names_action(self) -> AsyncTableNamesAdapterAction:
+        return self._make_async_table_names_action()
+
+    @_async_test_action.default
+    @final
+    def __make_async_test_action(self) -> AsyncTestAdapterAction:
+        return self._make_async_test_action()
+
+    @_async_table_info_action.default
+    @final
+    def __make_async_test_action(self) -> AsyncTableInfoAdapterAction:
+        return self._make_async_table_info_action()
+
+    @_async_table_exists_action.default
+    @final
+    def __make_async_table_exists_action(self) -> AsyncTableExistsAdapterAction:
+        return self._make_async_table_exists_action()
+
+    # Action factory methods
+
+    def _make_async_db_version_action(self) -> AsyncDBVersionAdapterAction:
+        # Redefine this method to enable `get_db_version`
+        return AsyncDBVersionAdapterActionNotImplemented()
+
+    def _make_async_schema_names_action(self) -> AsyncSchemaNamesAdapterAction:
+        # Redefine this method to enable `get_schema_names`
+        return AsyncSchemaNamesAdapterActionNotImplemented()
+
+    def _make_async_table_names_action(self) -> AsyncTableNamesAdapterAction:
+        # Redefine this method to enable `get_table_names`
+        return AsyncTableNamesAdapterActionNotImplemented()
+
+    def _make_async_test_action(self) -> AsyncTestAdapterAction:
+        # Redefine this method to enable `test`
+        return AsyncTestAdapterActionNotImplemented()
+
+    def _make_async_table_info_action(self) -> AsyncTableInfoAdapterAction:
+        # Redefine this method to enable `get_table_info`
+        return AsyncTableInfoAdapterActionNotImplemented()
+
+    def _make_async_table_exists_action(self) -> AsyncTableExistsAdapterAction:
+        # Redefine this method to enable `is_table_exists`
+        return AsyncTableExistsActionNotImplemented()
+
     async def test(self) -> None:
-        pass
+        return await self._async_test_action.run_test_action()
 
     @abc.abstractmethod
-    async def execute(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:
+    async def execute(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:  # TODO: Implement via action
         pass
 
-    @abc.abstractmethod
     async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
-        pass
+        return await self._async_db_version_action.run_db_version_action(db_ident=db_ident)
 
-    @abc.abstractmethod
     async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
-        pass
+        return await self._async_schema_names_action.run_schema_names_action(db_ident=db_ident)
 
-    @abc.abstractmethod
     async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-        pass
+        return await self._async_table_names_action.run_table_names_action(schema_ident=schema_ident)
 
-    @abc.abstractmethod
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
-        pass
+        return await self._async_table_info_action.run_table_info_action(
+            table_def=table_def,
+            fetch_idx_info=fetch_idx_info,
+        )
 
-    @abc.abstractmethod
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
-        pass
+        return await self._async_table_exists_action.run_table_exists_action(table_ident=table_ident)
 
     @abc.abstractmethod
     async def close(self) -> None:

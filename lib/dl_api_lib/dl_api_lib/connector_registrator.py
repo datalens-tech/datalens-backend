@@ -13,7 +13,6 @@ from dl_api_connector.connector import (
 from dl_api_lib.connection_forms.registry import register_connection_form_factory_cls
 from dl_api_lib.connection_info import register_connector_info_provider_cls
 from dl_api_lib.connector_alias import register_connector_alias
-from dl_api_lib.dashsql.registry import register_dash_sql_param_literalizer_cls
 from dl_api_lib.dataset.dialect import register_dialect_name
 from dl_api_lib.i18n.registry import register_translation_configs
 from dl_api_lib.query.registry import (
@@ -69,10 +68,6 @@ class ApiConnectorRegistrator:
         register_filter_formula_compiler_cls(
             backend_type=backend_type,
             filter_compiler_cls=backend_def.filter_formula_compiler_cls,
-        )
-        register_dash_sql_param_literalizer_cls(
-            backend_type=backend_type,
-            literalizer_cls=backend_def.dashsql_literalizer_cls,
         )
 
     @classmethod
