@@ -8,7 +8,7 @@ from typing import (
     Type,
 )
 
-from aiochclient.http_clients import aiohttp
+import aiohttp
 import attr
 
 from dl_constants.enums import IndexKind

@@ -29,40 +29,16 @@ python-dateutil = ">=2.8.2"
 datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 
 [[tool.mypy.overrides]]
-module = "ciso8601"
+module = [
+    "ciso8601",
+    "sqlalchemy",
+    "graphviz.*",
+    "pytest.*",
+    "pytz.tzinfo.*",
+    "dl_formula.parser.antlr.gen.*",
+    "antlr4.*"
+]
 ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "ydb"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "sqlalchemy"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "clickhouse_sqlalchemy.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "graphviz.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "pytest.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "pytz.tzinfo.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "dl_sqlalchemy_metrica_api.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "dl_formula.parser.antlr.gen.DataLensLexer,dl_formula.parser.antlr.gen.DataLensParser,dl_formula.parser.antlr.gen.DataLensVisitor"
-ignore_errors = true
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

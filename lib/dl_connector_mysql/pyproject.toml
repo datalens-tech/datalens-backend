@@ -64,8 +64,6 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = ["dl_connector_mysql_tests/db", "dl_connector_mysql_tests/unit"]
 
-
-
 [datalens.pytest.local]
 root_dir = "dl_connector_mysql_tests/"
 target_path = "db unit"
@@ -75,6 +73,13 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[[tool.mypy.overrides]]
+module = [
+    "dl_sqlalchemy_mysql.*",
+    "aiomysql.*"
+]
+ignore_missing_imports = true
 
 [datalens.i18n.domains]
 dl_connector_mysql = [

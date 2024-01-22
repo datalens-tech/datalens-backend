@@ -81,6 +81,10 @@ disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
 
+[[tool.mypy.overrides]]
+module = "dl_sqlalchemy_postgres.*"
+ignore_missing_imports = true
+
 [datalens.i18n.domains]
 dl_connector_postgresql = [
     {path = "dl_connector_postgresql/api"},

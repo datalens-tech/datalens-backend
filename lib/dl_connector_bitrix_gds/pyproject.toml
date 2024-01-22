@@ -66,6 +66,10 @@ disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
 
+[[tool.mypy.overrides]]
+module = "dl_sqlalchemy_bitrix.*"
+ignore_missing_imports = true
+
 [datalens.i18n.domains]
 dl_connector_bitrix_gds = [
     {path = "dl_connector_bitrix_gds/api"},
