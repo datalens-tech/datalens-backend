@@ -150,6 +150,8 @@ datalens-attrs-model-mapper = {path = "../lib/dl_attrs_model_mapper"}
 datalens-attrs-model-mapper-doc-tools = {path = "../lib/dl_attrs_model_mapper_doc_tools"}
 datalens-connector-ydb = {path = "../lib/dl_connector_ydb"}
 datalens-dashsql = {path = "../lib/dl_dashsql"}
+datalens-pivot = {path = "../lib/dl_pivot"}
+datalens-pivot-pandas = {path = "../lib/dl_pivot_pandas"}
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.3.0"
