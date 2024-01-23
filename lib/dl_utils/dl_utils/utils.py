@@ -5,8 +5,6 @@ from enum import Enum
 import functools
 from itertools import islice
 import operator
-import os
-import sys
 from time import time
 from typing import (
     Any,
@@ -18,79 +16,9 @@ from typing import (
     Tuple,
     Type,
     TypeVar,
-    cast,
 )
 
 import attr
-
-
-def get_pdb() -> Any:
-    try:
-        import ipdb
-
-        return ipdb
-    except Exception:
-        import pdb
-
-        return pdb
-
-
-def maybe_postmortem(ei: Any = None) -> None:
-    """
-    An env-controlled post-mortem breakpoint.
-    Set `BI_ERR_PDB=1` to use.
-    """
-    if ei is None:
-        ei = sys.exc_info()
-    if os.environ.get("BI_ERR_PDB") != "1":
-        return
-    _, _, sys.last_traceback = ei
-    import traceback
-
-    print("".join(traceback.format_exception(*ei)))
-    pdb = get_pdb()
-    pdb.pm()
-
-
-_CALLABLE_TV = TypeVar("_CALLABLE_TV", bound=Callable)
-
-
-def exc_catch_wrap(func: _CALLABLE_TV) -> _CALLABLE_TV:
-    """
-    An env-controlled post-mortem function wrapper.
-    Set `BI_ERR_PDB=1` to use. Does nothing otherwise.
-    """
-    if os.environ.get("BI_ERR_PDB") != "1":
-        return func
-
-    @functools.wraps(func)
-    def exc_catch_wrapped(*args: Any, **kwargs: Any) -> Any:
-        try:
-            return func(*args, **kwargs)
-        except Exception:
-            maybe_postmortem()
-            raise
-
-    return cast(_CALLABLE_TV, exc_catch_wrapped)
-
-
-def exc_catch_awrap(afunc: _CALLABLE_TV) -> _CALLABLE_TV:
-    """
-    An env-controlled post-mortem async-function wrapper.
-    Set `BI_ERR_PDB=1` to use. Does nothing otherwise.
-    """
-    if os.environ.get("BI_ERR_PDB") != "1":
-        return afunc
-
-    @functools.wraps(afunc)
-    async def exc_catch_awrapped(*args: Any, **kwargs: Any) -> Any:
-        try:
-            return await afunc(*args, **kwargs)
-        except Exception:
-            maybe_postmortem()
-            raise
-
-    return cast(_CALLABLE_TV, exc_catch_awrapped)
 
 
 def get_type_full_name(t: Type) -> str:
