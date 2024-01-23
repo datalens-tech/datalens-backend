@@ -21,7 +21,6 @@ from dl_app_tools.profiling_base import (
     generic_profiler_async,
 )
 from dl_query_processing.merging.primitives import MergedQueryDataStream
-from dl_utils.utils import exc_catch_awrap
 
 
 if TYPE_CHECKING:
@@ -49,7 +48,6 @@ class DatasetPivotView(DatasetDataBaseView):
     #     responses={200: ('Success', dl_api_lib.schemas.data.DatasetVersionResultResponseSchema())}
     # )
     @generic_profiler_async("ds-pivot-full")
-    @exc_catch_awrap
     @DatasetDataBaseView.with_resolved_entities
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> Response:

@@ -46,7 +46,6 @@ from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from dl_core.connection_models.common_models import TableDefinition
 from dl_core.db import SchemaInfo
 from dl_utils.aio import ContextVarExecutor
-from dl_utils.utils import maybe_postmortem
 
 
 if TYPE_CHECKING:
