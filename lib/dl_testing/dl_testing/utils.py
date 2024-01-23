@@ -5,6 +5,7 @@ import http.client
 import logging
 import os
 import socket
+import ssl
 import time
 from typing import (
     Any,
@@ -15,6 +16,7 @@ from typing import (
     overload,
 )
 
+import aiohttp
 import pytest
 
 from dl_api_commons.reporting.profiler import (
@@ -22,7 +24,10 @@ from dl_api_commons.reporting.profiler import (
     QUERY_PROFILING_ENTRY,
 )
 from dl_testing.containers import get_test_container_hostport
-from dl_testing.shared_testing_constants import RUN_DEVHOST_TESTS
+from dl_testing.shared_testing_constants import (
+    CA_BUNDLE_FILE,
+    RUN_DEVHOST_TESTS,
+)
 from dl_utils.wait import wait_for
 
 
@@ -139,4 +144,23 @@ def get_dump_request_profile_records(caplog, single: bool = False):
         caplog,
         predicate=_is_profiling_record,
         single=single,
+    )
+
+
+def get_root_certificates_path() -> str:
+    return CA_BUNDLE_FILE
+
+
+def get_root_certificates() -> bytes:
+    with open(get_root_certificates_path(), "rb") as f:
+        return f.read()
+
+
+def get_default_aiohttp_session() -> aiohttp.ClientSession:
+    return aiohttp.ClientSession(
+        connector=aiohttp.TCPConnector(
+            ssl_context=ssl.create_default_context(
+                cafile=get_root_certificates_path(),
+            ),
+        ),
     )

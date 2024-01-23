@@ -48,11 +48,13 @@ _ENTRY_TV = TypeVar("_ENTRY_TV", bound=USEntry)
 
 class AsyncUSManager(USManagerBase):
     _us_client: UStorageClientAIO
+    _ca_data: bytes
 
     def __init__(
         self,
         us_auth_context: USAuthContextBase,
         us_base_url: str,
+        ca_data: bytes,
         bi_context: RequestContextInfo,
         services_registry: ServicesRegistry,
         crypto_keys_config: Optional[CryptoKeysConfig] = None,
@@ -66,7 +68,9 @@ class AsyncUSManager(USManagerBase):
             context_request_id=bi_context.request_id if bi_context is not None else None,
             context_forwarded_for=bi_context.forwarder_for,
             context_workbook_id=bi_context.workbook_id,
+            ca_data=ca_data,
         )
+        self._ca_data = ca_data
 
         super().__init__(
             bi_context=bi_context,
@@ -91,6 +95,7 @@ class AsyncUSManager(USManagerBase):
             bi_context=self._bi_context,
             services_registry=self._services_registry,
             lifecycle_manager_factory=self._lifecycle_manager_factory,
+            ca_data=self._ca_data,
         )
 
     async def close(self) -> None:

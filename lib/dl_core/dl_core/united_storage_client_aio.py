@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-import ssl
 import time
 from typing import (
     AsyncGenerator,
@@ -20,7 +19,6 @@ from dl_api_commons.aiohttp.aiohttp_client import (
     PredefinedIntervalsRetrier,
 )
 from dl_api_commons.tracing import get_current_tracing_headers
-from dl_configs.utils import get_root_certificates_path
 from dl_core.base_models import EntryLocation
 from dl_core.exc import (
     USLockUnacquiredException,
@@ -105,13 +103,14 @@ class UStorageClientAIO(UStorageClientBase):
         def json(self) -> dict:
             return self._request_data.json  # type: ignore  # TODO: fix
 
-    _session: aiohttp.ClientSession
+    _bi_http_client: BIAioHTTPClient
 
     def __init__(
         self,
         host: str,
         prefix: Optional[str],
         auth_ctx: USAuthContextBase,
+        ca_data: bytes,
         context_request_id: Optional[str] = None,
         context_forwarded_for: Optional[str] = None,
         context_workbook_id: Optional[str] = None,
@@ -130,14 +129,17 @@ class UStorageClientAIO(UStorageClientBase):
         self._retry_intervals = (0.5, 1.0, 1.1, 2.0, 2.2)
         self._retry_codes = {408, 429, 500, 502, 503, 504}
 
-        ssl_context = ssl.create_default_context(cafile=get_root_certificates_path())
-
-        self._session = aiohttp.ClientSession(
+        self._bi_http_client = BIAioHTTPClient(
+            base_url="/".join([self.host, self.prefix]),
+            retrier=PredefinedIntervalsRetrier(
+                retry_intervals=self._retry_intervals,
+                retry_codes=self._retry_codes,
+                retry_methods={"GET", "POST", "PUT", "DELETE"},  # TODO: really retry all of them?..
+            ),
+            headers=self._default_headers,
             cookies=self._cookies,
-            connector=aiohttp.TCPConnector(ssl_context=ssl_context),
-            headers={
-                **self._default_headers,
-            },
+            raise_for_status=False,
+            ca_data=ca_data,
         )
 
     async def _request(self, request_data: UStorageClientBase.RequestData):  # type: ignore  # TODO: fix
@@ -146,30 +148,19 @@ class UStorageClientAIO(UStorageClientBase):
         tracing_headers = get_current_tracing_headers()
         start = time.monotonic()
 
-        async with BIAioHTTPClient(
-            base_url="/".join([self.host, self.prefix]),
-            session=self._session,
-            retrier=PredefinedIntervalsRetrier(
-                retry_intervals=self._retry_intervals,
-                retry_codes=self._retry_codes,
-                retry_methods={"GET", "POST", "PUT", "DELETE"},  # TODO: really retry all of them?..
-            ),
-            raise_for_status=False,
-            close_session_on_exit=False,
-        ) as bi_http_client:
-            async with bi_http_client.request(
-                method=request_data.method,
-                path=request_data.relative_url,
-                params=request_data.params,
-                json_data=request_data.json,
-                read_timeout_sec=self.timeout,  # TODO: total timeout
-                conn_timeout_sec=1,
-                headers={
-                    **self._extra_headers,
-                    **tracing_headers,
-                },
-            ) as response:
-                content = await response.read()
+        async with self._bi_http_client.request(
+            method=request_data.method,
+            path=request_data.relative_url,
+            params=request_data.params,
+            json_data=request_data.json,
+            read_timeout_sec=self.timeout,  # TODO: total timeout
+            conn_timeout_sec=1,
+            headers={
+                **self._extra_headers,
+                **tracing_headers,
+            },
+        ) as response:
+            content = await response.read()
 
         end = time.monotonic()
 
@@ -308,4 +299,4 @@ class UStorageClientAIO(UStorageClientBase):
             LOGGER.exception('Unable to release lock "%s"', lock)
 
     async def close(self):  # type: ignore  # TODO: fix
-        await self._session.close()
+        await self._bi_http_client.close()

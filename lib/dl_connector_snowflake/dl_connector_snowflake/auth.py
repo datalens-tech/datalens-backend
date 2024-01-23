@@ -15,6 +15,7 @@ from dl_api_commons.aiohttp.aiohttp_client import (
     PredefinedIntervalsRetrier,
     THeaders,
 )
+from dl_configs.utils import get_root_certificates
 
 from dl_connector_snowflake.core.dto import SnowFlakeConnDTO
 from dl_connector_snowflake.core.exc import SnowflakeGetAccessTokenError
@@ -79,7 +80,9 @@ class SFAuthProvider:
             read_timeout_sec=2,
             raise_for_status=False,
             retrier=PredefinedIntervalsRetrier(retry_intervals=(0.2, 0.3, 0.5), retry_methods={"POST"}),
-            session=None,
+            # TODO: pass ca_data through *DTO
+            # https://github.com/datalens-tech/datalens-backend/issues/233
+            ca_data=get_root_certificates(),
         ) as http_client:
             async with http_client.request(
                 method="POST",

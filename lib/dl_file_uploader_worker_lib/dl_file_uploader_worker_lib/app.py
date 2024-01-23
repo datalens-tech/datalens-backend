@@ -12,6 +12,7 @@ from dl_api_commons.tenant_resolver import (
     CommonTenantResolver,
     TenantResolver,
 )
+from dl_configs.utils import get_root_certificates
 from dl_core.aio.web_app_services.gsheets import GSheetsSettings
 from dl_core.aio.web_app_services.s3 import S3Service
 from dl_core.loader import (
@@ -51,6 +52,7 @@ _TSettings = TypeVar("_TSettings", bound=FileUploaderWorkerSettings)
 @attr.s
 class FileUploaderContextFab(BaseContextFabric):
     _settings: FileUploaderWorkerSettings = attr.ib()
+    _ca_data: bytes = attr.ib()
     _tenant_resolver: TenantResolver = attr.ib(factory=lambda: CommonTenantResolver())
 
     async def make(self) -> FileUploaderTaskContext:
@@ -86,6 +88,7 @@ class FileUploaderContextFab(BaseContextFabric):
                 cafile=self._settings.SECURE_READER.CAFILE,
             ),
             tenant_resolver=self._tenant_resolver,
+            ca_data=self._ca_data,
         )
 
     async def tear_down(self, inst: FileUploaderTaskContext) -> None:  # type: ignore
@@ -96,6 +99,7 @@ class FileUploaderContextFab(BaseContextFabric):
 
 @attr.s(kw_only=True)
 class FileUploaderWorkerFactory(Generic[_TSettings], abc.ABC):
+    _ca_data: bytes = attr.ib()
     _settings: _TSettings = attr.ib()
 
     @abc.abstractmethod
@@ -119,7 +123,11 @@ class FileUploaderWorkerFactory(Generic[_TSettings], abc.ABC):
                 registry=REGISTRY,
                 state=state,
             ),
-            context_fab=FileUploaderContextFab(self._settings, tenant_resolver=self._get_tenant_resolver()),
+            context_fab=FileUploaderContextFab(
+                settings=self._settings,
+                ca_data=self._ca_data,
+                tenant_resolver=self._get_tenant_resolver(),
+            ),
             worker_settings=WorkerSettings(),
             cron_tasks=cron_tasks,
         )

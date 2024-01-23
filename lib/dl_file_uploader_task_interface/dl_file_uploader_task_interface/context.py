@@ -44,6 +44,7 @@ class FileUploaderTaskContext(BaseContext):
     crypto_keys_config: CryptoKeysConfig = attr.ib()
     secure_reader_settings: SecureReaderSettings = attr.ib()
     tenant_resolver: TenantResolver = attr.ib()
+    ca_data: bytes = attr.ib()
 
     def get_rci(self) -> RequestContextInfo:
         return RequestContextInfo.create_empty()
@@ -52,6 +53,7 @@ class FileUploaderTaskContext(BaseContext):
         rci = rci or RequestContextInfo.create_empty()
         return create_sr_factory_from_env_vars(
             self.settings.CONNECTORS,
+            ca_data=self.ca_data,
         ).make_service_registry(rci)
 
     def get_async_usm(self, rci: Optional[RequestContextInfo] = None) -> AsyncUSManager:
@@ -63,6 +65,7 @@ class FileUploaderTaskContext(BaseContext):
             services_registry=services_registry,
             bi_context=rci,
             crypto_keys_config=self.crypto_keys_config,
+            ca_data=self.ca_data,
         )
 
     def make_task_processor(self, request_id: Optional[str]) -> TaskProcessor:

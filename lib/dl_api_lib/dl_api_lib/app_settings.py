@@ -21,7 +21,10 @@ from dl_configs.settings_loaders.meta_definition import (
 )
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 from dl_configs.settings_submodels import RedisSettings
-from dl_configs.utils import split_by_comma
+from dl_configs.utils import (
+    get_root_certificates_path,
+    split_by_comma,
+)
 from dl_constants.enums import (
     DataPivotEngineType,
     QueryProcessingMode,
@@ -141,6 +144,7 @@ class AppSettings:
         env_var_converter=lambda s: QueryProcessingMode[s.lower()],
         missing=QueryProcessingMode.basic,
     )
+    CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())
 
     PIVOT_ENGINE_TYPE: DataPivotEngineType = s_attrib(  # type: ignore
         "PIVOT_ENGINE_TYPE",
@@ -233,6 +237,8 @@ class DataApiAppSettings(AppSettings):
     )
 
     BI_ASYNC_APP_DISABLE_KEEPALIVE: bool = s_attrib("BI_ASYNC_APP_DISABLE_KEEPALIVE", missing=False)  # type: ignore
+
+    CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())
 
     @property
     def app_name(self) -> str:
