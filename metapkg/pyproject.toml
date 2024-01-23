@@ -172,7 +172,7 @@ oracledb = "==2.0.0"
 psycopg2-binary = "==2.9.9"
 tomlkit = "==0.12.3"
 pandas = "==2.0.3"
-platformdirs = "==3.10.0"
+platformdirs = "==3.8.0"
 clize = "==5.0.0"
 poetry = "==1.7.1"
 
