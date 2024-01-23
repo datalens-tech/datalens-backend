@@ -1573,7 +1573,7 @@ datalens-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 requests = ">=2.28.2"
 snowflake-connector-python = ">=3.6.0"
-snowflake-sqlalchemy = ">=1.4.6"
+snowflake-sqlalchemy = ">=1.5.1"
 sqlalchemy = ">=1.4.51, <2.0"
 
 [package.source]
@@ -5434,13 +5434,13 @@ secure-local-storage = ["keyring (!=16.1.0,<25.0.0)"]
 
 [[package]]
 name = "snowflake-sqlalchemy"
-version = "1.4.6"
+version = "1.5.1"
 description = "Snowflake SQLAlchemy Dialect"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "snowflake-sqlalchemy-1.4.6.tar.gz", hash = "sha256:c64c7c42569b382a1daa3e2d458c69967d33f871d5c1876a95791a8adce62b1f"},
-    {file = "snowflake_sqlalchemy-1.4.6-py2.py3-none-any.whl", hash = "sha256:2aba194bdaa163ed927e6b731d1db5e2f836afb7d2ca88ca65b6d7f76ee68c11"},
+    {file = "snowflake-sqlalchemy-1.5.1.tar.gz", hash = "sha256:4f1383402ffc89311974bd810dee22003aef4af0f312a0fdb55778333ad1abf7"},
+    {file = "snowflake_sqlalchemy-1.5.1-py2.py3-none-any.whl", hash = "sha256:df022fb73bc04d68dfb3216ebf7a1bfbd14d22def9c38bbe05275beb258adcd0"},
 ]
 
 [package.dependencies]
@@ -6259,4 +6259,4 @@ yc = ["yandexcloud"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12, <3.13"
-content-hash = "b9b9afc1255c9293d4f9305c997ff1cfb38e37b86995a7ee33062085c5b51ac0"
+content-hash = "6010d42d6b3ad2178f3a107a94037cec36089316a65ba44e7b48f6ef2697bb27"
