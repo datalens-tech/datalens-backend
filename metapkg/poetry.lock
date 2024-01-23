@@ -3824,22 +3824,21 @@ tests = ["pytest", "pytz", "simplejson"]
 
 [[package]]
 name = "marshmallow-oneofschema"
-version = "3.0.1"
+version = "3.1.0"
 description = "marshmallow multiplexing schema"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8"
 files = [
-    {file = "marshmallow-oneofschema-3.0.1.tar.gz", hash = "sha256:62cd2099b29188c92493c2940ee79d1bf2f2619a71721664e5a98ec2faa58237"},
-    {file = "marshmallow_oneofschema-3.0.1-py2.py3-none-any.whl", hash = "sha256:bd29410a9f2f7457a2b428286e2a80ef76b8ddc3701527dc1f935a88914b02f2"},
+    {file = "marshmallow_oneofschema-3.1.0-py3-none-any.whl", hash = "sha256:5039ee02d74e3766578d4dac8f25c0218ef60ec2d4b4a422843d23c6c9b645b2"},
+    {file = "marshmallow_oneofschema-3.1.0.tar.gz", hash = "sha256:755bf89c326ba02ce7b0058165e34dfd72d00472e68d40ecb9470db9472bd79a"},
 ]
 
 [package.dependencies]
 marshmallow = ">=3.0.0,<4.0.0"
 
 [package.extras]
-dev = ["flake8 (==3.9.2)", "flake8-bugbear (==21.4.3)", "mock", "pre-commit (>=2.7,<3.0)", "pytest", "tox"]
-lint = ["flake8 (==3.9.2)", "flake8-bugbear (==21.4.3)", "pre-commit (>=2.7,<3.0)"]
-tests = ["mock", "pytest"]
+dev = ["marshmallow-oneofschema[tests]", "pre-commit (>=3.5,<4.0)", "tox"]
+tests = ["pytest"]
 
 [[package]]
 name = "matplotlib-inline"
@@ -6431,4 +6430,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "6a310e617837fd5d355e2fa56b957947859f8e600f0172969ecb19fcfaed1709"
+content-hash = "9b76517dbaf9c8e6e651210410eb20a0023d67ad5939a9cb12c0225d7fb21761"
