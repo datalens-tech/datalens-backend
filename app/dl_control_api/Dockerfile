@@ -28,7 +28,6 @@ ARG GID=1000
 ARG UID=1000
 RUN groupadd -r -g ${GID} ${USER} && \
     useradd -mr -g ${USER} -u ${UID} -s /bin/bash ${USER}
-# RUN useradd -ms /bin/bash --uid 1000 ${USER}
 USER ${USER}
 
 EXPOSE 8080
