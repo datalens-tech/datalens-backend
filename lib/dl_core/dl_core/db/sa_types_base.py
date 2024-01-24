@@ -34,20 +34,20 @@ def lengthed_instantiator(typecls: Type[TypeEngine], default_length: int = 255) 
             length = nt.length or default_length
         else:
             length = default_length
-        return typecls(length)
+        return typecls(length)  # type: ignore  # TODO: fix
 
     return type_gen
 
 
 def timezone_instantiator(typecls: Type[TypeEngine]) -> TypeFactory:
     def type_gen(nt: GenericNativeType) -> TypeEngine:
-        return typecls(timezone=True)
+        return typecls(timezone=True)  # type: ignore  # TODO: fix
 
     return type_gen
 
 
 def typed_instantiator(typecls: Type[TypeEngine], inner_type: Type[TypeEngine]) -> TypeFactory:
     def type_gen(nt: GenericNativeType) -> TypeEngine:
-        return typecls(inner_type)
+        return typecls(inner_type)  # type: ignore  # TODO: fix
 
     return type_gen
