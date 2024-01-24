@@ -19,7 +19,7 @@ class JinjaPlaceholderStyle(PlaceholderStyle):
     """Placeholder style corresponding to the "named" DBAPI paramstyle"""
 
     def make_placeholder(self, param_name: str, param_idx: int, user_type: UserDataType) -> str:
-        return f"{{{param_name}}}"
+        return f"{{{{{param_name}}}}}"
 
 
 @attr.s(frozen=True)

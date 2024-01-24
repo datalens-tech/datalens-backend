@@ -138,7 +138,7 @@ class DashSQLSelector:
 
         return sa_text
 
-    def _make_sa_query(self) -> tuple[sa.sql.elements.TextClause, str]:
+    def _make_sa_query(self) -> tuple[TextClause, str]:
         query = self.sql_query
         if self.incoming_parameters is None:
             # No parameters substitution

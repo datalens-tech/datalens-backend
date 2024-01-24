@@ -49,7 +49,7 @@ class UnknownParameterPolicy(Enum):
     # Raise an error whenever an unknown parameter is discovered in the query
     error = "error"
     # Skip unknown parameters, leave their original placeholders "as-is"
-    skip = "skip"
+    ignore = "ignore"
 
 
 class UnconsumedParameterPolicy(Enum):

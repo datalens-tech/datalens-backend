@@ -245,6 +245,8 @@ class DashSQLView(BaseView):
         dashsql_selector = self.dashsql_selector_cls(
             conn=conn,
             sql_query=sql_query,
+            # Note: `None` means `no substitution` (legacy),
+            # `[]` means `attempt to substitute`.
             incoming_parameters=incoming_parameters,
             db_params=db_params or {},
             connector_specific_params=connector_specific_params,
