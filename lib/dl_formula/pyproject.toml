@@ -40,7 +40,7 @@ module = [
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = "dl_formula.parser.antlr.*"
+module = "dl_formula.parser.antlr.gen.*"
 ignore_errors = true
 ignore_missing_imports = true
 
