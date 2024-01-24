@@ -81,7 +81,7 @@ class WSGIRunner:
     _bind_port: Optional[int] = attr.ib(default=None)
     _bind_addr: str = attr.ib(default="127.0.0.1")
     _wait_time: float = attr.ib(default=15.0)
-    _poll_time: float = attr.ib(default=0.1)
+    _poll_time: float = attr.ib(default=0.5)
     _wait_term_time: float = attr.ib(default=5.0)
     _env: Optional[Dict[str, str]] = attr.ib(default=None)
 
