@@ -172,7 +172,7 @@ class ValueSchema(OneOfSchemaWithDumpLoadHooks):
         UserDataType.array_str.name: ArrayStrValueSchema,
         UserDataType.array_int.name: ArrayIntValueSchema,
         UserDataType.array_float.name: ArrayFloatValueSchema,
-        UserDataType.tree_str.name: TreeStrParameterValue,
+        UserDataType.tree_str.name: TreeStrParameterValue,  # type: ignore  # 2024-01-24 # TODO: Dict entry 15 has incompatible type "str": "type[TreeStrParameterValue]"; expected "str": "type[Schema]"  [dict-item]
     }
 
     @pre_load(pass_many=False)
