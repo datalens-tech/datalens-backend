@@ -125,8 +125,8 @@ class Worker:
         *,
         queue_name: Optional[str] = default_queue_name,
         cron_jobs: Optional[Sequence[CronJob]] = None,
-        redis_settings: RedisSettings = None,
-        redis_pool: ArqRedis = None,
+        redis_settings: RedisSettings = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "redis_settings" (default has type "None", argument has type "RedisSettings")  [assignment]
+        redis_pool: ArqRedis = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "redis_pool" (default has type "None", argument has type "ArqRedis")  [assignment]
         burst: bool = False,
         on_startup: Optional['StartupShutdown'] = None,
         on_shutdown: Optional['StartupShutdown'] = None,
@@ -798,7 +798,7 @@ class Worker:
         if self.on_shutdown:
             await self.on_shutdown(self.ctx)
         await self.pool.close(close_connection_pool=True)
-        self._pool = None
+        self._pool = None  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "None", variable has type "ArqRedis")  [assignment]
 
     def __repr__(self) -> str:
         return (

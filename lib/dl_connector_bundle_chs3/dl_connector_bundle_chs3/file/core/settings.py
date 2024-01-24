@@ -30,8 +30,8 @@ def file_s3_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, Conne
             PASSWORD=required(str),
             ACCESS_KEY_ID=required(str),
             SECRET_ACCESS_KEY=required(str),
-            S3_ENDPOINT=full_cfg.S3_ENDPOINT_URL,
-            BUCKET=full_cfg.FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME,
+            S3_ENDPOINT=full_cfg.S3_ENDPOINT_URL,  # type: ignore  # 2024-01-24 # TODO: Item "LegacyDefaults" of "ObjectLikeConfig | LegacyDefaults" has no attribute "S3_ENDPOINT_URL"  [union-attr]
+            BUCKET=full_cfg.FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME,  # type: ignore  # 2024-01-24 # TODO: Item "LegacyDefaults" of "ObjectLikeConfig | LegacyDefaults" has no attribute "FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME"  [union-attr]
         )
     )
 
