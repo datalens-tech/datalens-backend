@@ -35,9 +35,13 @@ module = [
     "graphviz.*",
     "pytest.*",
     "pytz.tzinfo.*",
-    "dl_formula.parser.antlr.gen.*",
     "antlr4.*"
 ]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "dl_formula.parser.antlr.*"
+ignore_errors = true
 ignore_missing_imports = true
 
 [build-system]
