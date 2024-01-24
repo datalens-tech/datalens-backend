@@ -85,7 +85,7 @@ class PlaceholderQueryFormatter(QueryFormatter):
         else:
             if self._unknown_param_policy == UnknownParameterPolicy.error:
                 raise RuntimeError(f"Unknown parameter {orig_param_name}")
-            if self._unknown_param_policy == UnknownParameterPolicy.skip:
+            if self._unknown_param_policy == UnknownParameterPolicy.ignore:
                 # Do not perform any replacement
                 return original_text
             else:

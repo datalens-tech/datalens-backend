@@ -50,7 +50,7 @@ class DBAPIQueryFormatterFactory(QueryFormatterFactory):
 
     def get_query_formatter(self) -> QueryFormatter:
         query_formatter = PlaceholderQueryFormatter(
-            unknown_param_policy=UnknownParameterPolicy.skip,
+            unknown_param_policy=UnknownParameterPolicy.ignore,
             unconsumed_param_policy=UnconsumedParameterPolicy.ignore,
             param_matcher=JinjaStyleParamMatcher(),
             escapes={":": r"\:"},
