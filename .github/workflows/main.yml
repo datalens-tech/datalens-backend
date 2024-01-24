@@ -85,15 +85,28 @@ jobs:
           LABEL: "ci-approved"
         run: echo "result=$(./gh_pull_request_check_label.sh)" >> $GITHUB_OUTPUT
 
-      - name: Combine results
-        id: result
+      - name: Combine permissions
         run: |
           user_allowed=${{ steps.check_user_permissions.outputs.result }}
           pr_allowed=${{ steps.check_pr_permissions.outputs.result }}
           
-          [[ $user_allowed != "true" && $pr_allowed != "true" ]] && exit 1
+          [[ $user_allowed == "true" || $pr_allowed == "true" ]] && exit 0
           
-          echo "PR is allowed to run CI"
+          echo "ERROR: User have no permissions to run CI and PR is not approved"
+          exit 1
+
+      - name: Checkout branch code
+        uses: actions/checkout@v4
+        if: ${{ github.event_name != 'workflow_dispatch' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          path: branch_code
+
+      - name: Check fork PR branch contains latest base sha
+        if: ${{ github.event_name != 'workflow_dispatch' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
+        working-directory: branch_code
+        run: git branch --contains ${{ github.event.pull_request.base.sha }}
 
   gh_build_image:
     runs-on: [ self-hosted, linux, light ]
