@@ -107,14 +107,12 @@ class NativePivotSorter(PivotSorter):
         self._sort_key_list(key_list=key_list, directions=directions)
 
     def _sort_by_measure(self, axis: SortAxis, sorting_piid: int, settings: PivotMeasureSortingSettings) -> None:
-        sorting_idx: Optional[int] = None
         sorting_dim_values: Optional[tuple[DataCellVector, ...]] = None
         other_axis = {SortAxis.columns: SortAxis.rows, SortAxis.rows: SortAxis.columns}[axis]
 
         for idx, header in enumerate(self._pivot_dframe.iter_axis_headers(axis)):
             if header.compare_sorting_settings(settings):
-                if sorting_idx is None:
-                    sorting_idx = idx
+                if sorting_dim_values is None:
                     sorting_dim_values = header.values
                     header.info.sorting_direction = settings.direction
                 else:  # should never actually occur, as header_values + role_spec uniquely identify sorting_idx
