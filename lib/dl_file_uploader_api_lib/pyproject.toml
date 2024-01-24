@@ -67,5 +67,5 @@ check_untyped_defs = true
 strict_optional = true
 
 [[tool.mypy.overrides]]
-module = ["aiogoogle.*", "marshmallow_oneofschema.*"]
+module = "aiogoogle.*"
 ignore_missing_imports = true

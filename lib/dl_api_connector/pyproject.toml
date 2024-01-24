@@ -50,10 +50,6 @@ disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
 
-[[tool.mypy.overrides]]
-module = ["marshmallow_oneofschema.*"]
-ignore_missing_imports = true
-
 [datalens.i18n.domains]
 dl_api_connector = [
     {path = "dl_api_connector"},

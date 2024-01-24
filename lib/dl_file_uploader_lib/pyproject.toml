@@ -58,5 +58,5 @@ check_untyped_defs = true
 strict_optional = true
 
 [[tool.mypy.overrides]]
-module = ["aiogoogle.*", "marshmallow_oneofschema.*", "types_aiobotocore_s3.*", "mypy_boto3_s3.*"]
+module = ["aiogoogle.*", "types_aiobotocore_s3.*", "mypy_boto3_s3.*"]
 ignore_missing_imports = true

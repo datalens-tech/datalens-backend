@@ -85,7 +85,6 @@ strict_optional = true
 [[tool.mypy.overrides]]
 module = [
     "flask_restx.*",
-    "marshmallow_oneofschema.*",
     "statcommons.*",
     "flask_marshmallow"
 ]
