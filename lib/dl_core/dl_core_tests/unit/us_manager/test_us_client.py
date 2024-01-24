@@ -10,7 +10,7 @@ from dl_core.united_storage_client_aio import UStorageClientAIO
 
 
 @pytest.mark.asyncio
-async def test_fields_masking(aiohttp_client, caplog):
+async def test_fields_masking(aiohttp_client, caplog, root_certificates):
     caplog.set_level("INFO", logger="dl_core.united_storage_client")
 
     @web.middleware
@@ -22,7 +22,10 @@ async def test_fields_masking(aiohttp_client, caplog):
     mock = await aiohttp_client(app)
 
     us_client = UStorageClientAIO(
-        auth_ctx=USAuthContextMaster("fake_token"), host=f"http://{mock.host}:{mock.port}", prefix="/api/private"
+        auth_ctx=USAuthContextMaster("fake_token"),
+        host=f"http://{mock.host}:{mock.port}",
+        prefix="/api/private",
+        ca_data=root_certificates,
     )
 
     secret_value = "some_cypher_text_898"

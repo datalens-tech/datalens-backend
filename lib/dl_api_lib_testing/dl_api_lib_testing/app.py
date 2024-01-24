@@ -53,6 +53,7 @@ from dl_core.services_registry.rqe_caches import RQECachesSetting
 from dl_core.utils import FutureRef
 from dl_core_testing.app_test_workarounds import TestEnvManagerFactory
 from dl_core_testing.fixture_server_runner import WSGIRunner
+from dl_testing.utils import get_root_certificates
 
 
 @attr.s
@@ -152,6 +153,7 @@ class TestingSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
     def _get_inst_specific_sr_factory(
         self,
         settings: AppSettings,
+        ca_data: bytes,
     ) -> Optional[InstallationSpecificServiceRegistryFactory]:
         return TestingServiceRegistryFactory()
 
@@ -209,8 +211,13 @@ class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRF
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> DataApiEnvSetupResult:
         conn_opts_factory = ConnOptionsMutatorsFactory()
+        ca_data = get_root_certificates()
+
         sr_factory = self.get_sr_factory(
-            settings=self._settings, conn_opts_factory=conn_opts_factory, connectors_settings=connectors_settings
+            settings=self._settings,
+            conn_opts_factory=conn_opts_factory,
+            connectors_settings=connectors_settings,
+            ca_data=ca_data,
         )
 
         auth_mw_list = [
@@ -232,6 +239,7 @@ class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRF
         common_us_kw = dict(
             us_base_url=self._settings.US_BASE_URL,
             crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
+            ca_data=ca_data,
         )
         usm_middleware_list = [
             service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore[arg-type]

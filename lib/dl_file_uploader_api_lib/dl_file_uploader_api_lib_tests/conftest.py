@@ -74,7 +74,11 @@ from dl_testing.s3_utils import (
     create_s3_bucket,
     create_s3_client,
 )
-from dl_testing.utils import wait_for_initdb
+from dl_testing.utils import (
+    get_default_aiohttp_session,
+    get_root_certificates,
+    wait_for_initdb,
+)
 
 from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 
@@ -225,12 +229,14 @@ def bi_file_uploader_app(loop, aiohttp_client, app_settings):
 
 
 @pytest.fixture(scope="function")
-def fu_client(bi_file_uploader_app) -> DLCommonAPIClient:
-    return DLCommonAPIClient(
-        base_url=f"http://{bi_file_uploader_app.host}:{bi_file_uploader_app.port}",
-        tenant=TenantCommon(),
-        auth_data=NoAuthData(),
-    )
+async def fu_client(bi_file_uploader_app) -> DLCommonAPIClient:
+    async with get_default_aiohttp_session() as session:
+        yield DLCommonAPIClient(
+            base_url=f"http://{bi_file_uploader_app.host}:{bi_file_uploader_app.port}",
+            tenant=TenantCommon(),
+            auth_data=NoAuthData(),
+            session=session,
+        )
 
 
 @pytest.fixture(scope="function")
@@ -346,14 +352,20 @@ def file_uploader_worker_settings(
     yield settings
 
 
+@pytest.fixture(scope="function")
+def root_certificates() -> bytes:
+    return get_root_certificates()
+
+
 @pytest.fixture(scope="function", params=["local"], ids=["local_tp"])
-async def use_local_task_processor(request, monkeypatch, loop, file_uploader_worker_settings):
+async def use_local_task_processor(request, monkeypatch, loop, file_uploader_worker_settings, root_certificates):
     task_state = TaskState(BITaskStateImpl())
     async with get_task_processor_client(
         client_type=request.param,
         loop=loop,
         task_state=task_state,
         file_uploader_worker_settings=file_uploader_worker_settings,
+        ca_data=root_certificates,
     ) as task_processor_client:
 
         def new_get_task_processor(self: FileUploaderDLRequest) -> TaskProcessor:
@@ -384,7 +396,7 @@ def prepare_us(us_config):
 
 @pytest.fixture(scope="function")
 @pytest.mark.usefixtures("loop")
-def default_async_usm_per_test(bi_context, prepare_us, us_config):
+def default_async_usm_per_test(bi_context, prepare_us, us_config, root_certificates):
     rci = RequestContextInfo.create_empty()
     return AsyncUSManager(
         us_base_url=us_config.base_url,
@@ -392,6 +404,7 @@ def default_async_usm_per_test(bi_context, prepare_us, us_config):
         crypto_keys_config=us_config.crypto_keys_config,
         bi_context=bi_context,
         services_registry=DummyServiceRegistry(rci=rci),
+        ca_data=root_certificates,
     )
 
 

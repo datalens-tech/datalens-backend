@@ -103,6 +103,7 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
     def _get_inst_specific_sr_factory(
         self,
         settings: TSettings,
+        ca_data: bytes,
     ) -> Optional[InstallationSpecificServiceRegistryFactory]:
         raise NotImplementedError
 
@@ -136,6 +137,7 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
         settings: TSettings,
         conn_opts_factory: ConnOptionsMutatorsFactory,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        ca_data: bytes,
     ) -> DefaultApiSRFactory:
         supported_functions_manager = SupportedFunctionsManager(supported_tags=settings.FORMULA_SUPPORTED_FUNC_TAGS)
 
@@ -181,9 +183,13 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
             localizer_factory=localization_factory,
             localizer_fallback=localizer_fallback,
             connector_availability=self._get_connector_availability(settings),
-            inst_specific_sr_factory=self._get_inst_specific_sr_factory(settings),
+            inst_specific_sr_factory=self._get_inst_specific_sr_factory(
+                settings,
+                ca_data=ca_data,
+            ),
             force_non_rqe_mode=settings.RQE_FORCE_OFF,
             query_proc_mode=settings.QUERY_PROCESSING_MODE,
+            ca_data=ca_data,
             pivot_transformer_factory=pivot_transformer_factory,
         )
         return sr_factory

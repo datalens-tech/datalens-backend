@@ -34,6 +34,7 @@ from dl_configs.rqe import RQEConfig
 from dl_constants.enums import ConnectionType
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_core_testing.database import DbTable
+from dl_testing.utils import get_root_certificates_path
 
 
 class DataApiTestParams(NamedTuple):
@@ -85,6 +86,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             FILE_UPLOADER_BASE_URL=f"{bi_test_config.file_uploader_api_host}:{bi_test_config.file_uploader_api_port}",
             FILE_UPLOADER_MASTER_TOKEN="qwerty",
             QUERY_PROCESSING_MODE=cls.query_processing_mode,
+            CA_FILE_PATH=get_root_certificates_path(),
         )  # type: ignore
 
     @pytest.fixture(scope="function")

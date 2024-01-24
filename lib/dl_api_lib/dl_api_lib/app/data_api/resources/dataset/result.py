@@ -43,7 +43,6 @@ from dl_query_processing.legend.field_legend import (
 )
 from dl_query_processing.merging.primitives import MergedQueryDataStream
 from dl_query_processing.postprocessing.primitives import PostprocessedRow
-from dl_utils.utils import exc_catch_awrap
 
 
 if TYPE_CHECKING:
@@ -68,7 +67,6 @@ class DatasetResultView(DatasetDataBaseView, abc.ABC):
     #     responses={200: ('Success', dl_api_lib.schemas.data.DatasetVersionResultResponseSchema())}
     # )
     @generic_profiler_async("ds-result-full")
-    @exc_catch_awrap
     @DatasetDataBaseView.with_resolved_entities
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> Response:

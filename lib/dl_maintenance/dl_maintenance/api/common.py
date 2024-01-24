@@ -56,7 +56,7 @@ class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
             fallbacks=CONNECTORS_SETTINGS_FALLBACKS,
         )
 
-    def get_sr_factory(self, is_async_env: bool) -> Optional[SRFactory]:
+    def get_sr_factory(self, ca_data: bytes, is_async_env: bool) -> Optional[SRFactory]:
         assert self._app_factory_cls is not None
         conn_opts_factory = ConnOptionsMutatorsFactory()
         settings = self.get_app_settings()
@@ -64,5 +64,6 @@ class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
             settings=settings,
             conn_opts_factory=conn_opts_factory,
             connectors_settings=self.get_connector_settings(),
+            ca_data=ca_data,
         )
         return sr_factory

@@ -20,6 +20,7 @@ from dl_core.us_manager.us_manager_sync import SyncUSManager
 class USMFactory:
     us_base_url: str = attr.ib()
     crypto_keys_config: Optional[CryptoKeysConfig] = attr.ib()
+    ca_data: bytes = attr.ib()
     us_master_token: Optional[str] = attr.ib(default=None, repr=False)
     us_public_token: Optional[str] = attr.ib(default=None, repr=False)
 
@@ -52,6 +53,10 @@ class USMFactory:
         assert self.us_master_token is not None, "US master token must be set in factory to create USAuthContextMaster"
         return USAuthContextMaster(us_master_token=self.us_master_token)
 
+    def get_ca_data(self) -> bytes:
+        assert self.ca_data is not None, "ca_data must be set in factory to create AsyncUSClient"
+        return self.ca_data
+
     # Async
     def get_regular_async_usm(
         self,
@@ -64,6 +69,7 @@ class USMFactory:
             bi_context=rci,
             crypto_keys_config=self.crypto_keys_config,
             services_registry=services_registry,
+            ca_data=self.get_ca_data(),
         )
 
     def get_master_async_usm(
@@ -77,6 +83,7 @@ class USMFactory:
             bi_context=rci,
             crypto_keys_config=self.crypto_keys_config,
             services_registry=services_registry,
+            ca_data=self.get_ca_data(),
         )
 
     def get_public_async_usm(
@@ -94,6 +101,7 @@ class USMFactory:
             bi_context=rci,
             crypto_keys_config=self.crypto_keys_config,
             services_registry=services_registry,
+            ca_data=self.get_ca_data(),
         )
 
     # Sync
@@ -134,4 +142,5 @@ class USMFactory:
             bi_context=rci,
             crypto_keys_config=self.crypto_keys_config,
             services_registry=services_registry,
+            ca_data=self.get_ca_data(),
         )

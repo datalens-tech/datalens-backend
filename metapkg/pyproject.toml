@@ -32,7 +32,7 @@ flask-restx = "==1.1.0"
 graphviz = "==0.17"
 ipdb = "==0.13.13"
 ipython = "==8.10.0"
-marshmallow-oneofschema = "==3.0.1"
+marshmallow-oneofschema = "==3.1.0"
 pandas = "==1.5.3"
 pyopenssl = "==23.2.0"
 python-dateutil = "==2.8.2"
@@ -150,6 +150,8 @@ datalens-attrs-model-mapper = {path = "../lib/dl_attrs_model_mapper"}
 datalens-attrs-model-mapper-doc-tools = {path = "../lib/dl_attrs_model_mapper_doc_tools"}
 datalens-connector-ydb = {path = "../lib/dl_connector_ydb"}
 datalens-dashsql = {path = "../lib/dl_dashsql"}
+datalens-pivot = {path = "../lib/dl_pivot"}
+datalens-pivot-pandas = {path = "../lib/dl_pivot_pandas"}
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.3.0"
@@ -248,7 +250,6 @@ jaeger-client =  {ignore = true}
 jinja2 =  {ignore = true}
 lz4 =  {ignore = true}
 marshmallow =  {ignore = true}
-marshmallow-oneofschema =  {ignore = true}
 more-itertools =  {ignore = true}
 openpyxl =  {ignore = true}
 oracledb =  {ignore = true}
