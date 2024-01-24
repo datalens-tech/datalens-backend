@@ -1,5 +1,4 @@
 import logging
-import ssl
 from typing import (
     Any,
     AsyncIterable,
@@ -17,7 +16,6 @@ from dl_api_commons.base_models import (
     TenantDef,
 )
 from dl_api_commons.tracing import get_current_tracing_headers
-from dl_configs.utils import get_root_certificates_path
 from dl_constants.api_constants import (
     DLHeaders,
     DLHeadersCommon,
@@ -57,21 +55,15 @@ class RequestExecutionException(Exception):
         self.request_id = request_id
 
 
-def get_default_aiohttp_session() -> aiohttp.ClientSession:
-    return aiohttp.ClientSession(
-        connector=aiohttp.TCPConnector(ssl_context=ssl.create_default_context(cafile=get_root_certificates_path())),
-    )
-
-
 @attr.s(auto_attribs=True)
 class DLCommonAPIClient:
     _base_url: str = attr.ib()
     _tenant: TenantDef = attr.ib()
     _auth_data: AuthData = attr.ib()
+    _session: aiohttp.ClientSession = attr.ib()
     _req_id: Optional[str] = attr.ib(default=None)
 
     _extra_headers: Optional[dict[DLHeaders, str]] = attr.ib(default=None)
-    _session: aiohttp.ClientSession = attr.ib(factory=get_default_aiohttp_session)
 
     @staticmethod
     def update_dl_headers(acc: dict[DLHeaders, str], update: dict[DLHeaders, str], stage: str) -> None:

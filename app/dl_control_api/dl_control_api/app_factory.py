@@ -36,6 +36,7 @@ class StandaloneControlApiSRFactoryBuilder(SRFactoryBuilder[ControlApiAppSetting
     def _get_inst_specific_sr_factory(
         self,
         settings: ControlApiAppSettings,
+        ca_data: bytes,
     ) -> StandaloneServiceRegistryFactory:
         return StandaloneServiceRegistryFactory()
 

@@ -11,6 +11,7 @@ from dl_configs.settings_submodels import (
     CorsSettings,
     CsrfSettings,
 )
+from dl_configs.utils import get_root_certificates_path
 from dl_file_uploader_lib.settings import FileUploaderBaseSettings
 
 
@@ -54,3 +55,5 @@ class FileUploaderAPISettings(FileUploaderBaseSettings):
     FILE_UPLOADER_MASTER_TOKEN: str = s_attrib("FILE_UPLOADER_MASTER_TOKEN", sensitive=True)  # type: ignore
 
     ALLOW_XLSX: bool = s_attrib("ALLOW_XLSX", missing=False)  # type: ignore
+
+    CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())

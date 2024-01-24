@@ -22,8 +22,6 @@ import aiohttp
 import aiohttp.web
 import attr
 
-from dl_configs.utils import get_root_certificates_path
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -93,10 +91,6 @@ class PredefinedIntervalsRetrier(BaseRetrier):
         raise Exception("You should not be here")
 
 
-def default_ssl_context() -> ssl.SSLContext:
-    return ssl.create_default_context(cafile=get_root_certificates_path())
-
-
 @attr.s(kw_only=True)
 class BIAioHTTPClient:
     base_url: str = attr.ib()
@@ -112,26 +106,24 @@ class BIAioHTTPClient:
 
     retrier: BaseRetrier = attr.ib(factory=NoRetriesRetrier)
 
-    ssl_context: Optional[ssl.SSLContext] = attr.ib(factory=default_ssl_context)
-    _session: Optional[aiohttp.ClientSession] = attr.ib()
-    close_session_on_exit: Optional[bool] = attr.ib(default=None)
+    _ca_data: bytes = attr.ib()
+    _session: Optional[aiohttp.ClientSession] = attr.ib(init=False)
 
-    def make_default_session(self) -> aiohttp.ClientSession:
+    def __attrs_post_init__(self):
+        self._session = self._make_session()
+
+    def _make_session(self) -> aiohttp.ClientSession:
+        ssl_context = ssl.create_default_context(cadata=self._ca_data.decode("utf-8"))
         return aiohttp.ClientSession(
-            cookies=self.cookies, headers=self.headers, connector=aiohttp.TCPConnector(ssl_context=self.ssl_context)
+            cookies=self.cookies,
+            headers=self.headers,
+            connector=aiohttp.TCPConnector(
+                ssl_context=ssl_context,
+            ),
         )
 
-    @property
-    def session(self) -> aiohttp.ClientSession:
-        if self._session is None:
-            self._session = self.make_default_session()
-            if self.close_session_on_exit is None:
-                self.close_session_on_exit = True
-        return self._session
-
     async def close(self) -> None:
-        if self.close_session_on_exit:
-            await self.session.close()
+        await self._session.close()
 
     async def __aenter__(self) -> BIAioHTTPClient:
         return self
@@ -168,7 +160,7 @@ class BIAioHTTPClient:
             sock_connect=conn_timeout_sec or self.conn_timeout_sec,
             sock_read=read_timeout_sec or self.read_timeout_sec,
         )
-        return await self.session.request(
+        return await self._session.request(
             method=method,
             url=self.url(path),
             params=params,

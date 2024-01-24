@@ -17,6 +17,7 @@ pytest = ">=7.2.2"
 python = ">=3.12, <3.13"
 pyyaml = ">=6.0.1"
 datalens-utils = {path = "../dl_utils"}
+datalens-configs = {path = "../dl_configs"}
 
 [tool.poetry.plugins.env_param_getters]
 direct = "dl_testing.env_params.main:DirectEnvParamGetter"

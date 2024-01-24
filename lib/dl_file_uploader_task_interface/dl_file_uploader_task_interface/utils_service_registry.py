@@ -33,7 +33,10 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-def create_sr_factory_from_env_vars(connectors_settings: FileUploaderConnectorsSettings) -> DefaultSRFactory:
+def create_sr_factory_from_env_vars(
+    connectors_settings: FileUploaderConnectorsSettings,
+    ca_data: bytes,
+) -> DefaultSRFactory:
     def get_conn_options(conn: ExecutorBasedMixin) -> Optional[ConnectOptions]:
         opts = conn.get_conn_options()
 
@@ -57,12 +60,14 @@ def create_sr_factory_from_env_vars(connectors_settings: FileUploaderConnectorsS
         connect_options_factory=get_conn_options,
         env_manager_factory=InsecureEnvManagerFactory(),
         connectors_settings=connectors_settings,
+        ca_data=ca_data,
     )
 
 
 def get_async_service_us_manager(
     us_host: str,
     us_master_token: str,
+    ca_data: bytes,
     crypto_keys_config: CryptoKeysConfig,
     bi_context: Optional[RequestContextInfo] = None,
     services_registry: Optional[ServicesRegistry] = None,
@@ -74,6 +79,7 @@ def get_async_service_us_manager(
         crypto_keys_config=crypto_keys_config,
         bi_context=bi_context or RequestContextInfo.create_empty(),
         services_registry=services_registry,
+        ca_data=ca_data,
     )
 
     return usm

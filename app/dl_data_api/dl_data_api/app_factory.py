@@ -17,6 +17,7 @@ from dl_api_lib.app_settings import (
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.enums import RequiredService
+from dl_configs.utils import get_root_certificates
 from dl_constants.enums import ConnectionType
 from dl_core.aio.middlewares.services_registry import services_registry_middleware
 from dl_core.aio.middlewares.us_manager import service_us_manager_middleware
@@ -43,6 +44,7 @@ class StandaloneDataApiSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
     def _get_inst_specific_sr_factory(
         self,
         settings: AppSettings,
+        ca_data: bytes,
     ) -> Optional[InstallationSpecificServiceRegistryFactory]:
         return None
 
@@ -78,9 +80,14 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], Standal
         sr_middleware_list: list[AIOHTTPMiddleware]
         usm_middleware_list: list[AIOHTTPMiddleware]
 
+        ca_data = get_root_certificates(path=self._settings.CA_FILE_PATH)
+
         conn_opts_factory = ConnOptionsMutatorsFactory()
         sr_factory = self.get_sr_factory(
-            settings=self._settings, conn_opts_factory=conn_opts_factory, connectors_settings=connectors_settings
+            settings=self._settings,
+            conn_opts_factory=conn_opts_factory,
+            connectors_settings=connectors_settings,
+            ca_data=ca_data,
         )
 
         # Auth middlewares
@@ -105,6 +112,7 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], Standal
         common_us_kw = dict(
             us_base_url=self._settings.US_BASE_URL,
             crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
+            ca_data=ca_data,
         )
         usm_middleware_list = [
             service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore

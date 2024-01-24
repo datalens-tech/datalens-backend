@@ -68,7 +68,10 @@ from dl_testing.s3_utils import (
     create_s3_client,
     create_sync_s3_client,
 )
-from dl_testing.utils import wait_for_initdb
+from dl_testing.utils import (
+    get_root_certificates,
+    wait_for_initdb,
+)
 
 from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 
@@ -155,6 +158,11 @@ def s3_settings() -> S3Settings:
     )
 
 
+@pytest.fixture(scope="function")
+def root_certificates() -> bytes:
+    return get_root_certificates()
+
+
 @pytest.fixture(scope="session")
 def secure_reader():
     socket_name = "reader.sock"
@@ -234,9 +242,17 @@ def task_state():
 
 
 @pytest.fixture(scope="function")
-async def task_processor_arq_worker(loop, task_state, file_uploader_worker_settings):
+async def task_processor_arq_worker(
+    loop,
+    task_state,
+    file_uploader_worker_settings,
+    root_certificates,
+):
     LOGGER.info("Set up worker")
-    worker = TestingFileUploaderWorkerFactory(settings=file_uploader_worker_settings).create_worker(state=task_state)
+    worker = TestingFileUploaderWorkerFactory(
+        settings=file_uploader_worker_settings,
+        ca_data=root_certificates,
+    ).create_worker(state=task_state)
     wrapper = ArqWorkerTestWrapper(loop=loop, worker=worker)
     yield await wrapper.start()
     await wrapper.stop()
@@ -251,8 +267,16 @@ def task_processor_arq_client(loop, task_processor_arq_worker, redis_pool, task_
 
 
 @pytest.fixture(scope="function")
-async def task_processor_local_client(loop, task_state, file_uploader_worker_settings):
-    context_fab = FileUploaderContextFab(file_uploader_worker_settings)
+async def task_processor_local_client(
+    loop,
+    task_state,
+    file_uploader_worker_settings,
+    root_certificates,
+):
+    context_fab = FileUploaderContextFab(
+        file_uploader_worker_settings,
+        ca_data=root_certificates,
+    )
     context = await context_fab.make()
     executor = Executor(context=context, state=task_state, registry=REGISTRY)
     impl = LocalProcessorImpl(executor)
@@ -352,7 +376,7 @@ def default_sync_usm(bi_context, prepare_us, us_config):
 
 @pytest.fixture(scope="function")
 @pytest.mark.usefixtures("loop")
-def default_async_usm_per_test(bi_context, prepare_us, us_config):
+def default_async_usm_per_test(bi_context, prepare_us, us_config, root_certificates):
     rci = RequestContextInfo.create_empty()
     return AsyncUSManager(
         us_base_url=us_config.base_url,
@@ -360,6 +384,7 @@ def default_async_usm_per_test(bi_context, prepare_us, us_config):
         crypto_keys_config=us_config.crypto_keys_config,
         bi_context=bi_context,
         services_registry=DummyServiceRegistry(rci=rci),
+        ca_data=root_certificates,
     )
 
 

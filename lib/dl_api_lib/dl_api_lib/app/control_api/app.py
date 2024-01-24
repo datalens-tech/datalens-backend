@@ -34,6 +34,7 @@ from dl_api_lib.app_settings import (
     ControlApiAppTestingsSettings,
 )
 from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.utils import get_root_certificates
 from dl_constants.enums import (
     ConnectionType,
     USAuthMode,
@@ -103,6 +104,8 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         ).wrap_flask_app(app)
         ContextVarMiddleware().wrap_flask_app(app)
 
+        ca_data = get_root_certificates(path=self._settings.CA_FILE_PATH)
+
         if close_loop_after_request:
             AIOEventLoopMiddleware().wrap_flask_app(app)
 
@@ -135,6 +138,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
             settings=self._settings,
             conn_opts_factory=conn_opts_mutators_factory,
             connectors_settings=connectors_settings,
+            ca_data=get_root_certificates(self._settings.CA_FILE_PATH),
         )
 
         ServicesRegistryMiddleware(
@@ -146,6 +150,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
             us_base_url=self._settings.US_BASE_URL,
             us_master_token=self._settings.US_MASTER_TOKEN,
             us_auth_mode=env_setup_result.us_auth_mode,
+            ca_data=ca_data,
         ).set_up(app)
 
         app.logger

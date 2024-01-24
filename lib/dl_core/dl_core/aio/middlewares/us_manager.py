@@ -16,13 +16,12 @@ from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.aiohttp import aiohttp_wrappers
 from dl_api_commons.tenant_resolver import TenantResolver
 from dl_configs.crypto_keys import CryptoKeysConfig
+from dl_core import exc
 from dl_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
 from dl_core.services_registry.top_level import DummyServiceRegistry
+from dl_core.us_manager.factory import USMFactory
+from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_utils.aio import shield_wait_for_complete
-
-from ... import exc
-from ...us_manager.factory import USMFactory
-from ...us_manager.us_manager_async import AsyncUSManager
 
 
 LOGGER = logging.getLogger(__name__)
@@ -36,6 +35,7 @@ def public_usm_workaround_middleware(
     conn_id_match_info_code: str,
     us_master_token: Optional[str],
     tenant_resolver: TenantResolver,
+    ca_data: bytes,
 ) -> AIOHTTPMiddleware:
     """
     This is workaround for the following public API issues:
@@ -61,6 +61,7 @@ def public_usm_workaround_middleware(
         crypto_keys_config=crypto_keys_config,
         us_master_token=us_master_token,
         us_public_token=us_public_token,
+        ca_data=ca_data,
     )
 
     @web.middleware
@@ -125,11 +126,13 @@ async def _usm_close_cm(usm: AsyncUSManager, label: str) -> AsyncGenerator[None,
 def us_manager_middleware(
     us_base_url: str,
     crypto_keys_config: CryptoKeysConfig,
+    ca_data: bytes,
     embed: bool = False,
 ) -> AIOHTTPMiddleware:
     usm_factory = USMFactory(
         us_base_url=us_base_url,
         crypto_keys_config=crypto_keys_config,
+        ca_data=ca_data,
     )
 
     @web.middleware
@@ -160,6 +163,7 @@ def public_us_manager_middleware(
     us_base_url: str,
     us_public_token: str,
     crypto_keys_config: CryptoKeysConfig,
+    ca_data: bytes,
 ) -> AIOHTTPMiddleware:
     """
     Middleware to create public US manager. Works with committed RCI.
@@ -170,6 +174,7 @@ def public_us_manager_middleware(
         us_base_url=us_base_url,
         crypto_keys_config=crypto_keys_config,
         us_public_token=us_public_token,
+        ca_data=ca_data,
     )
 
     @web.middleware
@@ -195,12 +200,14 @@ def service_us_manager_middleware(
     us_base_url: str,
     us_master_token: str,
     crypto_keys_config: CryptoKeysConfig,
+    ca_data: bytes,
     as_user_usm: bool = False,
 ) -> AIOHTTPMiddleware:
     usm_factory = USMFactory(
         us_base_url=us_base_url,
         crypto_keys_config=crypto_keys_config,
         us_master_token=us_master_token,
+        ca_data=ca_data,
     )
 
     @web.middleware

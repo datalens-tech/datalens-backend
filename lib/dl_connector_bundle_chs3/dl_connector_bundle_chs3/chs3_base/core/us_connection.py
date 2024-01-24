@@ -307,7 +307,6 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
         headers = make_user_auth_headers(rci=rci)
         cookies = make_user_auth_cookies(rci=rci)
         fu_client_factory = self.us_manager.get_services_registry().get_file_uploader_client_factory()
-        fu_client = fu_client_factory.get_client(headers=headers, cookies=cookies)
 
         sources_desc = []
         for src_id in sources_to_add:
@@ -315,7 +314,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
             sources_desc.append(src.get_desc())
 
         if sources_desc:
-            async with fu_client:
+            async with fu_client_factory.get_client(headers=headers, cookies=cookies) as fu_client:
                 internal_params = await fu_client.get_internal_params_batch(sources_desc)
 
             for src_order, src_id in enumerate(sources_to_add):

@@ -34,9 +34,13 @@ async def task_processor_arq_worker(
     loop: asyncio.AbstractEventLoop,
     task_state: TaskState,
     file_uploader_worker_settings: FileUploaderWorkerSettings,
+    ca_data: bytes,
 ) -> AsyncGenerator[ArqWorker, None]:
     LOGGER.info("Set up worker")
-    worker = TestingFileUploaderWorkerFactory(settings=file_uploader_worker_settings).create_worker(state=task_state)
+    worker = TestingFileUploaderWorkerFactory(
+        settings=file_uploader_worker_settings,
+        ca_data=ca_data,
+    ).create_worker(state=task_state)
     wrapper = ArqWorkerTestWrapper(loop=loop, worker=worker)
     try:
         yield await wrapper.start()
@@ -50,8 +54,14 @@ async def task_processor_arq_client(
     redis_pool: arq.ArqRedis,
     task_state: TaskState,
     file_uploader_worker_settings: FileUploaderWorkerSettings,
+    ca_data: bytes,
 ) -> AsyncGenerator[TaskProcessor, None]:
-    async with task_processor_arq_worker(loop, task_state, file_uploader_worker_settings):
+    async with task_processor_arq_worker(
+        loop,
+        task_state,
+        file_uploader_worker_settings,
+        ca_data=ca_data,
+    ):
         impl = ARQProcessorImpl(redis_pool)
         p = TaskProcessor(impl=impl, state=task_state)
         LOGGER.info("Arq TP is ready")
@@ -62,8 +72,12 @@ async def task_processor_arq_client(
 async def task_processor_local_client(
     task_state: TaskState,
     file_uploader_worker_settings: FileUploaderWorkerSettings,
+    ca_data: bytes,
 ) -> AsyncGenerator[TaskProcessor, None]:
-    context_fab = FileUploaderContextFab(file_uploader_worker_settings)
+    context_fab = FileUploaderContextFab(
+        settings=file_uploader_worker_settings,
+        ca_data=ca_data,
+    )
     context = await context_fab.make()
     executor = Executor(context=context, state=task_state, registry=REGISTRY)
     impl = LocalProcessorImpl(executor)
@@ -81,15 +95,26 @@ async def get_task_processor_client(
     loop: asyncio.AbstractEventLoop,
     task_state: TaskState,
     file_uploader_worker_settings: FileUploaderWorkerSettings,
+    ca_data: bytes,
 ) -> AsyncGenerator[TaskProcessor, None]:
     if client_type == "arq":
         arq_redis_settings = create_arq_redis_settings(file_uploader_worker_settings.REDIS_ARQ)
         pool = await create_redis_pool(arq_redis_settings)
-        async with task_processor_arq_client(loop, pool, task_state, file_uploader_worker_settings) as tp:
+        async with task_processor_arq_client(
+            loop,
+            pool,
+            task_state,
+            file_uploader_worker_settings,
+            ca_data=ca_data,
+        ) as tp:
             try:
                 yield tp
             finally:
                 await pool.close()
     elif client_type == "local":
-        async with task_processor_local_client(task_state, file_uploader_worker_settings) as tp:
+        async with task_processor_local_client(
+            task_state,
+            file_uploader_worker_settings,
+            ca_data=ca_data,
+        ) as tp:
             yield tp

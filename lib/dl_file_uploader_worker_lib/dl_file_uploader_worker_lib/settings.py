@@ -6,6 +6,7 @@ from dl_configs.connectors_settings import ConnectorsConfigType
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 from dl_configs.settings_submodels import GoogleAppSettings
+from dl_configs.utils import get_root_certificates_path
 from dl_file_uploader_lib.settings import FileUploaderBaseSettings
 
 from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
@@ -61,3 +62,5 @@ class FileUploaderWorkerSettings(FileUploaderBaseSettings):
             )
         ),
     )
+
+    CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())
