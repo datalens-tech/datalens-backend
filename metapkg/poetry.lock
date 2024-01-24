@@ -2087,6 +2087,38 @@ type = "directory"
 url = "../lib/dl_package_boilerplate"
 
 [[package]]
+name = "datalens-pivot"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.12, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_pivot"
+
+[[package]]
+name = "datalens-pivot-pandas"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.12, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_pivot_pandas"
+
+[[package]]
 name = "datalens-query-processing"
 version = "0.0.1"
 description = ""
@@ -6258,4 +6290,4 @@ yc = ["yandexcloud"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12, <3.13"
-content-hash = "8e5cdf6e1d669da2e29e01d6fb7f39043f1d1dfb0cfbda74d5735509dc1e70e5"
+content-hash = "bfda8a1c83f3518652ca08075dcfaffe7799c5ca72840c8a4362a91e88d6550c"
