@@ -26,7 +26,7 @@ class DummyStateImpl(BaseTaskStateImpl):
         pass
 
     def get_state(self, task: TaskInstance) -> list:
-        pass
+        return []
 
 
 # i will change it later
@@ -75,7 +75,7 @@ async def wait_task(task: TaskInstance, state: TaskState, timeout: float = 10, i
     """
     timeout == the bottom line
     """
-    spent_time = 0
+    spent_time = 0.0
     while spent_time < timeout:
         current_state = state.get_state(task)
         # Has the task reached the final state?
