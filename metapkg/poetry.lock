@@ -1761,7 +1761,7 @@ develop = false
 [package.dependencies]
 attrs = ">=22.2.0"
 datalens-constants = {path = "../../lib/dl_constants"}
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = ">=1.4.51, <2.0"
 
 [package.source]
 type = "directory"
