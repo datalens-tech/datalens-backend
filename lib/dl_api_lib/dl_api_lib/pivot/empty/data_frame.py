@@ -24,7 +24,7 @@ _PIVOT_DATA_FRAME_TV = TypeVar("_PIVOT_DATA_FRAME_TV", bound="EmptyPivotDataFram
 
 @attr.s
 class EmptyPivotDataFrame(PivotDataFrame):
-    def iter_columns(self) -> Generator[PivotHeader, None, None]:
+    def iter_column_headers(self) -> Generator[PivotHeader, None, None]:
         yield from ()
 
     def iter_row_headers(self) -> Generator[PivotHeader, None, None]:

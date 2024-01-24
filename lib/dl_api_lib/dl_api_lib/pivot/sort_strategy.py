@@ -41,7 +41,7 @@ from dl_constants.enums import (
 
 
 if TYPE_CHECKING:
-    from dl_api_lib.query.formalization.pivot_legend import PivotLegend
+    from dl_api_lib.pivot.pivot_legend import PivotLegend
     from dl_query_processing.legend.field_legend import Legend
 
 
@@ -65,7 +65,7 @@ class SortValueNormalizer(abc.ABC):
     _direction: OrderDirection = attr.ib()
 
     @abc.abstractmethod
-    def normalize_vector_value(self, vector: Union[DataCellVector, float]) -> Any:
+    def normalize_vector_value(self, vector: DataCellVector | float | None) -> Any:
         raise NotImplementedError
 
 
@@ -94,9 +94,9 @@ class BaseSortValueNormalizer(SortValueNormalizer):
 
         return None
 
-    def normalize_vector_value(self, vector: Union[DataCellVector, float]) -> Any:
-        # the case of NaN values
-        if isinstance(vector, float) and isnan(vector):
+    def normalize_vector_value(self, vector: DataCellVector | float | None) -> Any:
+        # the case of NaN values (in pandas they represent missing cells)
+        if vector is None or isinstance(vector, float) and isnan(vector):
             return NORMAL_LEAST_NULL_VALUE
 
         assert isinstance(vector, DataCellVector)
@@ -122,7 +122,7 @@ class MeasureSortValueNormalizer(BaseSortValueNormalizer):
 
 @attr.s
 class DimensionSortValueNormalizer(BaseSortValueNormalizer):
-    def normalize_vector_value(self, vector: Union[DataCellVector, float]) -> Any:
+    def normalize_vector_value(self, vector: DataCellVector | float | None) -> Any:
         assert isinstance(vector, DataCellVector)
         legend_item_id = vector.main_legend_item_id
         if legend_item_id not in self._legend_item_ids:
@@ -151,7 +151,7 @@ class MeasureNameSortValueNormalizer(SortValueNormalizer):
             for order_value, item in enumerate(self._pivot_legend.list_for_role(role=PivotRole.pivot_measure))
         }
 
-    def normalize_vector_value(self, vector: Union[DataCellVector, float]) -> Any:
+    def normalize_vector_value(self, vector: DataCellVector | float | None) -> Any:
         assert isinstance(vector, DataCellVector)
         main_value = vector.main_value
         assert isinstance(main_value, MeasureNameValue)

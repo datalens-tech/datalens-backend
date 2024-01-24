@@ -29,7 +29,7 @@ class PdPivotDataFrame(PivotDataFrame):
     def pd_df(self) -> pd.DataFrame:
         return self._pd_df
 
-    def iter_columns(self) -> Generator[PivotHeader, None, None]:
+    def iter_column_headers(self) -> Generator[PivotHeader, None, None]:
         for values in self._pd_df.columns:
             if isinstance(values, DataCellVector):
                 # Single column dimension, so normalize
@@ -93,7 +93,7 @@ class PdHSeriesPivotDataFrame(PdSeriesPivotDataFrameBase):
     A horizontal `pandas.Series`
     """
 
-    def iter_columns(self) -> Generator[PivotHeader, None, None]:
+    def iter_column_headers(self) -> Generator[PivotHeader, None, None]:
         yield from self._iter_headers()
 
     def iter_row_headers(self) -> Generator[PivotHeader, None, None]:
@@ -115,7 +115,7 @@ class PdVSeriesPivotDataFrame(PdSeriesPivotDataFrameBase):
     A vertical `pandas.Series`
     """
 
-    def iter_columns(self) -> Generator[PivotHeader, None, None]:
+    def iter_column_headers(self) -> Generator[PivotHeader, None, None]:
         yield PivotHeader()
 
     def iter_row_headers(self) -> Generator[PivotHeader, None, None]:

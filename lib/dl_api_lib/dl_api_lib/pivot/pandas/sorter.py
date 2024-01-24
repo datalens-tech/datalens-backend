@@ -5,7 +5,6 @@ from itertools import count
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Generator,
     Optional,
     Sequence,
     Union,
@@ -20,27 +19,23 @@ from dl_api_lib.pivot.pandas.data_frame import (
     PdPivotDataFrame,
     PdVSeriesPivotDataFrame,
 )
+from dl_api_lib.pivot.pivot_legend import (
+    PivotDimensionRoleSpec,
+    PivotMeasureRoleSpec,
+)
 from dl_api_lib.pivot.primitives import (
     DataCellVector,
     SortAxis,
 )
-from dl_api_lib.query.formalization.pivot_legend import (
-    PivotDimensionRoleSpec,
-    PivotMeasureRoleSpec,
-)
 from dl_constants.enums import (
     OrderDirection,
-    PivotHeaderRole,
     PivotRole,
 )
 import dl_query_processing.exc as exc
 
 
 if TYPE_CHECKING:
-    from dl_api_lib.pivot.primitives import (
-        PivotHeader,
-        PivotMeasureSortingSettings,
-    )
+    from dl_api_lib.pivot.primitives import PivotMeasureSortingSettings
 
 
 _PD_AXIS_MAP = {
@@ -69,22 +64,6 @@ class PdPivotSorterBase(PivotSorter):
                 for f in self._pivot_legend.list_for_role(role=PivotRole.pivot_row)
             ],
         }
-
-    @staticmethod
-    def _complementary_axis(axis: SortAxis) -> SortAxis:
-        return next(iter(set(SortAxis) - {axis}))
-
-    def _get_pd_index(self, axis: SortAxis) -> Generator[PivotHeader, None, None]:
-        if axis == SortAxis.columns:
-            return self._pivot_dframe.iter_columns()
-        return self._pivot_dframe.iter_row_headers()
-
-    def _has_total(self, axis: SortAxis) -> bool:
-        index = self._get_pd_index(axis)
-        total_count = sum(header.info.role_spec.role == PivotHeaderRole.total for header in index)
-        if total_count > 1:
-            raise exc.PivotSortingWithSubtotalsIsNotAllowed()
-        return bool(total_count)
 
     @abc.abstractmethod
     def _get_pd_axis(self, axis: SortAxis) -> int:
@@ -141,7 +120,7 @@ class PdPivotSorterBase(PivotSorter):
     def _sort_by_measure(self, axis: SortAxis, sorting_piid: int, settings: PivotMeasureSortingSettings) -> None:
         sorting_idx: Optional[int] = None
 
-        for idx, header in enumerate(self._get_pd_index(axis)):
+        for idx, header in enumerate(self._pivot_dframe.iter_axis_headers(axis)):
             if header.compare_sorting_settings(settings):
                 if sorting_idx is None:
                     sorting_idx = idx
@@ -162,7 +141,7 @@ class PdPivotSorterBase(PivotSorter):
         sorting_key = sorting_key.map(normalizer.normalize_vector_value).argsort()
         if settings.direction == OrderDirection.desc:
             sorting_key = sorting_key[::-1]
-        if self._has_total(self._complementary_axis(axis)):
+        if self._axis_has_total(self._complementary_axis(axis)):
             # manually put the total at the end
             key_len = len(sorting_key)
             total_pos = list(sorting_key).index(key_len - 1)
@@ -177,7 +156,10 @@ class PdPivotSorterBase(PivotSorter):
             sorting_settings = cast(PivotMeasureRoleSpec, pivot_item.role_spec).sorting
             if sorting_settings is None:
                 continue
-            for axis, settings in zip(SortAxis, [sorting_settings.column, sorting_settings.row]):
+            for axis, settings in zip(
+                [SortAxis.columns, SortAxis.rows],
+                [sorting_settings.column, sorting_settings.row],
+            ):
                 if settings is not None:
                     self._sort_by_measure(axis, pivot_item.pivot_item_id, settings)
 

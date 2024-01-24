@@ -5,6 +5,7 @@ from marshmallow import fields as ma_fields
 from marshmallow import validate as ma_validate
 from marshmallow_oneofschema import OneOfSchema
 
+from dl_api_lib.pivot.pivot_legend import PivotRoleSpec
 from dl_api_lib.pivot.primitives import (
     PivotHeaderInfo,
     PivotHeaderRoleSpec,
@@ -12,7 +13,6 @@ from dl_api_lib.pivot.primitives import (
     PivotMeasureSorting,
     PivotMeasureSortingSettings,
 )
-from dl_api_lib.query.formalization.pivot_legend import PivotRoleSpec
 from dl_api_lib.query.formalization.raw_pivot_specs import (
     PivotPaginationSpec,
     RawAnnotationPivotRoleSpec,

@@ -17,14 +17,14 @@ from typing import (  # It thinks NamedTuple isn't used, but it is  # noqa: F401
 
 import attr
 
+from dl_api_lib.pivot.pivot_legend import (
+    PivotAnnotationRoleSpec,
+    PivotLegend,
+)
 from dl_api_lib.pivot.primitives import (
     DataCell,
     DataCellVector,
     MeasureNameValue,
-)
-from dl_api_lib.query.formalization.pivot_legend import (
-    PivotAnnotationRoleSpec,
-    PivotLegend,
 )
 from dl_constants.enums import (
     FieldType,
