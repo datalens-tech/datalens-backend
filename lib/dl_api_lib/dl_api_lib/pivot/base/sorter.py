@@ -5,10 +5,15 @@ from typing import TYPE_CHECKING
 
 import attr
 
+from dl_api_lib.pivot.primitives import (
+    PivotHeaderRole,
+    SortAxis,
+)
 from dl_api_lib.pivot.sort_strategy import (
     DimensionSortValueStrategy,
     MeasureSortStrategy,
 )
+import dl_query_processing.exc as exc
 
 
 if TYPE_CHECKING:
@@ -33,6 +38,17 @@ class PivotSorter(abc.ABC):
     @_measure_sort_strategy.default
     def _make_measure_sort_strategy(self) -> SortValueStrategy:
         return MeasureSortStrategy(legend=self._legend, pivot_legend=self._pivot_legend)
+
+    @staticmethod
+    def _complementary_axis(axis: SortAxis) -> SortAxis:
+        return next(iter(set(SortAxis) - {axis}))
+
+    def _axis_has_total(self, axis: SortAxis) -> bool:
+        headers = self._pivot_dframe.iter_axis_headers(axis)
+        total_count = sum(header.info.role_spec.role == PivotHeaderRole.total for header in headers)
+        if total_count > 1:
+            raise exc.PivotSortingWithSubtotalsIsNotAllowed()
+        return bool(total_count)
 
     @abc.abstractmethod
     def sort(self) -> None:

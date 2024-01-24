@@ -33,10 +33,7 @@ import dl_query_processing.exc as exc
 
 
 if TYPE_CHECKING:
-    from dl_api_lib.pivot.primitives import (
-        PivotHeader,
-        PivotMeasureSortingSettings,
-    )
+    from dl_api_lib.pivot.primitives import PivotMeasureSortingSettings
 
 
 @attr.s
@@ -66,13 +63,6 @@ class NativePivotSorter(PivotSorter):
                 return self._native_dframe.column_keys
             case _:
                 raise ValueError(axis)
-
-    def _has_total(self, axis: SortAxis) -> bool:
-        headers = self._pivot_dframe.iter_axis_headers(axis)
-        total_count = sum(header.info.role_spec.role == PivotHeaderRole.total for header in headers)
-        if total_count > 1:
-            raise exc.PivotSortingWithSubtotalsIsNotAllowed()
-        return bool(total_count)
 
     def _sort_key_list(self, key_list: list[FlatPivotDataKey], directions: Sequence[OrderDirection]) -> None:
         all_descending = all(direct is OrderDirection.desc for direct in directions)
@@ -108,7 +98,7 @@ class NativePivotSorter(PivotSorter):
 
     def _sort_by_measure(self, axis: SortAxis, sorting_piid: int, settings: PivotMeasureSortingSettings) -> None:
         sorting_dim_values: Optional[tuple[DataCellVector, ...]] = None
-        other_axis = {SortAxis.columns: SortAxis.rows, SortAxis.rows: SortAxis.columns}[axis]
+        other_axis = self._complementary_axis(axis)
 
         for idx, header in enumerate(self._pivot_dframe.iter_axis_headers(axis)):
             if header.compare_sorting_settings(settings):
@@ -120,10 +110,14 @@ class NativePivotSorter(PivotSorter):
         if sorting_dim_values is None:
             raise exc.PivotSortingRowOrColumnNotFound()
 
+        normalizer = self._measure_sort_strategy.get_normalizer(
+            pivot_item_id=sorting_piid, direction=settings.direction
+        )
+
         # First order the measure values in the selected row/column
         # (together with their original position indices)
         indexed_values = [
-            (old_pos_idx, value)
+            (old_pos_idx, normalizer.normalize_vector_value(value))
             for old_pos_idx, value in enumerate(
                 self._native_dframe.iter_values_along_axis(
                     axis=other_axis,
@@ -131,15 +125,7 @@ class NativePivotSorter(PivotSorter):
                 )
             )
         ]
-
-        def normalize_measure_value(value: Optional[DataCellVector]) -> Any:
-            """Convert key to a value that can be sorted natively"""
-            normalizer = self._measure_sort_strategy.get_normalizer(
-                pivot_item_id=sorting_piid, direction=settings.direction
-            )
-            return normalizer.normalize_vector_value(value)
-
-        indexed_values.sort(key=lambda pair: normalize_measure_value(pair[1]))  # pair = (old_pos_idx, value)
+        indexed_values.sort(key=lambda pair: pair[1])  # pair = (old_pos_idx, value)
 
         reverse = settings.direction == OrderDirection.desc
 
@@ -148,9 +134,12 @@ class NativePivotSorter(PivotSorter):
         key_to_new_idx = {
             key_list[old_pos_idx]: new_pos_idx for new_pos_idx, (old_pos_idx, _) in enumerate(indexed_values)
         }
-        key_list.sort(key=lambda key_value: key_to_new_idx[key_value], reverse=reverse)
+        key_list.sort(
+            key=lambda key_value: key_to_new_idx[key_value],
+            reverse=settings.direction == OrderDirection.desc,
+        )
 
-        if self._has_total(other_axis):  # hack for totals
+        if self._axis_has_total(other_axis):  # hack for totals
             # Find the key
             total_key: Optional[FlatPivotDataKey] = None
             for dim_header in self._pivot_dframe.iter_axis_headers(other_axis):

@@ -29,17 +29,13 @@ from dl_api_lib.pivot.primitives import (
 )
 from dl_constants.enums import (
     OrderDirection,
-    PivotHeaderRole,
     PivotRole,
 )
 import dl_query_processing.exc as exc
 
 
 if TYPE_CHECKING:
-    from dl_api_lib.pivot.primitives import (
-        PivotHeader,
-        PivotMeasureSortingSettings,
-    )
+    from dl_api_lib.pivot.primitives import PivotMeasureSortingSettings
 
 
 _PD_AXIS_MAP = {
@@ -68,17 +64,6 @@ class PdPivotSorterBase(PivotSorter):
                 for f in self._pivot_legend.list_for_role(role=PivotRole.pivot_row)
             ],
         }
-
-    @staticmethod
-    def _complementary_axis(axis: SortAxis) -> SortAxis:
-        return next(iter(set(SortAxis) - {axis}))
-
-    def _has_total(self, axis: SortAxis) -> bool:
-        index = self._pivot_dframe.iter_axis_headers(axis)
-        total_count = sum(header.info.role_spec.role == PivotHeaderRole.total for header in index)
-        if total_count > 1:
-            raise exc.PivotSortingWithSubtotalsIsNotAllowed()
-        return bool(total_count)
 
     @abc.abstractmethod
     def _get_pd_axis(self, axis: SortAxis) -> int:
@@ -156,7 +141,7 @@ class PdPivotSorterBase(PivotSorter):
         sorting_key = sorting_key.map(normalizer.normalize_vector_value).argsort()
         if settings.direction == OrderDirection.desc:
             sorting_key = sorting_key[::-1]
-        if self._has_total(self._complementary_axis(axis)):
+        if self._axis_has_total(self._complementary_axis(axis)):
             # manually put the total at the end
             key_len = len(sorting_key)
             total_pos = list(sorting_key).index(key_len - 1)
