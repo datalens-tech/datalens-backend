@@ -102,6 +102,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           path: branch_code
+          fetch-depth: 0
 
       - name: Check fork PR branch contains latest base sha
         if: ${{ github.event_name != 'workflow_dispatch' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
