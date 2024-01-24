@@ -4,7 +4,7 @@ import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
 from dl_constants.enums import UserDataType
-from dl_core.exc import DashSQLError
+from dl_dashsql.exc import DashSQLError
 
 
 TValueBase = str | list[str] | tuple[str, ...]

@@ -1095,6 +1095,7 @@ datalens-compeng-pg = {path = "../dl_compeng_pg"}
 datalens-configs = {path = "../dl_configs"}
 datalens-constants = {path = "../dl_constants"}
 datalens-core = {path = "../dl_core"}
+datalens-dashsql = {path = "../../lib/dl_dashsql"}
 datalens-formula = {path = "../dl_formula"}
 datalens-i18n = {path = "../dl_i18n"}
 datalens-model-tools = {path = "../dl_model_tools"}
@@ -1735,6 +1736,7 @@ datalens-api-commons = {path = "../dl_api_commons"}
 datalens-app-tools = {path = "../dl_app_tools"}
 datalens-configs = {path = "../dl_configs"}
 datalens-constants = {path = "../dl_constants"}
+datalens-dashsql = {path = "../../lib/dl_dashsql"}
 datalens-i18n = {path = "../dl_i18n"}
 datalens-model-tools = {path = "../dl_model_tools"}
 datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
@@ -1814,6 +1816,7 @@ develop = false
 [package.dependencies]
 attrs = ">=22.2.0"
 datalens-constants = {path = "../../lib/dl_constants"}
+sqlalchemy = ">=1.4.46, <2.0"
 
 [package.source]
 type = "directory"

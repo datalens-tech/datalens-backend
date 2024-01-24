@@ -25,28 +25,21 @@ from dl_api_lib.enums import USPermissionKind
 import dl_api_lib.schemas.main
 from dl_api_lib.utils.base import need_permission_on_entry
 from dl_app_tools.profiling_base import generic_profiler_async
-from dl_constants.enums import (
-    ConnectionType,
-    UserDataType,
-)
-from dl_core.backend_types import get_backend_type
-from dl_core.dashsql.literalizer import TValueBase
-from dl_core.dashsql.registry import get_dash_sql_param_literalizer
+from dl_constants.enums import UserDataType
 from dl_core.data_processing.dashsql import (
-    BindParamInfo,
     DashSQLCachedSelector,
     DashSQLEvent,
     TRow,
 )
-from dl_core.exc import (
-    DashSQLError,
-    UnexpectedUSEntryType,
-)
+from dl_core.exc import UnexpectedUSEntryType
 from dl_core.us_connection_base import (
     ConnectionBase,
     ExecutorBasedMixin,
     SubselectMixin,
 )
+from dl_dashsql.exc import DashSQLError
+from dl_dashsql.formatting.base import QueryIncomingParameter
+from dl_dashsql.literalizer import TValueBase
 from dl_query_processing.utils.datetime import parse_datetime
 
 
@@ -83,7 +76,7 @@ def parse_value(value: Optional[str], bi_type: UserDataType) -> Any:
     raise DashSQLError(f"Unsupported type: {bi_type.name!r}")
 
 
-def make_param_obj(name: str, param: dict, conn_type: ConnectionType) -> BindParamInfo:
+def make_param_obj(name: str, param: dict) -> QueryIncomingParameter:
     type_name: str = param["type_name"]
     value_base: TValueBase = param["value"]
 
@@ -91,10 +84,6 @@ def make_param_obj(name: str, param: dict, conn_type: ConnectionType) -> BindPar
         bi_type = UserDataType[type_name]
     except KeyError:
         raise DashSQLError(f"Unknown type name {type_name!r}")
-
-    backend_type = get_backend_type(conn_type=conn_type)
-    literalizer_cls = get_dash_sql_param_literalizer(backend_type=backend_type)
-    sa_type = literalizer_cls.get_sa_type(bi_type=bi_type, value_base=value_base)
 
     try:
         if isinstance(value_base, (list, tuple)):
@@ -104,12 +93,10 @@ def make_param_obj(name: str, param: dict, conn_type: ConnectionType) -> BindPar
     except ValueError:
         raise DashSQLError(f"Unsupported value for type {type_name!r}: {value_base!r}")
 
-    return BindParamInfo(
-        name=name,
-        type_name=type_name,
-        sa_type=sa_type,
+    return QueryIncomingParameter(
+        original_name=name,
+        user_type=bi_type,
         value=value,
-        expanding=isinstance(value, (list, tuple)),
     )
 
 
@@ -232,7 +219,7 @@ class DashSQLView(BaseView):
         schema = dl_api_lib.schemas.main.DashSQLRequestSchema()
         body = schema.load(self.dl_request.json)
         sql_query = body["sql_query"]
-        params = body.get("params")
+        raw_params = body.get("params")
         db_params = body.get("db_params")
         connector_specific_params = body.get("connector_specific_params")
 
@@ -247,14 +234,9 @@ class DashSQLView(BaseView):
         # A slightly more explicit check (which should have been done in `get_by_id` anyway):
         need_permission_on_entry(conn, USPermissionKind.execute)
 
-        # TODO: instead of this, use something like:
-        #     formula_dialect = dl_formula.core.dialect.from_name_and_version(conn.get_dialect().name)
-        #     bindparam = dl_formula.definitions.literals.literal(parsed_value, formula_dialect)
-        # (but account for `expanding`)
-        conn_type = conn.conn_type
-        param_objs = None
-        if params is not None:
-            param_objs = [make_param_obj(name, param, conn_type=conn_type) for name, param in params.items()]
+        incoming_parameters: Optional[list[QueryIncomingParameter]] = None
+        if raw_params is not None:
+            incoming_parameters = [make_param_obj(name, param) for name, param in raw_params.items()]
 
         # TODO: move dashsql selector's construction to factory
         bleeding_edge_users = self.request.app.get("BLEEDING_EDGE_USERS", ())
@@ -265,7 +247,7 @@ class DashSQLView(BaseView):
             sql_query=sql_query,
             # Note: `None` means `no substitution` (legacy),
             # `[]` means `attempt to substitute`.
-            params=param_objs,
+            incoming_parameters=incoming_parameters,
             db_params=db_params or {},
             connector_specific_params=connector_specific_params,
             service_registry=self.dl_request.services_registry,
