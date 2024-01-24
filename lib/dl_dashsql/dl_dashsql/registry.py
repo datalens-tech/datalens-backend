@@ -1,7 +1,7 @@
 from typing import Type
 
 from dl_constants.enums import SourceBackendType
-from dl_core.dashsql.literalizer import DashSQLParamLiteralizer
+from dl_dashsql.literalizer import DashSQLParamLiteralizer
 
 
 _LITERALIZER_CLASSES: dict[SourceBackendType, Type[DashSQLParamLiteralizer]] = {}

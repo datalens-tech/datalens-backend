@@ -2,26 +2,20 @@ from __future__ import annotations
 
 import enum
 import logging
-import re
 import sys
 import time
 from typing import (
     TYPE_CHECKING,
     Any,
     AsyncIterable,
-    Dict,
-    List,
     Optional,
     Sequence,
-    Set,
-    Tuple,
-    Union,
 )
 
 import attr
 import sqlalchemy as sa
+from sqlalchemy.sql.elements import TextClause
 
-from dl_api_commons.headers import DLHeadersCommon
 from dl_api_commons.reporting.models import (
     QueryExecutionCacheInfoReportingRecord,
     QueryExecutionEndReportingRecord,
@@ -29,6 +23,7 @@ from dl_api_commons.reporting.models import (
 )
 from dl_constants.types import TJSONExt  # not under `TYPE_CHECKING`, need to define new type aliases.
 from dl_core import exc
+from dl_core.backend_types import get_backend_type
 from dl_core.base_models import WorkbookEntryLocation
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.connectors.base.dashsql import get_custom_dash_sql_key_names
@@ -47,6 +42,12 @@ from dl_core.utils import (
     make_id,
     sa_plain_text,
 )
+from dl_dashsql.formatting.base import (
+    FormattedQuery,
+    QueryIncomingParameter,
+)
+from dl_dashsql.formatting.placeholder_dbapi import DBAPIQueryFormatterFactory
+from dl_dashsql.registry import get_dash_sql_param_literalizer
 
 
 if TYPE_CHECKING:
@@ -72,103 +73,40 @@ class DashSQLEvent(enum.Enum):
     footer = "footer"
 
 
-TRow = Tuple[TJSONExt, ...]
-TMeta = Dict[str, TJSONExt]
+TRow = tuple[TJSONExt, ...]
+TMeta = dict[str, TJSONExt]
 # # More correct but mymy couldn't:
 # TResultEvent = Union[
-#     Tuple[Literal['metadata'], TMeta],
-#     Tuple[Literal['row'], TRow],
-#     Tuple[Literal['rowchunk'], Tuple[TRow, ...]],
-#     Tuple[Literal['error'], TMeta],
-#     Tuple[Literal['footer'], TMeta],
+#     tuple[Literal['metadata'], TMeta],
+#     tuple[Literal['row'], TRow],
+#     tuple[Literal['rowchunk'], tuple[TRow, ...]],
+#     tuple[Literal['error'], TMeta],
+#     tuple[Literal['footer'], TMeta],
 # ]
-TResultEvent = Tuple[str, Union[TMeta, TRow]]
+TResultEvent = tuple[str, TMeta | TRow]
 TResultEvents = AsyncIterable[TResultEvent]
-
-
-@attr.s(frozen=True, auto_attribs=True)
-class BindParamInfo:
-    name: str
-    type_name: str
-    sa_type: sa.sql.type_api.TypeEngine
-    value: Any
-    expanding: bool = False
-
-
-@attr.s
-class ParamsReformatter:
-    query: str = attr.ib()
-    existing_params: Set[str] = attr.ib()
-
-    found_params: Set[str] = attr.ib(factory=set)  # for optionally skipping bindparams
-    known_params: Set[str] = attr.ib(factory=set)  # for the uniqueness checks
-    params_namemap: Dict[str, str] = attr.ib(factory=dict)
-    pcounter: int = attr.ib(default=1)  # for making new unique names
-    nameprefix: str = attr.ib(default="p")
-
-    def __attrs_post_init__(self) -> None:
-        self.known_params.update(self.existing_params)
-
-    def prenormalize_param_name(self, name: str) -> str:
-        """To make sure there're no catches with `:param`, normalize param names"""
-        name = re.sub(r"[^A-Za-z0-9]", "_", name)
-        if not re.search(r"^[A-Za-z]", name):
-            name = f"{self.nameprefix}{name}"
-        return name
-
-    def normalize_param_name(self, name: str) -> str:
-        mapped = self.params_namemap.get(name)
-        if mapped is not None:
-            return mapped
-        mapped = self.prenormalize_param_name(name)
-        if mapped == name:
-            return name
-
-        if mapped in self.known_params:
-            while True:
-                candidate = f"{mapped}_{self.pcounter}"
-                if candidate not in self.known_params:
-                    mapped = candidate
-                    break
-                self.pcounter += 1
-
-        self.params_namemap[name] = mapped
-        self.known_params.add(mapped)
-        return mapped
-
-    def param_repl(self, match: re.Match) -> str:
-        param_name = match.group(1)
-        if param_name not in self.existing_params:
-            return match.group(0)  # hacky: leave as-is
-
-        self.found_params.add(param_name)
-        mapped_name = self.normalize_param_name(param_name)
-        return f":{mapped_name}"
-
-    def reformat(self) -> str:
-        """Convert from `{{paramname}}` to `:paramname`"""
-        query = self.query
-        query = query.replace(":", r"\:")
-        query = re.sub(r"\{\{([^}]+)\}\}", self.param_repl, query)
-        return query
 
 
 @attr.s(auto_attribs=True)
 class DashSQLSelector:
     conn: ConnectionBase
     sql_query: str
-    params: Optional[List[BindParamInfo]]
-    db_params: Dict[str, str]
+    incoming_parameters: Optional[list[QueryIncomingParameter]]
+    db_params: dict[str, str]
     _service_registry: ServicesRegistry
-    connector_specific_params: Optional[Dict[str, TJSONExt]] = attr.ib(default=None)
+    connector_specific_params: Optional[dict[str, TJSONExt]] = attr.ib(default=None)
 
     def __attrs_post_init__(self) -> None:
         specific_param_keys = get_custom_dash_sql_key_names(conn_type=self.conn.conn_type)
-        if specific_param_keys and self.connector_specific_params is None and self.params is not None:
+        if specific_param_keys and self.connector_specific_params is None and self.incoming_parameters is not None:
             self.connector_specific_params = {
-                param.name: param.value for param in self.params if param.name in specific_param_keys
+                param.original_name: param.value
+                for param in self.incoming_parameters
+                if param.original_name in specific_param_keys
             }
-            self.params = [param for param in self.params if param.name not in specific_param_keys]
+            self.incoming_parameters = [
+                param for param in self.incoming_parameters if param.original_name not in specific_param_keys
+            ]
 
     def make_ce(self) -> AsyncConnExecutorBase:
         ce_factory = self._service_registry.get_conn_executor_factory()
@@ -176,34 +114,42 @@ class DashSQLSelector:
         ce = ce.mutate_for_dashsql(db_params=self.db_params)
         return ce
 
-    def _make_sa_query(self) -> Tuple[sa.sql.elements.TextClause, str]:
-        query = self.sql_query
-        params = self.params
-        if params is None:
-            # No parameters substitution
-            return sa_plain_text(query), query
+    def _formatted_query_to_sa_query(self, formatted_query: FormattedQuery) -> TextClause:
+        backend_type = get_backend_type(conn_type=self.conn.conn_type)
+        literalizer_cls = get_dash_sql_param_literalizer(backend_type=backend_type)
 
-        reformatter = ParamsReformatter(
-            query=query,
-            existing_params={param.name for param in params},
-        )
-        query = reformatter.reformat()
         try:
-            sa_text = sa.text(query).bindparams(
+            sa_text = sa.text(formatted_query.query).bindparams(
                 *[
                     sa.bindparam(
-                        reformatter.normalize_param_name(param.name),
-                        type_=param.sa_type,
-                        value=param.value,
-                        expanding=param.expanding,
+                        param.param_name,
+                        type_=literalizer_cls.get_sa_type(
+                            bi_type=param.incoming_param.user_type,
+                            value_base=param.incoming_param.value,
+                        ),
+                        value=param.incoming_param.value,
+                        expanding=isinstance(param.incoming_param.value, (list, tuple)),
                     )
-                    for param in params
-                    # dubious current behavior: skip unknown params
-                    if param.name in reformatter.found_params
+                    for param in formatted_query.bound_params
                 ]
             )
         except sa.exc.ArgumentError:
             raise exc.WrongQueryParameterization()
+
+        return sa_text
+
+    def _make_sa_query(self) -> tuple[sa.sql.elements.TextClause, str]:
+        query = self.sql_query
+        if self.incoming_parameters is None:
+            # No parameters substitution
+            return sa_plain_text(query), query
+
+        formatter_factory = DBAPIQueryFormatterFactory()  # TODO: Connectorize
+        formatter = formatter_factory.get_query_formatter()
+        formatting_result = formatter.format_query(query=query, incoming_parameters=self.incoming_parameters or [])
+        formatted_query = formatting_result.formatted_query
+        sa_query = self._formatted_query_to_sa_query(formatted_query)
+
         conn = self.conn
         # This should've been `dialect = conn.get_dialect() if isinstance(conn, ExecutorBasedMixin) else None`,
         # but mypy couldn't handle that.
@@ -212,7 +158,7 @@ class DashSQLSelector:
         else:
             dialect = None  # type: ignore  # TODO: fix
         debug_text = compile_query_for_debug(self.sql_query, dialect=dialect)
-        return sa_text, debug_text
+        return sa_query, debug_text
 
     def make_ce_query(self) -> ConnExecutorQuery:
         sa_text, debug_compiled_query = self._make_sa_query()
@@ -292,12 +238,12 @@ class DashSQLCachedSelector(DashSQLSelector):
         return "dashsql_{}".format(make_id())
 
     def _get_jsonable_params(self) -> Optional[TJSONExt]:
-        if self.params is None:
+        if self.incoming_parameters is None:
             return None
         return tuple(
             # `value` might contain e.g. datetimes
-            (param.name, param.type_name, param.value, param.expanding)
-            for param in self.params
+            (param.original_name, param.user_type.name, param.value)
+            for param in self.incoming_parameters
         )
 
     def _get_jsonable_connector_specific_params(self) -> Optional[TJSONExt]:

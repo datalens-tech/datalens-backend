@@ -2,7 +2,7 @@ import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
 from dl_constants.enums import UserDataType
-from dl_core.dashsql.literalizer import (
+from dl_dashsql.literalizer import (
     DefaultDashSQLParamLiteralizer,
     TValueBase,
 )

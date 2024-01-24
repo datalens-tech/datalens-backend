@@ -16,7 +16,6 @@ from dl_core.connectors.base.connector import (
 from dl_core.connectors.base.dashsql import register_custom_dash_sql_key_names
 from dl_core.connectors.base.data_source_migration import register_data_source_migrator
 from dl_core.connectors.settings.registry import register_connector_settings_class
-from dl_core.dashsql.registry import register_dash_sql_param_literalizer_cls
 from dl_core.data_processing.query_compiler_registry import register_sa_query_compiler_cls
 from dl_core.data_source.type_mapping import register_data_source_class
 from dl_core.data_source_spec.type_mapping import register_data_source_spec_class
@@ -34,6 +33,7 @@ from dl_core.services_registry.conn_executor_factory import (
 from dl_core.us_connection import register_connection_class
 from dl_core.us_manager.storage_schemas.connection_schema_registry import register_connection_schema
 from dl_core.us_manager.storage_schemas.data_source_spec import register_data_source_schema
+from dl_dashsql.registry import register_dash_sql_param_literalizer_cls
 
 
 if TYPE_CHECKING:
