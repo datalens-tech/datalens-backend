@@ -21,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
+    outputs:
+      image-version: ${{ steps.push_image.outputs.image-version }}
     strategy:
       matrix:
         image_name:
@@ -52,9 +54,19 @@ jobs:
         docker tag "${image_url_rc}" "${image_url_release}"
         docker push "${image_url_release}"
 
+        echo "image-version=${image_version}" >> $GITHUB_OUTPUT
+
+  run_e2e_tests:
+    name: "Run E2E tests"
+    needs: [ push_images ]
+    uses: datalens-tech/datalens-backend/.github/workflows/run_e2e.yml@main
+    with:
+      image_version: ${{ needs.push_images.outputs.image-version }}
+    secrets: inherit
+
   release:
     name: "Create release"
-    needs: [push_images]
+    needs: [ push_images, run_e2e_tests ]
     runs-on: ubuntu-latest
     permissions:
       contents: write
