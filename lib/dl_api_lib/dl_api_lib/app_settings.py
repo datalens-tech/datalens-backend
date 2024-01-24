@@ -144,7 +144,7 @@ class AppSettings:
         env_var_converter=lambda s: QueryProcessingMode[s.lower()],
         missing=QueryProcessingMode.basic,
     )
-    CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())
+    CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
 
     PIVOT_ENGINE_TYPE: DataPivotEngineType = s_attrib(  # type: ignore
         "PIVOT_ENGINE_TYPE",
@@ -238,7 +238,7 @@ class DataApiAppSettings(AppSettings):
 
     BI_ASYNC_APP_DISABLE_KEEPALIVE: bool = s_attrib("BI_ASYNC_APP_DISABLE_KEEPALIVE", missing=False)  # type: ignore
 
-    CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())
+    CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
 
     @property
     def app_name(self) -> str:

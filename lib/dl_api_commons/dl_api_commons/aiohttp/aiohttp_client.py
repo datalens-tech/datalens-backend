@@ -109,7 +109,7 @@ class BIAioHTTPClient:
     _ca_data: bytes = attr.ib()
     _session: Optional[aiohttp.ClientSession] = attr.ib(init=False)
 
-    def __attrs_post_init__(self):
+    def __attrs_post_init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         self._session = self._make_session()
 
     def _make_session(self) -> aiohttp.ClientSession:
@@ -123,7 +123,7 @@ class BIAioHTTPClient:
         )
 
     async def close(self) -> None:
-        await self._session.close()
+        await self._session.close()  # type: ignore  # 2024-01-24 # TODO: Item "None" of "ClientSession | None" has no attribute "close"  [union-attr]
 
     async def __aenter__(self) -> BIAioHTTPClient:
         return self
@@ -160,7 +160,7 @@ class BIAioHTTPClient:
             sock_connect=conn_timeout_sec or self.conn_timeout_sec,
             sock_read=read_timeout_sec or self.read_timeout_sec,
         )
-        return await self._session.request(
+        return await self._session.request(  # type: ignore  # 2024-01-24 # TODO: Item "None" of "ClientSession | None" has no attribute "request"  [union-attr]
             method=method,
             url=self.url(path),
             params=params,
