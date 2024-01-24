@@ -127,8 +127,6 @@ class NativePivotSorter(PivotSorter):
         ]
         indexed_values.sort(key=lambda pair: pair[1])  # pair = (old_pos_idx, value)
 
-        reverse = settings.direction == OrderDirection.desc
-
         # Now reorder the keys in accordance with the sorted measures
         key_list = self._get_key_list_for_axis(other_axis)
         key_to_new_idx = {
