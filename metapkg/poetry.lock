@@ -1047,7 +1047,7 @@ datalens-query-processing = {path = "../dl_query_processing"}
 datalens-task-processor = {path = "../dl_task_processor"}
 datalens-utils = {path = "../dl_utils"}
 flask = ">=2.2.5"
-flask-marshmallow = ">=0.14.0"
+flask-marshmallow = ">=1.1.0"
 flask-restx = ">=1.1.0"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
@@ -2698,26 +2698,24 @@ dotenv = ["python-dotenv"]
 
 [[package]]
 name = "flask-marshmallow"
-version = "0.14.0"
+version = "1.1.0"
 description = "Flask + marshmallow for beautiful APIs"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "flask-marshmallow-0.14.0.tar.gz", hash = "sha256:bd01a6372cbe50e36f205cfff0fc5dab0b7b662c4c8b2c4fc06a3151b2950950"},
-    {file = "flask_marshmallow-0.14.0-py2.py3-none-any.whl", hash = "sha256:2adcd782b5a4a6c5ae3c96701f320d8ca6997995a52b2661093c56cc3ed24754"},
+    {file = "flask_marshmallow-1.1.0-py3-none-any.whl", hash = "sha256:45787a13d1e2b4940ea19d1882c8cf6e43335aa769e91f3e2a270d18d9f66f2e"},
+    {file = "flask_marshmallow-1.1.0.tar.gz", hash = "sha256:2d186af7c8b4455b8a2c166c7470939c17d70353671ea5a287a14676846fa013"},
 ]
 
 [package.dependencies]
-Flask = "*"
-marshmallow = ">=2.0.0"
-six = ">=1.9.0"
+Flask = ">=2.2"
+marshmallow = ">=3.0.0"
 
 [package.extras]
-dev = ["flake8 (==3.8.3)", "flake8-bugbear (==20.1.4)", "flask-sqlalchemy", "marshmallow-sqlalchemy (>=0.13.0)", "marshmallow-sqlalchemy (>=0.13.0,<0.19.0)", "mock", "pre-commit (>=2.4,<3.0)", "pytest", "tox"]
-docs = ["Sphinx (==3.2.1)", "marshmallow-sqlalchemy (>=0.13.0)", "sphinx-issues (==1.2.0)"]
-lint = ["flake8 (==3.8.3)", "flake8-bugbear (==20.1.4)", "pre-commit (>=2.4,<3.0)"]
-sqlalchemy = ["flask-sqlalchemy", "marshmallow-sqlalchemy (>=0.13.0)", "marshmallow-sqlalchemy (>=0.13.0,<0.19.0)"]
-tests = ["flask-sqlalchemy", "marshmallow-sqlalchemy (>=0.13.0)", "marshmallow-sqlalchemy (>=0.13.0,<0.19.0)", "mock", "pytest"]
+dev = ["flask-marshmallow[tests]", "pre-commit (>=3.5,<4.0)", "tox"]
+docs = ["Sphinx (==7.2.6)", "marshmallow-sqlalchemy (>=0.19.0)", "sphinx-issues (==3.0.1)"]
+sqlalchemy = ["flask-sqlalchemy (>=3.0.0)", "marshmallow-sqlalchemy (>=0.29.0)"]
+tests = ["flask-marshmallow[sqlalchemy]", "pytest"]
 
 [[package]]
 name = "flask-restx"
@@ -6259,4 +6257,4 @@ yc = ["yandexcloud"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12, <3.13"
-content-hash = "221cfdf1a68136a81e4325dbd1fa364bc00da0d33b1bcb806ce7626c5aa2a024"
+content-hash = "8e5cdf6e1d669da2e29e01d6fb7f39043f1d1dfb0cfbda74d5735509dc1e70e5"
