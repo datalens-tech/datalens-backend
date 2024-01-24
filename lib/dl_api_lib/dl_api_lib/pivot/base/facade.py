@@ -22,11 +22,11 @@ if TYPE_CHECKING:
     from dl_api_lib.pivot.base.data_frame import PivotDataFrame
     from dl_api_lib.pivot.base.paginator import PivotPaginator
     from dl_api_lib.pivot.base.sorter import PivotSorter
+    from dl_api_lib.pivot.pivot_legend import PivotLegend
     from dl_api_lib.pivot.primitives import (
         MeasureValues,
         PivotHeader,
     )
-    from dl_api_lib.query.formalization.pivot_legend import PivotLegend
     from dl_query_processing.legend.field_legend import Legend
 
 
@@ -63,8 +63,8 @@ class TableDataFacade(abc.ABC):
     def _make_paginator(self) -> PivotPaginator:
         raise NotImplementedError
 
-    def iter_columns(self) -> Generator[PivotHeader, None, None]:
-        return self._pivot_dframe.iter_columns()
+    def iter_column_headers(self) -> Generator[PivotHeader, None, None]:
+        return self._pivot_dframe.iter_column_headers()
 
     def iter_row_dim_headers(self) -> Generator[DataCellVector, None, None]:
         dname_legend_item_id = next(iter(self._legend.get_dimension_name_legend_item_ids()))

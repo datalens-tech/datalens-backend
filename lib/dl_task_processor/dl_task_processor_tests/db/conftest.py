@@ -63,8 +63,8 @@ def task_state():
 
 
 @pytest.fixture(scope="function")
-def worker_settings():
-    return WorkerSettings()
+def worker_settings(request):
+    return getattr(request, "param", WorkerSettings())
 
 
 @pytest.fixture(scope="function")

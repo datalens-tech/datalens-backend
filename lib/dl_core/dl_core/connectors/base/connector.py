@@ -24,13 +24,13 @@ from dl_core.connectors.base.lifecycle import (
 )
 from dl_core.connectors.base.query_compiler import QueryCompiler
 from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
-from dl_core.dashsql.literalizer import (
-    DashSQLParamLiteralizer,
-    DefaultDashSQLParamLiteralizer,
-)
 from dl_core.data_source.base import DataSource
 from dl_core.data_source_spec.base import DataSourceSpec
 from dl_core.us_manager.storage_schemas.data_source_spec_base import DataSourceSpecStorageSchema
+from dl_dashsql.literalizer import (
+    DashSQLParamLiteralizer,
+    DefaultDashSQLParamLiteralizer,
+)
 
 
 if TYPE_CHECKING:

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Any,
+    Optional,
     Sequence,
     cast,
 )
@@ -14,19 +15,21 @@ from dl_api_lib.pivot.native.data_frame import (
     FlatPivotDataKey,
     NativePivotDataFrame,
 )
+from dl_api_lib.pivot.pivot_legend import (
+    PivotDimensionRoleSpec,
+    PivotMeasureRoleSpec,
+)
 from dl_api_lib.pivot.primitives import (
     DataCellVector,
     SortAxis,
 )
 from dl_api_lib.pivot.sort_helpers import invert
-from dl_api_lib.query.formalization.pivot_legend import (
-    PivotDimensionRoleSpec,
-    PivotMeasureRoleSpec,
-)
 from dl_constants.enums import (
     OrderDirection,
+    PivotHeaderRole,
     PivotRole,
 )
+import dl_query_processing.exc as exc
 
 
 if TYPE_CHECKING:
@@ -94,7 +97,59 @@ class NativePivotSorter(PivotSorter):
         self._sort_key_list(key_list=key_list, directions=directions)
 
     def _sort_by_measure(self, axis: SortAxis, sorting_piid: int, settings: PivotMeasureSortingSettings) -> None:
-        pass  # TODO: Not implemented yet. Feeling bored? Go right ahead and contribute!
+        sorting_dim_values: Optional[tuple[DataCellVector, ...]] = None
+        other_axis = self._complementary_axis(axis)
+
+        for idx, header in enumerate(self._pivot_dframe.iter_axis_headers(axis)):
+            if header.compare_sorting_settings(settings):
+                if sorting_dim_values is None:
+                    sorting_dim_values = header.values
+                    header.info.sorting_direction = settings.direction
+                else:  # should never actually occur, as header_values + role_spec uniquely identify sorting_idx
+                    raise exc.PivotSortingRowOrColumnIsAmbiguous()
+        if sorting_dim_values is None:
+            raise exc.PivotSortingRowOrColumnNotFound()
+
+        normalizer = self._measure_sort_strategy.get_normalizer(
+            pivot_item_id=sorting_piid, direction=settings.direction
+        )
+
+        # First order the measure values in the selected row/column
+        # (together with their original position indices)
+        indexed_values = [
+            (old_pos_idx, normalizer.normalize_vector_value(value))
+            for old_pos_idx, value in enumerate(
+                self._native_dframe.iter_values_along_axis(
+                    axis=other_axis,
+                    dim_values=sorting_dim_values,
+                )
+            )
+        ]
+        indexed_values.sort(key=lambda pair: pair[1])  # pair = (old_pos_idx, value)
+
+        # Now reorder the keys in accordance with the sorted measures
+        key_list = self._get_key_list_for_axis(other_axis)
+        key_to_new_idx = {
+            key_list[old_pos_idx]: new_pos_idx for new_pos_idx, (old_pos_idx, _) in enumerate(indexed_values)
+        }
+        key_list.sort(
+            key=lambda key_value: key_to_new_idx[key_value],
+            reverse=settings.direction == OrderDirection.desc,
+        )
+
+        if self._axis_has_total(other_axis):  # hack for totals
+            # Find the key
+            total_key: Optional[FlatPivotDataKey] = None
+            for dim_header in self._pivot_dframe.iter_axis_headers(other_axis):
+                if dim_header.info.role_spec.role == PivotHeaderRole.total:
+                    total_key = FlatPivotDataKey(values=dim_header.values)
+
+            assert total_key is not None
+
+            # Manually put the total at the end
+            total_pos = key_list.index(total_key)
+            del key_list[total_pos]
+            key_list.append(total_key)
 
     def sort(self) -> None:
         # First sort by dimension
@@ -110,6 +165,9 @@ class NativePivotSorter(PivotSorter):
             sorting_settings = cast(PivotMeasureRoleSpec, pivot_item.role_spec).sorting
             if sorting_settings is None:
                 continue
-            for axis, settings in zip(SortAxis, [sorting_settings.column, sorting_settings.row]):
+            for axis, settings in zip(
+                [SortAxis.columns, SortAxis.rows],
+                [sorting_settings.column, sorting_settings.row],
+            ):
                 if settings is not None:
                     self._sort_by_measure(axis, pivot_item.pivot_item_id, settings)

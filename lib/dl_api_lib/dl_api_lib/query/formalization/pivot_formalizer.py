@@ -2,8 +2,7 @@ from typing import cast
 
 import attr
 
-from dl_api_lib.query.formalization.id_gen import IdGenerator
-from dl_api_lib.query.formalization.pivot_legend import (
+from dl_api_lib.pivot.pivot_legend import (
     PivotAnnotationRoleSpec,
     PivotDimensionRoleSpec,
     PivotLegend,
@@ -11,6 +10,7 @@ from dl_api_lib.query.formalization.pivot_legend import (
     PivotMeasureRoleSpec,
     PivotRoleSpec,
 )
+from dl_api_lib.query.formalization.id_gen import IdGenerator
 from dl_api_lib.query.formalization.raw_pivot_specs import (
     RawAnnotationPivotRoleSpec,
     RawDimensionPivotRoleSpec,

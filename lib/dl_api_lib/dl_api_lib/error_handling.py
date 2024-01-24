@@ -23,6 +23,7 @@ from dl_constants.exc import (
     GLOBAL_ERR_PREFIX,
 )
 from dl_core import exc as common_exc
+from dl_dashsql import exc as dashsql_exc
 from dl_formula.core import exc as formula_exc
 import dl_query_processing.exc
 
@@ -76,7 +77,7 @@ EXCEPTION_CODES = {
     dl_query_processing.exc.BlockSpecError: status.BAD_REQUEST,
     dl_query_processing.exc.TreeError: status.BAD_REQUEST,
     dl_query_processing.exc.ParameterError: status.BAD_REQUEST,
-    common_exc.DashSQLError: status.BAD_REQUEST,
+    dashsql_exc.DashSQLError: status.BAD_REQUEST,
     dl_query_processing.exc.GenericInvalidRequestError: status.BAD_REQUEST,
     dl_query_processing.exc.InvalidGroupByConfiguration: status.BAD_REQUEST,
     common_exc.WrongQueryParameterization: status.BAD_REQUEST,

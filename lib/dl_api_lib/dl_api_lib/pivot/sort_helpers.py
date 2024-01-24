@@ -112,27 +112,27 @@ class InvertedSortWrapper:
 
     def __eq__(self, other: Any):
         assert isinstance(other, type(self))
-        return self.__value.__eq__(other.__value)
+        return self.__value == other.__value
 
     def __ne__(self, other: Any):
         assert isinstance(other, type(self))
-        return self.__value.__ne__(other.__value)
+        return self.__value != other.__value
 
     def __gt__(self, other: Any):
         assert isinstance(other, type(self))
-        return self.__value.__lt__(other.__value)
+        return self.__value < other.__value
 
     def __lt__(self, other: Any):
         assert isinstance(other, type(self))
-        return self.__value.__gt__(other.__value)
+        return self.__value > other.__value
 
     def __ge__(self, other: Any):
         assert isinstance(other, type(self))
-        return self.__value.__le__(other.__value)
+        return self.__value <= other.__value
 
     def __le__(self, other: Any):
         assert isinstance(other, type(self))
-        return self.__value.__ge__(other.__value)
+        return self.__value >= other.__value
 
 
 def invert(value: Any) -> InvertedSortWrapper:

@@ -94,6 +94,12 @@ class SomeTaskInterface(BaseTaskMeta):
 
 
 @attr.s
+class WaitingTaskInterface(BaseTaskMeta):
+    name = TaskName("waiting_task")
+    seconds_to_wait: int = attr.ib()
+
+
+@attr.s
 class BrokenTaskInterface(BaseTaskMeta):
     name = TaskName("broken_task")
     bar: str = attr.ib()
@@ -133,6 +139,17 @@ class SomeTask(BaseExecutorTask[SomeTaskInterface, Context]):
             LOGGER.exception(ex)
             raise
         LOGGER.info(result)
+        return Success()
+
+
+@attr.s
+class WaitingTask(BaseExecutorTask[WaitingTaskInterface, Context]):
+    cls_meta = WaitingTaskInterface
+
+    async def run(self) -> TaskResult:
+        LOGGER.info(f"Its a waiting task with a {self._ctx}, going to wait for {self.meta.seconds_to_wait}s...")
+        await asyncio.sleep(self.meta.seconds_to_wait)
+        LOGGER.info("Done waiting")
         return Success()
 
 
@@ -188,6 +205,7 @@ class ScheduleFromTaskTask(BaseExecutorTask[ScheduleFromTaskTaskInterface, Conte
 REGISTRY: TaskRegistry = TaskRegistry.create(
     [
         SomeTask,
+        WaitingTask,
         BrokenTask,
         RetryTask,
         TestIdsTask,

@@ -21,10 +21,11 @@ target-version = ['py312']
 force-exclude= '''
 /(
   # The following are specific to Black, you probably don't want those.
-  lib/redis-cache-lock
-  | lib/clickhouse-sqlalchemy
-  | lib/dl_formula/dl_formula/parser/antlr/gen
-)/
+  lib/redis-cache-lock/
+  | lib/clickhouse-sqlalchemy/
+  | lib/dl_formula/dl_formula/parser/antlr/gen/
+  | lib/dl_task_processor/dl_task_processor/upstream_worker.py
+)
 '''
 
 [tool.isort]
@@ -34,6 +35,7 @@ skip_glob = [
   "lib/redis-cache-lock/*",
   "lib/clickhouse-sqlalchemy/*",
   "lib/dl_formula/dl_formula/parser/antlr/gen/*",
+  "lib/dl_task_processor/dl_task_processor/upstream_worker.py",
 ]
 multi_line_output = 3
 force_grid_wrap = 2
