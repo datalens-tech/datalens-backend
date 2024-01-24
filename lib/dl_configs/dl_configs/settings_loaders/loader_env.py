@@ -388,7 +388,7 @@ class EnvSettingsLoader:
             if ignore_none:
                 # TODO FIX: try to not use noqa: E721
                 # (to consider: `not issubclass(arg_type, type(None))`
-                unwrapped_types = [argtype for argtype in unwrapped_types if argtype is not type(None)]  # noqa: E721  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "list[Any]", variable has type "tuple[Any, ...]")  [assignment]
+                unwrapped_types = [argtype for argtype in unwrapped_types if argtype is not type(None)]  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "list[Any]", variable has type "tuple[Any, ...]")  [assignment]
             return frozenset(unwrapped_types)
         return frozenset([the_type])
 
