@@ -61,7 +61,7 @@ def _make_ch_dtwtz(nt: GenericNativeType, typecls: Type[TypeEngine] = ch_types.D
         tz = nt.timezone_name
     else:
         tz = "UTC"
-    typeobj = typecls(tz)
+    typeobj = typecls(tz)  # type: ignore  # 2024-01-24 # TODO: Too many arguments for "TypeEngine"  [call-arg]
     return _make_ch_type(nt=nt, typeobj=typeobj)
 
 
@@ -73,7 +73,7 @@ def _make_ch_dt64(nt: GenericNativeType, typecls: Type[TypeEngine] = ch_types.Da
         precision = nt.precision
     else:
         precision = DEFAULT_DT64_PRECISION
-    typeobj = typecls(precision)
+    typeobj = typecls(precision)  # type: ignore  # 2024-01-24 # TODO: Too many arguments for "TypeEngine"  [call-arg]
     return _make_ch_type(nt=nt, typeobj=typeobj)
 
 
@@ -84,7 +84,7 @@ def _make_ch_dt64wtz(nt: GenericNativeType, typecls: Type[TypeEngine] = ch_types
     else:
         tz = "UTC"
         precision = DEFAULT_DT64_PRECISION
-    typeobj = typecls(precision, tz)
+    typeobj = typecls(precision, tz)  # type: ignore  # 2024-01-24 # TODO: Too many arguments for "TypeEngine"  [call-arg]
     return _make_ch_type(nt=nt, typeobj=typeobj)
 
 

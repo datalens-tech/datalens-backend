@@ -168,7 +168,7 @@ def get_pivot_response(
                 role=role,
                 legend_item_ids=legend_item_ids,
                 title=remapped_title,
-                direction=order_fields.get(title, OrderDirection.asc),
+                direction=order_fields.get(title, OrderDirection.asc),  # type: ignore  # 2024-01-24 # TODO: Argument "direction" to "make_req_pivot_item" of "Dataset" has incompatible type "OrderDirection | None"; expected "OrderDirection"  [arg-type]
             )
         if role == PivotRole.pivot_measure:
             return dataset.make_req_pivot_item(
@@ -187,7 +187,7 @@ def get_pivot_response(
 
     pivot_resp = data_api.get_pivot(
         dataset=dataset,
-        fields=legend,
+        fields=legend,  # type: ignore  # 2024-01-24 # TODO: Argument "fields" to "get_pivot" of "SyncHttpDataApiV2" has incompatible type "list[RequestLegendItem]"; expected "list[ResultField | RequestLegendItem] | None"  [arg-type]
         pivot_structure=[
             *[make_pivot_item(title=title, role=PivotRole.pivot_column) for title in columns],
             *[make_pivot_item(title=title, role=PivotRole.pivot_row) for title in rows],
@@ -199,7 +199,7 @@ def get_pivot_response(
             ],
             *[make_pivot_item(title=title, role=PivotRole.pivot_annotation) for title in annotations or ()],
         ],
-        order_by=[order_by_item(title=title, direction=direction) for title, direction in (order_fields or {}).items()],
+        order_by=[order_by_item(title=title, direction=direction) for title, direction in (order_fields or {}).items()],  # type: ignore  # 2024-01-24 # TODO: Argument "direction" to "order_by_item" has incompatible type "OrderDirection | None"; expected "OrderDirection"  [arg-type]
         filters=filters,
         pivot_pagination=pivot_pagination,
         pivot_totals=simple_totals,
@@ -321,7 +321,7 @@ def check_pivot_response(
         totals=check_totals,
     )
     legend_for_result = [item for item in legend if item.ref.type != QueryItemRefType.measure_name]
-    result_resp = data_api.get_result(dataset=dataset, fields=legend_for_result, filters=filters, fail_ok=True)
+    result_resp = data_api.get_result(dataset=dataset, fields=legend_for_result, filters=filters, fail_ok=True)  # type: ignore  # 2024-01-24 # TODO: Argument "fields" to "get_result" of "SyncHttpDataApiV2" has incompatible type "list[RequestLegendItem]"; expected "list[ResultField | RequestLegendItem] | None"  [arg-type]
     assert result_resp.status_code == HTTPStatus.OK, result_resp.json
 
     result_mapper_measure_liids = frozenset(
@@ -335,7 +335,7 @@ def check_pivot_response(
     pivot_data_abstraction = PivotDataAbstraction.from_response(pivot_resp)
     pivot_data_mapper: DataCellMapper1D = pivot_data_abstraction.get_1d_mapper()
 
-    def _is_total(dimension: Optional[list], totals_liids: set[int]):
+    def _is_total(dimension: Optional[list], totals_liids: set[int]):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         return dimension is not None and any(value[0][1] in totals_liids for value in dimension)
 
     totals_liids = {

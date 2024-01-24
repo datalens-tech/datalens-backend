@@ -45,7 +45,7 @@ async def shield_wait_for_complete(
     :return: shielded coroutine result
     """
     loop = asyncio.get_event_loop()
-    real_task = loop.create_task(coro)
+    real_task = loop.create_task(coro)  # type: ignore  # 2024-01-24 # TODO: Need type annotation for "real_task"  [var-annotated]
 
     try:
         return await asyncio.shield(real_task)

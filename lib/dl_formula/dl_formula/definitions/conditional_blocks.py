@@ -46,14 +46,14 @@ class CaseBlock(CondBlock):
     }
 
     @staticmethod
-    def _ifnull(value, data_type: DataType) -> bool:
+    def _ifnull(value, data_type: DataType) -> bool:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         if value is None or isinstance(value, Null):
             return CaseBlock._null_replace_map.get(data_type, sa.null())
 
         return value
 
     @classmethod
-    def translation(cls, *args, replace_nulls: bool = False, as_multiif: bool = False):
+    def translation(cls, *args, replace_nulls: bool = False, as_multiif: bool = False):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         value_arg, args = args[0], args[1:]
         else_expr, else_type = None, DataType.NULL
         if len(args) % 2 == 1:
@@ -67,7 +67,7 @@ class CaseBlock(CondBlock):
 
         return_type = DataType.get_common_cast_type(else_type, *[then_expr.data_type for _, then_expr in when_args])
 
-        def _then_else_wrap(expr):
+        def _then_else_wrap(expr):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
             if replace_nulls:
                 # TODO: make sure it's not needed anymore and remove
                 # for ClickHouse only, a workaround for https://github.com/ClickHouse/ClickHouse/issues/7237

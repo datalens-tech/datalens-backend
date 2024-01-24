@@ -224,8 +224,8 @@ class OperationProcessorAsyncBase(abc.ABC):
         )
         self._reporting_registry.save_reporting_record(report=report)
 
-    def pre_run(self, ctx: OpExecutionContext) -> None:
+    def pre_run(self, ctx: OpExecutionContext) -> None:  # type: ignore  # 2024-01-24 # TODO: Name "pre_run" already defined on line 101  [no-redef]
         self._save_start_exec_reporting_record(ctx=ctx)
 
-    def post_run(self, ctx: OpExecutionContext, exec_exception: Optional[Exception]) -> None:
+    def post_run(self, ctx: OpExecutionContext, exec_exception: Optional[Exception]) -> None:  # type: ignore  # 2024-01-24 # TODO: Name "post_run" already defined on line 104  [no-redef]
         self._save_end_exec_reporting_record(ctx=ctx, exec_exception=exec_exception)

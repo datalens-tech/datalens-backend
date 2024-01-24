@@ -1464,12 +1464,12 @@ class DatasetValidator(DatasetBaseWrapper):
         try:
             new_dsrc_spec = dst_migrator.import_migration_dtos(
                 migration_dtos=migration_dtos,
-                connection_ref=new_connection.conn_ref,
+                connection_ref=new_connection.conn_ref,  # type: ignore  # 2024-01-24 # TODO: Argument "connection_ref" to "import_migration_dtos" of "DataSourceMigrator" has incompatible type "ConnectionRef | None"; expected "ConnectionRef"  [arg-type]
             )
         except common_exc.DataSourceMigrationImpossible:
             # Failed to migrate anything.
             # Let's just go with an empty default data source
-            return {}, new_connection.source_type
+            return {}, new_connection.source_type  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "tuple[dict[Any, Any], DataSourceType | None]", expected "tuple[dict[Any, Any], DataSourceType]")  [return-value]
 
         new_dsrc_cls = get_data_source_class(new_dsrc_spec.source_type)
         new_dsrc_dummy = new_dsrc_cls(
@@ -1527,7 +1527,7 @@ class DatasetValidator(DatasetBaseWrapper):
         LOGGER.info(f"Found {len(updates)} sources to update")
         for dsrc_data in updates:
             LOGGER.info(
-                f'Going to update source {dsrc_data["id"]} as {dsrc_data["source_type"].name} '
+                f'Going to update source {dsrc_data["id"]} as {dsrc_data["source_type"].name} '  # type: ignore  # 2024-01-24 # TODO: "object" has no attribute "name"  [attr-defined]
                 f"for connection {connection_data.new_id}"
             )
             self.apply_source_action(

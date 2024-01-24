@@ -19,7 +19,7 @@ def make_saved_file_connection(
     conn_name = "{} test conn {}".format(conn_type.name, uuid.uuid4())
     conn = FileS3Connection.create_from_dict(
         data_dict=FileS3Connection.DataModel(
-            sources=sources,
+            sources=sources,  # type: ignore  # 2024-01-24 # TODO: Argument "sources" to "DataModel" has incompatible type "list[dl_connector_bundle_chs3.file.core.us_connection.FileS3Connection.FileDataSource]"; expected "list[dl_connector_bundle_chs3.chs3_base.core.us_connection.BaseFileS3Connection.FileDataSource]"  [arg-type]
         ),
         ds_key=conn_name,
         type_=CONNECTION_TYPE_FILE.name,

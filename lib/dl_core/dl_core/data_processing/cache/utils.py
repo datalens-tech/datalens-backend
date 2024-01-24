@@ -130,7 +130,7 @@ class CompengOptionsBuilder(DatasetOptionsBuilder):  # TODO: Move to compeng pac
         joint_dsrc_info: PreparedFromInfo,
         data_key: LocalKeyRepresentation,
     ) -> BIQueryCacheOptions:
-        ttl_info = self.get_cache_ttl_info(data_source_list=joint_dsrc_info.data_source_list)
+        ttl_info = self.get_cache_ttl_info(data_source_list=joint_dsrc_info.data_source_list)  # type: ignore  # 2024-01-24 # TODO: Argument "data_source_list" to "get_cache_ttl_info" of "CacheOptionsBuilderBase" has incompatible type "tuple[DataSource, ...] | None"; expected "Collection[DataSource]"  [arg-type]
         return BIQueryCacheOptions(
             cache_enabled=self.cache_enabled,
             key=data_key,
@@ -148,7 +148,7 @@ class CompengOptionsBuilder(DatasetOptionsBuilder):  # TODO: Move to compeng pac
         # TODO: Remove after switching to new cache keys
         compiled_query = self.get_query_str_for_cache(
             query=query_res_info.query,
-            dialect=from_info.query_compiler.dialect,
+            dialect=from_info.query_compiler.dialect,  # type: ignore  # 2024-01-24 # TODO: Item "None" of "PreparedFromInfo | None" has no attribute "query_compiler"  [union-attr]
         )
         return base_key.extend(part_type="query", part_content=compiled_query)
 
@@ -170,7 +170,7 @@ class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
     ) -> BIQueryCacheOptions:
         """Returns cache key, TTL for new entries, refresh TTL flag"""
 
-        ttl_info = self.get_cache_ttl_info(data_source_list=joint_dsrc_info.data_source_list)
+        ttl_info = self.get_cache_ttl_info(data_source_list=joint_dsrc_info.data_source_list)  # type: ignore  # 2024-01-24 # TODO: Argument "data_source_list" to "get_cache_ttl_info" of "CacheOptionsBuilderBase" has incompatible type "tuple[DataSource, ...] | None"; expected "Collection[DataSource]"  [arg-type]
         cache_enabled = self.get_cache_enabled(joint_dsrc_info=joint_dsrc_info)
         return BIQueryCacheOptions(
             cache_enabled=cache_enabled,
@@ -215,11 +215,11 @@ class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
         # TODO: Remove after switching to new cache keys
         compiled_query = self.get_query_str_for_cache(
             query=query_res_info.query,
-            dialect=from_info.query_compiler.dialect,
+            dialect=from_info.query_compiler.dialect,  # type: ignore  # 2024-01-24 # TODO: Item "None" of "PreparedFromInfo | None" has no attribute "query_compiler"  [union-attr]
         )
         data_key: Optional[LocalKeyRepresentation] = self.make_data_select_cache_key(
             base_key=base_key,
-            from_info=from_info,
+            from_info=from_info,  # type: ignore  # 2024-01-24 # TODO: Argument "from_info" to "make_data_select_cache_key" of "SelectorCacheOptionsBuilder" has incompatible type "PreparedFromInfo | None"; expected "PreparedFromInfo"  [arg-type]
             compiled_query=compiled_query,
             user_types=query_res_info.user_types,
             is_bleeding_edge_user=self._is_bleeding_edge_user,
@@ -256,7 +256,7 @@ class DashSQLCacheOptionsBuilder(CacheOptionsBuilderBase):
             DataKeyPart(part_type="is_bleeding_edge_user", part_content=self._is_bleeding_edge_user),
         )
         if not cache_enabled:
-            local_key_rep = None
+            local_key_rep = None  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "None", variable has type "LocalKeyRepresentation")  [assignment]
 
         return BIQueryCacheOptions(
             cache_enabled=cache_enabled,

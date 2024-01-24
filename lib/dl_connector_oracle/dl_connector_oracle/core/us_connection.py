@@ -47,7 +47,7 @@ class ConnectionSQLOracle(ClassicConnectionSQL):
             db_name=self.data.db_name,
             db_name_type=self.data.db_name_type,
             username=self.data.username,
-            password=self.password,
+            password=self.password,  # type: ignore  # 2024-01-24 # TODO: Argument "password" to "OracleConnDTO" has incompatible type "str | None"; expected "str"  [arg-type]
         )
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:

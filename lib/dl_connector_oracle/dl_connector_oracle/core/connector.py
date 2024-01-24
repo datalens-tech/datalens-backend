@@ -64,4 +64,4 @@ class OracleCoreConnector(CoreConnector):
         OracleSubselectCoreSourceDefinition,
     )
     rqe_adapter_classes = frozenset({OracleDefaultAdapter})
-    sa_types = SQLALCHEMY_ORACLE_TYPES
+    sa_types = SQLALCHEMY_ORACLE_TYPES  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[GenericNativeType, function]", base class "CoreConnector" defined the type as "dict[GenericNativeType, Callable[[GenericNativeType], TypeEngine]] | None")  [assignment]

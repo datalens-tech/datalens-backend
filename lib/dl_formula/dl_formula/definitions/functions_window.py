@@ -64,7 +64,7 @@ def _order_by_from_args(*args: ClauseElement) -> ClauseList:
     param = args[0]
     if len(args) == 2:
         assert is_literal(args[1])
-        dir_value = args[1].value.lower()
+        dir_value = args[1].value.lower()  # type: ignore  # 2024-01-24 # TODO: "ClauseElement" has no attribute "value"  [attr-defined]
     else:
         # Default ranking is from greatest to least
         dir_value = "desc"
@@ -87,8 +87,8 @@ def _rows_full_window(*_: Any) -> WinRangeTuple:
 def _rows_stretching_window(_: ClauseElement, direction: ClauseElement = sa.literal("asc")) -> WinRangeTuple:
     """Defines range tuple for functions that need a stretching or shrinking window."""
     assert is_literal(direction)
-    assert isinstance(un_literal(direction), str)
-    dir_value = direction.value.lower()
+    assert isinstance(un_literal(direction), str)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "un_literal" has incompatible type "ClauseElement"; expected "BaseLiteral | BindParameter[Any] | TypeDefiningCast | Function | Null | array | None"  [arg-type]
+    dir_value = direction.value.lower()  # type: ignore  # 2024-01-24 # TODO: "ClauseElement" has no attribute "value"  [attr-defined]
     if dir_value == "asc":
         return None, 0
     elif dir_value == "desc":

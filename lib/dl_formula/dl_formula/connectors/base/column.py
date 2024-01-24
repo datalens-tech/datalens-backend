@@ -28,7 +28,7 @@ class ColumnRenderer(abc.ABC):
 class DefaultColumnRenderer(ColumnRenderer):
     def make_column(self, name: str) -> sa.sql.ClauseElement:
         full_name_parts = self._field_names.get(name) or (name,)
-        return sa.literal_column(".".join([self._quoter(part) for part in full_name_parts]))
+        return sa.literal_column(".".join([self._quoter(part) for part in full_name_parts]))  # type: ignore  # 2024-01-24 # TODO: List comprehension has incompatible type List[ClauseElement]; expected List[str]  [misc]
 
 
 @attr.s

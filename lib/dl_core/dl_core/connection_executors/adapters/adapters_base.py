@@ -84,17 +84,17 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
 
     # Action defaults
 
-    @_sync_db_version_action.default
+    @_sync_db_version_action.default  # type: ignore  # 2024-01-24 # TODO: "SyncDBVersionAdapterAction" has no attribute "default"  [attr-defined]
     @final
     def __make_default_sync_db_version_action(self) -> SyncDBVersionAdapterAction:
         return self._make_sync_db_version_action()
 
-    @_sync_schema_names_action.default
+    @_sync_schema_names_action.default  # type: ignore  # 2024-01-24 # TODO: "SyncSchemaNamesAdapterAction" has no attribute "default"  [attr-defined]
     @final
     def __make_sync_schema_names_action(self) -> SyncSchemaNamesAdapterAction:
         return self._make_sync_schema_names_action()
 
-    @_sync_table_names_action.default
+    @_sync_table_names_action.default  # type: ignore  # 2024-01-24 # TODO: "SyncTableNamesAdapterAction" has no attribute "default"  [attr-defined]
     @final
     def __make_sync_table_names_action(self) -> SyncTableNamesAdapterAction:
         return self._make_sync_table_names_action()
@@ -104,12 +104,12 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
     def __make_sync_test_action(self) -> SyncTestAdapterAction:
         return self._make_sync_test_action()
 
-    @_sync_table_info_action.default
+    @_sync_table_info_action.default  # type: ignore  # 2024-01-24 # TODO: Name "__make_sync_test_action" already defined on line 102  [no-redef]
     @final
     def __make_sync_test_action(self) -> SyncTableInfoAdapterAction:
         return self._make_sync_table_info_action()
 
-    @_sync_table_exists_action.default
+    @_sync_table_exists_action.default  # type: ignore  # 2024-01-24 # TODO: "SyncTableExistsAdapterAction" has no attribute "default"  [attr-defined]
     @final
     def __make_sync_table_exists_action(self) -> SyncTableExistsAdapterAction:
         return self._make_sync_table_exists_action()

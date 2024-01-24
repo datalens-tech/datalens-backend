@@ -54,7 +54,7 @@ def get_test_container_hostport(
         return HostPort(host="127.0.0.1", port=fallback_port)
     else:
         try:
-            with open(file_path) as dcyml:
+            with open(file_path) as dcyml:  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "open" has incompatible type "str | None"; expected "int | str | bytes | PathLike[str] | PathLike[bytes]"  [arg-type]
                 docker_compose_yml = yaml.safe_load(dcyml)
         except FileNotFoundError:
             if fallback_port is not None:

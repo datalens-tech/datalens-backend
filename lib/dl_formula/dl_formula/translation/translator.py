@@ -184,7 +184,7 @@ class SqlAlchemyTranslator:
         return ctx
 
     @staticmethod
-    def _coerce_type(ctx: TranslationCtx):
+    def _coerce_type(ctx: TranslationCtx):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         """
         Make sure value is cast to proper Python type
         (this is done outside the DB by ``sqlalchemy``)
@@ -229,7 +229,7 @@ class SqlAlchemyTranslator:
 
         return ctx
 
-    def _postprocess_context(self, ctx: TranslationCtx):
+    def _postprocess_context(self, ctx: TranslationCtx):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         """Additional contextual postprocessing of expressions (dialect dependent)"""
 
         assert ctx.data_type is not None

@@ -83,7 +83,7 @@ try:
 except exc.ParserNotFoundError:
 
     class DataPreparer:  # type: ignore
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
             raise exc.ParserNotFoundError()
 
 
@@ -155,7 +155,7 @@ class ReferenceDocGenerator:
             func_doc_structs.append(self._get_single_rendered_func(func_key=func_key, doc_config=doc_config))
         return func_doc_structs
 
-    def generate_doc_func(self, outdir: str):
+    def generate_doc_func(self, outdir: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         raw_funcs = self._func_ref.as_list()
         for doc_config in self._gen_config.func_doc_configs.values():
             template = self._jinja_env.get_template(doc_config.template_file)
@@ -259,7 +259,7 @@ class ReferenceDocGenerator:
         )
         print(text)
 
-    def generate_doc_list_all(self, context_path: str):
+    def generate_doc_list_all(self, context_path: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         doc_config = self._gen_config.func_doc_configs[FuncDocConfigVersion.overview_shortcut]
         raw_funcs = self._func_ref.as_list()
         rend_funcs = self._render_funcs(raw_funcs=raw_funcs, doc_config=doc_config)
@@ -271,7 +271,7 @@ class ReferenceDocGenerator:
             in_category=False,
         )
 
-    def generate_doc_list_category(self, category: str, context_path: str):
+    def generate_doc_list_category(self, category: str, context_path: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         doc_config = self._gen_config.func_doc_configs[FuncDocConfigVersion.overview_shortcut]
         raw_funcs = self._func_ref.filter(category=category)
         rend_funcs = self._render_funcs(raw_funcs=raw_funcs, doc_config=doc_config)
@@ -364,7 +364,7 @@ class ReferenceDocGenerator:
         )
         print(text)
 
-    def generate_doc_full_dir(self, outdir: str):
+    def generate_doc_full_dir(self, outdir: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         raw_funcs = self._func_ref.as_list()
         funcs_by_category = self._group_raw_funcs_by_category(raw_funcs=raw_funcs)
 

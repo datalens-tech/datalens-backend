@@ -333,7 +333,7 @@ class DbCastWhiteListAliasedResourceRegistry(AliasedResourceRegistryBase):
                 ]
             ),
         }
-        return resources
+        return resources  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "dict[str, AliasedTableResource]", expected "MutableMapping[str, AliasedResource]")  [return-value]
 
 
 FUNCTION_DB_CAST = FunctionDocRegistryItem(

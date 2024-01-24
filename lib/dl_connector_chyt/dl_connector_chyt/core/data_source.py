@@ -127,7 +127,7 @@ class BaseCHYTSpecialDataSource(CHYTDataSourceBaseMixin, BaseSQLDataSource, abc.
         raise NotImplementedError
 
     def get_table_definition(self) -> TableDefinition:
-        return SATextTableDefinition(self.get_sql_source())
+        return SATextTableDefinition(self.get_sql_source())  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "SATextTableDefinition" has incompatible type "ClauseElement"; expected "TextClause"  [arg-type]
 
 
 class BaseCHYTTableFuncDataSource(BaseCHYTSpecialDataSource, abc.ABC):
@@ -258,7 +258,7 @@ class BaseCHYTTableSubselectDataSource(BaseCHYTSpecialDataSource, CommonClickHou
         )
 
     def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
-        if not self.connection.is_subselect_allowed:
+        if not self.connection.is_subselect_allowed:  # type: ignore  # 2024-01-24 # TODO: "ConnectionBase" has no attribute "is_subselect_allowed"  [attr-defined]
             raise exc.SubselectNotAllowed()
 
         subsql = self.subsql

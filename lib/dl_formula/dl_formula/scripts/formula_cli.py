@@ -142,7 +142,7 @@ class FormulaCliTool:
             yield line
 
     @classmethod
-    def parse(cls, text: str, pretty: bool, suppress_errors: bool, pos: Optional[int] = None, with_meta: bool = False):
+    def parse(cls, text: str, pretty: bool, suppress_errors: bool, pos: Optional[int] = None, with_meta: bool = False):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         if not text:
             # bulk mode, read from STDIN
             for line in cls._stdin_lines():
@@ -168,12 +168,12 @@ class FormulaCliTool:
         print(text)
 
     @classmethod
-    def split(cls, text: str, diff: bool):
+    def split(cls, text: str, diff: bool):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         formula = formula_parser.parse(text)
 
         chars = []  # type: ignore  # TODO: fix
 
-        def _mark_positions(node, level=0):
+        def _mark_positions(node, level=0):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
             if len(chars) == level:
                 chars.append([" " for _ in range(len(text))])
             if node.pos_range != (None, None):
@@ -190,13 +190,13 @@ class FormulaCliTool:
             print("{0:>2}: {1}".format(num, "".join(line)))
 
     @staticmethod
-    def graph(text: str, render_to: str, view: bool):
+    def graph(text: str, render_to: str, view: bool):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         formula = formula_parser.parse(text)
         dot = dl_formula.dot.translate(formula)
         make_graphviz_graph(dot, render_to=render_to, view=view)
 
     @classmethod
-    def translate(
+    def translate(  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         cls, text: str, tablename: Optional[str], dialect: DialectCombo, unknown_funcs: bool, suppress_errors: bool
     ):
         if not text:
@@ -238,7 +238,7 @@ class FormulaCliTool:
                 raise
 
     @staticmethod
-    def list_dialects():
+    def list_dialects():  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         print(
             "\n".join(
                 [
@@ -276,7 +276,7 @@ class FormulaCliTool:
         return filename, lineno  # type: ignore  # TODO: fix
 
     @classmethod
-    def goto_func(cls, name: str, show: bool):
+    def goto_func(cls, name: str, show: bool):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         editor_exe = os.environ.get("PYCHARM", "pycharm")
         filename, lineno = cls._get_func_source_info(name)
         if show:
@@ -338,7 +338,7 @@ class FormulaCliTool:
                 print(f"    {type(item).__name__},")
 
     @classmethod
-    def run(cls, args):
+    def run(cls, args):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         tool = cls()
 
         if args.command == "parse":
@@ -378,7 +378,7 @@ class FormulaCliTool:
             tool.print_registry()
 
 
-def main():
+def main():  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
     load_formula_lib()
     FormulaCliTool.run(parser.parse_args())
 

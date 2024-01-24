@@ -76,7 +76,7 @@ class ValueVariant(Generic[_VARIANT_OF_TV]):
         self.dialects: DialectCombo = dialects
         self._value: _VARIANT_OF_TV = value
 
-    def clone(self: _VARIANT_TV, **kwargs) -> _VARIANT_TV:
+    def clone(self: _VARIANT_TV, **kwargs) -> _VARIANT_TV:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         copy_kwargs = dict(
             dialects=self.dialects,
             value=self._value,
@@ -88,7 +88,7 @@ class ValueVariant(Generic[_VARIANT_OF_TV]):
     def value(self) -> _VARIANT_OF_TV:
         return self._value
 
-    def match(self, dialect) -> bool:
+    def match(self, dialect) -> bool:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         """Return True if this variant matches the given dialect"""
         return self.dialects == D.ANY or self.dialects & dialect == dialect
 
@@ -105,7 +105,7 @@ class FuncTranslationImplementationBase(abc.ABC):
     unwrap_args: bool = attr.ib(default=True)  # TODO: make an args-unwrapping subclass instead
 
     def clone(self: _TRANS_IMPL_TV, **kwargs: Any) -> _TRANS_IMPL_TV:
-        return attr.evolve(**kwargs)
+        return attr.evolve(**kwargs)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "evolve" has incompatible type "dict[str, Any]"; expected an attrs class  [misc]
 
     @abc.abstractmethod
     def translate(
@@ -259,7 +259,7 @@ class WindowFunctionImplementation(FuncTranslationImplementation):
 
         order_by_part = default_order_by
         if self.translation_order_by is not None:
-            order_by_part = self._await_conversion_to_sa(
+            order_by_part = self._await_conversion_to_sa(  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "ClauseElement", variable has type "ClauseList | None")  [assignment]
                 self.translation_order_by(*args),  # NOTE: not passing the `kwargs` here at the moment.
                 translator_cb=translator_cb,
             )
@@ -320,7 +320,7 @@ class TranslationVariant(ValueVariant[FuncTranslationImplementationBase]):
         instance = cls(dialects=dialects, value=translation_impl)
         return instance
 
-    def __repr__(self):
+    def __repr__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         _c0 = "\x1b[0m"
         _c1 = "\x1b[038;5;118m"
         return "<{}({})>{}".format(
@@ -329,7 +329,7 @@ class TranslationVariant(ValueVariant[FuncTranslationImplementationBase]):
             _c0,
         )
 
-    def translate(
+    def translate(  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         self,
         *args,
         translator_cb: TranslateCallback,
@@ -347,7 +347,7 @@ class TranslationVariant(ValueVariant[FuncTranslationImplementationBase]):
             translation_env=translation_env,
         )
 
-    def match(self, dialect) -> bool:
+    def match(self, dialect) -> bool:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         return super().match(dialect)
 
 
@@ -544,7 +544,7 @@ class MultiVariantTranslation(NodeTranslation):
         return cls.return_flags
 
     @classmethod
-    def _get_return_type_info(cls, args):
+    def _get_return_type_info(cls, args):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         arg_types = [arg.data_type for arg in args]
         data_type = cls.return_type.get_from_args(arg_types)
         data_type_params = cls.return_type_params.get_from_arg_values(args)
@@ -657,7 +657,7 @@ class SingleVariantTranslationBase(MultiVariantTranslation):
         self._inst_dialects = dialects
         super().__init__(arg_transformer=arg_transformer)
 
-    def _translate_main(cls, *args):
+    def _translate_main(cls, *args):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         """Variant implementation"""
         raise NotImplementedError
 
@@ -692,18 +692,18 @@ class SingleVariantFullOverrideTranslationBase(SingleVariantTranslationBase):
     __slots__ = ()
 
     @classmethod
-    def _translate_all(cls, *args, env=None) -> PartialTranslationResult:
+    def _translate_all(cls, *args, env=None) -> PartialTranslationResult:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         """Main overridable method"""
         raise NotImplementedError
 
     @classmethod
-    def _translate_main(cls, *args, **kwargs):
+    def _translate_main(cls, *args, **kwargs):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         raise Exception(
             "SingleVariantFullOverrideTranslation._translate_main dummy method was called",
             dict(cls=cls, args=args, kwargs=kwargs),
         )
 
-    def translate(self, env, args) -> TranslationResult:
+    def translate(self, env, args) -> TranslationResult:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         sup_result: TranslationResult = super().translate(env=env, args=args)
         var_result: PartialTranslationResult = self._translate_all(*args, env=env)
         return sup_result._replace(**{key: val for key, val in var_result._asdict().items() if val is not None})

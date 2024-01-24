@@ -16,7 +16,7 @@ def norm_name(func_name: str) -> str:
 
 
 class LowlevelOpRegistry:
-    def __init__(self):
+    def __init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         self._basic_op_registry: Dict[BasicOpItemKey, BasicOpItem] = {}
         self._name_is_win_op_registry: Dict[NameIsWinOpItemKey, NameIsWinOpItem] = {}
         self._name_op_registry: Dict[str, NameOpItem] = {}

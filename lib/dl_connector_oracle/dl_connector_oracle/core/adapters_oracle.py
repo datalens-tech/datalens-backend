@@ -166,7 +166,7 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
             if scale == -127:
                 scale = 0
 
-            sa_type = sa_cls(precision, scale)
+            sa_type = sa_cls(precision, scale)  # type: ignore  # 2024-01-24 # TODO: Too many arguments for "TypeEngine"  [call-arg]
         else:
             sa_type = sa_cls
 

@@ -139,13 +139,13 @@ class FuncContains(StringFunction):
     return_flags = ContextFlag.IS_CONDITION
 
 
-def quote_like(value, escape="\\", chars=("%", "_")):
+def quote_like(value, escape="\\", chars=("%", "_")):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     for char in (escape,) + tuple(chars):
         value = value.replace(char, escape + char)
     return value
 
 
-def quote_like_metrica(value):
+def quote_like_metrica(value):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     value = value.replace("\\", r"\\")
     value = value.replace("*", r"\*")
     return value

@@ -41,7 +41,7 @@ class StrictMarkupCompatibleArgTypes(ArgTypeForAll):
     _compatible_types = MARKUP_EFFECTIVELY
     _required_types = DataType.MARKUP.autocast_types
 
-    def __init__(self):
+    def __init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         super().__init__(expected_types=MARKUP_EFFECTIVELY)
 
     def match_arg_types(self, arg_types: Sequence[DataType]) -> bool:
@@ -55,11 +55,11 @@ class StrictMarkupCompatibleArgTypes(ArgTypeForAll):
 
 
 # TODO: make this definitely unnecessary.
-def concat_strings(items, sep=""):
+def concat_strings(items, sep=""):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     result = []
     literals_buf = []  # type: ignore  # TODO: fix
 
-    def flush():
+    def flush():  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         if literals_buf:
             result.append(sep.join(literals_buf))
             literals_buf[:] = []
@@ -105,7 +105,7 @@ class FuncInternalStr(FuncInternalStrBase):
     return_type = Fixed(DataType.STRING)
 
 
-def concat(nodes):
+def concat(nodes):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     nodes = concat_strings(nodes)
     nodes_processed = [n.func.__STR(node) for node in nodes]
 
@@ -115,7 +115,7 @@ def concat(nodes):
     return n.func.CONCAT(*nodes_processed)
 
 
-def process_markup_child(node):
+def process_markup_child(node):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     if node.data_type == DataType.MARKUP:
         return node
     if node.data_type == DataType.CONST_MARKUP:
@@ -132,7 +132,7 @@ def process_markup_child(node):
     raise Exception("Unexpected markup child type", node)
 
 
-def markup_node(func_name, *children):
+def markup_node(func_name, *children):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     """
     Using `concat` and `replace`, return an expression that results in
     something parseable by the special parser.
@@ -148,7 +148,7 @@ def markup_node(func_name, *children):
     return concat(pieces)
 
 
-def make_variants(func_name):
+def make_variants(func_name):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     return [
         VW(
             D.DUMMY | D.SQLITE,
@@ -164,10 +164,10 @@ class MarkupTypeStrategy(Fixed):
     Inherits `Fixed` for docgen.
     """
 
-    def __init__(self):
+    def __init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         super().__init__(DataType.MARKUP)
 
-    def get_from_args(self, arg_types):
+    def get_from_args(self, arg_types):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         if all(arg.casts_to(DataType.CONST_MARKUP) or arg.casts_to(DataType.CONST_STRING) for arg in arg_types):
             return DataType.CONST_MARKUP
         return DataType.MARKUP

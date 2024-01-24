@@ -130,10 +130,10 @@ class BaseSQLDataSource(DataSource):
         return self._exists
 
     def get_dialect(self) -> DefaultDialect:
-        return self.connection.get_dialect()
+        return self.connection.get_dialect()  # type: ignore  # 2024-01-24 # TODO: "ConnectionBase" has no attribute "get_dialect"  [attr-defined]
 
     def quote(self, value) -> sa.sql.quoted_name:  # type: ignore  # TODO: fix  # subclass of str
-        return self.connection.quote(value)
+        return self.connection.quote(value)  # type: ignore  # 2024-01-24 # TODO: "ConnectionBase" has no attribute "quote"  [attr-defined]
 
     def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         raise NotImplementedError()
@@ -198,7 +198,7 @@ class SubselectDataSource(BaseSQLDataSource):
     _subquery_auto_alias = "source"
 
     def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
-        if not self.connection.is_subselect_allowed:
+        if not self.connection.is_subselect_allowed:  # type: ignore  # 2024-01-24 # TODO: "ConnectionBase" has no attribute "is_subselect_allowed"  [attr-defined]
             raise exc.SubselectNotAllowed()
 
         subsql = self.subsql
@@ -221,7 +221,7 @@ class SubselectDataSource(BaseSQLDataSource):
 
     def get_table_definition(self) -> TableDefinition:
         subselect = self.get_sql_source(alias="source")
-        return SATextTableDefinition(text=subselect)
+        return SATextTableDefinition(text=subselect)  # type: ignore  # 2024-01-24 # TODO: Argument "text" to "SATextTableDefinition" has incompatible type "ClauseElement"; expected "TextClause"  [arg-type]
 
 
 @attr.s

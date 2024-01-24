@@ -50,7 +50,7 @@ class SourceDataProcessorFactory(BaseClosableDataProcessorFactory):
         )
 
         if allow_cache_usage:
-            processor = CacheOperationProcessor(
+            processor = CacheOperationProcessor(  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "CacheOperationProcessor", variable has type "SourceDbOperationProcessor")  [assignment]
                 service_registry=self.services_registry,
                 dataset=dataset,
                 main_processor=processor,

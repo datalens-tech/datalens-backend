@@ -18,4 +18,4 @@ class BigQueryFormulaConnector(FormulaConnector):
     def registration_hook(cls) -> None:
         # Unregister BigQuery's custom implementation of `unnest` because it breaks other connectors
         # https://github.com/googleapis/python-bigquery-sqlalchemy/issues/882
-        del sa_funcs._registry["_default"]["unnest"]  # noqa
+        del sa_funcs._registry["_default"]["unnest"]  # noqa  # type: ignore  # 2024-01-24 # TODO: Module has no attribute "_registry"  [attr-defined]

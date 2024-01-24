@@ -117,7 +117,7 @@ class Retry(TaskResult):
 
 @attr.s
 class BaseExecutorTask(Generic[_BASE_TASK_META_TV, _BASE_TASK_CONTEXT_TV], metaclass=abc.ABCMeta):
-    cls_meta: ClassVar[Type[_BASE_TASK_META_TV]]
+    cls_meta: ClassVar[Type[_BASE_TASK_META_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
     meta: _BASE_TASK_META_TV = attr.ib()
     _ctx: _BASE_TASK_CONTEXT_TV = attr.ib()
     _instance_id: InstanceID = attr.ib()
@@ -159,7 +159,7 @@ class TaskRegistry:
         assert sorted(
             [t.name() for t in tasks],
         ) == sorted(list(set([t.name() for t in tasks]))), "Some tasks has the same name"
-        return cls(tasks={task.name(): task for task in tasks})
+        return cls(tasks={task.name(): task for task in tasks})  # type: ignore  # 2024-01-24 # TODO: Value expression in dictionary comprehension has incompatible type "type[BaseExecutorTask[Any, Any]]"; expected type "BaseExecutorTask[Any, Any]"  [misc]
 
     def get_task(self, name: TaskName) -> Type[BaseExecutorTask]:
         return self._tasks[name]

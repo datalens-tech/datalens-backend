@@ -53,7 +53,7 @@ YQL_SHIFT_FUNCS = {
 }
 
 
-def _date_datetime_add_yql(value_expr, type_expr, mult_expr, *, const_mult: bool) -> ClauseElement:
+def _date_datetime_add_yql(value_expr, type_expr, mult_expr, *, const_mult: bool) -> ClauseElement:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
     type_name = un_literal(type_expr)
     type_name = normalize_and_validate_datetime_interval_type(type_name)
 
@@ -79,12 +79,12 @@ def _date_datetime_add_yql(value_expr, type_expr, mult_expr, *, const_mult: bool
     raise ValueError("Unexpectedly unsupported YQL datetime shift", type_name)
 
 
-def date_add_yql(value_expr, type_expr, mult_expr, *, const_mult: bool) -> ClauseElement:
+def date_add_yql(value_expr, type_expr, mult_expr, *, const_mult: bool) -> ClauseElement:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
     expr = _date_datetime_add_yql(value_expr, type_expr, mult_expr, const_mult=const_mult)
     return sa.func.DateTime.MakeDate(expr)
 
 
-def datetime_add_yql(value_expr, type_expr, mult_expr, *, const_mult: bool) -> ClauseElement:
+def datetime_add_yql(value_expr, type_expr, mult_expr, *, const_mult: bool) -> ClauseElement:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
     expr = _date_datetime_add_yql(value_expr, type_expr, mult_expr, const_mult=const_mult)
     return sa.func.DateTime.MakeDatetime(expr)
 
@@ -124,7 +124,7 @@ def datetime_interval(
     return sa.text(sql)
 
 
-def ensure_naive_datetime(datetime_ctx):
+def ensure_naive_datetime(datetime_ctx):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     """Convert DATETIMETZ values to DATETIME values; leave the other values as-is"""
     if isinstance(datetime_ctx, nodes.FuncCall) and datetime_ctx.name.lower() == "datetimetz_to_naive":
         # double-ensure
@@ -134,12 +134,12 @@ def ensure_naive_datetime(datetime_ctx):
     return datetime_ctx
 
 
-def ensure_naive_first_arg(func):
+def ensure_naive_first_arg(func):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     """Make sure the first `func` argument is a naive DATETIME if it was a DATETIMETZ"""
     # TODO: this should have probably been an autocast-by-function (same with str->markup)
 
     @functools.wraps(func)
-    def _ensured_naive_first_arg(datetime_ctx, *args, **kwargs):
+    def _ensured_naive_first_arg(datetime_ctx, *args, **kwargs):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         datetime_ctx = ensure_naive_datetime(datetime_ctx)
         return func(datetime_ctx, *args, **kwargs)
 
@@ -149,7 +149,7 @@ def ensure_naive_first_arg(func):
 UTC_CH_TZ_ARGS = ("UTC",)  # TODO later: make empty (backwards-incompatible change)
 
 
-def make_ch_tz_args(date_ctx) -> Tuple[Tuple[Any, ...], Tuple[Any, ...]]:
+def make_ch_tz_args(date_ctx) -> Tuple[Tuple[Any, ...], Tuple[Any, ...]]:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
     """
     For a datetime TranslationCtx argument,
     return a pair of CH function `*args`:
@@ -173,7 +173,7 @@ def make_ch_tz_args(date_ctx) -> Tuple[Tuple[Any, ...], Tuple[Any, ...]]:
     )
 
 
-def ch_date_with_tz(date_ctx) -> Tuple[ClauseElement, ...]:
+def ch_date_with_tz(date_ctx) -> Tuple[ClauseElement, ...]:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
     """Primarily intended for functions that return a non-datetime, such as toSecond()"""
     date_expr = date_ctx.expression
     data_type = date_ctx.data_type

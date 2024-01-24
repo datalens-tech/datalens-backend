@@ -19,7 +19,7 @@ class CacheOperationProcessor(ExecutorBasedOperationProcessor, OperationProcesso
     _use_cache: bool = attr.ib(kw_only=True, default=True)
     _use_locked_cache: bool = attr.ib(kw_only=True, default=True)
 
-    def _make_cache_options_builder(self) -> CacheOptionsBuilderBase:
+    def _make_cache_options_builder(self) -> CacheOptionsBuilderBase:  # type: ignore  # 2024-01-24 # TODO: Return type "CacheOptionsBuilderBase" of "_make_cache_options_builder" incompatible with return type "DatasetOptionsBuilder" in supertype "OperationProcessorAsyncBase"  [override]
         return self._main_processor._cache_options_builder
 
     def _make_db_ex_adapter(self) -> Optional[ProcessorDbExecAdapterBase]:

@@ -85,7 +85,7 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
         connection = dsrc.connection
         conn_type = connection.conn_type
         backend_type = get_backend_type(conn_type=conn_type)
-        sa_dialect = connection.get_dialect()
+        sa_dialect = connection.get_dialect()  # type: ignore  # 2024-01-24 # TODO: "ConnectionBase" has no attribute "get_dialect"  [attr-defined]
         query_compiler_cls = get_sa_query_compiler_cls(backend_type=backend_type)
         query_compiler = query_compiler_cls(dialect=sa_dialect)
 

@@ -150,7 +150,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
 
         engine = self.get_db_engine(db_name=None)
         dialect = engine.dialect
-        ischema_names = dialect.ischema_names
+        ischema_names = dialect.ischema_names  # type: ignore  # 2024-01-24 # TODO: "Dialect" has no attribute "ischema_names"  [attr-defined]
 
         columns = []
         for column_info in data:

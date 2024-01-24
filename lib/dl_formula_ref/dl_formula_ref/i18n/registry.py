@@ -36,7 +36,7 @@ class _StringLocalizer:
         return self._translatable_localizer.translate(text)
 
 
-def get_localizer(locale: str):
+def get_localizer(locale: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
     loc_loader = LocalizerLoader(configs=_LOCALIZATION_CONFIGS)
     loc_factory = loc_loader.load()
     localizer = _StringLocalizer(
@@ -47,5 +47,5 @@ def get_localizer(locale: str):
 
 
 @attr.s
-class FormulaRefTranslatable(Translatable):
-    domain = attr.ib(kw_only=True, default=DOMAIN)
+class FormulaRefTranslatable(Translatable):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    domain = attr.ib(kw_only=True, default=DOMAIN)  # type: ignore  # 2024-01-24 # TODO: Need type annotation for "domain"  [var-annotated]

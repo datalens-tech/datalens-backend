@@ -129,9 +129,9 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         result_iter = LazyAsyncChunked(initializer=initialize_data_stream, finalizer=finalize_data_stream)
 
         if row_count_hard_limit is not None:
-            result_iter = result_iter.limit(max_count=row_count_hard_limit)
+            result_iter = result_iter.limit(max_count=row_count_hard_limit)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "AsyncChunkedLimited[Any]", variable has type "LazyAsyncChunked[list[date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None]]")  [assignment]
 
-        return result_iter
+        return result_iter  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "LazyAsyncChunked[list[date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None]]", expected "AsyncChunkedBase[Sequence[date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None]]")  [return-value]
 
     async def _execute_and_fetch(
         self,

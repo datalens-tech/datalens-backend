@@ -45,7 +45,7 @@ class AsyncHttpApiBase(ApiBase):
         method: str,
         data: Optional[dict] = None,
         headers: Optional[dict] = None,
-        lock_timeout: int = None,
+        lock_timeout: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "lock_timeout" (default has type "None", argument has type "int")  [assignment]
     ) -> ClientResponse:
         data_str: Optional[str] = None
         content_type: Optional[str] = None
@@ -72,7 +72,7 @@ class AsyncHttpApiBase(ApiBase):
 
         while response.status_code == HTTPStatus.LOCKED and lock_timeout and time.monotonic() - started < lock_timeout:
             await asyncio.sleep(0.3)
-            response = send_request()
+            response = send_request()  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Coroutine[Any, Any, ClientResponse]", variable has type "ClientResponse")  [assignment]
 
         return response
 

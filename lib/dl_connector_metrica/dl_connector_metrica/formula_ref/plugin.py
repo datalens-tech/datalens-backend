@@ -20,7 +20,7 @@ class MetricaFormulaRefPlugin(FormulaRefPlugin):
     function_extensions = [
         FUNCTION_OP_PLUS.extend(
             dialect=MetricaDialect.METRIKAAPI,
-            notes=[
+            notes=[  # type: ignore  # 2024-01-24 # TODO: Argument "notes" to "extend" of "FunctionDocRegistryItem" has incompatible type "list[Note]"; expected "tuple[Note, ...]"  [arg-type]
                 Note(
                     level=NoteLevel.warning,
                     text=Translatable("{dialects: METRIKAAPI} does not support string concatenation."),

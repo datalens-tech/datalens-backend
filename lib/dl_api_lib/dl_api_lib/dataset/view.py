@@ -207,7 +207,7 @@ class DatasetView(DatasetBaseWrapper):
             dsrc = self._get_data_source_strict(source_id=avatar.source_id, role=role)
             connection = dsrc.connection
             if connection not in target_connections:
-                target_connections.append(connection)
+                target_connections.append(connection)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "append" of "list" has incompatible type "ConnectionBase"; expected "ClassicConnectionSQL"  [arg-type]
 
         return QueryExecutionInfo(
             role=role,

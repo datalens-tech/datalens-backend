@@ -21,19 +21,19 @@ if TYPE_CHECKING:
 
 
 class _TextClauseHack(sa.sql.elements.TextClause):
-    def __bool__(self):
+    def __bool__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         # Possibly a bug in sqlalchemy 1.4: query caching fails as, normally,
         # 'Boolean value of this clause is not defined'.
         # Not that the cache should be used here anyway, most likely.
         return True
 
 
-def raw_sql(sql_text):
+def raw_sql(sql_text):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     """Basically just `sa.text(sql_text)` with hacks"""
     return _TextClauseHack(sql_text)
 
 
-def make_binary_chain(binary_callable, *args, wrap_as_nodes: bool = True):
+def make_binary_chain(binary_callable, *args, wrap_as_nodes: bool = True):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
     if len(args) == 0:
         return None
 
@@ -52,7 +52,7 @@ def make_binary_chain(binary_callable, *args, wrap_as_nodes: bool = True):
     return expr
 
 
-def quantile_value(quant: float):
+def quantile_value(quant: float):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
     """
     Validate and normalize the value for a quantile.
     """
@@ -76,7 +76,7 @@ def desc(value: ClauseElement) -> ClauseElement:
     return value
 
 
-def ifnotnull(value, expr):
+def ifnotnull(value, expr):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     """Wrap `expr` in an `sa.case` that results in a NULL for a NULL `value`"""
     return sa.case([(value.is_(None), sa.null())], else_=expr)
 
@@ -86,5 +86,5 @@ class _PatchedWithinGroup(WithinGroup):
         return self.__class__, (self.element, *self.order_by)  # type: ignore
 
 
-def within_group(clause_el: ClauseElement, *order_by) -> _PatchedWithinGroup:
+def within_group(clause_el: ClauseElement, *order_by) -> _PatchedWithinGroup:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
     return _PatchedWithinGroup(clause_el, *order_by)

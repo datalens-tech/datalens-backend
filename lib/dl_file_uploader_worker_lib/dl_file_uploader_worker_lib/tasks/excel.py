@@ -105,7 +105,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                         file_data = await resp.json()
 
             for src in dfile.sources:
-                sources_to_update_by_sheet_id[src.user_source_dsrc_properties.sheet_id].append(src)
+                sources_to_update_by_sheet_id[src.user_source_dsrc_properties.sheet_id].append(src)  # type: ignore  # 2024-01-24 # TODO: Item "UserSourceDataSourceProperties" of "UserSourceDataSourceProperties | None" has no attribute "sheet_id"  [union-attr]
 
             for spreadsheet in file_data:
                 sheetname = spreadsheet["sheetname"]
@@ -207,7 +207,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                 src.status = FileProcessingStatus.failed
                 connection_error_tracker.add_error(src.id, src.error)
 
-            await connection_error_tracker.finalize(self.meta.exec_mode, self.meta.connection_id)
+            await connection_error_tracker.finalize(self.meta.exec_mode, self.meta.connection_id)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "finalize" of "FileConnectionDataSourceErrorTracker" has incompatible type "TaskExecutionMode | None"; expected "TaskExecutionMode"  [arg-type]
             await dfile.save()
             LOGGER.info("DataFile object saved.")
 
@@ -216,7 +216,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                 file_id=dfile.id,
                 tenant_id=self.meta.tenant_id,
                 connection_id=self.meta.connection_id,
-                exec_mode=self.meta.exec_mode,
+                exec_mode=self.meta.exec_mode,  # type: ignore  # 2024-01-24 # TODO: Argument "exec_mode" to "ParseFileTask" has incompatible type "TaskExecutionMode | None"; expected "TaskExecutionMode"  [arg-type]
             )
             await task_processor.schedule(parse_file_task)
             LOGGER.info(f"Scheduled ParseFileTask for file_id {dfile.id}")
@@ -233,7 +233,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
 
                 for src in dfile.sources or ():
                     connection_error_tracker.add_error(src.id, dfile.error)
-                await connection_error_tracker.finalize(self.meta.exec_mode, self.meta.connection_id)
+                await connection_error_tracker.finalize(self.meta.exec_mode, self.meta.connection_id)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "finalize" of "FileConnectionDataSourceErrorTracker" has incompatible type "TaskExecutionMode | None"; expected "TaskExecutionMode"  [arg-type]
 
                 return Fail()
         finally:

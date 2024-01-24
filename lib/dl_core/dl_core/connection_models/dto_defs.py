@@ -27,7 +27,7 @@ class ConnDTO:
         )
 
     def clone(self: _CONN_DTO_TV, **kwargs: Any) -> _CONN_DTO_TV:
-        return attr.evolve(self, **kwargs)
+        return attr.evolve(self, **kwargs)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "evolve" has a variable type "_CONN_DTO_TV" not bound to an attrs class  [misc]
 
 
 @attr.s(frozen=True)

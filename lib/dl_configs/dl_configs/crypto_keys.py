@@ -18,17 +18,17 @@ from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 
 @attr.s(frozen=True)
 class CryptoKeysConfig(SettingsBase):
-    map_id_key: Dict[str, str] = s_attrib("KEY_VAL_ID", sensitive=True)
-    actual_key_id: str = s_attrib("ACTUAL_KEY_ID")
+    map_id_key: Dict[str, str] = s_attrib("KEY_VAL_ID", sensitive=True)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "dict[str, str]")  [assignment]
+    actual_key_id: str = s_attrib("ACTUAL_KEY_ID")  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
 
-    @actual_key_id.default
-    def _default_actual_key_id(self):
+    @actual_key_id.default  # type: ignore  # 2024-01-24 # TODO: "str" has no attribute "default"  [attr-defined]
+    def _default_actual_key_id(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         if len(self.map_id_key) == 1:
             return next(iter(self.map_id_key.keys()))
         # TODO FIX: Integrate with env loader exceptions handling
         raise ValueError("Missing actual_key_id (acceptable only in single key case)")
 
-    def __attrs_post_init__(self):
+    def __attrs_post_init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         if self.actual_key_id not in self.map_id_key:
             raise ValueError()
 
@@ -44,21 +44,21 @@ class CryptoKeysConfig(SettingsBase):
         except KeyError as exc:
             # TODO FIX: Integrate with env loader exceptions handling
             raise ValueError(f"Crypto keys config missing key {exc!r}")
-        return CryptoKeysConfig(
+        return CryptoKeysConfig(  # type: ignore  # 2024-01-24 # TODO: Unexpected keyword argument "actual_key_id" for "CryptoKeysConfig"  [call-arg]
             actual_key_id=actual_key_id,
             map_id_key=map_id_key,
         )
 
 
 def get_single_key_crypto_keys_config(*, key_id: str, key_value: str) -> CryptoKeysConfig:
-    return CryptoKeysConfig(
+    return CryptoKeysConfig(  # type: ignore  # 2024-01-24 # TODO: Unexpected keyword argument "map_id_key" for "CryptoKeysConfig"  [call-arg]
         map_id_key={key_id: key_value},
         actual_key_id=key_id,
     )
 
 
 def get_dummy_crypto_keys_config() -> CryptoKeysConfig:
-    return CryptoKeysConfig(
+    return CryptoKeysConfig(  # type: ignore  # 2024-01-24 # TODO: Unexpected keyword argument "map_id_key" for "CryptoKeysConfig"  [call-arg]
         map_id_key={"dummy_key_id_qwerty123": fernet.Fernet.generate_key().decode()},
         actual_key_id="dummy_key_id_qwerty123",
     )
@@ -72,7 +72,7 @@ class _CryptoKeysConfigOnlySettings(SettingsBase):
     So we make this wrapper.
     """
 
-    cry: CryptoKeysConfig = s_attrib("DL_CRY", json_converter=CryptoKeysConfig.from_json, sensitive=True)
+    cry: CryptoKeysConfig = s_attrib("DL_CRY", json_converter=CryptoKeysConfig.from_json, sensitive=True)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "CryptoKeysConfig")  [assignment]
 
 
 def get_crypto_keys_config_from_env(config_source: Optional[Mapping[str, str]] = None) -> CryptoKeysConfig:

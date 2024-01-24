@@ -59,7 +59,7 @@ def literal(value: Any, type_: Optional[TypeEngine] = None, d: Optional[DialectC
     return sa.literal(value, type_)
 
 
-def un_literal(sa_obj: Optional[Literal], value_ctx: Optional[TranslationCtx] = None):
+def un_literal(sa_obj: Optional[Literal], value_ctx: Optional[TranslationCtx] = None):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
     """Given an SA object produced by `literal` (or compatible), return the original value"""
 
     assert sa_obj is not None
@@ -94,7 +94,7 @@ def un_literal(sa_obj: Optional[Literal], value_ctx: Optional[TranslationCtx] = 
     raise ValueError(f"Not a literal-like SA object: {sa_obj!r}")
 
 
-def is_literal(sa_obj) -> bool:
+def is_literal(sa_obj) -> bool:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
     try:
         un_literal(sa_obj)
     except ValueError:

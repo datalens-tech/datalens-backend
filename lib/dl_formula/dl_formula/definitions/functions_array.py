@@ -51,7 +51,7 @@ def _normalize_arr_items(val: List[TranslationCtx], item_type: Type) -> list:
     """Unliteralize and convert array items"""
     result = []
     for item in val:
-        un_lit_item = un_literal(item.expression)
+        un_lit_item = un_literal(item.expression)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "un_literal" has incompatible type "ClauseElement | None"; expected "BaseLiteral | BindParameter[Any] | TypeDefiningCast | Function | Null | array | None"  [arg-type]
         if un_lit_item is not None:
             un_lit_item = item_type(un_lit_item)
         result.append(un_lit_item)

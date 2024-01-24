@@ -56,7 +56,7 @@ class YaDocsFileS3ConnectionLifecycleManager(
         async with fu_client_factory.get_client(headers=headers, cookies=cookies) as fu_client:
             await fu_client.update_connection_data_internal(
                 conn_id=self.entry.uuid,
-                sources=sources,
+                sources=sources,  # type: ignore  # 2024-01-24 # TODO: Argument "sources" to "update_connection_data_internal" of "FileUploaderClient" has incompatible type "list[YaDocsFileSourceDesc]"; expected "list[GSheetsFileSourceDesc | YaDocsFileSourceDesc]"  [arg-type]
                 authorized=self.entry.authorized,
                 tenant_id=rci.tenant.get_tenant_id() if rci.tenant is not None else None,
             )

@@ -59,7 +59,7 @@ class Section(LocalizedSerializable):
             if hasattr(settings, "conn_type"):
                 return Connector.from_settings(settings)  # type: ignore
             elif hasattr(settings, "includes"):
-                return ConnectorContainer.from_settings(settings)  # typeL ignore
+                return ConnectorContainer.from_settings(settings)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "from_settings" of "ConnectorContainer" has incompatible type "ConnectorBaseSettings"; expected "ConnectorContainerSettings"  [arg-type]
             raise ValueError('Can\'t create a connector, neither "conn_type" nor "includes" found among settings')
 
         return cls(
@@ -117,11 +117,11 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
 
 
 @attr.s(kw_only=True)
-class Connector(ConnectorBase):
+class Connector(ConnectorBase):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
     """Represents an actual connection type"""
 
     _hidden: bool = attr.ib(init=False, default=False)
-    conn_type: ConnectionType = attr.ib(
+    conn_type: ConnectionType = attr.ib(  # type: ignore  # 2024-01-24 # TODO: Need type annotation for "conn_type"  [var-annotated]
         converter=lambda v: ConnectionType(v) if not isinstance(v, ConnectionType) else v
     )
     availability: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free, converter=ConnectorAvailability)
@@ -227,7 +227,7 @@ class ConnectorAvailabilityConfig(SettingsBase):
     ) -> ConnectorAvailabilityConfig:
         visible_connectors: set[ConnectionType] = {ConnectionType(item) for item in settings.visible_connectors}
 
-        return cls(
+        return cls(  # type: ignore  # 2024-01-24 # TODO: Unexpected keyword argument "visible_connectors" for "ConnectorAvailabilityConfig"  [call-arg]
             uncategorized=[Connector.from_settings(item) for item in settings.uncategorized],
             sections=[Section.from_settings(item) for item in settings.sections],
             visible_connectors=visible_connectors,
