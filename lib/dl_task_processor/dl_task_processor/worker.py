@@ -10,6 +10,7 @@ from typing import (
     Any,
     Dict,
     Optional,
+    Protocol,
     Sequence,
 )
 
@@ -35,13 +36,24 @@ LOGGER = logging.getLogger(__name__)
 CONTEXT_KEY = "bi_context"
 
 
+class WorkerMetricsSenderProtocol(Protocol):
+    async def send(self, timestamp: float, metrics: dict[str, Any]) -> None:
+        ...
+
+
 class DLArqWorker(Worker):
-    def __init__(self, health_check_record_ttl: SecondsTimedelta, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        health_check_record_ttl: SecondsTimedelta,
+        metrics_sender: Optional[WorkerMetricsSenderProtocol] = None,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
+        self._metrics_sender = metrics_sender
         self.health_check_record_ttl = to_seconds(health_check_record_ttl)
 
     async def record_health(self) -> None:
-        """Copy and paste from the base class, but using health_check_record_ttl"""
+        """Copy and paste from the base class, but using health_check_record_ttl & sending metrics"""
 
         now_ts = time.time()
         if (now_ts - self._last_health_check) < self.health_check_interval:
@@ -62,6 +74,18 @@ class DLArqWorker(Worker):
             self._last_health_check_log = log_suffix
         elif not self._last_health_check_log:
             self._last_health_check_log = log_suffix
+
+        if self._metrics_sender is not None:
+            await self._metrics_sender.send(
+                timestamp=now_ts,
+                metrics=dict(
+                    j_complete=self.jobs_complete,
+                    j_failed=self.jobs_failed,
+                    j_retried=self.jobs_retried,
+                    j_ongoing=pending_tasks,
+                    queued=queued,
+                ),
+            )
 
 
 @attr.s
@@ -86,6 +110,7 @@ class ArqWorker:
     _context_fab: BaseContextFabric = attr.ib()
     _redis_settings: RedisSettings = attr.ib()
     _worker_settings: WorkerSettings = attr.ib()
+    _metrics_sender: Optional[WorkerMetricsSenderProtocol] = attr.ib(default=None)
     _arq_worker: DLArqWorker = attr.ib(default=None)
     _cron_tasks: Sequence[CronTask] = attr.ib(factory=list)
 
@@ -108,6 +133,7 @@ class ArqWorker:
             health_check_record_ttl=self._worker_settings.health_check_record_ttl,
             cron_jobs=self._cron_tasks,
             redis_pool=redis_pool,
+            metrics_sender=self._metrics_sender,
         )
         await self._arq_worker.main()
 
