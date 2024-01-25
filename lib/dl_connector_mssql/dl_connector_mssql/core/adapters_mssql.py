@@ -174,7 +174,6 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
             nullable = column_info["is_nullable"]
 
             native_type = CommonNativeType.normalize_name_and_create(
-                conn_type=self.conn_type,
                 name=self.normalize_sa_col_type(sa_type),
                 nullable=nullable,
             )

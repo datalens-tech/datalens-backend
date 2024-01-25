@@ -174,7 +174,6 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
 
         def get_expected_native_type(self, conn_type: ConnectionType) -> GenericNativeType:
             return self.nt or CommonNativeType(
-                conn_type=conn_type,
                 name=norm_native_type(self.nt_name if self.nt_name is not None else self.sa_type),
                 nullable=self.nullable,
             )

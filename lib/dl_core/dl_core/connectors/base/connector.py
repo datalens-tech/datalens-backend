@@ -61,7 +61,7 @@ class CoreConnectionDefinition(abc.ABC):
     conn_type: ClassVar[ConnectionType]
     connection_cls: ClassVar[Type[ConnectionBase]]
     us_storage_schema_cls: ClassVar[Optional[Type[Schema]]] = None
-    type_transformer_cls: ClassVar[Type[TypeTransformer]]
+    type_transformer_cls: ClassVar[Type[TypeTransformer]]  # TODO: Move to CoreBackendDefinition
     sync_conn_executor_cls: ClassVar[Optional[Type[ConnExecutorBase]]] = None
     async_conn_executor_cls: ClassVar[Optional[Type[AsyncConnExecutorBase]]] = None
     lifecycle_manager_cls: ClassVar[Type[ConnectionLifecycleManager]] = DefaultConnectionLifecycleManager
@@ -83,7 +83,10 @@ class CoreConnector(abc.ABC):
     backend_definition: Type[CoreBackendDefinition]
     connection_definitions: ClassVar[tuple[Type[CoreConnectionDefinition], ...]] = ()
     source_definitions: ClassVar[tuple[Type[CoreSourceDefinition], ...]] = ()
-    sa_types: ClassVar[Optional[dict[GenericNativeType, Callable[[GenericNativeType], TypeEngine]]]] = None
+    # TODO: Move to CoreBackendDefinition:
+    sa_types: ClassVar[
+        Optional[dict[tuple[SourceBackendType, GenericNativeType], Callable[[GenericNativeType], TypeEngine]]]
+    ] = None
     rqe_adapter_classes: ClassVar[AbstractSet[Type[CommonBaseDirectAdapter]]] = frozenset()
     conn_security: ClassVar[AbstractSet[ConnSecuritySettings]] = frozenset()
     query_fail_exceptions: frozenset[Type[Exception]] = frozenset()

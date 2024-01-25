@@ -264,7 +264,6 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
                     explicit_timezone = False
                     col_type = ch_types.DateTime64WithTZ(col_type.precision, system_tz)
 
-            conn_type = self.conn_type
             if is_array:
                 name = norm_native_type(ch_types.Array(col_type))
             else:
@@ -272,7 +271,6 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
 
             if isinstance(col_type, ch_types.DateTimeWithTZ):
                 return ClickHouseDateTimeWithTZNativeType(
-                    conn_type=conn_type,
                     name=name,  # type: ignore  # TODO: fix
                     nullable=nullable,
                     lowcardinality=lowcardinality,
@@ -281,7 +279,6 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
                 )
             if isinstance(col_type, ch_types.DateTime64WithTZ):
                 return ClickHouseDateTime64WithTZNativeType(
-                    conn_type=conn_type,
                     name=name,  # type: ignore  # TODO: fix
                     nullable=nullable,
                     lowcardinality=lowcardinality,
@@ -291,14 +288,12 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
                 )
             if isinstance(col_type, ch_types.DateTime64):
                 return ClickHouseDateTime64NativeType(
-                    conn_type=conn_type,
                     name=name,  # type: ignore  # TODO: fix
                     nullable=nullable,
                     lowcardinality=lowcardinality,
                     precision=col_type.precision,
                 )
             return ClickHouseNativeType(
-                conn_type=conn_type,
                 name=name,  # type: ignore  # TODO: fix
                 nullable=nullable,
                 lowcardinality=lowcardinality,
@@ -627,7 +622,6 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         if type_pieces and type_pieces[0] == "nullable":
             type_pieces = type_pieces[1:]
         return GenericNativeType.normalize_name_and_create(
-            conn_type=self.conn_type,
             name=type_pieces[0] if type_pieces else "",
         )
 

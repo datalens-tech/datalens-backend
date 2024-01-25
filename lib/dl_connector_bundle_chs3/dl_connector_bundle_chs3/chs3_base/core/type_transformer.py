@@ -137,9 +137,9 @@ class FileTypeTransformer(ClickHouseTypeTransformer):
 
     user_to_native_map = {
         **ClickHouseTypeTransformer.user_to_native_map,
-        UserDataType.datetime: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.DateTime64),
-        UserDataType.genericdatetime: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.DateTime64),
-        UserDataType.date: make_native_type(CONNECTION_TYPE_CLICKHOUSE, ch_types.Date32),
+        UserDataType.datetime: make_native_type(ch_types.DateTime64),
+        UserDataType.genericdatetime: make_native_type(ch_types.DateTime64),
+        UserDataType.date: make_native_type(ch_types.Date32),
     }
 
     @classmethod
