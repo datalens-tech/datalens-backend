@@ -22,25 +22,6 @@ awscli = ["awscli (>=1.25.60,<1.25.61)"]
 boto3 = ["boto3 (>=1.24.59,<1.24.60)"]
 
 [[package]]
-name = "aiochclient"
-version = "2.5.1"
-description = "Async http clickhouse client for python 3.6+"
-optional = false
-python-versions = "*"
-files = [
-    {file = "aiochclient-2.5.1.tar.gz", hash = "sha256:eace124433f35851b8296dfae36dedfcb1391ea0c09effaa74004aef4d2d5295"},
-]
-
-[package.dependencies]
-sqlparse = ">=0.4.3"
-
-[package.extras]
-aiohttp = ["aiohttp (>=3.8.4)"]
-aiohttp-speedups = ["aiodns", "aiohttp (>=3.8.4)", "cchardet", "ciso8601 (>=2.3.0)"]
-httpx = ["httpx"]
-httpx-speedups = ["ciso8601 (>=2.3.0)", "httpx"]
-
-[[package]]
 name = "aiodns"
 version = "3.0.0"
 description = "Simple DNS resolver for asyncio"
@@ -1302,7 +1283,6 @@ files = []
 develop = false
 
 [package.dependencies]
-aiochclient = ">=2.5.1"
 attrs = ">=22.2.0"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 datalens-api-commons = {path = "../dl_api_commons"}
@@ -5580,22 +5560,6 @@ geography = ["GeoAlchemy2", "shapely"]
 tests = ["packaging", "pytz"]
 
 [[package]]
-name = "sqlparse"
-version = "0.4.4"
-description = "A non-validating SQL parser."
-optional = false
-python-versions = ">=3.5"
-files = [
-    {file = "sqlparse-0.4.4-py3-none-any.whl", hash = "sha256:5430a4fe2ac7d0f93e66f1efc6e1338a41884b7ddf2a350cedd20ccc4d9d28f3"},
-    {file = "sqlparse-0.4.4.tar.gz", hash = "sha256:d446183e84b8349fa3061f0fe7f06ca94ba65b426946ffebe6e3e8295332420c"},
-]
-
-[package.extras]
-dev = ["build", "flake8"]
-doc = ["sphinx"]
-test = ["pytest", "pytest-cov"]
-
-[[package]]
 name = "stack-data"
 version = "0.6.2"
 description = "Extract data from python stack frames and tracebacks for informative displays"
@@ -6293,4 +6257,4 @@ yc = ["yandexcloud"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12, <3.13"
-content-hash = "bfda8a1c83f3518652ca08075dcfaffe7799c5ca72840c8a4362a91e88d6550c"
+content-hash = "e1a37825ee2d9d5c66ea149bd683eca4c757b6de9f84458f593f4b373c6760df"
