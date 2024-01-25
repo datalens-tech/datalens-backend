@@ -776,9 +776,8 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
         )
 
         if self.CACHE_SAVE_BACKGROUND:
-            asyncio.create_task(
-                self._redis_set(update_request),
-            )
+            task_tmp = asyncio.create_task(self._redis_set(update_request))
+            await asyncio.shield(task_tmp)
         else:
             try:
                 await asyncio.wait_for(
