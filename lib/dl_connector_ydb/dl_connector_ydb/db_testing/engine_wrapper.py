@@ -63,7 +63,7 @@ class YQLEngineWrapper(EngineWrapperBase):
         return table.with_primary_keys(*primary_keys)
 
     def _get_table_path(self, table: sa.Table) -> str:
-        return os.path.join(self.engine.url.query["database"], table.name)
+        return os.path.join(self.engine.url.query["database"], table.name)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "join" has incompatible type "str | tuple[str, ...]"; expected "str"  [arg-type]
 
     def _get_connection_params(self) -> ydb.DriverConfig:
         return ydb.DriverConfig(

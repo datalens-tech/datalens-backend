@@ -81,7 +81,7 @@ class DLRequestBase:
             return request[cls.KEY_DL_REQUEST]
         return None
 
-    def _set_attr_once(self, name, value) -> None:
+    def _set_attr_once(self, name, value) -> None:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         if name in self.request:
             raise ValueError(f"Request key '{name}' already set")
         self.request[name] = value
@@ -211,7 +211,7 @@ class DLRequestBase:
         elif len(header_value_list) > 1:
             raise InvalidHeaderException("Expecting single header but multiple received", header_name=header_name)
 
-        return header_value_list[0]
+        return header_value_list[0]  # type: ignore  # 2024-01-24 # TODO: Tuple index out of range  [misc]
 
     def get_single_json_header(self, header: DLHeaders) -> Union[bool, int, float, list, dict, None]:
         raw_header = self.request.headers.get(header.value)

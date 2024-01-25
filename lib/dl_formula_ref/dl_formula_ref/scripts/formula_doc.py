@@ -37,21 +37,21 @@ subparsers.add_parser(
 
 class FormulaDocTool:
     @staticmethod
-    def print_versions():
+    def print_versions():  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         print("\n".join(sorted([version.name for version in ConfigVersion])))
 
     @staticmethod
-    def print_locales(config_version: ConfigVersion):
+    def print_locales(config_version: ConfigVersion):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         gen_config = get_generator_config(version=config_version)
         print("\n".join(sorted(gen_config.supported_locales)))
 
     @classmethod
-    def generate_doc(cls, outdir: str, locale: str, config_version: ConfigVersion):
+    def generate_doc(cls, outdir: str, locale: str, config_version: ConfigVersion):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         ref_doc_generator = ReferenceDocGenerator(locale=locale, config_version=config_version)
         ref_doc_generator.generate_doc_full_dir(outdir=outdir)
 
     @classmethod
-    def run(cls, args):
+    def run(cls, args):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         tool = cls()
 
         match args.command:
@@ -63,7 +63,7 @@ class FormulaDocTool:
                 tool.generate_doc(outdir=args.outdir, locale=args.locale, config_version=args.config_version)
 
 
-def main():
+def main():  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
     load_formula_ref()
     FormulaDocTool.run(parser.parse_args())
 

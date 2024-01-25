@@ -126,7 +126,7 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
     def __make_async_test_action(self) -> AsyncTestAdapterAction:
         return self._make_async_test_action()
 
-    @_async_table_info_action.default
+    @_async_table_info_action.default  # type: ignore  # 2024-01-24 # TODO: Name "__make_async_test_action" already defined on line 124  [no-redef]
     @final
     def __make_async_test_action(self) -> AsyncTableInfoAdapterAction:
         return self._make_async_table_info_action()

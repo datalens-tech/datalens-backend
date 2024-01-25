@@ -28,7 +28,7 @@ class ConnectionPostgreSQL(ConnectionPostgreSQLBase):
             port=self.data.port,
             db_name=self.data.db_name,
             username=self.data.username,
-            password=self.password,
+            password=self.password,  # type: ignore  # 2024-01-24 # TODO: Argument "password" to "PostgresConnDTO" has incompatible type "str | None"; expected "str"  [arg-type]
             enforce_collate=self.data.enforce_collate,
             ssl_enable=self.data.ssl_enable,
             ssl_ca=self.data.ssl_ca,

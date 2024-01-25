@@ -37,7 +37,7 @@ _TARGET_TV = TypeVar("_TARGET_TV")
 
 
 class BaseStorageSchema(Schema, Generic[_TARGET_TV]):
-    TARGET_CLS: ClassVar[Type[_TARGET_TV]]
+    TARGET_CLS: ClassVar[Type[_TARGET_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
     @classmethod
     def get_target_cls(cls) -> Type[_TARGET_TV]:

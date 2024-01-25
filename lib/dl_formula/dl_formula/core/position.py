@@ -30,7 +30,7 @@ class PositionConverter:
         col = len(cropped.rsplit("\n", 1)[-1])
         return row, col
 
-    def idx_to_position(self, idx: int):
+    def idx_to_position(self, idx: int):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         start = idx
         end = idx
         start_row, start_col = self.idx_to_line_and_row(idx)
@@ -47,7 +47,7 @@ class PositionConverter:
     def row_and_col_to_idx(self, line: int, column: int) -> int:
         return self._pos_by_line[line - 1] + column - 1
 
-    def merge_positions(self, start_position: Position, end_position: Position):
+    def merge_positions(self, start_position: Position, end_position: Position):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         return Position(
             start=start_position.start,
             end=end_position.end,

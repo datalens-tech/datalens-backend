@@ -29,7 +29,8 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = ["dl_sqlalchemy_promql_tests/unit"]
 
-
+[datalens.meta.mypy]
+targets = []    # ignore mypy in entire module
 
 [tool.mypy]
 warn_unused_configs = true

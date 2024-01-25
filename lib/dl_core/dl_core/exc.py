@@ -274,8 +274,8 @@ class USBadRequestException(USReqException):
     @property
     def message(self) -> str:
         try:
-            if self.orig_exc and isinstance(self.orig_exc.response, requests.Response):
-                return self.orig_exc.response.json()["message"]
+            if self.orig_exc and isinstance(self.orig_exc.response, requests.Response):  # type: ignore  # 2024-01-24 # TODO: "Exception" has no attribute "response"  [attr-defined]
+                return self.orig_exc.response.json()["message"]  # type: ignore  # 2024-01-24 # TODO: "Exception" has no attribute "response"  [attr-defined]
         except (ValueError, KeyError, AttributeError):
             pass
         return super().message

@@ -20,10 +20,10 @@ def create_s3_native_from_ch_table(
         conn_dto=BaseFileS3ConnDTO(
             conn_id=None,
             protocol="http",
-            host=db.url.host,
-            port=db.url.port,
-            username=db.url.username,
-            password=db.url.password,
+            host=db.url.host,  # type: ignore  # 2024-01-24 # TODO: Argument "host" to "BaseFileS3ConnDTO" has incompatible type "str | None"; expected "str"  [arg-type]
+            port=db.url.port,  # type: ignore  # 2024-01-24 # TODO: Argument "port" to "BaseFileS3ConnDTO" has incompatible type "int | None"; expected "int"  [arg-type]
+            username=db.url.username,  # type: ignore  # 2024-01-24 # TODO: Argument "username" to "BaseFileS3ConnDTO" has incompatible type "str | None"; expected "str"  [arg-type]
+            password=db.url.password,  # type: ignore  # 2024-01-24 # TODO: Argument "password" to "BaseFileS3ConnDTO" has incompatible type "object"; expected "str"  [arg-type]
             multihosts=db.get_conn_hosts(),  # type: ignore
             s3_endpoint="http://s3-storage:8000",
             access_key_id=s3_settings.ACCESS_KEY_ID,

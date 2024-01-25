@@ -107,7 +107,7 @@ class SqlSourceBuilder:
                 used_avatar_ids_as_list.append(child_avatar_id)
 
                 relation_expr_ctx = prep_relation.expression
-                relation_expr: JoinExpressionType = relation_expr_ctx.expression
+                relation_expr: JoinExpressionType = relation_expr_ctx.expression  # type: ignore  # 2024-01-24 # TODO: "ClauseElement" has no attribute "expression"  [attr-defined]
                 LOGGER.info(f"Including relation between avatars {avatar_id} and {child_avatar_id}")
                 avatar_join_info_list.append(
                     AvatarJoinInfo(

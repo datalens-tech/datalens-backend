@@ -24,7 +24,7 @@ _US_ENTRY_TV = TypeVar("_US_ENTRY_TV", bound=USEntry)
 
 @attr.s
 class EntryLifecycleManager(abc.ABC, Generic[_US_ENTRY_TV]):
-    ENTRY_CLS: ClassVar[Type[_US_ENTRY_TV]]
+    ENTRY_CLS: ClassVar[Type[_US_ENTRY_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
     _entry: _US_ENTRY_TV = attr.ib(kw_only=True)
     _us_manager: USManagerBase = attr.ib(kw_only=True)

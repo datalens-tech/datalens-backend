@@ -168,7 +168,7 @@ class FuncDatepart2(FuncDatepart):
 
 
 @ensure_naive_first_arg
-def _datepart_const_impl(date_ctx, part_ctx, firstday_ctx):
+def _datepart_const_impl(date_ctx, part_ctx, firstday_ctx):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     """`DATEPART` for `(date|datetime, str, str)`"""
     part: str = un_literal(part_ctx.expression)
 
@@ -213,7 +213,7 @@ class FuncDatepart3Const(FuncDatepart):
 
 
 @ensure_naive_first_arg
-def _datepart_nonconst_impl(date_ctx, part_ctx, firstday_ctx):
+def _datepart_nonconst_impl(date_ctx, part_ctx, firstday_ctx):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     firstday: str = un_literal(firstday_ctx.expression)
     return (
         n.case(part_ctx)
@@ -250,7 +250,7 @@ class FuncDatepart3NonConst(FuncDatepart):
     ]
 
 
-def norm_datetrunc_unit(unit):
+def norm_datetrunc_unit(unit):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     return normalize_and_validate_datetime_interval_type(un_literal(unit))
 
 
@@ -453,7 +453,7 @@ class FuncDayofweek(SpecificDatepartFunc):
     }
 
     @classmethod
-    def _norm_fd(cls, firstday):
+    def _norm_fd(cls, firstday):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         """Normalize first-day-of-the-week value (convert to int (1-7))"""
         try:
             return cls._fd_map[un_literal(firstday).lower()]
@@ -474,7 +474,7 @@ class FuncDayofweek1(FuncDayofweek):
     ]
 
 
-def dow_firstday_shift(base_1_dow, firstday_expr):
+def dow_firstday_shift(base_1_dow, firstday_expr):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     """
     `base_1_dow` should be `1` for monday, ..., `6` for saturday, `7` for sunday
     """

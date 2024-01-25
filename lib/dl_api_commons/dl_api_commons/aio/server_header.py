@@ -16,7 +16,7 @@ class ServerHeader:
             raise ValueError("Server header must have non-zero length")
 
     def add_signal_handlers(self, app: web.Application):  # type: ignore  # TODO: fix
-        app.on_response_prepare.append(self.on_response_prepare)
+        app.on_response_prepare.append(self.on_response_prepare)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "append" of "MutableSequence" has incompatible type "Callable[[Request, Response], Coroutine[Any, Any, Any]]"; expected "Callable[[Request, StreamResponse], Awaitable[None]]"  [arg-type]
 
     async def on_response_prepare(self, _: web.Request, response: web.Response):  # type: ignore  # TODO: fix
         response.headers["Server"] = self._server_header

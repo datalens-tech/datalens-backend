@@ -261,7 +261,7 @@ class OptimizeConstFuncMutation(FormulaMutation):
                         pass
                     if cond_arg.value is True:
                         # This is the first true condition, so just return its "then"
-                        return then_arg
+                        return then_arg  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "FormulaItem", expected "FuncCall")  [return-value]
 
                 else:
                     # Add the args without changes
@@ -275,7 +275,8 @@ class OptimizeConstFuncMutation(FormulaMutation):
                 return node
 
             if len(new_args) == 1:  # All conditions turned out to be false (only "else" in new args)
-                return node.args[-1]  # the "else"
+                # the "else"
+                return node.args[-1]  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "FormulaItem", expected "FuncCall")  [return-value]
 
             return nodes.FuncCall.make("if", args=new_args, meta=node.meta)
 
@@ -310,7 +311,7 @@ class OptimizeConstFuncMutation(FormulaMutation):
                         pass
                     else:  # They are equal
                         # This is the first matching "when", so just return its "then"
-                        return then_arg
+                        return then_arg  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "FormulaItem", expected "FuncCall")  [return-value]
 
                 else:
                     # Add the args without changes
@@ -324,7 +325,8 @@ class OptimizeConstFuncMutation(FormulaMutation):
                 return node
 
             if len(new_args) == 2:  # All conditions turned out to be false
-                return node.args[-1]  # the "else"
+                # the "else"
+                return node.args[-1]  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "FormulaItem", expected "FuncCall")  [return-value]
 
             return nodes.FuncCall.make("case", args=new_args, meta=node.meta)
 

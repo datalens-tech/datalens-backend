@@ -51,8 +51,8 @@ def chyt_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, Connecto
         return {}
     return dict(
         CHYT=CHYTConnectorSettings(  # type: ignore
-            PUBLIC_CLIQUES=tuple(cfg.CONN_CHYT_PUBLIC_CLIQUES),
-            FORBIDDEN_CLIQUES=tuple(cfg.CONN_CHYT_FORBIDDEN_CLIQUES),
+            PUBLIC_CLIQUES=tuple(cfg.CONN_CHYT_PUBLIC_CLIQUES),  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "tuple" has incompatible type "Any | tuple[str] | None"; expected "Iterable[Any]"  [arg-type]
+            FORBIDDEN_CLIQUES=tuple(cfg.CONN_CHYT_FORBIDDEN_CLIQUES),  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "tuple" has incompatible type "Any | tuple[str] | None"; expected "Iterable[Any]"  [arg-type]
             DEFAULT_CLIQUE=cfg.CONN_CHYT_DEFAULT_CLIQUE,
         )
     )

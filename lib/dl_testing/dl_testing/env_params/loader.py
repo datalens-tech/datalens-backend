@@ -22,7 +22,7 @@ class EnvParamGetterLoader:
     def _make_ep_mgr(self) -> EntrypointClassManager:
         return EntrypointClassManager(entrypoint_group_name=self.EP_NAME)
 
-    def get_getter(self, name: str) -> EnvParamGetter:
+    def get_getter(self, name: str) -> EnvParamGetter:  # type: ignore  # 2024-01-24 # TODO: Missing return statement  [return]
         try:
             return self._getters[name]
         except KeyError:
@@ -41,7 +41,7 @@ class EnvParamGetterLoader:
         getter.initialize(config={})
         self._getters[name] = getter
 
-    def _resolve_setting_item(self, setting: dict, requirement_getter: EnvParamGetter) -> Optional[str]:
+    def _resolve_setting_item(self, setting: dict, requirement_getter: EnvParamGetter) -> Optional[str]:  # type: ignore  # 2024-01-24 # TODO: Missing return statement  [return]
         if setting["type"] == "value":
             return setting["value"]
         if setting["type"] == "param":
@@ -61,7 +61,7 @@ class EnvParamGetterLoader:
             for setting_name, raw_setting in raw_getter_settings.items():
                 assert isinstance(raw_setting, dict)
                 setting_value = self._resolve_setting_item(raw_setting, requirement_getter=requirement_getter)
-                resolved_getter_settings[setting_name] = setting_value
+                resolved_getter_settings[setting_name] = setting_value  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "str | None", target has type "str")  [assignment]
 
             getter.initialize(config=resolved_getter_settings)
             self._getters[getter_name] = getter

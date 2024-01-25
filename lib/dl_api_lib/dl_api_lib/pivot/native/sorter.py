@@ -81,7 +81,7 @@ class NativePivotSorter(PivotSorter):
             if not all_descending and direction is OrderDirection.desc:
                 # No inversion is applied if all dimensions are in descending order (`all_descending`)
                 # because a global `reverse` is applied (see above and below)
-                value = invert(value)
+                value = invert(value)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "InvertedSortWrapper", variable has type "DataCellVector")  [assignment]
             return value
 
         def normalize_key(key: FlatPivotDataKey) -> Any:

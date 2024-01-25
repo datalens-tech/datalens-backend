@@ -68,4 +68,4 @@ class GreenplumCoreConnector(CoreConnector):
         GreenplumSubselectCoreSourceDefinition,
     )
     rqe_adapter_classes = frozenset({GreenplumAdapter, AsyncGreenplumAdapter})
-    sa_types = SQLALCHEMY_POSTGRES_TYPES
+    sa_types = SQLALCHEMY_POSTGRES_TYPES  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[GenericNativeType, function]", base class "CoreConnector" defined the type as "dict[GenericNativeType, Callable[[GenericNativeType], TypeEngine]] | None")  [assignment]

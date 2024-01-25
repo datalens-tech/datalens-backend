@@ -62,7 +62,7 @@ class ConnectionParamsTester(BIResource):
     def post(self):  # type: ignore  # TODO: fix
         service_registry = self.get_service_registry()
         schema = GenericConnectionSchema(context=self.get_schema_ctx(schema_operations_mode=CreateMode.test))
-        body_json = dict(request.json)
+        body_json = dict(request.json)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "dict" has incompatible type "Any | None"; expected "SupportsKeysAndGetItem[Any, Any]"  [arg-type]
         body_json["name"] = "mocked_name"  # FIXME: BI-4639
         try:
             conn: ConnectionBase = schema.load(body_json)
@@ -93,14 +93,14 @@ class ConnectionTester(BIResource):
         assert isinstance(conn_orig, ConnectionBase)  # for typing
         need_permission_on_entry(conn, USPermissionKind.read)
 
-        body_json = dict(request.json)
+        body_json = dict(request.json)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "dict" has incompatible type "Any | None"; expected "SupportsKeysAndGetItem[Any, Any]"  [arg-type]
 
         has_changes = len(body_json.keys()) > 0
         if has_changes:
             need_permission_on_entry(conn, USPermissionKind.edit)
         schema_ctx = self.get_schema_ctx(schema_operations_mode=EditMode.test, editable_object=None)
 
-        schema_cls = GenericConnectionSchema().get_edit_schema_cls(conn)
+        schema_cls = GenericConnectionSchema().get_edit_schema_cls(conn)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "get_edit_schema_cls" of "GenericConnectionSchema" has incompatible type "USEntry"; expected "ConnectionBase"  [arg-type]
         schema = schema_cls(context=schema_ctx)
 
         try:
@@ -109,12 +109,12 @@ class ConnectionTester(BIResource):
         except MValidationError as err:
             return err.messages, 400
 
-        conn.validate_new_data_sync(services_registry=service_registry, changes=changes, original_version=conn_orig)
+        conn.validate_new_data_sync(services_registry=service_registry, changes=changes, original_version=conn_orig)  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "validate_new_data_sync"  [attr-defined]
 
         try:
-            conn.test(conn_executor_factory=service_registry.get_conn_executor_factory().get_sync_conn_executor)
+            conn.test(conn_executor_factory=service_registry.get_conn_executor_factory().get_sync_conn_executor)  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "test"  [attr-defined]
         except NotImplementedError as err:
-            raise exc.UnsupportedForEntityType(f"Connector {conn.conn_type.name} does not support testing") from err
+            raise exc.UnsupportedForEntityType(f"Connector {conn.conn_type.name} does not support testing") from err  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "conn_type"  [attr-defined]
         except Exception as e:
             _handle_conn_test_exc(e)
 
@@ -127,7 +127,7 @@ class ConnectionsList(BIResource):
         us_manager = self.get_us_manager()
 
         conn_availability = self.get_service_registry().get_connector_availability()
-        conn_type_is_available = conn_availability.check_connector_is_available(ct[request.json.get("type")])
+        conn_type_is_available = conn_availability.check_connector_is_available(ct[request.json.get("type")])  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Any | None" has no attribute "get"  [union-attr]
         if not conn_type_is_available:
             # TODO: remove `abort` after migration to schematic_request decorator with common error handling
             abort(400, "This connection type is not editable")
@@ -195,7 +195,7 @@ class ConnectionItem(BIResource):
         need_permission_on_entry(conn, USPermissionKind.read)
 
         result = GenericConnectionSchema(context=self.get_schema_ctx(EditMode.edit)).dump(conn)
-        result.update(options=ConnectionOptionsSchema().dump(self._make_options_data(conn)))
+        result.update(options=ConnectionOptionsSchema().dump(self._make_options_data(conn)))  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "_make_options_data" of "ConnectionItem" has incompatible type "USEntry"; expected "ConnectionBase"  [arg-type]
         return result
 
     @put_to_request_context(endpoint_code="ConnectionDelete")
@@ -222,11 +222,11 @@ class ConnectionItem(BIResource):
             schema = schema_cls(context=schema_ctx)
 
             try:
-                changes = schema.load(request.json)
+                changes = schema.load(request.json)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "load" of "Schema" has incompatible type "Any | None"; expected "Mapping[str, Any] | Iterable[Mapping[str, Any]]"  [arg-type]
                 schema.update_object(conn, changes)
             except MValidationError as e:
                 return e.messages, 400
-            conn.validate_new_data_sync(
+            conn.validate_new_data_sync(  # type: ignore  # 2024-01-24 # TODO: <nothing> has no attribute "validate_new_data_sync"  [attr-defined]
                 services_registry=self.get_service_registry(),
                 changes=changes,
                 original_version=conn_orig,
@@ -247,7 +247,7 @@ class ConnectionInfoMetadataSources(BIResource):
         connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
 
         localizer = self.get_service_registry().get_localizer()
-        source_template_templates = connection.get_data_source_template_templates(localizer=localizer)
+        source_template_templates = connection.get_data_source_template_templates(localizer=localizer)  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "get_data_source_template_templates"  [attr-defined]
 
         source_templates = []
         try:
@@ -255,7 +255,7 @@ class ConnectionInfoMetadataSources(BIResource):
         except USPermissionRequired:
             pass
         else:
-            source_templates = connection.get_data_source_local_templates()
+            source_templates = connection.get_data_source_local_templates()  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "get_data_source_local_templates"  [attr-defined]
 
         return {
             "sources": _dump_source_templates(source_templates),
@@ -275,7 +275,7 @@ class ConnectionInfoSources(BIResource):
 
         service_registry = self.get_service_registry()
         localizer = service_registry.get_localizer()
-        source_template_templates = connection.get_data_source_template_templates(localizer=localizer)
+        source_template_templates = connection.get_data_source_template_templates(localizer=localizer)  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "get_data_source_template_templates"  [attr-defined]
 
         source_templates = []
         try:
@@ -283,7 +283,7 @@ class ConnectionInfoSources(BIResource):
         except USPermissionRequired:
             pass
         else:
-            source_templates = connection.get_data_source_templates(
+            source_templates = connection.get_data_source_templates(  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "get_data_source_templates"  [attr-defined]
                 conn_executor_factory=service_registry.get_conn_executor_factory().get_sync_conn_executor,
             )
 
@@ -313,11 +313,11 @@ class ConnectionInfoSourceSchema(BIResource):
         sr = self.get_service_registry()
 
         def conn_executor_factory_func() -> SyncConnExecutorBase:
-            conn_executor = sr.get_conn_executor_factory().get_sync_conn_executor(conn=connection)
+            conn_executor = sr.get_conn_executor_factory().get_sync_conn_executor(conn=connection)  # type: ignore  # 2024-01-24 # TODO: Argument "conn" to "get_sync_conn_executor" of "ConnExecutorFactory" has incompatible type "USEntry"; expected "ConnectionBase"  [arg-type]
             return conn_executor
 
         need_permission_on_entry(connection, USPermissionKind.read)
-        if not connection.is_dashsql_allowed:
+        if not connection.is_dashsql_allowed:  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "is_dashsql_allowed"  [attr-defined]
             abort(400, "Not supported for connector without dashsql allowed")
 
         src = body["source"]

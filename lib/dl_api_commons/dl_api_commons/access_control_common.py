@@ -64,7 +64,7 @@ def get_token_from_authorization_header(secret_header_value: None, token_type: A
     pass
 
 
-def get_token_from_authorization_header(secret_header_value, token_type):
+def get_token_from_authorization_header(secret_header_value, token_type):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     if secret_header_value is None:
         return None
     assert isinstance(secret_header_value, str)

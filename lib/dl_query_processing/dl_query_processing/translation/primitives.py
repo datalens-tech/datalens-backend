@@ -53,7 +53,7 @@ class DetailedType(NamedTuple):
                 self.field_id,
                 self.data_type.name,
                 self.formula_data_type.name if self.formula_data_type is not None else None,
-                self.formula_data_type_params.as_primitive() if self.formula_data_type is not None else None,
+                self.formula_data_type_params.as_primitive() if self.formula_data_type is not None else None,  # type: ignore  # 2024-01-24 # TODO: Item "None" of "DataTypeParams | None" has no attribute "as_primitive"  [union-attr]
             )
         )
 

@@ -25,7 +25,7 @@ class Validator:
         self._collect_errors = collect_errors
 
     @contextmanager
-    def handle_error(self, checker_cls: Type["Checker"], node: nodes.FormulaItem):
+    def handle_error(self, checker_cls: Type["Checker"], node: nodes.FormulaItem):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         try:
             yield
         except exc.ValidationError as err:
@@ -68,7 +68,7 @@ class ValidatorProxy:
         self._checker_cls = checker_cls
 
     @contextmanager
-    def handle_error(self, node: nodes.FormulaItem):
+    def handle_error(self, node: nodes.FormulaItem):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         with self._validator.handle_error(checker_cls=self._checker_cls, node=node):
             yield
 

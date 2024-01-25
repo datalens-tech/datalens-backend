@@ -83,6 +83,13 @@ disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
 
+[[tool.mypy.overrides]]
+module = [
+    "sqlalchemy_bigquery.*",
+    "google.*"
+]
+ignore_missing_imports = true
+
 [datalens.i18n.domains]
 dl_connector_bigquery = [
     {path = "dl_connector_bigquery/api"},

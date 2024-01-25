@@ -71,6 +71,10 @@ disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
 
+[[tool.mypy.overrides]]
+module = "dl_sqlalchemy_metrica_api.*"
+ignore_missing_imports = true
+
 [datalens.i18n.domains]
 dl_connector_metrica = [
     {path = "dl_connector_metrica/api"},

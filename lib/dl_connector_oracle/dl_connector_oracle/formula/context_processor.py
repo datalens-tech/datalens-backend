@@ -19,7 +19,7 @@ class OracleContextPostprocessor(BooleanlessContextPostprocessor):
         ):
             expression = cast(ClauseElement, expression != 0)
         elif data_type in (DataType.CONST_STRING, DataType.STRING):
-            expression = expression.isnot(None)
+            expression = expression.isnot(None)  # type: ignore  # 2024-01-24 # TODO: "ClauseElement" has no attribute "isnot"  [attr-defined]
         elif data_type in (DataType.CONST_DATE, DataType.CONST_DATETIME, DataType.DATE, DataType.DATETIME):
             expression = cast(ClauseElement, sa.literal(1) == 1)
         else:

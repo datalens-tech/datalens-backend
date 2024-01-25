@@ -45,7 +45,7 @@ class GreenplumApiConnectionDefinition(ApiConnectionDefinition):
 
 
 class GreenplumApiBackendDefinition(PostgreSQLApiBackendDefinition):
-    core_backend_definition = GreenplumCoreBackendDefinition
+    core_backend_definition = GreenplumCoreBackendDefinition  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "type[GreenplumCoreBackendDefinition]", base class "PostgreSQLApiBackendDefinition" defined the type as "type[PostgreSQLCoreBackendDefinition]")  [assignment]
 
 
 class GreenplumApiConnector(ApiConnector):

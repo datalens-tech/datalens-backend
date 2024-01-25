@@ -30,7 +30,7 @@ class DataSourceSchema(OneOfSchema):
 
     type_field_remove = False
     type_field = "source_type"
-    type_schemas: dict[str, Type[DataSourceBaseSchema]] = {}
+    type_schemas: dict[str, Type[DataSourceBaseSchema]] = {}  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[DataSourceBaseSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
 
     def get_obj_type(self, obj: dict[str, Any]) -> str:
         return obj[self.type_field].name
@@ -59,7 +59,7 @@ class DataSourceTemplateResponseSchema(OneOfSchema):
 
     type_field_remove = False
     type_field = "source_type"
-    type_schemas: dict[str, Type[DataSourceTemplateBaseSchema]] = {}
+    type_schemas: dict[str, Type[DataSourceTemplateBaseSchema]] = {}  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[DataSourceTemplateBaseSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
 
     def get_obj_type(self, obj: dict[str, Any]) -> str:
         return obj[self.type_field].name

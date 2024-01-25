@@ -83,7 +83,11 @@ check_untyped_defs = true
 strict_optional = true
 
 [[tool.mypy.overrides]]
-module = ["flask_restx.*", "marshmallow_oneofschema.*"]
+module = [
+    "flask_restx.*",
+    "statcommons.*",
+    "flask_marshmallow"
+]
 ignore_missing_imports = true
 
 [datalens.i18n.domains]

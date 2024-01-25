@@ -110,7 +110,7 @@ class PdPivotSorterBase(PivotSorter):
 
             return pd.Index([normalizer.normalize_vector_value(vector) for vector in idx])
 
-        self._get_pd_obj().sort_index(
+        self._get_pd_obj().sort_index(  # type: ignore  # 2024-01-24 # TODO: No overload variant of "sort_index" of "DataFrame" matches argument types "int", "bool | list[bool]", "bool", "Callable[[Index], Index]"  [call-overload]
             axis=self._get_pd_axis(axis),
             ascending=ascending,
             inplace=True,
@@ -147,7 +147,7 @@ class PdPivotSorterBase(PivotSorter):
             total_pos = list(sorting_key).index(key_len - 1)
             order = list(range(key_len))
             order.append(order.pop(total_pos))
-            sorting_key = sorting_key[order]
+            sorting_key = sorting_key[order]  # type: ignore  # 2024-01-24 # TODO: Invalid index type "list[int]" for "Series[Any]"; expected type "list[str] | Index | Series[Any] | slice | Series[bool] | ndarray[Any, dtype[bool_]] | list[bool] | tuple[Any | slice, ...]"  [index]
         self._apply_sorting_key(axis, sorting_key)
 
     def sort(self) -> None:

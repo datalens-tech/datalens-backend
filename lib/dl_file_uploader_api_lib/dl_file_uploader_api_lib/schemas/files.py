@@ -38,7 +38,9 @@ def validate_yadocs_data(data: dict) -> None:
     if not ((data["public_link"] is None) ^ (data["private_path"] is None)):
         raise ValueError("Expected exactly one of [`private_path`, `public_link`] to be specified")
     if data["public_link"] is None and data["oauth_token"] is None and data["connection_id"] is None:
-        raise ma.ValidationError("Expected `oauth_token` or `connection_id` to be specified")
+        raise ma.ValidationError(
+            "Authentication is required to work with private files (expected `oauth_token` or `connection_id` to be specified)"
+        )
 
 
 class FileLinkRequestSchema(BaseRequestSchema):
@@ -202,7 +204,7 @@ class UpdateConnectionDataRequestSchemaYaDocs(UpdateConnectionDataRequestSchemaB
 
 
 class UpdateConnectionDataRequestSchema(FileTypeOneOfSchema):
-    type_schemas: dict[str, Type[UpdateConnectionDataRequestSchemaBase]] = {
+    type_schemas: dict[str, Type[UpdateConnectionDataRequestSchemaBase]] = {  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[UpdateConnectionDataRequestSchemaBase]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
         FileType.gsheets.name: UpdateConnectionDataRequestSchemaGSheets,
         FileType.yadocs.name: UpdateConnectionDataRequestSchemaYaDocs,
     }

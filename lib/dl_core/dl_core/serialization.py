@@ -173,23 +173,23 @@ COMMON_SERIALIZERS = [
     DecimalSerializer,
     UUIDSerializer,
 ]
-assert len(set(cls.typename for cls in COMMON_SERIALIZERS)) == len(COMMON_SERIALIZERS), "uniqueness check"
+assert len(set(cls.typename for cls in COMMON_SERIALIZERS)) == len(COMMON_SERIALIZERS), "uniqueness check"  # type: ignore  # 2024-01-24 # TODO: "type[object]" has no attribute "typename"  [attr-defined]
 
 
 class RedisDatalensDataJSONEncoder(json.JSONEncoder):
-    JSONABLERS_MAP = {cls.typeobj: cls for cls in COMMON_SERIALIZERS}
+    JSONABLERS_MAP = {cls.typeobj: cls for cls in COMMON_SERIALIZERS}  # type: ignore  # 2024-01-24 # TODO: "type[object]" has no attribute "typeobj"  [attr-defined]
 
     def default(self, obj):  # type: ignore  # TODO: fix
         typeobj = type(obj)
         preprocessor = self.JSONABLERS_MAP.get(typeobj)
         if preprocessor is not None:
-            return dict(__dl_type__=preprocessor.typename, value=preprocessor.to_jsonable(obj))
+            return dict(__dl_type__=preprocessor.typename, value=preprocessor.to_jsonable(obj))  # type: ignore  # 2024-01-24 # TODO: "type[object]" has no attribute "typename"  [attr-defined]
 
         return super().default(obj)  # effectively, raises `TypeError`
 
 
 class RedisDatalensDataJSONDecoder(json.JSONDecoder):
-    DEJSONABLERS_MAP = {cls.typename: cls for cls in COMMON_SERIALIZERS}
+    DEJSONABLERS_MAP = {cls.typename: cls for cls in COMMON_SERIALIZERS}  # type: ignore  # 2024-01-24 # TODO: "type[object]" has no attribute "typename"  [attr-defined]
     # Transition
     COMPAT_CONVERTERS_MAP = {
         "date": lambda o: datetime.date(*[int(p) for p in o["value"].split("-")]),
@@ -209,7 +209,7 @@ class RedisDatalensDataJSONDecoder(json.JSONDecoder):
         if dl_type is not None:
             postprocessor = self.DEJSONABLERS_MAP.get(dl_type)
             if postprocessor is not None:
-                return postprocessor.from_jsonable(obj["value"])
+                return postprocessor.from_jsonable(obj["value"])  # type: ignore  # 2024-01-24 # TODO: "type[object]" has no attribute "from_jsonable"  [attr-defined]
 
         # Transition
         compat_dl_type = obj.get("dl_type")

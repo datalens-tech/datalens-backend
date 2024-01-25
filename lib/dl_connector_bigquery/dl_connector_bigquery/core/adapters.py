@@ -85,7 +85,7 @@ class BigQueryDefaultAdapter(BaseClassicAdapter[BigQueryConnTargetDTO]):
         bq_datasets = list(client.list_datasets())
         project_id = self._target_dto.project_id
         db_engine = self.get_db_engine(db_name=project_id)
-        quoter = db_engine.dialect.identifier_preparer.quote
+        quoter = db_engine.dialect.identifier_preparer.quote  # type: ignore  # 2024-01-24 # TODO: "Dialect" has no attribute "identifier_preparer"  [attr-defined]
 
         subqueries = [
             sa.select(

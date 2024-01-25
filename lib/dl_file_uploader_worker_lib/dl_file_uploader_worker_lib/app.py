@@ -41,6 +41,7 @@ from dl_task_processor.state import (
 )
 from dl_task_processor.worker import (
     ArqWorker,
+    WorkerMetricsSenderProtocol,
     WorkerSettings,
 )
 from dl_utils.aio import ContextVarExecutor
@@ -106,6 +107,9 @@ class FileUploaderWorkerFactory(Generic[_TSettings], abc.ABC):
     def _get_tenant_resolver(self) -> TenantResolver:
         raise NotImplementedError()
 
+    def _get_metrics_sender(self) -> Optional[WorkerMetricsSenderProtocol]:
+        return None
+
     def create_worker(self, state: Optional[TaskState] = None) -> ArqWorker:
         if state is None:
             state = TaskState(DummyStateImpl())
@@ -130,5 +134,6 @@ class FileUploaderWorkerFactory(Generic[_TSettings], abc.ABC):
             ),
             worker_settings=WorkerSettings(),
             cron_tasks=cron_tasks,
+            metrics_sender=self._get_metrics_sender(),
         )
         return worker

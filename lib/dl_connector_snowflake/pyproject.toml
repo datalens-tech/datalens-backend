@@ -54,6 +54,7 @@ datalens-core-testing = {path = "../dl_core_testing"}
 [[tool.mypy.overrides]]
 module = "snowflake.*"
 follow_imports = "skip"
+ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "pytest.*"

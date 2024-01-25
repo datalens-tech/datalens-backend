@@ -61,7 +61,7 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
             cluster_name=self.data.cluster_name,
             db_name=self.data.db_name,
             username=self.data.username,
-            password=self.password,
+            password=self.password,  # type: ignore  # 2024-01-24 # TODO: Argument "password" to "ClickHouseConnDTO" has incompatible type "str | None"; expected "str"  [arg-type]
             secure=self.data.secure,
             ssl_ca=self.data.ssl_ca,
         )

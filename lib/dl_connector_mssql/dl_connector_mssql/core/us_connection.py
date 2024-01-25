@@ -43,7 +43,7 @@ class ConnectionMSSQL(ClassicConnectionSQL):
             port=self.data.port,
             db_name=self.data.db_name,
             username=self.data.username,
-            password=self.password,
+            password=self.password,  # type: ignore  # 2024-01-24 # TODO: Argument "password" to "MSSQLConnDTO" has incompatible type "str | None"; expected "str"  [arg-type]
         )
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:

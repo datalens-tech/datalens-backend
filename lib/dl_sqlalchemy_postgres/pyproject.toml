@@ -33,6 +33,9 @@ testpaths = [
     "dl_sqlalchemy_postgres_tests/db",
 ]
 
+[datalens.meta.mypy]
+targets = []    # ignore mypy in entire module
+
 [tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true

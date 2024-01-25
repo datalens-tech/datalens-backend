@@ -78,6 +78,10 @@ disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
 
+[[tool.mypy.overrides]]
+module = "clickhouse_sqlalchemy.*"
+ignore_missing_imports = true
+
 [datalens.i18n.domains]
 dl_connector_clickhouse = [
     {path = "dl_connector_clickhouse/api"},

@@ -89,7 +89,7 @@ class ResultRowSplitter:
             dim_tuple = DataCellTuple(
                 tuple(sorted(chain(dimension_cells + (mname_cell,)), key=lambda cell: cell.title))
             )
-            yield dim_tuple, DataItem(cell=measure_cell, meta=DataItemMeta(tags=frozenset(tags)))
+            yield dim_tuple, DataItem(cell=measure_cell, meta=DataItemMeta(tags=frozenset(tags)))  # type: ignore  # 2024-01-24 # TODO: Incompatible types in "yield" (actual type "tuple[DataCellTuple, DataItem]", expected type "tuple[DataCellTuple, DataCell]")  [misc]
 
 
 @attr.s
@@ -134,7 +134,7 @@ class ResultDataAbstraction:
     ) -> DataCellMapper1D:
         return SimpleDataCellMapper1D(
             cells={
-                dim_tuple: cell
+                dim_tuple: cell  # type: ignore  # 2024-01-24 # TODO: Value expression in dictionary comprehension has incompatible type "DataCell"; expected type "DataItem"  [misc]
                 for dim_tuple, cell in self._iter_split_rows_by_measure(
                     dimension_liids=dimension_liids,
                     measure_liids=measure_liids,

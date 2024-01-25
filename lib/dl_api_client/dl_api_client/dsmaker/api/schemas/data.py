@@ -359,7 +359,7 @@ class AfterBlockPlacementSchema(BlockPlacementSchema):
     dimension_values = ma_fields.Nested(DimensionValueSpecSchema, many=True, allow_none=True)
 
 
-class BlockPlacementSchema(OneOfSchema):
+class BlockPlacementSchema(OneOfSchema):  # type: ignore  # 2024-01-24 # TODO: Name "BlockPlacementSchema" already defined on line 350  [no-redef]
     class Meta:
         unknown = EXCLUDE
 

@@ -89,7 +89,7 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
             result = ((schema_ident.schema_name, name) for name in itertools.chain(table_list, view_list))
         else:
             assert schema_ident.schema_name is None
-            result = db_engine.execute(sa.text(self._LIST_ALL_TABLES_QUERY))
+            result = db_engine.execute(sa.text(self._LIST_ALL_TABLES_QUERY))  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "CursorResult", variable has type "Generator[tuple[str, Any], None, None]")  [assignment]
 
         return [
             TableIdent(

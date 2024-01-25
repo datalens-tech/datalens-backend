@@ -17,7 +17,7 @@ V = TranslationVariant.make
 
 def _all_concat_pg(expr: ClauseElement, sep: str = ", ") -> ClauseElement:
     res = expr
-    res = res.distinct()
+    res = res.distinct()  # type: ignore  # 2024-01-24 # TODO: "ClauseElement" has no attribute "distinct"  [attr-defined]
     # This could be
     # `res = sa.func.string_agg(res, sep)`
     # but older postgres versions refuse to auto-cast into strings that way.

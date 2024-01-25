@@ -70,7 +70,7 @@ class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
 
         # Resolve TTL info and save BIQueryCacheOptions object
         cache_options = self._cache_options_builder.get_cache_options(
-            joint_dsrc_info=joint_dsrc_info,
+            joint_dsrc_info=joint_dsrc_info,  # type: ignore  # 2024-01-24 # TODO: Argument "joint_dsrc_info" to "get_cache_options" of "DatasetOptionsBuilder" has incompatible type "PreparedFromInfo | None"; expected "PreparedFromInfo"  [arg-type]
             data_key=data_key,
         )
 
@@ -108,12 +108,12 @@ class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
             elif sit == CacheSituation.generated:
                 cache_full_hit = False
         finally:
-            self._save_data_proc_cache_info_reporting_record(ctx=ctx, cache_full_hit=cache_full_hit)
-            self._main_processor.db_ex_adapter.post_cache_usage(query_id=query_id, cache_full_hit=cache_full_hit)
+            self._save_data_proc_cache_info_reporting_record(ctx=ctx, cache_full_hit=cache_full_hit)  # type: ignore  # 2024-01-24 # TODO: Argument "cache_full_hit" to "_save_data_proc_cache_info_reporting_record" of "CacheExecAdapter" has incompatible type "bool | None"; expected "bool"  [arg-type]
+            self._main_processor.db_ex_adapter.post_cache_usage(query_id=query_id, cache_full_hit=cache_full_hit)  # type: ignore  # 2024-01-24 # TODO: Argument "cache_full_hit" to "post_cache_usage" of "ProcessorDbExecAdapterBase" has incompatible type "bool | None"; expected "bool"  [arg-type]
 
-        return result_iter
+        return result_iter  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "AsyncChunkedBase[dict[str, dict[Any, Any] | list[Any] | tuple[Any, ...] | date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None] | list[dict[Any, Any] | list[Any] | tuple[Any, ...] | date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None] | tuple[dict[Any, Any] | list[Any] | tuple[Any, ...] | date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None, ...] | date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None] | None", expected "AsyncChunkedBase[Sequence[date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None]]")  [return-value]
 
-    async def create_table(
+    async def create_table(  # type: ignore  # 2024-01-24 # TODO: Return type "Coroutine[Any, Any, None]" of "create_table" incompatible with return type "Coroutine[Any, Any, TableClause]" in supertype "ProcessorDbExecAdapterBase"  [override]
         self,
         *,
         table_name: str,

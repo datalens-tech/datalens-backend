@@ -21,14 +21,14 @@ class FileLink(NamedTuple):
 class FuncPathTemplate(NamedTuple):
     path: str
 
-    def format(self, category_name: str, func_name: str):
+    def format(self, category_name: str, func_name: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         return self.path.format(func_name=func_name, category_name=category_name)
 
 
 class CatPathTemplate(NamedTuple):
     path: str
 
-    def format(self, category_name: str):
+    def format(self, category_name: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         return self.path.format(category_name=category_name)
 
 

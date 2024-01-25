@@ -109,9 +109,9 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
         dataset: Dataset,
         preview: bool = True,
         fail_ok: bool = False,
-        dir_path: str = None,
-        workbook_id: str = None,
-        created_via: str = None,
+        dir_path: str = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "dir_path" (default has type "None", argument has type "str")  [assignment]
+        workbook_id: str = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "workbook_id" (default has type "None", argument has type "str")  [assignment]
+        created_via: str = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "created_via" (default has type "None", argument has type "str")  [assignment]
         lock_timeout: int = 3,
     ) -> HttpDatasetApiResponse:
         dataset.prepare()
@@ -191,7 +191,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
         data = {"new_key": new_key}
 
         response = self._request(f"/api/v1/datasets/{dataset.id}/copy", method="post", data=data)
-        assert response.status_code == 200, f"Dataset copy fail: {response.data}"
+        assert response.status_code == 200, f"Dataset copy fail: {response.data}"  # type: ignore  # 2024-01-24 # TODO: If x = b'abc' then f"***x***" or "***".format(x) produces "b'abc'", not "abc". If this is desired behavior, use f"***x!r***" or "***!r***".format(x). Otherwise, decode the bytes  [str-bytes-safe]
         dataset = self.serial_adapter.load_dataset_from_response_body(dataset=dataset, body=response.json)
         return HttpDatasetApiResponse(
             json=response.json,
@@ -212,7 +212,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
     def apply_updates(  # type: ignore  # TODO: fix
         self,
         dataset: Dataset,
-        updates: list[Union[UpdateAction, dict]] = None,
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         fail_ok: bool = False,
     ) -> HttpDatasetApiResponse:
         if dataset.created_:
@@ -221,7 +221,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
             url = "/api/v1/datasets/validators/dataset"
 
         data = self.dump_dataset_to_request_body(dataset)
-        updates = list(updates or ()) + self.serial_adapter.generate_implicit_updates(dataset)
+        updates = list(updates or ()) + self.serial_adapter.generate_implicit_updates(dataset)  # type: ignore  # 2024-01-24 # TODO: Unsupported operand types for + ("list[UpdateAction | dict[Any, Any]]" and "list[UpdateAction]")  [operator]
         data["updates"] = self.serial_adapter.dump_updates(updates)
         response = self._request(url, method="post", data=data)
 
@@ -232,7 +232,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
             try:
                 assert response.status_code == HTTPStatus.OK, response.json
             except AssertionError:
-                print("\n".join(HttpApiResponse.extract_response_errors(response)))
+                print("\n".join(HttpApiResponse.extract_response_errors(response)))  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "extract_response_errors" of "HttpApiResponse" has incompatible type "ClientResponse"; expected "dict[str, Any]"  [arg-type]
                 raise
 
         if "dataset" in response.json:
