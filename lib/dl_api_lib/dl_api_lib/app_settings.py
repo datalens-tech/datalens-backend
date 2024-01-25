@@ -146,7 +146,7 @@ class AppSettings:
     )
     CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
 
-    PIVOT_ENGINE_TYPE: DataPivotEngineType = s_attrib(  # type: ignore
+    PIVOT_ENGINE_TYPE: Optional[DataPivotEngineType] = s_attrib(  # type: ignore
         "PIVOT_ENGINE_TYPE",
         env_var_converter=lambda s: DataPivotEngineType[s.lower()],
         missing=PIVOT_ENGINE_TYPE_PANDAS,  # TODO: Switch to another default
