@@ -10,7 +10,6 @@ import attr
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from dl_api_lib.pivot.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.enums import RedisMode
 from dl_configs.environments import is_setting_applicable
@@ -32,6 +31,7 @@ from dl_constants.enums import (
 )
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_formula.parser.factory import ParserType
+from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 
 
 @attr.s(frozen=True)

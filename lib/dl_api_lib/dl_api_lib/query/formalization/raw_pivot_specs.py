@@ -8,11 +8,11 @@ from typing import (
 
 import attr
 
-from dl_api_lib.pivot.primitives import PivotMeasureSorting
 from dl_constants.enums import (
     OrderDirection,
     PivotRole,
 )
+from dl_pivot.primitives import PivotMeasureSorting
 
 
 _PIVOT_ROLE_SPEC_TV = TypeVar("_PIVOT_ROLE_SPEC_TV", bound="RawPivotRoleSpec")

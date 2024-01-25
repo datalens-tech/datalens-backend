@@ -34,8 +34,8 @@ from dl_configs.rqe import RQEConfig
 from dl_constants.enums import ConnectionType
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_core_testing.database import DbTable
+from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 from dl_testing.utils import get_root_certificates_path
-from dl_api_lib.pivot.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 
 
 class DataApiTestParams(NamedTuple):

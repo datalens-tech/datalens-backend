@@ -1,24 +1,24 @@
 import pytest
 
-from dl_api_lib.pivot.pandas.transformer import PdPivotTransformer
-from dl_api_lib.pivot.pivot_legend import (
-    PivotDimensionRoleSpec,
-    PivotLegend,
-    PivotLegendItem,
-    PivotMeasureRoleSpec,
-)
-from dl_api_lib.pivot.primitives import DataCell as DC
-from dl_api_lib.pivot.primitives import DataCellVector as DV
-from dl_api_lib.pivot.primitives import DataRow
-from dl_api_lib.pivot.primitives import MeasureNameValue as MNV
-from dl_api_lib.pivot.primitives import PivotHeader
-from dl_api_lib.pivot.table import PivotTable
 from dl_constants.enums import (
     FieldType,
     PivotItemType,
     PivotRole,
     UserDataType,
 )
+from dl_pivot.pivot_legend import (
+    PivotDimensionRoleSpec,
+    PivotLegend,
+    PivotLegendItem,
+    PivotMeasureRoleSpec,
+)
+from dl_pivot.primitives import DataCell as DC
+from dl_pivot.primitives import DataCellVector as DV
+from dl_pivot.primitives import DataRow
+from dl_pivot.primitives import MeasureNameValue as MNV
+from dl_pivot.primitives import PivotHeader
+from dl_pivot.table import PivotTable
+from dl_pivot_pandas.pandas.transformer import PdPivotTransformer
 import dl_query_processing.exc
 from dl_query_processing.legend.field_legend import (
     FieldObjSpec,

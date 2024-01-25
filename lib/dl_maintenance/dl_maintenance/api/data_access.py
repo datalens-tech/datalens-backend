@@ -35,7 +35,6 @@ from dl_api_lib.api_common.data_serialization import (
     PivotDataRequestResponseSerializer,
 )
 from dl_api_lib.dataset.view import DatasetView
-from dl_api_lib.pivot.pandas.transformer import PdPivotTransformer
 from dl_api_lib.query.formalization.block_formalizer import BlockFormalizer
 from dl_api_lib.query.formalization.legend_formalizer import ResultLegendFormalizer
 from dl_api_lib.query.formalization.pivot_formalizer import PivotFormalizer
@@ -54,6 +53,7 @@ from dl_api_lib.request_model.normalization.drm_normalizer_pivot import PivotSpe
 from dl_constants.enums import PivotRole
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
+from dl_pivot.native.transformer import NativePivotTransformer
 from dl_query_processing.legend.block_legend import BlockSpec
 from dl_query_processing.merging.merger import DataStreamMerger
 from dl_query_processing.merging.primitives import MergedQueryDataStream
@@ -220,7 +220,7 @@ async def get_pivot_data(
     )
     pivot_formalizer = PivotFormalizer(dataset=dataset, legend=merged_stream.legend)
     pivot_legend = pivot_formalizer.make_pivot_legend(raw_pivot_spec=raw_pivot_spec)
-    pivot_transformer = PdPivotTransformer(legend=merged_stream.legend, pivot_legend=pivot_legend)
+    pivot_transformer = NativePivotTransformer(legend=merged_stream.legend, pivot_legend=pivot_legend)
     pivot_table = pivot_transformer.pivot(rows=merged_stream.rows)
     response_json = PivotDataRequestResponseSerializer.make_pivot_response(
         merged_stream=merged_stream,

@@ -9,7 +9,6 @@ from typing import (
 import attr
 
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from dl_api_lib.pivot.base.transformer_factory import PivotTransformerFactory
 from dl_api_lib.service_registry.dataset_validator_factory import DefaultDatasetValidatorFactory
 from dl_api_lib.service_registry.field_id_generator_factory import FieldIdGeneratorFactory
 from dl_api_lib.service_registry.service_registry import DefaultApiServiceRegistry
@@ -24,6 +23,7 @@ from dl_i18n.localizer_base import (
     Localizer,
     LocalizerFactory,
 )
+from dl_pivot.base.transformer_factory import PivotTransformerFactory
 
 
 if TYPE_CHECKING:

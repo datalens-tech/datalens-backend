@@ -32,9 +32,9 @@ from dl_utils.utils import enum_not_none
 
 
 if TYPE_CHECKING:
-    from dl_api_lib.pivot.primitives import DataCellVector
-    from dl_api_lib.pivot.table import PivotTable
     from dl_constants.types import TJSONLike
+    from dl_pivot.primitives import DataCellVector
+    from dl_pivot.table import PivotTable
 
 
 LOGGER = logging.getLogger(__name__)

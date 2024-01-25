@@ -1,19 +1,3 @@
-from dl_api_lib.pivot.pandas.transformer import PdPivotTransformer
-from dl_api_lib.pivot.pivot_legend import (
-    PivotDimensionRoleSpec,
-    PivotLegend,
-    PivotLegendItem,
-    PivotMeasureRoleSpec,
-)
-from dl_api_lib.pivot.primitives import (
-    PivotHeaderRoleSpec,
-    PivotHeaderValue,
-    PivotMeasureSorting,
-    PivotMeasureSortingSettings,
-)
-from dl_api_lib.pivot.primitives import DataCell as DC
-from dl_api_lib.pivot.primitives import DataCellVector as DV
-from dl_api_lib.pivot.primitives import MeasureNameValue as MNV
 from dl_constants.enums import (
     FieldType,
     OrderDirection,
@@ -22,6 +6,22 @@ from dl_constants.enums import (
     PivotRole,
     UserDataType,
 )
+from dl_pivot.pivot_legend import (
+    PivotDimensionRoleSpec,
+    PivotLegend,
+    PivotLegendItem,
+    PivotMeasureRoleSpec,
+)
+from dl_pivot.primitives import (
+    PivotHeaderRoleSpec,
+    PivotHeaderValue,
+    PivotMeasureSorting,
+    PivotMeasureSortingSettings,
+)
+from dl_pivot.primitives import DataCell as DC
+from dl_pivot.primitives import DataCellVector as DV
+from dl_pivot.primitives import MeasureNameValue as MNV
+from dl_pivot_pandas.pandas.transformer import PdPivotTransformer
 from dl_query_processing.legend.field_legend import (
     FieldObjSpec,
     Legend,

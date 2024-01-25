@@ -1,26 +1,26 @@
-from dl_api_lib.pivot.hashable_packing import JsonHashableValuePacker
-from dl_api_lib.pivot.hashable_packing import JsonWrapper as JW
-from dl_api_lib.pivot.pivot_legend import (
-    PivotAnnotationRoleSpec,
-    PivotDimensionRoleSpec,
-    PivotLegend,
-    PivotLegendItem,
-    PivotMeasureRoleSpec,
-)
-from dl_api_lib.pivot.primitives import DataCell as DC
-from dl_api_lib.pivot.primitives import DataCellVector as DV
-from dl_api_lib.pivot.primitives import MeasureNameValue as MNV
-from dl_api_lib.pivot.stream_modifiers import (
-    DataCellConverter,
-    MeasureDataTransposer,
-    TransposedDataRow,
-)
 from dl_constants.enums import (
     FieldRole,
     FieldType,
     PivotItemType,
     PivotRole,
     UserDataType,
+)
+from dl_pivot.hashable_packing import JsonHashableValuePacker
+from dl_pivot.hashable_packing import JsonWrapper as JW
+from dl_pivot.pivot_legend import (
+    PivotAnnotationRoleSpec,
+    PivotDimensionRoleSpec,
+    PivotLegend,
+    PivotLegendItem,
+    PivotMeasureRoleSpec,
+)
+from dl_pivot.primitives import DataCell as DC
+from dl_pivot.primitives import DataCellVector as DV
+from dl_pivot.primitives import MeasureNameValue as MNV
+from dl_pivot.stream_modifiers import (
+    DataCellConverter,
+    MeasureDataTransposer,
+    TransposedDataRow,
 )
 from dl_query_processing.legend.field_legend import (
     FieldObjSpec,
