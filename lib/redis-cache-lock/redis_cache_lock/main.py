@@ -154,7 +154,7 @@ class RedisCacheLock:
                 self._log("Exception in background task %r: %r", name, err)
                 return None
 
-        task = asyncio.create_task(background_wrapper(), name=name)
+        task = asyncio.shield(asyncio.create_task(background_wrapper(), name=name))
         callback = self.bg_task_callback
         if callback is not None:
             callback(task)  # pylint: disable=not-callable
