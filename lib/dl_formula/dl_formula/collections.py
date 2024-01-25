@@ -30,7 +30,7 @@ class NodeSet:
         for node in nodes:
             self.add(node)
 
-    def __eq__(self, other):
+    def __eq__(self, other):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         if not isinstance(other, self.__class__):
             return False
         return self._data_set == other._data_set

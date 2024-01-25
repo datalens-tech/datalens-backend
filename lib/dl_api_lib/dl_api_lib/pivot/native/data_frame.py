@@ -60,7 +60,7 @@ class NativePivotDataFrame(PivotDataFrame):
 
     def iter_values_along_axis(
         self, axis: SortAxis, dim_values: tuple[DataCellVector, ...]
-    ) -> Generator[DataCellVector]:
+    ) -> Generator[DataCellVector]:  # type: ignore  # 2024-01-24 # TODO: "Generator" expects 3 type arguments, but 1 given  [type-arg]
         if axis == SortAxis.columns:
             # iterate over columns with fixed row
             row_key = FlatPivotDataKey(values=dim_values)

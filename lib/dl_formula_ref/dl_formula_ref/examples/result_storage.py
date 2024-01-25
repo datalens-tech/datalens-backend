@@ -28,7 +28,7 @@ class StorageKey:
 
 
 class CustomJSONEncoder(json.JSONEncoder):
-    def default(self, obj) -> Any:
+    def default(self, obj) -> Any:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         if isinstance(obj, datetime.datetime):
             return {"__type__": "datetime", "__value__": obj.isoformat()}
         if isinstance(obj, datetime.date):
@@ -39,7 +39,7 @@ class CustomJSONEncoder(json.JSONEncoder):
 
 
 class CustomJSONDecoder(json.JSONDecoder):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         super().__init__(object_hook=self.object_hook, *args, **kwargs)
 
     def object_hook(self, obj_dict: Dict[str, Any]) -> Any:

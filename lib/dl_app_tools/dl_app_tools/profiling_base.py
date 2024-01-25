@@ -168,7 +168,7 @@ class GenericProfiler:
                 exc_info = (exc_type, exc_val, exc_tb)
                 assert self._ot_span_context is not None
                 span = self._ot_span_context.span
-                span.set_tag(opentracing.span.tags.ERROR, True)
+                span.set_tag(opentracing.span.tags.ERROR, True)  # type: ignore  # 2024-01-24 # TODO: Module has no attribute "tags"  [attr-defined]
                 span.set_tag("bi.exc_type", get_type_full_name(exc_type))
 
             log_data = self._save_profiling_log(exc_type, exc_info=exc_info)
@@ -243,15 +243,15 @@ _GP_FUNC_T = Callable[..., _GP_FUNC_RET_TV]
 
 def generic_profiler(
     stage: str,
-    extra_data: dict = None,
-    logger: logging.Logger = None,
+    extra_data: dict = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "extra_data" (default has type "None", argument has type "dict[Any, Any]")  [assignment]
+    logger: logging.Logger = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "logger" (default has type "None", argument has type "Logger")  [assignment]
 ) -> Callable[[_GP_FUNC_T], _GP_FUNC_T]:
     def generic_profiler_wrap(func: _GP_FUNC_T) -> _GP_FUNC_T:
         if inspect.iscoroutinefunction(func):
             raise ValueError("This decorator shouldn't be used on coroutines; use `generic_profiler_async` instead")
 
         @functools.wraps(func)
-        def generic_profiler_wrapper(*args: Any, **kwargs: Any) -> _GP_FUNC_RET_TV:
+        def generic_profiler_wrapper(*args: Any, **kwargs: Any) -> _GP_FUNC_RET_TV:  # type: ignore  # 2024-01-24 # TODO: A function returning TypeVar should receive at least one argument containing the same TypeVar  [type-var]
             with GenericProfiler(stage, extra_data=extra_data, logger=logger):
                 return func(*args, **kwargs)
 
@@ -261,11 +261,11 @@ def generic_profiler(
 
 
 _GPA_CORO_RET_TV = TypeVar("_GPA_CORO_RET_TV")
-_GPA_CORO_TV = TypeVar("_GPA_CORO_TV", bound=Callable[..., Awaitable[_GPA_CORO_RET_TV]])
+_GPA_CORO_TV = TypeVar("_GPA_CORO_TV", bound=Callable[..., Awaitable[_GPA_CORO_RET_TV]])  # type: ignore  # 2024-01-24 # TODO: Type variable "dl_app_tools.profiling_base._GPA_CORO_RET_TV" is unbound  [valid-type]
 
 
 def generic_profiler_async(
-    stage: str, extra_data: dict = None, logger: logging.Logger = None
+    stage: str, extra_data: dict = None, logger: logging.Logger = None  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "extra_data" (default has type "None", argument has type "dict[Any, Any]")  [assignment]
 ) -> Callable[[_GPA_CORO_TV], _GPA_CORO_TV]:
     def generic_profiler_wrap_async(coro: _GPA_CORO_TV) -> _GPA_CORO_TV:
         if not inspect.iscoroutinefunction(coro):

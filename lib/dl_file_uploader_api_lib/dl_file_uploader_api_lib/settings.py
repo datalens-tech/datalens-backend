@@ -56,4 +56,4 @@ class FileUploaderAPISettings(FileUploaderBaseSettings):
 
     ALLOW_XLSX: bool = s_attrib("ALLOW_XLSX", missing=False)  # type: ignore
 
-    CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())
+    CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]

@@ -91,7 +91,7 @@ class PromQLAdapter(BaseClassicAdapter["PromQLConnTargetDTO"]):
         engine = self.get_db_engine(db_name="")
         connection = engine.raw_connection()
         try:
-            connection.cli.test_connection()
+            connection.cli.test_connection()  # type: ignore  # 2024-01-24 # TODO: "DBAPIConnection" has no attribute "cli"  [attr-defined]
         finally:
             connection.close()
 

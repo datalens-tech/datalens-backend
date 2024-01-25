@@ -69,7 +69,7 @@ class OneOfSchemaWithDumpLoadHooks(OneOfSchema):  # TODO: Move to bi_model_tools
         if self._has_processors(PRE_LOAD):
             try:
                 processed_data = self._invoke_load_processors(
-                    PRE_LOAD, data, many=many, original_data=data, partial=partial
+                    PRE_LOAD, data, many=many, original_data=data, partial=partial  # type: ignore  # 2024-01-24 # TODO: Argument "partial" to "_invoke_load_processors" of "Schema" has incompatible type "bool | Sequence[str] | AbstractSet[str]"; expected "bool | Sequence[str] | set[str]"  [arg-type]
                 )
             except ValidationError as err:
                 errors = err.normalized_messages()
@@ -90,7 +90,7 @@ class OneOfSchemaWithDumpLoadHooks(OneOfSchema):  # TODO: Move to bi_model_tools
                         result,
                         many=many,
                         original_data=data,
-                        partial=partial,
+                        partial=partial,  # type: ignore  # 2024-01-24 # TODO: Argument "partial" to "_invoke_load_processors" of "Schema" has incompatible type "bool | Sequence[str] | AbstractSet[str]"; expected "bool | Sequence[str] | set[str]"  [arg-type]
                     )
                 except ValidationError as err:
                     errors = err.normalized_messages()

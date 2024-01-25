@@ -239,7 +239,7 @@ DEFINITIONS_ARRAY = [
             V(
                 D.POSTGRESQL,
                 # using Grouping as workaround to wrap expression before getitem with ()
-                lambda array, index: Grouping(sa.type_coerce(array, sa_postgresql.ARRAY(TypeEngine)))[index],
+                lambda array, index: Grouping(sa.type_coerce(array, sa_postgresql.ARRAY(TypeEngine)))[index],  # type: ignore  # 2024-01-24 # TODO: Argument 2 has incompatible type "Callable[[Any, Any], ColumnOperators[Any]]"; expected "Callable[..., ClauseElement | FormulaItem]"  [arg-type]
             ),
         ]
     ),
@@ -248,7 +248,7 @@ DEFINITIONS_ARRAY = [
             V(
                 D.POSTGRESQL,
                 # using Grouping as workaround to wrap expression before getitem with ()
-                lambda array, index: Grouping(sa.type_coerce(array, sa_postgresql.ARRAY(TypeEngine)))[index],
+                lambda array, index: Grouping(sa.type_coerce(array, sa_postgresql.ARRAY(TypeEngine)))[index],  # type: ignore  # 2024-01-24 # TODO: Argument 2 has incompatible type "Callable[[Any, Any], ColumnOperators[Any]]"; expected "Callable[..., ClauseElement | FormulaItem]"  [arg-type]
             ),
         ]
     ),
@@ -257,7 +257,7 @@ DEFINITIONS_ARRAY = [
             V(
                 D.POSTGRESQL,
                 # using Grouping as workaround to wrap expression before getitem with ()
-                lambda array, index: Grouping(sa.type_coerce(array, sa_postgresql.ARRAY(TypeEngine)))[index],
+                lambda array, index: Grouping(sa.type_coerce(array, sa_postgresql.ARRAY(TypeEngine)))[index],  # type: ignore  # 2024-01-24 # TODO: Argument 2 has incompatible type "Callable[[Any, Any], ColumnOperators[Any]]"; expected "Callable[..., ClauseElement | FormulaItem]"  [arg-type]
             ),
         ]
     ),
@@ -283,7 +283,7 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.POSTGRESQL,
-                lambda array, offset, length: Grouping(sa.type_coerce(array, sa_postgresql.ARRAY(TypeEngine)))[
+                lambda array, offset, length: Grouping(sa.type_coerce(array, sa_postgresql.ARRAY(TypeEngine)))[  # type: ignore  # 2024-01-24 # TODO: Argument 2 has incompatible type "Callable[[Any, Any, Any], ColumnOperators[Any]]"; expected "Callable[..., ClauseElement | FormulaItem]"  [arg-type]
                     offset : offset + length - 1
                 ],
             ),
@@ -294,7 +294,7 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.POSTGRESQL,
-                lambda x, y, _env: Grouping(sa.type_coerce(x, sa_postgresql.ARRAY(TypeEngine)))[1 : len(un_literal(y))]
+                lambda x, y, _env: Grouping(sa.type_coerce(x, sa_postgresql.ARRAY(TypeEngine)))[1 : len(un_literal(y))]  # type: ignore  # 2024-01-24 # TODO: Invalid index type "slice" for "Grouping"; expected type "int"  [index]
                 == y,
             ),
         ]
@@ -303,7 +303,7 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.POSTGRESQL,
-                lambda x, y, _env: Grouping(sa.type_coerce(x, sa_postgresql.ARRAY(TypeEngine)))[
+                lambda x, y, _env: Grouping(sa.type_coerce(x, sa_postgresql.ARRAY(TypeEngine)))[  # type: ignore  # 2024-01-24 # TODO: Invalid index type "slice" for "Grouping"; expected type "int"  [index]
                     1 : sa.func.array_length(y, 1)
                 ]
                 == y,

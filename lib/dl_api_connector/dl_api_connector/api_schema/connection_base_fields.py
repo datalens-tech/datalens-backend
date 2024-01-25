@@ -12,7 +12,7 @@ def alias_string_field(
     required: bool = True,
     bi_extra: FieldExtra = FieldExtra(editable=True),
 ) -> ma_fields.String:
-    def validate(value: str):
+    def validate(value: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         if re.match("^\*", value) is None:
             raise ma_validate.ValidationError("Clique alias name must begin with an asterisk (*)")
 

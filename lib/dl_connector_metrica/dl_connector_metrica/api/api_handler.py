@@ -36,7 +36,7 @@ class MetricaConnectionAvailableCounters(BIResource):
     def get(self, connection_id: str) -> dict:
         conn = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
         need_permission_on_entry(conn, USPermissionKind.edit)
-        if conn.conn_type not in (CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API):
+        if conn.conn_type not in (CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API):  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "conn_type"  [attr-defined]
             raise exc.UnsupportedForEntityType("Unsupported connection type")
         assert isinstance(conn, MetrikaBaseMixin)
         try:

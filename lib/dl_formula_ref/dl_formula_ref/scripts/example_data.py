@@ -37,7 +37,7 @@ def get_parser() -> argparse.ArgumentParser:
 
 class ExampleDataTool:
     @classmethod
-    def generate_example_data(
+    def generate_example_data(  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         cls, config_version: ConfigVersion, output_path: str, db_config_path: str, default_dialect: DialectCombo
     ):
         """
@@ -61,7 +61,7 @@ class ExampleDataTool:
         print("Generated data successfully")
 
     @classmethod
-    def run(cls, args):
+    def run(cls, args):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         tool = cls()
 
         match args.command:
@@ -76,7 +76,7 @@ class ExampleDataTool:
                 raise RuntimeError(f"Invalid command {args.command}")
 
 
-def main():
+def main():  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
     load_formula_ref()
     load_db_testing_lib()
     parser = get_parser()

@@ -37,7 +37,7 @@ class YDBTableDataSource(YDBDataSourceMixin, StandardSQLDataSource):
     @require_table_name
     def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         # cross-db joins are not supported
-        assert not self.db_name or self.db_name == self.connection.db_name
+        assert not self.db_name or self.db_name == self.connection.db_name  # type: ignore  # 2024-01-24 # TODO: "ConnectionBase" has no attribute "db_name"; maybe "dir_name"?  [attr-defined]
 
         # Unlike `super()`, not adding the database name here.
         q = self.quote

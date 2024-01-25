@@ -114,7 +114,7 @@ class StyledDialect(NamedTuple):
     multiline: str | Translatable
     split_version: str | Translatable
 
-    def for_style(self, item):
+    def for_style(self, item):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         if isinstance(item, DialectStyle):
             item = item.name
         if isinstance(item, str):

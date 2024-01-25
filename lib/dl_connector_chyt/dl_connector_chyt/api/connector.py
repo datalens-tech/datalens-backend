@@ -66,7 +66,7 @@ class CHYTSubselectApiSourceDefinition(ApiSourceDefinition):
 
 
 class CHYTApiBackendDefinition(ClickHouseApiBackendDefinition):
-    core_backend_definition = CHYTCoreBackendDefinition
+    core_backend_definition = CHYTCoreBackendDefinition  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "type[CHYTCoreBackendDefinition]", base class "ClickHouseApiBackendDefinition" defined the type as "type[ClickHouseCoreBackendDefinition]")  [assignment]
 
 
 class CHYTApiConnector(ApiConnector):

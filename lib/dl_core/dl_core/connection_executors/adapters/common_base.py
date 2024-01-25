@@ -42,7 +42,7 @@ def get_dialect_string(conn_type: ConnectionType) -> str:
 def get_dialect_for_conn_type(conn_type: ConnectionType) -> DefaultDialect:
     engine = sa.create_engine(f"{get_dialect_string(conn_type)}://", strategy="mock", executor=lambda *_, **__: None)
     engine = engine.execution_options(compiled_cache=None)
-    return engine.dialect
+    return engine.dialect  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "Dialect", expected "DefaultDialect")  [return-value]
 
 
 _DBA_TV = TypeVar("_DBA_TV", bound="CommonBaseDirectAdapter")

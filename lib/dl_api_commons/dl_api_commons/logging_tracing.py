@@ -38,4 +38,4 @@ class OpenTracingLoggingContextController(RequestLoggingContextController):
             else:
                 LOGGER.warning("Got not-string value for root span operation name : %s", value)
         elif key == "is_error":
-            self.root_span.set_tag(opentracing.span.tags.ERROR, bool(value))
+            self.root_span.set_tag(opentracing.span.tags.ERROR, bool(value))  # type: ignore  # 2024-01-24 # TODO: Module has no attribute "tags"  [attr-defined]

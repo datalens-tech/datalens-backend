@@ -184,7 +184,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
     def set_up_sentry(self) -> None:
         configure_sentry_for_aiohttp(
             SentryConfig(
-                dsn=self._settings.SENTRY_DSN,
+                dsn=self._settings.SENTRY_DSN,  # type: ignore  # 2024-01-24 # TODO: Argument "dsn" to "SentryConfig" has incompatible type "str | None"; expected "str"  [arg-type]
                 release=self.get_app_version(),
             )
         )

@@ -47,7 +47,7 @@ class ObligatoryFilterUpdateSchema(DefaultSchema[ObligatoryFilter]):
 class BaseApiV1SerializationAdapter:
     # TODO: switch to marshmallow
 
-    def dump_item(self, item: ApiProxyObject, action: Action = None) -> dict:
+    def dump_item(self, item: ApiProxyObject, action: Action = None) -> dict:  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "action" (default has type "None", argument has type "Action")  [assignment]
         """
         Dump item data for API request. Return dict
 
@@ -69,7 +69,7 @@ class BaseApiV1SerializationAdapter:
             return dict(
                 id=item.id,
                 connection_id=item.connection_id,
-                source_type=item.source_type.name,
+                source_type=item.source_type.name,  # type: ignore  # 2024-01-24 # TODO: Item "None" of "DataSourceType | None" has no attribute "name"  [union-attr]
                 title=item.title,
                 raw_schema=[
                     dict(
@@ -170,7 +170,7 @@ class BaseApiV1SerializationAdapter:
             return dict(guid=item.id)
 
     @_dump_item.register(ObligatoryFilter)
-    def dump_obligatory_filter(self, item: ObligatoryFilter, action: Action = None) -> dict:
+    def dump_obligatory_filter(self, item: ObligatoryFilter, action: Action = None) -> dict:  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "action" (default has type "None", argument has type "Action")  [assignment]
         if action == Action.delete:
             return dict(id=item.id)
         if action == Action.add:
@@ -223,7 +223,7 @@ class BaseApiV1SerializationAdapter:
             ObligatoryFilter: "obligatory_filter",
         }[type(item)]
 
-    def dump_updates(self, updates: List[Union[UpdateAction, dict]] = None) -> List[dict]:
+    def dump_updates(self, updates: List[Union[UpdateAction, dict]] = None) -> List[dict]:  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         result = []
         for update in updates or ():
             if isinstance(update, UpdateAction):

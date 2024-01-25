@@ -74,8 +74,8 @@ class DataApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
         self,
         *,
         dataset: Dataset,
-        updates: List[Union[UpdateAction, dict]] = None,
-        limit: int = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
     ) -> Dict[str, Any]:
         data = self.dump_dataset(dataset)
         updates = list(updates or ()) + self.generate_implicit_updates(dataset)  # type: ignore  # TODO: fix
@@ -99,7 +99,7 @@ class DataApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
         where: Optional[List[WhereClause]] = None,
         disable_group_by: Optional[bool] = None,
         with_totals: Optional[bool] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
     ) -> Dict[str, Any]:
         if dataset is not None:
             data = self.dump_dataset(dataset)
@@ -143,7 +143,7 @@ class DataApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
         dataset: Optional[Dataset] = None,
         field: ResultField,
         filters: Optional[List[WhereClause]] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
     ) -> Dict[str, Any]:
         if dataset is not None:
             data = self.dump_dataset(dataset)
@@ -169,7 +169,7 @@ class DataApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
         limit: Optional[int] = None,
         field: ResultField,
         filters: Optional[List[WhereClause]] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         ignore_nonexistent_filters: Optional[bool] = None,
     ) -> Dict[str, Any]:
         if dataset is not None:
@@ -268,8 +268,8 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
         self,
         *,
         dataset: Dataset,
-        updates: List[Union[UpdateAction, dict]] = None,
-        limit: int = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         fail_ok: bool = False,
     ) -> HttpDataApiResponse:
         data = self.serial_adapter.make_req_data_get_preview(
@@ -291,15 +291,15 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
             except KeyError:
                 raise ValueError(response.data)
 
-        return self.make_response_obj(client_response=response, data=resp_data)
+        return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
     def get_result(
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
-        limit: int = None,
-        offset: int = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
+        offset: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "offset" (default has type "None", argument has type "int")  [assignment]
         fields: Optional[List[ResultField]] = None,
         group_by: Optional[List[ResultField]] = None,
         order_by: Optional[List[Union[ResultField, OrderedField]]] = None,
@@ -322,7 +322,7 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
             with_totals=with_totals,
             updates=updates,
         )
-        response = self.get_response_for_dataset_result(dataset_id=dataset.id, raw_body=data)
+        response = self.get_response_for_dataset_result(dataset_id=dataset.id, raw_body=data)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Dataset | None" has no attribute "id"  [union-attr]
         resp_data: Optional[dict] = None
         if not fail_ok:
             assert response.status_code == HTTPStatus.OK, response.json
@@ -332,14 +332,14 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
             except KeyError:
                 raise ValueError(response.data)
 
-        return self.make_response_obj(client_response=response, data=resp_data)
+        return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
     def get_value_range(
         self,
         *,
         dataset: Optional[Dataset],
         field: ResultField,
-        updates: List[Union[UpdateAction, dict]] = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         where: Optional[List[WhereClause]] = None,  # TODO: Rename -> filters
         filters: Optional[List[WhereClause]] = None,
         fail_ok: bool = False,
@@ -351,7 +351,7 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
             filters=filters,
             updates=updates,
         )
-        response = self.get_response_for_dataset_value_range(dataset_id=dataset.id, raw_body=data)
+        response = self.get_response_for_dataset_value_range(dataset_id=dataset.id, raw_body=data)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Dataset | None" has no attribute "id"  [union-attr]
         resp_data: Optional[dict] = None
         if not fail_ok:
             assert response.status_code == HTTPStatus.OK, response.json
@@ -372,8 +372,8 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
-        limit: int = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         field: ResultField,
         where: Optional[List[WhereClause]] = None,  # TODO: Rename -> filters
         filters: Optional[List[WhereClause]] = None,
@@ -389,7 +389,7 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
             updates=updates,
             ignore_nonexistent_filters=ignore_nonexistent_filters,
         )
-        response = self.get_response_for_dataset_value_distinct(dataset_id=dataset.id, raw_body=data)
+        response = self.get_response_for_dataset_value_distinct(dataset_id=dataset.id, raw_body=data)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Dataset | None" has no attribute "id"  [union-attr]
         resp_data: Optional[dict] = None
         if not fail_ok:
             assert response.status_code == HTTPStatus.OK, response.json
@@ -399,7 +399,7 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
             except KeyError:
                 raise ValueError(response.data)
 
-        return self.make_response_obj(client_response=response, data=resp_data)
+        return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
     def get_fields(self, dataset_id: str, fail_ok: bool = False) -> HttpDataApiResponse:
         url = f"/api/data/{self.api_v}/datasets/{dataset_id}/fields"
@@ -408,7 +408,7 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
         if not fail_ok:
             assert response.status_code == HTTPStatus.OK, response.json
 
-        return self.make_response_obj(client_response=response, data=resp_data)
+        return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
 
 @attr.s
@@ -427,7 +427,7 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
         autofill_legend: bool = False,
         ignore_nonexistent_filters: Optional[bool] = None,
         row_count_hard_limit: Optional[int] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
     ) -> Dict[str, Any]:
         if dataset is not None:
             data = self.dump_dataset(dataset)
@@ -515,11 +515,11 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
         self,
         *,
         dataset: Dataset,
-        updates: List[Union[UpdateAction, dict]] = None,
-        limit: int = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
     ) -> Dict[str, Any]:
         data = self.dump_dataset(dataset)
-        updates = list(updates or ()) + self.generate_implicit_updates(dataset)
+        updates = list(updates or ()) + self.generate_implicit_updates(dataset)  # type: ignore  # 2024-01-24 # TODO: Unsupported operand types for + ("list[UpdateAction | dict[Any, Any]]" and "list[UpdateAction]")  [operator]
         data["updates"] = self.dump_updates(updates)
 
         if limit is not None:
@@ -543,7 +543,7 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
         result_with_totals: Optional[bool] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
         row_count_hard_limit: Optional[int] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
     ) -> Dict[str, Any]:
         data = self.make_req_data_common(
             dataset=dataset,
@@ -577,7 +577,7 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
         parameters: Optional[List[Union[ResultField, ParameterFieldValue]]] = None,
         blocks: Optional[List[BlockSpec]] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
     ) -> Dict[str, Any]:
         fields = [
             field.as_req_legend_item(role=FieldRole.range, range_type=RangeType.min),
@@ -585,7 +585,7 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
         ]
         data = self.make_req_data_common(
             dataset=dataset,
-            fields=fields,
+            fields=fields,  # type: ignore  # 2024-01-24 # TODO: Argument "fields" to "make_req_data_common" of "DataApiV2SerializationAdapter" has incompatible type "list[RequestLegendItem]"; expected "list[ResultField | RequestLegendItem] | None"  [arg-type]
             filters=filters,
             parameters=parameters,
             blocks=blocks,
@@ -607,7 +607,7 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
         parameters: Optional[List[Union[ResultField, ParameterFieldValue]]] = None,
         blocks: Optional[List[BlockSpec]] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
     ) -> Dict[str, Any]:
         field_li: RequestLegendItem
         if isinstance(field, RequestLegendItem):
@@ -620,7 +620,7 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
             dataset=dataset,
             limit=limit,
             offset=offset,
-            fields=fields,
+            fields=fields,  # type: ignore  # 2024-01-24 # TODO: Argument "fields" to "make_req_data_common" of "DataApiV2SerializationAdapter" has incompatible type "list[RequestLegendItem]"; expected "list[ResultField | RequestLegendItem] | None"  [arg-type]
             order_by=order_by,
             filters=filters,
             parameters=parameters,
@@ -647,14 +647,14 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
         pivot_structure: Optional[list[RequestPivotItem]] = None,
         pivot_totals: Optional[PivotTotals] = None,
         with_totals: Optional[bool] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
     ) -> Dict[str, Any]:
         data = self.make_req_data_common(
             dataset=dataset,
             limit=limit,
             offset=offset,
             fields=fields,
-            order_by=order_by,
+            order_by=order_by,  # type: ignore  # 2024-01-24 # TODO: Argument "order_by" to "make_req_data_common" of "DataApiV2SerializationAdapter" has incompatible type "list[OrderedField] | None"; expected "list[ResultField | OrderedField] | None"  [arg-type]
             filters=filters,
             blocks=blocks,
             autofill_legend=autofill_legend,
@@ -735,8 +735,8 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
         self,
         *,
         dataset: Dataset,
-        updates: List[Union[UpdateAction, dict]] = None,
-        limit: int = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         fail_ok: bool = False,
     ) -> HttpDataApiResponse:
         data = self.serial_adapter.make_req_data_get_preview(dataset=dataset, limit=limit, updates=updates)
@@ -754,13 +754,13 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             except KeyError:
                 raise ValueError(response.data)
 
-        return self.make_response_obj(client_response=response, data=resp_data)
+        return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
     def get_result(
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: Optional[int] = None,
         offset: Optional[int] = None,
         fields: Optional[List[Union[ResultField, RequestLegendItem]]] = None,
@@ -791,7 +791,7 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             row_count_hard_limit=row_count_hard_limit,
             updates=updates,
         )
-        response = self.get_response_for_dataset_result(dataset_id=dataset.id, raw_body=data)
+        response = self.get_response_for_dataset_result(dataset_id=dataset.id, raw_body=data)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Dataset | None" has no attribute "id"  [union-attr]
         resp_data: Optional[dict] = None
         if not fail_ok:
             assert response.status_code == HTTPStatus.OK, response.json
@@ -802,14 +802,14 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             except KeyError:
                 raise ValueError(response.data)
 
-        return self.make_response_obj(client_response=response, data=resp_data)
+        return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
     def get_value_range(
         self,
         *,
         dataset: Optional[Dataset],
         field: ResultField,
-        updates: List[Union[UpdateAction, dict]] = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         filters: Optional[List[WhereClause]] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
         fail_ok: bool = False,
@@ -821,7 +821,7 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             updates=updates,
             ignore_nonexistent_filters=ignore_nonexistent_filters,
         )
-        response = self.get_response_for_dataset_value_range(dataset_id=dataset.id, raw_body=data)
+        response = self.get_response_for_dataset_value_range(dataset_id=dataset.id, raw_body=data)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Dataset | None" has no attribute "id"  [union-attr]
         resp_data: Optional[dict] = None
         if not fail_ok:
             assert response.status_code == HTTPStatus.OK, response.json
@@ -832,14 +832,14 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             except KeyError:
                 raise ValueError(response.data)
 
-        return self.make_response_obj(client_response=response, data=resp_data)
+        return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
     def get_distinct(
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
-        limit: int = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         field: ResultField,
         filters: Optional[List[WhereClause]] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
@@ -853,7 +853,7 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             updates=updates,
             ignore_nonexistent_filters=ignore_nonexistent_filters,
         )
-        response = self.get_response_for_dataset_value_distinct(dataset_id=dataset.id, raw_body=data)
+        response = self.get_response_for_dataset_value_distinct(dataset_id=dataset.id, raw_body=data)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Dataset | None" has no attribute "id"  [union-attr]
         resp_data: Optional[dict] = None
         if not fail_ok:
             assert response.status_code == HTTPStatus.OK, response.json
@@ -864,14 +864,14 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             except KeyError:
                 raise ValueError(response.data)
 
-        return self.make_response_obj(client_response=response, data=resp_data)
+        return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
     def get_pivot(
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
-        limit: int = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         offset: Optional[int] = None,
         fields: Optional[List[Union[ResultField, RequestLegendItem]]] = None,
         order_by: Optional[List[OrderedField]] = None,
@@ -901,7 +901,7 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             pivot_totals=pivot_totals,
             with_totals=with_totals,
         )
-        response = self.get_response_for_dataset_pivot(dataset_id=dataset.id, raw_body=data)
+        response = self.get_response_for_dataset_pivot(dataset_id=dataset.id, raw_body=data)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Dataset | None" has no attribute "id"  [union-attr]
         resp_data: Optional[dict] = None
         if not fail_ok:
             assert response.status_code == HTTPStatus.OK, response.json
@@ -912,7 +912,7 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             except KeyError:
                 raise ValueError(response.data)
 
-        return self.make_response_obj(client_response=response, data=resp_data)
+        return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
 
 @attr.s
@@ -976,8 +976,8 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
         self,
         *,
         dataset: Dataset,
-        updates: List[Union[UpdateAction, dict]] = None,
-        limit: int = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         fail_ok: bool = False,
     ) -> HttpDataApiResponse:
         data = self.serial_adapter.make_req_data_get_preview(dataset=dataset, limit=limit, updates=updates)
@@ -994,13 +994,13 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
             except KeyError:
                 raise ValueError(response.data)
 
-        return self.make_response_obj(client_response=response, data=resp_data)
+        return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
     async def get_result(
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: Optional[int] = None,
         offset: Optional[int] = None,
         fields: Optional[List[Union[ResultField, RequestLegendItem]]] = None,
@@ -1031,7 +1031,7 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
             row_count_hard_limit=row_count_hard_limit,
             updates=updates,
         )
-        response = await self.get_response_for_dataset_result(dataset_id=dataset.id, raw_body=data)
+        response = await self.get_response_for_dataset_result(dataset_id=dataset.id, raw_body=data)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Dataset | None" has no attribute "id"  [union-attr]
         resp_data: Optional[dict] = None
         if not fail_ok:
             assert response.status_code == HTTPStatus.OK, response.json
@@ -1041,14 +1041,14 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
             except KeyError:
                 raise ValueError(response.data)
 
-        return self.make_response_obj(client_response=response, data=resp_data)
+        return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
     async def get_value_range(
         self,
         *,
         dataset: Optional[Dataset],
         field: ResultField,
-        updates: List[Union[UpdateAction, dict]] = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         filters: Optional[List[WhereClause]] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
         fail_ok: bool = False,
@@ -1060,7 +1060,7 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
             updates=updates,
             ignore_nonexistent_filters=ignore_nonexistent_filters,
         )
-        response = await self.get_response_for_dataset_value_range(dataset_id=dataset.id, raw_body=data)
+        response = await self.get_response_for_dataset_value_range(dataset_id=dataset.id, raw_body=data)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Dataset | None" has no attribute "id"  [union-attr]
         resp_data: Optional[dict] = None
         if not fail_ok:
             assert response.status_code == HTTPStatus.OK, response.json
@@ -1070,14 +1070,14 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
             except KeyError:
                 raise ValueError(response.data)
 
-        return self.make_response_obj(client_response=response, data=resp_data)
+        return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
     async def get_distinct(
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
-        limit: int = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         field: ResultField,
         filters: Optional[List[WhereClause]] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
@@ -1091,7 +1091,7 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
             updates=updates,
             ignore_nonexistent_filters=ignore_nonexistent_filters,
         )
-        response = await self.get_response_for_dataset_value_distinct(dataset_id=dataset.id, raw_body=data)
+        response = await self.get_response_for_dataset_value_distinct(dataset_id=dataset.id, raw_body=data)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Dataset | None" has no attribute "id"  [union-attr]
         resp_data: Optional[dict] = None
         if not fail_ok:
             assert response.status_code == HTTPStatus.OK, response.json
@@ -1101,14 +1101,14 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
             except KeyError:
                 raise ValueError(response.data)
 
-        return self.make_response_obj(client_response=response, data=resp_data)
+        return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
     async def get_pivot(
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,
-        limit: int = None,
+        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         offset: Optional[int] = None,
         fields: Optional[List[Union[ResultField, RequestLegendItem]]] = None,
         order_by: Optional[List[OrderedField]] = None,
@@ -1138,7 +1138,7 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
             pivot_totals=pivot_totals,
             with_totals=with_totals,
         )
-        response = await self.get_response_for_dataset_pivot(dataset_id=dataset.id, raw_body=data)
+        response = await self.get_response_for_dataset_pivot(dataset_id=dataset.id, raw_body=data)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Dataset | None" has no attribute "id"  [union-attr]
         resp_data: Optional[dict] = None
         if not fail_ok:
             assert response.status_code == HTTPStatus.OK, response.json
@@ -1149,7 +1149,7 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
             except KeyError:
                 raise ValueError(response.data)
 
-        return self.make_response_obj(client_response=response, data=resp_data)
+        return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
 
 @attr.s

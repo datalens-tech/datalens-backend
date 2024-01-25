@@ -82,7 +82,7 @@ class ApiProxyObject:
         """Generate ``add_*`` action"""
         return self._make_action(Action.add)
 
-    def update(self, **data) -> UpdateAction:
+    def update(self, **data) -> UpdateAction:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         """Generate ``update_*`` action"""
         return self._make_action(Action.update, data=data)
 
@@ -114,7 +114,7 @@ class Container(Generic[_ITEM_TV]):
     Items can be fetched both by integer (by index) and string (by alias) keys.
     """
 
-    def __init__(self, data: Union[list, tuple, dict, "Container"] = None):
+    def __init__(self, data: Union[list, tuple, dict, "Container"] = None):  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "data" (default has type "None", argument has type "list[Any] | tuple[Any, ...] | dict[Any, Any] | Container[Any]")  [assignment]
         self._item_ids: List[str] = []  # order list of object IDs
         self._items: Dict[str, _ITEM_TV] = {}  # objects by ID
         self._id_by_alias: Dict[str, str] = {}  # alias -> ID
@@ -215,7 +215,7 @@ class Container(Generic[_ITEM_TV]):
 @attr.s
 class DataSource(ApiProxyObject):
     connection_id: str = attr.ib(default=None)
-    source_type: Optional[DataSourceType] = attr.ib(default=None, converter=DataSourceType.normalize)
+    source_type: Optional[DataSourceType] = attr.ib(default=None, converter=DataSourceType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
     parameters: dict = attr.ib(default=None)
     raw_schema: list = attr.ib(factory=list)
     index_info_set: Optional[list] = attr.ib(default=None)
@@ -260,7 +260,7 @@ class SourceAvatar(ApiProxyObject):
     def join(
         self,
         other: "SourceAvatar",
-        conditions: List["JoinCondition"] = None,
+        conditions: List["JoinCondition"] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "conditions" (default has type "None", argument has type "list[JoinCondition]")  [assignment]
         join_type: JoinType = JoinType.inner,
     ) -> "AvatarRelation":
         return AvatarRelation(
@@ -331,7 +331,7 @@ class _Column:
     # use attr.s on superclass of the "real" class so that comparison methods from ConditionMakerMixin are used
     title: str = attr.ib(default=None)
     name: str = attr.ib(default=None)
-    user_type: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)
+    user_type: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
     native_type: Optional[dict] = attr.ib(default=None)
     nullable: bool = attr.ib(default=True)
     description: str = attr.ib(default="")
@@ -486,7 +486,7 @@ def _make_pivot_role_spec(
     if role == PivotRole.pivot_annotation:
         pivot_role_spec = AnnotationPivotRoleSpec(
             role=role,
-            annotation_type=annotation_type,
+            annotation_type=annotation_type,  # type: ignore  # 2024-01-24 # TODO: Argument "annotation_type" to "AnnotationPivotRoleSpec" has incompatible type "str | None"; expected "str"  [arg-type]
             target_legend_item_ids=target_legend_item_ids,
         )
     elif role == PivotRole.pivot_measure:
@@ -508,23 +508,23 @@ def _make_pivot_role_spec(
 @attr.s
 class _ResultField(ApiProxyObject):
     title: Optional[str] = attr.ib(default=None)
-    calc_mode: CalcMode = attr.ib(default=CalcMode.direct, converter=CalcMode.normalize)
+    calc_mode: CalcMode = attr.ib(default=CalcMode.direct, converter=CalcMode.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
     aggregation: AggregationFunction = attr.ib(
-        default=AggregationFunction.none, converter=AggregationFunction.normalize
+        default=AggregationFunction.none, converter=AggregationFunction.normalize  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
     )
-    type: FieldType = attr.ib(default=FieldType.DIMENSION, converter=FieldType.normalize)
+    type: FieldType = attr.ib(default=FieldType.DIMENSION, converter=FieldType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
     source: Optional[str] = attr.ib(default=None)
     hidden: bool = attr.ib(default=False)
     description: str = attr.ib(default="")
     formula: str = attr.ib(default="")
-    initial_data_type: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)
-    cast: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)
-    data_type: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)
+    initial_data_type: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    cast: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    data_type: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
     valid: bool = attr.ib(default=True)
     has_auto_aggregation: bool = attr.ib(default=False)
     lock_aggregation: bool = attr.ib(default=False)
     avatar_id: Optional[str] = attr.ib(default=None)
-    managed_by: ManagedBy = attr.ib(default=ManagedBy.user, converter=ManagedBy.normalize)
+    managed_by: ManagedBy = attr.ib(default=ManagedBy.user, converter=ManagedBy.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
     default_value: Optional[ParameterValue] = attr.ib(default=None)
     value_constraint: Optional[ParameterValueConstraint] = attr.ib(default=None)
 
@@ -571,7 +571,7 @@ class _ResultField(ApiProxyObject):
         return OrderedField(field_id=self.id, direction=OrderDirection.desc)
 
     def parameter_value(self, value: Any = None) -> ParameterFieldValue:
-        return ParameterFieldValue(field_id=self.id, value=value if value is not None else self.default_value.value)
+        return ParameterFieldValue(field_id=self.id, value=value if value is not None else self.default_value.value)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "ParameterValue[Any] | None" has no attribute "value"  [union-attr]
 
     def as_req_legend_item(
         self,
@@ -948,7 +948,7 @@ class Dataset(ApiProxyObject):
         if role == FieldRole.row:
             role_spec = RowRoleSpec(role=role)
         else:
-            role_spec = RoleSpec(role=role)
+            role_spec = RoleSpec(role=role)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "RoleSpec", variable has type "RowRoleSpec")  [assignment]
         return RequestLegendItem(
             ref=MeasureNameRequestLegendItemRef(),
             role_spec=role_spec,

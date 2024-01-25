@@ -65,7 +65,7 @@ def handle_bad_request(error):  # type: ignore
 
 
 @API.errorhandler(AuthFailureError)
-def handle_auth_error(error):
+def handle_auth_error(error):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     if error.response_code in (401, 403):
         if error.user_message is None:
             LOGGER.warning("No user message for AuthFailureError with defined response code", exc_info=True)

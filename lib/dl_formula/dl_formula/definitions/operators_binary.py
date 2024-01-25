@@ -41,7 +41,7 @@ V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 
 
-def as_bigint(value):
+def as_bigint(value):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     return sa.cast(value, sa.BIGINT())
 
 
@@ -531,7 +531,7 @@ class BinaryOr(Binary):  # FIXME: support other types
     return_flags = ContextFlag.IS_CONDITION
 
 
-def _in_fix_null(left, right, stringify_values):
+def _in_fix_null(left, right, stringify_values):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     new_left, new_right = _prepare_in_args(left, right, stringify_values)
     if len(new_right) == len(right):
         return new_left.in_(new_right)
@@ -559,7 +559,7 @@ class BinaryIn(Binary):
     return_flags = ContextFlag.IS_CONDITION
 
 
-def _not_in_fix_null(left, right, stringify_values):
+def _not_in_fix_null(left, right, stringify_values):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     new_left, new_right = _prepare_in_args(left, right, stringify_values)
     if len(new_right) == len(right):
         return sa.or_(
@@ -576,7 +576,7 @@ def _not_in_fix_null(left, right, stringify_values):
     return new_left.isnot(None)
 
 
-def _prepare_in_args(left, right, stringify_values: bool):
+def _prepare_in_args(left, right, stringify_values: bool):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
     right_nulls_filtered = [x for x in right if not isinstance(x, sa.sql.elements.Null)]
     if not stringify_values:
         return left, right_nulls_filtered

@@ -45,7 +45,7 @@ class ArqCronWrapper:
     _task: BaseTaskMeta = attr.ib()
     __qualname__ = "ArqCronWrapper"
     # special asyncio marker; because of asyncio.iscoroutinefunction in the arq core
-    _is_coroutine = asyncio.coroutines._is_coroutine  # type: ignore
+    _is_coroutine = asyncio.coroutines._is_coroutine  # type: ignore  # 2024-01-24 # TODO: Module has no attribute "_is_coroutine"; maybe "iscoroutine" or "coroutine"?  [attr-defined]
 
     async def __call__(self, ctx: Dict[Any, Any], *args: Any, **kwargs: Any) -> Any:  # pragma: no cover
         return await arq_base_task(

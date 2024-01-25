@@ -276,7 +276,7 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
                                         assert old_tenant_id
                                         uuid = cast(str, conn.uuid)
                                         old_tenant_id = cast(str, old_tenant_id)
-                                        old_s3_filename = "_".join([old_tenant_id, uuid, source.s3_filename_suffix])
+                                        old_s3_filename = "_".join([old_tenant_id, uuid, source.s3_filename_suffix])  # type: ignore  # 2024-01-24 # TODO: List item 2 has incompatible type "str | None"; expected "str"  [list-item]
 
                                     if not old_tenant_id:
                                         old_fname_parts = old_s3_filename.split("_")

@@ -24,10 +24,10 @@ from dl_formula.translation import ext_nodes
 from dl_formula.translation.context import TranslationCtx
 
 
-def _require_type(expected_type: Union[type, Tuple[Union[type, nodes.Array], ...], nodes.Array]):
-    def decorator(func):
+def _require_type(expected_type: Union[type, Tuple[Union[type, nodes.Array], ...], nodes.Array]):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def decorator(func):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         @wraps(func)
-        def wrapper(self, value):
+        def wrapper(self, value):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
             nodes.check_type(value, expected_type=expected_type)
             return func(self, value)
 
@@ -36,7 +36,7 @@ def _require_type(expected_type: Union[type, Tuple[Union[type, nodes.Array], ...
     return decorator
 
 
-def _norm(value) -> nodes.FormulaItem:
+def _norm(value) -> nodes.FormulaItem:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
     if not isinstance(value, nodes.FormulaItem):
         value = n.lit(value)
     return value
@@ -60,7 +60,7 @@ class NodeShortcut:
             type(None),
         )
     )
-    def lit(self, value) -> Union[nodes.BaseLiteral, nodes.Null]:
+    def lit(self, value) -> Union[nodes.BaseLiteral, nodes.Null]:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         if isinstance(value, str):
             return self.str(value)
         if isinstance(value, bool):
@@ -175,13 +175,13 @@ class NodeShortcut:
         def __init__(self, assume_window: bool = False):
             self._assume_window = assume_window
 
-        def __getattr__(self, name: str):
+        def __getattr__(self, name: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
             return self._make_func(name)
 
-        def __call__(self, name: str):
+        def __call__(self, name: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
             return self._make_func(name)
 
-        def _make_func(self, name: str):
+        def _make_func(self, name: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
             def wrapper(
                 *pos_args: nodes.FormulaItem,
                 grouping: Optional[nodes.WindowGrouping] = None,
@@ -240,30 +240,30 @@ class NodeShortcut:
     wfunc = FuncShortcut(assume_window=True)  # same, but always results in a window function
 
     class WhenProxy:
-        def __init__(self, val):
+        def __init__(self, val):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
             self._val = val
 
-        def then(self, expr) -> nodes.WhenPart:
+        def then(self, expr) -> nodes.WhenPart:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
             return nodes.WhenPart.make(val=_norm(self._val), expr=_norm(expr))
 
-    def when(self, val) -> "NodeShortcut.WhenProxy":
+    def when(self, val) -> "NodeShortcut.WhenProxy":  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         return self.WhenProxy(val)
 
     class CaseProxy:
-        def __init__(self, case_expr):
+        def __init__(self, case_expr):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
             self._case_expr = case_expr
             self._when_list = []
 
-        def whens(self, *when_list) -> "NodeShortcut.CaseProxy":
+        def whens(self, *when_list) -> "NodeShortcut.CaseProxy":  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
             self._when_list += when_list or []
             return self
 
-        def else_(self, expr) -> nodes.CaseBlock:
+        def else_(self, expr) -> nodes.CaseBlock:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
             return nodes.CaseBlock.make(
                 case_expr=_norm(self._case_expr), when_list=self._when_list, else_expr=_norm(expr)
             )
 
-    def case(self, expr) -> "NodeShortcut.CaseProxy":
+    def case(self, expr) -> "NodeShortcut.CaseProxy":  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         """
         Usage:
         TODO
@@ -271,31 +271,31 @@ class NodeShortcut:
         return self.CaseProxy(expr)
 
     class IfPartProxy:
-        def __init__(self, cond):
+        def __init__(self, cond):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
             self._cond = cond
             self._expr = None
 
-        def then(self, expr) -> "NodeShortcut.IfPartProxy":
+        def then(self, expr) -> "NodeShortcut.IfPartProxy":  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
             self._expr = expr
             return self
 
-        def else_(self, expr) -> nodes.IfBlock:
+        def else_(self, expr) -> nodes.IfBlock:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
             return n.IfBlockProxy([self]).else_(expr)
 
-    def elseif(self, cond) -> "NodeShortcut.IfPartProxy":
+    def elseif(self, cond) -> "NodeShortcut.IfPartProxy":  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         return self.IfPartProxy(cond)
 
     class IfBlockProxy:
         def __init__(self, if_list: list):
             self._if_list = if_list
 
-        def else_(self, expr) -> nodes.IfBlock:
+        def else_(self, expr) -> nodes.IfBlock:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
             return nodes.IfBlock.make(
                 if_list=[nodes.IfPart.make(cond=_norm(ipp._cond), expr=_norm(ipp._expr)) for ipp in self._if_list],
                 else_expr=_norm(expr),
             )
 
-    def if_(self, *exprs) -> Union["NodeShortcut.IfBlockProxy", "NodeShortcut.IfPartProxy"]:
+    def if_(self, *exprs) -> Union["NodeShortcut.IfBlockProxy", "NodeShortcut.IfPartProxy"]:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         """
         Usage:
         TODO
@@ -387,7 +387,7 @@ class NodeShortcut:
     ) -> nodes.Ternary:
         return nodes.Ternary.make(name=name, first=first, second=second, third=third, meta=meta)
 
-    def not_(
+    def not_(  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         self,
         expr: nodes.FormulaItem,
         meta: Optional[nodes.NodeMeta] = None,

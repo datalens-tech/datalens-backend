@@ -75,7 +75,6 @@ tornado = "==6.3.3"
 cryptography = "==41.0.4"
 typeguard = "==2.13.3"
 more-itertools = "==9.1.0"
-aiochclient = "==2.2.0"
 cchardet = "==2.1.7"
 dnspython = "==2.2.1"
 lz4 = "==4.3.2"
@@ -213,7 +212,6 @@ strict_optional = true
 # : src package -> {"name": "non standard name", "version": "hard coded version"}
 # : src package -> {"version": "hard coded version"}  # implies standard types-{pkg name} name
 # : src package -> {"ignore": true} # stub doesn't exist
-aiochclient = {ignore = true}
 aiodns = {ignore = true}
 aiogoogle =  {ignore = true}
 aiomysql =  {ignore = true}

@@ -146,7 +146,7 @@ class AsyncPostgresAdapter(
             self.__dialect = AsyncBIPGDialect()
         return self.__dialect
 
-    def get_conn_line(self, db_name: Optional[str] = None, params: dict[str, Any] = None) -> str:
+    def get_conn_line(self, db_name: Optional[str] = None, params: dict[str, Any] = None) -> str:  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "params" (default has type "None", argument has type "dict[str, Any]")  [assignment]
         params = params or {}
         params["sslrootcert"] = self.get_ssl_cert_path(self._target_dto.ssl_ca)
         return AsyncPGConnLineConstructor(
@@ -171,7 +171,7 @@ class AsyncPostgresAdapter(
     async def create_conn_pool(self, db_name_from_query: str) -> asyncpg.Pool:
         db_name = self.get_db_name_for_query(db_name_from_query)
         conn_line = self.get_conn_line(db_name=db_name)
-        return await asyncpg.create_pool(conn_line, min_size=1, statement_cache_size=0)
+        return await asyncpg.create_pool(conn_line, min_size=1, statement_cache_size=0)  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "Pool[Record] | None", expected "Pool[Any]")  [return-value]
 
     @asynccontextmanager
     async def _get_connection(self, db_name_from_query: str) -> AsyncIterator[asyncpg.Connection]:
@@ -214,7 +214,7 @@ class AsyncPostgresAdapter(
                     schema="pg_catalog",
                     format="text",
                 )
-            yield connection
+            yield connection  # type: ignore  # 2024-01-24 # TODO: Incompatible types in "yield" (actual type "PoolConnectionProxy[Any]", expected type "Connection[Any]")  [misc]
 
     async def test(self) -> None:
         await self.execute(DBAdapterQuery("select 1"))
@@ -282,7 +282,7 @@ class AsyncPostgresAdapter(
             debug_query = query.debug_compiled_query or make_debug_query(compiled_query, params)
 
         with self.handle_execution_error(debug_query), self.execution_context():
-            async with self._get_connection(query.db_name) as conn:
+            async with self._get_connection(query.db_name) as conn:  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "_get_connection" of "AsyncPostgresAdapter" has incompatible type "str | None"; expected "str"  [arg-type]
                 # prepare works only inside a transaction
                 async with conn.transaction():
                     prepared_query = await conn.prepare(compiled_query)

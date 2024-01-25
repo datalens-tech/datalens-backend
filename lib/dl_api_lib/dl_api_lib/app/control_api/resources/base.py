@@ -80,7 +80,7 @@ class BIResourceMeta(type(Resource)):  # type: ignore  # TODO: fix
                     api_decorators.with_profiler_stats(
                         os.path.join(stats_dir, meth_name),
                         # turn on checker only if there is something to check
-                        condition_check=_profile_request_check if PROFILE_REQ_PATH_RE else None,
+                        condition_check=_profile_request_check if PROFILE_REQ_PATH_RE else None,  # type: ignore  # 2024-01-24 # TODO: Argument "condition_check" to "with_profiler_stats" has incompatible type "Callable[[VarArg(Any), KwArg(Any)], bool] | None"; expected "Callable[..., Any]"  [arg-type]
                     )(method)
                     if meth_name in profile_methods
                     else method

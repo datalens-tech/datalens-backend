@@ -97,9 +97,9 @@ module = [
     "aiogoogle.*",
     "anyascii.*",
     "lz4.*",
-    "marshmallow_oneofschema.*",
     "types_aiobotocore_s3.*",
-    "mypy_boto3_s3.*"
+    "mypy_boto3_s3.*",
+    "statcommons.*"
 ]
 ignore_missing_imports = true
 

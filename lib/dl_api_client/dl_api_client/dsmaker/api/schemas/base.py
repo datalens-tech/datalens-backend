@@ -21,7 +21,7 @@ _TARGET_OBJECT_TV = TypeVar("_TARGET_OBJECT_TV")
 
 
 class DefaultSchema(BaseSchema, Generic[_TARGET_OBJECT_TV]):
-    TARGET_CLS: ClassVar[Type[_TARGET_OBJECT_TV]]
+    TARGET_CLS: ClassVar[Type[_TARGET_OBJECT_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
     @classmethod
     def get_target_cls(cls) -> Type[_TARGET_OBJECT_TV]:

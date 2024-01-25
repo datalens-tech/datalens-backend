@@ -631,7 +631,7 @@ class FuncTreeStr(FuncTreeBase):
 class DbCastArgTypes(ArgTypeSequence):
     __slots__ = ()
 
-    def __init__(self):
+    def __init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         super().__init__(
             arg_types=[
                 # 1. expression
@@ -715,7 +715,7 @@ class FuncDbCastBase(TypeConvFunction):
                 f"Native type cast to {name} requires {type_spec.arg_types}, got {len(type_args)}"
             )
 
-        def _raise_type_mismath(_arg_num: int):
+        def _raise_type_mismath(_arg_num: int):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
             dtype = type_args[_arg_num].data_type
             assert dtype is not None
             raise exc.TranslationError(
@@ -739,7 +739,7 @@ class FuncDbCastBase(TypeConvFunction):
         # All validation checks are done
         # Create the type and make the cast
         if type_spec.nested_sa_type is not None:
-            cast_to_type = type_spec.sa_type(type_spec.nested_sa_type(*unwrapped_native_type_args))
+            cast_to_type = type_spec.sa_type(type_spec.nested_sa_type(*unwrapped_native_type_args))  # type: ignore  # 2024-01-24 # TODO: Too many arguments for "TypeEngine"  [call-arg]
         else:
             cast_to_type = type_spec.sa_type(*unwrapped_native_type_args)
 
@@ -762,7 +762,7 @@ class FuncDbCastBase(TypeConvFunction):
         assert value.expression is not None
         return cls.apply_cast_wrapper(dialect=dialect, expression=value.expression, type_=type_)
 
-    def __init__(self):
+    def __init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         super().__init__()
 
         self._inst_variants = [

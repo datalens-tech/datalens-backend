@@ -176,7 +176,7 @@ class CalcOpExecutorAsync(OpExecutorAsync):
         # TODO: Remove legacy version
 
         # Legacy procedure
-        from_info = self.get_from_info_from_stream(source_stream=source_stream)
+        from_info = self.get_from_info_from_stream(source_stream=source_stream)  # type: ignore  # 2024-01-24 # TODO: Argument "source_stream" to "get_from_info_from_stream" of "CalcOpExecutorAsync" has incompatible type "AbstractStream | None"; expected "AbstractStream"  [arg-type]
         query_compiler = from_info.query_compiler
         query = query_compiler.compile_select(
             bi_query=op.bi_query,
@@ -187,16 +187,16 @@ class CalcOpExecutorAsync(OpExecutorAsync):
         )
         legacy_data_key = self.db_ex_adapter.get_data_key(
             query=query,
-            user_types=source_stream.user_types,
+            user_types=source_stream.user_types,  # type: ignore  # 2024-01-24 # TODO: Item "None" of "AbstractStream | None" has no attribute "user_types"  [union-attr]
             from_info=from_info,
-            base_key=source_stream.data_key,
+            base_key=source_stream.data_key,  # type: ignore  # 2024-01-24 # TODO: Item "None" of "AbstractStream | None" has no attribute "data_key"  [union-attr]
         )
 
         # New procedure
-        new_data_key = source_stream.data_key.extend("query", op.data_key_data)
+        new_data_key = source_stream.data_key.extend("query", op.data_key_data)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "AbstractStream | None" has no attribute "data_key"  [union-attr]
 
         LOGGER.info(
-            f"Preliminary cache key info for query: "
+            f"Preliminary cache key info for query: "  # type: ignore  # 2024-01-24 # TODO: Item "None" of "LocalKeyRepresentation | None" has no attribute "key_parts_hash"  [union-attr]
             f"legacy key: {legacy_data_key.key_parts_hash} ; "
             f"new key: {new_data_key.key_parts_hash}"
         )
@@ -250,7 +250,7 @@ class CalcOpExecutorAsync(OpExecutorAsync):
             names=prep_src_info.col_names,
             user_types=user_types,
             data_key=data_key,
-            meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),
+            meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),  # type: ignore  # 2024-01-24 # TODO: Argument "data_source_list" to "DataRequestMetaInfo" has incompatible type "tuple[DataSource, ...] | None"; expected "Collection[DataSource]"  [arg-type]
             preparation_callback=source_stream.prepare,
         )
 
@@ -289,7 +289,7 @@ class JoinOpExecutorAsync(OpExecutorAsync):
             user_types=[],
             joint_dsrc_info=joint_dsrc_info,  # not used  # not used
             meta=DataRequestMetaInfo(
-                data_source_list=joint_dsrc_info.data_source_list,
+                data_source_list=joint_dsrc_info.data_source_list,  # type: ignore  # 2024-01-24 # TODO: Argument "data_source_list" to "DataRequestMetaInfo" has incompatible type "tuple[DataSource, ...] | None"; expected "Collection[DataSource]"  [arg-type]
             ),
             data_key=data_key,
             preparation_callback=joint_preparation_callback,
@@ -303,7 +303,7 @@ class UploadOpExecutorAsync(OpExecutorAsync):
         assert isinstance(op, UploadOp)
 
         source_stream = self.ctx.get_stream(op.source_stream_id)
-        return source_stream.data_key
+        return source_stream.data_key  # type: ignore  # 2024-01-24 # TODO: Item "None" of "AbstractStream | None" has no attribute "data_key"  [union-attr]
 
     @log_op  # type: ignore  # TODO: fix
     async def execute(self, op: BaseOp) -> DataSourceVS:  # type: ignore  # TODO: fix
@@ -365,6 +365,6 @@ class UploadOpExecutorAsync(OpExecutorAsync):
             user_types=prep_src_info.user_types,
             alias=op.alias,
             data_key=data_key,
-            meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),
+            meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),  # type: ignore  # 2024-01-24 # TODO: Argument "data_source_list" to "DataRequestMetaInfo" has incompatible type "tuple[DataSource, ...] | None"; expected "Collection[DataSource]"  [arg-type]
             preparation_callback=upload_data,
         )

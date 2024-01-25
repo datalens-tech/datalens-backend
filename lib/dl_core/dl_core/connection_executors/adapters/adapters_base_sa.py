@@ -161,8 +161,8 @@ class BaseSAAdapter(
                 )
 
             cursor_info = ExecutionStepCursorInfo(
-                cursor_info=self._make_cursor_info(result.cursor, db_session=db_session),
-                raw_cursor_description=list(result.cursor.description),
+                cursor_info=self._make_cursor_info(result.cursor, db_session=db_session),  # type: ignore  # 2024-01-24 # TODO: "Result" has no attribute "cursor"  [attr-defined]
+                raw_cursor_description=list(result.cursor.description),  # type: ignore  # 2024-01-24 # TODO: "Result" has no attribute "cursor"  [attr-defined]
                 raw_engine=engine,
             )
             yield cursor_info

@@ -45,7 +45,7 @@ _TARGET_TV = TypeVar("_TARGET_TV")
 class NativeTypeSchemaBase(Schema, Generic[_TARGET_TV]):
     """(Shared ((Native Type) Storage Schema)), common base class for NT schemas."""
 
-    TARGET_CLS: ClassVar[Type[_TARGET_TV]]
+    TARGET_CLS: ClassVar[Type[_TARGET_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
     @post_load(pass_many=False)
     def to_object(self, data: dict, **_):  # type: ignore  # TODO: fix

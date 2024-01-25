@@ -33,7 +33,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
     node_cl: ClassVar[str] = "cl"
     node_br: ClassVar[str] = "br"
 
-    _node_cls: ClassVar[Type[_NODE_TV]]
+    _node_cls: ClassVar[Type[_NODE_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
     _dbg: bool = False
 

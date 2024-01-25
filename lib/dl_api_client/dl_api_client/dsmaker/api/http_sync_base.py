@@ -97,7 +97,7 @@ class SyncHttpApiBase(ApiBase):
         method: str,
         data: Optional[dict] = None,
         headers: Optional[dict] = None,
-        lock_timeout: int = None,
+        lock_timeout: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "lock_timeout" (default has type "None", argument has type "int")  [assignment]
     ) -> ClientResponse:
         data_str: Optional[str] = None
         content_type: Optional[str] = None

@@ -11,7 +11,6 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
-aiochclient = ">=2.2.0"
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.12"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
@@ -61,6 +60,13 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[[tool.mypy.overrides]]
+module = [
+    "clickhouse_sqlalchemy.*",
+    "dl_sqlalchemy_chyt.*"
+]
+ignore_missing_imports = true
 
 [datalens.i18n.domains]
 dl_connector_chyt = [

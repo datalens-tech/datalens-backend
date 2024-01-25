@@ -78,7 +78,7 @@ class QueryCompiler:
         expr = expr_ctx.expression
         if not expr_ctx.alias:
             return expr
-        expr_with_alias = expr.label(expr_ctx.alias)
+        expr_with_alias = expr.label(expr_ctx.alias)  # type: ignore  # 2024-01-24 # TODO: "ClauseElement" has no attribute "label"  [attr-defined]
         # TODO: put this separation into subclasses (if the logic proves to be correct).
         if self.groupby_alias_mode == SectionAliasMode.unaliased:
             return expr_with_alias
@@ -96,7 +96,7 @@ class QueryCompiler:
         expr = expr_ctx.expression
         if not expr_ctx.alias:
             return expr
-        expr_with_alias = expr.label(expr_ctx.alias)
+        expr_with_alias = expr.label(expr_ctx.alias)  # type: ignore  # 2024-01-24 # TODO: "ClauseElement" has no attribute "label"  [attr-defined]
         # TODO: put this separation into subclasses (if the logic proves to be correct).
         if self.groupby_alias_mode == SectionAliasMode.unaliased:
             return expr

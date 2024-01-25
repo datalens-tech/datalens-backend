@@ -300,7 +300,7 @@ def raise_for_status_and_hide_secret_headers(response: ClientResponse) -> None:
         new_request_info = RequestInfo(
             response.request_info.url,
             response.request_info.method,
-            CIMultiDict(clean_secret_data_in_headers(_multidict_to_list(response.request_info.headers))),
+            CIMultiDict(clean_secret_data_in_headers(_multidict_to_list(response.request_info.headers))),  # type: ignore  # 2024-01-24 # TODO: Argument 3 to "RequestInfo" has incompatible type "CIMultiDict[str]"; expected "CIMultiDictProxy[str]"  [arg-type]
         )
         raise ClientResponseError(
             new_request_info,
