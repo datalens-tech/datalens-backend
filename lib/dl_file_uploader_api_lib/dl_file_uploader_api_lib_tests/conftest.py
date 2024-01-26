@@ -352,7 +352,7 @@ def file_uploader_worker_settings(
     yield settings
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def root_certificates() -> bytes:
     return get_root_certificates()
 

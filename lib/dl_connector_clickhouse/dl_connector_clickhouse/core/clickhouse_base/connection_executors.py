@@ -51,6 +51,7 @@ class _BaseClickHouseConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_CLICKHOUSE
                     disable_value_processing=self._conn_options.disable_value_processing,
                     secure=self._conn_dto.secure,
                     ssl_ca=self._conn_dto.ssl_ca,
+                    ca_data=self._ca_data.decode("ascii"),
                 )
             )
         return dto_pool

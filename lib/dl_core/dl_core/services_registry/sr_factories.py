@@ -128,6 +128,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
             connect_options_mutator=self.env_manager_factory.mutate_conn_opts,
             entity_usage_checker=self.entity_usage_checker,
             force_non_rqe_mode=self.force_non_rqe_mode,
+            ca_data=self.ca_data,
         )
 
     def additional_sr_constructor_kwargs(

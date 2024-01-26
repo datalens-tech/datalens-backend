@@ -34,6 +34,7 @@ class BaseFileS3AsyncAdapterConnExecutor(AsyncClickHouseConnExecutor):
                     access_key_id=self._conn_dto.access_key_id,
                     secret_access_key=self._conn_dto.secret_access_key,
                     replace_secret=self._conn_dto.replace_secret,
+                    ca_data=self._ca_data.decode("ascii"),
                 )
             )
         return dto_pool

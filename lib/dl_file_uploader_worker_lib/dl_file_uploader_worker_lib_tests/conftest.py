@@ -158,7 +158,7 @@ def s3_settings() -> S3Settings:
     )
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def root_certificates() -> bytes:
     return get_root_certificates()
 

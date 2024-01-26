@@ -113,7 +113,7 @@ class BIAioHTTPClient:
         self._session = self._make_session()
 
     def _make_session(self) -> aiohttp.ClientSession:
-        ssl_context = ssl.create_default_context(cadata=self._ca_data.decode("utf-8"))
+        ssl_context = ssl.create_default_context(cadata=self._ca_data.decode("ascii"))
         return aiohttp.ClientSession(
             cookies=self.cookies,
             headers=self.headers,
