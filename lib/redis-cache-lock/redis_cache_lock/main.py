@@ -154,7 +154,7 @@ class RedisCacheLock:
                 self._log("Exception in background task %r: %r", name, err)
                 return None
 
-        task = asyncio.shield(asyncio.create_task(background_wrapper(), name=name))
+        task = asyncio.create_task(background_wrapper(), name=name)
         callback = self.bg_task_callback
         if callback is not None:
             callback(task)  # pylint: disable=not-callable
@@ -181,7 +181,7 @@ class RedisCacheLock:
             result = await self._wait_network_call(asyncio.shield(coro))
             return False, result
 
-        return True, self.process_in_background(coro, name=name)
+        return True, await asyncio.shield(self.process_in_background(coro, name=name))
 
     async def _postpone_to_finalization(self, coro: Awaitable) -> Any:
         cm_stack = self._cm_stack
