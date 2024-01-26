@@ -1099,6 +1099,8 @@ datalens-dashsql = {path = "../../lib/dl_dashsql"}
 datalens-formula = {path = "../dl_formula"}
 datalens-i18n = {path = "../dl_i18n"}
 datalens-model-tools = {path = "../dl_model_tools"}
+datalens-pivot = {path = "../dl_pivot"}
+datalens-pivot-pandas = {path = "../dl_pivot_pandas"}
 datalens-query-processing = {path = "../dl_query_processing"}
 datalens-task-processor = {path = "../dl_task_processor"}
 datalens-utils = {path = "../dl_utils"}
@@ -1108,7 +1110,6 @@ flask-restx = ">=1.1.0"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 more-itertools = ">=9.1.0"
-pandas = ">=1.5.3"
 statcommons = {path = "../statcommons"}
 werkzeug = ">=2.2.3"
 
@@ -1136,7 +1137,11 @@ datalens-configs = {path = "../dl_configs"}
 datalens-constants = {path = "../dl_constants"}
 datalens-core = {path = "../dl_core"}
 datalens-core-testing = {path = "../dl_core_testing"}
+datalens-formula-testing = {path = "../dl_formula_testing"}
 datalens-i18n = {path = "../dl_i18n"}
+datalens-pivot-pandas = {path = "../dl_pivot_pandas"}
+datalens-query-processing = {path = "../dl_query_processing"}
+datalens-testing = {path = "../dl_testing"}
 datalens-utils = {path = "../dl_utils"}
 flask = ">=2.2.5"
 pytest = ">=7.2.2"
@@ -2099,6 +2104,7 @@ datalens-app-tools = {path = "../dl_app_tools"}
 datalens-configs = {path = "../dl_configs"}
 datalens-constants = {path = "../dl_constants"}
 datalens-core = {path = "../dl_core"}
+datalens-pivot = {path = "../dl_pivot"}
 datalens-query-processing = {path = "../dl_query_processing"}
 datalens-utils = {path = "../dl_utils"}
 pygments = ">=2.4.0"
@@ -2155,6 +2161,9 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+datalens-constants = {path = "../dl_constants"}
+datalens-query-processing = {path = "../dl_query_processing"}
+datalens-utils = {path = "../dl_utils"}
 
 [package.source]
 type = "directory"
@@ -2171,6 +2180,10 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+datalens-constants = {path = "../dl_constants"}
+datalens-pivot = {path = "../dl_pivot"}
+datalens-query-processing = {path = "../dl_query_processing"}
+pandas = ">=1.5.3"
 
 [package.source]
 type = "directory"

@@ -5,14 +5,6 @@ from marshmallow import fields as ma_fields
 from marshmallow import validate as ma_validate
 from marshmallow_oneofschema import OneOfSchema
 
-from dl_api_lib.pivot.pivot_legend import PivotRoleSpec
-from dl_api_lib.pivot.primitives import (
-    PivotHeaderInfo,
-    PivotHeaderRoleSpec,
-    PivotHeaderValue,
-    PivotMeasureSorting,
-    PivotMeasureSortingSettings,
-)
 from dl_api_lib.query.formalization.raw_pivot_specs import (
     PivotPaginationSpec,
     RawAnnotationPivotRoleSpec,
@@ -32,6 +24,14 @@ from dl_constants.enums import (
 from dl_model_tools.schema.base import (
     BaseSchema,
     DefaultSchema,
+)
+from dl_pivot.pivot_legend import PivotRoleSpec
+from dl_pivot.primitives import (
+    PivotHeaderInfo,
+    PivotHeaderRoleSpec,
+    PivotHeaderValue,
+    PivotMeasureSorting,
+    PivotMeasureSortingSettings,
 )
 
 

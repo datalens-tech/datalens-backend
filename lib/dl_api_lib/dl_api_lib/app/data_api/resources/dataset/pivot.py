@@ -11,7 +11,6 @@ from dl_api_lib.app.data_api.resources.base import (
     requires,
 )
 from dl_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
-from dl_api_lib.pivot.pivot_legend import PivotLegend
 from dl_api_lib.query.formalization.pivot_formalizer import PivotFormalizer
 from dl_api_lib.request_model.normalization.drm_normalizer_pivot import PivotRequestModelNormalizer
 import dl_api_lib.schemas.data
@@ -20,15 +19,16 @@ from dl_app_tools.profiling_base import (
     GenericProfiler,
     generic_profiler_async,
 )
+from dl_pivot.pivot_legend import PivotLegend
 from dl_query_processing.merging.primitives import MergedQueryDataStream
 
 
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
 
-    from dl_api_lib.pivot.table import PivotTable
     from dl_api_lib.query.formalization.raw_pivot_specs import PivotPaginationSpec
     from dl_api_lib.request_model.data import PivotDataRequestModel
+    from dl_pivot.table import PivotTable
     from dl_query_processing.legend.field_legend import Legend
 
 

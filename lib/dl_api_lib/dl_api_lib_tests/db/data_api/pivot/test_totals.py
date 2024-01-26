@@ -4,12 +4,6 @@ import pytest
 
 from dl_api_client.dsmaker.pivot_utils import check_pivot_response
 from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
-from dl_api_lib.pivot.primitives import (
-    PivotHeaderRoleSpec,
-    PivotHeaderValue,
-    PivotMeasureSorting,
-    PivotMeasureSortingSettings,
-)
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 from dl_constants.enums import (
     NotificationType,
@@ -18,6 +12,12 @@ from dl_constants.enums import (
     WhereClauseOperation,
 )
 from dl_constants.internal_constants import MEASURE_NAME_TITLE
+from dl_pivot.primitives import (
+    PivotHeaderRoleSpec,
+    PivotHeaderValue,
+    PivotMeasureSorting,
+    PivotMeasureSortingSettings,
+)
 
 
 class TestPivotWithTotals(DefaultApiTestBase):

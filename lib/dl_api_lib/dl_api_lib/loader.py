@@ -6,7 +6,6 @@ from typing import (
 import attr
 
 from dl_api_lib.app_connectors import register_all_connectors
-from dl_api_lib.pivot.plugin_registration import register_all_pivot_engine_plugins
 from dl_core.loader import (
     CoreLibraryConfig,
     load_core_lib,
@@ -17,6 +16,7 @@ from dl_formula.loader import (
     load_formula_lib,
     preload_bi_formula,
 )
+from dl_pivot.plugin_registration import register_all_pivot_engine_plugins
 
 
 @attr.s(frozen=True)
