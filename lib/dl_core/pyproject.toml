@@ -13,7 +13,7 @@ readme = "README.md"
 Flask = ">=2.2.5"
 Werkzeug = ">=2.2.3"
 aiobotocore = ">=2.4.2"
-aiodns = ">=3.0.0"
+aiodns = ">=3.1.1"
 aiohttp = ">=3.8.1"
 anyascii = ">=0.3.2"
 arq = ">=0.25.0"
@@ -93,7 +93,6 @@ strict_optional = true
 
 [[tool.mypy.overrides]]
 module = [
-    "aiodns.*",
     "aiogoogle.*",
     "anyascii.*",
     "lz4.*",
