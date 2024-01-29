@@ -69,7 +69,7 @@ class BaseClassDescriptor(metaclass=abc.ABCMeta):
         self._target_cls = cls
         self.pre_registration_hook(cls)
         self._register(self)
-        return cls
+        return cls  # type: ignore  # 2024-01-29 # TODO: Incompatible return value type (got "type[AttrsInstance]", expected "_CLS_T")  [return-value]
 
 
 @attr.s(kw_only=True)

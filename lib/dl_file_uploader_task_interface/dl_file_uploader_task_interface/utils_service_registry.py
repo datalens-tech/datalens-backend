@@ -49,7 +49,7 @@ def create_sr_factory_from_env_vars(
             rqe_sock_read_timeout=int(os.environ.get("RQE_SOCK_READ_TIMEOUT", 30 * 60)),
         )
 
-    connectors_settings = {
+    connectors_settings = {  # type: ignore  # 2024-01-29 # TODO: Incompatible types in assignment (expression has type "dict[ConnectionType, FileS3ConnectorSettings | None]", variable has type "FileUploaderConnectorsSettings")  [assignment]
         CONNECTION_TYPE_FILE: connectors_settings.FILE,
         CONNECTION_TYPE_GSHEETS_V2: connectors_settings.FILE,
         CONNECTION_TYPE_YADOCS: connectors_settings.FILE,
@@ -59,7 +59,7 @@ def create_sr_factory_from_env_vars(
         async_env=True,
         connect_options_factory=get_conn_options,
         env_manager_factory=InsecureEnvManagerFactory(),
-        connectors_settings=connectors_settings,
+        connectors_settings=connectors_settings,  # type: ignore  # 2024-01-29 # TODO: Argument "connectors_settings" to "DefaultSRFactory" has incompatible type "FileUploaderConnectorsSettings"; expected "dict[ConnectionType, ConnectorSettingsBase]"  [arg-type]
         ca_data=ca_data,
     )
 
@@ -78,7 +78,7 @@ def get_async_service_us_manager(
         us_auth_context=USAuthContextMaster(us_master_token=us_master_token),
         crypto_keys_config=crypto_keys_config,
         bi_context=bi_context or RequestContextInfo.create_empty(),
-        services_registry=services_registry,
+        services_registry=services_registry,  # type: ignore  # 2024-01-29 # TODO: Argument "services_registry" to "AsyncUSManager" has incompatible type "ServicesRegistry | None"; expected "ServicesRegistry"  [arg-type]
         ca_data=ca_data,
     )
 

@@ -32,7 +32,7 @@ class ForcedLiteral(MultiVariantTranslation):
 
     @classmethod
     @contextmanager
-    def use(cls):
+    def use(cls):  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
         def_item = cls()
         OPERATION_REGISTRY.register(def_item)
         try:

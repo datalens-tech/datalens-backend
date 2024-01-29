@@ -64,7 +64,7 @@ class PostgreSQLExecAdapterAsync(Generic[_CONN_TV], ProcessorDbExecAdapterBase, 
         ]
         return sa.Table(table_name, sa.MetaData(), *columns, prefixes=["TEMPORARY"])
 
-    async def create_table(
+    async def create_table(  # type: ignore  # 2024-01-29 # TODO: Return type "Coroutine[Any, Any, None]" of "create_table" incompatible with return type "Coroutine[Any, Any, TableClause]" in supertype "ProcessorDbExecAdapterBase"  [override]
         self,
         *,
         table_name: str,

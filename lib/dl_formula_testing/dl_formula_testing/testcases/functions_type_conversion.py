@@ -73,7 +73,7 @@ class DefaultStrTypeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
 
         raise NotImplementedError("This test is dialect-dependent")
 
-    def test_str_from_const_null(self, dbe: DbEvaluator):
+    def test_str_from_const_null(self, dbe: DbEvaluator):  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
         if self.empty_str_is_null:
             pytest.skip()
 
@@ -94,7 +94,7 @@ class DefaultStrTypeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("STR(GEOPOINT(NULL))") is None
         assert dbe.eval("STR(GEOPOLYGON(NULL))") is None
 
-    def test_str_from_data_null(self, dbe: DbEvaluator, null_data_table: sa.Table):
+    def test_str_from_data_null(self, dbe: DbEvaluator, null_data_table: sa.Table):  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
         if self.empty_str_is_null:
             pytest.skip()
 
@@ -187,7 +187,7 @@ class DefaultBoolTypeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         assert dbe.eval("BOOL(DATETIME(NULL))") is None
         assert dbe.eval("BOOL(GENERICDATETIME(NULL))") is None
 
-    def test_bool_from_data_null(self, dbe: DbEvaluator, null_data_table: sa.Table):
+    def test_bool_from_data_null(self, dbe: DbEvaluator, null_data_table: sa.Table):  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
         assert dbe.eval("BOOL([bool_null])", from_=null_data_table) is None
         if not self.bool_is_expression:
             assert dbe.eval("BOOL([str_null])", from_=null_data_table) is None

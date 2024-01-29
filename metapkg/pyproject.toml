@@ -68,7 +68,7 @@ jinja2 = "==3.1.2"
 opentracing = "==2.4.0"
 frozendict = "==2.3.8"
 typing-extensions = "==4.5.0"
-aiodns = "==3.0.0"
+aiodns = "==3.1.1"
 jaeger-client = "==4.8.0"
 pytest = "==7.2.2"
 tornado = "==6.3.3"
@@ -212,7 +212,6 @@ strict_optional = true
 # : src package -> {"name": "non standard name", "version": "hard coded version"}
 # : src package -> {"version": "hard coded version"}  # implies standard types-{pkg name} name
 # : src package -> {"ignore": true} # stub doesn't exist
-aiodns = {ignore = true}
 aiogoogle =  {ignore = true}
 aiomysql =  {ignore = true}
 aiopg =  {ignore = true}

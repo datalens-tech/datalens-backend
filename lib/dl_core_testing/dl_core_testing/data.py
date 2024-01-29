@@ -85,7 +85,7 @@ class DataFetcher:
             user_types=prep_src_info.user_types,
             prep_src_info=prep_src_info,
             data_key=prep_src_info.data_key,
-            meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),
+            meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),  # type: ignore  # 2024-01-29 # TODO: Argument "data_source_list" to "DataRequestMetaInfo" has incompatible type "tuple[DataSource, ...] | None"; expected "Collection[DataSource]"  [arg-type]
             preparation_callback=None,
         )
 
