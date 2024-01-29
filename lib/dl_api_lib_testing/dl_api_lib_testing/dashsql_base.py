@@ -1,6 +1,7 @@
 import abc
 from typing import (
     Any,
+    Mapping,
     Optional,
 )
 
@@ -21,7 +22,7 @@ class DashSQLTestBase(DataApiTestBase, ConnectionTestBase, metaclass=abc.ABCMeta
         query: str,
         fail_ok: bool = False,
         params: Optional[dict] = None,
-        connector_specific_params: Optional[dict] = None,
+        connector_specific_params: Optional[Mapping] = None,
         headers: Optional[dict[str, str]] = None,
     ) -> ClientResponse:
         request_body: dict[str, Any] = {"sql_query": query}

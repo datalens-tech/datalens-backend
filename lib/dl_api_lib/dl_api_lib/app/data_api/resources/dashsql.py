@@ -39,7 +39,10 @@ from dl_core.us_connection_base import (
 )
 from dl_dashsql.exc import DashSQLError
 from dl_dashsql.formatting.base import QueryIncomingParameter
-from dl_dashsql.types import IncomingDSQLParamType
+from dl_dashsql.types import (
+    IncomingDSQLParamType,
+    IncomingDSQLParamTypeExt,
+)
 from dl_query_processing.utils.datetime import parse_datetime
 
 
@@ -79,6 +82,7 @@ def parse_value(value: Optional[str], bi_type: UserDataType) -> IncomingDSQLPara
 def make_param_obj(name: str, param: dict) -> QueryIncomingParameter:
     type_name: str = param["type_name"]
     value_base: str | list[str] | tuple[str, ...] = param["value"]
+    value: IncomingDSQLParamTypeExt
 
     try:
         bi_type = UserDataType[type_name]
@@ -87,7 +91,7 @@ def make_param_obj(name: str, param: dict) -> QueryIncomingParameter:
 
     try:
         if isinstance(value_base, (list, tuple)):
-            value = [parse_value(sub_value, bi_type) for sub_value in value_base]
+            value = tuple(parse_value(sub_value, bi_type) for sub_value in value_base)
         else:
             value = parse_value(value_base, bi_type)
     except ValueError:

@@ -13,6 +13,7 @@ from typing import (
     FrozenSet,
     Generator,
     List,
+    Mapping,
     Optional,
     Sequence,
     TypeVar,
@@ -64,7 +65,7 @@ class ConnExecutorQuery:
     user_types: Optional[List[UserDataType]] = attr.ib(default=None)
     debug_compiled_query: Optional[str] = attr.ib(default=None)
     chunk_size: Optional[int] = attr.ib(default=None)
-    connector_specific_params: Optional[Dict[str, TJSONExt]] = attr.ib(default=None)
+    connector_specific_params: Optional[Mapping[str, TJSONExt]] = attr.ib(default=None)
     # TODO FIX: We really need it in query?
     db_name: Optional[str] = attr.ib(default=None)
     autodetect_user_types: bool = attr.ib(default=False)

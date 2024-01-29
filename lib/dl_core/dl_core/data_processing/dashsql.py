@@ -8,6 +8,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     AsyncIterable,
+    Mapping,
     Optional,
     Sequence,
 )
@@ -95,7 +96,7 @@ class DashSQLSelector:
     incoming_parameters: Optional[list[QueryIncomingParameter]]
     db_params: dict[str, str]
     _service_registry: ServicesRegistry
-    connector_specific_params: Optional[dict[str, IncomingDSQLParamTypeExt]] = attr.ib(default=None)
+    connector_specific_params: Optional[Mapping[str, IncomingDSQLParamTypeExt]] = attr.ib(default=None)
 
     def __attrs_post_init__(self) -> None:
         specific_param_keys = get_custom_dash_sql_key_names(conn_type=self.conn.conn_type)
