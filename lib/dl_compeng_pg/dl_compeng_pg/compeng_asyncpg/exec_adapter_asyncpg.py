@@ -59,7 +59,7 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
         dialect.implicit_returning = True
         dialect.supports_native_enum = True
         dialect.supports_smallserial = True  # 9.2+
-        dialect._backslash_escapes = False
+        dialect._backslash_escapes = False  # type: ignore  # 2024-01-29 # TODO: "PGDialect_pypostgresql" has no attribute "_backslash_escapes"  [attr-defined]
         dialect.supports_sane_multi_rowcount = True  # psycopg 2.0.9+
         dialect._has_native_hstore = True  # type: ignore  # TODO: fix
 

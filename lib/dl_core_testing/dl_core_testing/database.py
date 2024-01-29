@@ -200,7 +200,7 @@ TEST_SEED = random.getrandbits(128)
 
 
 def make_sample_data(
-    columns: list[C] = None, rows: int = 10, seed: int = TEST_SEED, start_value: int = 0
+    columns: list[C] = None, rows: int = 10, seed: int = TEST_SEED, start_value: int = 0  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "columns" (default has type "None", argument has type "list[C]")  [assignment]
 ) -> list[dict[str, Any]]:
     rnd = random.Random(seed)
 
@@ -314,14 +314,14 @@ class DbView(NamedTuple):
         )
 
 
-def make_view(db: Db, query: str, schema: str = None, name: str = None) -> DbView:
+def make_view(db: Db, query: str, schema: str = None, name: str = None) -> DbView:  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "schema" (default has type "None", argument has type "str")  [assignment]
     name = name or "test_view_{}".format(uuid.uuid4().hex[:10])
     db.create_view(query=query, schema=schema, name=name)
     return DbView(db=db, schema=schema, name=name, query=query)  # type: ignore  # TODO: fix
 
 
-def make_view_from_table(db_table: DbTable, name: str = None, schema: str = None) -> DbView:
-    return make_view(db=db_table.db, query=db_table.select_all_query, schema=schema or db_table.schema, name=name)
+def make_view_from_table(db_table: DbTable, name: str = None, schema: str = None) -> DbView:  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "name" (default has type "None", argument has type "str")  [assignment]
+    return make_view(db=db_table.db, query=db_table.select_all_query, schema=schema or db_table.schema, name=name)  # type: ignore  # 2024-01-29 # TODO: Argument "schema" to "make_view" has incompatible type "str | None"; expected "str"  [arg-type]
 
 
 class MultiTables(NamedTuple):

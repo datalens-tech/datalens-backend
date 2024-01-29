@@ -26,7 +26,7 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
     supports_top_concat: ClassVar[bool] = False
 
     def test_basic_aggregation_functions(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
 
         assert dbe.eval("SUM([int_value])", from_=data_table) == sum(values)
         assert dbe.eval("AVG([int_value])", from_=data_table) == sum(values) / len(values)
@@ -37,16 +37,16 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("COUNTD([int_value])", from_=data_table) == len(set(values))
 
     def test_date_avg_function(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        date_values = data_table.date_values
+        date_values = data_table.date_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "date_values"  [attr-defined]
 
         assert dbe.eval("AVG([date_value])", from_=data_table) == datetime.date.fromtimestamp(
             sum(map(lambda date: utc_ts(date), date_values)) / len(date_values)
         )
 
     def test_datetime_avg_function(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        datetime_values = data_table.datetime_values
+        datetime_values = data_table.datetime_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "datetime_values"  [attr-defined]
 
-        def dt_avg(values) -> datetime.datetime:
+        def dt_avg(values) -> datetime.datetime:  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
             tses = [utc_ts(dt) for dt in values]
             ts = sum(tses) / len(tses)
             return datetime.datetime.utcfromtimestamp(ts)
@@ -67,7 +67,7 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert result == dt_avg(datetime_values)
 
     def test_statistical_aggregation_functions(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
 
         avg = sum(values) / len(values)
         var_samp = sum([(v - avg) ** 2 for v in values]) / (len(values) - 1)
@@ -81,11 +81,11 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         if not self.supports_countd_approx:
             pytest.skip()
 
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert dbe.eval("COUNTD_APPROX([int_value])", from_=data_table) == len(set(values))
 
     def test_conditional_aggregation_functions(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
 
         assert dbe.eval("SUM_IF([int_value], [int_value] > 5)", from_=data_table) == sum([v for v in values if v > 5])
         assert dbe.eval("SUM_IF([int_value] + 2 * 2, [int_value] > 5)", from_=data_table) == sum(
@@ -132,8 +132,8 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         if not self.supports_median:
             pytest.skip()
 
-        date_values = data_table.date_values
-        datetime_values = data_table.datetime_values
+        date_values = data_table.date_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "date_values"  [attr-defined]
+        datetime_values = data_table.datetime_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "datetime_values"  [attr-defined]
 
         VALUE_TV = TypeVar("VALUE_TV")
 
@@ -150,7 +150,7 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         if not self.supports_any:
             pytest.skip()
 
-        int_values = data_table.int_values
+        int_values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert dbe.eval("ANY([int_value])", from_=data_table) in int_values
 
     def test_arg_min_max(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
@@ -164,7 +164,7 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         if not self.supports_all_concat:
             pytest.skip()
 
-        expected_values = sorted(str(val) for val in set(data_table.int_values))
+        expected_values = sorted(str(val) for val in set(data_table.int_values))  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert dbe.eval("ALL_CONCAT([int_value])", from_=data_table) == ", ".join(expected_values)
         assert dbe.eval("ALL_CONCAT([int_value], '')", from_=data_table) == "".join(expected_values)
         assert dbe.eval("ALL_CONCAT([int_value], ' – ')", from_=data_table) == " – ".join(expected_values)
@@ -173,7 +173,7 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         if not self.supports_top_concat:
             pytest.skip()
 
-        expected_values = set(str(val) for val in set(data_table.int_values))
+        expected_values = set(str(val) for val in set(data_table.int_values))  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         res = dbe.eval("TOP_CONCAT([int_value], 3)", from_=data_table)
         assert not set(res.split(", ")) - expected_values, "should be a subset"
         res = dbe.eval("TOP_CONCAT([int_value], 3, '; ')", from_=data_table)

@@ -59,7 +59,7 @@ class ApiTestBase(abc.ABC):
     query_processing_mode: ClassVar[QueryProcessingMode] = QueryProcessingMode.basic
 
     @pytest.fixture(scope="function", autouse=True)
-    def preload(self):
+    def preload(self):  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
         preload_api_lib()
 
     @pytest.fixture(scope="class")
@@ -101,7 +101,7 @@ class ApiTestBase(abc.ABC):
 
         redis_setting_maker = core_test_config.get_redis_setting_maker()
 
-        settings = ControlApiAppSettings(
+        settings = ControlApiAppSettings(  # type: ignore  # 2024-01-29 # TODO: Unexpected keyword argument "CONNECTOR_AVAILABILITY" for "ControlApiAppSettings"  [call-arg]
             CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig.from_settings(
                 bi_test_config.connector_availability_settings,
             ),
@@ -173,7 +173,8 @@ class ApiTestBase(abc.ABC):
                 return {}
 
         control_api_app.test_client_class = TestClient
-        control_api_app.response_class = FlaskTestResponse  # for the `json` property
+        # for the `json` property
+        control_api_app.response_class = FlaskTestResponse  # type: ignore  # 2024-01-29 # TODO: Incompatible types in assignment (expression has type "type[FlaskTestResponse]", variable has type "type[Response]")  [assignment]
 
         return control_api_app.test_client()
 

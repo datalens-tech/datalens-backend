@@ -52,7 +52,7 @@ class FileUploaderTaskContext(BaseContext):
     def get_service_registry(self, rci: Optional[RequestContextInfo] = None) -> ServicesRegistry:
         rci = rci or RequestContextInfo.create_empty()
         return create_sr_factory_from_env_vars(
-            self.settings.CONNECTORS,
+            self.settings.CONNECTORS,  # type: ignore  # 2024-01-29 # TODO: Item "None" of "Any | None" has no attribute "CONNECTORS"  [union-attr]
             ca_data=self.ca_data,
         ).make_service_registry(rci)
 
@@ -60,8 +60,8 @@ class FileUploaderTaskContext(BaseContext):
         rci = rci or RequestContextInfo.create_empty()
         services_registry = self.get_service_registry(rci=rci)
         return get_async_service_us_manager(
-            us_host=self.settings.US_BASE_URL,
-            us_master_token=self.settings.US_MASTER_TOKEN,
+            us_host=self.settings.US_BASE_URL,  # type: ignore  # 2024-01-29 # TODO: Item "None" of "Any | None" has no attribute "US_BASE_URL"  [union-attr]
+            us_master_token=self.settings.US_MASTER_TOKEN,  # type: ignore  # 2024-01-29 # TODO: Item "None" of "Any | None" has no attribute "US_MASTER_TOKEN"  [union-attr]
             services_registry=services_registry,
             bi_context=rci,
             crypto_keys_config=self.crypto_keys_config,

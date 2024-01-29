@@ -39,7 +39,7 @@ class ToolRunner:
         self.parser = parser
         self.tool_cls = tool_cls
 
-    def run(self, args: list[str], stdin: Optional[str] = None):
+    def run(self, args: list[str], stdin: Optional[str] = None):  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
         stdin_str = stdin
         stdout = io.StringIO()
         stderr = io.StringIO()

@@ -32,7 +32,7 @@ class BaseAsyncAdapterTestClass(BaseConnectionExecutorTestClass, Generic[_TARGET
 
     @pytest.fixture
     async def target_conn_dto(self, async_connection_executor: AsyncConnExecutorBase) -> _TARGET_DTO_TV:
-        target_conn_dto_pool = await async_connection_executor._make_target_conn_dto_pool()  # noqa
+        target_conn_dto_pool = await async_connection_executor._make_target_conn_dto_pool()  # type: ignore  # 2024-01-29 # TODO: "AsyncConnExecutorBase" has no attribute "_make_target_conn_dto_pool"  [attr-defined]
         return next(iter(target_conn_dto_pool))
 
     def _make_dba(self, target_dto: _TARGET_DTO_TV, rci: RequestContextInfo) -> AsyncDirectDBAdapter:
@@ -42,7 +42,7 @@ class BaseAsyncAdapterTestClass(BaseConnectionExecutorTestClass, Generic[_TARGET
             default_chunk_size=10,
         )
 
-    async def _test_pass_db_query_to_user(
+    async def _test_pass_db_query_to_user(  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
         self,
         pass_db_query_to_user: Optional[bool],
         query_to_send: str,

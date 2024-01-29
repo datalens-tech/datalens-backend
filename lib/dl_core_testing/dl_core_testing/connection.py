@@ -38,7 +38,7 @@ def _ensure_entry_location(loc: Optional[EntryLocation], gen_path_postfix: Seque
 def make_connection_base(
     us_manager: USManagerBase,
     conn_type: ConnectionType,
-    conn_name: str = None,
+    conn_name: str = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "conn_name" (default has type "None", argument has type "str")  [assignment]
     data_dict: Optional[dict] = None,
     conn_cls: Optional[Type[ConnectionBase]] = None,
 ) -> ConnectionBase:
@@ -68,7 +68,7 @@ def make_connection(
     us_manager: USManagerBase,
     db: Optional[Db] = None,
     conn_type: Optional[ConnectionType] = None,
-    conn_name: str = None,
+    conn_name: str = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "conn_name" (default has type "None", argument has type "str")  [assignment]
     data_dict: Optional[dict] = None,
 ) -> ConnectionBase:
     credentials: dict = {}
@@ -93,7 +93,7 @@ def make_saved_connection(  # type: ignore  # TODO: fix
     sync_usm: SyncUSManager,
     db: Optional[Db] = None,
     conn_type: Optional[ConnectionType] = None,
-    conn_name: str = None,
+    conn_name: str = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "conn_name" (default has type "None", argument has type "str")  [assignment]
     data_dict: Optional[dict] = None,
 ) -> ConnectionBase:
     conn = make_connection(us_manager=sync_usm, db=db, conn_type=conn_type, conn_name=conn_name, data_dict=data_dict)

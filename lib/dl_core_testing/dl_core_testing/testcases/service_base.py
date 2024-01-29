@@ -89,7 +89,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
 
     @contextlib.asynccontextmanager
     async def _make_redis(self, redis_settings: RedisSettings) -> AsyncGenerator[Redis, None]:
-        redis_client = Redis(
+        redis_client = Redis(  # type: ignore  # 2024-01-29 # TODO: Need type annotation for "redis_client"  [var-annotated]
             host=redis_settings.HOSTS[0],
             port=redis_settings.PORT,
             db=redis_settings.DB,
@@ -102,7 +102,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             await redis_client.connection_pool.disconnect()
 
     @pytest.fixture(scope="function")
-    async def caches_redis_client_factory(self) -> Optional[Callable[[bool], Redis]]:
+    async def caches_redis_client_factory(self) -> Optional[Callable[[bool], Redis]]:  # type: ignore  # 2024-01-29 # TODO: The return type of an async generator function should be "AsyncGenerator" or one of its supertypes  [misc]
         if not self.data_caches_enabled:
             yield None
 
@@ -171,7 +171,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
                 else None
             ),
             caches_redis_client_factory=caches_redis_client_factory,
-            data_processor_service_factory=data_processor_service_factory,
+            data_processor_service_factory=data_processor_service_factory,  # type: ignore  # 2024-01-29 # TODO: Argument "data_processor_service_factory" to "DefaultServicesRegistry" has incompatible type "Callable[[bool], DataProcessorService] | None"; expected "Callable[[ProcessorType], DataProcessorService] | None"  [arg-type]
             **kwargs,
         )
         sr_future_ref.fulfill(service_registry)
@@ -286,5 +286,5 @@ class DbServiceFixtureTextClass(metaclass=abc.ABCMeta):
         return self.db_dispenser.get_database(db_config)
 
     @pytest.fixture(scope="class", autouse=True)
-    def db_is_ready(self, db: Db) -> str:
+    def db_is_ready(self, db: Db) -> str:  # type: ignore  # 2024-01-29 # TODO: Missing return statement  [empty-body]
         pass  # Just making sure that the database is available

@@ -479,7 +479,7 @@ class DefaultConnectorDataPreviewTestSuite(StandardizedDataApiTestBase, Regulate
 class DefaultConnectorDataCacheTestSuite(StandardizedDataApiTestBase, RegulatedTestCase):
     data_caches_enabled = True
 
-    def test_cache_with_filter_with_constants(
+    def test_cache_with_filter_with_constants(  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
         self,
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
