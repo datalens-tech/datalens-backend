@@ -39,8 +39,6 @@ from dl_testing.s3_utils import (
     create_s3_bucket,
     create_s3_client,
 )
-from dl_testing.utils import get_root_certificates
-
 from dl_connector_bundle_chs3.chs3_base.core.testing.utils import create_s3_native_from_ch_table
 from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from dl_connector_bundle_chs3_tests.db import config as test_config
@@ -108,7 +106,7 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
     @pytest.fixture(scope="session")
     def conn_sync_service_registry(
         self,
-        root_certificates,
+        root_certificates: bytes,
         conn_bi_context: RequestContextInfo,
         task_processor_factory: TaskProcessorFactory,
     ) -> ServicesRegistry:
@@ -122,7 +120,7 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
     @pytest.fixture(scope="session")
     def conn_async_service_registry(
         self,
-        root_certificates,
+        root_certificates: bytes,
         conn_bi_context: RequestContextInfo,
         task_processor_factory: TaskProcessorFactory,
     ) -> ServicesRegistry:
