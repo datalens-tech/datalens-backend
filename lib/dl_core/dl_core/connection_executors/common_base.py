@@ -16,11 +16,10 @@ from typing import (
     Optional,
     Sequence,
     TypeVar,
-    Union,
 )
 
 import attr
-from sqlalchemy import sql as sasql
+from sqlalchemy.sql.elements import ClauseElement
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_constants.enums import UserDataType
@@ -61,7 +60,7 @@ class ExecutionMode(enum.Enum):
 
 @attr.s
 class ConnExecutorQuery:
-    query: Union[sasql.Select, str] = attr.ib()
+    query: ClauseElement | str = attr.ib()
     user_types: Optional[List[UserDataType]] = attr.ib(default=None)
     debug_compiled_query: Optional[str] = attr.ib(default=None)
     chunk_size: Optional[int] = attr.ib(default=None)

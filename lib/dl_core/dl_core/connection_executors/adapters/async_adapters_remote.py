@@ -61,6 +61,12 @@ from dl_core.connection_executors.qe_serializer import dba_actions as dba_action
 from dl_core.connection_executors.remote_query_executor.crypto import get_hmac_hex_digest
 from dl_core.connection_models.conn_options import ConnectOptions
 from dl_core.enums import RQEEventType
+from dl_dashsql.typed_query.primitives import (
+    TypedQuery,
+    TypedQueryResult,
+)
+from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
+from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
 from dl_utils.utils import make_url
 
 
@@ -372,6 +378,22 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
                 req_ctx_info=self._req_ctx_info,
             ),
         )
+
+    async def execute_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
+        tq_serializer = get_typed_query_serializer(query_type=typed_query.query_type)
+        typed_query_str = tq_serializer.serialize(typed_query)
+        tq_result_str = await self._make_request_parse_response(
+            dba_actions.ActionExecuteTypedQuery(
+                target_conn_dto=self._target_dto,
+                dba_cls=self._dba_cls,
+                req_ctx_info=self._req_ctx_info,
+                query_type=typed_query.query_type,
+                typed_query_str=typed_query_str,
+            ),
+        )
+        tq_result_serializer = get_typed_query_result_serializer(query_type=typed_query.query_type)
+        tq_result = tq_result_serializer.deserialize(tq_result_str)
+        return tq_result
 
     async def close(self) -> None:
         await self._session.close()

@@ -5,9 +5,8 @@ from sqlalchemy.types import TypeEngine
 
 from dl_constants.enums import UserDataType
 from dl_dashsql.exc import DashSQLError
+from dl_dashsql.types import IncomingDSQLParamTypeExt
 
-
-TValueBase = str | list[str] | tuple[str, ...]
 
 BI_TYPE_TO_SA_TYPE: dict[UserDataType, TypeEngine] = {
     UserDataType.string: sa.TEXT(),
@@ -23,12 +22,12 @@ BI_TYPE_TO_SA_TYPE: dict[UserDataType, TypeEngine] = {
 
 class DashSQLParamLiteralizer(abc.ABC):
     @abc.abstractmethod
-    def get_sa_type(self, bi_type: UserDataType, value_base: TValueBase) -> TypeEngine:
+    def get_sa_type(self, bi_type: UserDataType, value_base: IncomingDSQLParamTypeExt) -> TypeEngine:
         raise NotImplementedError
 
 
 class DefaultDashSQLParamLiteralizer(DashSQLParamLiteralizer):
-    def get_sa_type(self, bi_type: UserDataType, value_base: TValueBase) -> TypeEngine:
+    def get_sa_type(self, bi_type: UserDataType, value_base: IncomingDSQLParamTypeExt) -> TypeEngine:
         try:
             sa_type = BI_TYPE_TO_SA_TYPE[bi_type]
             return sa_type

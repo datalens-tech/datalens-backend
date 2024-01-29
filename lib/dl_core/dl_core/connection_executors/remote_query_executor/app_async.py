@@ -54,6 +54,8 @@ from dl_core.loader import (
     load_core_lib,
 )
 from dl_core.logging_config import configure_logging
+from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
+from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
 from dl_utils.aio import ContextVarExecutor
 
 
@@ -173,8 +175,23 @@ class ActionHandlingView(BaseView):
         elif isinstance(action, act.ActionIsTableExists):
             return await dba.is_table_exists(table_ident=action.table_ident)
 
+        elif isinstance(action, act.ActionExecuteTypedQuery):
+            return await self._handle_execute_typed_query_action(dba=dba, action=action)
+
         else:
             raise NotImplementedError(f"Action {action} is not implemented in QE")
+
+    async def _handle_execute_typed_query_action(
+        self,
+        dba: AsyncDBAdapter,
+        action: act.ActionExecuteTypedQuery,
+    ) -> str:
+        tq_serializer = get_typed_query_serializer(query_type=action.query_type)
+        typed_query = tq_serializer.deserialize(action.typed_query_str)
+        tq_result = await dba.execute_typed_query(typed_query=typed_query)
+        tq_result_serializer = get_typed_query_result_serializer(query_type=action.query_type)
+        tq_result_str = tq_result_serializer.serialize(tq_result)
+        return tq_result_str
 
     async def post(self) -> Union[web.Response, web.StreamResponse]:
         action = await self.get_action()

@@ -13,7 +13,7 @@ from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.data_api_base import DataApiTestBase
 
 
-class DashSQLTestBase(ConnectionTestBase, DataApiTestBase, metaclass=abc.ABCMeta):
+class DashSQLTestBase(DataApiTestBase, ConnectionTestBase, metaclass=abc.ABCMeta):
     async def get_dashsql_response(
         self,
         data_api_aio: TestClient,
@@ -30,7 +30,7 @@ class DashSQLTestBase(ConnectionTestBase, DataApiTestBase, metaclass=abc.ABCMeta
         if connector_specific_params:
             request_body["connector_specific_params"] = connector_specific_params
 
-        resp = await data_api_aio.post(f"api/v1/connections/{conn_id}/dashsql", json=request_body, headers=headers)
+        resp = await data_api_aio.post(f"api/data/v1/connections/{conn_id}/dashsql", json=request_body, headers=headers)
         resp_data = await resp.json()
         if not fail_ok:
             assert resp.status == 200, resp_data

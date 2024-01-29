@@ -10,6 +10,7 @@ from typing import (
 
 from marshmallow import fields
 
+from dl_constants.enums import DashSQLQueryType
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
 from dl_core.connection_executors.qe_serializer import dba_actions as dba_actions
@@ -22,6 +23,7 @@ from dl_core.connection_executors.qe_serializer.schemas_common import (
     TableDefinitionSchema,
     TableIdentSchema,
 )
+from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 
 class DBAdapterActionBaseSchema(BaseQEAPISchema):
@@ -99,3 +101,11 @@ class ActionIsTableExistsSchema(DBAdapterActionBaseSchema):
 
     def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionIsTableExists:
         return dba_actions.ActionIsTableExists(**data)
+
+
+class ActionExecuteTypedQuerySchema(DBAdapterActionBaseSchema):
+    query_type = DynamicEnumField(DashSQLQueryType)
+    typed_query_str = fields.String()
+
+    def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionExecuteTypedQuery:
+        return dba_actions.ActionExecuteTypedQuery(**data)

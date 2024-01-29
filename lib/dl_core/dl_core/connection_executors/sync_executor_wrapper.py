@@ -46,6 +46,10 @@ if TYPE_CHECKING:
         TableIdent,
     )
     from dl_core.connection_models.dto_defs import ConnDTO
+    from dl_dashsql.typed_query.primitives import (
+        TypedQuery,
+        TypedQueryResult,
+    )
 
 
 _RET_TV = TypeVar("_RET_TV")
@@ -131,14 +135,17 @@ class SyncWrapperForAsyncConnExecutor(SyncConnExecutorBase):
             for msg in generator:
                 if not isinstance(msg, ExecutionStepDataChunk):
                     raise ValueError(f"Unexpected message instead of ExecutionStepDataChunk from SA adapter : {msg}")
-                # TODO CONSIDER: May be convert to user types in SAAdapter
+                # TODO CONSIDER: Maybe convert to user types in SAAdapter
                 yield [self._async_conn_executor.cast_row_to_output(row, query.user_types) for row in msg.chunk]
 
         return SyncExecutionResult(cursor_info=cursor_msg.cursor_info, result=data_generator())
 
-    def _execute_in_loop(self, query: ConnExecutorQuery) -> SyncExecutionResult:
-        async_result: AsyncExecutionResult = self._await_sync(self._async_conn_executor.execute(query))
+    def _execute_typed_query_on_sync_adapter_from_wrapped_executor(self, typed_query: TypedQuery) -> TypedQueryResult:
+        sa_adapter = self._extract_sync_sa_adapter(raise_on_not_exists=True)
+        result = sa_adapter.execute_typed_query(typed_query=typed_query)
+        return result
 
+    def _convert_async_result_to_sync(self, async_result: AsyncExecutionResult) -> SyncExecutionResult:
         def data_generator() -> Generator[TBIDataTable, None, None]:
             chunk_iter = async_result.result.__aiter__()
             while True:
@@ -149,12 +156,29 @@ class SyncWrapperForAsyncConnExecutor(SyncConnExecutorBase):
 
         return SyncExecutionResult(cursor_info=async_result.cursor_info, result=data_generator())
 
+    def _execute_in_loop(self, query: ConnExecutorQuery) -> SyncExecutionResult:
+        async_result: AsyncExecutionResult = self._await_sync(self._async_conn_executor.execute(query))
+        return self._convert_async_result_to_sync(async_result)
+
+    def _execute_typed_query_in_loop(self, typed_query: TypedQuery) -> TypedQueryResult:
+        result: TypedQueryResult = self._await_sync(
+            self._async_conn_executor.execute_typed_query(typed_query),
+        )
+        return result
+
     @init_required
     def execute(self, query: ConnExecutorQuery) -> SyncExecutionResult:
         sa_adapter = self._extract_sync_sa_adapter(raise_on_not_exists=False)
         if sa_adapter is not None:
             return self._execute_on_sync_adapter_from_wrapped_executor(query)
         return self._execute_in_loop(query)
+
+    @init_required
+    def execute_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
+        sa_adapter = self._extract_sync_sa_adapter(raise_on_not_exists=False)
+        if sa_adapter is not None:
+            return self._execute_typed_query_on_sync_adapter_from_wrapped_executor(typed_query)
+        return self._execute_typed_query_in_loop(typed_query)
 
     @init_required
     def test(self) -> None:

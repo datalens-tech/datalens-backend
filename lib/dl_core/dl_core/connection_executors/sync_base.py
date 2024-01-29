@@ -25,6 +25,10 @@ if TYPE_CHECKING:
         TableIdent,
     )
     from dl_core.connection_models.dto_defs import ConnDTO
+    from dl_dashsql.typed_query.primitives import (
+        TypedQuery,
+        TypedQueryResult,
+    )
 
 
 LOGGER = logging.getLogger(__name__)
@@ -57,6 +61,10 @@ class SyncConnExecutorBase(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def execute(self, query: ConnExecutorQuery) -> SyncExecutionResult:
+        pass
+
+    @abc.abstractmethod
+    def execute_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
         pass
 
     @abc.abstractmethod

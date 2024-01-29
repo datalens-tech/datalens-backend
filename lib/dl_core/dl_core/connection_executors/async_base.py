@@ -35,6 +35,10 @@ if TYPE_CHECKING:
         TableDefinition,
         TableIdent,
     )
+    from dl_dashsql.typed_query.primitives import (
+        TypedQuery,
+        TypedQueryResult,
+    )
 
 
 LOGGER = logging.getLogger(__name__)
@@ -101,6 +105,16 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
 
     @final
     @init_required
+    async def execute_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
+        """
+        This method should not be overridden!
+        :param query:
+        :return: Chunks of result
+        """
+        return await self._execute_typed_query(typed_query)
+
+    @final
+    @init_required
     async def test(self) -> None:
         await self._test()
 
@@ -137,6 +151,10 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
     # Methods to implements
     @abc.abstractmethod
     async def _execute(self, query: ConnExecutorQuery) -> AsyncExecutionResult:
+        pass
+
+    @abc.abstractmethod
+    async def _execute_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
         pass
 
     @abc.abstractmethod

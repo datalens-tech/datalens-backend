@@ -55,6 +55,7 @@ from dl_api_lib.app.data_api.resources.ping import (
     PingReadyView,
     PingView,
 )
+from dl_api_lib.app.data_api.resources.typed_query import DashSQLTypedQueryView
 from dl_api_lib.app.data_api.resources.unistat import UnistatView
 from dl_api_lib.app_common import SRFactoryBuilder
 from dl_api_lib.app_settings import DataApiAppSettings
@@ -141,6 +142,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
         # TODO: at some point the non-'/data/' routes should probably be removed.
         app.router.add_route("post", "/api/v1/connections/{conn_id}/dashsql", DashSQLView)  # FIXME: Remove
         app.router.add_route("post", "/api/data/v1/connections/{conn_id}/dashsql", DashSQLView)
+        app.router.add_route("post", "/api/data/v1/connections/{conn_id}/typed_query", DashSQLTypedQueryView)
         app.router.add_route(
             "post", "/api/v1/datasets/{ds_id}/versions/draft/result", DatasetResultViewV1
         )  # FIXME: Remove

@@ -6,8 +6,8 @@ from typing import Union
 
 import opentracing
 import sqlalchemy as sa
-from sqlalchemy import sql as sasql
 from sqlalchemy.engine import Dialect
+from sqlalchemy.sql.elements import ClauseElement
 
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_models import DBIdent
@@ -21,7 +21,7 @@ def get_db_version_query(db_ident: DBIdent) -> DBAdapterQuery:
     return DBAdapterQuery(sa.select([sa.func.version()]), db_name=db_ident.db_name)
 
 
-def compile_query_for_debug(query: sasql.Select, dialect: Dialect) -> str:
+def compile_query_for_debug(query: ClauseElement, dialect: Dialect) -> str:
     """
     Compile query to string.
     This function is only suitable for logging and not execution of the result.

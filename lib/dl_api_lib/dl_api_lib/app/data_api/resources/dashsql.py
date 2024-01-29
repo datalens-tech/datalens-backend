@@ -39,7 +39,7 @@ from dl_core.us_connection_base import (
 )
 from dl_dashsql.exc import DashSQLError
 from dl_dashsql.formatting.base import QueryIncomingParameter
-from dl_dashsql.literalizer import TValueBase
+from dl_dashsql.types import IncomingDSQLParamType
 from dl_query_processing.utils.datetime import parse_datetime
 
 
@@ -54,7 +54,7 @@ if TYPE_CHECKING:
 TRowProcessor = Callable[[TRow], TRow]
 
 
-def parse_value(value: Optional[str], bi_type: UserDataType) -> Any:
+def parse_value(value: Optional[str], bi_type: UserDataType) -> IncomingDSQLParamType:
     if value is None:
         return None
     if bi_type == UserDataType.string:
@@ -78,7 +78,7 @@ def parse_value(value: Optional[str], bi_type: UserDataType) -> Any:
 
 def make_param_obj(name: str, param: dict) -> QueryIncomingParameter:
     type_name: str = param["type_name"]
-    value_base: TValueBase = param["value"]
+    value_base: str | list[str] | tuple[str, ...] = param["value"]
 
     try:
         bi_type = UserDataType[type_name]

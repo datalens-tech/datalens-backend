@@ -2,12 +2,12 @@ import datetime
 from typing import Union
 
 import sqlalchemy as sa
-from sqlalchemy import sql as sasql
 from sqlalchemy.engine import Dialect
+from sqlalchemy.sql.elements import ClauseElement
 
 
 def compile_mysql_query(
-    query: Union[str, sasql.Select],
+    query: Union[str, ClauseElement],
     dialect: Dialect,
     escape_percent: bool,
 ) -> tuple[str, dict]:
