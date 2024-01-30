@@ -2,7 +2,6 @@ import abc
 from enum import Enum
 import re
 from typing import (
-    Any,
     Mapping,
     Sequence,
 )
@@ -10,6 +9,7 @@ from typing import (
 import attr
 
 from dl_constants.enums import UserDataType
+from dl_dashsql.types import IncomingDSQLParamTypeExt
 
 
 @attr.s(frozen=True, kw_only=True)
@@ -67,7 +67,7 @@ class UnconsumedParameterPolicy(Enum):
 @attr.s(frozen=True, kw_only=True)
 class QueryIncomingParameter:
     original_name: str = attr.ib()
-    value: Any = attr.ib()
+    value: IncomingDSQLParamTypeExt = attr.ib()
     user_type: UserDataType = attr.ib()
 
 

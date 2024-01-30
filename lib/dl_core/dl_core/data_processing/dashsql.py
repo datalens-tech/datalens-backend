@@ -8,6 +8,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     AsyncIterable,
+    Mapping,
     Optional,
     Sequence,
 )
@@ -48,6 +49,7 @@ from dl_dashsql.formatting.base import (
 )
 from dl_dashsql.formatting.placeholder_dbapi import DBAPIQueryFormatterFactory
 from dl_dashsql.registry import get_dash_sql_param_literalizer
+from dl_dashsql.types import IncomingDSQLParamTypeExt
 
 
 if TYPE_CHECKING:
@@ -94,7 +96,7 @@ class DashSQLSelector:
     incoming_parameters: Optional[list[QueryIncomingParameter]]
     db_params: dict[str, str]
     _service_registry: ServicesRegistry
-    connector_specific_params: Optional[dict[str, TJSONExt]] = attr.ib(default=None)
+    connector_specific_params: Optional[Mapping[str, IncomingDSQLParamTypeExt]] = attr.ib(default=None)
 
     def __attrs_post_init__(self) -> None:
         specific_param_keys = get_custom_dash_sql_key_names(conn_type=self.conn.conn_type)
@@ -116,14 +118,14 @@ class DashSQLSelector:
 
     def _formatted_query_to_sa_query(self, formatted_query: FormattedQuery) -> TextClause:
         backend_type = get_backend_type(conn_type=self.conn.conn_type)
-        literalizer_cls = get_dash_sql_param_literalizer(backend_type=backend_type)
+        literalizer = get_dash_sql_param_literalizer(backend_type=backend_type)
 
         try:
             sa_text = sa.text(formatted_query.query).bindparams(
                 *[
                     sa.bindparam(
                         param.param_name,
-                        type_=literalizer_cls.get_sa_type(
+                        type_=literalizer.get_sa_type(
                             bi_type=param.incoming_param.user_type,
                             value_base=param.incoming_param.value,
                         ),

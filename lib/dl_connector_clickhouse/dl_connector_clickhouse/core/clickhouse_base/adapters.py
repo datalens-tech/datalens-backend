@@ -35,6 +35,11 @@ from sqlalchemy.sql.type_api import TypeEngine
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_constants.enums import IndexKind
 from dl_core import exc
+from dl_core.connection_executors.adapters.adapter_actions.typed_query import (
+    AsyncTypedQueryAdapterAction,
+    AsyncTypedQueryAdapterActionViaStandardExecute,
+    TypedQueryToDBAQueryConverter,
+)
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import (
     BaseClassicAdapter,
     ClassicSQLConnLineConstructor,
@@ -63,6 +68,8 @@ from dl_core.db.native_type import (
     GenericNativeType,
     norm_native_type,
 )
+from dl_dashsql.formatting.placeholder_dbapi import DBAPIQueryFormatterFactory
+from dl_dashsql.registry import get_dash_sql_param_literalizer
 from dl_utils.utils import make_url
 
 from dl_connector_clickhouse.core.clickhouse_base.ch_commons import (
@@ -77,10 +84,7 @@ from dl_connector_clickhouse.core.clickhouse_base.exc import CHRowTooLarge
 if TYPE_CHECKING:
     from dl_constants.types import TBIChunksGen
     from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
-    from dl_core.connection_models.common_models import (
-        DBIdent,
-        SchemaIdent,
-    )
+    from dl_core.connection_models.common_models import SchemaIdent
 
     from dl_connector_clickhouse.core.clickhouse_base.target_dto import (  # noqa: F401
         BaseClickHouseConnTargetDTO,
@@ -366,6 +370,16 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
     _target_dto: BaseClickHouseConnTargetDTO = attr.ib()
 
     _url: str = attr.ib(init=False, default=None)
+
+    def _make_async_typed_query_action(self) -> AsyncTypedQueryAdapterAction:
+        literalizer = get_dash_sql_param_literalizer(backend_type=self.get_backend_type())
+        return AsyncTypedQueryAdapterActionViaStandardExecute(
+            async_adapter=self,
+            query_converter=TypedQueryToDBAQueryConverter(
+                literalizer=literalizer,
+                query_formatter_factory=DBAPIQueryFormatterFactory(),
+            ),
+        )
 
     def __attrs_post_init__(self) -> None:
         super().__attrs_post_init__()
