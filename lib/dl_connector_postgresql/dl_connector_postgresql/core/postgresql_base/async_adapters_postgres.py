@@ -121,7 +121,7 @@ class AsyncPostgresAdapter(
         # but there are about 40 different types of exceptions for every case of error
         # I hope private type will work for a long time and we won't put all ~40 exceptions here
         asyncpg.exceptions._base.PostgresError,
-        asyncio.TimeoutError,
+        TimeoutError,
         # invalid/not available cluster provokes it
         # not connection/timeout error
         OSError,

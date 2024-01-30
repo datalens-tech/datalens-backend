@@ -784,7 +784,7 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
                     self._redis_set(update_request),
                     timeout=self.CACHE_SAVE_TIMEOUT_SEC,
                 )
-            except asyncio.TimeoutError as err:
+            except TimeoutError as err:
                 self._log_save_failed(update_request=update_request, err=err)
 
     @generic_profiler_async("qcache-write-redis-exec")  # type: ignore  # TODO: fix
@@ -814,7 +814,7 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
                 self._redis_get(full_key, new_ttl_sec=new_ttl_sec),
                 timeout=read_timeout,
             )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             self._log_cache_timeout(timeout=read_timeout, details=details)
             return None
 

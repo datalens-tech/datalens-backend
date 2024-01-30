@@ -111,7 +111,7 @@ class RequestBootstrap:
                     try:
                         async with timeout(self.timeout_sec):
                             result = await handler(request)
-                    except asyncio.TimeoutError:
+                    except TimeoutError:
                         raise RequestTimeoutError() from None
                 else:
                     result = await handler(request)

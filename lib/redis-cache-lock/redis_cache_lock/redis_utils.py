@@ -119,7 +119,7 @@ class SubscriptionManagerBase:
             return await asyncio.wait_for(
                 self.get_direct(timeout=timeout), timeout=timeout
             )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             return None
 
     async def exit(self) -> None:
@@ -200,7 +200,6 @@ class SubscriptionManager(SubscriptionManagerBase):
                 break
             if time.monotonic() - t01 >= timeout:
                 break
-            await asyncio.sleep(0.001)
         if message is None:
             return None
         return message["data"]

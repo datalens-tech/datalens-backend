@@ -734,7 +734,7 @@ class Worker:
         """
         Wait for tasks to complete, until `wait_for_job_completion_on_signal_second` has been reached.
         """
-        with contextlib.suppress(asyncio.TimeoutError):
+        with contextlib.suppress(TimeoutError):
             await asyncio.wait_for(
                 self._sleep_until_tasks_complete(),
                 self._job_completion_wait,
