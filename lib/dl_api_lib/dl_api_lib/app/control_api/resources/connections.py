@@ -323,7 +323,7 @@ class ConnectionInfoSourceSchema(BIResource):
         src = body["source"]
         dsrc_spec = make_spec_from_dict(source_type=src["source_type"], data=src["parameters"])
         dsrc_cls = get_data_source_class(src["source_type"])
-        dsrc = dsrc_cls(spec=dsrc_spec, connection=connection)  # type: ignore
+        dsrc = dsrc_cls(spec=dsrc_spec, connection=connection)
 
         schema_info = dsrc.get_schema_info(conn_executor_factory=conn_executor_factory_func)
 

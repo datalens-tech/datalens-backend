@@ -51,7 +51,7 @@ class FlaskWSGIMiddleware(metaclass=abc.ABCMeta):
 
         self._app = app
         self._original_wsgi_app = app.wsgi_app
-        app.wsgi_app = self.wsgi_app  # type: ignore
+        app.wsgi_app = self.wsgi_app
         setattr(app, self._APP_FLAG_ATTR_NAME, True)
 
     @classmethod

@@ -89,7 +89,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             QUERY_PROCESSING_MODE=cls.query_processing_mode,
             CA_FILE_PATH=get_root_certificates_path(),
             PIVOT_ENGINE_TYPE=PIVOT_ENGINE_TYPE_PANDAS,
-        )  # type: ignore
+        )
 
     @pytest.fixture(scope="function")
     def data_api_app_settings(

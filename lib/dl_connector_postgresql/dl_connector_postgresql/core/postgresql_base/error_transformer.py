@@ -28,7 +28,7 @@ sync_pg_db_error_transformer: DbErrorTransformer = ChainedDbErrorTransformer(
             then_raise=exc.SourceHostNotKnownError,
         ),
         Rule(
-            when=orig_exc_is(orig_exc_cls=psycopg2.errors.UndefinedTable),  # type: ignore
+            when=orig_exc_is(orig_exc_cls=psycopg2.errors.UndefinedTable),
             then_raise=PostgresSourceDoesNotExistError,
         ),
     ]

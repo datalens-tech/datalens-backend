@@ -45,7 +45,7 @@ class MdRichTextRenderer(RichTextRenderer):
         return self._render(rtext, env=env)
 
     @singledispatchmethod
-    def _render(self, value, env: RichTextRenderEnvironment) -> str:  # type: ignore
+    def _render(self, value, env: RichTextRenderEnvironment) -> str:
         raise TypeError
 
     @_render.register

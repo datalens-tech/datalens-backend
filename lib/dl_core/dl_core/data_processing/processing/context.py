@@ -85,4 +85,4 @@ class OpExecutionContext:
                 raise ValueError(f"Unknown kwarg: {key!r}")
             new_kwargs[key] = val
 
-        return self.__class__(**new_kwargs)  # type: ignore
+        return self.__class__(**new_kwargs)

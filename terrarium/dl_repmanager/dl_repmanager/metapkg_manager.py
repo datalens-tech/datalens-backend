@@ -68,24 +68,24 @@ class MetaPackageManager:
         section[pkg_spec.package_name] = pkg_spec.to_toml_value()
 
     def list_poetry_groups(self) -> list[str]:
-        return list(self._toml["tool"]["poetry"]["group"].keys())  # type: ignore
+        return list(self._toml["tool"]["poetry"]["group"].keys())
 
     def remove_poetry_group(self, name: str) -> None:
-        del self._toml["tool"]["poetry"]["group"][name]  # type: ignore
+        del self._toml["tool"]["poetry"]["group"][name]
 
     def list_mypy_stubs_override(self) -> list[str]:
-        mypy_section = self._toml["datalens"]["meta"]["mypy_stubs_packages_override"]  # type: ignore
+        mypy_section = self._toml["datalens"]["meta"]["mypy_stubs_packages_override"]
         if mypy_section:
-            return list(mypy_section.keys())  # type: ignore
+            return list(mypy_section.keys())
         return []
 
     def remove_mypy_stubs_override(self, name: str) -> None:
-        mypy_section = self._toml["datalens"]["meta"]["mypy_stubs_packages_override"]  # type: ignore
+        mypy_section = self._toml["datalens"]["meta"]["mypy_stubs_packages_override"]
         if mypy_section:
-            del mypy_section[name]  # type: ignore
+            del mypy_section[name]
 
     def remove_package_sources_section(self) -> None:
-        del self._toml["tool"]["poetry"]["source"]  # type: ignore
+        del self._toml["tool"]["poetry"]["source"]
 
     @staticmethod
     def get_dependencies_section_name(group: Optional[str]) -> str:

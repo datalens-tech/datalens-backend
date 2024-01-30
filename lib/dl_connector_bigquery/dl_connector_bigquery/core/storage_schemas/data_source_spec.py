@@ -21,11 +21,11 @@ class BigQueryTableDataSourceSpecStorageSchema(
     DatasetSQLDataSourceSpecStorageSchemaMixin,
     BaseSQLDataSourceSpecStorageSchema,
 ):
-    TARGET_CLS = BigQueryTableDataSourceSpec  # type: ignore
+    TARGET_CLS = BigQueryTableDataSourceSpec
 
 
 class BigQuerySubselectDataSourceSpecStorageSchema(
     SubselectSQLDataSourceSpecStorageSchemaMixin,
     BaseSQLDataSourceSpecStorageSchema,
 ):
-    TARGET_CLS = BigQuerySubselectDataSourceSpec  # type: ignore
+    TARGET_CLS = BigQuerySubselectDataSourceSpec

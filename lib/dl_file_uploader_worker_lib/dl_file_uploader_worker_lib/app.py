@@ -92,7 +92,7 @@ class FileUploaderContextFab(BaseContextFabric):
             ca_data=self._ca_data,
         )
 
-    async def tear_down(self, inst: FileUploaderTaskContext) -> None:  # type: ignore
+    async def tear_down(self, inst: FileUploaderTaskContext) -> None:
         await inst.s3_service.tear_down()
         await inst.redis_service.tear_down()
         inst.tpe.shutdown()

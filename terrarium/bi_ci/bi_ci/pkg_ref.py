@@ -32,11 +32,11 @@ class PkgRef:
         raw = {}
         if spec:
             # tomlkit & mypy very annoying together, hence a bunch of ignores
-            raw = dict(spec["tool"]["poetry"]["dependencies"])  # type: ignore
+            raw = dict(spec["tool"]["poetry"]["dependencies"])
             for group in include_groups or []:
-                if "group" not in spec["tool"]["poetry"]:  # type: ignore
+                if "group" not in spec["tool"]["poetry"]:
                     continue
-                raw.update(spec["tool"]["poetry"]["group"].get(group, {}).get("dependencies", {}))  # type: ignore
+                raw.update(spec["tool"]["poetry"]["group"].get(group, {}).get("dependencies", {}))
 
         for name, specifier in raw.items():
             if isinstance(specifier, dict) and "path" in specifier:
@@ -47,7 +47,7 @@ class PkgRef:
     @cached_property
     def self_pkg_name(self) -> str | None:
         try:
-            return self.self_toml["tool"]["poetry"]["name"]  # type: ignore
+            return self.self_toml["tool"]["poetry"]["name"]
         except (KeyError, TypeError):
             return None
 
@@ -55,6 +55,6 @@ class PkgRef:
     def skip_test(self) -> bool:
         spec = self.self_toml
         try:
-            return spec["datalens_ci"]["skip_test"]  # type: ignore
+            return spec["datalens_ci"]["skip_test"]
         except (KeyError, TypeError):
             return False

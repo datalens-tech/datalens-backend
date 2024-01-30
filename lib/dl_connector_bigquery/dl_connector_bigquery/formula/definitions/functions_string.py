@@ -43,7 +43,7 @@ DEFINITIONS_STRING = [
         variants=[
             V(
                 D.BIGQUERY,
-                lambda x, y, z: n.if_(sa.func.STRPOS(sa.func.SUBSTRING(x, z), y) > 0)  # type: ignore
+                lambda x, y, z: n.if_(sa.func.STRPOS(sa.func.SUBSTRING(x, z), y) > 0)
                 .then(sa.func.STRPOS(sa.func.SUBSTRING(x, z), y) + z - 1)
                 .else_(0),
             ),

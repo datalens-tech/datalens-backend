@@ -29,4 +29,4 @@ class ConnectionRefField(Field):
         Wraps connection ID with ConnRef object
         `None` value will not be passed here, so we should handle it in `.to_object()`
         """
-        return DefaultConnectionRef(conn_id=value)  # type: ignore
+        return DefaultConnectionRef(conn_id=value)

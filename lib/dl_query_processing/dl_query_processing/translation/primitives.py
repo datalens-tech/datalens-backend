@@ -63,7 +63,7 @@ _META_TV = TypeVar("_META_TV", bound="TranslatedQueryMetaInfo")
 
 @attr.s
 class TranslatedQueryMetaInfo(QueryMetaInfo):
-    detailed_types: Optional[list[Optional[DetailedType]]] = attr.ib(kw_only=True, factory=list)  # type: ignore
+    detailed_types: Optional[list[Optional[DetailedType]]] = attr.ib(kw_only=True, factory=list)
 
     @property
     def extract(self) -> QueryElementExtract:

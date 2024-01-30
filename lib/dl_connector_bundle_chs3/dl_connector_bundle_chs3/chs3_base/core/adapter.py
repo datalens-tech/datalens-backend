@@ -39,7 +39,7 @@ class BaseAsyncFileS3Adapter(BaseAsyncClickHouseAdapter):
     def _make_async_db_version_action(self) -> AsyncDBVersionAdapterAction:
         return AsyncDBVersionAdapterActionEmptyString()
 
-    async def is_table_exists(self, table_ident: TableIdent) -> bool:  # type: ignore
+    async def is_table_exists(self, table_ident: TableIdent) -> bool:
         return True
 
     def get_request_params(self, dba_q: DBAdapterQuery) -> Dict[str, str]:

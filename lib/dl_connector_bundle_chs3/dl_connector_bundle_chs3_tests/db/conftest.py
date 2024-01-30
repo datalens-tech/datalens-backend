@@ -17,7 +17,7 @@ def pytest_configure(config):  # noqa
 
 @pytest.fixture(autouse=True)
 def patch_get_full_s3_filename(monkeypatch: pytest.MonkeyPatch) -> None:
-    def _patched(self: Any, s3_filename_suffix: str) -> str:  # type: ignore
+    def _patched(self: Any, s3_filename_suffix: str) -> str:
         return s3_filename_suffix
 
     monkeypatch.setattr(BaseFileS3Connection, "get_full_s3_filename", _patched)

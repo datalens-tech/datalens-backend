@@ -17,7 +17,7 @@ def get_mypy_targets(pkg_dir: Path) -> list[str]:
     try:
         with open(pkg_dir / PYPROJECT_TOML) as fh:
             meta = tomlkit.load(fh)
-            return meta["datalens"]["meta"]["mypy"]["targets"]  # type: ignore
+            return meta["datalens"]["meta"]["mypy"]["targets"]
     except NonExistentKey:
         pass
 
@@ -31,7 +31,7 @@ def get_targets(root: Path) -> Iterable[str]:
         yield str(path.parent).replace(PYPROJECT_TOML, "")
 
 
-def main(root: Path, targets_file: Path = None) -> None:  # type: ignore
+def main(root: Path, targets_file: Path = None) -> None:
     # clize can't recognize type annotation "Optional"
     paths: Iterable[str]
     if targets_file is not None:

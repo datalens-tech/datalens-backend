@@ -545,7 +545,7 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
             columns: list[FromColumn] = []
             added_col_aliases: set[str] = set()
             item: AddFormulaInfo | AliasedFormulaSplitMask
-            for item in itertools.chain(subquery_mask.formula_split_masks, subquery_mask.add_formulas):  # type: ignore
+            for item in itertools.chain(subquery_mask.formula_split_masks, subquery_mask.add_formulas):
                 alias = item.alias
                 if alias not in added_col_aliases:
                     columns.append(FromColumn(id=alias, name=alias))

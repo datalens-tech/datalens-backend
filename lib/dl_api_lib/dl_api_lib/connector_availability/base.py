@@ -51,13 +51,13 @@ def _make_translatable(text: str, domain: Optional[str]) -> Translatable:
 @attr.s(kw_only=True)
 class Section(LocalizedSerializable):
     title_translatable: Translatable = attr.ib()
-    connectors: list[ConnectorBase] = attr.ib(validator=attr.validators.min_len(1))  # type: ignore
+    connectors: list[ConnectorBase] = attr.ib(validator=attr.validators.min_len(1))
 
     @classmethod
     def from_settings(cls, settings: SectionSettings) -> Section:
         def _connector_from_settings(settings: ConnectorBaseSettings | ObjectLikeConfig) -> ConnectorBase:
             if hasattr(settings, "conn_type"):
-                return Connector.from_settings(settings)  # type: ignore
+                return Connector.from_settings(settings)
             elif hasattr(settings, "includes"):
                 return ConnectorContainer.from_settings(settings)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "from_settings" of "ConnectorContainer" has incompatible type "ConnectorBaseSettings"; expected "ConnectorContainerSettings"  [arg-type]
             raise ValueError('Can\'t create a connector, neither "conn_type" nor "includes" found among settings')
@@ -166,7 +166,7 @@ class ConnectorContainer(ConnectorBase):
 
     conn_type_str = "__meta__"
     _alias: str = attr.ib()
-    includes: list[Connector] = attr.ib(validator=attr.validators.min_len(1))  # type: ignore
+    includes: list[Connector] = attr.ib(validator=attr.validators.min_len(1))
     title_translatable: Translatable = attr.ib()
 
     @property
@@ -211,7 +211,7 @@ class ConnectorAvailabilityConfig(SettingsBase):
     uncategorized: list[Connector] = attr.ib(factory=list)
     sections: list[Section] = attr.ib(factory=list)
 
-    visible_connectors: set[ConnectionType] = s_attrib(  # type: ignore
+    visible_connectors: set[ConnectionType] = s_attrib(
         "VISIBLE",
         env_var_converter=conn_type_set_env_var_converter,
         missing_factory=set,
@@ -237,7 +237,7 @@ class ConnectorAvailabilityConfig(SettingsBase):
         return itertools.chain(
             self.uncategorized,
             itertools.chain.from_iterable(
-                connector.includes if isinstance(connector, ConnectorContainer) else (connector,)  # type: ignore
+                connector.includes if isinstance(connector, ConnectorContainer) else (connector,)
                 for connector in itertools.chain.from_iterable(section.connectors for section in self.sections)
             ),
         )

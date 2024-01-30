@@ -44,7 +44,7 @@ class ConnectionFormTestBase:
     @pytest.fixture(
         params=[mode.name for mode in ConnectionFormMode],
     )
-    def mode(self, request) -> ConnectionFormMode:  # type: ignore
+    def mode(self, request) -> ConnectionFormMode:
         return ConnectionFormMode(request.param)
 
     @pytest.fixture

@@ -89,7 +89,7 @@ class BIClickHouseCompiler(BIClickHouseCompilerBasic, UPSTREAM.statement_compile
             if toplevel:
                 self.from_linter = from_linter
         else:
-            from_linter = None  # type: ignore
+            from_linter = None
             warn_linting = False
 
         if froms:

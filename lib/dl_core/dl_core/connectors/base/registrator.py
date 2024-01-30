@@ -44,15 +44,15 @@ class CoreConnectorRegistrator:
     @classmethod
     def register_source_definition(cls, source_def: Type[CoreSourceDefinition]) -> None:
         register_data_source_spec_class(
-            source_type=source_def.source_type,  # type: ignore
+            source_type=source_def.source_type,
             spec_cls=source_def.source_spec_cls,
         )
         register_data_source_class(
-            source_type=source_def.source_type,  # type: ignore
+            source_type=source_def.source_type,
             source_cls=source_def.source_cls,
         )
         register_data_source_schema(
-            source_type=source_def.source_type,  # type: ignore
+            source_type=source_def.source_type,
             schema_cls=source_def.us_storage_schema_cls,
         )
 
@@ -69,8 +69,8 @@ class CoreConnectorRegistrator:
             lifecycle_manager_cls=conn_def.lifecycle_manager_cls,
         )
         register_connection_backend_type(conn_type=conn_def.conn_type, backend_type=backend_type)
-        register_connection_schema(conn_cls=conn_def.connection_cls, schema_cls=conn_def.us_storage_schema_cls)  # type: ignore
-        register_type_transformer_class(conn_type=conn_def.conn_type, tt_cls=conn_def.type_transformer_cls)  # type: ignore
+        register_connection_schema(conn_cls=conn_def.connection_cls, schema_cls=conn_def.us_storage_schema_cls)
+        register_type_transformer_class(conn_type=conn_def.conn_type, tt_cls=conn_def.type_transformer_cls)
         if conn_def.sync_conn_executor_cls is not None:
             register_sync_conn_executor_class(
                 conn_cls=conn_def.connection_cls, sync_ce_cls=conn_def.sync_conn_executor_cls

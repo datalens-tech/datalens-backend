@@ -201,7 +201,7 @@ class DatasetDataBaseView(BaseView):
     def try_get_mutation_key(self, updates: List[Action]) -> Optional[MutationKey]:
         if self.dataset_id is not None and self.dataset.revision_id is not None:
             if self._updates_only_fields(updates):
-                return UpdateDatasetMutationKey.create(self.dataset.revision_id, updates)  # type: ignore
+                return UpdateDatasetMutationKey.create(self.dataset.revision_id, updates)
         return None
 
     def try_get_cache(self) -> Optional[USEntryMutationCache]:

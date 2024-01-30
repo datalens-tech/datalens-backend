@@ -73,4 +73,4 @@ class CHYTSyncAdapterConnExecutor(CHYTAdapterConnExecutor):
 
 @attr.s(cmp=False, hash=False)
 class CHYTAsyncAdapterConnExecutor(CHYTAdapterConnExecutor):
-    TARGET_ADAPTER_CLS = AsyncCHYTAdapter  # type: ignore
+    TARGET_ADAPTER_CLS = AsyncCHYTAdapter

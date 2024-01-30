@@ -20,7 +20,7 @@ from dl_core import exc
 from dl_core.connection_executors.adapters.adapters_base_sa import BaseSAAdapter
 from dl_core.connection_models import DBIdent
 from dl_core.connectors.base.error_transformer import DBExcKWArgs
-from dl_sqlalchemy_metrica_api import exceptions as sqla_metrika_exc  # type: ignore
+from dl_sqlalchemy_metrica_api import exceptions as sqla_metrika_exc
 
 from dl_connector_metrica.core.constants import (
     CONNECTION_TYPE_APPMETRICA_API,
@@ -81,5 +81,5 @@ class MetricaAPIDefaultAdapter(BaseSAAdapter[_M_CONN_T_DTO_TV]):
         return ""
 
 
-class AppMetricaAPIDefaultAdapter(MetricaAPIDefaultAdapter[AppMetricaAPIConnTargetDTO]):  # type: ignore
+class AppMetricaAPIDefaultAdapter(MetricaAPIDefaultAdapter[AppMetricaAPIConnTargetDTO]):
     conn_type = CONNECTION_TYPE_APPMETRICA_API

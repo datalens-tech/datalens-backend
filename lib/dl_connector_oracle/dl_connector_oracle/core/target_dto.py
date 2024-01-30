@@ -34,4 +34,4 @@ class OracleConnTargetDTO(BaseSQLConnTargetDTO):
     @classmethod
     def _from_jsonable_dict(cls: Type[_CT_DTO_TV], data: dict) -> _CT_DTO_TV:
         prepared_data = {**data, "db_name_type": OracleDbNameType[data["db_name_type"]]}
-        return cls(**prepared_data)  # type: ignore
+        return cls(**prepared_data)

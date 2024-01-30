@@ -57,7 +57,7 @@ class ConvertBlocksToFunctionsMutation(FormulaMutation):
 
     def _make_replacement_for_if_block(self, node: nodes.IfBlock) -> nodes.FuncCall:
         args: list[nodes.FormulaItem] = [
-            *chain.from_iterable(if_part.children for if_part in node.if_list),  # type: ignore
+            *chain.from_iterable(if_part.children for if_part in node.if_list),
             node.else_expr,
         ]
         return nodes.FuncCall.make("if", args=args, meta=node.meta)
@@ -65,7 +65,7 @@ class ConvertBlocksToFunctionsMutation(FormulaMutation):
     def _make_replacement_for_case_block(self, node: nodes.CaseBlock) -> nodes.FuncCall:
         args: list[nodes.FormulaItem] = [
             node.case_expr,
-            *chain.from_iterable(when_part.children for when_part in node.when_list),  # type: ignore
+            *chain.from_iterable(when_part.children for when_part in node.when_list),
         ]
         if node.else_expr is not None:
             args.append(node.else_expr)

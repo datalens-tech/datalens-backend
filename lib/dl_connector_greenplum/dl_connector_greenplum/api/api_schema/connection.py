@@ -5,4 +5,4 @@ from dl_connector_postgresql.api.api_schema.connection import PostgreSQLConnecti
 
 
 class GreenplumConnectionSchema(PostgreSQLConnectionSchema):
-    TARGET_CLS = GreenplumConnection  # type: ignore
+    TARGET_CLS = GreenplumConnection

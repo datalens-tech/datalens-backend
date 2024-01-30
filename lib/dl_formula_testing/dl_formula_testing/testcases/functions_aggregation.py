@@ -138,7 +138,7 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         VALUE_TV = TypeVar("VALUE_TV")
 
         def medians(values: Collection[Union[VALUE_TV]]) -> tuple[VALUE_TV, VALUE_TV]:
-            values = sorted(values)  # type: ignore
+            values = sorted(values)
             middle = len(values) // 2 - 1
             return (values[middle], values[middle + 1])
 

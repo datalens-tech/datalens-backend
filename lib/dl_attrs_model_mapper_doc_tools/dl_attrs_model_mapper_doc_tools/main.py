@@ -310,7 +310,7 @@ class Docs:
                             items=[
                                 dict(
                                     # TODO FIX: Extract TOC title somehow more accurate
-                                    name=initial_ctx.localize(class_doc.header.value),  # type: ignore
+                                    name=initial_ctx.localize(class_doc.header.value),
                                     href=self.get_file_path_for_type_strict(class_doc.type),
                                 )
                                 for class_doc in self._dedicated_class_docs

@@ -211,7 +211,7 @@ class FormulaItem(abc.ABC):
 
     def list_node_type(self, node_type: Type[_FORMULA_ITEM_TV]) -> list[_FORMULA_ITEM_TV]:
         res: list[_FORMULA_ITEM_TV] = []
-        self.visit_node_type(node_type=node_type, visit_func=res.append)  # type: ignore
+        self.visit_node_type(node_type=node_type, visit_func=res.append)
         return res
 
     def get_by_pos(
@@ -252,7 +252,7 @@ class FormulaItem(abc.ABC):
         assert child_index is not None
         parent = top_node.get(parent_index)
 
-        parent.__children[child_index] = expr  # type: ignore
+        parent.__children[child_index] = expr
         for node in reversed(list(top_node.iter_index(parent_index))):
             node.__extract = node._make_extract()
 
@@ -279,13 +279,13 @@ class FormulaItem(abc.ABC):
 
         # final replacement
         if child_in_index is None:
-            return expr  # type: ignore
+            return expr
 
         child = self.__children[child_in_index]
         new_child = child.replace_at_index(index_tail, expr)
 
         children = self.__children[:]
-        children[child_in_index] = new_child  # type: ignore
+        children[child_in_index] = new_child
 
         return self.light_copy(children)
 
@@ -297,7 +297,7 @@ class FormulaItem(abc.ABC):
         """
 
         return self.__class__(
-            *children,  # type: ignore
+            *children,
             internal_value=self.__internal_value,
             meta=meta or self.__meta,
         )
@@ -325,12 +325,12 @@ class FormulaItem(abc.ABC):
             if match_func(child, parent_stack_w_self):
                 modified_child = replace_func(child, parent_stack_w_self)
                 if modified_child is not child or modified_child != child:
-                    child = to_replace[idx] = modified_child  # type: ignore
+                    child = to_replace[idx] = modified_child
                     is_modified = True
 
             modified_child = child.replace_nodes(match_func, replace_func, parent_stack_w_self)
             if modified_child is not child or modified_child != child:
-                to_replace[idx] = modified_child  # type: ignore
+                to_replace[idx] = modified_child
                 is_modified = True
 
         if is_modified:
@@ -387,7 +387,7 @@ class FormulaItem(abc.ABC):
         if max_depth == 0:
             return
         child_max_depth = max_depth - 1 if max_depth is not None else None
-        for child_i, child in enumerate(self.children):  # type: ignore
+        for child_i, child in enumerate(self.children):
             yield from child.enumerate(prefix=prefix + child_i, max_depth=child_max_depth)
 
     def resolve_index(self, node: FormulaItem, pointer_eq: bool = True) -> Optional[NodeHierarchyIndex]:

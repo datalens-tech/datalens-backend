@@ -201,7 +201,7 @@ class AsyncUSManager(USManagerBase):
         )
 
         try:
-            entry = await self.get_by_id(entry_id, expected_type)  # type: ignore
+            entry = await self.get_by_id(entry_id, expected_type)
             entry._lock = lock_token  # type: ignore  # TODO: fix
             assert entry is not None
             yield entry

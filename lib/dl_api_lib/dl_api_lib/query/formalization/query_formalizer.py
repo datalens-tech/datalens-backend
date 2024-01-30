@@ -86,7 +86,7 @@ _RANGE_TYPE_TO_SELECT_TYPE = {
 }
 
 
-def need_permission_on_entry(us_entry, permission) -> None:  # type: ignore
+def need_permission_on_entry(us_entry, permission) -> None:
     # TODO: DELETE ME after the check is moved up the stack
     assert us_entry.permissions is not None
     assert us_entry.uuid is not None

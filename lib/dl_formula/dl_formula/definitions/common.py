@@ -83,7 +83,7 @@ def ifnotnull(value, expr):  # type: ignore  # 2024-01-24 # TODO: Function is mi
 
 class _PatchedWithinGroup(WithinGroup):
     def __reduce__(self) -> tuple:
-        return self.__class__, (self.element, *self.order_by)  # type: ignore
+        return self.__class__, (self.element, *self.order_by)
 
 
 def within_group(clause_el: ClauseElement, *order_by) -> _PatchedWithinGroup:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]

@@ -237,7 +237,7 @@ class USEntryCrawler:
 
         await self._task_runner.finalize()
 
-        return entry_id_distribution  # type: ignore
+        return entry_id_distribution
 
     async def single_entry_run(
         self,

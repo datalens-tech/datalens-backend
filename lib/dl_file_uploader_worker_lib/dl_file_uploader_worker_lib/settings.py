@@ -15,14 +15,14 @@ from dl_connector_bundle_chs3.file.core.settings import file_s3_settings_fallbac
 
 @attr.s(frozen=True)
 class SecureReader(SettingsBase):
-    SOCKET: str = s_attrib("SOCKET")  # type: ignore
-    ENDPOINT: Optional[str] = s_attrib("ENDPOINT", missing=None)  # type: ignore
-    CAFILE: Optional[str] = s_attrib("CAFILE", missing=None)  # type: ignore
+    SOCKET: str = s_attrib("SOCKET")
+    ENDPOINT: Optional[str] = s_attrib("ENDPOINT", missing=None)
+    CAFILE: Optional[str] = s_attrib("CAFILE", missing=None)
 
 
 @attr.s(frozen=True)
 class FileUploaderConnectorsSettings(SettingsBase):
-    FILE: Optional[FileS3ConnectorSettings] = s_attrib("FILE", missing=None)  # type: ignore
+    FILE: Optional[FileS3ConnectorSettings] = s_attrib("FILE", missing=None)
 
 
 def file_uploader_connectors_settings_fallback(full_cfg: ConnectorsConfigType) -> FileUploaderConnectorsSettings:
@@ -32,30 +32,30 @@ def file_uploader_connectors_settings_fallback(full_cfg: ConnectorsConfigType) -
 
 @attr.s(frozen=True)
 class FileUploaderWorkerSettings(FileUploaderBaseSettings):
-    SENTRY_DSN: Optional[str] = s_attrib(  # type: ignore
+    SENTRY_DSN: Optional[str] = s_attrib(
         "DL_SENTRY_DSN",
         fallback_cfg_key="SENTRY_DSN_FILE_UPLOADER_WORKER",
         missing=None,
     )
 
-    US_BASE_URL: str = s_attrib("US_HOST", fallback_cfg_key="US_BASE_URL")  # type: ignore
-    US_MASTER_TOKEN: str = s_attrib("US_MASTER_TOKEN", sensitive=True)  # type: ignore
+    US_BASE_URL: str = s_attrib("US_HOST", fallback_cfg_key="US_BASE_URL")
+    US_MASTER_TOKEN: str = s_attrib("US_MASTER_TOKEN", sensitive=True)
 
-    CONNECTORS: Optional[FileUploaderConnectorsSettings] = s_attrib(  # type: ignore
+    CONNECTORS: Optional[FileUploaderConnectorsSettings] = s_attrib(
         "CONNECTORS",
         fallback_factory=file_uploader_connectors_settings_fallback,
     )
 
-    GSHEETS_APP: GoogleAppSettings = s_attrib(  # type: ignore
+    GSHEETS_APP: GoogleAppSettings = s_attrib(
         # TODO: check gsheets connector availability
         "GSHEETS_APP",
     )
 
-    ENABLE_REGULAR_S3_LC_RULES_CLEANUP: bool = s_attrib("ENABLE_REGULAR_S3_LC_RULES_CLEANUP", missing=False)  # type: ignore
-    SECURE_READER: SecureReader = s_attrib(  # type: ignore
+    ENABLE_REGULAR_S3_LC_RULES_CLEANUP: bool = s_attrib("ENABLE_REGULAR_S3_LC_RULES_CLEANUP", missing=False)
+    SECURE_READER: SecureReader = s_attrib(
         "SECURE_READER",
         fallback_factory=(
-            lambda: SecureReader(  # type: ignore
+            lambda: SecureReader(
                 SOCKET="/var/reader.sock",
                 ENDPOINT=None,
                 CAFILE=None,

@@ -74,7 +74,7 @@ def run_pytest_one(t: Target) -> int:
     print(f"{run_args=}")
     print(f"{subprocess_kwargs=}")
 
-    process = subprocess.run(run_args, **subprocess_kwargs)  # type: ignore
+    process = subprocess.run(run_args, **subprocess_kwargs)
     return process.returncode
 
 

@@ -17,7 +17,7 @@ V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 
 
-def _all_concat_yql(expr, sep=", "):  # type: ignore
+def _all_concat_yql(expr, sep=", "):
     res = expr
     res = sa.cast(res, sa.TEXT)
     res = sa.func.AGGREGATE_LIST_DISTINCT(res)

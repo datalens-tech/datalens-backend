@@ -104,7 +104,7 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
                 dsrc.status = FileProcessingStatus.ready
 
             dfile.status = FileProcessingStatus.ready
-            if dfile.file_type == FileType.csv and (csv_src := dfile.sources[0]).status == FileProcessingStatus.failed:  # type: ignore
+            if dfile.file_type == FileType.csv and (csv_src := dfile.sources[0]).status == FileProcessingStatus.failed:
                 # there is guaranteed a single source in a csv file, and the error must be saved on the top level
                 dfile.status = csv_src.status
                 dfile.error = csv_src.error

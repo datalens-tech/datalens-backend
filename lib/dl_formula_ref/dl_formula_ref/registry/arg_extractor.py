@@ -61,8 +61,8 @@ class DefaultArgumentExtractor(ArgumentExtractorBase):
             min_arg_cnt = max(len(arg_names), INFINITE_ARG_COUNT)
             max_arg_cnt = max(len(arg_names), INFINITE_ARG_COUNT)
         else:
-            min_arg_cnt = min(defn.arg_cnt for defn in def_list)  # type: ignore
-            max_arg_cnt = max(defn.arg_cnt for defn in def_list)  # type: ignore
+            min_arg_cnt = min(defn.arg_cnt for defn in def_list)
+            max_arg_cnt = max(defn.arg_cnt for defn in def_list)
             arg_names = max((defn.arg_names or () for defn in def_list), key=lambda names: len(names))
 
         # generate arg types

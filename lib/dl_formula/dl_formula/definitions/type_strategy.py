@@ -44,7 +44,7 @@ class FromArgs(TypeStrategy):
         self._indices = indices or [slice(0, None)]
 
     def get_from_args(self, arg_types: List[DataType]) -> DataType:
-        return self._get_from_args_and_indices(arg_types, self._indices)  # type: ignore
+        return self._get_from_args_and_indices(arg_types, self._indices)
 
     @staticmethod
     def _get_from_args_and_indices(
@@ -52,7 +52,7 @@ class FromArgs(TypeStrategy):
         indices: Sequence[Union[int, slice]],
     ) -> DataType:
         use_arg_types = []
-        for ind in indices:  # type: ignore
+        for ind in indices:
             if isinstance(ind, int):
                 use_arg_types.append(arg_types[ind])
             elif isinstance(ind, slice):
@@ -135,4 +135,4 @@ class ParamsFromArgs(TypeParamsStrategy):
         self._index = index
 
     def get_from_arg_values(self, args: List[TranslationCtx]) -> DataTypeParams:
-        return args[self._index].data_type_params  # type: ignore
+        return args[self._index].data_type_params

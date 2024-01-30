@@ -68,11 +68,11 @@ def remap_formula_obj_fields(
 
     # In case the node is itself a Field
     if isinstance(node, formula_nodes.Field):
-        return remap_field(node)  # type: ignore
+        return remap_field(node)
 
     # For all other cases when it contains Fields
     updated_node = node.replace_nodes(
         match_func=lambda _node, parent_stack: isinstance(_node, formula_nodes.Field),
-        replace_func=remap_field,  # type: ignore
+        replace_func=remap_field,
     )
     return updated_node

@@ -111,7 +111,7 @@ class PingView(BaseView):
 class ActionHandlingView(BaseView):
     async def get_action(self) -> act.RemoteDBAdapterAction:
         raw_body = await self.request.json()
-        action = ActionSerializer().deserialize_action(raw_body, allowed_dba_classes=SUPPORTED_ADAPTER_CLS)  # type: ignore
+        action = ActionSerializer().deserialize_action(raw_body, allowed_dba_classes=SUPPORTED_ADAPTER_CLS)
         return action
 
     @staticmethod
@@ -167,7 +167,7 @@ class ActionHandlingView(BaseView):
             return await dba.get_schema_names(db_ident=action.db_ident)
 
         elif isinstance(action, act.ActionGetTables):
-            return await dba.get_tables(schema_ident=action.schema_ident)  # type: ignore
+            return await dba.get_tables(schema_ident=action.schema_ident)
 
         elif isinstance(action, act.ActionGetTableInfo):
             return await dba.get_table_info(table_def=action.table_def, fetch_idx_info=action.fetch_idx_info)

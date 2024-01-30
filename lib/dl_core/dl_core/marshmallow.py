@@ -14,7 +14,7 @@ import marshmallow.utils as ma_utils
 
 
 class FrozenSetField(fields.List):
-    def _deserialize(self, value: Any, attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any) -> FrozenSet[Any]:  # type: ignore
+    def _deserialize(self, value: Any, attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any) -> FrozenSet[Any]:
         return frozenset(super()._deserialize(value, attr, data, **kwargs))
 
     def _serialize(self, value: Any, attr: Optional[str], obj: Any, **kwargs: Any) -> Optional[list[Any]]:

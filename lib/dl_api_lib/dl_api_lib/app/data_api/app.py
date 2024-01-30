@@ -77,9 +77,9 @@ from dl_core.aio.web_app_services.redis import (
 LOGGER = logging.getLogger(__name__)
 
 
-def _log_exc(coro):  # type: ignore
+def _log_exc(coro):
     @functools.wraps(coro)
-    async def wrapper(*args, **kwargs):  # type: ignore
+    async def wrapper(*args, **kwargs):
         try:
             return await coro(*args, **kwargs)
         except Exception:

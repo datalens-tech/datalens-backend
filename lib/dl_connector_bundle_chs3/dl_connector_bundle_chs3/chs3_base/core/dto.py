@@ -14,6 +14,6 @@ class BaseFileS3ConnDTO(ClickHouseConnDTO):
     replace_secret: str = attr.ib(kw_only=True)
 
     # Set default=None
-    db_name: Optional[str] = attr.ib(kw_only=True, default=None)  # type: ignore
-    cluster_name: Optional[str] = attr.ib(kw_only=True, default=None)  # type: ignore
+    db_name: Optional[str] = attr.ib(kw_only=True, default=None)
+    cluster_name: Optional[str] = attr.ib(kw_only=True, default=None)
     endpoint: Optional[str] = attr.ib(kw_only=True, default=None)

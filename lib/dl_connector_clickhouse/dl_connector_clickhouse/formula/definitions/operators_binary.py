@@ -152,7 +152,7 @@ def _denullified_eq(
     if data_type == DataType.UNSUPPORTED:
         # We don't know the real type,
         # so the best we can do is build a regular equality expression
-        return left_ctx.expression == right_ctx.expression  # type: ignore
+        return left_ctx.expression == right_ctx.expression
 
     dialect = translation_env.dialect
     null_value, stringify_value = _get_null_substitute_value(data_type, dialect=dialect)
@@ -167,7 +167,7 @@ def _denullified_eq(
         sa.func.ifNull(left, null_value) == sa.func.ifNull(right, null_value),
         sa.func.isNull(left) == sa.func.isNull(right),
     )
-    return expr  # type: ignore
+    return expr
 
 
 class BinaryEqualDenullified(base.BinaryEqualDenullified):

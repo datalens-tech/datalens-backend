@@ -82,7 +82,7 @@ class GSheetsFileS3Connection(BaseFileS3Connection):
 
     @attr.s(eq=False, kw_only=True)
     class DataModel(BaseFileS3Connection.DataModel):
-        sources: list["GSheetsFileS3Connection.FileDataSource"] = attr.ib()  # type: ignore
+        sources: list["GSheetsFileS3Connection.FileDataSource"] = attr.ib()
 
         refresh_token: Optional[str] = attr.ib(default=None, repr=False)
         refresh_enabled: bool = attr.ib(default=False)

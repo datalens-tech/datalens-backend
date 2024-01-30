@@ -33,7 +33,7 @@ class ConnectorContainerSettings(ConnectorBaseSettings):
 @attr.s(kw_only=True)
 class SectionSettings(SettingsBase):
     title_translatable: TranslatableSettings = attr.ib()
-    connectors: list[ConnectorBaseSettings] = attr.ib(validator=attr.validators.min_len(1))  # type: ignore
+    connectors: list[ConnectorBaseSettings] = attr.ib(validator=attr.validators.min_len(1))
 
 
 @attr.s(kw_only=True)

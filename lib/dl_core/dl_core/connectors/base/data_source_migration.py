@@ -114,7 +114,7 @@ class SpecBasedSourceMigrator(DataSourceMigrator):
             elif hasattr(data_source_spec, mapping_item.source_spec_key):
                 params[mapping_item.migration_dto_key] = getattr(data_source_spec, mapping_item.source_spec_key)
 
-        return migration_spec.dto_cls(**params)  # type: ignore
+        return migration_spec.dto_cls(**params)
 
     def export_migration_dtos(
         self,

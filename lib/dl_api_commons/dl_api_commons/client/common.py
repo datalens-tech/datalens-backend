@@ -42,7 +42,7 @@ class CommonInternalAPIClient(DLCommonAPIClient):
             yield None
         except marshmallow.exceptions.ValidationError as ma_exc:
             LOGGER.info(f"Deserialization fail in internal API client: {type(self).__name__}", exc_info=True)
-            effective_messages: dict[str, Any] = ma_exc.messages  # type: ignore
+            effective_messages: dict[str, Any] = ma_exc.messages
 
             raise dl_api_commons.exc.MalformedAPIResponseErr(
                 self.create_exc_data(

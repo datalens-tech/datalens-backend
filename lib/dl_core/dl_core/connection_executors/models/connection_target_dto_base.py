@@ -43,7 +43,7 @@ class ConnTargetDTO(metaclass=abc.ABCMeta):
 
     _MAP_CLASS_NAME_CLASS: ClassVar[Dict[str, Type[ConnTargetDTO]]] = {}
 
-    def __init_subclass__(cls, **kwargs):  # type: ignore
+    def __init_subclass__(cls, **kwargs):
         cls._MAP_CLASS_NAME_CLASS[cls.__qualname__] = cls
 
     @classmethod

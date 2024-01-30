@@ -61,8 +61,8 @@ class MultiCacheManager(Generic[_QUALIFIER_VALUE_TV]):
                 raise error
             return result
 
-        wrapper.cache_info = _cached_result_and_error_wrapper.cache_info  # type: ignore
-        wrapper.cache_clear = _cached_result_and_error_wrapper.cache_clear  # type: ignore
+        wrapper.cache_info = _cached_result_and_error_wrapper.cache_info
+        wrapper.cache_clear = _cached_result_and_error_wrapper.cache_clear
         return wrapper
 
     def get_cached_wrapper_for_args(self, *args: Any, **kwargs: Any) -> _FUNC:
@@ -79,13 +79,13 @@ class MultiCacheManager(Generic[_QUALIFIER_VALUE_TV]):
     def cache_info(self) -> Dict[Optional[_QUALIFIER_VALUE_TV], _CacheInfo]:
         """Collect cache info objects for all existing cache qualifier values."""
         with self._cached_wrappers_lock:
-            return {qvalue: wrapper.cache_info() for qvalue, wrapper in self._cached_wrappers.items()}  # type: ignore
+            return {qvalue: wrapper.cache_info() for qvalue, wrapper in self._cached_wrappers.items()}
 
     def cache_clear(self) -> None:
         """Clear all existing caches."""
         with self._cached_wrappers_lock:
             for wrapper in self._cached_wrappers.values():
-                wrapper.cache_clear()  # type: ignore
+                wrapper.cache_clear()
 
 
 def multi_cached_with_errors(
@@ -112,9 +112,9 @@ def multi_cached_with_errors(
             wrapper = cache_manager.get_cached_wrapper_for_args(*args, **kwargs)
             return wrapper(*args, **kwargs)
 
-        generic_wrapper.multi_cache_manager = cache_manager  # type: ignore
-        generic_wrapper.cache_clear = cache_manager.cache_clear  # type: ignore
-        generic_wrapper.cache_info = cache_manager.cache_info  # type: ignore
+        generic_wrapper.multi_cache_manager = cache_manager
+        generic_wrapper.cache_clear = cache_manager.cache_clear
+        generic_wrapper.cache_info = cache_manager.cache_info
 
         return generic_wrapper
 

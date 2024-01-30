@@ -13,11 +13,11 @@ def method_lru(maxsize: int = 128, typed: bool = False) -> Callable:
 
     def wrapper(func: Callable) -> Callable:
         @functools.lru_cache(maxsize, typed)
-        def _func(_self: Callable, *args, **kwargs) -> Any:  # type: ignore
+        def _func(_self: Callable, *args, **kwargs) -> Any:
             return func(_self(), *args, **kwargs)
 
         @functools.wraps(func)
-        def inner(self: object, *args, **kwargs) -> Callable:  # type: ignore
+        def inner(self: object, *args, **kwargs) -> Callable:
             return _func(weakref.ref(self), *args, **kwargs)
 
         return inner

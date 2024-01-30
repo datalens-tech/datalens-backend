@@ -82,7 +82,7 @@ class CsvTableDumper:
             return _value_gen
 
         columns = [
-            C(name=name, user_type=user_type, vg=_value_gen_factory(_col_idx=col_idx), nullable=nullable)  # type: ignore
+            C(name=name, user_type=user_type, vg=_value_gen_factory(_col_idx=col_idx), nullable=nullable)
             for col_idx, (name, user_type) in enumerate(table_schema)
         ]
 

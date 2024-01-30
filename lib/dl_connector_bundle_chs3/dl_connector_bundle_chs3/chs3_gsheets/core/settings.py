@@ -23,7 +23,7 @@ def gsheets_file_s3_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[st
     if cfg is None:
         return {}
     return dict(
-        GSHEETS_V2=FileS3ConnectorSettings(  # type: ignore
+        GSHEETS_V2=FileS3ConnectorSettings(
             HOST=cfg.CONN_FILE_CH_HOST,
             PORT=cfg.CONN_FILE_CH_PORT,
             USERNAME=cfg.CONN_FILE_CH_USERNAME,

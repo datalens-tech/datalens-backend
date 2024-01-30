@@ -70,7 +70,7 @@ class DLBaseException(Exception):
     # ##
     _MAP_CLASS_NAME_CLASS: ClassVar[dict[str, Type["DLBaseException"]]] = {}
 
-    def __init_subclass__(cls, **kwargs):  # type: ignore
+    def __init_subclass__(cls, **kwargs):
         cls._MAP_CLASS_NAME_CLASS[cls.__qualname__] = cls
 
     @classmethod

@@ -129,32 +129,32 @@ class DynamicEnumMetaclass(type):
             # A subclass. Enforce slots without any additional instance attributes
             attrs = dict(attrs, __slots__=())
 
-        return super().__new__(mcs, name, bases, attrs)  # type: ignore
+        return super().__new__(mcs, name, bases, attrs)
 
     def __call__(cls: Type[_ANY_TV], *args: Any, **kwargs: Any) -> _ANY_TV:
         value = _get_value_from_dyn_enum_args(args, kwargs)
 
         # Deduplicate instances with the same value
         if cls not in DynamicEnumMetaclass.__instances:
-            DynamicEnumMetaclass.__instances[cls] = {}  # type: ignore
-        cls_instances = DynamicEnumMetaclass.__instances[cls]  # type: ignore
+            DynamicEnumMetaclass.__instances[cls] = {}
+        cls_instances = DynamicEnumMetaclass.__instances[cls]
         if value not in cls_instances:
-            cls_instances[value] = super().__call__(*args, **kwargs)  # type: ignore
+            cls_instances[value] = super().__call__(*args, **kwargs)
 
-        return cls_instances[value]  # type: ignore
+        return cls_instances[value]
 
     def __getitem__(cls: Type[_ANY_TV], item: str) -> _ANY_TV:
-        return cls(item)  # type: ignore
+        return cls(item)
 
     def __contains__(cls: DynamicEnumMetaclass, item: str) -> bool:
-        return cls.is_declared(item)  # type: ignore
+        return cls.is_declared(item)
 
     def __iter__(cls: Type[_ANY_TV]) -> Generator[_ANY_TV, None, None]:
-        yield from cls.iter_items()  # type: ignore
+        yield from cls.iter_items()
 
     @property
     def __members__(cls) -> MappingProxyType:  # For compatibility with Enum
-        return MappingProxyType({elem.name: elem.value for elem in cls})  # type: ignore
+        return MappingProxyType({elem.name: elem.value for elem in cls})
 
 
 class DynamicEnum(metaclass=DynamicEnumMetaclass):

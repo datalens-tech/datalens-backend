@@ -52,7 +52,7 @@ if TYPE_CHECKING:
 
 class CoreSourceDefinition(abc.ABC):
     source_type: ClassVar[DataSourceType]
-    source_cls: ClassVar[Type[DataSource]] = DataSource  # type: ignore
+    source_cls: ClassVar[Type[DataSource]] = DataSource
     source_spec_cls: ClassVar[Type[DataSourceSpec]] = DataSourceSpec
     us_storage_schema_cls: ClassVar[Type[DataSourceSpecStorageSchema]] = DataSourceSpecStorageSchema
 

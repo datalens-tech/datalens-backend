@@ -11,7 +11,7 @@ class BaseFileS3AsyncAdapterConnExecutor(AsyncClickHouseConnExecutor):
     _conn_dto: BaseFileS3ConnDTO = attr.ib()
     _conn_options: CHConnectOptions = attr.ib()
 
-    async def _make_target_conn_dto_pool(self) -> list[BaseFileS3ConnTargetDTO]:  # type: ignore
+    async def _make_target_conn_dto_pool(self) -> list[BaseFileS3ConnTargetDTO]:
         dto_pool = []
         for host in self._conn_hosts_pool:
             dto_pool.append(

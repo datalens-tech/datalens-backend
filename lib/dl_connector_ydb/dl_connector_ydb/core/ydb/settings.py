@@ -19,8 +19,8 @@ from dl_core.connectors.settings.primitives import (
 
 @attr.s(frozen=True)
 class YDBConnectorSettings(ConnectorSettingsBase):
-    HAS_AUTH: Optional[bool] = s_attrib("HAS_AUTH", missing=True)  # type: ignore
-    DEFAULT_HOST_VALUE: Optional[str] = s_attrib("DEFAULT_HOST_VALUE", missing=None)  # type: ignore
+    HAS_AUTH: Optional[bool] = s_attrib("HAS_AUTH", missing=True)
+    DEFAULT_HOST_VALUE: Optional[str] = s_attrib("DEFAULT_HOST_VALUE", missing=None)
 
 
 class ConnectorsDataYDBBase(ConnectorsDataBase):
@@ -39,7 +39,7 @@ def ydb_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, Connector
     )
     if cfg is None:
         return {}
-    return dict(YDB=YDBConnectorSettings(HAS_AUTH=cfg.HAS_AUTH))  # type: ignore
+    return dict(YDB=YDBConnectorSettings(HAS_AUTH=cfg.HAS_AUTH))
 
 
 class YDBSettingDefinition(ConnectorSettingsDefinition):

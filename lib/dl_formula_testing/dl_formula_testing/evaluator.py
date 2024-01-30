@@ -89,7 +89,7 @@ class DbEvaluator:
         other_fields = other_fields or {}
         parser = get_parser(ParserType.antlr_py)
         if field_types is None:
-            field_types = FIELD_TYPES  # type: ignore
+            field_types = FIELD_TYPES
         if isinstance(formula, str):
             formula = parser.parse(formula)
         if isinstance(formula, Formula):
@@ -103,18 +103,18 @@ class DbEvaluator:
 
             # mutate
             mutations = []
-            group_by_objs = [parser.parse(expr).expr for expr in (group_by or ())]  # type: ignore
+            group_by_objs = [parser.parse(expr).expr for expr in (group_by or ())]
             mutations.append(AmongToWithinGroupingMutation(global_dimensions=group_by_objs))
             if order_by is not None:
-                order_by_objs = [parser.parse(expr).expr for expr in order_by]  # type: ignore
-                mutations.append(DefaultWindowOrderingMutation(default_order_by=order_by_objs))  # type: ignore
+                order_by_objs = [parser.parse(expr).expr for expr in order_by]
+                mutations.append(DefaultWindowOrderingMutation(default_order_by=order_by_objs))
             formula = apply_mutations(formula, mutations=mutations)
 
             # translate
-            formula = translate(  # type: ignore
+            formula = translate(
                 formula=formula,
                 dialect=self.dialect,
-                field_types=field_types,  # type: ignore
+                field_types=field_types,
                 context_flags=context_flags,
                 collect_errors=collect_errors,
                 required_scopes=required_scopes,

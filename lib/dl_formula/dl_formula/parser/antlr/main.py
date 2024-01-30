@@ -67,4 +67,4 @@ class AntlrPyFormulaParser(FormulaParser):
         return parse(formula)
 
     def _get_global_stats(self) -> Dict[str, _CacheInfo]:
-        return parse.cache_info()  # type: ignore
+        return parse.cache_info()

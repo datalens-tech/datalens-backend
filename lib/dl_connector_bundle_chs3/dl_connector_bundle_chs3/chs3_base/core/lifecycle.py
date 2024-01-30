@@ -74,7 +74,7 @@ class FileConnTaskScheduler:
                 file_id=source.file_id,
                 src_source_id=src_source_id,
                 dst_source_id=source.id,
-                connection_id=conn.uuid,  # type: ignore
+                connection_id=conn.uuid,
             )
             task_instance = await_sync(self._task_processor.schedule(task))
             LOGGER.info(

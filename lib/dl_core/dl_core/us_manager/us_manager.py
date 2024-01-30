@@ -336,8 +336,8 @@ class USManagerBase:
             data = us_resp.get("data")
             serializer = self.get_us_entry_serializer(entry_cls)
             data_pack = USDataPack(
-                data=data,  # type: ignore
-                secrets=us_resp.get("unversionedData"),  # type: ignore
+                data=data,
+                secrets=us_resp.get("unversionedData"),
             )
 
             entry = serializer.deserialize(

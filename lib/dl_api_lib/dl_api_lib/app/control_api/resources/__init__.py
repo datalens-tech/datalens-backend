@@ -30,7 +30,7 @@ def init_apis(app: flask.Flask) -> None:
 
 
 @API.errorhandler(USReqException)
-def handle_us_error(error):  # type: ignore
+def handle_us_error(error):
     resp = error.orig_exc.response
     try:
         text = resp.text
@@ -45,13 +45,13 @@ def handle_us_error(error):  # type: ignore
 
 
 @API.errorhandler(UnavailableForLegalReasons)
-def handle_us_read_only_mode_error(error):  # type: ignore
+def handle_us_read_only_mode_error(error):
     # flask_restx doesn't support HTTP 451, so we have to handle it manually
     return error.data, 451
 
 
 @API.errorhandler(BadRequest)
-def handle_bad_request(error):  # type: ignore
+def handle_bad_request(error):
     rci = ReqCtxInfoMiddleware.get_last_resort_rci()
     req_id: Optional[str] = rci.request_id if rci is not None else None
 
