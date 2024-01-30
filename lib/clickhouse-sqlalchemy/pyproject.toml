@@ -37,6 +37,9 @@ testpaths = []
 [datalens_ci]
 skip_test = true
 
+[datalens.meta.mypy]
+targets = []    # ignore mypy in entire module
+
 [tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true

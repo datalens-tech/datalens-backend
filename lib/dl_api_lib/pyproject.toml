@@ -17,7 +17,6 @@ flask-restx = ">=1.1.0"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 more-itertools = ">=9.1.0"
-pandas = ">=2.0.3"
 python = ">=3.12, <3.13"
 werkzeug = ">=2.2.3"
 statcommons = {path = "../statcommons"}
@@ -35,6 +34,8 @@ datalens-query-processing = {path = "../dl_query_processing"}
 datalens-model-tools = {path = "../dl_model_tools"}
 datalens-task-processor = {path = "../dl_task_processor"}
 datalens-dashsql = {path = "../../lib/dl_dashsql"}
+datalens-pivot = {path = "../dl_pivot"}
+datalens-pivot-pandas = {path = "../dl_pivot_pandas"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
@@ -94,7 +95,3 @@ ignore_missing_imports = true
 dl_api_lib = [
     {path = "dl_api_lib"},
 ]
-
-[tool.poetry.plugins."dl_api_lib.pivot_engine_plugins"]
-pandas = "dl_api_lib.pivot.pandas.plugin:PandasPivotEnginePlugin"
-native = "dl_api_lib.pivot.native.plugin:NativePivotEnginePlugin"

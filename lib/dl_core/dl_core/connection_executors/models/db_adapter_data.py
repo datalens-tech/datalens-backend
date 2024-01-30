@@ -4,6 +4,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    Mapping,
     Optional,
     Sequence,
     Tuple,
@@ -12,7 +13,7 @@ from typing import (
 )
 
 import attr
-from sqlalchemy import sql as sasql
+from sqlalchemy.sql.elements import ClauseElement
 
 
 if TYPE_CHECKING:
@@ -43,11 +44,11 @@ _DB_ADAPTER_QUERY_TV = TypeVar("_DB_ADAPTER_QUERY_TV", bound="DBAdapterQuery")
 
 @attr.s(frozen=True)
 class DBAdapterQuery:
-    query: Union[sasql.Select, str] = attr.ib()
+    query: Union[ClauseElement, str] = attr.ib()
     db_name: Optional[str] = attr.ib(default=None)
     debug_compiled_query: Optional[str] = attr.ib(default=None)
     chunk_size: Optional[int] = attr.ib(default=None)
-    connector_specific_params: Optional[Dict[str, TJSONExt]] = attr.ib(default=None)
+    connector_specific_params: Optional[Mapping[str, TJSONExt]] = attr.ib(default=None)
     # Use-case: `explain ...` queries are incompatible with streaming (and
     # server-side cursors in general) because psycopg2 prepends 'DECLARE ...
     # CURSOR WITHOUT HOLD FOR ...' to the statement.

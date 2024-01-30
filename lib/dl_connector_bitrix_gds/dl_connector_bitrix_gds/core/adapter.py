@@ -8,7 +8,6 @@ from typing import (
     Any,
     ClassVar,
     Optional,
-    Union,
 )
 import uuid
 
@@ -16,7 +15,10 @@ import attr
 from redis_cache_lock.types import TClientACM
 from redis_cache_lock.utils import wrap_generate_func
 import sqlalchemy as sa
-from sqlalchemy.sql.elements import TypeCoerce
+from sqlalchemy.sql.elements import (
+    ClauseElement,
+    TypeCoerce,
+)
 
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_constants.enums import ConnectionType
@@ -31,7 +33,6 @@ from dl_core.connection_executors.models.db_adapter_data import (
     RawSchemaInfo,
 )
 from dl_core.connection_models import (
-    DBIdent,
     SchemaIdent,
     TableDefinition,
     TableIdent,
@@ -210,7 +211,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
         )
         return payload
 
-    def _extract_table_name(self, query: Union[sa.sql.Select, str]) -> str:
+    def _extract_table_name(self, query: ClauseElement | str) -> str:
         assert isinstance(query, sa.sql.Select)
         froms = query.froms[0]
         if isinstance(froms, sa.sql.Subquery) and hasattr(froms, "element"):

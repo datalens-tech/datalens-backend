@@ -56,6 +56,10 @@ if TYPE_CHECKING:
         SchemaIdent,
         TableIdent,
     )
+    from dl_dashsql.typed_query.primitives import (
+        TypedQuery,
+        TypedQueryResult,
+    )
 
 
 LOGGER = logging.getLogger(__name__)
@@ -256,6 +260,9 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
             result.append(bi_type)
 
         return result
+
+    async def _execute_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
+        return await self._target_dba.execute_typed_query(typed_query=typed_query)
 
     async def _execute(self, query: ConnExecutorQuery) -> AsyncExecutionResult:
         raw_result = await self._execute_query(self.executor_query_to_db_adapter_query(query))

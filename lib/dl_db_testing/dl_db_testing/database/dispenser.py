@@ -66,12 +66,12 @@ class ReInitableDbDispenser(DbDispenserBase[_DB_CONFIG_TV, _DB_TV], Generic[_DB_
 
     def _check_reinit_db(self, db_config: DbConfig, reconnect_timeout: Optional[int] = None) -> bool:
         """Check if DB is alive. If it is not, try to re-initialize it"""
-        db = self._db_cache.get(db_config)
+        db = self._db_cache.get(db_config)  # type: ignore  # 2024-01-29 # TODO: Argument 1 to "get" of "dict" has incompatible type "DbConfig"; expected "_DB_CONFIG_TV"  [arg-type]
         if db is None:
             return False
 
-        reinit_hook = self._reinit_hooks.get(db_config)
-        if reinit_hook is None or self._db_reinit_counts[db_config] >= self._max_reinit_count:
+        reinit_hook = self._reinit_hooks.get(db_config)  # type: ignore  # 2024-01-29 # TODO: Argument 1 to "get" of "dict" has incompatible type "DbConfig"; expected "_DB_CONFIG_TV"  [arg-type]
+        if reinit_hook is None or self._db_reinit_counts[db_config] >= self._max_reinit_count:  # type: ignore  # 2024-01-29 # TODO: Invalid index type "DbConfig" for "dict[_DB_CONFIG_TV, int]"; expected type "_DB_CONFIG_TV"  [index]
             return False
 
         if not db.test():
@@ -79,7 +79,7 @@ class ReInitableDbDispenser(DbDispenserBase[_DB_CONFIG_TV, _DB_TV], Generic[_DB_
             reinit_hook()
             # Wait until it comes up
             self.wait_for_db(db=db, reconnect_timeout=reconnect_timeout)
-            self._db_reinit_counts[db_config] += 1
+            self._db_reinit_counts[db_config] += 1  # type: ignore  # 2024-01-29 # TODO: Invalid index type "DbConfig" for "dict[_DB_CONFIG_TV, int]"; expected type "_DB_CONFIG_TV"  [index]
             return True
 
         return False

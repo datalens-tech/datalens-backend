@@ -10,6 +10,10 @@ from dl_core.connection_models import (
     TableDefinition,
     TableIdent,
 )
+from dl_dashsql.typed_query.primitives import (
+    TypedQuery,
+    TypedQueryResult,
+)
 
 
 @attr.s(frozen=True)
@@ -64,6 +68,13 @@ class SyncTableExistsAdapterAction(SyncAdapterAction):
         raise NotImplementedError
 
 
+@attr.s(frozen=True)
+class SyncTypedQueryAdapterAction(SyncAdapterAction):
+    @abc.abstractmethod
+    def run_typed_query_action(self, typed_query: TypedQuery) -> TypedQueryResult:
+        raise NotImplementedError
+
+
 # Dummy "NotImplemented" implementations
 
 
@@ -100,4 +111,10 @@ class SyncTableInfoAdapterActionNotImplemented(SyncTableInfoAdapterAction):
 @attr.s(frozen=True)
 class SyncTableExistsActionNotImplemented(SyncTableExistsAdapterAction):
     def run_table_exists_action(self, table_ident: TableIdent) -> bool:
+        raise NotImplementedError
+
+
+@attr.s(frozen=True)
+class SyncTypedQueryAdapterActionNotImplemented(SyncTypedQueryAdapterAction):
+    def run_typed_query_action(self, typed_query: TypedQuery) -> TypedQueryResult:
         raise NotImplementedError

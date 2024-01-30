@@ -12,6 +12,7 @@ from typing import (
 
 import sqlalchemy as sa
 from sqlalchemy.engine.default import DefaultDialect
+from sqlalchemy.sql.elements import ClauseElement
 
 from dl_constants.enums import (
     ConnectionType,
@@ -72,7 +73,7 @@ class CommonBaseDirectAdapter(Generic[_TARGET_DTO_TV], metaclass=abc.ABCMeta):
         return get_dialect_for_conn_type(cls.conn_type)
 
     def compile_query_for_execution(
-        self, query: sa.sql.Select | str, dialect: Optional[sa.engine.Dialect] = None
+        self, query: ClauseElement | str, dialect: Optional[sa.engine.Dialect] = None
     ) -> str:
         """Should not be used unless it is impossible to avoid"""
         if isinstance(query, str):

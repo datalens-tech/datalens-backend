@@ -10,7 +10,6 @@ import attr
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
-from dl_api_lib.pivot.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.enums import RedisMode
 from dl_configs.environments import is_setting_applicable
@@ -32,6 +31,7 @@ from dl_constants.enums import (
 )
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_formula.parser.factory import ParserType
+from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 
 
 @attr.s(frozen=True)
@@ -146,7 +146,7 @@ class AppSettings:
     )
     CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
 
-    PIVOT_ENGINE_TYPE: DataPivotEngineType = s_attrib(  # type: ignore
+    PIVOT_ENGINE_TYPE: Optional[DataPivotEngineType] = s_attrib(  # type: ignore
         "PIVOT_ENGINE_TYPE",
         env_var_converter=lambda s: DataPivotEngineType[s.lower()],
         missing=PIVOT_ENGINE_TYPE_PANDAS,  # TODO: Switch to another default

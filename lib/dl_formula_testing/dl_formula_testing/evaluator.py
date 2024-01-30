@@ -125,7 +125,7 @@ class DbEvaluator:
         return formula
 
     @staticmethod
-    def print_as_example(formula: Union[str, Formula], result) -> None:
+    def print_as_example(formula: Union[str, Formula], result) -> None:  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         if isinstance(result, datetime.date):
             result_str = "#{}#".format(str(result))
         elif isinstance(result, bool):
@@ -134,7 +134,7 @@ class DbEvaluator:
             result_str = repr(result)
         print("{},".format(repr("{} = {}".format(formula, result_str))))
 
-    def eval(
+    def eval(  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
         self,
         formula: Union[str, Formula],
         from_: Optional[ClauseElement] = None,
@@ -154,7 +154,7 @@ class DbEvaluator:
             required_scopes=required_scopes,
         )
 
-        def convert(val):
+        def convert(val):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
             # a workaround for missing boolean type in DBs and no coercion to bool
             if select_ctx.data_type in (DataType.CONST_BOOLEAN, DataType.BOOLEAN) and val in (0, 1):
                 val = bool(val)

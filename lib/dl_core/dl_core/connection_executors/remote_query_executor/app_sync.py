@@ -48,6 +48,8 @@ from dl_core.loader import (
     load_core_lib,
 )
 from dl_core.logging_config import hook_configure_logging as _hook_configure_logging
+from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
+from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
 
 
 if TYPE_CHECKING:
@@ -104,8 +106,23 @@ class ActionHandlingView(flask.views.View):
         elif isinstance(action, act.ActionIsTableExists):
             return dba.is_table_exists(table_ident=action.table_ident)
 
+        elif isinstance(action, act.ActionExecuteTypedQuery):
+            return self._handle_execute_typed_query_action(dba=dba, action=action)
+
         else:
             raise NotImplementedError(f"Action {action} is not implemented in QE")
+
+    def _handle_execute_typed_query_action(
+        self,
+        dba: SyncDirectDBAdapter,
+        action: act.ActionExecuteTypedQuery,
+    ) -> str:
+        tq_serializer = get_typed_query_serializer(query_type=action.query_type)
+        typed_query = tq_serializer.deserialize(action.typed_query_str)
+        tq_result = dba.execute_typed_query(typed_query=typed_query)
+        tq_result_serializer = get_typed_query_result_serializer(query_type=action.query_type)
+        tq_result_str = tq_result_serializer.serialize(tq_result)
+        return tq_result_str
 
     @staticmethod
     def try_close_dba(dba: SyncDirectDBAdapter) -> None:

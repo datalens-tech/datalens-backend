@@ -21,7 +21,7 @@ from dl_formula_testing.testcases.base import FormulaConnectorTestBase
 NUMERIC = Union[decimal.Decimal, int, float]
 
 
-def approx(value):
+def approx(value):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
     if isinstance(value, list):
         result = []
         for subvalue in value:
@@ -40,7 +40,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
     supports_rank_percentile: ClassVar[bool] = True
 
     def test_rank(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
 
         assert dbe.eval("RANK([int_value])", from_=data_table, order_by=["[id]"], many=True) == (
@@ -57,7 +57,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         )
 
     def test_rank_dense(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
 
         assert dbe.eval("RANK_DENSE([int_value])", from_=data_table, order_by=["[id]"], many=True) == (
@@ -74,7 +74,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         ) == ([1] * 10 + [2] * 10)
 
     def test_rank_unique(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
 
         assert dbe.eval("RANK_UNIQUE([id])", from_=data_table, order_by=["[id]"], many=True) == list(
@@ -100,7 +100,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         if not self.supports_rank_percentile:
             pytest.skip()
 
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         cnt = len(values)
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
 
@@ -109,7 +109,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         ) == ([(val * 2) / (cnt - 1) for val in range(10)] + [(val * 2) / (cnt - 1) for val in range(10)])
 
     def test_sum(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
         assert dbe.eval("SUM([int_value] TOTAL)", from_=data_table, order_by=["[id]"], many=True) == (
             [sum(values)] * 20
@@ -119,7 +119,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         )
 
     def test_min(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
         assert dbe.eval("MIN([int_value] TOTAL)", from_=data_table, order_by=["[id]"], many=True) == (
             [min(values)] * 20
@@ -129,7 +129,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         )
 
     def test_max(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
         assert dbe.eval("MAX([int_value] TOTAL)", from_=data_table, order_by=["[id]"], many=True) == (
             [max(values)] * 20
@@ -139,7 +139,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         )
 
     def test_count(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
         # 1 arg
         assert dbe.eval("COUNT([int_value] TOTAL)", from_=data_table, order_by=["[id]"], many=True) == (
@@ -155,7 +155,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         )
 
     def test_avg(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
         assert approx(dbe.eval("AVG([int_value] TOTAL)", from_=data_table, order_by=["[id]"], many=True)) == (
             [sum(values) / 20] * 20
@@ -165,7 +165,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         )
 
     def test_sum_if(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
         assert dbe.eval("SUM_IF([int_value], [id] < 11 TOTAL)", from_=data_table, order_by=["[id]"], many=True) == (
             [sum(v for id_0, v in enumerate(values) if id_0 + 1 < 11)] * 20  # (id_0 = id - 1)
@@ -175,7 +175,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         ) == ([val for val in range(1, 11)] + [val for val in range(1, 11)])
 
     def test_count_if(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
         assert dbe.eval("COUNT_IF([int_value], [id] < 11 TOTAL)", from_=data_table, order_by=["[id]"], many=True) == (
             [10] * 20
@@ -185,7 +185,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         ) == ([1] * 10 + [1] * 10)
 
     def test_avg_if(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
         assert dbe.eval(
             "AVG_IF([int_value], [id] < 11 TOTAL)", from_=data_table, order_by=["[id]"], many=True
@@ -200,7 +200,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         self, dbe: DbEvaluator, data_table: sa.Table, func_name: str, py_agg_func: Callable[[List[NUMERIC]], NUMERIC]
     ) -> None:
         ids = list(range(1, 21))
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
         assert approx(dbe.eval(f"{func_name}([int_value] TOTAL)", from_=data_table, order_by=["[id]"], many=True)) == (
             [py_agg_func(values[: i + 1]) for i in range(20)]
@@ -241,7 +241,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
     def _check_mfunc(
         self, dbe: DbEvaluator, data_table: sa.Table, func_name: str, py_agg_func: Callable[[List[NUMERIC]], NUMERIC]
     ) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
         assert approx(dbe.eval(f"{func_name}([int_value], 1)", from_=data_table, order_by=["[id]"], many=True)) == (
             [py_agg_func(values[max(0, i - 1) : i + 1]) for i in range(20)]
@@ -285,7 +285,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
                 return default
             return values[offset_idx]
 
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
         assert dbe.eval("LAG([int_value])", from_=data_table, order_by=["[id]"], many=True) == (
             [lag(values, i, offset=1) for i in range(20)]
@@ -308,7 +308,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         )
 
     def test_first(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
 
         assert dbe.eval("FIRST([int_value] TOTAL ORDER BY [id])", from_=data_table, many=True) == [values[0]] * len(
@@ -319,7 +319,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         ] * len(values)
 
     def test_last(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        values = data_table.int_values
+        values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))
 
         assert dbe.eval("LAST([int_value] TOTAL ORDER BY [id])", from_=data_table, many=True) == [values[-1]] * len(

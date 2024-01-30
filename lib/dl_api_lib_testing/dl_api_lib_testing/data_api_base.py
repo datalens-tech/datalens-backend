@@ -34,6 +34,7 @@ from dl_configs.rqe import RQEConfig
 from dl_constants.enums import ConnectionType
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_core_testing.database import DbTable
+from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 from dl_testing.utils import get_root_certificates_path
 
 
@@ -87,6 +88,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             FILE_UPLOADER_MASTER_TOKEN="qwerty",
             QUERY_PROCESSING_MODE=cls.query_processing_mode,
             CA_FILE_PATH=get_root_certificates_path(),
+            PIVOT_ENGINE_TYPE=PIVOT_ENGINE_TYPE_PANDAS,
         )  # type: ignore
 
     @pytest.fixture(scope="function")

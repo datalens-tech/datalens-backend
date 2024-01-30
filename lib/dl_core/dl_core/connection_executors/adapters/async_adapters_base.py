@@ -29,6 +29,8 @@ from dl_core.connection_executors.adapters.adapter_actions.async_base import (
     AsyncTableNamesAdapterActionNotImplemented,
     AsyncTestAdapterAction,
     AsyncTestAdapterActionNotImplemented,
+    AsyncTypedQueryActionNotImplemented,
+    AsyncTypedQueryAdapterAction,
 )
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from dl_core.connection_executors.models.db_adapter_data import (
@@ -47,6 +49,10 @@ if TYPE_CHECKING:
         SchemaIdent,
         TableDefinition,
         TableIdent,
+    )
+    from dl_dashsql.typed_query.primitives import (
+        TypedQuery,
+        TypedQueryResult,
     )
 
 
@@ -103,6 +109,7 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
     _async_test_action: AsyncTestAdapterAction = attr.ib(init=False)
     _async_table_info_action: AsyncTableInfoAdapterAction = attr.ib(init=False)
     _async_table_exists_action: AsyncTableExistsAdapterAction = attr.ib(init=False)
+    _async_typed_query_action: AsyncTypedQueryAdapterAction = attr.ib(init=False)
 
     # Action defaults
 
@@ -113,28 +120,33 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
 
     @_async_schema_names_action.default
     @final
-    def __make_async_schema_names_action(self) -> AsyncSchemaNamesAdapterAction:
+    def __make_default_async_schema_names_action(self) -> AsyncSchemaNamesAdapterAction:
         return self._make_async_schema_names_action()
 
     @_async_table_names_action.default
     @final
-    def __make_async_table_names_action(self) -> AsyncTableNamesAdapterAction:
+    def __make_default_async_table_names_action(self) -> AsyncTableNamesAdapterAction:
         return self._make_async_table_names_action()
 
     @_async_test_action.default
     @final
-    def __make_async_test_action(self) -> AsyncTestAdapterAction:
+    def __make_default_async_test_action(self) -> AsyncTestAdapterAction:
         return self._make_async_test_action()
 
     @_async_table_info_action.default  # type: ignore  # 2024-01-24 # TODO: Name "__make_async_test_action" already defined on line 124  [no-redef]
     @final
-    def __make_async_test_action(self) -> AsyncTableInfoAdapterAction:
+    def __make_default_async_test_action(self) -> AsyncTableInfoAdapterAction:
         return self._make_async_table_info_action()
 
     @_async_table_exists_action.default
     @final
-    def __make_async_table_exists_action(self) -> AsyncTableExistsAdapterAction:
+    def __make_default_async_table_exists_action(self) -> AsyncTableExistsAdapterAction:
         return self._make_async_table_exists_action()
+
+    @_async_typed_query_action.default
+    @final
+    def __make_default_async_typed_query_action(self) -> AsyncTypedQueryAdapterAction:
+        return self._make_async_typed_query_action()
 
     # Action factory methods
 
@@ -162,8 +174,15 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
         # Redefine this method to enable `is_table_exists`
         return AsyncTableExistsActionNotImplemented()
 
+    def _make_async_typed_query_action(self) -> AsyncTypedQueryAdapterAction:
+        # Redefine this method to enable `execute_typedQuery`
+        return AsyncTypedQueryActionNotImplemented()
+
     async def test(self) -> None:
         return await self._async_test_action.run_test_action()
+
+    async def execute_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
+        return await self._async_typed_query_action.run_typed_query_action(typed_query=typed_query)
 
     @abc.abstractmethod
     async def execute(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:  # TODO: Implement via action

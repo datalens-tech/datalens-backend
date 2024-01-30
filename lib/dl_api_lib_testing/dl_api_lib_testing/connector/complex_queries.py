@@ -38,7 +38,7 @@ from dl_testing.regulated_test import (
 class DefaultBasicExtAggregationTestSuite(
     RegulatedTestCase, DataApiTestBase, DatasetTestBase, DbServiceFixtureTextClass
 ):
-    def test_lod_fixed_single_dim_in_two_dim_query(self, control_api, data_api, saved_dataset):
+    def test_lod_fixed_single_dim_in_two_dim_query(self, control_api, data_api, saved_dataset):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
         ds = add_formulas_to_dataset(
             api_v1=control_api,
             dataset=saved_dataset,
@@ -63,10 +63,10 @@ class DefaultBasicExtAggregationTestSuite(
         assert result_resp.status_code == HTTPStatus.OK, result_resp.json
         data_rows = get_data_rows(result_resp)
 
-        sum_by_city = defaultdict(lambda: 0)
+        sum_by_city = defaultdict(lambda: 0)  # type: ignore  # 2024-01-29 # TODO: Need type annotation for "sum_by_city"  [var-annotated]
         for row in data_rows:
             sum_by_city[row[0]] += float(row[2])
-        sum_by_category = defaultdict(lambda: 0)
+        sum_by_category = defaultdict(lambda: 0)  # type: ignore  # 2024-01-29 # TODO: Need type annotation for "sum_by_category"  [var-annotated]
         for row in data_rows:
             sum_by_category[row[1]] += float(row[2])
 
@@ -74,7 +74,7 @@ class DefaultBasicExtAggregationTestSuite(
             assert float(row[3]) == pytest.approx(sum_by_city[row[0]])
             assert float(row[4]) == pytest.approx(sum_by_category[row[1]])
 
-    def test_null_dimensions(self, request, control_api, data_api, db, saved_connection_id):
+    def test_null_dimensions(self, request, control_api, data_api, db, saved_connection_id):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
         connection_id = saved_connection_id
 
         raw_data = [
@@ -128,7 +128,7 @@ class DefaultBasicExtAggregationTestSuite(
         assert city == ["New York", "New Rochelle", None]
         assert sum_lod == [11, 1100, 110000]
 
-    def test_total_lod(self, control_api, data_api, saved_dataset):
+    def test_total_lod(self, control_api, data_api, saved_dataset):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
         data_api = data_api
         ds = add_formulas_to_dataset(
             api_v1=control_api,
@@ -168,7 +168,7 @@ class DefaultBasicExtAggregationTestSuite(
                 float(row[2]) == pytest.approx(total_sum) == pytest.approx(expected_total_value)
             ), f"total sum doesn't match expected number in row {row_idx}"
 
-    def test_total_lod_2(
+    def test_total_lod_2(  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
         self,
         request,
         control_api,
@@ -218,7 +218,7 @@ class DefaultBasicExtAggregationTestSuite(
         check_equality_of_totals("Agg 1", "Agg 3")
         check_equality_of_totals("Agg 1", "Agg 2", "Agg 3")
 
-    def test_lod_in_order_by(
+    def test_lod_in_order_by(  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
         self,
         request,
         control_api,
@@ -269,7 +269,7 @@ class DefaultBasicExtAggregationTestSuite(
 class DefaultBasicLookupFunctionTestSuite(
     RegulatedTestCase, DataApiTestBase, DatasetTestBase, DbServiceFixtureTextClass
 ):
-    def test_ago_any_db(self, request, saved_connection_id, control_api, data_api, db):
+    def test_ago_any_db(self, request, saved_connection_id, control_api, data_api, db):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
         db_table = make_table(db=db)
         request.addfinalizer(functools.partial(db.drop_table, db_table.table))
         ds = create_basic_dataset(
@@ -299,7 +299,7 @@ class DefaultBasicLookupFunctionTestSuite(
 
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=2, day_offset=2)
 
-    def test_triple_ago_any_db(self, request, saved_connection_id, control_api, data_api, db):
+    def test_triple_ago_any_db(self, request, saved_connection_id, control_api, data_api, db):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
         db_table = make_table(db)
         request.addfinalizer(functools.partial(db.drop_table, db_table.table))
         ds = create_basic_dataset(
@@ -335,12 +335,12 @@ class DefaultBasicLookupFunctionTestSuite(
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=3, day_offset=2)
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=4, day_offset=3)
 
-    def test_ago_any_db_multisource(self, request, saved_connection_id, control_api, data_api, db):
+    def test_ago_any_db_multisource(self, request, saved_connection_id, control_api, data_api, db):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
         connection_id = saved_connection_id
         table_1 = make_table(db)
         table_2 = make_table(db)
 
-        def teardown(db, *tables):
+        def teardown(db, *tables):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
             for table in tables:
                 db.drop_table(table)
 
@@ -389,7 +389,7 @@ class DefaultBasicLookupFunctionTestSuite(
 
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=2, day_offset=2)
 
-    def test_nested_ago(self, request, saved_connection_id, control_api, data_api, db):
+    def test_nested_ago(self, request, saved_connection_id, control_api, data_api, db):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
         db_table = make_table(db)
         request.addfinalizer(functools.partial(db.drop_table, db_table.table))
         ds = create_basic_dataset(
@@ -425,7 +425,7 @@ class DefaultBasicLookupFunctionTestSuite(
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=3, day_offset=2)
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=4, day_offset=3)
 
-    def test_month_ago_for_shorter_month(self, request, db, saved_connection_id, control_api, data_api):
+    def test_month_ago_for_shorter_month(self, request, db, saved_connection_id, control_api, data_api):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
         any_db_table_200 = make_table(db, rows=200)
         request.addfinalizer(functools.partial(db.drop_table, any_db_table_200.table))
 
@@ -465,7 +465,7 @@ class DefaultBasicWindowFunctionTestSuite(
     feature_window_functions = Feature("window_functions")
 
     @for_features(feature_window_functions)
-    def test_window_functions(self, control_api, data_api, saved_dataset):
+    def test_window_functions(self, control_api, data_api, saved_dataset):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
         ds = add_formulas_to_dataset(
             api_v1=control_api,
             dataset=saved_dataset,

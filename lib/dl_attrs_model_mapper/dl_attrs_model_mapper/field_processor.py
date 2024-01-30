@@ -126,7 +126,7 @@ class Processor(Generic[_PROCESSING_OBJECT_TV]):
         assert attr.has(type(target))
         changes = {}
 
-        for attr_ib in attr.fields(type(target)):
+        for attr_ib in attr.fields(type(target)):  # type: ignore  # 2024-01-29 # TODO: Argument 1 to "fields" has incompatible type "type[_TARGET_TV]"; expected "type[AttrsInstance]"  [arg-type]
             current_value = getattr(target, attr_ib.name)
 
             meta = self._create_field_meta(attr_ib)
@@ -138,6 +138,6 @@ class Processor(Generic[_PROCESSING_OBJECT_TV]):
                 changes[self._get_changes_key(attr_ib)] = processed_value
 
         if changes:
-            return attr.evolve(target, **changes)
+            return attr.evolve(target, **changes)  # type: ignore  # 2024-01-29 # TODO: Argument 1 to "evolve" has a variable type "_TARGET_TV" not bound to an attrs class  [misc]
         else:
             return target

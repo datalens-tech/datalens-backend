@@ -17,7 +17,7 @@ class AiopgCompEngService(CompEngPgService[AiopgPoolWrapper]):
     def _get_pool_wrapper_cls(self) -> Type[BasePgPoolWrapper]:
         return AiopgPoolWrapper
 
-    def get_data_processor(
+    def get_data_processor(  # type: ignore  # 2024-01-29 # TODO: Return type "OperationProcessorAsyncBase" of "get_data_processor" incompatible with return type "ExecutorBasedOperationProcessor" in supertype "DataProcessorService"  [override]
         self,
         service_registry: ServicesRegistry,
         reporting_enabled: bool,

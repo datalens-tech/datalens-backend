@@ -33,7 +33,7 @@ _TARGET_OBJECT_GENERATED_TV = TypeVar("_TARGET_OBJECT_GENERATED_TV")
 
 
 class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
-    target_cls: ClassVar[Type[_TARGET_OBJECT_BASE_TV]]
+    target_cls: ClassVar[Type[_TARGET_OBJECT_BASE_TV]]  # type: ignore  # 2024-01-29 # TODO: ClassVar cannot contain type variables  [misc]
     _fields_to_skip_on_none: ClassVar[set[str]]
 
     # TODO FIX: Make tests
@@ -96,7 +96,7 @@ class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
 class BaseOneOfSchema(OneOfSchema):
     type_field = "type"
 
-    type_schemas: Dict[str, Type[BaseSchema]] = {}
+    type_schemas: Dict[str, Type[BaseSchema]] = {}  # type: ignore  # 2024-01-29 # TODO: Incompatible types in assignment (expression has type "dict[str, type[BaseSchema[Any]]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
     _map_cls_type_discriminator: ClassVar[dict[Type, str]] = {}
 
     @classmethod

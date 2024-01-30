@@ -5,12 +5,11 @@ from typing import (
 )
 
 import sqlalchemy as sa
-from sqlalchemy import sql as sasql
 from sqlalchemy.engine import Dialect
 
 
 def compile_pg_query(
-    query: Union[str, sasql.Select],
+    query: Union[str, sa.sql.ClauseElement],
     dialect: Dialect,
     exclude_types: AbstractSet[Any] = frozenset(),
     add_types: bool = True,

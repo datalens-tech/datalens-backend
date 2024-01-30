@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     Generator,
     Iterable,
-    List,
     Optional,
     Sequence,
     TypeVar,
@@ -28,6 +27,8 @@ from dl_core.connection_executors.adapters.adapter_actions.sync_base import (
     SyncTableNamesAdapterActionNotImplemented,
     SyncTestAdapterAction,
     SyncTestAdapterActionNotImplemented,
+    SyncTypedQueryAdapterAction,
+    SyncTypedQueryAdapterActionNotImplemented,
 )
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from dl_core.connection_executors.models.db_adapter_data import (
@@ -47,6 +48,10 @@ from dl_core.connection_models import (
 
 if TYPE_CHECKING:
     from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO  # noqa: F401
+    from dl_dashsql.typed_query.primitives import (
+        TypedQuery,
+        TypedQueryResult,
+    )
 
 
 LOGGER = logging.getLogger(__name__)
@@ -59,11 +64,11 @@ class DBAdapterQueryResult:
     # Notable difference from `cursor_info`: raw value is not meant to be serialized.
     raw_cursor_info: Optional[ExecutionStepCursorInfo] = attr.ib(default=None)
 
-    def get_all(self) -> Sequence[Sequence]:
+    def get_all(self) -> list[Sequence]:
         """
         :return: All fetched data
         """
-        result: List[Sequence] = []
+        result: list[Sequence] = []
         for chunk in self.data_chunks:
             result.extend(chunk)
 
@@ -81,38 +86,44 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
     _sync_test_action: SyncTestAdapterAction = attr.ib(init=False)
     _sync_table_info_action: SyncTableInfoAdapterAction = attr.ib(init=False)
     _sync_table_exists_action: SyncTableExistsAdapterAction = attr.ib(init=False)
+    _sync_typed_query_action: SyncTypedQueryAdapterAction = attr.ib(init=False)
 
     # Action defaults
 
-    @_sync_db_version_action.default  # type: ignore  # 2024-01-24 # TODO: "SyncDBVersionAdapterAction" has no attribute "default"  [attr-defined]
+    @_sync_db_version_action.default  # type: ignore  # attrs field default
     @final
     def __make_default_sync_db_version_action(self) -> SyncDBVersionAdapterAction:
         return self._make_sync_db_version_action()
 
-    @_sync_schema_names_action.default  # type: ignore  # 2024-01-24 # TODO: "SyncSchemaNamesAdapterAction" has no attribute "default"  [attr-defined]
+    @_sync_schema_names_action.default  # type: ignore  # attrs field default
     @final
-    def __make_sync_schema_names_action(self) -> SyncSchemaNamesAdapterAction:
+    def __make_default_sync_schema_names_action(self) -> SyncSchemaNamesAdapterAction:
         return self._make_sync_schema_names_action()
 
-    @_sync_table_names_action.default  # type: ignore  # 2024-01-24 # TODO: "SyncTableNamesAdapterAction" has no attribute "default"  [attr-defined]
+    @_sync_table_names_action.default  # type: ignore  # attrs field default
     @final
-    def __make_sync_table_names_action(self) -> SyncTableNamesAdapterAction:
+    def __make_default_sync_table_names_action(self) -> SyncTableNamesAdapterAction:
         return self._make_sync_table_names_action()
 
-    @_sync_test_action.default
+    @_sync_test_action.default  # type: ignore  # attrs field default
     @final
-    def __make_sync_test_action(self) -> SyncTestAdapterAction:
+    def __make_default_sync_test_action(self) -> SyncTestAdapterAction:
         return self._make_sync_test_action()
 
-    @_sync_table_info_action.default  # type: ignore  # 2024-01-24 # TODO: Name "__make_sync_test_action" already defined on line 102  [no-redef]
+    @_sync_table_info_action.default  # type: ignore  # attrs field default
     @final
-    def __make_sync_test_action(self) -> SyncTableInfoAdapterAction:
+    def __make_default_sync_test_action(self) -> SyncTableInfoAdapterAction:
         return self._make_sync_table_info_action()
 
-    @_sync_table_exists_action.default  # type: ignore  # 2024-01-24 # TODO: "SyncTableExistsAdapterAction" has no attribute "default"  [attr-defined]
+    @_sync_table_exists_action.default  # type: ignore  # attrs field default
     @final
-    def __make_sync_table_exists_action(self) -> SyncTableExistsAdapterAction:
+    def __make_default_sync_table_exists_action(self) -> SyncTableExistsAdapterAction:
         return self._make_sync_table_exists_action()
+
+    @_sync_typed_query_action.default  # type: ignore  # attrs field default
+    @final
+    def __make_default_sync_typed_query_action(self) -> SyncTypedQueryAdapterAction:
+        return self._make_sync_typed_query_action()
 
     # Action factory methods
 
@@ -140,6 +151,10 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
         # Redefine this method to enable `is_table_exists`
         return SyncTableExistsActionNotImplemented()
 
+    def _make_sync_typed_query_action(self) -> SyncTypedQueryAdapterAction:
+        # Redefine this method to enable `execute_typed_query`
+        return SyncTypedQueryAdapterActionNotImplemented()
+
     @abc.abstractmethod
     def execute_by_steps(self, db_adapter_query: DBAdapterQuery) -> Generator[ExecutionStep, None, None]:
         pass
@@ -147,6 +162,9 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
     @abc.abstractmethod
     def test(self) -> None:
         pass
+
+    def execute_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
+        return self._sync_typed_query_action.run_typed_query_action(typed_query=typed_query)
 
     # TODO CONSIDER: Make version with simplified interface execute(query: str, db_name: Optional[str] = None)
     @final

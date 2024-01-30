@@ -52,7 +52,7 @@ class BaseDataSourceTestClass(
     BaseConnectionTestClass[_CONN_TV],
     Generic[_CONN_TV, _DSRC_SPEC_TV, _DSRC_TV],
 ):
-    DSRC_CLS: ClassVar[Type[_DSRC_TV]]
+    DSRC_CLS: ClassVar[Type[_DSRC_TV]]  # type: ignore  # 2024-01-29 # TODO: ClassVar cannot contain type variables  [misc]
 
     @abc.abstractmethod
     @pytest.fixture(scope="class")
@@ -120,7 +120,7 @@ class DefaultDataSourceTestClass(
         migration_dtos: Sequence[DataSourceMigrationInterface],
     ) -> None:
         assert isinstance(data_source, TableSQLDataSourceMixin)
-        assert migration_dtos[0] == SQLTableDSMI(
+        assert migration_dtos[0] == SQLTableDSMI(  # type: ignore  # 2024-01-29 # TODO: Unexpected keyword argument "db_name" for "SQLTableDSMI"  [call-arg]
             db_name=getattr(data_source, "db_name", None),
             schema_name=getattr(data_source, "schema_name", None),
             table_name=data_source.table_name,
