@@ -45,7 +45,7 @@ class MdRichTextRenderer(RichTextRenderer):
         return self._render(rtext, env=env)
 
     @singledispatchmethod
-    def _render(self, value, env: RichTextRenderEnvironment) -> str:
+    def _render(self, value, env: RichTextRenderEnvironment) -> str:  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         raise TypeError
 
     @_render.register

@@ -28,7 +28,7 @@ YQL_DATE_DATETRUNC_FUNCS = {
 }
 
 
-def _datetrunc2_yql_impl(date_ctx, unit_ctx):
+def _datetrunc2_yql_impl(date_ctx, unit_ctx):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
     date_expr = date_ctx.expression
     unit = base.norm_datetrunc_unit(unit_ctx.expression)
 

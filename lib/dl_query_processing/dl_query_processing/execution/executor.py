@@ -124,7 +124,7 @@ class QueryExecutor(QueryExecutorBase):
         if translated_multi_query.is_empty():
             for stream in streams_by_result_id.values():
                 assert isinstance(stream, DataStreamAsync)
-            return streams_by_result_id, stream_aliases
+            return streams_by_result_id, stream_aliases  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "tuple[dict[str, AbstractStream], dict[str, str]]", expected "tuple[dict[str, DataStreamAsync], dict[str, str]]")  [return-value]
 
         op: BaseOp  # For usage in various parts of this function
 

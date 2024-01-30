@@ -14,7 +14,7 @@ import marshmallow.utils as ma_utils
 
 
 class FrozenSetField(fields.List):
-    def _deserialize(self, value: Any, attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any) -> FrozenSet[Any]:
+    def _deserialize(self, value: Any, attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any) -> FrozenSet[Any]:  # type: ignore  # 2024-01-30 # TODO: Return type "frozenset[Any]" of "_deserialize" incompatible with return type "list[Any]" in supertype "List"  [override]
         return frozenset(super()._deserialize(value, attr, data, **kwargs))
 
     def _serialize(self, value: Any, attr: Optional[str], obj: Any, **kwargs: Any) -> Optional[list[Any]]:

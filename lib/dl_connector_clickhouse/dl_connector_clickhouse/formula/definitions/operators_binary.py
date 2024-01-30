@@ -152,7 +152,7 @@ def _denullified_eq(
     if data_type == DataType.UNSUPPORTED:
         # We don't know the real type,
         # so the best we can do is build a regular equality expression
-        return left_ctx.expression == right_ctx.expression
+        return left_ctx.expression == right_ctx.expression  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "bool", expected "ClauseElement")  [return-value]
 
     dialect = translation_env.dialect
     null_value, stringify_value = _get_null_substitute_value(data_type, dialect=dialect)

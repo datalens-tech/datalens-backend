@@ -57,7 +57,7 @@ class Section(LocalizedSerializable):
     def from_settings(cls, settings: SectionSettings) -> Section:
         def _connector_from_settings(settings: ConnectorBaseSettings | ObjectLikeConfig) -> ConnectorBase:
             if hasattr(settings, "conn_type"):
-                return Connector.from_settings(settings)
+                return Connector.from_settings(settings)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "from_settings" of "Connector" has incompatible type "ConnectorBaseSettings | ObjectLikeConfig"; expected "ConnectorSettings"  [arg-type]
             elif hasattr(settings, "includes"):
                 return ConnectorContainer.from_settings(settings)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "from_settings" of "ConnectorContainer" has incompatible type "ConnectorBaseSettings"; expected "ConnectorContainerSettings"  [arg-type]
             raise ValueError('Can\'t create a connector, neither "conn_type" nor "includes" found among settings')
@@ -211,7 +211,7 @@ class ConnectorAvailabilityConfig(SettingsBase):
     uncategorized: list[Connector] = attr.ib(factory=list)
     sections: list[Section] = attr.ib(factory=list)
 
-    visible_connectors: set[ConnectionType] = s_attrib(
+    visible_connectors: set[ConnectionType] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "set[ConnectionType]")  [assignment]
         "VISIBLE",
         env_var_converter=conn_type_set_env_var_converter,
         missing_factory=set,
@@ -237,7 +237,7 @@ class ConnectorAvailabilityConfig(SettingsBase):
         return itertools.chain(
             self.uncategorized,
             itertools.chain.from_iterable(
-                connector.includes if isinstance(connector, ConnectorContainer) else (connector,)
+                connector.includes if isinstance(connector, ConnectorContainer) else (connector,)  # type: ignore  # 2024-01-30 # TODO: Generator has incompatible item type "Sequence[ConnectorBase]"; expected "Iterable[Connector]"  [misc]
                 for connector in itertools.chain.from_iterable(section.connectors for section in self.sections)
             ),
         )

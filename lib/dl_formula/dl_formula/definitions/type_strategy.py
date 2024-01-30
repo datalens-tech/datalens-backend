@@ -135,4 +135,4 @@ class ParamsFromArgs(TypeParamsStrategy):
         self._index = index
 
     def get_from_arg_values(self, args: List[TranslationCtx]) -> DataTypeParams:
-        return args[self._index].data_type_params
+        return args[self._index].data_type_params  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "DataTypeParams | None", expected "DataTypeParams")  [return-value]

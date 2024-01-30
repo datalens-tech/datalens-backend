@@ -137,7 +137,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
             replace_secret=self.get_replace_secret(),
             protocol="https" if cs.SECURE else "http",
             host=cs.HOST,
-            multihosts=parse_comma_separated_hosts(cs.HOST),
+            multihosts=parse_comma_separated_hosts(cs.HOST),  # type: ignore  # 2024-01-30 # TODO: Argument "multihosts" to "BaseFileS3ConnDTO" has incompatible type "tuple[str, ...]"; expected "Iterable[_T_co]"  [arg-type]
             port=cs.PORT,
             username=cs.USERNAME,
             password=cs.PASSWORD,
@@ -165,7 +165,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
                 title=source.title,
                 group=[],
                 source_type=self.source_type,
-                connection_id=self.uuid,
+                connection_id=self.uuid,  # type: ignore  # 2024-01-30 # TODO: Argument "connection_id" to "DataSourceTemplate" has incompatible type "str | None"; expected "str"  [arg-type]
                 parameters={
                     "origin_source_id": source.id,
                 },

@@ -73,4 +73,4 @@ class CHYTSyncAdapterConnExecutor(CHYTAdapterConnExecutor):
 
 @attr.s(cmp=False, hash=False)
 class CHYTAsyncAdapterConnExecutor(CHYTAdapterConnExecutor):
-    TARGET_ADAPTER_CLS = AsyncCHYTAdapter
+    TARGET_ADAPTER_CLS = AsyncCHYTAdapter  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "type[AsyncCHYTAdapter]", base class "DefaultSqlAlchemyConnExecutor" defined the type as "type[BaseCHYTAdapter]")  [assignment]

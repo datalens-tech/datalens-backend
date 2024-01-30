@@ -104,7 +104,7 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
                 dsrc.status = FileProcessingStatus.ready
 
             dfile.status = FileProcessingStatus.ready
-            if dfile.file_type == FileType.csv and (csv_src := dfile.sources[0]).status == FileProcessingStatus.failed:
+            if dfile.file_type == FileType.csv and (csv_src := dfile.sources[0]).status == FileProcessingStatus.failed:  # type: ignore  # 2024-01-30 # TODO: Value of type "list[DataSource] | None" is not indexable  [index]
                 # there is guaranteed a single source in a csv file, and the error must be saved on the top level
                 dfile.status = csv_src.status
                 dfile.error = csv_src.error

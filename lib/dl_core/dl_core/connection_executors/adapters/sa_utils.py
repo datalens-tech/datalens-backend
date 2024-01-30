@@ -44,7 +44,7 @@ def make_debug_query(query: str, params: Union[list, dict]) -> str:
 
 class CursorLogger:
     @staticmethod
-    def before_cursor_execute_handler(conn, cursor, statement, parameters, context, executemany):
+    def before_cursor_execute_handler(conn, cursor, statement, parameters, context, executemany):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         tracer = opentracing.global_tracer()
         # Scope was not created due to decoupled span closing procedure
         #  which may cause broken parent-child relationships in case when `after_cursor_execute_handler()`
@@ -62,7 +62,7 @@ class CursorLogger:
         conn.info.setdefault("ot_span_scope_stack", []).append(span)
 
     @staticmethod
-    def after_cursor_execute_handler(conn, cursor, statement, parameters, context, executemany):
+    def after_cursor_execute_handler(conn, cursor, statement, parameters, context, executemany):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         engine_url = context.engine.url
         query_start_time = conn.info["query_start_time"].pop(-1)
 

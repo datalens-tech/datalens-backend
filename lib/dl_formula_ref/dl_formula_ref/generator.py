@@ -82,7 +82,7 @@ try:
     from dl_formula_ref.examples.data_prep import DataPreparer
 except exc.ParserNotFoundError:
 
-    class DataPreparer:
+    class DataPreparer:  # type: ignore  # 2024-01-30 # TODO: Name "DataPreparer" already defined (possibly by an import)  [no-redef]
         def __init__(self, *args, **kwargs):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
             raise exc.ParserNotFoundError()
 

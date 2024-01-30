@@ -74,7 +74,7 @@ class FileConnTaskScheduler:
                 file_id=source.file_id,
                 src_source_id=src_source_id,
                 dst_source_id=source.id,
-                connection_id=conn.uuid,
+                connection_id=conn.uuid,  # type: ignore  # 2024-01-30 # TODO: Argument "connection_id" to "SaveSourceTask" has incompatible type "str | None"; expected "str"  [arg-type]
             )
             task_instance = await_sync(self._task_processor.schedule(task))
             LOGGER.info(

@@ -74,7 +74,7 @@ def run_pytest_one(t: Target) -> int:
     print(f"{run_args=}")
     print(f"{subprocess_kwargs=}")
 
-    process = subprocess.run(run_args, **subprocess_kwargs)
+    process = subprocess.run(run_args, **subprocess_kwargs)  # type: ignore  # 2024-01-30 # TODO: No overload variant of "run" matches argument types "list[str]", "dict[str, str | bool]"  [call-overload]
     return process.returncode
 
 

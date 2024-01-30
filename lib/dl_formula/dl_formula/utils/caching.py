@@ -61,8 +61,8 @@ class MultiCacheManager(Generic[_QUALIFIER_VALUE_TV]):
                 raise error
             return result
 
-        wrapper.cache_info = _cached_result_and_error_wrapper.cache_info
-        wrapper.cache_clear = _cached_result_and_error_wrapper.cache_clear
+        wrapper.cache_info = _cached_result_and_error_wrapper.cache_info  # type: ignore  # 2024-01-30 # TODO: "Callable[[VarArg(Any), KwArg(Any)], Any]" has no attribute "cache_info"  [attr-defined]
+        wrapper.cache_clear = _cached_result_and_error_wrapper.cache_clear  # type: ignore  # 2024-01-30 # TODO: "Callable[[VarArg(Any), KwArg(Any)], Any]" has no attribute "cache_clear"  [attr-defined]
         return wrapper
 
     def get_cached_wrapper_for_args(self, *args: Any, **kwargs: Any) -> _FUNC:
@@ -79,13 +79,13 @@ class MultiCacheManager(Generic[_QUALIFIER_VALUE_TV]):
     def cache_info(self) -> Dict[Optional[_QUALIFIER_VALUE_TV], _CacheInfo]:
         """Collect cache info objects for all existing cache qualifier values."""
         with self._cached_wrappers_lock:
-            return {qvalue: wrapper.cache_info() for qvalue, wrapper in self._cached_wrappers.items()}
+            return {qvalue: wrapper.cache_info() for qvalue, wrapper in self._cached_wrappers.items()}  # type: ignore  # 2024-01-30 # TODO: "Callable[..., Any]" has no attribute "cache_info"  [attr-defined]
 
     def cache_clear(self) -> None:
         """Clear all existing caches."""
         with self._cached_wrappers_lock:
             for wrapper in self._cached_wrappers.values():
-                wrapper.cache_clear()
+                wrapper.cache_clear()  # type: ignore  # 2024-01-30 # TODO: "Callable[..., Any]" has no attribute "cache_clear"  [attr-defined]
 
 
 def multi_cached_with_errors(
@@ -112,9 +112,9 @@ def multi_cached_with_errors(
             wrapper = cache_manager.get_cached_wrapper_for_args(*args, **kwargs)
             return wrapper(*args, **kwargs)
 
-        generic_wrapper.multi_cache_manager = cache_manager
-        generic_wrapper.cache_clear = cache_manager.cache_clear
-        generic_wrapper.cache_info = cache_manager.cache_info
+        generic_wrapper.multi_cache_manager = cache_manager  # type: ignore  # 2024-01-30 # TODO: "Callable[[VarArg(Any), KwArg(Any)], Any]" has no attribute "multi_cache_manager"  [attr-defined]
+        generic_wrapper.cache_clear = cache_manager.cache_clear  # type: ignore  # 2024-01-30 # TODO: "Callable[[VarArg(Any), KwArg(Any)], Any]" has no attribute "cache_clear"  [attr-defined]
+        generic_wrapper.cache_info = cache_manager.cache_info  # type: ignore  # 2024-01-30 # TODO: "Callable[[VarArg(Any), KwArg(Any)], Any]" has no attribute "cache_info"  [attr-defined]
 
         return generic_wrapper
 

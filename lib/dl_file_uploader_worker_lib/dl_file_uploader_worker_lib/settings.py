@@ -15,14 +15,14 @@ from dl_connector_bundle_chs3.file.core.settings import file_s3_settings_fallbac
 
 @attr.s(frozen=True)
 class SecureReader(SettingsBase):
-    SOCKET: str = s_attrib("SOCKET")
-    ENDPOINT: Optional[str] = s_attrib("ENDPOINT", missing=None)
-    CAFILE: Optional[str] = s_attrib("CAFILE", missing=None)
+    SOCKET: str = s_attrib("SOCKET")  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
+    ENDPOINT: Optional[str] = s_attrib("ENDPOINT", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
+    CAFILE: Optional[str] = s_attrib("CAFILE", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
 
 
 @attr.s(frozen=True)
 class FileUploaderConnectorsSettings(SettingsBase):
-    FILE: Optional[FileS3ConnectorSettings] = s_attrib("FILE", missing=None)
+    FILE: Optional[FileS3ConnectorSettings] = s_attrib("FILE", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "FileS3ConnectorSettings | None")  [assignment]
 
 
 def file_uploader_connectors_settings_fallback(full_cfg: ConnectorsConfigType) -> FileUploaderConnectorsSettings:
@@ -32,30 +32,30 @@ def file_uploader_connectors_settings_fallback(full_cfg: ConnectorsConfigType) -
 
 @attr.s(frozen=True)
 class FileUploaderWorkerSettings(FileUploaderBaseSettings):
-    SENTRY_DSN: Optional[str] = s_attrib(
+    SENTRY_DSN: Optional[str] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
         "DL_SENTRY_DSN",
         fallback_cfg_key="SENTRY_DSN_FILE_UPLOADER_WORKER",
         missing=None,
     )
 
-    US_BASE_URL: str = s_attrib("US_HOST", fallback_cfg_key="US_BASE_URL")
-    US_MASTER_TOKEN: str = s_attrib("US_MASTER_TOKEN", sensitive=True)
+    US_BASE_URL: str = s_attrib("US_HOST", fallback_cfg_key="US_BASE_URL")  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
+    US_MASTER_TOKEN: str = s_attrib("US_MASTER_TOKEN", sensitive=True)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
 
-    CONNECTORS: Optional[FileUploaderConnectorsSettings] = s_attrib(
+    CONNECTORS: Optional[FileUploaderConnectorsSettings] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "FileUploaderConnectorsSettings | None")  [assignment]
         "CONNECTORS",
         fallback_factory=file_uploader_connectors_settings_fallback,
     )
 
-    GSHEETS_APP: GoogleAppSettings = s_attrib(
+    GSHEETS_APP: GoogleAppSettings = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "GoogleAppSettings")  [assignment]
         # TODO: check gsheets connector availability
         "GSHEETS_APP",
     )
 
-    ENABLE_REGULAR_S3_LC_RULES_CLEANUP: bool = s_attrib("ENABLE_REGULAR_S3_LC_RULES_CLEANUP", missing=False)
-    SECURE_READER: SecureReader = s_attrib(
+    ENABLE_REGULAR_S3_LC_RULES_CLEANUP: bool = s_attrib("ENABLE_REGULAR_S3_LC_RULES_CLEANUP", missing=False)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
+    SECURE_READER: SecureReader = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "SecureReader")  [assignment]
         "SECURE_READER",
         fallback_factory=(
-            lambda: SecureReader(
+            lambda: SecureReader(  # type: ignore  # 2024-01-30 # TODO: Argument "fallback_factory" to "s_attrib" has incompatible type "Callable[[], SecureReader]"; expected "Callable[[Any, Any], Any] | Callable[[Any], Any] | None"  [arg-type]
                 SOCKET="/var/reader.sock",
                 ENDPOINT=None,
                 CAFILE=None,

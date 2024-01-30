@@ -21,7 +21,7 @@ class BigQueryTableDataSourceSpecStorageSchema(
     DatasetSQLDataSourceSpecStorageSchemaMixin,
     BaseSQLDataSourceSpecStorageSchema,
 ):
-    TARGET_CLS = BigQueryTableDataSourceSpec
+    TARGET_CLS = BigQueryTableDataSourceSpec  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "type[BigQueryTableDataSourceSpec]", base class "BaseSQLDataSourceSpecStorageSchema" defined the type as "type[SQLDataSourceSpecBase]")  [assignment]
 
 
 class BigQuerySubselectDataSourceSpecStorageSchema(

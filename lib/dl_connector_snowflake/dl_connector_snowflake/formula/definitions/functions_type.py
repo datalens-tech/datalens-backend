@@ -34,7 +34,7 @@ class FuncDatetime2SF(SingleVariantTranslationBase, base.FuncTypeGenericDatetime
     name = "datetime"
 
     @classmethod
-    def _translate_main(cls, value_ctx, tz_ctx):
+    def _translate_main(cls, value_ctx, tz_ctx):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         """
         Equivalent to `dt at time zone tz`.
         Its semantics:

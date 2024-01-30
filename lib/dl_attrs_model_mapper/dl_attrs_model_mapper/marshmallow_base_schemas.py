@@ -82,7 +82,7 @@ class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
     ) -> Type[BaseSchema[_TARGET_OBJECT_GENERATED_TV]]:
         # TODO FIX: Generate mnemonic class name
         class ResultingSchema(
-            BaseSchema[_TARGET_OBJECT_GENERATED_TV], marshmallow.Schema.from_dict(field_map)
+            BaseSchema[_TARGET_OBJECT_GENERATED_TV], marshmallow.Schema.from_dict(field_map)  # type: ignore  # 2024-01-30 # TODO: Unsupported dynamic base class "marshmallow.Schema.from_dict"  [misc]
         ):
             class Meta:
                 ordered = True

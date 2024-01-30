@@ -129,7 +129,7 @@ def _make_regulated_test_class(
         test_params=test_params,
     )
 
-    new_cls = type.__new__(mcs, name, bases, attrs)
+    new_cls = type.__new__(mcs, name, bases, attrs)  # type: ignore  # 2024-01-30 # TODO: Need type annotation for "new_cls"  [var-annotated]
     return new_cls
 
 

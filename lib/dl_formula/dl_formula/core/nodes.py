@@ -211,7 +211,7 @@ class FormulaItem(abc.ABC):
 
     def list_node_type(self, node_type: Type[_FORMULA_ITEM_TV]) -> list[_FORMULA_ITEM_TV]:
         res: list[_FORMULA_ITEM_TV] = []
-        self.visit_node_type(node_type=node_type, visit_func=res.append)
+        self.visit_node_type(node_type=node_type, visit_func=res.append)  # type: ignore  # 2024-01-30 # TODO: Argument "visit_func" to "visit_node_type" of "FormulaItem" has incompatible type "Callable[[_FORMULA_ITEM_TV], None]"; expected "Callable[[FormulaItem], Any]"  [arg-type]
         return res
 
     def get_by_pos(
@@ -279,7 +279,7 @@ class FormulaItem(abc.ABC):
 
         # final replacement
         if child_in_index is None:
-            return expr
+            return expr  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "FormulaItem", expected "_FORMULA_ITEM_TV")  [return-value]
 
         child = self.__children[child_in_index]
         new_child = child.replace_at_index(index_tail, expr)

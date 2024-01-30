@@ -201,7 +201,7 @@ class AsyncUSManager(USManagerBase):
         )
 
         try:
-            entry = await self.get_by_id(entry_id, expected_type)
+            entry = await self.get_by_id(entry_id, expected_type)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "USEntry", variable has type "_ENTRY_TV | None")  [assignment]
             entry._lock = lock_token  # type: ignore  # TODO: fix
             assert entry is not None
             yield entry

@@ -81,5 +81,5 @@ class MetricaAPIDefaultAdapter(BaseSAAdapter[_M_CONN_T_DTO_TV]):
         return ""
 
 
-class AppMetricaAPIDefaultAdapter(MetricaAPIDefaultAdapter[AppMetricaAPIConnTargetDTO]):
+class AppMetricaAPIDefaultAdapter(MetricaAPIDefaultAdapter[AppMetricaAPIConnTargetDTO]):  # type: ignore  # 2024-01-30 # TODO: Type argument "AppMetricaAPIConnTargetDTO" of "MetricaAPIDefaultAdapter" must be a subtype of "MetricaAPIConnTargetDTO"  [type-var]
     conn_type = CONNECTION_TYPE_APPMETRICA_API

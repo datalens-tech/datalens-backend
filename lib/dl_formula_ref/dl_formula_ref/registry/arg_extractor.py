@@ -61,8 +61,8 @@ class DefaultArgumentExtractor(ArgumentExtractorBase):
             min_arg_cnt = max(len(arg_names), INFINITE_ARG_COUNT)
             max_arg_cnt = max(len(arg_names), INFINITE_ARG_COUNT)
         else:
-            min_arg_cnt = min(defn.arg_cnt for defn in def_list)
-            max_arg_cnt = max(defn.arg_cnt for defn in def_list)
+            min_arg_cnt = min(defn.arg_cnt for defn in def_list)  # type: ignore  # 2024-01-30 # TODO: Value of type variable "SupportsRichComparisonT" of "min" cannot be "int | None"  [type-var]
+            max_arg_cnt = max(defn.arg_cnt for defn in def_list)  # type: ignore  # 2024-01-30 # TODO: Value of type variable "SupportsRichComparisonT" of "max" cannot be "int | None"  [type-var]
             arg_names = max((defn.arg_names or () for defn in def_list), key=lambda names: len(names))
 
         # generate arg types

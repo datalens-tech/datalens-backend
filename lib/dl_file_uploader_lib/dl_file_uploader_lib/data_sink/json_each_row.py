@@ -169,11 +169,11 @@ class S3JsonEachRowUntypedFileDataSink(S3JsonEachRowFileDataSink):
             bucket_name=bucket_name,
         )
 
-    def _process_row(self, row_data: list) -> bytes:
+    def _process_row(self, row_data: list) -> bytes:  # type: ignore  # 2024-01-30 # TODO: Argument 1 of "_process_row" is incompatible with supertype "S3JsonEachRowFileDataSink"; supertype defines the argument type as "dict[Any, Any]"  [override]
         # skip type casts
         return json.dumps(row_data).encode("utf-8")
 
-    def dump_data_stream(self, data_stream: SimpleUntypedDataStream) -> None:
+    def dump_data_stream(self, data_stream: SimpleUntypedDataStream) -> None:  # type: ignore  # 2024-01-30 # TODO: Argument 1 of "dump_data_stream" is incompatible with supertype "S3JsonEachRowFileDataSink"; supertype defines the argument type as "DataStreamBase[Any]"  [override]
         self._dump_data_stream_base(data_stream)
 
 

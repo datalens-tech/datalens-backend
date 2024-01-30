@@ -89,7 +89,7 @@ class DbEvaluator:
         other_fields = other_fields or {}
         parser = get_parser(ParserType.antlr_py)
         if field_types is None:
-            field_types = FIELD_TYPES
+            field_types = FIELD_TYPES  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "dict[str, DataType]", variable has type "Sequence[DataType] | None")  [assignment]
         if isinstance(formula, str):
             formula = parser.parse(formula)
         if isinstance(formula, Formula):
@@ -103,18 +103,18 @@ class DbEvaluator:
 
             # mutate
             mutations = []
-            group_by_objs = [parser.parse(expr).expr for expr in (group_by or ())]
+            group_by_objs = [parser.parse(expr).expr for expr in (group_by or ())]  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "parse" of "FormulaParser" has incompatible type "str | Formula"; expected "str"  [arg-type]
             mutations.append(AmongToWithinGroupingMutation(global_dimensions=group_by_objs))
             if order_by is not None:
-                order_by_objs = [parser.parse(expr).expr for expr in order_by]
-                mutations.append(DefaultWindowOrderingMutation(default_order_by=order_by_objs))
+                order_by_objs = [parser.parse(expr).expr for expr in order_by]  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "parse" of "FormulaParser" has incompatible type "str | Formula"; expected "str"  [arg-type]
+                mutations.append(DefaultWindowOrderingMutation(default_order_by=order_by_objs))  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "append" of "list" has incompatible type "DefaultWindowOrderingMutation"; expected "AmongToWithinGroupingMutation"  [arg-type]
             formula = apply_mutations(formula, mutations=mutations)
 
             # translate
-            formula = translate(
+            formula = translate(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "TranslationCtx", variable has type "str | Formula")  [assignment]
                 formula=formula,
                 dialect=self.dialect,
-                field_types=field_types,
+                field_types=field_types,  # type: ignore  # 2024-01-30 # TODO: Argument "field_types" to "translate" has incompatible type "Sequence[DataType] | None"; expected "dict[str, DataType] | None"  [arg-type]
                 context_flags=context_flags,
                 collect_errors=collect_errors,
                 required_scopes=required_scopes,

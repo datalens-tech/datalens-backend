@@ -31,6 +31,6 @@ class DefaultSchema(BaseSchema, Generic[_TARGET_OBJECT_TV]):
         return self.get_target_cls()(**data)
 
     @post_load(pass_many=False)
-    def post_load(self, data, **_) -> _TARGET_OBJECT_TV:
+    def post_load(self, data, **_) -> _TARGET_OBJECT_TV:  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         obj = self.to_object(data)
         return obj

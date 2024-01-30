@@ -58,7 +58,7 @@ class TracingMiddleware(FlaskWSGIMiddleware):
                 return False
         return True
 
-    def wsgi_app(self, environ: WSGIEnviron, start_response: WSGIStartResponse) -> WSGIReturn:
+    def wsgi_app(self, environ: WSGIEnviron, start_response: WSGIStartResponse) -> WSGIReturn:  # type: ignore  # 2024-01-30 # TODO: Missing return statement  [return]
         http_path = environ["PATH_INFO"]
         http_method = environ["REQUEST_METHOD"]
         tracer = opentracing.global_tracer()

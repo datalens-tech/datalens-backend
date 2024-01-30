@@ -275,7 +275,7 @@ _DL_REQUEST_TV = TypeVar("_DL_REQUEST_TV", bound=DLRequestBase)
 
 
 class DLRequestView(web.View, Generic[_DL_REQUEST_TV]):
-    dl_request_cls: Type[_DL_REQUEST_TV] = DLRequestBase
+    dl_request_cls: Type[_DL_REQUEST_TV] = DLRequestBase  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "type[DLRequestBase]", variable has type "type[_DL_REQUEST_TV]")  [assignment]
 
     @property
     def dl_request(self) -> _DL_REQUEST_TV:

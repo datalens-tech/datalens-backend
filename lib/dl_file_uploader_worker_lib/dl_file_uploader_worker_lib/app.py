@@ -92,7 +92,7 @@ class FileUploaderContextFab(BaseContextFabric):
             ca_data=self._ca_data,
         )
 
-    async def tear_down(self, inst: FileUploaderTaskContext) -> None:
+    async def tear_down(self, inst: FileUploaderTaskContext) -> None:  # type: ignore  # 2024-01-30 # TODO: Argument 1 of "tear_down" is incompatible with supertype "BaseContextFabric"; supertype defines the argument type as "BaseContext"  [override]
         await inst.s3_service.tear_down()
         await inst.redis_service.tear_down()
         inst.tpe.shutdown()

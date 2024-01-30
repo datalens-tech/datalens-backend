@@ -186,7 +186,7 @@ class PdPivotSorter(PdPivotSorterBase):
             new_df = self._get_pd_obj().iloc[sorting_key]  # ordering by column, so reorder rows
         else:
             new_df = self._get_pd_obj().iloc[:, sorting_key]  # ordering by row, so reorder columns
-        self._pivot_dframe._pd_df = new_df
+        self._pivot_dframe._pd_df = new_df  # type: ignore  # 2024-01-30 # TODO: "PivotDataFrame" has no attribute "_pd_df"  [attr-defined]
 
     def sort(self) -> None:
         directions_by_axis = self._resolve_axis_order()

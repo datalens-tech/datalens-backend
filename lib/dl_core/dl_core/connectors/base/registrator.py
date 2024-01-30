@@ -69,7 +69,7 @@ class CoreConnectorRegistrator:
             lifecycle_manager_cls=conn_def.lifecycle_manager_cls,
         )
         register_connection_backend_type(conn_type=conn_def.conn_type, backend_type=backend_type)
-        register_connection_schema(conn_cls=conn_def.connection_cls, schema_cls=conn_def.us_storage_schema_cls)
+        register_connection_schema(conn_cls=conn_def.connection_cls, schema_cls=conn_def.us_storage_schema_cls)  # type: ignore  # 2024-01-30 # TODO: Argument "schema_cls" to "register_connection_schema" has incompatible type "type[Schema] | None"; expected "type[Schema]"  [arg-type]
         register_type_transformer_class(conn_type=conn_def.conn_type, tt_cls=conn_def.type_transformer_cls)
         if conn_def.sync_conn_executor_cls is not None:
             register_sync_conn_executor_class(

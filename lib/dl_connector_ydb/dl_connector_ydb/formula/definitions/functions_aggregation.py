@@ -17,7 +17,7 @@ V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 
 
-def _all_concat_yql(expr, sep=", "):
+def _all_concat_yql(expr, sep=", "):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
     res = expr
     res = sa.cast(res, sa.TEXT)
     res = sa.func.AGGREGATE_LIST_DISTINCT(res)

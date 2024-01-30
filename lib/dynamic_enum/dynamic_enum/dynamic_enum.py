@@ -136,25 +136,25 @@ class DynamicEnumMetaclass(type):
 
         # Deduplicate instances with the same value
         if cls not in DynamicEnumMetaclass.__instances:
-            DynamicEnumMetaclass.__instances[cls] = {}
-        cls_instances = DynamicEnumMetaclass.__instances[cls]
+            DynamicEnumMetaclass.__instances[cls] = {}  # type: ignore  # 2024-01-30 # TODO: Invalid index type "type[_ANY_TV]" for "dict[DynamicEnumMetaclass, dict[str, Any]]"; expected type "DynamicEnumMetaclass"  [index]
+        cls_instances = DynamicEnumMetaclass.__instances[cls]  # type: ignore  # 2024-01-30 # TODO: Invalid index type "type[_ANY_TV]" for "dict[DynamicEnumMetaclass, dict[str, Any]]"; expected type "DynamicEnumMetaclass"  [index]
         if value not in cls_instances:
-            cls_instances[value] = super().__call__(*args, **kwargs)
+            cls_instances[value] = super().__call__(*args, **kwargs)  # type: ignore  # 2024-01-30 # TODO: Argument 2 for "super" not an instance of argument 1  [misc]
 
         return cls_instances[value]
 
     def __getitem__(cls: Type[_ANY_TV], item: str) -> _ANY_TV:
-        return cls(item)
+        return cls(item)  # type: ignore  # 2024-01-30 # TODO: Too many arguments for "object"  [call-arg]
 
     def __contains__(cls: DynamicEnumMetaclass, item: str) -> bool:
-        return cls.is_declared(item)
+        return cls.is_declared(item)  # type: ignore  # 2024-01-30 # TODO: "DynamicEnumMetaclass" has no attribute "is_declared"  [attr-defined]
 
     def __iter__(cls: Type[_ANY_TV]) -> Generator[_ANY_TV, None, None]:
-        yield from cls.iter_items()
+        yield from cls.iter_items()  # type: ignore  # 2024-01-30 # TODO: "type[_ANY_TV]" has no attribute "iter_items"  [attr-defined]
 
     @property
     def __members__(cls) -> MappingProxyType:  # For compatibility with Enum
-        return MappingProxyType({elem.name: elem.value for elem in cls})
+        return MappingProxyType({elem.name: elem.value for elem in cls})  # type: ignore  # 2024-01-30 # TODO: Need type annotation for "elem"  [var-annotated]
 
 
 class DynamicEnum(metaclass=DynamicEnumMetaclass):

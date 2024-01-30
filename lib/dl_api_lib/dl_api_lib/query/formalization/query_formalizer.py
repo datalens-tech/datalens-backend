@@ -86,7 +86,7 @@ _RANGE_TYPE_TO_SELECT_TYPE = {
 }
 
 
-def need_permission_on_entry(us_entry, permission) -> None:
+def need_permission_on_entry(us_entry, permission) -> None:  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
     # TODO: DELETE ME after the check is moved up the stack
     assert us_entry.permissions is not None
     assert us_entry.uuid is not None

@@ -237,7 +237,7 @@ class USEntryCrawler:
 
         await self._task_runner.finalize()
 
-        return entry_id_distribution
+        return entry_id_distribution  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "dict[EntryHandlingResult, list[str]]", expected "dict[EntryHandlingResult, Sequence[str]]")  [return-value]
 
     async def single_entry_run(
         self,

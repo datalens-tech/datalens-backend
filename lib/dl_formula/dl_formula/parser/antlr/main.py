@@ -67,4 +67,4 @@ class AntlrPyFormulaParser(FormulaParser):
         return parse(formula)
 
     def _get_global_stats(self) -> Dict[str, _CacheInfo]:
-        return parse.cache_info()
+        return parse.cache_info()  # type: ignore  # 2024-01-30 # TODO: "Callable[..., Any]" has no attribute "cache_info"  [attr-defined]

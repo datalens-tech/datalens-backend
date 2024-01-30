@@ -34,7 +34,7 @@ class FuncTypeGenericDatetime2PGImpl(SingleVariantTranslationBase, base.FuncType
     ]
 
     @classmethod
-    def _translate_main(cls, value_ctx, tz_ctx):
+    def _translate_main(cls, value_ctx, tz_ctx):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         """
         Equivalent to `dt at time zone tz`.
         Its semantics:
@@ -104,7 +104,7 @@ class FuncDatetimeTZPG(SingleVariantTranslationBase, base.FuncDatetimeTZ):
     ]
 
     @classmethod
-    def _translate_main(cls, value_ctx, tz_ctx):
+    def _translate_main(cls, value_ctx, tz_ctx):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         value = value_ctx.expression
         value_type = value_ctx.data_type
         tz = tz_ctx.expression
@@ -149,7 +149,7 @@ class FuncDatetimeTZToNaivePG(base.FuncDatetimeTZToNaive):
     dialects = D.POSTGRESQL | D.COMPENG
 
     @classmethod
-    def _translate_main(cls, value_ctx):
+    def _translate_main(cls, value_ctx):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         expr = value_ctx.expression
         tz = value_ctx.data_type_params.timezone
         assert tz
