@@ -18,13 +18,6 @@ vars:
   TARGET_TOML:
     sh: echo $(echo "{{.CHECK_TARGET}}" | tr ' ' '\n' | grep 'pyproject.toml$')
 
-  # Files changed since last commit
-  CHANGED_PY_SINGLE_LINE:
-    sh: cd {{.ROOT_DIR}} &&  echo $(git diff --relative --diff-filter=ACMRT --name-only HEAD | grep '\.py$' )
-
-  CHANGED_PYPROJECT_SINGLE_LINE:
-    sh: cd {{.ROOT_DIR}} &&  echo $(git diff --relative --diff-filter=ACMRT --name-only HEAD | grep 'pyproject.toml$' )
-
   DO_RUFF_FIX: "false"
 
 includes:
@@ -158,8 +151,10 @@ tasks:
     cmds:
       - task: _run_tools
         vars:
-          TARGET: "{{.CHANGED_PY_SINGLE_LINE}}"
-          TARGET_TOML: "{{.CHANGED_PYPROJECT_SINGLE_LINE}}"
+          TARGET:
+            sh: cd {{.ROOT_DIR}} &&  echo $(git diff --relative --diff-filter=ACMRT --name-only HEAD | grep '\.py$' )
+          TARGET_TOML:
+            sh: cd {{.ROOT_DIR}} &&  echo $(git diff --relative --diff-filter=ACMRT --name-only HEAD | grep 'pyproject.toml$' )
           APPLY_FIX: "{{.APPLY_FIX}}"
           STRICT: "{{.STRICT}}"
 
