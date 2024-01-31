@@ -424,7 +424,10 @@ class EntityCacheEntryLockedManagerAsync(EntityCacheEntryManagerAsyncBase):
         try:
             yield cli
         finally:
-            await cli.close()
+            # This weird sleep here is on purpose.
+            # It allows other async tasks to finalize cache or to unsubscribe from redis.
+            await asyncio.sleep(0.001)
+            await cli.aclose()
 
     def _make_rcl(self) -> Tuple[RedisCacheLock, HistoryHolder]:
         cache_engine = self.cache_engine

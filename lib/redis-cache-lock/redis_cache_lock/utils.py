@@ -87,7 +87,7 @@ class PreExitable:
 async def task_cm(coro: Awaitable) -> AsyncGenerator[asyncio.Task, None]:
     """Small helper to run an asyncio task for the duration of the context manager"""
     # While it doesn't actually do any `await`, it would be weird to expect non-async here.
-    task = asyncio.shield(asyncio.create_task(coro))
+    task = asyncio.create_task(coro)
     try:
         yield task
     finally:

@@ -178,7 +178,7 @@ class RedisCacheLock:
         if not self.enable_background_tasks:
             # The `wait_for(shield(coro))` results in waiting until timeout but
             # leaving the coro in background when the timeout is reached.
-            result = await self._wait_network_call(asyncio.shield(coro))
+            result = await asyncio.shield(self._wait_network_call(coro))
             return False, result
 
         return True, await asyncio.shield(self.process_in_background(coro, name=name))
@@ -234,7 +234,6 @@ class RedisCacheLock:
                     channel_key=signal_key,
                 )
             )
-
             self._log("Re-checking the situation after subscription")
             # In case the result appeared between first `get` and `psubscribe`, check for it again.
             self.situation = self.req_situation.requesting
@@ -323,7 +322,6 @@ class RedisCacheLock:
 
         cli = self._client
         assert cli is not None, "must be initialized for this method"
-
         situation, result, subscription = await self._get_data()
 
         if situation == self.req_situation.lock_wait:

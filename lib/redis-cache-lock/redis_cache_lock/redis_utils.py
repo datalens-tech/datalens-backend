@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import time
 from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING, Any, AsyncGenerator, List, Optional, Sequence, Tuple
@@ -17,6 +18,8 @@ if TYPE_CHECKING:
     from redis.asyncio import Redis
 
     from .types import TClientACM
+
+LOGGER = logging.getLogger(__name__)
 
 
 async def eval_script(cli: Redis, script: Any, keys: List[Any], args: List[Any]) -> Any:
@@ -185,7 +188,11 @@ class SubscriptionManager(SubscriptionManagerBase):
             try:
                 yield psub
             finally:
-                await psub.unsubscribe(channel_key)
+                try:
+                    await psub.unsubscribe(channel_key)
+                except TypeError:
+                    LOGGER.warning("Couldn't unsubscribe from redis channel. Client can be closed.", exc_info=True)
+                    pass
 
     async def get_direct(self, timeout: float) -> Optional[bytes]:
         t01 = time.monotonic()
