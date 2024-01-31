@@ -13,7 +13,7 @@ MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA = {}
 
 
 def register_connection_schema(conn_cls: Type[ConnectionBase], schema_cls: Type[Schema]) -> None:
-    MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA[conn_cls.DataModel] = schema_cls  # type: ignore
+    MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA[conn_cls.DataModel] = schema_cls
 
 
 class UnknownConnectionStorageSchema(ConnectionBaseDataStorageSchema[UnknownConnection.DataModel]):

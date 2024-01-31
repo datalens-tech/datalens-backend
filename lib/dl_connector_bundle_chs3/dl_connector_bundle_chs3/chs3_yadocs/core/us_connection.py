@@ -87,7 +87,7 @@ class YaDocsFileS3Connection(BaseFileS3Connection):
 
     @attr.s(eq=False, kw_only=True)
     class DataModel(BaseFileS3Connection.DataModel):
-        sources: list["YaDocsFileS3Connection.FileDataSource"] = attr.ib()  # type: ignore
+        sources: list["YaDocsFileS3Connection.FileDataSource"] = attr.ib()  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "list[dl_connector_bundle_chs3.chs3_yadocs.core.us_connection.YaDocsFileS3Connection.FileDataSource]", base class "DataModel" defined the type as "list[dl_connector_bundle_chs3.chs3_base.core.us_connection.BaseFileS3Connection.FileDataSource]")  [assignment]
 
         oauth_token: Optional[str] = attr.ib(default=None, repr=False)
         refresh_enabled: bool = attr.ib(default=False)

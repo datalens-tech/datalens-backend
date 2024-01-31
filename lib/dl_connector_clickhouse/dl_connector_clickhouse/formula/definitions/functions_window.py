@@ -78,7 +78,7 @@ class RankPercentileTranslationImplementation(FuncTranslationImplementationBase)
             translation_ctx=translation_ctx,
             translation_env=translation_env,
         )
-        order_by_part = base._order_by_from_args(*args)  # type: ignore
+        order_by_part = base._order_by_from_args(*args)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "_order_by_from_args" has incompatible type "*Iterable[TranslationCtx | ClauseElement]"; expected "ClauseElement"  [arg-type]
 
         wf_rank = translation_rank(*args).over(partition_by=partition_by, order_by=order_by_part)
         wf_total_partition_rows = sa.func.COUNT(1).over(partition_by=partition_by)  # ORDER BY is unnecessary

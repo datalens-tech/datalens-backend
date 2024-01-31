@@ -51,7 +51,7 @@ def make_connection_base(
     data_model_cls = conn_cls.DataModel
 
     if issubclass(data_model_cls, ConnectionDataModelBase):
-        effective_data = data_model_cls(**data_dict)  # type: ignore
+        effective_data = data_model_cls(**data_dict)
     else:
         raise TypeError(f"Unexpected data model class: {data_model_cls}")
 

@@ -85,7 +85,7 @@ class OperationProcessorAsyncBase(abc.ABC):
         await self.start()
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):  # type: ignore
+    async def __aexit__(self, exc_type, exc_val, exc_tb):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         await self.end()
 
     async def prepare_output_streams(self, output_streams: List[AbstractStream]) -> List[DataStreamAsync]:
@@ -154,7 +154,7 @@ class OperationProcessorAsyncBase(abc.ABC):
 
         await _make_output_streams_ready_recursive(output_stream_ids)
         LOGGER.info("Done processing operations")
-        return [ready_streams[stream_id] for stream_id in sorted(output_stream_ids)]  # type: ignore
+        return [ready_streams[stream_id] for stream_id in sorted(output_stream_ids)]  # type: ignore  # 2024-01-30 # TODO: List comprehension has incompatible type List[AbstractStream]; expected List[DataStreamAsync]  [misc]
 
     async def run(
         self,
@@ -208,7 +208,7 @@ class OperationProcessorAsyncBase(abc.ABC):
             processing_id=ctx.processing_id,
             source_query_ids=tuple(
                 in_stream.meta.query_id for in_stream in ctx.data_streams if in_stream.meta.query_id is not None
-            ),  # type: ignore
+            ),
         )
         self._reporting_registry.save_reporting_record(report=report)
 

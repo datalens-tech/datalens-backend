@@ -117,9 +117,9 @@ class SimpleDatasetUpdateGen:
 
         action_data = {
             "action": DatasetAction.add_field,
-            "field": AddField(**field_data),  # type: ignore
+            "field": AddField(**field_data),  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "AddField" has incompatible type "**dict[str, object]"; expected "str | None"  [arg-type]
         }
-        return FieldAction(**action_data)  # type: ignore
+        return FieldAction(**action_data)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "FieldAction" has incompatible type "**dict[str, object]"; expected "DatasetAction"  [arg-type]
 
     def update_source_as_subselect(
         self,
@@ -151,7 +151,7 @@ class SimpleDatasetUpdateGen:
             "action": DatasetAction.update_source,
             "source": source_data,
         }
-        return AddUpdateSourceAction(**action_data)  # type: ignore
+        return AddUpdateSourceAction(**action_data)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "AddUpdateSourceAction" has incompatible type "**dict[str, object]"; expected "DatasetAction"  [arg-type]
 
     def replace_connection(self, old_id: str, new_id: str) -> ReplaceConnectionAction:
         connection_data = {"id": old_id, "new_id": new_id}
@@ -159,14 +159,14 @@ class SimpleDatasetUpdateGen:
             "action": DatasetAction.replace_connection,
             "connection": ReplaceConnection(**connection_data),
         }
-        return ReplaceConnectionAction(**action_data)  # type: ignore
+        return ReplaceConnectionAction(**action_data)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "ReplaceConnectionAction" has incompatible type "**dict[str, object]"; expected "DatasetAction"  [arg-type]
 
     def refresh_source(self, source_id: str) -> SourceActionBase:
         action_data = {
             "action": DatasetAction.refresh_source,
             "source": {"id": source_id},
         }
-        return SourceActionBase(**action_data)  # type: ignore
+        return SourceActionBase(**action_data)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "SourceActionBase" has incompatible type "**dict[str, object]"; expected "DatasetAction"  [arg-type]
 
     def refresh_all_sources(self) -> List[SourceActionBase]:
         return [self.refresh_source(source_id) for source_id in self._ds_accessor.get_data_source_id_list()]

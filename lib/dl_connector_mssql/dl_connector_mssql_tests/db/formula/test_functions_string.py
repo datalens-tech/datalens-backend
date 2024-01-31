@@ -14,8 +14,8 @@ class TestStringFunctionMSSQL(MSSQLTestBase, DefaultStringFunctionFormulaConnect
     supports_split_3 = False
     supports_non_const_percent_escape = False
 
-    def test_contains_extended(self) -> None:  # type: ignore
+    def test_contains_extended(self) -> None:
         pytest.skip()  # Override base test; default checks not supported
 
-    def test_notcontains_extended(self) -> None:  # type: ignore
+    def test_notcontains_extended(self) -> None:
         pytest.skip()  # Override base test; default checks not supported

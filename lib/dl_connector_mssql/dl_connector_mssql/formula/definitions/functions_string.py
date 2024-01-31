@@ -27,7 +27,7 @@ def make_like_pattern_mssql_const(value: Any, left_any: bool = True, right_any: 
     return result
 
 
-def make_like_pattern_mssql_clause(clause, left_any=True, right_any=True):  # type: ignore
+def make_like_pattern_mssql_clause(clause, left_any=True, right_any=True):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
     # e.g. `ColumnClause`
     pieces = []
     if left_any:

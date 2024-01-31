@@ -43,11 +43,11 @@ def get_sa_query_cls(backend_type: SourceBackendType) -> Type[Query]:
 class CustomSession(Session):
     __closed = False
 
-    def close(self):  # type: ignore
+    def close(self):  # type: ignore  # 2024-01-30 # TODO: Function is missing a return type annotation  [no-untyped-def]
         super().close()
         self.__closed = True
 
-    def execute(self, *args, **kwargs):  # type: ignore
+    def execute(self, *args, **kwargs):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         if self.__closed:
             raise exc.DBSessionError("Cannot execute on closed session")
         return super().execute(*args, **kwargs)

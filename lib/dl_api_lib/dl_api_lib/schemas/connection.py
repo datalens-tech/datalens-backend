@@ -57,7 +57,7 @@ class GenericConnectionSchema(OneOfSchema):
     type_schemas: dict[str, Type[ConnectionSchema]] = {}  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[ConnectionSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
     supported_connections: ClassVar[set[Type[ConnectionBase]]] = set()
 
-    def get_data_type(self, data):  # type: ignore
+    def get_data_type(self, data):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         data_type = super().get_data_type(data)
         self.context[ConnectionSchema.CONN_TYPE_CTX_KEY] = data_type
         return data_type

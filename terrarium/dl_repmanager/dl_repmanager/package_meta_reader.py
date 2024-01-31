@@ -50,7 +50,7 @@ class PackageMetaReader:
         return package_reg_name
 
     def get_package_module_names(self) -> tuple[str, ...]:
-        module_names = tuple(pkg["include"] for pkg in self._get_main_section()["packages"])  # type: ignore
+        module_names = tuple(pkg["include"] for pkg in self._get_main_section()["packages"])
         return module_names
 
     def get_package_type(

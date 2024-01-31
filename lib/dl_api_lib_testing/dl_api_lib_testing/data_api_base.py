@@ -68,7 +68,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
         us_config = core_test_config.get_us_config()
         redis_setting_maker = core_test_config.get_redis_setting_maker()
 
-        return DataApiAppSettings(
+        return DataApiAppSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "SENTRY_ENABLED" for "DataApiAppSettings"  [call-arg]
             SENTRY_ENABLED=False,
             US_BASE_URL=us_config.us_host,
             US_MASTER_TOKEN=us_config.us_master_token,
@@ -89,7 +89,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             QUERY_PROCESSING_MODE=cls.query_processing_mode,
             CA_FILE_PATH=get_root_certificates_path(),
             PIVOT_ENGINE_TYPE=PIVOT_ENGINE_TYPE_PANDAS,
-        )  # type: ignore
+        )
 
     @pytest.fixture(scope="function")
     def data_api_app_settings(
