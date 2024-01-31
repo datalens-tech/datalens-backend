@@ -127,7 +127,7 @@ class RepoEnvironment:
     ) -> list[RepositoryManagementPlugin]:
         # TODO: parameterize and load plugins from config
         return [
-            get_plugin_cls(plugin_type=plugin_config.plugin_type)(  # type: ignore
+            get_plugin_cls(plugin_type=plugin_config.plugin_type)(
                 repository_env=self,
                 package_index=package_index,
                 base_path=self.base_path,

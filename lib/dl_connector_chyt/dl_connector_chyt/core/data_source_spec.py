@@ -35,12 +35,12 @@ class CHYTTableListDataSourceSpec(CHYTDataSourceSpecMixin, SQLDataSourceSpecBase
 _VAL_TV = TypeVar("_VAL_TV")
 
 
-def _zero_to_none(value: _VAL_TV) -> Optional[_VAL_TV]:  # type: ignore
+def _zero_to_none(value: _VAL_TV) -> Optional[_VAL_TV]:
     return value or None
 
 
 @attr.s
 class CHYTTableRangeDataSourceSpec(CHYTDataSourceSpecMixin, SQLDataSourceSpecBase):
     directory_path: Optional[str] = attr.ib(kw_only=True, default=None)
-    range_from: Optional[str] = attr.ib(kw_only=True, default=None, converter=_zero_to_none)  # type: ignore
-    range_to: Optional[str] = attr.ib(kw_only=True, default=None, converter=_zero_to_none)  # type: ignore
+    range_from: Optional[str] = attr.ib(kw_only=True, default=None, converter=_zero_to_none)
+    range_to: Optional[str] = attr.ib(kw_only=True, default=None, converter=_zero_to_none)

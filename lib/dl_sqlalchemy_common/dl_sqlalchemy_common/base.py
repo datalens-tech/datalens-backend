@@ -19,8 +19,8 @@ class Formatter:
         if separator is None:
             separator = self.separator
         if cleanup:
-            pieces = [item.rstrip() for item in pieces]  # type: ignore
-            pieces = [item for item in pieces if item]  # type: ignore
+            pieces = [item.rstrip() for item in pieces]
+            pieces = [item for item in pieces if item]
         return separator.join(pieces)
 
     def indent(self, text: str) -> str:
@@ -384,7 +384,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
             if toplevel:
                 self.from_linter = from_linter
         else:
-            from_linter = None  # type: ignore
+            from_linter = None
             warn_linting = False
 
         if froms:

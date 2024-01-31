@@ -283,7 +283,7 @@ class UpdateConnectionDataView(FileUploaderBaseView):
                     error=None,
                 )
 
-                dfile_by_source_properties[src["spreadsheet_id"]].sources.append(sheet_data_source)  # type: ignore
+                dfile_by_source_properties[src["spreadsheet_id"]].sources.append(sheet_data_source)  # type: ignore  # 2024-01-30 # TODO: Item "None" of "list[DataSource] | None" has no attribute "append"  [union-attr]
 
             elif req_data["type"] == FileType.yadocs:
                 filled_source_property = "public_link" if src["public_link"] is not None else "private_path"
@@ -322,7 +322,7 @@ class UpdateConnectionDataView(FileUploaderBaseView):
                     error=None,
                 )
 
-                dfile_by_source_properties[src[filled_source_property]].sources.append(sheet_data_source)  # type: ignore
+                dfile_by_source_properties[src[filled_source_property]].sources.append(sheet_data_source)  # type: ignore  # 2024-01-30 # TODO: Item "None" of "list[DataSource] | None" has no attribute "append"  [union-attr]
 
         task_processor = self.dl_request.get_task_processor()
         exec_mode = TaskExecutionMode.UPDATE_AND_SAVE if req_data["save"] else TaskExecutionMode.UPDATE_NO_SAVE

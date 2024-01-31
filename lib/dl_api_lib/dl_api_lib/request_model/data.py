@@ -50,7 +50,7 @@ class FieldAction(Action):
     @property
     def serialized(self) -> Dict[str, Any]:
         serializer = lambda t, at, val: val.name if isinstance(val, Enum) else val  # noqa
-        return attr.asdict(self, recurse=True, value_serializer=serializer)  # type: ignore
+        return attr.asdict(self, recurse=True, value_serializer=serializer)
 
 
 @attr.s(frozen=True, kw_only=True, auto_attribs=True)

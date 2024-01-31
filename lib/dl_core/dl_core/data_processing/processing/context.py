@@ -85,4 +85,4 @@ class OpExecutionContext:
                 raise ValueError(f"Unknown kwarg: {key!r}")
             new_kwargs[key] = val
 
-        return self.__class__(**new_kwargs)  # type: ignore
+        return self.__class__(**new_kwargs)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "OpExecutionContext" has incompatible type "**dict[str, Collection[object]]"; expected "str"  [arg-type]

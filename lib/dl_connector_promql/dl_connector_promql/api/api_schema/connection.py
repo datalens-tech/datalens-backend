@@ -42,7 +42,7 @@ class DBPathField(ma_fields.String):
 
 
 class PromQLConnectionSchema(ConnectionMetaMixin, ClassicSQLConnectionSchema):
-    TARGET_CLS = PromQLConnection  # type: ignore
+    TARGET_CLS = PromQLConnection
 
     secure = ma_fields.Boolean(attribute="data.secure", bi_extra=FieldExtra(editable=True))
     username = ma_fields.String(

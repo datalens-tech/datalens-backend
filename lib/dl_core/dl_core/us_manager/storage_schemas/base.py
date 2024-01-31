@@ -96,7 +96,7 @@ class BaseStorageSchema(Schema, Generic[_TARGET_TV]):
 
 class DefaultStorageSchema(BaseStorageSchema[_TARGET_TV], Generic[_TARGET_TV]):
     def to_object(self, data: dict) -> _TARGET_TV:
-        return self.get_target_cls()(**data)  # type: ignore
+        return self.get_target_cls()(**data)
 
 
 # class CustomNested(fields.Nested):

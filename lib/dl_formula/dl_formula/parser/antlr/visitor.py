@@ -42,7 +42,7 @@ class CustomDataLensVisitor(DataLensVisitor):
         self._text = text
         self._pos_conv = PositionConverter(text=text)
 
-    def _make_node_meta(self, *ctxes: antlr4.ParserRuleContext) -> Optional[nodes.NodeMeta]:  # type: ignore
+    def _make_node_meta(self, *ctxes: antlr4.ParserRuleContext) -> Optional[nodes.NodeMeta]:
         first_ctx = ctxes[0]
         last_ctx = ctxes[-1]
         return nodes.NodeMeta(
@@ -60,7 +60,7 @@ class CustomDataLensVisitor(DataLensVisitor):
 
     def _separate_children(
         self,
-        ctx: antlr4.ParserRuleContext,  # type: ignore
+        ctx: antlr4.ParserRuleContext,
         exclude: Iterable[str] = (),
         lower_str: bool = False,
     ) -> Tuple[List[str], List[nodes.FormulaItem]]:
@@ -385,8 +385,8 @@ class CustomDataLensVisitor(DataLensVisitor):
             )
 
         def _flatten_and_visit_cmp_ctx(
-            _ctx: antlr4.ParserRuleContext,  # type: ignore
-        ) -> List[antlr4.ParserRuleContext]:  # type: ignore
+            _ctx: antlr4.ParserRuleContext,
+        ) -> List[antlr4.ParserRuleContext]:
             if is_cmp(_ctx):
                 return [
                     *_flatten_and_visit_cmp_ctx(_ctx.children[0]),  # type: ignore  # TODO: fix
