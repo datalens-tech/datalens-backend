@@ -190,7 +190,7 @@ class SubscriptionManager(SubscriptionManagerBase):
             finally:
                 try:
                     await psub.unsubscribe(channel_key)
-                except TypeError:
+                except (TypeError, ConnectionError):
                     LOGGER.warning("Couldn't unsubscribe from redis channel. Client can be closed.", exc_info=True)
                     pass
 
