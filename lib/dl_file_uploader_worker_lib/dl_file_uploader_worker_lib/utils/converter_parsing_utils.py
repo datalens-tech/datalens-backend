@@ -500,7 +500,7 @@ def make_result_types(
     has_header: bool,
     missing_title_generator: Callable[[int], str] = idx_to_file_notation,
 ) -> TResultTypes:
-    def get_value(value):  # type: ignore
+    def get_value(value):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         if isinstance(value, Cell):
             return str(value.value) if not value.empty else None
         return str(value)

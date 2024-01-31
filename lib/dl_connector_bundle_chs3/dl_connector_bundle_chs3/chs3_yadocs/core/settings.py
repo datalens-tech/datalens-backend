@@ -23,7 +23,7 @@ def yadocs_file_s3_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str
     if cfg is None:
         return {}
     return dict(
-        YADOCS=FileS3ConnectorSettings(  # type: ignore
+        YADOCS=FileS3ConnectorSettings(
             HOST=cfg.CONN_FILE_CH_HOST,
             PORT=cfg.CONN_FILE_CH_PORT,
             USERNAME=cfg.CONN_FILE_CH_USERNAME,

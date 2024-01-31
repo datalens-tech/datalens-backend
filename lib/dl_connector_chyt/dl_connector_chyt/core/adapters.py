@@ -88,7 +88,7 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
             wrapper_exc=wrapper_exc,
             orig_exc=orig_exc,
             debug_compiled_query=debug_compiled_query,
-            **kwargs,  # type: ignore
+            **kwargs,
         )
         return ensure_db_message(exc_cls, kw)
 

@@ -331,7 +331,7 @@ def prepare_preview(sample: str, dialect: csv.Dialect, has_header: bool) -> list
     preview: list[list[Optional[str]]] = []
     preview_size = 0
     for row in csv_reader:
-        preview.append(row)  # type: ignore
+        preview.append(row)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "append" of "list" has incompatible type "list[str]"; expected "list[str | None]"  [arg-type]
         if len(preview) >= MAX_PREVIEW_ROWS:
             break
 

@@ -19,7 +19,7 @@ async def release_source_update_locks(redis_cli: redis.asyncio.Redis, *source_id
     for source_id in source_ids:
         source_update_lock_key, source_update_lock_token = get_update_connection_source_lock(src_id=source_id)
         source_lock = RedisLock(redis=redis_cli, name=source_update_lock_key)
-        source_lock.local.token = source_update_lock_token  # type: ignore
+        source_lock.local.token = source_update_lock_token
         try:
             await source_lock.release()
         except redis.exceptions.LockError:

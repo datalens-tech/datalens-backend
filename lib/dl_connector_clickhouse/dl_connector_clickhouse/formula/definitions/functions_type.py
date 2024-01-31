@@ -59,7 +59,7 @@ class FuncDatetimeTZCH(SingleVariantTranslationBase, base.FuncDatetimeTZ):
     ]
 
     @classmethod
-    def _translate_main(cls, value_ctx, tz_ctx):  # type: ignore
+    def _translate_main(cls, value_ctx, tz_ctx):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         # NOTE: Tricky point:
         # in CH, converting all aware datetimes to UTC,
         # primarily for the correct output.
@@ -84,7 +84,7 @@ class FuncDatetimeTZToNaiveCH(base.FuncDatetimeTZToNaive):
     dialects = D.CLICKHOUSE
 
     @classmethod
-    def _translate_main(cls, value_ctx):  # type: ignore
+    def _translate_main(cls, value_ctx):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         expr = value_ctx.expression
         tz = value_ctx.data_type_params.timezone
         assert tz
@@ -109,7 +109,7 @@ class FuncTypeGenericDatetime2CHImpl(SingleVariantTranslationBase, base.FuncType
     ]
 
     @classmethod
-    def _translate_main(cls, expr, tz):  # type: ignore
+    def _translate_main(cls, expr, tz):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         return sa.func.toDateTime(expr.expression, tz.expression)
 
 

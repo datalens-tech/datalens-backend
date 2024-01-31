@@ -66,15 +66,15 @@ def hook_configure_configure_sentry_for_flask(app: flask.Flask, cfg: SentryConfi
     but ensure it is configured in `before_first_request` (flask app).
     """
     try:
-        import uwsgidecorators  # type: ignore
+        import uwsgidecorators  # type: ignore  # 2024-01-30 # TODO: Skipping analyzing "uwsgidecorators": module is installed, but missing library stubs or py.typed marker  [import]
     except Exception:  # noqa
         pass
     else:
 
         @uwsgidecorators.postfork
-        def _init_logging_in_uwsgi_postfork():  # type: ignore
+        def _init_logging_in_uwsgi_postfork():  # type: ignore  # 2024-01-30 # TODO: Function is missing a return type annotation  [no-untyped-def]
             configure_sentry_for_flask(cfg)
 
     @app.before_first_request
-    def _init_logging_in_before_first_request():  # type: ignore
+    def _init_logging_in_before_first_request():  # type: ignore  # 2024-01-30 # TODO: Function is missing a return type annotation  [no-untyped-def]
         configure_sentry_for_flask(cfg)

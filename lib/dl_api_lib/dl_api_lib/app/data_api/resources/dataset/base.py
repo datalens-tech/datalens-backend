@@ -201,7 +201,7 @@ class DatasetDataBaseView(BaseView):
     def try_get_mutation_key(self, updates: List[Action]) -> Optional[MutationKey]:
         if self.dataset_id is not None and self.dataset.revision_id is not None:
             if self._updates_only_fields(updates):
-                return UpdateDatasetMutationKey.create(self.dataset.revision_id, updates)  # type: ignore
+                return UpdateDatasetMutationKey.create(self.dataset.revision_id, updates)  # type: ignore  # 2024-01-30 # TODO: Argument 2 to "create" of "UpdateDatasetMutationKey" has incompatible type "list[Action]"; expected "list[FieldAction]"  [arg-type]
         return None
 
     def try_get_cache(self) -> Optional[USEntryMutationCache]:

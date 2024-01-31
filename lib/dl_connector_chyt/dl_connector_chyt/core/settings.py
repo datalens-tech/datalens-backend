@@ -26,9 +26,9 @@ class CHYTConnectorSettings(ConnectorSettingsBase):
     DEFAULT_CLIQUE:     clique that is set by default in the connection form
     """
 
-    PUBLIC_CLIQUES: tuple[str] = s_attrib("PUBLIC_CLIQUES", missing_factory=tuple, env_var_converter=split_by_comma)  # type: ignore
-    FORBIDDEN_CLIQUES: tuple[str] = s_attrib("FORBIDDEN_CLIQUES", missing_factory=tuple, env_var_converter=split_by_comma)  # type: ignore
-    DEFAULT_CLIQUE: Optional[str] = s_attrib("DEFAULT_CLIQUE", missing=None)  # type: ignore
+    PUBLIC_CLIQUES: tuple[str] = s_attrib("PUBLIC_CLIQUES", missing_factory=tuple, env_var_converter=split_by_comma)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "tuple[str]")  [assignment]
+    FORBIDDEN_CLIQUES: tuple[str] = s_attrib("FORBIDDEN_CLIQUES", missing_factory=tuple, env_var_converter=split_by_comma)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "tuple[str]")  [assignment]
+    DEFAULT_CLIQUE: Optional[str] = s_attrib("DEFAULT_CLIQUE", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
 
 
 class ConnectorsDataCHYTBase(ConnectorsDataBase):
@@ -50,7 +50,7 @@ def chyt_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, Connecto
     if cfg is None:
         return {}
     return dict(
-        CHYT=CHYTConnectorSettings(  # type: ignore
+        CHYT=CHYTConnectorSettings(
             PUBLIC_CLIQUES=tuple(cfg.CONN_CHYT_PUBLIC_CLIQUES),  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "tuple" has incompatible type "Any | tuple[str] | None"; expected "Iterable[Any]"  [arg-type]
             FORBIDDEN_CLIQUES=tuple(cfg.CONN_CHYT_FORBIDDEN_CLIQUES),  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "tuple" has incompatible type "Any | tuple[str] | None"; expected "Iterable[Any]"  [arg-type]
             DEFAULT_CLIQUE=cfg.CONN_CHYT_DEFAULT_CLIQUE,

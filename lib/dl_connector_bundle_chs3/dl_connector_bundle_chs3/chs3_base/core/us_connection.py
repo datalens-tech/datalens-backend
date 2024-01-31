@@ -50,7 +50,7 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings], ConnectionClickhouseBase):  # type: ignore
+class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings], ConnectionClickhouseBase):
     is_always_internal_source: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     settings_type = FileS3ConnectorSettings
@@ -126,7 +126,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
         assert self.uuid and self.raw_tenant_id
         return "_".join((self.raw_tenant_id, self.uuid, s3_filename_suffix))
 
-    def get_conn_dto(self) -> BaseFileS3ConnDTO:  # type: ignore
+    def get_conn_dto(self) -> BaseFileS3ConnDTO:
         cs = self._connector_settings
         conn_dto = BaseFileS3ConnDTO(
             conn_id=self.uuid,
@@ -137,7 +137,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
             replace_secret=self.get_replace_secret(),
             protocol="https" if cs.SECURE else "http",
             host=cs.HOST,
-            multihosts=parse_comma_separated_hosts(cs.HOST),  # type: ignore
+            multihosts=parse_comma_separated_hosts(cs.HOST),  # type: ignore  # 2024-01-30 # TODO: Argument "multihosts" to "BaseFileS3ConnDTO" has incompatible type "tuple[str, ...]"; expected "Iterable[_T_co]"  [arg-type]
             port=cs.PORT,
             username=cs.USERNAME,
             password=cs.PASSWORD,
@@ -165,7 +165,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
                 title=source.title,
                 group=[],
                 source_type=self.source_type,
-                connection_id=self.uuid,  # type: ignore
+                connection_id=self.uuid,  # type: ignore  # 2024-01-30 # TODO: Argument "connection_id" to "DataSourceTemplate" has incompatible type "str | None"; expected "str"  [arg-type]
                 parameters={
                     "origin_source_id": source.id,
                 },

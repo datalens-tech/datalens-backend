@@ -49,7 +49,7 @@ class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
     @post_load(pass_many=False)
     def post_load(self, data: Dict[str, Any], **_: Any) -> _TARGET_OBJECT_BASE_TV:
         try:
-            return self.target_cls(**data)  # type: ignore
+            return self.target_cls(**data)
         except Exception as exc:
             logging.exception(f"Can not instantiate class {self.target_cls}: {exc}")
             raise
@@ -82,7 +82,7 @@ class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
     ) -> Type[BaseSchema[_TARGET_OBJECT_GENERATED_TV]]:
         # TODO FIX: Generate mnemonic class name
         class ResultingSchema(
-            BaseSchema[_TARGET_OBJECT_GENERATED_TV], marshmallow.Schema.from_dict(field_map)  # type: ignore
+            BaseSchema[_TARGET_OBJECT_GENERATED_TV], marshmallow.Schema.from_dict(field_map)  # type: ignore  # 2024-01-30 # TODO: Unsupported dynamic base class "marshmallow.Schema.from_dict"  [misc]
         ):
             class Meta:
                 ordered = True
@@ -90,7 +90,7 @@ class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
             target_cls = generate_for
             _fields_to_skip_on_none = fields_to_skip_on_none or set()
 
-        return ResultingSchema  # type: ignore
+        return ResultingSchema
 
 
 class BaseOneOfSchema(OneOfSchema):

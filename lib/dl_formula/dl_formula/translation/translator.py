@@ -344,7 +344,7 @@ class SqlAlchemyTranslator:
     def _translate_node_case_block(self, node: nodes.CaseBlock, ctx: TranslationCtx) -> None:
         args: list[nodes.FormulaItem] = [
             node.case_expr,
-            *chain.from_iterable(when_part.children for when_part in node.when_list),  # type: ignore
+            *chain.from_iterable(when_part.children for when_part in node.when_list),
         ]
         if node.else_expr is not None:
             args.append(node.else_expr)
@@ -355,7 +355,7 @@ class SqlAlchemyTranslator:
     @_translate_node.register(nodes.IfBlock)
     def _translate_node_if_block(self, node: nodes.IfBlock, ctx: TranslationCtx) -> None:
         args: list[nodes.FormulaItem] = [
-            *chain.from_iterable(if_part.children for if_part in node.if_list),  # type: ignore
+            *chain.from_iterable(if_part.children for if_part in node.if_list),
             node.else_expr,
         ]
         self.simple_translate_func(

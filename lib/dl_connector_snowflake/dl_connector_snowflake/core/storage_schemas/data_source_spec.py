@@ -14,11 +14,11 @@ class SnowFlakeTableDataSourceSpecStorageSchema(
     TableSQLDataSourceSpecStorageSchemaMixin,
     BaseSQLDataSourceSpecStorageSchema,
 ):
-    TARGET_CLS = SnowFlakeTableDataSourceSpec  # type: ignore
+    TARGET_CLS = SnowFlakeTableDataSourceSpec
 
 
 class SnowFlakeSubselectDataSourceSpecStorageSchema(
     SubselectSQLDataSourceSpecStorageSchemaMixin,
     BaseSQLDataSourceSpecStorageSchema,
 ):
-    TARGET_CLS = SnowFlakeSubselectDataSourceSpec  # type: ignore
+    TARGET_CLS = SnowFlakeSubselectDataSourceSpec

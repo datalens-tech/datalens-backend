@@ -336,8 +336,8 @@ class USManagerBase:
             data = us_resp.get("data")
             serializer = self.get_us_entry_serializer(entry_cls)
             data_pack = USDataPack(
-                data=data,  # type: ignore
-                secrets=us_resp.get("unversionedData"),  # type: ignore
+                data=data,  # type: ignore  # 2024-01-30 # TODO: Argument "data" to "USDataPack" has incompatible type "Any | None"; expected "dict[str, Any]"  [arg-type]
+                secrets=us_resp.get("unversionedData"),  # type: ignore  # 2024-01-30 # TODO: Argument "secrets" to "USDataPack" has incompatible type "Any | None"; expected "dict[str, str | EncryptedData | None]"  [arg-type]
             )
 
             entry = serializer.deserialize(

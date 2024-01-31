@@ -23,7 +23,7 @@ def file_s3_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, Conne
     if cfg is None:
         return {}
     return dict(
-        FILE=FileS3ConnectorSettings(  # type: ignore
+        FILE=FileS3ConnectorSettings(
             HOST=cfg.CONN_FILE_CH_HOST,
             PORT=cfg.CONN_FILE_CH_PORT,
             USERNAME=cfg.CONN_FILE_CH_USERNAME,
