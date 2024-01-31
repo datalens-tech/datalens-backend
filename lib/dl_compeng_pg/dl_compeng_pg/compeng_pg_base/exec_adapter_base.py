@@ -61,10 +61,13 @@ class PostgreSQLExecAdapterAsync(Generic[_CONN_TV], ProcessorDbExecAdapterBase, 
         assert len(names) == len(user_types)
         backend_type = BACKEND_TYPE_POSTGRES
         columns = [
-            sa.Column(name=name, type_=make_sa_type(
-                backend_type=backend_type,
-                native_type=self._tt.type_user_to_native(user_t=user_t),
-            ))
+            sa.Column(
+                name=name,
+                type_=make_sa_type(
+                    backend_type=backend_type,
+                    native_type=self._tt.type_user_to_native(user_t=user_t),
+                ),
+            )
             for name, user_t in zip(names, user_types)
         ]
         return sa.Table(table_name, sa.MetaData(), *columns, prefixes=["TEMPORARY"])

@@ -70,9 +70,6 @@ class YQLTypeTransformer(TypeTransformer):
         if bi_type != UserDataType.datetime
     }
     user_to_native_map = {
-        **{
-            bi_type: make_native_type(sa_types[0])
-            for bi_type, sa_types in _base_type_map.items()
-        },
+        **{bi_type: make_native_type(sa_types[0]) for bi_type, sa_types in _base_type_map.items()},
         **{bi_type: make_native_type(sa_type) for bi_type, sa_type in _extra_type_map.items()},
     }
