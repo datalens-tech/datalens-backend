@@ -17,7 +17,7 @@ class PromQLCompiler(compiler.SQLCompiler):
         pass
 
 
-class PromQLDialect(default.DefaultDialect):  # type: ignore
+class PromQLDialect(default.DefaultDialect):
     name = "bi_promql"
     statement_compiler = PromQLCompiler
 

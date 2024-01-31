@@ -26,6 +26,10 @@ datalens-api-connector = {path = "../dl_api_connector"}
 datalens-core = {path = "../dl_core"}
 datalens-core-testing = {path = "../dl_core_testing"}
 datalens-api-lib = {path = "../dl_api_lib"}
+datalens-formula-testing = {path = "../dl_formula_testing"}
+datalens-pivot-pandas = {path = "../dl_pivot_pandas"}
+datalens-query-processing = {path = "../dl_query_processing"}
+datalens-testing = {path = "../dl_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

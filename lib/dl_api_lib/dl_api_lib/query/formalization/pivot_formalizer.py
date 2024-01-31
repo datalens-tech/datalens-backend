@@ -2,14 +2,6 @@ from typing import cast
 
 import attr
 
-from dl_api_lib.pivot.pivot_legend import (
-    PivotAnnotationRoleSpec,
-    PivotDimensionRoleSpec,
-    PivotLegend,
-    PivotLegendItem,
-    PivotMeasureRoleSpec,
-    PivotRoleSpec,
-)
 from dl_api_lib.query.formalization.id_gen import IdGenerator
 from dl_api_lib.query.formalization.raw_pivot_specs import (
     RawAnnotationPivotRoleSpec,
@@ -30,6 +22,14 @@ from dl_constants.internal_constants import (
     MEASURE_NAME_TITLE,
 )
 from dl_core.us_dataset import Dataset
+from dl_pivot.pivot_legend import (
+    PivotAnnotationRoleSpec,
+    PivotDimensionRoleSpec,
+    PivotLegend,
+    PivotLegendItem,
+    PivotMeasureRoleSpec,
+    PivotRoleSpec,
+)
 import dl_query_processing.exc
 from dl_query_processing.legend.field_legend import (
     Legend,

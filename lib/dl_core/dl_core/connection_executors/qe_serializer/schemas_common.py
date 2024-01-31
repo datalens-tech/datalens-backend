@@ -77,7 +77,9 @@ class DBAdapterQueryStrSchema(BaseQEAPISchema):
         )
 
     def dump_conn_params(self, dba_query: DBAdapterQuery) -> Optional[dict]:
-        conn_params = dba_query.connector_specific_params
+        conn_params = (
+            dict(dba_query.connector_specific_params) if dba_query.connector_specific_params is not None else None
+        )
         if conn_params is not None:
             for k, v in conn_params.items():
                 conn_params[k] = json.dumps(v, cls=RedisDatalensDataJSONEncoder)

@@ -149,7 +149,7 @@ class FileUploaderClient(BIAioHTTPClient):
 
     async def get_preview_batch(self, file_sources: list[FileSourceDesc]) -> list[SourcePreview]:
         previews = await asyncio.gather(*[self.get_preview(src) for src in file_sources])
-        return previews  # type: ignore
+        return previews
 
     def get_preview_batch_sync(self, file_sources: list[FileSourceDesc]) -> list[SourcePreview]:
         return await_sync(self.get_preview_batch(file_sources))
@@ -168,7 +168,7 @@ class FileUploaderClient(BIAioHTTPClient):
 
     async def get_internal_params_batch(self, file_sources: list[FileSourceDesc]) -> list[SourceInternalParams]:
         internal_params = await asyncio.gather(*[self.get_internal_params(src) for src in file_sources])
-        return internal_params  # type: ignore
+        return internal_params
 
     async def cleanup_tenant(self, tenant_id: str) -> None:
         path = "api/v2/cleanup"

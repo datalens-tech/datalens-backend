@@ -112,7 +112,7 @@ class FileTypeOneOfSchema(OneOfSchema):
         assert isinstance(type_field, FileType)
         return type_field.name
 
-    def get_data_type(self, data: dict):  # type: ignore
+    def get_data_type(self, data: dict):  # type: ignore  # 2024-01-30 # TODO: Function is missing a return type annotation  [no-untyped-def]
         data_type = data.get(self.type_field)
         if self.type_field not in data:
             data[self.type_field] = FileType.gsheets.value

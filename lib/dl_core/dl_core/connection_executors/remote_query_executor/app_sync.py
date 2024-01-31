@@ -48,6 +48,8 @@ from dl_core.loader import (
     load_core_lib,
 )
 from dl_core.logging_config import hook_configure_logging as _hook_configure_logging
+from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
+from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
 
 
 if TYPE_CHECKING:
@@ -79,7 +81,7 @@ class ActionHandlingView(flask.views.View):
     methods = ["POST"]
 
     def get_action(self) -> act.RemoteDBAdapterAction:
-        return ActionSerializer().deserialize_action(flask.request.json, allowed_dba_classes=SUPPORTED_ADAPTER_CLS)  # type: ignore
+        return ActionSerializer().deserialize_action(flask.request.json, allowed_dba_classes=SUPPORTED_ADAPTER_CLS)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "deserialize_action" of "ActionSerializer" has incompatible type "Any | None"; expected "dict[Any, Any]"  [arg-type]
 
     def execute_non_streamed_action(
         self,
@@ -96,7 +98,7 @@ class ActionHandlingView(flask.views.View):
             return dba.get_schema_names(db_ident=action.db_ident)
 
         elif isinstance(action, act.ActionGetTables):
-            return dba.get_tables(schema_ident=action.schema_ident)  # type: ignore
+            return dba.get_tables(schema_ident=action.schema_ident)  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "list[TableIdent]", expected "RawSchemaInfo | list[str] | str | bool | int | None")  [return-value]
 
         elif isinstance(action, act.ActionGetTableInfo):
             return dba.get_table_info(table_def=action.table_def, fetch_idx_info=action.fetch_idx_info)
@@ -104,8 +106,23 @@ class ActionHandlingView(flask.views.View):
         elif isinstance(action, act.ActionIsTableExists):
             return dba.is_table_exists(table_ident=action.table_ident)
 
+        elif isinstance(action, act.ActionExecuteTypedQuery):
+            return self._handle_execute_typed_query_action(dba=dba, action=action)
+
         else:
             raise NotImplementedError(f"Action {action} is not implemented in QE")
+
+    def _handle_execute_typed_query_action(
+        self,
+        dba: SyncDirectDBAdapter,
+        action: act.ActionExecuteTypedQuery,
+    ) -> str:
+        tq_serializer = get_typed_query_serializer(query_type=action.query_type)
+        typed_query = tq_serializer.deserialize(action.typed_query_str)
+        tq_result = dba.execute_typed_query(typed_query=typed_query)
+        tq_result_serializer = get_typed_query_result_serializer(query_type=action.query_type)
+        tq_result_str = tq_result_serializer.serialize(tq_result)
+        return tq_result_str
 
     @staticmethod
     def try_close_dba(dba: SyncDirectDBAdapter) -> None:
@@ -168,7 +185,7 @@ class ActionHandlingView(flask.views.View):
         LOGGER.info("DBA for action was created: %s", dba)
         return dba
 
-    def dispatch_request(self) -> flask.Response:  # type: ignore
+    def dispatch_request(self) -> flask.Response:
         action = self.get_action()
         LOGGER.info("Got QE action request: %s", action)
 

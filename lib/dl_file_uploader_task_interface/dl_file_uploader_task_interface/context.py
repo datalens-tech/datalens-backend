@@ -1,7 +1,4 @@
-from typing import (
-    Any,
-    Optional,
-)
+from typing import Optional
 
 import arq
 import attr
@@ -18,6 +15,7 @@ from dl_file_uploader_task_interface.utils_service_registry import (
     create_sr_factory_from_env_vars,
     get_async_service_us_manager,
 )
+from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 from dl_task_processor.context import BaseContext
 from dl_task_processor.processor import (
     TaskProcessor,
@@ -35,7 +33,7 @@ class SecureReaderSettings:
 
 @attr.s
 class FileUploaderTaskContext(BaseContext):
-    settings: Optional[Any] = attr.ib()
+    settings: FileUploaderWorkerSettings = attr.ib()
     tpe: ContextVarExecutor = attr.ib()
     redis_service: RedisBaseService = attr.ib()
     s3_service: S3Service = attr.ib()

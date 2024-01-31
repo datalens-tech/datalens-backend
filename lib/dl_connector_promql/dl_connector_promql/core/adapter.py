@@ -123,7 +123,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
 
     async def _run_query(self, dba_query: DBAdapterQuery) -> ClientResponse:
         req_params = {"from", "to", "step"}
-        conn_params = dba_query.connector_specific_params
+        conn_params = dict(dba_query.connector_specific_params or {})
         if conn_params is None or not req_params <= set(conn_params):
             db_exc = self.make_exc(
                 status_code=HTTPBadRequest.status_code,

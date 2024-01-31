@@ -98,7 +98,7 @@ class EngineWrapperBase:
 
     @property
     def dialect(self) -> DefaultDialect:
-        return self._engine.dialect
+        return self._engine.dialect  # type: ignore  # 2024-01-29 # TODO: Incompatible return value type (got "Dialect", expected "DefaultDialect")  [return-value]
 
     @property
     def connection(self) -> Connection:
@@ -112,7 +112,7 @@ class EngineWrapperBase:
         return self._engine.execute(query, *multiparams, **params)
 
     def has_table(self, table_name: str, schema: Optional[str] = None) -> bool:
-        return self.dialect.has_table(self._engine, table_name, schema=schema)
+        return self.dialect.has_table(self._engine, table_name, schema=schema)  # type: ignore  # 2024-01-29 # TODO: "has_table" of "Dialect" does not return a value  [func-returns-value]
 
     def load_table(self, table_name: str, schema: Optional[str] = None) -> sa.Table:
         return sa.Table(table_name, sa.MetaData(bind=self.engine), schema=schema, autoload=True)
@@ -162,7 +162,7 @@ class EngineWrapperBase:
     def get_conn_credentials(self, full: bool = False) -> dict:
         return dict(
             host=self.url.host,
-            port=int(self.url.port),
+            port=int(self.url.port),  # type: ignore  # 2024-01-29 # TODO: Argument 1 to "int" has incompatible type "int | None"; expected "str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc"  [arg-type]
             username=self.url.username,
             password=self.url.password,
             db_name=self.url.database,

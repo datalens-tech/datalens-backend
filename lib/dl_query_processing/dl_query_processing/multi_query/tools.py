@@ -68,11 +68,11 @@ def remap_formula_obj_fields(
 
     # In case the node is itself a Field
     if isinstance(node, formula_nodes.Field):
-        return remap_field(node)  # type: ignore
+        return remap_field(node)  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "Field", expected "_FORMULA_NODE_TV")  [return-value]
 
     # For all other cases when it contains Fields
     updated_node = node.replace_nodes(
         match_func=lambda _node, parent_stack: isinstance(_node, formula_nodes.Field),
-        replace_func=remap_field,  # type: ignore
+        replace_func=remap_field,  # type: ignore  # 2024-01-30 # TODO: Argument "replace_func" to "replace_nodes" of "FormulaItem" has incompatible type "Callable[[Field, VarArg(Any), KwArg(Any)], Field]"; expected "Callable[[FormulaItem, tuple[FormulaItem, ...]], FormulaItem]"  [arg-type]
     )
     return updated_node

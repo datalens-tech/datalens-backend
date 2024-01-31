@@ -14,7 +14,7 @@ from dl_core.rls import (
 
 def load_rls_config(name: str) -> str:
     data = pkgutil.get_data(dl_api_lib_testing.test_data.__name__, "rls_configs/" + name)
-    return data.decode("utf-8")
+    return data.decode("utf-8")  # type: ignore  # 2024-01-29 # TODO: Item "None" of "bytes | None" has no attribute "decode"  [union-attr]
 
 
 def load_rls(name: str) -> list[RLSEntry]:
@@ -64,7 +64,7 @@ RLS_CONFIG_CASES = [
 ]
 
 
-def config_to_comparable(conf: str):
+def config_to_comparable(conf: str):  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
     return set((line.split(": ")[0], ",".join(sorted(line.split(": ")[1]))) for line in conf.strip().split("\n"))
 
 

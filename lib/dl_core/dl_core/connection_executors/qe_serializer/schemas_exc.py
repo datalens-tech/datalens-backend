@@ -18,7 +18,7 @@ class DLExcSchema(Schema):
     dl_exec_dict = fields.Function(serialize=lambda exc: exc.to_jsonable_dict(), deserialize=lambda o: o)
 
     @post_load(pass_many=False)
-    def post_load(self, data: dict, **_) -> DLBaseException:  # type: ignore
+    def post_load(self, data: dict, **_) -> DLBaseException:  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         return DLBaseException.from_jsonable_dict(data["dl_exec_dict"])
 
 
@@ -31,7 +31,7 @@ class OtherExcSchema(Schema):
     )
 
     @post_load(pass_many=False)
-    def post_load(self, data: dict, **_: dict) -> QueryExecutorException:  # type: ignore
+    def post_load(self, data: dict, **_: dict) -> QueryExecutorException:
         tb = "".join(data.get("exc_tb") or ())
         return QueryExecutorException(f"{data['exc_type_name']}: {data['exc_msg']}\n{tb}")
 

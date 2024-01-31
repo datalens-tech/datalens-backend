@@ -74,7 +74,7 @@ class SqlSourceBuilder:
         on_clause: JoinExpressionType,
     ) -> SqlSourceType:
         join_params = dict(self._COMMON_JOIN_PARAMS, **self._JOIN_PARAMS_BY_TYPE[join_type])
-        result = sa.join(left, right, on_clause)  # type: ignore
+        result = sa.join(left, right, on_clause)
         for name, value in join_params.items():
             setattr(result, name, value)
         return result

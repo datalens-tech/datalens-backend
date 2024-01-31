@@ -73,7 +73,7 @@ class RedisModel(SecretContainingMixin, metaclass=abc.ABCMeta):
     @classmethod
     async def get(cls: Type[TRedisModel], manager: RedisModelManager, obj_id: str) -> TRedisModel:
         key = cls._generate_key_by_id(obj_id)
-        return await manager.get(key=key, target_cls=cls)  # type: ignore
+        return await manager.get(key=key, target_cls=cls)  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "RedisModel", expected "TRedisModel")  [return-value]
 
     async def save(self, ttl: Union[int, timedelta, None] = None) -> None:
         assert self._manager
@@ -103,7 +103,7 @@ class RedisModelUserIdAuth(RedisModel, metaclass=abc.ABCMeta):
         key = cls._generate_key_by_id(obj_id)
         obj = await manager.get(key=key, target_cls=cls, post_load=_check_obj_auth)
         assert isinstance(obj, RedisModelUserIdAuth)
-        return obj  # type: ignore
+        return obj  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "RedisModelUserIdAuth", expected "TRedisModel")  [return-value]
 
 
 def _check_obj_auth(obj: RedisModelUserIdAuth) -> None:
@@ -231,7 +231,7 @@ class RedisModelManager:
             raise RedisModelNotFound()
 
         obj = self._deserialize_object(json_data, target_cls)
-        obj._manager = self  # type: ignore
+        obj._manager = self
 
         if post_load is not None:
             post_load(obj)

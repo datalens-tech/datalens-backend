@@ -34,7 +34,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def create_sr_factory_from_env_vars(
-    connectors_settings: FileUploaderConnectorsSettings,
+    file_uploader_connectors_settings: FileUploaderConnectorsSettings,
     ca_data: bytes,
 ) -> DefaultSRFactory:
     def get_conn_options(conn: ExecutorBasedMixin) -> Optional[ConnectOptions]:
@@ -50,9 +50,9 @@ def create_sr_factory_from_env_vars(
         )
 
     connectors_settings = {
-        CONNECTION_TYPE_FILE: connectors_settings.FILE,
-        CONNECTION_TYPE_GSHEETS_V2: connectors_settings.FILE,
-        CONNECTION_TYPE_YADOCS: connectors_settings.FILE,
+        CONNECTION_TYPE_FILE: file_uploader_connectors_settings.FILE,
+        CONNECTION_TYPE_GSHEETS_V2: file_uploader_connectors_settings.FILE,
+        CONNECTION_TYPE_YADOCS: file_uploader_connectors_settings.FILE,
     }
     return DefaultSRFactory(
         rqe_config=rqe_config_from_env(),
@@ -69,8 +69,8 @@ def get_async_service_us_manager(
     us_master_token: str,
     ca_data: bytes,
     crypto_keys_config: CryptoKeysConfig,
+    services_registry: ServicesRegistry,
     bi_context: Optional[RequestContextInfo] = None,
-    services_registry: Optional[ServicesRegistry] = None,
 ) -> AsyncUSManager:
     usm = AsyncUSManager(
         us_api_prefix="private",

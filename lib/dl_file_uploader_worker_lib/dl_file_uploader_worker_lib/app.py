@@ -41,6 +41,7 @@ from dl_task_processor.state import (
 )
 from dl_task_processor.worker import (
     ArqWorker,
+    WorkerMetricsSenderProtocol,
     WorkerSettings,
 )
 from dl_utils.aio import ContextVarExecutor
@@ -91,7 +92,7 @@ class FileUploaderContextFab(BaseContextFabric):
             ca_data=self._ca_data,
         )
 
-    async def tear_down(self, inst: FileUploaderTaskContext) -> None:  # type: ignore
+    async def tear_down(self, inst: FileUploaderTaskContext) -> None:  # type: ignore  # 2024-01-30 # TODO: Argument 1 of "tear_down" is incompatible with supertype "BaseContextFabric"; supertype defines the argument type as "BaseContext"  [override]
         await inst.s3_service.tear_down()
         await inst.redis_service.tear_down()
         inst.tpe.shutdown()
@@ -105,6 +106,9 @@ class FileUploaderWorkerFactory(Generic[_TSettings], abc.ABC):
     @abc.abstractmethod
     def _get_tenant_resolver(self) -> TenantResolver:
         raise NotImplementedError()
+
+    def _get_metrics_sender(self) -> Optional[WorkerMetricsSenderProtocol]:
+        return None
 
     def create_worker(self, state: Optional[TaskState] = None) -> ArqWorker:
         if state is None:
@@ -130,5 +134,6 @@ class FileUploaderWorkerFactory(Generic[_TSettings], abc.ABC):
             ),
             worker_settings=WorkerSettings(),
             cron_tasks=cron_tasks,
+            metrics_sender=self._get_metrics_sender(),
         )
         return worker

@@ -10,7 +10,7 @@ _CONNECTOR_EP_GROUP = f"{package.__name__}.connectors"
 
 
 def _get_all_ep_connectors() -> dict[str, Type[DbTestingConnector]]:
-    entrypoints = list(metadata.entry_points().select(group=_CONNECTOR_EP_GROUP))  # type: ignore
+    entrypoints = list(metadata.entry_points().select(group=_CONNECTOR_EP_GROUP))
     return {ep.name: ep.load() for ep in entrypoints}
 
 

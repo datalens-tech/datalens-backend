@@ -54,6 +54,8 @@ from dl_core.loader import (
     load_core_lib,
 )
 from dl_core.logging_config import configure_logging
+from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
+from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
 from dl_utils.aio import ContextVarExecutor
 
 
@@ -109,7 +111,7 @@ class PingView(BaseView):
 class ActionHandlingView(BaseView):
     async def get_action(self) -> act.RemoteDBAdapterAction:
         raw_body = await self.request.json()
-        action = ActionSerializer().deserialize_action(raw_body, allowed_dba_classes=SUPPORTED_ADAPTER_CLS)  # type: ignore
+        action = ActionSerializer().deserialize_action(raw_body, allowed_dba_classes=SUPPORTED_ADAPTER_CLS)  # type: ignore  # 2024-01-30 # TODO: Argument "allowed_dba_classes" to "deserialize_action" of "ActionSerializer" has incompatible type "set[type[CommonBaseDirectAdapter[Any]]]"; expected "frozenset[type[CommonBaseDirectAdapter[Any]]]"  [arg-type]
         return action
 
     @staticmethod
@@ -165,7 +167,7 @@ class ActionHandlingView(BaseView):
             return await dba.get_schema_names(db_ident=action.db_ident)
 
         elif isinstance(action, act.ActionGetTables):
-            return await dba.get_tables(schema_ident=action.schema_ident)  # type: ignore
+            return await dba.get_tables(schema_ident=action.schema_ident)  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "list[TableIdent]", expected "RawSchemaInfo | list[str] | str | bool | int | None")  [return-value]
 
         elif isinstance(action, act.ActionGetTableInfo):
             return await dba.get_table_info(table_def=action.table_def, fetch_idx_info=action.fetch_idx_info)
@@ -173,8 +175,23 @@ class ActionHandlingView(BaseView):
         elif isinstance(action, act.ActionIsTableExists):
             return await dba.is_table_exists(table_ident=action.table_ident)
 
+        elif isinstance(action, act.ActionExecuteTypedQuery):
+            return await self._handle_execute_typed_query_action(dba=dba, action=action)
+
         else:
             raise NotImplementedError(f"Action {action} is not implemented in QE")
+
+    async def _handle_execute_typed_query_action(
+        self,
+        dba: AsyncDBAdapter,
+        action: act.ActionExecuteTypedQuery,
+    ) -> str:
+        tq_serializer = get_typed_query_serializer(query_type=action.query_type)
+        typed_query = tq_serializer.deserialize(action.typed_query_str)
+        tq_result = await dba.execute_typed_query(typed_query=typed_query)
+        tq_result_serializer = get_typed_query_result_serializer(query_type=action.query_type)
+        tq_result_str = tq_result_serializer.serialize(tq_result)
+        return tq_result_str
 
     async def post(self) -> Union[web.Response, web.StreamResponse]:
         action = await self.get_action()

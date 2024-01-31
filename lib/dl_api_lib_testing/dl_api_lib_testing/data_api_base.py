@@ -34,6 +34,7 @@ from dl_configs.rqe import RQEConfig
 from dl_constants.enums import ConnectionType
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_core_testing.database import DbTable
+from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 from dl_testing.utils import get_root_certificates_path
 
 
@@ -67,7 +68,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
         us_config = core_test_config.get_us_config()
         redis_setting_maker = core_test_config.get_redis_setting_maker()
 
-        return DataApiAppSettings(
+        return DataApiAppSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "SENTRY_ENABLED" for "DataApiAppSettings"  [call-arg]
             SENTRY_ENABLED=False,
             US_BASE_URL=us_config.us_host,
             US_MASTER_TOKEN=us_config.us_master_token,
@@ -87,7 +88,8 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             FILE_UPLOADER_MASTER_TOKEN="qwerty",
             QUERY_PROCESSING_MODE=cls.query_processing_mode,
             CA_FILE_PATH=get_root_certificates_path(),
-        )  # type: ignore
+            PIVOT_ENGINE_TYPE=PIVOT_ENGINE_TYPE_PANDAS,
+        )
 
     @pytest.fixture(scope="function")
     def data_api_app_settings(

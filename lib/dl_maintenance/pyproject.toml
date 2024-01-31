@@ -24,6 +24,7 @@ datalens-core = {path = "../dl_core"}
 datalens-app-tools = {path = "../dl_app_tools"}
 datalens-query-processing = {path = "../dl_query_processing"}
 datalens-api-lib = {path = "../dl_api_lib"}
+datalens-pivot = {path = "../dl_pivot"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

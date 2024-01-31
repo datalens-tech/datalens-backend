@@ -60,3 +60,11 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[[tool.mypy.overrides]]
+module = [
+    "pyuwsgi.*",
+    "docker.*",
+    "statcommons.*"
+]
+ignore_missing_imports = true

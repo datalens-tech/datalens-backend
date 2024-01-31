@@ -33,6 +33,7 @@ class ActionSerializer:
         dba_actions.ActionGetTables: schema_actions.ActionGetTablesSchema,
         dba_actions.ActionGetTableInfo: schema_actions.ActionGetTableInfoSchema,
         dba_actions.ActionIsTableExists: schema_actions.ActionIsTableExistsSchema,
+        dba_actions.ActionExecuteTypedQuery: schema_actions.ActionExecuteTypedQuerySchema,
     }
 
     EXC_SCHEMA_CLS = schemas_exc.GenericExcSchema

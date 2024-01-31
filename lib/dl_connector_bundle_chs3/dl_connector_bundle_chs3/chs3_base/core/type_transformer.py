@@ -87,7 +87,7 @@ class FloatFileTypeCaster(TypeCaster):
 
 class DateFileTypeCaster(DateTypeCaster):
     def _cast_for_input(self, value: Any) -> Any:
-        return DateTypeCaster.cast_func(value).isoformat()  # type: ignore
+        return DateTypeCaster.cast_func(value).isoformat()  # type: ignore  # 2024-01-30 # TODO: Item "None" of "date | None" has no attribute "isoformat"  [union-attr]
 
 
 class DatetimeFileCommonTypeCaster(TypeCaster):
@@ -99,7 +99,7 @@ class DatetimeFileTypeCaster(DatetimeFileCommonTypeCaster):
         dt: Optional[datetime.datetime] = DatetimeFileCommonTypeCaster.cast_func(value)
         if dt is not None:
             if dt.tzinfo is not None and dt.utcoffset() is not None:
-                dt = dt.replace(tzinfo=None) - dt.utcoffset()  # type: ignore
+                dt = dt.replace(tzinfo=None) - dt.utcoffset()  # type: ignore  # 2024-01-30 # TODO: No overload variant of "__sub__" of "datetime" matches argument type "None"  [operator]
             return dt.isoformat()
         return None
 
@@ -114,7 +114,7 @@ class GenericDatetimeFileTypeCaster(DatetimeFileCommonTypeCaster):
         dt: Optional[datetime.datetime] = DatetimeFileCommonTypeCaster.cast_func(value)
         if dt is not None:
             if dt.tzinfo is not None and dt.utcoffset() is not None:
-                dt = dt.replace(tzinfo=None) - dt.utcoffset()  # type: ignore
+                dt = dt.replace(tzinfo=None) - dt.utcoffset()  # type: ignore  # 2024-01-30 # TODO: No overload variant of "__sub__" of "datetime" matches argument type "None"  [operator]
             return dt.isoformat()
         return None
 

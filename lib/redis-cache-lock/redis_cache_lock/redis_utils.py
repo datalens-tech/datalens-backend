@@ -145,7 +145,7 @@ class SubscriptionManagerLegacy(SubscriptionManagerBase):
         channel_key: str,
     ) -> AsyncGenerator[Any, None]:
         try:
-            channels: Tuple[Any, ...] = await cli.psubscribe(channel_key)  # type: ignore
+            channels: Tuple[Any, ...] = await cli.psubscribe(channel_key)
             if len(channels) != 1:
                 raise ValueError(
                     f"Expected a single channel; "
@@ -154,7 +154,7 @@ class SubscriptionManagerLegacy(SubscriptionManagerBase):
             channel = channels[0]
             yield channel
         finally:
-            await cli.punsubscribe(channel_key)  # type: ignore
+            await cli.punsubscribe(channel_key)
 
     async def get_direct(self, timeout: float) -> Optional[bytes]:
         try:

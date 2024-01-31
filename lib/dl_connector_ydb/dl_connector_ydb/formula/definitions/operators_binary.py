@@ -129,7 +129,7 @@ DEFINITIONS_BINARY = [
     base.BinaryEqualDenullified(
         variants=[
             # YQL does not support ISNULL and other complex operations in JOIN conditions
-            V(D.YQL, lambda left, right: left == right),  # type: ignore
+            V(D.YQL, lambda left, right: left == right),
         ]
     ),
     # and

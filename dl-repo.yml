@@ -21,6 +21,7 @@ dl_repo:
         - own_dependency_group
 
   custom_package_map:
+    attr: attrs
     flask_marshmallow: flask-marshmallow
     flask_restx: flask-restx
     grpc: grpcio

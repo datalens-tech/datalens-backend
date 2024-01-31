@@ -59,7 +59,7 @@ class FileUploaderErrorHandler(AIOHTTPErrorHandler):
         elif isinstance(err, (models.EmptySourcesError, models.SourceNotFoundError)):
             return ErrorData(HTTPStatus.NOT_FOUND, response_body={}, level=ErrorLevel.info)
         elif isinstance(err, exc.DLFileUploaderBaseError):
-            status_code = STATUS_CODES.get(err.__class__, HTTPStatus.INTERNAL_SERVER_ERROR)  # type: ignore
+            status_code = STATUS_CODES.get(err.__class__, HTTPStatus.INTERNAL_SERVER_ERROR)
             body = dict(
                 message=err.message,
                 code=exc.make_err_code(err),

@@ -455,6 +455,8 @@ jobs:
       - name: Checkout code, just to get access to .github/execute_mypy...
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 1
       - run: echo '${{ needs.router.outputs.affected }}' >> /tmp/dl_test_targets.json
       - name: run mypy
@@ -527,6 +529,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 1
       - run: |
           task cq:check_dir -- .

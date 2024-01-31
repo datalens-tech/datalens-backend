@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 
-import ciso8601  # type: ignore
+import ciso8601
 
 
 def parse_datetime(value: str) -> datetime.datetime:

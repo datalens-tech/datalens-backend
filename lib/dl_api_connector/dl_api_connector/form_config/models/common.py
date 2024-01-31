@@ -125,7 +125,7 @@ class SerializableConfig:
         if isinstance(value, SerializableConfig):
             return value.as_dict()
         if attr.has(value.__class__):
-            return attr.asdict(value, value_serializer=SerializableConfig._attr_value_serializer, recurse=False)  # type: ignore
+            return attr.asdict(value, value_serializer=SerializableConfig._attr_value_serializer, recurse=False)
         if isinstance(value, (list, tuple)):
             return [SerializableConfig.prepare_value(item) for item in value]
         if isinstance(value, dict):
@@ -152,7 +152,7 @@ class SerializableConfig:
         return cls.prepare_value(value)
 
     def as_dict(self) -> dict[str, Any]:
-        result = attr.asdict(self, value_serializer=self._attr_value_serializer, recurse=False)  # type: ignore
+        result = attr.asdict(self, value_serializer=self._attr_value_serializer, recurse=False)
         return {
             k.value if isinstance(k, (Enum, DynamicEnum)) else self._remap_keys_buffer.get(k, k): v
             for k, v in result.items()

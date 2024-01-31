@@ -33,7 +33,7 @@ _TARGET_OBJECT_GENERATED_TV = TypeVar("_TARGET_OBJECT_GENERATED_TV")
 
 
 class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
-    target_cls: ClassVar[Type[_TARGET_OBJECT_BASE_TV]]
+    target_cls: ClassVar[Type[_TARGET_OBJECT_BASE_TV]]  # type: ignore  # 2024-01-29 # TODO: ClassVar cannot contain type variables  [misc]
     _fields_to_skip_on_none: ClassVar[set[str]]
 
     # TODO FIX: Make tests
@@ -49,7 +49,7 @@ class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
     @post_load(pass_many=False)
     def post_load(self, data: Dict[str, Any], **_: Any) -> _TARGET_OBJECT_BASE_TV:
         try:
-            return self.target_cls(**data)  # type: ignore
+            return self.target_cls(**data)
         except Exception as exc:
             logging.exception(f"Can not instantiate class {self.target_cls}: {exc}")
             raise
@@ -82,7 +82,7 @@ class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
     ) -> Type[BaseSchema[_TARGET_OBJECT_GENERATED_TV]]:
         # TODO FIX: Generate mnemonic class name
         class ResultingSchema(
-            BaseSchema[_TARGET_OBJECT_GENERATED_TV], marshmallow.Schema.from_dict(field_map)  # type: ignore
+            BaseSchema[_TARGET_OBJECT_GENERATED_TV], marshmallow.Schema.from_dict(field_map)  # type: ignore  # 2024-01-30 # TODO: Unsupported dynamic base class "marshmallow.Schema.from_dict"  [misc]
         ):
             class Meta:
                 ordered = True
@@ -90,13 +90,13 @@ class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
             target_cls = generate_for
             _fields_to_skip_on_none = fields_to_skip_on_none or set()
 
-        return ResultingSchema  # type: ignore
+        return ResultingSchema
 
 
 class BaseOneOfSchema(OneOfSchema):
     type_field = "type"
 
-    type_schemas: Dict[str, Type[BaseSchema]] = {}
+    type_schemas: Dict[str, Type[BaseSchema]] = {}  # type: ignore  # 2024-01-29 # TODO: Incompatible types in assignment (expression has type "dict[str, type[BaseSchema[Any]]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
     _map_cls_type_discriminator: ClassVar[dict[Type, str]] = {}
 
     @classmethod
