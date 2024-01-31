@@ -178,7 +178,7 @@ class RedisCacheLock:
         if not self.enable_background_tasks:
             # The `wait_for(shield(coro))` results in waiting until timeout but
             # leaving the coro in background when the timeout is reached.
-            result = await asyncio.shield(self._wait_network_call(coro))
+            result = await self._wait_network_call(asyncio.shield(coro))
             return False, result
 
         return True, await asyncio.shield(self.process_in_background(coro, name=name))
