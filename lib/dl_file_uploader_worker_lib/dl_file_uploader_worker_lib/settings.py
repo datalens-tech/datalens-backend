@@ -41,7 +41,7 @@ class FileUploaderWorkerSettings(FileUploaderBaseSettings):
     US_BASE_URL: str = s_attrib("US_HOST", fallback_cfg_key="US_BASE_URL")  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
     US_MASTER_TOKEN: str = s_attrib("US_MASTER_TOKEN", sensitive=True)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
 
-    CONNECTORS: FileUploaderConnectorsSettings = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "FileUploaderConnectorsSettings | None")  [assignment]
+    CONNECTORS: FileUploaderConnectorsSettings = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "FileUploaderConnectorsSettings")  [assignment]
         "CONNECTORS",
         fallback_factory=file_uploader_connectors_settings_fallback,
     )
