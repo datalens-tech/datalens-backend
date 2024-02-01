@@ -11,7 +11,6 @@ from typing import (
     Tuple,
 )
 
-import attr
 from sqlalchemy.sql.type_api import TypeEngine
 
 from dl_constants.enums import ConnectionType

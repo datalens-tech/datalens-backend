@@ -5,10 +5,13 @@ import sqlalchemy
 
 import dl_core.connectors.base.error_transformer as error_transformer
 from dl_core.connectors.base.error_transformer import (
+    DbErrorTransformer,
+    DBExcKWArgs,
+)
+from dl_core.connectors.base.error_transformer import (
     ExcMatchCondition,
     wrapper_exc_is_and_matches_re,
 )
-from dl_core.connectors.base.error_transformer import DbErrorTransformer
 from dl_core.connectors.base.error_transformer import ErrorTransformerRule as Rule
 import dl_core.exc as exc
 
@@ -49,8 +52,11 @@ def is_source_connect_async_error() -> ExcMatchCondition:
 class AsyncMysqlChainedDbErrorTransformer(error_transformer.ChainedDbErrorTransformer):
     @staticmethod
     def _get_error_kw(
-        debug_compiled_query: Optional[str], orig_exc: Optional[Exception], wrapper_exc: Exception
-    ) -> error_transformer.DBExcKWArgs:
+        debug_compiled_query: Optional[str],
+        orig_exc: Optional[Exception],
+        wrapper_exc: Exception,
+        message: Optional[str] = None,
+    ) -> DBExcKWArgs:
         if isinstance(wrapper_exc, pymysql.ProgrammingError):
             return dict(
                 db_message=str(orig_exc) if orig_exc else str(wrapper_exc),
@@ -58,7 +64,12 @@ class AsyncMysqlChainedDbErrorTransformer(error_transformer.ChainedDbErrorTransf
                 orig=wrapper_exc,  # keep orig exception for .args
                 details={},
             )
-        return error_transformer.ChainedDbErrorTransformer._get_error_kw(debug_compiled_query, orig_exc, wrapper_exc)
+        return error_transformer.ChainedDbErrorTransformer._get_error_kw(
+            debug_compiled_query=debug_compiled_query,
+            orig_exc=orig_exc,
+            wrapper_exc=wrapper_exc,
+            message=message,
+        )
 
 
 async_mysql_db_error_transformer: DbErrorTransformer = AsyncMysqlChainedDbErrorTransformer(
