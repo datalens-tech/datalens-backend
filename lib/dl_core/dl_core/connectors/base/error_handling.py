@@ -2,17 +2,18 @@ import contextlib
 import logging
 from typing import (
     Callable,
-    ClassVar,
     Generator,
     Optional,
     Type,
 )
 
+import attr
 from sqlalchemy import exc as sa_exc
 
 from dl_core.connectors.base.error_transformer import (
     DbErrorTransformer,
-    DBExcKWArgs,
+    ExceptionInfo,
+    GeneratedException,
 )
 import dl_core.exc as exc
 
@@ -20,16 +21,14 @@ import dl_core.exc as exc
 LOGGER = logging.getLogger(__name__)
 
 
-class ErrorHandlerMixin:
-    # TODO: Switch to nested mode from mixin
-    EXTRA_EXC_CLS: ClassVar[tuple[Type[Exception], ...]] = ()
+@attr.s(frozen=True)
+class ExceptionMaker:  # TODO: merge with ErrorTransformer
+    """
+    ErrorTransformer-based exception handling
+    """
 
-    # TODO FIX: Try to implement overrides in more functional style
-    @classmethod
-    def make_exc(
-        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
-    ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
-        raise NotImplementedError()
+    _error_transformer: DbErrorTransformer = attr.ib(kw_only=True)
+    _extra_exception_classes: tuple[Type[Exception], ...] = attr.ib(kw_only=True, default=())
 
     # TODO CONSIDER: Pass DBAdapterQuery to be able to add some context logging
     @contextlib.contextmanager
@@ -43,7 +42,7 @@ class ErrorHandlerMixin:
         exc_clses_to_catch: tuple[Type[Exception], ...] = (
             sa_exc.DatabaseError,
             sa_exc.InvalidRequestError,
-        ) + self.EXTRA_EXC_CLS
+        ) + self._extra_exception_classes
 
         def post_process_exc_ignore_errors(exc_to_post_process: exc.DatabaseQueryError) -> None:
             if exc_post_processor is not None:
@@ -60,38 +59,57 @@ class ErrorHandlerMixin:
             raise
 
         except exc_clses_to_catch as err:
-            LOGGER.info("Got DB exception in DBA.handle_execution_error()", exc_info=True)
+            LOGGER.info(
+                f"Got DB exception in {self.__class__.__name__}.handle_execution_error()",
+                exc_info=True,
+            )
 
             orig_exc = getattr(err, "orig", None)
 
-            exc_cls, exc_kwargs = self.make_exc(
-                wrapper_exc=err, orig_exc=orig_exc, debug_compiled_query=debug_compiled_query
+            new_exc = self.make_exc(
+                wrapper_exc=err,
+                orig_exc=orig_exc,
+                debug_compiled_query=debug_compiled_query,
             )
             try:
-                raise exc_cls(**exc_kwargs) from err
+                raise new_exc from err
             except exc.DatabaseQueryError as just_raised:
                 post_process_exc_ignore_errors(just_raised)
                 raise
 
         except Exception:
-            LOGGER.info("Got unexpected exception in DBA.handle_execution_error()", exc_info=True)
+            LOGGER.info(
+                f"Got unexpected exception in {self.__class__.__name__}.handle_execution_error()",
+                exc_info=True,
+            )
             raise
 
-
-class ETBasedExceptionMaker(ErrorHandlerMixin):
-    """
-    ErrorTransformer-based exception handling
-    """
-
-    _error_transformer: ClassVar[DbErrorTransformer]
-
-    @classmethod
-    def make_exc(
-        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
-    ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
-        trans_exc_cls, kw = cls._error_transformer.make_bi_error_parameters(
+    def make_exc_info(
+        self,
+        wrapper_exc: Exception = GeneratedException(),
+        orig_exc: Optional[Exception] = None,
+        debug_compiled_query: Optional[str] = None,
+        message: Optional[str] = None,
+    ) -> ExceptionInfo:
+        exc_info = self._error_transformer.make_bi_error_parameters(
             wrapper_exc=wrapper_exc,
             debug_compiled_query=debug_compiled_query,
+            orig_exc=orig_exc,
+            message=message,
         )
+        return exc_info
 
-        return trans_exc_cls, kw
+    def make_exc(
+        self,
+        wrapper_exc: Exception = GeneratedException(),
+        orig_exc: Optional[Exception] = None,
+        debug_compiled_query: Optional[str] = None,
+        message: Optional[str] = None,
+    ) -> exc.DatabaseQueryError:
+        exc_info = self.make_exc_info(
+            wrapper_exc=wrapper_exc,
+            debug_compiled_query=debug_compiled_query,
+            orig_exc=orig_exc,
+            message=message,
+        )
+        return exc_info.exc_cls(**exc_info.exc_kwargs)

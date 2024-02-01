@@ -8,7 +8,6 @@ from typing import (
     Any,
     List,
     Optional,
-    Tuple,
     Type,
 )
 from urllib.parse import quote_plus
@@ -31,7 +30,13 @@ from dl_core.connection_models import (
     SchemaIdent,
     TableIdent,
 )
-from dl_core.connectors.base.error_transformer import DBExcKWArgs
+from dl_core.connectors.base.error_handling import ExceptionMaker
+from dl_core.connectors.base.error_transformer import (
+    DBExcKWArgs,
+    ExceptionInfo,
+    GeneratedException,
+    make_default_transformer_with_custom_rules,
+)
 from dl_core.db.native_type import CommonNativeType
 import dl_core.exc as exc
 
@@ -43,6 +48,81 @@ from dl_connector_mssql.core.exc import (
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+class MSSQLExceptionMaker(ExceptionMaker):
+    # FIXME: Move customization to ErrorTransformer subclass instead of ExceptionMaker
+
+    _EXC_CODE_RE = re.compile(
+        r"\(\'[0-9A-Z]+\', [\'\"]\[(?P<state>[0-9A-Z]+)\] " r"\[FreeTDS\][^(]+" r"\((?P<code>\d+)\)"
+    )
+    _EXC_CODE_MAP = {
+        # [42S22] Invalid column name '.+'. (207)
+        207: exc.ColumnDoesNotExist,
+        # [42S02] Invalid object name '.+'. (208)
+        208: SyncMssqlSourceDoesNotExistError,
+        # [22007] Conversion failed when converting date and/or time from character string. (241)
+        241: exc.DataParseError,
+        # [22012] Divide by zero error encountered. (8134)
+        8134: exc.DivisionByZero,
+        # [08S01] Read from the server failed (20004)
+        20004: exc.SourceConnectError,
+        # [08S01] Write to the server failed (20006)
+        20006: exc.SourceConnectError,
+        # [01000] Unexpected EOF from the server (20017)
+        20017: exc.SourceClosedPrematurely,
+        # ?
+        # [23000] The statement terminated. The maximum recursion 100
+        #         has been exhausted before statement completion. (530)
+        # [42000] Snapshot isolation transaction failed in database '.+'
+        #         because the object accessed by the statement has been modified
+        #         by a DDL statement... (3961)
+        # [42000] Transaction (Process ID \d+) was deadlocked on lock... (1205)
+        # [42000] The batch could not be analyzed because of compile errors. (11501)
+    }
+
+    _EXC_STATE_MAP = {
+        # [08001] Unable to connect to data source (0)
+        "08001": exc.SourceConnectError,
+        # [HY000] Could not perform COMMIT or ROLLBACK (0)
+        "HY000": CommitOrRollbackFailed,
+        # [HYT00] Query timeout expired (0)
+        "HYT00": exc.SourceTimeout,
+    }
+
+    @classmethod
+    def get_exc_class(cls, err_msg: str) -> Optional[Type[exc.DatabaseQueryError]]:
+        err_match = cls._EXC_CODE_RE.match(err_msg)
+        if err_match is not None:
+            code = int(err_match.group("code"))
+            state = err_match.group("state").upper()
+            if code in cls._EXC_CODE_MAP:
+                return cls._EXC_CODE_MAP[code]
+            elif state in cls._EXC_STATE_MAP:
+                return cls._EXC_STATE_MAP[state]
+            return exc.DatabaseQueryError
+
+        return None
+
+    def make_exc_info(
+        self,
+        wrapper_exc: Exception = GeneratedException(),
+        orig_exc: Optional[Exception] = None,
+        debug_compiled_query: Optional[str] = None,
+        message: Optional[str] = None,
+    ) -> ExceptionInfo:
+        exc_info = super().make_exc_info(
+            wrapper_exc=wrapper_exc,
+            orig_exc=orig_exc,
+            debug_compiled_query=debug_compiled_query,
+            message=message,
+        )
+
+        db_msg = exc_info.exc_kwargs["db_message"]
+        specific_exc_cls = self.get_exc_class(db_msg)  # type: ignore  # TODO: fix
+        exc_cls = specific_exc_cls if specific_exc_cls is not None else exc_info.exc_cls
+        exc_info = exc_info.clone(exc_cls=exc_cls)
+        return exc_info
 
 
 class MSSQLDefaultAdapter(BaseClassicAdapter):
@@ -59,6 +139,12 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
             quote_plus("TDS_Version=8.0"),
         ]
     )  # {...}s are are left unquoted for future formatting in `get_conn_line`
+
+    def _make_exception_maker(self) -> ExceptionMaker:
+        return MSSQLExceptionMaker(
+            error_transformer=make_default_transformer_with_custom_rules(),
+            extra_exception_classes=(pyodbc.Error, sa_exc.DBAPIError),
+        )
 
     def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
         return self.execute(DBAdapterQuery("SELECT @@VERSION", db_name=db_ident.db_name)).get_all()[0][0]
@@ -200,68 +286,3 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
             )
 
         return RawSchemaInfo(columns=tuple(columns))
-
-    _EXC_CODE_RE = re.compile(
-        r"\(\'[0-9A-Z]+\', [\'\"]\[(?P<state>[0-9A-Z]+)\] " r"\[FreeTDS\][^(]+" r"\((?P<code>\d+)\)"
-    )
-    _EXC_CODE_MAP = {
-        # [42S22] Invalid column name '.+'. (207)
-        207: exc.ColumnDoesNotExist,
-        # [42S02] Invalid object name '.+'. (208)
-        208: SyncMssqlSourceDoesNotExistError,
-        # [22007] Conversion failed when converting date and/or time from character string. (241)
-        241: exc.DataParseError,
-        # [22012] Divide by zero error encountered. (8134)
-        8134: exc.DivisionByZero,
-        # [08S01] Read from the server failed (20004)
-        20004: exc.SourceConnectError,
-        # [08S01] Write to the server failed (20006)
-        20006: exc.SourceConnectError,
-        # [01000] Unexpected EOF from the server (20017)
-        20017: exc.SourceClosedPrematurely,
-        # ?
-        # [23000] The statement terminated. The maximum recursion 100
-        #         has been exhausted before statement completion. (530)
-        # [42000] Snapshot isolation transaction failed in database '.+'
-        #         because the object accessed by the statement has been modified
-        #         by a DDL statement... (3961)
-        # [42000] Transaction (Process ID \d+) was deadlocked on lock... (1205)
-        # [42000] The batch could not be analyzed because of compile errors. (11501)
-    }
-
-    _EXC_STATE_MAP = {
-        # [08001] Unable to connect to data source (0)
-        "08001": exc.SourceConnectError,
-        # [HY000] Could not perform COMMIT or ROLLBACK (0)
-        "HY000": CommitOrRollbackFailed,
-        # [HYT00] Query timeout expired (0)
-        "HYT00": exc.SourceTimeout,
-    }
-
-    EXTRA_EXC_CLS = (pyodbc.Error, sa_exc.DBAPIError)
-
-    @classmethod
-    def get_exc_class(cls, err_msg: str) -> Optional[Type[exc.DatabaseQueryError]]:
-        err_match = cls._EXC_CODE_RE.match(err_msg)
-        if err_match is not None:
-            code = int(err_match.group("code"))
-            state = err_match.group("state").upper()
-            if code in cls._EXC_CODE_MAP:
-                return cls._EXC_CODE_MAP[code]
-            elif state in cls._EXC_STATE_MAP:
-                return cls._EXC_STATE_MAP[state]
-            return exc.DatabaseQueryError
-
-        return None
-
-    @classmethod
-    def make_exc(  # TODO:  Move to ErrorTransformer
-        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
-    ) -> Tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
-        exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_compiled_query)
-
-        db_msg = kw["db_message"]
-        specific_exc_cls = cls.get_exc_class(db_msg)  # type: ignore  # TODO: fix
-        exc_cls = specific_exc_cls if specific_exc_cls is not None else exc_cls
-
-        return exc_cls, kw

@@ -58,7 +58,13 @@ from dl_core.connection_models import (
     TableDefinition,
     TableIdent,
 )
-from dl_core.connectors.base.error_transformer import DBExcKWArgs
+from dl_core.connectors.base.error_handling import ExceptionMaker
+from dl_core.connectors.base.error_transformer import (
+    DBExcKWArgs,
+    ExceptionInfo,
+    GeneratedException,
+    make_default_transformer_with_custom_rules,
+)
 from dl_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
 from dl_core.db.conversion_base import get_type_transformer
 from dl_core.db.native_type import (
@@ -121,6 +127,53 @@ class BaseClickHouseConnLineConstructor(ClassicSQLConnLineConstructor[_TARGET_DT
         }
 
 
+class SyncDBAClickHouseExceptionMaker(ExceptionMaker):
+    # FIXME: Move customization to ErrorTransformer subclass instead of ExceptionMaker
+
+    ch_utils: ClassVar[Type[ClickHouseBaseUtils]] = ClickHouseBaseUtils
+
+    def make_exc_info(
+        self,
+        wrapper_exc: Exception = GeneratedException(),
+        orig_exc: Optional[Exception] = None,
+        debug_compiled_query: Optional[str] = None,
+        message: Optional[str] = None,
+    ) -> ExceptionInfo:
+        exc_info = super().make_exc_info(
+            wrapper_exc=wrapper_exc,
+            orig_exc=orig_exc,
+            debug_compiled_query=debug_compiled_query,
+            message=message,
+        )
+
+        ch_exc_cls: Optional[Type[exc.DatabaseQueryError]] = None
+        if isinstance(wrapper_exc, ch_exc.DatabaseException):
+            # Special case for ClickHouse
+            # try to differentiate errors by error code
+            db_msg = exc_info.exc_kwargs["db_message"]
+            if db_msg:
+                try:
+                    # TODO: Temporary, will be fixed for sync adapter later
+                    ch_exc_cls_with_params = self.ch_utils.get_exc_class(db_msg)
+                    if ch_exc_cls_with_params:
+                        ch_exc_cls, _ = ch_exc_cls_with_params
+                        ch_exc_cls = ch_exc_cls or exc_info.exc_cls
+                except Exception:  # noqa
+                    LOGGER.info("Can not parse ClickHouse error message")
+
+        if ch_exc_cls:
+            exc_info = exc_info.clone(exc_cls=ch_exc_cls)
+
+        elif isinstance(orig_exc, requests.exceptions.ReadTimeout):
+            LOGGER.info("ClickHouse timed out")
+            exc_info = exc_info.clone(exc_cls=exc.SourceTimeout)
+
+        elif isinstance(orig_exc, requests.exceptions.ConnectionError):
+            exc_info = exc_info.clone(exc_cls=exc.SourceConnectError)
+
+        return exc_info
+
+
 @attr.s
 class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], BaseSSLCertAdapter):
     allow_sa_text_as_columns_source = True
@@ -128,6 +181,12 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
     conn_line_constructor_type: ClassVar[Type[BaseClickHouseConnLineConstructor]] = BaseClickHouseConnLineConstructor
 
     _dt_with_system_tz = True
+
+    def _make_exception_maker(self) -> ExceptionMaker:
+        return SyncDBAClickHouseExceptionMaker(
+            error_transformer=make_default_transformer_with_custom_rules(),
+            extra_exception_classes=(ch_exc.DatabaseException,),
+        )
 
     def _get_dsn_params_from_headers(self) -> dict[str, str]:
         return self._convert_headers_to_dsn_params(self.ch_utils.get_context_headers(self._req_ctx_info))
@@ -184,41 +243,6 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
     @staticmethod
     def _convert_headers_to_dsn_params(headers: dict[str, str]) -> dict[str, str]:
         return {f"header__{h_name}": h_val for h_name, h_val in headers.items()}
-
-    EXTRA_EXC_CLS = (ch_exc.DatabaseException,)
-
-    @classmethod
-    def make_exc(  # TODO:  Move to ErrorTransformer
-        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
-    ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
-        exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_compiled_query)
-
-        ch_exc_cls: Optional[Type[exc.DatabaseQueryError]] = None
-        if isinstance(wrapper_exc, ch_exc.DatabaseException):
-            # Special case for ClickHouse
-            # try to differentiate errors by error code
-            db_msg = kw["db_message"]
-            if db_msg:
-                try:
-                    # TODO: Temporary, will be fixed for sync adapter later
-                    ch_exc_cls_with_params = cls.ch_utils.get_exc_class(db_msg)
-                    if ch_exc_cls_with_params:
-                        ch_exc_cls, _ = ch_exc_cls_with_params
-                        ch_exc_cls = ch_exc_cls or exc_cls
-                except Exception:  # noqa
-                    LOGGER.info("Can not parse ClickHouse error message")
-
-        if ch_exc_cls:
-            exc_cls = ch_exc_cls
-
-        elif isinstance(orig_exc, requests.exceptions.ReadTimeout):
-            LOGGER.info("ClickHouse timed out")
-            exc_cls = exc.SourceTimeout
-
-        elif isinstance(orig_exc, requests.exceptions.ConnectionError):
-            exc_cls = exc.SourceConnectError
-
-        return exc_cls, kw
 
     # TODO CONSIDER: Do we really need to overwrite native type???
     def normalize_sa_col_type(self, sa_col_type: TypeEngine) -> TypeEngine:
@@ -360,6 +384,31 @@ class ClickHouseAdapter(BaseClickHouseAdapter):
         return common_indexes + tuple(ch_specific_idx_list)
 
 
+class AsyncDBAClickHouseExceptionMaker(ExceptionMaker):
+    # FIXME: Move customization to ErrorTransformer subclass instead of ExceptionMaker
+
+    ch_utils: ClassVar[Type[ClickHouseBaseUtils]] = ClickHouseBaseUtils
+
+    def make_exc_info(
+        self,
+        wrapper_exc: Exception = GeneratedException(),
+        orig_exc: Optional[Exception] = None,
+        debug_compiled_query: Optional[str] = None,
+        message: Optional[str] = None,
+    ) -> ExceptionInfo:
+        exc_cls: Type[exc.DatabaseQueryError]
+        try:
+            exc_cls, exc_kwargs = self.ch_utils.get_exc_class(message or "") or (exc.DatabaseQueryError, {})
+        except Exception:  # noqa
+            exc_cls, exc_kwargs = exc.DatabaseQueryError, {}
+
+        exc_kwargs = exc_kwargs.copy()  # type: ignore  # TODO: Make sure this dict conforms to DBExcKWArgs restrictions
+        if not exc_kwargs.get("db_message"):
+            exc_kwargs["db_message"] = message or str(wrapper_exc)
+        exc_inf = ExceptionInfo(exc_cls=exc_cls, exc_kwargs=exc_kwargs)  # type: ignore  # TODO: Same as above
+        return exc_inf
+
+
 @attr.s(kw_only=True)
 class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
     ch_utils: ClassVar[Type[ClickHouseBaseUtils]] = ClickHouseBaseUtils
@@ -367,6 +416,11 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
     _target_dto: BaseClickHouseConnTargetDTO = attr.ib()
 
     _url: str = attr.ib(init=False, default=None)
+
+    def _make_exception_maker(self) -> ExceptionMaker:
+        return AsyncDBAClickHouseExceptionMaker(
+            error_transformer=make_default_transformer_with_custom_rules(),
+        )
 
     def _make_async_typed_query_action(self) -> AsyncTypedQueryAdapterAction:
         literalizer = get_dash_sql_param_literalizer(backend_type=self.get_backend_type())
@@ -547,7 +601,10 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         if resp.status != 200:
             bytes_body = await resp.read()
             body = bytes_body.decode(errors="replace")
-            db_exc = self.make_exc(resp.status, body, debug_compiled_query=query.debug_compiled_query)
+            db_exc = self._exception_maker.make_exc(
+                message=body,
+                debug_compiled_query=query.debug_compiled_query,
+            )
             raise db_exc
 
         # Primarily for DashSQL
@@ -641,26 +698,6 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             type_pieces = type_pieces[1:]
         return GenericNativeType.normalize_name_and_create(
             name=type_pieces[0] if type_pieces else "",
-        )
-
-    def make_exc(  # TODO:  Move to ErrorTransformer
-        self,
-        status_code: int,  # noqa
-        err_body: str,
-        debug_compiled_query: Optional[str] = None,
-    ) -> exc.DatabaseQueryError:
-        exc_cls: Type[exc.DatabaseQueryError]
-        try:
-            exc_cls, exc_params = self.ch_utils.get_exc_class(err_body) or (exc.DatabaseQueryError, None)
-        except Exception:  # noqa
-            exc_cls, exc_params = exc.DatabaseQueryError, None
-
-        return exc_cls(
-            db_message=err_body,
-            query=debug_compiled_query,
-            orig=None,
-            details={},
-            params=exc_params,
         )
 
     async def test(self) -> None:

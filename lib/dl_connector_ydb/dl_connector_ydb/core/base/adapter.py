@@ -109,18 +109,3 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
             else None
             for type_name_norm in type_names_norm
         )
-
-    @classmethod
-    def make_exc(  # TODO:  Move to ErrorTransformer
-        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
-    ) -> Tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
-        exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_compiled_query)
-
-        try:
-            message = wrapper_exc.message  # type: ignore  # 2024-01-24 # TODO: "Exception" has no attribute "message"  [attr-defined]
-        except Exception:
-            pass
-        else:
-            kw["db_message"] = kw.get("db_message") or message
-
-        return exc_cls, kw

@@ -21,16 +21,16 @@ NAME_OR_SERVICE_NOT_KNOWN_MSG = """
 def test_name_or_service_not_known_sync():
     transformer = sync_pg_db_error_transformer
 
-    parameters = transformer.make_bi_error_parameters(
+    exc_info = transformer.make_bi_error_parameters(
         wrapper_exc=psycopg2.OperationalError(NAME_OR_SERVICE_NOT_KNOWN_MSG)
     )
 
-    assert parameters[0] == SourceHostNotKnownError
+    assert exc_info.exc_cls == SourceHostNotKnownError
 
 
 def test_name_or_service_not_known_async():
     transformer = make_async_pg_error_transformer()
 
-    parameters = transformer.make_bi_error_parameters(wrapper_exc=gaierror(NAME_OR_SERVICE_NOT_KNOWN_MSG))
+    exc_info = transformer.make_bi_error_parameters(wrapper_exc=gaierror(NAME_OR_SERVICE_NOT_KNOWN_MSG))
 
-    assert parameters[0] == SourceHostNotKnownError
+    assert exc_info.exc_cls == SourceHostNotKnownError

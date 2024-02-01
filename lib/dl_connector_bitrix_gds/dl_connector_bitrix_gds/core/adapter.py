@@ -38,7 +38,7 @@ from dl_core.connection_models import (
     TableDefinition,
     TableIdent,
 )
-from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
+from dl_core.connectors.base.error_handling import ExceptionMaker
 from dl_core.db.native_type import CommonNativeType
 from dl_core.exc import DatabaseQueryError
 
@@ -84,16 +84,19 @@ def extract_select_column_name(column: Label) -> str:
     return element.name
 
 
-class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
+@attr.s
+class BitrixGDSDefaultAdapter(AiohttpDBAdapter):
     conn_type: ClassVar[ConnectionType] = CONNECTION_TYPE_BITRIX24
     _target_dto: BitrixGDSConnTargetDTO = attr.ib()
     _redis_cli_acm: Optional[TClientACM] = attr.ib(init=False)
 
     table: Optional[BitrixGDSTable] = None
 
-    _error_transformer = bitrix_error_transformer
-
-    EXTRA_EXC_CLS = (json.JSONDecodeError,)
+    def _make_exception_maker(self) -> ExceptionMaker:
+        return ExceptionMaker(
+            error_transformer=bitrix_error_transformer,
+            extra_exception_classes=(json.JSONDecodeError,),
+        )
 
     def _make_async_db_version_action(self) -> AsyncDBVersionAdapterAction:
         return AsyncDBVersionAdapterActionNone()
@@ -152,7 +155,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             json.dumps({k: (v if k != "key" else "...") for k, v in payload.json_body.items()}),
         )
 
-        with self.handle_execution_error(query_text):
+        with self._exception_maker.handle_execution_error(query_text):
             resp = await self._session.post(
                 url=api_url,
                 params={

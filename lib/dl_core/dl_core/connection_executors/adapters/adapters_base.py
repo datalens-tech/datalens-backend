@@ -44,6 +44,8 @@ from dl_core.connection_models import (
     TableDefinition,
     TableIdent,
 )
+from dl_core.connectors.base.error_handling import ExceptionMaker
+from dl_core.connectors.base.error_transformer import make_default_transformer_with_custom_rules
 
 
 if TYPE_CHECKING:
@@ -80,6 +82,8 @@ _TARGET_DTO_TV = TypeVar("_TARGET_DTO_TV", bound="ConnTargetDTO")
 
 @attr.s
 class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc.ABCMeta):
+    _exception_maker: ExceptionMaker = attr.ib(init=False)
+
     # Adapter action fields
     _sync_db_version_action: SyncDBVersionAdapterAction = attr.ib(init=False)
     _sync_schema_names_action: SyncSchemaNamesAdapterAction = attr.ib(init=False)
@@ -88,6 +92,10 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
     _sync_table_info_action: SyncTableInfoAdapterAction = attr.ib(init=False)
     _sync_table_exists_action: SyncTableExistsAdapterAction = attr.ib(init=False)
     _sync_typed_query_action: SyncTypedQueryAdapterAction = attr.ib(init=False)
+
+    @_exception_maker.default
+    def __make_default_exception_maker(self) -> ExceptionMaker:
+        return self._make_exception_maker()
 
     def __attrs_post_init__(self) -> None:
         self._initialize_actions()
@@ -100,6 +108,14 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
         self._sync_table_info_action = self._make_sync_table_info_action()
         self._sync_table_exists_action = self._make_sync_table_exists_action()
         self._sync_typed_query_action = self._make_sync_typed_query_action()
+
+    # Factory methods
+
+    def _make_exception_maker(self) -> ExceptionMaker:
+        # Redefine this method to enable `get_db_version`
+        return ExceptionMaker(
+            error_transformer=make_default_transformer_with_custom_rules(),
+        )
 
     # Action factory methods
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import abc
 import asyncio
 import re
@@ -18,11 +20,24 @@ import dl_core.exc as exc
 from dl_core.exc import DatabaseQueryError
 
 
+class GeneratedException(Exception):
+    """Exception for use in ErrorTransformer for exceptions generated without a source exception"""
+
+
 class DBExcKWArgs(TypedDict, total=False):
     db_message: Optional[str]
     query: Optional[str]
     orig: Optional[Exception]
     details: dict[str, Any]
+
+
+@attr.s(frozen=True)
+class ExceptionInfo:
+    exc_cls: Type[exc.DatabaseQueryError] = attr.ib(kw_only=True)
+    exc_kwargs: DBExcKWArgs = attr.ib(kw_only=True)
+
+    def clone(self, **kwargs: Any) -> ExceptionInfo:
+        return attr.evolve(self, **kwargs)
 
 
 class DbErrorTransformer(abc.ABC):
@@ -31,28 +46,33 @@ class DbErrorTransformer(abc.ABC):
     def make_bi_error_parameters(
         self,
         wrapper_exc: Exception,
+        orig_exc: Optional[Exception] = None,
         debug_compiled_query: Optional[str] = None,
-    ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
+        message: Optional[str] = None,
+    ) -> ExceptionInfo:
         kw: DBExcKWArgs = DBExcKWArgs(
-            db_message=str(wrapper_exc),
+            db_message=message or str(wrapper_exc),
             query=debug_compiled_query,
             orig=wrapper_exc,
             details={},
         )
-
-        return self._DEFAULT_EXC_CLS, kw
+        exc_info = ExceptionInfo(exc_cls=self._DEFAULT_EXC_CLS, exc_kwargs=kw)
+        return exc_info
 
     def make_bi_error(
         self,
         wrapper_exc: Exception,
         orig_exc: Optional[Exception] = None,
         debug_compiled_query: Optional[str] = None,
+        message: Optional[str] = None,
     ) -> exc.DatabaseQueryError:
-        trans_exc_cls, kw = self.make_bi_error_parameters(
+        exc_info = self.make_bi_error_parameters(
             wrapper_exc=wrapper_exc,
+            orig_exc=orig_exc,
             debug_compiled_query=debug_compiled_query,
+            message=message,
         )
-        return trans_exc_cls(**kw)
+        return exc_info.exc_cls(**exc_info.exc_kwargs)
 
 
 ExcMatchCondition = Callable[[Exception], bool]
@@ -129,21 +149,35 @@ class ChainedDbErrorTransformer(DbErrorTransformer):
         wrapper_exc: Exception,
         orig_exc: Optional[Exception] = None,
         debug_compiled_query: Optional[str] = None,
+        message: Optional[str] = None,
     ) -> DatabaseQueryError:
         transformed_exc_cls: Type[DatabaseQueryError] = self._get_bi_error_cls(wrapper_exc)
-        kw: DBExcKWArgs = self._get_error_kw(debug_compiled_query, orig_exc, wrapper_exc)
+        kw: DBExcKWArgs = self._get_error_kw(
+            debug_compiled_query=debug_compiled_query,
+            orig_exc=orig_exc,
+            wrapper_exc=wrapper_exc,
+            message=message,
+        )
         return transformed_exc_cls(**kw)
 
     def make_bi_error_parameters(
         self,
         wrapper_exc: Exception,
+        orig_exc: Optional[Exception] = None,
         debug_compiled_query: Optional[str] = None,
-    ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
+        message: Optional[str] = None,
+    ) -> ExceptionInfo:
         transformed_exc_cls: Type[DatabaseQueryError] = self._get_bi_error_cls(wrapper_exc)
-        orig_exc = getattr(wrapper_exc, "orig", None)
-        kw: DBExcKWArgs = self._get_error_kw(debug_compiled_query, orig_exc, wrapper_exc)
-
-        return transformed_exc_cls, kw
+        if orig_exc is None:  # TODO: get rid of this crutch in favor of passing orig_exc down as an arg
+            orig_exc = getattr(wrapper_exc, "orig", None)
+        kw: DBExcKWArgs = self._get_error_kw(
+            debug_compiled_query=debug_compiled_query,
+            orig_exc=orig_exc,
+            wrapper_exc=wrapper_exc,
+            message=message,
+        )
+        exc_info = ExceptionInfo(exc_cls=transformed_exc_cls, exc_kwargs=kw)
+        return exc_info
 
     def _get_bi_error_cls(
         self,
@@ -157,10 +191,13 @@ class ChainedDbErrorTransformer(DbErrorTransformer):
 
     @staticmethod
     def _get_error_kw(
-        debug_compiled_query: Optional[str], orig_exc: Optional[Exception], wrapper_exc: Exception
+        debug_compiled_query: Optional[str],
+        orig_exc: Optional[Exception],
+        wrapper_exc: Exception,
+        message: Optional[str] = None,
     ) -> DBExcKWArgs:
         return dict(
-            db_message=str(orig_exc) if orig_exc else str(wrapper_exc),
+            db_message=message or (str(orig_exc) if orig_exc else str(wrapper_exc)),
             query=debug_compiled_query,
             orig=orig_exc,
             details={},
@@ -168,6 +205,7 @@ class ChainedDbErrorTransformer(DbErrorTransformer):
 
 
 default_error_transformer_rules = (
+    ErrorTransformerRule(when=orig_exc_is(GeneratedException), then_raise=DatabaseQueryError),
     ErrorTransformerRule(
         when=orig_exc_is(sa_exc.NoSuchTableError),  # FIXME: not an exc.DatabaseQueryError
         then_raise=exc.SourceDoesNotExist,

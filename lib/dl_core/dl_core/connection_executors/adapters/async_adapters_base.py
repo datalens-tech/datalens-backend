@@ -39,6 +39,8 @@ from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
     RawSchemaInfo,
 )
+from dl_core.connectors.base.error_handling import ExceptionMaker
+from dl_core.connectors.base.error_transformer import make_default_transformer_with_custom_rules
 
 
 if TYPE_CHECKING:
@@ -101,6 +103,8 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
     corresponding action factory method.
     """
 
+    _exception_maker: ExceptionMaker = attr.ib(init=False)
+
     # Adapter action fields
     _async_db_version_action: AsyncDBVersionAdapterAction = attr.ib(init=False)
     _async_schema_names_action: AsyncSchemaNamesAdapterAction = attr.ib(init=False)
@@ -109,6 +113,10 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
     _async_table_info_action: AsyncTableInfoAdapterAction = attr.ib(init=False)
     _async_table_exists_action: AsyncTableExistsAdapterAction = attr.ib(init=False)
     _async_typed_query_action: AsyncTypedQueryAdapterAction = attr.ib(init=False)
+
+    @_exception_maker.default
+    def __make_default_exception_maker(self) -> ExceptionMaker:
+        return self._make_exception_maker()
 
     def __attrs_post_init__(self) -> None:
         self._initialize_actions()
@@ -121,6 +129,14 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
         self._async_table_info_action = self._make_async_table_info_action()
         self._async_table_exists_action = self._make_async_table_exists_action()
         self._async_typed_query_action = self._make_async_typed_query_action()
+
+    # Factory methods
+
+    def _make_exception_maker(self) -> ExceptionMaker:
+        # Redefine this method to enable `get_db_version`
+        return ExceptionMaker(
+            error_transformer=make_default_transformer_with_custom_rules(),
+        )
 
     # Action factory methods
 

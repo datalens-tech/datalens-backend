@@ -23,6 +23,7 @@ from dl_core.connection_models.common_models import (
     SchemaIdent,
     TableIdent,
 )
+from dl_core.connectors.base.error_handling import ExceptionMaker
 
 from dl_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY
 from dl_connector_bigquery.core.error_transformer import big_query_db_error_transformer
@@ -46,7 +47,6 @@ class BigQueryDefaultAdapter(BaseClassicAdapter[BigQueryConnTargetDTO]):
     conn_type = CONNECTION_TYPE_BIGQUERY
     dsn_template = "{dialect}://{project_id}"
     conn_line_constructor_type = BigQueryConnLineConstructor
-    _error_transformer = big_query_db_error_transformer
 
     _type_code_to_sa = {
         "STRING": bq_types.STRING,
@@ -62,6 +62,9 @@ class BigQueryDefaultAdapter(BaseClassicAdapter[BigQueryConnTargetDTO]):
         "BIGNUMERIC": bq_types.BIGNUMERIC,
         # TODO: ARRAY
     }
+
+    def _make_exception_maker(self) -> ExceptionMaker:
+        return ExceptionMaker(error_transformer=big_query_db_error_transformer)
 
     def get_default_db_name(self) -> Optional[str]:
         return self._target_dto.project_id

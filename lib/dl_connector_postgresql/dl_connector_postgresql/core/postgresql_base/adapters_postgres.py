@@ -18,6 +18,7 @@ import sqlalchemy as sa
 
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_models.common_models import TableIdent
+from dl_core.connectors.base.error_handling import ExceptionMaker
 
 from dl_connector_postgresql.core.postgresql_base.adapters_base_postgres import (
     OID_KNOWLEDGE,
@@ -36,14 +37,15 @@ if TYPE_CHECKING:
 
 @attr.s()
 class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTargetDTO]):
-    _error_transformer = sync_pg_db_error_transformer
-
     execution_options = {
         "stream_results": True,
     }
 
     _LIST_ALL_TABLES_QUERY = PG_LIST_SOURCES_ALL_SCHEMAS_SQL
     _LIST_TABLE_NAMES_QUERY = PG_LIST_TABLE_NAMES
+
+    def _make_exception_maker(self) -> ExceptionMaker:
+        return ExceptionMaker(error_transformer=sync_pg_db_error_transformer)
 
     def get_connect_args(self) -> dict:
         return dict(
