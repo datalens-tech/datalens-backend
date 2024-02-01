@@ -19,6 +19,7 @@ from dl_api_commons.aiohttp.aiohttp_client import (
     PredefinedIntervalsRetrier,
 )
 from dl_api_commons.tracing import get_current_tracing_headers
+from dl_app_tools.profiling_base import GenericProfiler
 from dl_core.base_models import EntryLocation
 from dl_core.exc import (
     USLockUnacquiredException,
@@ -148,19 +149,20 @@ class UStorageClientAIO(UStorageClientBase):
         tracing_headers = get_current_tracing_headers()
         start = time.monotonic()
 
-        async with self._bi_http_client.request(
-            method=request_data.method,
-            path=request_data.relative_url,
-            params=request_data.params,
-            json_data=request_data.json,
-            read_timeout_sec=self.timeout,  # TODO: total timeout
-            conn_timeout_sec=1,
-            headers={
-                **self._extra_headers,
-                **tracing_headers,
-            },
-        ) as response:
-            content = await response.read()
+        with GenericProfiler("us-client-request"):
+            async with self._bi_http_client.request(
+                method=request_data.method,
+                path=request_data.relative_url,
+                params=request_data.params,
+                json_data=request_data.json,
+                read_timeout_sec=self.timeout,  # TODO: total timeout
+                conn_timeout_sec=1,
+                headers={
+                    **self._extra_headers,
+                    **tracing_headers,
+                },
+            ) as response:
+                content = await response.read()
 
         end = time.monotonic()
 
