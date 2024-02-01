@@ -13,7 +13,10 @@ from typing import (
 import attr
 from dynamic_enum import DynamicEnum
 
-from dl_attrs_model_mapper.structs.mappings import FrozenMappingStrToStrOrStrSeq
+from dl_attrs_model_mapper.structs.mappings import (
+    FrozenMappingStrToStrOrStrSeq,
+    FrozenStrMapping,
+)
 from dl_attrs_model_mapper.structs.singleormultistring import SingleOrMultiString
 
 
@@ -132,10 +135,11 @@ class Renderer:
             inline_single_element=False,
         )
 
-    @_get_lines_internal.register
-    def _get_lines_internal_frozen_mapping_str_to_str_or_str_seq(
+    @_get_lines_internal.register(FrozenMappingStrToStrOrStrSeq)
+    @_get_lines_internal.register(FrozenStrMapping)
+    def _get_lines_internal_frozen_str_mapping_any(
         self,
-        model: FrozenMappingStrToStrOrStrSeq,
+        model: FrozenMappingStrToStrOrStrSeq | FrozenStrMapping,
     ) -> list[str]:
         under_hood_dict_lines = self._get_lines_internal(dict(model))
         prefix = f"{self.get_type_str(type(model))}("
