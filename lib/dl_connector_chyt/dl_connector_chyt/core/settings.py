@@ -32,8 +32,8 @@ class CHYTConnectorSettings(ConnectorSettingsBase):
 
 
 class ConnectorsDataCHYTBase(ConnectorsDataBase):
-    CONN_CHYT_PUBLIC_CLIQUES: ClassVar[Optional[tuple[str]]] = None
-    CONN_CHYT_FORBIDDEN_CLIQUES: ClassVar[Optional[tuple[str]]] = None
+    CONN_CHYT_PUBLIC_CLIQUES: ClassVar[Optional[tuple[str, ...]]] = None
+    CONN_CHYT_FORBIDDEN_CLIQUES: ClassVar[Optional[tuple[str, ...]]] = None
     CONN_CHYT_DEFAULT_CLIQUE: ClassVar[Optional[str]] = None
 
     @classmethod
