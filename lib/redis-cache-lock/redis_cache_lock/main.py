@@ -191,7 +191,7 @@ class RedisCacheLock:
     async def get_data_slave(self) -> Optional[bytes]:
         data_key = self.data_key
         cli: Redis
-        async with self._client_acm_managed(master=False, exclusive=False) as cli:
+        async with self._client_acm_managed(master=False) as cli:
             return await self._wait_network_call(cli.get(data_key))
 
     async def _get_data(
@@ -230,7 +230,7 @@ class RedisCacheLock:
             subscription = await self._wait_network_call(
                 self.subscription_manager_cls.create(
                     cm_stack=cm_stack,
-                    client_acm=self._client_acm_managed,
+                    client=cli,
                     channel_key=signal_key,
                 )
             )
@@ -310,10 +310,7 @@ class RedisCacheLock:
                 return situation, data
 
         finally:
-            await self._finalize_maybe_in_background(
-                sub.exit(),
-                name="sub.exit() (done waiting)",
-            )
+            await sub.exit()
 
         raise Exception("Programming Error")
 
@@ -502,7 +499,7 @@ class RedisCacheLock:
         await cm_stack.__aenter__()  # The corresponding `finally:` is the `def finalize`.
 
         cli: Redis = await cm_stack.enter_async_context(
-            self._client_acm_managed(master=True, exclusive=False)
+            self._client_acm_managed(master=True)
         )
         self._client = cli
 
@@ -580,17 +577,15 @@ class RedisCacheLock:
             )
         finally:
             cm_stack = self._cm_stack
-
             self._cleanup()
-
             if cm_stack is not None:
                 # Should not matter whether there was an exception.
                 # The saving should happen in this finalization, because it
                 # might be in background, but should be finished before the
                 # client is released.
-                await self._finalize_maybe_in_background(
-                    cm_stack.__aexit__(None, None, None), name="cm_stack exit"
-                )
+                await cm_stack.aclose()
+
+
 
     async def _call_generate_func(
         self, generate_func: TGenerateFunc
