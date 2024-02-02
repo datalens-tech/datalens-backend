@@ -181,12 +181,15 @@ def main() -> None:
         )
     )
     result = set()
+    skipped = set()
 
     for sub in to_check:
         if sub.skip_test:
+            skipped.add(str(sub.partial_parent_path))
             continue
         result.add(str(sub.partial_parent_path))
     print(f"affected={json.dumps(list(result))}")
+    print(f"all_affected_with_skips={json.dumps(list(result | skipped))}")
 
 
 if __name__ == "__main__":
