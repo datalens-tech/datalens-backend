@@ -10,8 +10,10 @@ from typing import (
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
+from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.rqe import rqe_config_from_env
+from dl_constants.enums import ConnectionType
 from dl_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
 from dl_core.services_registry.sr_factories import DefaultSRFactory
 from dl_core.services_registry.top_level import ServicesRegistry
@@ -49,11 +51,13 @@ def create_sr_factory_from_env_vars(
             rqe_sock_read_timeout=int(os.environ.get("RQE_SOCK_READ_TIMEOUT", 30 * 60)),
         )
 
-    connectors_settings = {
-        CONNECTION_TYPE_FILE: file_uploader_connectors_settings.FILE,
-        CONNECTION_TYPE_GSHEETS_V2: file_uploader_connectors_settings.FILE,
-        CONNECTION_TYPE_YADOCS: file_uploader_connectors_settings.FILE,
-    }
+    connectors_settings: dict[ConnectionType, ConnectorSettingsBase] = {}
+    if file_uploader_connectors_settings.FILE is not None:
+        connectors_settings = {
+            CONNECTION_TYPE_FILE: file_uploader_connectors_settings.FILE,
+            CONNECTION_TYPE_GSHEETS_V2: file_uploader_connectors_settings.FILE,
+            CONNECTION_TYPE_YADOCS: file_uploader_connectors_settings.FILE,
+        }
     return DefaultSRFactory(
         rqe_config=rqe_config_from_env(),
         async_env=True,
