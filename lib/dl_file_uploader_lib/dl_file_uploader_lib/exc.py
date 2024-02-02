@@ -63,6 +63,11 @@ class InvalidLink(DLFileUploaderBaseError):
     default_message = "Invalid format link provided"
 
 
+class YaDocsInvalidLinkPrefix(InvalidLink):
+    err_code = InvalidLink.err_code + ["YADOCS_INVALID_PUBLIC_LINK_PREFIX"]
+    default_message = "Invalid url path prefix"
+
+
 class EmptyDocument(DLFileUploaderBaseError):
     err_code = DLFileUploaderBaseError.err_code + ["NO_DATA"]
     default_message = "Empty document"

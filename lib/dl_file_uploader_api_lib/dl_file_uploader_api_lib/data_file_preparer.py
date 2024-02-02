@@ -4,7 +4,7 @@ import urllib.parse
 
 from dl_constants.enums import FileProcessingStatus
 from dl_file_uploader_lib.enums import FileType
-from dl_file_uploader_lib.exc import InvalidLink
+from dl_file_uploader_lib.exc import InvalidLink, YaDocsInvalidLinkPrefix
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import DataFile
 from dl_file_uploader_lib.redis_model.models.models import (
@@ -84,7 +84,9 @@ async def yadocs_data_file_preparer(
         path = parts.path
         prefix = "/i/"
         if not path.startswith(prefix):
-            raise InvalidLink(f"Invalid URL path prefix: {path!r}; should be {prefix!r}; {example_url_message}")
+            raise YaDocsInvalidLinkPrefix(
+                f"Invalid URL path prefix: {path!r}; should be {prefix!r}; {example_url_message}"
+            )
 
     df = DataFile(
         manager=redis_model_manager,
