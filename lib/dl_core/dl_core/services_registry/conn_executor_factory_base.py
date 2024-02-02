@@ -118,6 +118,7 @@ class ConnExecutorRecipe:
     exec_mode: ExecutionMode
     rqe_data: Optional[RemoteQueryExecutorData]
     conn_hosts_pool: Sequence[str] = attr.ib(kw_only=True, converter=tuple)
+    ca_data: bytes
 
 
 @attr.s(frozen=True)

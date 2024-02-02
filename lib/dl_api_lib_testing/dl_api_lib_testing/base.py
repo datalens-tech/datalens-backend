@@ -134,7 +134,7 @@ class ApiTestBase(abc.ABC):
             rqe_config_subprocess=rqe_config_subprocess,
         )
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture(scope="session")
     def ca_data(self) -> bytes:
         return get_root_certificates()
 

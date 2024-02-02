@@ -2,11 +2,14 @@ from typing import Optional
 
 import attr
 
-from dl_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO
+from dl_core.connection_executors.models.connection_target_dto_base import (
+    BaseAiohttpConnTargetDTO,
+    BaseSQLConnTargetDTO,
+)
 
 
 @attr.s(frozen=True)
-class BaseClickHouseConnTargetDTO(BaseSQLConnTargetDTO):
+class BaseClickHouseConnTargetDTO(BaseSQLConnTargetDTO, BaseAiohttpConnTargetDTO):
     protocol: str = attr.ib()
     # TODO CONSIDER: Is really optional?
     endpoint: Optional[str] = attr.ib()

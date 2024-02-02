@@ -39,6 +39,7 @@ class PromQLConnExecutor(DefaultSqlAlchemyConnExecutor[PromQLAdapter]):
                 password=self._conn_dto.password,
                 protocol=self._conn_dto.protocol,
                 db_name=self._conn_dto.db_name,
+                ca_data=self._ca_data.decode("ascii"),
             )
         ]
 
@@ -62,5 +63,6 @@ class PromQLAsyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[AsyncPromQLAd
                 password=self._conn_dto.password,
                 protocol=self._conn_dto.protocol,
                 db_name=self._conn_dto.db_name,
+                ca_data=self._ca_data.decode("ascii"),
             )
         ]

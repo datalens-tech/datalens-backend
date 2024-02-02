@@ -57,6 +57,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
     rqe_config: Optional[RQEConfig] = attr.ib()
     tpe: Optional[ContextVarExecutor] = attr.ib()
     conn_sec_mgr: ConnectionSecurityManager = attr.ib()
+    ca_data: bytes = attr.ib()
 
     is_bleeding_edge_user: bool = attr.ib(default=False)
     conn_cls_whitelist: Optional[FrozenSet[Type[ExecutorBasedMixin]]] = attr.ib(default=None)
@@ -149,6 +150,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
             rqe_data=rqe_data,
             exec_mode=exec_mode,
             conn_hosts_pool=conn_hosts_pool,  # type: ignore  # TODO: fix
+            ca_data=self.ca_data,
         )
 
     def _cook_conn_executor(self, recipe: ConnExecutorRecipe, with_tpe: bool) -> AsyncConnExecutorBase:
@@ -170,6 +172,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
                 conn_hosts_pool=recipe.conn_hosts_pool,
                 host_fail_callback=_conn_host_fail_callback_func,
                 services_registry=self._services_registry_ref.ref,  # Do not use. To be deprecated. Somehow.
+                ca_data=recipe.ca_data,
             )
         else:
             raise CEFactoryError(f"Can not instantiate {executor_cls}")
