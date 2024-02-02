@@ -63,7 +63,7 @@ def create_sr_factory_from_env_vars(
         async_env=True,
         connect_options_factory=get_conn_options,
         env_manager_factory=InsecureEnvManagerFactory(),
-        connectors_settings=connectors_settings,
+        connectors_settings=connectors_settings,  # type: ignore  # 2024-02-02 # TODO: Argument "connectors_settings" to "DefaultSRFactory" has incompatible type "dict[ConnectionType, FileS3ConnectorSettings | None]"; expected "dict[ConnectionType, ConnectorSettingsBase]"  [arg-type]
         ca_data=ca_data,
     )
 

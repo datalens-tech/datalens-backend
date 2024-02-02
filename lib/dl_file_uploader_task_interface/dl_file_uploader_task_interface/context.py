@@ -50,7 +50,7 @@ class FileUploaderTaskContext(BaseContext):
     def get_service_registry(self, rci: Optional[RequestContextInfo] = None) -> ServicesRegistry:
         rci = rci or RequestContextInfo.create_empty()
         return create_sr_factory_from_env_vars(
-            self.settings.CONNECTORS,
+            self.settings.CONNECTORS,  # type: ignore  # 2024-02-02 # TODO: Argument 1 to "create_sr_factory_from_env_vars" has incompatible type "FileUploaderConnectorsSettings | None"; expected "FileUploaderConnectorsSettings"  [arg-type]
             ca_data=self.ca_data,
         ).make_service_registry(rci)
 
