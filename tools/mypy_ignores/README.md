@@ -1,0 +1,1 @@
+Simple script to parse mypy logs from CI and add per-line ignores to source code.
