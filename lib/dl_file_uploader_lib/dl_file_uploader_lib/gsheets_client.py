@@ -409,9 +409,9 @@ class GSheetsClient:
                         )
                     else:
                         user_creds = None
-                    resp_json = await self._aiogoogle.as_user(request, user_creds=user_creds)  # type: ignore
+                    resp_json = await self._aiogoogle.as_user(request, user_creds=user_creds)
                 else:
-                    resp_json = await self._aiogoogle.as_api_key(request)  # type: ignore
+                    resp_json = await self._aiogoogle.as_api_key(request)
                 break
             except aiogoogle.excs.HTTPError as err:
                 if self._is_retryable_status(err.res.status_code):

@@ -82,7 +82,7 @@ class GSheetsFileS3Connection(BaseFileS3Connection):
 
     @attr.s(eq=False, kw_only=True)
     class DataModel(BaseFileS3Connection.DataModel):
-        sources: list["GSheetsFileS3Connection.FileDataSource"] = attr.ib()  # type: ignore
+        sources: list["GSheetsFileS3Connection.FileDataSource"] = attr.ib()  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "list[dl_connector_bundle_chs3.chs3_gsheets.core.us_connection.GSheetsFileS3Connection.FileDataSource]", base class "DataModel" defined the type as "list[dl_connector_bundle_chs3.chs3_base.core.us_connection.BaseFileS3Connection.FileDataSource]")  [assignment]
 
         refresh_token: Optional[str] = attr.ib(default=None, repr=False)
         refresh_enabled: bool = attr.ib(default=False)

@@ -817,7 +817,7 @@ def test_file_mapping(temp_file_factory):
 def test_default_cfg_key_name(temp_file_factory):
     @attr.s(frozen=True)
     class Settings:
-        TEST_KEY: str = s_attrib("TEST_KEY", missing="default_value")  # type: ignore
+        TEST_KEY: str = s_attrib("TEST_KEY", missing="default_value")
 
     class Fallback:
         TEST_KEY = "test_value"

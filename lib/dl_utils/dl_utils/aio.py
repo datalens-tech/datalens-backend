@@ -68,9 +68,9 @@ _SUBMIT_RT = TypeVar("_SUBMIT_RT")
 class ContextVarExecutor(ThreadPoolExecutor):
     """Bug in Python: default TPE does not propagate ContextVars in running thread."""
 
-    def __init__(self, *args, **kwargs):  # type: ignore
+    def __init__(self, *args, **kwargs):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         super().__init__(*args, **kwargs)
-        self._futures_set = weakref.WeakSet()  # type: ignore
+        self._futures_set = weakref.WeakSet()  # type: ignore  # 2024-01-30 # TODO: Need type annotation for "_futures_set"  [var-annotated]
 
     def get_pending_futures_count(self) -> int:
         return len([fut for fut in self._futures_set if fut.running()])

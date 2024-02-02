@@ -27,14 +27,14 @@ class ReqCtxInfoMiddleware:
 
     plain_headers: Tuple[str, ...] = attr.ib(  # type: ignore  # 2024-01-24 # TODO: Need type annotation for "plain_headers"  [var-annotated]
         default=(),
-        converter=lambda extra: append_extra_headers_and_normalize(  # type: ignore
+        converter=lambda extra: append_extra_headers_and_normalize(
             default=DEFAULT_RCI_PLAIN_HEADERS,
             extra=extra,
         ),
     )
     secret_headers: Tuple[str, ...] = attr.ib(  # type: ignore  # 2024-01-24 # TODO: Need type annotation for "secret_headers"  [var-annotated]
         default=(),
-        converter=lambda extra: append_extra_headers_and_normalize(  # type: ignore
+        converter=lambda extra: append_extra_headers_and_normalize(
             default=DEFAULT_RCI_SECRET_HEADERS,
             extra=extra,
         ),

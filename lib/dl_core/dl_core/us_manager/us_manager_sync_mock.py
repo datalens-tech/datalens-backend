@@ -155,8 +155,8 @@ class MockedSyncUSManager(SyncUSManager):
             bi_context=bi_context,
             us_base_url="http://localhost:66000",
             us_api_prefix="dummy",
-            crypto_keys_config=CryptoKeysConfig(
-                map_id_key={"dummy_usm_key": fernet.Fernet.generate_key()},  # type: ignore
+            crypto_keys_config=CryptoKeysConfig(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "map_id_key" for "CryptoKeysConfig"  [call-arg]
+                map_id_key={"dummy_usm_key": fernet.Fernet.generate_key()},
                 actual_key_id="dummy_usm_key",
             )
             if crypto_keys_config is None

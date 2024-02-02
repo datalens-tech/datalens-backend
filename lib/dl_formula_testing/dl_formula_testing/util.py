@@ -91,4 +91,4 @@ def utc_ts(*args, tzinfo: Optional[datetime.tzinfo] = None) -> float:  # type: i
 def as_tz(dt: datetime.datetime, tzinfo: datetime.tzinfo) -> datetime.datetime:
     assert hasattr(tzinfo, "localize"), "non-pytz time zones are not supported"
     # Sadly pytz has no single base class defining the `localize` interface
-    return tzinfo.localize(dt)  # type: ignore
+    return tzinfo.localize(dt)

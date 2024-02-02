@@ -81,7 +81,7 @@ class ActionHandlingView(flask.views.View):
     methods = ["POST"]
 
     def get_action(self) -> act.RemoteDBAdapterAction:
-        return ActionSerializer().deserialize_action(flask.request.json, allowed_dba_classes=SUPPORTED_ADAPTER_CLS)  # type: ignore
+        return ActionSerializer().deserialize_action(flask.request.json, allowed_dba_classes=SUPPORTED_ADAPTER_CLS)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "deserialize_action" of "ActionSerializer" has incompatible type "Any | None"; expected "dict[Any, Any]"  [arg-type]
 
     def execute_non_streamed_action(
         self,
@@ -98,7 +98,7 @@ class ActionHandlingView(flask.views.View):
             return dba.get_schema_names(db_ident=action.db_ident)
 
         elif isinstance(action, act.ActionGetTables):
-            return dba.get_tables(schema_ident=action.schema_ident)  # type: ignore
+            return dba.get_tables(schema_ident=action.schema_ident)  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "list[TableIdent]", expected "RawSchemaInfo | list[str] | str | bool | int | None")  [return-value]
 
         elif isinstance(action, act.ActionGetTableInfo):
             return dba.get_table_info(table_def=action.table_def, fetch_idx_info=action.fetch_idx_info)
@@ -185,7 +185,7 @@ class ActionHandlingView(flask.views.View):
         LOGGER.info("DBA for action was created: %s", dba)
         return dba
 
-    def dispatch_request(self) -> flask.Response:  # type: ignore
+    def dispatch_request(self) -> flask.Response:
         action = self.get_action()
         LOGGER.info("Got QE action request: %s", action)
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import pytest  # type: ignore
+import pytest
 import sqlalchemy as sa
 
 from dl_sqlalchemy_clickhouse.base import register_dialect

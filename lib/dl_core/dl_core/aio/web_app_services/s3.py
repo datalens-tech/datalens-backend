@@ -38,7 +38,7 @@ class S3Service:
 
     @property
     def client(self) -> AsyncS3Client:
-        return self._client  # type: ignore
+        return self._client
 
     @classmethod
     def get_full_app_key(cls) -> str:

@@ -46,7 +46,7 @@ class S3JsonEachRowFileDataSink(DataSink):
     _part_number: int = 1
     _multipart_upload_started: bool = False
 
-    def __init__(  # type: ignore
+    def __init__(
         self,
         bi_schema: list[SchemaColumn],
         s3: SyncS3Client,
@@ -156,7 +156,7 @@ class S3JsonEachRowFileDataSink(DataSink):
 
 
 class S3JsonEachRowUntypedFileDataSink(S3JsonEachRowFileDataSink):
-    def __init__(  # type: ignore
+    def __init__(
         self,
         s3: SyncS3Client,
         s3_key: str,
@@ -169,11 +169,11 @@ class S3JsonEachRowUntypedFileDataSink(S3JsonEachRowFileDataSink):
             bucket_name=bucket_name,
         )
 
-    def _process_row(self, row_data: list) -> bytes:  # type: ignore
+    def _process_row(self, row_data: list) -> bytes:  # type: ignore  # 2024-01-30 # TODO: Argument 1 of "_process_row" is incompatible with supertype "S3JsonEachRowFileDataSink"; supertype defines the argument type as "dict[Any, Any]"  [override]
         # skip type casts
         return json.dumps(row_data).encode("utf-8")
 
-    def dump_data_stream(self, data_stream: SimpleUntypedDataStream) -> None:  # type: ignore
+    def dump_data_stream(self, data_stream: SimpleUntypedDataStream) -> None:  # type: ignore  # 2024-01-30 # TODO: Argument 1 of "dump_data_stream" is incompatible with supertype "S3JsonEachRowFileDataSink"; supertype defines the argument type as "DataStreamBase[Any]"  [override]
         self._dump_data_stream_base(data_stream)
 
 

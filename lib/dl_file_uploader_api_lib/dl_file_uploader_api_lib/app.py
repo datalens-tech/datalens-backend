@@ -108,7 +108,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
         ]
 
         app = web.Application(
-            middlewares=middleware_list,  # type: ignore
+            middlewares=middleware_list,
         )
         app.on_response_prepare.append(req_id_service.on_response_prepare)
 
@@ -126,7 +126,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
         app.on_startup.append(s3_service.init_hook)
         app.on_shutdown.append(s3_service.tear_down_hook)
 
-        arq_redis_service = ArqRedisService(arq_settings=create_arq_redis_settings(self._settings.REDIS_ARQ))  # type: ignore
+        arq_redis_service = ArqRedisService(arq_settings=create_arq_redis_settings(self._settings.REDIS_ARQ))
         app.on_startup.append(arq_redis_service.init_hook)
         app.on_shutdown.append(arq_redis_service.tear_down_hook)
 

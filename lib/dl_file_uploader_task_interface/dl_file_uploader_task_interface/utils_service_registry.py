@@ -10,8 +10,10 @@ from typing import (
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
+from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.rqe import rqe_config_from_env
+from dl_constants.enums import ConnectionType
 from dl_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
 from dl_core.services_registry.sr_factories import DefaultSRFactory
 from dl_core.services_registry.top_level import ServicesRegistry
@@ -34,7 +36,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def create_sr_factory_from_env_vars(
-    connectors_settings: FileUploaderConnectorsSettings,
+    file_uploader_connectors_settings: FileUploaderConnectorsSettings,
     ca_data: bytes,
 ) -> DefaultSRFactory:
     def get_conn_options(conn: ExecutorBasedMixin) -> Optional[ConnectOptions]:
@@ -49,17 +51,19 @@ def create_sr_factory_from_env_vars(
             rqe_sock_read_timeout=int(os.environ.get("RQE_SOCK_READ_TIMEOUT", 30 * 60)),
         )
 
-    connectors_settings = {  # type: ignore  # 2024-01-29 # TODO: Incompatible types in assignment (expression has type "dict[ConnectionType, FileS3ConnectorSettings | None]", variable has type "FileUploaderConnectorsSettings")  [assignment]
-        CONNECTION_TYPE_FILE: connectors_settings.FILE,
-        CONNECTION_TYPE_GSHEETS_V2: connectors_settings.FILE,
-        CONNECTION_TYPE_YADOCS: connectors_settings.FILE,
-    }
+    connectors_settings: dict[ConnectionType, ConnectorSettingsBase] = {}
+    if file_uploader_connectors_settings.FILE is not None:
+        connectors_settings = {
+            CONNECTION_TYPE_FILE: file_uploader_connectors_settings.FILE,
+            CONNECTION_TYPE_GSHEETS_V2: file_uploader_connectors_settings.FILE,
+            CONNECTION_TYPE_YADOCS: file_uploader_connectors_settings.FILE,
+        }
     return DefaultSRFactory(
         rqe_config=rqe_config_from_env(),
         async_env=True,
         connect_options_factory=get_conn_options,
         env_manager_factory=InsecureEnvManagerFactory(),
-        connectors_settings=connectors_settings,  # type: ignore  # 2024-01-29 # TODO: Argument "connectors_settings" to "DefaultSRFactory" has incompatible type "FileUploaderConnectorsSettings"; expected "dict[ConnectionType, ConnectorSettingsBase]"  [arg-type]
+        connectors_settings=connectors_settings,
         ca_data=ca_data,
     )
 
@@ -69,8 +73,8 @@ def get_async_service_us_manager(
     us_master_token: str,
     ca_data: bytes,
     crypto_keys_config: CryptoKeysConfig,
+    services_registry: ServicesRegistry,
     bi_context: Optional[RequestContextInfo] = None,
-    services_registry: Optional[ServicesRegistry] = None,
 ) -> AsyncUSManager:
     usm = AsyncUSManager(
         us_api_prefix="private",
@@ -78,7 +82,7 @@ def get_async_service_us_manager(
         us_auth_context=USAuthContextMaster(us_master_token=us_master_token),
         crypto_keys_config=crypto_keys_config,
         bi_context=bi_context or RequestContextInfo.create_empty(),
-        services_registry=services_registry,  # type: ignore  # 2024-01-29 # TODO: Argument "services_registry" to "AsyncUSManager" has incompatible type "ServicesRegistry | None"; expected "ServicesRegistry"  [arg-type]
+        services_registry=services_registry,
         ca_data=ca_data,
     )
 

@@ -1,7 +1,4 @@
-from typing import (
-    Any,
-    Optional,
-)
+from typing import Optional
 
 import arq
 import attr
@@ -18,6 +15,7 @@ from dl_file_uploader_task_interface.utils_service_registry import (
     create_sr_factory_from_env_vars,
     get_async_service_us_manager,
 )
+from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 from dl_task_processor.context import BaseContext
 from dl_task_processor.processor import (
     TaskProcessor,
@@ -35,7 +33,7 @@ class SecureReaderSettings:
 
 @attr.s
 class FileUploaderTaskContext(BaseContext):
-    settings: Optional[Any] = attr.ib()
+    settings: FileUploaderWorkerSettings = attr.ib()
     tpe: ContextVarExecutor = attr.ib()
     redis_service: RedisBaseService = attr.ib()
     s3_service: S3Service = attr.ib()
@@ -52,7 +50,7 @@ class FileUploaderTaskContext(BaseContext):
     def get_service_registry(self, rci: Optional[RequestContextInfo] = None) -> ServicesRegistry:
         rci = rci or RequestContextInfo.create_empty()
         return create_sr_factory_from_env_vars(
-            self.settings.CONNECTORS,  # type: ignore  # 2024-01-29 # TODO: Item "None" of "Any | None" has no attribute "CONNECTORS"  [union-attr]
+            self.settings.CONNECTORS,
             ca_data=self.ca_data,
         ).make_service_registry(rci)
 
@@ -60,8 +58,8 @@ class FileUploaderTaskContext(BaseContext):
         rci = rci or RequestContextInfo.create_empty()
         services_registry = self.get_service_registry(rci=rci)
         return get_async_service_us_manager(
-            us_host=self.settings.US_BASE_URL,  # type: ignore  # 2024-01-29 # TODO: Item "None" of "Any | None" has no attribute "US_BASE_URL"  [union-attr]
-            us_master_token=self.settings.US_MASTER_TOKEN,  # type: ignore  # 2024-01-29 # TODO: Item "None" of "Any | None" has no attribute "US_MASTER_TOKEN"  [union-attr]
+            us_host=self.settings.US_BASE_URL,
+            us_master_token=self.settings.US_MASTER_TOKEN,
             services_registry=services_registry,
             bi_context=rci,
             crypto_keys_config=self.crypto_keys_config,

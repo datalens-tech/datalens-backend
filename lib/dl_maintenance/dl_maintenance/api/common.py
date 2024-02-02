@@ -60,7 +60,7 @@ class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
         assert self._app_factory_cls is not None
         conn_opts_factory = ConnOptionsMutatorsFactory()
         settings = self.get_app_settings()
-        sr_factory = self._app_factory_cls(settings=settings).get_sr_factory(  # type: ignore
+        sr_factory = self._app_factory_cls(settings=settings).get_sr_factory(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "settings" for "SRFactoryBuilder"  [call-arg]
             settings=settings,
             conn_opts_factory=conn_opts_factory,
             connectors_settings=self.get_connector_settings(),

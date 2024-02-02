@@ -213,7 +213,7 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
     async def __aenter__(self: _DBA_TV) -> _DBA_TV:
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):  # type: ignore
+    async def __aexit__(self, exc_type, exc_val, exc_tb):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         await self.close()
 
 

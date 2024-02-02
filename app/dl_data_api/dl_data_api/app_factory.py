@@ -115,8 +115,8 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], Standal
             ca_data=ca_data,
         )
         usm_middleware_list = [
-            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore
-            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw),  # type: ignore
+            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore  # 2024-01-30 # TODO: Argument "us_master_token" to "service_us_manager_middleware" has incompatible type "str | None"; expected "str"  [arg-type]
+            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw),  # type: ignore  # 2024-01-30 # TODO: Argument "us_master_token" to "service_us_manager_middleware" has incompatible type "str | None"; expected "str"  [arg-type]
         ]
 
         result = EnvSetupResult(

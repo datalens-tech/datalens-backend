@@ -56,7 +56,7 @@ class PdHSeriesPivotPaginator(PivotPaginator):
             assert limit_rows > 1
         if offset_rows is not None and offset_rows > 0:
             assert pivot_dframe.get_row_count() == 1
-            pd_series = pd_series.transform(lambda x: None)  # type: ignore
+            pd_series = pd_series.transform(lambda x: None)
 
         pivot_dframe = pivot_dframe.clone(pd_series=pd_series)
         return pivot_dframe

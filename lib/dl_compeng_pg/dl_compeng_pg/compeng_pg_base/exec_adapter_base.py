@@ -78,7 +78,7 @@ class PostgreSQLExecAdapterAsync(Generic[_CONN_TV], ProcessorDbExecAdapterBase, 
         await self._execute_ddl(sa.schema.CreateTable(table))
 
     async def _drop_table(self, table_name: str) -> None:
-        await self._execute_ddl(sa.schema.DropTable(sa.table(table_name)))  # type: ignore
+        await self._execute_ddl(sa.schema.DropTable(sa.table(table_name)))
 
     async def drop_table(self, table_name: str) -> None:
         """Drop table in database"""
