@@ -4,7 +4,10 @@ import urllib.parse
 
 from dl_constants.enums import FileProcessingStatus
 from dl_file_uploader_lib.enums import FileType
-from dl_file_uploader_lib.exc import InvalidLink, YaDocsInvalidLinkPrefix
+from dl_file_uploader_lib.exc import (
+    InvalidLink,
+    YaDocsInvalidLinkPrefix,
+)
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import DataFile
 from dl_file_uploader_lib.redis_model.models.models import (
