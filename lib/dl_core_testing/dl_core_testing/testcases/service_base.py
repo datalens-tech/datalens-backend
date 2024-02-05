@@ -182,7 +182,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
     @pytest.fixture(scope="session")
     def conn_sync_service_registry(
         self,
-        root_certificates,
+        root_certificates: bytes,
         conn_bi_context: RequestContextInfo,
     ) -> ServicesRegistry:
         return self.service_registry_factory(
@@ -195,7 +195,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
     @pytest.fixture(scope="session")
     def conn_async_service_registry(
         self,
-        root_certificates,
+        root_certificates: bytes,
         conn_bi_context: RequestContextInfo,
         # caches_redis_client_factory: Optional[Callable[[bool], Redis]],  # FIXME: switch to function scope to use
     ) -> ServicesRegistry:
@@ -249,10 +249,6 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             ca_data=root_certificates,
         )
         return us_manager
-
-    @pytest.fixture(scope="session")
-    def root_certificates(self) -> bytes:
-        return get_root_certificates()
 
 
 class DbServiceFixtureTextClass(metaclass=abc.ABCMeta):
