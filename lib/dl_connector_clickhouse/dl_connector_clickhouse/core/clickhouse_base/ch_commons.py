@@ -23,6 +23,7 @@ from dl_core.db import (
     make_sa_type,
 )
 
+from dl_connector_clickhouse.core.clickhouse_base.constants import BACKEND_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.core.clickhouse_base.exc import (
     CannotInsertNullInOrdinaryColumn,
     CHIncorrectData,
@@ -198,7 +199,7 @@ def create_column_sql(
     if nullable is not None:
         native_type = native_type.as_common().clone(nullable=nullable)
 
-    sa_type = make_sa_type(native_type)
+    sa_type = make_sa_type(backend_type=BACKEND_TYPE_CLICKHOUSE, native_type=native_type)
 
     sa_column_obj = sa_schema.Column(col.name, sa_type)
     sa_cc_obj = sa_ddl.CreateColumn(sa_column_obj)

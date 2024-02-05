@@ -75,7 +75,6 @@ class SATypeTransformer(SAColumnTypeNormalizer):
             nullable = True
 
         return CommonNativeType.normalize_name_and_create(
-            conn_type=self.conn_type,
             name=self.normalize_sa_col_type(sa_type),  # type: ignore  # TODO: fix
             # no idea whether it can be False here; `create view` version
             # returns `nullable=True` for all known cases (for PG and MySQL).

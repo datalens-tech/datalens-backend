@@ -22,7 +22,6 @@ from aiohttp.client import (
 import aiohttp.client_exceptions
 import attr
 
-from dl_configs.utils import get_root_certificates_path
 from dl_core import exc
 from dl_core.connection_executors.adapters.async_adapters_base import AsyncDirectDBAdapter
 
@@ -30,7 +29,7 @@ from dl_core.connection_executors.adapters.async_adapters_base import AsyncDirec
 if TYPE_CHECKING:
     from aiohttp import BasicAuth
 
-    from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
+    from dl_core.connection_executors.models.connection_target_dto_base import BaseAiohttpConnTargetDTO
     from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
     from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 
@@ -43,7 +42,7 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
     """Common base for adapters that primarily use an aiohttp client"""
 
     # TODO?: commonize some of the CTDTO attributes such as connect_timeout?
-    _target_dto: ConnTargetDTO = attr.ib()
+    _target_dto: BaseAiohttpConnTargetDTO = attr.ib()
     _req_ctx_info: DBAdapterScopedRCI = attr.ib()
 
     _http_read_chunk_size: int = attr.ib(init=False, default=(1024 * 64))
@@ -57,9 +56,9 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
             auth=self.get_session_auth(),
             headers=self.get_session_headers(),
             connector=self.create_aiohttp_connector(
-                # TODO: pass ca_data through *DTO
-                # https://github.com/datalens-tech/datalens-backend/issues/233
-                ssl_context=ssl.create_default_context(cafile=get_root_certificates_path())
+                ssl_context=ssl.create_default_context(
+                    cadata=self._target_dto.ca_data,
+                )
             ),
         )
 
@@ -71,7 +70,7 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
     @classmethod
     def create(
         cls: Type[_DBA_TV],
-        target_dto: ConnTargetDTO,
+        target_dto: BaseAiohttpConnTargetDTO,
         req_ctx_info: DBAdapterScopedRCI,
         default_chunk_size: int,
     ) -> _DBA_TV:

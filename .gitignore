@@ -7,7 +7,7 @@ build
 .tmp.env*
 .coverage
 .python-version
-*.ipynb
+.ipynb_checkpoints
 .ruff_cache
 .idea
 __pycache__

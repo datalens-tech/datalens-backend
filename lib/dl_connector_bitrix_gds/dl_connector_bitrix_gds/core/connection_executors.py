@@ -59,5 +59,6 @@ class BitrixGDSAsyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[BitrixGDSD
                 connect_timeout=self._conn_options.connect_timeout,  # type: ignore  # TODO: fix
                 redis_conn_params=conn_params,
                 redis_caches_ttl=caches_ttl,
+                ca_data=self._ca_data.decode("ascii"),
             )
         ]

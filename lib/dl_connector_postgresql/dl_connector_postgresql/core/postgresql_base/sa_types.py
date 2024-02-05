@@ -9,7 +9,7 @@ from dl_core.db.sa_types_base import (
     typed_instantiator,
 )
 
-from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
+from dl_connector_postgresql.core.postgresql.constants import BACKEND_TYPE_POSTGRES
 from dl_connector_postgresql.core.postgresql_base.type_transformer import (
     PG_TYPES_FLOAT,
     PG_TYPES_INT,
@@ -33,15 +33,15 @@ SQLALCHEMY_POSTGRES_ARRAY_INNER_TYPES = (
 )
 SQLALCHEMY_POSTGRES_TYPES = {
     **{
-        make_native_type(CONNECTION_TYPE_POSTGRES, typecls): simple_instantiator(typecls)
+        (BACKEND_TYPE_POSTGRES, make_native_type(typecls)): simple_instantiator(typecls)
         for typecls in SQLALCHEMY_POSTGRES_BASE_TYPES
     },
     **{
-        make_native_type(CONNECTION_TYPE_POSTGRES, typecls): timezone_instantiator(typecls)
+        (BACKEND_TYPE_POSTGRES, make_native_type(typecls)): timezone_instantiator(typecls)
         for typecls in SQLALCHEMY_POSTGRES_TIMEZONE_TYPES
     },
     **{
-        make_native_type(CONNECTION_TYPE_POSTGRES, pg_types.ARRAY(inner_typecls)): typed_instantiator(
+        (BACKEND_TYPE_POSTGRES, make_native_type(pg_types.ARRAY(inner_typecls))): typed_instantiator(
             pg_types.ARRAY, inner_typecls
         )
         for inner_typecls in SQLALCHEMY_POSTGRES_ARRAY_INNER_TYPES

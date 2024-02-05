@@ -27,10 +27,10 @@ from dl_connector_greenplum.core.data_source import (
     GreenplumTableDataSource,
 )
 from dl_connector_greenplum.core.data_source_migration import GreenPlumDataSourceMigrator
+from dl_connector_greenplum.core.sa_types import SQLALCHEMY_GP_TYPES
 from dl_connector_greenplum.core.storage_schemas.connection import GreenplumConnectionDataStorageSchema
 from dl_connector_greenplum.core.us_connection import GreenplumConnection
 from dl_connector_postgresql.core.postgresql_base.query_compiler import PostgreSQLQueryCompiler
-from dl_connector_postgresql.core.postgresql_base.sa_types import SQLALCHEMY_POSTGRES_TYPES
 from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
 
 
@@ -68,4 +68,4 @@ class GreenplumCoreConnector(CoreConnector):
         GreenplumSubselectCoreSourceDefinition,
     )
     rqe_adapter_classes = frozenset({GreenplumAdapter, AsyncGreenplumAdapter})
-    sa_types = SQLALCHEMY_POSTGRES_TYPES  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[GenericNativeType, function]", base class "CoreConnector" defined the type as "dict[GenericNativeType, Callable[[GenericNativeType], TypeEngine]] | None")  [assignment]
+    sa_types = SQLALCHEMY_GP_TYPES  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[GenericNativeType, function]", base class "CoreConnector" defined the type as "dict[GenericNativeType, Callable[[GenericNativeType], TypeEngine]] | None")  [assignment]

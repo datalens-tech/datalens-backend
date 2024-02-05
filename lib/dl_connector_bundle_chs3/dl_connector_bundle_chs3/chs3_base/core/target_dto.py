@@ -2,12 +2,15 @@ from typing import Optional
 
 import attr
 
-from dl_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO
+from dl_core.connection_executors.models.connection_target_dto_base import (
+    BaseAiohttpConnTargetDTO,
+    BaseSQLConnTargetDTO,
+)
 from dl_core.utils import secrepr
 
 
 @attr.s
-class BaseFileS3ConnTargetDTO(BaseSQLConnTargetDTO):
+class BaseFileS3ConnTargetDTO(BaseAiohttpConnTargetDTO, BaseSQLConnTargetDTO):
     protocol: str = attr.ib(kw_only=True)
     disable_value_processing: bool = attr.ib(kw_only=True)
 

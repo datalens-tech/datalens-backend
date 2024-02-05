@@ -9,7 +9,7 @@ from dl_core.db.sa_types_base import (
     simple_instantiator,
 )
 
-from dl_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
+from dl_connector_oracle.core.constants import BACKEND_TYPE_ORACLE
 
 
 SQLALCHEMY_ORACLE_BASE_TYPES = (
@@ -29,13 +29,13 @@ SQLALCHEMY_ORACLE_LENGTHED_TYPES = (
 )
 SQLALCHEMY_ORACLE_TYPES = {
     **{
-        make_native_type(CONNECTION_TYPE_ORACLE, typecls): simple_instantiator(typecls)
+        (BACKEND_TYPE_ORACLE, make_native_type(typecls)): simple_instantiator(typecls)
         for typecls in SQLALCHEMY_ORACLE_BASE_TYPES
     },
     # A tricky substitution (possibly in the wrong place):
-    make_native_type(CONNECTION_TYPE_ORACLE, sa.Integer): simple_instantiator(or_types.NUMBER),
+    (BACKEND_TYPE_ORACLE, make_native_type(sa.Integer)): simple_instantiator(or_types.NUMBER),
     **{
-        make_native_type(CONNECTION_TYPE_ORACLE, typecls): lengthed_instantiator(typecls)
+        (BACKEND_TYPE_ORACLE, make_native_type(typecls)): lengthed_instantiator(typecls)
         for typecls in SQLALCHEMY_ORACLE_LENGTHED_TYPES
     },
 }

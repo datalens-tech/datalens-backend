@@ -63,6 +63,7 @@ class CHYTAdapterConnExecutor(BaseCHYTAdapterConnExecutor):
             insert_quorum=self._conn_options.insert_quorum,
             insert_quorum_timeout=self._conn_options.insert_quorum_timeout,
             disable_value_processing=self._conn_options.disable_value_processing,
+            ca_data=self._ca_data.decode("ascii"),
         )
 
 

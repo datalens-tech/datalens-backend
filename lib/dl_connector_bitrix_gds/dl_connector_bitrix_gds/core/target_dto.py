@@ -2,7 +2,7 @@ from typing import Optional
 
 import attr
 
-from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
+from dl_core.connection_executors.models.connection_target_dto_base import BaseAiohttpConnTargetDTO
 from dl_core.utils import secrepr
 
 
@@ -15,7 +15,7 @@ def hide_pass(value: Optional[dict]) -> str:
 
 
 @attr.s(frozen=True)
-class BitrixGDSConnTargetDTO(ConnTargetDTO):
+class BitrixGDSConnTargetDTO(BaseAiohttpConnTargetDTO):
     portal: str = attr.ib(kw_only=True)
     token: str = attr.ib(kw_only=True, repr=secrepr)
 

@@ -11,7 +11,7 @@ from clickhouse_sqlalchemy import types as ch_types
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
-from dl_constants.enums import ConnectionType
+from dl_constants.enums import SourceBackendType
 from dl_core.db.native_type import (
     ClickHouseDateTime64NativeType,
     ClickHouseDateTime64WithTZNativeType,
@@ -22,7 +22,7 @@ from dl_core.db.native_type import (
 )
 from dl_core.db.sa_types_base import make_native_type
 
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
+from dl_connector_clickhouse.core.clickhouse_base.constants import BACKEND_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.core.clickhouse_base.type_transformer import (
     CH_TYPES_DATE,
     CH_TYPES_FLOAT,
@@ -107,30 +107,32 @@ SQLALCHEMY_CLICKHOUSE_BASE_TYPES = (
 
 
 def _generate_complex_ch_types(
-    base_ch_types: Collection[Type[TypeEngine]], conn_type: ConnectionType
-) -> dict[GenericNativeType, Callable[..., TypeEngine]]:
+    base_ch_types: Collection[Type[TypeEngine]],
+) -> dict[tuple[SourceBackendType, GenericNativeType], Callable[..., TypeEngine]]:
     return {
-        **{make_native_type(conn_type, typecls): ch_instantiator(typecls) for typecls in base_ch_types},
-        make_native_type(conn_type, ch_types.DateTimeWithTZ): _make_ch_dtwtz,
-        make_native_type(conn_type, ch_types.DateTime64): _make_ch_dt64,
-        make_native_type(conn_type, ch_types.DateTime64WithTZ): _make_ch_dt64wtz,
+        **{(BACKEND_TYPE_CLICKHOUSE, make_native_type(typecls)): ch_instantiator(typecls) for typecls in base_ch_types},
+        (BACKEND_TYPE_CLICKHOUSE, make_native_type(ch_types.DateTimeWithTZ)): _make_ch_dtwtz,
+        (BACKEND_TYPE_CLICKHOUSE, make_native_type(ch_types.DateTime64)): _make_ch_dt64,
+        (BACKEND_TYPE_CLICKHOUSE, make_native_type(ch_types.DateTime64WithTZ)): _make_ch_dt64wtz,
         **{
-            make_native_type(conn_type, ch_types.Array(typecls)): partial(_make_ch_array, inner_typecls=typecls)
+            (BACKEND_TYPE_CLICKHOUSE, make_native_type(ch_types.Array(typecls))): partial(
+                _make_ch_array, inner_typecls=typecls
+            )
             for typecls in CH_TYPES_INT
         },
         **{
-            make_native_type(conn_type, ch_types.Array(typecls)): partial(_make_ch_array, inner_typecls=typecls)
+            (BACKEND_TYPE_CLICKHOUSE, make_native_type(ch_types.Array(typecls))): partial(
+                _make_ch_array, inner_typecls=typecls
+            )
             for typecls in CH_TYPES_FLOAT
         },
-        make_native_type(conn_type, ch_types.Array(ch_types.String)): partial(
+        (BACKEND_TYPE_CLICKHOUSE, make_native_type(ch_types.Array(ch_types.String))): partial(
             _make_ch_array, inner_typecls=ch_types.String
         ),
         # For the `UserDataType.unsupported`; should only be filled with `NULL`s in materialization.
         # See also: `dl_core.data_source.sql.BaseSQLDataSource._make_raw_column_select`
-        make_native_type(conn_type, sa.sql.sqltypes.NullType): ch_fallback_type_gen,
+        (BACKEND_TYPE_CLICKHOUSE, make_native_type(sa.sql.sqltypes.NullType)): ch_fallback_type_gen,
     }
 
 
-SQLALCHEMY_CLICKHOUSE_TYPES = _generate_complex_ch_types(
-    SQLALCHEMY_CLICKHOUSE_BASE_TYPES, conn_type=CONNECTION_TYPE_CLICKHOUSE
-)
+SQLALCHEMY_CLICKHOUSE_TYPES = _generate_complex_ch_types(SQLALCHEMY_CLICKHOUSE_BASE_TYPES)
