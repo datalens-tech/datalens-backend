@@ -95,7 +95,7 @@ _BASE_TASK_CONTEXT_TV = TypeVar("_BASE_TASK_CONTEXT_TV", bound=BaseContext)
 
 
 @attr.s(frozen=True, eq=True)
-class TaskResult(metaclass=abc.ABCMeta):
+class TaskResult(metaclass=abc.ABCMeta):  # noqa: B024
     pass
 
 

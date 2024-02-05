@@ -163,5 +163,5 @@ def test_paginate():
         ),
     ]
     # (Moscow, Sales) header is paginated, so the check is a bit hacky
-    for header, direction in zip(sorting_headers, [OrderDirection.desc, OrderDirection.asc]):
+    for header, direction in zip(sorting_headers, [OrderDirection.desc, OrderDirection.asc], strict=True):
         assert pivot_table.facade._pivot_dframe.headers_info[header].sorting_direction == direction

@@ -32,7 +32,7 @@ class ArgTypeSequence(ArgTypeMatcher):
         self._exp_arg_types = arg_types
 
     def match_arg_types(self, arg_types: Sequence[DataType]) -> bool:
-        for expected_arg_type, real_arg_type in zip(self._exp_arg_types, arg_types):
+        for expected_arg_type, real_arg_type in zip(self._exp_arg_types, arg_types, strict=True):
             if isinstance(expected_arg_type, DataType):
                 # a single type
                 if not real_arg_type.casts_to(expected_arg_type):

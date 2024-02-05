@@ -69,12 +69,15 @@ class SourceFilterSpec:
 
 
 class EntryLocation(metaclass=abc.ABCMeta):
+    @abc.abstractmethod
     def to_short_string(self) -> str:
         raise NotImplementedError()
 
+    @abc.abstractmethod
     def to_us_req_api_params(self) -> dict[str, Any]:
         raise NotImplementedError()
 
+    @abc.abstractmethod
     def to_us_resp_api_params(self, key_from_us_resp: Optional[str]) -> dict[str, str]:
         raise NotImplementedError()
 

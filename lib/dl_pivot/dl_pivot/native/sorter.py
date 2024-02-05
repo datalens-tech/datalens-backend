@@ -100,7 +100,7 @@ class NativePivotSorter(PivotSorter):
         sorting_dim_values: Optional[tuple[DataCellVector, ...]] = None
         other_axis = self._complementary_axis(axis)
 
-        for idx, header in enumerate(self._pivot_dframe.iter_axis_headers(axis)):
+        for _idx, header in enumerate(self._pivot_dframe.iter_axis_headers(axis)):
             if header.compare_sorting_settings(settings):
                 if sorting_dim_values is None:
                     sorting_dim_values = header.values
@@ -168,6 +168,7 @@ class NativePivotSorter(PivotSorter):
             for axis, settings in zip(
                 [SortAxis.columns, SortAxis.rows],
                 [sorting_settings.column, sorting_settings.row],
+                strict=True,
             ):
                 if settings is not None:
                     self._sort_by_measure(axis, pivot_item.pivot_item_id, settings)

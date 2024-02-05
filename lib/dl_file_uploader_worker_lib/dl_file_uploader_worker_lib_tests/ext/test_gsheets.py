@@ -654,7 +654,7 @@ async def test_download_and_parse_big_gsheets(
         assert src.is_applicable
 
     for src, has_header, header_values, user_types in zip(
-        df.sources, expected_has_header, expected_headers, expected_user_types
+        df.sources, expected_has_header, expected_headers, expected_user_types, strict=True
     ):
         assert src.file_source_settings.first_line_is_header == has_header, src.title
 
@@ -721,7 +721,7 @@ async def test_gsheets_full_pipeline(
         assert src.is_applicable
 
     for src, has_header, header_values, user_types in zip(
-        df.sources, expected_has_header, expected_headers, expected_user_types
+        df.sources, expected_has_header, expected_headers, expected_user_types, strict=True
     ):
         assert src.file_source_settings.first_line_is_header == has_header, src.title
 
@@ -768,7 +768,7 @@ async def test_gsheets_full_pipeline(
         assert updated_conn.get_file_source_by_id(src.id).status == FileProcessingStatus.ready
 
         for conn_src, has_header, header_values, user_types in zip(
-            updated_conn.data.sources, expected_has_header, expected_headers, expected_user_types
+            updated_conn.data.sources, expected_has_header, expected_headers, expected_user_types, strict=True
         ):
             assert conn_src.first_line_is_header == has_header, src.title
 

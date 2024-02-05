@@ -135,7 +135,7 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
         wf_qforks_found: bool = False
         wf_bfb_set: set[frozenset[str]] = set()
         non_wf_bfb_set: set[frozenset[str]] = set()
-        for formula_split_mask, qfork_node, normalized_bfb in fmask_qfork_bfb_list:
+        for _formula_split_mask, qfork_node, normalized_bfb in fmask_qfork_bfb_list:
             if inspect_node.qfork_is_window(qfork_node):
                 wf_qforks_found = True
                 wf_bfb_set.add(normalized_bfb)

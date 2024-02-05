@@ -248,7 +248,7 @@ async def test_all_types(
     for sheet_test_data_cells in test_data_sheet.data[1:]:
         sheet_title = sheet_test_data_cells[0].value
         loaded_test_data[sheet_title] = {}
-        for test_value_key, test_value_cell in zip(test_value_keys, sheet_test_data_cells[1:]):
+        for test_value_key, test_value_cell in zip(test_value_keys, sheet_test_data_cells[1:], strict=True):
             loaded_test_data[sheet_title][test_value_key] = json.loads(test_value_cell.value)
 
     if print_actual:

@@ -27,7 +27,7 @@ def preload_bi_formula() -> None:
     load_all_connectors()
 
 
-def load_formula_lib(formula_lib_config: FormulaLibraryConfig = FormulaLibraryConfig()) -> None:
+def load_formula_lib(formula_lib_config: FormulaLibraryConfig = FormulaLibraryConfig()) -> None:  # noqa: B008
     """Initialize the library"""
     register_all_connectors(connector_ep_names=formula_lib_config.formula_connector_ep_names)
     populate_translation_registry()

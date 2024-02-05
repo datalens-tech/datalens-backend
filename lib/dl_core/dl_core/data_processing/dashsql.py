@@ -135,8 +135,8 @@ class DashSQLSelector:
                     for param in formatted_query.bound_params
                 ]
             )
-        except sa.exc.ArgumentError:
-            raise exc.WrongQueryParameterization()
+        except sa.exc.ArgumentError as e:
+            raise exc.WrongQueryParameterization() from e
 
         return sa_text
 

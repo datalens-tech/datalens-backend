@@ -46,7 +46,7 @@ def get_sys_memstatus(pid):
     except (OSError, IOError) as exc:
         return dict(_exc=repr(exc))
     data_m = data_statm.strip("\n").split(" ")
-    return dict(zip(STATM_COLS, data_m))
+    return dict(zip(STATM_COLS, data_m, strict=True))
 
 
 CONTEXT_ENV_VARS = dict(

@@ -153,7 +153,7 @@ class C:
         try:
             return self.DEFAULT_VALUE_GENERATORS[self.user_type]
         except KeyError as e:
-            raise ValueError(f"No default value generator for user type {e}")
+            raise ValueError(f"No default value generator for user type {e}") from e
 
     def get_sa_type(self, tt: TypeTransformer, backend_type: SourceBackendType) -> TypeEngine:
         if self._sa_type is not None:

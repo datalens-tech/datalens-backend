@@ -104,7 +104,7 @@ class DefaultDataSourceTestClass(
         for col in simplified_schema:
             print(col)
         assert len(simplified_schema) == len(expected_schema)
-        for actual, expected in zip(simplified_schema, expected_schema):
+        for actual, expected in zip(simplified_schema, expected_schema, strict=True):
             assert actual == expected, f"{expected=} {actual=}"
 
     def _check_migration_dtos(
@@ -194,8 +194,8 @@ class DataSourceTestByViewClass(
 
         # for a more readable diff:
         if len(schema) == len(view_schema):
-            sc_mismatch = [sc for sc, vsc in zip(schema, view_schema) if sc != vsc]
-            vsc_mismatch = [vsc for sc, vsc in zip(schema, view_schema) if sc != vsc]
+            sc_mismatch = [sc for sc, vsc in zip(schema, view_schema, strict=True) if sc != vsc]
+            vsc_mismatch = [vsc for sc, vsc in zip(schema, view_schema, strict=True) if sc != vsc]
             assert sc_mismatch == vsc_mismatch
 
         assert schema == tuple(view_schema)

@@ -16,7 +16,7 @@ def are_raw_schemas_same(first: Optional[List[SchemaColumn]], second: Optional[L
         return first == second
     if len(first) != len(second):
         return False
-    for col_1, col_2 in zip(first, second):
+    for col_1, col_2 in zip(first, second, strict=True):
         data_1, data_2 = col_1._asdict(), col_2._asdict()
         # FIXME:
         # API doesn't have the full NativeType definition yet, so we can't compare them directly

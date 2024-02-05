@@ -185,8 +185,8 @@ class DatasetDataBaseView(BaseView):
         else:
             try:
                 dataset = await us_manager.get_by_id(self.dataset_id, Dataset)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "USEntry", variable has type "Dataset")  [assignment]
-            except USObjectNotFoundException:
-                raise web.HTTPNotFound(reason="Entity not found")
+            except USObjectNotFoundException as e:
+                raise web.HTTPNotFound(reason="Entity not found") from e
 
             await us_manager.load_dependencies(dataset)
 
@@ -420,7 +420,7 @@ class DatasetDataBaseView(BaseView):
         executed_queries = await runner.finalize()
         postprocessed_query_blocks = [
             PostprocessedQueryBlock.from_block_spec(block_spec, postprocessed_query=postprocessed_query)
-            for block_spec, postprocessed_query in zip(block_legend.blocks, executed_queries)
+            for block_spec, postprocessed_query in zip(block_legend.blocks, executed_queries, strict=True)
         ]
 
         postprocessed_query_union = PostprocessedQueryUnion(

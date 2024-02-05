@@ -130,7 +130,7 @@ class DataSource(metaclass=abc.ABCMeta):
 
     def initialize(self) -> None:
         """All IO-dependent initialization goes here (whatever can later be made awaitable)"""
-        pass
+        return
 
     @classmethod
     def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:

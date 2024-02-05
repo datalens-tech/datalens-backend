@@ -260,7 +260,7 @@ class RepositoryManager:
     def _rename_i18n_files(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:
         """Rename the locale files in accordance with the new domain names"""
         assert len(new_package_info.i18n_domains) == len(old_package_info.i18n_domains)
-        zipped_domain_pairs = zip(old_package_info.i18n_domains, new_package_info.i18n_domains)
+        zipped_domain_pairs = zip(old_package_info.i18n_domains, new_package_info.i18n_domains, strict=True)
         for old_domain_spec, new_domain_spec in zipped_domain_pairs:
             if new_domain_spec.domain_name == old_domain_spec.domain_name:
                 continue
@@ -311,7 +311,9 @@ class RepositoryManager:
         self.fs_editor.move_path(old_path=old_code_path, new_path=new_code_path)
 
         # Rename the tests dir
-        for boilerplate_test_dir, package_test_dir in zip(old_package_info.test_dirs, new_package_info.test_dirs):
+        for boilerplate_test_dir, package_test_dir in zip(
+            old_package_info.test_dirs, new_package_info.test_dirs, strict=True
+        ):
             old_tests_path = new_pkg_dir / boilerplate_test_dir
             new_tests_path = new_pkg_dir / package_test_dir
             self.fs_editor.move_path(old_path=old_tests_path, new_path=new_tests_path)
@@ -321,8 +323,8 @@ class RepositoryManager:
 
         # Replace all package name occurrences with the given name
         all_zipped_modules = itertools.chain(
-            zip(old_package_info.module_names, new_package_info.module_names),
-            zip(old_package_info.test_dirs, new_package_info.test_dirs),
+            zip(old_package_info.module_names, new_package_info.module_names, strict=True),
+            zip(old_package_info.test_dirs, new_package_info.test_dirs, strict=True),
         )
         for boilerplate_mod_name, package_mod_name in all_zipped_modules:
             if boilerplate_mod_name == "tests" or package_mod_name == "tests":

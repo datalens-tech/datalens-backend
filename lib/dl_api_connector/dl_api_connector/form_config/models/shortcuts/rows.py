@@ -42,7 +42,7 @@ class RowConstructor:
 
     def port_row(
         self,
-        label_text: BaseTranslatable = Translatable("field_port"),
+        label_text: BaseTranslatable = Translatable("field_port"),  # noqa: B008
         default_value: Optional[str] = None,
     ) -> C.CustomizableRow:
         text = self._localizer.translate(label_text)
@@ -79,7 +79,7 @@ class RowConstructor:
 
     def username_row(
         self,
-        label_text: BaseTranslatable = Translatable("field_username"),
+        label_text: BaseTranslatable = Translatable("field_username"),  # noqa: B008
         default_value: Optional[str] = None,
         display_conditions: Optional[TDisplayConditions] = None,
     ) -> C.CustomizableRow:
@@ -112,7 +112,7 @@ class RowConstructor:
 
     def db_name_row(
         self,
-        label_text: BaseTranslatable = Translatable("field_db-name"),
+        label_text: BaseTranslatable = Translatable("field_db-name"),  # noqa: B008
         default_value: Optional[str] = None,
         display_conditions: Optional[TDisplayConditions] = None,
     ) -> C.CustomizableRow:

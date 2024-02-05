@@ -75,7 +75,7 @@ async def another_uploaded_file_id(another_uploaded_file) -> str:
 
 @pytest.fixture(scope="function")
 async def uploaded_file_dt(upload_file) -> DataFile:
-    csv_data = f"""Date time
+    csv_data = """Date time
 13.10.2023 21:02:36
 13.10.2023 10:38:48
 12.10.2023 20:47:22

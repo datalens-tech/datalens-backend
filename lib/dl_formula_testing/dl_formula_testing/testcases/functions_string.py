@@ -250,7 +250,7 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
 
         # const:
         statement = "NOTCONTAINS(__LIT__({}), {})".format(value_fl, pattern_fl)
-        a = dbe.eval(statement)
+        dbe.eval(statement)
         assert dbe.eval(statement) is not expected, (statement, expected)
 
         # var:

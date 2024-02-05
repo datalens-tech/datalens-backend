@@ -54,7 +54,7 @@ class CsvTableDumper:
         return self._PY_CONVERTERS_BY_BITYPE[user_type](value)
 
     def _convert_row(self, row: Sequence[Optional[str]], type_schema: Sequence[UserDataType]) -> list[Any]:
-        return [self._convert_value(v, t) for v, t in zip(row, type_schema)]
+        return [self._convert_value(v, t) for v, t in zip(row, type_schema, strict=True)]
 
     def _load_table_data(self, raw_csv_data: str, type_schema: Sequence[UserDataType]) -> list[list[Any]]:
         reader = csv.reader(io.StringIO(raw_csv_data))

@@ -10,7 +10,6 @@ from typing import (
 import attr
 from sqlalchemy.exc import DatabaseError
 
-from dl_constants.enums import DataSourceRole
 from dl_core.data_processing.cache.exc import CachePreparationFailed
 from dl_core.data_processing.cache.primitives import (
     BIQueryCacheOptions,
@@ -35,7 +34,6 @@ if TYPE_CHECKING:
     from dl_constants.types import TJSONExt
     from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
     from dl_core.data_source.base import DataSource
-    from dl_core.us_dataset import Dataset
     from dl_core.us_manager.local_cache import USEntryBuffer
 
 
@@ -104,7 +102,7 @@ class CacheOptionsBuilderBase:
         *,
         query_res_info: QueryAndResultInfo,
         from_info: Optional[PreparedFromInfo] = None,
-        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
+        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),  # noqa: B008
     ) -> Optional[LocalKeyRepresentation]:
         return base_key
 
@@ -143,7 +141,7 @@ class CompengOptionsBuilder(DatasetOptionsBuilder):  # TODO: Move to compeng pac
         *,
         query_res_info: QueryAndResultInfo,
         from_info: Optional[PreparedFromInfo] = None,
-        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
+        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),  # noqa: B008
     ) -> Optional[LocalKeyRepresentation]:
         # TODO: Remove after switching to new cache keys
         compiled_query = self.get_query_str_for_cache(
@@ -185,7 +183,7 @@ class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
         compiled_query: str,
         user_types: list[UserDataType],
         is_bleeding_edge_user: bool,
-        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
+        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),  # noqa: B008
     ) -> LocalKeyRepresentation:
         # TODO: Remove after switching to new cache keys,
         #  but put the db_name + target_connection.get_cache_key_part() parts somewhere
@@ -210,7 +208,7 @@ class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
         *,
         query_res_info: QueryAndResultInfo,
         from_info: Optional[PreparedFromInfo] = None,
-        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
+        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),  # noqa: B008
     ) -> Optional[LocalKeyRepresentation]:
         # TODO: Remove after switching to new cache keys
         compiled_query = self.get_query_str_for_cache(
@@ -241,7 +239,7 @@ class DashSQLCacheOptionsBuilder(CacheOptionsBuilderBase):
         params: TJSONExt,
         db_params: dict[str, str],
         connector_specific_params: TJSONExt,
-        data_key: LocalKeyRepresentation = LocalKeyRepresentation(),
+        data_key: LocalKeyRepresentation = LocalKeyRepresentation(),  # noqa: B008
     ) -> BIQueryCacheOptions:
         cache_enabled = self.get_cache_enabled(conn=conn)
         ttl_config = self.get_actual_ttl_config(connection=conn)

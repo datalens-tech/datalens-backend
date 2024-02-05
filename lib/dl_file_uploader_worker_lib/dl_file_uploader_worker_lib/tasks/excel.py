@@ -4,6 +4,7 @@ import itertools
 import logging
 import ssl
 from typing import (
+    Any,
     Iterable,
     Iterator,
     Optional,
@@ -168,14 +169,13 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                             has_header = src.file_source_settings.first_line_is_header
                         assert has_header is not None
 
-                        def data_iter() -> Iterator[list]:
-                            row_iter = iter(sheetdata)
+                        def data_iter(row_iter: Iterator[Iterable[dict[str, Any]]]) -> Iterator[list]:
                             for row in row_iter:
                                 values = [cell["value"] for cell in row]
                                 yield values
 
                         data_stream = SimpleUntypedDataStream(
-                            data_iter=data_iter(),
+                            data_iter=data_iter(iter(sheetdata)),
                             rows_to_copy=None,  # TODO
                         )
                         with S3JsonEachRowUntypedFileDataSink(

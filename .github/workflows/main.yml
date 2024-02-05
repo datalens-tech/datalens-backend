@@ -513,7 +513,7 @@ jobs:
           event_name: ${{ github.event.workflow_run.event }}
           report_individual_runs: "true"
 
-  codestyle_all_without_ruff:
+  codestyle_all:
     runs-on: [ self-hosted, linux, light ]
     needs: gh_build_image
     container:
@@ -538,4 +538,3 @@ jobs:
           task cq:check_dir_strict -- .
         env:
           VENV_PATH: /venv
-          SKIP_RUFF: true

@@ -87,15 +87,15 @@ def make_param_obj(name: str, param: dict) -> QueryIncomingParameter:
     try:
         bi_type = UserDataType[type_name]
     except KeyError:
-        raise DashSQLError(f"Unknown type name {type_name!r}")
+        raise DashSQLError(f"Unknown type name {type_name!r}") from None
 
     try:
         if isinstance(value_base, (list, tuple)):
             value = tuple(parse_value(sub_value, bi_type) for sub_value in value_base)
         else:
             value = parse_value(value_base, bi_type)
-    except ValueError:
-        raise DashSQLError(f"Unsupported value for type {type_name!r}: {value_base!r}")
+    except ValueError as e:
+        raise DashSQLError(f"Unsupported value for type {type_name!r}: {value_base!r}") from e
 
     return QueryIncomingParameter(
         original_name=name,
@@ -172,7 +172,7 @@ class DashSQLView(BaseView):
         funcs = tuple(cls._postprocess_any for _ in bi_type_names)
 
         def _postprocess_row(row: TRow, funcs: tuple[Callable, ...] = funcs) -> TRow:
-            return tuple(func(value) for func, value in zip(funcs, row))
+            return tuple(func(value) for func, value in zip(funcs, row, strict=True))
 
         return _postprocess_row
 

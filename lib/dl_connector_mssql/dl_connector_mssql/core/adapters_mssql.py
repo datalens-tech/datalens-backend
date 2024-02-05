@@ -146,7 +146,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
         names = query_res.cursor_info["names"]
         if data:
             assert len(names) == len(data[0])
-        data = [dict(zip(names, row)) for row in data]
+        data = [dict(zip(names, row, strict=True)) for row in data]
 
         engine = self.get_db_engine(db_name=None)
         dialect = engine.dialect

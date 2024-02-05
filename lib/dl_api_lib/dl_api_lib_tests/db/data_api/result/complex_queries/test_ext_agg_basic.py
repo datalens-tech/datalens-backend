@@ -99,7 +99,7 @@ class TestBasicExtendedAggregations(DefaultApiTestBase, DefaultBasicExtAggregati
             for row in data_rows:
                 sum_by_city_and_cat[(row[0], row[1])] += float(row[2])
             sum_list_by_city: dict[str, list[float]] = defaultdict(list)
-            for (city, cat), sum_value in sum_by_city_and_cat.items():
+            for (city, _cat), sum_value in sum_by_city_and_cat.items():
                 sum_list_by_city[city].append(sum_value)
 
             # 3. Group by city and calculate average of sales sums

@@ -47,7 +47,7 @@ class DataDumper:
         return table_ref
 
     def dump_data(self, table_ref: TableReference, table: DataTable) -> None:
-        data_as_dicts = [{col.name: value for col, value in zip(table.columns, row)} for row in table.rows]
+        data_as_dicts = [{col.name: value for col, value in zip(table.columns, row, strict=True)} for row in table.rows]
         sa_table = self.generate_sa_table(table_ref)
         self._db.insert_into_table(sa_table, data_as_dicts)
 
@@ -76,7 +76,7 @@ class DataDumper:
             return val
 
         rows = [
-            [convert(val, col) for val, col in zip(row, query_ctx.result_columns)]
+            [convert(val, col) for val, col in zip(row, query_ctx.result_columns, strict=True)]
             for row in self._db.execute(query_ctx.sa_query).fetchall()
         ]
         result_data_table = DataTable(columns=list(query_ctx.result_columns), rows=rows)

@@ -139,7 +139,7 @@ def schematic_request(  # type: ignore  # TODO: fix
                 # which is the exception raised by flask's `abort`
                 raise
             except Exception as err:
-                ei = sys.exc_info()
+                _ei = sys.exc_info()
 
                 exc_api_prefix = capp.config.get("ERR_CODE_API_PREFIX")
                 error_schema = RegularAPIErrorSchema(context=dict(api_prefix=exc_api_prefix))

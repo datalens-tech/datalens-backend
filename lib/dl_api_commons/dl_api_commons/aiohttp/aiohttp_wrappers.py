@@ -219,11 +219,11 @@ class DLRequestBase:
             return None
         try:
             return json.loads(raw_header)
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
             raise InvalidHeaderException(
                 "Invalid JSON in header content",
                 header_name=header.value,
-            )
+            ) from e
 
     @property
     def required_resources(self) -> FrozenSet[RequiredResource]:

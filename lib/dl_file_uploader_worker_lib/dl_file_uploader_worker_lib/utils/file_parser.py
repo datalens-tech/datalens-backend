@@ -66,15 +66,18 @@ class FileParser(metaclass=abc.ABCMeta):
         s3_sync_resp = s3_sync_cli.get_object(Bucket=self.s3.tmp_bucket_name, Key=key)
         return s3_sync_resp["Body"]
 
+    @abc.abstractmethod
     def ensure_sources_and_return(self) -> list[DataSource]:
         raise NotImplementedError
 
+    @abc.abstractmethod
     async def guess_header_and_schema(
         self,
         dsrc: DataSource,
     ) -> tuple[bool, list[SchemaColumn], Optional[FileSettings], FileSourceSettings]:
         raise NotImplementedError
 
+    @abc.abstractmethod
     async def prepare_preview(self, dsrc: DataSource, rmm: RedisModelManager) -> DataSourcePreview:
         raise NotImplementedError
 

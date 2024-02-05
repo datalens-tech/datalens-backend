@@ -68,7 +68,7 @@ class PostgreSQLExecAdapterAsync(Generic[_CONN_TV], ProcessorDbExecAdapterBase, 
                     native_type=self._tt.type_user_to_native(user_t=user_t),
                 ),
             )
-            for name, user_t in zip(names, user_types)
+            for name, user_t in zip(names, user_types, strict=True)
         ]
         return sa.Table(table_name, sa.MetaData(), *columns, prefixes=["TEMPORARY"])
 

@@ -306,7 +306,7 @@ class TestBasicWindowFunctions(DefaultApiTestBase, DefaultBasicWindowFunctionTes
     def test_nested_window_functions(self, control_api, data_api, saved_dataset):
         scary_formula_tmpl = 'RANK_UNIQUE(10 * {repl}, "asc")'
         scary_formula = scary_formula_tmpl
-        for i in range(10):
+        for _ in range(10):
             scary_formula = scary_formula_tmpl.replace("{repl}", scary_formula)
         scary_formula = scary_formula.replace("{repl}", "[Group Sales]")
 
@@ -779,6 +779,6 @@ class TestBasicWindowFunctions(DefaultApiTestBase, DefaultBasicWindowFunctionTes
         data_rows_no_sum = get_data(measures=("Sales RSUM BFB",))
         data_rows_with_sum = get_data(measures=("Sales RSUM BFB", "Sales SUM"))
         assert len(data_rows_no_sum) == len(data_rows_with_sum)
-        for row_no_sum, row_with_sum in zip(data_rows_no_sum, data_rows_with_sum):
+        for row_no_sum, row_with_sum in zip(data_rows_no_sum, data_rows_with_sum, strict=True):
             assert row_no_sum[0] == row_with_sum[0]  # The dimension
             assert row_no_sum[1] == row_with_sum[1]  # The measure

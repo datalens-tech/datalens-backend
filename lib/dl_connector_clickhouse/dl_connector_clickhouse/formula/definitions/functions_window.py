@@ -32,7 +32,7 @@ class WinLagClickHouseBase(base.WinLagBase):
     variants = [
         V(
             SUPPORTED_DIALECTS,
-            translation=lambda x, offset=sa.literal(1), default=sa.null(), *_: (
+            translation=lambda x, offset=sa.literal(1), default=sa.null(), *_: (  # noqa: B008
                 base.lag_implementation(
                     x,
                     offset=offset,
@@ -41,7 +41,7 @@ class WinLagClickHouseBase(base.WinLagBase):
                     lead_name="leadInFrame",
                 )
             ),
-            translation_rows=lambda x, offset=sa.literal(1), *_: (None, None),
+            translation_rows=lambda x, offset=sa.literal(1), *_: (None, None),  # noqa: B008
             as_winfunc=True,
         ),
     ]

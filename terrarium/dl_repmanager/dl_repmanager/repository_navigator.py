@@ -259,7 +259,7 @@ class RepositoryNavigator:
 
                 path_to_package_info: dict[Path, PackageInfo] = {}
                 for path, (
-                    package_type,
+                    _package_type,
                     pkg_type_dir,
                     rel_path,
                 ) in path_to_package_type_and_rel.items():

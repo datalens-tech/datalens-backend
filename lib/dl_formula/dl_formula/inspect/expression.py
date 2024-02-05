@@ -281,7 +281,7 @@ def infer_data_type(
 
 def enumerate_fields(
     node: nodes.FormulaItem,
-    prefix: NodeHierarchyIndex = NodeHierarchyIndex(),
+    prefix: NodeHierarchyIndex = NodeHierarchyIndex(),  # noqa: B008
 ) -> Generator[Tuple[NodeHierarchyIndex, nodes.Field], None, None]:
     """Just like ``enumerate``, but yields only field nodes."""
     for index, sub_node in node.enumerate(prefix=prefix):
@@ -291,7 +291,7 @@ def enumerate_fields(
 
 def enumerate_autonomous_children(
     node: nodes.FormulaItem,
-    prefix: NodeHierarchyIndex = NodeHierarchyIndex(),
+    prefix: NodeHierarchyIndex = NodeHierarchyIndex(),  # noqa: B008
     exclude_node_types: Tuple[Type[nodes.FormulaItem], ...] = (),
     parent_stack: Tuple[nodes.FormulaItem, ...] = (),
 ) -> Iterable[Tuple[NodeHierarchyIndex, nodes.FormulaItem, Tuple[nodes.FormulaItem, ...]]]:

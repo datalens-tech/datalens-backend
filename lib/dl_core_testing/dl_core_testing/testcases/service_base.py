@@ -285,12 +285,12 @@ class DbServiceFixtureTextClass(metaclass=abc.ABCMeta):
         )
 
     def db_reinit_hook(self) -> None:
-        pass
+        return
 
     @pytest.fixture(scope="class")
     def db(self, db_config: CoreDbConfig) -> Db:
         return self.db_dispenser.get_database(db_config)
 
     @pytest.fixture(scope="class", autouse=True)
-    def db_is_ready(self, db: Db) -> str:  # type: ignore  # 2024-01-29 # TODO: Missing return statement  [empty-body]
-        pass  # Just making sure that the database is available
+    def db_is_ready(self, db: Db) -> None:
+        return  # Just making sure that the database is available

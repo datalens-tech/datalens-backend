@@ -66,7 +66,7 @@ def get_from_env(env_key: str, converter: Callable[[str], _RET_TV]) -> _RET_TV:
 def get_from_env(  # noqa
     env_key: str,
     converter: Callable[[str], _RET_TV],
-    default: Union[_RET_TV, Factory[_RET_TV], Required, None] = Required(),
+    default: Union[_RET_TV, Factory[_RET_TV], Required, None] = Required(),  # noqa: B008
 ) -> Optional[_RET_TV]:
     if env_key in os.environ:
         try:

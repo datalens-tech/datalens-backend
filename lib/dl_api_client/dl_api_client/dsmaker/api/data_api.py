@@ -288,8 +288,8 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
         if response.status_code == HTTPStatus.OK:
             try:
                 resp_data = response.json["result"]["data"]
-            except KeyError:
-                raise ValueError(response.data)
+            except KeyError as e:
+                raise ValueError(response.data) from e
 
         return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
@@ -329,8 +329,8 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
         if response.status_code == HTTPStatus.OK:
             try:
                 resp_data = response.json["result"]["data"]
-            except KeyError:
-                raise ValueError(response.data)
+            except KeyError as e:
+                raise ValueError(response.data) from e
 
         return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
@@ -358,8 +358,8 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
         if response.status_code == HTTPStatus.OK:
             try:
                 resp_data = response.json["result"]["data"]
-            except KeyError:
-                raise ValueError(response.data)
+            except KeyError as e:
+                raise ValueError(response.data) from e
 
         return HttpDataApiResponse(
             api_version=self.api_v,
@@ -396,8 +396,8 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
         if response.status_code == HTTPStatus.OK:
             try:
                 resp_data = response.json["result"]["data"]
-            except KeyError:
-                raise ValueError(response.data)
+            except KeyError as e:
+                raise ValueError(response.data) from e
 
         return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
@@ -751,8 +751,8 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             try:
                 resp_schema = ResultResponseSchema()
                 resp_data = resp_schema.load(response.json)
-            except KeyError:
-                raise ValueError(response.data)
+            except KeyError as e:
+                raise ValueError(response.data) from e
 
         return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
@@ -799,8 +799,8 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             try:
                 resp_schema = ResultResponseSchema()
                 resp_data = resp_schema.load(response.json)
-            except KeyError:
-                raise ValueError(response.data)
+            except KeyError as e:
+                raise ValueError(response.data) from e
 
         return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
@@ -829,8 +829,8 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             try:
                 resp_schema = ResultResponseSchema()
                 resp_data = resp_schema.load(response.json)
-            except KeyError:
-                raise ValueError(response.data)
+            except KeyError as e:
+                raise ValueError(response.data) from e
 
         return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
@@ -861,8 +861,8 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             try:
                 resp_schema = ResultResponseSchema()
                 resp_data = resp_schema.load(response.json)
-            except KeyError:
-                raise ValueError(response.data)
+            except KeyError as e:
+                raise ValueError(response.data) from e
 
         return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
@@ -909,8 +909,8 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             try:
                 resp_schema = PivotResponseSchema()
                 resp_data = resp_schema.load(response.json)
-            except KeyError:
-                raise ValueError(response.data)
+            except KeyError as e:
+                raise ValueError(response.data) from e
 
         return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
@@ -991,8 +991,8 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
         if response.status_code == HTTPStatus.OK:
             try:
                 resp_data = self._make_resp_data(response.json)
-            except KeyError:
-                raise ValueError(response.data)
+            except KeyError as e:
+                raise ValueError(response.data) from e
 
         return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
@@ -1038,8 +1038,8 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
         if response.status_code == HTTPStatus.OK:
             try:
                 resp_data = self._make_resp_data(response.json)
-            except KeyError:
-                raise ValueError(response.data)
+            except KeyError as e:
+                raise ValueError(response.data) from e
 
         return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
@@ -1067,8 +1067,8 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
         if response.status_code == HTTPStatus.OK:
             try:
                 resp_data = self._make_resp_data(response.json)
-            except KeyError:
-                raise ValueError(response.data)
+            except KeyError as e:
+                raise ValueError(response.data) from e
 
         return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
@@ -1098,8 +1098,8 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
         if response.status_code == HTTPStatus.OK:
             try:
                 resp_data = self._make_resp_data(response.json)
-            except KeyError:
-                raise ValueError(response.data)
+            except KeyError as e:
+                raise ValueError(response.data) from e
 
         return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 
@@ -1146,8 +1146,8 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
             try:
                 resp_schema = PivotResponseSchema()
                 resp_data = resp_schema.load(response.json)
-            except KeyError:
-                raise ValueError(response.data)
+            except KeyError as e:
+                raise ValueError(response.data) from e
 
         return self.make_response_obj(client_response=response, data=resp_data)  # type: ignore  # 2024-01-24 # TODO: Argument "data" to "make_response_obj" of "DataApiBaseMixin" has incompatible type "dict[Any, Any] | None"; expected "dict[Any, Any]"  [arg-type]
 

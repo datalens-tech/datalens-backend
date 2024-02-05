@@ -185,7 +185,9 @@ class AsyncMySQLAdapter(
                             tuple(
                                 (col_converter(val) if col_converter is not None and val is not None else val)
                                 for val, col_converter in zip(
-                                    [row[col_name] for col_name in cursor_info.cursor_info["names"]], row_converters
+                                    [row[col_name] for col_name in cursor_info.cursor_info["names"]],
+                                    row_converters,
+                                    strict=True,
                                 )
                             )
                             for row in rows

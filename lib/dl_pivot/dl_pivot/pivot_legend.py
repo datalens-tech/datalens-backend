@@ -77,8 +77,10 @@ class PivotLegend:
     def get_item(self, pivot_item_id: int) -> PivotLegendItem:
         try:
             return self._piid_to_item[pivot_item_id]
-        except KeyError:
-            raise dl_query_processing.exc.PivotLegendItemReferenceError(f"Unknown pivot legend item: {pivot_item_id}")
+        except KeyError as e:
+            raise dl_query_processing.exc.PivotLegendItemReferenceError(
+                f"Unknown pivot legend item: {pivot_item_id}"
+            ) from e
 
     def leg_item_id_to_pivot_item_id_list(self, legend_item_id: int) -> list[int]:
         return self._liid_to_piid[legend_item_id]

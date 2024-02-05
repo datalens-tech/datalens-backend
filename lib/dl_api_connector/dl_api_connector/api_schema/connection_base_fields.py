@@ -10,7 +10,7 @@ from dl_api_connector.api_schema.extras import FieldExtra
 def alias_string_field(
     attribute: str,
     required: bool = True,
-    bi_extra: FieldExtra = FieldExtra(editable=True),
+    bi_extra: FieldExtra = FieldExtra(editable=True),  # noqa: B008
 ) -> ma_fields.String:
     def validate(value: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         if re.match("^\*", value) is None:
@@ -30,7 +30,7 @@ def cache_ttl_field(
     allow_none: bool = True,
     missing: Optional[int] = None,
     default: Optional[int] = None,
-    bi_extra: FieldExtra = FieldExtra(editable=True),
+    bi_extra: FieldExtra = FieldExtra(editable=True),  # noqa: B008
 ) -> ma_fields.Integer:
     return ma_fields.Integer(
         attribute=attribute,
@@ -47,7 +47,7 @@ def secret_string_field(
     required: bool = True,
     allow_none: bool = False,
     default: Optional[str] = None,
-    bi_extra: FieldExtra = FieldExtra(editable=True),
+    bi_extra: FieldExtra = FieldExtra(editable=True),  # noqa: B008
 ) -> ma_fields.String:
     return ma_fields.String(
         attribute=attribute,
