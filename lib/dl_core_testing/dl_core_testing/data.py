@@ -108,7 +108,7 @@ class DataFetcher:
         if required_avatar_ids is None:
             required_avatar_ids = bi_query.get_required_avatar_ids()
 
-        data_key_data = (data_key_data or "__qwerty",)  # just a random hashable
+        data_key_data = data_key_data or "__qwerty"  # just a random hashable
         assert data_key_data is not None
 
         dp_factory = self._service_registry.get_data_processor_factory()  # type: ignore  # TODO: fix

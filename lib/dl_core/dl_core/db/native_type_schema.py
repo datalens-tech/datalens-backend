@@ -17,6 +17,7 @@ from typing import (
 )
 
 from marshmallow import (
+    EXCLUDE,
     Schema,
     fields,
     post_load,
@@ -42,6 +43,14 @@ _TARGET_TV = TypeVar("_TARGET_TV")
 
 class NativeTypeSchemaBase(Schema, Generic[_TARGET_TV]):
     """(Shared ((Native Type) Storage Schema)), common base class for NT schemas."""
+
+    class Meta:
+        # This crutch allows the schema to ignore unknown attributes.
+        # We need this because older dataset versions have `conn_type` attributes in native type objects,
+        # but this attribute is no longer present in current code.
+        # To avoid this conflict we need to ignore extra attributes.
+        # TODO: Eventually dfatasets should be migrated so that this can be removed
+        unknown = EXCLUDE
 
     TARGET_CLS: ClassVar[Type[_TARGET_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
