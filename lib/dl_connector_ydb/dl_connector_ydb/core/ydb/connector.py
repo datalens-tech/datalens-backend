@@ -16,6 +16,7 @@ from dl_core.us_manager.storage_schemas.data_source_spec_base import (
 )
 
 from dl_connector_ydb.core.base.query_compiler import YQLQueryCompiler
+from dl_connector_ydb.core.base.type_transformer import YQLTypeTransformer
 from dl_connector_ydb.core.ydb.adapter import YDBAdapter
 from dl_connector_ydb.core.ydb.connection_executors import YDBAsyncAdapterConnExecutor
 from dl_connector_ydb.core.ydb.constants import (
@@ -30,7 +31,6 @@ from dl_connector_ydb.core.ydb.data_source import (
 )
 from dl_connector_ydb.core.ydb.settings import YDBSettingDefinition
 from dl_connector_ydb.core.ydb.storage_schemas.connection import YDBConnectionDataStorageSchema
-from dl_connector_ydb.core.ydb.type_transformer import YDBTypeTransformer
 from dl_connector_ydb.core.ydb.us_connection import YDBConnection
 
 
@@ -38,7 +38,7 @@ class YDBCoreConnectionDefinition(CoreConnectionDefinition):
     conn_type = CONNECTION_TYPE_YDB
     connection_cls = YDBConnection
     us_storage_schema_cls = YDBConnectionDataStorageSchema
-    type_transformer_cls = YDBTypeTransformer
+    type_transformer_cls = YQLTypeTransformer
     sync_conn_executor_cls = YDBAsyncAdapterConnExecutor
     async_conn_executor_cls = YDBAsyncAdapterConnExecutor
     dialect_string = "yql"

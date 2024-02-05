@@ -90,6 +90,7 @@ class ConnExecutorBase(metaclass=abc.ABCMeta):
     _exec_mode: ExecutionMode = attr.ib()
     _sec_mgr: "ConnectionSecurityManager" = attr.ib()
     _remote_qe_data: Optional[RemoteQueryExecutorData] = attr.ib()
+    _ca_data: bytes = attr.ib()
     _services_registry: Optional[ServicesRegistry] = attr.ib(
         kw_only=True, default=None
     )  # Do not use. To be deprecated. Somehow.

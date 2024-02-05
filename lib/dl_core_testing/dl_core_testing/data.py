@@ -93,6 +93,7 @@ class DataFetcher:
         self,
         *,
         bi_query: BIQuery,
+        data_key_data: Optional[str] = None,
         role: DataSourceRole = DataSourceRole.origin,
         row_count_hard_limit: Optional[int] = None,
         root_avatar_id: Optional[AvatarId] = None,
@@ -106,6 +107,9 @@ class DataFetcher:
             root_avatar_id = self._ds_accessor.get_root_avatar_strict().id
         if required_avatar_ids is None:
             required_avatar_ids = bi_query.get_required_avatar_ids()
+
+        data_key_data = (data_key_data or "__qwerty",)  # just a random hashable
+        assert data_key_data is not None
 
         dp_factory = self._service_registry.get_data_processor_factory()  # type: ignore  # TODO: fix
         data_processor = await dp_factory.get_data_processor(
@@ -138,7 +142,7 @@ class DataFetcher:
                 result_id="res",
                 bi_query=bi_query,
                 alias="res",
-                data_key_data="__qwerty",  # just a random hashable
+                data_key_data=data_key_data,
             ),
             DownloadOp(
                 source_stream_id="calc_0",
@@ -159,6 +163,7 @@ class DataFetcher:
         self,
         *,
         bi_query: BIQuery,
+        data_key_data: Optional[str] = None,
         role: DataSourceRole = DataSourceRole.origin,
         row_count_hard_limit: Optional[int] = None,
         root_avatar_id: Optional[AvatarId] = None,
@@ -172,6 +177,7 @@ class DataFetcher:
             self.get_data_stream_async(
                 role=role,
                 bi_query=bi_query,
+                data_key_data=data_key_data,
                 row_count_hard_limit=row_count_hard_limit,
                 root_avatar_id=root_avatar_id,
                 required_avatar_ids=required_avatar_ids,

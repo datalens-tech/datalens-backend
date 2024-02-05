@@ -37,9 +37,6 @@ class TypedQueryParamGetter:
     def _default_params_by_name(self) -> Mapping[str, TypedQueryParameter]:
         return {param.name: param for param in self.parameters}
 
-    def get_opt(self, name: str, default: Optional[IncomingDSQLParamTypeExt] = None) -> Optional[TypedQueryParameter]:
-        return self._params_by_name.get(name, default)
-
     def get_strict(self, name: str) -> TypedQueryParameter:
         return self._params_by_name[name]
 

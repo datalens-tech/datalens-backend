@@ -85,3 +85,8 @@ class BaseSQLConnTargetDTO(ConnTargetDTO):
 
     def get_effective_host(self) -> Optional[str]:
         return self.host
+
+
+@attr.s(frozen=True)
+class BaseAiohttpConnTargetDTO(ConnTargetDTO, metaclass=abc.ABCMeta):
+    ca_data: str = attr.ib(repr=secrepr)

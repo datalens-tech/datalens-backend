@@ -107,6 +107,7 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
     @pytest.fixture(scope="session")
     def conn_sync_service_registry(
         self,
+        root_certificates: bytes,
         conn_bi_context: RequestContextInfo,
         task_processor_factory: TaskProcessorFactory,
     ) -> ServicesRegistry:
@@ -114,11 +115,13 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
             conn_exec_factory_async_env=False,
             conn_bi_context=conn_bi_context,
             task_processor_factory=task_processor_factory,
+            root_certificates_data=root_certificates,
         )
 
     @pytest.fixture(scope="session")
     def conn_async_service_registry(
         self,
+        root_certificates: bytes,
         conn_bi_context: RequestContextInfo,
         task_processor_factory: TaskProcessorFactory,
     ) -> ServicesRegistry:
@@ -126,6 +129,7 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
             conn_exec_factory_async_env=True,
             conn_bi_context=conn_bi_context,
             task_processor_factory=task_processor_factory,
+            root_certificates_data=root_certificates,
         )
 
     @pytest.fixture(scope="function")
