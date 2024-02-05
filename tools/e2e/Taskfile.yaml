@@ -1,0 +1,125 @@
+version: 3
+
+vars:
+  datalens_ui_folder: ../../../../datalens-ui
+
+  control_api_target: "dl_control_api"
+  control_api_tag: "control-api:test"
+
+  data_api_target: "dl_data_api"
+  data_api_tag: "data-api:test"
+
+  ui_tag: "datalens-ui:test"
+
+tasks:
+  _docker:
+    internal: true
+    requires:
+      vars:
+        - COMMAND
+    cmds:
+      - echo $DATALENS_UI_TAG
+      - docker compose
+        -f {{.datalens_ui_folder}}/tests/docker-compose.e2e.yml
+        -f docker-compose.e2e-dev-backend.yaml
+        {{.COMMAND}}
+    env:
+      CONTROL_API_TAG: "{{.control_api_tag}}"
+      DATA_API_TAG: "{{.data_api_tag}}"
+      DATALENS_UI_TAG: "{{.ui_tag}}"
+
+  datalens-ui-repo-clone:
+    dir: "{{.datalens_ui_folder}}/.."
+    desc: Clone datalens-ui repository
+    cmds:
+      - git clone git@github.com:datalens-tech/datalens-ui.git
+
+  datalens-ui-repo-update:
+    dir: "{{.datalens_ui_folder}}"
+    desc: Checkout latest datalens-ui
+    cmds:
+      - git fetch --all
+      - git checkout main
+      - git pull
+
+  datalens-ui-init:
+    dir: "{{.datalens_ui_folder}}"
+    desc: Install dependencies
+    cmds:
+      - npm ci
+
+  docker-build-backend:
+    dir: ../../docker_build
+    cmds:
+      - ./run-project-bake
+        {{.control_api_target}} 
+        {{.data_api_target}}
+        --set "{{.control_api_target}}.tags={{.control_api_tag}}"
+        --set "{{.data_api_target}}.tags={{.data_api_tag}}"
+
+  docker-build-frontend:
+    dir: "{{.datalens_ui_folder}}"
+    cmds:
+      - task: datalens-ui-repo-update
+      - docker build 
+        --tag {{.ui_tag}} 
+        --network=host 
+        .
+
+  docker-build:
+    desc: Prepare fresh backend and frontend dev containers
+    cmds:
+      - task: docker-build-backend
+      - task: docker-build-frontend
+
+  docker-start:
+    desc: Start services
+    cmds:
+      - task: _docker
+        vars: { COMMAND: "up -d  {{.CLI_ARGS}}" }
+
+  docker-stop:
+    desc: Stop services
+    cmds:
+      - task: _docker
+        vars: { COMMAND: "down {{.CLI_ARGS}}" }
+
+  docker-logs:
+    desc: Show logs from all services
+    cmds:
+      - task: _docker
+        vars: { COMMAND: "logs --follow" }
+
+  docker-logs-data-api:
+    desc: Show logs from data-api service
+    cmds:
+      - task: _docker
+        vars: { COMMAND: "logs --follow data-api" }
+
+  docker-logs-control-api:
+    desc: Show logs from control-api service
+    cmds:
+      - task: _docker
+        vars: { COMMAND: "logs --follow control-api" }
+
+  test:
+    dir: "{{.datalens_ui_folder}}"
+    desc: |
+      Run tests, could be altered with parameters:
+      E2E_TEST_NAME_PATTERN to run specific tests, e.g. E2E_TEST_NAME_PATTERN="Add dataset"
+      E2E_HEADFUL to run tests in headful mode (inside real browser), e.g. E2E_HEADFUL=1
+    env:
+      E2E_DOMAIN: "http://localhost:8080"
+      NO_AUTH: "true"
+      E2E_TEST_NAME_PATTERN: '{{.PATTERN | default ""}}'
+      E2E_HEADFUL: '{{.HEADFUL | default ""}}'
+    cmds:
+      - npm run test:install:chromium
+      - npm run test:e2e:opensource
+
+  test-headful:
+    dir: "{{.datalens_ui_folder}}"
+    desc: test command shortcut with headful mode on
+    cmds:
+      - task: test
+        vars: { HEADFUL: "1" }
