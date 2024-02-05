@@ -20,6 +20,9 @@ class NativeTypeSchema(Schema):
 
     @post_load(pass_many=False)
     def to_object(self, data: dict[str, Any], **kwargs: Any) -> Any:
+        if "conn_type" in data:
+            data = data.copy()
+            data.pop("conn_type")
         return GenericNativeType(**data)
 
 
