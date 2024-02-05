@@ -22,6 +22,7 @@ from dl_core.data_processing.processing.db_base.exec_adapter_base import Process
 from dl_core.data_processing.streaming import AsyncChunkedBase
 from dl_core.db.sa_types import make_sa_type
 
+from dl_connector_postgresql.core.postgresql.constants import BACKEND_TYPE_POSTGRES
 from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
 
 
@@ -58,8 +59,15 @@ class PostgreSQLExecAdapterAsync(Generic[_CONN_TV], ProcessorDbExecAdapterBase, 
 
     def _make_sa_table(self, table_name: str, names: Sequence[str], user_types: Sequence[UserDataType]) -> sa.Table:
         assert len(names) == len(user_types)
+        backend_type = BACKEND_TYPE_POSTGRES
         columns = [
-            sa.Column(name=name, type_=make_sa_type(native_type=self._tt.type_user_to_native(user_t=user_t)))
+            sa.Column(
+                name=name,
+                type_=make_sa_type(
+                    backend_type=backend_type,
+                    native_type=self._tt.type_user_to_native(user_t=user_t),
+                ),
+            )
             for name, user_t in zip(names, user_types)
         ]
         return sa.Table(table_name, sa.MetaData(), *columns, prefixes=["TEMPORARY"])

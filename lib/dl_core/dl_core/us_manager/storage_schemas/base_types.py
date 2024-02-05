@@ -8,19 +8,14 @@ from marshmallow import (
     post_load,
 )
 
-from dl_constants.enums import (
-    ConnectionType,
-    UserDataType,
-)
+from dl_constants.enums import UserDataType
 from dl_core.db.elements import SchemaColumn
 from dl_core.db.native_type import GenericNativeType
-from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 
 class NativeTypeSchema(Schema):
     """(currently used for uploads / ProviderConnection)"""
 
-    conn_type = DynamicEnumField(ConnectionType, by_value=True)
     name = fields.String()
 
     @post_load(pass_many=False)

@@ -22,7 +22,7 @@ class TestingConnection(ConnectionBase):
 
 
 class TestingTypeTransformer(TypeTransformer):
-    conn_type = CONNECTION_TYPE_TESTING
+    pass
 
 
 class TestingConnectionDataStorageSchema(BaseConnectionDataStorageSchema):
