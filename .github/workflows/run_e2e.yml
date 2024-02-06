@@ -23,7 +23,7 @@ jobs:
         uses: codex-/return-dispatch@v1
         id: return_dispatch
         with:
-          token: ${{ secrets.E2E_WORKFLOW_TOKEN }}
+          token: ${{ secrets.ROBOT_GITHUB_E2E_WORKFLOW_TOKEN }}
           ref: refs/heads/main
           repo: datalens-ui
           owner: datalens-tech
