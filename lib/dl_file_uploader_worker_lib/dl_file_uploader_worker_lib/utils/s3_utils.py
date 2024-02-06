@@ -90,7 +90,7 @@ def copy_from_s3_to_s3(
             next(text_io_wrapper)
         for line in text_io_wrapper:
             line_data = json.loads(line)
-            yield dict(zip(fieldnames, line_data))
+            yield dict(zip(fieldnames, line_data, strict=True))
 
     if file_type == FileType.csv:
         assert isinstance(file_settings, CSVFileSettings)

@@ -151,7 +151,7 @@ class DataSourceCollectionBase:
         if len(raw_schema_1) != len(raw_schema_2):
             return False
 
-        for col_1, col_2 in zip(raw_schema_1, raw_schema_2):
+        for col_1, col_2 in zip(raw_schema_1, raw_schema_2, strict=True):
             if col_1.name != col_2.name or col_1.user_type != col_2.user_type:
                 return False
 

@@ -103,10 +103,10 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
 
         try:
             min_rank = min(rank for avatar_id, rank in ranks.items() if avatar_id in user_avatar_ids)
-        except ValueError:
+        except ValueError as e:
             raise exc.UnboundAvatarError(
                 "Detected the usage of an unbound avatar. " "Dataset is configured incorrectly."
-            )
+            ) from e
 
         # add parent_ids until single common ancestor remains
         common_root_ids = user_avatar_ids

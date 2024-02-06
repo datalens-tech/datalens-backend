@@ -62,7 +62,7 @@ class ResultRowSplitter:
         raw_row: ResultRawDataRow,
         legend_item_ids: AbstractSet[int],
     ) -> Generator[tuple[DataCell, int], None, None]:
-        for liid, value in zip(raw_row.legend, raw_row.data):
+        for liid, value in zip(raw_row.legend, raw_row.data, strict=True):
             if liid in legend_item_ids:
                 yield DataCell(value=value, title=self._field_legend.get_title_by_legend_item_id(liid)), liid
 

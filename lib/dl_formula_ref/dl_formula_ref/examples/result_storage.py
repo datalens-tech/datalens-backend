@@ -40,7 +40,7 @@ class CustomJSONEncoder(json.JSONEncoder):
 
 class CustomJSONDecoder(json.JSONDecoder):
     def __init__(self, *args, **kwargs):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
-        super().__init__(object_hook=self.object_hook, *args, **kwargs)
+        super().__init__(object_hook=self.object_hook, *args, **kwargs)  # noqa: B026
 
     def object_hook(self, obj_dict: Dict[str, Any]) -> Any:
         if obj_dict.get("__type__") == "datetime":

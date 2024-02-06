@@ -72,7 +72,7 @@ class MetrikaApiDataSource(PseudoSQLDataSource):
             assert self.saved_raw_schema is not None
             column = next(col for col in self.saved_raw_schema if col.name == col_name)
         except StopIteration:
-            raise exc.InvalidColumnError("Invalid field name")
+            raise exc.InvalidColumnError("Invalid field name") from None
 
         if column.user_type not in (UserDataType.date, UserDataType.datetime, UserDataType.genericdatetime):
             raise exc.InvalidColumnError("Invalid field for value range")

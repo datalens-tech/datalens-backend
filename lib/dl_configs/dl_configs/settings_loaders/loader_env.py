@@ -253,13 +253,13 @@ class CompositeExtractor(SDictExtractor):
             json_value = json.loads(json_str)
         except json.JSONDecodeError:
             # TODO FIX: take in account potential sensivity of value
-            raise InvalidConfigValueException(f"Malformed JSON for {self.key!r}")
+            raise InvalidConfigValueException(f"Malformed JSON for {self.key!r}") from None
 
         try:
             return converter(json_value)
-        except Exception as exc:  # noqa
+        except Exception as exc:
             # TODO FIX: take in account potential sensivity of value
-            raise InvalidConfigValueException(f"Can not convert JSON value to target object {self.key!r}")
+            raise InvalidConfigValueException(f"Can not convert JSON value to target object {self.key!r}") from exc
 
     def _extract(self, s_dict: SDict) -> Any:
         default_value = self.default

@@ -112,8 +112,8 @@ def split_by_quoted_quote(value: str, quote: str = "'") -> tuple[str, str]:
     while True:
         try:
             next_quote = value.index(quote)
-        except ValueError:
-            raise ValueError("Unclosed quote")
+        except ValueError as e:
+            raise ValueError("Unclosed quote") from e
         value_piece = value[:next_quote]
         result.append(value_piece)
         value = value[next_quote + ql :]

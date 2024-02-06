@@ -30,4 +30,4 @@ def get_data_processor_service_class(processor_type: ProcessorType) -> Type[Data
         return _DATA_PROCESSOR_SERVICE_CLASSES[processor_type]
     except KeyError:
         # TODO: Support non-pg data processor here too
-        raise ValueError(f"Data processor type {processor_type} is not supported")
+        raise ValueError(f"Data processor type {processor_type} is not supported") from None

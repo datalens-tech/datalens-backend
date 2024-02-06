@@ -38,12 +38,12 @@ class CryptoKeysConfig(SettingsBase):
             actual_key_id = json_value["actual_key_id"]
         except KeyError as exc:
             # TODO FIX: Integrate with env loader exceptions handling
-            raise ValueError(f"Crypto keys config missing key {exc!r}")
+            raise ValueError(f"Crypto keys config missing key {exc!r}") from None
         try:
             map_id_key = json_value["keys"]
         except KeyError as exc:
             # TODO FIX: Integrate with env loader exceptions handling
-            raise ValueError(f"Crypto keys config missing key {exc!r}")
+            raise ValueError(f"Crypto keys config missing key {exc!r}") from None
         return CryptoKeysConfig(  # type: ignore  # 2024-01-24 # TODO: Unexpected keyword argument "actual_key_id" for "CryptoKeysConfig"  [call-arg]
             actual_key_id=actual_key_id,
             map_id_key=map_id_key,

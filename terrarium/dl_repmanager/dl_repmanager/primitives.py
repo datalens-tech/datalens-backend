@@ -23,7 +23,7 @@ _CLONABLE_TV = TypeVar("_CLONABLE_TV", bound="_Clonable")
 
 
 @attr.s(frozen=True)
-class _Clonable(abc.ABC):
+class _Clonable(abc.ABC):  # noqa: B024
     def clone(self: _CLONABLE_TV, **kwargs: Any) -> _CLONABLE_TV:
         return attr.evolve(self, **kwargs)
 

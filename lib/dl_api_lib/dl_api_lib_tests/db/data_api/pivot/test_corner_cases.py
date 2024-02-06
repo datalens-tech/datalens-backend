@@ -277,10 +277,10 @@ class TestPivotCornerCases(DefaultApiTestBase):
 
         assert len(double_result_data["pivot_data"]["rows"]) == len(single_result_data["pivot_data"]["rows"])
         for single_row, double_row in zip(
-            single_result_data["pivot_data"]["rows"], double_result_data["pivot_data"]["rows"]
+            single_result_data["pivot_data"]["rows"], double_result_data["pivot_data"]["rows"], strict=True
         ):
             assert len(single_row["values"]) == len(double_row["values"])
-            for single_cell, double_cell in zip(single_row["values"], double_row["values"]):
+            for single_cell, double_cell in zip(single_row["values"], double_row["values"], strict=True):
                 if single_cell is None or double_cell is None:
                     assert single_cell == double_cell
                 else:

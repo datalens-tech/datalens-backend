@@ -84,7 +84,10 @@ def _rows_full_window(*_: Any) -> WinRangeTuple:
     return None, None
 
 
-def _rows_stretching_window(_: ClauseElement, direction: ClauseElement = sa.literal("asc")) -> WinRangeTuple:
+def _rows_stretching_window(
+    _: ClauseElement,
+    direction: ClauseElement = sa.literal("asc"),  # noqa: B008
+) -> WinRangeTuple:
     """Defines range tuple for functions that need a stretching or shrinking window."""
     assert is_literal(direction)
     assert isinstance(un_literal(direction), str)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "un_literal" has incompatible type "ClauseElement"; expected "BaseLiteral | BindParameter[Any] | TypeDefiningCast | Function | Null | array | None"  [arg-type]
@@ -785,8 +788,8 @@ class WinMAvg3(WinMAvgBase):
 
 def lag_implementation(
     x: Any,
-    offset: Any = sa.literal(1),
-    default: Any = sa.null(),
+    offset: Any = sa.literal(1),  # noqa: B008
+    default: Any = sa.null(),  # noqa: B008
     lag_name: str = "LAG",
     lead_name: str = "LEAD",
 ) -> ClauseElement:
@@ -808,10 +811,10 @@ class WinLagBase(OrderedWinFuncBase):
             D.DUMMY,
             # PostgreSQL requires offset and default to be constant,
             # so we must unwrap these values in case casts have been added to them.
-            translation=lambda x, offset=sa.literal(1), default=sa.null(), *_: (
+            translation=lambda x, offset=sa.literal(1), default=sa.null(), *_: (  # noqa: B008
                 lag_implementation(x, offset=offset, default=default)
             ),
-            translation_rows=lambda x, offset=sa.literal(1), *_: (None, None),
+            translation_rows=lambda x, offset=sa.literal(1), *_: (None, None),  # noqa: B008
             as_winfunc=True,
         ),
     ]

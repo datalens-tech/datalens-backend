@@ -93,8 +93,8 @@ class LocalizerLoader:
                     languages=[config.locale],
                 )
                 assert isinstance(gnu_localizer, gettext.GNUTranslations)
-            except FileNotFoundError:
-                raise UnknownDomain(f"Unknown domain {config.domain}")
+            except FileNotFoundError as e:
+                raise UnknownDomain(f"Unknown domain {config.domain}") from e
             localizers.append(
                 _GNULocalizer(
                     domain=config.domain,

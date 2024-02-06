@@ -106,7 +106,7 @@ def format_exception_with_locals(exc_type, exc_value, tb):
         locations = traceback.format_tb(tb)
         local_vars = format_locals(tb)
         formatted = ["Traceback (most recent call last):\n"]
-        for loc, var in zip(locations, local_vars):
+        for loc, var in zip(locations, local_vars, strict=True):
             formatted.append(loc)
             formatted.extend(var)
         formatted.extend(exception)
@@ -228,7 +228,7 @@ class RecordDataFormatterMixin:
         return record.created
 
     @staticmethod
-    def get_record_timestampns(record, ns=int(1e9)):
+    def get_record_timestampns(record, ns=int(1e9)):  # noqa: B008
         return int(record.created * ns)
 
     @staticmethod

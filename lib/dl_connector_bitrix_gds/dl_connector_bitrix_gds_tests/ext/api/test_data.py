@@ -52,7 +52,7 @@ class TestBitrixSmartTablesData(BitrixSmartTablesDataApiTestBase):
         data_api: SyncHttpDataApiV2,
     ) -> None:
         ds = saved_dataset
-        ds.result_schema["Date from string user_field"] = ds.field(formula=f"DATE([UF_CRM_5_1694020695771])")
+        ds.result_schema["Date from string user_field"] = ds.field(formula="DATE([UF_CRM_5_1694020695771])")
         self.get_preview(ds, data_api)
 
         result_resp = data_api.get_result(

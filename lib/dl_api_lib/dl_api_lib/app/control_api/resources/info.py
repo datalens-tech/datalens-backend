@@ -130,12 +130,12 @@ class ConnectorForm(BIResource):
         try:
             ct = ConnectionType(conn_type)
         except ValueError:
-            raise UnsupportedForEntityType(f"Unknown connector type: {conn_type}")
+            raise UnsupportedForEntityType(f"Unknown connector type: {conn_type}") from None
 
         try:
             mode = ConnectionFormMode(form_mode)
         except ValueError:
-            raise UnsupportedForEntityType(f"Unknown form mode: {form_mode}")
+            raise UnsupportedForEntityType(f"Unknown form mode: {form_mode}") from None
 
         try:
             form_factory_cls = get_connection_form_factory_cls(ct)

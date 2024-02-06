@@ -82,7 +82,7 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         query: str | Select,
         user_type: UserDataType,
         ctx: OpExecutionContext,
-        data_key: LocalKeyRepresentation = LocalKeyRepresentation(),
+        data_key: LocalKeyRepresentation = LocalKeyRepresentation(),  # noqa: B008
         preparation_callback: Optional[Callable[[], Awaitable[None]]] = None,
     ) -> TBIDataValue:
         """Execute a statement returning a scalar value."""
@@ -109,7 +109,7 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         joint_dsrc_info: Optional[PreparedFromInfo] = None,
         query_id: str,
         ctx: OpExecutionContext,
-        data_key: LocalKeyRepresentation = LocalKeyRepresentation(),
+        data_key: LocalKeyRepresentation = LocalKeyRepresentation(),  # noqa: B008
         preparation_callback: Optional[Callable[[], Awaitable[None]]] = None,
     ) -> TValuesChunkStream:
         """Fetch data from a table"""
@@ -149,7 +149,7 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         query: str | Select,
         user_types: Sequence[UserDataType],
         from_info: Optional[PreparedFromInfo] = None,
-        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),
+        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),  # noqa: B008
     ) -> Optional[LocalKeyRepresentation]:
         # TODO: Remove this method
         query_res_info = self._make_query_res_info(query=query, user_types=user_types)
@@ -200,10 +200,10 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         compiled_query: str,
         target_connection_ref: Optional[ConnectionRef],
     ) -> None:
-        pass
+        return
 
     def post_query_execute(self, query_id: str, exec_exception: Optional[Exception]) -> None:
-        pass
+        return
 
     def post_cache_usage(self, query_id: str, cache_full_hit: bool) -> None:
-        pass
+        return

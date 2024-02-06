@@ -18,6 +18,7 @@ DEFAULT_OPERATION_TIMEOUT = 60.0
 
 class BasePgPoolWrapper(metaclass=abc.ABCMeta):
     @classmethod
+    @abc.abstractmethod
     async def connect(
         cls: Type[_POOL_WRAPPER_TV],
         url: str,
@@ -27,6 +28,7 @@ class BasePgPoolWrapper(metaclass=abc.ABCMeta):
     ) -> _POOL_WRAPPER_TV:
         raise NotImplementedError
 
+    @abc.abstractmethod
     async def disconnect(self) -> None:
         raise NotImplementedError
 

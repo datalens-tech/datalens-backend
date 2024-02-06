@@ -146,7 +146,7 @@ class FieldRLSSerializer:
         except ValueError as exc_value:
             raise exc.RLSConfigParsingError(
                 f"RLS: Parsing failed at line {idx + 1}", details=dict(description=str(exc_value))
-            )
+            ) from None
 
     @classmethod
     def _resolve_subject_names(cls, subject_names: List[str], subject_resolver: BaseSubjectResolver) -> Dict[str, Any]:

@@ -299,9 +299,11 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
                     )
                 # We don't need to close worker thread in case of timeout:
                 #  Worker will wait for 'start_confirmed' state with timeout
-                #  If timeout fires - it will terminates
-                except TimeoutError:
-                    raise InitializationFailed(f"Worker thread did not start in {self._worker_thread_start_timeout}")
+                #  If timeout fires - it will terminate
+                except TimeoutError as err:
+                    raise InitializationFailed(
+                        f"Worker thread did not start in {self._worker_thread_start_timeout}"
+                    ) from err
                 except Exception as err:
                     raise InitializationFailed() from err
 

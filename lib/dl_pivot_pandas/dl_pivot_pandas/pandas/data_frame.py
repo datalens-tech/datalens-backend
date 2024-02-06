@@ -122,7 +122,7 @@ class PdVSeriesPivotDataFrame(PdSeriesPivotDataFrameBase):
         yield from self._iter_headers()
 
     def iter_rows(self) -> Generator[tuple[PivotHeader, MeasureValues], None, None]:
-        for header, value in zip(self._iter_headers(), self._get_values()):
+        for header, value in zip(self._iter_headers(), self._get_values(), strict=True):
             yield header, (value,)
 
     def get_column_count(self) -> int:

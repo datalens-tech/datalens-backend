@@ -31,5 +31,5 @@ class DefaultDashSQLParamLiteralizer(DashSQLParamLiteralizer):
         try:
             sa_type = BI_TYPE_TO_SA_TYPE[bi_type]
             return sa_type
-        except (KeyError, ValueError):
-            raise DashSQLError(f"Unsupported type {bi_type.name!r}")
+        except (KeyError, ValueError) as e:
+            raise DashSQLError(f"Unsupported type {bi_type.name!r}") from e

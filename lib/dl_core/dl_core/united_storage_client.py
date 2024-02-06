@@ -370,9 +370,9 @@ class UStorageClientBase:
             for status_code, error_regex, exc_cls in cls.ERROR_MAP:
                 if response.status_code == status_code:
                     if error_regex is None or message is not None and error_regex.match(message):
-                        raise exc_cls(orig_exc=http_err_ex)
+                        raise exc_cls(orig_exc=http_err_ex) from http_err_ex_wrapper
 
-            raise exc.USReqException(orig_exc=http_err_ex)
+            raise exc.USReqException(orig_exc=http_err_ex) from http_err_ex_wrapper
 
         try:
             return response.json()

@@ -457,8 +457,8 @@ class FuncDayofweek(SpecificDatepartFunc):
         """Normalize first-day-of-the-week value (convert to int (1-7))"""
         try:
             return cls._fd_map[un_literal(firstday).lower()]
-        except KeyError:
-            raise exc.TranslationError("Unknown time unit")
+        except KeyError as e:
+            raise exc.TranslationError("Unknown time unit") from e
 
 
 norm_fd = FuncDayofweek._norm_fd

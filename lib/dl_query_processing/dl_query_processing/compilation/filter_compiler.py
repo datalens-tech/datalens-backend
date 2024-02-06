@@ -219,7 +219,7 @@ class FilterFormulaCompiler:
             add_arg_cnt = filter_def.arg_cnt
             expr_callable = filter_def.callable
         except KeyError:
-            raise ValueError(operation)
+            raise ValueError(operation) from None
 
         # 2. Make list of args for function call
         if add_arg_cnt is None:  # for list lookup operations (IN, NOT IN)

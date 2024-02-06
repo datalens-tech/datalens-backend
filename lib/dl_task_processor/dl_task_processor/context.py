@@ -4,7 +4,7 @@ import attr
 
 
 @attr.s
-class BaseContext(metaclass=abc.ABCMeta):
+class BaseContext(metaclass=abc.ABCMeta):  # noqa: B024
     pass
 
 

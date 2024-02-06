@@ -91,8 +91,8 @@ class TypedQueryToDBAQueryConverter:
                     for param in formatted_query.bound_params
                 ]
             )
-        except sa_exc.ArgumentError:
-            raise exc.WrongQueryParameterization()
+        except sa_exc.ArgumentError as e:
+            raise exc.WrongQueryParameterization() from e
 
         return sa_text
 

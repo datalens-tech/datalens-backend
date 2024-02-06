@@ -204,7 +204,7 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
                 table_def=TableIdent(db_name=db.name, schema_name=sa_table.schema, table_name=sa_table.name)
             ).schema
             assert len(detected_columns) == len(type_schema), f"Incorrect number of columns in schema {schema_name}"
-            for col_idx, (expected_col, detected_col) in enumerate(zip(type_schema, detected_columns)):
+            for col_idx, (expected_col, detected_col) in enumerate(zip(type_schema, detected_columns, strict=True)):
                 assert detected_col.user_type == expected_col.user_type, (
                     f"Incorrect user type detected for schema {schema_name} col #{col_idx}: "
                     f"expected {expected_col.user_type.name}, got {detected_col.user_type.name}"

@@ -53,10 +53,10 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
         capabilities = DatasetCapabilities(dataset=dataset, dsrc_coll_factory=dsrc_coll_factory)
         try:
             return capabilities.resolve_source_role(for_preview=True, log_reasons=log_reasons)
-        except common_exc.NoCommonRoleError:
+        except common_exc.NoCommonRoleError as e:
             raise common_exc.TableNameNotConfiguredError(
                 "Dataset's sources are not configured correctly. Direct access is not possible"
-            )
+            ) from e
 
     # TODO FIX: Add docs/schemas decorator
     # @schematic_request(

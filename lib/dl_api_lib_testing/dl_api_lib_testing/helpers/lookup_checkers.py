@@ -24,7 +24,7 @@ def check_at_date_data(
     value_by_date = {read_date(row[date_idx]): row[value_idx] for row in data_rows}
     rows_checked = 0
 
-    for row_idx, row in enumerate(data_rows):
+    for _row_idx, row in enumerate(data_rows):
         cur_date = read_date(row[date_idx])
         ago_date = ago_date_callable(cur_date)
         expected_ago_value = value_by_date.get(ago_date)

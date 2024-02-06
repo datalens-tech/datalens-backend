@@ -76,10 +76,10 @@ class OperationProcessorAsyncBase(abc.ABC):
         raise NotImplementedError
 
     async def start(self) -> None:
-        pass
+        return
 
     async def end(self) -> None:
-        pass
+        return
 
     async def __aenter__(self: _OP_PROC_TV) -> _OP_PROC_TV:
         await self.start()
@@ -97,12 +97,6 @@ class OperationProcessorAsyncBase(abc.ABC):
             result.append(stream)
 
         return result
-
-    def pre_run(self, ctx: OpExecutionContext) -> None:
-        pass
-
-    def post_run(self, ctx: OpExecutionContext, exec_exception: Optional[Exception]) -> None:
-        pass
 
     def _validate_input_stream(self, stream: AbstractStream, op: BaseOp) -> None:
         if not isinstance(stream, op.supported_source_types):

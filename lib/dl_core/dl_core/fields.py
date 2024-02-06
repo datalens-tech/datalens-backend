@@ -422,8 +422,8 @@ class ResultSchema:
             self.reload_caches()
         try:
             return self._guid_cache[guid]
-        except KeyError:
-            raise FieldNotFound(f"Unknown field {guid}")
+        except KeyError as e:
+            raise FieldNotFound(f"Unknown field {guid}") from e
 
     def by_title(self, title: str) -> BIField:
         """Find field by title"""
@@ -431,8 +431,8 @@ class ResultSchema:
             self.reload_caches()
         try:
             return self._title_cache[title]
-        except KeyError:
-            raise FieldNotFound(f"Unknown field {title}")
+        except KeyError as e:
+            raise FieldNotFound(f"Unknown field {title}") from e
 
     @property
     def titles_to_guids(self) -> Dict[str, FieldId]:

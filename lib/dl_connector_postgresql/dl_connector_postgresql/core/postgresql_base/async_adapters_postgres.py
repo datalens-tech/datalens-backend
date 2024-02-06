@@ -268,7 +268,7 @@ class AsyncPostgresAdapter(
             row = tuple(raw_rec.values())
             return tuple(
                 (col_converter(val) if col_converter is not None and val is not None else val)
-                for val, col_converter in zip(row, row_converters)
+                for val, col_converter in zip(row, row_converters, strict=True)
             )
 
         q = query.query

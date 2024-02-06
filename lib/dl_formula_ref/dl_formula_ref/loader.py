@@ -14,6 +14,6 @@ class FormulaRefLibraryConfig:
     plugin_ep_names: Optional[Collection[str]] = attr.ib(kw_only=True, default=None)
 
 
-def load_formula_ref(formula_ref_lib_config: FormulaRefLibraryConfig = FormulaRefLibraryConfig()) -> None:
+def load_formula_ref(formula_ref_lib_config: FormulaRefLibraryConfig = FormulaRefLibraryConfig()) -> None:  # noqa: B008
     load_formula_lib()
     register_all_plugins(plugin_ep_names=formula_ref_lib_config.plugin_ep_names)

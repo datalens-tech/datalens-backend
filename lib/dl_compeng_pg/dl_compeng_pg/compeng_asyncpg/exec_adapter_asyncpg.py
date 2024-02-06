@@ -116,7 +116,7 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
                         chunk.append(
                             [
                                 self._tt.cast_for_output(value=value, user_t=user_t)
-                                for value, user_t in zip(row, user_types)
+                                for value, user_t in zip(row, user_types, strict=True)
                             ]
                         )
                     if not chunk:
@@ -140,6 +140,9 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
             chunk = []
             for row in raw_chunk:
                 chunk.append(
-                    [self._tt.cast_for_input(value=value, user_t=user_t) for value, user_t in zip(row, user_types)]
+                    [
+                        self._tt.cast_for_input(value=value, user_t=user_t)
+                        for value, user_t in zip(row, user_types, strict=True)
+                    ]
                 )
             await self._conn.copy_records_to_table(table_name=table_name, columns=names, records=chunk)

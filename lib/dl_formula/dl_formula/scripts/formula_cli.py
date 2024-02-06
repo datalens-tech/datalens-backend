@@ -301,7 +301,7 @@ class FormulaCliTool:
             char_table = []  # type: ignore  # TODO: fix
             for i in reversed(range(len(levels))):
                 char_line = [" " for _ in range(len(text))]
-                for alias, node in sorted(sliced_formula.slices[i].aliased_nodes.items()):
+                for _alias, node in sorted(sliced_formula.slices[i].aliased_nodes.items()):
                     char_line[node.start_pos : node.end_pos] = list(text[node.start_pos : node.end_pos])
                     if char_table:
                         for j in range(node.start_pos, node.end_pos):  # type: ignore  # TODO: fix

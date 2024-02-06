@@ -278,7 +278,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
                     try:
                         event_type = RQEEventType[event_type_name]
                     except KeyError:
-                        raise QueryExecutorException(f"QE parse: unknown event_type: {event_type_name!r}")
+                        raise QueryExecutorException(f"QE parse: unknown event_type: {event_type_name!r}") from None
 
                     yield event_type, event_data  # type: ignore  # TODO: fix
 
@@ -306,8 +306,8 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
                 elif ev_type == RQEEventType.error_dump:
                     try:
                         exc = self._parse_exception(ev_data)
-                    except Exception:
-                        raise QueryExecutorException(f"QE parse: failed to parse an error event: {ev_data!r}")
+                    except Exception as e:
+                        raise QueryExecutorException(f"QE parse: failed to parse an error event: {ev_data!r}") from e
                     raise exc
                 elif ev_type == RQEEventType.finished:
                     return

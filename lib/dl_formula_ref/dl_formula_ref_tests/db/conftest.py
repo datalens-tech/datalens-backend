@@ -49,7 +49,7 @@ def alive_db_for(dialect, timelimit, poll_pause):
             check_value_res = db.scalar(literal(check_value_in, d=dialect))
         except Exception as exc:
             if time.monotonic() > timelimit:
-                raise Exception(f"Timed out while waiting for db {dialect!r} {db!r}", exc)
+                raise Exception(f"Timed out while waiting for db {dialect!r} {db!r}", exc) from exc
             print(f"Waiting for db to come up: {dialect!r}   (db={db!r}, exc={exc!r}).")
             time.sleep(poll_pause)
         else:
