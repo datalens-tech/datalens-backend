@@ -9,7 +9,6 @@ from dl_connector_bundle_chs3.chs3_gsheets.api.api_schema.connection import GShe
 from dl_connector_bundle_chs3.chs3_gsheets.api.connection_info import GSheetsFileS3ConnectionInfoProvider
 from dl_connector_bundle_chs3.chs3_gsheets.core.connector import (
     GSheetsFileS3CoreConnectionDefinition,
-    GSheetsFileS3CoreConnector,
     GSheetsFileS3TableCoreSourceDefinition,
 )
 

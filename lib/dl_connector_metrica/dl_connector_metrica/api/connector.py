@@ -26,11 +26,9 @@ from dl_connector_metrica.api.i18n.localizer import CONFIGS
 from dl_connector_metrica.core.connector import (
     AppMetricaApiCoreBackendDefinition,
     AppMetricaApiCoreConnectionDefinition,
-    AppMetricaApiCoreConnector,
     AppMetricaApiCoreSourceDefinition,
     MetricaApiCoreBackendDefinition,
     MetricaApiCoreConnectionDefinition,
-    MetricaApiCoreConnector,
     MetricaApiCoreSourceDefinition,
 )
 from dl_connector_metrica.formula.constants import DIALECT_NAME_METRICAAPI
