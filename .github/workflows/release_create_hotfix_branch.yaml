@@ -77,4 +77,4 @@ jobs:
           --title "Hotfix ${{ steps.create_branch.outputs.hotfix_version }}" \
           --body "Hotfix ${{ steps.create_branch.outputs.hotfix_version }}"
       env:
-        GH_TOKEN: ${{ github.ROBOT_GITHUB_PUBLIC_REPO_CREATE_HOTFIX_TOKEN }}
+        GH_TOKEN: ${{ secrets.ROBOT_GITHUB_PUBLIC_REPO_CREATE_HOTFIX_TOKEN }}
