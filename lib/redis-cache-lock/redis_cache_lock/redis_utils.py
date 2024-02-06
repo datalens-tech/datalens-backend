@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import time
 from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING, Any, AsyncGenerator, List, Optional, Sequence, Tuple
@@ -9,7 +10,6 @@ import redis.asyncio
 import attr
 
 from .types import Protocol
-from .utils import PreExitable
 
 if TYPE_CHECKING:
     from contextlib import AsyncExitStack  # pylint: disable=ungrouped-imports
@@ -17,6 +17,8 @@ if TYPE_CHECKING:
     from redis.asyncio import Redis
 
     from .types import TClientACM
+
+LOGGER = logging.getLogger(__name__)
 
 
 async def eval_script(cli: Redis, script: Any, keys: List[Any], args: List[Any]) -> Any:
@@ -78,16 +80,13 @@ class SubscriptionManagerBase:
     """Helper to manage a redis subscription"""
 
     cli: Redis
-    cli_cm: PreExitable
     psub: Any
-    psub_cm: PreExitable
 
-    @classmethod
+    @staticmethod
     @asynccontextmanager
     async def _psub_acm(
-        cls,
-        cli: Redis,  # pylint: disable=unused-argument
-        channel_key: str,  # pylint: disable=unused-argument
+            cli: Redis,  # pylint: disable=unused-argument
+            channel_key: str,  # pylint: disable=unused-argument
     ) -> AsyncGenerator[Any, None]:
         if False:  # ensure this is a generator (for mypy)  # pylint: disable=using-constant-test
             yield None
@@ -95,20 +94,15 @@ class SubscriptionManagerBase:
 
     @classmethod
     async def create(
-        cls,
-        cm_stack: AsyncExitStack,
-        client_acm: TClientACM,
-        channel_key: str,
+            cls,
+            cm_stack: AsyncExitStack,
+            client: Redis,
+            channel_key: str,
     ) -> SubscriptionManagerBase:
-        cli_cm = PreExitable(client_acm(master=True, exclusive=True))
-        cli: Redis = await cm_stack.enter_async_context(cli_cm)
-        psub_cm = PreExitable(cls._psub_acm(cli=cli, channel_key=channel_key))
-        psub: Any = await cm_stack.enter_async_context(psub_cm)
+        psub: Any = await cm_stack.enter_async_context(cls._psub_acm(cli=client, channel_key=channel_key))
         return cls(
-            cli=cli,
-            cli_cm=cli_cm,
+            cli=client,
             psub=psub,
-            psub_cm=psub_cm,
         )
 
     async def get_direct(self, timeout: float) -> Optional[bytes]:
@@ -119,73 +113,36 @@ class SubscriptionManagerBase:
             return await asyncio.wait_for(
                 self.get_direct(timeout=timeout), timeout=timeout
             )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             return None
 
     async def exit(self) -> None:
         """
         End the subscription and release the client.
-        Can be called multiple times.
         Allows freeing of resources before the passed `cm_stack` finishes.
         """
         # This is done in order and the exceptions are passed through.
         # The fallback closing is through the `cm_stack` which is done fully
         # even if some CM raises.
-        await self.psub_cm.exit()
-        await self.cli_cm.exit()
-
-
-@attr.s(auto_attribs=True, frozen=True, slots=True)
-class SubscriptionManagerLegacy(SubscriptionManagerBase):
-    @classmethod
-    @asynccontextmanager
-    async def _psub_acm(
-        cls,
-        cli: Redis,
-        channel_key: str,
-    ) -> AsyncGenerator[Any, None]:
-        try:
-            channels: Tuple[Any, ...] = await cli.psubscribe(channel_key)
-            if len(channels) != 1:
-                raise ValueError(
-                    f"Expected a single channel; "
-                    f"channel_key={channel_key!r}, channels={channels!r}"
-                )
-            channel = channels[0]
-            yield channel
-        finally:
-            await cli.punsubscribe(channel_key)
-
-    async def get_direct(self, timeout: float) -> Optional[bytes]:
-        try:
-            # returns a `channel_key, message_data` tuple.
-            item = await self.psub.get()
-        except Exception:  # pylint: disable=broad-except
-            # doesn't really matter which exception,
-            # although this can often be `aioredis.errors.ChannelClosedError`.
-            item = None
-
-        if item is None:
-            return None
-
-        _, message = item
-        return message
+        await self.psub.aclose()
 
 
 class SubscriptionManager(SubscriptionManagerBase):
-    @classmethod
+    @staticmethod
     @asynccontextmanager
     async def _psub_acm(
-        cls,
-        cli: Redis,
-        channel_key: str,
+            cli: Redis,
+            channel_key: str,
     ) -> AsyncGenerator[Any, None]:
         async with cli.pubsub() as psub:
             await psub.subscribe(channel_key)
             try:
                 yield psub
             finally:
-                await psub.unsubscribe(channel_key)
+                try:
+                    await psub.unsubscribe(channel_key)
+                except (TypeError, ConnectionError):
+                    LOGGER.warning("Couldn't unsubscribe from redis channel. Client can be closed.", exc_info=True)
 
     async def get_direct(self, timeout: float) -> Optional[bytes]:
         t01 = time.monotonic()
@@ -200,19 +157,17 @@ class SubscriptionManager(SubscriptionManagerBase):
                 break
             if time.monotonic() - t01 >= timeout:
                 break
-            await asyncio.sleep(0.001)
         if message is None:
             return None
         return message["data"]
 
     @classmethod
     async def create(
-        cls,
-        cm_stack: AsyncExitStack,
-        client_acm: TClientACM,
-        channel_key: str,
+            cls,
+            cm_stack: AsyncExitStack,
+            client: Redis,
+            channel_key: str,
     ) -> SubscriptionManagerBase:
-        """Convenience override for aioredis versions here"""
         return await super().create(
-            cm_stack=cm_stack, client_acm=client_acm, channel_key=channel_key
+            cm_stack=cm_stack, client=client, channel_key=channel_key
         )

@@ -424,7 +424,7 @@ class EntityCacheEntryLockedManagerAsync(EntityCacheEntryManagerAsyncBase):
         try:
             yield cli
         finally:
-            await cli.close()
+            await cli.aclose(close_connection_pool=False)
 
     def _make_rcl(self) -> Tuple[RedisCacheLock, HistoryHolder]:
         cache_engine = self.cache_engine
@@ -776,16 +776,15 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
         )
 
         if self.CACHE_SAVE_BACKGROUND:
-            asyncio.create_task(
-                self._redis_set(update_request),
-            )
+            task_tmp = asyncio.create_task(self._redis_set(update_request))
+            await asyncio.shield(task_tmp)
         else:
             try:
                 await asyncio.wait_for(
                     self._redis_set(update_request),
                     timeout=self.CACHE_SAVE_TIMEOUT_SEC,
                 )
-            except asyncio.TimeoutError as err:
+            except TimeoutError as err:
                 self._log_save_failed(update_request=update_request, err=err)
 
     @generic_profiler_async("qcache-write-redis-exec")  # type: ignore  # TODO: fix
@@ -815,7 +814,7 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
                 self._redis_get(full_key, new_ttl_sec=new_ttl_sec),
                 timeout=read_timeout,
             )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             self._log_cache_timeout(timeout=read_timeout, details=details)
             return None
 

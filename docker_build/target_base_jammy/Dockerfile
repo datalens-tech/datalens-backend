@@ -27,7 +27,7 @@ RUN bash /install/install_py_310.sh
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
 RUN python3 -m pip install -U pip
 # TODO FIX: try to install j2cli to dedicated venv & make symlink in /usr/local/bin
-RUN python3 -m pip install poetry==1.5.0 j2cli==0.3.10
+RUN python3 -m pip install poetry==1.7.1 j2cli==0.3.10
 
 RUN curl "https://storage.yandexcloud.net/cloud-certs/CA.pem" > /usr/local/share/ca-certificates/yandex-cloud-ca.crt
 RUN update-ca-certificates

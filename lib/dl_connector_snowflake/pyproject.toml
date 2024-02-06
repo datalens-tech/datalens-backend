@@ -12,10 +12,10 @@ readme = "README.md"
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
 marshmallow = ">=3.19.0"
-python = ">=3.10, <3.12"
+python = ">=3.10, <3.13"
 requests = ">=2.28.2"
-snowflake-connector-python = ">=3.1.0"
-snowflake-sqlalchemy = ">=1.4.6"
+snowflake-connector-python = ">=3.6.0"
+snowflake-sqlalchemy = ">=1.5.1"
 sqlalchemy = ">=1.4.46, <2.0"
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-utils = {path = "../dl_utils"}
