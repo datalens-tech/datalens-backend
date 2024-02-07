@@ -95,8 +95,8 @@ class GitActionProcessor:
 
     @_process_action.register
     def _process_multi_action(self, action: MultiGitAction) -> None:
-        for action in action.actions:
-            self._process_action(action)
+        for git_action in action.actions:
+            self._process_action(git_action)
 
     @_process_action.register
     def _process_add_file_action(self, action: AddGitFileAction) -> None:
@@ -142,7 +142,7 @@ class GitActionProcessor:
         branch = getattr(self._git_repo.heads, branch_name)
         branch.checkout()
 
-    def add_commit(self, message: str, action: GitAction = MultiGitAction()) -> str:
+    def add_commit(self, message: str, action: GitAction = MultiGitAction()) -> str:  # noqa: B008
         self._process_action(action)
         self._git_repo.index.commit(message)
         return self._git_repo.commit().hexsha

@@ -82,4 +82,4 @@ def postprocess_data(
 ) -> PostprocessedData:
     columns_processors = [get_type_processor(ft) for ft in field_types]
 
-    return tuple(tuple(processor(col) for processor, col in zip(columns_processors, row)) for row in data)
+    return tuple(tuple(processor(col) for processor, col in zip(columns_processors, row, strict=False)) for row in data)

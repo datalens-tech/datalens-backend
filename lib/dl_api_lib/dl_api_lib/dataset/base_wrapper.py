@@ -340,7 +340,7 @@ class DatasetBaseWrapper:
         try:
             return self._ds.result_schema.by_guid(field_id)
         except KeyError:
-            raise FieldNotFound(f"Field {field_id} not found in dataset")
+            raise FieldNotFound(f"Field {field_id} not found in dataset") from None
 
     def process_compiled_query(self, compiled_query: CompiledQuery) -> CompiledMultiQueryBase:
         try:
@@ -357,7 +357,7 @@ class DatasetBaseWrapper:
                 compiled_multi_query = multi_mutator.mutate_multi_query(compiled_multi_query)
 
         except formula_exc.FormulaError as err:
-            raise dl_query_processing.exc.FormulaHandlingError(*err.errors)
+            raise dl_query_processing.exc.FormulaHandlingError(*err.errors) from err
 
         return compiled_multi_query
 
@@ -374,6 +374,6 @@ class DatasetBaseWrapper:
             query_translator = self.make_multi_query_translator()
             translated_multi_query = query_translator.translate_multi_query(compiled_multi_query=compiled_multi_query)
         except formula_exc.FormulaError as err:
-            raise dl_query_processing.exc.FormulaHandlingError(*err.errors)
+            raise dl_query_processing.exc.FormulaHandlingError(*err.errors) from err
 
         return translated_multi_query

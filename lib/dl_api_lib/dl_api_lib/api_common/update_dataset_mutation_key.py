@@ -33,8 +33,8 @@ class UpdateDatasetMutationKey(MutationKey):
     def create(cls, dataset_revision_id: str, updates: List[FieldAction]) -> UpdateDatasetMutationKey:
         try:
             serialized = [upd.serialized for upd in updates]
-        except Exception:
-            raise MutationKeySerializationError()
+        except Exception as e:
+            raise MutationKeySerializationError() from e
         serialized.sort(key=lambda x: json.dumps(x, indent=None, sort_keys=True, cls=RedisDatalensDataJSONEncoder))
         dumped = json.dumps(
             dict(ds_rev=dataset_revision_id, mutation=serialized),

@@ -54,8 +54,8 @@ class ServicesRegistryMiddleware:
     def get_request_services_registry(cls) -> "ServicesRegistry":
         try:
             services_registry = flask.g.bi_services_registry
-        except AttributeError:
-            raise NoServiceRegistryForRequest()
+        except AttributeError as e:
+            raise NoServiceRegistryForRequest() from e
         else:
             if services_registry is None:
                 raise NoServiceRegistryForRequest()

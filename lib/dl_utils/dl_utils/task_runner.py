@@ -11,7 +11,7 @@ from typing import (
 
 class TaskRunner(abc.ABC):
     async def initialize(self) -> None:
-        pass
+        return
 
     @abc.abstractmethod
     async def schedule(self, awaitable: Awaitable) -> None:

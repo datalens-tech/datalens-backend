@@ -17,7 +17,7 @@ from dl_dashsql.typed_query.primitives import (
 
 
 @attr.s(frozen=True)
-class SyncAdapterAction(abc.ABC):
+class SyncAdapterAction(abc.ABC):  # noqa: B024
     """
     Base class for all adapter actions.
     """

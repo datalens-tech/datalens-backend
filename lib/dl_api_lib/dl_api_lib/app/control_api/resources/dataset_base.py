@@ -88,8 +88,8 @@ class DatasetResource(BIResource):
         if dataset_id:
             try:
                 dataset = us_manager.get_by_id(dataset_id, expected_type=Dataset)
-            except UnexpectedUSEntryType:
-                raise USObjectNotFoundException("Dataset with id {} does not exist".format(dataset_id))
+            except UnexpectedUSEntryType as e:
+                raise USObjectNotFoundException("Dataset with id {} does not exist".format(dataset_id)) from e
         else:
             dataset = Dataset.create_from_dict(
                 Dataset.DataModel(name=""),  # TODO: Remove name - it's not used, but is required

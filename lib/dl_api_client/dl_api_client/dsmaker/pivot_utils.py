@@ -195,7 +195,7 @@ def get_pivot_response(
                 make_pivot_item(
                     title=title, role=PivotRole.pivot_measure, measure_sorting_settings=measure_sorting_settings
                 )
-                for title, measure_sorting_settings in zip(measures, measures_sorting_settings)
+                for title, measure_sorting_settings in zip(measures, measures_sorting_settings, strict=True)
             ],
             *[make_pivot_item(title=title, role=PivotRole.pivot_annotation) for title in annotations or ()],
         ],

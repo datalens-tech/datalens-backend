@@ -107,14 +107,14 @@ class SFAuthProvider:
                             "raw_response": repr(raw),
                         },
                     )
-                except Exception:
+                except Exception as e:
                     raise SnowflakeGetAccessTokenError(
                         "Failed to get access token, try to obtain new refresh token",
                         details={
                             "status_code": response.status,
                             "raw_response": repr(raw),
                         },
-                    )
+                    ) from e
 
     def should_notify_refresh_token_to_expire_soon(self) -> bool:
         if self.refresh_token_expire_time is None:

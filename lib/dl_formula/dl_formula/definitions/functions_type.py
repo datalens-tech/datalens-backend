@@ -265,7 +265,7 @@ class FuncDatetimeTZConst(SingleVariantTranslationBase, FuncDatetimeTZ):
         try:
             dt = make_datetimetz_value(value, tzname)
         except ValueError as err:
-            raise exc.ParseValueError(str(err))
+            raise exc.ParseValueError(str(err)) from err
         return literal(dt, d=_env.dialect)
 
 
@@ -699,8 +699,10 @@ class FuncDbCastBase(TypeConvFunction):
 
         try:
             whitelist = whitelist_by_type[data_type]
-        except KeyError:
-            raise exc.TranslationError(f"Data type {data_type} is not supported by function {cls.name.upper()}")
+        except KeyError as err:
+            raise exc.TranslationError(
+                f"Data type {data_type} is not supported by function {cls.name.upper()}"
+            ) from err
 
         # Find the correct spec by data type name
         for each_spec in whitelist:
@@ -723,7 +725,7 @@ class FuncDbCastBase(TypeConvFunction):
             )
 
         unwrapped_native_type_args = []
-        for arg_num, (arg, req_arg_type) in enumerate(zip(type_args, type_spec.arg_types)):
+        for arg_num, (arg, req_arg_type) in enumerate(zip(type_args, type_spec.arg_types, strict=True)):
             if isinstance(req_arg_type, DataType):
                 if not arg.data_type.casts_to(req_arg_type):  # type: ignore  # TODO: fix
                     _raise_type_mismath(arg_num)

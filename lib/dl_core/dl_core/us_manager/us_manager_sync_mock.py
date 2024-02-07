@@ -138,8 +138,8 @@ class MockedUStorageClient(UStorageClient):
         assert params is None
         try:
             previous_resp = self._saved_entries[entry_id]
-        except KeyError:
-            raise USObjectNotFoundException()
+        except KeyError as e:
+            raise USObjectNotFoundException() from e
         else:
             return previous_resp
 
@@ -147,9 +147,9 @@ class MockedUStorageClient(UStorageClient):
 class MockedSyncUSManager(SyncUSManager):
     def __init__(
         self,
-        bi_context: RequestContextInfo = RequestContextInfo.create_empty(),
+        bi_context: RequestContextInfo = RequestContextInfo.create_empty(),  # noqa: B008
         crypto_keys_config: Optional[CryptoKeysConfig] = None,
-        services_registry: ServicesRegistry = DummyServiceRegistry(rci=RequestContextInfo.create_empty()),
+        services_registry: ServicesRegistry = DummyServiceRegistry(rci=RequestContextInfo.create_empty()),  # noqa: B008
     ):
         super().__init__(
             bi_context=bi_context,

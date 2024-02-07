@@ -242,7 +242,7 @@ class GSheetsClient:
                 row.extend([None] * width_diff)
             else:
                 row = row[: len(user_types)]
-            for col_idx, (value, user_type) in enumerate(zip(row, user_types)):
+            for col_idx, (value, user_type) in enumerate(zip(row, user_types, strict=True)):
                 try:
                     raw_values[row_idx][col_idx] = make_type(value, user_type)
                 except (ValueError, TypeError):

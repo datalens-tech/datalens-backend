@@ -77,7 +77,7 @@ class PreGeneratedLODTestRunner:
             all_measures = self.get_measure_data(
                 ds=ds, test_settings=test_settings, measures=[name for name, _ in measure_fields]
             )
-            for measure_name, measure_formula in measure_fields:
+            for measure_name, _measure_formula in measure_fields:
                 one_measure = self.get_measure_data(ds=ds, test_settings=test_settings, measures=[measure_name])
                 assert pytest.approx(all_measures[measure_name]) == one_measure[measure_name]
         except Error400:

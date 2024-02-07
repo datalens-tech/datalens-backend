@@ -38,8 +38,8 @@ def get_tzobj(tzname: str) -> datetime.tzinfo:
     try:
         # Should essentially be a hashmap lookup, no need to cache it further.
         return pytz.timezone(tzname)
-    except pytz.UnknownTimeZoneError:
-        raise ValueError(f"Invalid timezone name: {tzname!r}")
+    except pytz.UnknownTimeZoneError as e:
+        raise ValueError(f"Invalid timezone name: {tzname!r}") from e
 
 
 def parse_dt_string(value: str) -> datetime.datetime:

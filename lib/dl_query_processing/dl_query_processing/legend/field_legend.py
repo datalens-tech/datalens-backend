@@ -181,7 +181,7 @@ class Legend:
         try:
             return self._liid_to_item[legend_item_id]
         except KeyError:
-            raise dl_query_processing.exc.LegendItemReferenceError(f"Unknown legend item: {legend_item_id}")
+            raise dl_query_processing.exc.LegendItemReferenceError(f"Unknown legend item: {legend_item_id}") from None
 
     def add_item(self, item: LegendItem) -> None:
         self._items.append(item)

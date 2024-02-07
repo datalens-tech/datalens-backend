@@ -119,7 +119,7 @@ class FormulaItem(abc.ABC):
 
     @classmethod
     def validate_children(cls, children: Sequence[FormulaItem]) -> None:
-        pass
+        return
 
     @classmethod
     def validate_internal_value(cls, internal_value: tuple[Optional[Hashable], ...]) -> None:
@@ -373,7 +373,7 @@ class FormulaItem(abc.ABC):
 
     def enumerate(
         self,
-        prefix: NodeHierarchyIndex = NodeHierarchyIndex(),
+        prefix: NodeHierarchyIndex = NodeHierarchyIndex(),  # noqa: B008
         max_depth: Optional[int] = None,
     ) -> Generator[tuple[NodeHierarchyIndex, FormulaItem], None, None]:
         """

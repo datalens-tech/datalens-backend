@@ -194,7 +194,7 @@ def regulated_test_case(test_cls: type, /) -> type:
 
 @overload
 def regulated_test_case(
-    *, test_params: RegulatedTestParams = RegulatedTestParams()  # noqa B008
+    *, test_params: RegulatedTestParams = RegulatedTestParams()  # noqa: B008
 ) -> Callable[[type], type]:
     ...
 

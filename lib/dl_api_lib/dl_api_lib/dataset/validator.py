@@ -194,7 +194,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 )
         except common_exc.DatasetConfigurationError as err:
             LOGGER.info("Error occurred during applying action: %r", err)
-            raise exc.DLValidationFatal(f"Invalid action: {err}")
+            raise exc.DLValidationFatal(f"Invalid action: {err}") from err
 
         self._check_for_orphaned_component_errors()
 
@@ -655,11 +655,11 @@ class DatasetValidator(DatasetBaseWrapper):
         if action in (DatasetAction.update_field, DatasetAction.delete_field):
             try:
                 old_field = self.get_field_by_id(field_id)
-            except common_exc.FieldNotFound:
+            except common_exc.FieldNotFound as err:
                 err_msg = f"Field with ID {field_id} doesn't exist"
                 LOGGER.error(err_msg)
                 if strict:
-                    raise exc.DLValidationFatal(err_msg)
+                    raise exc.DLValidationFatal(err_msg) from err
                 return
 
             self._ds_ca.validate_component_can_be_managed(component_ref=component_ref, by=by)

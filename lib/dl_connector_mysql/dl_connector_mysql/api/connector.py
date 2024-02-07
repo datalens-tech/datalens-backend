@@ -21,7 +21,6 @@ from dl_connector_mysql.api.i18n.localizer import CONFIGS
 from dl_connector_mysql.core.connector import (
     MySQLCoreBackendDefinition,
     MySQLCoreConnectionDefinition,
-    MySQLCoreConnector,
     MySQLSubselectCoreSourceDefinition,
     MySQLTableCoreSourceDefinition,
 )

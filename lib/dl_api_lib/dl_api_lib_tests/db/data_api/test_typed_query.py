@@ -23,7 +23,7 @@ class TestDashSQLTypedQueryWithParameters(DefaultApiTestBase, DefaultDashSQLType
     @pytest.fixture(scope="class")
     def typed_query_info(self) -> TypedQueryInfo:
         return TypedQueryInfo(
-            query_type=DashSQLQueryType.classic_query,
+            query_type=DashSQLQueryType.generic_query,
             query_content={"query": "select 1,{{my_param}}, 3"},
             params=[
                 TypedQueryParam(

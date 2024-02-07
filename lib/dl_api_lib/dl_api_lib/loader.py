@@ -33,7 +33,7 @@ def preload_api_lib() -> None:
     preload_bi_formula()
 
 
-def load_api_lib(api_lib_config: ApiLibraryConfig = ApiLibraryConfig()) -> None:
+def load_api_lib(api_lib_config: ApiLibraryConfig = ApiLibraryConfig()) -> None:  # noqa: B008
     load_formula_lib(formula_lib_config=api_lib_config.formula_lib_config)
     load_core_lib(core_lib_config=api_lib_config.core_lib_config)
     register_all_connectors(connector_ep_names=api_lib_config.api_connector_ep_names)

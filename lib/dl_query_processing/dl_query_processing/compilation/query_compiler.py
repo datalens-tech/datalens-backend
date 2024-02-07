@@ -98,7 +98,7 @@ class DefaultQueryCompiler(RawQueryCompilerBase):
     def _make_compiled_formula(
         self,
         field_id: FieldId,
-        select_wrapper: SelectWrapperSpec = SelectWrapperSpec(type=SelectValueType.plain),
+        select_wrapper: SelectWrapperSpec = SelectWrapperSpec(type=SelectValueType.plain),  # noqa: B008
     ) -> CompiledFormulaInfo:
         formula: CompiledFormulaInfo
         # All of these types require the actual field object
@@ -118,7 +118,7 @@ class DefaultQueryCompiler(RawQueryCompilerBase):
         self,
         field_id: FieldId,
         direction: OrderDirection,
-        select_wrapper: SelectWrapperSpec = SelectWrapperSpec(type=SelectValueType.plain),
+        select_wrapper: SelectWrapperSpec = SelectWrapperSpec(type=SelectValueType.plain),  # noqa: B008
     ) -> CompiledOrderByFormulaInfo:
         formula = self._make_compiled_formula(field_id=field_id, select_wrapper=select_wrapper)
         formula = attrs_evolve_to_subclass(

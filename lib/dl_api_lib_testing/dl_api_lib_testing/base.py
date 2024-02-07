@@ -81,6 +81,7 @@ class ApiTestBase(abc.ABC):
     @pytest.fixture(scope="function")
     def environment_readiness(self, enable_all_connectors: Any) -> None:
         """Make sure the environment is ready for tests"""
+        return
 
     @pytest.fixture(scope="function")
     def rqe_config_subprocess(

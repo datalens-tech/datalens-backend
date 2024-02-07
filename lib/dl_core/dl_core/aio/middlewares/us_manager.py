@@ -95,8 +95,8 @@ def public_usm_workaround_middleware(
         try:
             try:
                 entry = await public_usm.get_by_id(entry_id)
-            except exc.USObjectNotFoundException:
-                raise web.HTTPNotFound()
+            except exc.USObjectNotFoundException as e:
+                raise web.HTTPNotFound() from e
             else:
                 tenant = tenant_resolver.resolve_tenant_def_by_tenant_id(entry.raw_tenant_id)
         finally:

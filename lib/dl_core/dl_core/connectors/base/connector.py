@@ -95,3 +95,4 @@ class CoreConnector(abc.ABC):
     @classmethod
     def registration_hook(cls) -> None:
         """Do some non-standard stuff here. Think twice before implementing."""
+        return

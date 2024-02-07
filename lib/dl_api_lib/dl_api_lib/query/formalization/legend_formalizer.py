@@ -123,8 +123,8 @@ class LegendFormalizer(abc.ABC):
                     prefix = json.loads(raw_role_spec.prefix)
                     if not isinstance(prefix, list):
                         raise ValueError(prefix)
-                except ValueError:
-                    raise dl_query_processing.exc.GenericInvalidRequestError("Invalid value for tree prefix")
+                except ValueError as e:
+                    raise dl_query_processing.exc.GenericInvalidRequestError("Invalid value for tree prefix") from e
                 role_spec = TreeRoleSpec(
                     role=raw_role_spec.role,
                     level=raw_role_spec.level,

@@ -18,5 +18,5 @@ def load_all_connectors() -> None:
 
 
 def register_all_connectors(connector_ep_names: Optional[Collection[str]] = None) -> None:
-    for ep_name, connector_cls in sorted(get_all_connectors(connector_ep_names).items()):
+    for _ep_name, connector_cls in sorted(get_all_connectors(connector_ep_names).items()):
         _register_connector(connector_cls)

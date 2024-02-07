@@ -1,6 +1,5 @@
 from typing import (
     Mapping,
-    Optional,
     Sequence,
     Type,
     TypeVar,
@@ -48,8 +47,8 @@ class TypedQueryParamGetter:
                 raise exc.DashSQLParameterError(f"Parameter {name!r} has invalid type")
             return value
 
-        except KeyError:
-            raise exc.DashSQLParameterError(f"Required parameter {name!r} is missing")
+        except KeyError as e:
+            raise exc.DashSQLParameterError(f"Required parameter {name!r} is missing") from e
 
 
 @attr.s(frozen=True, kw_only=True)

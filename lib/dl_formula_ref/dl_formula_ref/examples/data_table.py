@@ -27,7 +27,13 @@ def horizontal_join(*tables: DataTable) -> DataTable:
     assert len(lengths) == 1, f"All tables must have the same number of rows for horizontal join, got {lengths}"
     return DataTable(
         columns=[col for t in tables for col in t.columns],
-        rows=[list(chain.from_iterable(concat_row_parts)) for concat_row_parts in zip(*(t.rows for t in tables))],
+        rows=[
+            list(chain.from_iterable(concat_row_parts))
+            for concat_row_parts in zip(
+                *(t.rows for t in tables),
+                strict=True,
+            )
+        ],
     )
 
 

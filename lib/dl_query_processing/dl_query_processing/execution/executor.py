@@ -358,7 +358,7 @@ class QueryExecutor(QueryExecutorBase):
                 role=exec_info.role,
                 row_count_hard_limit=row_count_hard_limit,
             )
-        except exc.EmptyQuery:
+        except exc.EmptyQuery as e:
             if empty_query_mode == EmptyQueryMode.error:
                 raise
             empty_rows: List[TBIDataRow]
@@ -367,7 +367,7 @@ class QueryExecutor(QueryExecutorBase):
             elif empty_query_mode == EmptyQueryMode.empty_row:
                 empty_rows = [[]]
             else:
-                raise ValueError(empty_query_mode)
+                raise ValueError(empty_query_mode) from e
             return ExecutedQuery(
                 rows=empty_rows,
                 meta=ExecutedQueryMetaInfo.from_trans_meta(

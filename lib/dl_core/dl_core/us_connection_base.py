@@ -397,7 +397,7 @@ class ExecutorBasedMixin(ConnectionBase, metaclass=abc.ABCMeta):
         return conn_executor.get_tables(SchemaIdent(db_name=db_name, schema_name=schema_name))
 
     def get_supported_dashsql_query_types(self) -> frozenset[DashSQLQueryType]:
-        return frozenset({DashSQLQueryType.classic_query})
+        return frozenset({DashSQLQueryType.generic_query})
 
 
 class SubselectMixin:

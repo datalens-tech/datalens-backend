@@ -159,6 +159,7 @@ class PdPivotSorterBase(PivotSorter):
             for axis, settings in zip(
                 [SortAxis.columns, SortAxis.rows],
                 [sorting_settings.column, sorting_settings.row],
+                strict=True,
             ):
                 if settings is not None:
                     self._sort_by_measure(axis, pivot_item.pivot_item_id, settings)

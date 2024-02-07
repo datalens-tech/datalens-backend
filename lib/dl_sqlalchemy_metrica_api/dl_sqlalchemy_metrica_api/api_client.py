@@ -147,7 +147,7 @@ class MetrikaApiClient(object):
         try:
             parsed_resp = response.json()
         except JSONDecodeError as ex:
-            raise MetrikaHttpApiException("Unable to parse response.", orig_exc=ex)
+            raise MetrikaHttpApiException("Unable to parse response.", orig_exc=ex) from ex
         return parsed_resp
 
     def get(self, uri, **kwargs):
@@ -197,7 +197,7 @@ class MetrikaApiClient(object):
                     )
                 )
         except (KeyError, ValueError) as ex:
-            raise MetrikaApiException(orig_exc=ex)
+            raise MetrikaApiException(orig_exc=ex) from ex
 
         return dict(
             fields=result_columns,
@@ -233,5 +233,5 @@ class MetrikaApiClient(object):
             date_str = counter_info.get("create_time", counter_info.get("create_date")).split("T")[0]
             creation_date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
         except (ValueError, KeyError) as ex:
-            raise MetrikaApiException(orig_exc=ex)
+            raise MetrikaApiException(orig_exc=ex) from ex
         return creation_date

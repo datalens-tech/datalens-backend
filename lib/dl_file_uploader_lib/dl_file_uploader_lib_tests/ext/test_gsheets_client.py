@@ -35,6 +35,6 @@ async def test_number_format_types(env_param_getter, redis_model_manager):
         header = data[0]  # the first row contains expected number format types
         expected_types = [NumberFormatType(cell.value.upper()) for cell in header]
         for row_idx, row in enumerate(data[1:]):
-            for col_idx, (cell, expected_fmt) in enumerate(zip(row, expected_types)):
+            for col_idx, (cell, expected_fmt) in enumerate(zip(row, expected_types, strict=True)):
                 assert cell.number_format_type == expected_fmt, f"Failed at [{row_idx + 1}, {col_idx}], {cell=}"
         LOGGER.info(f"{sheet.title} is OK")

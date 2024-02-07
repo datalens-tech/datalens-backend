@@ -13,8 +13,8 @@ from dl_core.us_manager.us_manager import USManagerBase
 class DummyUSManager(USManagerBase):
     def __init__(
         self,
-        bi_context: RequestContextInfo = RequestContextInfo.create_empty(),
-        services_registry: ServicesRegistry = DummyServiceRegistry(rci=RequestContextInfo.create_empty()),
+        bi_context: RequestContextInfo = RequestContextInfo.create_empty(),  # noqa: B008
+        services_registry: ServicesRegistry = DummyServiceRegistry(rci=RequestContextInfo.create_empty()),  # noqa: B008
     ):
         super().__init__(
             bi_context=bi_context,

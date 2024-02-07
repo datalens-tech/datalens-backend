@@ -99,7 +99,7 @@ class DataCellConverter:
     def _iter_rows(self) -> Generator[Sequence[DataCell], None, None]:
         for row in self._rows:
             dcell_row: list[DataCell] = []
-            for value, legend_item_id in zip(row.data, row.legend_item_ids):
+            for value, legend_item_id in zip(row.data, row.legend_item_ids, strict=True):
                 pivot_item_id_list = self._pivot_legend.leg_item_id_to_pivot_item_id_list(legend_item_id)
                 for pivot_item_id in pivot_item_id_list:
                     cell = DataCell(

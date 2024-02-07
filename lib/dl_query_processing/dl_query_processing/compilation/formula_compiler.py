@@ -158,8 +158,8 @@ class FieldProcessingStageManager:
                     field_types=self._columns.get_column_formula_types(),
                     env=self._inspect_env,
                 )
-            except KeyError:
-                raise formula_exc.DataTypeError("Unknown type for column")
+            except KeyError as e:
+                raise formula_exc.DataTypeError("Unknown type for column") from e
         except formula_exc.FormulaError:
             return self.default_type_on_error
 
@@ -522,7 +522,7 @@ class FormulaCompiler:
                 formula_obj = self._formula_parser.parse(formula)
             except formula_exc.ParseError as err:
                 if not collect_errors:
-                    raise dl_query_processing.exc.FormulaHandlingError(*err.errors)
+                    raise dl_query_processing.exc.FormulaHandlingError(*err.errors) from err
                 errors.extend(err.errors)
 
             self._formula_parsed_cache[formula] = formula_obj  # type: ignore  # TODO: fix
@@ -950,7 +950,7 @@ class FormulaCompiler:
             yield
         except formula_exc.FormulaError as err:
             field = self._fields.get(id=field_id)
-            raise dl_query_processing.exc.DLFormulaError(field=field, formula_errors=err.errors)
+            raise dl_query_processing.exc.DLFormulaError(field=field, formula_errors=err.errors) from err
 
     def _require_field_formula_preparation(self, field: BIField) -> None:
         """Make sure that the field's fully prepared and ready for translation formula is in the cache"""

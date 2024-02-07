@@ -114,10 +114,10 @@ class TaskProcessorFactory(metaclass=abc.ABCMeta):
         pass
 
     def cleanup(self) -> None:
-        pass
+        return
 
     async def cleanup_async(self) -> None:
-        pass
+        return
 
 
 @attr.s

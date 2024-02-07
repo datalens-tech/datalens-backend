@@ -153,7 +153,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
             ca_data=ca_data,
         ).set_up(app)
 
-        app.logger
+        _ = app.logger
 
         ma = Marshmallow()
         ma.init_app(app)

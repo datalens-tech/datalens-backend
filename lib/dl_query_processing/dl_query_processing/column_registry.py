@@ -135,11 +135,11 @@ class ColumnRegistry:
         try:
             column_id = self._column_ids[(avatar_id, name)]
             return self._columns[column_id]
-        except KeyError:
+        except KeyError as e:
             raise formula_exc.FormulaError(
                 f"Unknown referenced source column: {name}",
                 code=formula_exc.UnknownSourceColumnError.default_code,
-            )
+            ) from e
 
     def get_column_ids(self) -> Dict[Tuple[str, str], str]:
         return {

@@ -488,7 +488,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
                 try:
                     event, data = parser.next_event()
                 except parser.RowTooLarge:
-                    raise CHRowTooLarge()
+                    raise CHRowTooLarge() from None
                 if event == parser.parts.NEED_DATA:
                     break
                 elif event == parser.parts.FINISHED:
@@ -593,7 +593,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
                                 _safe_col_converter(col_converter, val)  # type: ignore  # TODO: fix
                                 if col_converter is not None
                                 else val
-                                for val, col_converter in zip(raw_row, row_converters)
+                                for val, col_converter in zip(raw_row, row_converters, strict=True)
                             )
                             for raw_row in evt_data
                         )

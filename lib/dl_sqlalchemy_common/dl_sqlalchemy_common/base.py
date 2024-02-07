@@ -323,6 +323,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
                             repeated,
                         ) in compile_state_wraps_for.columns_plus_names
                     ],
+                    strict=True,
                 )
             )
 

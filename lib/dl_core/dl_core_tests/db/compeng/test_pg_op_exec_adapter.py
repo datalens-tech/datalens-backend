@@ -44,7 +44,7 @@ async def get_active_queries(pg_adapter: PostgreSQLExecAdapterAsync) -> List[Dic
         ctx=ctx,
     )
     queries = await queries_resp.all()
-    queries = [dict(zip(columns, row)) for row in queries]  # should've perhaps been in the cursor?
+    queries = [dict(zip(columns, row, strict=True)) for row in queries]  # should've perhaps been in the cursor?
     # skip self
     queries = [query for query in queries if query["query"] and "active_queries_query" not in query["query"]]
     return queries
@@ -136,7 +136,7 @@ class BaseTestPGOpExecAdapter(DefaultCoreTestClass):
         table_name = str(uuid.uuid4())
         attempts = 10
         assert attempts > self.max_size
-        for attempt in range(attempts):
+        for _attempt in range(attempts):
             async with self.make_pg_adapter(
                 service_registry=service_registry,
                 compeng_pg_dsn=compeng_pg_dsn,

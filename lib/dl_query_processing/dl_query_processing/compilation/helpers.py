@@ -152,8 +152,8 @@ def make_literal_node(val: Any, data_type: DataType) -> formula_nodes.BaseLitera
             elif data_type in ARRAY_TYPES or data_type in TREE_TYPES:
                 try:
                     val = json.loads(val)
-                except json.decoder.JSONDecodeError:
-                    raise ValueError("Invalid value for array")
+                except json.decoder.JSONDecodeError as e:
+                    raise ValueError("Invalid value for array") from e
             # No known use-cases: DataType.MARKUP
             else:
                 raise ValueError("Unexpected data_type value")
@@ -173,8 +173,10 @@ def make_literal_node(val: Any, data_type: DataType) -> formula_nodes.BaseLitera
         if node is None:
             node = dl_formula.shortcuts.n.lit(val)  # guess literal type
 
-    except (ValueError, TypeError):
-        raise dl_query_processing.exc.InvalidLiteralError(f"Invalid literal value {val!r} for type {data_type.name}")
+    except (ValueError, TypeError) as e:
+        raise dl_query_processing.exc.InvalidLiteralError(
+            f"Invalid literal value {val!r} for type {data_type.name}"
+        ) from e
 
     assert node is not None
     return node

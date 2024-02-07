@@ -134,7 +134,7 @@ async def _values_data_iter(
                 f" to {sheet_sample.batch_size_rows}"
             )
 
-        for idx, (col, new_user_type) in enumerate(zip(raw_schema_body, new_user_types)):
+        for idx, (col, new_user_type) in enumerate(zip(raw_schema_body, new_user_types, strict=True)):
             # fall back to string
             if new_user_type == "time":
                 new_user_type = UserDataType.string

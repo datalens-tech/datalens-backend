@@ -11,7 +11,7 @@ from dl_formula.definitions.flags import (
 )
 
 
-class ContextPostprocessor(abc.ABC):
+class ContextPostprocessor(abc.ABC):  # noqa: B024
     def get_warnings(self, data_type: DataType, flags: ContextFlags) -> list[str]:
         result: list[str] = []
         if flags & ContextFlag.DEPRECATED:

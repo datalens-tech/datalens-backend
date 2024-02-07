@@ -76,7 +76,7 @@ class AiopgExecAdapter(PostgreSQLExecAdapterAsync[aiopg.sa.SAConnection]):  # no
                     chunk.append(
                         [
                             self._tt.cast_for_output(value=value, user_t=user_t)
-                            for value, user_t in zip(row.as_tuple(), user_types)
+                            for value, user_t in zip(row.as_tuple(), user_types, strict=True)
                         ]
                     )
                 if not chunk:
@@ -102,7 +102,10 @@ class AiopgExecAdapter(PostgreSQLExecAdapterAsync[aiopg.sa.SAConnection]):  # no
             chunk = []
             for row in raw_chunk:
                 chunk.append(
-                    [self._tt.cast_for_input(value=value, user_t=user_t) for value, user_t in zip(row, user_types)]
+                    [
+                        self._tt.cast_for_input(value=value, user_t=user_t)
+                        for value, user_t in zip(row, user_types, strict=True)
+                    ]
                 )
             query = table.insert(values=chunk)
             await self._execute(query=query)

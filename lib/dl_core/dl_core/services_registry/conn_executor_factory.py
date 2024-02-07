@@ -97,8 +97,8 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
             ce = map_conn_type_ce_type[type(conn)]
             assert issubclass(ce, AsyncConnExecutorBase)
             return ce
-        except KeyError:
-            raise CEFactoryError(f"No executor for connection type {type(conn)}")
+        except KeyError as e:
+            raise CEFactoryError(f"No executor for connection type {type(conn)}") from e
 
     def _get_conn_hosts_pool(self, dto: ConnDTO) -> Sequence[str]:
         if isinstance(dto, DefaultSQLDTO):
