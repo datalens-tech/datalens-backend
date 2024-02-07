@@ -4,7 +4,7 @@
 
 # Prepare datalens-ui for development
 
-* `task datalens-ui-repo-clone` - Clone repository near primary repository
+* `task datalens-ui-repo-clone` - Clone datalens-ui (repository) near primary repository
 * `nvm install # from datalens-ui directory` - Install correct node version
 * `task datalens-ui-init` - Install dependencies
 

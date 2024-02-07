@@ -1,15 +1,15 @@
 version: 3
 
 vars:
-  datalens_ui_folder: ../../../../datalens-ui
+  DATALENS_UI_FOLDER: '{{.DATALENS_UI_FOLDER | default "../../../../datalens-ui"}}'
 
-  control_api_target: "dl_control_api"
-  control_api_tag: "control-api:test"
+  CONTROL_API_TARGET: "dl_control_api"
+  CONTROL_API_TAG: '{{.CONTROL_API_TAG | default "control-api:test"}}'
 
-  data_api_target: "dl_data_api"
-  data_api_tag: "data-api:test"
+  DATA_API_TARGET: "dl_data_api"
+  DATA_API_TAG: '{{.DATA_API_TAG | default "data-api:test"}}'
 
-  ui_tag: "datalens-ui:test"
+  UI_TAG: '{{.UI_TAG | default "datalens-ui:test"}}'
 
 tasks:
   _docker:
@@ -18,24 +18,23 @@ tasks:
       vars:
         - COMMAND
     cmds:
-      - echo $DATALENS_UI_TAG
       - docker compose
-        -f {{.datalens_ui_folder}}/tests/docker-compose.e2e.yml
+        -f {{.DATALENS_UI_FOLDER}}/tests/docker-compose.e2e.yml
         -f docker-compose.e2e-dev-backend.yaml
         {{.COMMAND}}
     env:
-      CONTROL_API_TAG: "{{.control_api_tag}}"
-      DATA_API_TAG: "{{.data_api_tag}}"
-      DATALENS_UI_TAG: "{{.ui_tag}}"
+      CONTROL_API_TAG: "{{.CONTROL_API_TAG}}"
+      DATA_API_TAG: "{{.DATA_API_TAG}}"
+      DATALENS_UI_TAG: "{{.UI_TAG}}"
 
   datalens-ui-repo-clone:
-    dir: "{{.datalens_ui_folder}}/.."
-    desc: Clone datalens-ui repository
+    dir: "{{.DATALENS_UI_FOLDER}}/.."
+    desc: Clone datalens-ui (repository) near primary repository
     cmds:
       - git clone git@github.com:datalens-tech/datalens-ui.git
 
   datalens-ui-repo-update:
-    dir: "{{.datalens_ui_folder}}"
+    dir: "{{.DATALENS_UI_FOLDER}}"
     desc: Checkout latest datalens-ui
     cmds:
       - git fetch --all
@@ -43,26 +42,28 @@ tasks:
       - git pull
 
   datalens-ui-init:
-    dir: "{{.datalens_ui_folder}}"
+    dir: "{{.DATALENS_UI_FOLDER}}"
     desc: Install dependencies
     cmds:
       - npm ci
 
   docker-build-backend:
+    desc: Build backend containers
     dir: ../../docker_build
     cmds:
       - ./run-project-bake
-        {{.control_api_target}} 
-        {{.data_api_target}}
-        --set "{{.control_api_target}}.tags={{.control_api_tag}}"
-        --set "{{.data_api_target}}.tags={{.data_api_tag}}"
+        {{.CONTROL_API_TARGET}} 
+        {{.DATA_API_TARGET}}
+        --set "{{.CONTROL_API_TARGET}}.tags={{.CONTROL_API_TAG}}"
+        --set "{{.DATA_API_TARGET}}.tags={{.DATA_API_TAG}}"
 
   docker-build-frontend:
-    dir: "{{.datalens_ui_folder}}"
+    desc: Build frontend container
+    dir: "{{.DATALENS_UI_FOLDER}}"
     cmds:
       - task: datalens-ui-repo-update
       - docker build 
-        --tag {{.ui_tag}} 
+        --tag {{.UI_TAG}} 
         --network=host 
         .
 
@@ -73,10 +74,14 @@ tasks:
       - task: docker-build-frontend
 
   docker-start:
-    desc: Start services
+    desc: |
+      Start services, options: 
+      - DETACH to run in foreground mode, e.g. `task docker-start DETACH=false`, default is true
     cmds:
       - task: _docker
-        vars: { COMMAND: "up -d  {{.CLI_ARGS}}" }
+        vars: { COMMAND: 'up {{if eq .DETACH "true"}} --detach {{end}}  {{.CLI_ARGS}}' }
+    vars:
+      DETACH: '{{.DETACH | default "true"}}'
 
   docker-stop:
     desc: Stop services
@@ -103,11 +108,11 @@ tasks:
         vars: { COMMAND: "logs --follow control-api" }
 
   test:
-    dir: "{{.datalens_ui_folder}}"
+    dir: "{{.DATALENS_UI_FOLDER}}"
     desc: |
-      Run tests, could be altered with parameters:
-      E2E_TEST_NAME_PATTERN to run specific tests, e.g. E2E_TEST_NAME_PATTERN="Add dataset"
-      E2E_HEADFUL to run tests in headful mode (inside real browser), e.g. E2E_HEADFUL=1
+      Run tests, options:
+      - E2E_TEST_NAME_PATTERN to run specific tests, e.g. `task test E2E_TEST_NAME_PATTERN="Add dataset"`, default is all tests
+      - E2E_HEADFUL to run tests in headful mode (inside real browser), e.g. `task test E2E_HEADFUL=1`, default is headless
     env:
       E2E_DOMAIN: "http://localhost:8080"
       NO_AUTH: "true"
@@ -118,7 +123,7 @@ tasks:
       - npm run test:e2e:opensource
 
   test-headful:
-    dir: "{{.datalens_ui_folder}}"
+    dir: "{{.DATALENS_UI_FOLDER}}"
     desc: test command shortcut with headful mode on
     cmds:
       - task: test
