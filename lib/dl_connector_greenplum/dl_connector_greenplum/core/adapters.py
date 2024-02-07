@@ -85,7 +85,8 @@ class AsyncGreenplumAdapter(AsyncPostgresAdapter):
 
             db_version = await connection.fetchval("SELECT version()")
             if "greenplum" not in db_version.lower():
-                # to keep compatibility with postgres
+                # doing nothing to keep compatibility with postgres
+                # (for tests and existing connections to PG via GP connector)
                 yield
                 return
 
