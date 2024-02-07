@@ -3,6 +3,7 @@ from __future__ import annotations
 import abc
 from typing import (
     Callable,
+    ClassVar,
     List,
     Sequence,
     Set,
@@ -193,6 +194,36 @@ class NullifyFormulaAtomicQueryMutator(AtomicQueryFormulaListMutatorBase):
         return new_formula_list
 
 
+@attr.s
+class RemoveConstFromGroupByFormulaAtomicQueryMutator(AtomicQueryFormulaListMutatorBase):
+    _applicable_dialects: ClassVar[set[DialectCombo]] = set()
+
+    _dialects: DialectCombo = attr.ib()
+
+    def match_query(self, compiled_query: CompiledQuery) -> bool:
+        return True  # Apply to all
+
+    def mutate_formula_list(
+        self,
+        formula_list: List[_COMPILED_FLA_TV],
+        query_part: QueryPart,
+    ) -> List[_COMPILED_FLA_TV]:
+        if query_part != QueryPart.group_by or self._dialects not in self._applicable_dialects:
+            return formula_list
+
+        new_group_by_formula_list = [
+            group_by_item
+            for group_by_item in formula_list
+            if not is_bound_only_to(group_by_item.formula_obj, NodeSet())
+        ]
+        return new_group_by_formula_list
+
+    @classmethod
+    def register_dialect(cls, dialects: DialectCombo) -> None:
+        for dialect in dialects.to_list(with_self=True):
+            cls._applicable_dialects.add(dialect)
+
+
 def contains_inconsistent_aggregations(
     node: formula_nodes.FormulaItem,
     dimensions: list[formula_nodes.FormulaItem],
@@ -271,14 +302,8 @@ class OptimizingQueryMutator(QueryMutator):
             )
             compiled_query = mutator.mutate_query(compiled_query)
 
-        # Don't group by unbound expressions (ones that don't refer to source fields)
-        compiled_query = compiled_query.clone(
-            group_by=[
-                group_by_item
-                for group_by_item in compiled_query.group_by
-                if not is_bound_only_to(group_by_item.formula_obj, NodeSet())
-            ]
-        )
+        group_by_xonst_mutator = RemoveConstFromGroupByFormulaAtomicQueryMutator(self._dialect)
+        compiled_query = group_by_xonst_mutator.mutate_query(compiled_query)
 
         filter_mutator = IgnoreFormulaAtomicQueryMutator(ignore_formula_checks=[formula_is_true])
         compiled_query = filter_mutator.mutate_query(compiled_query)
