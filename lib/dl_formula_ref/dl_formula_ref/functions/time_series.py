@@ -27,6 +27,7 @@ FUNCTION_AGO = FunctionDocRegistryItem(
         "The {arg:2} argument takes the following values:\n"
         '- `"year"`;\n'
         '- `"month"`;\n'
+        '- `"week"`;\n'
         '- `"day"`;\n'
         '- `"hour"`;\n'
         '- `"minute"`;\n'

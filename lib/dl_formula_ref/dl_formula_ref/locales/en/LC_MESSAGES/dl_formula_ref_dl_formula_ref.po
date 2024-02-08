@@ -1041,6 +1041,15 @@ msgid ""
 "marked up text."
 msgstr ""
 
+msgid "Stylizes the passed text with the passed color."
+msgstr ""
+
+msgid "Stylizes the passed text with the passed size."
+msgstr ""
+
+msgid "Adds a line break."
+msgstr ""
+
 msgid "Returns the absolute value of {arg:0}."
 msgstr ""
 
@@ -1496,6 +1505,7 @@ msgid ""
 "The {arg:2} argument takes the following values:\n"
 "- `\"year\"`;\n"
 "- `\"month\"`;\n"
+"- `\"week\"`;\n"
 "- `\"day\"`;\n"
 "- `\"hour\"`;\n"
 "- `\"minute\"`;\n"
