@@ -175,10 +175,10 @@ class CompositeExtractor(SDictExtractor):
         if field_enables_flag_extractor is None:
             return False
 
-        if self.field_enables_flag_extractor.has_field(
-                scoped_s_dict):  # type: ignore  # 2024-01-24 # TODO: Item "None" of "ScalarExtractor | None" has no attribute "has_field"  [union-attr]
-            should_read = self.field_enables_flag_extractor.extract(
-                scoped_s_dict)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "ScalarExtractor | None" has no attribute "extract"  [union-attr]
+        if self.field_enables_flag_extractor.has_field(  # type: ignore  # 2024-01-24 # TODO: Item "None" of "ScalarExtractor | None" has no attribute "has_field"  [union-attr]
+                scoped_s_dict):
+            should_read = self.field_enables_flag_extractor.extract( # type: ignore  # 2024-01-24 # TODO: Item "None" of "ScalarExtractor | None" has no attribute "extract"  [union-attr]
+                scoped_s_dict)
             return not bool(should_read)
 
         return False
@@ -351,8 +351,7 @@ class EnvSettingsLoader:
         simple_type_converters: dict[Type, Callable[[str], Any]] = {
             int: int,
             float: float,
-            str: None,
-            # type: ignore  # 2024-01-24 # TODO: Dict entry 2 has incompatible type "type[str]": "None"; expected "type[Any]": "Callable[[str], Any]"  [dict-item]
+            str: None, # type: ignore  # 2024-01-24 # TODO: Dict entry 2 has incompatible type "type[str]": "None"; expected "type[Any]": "Callable[[str], Any]"  [dict-item]
             bool: lambda x: {"1": True, "0": False, "true": True, "false": False}[x.lower()],
         }
         if meta.env_var_converter is not None:
@@ -403,8 +402,8 @@ class EnvSettingsLoader:
     @classmethod
     def is_sub_settings_field(cls, attrib: attr.Attribute) -> bool:
         the_type = attrib.type
-        possible_types = cls.unwrap_union(the_type,
-                                          ignore_none=True)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "unwrap_union" of "EnvSettingsLoader" has incompatible type "type[Any] | None"; expected "type[Any]"  [arg-type]
+        possible_types = cls.unwrap_union(the_type, # type: ignore  # 2024-01-24 # TODO: Argument 1 to "unwrap_union" of "EnvSettingsLoader" has incompatible type "type[Any] | None"; expected "type[Any]"  [arg-type]
+                                          ignore_none=True)
         map_type_is_sub_setting: dict[Type, bool] = {
             t: isinstance(t, type) and issubclass(t, SettingsBase) for t in possible_types
         }
@@ -498,8 +497,8 @@ class EnvSettingsLoader:
                     raise SettingsLoadingException(f"Unexpected signature of fallback factory for {field}")
 
             else:
-                field_default = getattr(fallback_cfg, field_s_meta.name,
-                                        NOT_SET)  # type: ignore  # 2024-01-24 # TODO: Argument 2 to "getattr" has incompatible type "str | None"; expected "str"  [arg-type]
+                field_default = getattr(fallback_cfg, field_s_meta.name,  # type: ignore  # 2024-01-24 # TODO: Argument 2 to "getattr" has incompatible type "str | None"; expected "str"  [arg-type]
+                                        NOT_SET)
                 if (
                         field_default is NOT_SET
                         and cls.is_sub_settings_field(field)
@@ -514,17 +513,15 @@ class EnvSettingsLoader:
                 child_extractor = DefaultOnlyExtractor(
                     key=None,
                     default=field_default,
-                    expected_type=field.type,
-                    # type: ignore  # 2024-01-24 # TODO: Argument "expected_type" to "DefaultOnlyExtractor" has incompatible type "type[Any] | None"; expected "type[Any]"  [arg-type]
-                )
+                    expected_type=field.type, # type: ignore  # 2024-01-24 # TODO: Argument "expected_type" to "DefaultOnlyExtractor" has incompatible type "type[Any] | None"; expected "type[Any]"  [arg-type]
+                    )
             elif cls.is_sub_settings_field(field):
                 assert field_s_meta.fallback_cfg_key is None, "At this moment nested objects can not have defaults"
                 enabled_key_name = field_s_meta.enabled_key_name
 
                 child_extractor = cls.build_composite_extractor(
-                    settings_type=field.type,
-                    # type: ignore  # 2024-01-24 # TODO: Argument "settings_type" to "build_composite_extractor" of "EnvSettingsLoader" has incompatible type "type[Any] | None"; expected "type[SettingsBase]"  [arg-type]
-                    key_prefix=key_prefix + (field_s_meta.name,),
+                    settings_type=field.type, # type: ignore  # 2024-01-24 # TODO: Argument "settings_type" to "build_composite_extractor" of "EnvSettingsLoader" has incompatible type "type[Any] | None"; expected "type[SettingsBase]"  [arg-type]
+                     key_prefix=key_prefix + (field_s_meta.name,),
                     default=field_default,
                     json_converter=field_s_meta.json_converter,
                     field_enables_flag_extractor=None  # type: ignore  # 2024-01-24 # TODO: Argument "field_enables_flag_extractor" to "build_composite_extractor" of "EnvSettingsLoader" has incompatible type "ScalarExtractor | DictExtractor | None"; expected "ScalarExtractor | None"  [arg-type]
@@ -543,8 +540,7 @@ class EnvSettingsLoader:
                 )
                 child_extractor = cls.build_default_extractor(
                     name=field_name,
-                    field_type=field.type,
-                    # type: ignore  # 2024-01-24 # TODO: Argument "field_type" to "build_default_extractor" of "EnvSettingsLoader" has incompatible type "type[Any] | None"; expected "type[Any]"  [arg-type]
+                    field_type=field.type,  # type: ignore  # 2024-01-24 # TODO: Argument "field_type" to "build_default_extractor" of "EnvSettingsLoader" has incompatible type "type[Any] | None"; expected "type[Any]"  [arg-type]
                     meta=field_s_meta,
                     default=field_default,
                 )
@@ -565,8 +561,8 @@ class EnvSettingsLoader:
 
     @classmethod
     def get_app_cfg_type_field(cls, settings_type: Type[SettingsBase]) -> Optional[attr.Attribute]:
-        candidates = [field for field in attr.fields(settings_type) if SMeta.from_attrib(
-            field).is_app_cfg_type]  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "fields" has incompatible type "type[SettingsBase]"; expected "type[AttrsInstance]"  [arg-type]
+        candidates = [field for field in attr.fields(settings_type) if SMeta.from_attrib(   # type: ignore  # 2024-01-24 # TODO: Argument 1 to "fields" has incompatible type "type[SettingsBase]"; expected "type[AttrsInstance]"  [arg-type]
+            field).is_app_cfg_type]
         if len(candidates) > 1:
             raise SettingsLoadingException(
                 f"Settings class {get_type_full_name(settings_type)}"
@@ -583,10 +579,8 @@ class EnvSettingsLoader:
 
         extractor = cls.build_default_extractor(
             name=app_cfg_type_field.name,
-            field_type=app_cfg_type_field.type,
-            # type: ignore  # 2024-01-24 # TODO: Argument "field_type" to "build_default_extractor" of "EnvSettingsLoader" has incompatible type "type[Any] | None"; expected "type[Any]"  [arg-type]
-            meta=SMeta.from_attrib(app_cfg_type_field),
-            # type: ignore  # 2024-01-24 # TODO: Argument "meta" to "build_default_extractor" of "EnvSettingsLoader" has incompatible type "SMeta | None"; expected "SMeta"  [arg-type]
+            field_type=app_cfg_type_field.type,  # type: ignore  # 2024-01-24 # TODO: Argument "field_type" to "build_default_extractor" of "EnvSettingsLoader" has incompatible type "type[Any] | None"; expected "type[Any]"  [arg-type]
+            meta=SMeta.from_attrib(app_cfg_type_field),  # type: ignore  # 2024-01-24 # TODO: Argument "meta" to "build_default_extractor" of "EnvSettingsLoader" has incompatible type "SMeta | None"; expected "SMeta"  [arg-type]
             default=NOT_SET,
         )
         return extractor.extract(s_dict)
@@ -602,8 +596,7 @@ class EnvSettingsLoader:
             field_overrides: Optional[dict[str, Any]] = None,
     ) -> CompositeExtractor:
         return cls.build_composite_extractor(
-            settings_type=settings_type,
-            # type: ignore  # 2024-01-24 # TODO: Argument "settings_type" to "build_composite_extractor" of "EnvSettingsLoader" has incompatible type "type[_SETTINGS_TV]"; expected "type[SettingsBase]"  [arg-type]
+            settings_type=settings_type,  # type: ignore  # 2024-01-24 # TODO: Argument "settings_type" to "build_composite_extractor" of "EnvSettingsLoader" has incompatible type "type[_SETTINGS_TV]"; expected "type[SettingsBase]"  [arg-type]
             key_prefix=() if key_prefix is None else (key_prefix,),
             fallback_cfg=fallback_cfg,
             app_cfg_type=app_cfg_type,
@@ -640,9 +633,8 @@ class EnvSettingsLoader:
         if fallback_cfg_resolver is not None:
             fallback_cfg = fallback_cfg_resolver.resolve(effective_s_dict)
 
-        app_cfg_type = self.get_app_cfg_type_value_from_env(settings_type,
-                                                            effective_s_dict)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "get_app_cfg_type_value_from_env" of "EnvSettingsLoader" has incompatible type "type[_SETTINGS_TV]"; expected "type[SettingsBase]"  [arg-type]
-
+        app_cfg_type = self.get_app_cfg_type_value_from_env(settings_type,  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "get_app_cfg_type_value_from_env" of "EnvSettingsLoader" has incompatible type "type[_SETTINGS_TV]"; expected "type[SettingsBase]"  [arg-type]
+                                                            effective_s_dict)
         extractor = self.build_top_level_extractor(
             settings_type=settings_type,
             key_prefix=key_prefix,
