@@ -262,6 +262,10 @@ class AsyncPostgresAdapter(
                 stack.enter_context(context)
             yield
 
+    @asynccontextmanager
+    async def _query_preparation_context(self, connection: asyncpg.Connection) -> AsyncIterator[None]:
+        yield
+
     async def _execute_by_step(self, query: DBAdapterQuery) -> AsyncIterator[ExecutionStep]:
         def make_record(raw_rec: asyncpg.Record, query_attrs: Iterable[asyncpg.Attribute]) -> TBIDataRow:
             row_converters = self._get_row_converters(query_attrs=query_attrs)
@@ -285,7 +289,8 @@ class AsyncPostgresAdapter(
             async with self._get_connection(query.db_name) as conn:  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "_get_connection" of "AsyncPostgresAdapter" has incompatible type "str | None"; expected "str"  [arg-type]
                 # prepare works only inside a transaction
                 async with conn.transaction():
-                    prepared_query = await conn.prepare(compiled_query)
+                    async with self._query_preparation_context(conn):
+                        prepared_query = await conn.prepare(compiled_query)
                     cursor_info = self._make_cursor_info(prepared_query.get_attributes())
                     yield ExecutionStepCursorInfo(cursor_info=cursor_info)
                     cursor = await prepared_query.cursor(*params)

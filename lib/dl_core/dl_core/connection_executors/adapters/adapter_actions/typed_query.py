@@ -123,7 +123,7 @@ class AsyncTypedQueryAdapterActionViaStandardExecute(AsyncTypedQueryAdapterActio
         return result
 
     async def run_typed_query_action(self, typed_query: TypedQuery) -> TypedQueryResult:
-        assert typed_query.query_type is DashSQLQueryType.classic_query
+        assert typed_query.query_type is DashSQLQueryType.generic_query
         dba_query = self._query_converter.make_dba_query(typed_query=typed_query)
         dba_async_result = await self._async_adapter.execute(dba_query)
         result = await self._make_result(typed_query=typed_query, dba_async_result=dba_async_result)
@@ -146,7 +146,7 @@ class SyncTypedQueryAdapterActionViaLegacyExecute(SyncTypedQueryAdapterAction):
         return result
 
     def run_typed_query_action(self, typed_query: TypedQuery) -> TypedQueryResult:
-        assert typed_query.query_type is DashSQLQueryType.classic_query
+        assert typed_query.query_type is DashSQLQueryType.generic_query
         dba_query = self._query_converter.make_dba_query(typed_query=typed_query)
         dba_sync_result = self._sync_adapter.execute(dba_query)
         result = self._make_result(typed_query=typed_query, dba_sync_result=dba_sync_result)
