@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Callable,
-    Optional,
     TypeVar,
 )
 
@@ -19,6 +18,7 @@ from dl_formula.core import (
     exc,
     nodes,
 )
+from dl_formula.definitions.base import TransCallResult
 from dl_formula.shortcuts import n
 
 
@@ -42,16 +42,16 @@ def raw_sql(sql_text: str) -> _TextClauseHack:
     return _TextClauseHack(sql_text)
 
 
-_BINARY_CHAIN_TV = TypeVar("_BINARY_CHAIN_TV")
+_BINARY_CHAIN_TV = TypeVar("_BINARY_CHAIN_TV", bound=TransCallResult)
 
 
 def make_binary_chain(
     binary_callable: Callable[[_BINARY_CHAIN_TV, _BINARY_CHAIN_TV], _BINARY_CHAIN_TV],
     *args: _BINARY_CHAIN_TV,
     wrap_as_nodes: bool = True,
-) -> Optional[_BINARY_CHAIN_TV]:
+) -> _BINARY_CHAIN_TV:
     if len(args) == 0:
-        return None
+        return sa.null()
 
     expr = args[0]
     for next_arg in args[1:]:
