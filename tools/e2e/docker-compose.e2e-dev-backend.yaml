@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+  control-api:
+    image: ${CONTROL_API_TAG}
+
+  data-api:
+    image: ${DATA_API_TAG}
+
+  datalens:
+    image: ${DATALENS_UI_TAG}
+    build: !reset null
