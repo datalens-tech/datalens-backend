@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import logging
 
-import attr
 from aiohttp import ClientResponse
-
+import attr
 from clickhouse_sqlalchemy.drivers.http.transport import _get_type  # noqa
-from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 
+from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.utils import get_current_w3c_tracing_headers
 
 from dl_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
