@@ -11,13 +11,13 @@ from typing import (
 
 import attr
 
+from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_constants.enums import (
     DataSourceRole,
     ProcessorType,
 )
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.ids import AvatarId
-from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
 from dl_core.data_processing.prepared_components.default_manager import DefaultPreparedComponentManager
 from dl_core.data_processing.processing.operation import (
     CalcOp,

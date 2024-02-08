@@ -17,10 +17,10 @@ import attr
 import sqlalchemy as sa
 from sqlalchemy.sql.selectable import Select
 
+from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_constants.enums import JoinType
 from dl_constants.types import TBIDataValue
 from dl_core.connectors.base.query_compiler import QueryCompiler
-from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
 from dl_core.data_processing.cache.utils import DatasetOptionsBuilder
 from dl_core.data_processing.processing.context import OpExecutionContext
 from dl_core.data_processing.streaming import AsyncChunkedBase

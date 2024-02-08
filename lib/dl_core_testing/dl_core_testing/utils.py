@@ -5,7 +5,7 @@ from typing import Optional
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_core.data_processing.cache.primitives import CacheTTLConfig
+from dl_cache_engine.primitives import CacheTTLConfig
 
 
 @attr.s(auto_attribs=True, frozen=True)

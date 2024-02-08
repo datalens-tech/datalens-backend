@@ -95,11 +95,10 @@ from dl_app_tools.profiling_base import (
     GenericProfiler,
     generic_profiler_async,
 )
+from dl_cache_engine.exc import CachedEntryPackageVersionMismatch
+from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_constants.types import TJSONExt
-import dl_core
-from dl_core.data_processing.cache.exc import CachedEntryPackageVersionMismatch
-from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
-from dl_core.serialization import (
+from dl_model_tools.serialization import (
     CacheMetadataSerialization,
     common_dumps,
     common_loads,

@@ -20,6 +20,10 @@ import sqlalchemy as sa
 from sqlalchemy.engine.default import DefaultDialect
 
 from dl_api_commons.reporting.models import NotificationReportingRecord
+from dl_cache_engine.primitives import (
+    DataKeyPart,
+    LocalKeyRepresentation,
+)
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_constants.enums import (
     ConnectionType,
@@ -42,10 +46,6 @@ from dl_core.connection_executors.adapters.common_base import get_dialect_for_co
 from dl_core.connection_models import (
     DBIdent,
     SchemaIdent,
-)
-from dl_core.data_processing.cache.primitives import (
-    DataKeyPart,
-    LocalKeyRepresentation,
 )
 from dl_core.db import (
     TypeTransformer,

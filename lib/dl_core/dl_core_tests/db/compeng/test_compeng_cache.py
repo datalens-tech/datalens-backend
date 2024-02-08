@@ -13,6 +13,10 @@ from dl_api_commons.reporting.profiler import (
     PROFILING_LOG_NAME,
     DefaultReportingProfiler,
 )
+from dl_cache_engine.primitives import (
+    DataKeyPart,
+    LocalKeyRepresentation,
+)
 from dl_constants.api_constants import DLHeadersCommon
 from dl_constants.enums import (
     DataSourceRole,
@@ -21,10 +25,6 @@ from dl_constants.enums import (
     UserDataType,
 )
 from dl_core.base_models import WorkbookEntryLocation
-from dl_core.data_processing.cache.primitives import (
-    DataKeyPart,
-    LocalKeyRepresentation,
-)
 from dl_core.data_processing.processing.operation import (
     BaseOp,
     CalcOp,

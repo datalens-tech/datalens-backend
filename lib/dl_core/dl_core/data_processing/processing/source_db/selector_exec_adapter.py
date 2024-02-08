@@ -44,11 +44,11 @@ from dl_core.us_connection_base import (
 if TYPE_CHECKING:
     from sqlalchemy.sql.selectable import Select
 
+    from dl_cache_engine.primitives import LocalKeyRepresentation
     from dl_constants.enums import DataSourceRole
     from dl_constants.types import TBIDataValue
     from dl_core.base_models import ConnectionRef
     from dl_core.connections_security.base import ConnectionSecurityManager
-    from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
     from dl_core.data_processing.prepared_components.manager_base import PreparedComponentManagerBase
     from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
     from dl_core.data_processing.types import TValuesChunkStream

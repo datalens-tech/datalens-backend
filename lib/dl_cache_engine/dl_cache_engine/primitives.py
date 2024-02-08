@@ -11,7 +11,7 @@ from typing import (
 
 import attr
 
-from dl_core.data_processing.cache.exc import CacheKeyValidationError
+from dl_cache_engine.exc import CacheKeyValidationError
 
 
 @attr.s(frozen=True)

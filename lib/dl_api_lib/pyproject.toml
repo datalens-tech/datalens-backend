@@ -36,6 +36,7 @@ datalens-task-processor = {path = "../dl_task_processor"}
 datalens-dashsql = {path = "../../lib/dl_dashsql"}
 datalens-pivot = {path = "../dl_pivot"}
 datalens-pivot-pandas = {path = "../dl_pivot_pandas"}
+datalens-cache-engine = {path = "../dl_cache_engine"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

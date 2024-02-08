@@ -23,6 +23,7 @@ from dl_api_lib.app_settings import (
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
+from dl_cache_engine.primitives import CacheTTLConfig
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.enums import RequiredService
 from dl_configs.rqe import (
@@ -36,7 +37,6 @@ from dl_constants.enums import (
 )
 from dl_core.aio.middlewares.services_registry import services_registry_middleware
 from dl_core.aio.middlewares.us_manager import service_us_manager_middleware
-from dl_core.data_processing.cache.primitives import CacheTTLConfig
 from dl_core.rls import (
     RLS_FAILED_USER_NAME_PREFIX,
     BaseSubjectResolver,

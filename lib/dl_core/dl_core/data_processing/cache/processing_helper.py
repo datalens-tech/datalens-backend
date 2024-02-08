@@ -18,11 +18,11 @@ from dl_core.data_processing.streaming import AsyncChunked
 
 
 if TYPE_CHECKING:
-    from dl_core.data_processing.cache.engine import (
+    from dl_cache_engine.engine import (
         EntityCacheEngineAsync,
         EntityCacheEntryManagerAsyncBase,
     )
-    from dl_core.data_processing.cache.primitives import BIQueryCacheOptions
+    from dl_cache_engine.primitives import BIQueryCacheOptions
     from dl_core.data_processing.types import TJSONExtChunkStream
     from dl_core.services_registry import ServicesRegistry
 

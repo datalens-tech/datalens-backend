@@ -44,11 +44,11 @@ if TYPE_CHECKING:
     from redis.asyncio import Redis
 
     from dl_api_commons.base_models import RequestContextInfo
+    from dl_cache_engine.primitives import CacheTTLConfig
     from dl_configs.connectors_settings import ConnectorSettingsBase
     from dl_configs.rqe import RQEConfig
     from dl_constants.enums import ConnectionType
     from dl_core.aio.web_app_services.data_processing.data_processor import DataProcessorService
-    from dl_core.data_processing.cache.primitives import CacheTTLConfig
     from dl_core.services_registry.entity_checker import EntityUsageChecker
     from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
     from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory

@@ -24,6 +24,9 @@ datalens-core = {path = "../dl_core"}
 datalens-app-tools = {path = "../dl_app_tools"}
 datalens-query-processing = {path = "../dl_query_processing"}
 datalens-sqlalchemy-bitrix = {path = "../dl_sqlalchemy_bitrix"}
+datalens-cache-engine = {path = "../dl_cache_engine"}
+datalens-formula = {path = "../dl_formula"}
+datalens-model-tools = {path = "../dl_model_tools"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]

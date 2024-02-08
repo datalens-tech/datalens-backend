@@ -12,10 +12,10 @@ import redis.asyncio
 from redis_cache_lock.types import TClientACM
 
 from dl_app_tools.profiling_base import GenericProfiler
+from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_constants.types import TJSONExt
 from dl_core.aio.web_app_services.redis import RedisConnParams
-from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
-from dl_core.serialization import (
+from dl_model_tools.serialization import (
     common_dumps,
     common_loads,
 )

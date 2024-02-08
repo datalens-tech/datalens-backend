@@ -30,6 +30,7 @@ datalens-formula-testing = {path = "../dl_formula_testing"}
 datalens-pivot-pandas = {path = "../dl_pivot_pandas"}
 datalens-query-processing = {path = "../dl_query_processing"}
 datalens-testing = {path = "../dl_testing"}
+datalens-cache-engine = {path = "../dl_cache_engine"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

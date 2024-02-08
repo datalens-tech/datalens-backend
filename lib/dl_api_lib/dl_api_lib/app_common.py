@@ -21,13 +21,13 @@ from dl_api_lib.i18n.registry import (
 )
 from dl_api_lib.service_registry.sr_factory import DefaultApiSRFactory
 from dl_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
+from dl_cache_engine.primitives import CacheTTLConfig
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.enums import RequiredService
 from dl_constants.enums import (
     ConnectionType,
     RLSSubjectType,
 )
-from dl_core.data_processing.cache.primitives import CacheTTLConfig
 from dl_core.rls import (
     RLS_FAILED_USER_NAME_PREFIX,
     BaseSubjectResolver,
