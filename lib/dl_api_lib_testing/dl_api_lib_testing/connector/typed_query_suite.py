@@ -8,7 +8,10 @@ from dl_api_lib_testing.typed_query_base import (
     DashSQLTypedQueryTestBase,
     TypedQueryInfo,
 )
-from dl_constants.enums import DashSQLQueryType
+from dl_constants.enums import (
+    DashSQLQueryType,
+    UserDataType,
+)
 from dl_testing.regulated_test import RegulatedTestCase
 
 
@@ -21,12 +24,20 @@ class DefaultDashSQLTypedQueryTestSuite(DashSQLTypedQueryTestBase, RegulatedTest
     def typed_query_info(self) -> TypedQueryInfo:
         return TypedQueryInfo(
             query_type=DashSQLQueryType.generic_query,
-            query_content={"query": "select 1, 2, 3"},
+            query_content={"query": "select 1 as q, 2 as w, 'zxc' as e"},
             params=[],
         )
 
     def check_result(self, result_data: dict) -> None:
-        assert result_data["data"][0] == [1, 2, 3]
+        assert result_data["data"]["rows"][0] == [1, 2, "zxc"]
+        headers = result_data["data"]["headers"]
+        assert len(headers) == 3
+        assert [header["name"] for header in headers] == ["q", "w", "e"]
+        assert [header["data_type"] for header in headers] == [
+            UserDataType.integer.name,
+            UserDataType.integer.name,
+            UserDataType.string.name,
+        ]
 
     @pytest.mark.asyncio
     async def test_basic_query(

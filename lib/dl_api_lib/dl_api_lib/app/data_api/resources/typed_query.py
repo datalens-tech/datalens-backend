@@ -16,6 +16,7 @@ from dl_api_lib.app.data_api.resources.base import (
 )
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.schemas.typed_query import (
+    DataRowsTypedQueryResultSchema,
     PlainTypedQueryContentSchema,
     RawTypedQuery,
     RawTypedQueryParameter,
@@ -32,12 +33,6 @@ from dl_dashsql.typed_query.primitives import (
     TypedQueryParameter,
     TypedQueryResult,
 )
-
-
-class TypedQueryResultSerializer:
-    def serialize_typed_query_result(self, typed_query_result: TypedQueryResult) -> Any:
-        assert isinstance(typed_query_result, DataRowsTypedQueryResult)
-        return list(typed_query_result.data_rows)
 
 
 class TypedQueryLoader(abc.ABC):
@@ -74,12 +69,24 @@ class PlainTypedQueryLoader(TypedQueryLoader):
         return typed_query
 
 
+class TypedQueryResultSerializer:
+    """Serializes the result (meta and data)"""
+
+    def serialize_typed_query_result(self, typed_query_result: TypedQueryResult) -> Any:
+        # No other result types are supported in API:
+        assert isinstance(typed_query_result, DataRowsTypedQueryResult)
+        return DataRowsTypedQueryResultSchema().dump(typed_query_result)
+
+
 @requires(RequiredResourceCommon.US_MANAGER)
 class DashSQLTypedQueryView(BaseView):
     """
-    Connection + SQL query -> special-format data result.
+    Perform a query using the given connection.
+    The behavior is connection- and query type-specific.
 
-    Partially related to `DatasetPreviewView` and its bases, but much more stripped down.
+    Main use cases:
+    - QL charts (charts using user-written queries)
+    - selectors for QL charts
     """
 
     # TODO?: cache support
@@ -89,9 +96,12 @@ class DashSQLTypedQueryView(BaseView):
 
     @property
     def connection_id(self) -> Optional[str]:
+        # TODO: Move to some base class for connection-based views
         return self.request.match_info.get("conn_id")
 
     async def get_connection(self) -> ConnectionBase:
+        """Get connection object from the ID in the URL"""
+        # TODO: Move to some base class for connection-based views
         connection_id = self.connection_id
         assert connection_id
         connection = await self.dl_request.us_manager.get_by_id(connection_id, ConnectionBase)
@@ -99,9 +109,11 @@ class DashSQLTypedQueryView(BaseView):
         return connection
 
     def validate_connection(self, connection: ConnectionBase) -> None:
+        """Check whether we can se this connection to execute the query"""
         need_permission_on_entry(connection, USPermissionKind.execute)
 
     def make_typed_query(self) -> TypedQuery:
+        """Formalize and validate query from input"""
         raw_typed_query: RawTypedQuery = TypedQuerySchema().load(self.dl_request.json)
         loader = PlainTypedQueryLoader()  # TODO: Get loader from somewhere using query_type
         typed_query = loader.load_typed_query(
@@ -112,6 +124,7 @@ class DashSQLTypedQueryView(BaseView):
         return typed_query
 
     async def execute_query(self, connection: ConnectionBase, typed_query: TypedQuery) -> TypedQueryResult:
+        """Prepare everything for execution and execute"""
         sr = self.dl_request.services_registry
         ce_factory = sr.get_conn_executor_factory()
         conn_executor = ce_factory.get_async_conn_executor(conn=connection)
@@ -119,6 +132,7 @@ class DashSQLTypedQueryView(BaseView):
         return typed_query_result
 
     def make_response_data(self, typed_query_result: TypedQueryResult) -> dict:
+        """Serialize output"""
         result_serializer = TypedQueryResultSerializer()  # TODO: Get serializer from somewhere
         response_data = {"data": result_serializer.serialize_typed_query_result(typed_query_result)}
         return response_data
@@ -126,10 +140,15 @@ class DashSQLTypedQueryView(BaseView):
     @generic_profiler_async("dashsql-typed-query")
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> web.Response:
+        """The main view method. Handle typed query execution"""
+
+        # Formalize and validate input
         connection = await self.get_connection()
         self.validate_connection(connection)
-
         typed_query = self.make_typed_query()
+
+        # Execute
         typed_query_result = await self.execute_query(connection=connection, typed_query=typed_query)
 
+        # Prepare and return output
         return web.json_response(self.make_response_data(typed_query_result))

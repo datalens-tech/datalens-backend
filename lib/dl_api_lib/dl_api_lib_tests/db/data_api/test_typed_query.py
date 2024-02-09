@@ -24,10 +24,15 @@ class TestDashSQLTypedQueryWithParameters(DefaultApiTestBase, DefaultDashSQLType
     def typed_query_info(self) -> TypedQueryInfo:
         return TypedQueryInfo(
             query_type=DashSQLQueryType.generic_query,
-            query_content={"query": "select 1,{{my_param}}, 3"},
+            query_content={"query": "select 1 as one, {{my_param_1}} as two, {{my_param_2}} as three"},
             params=[
                 TypedQueryParam(
-                    name="my_param",
+                    name="my_param_2",
+                    user_type=UserDataType.string,
+                    value="lorem ipsum",
+                ),
+                TypedQueryParam(
+                    name="my_param_1",
                     user_type=UserDataType.integer,
                     value=8,
                 ),
@@ -35,5 +40,12 @@ class TestDashSQLTypedQueryWithParameters(DefaultApiTestBase, DefaultDashSQLType
         )
 
     def check_result(self, result_data: dict) -> None:
-        print(result_data)
-        assert result_data["data"][0] == [1, 8, 3]
+        assert result_data["data"]["rows"][0] == [1, 8, "lorem ipsum"]
+        headers = result_data["data"]["headers"]
+        assert len(headers) == 3
+        assert [header["name"] for header in headers] == ["one", "two", "three"]
+        assert [header["data_type"] for header in headers] == [
+            UserDataType.integer.name,
+            UserDataType.integer.name,
+            UserDataType.string.name,
+        ]
