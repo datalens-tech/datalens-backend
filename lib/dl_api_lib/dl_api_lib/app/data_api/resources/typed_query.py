@@ -109,7 +109,7 @@ class DashSQLTypedQueryView(BaseView):
         return connection
 
     def validate_connection(self, connection: ConnectionBase) -> None:
-        """Check whether we can se this connection to execute the query"""
+        """Check whether we can use this connection to execute the query"""
         need_permission_on_entry(connection, USPermissionKind.execute)
 
     def make_typed_query(self) -> TypedQuery:

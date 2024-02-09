@@ -152,7 +152,7 @@ class AsyncTypedQueryAdapterActionViaStandardExecute(AsyncTypedQueryAdapterActio
 
         # Convert native types to user types and generate headers
         headers: list[TypedQueryResultColumnHeader] = []
-        for name, native_type in zip(names, db_types):
+        for name, native_type in zip(names, db_types, strict=True):
             user_type = UserDataType.unsupported
             if native_type:
                 try:
@@ -204,7 +204,7 @@ class SyncTypedQueryAdapterActionViaLegacyExecute(SyncTypedQueryAdapterAction):
         # TODO: Implement this
         description = raw_cursor_info.raw_cursor_description
         headers: list[TypedQueryResultColumnHeader] = []
-        for col_num, cursor_col in enumerate(description):
+        for col_num, _ in enumerate(description):
             headers.append(
                 TypedQueryResultColumnHeader(
                     name=f"col_{col_num}",
