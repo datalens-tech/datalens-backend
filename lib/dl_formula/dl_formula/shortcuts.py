@@ -387,11 +387,11 @@ class NodeShortcut:
     ) -> nodes.Ternary:
         return nodes.Ternary.make(name=name, first=first, second=second, third=third, meta=meta)
 
-    def not_(  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def not_(
         self,
         expr: nodes.FormulaItem,
         meta: Optional[nodes.NodeMeta] = None,
-    ):
+    ) -> nodes.Unary:
         return self.unary("not", expr, meta=meta)
 
 

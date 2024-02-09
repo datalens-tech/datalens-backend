@@ -109,7 +109,7 @@ class BIAioHTTPClient:
     _ca_data: bytes = attr.ib()
     _session: Optional[aiohttp.ClientSession] = attr.ib(init=False)
 
-    def __attrs_post_init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __attrs_post_init__(self) -> None:
         self._session = self._make_session()
 
     def _make_session(self) -> aiohttp.ClientSession:

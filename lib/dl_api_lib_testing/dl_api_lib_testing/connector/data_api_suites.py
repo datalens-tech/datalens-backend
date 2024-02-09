@@ -479,13 +479,13 @@ class DefaultConnectorDataPreviewTestSuite(StandardizedDataApiTestBase, Regulate
 class DefaultConnectorDataCacheTestSuite(StandardizedDataApiTestBase, RegulatedTestCase):
     data_caches_enabled = True
 
-    def test_cache_with_filter_with_constants(  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def test_cache_with_filter_with_constants(
         self,
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         db: Db,
         saved_connection_id: str,
-    ):
+    ) -> None:
         """
         There used to problems with the generation of cache keys for MySQL.
         This test makes sure that cache keys for queries with different and repeated constants

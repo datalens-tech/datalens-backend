@@ -41,7 +41,7 @@ class StrictMarkupCompatibleArgTypes(ArgTypeForAll):
     _compatible_types = MARKUP_EFFECTIVELY
     _required_types = DataType.MARKUP.autocast_types
 
-    def __init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __init__(self) -> None:
         super().__init__(expected_types=MARKUP_EFFECTIVELY)
 
     def match_arg_types(self, arg_types: Sequence[DataType]) -> bool:
@@ -164,7 +164,7 @@ class MarkupTypeStrategy(Fixed):
     Inherits `Fixed` for docgen.
     """
 
-    def __init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __init__(self) -> None:
         super().__init__(DataType.MARKUP)
 
     def get_from_args(self, arg_types):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]

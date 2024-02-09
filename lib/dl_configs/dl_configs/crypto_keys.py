@@ -22,13 +22,13 @@ class CryptoKeysConfig(SettingsBase):
     actual_key_id: str = s_attrib("ACTUAL_KEY_ID")  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
 
     @actual_key_id.default  # type: ignore  # 2024-01-24 # TODO: "str" has no attribute "default"  [attr-defined]
-    def _default_actual_key_id(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def _default_actual_key_id(self) -> str:
         if len(self.map_id_key) == 1:
             return next(iter(self.map_id_key.keys()))
         # TODO FIX: Integrate with env loader exceptions handling
         raise ValueError("Missing actual_key_id (acceptable only in single key case)")
 
-    def __attrs_post_init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __attrs_post_init__(self) -> None:
         if self.actual_key_id not in self.map_id_key:
             raise ValueError()
 
