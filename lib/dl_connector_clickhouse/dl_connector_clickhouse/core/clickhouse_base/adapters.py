@@ -60,6 +60,7 @@ from dl_core.connection_models import (
 )
 from dl_core.connectors.base.error_transformer import DBExcKWArgs
 from dl_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
+from dl_core.db.conversion_base import get_type_transformer
 from dl_core.db.native_type import (
     ClickHouseDateTime64NativeType,
     ClickHouseDateTime64WithTZNativeType,
@@ -79,7 +80,6 @@ from dl_connector_clickhouse.core.clickhouse_base.ch_commons import (
 )
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.core.clickhouse_base.exc import CHRowTooLarge
-from dl_core.db.conversion_base import get_type_transformer
 
 
 if TYPE_CHECKING:
