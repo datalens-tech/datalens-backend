@@ -66,5 +66,5 @@ check_untyped_defs = true
 strict_optional = true
 
 [[tool.mypy.overrides]]
-module = ["aiogoogle.*", "faust-cchardet.*", "mypy_boto3_s3.*", "clickhouse_sqlalchemy.*"]
+module = ["aiogoogle.*", "cchardet.*", "mypy_boto3_s3.*", "clickhouse_sqlalchemy.*"]
 ignore_missing_imports = true

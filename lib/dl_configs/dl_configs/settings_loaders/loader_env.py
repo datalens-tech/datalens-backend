@@ -70,8 +70,7 @@ class ConfigFieldMissing(InvalidConfigValueException):
         return self._field_set
 
 
-def get_sub_keys(prefix: str,
-                 env: SDict):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+def get_sub_keys(prefix: str, env: SDict):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
     effective_prefix = prefix if prefix.endswith(SEP) else prefix + SEP
     return {key[len(effective_prefix):]: value for key, value in env.items() if key.startswith(effective_prefix)}
 
@@ -132,8 +131,7 @@ class ScalarExtractor(SDictExtractor):
 
 @attr.s
 class DefaultOnlyExtractor(SDictExtractor):
-    def __attrs_post_init__(
-            self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __attrs_post_init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         assert self.default is not NOT_SET
 
     def has_field(self, s_dict: SDict) -> bool:
@@ -167,8 +165,7 @@ class CompositeExtractor(SDictExtractor):
     is_root: bool = attr.ib(default=False)
     field_enables_flag_extractor: Optional[ScalarExtractor] = attr.ib(default=None)
 
-    def should_ignore(self,
-                      s_dict) -> bool:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def should_ignore(self, s_dict) -> bool:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         scoped_s_dict = self._get_scoped_s_dict(s_dict)
         field_enables_flag_extractor = self.field_enables_flag_extractor
 
@@ -214,8 +211,7 @@ class CompositeExtractor(SDictExtractor):
         missing_required_fields: list[attr.Attribute] = []
         missing_sub_field_code_set: set[str] = set()
 
-        def handle_field_sub_exc(faulty_field_name: str,
-                                 exc: ConfigFieldMissing):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+        def handle_field_sub_exc(faulty_field_name: str, exc: ConfigFieldMissing):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
             missing_sub_field_code_set.update(f"{faulty_field_name}.{sub_field}" for sub_field in exc.field_set)
 
         if obj is None:
@@ -313,8 +309,7 @@ class EnvSettingsLoader:
 
     _s_dict: Optional[SDict] = attr.ib(repr=False)
 
-    def __attrs_post_init__(
-            self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __attrs_post_init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         if self._s_dict is None:
             self._s_dict = MappingProxyType(dict(os.environ))
         else:

@@ -113,7 +113,7 @@ class SubscriptionManagerBase:
             return await asyncio.wait_for(
                 self.get_direct(timeout=timeout), timeout=timeout
             )
-        except TimeoutError:
+        except asyncio.TimeoutError:
             return None
 
     async def exit(self) -> None:
