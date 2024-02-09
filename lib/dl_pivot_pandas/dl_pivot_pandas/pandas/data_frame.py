@@ -35,7 +35,6 @@ class PdPivotDataFrame(PivotDataFrame):
                 # Single column dimension, so normalize
                 values = (values,)
 
-
             yield PivotHeader(values=values, info=self.headers_info[values])  # type: ignore # TODO: Argument "values" to "PivotHeader" has incompatible type "str"
 
     def iter_row_headers(self) -> Generator[PivotHeader, None, None]:

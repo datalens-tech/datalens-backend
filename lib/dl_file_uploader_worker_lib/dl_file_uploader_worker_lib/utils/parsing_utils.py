@@ -13,7 +13,7 @@ from typing import (
 )
 
 import attr
-import cchardet as chardet  # type: ignore[import-untyped]
+import cchardet as chardet
 
 from dl_app_tools.profiling_base import generic_profiler
 from dl_constants.enums import (

@@ -232,8 +232,7 @@ class DatasetVersionItem(DatasetResource):
         """Update dataset version"""
         us_manager = self.get_us_manager()
         with us_manager.get_locked_entry_cm(
-                Dataset,  # type: ignore
-                dataset_id, wait_timeout=DEFAULT_DATASET_LOCK_WAIT_TIMEOUT
+            Dataset, dataset_id, wait_timeout=DEFAULT_DATASET_LOCK_WAIT_TIMEOUT  # type: ignore
         ) as ds:  # type: Dataset
             utils.need_permission_on_entry(ds, USPermissionKind.edit)
             us_manager.load_dependencies(ds)
