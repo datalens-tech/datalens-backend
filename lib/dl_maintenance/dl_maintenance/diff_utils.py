@@ -26,10 +26,10 @@ class DictFieldsDiff:
     modified: Sequence[str]
     removed: Sequence[str]
 
-    def __bool__(self):  # type: ignore  # TODO: fix
+    def __bool__(self) -> bool:
         return any(attr.asdict(self).values())
 
-    def short_str(self):  # type: ignore  # TODO: fix
+    def short_str(self) -> str:
         parts = [f"{f_name}={f_val}" for f_name, f_val in attr.asdict(self).items() if f_val]
         return f"({';'.join(parts)})"
 
@@ -40,11 +40,11 @@ class EntryFieldsDiff:
     unversioned_data: DictFieldsDiff
     meta: DictFieldsDiff
 
-    def short_str(self):  # type: ignore  # TODO: fix
+    def short_str(self) -> str:
         parts = [f"{f_name}={f_val.short_str()}" for f_name, f_val in attr.asdict(self, recurse=False).items() if f_val]
         return f"Diff({' '.join(parts)})"
 
-    def __bool__(self):  # type: ignore  # TODO: fix
+    def __bool__(self) -> bool:
         return any(attr.asdict(self).values())
 
 
@@ -59,7 +59,7 @@ def get_dict_top_level_diff(a: Dict[str, Any], b: Dict[str, Any]) -> DictFieldsD
     )
 
 
-def get_pre_save_top_level_dict(entry: USMigrationEntry):  # type: ignore  # TODO: fix
+def get_pre_save_top_level_dict(entry: USMigrationEntry) -> EntryFieldsDiff:
     us_resp = entry._us_resp
     return EntryFieldsDiff(
         data=get_dict_top_level_diff(us_resp["data"], entry.data),  # type: ignore  # TODO: fix
