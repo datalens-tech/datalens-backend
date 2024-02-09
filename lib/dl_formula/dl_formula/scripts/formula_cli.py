@@ -47,6 +47,7 @@ from .common import (
     make_graphviz_graph,
 )
 
+
 if TYPE_CHECKING:
     import dl_formula.core.nodes as nodes
 

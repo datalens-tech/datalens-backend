@@ -74,7 +74,7 @@ class ConfigFieldMissing(InvalidConfigValueException):
 
 def get_sub_keys(prefix: str, env: SDict) -> dict[str, str]:
     effective_prefix = prefix if prefix.endswith(SEP) else prefix + SEP
-    return {key[len(effective_prefix):]: value for key, value in env.items() if key.startswith(effective_prefix)}
+    return {key[len(effective_prefix) :]: value for key, value in env.items() if key.startswith(effective_prefix)}
 
 
 NOT_SET = object()
