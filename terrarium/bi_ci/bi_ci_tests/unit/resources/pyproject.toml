@@ -57,3 +57,6 @@ target_path = "snowflake"
 [datalens.pytest.db]
 root_dir = "bi_core_tests/db"
 compose_file_base = "alt_docker-compose"
+
+[datalens.meta.mypy]
+targets = []    # ignore mypy for this module
