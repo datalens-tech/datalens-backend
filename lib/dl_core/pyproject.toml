@@ -91,7 +91,6 @@ strict_optional = true
 module = [
     "aiogoogle.*",
     "anyascii.*",
-    "lz4.*",
     "types_aiobotocore_s3.*",
     "mypy_boto3_s3.*",
     "statcommons.*"

@@ -41,3 +41,9 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[[tool.mypy.overrides]]
+module = [
+    "lz4.*",
+]
+ignore_missing_imports = true
