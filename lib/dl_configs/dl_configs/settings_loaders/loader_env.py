@@ -117,9 +117,7 @@ class ScalarExtractor(SDictExtractor):
 
             return None
 
-        value = s_dict[
-            self.key
-        ]  # type: ignore  # 2024-01-24 # TODO: Invalid index type "str | None" for "Mapping[str, str]"; expected type "str"  [index]
+        value = s_dict[self.key]  # type: ignore  # 2024-01-24 # TODO: Invalid index type "str | None" for "Mapping[str, str]";
 
         if self.converter is None:
             return value
@@ -568,10 +566,8 @@ class EnvSettingsLoader:
     def get_app_cfg_type_field(cls, settings_type: Type[SettingsBase]) -> Optional[attr.Attribute]:
         candidates = [
             field
-            for field in attr.fields(settings_type)
-            if SMeta.from_attrib(  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "fields" has incompatible type "type[SettingsBase]"; expected "type[AttrsInstance]"  [arg-type]
-                field
-            ).is_app_cfg_type
+            for field in attr.fields(settings_type)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "fields" has incompatible type "type[SettingsBase]";
+            if SMeta.from_attrib(field).is_app_cfg_type  # type: ignore  # 2024-02-09 # TODO: Item "None" of "SMeta | None" has no attribute
         ]
         if len(candidates) > 1:
             raise SettingsLoadingException(
