@@ -37,7 +37,7 @@ from dl_core.connection_models import (
     TableIdent,
 )
 from dl_core.enums import QueryExecutorMode
-from dl_core.serialization import (
+from dl_model_tools.serialization import (
     RedisDatalensDataJSONDecoder,
     RedisDatalensDataJSONEncoder,
 )

@@ -25,7 +25,6 @@ dnspython = ">=2.2.1"
 flask = ">=2.2.5"
 grpcio = ">=1.58.0"
 jaeger-client = ">=4.8.0"
-lz4 = ">=4.3.2"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 multidict = ">=4.0"
@@ -33,7 +32,6 @@ opentracing = ">=2.4.0"
 python = ">=3.10, <3.12"
 python-dateutil = ">=2.8.2"
 pytz = ">=2022.7.1"
-pyyaml = ">=6.0.1"
 redis = ">=4.5.4"
 requests = ">=2.28.2"
 shortuuid = ">=1.0.11"
@@ -42,20 +40,18 @@ typing-extensions = ">=4.5.0"
 uwsgi = ">=2.0.22"
 werkzeug = ">=2.2.3"
 xxhash = ">=3.2.0"
-# Check if really required
-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 redis_cache_lock = {path = "../redis-cache-lock"}
 statcommons = {path = "../statcommons"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-utils = {path = "../dl_utils"}
 datalens-constants = {path = "../dl_constants"}
 datalens-i18n = {path = "../dl_i18n"}
-datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 datalens-configs = {path = "../dl_configs"}
 datalens-app-tools = {path = "../dl_app_tools"}
 datalens-model-tools = {path = "../dl_model_tools"}
 datalens-task-processor = {path = "../dl_task_processor"}
 datalens-dashsql = {path = "../../lib/dl_dashsql"}
+datalens-cache-engine = {path = "../dl_cache_engine"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
@@ -95,7 +91,6 @@ strict_optional = true
 module = [
     "aiogoogle.*",
     "anyascii.*",
-    "lz4.*",
     "types_aiobotocore_s3.*",
     "mypy_boto3_s3.*",
     "statcommons.*"

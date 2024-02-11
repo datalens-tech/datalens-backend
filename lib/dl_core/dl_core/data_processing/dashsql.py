@@ -53,11 +53,11 @@ from dl_dashsql.types import IncomingDSQLParamTypeExt
 
 
 if TYPE_CHECKING:
+    from dl_cache_engine.primitives import BIQueryCacheOptions
     from dl_core.connection_executors.async_base import (
         AsyncConnExecutorBase,
         AsyncExecutionResult,
     )
-    from dl_core.data_processing.cache.primitives import BIQueryCacheOptions
     from dl_core.data_processing.types import TJSONExtChunkStream
     from dl_core.services_registry import ServicesRegistry
     from dl_core.us_connection_base import ConnectionBase

@@ -9,10 +9,10 @@ from typing import (
 
 import attr
 
+from dl_cache_engine.primitives import CacheTTLConfig
 from dl_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
 from dl_compeng_pg.compeng_pg_base.pool_base import BasePgPoolWrapper
 from dl_constants.enums import UserDataType
-from dl_core.data_processing.cache.primitives import CacheTTLConfig
 from dl_core.data_processing.cache.utils import (
     CompengOptionsBuilder,
     DatasetOptionsBuilder,

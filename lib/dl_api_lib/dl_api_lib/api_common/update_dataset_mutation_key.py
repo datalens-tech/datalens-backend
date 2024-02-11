@@ -10,8 +10,8 @@ from typing import (
 import attr
 
 from dl_api_lib.request_model.data import FieldAction
-from dl_core.serialization import RedisDatalensDataJSONEncoder
 from dl_core.us_manager.mutation_cache.mutation_key_base import MutationKey
+from dl_model_tools.serialization import RedisDatalensDataJSONEncoder
 
 
 class MutationKeySerializationError(ValueError):

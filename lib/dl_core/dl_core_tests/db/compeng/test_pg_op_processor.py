@@ -14,6 +14,7 @@ import uuid
 import pytest
 import sqlalchemy as sa
 
+from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_compeng_pg.compeng_aiopg.pool_aiopg import AiopgPoolWrapper
 from dl_compeng_pg.compeng_aiopg.processor_aiopg import AiopgOperationProcessor
 from dl_compeng_pg.compeng_asyncpg.pool_asyncpg import AsyncpgPoolWrapper
@@ -24,7 +25,6 @@ from dl_constants.enums import (
     JoinType,
     UserDataType,
 )
-from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
 from dl_core.data_processing.processing.operation import (
     CalcOp,
     DownloadOp,

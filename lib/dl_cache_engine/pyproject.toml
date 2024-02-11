@@ -1,29 +1,23 @@
 
 [tool.poetry]
-name = "datalens-compeng-pg"
+name = "datalens-cache-engine"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_compeng_pg"}]
+packages = [{include = "dl_cache_engine"}]
 license = "Apache 2.0"
 readme = "README.md"
 
 
 [tool.poetry.dependencies]
-aiopg = ">=1.4.0"
-asyncpg = ">=0.27.0"
 attrs = ">=22.2.0"
 python = ">=3.10, <3.12"
-sqlalchemy = ">=1.4.46, <2.0"
-datalens-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
-datalens-cache-engine = {path = "../dl_cache_engine"}
+datalens-app-tools = {path = "../dl_app_tools"}
 datalens-constants = {path = "../dl_constants"}
-datalens-connector-postgresql = {path = "../dl_connector_postgresql"}
-datalens-core = {path = "../dl_core"}
-
-[tool.poetry.plugins."dl_core.data_processor_plugins"]
-compeng_aiopg = "dl_compeng_pg.compeng_aiopg.plugin:AiopgCompengPlugin"
-compeng_asyncpg = "dl_compeng_pg.compeng_asyncpg.plugin:AsyncpgCompengPlugin"
+datalens-model-tools = {path = "../dl_model_tools"}
+lz4 = "==4.3.2"
+redis = "==4.5.4"
+redis_cache_lock = {path = "../redis-cache-lock"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
@@ -39,8 +33,6 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-
-
 [datalens_ci]
 skip_test = true
 
@@ -51,5 +43,7 @@ check_untyped_defs = true
 strict_optional = true
 
 [[tool.mypy.overrides]]
-module = "dl_sqlalchemy_postgres.*"
+module = [
+    "lz4.*",
+]
 ignore_missing_imports = true

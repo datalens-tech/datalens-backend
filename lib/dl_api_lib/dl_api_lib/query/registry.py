@@ -59,14 +59,14 @@ def register_is_compeng_executable(backend_type: SourceBackendType, is_compeng_e
 
 
 @attr.s(frozen=True, auto_attribs=True, kw_only=True)
-class MQMFactoryKey:
+class MQMFactoryKey:  # TODO: Move to dl_query_processing
     query_proc_mode: QueryProcessingMode
     backend_type: SourceBackendType
     dialect: Optional[DialectCombo]
 
 
 @attr.s(frozen=True, auto_attribs=True, kw_only=True)
-class MQMFactorySettingItem:
+class MQMFactorySettingItem:  # TODO: Move to dl_query_processing
     query_proc_mode: QueryProcessingMode
     factory_cls: Type[MultiQueryMutatorFactoryBase]
     dialects: Collection[Optional[DialectCombo]] = attr.ib(default=(None,))

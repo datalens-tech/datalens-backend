@@ -14,12 +14,12 @@ from typing import (
 import attr
 
 from dl_api_commons.reporting.models import DataProcessingCacheInfoReportingRecord
+from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_constants.enums import (
     JoinType,
     UserDataType,
 )
 from dl_core.connectors.base.query_compiler import QueryCompiler
-from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
 from dl_core.data_processing.cache.processing_helper import (
     CacheProcessingHelper,
     CacheSituation,

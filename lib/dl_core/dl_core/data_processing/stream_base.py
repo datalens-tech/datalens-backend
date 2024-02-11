@@ -16,10 +16,10 @@ import attr
 
 
 if TYPE_CHECKING:
+    from dl_cache_engine.primitives import LocalKeyRepresentation
     from dl_constants.enums import UserDataType
     from dl_constants.types import TBIDataRow
     from dl_core.components.ids import AvatarId
-    from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
     from dl_core.data_processing.prepared_components.primitives import (
         PreparedMultiFromInfo,
         PreparedSingleFromInfo,

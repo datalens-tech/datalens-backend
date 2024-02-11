@@ -10,8 +10,8 @@ from typing import (
 import attr
 from sqlalchemy.exc import DatabaseError
 
-from dl_core.data_processing.cache.exc import CachePreparationFailed
-from dl_core.data_processing.cache.primitives import (
+from dl_cache_engine.exc import CachePreparationFailed
+from dl_cache_engine.primitives import (
     BIQueryCacheOptions,
     CacheTTLConfig,
     CacheTTLInfo,
@@ -19,11 +19,11 @@ from dl_core.data_processing.cache.primitives import (
     LocalKeyRepresentation,
 )
 from dl_core.query.bi_query import QueryAndResultInfo
-from dl_core.serialization import hashable_dumps
 from dl_core.us_connection_base import (
     ConnectionBase,
     ExecutorBasedMixin,
 )
+from dl_model_tools.serialization import hashable_dumps
 
 
 if TYPE_CHECKING:

@@ -4,8 +4,8 @@ from typing import Optional
 
 import attr
 
+from dl_cache_engine.primitives import CacheTTLConfig
 from dl_constants.enums import DataSourceRole
-from dl_core.data_processing.cache.primitives import CacheTTLConfig
 from dl_core.data_processing.cache.utils import (
     DatasetOptionsBuilder,
     SelectorCacheOptionsBuilder,

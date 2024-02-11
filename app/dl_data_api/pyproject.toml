@@ -9,6 +9,7 @@ license = "Apache 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
+aiohttp = ">=3.8.1"
 python = ">=3.10, <3.12"
 gunicorn = ">=20.1.0"
 datalens-version = {path = "../../lib/dl_version"}
@@ -24,6 +25,10 @@ datalens-core = {path = "../../lib/dl_core"}
 datalens-app-tools = {path = "../../lib/dl_app_tools"}
 datalens-model-tools = {path = "../../lib/dl_model_tools"}
 datalens-api-lib = {path = "../../lib/dl_api_lib"}
+datalens-api-commons = {path = "../../lib/dl_api_commons"}
+datalens-cache-engine = {path = "../../lib/dl_cache_engine"}
+datalens-configs = {path = "../../lib/dl_configs"}
+datalens-constants = {path = "../../lib/dl_constants"}
 
 [build-system]
 requires = ["poetry-core"]

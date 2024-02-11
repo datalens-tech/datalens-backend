@@ -4,7 +4,7 @@ import datetime
 import decimal
 import json
 
-from dl_core.serialization import (
+from dl_model_tools.serialization import (
     RedisDatalensDataJSONDecoder,
     RedisDatalensDataJSONEncoder,
 )
