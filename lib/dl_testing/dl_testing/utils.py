@@ -12,6 +12,7 @@ from typing import (
     Callable,
     List,
     Literal,
+    Optional,
     Tuple,
     overload,
 )
@@ -44,7 +45,9 @@ def skip_outside_devhost(func):  # type: ignore  # 2024-01-24 # TODO: Function i
     return pytest.mark.skip("Requires RUN_DEVHOST_TESTS=1")(func)
 
 
-def wait_for_initdb(initdb_port, initdb_host=None, timeout=900, require: bool = False):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+def wait_for_initdb(
+    initdb_port: int, initdb_host: Optional[str] = None, timeout: int = 900, require: bool = False
+) -> tuple[bool, str]:
     initdb_host = initdb_host or get_test_container_hostport("init-db").host
     # TODO: initdb_port?
 
@@ -68,7 +71,7 @@ def wait_for_initdb(initdb_port, initdb_host=None, timeout=900, require: bool = 
     )
 
 
-def wait_for_port(host: str, port: int, period_seconds: int = 1, timeout_seconds: int = 10):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+def wait_for_port(host: str, port: int, period_seconds: int = 1, timeout_seconds: int = 10) -> None:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     time_start = time.time()
 
