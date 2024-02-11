@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
+from dl_constants.enums import DashSQLQueryType
 from dl_core.us_connection_base import DataSourceTemplate
 from dl_i18n.localizer_base import Localizer
 
@@ -39,3 +40,10 @@ class ConnectionClickhouse(ConnectionClickhouseBase):
     @property
     def allow_public_usage(self) -> bool:
         return True
+
+    def get_supported_dashsql_query_types(self) -> frozenset[DashSQLQueryType]:
+        return frozenset(
+            {
+                DashSQLQueryType.generic_query,
+            }
+        )

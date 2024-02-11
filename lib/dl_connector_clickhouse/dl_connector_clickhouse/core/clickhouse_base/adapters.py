@@ -60,6 +60,7 @@ from dl_core.connection_models import (
 )
 from dl_core.connectors.base.error_transformer import DBExcKWArgs
 from dl_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
+from dl_core.db.conversion_base import get_type_transformer
 from dl_core.db.native_type import (
     ClickHouseDateTime64NativeType,
     ClickHouseDateTime64WithTZNativeType,
@@ -368,12 +369,14 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
 
     def _make_async_typed_query_action(self) -> AsyncTypedQueryAdapterAction:
         literalizer = get_dash_sql_param_literalizer(backend_type=self.get_backend_type())
+        type_transformer = get_type_transformer(conn_type=self.conn_type)
         return AsyncTypedQueryAdapterActionViaStandardExecute(
             async_adapter=self,
             query_converter=TypedQueryToDBAQueryConverter(
                 literalizer=literalizer,
                 query_formatter_factory=DBAPIQueryFormatterFactory(),
             ),
+            type_transformer=type_transformer,
         )
 
     def __attrs_post_init__(self) -> None:
