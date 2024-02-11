@@ -58,7 +58,7 @@ class DataType(Enum):
     UNSUPPORTED = "unsupported"
 
     @classmethod
-    def get_common_cast_type(cls, *types) -> DataType:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def get_common_cast_type(cls, *types: DataType) -> DataType:
         set_of_types = set(types)
         if len(set_of_types) == 1:
             return set_of_types.pop()

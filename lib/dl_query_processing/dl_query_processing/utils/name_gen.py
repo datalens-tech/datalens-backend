@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from itertools import count
+from typing import Mapping
 
 import dl_formula.core.nodes as formula_nodes
 
@@ -24,7 +25,7 @@ class NameGen:  # TODO: Rename
     sep = "_"
 
     def __init__(self) -> None:
-        self.counters = defaultdict(lambda: 0)  # type: ignore  # 2024-01-24 # TODO: Need type annotation for "counters"  [var-annotated]
+        self.counters: dict[str, int] = defaultdict(lambda: 0)
 
     def __call__(self, node: formula_nodes.FormulaItem, name: str) -> str:
         self.counters[name] += 1
@@ -34,11 +35,11 @@ class NameGen:  # TODO: Rename
 class MappedNameGen(NameGen):
     sep = ""
 
-    def __init__(self, namemap) -> None:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def __init__(self, namemap: Mapping[str, str]) -> None:
         super().__init__()
         self.namemap = namemap
 
-    def __call__(self, node, name) -> str:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def __call__(self, node: formula_nodes.FormulaItem, name: str) -> str:
         return super().__call__(node, self.namemap.get(name, name))
 
 

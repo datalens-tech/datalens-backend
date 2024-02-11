@@ -10,6 +10,7 @@ import time
 from typing import (
     Any,
     Callable,
+    Generator,
     List,
     Literal,
     Optional,
@@ -119,7 +120,7 @@ def guids_from_titles(result_schema: List[dict], titles: List[str]) -> List[str]
 
 
 @contextmanager
-def override_env_cm(to_set: dict[str, str], purge: bool = False):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+def override_env_cm(to_set: dict[str, str], purge: bool = False) -> Generator[None, None, None]:
     preserved = {k: v for k, v in os.environ.items()}
 
     try:
@@ -138,7 +139,7 @@ def override_env_cm(to_set: dict[str, str], purge: bool = False):  # type: ignor
             os.environ[k] = v
 
 
-def _is_profiling_record(rec) -> bool:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+def _is_profiling_record(rec: logging.LogRecord) -> bool:
     return rec.name == PROFILING_LOG_NAME and rec.msg == QUERY_PROFILING_ENTRY
 
 
