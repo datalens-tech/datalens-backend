@@ -299,7 +299,7 @@ class DatasetBaseWrapper:
     def allow_nested_window_functions(self) -> bool:
         return True
 
-    def load_exbuilders(self):  # type: ignore  # TODO: fix
+    def load_exbuilders(self) -> None:
         self.inspect_env = InspectionEnvironment()
         self._column_reg = ColumnRegistry(
             db_columns=self._generate_raw_column_list(),

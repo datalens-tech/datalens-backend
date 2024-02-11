@@ -397,7 +397,7 @@ class ResultSchema:
     _title_cache: Dict[str, BIField] = attr.ib(init=False, eq=False)
     valid: bool = attr.ib(default=True)
 
-    def __attrs_post_init__(self):  # type: ignore  # TODO: fix
+    def __attrs_post_init__(self) -> None:
         self._guid_cache = {}
         self._title_cache = {}
         self.reload_caches()

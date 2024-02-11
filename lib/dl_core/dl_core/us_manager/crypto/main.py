@@ -21,7 +21,7 @@ class CryptoController:
     _key_config: CryptoKeysConfig = attr.ib()
     _map_key_id_fernet_instance: typing.Dict[str, fernet.Fernet] = attr.ib(init=False)
 
-    def __attrs_post_init__(self):  # type: ignore  # TODO: fix
+    def __attrs_post_init__(self) -> None:
         self._map_key_id_fernet_instance = {
             key_id: fernet.Fernet(key_val) for key_id, key_val in self._key_config.map_id_key.items()
         }

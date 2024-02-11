@@ -109,7 +109,7 @@ class DataSource(metaclass=abc.ABCMeta):
         if self._connection is not None:
             self._validate_connection_cls(self._connection)
 
-    def __attrs_post_init__(self):  # type: ignore  # TODO: fix
+    def __attrs_post_init__(self) -> None:
         self._validate_connection()
 
     @classmethod
