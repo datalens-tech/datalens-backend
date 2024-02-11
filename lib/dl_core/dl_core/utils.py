@@ -96,7 +96,7 @@ def make_user_auth_cookies(
 
 
 # TODO FIX: Remove after migration to Connection Executors
-def compile_query_for_debug(query, dialect) -> str:
+def compile_query_for_debug(query, dialect):  # type: ignore  # TODO: fix
     """
     Compile query to string.
     This function is only suitable for logging and not execution of the result.
