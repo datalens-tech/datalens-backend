@@ -78,7 +78,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
     _row_count_hard_limit: Optional[int] = attr.ib(kw_only=True, default=None)
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
 
-    def __attrs_post_init__(self):  # type: ignore  # TODO: fix
+    def __attrs_post_init__(self) -> None:
         if self._prep_component_manager is None:
             self._prep_component_manager = DefaultPreparedComponentManager(
                 dataset=self._dataset,

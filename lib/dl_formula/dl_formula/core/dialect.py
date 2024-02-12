@@ -202,7 +202,7 @@ dialect_defaults: dict[DialectName, DialectCombo] = {
 }
 
 
-def register_default_dialect(dialect_name: DialectName, dialect_combo: DialectCombo):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+def register_default_dialect(dialect_name: DialectName, dialect_combo: DialectCombo) -> None:
     if dialect_name in dialect_defaults:
         assert dialect_defaults[dialect_name] is dialect_combo
     else:

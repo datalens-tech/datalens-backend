@@ -22,7 +22,7 @@ class BrokenUSLink:
     reference: ConnectionRef = attr.ib()
     _referrer_id_set: set[str] = attr.ib(init=False, factory=set)
 
-    def __attrs_post_init__(self):  # type: ignore  # TODO: fix
+    def __attrs_post_init__(self) -> None:
         self._referrer_id_set = set(self._referrer_id_set)
 
     @property

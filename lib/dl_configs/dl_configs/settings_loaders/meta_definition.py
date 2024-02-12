@@ -31,12 +31,12 @@ class SMeta:
     enabled_key_name: Optional[str] = attr.ib(default=None)
     is_app_cfg_type: bool = attr.ib(default=False)
 
-    def __attrs_post_init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __attrs_post_init__(self) -> None:
         assert not (
             self.fallback_cfg_key is not None and self.fallback_factory is not None
         ), "fallback_factory and fallback_cfg_key can not be defined together"
 
-    def to_dict(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def to_dict(self) -> dict[str, SMeta]:
         return {self.attrs_meta_key: self}
 
     @classmethod

@@ -172,7 +172,7 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
     _worker_thread_started_event = attr.ib(init=False, factory=asyncio.Event)
     _log: logging.LoggerAdapter = attr.ib(init=False, default=None)
 
-    def __attrs_post_init__(self):  # type: ignore  # TODO: fix
+    def __attrs_post_init__(self) -> None:
         self._log = logging.LoggerAdapter(
             logging.getLogger(__name__),
             extra=dict(

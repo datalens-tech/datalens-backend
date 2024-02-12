@@ -42,14 +42,14 @@ class BaseAsyncAdapterTestClass(BaseConnectionExecutorTestClass, Generic[_TARGET
             default_chunk_size=10,
         )
 
-    async def _test_pass_db_query_to_user(  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    async def _test_pass_db_query_to_user(
         self,
         pass_db_query_to_user: Optional[bool],
         query_to_send: str,
         expected_query: Optional[str],
         conn_bi_context: RequestContextInfo,
         target_conn_dto: _TARGET_DTO_TV,
-    ):
+    ) -> None:
         debug_query = expected_query
 
         target_conn_dto = target_conn_dto.clone(port="65535")  # not the actual db port to raise connect error

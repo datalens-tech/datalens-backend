@@ -151,11 +151,11 @@ _IS_FORKABLE_DIALECT: dict[DialectName, bool] = {}
 _IS_FORKABLE_DEFAULT = True
 
 
-def is_forkable_dialect(dialect: DialectCombo):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+def is_forkable_dialect(dialect: DialectCombo) -> bool:
     return _IS_FORKABLE_DIALECT.get(dialect.common_name, _IS_FORKABLE_DEFAULT)
 
 
-def register_forkable_dialect_name(dialect_name: DialectName, is_forkable: bool):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+def register_forkable_dialect_name(dialect_name: DialectName, is_forkable: bool) -> None:
     try:
         assert _IS_FORKABLE_DIALECT[dialect_name] is is_forkable
     except KeyError:

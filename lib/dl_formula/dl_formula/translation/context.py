@@ -86,13 +86,13 @@ class TranslationCtx:
         }
 
     @property
-    def _expression_str(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def _expression_str(self) -> str:
         try:
             return str(self.expression)
         except Exception:
             return repr(self.expression)
 
-    def __repr__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def __repr__(self) -> str:
         _c0 = "\x1b[0m"
         _c1 = "\x1b[038;5;118m"
         return "<{}({})>{}".format(

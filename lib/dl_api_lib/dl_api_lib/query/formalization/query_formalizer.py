@@ -73,6 +73,7 @@ from dl_query_processing.legend.field_legend import (
 
 if TYPE_CHECKING:
     from dl_core.services_registry.top_level import ServicesRegistry
+    from dl_core.us_entry import USEntry
     from dl_query_processing.compilation.query_meta import QueryMetaInfo
     from dl_query_processing.legend.block_legend import BlockSpec
 
@@ -86,7 +87,7 @@ _RANGE_TYPE_TO_SELECT_TYPE = {
 }
 
 
-def need_permission_on_entry(us_entry, permission) -> None:  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+def need_permission_on_entry(us_entry: USEntry, permission: str) -> None:
     # TODO: DELETE ME after the check is moved up the stack
     assert us_entry.permissions is not None
     assert us_entry.uuid is not None

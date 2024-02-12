@@ -18,7 +18,7 @@ class DefaultMathFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
     supports_atan_2_in_origin: ClassVar[bool] = True
     supports_float_div: ClassVar[bool] = True
 
-    def test_trigonometric_functions(self, dbe: DbEvaluator):  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def test_trigonometric_functions(self, dbe: DbEvaluator) -> None:
         assert dbe.eval("ACOS(1)") == 0
         assert dbe.eval("ACOS(0)") == pytest.approx(math.pi / 2)
 

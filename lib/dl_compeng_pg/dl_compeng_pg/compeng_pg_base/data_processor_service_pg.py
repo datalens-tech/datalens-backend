@@ -73,9 +73,9 @@ class CompEngPgService(DataProcessorService, Generic[_POOL_TV], metaclass=abc.AB
             await self._deinit_pool()
 
     async def _deinit_pool(self) -> None:
-        """..."""
+        assert self._pool is not None
         LOGGER.info("Tear down compeng pg pool %r...", self)
-        await self._pool.disconnect()  # type: ignore  # TODO: fix
+        await self._pool.disconnect()
         self._pool = None
         LOGGER.info("Tear down compeng pg pool %r: done.", self)
 

@@ -10,8 +10,10 @@ import time
 from typing import (
     Any,
     Callable,
+    Generator,
     List,
     Literal,
+    Optional,
     Tuple,
     overload,
 )
@@ -44,7 +46,9 @@ def skip_outside_devhost(func):  # type: ignore  # 2024-01-24 # TODO: Function i
     return pytest.mark.skip("Requires RUN_DEVHOST_TESTS=1")(func)
 
 
-def wait_for_initdb(initdb_port, initdb_host=None, timeout=900, require: bool = False):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+def wait_for_initdb(
+    initdb_port: int, initdb_host: Optional[str] = None, timeout: int = 900, require: bool = False
+) -> tuple[bool, str]:
     initdb_host = initdb_host or get_test_container_hostport("init-db").host
     # TODO: initdb_port?
 
@@ -68,7 +72,7 @@ def wait_for_initdb(initdb_port, initdb_host=None, timeout=900, require: bool = 
     )
 
 
-def wait_for_port(host: str, port: int, period_seconds: int = 1, timeout_seconds: int = 10):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+def wait_for_port(host: str, port: int, period_seconds: int = 1, timeout_seconds: int = 10) -> None:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     time_start = time.time()
 
@@ -116,7 +120,7 @@ def guids_from_titles(result_schema: List[dict], titles: List[str]) -> List[str]
 
 
 @contextmanager
-def override_env_cm(to_set: dict[str, str], purge: bool = False):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+def override_env_cm(to_set: dict[str, str], purge: bool = False) -> Generator[None, None, None]:
     preserved = {k: v for k, v in os.environ.items()}
 
     try:
@@ -135,7 +139,7 @@ def override_env_cm(to_set: dict[str, str], purge: bool = False):  # type: ignor
             os.environ[k] = v
 
 
-def _is_profiling_record(rec) -> bool:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+def _is_profiling_record(rec: logging.LogRecord) -> bool:
     return rec.name == PROFILING_LOG_NAME and rec.msg == QUERY_PROFILING_ENTRY
 
 

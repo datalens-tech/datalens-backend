@@ -631,7 +631,7 @@ class FuncTreeStr(FuncTreeBase):
 class DbCastArgTypes(ArgTypeSequence):
     __slots__ = ()
 
-    def __init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __init__(self) -> None:
         super().__init__(
             arg_types=[
                 # 1. expression
@@ -764,7 +764,7 @@ class FuncDbCastBase(TypeConvFunction):
         assert value.expression is not None
         return cls.apply_cast_wrapper(dialect=dialect, expression=value.expression, type_=type_)
 
-    def __init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __init__(self) -> None:
         super().__init__()
 
         self._inst_variants = [

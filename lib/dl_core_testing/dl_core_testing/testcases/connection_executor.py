@@ -71,7 +71,7 @@ class BaseConnectionExecutorTestClass(RegulatedTestCase, BaseConnectionTestClass
     async def async_connection_executor(
         self,
         async_conn_executor_factory: Callable[[], AsyncConnExecutorBase],
-    ) -> AsyncGenerator[AsyncConnExecutorBase, None, None]:  # type: ignore  # 2024-01-29 # TODO: "AsyncGenerator" expects 2 type arguments, but 3 given  [type-arg]
+    ) -> AsyncGenerator[AsyncConnExecutorBase, None]:
         async_conn_executor = async_conn_executor_factory()
         yield async_conn_executor_factory()
         await async_conn_executor.close()
@@ -96,7 +96,7 @@ class DefaultSyncAsyncConnectionExecutorCheckBase(BaseConnectionExecutorTestClas
         return C.full_house()
 
     @pytest.fixture(scope="function")
-    def db_table(self, db: Db, db_table_columns: list[C]) -> DbTable:  # type: ignore  # 2024-01-29 # TODO: The return type of a generator function should be "Generator" or one of its supertypes  [misc]
+    def db_table(self, db: Db, db_table_columns: list[C]) -> Generator[DbTable, None, None]:
         db_table = make_table(db, columns=db_table_columns)
         yield db_table
         db.drop_table(db_table.table)
@@ -132,12 +132,12 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
     def test_test(self, sync_connection_executor: SyncConnExecutorBase) -> None:
         sync_connection_executor.test()
 
-    def test_get_table_names(  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def test_get_table_names(
         self,
         sample_table: DbTable,
         db: Db,
         sync_connection_executor: SyncConnExecutorBase,
-    ):
+    ) -> None:
         # at the moment, checks that sample table is listed among the others
 
         tables = [sample_table]
@@ -173,10 +173,11 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
         nt: Optional[GenericNativeType] = attr.ib(default=None)
 
         def get_expected_native_type(self, conn_type: ConnectionType) -> GenericNativeType:
-            return self.nt or CommonNativeType(
-                name=norm_native_type(self.nt_name if self.nt_name is not None else self.sa_type),  # type: ignore  # 2024-01-29 # TODO: Argument "name" to "CommonNativeType" has incompatible type "str | None"; expected "str"  [arg-type]
-                nullable=self.nullable,
-            )
+            if self.nt is not None:
+                return self.nt
+            name = norm_native_type(self.nt_name if self.nt_name is not None else self.sa_type)
+            assert name is not None
+            return CommonNativeType(name=name, nullable=self.nullable)
 
     def get_schemas_for_type_recognition(self) -> dict[str, Sequence[CD]]:
         return {
@@ -189,7 +190,9 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
             ],
         }
 
-    def test_type_recognition(self, request, db: Db, sync_connection_executor: SyncConnExecutorBase) -> None:  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def test_type_recognition(
+        self, request: pytest.FixtureRequest, db: Db, sync_connection_executor: SyncConnExecutorBase
+    ) -> None:
         for schema_name, type_schema in self.get_schemas_for_type_recognition().items():
             columns = [
                 sa.Column(name=f"c_{shortuuid.uuid().lower()}", type_=column_data.sa_type)

@@ -5,6 +5,7 @@ import datetime
 import re
 import time
 from typing import (
+    Any,
     Collection,
     Optional,
     Sequence,
@@ -125,7 +126,7 @@ class DbEvaluator:
         return formula
 
     @staticmethod
-    def print_as_example(formula: Union[str, Formula], result) -> None:  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def print_as_example(formula: Union[str, Formula], result: Any) -> None:
         if isinstance(result, datetime.date):
             result_str = "#{}#".format(str(result))
         elif isinstance(result, bool):

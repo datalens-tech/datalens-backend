@@ -41,12 +41,15 @@ class DefaultSchema(BaseSchema, Generic[_TARGET_OBJECT_TV]):
         return obj
 
 
-class DefaultValidateSchema(DefaultSchema[_TARGET_OBJECT_TV], Generic[_TARGET_OBJECT_TV]):
+_TARGET_ATTRS_OBJECT_TV = TypeVar("_TARGET_ATTRS_OBJECT_TV", bound=attr.AttrsInstance)
+
+
+class DefaultValidateSchema(DefaultSchema[_TARGET_ATTRS_OBJECT_TV], Generic[_TARGET_ATTRS_OBJECT_TV]):
     @post_load(pass_many=False)
-    def post_load(self, data: Dict[str, Any], **_: Any) -> _TARGET_OBJECT_TV:
+    def post_load(self, data: Dict[str, Any], **_: Any) -> _TARGET_ATTRS_OBJECT_TV:
         data_with_orig = data.copy()
         obj = self.to_object(data_with_orig)
-        as_dict = attr.asdict(obj, recurse=False)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "asdict" has incompatible type "_TARGET_OBJECT_TV"; expected "AttrsInstance"  [arg-type]
+        as_dict = attr.asdict(obj, recurse=False)
         as_dict = {k: v for k, v in as_dict.items() if v is not None}
         data = {k: v for k, v in data.items() if v is not None}
         assert data == as_dict
