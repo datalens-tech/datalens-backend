@@ -1023,6 +1023,7 @@ attrs = ">=22.2.0"
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-api-connector = {path = "../dl_api_connector"}
 datalens-app-tools = {path = "../dl_app_tools"}
+datalens-cache-engine = {path = "../dl_cache_engine"}
 datalens-compeng-pg = {path = "../dl_compeng_pg"}
 datalens-configs = {path = "../dl_configs"}
 datalens-constants = {path = "../dl_constants"}
@@ -1065,6 +1066,7 @@ datalens-api-client = {path = "../dl_api_client"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-api-connector = {path = "../dl_api_connector"}
 datalens-api-lib = {path = "../dl_api_lib"}
+datalens-cache-engine = {path = "../dl_cache_engine"}
 datalens-configs = {path = "../dl_configs"}
 datalens-constants = {path = "../dl_constants"}
 datalens-core = {path = "../dl_core"}
@@ -1140,6 +1142,28 @@ type = "directory"
 url = "../lib/dl_attrs_model_mapper_doc_tools"
 
 [[package]]
+name = "datalens-cache-engine"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-app-tools = {path = "../dl_app_tools"}
+datalens-constants = {path = "../dl_constants"}
+datalens-model-tools = {path = "../dl_model_tools"}
+lz4 = "==4.3.2"
+redis = "==5.0.1"
+redis_cache_lock = {path = "../redis-cache-lock"}
+
+[package.source]
+type = "directory"
+url = "../lib/dl_cache_engine"
+
+[[package]]
 name = "datalens-compeng-pg"
 version = "0.0.1"
 description = ""
@@ -1152,11 +1176,11 @@ develop = false
 aiopg = ">=1.4.0"
 asyncpg = ">=0.29.0"
 attrs = ">=22.2.0"
+datalens-cache-engine = {path = "../dl_cache_engine"}
 datalens-connector-postgresql = {path = "../dl_connector_postgresql"}
 datalens-constants = {path = "../dl_constants"}
 datalens-core = {path = "../dl_core"}
 datalens-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
-shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
 
 [package.source]
@@ -1235,10 +1259,13 @@ attrs = ">=22.2.0"
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-api-connector = {path = "../dl_api_connector"}
 datalens-app-tools = {path = "../dl_app_tools"}
+datalens-cache-engine = {path = "../dl_cache_engine"}
 datalens-configs = {path = "../dl_configs"}
 datalens-constants = {path = "../dl_constants"}
 datalens-core = {path = "../dl_core"}
+datalens-formula = {path = "../dl_formula"}
 datalens-i18n = {path = "../dl_i18n"}
+datalens-model-tools = {path = "../dl_model_tools"}
 datalens-query-processing = {path = "../dl_query_processing"}
 datalens-sqlalchemy-bitrix = {path = "../dl_sqlalchemy_bitrix"}
 datalens-utils = {path = "../dl_utils"}
@@ -1629,12 +1656,16 @@ files = []
 develop = false
 
 [package.dependencies]
+datalens-api-commons = {path = "../../lib/dl_api_commons"}
 datalens-api-lib = {path = "../../lib/dl_api_lib"}
 datalens-app-tools = {path = "../../lib/dl_app_tools"}
+datalens-cache-engine = {path = "../../lib/dl_cache_engine"}
+datalens-configs = {path = "../../lib/dl_configs"}
 datalens-connector-chyt = {path = "../../lib/dl_connector_chyt"}
 datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
 datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 datalens-connector-ydb = {path = "../../lib/dl_connector_ydb"}
+datalens-constants = {path = "../../lib/dl_constants"}
 datalens-core = {path = "../../lib/dl_core"}
 datalens-model-tools = {path = "../../lib/dl_model_tools"}
 datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
@@ -1666,30 +1697,27 @@ arq = ">=0.25.0"
 attrs = ">=22.2.0"
 boto3 = ">=1.24.59"
 botocore = ">=1.27.59,<1.27.60"
-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 cryptography = ">=41.0.4"
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-app-tools = {path = "../dl_app_tools"}
+datalens-cache-engine = {path = "../dl_cache_engine"}
 datalens-configs = {path = "../dl_configs"}
 datalens-constants = {path = "../dl_constants"}
 datalens-dashsql = {path = "../../lib/dl_dashsql"}
 datalens-i18n = {path = "../dl_i18n"}
 datalens-model-tools = {path = "../dl_model_tools"}
-datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 datalens-task-processor = {path = "../dl_task_processor"}
 datalens-utils = {path = "../dl_utils"}
 dnspython = ">=2.2.1"
 Flask = ">=2.2.5"
 grpcio = ">=1.60.0"
 jaeger-client = ">=4.8.0"
-lz4 = ">=4.3.2"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 multidict = ">=4.0"
 opentracing = ">=2.4.0"
 python-dateutil = ">=2.8.2"
 pytz = ">=2022.7.1"
-pyyaml = ">=6.0.1"
 redis = ">=5.0.1"
 redis_cache_lock = {path = "../redis-cache-lock"}
 requests = ">=2.28.2"
@@ -1768,12 +1796,17 @@ files = []
 develop = false
 
 [package.dependencies]
+aiohttp = ">=3.9.1"
+datalens-api-commons = {path = "../../lib/dl_api_commons"}
 datalens-api-lib = {path = "../../lib/dl_api_lib"}
 datalens-app-tools = {path = "../../lib/dl_app_tools"}
+datalens-cache-engine = {path = "../../lib/dl_cache_engine"}
+datalens-configs = {path = "../../lib/dl_configs"}
 datalens-connector-chyt = {path = "../../lib/dl_connector_chyt"}
 datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
 datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 datalens-connector-ydb = {path = "../../lib/dl_connector_ydb"}
+datalens-constants = {path = "../../lib/dl_constants"}
 datalens-core = {path = "../../lib/dl_core"}
 datalens-model-tools = {path = "../../lib/dl_model_tools"}
 datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
@@ -2058,6 +2091,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+datalens-constants = {path = "../dl_constants"}
 dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = ">=3.19.0"
 
@@ -6375,4 +6409,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "642c93de0a07174ffe7539347eb435dba528436d90361c7f85288142a44acbe0"
+content-hash = "5db74a127b774a708281ac161b98b6444251fb47ea58fd2a6c7f745f829c91ec"
