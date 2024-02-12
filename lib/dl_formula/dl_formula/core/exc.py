@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import (
+    Any,
     ClassVar,
     List,
     Optional,
@@ -19,7 +20,7 @@ from dl_formula.core.position import Position
 
 
 class ParserNotFoundError(Exception):
-    def __init__(self, *args, **kwargs):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__()
         self.description = (
             "Cannot import parser files,"
@@ -27,7 +28,7 @@ class ParserNotFoundError(Exception):
             " `${PROJECT_ROOT}/docker_build/run-project-bake gen_antlr`"
         )
 
-    def __str__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def __str__(self) -> str:
         return self.description
 
 
@@ -79,7 +80,7 @@ class FormulaError(Exception):
         self.error = self.errors[0] if len(errors) == 1 else None
         self.description = "; ".join([str(err) for err in self.errors])
 
-    def __str__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def __str__(self) -> str:
         return self.description
 
 

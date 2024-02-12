@@ -21,6 +21,7 @@ from sqlalchemy.sql.elements import (
 )
 
 from dl_app_tools.profiling_base import generic_profiler_async
+from dl_cache_engine.engine import RedisCacheLockWrapped
 from dl_constants.enums import ConnectionType
 from dl_core.aio.web_app_services.redis import RedisConnParams
 from dl_core.connection_executors.adapters.adapter_actions.async_base import AsyncDBVersionAdapterAction
@@ -38,7 +39,6 @@ from dl_core.connection_models import (
     TableIdent,
 )
 from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
-from dl_core.data_processing.cache.engine import RedisCacheLockWrapped
 from dl_core.db.native_type import CommonNativeType
 from dl_core.exc import DatabaseQueryError
 

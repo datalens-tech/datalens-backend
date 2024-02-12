@@ -16,7 +16,7 @@ from sqlalchemy.sql.selectable import (
     Subquery,
 )
 
-from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
+from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_core.data_processing.prepared_components.primitives import (
     PreparedFromInfo,
     PreparedSingleFromInfo,

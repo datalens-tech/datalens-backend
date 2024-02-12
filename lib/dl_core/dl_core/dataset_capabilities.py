@@ -59,7 +59,7 @@ def get_compatible_source_types(source_type: DataSourceType) -> FrozenSet[DataSo
 _SOURCE_CONNECTION_COMPATIBILITY: Dict[DataSourceType, FrozenSet[ConnectionType]] = {}
 
 
-def _populate_compatibility_map():  # type: ignore  # TODO: fix
+def _populate_compatibility_map() -> None:
     for conn_type, conn_cls in CONNECTION_TYPES.items():
         for dsrc_type in conn_cls.get_provided_source_types():
             _SOURCE_CONNECTION_COMPATIBILITY[dsrc_type] = _SOURCE_CONNECTION_COMPATIBILITY.get(

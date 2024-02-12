@@ -3,10 +3,6 @@ from __future__ import annotations
 from dl_utils.utils import join_in_chunks
 
 
-def test_stuff():
-    assert True
-
-
 def test_join_in_chunks():
     # TODO: `hypothesis` test over these parameters
     values = list(map(str, range(1000)))

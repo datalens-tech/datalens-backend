@@ -22,13 +22,14 @@ class EnvParamGetterLoader:
     def _make_ep_mgr(self) -> EntrypointClassManager:
         return EntrypointClassManager(entrypoint_group_name=self.EP_NAME)
 
-    def get_getter(self, name: str) -> EnvParamGetter:  # type: ignore  # 2024-01-24 # TODO: Missing return statement  [return]
+    def get_getter(self, name: str) -> EnvParamGetter:
         try:
             return self._getters[name]
         except KeyError:
             if name.startswith("$"):
                 self._auto_add_getter(name)
                 return self.get_getter(name)
+            raise
 
     def has_getter(self, name: str) -> bool:
         return name in self._getters

@@ -118,7 +118,7 @@ def parse_comma_separated_hosts(host: Optional[str]) -> tuple[str, ...]:
     return tuple(h.strip() for h in host.split(","))
 
 
-def validate_hostname_or_ip_address(hostname: str):  # type: ignore  # TODO: fix
+def validate_hostname_or_ip_address(hostname: str) -> None:
     # IP address case
     try:
         ipaddress.ip_address(hostname)
@@ -149,7 +149,7 @@ def validate_hostname_or_ip_address(hostname: str):  # type: ignore  # TODO: fix
         raise ValueError("Not a valid netloc")
 
 
-def shorten_uuid(some_uuid: str):  # type: ignore  # TODO: fix
+def shorten_uuid(some_uuid: str) -> str:
     return shortuuid.encode(uuid.UUID(some_uuid))
 
 

@@ -14,9 +14,9 @@ import redis.asyncio
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.reporting.registry import ReportingRegistry
+from dl_cache_engine.primitives import CacheTTLConfig
 from dl_configs.enums import RequiredService
 from dl_constants.enums import ProcessorType
-from dl_core.data_processing.cache.primitives import CacheTTLConfig
 from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.services_registry.cache_engine_factory import (
     CacheEngineFactory,

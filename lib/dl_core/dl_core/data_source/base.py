@@ -16,6 +16,10 @@ from typing import (
 import attr
 from sqlalchemy.sql.elements import ClauseElement
 
+from dl_cache_engine.primitives import (
+    DataKeyPart,
+    LocalKeyRepresentation,
+)
 from dl_constants.enums import (
     ConnectionType,
     DataSourceType,
@@ -27,10 +31,6 @@ from dl_core.base_models import (
     SourceFilterSpec,
 )
 from dl_core.connectors.base.query_compiler import QueryCompiler
-from dl_core.data_processing.cache.primitives import (
-    DataKeyPart,
-    LocalKeyRepresentation,
-)
 from dl_core.data_source_spec.base import DataSourceSpec
 from dl_core.db import (
     IndexInfo,
@@ -109,7 +109,7 @@ class DataSource(metaclass=abc.ABCMeta):
         if self._connection is not None:
             self._validate_connection_cls(self._connection)
 
-    def __attrs_post_init__(self):  # type: ignore  # TODO: fix
+    def __attrs_post_init__(self) -> None:
         self._validate_connection()
 
     @classmethod

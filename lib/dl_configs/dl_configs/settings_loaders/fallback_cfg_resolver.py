@@ -33,7 +33,7 @@ class ObjectLikeConfig(Mapping):
     def __iter__(self) -> Iterator:
         return iter(self._data)
 
-    def _get_key(self, key: Any):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def _get_key(self, key: Any) -> Any:
         if key not in self._data:
             path = ".".join(self._path + [key])
             raise AttributeError(f'There is no record in config by path: "{path}"')
@@ -91,7 +91,7 @@ class YamlFileConfigResolver(FallbackConfigResolver):
         return path
 
     @classmethod
-    def is_config_enabled(cls, s_dict: SDict):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def is_config_enabled(cls, s_dict: SDict) -> bool:
         result = cls._get_config_path(s_dict) is not None
         LOGGER.info('Check path key in s_dict: "%s"', result)
         return result

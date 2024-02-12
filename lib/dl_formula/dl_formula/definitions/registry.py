@@ -27,7 +27,7 @@ class FuncKey(NamedTuple):
 
 
 class OperationRegistry:
-    def __init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __init__(self) -> None:
         self.ops: dict[FuncKey, list["op_base.NodeTranslation"]] = {}
 
     def __contains__(self, key: FuncKey) -> bool:

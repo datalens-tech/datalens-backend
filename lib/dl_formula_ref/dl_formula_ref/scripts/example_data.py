@@ -37,9 +37,9 @@ def get_parser() -> argparse.ArgumentParser:
 
 class ExampleDataTool:
     @classmethod
-    def generate_example_data(  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def generate_example_data(
         cls, config_version: ConfigVersion, output_path: str, db_config_path: str, default_dialect: DialectCombo
-    ):
+    ) -> None:
         """
         Requires a DB URL mapping in local file `dl_formula_ref/db_config.json`
         with the following format:
@@ -61,7 +61,7 @@ class ExampleDataTool:
         print("Generated data successfully")
 
     @classmethod
-    def run(cls, args):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def run(cls, args: argparse.Namespace) -> None:
         tool = cls()
 
         match args.command:
@@ -76,7 +76,7 @@ class ExampleDataTool:
                 raise RuntimeError(f"Invalid command {args.command}")
 
 
-def main():  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+def main() -> None:
     load_formula_ref()
     load_db_testing_lib()
     parser = get_parser()

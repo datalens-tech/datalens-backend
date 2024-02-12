@@ -22,6 +22,7 @@ dl_repo:
 
   custom_package_map:
     attr: attrs
+    dateutil: python-dateutil
     flask_marshmallow: flask-marshmallow
     flask_restx: flask-restx
     grpc: grpcio

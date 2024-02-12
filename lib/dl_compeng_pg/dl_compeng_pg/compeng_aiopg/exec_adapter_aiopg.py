@@ -17,9 +17,9 @@ import attr
 from sqlalchemy.sql.base import Executable
 from sqlalchemy.sql.selectable import Select
 
+from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
 from dl_constants.enums import UserDataType
-from dl_core.data_processing.cache.primitives import LocalKeyRepresentation
 from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
 from dl_core.data_processing.processing.context import OpExecutionContext
 from dl_core.data_processing.streaming import (

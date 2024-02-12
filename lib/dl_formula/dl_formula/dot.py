@@ -23,7 +23,7 @@ class DotTranslator:
         bool: "#d7e6df",
     }
 
-    def __init__(self):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __init__(self) -> None:
         pass
 
     def translate(self, formula: nodes.Formula, title: str = "Formula") -> graphviz.Digraph:

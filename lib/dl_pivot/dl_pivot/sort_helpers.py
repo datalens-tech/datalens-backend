@@ -107,30 +107,30 @@ class InvertedSortWrapper:
 
     __slots__ = ("__value",)
 
-    def __init__(self, value: Any):
+    def __init__(self, value: Any) -> None:
         self.__value = value
 
-    def __eq__(self, other: Any):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __eq__(self, other: Any) -> bool:
         assert isinstance(other, type(self))
         return self.__value == other.__value
 
-    def __ne__(self, other: Any):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __ne__(self, other: Any) -> bool:
         assert isinstance(other, type(self))
         return self.__value != other.__value
 
-    def __gt__(self, other: Any):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __gt__(self, other: Any) -> bool:
         assert isinstance(other, type(self))
         return self.__value < other.__value
 
-    def __lt__(self, other: Any):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __lt__(self, other: Any) -> bool:
         assert isinstance(other, type(self))
         return self.__value > other.__value
 
-    def __ge__(self, other: Any):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __ge__(self, other: Any) -> bool:
         assert isinstance(other, type(self))
         return self.__value <= other.__value
 
-    def __le__(self, other: Any):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def __le__(self, other: Any) -> bool:
         assert isinstance(other, type(self))
         return self.__value >= other.__value
 

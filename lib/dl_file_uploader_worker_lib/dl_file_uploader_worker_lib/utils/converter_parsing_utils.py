@@ -500,12 +500,12 @@ def make_result_types(
     has_header: bool,
     missing_title_generator: Callable[[int], str] = idx_to_file_notation,
 ) -> TResultTypes:
-    def get_value(value):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def get_value(value: str | Cell) -> Optional[str]:
         if isinstance(value, Cell):
             return str(value.value) if not value.empty else None
         return str(value)
 
-    result_types = []
+    result_types: TResultTypes = []
     for index, t in types.items():
         header_value = get_value(header_values[index]) if has_header and len(header_values) > index else ""
         result_types.append(
@@ -516,8 +516,8 @@ def make_result_types(
                 title=header_value or missing_title_generator(index),
             )
         )
-    result_types.sort(key=lambda t: t["index"])  # type: ignore  # 2024-01-24 # TODO: Argument "key" to "sort" of "list" has incompatible type "Callable[[dict[str, object | Any]], object | Any]"; expected "Callable[[dict[str, object | Any]], SupportsDunderLT[Any] | SupportsDunderGT[Any]]"  [arg-type]
-    return result_types  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "list[dict[str, object | Any]]", expected "list[dict[str, str | int]]")  [return-value]
+    result_types.sort(key=lambda t: t["index"])
+    return result_types
 
 
 def guess_column_types(
@@ -632,10 +632,11 @@ def make_excel_result_types(
     types: TColumnTypes,
     has_header: bool,
 ) -> TResultTypes:
-    def get_value(value) -> str:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
-        return value.get("value")
+    def get_value(values: dict) -> Optional[str]:
+        value: Optional[str] = values.get("value")
+        return value
 
-    result_types = []
+    result_types: TResultTypes = []
     for index, t in types.items():
         header_value = get_value(header_values[index]) if has_header and len(header_values) > index else ""
         result_types.append(
@@ -646,8 +647,8 @@ def make_excel_result_types(
                 title=header_value or "field{}".format(index + 1),
             )
         )
-    result_types.sort(key=lambda t: t["index"])  # type: ignore  # 2024-01-24 # TODO: Argument "key" to "sort" of "list" has incompatible type "Callable[[dict[str, object]], object]"; expected "Callable[[dict[str, object]], SupportsDunderLT[Any] | SupportsDunderGT[Any]]"  [arg-type]
-    return result_types  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "list[dict[str, object]]", expected "list[dict[str, str | int]]")  [return-value]
+    result_types.sort(key=lambda t: t["index"])
+    return result_types
 
 
 @generic_profiler("guess_types_and_header_excel")

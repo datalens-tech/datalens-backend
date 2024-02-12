@@ -59,7 +59,7 @@ class ApiTestBase(abc.ABC):
     query_processing_mode: ClassVar[QueryProcessingMode] = QueryProcessingMode.basic
 
     @pytest.fixture(scope="function", autouse=True)
-    def preload(self):  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def preload(self) -> None:
         preload_api_lib()
 
     @pytest.fixture(scope="class")

@@ -3,6 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 import logging
 from typing import (
+    TYPE_CHECKING,
     NamedTuple,
     Optional,
 )
@@ -36,6 +37,10 @@ from dl_core.us_manager.local_cache import USEntryBuffer
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_utils.aio import await_sync
+
+
+if TYPE_CHECKING:
+    from dl_core.rls import RLSEntry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -254,7 +259,7 @@ class DatasetApiLoader:
         return handled_avatar_relation_ids
 
     @staticmethod
-    def _rls_list_to_set(rls_list):  # type: ignore  # TODO: fix
+    def _rls_list_to_set(rls_list: list[RLSEntry]) -> set[tuple]:
         return set(
             (
                 rlse.field_guid,

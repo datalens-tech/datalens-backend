@@ -11,7 +11,7 @@ from typing import (
 
 import attr
 
-from dl_core.data_processing.cache.engine import EntityCacheEngineAsync
+from dl_cache_engine.engine import EntityCacheEngineAsync
 from dl_core.utils import FutureRef
 
 
