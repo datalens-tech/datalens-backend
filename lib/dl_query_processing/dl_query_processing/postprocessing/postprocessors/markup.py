@@ -32,6 +32,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
     node_sz: ClassVar[str] = "sz"
     node_cl: ClassVar[str] = "cl"
     node_br: ClassVar[str] = "br"
+    node_userinfo: ClassVar[str] = "userinfo"
 
     _node_cls: ClassVar[Type[_NODE_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
@@ -107,6 +108,9 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
 
     def n_br(self) -> _NODE_TV:
         return self._make_node(self.node_br)
+
+    def n_userinfo(self, user_id: str, user_info: str) -> _NODE_TV:
+        return self._make_node(self.node_userinfo, str(user_id), str(user_info))
 
     # Node-structure into a string
 
@@ -244,6 +248,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
         node_sz: dict(name="size", argnames=("content", "size")),
         node_cl: dict(name="color", argnames=("content", "color")),
         node_br: dict(name="br"),
+        node_userinfo: dict(name="user_info", argnames=("content", "user_info")),
     }
 
     def _argcount_mismatch(self, node, **kwargs):  # type: ignore  # TODO: fix
@@ -279,6 +284,11 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
                 return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
             content, size = funcargs
             return dict(type="size", size=size, content=self._verbalize_i(content))
+        if funcname == self.node_userinfo:
+            if len(funcargs) != 2:
+                return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
+            content, user_info = funcargs
+            return dict(type="user_info", user_info=user_info, content=self._verbalize_i(content))
         if funcname == self.node_br:
             if len(funcargs) != 0:
                 return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
