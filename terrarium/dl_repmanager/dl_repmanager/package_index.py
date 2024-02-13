@@ -6,6 +6,8 @@ from frozendict import frozendict
 
 from dl_repmanager.package_meta_reader import PackageMetaIOFactory
 from dl_repmanager.primitives import (
+    MAIN_DEP_SECTION_NAME,
+    TEST_SECTION_NAME,
     LocalReqPackageSpec,
     PackageInfo,
     PypiReqPackageSpec,
@@ -70,8 +72,8 @@ class PackageIndexBuilder:
             return None
 
         req_list_names = [
-            "tool.poetry.dependencies",
-            "tool.poetry.group.tests.dependencies",
+            MAIN_DEP_SECTION_NAME,
+            TEST_SECTION_NAME,
         ]
         requirement_lists: dict[str, RequirementList] = {}
         package_meta_io_factory = PackageMetaIOFactory(fs_editor=self.repository_env.get_fs_editor())
