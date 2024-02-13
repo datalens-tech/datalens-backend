@@ -196,8 +196,8 @@ class CalcOpExecutorAsync(OpExecutorAsync):
         new_data_key = source_stream.data_key.extend("query", op.data_key_data)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "AbstractStream | None" has no attribute "data_key"  [union-attr]
 
         LOGGER.info(
-            f"Preliminary cache key info for query: "  # type: ignore  # 2024-01-24 # TODO: Item "None" of "LocalKeyRepresentation | None" has no attribute "key_parts_hash"  [union-attr]
-            f"legacy key: {legacy_data_key.key_parts_hash} ; "
+            f"Preliminary cache key info for query: "
+            f"legacy key: {legacy_data_key.key_parts_hash} ; "  # type: ignore  # 2024-01-24 # TODO: Item "None" of "LocalKeyRepresentation | None" has no attribute "key_parts_hash"  [union-attr]
             f"new key: {new_data_key.key_parts_hash}"
         )
 

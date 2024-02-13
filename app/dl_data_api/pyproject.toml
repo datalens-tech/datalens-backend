@@ -9,9 +9,9 @@ license = "Apache 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-aiohttp = ">=3.8.1"
-python = ">=3.10, <3.12"
-gunicorn = ">=20.1.0"
+aiohttp = ">=3.9.1"
+python = ">=3.10, <3.13"
+gunicorn = ">=21.2.0"
 datalens-version = {path = "../../lib/dl_version"}
 datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
 datalens-utils = {path = "../../lib/dl_utils"}

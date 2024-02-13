@@ -54,7 +54,6 @@ _SETTINGS_TV = TypeVar("_SETTINGS_TV")
 
 SEP = "_"
 
-
 LOGGER = logging.getLogger(__name__)
 
 
@@ -100,7 +99,7 @@ class SDictExtractor:
     @final
     def extract(self, s_dict: SDict) -> Any:
         ret = self._extract(s_dict)
-        typeguard.check_type(self.key or "root", ret, self.expected_type)
+        typeguard.check_type(ret, self.expected_type)
         return ret
 
 
@@ -118,7 +117,7 @@ class ScalarExtractor(SDictExtractor):
 
             return None
 
-        value = s_dict[self.key]  # type: ignore  # 2024-01-24 # TODO: Invalid index type "str | None" for "Mapping[str, str]"; expected type "str"  [index]
+        value = s_dict[self.key]  # type: ignore  # 2024-01-24 # TODO: Invalid index type "str | None" for "Mapping[str, str]";
 
         if self.converter is None:
             return value
@@ -173,8 +172,12 @@ class CompositeExtractor(SDictExtractor):
         if field_enables_flag_extractor is None:
             return False
 
-        if self.field_enables_flag_extractor.has_field(scoped_s_dict):  # type: ignore  # 2024-01-24 # TODO: Item "None" of "ScalarExtractor | None" has no attribute "has_field"  [union-attr]
-            should_read = self.field_enables_flag_extractor.extract(scoped_s_dict)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "ScalarExtractor | None" has no attribute "extract"  [union-attr]
+        if self.field_enables_flag_extractor.has_field(  # type: ignore  # 2024-01-24 # TODO: Item "None" of "ScalarExtractor | None" has no attribute "has_field"  [union-attr]
+            scoped_s_dict
+        ):
+            should_read = self.field_enables_flag_extractor.extract(  # type: ignore  # 2024-01-24 # TODO: Item "None" of "ScalarExtractor | None" has no attribute "extract"  [union-attr]
+                scoped_s_dict
+            )
             return not bool(should_read)
 
         return False
@@ -388,14 +391,19 @@ class EnvSettingsLoader:
             if ignore_none:
                 # TODO FIX: try to not use noqa: E721
                 # (to consider: `not issubclass(arg_type, type(None))`
-                unwrapped_types = [argtype for argtype in unwrapped_types if argtype is not type(None)]  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "list[Any]", variable has type "tuple[Any, ...]")  [assignment]
+                unwrapped_types = [
+                    argtype for argtype in unwrapped_types if argtype is not type(None)
+                ]  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "list[Any]", variable has type "tuple[Any, ...]")  [assignment]
             return frozenset(unwrapped_types)
         return frozenset([the_type])
 
     @classmethod
     def is_sub_settings_field(cls, attrib: attr.Attribute) -> bool:
         the_type = attrib.type
-        possible_types = cls.unwrap_union(the_type, ignore_none=True)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "unwrap_union" of "EnvSettingsLoader" has incompatible type "type[Any] | None"; expected "type[Any]"  [arg-type]
+        possible_types = cls.unwrap_union(
+            the_type,  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "unwrap_union" of "EnvSettingsLoader" has incompatible type "type[Any] | None"; expected "type[Any]"  [arg-type]
+            ignore_none=True,
+        )
         map_type_is_sub_setting: dict[Type, bool] = {
             t: isinstance(t, type) and issubclass(t, SettingsBase) for t in possible_types
         }
@@ -489,7 +497,11 @@ class EnvSettingsLoader:
                     raise SettingsLoadingException(f"Unexpected signature of fallback factory for {field}")
 
             else:
-                field_default = getattr(fallback_cfg, field_s_meta.name, NOT_SET)  # type: ignore  # 2024-01-24 # TODO: Argument 2 to "getattr" has incompatible type "str | None"; expected "str"  [arg-type]
+                field_default = getattr(
+                    fallback_cfg,
+                    field_s_meta.name,  # type: ignore  # 2024-01-24 # TODO: Argument 2 to "getattr" has incompatible type "str | None"; expected "str"  [arg-type]
+                    NOT_SET,
+                )
                 if (
                     field_default is NOT_SET
                     and cls.is_sub_settings_field(field)
@@ -552,7 +564,11 @@ class EnvSettingsLoader:
 
     @classmethod
     def get_app_cfg_type_field(cls, settings_type: Type[SettingsBase]) -> Optional[attr.Attribute]:
-        candidates = [field for field in attr.fields(settings_type) if SMeta.from_attrib(field).is_app_cfg_type]  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "fields" has incompatible type "type[SettingsBase]"; expected "type[AttrsInstance]"  [arg-type]
+        candidates = [
+            field
+            for field in attr.fields(settings_type)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "fields" has incompatible type "type[SettingsBase]";
+            if SMeta.from_attrib(field).is_app_cfg_type  # type: ignore  # 2024-02-09 # TODO: Item "None" of "SMeta | None" has no attribute
+        ]
         if len(candidates) > 1:
             raise SettingsLoadingException(
                 f"Settings class {get_type_full_name(settings_type)}"
@@ -623,8 +639,10 @@ class EnvSettingsLoader:
         if fallback_cfg_resolver is not None:
             fallback_cfg = fallback_cfg_resolver.resolve(effective_s_dict)
 
-        app_cfg_type = self.get_app_cfg_type_value_from_env(settings_type, effective_s_dict)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "get_app_cfg_type_value_from_env" of "EnvSettingsLoader" has incompatible type "type[_SETTINGS_TV]"; expected "type[SettingsBase]"  [arg-type]
-
+        app_cfg_type = self.get_app_cfg_type_value_from_env(
+            settings_type,  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "get_app_cfg_type_value_from_env" of "EnvSettingsLoader" has incompatible type "type[_SETTINGS_TV]"; expected "type[SettingsBase]"  [arg-type]
+            effective_s_dict,
+        )
         extractor = self.build_top_level_extractor(
             settings_type=settings_type,
             key_prefix=key_prefix,

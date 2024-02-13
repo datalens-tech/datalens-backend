@@ -10,10 +10,10 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-aiohttp = ">=3.8.1"
+aiohttp = ">=3.9.1"
 certifi = ">=2023.7.22"
 openpyxl = ">=3.0.10"
-python = ">=3.10, <3.12"
+python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
 pytest-asyncio = ">=0.20.3"

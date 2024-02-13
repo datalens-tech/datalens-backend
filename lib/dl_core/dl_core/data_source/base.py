@@ -102,8 +102,8 @@ class DataSource(metaclass=abc.ABCMeta):
             pass
         else:
             raise ValueError(
-                f"Unexpected combination of 'connection' and 'connection_ref':"  # type: ignore  # TODO: fix
-                f" {self._connection} and {self._spec.connection_ref}"
+                f"Unexpected combination of 'connection' and 'connection_ref':"
+                f" {self._connection} and {self._spec.connection_ref}"  # type: ignore  # TODO: fix no attribute
             )
 
         if self._connection is not None:

@@ -423,7 +423,7 @@ class EntityCacheEntryLockedManagerAsync(EntityCacheEntryManagerAsyncBase):
         try:
             yield cli
         finally:
-            await cli.close()
+            await cli.aclose(close_connection_pool=False)  # type: ignore # TODO: Not relevant mypy stubs
 
     def _make_rcl(self) -> Tuple[RedisCacheLock, HistoryHolder]:
         cache_engine = self.cache_engine
@@ -775,9 +775,8 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
         )
 
         if self.CACHE_SAVE_BACKGROUND:
-            asyncio.create_task(
-                self._redis_set(update_request),
-            )
+            task_tmp = asyncio.create_task(self._redis_set(update_request))
+            await asyncio.shield(task_tmp)
         else:
             try:
                 await asyncio.wait_for(

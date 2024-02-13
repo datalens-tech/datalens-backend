@@ -13,7 +13,7 @@ readme = "README.md"
 attrs = ">=22.2.0"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
-python = ">=3.10, <3.12"
+python = ">=3.10, <3.13"
 dynamic-enum = {path = "../dynamic_enum"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-constants = {path = "../dl_constants"}

@@ -11,9 +11,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 aiopg = ">=1.4.0"
-asyncpg = ">=0.27.0"
+asyncpg = ">=0.29.0"
 attrs = ">=22.2.0"
-python = ">=3.10, <3.12"
+python = ">=3.10, <3.13"
 sqlalchemy = ">=1.4.46, <2.0"
 datalens-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 datalens-cache-engine = {path = "../dl_cache_engine"}

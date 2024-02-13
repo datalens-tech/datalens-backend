@@ -6,7 +6,7 @@ mkdir /venv
 python -m venv /venv
 source /venv/bin/activate
 
-pip install --no-input poetry==1.5.0
+pip install --no-input poetry==1.7.1
 
 cd /src/metapkg
 poetry export --without=dev --without=ci --without-hashes --format=requirements.txt > requirements.txt

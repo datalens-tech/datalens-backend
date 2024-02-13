@@ -11,7 +11,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
-python = ">=3.10, <3.12"
+python = ">=3.10, <3.13"
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-constants = {path = "../dl_constants"}
 datalens-i18n = {path = "../dl_i18n"}

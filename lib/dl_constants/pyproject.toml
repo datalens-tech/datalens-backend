@@ -9,8 +9,8 @@ license = "Apache 2.0"
 
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.12"
-typing-extensions = ">=4.5.0"
+python = ">=3.10, <3.13"
+typing-extensions = ">=4.9.0"
 dynamic-enum = {path = "../dynamic_enum"}
 
 [tool.poetry.group.tests.dependencies]
