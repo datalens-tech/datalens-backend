@@ -42,7 +42,7 @@ tasks:
     cmds:
       - |
         if [ "$SKIP_RUFF" == "true" ]; then exit 0; fi        
-        source $VENV_PATH/bin/activate
+        sh $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}     
         ruff {{.FIX_FLAG}}  {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
@@ -62,7 +62,7 @@ tasks:
         sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
       - |
-        source $VENV_PATH/bin/activate
+        sh $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}
         exit_code=0
         set +ex
@@ -98,7 +98,7 @@ tasks:
       - |
         pwd
         echo $VENV_PATH
-        source $VENV_PATH/bin/activate
+        sh $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}
         black --config={{.ROOT_DIR}}/pyproject.toml {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
@@ -117,7 +117,7 @@ tasks:
         sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
       - |
-        source $VENV_PATH/bin/activate
+        sh $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}
         toml-sort {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
