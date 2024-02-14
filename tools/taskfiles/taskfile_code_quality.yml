@@ -40,11 +40,10 @@ tasks:
       IGNORE_ERRORS:
         sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
-      - |
-        if [ "$SKIP_RUFF" == "true" ]; then exit 0; fi        
-        sh $VENV_PATH/bin/activate
-        cd {{.ROOT_DIR}}     
-        ruff {{.FIX_FLAG}}  {{.TARGET}} {{.IGNORE_ERRORS}}
+      - if [ "$SKIP_RUFF" == "true" ]; then exit 0; fi
+      - source $VENV_PATH/bin/activate
+      - cd {{.ROOT_DIR}}
+      - ruff {{.FIX_FLAG}}  {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
@@ -61,8 +60,7 @@ tasks:
       IGNORE_ERRORS:
         sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
-      - sh $VENV_PATH/bin/activate
-      - python --version
+      - source $VENV_PATH/bin/activate
       - cd {{.ROOT_DIR}}
       - exit_code=0
       - set +ex
@@ -96,12 +94,10 @@ tasks:
         sh: if [ "{{.STRICT|default false}}" == "true" ]; then echo ""; else echo "|| true";  fi;
 #        sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
-      - |
-        pwd
-        echo $VENV_PATH
-        sh $VENV_PATH/bin/activate
-        cd {{.ROOT_DIR}}
-        black --config={{.ROOT_DIR}}/pyproject.toml {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
+      - pwd
+      - source $VENV_PATH/bin/activate
+      - cd {{.ROOT_DIR}}
+      - black --config={{.ROOT_DIR}}/pyproject.toml {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
@@ -117,10 +113,9 @@ tasks:
       IGNORE_ERRORS:
         sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
-      - |
-        sh $VENV_PATH/bin/activate
-        cd {{.ROOT_DIR}}
-        toml-sort {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
+      - source $VENV_PATH/bin/activate
+      - cd {{.ROOT_DIR}}
+      - toml-sort {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
