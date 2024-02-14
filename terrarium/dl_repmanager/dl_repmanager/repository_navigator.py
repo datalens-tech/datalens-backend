@@ -342,3 +342,4 @@ class RepositoryNavigator:
         for package_info in self.package_index.list_package_infos():
             if path.is_relative_to(package_info.abs_path):
                 return package_info
+        raise ValueError(f"Could not find package for path {path}")
