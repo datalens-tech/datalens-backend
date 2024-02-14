@@ -40,10 +40,11 @@ tasks:
       IGNORE_ERRORS:
         sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
-      - if [ "$SKIP_RUFF" == "true" ]; then exit 0; fi
-      - source $VENV_PATH/bin/activate
-      - cd {{.ROOT_DIR}}
-      - ruff {{.FIX_FLAG}}  {{.TARGET}} {{.IGNORE_ERRORS}}
+      - |
+        if [ "$SKIP_RUFF" == "true" ]; then exit 0; fi        
+        source $VENV_PATH/bin/activate
+        cd {{.ROOT_DIR}}     
+        ruff {{.FIX_FLAG}}  {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
@@ -60,11 +61,11 @@ tasks:
       IGNORE_ERRORS:
         sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
-      - source $VENV_PATH/bin/activate
-      - cd {{.ROOT_DIR}}
-      - exit_code=0
-      - set +ex
       - |
+        source $VENV_PATH/bin/activate
+        cd {{.ROOT_DIR}}
+        exit_code=0
+        set +ex
         for file in {{.TARGET}}; do
           eval 'isort "$file" {{.CHECK_FLAG}}'
           exit_code=$(expr $exit_code + $?)
@@ -94,10 +95,12 @@ tasks:
         sh: if [ "{{.STRICT|default false}}" == "true" ]; then echo ""; else echo "|| true";  fi;
 #        sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
-      - pwd
-      - source $VENV_PATH/bin/activate
-      - cd {{.ROOT_DIR}}
-      - black --config={{.ROOT_DIR}}/pyproject.toml {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
+      - |
+        pwd
+        echo $VENV_PATH
+        source $VENV_PATH/bin/activate
+        cd {{.ROOT_DIR}}
+        black --config={{.ROOT_DIR}}/pyproject.toml {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
@@ -113,9 +116,10 @@ tasks:
       IGNORE_ERRORS:
         sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
-      - source $VENV_PATH/bin/activate
-      - cd {{.ROOT_DIR}}
-      - toml-sort {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
+      - |
+        source $VENV_PATH/bin/activate
+        cd {{.ROOT_DIR}}
+        toml-sort {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
