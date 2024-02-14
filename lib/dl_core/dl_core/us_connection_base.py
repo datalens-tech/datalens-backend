@@ -31,6 +31,7 @@ from dl_constants.enums import (
     DataSourceRole,
     DataSourceType,
     RawSQLLevel,
+    UserDataType,
 )
 from dl_core import connection_models
 from dl_core.base_models import (
@@ -97,6 +98,27 @@ class DataSourceTemplate(NamedTuple):
             connection_id=self.connection_id,
             **self.parameters,
         )
+
+
+@attr.s(frozen=True)
+class RequiredParameterInfo:
+    name: str = attr.ib(kw_only=True)
+    data_type: UserDataType = attr.ib(kw_only=True)
+
+
+@attr.s(frozen=True)
+class QueryTypeInfo:
+    query_type: DashSQLQueryType = attr.ib(kw_only=True)
+    query_type_label: str = attr.ib(kw_only=True)  # How the value should be displayed in the UI
+    required_parameters: list[RequiredParameterInfo] = attr.ib(kw_only=True)
+
+
+@attr.s(frozen=True)
+class ConnectionOptions:
+    allow_dashsql_usage: bool = attr.ib(kw_only=True)
+    allow_dataset_usage: bool = attr.ib(kw_only=True)
+    allow_typed_query_usage: bool = attr.ib(kw_only=True)
+    query_types: list[QueryTypeInfo] = attr.ib(kw_only=True)
 
 
 _CB_TV = TypeVar("_CB_TV", bound="ConnectionBase")
@@ -203,6 +225,10 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     @property
     def is_dataset_allowed(self) -> bool:
         return True
+
+    @property
+    def is_typed_query_allowed(self) -> bool:
+        return False
 
     def as_dict(self, short=False):  # type: ignore  # TODO: fix
         resp = super().as_dict(short=short)
@@ -341,6 +367,24 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     def get_supported_dashsql_query_types(self) -> frozenset[DashSQLQueryType]:
         return frozenset()
+
+    def get_options(self) -> ConnectionOptions:
+        query_type_info_list: list[QueryTypeInfo] = []
+        for dsql_qt in sorted(self.get_supported_dashsql_query_types(), key=lambda qt: qt.name):
+            query_type_info = QueryTypeInfo(
+                query_type=dsql_qt,
+                # FIXME: This should probably be a localized human-readable label
+                query_type_label=dsql_qt.name,
+                required_parameters=[],
+            )
+            query_type_info_list.append(query_type_info)
+
+        return ConnectionOptions(
+            allow_dashsql_usage=self.is_dashsql_allowed,
+            allow_dataset_usage=self.is_dataset_allowed,
+            allow_typed_query_usage=self.is_typed_query_allowed,
+            query_types=query_type_info_list,
+        )
 
 
 class ExecutorBasedMixin(ConnectionBase, metaclass=abc.ABCMeta):

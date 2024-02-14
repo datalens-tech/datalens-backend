@@ -9,8 +9,11 @@ from marshmallow import Schema
 from marshmallow import fields as ma_fields
 
 from dl_api_connector.api_schema.top_level import USEntryBaseSchema
-from dl_constants.enums import ConnectionType as CT
-from dl_constants.enums import DashSQLQueryType
+from dl_constants.enums import (
+    ConnectionType,
+    DashSQLQueryType,
+    UserDataType,
+)
 from dl_core.us_connection_base import ConnectionBase
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
@@ -20,7 +23,7 @@ class ConnectionSchema(USEntryBaseSchema):
     CONN_TYPE_CTX_KEY: ClassVar[str] = "conn_type"
 
     # From ConnectionBase.as_dict()
-    db_type = DynamicEnumField(CT, attribute="conn_type", dump_only=True)
+    db_type = DynamicEnumField(ConnectionType, attribute="conn_type", dump_only=True)
     # TODO FIX: Change for datetime field after created/updated _at become datetime instead of string
     created_at = ma_fields.String(dump_only=True)
     updated_at = ma_fields.String(dump_only=True)
@@ -43,9 +46,9 @@ class ConnectionSchema(USEntryBaseSchema):
 
     def default_create_from_dict_kwargs(self, data: dict[str, Any]) -> dict[str, Any]:
         try:
-            ct = CT(self.context[self.CONN_TYPE_CTX_KEY])
+            ct = ConnectionType(self.context[self.CONN_TYPE_CTX_KEY])
         except ValueError:
-            ct = CT.unknown
+            ct = ConnectionType.unknown
         ret = dict(
             super().default_create_from_dict_kwargs(data),
             type_=ct.name,
@@ -65,12 +68,19 @@ class ConnectionMetaMixin(ConnectionSchema):
     meta = ma_fields.Dict(dump_only=True)  # In ConnectionBase.as_dict() meta was included
 
 
-class DashSQLQueryTypeInfo(Schema):
-    dashsql_query_type = DynamicEnumField(DashSQLQueryType, dump_only=True)
-    dashsql_query_type_label = ma_fields.String(dump_only=True)
+class RequiredParameterInfoSchema(Schema):
+    name = ma_fields.String(dump_only=True)
+    data_type = ma_fields.Enum(UserDataType, dump_only=True)
+
+
+class QueryTypeInfoSchema(Schema):
+    query_type = DynamicEnumField(DashSQLQueryType, dump_only=True)
+    query_type_label = ma_fields.String(dump_only=True)
+    required_parameters = ma_fields.List(ma_fields.Nested(RequiredParameterInfoSchema()), dump_only=True)
 
 
 class ConnectionOptionsSchema(Schema):
     allow_dashsql_usage = ma_fields.Boolean(dump_only=True)
     allow_dataset_usage = ma_fields.Boolean(dump_only=True)
-    dashsql_query_types = ma_fields.Nested(DashSQLQueryTypeInfo(), dump_only=True, many=True)
+    allow_typed_query_usage = ma_fields.Boolean(dump_only=True)
+    query_types = ma_fields.List(ma_fields.Nested(QueryTypeInfoSchema()), dump_only=True)

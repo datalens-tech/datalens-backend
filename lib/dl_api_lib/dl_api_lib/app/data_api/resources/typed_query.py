@@ -134,7 +134,7 @@ class DashSQLTypedQueryView(BaseView):
     def make_response_data(self, typed_query_result: TypedQueryResult) -> dict:
         """Serialize output"""
         result_serializer = TypedQueryResultSerializer()  # TODO: Get serializer from somewhere
-        response_data = {"data": result_serializer.serialize_typed_query_result(typed_query_result)}
+        response_data = result_serializer.serialize_typed_query_result(typed_query_result)
         return response_data
 
     @generic_profiler_async("dashsql-typed-query")

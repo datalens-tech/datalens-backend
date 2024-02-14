@@ -27,8 +27,11 @@ from dl_api_lib.schemas.connection import (
     GenericConnectionSchema,
 )
 from dl_api_lib.utils import need_permission_on_entry
-from dl_constants.enums import ConnectionType as ct
-from dl_constants.enums import DashSQLQueryType
+from dl_constants.enums import (
+    ConnectionType,
+    DashSQLQueryType,
+    UserDataType,
+)
 from dl_constants.exc import DLBaseException
 from dl_core.data_source.type_mapping import get_data_source_class
 from dl_core.data_source_merge_tools import make_spec_from_dict
@@ -127,7 +130,9 @@ class ConnectionsList(BIResource):
         us_manager = self.get_us_manager()
 
         conn_availability = self.get_service_registry().get_connector_availability()
-        conn_type_is_available = conn_availability.check_connector_is_available(ct[request.json.get("type")])  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Any | None" has no attribute "get"  [union-attr]
+        conn_type_is_available = conn_availability.check_connector_is_available(
+            ConnectionType[request.json.get("type")]  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Any | None" has no attribute "get"  [union-attr]
+        )
         if not conn_type_is_available:
             # TODO: remove `abort` after migration to schematic_request decorator with common error handling
             abort(400, "This connection type is not editable")
@@ -146,43 +151,8 @@ class ConnectionsList(BIResource):
         return {"id": conn.uuid}
 
 
-@attr.s(frozen=True)
-class DashSQLQueryTypeInfo:
-    dashsql_query_type: DashSQLQueryType = attr.ib(kw_only=True)
-    dashsql_query_type_label: str = attr.ib(kw_only=True)  # How the value should be displayed in the UI
-    # TODO: more info about what this query type entails/requires (e.g. form type or structure)
-
-
-@attr.s(frozen=True)
-class ConnectionOptions:
-    allow_dashsql_usage: bool = attr.ib(kw_only=True)
-    allow_dataset_usage: bool = attr.ib(kw_only=True)
-    dashsql_query_types: list[DashSQLQueryTypeInfo] = attr.ib(kw_only=True)
-
-
 @ns.route("/<connection_id>")
 class ConnectionItem(BIResource):
-    @classmethod
-    def _make_options_data(
-        cls,
-        conn: ConnectionBase,
-        # service_registry: ApiServiceRegistry,
-    ) -> ConnectionOptions:
-        dashsql_query_type_info_list: list[DashSQLQueryTypeInfo] = []
-        for dsql_qt in sorted(conn.get_supported_dashsql_query_types(), key=lambda qt: qt.name):
-            dashsql_query_type_info = DashSQLQueryTypeInfo(
-                dashsql_query_type=dsql_qt,
-                # FIXME: This should probably be a localized human-readable label
-                dashsql_query_type_label=dsql_qt.name,
-            )
-            dashsql_query_type_info_list.append(dashsql_query_type_info)
-
-        return ConnectionOptions(
-            allow_dashsql_usage=conn.is_dashsql_allowed,
-            allow_dataset_usage=conn.is_dataset_allowed,
-            dashsql_query_types=dashsql_query_type_info_list,
-        )
-
     @put_to_request_context(endpoint_code="ConnectionGet")
     @schematic_request(
         ns=ns,
@@ -190,12 +160,13 @@ class ConnectionItem(BIResource):
             # 200: ('Success', GetConnectionResponseSchema()),
         },
     )
-    def get(self, connection_id):  # type: ignore  # TODO: fix
+    def get(self, connection_id: str) -> dict:
         conn = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
         need_permission_on_entry(conn, USPermissionKind.read)
+        assert isinstance(conn, ConnectionBase)
 
         result = GenericConnectionSchema(context=self.get_schema_ctx(EditMode.edit)).dump(conn)
-        result.update(options=ConnectionOptionsSchema().dump(self._make_options_data(conn)))  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "_make_options_data" of "ConnectionItem" has incompatible type "USEntry"; expected "ConnectionBase"  [arg-type]
+        result.update(options=ConnectionOptionsSchema().dump(conn.get_options()))
         return result
 
     @put_to_request_context(endpoint_code="ConnectionDelete")

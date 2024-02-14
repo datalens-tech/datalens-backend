@@ -51,5 +51,6 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         assert resp.status_code == 200, resp.json
         assert isinstance(resp.json["options"]["allow_dashsql_usage"], bool)
         assert isinstance(resp.json["options"]["allow_dataset_usage"], bool)
-        assert len(resp.json["options"]["dashsql_query_types"]) > 0
-        assert any([qt["dashsql_query_type"] == "generic_query" for qt in resp.json["options"]["dashsql_query_types"]])
+        assert isinstance(resp.json["options"]["allow_typed_query_usage"], bool)
+        assert len(resp.json["options"]["query_types"]) > 0
+        assert any([qt["query_type"] == "generic_query" for qt in resp.json["options"]["query_types"]])

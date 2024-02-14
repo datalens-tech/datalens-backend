@@ -53,11 +53,14 @@ class TypedQuerySchema(DefaultSchema[RawTypedQuery]):
 
 
 class DataRowsTypedQueryResultSchema(BaseSchema):
-    class ColumnHeaderSchema(BaseSchema):
-        name = ma_fields.String(required=True)
-        data_type = ma_fields.Enum(UserDataType, required=True, attribute="user_type")
+    class DataSchema(BaseSchema):
+        class ColumnHeaderSchema(BaseSchema):
+            name = ma_fields.String(required=True)
+            data_type = ma_fields.Enum(UserDataType, required=True, attribute="user_type")
+
+        # Raw result data will go here. MA is not good with serializing large amounts of data
+        rows = ma_fields.Raw(required=True, attribute="data_rows")
+        headers = ma_fields.List(ma_fields.Nested(ColumnHeaderSchema()), required=True, attribute="column_headers")
 
     query_type = DynamicEnumField(DashSQLQueryType, required=True)
-    # Raw result data will go here. MA is not good with serializing large amounts of data
-    rows = ma_fields.Raw(required=True, attribute="data_rows")
-    headers = ma_fields.List(ma_fields.Nested(ColumnHeaderSchema()), required=True, attribute="column_headers")
+    data = ma_fields.Nested(DataSchema(), required=True)
