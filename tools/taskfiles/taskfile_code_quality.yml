@@ -61,11 +61,12 @@ tasks:
       IGNORE_ERRORS:
         sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
+      - sh $VENV_PATH/bin/activate
+      - python --version
+      - cd {{.ROOT_DIR}}
+      - exit_code=0
+      - set +ex
       - |
-        sh $VENV_PATH/bin/activate
-        cd {{.ROOT_DIR}}
-        exit_code=0
-        set +ex
         for file in {{.TARGET}}; do
           eval 'isort "$file" {{.CHECK_FLAG}}'
           exit_code=$(expr $exit_code + $?)
