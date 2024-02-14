@@ -154,9 +154,9 @@ datalens-pivot-pandas = {path = "../lib/dl_pivot_pandas"}
 datalens-cache-engine = {path = "../lib/dl_cache_engine"}
 
 [tool.poetry.group.dev.dependencies]
-black = "==23.3.0"
-ruff = "==0.0.267"
-isort = "==5.12.0"
+black = "==24.2.0"
+ruff = "==0.2.1"
+isort = "==5.13.2"
 ipdb = "==0.13.13"
 pyodbc = "==5.0.1"
 pytest = "==7.2.2"
