@@ -121,12 +121,16 @@ class BaseClickHouseConnLineConstructor(ClassicSQLConnLineConstructor[_TARGET_DT
         }
 
 
+@attr.s
 class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], BaseSSLCertAdapter):
     allow_sa_text_as_columns_source = True
     ch_utils: ClassVar[Type[ClickHouseBaseUtils]] = ClickHouseBaseUtils
     conn_line_constructor_type: ClassVar[Type[BaseClickHouseConnLineConstructor]] = BaseClickHouseConnLineConstructor
 
     _dt_with_system_tz = True
+
+    def __attrs_post_init__(self) -> None:
+        super().__attrs_post_init__()
 
     def _get_dsn_params_from_headers(self) -> dict[str, str]:
         return self._convert_headers_to_dsn_params(self.ch_utils.get_context_headers(self._req_ctx_info))

@@ -100,6 +100,8 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
     DEFAULT_REL_PATH = "/execute_action"
 
     def __attrs_post_init__(self) -> None:
+        super().__attrs_post_init__()
+
         if self._force_async_rqe:
             self._use_sync_rqe = False
         else:
