@@ -15,6 +15,7 @@ python = ">=3.10, <3.13"
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-constants = {path = "../dl_constants"}
 datalens-formula-ref = {path = "../dl_formula_ref"}
