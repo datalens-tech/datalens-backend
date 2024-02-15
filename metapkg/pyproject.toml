@@ -207,6 +207,9 @@ disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
 
+[datalens.meta.mypy]
+targets = []    # ignore mypy for this module
+
 [datalens.meta.mypy_stubs_packages_override]
 # bunch of overrides for different case
 # : src package -> {"name": "non standard name, but same stub should have same version"}

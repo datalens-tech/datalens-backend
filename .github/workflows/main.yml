@@ -21,9 +21,9 @@ on:
         type: boolean
         default: false
         description: "Check to only run mypy"
-      pytest_timeout_minutes:
+      mypy_timeout_minutes:
         type: number
-        default: 10
+        default: 20
         description: "Timeout for pytest JOB in minutes"
 
 jobs:
@@ -437,7 +437,7 @@ jobs:
 
   mypy:
     runs-on: [ self-hosted, linux, light ]
-    needs: router
+    needs: gh_build_image
     container:
       # until https://github.com/github/docs/issues/25520 is resolved, using vars
       image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
@@ -447,7 +447,7 @@ jobs:
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     name: "🐲 mypy"
-    timeout-minutes: ${{ inputs.pytest_timeout_minutes && fromJSON(inputs.pytest_timeout_minutes ) || 10 }}
+    timeout-minutes: ${{ inputs.mypy_timeout_minutes && fromJSON(inputs.mypy_timeout_minutes ) || 20 }}
     steps:
       - name: Cleanup build folder
         run: |
@@ -459,11 +459,10 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 1
-      - run: echo '${{ needs.router.outputs.all_affected_with_skips }}' >> /tmp/dl_test_targets.json
       - name: run mypy
         run: |
           . /venv/bin/activate
-          execute-mypy-multi /src /tmp/dl_test_targets.json
+          execute-mypy-multi /src
         env:
           PYTHONUNBUFFERED: "1"
 
