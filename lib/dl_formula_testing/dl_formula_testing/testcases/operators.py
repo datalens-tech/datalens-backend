@@ -80,10 +80,12 @@ class DefaultOperatorFormulaConnectorTestSuite(FormulaConnectorTestBase):
 
     def test_subtraction_date_time_date_time(self, dbe: DbEvaluator) -> None:
         assert dbe.eval("#2019-01-06# - #2019-01-02#") == 4
+        assert dbe.eval("#2019-01-06# - #2019-02-02#") == -27
         assert dbe.eval("#2019-01-06 15# - #2019-01-02 03#") == pytest.approx(4.5)
 
     def test_subtraction_genericdatetime_genericdatetime(self, dbe: DbEvaluator) -> None:
         assert dbe.eval("##2019-01-06## - ##2019-01-02##") == 4
+        assert dbe.eval("##2019-01-06 00:00:00## - ##2019-02-02 12:00:00##") == pytest.approx(-27.5)
         assert dbe.eval("##2019-01-06 15## - ##2019-01-02 03##") == pytest.approx(4.5)
 
     def test_multiplication(self, dbe: DbEvaluator, forced_literal_use: Any) -> None:
