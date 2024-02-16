@@ -2,7 +2,7 @@
 
 poetry==1.7.1
 clize==5.0.0
-black==24.2.0
+black==23.12.1
 ruff==0.2.1
 isort==5.13.2
 pre-commit==3.4.0
