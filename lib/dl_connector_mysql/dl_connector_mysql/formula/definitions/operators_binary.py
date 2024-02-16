@@ -82,7 +82,11 @@ DEFINITIONS_BINARY = [
             ),
         ]
     ),
-    base.BinaryMinusDates.for_dialect(D.MYSQL),
+    base.BinaryMinusDates(
+        variants=[
+            V(D.MYSQL, sa.func.DATEDIFF),
+        ]
+    ),
     base.BinaryMinusDatetimes(
         variants=[
             V(D.MYSQL, lambda left, right: (sa.func.UNIX_TIMESTAMP(left) - sa.func.UNIX_TIMESTAMP(right)) / DAY_SEC),
