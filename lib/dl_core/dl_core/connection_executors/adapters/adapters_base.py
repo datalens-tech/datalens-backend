@@ -92,7 +92,7 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
     def __attrs_post_init__(self) -> None:
         self._initialize_actions()
 
-    def _initialize_actions(self):
+    def _initialize_actions(self) -> None:
         self._sync_db_version_action = self._make_sync_db_version_action()
         self._sync_schema_names_action = self._make_sync_schema_names_action()
         self._sync_table_names_action = self._make_sync_table_names_action()

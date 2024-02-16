@@ -114,7 +114,7 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
     def __attrs_post_init__(self) -> None:
         self._initialize_actions()
 
-    def _initialize_actions(self):
+    def _initialize_actions(self) -> None:
         self._async_db_version_action = self._make_async_db_version_action()
         self._async_schema_names_action = self._make_async_schema_names_action()
         self._async_table_names_action = self._make_async_table_names_action()
