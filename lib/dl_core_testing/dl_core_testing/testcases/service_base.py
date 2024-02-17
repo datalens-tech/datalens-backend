@@ -89,7 +89,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
 
     @contextlib.asynccontextmanager
     async def _make_redis(self, redis_settings: RedisSettings) -> AsyncGenerator[Redis, None]:
-        redis_client = Redis(  # type: ignore  # 2024-01-29 # TODO: Need type annotation for "redis_client"  [var-annotated]
+        redis_client: Redis = Redis(
             host=redis_settings.HOSTS[0],
             port=redis_settings.PORT,
             db=redis_settings.DB,
@@ -102,7 +102,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             await redis_client.connection_pool.disconnect()
 
     @pytest.fixture(scope="function")
-    async def caches_redis_client_factory(self) -> Optional[Callable[[bool], Redis]]:  # type: ignore  # 2024-01-29 # TODO: The return type of an async generator function should be "AsyncGenerator" or one of its supertypes  [misc]
+    async def caches_redis_client_factory(self) -> AsyncGenerator[Optional[Callable[[bool], Redis]], None]:
         if not self.data_caches_enabled:
             yield None
 

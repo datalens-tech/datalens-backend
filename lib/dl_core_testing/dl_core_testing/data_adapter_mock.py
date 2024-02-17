@@ -63,7 +63,7 @@ class Table:
 class TablesRegistry:
     tbl_list: List[Table] = attr.ib(factory=lambda: [])
 
-    def get_table(self, table_name) -> Optional[Table]:  # type: ignore  # TODO: fix
+    def get_table(self, table_name: str) -> Optional[Table]:
         return next((t for t in self.tbl_list if t.name == table_name), None)
 
 
@@ -84,20 +84,20 @@ class TablePropertiesSchema(Schema):
     meta = fields.Dict(keys=fields.String(), values=fields.String())
 
 
-def create_app(table_registry: TablesRegistry):  # type: ignore  # TODO: fix
+def create_app(table_registry: TablesRegistry) -> web.Application:
     app = web.Application()
     app["TABLE_REGISTRY"] = table_registry
 
     def get_table_registry() -> TablesRegistry:
         return app["TABLE_REGISTRY"]
 
-    def get_table_for_request(request: web.Request):  # type: ignore  # TODO: fix
+    def get_table_for_request(request: web.Request) -> Table:
         tbl = get_table_registry().get_table(request.match_info["table_name"])
         if tbl is None:
             raise web.HTTPNotFound()
         return tbl
 
-    async def rq_table_data(request: web.Request):  # type: ignore  # TODO: fix
+    async def rq_table_data(request: web.Request) -> web.StreamResponse:
         table = get_table_for_request(request)
         resp = web.StreamResponse(status=200)
         resp.headers["X-DL-Row-Count"] = str(table.data_length)
@@ -115,12 +115,12 @@ def create_app(table_registry: TablesRegistry):  # type: ignore  # TODO: fix
         await resp.write_eof()
         return resp
 
-    async def rq_list_tables(_):  # type: ignore  # TODO: fix
+    async def rq_list_tables(_: web.Request) -> web.Response:
         tr = get_table_registry()
 
         return web.json_response({"tables": [t.name for t in tr.tbl_list]})
 
-    async def rq_table_properties(request: web.Request):  # type: ignore  # TODO: fix
+    async def rq_table_properties(request: web.Request) -> web.Response:
         table = get_table_for_request(request)
         return web.json_response(TablePropertiesSchema().dump(table))
 

@@ -50,11 +50,13 @@ def get_test_container_hostport(
     port: int
 
     file_path = _get_docker_compose_file_path(filename=dc_filename)
-    if not file_path and fallback_port is not None:
-        return HostPort(host="127.0.0.1", port=fallback_port)
+    if file_path is None:
+        if fallback_port is not None:
+            return HostPort(host="127.0.0.1", port=fallback_port)
+        raise FileNotFoundError("Docker compose file not found")
     else:
         try:
-            with open(file_path) as dcyml:  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "open" has incompatible type "str | None"; expected "int | str | bytes | PathLike[str] | PathLike[bytes]"  [arg-type]
+            with open(file_path) as dcyml:
                 docker_compose_yml = yaml.safe_load(dcyml)
         except FileNotFoundError:
             if fallback_port is not None:
