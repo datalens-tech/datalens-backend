@@ -75,14 +75,14 @@ class CsvTableDumper:
         type_schema = [user_type for col_name, user_type in table_schema]
         data = self._load_table_data(raw_csv_data=raw_csv_data, type_schema=type_schema)
 
-        def _value_gen_factory(_col_idx: int) -> Callable[[int, datetime.datetime], Any]:
-            def _value_gen(rn: int, ts: datetime.datetime) -> Any:
+        def _value_gen_factory(_col_idx: int) -> Callable[[int, datetime.datetime, random.Random], Any]:
+            def _value_gen(rn: int, ts: datetime.datetime, rnd: random.Random) -> Any:
                 return data[rn][_col_idx]
 
             return _value_gen
 
         columns = [
-            C(name=name, user_type=user_type, vg=_value_gen_factory(_col_idx=col_idx), nullable=nullable)
+            C(name=name, user_type=user_type, vg=_value_gen_factory(_col_idx=col_idx), nullable=nullable)  # type: ignore  # 2024-01-30 # TODO: Argument "vg" to "C" has incompatible type "Callable[[int, datetime, Random], Any]"; expected "Callable[[int, datetime], Any]"  [arg-type]
             for col_idx, (name, user_type) in enumerate(table_schema)
         ]
 

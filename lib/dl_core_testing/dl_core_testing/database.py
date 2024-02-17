@@ -190,7 +190,7 @@ class C:
         ]
 
     @classmethod
-    def array_columns(cls):  # type: ignore  # TODO: fix
+    def array_columns(cls) -> list[C]:
         return [
             cls("array_int_value", UserDataType.array_int),
             cls("array_str_value", UserDataType.array_str),
