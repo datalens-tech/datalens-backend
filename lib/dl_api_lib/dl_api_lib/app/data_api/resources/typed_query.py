@@ -75,7 +75,10 @@ class TypedQueryResultSerializer:
     def serialize_typed_query_result(self, typed_query_result: TypedQueryResult) -> Any:
         # No other result types are supported in API:
         assert isinstance(typed_query_result, DataRowsTypedQueryResult)
-        return DataRowsTypedQueryResultSchema().dump(typed_query_result)
+        return {
+            "query_type": typed_query_result.query_type.name,
+            "data": DataRowsTypedQueryResultSchema().dump(typed_query_result),
+        }
 
 
 @requires(RequiredResourceCommon.US_MANAGER)
