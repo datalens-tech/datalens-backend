@@ -77,10 +77,10 @@ class FilterParams:
 
     field: BIField
     operation: WhereClauseOperation
-    filter_args: list = None  # type: ignore  # TODO: fix
-    data_type: DataType = None  # type: ignore  # TODO: fix
-    field_cast_type: DataType = None  # type: ignore  # TODO: fix
-    arg_cast_type: DataType = None  # type: ignore  # TODO: fix
+    data_type: DataType
+    field_cast_type: DataType
+    arg_cast_type: DataType
+    filter_args: Optional[list] = None
 
     def clone(self: _FILTER_PARAMS_TV, **updates: Any) -> _FILTER_PARAMS_TV:
         """Convenience method so that callers don't need to know about `attr`"""
@@ -166,7 +166,7 @@ class FilterFormulaCompiler:
         filter_params = FilterParams(
             field=field,
             operation=operation,
-            filter_args=filter_args,  # type: ignore  # TODO: fix
+            filter_args=filter_args,
             data_type=data_type,
             # defaults:
             field_cast_type=data_type,

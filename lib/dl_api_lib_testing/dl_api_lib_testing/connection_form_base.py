@@ -44,7 +44,7 @@ class ConnectionFormTestBase:
     @pytest.fixture(
         params=[mode.name for mode in ConnectionFormMode],
     )
-    def mode(self, request) -> ConnectionFormMode:  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def mode(self, request: pytest.FixtureRequest) -> ConnectionFormMode:
         return ConnectionFormMode(request.param)
 
     @pytest.fixture
