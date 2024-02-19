@@ -78,6 +78,7 @@ class DBAdapterQueryResult:
 _TARGET_DTO_TV = TypeVar("_TARGET_DTO_TV", bound="ConnTargetDTO")
 
 
+@attr.s
 class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc.ABCMeta):
     # Adapter action fields
     _sync_db_version_action: SyncDBVersionAdapterAction = attr.ib(init=False)
@@ -88,42 +89,17 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
     _sync_table_exists_action: SyncTableExistsAdapterAction = attr.ib(init=False)
     _sync_typed_query_action: SyncTypedQueryAdapterAction = attr.ib(init=False)
 
-    # Action defaults
+    def __attrs_post_init__(self) -> None:
+        self._initialize_actions()
 
-    @_sync_db_version_action.default  # type: ignore  # attrs field default
-    @final
-    def __make_default_sync_db_version_action(self) -> SyncDBVersionAdapterAction:
-        return self._make_sync_db_version_action()
-
-    @_sync_schema_names_action.default  # type: ignore  # attrs field default
-    @final
-    def __make_default_sync_schema_names_action(self) -> SyncSchemaNamesAdapterAction:
-        return self._make_sync_schema_names_action()
-
-    @_sync_table_names_action.default  # type: ignore  # attrs field default
-    @final
-    def __make_default_sync_table_names_action(self) -> SyncTableNamesAdapterAction:
-        return self._make_sync_table_names_action()
-
-    @_sync_test_action.default  # type: ignore  # attrs field default
-    @final
-    def __make_default_sync_test_action(self) -> SyncTestAdapterAction:
-        return self._make_sync_test_action()
-
-    @_sync_table_info_action.default  # type: ignore  # attrs field default
-    @final
-    def __make_default_sync_test_action(self) -> SyncTableInfoAdapterAction:
-        return self._make_sync_table_info_action()
-
-    @_sync_table_exists_action.default  # type: ignore  # attrs field default
-    @final
-    def __make_default_sync_table_exists_action(self) -> SyncTableExistsAdapterAction:
-        return self._make_sync_table_exists_action()
-
-    @_sync_typed_query_action.default  # type: ignore  # attrs field default
-    @final
-    def __make_default_sync_typed_query_action(self) -> SyncTypedQueryAdapterAction:
-        return self._make_sync_typed_query_action()
+    def _initialize_actions(self) -> None:
+        self._sync_db_version_action = self._make_sync_db_version_action()
+        self._sync_schema_names_action = self._make_sync_schema_names_action()
+        self._sync_table_names_action = self._make_sync_table_names_action()
+        self._sync_test_action = self._make_sync_test_action()
+        self._sync_table_info_action = self._make_sync_table_info_action()
+        self._sync_table_exists_action = self._make_sync_table_exists_action()
+        self._sync_typed_query_action = self._make_sync_typed_query_action()
 
     # Action factory methods
 

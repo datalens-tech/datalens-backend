@@ -121,6 +121,7 @@ class BaseClickHouseConnLineConstructor(ClassicSQLConnLineConstructor[_TARGET_DT
         }
 
 
+@attr.s
 class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], BaseSSLCertAdapter):
     allow_sa_text_as_columns_source = True
     ch_utils: ClassVar[Type[ClickHouseBaseUtils]] = ClickHouseBaseUtils

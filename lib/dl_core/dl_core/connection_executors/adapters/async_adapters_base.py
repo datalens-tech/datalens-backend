@@ -111,42 +111,17 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
     _async_table_exists_action: AsyncTableExistsAdapterAction = attr.ib(init=False)
     _async_typed_query_action: AsyncTypedQueryAdapterAction = attr.ib(init=False)
 
-    # Action defaults
+    def __attrs_post_init__(self) -> None:
+        self._initialize_actions()
 
-    @_async_db_version_action.default
-    @final
-    def __make_default_async_db_version_action(self) -> AsyncDBVersionAdapterAction:
-        return self._make_async_db_version_action()
-
-    @_async_schema_names_action.default
-    @final
-    def __make_default_async_schema_names_action(self) -> AsyncSchemaNamesAdapterAction:
-        return self._make_async_schema_names_action()
-
-    @_async_table_names_action.default
-    @final
-    def __make_default_async_table_names_action(self) -> AsyncTableNamesAdapterAction:
-        return self._make_async_table_names_action()
-
-    @_async_test_action.default
-    @final
-    def __make_default_async_test_action(self) -> AsyncTestAdapterAction:
-        return self._make_async_test_action()
-
-    @_async_table_info_action.default  # type: ignore  # 2024-01-24 # TODO: Name "__make_async_test_action" already defined on line 124  [no-redef]
-    @final
-    def __make_default_async_test_action(self) -> AsyncTableInfoAdapterAction:
-        return self._make_async_table_info_action()
-
-    @_async_table_exists_action.default
-    @final
-    def __make_default_async_table_exists_action(self) -> AsyncTableExistsAdapterAction:
-        return self._make_async_table_exists_action()
-
-    @_async_typed_query_action.default
-    @final
-    def __make_default_async_typed_query_action(self) -> AsyncTypedQueryAdapterAction:
-        return self._make_async_typed_query_action()
+    def _initialize_actions(self) -> None:
+        self._async_db_version_action = self._make_async_db_version_action()
+        self._async_schema_names_action = self._make_async_schema_names_action()
+        self._async_table_names_action = self._make_async_table_names_action()
+        self._async_test_action = self._make_async_test_action()
+        self._async_table_info_action = self._make_async_table_info_action()
+        self._async_table_exists_action = self._make_async_table_exists_action()
+        self._async_typed_query_action = self._make_async_typed_query_action()
 
     # Action factory methods
 

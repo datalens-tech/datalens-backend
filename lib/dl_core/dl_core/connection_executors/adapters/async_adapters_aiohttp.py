@@ -61,6 +61,7 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
                 )
             ),
         )
+        super().__attrs_post_init__()
 
     def create_aiohttp_connector(self, ssl_context: Optional[ssl.SSLContext]) -> aiohttp.TCPConnector:
         return aiohttp.TCPConnector(
