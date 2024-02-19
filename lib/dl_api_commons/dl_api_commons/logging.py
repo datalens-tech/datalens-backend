@@ -36,6 +36,8 @@ SECRET_HEADERS: frozenset[str] = frozenset(
         "X-Us-Master-Token",
         "Master-Token",
         "X-DL-API-Key",
+        "X-Ya-Service-Ticket",
+        "X-Ya-User-Ticket",
     )
 )
 
