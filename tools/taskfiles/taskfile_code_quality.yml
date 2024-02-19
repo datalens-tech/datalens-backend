@@ -41,6 +41,7 @@ tasks:
         sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
       - |
+        set +ex
         if [ "$SKIP_RUFF" == "true" ]; then exit 0; fi        
         . $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}     
@@ -62,10 +63,10 @@ tasks:
         sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
       - |
+        set +ex
         . $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}
         exit_code=0
-        set +ex
         for file in {{.TARGET}}; do
           eval 'isort "$file" {{.CHECK_FLAG}}'
           exit_code=$(expr $exit_code + $?)
@@ -96,6 +97,7 @@ tasks:
 #        sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
       - |
+        set +ex
         pwd
         echo $VENV_PATH
         . $VENV_PATH/bin/activate
@@ -117,6 +119,7 @@ tasks:
         sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:
       - |
+        set +ex
         . $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}
         toml-sort {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
