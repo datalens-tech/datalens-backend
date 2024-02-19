@@ -28,7 +28,8 @@ jobs:
           - image_name: "datalens-data-api"
             bake_target: "dl_data_api"
     container:
-      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
+#      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest" # TODO this
+      image: "ghcr.io/datalens-tech/datalens-backend/debian_docker:latest"
       options: -v /var/run/docker.sock:/var/run/docker.sock
       credentials:
         username: ${{ github.actor }}

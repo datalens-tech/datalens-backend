@@ -13,28 +13,17 @@ on:
         description: "Commit hash (to validate pr has not changed before the run is started)"
 
 jobs:
-  build_backend:
-    name: "Build images"
+  run_e2e:
+    name: "Build and run E2E"
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    outputs:
-      image-version: ${{ steps.build_image.outputs.image-version }}
-    strategy:
-      matrix:
-        include:
-          - image_name: "datalens-control-api"
-            bake_target: "dl_control_api"
-          - image_name: "datalens-data-api"
-            bake_target: "dl_data_api"
-    container:
-      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
-      options: -v /var/run/docker.sock:/var/run/docker.sock
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    env:
-      cr_url: "ghcr.io/${{ github.repository_owner }}"
+#    container:
+#      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
+#      options: -v /var/run/docker.sock:/var/run/docker.sock
+#      credentials:
+#        username: ${{ github.actor }}
+#        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
