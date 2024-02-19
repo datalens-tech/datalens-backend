@@ -336,6 +336,7 @@ class DashSQLQueryType(DynamicEnum):
     generic_distinct = AutoEnumValue()
     # More specific than `generic_distinct` for connectors that have the concept of labels
     generic_label_values = AutoEnumValue()
+    generic_label_names = AutoEnumValue()
 
     # Connector-specific query types should be defined as "<connector_name>_<query_type>"
 
