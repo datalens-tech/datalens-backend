@@ -129,9 +129,6 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
 
     _dt_with_system_tz = True
 
-    def __attrs_post_init__(self) -> None:
-        super().__attrs_post_init__()
-
     def _get_dsn_params_from_headers(self) -> dict[str, str]:
         return self._convert_headers_to_dsn_params(self.ch_utils.get_context_headers(self._req_ctx_info))
 
