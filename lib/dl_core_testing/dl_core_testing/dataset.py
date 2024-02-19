@@ -28,11 +28,11 @@ if TYPE_CHECKING:
     )
 
 
-def make_ds_key(*args) -> str:  # type: ignore  # TODO: fix
+def make_ds_key(*args: str) -> str:
     return "/".join(["tests", *args])
 
 
-def make_dataset(  # type: ignore  # TODO: fix
+def make_dataset(
     sync_usm: SyncUSManager,
     connection: Optional[ConnectionBase] = None,
     db_table: Optional[DbTable] = None,
@@ -45,7 +45,7 @@ def make_dataset(  # type: ignore  # TODO: fix
     ds_info: Optional[dict] = None,
     dsrc_params: Optional[dict] = None,
     created_via: Optional[DataSourceCreatedVia] = None,
-):
+) -> Dataset:
     service_registry = sync_usm.get_services_registry()
     ds_info = dict(ds_info or {})
     db = db_table.db if db_table else None

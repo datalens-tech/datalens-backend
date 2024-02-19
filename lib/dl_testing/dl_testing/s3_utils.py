@@ -19,11 +19,13 @@ if TYPE_CHECKING:
     from mypy_boto3_s3.client import S3Client as SyncS3Client
     from types_aiobotocore_s3 import S3Client as AsyncS3Client
 
+    from dl_configs.settings_submodels import S3Settings
+
 
 LOGGER = logging.getLogger(__name__)
 
 
-def create_s3_client(s3_settings) -> AsyncS3Client:  # type: ignore  # TODO: fix
+def create_s3_client(s3_settings: S3Settings) -> AsyncS3Client:
     session = aiobotocore.session.get_session()
     return session.create_client(
         service_name="s3",
@@ -33,7 +35,7 @@ def create_s3_client(s3_settings) -> AsyncS3Client:  # type: ignore  # TODO: fix
     )
 
 
-def create_sync_s3_client(s3_settings) -> SyncS3Client:  # type: ignore  # TODO: fix
+def create_sync_s3_client(s3_settings: S3Settings) -> SyncS3Client:
     session = boto3.Session()
     return session.client(
         service_name="s3",
@@ -102,7 +104,7 @@ S3_TBL_FUNC_TEMPLATE = """s3(
 '{schema_line}')"""
 
 
-def s3_tbl_func_maker(s3_settings) -> Callable[..., str]:  # type: ignore  # TODO: fix
+def s3_tbl_func_maker(s3_settings: S3Settings) -> Callable[..., str]:
     def table_function(  # type: ignore  # TODO: fix
         for_: str,
         conn_dto,
