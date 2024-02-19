@@ -36,6 +36,8 @@ _EXPECTED_MASKED_HEADERS = (
     ("NonSecretHeader", "Ololo"),
     ("NonSecretHeader", "Azaza"),
     ("X-DL-API-Key", "123<hidden>789"),
+    ("X-Ya-Service-Ticket", "<hidden>"),
+    ("X-Ya-User-Ticket", "<hidden>"),
     ("Cookie", "Session_id=<hidden>; _ym_isad=2; sessionid2=<hidden>"),
     ("Cookie", "_ym_isad=2; session_id=<hidden>; sessionid2=<hidden>"),
 )
@@ -52,6 +54,8 @@ _INPUT_HEADERS = (
     ("NonSecretHeader", "Ololo"),
     ("NonSecretHeader", "Azaza"),
     ("X-DL-API-Key", "123456789"),
+    ("X-Ya-Service-Ticket", "secret"),
+    ("X-Ya-User-Ticket", "secret"),
     ("Cookie", "Session_id=sec_val; _ym_isad=2; sessionid2=sec_val2"),
     ("Cookie", "_ym_isad=2; session_id=sec_valci; sessionid2=sec_val2"),
 )
