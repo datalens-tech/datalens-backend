@@ -17,11 +17,14 @@ from typing import (
     Iterable,
     List,
     Optional,
+    Protocol,
     Sequence,
     Set,
     Tuple,
+    Type,
     Union,
     cast,
+    overload,
 )
 import uuid
 
@@ -190,12 +193,10 @@ class FieldProcessingStageManager:
             )
         )
 
-    def set_result(
-        self, formula_obj: Optional[formula_nodes.Formula], *, field: BIField, stage: ProcessingStage
-    ) -> None:
+    def set_result(self, formula_obj: formula_nodes.Formula, *, field: BIField, stage: ProcessingStage) -> None:
         self._exprs[field.guid][stage] = formula_obj
         if stage in self.save_type_stages:
-            self._data_types[field.guid][stage] = self._get_formula_obj_data_type(formula_obj)  # type: ignore  # TODO: fix
+            self._data_types[field.guid][stage] = self._get_formula_obj_data_type(formula_obj)
 
     def get_result(self, field: BIField, stage: ProcessingStage) -> Optional[formula_nodes.Formula]:
         return self._exprs[field.guid][stage]
@@ -255,7 +256,27 @@ class FieldProcessingStageManager:
                 raise dl_query_processing.exc.FormulaHandlingError(*pass_on_errors, stage=stage, field=field) from err
 
 
-StageProcType = Callable[["FormulaCompiler", BIField, bool], formula_nodes.Formula]
+class StageProcCallable(Protocol):
+    def __call__(self, field: BIField, collect_errors: bool = False) -> formula_nodes.Formula:
+        ...
+
+
+# https://github.com/python/typing/discussions/1040
+# and all of this just for the positional argument...
+class StageProcType(Protocol):
+    def __call__(_, self: FormulaCompiler, field: BIField, collect_errors: bool = False) -> formula_nodes.Formula:
+        ...
+
+    @overload
+    def __get__(self, obj: FormulaCompiler, objtype: Type[FormulaCompiler] | None = None) -> StageProcCallable:
+        ...
+
+    @overload
+    def __get__(self, obj: None, objtype: Type[FormulaCompiler] | None = None) -> StageProcCallable:
+        ...
+
+    def __get__(self, obj: FormulaCompiler | None, objtype: Type[FormulaCompiler] | None = None) -> StageProcCallable:
+        ...
 
 
 def implements_stage(stage: ProcessingStage) -> Callable[[StageProcType], StageProcType]:
@@ -297,7 +318,7 @@ def implements_stage(stage: ProcessingStage) -> Callable[[StageProcType], StageP
     return decorator
 
 
-def _unsupported_cast(typename):  # type: ignore  # TODO: fix
+def _unsupported_cast(typename: str) -> str:
     return f"__UNSUPPORTED_CAST_TO_{typename.upper()}__"
 
 
@@ -615,13 +636,11 @@ class FormulaCompiler:
                     # Double aggregation detected,
                     # so generate sub-node only up to the aggregation stage
                     # (`casting` is the previous one)
-                    sub_node = self._process_field_stage_casting(child_field, collect_errors=collect_errors).expr  # type: ignore  # TODO: fix
+                    sub_node = self._process_field_stage_casting(child_field, collect_errors=collect_errors).expr
 
                 else:
                     # No ignorable double aggregations, proceed as usual
-                    sub_node = self._process_field_stage_aggregation(
-                        child_field, collect_errors=collect_errors
-                    ).expr  # type: ignore  # TODO: fix
+                    sub_node = self._process_field_stage_aggregation(child_field, collect_errors=collect_errors).expr
 
                 child_wrapper = self._field_wrappers.get(child_field.guid)
                 if child_wrapper is not None:
@@ -788,7 +807,7 @@ class FormulaCompiler:
                 global_dimensions = [
                     # We will need to process some other fields to a more advanced stage,
                     # but since they are all dimensions, there will be no recursion loop
-                    self._process_field_stage_aggregation(  # type: ignore  # TODO: fix
+                    self._process_field_stage_aggregation(
                         self._fields.get(id=dim_id), collect_errors=collect_errors
                     ).expr
                     for dim_id in sorted(self._group_by_ids)
@@ -857,9 +876,7 @@ class FormulaCompiler:
             for dim_field_id in self._group_by_ids:
                 dim_field = self._fields.get(id=dim_field_id)
                 try:
-                    dim_formula_obj = self._process_field_stage_aggregation(
-                        dim_field, collect_errors=collect_errors
-                    )  # type: ignore  # TODO: fix
+                    dim_formula_obj = self._process_field_stage_aggregation(dim_field, collect_errors=collect_errors)
                 except formula_exc.FormulaError:
                     # error has been registered, so when the field will be rendered explicitly the error will be raised
                     # here we can just skip it since there's nothing to register as a dimension
@@ -893,25 +910,25 @@ class FormulaCompiler:
     def _process_field_stage_pre_sub_mutation(
         self, field: BIField, collect_errors: bool = False
     ) -> formula_nodes.Formula:
-        formula_obj = self._process_field_stage_base(field, collect_errors=collect_errors)  # type: ignore  # TODO: fix
+        formula_obj = self._process_field_stage_base(field, collect_errors=collect_errors)
         return self.apply_pre_sub_mutations(field=field, formula_obj=formula_obj, collect_errors=collect_errors)
 
     @implements_stage(ProcessingStage.dep_generation)
     def _process_field_stage_dep_generation(
         self, field: BIField, collect_errors: bool = False
     ) -> formula_nodes.Formula:
-        formula_obj = self._process_field_stage_pre_sub_mutation(field, collect_errors=collect_errors)  # type: ignore  # TODO: fix
+        formula_obj = self._process_field_stage_pre_sub_mutation(field, collect_errors=collect_errors)
         self._make_dependencies_for_field(field=field, formula_obj=formula_obj)
         return formula_obj
 
     @implements_stage(ProcessingStage.substitution)
     def _process_field_stage_substitution(self, field: BIField, collect_errors: bool = False) -> formula_nodes.Formula:
-        formula_obj = self._process_field_stage_dep_generation(field, collect_errors=collect_errors)  # type: ignore  # TODO: fix
+        formula_obj = self._process_field_stage_dep_generation(field, collect_errors=collect_errors)
         return self._substitute_fields_in_formula(field=field, formula_obj=formula_obj, collect_errors=collect_errors)
 
     @implements_stage(ProcessingStage.casting)
     def _process_field_stage_casting(self, field: BIField, collect_errors: bool = False) -> formula_nodes.Formula:
-        formula_obj = self._process_field_stage_substitution(field, collect_errors=collect_errors)  # type: ignore  # TODO: fix
+        formula_obj = self._process_field_stage_substitution(field, collect_errors=collect_errors)
         return self._apply_cast(
             formula_obj=formula_obj,
             current_dtype=self._stage_manager.get_data_type(field=field, stage=ProcessingStage.substitution),
@@ -920,7 +937,7 @@ class FormulaCompiler:
 
     @implements_stage(ProcessingStage.aggregation)
     def _process_field_stage_aggregation(self, field: BIField, collect_errors: bool = False) -> formula_nodes.Formula:
-        formula_obj = self._process_field_stage_casting(field, collect_errors=collect_errors)  # type: ignore  # TODO: fix
+        formula_obj = self._process_field_stage_casting(field, collect_errors=collect_errors)
         formula_obj = self._apply_aggregation(formula_obj=formula_obj, aggregation=field.aggregation)
         is_agg = is_aggregate_expression(formula_obj, env=self._inspect_env)
         self._field_types[field.guid] = FieldType.MEASURE if is_agg else FieldType.DIMENSION
@@ -928,21 +945,21 @@ class FormulaCompiler:
 
     @implements_stage(ProcessingStage.mutation)
     def _process_field_stage_mutation(self, field: BIField, collect_errors: bool = False) -> formula_nodes.Formula:
-        formula_obj = self._process_field_stage_aggregation(field, collect_errors=collect_errors)  # type: ignore  # TODO: fix
+        formula_obj = self._process_field_stage_aggregation(field, collect_errors=collect_errors)
         return self.apply_mutations(field=field, formula_obj=formula_obj, collect_errors=collect_errors)
 
     @implements_stage(ProcessingStage.validation)
     def _process_field_stage_validation(self, field: BIField, collect_errors: bool = False) -> formula_nodes.Formula:
-        formula_obj = self._process_field_stage_mutation(field, collect_errors=collect_errors)  # type: ignore  # TODO: fix
+        formula_obj = self._process_field_stage_mutation(field, collect_errors=collect_errors)
         self._validate_field_formula(formula_obj=formula_obj, field_id=field.guid, collect_errors=collect_errors)
         return formula_obj
 
     @implements_stage(ProcessingStage.final)
     def _process_field_stage_final(self, field: BIField, collect_errors: bool = False) -> formula_nodes.Formula:
-        return self._process_field_stage_validation(field, collect_errors=collect_errors)  # type: ignore  # TODO: fix
+        return self._process_field_stage_validation(field, collect_errors=collect_errors)
 
     def _compile_field_formula(self, field: BIField, collect_errors: bool = False) -> formula_nodes.Formula:
-        return self._process_field_stage_final(field=field, collect_errors=collect_errors)  # type: ignore  # TODO: fix
+        return self._process_field_stage_final(field=field, collect_errors=collect_errors)
 
     @contextmanager
     def handle_formula_error(self, field_id: FieldId) -> Generator[None, None, None]:
@@ -984,12 +1001,12 @@ class FormulaCompiler:
         self._require_field_formula_preparation(field)
         return self._stage_manager.get_data_type(field=field, stage=ProcessingStage.aggregation)
 
-    def get_field_type(self, field: BIField) -> Optional[UserDataType]:
+    def get_field_type(self, field: BIField) -> FieldType:
         """Return automatically determined field type"""
         self._require_field_formula_preparation(field)
-        return self._field_types.get(field.guid, FieldType.DIMENSION)  # type: ignore  # TODO: fix
+        return self._field_types.get(field.guid, FieldType.DIMENSION)
 
-    def get_field_errors(self, field: BIField) -> Optional[List[FormulaErrorCtx]]:
+    def get_field_errors(self, field: BIField) -> List[FormulaErrorCtx]:
         """Return list of errors found for given field"""
         self._require_field_formula_preparation(field)
         return self._stage_manager.get_errors(field)
@@ -1089,7 +1106,7 @@ class FormulaCompiler:
         )
         return formula_info
 
-    def compile_field_formula(  # type: ignore  # TODO: fix
+    def compile_field_formula(
         self,
         field: BIField,
         collect_errors: bool = False,
@@ -1150,11 +1167,11 @@ class FormulaCompiler:
     def get_formula_errors(self, formula: str) -> List[FormulaErrorCtx]:
         field = self.make_formula_field(formula=formula)
         errors = self.get_field_errors(field)
-        return errors  # type: ignore  # TODO: fix
+        return errors
 
     def field_has_auto_aggregation(self, field: BIField) -> bool:
         try:
-            formula_obj = self._process_field_stage_casting(field=field, collect_errors=False)  # type: ignore  # TODO: fix
+            formula_obj = self._process_field_stage_casting(field=field, collect_errors=False)
             return is_aggregate_expression(formula_obj, env=self._inspect_env)
         except formula_exc.FormulaError:
             return False
