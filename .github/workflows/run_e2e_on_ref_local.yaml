@@ -1,0 +1,59 @@
+name: "Run E2E tests on ref (local)"
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        type: string
+        required: true
+        description: "Pull request number/url to run tests on"
+      sha:
+        type: string
+        required: true
+        description: "Commit hash (to validate pr has not changed before the run is started)"
+
+jobs:
+  build_backend:
+    name: "Build images"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      image-version: ${{ steps.build_image.outputs.image-version }}
+    strategy:
+      matrix:
+        include:
+          - image_name: "datalens-control-api"
+            bake_target: "dl_control_api"
+          - image_name: "datalens-data-api"
+            bake_target: "dl_data_api"
+    container:
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
+      options: -v /var/run/docker.sock:/var/run/docker.sock
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      cr_url: "ghcr.io/${{ github.repository_owner }}"
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Switch to PR head
+      run: gh pr checkout ${{ github.event.inputs.pr }}
+      env:
+        GH_TOKEN: ${{ github.token }}
+    - name: Validate SHA
+      run: |
+        HEAD_SHA=$(git rev-parse HEAD) \
+        INPUT_SHA="${{ github.event.inputs.sha }}" && \
+        [ x"$HEAD_SHA" != x"$INPUT_SHA" ] && echo "The branch was updated since the workflow was triggered, exiting" \
+        && exit 1
+
+    - name: Install Task
+      uses: arduino/setup-task@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and run E2E
+      run: |
+        cd tools/e2e & task init-and-run
