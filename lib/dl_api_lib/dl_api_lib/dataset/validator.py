@@ -297,10 +297,10 @@ class DatasetValidator(DatasetBaseWrapper):
             )
             formula_comp_multi_query = self.process_compiled_query(compiled_query=formula_comp_query)
             multi_translator = self.make_multi_query_translator()
-            errors += multi_translator.collect_errors(compiled_multi_query=formula_comp_multi_query)  # type: ignore  # TODO: fix
+            errors += multi_translator.collect_errors(compiled_multi_query=formula_comp_multi_query)
         except formula_exc.FormulaError:
             pass
-        return errors  # type: ignore  # TODO: fix
+        return errors
 
     def _get_relation_errors(self, relation: AvatarRelation) -> list[FormulaErrorCtx]:
         # TODO: switch to ComponentError items
