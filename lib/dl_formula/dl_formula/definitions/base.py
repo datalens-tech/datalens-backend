@@ -689,12 +689,21 @@ class SingleVariantTranslationBase(MultiVariantTranslation):
     ) -> _SINGLE_NODE_TRANS_TV:
         return cls(dialects=dialects)
 
+<<<<<<< HEAD
     def for_another_dialect(
         self,
         dialects: DialectCombo,
         arg_transformer: Optional[ArgTransformer] = None,
     ) -> SingleVariantTranslationBase:
         func_class = type(self)
+=======
+    def for_another_dialect(  # type: ignore  # 2024-02-20 # TODO: Signature of "for_another_dialect" incompatible with supertype "MultiVariantTranslation"  [override]
+        self,
+        dialects: DialectCombo,
+        func_class: Type[_SINGLE_NODE_TRANS_TV],
+        arg_transformer: Optional[ArgTransformer] = None,
+    ) -> _SINGLE_NODE_TRANS_TV:
+>>>>>>> a2e66653 (Mypy fixes)
         return func_class(dialects=dialects, arg_transformer=arg_transformer)
 
 
