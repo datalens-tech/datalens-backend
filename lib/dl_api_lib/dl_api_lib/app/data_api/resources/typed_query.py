@@ -25,6 +25,7 @@ from dl_api_lib.schemas.typed_query import (
 from dl_api_lib.utils.base import need_permission_on_entry
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_constants.enums import DashSQLQueryType
+from dl_core.data_processing.typed_query import CEBasedTypedQueryProcessor
 from dl_core.us_connection_base import ConnectionBase
 from dl_dashsql.typed_query.primitives import (
     DataRowsTypedQueryResult,
@@ -33,6 +34,7 @@ from dl_dashsql.typed_query.primitives import (
     TypedQueryParameter,
     TypedQueryResult,
 )
+from dl_dashsql.typed_query.processor.base import TypedQueryProcessorBase
 
 
 class TypedQueryLoader(abc.ABC):
@@ -126,12 +128,18 @@ class DashSQLTypedQueryView(BaseView):
         )
         return typed_query
 
-    async def execute_query(self, connection: ConnectionBase, typed_query: TypedQuery) -> TypedQueryResult:
-        """Prepare everything for execution and execute"""
+    def _get_tq_processor(self, connection: ConnectionBase) -> TypedQueryProcessorBase:
+        # TODO: Move processor creation to SR (more logic will come with the implementation of caches)
         sr = self.dl_request.services_registry
         ce_factory = sr.get_conn_executor_factory()
         conn_executor = ce_factory.get_async_conn_executor(conn=connection)
-        typed_query_result = await conn_executor.execute_typed_query(typed_query=typed_query)
+        tq_processor = CEBasedTypedQueryProcessor(async_conn_executor=conn_executor)
+        return tq_processor
+
+    async def execute_query(self, connection: ConnectionBase, typed_query: TypedQuery) -> TypedQueryResult:
+        """Prepare everything for execution and execute"""
+        tq_processor = self._get_tq_processor(connection=connection)
+        typed_query_result = await tq_processor.process_typed_query(typed_query=typed_query)
         return typed_query_result
 
     def make_response_data(self, typed_query_result: TypedQueryResult) -> dict:
