@@ -67,7 +67,7 @@ jobs:
         bake_target=${{ matrix.bake_target }}
         image_version="${{ github.event.inputs.sha }}"
         image_url="${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}"
-        ./run-project-bake "${bake_target}" --set "${bake_target}.tags=${image_url}"
+        ./run-project-bake "${bake_target}" --push --set "${bake_target}.tags=${image_url}"
         echo "image-version=${image_version}" >> $GITHUB_OUTPUT
 
   run_e2e_tests:
