@@ -77,6 +77,7 @@ class QueryTypeInfoSchema(Schema):
     query_type = DynamicEnumField(DashSQLQueryType, dump_only=True)
     query_type_label = ma_fields.String(dump_only=True)
     required_parameters = ma_fields.List(ma_fields.Nested(RequiredParameterInfoSchema()), dump_only=True)
+    allow_selector = ma_fields.Boolean(dump_only=True)
 
 
 class ConnectionOptionsSchema(Schema):
