@@ -626,7 +626,7 @@ class MultiVariantTranslation(NodeTranslation):
     def for_another_dialect(
         self,
         dialects: DialectCombo,
-        func_class: Type[MultiVariantTranslation] | SingleVariantTranslationBase,
+        func_class: Type[_MULTI_NODE_TRANS_TV],
         arg_transformer: Optional[ArgTransformer] = None,
     ) -> _MULTI_NODE_TRANS_TV:
         assert len(self.get_variants()) == 1
