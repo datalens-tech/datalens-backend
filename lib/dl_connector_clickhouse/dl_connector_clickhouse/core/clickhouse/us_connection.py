@@ -47,3 +47,7 @@ class ConnectionClickhouse(ConnectionClickhouseBase):
                 DashSQLQueryType.generic_query,
             }
         )
+
+    @property
+    def is_typed_query_allowed(self) -> bool:
+        return False

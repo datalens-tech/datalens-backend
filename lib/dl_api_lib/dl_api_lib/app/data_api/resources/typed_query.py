@@ -75,7 +75,10 @@ class TypedQueryResultSerializer:
     def serialize_typed_query_result(self, typed_query_result: TypedQueryResult) -> Any:
         # No other result types are supported in API:
         assert isinstance(typed_query_result, DataRowsTypedQueryResult)
-        return DataRowsTypedQueryResultSchema().dump(typed_query_result)
+        return {
+            "query_type": typed_query_result.query_type.name,
+            "data": DataRowsTypedQueryResultSchema().dump(typed_query_result),
+        }
 
 
 @requires(RequiredResourceCommon.US_MANAGER)
@@ -134,7 +137,7 @@ class DashSQLTypedQueryView(BaseView):
     def make_response_data(self, typed_query_result: TypedQueryResult) -> dict:
         """Serialize output"""
         result_serializer = TypedQueryResultSerializer()  # TODO: Get serializer from somewhere
-        response_data = {"data": result_serializer.serialize_typed_query_result(typed_query_result)}
+        response_data = result_serializer.serialize_typed_query_result(typed_query_result)
         return response_data
 
     @generic_profiler_async("dashsql-typed-query")
