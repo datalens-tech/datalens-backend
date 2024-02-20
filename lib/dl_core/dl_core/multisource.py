@@ -82,3 +82,4 @@ class AvatarRelation:
     join_type: JoinType = attr.ib(default=JoinType.inner)
     managed_by: ManagedBy = attr.ib(default=ManagedBy.user)
     valid: bool = attr.ib(default=True)
+    required: bool = attr.ib(default=False)

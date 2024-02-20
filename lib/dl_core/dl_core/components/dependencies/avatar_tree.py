@@ -20,6 +20,7 @@ from dl_core.components.ids import (
     RelationId,
 )
 import dl_core.exc as exc
+from dl_core.multisource import AvatarRelation
 from dl_core.us_dataset import Dataset
 
 
@@ -52,9 +53,49 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
         populate_recursively(avatar_id=root_avatar.id, rank=0)
         return ranks
 
+    def _get_all_required_child_relations(self, avatar_id: AvatarId) -> Tuple[list[RelationId], list[AvatarId]]:
+        relations: list[AvatarRelation] = self._ds_accessor.get_avatar_relation_list(left_avatar_id=avatar_id)
+
+        relation_ids = []
+        avatar_ids = []
+        for r in relations:
+            if r.required:
+                relation_ids.append(r.id)
+                avatar_ids.append(r.right_avatar_id)
+
+        return relation_ids, avatar_ids
+
+    def _get_all_required_relations(self, avatars: set[AvatarId]) -> Tuple[list[RelationId], list[AvatarId]]:
+        stack = list(avatars)
+        all_new_avatars = []
+        all_new_relations = []
+        visited = set()
+        while stack:
+            avatar_id = stack.pop()
+            if avatar_id in visited:
+                continue
+
+            visited.add(avatar_id)
+            new_relations, new_avatar_ids = self._get_all_required_child_relations(avatar_id)
+
+            all_new_avatars.extend(new_avatar_ids)
+            all_new_relations.extend(new_relations)
+
+            stack.extend(new_avatar_ids)
+
+        return all_new_relations, all_new_avatars
+
+    def _get_relation_and_parent_id(self, avatar_id: AvatarId) -> Tuple[RelationId, AvatarId]:
+        relations = self._ds_accessor.get_avatar_relation_list(right_avatar_id=avatar_id)
+        assert len(relations) == 1
+        relation = relations[0]
+        return relation.id, relation.left_avatar_id
+
     def expand_required_avatar_ids(
         self, required_avatar_ids: Collection[str]
     ) -> Tuple[Optional[AvatarId], Set[AvatarId], Set[RelationId]]:
+        # todo: this method is too big
+        #  need to split it down to several methods
         if len(required_avatar_ids) == 1:
             # Single avatar -> nothing to resolve
             return next(iter(required_avatar_ids)), set(required_avatar_ids), set()
@@ -67,6 +108,7 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
         required_relation_ids: Set[RelationId] = set()
 
         # first add avatars used by required feature-managed relations
+        # todo: move to separate method
         for iteration in range(10):
             updated_required_avatar_ids = required_avatar_ids.copy()
             for relation in self._ds_accessor.get_avatar_relation_list():
@@ -95,12 +137,6 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
         }
         assert user_avatar_ids, "Must have at least one user-managed source"
 
-        def get_relation_and_parent_id(avatar_id: AvatarId) -> Tuple[RelationId, AvatarId]:
-            relations = self._ds_accessor.get_avatar_relation_list(right_avatar_id=avatar_id)
-            assert len(relations) == 1
-            relation = relations[0]
-            return relation.id, relation.left_avatar_id
-
         try:
             min_rank = min(rank for avatar_id, rank in ranks.items() if avatar_id in user_avatar_ids)
         except ValueError as e:
@@ -109,13 +145,14 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
             ) from e
 
         # add parent_ids until single common ancestor remains
+        # todo: move to separate method
         common_root_ids = user_avatar_ids
         while len(common_root_ids) > 1:
             new_common_root_ids = set()
             for avatar_id in common_root_ids:
                 # now fill in the gaps so that all `new_common_root_ids` are at the same level in the avatar tree
                 while ranks[avatar_id] > min_rank:
-                    new_relation_id, new_avatar_id = get_relation_and_parent_id(avatar_id)
+                    new_relation_id, new_avatar_id = self._get_relation_and_parent_id(avatar_id)
                     # add this parent to required IDs
                     if new_avatar_id not in required_avatar_ids:
                         LOGGER.info(
@@ -130,5 +167,10 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
             common_root_ids = new_common_root_ids
             if len(common_root_ids) > 1:
                 min_rank -= 1
+
+        req_relations, req_avatars = self._get_all_required_relations(required_avatar_ids)
+
+        required_avatar_ids.update(req_avatars)
+        required_relation_ids.update(req_relations)
 
         return next(iter(common_root_ids)), required_avatar_ids, required_relation_ids

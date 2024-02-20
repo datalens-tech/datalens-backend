@@ -322,6 +322,7 @@ class DatasetComponentEditor:
         join_type: Optional[JoinType] = None,
         managed_by: Optional[ManagedBy] = None,
         valid: bool = True,
+        required: bool = False,
     ) -> None:
         # validate
         if self._ds_accessor.get_avatar_relation_list(right_avatar_id=right_avatar_id):
@@ -343,6 +344,7 @@ class DatasetComponentEditor:
                 join_type=join_type or JoinType.inner,
                 managed_by=managed_by or ManagedBy.user,
                 valid=valid,
+                required=required,
             )
         )
 
