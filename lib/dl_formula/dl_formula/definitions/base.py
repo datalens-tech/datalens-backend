@@ -628,7 +628,7 @@ class MultiVariantTranslation(NodeTranslation):
         dialects: DialectCombo,
         func_class: Type[_MULTI_NODE_TRANS_TV],
         arg_transformer: Optional[ArgTransformer] = None,
-    ) -> MultiVariantTranslation:
+    ) -> object:
         assert len(self.get_variants()) == 1
         variant = next(iter(self.get_variants()))
         patched_variant = variant.clone(dialects=dialects)
