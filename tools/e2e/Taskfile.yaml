@@ -140,7 +140,7 @@ tasks:
       - task: datalens-ui-init
       - task: docker-build
       - task: docker-start
+      - defer: { task: docker-stop }
       - task: test
         vars:
           RETRY_TIMES: 1
-      - task: docker-stop
