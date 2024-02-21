@@ -20,6 +20,7 @@ jobs:
     runs-on: [ self-hosted, linux ]
     permissions:
       contents: read
+      packages: read
     container:
       image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
       options: -v /var/run/docker.sock:/var/run/docker.sock
