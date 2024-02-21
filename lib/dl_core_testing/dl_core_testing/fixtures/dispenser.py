@@ -1,4 +1,5 @@
 import pkgutil
+from typing import Optional
 
 import attr
 
@@ -14,6 +15,8 @@ from dl_core_testing.fixtures.primitives import FixtureTableSpec
 @attr.s
 class DbCsvTableDispenser:
     _tables: dict[DbConfig, dict[FixtureTableSpec, DbTable]] = attr.ib(init=False, factory=dict)
+    _table_name_prefix: Optional[str] = attr.ib(default=None)
+    _bulk_insert: bool = attr.ib(default=False)
 
     def _get_raw_csv_data(self, path: str) -> str:
         byte_data = pkgutil.get_data(__name__, path)
@@ -26,6 +29,8 @@ class DbCsvTableDispenser:
             raw_csv_data=self._get_raw_csv_data(spec.csv_name),
             table_schema=spec.table_schema,
             nullable=spec.nullable,
+            table_name_prefix=self._table_name_prefix,
+            bulk_insert=self._bulk_insert,
         )
         if db.config not in self._tables:
             self._tables[db.config] = {}
