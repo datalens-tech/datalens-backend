@@ -626,12 +626,13 @@ class MultiVariantTranslation(NodeTranslation):
     def for_another_dialect(
         self,
         dialects: DialectCombo,
-        func_class: Type[_MULTI_NODE_TRANS_TV],
         arg_transformer: Optional[ArgTransformer] = None,
-    ) -> _MULTI_NODE_TRANS_TV:
-        assert len(self.get_variants()) == 1
-        variant = next(iter(self.get_variants()))
+    ) -> MultiVariantTranslation:
+        variants = self.get_variants()
+        assert len(variants) == 1
+        variant = next(iter(variants))
         patched_variant = variant.clone(dialects=dialects)
+        func_class = type(self)
         return func_class(variants=[patched_variant], arg_transformer=arg_transformer)
 
 
@@ -688,12 +689,12 @@ class SingleVariantTranslationBase(MultiVariantTranslation):
     ) -> _SINGLE_NODE_TRANS_TV:
         return cls(dialects=dialects)
 
-    def for_another_dialect(  # type: ignore  # 2024-02-20 # TODO: Signature of "for_another_dialect" incompatible with supertype "MultiVariantTranslation"  [override]
+    def for_another_dialect(
         self,
         dialects: DialectCombo,
-        func_class: Type[_SINGLE_NODE_TRANS_TV],
         arg_transformer: Optional[ArgTransformer] = None,
-    ) -> _SINGLE_NODE_TRANS_TV:
+    ) -> SingleVariantTranslationBase:
+        func_class = type(self)
         return func_class(dialects=dialects, arg_transformer=arg_transformer)
 
 
