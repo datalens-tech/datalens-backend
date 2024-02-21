@@ -18,7 +18,6 @@ from dl_connector_ydb.api.ydb.i18n.localizer import CONFIGS
 from dl_connector_ydb.core.ydb.connector import (
     YDBCoreBackendDefinition,
     YDBCoreConnectionDefinition,
-    YDBCoreConnector,
     YDBCoreSourceDefinition,
     YDBCoreSubselectSourceDefinition,
 )

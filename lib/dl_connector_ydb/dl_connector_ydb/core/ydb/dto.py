@@ -9,4 +9,6 @@ from dl_connector_ydb.core.ydb.constants import CONNECTION_TYPE_YDB
 
 @attr.s(frozen=True)
 class YDBConnDTO(DefaultSQLDTO):
+    auth_type: str = attr.ib()
+
     conn_type = CONNECTION_TYPE_YDB
