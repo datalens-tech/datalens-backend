@@ -23,8 +23,6 @@ class DefaultCompengMultiQueryMutator(MultiQueryMutatorBase):
     if `multi_query` contains window functions,
     """
 
-    optimize_compeng_usage: bool = attr.ib(kw_only=True, default=True)
-
     def split_borderline_query(
         self,
         query: CompiledQuery,
@@ -99,36 +97,25 @@ class DefaultCompengMultiQueryMutator(MultiQueryMutatorBase):
 
         # Replace `level_type` in all of the bottom-level sub-queries
         updated_queries: list[CompiledQuery] = []
-        base_from_ids = {from_obj.id for from_obj in multi_query.get_base_froms().values()}
         for query in multi_query.iter_queries():
-            query_is_base = bool(set(query.joined_from.iter_ids()) & base_from_ids)
             this_iteration_updated_queries: list[CompiledQuery] = []
-            if (
-                # optimized version
-                self.optimize_compeng_usage
-                and query.id in queries_with_win_funcs
-                # non-optimized version
-                or not self.optimize_compeng_usage
-                and not query_is_base
-            ):
-                if self.optimize_compeng_usage and query.id in borderline_queries:
-                    # Split borderline queries so that only the part that starts with window functions
-                    # goes to COMPENG. Everything below it should remain in source DB.
-                    requirement_subtree = build_requirement_subtree(multi_query, query.id)
-                    this_iteration_updated_queries.extend(
-                        self.split_borderline_query(
-                            query=query,
-                            requirement_subtree=requirement_subtree,
-                            query_id_gen=query_id_gen,
-                            expr_id_gen=expr_id_gen,
-                        )
-                    )
-                else:
-                    query = query.clone(level_type=ExecutionLevel.compeng)
-                    this_iteration_updated_queries.append(query)
-
-            else:
+            if query.id not in queries_with_win_funcs:
                 this_iteration_updated_queries.append(query)
+            elif query.id not in borderline_queries:
+                query = query.clone(level_type=ExecutionLevel.compeng)
+                this_iteration_updated_queries.append(query)
+            else:
+                # Split borderline queries so that only the part that starts with window functions
+                # goes to COMPENG. Everything below it should remain in source DB.
+                requirement_subtree = build_requirement_subtree(multi_query, query.id)
+                this_iteration_updated_queries.extend(
+                    self.split_borderline_query(
+                        query=query,
+                        requirement_subtree=requirement_subtree,
+                        query_id_gen=query_id_gen,
+                        expr_id_gen=expr_id_gen,
+                    )
+                )
 
             updated_queries.extend(this_iteration_updated_queries)
 
