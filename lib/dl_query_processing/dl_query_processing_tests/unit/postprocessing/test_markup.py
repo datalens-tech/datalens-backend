@@ -17,6 +17,7 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
         "",
         MPP.n_br(),
         MPP.n_cl(MPP.n_sz("col2", "L"), "#dddddd"),
+        MPP.n_userinfo("123", "email"),
     )
     if MPP._dbg:
         print("formulated:", formulated)
@@ -32,6 +33,7 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
             "",
             ("br",),
             ("cl", ("sz", "col2", "L"), "#dddddd"),
+            ("userinfo", "123", "email"),
         )
         assert formulated == expected
     dumped = MPP.dump(formulated)
@@ -39,7 +41,7 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
         print("dumped:", repr(dumped))
     assert (
         dumped
-        == '(c "url: """ (a "col1" "col2") """; """ (i (b (a "col3" "col4"))) """" "" (br ) (cl (sz "col2" "L") "#dddddd"))'
+        == '(c "url: """ (a "col1" "col2") """; """ (i (b (a "col3" "col4"))) """" "" (br ) (cl (sz "col2" "L") "#dddddd") (userinfo "123" "email"))'
     )
     parsed = MPP.parse(dumped)
     if MPP._dbg:
@@ -70,6 +72,7 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
                 "color": "#dddddd",
                 "content": {"type": "size", "size": "L", "content": {"type": "text", "content": "col2"}},
             },
+            {"type": "user_info", "content": {"type": "text", "content": "123"}, "user_info": "email"},
         ],
     }
     assert verbalized == expected
