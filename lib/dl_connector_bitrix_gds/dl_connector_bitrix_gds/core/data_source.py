@@ -22,7 +22,7 @@ from dl_connector_bitrix_gds.core.constants import (
 )
 
 
-def _get_supported_join_types() -> ClassVar[frozenset[JoinType]]:
+def _get_supported_join_types() -> frozenset[JoinType]:
     flag = os.environ.get("EXPERIMENTAL_BITRIX_ENABLE_JOIN_TYPES", "false")
     if flag.lower() == "true":
         return frozenset(
