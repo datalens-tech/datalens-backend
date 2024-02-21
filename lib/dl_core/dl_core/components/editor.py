@@ -354,7 +354,7 @@ class DatasetComponentEditor:
         conditions: Optional[list[BinaryCondition]] = None,
         join_type: Optional[JoinType] = None,
         valid: Optional[bool] = None,
-        required: bool = None,
+        required: Optional[bool] = None,
     ) -> None:
         # left/right avatar IDs cannot be changed. Delete/create new relation to do that
         relation = self._ds_accessor.get_avatar_relation_opt(relation_id=relation_id)
