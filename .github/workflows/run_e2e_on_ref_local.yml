@@ -48,10 +48,11 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Checkout datalens-ui repo
+      uses: actions/checkout@v4
+      with:
+        repository: datalens-tech/datalens-ui
+        path: tools/e2e/datalens-ui
+
     - name: Build and run E2E
-      env:
-        GH_TOKEN: ${{ secrets.GHA_REPO_TOKEN }}
-      run: |
-        cd tools/e2e
-        git clone https://${{ secrets.ROBOT_PUBLIC_REPO_LOGIN }}:${{ secrets.ROBOT_PUBLIC_REPO_TOKEN }}@github.com/datalens-tech/datalens-ui.git ../../../../datalens-ui
-        task init-and-run
+      run: task e2e:init-and-run DATALENS_UI_FOLDER="./datalens-ui"
