@@ -28,6 +28,10 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
+    - name: 'Cleanup build folder'
+      run: |
+        rm -rf ./* || true
+        rm -rf ./.??* || true
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Fix dubious ownership
