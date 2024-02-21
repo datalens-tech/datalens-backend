@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from typing import (
     ClassVar,
     Optional,
@@ -21,8 +22,23 @@ from dl_connector_bitrix_gds.core.constants import (
 )
 
 
+def _get_supported_join_types() -> ClassVar[frozenset[JoinType]]:
+    flag = os.environ.get("EXPERIMENTAL_BITRIX_ENABLE_JOIN_TYPES", "false")
+    if flag.lower() == "true":
+        return frozenset(
+            {
+                JoinType.inner,
+                JoinType.left,
+                JoinType.full,
+                JoinType.right,
+            }
+        )
+
+    return frozenset()
+
+
 class BitrixGDSDataSource(PseudoSQLDataSource):
-    supported_join_types: ClassVar[frozenset[JoinType]] = frozenset()
+    supported_join_types: ClassVar[frozenset[JoinType]] = _get_supported_join_types()
     conn_type = CONNECTION_TYPE_BITRIX24
 
     @property
