@@ -141,9 +141,9 @@ tasks:
       - task: docker-build
       - task: docker-start
       - defer: { task: docker-stop }
+      - defer: for i in $(docker ps -aq); do echo "now $i"; docker logs $i; done
+      - defer: docker ps -a
       - task: test
         vars:
           RETRY_TIMES: 1
           PATTERN: "Add dataset"
-      - defer: for i in $(docker ps -aq); do echo "now $i"; docker logs $i; done
-      - defer: docker ps -a
