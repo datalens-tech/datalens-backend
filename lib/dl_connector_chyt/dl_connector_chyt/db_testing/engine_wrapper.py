@@ -3,6 +3,7 @@ from typing import (
     Sequence,
 )
 
+from clickhouse_sqlalchemy import Table as CHTable
 import sqlalchemy as sa
 
 from dl_db_testing.database.engine_wrapper import EngineWrapperBase
@@ -22,8 +23,7 @@ class CHYTEngineWrapperBase(EngineWrapperBase):
         schema: Optional[str] = None,
         table_name: Optional[str] = None,
     ) -> sa.Table:
-        table = super().table_from_columns(columns, table_name=table_name)
-        # assert table_name is not None, "Table name is required"
-        # table = CHTable(table_name, sa.MetaData(), *columns)
+        assert table_name is not None, "Table name is required"
+        table = CHTable(table_name, sa.MetaData(), *columns)
         table.engine = YtTable()
         return table
