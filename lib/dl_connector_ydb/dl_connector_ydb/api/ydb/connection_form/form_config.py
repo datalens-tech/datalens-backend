@@ -1,11 +1,16 @@
 from __future__ import annotations
 
-from enum import Enum
+from enum import (
+    Enum,
+    unique,
+)
 from typing import (
     Optional,
     Sequence,
     Type,
 )
+
+import attr
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_connector.form_config.models.api_schema import (
@@ -20,20 +25,60 @@ from dl_api_connector.form_config.models.base import (
 )
 from dl_api_connector.form_config.models.common import (
     CommonFieldName,
+    FormFieldName,
     OAuthApplication,
 )
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_i18n.localizer_base import Localizer
 
 from dl_connector_ydb.api.ydb.connection_info import YDBConnectionInfoProvider
 from dl_connector_ydb.api.ydb.i18n.localizer import Translatable
+from dl_connector_ydb.core.ydb.constants import YDBAuthTypeMode
 from dl_connector_ydb.core.ydb.settings import YDBConnectorSettings
 
 
 class YDBOAuthApplication(OAuthApplication):
     ydb = "ydb"
+
+
+@unique
+class YDBFieldName(FormFieldName):
+    auth_type = "auth_type"
+
+
+@attr.s
+class YDBRowConstructor:
+    _localizer: Localizer = attr.ib()
+
+    def enforce_collate_row(self) -> C.CustomizableRow:
+        return C.CustomizableRow(
+            items=[
+                C.LabelRowItem(
+                    text=self._localizer.translate(Translatable("field_auth_type")),
+                ),
+                C.RadioButtonRowItem(
+                    name=YDBFieldName.auth_type,
+                    options=[
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_auth-type-anonymous")),
+                            value=YDBAuthTypeMode.anonymous.value,
+                        ),
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_auth-type-password")),
+                            value=YDBAuthTypeMode.password.value,
+                        ),
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_auth-type-oauth")),
+                            value=YDBAuthTypeMode.oauth.value,
+                        ),
+                    ],
+                    default_value=YDBAuthTypeMode.oauth.value,
+                ),
+            ]
+        )
 
 
 class YDBConnectionFormFactory(ConnectionFormFactory):
@@ -88,10 +133,12 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         edit_api_schema: FormActionApiSchema,
         check_api_schema: FormActionApiSchema,
         rc: RowConstructor,
+        ydb_rc: YDBRowConstructor,
     ) -> ConnectionForm:
         return ConnectionForm(
             title=YDBConnectionInfoProvider.get_title(self._localizer),
             rows=[
+                ydb_rc.enforce_collate_row(),
                 *db_section_rows,
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
                 rc.raw_sql_level_row(),
@@ -110,6 +157,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)
+        ydb_rc = YDBRowConstructor(localizer=self._localizer)
 
         edit_api_schema = self._get_base_edit_api_schema()
         common_api_schema_items = self._get_base_common_api_schema_items(names_source=CommonFieldName)
@@ -130,4 +178,5 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
             edit_api_schema=edit_api_schema,
             check_api_schema=check_api_schema,
             rc=rc,
+            ydb_rc=ydb_rc,
         )
