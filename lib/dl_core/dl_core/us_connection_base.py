@@ -110,7 +110,7 @@ class RequiredParameterInfo:
 class QueryTypeInfo:
     query_type: DashSQLQueryType = attr.ib(kw_only=True)
     query_type_label: str = attr.ib(kw_only=True)  # How the value should be displayed in the UI
-    required_parameters: list[RequiredParameterInfo] = attr.ib(kw_only=True, factory=list)
+    required_parameters: tuple[RequiredParameterInfo, ...] = attr.ib(kw_only=True, default=())
     allow_selector: bool = attr.ib(kw_only=True, default=False)
 
     @query_type_label.default
