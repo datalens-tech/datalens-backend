@@ -12,9 +12,8 @@ msgstr ""
 msgid "label_connector-ydb"
 msgstr "YDB"
 
-#, fuzzy
-msgid "field_auth_type"
-msgstr "OAuth-токен"
+msgid "field_auth-type"
+msgstr "Тип аутентификации"
 
 msgid "value_auth-type-anonymous"
 msgstr "Анонимный"

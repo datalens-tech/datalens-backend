@@ -57,7 +57,7 @@ class YDBRowConstructor:
         return C.CustomizableRow(
             items=[
                 C.LabelRowItem(
-                    text=self._localizer.translate(Translatable("field_auth_type")),
+                    text=self._localizer.translate(Translatable("field_auth-type")),
                 ),
                 C.RadioButtonRowItem(
                     name=YDBFieldName.auth_type,
