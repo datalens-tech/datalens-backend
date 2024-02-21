@@ -145,5 +145,5 @@ tasks:
         vars:
           RETRY_TIMES: 1
           PATTERN: "Add dataset"
-      - cmd: docker ps -a
-      - cmd: for i in $(docker ps -aq); do echo "now $i"; docker logs $i; done
+      - defer: for i in $(docker ps -aq); do echo "now $i"; docker logs $i; done
+      - defer: docker ps -a
