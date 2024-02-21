@@ -46,13 +46,18 @@ jobs:
     - name: Install Task
       uses: arduino/setup-task@v1
       with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        version: 3.33.1
 
     - name: Checkout datalens-ui repo
       uses: actions/checkout@v4
       with:
         repository: datalens-tech/datalens-ui
         path: tools/e2e/datalens-ui
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+        cache-dependency-path: tools/e2e/datalens-ui/package-lock.json
 
     - name: Build and run E2E
       run: task e2e:init-and-run DATALENS_UI_FOLDER="./datalens-ui"

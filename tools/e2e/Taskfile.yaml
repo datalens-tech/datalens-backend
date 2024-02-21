@@ -40,17 +40,6 @@ tasks:
       - git checkout main
       - git pull
 
-  nvm-install:
-    dir: "{{.DATALENS_UI_FOLDER}}"
-    desc: Install nvm & node
-    cmds:
-      - |
-        PROFILE=/dev/null bash -c \
-          'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
-          export NVM_DIR="$HOME/.nvm" && \
-          source $NVM_DIR/nvm.sh && \
-          nvm install'
-
   datalens-ui-init:
     dir: "{{.DATALENS_UI_FOLDER}}"
     desc: Install dependencies
@@ -142,11 +131,10 @@ tasks:
         vars: { HEADFUL: "1" }
 
   init-and-run:
-    desc: Bootstrap command; install everything and run all tests
+    desc: Bootstrap command; install everything and run all tests; requires node installed
     cmds:
       - task: datalens-ui-repo-clone
       - task: datalens-ui-repo-update
-      - task: nvm-install
       - task: datalens-ui-init
       - task: docker-build
       - task: docker-start
