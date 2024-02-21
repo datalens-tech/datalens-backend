@@ -135,6 +135,7 @@ tasks:
     cmds:
       - task: datalens-ui-repo-clone
       - cmd: echo "Hello from a PR"
+      - cmd: mkdir {{.DATALENS_UI_FOLDER}}/tests/metadata
       - task: datalens-ui-repo-update
       - task: datalens-ui-init
       - task: docker-build
