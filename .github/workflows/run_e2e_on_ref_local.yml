@@ -30,6 +30,10 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+    - name: Fix dubious ownership
+      run: .github/.scripts/git_config_save_directory.sh
+      env:
+        REPOSITORY_NAME: ${{ github.event.repository.name }}
     - name: Switch to PR head
       run: gh pr checkout ${{ github.event.inputs.pr }}
       env:
