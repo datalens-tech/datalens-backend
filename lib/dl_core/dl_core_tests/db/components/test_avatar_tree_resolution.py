@@ -58,16 +58,16 @@ class TestAvatarTreeResolution(DefaultCoreTestClass):
         dsrc_5_proxy = dataset_builder.add_data_source()
         dsrc_6_proxy = dataset_builder.add_data_source()
 
-        avatar_1_proxy = dsrc_1_proxy.add_avatar("1")
-        avatar_2_proxy = dsrc_2_proxy.add_avatar("2")
-        avatar_3_proxy = dsrc_3_proxy.add_avatar("3")
-        avatar_4_proxy = dsrc_4_proxy.add_avatar("4")
-        avatar_5_proxy = dsrc_5_proxy.add_avatar("5")
-        avatar_6_proxy = dsrc_6_proxy.add_avatar("6")
-        avatar_7_proxy = dsrc_6_proxy.add_avatar("7")
-        avatar_8_proxy = dsrc_5_proxy.add_avatar("8")
-        avatar_9_proxy = dsrc_6_proxy.add_avatar("9")
-        avatar_10_proxy = dsrc_6_proxy.add_avatar("10")
+        avatar_1_proxy = dsrc_1_proxy.add_avatar()
+        avatar_2_proxy = dsrc_2_proxy.add_avatar()
+        avatar_3_proxy = dsrc_3_proxy.add_avatar()
+        avatar_4_proxy = dsrc_4_proxy.add_avatar()
+        avatar_5_proxy = dsrc_5_proxy.add_avatar()
+        avatar_6_proxy = dsrc_6_proxy.add_avatar()
+        avatar_7_proxy = dsrc_6_proxy.add_avatar()
+        avatar_8_proxy = dsrc_5_proxy.add_avatar()
+        avatar_9_proxy = dsrc_6_proxy.add_avatar()
+        avatar_10_proxy = dsrc_6_proxy.add_avatar()
 
         relation_1_2_proxy = avatar_1_proxy.add_relation_simple_eq(
             right=avatar_2_proxy, left_col_name="int_value", right_col_name="int_value"
