@@ -57,11 +57,13 @@ jobs:
       with:
         version: 3.33.1
 
-    - name: Checkout datalens-ui repo
-      uses: actions/checkout@v4
-      with:
-        repository: datalens-tech/datalens-ui
-        path: tools/e2e/datalens-ui
+#    - name: Checkout datalens-ui repo
+#      uses: actions/checkout@v4
+#      with:
+#        repository: datalens-tech/datalens-ui
+#        path: tools/e2e/datalens-ui
+    - name: Clone datalens-ui repo
+      run: git clone https://github.com/datalens-tech/datalens-ui.git ./tools/e2e/datalens-ui
     - uses: actions/setup-node@v3
       with:
         node-version: 18
