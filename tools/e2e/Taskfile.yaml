@@ -13,7 +13,6 @@ vars:
 
 tasks:
   _docker:
-    dir: "{{.DATALENS_UI_FOLDER}}/tests"
     internal: true
     requires:
       vars:
