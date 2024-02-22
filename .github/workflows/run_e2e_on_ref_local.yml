@@ -63,7 +63,7 @@ jobs:
 #        repository: datalens-tech/datalens-ui
 #        path: tools/e2e/datalens-ui
     - name: Clone datalens-ui repo
-      run: git clone https://github.com/datalens-tech/datalens-ui.git ./tools/e2e/datalens-ui && chown -R $(whoami) ./tools/e2e/datalens-ui
+      run: git clone https://github.com/datalens-tech/datalens-ui.git ../datalens-ui && chown -R $(whoami) ../datalens-ui
     - uses: actions/setup-node@v3
       with:
         node-version: 18
@@ -71,4 +71,4 @@ jobs:
         cache-dependency-path: tools/e2e/datalens-ui/package-lock.json
 
     - name: Build and run E2E
-      run: task e2e:init-and-run DATALENS_UI_FOLDER="../datalens-ui"
+      run: task e2e:init-and-run DATALENS_UI_FOLDER="../../../datalens-ui"
