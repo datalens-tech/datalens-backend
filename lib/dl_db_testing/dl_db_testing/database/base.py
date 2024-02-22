@@ -158,14 +158,17 @@ class DbTableBase:
     def name(self) -> str:
         return self.table.name
 
-    def insert(self, data: Union[dict, List[dict]], bulk_insert: bool = False, chunk_size: int = 200) -> None:
+    def insert(self, data: Union[dict, List[dict]], chunk_size: Optional[int] = None) -> None:
+        chunk_size = chunk_size or 1
+        assert chunk_size is not None
+
         # TODO: Use insert_into_table
         if not self.can_insert:
             raise RuntimeError("Can't insert into table")
         if isinstance(data, dict):
             self.db.execute(self.table.insert(data))
         elif isinstance(data, list):
-            if bulk_insert:
+            if chunk_size > 1:
                 rest = data
                 while rest:
                     chunk = rest[:chunk_size]

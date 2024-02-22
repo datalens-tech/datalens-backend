@@ -66,7 +66,7 @@ class CsvTableDumper:
         table_schema: Sequence[tuple[str, UserDataType]],
         table_name_prefix: Optional[str] = None,
         nullable: bool = True,
-        bulk_insert: bool = False,
+        chunk_size: Optional[int] = None,
     ) -> DbTable:
         table_name_prefix = table_name_prefix or "table_"
         if not table_name_prefix.endswith("_"):
@@ -87,5 +87,5 @@ class CsvTableDumper:
             for col_idx, (name, user_type) in enumerate(table_schema)
         ]
 
-        db_table = make_table(db=self.db, name=table_name, columns=columns, rows=len(data), bulk_insert=bulk_insert)
+        db_table = make_table(db=self.db, name=table_name, columns=columns, rows=len(data), chunk_size=chunk_size)
         return db_table

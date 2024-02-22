@@ -30,3 +30,7 @@ class CHYTEngineWrapperBase(EngineWrapperBase):
 
     def test(self) -> bool:
         return True
+
+    def drop_table(self, db_name: str, table: sa.Table) -> None:
+        if table.exists(bind=self.engine):
+            super().drop_table(db_name=db_name, table=table)
