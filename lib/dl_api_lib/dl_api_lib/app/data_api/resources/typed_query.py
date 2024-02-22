@@ -26,6 +26,7 @@ from dl_api_lib.utils.base import need_permission_on_entry
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_constants.enums import DashSQLQueryType
 from dl_core.data_processing.typed_query import CEBasedTypedQueryProcessor
+import dl_core.exc as core_exc
 from dl_core.us_connection_base import ConnectionBase
 from dl_dashsql.typed_query.primitives import (
     DataRowsTypedQueryResult,
@@ -116,6 +117,8 @@ class DashSQLTypedQueryView(BaseView):
     def validate_connection(self, connection: ConnectionBase) -> None:
         """Check whether we can use this connection to execute the query"""
         need_permission_on_entry(connection, USPermissionKind.execute)
+        if not connection.is_typed_query_allowed or not connection.is_dashsql_allowed:
+            raise core_exc.DashSQLNotAllowed()
 
     def make_typed_query(self) -> TypedQuery:
         """Formalize and validate query from input"""
