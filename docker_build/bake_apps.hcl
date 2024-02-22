@@ -1,5 +1,9 @@
 target "dl_control_api" {
   pull     = false
+  args = {
+    UID = 1000
+    GID = 1000
+  }
   contexts = {
     bake_ctx_base_img = "target:base_jammy_db"
     bake_ctx_src_lib  = "target:dl_src_lib"
@@ -11,6 +15,10 @@ target "dl_control_api" {
 
 target "dl_data_api" {
   pull     = false
+  args = {
+    UID = 1000
+    GID = 1000
+  }
   contexts = {
     bake_ctx_base_img = "target:base_jammy_db"
     bake_ctx_src_lib  = "target:dl_src_lib"

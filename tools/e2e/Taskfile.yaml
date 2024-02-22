@@ -25,9 +25,7 @@ tasks:
       - ls -la backend-configs
       - echo $(ls -la backend-configs)
       - cat docker-compose.e2e.yml
-      - export UID=$(id -u) && \
-        export GID=$(id -g) && \
-        docker compose
+      - docker compose
         -f docker-compose.e2e.yml
         -f ../../docker-compose.e2e-dev-backend.yaml
         {{.COMMAND}}
@@ -59,9 +57,7 @@ tasks:
     desc: Build backend containers
     dir: ../../docker_build
     cmds:
-      - export UID=$(id -u) && \
-        export GID=$(id -g) && \
-        ./run-project-bake
+      - ./run-project-bake
         {{.CONTROL_API_TARGET}} 
         {{.DATA_API_TARGET}}
         --set "{{.CONTROL_API_TARGET}}.tags={{.CONTROL_API_TAG}}"
