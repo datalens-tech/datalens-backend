@@ -68,6 +68,8 @@ jobs:
         git clone https://github.com/datalens-tech/datalens-ui.git ../datalens-ui && chown -R $(whoami) ../datalens-ui
         ls -la
         ls -la ../
+        ls -la ../datalens-ui
+        ls -la /__w/datalens-backend/datalens-ui/ || true
         pwd
         pwd ..
     - uses: actions/setup-node@v3
