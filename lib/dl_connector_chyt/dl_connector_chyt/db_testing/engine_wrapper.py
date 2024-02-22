@@ -27,3 +27,6 @@ class CHYTEngineWrapperBase(EngineWrapperBase):
         table = CHTable(table_name, sa.MetaData(), *columns)
         table.engine = YtTable()
         return table
+
+    def test(self) -> bool:
+        return True
