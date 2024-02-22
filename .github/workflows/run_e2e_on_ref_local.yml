@@ -68,7 +68,7 @@ jobs:
       with:
         node-version: 18
         cache: 'npm'
-        cache-dependency-path: ../datalens-ui/package-lock.json
+#        cache-dependency-path: ../datalens-ui/package-lock.json
 
     - name: Build and run E2E
       run: task e2e:init-and-run DATALENS_UI_FOLDER="../../../datalens-ui"
