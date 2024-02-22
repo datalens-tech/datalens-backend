@@ -50,4 +50,4 @@ class ConnectionClickhouse(ConnectionClickhouseBase):
 
     @property
     def is_typed_query_allowed(self) -> bool:
-        return False
+        return True
