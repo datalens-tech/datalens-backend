@@ -59,7 +59,7 @@ class GenericNativeTypeSchema(NativeTypeSchemaBase[GenericNativeType]):
     """
 
     TARGET_CLS = GenericNativeType
-    conn_type = DynamicEnumField(ConnectionType)
+    conn_type = DynamicEnumField(ConnectionType, load_default=ConnectionType.unknown)
     name = fields.String()
 
 
