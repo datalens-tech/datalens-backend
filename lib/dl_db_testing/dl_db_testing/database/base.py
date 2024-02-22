@@ -169,6 +169,7 @@ class DbTableBase:
             self.db.execute(self.table.insert(data))
         elif isinstance(data, list):
             if chunk_size > 1:
+                # TODO: Change to itertools.batched after switching to Python 3.12
                 rest = data
                 while rest:
                     chunk = rest[:chunk_size]
