@@ -25,7 +25,7 @@ tasks:
       - ls -la backend-configs
       - echo $(ls -la backend-configs)
       - cat docker-compose.e2e.yml
-      - docker compose
+      - UID=$(id -u) GID=$(id -g) docker compose
         -f docker-compose.e2e.yml
         -f ../../docker-compose.e2e-dev-backend.yaml
         {{.COMMAND}}
@@ -61,11 +61,11 @@ tasks:
         {{.CONTROL_API_TARGET}} 
         {{.DATA_API_TARGET}}
         --set "{{.CONTROL_API_TARGET}}.tags={{.CONTROL_API_TAG}}"
-        --set "{{.CONTROL_API_TARGET}}.args.UID=$(id -u)"
-        --set "{{.CONTROL_API_TARGET}}.args.GID=$(id -g)"
         --set "{{.DATA_API_TARGET}}.tags={{.DATA_API_TAG}}"
-        --set "{{.DATA_API_TARGET}}.args.UID=$(id -u)"
-        --set "{{.DATA_API_TARGET}}.args.GID=$(id -g)"
+#        --set "{{.CONTROL_API_TARGET}}.args.UID=$(id -u)"
+#        --set "{{.CONTROL_API_TARGET}}.args.GID=$(id -g)"
+#        --set "{{.DATA_API_TARGET}}.args.UID=$(id -u)"
+#        --set "{{.DATA_API_TARGET}}.args.GID=$(id -g)"
 
   docker-build-frontend:
     desc: Build frontend container

@@ -2,9 +2,11 @@ version: "3.7"
 
 services:
   control-api:
+    user: "${UID}:${GID}"
     image: ${CONTROL_API_TAG}
 
   data-api:
+    user: "${UID}:${GID}"
     image: ${DATA_API_TAG}
 
   datalens:
