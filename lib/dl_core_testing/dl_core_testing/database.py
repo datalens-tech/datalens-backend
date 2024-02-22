@@ -228,6 +228,7 @@ def make_table(
     name: Optional[str] = None,
     data: Optional[list[dict[str, Any]]] = None,
     create_in_db: bool = True,
+    chunk_size: Optional[int] = None,
 ) -> DbTable:
     backend_type = get_backend_type(conn_type=db.conn_type)
     columns = columns or C.full_house()
@@ -246,7 +247,7 @@ def make_table(
 
     if create_in_db:
         db.create_table(table)
-        db_table.insert(data)
+        db_table.insert(data, chunk_size=chunk_size)
 
     return db_table
 
