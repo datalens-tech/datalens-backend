@@ -20,6 +20,11 @@ tasks:
         - COMMAND
     cmds:
       - echo $(pwd)
+      - ls -la
+      - echo $(ls -la)
+      - ls -la backend-configs
+      - echo $(ls -la backend-configs)
+      - cat docker-compose.e2e.yml
       - docker compose
         -f docker-compose.e2e.yml
         -f ../../docker-compose.e2e-dev-backend.yaml
