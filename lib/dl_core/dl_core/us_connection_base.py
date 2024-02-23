@@ -110,7 +110,16 @@ class RequiredParameterInfo:
 class QueryTypeInfo:
     query_type: DashSQLQueryType = attr.ib(kw_only=True)
     query_type_label: str = attr.ib(kw_only=True)  # How the value should be displayed in the UI
-    required_parameters: list[RequiredParameterInfo] = attr.ib(kw_only=True)
+    required_parameters: tuple[RequiredParameterInfo, ...] = attr.ib(kw_only=True, default=())
+    allow_selector: bool = attr.ib(kw_only=True, default=False)
+
+    @query_type_label.default
+    def _default_query_type_label(self) -> str:
+        # FIXME: This is a temporary hack until we start using real texts here
+        label = self.query_type.name
+        label = label.replace("_", " ")
+        label = " ".join([word.capitalize() for word in label.split()])
+        return label
 
 
 @attr.s(frozen=True)
@@ -365,20 +374,11 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         )
         return local_key_rep
 
-    def get_supported_dashsql_query_types(self) -> frozenset[DashSQLQueryType]:
+    def get_supported_query_type_infos(self) -> frozenset[QueryTypeInfo]:
         return frozenset()
 
     def get_options(self) -> ConnectionOptions:
-        query_type_info_list: list[QueryTypeInfo] = []
-        for dsql_qt in sorted(self.get_supported_dashsql_query_types(), key=lambda qt: qt.name):
-            query_type_info = QueryTypeInfo(
-                query_type=dsql_qt,
-                # FIXME: This should probably be a localized human-readable label
-                query_type_label=dsql_qt.name,
-                required_parameters=[],
-            )
-            query_type_info_list.append(query_type_info)
-
+        query_type_info_list = sorted(self.get_supported_query_type_infos(), key=lambda qti: qti.query_type.name)
         return ConnectionOptions(
             allow_dashsql_usage=self.is_dashsql_allowed,
             allow_dataset_usage=self.is_dataset_allowed,
@@ -440,8 +440,8 @@ class ExecutorBasedMixin(ConnectionBase, metaclass=abc.ABCMeta):
         conn_executor = conn_executor_factory(self)
         return conn_executor.get_tables(SchemaIdent(db_name=db_name, schema_name=schema_name))
 
-    def get_supported_dashsql_query_types(self) -> frozenset[DashSQLQueryType]:
-        return frozenset({DashSQLQueryType.generic_query})
+    def get_supported_query_type_infos(self) -> frozenset[QueryTypeInfo]:
+        return frozenset({QueryTypeInfo(query_type=DashSQLQueryType.generic_query)})
 
 
 class SubselectMixin:
