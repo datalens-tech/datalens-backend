@@ -53,38 +53,6 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
         populate_recursively(avatar_id=root_avatar.id, rank=0)
         return ranks
 
-    def _get_all_required_child_relations(self, avatar_id: AvatarId) -> Tuple[list[RelationId], list[AvatarId]]:
-        relations: list[AvatarRelation] = self._ds_accessor.get_avatar_relation_list(left_avatar_id=avatar_id)
-
-        relation_ids = []
-        avatar_ids = []
-        for r in relations:
-            if r.required:
-                relation_ids.append(r.id)
-                avatar_ids.append(r.right_avatar_id)
-
-        return relation_ids, avatar_ids
-
-    def _get_all_required_relations(self, avatars: set[AvatarId]) -> Tuple[list[RelationId], list[AvatarId]]:
-        stack = list(avatars)
-        all_new_avatars = []
-        all_new_relations = []
-        visited = set()
-        while stack:
-            avatar_id = stack.pop()
-            if avatar_id in visited:
-                continue
-
-            visited.add(avatar_id)
-            new_relations, new_avatar_ids = self._get_all_required_child_relations(avatar_id)
-
-            all_new_avatars.extend(new_avatar_ids)
-            all_new_relations.extend(new_relations)
-
-            stack.extend(new_avatar_ids)
-
-        return all_new_relations, all_new_avatars
-
     def _get_relation_and_parent_id(self, avatar_id: AvatarId) -> Tuple[RelationId, AvatarId]:
         relations = self._ds_accessor.get_avatar_relation_list(right_avatar_id=avatar_id)
         assert len(relations) == 1
@@ -108,7 +76,6 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
         required_relation_ids: Set[RelationId] = set()
 
         # first add avatars used by required feature-managed relations
-        # todo: move to separate method
         for iteration in range(10):
             updated_required_avatar_ids = required_avatar_ids.copy()
             for relation in self._ds_accessor.get_avatar_relation_list():
@@ -130,6 +97,14 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
             # It means that for every iteration we are still getting new avatars
             raise RuntimeError("Failed to resolve required avatars")  # Should not happen
 
+        # add all required relations and its avatars
+        for relation in self._ds_accessor.get_avatar_relation_list():
+            if relation.required:
+                required_avatar_ids |= self._relation_avatar_dep_mgr.get_relation_avatar_references(
+                    relation_id=relation.id
+                )
+                required_relation_ids.add(relation.id)
+
         user_avatar_ids = {
             avatar_id
             for avatar_id in required_avatar_ids
@@ -145,7 +120,6 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
             ) from e
 
         # add parent_ids until single common ancestor remains
-        # todo: move to separate method
         common_root_ids = user_avatar_ids
         while len(common_root_ids) > 1:
             new_common_root_ids = set()
@@ -167,10 +141,5 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
             common_root_ids = new_common_root_ids
             if len(common_root_ids) > 1:
                 min_rank -= 1
-
-        req_relations, req_avatars = self._get_all_required_relations(required_avatar_ids)
-
-        required_avatar_ids.update(req_avatars)
-        required_relation_ids.update(req_relations)
 
         return next(iter(common_root_ids)), required_avatar_ids, required_relation_ids

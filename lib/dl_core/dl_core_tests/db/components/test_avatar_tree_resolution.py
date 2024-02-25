@@ -81,8 +81,8 @@ class TestAvatarTreeResolution(DefaultCoreTestClass):
         relation_3_5_proxy = avatar_3_proxy.add_relation_simple_eq(
             right=avatar_5_proxy, left_col_name="int_value", right_col_name="int_value"
         )
-        relation_4_6_proxy = avatar_4_proxy.add_relation_simple_eq(
-            right=avatar_6_proxy, left_col_name="int_value", right_col_name="int_value", required=True
+        avatar_4_proxy.add_relation_simple_eq(
+            right=avatar_6_proxy, left_col_name="int_value", right_col_name="int_value"
         )
         relation_4_7_proxy = avatar_4_proxy.add_relation_simple_eq(
             right=avatar_7_proxy, left_col_name="int_value", right_col_name="int_value", required=True
@@ -90,10 +90,10 @@ class TestAvatarTreeResolution(DefaultCoreTestClass):
         avatar_4_proxy.add_relation_simple_eq(
             right=avatar_10_proxy, left_col_name="int_value", right_col_name="int_value"
         )
-        avatar_2_proxy.add_relation_simple_eq(
+        relation_2_8_proxy = avatar_2_proxy.add_relation_simple_eq(
             right=avatar_8_proxy, left_col_name="int_value", right_col_name="int_value"
         )
-        avatar_8_proxy.add_relation_simple_eq(
+        relation_8_9_proxy = avatar_8_proxy.add_relation_simple_eq(
             right=avatar_9_proxy, left_col_name="int_value", right_col_name="int_value", required=True
         )
 
@@ -102,7 +102,7 @@ class TestAvatarTreeResolution(DefaultCoreTestClass):
         
               8 -r- 9     10
               |           |
-        1 --- 2 --- 3 -r- 4 -r- 6
+        1 --- 2 --- 3 -r- 4 --- 6
                     |     |
                     5     * --r- 7
                     
@@ -110,7 +110,7 @@ class TestAvatarTreeResolution(DefaultCoreTestClass):
         -r- required by user relation
                     
         nodes required by arguments is 5 and 1, so in result expected all nodes between 5 and 1 (it's 3, 2) and
-        all required by user nodes attached to them - it is nodes 1, 2, 3, 4, 5, 6, 7
+        all required by user nodes attached to them (directly and indirectly) - it is nodes 1, 2, 3, 4, 5, 7, 8, 9
         """
 
         dep_mgr_factory = ComponentDependencyManagerFactory(dataset=dataset)
@@ -129,14 +129,16 @@ class TestAvatarTreeResolution(DefaultCoreTestClass):
             avatar_3_proxy.avatar_id,
             avatar_4_proxy.avatar_id,
             avatar_5_proxy.avatar_id,
-            avatar_6_proxy.avatar_id,
             avatar_7_proxy.avatar_id,
+            avatar_8_proxy.avatar_id,
+            avatar_9_proxy.avatar_id,
         }
         assert required_relation_ids == {
             relation_1_2_proxy.relation_id,
             relation_2_3_proxy.relation_id,
             relation_3_4_proxy.relation_id,
             relation_3_5_proxy.relation_id,
-            relation_4_6_proxy.relation_id,
             relation_4_7_proxy.relation_id,
+            relation_2_8_proxy.relation_id,
+            relation_8_9_proxy.relation_id,
         }
