@@ -1,7 +1,10 @@
+from typing import Optional
+
 from dl_constants.enums import (
     ConnectionType,
     DataSourceType,
 )
+from dl_core import connection_models
 from dl_core.connectors.base.connector import (
     CoreBackendDefinition,
     CoreConnectionDefinition,
@@ -18,7 +21,12 @@ SOURCE_TYPE_TESTING = DataSourceType.declare("TESTING")
 
 
 class TestingConnection(ConnectionBase):
-    pass
+    def get_conn_dto(self) -> connection_models.ConnDTO:
+        raise NotImplementedError
+
+    @property
+    def cache_ttl_sec_override(self) -> Optional[int]:
+        return 0
 
 
 class TestingTypeTransformer(TypeTransformer):

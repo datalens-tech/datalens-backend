@@ -283,9 +283,6 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             **kwargs,
         )
 
-    def test(self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase]) -> None:
-        raise NotImplementedError
-
     @property
     def table_name(self):  # type: ignore  # TODO: fix
         return self.data.table_name
@@ -375,7 +372,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         return local_key_rep
 
     def get_supported_query_type_infos(self) -> frozenset[QueryTypeInfo]:
-        return frozenset()
+        return frozenset({QueryTypeInfo(query_type=DashSQLQueryType.generic_query)})
 
     def get_options(self) -> ConnectionOptions:
         query_type_info_list = sorted(self.get_supported_query_type_infos(), key=lambda qti: qti.query_type.name)
@@ -386,8 +383,6 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             query_types=query_type_info_list,
         )
 
-
-class ExecutorBasedMixin(ConnectionBase, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_conn_dto(self) -> connection_models.ConnDTO:
         pass
@@ -440,8 +435,9 @@ class ExecutorBasedMixin(ConnectionBase, metaclass=abc.ABCMeta):
         conn_executor = conn_executor_factory(self)
         return conn_executor.get_tables(SchemaIdent(db_name=db_name, schema_name=schema_name))
 
-    def get_supported_query_type_infos(self) -> frozenset[QueryTypeInfo]:
-        return frozenset({QueryTypeInfo(query_type=DashSQLQueryType.generic_query)})
+
+class ExecutorBasedMixin(ConnectionBase, metaclass=abc.ABCMeta):
+    pass  # TODO: Remove all usages, then remove the class itself
 
 
 class SubselectMixin:
@@ -622,3 +618,10 @@ class UnknownConnection(ConnectionBase):
     @attr.s(kw_only=True)
     class DataModel(ConnectionBase.DataModel):
         pass
+
+    def get_conn_dto(self) -> connection_models.ConnDTO:
+        raise NotImplementedError
+
+    @property
+    def cache_ttl_sec_override(self) -> Optional[int]:
+        return 0
