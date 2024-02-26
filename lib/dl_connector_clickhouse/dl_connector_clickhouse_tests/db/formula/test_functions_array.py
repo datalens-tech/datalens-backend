@@ -4,15 +4,9 @@ import pytest
 import sqlalchemy as sa
 
 from dl_formula_testing.evaluator import DbEvaluator
-from dl_formula_testing.testcases.functions_array import DefaultArrayFunctionFormulaConnectorTestSuite
 
+from dl_connector_clickhouse.formula.testing.test_suites import ArrayFunctionClickHouseTestSuite
 from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
-
-
-class ArrayFunctionClickHouseTestSuite(DefaultArrayFunctionFormulaConnectorTestSuite):
-    def test_startswith_string_array(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        assert dbe.eval("STARTSWITH([arr_str_value], [arr_str_value])", from_=data_table)
-        assert not dbe.eval('STARTSWITH([arr_str_value], ARRAY("", "cde", NULL))', from_=data_table)
 
 
 class TestArrayFunctionClickHouse_21_8(ClickHouse_21_8TestBase, ArrayFunctionClickHouseTestSuite):
