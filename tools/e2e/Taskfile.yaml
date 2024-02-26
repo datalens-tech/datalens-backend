@@ -28,10 +28,9 @@ tasks:
       DATALENS_UI_TAG: "{{.UI_TAG}}"
 
   datalens-ui-repo-clone:
-    dir: "{{.DATALENS_UI_FOLDER}}/.."
-    desc: Clone datalens-ui (repository) near primary repository
+    desc: Clone datalens-ui (repository) to a specified location
     cmds:
-      - git clone git@github.com:datalens-tech/datalens-ui.git
+      - if [ ! -d {{.DATALENS_UI_FOLDER}} ]; then git clone git@github.com:datalens-tech/datalens-ui.git {{.DATALENS_UI_FOLDER}}; fi
 
   datalens-ui-repo-update:
     dir: "{{.DATALENS_UI_FOLDER}}"
@@ -111,13 +110,15 @@ tasks:
     dir: "{{.DATALENS_UI_FOLDER}}"
     desc: |
       Run tests, options:
-      - E2E_TEST_NAME_PATTERN to run specific tests, e.g. `task test E2E_TEST_NAME_PATTERN="Add dataset"`, default is all tests
-      - E2E_HEADFUL to run tests in headful mode (inside real browser), e.g. `task test E2E_HEADFUL=1`, default is headless
+      - E2E_TEST_NAME_PATTERN to run specific tests, e.g. `task test PATTERN="Add dataset"`, default is all tests
+      - E2E_HEADFUL to run tests in headful mode (inside real browser), e.g. `task test HEADFUL=1`, default is headless
+      - E2E_RETRY_TIMES to configure the number on retries for each test, e.g. `task test RETRY_TIMES=2`, default is 0
     env:
       E2E_DOMAIN: "http://localhost:8080"
       NO_AUTH: "true"
       E2E_TEST_NAME_PATTERN: '{{.PATTERN | default ""}}'
       E2E_HEADFUL: '{{.HEADFUL | default ""}}'
+      E2E_RETRY_TIMES: '{{.RETRY_TIMES | default ""}}'
     cmds:
       - npm run test:install:chromium
       - npm run test:e2e:opensource
@@ -128,3 +129,16 @@ tasks:
     cmds:
       - task: test
         vars: { HEADFUL: "1" }
+
+  init-and-run:
+    desc: Bootstrap command; install everything and run all tests; requires node installed
+    cmds:
+      - task: datalens-ui-repo-clone
+      - task: datalens-ui-repo-update
+      - task: datalens-ui-init
+      - task: docker-build
+      - task: docker-start
+      - task: test
+        vars:
+          RETRY_TIMES: 1
+      - task: docker-stop

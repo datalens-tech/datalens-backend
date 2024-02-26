@@ -24,3 +24,7 @@ includes:
   release:
     taskfile: tools/taskfiles/taskfile_release.yaml
     dir: tools
+
+  e2e:
+    taskfile: tools/e2e/Taskfile.yaml
+    dir: tools/e2e

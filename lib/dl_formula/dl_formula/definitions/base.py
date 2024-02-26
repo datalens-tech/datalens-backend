@@ -623,6 +623,18 @@ class MultiVariantTranslation(NodeTranslation):
         patched_variant = variant.clone(dialects=dialects)
         return cls(variants=[patched_variant], arg_transformer=arg_transformer)
 
+    def for_another_dialect(
+        self,
+        dialects: DialectCombo,
+        arg_transformer: Optional[ArgTransformer] = None,
+    ) -> MultiVariantTranslation:
+        variants = self.get_variants()
+        assert len(variants) == 1
+        variant = next(iter(variants))
+        patched_variant = variant.clone(dialects=dialects)
+        func_class = type(self)
+        return func_class(variants=[patched_variant], arg_transformer=arg_transformer)
+
 
 _SINGLE_NODE_TRANS_TV = TypeVar("_SINGLE_NODE_TRANS_TV", bound="SingleVariantTranslationBase")
 
@@ -676,6 +688,14 @@ class SingleVariantTranslationBase(MultiVariantTranslation):
         arg_transformer: Optional[ArgTransformer] = None,
     ) -> _SINGLE_NODE_TRANS_TV:
         return cls(dialects=dialects)
+
+    def for_another_dialect(
+        self,
+        dialects: DialectCombo,
+        arg_transformer: Optional[ArgTransformer] = None,
+    ) -> SingleVariantTranslationBase:
+        func_class = type(self)
+        return func_class(dialects=dialects, arg_transformer=arg_transformer)
 
 
 class SingleVariantFullOverrideTranslationBase(SingleVariantTranslationBase):

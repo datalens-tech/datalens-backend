@@ -27,4 +27,3 @@ Or to read logs from specific container, use `task docker-logs-data-api` or `tas
 # After tests
 
 * `task docker-stop` - Stop dev containers
-
