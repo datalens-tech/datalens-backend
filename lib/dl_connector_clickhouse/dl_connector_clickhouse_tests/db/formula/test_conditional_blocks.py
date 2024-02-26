@@ -1,5 +1,5 @@
-from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
 from dl_connector_clickhouse.formula.testing.test_suites import ConditionalBlockClickHouseTestSuite
+from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
 
 
 class TestMainAggFunctionClickHouse_21_8(ClickHouse_21_8TestBase, ConditionalBlockClickHouseTestSuite):
