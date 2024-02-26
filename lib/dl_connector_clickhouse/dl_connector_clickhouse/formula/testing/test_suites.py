@@ -37,7 +37,7 @@ from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 
 class ConditionalBlockClickHouseTestSuite(DefaultConditionalBlockFormulaConnectorTestSuite):
-    def test_case_block_returning_null(self, dbe: DbEvaluator):
+    def test_case_block_returning_null(self, dbe: DbEvaluator) -> None:
         # https://github.com/ClickHouse/ClickHouse/issues/7237
         assert to_str(dbe.eval('CASE 3 WHEN 1 THEN "1st" WHEN 2 THEN "2nd" END')) == ""
         assert dbe.eval("CASE 3 WHEN 1 THEN 1 WHEN 2 THEN 2 END") == 0
@@ -119,7 +119,7 @@ class StringFunctionClickHouseTestSuite(DefaultStringFunctionFormulaConnectorTes
 class StrTypeFunctionClickHouseTestSuite(DefaultStrTypeFunctionFormulaConnectorTestSuite):
     bool_of_null_is_false = True
 
-    def test_str_from_array(self, dbe: DbEvaluator, data_table) -> None:
+    def test_str_from_array(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         assert to_str(dbe.eval("STR([arr_int_value])", from_=data_table)) == "[0,23,456,NULL]"
         assert to_str(dbe.eval("STR([arr_float_value])", from_=data_table)) == "[0,45,0.123,NULL]"
         assert to_str(dbe.eval("STR([arr_str_value])", from_=data_table)) == "['','','cde',NULL]"
