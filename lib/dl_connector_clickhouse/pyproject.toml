@@ -10,8 +10,11 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
+aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
+marshmallow = ">=3.19.0"
 python = ">=3.10, <3.13"
+requests = ">=2.28.2"
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
@@ -25,6 +28,14 @@ datalens-api-connector = {path = "../dl_api_connector"}
 datalens-core = {path = "../dl_core"}
 datalens-core-testing = {path = "../dl_core_testing"}
 datalens-db-testing = {path = "../dl_db_testing"}
+datalens-app-tools = {path = "../dl_app_tools"}
+datalens-dashsql = {path = "../dl_dashsql"}
+datalens-formula-testing = {path = "../dl_formula_testing"}
+datalens-query-processing = {path = "../dl_query_processing"}
+datalens-testing = {path = "../dl_testing"}
+datalens-utils = {path = "../dl_utils"}
+pytest = ">=7.2.2"
+pytz = ">=2022.7.1"
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
@@ -45,12 +56,8 @@ clickhouse = "dl_connector_clickhouse.formula_ref.plugin:ClickHouseFormulaRefPlu
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
 frozendict = ">=2.3.8"
-pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
-pytz = ">=2022.7.1"
 datalens-api-lib-testing = {path = "../dl_api_lib_testing"}
-datalens-formula-testing = {path = "../dl_formula_testing"}
-datalens-testing = {path = "../dl_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

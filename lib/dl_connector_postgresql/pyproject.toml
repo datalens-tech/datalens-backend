@@ -56,6 +56,7 @@ shortuuid = ">=1.0.11"
 datalens-api-lib-testing = {path = "../dl_api_lib_testing"}
 datalens-api-client = {path = "../dl_api_client"}
 datalens-formula-testing = {path = "../dl_formula_testing"}
+datalens-query-processing = {path = "../dl_query_processing"}
 datalens-testing = {path = "../dl_testing"}
 
 [build-system]

@@ -1,10 +1,13 @@
 import abc
 from typing import (
     ClassVar,
+    Collection,
     Optional,
     Tuple,
     Type,
 )
+
+import attr
 
 from dl_api_connector.api_schema.connection_base import ConnectionSchema
 from dl_api_connector.api_schema.source_base import (
@@ -13,8 +16,10 @@ from dl_api_connector.api_schema.source_base import (
 )
 from dl_api_connector.connection_info import ConnectionInfoProvider
 from dl_api_connector.form_config.models.base import ConnectionFormFactory
-from dl_api_lib.query.registry import MQMFactorySettingItem
-from dl_constants.enums import QueryProcessingMode
+from dl_constants.enums import (
+    QueryProcessingMode,
+    SourceBackendType,
+)
 from dl_core.connectors.base.connector import (
     CoreBackendDefinition,
     CoreConnectionDefinition,
@@ -31,6 +36,7 @@ from dl_query_processing.compilation.filter_compiler import (
 )
 from dl_query_processing.multi_query.factory import (
     DefaultMultiQueryMutatorFactory,
+    MultiQueryMutatorFactoryBase,
     NoCompengMultiQueryMutatorFactory,
 )
 
@@ -47,6 +53,20 @@ class ApiConnectionDefinition(abc.ABC):
     alias: ClassVar[Optional[str]] = None  # TODO remove in favor of info provider
     info_provider_cls: ClassVar[Type[ConnectionInfoProvider]]
     form_factory_cls: ClassVar[Optional[Type[ConnectionFormFactory]]] = None
+
+
+@attr.s(frozen=True, auto_attribs=True, kw_only=True)
+class MQMFactoryKey:
+    query_proc_mode: QueryProcessingMode
+    backend_type: SourceBackendType
+    dialect: Optional[DialectCombo]
+
+
+@attr.s(frozen=True, auto_attribs=True, kw_only=True)
+class MQMFactorySettingItem:
+    query_proc_mode: QueryProcessingMode
+    factory_cls: Type[MultiQueryMutatorFactoryBase]
+    dialects: Collection[Optional[DialectCombo]] = attr.ib(default=(None,))
 
 
 class ApiBackendDefinition(abc.ABC):
