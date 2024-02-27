@@ -41,6 +41,7 @@ from dl_core.data_processing.stream_base import (
     DataStreamAsync,
     JointDataSourceVS,
 )
+import dl_core.exc as exc
 from dl_core.utils import (
     compile_query_for_debug,
     make_id,
@@ -126,7 +127,10 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
         )
 
         if op.row_count_hard_limit is not None:
-            data = data.limit(op.row_count_hard_limit)
+            data = data.limit(
+                max_count=op.row_count_hard_limit,
+                limit_exception=exc.ResultRowCountLimitExceeded,
+            )
 
         self.db_ex_adapter.post_query_execute(
             query_id=query_id,
