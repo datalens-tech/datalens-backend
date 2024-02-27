@@ -156,7 +156,7 @@ class TestAiopgOpRunner(BaseTestPGOpExecAdapter):
         async with aiopg.sa.create_engine(compeng_pg_dsn, minsize=self.min_size, maxsize=self.max_size) as engine:
             async with engine.acquire() as conn:
                 yield AiopgExecAdapter(
-                    service_registry=service_registry,
+                    reporting_registry=service_registry.get_reporting_registry(),
                     conn=conn,
                     cache_options_builder=CompengOptionsBuilder(),
                 )
@@ -174,7 +174,7 @@ class TestAsyncpgOpRunner(BaseTestPGOpExecAdapter):
             async with pool.acquire() as conn:
                 async with conn.transaction():
                     yield AsyncpgExecAdapter(
-                        service_registry=service_registry,
+                        reporting_registry=service_registry.get_reporting_registry(),
                         conn=conn,
                         cache_options_builder=CompengOptionsBuilder(),
                     )

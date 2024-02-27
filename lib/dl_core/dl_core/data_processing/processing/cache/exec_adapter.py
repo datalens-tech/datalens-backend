@@ -28,7 +28,6 @@ from dl_core.data_processing.processing.context import OpExecutionContext
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
 from dl_core.data_processing.processing.db_base.processor_base import ExecutorBasedOperationProcessor
 from dl_core.data_processing.streaming import AsyncChunkedBase
-from dl_core.us_dataset import Dataset
 
 
 if TYPE_CHECKING:
@@ -37,14 +36,16 @@ if TYPE_CHECKING:
     from dl_core.base_models import ConnectionRef
     from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
     from dl_core.data_processing.types import TValuesChunkStream
+    from dl_core.services_registry.cache_engine_factory import CacheEngineFactory
 
 
 @attr.s
 class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
-    _dataset: Dataset = attr.ib(kw_only=True)
+    _dataset_id: Optional[str] = attr.ib(kw_only=True)
     _main_processor: ExecutorBasedOperationProcessor = attr.ib(kw_only=True)
     _use_cache: bool = attr.ib(kw_only=True)
     _use_locked_cache: bool = attr.ib(kw_only=True)
+    _cache_engine_factory: CacheEngineFactory = attr.ib(kw_only=True)
 
     def _save_data_proc_cache_info_reporting_record(self, ctx: OpExecutionContext, cache_full_hit: bool) -> None:
         data_proc_cache_record = DataProcessingCacheInfoReportingRecord(
@@ -74,11 +75,8 @@ class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
             data_key=data_key,
         )
 
-        ds_id = self._dataset.uuid
-        cache_helper = CacheProcessingHelper(
-            entity_id=ds_id,  # type: ignore  # TODO: fix
-            service_registry=self._service_registry,
-        )
+        cache_engine = self._cache_engine_factory.get_cache_engine(entity_id=self._dataset_id)
+        cache_helper = CacheProcessingHelper(cache_engine=cache_engine)
 
         original_ctx = ctx.clone()
 

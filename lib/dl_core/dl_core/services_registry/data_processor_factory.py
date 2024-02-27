@@ -41,7 +41,9 @@ class SourceDataProcessorFactory(BaseClosableDataProcessorFactory):
     ) -> ExecutorBasedOperationProcessor:
         assert role is not None
         processor = SourceDbOperationProcessor(
-            service_registry=self.services_registry,
+            reporting_registry=self.services_registry.get_reporting_registry(),
+            ce_factory=self.services_registry.get_conn_executor_factory(),
+            rci=self.services_registry.rci,
             dataset=dataset,
             role=role,
             us_entry_buffer=us_entry_buffer,
@@ -50,9 +52,12 @@ class SourceDataProcessorFactory(BaseClosableDataProcessorFactory):
         )
 
         if allow_cache_usage:
+            cache_engine_factory = self.services_registry.get_cache_engine_factory()
+            assert cache_engine_factory is not None
             processor = CacheOperationProcessor(  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "CacheOperationProcessor", variable has type "SourceDbOperationProcessor")  [assignment]
-                service_registry=self.services_registry,
-                dataset=dataset,
+                reporting_registry=self.services_registry.get_reporting_registry(),
+                cache_engine_factory=cache_engine_factory,
+                dataset_id=dataset.uuid,
                 main_processor=processor,
                 use_cache=allow_cache_usage,
             )
@@ -79,14 +84,17 @@ class CompengDataProcessorFactory(BaseClosableDataProcessorFactory):
 
         data_proc_service = dproc_srv_factory(processor_type)
         processor = data_proc_service.get_data_processor(
-            service_registry=self.services_registry,
+            reporting_registry=self.services_registry.get_reporting_registry(),
             reporting_enabled=reporting_enabled,
         )
 
         if allow_cache_usage:
+            cache_engine_factory = self.services_registry.get_cache_engine_factory()
+            assert cache_engine_factory is not None
             processor = CacheOperationProcessor(
-                service_registry=self.services_registry,
-                dataset=dataset,
+                reporting_registry=self.services_registry.get_reporting_registry(),
+                cache_engine_factory=cache_engine_factory,
+                dataset_id=dataset.uuid,
                 main_processor=processor,
                 use_cache=allow_cache_usage,
             )

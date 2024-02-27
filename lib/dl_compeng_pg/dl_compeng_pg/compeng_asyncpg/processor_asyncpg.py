@@ -24,7 +24,7 @@ class AsyncpgOperationProcessor(PostgreSQLOperationProcessor[AsyncpgPoolWrapper,
         self._pg_conn = pg_conn
         await cmstack.enter_async_context(pg_conn.transaction())
         self._db_ex_adapter = AsyncpgExecAdapter(
-            service_registry=self.service_registry,
+            reporting_registry=self._reporting_registry,
             reporting_enabled=self._reporting_enabled,
             conn=pg_conn,
             cache_options_builder=self._cache_options_builder,

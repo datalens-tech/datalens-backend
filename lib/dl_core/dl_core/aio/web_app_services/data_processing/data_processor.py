@@ -17,7 +17,7 @@ from dl_core.data_processing.processing.db_base.processor_base import ExecutorBa
 
 
 if TYPE_CHECKING:
-    from dl_core.services_registry.top_level import ServicesRegistry
+    from dl_api_commons.reporting.registry import ReportingRegistry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -72,7 +72,7 @@ class DataProcessorService(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_data_processor(
         self,
-        service_registry: ServicesRegistry,
+        reporting_registry: ReportingRegistry,
         reporting_enabled: bool,
     ) -> ExecutorBasedOperationProcessor:
         raise NotImplementedError

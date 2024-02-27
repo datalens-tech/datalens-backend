@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+)
 
 import attr
 
@@ -17,6 +20,11 @@ from dl_core.us_dataset import Dataset
 from dl_core.us_manager.local_cache import USEntryBuffer
 
 
+if TYPE_CHECKING:
+    from dl_api_commons.base_models import RequestContextInfo
+    from dl_core.services_registry.conn_executor_factory_base import ConnExecutorFactory
+
+
 @attr.s
 class SourceDbOperationProcessor(ExecutorBasedOperationProcessor):
     _role: DataSourceRole = attr.ib(kw_only=True)
@@ -25,6 +33,8 @@ class SourceDbOperationProcessor(ExecutorBasedOperationProcessor):
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
     _is_bleeding_edge_user: bool = attr.ib(default=False)
     _default_cache_ttl_config: CacheTTLConfig = attr.ib(default=None)
+    _ce_factory: ConnExecutorFactory = attr.ib(kw_only=True)
+    _rci: RequestContextInfo = attr.ib(kw_only=True)
 
     def _make_cache_options_builder(self) -> DatasetOptionsBuilder:
         return SelectorCacheOptionsBuilder(
@@ -35,11 +45,13 @@ class SourceDbOperationProcessor(ExecutorBasedOperationProcessor):
 
     def _make_db_ex_adapter(self) -> Optional[ProcessorDbExecAdapterBase]:
         return SourceDbExecAdapter(
-            service_registry=self.service_registry,
+            reporting_registry=self._reporting_registry,
             reporting_enabled=self._reporting_enabled,
             role=self._role,
             dataset=self._dataset,
             row_count_hard_limit=self._row_count_hard_limit,
             us_entry_buffer=self._us_entry_buffer,
             cache_options_builder=self._cache_options_builder,
+            ce_factory=self._ce_factory,
+            rci=self._rci,
         )
