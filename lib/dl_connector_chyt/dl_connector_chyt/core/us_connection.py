@@ -22,7 +22,6 @@ from dl_core.us_connection_base import (
     ConnectionBase,
     ConnectionHardcodedDataMixin,
     DataSourceTemplate,
-    ExecutorBasedMixin,
     SubselectMixin,
 )
 from dl_core.utils import secrepr
@@ -48,7 +47,6 @@ if TYPE_CHECKING:
 
 class BaseConnectionCHYT(  # type: ignore  # 2024-01-24 # TODO: Definition of "us_manager" in base class "USEntry" is incompatible with definition in base class "ConnectionHardcodedDataMixin"  [misc]
     SubselectMixin,
-    ExecutorBasedMixin,
     ConnectionBase,
     ConnectionHardcodedDataMixin[CHYTConnectorSettings],
     abc.ABC,

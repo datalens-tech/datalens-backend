@@ -34,7 +34,6 @@ from dl_core.data_processing.dashsql import (
 from dl_core.exc import UnexpectedUSEntryType
 from dl_core.us_connection_base import (
     ConnectionBase,
-    ExecutorBasedMixin,
     SubselectMixin,
 )
 from dl_dashsql.exc import DashSQLError
@@ -48,10 +47,7 @@ from dl_query_processing.utils.datetime import parse_datetime
 
 if TYPE_CHECKING:
     from dl_constants.types import TJSONLike
-    from dl_core.data_processing.dashsql import (
-        DashSQLSelector,
-        TResultEvents,
-    )
+    from dl_core.data_processing.dashsql import TResultEvents
 
 
 TRowProcessor = Callable[[TRow], TRow]
@@ -116,7 +112,7 @@ class DashSQLView(BaseView):
 
     endpoint_code = "DashSQL"
     profiler_prefix = "dashsql_result"
-    dashsql_selector_cls: Type[DashSQLSelector] = DashSQLCachedSelector
+    dashsql_selector_cls: Type[DashSQLCachedSelector] = DashSQLCachedSelector
 
     @property
     def conn_id(self) -> Optional[str]:
@@ -132,9 +128,8 @@ class DashSQLView(BaseView):
             return
         self.dl_request.log_ctx_controller.put_to_context("conn_type", conn.conn_type.name)
         sr = self.dl_request.services_registry
-        if isinstance(conn, ExecutorBasedMixin):
-            ce_cls_str = sr.get_conn_executor_factory().get_async_conn_executor_cls(conn).__qualname__
-            self.dl_request.log_ctx_controller.put_to_context("conn_exec_cls", ce_cls_str)
+        ce_cls_str = sr.get_conn_executor_factory().get_async_conn_executor_cls(conn).__qualname__
+        self.dl_request.log_ctx_controller.put_to_context("conn_exec_cls", ce_cls_str)
 
     @staticmethod
     def _json_default(value: Any) -> TJSONLike:
@@ -232,7 +227,7 @@ class DashSQLView(BaseView):
 
         self.enrich_logging_context(conn)
 
-        if not isinstance(conn, SubselectMixin) or not isinstance(conn, ExecutorBasedMixin):
+        if not isinstance(conn, SubselectMixin) or not isinstance(conn, ConnectionBase):
             raise UnexpectedUSEntryType("Expecting a subselect-compatible connection")
 
         # A slightly more explicit check (which should have been done in `get_by_id` anyway):

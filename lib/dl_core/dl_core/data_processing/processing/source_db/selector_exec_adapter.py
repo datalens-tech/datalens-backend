@@ -37,7 +37,6 @@ from dl_core.query.bi_query import QueryAndResultInfo
 from dl_core.us_connection_base import (
     ClassicConnectionSQL,
     ConnectionBase,
-    ExecutorBasedMixin,
 )
 
 
@@ -104,7 +103,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
 
         assert joint_dsrc_info.target_connection_ref is not None
         target_connection = self._us_entry_buffer.get_entry(joint_dsrc_info.target_connection_ref)
-        assert isinstance(target_connection, ExecutorBasedMixin)
+        assert isinstance(target_connection, ConnectionBase)
 
         ce_factory = self._service_registry.get_conn_executor_factory()
         ce = ce_factory.get_async_conn_executor(target_connection)
@@ -167,7 +166,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
     ) -> None:
         assert target_connection_ref is not None
         target_connection = self._us_entry_buffer.get_entry(entry_id=target_connection_ref)
-        assert isinstance(target_connection, ExecutorBasedMixin)
+        assert isinstance(target_connection, ConnectionBase)
 
         workbook_id = self._service_registry.rci.workbook_id or (
             target_connection.entry_key.workbook_id

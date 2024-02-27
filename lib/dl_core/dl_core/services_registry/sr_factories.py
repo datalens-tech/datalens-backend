@@ -53,7 +53,7 @@ if TYPE_CHECKING:
     from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
     from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
     from dl_core.services_registry.typing import ConnectOptionsFactory
-    from dl_core.us_connection_base import ExecutorBasedMixin
+    from dl_core.us_connection_base import ConnectionBase
 
 
 LOGGER = logging.getLogger(__name__)
@@ -91,7 +91,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
     # Config options
     default_cache_ttl_config: Optional[CacheTTLConfig] = attr.ib(default=None)
     bleeding_edge_users: Sequence[str] = attr.ib(default=())
-    conn_cls_whitelist: Optional[FrozenSet[Type[ExecutorBasedMixin]]] = attr.ib(default=None)
+    conn_cls_whitelist: Optional[FrozenSet[Type[ConnectionBase]]] = attr.ib(default=None)
     connect_options_factory: Optional[ConnectOptionsFactory] = attr.ib(default=None)
     entity_usage_checker: Optional[EntityUsageChecker] = attr.ib(default=None)
     connectors_settings: dict[ConnectionType, ConnectorSettingsBase] = attr.ib(factory=dict)

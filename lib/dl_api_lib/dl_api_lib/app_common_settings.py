@@ -10,10 +10,10 @@ from typing import (
 
 if TYPE_CHECKING:
     from dl_core.connection_models import ConnectOptions
-    from dl_core.us_connection_base import ExecutorBasedMixin
+    from dl_core.us_connection_base import ConnectionBase
 
 
-_T_CONN_OPTIONS_MUTATOR = Callable[["ConnectOptions", "ExecutorBasedMixin"], Optional["ConnectOptions"]]
+_T_CONN_OPTIONS_MUTATOR = Callable[["ConnectOptions", "ConnectionBase"], Optional["ConnectOptions"]]
 
 
 class ConnOptionsMutatorsFactory:
@@ -23,7 +23,7 @@ class ConnOptionsMutatorsFactory:
     def add_mutator(self, func: _T_CONN_OPTIONS_MUTATOR) -> None:
         self.mutators.append(func)
 
-    def __call__(self, conn: ExecutorBasedMixin) -> Optional[ConnectOptions]:
+    def __call__(self, conn: ConnectionBase) -> Optional[ConnectOptions]:
         any_mutated = False
         conn_opts = conn.get_conn_options()
         for func in self.mutators:

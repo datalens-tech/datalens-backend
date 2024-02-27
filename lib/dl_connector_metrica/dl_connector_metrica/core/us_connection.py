@@ -24,7 +24,6 @@ from dl_core.db import (
 from dl_core.us_connection_base import (
     ConnectionBase,
     DataSourceTemplate,
-    ExecutorBasedMixin,
 )
 from dl_core.utils import secrepr
 import dl_sqlalchemy_metrica_api
@@ -115,7 +114,7 @@ class MetrikaBaseMixin(ConnectionBase):
         raise exc.ConnectionConfigurationError('"token" must be specified if "counter_id" is changing.')
 
 
-class MetrikaApiConnection(MetrikaBaseMixin, ExecutorBasedMixin, ConnectionBase):  # type: ignore  # TODO: fix
+class MetrikaApiConnection(MetrikaBaseMixin, ConnectionBase):  # type: ignore  # TODO: fix
     is_always_internal_source: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
 

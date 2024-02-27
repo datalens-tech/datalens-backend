@@ -436,10 +436,6 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         return conn_executor.get_tables(SchemaIdent(db_name=db_name, schema_name=schema_name))
 
 
-class ExecutorBasedMixin(ConnectionBase, metaclass=abc.ABCMeta):
-    pass  # TODO: Remove all usages, then remove the class itself
-
-
 class SubselectMixin:
     # Not included: DataModel.raw_sql_level
 
@@ -486,7 +482,7 @@ class SubselectMixin:
         ]
 
 
-class ConnectionSQL(SubselectMixin, ExecutorBasedMixin, ConnectionBase):  # type: ignore  # TODO: fix
+class ConnectionSQL(SubselectMixin, ConnectionBase):  # type: ignore  # TODO: fix
     has_schema: ClassVar[bool] = False
     default_schema_name: ClassVar[Optional[str]] = None
 

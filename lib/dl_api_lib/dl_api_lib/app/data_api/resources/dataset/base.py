@@ -58,7 +58,6 @@ from dl_core.data_source.base import DataSource
 from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.dataset_capabilities import DatasetCapabilities
 from dl_core.exc import USObjectNotFoundException
-from dl_core.us_connection_base import ExecutorBasedMixin
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.mutation_cache.engine_factory import CacheInitializationError
 from dl_core.us_manager.mutation_cache.mutation_key_base import MutationKey
@@ -147,12 +146,9 @@ class DatasetDataBaseView(BaseView):
 
                     sr = self.dl_request.services_registry
                     try:
-                        if isinstance(target_conn, ExecutorBasedMixin):
-                            ce_cls_str = (
-                                sr.get_conn_executor_factory().get_async_conn_executor_cls(target_conn).__qualname__
-                            )
-                        else:
-                            ce_cls_str = "N/D"
+                        ce_cls_str = (
+                            sr.get_conn_executor_factory().get_async_conn_executor_cls(target_conn).__qualname__
+                        )
                         self.dl_request.log_ctx_controller.put_to_context("conn_exec_cls", ce_cls_str)
                     except Exception:  # noqa
                         LOGGER.exception("Can not get CE class for connection %s", target_conn.uuid)
