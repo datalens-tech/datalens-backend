@@ -141,14 +141,24 @@ class AppSettings:
 
     QUERY_PROCESSING_MODE: QueryProcessingMode = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "QueryProcessingMode")  [assignment]
         "QUERY_PROCESSING_MODE",
-        env_var_converter=lambda s: QueryProcessingMode[s.lower()],
+        fallback_factory=lambda s: (
+            QueryProcessingMode[s.QUERY_PROCESSING_MODE.lower()]
+            if getattr(s, "QUERY_PROCESSING_MODE", None) is not None
+            else QueryProcessingMode.basic
+        ),
+        env_var_converter=lambda s: (QueryProcessingMode[s.lower()] if s is not None else QueryProcessingMode.basic),
         missing=QueryProcessingMode.basic,
     )
     CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
 
     PIVOT_ENGINE_TYPE: Optional[DataPivotEngineType] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "DataPivotEngineType | None")  [assignment]
         "PIVOT_ENGINE_TYPE",
-        env_var_converter=lambda s: DataPivotEngineType[s.lower()],
+        fallback_factory=lambda s: (
+            DataPivotEngineType[s.PIVOT_ENGINE_TYPE.lower()]
+            if getattr(s, "PIVOT_ENGINE_TYPE", None) is not None
+            else PIVOT_ENGINE_TYPE_PANDAS
+        ),
+        env_var_converter=lambda s: (DataPivotEngineType[s.lower()] if s is not None else PIVOT_ENGINE_TYPE_PANDAS),
         missing=PIVOT_ENGINE_TYPE_PANDAS,  # TODO: Switch to another default
     )
 
