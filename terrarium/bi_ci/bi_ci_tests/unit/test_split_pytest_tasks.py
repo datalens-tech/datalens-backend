@@ -100,7 +100,7 @@ def test_split_tests_without_targets(
     ) as root_path:
         split_pytest_tasks.split_tests(requested_mode, root_path, test_targets_json_path)
 
-    mocked_print.assert_called_once_with(f"split_{requested_mode}={result}")
+    mocked_print.assert_has_calls([mock.call(f"split_{requested_mode}={result}")])
 
 
 @pytest.mark.parametrize(
@@ -125,7 +125,7 @@ def test_split_tests_without_label(
     ) as root_path:
         split_pytest_tasks.split_tests(requested_mode, root_path, test_targets_json_path)
 
-    mocked_print.assert_called_once_with(f"split_{requested_mode}={result}")
+    mocked_print.assert_has_calls([mock.call(f"split_{requested_mode}={result}")])
 
 
 @pytest.mark.parametrize("requested_mode", ["base", "not_base"])
@@ -182,6 +182,55 @@ def test_split_tests_multiple(
             mock.call('split_base=["a:unit", "a:integration", "b:unit", "b:e2e"]'),
             mock.call('split_fat=["a:e2e", "b:integration"]'),
             mock.call("split_ext=[]"),
+        ],
+        any_order=True,
+    )
+
+
+def test_split_tests_raise_on_unused_label(
+    mocked_print: mock.Mock,
+    test_targets_json_context: TestTargetsJsonContext,
+    libs_pyprojects_context: LibsPyprojectsContext,
+):
+    pyproject_data = """
+    [datalens.pytest.unit]
+    labels = ["unused"]
+    """
+
+    with test_targets_json_context(["package"]) as test_targets_json_path, libs_pyprojects_context(
+        {"package": pyproject_data}
+    ) as root_path:
+        with pytest.raises(ValueError):
+            split_pytest_tasks.split_tests(
+                "base,not_base",
+                root_path,
+                test_targets_json_path,
+                raise_on_unused_label=True,
+            )
+
+    mocked_print.assert_called_once_with("Unused labels in package:unit: unused", file=sys.stderr)
+
+
+def test_split_tests_not_raise_on_unused_label_if_no_flag(
+    mocked_print: mock.Mock,
+    test_targets_json_context: TestTargetsJsonContext,
+    libs_pyprojects_context: LibsPyprojectsContext,
+):
+    pyproject_data = """
+    [datalens.pytest.unit]
+    labels = ["unused"]
+    """
+
+    with test_targets_json_context(["package"]) as test_targets_json_path, libs_pyprojects_context(
+        {"package": pyproject_data}
+    ) as root_path:
+        split_pytest_tasks.split_tests("base,not_base", root_path, test_targets_json_path)
+
+    mocked_print.assert_has_calls(
+        [
+            mock.call("Unused labels in package:unit: unused", file=sys.stderr),
+            mock.call("split_base=[]"),
+            mock.call("split_not_base=[]"),
         ],
         any_order=True,
     )
