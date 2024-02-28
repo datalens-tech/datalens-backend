@@ -77,9 +77,10 @@ testpaths = ["dl_connector_snowflake_tests/ext", "dl_connector_snowflake_tests/u
 
 
 
-#[datalens.pytest.ext]
-#root_dir = "dl_connector_snowflake_tests/ext"
-#labels = ["ext_public"]
+[datalens.pytest.ext]
+root_dir = "dl_connector_snowflake_tests/ext"
+labels = ["ext_public"]
+skip_tests = true
 
 [datalens.pytest.unit]
 root_dir = "dl_connector_snowflake_tests/"

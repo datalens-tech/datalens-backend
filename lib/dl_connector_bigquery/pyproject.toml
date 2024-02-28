@@ -71,10 +71,11 @@ testpaths = ["dl_connector_bigquery_tests/ext", "dl_connector_bigquery_tests/uni
 root_dir = "dl_connector_bigquery_tests/unit"
 skip_compose = "true"
 
-#[datalens.pytest.ext]
-#root_dir = "dl_connector_bigquery_tests/ext"
-#skip_compose = "true"
-#labels = ["ext_public"]
+[datalens.pytest.ext]
+root_dir = "dl_connector_bigquery_tests/ext"
+skip_compose = "true"
+labels = ["ext_public"]
+skip_tests = true
 
 
 [tool.mypy]
