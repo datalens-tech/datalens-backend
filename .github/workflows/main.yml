@@ -476,14 +476,15 @@ jobs:
         run: |
           skip_tests=${{ needs.check-skip-tests-label.outputs.result }}
           [[ $skip_tests == "true" ]] && exit 0
-
-          [[ ${{ needs.pytest_split.result }} != "success" ]] && exit 1
+          
+          pytest_split=${{ needs.pytest_split.result }}
+          [[ $pytest_split != "success" && $pytest_split != "skipped" ]] && echo "pytest_split failed" && exit 1
           result_base=${{ needs.run_tests_base.result }}
-          [[ $result_base != "success" && $result_base != "skipped" ]] && exit 1
+          [[ $result_base != "success" && $result_base != "skipped" ]] && echo "base failed" && exit 1
           result_fat=${{ needs.run_tests_fat.result }}
-          [[ $result_fat != "success" && $result_fat != "skipped" ]] && exit 1
+          [[ $result_fat != "success" && $result_fat != "skipped" ]] && echo "fat failed" && exit 1
           result_ext_public=${{ needs.run_tests_ext_public.result }}
-          [[ $result_ext_public != "success" && $result_ext_public != "skipped" ]] && exit 1
+          [[ $result_ext_public != "success" && $result_ext_public != "skipped" ]] && echo "ext_public failed" && exit 1
           
           echo "All tests passed"
 
