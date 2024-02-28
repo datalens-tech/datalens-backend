@@ -26,30 +26,45 @@ labels = ["fat"]
 DEFAULT_MODE = "base"
 DEFAULT_LABELS = frozenset([DEFAULT_MODE])
 DEFAULT_TARGET_NAME = "__default__"
+DEFAULT_TARGET_PATHS = frozenset(["."])
 
 
 @dataclasses.dataclass
 class TestTarget:
-    package_path: str
+    package_path: pathlib.Path
     section: str
     requested_mode: str
 
 
 @dataclasses.dataclass
 class PyprojectPytestTarget:
+    root_dir: str
+    target_paths: frozenset[str] = dataclasses.field(default=DEFAULT_TARGET_PATHS)
     name: str = DEFAULT_TARGET_NAME
     labels: frozenset[str] = dataclasses.field(default=DEFAULT_LABELS)
 
     @classmethod
-    def from_dict(cls, name: str, data: dict[str, typing.Any]) -> typing_extensions.Self:
+    def from_raw(cls, name: str, data: dict[str, typing.Any]) -> typing_extensions.Self:
+        if "target_path" in data:
+            target_paths = frozenset(str(data["target_path"]).split(" "))
+        else:
+            target_paths = DEFAULT_TARGET_PATHS
+
+        if "labels" in data:
+            labels = frozenset(data["labels"])
+        else:
+            labels = DEFAULT_LABELS
+
         return cls(
             name=name,
-            labels=frozenset(data["labels"]) if "labels" in data else DEFAULT_LABELS,
+            root_dir=data["root_dir"],
+            target_paths=target_paths,
+            labels=labels,
         )
 
 
 def format_output(name: str, targets: typing.Iterable[TestTarget]) -> str:
-    data = [f"{target.package_path}:{target.section}" for target in targets]
+    data = [f"{target.package_path.name}:{target.section}" for target in targets]
 
     return f"{name}={json.dumps(data)}"
 
@@ -69,42 +84,50 @@ def print_error(message: str) -> None:
     print(message, file=sys.stderr)
 
 
-def read_package_paths(targets_path: pathlib.Path) -> typing.Generator[str, None, None]:
+def read_package_paths(
+    root_dir: pathlib.Path,
+    targets_path: pathlib.Path,
+) -> typing.Generator[pathlib.Path, None, None]:
     with open(targets_path, "r") as file:
         data = file.read()
         data = data.strip()
         data = data.replace("'", '"')
 
     for item in json.loads(data):
-        yield item.strip()
+        package_relative_path = item.strip()
+        yield root_dir / package_relative_path
 
 
-def read_pytest_targets(path: pathlib.Path) -> list[PyprojectPytestTarget]:
-    if not path.is_file():
-        print_error(f"File {path.absolute()} not found")
-        raise FileNotFoundError(f"File {path.absolute()} not found")
+def read_pytest_targets(package_path: pathlib.Path) -> list[PyprojectPytestTarget]:
+    pyproject_path = package_path / "pyproject.toml"
 
-    with open(path, "r") as file:
+    if not pyproject_path.is_file():
+        error_message = f"pyproject.toml not found in {package_path}"
+        print_error(error_message)
+        raise FileNotFoundError(error_message)
+
+    with open(pyproject_path, "r") as file:
         toml_data = tomlkit.parse(file.read())
 
     raw_targets = toml_data.get("datalens", {}).get("pytest", {})
 
     if len(raw_targets) == 0:
-        return [PyprojectPytestTarget()]
+        return [PyprojectPytestTarget(root_dir=f"{package_path.name}_tests/")]
 
-    return [PyprojectPytestTarget.from_dict(name, data) for name, data in raw_targets.items()]
+    return [PyprojectPytestTarget.from_raw(name=name, data=data) for name, data in raw_targets.items()]
 
 
 def get_target_tests(
-    package_path: str,
-    requested_modes: set[str],
+    package_path: pathlib.Path,
+    requested_labels: set[str],
     target: PyprojectPytestTarget,
     raise_on_unused_label: bool = False,
 ) -> typing.Generator[TestTarget, None, None]:
-    requested_labels = requested_modes & target.labels
+    requested_labels = requested_labels & target.labels
+    unused_labels = target.labels - requested_labels
 
-    if unused_labels := target.labels - requested_labels:
-        error_message = f"Unused labels in {package_path}:{target.name}: {' '.join(unused_labels)}"
+    if len(unused_labels) > 0:
+        error_message = f"Unused labels in {package_path.name}:{target.name}: {' '.join(unused_labels)}"
         print_error(error_message)
 
         if raise_on_unused_label:
@@ -115,55 +138,53 @@ def get_target_tests(
 
 
 def get_package_tests(
-    root_path: pathlib.Path,
-    package_path: str,
-    requested_modes: set[str],
+    package_path: pathlib.Path,
+    requested_labels: set[str],
     raise_on_unused_label: bool = False,
 ) -> typing.Generator[TestTarget, None, None]:
     try:
-        pytest_targets = read_pytest_targets(root_path / package_path / "pyproject.toml")
+        pytest_targets = read_pytest_targets(package_path)
     except FileNotFoundError:
         return
 
     for target in pytest_targets:
         yield from get_target_tests(
             package_path=package_path,
-            requested_modes=requested_modes,
+            requested_labels=requested_labels,
             target=target,
             raise_on_unused_label=raise_on_unused_label,
         )
 
 
 def get_tests(
-    requested_modes: set[str],
+    requested_labels: set[str],
     root_dir: pathlib.Path,
     test_targets_json_path: pathlib.Path,
     raise_on_unused_label: bool = False,
 ) -> typing.Generator[TestTarget, None, None]:
-    for package_path in read_package_paths(test_targets_json_path):
+    for package_path in read_package_paths(root_dir=root_dir, targets_path=test_targets_json_path):
         yield from get_package_tests(
-            root_path=root_dir,
             package_path=package_path,
-            requested_modes=requested_modes,
+            requested_labels=requested_labels,
             raise_on_unused_label=raise_on_unused_label,
         )
 
 
 def split_tests(
-    requested_modes: str,
+    requested_labels: str,
     root_dir: str,
     test_targets_json_path: str,
     raise_on_unused_label: bool = False,
 ) -> None:
-    modes = set(requested_modes.split(","))
+    labels = set(requested_labels.split(","))
 
     result = get_tests(
-        requested_modes=modes,
+        requested_labels=labels,
         root_dir=pathlib.Path(root_dir),
         test_targets_json_path=pathlib.Path(test_targets_json_path),
         raise_on_unused_label=raise_on_unused_label,
     )
-    print_output(modes, result)
+    print_output(labels, result)
 
 
 cmd = functools.partial(clize.run, split_tests)
