@@ -202,7 +202,12 @@ class DatasetBuilder:
         )
 
     def add_avatar_relation_simple_eq(
-        self, left_avatar_id: str, right_avatar_id: str, left_col_name: str, right_col_name: str, required: bool = False
+        self,
+        left_avatar_id: str,
+        right_avatar_id: str,
+        left_col_name: str,
+        right_col_name: str,
+        required: bool = False,
     ) -> AvatarRelationProxy:
         conditions = [
             BinaryCondition(

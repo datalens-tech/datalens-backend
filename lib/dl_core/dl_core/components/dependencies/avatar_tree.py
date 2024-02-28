@@ -62,7 +62,7 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
     def expand_required_avatar_ids(
         self, required_avatar_ids: Collection[str]
     ) -> Tuple[Optional[AvatarId], Set[AvatarId], Set[RelationId]]:
-        # todo: this method is too big
+        # TODO: this method is too big
         #  need to split it down to several methods
         if len(required_avatar_ids) == 1:
             # Single avatar -> nothing to resolve
