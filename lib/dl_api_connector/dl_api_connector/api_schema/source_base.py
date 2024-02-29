@@ -288,3 +288,4 @@ class AvatarRelationSchema(BaseSchema):
     join_type = ma_fields.Enum(JoinType)
     managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user, load_default=ManagedBy.user)
     virtual = VirtualFlagField(attribute="managed_by", dump_only=True)
+    required = ma_fields.Bool(load_default=False, required=False, dump_default=False)

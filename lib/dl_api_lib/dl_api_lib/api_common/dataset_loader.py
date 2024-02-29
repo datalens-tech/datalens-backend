@@ -246,6 +246,7 @@ class DatasetApiLoader:
                     relation_id=relation_data["id"],
                     conditions=relation_data["conditions"],
                     join_type=relation_data["join_type"],
+                    required=relation_data["required"],
                 )
             else:
                 ds_editor.add_avatar_relation(
@@ -255,6 +256,7 @@ class DatasetApiLoader:
                     conditions=relation_data["conditions"],
                     join_type=relation_data["join_type"],
                     managed_by=relation_data["managed_by"],
+                    required=relation_data["required"],
                 )
         return handled_avatar_relation_ids
 

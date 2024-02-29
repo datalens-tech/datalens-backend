@@ -113,6 +113,7 @@ class SourceAvatarProxy(DatasetBuilderComponentProxy):
         right: SourceAvatarProxy | str,
         left_col_name: str,
         right_col_name: str,
+        required: bool = False,
     ) -> AvatarRelationProxy:
         if isinstance(right, SourceAvatarProxy):
             right = right.avatar_id
@@ -122,6 +123,7 @@ class SourceAvatarProxy(DatasetBuilderComponentProxy):
             right_avatar_id=right,
             left_col_name=left_col_name,
             right_col_name=right_col_name,
+            required=required,
         )
 
 
@@ -193,6 +195,7 @@ class DatasetBuilder:
         left_avatar_id: str,
         right_avatar_id: str,
         conditions: list[BinaryCondition],
+        required: bool = False,
     ) -> AvatarRelationProxy:
         relation_id = str(uuid.uuid4())
         self.ds_wrapper.add_avatar_relation(
@@ -200,6 +203,7 @@ class DatasetBuilder:
             left_avatar_id=left_avatar_id,
             right_avatar_id=right_avatar_id,
             conditions=conditions,
+            required=required,
         )
         return AvatarRelationProxy(
             dataset_builder=self,
@@ -212,6 +216,7 @@ class DatasetBuilder:
         right_avatar_id: str,
         left_col_name: str,
         right_col_name: str,
+        required: bool = False,
     ) -> AvatarRelationProxy:
         conditions = [
             BinaryCondition(
@@ -224,6 +229,7 @@ class DatasetBuilder:
             left_avatar_id=left_avatar_id,
             right_avatar_id=right_avatar_id,
             conditions=conditions,
+            required=required,
         )
 
 

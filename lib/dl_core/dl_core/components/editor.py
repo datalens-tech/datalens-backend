@@ -322,6 +322,7 @@ class DatasetComponentEditor:
         join_type: Optional[JoinType] = None,
         managed_by: Optional[ManagedBy] = None,
         valid: bool = True,
+        required: bool = False,
     ) -> None:
         # validate
         if self._ds_accessor.get_avatar_relation_list(right_avatar_id=right_avatar_id):
@@ -343,6 +344,7 @@ class DatasetComponentEditor:
                 join_type=join_type or JoinType.inner,
                 managed_by=managed_by or ManagedBy.user,
                 valid=valid,
+                required=required,
             )
         )
 
@@ -352,6 +354,7 @@ class DatasetComponentEditor:
         conditions: Optional[list[BinaryCondition]] = None,
         join_type: Optional[JoinType] = None,
         valid: Optional[bool] = None,
+        required: Optional[bool] = None,
     ) -> None:
         # left/right avatar IDs cannot be changed. Delete/create new relation to do that
         relation = self._ds_accessor.get_avatar_relation_opt(relation_id=relation_id)
@@ -362,6 +365,8 @@ class DatasetComponentEditor:
                 relation.join_type = join_type
             if valid is not None:
                 relation.valid = valid
+            if required is not None:
+                relation.required = required
 
     def reverse_relation(self, relation_id: str) -> None:
         """Swap left and right parts of the relation. This might be needed if root avatar is reset"""

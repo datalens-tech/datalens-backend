@@ -335,6 +335,7 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
         join_type: JoinType = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "join_type" (default has type "None", argument has type "JoinType")  [assignment]
         managed_by: ManagedBy = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "managed_by" (default has type "None", argument has type "ManagedBy")  [assignment]
         valid: bool = True,
+        required: bool = False,
     ) -> None:
         self._ds_editor.add_avatar_relation(
             relation_id=relation_id,
@@ -344,6 +345,7 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
             join_type=join_type,
             managed_by=managed_by,
             valid=valid,
+            required=required,
         )
 
     def update_avatar_relation(
