@@ -136,17 +136,35 @@ def get_target_tests(
         yield TestTarget(relative_path=relative_path, section=target.name, requested_mode=requested_mode)
 
 
+def is_parent_path(parent: pathlib.Path, child: pathlib.Path) -> bool:
+    return str(child).startswith(str(parent))
+
+
 def get_tests_root_dirs(
     package_path: pathlib.Path,
     pytest_targets: list[PyprojectPytestTarget],
 ) -> set[pathlib.Path]:
-    root_dirs: set[pathlib.Path] = set()
+    all_root_dirs: set[pathlib.Path] = set()
+
+    # adding default test diirectory
+    all_root_dirs.add(package_path / f"{package_path.name}_tests")
+
     for target in pytest_targets:
         root_dir = package_path / target.root_dir
-        root_dirs.add(root_dir)
+        all_root_dirs.add(root_dir)
 
         if not root_dir.is_dir():
             print_error(f"Root dir {root_dir.name} not found in {root_dir.parent}")
+
+    # deduplicating subdirectories
+
+    root_dirs: set[pathlib.Path] = set()
+    for root_dir in all_root_dirs:
+        for other_root_dir in all_root_dirs:
+            if is_parent_path(parent=other_root_dir, child=root_dir) and other_root_dir != root_dir:
+                break
+        else:
+            root_dirs.add(root_dir)
 
     return root_dirs
 
@@ -192,7 +210,7 @@ def validate_test_coverage(
     for root_dir_path in root_dirs:
         for file in iterate_over_pytest_files(root_dir_path):
             for covered_dir in covered_dirs:
-                if str(file).startswith(str(covered_dir)):
+                if is_parent_path(parent=covered_dir, child=file):
                     break
             else:
                 error_message = f"Uncovered test file {file} found in {relative_path}"

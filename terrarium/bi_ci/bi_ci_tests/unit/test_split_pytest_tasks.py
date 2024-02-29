@@ -310,19 +310,29 @@ def test_split_tests_not_raise_on_unused_label_if_no_flag(
     )
 
 
+@pytest.mark.parametrize(
+    "pyproject",
+    [
+        """
+        [datalens.pytest.unit]
+        root_dir = "package_tests"
+        target_path = "unit"
+        """,
+        """
+        [datalens.pytest.unit]
+        root_dir = "package_tests/unit"
+        """,
+    ],
+    ids=["target_path", "root_dir"],
+)
 def test_split_tests_raise_on_uncovered_test(
     mocked_print: mock.Mock,
     test_targets_json_context: TestTargetsJsonContext,
     libs_pyprojects_context: LibsPyprojectsContext,
+    pyproject: str,
 ):
-    pyproject = """
-    [datalens.pytest.unit]
-    root_dir = "tests"
-    target_path = "unit"
-    """
-
     with test_targets_json_context(["package"]) as test_targets_json_path, libs_pyprojects_context(
-        {"package": LibContext(pyproject=pyproject, pytest_files=["tests/not_unit/test_random.py"])}
+        {"package": LibContext(pyproject=pyproject, pytest_files=["package_tests/not_unit/test_random.py"])}
     ) as root_path:
         with pytest.raises(ValueError):
             split_pytest_tasks.split_tests(
@@ -335,7 +345,7 @@ def test_split_tests_raise_on_uncovered_test(
     mocked_print.assert_has_calls(
         [
             mock.call(
-                f"Uncovered test file {root_path}/package/tests/not_unit/test_random.py found in package",
+                f"Uncovered test file {root_path}/package/package_tests/not_unit/test_random.py found in package",
                 file=sys.stderr,
             ),
         ],
