@@ -246,6 +246,19 @@ def test_split_tests_multiple(
     )
 
 
+def test_split_tests_nested(
+    mocked_print: mock.Mock,
+    test_targets_json_context: TestTargetsJsonContext,
+    libs_pyprojects_context: LibsPyprojectsContext,
+):
+    with test_targets_json_context(["lib/package"]) as test_targets_json_path, libs_pyprojects_context(
+        {"lib/package": LibContext()}
+    ) as root_path:
+        split_pytest_tasks.split_tests("base", root_path, test_targets_json_path)
+
+    mocked_print.assert_has_calls([mock.call('split_base=["lib/package:__default__"]')])
+
+
 def test_split_tests_raise_on_unused_label(
     mocked_print: mock.Mock,
     test_targets_json_context: TestTargetsJsonContext,
@@ -322,7 +335,7 @@ def test_split_tests_raise_on_uncovered_test(
     mocked_print.assert_has_calls(
         [
             mock.call(
-                f"Uncovered test file {root_path}/package/tests/not_unit/test_random.py found in {root_path}/package",
+                f"Uncovered test file {root_path}/package/tests/not_unit/test_random.py found in package",
                 file=sys.stderr,
             ),
         ],

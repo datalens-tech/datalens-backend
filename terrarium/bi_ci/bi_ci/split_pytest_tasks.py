@@ -31,7 +31,7 @@ DEFAULT_TARGET_PATHS = frozenset(["."])
 
 @dataclasses.dataclass
 class TestTarget:
-    package_path: pathlib.Path
+    relative_path: str
     section: str
     requested_mode: str
 
@@ -64,7 +64,7 @@ class PyprojectPytestTarget:
 
 
 def format_output(name: str, targets: typing.Iterable[TestTarget]) -> str:
-    data = [f"{target.package_path.name}:{target.section}" for target in targets]
+    data = [f"{target.relative_path}:{target.section}" for target in targets]
 
     return f"{name}={json.dumps(data)}"
 
@@ -85,9 +85,8 @@ def print_error(message: str) -> None:
 
 
 def read_package_paths(
-    root_dir: pathlib.Path,
     targets_path: pathlib.Path,
-) -> typing.Generator[pathlib.Path, None, None]:
+) -> typing.Generator[str, None, None]:
     with open(targets_path, "r") as file:
         data = file.read()
         data = data.strip()
@@ -95,14 +94,14 @@ def read_package_paths(
 
     for item in json.loads(data):
         package_relative_path = item.strip()
-        yield root_dir / package_relative_path
+        yield package_relative_path
 
 
-def read_pytest_targets(package_path: pathlib.Path) -> list[PyprojectPytestTarget]:
-    pyproject_path = package_path / "pyproject.toml"
+def read_pytest_targets(absolute_path: pathlib.Path, relative_path: str) -> list[PyprojectPytestTarget]:
+    pyproject_path = absolute_path / "pyproject.toml"
 
     if not pyproject_path.is_file():
-        error_message = f"pyproject.toml not found in {package_path}"
+        error_message = f"pyproject.toml not found in {relative_path}"
         print_error(error_message)
         raise FileNotFoundError(error_message)
 
@@ -112,13 +111,13 @@ def read_pytest_targets(package_path: pathlib.Path) -> list[PyprojectPytestTarge
     raw_targets = toml_data.get("datalens", {}).get("pytest", {})
 
     if len(raw_targets) == 0:
-        return [PyprojectPytestTarget(root_dir=f"{package_path.name}_tests/")]
+        return [PyprojectPytestTarget(root_dir=f"{absolute_path.name}_tests/")]
 
     return [PyprojectPytestTarget.from_raw(name=name, data=data) for name, data in raw_targets.items()]
 
 
 def get_target_tests(
-    package_path: pathlib.Path,
+    relative_path: str,
     requested_labels: set[str],
     target: PyprojectPytestTarget,
     raise_on_unused_label: bool = False,
@@ -127,14 +126,14 @@ def get_target_tests(
     unused_labels = target.labels - requested_labels
 
     if len(unused_labels) > 0:
-        error_message = f"Unused labels in {package_path.name}:{target.name}: {' '.join(unused_labels)}"
+        error_message = f"Unused labels in {relative_path}:{target.name}: {' '.join(unused_labels)}"
         print_error(error_message)
 
         if raise_on_unused_label:
             raise ValueError(error_message)
 
     for requested_mode in requested_labels:
-        yield TestTarget(package_path=package_path, section=target.name, requested_mode=requested_mode)
+        yield TestTarget(relative_path=relative_path, section=target.name, requested_mode=requested_mode)
 
 
 def get_tests_root_dirs(
@@ -153,19 +152,19 @@ def get_tests_root_dirs(
 
 
 def get_tests_covered_dirs(
-    package_path: pathlib.Path,
+    absolute_path: pathlib.Path,
     pytest_targets: list[PyprojectPytestTarget],
 ) -> set[pathlib.Path]:
     covered_dirs: set[pathlib.Path] = set()
     for target in pytest_targets:
-        root_dir = package_path / target.root_dir
+        root_dir = absolute_path / target.root_dir
 
         for target_path in target.target_paths:
             absolute_target_path = root_dir / target_path
             covered_dirs.add(absolute_target_path)
 
             if not absolute_target_path.is_dir():
-                print_error(f"Target dir {target_path} not found in {package_path}/{root_dir}")
+                print_error(f"Target dir {target_path} not found in {root_dir}")
 
     return covered_dirs
 
@@ -182,12 +181,13 @@ def iterate_over_pytest_files(path: pathlib.Path) -> typing.Generator[pathlib.Pa
 
 
 def validate_test_coverage(
-    package_path: pathlib.Path,
+    absolute_path: pathlib.Path,
+    relative_path: str,
     pytest_targets: list[PyprojectPytestTarget],
     raise_on_uncovered_test: bool = False,
 ) -> None:
-    root_dirs = get_tests_root_dirs(package_path=package_path, pytest_targets=pytest_targets)
-    covered_dirs = get_tests_covered_dirs(package_path=package_path, pytest_targets=pytest_targets)
+    root_dirs = get_tests_root_dirs(package_path=absolute_path, pytest_targets=pytest_targets)
+    covered_dirs = get_tests_covered_dirs(absolute_path=absolute_path, pytest_targets=pytest_targets)
 
     for root_dir_path in root_dirs:
         for file in iterate_over_pytest_files(root_dir_path):
@@ -195,7 +195,7 @@ def validate_test_coverage(
                 if str(file).startswith(str(covered_dir)):
                     break
             else:
-                error_message = f"Uncovered test file {file} found in {package_path}"
+                error_message = f"Uncovered test file {file} found in {relative_path}"
                 print_error(error_message)
 
                 if raise_on_uncovered_test:
@@ -203,25 +203,27 @@ def validate_test_coverage(
 
 
 def get_package_tests(
-    package_path: pathlib.Path,
+    absolute_path: pathlib.Path,
+    relative_path: str,
     requested_labels: set[str],
     raise_on_unused_label: bool = False,
     raise_on_uncovered_test: bool = False,
 ) -> typing.Generator[TestTarget, None, None]:
     try:
-        pytest_targets = read_pytest_targets(package_path)
+        pytest_targets = read_pytest_targets(absolute_path=absolute_path, relative_path=relative_path)
     except FileNotFoundError:
         return
 
     validate_test_coverage(
-        package_path=package_path,
+        absolute_path=absolute_path,
+        relative_path=relative_path,
         pytest_targets=pytest_targets,
         raise_on_uncovered_test=raise_on_uncovered_test,
     )
 
     for target in pytest_targets:
         yield from get_target_tests(
-            package_path=package_path,
+            relative_path=relative_path,
             requested_labels=requested_labels,
             target=target,
             raise_on_unused_label=raise_on_unused_label,
@@ -235,9 +237,10 @@ def get_tests(
     raise_on_unused_label: bool = False,
     raise_on_uncovered_test: bool = False,
 ) -> typing.Generator[TestTarget, None, None]:
-    for package_path in read_package_paths(root_dir=root_dir, targets_path=test_targets_json_path):
+    for package_relative_path in read_package_paths(targets_path=test_targets_json_path):
         yield from get_package_tests(
-            package_path=package_path,
+            absolute_path=root_dir / package_relative_path,
+            relative_path=package_relative_path,
             requested_labels=requested_labels,
             raise_on_unused_label=raise_on_unused_label,
             raise_on_uncovered_test=raise_on_uncovered_test,
