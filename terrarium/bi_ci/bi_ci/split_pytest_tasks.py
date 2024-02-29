@@ -137,15 +137,87 @@ def get_target_tests(
         yield TestTarget(package_path=package_path, section=target.name, requested_mode=requested_mode)
 
 
+def get_tests_root_dirs(
+    package_path: pathlib.Path,
+    pytest_targets: list[PyprojectPytestTarget],
+) -> set[pathlib.Path]:
+    root_dirs: set[pathlib.Path] = set()
+    for target in pytest_targets:
+        root_dir = package_path / target.root_dir
+        root_dirs.add(root_dir)
+
+        if not root_dir.is_dir():
+            print_error(f"Root dir {root_dir.name} not found in {root_dir.parent}")
+
+    return root_dirs
+
+
+def get_tests_covered_dirs(
+    package_path: pathlib.Path,
+    pytest_targets: list[PyprojectPytestTarget],
+) -> set[pathlib.Path]:
+    covered_dirs: set[pathlib.Path] = set()
+    for target in pytest_targets:
+        root_dir = package_path / target.root_dir
+
+        for target_path in target.target_paths:
+            absolute_target_path = root_dir / target_path
+            covered_dirs.add(absolute_target_path)
+
+            if not absolute_target_path.is_dir():
+                print_error(f"Target dir {target_path} not found in {package_path}/{root_dir}")
+
+    return covered_dirs
+
+
+def iterate_over_pytest_files(path: pathlib.Path) -> typing.Generator[pathlib.Path, None, None]:
+    if not path.is_dir():
+        return
+
+    for file in path.iterdir():
+        if file.is_dir():
+            yield from iterate_over_pytest_files(file)
+        elif file.suffix == ".py" and file.name.startswith("test_"):
+            yield file
+
+
+def validate_test_coverage(
+    package_path: pathlib.Path,
+    pytest_targets: list[PyprojectPytestTarget],
+    raise_on_uncovered_test: bool = False,
+) -> None:
+    root_dirs = get_tests_root_dirs(package_path=package_path, pytest_targets=pytest_targets)
+    covered_dirs = get_tests_covered_dirs(package_path=package_path, pytest_targets=pytest_targets)
+
+    for root_dir_path in root_dirs:
+        for file in iterate_over_pytest_files(root_dir_path):
+            for covered_dir in covered_dirs:
+                if str(file).startswith(str(covered_dir)):
+                    break
+            else:
+                error_message = f"Uncovered test file {file} found in {package_path}"
+                print_error(error_message)
+
+                if raise_on_uncovered_test:
+                    raise ValueError(error_message)
+
+
 def get_package_tests(
     package_path: pathlib.Path,
     requested_labels: set[str],
     raise_on_unused_label: bool = False,
+    raise_on_uncovered_test: bool = False,
 ) -> typing.Generator[TestTarget, None, None]:
     try:
         pytest_targets = read_pytest_targets(package_path)
     except FileNotFoundError:
         return
+
+    validate_test_coverage(
+        package_path=package_path,
+        pytest_targets=pytest_targets,
+        raise_on_uncovered_test=raise_on_uncovered_test,
+    )
 
     for target in pytest_targets:
         yield from get_target_tests(
@@ -161,12 +233,14 @@ def get_tests(
     root_dir: pathlib.Path,
     test_targets_json_path: pathlib.Path,
     raise_on_unused_label: bool = False,
+    raise_on_uncovered_test: bool = False,
 ) -> typing.Generator[TestTarget, None, None]:
     for package_path in read_package_paths(root_dir=root_dir, targets_path=test_targets_json_path):
         yield from get_package_tests(
             package_path=package_path,
             requested_labels=requested_labels,
             raise_on_unused_label=raise_on_unused_label,
+            raise_on_uncovered_test=raise_on_uncovered_test,
         )
 
 
@@ -175,6 +249,7 @@ def split_tests(
     root_dir: str,
     test_targets_json_path: str,
     raise_on_unused_label: bool = False,
+    raise_on_uncovered_test: bool = False,
 ) -> None:
     labels = set(requested_labels.split(","))
 
@@ -183,6 +258,7 @@ def split_tests(
         root_dir=pathlib.Path(root_dir),
         test_targets_json_path=pathlib.Path(test_targets_json_path),
         raise_on_unused_label=raise_on_unused_label,
+        raise_on_uncovered_test=raise_on_uncovered_test,
     )
     print_output(labels, result)
 

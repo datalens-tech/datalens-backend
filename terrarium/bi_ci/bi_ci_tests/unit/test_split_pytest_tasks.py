@@ -49,6 +49,8 @@ def fixture_file_context() -> FileContext:
         if path is None:
             path = f"/tmp/{uuid.uuid4()}"
 
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+
         with open(path, "w") as file:
             if data is not None:
                 file.write(data)
@@ -85,6 +87,7 @@ def fixture_test_targets_json_context(file_context: FileContext) -> TestTargetsJ
 @dataclasses.dataclass
 class LibContext:
     pyproject: str = ""
+    pytest_files: list[str] = dataclasses.field(default_factory=list)
 
 
 class LibsPyprojectsContext(typing.Protocol):
@@ -103,6 +106,8 @@ def fixture_libs_pyprojects_context(folder_context: FolderContext, file_context:
                     lib_contexts.enter_context(
                         file_context(path=f"{root_path}/{lib_name}/pyproject.toml", data=lib_context.pyproject)
                     )
+                    for pytest_file in lib_context.pytest_files:
+                        lib_contexts.enter_context(file_context(path=f"{root_path}/{lib_name}/{pytest_file}"))
 
                 yield root_path
 
@@ -290,3 +295,66 @@ def test_split_tests_not_raise_on_unused_label_if_no_flag(
         ],
         any_order=True,
     )
+
+
+def test_split_tests_raise_on_uncovered_test(
+    mocked_print: mock.Mock,
+    test_targets_json_context: TestTargetsJsonContext,
+    libs_pyprojects_context: LibsPyprojectsContext,
+):
+    pyproject = """
+    [datalens.pytest.unit]
+    root_dir = "tests"
+    target_path = "unit"
+    """
+
+    with test_targets_json_context(["package"]) as test_targets_json_path, libs_pyprojects_context(
+        {"package": LibContext(pyproject=pyproject, pytest_files=["tests/not_unit/test_random.py"])}
+    ) as root_path:
+        with pytest.raises(ValueError):
+            split_pytest_tasks.split_tests(
+                "base",
+                root_path,
+                test_targets_json_path,
+                raise_on_uncovered_test=True,
+            )
+
+    mocked_print.assert_has_calls(
+        [
+            mock.call(
+                f"Uncovered test file {root_path}/package/tests/not_unit/test_random.py found in {root_path}/package",
+                file=sys.stderr,
+            ),
+        ],
+    )
+
+
+def test_split_tests_absent_target_path_covers_all_root_dir(
+    mocked_print: mock.Mock,
+    test_targets_json_context: TestTargetsJsonContext,
+    libs_pyprojects_context: LibsPyprojectsContext,
+):
+    pyproject = """
+    [datalens.pytest.unit]
+    root_dir = "tests"
+    """
+
+    with test_targets_json_context(["package"]) as test_targets_json_path, libs_pyprojects_context(
+        {"package": LibContext(pyproject=pyproject, pytest_files=["tests/not_unit/test_random.py"])}
+    ) as root_path:
+        split_pytest_tasks.split_tests("base", root_path, test_targets_json_path, raise_on_uncovered_test=True)
+
+    mocked_print.assert_has_calls([mock.call('split_base=["package:unit"]')])
+
+
+def test_split_tests_absent_target_covers_default_tests_folder(
+    mocked_print: mock.Mock,
+    test_targets_json_context: TestTargetsJsonContext,
+    libs_pyprojects_context: LibsPyprojectsContext,
+):
+    with test_targets_json_context(["package"]) as test_targets_json_path, libs_pyprojects_context(
+        {"package": LibContext(pyproject="", pytest_files=["package_tests/test_random.py"])}
+    ) as root_path:
+        split_pytest_tasks.split_tests("base", root_path, test_targets_json_path, raise_on_uncovered_test=True)
+
+    mocked_print.assert_has_calls([mock.call('split_base=["package:__default__"]')])
