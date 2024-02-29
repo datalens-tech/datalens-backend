@@ -32,13 +32,12 @@ jobs:
       run: |
         rm -rf ./* || true
         rm -rf ./.??* || true
-        rm -rf ../datalens-ui || true
 
     - name: Checkout datalens-ui repo
       uses: actions/checkout@v4
       with:
         repository: datalens-tech/datalens-ui
-        path: datalens-ui
+        path: /__w/datalens-backend/datalens-ui
 #        path: tools/e2e/datalens-ui
 #    - name: Fix dubious ownership
 #      run: .github/.scripts/git_config_save_directory.sh
@@ -56,20 +55,21 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-        path: datalens-backend
+        path: /__w/datalens-backend/datalens-backend
 
     - name: dircheck
       run: |
         ls -la
         ls -la ../
         ls -la /__w || true
-#        ls -la /__w/datalens-backend || true
+        ls -la /__w/datalens-backend || true
+        ls -la /__w/datalens-backend/datalens-backend || true
 
-    - name: Fix dubious ownership
-      working-directory: datalens-backend
-      run: .github/.scripts/git_config_save_directory.sh
-      env:
-        REPOSITORY_NAME: ${{ github.event.repository.name }}
+#    - name: Fix dubious ownership
+#      working-directory: datalens-backend
+#      run: .github/.scripts/git_config_save_directory.sh
+#      env:
+#        REPOSITORY_NAME: ${{ github.event.repository.name }}
 
     - name: Switch to PR head
       working-directory: datalens-backend
@@ -109,7 +109,7 @@ jobs:
         node-version: 18
         cache: 'npm'
 #        cache-dependency-path: ../datalens-ui/package-lock.json
-        cache-dependency-path: ./datalens-ui/package-lock.json
+        cache-dependency-path: /__w/datalens-backend/datalens-ui/package-lock.json
 
     - name: dircheck
       working-directory: datalens-backend
@@ -123,4 +123,4 @@ jobs:
 
     - name: Build and run E2E
       working-directory: datalens-backend
-      run: task e2e:init-and-run DATALENS_UI_FOLDER="/__w/datalens-backend/datalens-backend/datalens-ui"
+      run: task e2e:init-and-run DATALENS_UI_FOLDER="/__w/datalens-backend/datalens-ui"
