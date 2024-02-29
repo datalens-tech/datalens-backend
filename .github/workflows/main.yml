@@ -208,8 +208,7 @@ jobs:
         . /venv/bin/activate && detect-affected-packages \
           --repo=/src \
           --changes_file="/tmp/targets.json" \
-          --root_pkgs="lib,app,terrarium" \
-          --fallback_pkg="terrarium/bi_ci" | tee -a  >> "$GITHUB_OUTPUT"
+          --root_pkgs="lib,app" | tee -a  >> "$GITHUB_OUTPUT"
       env:
         TEST_TARGET_OVERRIDE: ${{ github.event.inputs.test_targets }}
 
@@ -491,7 +490,7 @@ jobs:
   publish-result:
     runs-on: [ self-hosted, linux, light ]
     needs: [ "run_tests_base", "run_tests_fat", "run_tests_ext_public" ]
-    if: ${{ !cancelled() && github.event.inputs.run_mypy_only != 'true' }}
+    if: ${{ !cancelled() && github.event.inputs.run_mypy_only != 'true' && ( needs.run_tests_base.result != 'skipped' || needs.run_tests_fat.result != 'skipped' || needs.run_tests_ext_public.result != 'skipped' )}}
     permissions:
       contents: read
       issues: read
