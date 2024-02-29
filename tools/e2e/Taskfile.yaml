@@ -23,6 +23,7 @@ tasks:
       - ls -la
       - ls -la {{.DATALENS_UI_FOLDER}}/tests/backend-configs || true
       - cat {{.DATALENS_UI_FOLDER}}/tests/docker-compose.e2e.yml
+      - cp -R {{.DATALENS_UI_FOLDER}}/tests/backend-configs .
       - DOCKER_USER="$(id -u):$(id -g)" docker compose
         -f {{.DATALENS_UI_FOLDER}}/tests/docker-compose.e2e.yml
         -f docker-compose.e2e-dev-backend.yaml
