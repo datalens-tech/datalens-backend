@@ -16,7 +16,10 @@ from dl_formula.loader import (
     load_formula_lib,
     preload_bi_formula,
 )
-from dl_pivot.plugin_registration import register_all_pivot_engine_plugins
+from dl_pivot.plugin_registration import (
+    preload_pivot_engine_plugins,
+    register_all_pivot_engine_plugins,
+)
 
 
 @attr.s(frozen=True)
@@ -31,6 +34,7 @@ def preload_api_lib() -> None:
 
     preload_bi_core()
     preload_bi_formula()
+    preload_pivot_engine_plugins()
 
 
 def load_api_lib(api_lib_config: ApiLibraryConfig = ApiLibraryConfig()) -> None:  # noqa: B008

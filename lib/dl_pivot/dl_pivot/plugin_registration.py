@@ -43,11 +43,15 @@ class PivotEnginePluginEntrypointManager(EntrypointClassManager[PivotEnginePlugi
     entrypoint_group_name = attr.ib(init=False, default=_PIVOT_PLUGIN_EP_GROUP)
 
 
-def get_all_pivot_engine_plugins() -> dict[str, Type[PivotEnginePlugin]]:
+def _get_all_pivot_engine_plugins() -> dict[str, Type[PivotEnginePlugin]]:
     ep_mgr = PivotEnginePluginEntrypointManager()
     return ep_mgr.get_all_ep_classes()
 
 
 def register_all_pivot_engine_plugins() -> None:
-    for plugin_cls in get_all_pivot_engine_plugins().values():
+    for plugin_cls in _get_all_pivot_engine_plugins().values():
         register_pivot_engine_plugin(plugin_cls)
+
+
+def preload_pivot_engine_plugins() -> None:
+    _get_all_pivot_engine_plugins()
