@@ -111,6 +111,15 @@ jobs:
 #        cache-dependency-path: ../datalens-ui/package-lock.json
         cache-dependency-path: ./datalens-ui/package-lock.json
 
+    - name: dircheck
+      working-directory: datalens-backend
+      run: |
+        ls -la
+        ls -la ../
+        ls -la /__w || true
+        ls -la /__w/datalens-backend || true
+        ls -la /__w/datalens-backend/datalens-backend || true
+
     - name: Build and run E2E
       working-directory: datalens-backend
       run: task e2e:init-and-run DATALENS_UI_FOLDER="../../datalens-ui"
