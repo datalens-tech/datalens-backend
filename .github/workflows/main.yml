@@ -16,7 +16,7 @@ on:
     inputs:
       test_targets:
         default: ""
-        description: "Comma separated list to run pytest on, e.g.: `lib/dl_api_lib,lib/dl_core`. "
+        description: "Comma separated list to run pytest on, e.g.: `lib/dl_api_lib,lib/dl_core`. Use __ALL__ to run all tests"
       run_mypy_only:
         type: boolean
         default: false
