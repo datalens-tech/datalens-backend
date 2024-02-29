@@ -33,12 +33,24 @@ jobs:
         rm -rf ./* || true
         rm -rf ./.??* || true
         rm -rf ../datalens-ui || true
+
     - name: Checkout code
       uses: actions/checkout@v2
+    - name: Checkout datalens-ui repo
+      uses: actions/checkout@v4
+      with:
+        repository: datalens-tech/datalens-ui
+        path: tools/e2e/datalens-ui
+
     - name: Fix dubious ownership
       run: .github/.scripts/git_config_save_directory.sh
       env:
         REPOSITORY_NAME: ${{ github.event.repository.name }}
+    - name: Fix dubious ownership
+      run: .github/.scripts/git_config_save_directory.sh
+      env:
+        REPOSITORY_NAME: datalens-ui
+
     - name: Switch to PR head
       run: gh pr checkout ${{ github.event.inputs.pr }}
       env:
@@ -65,19 +77,17 @@ jobs:
 #        path: tools/e2e/datalens-ui
     - name: Clone datalens-ui repo
       run: |
-        git clone https://github.com/datalens-tech/datalens-ui.git ../datalens-ui && chown -R $(whoami) ../datalens-ui
         ls -la
         ls -la ../
-        ls -la ../datalens-ui
-        ls -la /__w/datalens-backend/datalens-ui/ || true
-        pwd
-        pwd ..
+        ls -la /__w || true
+        ls -la /__w/datalens-backend || true
+
     - uses: actions/setup-node@v3
       with:
         node-version: 18
         cache: 'npm'
 #        cache-dependency-path: ../datalens-ui/package-lock.json
-        cache-dependency-path: /__w/datalens-backend/datalens-ui/package-lock.json
+        cache-dependency-path: /__w/datalens-ui/datalens-ui/package-lock.json
 
     - name: Build and run E2E
-      run: task e2e:init-and-run DATALENS_UI_FOLDER="../../../datalens-ui"
+      run: task e2e:init-and-run DATALENS_UI_FOLDER="/__w/datalens-ui/datalens-ui"
