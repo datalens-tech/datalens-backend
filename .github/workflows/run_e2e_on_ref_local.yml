@@ -40,10 +40,10 @@ jobs:
         repository: datalens-tech/datalens-ui
         path: datalens-ui
 #        path: tools/e2e/datalens-ui
-    - name: Fix dubious ownership
-      run: .github/.scripts/git_config_save_directory.sh
-      env:
-        REPOSITORY_NAME: datalens-ui
+#    - name: Fix dubious ownership
+#      run: .github/.scripts/git_config_save_directory.sh
+#      env:
+#        REPOSITORY_NAME: datalens-ui
 
     - name: Checkout code
       uses: actions/checkout@v2
