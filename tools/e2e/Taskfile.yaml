@@ -43,6 +43,7 @@ tasks:
     dir: "{{.DATALENS_UI_FOLDER}}"
     desc: Checkout latest datalens-ui
     cmds:
+      - echo "asdf {{.DATALENS_UI_FOLDER}}"
       - pwd
       - ls -la
       - git fetch --all
@@ -150,7 +151,7 @@ tasks:
     desc: Bootstrap command; install everything and run all tests; requires node installed
     cmds:
       - task: datalens-ui-repo-clone
-      - cmd: echo "Hello from a PR"
+      - cmd: echo "Hello from a PR {{.DATALENS_UI_FOLDER}}"
 #      - cmd: mkdir {{.DATALENS_UI_FOLDER}}/tests/metadata
       - task: datalens-ui-repo-update
       - task: datalens-ui-init
