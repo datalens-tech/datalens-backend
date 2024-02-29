@@ -4,10 +4,14 @@ services:
   control-api:
     user: "${DOCKER_USER}"
     image: ${CONTROL_API_TAG}
+    volumes:
+      - ./backend-configs:/etc/backend-configs
 
   data-api:
     user: "${DOCKER_USER}"
     image: ${DATA_API_TAG}
+    volumes:
+      - ./backend-configs:/etc/backend-configs
 
   datalens:
     image: ${DATALENS_UI_TAG}
