@@ -12,6 +12,7 @@ import attr
 
 from dl_cli_tools.cli_base import CliToolBase
 from dl_cli_tools.logging import setup_basic_logging
+from dl_repmanager.dependency_resolution import DeepIndexBuilder
 from dl_repmanager.git_manager import GitManager
 from dl_repmanager.metapkg_manager import MetaPackageManager
 from dl_repmanager.package_index import (
@@ -20,8 +21,10 @@ from dl_repmanager.package_index import (
 )
 from dl_repmanager.package_reference import PackageReference
 from dl_repmanager.primitives import (
+    MAIN_DEP_SECTION_NAME,
     EntityReference,
     EntityReferenceType,
+    PackageInfo,
 )
 from dl_repmanager.project_editor import PyPrjEditor
 from dl_repmanager.repository_env import (
@@ -258,6 +261,17 @@ def make_parser() -> argparse.ArgumentParser:
     )
     add_package_commands(recurse_packages_subparsers)
 
+    resolve_file_deps_parser = subparsers.add_parser(
+        "resolve-file-deps",
+        help="Resolve packages dependent on given list of files",
+    )
+    resolve_file_deps_parser.add_argument(
+        "--pkg-print-mode",
+        type=str,
+        default="reg_name",
+        help="How to print the dependent packages (reg_name|root_path)",
+    )
+
     return parser
 
 
@@ -446,6 +460,25 @@ class DlRepManagerTool(CliToolBase):
                 args=args,
             )
 
+    def resolve_file_deps(self, pkg_print_mode: list[EntityReference]) -> None:
+        file_list = sys.stdin.read().split()
+        deep_index_builder = DeepIndexBuilder()
+        deep_index = deep_index_builder.build_deep_index(
+            package_index=self.package_index,
+            main_section_name=MAIN_DEP_SECTION_NAME,
+        )
+        package_infos: set[PackageInfo] = set()
+        for path_str in file_list:
+            path = Path(path_str).absolute()
+            src_package_info = self.repository_navigator.find_package_by_path(path=path)
+            dep_reg_names = deep_index.get_deep_dependency_names(package_reg_name=src_package_info.package_reg_name)
+            for dep_reg_name in dep_reg_names:
+                package_infos.add(self.package_index.get_package_info_by_reg_name(dep_reg_name))
+
+        package_info_list = sorted(package_infos, key=lambda pi: pi.package_reg_name)
+        for package_info in package_info_list:
+            print(package_info.package_reg_name)
+
     @classmethod
     def initialize(cls, base_path: Path, config_file_name: str, fs_editor_type: str) -> DlRepManagerTool:
         repository_env = RepoEnvironmentLoader(
@@ -536,6 +569,8 @@ class DlRepManagerTool(CliToolBase):
                 tool.search_imports(entities=args.entities, imported=args.imported)
             case "recurse-packages":
                 tool.recurse_packages(entities=args.entities, args=args)
+            case "resolve-file-deps":
+                tool.resolve_file_deps(pkg_print_mode=args.pkg_print_mode)
             case _:
                 raise RuntimeError(f"Got unknown command: {args.command}")
 

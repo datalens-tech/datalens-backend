@@ -185,3 +185,7 @@ class ImportSpec:
 class MetaPackageSpec(_Clonable):
     name: str = attr.ib(kw_only=True)
     toml_path: Path = attr.ib(kw_only=True)
+
+
+MAIN_DEP_SECTION_NAME = "tool.poetry.dependencies"
+TEST_SECTION_NAME = "tool.poetry.group.tests.dependencies"
