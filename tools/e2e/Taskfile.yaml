@@ -51,6 +51,7 @@ tasks:
     dir: "{{.DATALENS_UI_FOLDER}}"
     desc: Install dependencies
     cmds:
+      - ls -la
       - npm ci
 
   docker-build-backend:

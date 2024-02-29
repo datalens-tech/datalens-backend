@@ -123,4 +123,4 @@ jobs:
 
     - name: Build and run E2E
       working-directory: datalens-backend
-      run: task e2e:init-and-run DATALENS_UI_FOLDER="/__w/datalens-backend/datalens-backend/datalens-ui/datalens-ui"
+      run: task e2e:init-and-run DATALENS_UI_FOLDER="/__w/datalens-backend/datalens-backend/datalens-ui"
