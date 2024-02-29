@@ -39,9 +39,9 @@ class TestTarget:
 @dataclasses.dataclass
 class PyprojectPytestTarget:
     root_dir: str
-    target_paths: frozenset[str] = dataclasses.field(default=DEFAULT_TARGET_PATHS)
+    target_paths: frozenset[str] = DEFAULT_TARGET_PATHS
     name: str = DEFAULT_TARGET_NAME
-    labels: frozenset[str] = dataclasses.field(default=DEFAULT_LABELS)
+    labels: frozenset[str] = DEFAULT_LABELS
 
     @classmethod
     def from_raw(cls, name: str, data: dict[str, typing.Any]) -> typing_extensions.Self:
@@ -137,7 +137,7 @@ def get_target_tests(
 
 
 def is_parent_path(parent: pathlib.Path, child: pathlib.Path) -> bool:
-    return str(child).startswith(str(parent))
+    return parent in child.parents
 
 
 def get_tests_root_dirs(
