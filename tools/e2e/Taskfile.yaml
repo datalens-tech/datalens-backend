@@ -93,7 +93,7 @@ tasks:
     cmds:
       - echo $(pwd)
       - task: _docker
-        vars: { COMMAND: 'up {{if eq .DETACH "true"}} --detach {{end}}  {{.CLI_ARGS}}' }
+        vars: { COMMAND: 'up {{if eq .DETACH "true"}} --detach {{end}} --force-recreate {{.CLI_ARGS}}' }
     vars:
       DETACH: '{{.DETACH | default "true"}}'
 
@@ -155,10 +155,10 @@ tasks:
       - task: datalens-ui-init
       - task: docker-build
       - echo $(pwd)
-      - task: docker-start
       - defer: { task: docker-stop }
       - defer: for i in $(docker ps -aq); do echo "now $i"; docker logs $i; done
       - defer: docker ps -a
+      - task: docker-start
       - task: test
         vars:
           RETRY_TIMES: 1
