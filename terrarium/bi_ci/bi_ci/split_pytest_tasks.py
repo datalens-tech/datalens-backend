@@ -42,6 +42,7 @@ class PyprojectPytestTarget:
     target_paths: frozenset[str] = DEFAULT_TARGET_PATHS
     name: str = DEFAULT_TARGET_NAME
     labels: frozenset[str] = DEFAULT_LABELS
+    skip_tests: bool = False
 
     @classmethod
     def from_raw(cls, name: str, data: dict[str, typing.Any]) -> typing_extensions.Self:
@@ -60,6 +61,7 @@ class PyprojectPytestTarget:
             root_dir=data["root_dir"],
             target_paths=target_paths,
             labels=labels,
+            skip_tests=data.get("skip_tests", False),
         )
 
 
@@ -81,7 +83,11 @@ def print_output(requested_modes: set[str], test_targets: typing.Iterable[TestTa
 
 
 def print_error(message: str) -> None:
-    print(message, file=sys.stderr)
+    print(f"ERROR::{message}", file=sys.stderr)
+
+
+def print_warning(message: str) -> None:
+    print(f"WARNING::{message}", file=sys.stderr)
 
 
 def read_package_paths(
@@ -154,7 +160,7 @@ def get_tests_root_dirs(
         all_root_dirs.add(root_dir)
 
         if not root_dir.is_dir():
-            print_error(f"Root dir {root_dir.name} not found in {root_dir.parent}")
+            print_warning(f"Root dir {root_dir.name} not found in {root_dir.parent}")
 
     # deduplicating subdirectories
 
@@ -182,7 +188,7 @@ def get_tests_covered_dirs(
             covered_dirs.add(absolute_target_path)
 
             if not absolute_target_path.is_dir():
-                print_error(f"Target dir {target_path} not found in {root_dir}")
+                print_warning(f"Target dir {target_path} not found in {root_dir}")
 
     return covered_dirs
 
@@ -240,6 +246,10 @@ def get_package_tests(
     )
 
     for target in pytest_targets:
+        if target.skip_tests:
+            print_warning(f"Skipping tests for {relative_path}:{target.name}")
+            continue
+
         yield from get_target_tests(
             relative_path=relative_path,
             requested_labels=requested_labels,

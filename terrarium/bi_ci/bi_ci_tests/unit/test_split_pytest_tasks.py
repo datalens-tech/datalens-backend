@@ -132,6 +132,31 @@ def test_split_tests_no_pyproject(
     )
 
 
+def test_split_tests_skip_tests(
+    mocked_print: mock.Mock,
+    test_targets_json_context: TestTargetsJsonContext,
+    libs_context: LibsPyprojectsContext,
+):
+    pyproject = """
+    [datalens.pytest.unit]
+    root_dir = "tests"
+    skip_tests = true
+    """
+
+    with test_targets_json_context(["package"]) as test_targets_json_path, libs_context(
+        {"package": LibContext(pyproject=pyproject, pytest_files=["tests/test_random.py"])}
+    ) as root_path:
+        split_pytest_tasks.split_tests("base", root_path, test_targets_json_path, raise_on_uncovered_test=True)
+
+    mocked_print.assert_has_calls(
+        [
+            mock.call("split_base=[]"),
+            mock.call("WARNING::Skipping tests for package:unit", file=sys.stderr),
+        ],
+        any_order=True,
+    )
+
+
 @pytest.mark.parametrize(
     "requested_mode, result",
     [
@@ -281,7 +306,7 @@ def test_split_tests_raise_on_unused_label(
                 raise_on_unused_label=True,
             )
 
-    mocked_print.assert_has_calls([mock.call("Unused labels in package:unit: unused", file=sys.stderr)])
+    mocked_print.assert_has_calls([mock.call("ERROR::Unused labels in package:unit: unused", file=sys.stderr)])
 
 
 def test_split_tests_not_raise_on_unused_label_if_no_flag(
@@ -302,7 +327,7 @@ def test_split_tests_not_raise_on_unused_label_if_no_flag(
 
     mocked_print.assert_has_calls(
         [
-            mock.call("Unused labels in package:unit: unused", file=sys.stderr),
+            mock.call("ERROR::Unused labels in package:unit: unused", file=sys.stderr),
             mock.call("split_base=[]"),
             mock.call("split_not_base=[]"),
         ],
@@ -345,7 +370,8 @@ def test_split_tests_raise_on_uncovered_test(
     mocked_print.assert_has_calls(
         [
             mock.call(
-                f"Uncovered test file {root_path}/package/package_tests/not_unit/test_random.py found in package",
+                "ERROR::Uncovered test file "
+                f"{root_path}/package/package_tests/not_unit/test_random.py found in package",
                 file=sys.stderr,
             ),
         ],

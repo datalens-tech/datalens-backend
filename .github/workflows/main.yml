@@ -276,7 +276,7 @@ jobs:
         id: get_split
         run: |
           . /venv/bin/activate && echo '${{ needs.router.outputs.affected }}' >> /tmp/dl_test_targets.json
-          split-pytest-tasks base,fat,ext_public /src /tmp/dl_test_targets.json >> "$GITHUB_OUTPUT"
+          split-pytest-tasks base,fat,ext_public /src /tmp/dl_test_targets.json true true >> "$GITHUB_OUTPUT"
 
   run_tests_base:
     runs-on: [ self-hosted, linux, light ]
