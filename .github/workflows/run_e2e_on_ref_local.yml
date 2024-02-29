@@ -33,11 +33,22 @@ jobs:
         rm -rf ./* || true
         rm -rf ./.??* || true
 
+    - name: dircheck_initial
+      run: |
+        pwd
+        ls -la
+        ls -la ../
+        ls -la /__w || true
+        ls -la /__w/datalens-backend || true
+        ls -la /__w/datalens-backend/datalens-backend || true
+        ls -la /__w/datalens-backend/datalens-backend/datalens-backend || true
+
     - name: Checkout datalens-ui repo
       uses: actions/checkout@v4
       with:
         repository: datalens-tech/datalens-ui
         path: /__w/datalens-backend/datalens-backend/datalens-ui
+
 #        path: tools/e2e/datalens-ui
 #    - name: Fix dubious ownership
 #      run: .github/.scripts/git_config_save_directory.sh
@@ -122,5 +133,5 @@ jobs:
         ls -la /__w/datalens-backend/datalens-backend/datalens-ui || true
 
     - name: Build and run E2E
-      working-directory: datalens-backend
+      working-directory: /__w/datalens-backend/datalens-backend/datalens-backend
       run: task e2e:init-and-run DATALENS_UI_FOLDER="/__w/datalens-backend/datalens-backend/datalens-ui"
