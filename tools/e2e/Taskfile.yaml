@@ -43,6 +43,8 @@ tasks:
     dir: "{{.DATALENS_UI_FOLDER}}"
     desc: Checkout latest datalens-ui
     cmds:
+      - pwd
+      - ls -la
       - git fetch --all
       - git checkout main
       - git pull
@@ -52,6 +54,7 @@ tasks:
     desc: Install dependencies
     cmds:
       - ls -la
+      - pwd
       - npm ci
 
   docker-build-backend:
