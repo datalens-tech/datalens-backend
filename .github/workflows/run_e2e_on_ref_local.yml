@@ -67,7 +67,7 @@ jobs:
         ls -la /__w/datalens-backend/datalens-backend || true
 
     - name: Checkout code
-      run: git clone https://github.com/datalens-tech/datalens-backend.git /datalens-backend
+      run: git clone https://github.com/datalens-tech/datalens-backend.git datalens-backend
 #      run: git clone https://github.com/datalens-tech/datalens-backend.git /__w/datalens-backend/datalens-backend/datalens-backend
 
 #      uses: actions/checkout@v2
