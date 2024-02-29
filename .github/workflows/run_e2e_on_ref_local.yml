@@ -17,7 +17,7 @@ on:
 jobs:
   run_e2e:
     name: "Build and run E2E"
-    runs-on: [ self-hosted, linux ]
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: read
