@@ -141,14 +141,14 @@ tasks:
       - task: docker-build
       - defer: { task: docker-stop }
       - defer: |
-          [[ -n "{{.SHOW_LOGS_WHEN_DONE}}" ]] && \
-          docker ps -a && \
-          for i in $(docker ps -aq); do
-            echo "\n\n Showing logs for container $i"
-            docker logs $i
-          done
+          if [[ -n "{{.SHOW_LOGS_WHEN_DONE}}" ]]; then
+            docker ps -a
+            for i in $(docker ps -aq); do
+              echo $'\n\n'"Showing logs for container $i"
+              docker logs $i
+            done
+          fi
       - task: docker-start
       - task: test
         vars:
           RETRY_TIMES: 1
-      - task: docker-stop
