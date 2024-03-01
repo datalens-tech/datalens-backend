@@ -18,8 +18,6 @@ from typing import (
 
 import attr
 
-import dl_core.exc as exc
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -46,8 +44,8 @@ class AsyncChunkedBase(Generic[_ENTRY_TV]):
             result += chunk
         return result
 
-    def limit(self, max_count: int) -> AsyncChunkedLimited:
-        return AsyncChunkedLimited(chunked=self, max_count=max_count)
+    def limit(self, max_count: int, limit_exception: Type[Exception]) -> AsyncChunkedLimited:
+        return AsyncChunkedLimited(chunked=self, max_count=max_count, limit_exc_to_raise=limit_exception)
 
 
 @attr.s
@@ -83,7 +81,7 @@ class AsyncChunked(AsyncChunkedBase[_ENTRY_TV]):
 class AsyncChunkedLimited(AsyncChunkedBase[_ENTRY_TV]):
     _chunked: AsyncChunkedBase = attr.ib()
     _max_count: int = attr.ib()
-    limit_exc_to_raise: Type[Exception] = exc.ResultRowCountLimitExceeded
+    limit_exc_to_raise: Type[Exception] = attr.ib(kw_only=True)
 
     @property
     def items(self) -> AsyncIterable[_ENTRY_TV]:
@@ -112,7 +110,7 @@ class AsyncChunkedLimited(AsyncChunkedBase[_ENTRY_TV]):
             async for chunk in self._chunked.chunks:
                 cnt += len(chunk)
                 if cnt > self._max_count:
-                    raise exc.ResultRowCountLimitExceeded()
+                    raise self.limit_exc_to_raise()
                 yield chunk
 
             LOGGER.info(f"Received {cnt} data rows.")
