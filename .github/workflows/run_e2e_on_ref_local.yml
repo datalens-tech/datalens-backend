@@ -17,28 +17,28 @@ on:
 jobs:
   run_e2e:
     name: "Build and run E2E"
-    runs-on: [ self-hosted, linux ]
+    runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: read
-    container:
-      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
-      options: -v /var/run/docker.sock:/var/run/docker.sock
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Fix dubious ownership
-      run: .github/.scripts/git_config_save_directory.sh
-      env:
-        REPOSITORY_NAME: ${{ github.event.repository.name }}
+    - name: Checkout datalens-backend
+      uses: actions/checkout@v4
+      with:
+        path: datalens-backend
+
+    - name: Checkout datalens-ui
+      uses: actions/checkout@v4
+      with:
+        repository: datalens-tech/datalens-ui
+        path: datalens-ui
+
     - name: Switch to PR head
+      working-directory: datalens-backend
       run: gh pr checkout ${{ github.event.inputs.pr }}
       env:
         GH_TOKEN: ${{ github.token }}
     - name: Validate SHA
+      working-directory: datalens-backend
       run: |
         export HEAD_SHA=$(git rev-parse HEAD)
         export INPUT_SHA="${{ github.event.inputs.sha }}"
@@ -53,16 +53,13 @@ jobs:
       with:
         version: 3.33.1
 
-    - name: Checkout datalens-ui repo
-      uses: actions/checkout@v4
-      with:
-        repository: datalens-tech/datalens-ui
-        path: tools/e2e/datalens-ui
     - uses: actions/setup-node@v3
       with:
         node-version: 18
         cache: 'npm'
-        cache-dependency-path: tools/e2e/datalens-ui/package-lock.json
+        cache-dependency-path: datalens-ui/package-lock.json
 
     - name: Build and run E2E
-      run: task e2e:init-and-run DATALENS_UI_FOLDER="./datalens-ui"
+      working-directory: datalens-backend
+      run: task e2e:init-and-run DATALENS_UI_FOLDER="../../../datalens-ui" SHOW_LOGS_WHEN_DONE=1
+      # note: ^ ui path is relative to datalens-backend/tools/e2e
