@@ -61,5 +61,5 @@ jobs:
 
     - name: Build and run E2E
       working-directory: datalens-backend
-      run: task e2e:init-and-run DATALENS_UI_FOLDER="../../../datalens-ui" SHOW_LOGS_WHEN_DONE=true
+      run: task e2e:init-and-run DATALENS_UI_FOLDER="../../../datalens-ui" SHOW_LOGS_WHEN_DONE=1
       # note: ^ ui path is relative to datalens-backend/tools/e2e

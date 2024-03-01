@@ -133,7 +133,7 @@ tasks:
   init-and-run:
     desc: Bootstrap command; install everything and run all tests; requires node installed
     vars:
-      SHOW_LOGS_WHEN_DONE: '{{.SHOW_LOGS_WHEN_DONE | default ""}}'
+      SHOW_LOGS_WHEN_DONE: '{{.SHOW_LOGS_WHEN_DONE | default "0"}}'
     cmds:
       - task: datalens-ui-repo-clone
       - task: datalens-ui-repo-update
@@ -141,7 +141,7 @@ tasks:
       - task: docker-build
       - defer: { task: docker-stop }
       - defer: |
-          if [[ -n "{{.SHOW_LOGS_WHEN_DONE}}" ]]; then
+          if [[ "{{.SHOW_LOGS_WHEN_DONE}}" == "1" ]]; then
             docker ps -a
             for i in $(docker ps -aq); do
               echo $'\n\n'"Showing logs for container $i"
