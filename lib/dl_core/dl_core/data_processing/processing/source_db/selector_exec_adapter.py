@@ -45,6 +45,7 @@ from dl_core.us_connection_base import (
 if TYPE_CHECKING:
     from sqlalchemy.sql.selectable import Select
 
+    from dl_api_commons.base_models import RequestContextInfo
     from dl_cache_engine.primitives import LocalKeyRepresentation
     from dl_constants.enums import DataSourceRole
     from dl_constants.types import TBIDataValue
@@ -53,6 +54,7 @@ if TYPE_CHECKING:
     from dl_core.data_processing.prepared_components.manager_base import PreparedComponentManagerBase
     from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
     from dl_core.data_processing.types import TValuesChunkStream
+    from dl_core.services_registry.conn_executor_factory_base import ConnExecutorFactory
     from dl_core.us_dataset import Dataset
     from dl_core.us_manager.local_cache import USEntryBuffer
 
@@ -78,6 +80,8 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
     _prep_component_manager: Optional[PreparedComponentManagerBase] = attr.ib(kw_only=True, default=None)
     _row_count_hard_limit: Optional[int] = attr.ib(kw_only=True, default=None)
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
+    _ce_factory: ConnExecutorFactory = attr.ib(kw_only=True)
+    _rci: RequestContextInfo = attr.ib(kw_only=True)
 
     def __attrs_post_init__(self) -> None:
         if self._prep_component_manager is None:
@@ -107,8 +111,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         target_connection = self._us_entry_buffer.get_entry(joint_dsrc_info.target_connection_ref)
         assert isinstance(target_connection, ExecutorBasedMixin)
 
-        ce_factory = self._service_registry.get_conn_executor_factory()
-        ce = ce_factory.get_async_conn_executor(target_connection)
+        ce = self._ce_factory.get_async_conn_executor(target_connection)
 
         exec_result = await ce.execute(
             ConnExecutorQuery(
@@ -175,7 +178,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         target_connection = self._us_entry_buffer.get_entry(entry_id=target_connection_ref)
         assert isinstance(target_connection, ExecutorBasedMixin)
 
-        workbook_id = self._service_registry.rci.workbook_id or (
+        workbook_id = self._rci.workbook_id or (
             target_connection.entry_key.workbook_id
             if isinstance(target_connection.entry_key, WorkbookEntryLocation)
             else None
@@ -187,7 +190,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
             dataset_id=dataset_id,
             query_type=get_query_type(
                 connection=target_connection,
-                conn_sec_mgr=self._service_registry.get_conn_executor_factory().conn_security_manager,
+                conn_sec_mgr=self._ce_factory.conn_security_manager,
             ),
             connection_type=target_connection.conn_type,
             conn_reporting_data=target_connection.get_conn_dto().conn_reporting_data(),

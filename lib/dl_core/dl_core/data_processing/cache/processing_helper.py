@@ -24,7 +24,6 @@ if TYPE_CHECKING:
     )
     from dl_cache_engine.primitives import BIQueryCacheOptions
     from dl_core.data_processing.types import TJSONExtChunkStream
-    from dl_core.services_registry import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -45,16 +44,9 @@ class CacheSituation(enum.IntEnum):
 
 @attr.s
 class CacheProcessingHelper:
-    entity_id: str = attr.ib(kw_only=True)
-    _service_registry: ServicesRegistry = attr.ib(kw_only=True)
-    _cache_engine: Optional[EntityCacheEngineAsync] = attr.ib(init=False, default=None)
+    _cache_engine: Optional[EntityCacheEngineAsync] = attr.ib(kw_only=True)
 
     error_ttl_sec: ClassVar[float] = 1.5
-
-    def __attrs_post_init__(self) -> None:
-        cache_engine_factory = self._service_registry.get_cache_engine_factory()
-        if cache_engine_factory is not None:
-            self._cache_engine = cache_engine_factory.get_cache_engine(entity_id=self.entity_id)
 
     async def get_cache_entry_manager(
         self,

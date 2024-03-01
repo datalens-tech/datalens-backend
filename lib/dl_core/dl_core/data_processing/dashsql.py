@@ -305,10 +305,10 @@ class DashSQLCachedSelector(DashSQLSelector):
             )
         )
 
-        cache_helper = CacheProcessingHelper(
-            entity_id=conn_id,
-            service_registry=service_registry,
-        )
+        cache_engine_factory = service_registry.get_cache_engine_factory()
+        assert cache_engine_factory is not None
+        cache_engine = cache_engine_factory.get_cache_engine(entity_id=conn_id)
+        cache_helper = CacheProcessingHelper(cache_engine=cache_engine)
         cache_options = self.make_cache_options()
         if not cache_options.cache_enabled:
             # cache not applicable

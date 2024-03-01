@@ -35,7 +35,6 @@ from dl_core.data_processing.stream_base import (
 
 if TYPE_CHECKING:
     from dl_api_commons.reporting.registry import ReportingRegistry
-    from dl_core.services_registry import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -46,7 +45,7 @@ _OP_PROC_TV = TypeVar("_OP_PROC_TV", bound="OperationProcessorAsyncBase")
 
 @attr.s
 class OperationProcessorAsyncBase(abc.ABC):
-    _service_registry: ServicesRegistry = attr.ib(kw_only=True)  # Service registry override
+    _reporting_registry: ReportingRegistry = attr.ib(kw_only=True)
     _reporting_enabled: bool = attr.ib(kw_only=True, default=True)
     _cache_options_builder: DatasetOptionsBuilder = attr.ib(init=False)
     _db_ex_adapter: Optional[ProcessorDbExecAdapterBase] = attr.ib(init=False, default=None)
@@ -186,15 +185,6 @@ class OperationProcessorAsyncBase(abc.ABC):
             self.post_run(ctx=ctx, exec_exception=exec_exception)
 
         return result
-
-    @property
-    def service_registry(self) -> ServicesRegistry:
-        assert self._service_registry is not None
-        return self._service_registry
-
-    @property
-    def _reporting_registry(self) -> ReportingRegistry:
-        return self.service_registry.get_reporting_registry()
 
     def _save_start_exec_reporting_record(self, ctx: OpExecutionContext) -> None:
         report = DataProcessingStartReportingRecord(
