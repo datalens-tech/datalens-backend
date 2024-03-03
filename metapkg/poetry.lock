@@ -1360,6 +1360,7 @@ datalens-db-testing = {path = "../dl_db_testing"}
 datalens-formula = {path = "../dl_formula"}
 datalens-formula-ref = {path = "../dl_formula_ref"}
 datalens-i18n = {path = "../dl_i18n"}
+datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
 
