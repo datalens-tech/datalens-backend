@@ -39,6 +39,8 @@ STABILIZED_CODES = (
     (dl_core.exc.USBadRequestException, "ERR.DS_API.US.BAD_REQUEST"),
     (dl_core.exc.USAlreadyExistsException, "ERR.DS_API.US.BAD_REQUEST.ALREADY_EXISTS"),
     (dl_core.exc.USObjectNotFoundException, "ERR.DS_API.US.OBJ_NOT_FOUND"),
+    (dl_core.exc.USAccessDeniedException, "ERR.DS_API.US.ACCESS_DENIED"),
+    (dl_core.exc.USWorkbookIsolationInterruptionException, "ERR.DS_API.US.WORKBOOK_ISOLATION_INTERRUPTION"),
     (dl_query_processing.exc.DLFormulaError, "ERR.DS_API.FORMULA"),
     (dl_core.exc.FieldNotFound, "ERR.DS_API.FIELD.NOT_FOUND"),
     (dl_query_processing.exc.FilterValueError, "ERR.DS_API.FILTER.INVALID_VALUE"),
