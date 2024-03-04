@@ -61,7 +61,7 @@ jobs:
 
   build_images:
     name: "Build images"
-    needs: [get_version]
+    needs: [ get_version ]
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -118,7 +118,7 @@ jobs:
 
   release:
     name: "Create prerelease"
-    needs: [build_images, get_version]
+    needs: [ get_version ]
     runs-on: ubuntu-latest
     permissions:
       contents: write
