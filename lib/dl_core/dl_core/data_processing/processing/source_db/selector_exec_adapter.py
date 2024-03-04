@@ -28,16 +28,16 @@ from dl_core.connection_executors import ConnExecutorQuery
 from dl_core.data_processing.prepared_components.default_manager import DefaultPreparedComponentManager
 from dl_core.data_processing.processing.context import OpExecutionContext
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
-from dl_core.data_processing.streaming import (
-    AsyncChunked,
-    AsyncChunkedBase,
-    LazyAsyncChunked,
-)
 import dl_core.exc as exc
 from dl_core.query.bi_query import QueryAndResultInfo
 from dl_core.us_connection_base import (
     ClassicConnectionSQL,
     ConnectionBase,
+)
+from dl_utils.streaming import (
+    AsyncChunked,
+    AsyncChunkedBase,
+    LazyAsyncChunked,
 )
 
 

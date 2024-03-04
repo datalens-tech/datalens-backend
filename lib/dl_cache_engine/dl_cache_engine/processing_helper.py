@@ -14,7 +14,11 @@ from typing import (
 
 import attr
 
-from dl_core.data_processing.streaming import AsyncChunked
+from dl_constants.types import TJSONExt
+from dl_utils.streaming import (
+    AsyncChunked,
+    AsyncChunkedBase,
+)
 
 
 if TYPE_CHECKING:
@@ -23,10 +27,11 @@ if TYPE_CHECKING:
         EntityCacheEntryManagerAsyncBase,
     )
     from dl_cache_engine.primitives import BIQueryCacheOptions
-    from dl_core.data_processing.types import TJSONExtChunkStream
 
 
 LOGGER = logging.getLogger(__name__)
+
+TJSONExtChunkStream = AsyncChunkedBase[TJSONExt]  # wrapper of async iterable of chunks of JSONables
 
 
 @enum.unique

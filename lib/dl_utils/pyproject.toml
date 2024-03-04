@@ -9,8 +9,10 @@ license = "Apache 2.0"
 
 
 [tool.poetry.dependencies]
-attrs = ">=22.2.0"
 async-timeout = ">=4.0.3"
+attrs = ">=22.2.0"
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]

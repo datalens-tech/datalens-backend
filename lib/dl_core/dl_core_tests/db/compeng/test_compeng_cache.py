@@ -35,13 +35,13 @@ from dl_core.data_processing.stream_base import (
     DataRequestMetaInfo,
     DataStreamAsync,
 )
-from dl_core.data_processing.streaming import AsyncChunked
 from dl_core.query.bi_query import BIQuery
 from dl_core.query.expression import ExpressionCtx
 from dl_core.services_registry import ServicesRegistry
 from dl_core_testing.dataset_wrappers import DatasetTestWrapper
 from dl_core_tests.db.base import DefaultCoreTestClass
 from dl_testing.utils import get_dump_request_profile_records
+from dl_utils.streaming import AsyncChunked
 
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO

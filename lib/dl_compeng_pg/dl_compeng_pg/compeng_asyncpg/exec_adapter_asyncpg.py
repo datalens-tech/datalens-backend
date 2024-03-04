@@ -25,11 +25,11 @@ from dl_constants.enums import UserDataType
 from dl_core.connectors.base.error_transformer import DbErrorTransformer
 from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
 from dl_core.data_processing.processing.context import OpExecutionContext
-from dl_core.data_processing.streaming import (
+from dl_sqlalchemy_postgres.asyncpg import DBAPIMock
+from dl_utils.streaming import (
     AsyncChunked,
     AsyncChunkedBase,
 )
-from dl_sqlalchemy_postgres.asyncpg import DBAPIMock
 
 from dl_connector_postgresql.core.postgresql_base.error_transformer import make_async_pg_error_transformer
 from dl_connector_postgresql.core.postgresql_base.utils import compile_pg_query

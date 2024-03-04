@@ -23,10 +23,10 @@ from dl_constants.types import TBIDataValue
 from dl_core.connectors.base.query_compiler import QueryCompiler
 from dl_core.data_processing.cache.utils import DatasetOptionsBuilder
 from dl_core.data_processing.processing.context import OpExecutionContext
-from dl_core.data_processing.streaming import AsyncChunkedBase
 from dl_core.data_processing.types import TValuesChunkStream
 from dl_core.query.bi_query import QueryAndResultInfo
 from dl_core.utils import make_id
+from dl_utils.streaming import AsyncChunkedBase
 
 
 if TYPE_CHECKING:

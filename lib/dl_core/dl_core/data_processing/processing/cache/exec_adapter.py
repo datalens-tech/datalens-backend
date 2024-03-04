@@ -15,19 +15,19 @@ import attr
 
 from dl_api_commons.reporting.models import DataProcessingCacheInfoReportingRecord
 from dl_cache_engine.primitives import LocalKeyRepresentation
+from dl_cache_engine.processing_helper import (
+    CacheProcessingHelper,
+    CacheSituation,
+)
 from dl_constants.enums import (
     JoinType,
     UserDataType,
 )
 from dl_core.connectors.base.query_compiler import QueryCompiler
-from dl_core.data_processing.cache.processing_helper import (
-    CacheProcessingHelper,
-    CacheSituation,
-)
 from dl_core.data_processing.processing.context import OpExecutionContext
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
 from dl_core.data_processing.processing.db_base.processor_base import ExecutorBasedOperationProcessor
-from dl_core.data_processing.streaming import AsyncChunkedBase
+from dl_utils.streaming import AsyncChunkedBase
 
 
 if TYPE_CHECKING:

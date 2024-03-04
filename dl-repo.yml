@@ -21,6 +21,7 @@ dl_repo:
         - own_dependency_group
 
   custom_package_map:
+    async_timeout: async-timeout
     attr: attrs
     dateutil: python-dateutil
     flask_marshmallow: flask-marshmallow

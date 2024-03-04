@@ -22,7 +22,7 @@ from dl_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapte
 from dl_constants.enums import UserDataType
 from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
 from dl_core.data_processing.processing.context import OpExecutionContext
-from dl_core.data_processing.streaming import (
+from dl_utils.streaming import (
     AsyncChunked,
     AsyncChunkedBase,
 )

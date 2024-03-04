@@ -22,21 +22,18 @@ from dl_api_commons.reporting.models import (
     QueryExecutionEndReportingRecord,
     QueryExecutionStartReportingRecord,
 )
+from dl_cache_engine.processing_helper import (
+    CacheProcessingHelper,
+    CacheSituation,
+    TJSONExtChunkStream,
+)
 from dl_constants.types import TJSONExt  # not under `TYPE_CHECKING`, need to define new type aliases.
 from dl_core import exc
 from dl_core.backend_types import get_backend_type
 from dl_core.base_models import WorkbookEntryLocation
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.connectors.base.dashsql import get_custom_dash_sql_key_names
-from dl_core.data_processing.cache.processing_helper import (
-    CacheProcessingHelper,
-    CacheSituation,
-)
 from dl_core.data_processing.cache.utils import DashSQLCacheOptionsBuilder
-from dl_core.data_processing.streaming import (
-    AsyncChunked,
-    chunkify_by_one,
-)
 from dl_core.utils import (
     compile_query_for_debug,
     make_id,
@@ -49,6 +46,10 @@ from dl_dashsql.formatting.base import (
 from dl_dashsql.formatting.placeholder_dbapi import DBAPIQueryFormatterFactory
 from dl_dashsql.registry import get_dash_sql_param_literalizer
 from dl_dashsql.types import IncomingDSQLParamTypeExt
+from dl_utils.streaming import (
+    AsyncChunked,
+    chunkify_by_one,
+)
 
 
 if TYPE_CHECKING:
@@ -57,7 +58,6 @@ if TYPE_CHECKING:
         AsyncConnExecutorBase,
         AsyncExecutionResult,
     )
-    from dl_core.data_processing.types import TJSONExtChunkStream
     from dl_core.services_registry import ServicesRegistry
     from dl_core.us_connection_base import ConnectionBase
 
