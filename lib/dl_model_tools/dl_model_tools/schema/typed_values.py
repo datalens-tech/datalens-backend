@@ -19,7 +19,7 @@ from marshmallow import (
 from marshmallow import fields as ma_fields
 
 from dl_constants.enums import UserDataType
-from dl_core.values import (
+from dl_model_tools.typed_values import (
     ArrayFloatValue,
     ArrayIntValue,
     ArrayStrValue,
@@ -38,7 +38,7 @@ from dl_core.values import (
     UuidValue,
 )
 from dl_model_tools.schema.base import DefaultSchema
-from dl_utils.schemas import OneOfSchemaWithDumpLoadHooks
+from dl_model_tools.schema.oneofschema import OneOfSchemaWithDumpLoadHooks
 
 
 VALUE_TYPE_CONTEXT_KEY = "bi_value_type"

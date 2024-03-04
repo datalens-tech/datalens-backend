@@ -71,7 +71,7 @@ from dl_constants.enums import (
     WhereClauseOperation,
 )
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
-from dl_utils.schemas import OneOfSchemaWithDumpLoadHooks
+from dl_model_tools.schema.oneofschema import OneOfSchemaWithDumpLoadHooks
 
 
 if TYPE_CHECKING:

@@ -24,7 +24,7 @@ from dl_constants.enums import (
     UserDataType,
 )
 from dl_core.fields import CalculationSpec
-from dl_core.values import BIValue
+from dl_model_tools.typed_values import BIValue
 
 
 @attr.s(frozen=True, kw_only=True)
