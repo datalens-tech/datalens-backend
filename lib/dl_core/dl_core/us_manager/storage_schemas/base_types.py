@@ -20,7 +20,7 @@ from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 class NativeTypeSchema(Schema):
     """(currently used for uploads / ProviderConnection)"""
 
-    conn_type = DynamicEnumField(ConnectionType, by_value=True)
+    conn_type = DynamicEnumField(ConnectionType, by_value=True, load_default=ConnectionType.unknown)
     name = fields.String()
 
     @post_load(pass_many=False)
