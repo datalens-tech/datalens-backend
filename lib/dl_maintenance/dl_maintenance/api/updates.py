@@ -61,7 +61,7 @@ from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.fields import ParameterValueConstraint
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
-from dl_core.values import BIValue
+from dl_model_tools.typed_values import BIValue
 
 
 def _make_component_id() -> str:
