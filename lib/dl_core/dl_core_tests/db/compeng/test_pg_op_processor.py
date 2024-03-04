@@ -35,7 +35,6 @@ from dl_core.data_processing.stream_base import (
     DataRequestMetaInfo,
     DataStreamAsync,
 )
-from dl_core.data_processing.streaming import AsyncChunked
 from dl_core.query.bi_query import BIQuery
 from dl_core.query.expression import (
     ExpressionCtx,
@@ -43,6 +42,7 @@ from dl_core.query.expression import (
     OrderByExpressionCtx,
 )
 from dl_core_tests.db.base import DefaultCoreTestClass
+from dl_utils.streaming import AsyncChunked
 
 
 class PGOpRunnerTestBase(DefaultCoreTestClass):

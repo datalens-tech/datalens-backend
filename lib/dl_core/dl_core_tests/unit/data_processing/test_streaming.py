@@ -4,12 +4,12 @@ from typing import Generator
 
 import pytest
 
-from dl_core.data_processing.streaming import (
+import dl_core.exc as exc
+from dl_utils.streaming import (
     AsyncChunked,
     AsyncChunkedLimited,
     LazyAsyncChunked,
 )
-import dl_core.exc as exc
 
 
 def chunked_range(size: int, chunk_size: int) -> Generator[Generator[int, None, None], None, None]:

@@ -19,8 +19,8 @@ from sqlalchemy.sql.base import Executable
 from dl_constants.enums import UserDataType
 from dl_core.connectors.base.query_compiler import QueryCompiler
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
-from dl_core.data_processing.streaming import AsyncChunkedBase
 from dl_core.db.sa_types import make_sa_type
+from dl_utils.streaming import AsyncChunkedBase
 
 from dl_connector_postgresql.core.postgresql.constants import BACKEND_TYPE_POSTGRES
 from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
