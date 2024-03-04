@@ -31,10 +31,7 @@ from dl_core.connection_models import (
     ConnectOptions,
 )
 from dl_core.services_registry.entity_checker import EntityUsageChecker
-from dl_core.us_connection_base import (
-    ConnectionBase,
-    ExecutorBasedMixin,
-)
+from dl_core.us_connection_base import ConnectionBase
 from dl_core.utils import FutureRef
 
 
@@ -60,7 +57,7 @@ class ConnExecutorFactory(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_async_conn_executor_cls(self, conn: ExecutorBasedMixin) -> Type[AsyncConnExecutorBase]:
+    def get_async_conn_executor_cls(self, conn: ConnectionBase) -> Type[AsyncConnExecutorBase]:
         pass
 
     @abc.abstractmethod
@@ -152,24 +149,23 @@ class BaseClosableExecutorFactory(ConnExecutorFactory, metaclass=abc.ABCMeta):
 
     @final
     @ensure_env(async_env=True)
-    def get_async_conn_executor(self, conn: ExecutorBasedMixin) -> AsyncConnExecutorBase:
+    def get_async_conn_executor(self, conn: ConnectionBase) -> AsyncConnExecutorBase:
         return self._get_or_create_conn_executor(conn, with_sync_wrapper=False).async_ce
 
     @final
     @ensure_env(async_env=False)
-    def get_sync_conn_executor(self, conn: ExecutorBasedMixin) -> SyncConnExecutorBase:
+    def get_sync_conn_executor(self, conn: ConnectionBase) -> SyncConnExecutorBase:
         pair = self._get_or_create_conn_executor(conn, with_sync_wrapper=True)
         assert pair.sync_wrapper is not None
         return pair.sync_wrapper
 
     # TODO CONSIDER: May be add option to ignore cache?
     @final
-    def _get_or_create_conn_executor(self, conn: ExecutorBasedMixin, with_sync_wrapper: bool) -> _CECreationResult:
+    def _get_or_create_conn_executor(self, conn: ConnectionBase, with_sync_wrapper: bool) -> _CECreationResult:
         if self._entity_usage_checker is not None:
             assert isinstance(conn, ConnectionBase)
             self._entity_usage_checker.ensure_data_connection_can_be_used(rci=self.req_ctx_info, conn=conn)
 
-        assert isinstance(conn, ExecutorBasedMixin)
         recipe = self._get_async_conn_executor_recipe(conn)
         created_list = self._map_recipe_created_ce_pair.setdefault(recipe, [])
 
@@ -222,7 +218,7 @@ class BaseClosableExecutorFactory(ConnExecutorFactory, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def _get_async_conn_executor_recipe(
         self,
-        conn: ExecutorBasedMixin,
+        conn: ConnectionBase,
     ) -> ConnExecutorRecipe:
         pass
 

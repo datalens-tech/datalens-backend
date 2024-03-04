@@ -37,7 +37,6 @@ from dl_core.data_processing.streaming import (
     AsyncChunked,
     chunkify_by_one,
 )
-from dl_core.us_connection_base import ExecutorBasedMixin
 from dl_core.utils import (
     compile_query_for_debug,
     make_id,
@@ -153,12 +152,7 @@ class DashSQLSelector:
         sa_query = self._formatted_query_to_sa_query(formatted_query)
 
         conn = self.conn
-        # This should've been `dialect = conn.get_dialect() if isinstance(conn, ExecutorBasedMixin) else None`,
-        # but mypy couldn't handle that.
-        if isinstance(conn, ExecutorBasedMixin):
-            dialect = conn.get_dialect()
-        else:
-            dialect = None  # type: ignore  # TODO: fix
+        dialect = conn.get_dialect()
         debug_text = compile_query_for_debug(self.sql_query, dialect=dialect)
         return sa_query, debug_text
 
@@ -281,7 +275,6 @@ class DashSQLCachedSelector(DashSQLSelector):
             return AsyncChunked(chunked_data=chunks)
 
         query_id = self.make_query_id()
-        assert isinstance(self.conn, ExecutorBasedMixin), "connection must be derived from ExecutorBasedMixin"
         conn = self.conn
         conn_id = conn.uuid
         assert conn_id

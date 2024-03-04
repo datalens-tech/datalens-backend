@@ -13,7 +13,6 @@ from dl_constants.enums import (
     DataSourceType,
 )
 from dl_core.us_connection import get_connection_class
-from dl_core.us_connection_base import ExecutorBasedMixin
 from dl_core.us_dataset import Dataset
 from dl_core_testing.dataset_wrappers import EditableDatasetTestWrapper
 
@@ -80,7 +79,6 @@ def make_dataset(
         source_id = str(uuid.uuid4())
 
         def conn_executor_factory() -> SyncConnExecutorBase:
-            assert isinstance(connection, ExecutorBasedMixin)
             return service_registry.get_conn_executor_factory().get_sync_conn_executor(conn=connection)
 
         assert created_from is not None

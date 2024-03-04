@@ -14,7 +14,6 @@ from dl_core.connection_models.conn_options import ConnectOptions
 from dl_core.us_connection_base import (
     ConnectionBase,
     DataSourceTemplate,
-    ExecutorBasedMixin,
 )
 from dl_core.utils import secrepr
 from dl_utils.utils import DataKey
@@ -33,7 +32,7 @@ class BitrixGDSConnectOptions(ConnectOptions):
     total_timeout: Optional[int] = attr.ib(default=None)
 
 
-class BitrixGDSConnection(ExecutorBasedMixin, ConnectionBase):
+class BitrixGDSConnection(ConnectionBase):
     allow_cache: ClassVar[bool] = True
 
     @attr.s(kw_only=True)

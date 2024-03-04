@@ -29,7 +29,7 @@ from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectO
 
 if TYPE_CHECKING:
     from dl_core.connection_models import ConnectOptions
-    from dl_core.us_connection_base import ExecutorBasedMixin
+    from dl_core.us_connection_base import ConnectionBase
 
 
 LOGGER = logging.getLogger(__name__)
@@ -39,7 +39,7 @@ def create_sr_factory_from_env_vars(
     file_uploader_connectors_settings: FileUploaderConnectorsSettings,
     ca_data: bytes,
 ) -> DefaultSRFactory:
-    def get_conn_options(conn: ExecutorBasedMixin) -> Optional[ConnectOptions]:
+    def get_conn_options(conn: ConnectionBase) -> Optional[ConnectOptions]:
         opts = conn.get_conn_options()
 
         if isinstance(opts, CHConnectOptions):

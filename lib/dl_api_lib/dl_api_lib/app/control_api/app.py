@@ -47,7 +47,7 @@ from dl_core.ping import register_ping_handler_hax
 
 if TYPE_CHECKING:
     from dl_core.connection_models import ConnectOptions
-    from dl_core.us_connection_base import ExecutorBasedMixin
+    from dl_core.us_connection_base import ConnectionBase
 
 
 @attr.s(frozen=True)
@@ -77,9 +77,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
     def _get_conn_opts_mutators_factory(self) -> ConnOptionsMutatorsFactory:
         conn_opts_mutators_factory = ConnOptionsMutatorsFactory()
 
-        def enable_index_fetching_mutator(
-            conn_opts: ConnectOptions, conn: ExecutorBasedMixin
-        ) -> Optional[ConnectOptions]:
+        def enable_index_fetching_mutator(conn_opts: ConnectOptions, conn: ConnectionBase) -> Optional[ConnectOptions]:
             return conn_opts.clone(fetch_table_indexes=True)
 
         if self._settings.DO_DSRC_IDX_FETCH:
