@@ -9,8 +9,8 @@ from dl_api_connector.connector import (
     ApiConnectionDefinition,
     ApiConnector,
     ApiSourceDefinition,
+    MQMFactorySettingItem,
 )
-from dl_api_lib.query.registry import MQMFactorySettingItem
 from dl_constants.enums import QueryProcessingMode
 from dl_query_processing.multi_query.factory import NoCompengMultiQueryMutatorFactory
 
@@ -20,7 +20,6 @@ from dl_connector_clickhouse.api.connection_info import ClickHouseConnectionInfo
 from dl_connector_clickhouse.api.i18n.localizer import CONFIGS
 from dl_connector_clickhouse.core.clickhouse.connector import (
     ClickHouseCoreConnectionDefinition,
-    ClickHouseCoreConnector,
     ClickHouseSubselectCoreSourceDefinition,
     ClickHouseTableCoreSourceDefinition,
 )
