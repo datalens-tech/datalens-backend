@@ -27,10 +27,6 @@ from dl_api_lib.schemas.fields import ResultSchemaAuxSchema
 from dl_api_lib.schemas.filter import ObligatoryFilterSchema
 from dl_api_lib.schemas.options import OptionsMixin
 from dl_api_lib.schemas.parameters import ParameterValueConstraintSchema
-from dl_api_lib.schemas.values import (
-    ValueSchema,
-    WithNestedValueSchema,
-)
 from dl_constants.enums import (
     AggregationFunction,
     CalcMode,
@@ -50,6 +46,10 @@ from dl_core.fields import (
 from dl_model_tools.schema.base import (
     BaseSchema,
     DefaultSchema,
+)
+from dl_model_tools.schema.typed_values import (
+    ValueSchema,
+    WithNestedValueSchema,
 )
 
 

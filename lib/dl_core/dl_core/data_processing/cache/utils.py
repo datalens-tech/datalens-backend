@@ -19,10 +19,7 @@ from dl_cache_engine.primitives import (
     LocalKeyRepresentation,
 )
 from dl_core.query.bi_query import QueryAndResultInfo
-from dl_core.us_connection_base import (
-    ConnectionBase,
-    ExecutorBasedMixin,
-)
+from dl_core.us_connection_base import ConnectionBase
 from dl_model_tools.serialization import hashable_dumps
 
 
@@ -51,10 +48,9 @@ class CacheOptionsBuilderBase:
     ) -> CacheTTLConfig:
         ctc = self.default_ttl_config
 
-        if isinstance(connection, ExecutorBasedMixin):
-            override = connection.cache_ttl_sec_override
-            if override is not None:
-                ctc = ctc.clone(ttl_sec_direct=override)
+        override = connection.cache_ttl_sec_override
+        if override is not None:
+            ctc = ctc.clone(ttl_sec_direct=override)
 
         return ctc
 

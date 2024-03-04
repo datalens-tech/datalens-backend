@@ -6,7 +6,6 @@ from marshmallow import EXCLUDE
 from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
 
-from dl_api_lib.schemas.values import ValueSchema
 from dl_constants.enums import ParameterValueConstraintType
 from dl_core.fields import (
     ParameterValueConstraint,
@@ -14,6 +13,7 @@ from dl_core.fields import (
     SetParameterValueConstraint,
 )
 from dl_model_tools.schema.base import DefaultSchema
+from dl_model_tools.schema.typed_values import ValueSchema
 
 
 class ParameterValueConstraintSchema(OneOfSchema):

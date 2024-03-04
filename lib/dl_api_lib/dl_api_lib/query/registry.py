@@ -4,8 +4,7 @@ from typing import (
     Type,
 )
 
-import attr
-
+from dl_api_connector.connector import MQMFactoryKey
 from dl_constants.enums import (
     QueryProcessingMode,
     SourceBackendType,
@@ -56,20 +55,6 @@ def register_is_compeng_executable(backend_type: SourceBackendType, is_compeng_e
         assert _IS_COMPENG_EXECUTABLE_BACKEND_TYPE[backend_type] is is_compeng_executable
     except KeyError:
         _IS_COMPENG_EXECUTABLE_BACKEND_TYPE[backend_type] = is_compeng_executable
-
-
-@attr.s(frozen=True, auto_attribs=True, kw_only=True)
-class MQMFactoryKey:  # TODO: Move to dl_query_processing
-    query_proc_mode: QueryProcessingMode
-    backend_type: SourceBackendType
-    dialect: Optional[DialectCombo]
-
-
-@attr.s(frozen=True, auto_attribs=True, kw_only=True)
-class MQMFactorySettingItem:  # TODO: Move to dl_query_processing
-    query_proc_mode: QueryProcessingMode
-    factory_cls: Type[MultiQueryMutatorFactoryBase]
-    dialects: Collection[Optional[DialectCombo]] = attr.ib(default=(None,))
 
 
 _MQM_FACTORY_REGISTRY: dict[MQMFactoryKey, Type[MultiQueryMutatorFactoryBase]] = {}

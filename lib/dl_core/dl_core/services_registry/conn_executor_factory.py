@@ -45,7 +45,6 @@ if TYPE_CHECKING:
         ConnectOptionsFactory,
         ConnectOptionsMutator,
     )
-    from dl_core.us_connection_base import ExecutorBasedMixin
 
 
 LOGGER = logging.getLogger(__name__)
@@ -60,7 +59,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
     ca_data: bytes = attr.ib()
 
     is_bleeding_edge_user: bool = attr.ib(default=False)
-    conn_cls_whitelist: Optional[FrozenSet[Type[ExecutorBasedMixin]]] = attr.ib(default=None)
+    conn_cls_whitelist: Optional[FrozenSet[Type[ConnectionBase]]] = attr.ib(default=None)
     # User function that can override connect options.
     #  If factory returns `None` default connection connect options will be used
     connect_options_factory: Optional[ConnectOptionsFactory] = attr.ib(default=None)
@@ -77,7 +76,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
     MAX_HOST_RETRY_ATTEMPTS: ClassVar[int] = 3
 
     # TODO FIX: Make typing/implementation more accurate
-    def get_async_conn_executor_cls(self, conn: ExecutorBasedMixin) -> Type[AsyncConnExecutorBase]:
+    def get_async_conn_executor_cls(self, conn: ConnectionBase) -> Type[AsyncConnExecutorBase]:
         map_conn_type_ce_type: MutableMapping[Type[ConnectionBase], Type[ConnExecutorBase]] = ChainMap()
 
         if self.async_env:
@@ -118,7 +117,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
 
     def _get_async_conn_executor_recipe(
         self,
-        conn: ExecutorBasedMixin,
+        conn: ConnectionBase,
     ) -> ConnExecutorRecipe:
         # noinspection PyProtectedMember
         assert conn._context is self.req_ctx_info, "Divergence in RCI between CE factory and US connection"
@@ -178,7 +177,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
             raise CEFactoryError(f"Can not instantiate {executor_cls}")
 
     def _get_exec_mode_and_rqe_attrs(
-        self, conn: ExecutorBasedMixin, executor_cls: Type[AsyncConnExecutorBase]
+        self, conn: ConnectionBase, executor_cls: Type[AsyncConnExecutorBase]
     ) -> Tuple[ExecutionMode, Optional[RemoteQueryExecutorData]]:
         conn_dto = conn.get_conn_dto()
         conn_options = conn.get_conn_options()

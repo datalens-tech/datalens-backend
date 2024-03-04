@@ -9,8 +9,8 @@ from dl_api_connector.connector import (
     ApiConnectionDefinition,
     ApiConnector,
     ApiSourceDefinition,
+    MQMFactorySettingItem,
 )
-from dl_api_lib.query.registry import MQMFactorySettingItem
 from dl_constants.enums import QueryProcessingMode
 from dl_query_processing.multi_query.factory import NoCompengMultiQueryMutatorFactory
 
@@ -21,7 +21,6 @@ from dl_connector_postgresql.api.i18n.localizer import CONFIGS
 from dl_connector_postgresql.core.postgresql.connector import (
     PostgreSQLCoreBackendDefinition,
     PostgreSQLCoreConnectionDefinition,
-    PostgreSQLCoreConnector,
     PostgreSQLSubselectCoreSourceDefinition,
     PostgreSQLTableCoreSourceDefinition,
 )
