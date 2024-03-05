@@ -6,7 +6,10 @@ from dl_core.services_registry.top_level import (
     DummyServiceRegistry,
     ServicesRegistry,
 )
-from dl_core.united_storage_client import USAuthContextMaster, UStorageClientBase
+from dl_core.united_storage_client import (
+    USAuthContextMaster,
+    UStorageClientBase,
+)
 from dl_core.us_manager.us_manager import USManagerBase
 
 

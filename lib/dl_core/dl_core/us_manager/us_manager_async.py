@@ -85,7 +85,7 @@ class AsyncUSManager(USManagerBase[_ASYNC_US_CLIENT_TV], Generic[_ASYNC_US_CLIEN
             context_request_id=self._bi_context.request_id if self._bi_context is not None else None,
             context_forwarded_for=self._bi_context.forwarder_for,
             context_workbook_id=self._bi_context.workbook_id,
-            ca_data=self._ca_data
+            ca_data=self._ca_data,
         )
 
     @property
