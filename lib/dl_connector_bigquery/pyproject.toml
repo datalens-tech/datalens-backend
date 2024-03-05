@@ -69,7 +69,6 @@ skip_compose = "true"
 
 [datalens.pytest.ext]
 root_dir = "dl_connector_bigquery_tests/ext"
-skip_compose = "true"
 labels = ["ext_public"]
 
 [tool.mypy]
