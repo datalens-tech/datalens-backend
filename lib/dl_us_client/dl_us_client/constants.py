@@ -7,3 +7,8 @@ class OpCode:
     WB_BASIC_INFO_GET: str = "workbook_basic_info_get"
     WB_PRIVATE_INFO_GET: str = "private_workbook_info_get"
     COLLECTION_CONTENT_GET: str = "collection_content_get"
+    COLLECTION_CREATE: str = "collection_create"
+    COLLECTION_GET: str = "collection_get"
+    COLLECTION_UPDATE: str = "collection_update"
+    COLLECTION_DELETE: str = "collection_delete"
+    COLLECTION_MOVE: str = "collection_move"
