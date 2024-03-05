@@ -16,12 +16,17 @@ from dl_api_lib.service_registry.multi_query_mutator_factory import (
     SRMultiQueryMutatorFactory,
 )
 from dl_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
+from dl_api_lib.service_registry.typed_query_processor_factory import (
+    DefaultQueryProcessorFactory,
+    TypedQueryProcessorFactory,
+)
 from dl_api_lib.utils.rls import BaseSubjectResolver
 from dl_constants.enums import QueryProcessingMode
 from dl_core.services_registry.top_level import (
     DefaultServicesRegistry,
     ServicesRegistry,
 )
+from dl_core.utils import FutureRef
 from dl_formula.parser.factory import ParserType
 from dl_i18n.localizer_base import (
     Localizer,
@@ -72,6 +77,10 @@ class ApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
     def get_pivot_transformer_factory(self) -> PivotTransformerFactory:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def get_typed_query_processor_factory(self) -> TypedQueryProcessorFactory:
+        raise NotImplementedError
+
 
 @attr.s
 class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  # noqa
@@ -85,6 +94,7 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
     _connector_availability: Optional[ConnectorAvailabilityConfig] = attr.ib(kw_only=True, default=None)
     _query_proc_mode: QueryProcessingMode = attr.ib(kw_only=True, default=QueryProcessingMode.basic)
     _pivot_transformer_factory: Optional[PivotTransformerFactory] = attr.ib(kw_only=True, default=None)
+    _typed_query_processor_factory: TypedQueryProcessorFactory = attr.ib(kw_only=True)
 
     @_formula_parser_factory.default  # noqa
     def _default_formula_parser_factory(self) -> FormulaParserFactory:
@@ -93,6 +103,10 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
     @_field_id_generator_factory.default  # noqa
     def _default_field_id_generator_factory(self) -> FieldIdGeneratorFactory:
         return FieldIdGeneratorFactory()
+
+    @_typed_query_processor_factory.default  # noqa
+    def _default_typed_query_processor_factory(self) -> TypedQueryProcessorFactory:
+        return DefaultQueryProcessorFactory(service_registry_ref=FutureRef.fulfilled(self))
 
     def get_formula_parser_factory(self) -> FormulaParserFactory:
         assert self._formula_parser_factory is not None
@@ -131,6 +145,9 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
     def get_pivot_transformer_factory(self) -> PivotTransformerFactory:
         assert self._pivot_transformer_factory is not None
         return self._pivot_transformer_factory
+
+    def get_typed_query_processor_factory(self) -> TypedQueryProcessorFactory:
+        return self._typed_query_processor_factory
 
     def close(self) -> None:
         if self._formula_parser_factory is not None:
