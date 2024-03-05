@@ -421,6 +421,8 @@ jobs:
           BITRIX_DATALENS_TOKEN: "${{ secrets.EXT_BITRIX_DATALENS_TOKEN }}"
           METRIKA_OAUTH: "${{ secrets.EXT_METRIKA_OAUTH }}"
           YA_DOCS_API_KEY: "${{ secrets.EXT_YA_DOCS_API_KEY }}"
+          BIGQUERY_CONFIG: "${{ .secrets.EXT_BIGQUERY_CONFIG }}"
+          BIGQUERY_CREDS: "${{ .secrets.EXT_BIGQUERY_CREDS }}"
       - name: Stop compose if provided
         # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always

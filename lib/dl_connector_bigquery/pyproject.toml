@@ -1,4 +1,3 @@
-
 [tool.poetry]
 name = "datalens-connector-bigquery"
 version = "0.0.1"
@@ -7,7 +6,6 @@ authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_connector_bigquery"}]
 license = "Apache 2.0"
 readme = "README.md"
-
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
@@ -65,8 +63,6 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = ["dl_connector_bigquery_tests/ext", "dl_connector_bigquery_tests/unit"]
 
-
-
 [datalens.pytest.unit]
 root_dir = "dl_connector_bigquery_tests/unit"
 skip_compose = "true"
@@ -75,8 +71,6 @@ skip_compose = "true"
 root_dir = "dl_connector_bigquery_tests/ext"
 skip_compose = "true"
 labels = ["ext_public"]
-skip_tests = true
-
 
 [tool.mypy]
 warn_unused_configs = true
