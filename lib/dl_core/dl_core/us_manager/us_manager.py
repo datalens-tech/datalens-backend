@@ -101,7 +101,7 @@ class USManagerBase(Generic[_US_CLIENT_TV]):
     _fake_us_client: FakeUSClient
     _lifecycle_manager_factory: EntryLifecycleManagerFactoryBase
 
-    _us_client_type: Type[UStorageClientBase]
+    _us_client_type: Type[_US_CLIENT_TV]
 
     def __init__(
         self,
