@@ -7,6 +7,7 @@ import logging
 from typing import (
     ClassVar,
     Dict,
+    Generic,
     Optional,
     Set,
     Type,
@@ -74,6 +75,7 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 _ENTRY_TV = TypeVar("_ENTRY_TV", bound=USEntry)
+_US_CLIENT_TV = TypeVar("_US_CLIENT_TV", bound=UStorageClientBase)
 
 
 @attr.s(frozen=True)
@@ -82,7 +84,7 @@ class CryptoKeyInfo:
     key_kind: Optional[str] = attr.ib()
 
 
-class USManagerBase:
+class USManagerBase(Generic[_US_CLIENT_TV]):
     _MAP_TYPE_TO_SCHEMA: ClassVar[ChainMapGeneric[Type[BaseAttrsDataModel], Type[marshmallow.Schema]]] = ChainMap(
         MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA,  # type: ignore  # TODO: fix
         {
@@ -95,9 +97,11 @@ class USManagerBase:
     _loaded_entries: USEntryBuffer
 
     _us_auth_context: USAuthContextBase
-    _us_client: UStorageClientBase
+    _us_client: _US_CLIENT_TV
     _fake_us_client: FakeUSClient
     _lifecycle_manager_factory: EntryLifecycleManagerFactoryBase
+
+    _us_client_type: Type[UStorageClientBase]
 
     def __init__(
         self,
@@ -141,6 +145,16 @@ class USManagerBase:
         lifecycle_manager_factory = lifecycle_manager_factory or DefaultEntryLifecycleManagerFactory()
         assert lifecycle_manager_factory is not None
         self._lifecycle_manager_factory = lifecycle_manager_factory
+
+    def _create_us_client(self) -> _US_CLIENT_TV:
+        return self._us_client_type(
+            host=self._us_base_url,
+            prefix=self._us_api_prefix,
+            auth_ctx=self._us_auth_context,
+            context_request_id=self._bi_context.request_id if self._bi_context is not None else None,
+            context_forwarded_for=self._bi_context.forwarder_for,
+            context_workbook_id=self._bi_context.workbook_id,
+        )
 
     def get_entry_buffer(self) -> USEntryBuffer:
         return self._loaded_entries

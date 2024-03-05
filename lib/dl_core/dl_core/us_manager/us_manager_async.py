@@ -7,6 +7,7 @@ from typing import (
     Any,
     AsyncGenerator,
     AsyncIterable,
+    Generic,
     Iterable,
     Optional,
     Type,
@@ -44,11 +45,13 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 _ENTRY_TV = TypeVar("_ENTRY_TV", bound=USEntry)
+_ASYNC_US_CLIENT_TV = TypeVar("_ASYNC_US_CLIENT_TV", bound=UStorageClientAIO)
 
 
-class AsyncUSManager(USManagerBase):
-    _us_client: UStorageClientAIO
+class AsyncUSManager(USManagerBase[_ASYNC_US_CLIENT_TV], Generic[_ASYNC_US_CLIENT_TV]):
     _ca_data: bytes
+
+    _us_client_type = UStorageClientAIO
 
     def __init__(
         self,
@@ -61,17 +64,6 @@ class AsyncUSManager(USManagerBase):
         us_api_prefix: Optional[str] = None,
         lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
     ):
-        self._us_client = UStorageClientAIO(
-            host=us_base_url,
-            prefix=us_api_prefix,
-            auth_ctx=us_auth_context,
-            context_request_id=bi_context.request_id,
-            context_forwarded_for=bi_context.forwarder_for,
-            context_workbook_id=bi_context.workbook_id,
-            ca_data=ca_data,
-        )
-        self._ca_data = ca_data
-
         super().__init__(
             bi_context=bi_context,
             crypto_keys_config=crypto_keys_config,
@@ -80,6 +72,20 @@ class AsyncUSManager(USManagerBase):
             us_auth_context=us_auth_context,
             services_registry=services_registry,
             lifecycle_manager_factory=lifecycle_manager_factory,
+        )
+
+        self._ca_data = ca_data
+        self._us_client = self._create_us_client()
+
+    def _create_us_client(self) -> UStorageClientAIO:
+        return self._us_client_type(
+            host=self._us_base_url,
+            prefix=self._us_api_prefix,
+            auth_ctx=self._us_auth_context,
+            context_request_id=self._bi_context.request_id if self._bi_context is not None else None,
+            context_forwarded_for=self._bi_context.forwarder_for,
+            context_workbook_id=self._bi_context.workbook_id,
+            ca_data=self._ca_data
         )
 
     @property

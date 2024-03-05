@@ -51,8 +51,8 @@ LOGGER = logging.getLogger(__name__)
 _ENTRY_TV = TypeVar("_ENTRY_TV", bound=USEntry)
 
 
-class SyncUSManager(USManagerBase):
-    _us_client: UStorageClient
+class SyncUSManager(USManagerBase[UStorageClient]):
+    _us_client_type = UStorageClient
 
     def __init__(
         self,
@@ -76,16 +76,6 @@ class SyncUSManager(USManagerBase):
             lifecycle_manager_factory=lifecycle_manager_factory,
         )
         self._us_client = self._create_us_client()
-
-    def _create_us_client(self) -> UStorageClient:
-        return UStorageClient(
-            host=self._us_base_url,
-            prefix=self._us_api_prefix,
-            auth_ctx=self._us_auth_context,
-            context_request_id=self._bi_context.request_id if self._bi_context is not None else None,
-            context_forwarded_for=self._bi_context.forwarder_for,
-            context_workbook_id=self._bi_context.workbook_id,
-        )
 
     def clone(self, **kwargs):  # type: ignore  # TODO: fix
         """This should've been an `attr.evolve` wrapper"""

@@ -145,6 +145,8 @@ class MockedUStorageClient(UStorageClient):
 
 
 class MockedSyncUSManager(SyncUSManager):
+    _us_client_type = MockedUStorageClient
+
     def __init__(
         self,
         bi_context: RequestContextInfo = RequestContextInfo.create_empty(),  # noqa: B008

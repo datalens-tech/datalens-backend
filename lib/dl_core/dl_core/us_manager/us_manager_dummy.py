@@ -6,11 +6,13 @@ from dl_core.services_registry.top_level import (
     DummyServiceRegistry,
     ServicesRegistry,
 )
-from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.united_storage_client import USAuthContextMaster, UStorageClientBase
 from dl_core.us_manager.us_manager import USManagerBase
 
 
-class DummyUSManager(USManagerBase):
+class DummyUSManager(USManagerBase[UStorageClientBase]):
+    _us_client_type = UStorageClientBase
+
     def __init__(
         self,
         bi_context: RequestContextInfo = RequestContextInfo.create_empty(),  # noqa: B008
