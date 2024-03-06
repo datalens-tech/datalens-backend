@@ -18,6 +18,8 @@ services:
      - "51609:5432"
 
   us:
+    labels:
+      datalens.ci.service: united-storage
     build:
       context: ../testenv-common/images
       dockerfile: Dockerfile.us
