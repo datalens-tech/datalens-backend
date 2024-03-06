@@ -19,7 +19,13 @@ from sqlalchemy.engine import Engine
 from dl_core import exc
 from dl_core.connection_executors.adapters.adapters_base_sa import BaseSAAdapter
 from dl_core.connection_models import DBIdent
-from dl_core.connectors.base.error_transformer import DBExcKWArgs
+from dl_core.connectors.base.error_handling import ExceptionMaker
+from dl_core.connectors.base.error_transformer import (
+    DBExcKWArgs,
+    ExceptionInfo,
+    GeneratedException,
+    make_default_transformer_with_custom_rules,
+)
 from dl_sqlalchemy_metrica_api import exceptions as sqla_metrika_exc
 
 from dl_connector_metrica.core.constants import (
@@ -36,8 +42,42 @@ from dl_connector_metrica.core.target_dto import (
 _M_CONN_T_DTO_TV = TypeVar("_M_CONN_T_DTO_TV", bound=MetricaAPIConnTargetDTO)
 
 
+class MetricaExceptionMaker(ExceptionMaker):
+    # FIXME: Move customization to ErrorTransformer subclass instead of ExceptionMaker
+    def make_exc_info(
+        self,
+        wrapper_exc: Exception = GeneratedException(),
+        orig_exc: Optional[Exception] = None,
+        debug_compiled_query: Optional[str] = None,
+        message: Optional[str] = None,
+    ) -> ExceptionInfo:
+        exc_info = super().make_exc_info(
+            wrapper_exc=wrapper_exc,
+            orig_exc=orig_exc,
+            debug_compiled_query=debug_compiled_query,
+            message=message,
+        )
+
+        if isinstance(
+            orig_exc,
+            (
+                sqla_metrika_exc.MetrikaHttpApiException,
+                sqla_metrika_exc.NotSupportedError,
+                sqla_metrika_exc.ProgrammingError,
+            ),
+        ):
+            exc_info = exc_info.clone(exc_cls=MetricaAPIDatabaseQueryError)
+
+        return exc_info
+
+
 class MetricaAPIDefaultAdapter(BaseSAAdapter[_M_CONN_T_DTO_TV]):
     conn_type = CONNECTION_TYPE_METRICA_API
+
+    def _make_exception_maker(self) -> ExceptionMaker:
+        return MetricaExceptionMaker(
+            error_transformer=make_default_transformer_with_custom_rules(),
+        )
 
     def _get_db_engine(self, db_name: str, disable_streaming: bool = False) -> Engine:
         if disable_streaming:
@@ -55,24 +95,6 @@ class MetricaAPIDefaultAdapter(BaseSAAdapter[_M_CONN_T_DTO_TV]):
             dsn += "?" + urlencode(dsn_params)
 
         return sa.create_engine(dsn).execution_options(compiled_cache=None)
-
-    @classmethod
-    def make_exc(  # TODO:  Move to ErrorTransformer
-        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
-    ) -> Tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
-        exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_compiled_query)
-
-        if isinstance(
-            orig_exc,
-            (
-                sqla_metrika_exc.MetrikaHttpApiException,
-                sqla_metrika_exc.NotSupportedError,
-                sqla_metrika_exc.ProgrammingError,
-            ),
-        ):
-            exc_cls = MetricaAPIDatabaseQueryError
-
-        return exc_cls, kw
 
     def get_default_db_name(self) -> Optional[str]:
         return None
