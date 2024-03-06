@@ -53,7 +53,7 @@ class YDBFieldName(FormFieldName):
 class YDBRowConstructor:
     _localizer: Localizer = attr.ib()
 
-    def enforce_collate_row(self) -> C.CustomizableRow:
+    def auth_type_row(self) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
                 C.LabelRowItem(
@@ -90,10 +90,25 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         ]
 
     def _get_default_db_section(self, rc: RowConstructor, connector_settings: YDBConnectorSettings) -> list[FormRow]:
-        oauth_row = C.OAuthTokenRow(
-            name=CommonFieldName.token,
-            fake_value="******" if self.mode == ConnectionFormMode.edit else None,
-            application=YDBOAuthApplication.ydb,
+        oauth_row = (
+            C.OAuthTokenRow(
+                name=CommonFieldName.token,
+                fake_value="******" if self.mode == ConnectionFormMode.edit else None,
+                application=YDBOAuthApplication.ydb,
+            )
+            if not connector_settings.IS_OS
+            else C.CustomizableRow(
+                items=[
+                    C.LabelRowItem(text=self._localizer.translate(Translatable("field_oauth_row"))),
+                    C.InputRowItem(
+                        name=CommonFieldName.token,
+                        width="l",
+                        default_value="" if self.mode == ConnectionFormMode.create else None,
+                        fake_value="******" if self.mode == ConnectionFormMode.edit else None,
+                        control_props=C.InputRowItem.Props(type="password"),
+                    ),
+                ]
+            )
         )
         return [
             oauth_row,
@@ -134,11 +149,14 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         check_api_schema: FormActionApiSchema,
         rc: RowConstructor,
         ydb_rc: YDBRowConstructor,
+        connector_settings: Optional[ConnectorSettingsBase],
     ) -> ConnectionForm:
+        assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
+        auth_type_row = [ydb_rc.auth_type_row()] if connector_settings.IS_OS else []
         return ConnectionForm(
             title=YDBConnectionInfoProvider.get_title(self._localizer),
-            rows=[
-                ydb_rc.enforce_collate_row(),
+            rows=auth_type_row
+            + [
                 *db_section_rows,
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
                 rc.raw_sql_level_row(),
@@ -165,7 +183,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         common_api_schema_items.append(
             FormFieldApiSchema(
                 name=CommonFieldName.token,
-                required=self.mode == ConnectionFormMode.create and connector_settings.HAS_AUTH,  # type: ignore  # 2024-01-24 # TODO: Argument "required" to "FormFieldApiSchema" has incompatible type "bool | None"; expected "bool"  [arg-type]
+                required=self.mode == ConnectionFormMode.create and connector_settings.IS_OS,  # type: ignore  # 2024-01-24 # TODO: Argument "required" to "FormFieldApiSchema" has incompatible type "bool | None"; expected "bool"  [arg-type]
             )
         )
         edit_api_schema.items.extend(common_api_schema_items)
@@ -179,4 +197,5 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
             check_api_schema=check_api_schema,
             rc=rc,
             ydb_rc=ydb_rc,
+            connector_settings=connector_settings,
         )
