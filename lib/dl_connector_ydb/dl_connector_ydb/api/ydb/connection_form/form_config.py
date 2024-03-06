@@ -29,7 +29,10 @@ from dl_api_connector.form_config.models.common import (
     OAuthApplication,
 )
 import dl_api_connector.form_config.models.rows as C
-from dl_api_connector.form_config.models.rows.base import FormRow
+from dl_api_connector.form_config.models.rows.base import (
+    FormRow,
+    TDisplayConditions,
+)
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_i18n.localizer_base import Localizer
@@ -50,7 +53,7 @@ class YDBFieldName(FormFieldName):
 
 
 @attr.s
-class YDBRowConstructor:
+class YDBRowConstructor(RowConstructor):
     _localizer: Localizer = attr.ib()
 
     def auth_type_row(self) -> C.CustomizableRow:
@@ -80,6 +83,24 @@ class YDBRowConstructor:
             ]
         )
 
+    def password_row(
+        self, mode: ConnectionFormMode, display_conditions: Optional[TDisplayConditions] = None
+    ) -> C.CustomizableRow:
+        label_text = self._localizer.translate(Translatable("field_password"))
+        return C.CustomizableRow(
+            items=[
+                C.LabelRowItem(text=label_text, display_conditions=display_conditions),
+                C.InputRowItem(
+                    name=CommonFieldName.password,
+                    width="m",
+                    default_value="" if mode == ConnectionFormMode.create else None,
+                    fake_value="******" if mode == ConnectionFormMode.edit else None,
+                    control_props=C.InputRowItem.Props(type="password"),
+                    display_conditions=display_conditions,
+                ),
+            ]
+        )
+
 
 class YDBConnectionFormFactory(ConnectionFormFactory):
     def _get_base_common_api_schema_items(self, names_source: Type[Enum]) -> list[FormFieldApiSchema]:
@@ -99,13 +120,19 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
             if not connector_settings.IS_OS
             else C.CustomizableRow(
                 items=[
-                    C.LabelRowItem(text=self._localizer.translate(Translatable("field_oauth_row"))),
+                    C.LabelRowItem(
+                        text=self._localizer.translate(
+                            Translatable("field_oauth_row"),
+                        ),
+                        display_conditions={YDBFieldName.auth_type: "oauth"},
+                    ),
                     C.InputRowItem(
                         name=CommonFieldName.token,
                         width="l",
                         default_value="" if self.mode == ConnectionFormMode.create else None,
                         fake_value="******" if self.mode == ConnectionFormMode.edit else None,
                         control_props=C.InputRowItem.Props(type="password"),
+                        display_conditions={YDBFieldName.auth_type: "oauth"},
                     ),
                 ]
             )
@@ -158,6 +185,8 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
             rows=auth_type_row
             + [
                 *db_section_rows,
+                rc.username_row(display_conditions={YDBFieldName.auth_type: "password"}),
+                ydb_rc.password_row(display_conditions={YDBFieldName.auth_type: "password"}, mode=self.mode),
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
                 rc.raw_sql_level_row(),
             ],
@@ -183,7 +212,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         common_api_schema_items.append(
             FormFieldApiSchema(
                 name=CommonFieldName.token,
-                required=self.mode == ConnectionFormMode.create and connector_settings.IS_OS,  # type: ignore  # 2024-01-24 # TODO: Argument "required" to "FormFieldApiSchema" has incompatible type "bool | None"; expected "bool"  [arg-type]
+                required=self.mode == ConnectionFormMode.create and not connector_settings.IS_OS,  # type: ignore  # 2024-01-24 # TODO: Argument "required" to "FormFieldApiSchema" has incompatible type "bool | None"; expected "bool"  [arg-type]
             )
         )
         edit_api_schema.items.extend(common_api_schema_items)

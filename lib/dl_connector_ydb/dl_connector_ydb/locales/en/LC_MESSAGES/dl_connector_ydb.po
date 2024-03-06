@@ -24,6 +24,9 @@ msgstr "Password"
 msgid "value_auth-type-oauth"
 msgstr "OAuth"
 
+msgid "field_password"
+msgstr "Password"
+
 msgid "field_oauth_row"
 msgstr "OAuth-token"
 
