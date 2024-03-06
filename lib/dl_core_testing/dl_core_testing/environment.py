@@ -61,7 +61,6 @@ def run_cmd_in_containers_by_label(label: str, cmd: list[str]) -> None:
     docker_cli = docker.from_env(timeout=300)
     containers = docker_cli.containers.list(
         filters=dict(label=[f"datalens.ci.service={label}"]),
-        all=True,
     )
     for container in containers:
         LOGGER.debug(f"Running command {cmd} in container {container.name}")
