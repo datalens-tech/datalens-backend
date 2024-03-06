@@ -56,8 +56,6 @@ services:
       dockerfile: Dockerfile.s3-storage
     command: bash /data/entrypoint.sh
   us:
-    labels:
-      datalens.ci.service: united-storage
     build:
       context: ../../lib/testenv-common/images
       dockerfile: Dockerfile.us
@@ -67,6 +65,8 @@ services:
       AUTH_POLICY: required
       MASTER_TOKEN: AC1ofiek8coB
       POSTGRES_DSN_LIST: postgres://us:us@pg-us:5432/us-db-ci_purgeable
+    labels:
+      datalens.ci.service: united-storage
   zookeeper-1:
     environment:
       ZOO_MY_ID: 1
