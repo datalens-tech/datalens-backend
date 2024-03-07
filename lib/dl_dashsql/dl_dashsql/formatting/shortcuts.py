@@ -9,8 +9,8 @@ def params_for_formatter(params: Sequence[TypedQueryParameter]) -> Sequence[Quer
     return [
         QueryIncomingParameter(
             original_name=param.name,
-            user_type=param.user_type,
-            value=param.value,
+            user_type=param.typed_value.type,
+            value=param.typed_value.value,
         )
         for param in params
     ]

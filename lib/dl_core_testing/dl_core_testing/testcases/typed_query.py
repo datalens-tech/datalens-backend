@@ -11,7 +11,6 @@ from dl_core.connection_executors import AsyncConnExecutorBase
 from dl_core.us_connection_base import ConnectionBase
 from dl_core_testing.testcases.connection_executor import BaseConnectionExecutorTestClass
 from dl_dashsql.typed_query.primitives import (
-    DataRowsTypedQueryResult,
     PlainTypedQuery,
     TypedQuery,
     TypedQueryResult,
@@ -40,7 +39,6 @@ class DefaultTypedQueryChecker(TypedQueryChecker):
         )
 
     def check_typed_query_result(self, typed_query_result: TypedQueryResult) -> None:
-        assert isinstance(typed_query_result, DataRowsTypedQueryResult)
         assert typed_query_result.data_rows[0] == (1, 2, "zxc")
 
 

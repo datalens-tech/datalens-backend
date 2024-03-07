@@ -13,14 +13,13 @@ from dl_constants.enums import (
 )
 from dl_constants.types import TBIDataRow
 import dl_dashsql.exc as exc
-from dl_dashsql.types import IncomingDSQLParamTypeExt
+from dl_model_tools.typed_values import BIValue
 
 
 @attr.s(frozen=True, kw_only=True)
 class TypedQueryParameter:
     name: str = attr.ib()
-    user_type: UserDataType = attr.ib()
-    value: IncomingDSQLParamTypeExt = attr.ib()
+    typed_value: BIValue = attr.ib()
 
 
 _PARAM_VALUE_TV = TypeVar("_PARAM_VALUE_TV")
@@ -42,7 +41,7 @@ class TypedQueryParamGetter:
     # typed methods
     def get_typed_value(self, name: str, value_type: Type[_PARAM_VALUE_TV]) -> _PARAM_VALUE_TV:
         try:
-            value = self.get_strict(name).value
+            value = self.get_strict(name).typed_value.value
             if not isinstance(value, value_type):
                 raise exc.DashSQLParameterError(f"Parameter {name!r} has invalid type")
             return value
@@ -69,17 +68,13 @@ class PlainTypedQuery(TypedQuery):
 
 
 @attr.s(frozen=True, kw_only=True)
-class TypedQueryResult:
-    query_type: DashSQLQueryType = attr.ib()
-
-
-@attr.s(frozen=True, kw_only=True)
 class TypedQueryResultColumnHeader:
     name: str = attr.ib()
     user_type: UserDataType = attr.ib()
 
 
 @attr.s(frozen=True, kw_only=True)
-class DataRowsTypedQueryResult(TypedQueryResult):
+class TypedQueryResult:
+    query_type: DashSQLQueryType = attr.ib()
     column_headers: Sequence[TypedQueryResultColumnHeader] = attr.ib()
     data_rows: Sequence[TBIDataRow] = attr.ib()

@@ -19,6 +19,7 @@ class TestDashSQLTypedQuery(DefaultApiTestBase, DefaultDashSQLTypedQueryTestSuit
 
 class TestDashSQLTypedQueryWithParameters(DefaultApiTestBase, DefaultDashSQLTypedQueryTestSuite):
     raw_sql_level = RawSQLLevel.dashsql
+    data_caches_enabled = True
 
     @pytest.fixture(scope="class")
     def typed_query_info(self) -> TypedQueryInfo:

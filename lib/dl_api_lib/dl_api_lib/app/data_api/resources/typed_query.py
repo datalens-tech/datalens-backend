@@ -16,10 +16,10 @@ from dl_api_lib.app.data_api.resources.base import (
 )
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.schemas.typed_query import (
-    DataRowsTypedQueryResultSchema,
     PlainTypedQueryContentSchema,
     RawTypedQuery,
     RawTypedQueryParameter,
+    TypedQueryResultSchema,
     TypedQuerySchema,
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
@@ -29,7 +29,6 @@ from dl_constants.enums import DashSQLQueryType
 import dl_core.exc as core_exc
 from dl_core.us_connection_base import ConnectionBase
 from dl_dashsql.typed_query.primitives import (
-    DataRowsTypedQueryResult,
     PlainTypedQuery,
     TypedQuery,
     TypedQueryParameter,
@@ -62,8 +61,7 @@ class PlainTypedQueryLoader(TypedQueryLoader):
             parameters=tuple(
                 TypedQueryParameter(
                     name=param.name,
-                    user_type=param.data_type,
-                    value=param.value.value,
+                    typed_value=param.value,
                 )
                 for param in parameters
             ),
@@ -75,11 +73,9 @@ class TypedQueryResultSerializer:
     """Serializes the result (meta and data)"""
 
     def serialize_typed_query_result(self, typed_query_result: TypedQueryResult) -> Any:
-        # No other result types are supported in API:
-        assert isinstance(typed_query_result, DataRowsTypedQueryResult)
         return {
             "query_type": typed_query_result.query_type.name,
-            "data": DataRowsTypedQueryResultSchema().dump(typed_query_result),
+            "data": TypedQueryResultSchema().dump(typed_query_result),
         }
 
 
