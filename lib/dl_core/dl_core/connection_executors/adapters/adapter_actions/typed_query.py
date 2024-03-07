@@ -35,7 +35,6 @@ from dl_dashsql.formatting.base import (
 )
 from dl_dashsql.literalizer import DashSQLParamLiteralizer
 from dl_dashsql.typed_query.primitives import (
-    DataRowsTypedQueryResult,
     PlainTypedQuery,
     TypedQuery,
     TypedQueryResult,
@@ -50,7 +49,7 @@ if TYPE_CHECKING:
 @attr.s(frozen=True)
 class AsyncTypedQueryAdapterActionEmptyDataRows(AsyncTypedQueryAdapterAction):
     async def run_typed_query_action(self, typed_query: TypedQuery) -> TypedQueryResult:
-        return DataRowsTypedQueryResult(
+        return TypedQueryResult(
             query_type=typed_query.query_type,
             column_headers=(),
             data_rows=(),
@@ -75,8 +74,8 @@ class TypedQueryToDBAQueryConverter:
         formatter_incoming_parameters = [
             QueryIncomingParameter(
                 original_name=param.name,
-                user_type=param.user_type,
-                value=param.value,
+                user_type=param.typed_value.type,
+                value=param.typed_value.value,
             )
             for param in typed_query.parameters
         ]
@@ -175,7 +174,7 @@ class AsyncTypedQueryAdapterActionViaStandardExecute(AsyncTypedQueryAdapterActio
             raw_cursor_info=dba_async_result.raw_cursor_info,
             data=data,
         )
-        result = DataRowsTypedQueryResult(
+        result = TypedQueryResult(
             query_type=typed_query.query_type,
             data_rows=data,
             column_headers=column_headers,
@@ -219,7 +218,7 @@ class SyncTypedQueryAdapterActionViaLegacyExecute(SyncTypedQueryAdapterAction):
         raw_cursor_info = dba_sync_result.raw_cursor_info
         assert raw_cursor_info is not None
         column_headers = self._resolve_result_column_headers(raw_cursor_info=raw_cursor_info)
-        result = DataRowsTypedQueryResult(
+        result = TypedQueryResult(
             query_type=typed_query.query_type,
             data_rows=data,
             column_headers=column_headers,

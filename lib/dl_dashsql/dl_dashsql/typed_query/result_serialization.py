@@ -1,57 +1,56 @@
 import abc
-from typing import (
-    Generic,
-    TypeVar,
-)
+from typing import ClassVar
 
 import attr
+import marshmallow.fields as ma_fields
 from marshmallow.schema import Schema
 
-from dl_constants.enums import DashSQLQueryType
+from dl_constants.enums import (
+    DashSQLQueryType,
+    UserDataType,
+)
 from dl_dashsql.typed_query.primitives import TypedQueryResult
+from dl_model_tools.schema.base import (
+    BaseSchema,
+    DefaultSchema,
+)
+from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 
-_TYPED_QUERY_RESULT_TV = TypeVar("_TYPED_QUERY_RESULT_TV", bound=TypedQueryResult)
-
-
-class TypedQueryResultSerializer(abc.ABC, Generic[_TYPED_QUERY_RESULT_TV]):
+class TypedQueryResultSerializer(abc.ABC):
     @abc.abstractmethod
-    def serialize(self, typed_query_result: _TYPED_QUERY_RESULT_TV) -> str:
+    def serialize(self, typed_query_result: TypedQueryResult) -> str:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def deserialize(self, typed_query_result_str: str) -> _TYPED_QUERY_RESULT_TV:
+    def deserialize(self, typed_query_result_str: str) -> TypedQueryResult:
         raise NotImplementedError
+
+
+class TypedQueryResultSerializerSchema(DefaultSchema[TypedQueryResult]):
+    TARGET_CLS = TypedQueryResult
+
+    class ColumnHeaderSchema(BaseSchema):
+        name = ma_fields.String(required=True)
+        data_type = ma_fields.Enum(UserDataType, required=True, attribute="user_type")
+
+    query_type = DynamicEnumField(DashSQLQueryType)
+    rows = ma_fields.Raw(required=True, attribute="data_rows")
+    headers = ma_fields.List(ma_fields.Nested(ColumnHeaderSchema()), required=True, attribute="column_headers")
 
 
 @attr.s
-class MarshmallowTypedQueryResultSerializer(
-    TypedQueryResultSerializer[_TYPED_QUERY_RESULT_TV],
-    Generic[_TYPED_QUERY_RESULT_TV],
-):
-    _schema: Schema = attr.ib(kw_only=True)
+class DefaultTypedQueryResultSerializer(TypedQueryResultSerializer):
+    _schema: ClassVar[Schema] = TypedQueryResultSerializerSchema()
 
-    def serialize(self, typed_query_result: _TYPED_QUERY_RESULT_TV) -> str:
+    def serialize(self, typed_query_result: TypedQueryResult) -> str:
         typed_query_result_str = self._schema.dumps(typed_query_result)
         return typed_query_result_str
 
-    def deserialize(self, typed_query_result_str: str) -> _TYPED_QUERY_RESULT_TV:
+    def deserialize(self, typed_query_result_str: str) -> TypedQueryResult:
         typed_query_result = self._schema.loads(typed_query_result_str)
         return typed_query_result
 
 
-_TYPED_QUERY_RESULT_SERIALIZER_REGISTRY: dict[DashSQLQueryType, TypedQueryResultSerializer] = {}
-
-
-def register_typed_query_result_serializer(
-    query_type: DashSQLQueryType,
-    serializer: TypedQueryResultSerializer,
-) -> None:
-    if existing_serializer := _TYPED_QUERY_RESULT_SERIALIZER_REGISTRY.get(query_type) is not None:
-        assert existing_serializer is serializer
-    else:
-        _TYPED_QUERY_RESULT_SERIALIZER_REGISTRY[query_type] = serializer
-
-
 def get_typed_query_result_serializer(query_type: DashSQLQueryType) -> TypedQueryResultSerializer:
-    return _TYPED_QUERY_RESULT_SERIALIZER_REGISTRY[query_type]
+    return DefaultTypedQueryResultSerializer()

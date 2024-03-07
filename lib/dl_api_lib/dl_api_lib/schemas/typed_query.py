@@ -52,7 +52,7 @@ class TypedQuerySchema(DefaultSchema[RawTypedQuery]):
     parameters = ma_fields.List(ma_fields.Nested(TypedQueryParameterSchema), load_default=None)
 
 
-class DataRowsTypedQueryResultSchema(BaseSchema):
+class TypedQueryResultSchema(BaseSchema):
     class ColumnHeaderSchema(BaseSchema):
         name = ma_fields.String(required=True)
         data_type = ma_fields.Enum(UserDataType, required=True, attribute="user_type")
