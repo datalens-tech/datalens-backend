@@ -1,17 +1,18 @@
 version: '3'
 
 vars:
-  THIS_DIR:
-    sh: realpath "."
-
   PACKAGE_NAME:
     sh: basename {{.USER_WORKING_DIR}}
+
+  DOCKER_HOST:
+    sh: cat ./.env | grep -e 'DOCKER_HOST=.*' | cut -d '=' -f 2
 
 tasks:
   mk_dot_env:
     cmds:
       - cp .env.sample .env
       - echo 'fix env to point to the correct python executable'
+      - echo 'Add DOCKER_HOST=... to .env if you are using remote docker'
 
   ensure_venv:
     dotenv:
@@ -34,8 +35,12 @@ tasks:
     dir: '/{{.USER_WORKING_DIR}}'
     cmds:
       - docker-compose up --build
+    env:
+      DOCKER_HOST: '{{.DOCKER_HOST}}'
 
   devenv-d:
     dir: '/{{.USER_WORKING_DIR}}'
     cmds:
       - docker-compose up --build -d
+    env:
+      DOCKER_HOST: '{{.DOCKER_HOST}}'
