@@ -76,7 +76,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
 
     def get_extra_engine_event_listeners(self) -> list[EventListenerSpec]:
         def set_execution_timeout(dbapi_connection: pyodbc.Connection, connection_record: Any) -> None:
-            dbapi_connection.timeout = 70
+            dbapi_connection.timeout = 80
             # TODO ^ bind timout value to the COMMON_TIMEOUT_SEC app setting or create a new one
 
         return [
