@@ -171,7 +171,8 @@ class AsyncPostgresAdapter(
     async def create_conn_pool(self, db_name_from_query: str) -> asyncpg.Pool:
         db_name = self.get_db_name_for_query(db_name_from_query)
         conn_line = self.get_conn_line(db_name=db_name)
-        return await asyncpg.create_pool(conn_line, min_size=1, statement_cache_size=0)  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "Pool[Record] | None", expected "Pool[Any]")  [return-value]
+        return await asyncpg.create_pool(conn_line, min_size=1, statement_cache_size=0, command_timeout=80)  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "Pool[Record] | None", expected "Pool[Any]")  [return-value]
+        # TODO ^ bind command_timeout value to the COMMON_TIMEOUT_SEC app setting or create a new one
 
     @asynccontextmanager
     async def _get_connection(self, db_name_from_query: str) -> AsyncIterator[asyncpg.Connection]:
@@ -180,7 +181,8 @@ class AsyncPostgresAdapter(
             # Fix for the "asyncpg.exceptions.InvalidSQLStatementNameError: unnamed prepared statement does not exist"
             # We have already disabled cache by statement_cache_size=0, but it still works,
             # so let's try to use cache inside a transaction.
-            async with connection.transaction():
+            async with connection.transaction(readonly=True):
+                # TODO ^ make up a new DL exc and wrap asyncpg.exceptions.ReadOnlySQLTransactionError
                 # There is some decimal-magic in asyncpg
                 # and this magic is incompatible with magic in sqlalchemy-psycopg2
                 # so lets disable it
@@ -288,7 +290,8 @@ class AsyncPostgresAdapter(
         with self.handle_execution_error(debug_query), self.execution_context():
             async with self._get_connection(query.db_name) as conn:  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "_get_connection" of "AsyncPostgresAdapter" has incompatible type "str | None"; expected "str"  [arg-type]
                 # prepare works only inside a transaction
-                async with conn.transaction():
+                async with conn.transaction(readonly=True):
+                    # TODO ^ make up a new DL exc and wrap asyncpg.exceptions.ReadOnlySQLTransactionError
                     async with self._query_preparation_context(conn):
                         prepared_query = await conn.prepare(compiled_query)
                     cursor_info = self._make_cursor_info(prepared_query.get_attributes())
