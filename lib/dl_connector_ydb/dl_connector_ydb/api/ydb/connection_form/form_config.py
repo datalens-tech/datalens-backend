@@ -16,7 +16,11 @@ from dl_api_commons.base_models import TenantDef
 from dl_api_connector.form_config.models.api_schema import (
     FormActionApiSchema,
     FormApiSchema,
+    FormFieldApiAction,
+    FormFieldApiActionCondition,
     FormFieldApiSchema,
+    FormFieldConditionalApiAction,
+    FormFieldSelector,
 )
 from dl_api_connector.form_config.models.base import (
     ConnectionForm,
@@ -197,6 +201,56 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
             ),
         )
 
+    def _get_extra_items(self) -> list[FormFieldApiSchema]:
+        return [
+            FormFieldApiSchema(
+                name=CommonFieldName.token,
+                required=self.mode == ConnectionFormMode.create,
+                default_action=FormFieldApiAction.skip,
+            ),
+            FormFieldApiSchema(
+                name=CommonFieldName.password,
+                required=self.mode == ConnectionFormMode.create,
+                default_action=FormFieldApiAction.skip,
+            ),
+            FormFieldApiSchema(name=CommonFieldName.username, required=True, default_action=FormFieldApiAction.skip),
+            FormFieldApiSchema(name=YDBFieldName.auth_type, required=True),
+        ]
+
+    def _get_extra_conditions(self) -> list[FormFieldApiActionCondition]:
+        return [
+            FormFieldApiActionCondition(
+                when=FormFieldSelector(name=YDBFieldName.auth_type),
+                equals=YDBAuthTypeMode.password.value,
+                then=[
+                    FormFieldConditionalApiAction(
+                        selector=FormFieldSelector(name=CommonFieldName.password),
+                        action=FormFieldApiAction.include,
+                    ),
+                ],
+            ),
+            FormFieldApiActionCondition(
+                when=FormFieldSelector(name=YDBFieldName.auth_type),
+                equals=YDBAuthTypeMode.password.value,
+                then=[
+                    FormFieldConditionalApiAction(
+                        selector=FormFieldSelector(name=CommonFieldName.username),
+                        action=FormFieldApiAction.include,
+                    ),
+                ],
+            ),
+            FormFieldApiActionCondition(
+                when=FormFieldSelector(name=YDBFieldName.auth_type),
+                equals=YDBAuthTypeMode.oauth.value,
+                then=[
+                    FormFieldConditionalApiAction(
+                        selector=FormFieldSelector(name=CommonFieldName.token),
+                        action=FormFieldApiAction.include,
+                    ),
+                ],
+            ),
+        ]
+
     def get_form_config(
         self,
         connector_settings: Optional[ConnectorSettingsBase],
@@ -209,16 +263,26 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         edit_api_schema = self._get_base_edit_api_schema()
         common_api_schema_items = self._get_base_common_api_schema_items(names_source=CommonFieldName)
         db_section_rows = self._get_default_db_section(rc=rc, connector_settings=connector_settings)
-        common_api_schema_items.append(
-            FormFieldApiSchema(
-                name=CommonFieldName.token,
-                required=self.mode == ConnectionFormMode.create and not connector_settings.IS_OS,  # type: ignore  # 2024-01-24 # TODO: Argument "required" to "FormFieldApiSchema" has incompatible type "bool | None"; expected "bool"  [arg-type]
+        if not connector_settings.IS_OS:
+            common_api_schema_items.append(
+                FormFieldApiSchema(
+                    name=CommonFieldName.token,
+                    required=self.mode == ConnectionFormMode.create,  # type: ignore  # 2024-01-24 # TODO: Argument "required" to "FormFieldApiSchema" has incompatible type "bool | None"; expected "bool"  [arg-type]
+                )
             )
-        )
         edit_api_schema.items.extend(common_api_schema_items)
 
         create_api_schema = self._get_base_create_api_schema(edit_api_schema=edit_api_schema)
         check_api_schema = self._get_base_check_api_schema(common_api_schema_items=common_api_schema_items)
+
+        if connector_settings.IS_OS:
+            extra_api_items = self._get_extra_items()
+            extra_api_conditions = self._get_extra_conditions()
+
+            for schema in [edit_api_schema, check_api_schema, create_api_schema]:
+                schema.items.extend(extra_api_items)
+                schema.conditions.extend(extra_api_conditions)
+
         return self._get_base_form_config(
             db_section_rows=db_section_rows,
             create_api_schema=create_api_schema,
