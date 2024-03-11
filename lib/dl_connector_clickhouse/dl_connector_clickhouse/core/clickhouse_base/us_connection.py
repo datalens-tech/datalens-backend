@@ -40,7 +40,12 @@ class SubselectParameter:
 
 
 class ConnectionClickhouseBase(ClassicConnectionSQL):
-    MAX_ALLOWED_MAX_EXECUTION_TIME = 280  # 290 sec - requests http timeout, 300 sec - uwsgi harakiri
+    MAX_ALLOWED_MAX_EXECUTION_TIME = 70
+    # this is max seconds that can be specified as max_execution_time CH option
+    # magic number justification:
+    #   80s - requests http timeout (calculated below based on this value)
+    #   90s - our total request timeout
+    # TODO ^ bind this value to the COMMON_TIMEOUT_SEC app setting or create a new one
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):

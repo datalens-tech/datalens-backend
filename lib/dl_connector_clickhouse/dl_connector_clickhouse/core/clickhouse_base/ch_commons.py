@@ -63,7 +63,7 @@ def get_ch_settings(
         # forever-running queries (which is also known to break old-version CH
         # hosts at around 100_000 second long queries).
         # Note that in CH the value is rounded down to integer, and 0 seems to mean 'no limit'.
-        "max_execution_time": max_execution_time if max_execution_time is None else 3600 * 4,
+        "max_execution_time": max_execution_time if max_execution_time is not None else 3600 * 4,
         "readonly": read_only_level,
         # https://clickhouse.com/docs/en/operations/settings/settings#settings-insert_quorum
         # INSERT succeeds only when ClickHouse manages to correctly write data to the insert_quorum
