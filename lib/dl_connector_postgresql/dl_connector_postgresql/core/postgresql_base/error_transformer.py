@@ -6,6 +6,7 @@ from dl_core.connectors.base.error_transformer import (
     DbErrorTransformer,
 )
 from dl_core.connectors.base.error_transformer import (
+    make_default_transformer_with_custom_rules,
     make_rule_from_descr,
     orig_exc_is,
     wrapper_exc_is_and_matches_re,
@@ -54,4 +55,4 @@ def make_async_pg_error_transformer() -> DbErrorTransformer:
         ((OSError, "Connect call failed"), exc.SourceConnectError),
         ((OSError, "Name or service not known"), exc.SourceHostNotKnownError),
     )
-    return ChainedDbErrorTransformer([make_rule_from_descr(d) for d in rule_descriptions])
+    return make_default_transformer_with_custom_rules(*(make_rule_from_descr(d) for d in rule_descriptions))
