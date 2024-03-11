@@ -28,7 +28,7 @@ class CacheInitializationError(Exception):
 
 class MutationCacheEngineFactory(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def get_cache_engine(self, allow_slave) -> GenericCacheEngine:
+    def get_cache_engine(self, allow_slave: bool) -> GenericCacheEngine:
         pass
 
 

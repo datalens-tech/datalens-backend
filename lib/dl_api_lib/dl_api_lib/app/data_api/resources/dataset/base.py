@@ -54,6 +54,7 @@ from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_app_tools.profiling_base import (
     GenericProfiler,
     generic_profiler,
+    generic_profiler_async,
 )
 from dl_constants.enums import DataSourceRole
 from dl_core.components.accessor import DatasetComponentAccessor
@@ -221,7 +222,7 @@ class DatasetDataBaseView(BaseView):
             LOGGER.error("Mutation cache error", exc_info=True)
             return None
 
-    @generic_profiler("mutation-cache-get")
+    @generic_profiler_async("mutation-cache-get")
     async def try_get_dataset_from_cache(
         self,
         mutation_cache: Optional[USEntryMutationCache],
@@ -246,7 +247,7 @@ class DatasetDataBaseView(BaseView):
         assert isinstance(cached_dataset, Dataset)
         return cached_dataset
 
-    @generic_profiler("mutation-cache-save")
+    @generic_profiler_async("mutation-cache-save")
     async def try_save_dataset_to_cache(
         self,
         mutation_cache: Optional[USEntryMutationCache],
