@@ -222,7 +222,7 @@ class DatasetDataBaseView(BaseView):
             LOGGER.error("Mutation cache error", exc_info=True)
             return None
 
-    @generic_profiler_async("mutation-cache-get")
+    @generic_profiler_async("mutation-cache-get")  # type: ignore  # TODO: fix
     async def try_get_dataset_from_cache(
         self,
         mutation_cache: Optional[USEntryMutationCache],
@@ -247,7 +247,7 @@ class DatasetDataBaseView(BaseView):
         assert isinstance(cached_dataset, Dataset)
         return cached_dataset
 
-    @generic_profiler_async("mutation-cache-save")
+    @generic_profiler_async("mutation-cache-save")  # type: ignore  # TODO: fix
     async def try_save_dataset_to_cache(
         self,
         mutation_cache: Optional[USEntryMutationCache],
