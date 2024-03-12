@@ -16,6 +16,9 @@ from dl_utils.wait import wait_for
 LOGGER = logging.getLogger(__name__)
 
 
+US_SERVICE_DOCKER_COMPOSE_LABEL = "united-storage"
+
+
 def _wait_for_pg(dsn: str, timeout: int = 300, interval: float = 1.0) -> None:
     import psycopg2
 
@@ -50,6 +53,18 @@ def restart_container(container_name: str) -> None:
     docker_cli = docker.from_env(timeout=300)
     container = docker_cli.containers.list(filters=dict(name=container_name), all=True)[0]
     container.restart()
+
+
+def run_cmd_in_containers_by_label(label: str, cmd: list[str]) -> None:
+    import docker
+
+    docker_cli = docker.from_env(timeout=300)
+    containers = docker_cli.containers.list(
+        filters=dict(label=[f"datalens.ci.service={label}"]),
+    )
+    for container in containers:
+        LOGGER.debug(f"Running command {cmd} in container {container.name}")
+        container.exec_run(cmd)
 
 
 def restart_container_by_label(label: str, compose_project: str) -> None:
@@ -94,6 +109,11 @@ def prepare_united_storage(
             with requests.Session() as reqr:
                 resp = reqr.get(f"{us_host}/ping-db", headers=headers)
                 resp.raise_for_status()
+                run_cmd_in_containers_by_label(
+                    US_SERVICE_DOCKER_COMPOSE_LABEL,
+                    ["node", "/opt/app/dist/server/platform/src/db/scripts/migrate.js"],
+                )
+                # TODO change to a more pretty command when it is wrapped in US ^^^
                 return True, ""
         except Exception as e:
             return False, str(e)
