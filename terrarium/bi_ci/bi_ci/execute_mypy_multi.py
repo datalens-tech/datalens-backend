@@ -1,11 +1,16 @@
 import asyncio
 from asyncio import Queue
+import contextlib
 import enum
 from functools import partial
 import json
 from pathlib import Path
 import sys
-from typing import Iterable
+from typing import (
+    Any,
+    AsyncGenerator,
+    Iterable,
+)
 
 import attr
 import clize
@@ -49,6 +54,12 @@ class CacheQueue:
                 base_mypy_cache_dir / Path(str(i)),
             )
 
+    @contextlib.asynccontextmanager
+    async def borrow(self) -> AsyncGenerator[Path, None]:
+        value = await self.get()
+        yield value
+        await self.put(value)
+
     async def get(self) -> Path:
         return await self._queue.get()
 
@@ -57,19 +68,27 @@ class CacheQueue:
 
 
 def get_mypy_targets(pkg_dir: Path) -> list[str]:
+    def _ensure_target_types(values: Any) -> list[str]:
+        assert isinstance(values, list)
+        assert all([isinstance(value, str) for value in values])
+        return values
+
     with open(pkg_dir / PYPROJECT_TOML) as fh:
         meta = tomlkit.load(fh)
         try:
-            return meta["datalens"]["meta"]["mypy"]["targets"]  # type: ignore  # 2024-01-30 # TODO: Value of type "Item | Container" is not indexable  [index]
+            targets = meta["datalens"]["meta"]["mypy"]["targets"]  # type: ignore  # 2024-01-30 # TODO: Value of type "Item | Container" is not indexable  [index]
+            targets = _ensure_target_types(values=targets)
+            return targets
         except NonExistentKey:
             print("No data in meta['datalens']['meta']['mypy']['targets']")
         try:
             # just run mypy only on application/lib code
             # we don't run mypy on tests for backward compatability because there are a lot of mypy issues already
-            targets: list[str] = [
+            targets = [
                 package["include"]  # type: ignore # 2024-03-08 # Invalid index type "str" for "Any | str"; expected type "SupportsIndex | slice"  [index]
                 for package in meta["tool"]["poetry"]["packages"]  # type: ignore  # 2024-03-08 # TODO: Value of type "Item | Container" is not indexable  [index]
             ]
+            targets = _ensure_target_types(values=targets)
             return targets
         except NonExistentKey:
             print("No data in meta['tools']['poetry']['packages']")
@@ -85,19 +104,18 @@ def get_python_packages(root: Path) -> Iterable[str]:
 
 
 async def run_mypy(request: MypyRequest, cache_queue: CacheQueue) -> MypyResult:
-    mypy_cache_dir = await cache_queue.get()
-    mypy_cache_dir.mkdir(exist_ok=True)
+    async with cache_queue.borrow() as mypy_cache_dir:
+        mypy_cache_dir.mkdir(exist_ok=True)
 
-    command_args = ["mypy", f"--cache-dir={mypy_cache_dir}", *request.targets]
-    command = " ".join(command_args)
-    proc = await asyncio.create_subprocess_shell(
-        command,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-        cwd=str(request.pkg_dir),
-    )
-    stdout, stderr = await proc.communicate()
-    await cache_queue.put(mypy_cache_dir)
+        command_args = ["mypy", f"--cache-dir={mypy_cache_dir}", *request.targets]
+        command = " ".join(command_args)
+        proc = await asyncio.create_subprocess_shell(
+            command,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+            cwd=str(request.pkg_dir),
+        )
+        stdout, stderr = await proc.communicate()
     return MypyResult(
         pkg_dir=request.pkg_dir,
         command=command,
@@ -107,7 +125,7 @@ async def run_mypy(request: MypyRequest, cache_queue: CacheQueue) -> MypyResult:
     )
 
 
-def main(root: Path, targets_file: Path = None, processes: int = 1) -> None:  # type: ignore  # 2024-01-30 # TODO: Incompatible default for argument "targets_file" (default has type "None", argument has type "Path")  [assignment]
+def main(root: Path, targets_file: Path = None, processes: int = 1) -> None:  # type: ignore # clize can't recognize type annotation "Optional"
     """
     Run mypy on the datalens backend code.
     We have to run mypy separately on each project
@@ -115,7 +133,6 @@ def main(root: Path, targets_file: Path = None, processes: int = 1) -> None:  # 
 
     This script DON'T check mypy in tests.
     """
-    # clize can't recognize type annotation "Optional"
     package_rel_paths: Iterable[str]
     if targets_file is not None:
         package_rel_paths = json.load(open(targets_file))
@@ -146,9 +163,9 @@ def main(root: Path, targets_file: Path = None, processes: int = 1) -> None:  # 
         count=processes,
     )
     loop = asyncio.get_event_loop()
-    results: Iterable[MypyResult] = loop.run_until_complete(
-        asyncio.gather(*[run_mypy(request=request, cache_queue=cache_queue) for request in mypy_requests])
-    )
+    tasks = [run_mypy(request=request, cache_queue=cache_queue) for request in mypy_requests]
+    results: Iterable[MypyResult] = loop.run_until_complete(asyncio.gather(*tasks))
+    loop.close()
 
     print("\nRESULT\n")
     bad_pkg_dirs: list[str] = []
