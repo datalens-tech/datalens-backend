@@ -26,6 +26,7 @@ STATUS_CODES = {
     exc.FileLimitError: HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
     exc.InvalidFieldCast: HTTPStatus.BAD_REQUEST,
     exc.InvalidLink: HTTPStatus.BAD_REQUEST,
+    exc.YaDocsInvalidLinkPrefix: HTTPStatus.BAD_REQUEST,
     exc.InvalidSource: HTTPStatus.BAD_REQUEST,
     exc.ParseFailed: HTTPStatus.INTERNAL_SERVER_ERROR,
     exc.PermissionDenied: HTTPStatus.BAD_REQUEST,
