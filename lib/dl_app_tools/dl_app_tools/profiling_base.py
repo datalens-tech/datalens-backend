@@ -265,7 +265,9 @@ _GPA_CORO_TV = TypeVar("_GPA_CORO_TV", bound=Callable[..., Awaitable[_GPA_CORO_R
 
 
 def generic_profiler_async(
-    stage: str, extra_data: dict = None, logger: logging.Logger = None  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "extra_data" (default has type "None", argument has type "dict[Any, Any]")  [assignment]
+    stage: str,
+    extra_data: Optional[dict] = None,
+    logger: Optional[logging.Logger] = None,
 ) -> Callable[[_GPA_CORO_TV], _GPA_CORO_TV]:
     def generic_profiler_wrap_async(coro: _GPA_CORO_TV) -> _GPA_CORO_TV:
         if not inspect.iscoroutinefunction(coro):
