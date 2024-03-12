@@ -5,6 +5,7 @@ import decimal
 import logging
 import re
 from typing import (
+    Any,
     List,
     Optional,
     Tuple,
@@ -17,6 +18,7 @@ import sqlalchemy as sa
 from sqlalchemy import exc as sa_exc
 from sqlalchemy.dialects import mssql as ms_types
 
+from dl_core.connection_executors.adapters.adapters_base_sa import EventListenerSpec
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
@@ -71,6 +73,16 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
     }
 
     MSSQL_LIST_SOURCES_ALL_SCHEMAS_SQL = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.TABLES;"
+
+    def get_extra_engine_event_listeners(self) -> list[EventListenerSpec]:
+        def set_execution_timeout(dbapi_connection: pyodbc.Connection, connection_record: Any) -> None:
+            dbapi_connection.timeout = 80
+            # TODO ^ bind timout value to the COMMON_TIMEOUT_SEC app setting or create a new one
+
+        return [
+            *super().get_extra_engine_event_listeners(),
+            EventListenerSpec("connect", set_execution_timeout),
+        ]
 
     def _get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
         if schema_ident.schema_name is not None:
@@ -222,6 +234,8 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
         "08001": exc.SourceConnectError,
         # [HY000] Could not perform COMMIT or ROLLBACK (0)
         "HY000": CommitOrRollbackFailed,
+        # [HYT00] Query timeout expired (0)
+        "HYT00": exc.SourceTimeout,
     }
 
     EXTRA_EXC_CLS = (pyodbc.Error, sa_exc.DBAPIError)

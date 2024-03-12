@@ -78,6 +78,12 @@ _DBA_SA_TV = TypeVar("_DBA_SA_TV", bound="BaseSAAdapter")
 _DBA_SA_DTO_TV = TypeVar("_DBA_SA_DTO_TV", bound="ConnTargetDTO")
 
 
+@attr.s(frozen=True, auto_attribs=True)
+class EventListenerSpec:
+    event_name: str
+    callback: Callable
+
+
 @attr.s()
 class BaseSAAdapter(
     WithCursorInfo,
@@ -97,6 +103,11 @@ class BaseSAAdapter(
     _engine_cache: Dict[Tuple[Optional[str], bool], Engine] = attr.ib(init=False, factory=lambda: {})
     _error_transformer: ClassVar[DbErrorTransformer] = make_default_transformer_with_custom_rules()
 
+    _COMMON_ENGINE_EVENT_LISTENERS: ClassVar[list[EventListenerSpec]] = [
+        EventListenerSpec("before_cursor_execute", CursorLogger.before_cursor_execute_handler),
+        EventListenerSpec("after_cursor_execute", CursorLogger.after_cursor_execute_handler),
+    ]
+
     @classmethod
     def create(
         cls: Type[_DBA_SA_TV], target_dto: _DBA_SA_DTO_TV, req_ctx_info: DBAdapterScopedRCI, default_chunk_size: int
@@ -111,6 +122,9 @@ class BaseSAAdapter(
     def default_chunk_size(self) -> int:
         return self._default_chunk_size
 
+    def get_extra_engine_event_listeners(self) -> list[EventListenerSpec]:
+        return []
+
     @final
     def get_db_engine(self, db_name: Optional[str], disable_streaming: bool = False) -> Engine:
         effective_db_name = self.get_db_name_for_query(db_name_from_query=db_name)
@@ -120,9 +134,10 @@ class BaseSAAdapter(
         if cache_key not in self._engine_cache:
             new_engine = self._get_db_engine(db_name=effective_db_name, disable_streaming=disable_streaming)
             # Adding event listeners
-            # TODO CONSIDER: May be add adapters by flag?
-            event.listen(new_engine, "before_cursor_execute", CursorLogger.before_cursor_execute_handler)
-            event.listen(new_engine, "after_cursor_execute", CursorLogger.after_cursor_execute_handler)
+            for listener in self._COMMON_ENGINE_EVENT_LISTENERS:
+                event.listen(new_engine, listener.event_name, listener.callback)
+            for listener in self.get_extra_engine_event_listeners():
+                event.listen(new_engine, listener.event_name, listener.callback)
 
             self._engine_cache[cache_key] = new_engine
 
