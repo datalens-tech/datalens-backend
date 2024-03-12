@@ -131,7 +131,7 @@ def main(root: Path, targets_file: Path = None, processes: int = 1) -> None:  # 
     We have to run mypy separately on each project
     because mypy reads its settings from pyproject.toml from its current working directory.
 
-    This script DON'T check mypy in tests.
+    This script DOESN'T check mypy in tests.
     """
     package_rel_paths: Iterable[str]
     if targets_file is not None:
