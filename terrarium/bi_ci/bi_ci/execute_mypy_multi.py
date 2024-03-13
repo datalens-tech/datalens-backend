@@ -125,7 +125,7 @@ async def run_mypy(request: MypyRequest, cache_queue: CacheQueue) -> MypyResult:
     )
 
 
-def main(root: Path, targets_file: Path = None, processes: int = 1) -> None:  # type: ignore # clize can't recognize type annotation "Optional"
+def main(root: Path, *, targets_file: Path = None, processes: int = 1) -> None:  # type: ignore # clize can't recognize type annotation "Optional"
     """
     Run mypy on the datalens backend code.
     We have to run mypy separately on each project

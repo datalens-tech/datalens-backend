@@ -459,7 +459,7 @@ jobs:
       - name: run mypy
         run: |
           . /venv/bin/activate
-          execute-mypy-multi /src
+          execute-mypy-multi /src --processes=5
         env:
           PYTHONUNBUFFERED: "1"
 
