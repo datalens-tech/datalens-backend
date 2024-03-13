@@ -53,3 +53,6 @@ strict_optional = true
 exclude = [
     "^dl_repmanager_tests/",
 ]
+
+[datalens.meta.mypy]
+targets = ["dl_repmanager/"]

@@ -1,10 +1,18 @@
+import asyncio
+from asyncio import Queue
+import contextlib
+import enum
 from functools import partial
 import json
 from pathlib import Path
-import subprocess
 import sys
-from typing import Iterable
+from typing import (
+    Any,
+    AsyncGenerator,
+    Iterable,
+)
 
+import attr
 import clize
 import tomlkit
 from tomlkit.exceptions import NonExistentKey
@@ -13,52 +21,167 @@ from tomlkit.exceptions import NonExistentKey
 PYPROJECT_TOML = "pyproject.toml"
 
 
-def get_mypy_targets(pkg_dir: Path) -> list[str]:
-    try:
-        with open(pkg_dir / PYPROJECT_TOML) as fh:
-            meta = tomlkit.load(fh)
-            return meta["datalens"]["meta"]["mypy"]["targets"]  # type: ignore  # 2024-01-30 # TODO: Value of type "Item | Container" is not indexable  [index]
-    except NonExistentKey:
-        pass
+@attr.s
+class MypyRequest:
+    pkg_dir: Path = attr.ib()
+    targets: list[str] = attr.ib()
 
-    # fallback to the same name defaults
+
+class MypyStatus(enum.Enum):
+    SUCCESS = "success"
+    FAIL = "fail"
+
+
+@attr.s
+class MypyResult:
+    pkg_dir: Path = attr.ib()
+    command: str = attr.ib()
+    status: MypyStatus = attr.ib()
+    stdout: bytes = attr.ib()
+    stderr: bytes = attr.ib()
+
+
+class CacheQueue:
+    # control access to mypy cache directories
+    # mypy should reuse fs cache as much as possible
+    # but any concurrent runs mustn't access the same cache directory
+    def __init__(self, base_mypy_cache_dir: Path, count: int):
+        assert count > 0
+        self._queue: Queue = Queue()
+        for i in range(count):
+            # use fixed names for cache folders for reusing the cache during local runs
+            self._queue.put_nowait(
+                base_mypy_cache_dir / Path(str(i)),
+            )
+
+    @contextlib.asynccontextmanager
+    async def borrow(self) -> AsyncGenerator[Path, None]:
+        value = await self.get()
+        yield value
+        await self.put(value)
+
+    async def get(self) -> Path:
+        return await self._queue.get()
+
+    async def put(self, value: Path) -> None:
+        await self._queue.put(value)
+
+
+def get_mypy_targets(pkg_dir: Path) -> list[str]:
+    def _ensure_target_types(values: Any) -> list[str]:
+        assert isinstance(values, list)
+        assert all([isinstance(value, str) for value in values])
+        return values
+
+    with open(pkg_dir / PYPROJECT_TOML) as fh:
+        meta = tomlkit.load(fh)
+        try:
+            targets = meta["datalens"]["meta"]["mypy"]["targets"]  # type: ignore  # 2024-01-30 # TODO: Value of type "Item | Container" is not indexable  [index]
+            targets = _ensure_target_types(values=targets)
+            return targets
+        except NonExistentKey:
+            print("No data in meta['datalens']['meta']['mypy']['targets']")
+        try:
+            # just run mypy only on application/lib code
+            # we don't run mypy on tests for backward compatability because there are a lot of mypy issues already
+            targets = [
+                package["include"]  # type: ignore # 2024-03-08 # Invalid index type "str" for "Any | str"; expected type "SupportsIndex | slice"  [index]
+                for package in meta["tool"]["poetry"]["packages"]  # type: ignore  # 2024-03-08 # TODO: Value of type "Item | Container" is not indexable  [index]
+            ]
+            targets = _ensure_target_types(values=targets)
+            return targets
+        except NonExistentKey:
+            print("No data in meta['tools']['poetry']['packages']")
+
+    # fallback
     dirname = pkg_dir.name or ""
     return [dirname]
 
 
-def get_targets(root: Path) -> Iterable[str]:
+def get_python_packages(root: Path) -> Iterable[str]:
     for path in root.rglob(f"*{PYPROJECT_TOML}"):
         yield str(path.parent).replace(PYPROJECT_TOML, "")
 
 
-def main(root: Path, targets_file: Path = None) -> None:  # type: ignore  # 2024-01-30 # TODO: Incompatible default for argument "targets_file" (default has type "None", argument has type "Path")  [assignment]
-    # clize can't recognize type annotation "Optional"
-    paths: Iterable[str]
+async def run_mypy(request: MypyRequest, cache_queue: CacheQueue) -> MypyResult:
+    async with cache_queue.borrow() as mypy_cache_dir:
+        mypy_cache_dir.mkdir(exist_ok=True)
+
+        command_args = ["mypy", f"--cache-dir={mypy_cache_dir}", *request.targets]
+        command = " ".join(command_args)
+        proc = await asyncio.create_subprocess_shell(
+            command,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+            cwd=str(request.pkg_dir),
+        )
+        stdout, stderr = await proc.communicate()
+    return MypyResult(
+        pkg_dir=request.pkg_dir,
+        command=command,
+        status=MypyStatus.SUCCESS if proc.returncode == 0 else MypyStatus.FAIL,
+        stdout=stdout,
+        stderr=stderr,
+    )
+
+
+def main(root: Path, targets_file: Path = None, processes: int = 1) -> None:  # type: ignore # clize can't recognize type annotation "Optional"
+    """
+    Run mypy on the datalens backend code.
+    We have to run mypy separately on each project
+    because mypy reads its settings from pyproject.toml from its current working directory.
+
+    This script DOESN'T check mypy in tests.
+    """
+    package_rel_paths: Iterable[str]
     if targets_file is not None:
-        paths = json.load(open(targets_file))
+        package_rel_paths = json.load(open(targets_file))
     else:
-        paths = get_targets(root)
-    failed_list: list[str] = []
-    mypy_cache_dir = Path("/tmp/mypy_cache")
-    mypy_cache_dir.mkdir(exist_ok=True)
-    for path in paths:
-        pkg_dir = root / path
-        run_args = ["mypy", f"--cache-dir={mypy_cache_dir}"]
+        package_rel_paths = get_python_packages(root)
+
+    base_mypy_cache_dir = Path("/tmp/mypy_cache")
+    base_mypy_cache_dir.mkdir(exist_ok=True)
+
+    mypy_requests: list[MypyRequest] = []
+    for rel_path in package_rel_paths:
+        print()  # just separator
+        pkg_dir = root / rel_path
         targets = get_mypy_targets(pkg_dir)
-        print(f"Cmd: {run_args}; cwd={pkg_dir}")
-        if len(targets) > 0:
-            run_args.extend(targets)
-            run_exit_code = subprocess.run(" ".join(run_args), shell=True, cwd=str(pkg_dir)).returncode
-            if run_exit_code != 0:
-                failed_list.append(path)
-        else:
-            print(f"mypy config not found in {pkg_dir}/pyproject.toml, skipped")
+        if len(targets) == 0:
+            print(f"SKIP: there weren't any valid targets for {pkg_dir}")
+            continue
+        print(f"PLAN: process {pkg_dir} with {targets}")
+        mypy_requests.append(
+            MypyRequest(
+                pkg_dir=pkg_dir,
+                targets=targets,
+            )
+        )
 
-    if failed_list:
-        print("Mypy failed for targets:")
-        print("\n".join(sorted(failed_list)))
+    cache_queue = CacheQueue(
+        base_mypy_cache_dir=base_mypy_cache_dir,
+        count=processes,
+    )
+    loop = asyncio.get_event_loop()
+    tasks = [run_mypy(request=request, cache_queue=cache_queue) for request in mypy_requests]
+    results: Iterable[MypyResult] = loop.run_until_complete(asyncio.gather(*tasks))
+    loop.close()
 
-    sys.exit(0 if len(failed_list) == 0 else 1)
+    print("\nRESULT\n")
+    bad_pkg_dirs: list[str] = []
+    for result in results:
+        print(f"PACKAGE: {result.pkg_dir}")
+        print(f"CMD: {result.command}")
+        print(f"{result.stdout.decode('utf-8')}")
+        print(f"{result.stderr.decode('utf-8')}")
+        if result.status == MypyStatus.FAIL:
+            bad_pkg_dirs.append(str(result.pkg_dir))
+
+    if bad_pkg_dirs:
+        print("\nFAIL: mypy failed:")
+        print("\n".join(sorted(bad_pkg_dirs)))
+
+    sys.exit(1 if bad_pkg_dirs else 0)
 
 
 cmd = partial(clize.run, main)
