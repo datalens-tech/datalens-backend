@@ -133,7 +133,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                     C.InputRowItem(
                         name=CommonFieldName.token,
                         width="l",
-                        default_value="" if self.mode == ConnectionFormMode.create else None,
+                        default_value=None,
                         fake_value="******" if self.mode == ConnectionFormMode.edit else None,
                         control_props=C.InputRowItem.Props(type="password"),
                         display_conditions={YDBFieldName.auth_type: "oauth"},
