@@ -29,7 +29,7 @@ class DefaultCoreTestClass(BaseDatasetTestClass[ConnectionClickhouse]):
 
     core_test_config = test_config.CORE_TEST_CONFIG
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(scope="function", autouse=True)
     # FIXME: This fixture is a temporary solution for failing core tests when they are run together with api tests
     def loop(self, event_loop: asyncio.AbstractEventLoop) -> Generator[asyncio.AbstractEventLoop, None, None]:
         asyncio.set_event_loop(event_loop)

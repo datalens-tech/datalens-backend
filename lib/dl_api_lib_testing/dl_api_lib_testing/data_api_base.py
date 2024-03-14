@@ -50,7 +50,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
     mutation_caches_enabled: ClassVar[bool] = True
     data_caches_enabled: ClassVar[bool] = True
 
-    @pytest.fixture
+    @pytest.fixture(scope="function")  # FIXME: maybe autouse???
     def loop(self, event_loop: asyncio.AbstractEventLoop) -> Generator[asyncio.AbstractEventLoop, None, None]:
         asyncio.set_event_loop(event_loop)
         yield event_loop
