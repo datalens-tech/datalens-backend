@@ -4,6 +4,7 @@ import builtins
 import datetime as datetime_mod
 from functools import wraps
 from typing import (
+    Any,
     FrozenSet,
     List,
     Optional,
@@ -36,7 +37,7 @@ def _require_type(expected_type: Union[type, Tuple[Union[type, nodes.Array], ...
     return decorator
 
 
-def _norm(value) -> nodes.FormulaItem:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+def _norm(value: Any) -> nodes.FormulaItem:
     if not isinstance(value, nodes.FormulaItem):
         value = n.lit(value)
     return value
@@ -60,7 +61,7 @@ class NodeShortcut:
             type(None),
         )
     )
-    def lit(self, value) -> Union[nodes.BaseLiteral, nodes.Null]:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def lit(self, value: Any) -> Union[nodes.BaseLiteral, nodes.Null]:
         if isinstance(value, str):
             return self.str(value)
         if isinstance(value, bool):
@@ -240,13 +241,13 @@ class NodeShortcut:
     wfunc = FuncShortcut(assume_window=True)  # same, but always results in a window function
 
     class WhenProxy:
-        def __init__(self, val):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+        def __init__(self, val: Any) -> None:
             self._val = val
 
-        def then(self, expr) -> nodes.WhenPart:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+        def then(self, expr: Any) -> nodes.WhenPart:
             return nodes.WhenPart.make(val=_norm(self._val), expr=_norm(expr))
 
-    def when(self, val) -> "NodeShortcut.WhenProxy":  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def when(self, val: Any) -> "NodeShortcut.WhenProxy":
         return self.WhenProxy(val)
 
     class CaseProxy:
