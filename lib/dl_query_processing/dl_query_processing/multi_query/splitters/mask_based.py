@@ -303,12 +303,8 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
                 right_expr: formula_nodes.FormulaItem
                 left_expr: formula_nodes.FormulaItem
                 if isinstance(condition, formula_fork_nodes.SelfEqualityJoinCondition):
-                    expr = condition.expr
-                    if not isinstance(expr, (formula_nodes.Field, formula_aux_nodes.ErrorNode)):
-                        raise TypeError(f"Expected field or error node, got {type(expr)}")
-
-                    left_expr = expr
-                    right_expr = expr
+                    left_expr = condition.expr
+                    right_expr = condition.expr
                 elif isinstance(condition, formula_fork_nodes.BinaryJoinCondition):
                     left_expr = condition.expr
                     right_expr = condition.fork_expr
