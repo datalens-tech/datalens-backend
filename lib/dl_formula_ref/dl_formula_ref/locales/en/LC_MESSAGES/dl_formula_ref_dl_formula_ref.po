@@ -1044,7 +1044,12 @@ msgstr ""
 msgid "Stylizes the passed text with the passed color."
 msgstr ""
 
-msgid "Stylizes the passed text with the passed size."
+msgid ""
+"The color can be specified as any web color representation: hex triplet, "
+"color name, rgb(), etc."
+msgstr ""
+
+msgid "Sets the size of the passed text."
 msgstr ""
 
 msgid "Adds a line break."

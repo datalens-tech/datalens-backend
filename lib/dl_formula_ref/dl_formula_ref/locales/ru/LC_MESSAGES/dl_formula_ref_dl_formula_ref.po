@@ -1584,16 +1584,21 @@ msgstr ""
 "Объединяет размеченный текст. Также может быть использован для конвертации "
 "обычных строк в размеченный текст."
 
-#, fuzzy
 msgid "Stylizes the passed text with the passed color."
-msgstr "Выделяет переданный текст жирным шрифтом."
+msgstr "Задает цвет переданного текста."
 
-#, fuzzy
-msgid "Stylizes the passed text with the passed size."
-msgstr "Выделяет переданный текст жирным шрифтом."
+msgid ""
+"The color can be specified as any web color representation: hex triplet, "
+"color name, rgb(), etc."
+msgstr ""
+"Цвет может быть указан как любое представление веб-цвета: шестнадцатеричная "
+"тройка, название цвета, rgb() и т.д."
+
+msgid "Sets the size of the passed text."
+msgstr "Задает размер переданного текста."
 
 msgid "Adds a line break."
-msgstr ""
+msgstr "Добавляет перенос строки."
 
 msgid "Returns the absolute value of {arg:0}."
 msgstr "Возвращает абсолютное значение заданного числа {arg:0}."
