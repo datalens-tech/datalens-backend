@@ -608,6 +608,33 @@ class TestBasicExtendedAggregations(DefaultApiTestBase, DefaultBasicExtAggregati
         actual_value = float(data_rows[0][0])
         assert actual_value == pytest.approx(expected_value)
 
+    def test_lod_with_ago_and_constant_field(self, control_api, data_api, saved_dataset):
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            formulas={
+                "Sales Sum": "SUM([sales])",
+                "Sales LOD": "SUM([Sales Sum] WITHIN [order_date])",
+                "Sales AGO": "AGO([Sales Sum], [order_date], 1)",
+                "Constant Field": '"lol"',
+            },
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="order_date"),
+                ds.find_field(title="Sales LOD"),
+                ds.find_field(title="Sales AGO"),
+                ds.find_field(title="Constant Field"),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+        data_rows = get_data_rows(result_resp)
+        assert data_rows
+        assert all(row[-1] == "lol" for row in data_rows)
+
     def test_toplevel_lod_extra_dimension_error(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(
             api_v1=control_api,
