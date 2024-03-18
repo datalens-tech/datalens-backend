@@ -60,10 +60,10 @@ class YDBConnection(ClassicConnectionSQL):
             multihosts=(),
             port=self.data.port,
             db_name=self.data.db_name,
-            username=self.data.username
-            if self.data.auth_type == YDBAuthTypeMode.password.value
-            else "",  # not applicable
-            password=self.data.password if self.data.auth_type == YDBAuthTypeMode.password.value else self.data.token,
+            username=self.data.username,  # not applicable
+            password=self.data.password,
+            token=self.data.token,
+            auth_type=self.data.auth_type,
         )
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:

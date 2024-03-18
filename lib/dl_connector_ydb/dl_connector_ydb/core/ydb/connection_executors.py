@@ -34,5 +34,7 @@ class YDBAsyncAdapterConnExecutor(DefaultSqlAlchemyConnExecutor[YDBAdapter]):
                 db_name=self._conn_dto.db_name,
                 username=self._conn_dto.username or "",
                 password=self._conn_dto.password or "",
+                token=self._conn_dto.token or "",
+                auth_type=self._conn_dto.auth_type,
             )
         ]

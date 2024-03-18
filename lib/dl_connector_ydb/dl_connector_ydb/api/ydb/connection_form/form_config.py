@@ -60,7 +60,7 @@ class YDBFieldName(FormFieldName):
 class YDBRowConstructor(RowConstructor):
     _localizer: Localizer = attr.ib()
 
-    def auth_type_row(self) -> C.CustomizableRow:
+    def auth_type_row(self, mode: ConnectionFormMode) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
                 C.LabelRowItem(
@@ -83,6 +83,7 @@ class YDBRowConstructor(RowConstructor):
                         ),
                     ],
                     default_value=YDBAuthTypeMode.oauth.value,
+                    control_props=C.RadioButtonRowItem.Props(disabled=mode == ConnectionFormMode.edit),
                 ),
             ]
         )
@@ -183,17 +184,17 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         connector_settings: Optional[ConnectorSettingsBase],
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
-        auth_type_row = [ydb_rc.auth_type_row()] if connector_settings.IS_OS else []
+        auth_type_row = [ydb_rc.auth_type_row(mode=self.mode)] if connector_settings.IS_OS else []
+        rows = auth_type_row + [
+            *db_section_rows,
+            rc.username_row(display_conditions={YDBFieldName.auth_type: "password"}),
+            ydb_rc.password_row(display_conditions={YDBFieldName.auth_type: "password"}, mode=self.mode),
+            C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
+            rc.raw_sql_level_row(disabled=True),
+        ]
         return ConnectionForm(
             title=YDBConnectionInfoProvider.get_title(self._localizer),
-            rows=auth_type_row
-            + [
-                *db_section_rows,
-                rc.username_row(display_conditions={YDBFieldName.auth_type: "password"}),
-                ydb_rc.password_row(display_conditions={YDBFieldName.auth_type: "password"}, mode=self.mode),
-                C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-                rc.raw_sql_level_row(),
-            ],
+            rows=rows,
             api_schema=FormApiSchema(
                 create=create_api_schema if self.mode == ConnectionFormMode.create else None,
                 edit=edit_api_schema if self.mode == ConnectionFormMode.edit else None,

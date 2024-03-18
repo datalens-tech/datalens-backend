@@ -25,6 +25,7 @@ from dl_api_connector.form_config.models.rows.customizable.base import (
     PlaceholderMixin,
     RowItem,
 )
+from dl_api_connector.form_config.models.rows.prepared.base import DisabledMixin
 
 
 @attr.s(kw_only=True, frozen=True)
@@ -88,10 +89,15 @@ class SelectRowItem(ControlRowItem, PlaceholderMixin):
 
 
 @attr.s(kw_only=True, frozen=True)
-class RadioButtonRowItem(ControlRowItem):
+class RadioButtonRowItem(ControlRowItem, DisabledMixin):
     component_id = "radio_button"
 
+    @attr.s(kw_only=True, frozen=True)
+    class Props(SerializableConfig):
+        disabled: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
+
     options: list[SelectableOption] = attr.ib()
+    control_props: Optional[Props] = attr.ib(default=None, metadata=remap_skip_if_null("controlProps"))
 
 
 @attr.s(kw_only=True, frozen=True)

@@ -10,7 +10,9 @@ from typing import (
 
 import attr
 import grpc
+from ydb import DriverConfig
 import ydb.dbapi as ydb_dbapi
+from ydb.driver import credentials_impl
 import ydb.issues as ydb_cli_err
 
 from dl_constants.enums import ConnectionType
@@ -40,7 +42,27 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
     proto_schema: ClassVar[str] = "grpc"
 
     def _update_connect_args(self, args: dict) -> None:
-        args.update(auth_token=self._target_dto.password)
+        if self._target_dto.auth_type == "oauth":
+            # если oauth токен
+            args.update(auth_token=self._target_dto.token)
+        elif self._target_dto.auth_type == "password":
+            # если user-pass, то
+            driver_config = DriverConfig(
+                endpoint="{}://{}:{}".format(
+                    self.proto_schema,
+                    self._target_dto.host,
+                    self._target_dto.port,
+                ),
+                database=self._target_dto.db_name,
+            )
+            args.update(
+                credentials=credentials_impl.StaticCredentials(
+                    driver_config=driver_config, user=self._target_dto.user, password=self._target_dto.password
+                )
+            )
+        else:
+            # если anon, то
+            args.update(credentials=credentials_impl.AnonymousCredentials())
 
     def get_connect_args(self) -> dict:
         target_dto = self._target_dto
