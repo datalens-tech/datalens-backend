@@ -15,6 +15,7 @@ class YaDocsFileConnectionSourceStorageSchema(BaseFileConnectionSourceStorageSch
     public_link = fields.String(allow_none=True, load_default=None)
     private_path = fields.String(allow_none=True, load_default=None)
     first_line_is_header = fields.Boolean(allow_none=True, load_default=None)
+    sheet_id = fields.String(allow_none=True, load_default=None)
     data_updated_at = fields.DateTime()
 
 
