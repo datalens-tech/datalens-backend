@@ -184,16 +184,23 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         connector_settings: Optional[ConnectorSettingsBase],
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
-        auth_type_row = [ydb_rc.auth_type_row(mode=self.mode)] if connector_settings.IS_OS else []
-        rows = auth_type_row + [
-            *db_section_rows,
-            rc.username_row(display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.password.value}),
-            ydb_rc.password_row(
-                display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.password.value}, mode=self.mode
-            ),
-            C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-            rc.raw_sql_level_row(disabled=True),
-        ]
+        if connector_settings.IS_OS:
+            rows = [
+                ydb_rc.auth_type_row(mode=self.mode),
+                *db_section_rows,
+                rc.username_row(display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.password.value}),
+                ydb_rc.password_row(
+                    display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.password.value}, mode=self.mode
+                ),
+                C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
+                rc.raw_sql_level_row(disabled=True),
+            ]
+        else:
+            rows = [
+                *db_section_rows,
+                C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
+                rc.raw_sql_level_row(disabled=True),
+            ]
         return ConnectionForm(
             title=YDBConnectionInfoProvider.get_title(self._localizer),
             rows=rows,
