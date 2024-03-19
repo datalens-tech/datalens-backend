@@ -20,7 +20,10 @@ from dl_core import exc
 from dl_core.connection_models import TableIdent
 
 from dl_connector_ydb.core.base.adapter import YQLAdapterBase
-from dl_connector_ydb.core.ydb.constants import CONNECTION_TYPE_YDB
+from dl_connector_ydb.core.ydb.constants import (
+    CONNECTION_TYPE_YDB,
+    YDBAuthTypeMode,
+)
 from dl_connector_ydb.core.ydb.target_dto import YDBConnTargetDTO
 
 
@@ -42,9 +45,9 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
     proto_schema: ClassVar[str] = "grpc"
 
     def _update_connect_args(self, args: dict) -> None:
-        if self._target_dto.auth_type == "oauth":
+        if self._target_dto.auth_type == YDBAuthTypeMode.oauth.value:
             args.update(auth_token=self._target_dto.token)
-        elif self._target_dto.auth_type == "password":
+        elif self._target_dto.auth_type == YDBAuthTypeMode.password.value:
             driver_config = DriverConfig(
                 endpoint="{}://{}:{}".format(
                     self.proto_schema,
