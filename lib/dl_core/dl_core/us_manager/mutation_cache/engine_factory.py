@@ -28,7 +28,7 @@ class CacheInitializationError(Exception):
 
 class MutationCacheEngineFactory(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def get_cache_engine(self) -> GenericCacheEngine:
+    def get_cache_engine(self, allow_slave: bool) -> GenericCacheEngine:
         pass
 
 
@@ -48,20 +48,20 @@ class DefaultMutationCacheEngineFactory(MutationCacheEngineFactory):
     def service_registry(self) -> "ServicesRegistry":
         return self._services_registry_ref.ref
 
-    def _get_redis_cache_engine(self) -> Optional[RedisCacheEngine]:
+    def _get_redis_cache_engine(self, allow_slave: bool) -> Optional[RedisCacheEngine]:
         try:
-            redis_client = self.service_registry.get_mutations_redis_client()
+            redis_client = self.service_registry.get_mutations_redis_client(allow_slave)
             if redis_client is None:
                 return None
             return RedisCacheEngine(redis_client)
         except ValueError:
             return None
 
-    def get_cache_engine(self) -> GenericCacheEngine:
+    def get_cache_engine(self, allow_slave: bool) -> GenericCacheEngine:
         if self.cache_type == MemoryCacheEngine:
             return self._get_memory_cache_engine_singleton()
         elif self.cache_type == RedisCacheEngine:
-            redis_cache_engine = self._get_redis_cache_engine()
+            redis_cache_engine = self._get_redis_cache_engine(allow_slave)
             if redis_cache_engine:
                 return redis_cache_engine
             LOGGER.info("Can not create mutation cache engine: service registry did not return a Redis client")

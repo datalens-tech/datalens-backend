@@ -51,7 +51,11 @@ from dl_api_lib.request_model.data import (
     FieldAction,
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
-from dl_app_tools.profiling_base import GenericProfiler
+from dl_app_tools.profiling_base import (
+    GenericProfiler,
+    generic_profiler,
+    generic_profiler_async,
+)
 from dl_constants.enums import DataSourceRole
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.base import DataSource
@@ -200,14 +204,15 @@ class DatasetDataBaseView(BaseView):
                 return UpdateDatasetMutationKey.create(self.dataset.revision_id, updates)  # type: ignore  # 2024-01-30 # TODO: Argument 2 to "create" of "UpdateDatasetMutationKey" has incompatible type "list[Action]"; expected "list[FieldAction]"  [arg-type]
         return None
 
-    def try_get_cache(self) -> Optional[USEntryMutationCache]:
+    @generic_profiler("mutation-cache-init")
+    def try_get_cache(self, allow_slave: bool) -> Optional[USEntryMutationCache]:
         try:
             mc_factory = self.dl_request.services_registry.get_mutation_cache_factory()
             if mc_factory is None:
                 LOGGER.debug("Mutation cache is disabled")
                 return None
             mce_factory = self.dl_request.services_registry.get_mutation_cache_engine_factory(RedisCacheEngine)
-            cache_engine = mce_factory.get_cache_engine()
+            cache_engine = mce_factory.get_cache_engine(allow_slave)
             mutation_cache = mc_factory.get_mutation_cache(
                 usm=self.dl_request.us_manager,
                 engine=cache_engine,
@@ -217,6 +222,7 @@ class DatasetDataBaseView(BaseView):
             LOGGER.error("Mutation cache error", exc_info=True)
             return None
 
+    @generic_profiler_async("mutation-cache-get")  # type: ignore  # TODO: fix
     async def try_get_dataset_from_cache(
         self,
         mutation_cache: Optional[USEntryMutationCache],
@@ -241,6 +247,7 @@ class DatasetDataBaseView(BaseView):
         assert isinstance(cached_dataset, Dataset)
         return cached_dataset
 
+    @generic_profiler_async("mutation-cache-save")  # type: ignore  # TODO: fix
     async def try_save_dataset_to_cache(
         self,
         mutation_cache: Optional[USEntryMutationCache],
@@ -266,7 +273,8 @@ class DatasetDataBaseView(BaseView):
 
         with GenericProfiler("dataset-prepare"):
             if enable_mutation_caching:
-                mutation_cache = self.try_get_cache()
+                mutation_cache = self.try_get_cache(allow_slave=False)
+                # TODO consider: ^ analyze profiling & maybe use allow_slave=True when reading from cache
                 mutation_key = self.try_get_mutation_key(req_model.updates)
                 cached_dataset = await self.try_get_dataset_from_cache(mutation_cache, mutation_key)
                 if cached_dataset:

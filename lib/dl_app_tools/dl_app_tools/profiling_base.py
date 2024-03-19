@@ -243,8 +243,8 @@ _GP_FUNC_T = Callable[..., _GP_FUNC_RET_TV]
 
 def generic_profiler(
     stage: str,
-    extra_data: dict = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "extra_data" (default has type "None", argument has type "dict[Any, Any]")  [assignment]
-    logger: logging.Logger = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "logger" (default has type "None", argument has type "Logger")  [assignment]
+    extra_data: Optional[dict] = None,
+    logger: Optional[logging.Logger] = None,
 ) -> Callable[[_GP_FUNC_T], _GP_FUNC_T]:
     def generic_profiler_wrap(func: _GP_FUNC_T) -> _GP_FUNC_T:
         if inspect.iscoroutinefunction(func):
@@ -265,7 +265,9 @@ _GPA_CORO_TV = TypeVar("_GPA_CORO_TV", bound=Callable[..., Awaitable[_GPA_CORO_R
 
 
 def generic_profiler_async(
-    stage: str, extra_data: dict = None, logger: logging.Logger = None  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "extra_data" (default has type "None", argument has type "dict[Any, Any]")  [assignment]
+    stage: str,
+    extra_data: Optional[dict] = None,
+    logger: Optional[logging.Logger] = None,
 ) -> Callable[[_GPA_CORO_TV], _GPA_CORO_TV]:
     def generic_profiler_wrap_async(coro: _GPA_CORO_TV) -> _GPA_CORO_TV:
         if not inspect.iscoroutinefunction(coro):
