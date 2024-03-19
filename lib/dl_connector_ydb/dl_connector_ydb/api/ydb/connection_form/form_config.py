@@ -193,13 +193,13 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                     display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.password.value}, mode=self.mode
                 ),
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-                rc.raw_sql_level_row(disabled=True),
+                rc.raw_sql_level_row(),
             ]
         else:
             rows = [
                 *db_section_rows,
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-                rc.raw_sql_level_row(disabled=True),
+                rc.raw_sql_level_row(),
             ]
         return ConnectionForm(
             title=YDBConnectionInfoProvider.get_title(self._localizer),
