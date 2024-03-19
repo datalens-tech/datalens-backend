@@ -38,7 +38,7 @@ def ydb_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, Connector
         connector_data_class=ConnectorsDataYDBBase,
     )
     if cfg is None:
-        return dict(YDB=YDBConnectorSettings())
+        return {}
     return dict(YDB=YDBConnectorSettings(IS_OS=cfg.IS_OS))  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "IS_OS" for "YDBConnectorSettings"  [call-arg]
 
 
