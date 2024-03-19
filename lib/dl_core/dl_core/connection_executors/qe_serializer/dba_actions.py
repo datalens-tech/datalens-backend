@@ -67,6 +67,11 @@ class NonStreamAction(Generic[_RES_SCHEMA_TV], RemoteDBAdapterAction, metaclass=
 
 
 @attr.s(frozen=True)
+class ActionNonStreamExecuteQuery(RemoteDBAdapterAction):
+    db_adapter_query: DBAdapterQuery = attr.ib()
+
+
+@attr.s(frozen=True)
 class ActionTest(NonStreamAction[None]):
     class ResultSchema(BaseQEAPISchema):
         def to_object(self, data: Dict[str, Any]) -> Any:

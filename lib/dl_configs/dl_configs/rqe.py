@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import enum
 import os
 from typing import Optional
 
@@ -13,6 +14,11 @@ from dl_configs.settings_loaders.meta_definition import (
 )
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 from dl_configs.utils import validate_one_of
+
+
+class RQEExecuteRequestMode(enum.Enum):
+    STREAM = "stream"
+    NON_STREAM = "non_stream"
 
 
 @attr.s(frozen=True)
@@ -35,6 +41,11 @@ class RQEConfig(SettingsBase):
         "SECRET_KEY",
         sensitive=True,
         env_var_converter=lambda s: s.encode("ascii"),
+    )
+    execute_request_mode: RQEExecuteRequestMode = s_attrib(  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RQEExecuteRequestMode")  [assignment]
+        "EXECUTE_REQUEST_MODE",
+        missing=RQEExecuteRequestMode.STREAM,
+        env_var_converter=lambda s: RQEExecuteRequestMode[s.lower()],
     )
 
     @classmethod

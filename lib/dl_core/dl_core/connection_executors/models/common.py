@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import attr
 
+from dl_configs.rqe import RQEExecuteRequestMode
+
 
 @attr.s(frozen=True)
 class RemoteQueryExecutorData:
@@ -14,3 +16,5 @@ class RemoteQueryExecutorData:
     sync_protocol: str = attr.ib()
     sync_host: str = attr.ib()
     sync_port: int = attr.ib()
+
+    execute_request_mode: RQEExecuteRequestMode = attr.ib(default=RQEExecuteRequestMode.STREAM)

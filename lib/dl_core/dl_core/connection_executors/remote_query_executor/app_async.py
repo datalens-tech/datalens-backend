@@ -151,6 +151,24 @@ class ActionHandlingView(BaseView):
 
         return response
 
+    async def handle_non_stream_query_action(
+        self,
+        dba: AsyncDBAdapter,
+        dba_query: DBAdapterQuery,
+    ) -> web.Response:
+        try:
+            result = await dba.execute(dba_query)
+        except Exception:
+            LOGGER.exception("Exception during execution")
+            raise
+
+        events: list[tuple[str, Any]] = [(RQEEventType.raw_cursor_info.value, result.raw_cursor_info)]
+        async for raw_chunk in result.raw_chunk_generator:
+            events.append((RQEEventType.raw_chunk.value, raw_chunk))
+        events.append((RQEEventType.finished.value, None))
+
+        return web.Response(body=pickle.dumps(events))
+
     async def execute_non_streamed_action(
         self,
         dba: AsyncDBAdapter,
@@ -210,12 +228,16 @@ class ActionHandlingView(BaseView):
 
             if isinstance(action, act.ActionExecuteQuery):
                 return await self.handle_query_action(adapter, action.db_adapter_query)
-            elif isinstance(action, act.NonStreamAction):
+
+            if isinstance(action, act.ActionNonStreamExecuteQuery):
+                return await self.handle_non_stream_query_action(adapter, action.db_adapter_query)
+
+            if isinstance(action, act.NonStreamAction):
                 result = await self.execute_non_streamed_action(adapter, action)
                 resp_data = action.serialize_response(result)
                 return web.json_response(resp_data)
-            else:
-                raise NotImplementedError(f"Action {action} is not implemented in QE")
+
+            raise NotImplementedError(f"Action {action} is not implemented in QE")
 
 
 def body_signature_validation_middleware(hmac_key: bytes) -> AIOHTTPMiddleware:
