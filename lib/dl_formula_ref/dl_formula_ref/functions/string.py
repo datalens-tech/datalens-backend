@@ -248,13 +248,14 @@ FUNCTION_SUBSTR = FunctionDocRegistryItem(
     name="substr",
     category=CATEGORY_STRING,
     description=_(
-        "Returns the substring {arg:0} starting from the index {arg:1}.\n"
+        "Returns the substring {arg:0} starting from the index {arg:1}. The numbering starts with one.\n"
         "\n"
         "If an additional argument `{argn:2}` is specified, a substring of the "
         "specified length is returned."
     ),
     examples=[
         SimpleExample('SUBSTR("Computer", 3) = "mputer"'),
+        SimpleExample('SUBSTR("Computer", 3, 2) = "mp"'),
     ],
 )
 

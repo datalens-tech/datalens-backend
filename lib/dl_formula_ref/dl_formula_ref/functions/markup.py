@@ -24,7 +24,10 @@ FUNCTION_ITALIC = FunctionDocRegistryItem(
 FUNCTION_URL = FunctionDocRegistryItem(
     name="url",
     category=CATEGORY_MARKUP,
-    description=_("Wraps {arg:1} into a hyperlink to URL {arg:0}."),
+    description=_(
+        "Wraps {arg:1} into a hyperlink to URL {arg:0}. "
+        "When you click on the link, the page opens in a new browser tab."
+    ),
     examples=[
         SimpleExample("URL('https://example.com/?value=' + [value], [value])"),
     ],
