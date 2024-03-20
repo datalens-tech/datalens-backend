@@ -45,4 +45,4 @@ services:
       AUTH_POLICY: "required"
       MASTER_TOKEN: *c-us-master-token
     ports:
-     - "52500:80"
+     - "52500:8083"

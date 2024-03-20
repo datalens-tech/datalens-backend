@@ -67,7 +67,7 @@ services:
       AUTH_POLICY: "required"
       MASTER_TOKEN: *c-us-master-token
     ports:
-     - "52311:80"
+     - "52311:8083"
 
   redis-caches:
     # image: "bitnami/redis:5.0.8"
