@@ -52,7 +52,7 @@ services:
       context: ../testenv-common/images
       dockerfile: Dockerfile.us
     ports:
-      - 51500:80
+      - 51500:8083
     depends_on:
       - pg-us
     environment:
