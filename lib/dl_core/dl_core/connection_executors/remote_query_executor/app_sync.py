@@ -169,6 +169,25 @@ class ActionHandlingView(flask.views.View):
             },
         )
 
+    def execute_non_stream_execute_action(
+        self,
+        action: act.ActionNonStreamExecuteQuery,
+    ) -> flask.Response:
+        dba = self.create_dba_for_action(action)
+
+        try:
+            db_result = dba.execute(action.db_adapter_query)
+            events: list[tuple[str, Any]] = [(RQEEventType.raw_cursor_info.value, db_result.cursor_info)]
+            for raw_chunk in db_result.data_chunks:
+                events.append((RQEEventType.raw_chunk.value, raw_chunk))
+            events.append((RQEEventType.finished.value, None))
+
+            return flask.Response(response=pickle.dumps(events))
+        except Exception:
+            # noinspection PyBroadException
+            self.try_close_dba(dba)
+            raise
+
     @staticmethod
     def create_dba_for_action(action: act.RemoteDBAdapterAction) -> SyncDirectDBAdapter:
         LOGGER.info("Creating DBA")
@@ -189,6 +208,12 @@ class ActionHandlingView(flask.views.View):
         action = self.get_action()
         LOGGER.info("Got QE action request: %s", action)
 
+        if isinstance(action, act.ActionExecuteQuery):
+            return self.execute_execute_action(action)
+
+        if isinstance(action, act.ActionNonStreamExecuteQuery):
+            return self.execute_non_stream_execute_action(action)
+
         if isinstance(action, act.NonStreamAction):
             dba = self.create_dba_for_action(action)
             try:
@@ -196,10 +221,8 @@ class ActionHandlingView(flask.views.View):
                 return flask.jsonify(action.serialize_response(result))
             finally:
                 dba.close()
-        elif isinstance(action, act.ActionExecuteQuery):
-            return self.execute_execute_action(action)
-        else:
-            raise NotImplementedError(f"Action {action} is not implemented in QE")
+
+        raise NotImplementedError(f"Action {action} is not implemented in QE")
 
 
 @attr.s

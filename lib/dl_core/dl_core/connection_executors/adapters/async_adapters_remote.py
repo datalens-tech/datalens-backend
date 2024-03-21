@@ -4,6 +4,7 @@ import asyncio
 import json
 import logging
 import pickle
+import typing
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -42,7 +43,10 @@ from dl_core.connection_executors.adapters.async_adapters_base import (
     AsyncRawExecutionResult,
 )
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
-from dl_core.connection_executors.models.common import RemoteQueryExecutorData
+from dl_core.connection_executors.models.common import (
+    RemoteQueryExecutorData,
+    RQEExecuteRequestMode,
+)
 from dl_core.connection_executors.models.constants import (
     HEADER_BODY_SIGNATURE,
     HEADER_REQUEST_ID,
@@ -232,62 +236,26 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
         except Exception as resp_deserialization_exc:
             raise QueryExecutorException("Unexpected response JSON schema") from resp_deserialization_exc
 
-    # Here we have some async problem:
-    #  "qe" stage will be finished before some nested stages in RQE (e.g. "qe/fetch")
-    @generic_profiler_async("qe")  # type: ignore  # TODO: fix
-    async def execute(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:
-        resp = await self._make_request(
-            dba_actions.ActionExecuteQuery(
-                db_adapter_query=query,
-                target_conn_dto=self._target_dto,
-                dba_cls=self._dba_cls,
-                req_ctx_info=self._req_ctx_info,
-            ),
-        )
+    @staticmethod
+    def _parse_event(event: Any) -> Tuple[RQEEventType, Any]:
+        if not isinstance(event, tuple):
+            raise QueryExecutorException(f"QE parse: unexpected event type: {type(event)}")
+        if len(event) != 2:
+            raise QueryExecutorException(f"QE parse: event is not a pair: length={len(event)}")
+        event_type_name, event_data = event
+        if not isinstance(event_type_name, str):
+            raise QueryExecutorException(f"QE parse: event_type is not a str: {type(event_type_name)}")
+        try:
+            event_type = RQEEventType[event_type_name]
+        except KeyError:
+            raise QueryExecutorException(f"QE parse: unknown event_type: {event_type_name!r}") from None
 
-        if resp.status != 200:
-            resp_body_json = await self._read_body_json(resp)
-            exc = self._parse_exception(resp_body_json)
-            raise exc
+        return event_type, event_data
 
-        async def event_gen() -> AsyncGenerator[Tuple[str, Any], None]:
-            buf = b""
-
-            while True:
-                try:
-                    raw_chunk, end_of_chunk = await resp.content.readchunk()
-                except asyncio.CancelledError as err:
-                    raise common_exc.SourceTimeout(
-                        db_message="Source timed out", query=query.debug_compiled_query
-                    ) from err
-                buf += raw_chunk
-
-                # This isn't a very correct way, but it's hard to use pickle in async differently.
-                if end_of_chunk and buf:
-                    try:
-                        parsed_event = pickle.loads(buf)
-                    except Exception as err:
-                        raise QueryExecutorException("QE parse: failed to unpickle") from err
-
-                    buf = b""
-                    if not isinstance(parsed_event, tuple):
-                        raise QueryExecutorException(f"QE parse: unexpected event type: {type(parsed_event)}")
-                    if len(parsed_event) != 2:
-                        raise QueryExecutorException(f"QE parse: event is not a pair: length={len(parsed_event)}")
-                    event_type_name, event_data = parsed_event
-                    if not isinstance(event_type_name, str):
-                        raise QueryExecutorException(f"QE parse: event_type is not a str: {type(event_type_name)}")
-                    try:
-                        event_type = RQEEventType[event_type_name]
-                    except KeyError:
-                        raise QueryExecutorException(f"QE parse: unknown event_type: {event_type_name!r}") from None
-
-                    yield event_type, event_data  # type: ignore  # TODO: fix
-
-                if raw_chunk == b"" and not end_of_chunk:
-                    return
-
-        events = event_gen()
+    async def _get_execution_result(
+        self,
+        events: typing.AsyncGenerator[Tuple[RQEEventType, Any], None],
+    ) -> AsyncRawExecutionResult:
         ev_type, ev_data = await events.__anext__()
         if ev_type == RQEEventType.raw_cursor_info:
             raw_cursor_info = ev_data
@@ -320,6 +288,83 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             raw_cursor_info=raw_cursor_info,
             raw_chunk_generator=data_generator(),
         )
+
+    # Here we have some async problem:
+    #  "qe" stage will be finished before some nested stages in RQE (e.g. "qe/fetch")
+    async def _execute_stream(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:
+        resp = await self._make_request(
+            dba_actions.ActionExecuteQuery(
+                db_adapter_query=query,
+                target_conn_dto=self._target_dto,
+                dba_cls=self._dba_cls,
+                req_ctx_info=self._req_ctx_info,
+            ),
+        )
+
+        if resp.status != 200:
+            resp_body_json = await self._read_body_json(resp)
+            exc = self._parse_exception(resp_body_json)
+            raise exc
+
+        async def event_gen() -> AsyncGenerator[Tuple[RQEEventType, Any], None]:
+            buf = b""
+
+            while True:
+                try:
+                    raw_chunk, end_of_chunk = await resp.content.readchunk()
+                except asyncio.CancelledError as err:
+                    raise common_exc.SourceTimeout(
+                        db_message="Source timed out", query=query.debug_compiled_query
+                    ) from err
+                buf += raw_chunk
+
+                # This isn't a very correct way, but it's hard to use pickle in async differently.
+                if end_of_chunk and buf:
+                    try:
+                        event = pickle.loads(buf)
+                    except Exception as err:
+                        raise QueryExecutorException("QE parse: failed to unpickle") from err
+
+                    yield self._parse_event(event)
+                    buf = b""
+
+                if raw_chunk == b"" and not end_of_chunk:
+                    return
+
+        events = event_gen()
+        return await self._get_execution_result(events)
+
+    async def _execute_non_stream(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:
+        response = await self._make_request(
+            dba_actions.ActionNonStreamExecuteQuery(
+                db_adapter_query=query,
+                target_conn_dto=self._target_dto,
+                dba_cls=self._dba_cls,
+                req_ctx_info=self._req_ctx_info,
+            ),
+        )
+
+        if response.status != 200:
+            resp_body_json = await self._read_body_json(response)
+            exc = self._parse_exception(resp_body_json)
+            raise exc
+
+        raw_data = await response.read()
+        raw_events = pickle.loads(raw_data)
+
+        async def event_gen() -> AsyncGenerator[Tuple[RQEEventType, Any], None]:
+            for raw_event in raw_events:
+                yield self._parse_event(raw_event)
+
+        events = event_gen()
+        return await self._get_execution_result(events)
+
+    @generic_profiler_async("qe")  # type: ignore  # TODO: fix
+    async def execute(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:
+        if self._rqe_data.execute_request_mode == RQEExecuteRequestMode.STREAM:
+            return await self._execute_stream(query)
+
+        return await self._execute_non_stream(query)
 
     async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
         return await self._make_request_parse_response(

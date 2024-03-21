@@ -62,6 +62,13 @@ class ActionExecuteQuerySchema(DBAdapterActionBaseSchema):
         return dba_actions.ActionExecuteQuery(**data)
 
 
+class ActionNonStreamExecuteQuerySchema(DBAdapterActionBaseSchema):
+    db_adapter_query = fields.Nested(GenericDBAQuerySchema)
+
+    def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionNonStreamExecuteQuery:
+        return dba_actions.ActionNonStreamExecuteQuery(**data)
+
+
 class ActionGetDBVersionSchema(DBAdapterActionBaseSchema):
     db_ident = fields.Nested(DBIdentSchema)
 

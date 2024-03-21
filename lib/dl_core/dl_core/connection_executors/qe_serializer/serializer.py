@@ -27,6 +27,7 @@ ResponseTypes = Union[RawSchemaInfo, List[str], Optional[str], None, bool, int]
 class ActionSerializer:
     MAP_ACT_TYPE_SCHEMA_CLS: ClassVar[Dict[Type[dba_actions.RemoteDBAdapterAction], Type[Schema]]] = {
         dba_actions.ActionExecuteQuery: schema_actions.ActionExecuteQuerySchema,
+        dba_actions.ActionNonStreamExecuteQuery: schema_actions.ActionNonStreamExecuteQuerySchema,
         dba_actions.ActionTest: schema_actions.ActionTestSchema,
         dba_actions.ActionGetDBVersion: schema_actions.ActionGetDBVersionSchema,
         dba_actions.ActionGetSchemaNames: schema_actions.ActionGetSchemaNamesSchema,

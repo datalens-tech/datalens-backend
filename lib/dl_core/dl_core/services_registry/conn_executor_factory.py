@@ -226,6 +226,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
             sync_protocol=sync_rqe_netloc.scheme,
             sync_host=sync_rqe_netloc.host,
             sync_port=sync_rqe_netloc.port,
+            execute_request_mode=self.rqe_config.execute_request_mode,
         )
 
     @property
