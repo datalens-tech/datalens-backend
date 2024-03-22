@@ -5,9 +5,9 @@ from typing import (
     ClassVar,
     Optional,
 )
-from typing_extensions import Self
 
 import attr
+from typing_extensions import Self
 
 from dl_constants.enums import ConnectionType
 
