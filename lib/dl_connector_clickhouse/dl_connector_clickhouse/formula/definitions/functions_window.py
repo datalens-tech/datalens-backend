@@ -34,7 +34,7 @@ class WinLagClickHouseBase(base.WinLagBase):
             SUPPORTED_DIALECTS,
             translation=lambda x, offset=sa.literal(1), default=sa.null(), *_: (  # noqa: B008
                 base.lag_implementation(
-                    x,
+                    sa.func.toNullable(x),
                     offset=offset,
                     default=default,
                     lag_name="lagInFrame",
