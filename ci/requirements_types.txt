@@ -1,4 +1,3 @@
-attrs==22.2.0
 asyncpg-stubs==0.29.0
 boto3-stubs==1.24.59
 botocore-stubs==1.27.59
