@@ -1,0 +1,48 @@
+
+[tool.poetry]
+name = "datalens-rate-limiter"
+version = "0.0.1"
+description = ""
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_rate_limiter"}]
+license = "Apache 2.0"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+python = ">=3.10, <3.13"
+#datalens-constants = {path = "../../lib/dl_constants"}
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[datalens_ci]
+skip_test = true
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[datalens.pytest.unit]
+root_dir = "dl_rate_limiter/unit"
+skip_compose = "true"
+
+[datalens.pytest.ext]
+root_dir = "dl_rate_limiter/db"
+skip_compose = "true"
+labels = ["ext_public"]
+skip_tests = true
