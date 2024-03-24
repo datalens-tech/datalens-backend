@@ -3,6 +3,7 @@ from __future__ import annotations
 import abc
 import asyncio
 import logging
+from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     AsyncIterable,
@@ -10,11 +11,12 @@ from typing import (
     Callable,
     Generic,
     Optional,
+    Type,
     TypeVar,
-    final,
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_core.connection_executors.adapters.adapter_actions.async_base import (
     AsyncDBVersionAdapterAction,
@@ -75,8 +77,8 @@ _CACHE_TV = TypeVar("_CACHE_TV")
 
 @attr.s
 class AsyncCache(Generic[_CACHE_TV]):
-    _cache: dict[str, _CACHE_TV] = attr.ib(init=False, default=attr.Factory(dict))
-    _lock: asyncio.Lock = attr.ib(init=False, default=attr.Factory(asyncio.Lock))
+    _cache: dict[str, _CACHE_TV] = attr.ib(init=False, factory=dict)
+    _lock: asyncio.Lock = attr.ib(init=False, factory=asyncio.Lock)
 
     async def get(self, key: str, generator: Callable[[str], Awaitable[_CACHE_TV]]) -> _CACHE_TV:
         async with self._lock:
@@ -89,9 +91,6 @@ class AsyncCache(Generic[_CACHE_TV]):
             for elem in self._cache.values():
                 await finalizer(elem)
         self._cache.clear()
-
-
-_DBA_TV = TypeVar("_DBA_TV", bound="AsyncDBAdapter")
 
 
 @attr.s
@@ -185,10 +184,15 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
     async def close(self) -> None:
         pass
 
-    async def __aenter__(self: _DBA_TV) -> _DBA_TV:
+    async def __aenter__(self) -> Self:
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    async def __aexit__(
+        self,
+        exc_type:  Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> None:
         await self.close()
 
 

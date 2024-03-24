@@ -9,18 +9,17 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Dict,
     FrozenSet,
     Generator,
     List,
     Mapping,
     Optional,
     Sequence,
-    TypeVar,
 )
 
 import attr
 from sqlalchemy.sql.elements import ClauseElement
+from typing_extensions import Self
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_constants.enums import UserDataType
@@ -45,7 +44,7 @@ from dl_core.exc import UnsupportedNativeTypeError
 
 if TYPE_CHECKING:
     from dl_constants.types import TJSONExt
-    from dl_core.connections_security.base import ConnectionSecurityManager  # noqa
+    from dl_core.connections_security.base import ConnectionSecurityManager
     from dl_core.services_registry.top_level import ServicesRegistry
 
 
@@ -72,9 +71,6 @@ class ConnExecutorQuery:
     trusted_query: bool = attr.ib(default=False)
     is_ddl_dml_query: bool = attr.ib(default=False)
     is_dashsql_query: bool = attr.ib(default=False)
-
-
-_CONN_EXEC_TV = TypeVar("_CONN_EXEC_TV", bound="ConnExecutorBase")
 
 
 @attr.s(cmp=False, hash=False)
@@ -191,11 +187,11 @@ class ConnExecutorBase(metaclass=abc.ABCMeta):
                         exc.details[key] = value
             raise
 
-    def mutate_for_dashsql(self, db_params: Optional[Dict[str, str]] = None):  # type: ignore  # TODO: fix
+    def mutate_for_dashsql(self, db_params: Optional[dict[str, str]] = None) -> Self:
         """
         A place to do CE-specific alterations for DashSQL support.
         """
         return self
 
-    def clone(self: _CONN_EXEC_TV, **kwargs: Any) -> _CONN_EXEC_TV:
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
