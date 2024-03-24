@@ -78,6 +78,7 @@ class ComponentErrorRegistry:
         for item in self.items:
             if item.id == id:
                 return item
+        return None
 
     def remove_errors(
         self,
