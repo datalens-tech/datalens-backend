@@ -25,7 +25,7 @@ class FieldShallowInterDependencyManager(FieldShallowInterDependencyManagerBase)
     def _direct_dependencies(self) -> List[FieldInterDependencyItem]:
         return self._inter_dep_info.deps
 
-    def _get_item_for_field(self, dep_field_id: FieldId) -> Optional[FieldInterDependencyItem]:  # type: ignore  # TODO: fix
+    def _get_item_for_field(self, dep_field_id: FieldId) -> Optional[FieldInterDependencyItem]:
         for item in self._direct_dependencies:
             if item.dep_field_id == dep_field_id:
                 return item

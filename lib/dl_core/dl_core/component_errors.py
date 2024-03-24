@@ -74,7 +74,7 @@ ERROR_CLS_BY_COMP_TYPE: Dict[ComponentType, Type[ComponentError]] = {
 class ComponentErrorRegistry:
     items: List[ComponentErrorPack] = attr.ib(factory=list)
 
-    def get_pack(self, id: str) -> Optional[ComponentErrorPack]:  # type: ignore  # TODO: fix
+    def get_pack(self, id: str) -> Optional[ComponentErrorPack]:
         for item in self.items:
             if item.id == id:
                 return item

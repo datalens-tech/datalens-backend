@@ -51,7 +51,7 @@ class BaseView(DLRequestView[aiohttp_wrappers.DSAPIRequest]):
 
         return wrapper
 
-    async def resolve_entities(self):  # type: ignore  # TODO: fix
+    async def resolve_entities(self) -> None:
         pass
 
 

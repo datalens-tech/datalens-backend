@@ -62,11 +62,11 @@ class DataSourceSpecStorageSchema(BaseStorageSchema):  # noqa
         data["parameters"] = parameters
         return data
 
-    def push_ctx(self, data: dict):  # type: ignore  # TODO: fix
+    def push_ctx(self, data: dict) -> None:
         dsrc_cls = get_data_source_class(DataSourceType[data["created_from"]])
         self.context[CtxKey.ds_conn_type] = dsrc_cls.conn_type
 
-    def pop_ctx(self, data: dict):  # type: ignore  # TODO: fix
+    def pop_ctx(self, data: dict) -> None:
         self.context.pop(CtxKey.ds_conn_type, None)
 
     def constructor_kwargs(self, data: dict[str, Any]) -> dict[str, Any]:
