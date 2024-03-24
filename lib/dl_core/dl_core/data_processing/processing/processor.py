@@ -85,7 +85,7 @@ class OperationProcessorAsyncBase(abc.ABC):
 
     async def __aexit__(
         self,
-        exc_type:  Optional[Type[BaseException]],
+        exc_type: Optional[Type[BaseException]],
         exc_val: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> None:
