@@ -7,20 +7,17 @@ from typing import (
     ItemsView,
     Iterable,
     MutableMapping,
-    TypeVar,
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_i18n.localizer_base import Translatable
 
 
-_RES_TV = TypeVar("_RES_TV", bound="AliasedResource")
-
-
 @attr.s(frozen=True)
 class AliasedResource:
-    def clone(self: _RES_TV, **kwargs: Any) -> _RES_TV:
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
 
 

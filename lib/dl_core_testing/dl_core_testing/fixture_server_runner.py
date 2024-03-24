@@ -8,20 +8,19 @@ import socket
 import subprocess
 import sys
 import time
+from types import TracebackType
 from typing import (
-    Dict,
     Optional,
-    TypeVar,
+    Type,
 )
 
 import attr
 import requests
 from statcommons.log_config import deconfigure_logging
+from typing_extensions import Self
 
 
 LOGGER = logging.getLogger()
-
-_RUNNER_TV = TypeVar("_RUNNER_TV")
 
 
 class ForkPopenHack(subprocess.Popen):
@@ -83,7 +82,7 @@ class WSGIRunner:
     _wait_time: float = attr.ib(default=15.0)
     _poll_time: float = attr.ib(default=0.5)
     _wait_term_time: float = attr.ib(default=5.0)
-    _env: Optional[Dict[str, str]] = attr.ib(default=None)
+    _env: Optional[dict[str, str]] = attr.ib(default=None)
 
     _proc: subprocess.Popen = attr.ib(init=False, default=None)
 
@@ -153,7 +152,7 @@ class WSGIRunner:
         self._run_subproc()
         self.wait_for_up()
 
-    def _make_uwsgi_params(self):  # type: ignore  # TODO: fix
+    def _make_uwsgi_params(self) -> tuple[str, ...]:
         return (
             "--die-on-term",
             "--master",
@@ -178,7 +177,7 @@ class WSGIRunner:
             "3",
         )
 
-    def _run_subproc(self):  # type: ignore  # TODO: fix
+    def _run_subproc(self) -> None:
         cmd = ["uwsgi"] + list(self._make_uwsgi_params())
         env = {
             **(self._env or {}),
@@ -186,9 +185,9 @@ class WSGIRunner:
         }
         self._proc = subprocess.Popen(cmd, env=env)
 
-    def _run_fork_child_code(self):  # type: ignore  # TODO: fix
+    def _run_fork_child_code(self) -> None:
         self._debug("child: running uwsgi")
-        os.environ.update(self._env)  # type: ignore  # TODO: fix
+        os.environ.update(self._env or {})
         import pyuwsgi  # noqa
 
         cmd = [sys.argv[0]] + list(self._make_uwsgi_params())
@@ -200,7 +199,7 @@ class WSGIRunner:
         finally:
             self._debug("child: uwsgi done.")
 
-    def shutdown(self):  # type: ignore  # TODO: fix
+    def shutdown(self) -> None:
         try:
             self._proc.terminate()
             exit_code = self._proc.wait(self._wait_term_time)
@@ -209,9 +208,14 @@ class WSGIRunner:
             LOGGER.exception("Exception during test worker graceful shutdown. Going to kill...")
             self._proc.kill()
 
-    def __enter__(self: _RUNNER_TV) -> _RUNNER_TV:
-        self.run()  # type: ignore  # TODO: fix
+    def __enter__(self) -> Self:
+        self.run()
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> None:
         self.shutdown()

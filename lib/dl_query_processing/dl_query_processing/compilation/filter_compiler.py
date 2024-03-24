@@ -2,17 +2,16 @@ from __future__ import annotations
 
 import datetime
 import logging
-import os
 from typing import (
     Any,
     Callable,
     ClassVar,
     Dict,
     Optional,
-    TypeVar,
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_constants.enums import WhereClauseOperation
 from dl_core.fields import BIField
@@ -38,9 +37,6 @@ from dl_query_processing.utils.datetime import parse_datetime
 
 
 LOGGER = logging.getLogger(__name__)
-
-
-_FILTER_PARAMS_TV = TypeVar("_FILTER_PARAMS_TV", bound="FilterParams")
 
 CONTAINMENT_OPS = {
     WhereClauseOperation.STARTSWITH,
@@ -82,7 +78,7 @@ class FilterParams:
     arg_cast_type: DataType
     filter_args: Optional[list] = None
 
-    def clone(self: _FILTER_PARAMS_TV, **updates: Any) -> _FILTER_PARAMS_TV:
+    def clone(self, **updates: Any) -> Self:
         """Convenience method so that callers don't need to know about `attr`"""
         return attr.evolve(self, **updates)
 

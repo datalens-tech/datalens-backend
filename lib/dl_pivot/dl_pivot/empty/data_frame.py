@@ -4,10 +4,10 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Generator,
-    TypeVar,
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_pivot.base.data_frame import PivotDataFrame
 
@@ -17,9 +17,6 @@ if TYPE_CHECKING:
         MeasureValues,
         PivotHeader,
     )
-
-
-_PIVOT_DATA_FRAME_TV = TypeVar("_PIVOT_DATA_FRAME_TV", bound="EmptyPivotDataFrame")
 
 
 @attr.s
@@ -33,7 +30,7 @@ class EmptyPivotDataFrame(PivotDataFrame):
     def iter_rows(self) -> Generator[tuple[PivotHeader, MeasureValues], None, None]:
         yield from ()
 
-    def clone(self: _PIVOT_DATA_FRAME_TV, **kwargs: Any) -> _PIVOT_DATA_FRAME_TV:
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
 
     def get_column_count(self) -> int:
