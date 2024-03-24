@@ -23,7 +23,7 @@ class ConnDTO:
             connection_id=self.conn_id,
         )
 
-    def clone(self: Self, **kwargs: Any) -> Self:
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
 
 
