@@ -1585,17 +1585,17 @@ msgstr ""
 "обычных строк в размеченный текст."
 
 msgid "Stylizes the passed text with the passed color."
-msgstr "Задает цвет переданного текста."
+msgstr "Позволяет указать цвет для переданного текста."
 
 msgid ""
 "The color can be specified as any web color representation: hex triplet, "
 "color name, rgb(), etc."
 msgstr ""
-"Цвет может быть указан как любое представление веб-цвета: шестнадцатеричная "
-"тройка, название цвета, rgb() и т.д."
+"Цвет можно указать в любом формате представления веб-цвета: HEX, ключевым "
+"словом (например, `green`), RGB и т. д."
 
 msgid "Sets the size of the passed text."
-msgstr "Задает размер переданного текста."
+msgstr "Позволяет указать размер в пикселях для переданного текста."
 
 msgid "Adds a line break."
 msgstr "Добавляет перенос строки."
