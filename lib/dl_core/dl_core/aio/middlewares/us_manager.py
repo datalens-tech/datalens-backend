@@ -6,6 +6,7 @@ import logging
 from typing import (
     AsyncGenerator,
     Optional,
+    Type,
 )
 
 from aiohttp import web
@@ -36,6 +37,7 @@ def public_usm_workaround_middleware(
     us_master_token: Optional[str],
     tenant_resolver: TenantResolver,
     ca_data: bytes,
+    usm_factory_class: Type[USMFactory] = USMFactory,
 ) -> AIOHTTPMiddleware:
     """
     This is workaround for the following public API issues:
@@ -54,9 +56,11 @@ def public_usm_workaround_middleware(
     :param dataset_id_match_info_code: name of URL match param for dataset ID
     :param conn_id_match_info_code: name of URL match param for connection ID
     :param tenant_resolver:
+    :param ca_data:
+    :param usm_factory_class:
     :return: Actual middleware
     """
-    usm_factory = USMFactory(
+    usm_factory = usm_factory_class(
         us_base_url=us_base_url,
         crypto_keys_config=crypto_keys_config,
         us_master_token=us_master_token,
@@ -128,8 +132,9 @@ def us_manager_middleware(
     crypto_keys_config: CryptoKeysConfig,
     ca_data: bytes,
     embed: bool = False,
+    usm_factory_class: Type[USMFactory] = USMFactory,
 ) -> AIOHTTPMiddleware:
-    usm_factory = USMFactory(
+    usm_factory = usm_factory_class(
         us_base_url=us_base_url,
         crypto_keys_config=crypto_keys_config,
         ca_data=ca_data,
@@ -164,13 +169,14 @@ def public_us_manager_middleware(
     us_public_token: str,
     crypto_keys_config: CryptoKeysConfig,
     ca_data: bytes,
+    usm_factory_class: Type[USMFactory] = USMFactory,
 ) -> AIOHTTPMiddleware:
     """
     Middleware to create public US manager. Works with committed RCI.
     Must be used after `public_usm_workaround_middleware`.
     Can not be used together with `us_manager_middleware` because public USM treated as user USM.
     """
-    usm_factory = USMFactory(
+    usm_factory = usm_factory_class(
         us_base_url=us_base_url,
         crypto_keys_config=crypto_keys_config,
         us_public_token=us_public_token,
@@ -202,8 +208,9 @@ def service_us_manager_middleware(
     crypto_keys_config: CryptoKeysConfig,
     ca_data: bytes,
     as_user_usm: bool = False,
+    usm_factory_class: Type[USMFactory] = USMFactory,
 ) -> AIOHTTPMiddleware:
-    usm_factory = USMFactory(
+    usm_factory = usm_factory_class(
         us_base_url=us_base_url,
         crypto_keys_config=crypto_keys_config,
         us_master_token=us_master_token,
