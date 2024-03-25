@@ -12,10 +12,21 @@ readme = "README.md"
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
 python = ">=3.10, <3.13"
-#datalens-constants = {path = "../../lib/dl_constants"}
+redis = ">=5.0.1"
+aiohttp = { version = ">=3.9.1", optional = true }
+flask = { version = ">=2.2.5", optional = true }
+
+[tool.poetry.extras]
+aiohttp = ["aiohttp"]
+flask = ["flask"]
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+pytest-mock = "==3.12.0"
+flaky = "==3.8.1"
+datalens-testing = {path = "../dl_testing"}
+pytest-aiohttp = "==1.0.5"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -28,9 +39,6 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-[datalens_ci]
-skip_test = true
-
 [tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -38,11 +46,10 @@ check_untyped_defs = true
 strict_optional = true
 
 [datalens.pytest.unit]
-root_dir = "dl_rate_limiter/unit"
+root_dir = "dl_rate_limiter_tests/unit"
 skip_compose = "true"
 
-[datalens.pytest.ext]
-root_dir = "dl_rate_limiter/db"
-skip_compose = "true"
-labels = ["ext_public"]
-skip_tests = true
+[datalens.pytest.db]
+root_dir = "dl_rate_limiter_tests/db"
+labels = ["fat"]
+
