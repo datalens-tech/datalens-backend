@@ -45,7 +45,7 @@ class RQEConfig(SettingsBase):
     execute_request_mode: RQEExecuteRequestMode = s_attrib(  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RQEExecuteRequestMode")  [assignment]
         "EXECUTE_REQUEST_MODE",
         missing=RQEExecuteRequestMode.STREAM,
-        env_var_converter=lambda s: RQEExecuteRequestMode[s.lower()],
+        env_var_converter=lambda s: RQEExecuteRequestMode[s.upper()],
     )
 
     @classmethod
