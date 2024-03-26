@@ -4,6 +4,7 @@ from typing import ClassVar
 from dl_constants.enums import FileProcessingStatus
 from dl_core.connectors.base.lifecycle import ConnectionLifecycleManager
 from dl_core.reporting.notifications import get_notification_record
+from dl_core.services_registry.file_uploader_client_factory import FileType
 from dl_core.utils import (
     make_user_auth_cookies,
     make_user_auth_headers,
@@ -59,4 +60,5 @@ class YaDocsFileS3ConnectionLifecycleManager(
                 sources=sources,  # type: ignore  # 2024-01-24 # TODO: Argument "sources" to "update_connection_data_internal" of "FileUploaderClient" has incompatible type "list[YaDocsFileSourceDesc]"; expected "list[GSheetsFileSourceDesc | YaDocsFileSourceDesc]"  [arg-type]
                 authorized=self.entry.authorized,
                 tenant_id=rci.tenant.get_tenant_id() if rci.tenant is not None else None,
+                file_type=FileType.yadocs,
             )
