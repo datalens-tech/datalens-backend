@@ -42,7 +42,7 @@ FUNCTION_MARKUP = FunctionDocRegistryItem(
 FUNCTION_COLOR = FunctionDocRegistryItem(
     name="color",
     category=CATEGORY_MARKUP,
-    description=_("Stylizes the passed text with the passed color."),
+    description=_("Enables specifying the color for the provided text."),
     examples=[
         SimpleExample("COLOR([text], '#5282ff')"),
         SimpleExample("COLOR([text], 'blue')"),
@@ -51,9 +51,7 @@ FUNCTION_COLOR = FunctionDocRegistryItem(
     ],
     notes=[
         Note(
-            Translatable(
-                "The color can be specified as any web color representation: hex triplet, color name, rgb(), etc."
-            )
+            Translatable("You can specify the color in any web format, such as HEX, keyword (e.g., `green`), RGB, etc.")
         ),
     ],
 )
@@ -61,7 +59,7 @@ FUNCTION_COLOR = FunctionDocRegistryItem(
 FUNCTION_SIZE = FunctionDocRegistryItem(
     name="size",
     category=CATEGORY_MARKUP,
-    description=_("Sets the size of the passed text."),
+    description=_("Enables specifying the size (in pixels) for the provided text."),
     examples=[
         SimpleExample("SIZE([text], '26px')"),
     ],

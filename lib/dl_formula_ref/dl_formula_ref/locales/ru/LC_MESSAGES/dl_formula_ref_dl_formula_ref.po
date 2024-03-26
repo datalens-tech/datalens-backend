@@ -1584,17 +1584,17 @@ msgstr ""
 "Объединяет размеченный текст. Также может быть использован для конвертации "
 "обычных строк в размеченный текст."
 
-msgid "Stylizes the passed text with the passed color."
+msgid "Enables specifying the color for the provided text."
 msgstr "Позволяет указать цвет для переданного текста."
 
 msgid ""
-"The color can be specified as any web color representation: hex triplet, "
-"color name, rgb(), etc."
+"You can specify the color in any web format, such as HEX, keyword (e.g., "
+"`green`), RGB, etc."
 msgstr ""
 "Цвет можно указать в любом формате представления веб-цвета: HEX, ключевым "
 "словом (например, `green`), RGB и т. д."
 
-msgid "Sets the size of the passed text."
+msgid "Enables specifying the size (in pixels) for the provided text."
 msgstr "Позволяет указать размер в пикселях для переданного текста."
 
 msgid "Adds a line break."
