@@ -12,6 +12,7 @@ from dl_core.utils import (
 from dl_connector_bundle_chs3.chs3_base.core.constants import NOTIF_TYPE_STALE_DATA
 from dl_connector_bundle_chs3.chs3_base.core.lifecycle import BaseFileS3ConnectionLifecycleManager
 from dl_connector_bundle_chs3.chs3_yadocs.core.us_connection import YaDocsFileS3Connection
+from dl_connector_bundle_chs3.enums import FileType
 
 
 class YaDocsFileS3ConnectionLifecycleManager(
@@ -59,4 +60,5 @@ class YaDocsFileS3ConnectionLifecycleManager(
                 sources=sources,  # type: ignore  # 2024-01-24 # TODO: Argument "sources" to "update_connection_data_internal" of "FileUploaderClient" has incompatible type "list[YaDocsFileSourceDesc]"; expected "list[GSheetsFileSourceDesc | YaDocsFileSourceDesc]"  [arg-type]
                 authorized=self.entry.authorized,
                 tenant_id=rci.tenant.get_tenant_id() if rci.tenant is not None else None,
+                file_type=FileType.yadocs,
             )

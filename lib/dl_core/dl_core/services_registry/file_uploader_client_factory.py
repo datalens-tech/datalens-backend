@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from enum import Enum
 import logging
 from types import TracebackType
 from typing import (
@@ -14,6 +15,7 @@ from typing import (
 import aiohttp
 import attr
 import marshmallow as ma
+from marshmallow_oneofschema import OneOfSchema
 
 from dl_api_commons.aiohttp.aiohttp_client import (
     BIAioHTTPClient,
@@ -31,6 +33,32 @@ LOGGER = logging.getLogger(__name__)
 
 
 RawSchemaType = list[SchemaColumn]
+
+
+class FileType(Enum):
+    gsheets = "gsheets"
+    yadocs = "yadocs"
+
+
+class FileTypeOneOfSchema(OneOfSchema):
+    class Meta:
+        unknown = ma.EXCLUDE
+
+    type_field_remove = False
+
+    def get_obj_type(self, obj: dict[str, Any]) -> str:
+        type_field = obj[self.type_field] if isinstance(obj, dict) else getattr(obj, self.type_field)
+        assert isinstance(type_field, FileType)
+        return type_field.name
+
+    def get_data_type(self, data: dict):  # type: ignore  # 2024-01-30 # TODO: Function is missing a return type annotation  [no-untyped-def]
+        data_type = data.get(self.type_field)
+        if self.type_field not in data:
+            data[self.type_field] = FileType.gsheets.value
+            data_type = FileType.gsheets.value
+        if self.type_field in data and self.type_field_remove:
+            data.pop(self.type_field)
+        return data_type
 
 
 @attr.s(frozen=True, kw_only=True)
@@ -119,19 +147,45 @@ class CleanupApiSchema(ma.Schema):
     tenant_id = ma.fields.String(required=True)
 
 
-class UpdateConnectionDataRequestSchema(ma.Schema):
-    class UpdateConnectionDataSourceSchema(ma.Schema):
-        id = ma.fields.String(attribute="source_id")
-        title = ma.fields.String()
-        spreadsheet_id = ma.fields.String()
-        sheet_id = ma.fields.Integer()
-        first_line_is_header = ma.fields.Boolean()
+class UpdateConnectionDataSourceSchemaBase(ma.Schema):
+    id = ma.fields.String(attribute="source_id")
+    title = ma.fields.String()
+    first_line_is_header = ma.fields.Boolean()
 
+
+class UpdateConnectionDataSourceSchemaGSheets(UpdateConnectionDataSourceSchemaBase):
+    spreadsheet_id = ma.fields.String(load_default=None)
+    sheet_id = ma.fields.Integer(load_default=None)
+
+
+class UpdateConnectionDataSourceSchemaYaDocs(UpdateConnectionDataSourceSchemaBase):
+    public_link = ma.fields.String(load_default=None)
+    private_path = ma.fields.String(load_default=None)
+    sheet_id = ma.fields.String(load_default=None)
+
+
+class UpdateConnectionDataRequestSchemaBase(ma.Schema):
+    type = ma.fields.Enum(FileType)
     connection_id = ma.fields.String()
     save = ma.fields.Boolean()
-    sources = ma.fields.Nested(UpdateConnectionDataSourceSchema, many=True)
     authorized = ma.fields.Boolean()
     tenant_id = ma.fields.String(allow_none=True)
+
+
+class UpdateConnectionDataRequestSchemaGSheets(UpdateConnectionDataRequestSchemaBase):
+    sources = ma.fields.Nested(UpdateConnectionDataSourceSchemaGSheets, many=True)
+
+
+class UpdateConnectionDataRequestSchemaYaDocs(UpdateConnectionDataRequestSchemaBase):
+    sources = ma.fields.Nested(UpdateConnectionDataSourceSchemaYaDocs, many=True)
+
+
+class UpdateConnectionDataRequestSchema(FileTypeOneOfSchema):
+    type_schemas: dict[str, Type[UpdateConnectionDataRequestSchemaBase]] = {
+        # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[UpdateConnectionDataRequestSchemaBase]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
+        FileType.gsheets.name: UpdateConnectionDataRequestSchemaGSheets,
+        FileType.yadocs.name: UpdateConnectionDataRequestSchemaYaDocs,
+    }
 
 
 @attr.s
@@ -189,10 +243,12 @@ class FileUploaderClient(BIAioHTTPClient):
         sources: list[GSheetsFileSourceDesc | YaDocsFileSourceDesc],
         authorized: bool,
         tenant_id: Optional[str],
+        file_type: FileType,
     ) -> None:
         path = "/api/v2/update_connection_data_internal"
         json_data = UpdateConnectionDataRequestSchema().dump(
             dict(
+                type=file_type,
                 connection_id=conn_id,
                 save=True,
                 sources=sources,
