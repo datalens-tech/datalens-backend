@@ -141,6 +141,7 @@ class AvatarRelationSchema(DefaultStorageSchema):
     join_type = ma_fields.Enum(JoinType)
     managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
     valid = ma_fields.Boolean(allow_none=True)
+    required = ma_fields.Boolean(load_default=False, dump_default=False)
 
 
 class RLSSchema(DefaultStorageSchema):
