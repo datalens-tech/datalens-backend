@@ -4,6 +4,7 @@ from typing import ClassVar
 from dl_constants.enums import FileProcessingStatus
 from dl_core.connectors.base.lifecycle import ConnectionLifecycleManager
 from dl_core.reporting.notifications import get_notification_record
+from dl_core.services_registry.file_uploader_client_factory import FileType
 from dl_core.utils import (
     make_user_auth_cookies,
     make_user_auth_headers,
@@ -12,7 +13,6 @@ from dl_core.utils import (
 from dl_connector_bundle_chs3.chs3_base.core.constants import NOTIF_TYPE_STALE_DATA
 from dl_connector_bundle_chs3.chs3_base.core.lifecycle import BaseFileS3ConnectionLifecycleManager
 from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
-from dl_connector_bundle_chs3.enums import FileType
 
 
 class GSheetsFileS3ConnectionLifecycleManager(
