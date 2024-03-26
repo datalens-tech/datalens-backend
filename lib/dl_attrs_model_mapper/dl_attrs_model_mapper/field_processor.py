@@ -19,7 +19,7 @@ from dl_attrs_model_mapper.utils import (
 )
 
 
-_TARGET_TV = TypeVar("_TARGET_TV")
+_TARGET_TV = TypeVar("_TARGET_TV", bound=attr.AttrsInstance)
 _PROCESSING_OBJECT_TV = TypeVar("_PROCESSING_OBJECT_TV")
 
 
@@ -123,10 +123,9 @@ class Processor(Generic[_PROCESSING_OBJECT_TV]):
         raise AssertionError(f"Can not process container type {container_type}")
 
     def process(self, target: _TARGET_TV) -> _TARGET_TV:
-        assert attr.has(type(target))
         changes = {}
 
-        for attr_ib in attr.fields(type(target)):  # type: ignore  # 2024-01-29 # TODO: Argument 1 to "fields" has incompatible type "type[_TARGET_TV]"; expected "type[AttrsInstance]"  [arg-type]
+        for attr_ib in attr.fields(type(target)):
             current_value = getattr(target, attr_ib.name)
 
             meta = self._create_field_meta(attr_ib)

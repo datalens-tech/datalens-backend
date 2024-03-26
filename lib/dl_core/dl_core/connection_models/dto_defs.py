@@ -4,15 +4,12 @@ from typing import (
     Any,
     ClassVar,
     Optional,
-    TypeVar,
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_constants.enums import ConnectionType
-
-
-_CONN_DTO_TV = TypeVar("_CONN_DTO_TV")
 
 
 @attr.s(frozen=True)
@@ -26,8 +23,8 @@ class ConnDTO:
             connection_id=self.conn_id,
         )
 
-    def clone(self: _CONN_DTO_TV, **kwargs: Any) -> _CONN_DTO_TV:
-        return attr.evolve(self, **kwargs)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "evolve" has a variable type "_CONN_DTO_TV" not bound to an attrs class  [misc]
+    def clone(self, **kwargs: Any) -> Self:
+        return attr.evolve(self, **kwargs)
 
 
 @attr.s(frozen=True)
