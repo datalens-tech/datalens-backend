@@ -251,8 +251,6 @@ class FuncColor(FuncMarkup):
     ]
     variants = make_variants("cl")
 
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
-
 
 class FuncSize(FuncMarkup):
     name = "size"
@@ -263,14 +261,12 @@ class FuncSize(FuncMarkup):
         ArgTypeSequence([MARKUP_EFFECTIVELY, DataType.STRING]),
     ]
     variants = make_variants("sz")
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class FuncBr(FuncMarkup):
     name = "br"
     arg_cnt = 0
     variants = make_variants("br")
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 DEFINITIONS_MARKUP = [

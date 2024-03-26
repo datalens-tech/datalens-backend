@@ -1,7 +1,9 @@
 from dl_formula_ref.categories.markup import CATEGORY_MARKUP
+from dl_formula_ref.i18n.registry import FormulaRefTranslatable as Translatable
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.example import SimpleExample
+from dl_formula_ref.registry.note import Note
 
 
 _ = get_gettext()
@@ -40,20 +42,36 @@ FUNCTION_MARKUP = FunctionDocRegistryItem(
 FUNCTION_COLOR = FunctionDocRegistryItem(
     name="color",
     category=CATEGORY_MARKUP,
-    description=_("Stylizes the passed text with the passed color."),
+    description=_("Enables specifying the color for the provided text."),
+    examples=[
+        SimpleExample("COLOR([text], '#5282ff')"),
+        SimpleExample("COLOR([text], 'blue')"),
+        SimpleExample("COLOR([text], 'rgb(82, 130, 255)')"),
+        SimpleExample("COLOR([text], 'rgba(82, 130, 255, 0.5)')"),
+    ],
+    notes=[
+        Note(
+            Translatable("You can specify the color in any web format, such as HEX, keyword (e.g., `green`), RGB, etc.")
+        ),
+    ],
 )
-
 
 FUNCTION_SIZE = FunctionDocRegistryItem(
     name="size",
     category=CATEGORY_MARKUP,
-    description=_("Stylizes the passed text with the passed size."),
+    description=_("Enables specifying the size (in pixels) for the provided text."),
+    examples=[
+        SimpleExample("SIZE([text], '26px')"),
+    ],
 )
 
 FUNCTION_BR = FunctionDocRegistryItem(
     name="br",
     category=CATEGORY_MARKUP,
     description=_("Adds a line break."),
+    examples=[
+        SimpleExample("'Line 1' + BR() + 'Line 2'"),
+    ],
 )
 
 FUNCTIONS_MARKUP = [
