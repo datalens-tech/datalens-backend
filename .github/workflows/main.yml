@@ -211,6 +211,10 @@ jobs:
           --root_pkgs="lib,app" | tee -a  >> "$GITHUB_OUTPUT"
       env:
         TEST_TARGET_OVERRIDE: ${{ github.event.inputs.test_targets }}
+    - name: Print affected packages
+      run: |
+        echo "Affected packages: ${{ steps.get_affected.outputs.affected }}"
+        echo "Affected packages, including skipped in CI: ${{ steps.get_affected.outputs.all_affected_with_skips }}"
 
   check-skip-tests-label:
     name: Check PR skip tests label
