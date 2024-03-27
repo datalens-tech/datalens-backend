@@ -197,7 +197,8 @@ FUNCTION_IF = FunctionDocRegistryItem(
     description=_(
         "Checks conditional expressions {arg:0}, {arg:1}, ... and returns the "
         "matching result for the first condition found to be `TRUE`. IF all "
-        "conditional expressions are `FALSE`, it returns {arg:4}."
+        "conditional expressions are `FALSE`, it returns {arg:4}. "
+        "The expressions to be checked are set using logical operators."
     ),
     signature_gen=TemplatedSignatureGenerator(
         placement_mode=SignaturePlacement.tabbed,

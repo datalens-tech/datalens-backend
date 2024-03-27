@@ -339,16 +339,22 @@ FUNCTION_OP_LIKE = FunctionDocRegistryItem(
         "You can specify the value in {arg:1} or use the `%` character to match a "
         "string of any length.\n"
         "\n"
-        "The `{argn:0} NOT LIKE` option returns the opposite value."
+        "The `{argn:0} NOT LIKE` option returns the opposite value.\n"
+        "\n"
+        "When comparing values, the function is case-sensitive. "
+        "You can use `LIKE` along with {ref:UPPER} or {ref:LOWER} for case-insensitive comparison."
     ),
     signature_gen=TemplatedSignatureGenerator(signature_templates=(SignatureTemplate(body="{1} [ NOT ] LIKE {2}"),)),
     examples=[
         SimpleExample(example_str)
         for example_str in (
             '"raspberry" LIKE "%spb%" = TRUE',
+            '"raspberry" LIKE "%SPB%" = FALSE',
             '"raspberry" NOT LIKE "%spb%" = FALSE',
             "IIF([Country] LIKE 'RU', 'Y', 'N')",
             "IIF([Phone] LIKE '+7%', 'RU', 'notRU')",
+            'UPPER("raspberry") LIKE "%SPB%" = TRUE',
+            'UPPER("West") LIKE "WEST" = TRUE',
         )
     ],
 )
@@ -417,17 +423,25 @@ FUNCTION_OP_BETWEEN = FunctionDocRegistryItem(
     name="between",
     category=CATEGORY_OPERATOR,
     description=_(
-        "Returns `TRUE` if {arg:0} is in the range from {arg:1} to {arg:2}.\n"
+        "Returns `TRUE` if {arg:0} is in the range from {arg:1} to {arg:2} inclusive.\n"
         "\n"
         "The option `{argn:0} NOT BETWEEN {argn:1} AND {argn:2}` returns the "
         "opposite value."
     ),
+    notes=[
+        Note(
+            Translatable("Arguments {arg:0}, {arg:1}, {arg:2} must be of the same type."),
+        ),
+    ],
     signature_gen=TemplatedSignatureGenerator(
         signature_templates=(SignatureTemplate(body="{1} [ NOT ] BETWEEN {2} AND {3}"),)
     ),
     examples=[
         SimpleExample("3 BETWEEN 1 AND 100 = TRUE"),
+        SimpleExample("100 BETWEEN 1 AND 100 = TRUE"),
         SimpleExample("3 NOT BETWEEN 1 AND 100 = FALSE"),
+        SimpleExample("#2018-01-12# BETWEEN #2018-01-10# AND #2018-01-15# = TRUE"),
+        SimpleExample("#2018-01-12 01:02:10# BETWEEN #2018-01-12 01:02:00# AND #2018-01-12 01:02:30# = TRUE"),
     ],
 )
 
