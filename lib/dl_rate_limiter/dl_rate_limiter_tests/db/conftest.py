@@ -35,7 +35,6 @@ def fixture_session_sync_redis_client(redis_hostport: HostPort) -> redis.Redis:
 
 @pytest.fixture(scope="function", name="sync_redis_client")
 def fixture_sync_redis_client(session_sync_redis_client: redis.Redis) -> redis.Redis:
-    print(session_sync_redis_client)
     session_sync_redis_client.flushall()
     session_sync_redis_client.function_flush()
 
