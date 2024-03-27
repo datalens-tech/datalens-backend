@@ -23,4 +23,6 @@ DEFINITIONS_MARKUP = [
     base.FuncColor.for_dialect(D.ORACLE),
     # br
     base.FuncBr.for_dialect(D.ORACLE),
+    # image
+    base.FuncImage.for_dialect(D.ORACLE),
 ]

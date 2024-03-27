@@ -23,4 +23,6 @@ DEFINITIONS_MARKUP = [
     base.FuncColor.for_dialect(D.MSSQLSRV),
     # br
     base.FuncBr.for_dialect(D.MSSQLSRV),
+    # image
+    base.FuncImage.for_dialect(D.MSSQLSRV),
 ]

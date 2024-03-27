@@ -23,4 +23,6 @@ DEFINITIONS_MARKUP = [
     base.FuncColor.for_dialect(D.MYSQL),
     # br
     base.FuncBr.for_dialect(D.MYSQL),
+    # image
+    base.FuncImage.for_dialect(D.MYSQL),
 ]
