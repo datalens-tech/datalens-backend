@@ -5,6 +5,7 @@ from typing import (
     Set,
 )
 
+from dl_formula.core import exc
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import StandardDialect as D
 from dl_formula.definitions.args import (
@@ -107,7 +108,11 @@ class FuncInternalStr(FuncInternalStrBase):
 
 def concat(nodes):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     nodes = concat_strings(nodes)
-    nodes_processed = [n.func.__STR(node) for node in nodes]
+    nodes_processed = list()
+    for node in nodes:
+        if isinstance(node, int):
+            node = str(node)
+        nodes_processed.append(n.func.__STR(node))
 
     if len(nodes_processed) == 1:
         return nodes_processed[0]
@@ -127,6 +132,12 @@ def process_markup_child(node):  # type: ignore  # 2024-01-24 # TODO: Function i
     if node.data_type == DataType.CONST_STRING:
         value = node.expression.value
         return "".join((MARK_QUOT, str(value).replace(MARK_QUOT, MARK_QUOT + MARK_QUOT), MARK_QUOT))
+    if node.data_type == DataType.CONST_INTEGER:
+        return node.expression.value
+    if node.data_type == DataType.INTEGER:
+        concat(node)
+    if node.data_type == DataType.NULL and node.base_token == "image":
+        return '""'
     if node.data_type == DataType.NULL:
         return node
     raise Exception("Unexpected markup child type", node)
@@ -269,6 +280,33 @@ class FuncBr(FuncMarkup):
     variants = make_variants("br")
 
 
+def img_markup_variants(width, height) -> list[TranslationVariantWrapped]:
+    if int(width) > 0 and int(height) > 0:
+        return make_variants("img")
+    else:
+        raise exc.TranslationError("The width and height must be positive numbers")
+
+
+class FuncImage(FuncMarkup):
+    name = "image"
+    arg_cnt = 4
+    arg_names = ["src", "width", "height", "alt"]
+    argument_types = [
+        # image( null|str, null|int, null|int, null|str)
+        ArgTypeSequence(
+            [
+                DataType.STRING.autocast_types | DataType.NULL.autocast_types,
+                DataType.INTEGER.autocast_types | DataType.CONST_INTEGER.autocast_types | DataType.NULL.autocast_types,
+                DataType.INTEGER.autocast_types | DataType.CONST_INTEGER.autocast_types | DataType.NULL.autocast_types,
+                DataType.STRING.autocast_types | DataType.NULL.autocast_types,
+            ]
+        ),
+    ]
+    # variants = make_variants("img")  # TODO: arguments validation
+    variants = make_variants("img")
+    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
+
+
 DEFINITIONS_MARKUP = [
     # +
     BinaryPlusMarkup,
@@ -289,4 +327,6 @@ DEFINITIONS_MARKUP = [
     FuncColor,
     # br
     FuncBr,
+    # image
+    FuncImage,
 ]

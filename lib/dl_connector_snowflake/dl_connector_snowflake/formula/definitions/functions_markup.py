@@ -23,4 +23,6 @@ DEFINITIONS_MARKUP = [
     base.FuncColor.for_dialect(D.SNOWFLAKE),
     # br
     base.FuncBr.for_dialect(D.SNOWFLAKE),
+    # image
+    base.FuncImage.for_dialect(D.SNOWFLAKE),
 ]

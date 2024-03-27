@@ -23,4 +23,6 @@ DEFINITIONS_MARKUP = [
     base.FuncColor.for_dialect(D.YQL),
     # br
     base.FuncBr.for_dialect(D.YQL),
+    # image
+    base.FuncImage.for_dialect(D.YQL),
 ]
