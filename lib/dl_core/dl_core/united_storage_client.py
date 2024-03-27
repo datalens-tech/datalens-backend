@@ -330,7 +330,7 @@ class UStorageClientBase:
         return "/".join(map(lambda s: s.strip("/"), (self.host, self.prefix, relative_url)))
 
     @staticmethod
-    def _log_request_start(request_data: RequestData):  # type: ignore  # TODO: fix
+    def _log_request_start(request_data: RequestData) -> None:
         LOGGER.info(
             "Asking UnitedStorage: method: %s, url: %s, params:(%s)",
             request_data.method,
@@ -339,7 +339,7 @@ class UStorageClientBase:
         )
 
     @classmethod
-    def _get_us_json_from_response(cls, response: ResponseAdapter):  # type: ignore  # TODO: fix
+    def _get_us_json_from_response(cls, response: ResponseAdapter) -> dict:
         LOGGER.info(
             "Got %s from UnitedStorage (%s %s), content length: %s, request-id: %s, elapsed: %s",
             response.status_code,
@@ -380,12 +380,12 @@ class UStorageClientBase:
             LOGGER.info("Got http status %s with invalid json %s from US", response.status_code, response.content)
             raise exc.USInvalidResponse from ex
 
-    def _raise_for_disabled_interactions(self):  # type: ignore  # TODO: fix
+    def _raise_for_disabled_interactions(self) -> None:
         if self._disabled:
             raise exc.USInteractionDisabled("Interaction with US is forbidden")
 
     @contextmanager
-    def interaction_disabled(self):  # type: ignore  # TODO: fix
+    def interaction_disabled(self) -> Generator[None, None, None]:
         try:
             self._disabled = True
             yield

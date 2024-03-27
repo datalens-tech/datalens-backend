@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    NoReturn,
+)
 
-import attr
 from flask import request
 from flask_restx import abort
 from marshmallow import ValidationError as MValidationError
@@ -27,11 +29,7 @@ from dl_api_lib.schemas.connection import (
     GenericConnectionSchema,
 )
 from dl_api_lib.utils import need_permission_on_entry
-from dl_constants.enums import (
-    ConnectionType,
-    DashSQLQueryType,
-    UserDataType,
-)
+from dl_constants.enums import ConnectionType
 from dl_constants.exc import DLBaseException
 from dl_core.data_source.type_mapping import get_data_source_class
 from dl_core.data_source_merge_tools import make_spec_from_dict
@@ -51,7 +49,7 @@ LOGGER = logging.getLogger(__name__)
 ns = API.namespace("Connections", path="/connections")
 
 
-def _handle_conn_test_exc(exception: Exception):  # type: ignore  # TODO: fix
+def _handle_conn_test_exc(exception: Exception) -> NoReturn:
     if isinstance(exception, DLBaseException):
         raise exception
     else:

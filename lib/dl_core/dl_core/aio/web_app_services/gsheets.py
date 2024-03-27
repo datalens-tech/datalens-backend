@@ -114,7 +114,7 @@ class GSheetsSettings:
     client_id: str = attr.ib(repr=False)
     client_secret: str = attr.ib(repr=False)
 
-    def __attrs_post_init__(self):  # type: ignore  # monkeypatch point
+    def __attrs_post_init__(self) -> None:  # monkeypatch point
         pass
 
     def bind_to_app(self, app: web.Application) -> None:
