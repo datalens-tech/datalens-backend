@@ -6,11 +6,9 @@ import contextlib
 import ssl
 from typing import (
     TYPE_CHECKING,
-    Dict,
     Generator,
     Optional,
     Sequence,
-    Tuple,
     Type,
     TypeVar,
 )
@@ -101,7 +99,7 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
     async def close(self) -> None:
         await self._session.close()
 
-    execute_err_map: Sequence[Tuple[Type[Exception], Type[exc.DatabaseQueryError]]] = (
+    execute_err_map: Sequence[tuple[Type[Exception], Type[exc.DatabaseQueryError]]] = (
         (aiohttp.client_exceptions.ClientConnectorError, exc.SourceConnectError),
         (exc.AIOHttpConnTimeoutError, exc.SourceConnectError),
         (aiohttp.client_exceptions.ServerTimeoutError, exc.SourceTimeout),
