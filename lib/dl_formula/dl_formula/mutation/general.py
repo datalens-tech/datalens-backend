@@ -306,7 +306,7 @@ class OptimizeConstFuncMutation(FormulaMutation):
                 if isinstance(when_arg, nodes.BaseLiteral):
                     when_expr_value = when_arg.value
                     if when_expr_value != case_expr_value:
-                        # The "when" is not the same aas "case", so skip this branch
+                        # The "when" is not the same as "case", so skip this branch
                         # (don't add it to the optimized CASE)
                         pass
                     else:  # They are equal

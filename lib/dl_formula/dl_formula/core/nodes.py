@@ -322,16 +322,16 @@ class FormulaItem(abc.ABC):
         to_replace: dict[int, FormulaItem] = {}
 
         for idx, child in enumerate(self.__children):
+            modified_child = child.replace_nodes(match_func, replace_func, parent_stack_w_self)
+            if modified_child is not child or modified_child != child:
+                child = to_replace[idx] = modified_child
+                is_modified = True
+
             if match_func(child, parent_stack_w_self):
                 modified_child = replace_func(child, parent_stack_w_self)
                 if modified_child is not child or modified_child != child:
-                    child = to_replace[idx] = modified_child
+                    to_replace[idx] = modified_child
                     is_modified = True
-
-            modified_child = child.replace_nodes(match_func, replace_func, parent_stack_w_self)
-            if modified_child is not child or modified_child != child:
-                to_replace[idx] = modified_child
-                is_modified = True
 
         if is_modified:
             children = cast(
