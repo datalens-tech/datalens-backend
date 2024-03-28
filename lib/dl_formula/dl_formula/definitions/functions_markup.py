@@ -132,10 +132,10 @@ def process_markup_child(node):  # type: ignore  # 2024-01-24 # TODO: Function i
     if node.data_type == DataType.CONST_STRING:
         value = node.expression.value
         return "".join((MARK_QUOT, str(value).replace(MARK_QUOT, MARK_QUOT + MARK_QUOT), MARK_QUOT))
-    if node.data_type == DataType.INTEGER:
+    if node.data_type == DataType.INTEGER or node.data_type == DataType.CONST_INTEGER:
         return node.expression.value
-    if node.data_type == DataType.CONST_INTEGER:
-        return node.expression.value
+    if node.data_type == DataType.NULL and node.base_token == "image":
+        return '""'
     if node.data_type == DataType.NULL:
         return node
     raise Exception("Unexpected markup child type", node)

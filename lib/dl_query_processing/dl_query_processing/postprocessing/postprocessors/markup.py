@@ -114,7 +114,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
         return self._make_node(self.node_userinfo, str(user_id), str(user_info))
 
     def n_img(self, src: str, width: int, height: int, alt: str) -> _NODE_TV:
-        return self._make_node(self.node_image, str(src), width, height, str(alt))
+        return self._make_node(self.node_image, src, width, height, alt)
 
     # Node-structure into a string
 
@@ -122,7 +122,9 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
         if isinstance(node, str):
             return self._quote(node)
         if isinstance(node, int):
-            return str(node)
+            return self._quote(str(node))
+        if node is None:
+            return '""'
         if not isinstance(node, self._node_cls):
             raise ValueError("Value should be a node or a str")
         funcname, funcargs = self._unpack_node(node)
@@ -310,6 +312,21 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
             if len(funcargs) != 4:
                 return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=4)
             src, width, height, alt = funcargs
+            src = None if src == "" else src
+            alt = None if alt == "" else alt
+            if width != "":
+                width = int(width)
+                if width < 0:
+                    raise ValueError("Width can only be greater than 0")
+            else:
+                width = None
+
+            if height != "":
+                height = int(height)
+                if height < 0:
+                    raise ValueError("Height can only be greater than 0")
+            else:
+                height = None
             return dict(type="img", src=src, width=width, height=height, alt=alt)
 
         raise self.DumpError("Unknown func", node)

@@ -18,7 +18,7 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
         MPP.n_br(),
         MPP.n_cl(MPP.n_sz("col2", "L"), "#dddddd"),
         MPP.n_userinfo("123", "email"),
-        MPP.n_img("src", None, None, "img_text"),
+        MPP.n_img("src", "", 18, None),
     )
     if MPP._dbg:
         print("formulated:", formulated)
@@ -35,7 +35,7 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
             ("br",),
             ("cl", ("sz", "col2", "L"), "#dddddd"),
             ("userinfo", "123", "email"),
-            ("img", "src", 15, 18, "img_text"),
+            ("img", "src", "", 18, None),
         )
         assert formulated == expected
     dumped = MPP.dump(formulated)
@@ -43,7 +43,7 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
         print("dumped:", repr(dumped))
     assert (
         dumped
-        == '(c "url: """ (a "col1" "col2") """; """ (i (b (a "col3" "col4"))) """" "" (br ) (cl (sz "col2" "L") "#dddddd") (userinfo "123" "email") (img "src" "15" "18" "img_text"))'
+        == '(c "url: """ (a "col1" "col2") """; """ (i (b (a "col3" "col4"))) """" "" (br ) (cl (sz "col2" "L") "#dddddd") (userinfo "123" "email") (img "src" "" "18" ""))'
     )
     parsed = MPP.parse(dumped)
     if MPP._dbg:
@@ -79,8 +79,8 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
                 "type": "img",
                 "src": "src",
                 "width": None,
-                "height": None,
-                "alt": "img_text",
+                "height": 18,
+                "alt": None,
             },
         ],
     }
