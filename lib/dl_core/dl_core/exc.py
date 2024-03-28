@@ -247,6 +247,11 @@ class USAccessDeniedException(USReqException):
     err_code = USReqException.err_code + ["ACCESS_DENIED"]
 
 
+class USWorkbookIsolationInterruptionException(USReqException):
+    default_message = "Workbook isolation interruption"
+    err_code = USReqException.err_code + ["WORKBOOK_ISOLATION_INTERRUPTION"]
+
+
 class USLockUnacquiredException(USReqException):
     default_message = "Object locked"
     err_code = USReqException.err_code + ["ENTRY_LOCKED"]

@@ -241,6 +241,7 @@ class UStorageClientBase:
     ERROR_MAP: list[tuple[int, Optional[re.Pattern], Type[exc.USReqException]]] = [
         (400, None, exc.USBadRequestException),
         (403, None, exc.USAccessDeniedException),
+        (403, re.compile("Workbook isolation interruption"), exc.USWorkbookIsolationInterruptionException),
         (404, None, exc.USObjectNotFoundException),
         (409, re.compile("The entry already exists"), exc.USAlreadyExistsException),
         (409, None, exc.USIncorrectTenantIdException),
