@@ -12,10 +12,10 @@ from typing import (
     Sequence,
     Set,
     Tuple,
-    TypeVar,
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_constants.enums import (
     JoinType,
@@ -30,9 +30,6 @@ from dl_query_processing.enums import (
     ExecutionLevel,
     QueryPart,
 )
-
-
-_COMPILED_FLA_TV = TypeVar("_COMPILED_FLA_TV", bound="CompiledFormulaInfo")
 
 
 @attr.s(slots=True, frozen=True)
@@ -100,7 +97,7 @@ class CompiledFormulaInfo:
         )
         return text
 
-    def clone(self: _COMPILED_FLA_TV, **updates: Any) -> _COMPILED_FLA_TV:
+    def clone(self, **updates: Any) -> Self:
         return attr.evolve(self, **updates)
 
 
@@ -150,9 +147,6 @@ class CompiledJoinOnFormulaInfo(CompiledFormulaInfo):  # noqa
         )
 
 
-_FROM_OBJ_TV = TypeVar("_FROM_OBJ_TV", bound="FromObject")
-
-
 @attr.s(frozen=True)
 class FromColumn:
     id: str = attr.ib(kw_only=True)
@@ -187,7 +181,7 @@ class FromObject:
             ),
         )
 
-    def clone(self: _FROM_OBJ_TV, **updates: Any) -> _FROM_OBJ_TV:
+    def clone(self, **updates: Any) -> Self:
         return attr.evolve(self, **updates)
 
 
@@ -343,9 +337,6 @@ class SubqueryFromObject(FromObject):
     query_id: str = attr.ib(kw_only=True)
 
 
-_MULTI_QUERY_TV = TypeVar("_MULTI_QUERY_TV", bound="CompiledMultiQueryBase")
-
-
 @attr.s(frozen=True)
 class CompiledMultiQueryBase(abc.ABC):
     @property
@@ -376,7 +367,7 @@ class CompiledMultiQueryBase(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def for_level_type(self: _MULTI_QUERY_TV, level_type: ExecutionLevel) -> _MULTI_QUERY_TV:
+    def for_level_type(self, level_type: ExecutionLevel) -> Self:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -391,7 +382,7 @@ class CompiledMultiQueryBase(abc.ABC):
     def get_base_root_from_ids(self) -> AbstractSet[str]:
         raise NotImplementedError
 
-    def clone(self: _MULTI_QUERY_TV, **updates: Any) -> _MULTI_QUERY_TV:
+    def clone(self, **updates: Any) -> Self:
         return attr.evolve(self, **updates)
 
     def get_complexity(self) -> int:

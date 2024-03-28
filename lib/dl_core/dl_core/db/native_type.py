@@ -11,6 +11,7 @@ from typing import (
 
 import attr
 from sqlalchemy.types import TypeEngine
+from typing_extensions import Self
 
 
 SATypeSpec = Union[Type[TypeEngine], TypeEngine, str, None]
@@ -35,9 +36,6 @@ def norm_native_type(native_t: SATypeSpec) -> Optional[str]:
     return native_t_name.lower()
 
 
-_GENERIC_NATIVE_TYPE_TV = TypeVar("_GENERIC_NATIVE_TYPE_TV", bound="GenericNativeType")
-
-
 @attr.s(frozen=True)
 class GenericNativeType:
     """
@@ -48,20 +46,16 @@ class GenericNativeType:
     name: str = attr.ib()
 
     @classmethod
-    def normalize_name_and_create(
-        cls: Type[_GENERIC_NATIVE_TYPE_TV],
-        name: SATypeSpec,
-    ) -> _GENERIC_NATIVE_TYPE_TV:
+    def normalize_name_and_create(cls, name: SATypeSpec) -> Self:
         normalized_name = norm_native_type(name)
-        return cls(
-            name=normalized_name,  # type: ignore  # TODO: fix
-        )
+        assert normalized_name is not None
+        return cls(name=normalized_name)
 
     @property
     def as_generic(self) -> GenericNativeType:  # for subclasses
         return GenericNativeType(name=self.name)
 
-    def as_common(self, default_nullable=True) -> CommonNativeType:  # type: ignore  # TODO: fix
+    def as_common(self, default_nullable: bool = True) -> CommonNativeType:
         """
         Helper method that converts a GenericNativeType object to a
         CommonNativeType object with the specified `nullable` value; for
@@ -69,7 +63,7 @@ class GenericNativeType:
         """
         return CommonNativeType(name=self.name, nullable=default_nullable)
 
-    def clone(self: _GENERIC_NATIVE_TYPE_TV, **kwargs: Any) -> _GENERIC_NATIVE_TYPE_TV:
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
 
 
@@ -82,18 +76,12 @@ class CommonNativeType(GenericNativeType):
     nullable: bool = attr.ib(default=True)
 
     @classmethod
-    def normalize_name_and_create(
-        cls: Type[_COMMON_NATIVE_TYPE_TV],
-        name: SATypeSpec,
-        nullable: bool = True,
-    ) -> _COMMON_NATIVE_TYPE_TV:
+    def normalize_name_and_create(cls, name: SATypeSpec, nullable: bool = True) -> Self:
         normalized_name = norm_native_type(name)
-        return cls(
-            name=normalized_name,  # type: ignore  # TODO: fix
-            nullable=nullable,
-        )
+        assert normalized_name is not None
+        return cls(name=normalized_name, nullable=nullable)
 
-    def as_common(self: _COMMON_NATIVE_TYPE_TV, default_nullable=None) -> _COMMON_NATIVE_TYPE_TV:  # type: ignore  # TODO: fix
+    def as_common(self, default_nullable: bool = True) -> Self:
         return self
 
 

@@ -13,11 +13,11 @@ from typing import (
     NamedTuple,
     Optional,
     Type,
-    TypeVar,
     Union,
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_constants.enums import (
     AggregationFunction,
@@ -71,16 +71,13 @@ class SetParameterValueConstraint(ParameterValueConstraint):
         return any([v.value == value for v in self.values])
 
 
-_CALC_SPEC_TV = TypeVar("_CALC_SPEC_TV", bound="CalculationSpec")
-
-
 @attr.s(frozen=True)
 class CalculationSpec:
     """Defines how the field's expression is constructed"""
 
     mode: ClassVar[CalcMode]  # Different enum value for each subclass
 
-    def clone(self: _CALC_SPEC_TV, **kwargs: Any) -> _CALC_SPEC_TV:
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
 
     def depends_on(self, field: BIField) -> bool:

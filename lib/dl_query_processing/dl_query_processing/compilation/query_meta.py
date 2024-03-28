@@ -5,10 +5,10 @@ from typing import (
     Hashable,
     NamedTuple,
     Optional,
-    TypeVar,
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_core.constants import DataAPILimits
 from dl_query_processing.enums import (
@@ -19,9 +19,6 @@ from dl_query_processing.enums import (
 
 class QueryElementExtract(NamedTuple):
     values: tuple[Optional[Hashable], ...]
-
-
-_QUERY_META_TV = TypeVar("_QUERY_META_TV", bound="QueryMetaInfo")
 
 
 @attr.s
@@ -53,5 +50,5 @@ class QueryMetaInfo:
         assert self.field_order is not None
         return [field_id for idx, field_id in self.field_order]
 
-    def clone(self: _QUERY_META_TV, **updates: Any) -> _QUERY_META_TV:
+    def clone(self, **updates: Any) -> Self:
         return attr.evolve(self, **updates)

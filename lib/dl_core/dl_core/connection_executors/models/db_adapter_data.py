@@ -3,17 +3,16 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
     Mapping,
     Optional,
     Sequence,
     Tuple,
-    TypeVar,
     Union,
 )
 
 import attr
 from sqlalchemy.sql.elements import ClauseElement
+from typing_extensions import Self
 
 
 if TYPE_CHECKING:
@@ -28,7 +27,7 @@ class ExecutionStep:
 
 @attr.s(frozen=True)
 class ExecutionStepCursorInfo(ExecutionStep):  # type: ignore  # TODO: fix
-    cursor_info: Dict = attr.ib(factory=lambda: {})
+    cursor_info: dict = attr.ib(factory=dict)
     # Definitely not to be serialized:
     raw_cursor_description = attr.ib(default=None)  # type: ignore  # TODO: fix
     raw_engine = attr.ib(default=None)  # type: ignore  # TODO: fix
@@ -37,9 +36,6 @@ class ExecutionStepCursorInfo(ExecutionStep):  # type: ignore  # TODO: fix
 @attr.s(frozen=True)
 class ExecutionStepDataChunk(ExecutionStep):
     chunk: Sequence[Sequence] = attr.ib()
-
-
-_DB_ADAPTER_QUERY_TV = TypeVar("_DB_ADAPTER_QUERY_TV", bound="DBAdapterQuery")
 
 
 @attr.s(frozen=True)
@@ -64,7 +60,7 @@ class DBAdapterQuery:
         else:
             return self.chunk_size
 
-    def clone(self: _DB_ADAPTER_QUERY_TV, **kwargs: Any) -> _DB_ADAPTER_QUERY_TV:
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
 
 

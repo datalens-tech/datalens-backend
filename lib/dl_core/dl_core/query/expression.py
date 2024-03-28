@@ -5,10 +5,10 @@ from typing import (
     Any,
     Optional,
     Sequence,
-    TypeVar,
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_constants.enums import OrderDirection
 
@@ -23,9 +23,6 @@ if TYPE_CHECKING:
     from dl_core.components.ids import AvatarId
 
 
-_EXPRESSION_CTX_TV = TypeVar("_EXPRESSION_CTX_TV", bound="ExpressionCtx")
-
-
 @attr.s(auto_attribs=True, frozen=True)
 class ExpressionCtx:
     expression: ClauseElement
@@ -34,7 +31,7 @@ class ExpressionCtx:
     alias: Optional[str] = None
     original_field_id: Optional[Any] = None
 
-    def clone(self: _EXPRESSION_CTX_TV, **kwargs: Any) -> _EXPRESSION_CTX_TV:
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
 
 

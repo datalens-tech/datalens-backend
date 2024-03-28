@@ -6,10 +6,10 @@ from typing import (
     Collection,
     Optional,
     Sequence,
-    TypeVar,
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_constants.enums import (
@@ -23,9 +23,6 @@ from dl_core.query.bi_query import SqlSourceType
 if TYPE_CHECKING:
     from dl_core.base_models import ConnectionRef
     import dl_core.data_source
-
-
-_PREP_FROM_TV = TypeVar("_PREP_FROM_TV", bound="PreparedFromInfo")
 
 
 @attr.s(frozen=True)
@@ -56,7 +53,7 @@ class PreparedFromInfo:
         assert self.sql_source is not None
         return self.sql_source
 
-    def clone(self: _PREP_FROM_TV, **kwargs: Any) -> _PREP_FROM_TV:
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
 
 

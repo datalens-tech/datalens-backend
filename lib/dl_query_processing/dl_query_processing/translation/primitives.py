@@ -14,6 +14,7 @@ from typing import (
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_constants.enums import UserDataType
 from dl_core.components.ids import (
@@ -138,9 +139,6 @@ class TranslatedFlatQuery:
         return not self.select
 
 
-_TRANS_MULTI_QUERY_TV = TypeVar("_TRANS_MULTI_QUERY_TV", bound="TranslatedMultiQueryBase")
-
-
 @attr.s(frozen=True)
 class TranslatedMultiQueryBase(abc.ABC):
     @property
@@ -167,7 +165,7 @@ class TranslatedMultiQueryBase(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def for_level_type(self: _TRANS_MULTI_QUERY_TV, level_type: ExecutionLevel) -> _TRANS_MULTI_QUERY_TV:
+    def for_level_type(self, level_type: ExecutionLevel) -> Self:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -182,7 +180,7 @@ class TranslatedMultiQueryBase(abc.ABC):
     def get_base_root_from_ids(self) -> AbstractSet[str]:
         raise NotImplementedError
 
-    def clone(self: _TRANS_MULTI_QUERY_TV, **updates: Any) -> _TRANS_MULTI_QUERY_TV:
+    def clone(self, **updates: Any) -> Self:
         return attr.evolve(self, **updates)
 
 

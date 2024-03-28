@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import (
     Any,
     Optional,
-    TypeVar,
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_constants.enums import (
     OrderDirection,
@@ -15,14 +15,11 @@ from dl_constants.enums import (
 from dl_pivot.primitives import PivotMeasureSorting
 
 
-_PIVOT_ROLE_SPEC_TV = TypeVar("_PIVOT_ROLE_SPEC_TV", bound="RawPivotRoleSpec")
-
-
 @attr.s(frozen=True)
 class RawPivotRoleSpec:
     role: PivotRole = attr.ib(kw_only=True)
 
-    def clone(self: _PIVOT_ROLE_SPEC_TV, **updates: Any) -> _PIVOT_ROLE_SPEC_TV:
+    def clone(self, **updates: Any) -> Self:
         return attr.evolve(self, **updates)
 
 
