@@ -55,6 +55,7 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
             timeout=self.get_session_timeout(),
             auth=self.get_session_auth(),
             headers=self.get_session_headers(),
+            cookies=self.get_session_cookies(),
             connector=self.create_aiohttp_connector(
                 ssl_context=ssl.create_default_context(
                     cadata=self._target_dto.ca_data,
@@ -88,11 +89,14 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
     def get_session_auth(self) -> Optional[BasicAuth]:
         return None
 
-    def get_session_headers(self) -> Dict[str, str]:
+    def get_session_headers(self) -> dict[str, str]:
         return {
             # TODO: bi_constants / dl_configs.constants
             "user-agent": "DataLens",
         }
+
+    def get_session_cookies(self) -> dict[str, str]:
+        return {}
 
     async def close(self) -> None:
         await self._session.close()
