@@ -6,11 +6,9 @@ import contextlib
 import ssl
 from typing import (
     TYPE_CHECKING,
-    Dict,
     Generator,
     Optional,
     Sequence,
-    Tuple,
     Type,
     TypeVar,
 )
@@ -55,6 +53,7 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
             timeout=self.get_session_timeout(),
             auth=self.get_session_auth(),
             headers=self.get_session_headers(),
+            cookies=self.get_session_cookies(),
             connector=self.create_aiohttp_connector(
                 ssl_context=ssl.create_default_context(
                     cadata=self._target_dto.ca_data,
@@ -88,16 +87,19 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
     def get_session_auth(self) -> Optional[BasicAuth]:
         return None
 
-    def get_session_headers(self) -> Dict[str, str]:
+    def get_session_headers(self) -> dict[str, str]:
         return {
             # TODO: bi_constants / dl_configs.constants
             "user-agent": "DataLens",
         }
 
+    def get_session_cookies(self) -> dict[str, str]:
+        return {}
+
     async def close(self) -> None:
         await self._session.close()
 
-    execute_err_map: Sequence[Tuple[Type[Exception], Type[exc.DatabaseQueryError]]] = (
+    execute_err_map: Sequence[tuple[Type[Exception], Type[exc.DatabaseQueryError]]] = (
         (aiohttp.client_exceptions.ClientConnectorError, exc.SourceConnectError),
         (exc.AIOHttpConnTimeoutError, exc.SourceConnectError),
         (aiohttp.client_exceptions.ServerTimeoutError, exc.SourceTimeout),
