@@ -33,6 +33,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
     node_cl: ClassVar[str] = "cl"
     node_br: ClassVar[str] = "br"
     node_userinfo: ClassVar[str] = "userinfo"
+    node_image: ClassVar[str] = "img"
 
     _node_cls: ClassVar[Type[_NODE_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
@@ -112,11 +113,18 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
     def n_userinfo(self, user_id: str, user_info: str) -> _NODE_TV:
         return self._make_node(self.node_userinfo, str(user_id), str(user_info))
 
+    def n_img(self, src: str, width: int, height: int, alt: str) -> _NODE_TV:
+        return self._make_node(self.node_image, src, width, height, alt)
+
     # Node-structure into a string
 
     def _dump_i(self, node: NodeActual) -> str:
         if isinstance(node, str):
             return self._quote(node)
+        if isinstance(node, int):
+            return self._quote(str(node))
+        if node is None:
+            return '""'
         if not isinstance(node, self._node_cls):
             raise ValueError("Value should be a node or a str")
         funcname, funcargs = self._unpack_node(node)
@@ -249,6 +257,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
         node_cl: dict(name="color", argnames=("content", "color")),
         node_br: dict(name="br"),
         node_userinfo: dict(name="user_info", argnames=("content", "user_info")),
+        node_image: dict(name="image", argnames=("src", "width", "height", "alt")),
     }
 
     def _argcount_mismatch(self, node, **kwargs):  # type: ignore  # TODO: fix
@@ -299,6 +308,27 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
             return dict(
                 type={self.node_i: "italics", self.node_b: "bold"}[funcname], content=self._verbalize_i(funcargs[0])
             )
+        if funcname == self.node_image:
+            if len(funcargs) != 4:
+                return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=4)
+            src, width, height, alt = funcargs
+            src = None if src == "" else src
+            alt = None if alt == "" else alt
+            if width != "":
+                width = int(width)
+                if width < 0:
+                    raise ValueError("Width can only be greater than 0")
+            else:
+                width = None
+
+            if height != "":
+                height = int(height)
+                if height < 0:
+                    raise ValueError("Height can only be greater than 0")
+            else:
+                height = None
+            return dict(type="img", src=src, width=width, height=height, alt=alt)
+
         raise self.DumpError("Unknown func", node)
 
     def verbalize(self, node: Optional[_NODE_TV]) -> Any:
