@@ -1675,6 +1675,7 @@ datalens-cache-engine = {path = "../../lib/dl_cache_engine"}
 datalens-configs = {path = "../../lib/dl_configs"}
 datalens-connector-chyt = {path = "../../lib/dl_connector_chyt"}
 datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
+datalens-connector-mysql = {path = "../../lib/dl_connector_mysql"}
 datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 datalens-connector-ydb = {path = "../../lib/dl_connector_ydb"}
 datalens-constants = {path = "../../lib/dl_constants"}
@@ -1820,6 +1821,7 @@ datalens-cache-engine = {path = "../../lib/dl_cache_engine"}
 datalens-configs = {path = "../../lib/dl_configs"}
 datalens-connector-chyt = {path = "../../lib/dl_connector_chyt"}
 datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
+datalens-connector-mysql = {path = "../../lib/dl_connector_mysql"}
 datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 datalens-connector-ydb = {path = "../../lib/dl_connector_ydb"}
 datalens-constants = {path = "../../lib/dl_constants"}
