@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import (
     Sequence,
     Set,
+    TypeVar,
 )
 
-from dl_formula.core import exc
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import StandardDialect as D
 from dl_formula.definitions.args import (
@@ -33,6 +33,7 @@ MARK_RPAR = ")"
 MARK_SEP = " "
 MARK_QUOT = '"'
 
+_TRANS_VAR_WR_TV = TypeVar("_TRANS_VAR_WR_TV", bound="TranslationVariantWrapped")
 
 class StrictMarkupCompatibleArgTypes(ArgTypeForAll):
     """Markup-compatible arguments with at least one markup argument"""
@@ -278,13 +279,6 @@ class FuncBr(FuncMarkup):
     name = "br"
     arg_cnt = 0
     variants = make_variants("br")
-
-
-def img_markup_variants(width, height) -> list[TranslationVariantWrapped]:
-    if int(width) > 0 and int(height) > 0:
-        return make_variants("img")
-    else:
-        raise exc.TranslationError("The width and height must be positive numbers")
 
 
 class FuncImage(FuncMarkup):
