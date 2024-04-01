@@ -23,4 +23,6 @@ DEFINITIONS_MARKUP = [
     base.FuncColor.for_dialect(D.CLICKHOUSE),
     # br
     base.FuncBr.for_dialect(D.CLICKHOUSE),
+    # image
+    base.FuncImage.for_dialect(D.CLICKHOUSE),
 ]

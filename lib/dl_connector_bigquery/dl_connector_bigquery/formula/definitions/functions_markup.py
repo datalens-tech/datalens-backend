@@ -23,4 +23,6 @@ DEFINITIONS_MARKUP = [
     base.FuncColor.for_dialect(D.BIGQUERY),
     # br
     base.FuncBr.for_dialect(D.BIGQUERY),
+    # image
+    base.FuncImage.for_dialect(D.BIGQUERY),
 ]
