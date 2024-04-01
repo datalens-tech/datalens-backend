@@ -42,6 +42,7 @@ EXCEPTION_CODES = {
     common_exc.DatasetConfigurationError: status.BAD_REQUEST,
     common_exc.ConnectionConfigurationError: status.BAD_REQUEST,
     common_exc.USAccessDeniedException: status.FORBIDDEN,
+    common_exc.USWorkbookIsolationInterruptionException: status.FORBIDDEN,
     common_exc.USObjectNotFoundException: status.NOT_FOUND,
     common_exc.USPermissionCheckError: 530,
     common_exc.USLockUnacquiredException: status.LOCKED,
