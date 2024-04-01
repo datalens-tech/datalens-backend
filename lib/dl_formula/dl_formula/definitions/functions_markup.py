@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Sequence,
     Set,
-    TypeVar,
 )
 
 from dl_formula.core.datatype import DataType
@@ -33,7 +32,6 @@ MARK_RPAR = ")"
 MARK_SEP = " "
 MARK_QUOT = '"'
 
-_TRANS_VAR_WR_TV = TypeVar("_TRANS_VAR_WR_TV", bound="TranslationVariantWrapped")
 
 class StrictMarkupCompatibleArgTypes(ArgTypeForAll):
     """Markup-compatible arguments with at least one markup argument"""
