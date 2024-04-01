@@ -49,7 +49,6 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
     if MPP._dbg:
         print("parsed:    ", parsed)
         print("formulated:", formulated)
-    # assert parsed == formulated
     verbalized = MPP.verbalize(parsed)
     if MPP._dbg:
         print("verbalized:", verbalized)
