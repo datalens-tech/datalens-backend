@@ -93,9 +93,10 @@ class AppSettings:
         "RATE_LIMITER_REDIS",
         missing=None,
     )
-    RATE_LIMITER_CONFIG: RateLimiterConfig = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RateLimiterConfig")  [assignment]
+    RATE_LIMITER_CONFIG: Optional[RateLimiterConfig] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RateLimiterConfig")  [assignment]
         "RATE_LIMITER",
         fallback_factory=lambda cfg: RateLimiterConfig.from_json(cfg.get("RATE_LIMITER")),
+        missing=None,
     )
     SAMPLES_CH_HOSTS: tuple[str, ...] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "tuple[str, ...]")  [assignment]
         "SAMPLES_CH_HOST", env_var_converter=split_by_comma, missing_factory=list
