@@ -355,12 +355,12 @@ class JoinCondition:
 class AvatarRelation(ApiProxyObject):
     left_avatar_id: str = attr.ib(default=None)
     right_avatar_id: str = attr.ib(default=None)
-    conditions: List[JoinCondition] = attr.ib(factory=list)
+    conditions: list[JoinCondition] = attr.ib(factory=list)
     join_type: JoinType = attr.ib(default=JoinType.inner)
     managed_by: ManagedBy = attr.ib(default=ManagedBy.user)
     required: bool = attr.ib(default=False)
 
-    def on(self, *conditions: List[JoinCondition]) -> AvatarRelation:
+    def on(self, *conditions: JoinCondition) -> AvatarRelation:
         self.conditions += conditions
         return self
 
