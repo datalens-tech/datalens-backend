@@ -15,7 +15,6 @@ from dl_formula.core import (
     nodes,
 )
 from dl_formula.core.datatype import DataType
-from dl_formula.definitions.literals import un_literal
 from dl_formula.shortcuts import n
 
 
@@ -38,55 +37,6 @@ def normalize_and_validate_datetime_interval_type(type_name: str) -> str:
     if type_name not in SUPPORTED_INTERVAL_TYPES:
         raise exc.TranslationError("Invalid interval type: '{}'".format(type_name))
     return type_name
-
-
-YQL_INTERVAL_FUNCS = {
-    "second": "IntervalFromSeconds",
-    "minute": "IntervalFromMinutes",
-    "hour": "IntervalFromHours",
-    "day": "IntervalFromDays",
-}
-YQL_SHIFT_FUNCS = {
-    "month": "ShiftMonths",
-    "quarter": "ShiftQuarters",
-    "year": "ShiftYears",
-}
-
-
-def _date_datetime_add_yql(value_expr, type_expr, mult_expr, *, const_mult: bool) -> ClauseElement:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
-    type_name = un_literal(type_expr)
-    type_name = normalize_and_validate_datetime_interval_type(type_name)
-
-    if not const_mult:
-        # YQL requires a non-nullable mult;
-        # so ensure it is such.
-        mult_expr = sa.func.coalesce(mult_expr, 0)
-
-    if type_name == "week":
-        type_name = "day"
-        mult_expr = mult_expr * 7
-
-    func_name = YQL_INTERVAL_FUNCS.get(type_name)
-    if func_name is not None:
-        func = getattr(sa.func.DateTime, func_name)
-        return value_expr + func(mult_expr)
-
-    func_name = YQL_SHIFT_FUNCS.get(type_name)
-    if func_name is not None:
-        func = getattr(sa.func.DateTime, func_name)
-        return func(value_expr, mult_expr)
-
-    raise ValueError("Unexpectedly unsupported YQL datetime shift", type_name)
-
-
-def date_add_yql(value_expr, type_expr, mult_expr, *, const_mult: bool) -> ClauseElement:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
-    expr = _date_datetime_add_yql(value_expr, type_expr, mult_expr, const_mult=const_mult)
-    return sa.func.DateTime.MakeDate(expr)
-
-
-def datetime_add_yql(value_expr, type_expr, mult_expr, *, const_mult: bool) -> ClauseElement:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
-    expr = _date_datetime_add_yql(value_expr, type_expr, mult_expr, const_mult=const_mult)
-    return sa.func.DateTime.MakeDatetime(expr)
 
 
 def datetime_interval_ch(type_name: str, mult: int) -> ClauseElement:
