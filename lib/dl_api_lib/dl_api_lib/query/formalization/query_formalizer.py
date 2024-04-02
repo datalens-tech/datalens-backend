@@ -507,7 +507,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
         }
 
         # Add avatars that participate in required relations
-        avatar_ids_by_required_relations = functools.reduce(
+        avatar_ids_by_required_relations: set[AvatarId] = functools.reduce(
             or_,
             (
                 {relation.left_avatar_id, relation.right_avatar_id}
