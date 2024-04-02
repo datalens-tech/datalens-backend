@@ -49,7 +49,7 @@ class AvatarTreeResolverBase(abc.ABC):
 
              A0 -->  A1  -->  A2  --> [A4]
                |         --> [A3]
-               |         -->  A5  -r>  A6
+               |         -->  A5  -->  A6
                |
                 --> [F1]  # feature-managed avatar (joined to via an expression that uses a field from A5)
 
@@ -80,11 +80,6 @@ class AvatarTreeResolverBase(abc.ABC):
         Finally ``required_avatar_ids = {A3, A4, F1, A5, A2, A1}``;
         ``required_relation_ids``: ``{A0-F1, A1-A2, A1-A3, A1-A5, A2-A4}``.
 
-        3. Then add all avatars which attached to required_avatar_ids via relation required by user
-        (AvatarRelation.required) and this required relations
-        required_avatar_ids becomes {A3, A4, F1, A5, A2, A1, A6} and
-        ``required_relation_ids``: ``{A0-F1, A1-A2, A1-A3, A1-A5, A2-A4, A5-A6}``.
-
-        4. Return LUCA's ID (``A1``), updated ``required_avatar_ids`` and ``required_relation_ids``.
+        3. Return LUCA's ID (``A1``), updated ``required_avatar_ids`` and ``required_relation_ids``.
         """
         raise NotImplementedError

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import functools
 import logging
+from operator import or_
 import os
 from typing import (
     TYPE_CHECKING,
@@ -503,6 +505,17 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
             for field_id in required_field_ids
             for avatar_id in field_ava_dep_mgr.get_field_avatar_references(field_id)
         }
+
+        # Add avatars that participate in required relations
+        avatar_ids_by_required_relations = functools.reduce(
+            or_,
+            (
+                {relation.left_avatar_id, relation.right_avatar_id} if relation.required else set()
+                for relation in self._ds_accessor.get_avatar_relation_list()
+            ),
+        )
+        LOGGER.info(f"Adding avatars that are a part of required relations: {avatar_ids_by_required_relations}")
+        explicitly_required_avatar_ids |= avatar_ids_by_required_relations
 
         # Normalize avatars (fix them if there are no user-managed ones)
         explicitly_required_avatar_ids = normalize_explicit_avatar_ids(  # type: ignore  # TODO: fix

@@ -20,7 +20,6 @@ from dl_core.components.ids import (
     RelationId,
 )
 import dl_core.exc as exc
-from dl_core.multisource import AvatarRelation
 from dl_core.us_dataset import Dataset
 
 
@@ -96,14 +95,6 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
         else:
             # It means that for every iteration we are still getting new avatars
             raise RuntimeError("Failed to resolve required avatars")  # Should not happen
-
-        # add all required relations and its avatars
-        for relation in self._ds_accessor.get_avatar_relation_list():
-            if relation.required:
-                required_avatar_ids |= self._relation_avatar_dep_mgr.get_relation_avatar_references(
-                    relation_id=relation.id
-                )
-                required_relation_ids.add(relation.id)
 
         user_avatar_ids = {
             avatar_id

@@ -136,6 +136,7 @@ class BaseApiV1SerializationAdapter:
                 ],
                 join_type=item.join_type.name,
                 managed_by=item.managed_by.name,
+                required=item.required,
             )
 
     @_dump_item.register(ResultField)
