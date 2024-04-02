@@ -46,14 +46,7 @@ class TestDatasetJoinOptimization(DefaultApiTestBase):
 
         control_api.delete_dataset(ds.id)
 
-    def test_join_optimization_no_required(
-        self,
-        control_api,
-        data_api,
-        saved_connection_id,
-        dataset_params,
-        dataset_for_join_optimization_tests,
-    ):
+    def test_join_optimization_no_required(self, data_api, dataset_for_join_optimization_tests):
         """Selecting from a dataset without any required relations and making sure there are no JOINs"""
 
         ds = dataset_for_join_optimization_tests
@@ -69,14 +62,7 @@ class TestDatasetJoinOptimization(DefaultApiTestBase):
         joins_count = sent_query.count("INNER JOIN")
         assert joins_count == 0, sent_query  # 1 source is used
 
-    def test_join_optimization_implicit_required(
-        self,
-        control_api,
-        data_api,
-        saved_connection_id,
-        dataset_params,
-        dataset_for_join_optimization_tests,
-    ):
+    def test_join_optimization_implicit_required(self, data_api, dataset_for_join_optimization_tests):
         """Selecting from 2 sources that are not connected by a direct relation and making sure all necessary JOINs are performed"""
 
         ds = dataset_for_join_optimization_tests
@@ -97,8 +83,6 @@ class TestDatasetJoinOptimization(DefaultApiTestBase):
         self,
         control_api,
         data_api,
-        saved_connection_id,
-        dataset_params,
         dataset_for_join_optimization_tests,
     ):
         """Selecting from a source that has one required relation and making sure this required JOIN is performed"""
@@ -129,8 +113,6 @@ class TestDatasetJoinOptimization(DefaultApiTestBase):
         self,
         control_api,
         data_api,
-        saved_connection_id,
-        dataset_params,
         dataset_for_join_optimization_tests,
     ):
         """Selecting from a source that has no required relations and making sure all required JOINs are performed"""
