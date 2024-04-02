@@ -13,6 +13,7 @@ from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.enums import RedisMode
 from dl_configs.environments import is_setting_applicable
+from dl_configs.rate_limiter import RateLimiterConfig
 from dl_configs.rqe import RQEConfig
 from dl_configs.settings_loaders.meta_definition import (
     required,
@@ -87,6 +88,16 @@ class AppSettings:
         missing=None,
     )
 
+    RATE_LIMITER_ENABLED: bool = s_attrib("RATE_LIMITER_ENABLED", missing=False)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
+    RATE_LIMITER_REDIS: Optional[RedisSettings] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
+        "RATE_LIMITER_REDIS",
+        missing=None,
+    )
+    RATE_LIMITER_CONFIG: Optional[RateLimiterConfig] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RateLimiterConfig")  [assignment]
+        "RATE_LIMITER",
+        fallback_factory=lambda cfg: RateLimiterConfig.from_json(cfg.get("RATE_LIMITER")),
+        missing=None,
+    )
     SAMPLES_CH_HOSTS: tuple[str, ...] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "tuple[str, ...]")  [assignment]
         "SAMPLES_CH_HOST", env_var_converter=split_by_comma, missing_factory=list
     )
