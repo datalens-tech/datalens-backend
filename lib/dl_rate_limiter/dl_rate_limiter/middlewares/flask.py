@@ -31,3 +31,6 @@ class FlaskMiddleware:
             logger.exception("Failed to check request limit")
 
         return None
+
+    def set_up(self, app: flask.Flask) -> None:
+        app.before_request(self.process)

@@ -1,10 +1,14 @@
+import json
 import logging
 import os
+import typing
 from typing import (
     Callable,
     Container,
     TypeVar,
 )
+
+import typing_extensions
 
 from dl_constants.enums import ConnectionType
 
@@ -62,3 +66,34 @@ def split_by_comma(s: str) -> tuple[str, ...]:
 
 def conn_type_set_env_var_converter(s: str) -> set[ConnectionType]:
     return set(ConnectionType(entry.strip()) for entry in s.split(",") if entry)
+
+
+class ConstructableSettingsProtocol(typing.Protocol):
+    @classmethod
+    def from_json(cls, json_value: typing.Any) -> typing_extensions.Self:
+        ...
+
+
+SettingsT = typing.TypeVar("SettingsT", bound=ConstructableSettingsProtocol)
+
+
+def tuple_of_models_json_converter_factory(
+    model: type[SettingsT],
+) -> typing.Callable[[typing.Any], tuple[SettingsT, ...]]:
+    assert hasattr(model, "from_json")
+
+    def tuple_of_models_json_converter(json_value: typing.Any) -> tuple[SettingsT, ...]:
+        assert isinstance(json_value, list), f"Expected list, but got {type(json_value)}"
+        return tuple(model.from_json(entry) for entry in json_value)
+
+    return tuple_of_models_json_converter
+
+
+def tuple_of_models_env_converter_factory(
+    model: type[SettingsT],
+) -> typing.Callable[[str], tuple[SettingsT, ...]]:
+    def tuple_of_models_env_converter(env_value: str) -> tuple[SettingsT, ...]:
+        json_value = json.loads(env_value)
+        return tuple_of_models_json_converter_factory(model)(json_value)
+
+    return tuple_of_models_env_converter

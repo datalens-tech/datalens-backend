@@ -16,8 +16,7 @@ def fixture_app(sync_request_limiter: dl_rate_limiter.SyncRequestRateLimiter) ->
         return "OK"
 
     app.config.update({"TESTING": True})
-    middleware = dl_rate_limiter.FlaskMiddleware(rate_limiter=sync_request_limiter)
-    app.before_request(middleware.process)
+    dl_rate_limiter.FlaskMiddleware(rate_limiter=sync_request_limiter).set_up(app)
 
     yield app
 
