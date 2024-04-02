@@ -1,6 +1,7 @@
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 
+from dl_formula.connectors.base.literal import Literal
 from dl_formula.definitions.base import (
     TranslationVariant,
     TranslationVariantWrapped,
@@ -39,9 +40,10 @@ YQL_SHIFT_FUNCS = {
 
 
 def _date_datetime_add_yql(
-    value_expr: ClauseElement, type_expr: ClauseElement, mult_expr: ClauseElement, *, const_mult: bool
+    value_expr: ClauseElement, type_expr: Literal, mult_expr: ClauseElement, *, const_mult: bool
 ) -> ClauseElement:
     type_name = un_literal(type_expr)
+    assert isinstance(type_name, str)
     type_name = normalize_and_validate_datetime_interval_type(type_name)
 
     if not const_mult:
@@ -67,14 +69,14 @@ def _date_datetime_add_yql(
 
 
 def date_add_yql(
-    value_expr: ClauseElement, type_expr: ClauseElement, mult_expr: ClauseElement, *, const_mult: bool
+    value_expr: ClauseElement, type_expr: Literal, mult_expr: ClauseElement, *, const_mult: bool
 ) -> ClauseElement:
     expr = _date_datetime_add_yql(value_expr, type_expr, mult_expr, const_mult=const_mult)
     return sa.func.DateTime.MakeDate(expr)
 
 
 def datetime_add_yql(
-    value_expr: ClauseElement, type_expr: ClauseElement, mult_expr: ClauseElement, *, const_mult: bool
+    value_expr: ClauseElement, type_expr: Literal, mult_expr: ClauseElement, *, const_mult: bool
 ) -> ClauseElement:
     expr = _date_datetime_add_yql(value_expr, type_expr, mult_expr, const_mult=const_mult)
     return sa.func.DateTime.MakeDatetime(expr)
