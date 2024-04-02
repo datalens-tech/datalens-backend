@@ -93,7 +93,7 @@ class TestDatasetJoinOptimization(DefaultApiTestBase):
         ds = control_api.apply_updates(dataset=ds).dataset
         ds = control_api.save_dataset(dataset=ds).dataset
 
-        # Resulting avatar tree (the relation 1 -> 2 is required)
+        # Resulting avatar tree (the relation 1 -> 3 is required)
         # avatar_1 ─── avatar_2
         # ┃
         # ┗━━ avatar_3
@@ -123,7 +123,7 @@ class TestDatasetJoinOptimization(DefaultApiTestBase):
         ds = control_api.apply_updates(dataset=ds).dataset
         ds = control_api.save_dataset(dataset=ds).dataset
 
-        # Resulting avatar tree (the relation 1 -> 2 is required)
+        # Resulting avatar tree (the relation 1 -> 3 is required)
         # avatar_1 ─── avatar_2
         # ┃
         # ┗━━ avatar_3
