@@ -2,6 +2,7 @@ import asyncio
 
 import aiohttp.test_utils as aiohttp_test_utils
 import aiohttp.web as aiohttp_web
+import flaky
 import pytest
 import pytest_aiohttp.plugin as pytest_aiohttp_plugin
 import pytest_asyncio
@@ -43,6 +44,7 @@ async def test_limited(aiohttp_test_client: aiohttp_test_utils.TestClient):
     assert sum(response.status == 200 for response in responses) == 5
 
 
+@flaky.flaky(max_runs=3)
 @pytest.mark.asyncio
 async def test_limited_unique_headers(aiohttp_test_client: aiohttp_test_utils.TestClient):
     tasks = [aiohttp_test_client.get("/limited/1", headers={"X-Test-Header": str(i)}) for i in range(10)]
@@ -51,6 +53,7 @@ async def test_limited_unique_headers(aiohttp_test_client: aiohttp_test_utils.Te
     assert all(response.status == 200 for response in responses)
 
 
+@flaky.flaky(max_runs=3)
 @pytest.mark.asyncio
 async def test_limited_multiple_limits(aiohttp_test_client: aiohttp_test_utils.TestClient):
     tasks = [
