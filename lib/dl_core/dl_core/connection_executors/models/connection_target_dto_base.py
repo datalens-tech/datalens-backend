@@ -14,20 +14,19 @@ from typing import (
     Dict,
     Optional,
     Type,
-    TypeVar,
 )
 
 import attr
-from typing_extensions import final
+from typing_extensions import (
+    Self,
+    final,
+)
 
 from dl_core.utils import secrepr
 
 
 if TYPE_CHECKING:
     from dl_constants.types import TJSONLike
-
-
-_CT_DTO_TV = TypeVar("_CT_DTO_TV", bound="ConnTargetDTO")
 
 
 @attr.s(frozen=True)
@@ -43,7 +42,7 @@ class ConnTargetDTO(metaclass=abc.ABCMeta):
 
     _MAP_CLASS_NAME_CLASS: ClassVar[Dict[str, Type[ConnTargetDTO]]] = {}
 
-    def __init_subclass__(cls, **kwargs):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def __init_subclass__(cls, **kwargs: Any) -> None:
         cls._MAP_CLASS_NAME_CLASS[cls.__qualname__] = cls
 
     @classmethod
@@ -56,13 +55,13 @@ class ConnTargetDTO(metaclass=abc.ABCMeta):
 
     @classmethod
     @final
-    def from_jsonable_dict(cls: Type[_CT_DTO_TV], data: dict) -> _CT_DTO_TV:
+    def from_jsonable_dict(cls, data: dict) -> Self:
         if "cls_name" in data:
             raise ValueError("Property 'cls_name' in data dict. Use from_polymorphic_jsonable_dict() to unmarshal it.")
         return cls._from_jsonable_dict(data)
 
     @classmethod
-    def _from_jsonable_dict(cls: Type[_CT_DTO_TV], data: dict) -> _CT_DTO_TV:
+    def _from_jsonable_dict(cls, data: dict) -> Self:
         return cls(**data)
 
     def to_jsonable_dict(self) -> Dict[str, TJSONLike]:
@@ -71,7 +70,7 @@ class ConnTargetDTO(metaclass=abc.ABCMeta):
             cls_name=type(self).__qualname__,
         )
 
-    def clone(self: _CT_DTO_TV, **kwargs: Any) -> _CT_DTO_TV:
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
 
 

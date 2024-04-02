@@ -9,10 +9,10 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Generator,
-    TypeVar,
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_constants.enums import (
     FieldRole,
@@ -31,9 +31,6 @@ if TYPE_CHECKING:
         PivotHeader,
     )
     from dl_query_processing.legend.field_legend import Legend
-
-
-_PIVOT_DATA_FRAME_TV = TypeVar("_PIVOT_DATA_FRAME_TV", bound="PivotDataFrame")
 
 
 @attr.s
@@ -59,7 +56,7 @@ class PivotDataFrame(abc.ABC):
     def iter_rows(self) -> Generator[tuple[PivotHeader, MeasureValues], None, None]:
         raise NotImplementedError
 
-    def clone(self: _PIVOT_DATA_FRAME_TV, **kwargs: Any) -> _PIVOT_DATA_FRAME_TV:
+    def clone(self, **kwargs: Any) -> Self:
         kwargs["headers_info"] = kwargs.pop("headers_info", deepcopy(self.headers_info))
         return attr.evolve(self, **kwargs)
 

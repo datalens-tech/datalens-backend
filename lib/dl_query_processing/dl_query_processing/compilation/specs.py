@@ -4,11 +4,11 @@ from typing import (
     AbstractSet,
     Any,
     Optional,
-    TypeVar,
     Union,
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_constants.enums import (
     OrderDirection,
@@ -25,12 +25,10 @@ from dl_query_processing.enums import SelectValueType
 
 FilterArgType = Union[str, int, float, None]
 
-_QUERY_ITEM_SPEC_TV = TypeVar("_QUERY_ITEM_SPEC_TV", bound="QueryItemSpec")
-
 
 @attr.s(frozen=True)
 class QueryItemSpec:
-    def clone(self: _QUERY_ITEM_SPEC_TV, **kwargs: Any) -> _QUERY_ITEM_SPEC_TV:
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
 
 

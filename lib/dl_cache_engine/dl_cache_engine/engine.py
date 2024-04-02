@@ -83,13 +83,13 @@ from typing import (
     Optional,
     Tuple,
     Type,
-    TypeVar,
 )
 
 import attr
 import lz4.frame
 from redis_cache_lock.main import RedisCacheLock
 from redis_cache_lock.utils import HistoryHolder
+from typing_extensions import Self
 
 from dl_app_tools.profiling_base import (
     GenericProfiler,
@@ -305,9 +305,6 @@ class ResultCacheEntry:
         return result
 
 
-_ECEMA_TV = TypeVar("_ECEMA_TV", bound="EntityCacheEntryManagerAsyncBase")
-
-
 @attr.s(auto_attribs=True, slots=True)
 class EntityCacheEntryManagerAsyncBase:
     """
@@ -326,7 +323,7 @@ class EntityCacheEntryManagerAsyncBase:
     _starting: bool = False
     _started: bool = False
 
-    def clone(self: _ECEMA_TV, **updates: Any) -> _ECEMA_TV:
+    def clone(self, **updates: Any) -> Self:
         return attr.evolve(self, **updates)
 
     async def initialize(self) -> Optional[TJSONExt]:
@@ -540,9 +537,6 @@ class EntityCacheEntryLockedManagerAsync(EntityCacheEntryManagerAsyncBase):
         )
 
 
-_ECE_TV = TypeVar("_ECE_TV", bound="EntityCacheEngineBase")
-
-
 @attr.s(auto_attribs=True)
 class EntityCacheEngineBase:
     entity_id: str
@@ -556,7 +550,7 @@ class EntityCacheEngineBase:
     key_prefix_tpl: str = "bic_dp_ce__{entity_id}__query_cache/"  # dl_core data_processing cache_engine
     data_keys_suffix: str = ""
 
-    def clone(self: _ECE_TV, **updates: Any) -> _ECE_TV:
+    def clone(self, **updates: Any) -> Self:
         return attr.evolve(self, **updates)
 
     # Keys section

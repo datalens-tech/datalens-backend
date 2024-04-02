@@ -6,10 +6,10 @@ from typing import (
     Any,
     Generator,
     Optional,
-    TypeVar,
 )
 
 import attr
+from typing_extensions import Self
 
 from dl_constants.enums import PivotRole
 from dl_pivot.primitives import (
@@ -28,9 +28,6 @@ if TYPE_CHECKING:
         PivotHeader,
     )
     from dl_query_processing.legend.field_legend import Legend
-
-
-_FACADE_TV = TypeVar("_FACADE_TV", bound="TableDataFacade")
 
 
 @attr.s
@@ -89,7 +86,7 @@ class TableDataFacade(abc.ABC):
     def get_row_count(self) -> int:
         return self._pivot_dframe.get_row_count()
 
-    def clone(self: _FACADE_TV, **kwargs: Any) -> _FACADE_TV:
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
 
     def sort(self) -> None:

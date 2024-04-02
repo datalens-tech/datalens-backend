@@ -3,17 +3,19 @@ from __future__ import annotations
 import abc
 import logging
 import time
+from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     Collection,
     Dict,
     List,
     Optional,
-    TypeVar,
+    Type,
 )
 
 import attr
 import shortuuid
+from typing_extensions import Self
 
 from dl_api_commons.reporting.models import (
     DataProcessingEndReportingRecord,
@@ -38,9 +40,6 @@ if TYPE_CHECKING:
 
 
 LOGGER = logging.getLogger(__name__)
-
-
-_OP_PROC_TV = TypeVar("_OP_PROC_TV", bound="OperationProcessorAsyncBase")
 
 
 @attr.s
@@ -80,11 +79,16 @@ class OperationProcessorAsyncBase(abc.ABC):
     async def end(self) -> None:
         return
 
-    async def __aenter__(self: _OP_PROC_TV) -> _OP_PROC_TV:
+    async def __aenter__(self) -> Self:
         await self.start()
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    async def __aexit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> None:
         await self.end()
 
     async def prepare_output_streams(self, output_streams: List[AbstractStream]) -> List[DataStreamAsync]:
@@ -208,8 +212,8 @@ class OperationProcessorAsyncBase(abc.ABC):
         )
         self._reporting_registry.save_reporting_record(report=report)
 
-    def pre_run(self, ctx: OpExecutionContext) -> None:  # type: ignore  # 2024-01-24 # TODO: Name "pre_run" already defined on line 101  [no-redef]
+    def pre_run(self, ctx: OpExecutionContext) -> None:
         self._save_start_exec_reporting_record(ctx=ctx)
 
-    def post_run(self, ctx: OpExecutionContext, exec_exception: Optional[Exception]) -> None:  # type: ignore  # 2024-01-24 # TODO: Name "post_run" already defined on line 104  [no-redef]
+    def post_run(self, ctx: OpExecutionContext, exec_exception: Optional[Exception]) -> None:
         self._save_end_exec_reporting_record(ctx=ctx, exec_exception=exec_exception)
