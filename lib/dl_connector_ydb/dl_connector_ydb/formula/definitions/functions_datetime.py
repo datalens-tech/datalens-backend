@@ -1,6 +1,5 @@
-from typing import TYPE_CHECKING
-
 import sqlalchemy as sa
+from sqlalchemy.sql.elements import ClauseElement
 
 from dl_formula.definitions.base import (
     TranslationVariant,
@@ -9,14 +8,9 @@ from dl_formula.definitions.base import (
 from dl_formula.definitions.common_datetime import normalize_and_validate_datetime_interval_type
 import dl_formula.definitions.functions_datetime as base
 from dl_formula.definitions.literals import un_literal
+from dl_formula.translation.context import TranslationCtx
 
 from dl_connector_ydb.formula.constants import YqlDialect as D
-
-
-if TYPE_CHECKING:
-    from sqlalchemy.sql.elements import ClauseElement
-
-    from dl_formula.translation.context import TranslationCtx
 
 
 V = TranslationVariant.make
