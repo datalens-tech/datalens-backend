@@ -53,7 +53,7 @@ def _date_datetime_add_yql(
 
     if type_name == "week":
         type_name = "day"
-        mult_expr = mult_expr * 7
+        mult_expr = mult_expr * 7  # type: ignore  # 2024-04-02 # TODO: Unsupported operand types for * ("ClauseElement" and "int")  [operator]
 
     func_name = YQL_INTERVAL_FUNCS.get(type_name)
     if func_name is not None:
