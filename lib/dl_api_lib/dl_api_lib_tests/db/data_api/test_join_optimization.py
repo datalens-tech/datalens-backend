@@ -59,7 +59,7 @@ class TestDatasetJoinOptimization(DefaultApiTestBase):
         )
         assert result_resp.status_code == 200, result_resp.json
         sent_query: str = result_resp.json["blocks"][0]["query"]
-        joins_count = sent_query.count("INNER JOIN")
+        joins_count = sent_query.count("JOIN")
         assert joins_count == 0, sent_query  # 1 source is used
 
     def test_join_optimization_implicit_required(self, data_api, dataset_for_join_optimization_tests):
@@ -76,7 +76,7 @@ class TestDatasetJoinOptimization(DefaultApiTestBase):
         )
         assert result_resp.status_code == 200, result_resp.json
         sent_query: str = result_resp.json["blocks"][0]["query"]
-        joins_count = sent_query.count("INNER JOIN")
+        joins_count = sent_query.count("JOIN")
         assert joins_count == 2, sent_query  # all 3 sources are used
 
     def test_join_optimization_required_neighbour(
@@ -106,7 +106,7 @@ class TestDatasetJoinOptimization(DefaultApiTestBase):
         )
         assert result_resp.status_code == 200, result_resp.json
         sent_query: str = result_resp.json["blocks"][0]["query"]
-        joins_count = sent_query.count("INNER JOIN")
+        joins_count = sent_query.count("JOIN")
         assert joins_count == 1, sent_query  # 2 sources are used
 
     def test_join_optimization_required_other(
@@ -136,5 +136,5 @@ class TestDatasetJoinOptimization(DefaultApiTestBase):
         )
         assert result_resp.status_code == 200, result_resp.json
         sent_query: str = result_resp.json["blocks"][0]["query"]
-        joins_count = sent_query.count("INNER JOIN")
+        joins_count = sent_query.count("JOIN")
         assert joins_count == 2, sent_query  # all 3 sources are used
