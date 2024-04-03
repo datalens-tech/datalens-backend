@@ -504,6 +504,16 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
             for avatar_id in field_ava_dep_mgr.get_field_avatar_references(field_id)
         }
 
+        # Add avatars that participate in required relations
+        avatar_ids_by_required_relations: set[AvatarId] = {
+            avatar_id
+            for relation in self._ds_accessor.get_avatar_relation_list()
+            for avatar_id in (relation.left_avatar_id, relation.right_avatar_id)
+            if relation.required
+        }
+        LOGGER.info(f"Adding avatars that are a part of required relations: {avatar_ids_by_required_relations}")
+        explicitly_required_avatar_ids |= avatar_ids_by_required_relations
+
         # Normalize avatars (fix them if there are no user-managed ones)
         explicitly_required_avatar_ids = normalize_explicit_avatar_ids(  # type: ignore  # TODO: fix
             dataset=self._dataset, required_avatar_ids=explicitly_required_avatar_ids

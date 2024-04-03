@@ -369,6 +369,7 @@ class AvatarRelationSchema(DefaultSchema[AvatarRelation]):
     conditions = ma_fields.Nested(JoinConditionSchema, many=True)
     join_type = ma_fields.Enum(JoinType)
     managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user, load_default=ManagedBy.user)
+    required = ma_fields.Boolean()
 
     # Only locally used
     created_ = ma_fields.Boolean(load_default=True, load_only=True, attribute="created_")  # Always True

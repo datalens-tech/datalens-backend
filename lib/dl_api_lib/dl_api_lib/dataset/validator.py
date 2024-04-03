@@ -1415,6 +1415,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 right_avatar_id=right_avatar_id,
                 conditions=conditions,
                 join_type=avatar_relation_data.get("join_type"),
+                required=avatar_relation_data.get("required", False),
             )
 
         if action == DatasetAction.update_avatar_relation:
@@ -1422,6 +1423,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 relation_id=relation_id,
                 conditions=avatar_relation_data.get("conditions"),
                 join_type=avatar_relation_data.get("join_type"),
+                required=avatar_relation_data.get("required", False),
             )
 
         if action == DatasetAction.delete_avatar_relation:

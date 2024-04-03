@@ -1,5 +1,4 @@
 import logging
-from typing import AbstractSet
 
 from dl_constants.enums import ManagedBy
 from dl_core.components.accessor import DatasetComponentAccessor
@@ -11,9 +10,7 @@ import dl_query_processing.exc
 LOGGER = logging.getLogger(__name__)
 
 
-def normalize_explicit_avatar_ids(
-    dataset: Dataset, required_avatar_ids: AbstractSet[AvatarId]
-) -> AbstractSet[AvatarId]:
+def normalize_explicit_avatar_ids(dataset: Dataset, required_avatar_ids: set[AvatarId]) -> set[AvatarId]:
     user_managed_required_avatar_ids = set()
     accessor = DatasetComponentAccessor(dataset=dataset)
 
