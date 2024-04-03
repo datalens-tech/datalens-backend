@@ -101,7 +101,7 @@ class AppSettings:
                 DB=cfg.RATE_LIMITER_REDIS_DB,
                 PASSWORD=required(str),
             )
-            if is_setting_applicable(cfg, "REDIS_RQE_CACHES_DB")
+            if is_setting_applicable(cfg, "RATE_LIMITER_REDIS_DB")
             else None
         ),
         missing=None,
