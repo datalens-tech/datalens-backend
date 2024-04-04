@@ -1,17 +1,15 @@
-from __future__ import annotations
-
 import sqlalchemy as sa
+from sqlalchemy.sql.elements import ClauseElement
 
+from dl_formula.connectors.base.literal import Literal
 from dl_formula.definitions.base import (
     TranslationVariant,
     TranslationVariantWrapped,
 )
-from dl_formula.definitions.common_datetime import (
-    YQL_INTERVAL_FUNCS,
-    date_add_yql,
-    datetime_add_yql,
-)
+from dl_formula.definitions.common_datetime import normalize_and_validate_datetime_interval_type
 import dl_formula.definitions.functions_datetime as base
+from dl_formula.definitions.literals import un_literal
+from dl_formula.translation.context import TranslationCtx
 
 from dl_connector_ydb.formula.constants import YqlDialect as D
 
@@ -28,7 +26,63 @@ YQL_DATE_DATETRUNC_FUNCS = {
 }
 
 
-def _datetrunc2_yql_impl(date_ctx, unit_ctx):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+YQL_INTERVAL_FUNCS = {
+    "second": "IntervalFromSeconds",
+    "minute": "IntervalFromMinutes",
+    "hour": "IntervalFromHours",
+    "day": "IntervalFromDays",
+}
+YQL_SHIFT_FUNCS = {
+    "month": "ShiftMonths",
+    "quarter": "ShiftQuarters",
+    "year": "ShiftYears",
+}
+
+
+def _date_datetime_add_yql(
+    value_expr: ClauseElement, type_expr: Literal, mult_expr: ClauseElement, *, const_mult: bool
+) -> ClauseElement:
+    type_name = un_literal(type_expr)
+    assert isinstance(type_name, str)
+    type_name = normalize_and_validate_datetime_interval_type(type_name)
+
+    if not const_mult:
+        # YQL requires a non-nullable mult;
+        # so ensure it is such.
+        mult_expr = sa.func.coalesce(mult_expr, 0)
+
+    if type_name == "week":
+        type_name = "day"
+        mult_expr = mult_expr * 7  # type: ignore  # 2024-04-02 # TODO: Unsupported operand types for * ("ClauseElement" and "int")  [operator]
+
+    func_name = YQL_INTERVAL_FUNCS.get(type_name)
+    if func_name is not None:
+        func = getattr(sa.func.DateTime, func_name)
+        return value_expr + func(mult_expr)
+
+    func_name = YQL_SHIFT_FUNCS.get(type_name)
+    if func_name is not None:
+        func = getattr(sa.func.DateTime, func_name)
+        return func(value_expr, mult_expr)
+
+    raise ValueError("Unexpectedly unsupported YQL datetime shift", type_name)
+
+
+def date_add_yql(
+    value_expr: ClauseElement, type_expr: Literal, mult_expr: ClauseElement, *, const_mult: bool
+) -> ClauseElement:
+    expr = _date_datetime_add_yql(value_expr, type_expr, mult_expr, const_mult=const_mult)
+    return sa.func.DateTime.MakeDate(expr)
+
+
+def datetime_add_yql(
+    value_expr: ClauseElement, type_expr: Literal, mult_expr: ClauseElement, *, const_mult: bool
+) -> ClauseElement:
+    expr = _date_datetime_add_yql(value_expr, type_expr, mult_expr, const_mult=const_mult)
+    return sa.func.DateTime.MakeDatetime(expr)
+
+
+def _datetrunc2_yql_impl(date_ctx: TranslationCtx, unit_ctx: TranslationCtx) -> ClauseElement:
     date_expr = date_ctx.expression
     unit = base.norm_datetrunc_unit(unit_ctx.expression)
 
