@@ -60,6 +60,7 @@ class ArqCronWrapper:
 
 
 async def create_redis_pool(settings: ArqRedisSettings) -> ArqRedis:
+    LOGGER.info("Creating redis pool for an arq worker on %s, db=%s", settings.host, settings.database)
     return await create_pool(settings)
 
 
