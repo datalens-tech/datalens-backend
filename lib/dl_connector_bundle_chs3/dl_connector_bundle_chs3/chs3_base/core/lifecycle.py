@@ -33,6 +33,8 @@ class FileConnTaskScheduler:
 
         if source_to_del is None:
             source_to_del = (src.id for src in conn._saved_sources or [])
+
+        LOGGER.info("Going to schedule DeleteFileTask for sources %s", source_to_del)
         for src_id in source_to_del:
             source = conn.get_saved_source_by_id(src_id)
 
@@ -66,6 +68,7 @@ class FileConnTaskScheduler:
         }
         assert self._rci.tenant is not None
 
+        LOGGER.info("Going to schedule SaveSourceTask for sources %s", sources_to_add)
         for src_id in sources_to_add:
             source = conn.get_file_source_by_id(src_id)
             src_source_id = sources_to_replace.get(source.id, source.id)
