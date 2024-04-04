@@ -63,5 +63,5 @@ class RateLimiterConfig(SettingsBase):
 
         assert isinstance(json_value, typing.Mapping)
         return cls(  # type: ignore
-            PATTERNS=(RateLimiterPattern.from_json(entry) for entry in json_value["PATTERNS"]),
+            PATTERNS=tuple(RateLimiterPattern.from_json(entry) for entry in json_value["PATTERNS"]),
         )
