@@ -91,52 +91,11 @@ class BaseConnectionCHYT(  # type: ignore  # 2024-01-24 # TODO: Definition of "u
         )
         return base_ch_connect_options.to_subclass(CHYTConnectOptions)
 
-    @abc.abstractmethod
-    def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
-        raise NotImplementedError()
-
     def get_data_source_templates(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[DataSourceTemplate]:
         return []
-
-
-class ConnectionCHYTToken(BaseConnectionCHYT):
-    allow_cache: ClassVar[bool] = True
-
-    source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE
-    allowed_source_types = frozenset(
-        (
-            SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
-            SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
-            SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
-            SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
-        )
-    )
-
-    chyt_table_source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE
-    chyt_table_list_source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST
-    chyt_table_range_source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE
-    chyt_subselect_source_type = SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT
-
-    @attr.s(kw_only=True)
-    class DataModel(BaseConnectionCHYT.DataModel):
-        host: str = attr.ib()
-        port: int = attr.ib()
-        token: str = attr.ib(repr=secrepr)
-        secure: bool = attr.ib(default=False)
-
-        @classmethod
-        def get_secret_keys(cls) -> set[DataKey]:
-            return {
-                *super().get_secret_keys(),
-                DataKey(parts=("token",)),
-            }
-
-    @property
-    def token(self) -> str:
-        return self.data.token
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
         common: dict[str, Any] = dict(
@@ -213,6 +172,43 @@ class ConnectionCHYTToken(BaseConnectionCHYT):
             field_doc_key="YTsaurus/CHYT_SUBSELECT/subsql",
             localizer=localizer,
         )
+
+
+class ConnectionCHYTToken(BaseConnectionCHYT):
+    allow_cache: ClassVar[bool] = True
+
+    source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE
+    allowed_source_types = frozenset(
+        (
+            SOURCE_TYPE_CHYT_YTSAURUS_TABLE,
+            SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT,
+            SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST,
+            SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
+        )
+    )
+
+    chyt_table_source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE
+    chyt_table_list_source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE_LIST
+    chyt_table_range_source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE
+    chyt_subselect_source_type = SOURCE_TYPE_CHYT_YTSAURUS_SUBSELECT
+
+    @attr.s(kw_only=True)
+    class DataModel(BaseConnectionCHYT.DataModel):
+        host: str = attr.ib()
+        port: int = attr.ib()
+        token: str = attr.ib(repr=secrepr)
+        secure: bool = attr.ib(default=False)
+
+        @classmethod
+        def get_secret_keys(cls) -> set[DataKey]:
+            return {
+                *super().get_secret_keys(),
+                DataKey(parts=("token",)),
+            }
+
+    @property
+    def token(self) -> str:
+        return self.data.token
 
     def get_conn_dto(self) -> CHYTDTO:
         return CHYTDTO(
