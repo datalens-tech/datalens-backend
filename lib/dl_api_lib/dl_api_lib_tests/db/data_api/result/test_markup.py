@@ -24,7 +24,7 @@ class TestUMarkup(DefaultApiTestBase):
     def test_markup(self, saved_dataset, data_api, data_api_test_params):
         ds = saved_dataset
 
-        field_a, field_b, field_nulled = (str(uuid.uuid4()) for _ in range(3))
+        field_a, field_b, field_c, field_d, field_nulled = (str(uuid.uuid4()) for _ in range(5))
         formula_a = """
             markup(
                 italic(url(
@@ -35,6 +35,12 @@ class TestUMarkup(DefaultApiTestBase):
         formula_b = """
             url("https://example.com/?text=" + str([sales]) + " usd в рублях", str([sales]))
         """
+        formula_c = """
+                    image([city], [postal_code], 13, "alt_text")
+                """
+        formula_d = """
+                    image([city], [postal_code], NULL, NULL)
+                """
         formula_nulled = """
             url(if([sales] > 0, NULL, "neg"), str([sales]))
         """
@@ -53,6 +59,16 @@ class TestUMarkup(DefaultApiTestBase):
                     formula=formula_b,
                 ).add(),
                 ds.field(
+                    id=field_c,
+                    title="Field C",
+                    formula=formula_c,
+                ).add(),
+                ds.field(
+                    id=field_d,
+                    title="Field D",
+                    formula=formula_d,
+                ).add(),
+                ds.field(
                     id=field_nulled,
                     title="Field Nulled",
                     formula=formula_nulled,
@@ -61,6 +77,8 @@ class TestUMarkup(DefaultApiTestBase):
             fields=[
                 ds.field(id=field_a),
                 ds.field(id=field_b),
+                ds.field(id=field_c),
+                ds.field(id=field_d),
                 ds.field(id=field_nulled),
             ],
         )
@@ -70,10 +88,12 @@ class TestUMarkup(DefaultApiTestBase):
         assert data_rows
 
         some_row = data_rows[0]
-        assert len(some_row) == 3
-        res_a, res_b, res_nulled = some_row
+        assert len(some_row) == 5
+        res_a, res_b, res_c, res_d, res_nulled = some_row
         assert isinstance(res_a, dict)
         assert isinstance(res_b, dict)
+        assert isinstance(res_c, dict)
+        assert isinstance(res_d, dict)
         assert res_nulled is None
 
         b_val = res_b["content"]["content"]
@@ -84,3 +104,13 @@ class TestUMarkup(DefaultApiTestBase):
             "content": {"type": "text", "content": b_val},
         }
         assert res_b == expected_b
+
+        c_height = res_c["height"]
+        assert isinstance(c_height, int)
+        expected_c = {"type": "img", "src": "Richmond", "width": 23223, "height": 13, "alt": "alt_text"}
+        assert res_c == expected_c
+
+        d_alt = res_d["alt"]
+        assert d_alt is None
+        expected_d = {"type": "img", "src": "Richmond", "width": 23223, "height": None, "alt": None}
+        assert res_d == expected_d
