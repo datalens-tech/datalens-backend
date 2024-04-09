@@ -1,0 +1,7 @@
+from dl_formula_testing.testcases.functions_math import DefaultMathFunctionFormulaConnectorTestSuite
+
+from dl_connector_metrica_tests.ext.formula.base import MetricaTestBase
+
+
+class TestMathFunctionBigQuery(MetricaTestBase, DefaultMathFunctionFormulaConnectorTestSuite):
+    pass

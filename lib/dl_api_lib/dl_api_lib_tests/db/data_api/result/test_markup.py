@@ -24,7 +24,7 @@ class TestUMarkup(DefaultApiTestBase):
     def test_markup(self, saved_dataset, data_api, data_api_test_params):
         ds = saved_dataset
 
-        field_a, field_b, field_c, field_d, field_nulled = (str(uuid.uuid4()) for _ in range(5))
+        field_a, field_b, field_c, field_d, field_e, field_nulled = (str(uuid.uuid4()) for _ in range(6))
         formula_a = """
             markup(
                 italic(url(
@@ -40,6 +40,9 @@ class TestUMarkup(DefaultApiTestBase):
                 """
         formula_d = """
                     image([city], [postal_code], NULL, NULL)
+                """
+        formula_e = """
+                    image([city])
                 """
         formula_nulled = """
             url(if([sales] > 0, NULL, "neg"), str([sales]))
@@ -69,6 +72,11 @@ class TestUMarkup(DefaultApiTestBase):
                     formula=formula_d,
                 ).add(),
                 ds.field(
+                    id=field_e,
+                    title="Field E",
+                    formula=formula_e,
+                ).add(),
+                ds.field(
                     id=field_nulled,
                     title="Field Nulled",
                     formula=formula_nulled,
@@ -79,6 +87,7 @@ class TestUMarkup(DefaultApiTestBase):
                 ds.field(id=field_b),
                 ds.field(id=field_c),
                 ds.field(id=field_d),
+                ds.field(id=field_e),
                 ds.field(id=field_nulled),
             ],
         )
@@ -88,12 +97,13 @@ class TestUMarkup(DefaultApiTestBase):
         assert data_rows
 
         some_row = data_rows[0]
-        assert len(some_row) == 5
-        res_a, res_b, res_c, res_d, res_nulled = some_row
+        assert len(some_row) == 6
+        res_a, res_b, res_c, res_d, res_e, res_nulled = some_row
         assert isinstance(res_a, dict)
         assert isinstance(res_b, dict)
         assert isinstance(res_c, dict)
         assert isinstance(res_d, dict)
+        assert isinstance(res_e, dict)
         assert res_nulled is None
 
         b_val = res_b["content"]["content"]
@@ -114,3 +124,6 @@ class TestUMarkup(DefaultApiTestBase):
         assert d_alt is None
         expected_d = {"type": "img", "src": "Richmond", "width": 23223, "height": None, "alt": None}
         assert res_d == expected_d
+
+        expected_e = {"type": "img", "src": "Richmond", "width": None, "height": None, "alt": None}
+        assert res_e == expected_e

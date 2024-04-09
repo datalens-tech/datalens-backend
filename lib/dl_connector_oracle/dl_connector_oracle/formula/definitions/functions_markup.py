@@ -24,5 +24,8 @@ DEFINITIONS_MARKUP = [
     # br
     base.FuncBr.for_dialect(D.ORACLE),
     # image
-    base.FuncImage.for_dialect(D.ORACLE),
+    base.FuncImage1.for_dialect(D.ORACLE),
+    base.FuncImage2.for_dialect(D.ORACLE),
+    base.FuncImage3.for_dialect(D.ORACLE),
+    base.FuncImage4.for_dialect(D.ORACLE),
 ]

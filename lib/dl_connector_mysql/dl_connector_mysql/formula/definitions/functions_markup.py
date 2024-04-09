@@ -24,5 +24,8 @@ DEFINITIONS_MARKUP = [
     # br
     base.FuncBr.for_dialect(D.MYSQL),
     # image
-    base.FuncImage.for_dialect(D.MYSQL),
+    base.FuncImage1.for_dialect(D.MYSQL),
+    base.FuncImage2.for_dialect(D.MYSQL),
+    base.FuncImage3.for_dialect(D.MYSQL),
+    base.FuncImage4.for_dialect(D.MYSQL),
 ]

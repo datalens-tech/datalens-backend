@@ -24,5 +24,8 @@ DEFINITIONS_MARKUP = [
     # br
     base.FuncBr.for_dialect(D.CLICKHOUSE),
     # image
-    base.FuncImage.for_dialect(D.CLICKHOUSE),
+    base.FuncImage1.for_dialect(D.CLICKHOUSE),
+    base.FuncImage2.for_dialect(D.CLICKHOUSE),
+    base.FuncImage3.for_dialect(D.CLICKHOUSE),
+    base.FuncImage4.for_dialect(D.CLICKHOUSE),
 ]

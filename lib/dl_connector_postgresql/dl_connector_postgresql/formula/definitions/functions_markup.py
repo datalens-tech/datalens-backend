@@ -24,5 +24,8 @@ DEFINITIONS_MARKUP = [
     # br
     base.FuncBr.for_dialect(D.POSTGRESQL),
     # image
-    base.FuncImage.for_dialect(D.POSTGRESQL),
+    base.FuncImage1.for_dialect(D.POSTGRESQL),
+    base.FuncImage2.for_dialect(D.POSTGRESQL),
+    base.FuncImage3.for_dialect(D.POSTGRESQL),
+    base.FuncImage4.for_dialect(D.POSTGRESQL),
 ]
