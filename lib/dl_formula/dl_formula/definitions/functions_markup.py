@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from enum import Enum
 from typing import (
+    ClassVar,
     Sequence,
     Set,
 )
@@ -273,6 +275,14 @@ class FuncBr(FuncMarkup):
     variants = make_variants("br")
 
 
+class NullImageMarkupNode:
+    data_type: ClassVar[Enum] = DataType.NULL
+    base_token: ClassVar[str] = "image"
+
+
+null_image_node = NullImageMarkupNode()
+
+
 class FuncImageBase(FuncMarkup):
     name = "image"
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
@@ -292,7 +302,7 @@ class FuncImage1(FuncImageBase):
     variants = [
         VW(
             D.DUMMY | D.SQLITE,
-            lambda src: markup_node("img", src, "", "", ""),
+            lambda src: markup_node("img", src, null_image_node, null_image_node, null_image_node),
         ),
     ]
 
@@ -312,7 +322,7 @@ class FuncImage2(FuncImageBase):
     variants = [
         VW(
             D.DUMMY | D.SQLITE,
-            lambda src, width: markup_node("img", src, width, "", ""),
+            lambda src, width: markup_node("img", src, width, null_image_node, null_image_node),
         ),
     ]
 
@@ -333,7 +343,7 @@ class FuncImage3(FuncImageBase):
     variants = [
         VW(
             D.DUMMY | D.SQLITE,
-            lambda src, width, height: markup_node("img", src, width, height, ""),
+            lambda src, width, height: markup_node("img", src, width, height, null_image_node),
         ),
     ]
 
