@@ -292,7 +292,7 @@ class FuncImage1(FuncImageBase):
     variants = [
         VW(
             D.DUMMY | D.SQLITE,
-            lambda src, width: markup_node("img", src, "", "", ""),
+            lambda src: markup_node("img", src, "", "", ""),
         ),
     ]
 
