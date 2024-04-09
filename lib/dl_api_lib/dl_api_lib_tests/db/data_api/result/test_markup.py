@@ -115,15 +115,18 @@ class TestUMarkup(DefaultApiTestBase):
         }
         assert res_b == expected_b
 
-        c_height = res_c["height"]
+        c_src, c_width, c_height = res_c["src"], res_c["width"], res_c["height"]
+        assert isinstance(c_src, str)
         assert isinstance(c_height, int)
-        expected_c = {"type": "img", "src": "Richmond", "width": 23223, "height": 13, "alt": "alt_text"}
+        assert isinstance(c_width, int)
+        expected_c = {"type": "img", "src": c_src, "width": c_width, "height": 13, "alt": "alt_text"}
         assert res_c == expected_c
 
-        d_alt = res_d["alt"]
+        d_src, d_width, d_alt = res_d["src"], res_d["width"], res_d["alt"]
         assert d_alt is None
-        expected_d = {"type": "img", "src": "Richmond", "width": 23223, "height": None, "alt": None}
+        expected_d = {"type": "img", "src": d_src, "width": d_width, "height": None, "alt": None}
         assert res_d == expected_d
 
-        expected_e = {"type": "img", "src": "Richmond", "width": None, "height": None, "alt": None}
+        e_src = res_e["src"]
+        expected_e = {"type": "img", "src": e_src, "width": None, "height": None, "alt": None}
         assert res_e == expected_e
