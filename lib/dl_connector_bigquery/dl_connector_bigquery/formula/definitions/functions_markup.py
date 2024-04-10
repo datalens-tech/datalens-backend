@@ -24,5 +24,8 @@ DEFINITIONS_MARKUP = [
     # br
     base.FuncBr.for_dialect(D.BIGQUERY),
     # image
-    base.FuncImage.for_dialect(D.BIGQUERY),
+    base.FuncImage1.for_dialect(D.BIGQUERY),
+    base.FuncImage2.for_dialect(D.BIGQUERY),
+    base.FuncImage3.for_dialect(D.BIGQUERY),
+    base.FuncImage4.for_dialect(D.BIGQUERY),
 ]

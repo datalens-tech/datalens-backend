@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from enum import Enum
 from typing import (
+    ClassVar,
     Sequence,
     Set,
 )
@@ -273,8 +275,80 @@ class FuncBr(FuncMarkup):
     variants = make_variants("br")
 
 
-class FuncImage(FuncMarkup):
+class NullImageMarkupNode:
+    data_type: ClassVar[Enum] = DataType.NULL
+    base_token: ClassVar[str] = "image"
+
+
+null_image_node = NullImageMarkupNode()
+
+
+class FuncImageBase(FuncMarkup):
     name = "image"
+    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
+
+
+class FuncImage1(FuncImageBase):
+    arg_cnt = 1
+    arg_names = ["src"]
+    argument_types = [
+        # image( null|str)
+        ArgTypeSequence(
+            [
+                DataType.STRING.autocast_types | DataType.NULL.autocast_types,
+            ]
+        ),
+    ]
+    variants = [
+        VW(
+            D.DUMMY | D.SQLITE,
+            lambda src: markup_node("img", src, null_image_node, null_image_node, null_image_node),
+        ),
+    ]
+
+
+class FuncImage2(FuncImageBase):
+    arg_cnt = 2
+    arg_names = ["src", "width"]
+    argument_types = [
+        # image( null|str, null|int)
+        ArgTypeSequence(
+            [
+                DataType.STRING.autocast_types | DataType.NULL.autocast_types,
+                DataType.INTEGER.autocast_types | DataType.CONST_INTEGER.autocast_types | DataType.NULL.autocast_types,
+            ]
+        ),
+    ]
+    variants = [
+        VW(
+            D.DUMMY | D.SQLITE,
+            lambda src, width: markup_node("img", src, width, null_image_node, null_image_node),
+        ),
+    ]
+
+
+class FuncImage3(FuncImageBase):
+    arg_cnt = 3
+    arg_names = ["src", "width", "height"]
+    argument_types = [
+        # image( null|str, null|int, null|int)
+        ArgTypeSequence(
+            [
+                DataType.STRING.autocast_types | DataType.NULL.autocast_types,
+                DataType.INTEGER.autocast_types | DataType.CONST_INTEGER.autocast_types | DataType.NULL.autocast_types,
+                DataType.INTEGER.autocast_types | DataType.CONST_INTEGER.autocast_types | DataType.NULL.autocast_types,
+            ]
+        ),
+    ]
+    variants = [
+        VW(
+            D.DUMMY | D.SQLITE,
+            lambda src, width, height: markup_node("img", src, width, height, null_image_node),
+        ),
+    ]
+
+
+class FuncImage4(FuncImageBase):
     arg_cnt = 4
     arg_names = ["src", "width", "height", "alt"]
     argument_types = [
@@ -288,9 +362,7 @@ class FuncImage(FuncMarkup):
             ]
         ),
     ]
-    # variants = make_variants("img")  # TODO: arguments validation
     variants = make_variants("img")
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 DEFINITIONS_MARKUP = [
@@ -314,5 +386,8 @@ DEFINITIONS_MARKUP = [
     # br
     FuncBr,
     # image
-    FuncImage,
+    FuncImage1,
+    FuncImage2,
+    FuncImage3,
+    FuncImage4,
 ]

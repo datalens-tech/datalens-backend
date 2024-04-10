@@ -35,6 +35,10 @@ class DefaultMarkupFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
 
         assert to_str(dbe.eval("image('src1', NULL, 15, 'some_text')")) == '(img "src1" "" "15" "some_text")'
         assert to_str(dbe.eval("image('src1', NULL, 15, NULL)")) == '(img "src1" "" "15" "")'
+        assert to_str(dbe.eval("image('src1')")) == '(img "src1" "" "" "")'
+        assert to_str(dbe.eval("image('src1', 15)")) == '(img "src1" "15" "" "")'
+        assert to_str(dbe.eval("image('src1', 15, 16)")) == '(img "src1" "15" "16" "")'
+
         # TODO: Decide the desired behavior.
         assert (dbe.eval("'abc' + NULL + 'qwe'") is None) == (dbe.eval("italic(NULL) + '...'") is None)
         assert to_str(dbe.eval("italic('text00') + 'text01'")) == '(c (i "text00") "text01")'
