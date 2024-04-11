@@ -2486,7 +2486,7 @@ msgid ""
 "Converts the {arg:0} expression to {link: geopolygon_link: geopolygon} "
 "format."
 msgstr ""
-"Переводит выражение {arg:0} в формат {link: geopolygon_link: геополигона }."
+"Переводит выражение {arg:0} в формат {link: geopolygon_link: геополигона}."
 
 msgid "Data source"
 msgstr "Источник данных"
