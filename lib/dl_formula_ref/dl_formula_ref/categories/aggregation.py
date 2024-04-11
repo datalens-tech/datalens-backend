@@ -1,6 +1,7 @@
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.aliased_res import (
     AliasedTextResource,
+    AliasedLinkResource,
     SimpleAliasedResourceRegistry,
 )
 from dl_formula_ref.registry.base import FunctionDocCategory
@@ -74,6 +75,19 @@ CATEGORY_AGGREGATION = FunctionDocCategory(
                     "For any of these keywords the list may have any number of dimensions, or "
                     "even be empty.\n"
                     "\n"
+                    "Using `INCLUDE` or `EXCLUDE` without a dimension list is equivalent to grouping "
+                    "by dimensions of an external aggregation or by chart dimensions if there are no "
+                    "other aggregations over the current one. `FIXED` without a list means that all "
+                    "data will aggregate into a single group, e.g., for calculating the resulting value.\n"
+                    "\n"
+                    "Top-level aggregations must not contain any dimensions that are missing in the chart. "
+                    "Hence, if you need to add details or group by dimensions that are missing in the chart, "
+                    "you can add them in the lower levels. For example, if you need the maximum sales amount "
+                    "by cities without including data on cities to the chart, use:\n"
+                    "```\n"
+                    "MAX(SUM([Sales] FIXED [City]))\n"
+                    "```\n"
+                    "\n"
                     "{text:agg_syntax_lod_inheritance}\n"
                     "{text:agg_syntax_lod_examples}\n"
                     "{text:agg_syntax_lod_consistency}\n"
@@ -92,10 +106,7 @@ CATEGORY_AGGREGATION = FunctionDocCategory(
                     "AVG(MAX(SUM([Sales] FIXED [City], [Category], [Date]) FIXED [Category], "
                     "[Date]) FIXED [Date])\n"
                     "```\n"
-                    "`INCLUDE` or `EXCLUDE` without a list of dimensions results in the same "
-                    "dimensions as the aggregation above or dimensions of the chart if it is the "
-                    "topmost aggregation. `FIXED` without a list means that all data is "
-                    "aggregated in a single group, which can be used to calculate total values.\n"
+                    "\n"
                 )
             ),
             "agg_syntax_lod_examples": AliasedTextResource(
@@ -133,11 +144,8 @@ CATEGORY_AGGREGATION = FunctionDocCategory(
                     ")\n"
                     "```\n"
                     "\n"
-                    "One of the nested aggregations' set of dimensions contains all of the "
+                    "One of the nested aggregations set of dimensions contains all of the "
                     "others.\n"
-                    "\n"
-                    "Another important restriction for LOD is that top-level aggregations must "
-                    "not contain any dimensions not used in the chart."
                 )
             ),
             "agg_syntax_bfb": AliasedTextResource(
@@ -172,12 +180,14 @@ CATEGORY_AGGREGATION = FunctionDocCategory(
                 body=_(
                     "## Usage Restrictions {#usage-restrictions}\n"
                     "\n"
-                    "There are the following features of using aggregations:\n"
-                    "1. A function or operator cannot have aggregate and non-aggregate "
+                    "There are the following features of using aggregations: "
+                    "a function or operator cannot have aggregate and non-aggregate "
                     "expressions as its arguments simultaneously. The following usage is "
                     "forbidden: `CONCAT([Profit], SUM([Profit]))`.\n"
                 )
             ),
+            "standard_dev": AliasedLinkResource(url=_("https://en.wikipedia.org/wiki/Standard_deviation")),
+            "median_link": AliasedLinkResource(url=_("https://en.wikipedia.org/wiki/Median")),
         }
     ),
     keywords=_("aggregate functions,aggregations,aggregate data,level of detail,lod"),

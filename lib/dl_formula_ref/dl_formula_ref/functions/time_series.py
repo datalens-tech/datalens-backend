@@ -50,14 +50,22 @@ FUNCTION_AT_DATE = FunctionDocRegistryItem(
     name="at_date",
     category=CATEGORY_TIME_SERIES,
     description=_(
-        "Re-evaluate {arg:0} for a date/time specified by {arg:2}.\n"
+        "Re-evaluate {arg:0} for a date/time specified by {arg:2}. It allows to "
+        "get the measure at the beginning and at the end of a period, or for the specified date.\n"
         "The {arg:1} argument is the dimension along which the offset is made.\n"
+        "\n"
+        "You can use the following as the {arg:2} argument:\n"
+        "\n"
+        "* Certain date.\n"
+        "* Function {ref:TODAY} to obtain the current date.\n"
+        "* Functions to calculate date and time.\n"
         "\n"
         "See also {ref:AGO}, {ref:LAG}."
     ),
     notes=_NOTES_TIME_SERIES,
     examples=[
         SimpleExample("AT_DATE(SUM([Sales]), [Order Date], #2019-01-01#)"),
+        SimpleExample('AT_DATE(SUM([Sales]), [Order Date], TODAY())'),
         SimpleExample('AT_DATE(SUM([Sales]), [Order Date], DATETRUNC([Order Date], "month"))'),
     ],
 )

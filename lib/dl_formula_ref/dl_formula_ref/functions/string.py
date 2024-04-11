@@ -260,13 +260,15 @@ FUNCTION_SUBSTR = FunctionDocRegistryItem(
 )
 
 _REGEXP_NOTES = [
-    Note(Translatable("See the documentation of the data source to clarify the regular expression syntax.")),
+    Note(Translatable("See the documentation of the data source to clarify the regular expression syntax. "
+                      "For example, {dialects:CLICKHOUSE} uses the {link: ch_re_link: RE2 syntax} "
+                      "to compose regular expressions.")),
 ]
 
 FUNCTION_REGEXP_EXTRACT = FunctionDocRegistryItem(
     name="regexp_extract",
     category=CATEGORY_STRING,
-    description=_("Returns the substring {arg:0} that matches the regular expression pattern " "{arg:1}."),
+    description=_("Returns the substring {arg:0} that matches the regular expression " "{arg:1}."),
     notes=_REGEXP_NOTES,
     examples=[
         SimpleExample('REGEXP_EXTRACT("RU 912873", "[A-Z]+\\s+(\\d+)") = "912873"'),
@@ -347,14 +349,22 @@ FUNCTION_SPLIT = FunctionDocRegistryItem(
     category=CATEGORY_STRING,
     # FIXME: Connectorize dialect mentions (https://github.com/datalens-tech/datalens-backend/issues/81)
     description=_(
-        "Returns a substring from {arg:0} using the {arg:1} delimiter character to "
-        "divide the string into a sequence of {arg:2} parts. Delimiter is a comma by "
-        "default. If {arg:2} is not passed, an array is returned (only for "
-        "{dialects:CLICKHOUSE|POSTGRESQL} sources)"
+        "It splits {arg:0} into a sequence of substrings using the {arg:1} "
+        "character as separator and returns the substring whose number is equal "
+        "to the {arg:2} parameter. By default, the delimiting character is comma. "
+        "If {arg:2} is negative, the substring to return is counted from "
+        "the end of {arg:0}. If the number of substrings is less than "
+        "the {arg:2} {link: abs_value_link: absolute value}, the function "
+        "returns an empty string. If {arg:2} was not provided, the function "
+        "returns an array of the substrings (only for {dialects:CLICKHOUSE|POSTGRESQL} sources)."
     ),
     examples=[
         SimpleExample('SPLIT("192.168.0.1", ".", 1) = "192"'),
         SimpleExample('SPLIT("192.168.0.1", ".", -1) = "1"'),
+        SimpleExample('SPLIT("192.168.0.1", ".", 5) = ""'),
+        SimpleExample('SPLIT("192.168.0.1", ".") = "[\'192 \',\'168 \',\'0 \',\'1\']"'),
+        SimpleExample('SPLIT("192.168.0.1") = "192.168.0.1"'),
+        SimpleExample('SPLIT("a,b,c,d") = "[\'a\',\'b\',\'c\',\'d\']"'),
     ],
 )
 

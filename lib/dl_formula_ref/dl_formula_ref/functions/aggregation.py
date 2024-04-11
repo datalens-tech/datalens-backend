@@ -172,7 +172,7 @@ FUNCTION_STDEV = FunctionDocRegistryItem(
     name="stdev",
     category=CATEGORY_AGGREGATION,
     description=_(
-        "Returns the statistical standard deviation of all values in the expression "
+        "Returns the statistical {link: standard_dev: standard deviation} of all values in the expression "
         "based on a selection from the population."
     ),
     examples=[
@@ -184,7 +184,9 @@ FUNCTION_STDEVP = FunctionDocRegistryItem(
     name="stdevp",
     category=CATEGORY_AGGREGATION,
     description=_(
-        "Returns the statistical standard deviation of all values in the expression " "based on the biased population."
+        "Returns the statistical {link: standard_dev: standard deviation} of all values in the expression " "based on the biased population. "
+        "The function shows how far data points are from their average. "
+        "In other words, standard deviation shows to what extent values in a dataset deviate from their average."
     ),
     examples=[
         SimpleExample("STDEVP([Profit])"),
@@ -226,7 +228,10 @@ FUNCTION_QUANTILE_APPROX = FunctionDocRegistryItem(
 FUNCTION_MEDIAN = FunctionDocRegistryItem(
     name="median",
     category=CATEGORY_AGGREGATION,
-    description=_("Returns the median value."),
+    description=_(
+        "Returns the {link: median_link: median} value. "
+        "For an even number of items, it returns the greatest of the neighboring items in the central position."
+    ),
     examples=[
         SimpleExample("MEDIAN([Profit])"),
     ],

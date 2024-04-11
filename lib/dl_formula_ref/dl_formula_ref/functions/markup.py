@@ -1,13 +1,25 @@
+from dl_formula.core.datatype import DataType
 from dl_formula_ref.categories.markup import CATEGORY_MARKUP
 from dl_formula_ref.i18n.registry import FormulaRefTranslatable as Translatable
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
-from dl_formula_ref.registry.example import SimpleExample
+from dl_formula_ref.registry.example import (
+    DataExample,
+    SimpleExample,
+)
+from dl_formula_ref.examples.config import (
+    ExampleConfig,
+    ExampleSource,
+)
 from dl_formula_ref.registry.note import Note
 
 
 _ = get_gettext()
 
+_SOURCE_PRODUCTS_1 = ExampleSource(
+    columns=[("Product", DataType.STRING)],
+    data=[["Телевизор"], ["Смартфон"], ["Ноутбук"]],
+)
 
 FUNCTION_BOLD = FunctionDocRegistryItem(
     name="bold",
@@ -29,7 +41,7 @@ FUNCTION_URL = FunctionDocRegistryItem(
         "When you click on the link, the page opens in a new browser tab."
     ),
     examples=[
-        SimpleExample("URL('https://example.com/?value=' + [value], [value])"),
+        SimpleExample("URL('https://yandex.ru/search/?text=buy+a+' + [Product Name], [Product Name])"),
     ],
 )
 

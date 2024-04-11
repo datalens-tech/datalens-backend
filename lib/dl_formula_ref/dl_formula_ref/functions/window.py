@@ -113,6 +113,7 @@ def _make_rank_examples(func: str) -> List[DataExample]:
                     (f"{func} 1", f'{func}(SUM([Orders]), "desc")'),
                     (f"{func} 2", f'{func}(SUM([Orders]), "asc")'),
                 ],
+                formulas_as_names=False,
             ),
         ),
     ]
