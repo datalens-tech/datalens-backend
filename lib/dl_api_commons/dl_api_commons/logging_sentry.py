@@ -6,7 +6,7 @@ from typing import Any
 
 import attr
 
-from dl_api_commons import clean_secret_data_in_headers
+from dl_api_commons.logging import RequestObfuscator
 
 
 log = logging.getLogger()
@@ -87,7 +87,7 @@ def cleanup_local_vars(local_vars: dict) -> None:
 def cleanup_event_headers(original_headers: dict[str, str]) -> dict[str, str]:
     return {
         name: value
-        for name, value in clean_secret_data_in_headers(
+        for name, value in RequestObfuscator().clean_secret_data_in_headers(
             (
                 original_name,
                 original_value,

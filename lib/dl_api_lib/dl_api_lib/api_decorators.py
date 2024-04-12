@@ -19,7 +19,7 @@ from marshmallow import Schema
 from marshmallow import ValidationError as MValidationError
 from werkzeug.exceptions import HTTPException
 
-from dl_api_commons.logging import mask_sensitive_fields_by_name_in_json_recursive
+from dl_api_commons.logging import RequestObfuscator
 from dl_api_lib import utils
 from dl_api_lib.error_handling import (
     BIError,
@@ -88,7 +88,7 @@ def schematic_request(  # type: ignore  # TODO: fix
             body = request.get_json() if body_schema is not None else None
 
             if LOGGER.isEnabledFor(logging.INFO):
-                dbg_body_data = mask_sensitive_fields_by_name_in_json_recursive(body)
+                dbg_body_data = RequestObfuscator().mask_sensitive_fields_by_name_in_json_recursive(body)
                 dbg_body = json.dumps(dbg_body_data)
                 url = request.url
                 pfx = "http://"
