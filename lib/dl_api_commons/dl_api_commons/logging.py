@@ -29,192 +29,243 @@ NON_TRANSITIVE_LOGGING_CTX_KEYS = frozenset(
     }
 )
 
-SECRET_HEADERS: frozenset[str] = frozenset(
-    h.lower()
-    for h in (
-        "Authorization",
-        "X-Us-Master-Token",
-        "Master-Token",
-        "X-DL-API-Key",
-        "X-Ya-Service-Ticket",
-        "X-Ya-User-Ticket",
+
+class RequestObfuscator:
+    SECRET_HEADERS: ClassVar[frozenset[str]] = frozenset(
+        h.lower()
+        for h in (
+            "Authorization",
+            "X-Us-Master-Token",
+            "Master-Token",
+            "X-DL-API-Key",
+            "X-Ya-Service-Ticket",
+            "X-Ya-User-Ticket",
+        )
     )
-)
-
-SECRET_HEADERS_PATTERNS: Sequence[Pattern] = (re.compile(r".*token.*", re.IGNORECASE),)
-
-SECRET_COOKIES: frozenset[str] = frozenset(
-    c.lower()
-    for c in (
-        "Session_id",
-        "sessionid2",
-        "yc_session",
-        "iam_cookie",
+    SECRET_HEADERS_PATTERNS: ClassVar[Sequence[Pattern]] = (re.compile(r".*token.*", re.IGNORECASE),)
+    SECRET_COOKIES: ClassVar[frozenset[str]] = frozenset(
+        c.lower()
+        for c in (
+            "Session_id",
+            "sessionid2",
+            "yc_session",
+            "iam_cookie",
+        )
     )
-)
+    SENSITIVE_KEY_NAMES: frozenset[str] = frozenset(
+        (
+            "password",
+            "token",
+            "secret",
+            "private_key",
+            "cypher_text",
+        )
+    )
 
-
-def _is_secret_header(header_name: str) -> bool:
-    if header_name.lower() in SECRET_HEADERS:
-        return True
-
-    for pattern in SECRET_HEADERS_PATTERNS:
-        if pattern.match(header_name):
+    def _is_secret_header(self, header_name: str) -> bool:
+        if header_name.lower() in self.SECRET_HEADERS:
             return True
 
-    return False
+        for pattern in self.SECRET_HEADERS_PATTERNS:
+            if pattern.match(header_name):
+                return True
 
+        return False
 
-def _obfuscate_value(secret_value: str) -> str:
-    repl_str = "<hidden>"
-    if len(secret_value) > 8:
-        return secret_value[:3] + repl_str + secret_value[-3:]
-    else:
-        return repl_str
+    def _obfuscate_value(self, secret_value: str) -> str:
+        repl_str = "<hidden>"
+        if len(secret_value) > 8:
+            return secret_value[:3] + repl_str + secret_value[-3:]
+        else:
+            return repl_str
 
+    def _obfuscate_cookie_header_value(self, cookie_string: str) -> str:
+        cookie: SimpleCookie = SimpleCookie(cookie_string)
+        for cookie_name in cookie:
+            if cookie_name.lower() in self.SECRET_COOKIES:
+                repl_str = "<hidden>"
+                cookie[cookie_name].set(cookie_name, repl_str, repl_str)
 
-def _obfuscate_cookie_header_value(cookie_string: str) -> str:
-    cookie: SimpleCookie = SimpleCookie(cookie_string)
-    for cookie_name in cookie:
-        if cookie_name.lower() in SECRET_COOKIES:
-            repl_str = "<hidden>"
-            cookie[cookie_name].set(cookie_name, repl_str, repl_str)
+        return cookie.output(header="", sep=";").strip()
 
-    return cookie.output(header="", sep=";").strip()
-
-
-def clean_secret_data_in_headers(headers: Iterable[tuple[str, str]]) -> Iterable[tuple[str, str]]:
-    return tuple(
-        (
-            name,
-            _obfuscate_value(val)
-            if _is_secret_header(name)
-            else _obfuscate_cookie_header_value(val)
-            if name.lower() == "cookie"
-            else val,
+    def clean_secret_data_in_headers(self, headers: Iterable[tuple[str, str]]) -> Iterable[tuple[str, str]]:
+        return tuple(
+            (
+                name,
+                self._obfuscate_value(val)
+                if self._is_secret_header(name)
+                else self._obfuscate_cookie_header_value(val)
+                if name.lower() == "cookie"
+                else val,
+            )
+            for name, val in headers
         )
-        for name, val in headers
-    )
+
+    def mask_sensitive_fields_by_name_in_json_recursive(
+        self, source: Optional[dict[str, Any]], extra_sensitive_key_names: Iterable[str] = ()
+    ) -> Optional[dict[str, Any]]:
+        if source is None:
+            return None
+
+        all_sensitive_key_names = self.SENSITIVE_KEY_NAMES | frozenset(extra_sensitive_key_names)
+
+        def process_value(key_name: Optional[str], value: Any) -> Any:
+            if value is None:
+                return None
+
+            if isinstance(value, dict):
+                return {
+                    nested_key: process_value(nested_key, nested_value) for nested_key, nested_value in value.items()
+                }
+            if isinstance(
+                value,
+                (
+                    list,
+                    tuple,
+                ),
+            ):
+                return [process_value(key_name, nested_value) for nested_value in value]
+            if isinstance(value, str):
+                if key_name in all_sensitive_key_names:
+                    return self._obfuscate_value(value)
+                return value
+
+            if isinstance(
+                value,
+                (
+                    bool,
+                    float,
+                    int,
+                ),
+            ):
+                if key_name in all_sensitive_key_names:
+                    LOGGER.error("Non-string type for sensitive field '%s': %s", key_name, type(value))
+                    return self._obfuscate_value(str(value))
+                return value
+
+            raise TypeError(f"Unexpected value type: {type}")
+
+        return process_value(None, source)
 
 
-def log_request_start(logger: logging.Logger, method: str, full_path: str, headers: Iterable[tuple[str, str]]) -> None:
-    clean_headers = clean_secret_data_in_headers(headers)
+@attr.s
+class RequestLogHelper:
+    _logger: logging.Logger = attr.ib(kw_only=True)
+    _obfuscator: RequestObfuscator = attr.ib(kw_only=True, factory=RequestObfuscator)
 
-    logger.info(
-        "Received request. method: %s, path: %s, headers: %s, pid: %s",
-        method.upper(),
-        full_path,
-        # Complexity to be compatible with previous version of logger
-        "{{{}}}".format(", ".join([f"{k!r}: {v!r}" for k, v in clean_headers])),
-        os.getpid(),
-    )
+    def log_request_start(self, method: str, full_path: str, headers: Iterable[tuple[str, str]]) -> None:
+        clean_headers = self._obfuscator.clean_secret_data_in_headers(headers)
 
+        self._logger.info(
+            "Received request. method: %s, path: %s, headers: %s, pid: %s",
+            method.upper(),
+            full_path,
+            # Complexity to be compatible with previous version of logger
+            "{{{}}}".format(", ".join([f"{k!r}: {v!r}" for k, v in clean_headers])),
+            os.getpid(),
+        )
 
-def log_request_end(logger: logging.Logger, method: str, full_path: str, status_code: int) -> None:
-    logger.info(
-        "Response. method: %s, path: %s, status: %d",
-        method.upper(),
-        full_path,
-        status_code,
-        extra=dict(
+    def log_request_end(self, method: str, full_path: str, status_code: int) -> None:
+        self._logger.info(
+            "Response. method: %s, path: %s, status: %d",
+            method.upper(),
+            full_path,
+            status_code,
+            extra=dict(
+                event_code="http_response",
+                request_method=method,
+                request_path=full_path,
+                response_status=status_code,
+            ),
+        )
+
+    # TODO FIX: Make more strict typing for headers
+    def _normalize_headers(self, headers: Any) -> Optional[dict[str, str]]:
+        if headers is None:
+            return None
+        if hasattr(headers, "items"):
+            headers = headers.items()
+        headers = sorted(headers)
+        headers = {normalize_header_name(key): value for key, value in headers}
+
+        headers = dict(self._obfuscator.clean_secret_data_in_headers(headers.items()))
+
+        return headers
+
+    # TODO CONSIDER: Create custom type for headers
+    def log_request_end_extended(
+        self,
+        request_method: str,
+        request_path: str,
+        request_headers: Optional[dict],
+        response_status: int,
+        response_headers: Optional[dict],
+        response_timing: Optional[float],
+        # ...
+        user_id: Optional[str] = None,
+        username: Optional[str] = None,
+        # extra extra for when they're not in the context.
+        # TODO: tenant_id
+        request_id: Optional[str] = None,
+        endpoint_code: Optional[str] = None,
+    ) -> None:
+        """
+        Response pre-return detailed (extended) logging.
+
+        :param request_method: HTTP method; uppercase, e.g. 'GET'.
+
+        :param request_path: HTTP path; should, generally, include the query string,
+            i.e. '/a/b?c=d&e=f'.
+
+        :param request_headers: HTTP headers, unordered, normalized (lowercase
+            dash names, i.e. 'user-agent'), unduplicated, scrubbed.
+            Headers like 'remote-addr' should be authoritative.
+
+        :param user_id: primary identifier of the *authorized* initial user (authoritative);
+            e.g. '1120000000092758'.
+
+        :param username: readable identifier of the user, i.e. login, e.g. 'robot-datalens'.
+
+        :param response_status: HTTP status of the response; e.g. '502'.
+
+        :param response_headers: HTTP headers of the response, normalized.
+
+        :param response_timing: duration of the request handling, in seconds.
+
+        :param request_id: unique request identifier; should be specified when not
+            available in context.
+
+        :param endpoint_code: name of the handler; should be specified when not
+            available in context; use an empty string if it is not applicable.
+        """
+        request_method = request_method.upper()
+        request_headers = self._normalize_headers(request_headers)
+        response_headers = self._normalize_headers(response_headers)
+        if response_timing is not None:
+            response_timing = round(response_timing, 4)
+
+        extra = dict(
             event_code="http_response",
-            request_method=method,
-            request_path=full_path,
-            response_status=status_code,
-        ),
-    )
+            request_method=request_method,
+            request_path=request_path,
+            request_headers=request_headers,
+            user_id=user_id,
+            username=username,
+            response_status=response_status,
+            response_headers=response_headers,
+            response_timing=response_timing,
+            # Other possibilities:
+            # response_body_info=dict(body_piece=body[:max_size], body_size=body_size, ...),
+            # response_details=dict(...),
+        )
+        if request_id is not None:
+            extra["request_id"] = request_id
+        if endpoint_code is not None:
+            extra["endpoint_code"] = endpoint_code
 
-
-# TODO FIX: Make more strict typing for headers
-def _normalize_headers(headers: Any) -> Optional[dict[str, str]]:
-    if headers is None:
-        return None
-    if hasattr(headers, "items"):
-        headers = headers.items()
-    headers = sorted(headers)
-    headers = {normalize_header_name(key): value for key, value in headers}
-
-    headers = dict(clean_secret_data_in_headers(headers.items()))
-
-    return headers
-
-
-# TODO CONSIDER: Create custom type for headers
-def log_request_end_extended(
-    logger: logging.Logger,
-    request_method: str,
-    request_path: str,
-    request_headers: Optional[dict],
-    response_status: int,
-    response_headers: Optional[dict],
-    response_timing: Optional[float],
-    # ...
-    user_id: Optional[str] = None,
-    username: Optional[str] = None,
-    # extra extra for when they're not in the context.
-    # TODO: tenant_id
-    request_id: Optional[str] = None,
-    endpoint_code: Optional[str] = None,
-) -> None:
-    """
-    Response pre-return detailed (extended) logging.
-
-    :param logger: logger to send the log to.
-
-    :param request_method: HTTP method; uppercase, e.g. 'GET'.
-
-    :param request_path: HTTP path; should, generally, include the query string,
-        i.e. '/a/b?c=d&e=f'.
-
-    :param request_headers: HTTP headers, unordered, normalized (lowercase
-        dash names, i.e. 'user-agent'), unduplicated, scrubbed.
-        Headers like 'remote-addr' should be authoritative.
-
-    :param user_id: primary identifier of the *authorized* initial user (authoritative);
-        e.g. '1120000000092758'.
-
-    :param username: readable identifier of the user, i.e. login, e.g. 'robot-datalens'.
-
-    :param response_status: HTTP status of the response; e.g. '502'.
-
-    :param response_headers: HTTP headers of the response, normalized.
-
-    :param response_timing: duration of the request handling, in seconds.
-
-    :param request_id: unique request identifier; should be specified when not
-        available in context.
-
-    :param endpoint_code: name of the handler; should be specified when not
-        available in context; use an empty string if it is not applicable.
-    """
-    request_method = request_method.upper()
-    request_headers = _normalize_headers(request_headers)
-    response_headers = _normalize_headers(response_headers)
-    if response_timing is not None:
-        response_timing = round(response_timing, 4)
-
-    extra = dict(
-        event_code="http_response",
-        request_method=request_method,
-        request_path=request_path,
-        request_headers=request_headers,
-        user_id=user_id,
-        username=username,
-        response_status=response_status,
-        response_headers=response_headers,
-        response_timing=response_timing,
-        # Other possibilities:
-        # response_body_info=dict(body_piece=body[:max_size], body_size=body_size, ...),
-        # response_details=dict(...),
-    )
-    if request_id is not None:
-        extra["request_id"] = request_id
-    if endpoint_code is not None:
-        extra["endpoint_code"] = endpoint_code
-
-    logger.info(
-        "Response. method: %s, path: %s, status: %d", request_method, request_path, response_status, extra=extra
-    )
+        self._logger.info(
+            "Response. method: %s, path: %s, status: %d", request_method, request_path, response_status, extra=extra
+        )
 
 
 class RequestLoggingContextController(metaclass=abc.ABCMeta):
@@ -273,58 +324,6 @@ def format_dict(extra: dict[str, Any], separator: str = " ", *args: str, **kwarg
             )
 
     return separator.join(parts)
-
-
-def mask_sensitive_fields_by_name_in_json_recursive(
-    source: Optional[dict[str, Any]], extra_sensitive_key_names: Iterable[str] = ()
-) -> Optional[dict[str, Any]]:
-    if source is None:
-        return None
-
-    all_sensitive_key_names: set[str] = {
-        "password",
-        "token",
-        "secret",
-        "private_key",
-        "cypher_text",
-    }
-    all_sensitive_key_names.update(extra_sensitive_key_names)
-
-    def process_value(key_name: Optional[str], value: Any) -> Any:
-        if value is None:
-            return None
-
-        if isinstance(value, dict):
-            return {nested_key: process_value(nested_key, nested_value) for nested_key, nested_value in value.items()}
-        if isinstance(
-            value,
-            (
-                list,
-                tuple,
-            ),
-        ):
-            return [process_value(key_name, nested_value) for nested_value in value]
-        if isinstance(value, str):
-            if key_name in all_sensitive_key_names:
-                return _obfuscate_value(value)
-            return value
-
-        if isinstance(
-            value,
-            (
-                bool,
-                float,
-                int,
-            ),
-        ):
-            if key_name in all_sensitive_key_names:
-                LOGGER.error("Non-string type for sensitive field '%s': %s", key_name, type(value))
-                return _obfuscate_value(str(value))
-            return value
-
-        raise TypeError(f"Unexpected value type: {type}")
-
-    return process_value(None, source)
 
 
 class LogRequestLoggingContextController(RequestLoggingContextController):

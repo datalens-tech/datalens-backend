@@ -9,20 +9,19 @@ import flask
 from multidict import CIMultiDict
 import pytest
 
-from dl_api_commons import (
-    clean_secret_data_in_headers,
-    log_request_end,
-    log_request_start,
-)
 from dl_api_commons.aio.middlewares import request_id as aio_request_id
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from dl_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
 from dl_api_commons.flask.middlewares.request_id import RequestIDService
-from dl_api_commons.logging import mask_sensitive_fields_by_name_in_json_recursive
+from dl_api_commons.logging import (
+    RequestLogHelper,
+    RequestObfuscator,
+)
 
 
 LOGGER = logging.getLogger(__name__)
+LOG_HELPER = RequestLogHelper(logger=LOGGER)
 
 _EXPECTED_MASKED_HEADERS = (
     ("SomeToken", "<hidden>"),
@@ -62,14 +61,13 @@ _INPUT_HEADERS = (
 
 
 def test_headers_cleaning():
-    assert _EXPECTED_MASKED_HEADERS == clean_secret_data_in_headers(_INPUT_HEADERS)
+    assert _EXPECTED_MASKED_HEADERS == RequestObfuscator().clean_secret_data_in_headers(_INPUT_HEADERS)
 
 
 def test_common_logging_request_start(caplog):
     caplog.set_level("INFO")
     caplog.clear()
-    log_request_start(
-        logger=LOGGER,
+    LOG_HELPER.log_request_start(
         method="get",
         full_path="/api/ololo/azaza?param=value",
         headers=(
@@ -93,8 +91,7 @@ def test_common_logging_request_start(caplog):
 def test_common_logging_request_end(caplog):
     caplog.set_level("INFO")
     caplog.clear()
-    log_request_end(
-        logger=LOGGER,
+    LOG_HELPER.log_request_end(
         method="get",
         full_path="/unistat/?",
         status_code=200,
@@ -265,5 +262,5 @@ async def test_common_logging_aiohttp(caplog, aiohttp_client):
     ),
 )
 def test_mask_sensitive_fields_by_name_recursive(source: dict[str, Any], expected_masked: dict[str, Any]):
-    actual_masked = mask_sensitive_fields_by_name_in_json_recursive(source)
+    actual_masked = RequestObfuscator().mask_sensitive_fields_by_name_in_json_recursive(source)
     assert actual_masked == expected_masked

@@ -29,11 +29,11 @@ import opentracing
 import shortuuid
 import sqlalchemy as sa
 
-from dl_api_commons import clean_secret_data_in_headers
 from dl_api_commons.base_models import (
     AuthData,
     RequestContextInfo,
 )
+from dl_api_commons.logging import RequestObfuscator
 from dl_api_commons.utils import (
     stringify_dl_cookies,
     stringify_dl_headers,
@@ -294,18 +294,19 @@ def raise_for_status_and_hide_secret_headers(response: ClientResponse) -> None:
     but hides secret data in headers for exception
     """
     if not response.ok:
+        obfuscator = RequestObfuscator()
         # reason should always be not None for a started response
         assert response.reason is not None
         response.release()
         new_request_info = RequestInfo(
             response.request_info.url,
             response.request_info.method,
-            CIMultiDict(clean_secret_data_in_headers(_multidict_to_list(response.request_info.headers))),  # type: ignore  # 2024-01-24 # TODO: Argument 3 to "RequestInfo" has incompatible type "CIMultiDict[str]"; expected "CIMultiDictProxy[str]"  [arg-type]
+            CIMultiDict(obfuscator.clean_secret_data_in_headers(_multidict_to_list(response.request_info.headers))),  # type: ignore  # 2024-01-24 # TODO: Argument 3 to "RequestInfo" has incompatible type "CIMultiDict[str]"; expected "CIMultiDictProxy[str]"  [arg-type]
         )
         raise ClientResponseError(
             new_request_info,
             response.history,
             status=response.status,
             message=response.reason,
-            headers=CIMultiDict(clean_secret_data_in_headers(_multidict_to_list(response.headers))),
+            headers=CIMultiDict(obfuscator.clean_secret_data_in_headers(_multidict_to_list(response.headers))),
         )

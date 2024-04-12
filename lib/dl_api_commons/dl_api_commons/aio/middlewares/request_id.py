@@ -11,7 +11,6 @@ from aiohttp import web
 import attr
 
 from dl_api_commons import (
-    log_request_start,
     make_uuid_from_parts,
     request_id_generator,
 )
@@ -26,7 +25,7 @@ from dl_api_commons.headers import (
 )
 from dl_api_commons.logging import (
     NON_TRANSITIVE_LOGGING_CTX_KEYS,
-    log_request_end,
+    RequestLogHelper,
 )
 from dl_api_commons.reporting.profiler import DefaultReportingProfiler
 from dl_api_commons.reporting.registry import DefaultReportingRegistry
@@ -35,6 +34,7 @@ from dl_constants.api_constants import DLHeadersCommon
 
 
 LOGGER = logging.getLogger(__name__)
+LOG_HELPER = RequestLogHelper(logger=LOGGER)
 
 
 @attr.s
@@ -111,9 +111,7 @@ class RequestId:
                     else:
                         log.context.put_to_context(ctx_key, ctx_val)
 
-        log_request_start(
-            logger=LOGGER, method=request.method, full_path=request.path_qs, headers=request.headers.items()
-        )
+        LOG_HELPER.log_request_start(method=request.method, full_path=request.path_qs, headers=request.headers.items())
 
         dl_request.init_temp_rci(
             RequestContextInfo.create(
@@ -146,4 +144,4 @@ class RequestId:
         dl_request.reporting_profiler.on_request_end()
 
     def on_request_end(self, method: str, full_path: str, status_code: int) -> None:
-        log_request_end(LOGGER, method, full_path, status_code)
+        LOG_HELPER.log_request_end(method=method, full_path=full_path, status_code=status_code)

@@ -9,7 +9,7 @@ from aiohttp import web
 from aiohttp.typedefs import Handler
 
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
-from dl_api_commons.logging import mask_sensitive_fields_by_name_in_json_recursive
+from dl_api_commons.logging import RequestObfuscator
 from dl_api_lib.aio.aiohttp_wrappers import DSAPIRequest
 from dl_api_lib.app.data_api.resources.base import (
     BaseView,
@@ -41,7 +41,7 @@ def json_body_middleware() -> AIOHTTPMiddleware:
 
             dl_request.store_parsed_json_body(body)
 
-            dbg_body_data = mask_sensitive_fields_by_name_in_json_recursive(body)
+            dbg_body_data = RequestObfuscator().mask_sensitive_fields_by_name_in_json_recursive(body)
             dbg_body = json.dumps(dbg_body_data)
             url = dl_request.url  # url with http->https override
             extra = dict(
