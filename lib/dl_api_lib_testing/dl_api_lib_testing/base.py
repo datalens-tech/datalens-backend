@@ -16,6 +16,7 @@ from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_commons.base_models import (
     RequestContextInfo,
     TenantCommon,
+    TenantDef,
 )
 from dl_api_lib.app.control_api.app import ControlApiAppFactory
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
@@ -144,17 +145,22 @@ class ApiTestBase(abc.ABC):
         return TestingControlApiAppFactory(settings=control_api_app_settings)
 
     @pytest.fixture(scope="function")
+    def fake_tenant(self) -> TenantDef:
+        return TenantCommon()
+
+    @pytest.fixture(scope="function")
     def control_api_app(
         self,
         environment_readiness: None,
         control_api_app_factory: ControlApiAppFactory,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        fake_tenant: TenantDef,
     ) -> Generator[Flask, None, None]:
         """Session-wide test `Flask` application."""
 
         app = control_api_app_factory.create_app(
             connectors_settings=connectors_settings,
-            testing_app_settings=ControlApiAppTestingsSettings(fake_tenant=TenantCommon()),
+            testing_app_settings=ControlApiAppTestingsSettings(fake_tenant=fake_tenant),
             close_loop_after_request=False,
         )
 
