@@ -4,9 +4,8 @@ import abc
 from asyncio import CancelledError
 from contextlib import ExitStack
 import enum
+from http import HTTPStatus
 import logging
-import os
-import sys
 from typing import (
     Any,
     Dict,
@@ -38,6 +37,14 @@ class ErrorData:
     response_body: Dict[str, Any]
     level: ErrorLevel = attr.ib(validator=[attr.validators.instance_of(ErrorLevel)])
     http_reason: Optional[str] = attr.ib(default=None)
+
+
+DEFAULT_INTERNAL_SERVER_ERROR_DATA = ErrorData(
+    HTTPStatus.INTERNAL_SERVER_ERROR,
+    http_reason="Internal server error",
+    response_body=dict(message="Internal server error"),
+    level=ErrorLevel.error,
+)
 
 
 @attr.s
@@ -80,12 +87,7 @@ class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
                     exc_info=(type(err), err, err.__traceback__),
                 )
                 LOGGER.critical("Error handler raised an error during creating error response", exc_info=True)
-                err_data = ErrorData(
-                    500,
-                    http_reason="Internal server error",
-                    response_body=dict(message="Internal server error"),
-                    level=ErrorLevel.error,
-                )
+                err_data = DEFAULT_INTERNAL_SERVER_ERROR_DATA
                 return (
                     web.json_response(
                         dict(message="Internal Server Error"),
