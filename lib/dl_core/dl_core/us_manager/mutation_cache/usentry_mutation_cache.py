@@ -97,9 +97,11 @@ class USEntryMutationCache:
         serialized_entry["unversionedData"] = serialized_entry.pop("unversioned_data")
         return self._dump_raw_cache_data(mutation_key.get_collision_tier_breaker(), serialized_entry)
 
-    def _restore_entry_from_cache_representation(self, data: str) -> USEntry:
+    async def _restore_entry_from_cache_representation(self, data: str) -> USEntry:
         entry_dict = json.loads(data)
-        return self._usm._entry_dict_to_obj(entry_dict)
+        obj = self._usm._entry_dict_to_obj(entry_dict)
+        await self._usm.get_lifecycle_manager(entry=obj).post_init_async_hook()
+        return obj
 
     async def save_mutation_cache(self, entry: USEntry, mutation_key: MutationKey) -> None:
         key = USEntryMutationCacheKey(
@@ -156,4 +158,4 @@ class USEntryMutationCache:
         if collision_meta != mutation_key.get_collision_tier_breaker():
             return None
 
-        return self._restore_entry_from_cache_representation(us_entry_data)
+        return await self._restore_entry_from_cache_representation(us_entry_data)

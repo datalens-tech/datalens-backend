@@ -7,7 +7,6 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Generic,
     NamedTuple,
     Optional,
     Type,
@@ -71,7 +70,6 @@ if TYPE_CHECKING:
     from dl_core.connection_models.common_models import TableIdent
     from dl_core.services_registry import ServicesRegistry
     from dl_core.us_manager.us_manager import USManagerBase
-    from dl_core.us_manager.us_manager_sync import SyncUSManager
 
 
 LOGGER = logging.getLogger(__name__)
@@ -136,6 +134,7 @@ _CB_TV = TypeVar("_CB_TV", bound="ConnectionBase")
 class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     dir_name: ClassVar[str] = ""  # type: ignore  # TODO: fix
     scope: ClassVar[str] = "connection"  # type: ignore  # TODO: fix
+    settings_type: ClassVar[Type[ConnectorSettingsBase]] = ConnectorSettingsBase
 
     conn_type: ConnectionType
     source_type: ClassVar[Optional[DataSourceType]] = None
@@ -188,6 +187,8 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         except ValueError:
             self.conn_type = ConnectionType.unknown
 
+        self.__connector_settings: Optional[ConnectorSettingsBase] = None
+
     @property
     def allow_public_usage(self) -> bool:
         return False
@@ -238,6 +239,14 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     @property
     def is_typed_query_allowed(self) -> bool:
         return False
+
+    @property
+    def _connector_settings(self) -> ConnectorSettingsBase:
+        assert self.__connector_settings is not None
+        return self.__connector_settings
+
+    def set_connector_settings(self, connector_settings: ConnectorSettingsBase) -> None:
+        self.__connector_settings = connector_settings
 
     def as_dict(self, short=False):  # type: ignore  # TODO: fix
         resp = super().as_dict(short=short)
@@ -560,34 +569,6 @@ class ClassicConnectionSQL(ConnectionSQL):
 
     def parse_multihosts(self) -> tuple[str, ...]:
         return parse_comma_separated_hosts(self.data.host)
-
-
-CONNECTOR_SETTINGS_TV = TypeVar("CONNECTOR_SETTINGS_TV", bound=ConnectorSettingsBase)
-
-
-class ConnectionHardcodedDataMixin(Generic[CONNECTOR_SETTINGS_TV], metaclass=abc.ABCMeta):
-    """Connector type specific data is loaded from dl_configs.connectors_settings"""
-
-    conn_type: ConnectionType
-    settings_type: Type[CONNECTOR_SETTINGS_TV]
-    us_manager: SyncUSManager
-
-    # TODO: remove
-    @classmethod
-    def _get_connector_settings(cls, usm: SyncUSManager) -> CONNECTOR_SETTINGS_TV:
-        sr = usm.get_services_registry()
-        connectors_settings = sr.get_connectors_settings(cls.conn_type)
-        assert connectors_settings is not None
-        assert isinstance(connectors_settings, cls.settings_type)
-        return connectors_settings
-
-    @property
-    def _connector_settings(self) -> CONNECTOR_SETTINGS_TV:
-        sr = self.us_manager.get_services_registry()
-        connectors_settings = sr.get_connectors_settings(self.conn_type)
-        assert connectors_settings is not None
-        assert isinstance(connectors_settings, self.settings_type)
-        return connectors_settings
 
 
 class HiddenDatabaseNameMixin(ConnectionSQL):

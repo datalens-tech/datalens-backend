@@ -157,6 +157,7 @@ class AsyncUSManager(USManagerBase):
             resp = await self._us_client.update_entry(entry.uuid, lock=entry._lock, **save_params)
 
         entry._us_resp = resp
+        await self.get_lifecycle_manager(entry=entry).post_init_async_hook()
 
     async def delete(self, entry: USEntry) -> None:
         # TODO FIX: Use pre_delete_async_hook!!!
@@ -182,6 +183,7 @@ class AsyncUSManager(USManagerBase):
         reloaded_entry = self._entry_dict_to_obj(us_resp, expected_type=type(entry))
         entry.data = reloaded_entry.data
         entry._us_resp = us_resp
+        await self.get_lifecycle_manager(entry=entry).post_init_async_hook()
 
     @asynccontextmanager  # type: ignore  # TODO: fix
     async def locked_entry_cm(
@@ -333,6 +335,7 @@ class AsyncUSManager(USManagerBase):
                 # noinspection PyBroadException
                 try:
                     obj: USEntry = self._entry_dict_to_obj(us_resp, entry_cls)
+                    await self.get_lifecycle_manager(entry=obj).post_init_async_hook()
                     yield obj
                 except Exception:
                     LOGGER.exception("Failed to load US object: %s", us_resp)
