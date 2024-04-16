@@ -15,9 +15,9 @@ from dl_constants.api_constants import DLHeadersCommon
 LOGGER = logging.getLogger(__name__)
 
 
-def public_api_key_middleware(api_key: str) -> AIOHTTPMiddleware:
-    if not isinstance(api_key, str):
-        raise TypeError(f"API key must be a string, not '{type(api_key)}'")
+def public_api_key_middleware(api_keys: tuple[str, ...]) -> AIOHTTPMiddleware:
+    if not isinstance(api_keys, tuple):
+        raise TypeError(f"API key must be a tuple, not '{type(api_keys)}'")
 
     @web.middleware
     @DSAPIRequest.use_dl_request
@@ -31,7 +31,7 @@ def public_api_key_middleware(api_key: str) -> AIOHTTPMiddleware:
         if inbound_api_key is None:
             raise web.HTTPForbidden(reason="public api key required")
 
-        if inbound_api_key != api_key:
+        if inbound_api_key not in api_keys:
             LOGGER.info("Invalid API key, rejecting request...")
             raise web.HTTPForbidden(reason="invalid public api key")
 
