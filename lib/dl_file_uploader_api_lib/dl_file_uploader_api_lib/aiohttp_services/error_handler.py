@@ -5,6 +5,7 @@ from aiohttp import web
 from marshmallow import ValidationError as MValidationError
 
 from dl_api_commons.aio.middlewares.error_handling_outer import (
+    DEFAULT_INTERNAL_SERVER_ERROR_DATA,
     AIOHTTPErrorHandler,
     ErrorData,
     ErrorLevel,
@@ -73,9 +74,4 @@ class FileUploaderErrorHandler(AIOHTTPErrorHandler):
                 level=ErrorLevel.info,
             )
         else:
-            return ErrorData(
-                HTTPStatus.INTERNAL_SERVER_ERROR,
-                http_reason="Internal server error",
-                response_body=dict(message="Internal server error"),
-                level=ErrorLevel.error,
-            )
+            return DEFAULT_INTERNAL_SERVER_ERROR_DATA
