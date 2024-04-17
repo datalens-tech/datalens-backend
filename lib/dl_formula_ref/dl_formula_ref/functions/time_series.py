@@ -65,7 +65,7 @@ FUNCTION_AT_DATE = FunctionDocRegistryItem(
     notes=_NOTES_TIME_SERIES,
     examples=[
         SimpleExample("AT_DATE(SUM([Sales]), [Order Date], #2019-01-01#)"),
-        SimpleExample('AT_DATE(SUM([Sales]), [Order Date], TODAY())'),
+        SimpleExample("AT_DATE(SUM([Sales]), [Order Date], TODAY())"),
         SimpleExample('AT_DATE(SUM([Sales]), [Order Date], DATETRUNC([Order Date], "month"))'),
     ],
 )

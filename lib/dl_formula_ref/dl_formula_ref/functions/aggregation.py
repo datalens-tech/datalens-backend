@@ -184,7 +184,8 @@ FUNCTION_STDEVP = FunctionDocRegistryItem(
     name="stdevp",
     category=CATEGORY_AGGREGATION,
     description=_(
-        "Returns the statistical {link: standard_dev: standard deviation} of all values in the expression " "based on the biased population. "
+        "Returns the statistical {link: standard_dev: standard deviation} of all values in the expression "
+        "based on the biased population. "
         "The function shows how far data points are from their average. "
         "In other words, standard deviation shows to what extent values in a dataset deviate from their average."
     ),

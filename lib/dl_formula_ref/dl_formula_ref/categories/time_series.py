@@ -26,7 +26,7 @@ CATEGORY_TIME_SERIES = FunctionDocCategory(
         "\n"
         "Time series functions work with specific values or deviations specified in "
         "time units (days, hours, or seconds). Due to that, they become sensitive to "
-        "missing values in data. As the result, the `AGO(SUM([Sales]), [Date], \"year\")` "
+        'missing values in data. As the result, the `AGO(SUM([Sales]), [Date], "year")` '
         "formula will return `NULL` if there is no data for the same date in the previous "
         "year. Also, note that when you use data in date and time format, you might have "
         "data for the same date, but not for the exact same second. Besides, when rounding "

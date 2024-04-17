@@ -76,9 +76,9 @@ FUNCTION_DATETIME = FunctionDocRegistryItem(
         SimpleExample('DATETIME("2019-01-23 15:07:47") = #2019-01-23 15:07:47#'),
         SimpleExample('DATETIME("2019.01.02 03:04:05") = #2019-01-02 03:04:05#'),
         SimpleExample('DATETIME("2019-01-23") = #2019-01-23 00:00:00#'),
-        SimpleExample('DATETIME(1576807650) = #2019-12-20 02:07:30#'),
-        SimpleExample('DATETIME(1576807650.793) = #2019-12-20 02:07:30#'),
-        SimpleExample('DATETIME(1576807650.793, \'Asia/Hong_Kong\') = #2019-12-20 10:07:30#'),
+        SimpleExample("DATETIME(1576807650) = #2019-12-20 02:07:30#"),
+        SimpleExample("DATETIME(1576807650.793) = #2019-12-20 02:07:30#"),
+        SimpleExample("DATETIME(1576807650.793, 'Asia/Hong_Kong') = #2019-12-20 10:07:30#"),
     ],
 )
 

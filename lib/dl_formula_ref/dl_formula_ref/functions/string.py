@@ -260,9 +260,13 @@ FUNCTION_SUBSTR = FunctionDocRegistryItem(
 )
 
 _REGEXP_NOTES = [
-    Note(Translatable("See the documentation of the data source to clarify the regular expression syntax. "
-                      "For example, {dialects:CLICKHOUSE} uses the {link: ch_re_link: RE2 syntax} "
-                      "to compose regular expressions.")),
+    Note(
+        Translatable(
+            "See the documentation of the data source to clarify the regular expression syntax. "
+            "For example, {dialects:CLICKHOUSE} uses the {link: ch_re_link: RE2 syntax} "
+            "to compose regular expressions."
+        )
+    ),
 ]
 
 FUNCTION_REGEXP_EXTRACT = FunctionDocRegistryItem(
@@ -362,9 +366,9 @@ FUNCTION_SPLIT = FunctionDocRegistryItem(
         SimpleExample('SPLIT("192.168.0.1", ".", 1) = "192"'),
         SimpleExample('SPLIT("192.168.0.1", ".", -1) = "1"'),
         SimpleExample('SPLIT("192.168.0.1", ".", 5) = ""'),
-        SimpleExample('SPLIT("192.168.0.1", ".") = "[\'192 \',\'168 \',\'0 \',\'1\']"'),
+        SimpleExample("SPLIT(\"192.168.0.1\", \".\") = \"['192 ','168 ','0 ','1']\""),
         SimpleExample('SPLIT("192.168.0.1") = "192.168.0.1"'),
-        SimpleExample('SPLIT("a,b,c,d") = "[\'a\',\'b\',\'c\',\'d\']"'),
+        SimpleExample("SPLIT(\"a,b,c,d\") = \"['a','b','c','d']\""),
     ],
 )
 
