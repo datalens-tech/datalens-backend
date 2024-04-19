@@ -145,7 +145,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
         data_api_sync_client: SyncHttpClientBase,
         bi_headers: Optional[dict[str, str]],
     ) -> SyncHttpDataApiV2:
-        return SyncHttpDataApiV2(client=data_api_sync_client, headers=bi_headers)
+        return SyncHttpDataApiV2(client=data_api_sync_client, headers=bi_headers or {})
 
 
 class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=abc.ABCMeta):

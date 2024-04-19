@@ -200,7 +200,7 @@ class ApiTestBase(abc.ABC):
         control_api_sync_client: SyncHttpClientBase,
         bi_headers: Optional[dict[str, str]],
     ) -> SyncHttpDatasetApiV1:
-        return SyncHttpDatasetApiV1(client=control_api_sync_client, headers=bi_headers)
+        return SyncHttpDatasetApiV1(client=control_api_sync_client, headers=bi_headers or {})
 
     @pytest.fixture(scope="function")
     def sync_us_manager(
