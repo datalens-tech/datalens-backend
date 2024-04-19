@@ -1,7 +1,10 @@
 import abc
 import datetime
 import math
-from typing import Generator, Optional
+from typing import (
+    Generator,
+    Optional,
+)
 
 import attr
 import pytest
