@@ -71,8 +71,8 @@ class PublicEnvEntityUsageChecker(EntityUsageChecker):
                 for conn_id, exc in conn_validation_exc_map.items():
                     LOGGER.info("Connection %s is not allowed to be used in public env: %s", conn_id, exc)
 
-                # TODO FIX: Clarify error messages
-                raise EntityUsageNotAllowed("Dataset data are not materialized")
+                # TODO FIX: Clarify error messages: add the details that are logged above
+                raise EntityUsageNotAllowed("The publication of this object or some of its dependencies is not allowed")
         else:
             raise EntityUsageNotAllowed(f"Unexpected data source role resolved for dataset {dataset.uuid}")
 
