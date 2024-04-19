@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
@@ -46,10 +47,16 @@ class TestBitrixDatalensConnection(BitrixDatalensConnectionTestBase, DefaultConn
 
 
 class TestBitrixInvalidConnection(BitrixInvalidConnectionTestBase, DefaultConnectorConnectionTestSuite):
-    def test_test_connection(self, control_api_sync_client: SyncHttpClientBase, saved_connection_id: str) -> None:
+    def test_test_connection(
+        self,
+        control_api_sync_client: SyncHttpClientBase,
+        saved_connection_id: str,
+        bi_headers: Optional[dict[str, str]],
+    ) -> None:
         resp = control_api_sync_client.post(
             f"/api/v1/connections/test_connection/{saved_connection_id}",
             content_type="application/json",
             data=json.dumps({}),
+            headers=bi_headers,
         )
         assert resp.status_code == 400, resp.json

@@ -17,10 +17,6 @@ from dl_testing.regulated_test import RegulatedTestCase
 
 class DefaultDashSQLTypedQueryTestSuite(DashSQLTypedQueryTestBase, RegulatedTestCase, metaclass=abc.ABCMeta):
     @pytest.fixture(scope="class")
-    def typed_query_headers(self) -> Optional[dict[str, str]]:
-        return None
-
-    @pytest.fixture(scope="class")
     def typed_query_info(self) -> TypedQueryInfo:
         return TypedQueryInfo(
             query_type=DashSQLQueryType.generic_query,
@@ -45,13 +41,13 @@ class DefaultDashSQLTypedQueryTestSuite(DashSQLTypedQueryTestBase, RegulatedTest
         data_api_lowlevel_aiohttp_client: TestClient,
         saved_connection_id: str,
         typed_query_info: TypedQueryInfo,
-        typed_query_headers: Optional[dict[str, str]],
+        bi_headers: Optional[dict[str, str]],
     ) -> None:
         resp = await self.get_typed_query_response(
             data_api_aio=data_api_lowlevel_aiohttp_client,
             conn_id=saved_connection_id,
             typed_query_info=typed_query_info,
-            headers=typed_query_headers,
+            headers=bi_headers,
         )
         result_data = await resp.json()
         self.check_result(result_data)
