@@ -64,6 +64,7 @@ class Dataset(USEntry):
     class DataModel(BaseAttrsDataModel):
         name: str = attr.ib()
         revision_id: Optional[str] = attr.ib(default=None)
+        load_preview_by_default: Optional[bool] = attr.ib(default=True)
         result_schema: ResultSchema = attr.ib(factory=ResultSchema)
         source_collections: list[DataSourceCollectionSpecBase] = attr.ib(factory=list)
         source_avatars: list[multisource.SourceAvatar] = attr.ib(factory=list)
@@ -212,6 +213,10 @@ class Dataset(USEntry):
     @property
     def revision_id(self) -> Optional[str]:
         return self.data.revision_id
+
+    @property
+    def load_preview_by_default(self) -> Optional[str]:
+        return self.data.load_preview_by_default
 
     def rename_field_id_usages(self, old_id: str, new_id: str) -> None:
         self.error_registry.rename_pack(old_id=old_id, new_id=new_id)

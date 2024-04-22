@@ -180,6 +180,8 @@ class DatasetResource(BIResource):
 
         data["revision_id"] = dataset.revision_id
 
+        data["load_preview_by_default"] = dataset.load_preview_by_default
+
         return {"dataset": data}
 
     @classmethod
