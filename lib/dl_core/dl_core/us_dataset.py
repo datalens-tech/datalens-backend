@@ -215,7 +215,7 @@ class Dataset(USEntry):
         return self.data.revision_id
 
     @property
-    def load_preview_by_default(self) -> Optional[str]:
+    def load_preview_by_default(self) -> Optional[bool]:
         return self.data.load_preview_by_default
 
     def rename_field_id_usages(self, old_id: str, new_id: str) -> None:
