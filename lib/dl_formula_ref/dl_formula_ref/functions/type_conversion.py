@@ -59,9 +59,13 @@ FUNCTION_DATETIME = FunctionDocRegistryItem(
         "`Date` to `DateTime`, the time is set to '00:00:00'.\n"
         "The date must be in the format `YYYY-MM-DDThh:mm:ss` or `YYYY-MM-DD hh:mm:"
         "ss`.\n"
+        "Numeric values are rendered as time in {link: unix_ts: Unix time} format "
+        "or equal to the number of seconds elapsed since 00:00:00 on January 1, 1970, "
+        "less the adjustments for leap seconds.\n"
         "\n"
         "The date and time can be converted to the "
-        "specified time zone when the {arg:1} option is available."
+        "specified {link: timezone_link: time zone} when the {arg:1} option is available. "
+        "The {arg:1} parameter must be specified in `Region/Data_Zone` format."
     ),
     notes=[
         Note(
@@ -70,6 +74,11 @@ FUNCTION_DATETIME = FunctionDocRegistryItem(
     ],
     examples=[
         SimpleExample('DATETIME("2019-01-23 15:07:47") = #2019-01-23 15:07:47#'),
+        SimpleExample('DATETIME("2019.01.02 03:04:05") = #2019-01-02 03:04:05#'),
+        SimpleExample('DATETIME("2019-01-23") = #2019-01-23 00:00:00#'),
+        SimpleExample("DATETIME(1576807650) = #2019-12-20 02:07:30#"),
+        SimpleExample("DATETIME(1576807650.793) = #2019-12-20 02:07:30#"),
+        SimpleExample("DATETIME(1576807650.793, 'Asia/Hong_Kong') = #2019-12-20 10:07:30#"),
     ],
 )
 
@@ -263,7 +272,7 @@ FUNCTION_GEOPOINT = FunctionDocRegistryItem(
 FUNCTION_GEOPOLYGON = FunctionDocRegistryItem(
     name="geopolygon",
     category=CATEGORY_TYPE_CONVERSION,
-    description=_("Converts the {arg:0} expression to geopolygon format."),
+    description=_("Converts the {arg:0} expression to {link: geopolygon_link: geopolygon} format."),
     examples=[
         SimpleExample(
             'GEOPOLYGON("[[[55.79421,37.65046],[55.79594,37.6513],[55.79642,37.65133],'

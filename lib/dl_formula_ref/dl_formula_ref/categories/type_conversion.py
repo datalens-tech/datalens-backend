@@ -15,6 +15,10 @@ CATEGORY_TYPE_CONVERSION = FunctionDocCategory(
     resources=SimpleAliasedResourceRegistry(
         resources={
             "unix_ts": AliasedLinkResource(url=_("https://en.wikipedia.org/wiki/Unix_time")),
+            "geopolygon_link": AliasedLinkResource(url=_("../concepts/data-types.md#geopolygon")),
+            "timezone_link": AliasedLinkResource(
+                url=_("https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List")
+            ),
         }
     ),
 )

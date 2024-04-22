@@ -23,6 +23,15 @@ CATEGORY_TIME_SERIES = FunctionDocCategory(
         'missing values in data. As a result of this `AGO(SUM([Sales]), [Date], "year'
         '")` will return `NULL` if the same-date row for the previous year is '
         "missing.\n"
+        "\n"
+        "Time series functions work with specific values or deviations specified in "
+        "time units (days, hours, or seconds). Due to that, they become sensitive to "
+        'missing values in data. As the result, the `AGO(SUM([Sales]), [Date], "year")` '
+        "formula will return `NULL` if there is no data for the same date in the previous "
+        "year. Also, note that when you use data in date and time format, you might have "
+        "data for the same date, but not for the exact same second. Besides, when rounding "
+        "dates to weeks, a shift in years will also return `NULL`.\n"
+        "\n"
         "{text:time_series_syntax}\n"
     ),
     resources=SimpleAliasedResourceRegistry(

@@ -29,7 +29,7 @@ FUNCTION_URL = FunctionDocRegistryItem(
         "When you click on the link, the page opens in a new browser tab."
     ),
     examples=[
-        SimpleExample("URL('https://example.com/?value=' + [value], [value])"),
+        SimpleExample("URL('https://yandex.ru/search/?text=buy+a+' + [Product Name], [Product Name])"),
     ],
 )
 

@@ -15,6 +15,7 @@ CATEGORY_STRING = FunctionDocCategory(
     resources=SimpleAliasedResourceRegistry(
         resources={
             "ch_re_link": AliasedLinkResource(url=_("https://github.com/google/re2/wiki/Syntax")),
+            "abs_value_link": AliasedLinkResource(url=_("https://en.wikipedia.org/wiki/Absolute_value")),
         }
     ),
 )
