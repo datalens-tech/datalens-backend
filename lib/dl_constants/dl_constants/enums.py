@@ -378,7 +378,7 @@ class NotificationType(DynamicEnum):
     totals_removed_due_to_measure_filter = AutoEnumValue()
 
 
-class ConnectorAvailability(Enum):
+class ConnectorAvailability(DynamicEnum):
     free = "free"
     hidden = "hidden"
     uncreatable = "uncreatable"
