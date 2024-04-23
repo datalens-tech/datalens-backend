@@ -63,10 +63,12 @@ class SyncRequestRateLimiter:
     _patterns: list[RequestPattern] = attr.ib(factory=list)
 
     def check_limit(self, request: Request) -> bool:
+        logger.info("Checking rate limit for Request(%s)", Request)
         for pattern in self._patterns:
             if not pattern.matches(request):
                 continue
 
+            logger.info("Found match for Pattern(%s)", pattern)
             try:
                 event_key = pattern.event_key_template.generate_key(request)
             except TemplateError:
@@ -91,10 +93,12 @@ class AsyncRequestRateLimiter:
     _patterns: list[RequestPattern] = attr.ib(factory=list)
 
     async def check_limit(self, request: Request) -> bool:
+        logger.info("Checking rate limit for Request(%s)", Request)
         for pattern in self._patterns:
             if not pattern.matches(request):
                 continue
 
+            logger.info("Found match for Pattern(%s)", pattern)
             try:
                 event_key = pattern.event_key_template.generate_key(request)
             except TemplateError:

@@ -25,6 +25,8 @@ class RedisSettings(SettingsBase):
     DB: int = s_attrib("DB")  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "int")  [assignment]
     PASSWORD: str = s_attrib("PASSWORD", sensitive=True, missing=None)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
     SSL: Optional[bool] = s_attrib("SSL", missing=None)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool | None")  [assignment]
+    SOCKET_TIMEOUT: float = s_attrib("SOCKET_TIMEOUT", missing=0.0)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "float")  [assignment]
+    SOCKET_CONNECT_TIMEOUT: float = s_attrib("SOCKET_CONNECT_TIMEOUT", missing=0.0)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "float")  [assignment]
 
     def as_single_host_url(self) -> str:
         return make_url(
