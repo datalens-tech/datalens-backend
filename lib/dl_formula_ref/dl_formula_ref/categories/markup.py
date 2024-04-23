@@ -27,9 +27,9 @@ CATEGORY_MARKUP = FunctionDocCategory(
     keywords="",
     resources=SimpleAliasedResourceRegistry(
         resources={
-            "gravity_ui_link": AliasedLinkResource(url=_("https://github.com/gravity-ui")),
+            "gravity_ui_link": AliasedLinkResource(url=_("https://gravity-ui.com/")),
             "gravity_ui_texts_link": AliasedLinkResource(
-                url=_("https://preview.gravity-ui.com/uikit/?path=/story/colors--texts")
+                url=_("https://preview.gravity-ui.com/uikit/iframe.html?args=&id=colors--texts&viewMode=story")
             ),
         }
     ),

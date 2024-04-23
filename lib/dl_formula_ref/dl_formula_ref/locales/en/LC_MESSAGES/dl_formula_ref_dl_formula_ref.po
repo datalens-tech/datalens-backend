@@ -369,10 +369,12 @@ msgid ""
 "`IF(STARTSWITH([value], 'n'), BOLD([value]), MARKUP([value]))`.\n"
 msgstr ""
 
-msgid "https://github.com/gravity-ui"
+msgid "https://gravity-ui.com/"
 msgstr ""
 
-msgid "https://preview.gravity-ui.com/uikit/?path=/story/colors--texts"
+msgid ""
+"https://preview.gravity-ui.com/uikit/iframe.html?args=&id=colors--"
+"texts&viewMode=story"
 msgstr ""
 
 msgid "https://github.com/google/re2/wiki/Syntax"
