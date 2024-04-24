@@ -1,7 +1,10 @@
 import abc
 import datetime
 import math
-from typing import Generator
+from typing import (
+    Generator,
+    Optional,
+)
 
 import attr
 import pytest
@@ -90,6 +93,7 @@ class CHS3ConnectionApiTestBase(BaseCHS3TestClass[FILE_CONN_TV], ConnectionTestB
         self,
         control_api_sync_client: SyncHttpClientBase,
         connection_params: dict,
+        bi_headers: Optional[dict[str, str]],
         sync_us_manager: SyncUSManager,
         sample_file_data_source: BaseFileS3Connection.FileDataSource,
     ) -> Generator[str, None, None]:
@@ -101,6 +105,7 @@ class CHS3ConnectionApiTestBase(BaseCHS3TestClass[FILE_CONN_TV], ConnectionTestB
         with super().create_connection(
             control_api_sync_client=control_api_sync_client,
             connection_params=connection_params,
+            bi_headers=bi_headers,
         ) as conn_id:
             conn = sync_us_manager.get_by_id(conn_id, BaseFileS3Connection)
             for src in conn.data.sources:

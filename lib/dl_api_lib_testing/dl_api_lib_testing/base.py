@@ -72,6 +72,11 @@ class ApiTestBase(abc.ABC):
     def connectors_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:
         return {}
 
+    @pytest.fixture(scope="class")
+    def bi_headers(self) -> Optional[dict[str, str]]:
+        """Additional headers for api requests, e.g. authentication, cookies, etc"""
+        return None
+
     def is_connector_available(self, conn_type: ConnectionType) -> bool:
         return True
 
@@ -190,8 +195,12 @@ class ApiTestBase(abc.ABC):
         return FlaskSyncApiClient(int_wclient=client)
 
     @pytest.fixture(scope="function")
-    def control_api(self, control_api_sync_client: SyncHttpClientBase) -> SyncHttpDatasetApiV1:
-        return SyncHttpDatasetApiV1(client=control_api_sync_client)
+    def control_api(
+        self,
+        control_api_sync_client: SyncHttpClientBase,
+        bi_headers: Optional[dict[str, str]],
+    ) -> SyncHttpDatasetApiV1:
+        return SyncHttpDatasetApiV1(client=control_api_sync_client, headers=bi_headers or {})
 
     @pytest.fixture(scope="function")
     def sync_us_manager(

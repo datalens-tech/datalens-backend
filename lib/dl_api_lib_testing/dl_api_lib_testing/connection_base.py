@@ -4,6 +4,7 @@ import json
 from typing import (
     ClassVar,
     Generator,
+    Optional,
 )
 import uuid
 
@@ -36,10 +37,12 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
         self,
         control_api_sync_client: SyncHttpClientBase,
         connection_params: dict,
+        bi_headers: Optional[dict[str, str]],
     ) -> Generator[str, None, None]:
         with self.create_connection(
             control_api_sync_client=control_api_sync_client,
             connection_params=connection_params,
+            bi_headers=bi_headers,
         ) as conn_id:
             yield conn_id
 
@@ -48,6 +51,7 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
         self,
         control_api_sync_client: SyncHttpClientBase,
         connection_params: dict,
+        bi_headers: Optional[dict[str, str]],
     ) -> Generator[str, None, None]:
         data = dict(
             name=f"{self.conn_type.name} conn {uuid.uuid4()}",
@@ -58,6 +62,7 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
             "/api/v1/connections",
             content_type="application/json",
             data=json.dumps(data),
+            headers=bi_headers,
         )
         assert resp.status_code == 200, resp.json
         conn_id = resp.json["id"]

@@ -6,6 +6,7 @@ from typing import (
     Generator,
     Iterable,
     NamedTuple,
+    Optional,
 )
 
 from aiohttp import web
@@ -139,8 +140,12 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
         )
 
     @pytest.fixture(scope="function")
-    def data_api(self, data_api_sync_client: SyncHttpClientBase) -> SyncHttpDataApiV2:
-        return SyncHttpDataApiV2(client=data_api_sync_client)
+    def data_api(
+        self,
+        data_api_sync_client: SyncHttpClientBase,
+        bi_headers: Optional[dict[str, str]],
+    ) -> SyncHttpDataApiV2:
+        return SyncHttpDataApiV2(client=data_api_sync_client, headers=bi_headers or {})
 
 
 class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=abc.ABCMeta):
