@@ -116,11 +116,11 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
         )
 
 
-def conn_type_converter(value: Any) -> ConnectionType:
+def _conn_type_converter(value: Any) -> ConnectionType:
     return ConnectionType(value) if not isinstance(value, ConnectionType) else value
 
 
-def availability_converter(value: Any) -> ConnectorAvailability:
+def _availability_converter(value: Any) -> ConnectorAvailability:
     return ConnectorAvailability(value) if not isinstance(value, ConnectorAvailability) else value
 
 
@@ -129,8 +129,8 @@ class Connector(ConnectorBase):
     """Represents an actual connection type"""
 
     _hidden: bool = attr.ib(init=False, default=False)
-    conn_type: ConnectionType = attr.ib(converter=conn_type_converter)
-    availability: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free, converter=availability_converter)
+    conn_type: ConnectionType = attr.ib(converter=_conn_type_converter)
+    availability: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free, converter=_availability_converter)
 
     @classmethod
     def from_settings(cls, settings: ConnectorSettings) -> Connector:
