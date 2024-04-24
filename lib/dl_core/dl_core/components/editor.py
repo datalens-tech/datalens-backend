@@ -433,6 +433,9 @@ class DatasetComponentEditor:
     def set_revision_id(self, revision_id: Optional[str]) -> None:
         self._dataset.data.revision_id = revision_id
 
+    def set_load_preview_by_default(self, load_preview_by_default: Optional[bool]) -> None:
+        self._dataset.data.load_preview_by_default = load_preview_by_default
+
     def set_created_via(self, created_via: DataSourceCreatedVia) -> None:
         self._dataset.meta["created_via"] = created_via.name
 
