@@ -45,17 +45,22 @@ FUNCTION_MARKUP = FunctionDocRegistryItem(
 FUNCTION_COLOR = FunctionDocRegistryItem(
     name="color",
     category=CATEGORY_MARKUP,
-    description=_("Enables specifying the color for the provided text."),
+    description=_(
+        "Enables specifying the color for the provided text.\n"
+        "\n"
+        "We recommend using the {link: gravity_ui_texts_link: color variables} from the "
+        "{link: gravity_ui_link: Gravity UI} palette to specify colors. "
+        "Such colors are easily discernible with both the light and dark theme.\n"
+        "\n"
+        "You can also specify the color in any web format, such as HEX, keyword (e.g., `green`), RGB, etc. "
+        "In this case, however, we cannot guarantee that the colors will be discernible."
+    ),
     examples=[
+        SimpleExample("COLOR([text], '--g-color-text-danger')"),
         SimpleExample("COLOR([text], '#5282ff')"),
         SimpleExample("COLOR([text], 'blue')"),
         SimpleExample("COLOR([text], 'rgb(82, 130, 255)')"),
         SimpleExample("COLOR([text], 'rgba(82, 130, 255, 0.5)')"),
-    ],
-    notes=[
-        Note(
-            Translatable("You can specify the color in any web format, such as HEX, keyword (e.g., `green`), RGB, etc.")
-        ),
     ],
 )
 
