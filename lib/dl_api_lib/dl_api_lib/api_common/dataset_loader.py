@@ -363,6 +363,8 @@ class DatasetApiLoader:
         if dataset.revision_id != body["revision_id"]:
             raise exc.DatasetRevisionMismatch()
 
+        ds_editor.set_load_preview_by_default(body["load_preview_by_default"])
+
         # fields (result_schema)
         ds_editor.set_result_schema(body.get("result_schema", []))
         if body.get("result_schema_aux"):

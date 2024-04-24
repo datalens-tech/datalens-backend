@@ -11,6 +11,7 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
     def check_basic_dataset(self, ds: Dataset) -> None:
         """Additional dataset checks can be defined here"""
         assert ds.id
+        assert ds.load_preview_by_default
         assert len(ds.result_schema)
 
         field_names = {field.title for field in ds.result_schema}
