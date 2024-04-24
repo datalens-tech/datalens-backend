@@ -60,7 +60,6 @@ class DatasetApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
         :param body: API response body
         """
         new_id = body.get("id") or dataset.id
-        new_load_preview_by_default = body.get("load_preview_by_default", dataset.load_preview_by_default)
         new_name = body.get("name", dataset.name)
         body = body["dataset"]
         new_dataset = Dataset(
@@ -68,7 +67,7 @@ class DatasetApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
             name=new_name,
             id=new_id,
             revision_id=body.get("revision_id"),
-            load_preview_by_default=new_load_preview_by_default,
+            load_preview_by_default=body.get("load_preview_by_default", dataset.load_preview_by_default),
             rls=body.get("rls") or {},
             component_errors=ComponentErrorListSchema().load(body.get("component_errors") or {}),
             result_schema_aux=ResultSchemaAuxSchema().load(body.get("result_schema_aux") or {}),
