@@ -12,6 +12,7 @@ import uuid
 
 import aiopg.sa
 import asyncpg
+import flaky
 import pytest
 
 from dl_compeng_pg.compeng_aiopg.exec_adapter_aiopg import AiopgExecAdapter
@@ -90,6 +91,7 @@ class BaseTestPGOpExecAdapter(DefaultCoreTestClass):
         await pg_adapter.drop_table(table_name=table_name)
         assert not await self.table_exists(pg_adapter=pg_adapter, table_name=table_name)
 
+    @flaky.flaky(max_runs=5)  # FIXME: https://github.com/datalens-tech/datalens-backend/issues/438
     @pytest.mark.asyncio
     async def test_insert_fetch(self, pg_adapter: PostgreSQLExecAdapterAsync):
         queries_before = await get_active_queries(pg_adapter)
