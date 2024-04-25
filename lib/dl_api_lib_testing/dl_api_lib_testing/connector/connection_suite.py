@@ -42,6 +42,7 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
     ) -> None:
         resp = control_api_sync_client.get(
             url=f"/api/v1/connections/{saved_connection_id}",
+            headers=bi_headers,
         )
         assert resp.status_code == 200, resp.json
         assert resp.json["cache_ttl_sec"] is None, resp.json
@@ -57,6 +58,7 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
 
         resp = control_api_sync_client.get(
             url=f"/api/v1/connections/{saved_connection_id}",
+            headers=bi_headers,
         )
         assert resp.status_code == 200, resp.json
         assert resp.json["cache_ttl_sec"] == cache_ttl_override, resp.json
