@@ -9,6 +9,7 @@ from aiohttp import web
 
 from dl_api_commons.aiohttp import aiohttp_wrappers
 from dl_api_commons.base_models import (
+    AuthData,
     NoAuthData,
     TenantCommon,
     TenantDef,
@@ -25,6 +26,7 @@ def auth_trust_middleware(
     fake_user_id: Optional[str] = None,
     fake_user_name: Optional[str] = None,
     fake_tenant: Optional[TenantDef] = None,
+    fake_auth: Optional[AuthData] = None,
 ) -> AIOHTTPMiddleware:
     @web.middleware
     @aiohttp_wrappers.DLRequestBase.use_dl_request
@@ -38,7 +40,8 @@ def auth_trust_middleware(
             raise web.HTTPUnauthorized()
         else:
             updated_rci = app_request.temp_rci.clone(
-                auth_data=NoAuthData(), tenant=TenantCommon() if fake_tenant is None else fake_tenant
+                auth_data=NoAuthData() if fake_auth is None else fake_auth,
+                tenant=TenantCommon() if fake_tenant is None else fake_tenant,
             )
             if fake_user_id is not None:
                 updated_rci = updated_rci.clone(user_id=fake_user_id)
