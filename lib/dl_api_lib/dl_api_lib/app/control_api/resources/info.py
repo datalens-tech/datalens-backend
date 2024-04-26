@@ -115,7 +115,7 @@ class AvailableConnectorsCollection(BIResource):
     def get(self) -> dict:
         conn_availability = self.get_service_registry().get_connector_availability()
         localizer = self.get_service_registry().get_localizer()
-        return conn_availability.as_dict(localizer=localizer)
+        return conn_availability.get_available_connectors(localizer=localizer, tenant=self.get_current_rci().tenant)
 
 
 @ns.route("/connectors/forms/<string:conn_type>/<string:form_mode>")
