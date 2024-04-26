@@ -11,6 +11,7 @@ from typing import (
 
 import attr
 
+from dl_api_commons.base_models import TenantDef
 from dl_api_lib.connection_forms.registry import CONN_FORM_FACTORY_BY_TYPE
 from dl_api_lib.connection_info import get_connector_info_provider_cls
 from dl_api_lib.i18n.localizer import Translatable
@@ -248,7 +249,7 @@ class ConnectorAvailabilityConfig(SettingsBase):
             ),
         )
 
-    def as_dict(self, localizer: Localizer) -> dict[str, Any]:
+    def get_available_connectors(self, localizer: Localizer, tenant: Optional[TenantDef]) -> dict[str, Any]:
         return dict(
             uncategorized=[connector.as_dict(localizer) for connector in self.uncategorized],
             sections=[section.as_dict(localizer) for section in self.sections],
