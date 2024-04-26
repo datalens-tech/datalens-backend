@@ -88,29 +88,31 @@ class AppSettings:
         missing=None,
     )
 
-    # RATE_LIMITER_ENABLED: bool = s_attrib("RATE_LIMITER_ENABLED", missing=False)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
-    # RATE_LIMITER_REDIS: Optional[RedisSettings] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
-    #     "RATE_LIMITER_REDIS",
-    #     fallback_factory=(
-    #         lambda cfg: RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
-    #             MODE=RedisMode.single_host,
-    #             CLUSTER_NAME=cfg.RATE_LIMITER_REDIS_CLUSTER_NAME,
-    #             HOSTS=_list_to_tuple(cfg.RATE_LIMITER_REDIS_HOSTS),
-    #             PORT=cfg.RATE_LIMITER_REDIS_PORT,
-    #             SSL=cfg.RATE_LIMITER_REDIS_SSL,
-    #             DB=cfg.RATE_LIMITER_REDIS_DB,
-    #             PASSWORD=required(str),
-    #         )
-    #         if is_setting_applicable(cfg, "RATE_LIMITER_REDIS_DB")
-    #         else None
-    #     ),
-    #     missing=None,
-    # )
-    # RATE_LIMITER_CONFIG: Optional[RateLimiterConfig] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RateLimiterConfig")  [assignment]
-    #     "RATE_LIMITER",
-    #     fallback_factory=lambda cfg: RateLimiterConfig.from_json(cfg.get("RATE_LIMITER")),
-    #     missing=None,
-    # )
+    RATE_LIMITER_ENABLED: bool = s_attrib("RATE_LIMITER_ENABLED", missing=False)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
+    RATE_LIMITER_REDIS: Optional[RedisSettings] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
+        "RATE_LIMITER_REDIS",
+        fallback_factory=(
+            lambda cfg: RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
+                MODE=RedisMode.single_host,
+                CLUSTER_NAME=cfg.RATE_LIMITER_REDIS_CLUSTER_NAME,
+                HOSTS=_list_to_tuple(cfg.RATE_LIMITER_REDIS_HOSTS),
+                PORT=cfg.RATE_LIMITER_REDIS_PORT,
+                SSL=cfg.RATE_LIMITER_REDIS_SSL,
+                DB=cfg.RATE_LIMITER_REDIS_DB,
+                PASSWORD=required(str),
+                SOCKET_TIMEOUT=0.1,
+                SOCKET_CONNECT_TIMEOUT=0.5,
+            )
+            if is_setting_applicable(cfg, "RATE_LIMITER_REDIS_DB")
+            else None
+        ),
+        missing=None,
+    )
+    RATE_LIMITER_CONFIG: Optional[RateLimiterConfig] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RateLimiterConfig")  [assignment]
+        "RATE_LIMITER",
+        fallback_factory=lambda cfg: RateLimiterConfig.from_json(cfg.get("RATE_LIMITER")),
+        missing=None,
+    )
     SAMPLES_CH_HOSTS: tuple[str, ...] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "tuple[str, ...]")  [assignment]
         "SAMPLES_CH_HOST", env_var_converter=split_by_comma, missing_factory=list
     )
