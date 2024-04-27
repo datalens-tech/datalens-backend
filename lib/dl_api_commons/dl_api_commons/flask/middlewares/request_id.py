@@ -54,9 +54,13 @@ class RequestIDService:
         else:
             current_req_id = incoming_req_id or request_id_generator(self._request_id_app_prefix)
 
+        trace_id_header = DLHeadersCommon.UBER_TRACE_ID
+        trace_id = request.headers[trace_id_header].split(":")[0] if trace_id_header in request.headers else None
+
         req_log_ctx_ctrl = RequestLoggingContextControllerMiddleWare.get_for_request()
         req_log_ctx_ctrl.put_to_context("request_id", current_req_id)
         req_log_ctx_ctrl.put_to_context("parent_request_id", incoming_req_id)
+        req_log_ctx_ctrl.put_to_context("trace_id", trace_id)
 
         # Updating logging context with outer values
         logging_ctx_header = request.headers.get(self._logging_ctx_header_name)

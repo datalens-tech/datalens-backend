@@ -42,6 +42,7 @@ class SentryRequestLoggingContextController(RequestLoggingContextController):
         (
             "request_id",
             "parent_request_id",
+            "trace_id",
             "folder_id",
             "dataset_id",
             "conn_id",

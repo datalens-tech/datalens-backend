@@ -34,6 +34,7 @@ class DLHeadersCommon(DLHeaders):
     CONTENT_TYPE = "Content-Type"
     ACCEPT_LANGUAGE = "Accept-Language"
     ORIGIN = "Origin"
+    UBER_TRACE_ID = "Uber-Trace-Id"  # not actually a DL header, but an opentracing one, added to avoid repetition
 
     ACCESS_CTRL_REQ_HEADERS = "Access-Control-Request-Headers"
     ACCESS_CTRL_REQ_METH = "Access-Control-Request-Method"
