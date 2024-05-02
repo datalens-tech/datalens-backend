@@ -128,11 +128,8 @@ class DefaultReportingProfiler(ReportingProfiler):
             event_code="profile_db_request",
             dataset_id=start_record.dataset_id,
             # auto: request_id
-            user_id=self.rci.user_id,
-            billing_folder_id=self.rci.tenant.get_tenant_id() if self.rci.tenant is not None else None,
+            **self.rci.get_reporting_extra(),
             connection_type=start_record.connection_type.name,
-            source=self.rci.endpoint_code,
-            username=self.rci.user_name,
             execution_time=int(round((end_timestamp - start_record.timestamp) * 1000)),
             query=start_record.query,
             status="success" if error is None else "error",

@@ -31,6 +31,11 @@ class TenantDef(metaclass=abc.ABCMeta):
     def get_tenant_id(self) -> str:
         raise NotImplementedError()
 
+    def get_reporting_extra(self) -> dict[str, str]:
+        return dict(
+            billing_folder_id=self.get_tenant_id(),
+        )
+
 
 class AuthData(metaclass=abc.ABCMeta):
     @abc.abstractmethod
@@ -138,6 +143,15 @@ class RequestContextInfo:
 
     def clone(self: _REQUEST_CONTEXT_INFO_TV, **kwargs: Any) -> _REQUEST_CONTEXT_INFO_TV:
         return attr.evolve(self, **kwargs)
+
+    def get_reporting_extra(self) -> dict:
+        tenant_reporting_extra = {} if self.tenant is None else self.tenant.get_reporting_extra()
+        return dict(
+            user_id=self.user_id,
+            source=self.endpoint_code,
+            username=self.user_name,
+            **tenant_reporting_extra,
+        )
 
 
 _REQUEST_CONTEXT_INFO_TV = TypeVar("_REQUEST_CONTEXT_INFO_TV", bound="RequestContextInfo")
