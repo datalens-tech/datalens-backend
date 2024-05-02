@@ -1,7 +1,7 @@
 version: 3
 
 vars:
-  DATALENS_UI_FOLDER: '{{.DATALENS_UI_FOLDER | default "../../../../datalens-ui"}}'
+  DATALENS_UI_FOLDER: '{{.DATALENS_UI_FOLDER | default "datalens-ui"}}'
 
   CONTROL_API_TARGET: "dl_control_api"
   CONTROL_API_TAG: '{{.CONTROL_API_TAG | default "control-api:test"}}'
