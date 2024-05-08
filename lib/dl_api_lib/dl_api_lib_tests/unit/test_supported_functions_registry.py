@@ -17,6 +17,7 @@ from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import FromArgs
 from dl_formula.mutation.registry import get_mutation_lookup_functions_names
 
+
 V = TranslationVariant.make
 
 
