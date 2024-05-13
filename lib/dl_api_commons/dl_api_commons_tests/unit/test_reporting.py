@@ -4,7 +4,10 @@ import uuid
 
 import pytest
 
-from dl_api_commons.base_models import RequestContextInfo
+from dl_api_commons.base_models import (
+    RequestContextInfo,
+    TenantCommon,
+)
 from dl_api_commons.reporting.models import (
     QueryExecutionCacheInfoReportingRecord,
     QueryExecutionEndReportingRecord,
@@ -83,7 +86,7 @@ _CHYT_REPORT_FIELDS_FROM_START = dict(
         RequestContextInfo.create_empty(),
         RequestContextInfo.create(
             endpoint_code="ololo",
-            tenant=None,
+            tenant=TenantCommon(),
             user_name="user_name_123",
             user_id="uid_113",
             x_dl_context={k.value: str(uuid.uuid4()) for k in DLContextKey},
@@ -210,7 +213,6 @@ def test_db_query_report_generation(case_name, records_seq, expected_query_data,
         "event_code",
         "dataset_id",
         "user_id",
-        "billing_folder_id",
         "connection_id",
         "connection_type",
         "source",
@@ -239,18 +241,18 @@ def test_db_query_report_generation(case_name, records_seq, expected_query_data,
     else:
         required_extras += ("host",)
 
+    if rci.tenant is not None:
+        required_extras += ("billing_folder_id",)
+
     expected_extras = dict(
         event_code="profile_db_request",
-        source=rci.endpoint_code,
-        billing_folder_id=rci.tenant.get_tenant_id() if rci.tenant is not None else None,
-        user_id=rci.user_id,
-        username=rci.user_name,
         is_public=0,
         dash_id=rci.x_dl_context.get(DLContextKey.DASH_ID),
         dash_tab_id=rci.x_dl_context.get(DLContextKey.DASH_TAB_ID),
         chart_id=rci.x_dl_context.get(DLContextKey.CHART_ID),
         chart_kind=rci.x_dl_context.get(DLContextKey.CHART_KIND),
         **expected_query_data,
+        **rci.get_reporting_extra(),
     )
 
     assert set(expected_extras.keys()) == set(required_extras)
