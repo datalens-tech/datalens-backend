@@ -329,6 +329,7 @@ def format_dict(extra: dict[str, Any], separator: str = " ", *args: str, **kwarg
 class LogRequestLoggingContextController(RequestLoggingContextController):
     allowed_keys: ClassVar[tuple[str, ...]] = (
         "request_id",
+        "trace_id",
         "parent_request_id",
         "endpoint_code",
         "user_id",

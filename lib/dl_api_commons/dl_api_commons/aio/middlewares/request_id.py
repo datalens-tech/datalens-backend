@@ -76,7 +76,11 @@ class RequestId:
 
         endpoint_code = get_endpoint_code(request)
 
+        trace_id_header = DLHeadersCommon.UBER_TRACE_ID.lower()
+        trace_id = request.headers[trace_id_header].split(":")[0] if trace_id_header in request.headers else None
+
         if dl_request.log_ctx_controller:
+            dl_request.log_ctx_controller.put_to_context("trace_id", trace_id)
             dl_request.log_ctx_controller.put_to_context("request_id", request_id)
             dl_request.log_ctx_controller.put_to_context("parent_request_id", parent_request_id)
             dl_request.log_ctx_controller.put_to_context("endpoint_code", endpoint_code)
@@ -87,6 +91,7 @@ class RequestId:
             f"Initial log context for request {request_id}" f" is not empty: {initial_log_context}"
         )
 
+        log.context.put_to_context("trace_id", trace_id)
         log.context.put_to_context("request_id", request_id)
         log.context.put_to_context("parent_request_id", parent_request_id)
         log.context.put_to_context("endpoint_code", endpoint_code)

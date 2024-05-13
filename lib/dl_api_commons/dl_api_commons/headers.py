@@ -24,7 +24,7 @@ DEFAULT_RCI_PLAIN_HEADERS = (
     "Referer",
     "X-Chart-Id",
     "X-Dash-Id",
-    "uber-trace-id",
+    DLHeadersCommon.UBER_TRACE_ID,
     "Host",
     DLHeadersCommon.ACCEPT_LANGUAGE.value,
     # TODO FIX: Move to RCI attributes instead of headers passing
