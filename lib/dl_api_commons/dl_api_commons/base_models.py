@@ -145,14 +145,18 @@ class RequestContextInfo:
         return attr.evolve(self, **kwargs)
 
     def get_reporting_extra(self) -> dict[str, str | None]:
-        tenant_reporting_extra: dict[str, str | None] = (
-            dict(billing_folder_id=None) if self.tenant is None else self.tenant.get_reporting_extra()
-        )
-        return dict(
+        common_rci_reporting_extra = dict(
             user_id=self.user_id,
             source=self.endpoint_code,
             username=self.user_name,
-            **tenant_reporting_extra,
+        )
+        return (
+            common_rci_reporting_extra
+            if self.tenant is None
+            else dict(
+                **common_rci_reporting_extra,
+                **self.tenant.get_reporting_extra(),
+            )
         )
 
 
