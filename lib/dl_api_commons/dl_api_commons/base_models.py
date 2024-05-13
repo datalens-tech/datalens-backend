@@ -144,8 +144,8 @@ class RequestContextInfo:
     def clone(self: _REQUEST_CONTEXT_INFO_TV, **kwargs: Any) -> _REQUEST_CONTEXT_INFO_TV:
         return attr.evolve(self, **kwargs)
 
-    def get_reporting_extra(self) -> dict[str, Any]:
-        tenant_reporting_extra: dict[str, Any] = (
+    def get_reporting_extra(self) -> dict[str, str | None]:
+        tenant_reporting_extra: dict[str, str | None] = (
             dict(billing_folder_id=None) if self.tenant is None else self.tenant.get_reporting_extra()
         )
         return dict(
