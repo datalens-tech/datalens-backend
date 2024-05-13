@@ -145,19 +145,14 @@ class RequestContextInfo:
         return attr.evolve(self, **kwargs)
 
     def get_reporting_extra(self) -> dict[str, str | None]:
-        common_rci_reporting_extra = dict(
+        reporting_extra = dict(
             user_id=self.user_id,
             source=self.endpoint_code,
             username=self.user_name,
         )
-        return (
-            common_rci_reporting_extra
-            if self.tenant is None
-            else dict(
-                **common_rci_reporting_extra,
-                **self.tenant.get_reporting_extra(),
-            )
-        )
+        if self.tenant is not None:
+            reporting_extra.update(self.tenant.get_reporting_extra())
+        return reporting_extra
 
 
 _REQUEST_CONTEXT_INFO_TV = TypeVar("_REQUEST_CONTEXT_INFO_TV", bound="RequestContextInfo")
