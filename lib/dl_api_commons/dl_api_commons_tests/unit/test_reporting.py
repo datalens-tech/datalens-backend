@@ -4,7 +4,10 @@ import uuid
 
 import pytest
 
-from dl_api_commons.base_models import RequestContextInfo
+from dl_api_commons.base_models import (
+    RequestContextInfo,
+    TenantCommon,
+)
 from dl_api_commons.reporting.models import (
     QueryExecutionCacheInfoReportingRecord,
     QueryExecutionEndReportingRecord,
@@ -83,7 +86,7 @@ _CHYT_REPORT_FIELDS_FROM_START = dict(
         RequestContextInfo.create_empty(),
         RequestContextInfo.create(
             endpoint_code="ololo",
-            tenant=None,
+            tenant=TenantCommon(),
             user_name="user_name_123",
             user_id="uid_113",
             x_dl_context={k.value: str(uuid.uuid4()) for k in DLContextKey},
@@ -237,6 +240,9 @@ def test_db_query_report_generation(case_name, records_seq, expected_query_data,
         )
     else:
         required_extras += ("host",)
+
+    if rci.tenant is not None:
+        required_extras += ("billing_folder_id",)
 
     expected_extras = dict(
         event_code="profile_db_request",
