@@ -31,7 +31,7 @@ class TenantDef(metaclass=abc.ABCMeta):
     def get_tenant_id(self) -> str:
         raise NotImplementedError()
 
-    def get_reporting_extra(self) -> dict[str, str]:
+    def get_reporting_extra(self) -> dict[str, str | None]:
         return dict(
             billing_folder_id=self.get_tenant_id(),
         )
