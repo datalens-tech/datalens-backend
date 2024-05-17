@@ -111,6 +111,7 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
 
     @contextlib.contextmanager
     def wrap_execute_excs(self, query: DBAdapterQuery, stage: Optional[str]) -> Generator[None, None, None]:
+        # TODO: Move to ErrorTransformer/ExceptionMaker
         try:
             try:
                 yield None

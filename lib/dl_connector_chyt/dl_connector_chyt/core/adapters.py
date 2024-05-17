@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import abc
 from typing import (
-    Any,
     ClassVar,
     Optional,
     Type,
@@ -12,10 +11,14 @@ import aiohttp
 import attr
 
 from dl_constants.enums import IndexKind
-from dl_core import exc
 from dl_core.connection_executors.models.db_adapter_data import RawIndexInfo
 from dl_core.connection_models import TableIdent
-from dl_core.connectors.base.error_transformer import DBExcKWArgs
+from dl_core.connectors.base.error_handling import ExceptionMaker
+from dl_core.connectors.base.error_transformer import (
+    ExceptionInfo,
+    GeneratedException,
+    make_default_transformer_with_custom_rules,
+)
 from dl_core.utils import get_current_w3c_tracing_headers
 from dl_utils.aio import await_sync
 from dl_utils.utils import make_url
@@ -29,6 +32,7 @@ from dl_connector_chyt.core.utils import CHYTUtils
 from dl_connector_clickhouse.core.clickhouse_base.adapters import (
     BaseClickHouseAdapter,
     BaseClickHouseConnLineConstructor,
+    SyncDBAClickHouseExceptionMaker,
 )
 from dl_connector_clickhouse.core.clickhouse_base.ch_commons import (
     ensure_db_message,
@@ -47,11 +51,34 @@ class CHYTConnLineConstructor(BaseClickHouseConnLineConstructor):
         return super()._get_dsn_params(safe_db_symbols=new_safe_symbols, db_name=db_name, standard_auth=standard_auth)
 
 
+class CHYTExceptionMaker(SyncDBAClickHouseExceptionMaker):
+    def make_exc_info(
+        self,
+        wrapper_exc: Exception = GeneratedException(),
+        orig_exc: Optional[Exception] = None,
+        debug_compiled_query: Optional[str] = None,
+        message: Optional[str] = None,
+    ) -> ExceptionInfo:
+        exc_info = super().make_exc_info(
+            wrapper_exc=wrapper_exc,
+            orig_exc=orig_exc,
+            debug_compiled_query=debug_compiled_query,
+            message=message,
+        )
+        exc_info = ensure_db_message(exc_info=exc_info)
+        return exc_info
+
+
 class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
     ch_utils = CHYTUtils
     conn_line_constructor_type: ClassVar[Type[CHYTConnLineConstructor]] = CHYTConnLineConstructor
 
     _target_dto: BaseCHYTConnTargetDTO = attr.ib()
+
+    def _make_exception_maker(self) -> ExceptionMaker:
+        return CHYTExceptionMaker(
+            error_transformer=make_default_transformer_with_custom_rules(),
+        )
 
     def _get_dsn_params_from_headers(self) -> dict[str, str]:
         params = {
@@ -74,23 +101,6 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
             read_only_level=2,
             output_format_json_quote_denormals=1,
         )
-
-    # Fat boilerplate of an override.
-    @classmethod
-    def make_exc(  # TODO:  Move to ErrorTransformer
-        cls,
-        wrapper_exc: Exception,
-        orig_exc: Optional[Exception],
-        debug_compiled_query: Optional[str],
-        **kwargs: Any,
-    ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
-        exc_cls, kw = super().make_exc(
-            wrapper_exc=wrapper_exc,
-            orig_exc=orig_exc,
-            debug_compiled_query=debug_compiled_query,
-            **kwargs,
-        )
-        return ensure_db_message(exc_cls, kw)
 
     # noinspection PyMethodMayBeStatic
     async def _fetch_yt_sorting_columns(

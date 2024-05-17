@@ -58,7 +58,7 @@ from dl_core.connection_models import (
     TableDefinition,
     TableIdent,
 )
-from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
+from dl_core.connectors.base.error_handling import ExceptionMaker
 from dl_core.connectors.base.error_transformer import (
     DbErrorTransformer,
     make_default_transformer_with_custom_rules,
@@ -89,7 +89,6 @@ class BaseSAAdapter(
     WithCursorInfo,
     WithDatabaseNameOverride,
     WithNoneRowConverters,
-    ETBasedExceptionMaker,
     SyncDirectDBAdapter[_DBA_SA_DTO_TV],
     SAColumnTypeNormalizer,
 ):
@@ -101,7 +100,11 @@ class BaseSAAdapter(
     _req_ctx_info: DBAdapterScopedRCI = attr.ib()
     # Internals
     _engine_cache: Dict[Tuple[Optional[str], bool], Engine] = attr.ib(init=False, factory=lambda: {})
-    _error_transformer: ClassVar[DbErrorTransformer] = make_default_transformer_with_custom_rules()
+
+    def _make_exception_maker(self) -> ExceptionMaker:
+        return ExceptionMaker(
+            error_transformer=make_default_transformer_with_custom_rules(),
+        )
 
     _COMMON_ENGINE_EVENT_LISTENERS: ClassVar[list[EventListenerSpec]] = [
         EventListenerSpec("before_cursor_execute", CursorLogger.before_cursor_execute_handler),
@@ -167,7 +170,7 @@ class BaseSAAdapter(
 
         with db_session_context(
             backend_type=self.get_backend_type(), db_engine=engine
-        ) as db_session, self.handle_execution_error(compiled_query), self.execution_context():
+        ) as db_session, self._exception_maker.handle_execution_error(compiled_query), self.execution_context():
             with GenericProfiler("db-exec"):
                 result = db_session.execute(
                     query,
@@ -206,24 +209,24 @@ class BaseSAAdapter(
 
     @final
     def test(self) -> None:
-        with self.handle_execution_error(debug_compiled_query="<test()>"):
+        with self._exception_maker.handle_execution_error(debug_compiled_query="<test()>"):
             self._test()
 
     @final
     def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
-        with self.handle_execution_error(debug_compiled_query=f"<get_db_version({db_ident})>"):
+        with self._exception_maker.handle_execution_error(debug_compiled_query=f"<get_db_version({db_ident})>"):
             return self._get_db_version(db_ident)
 
     @final
     def get_schema_names(self, db_ident: DBIdent) -> List[str]:
-        with self.handle_execution_error(
+        with self._exception_maker.handle_execution_error(
             debug_compiled_query=f"<get_schema_names({db_ident})>"
         ), self.execution_context():
             return self._get_schema_names(db_ident)
 
     @final
     def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
-        with self.handle_execution_error(
+        with self._exception_maker.handle_execution_error(
             debug_compiled_query=f"<get_tables({schema_ident})>"
         ), self.execution_context():
             return self._get_tables(schema_ident)
@@ -254,7 +257,7 @@ class BaseSAAdapter(
                 f"Unsupported type of table table definition to get info: {get_type_full_name(type(table_def))}"
             )
 
-        with self.handle_execution_error(
+        with self._exception_maker.handle_execution_error(
             debug_compiled_query=debug_compiled_query,
             exc_post_processor=exc_post_processor,
         ), self.execution_context():
@@ -284,7 +287,7 @@ class BaseSAAdapter(
 
     @final
     def is_table_exists(self, table_ident: TableIdent) -> bool:
-        with self.handle_execution_error(f"<exists({table_ident})>"), self.execution_context():
+        with self._exception_maker.handle_execution_error(f"<exists({table_ident})>"), self.execution_context():
             return self._is_table_exists(table_ident)
 
     def _test(self) -> None:

@@ -23,6 +23,7 @@ from dl_core.connection_models.common_models import (
     DBIdent,
     SATextTableDefinition,
 )
+from dl_core.connectors.base.error_handling import ExceptionMaker
 from dl_core.db.native_type import SATypeSpec
 
 from dl_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
@@ -61,7 +62,6 @@ def construct_creator_func(target_dto: SnowFlakeConnTargetDTO) -> Callable:
 @attr.s(kw_only=True)
 class SnowFlakeDefaultAdapter(BaseClassicAdapter, BaseSAAdapter[SnowFlakeConnTargetDTO]):
     conn_type = CONNECTION_TYPE_SNOWFLAKE
-    _error_transformer = snowflake_error_transformer
 
     # https://docs.snowflake.com/en/user-guide/python-connector-api#type-codes
     _type_code_to_sa = {
@@ -80,6 +80,9 @@ class SnowFlakeDefaultAdapter(BaseClassicAdapter, BaseSAAdapter[SnowFlakeConnTar
         12: ssa.TIME,
         13: ssa.BOOLEAN,
     }
+
+    def _make_exception_maker(self) -> ExceptionMaker:
+        return ExceptionMaker(error_transformer=snowflake_error_transformer)
 
     def _cursor_column_to_sa(self, cursor_col, require: bool = True) -> Optional[SATypeSpec]:  # type: ignore  # TODO: fix
         """

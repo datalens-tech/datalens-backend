@@ -125,9 +125,8 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
         req_params = {"from", "to", "step"}
         conn_params = dict(dba_query.connector_specific_params or {})
         if conn_params is None or not req_params <= set(conn_params):
-            db_exc = self.make_exc(
-                status_code=HTTPBadRequest.status_code,
-                err_body="'step', 'from', 'to' must be in parameters",
+            db_exc = self._exception_maker.make_exc(
+                message="'step', 'from', 'to' must be in parameters",
                 debug_compiled_query=dba_query.debug_compiled_query,
             )
             raise db_exc
@@ -181,20 +180,6 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
                 query=dba_query.debug_compiled_query,
             ) from err
 
-    @staticmethod
-    def make_exc(  # TODO:  Move to ErrorTransformer
-        status_code: int,  # noqa
-        err_body: str,
-        debug_compiled_query: Optional[str] = None,
-    ) -> DatabaseQueryError:
-        exc_cls = DatabaseQueryError
-        return exc_cls(
-            db_message=err_body,
-            query=debug_compiled_query,
-            orig=None,
-            details={},
-        )
-
     @generic_profiler_async("db-full")  # type: ignore  # TODO: fix
     async def execute(self, dba_query: DBAdapterQuery) -> AsyncRawExecutionResult:
         with self.wrap_execute_excs(query=dba_query, stage="request"):
@@ -203,9 +188,8 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
         if resp.status != 200:
             body = await resp.text()
             body_piece = body[:100] + ("…" if len(body) > 100 else "")  # TODO: depends on db ownership
-            db_exc = self.make_exc(
-                status_code=resp.status,
-                err_body=body_piece,
+            db_exc = self._exception_maker.make_exc(
+                message=body_piece,
                 debug_compiled_query=dba_query.debug_compiled_query,
             )
             raise db_exc

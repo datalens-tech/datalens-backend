@@ -17,7 +17,10 @@ from sqlalchemy.sql import schema as sa_schema
 
 from dl_core import exc
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
-from dl_core.connectors.base.error_transformer import DBExcKWArgs
+from dl_core.connectors.base.error_transformer import (
+    DBExcKWArgs,
+    ExceptionInfo,
+)
 from dl_core.db import (
     SchemaColumn,
     make_sa_type,
@@ -208,12 +211,12 @@ def create_column_sql(
     return sa_ddl_obj.string
 
 
-def ensure_db_message(
-    exc_cls: Type[exc.DatabaseQueryError],
-    kw: DBExcKWArgs,
-) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
-    db_message = kw.get("db_message")
-    details = kw.get("details")
+def ensure_db_message(exc_info: ExceptionInfo) -> ExceptionInfo:
+    db_message = exc_info.exc_kwargs.get("db_message")
+    details = exc_info.exc_kwargs.get("details", {}).copy()
     if db_message and details is not None and not details.get("db_message"):
         details.update(db_message=db_message)
-    return exc_cls, kw
+
+    exc_kwargs = exc_info.exc_kwargs.copy()
+    exc_kwargs["details"] = details
+    return exc_info.clone(exc_kwargs=exc_kwargs)

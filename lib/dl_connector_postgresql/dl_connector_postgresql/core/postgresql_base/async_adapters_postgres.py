@@ -57,7 +57,7 @@ from dl_core.connection_models import (
     TableDefinition,
 )
 from dl_core.connection_models.common_models import TableIdent
-from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
+from dl_core.connectors.base.error_handling import ExceptionMaker
 from dl_sqlalchemy_postgres import AsyncBIPGDialect
 from dl_sqlalchemy_postgres.asyncpg import DBAPIMock
 
@@ -104,7 +104,6 @@ class AsyncPostgresAdapter(
     AsyncDirectDBAdapter,
     BasePostgresAdapter,
     SATypeTransformer,
-    ETBasedExceptionMaker,
 ):
     dsn_template: ClassVar[str] = "{dialect}://{user}:{passwd}@{host}:{port}/{db_name}"
     _default_chunk_size: int = attr.ib()
@@ -112,25 +111,28 @@ class AsyncPostgresAdapter(
     _req_ctx_info: DBAdapterScopedRCI = attr.ib()
     _conn_pools: AsyncCache[asyncpg.Pool] = attr.ib(default=attr.Factory(AsyncCache))
 
-    _error_transformer = make_async_pg_error_transformer()
     __dialect: Optional[AsyncBIPGDialect] = None
-
-    EXTRA_EXC_CLS: ClassVar[tuple[Type[Exception], ...]] = (
-        exc.DataStreamValidationError,
-        # I don't have any idea why asyncpg doesn't provide common exception in public interface
-        # but there are about 40 different types of exceptions for every case of error
-        # I hope private type will work for a long time and we won't put all ~40 exceptions here
-        asyncpg.exceptions._base.PostgresError,
-        asyncio.TimeoutError,
-        # invalid/not available cluster provokes it
-        # not connection/timeout error
-        OSError,
-    )
 
     _LIST_ALL_TABLES_QUERY = PG_LIST_SOURCES_ALL_SCHEMAS_SQL
     _LIST_SCHEMA_NAMES_QUERY = PG_LIST_SCHEMA_NAMES
     _LIST_TABLE_NAMES_QUERY = PG_LIST_TABLE_NAMES
     _LIST_VIEW_NAMES_QUERY = PG_LIST_VIEW_NAMES
+
+    def _make_exception_maker(self) -> ExceptionMaker:
+        return ExceptionMaker(
+            error_transformer=make_async_pg_error_transformer(),
+            extra_exception_classes=(
+                exc.DataStreamValidationError,
+                # I don't have any idea why asyncpg doesn't provide common exception in public interface
+                # but there are about 40 different types of exceptions for every case of error
+                # I hope private type will work for a long time and we won't put all ~40 exceptions here
+                asyncpg.exceptions._base.PostgresError,
+                asyncio.TimeoutError,
+                # invalid/not available cluster provokes it
+                # not connection/timeout error
+                OSError,
+            ),
+        )
 
     def _make_async_db_version_action(self) -> AsyncDBVersionAdapterAction:
         return AsyncDBVersionAdapterActionViaFunctionQuery(async_adapter=self)
@@ -287,7 +289,7 @@ class AsyncPostgresAdapter(
         if self._target_dto.pass_db_query_to_user:
             debug_query = query.debug_compiled_query or make_debug_query(compiled_query, params)
 
-        with self.handle_execution_error(debug_query), self.execution_context():
+        with self._exception_maker.handle_execution_error(debug_query), self.execution_context():
             async with self._get_connection(query.db_name) as conn:  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "_get_connection" of "AsyncPostgresAdapter" has incompatible type "str | None"; expected "str"  [arg-type]
                 # prepare works only inside a transaction
                 async with conn.transaction(readonly=True):

@@ -50,7 +50,7 @@ from dl_core.connection_models import (
     TableDefinition,
     TableIdent,
 )
-from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
+from dl_core.connectors.base.error_handling import ExceptionMaker
 from dl_sqlalchemy_mysql.base import DLMYSQLDialect
 
 from dl_connector_mysql.core.adapters_base_mysql import BaseMySQLAdapter
@@ -68,7 +68,6 @@ _DBA_ASYNC_MYSQL_TV = TypeVar("_DBA_ASYNC_MYSQL_TV", bound="AsyncMySQLAdapter")
 class AsyncMySQLAdapter(
     WithDatabaseNameOverride,
     WithNoneRowConverters,
-    ETBasedExceptionMaker,
     BaseMySQLAdapter,
     AsyncDirectDBAdapter,
     WithMinimalCursorInfo,
@@ -79,12 +78,14 @@ class AsyncMySQLAdapter(
 
     _engines: AsyncCache[aiomysql.sa.Engine] = attr.ib(default=attr.Factory(AsyncCache))
 
-    _error_transformer = async_mysql_db_error_transformer
-
-    EXTRA_EXC_CLS = (
-        OperationalError,
-        ProgrammingError,
-    )
+    def _make_exception_maker(self) -> ExceptionMaker:
+        return ExceptionMaker(
+            error_transformer=async_mysql_db_error_transformer,
+            extra_exception_classes=(
+                OperationalError,
+                ProgrammingError,
+            ),
+        )
 
     def _make_async_db_version_action(self) -> AsyncDBVersionAdapterAction:
         return AsyncDBVersionAdapterActionViaFunctionQuery(async_adapter=self)
@@ -162,7 +163,7 @@ class AsyncMySQLAdapter(
             else:
                 debug_query = query if isinstance(query, str) else compile_query_for_debug(query, self._dialect)
 
-        with self.handle_execution_error(debug_query):
+        with self._exception_maker.handle_execution_error(debug_query):
             async with self._get_connection(
                 db_adapter_query.db_name
             ) as conn:  # type: aiomysql.sa.connection.SAConnection
