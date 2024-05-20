@@ -32,6 +32,8 @@ def file_uploader_connectors_settings_fallback(full_cfg: ConnectorsConfigType) -
 
 @attr.s(frozen=True)
 class FileUploaderWorkerSettings(FileUploaderBaseSettings):
+    MAX_CONCURRENT_JOBS: int = s_attrib("MAX_CONCURRENT_JOBS", missing=10)
+
     SENTRY_DSN: Optional[str] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
         "DL_SENTRY_DSN",
         fallback_cfg_key="SENTRY_DSN_FILE_UPLOADER_WORKER",
