@@ -132,7 +132,7 @@ class FileUploaderWorkerFactory(Generic[_TSettings], abc.ABC):
                 ca_data=self._ca_data,
                 tenant_resolver=self._get_tenant_resolver(),
             ),
-            worker_settings=WorkerSettings(),
+            worker_settings=WorkerSettings(max_concurrent_jobs=self._settings.MAX_CONCURRENT_JOBS),
             cron_tasks=cron_tasks,
             metrics_sender=self._get_metrics_sender(),
         )
