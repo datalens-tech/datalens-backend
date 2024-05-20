@@ -84,13 +84,18 @@ class ExampleRenderer:
                 name_mapping = {name: formula for name, formula in example.additional_transformations[-1]}
             result_table = rename_columns(result_table, name_mapping=name_mapping)
 
+        if example.override_formula_fields is not None:
+            formula_fields = [(name, formula) for name, formula in example.override_formula_fields]
+        else:
+            formula_fields = example.formula_fields
+
         example_result = ExampleResult(
             name=example.name,
             order_by=example.order_by,
             group_by=example.group_by,
             source=self._render_table(source_table, example=example) if example.show_source_table else None,
             result=self._render_table(result_table, example=example),
-            formula_fields=example.formula_fields if not example.formulas_as_names else [],
+            formula_fields=formula_fields if not example.formulas_as_names else [],
         )
         template = self._jinja_env.get_template(self._example_template_filename)
         return template.render(example_result=example_result, under_cut=under_cut, _=self._trans)
