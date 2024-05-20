@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Install or update docker (datalens requires Docker engine 19.03 or newer):
+Install or update docker (DataLens requires Docker engine 19.03 or newer):
 
 - [Install docker](https://docs.docker.com/get-docker/)
 - [Install docker compose plugin](https://docs.docker.com/compose/install/)
