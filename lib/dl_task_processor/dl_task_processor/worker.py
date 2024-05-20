@@ -93,7 +93,7 @@ class WorkerSettings:
     # we should not allow forever-fail tasks because it can stop the whole system
     # but (if you really want it) you can provide float('inf')
     retry_hard_limit: int = attr.ib(default=100)
-    max_concurrent_jobs: int = attr.ib(default=10)
+    max_concurrent_jobs: int = attr.ib(default=15)
     job_timeout: int = attr.ib(default=600)  # seconds
     health_check_interval: int = attr.ib(default=30)  # how often the HC record is set
     health_check_record_ttl: int = attr.ib(  # ttl should generally be greater than the HC interval with a margin
