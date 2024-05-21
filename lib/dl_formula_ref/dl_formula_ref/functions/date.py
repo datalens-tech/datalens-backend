@@ -180,8 +180,8 @@ FUNCTION_DATETRUNC = FunctionDocRegistryItem(
         SimpleExample(example_str)
         for example_str in (
             'DATETRUNC(#2018-07-12 11:07:13#, "minute") = #2018-07-12 11:07:00#',
+            'DATETRUNC(#2018-07-12#, "year", 5) = #2015-01-01#',
             'DATETRUNC(#2018-07-12 11:07:13#, "second", 5) = #2018-07-12 11:07:10#',
-            'DATETRUNC(#2018-07-12 11:07:13#, "month", 4) = #2018-05-01 00:00:00#',
         )
     ],
 )

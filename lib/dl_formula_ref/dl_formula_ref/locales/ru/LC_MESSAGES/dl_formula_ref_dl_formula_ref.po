@@ -2687,7 +2687,7 @@ msgid ""
 "It converts the {arg:0} expression to `Tree of strings` format. You can use "
 "it in to create {link: tree_link: tree hierarchies}."
 msgstr ""
-"Переводит выражение {arg:0} в формат `Дерево строк`. Используется в для "
+"Переводит выражение {arg:0} в формат `Дерево строк`. Используется для "
 "создания {link: tree_link: древовидных иерархий}."
 
 msgid "Example with grouping"
