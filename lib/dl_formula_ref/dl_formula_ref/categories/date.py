@@ -14,6 +14,9 @@ CATEGORY_DATE = FunctionDocCategory(
     resources=SimpleAliasedResourceRegistry(
         resources={
             "iso_8601": AliasedLinkResource(url=_("https://en.wikipedia.org/wiki/ISO_8601")),
+            "ch_toStartOfInterval": AliasedLinkResource(
+                url=_("https://clickhouse.com/docs/en/sql-reference/functions/date-time-functions#tostartofinterval")
+            ),
         }
     ),
     keywords="",

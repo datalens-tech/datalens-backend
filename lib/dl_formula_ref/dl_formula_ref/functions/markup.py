@@ -56,7 +56,7 @@ FUNCTION_COLOR = FunctionDocRegistryItem(
         "In this case, however, we cannot guarantee that the colors will be discernible."
     ),
     examples=[
-        SimpleExample("COLOR([text], '--g-color-text-danger')"),
+        SimpleExample("COLOR([text], 'var(--g-color-text-danger)')"),
         SimpleExample("COLOR([text], '#5282ff')"),
         SimpleExample("COLOR([text], 'blue')"),
         SimpleExample("COLOR([text], 'rgb(82, 130, 255)')"),

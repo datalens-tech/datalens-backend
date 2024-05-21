@@ -59,12 +59,12 @@
                     3.141592653589793
                 ],
                 [
-                    -0.8660254,
-                    2.6179938469042465
+                    -0.86602540378,
+                    2.617993877982617
                 ],
                 [
-                    -0.70710677,
-                    2.356194473078074
+                    -0.70710678118,
+                    2.3561944901830856
                 ],
                 [
                     -0.5,
@@ -79,12 +79,12 @@
                     1.0471975511965979
                 ],
                 [
-                    0.70710677,
-                    0.7853981805117192
+                    0.70710678118,
+                    0.7853981634067079
                 ],
                 [
-                    0.8660254,
-                    0.5235988066855469
+                    0.86602540378,
+                    0.523598775607176
                 ],
                 [
                     1.0,
@@ -356,12 +356,12 @@
                     -1.5707963267948966
                 ],
                 [
-                    -0.8660254,
-                    -1.0471975201093497
+                    -0.86602540378,
+                    -1.0471975511877205
                 ],
                 [
-                    -0.70710677,
-                    -0.7853981462831774
+                    -0.70710678118,
+                    -0.7853981633881888
                 ],
                 [
                     -0.5,
@@ -376,12 +376,12 @@
                     0.5235987755982989
                 ],
                 [
-                    0.70710677,
-                    0.7853981462831774
+                    0.70710678118,
+                    0.7853981633881888
                 ],
                 [
-                    0.8660254,
-                    1.0471975201093497
+                    0.86602540378,
+                    1.0471975511877205
                 ],
                 [
                     1.0,
@@ -409,12 +409,12 @@
                     -0.7853981633974483
                 ],
                 [
-                    -0.8660254,
-                    -0.7137243700626944
+                    -0.86602540378,
+                    -0.7137243789422293
                 ],
                 [
-                    -0.70710677,
-                    -0.6154797006026426
+                    -0.70710678118,
+                    -0.6154797086660223
                 ],
                 [
                     -0.5,
@@ -429,12 +429,12 @@
                     0.4636476090008061
                 ],
                 [
-                    0.70710677,
-                    0.6154797006026426
+                    0.70710678118,
+                    0.6154797086660223
                 ],
                 [
-                    0.8660254,
-                    0.7137243700626944
+                    0.86602540378,
+                    0.7137243789422293
                 ],
                 [
                     1.0,
@@ -460,15 +460,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "AVG 1",
+                    "name": "AVG TOTAL",
                     "type": "FLOAT"
                 },
                 {
-                    "name": "AVG 2",
+                    "name": "AVG WITHIN",
                     "type": "FLOAT"
                 },
                 {
-                    "name": "AVG 3",
+                    "name": "AVG AMONG",
                     "type": "FLOAT"
                 }
             ],
@@ -1004,15 +1004,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "COUNT 1",
+                    "name": "COUNT TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "COUNT 2",
+                    "name": "COUNT WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "COUNT 3",
+                    "name": "COUNT AMONG",
                     "type": "INTEGER"
                 }
             ],
@@ -1499,11 +1499,11 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "FIRST 1",
+                    "name": "FIRST ORDER BY City",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "FIRST 2",
+                    "name": "FIRST ORDER BY Order Sum",
                     "type": "INTEGER"
                 }
             ],
@@ -1552,15 +1552,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "FIRST 1",
+                    "name": "FIRST TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "FIRST 2",
+                    "name": "FIRST WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "FIRST 3",
+                    "name": "FIRST AMONG",
                     "type": "INTEGER"
                 }
             ],
@@ -1579,7 +1579,7 @@
                     25,
                     7,
                     7,
-                    23
+                    25
                 ],
                 [
                     "London",
@@ -1595,7 +1595,7 @@
                     10,
                     7,
                     1,
-                    23
+                    25
                 ],
                 [
                     "Moscow",
@@ -1611,7 +1611,7 @@
                     4,
                     7,
                     2,
-                    23
+                    25
                 ],
                 [
                     "San Francisco",
@@ -1627,7 +1627,7 @@
                     23,
                     7,
                     5,
-                    23
+                    25
                 ]
             ]
         }
@@ -1750,7 +1750,7 @@
             "rows": [
                 [
                     432.4,
-                    432.3999938964844
+                    432.4
                 ],
                 [
                     77.0,
@@ -1869,11 +1869,11 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "LAG 1",
+                    "name": "LAG ORDER BY City",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "LAG 2",
+                    "name": "LAG ORDER BY Order Sum",
                     "type": "INTEGER"
                 }
             ],
@@ -1922,15 +1922,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "LAG 1",
+                    "name": "LAG TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "LAG 2",
+                    "name": "LAG WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "LAG 3",
+                    "name": "LAG AMONG",
                     "type": "INTEGER"
                 }
             ],
@@ -1949,7 +1949,7 @@
                     25,
                     7,
                     7,
-                    23
+                    null
                 ],
                 [
                     "London",
@@ -1965,7 +1965,7 @@
                     10,
                     1,
                     1,
-                    4
+                    25
                 ],
                 [
                     "Moscow",
@@ -1981,7 +1981,7 @@
                     4,
                     2,
                     2,
-                    25
+                    10
                 ],
                 [
                     "San Francisco",
@@ -1997,7 +1997,7 @@
                     23,
                     5,
                     5,
-                    null
+                    4
                 ]
             ]
         }
@@ -2064,11 +2064,11 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "LAST 1",
+                    "name": "LAST ORDER BY City",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "LAST 2",
+                    "name": "LAST ORDER BY Order Sum",
                     "type": "INTEGER"
                 }
             ],
@@ -2117,15 +2117,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "LAST 1",
+                    "name": "LAST TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "LAST 2",
+                    "name": "LAST WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "LAST 3",
+                    "name": "LAST AMONG",
                     "type": "INTEGER"
                 }
             ],
@@ -2144,7 +2144,7 @@
                     25,
                     23,
                     25,
-                    10
+                    23
                 ],
                 [
                     "London",
@@ -2160,7 +2160,7 @@
                     10,
                     23,
                     10,
-                    10
+                    23
                 ],
                 [
                     "Moscow",
@@ -2176,7 +2176,7 @@
                     4,
                     23,
                     4,
-                    10
+                    23
                 ],
                 [
                     "San Francisco",
@@ -2192,7 +2192,7 @@
                     23,
                     23,
                     23,
-                    10
+                    23
                 ]
             ]
         }
@@ -2222,50 +2222,26 @@
                 [
                     "Detroit",
                     32,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "21.5000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "30.0000000000000000"
-                    }
+                    21.5,
+                    30.0
                 ],
                 [
                     "London",
                     11,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "8.5000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "8.5000000000000000"
-                    }
+                    8.5,
+                    8.5
                 ],
                 [
                     "Moscow",
                     6,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "17.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "6.0000000000000000"
-                    }
+                    17.0,
+                    6.0
                 ],
                 [
                     "San Francisco",
                     28,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "28.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "19.5000000000000000"
-                    }
+                    28.0,
+                    19.5
                 ]
             ]
         }
@@ -2304,137 +2280,65 @@
                     "Detroit",
                     "Furniture",
                     7,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "7.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "7.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "7.0000000000000000"
-                    }
+                    7.0,
+                    7.0,
+                    7.0
                 ],
                 [
                     "Detroit",
                     "Office Supplies",
                     25,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "16.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "16.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "24.0000000000000000"
-                    }
+                    16.0,
+                    16.0,
+                    25.0
                 ],
                 [
                     "London",
                     "Furniture",
                     1,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "13.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "1.00000000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "4.0000000000000000"
-                    }
+                    13.0,
+                    1.0,
+                    4.0
                 ],
                 [
                     "London",
                     "Office Supplies",
                     10,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "5.5000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "5.5000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "7.0000000000000000"
-                    }
+                    5.5,
+                    5.5,
+                    17.5
                 ],
                 [
                     "Moscow",
                     "Furniture",
                     2,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "6.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "2.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "1.5000000000000000"
-                    }
+                    6.0,
+                    2.0,
+                    1.5
                 ],
                 [
                     "Moscow",
                     "Office Supplies",
                     4,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "3.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "3.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "14.5000000000000000"
-                    }
+                    3.0,
+                    3.0,
+                    7.0
                 ],
                 [
                     "San Francisco",
                     "Furniture",
                     5,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "4.5000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "5.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "3.5000000000000000"
-                    }
+                    4.5,
+                    5.0,
+                    3.5
                 ],
                 [
                     "San Francisco",
                     "Office Supplies",
                     23,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "14.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "14.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "23.0000000000000000"
-                    }
+                    14.0,
+                    14.0,
+                    13.5
                 ]
             ]
         }
@@ -2468,66 +2372,30 @@
                 [
                     "Detroit",
                     32,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "32.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "16.3333333333333333"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "21.5000000000000000"
-                    }
+                    32.0,
+                    16.333333333333332,
+                    21.5
                 ],
                 [
                     "London",
                     11,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "21.5000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "15.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "16.3333333333333333"
-                    }
+                    21.5,
+                    15.0,
+                    16.333333333333332
                 ],
                 [
                     "Moscow",
                     6,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "8.5000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "17.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "15.0000000000000000"
-                    }
+                    8.5,
+                    17.0,
+                    15.0
                 ],
                 [
                     "San Francisco",
                     28,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "17.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "28.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "17.0000000000000000"
-                    }
+                    17.0,
+                    28.0,
+                    17.0
                 ]
             ]
         }
@@ -2549,15 +2417,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "MAX 1",
+                    "name": "MAX TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "MAX 2",
+                    "name": "MAX WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "MAX 3",
+                    "name": "MAX AMONG",
                     "type": "INTEGER"
                 }
             ],
@@ -2722,7 +2590,7 @@
                     25,
                     2,
                     2,
-                    2
+                    1
                 ],
                 [
                     "London",
@@ -2770,7 +2638,7 @@
                     23,
                     2,
                     2,
-                    1
+                    2
                 ]
             ]
         }
@@ -2833,6 +2701,22 @@
         }
     ],
     [
+        "MEDIAN.Example",
+        {
+            "columns": [
+                {
+                    "name": "Median Profit",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    750.0
+                ]
+            ]
+        }
+    ],
+    [
         "MIN_WINDOW.Example with grouping",
         {
             "columns": [
@@ -2849,15 +2733,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "MIN 1",
+                    "name": "MIN TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "MIN 2",
+                    "name": "MIN WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "MIN 3",
+                    "name": "MIN AMONG",
                     "type": "INTEGER"
                 }
             ],
@@ -3038,7 +2922,7 @@
                     10,
                     10,
                     10,
-                    10
+                    25
                 ],
                 [
                     "Moscow",
@@ -3054,7 +2938,7 @@
                     4,
                     4,
                     4,
-                    25
+                    10
                 ],
                 [
                     "San Francisco",
@@ -3225,7 +3109,7 @@
                     25,
                     7,
                     7,
-                    23
+                    25
                 ],
                 [
                     "London",
@@ -3241,7 +3125,7 @@
                     10,
                     1,
                     1,
-                    4
+                    10
                 ],
                 [
                     "Moscow",
@@ -3273,7 +3157,7 @@
                     23,
                     5,
                     5,
-                    23
+                    4
                 ]
             ]
         }
@@ -3428,7 +3312,7 @@
                     25,
                     32,
                     32,
-                    48
+                    25
                 ],
                 [
                     "London",
@@ -3444,7 +3328,7 @@
                     10,
                     11,
                     11,
-                    14
+                    35
                 ],
                 [
                     "Moscow",
@@ -3460,7 +3344,7 @@
                     4,
                     6,
                     6,
-                    29
+                    14
                 ],
                 [
                     "San Francisco",
@@ -3476,7 +3360,7 @@
                     23,
                     28,
                     28,
-                    23
+                    27
                 ]
             ]
         }
@@ -3555,15 +3439,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK 1",
+                    "name": "RANK TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK 2",
+                    "name": "RANK WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK 3",
+                    "name": "RANK AMONG",
                     "type": "INTEGER"
                 }
             ],
@@ -3648,11 +3532,11 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK 1",
+                    "name": "RANK desc",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK 2",
+                    "name": "RANK asc",
                     "type": "INTEGER"
                 }
             ],
@@ -3701,15 +3585,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK_DENSE 1",
+                    "name": "RANK_DENSE TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK_DENSE 2",
+                    "name": "RANK_DENSE WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK_DENSE 3",
+                    "name": "RANK_DENSE AMONG",
                     "type": "INTEGER"
                 }
             ],
@@ -3794,11 +3678,11 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK_DENSE 1",
+                    "name": "RANK_DENSE desc",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK_DENSE 2",
+                    "name": "RANK_DENSE asc",
                     "type": "INTEGER"
                 }
             ],
@@ -3847,15 +3731,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK_PERCENTILE 1",
+                    "name": "RANK_PERCENTILE TOTAL",
                     "type": "FLOAT"
                 },
                 {
-                    "name": "RANK_PERCENTILE 2",
+                    "name": "RANK_PERCENTILE WITHIN",
                     "type": "FLOAT"
                 },
                 {
-                    "name": "RANK_PERCENTILE 3",
+                    "name": "RANK_PERCENTILE AMONG",
                     "type": "FLOAT"
                 }
             ],
@@ -3864,7 +3748,7 @@
                     "Detroit",
                     "Furniture",
                     7,
-                    0.428571428571429,
+                    0.42857142857142855,
                     1.0,
                     0.0
                 ],
@@ -3888,23 +3772,23 @@
                     "London",
                     "Office Supplies",
                     10,
-                    0.285714285714286,
+                    0.2857142857142857,
                     0.0,
-                    0.666666666666667
+                    0.6666666666666666
                 ],
                 [
                     "Moscow",
                     "Furniture",
                     2,
-                    0.857142857142857,
+                    0.8571428571428571,
                     1.0,
-                    0.666666666666667
+                    0.6666666666666666
                 ],
                 [
                     "Moscow",
                     "Office Supplies",
                     4,
-                    0.714285714285714,
+                    0.7142857142857143,
                     0.0,
                     1.0
                 ],
@@ -3912,17 +3796,17 @@
                     "San Francisco",
                     "Furniture",
                     5,
-                    0.571428571428571,
+                    0.5714285714285714,
                     1.0,
-                    0.333333333333333
+                    0.3333333333333333
                 ],
                 [
                     "San Francisco",
                     "Office Supplies",
                     23,
-                    0.142857142857143,
+                    0.14285714285714285,
                     0.0,
-                    0.333333333333333
+                    0.3333333333333333
                 ]
             ]
         }
@@ -3940,11 +3824,11 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK_PERCENTILE 1",
+                    "name": "RANK_PERCENTILE desc",
                     "type": "FLOAT"
                 },
                 {
-                    "name": "RANK_PERCENTILE 2",
+                    "name": "RANK_PERCENTILE asc",
                     "type": "FLOAT"
                 }
             ],
@@ -3958,8 +3842,8 @@
                 [
                     "London",
                     11,
-                    0.666666666666667,
-                    0.333333333333333
+                    0.6666666666666666,
+                    0.3333333333333333
                 ],
                 [
                     "Moscow",
@@ -3970,8 +3854,8 @@
                 [
                     "San Francisco",
                     28,
-                    0.333333333333333,
-                    0.666666666666667
+                    0.3333333333333333,
+                    0.6666666666666666
                 ]
             ]
         }
@@ -3993,15 +3877,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK_UNIQUE 1",
+                    "name": "RANK_UNIQUE TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK_UNIQUE 2",
+                    "name": "RANK_UNIQUE WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK_UNIQUE 3",
+                    "name": "RANK_UNIQUE AMONG",
                     "type": "INTEGER"
                 }
             ],
@@ -4086,11 +3970,11 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK_UNIQUE 1",
+                    "name": "RANK_UNIQUE desc",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RANK_UNIQUE 2",
+                    "name": "RANK_UNIQUE asc",
                     "type": "INTEGER"
                 }
             ],
@@ -4151,66 +4035,30 @@
                 [
                     "Detroit",
                     32,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "19.2500000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "19.2500000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "19.2500000000000000"
-                    }
+                    19.25,
+                    19.25,
+                    19.25
                 ],
                 [
                     "London",
                     11,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "15.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "15.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "8.5000000000000000"
-                    }
+                    15.0,
+                    15.0,
+                    8.5
                 ],
                 [
                     "Moscow",
                     6,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "17.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "17.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "6.0000000000000000"
-                    }
+                    17.0,
+                    17.0,
+                    6.0
                 ],
                 [
                     "San Francisco",
                     28,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "28.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "28.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "15.0000000000000000"
-                    }
+                    28.0,
+                    28.0,
+                    15.0
                 ]
             ]
         }
@@ -4232,15 +4080,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RAVG 1",
+                    "name": "RAVG TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RAVG 2",
+                    "name": "RAVG WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RAVG 3",
+                    "name": "RAVG AMONG",
                     "type": "INTEGER"
                 }
             ],
@@ -4249,137 +4097,65 @@
                     "Detroit",
                     "Furniture",
                     7,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "7.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "7.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "7.0000000000000000"
-                    }
+                    7.0,
+                    7.0,
+                    7.0
                 ],
                 [
                     "Detroit",
                     "Office Supplies",
                     25,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "16.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "16.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "24.0000000000000000"
-                    }
+                    16.0,
+                    16.0,
+                    25.0
                 ],
                 [
                     "London",
                     "Furniture",
                     1,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "11.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "1.00000000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "4.0000000000000000"
-                    }
+                    11.0,
+                    1.0,
+                    4.0
                 ],
                 [
                     "London",
                     "Office Supplies",
                     10,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "10.7500000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "5.5000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "15.5000000000000000"
-                    }
+                    10.75,
+                    5.5,
+                    17.5
                 ],
                 [
                     "Moscow",
                     "Furniture",
                     2,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "9.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "2.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "3.3333333333333333"
-                    }
+                    9.0,
+                    2.0,
+                    3.3333333333333335
                 ],
                 [
                     "Moscow",
                     "Office Supplies",
                     4,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "8.1666666666666667"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "3.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "17.3333333333333333"
-                    }
+                    8.166666666666666,
+                    3.0,
+                    13.0
                 ],
                 [
                     "San Francisco",
                     "Furniture",
                     5,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "7.7142857142857143"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "5.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "3.7500000000000000"
-                    }
+                    7.714285714285714,
+                    5.0,
+                    3.75
                 ],
                 [
                     "San Francisco",
                     "Office Supplies",
                     23,
-                    {
-                        "__type__": "decimal",
-                        "__value__": "9.6250000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "14.0000000000000000"
-                    },
-                    {
-                        "__type__": "decimal",
-                        "__value__": "23.0000000000000000"
-                    }
+                    9.625,
+                    14.0,
+                    15.5
                 ]
             ]
         }
@@ -4458,15 +4234,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RCOUNT 1",
+                    "name": "RCOUNT TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RCOUNT 2",
+                    "name": "RCOUNT WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RCOUNT 3",
+                    "name": "RCOUNT AMONG",
                     "type": "INTEGER"
                 }
             ],
@@ -4485,7 +4261,7 @@
                     25,
                     2,
                     2,
-                    2
+                    1
                 ],
                 [
                     "London",
@@ -4501,7 +4277,7 @@
                     10,
                     4,
                     2,
-                    4
+                    2
                 ],
                 [
                     "Moscow",
@@ -4533,7 +4309,7 @@
                     23,
                     8,
                     2,
-                    1
+                    4
                 ]
             ]
         }
@@ -4648,15 +4424,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RMAX 1",
+                    "name": "RMAX TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RMAX 2",
+                    "name": "RMAX WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RMAX 3",
+                    "name": "RMAX AMONG",
                     "type": "INTEGER"
                 }
             ],
@@ -4723,7 +4499,7 @@
                     23,
                     25,
                     23,
-                    23
+                    25
                 ]
             ]
         }
@@ -4802,15 +4578,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RMIN 1",
+                    "name": "RMIN TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RMIN 2",
+                    "name": "RMIN WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RMIN 3",
+                    "name": "RMIN AMONG",
                     "type": "INTEGER"
                 }
             ],
@@ -4829,7 +4605,7 @@
                     25,
                     7,
                     7,
-                    23
+                    25
                 ],
                 [
                     "London",
@@ -4845,7 +4621,7 @@
                     10,
                     1,
                     1,
-                    4
+                    10
                 ],
                 [
                     "Moscow",
@@ -4877,7 +4653,7 @@
                     23,
                     1,
                     5,
-                    23
+                    4
                 ]
             ]
         }
@@ -4956,15 +4732,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RSUM 1",
+                    "name": "RSUM TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RSUM 2",
+                    "name": "RSUM WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "RSUM 3",
+                    "name": "RSUM AMONG",
                     "type": "INTEGER"
                 }
             ],
@@ -4983,7 +4759,7 @@
                     25,
                     32,
                     32,
-                    48
+                    25
                 ],
                 [
                     "London",
@@ -4999,7 +4775,7 @@
                     10,
                     43,
                     11,
-                    62
+                    35
                 ],
                 [
                     "Moscow",
@@ -5015,7 +4791,7 @@
                     4,
                     49,
                     6,
-                    52
+                    39
                 ],
                 [
                     "San Francisco",
@@ -5031,7 +4807,7 @@
                     23,
                     77,
                     28,
-                    23
+                    62
                 ]
             ]
         }
@@ -5195,7 +4971,7 @@
                     20,
                     20.2,
                     4.47213595499958,
-                    4.494441095724746
+                    4.494441010848846
                 ],
                 [
                     25,
@@ -5268,13 +5044,45 @@
                     20,
                     20.2,
                     400.0,
-                    408.0400308227545
+                    408.03999999999996
                 ],
                 [
                     25,
                     25.0,
                     625.0,
                     625.0
+                ]
+            ]
+        }
+    ],
+    [
+        "STDEV.Example",
+        {
+            "columns": [
+                {
+                    "name": "Temperature SD",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    10.205464964983964
+                ]
+            ]
+        }
+    ],
+    [
+        "STDEVP.Example",
+        {
+            "columns": [
+                {
+                    "name": "Temperature SD",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    9.770988804733236
                 ]
             ]
         }
@@ -5288,11 +5096,11 @@
                     "type": "STRING"
                 },
                 {
-                    "name": "Sum 1",
+                    "name": "Sum Orders",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "Sum 2",
+                    "name": "Sum Profit",
                     "type": "FLOAT"
                 }
             ],
@@ -5300,17 +5108,17 @@
                 [
                     "Detroit",
                     5,
-                    6205.8701171875
+                    6205.87
                 ],
                 [
                     "London",
                     9,
-                    870.0999984741211
+                    870.1
                 ],
                 [
                     "Moscow",
                     6,
-                    1335.8399963378906
+                    1335.84
                 ],
                 [
                     "San Francisco",
@@ -5337,15 +5145,15 @@
                     "type": "INTEGER"
                 },
                 {
-                    "name": "SUM 1",
+                    "name": "SUM TOTAL",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "SUM 2",
+                    "name": "SUM WITHIN",
                     "type": "INTEGER"
                 },
                 {
-                    "name": "SUM 3",
+                    "name": "SUM AMONG",
                     "type": "INTEGER"
                 }
             ],

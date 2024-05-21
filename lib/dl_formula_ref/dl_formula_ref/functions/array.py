@@ -496,6 +496,24 @@ FUNCTION_ARR_REMOVE = FunctionDocRegistryItem(
     ],
 )
 
+FUNCTION_LEN_ARRAY = FunctionDocRegistryItem(
+    name="len",
+    category=CATEGORY_ARRAY,
+    impl_selector=ArgAwareImplementationSelector(
+        exp_arg_types={
+            0: {DataType.ARRAY_INT, DataType.ARRAY_FLOAT, DataType.ARRAY_STR},
+        },
+    ),
+    naming_provider=CategoryPostfixNamingProvider(
+        internal_name="len_array",
+    ),
+    description=_("It returns the number of the {arg:0} items."),
+    examples=[
+        SimpleExample("LEN(ARRAY(1, 2, 3)) = 3"),
+        SimpleExample("LEN(ARRAY('a', 'b', NULL, 'c')) = 4"),
+    ],
+)
+
 FUNCTIONS_ARRAY = [
     FUNCTION_ARRAY,
     FUNCTION_UNNEST,
@@ -518,4 +536,5 @@ FUNCTIONS_ARRAY = [
     FUNCTION_ARR_AVG,
     FUNCTION_ARR_PRODUCT,
     FUNCTION_ARR_REMOVE,
+    FUNCTION_LEN_ARRAY,
 ]

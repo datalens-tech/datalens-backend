@@ -12,16 +12,41 @@ _ = get_gettext()
 CATEGORY_WINDOW = FunctionDocCategory(
     name="window",
     description=_(
-        "Window functions are calculated in the same way as aggregations, but they do "
-        "not merge multiple entries into one. In some cases, this leads to duplication "
-        "of values among entries in the same group (for example, `SUM(... TOTAL)`).\n"
+        "Window functions in {{ datalens-short-name }} are calculated as aggregate functions of measures. "
+        "At the same time, grouping by dimensions differs from the grouping set in the chart. "
+        "Grouping parameters are specified in the function call as a list of dimensions to be included in the grouping (`WITHIN ...`) or excluded from it (`AMONG ...`).\n"
         "\n"
-        "Aggregate functions are calculated from groups of values that are determined "
-        "by the dimension fields used in a data query: entries with matching dimension "
-        "values are grouped. Window functions are also calculated over groups of "
-        "entries called _windows_. In this case, you should specify grouping "
-        "parameters in the function call as a list of dimensions to be included "
-        "(`WITHIN ...`) or excluded (`AMONG ...`) from the grouping.\n"
+        "Given that measures are aggregated values, one may consider window functions in {{ datalens-short-name }} "
+        "as aggregations of aggregations. One should note that not all aggregate functions would have the result of "
+        "aggregating particular results that is identical to the general aggregation of values.\n"
+        "\n"
+        "For example, if you calculate the sum of a measure for each group and then add these values together, "
+        "you will get the total sum of the measure in all groups:\n"
+        "```\n"
+        "SUM(SUM(a) UNION SUM(b)) = SUM(a UNION b)\n"
+        "```\n"
+        "If you count the amount of measure values for each group and then try to calculate the amount from the "
+        "sum of these values, you will get the amount of amounts (summands in the sum) rather than the total amount of values in all groups:\n"
+        "```\n"
+        "COUNT(COUNT(a) UNION COUNT(b)) = 2\n"
+        "```\n"
+        "\n"
+        "**Example**\n"
+        "\n"
+        "{table:win_functions_example}\n"
+        "\n"
+        "Where:\n"
+        "* **Sales**: Sum of the sales measure in the categories\n"
+        "* **Order Count**: Amount of the order measure values in the categories\n"
+        "* **Sales_Furniture+Technology**: Total sum of the sales measure in all categories:\n"
+        "  ```\n"
+        "  SUM_IF([Sales], [Category] = 'Furniture' TOTAL) + SUM_IF([Sales], [Category] = 'Technology' TOTAL)\n"
+        "  ```\n"
+        "* **OrderCount_Furniture+Technology**: Amount of amounts of the order measure values:\n"
+        "  ```\n"
+        "  COUNT(COUNT_IF([Order Count], [Category] = 'Furniture' TOTAL) +  COUNT_IF([Order Count], [Category] = 'Technology' TOTAL) TOTAL)\n"
+        "  ```\n"
+        "\n"
         "{text:window_usage_restrictions}\n"
         "{text:window_syntax}\n"
         "{text:agg_as_window}\n"
@@ -87,6 +112,19 @@ CATEGORY_WINDOW = FunctionDocCategory(
                     "recommend enabling the display of **Total** in the settings. This may cause "
                     "an error.\n"
                 )
+            ),
+            "win_functions_example": AliasedTableResource(
+                table_body=[
+                    [
+                        "`Category`",
+                        "`Sales`",
+                        "`OrderCount`",
+                        "`Sales_Furniture+Technology`",
+                        "`OrderCount_Furniture+Technology`",
+                    ],
+                    ["Furniture", "100000", "350", "300000", "2"],
+                    ["Technology", "200000", "650", "300000", "2"],
+                ]
             ),
             "window_func_signature": AliasedTextResource(
                 body=_(
