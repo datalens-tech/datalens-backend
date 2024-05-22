@@ -40,7 +40,7 @@ class DBAdapterActionBaseSchema(BaseQEAPISchema):
         return f"{act.dba_cls.__module__}.{act.dba_cls.__qualname__}"
 
     def load_dba_cls(self, value: str) -> Union[Type[CommonBaseDirectAdapter]]:
-        mod_name, cls_name = value.rsplit(".", 1)
+        mod_name, cls_name = value.rsplit(".", 1) if "." in value else (None, value)
         candidate = next(
             filter(
                 lambda clz: clz.__module__ == mod_name and clz.__qualname__ == cls_name or clz.__qualname__ == value,
