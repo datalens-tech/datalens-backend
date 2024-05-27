@@ -31,6 +31,9 @@ CATEGORY_MARKUP = FunctionDocCategory(
             "gravity_ui_texts_link": AliasedLinkResource(
                 url=_("https://preview.gravity-ui.com/uikit/iframe.html?args=&id=colors--texts&viewMode=story")
             ),
+            "jing_link": AliasedLinkResource(url=_("https://jing.yandex-team.ru/")),
+            "storage_link": AliasedLinkResource(url=_("../../storage/quickstart.md")),
+            "storage_prices_link": AliasedLinkResource(url=_("../../storage/pricing.md#prices-storage")),
         }
     ),
 )

@@ -82,6 +82,40 @@ FUNCTION_BR = FunctionDocRegistryItem(
     ],
 )
 
+FUNCTION_IMAGE = FunctionDocRegistryItem(
+    name="image",
+    category=CATEGORY_MARKUP,
+    description=_(
+        "Enables inserting an image located at the {arg:0} address to the table. "
+        "The {arg:1} and {arg:2} values are provided in pixels. If one of the dimensions is "
+        "`NULL`, it will be calculated automatically in proportion to the other. "
+        "If both dimensions are `NULL`, the image will be inserted with the original width and height. "
+        "In case there are issues when uploading the image, the function will display the {arg:3} text.\n"
+        "\n"
+        '{% if audience != "internal" %}\n'
+        "\n"
+        "Images can be added from the `*.yandex.ru`, `*.yandex.net`, `yastat.net`, `yastatic.net`, or "
+        "`storage.yandexcloud.net` domains. The easiest way is to upload and publish the image in "
+        "{link: storage_link: Yandex Object Storage} (see the pricing {link: storage_prices_link: here}).\n"
+        "\n"
+        "{% else %}\n"
+        "\n"
+        "Images can be added from the `*.yandex.ru`, `*.yandex-team.ru`, `*.yandex.net`, `yastat.net`, "
+        "`yastatic.net`, and `storage.yandexcloud.net` domains. The easiest way is to upload and post "
+        "an image in {link: storage_link: Yandex Object Storage} or {link: jing_link: Jing}.\n"
+        "\n"
+        "{% endif %}"
+    ),
+    examples=[
+        SimpleExample(
+            "IMAGE('https://storage.yandexcloud.net/functions********/nature-01.jpg', 250, 150, 'alt-text-1')"
+        ),
+        SimpleExample(
+            "IMAGE('https://storage.yandexcloud.net/functions********/nature-02.jpg', NULL, NULL, 'alt-text-2')"
+        ),
+    ],
+)
+
 FUNCTIONS_MARKUP = [
     FUNCTION_BOLD,
     FUNCTION_ITALIC,
@@ -90,4 +124,5 @@ FUNCTIONS_MARKUP = [
     FUNCTION_COLOR,
     FUNCTION_SIZE,
     FUNCTION_BR,
+    FUNCTION_IMAGE,
 ]
