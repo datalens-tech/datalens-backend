@@ -1,6 +1,7 @@
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.aliased_res import (
     AliasedLinkResource,
+    AliasedTextResource,
     SimpleAliasedResourceRegistry,
 )
 from dl_formula_ref.registry.base import FunctionDocCategory
@@ -30,6 +31,9 @@ CATEGORY_MARKUP = FunctionDocCategory(
             "gravity_ui_link": AliasedLinkResource(url=_("https://gravity-ui.com/")),
             "gravity_ui_texts_link": AliasedLinkResource(
                 url=_("https://preview.gravity-ui.com/uikit/iframe.html?args=&id=colors--texts&viewMode=story")
+            ),
+            "image_source_restrictions": AliasedTextResource(
+                body=_("These are the restrictions for everybody"),
             ),
         }
     ),
