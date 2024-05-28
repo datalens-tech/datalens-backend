@@ -15,7 +15,7 @@ from dl_constants.enums import (
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
 
-class TestDataset(DefaultApiTestBase):
+class TestInfo(DefaultApiTestBase):
     def test_get_field_types_info(self, client):
         resp = client.get("/api/v1/info/field_types")
         assert resp.status_code == 200, resp.json
