@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import abc
+import enum
 from typing import (
     Any,
     Optional,
@@ -37,13 +38,17 @@ class TenantDef(metaclass=abc.ABCMeta):
         )
 
 
+class AuthTarget(str, enum.Enum):
+    UNITED_STORAGE = "united_storage"
+
+
 class AuthData(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def get_headers(self) -> dict[DLHeaders, str]:
+    def get_headers(self, target: Optional[AuthTarget] = None) -> dict[DLHeaders, str]:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def get_cookies(self) -> dict[DLCookies, str]:
+    def get_cookies(self, target: Optional[AuthTarget] = None) -> dict[DLCookies, str]:
         raise NotImplementedError()
 
 
@@ -169,8 +174,8 @@ class TenantCommon(TenantDef):
 
 @attr.s()
 class NoAuthData(AuthData):
-    def get_headers(self) -> dict[DLHeaders, str]:
+    def get_headers(self, target: Optional[AuthTarget] = None) -> dict[DLHeaders, str]:
         return {}
 
-    def get_cookies(self) -> dict[DLCookies, str]:
+    def get_cookies(self, target: Optional[AuthTarget] = None) -> dict[DLCookies, str]:
         return {}

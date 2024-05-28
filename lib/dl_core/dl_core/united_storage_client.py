@@ -24,6 +24,7 @@ from requests.exceptions import HTTPError
 
 from dl_api_commons.base_models import (
     AuthData,
+    AuthTarget,
     TenantCommon,
     TenantDef,
 )
@@ -104,12 +105,12 @@ class USAuthContextRegular(USAuthContextBase):
 
         return {
             **(self.tenant.get_outbound_tenancy_headers() if include_tenancy else {}),
-            **self.auth_data.get_headers(),
+            **self.auth_data.get_headers(AuthTarget.UNITED_STORAGE),
             **{name: val for name, val in flags.items() if val is not None},
         }
 
     def get_outbound_cookies(self) -> dict[DLCookies, str]:
-        return self.auth_data.get_cookies()
+        return self.auth_data.get_cookies(AuthTarget.UNITED_STORAGE)
 
 
 @attr.s(frozen=True)
@@ -176,11 +177,11 @@ class USAuthContextEmbed(USAuthContextBase):
     def get_outbound_headers(self, include_tenancy: bool = True) -> dict[DLHeaders, str]:
         return {
             **(self.tenant.get_outbound_tenancy_headers() if include_tenancy else {}),
-            **self.auth_data.get_headers(),
+            **self.auth_data.get_headers(AuthTarget.UNITED_STORAGE),
         }
 
     def get_outbound_cookies(self) -> dict[DLCookies, str]:
-        return self.auth_data.get_cookies()
+        return self.auth_data.get_cookies(AuthTarget.UNITED_STORAGE)
 
 
 # noinspection PyCallByClass
