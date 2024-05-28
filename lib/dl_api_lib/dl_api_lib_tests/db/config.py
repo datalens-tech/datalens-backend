@@ -1,6 +1,12 @@
 from typing import ClassVar
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
+from dl_configs.connector_availability import (
+    ConnectorAvailabilityConfigSettings,
+    ConnectorSettings,
+    SectionSettings,
+    TranslatableSettings,
+)
 from dl_core_testing.configuration import DefaultCoreTestConfiguration
 from dl_testing.containers import get_test_container_hostport
 
@@ -40,5 +46,14 @@ DB_CORE_URL = DB_URLS[D.CLICKHOUSE_22_10]
 API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
     api_connector_ep_names=["clickhouse", "postgresql"],
     core_test_config=CORE_TEST_CONFIG,
+    connector_availability_settings=ConnectorAvailabilityConfigSettings(
+        uncategorized=[ConnectorSettings(conn_type="postgres")],
+        sections=[
+            SectionSettings(
+                title_translatable=TranslatableSettings(text="ClickHouse®"),
+                connectors=[ConnectorSettings(conn_type="clickhouse")],
+            )
+        ],
+    ),
     ext_query_executer_secret_key="_some_test_secret_key_",
 )
