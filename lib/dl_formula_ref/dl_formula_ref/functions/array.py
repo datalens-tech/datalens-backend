@@ -507,7 +507,7 @@ FUNCTION_LEN_ARRAY = FunctionDocRegistryItem(
     naming_provider=CategoryPostfixNamingProvider(
         internal_name="len_array",
     ),
-    description=_("It returns the number of the {arg:0} items."),
+    description=_("Returns the number of the {arg:0} items."),
     examples=[
         SimpleExample("LEN(ARRAY(1, 2, 3)) = 3"),
         SimpleExample("LEN(ARRAY('a', 'b', NULL, 'c')) = 4"),

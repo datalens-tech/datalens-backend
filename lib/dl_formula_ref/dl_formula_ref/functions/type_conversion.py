@@ -373,7 +373,7 @@ FUNCTION_TREE = FunctionDocRegistryItem(
     name="tree",
     category=CATEGORY_TYPE_CONVERSION,
     description=_(
-        "It converts the {arg:0} expression to `Tree of strings` format. You can use it in to create {link: tree_link: tree hierarchies}."
+        "Converts the {arg:0} expression to `Tree of strings` format. Can be used to create {link: tree_link: tree hierarchies}."
     ),
     examples=[
         SimpleExample("TREE(ARRAY([Country], [Region], [City]))"),
