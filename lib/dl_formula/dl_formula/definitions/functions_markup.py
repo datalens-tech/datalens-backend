@@ -285,7 +285,6 @@ null_image_node = NullImageMarkupNode()
 
 class FuncImageBase(FuncMarkup):
     name = "image"
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class FuncImage1(FuncImageBase):

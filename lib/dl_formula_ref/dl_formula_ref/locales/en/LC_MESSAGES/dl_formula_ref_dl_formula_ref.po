@@ -377,6 +377,19 @@ msgid ""
 "texts&viewMode=story"
 msgstr ""
 
+msgid "../../storage/quickstart.md"
+msgstr ""
+
+msgid "../../storage/pricing.md#prices-storage"
+msgstr ""
+
+msgid ""
+"Images can be added from the `*.yandex.ru`, `*.yandex.net`, `yastat.net`, "
+"`yastatic.net`, or `storage.yandexcloud.net` domains. The easiest way is to "
+"upload and publish the image in {link: storage_link: Yandex Object Storage} "
+"(see the pricing {link: storage_prices_link: here}).\n"
+msgstr ""
+
 msgid "https://github.com/google/re2/wiki/Syntax"
 msgstr "https://github.com/google/re2/wiki/Syntax"
 
@@ -1106,6 +1119,18 @@ msgid "Enables specifying the size (in pixels) for the provided text."
 msgstr ""
 
 msgid "Adds a line break."
+msgstr ""
+
+msgid ""
+"Enables inserting an image located at the {arg:0} address to the table. The "
+"{arg:1} and {arg:2} values are provided in pixels. If one of the dimensions "
+"is `NULL`, it will be calculated automatically in proportion to the other. "
+"If both dimensions are `NULL`, the image will be inserted with the original "
+"width and height. In case there are issues when uploading the image, the "
+"function will display the {arg:3} text.\n"
+"\n"
+"{text: image_source_restrictions}\n"
+"\n"
 msgstr ""
 
 msgid "Returns the absolute value of {arg:0}."
