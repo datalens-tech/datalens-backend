@@ -70,7 +70,7 @@ DEFINITIONS_AGG = [
         variants=[
             V(
                 D.and_above(D.POSTGRESQL_9_4) | D.COMPENG,
-                lambda expr: (within_group(sa.func.PERCENTILE_DISC(0.5), expr)),
+                lambda expr: (within_group(sa.func.PERCENTILE_DISC(0.5), expr.desc())),
             ),
         ]
     ),
@@ -82,7 +82,6 @@ DEFINITIONS_AGG = [
             V(
                 D.and_above(D.POSTGRESQL_9_4) | D.COMPENG,
                 lambda expr, quant: (
-                    # In MSSQLSRV window functions cannot be used as aggregations
                     within_group(
                         sa.func.percentile_disc(quantile_value(un_literal(quant))),
                         expr,
