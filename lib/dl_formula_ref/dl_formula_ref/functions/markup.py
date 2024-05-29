@@ -92,19 +92,8 @@ FUNCTION_IMAGE = FunctionDocRegistryItem(
         "If both dimensions are `NULL`, the image will be inserted with the original width and height. "
         "In case there are issues when uploading the image, the function will display the {arg:3} text.\n"
         "\n"
-        '{% if audience != "internal" %}\n'
+        "{text: image_source_restrictions}\n"
         "\n"
-        "Images can be added from the `*.yandex.ru`, `*.yandex.net`, `yastat.net`, `yastatic.net`, or "
-        "`storage.yandexcloud.net` domains. The easiest way is to upload and publish the image in "
-        "{link: storage_link: Yandex Object Storage} (see the pricing {link: storage_prices_link: here}).\n"
-        "\n"
-        "{% else %}\n"
-        "\n"
-        "Images can be added from the `*.yandex.ru`, `*.yandex-team.ru`, `*.yandex.net`, `yastat.net`, "
-        "`yastatic.net`, and `storage.yandexcloud.net` domains. The easiest way is to upload and post "
-        "an image in {link: storage_link: Yandex Object Storage} or {link: jing_link: Jing}.\n"
-        "\n"
-        "{% endif %}"
     ),
     examples=[
         SimpleExample(
