@@ -13,7 +13,10 @@ jobs:
   pytest:
     runs-on: [ self-hosted, linux ]
     container:
-      image: "python:3.11.0"
+      image: "ghcr.io/${{ github.repository_owner }}/docker-mirror/python:3.11.0"
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.ROBOT_GITHUB_PACKAGES_READ_TOKEN }}
 
     strategy:
       fail-fast: false
@@ -45,7 +48,10 @@ jobs:
   mypy:
     runs-on: [ self-hosted, linux ]
     container:
-      image: "python:3.11.0"
+      image: "ghcr.io/${{ github.repository_owner }}/docker-mirror/python:3.11.0"
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.ROBOT_GITHUB_PACKAGES_READ_TOKEN }}
 
     strategy:
       fail-fast: false

@@ -27,7 +27,8 @@ RUN bash /install/install_py_310.sh
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
 RUN python3 -m pip install -U pip
 # TODO FIX: try to install j2cli to dedicated venv & make symlink in /usr/local/bin
-RUN python3 -m pip install poetry==1.7.1 j2cli==0.3.10
+# TODO FIX: pyproject-hooks fix version: https://github.com/python-poetry/poetry/issues/9351
+RUN python3 -m pip install poetry==1.7.1 j2cli==0.3.10 pyproject-hooks==1.0.0
 
 RUN curl "https://storage.yandexcloud.net/cloud-certs/CA.pem" > /usr/local/share/ca-certificates/yandex-cloud-ca.crt
 RUN update-ca-certificates

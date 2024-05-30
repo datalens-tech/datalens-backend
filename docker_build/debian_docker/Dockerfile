@@ -1,4 +1,4 @@
-FROM debian:bookworm
+FROM ghcr.io/datalens-tech/docker-mirror/debian:bookworm
 
 # run all scripts in ./scripts in alphabetical order
 COPY ./scripts /tmp/scripts
