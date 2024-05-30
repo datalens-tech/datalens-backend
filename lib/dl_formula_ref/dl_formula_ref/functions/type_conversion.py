@@ -272,7 +272,10 @@ FUNCTION_GEOPOINT = FunctionDocRegistryItem(
 FUNCTION_GEOPOLYGON = FunctionDocRegistryItem(
     name="geopolygon",
     category=CATEGORY_TYPE_CONVERSION,
-    description=_("Converts the {arg:0} expression to {link: geopolygon_link: geopolygon} format."),
+    description=_(
+        "Converts the {arg:0} expression to {link: geopolygon_link: geopolygon} format. "
+        "At input, the function accepts strings in `[[[lat_1,lon_1], [lat_2,lon_2], ..., [lat_N-1,lon_N-1], [lat_N,lon_N]]]` format."
+    ),
     examples=[
         SimpleExample(
             'GEOPOLYGON("[[[55.79421,37.65046],[55.79594,37.6513],[55.79642,37.65133],'
@@ -366,6 +369,17 @@ FUNCTION_DB_CAST = FunctionDocRegistryItem(
     ],
 )
 
+FUNCTION_TREE = FunctionDocRegistryItem(
+    name="tree",
+    category=CATEGORY_TYPE_CONVERSION,
+    description=_(
+        "Converts the {arg:0} expression to `Tree of strings` format. Can be used to create {link: tree_link: tree hierarchies}."
+    ),
+    examples=[
+        SimpleExample("TREE(ARRAY([Country], [Region], [City]))"),
+    ],
+)
+
 FUNCTIONS_TYPE_CONVERSION = [
     FUNCTION_DATE,
     FUNCTION_DATETIME,
@@ -378,4 +392,5 @@ FUNCTIONS_TYPE_CONVERSION = [
     FUNCTION_GEOPOINT,
     FUNCTION_GEOPOLYGON,
     FUNCTION_DB_CAST,
+    FUNCTION_TREE,
 ]

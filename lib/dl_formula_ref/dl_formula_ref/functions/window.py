@@ -64,23 +64,24 @@ def _make_standard_window_examples(func: str) -> List[DataExample]:
                 order_by=["[City]", "[Category]"],
                 show_source_table=True,
                 formula_fields=[("City", "[City]"), ("Category", "[Category]"), ("Order Sum", "SUM([Orders])")],
+                formulas_as_names=False,
                 additional_transformations=[
                     [
                         ("City", "[City]"),
                         ("Category", "[Category]"),
                         ("Order Sum", "[Order Sum]"),
-                        (f"{func} 1", f"{func}([Order Sum] TOTAL{order_by_str})"),
-                        (f"{func} 2", f"{func}([Order Sum] WITHIN [City]{order_by_str})"),
-                        (f"{func} 3", f"{func}([Order Sum] WITHIN [Category]{order_by_str})"),
+                        (f"{func} TOTAL", f"{func}([Order Sum] TOTAL{order_by_str})"),
+                        (f"{func} WITHIN", f"{func}([Order Sum] WITHIN [City]{order_by_str})"),
+                        (f"{func} AMONG", f"{func}([Order Sum] WITHIN [Category]{order_by_str})"),
                     ],
                 ],
                 override_formula_fields=[
                     ("City", "[City]"),
                     ("Category", "[Category]"),
                     ("Order Sum", "SUM([Orders])"),
-                    (f"{func} 1", f"{func}(SUM([Orders]) TOTAL)"),
-                    (f"{func} 2", f"{func}(SUM([Orders]) WITHIN [City])"),
-                    (f"{func} 3", f"{func}(SUM([Orders]) AMONG [City])"),
+                    (f"{func} TOTAL", f"{func}(SUM([Orders]) TOTAL)"),
+                    (f"{func} WITHIN", f"{func}(SUM([Orders]) WITHIN [City])"),
+                    (f"{func} AMONG", f"{func}(SUM([Orders]) AMONG [City])"),
                 ],
             ),
         ),
@@ -99,19 +100,20 @@ def _make_rank_examples(func: str) -> List[DataExample]:
                 order_by=["[City]"],
                 show_source_table=True,
                 formula_fields=[("City", "[City]"), ("Order Sum", "SUM([Orders])")],
+                formulas_as_names=False,
                 additional_transformations=[
                     [
                         ("City", "[City]"),
                         ("Order Sum", "[Order Sum]"),
-                        (f"{func} 1", f'{func}([Order Sum], "desc")'),
-                        (f"{func} 2", f'{func}([Order Sum], "asc")'),
+                        (f"{func} desc", f'{func}([Order Sum], "desc")'),
+                        (f"{func} asc", f'{func}([Order Sum], "asc")'),
                     ],
                 ],
                 override_formula_fields=[
                     ("City", "[City]"),
                     ("Order Sum", "SUM([Orders])"),
-                    (f"{func} 1", f'{func}(SUM([Orders]), "desc")'),
-                    (f"{func} 2", f'{func}(SUM([Orders]), "asc")'),
+                    (f"{func} desc", f'{func}(SUM([Orders]), "desc")'),
+                    (f"{func} asc", f'{func}(SUM([Orders]), "asc")'),
                 ],
             ),
         ),
@@ -367,19 +369,20 @@ def _make_simple_order_by_examples(func: str) -> List[DataExample]:
                 order_by=["[City]"],
                 show_source_table=True,
                 formula_fields=[("City", "[City]"), ("Order Sum", "SUM([Orders])")],
+                formulas_as_names=False,
                 additional_transformations=[
                     [
                         ("City", "[City]"),
                         ("Order Sum", "[Order Sum]"),
-                        (f"{func} 1", f"{func}([Order Sum] ORDER BY [City] DESC)"),
-                        (f"{func} 2", f"{func}([Order Sum] ORDER BY [Order Sum])"),
+                        (f"{func} ORDER BY City", f"{func}([Order Sum] ORDER BY [City] DESC)"),
+                        (f"{func} ORDER BY Order Sum", f"{func}([Order Sum] ORDER BY [Order Sum])"),
                     ],
                 ],
                 override_formula_fields=[
                     ("City", "[City]"),
                     ("Order Sum", "SUM([Orders])"),
-                    (f"{func} 1", f"{func}(SUM([Orders]) ORDER BY [City] DESC)"),
-                    (f"{func} 2", f"{func}(SUM([Orders]) ORDER BY [Order Sum])"),
+                    (f"{func} ORDER BY City", f"{func}(SUM([Orders]) ORDER BY [City] DESC)"),
+                    (f"{func} ORDER BY Order Sum", f"{func}(SUM([Orders]) ORDER BY [Order Sum])"),
                 ],
             ),
         ),
@@ -410,6 +413,7 @@ def _make_rfunc_examples(func: str) -> list[DataExample]:
                 order_by=["[City]"],
                 show_source_table=True,
                 formula_fields=[("City", "[City]"), ("Order Sum", "SUM([Orders])")],
+                formulas_as_names=False,
                 additional_transformations=[
                     [
                         ("City", "[City]"),
@@ -570,6 +574,7 @@ def _make_mfunc_examples(func: str) -> List[DataExample]:
                 order_by=["[City]"],
                 show_source_table=True,
                 formula_fields=[("City", "[City]"), ("Order Sum", "SUM([Orders])")],
+                formulas_as_names=False,
                 additional_transformations=[
                     [
                         ("City", "[City]"),
@@ -596,6 +601,7 @@ def _make_mfunc_examples(func: str) -> List[DataExample]:
                 order_by=["[City]"],
                 show_source_table=True,
                 formula_fields=[("City", "[City]"), ("Order Sum", "SUM([Orders])")],
+                formulas_as_names=False,
                 additional_transformations=[
                     [
                         ("City", "[City]"),
@@ -620,6 +626,7 @@ def _make_mfunc_examples(func: str) -> List[DataExample]:
                 order_by=["[City]", "[Category]"],
                 show_source_table=True,
                 formula_fields=[("City", "[City]"), ("Category", "[Category]"), ("Order Sum", "SUM([Orders])")],
+                formulas_as_names=False,
                 additional_transformations=[
                     [
                         ("City", "[City]"),
@@ -774,6 +781,7 @@ def _make_lag_examples(func: str) -> List[DataExample]:
                 order_by=["[City]"],
                 show_source_table=True,
                 formula_fields=[("City", "[City]"), ("Order Sum", "SUM([Orders])")],
+                formulas_as_names=False,
                 additional_transformations=[
                     [
                         ("City", "[City]"),

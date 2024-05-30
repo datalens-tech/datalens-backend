@@ -351,8 +351,8 @@ FUNCTION_OP_LIKE = FunctionDocRegistryItem(
             '"raspberry" LIKE "%spb%" = TRUE',
             '"raspberry" LIKE "%SPB%" = FALSE',
             '"raspberry" NOT LIKE "%spb%" = FALSE',
-            "IIF([Country] LIKE 'RU', 'Y', 'N')",
-            "IIF([Phone] LIKE '+7%', 'RU', 'notRU')",
+            "IF([Country] LIKE 'RU', 'Y', 'N')",
+            "IF([Phone] LIKE '+7%', 'RU', 'notRU')",
             'UPPER("raspberry") LIKE "%SPB%" = TRUE',
             'UPPER("West") LIKE "WEST" = TRUE',
         )
