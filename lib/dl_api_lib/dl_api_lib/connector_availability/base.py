@@ -7,9 +7,14 @@ from typing import (
     Any,
     Iterator,
     Optional,
+    Type,
 )
 
 import attr
+from dynamic_enum import (
+    AutoEnumValue,
+    DynamicEnum,
+)
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_lib.connection_forms.registry import CONN_FORM_FACTORY_BY_TYPE
@@ -19,6 +24,8 @@ from dl_configs.connector_availability import (
     ConnectorAvailabilityConfigSettings,
     ConnectorBaseSettings,
     ConnectorContainerSettings,
+    ConnectorIconSrc,
+    ConnectorIconSrcType,
     ConnectorSettings,
     SectionSettings,
 )
@@ -125,6 +132,59 @@ def _availability_converter(value: Any) -> ConnectorAvailability:
     return ConnectorAvailability(value) if not isinstance(value, ConnectorAvailability) else value
 
 
+class ConnectorIconRole(DynamicEnum):
+    standard = AutoEnumValue()
+    nav = AutoEnumValue()
+
+
+@attr.s(kw_only=True)
+class ConnectorIconSrcConfig:
+    icon_type: ConnectorIconSrcType = attr.ib()
+
+    def as_dict(self) -> dict[str, Any]:
+        return dict(
+            type=self.icon_type,
+        )
+
+
+@attr.s(kw_only=True)
+class ConnectorIconSrcConfigData(ConnectorIconSrcConfig):
+    data: Optional[str] = attr.ib(default=None)
+
+    def as_dict(self) -> dict[str, Any]:
+        data = dict(standart="", nav="")
+        return dict(
+            **super().as_dict(),
+            data=data,
+        )
+
+
+@attr.s(kw_only=True)
+class ConnectorIconSrcConfigUrl(ConnectorIconSrcConfig):
+    url_prefix: str = attr.ib()
+
+    def as_dict(self) -> dict[str, Any]:
+        url = dict(
+            standart=f"{self.url_prefix.rstrip('/')}/{ConnectorIconRole.standard.value}/",
+            nav=f"{self.url_prefix.rstrip('/')}/{ConnectorIconRole.nav.value}/",
+        )
+        return dict(
+            **super().as_dict(),
+            url=url,
+        )
+
+
+def connector_icon_src_config_factory(icon_data: ConnectorIconSrc) -> ConnectorIconSrcConfig:
+    icon_data_dict = icon_data.as_dict()
+
+    cfg_class: dict[ConnectorIconSrcType, Type[ConnectorIconSrcConfig]] = {
+        ConnectorIconSrcType.data: ConnectorIconSrcConfigData,
+        ConnectorIconSrcType.url: ConnectorIconSrcConfigUrl,
+    }
+
+    return cfg_class[icon_data.icon_type](**icon_data_dict)
+
+
 @attr.s(kw_only=True)
 class Connector(ConnectorBase):
     """Represents an actual connection type"""
@@ -223,6 +283,42 @@ class ConnectorAvailabilityConfig(SettingsBase):
         env_var_converter=conn_type_set_env_var_converter,
         missing_factory=set,
     )
+    icon_src: ConnectorIconSrcConfig = attr.ib(default=None)
+
+    _icon_by_conn_type: dict[str, dict[str, Any]] = attr.ib(factory=dict)
+
+    def fill_icon_dict_by_conn_type(self) -> None:
+        if not self._icon_by_conn_type and self.icon_src is not None:
+            icon_src = self.icon_src.as_dict()
+            for conn in self._iter_connectors():
+                conn_type = conn.conn_type.value
+                self._icon_by_conn_type[conn_type] = dict()
+                self._icon_by_conn_type[conn_type]["type"] = icon_src["type"].value
+                self._icon_by_conn_type[conn_type]["conn_type"] = conn.conn_type.value
+                if icon_src["type"] == ConnectorIconSrcType.url:
+                    self._icon_by_conn_type[conn_type][ConnectorIconSrcType.url.value] = dict()
+                    self._icon_by_conn_type[conn_type][ConnectorIconSrcType.url.value][
+                        ConnectorIconRole.standard.value
+                    ] = icon_src["url_prefix"] + (conn.conn_type.value + ".svg")
+                    self._icon_by_conn_type[conn_type][ConnectorIconSrcType.url.value][
+                        ConnectorIconRole.nav.value
+                    ] = icon_src["url_prefix"] + (conn.conn_type.value + ".svg")
+                else:
+                    self._icon_by_conn_type[conn_type][ConnectorIconSrcType.data.value] = dict()
+                    self._icon_by_conn_type[conn_type][ConnectorIconSrcType.data.value][
+                        ConnectorIconRole.standard.value
+                    ] = ""
+                    self._icon_by_conn_type[conn_type][ConnectorIconSrcType.data.value][
+                        ConnectorIconRole.nav.value
+                    ] = ""
+
+    def list_icons(self) -> list[dict[str, Any]]:
+        self.fill_icon_dict_by_conn_type()
+        return list(self._icon_by_conn_type.values())
+
+    def get_icon(self, conn_type: str) -> Optional[dict[str, Any]]:
+        self.fill_icon_dict_by_conn_type()
+        return self._icon_by_conn_type[conn_type]
 
     def __attrs_post_init__(self) -> None:
         for connector in self._iter_connectors():
@@ -238,6 +334,7 @@ class ConnectorAvailabilityConfig(SettingsBase):
             uncategorized=[Connector.from_settings(item) for item in settings.uncategorized],
             sections=[Section.from_settings(item) for item in settings.sections],
             visible_connectors=visible_connectors,
+            icon_src=connector_icon_src_config_factory(settings.icon_src),
         )
 
     def _iter_connectors(self) -> Iterator[Connector]:
