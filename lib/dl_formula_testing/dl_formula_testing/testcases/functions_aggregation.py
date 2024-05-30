@@ -132,19 +132,20 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         if not self.supports_median:
             pytest.skip()
 
+        int_values = data_table.int_values  # type: ignore  # 2024-05-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         date_values = data_table.date_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "date_values"  [attr-defined]
         datetime_values = data_table.datetime_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "datetime_values"  [attr-defined]
 
         VALUE_TV = TypeVar("VALUE_TV")
 
-        def medians(values: Collection[Union[VALUE_TV]]) -> tuple[VALUE_TV, VALUE_TV]:
+        def median(values: Collection[Union[VALUE_TV]]) -> VALUE_TV:
             values = sorted(values)  # type: ignore  # 2024-01-30 # TODO: Value of type variable "SupportsRichComparisonT" of "sorted" cannot be "VALUE_TV"  [type-var]
-            middle = len(values) // 2 - 1
-            return (values[middle], values[middle + 1])
+            upper_middle = len(values) // 2 + 1
+            return values[upper_middle]
 
-        assert dbe.eval("MEDIAN([int_value])", from_=data_table) in (40, 50)
-        assert dbe.eval("MEDIAN([date_value])", from_=data_table) in medians(date_values)
-        assert dbe.eval("MEDIAN([datetime_value])", from_=data_table) in medians(datetime_values)
+        assert dbe.eval("MEDIAN([int_value])", from_=data_table) == median(int_values)
+        assert dbe.eval("MEDIAN([date_value])", from_=data_table) == median(date_values)
+        assert dbe.eval("MEDIAN([datetime_value])", from_=data_table) == median(datetime_values)
 
     def test_any(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         if not self.supports_any:

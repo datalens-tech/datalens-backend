@@ -42,7 +42,7 @@ DEFINITIONS_AGG = [
     # median
     base.AggMedian(
         variants=[
-            V(D.ORACLE, lambda expr: within_group(sa.func.PERCENTILE_DISC(0.5), expr)),
+            V(D.ORACLE, lambda expr: within_group(sa.func.PERCENTILE_DISC(0.5), expr.desc())),
         ]
     ),
     # min

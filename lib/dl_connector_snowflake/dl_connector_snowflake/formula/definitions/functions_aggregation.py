@@ -23,7 +23,7 @@ class AggMedianIntSF(base.AggMedian):
         V(
             D.SNOWFLAKE,
             lambda expr: sa.func.TO_NUMBER(
-                within_group(sa.func.PERCENTILE_DISC(0.5), expr),
+                within_group(sa.func.PERCENTILE_DISC(0.5), expr.desc()),
             ),
         ),
     ]
@@ -37,7 +37,7 @@ class AggMedianFloatSF(base.AggMedian):
     variants = [
         V(
             D.SNOWFLAKE,
-            lambda expr: within_group(sa.func.PERCENTILE_DISC(0.5), expr),
+            lambda expr: within_group(sa.func.PERCENTILE_DISC(0.5), expr.desc()),
         ),
     ]
 
@@ -52,7 +52,7 @@ class AggMedianDateSF(base.AggMedian):
                 sa.func.TO_TIMESTAMP(
                     within_group(
                         sa.func.PERCENTILE_DISC(0.5),
-                        sa.func.DATE_PART("EPOCH_SECOND", expr),
+                        sa.func.DATE_PART("EPOCH_SECOND", expr.desc()),
                     )
                 )
             ),
@@ -69,7 +69,7 @@ class AggMedianDateTimeSF(base.AggMedian):
             lambda expr: sa.func.TO_TIMESTAMP(
                 within_group(
                     sa.func.PERCENTILE_DISC(0.5),
-                    sa.func.DATE_PART("EPOCH_SECOND", expr),
+                    sa.func.DATE_PART("EPOCH_SECOND", expr.desc()),
                 )
             ),
         ),
