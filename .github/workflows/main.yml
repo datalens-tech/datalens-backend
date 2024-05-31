@@ -283,14 +283,15 @@ jobs:
           split-pytest-tasks base,fat,ext_public /src /tmp/dl_test_targets.json true true >> "$GITHUB_OUTPUT"
 
   run_tests_base:
-    runs-on: [ self-hosted, linux, light ]
     name: "🐍[pytest]${{ matrix.value }}"
-    timeout-minutes: 60
-    needs: pytest_split
-    if: ${{ needs.pytest_split.outputs.split_base != '[]' }}
+    runs-on: [ self-hosted, linux, light ]
     permissions:
       packages: write
       contents: read
+
+    needs: pytest_split
+    if: ${{ needs.pytest_split.outputs.split_base != '[]' }}
+
     container:
       image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
       options: -v /var/run/docker.sock:/var/run/docker.sock
@@ -299,10 +300,13 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
+
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
         value: ${{fromJson(needs.pytest_split.outputs.split_base)}}
+
     steps:
       - run: echo "Going to run tests for  ${{ matrix.value }}"
       - run: mkdir /report
@@ -332,14 +336,15 @@ jobs:
           retention-days: 1
 
   run_tests_fat:
-    runs-on: [ self-hosted, linux, fat ]
     name: "🐍[pytest][fat]${{ matrix.value }}"
-    timeout-minutes: 60
-    needs: pytest_split
-    if: ${{ needs.pytest_split.outputs.split_fat != '[]' }}
+    runs-on: [ self-hosted, linux, fat ]
     permissions:
       packages: write
       contents: read
+
+    needs: pytest_split
+    if: ${{ needs.pytest_split.outputs.split_fat != '[]' }}
+
     container:
       image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
       options: -v /var/run/docker.sock:/var/run/docker.sock
@@ -348,10 +353,13 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
+
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
         value: ${{fromJson(needs.pytest_split.outputs.split_fat)}}
+
     steps:
       - run: echo "Going to run tests for  ${{ matrix.value }}"
       - run: mkdir /report
@@ -381,15 +389,16 @@ jobs:
           retention-days: 1
 
   run_tests_ext_public:
+    name: "🐍[pytest][ext_public]${{ matrix.value }}"
     # using light runners for now, TBD: change when we have ext_public
     runs-on: [ self-hosted, linux, light ]
-    name: "🐍[pytest][ext_public]${{ matrix.value }}"
-    timeout-minutes: 60
+    permissions:
+      packages: read
+      contents: read
+
     needs: pytest_split
     if: ${{ needs.pytest_split.outputs.split_ext_public != '[]' }}
-    permissions:
-      packages: write
-      contents: read
+
     container:
       image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
       options: -v /var/run/docker.sock:/var/run/docker.sock
@@ -398,10 +407,13 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
+
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
         value: ${{fromJson(needs.pytest_split.outputs.split_ext_public)}}
+
     steps:
       - run: echo "Going to run tests for  ${{ matrix.value }}"
       - run: mkdir /report
@@ -490,29 +502,6 @@ jobs:
           [[ $result_ext_public != "success" && $result_ext_public != "skipped" ]] && echo "ext_public failed" && exit 1
           
           echo "All tests passed"
-
-  publish-result:
-    runs-on: [ self-hosted, linux, light ]
-    needs: [ "run_tests_base", "run_tests_fat", "run_tests_ext_public" ]
-    if: ${{ !cancelled() && github.event.inputs.run_mypy_only != 'true' && ( needs.run_tests_base.result != 'skipped' || needs.run_tests_fat.result != 'skipped' || needs.run_tests_ext_public.result != 'skipped' )}}
-    permissions:
-      contents: read
-      issues: read
-      checks: write
-      pull-requests: write
-    container: docker:latest
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          path: ./report/
-      - run: ls -lah ./report
-      - name: Publish Test Results
-        uses: datalens-tech/publish-unit-test-result-action@55478522536e0c60b0a4ff0c2bb8ab110d7a0f33
-        with:
-          files: |
-            ./report/**/*.xml
-          event_name: ${{ github.event.workflow_run.event }}
-          report_individual_runs: "true"
 
   codestyle_all:
     runs-on: [ self-hosted, linux, light ]
