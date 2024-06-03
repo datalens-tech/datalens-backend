@@ -29,6 +29,7 @@ from dl_core.aio.web_app_services.data_processing.data_processor import DataProc
 from dl_core.aio.web_app_services.data_processing.factory import make_compeng_service
 from dl_core.connections_security.base import InsecureConnectionSecurityManager
 from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
+from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from dl_core.services_registry.top_level import (
     DefaultServicesRegistry,
@@ -148,6 +149,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
         root_certificates_data: bytes,
         caches_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
         data_processor_service_factory: Optional[Callable[[bool], DataProcessorService]] = None,
+        entity_usage_checker: Optional[EntityUsageChecker] = None,
         **kwargs: Any,
     ) -> ServicesRegistry:
         sr_future_ref: FutureRef[ServicesRegistry] = FutureRef()
@@ -165,6 +167,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
                 conn_sec_mgr=InsecureConnectionSecurityManager(),
                 tpe=ContextVarExecutor(),
                 ca_data=root_certificates_data,
+                entity_usage_checker=entity_usage_checker,
             ),
             connectors_settings={self.conn_type: self.connection_settings} if self.connection_settings else {},
             inst_specific_sr=(
