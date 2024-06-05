@@ -1,5 +1,5 @@
 # FROM postgres:13-alpine3.20
-FROM ghcr.io/datalens-tech/docker-mirror/postgres:13-alpine3.20
+FROM postgres:13-alpine3.20
 
 COPY db-postgres/data /common-data
 
