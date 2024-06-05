@@ -1,5 +1,5 @@
 # FROM yandex/clickhouse-server:21.8.7.22
-FROM ghcr.io/datalens-tech/docker-mirror/yandex/clickhouse-server:21.8.7.22
+FROM yandex/clickhouse-server:21.8.7.22
 
 COPY db-clickhouse/users.xml /etc/clickhouse-server/users.xml
 

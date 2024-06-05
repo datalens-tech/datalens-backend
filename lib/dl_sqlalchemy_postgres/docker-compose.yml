@@ -3,7 +3,7 @@ version: '3.7'
 services:
   db-postgres:
     # image: "postgres:13-alpine3.20"
-    image: "ghcr.io/datalens-tech/docker-mirror/postgres:13-alpine3.20"
+    image: "postgres:13-alpine3.20"
     environment:
       - POSTGRES_DB=test_data
       - POSTGRES_USER=datalens
