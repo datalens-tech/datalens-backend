@@ -163,5 +163,5 @@ def over(
     order_by: Optional[ClauseElement] = None,
     rows: Optional[Tuple[Optional[int], Optional[int]]] = None,
     range_: Optional[Tuple[Optional[int], Optional[int]]] = None,
-):
+) -> _PatchedOver:
     return _PatchedOver(clause_el, partition_by=partition_by, order_by=order_by, rows=rows, range_=range_)
