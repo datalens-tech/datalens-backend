@@ -145,7 +145,7 @@ DEFINITIONS_MATH = [
     ),
     # exp
     base.FuncExp.for_dialect(D.CLICKHOUSE),
-    # div_safe
+    # fdiv_safe
     base.FuncFDivSafe2.for_dialect(D.CLICKHOUSE),
     base.FuncFDivSafe3.for_dialect(D.CLICKHOUSE),
     # floor

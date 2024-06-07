@@ -87,6 +87,10 @@ class DefaultMathFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("ROUND(2.3)") == 2
         assert float(dbe.eval("ROUND(2.1234, 2)")) == 2.12
 
+        assert str(dbe.eval("CEILING(-0.1)")) == "0.0"
+        assert str(dbe.eval("ROUND(-0.1)")) == "0.0"
+        assert str(dbe.eval("ROUND(-0.1, 0)")) == "0.0"
+
     def test_least(self, dbe: DbEvaluator) -> None:
         # single arg
         assert dbe.eval("LEAST(3.4)") == pytest.approx(3.4)
