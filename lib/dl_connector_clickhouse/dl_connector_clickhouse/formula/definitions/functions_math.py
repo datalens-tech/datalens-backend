@@ -89,7 +89,14 @@ DEFINITIONS_MATH = [
         ]
     ),
     # ceiling
-    base.FuncCeiling.for_dialect(D.CLICKHOUSE),
+    base.FuncCeiling(
+        variants=[
+            V(
+                D.CLICKHOUSE,
+                lambda num: sa.func.ceil(num) + 0,
+            )
+        ]
+    ),
     # compare
     base.FuncCompare(
         variants=[
@@ -138,7 +145,7 @@ DEFINITIONS_MATH = [
     ),
     # exp
     base.FuncExp.for_dialect(D.CLICKHOUSE),
-    # fdiv_safe
+    # div_safe
     base.FuncFDivSafe2.for_dialect(D.CLICKHOUSE),
     base.FuncFDivSafe3.for_dialect(D.CLICKHOUSE),
     # floor
@@ -182,8 +189,19 @@ DEFINITIONS_MATH = [
         ]
     ),
     # round
-    base.FuncRound1.for_dialect(D.CLICKHOUSE),
-    base.FuncRound2.for_dialect(D.CLICKHOUSE),
+    base.FuncRound1(
+        variants=[
+            V(D.CLICKHOUSE, lambda num: sa.func.round(num) + 0),
+        ],
+    ),
+    base.FuncRound2(
+        variants=[
+            V(
+                D.CLICKHOUSE,
+                lambda num, precision: sa.func.round(num, precision) + 0,
+            )
+        ]
+    ),
     # sign
     base.FuncSign(
         variants=[
