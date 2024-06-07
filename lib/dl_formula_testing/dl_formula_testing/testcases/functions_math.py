@@ -80,12 +80,15 @@ class DefaultMathFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
     def test_rounding_functions(self, dbe: DbEvaluator) -> None:
         assert dbe.eval("CEILING(2.7)") == 3
         assert dbe.eval("CEILING(-2.7)") == -2
+        assert str(dbe.eval("CEILING(-0.1)")) == "0.0"
 
         assert dbe.eval("FLOOR(2.7)") == 2
         assert dbe.eval("FLOOR(-2.7)") == -3
 
         assert dbe.eval("ROUND(2.3)") == 2
-        assert float(dbe.eval("ROUND(2.1234, 2)")) == 2.12
+        assert str(dbe.eval("ROUND(-0.1)")) == "0.0"
+        assert dbe.eval("ROUND(2.1234, 2)") == 2.12
+        assert str(dbe.eval("ROUND(-0.1, 0)")) == "0.0"
 
     def test_least(self, dbe: DbEvaluator) -> None:
         # single arg
