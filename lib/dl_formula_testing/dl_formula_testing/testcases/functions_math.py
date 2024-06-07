@@ -85,7 +85,7 @@ class DefaultMathFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("FLOOR(-2.7)") == -3
 
         assert dbe.eval("ROUND(2.3)") == 2
-        assert dbe.eval("ROUND(2.1234, 2)") == 2.12
+        assert float(dbe.eval("ROUND(2.1234, 2)")) == 2.12
 
     def test_least(self, dbe: DbEvaluator) -> None:
         # single arg
