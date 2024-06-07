@@ -13,8 +13,11 @@ from sqlalchemy.sql.functions import Function as SAFunction
 
 from dl_formula.definitions.base import (
     FuncTranslationImplementationBase,
-    TranslateCallback,
     TranslationVariant,
+)
+from dl_formula.definitions.common import (
+    TranslateCallback,
+    over,
 )
 import dl_formula.definitions.functions_window as base
 from dl_formula.translation.context import TranslationCtx
@@ -80,8 +83,8 @@ class RankPercentileTranslationImplementation(FuncTranslationImplementationBase)
         )
         order_by_part = base._order_by_from_args(*args)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "_order_by_from_args" has incompatible type "*Iterable[TranslationCtx | ClauseElement]"; expected "ClauseElement"  [arg-type]
 
-        wf_rank = translation_rank(*args).over(partition_by=partition_by, order_by=order_by_part)
-        wf_total_partition_rows = sa.func.COUNT(1).over(partition_by=partition_by)  # ORDER BY is unnecessary
+        wf_rank = over(translation_rank(*args), partition_by=partition_by, order_by=order_by_part)
+        wf_total_partition_rows = over(sa.func.COUNT(1), partition_by=partition_by)  # ORDER BY is unnecessary
 
         result = (wf_rank - 1) / (wf_total_partition_rows - 1)
         return cast(ClauseElement, result)
