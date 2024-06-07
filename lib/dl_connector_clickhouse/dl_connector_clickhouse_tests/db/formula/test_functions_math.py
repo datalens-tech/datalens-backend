@@ -7,4 +7,3 @@ class TestMathFunctionClickHouse_21_8(ClickHouse_21_8TestBase, MathFunctionClick
         assert str(dbe.eval("CEILING(-0.1)")) == "0.0"
         assert str(dbe.eval("ROUND(-0.1)")) == "0.0"
         assert str(dbe.eval("ROUND(-0.1, 0)")) == "0.0"
-        print('penis')
