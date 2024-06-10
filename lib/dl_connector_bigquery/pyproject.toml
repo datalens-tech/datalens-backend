@@ -15,7 +15,7 @@ google-api-core = ">=2.15.0"
 google-auth = ">=2.21.0"
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = ">=1.4.52, <2.0"
 sqlalchemy-bigquery = "==1.9.0"
 google-cloud-bigquery = "==3.14.1"
 google-cloud-bigquery-storage = { version = "==2.24.0", extras = ["pyarrow"] }

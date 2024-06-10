@@ -21,7 +21,7 @@ datalens-core = {path = "../dl_core"}
 datalens-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 datalens-utils = {path = "../dl_utils"}
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = ">=1.4.52, <2.0"
 
 [tool.poetry.plugins."dl_core.data_processor_plugins"]
 compeng_aiopg = "dl_compeng_pg.compeng_aiopg.plugin:AiopgCompengPlugin"
