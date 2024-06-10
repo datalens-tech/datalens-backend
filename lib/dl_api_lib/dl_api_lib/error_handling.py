@@ -61,6 +61,7 @@ EXCEPTION_CODES = {
     exc.FeatureNotAvailable: status.BAD_REQUEST,
     dl_query_processing.exc.FilterError: status.BAD_REQUEST,
     exc.UnsupportedForEntityType: status.BAD_REQUEST,
+    exc.BadConnectionType: status.BAD_REQUEST,
     common_exc.SourceAvatarNotFound: status.BAD_REQUEST,
     common_exc.ReferencedUSEntryNotFound: status.BAD_REQUEST,
     common_exc.ReferencedUSEntryAccessDenied: status.FORBIDDEN,

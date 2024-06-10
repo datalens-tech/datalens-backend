@@ -24,6 +24,11 @@ class UnsupportedForEntityType(DLBaseException):
     default_message = "This entity type does not support this operation"
 
 
+class BadConnectionType(DLBaseException):
+    err_code = DLBaseException.err_code + ["BAD_CONN_TYPE"]
+    default_message = "Invalid connection type value"
+
+
 class DatasetRevisionMismatch(DLBaseException):
     err_code = DLBaseException.err_code + ["DATASET_REVISION_MISMATCH"]
     default_message = "Dataset version mismatch. Refresh the page to continue."
