@@ -128,9 +128,13 @@ class ConnectionsList(BIResource):
         us_manager = self.get_us_manager()
 
         conn_availability = self.get_service_registry().get_connector_availability()
-        conn_type_is_available = conn_availability.check_connector_is_available(
-            ConnectionType[request.json.get("type")]  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Any | None" has no attribute "get"  [union-attr]
-        )
+        try:
+            conn_type_is_available = conn_availability.check_connector_is_available(
+                ConnectionType[request.json.get("type")]  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Any | None" has no attribute "get"  [union-attr]
+            )
+        except ValueError:
+            raise exc.BadConnectionType("Null connection type")
+
         if not conn_type_is_available:
             # TODO: remove `abort` after migration to schematic_request decorator with common error handling
             abort(400, "This connection type is not editable")
