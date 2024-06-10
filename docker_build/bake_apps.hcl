@@ -19,14 +19,3 @@ target "dl_data_api" {
   context    = "${DL_B_PROJECT_ROOT}/app/dl_data_api"
   dockerfile = "Dockerfile"
 }
-
-target "base_jammy_db" {
-  context  = "target_base_jammy_db"
-  contexts = {
-    bake_ctx_base_img = "target:base_jammy"
-  }
-}
-
-target "base_jammy" {
-  context = "target_base_jammy"
-}
