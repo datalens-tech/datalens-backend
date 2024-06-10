@@ -39,6 +39,11 @@ from dl_formula.definitions.args import (
     ArgFlagDispenser,
     ArgTypeMatcher,
 )
+from dl_formula.definitions.common import (
+    TransCallResult,
+    TranslateCallback,
+    over,
+)
 from dl_formula.definitions.flags import ContextFlags
 from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import (
@@ -88,10 +93,6 @@ class ValueVariant(Generic[_VARIANT_OF_TV]):
     def match(self, dialect: DialectCombo) -> bool:
         """Return True if this variant matches the given dialect"""
         return self.dialects == D.ANY or self.dialects & dialect == dialect
-
-
-TransCallResult = Union[ClauseElement, nodes.FormulaItem]
-TranslateCallback = Callable[[nodes.FormulaItem], TransCallResult]
 
 
 _TRANS_IMPL_TV = TypeVar("_TRANS_IMPL_TV", bound="FuncTranslationImplementationBase")
@@ -273,7 +274,7 @@ class WindowFunctionImplementation(FuncTranslationImplementation):
         # Note that an `Over` object cannot be simply reconstructed from its parts
         # as attributes of the existing `Over` instance.
         # RANGE_UNBOUNDED has to be replaced with None and RANGE_CURRENT with 0.
-        return func_part.over(partition_by=partition_by, order_by=order_by_part, range_=range_part, rows=rows_part)
+        return over(func_part, partition_by=partition_by, order_by=order_by_part, range_=range_part, rows=rows_part)
 
 
 _TRANS_VAR_TV = TypeVar("_TRANS_VAR_TV", bound="TranslationVariant")
