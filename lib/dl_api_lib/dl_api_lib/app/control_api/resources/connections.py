@@ -131,9 +131,7 @@ class ConnectionsList(BIResource):
         conn_type = request.json and request.json.get("type")
         if not (conn_type and conn_type in ConnectionType):
             raise exc.BadConnectionType(f"Invalid connection type value: {conn_type}")
-        conn_type_is_available = conn_availability.check_connector_is_available(
-            ConnectionType[conn_type]
-        )
+        conn_type_is_available = conn_availability.check_connector_is_available(ConnectionType[conn_type])
 
         if not conn_type_is_available:
             # TODO: remove `abort` after migration to schematic_request decorator with common error handling
