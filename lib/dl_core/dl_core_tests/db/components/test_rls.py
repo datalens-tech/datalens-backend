@@ -6,7 +6,10 @@ from dl_constants.enums import (
     RLSSubjectType,
 )
 from dl_core.fields import BIField
-from dl_core.rls import RLSEntry, RLSSubject
+from dl_core.rls import (
+    RLSEntry,
+    RLSSubject,
+)
 from dl_core_tests.db.base import DefaultCoreTestClass
 
 
@@ -57,7 +60,7 @@ class TestRLS(DefaultCoreTestClass):
         self._add_rls_restrictions(
             dataset.rls,
             field_guid=dataset.result_schema.fields[0].guid,
-            restrictions=[dict(allowed_value="QQQ", subject_id="qwerty")]
+            restrictions=[dict(allowed_value="QQQ", subject_id="qwerty")],
         )
         sync_us_manager.save(dataset)
         dataset = sync_us_manager.get_by_id(entry_id=dataset.uuid)
