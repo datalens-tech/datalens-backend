@@ -8,6 +8,10 @@ variable DL_B_PROJECT_ROOT {
   default = ".."
 }
 
+variable DL_B_SOURCES_ROOT {
+  default = ".."
+}
+
 variable DL_B_FILE_OPS_IMG {
   default = "debian:bookworm-slim"
 }
