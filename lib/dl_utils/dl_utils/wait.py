@@ -14,10 +14,6 @@ from typing import (
 LOGGER = logging.getLogger(__name__)
 
 
-class TimeLimitExceeded(Exception):
-    """Accompanying exception for `wait_for` and `await_for`"""
-
-
 def wait_for(
     name: str,
     condition: Callable[[], Union[bool, Tuple[bool, str]]],
@@ -50,7 +46,7 @@ def wait_for(
         if now > max_time:
             message = f"Timed out waiting for {name!r}, last status {status!r}, timeout {timeout:.3f}s."
             if require:
-                raise TimeLimitExceeded(message)
+                raise TimeoutError(message)
             LOGGER.error(message)
             return False, status
 
@@ -94,7 +90,7 @@ async def await_for(
         if now > max_time:
             message = f"Timed out waiting for {name!r}, status {status!r}, timeout {timeout:.3f}s."
             if require:
-                raise TimeLimitExceeded(message)
+                raise TimeoutError(message)
             LOGGER.error(message)
             return False, status
 
