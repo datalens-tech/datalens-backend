@@ -86,6 +86,7 @@ class DefaultMathFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
 
         assert dbe.eval("ROUND(2.3)") == 2
         assert float(dbe.eval("ROUND(2.1234, 2)")) == 2.12
+
         assert not any(
             [
                 isinstance(item, float) and str(item) != "0.0"

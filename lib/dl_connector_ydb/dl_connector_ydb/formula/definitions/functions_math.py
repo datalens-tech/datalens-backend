@@ -48,7 +48,7 @@ DEFINITIONS_MATH = [
     # ceiling
     base.FuncCeiling(
         variants=[
-            V(D.YQL, sa.func.Math.Ceil),
+            V(D.YQL, lambda num: sa.func.Math.Ceil(num) + 0),
         ]
     ),
     # cos
