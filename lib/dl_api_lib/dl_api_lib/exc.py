@@ -26,7 +26,7 @@ class UnsupportedForEntityType(DLBaseException):
 
 class BadConnectionType(DLBaseException):
     err_code = DLBaseException.err_code + ["BAD_CONN_TYPE"]
-    default_message = "Bad connection type's value"
+    default_message = "Invalid connection type's value"
 
 
 class DatasetRevisionMismatch(DLBaseException):

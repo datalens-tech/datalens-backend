@@ -129,7 +129,7 @@ class ConnectionsList(BIResource):
 
         conn_availability = self.get_service_registry().get_connector_availability()
         if request.json.get("type") not in ConnectionType:
-            raise exc.BadConnectionType("Not valid connection type")
+            raise exc.BadConnectionType()
         conn_type_is_available = conn_availability.check_connector_is_available(
             ConnectionType[request.json.get("type")]  # type: ignore  # 2024-01-24 # TODO: Item "None" of "Any | None" has no attribute "get"  [union-attr]
         )
