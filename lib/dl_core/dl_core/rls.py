@@ -128,60 +128,6 @@ class RLS:
 
         return False, allow_userid, allowed_values  # type: ignore  # TODO: fix
 
-    def _should_add_entry(
-        self,
-        field_guid: str,
-        subject_type: RLSSubjectType,
-        subject_id: str,
-        allowed_value: Optional[str],
-        pattern_type: RLSPatternType,
-    ) -> bool:
-        existing_allow_all_values, allow_userid, existing_allowed_values = self.get_field_restriction_for_subject(
-            field_guid=field_guid, subject_type=subject_type, subject_id=subject_id
-        )
-        if existing_allow_all_values:  # already wildcarded, skip
-            return False
-        if pattern_type == RLSPatternType.userid:
-            return not allow_userid  # add if it's not already set.
-        # Add if not existing:
-        return allowed_value not in existing_allowed_values  # type: ignore  # TODO: fix
-
-    def add_field_restriction_for_subject(
-        self,
-        field_guid: str,
-        subject_type: RLSSubjectType,
-        subject_id: str,
-        subject_name: str,
-        allowed_value: Optional[str],
-        pattern_type: RLSPatternType = RLSPatternType.value,
-        force: bool = False,
-    ) -> None:
-        """
-        Register a new RLS restriction.
-
-        Currently, only used in tests.
-        """
-        if force or self._should_add_entry(
-            field_guid=field_guid,
-            subject_type=subject_type,
-            subject_id=subject_id,
-            allowed_value=allowed_value,
-            pattern_type=pattern_type,
-        ):
-            # TODO?: if allow_all_values, drop all prior items for subject+field?
-            self.items.append(
-                RLSEntry(
-                    field_guid=field_guid,
-                    allowed_value=allowed_value,
-                    pattern_type=pattern_type,
-                    subject=RLSSubject(
-                        subject_type=subject_type,
-                        subject_name=subject_name,
-                        subject_id=subject_id,
-                    ),
-                )
-            )
-
     def get_subject_restrictions(
         self,
         subject_type: RLSSubjectType,
