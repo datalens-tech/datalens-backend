@@ -6,6 +6,10 @@ from dl_constants.enums import (
     RLSSubjectType,
 )
 from dl_core.fields import BIField
+from dl_core.rls import (
+    RLSEntry,
+    RLSSubject,
+)
 from dl_core_tests.db.base import DefaultCoreTestClass
 
 
@@ -22,20 +26,43 @@ class TestRLS(DefaultCoreTestClass):
             dataset.result_schema.fields.append(BIField.make(**dataset.create_result_schema_field(column=col)))
         return dataset
 
+    @staticmethod
+    def _add_rls_restrictions(rls, field_guid, restrictions):
+        for entry in restrictions:
+            subject_type = entry.get("subject_type")
+            subject_id = entry.get("subject_id")
+
+            if subject_type == RLSSubjectType.all:
+                assert subject_id is None
+                subject_id = "*"
+            else:
+                assert subject_id is not None
+                assert subject_type is None
+                subject_type = RLSSubjectType.user
+
+            rls.items.append(
+                RLSEntry(
+                    field_guid=field_guid,
+                    allowed_value=entry.get("allowed_value"),
+                    pattern_type=entry.get("pattern_type", RLSPatternType.value),
+                    subject=RLSSubject(
+                        subject_type=subject_type,
+                        subject_name=subject_id,
+                        subject_id=subject_id,
+                    ),
+                )
+            )
+
     def test_rls_simple(self, sync_us_manager, dataset_for_rls):
         dataset = dataset_for_rls
 
         assert not dataset.rls.has_restrictions
-        dataset.rls.add_field_restriction_for_subject(
+        self._add_rls_restrictions(
+            dataset.rls,
             field_guid=dataset.result_schema.fields[0].guid,
-            subject_id="qwerty",
-            subject_type=RLSSubjectType.user,
-            subject_name="Qwerty Uiop",
-            allowed_value="QQQ",
+            restrictions=[dict(allowed_value="QQQ", subject_id="qwerty")],
         )
-
         sync_us_manager.save(dataset)
-
         dataset = sync_us_manager.get_by_id(entry_id=dataset.uuid)
 
         assert dataset.rls.has_restrictions
@@ -47,30 +74,6 @@ class TestRLS(DefaultCoreTestClass):
         assert not allow_all_values
         assert not allow_userid
         assert allowed_values == ["QQQ"]
-
-    @staticmethod
-    def _add_rls_restrictions(rls, field_guid, restrictions):
-        for entry in restrictions:
-            subject_type = entry.get("subject_type")
-            subject_id = entry.get("subject_id")
-
-            if subject_type == RLSSubjectType.all:
-                assert subject_id is None
-                assert subject_type == RLSSubjectType.all
-                subject_id = "*"
-            else:
-                assert subject_id is not None
-                assert subject_type is None
-                subject_type = RLSSubjectType.user
-
-            rls.add_field_restriction_for_subject(
-                field_guid=field_guid,
-                subject_type=subject_type,
-                subject_id=subject_id,
-                subject_name=subject_id,
-                pattern_type=entry.get("pattern_type", RLSPatternType.value),
-                allowed_value=entry.get("allowed_value"),
-            )
 
     @pytest.mark.parametrize(
         "entrysets, expected_restrictions",
