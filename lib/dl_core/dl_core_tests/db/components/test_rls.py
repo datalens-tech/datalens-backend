@@ -6,7 +6,7 @@ from dl_constants.enums import (
     RLSSubjectType,
 )
 from dl_core.fields import BIField
-from dl_core.rls import (
+from dl_rls.models import (
     RLSEntry,
     RLSSubject,
 )

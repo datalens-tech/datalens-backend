@@ -42,7 +42,7 @@ from dl_core.fields import (
     DirectCalculationSpec,
     ResultSchema,
 )
-from dl_core.rls import RLS
+from dl_rls.rls import RLS
 from dl_core.us_entry import (
     BaseAttrsDataModel,
     USEntry,

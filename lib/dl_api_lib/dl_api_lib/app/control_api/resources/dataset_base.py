@@ -29,7 +29,7 @@ from dl_api_lib.query.registry import (
     is_compeng_executable,
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
-from dl_api_lib.utils.rls import FieldRLSSerializer
+from dl_rls.serializer import FieldRLSSerializer
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,

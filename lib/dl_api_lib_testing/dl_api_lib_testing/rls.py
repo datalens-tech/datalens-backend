@@ -1,15 +1,15 @@
 import json
 import pkgutil
 
-from dl_api_lib.utils.rls import FieldRLSSerializer
+from dl_rls.serializer import FieldRLSSerializer
 import dl_api_lib_testing.test_data
 from dl_constants.enums import RLSSubjectType
-from dl_core.rls import (
-    BaseSubjectResolver,
+from dl_rls.models import (
     RLSEntry,
     RLSPatternType,
     RLSSubject,
 )
+from dl_rls.subject_resolver import BaseSubjectResolver
 
 
 def load_rls_config(name: str) -> str:

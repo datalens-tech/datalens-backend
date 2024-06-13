@@ -20,7 +20,7 @@ from dl_api_lib.service_registry.typed_query_processor_factory import (
     DefaultQueryProcessorFactory,
     TypedQueryProcessorFactory,
 )
-from dl_api_lib.utils.rls import BaseSubjectResolver
+from dl_rls.subject_resolver import BaseSubjectResolver
 from dl_constants.enums import QueryProcessingMode
 from dl_core.services_registry.top_level import (
     DefaultServicesRegistry,

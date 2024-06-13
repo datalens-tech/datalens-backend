@@ -7,14 +7,6 @@ class FeatureNotAvailable(DLBaseException):
     err_code = DLBaseException.err_code + ["FEATURE_NOT_AVAILABLE"]
 
 
-class RLSError(DLBaseException):
-    err_code = DLBaseException.err_code + ["RLS"]
-
-
-class RLSConfigParsingError(RLSError):
-    err_code = RLSError.err_code + ["PARSE"]
-
-
 class DatasetActionNotAllowedError(DLBaseException):
     err_code = DLBaseException.err_code + ["ACTION_NOT_ALLOWED"]
 

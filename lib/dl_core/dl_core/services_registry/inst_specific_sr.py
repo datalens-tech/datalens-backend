@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 import attr
 
-from dl_core.rls import BaseSubjectResolver
+from dl_rls.subject_resolver import BaseSubjectResolver
 from dl_core.utils import FutureRef
 
 

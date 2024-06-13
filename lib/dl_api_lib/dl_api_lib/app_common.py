@@ -28,9 +28,8 @@ from dl_constants.enums import (
     ConnectionType,
     RLSSubjectType,
 )
-from dl_core.rls import (
+from dl_rls.models import (
     RLS_FAILED_USER_NAME_PREFIX,
-    BaseSubjectResolver,
     RLSSubject,
 )
 from dl_core.services_registry.entity_checker import EntityUsageChecker
@@ -48,6 +47,7 @@ from dl_i18n.localizer_base import (
 )
 from dl_pivot.base.transformer_factory import PivotTransformerFactory
 from dl_pivot.plugin_registration import get_pivot_transformer_factory_cls
+from dl_rls.subject_resolver import BaseSubjectResolver
 from dl_task_processor.arq_wrapper import create_arq_redis_settings
 
 

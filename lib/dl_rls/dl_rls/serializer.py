@@ -17,25 +17,24 @@ from typing import (
 import attr
 import more_itertools
 
-from dl_api_lib import exc
-from dl_api_lib.utils.base import (
+from dl_rls import exc
+from dl_rls.utils import (
     chunks,
     quote_by_quote,
     split_by_quoted_quote,
 )
 from dl_constants.enums import RLSSubjectType
-from dl_core.rls import (
+from dl_rls.models import (
     RLS_ALL_SUBJECT,
     RLS_ALL_SUBJECT_NAME,
     RLS_FAILED_USER_NAME_PREFIX,
     RLS_USERID_SUBJECT,
     RLS_USERID_SUBJECT_NAME,
-    BaseSubjectResolver,
     RLSEntry,
     RLSPatternType,
     RLSSubject,
 )
-
+from dl_rls.subject_resolver import BaseSubjectResolver
 
 LOGGER = logging.getLogger(__name__)
 
@@ -129,13 +128,13 @@ class FieldRLSSerializer:
         # Some extra validation.
         if cls.allow_all_subject_name in subject_names:
             if pattern_type == RLSPatternType.all:
-                raise ValueError(("Wildcard `*: *` is not allowed." " It would effectively disable RLS for the field."))
+                raise ValueError("Wildcard `*: *` is not allowed. It would effectively disable RLS for the field.")
             if len(subject_names) != 1:
                 # Note that this does not check for
                 #     value1: *
                 #     value1: user, …
                 # lines.
-                raise ValueError(("Wildcard user must be the only user in line" ", i.e. `…: *`."))
+                raise ValueError("Wildcard user must be the only user in line, i.e. `…: *`.")
 
         return pattern_type, value, subject_names
 

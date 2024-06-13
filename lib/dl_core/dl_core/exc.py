@@ -663,7 +663,3 @@ class USPermissionRequired(USReqException):
 
 class DataSourceMigrationImpossible(DLBaseException):
     err_code = DLBaseException.err_code + ["DSRC_MIGRATION_IMPOSSIBLE"]
-
-
-class RLSSubjectNotFound(DLBaseException):
-    err_code = DLBaseException.err_code + ["RLS_SUBJECT_NOT_FOUND"]
