@@ -87,16 +87,10 @@ class DefaultMathFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("ROUND(2.3)") == 2
         assert float(dbe.eval("ROUND(2.1234, 2)")) == 2.12
 
-        assert not any(
-            [
-                isinstance(item, float) and str(item) != "0.0"
-                for item in [
-                    dbe.eval("CEILING(-0.1)"),
-                    dbe.eval("ROUND(-0.1)"),
-                    dbe.eval("ROUND(-0.1, 0)"),
-                ]
-            ]
-        )
+        # Rounding result mustn't be eq to -0
+        assert str(dbe.eval("CEILING(-0.1)")) in ("0", "0.0")
+        assert str(dbe.eval("ROUND(-0.1)")) in ("0", "0.0")
+        assert str(dbe.eval("ROUND(-0.1, 0)")) in ("0", "0.0")
 
     def test_least(self, dbe: DbEvaluator) -> None:
         # single arg
