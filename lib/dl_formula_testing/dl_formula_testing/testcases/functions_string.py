@@ -127,7 +127,6 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert to_str(dbe.eval('REGEXP_EXTRACT("Карл у Клары украл кораллы", ".лары")')) == "Клары"
         assert to_str(dbe.eval('REGEXP_EXTRACT([str_null_value], "or..")', from_=data_table)) in (None, "")
 
-    @pytest.parametrized()
     def test_regexp_extract_all(self, dbe: DbEvaluator):
         if not self.supports_regex_extract_all:
             pytest.skip()
