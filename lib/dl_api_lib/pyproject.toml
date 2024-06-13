@@ -16,7 +16,6 @@ flask-marshmallow = ">=1.1.0"
 flask-restx = ">=1.1.0"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
-more-itertools = ">=9.1.0"
 python = ">=3.10, <3.13"
 werkzeug = ">=2.2.3"
 statcommons = {path = "../statcommons"}
@@ -37,6 +36,7 @@ datalens-dashsql = {path = "../../lib/dl_dashsql"}
 datalens-pivot = {path = "../dl_pivot"}
 datalens-pivot-pandas = {path = "../dl_pivot_pandas"}
 datalens-cache-engine = {path = "../dl_cache_engine"}
+datalens-rls = {path = "../lib/dl_rls"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

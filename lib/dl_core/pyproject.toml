@@ -52,6 +52,7 @@ datalens-model-tools = {path = "../dl_model_tools"}
 datalens-task-processor = {path = "../dl_task_processor"}
 datalens-dashsql = {path = "../../lib/dl_dashsql"}
 datalens-cache-engine = {path = "../dl_cache_engine"}
+datalens-rls = {path = "../lib/dl_rls"}
 
 [tool.poetry.group.tests.dependencies]
 flaky = "==3.8.1"
