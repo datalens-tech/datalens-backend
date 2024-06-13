@@ -35,8 +35,8 @@ from dl_core.us_dataset import (
 from dl_core.us_manager.local_cache import USEntryBuffer
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
-from dl_rls.serializer import FieldRLSSerializer
 import dl_rls.exc as rls_exc
+from dl_rls.serializer import FieldRLSSerializer
 from dl_utils.aio import await_sync
 
 

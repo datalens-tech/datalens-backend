@@ -85,8 +85,8 @@ class RLS:
         assert all(
             rls_entry.pattern_type == RLSPatternType.value for rls_entry in rls_entries
         ), "only simple values should remain at this point"
-        assert all(rls_entry.allowed_value is not None for rls_entry in rls_entries)
         allowed_values = [rls_entry.allowed_value for rls_entry in rls_entries]
+        assert all(value is not None for value in allowed_values)
 
         # `userid: userid` case
         allow_userid = False
