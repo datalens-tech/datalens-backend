@@ -88,6 +88,8 @@ class TestInfo(DefaultApiTestBase):
         form_resp = client.get("/api/v1/info/connectors/icons/list")
         assert form_resp.status_code == 200
         resp = form_resp.json
-        assert "icons" in resp
-        assert "type" in resp["icons"][0]
-        assert resp["icons"][0]["type"] == "data"
+        assert resp["icons"]
+        assert len(resp["icons"]) > 0
+        for icons in resp["icons"]:
+            assert "type" in icons
+            assert icons["type"] == "data"

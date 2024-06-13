@@ -290,11 +290,12 @@ class ConnectorAvailabilityConfig(SettingsBase):
     _icon_by_conn_type: dict[str, dict[str, Any]] = attr.ib(factory=dict)
 
     def fill_icon_dict_by_conn_type(self) -> None:
-        if not self._icon_by_conn_type and self.icon_src is not None:
-            for conn in self._iter_connectors():
-                conn_type = conn.conn_type.value
-                icon_src = self.icon_src.as_dict(conn_type=conn_type)
-                self._icon_by_conn_type[conn_type] = deepcopy(icon_src)
+        if self._icon_by_conn_type or self.icon_src is None:
+            return
+        for conn in self._iter_connectors():
+            conn_type = conn.conn_type.value
+            icon_src = self.icon_src.as_dict(conn_type=conn_type)
+            self._icon_by_conn_type[conn_type] = deepcopy(icon_src)
 
     def list_icons(self) -> list[dict[str, Any]]:
         self.fill_icon_dict_by_conn_type()
