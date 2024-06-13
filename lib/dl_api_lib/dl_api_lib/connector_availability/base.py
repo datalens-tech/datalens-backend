@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import abc
+from copy import deepcopy
 import itertools
 import logging
 from typing import (
@@ -141,9 +142,10 @@ class ConnectorIconRole(DynamicEnum):
 class ConnectorIconSrcConfig:
     icon_type: ConnectorIconSrcType = attr.ib()
 
-    def as_dict(self) -> dict[str, Any]:
+    def as_dict(self, conn_type: str) -> dict[str, Any]:
         return dict(
-            type=self.icon_type,
+            type=self.icon_type.value,
+            conn_type=conn_type,
         )
 
 
@@ -151,10 +153,10 @@ class ConnectorIconSrcConfig:
 class ConnectorIconSrcConfigData(ConnectorIconSrcConfig):
     data: Optional[str] = attr.ib(default=None)
 
-    def as_dict(self) -> dict[str, Any]:
+    def as_dict(self, conn_type: str) -> dict[str, Any]:
         data = dict(standart="", nav="")
         return dict(
-            **super().as_dict(),
+            **super().as_dict(conn_type=conn_type),
             data=data,
         )
 
@@ -163,13 +165,13 @@ class ConnectorIconSrcConfigData(ConnectorIconSrcConfig):
 class ConnectorIconSrcConfigUrl(ConnectorIconSrcConfig):
     url_prefix: str = attr.ib()
 
-    def as_dict(self) -> dict[str, Any]:
+    def as_dict(self, conn_type: str) -> dict[str, Any]:
         url = dict(
-            standart=f"{self.url_prefix.rstrip('/')}/{ConnectorIconRole.standard.value}/",
-            nav=f"{self.url_prefix.rstrip('/')}/{ConnectorIconRole.nav.value}/",
+            standart=f"{self.url_prefix.rstrip('/')}/{ConnectorIconRole.standard.value}/{conn_type}.svg",
+            nav=f"{self.url_prefix.rstrip('/')}/{ConnectorIconRole.nav.value}/{conn_type}.svg",
         )
         return dict(
-            **super().as_dict(),
+            **super().as_dict(conn_type=conn_type),
             url=url,
         )
 
@@ -289,28 +291,10 @@ class ConnectorAvailabilityConfig(SettingsBase):
 
     def fill_icon_dict_by_conn_type(self) -> None:
         if not self._icon_by_conn_type and self.icon_src is not None:
-            icon_src = self.icon_src.as_dict()
             for conn in self._iter_connectors():
                 conn_type = conn.conn_type.value
-                self._icon_by_conn_type[conn_type] = dict()
-                self._icon_by_conn_type[conn_type]["type"] = icon_src["type"].value
-                self._icon_by_conn_type[conn_type]["conn_type"] = conn.conn_type.value
-                if icon_src["type"] == ConnectorIconSrcType.url:
-                    self._icon_by_conn_type[conn_type][ConnectorIconSrcType.url.value] = dict()
-                    self._icon_by_conn_type[conn_type][ConnectorIconSrcType.url.value][
-                        ConnectorIconRole.standard.value
-                    ] = icon_src["url_prefix"] + (conn.conn_type.value + ".svg")
-                    self._icon_by_conn_type[conn_type][ConnectorIconSrcType.url.value][
-                        ConnectorIconRole.nav.value
-                    ] = icon_src["url_prefix"] + (conn.conn_type.value + ".svg")
-                else:
-                    self._icon_by_conn_type[conn_type][ConnectorIconSrcType.data.value] = dict()
-                    self._icon_by_conn_type[conn_type][ConnectorIconSrcType.data.value][
-                        ConnectorIconRole.standard.value
-                    ] = ""
-                    self._icon_by_conn_type[conn_type][ConnectorIconSrcType.data.value][
-                        ConnectorIconRole.nav.value
-                    ] = ""
+                icon_src = self.icon_src.as_dict(conn_type=conn_type)
+                self._icon_by_conn_type[conn_type] = deepcopy(icon_src)
 
     def list_icons(self) -> list[dict[str, Any]]:
         self.fill_icon_dict_by_conn_type()
