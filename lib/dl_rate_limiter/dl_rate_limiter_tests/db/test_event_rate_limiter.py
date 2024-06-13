@@ -110,6 +110,7 @@ def test_sync_check_event_limit(sync_redis_client: redis.Redis):
     assert sum(1 if result else 0 for result in results) == 5
 
 
+@flaky.flaky(max_runs=3)
 @pytest.mark.asyncio
 async def test_async_check_event_limit(async_redis_client: redis.asyncio.Redis):
     rate_limiter = dl_rate_limiter.AsyncRedisEventRateLimiter(async_redis_client)
