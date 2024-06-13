@@ -3,4 +3,4 @@ from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBas
 
 
 class TestStringFunctionClickHouse_21_8(ClickHouse_21_8TestBase, StringFunctionClickHouseTestSuite):
-    pass
+    supports_regex_extract_all = True

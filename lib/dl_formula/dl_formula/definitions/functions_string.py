@@ -592,6 +592,16 @@ class FuncRegexpExtract(StringFunction):
     return_type = Fixed(DataType.STRING)
 
 
+class FuncRegexpExtractAll(StringFunction):
+    name = "regexp_extract_all"
+    arg_cnt = 2
+    arg_names = ["string", "pattern"]
+    argument_types = [
+        ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),
+    ]
+    return_type = Fixed(DataType.ARRAY_STR)
+
+
 # In MS SQL Server regular expressions can only be used in user-defined functions
 
 
@@ -751,6 +761,8 @@ DEFINITIONS_STRING = [
     FuncLtrim,
     # regexp_extract
     FuncRegexpExtract,
+    # regexp_extract_all
+    FuncRegexpExtractAll,
     # regexp_extract_nth
     FuncRegexpExtractNth,
     # regexp_match

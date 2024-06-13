@@ -1,5 +1,7 @@
 import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as sa_postgresql
+import sqlalchemy.sql.functions
+from sqlalchemy.ext.compiler import compiles
 
 from dl_formula.definitions.base import (
     TranslationVariant,
@@ -14,6 +16,30 @@ from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
+
+
+class RegexpMatchesInBrackets(sqlalchemy.sql.functions.GenericFunction):
+    inherit_cache = True
+
+
+@compiles(RegexpMatchesInBrackets)
+def compile_regexp_matches_in_brackets(element, compiler, **kw):
+    return "(REGEXP_MATCHES(%s))" % compiler.process(element.clauses, **kw)
+
+
+def regexp_matches_in_brackets(text, pattern):
+    regexp_matches_subquery = sa.select(
+        sa.type_coerce(
+            sa.func.RegexpMatchesInBrackets(text, pattern, "g"),
+            sa_postgresql.ARRAY(sa.String),
+        )[1].label('strs')
+    )
+    return sa.type_coerce(
+        sa.select(
+            [sa.func.array_agg(regexp_matches_subquery.c.strs)],
+        ).select_from(regexp_matches_subquery),
+        sa_postgresql.ARRAY(sa.String),
+    )
 
 
 DEFINITIONS_STRING = [
@@ -117,6 +143,15 @@ DEFINITIONS_STRING = [
                     sa_postgresql.ARRAY(sa.String),
                 )[1],
             ),
+        ]
+    ),
+    # regexp_extract_all
+    base.FuncRegexpExtractAll(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                fss,
+            )
         ]
     ),
     # regexp_extract_nth

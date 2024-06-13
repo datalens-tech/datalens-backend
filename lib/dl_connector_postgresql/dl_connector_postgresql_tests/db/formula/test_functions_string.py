@@ -7,8 +7,8 @@ from dl_connector_postgresql_tests.db.formula.base import (
 
 
 class TestStringFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, DefaultStringFunctionFormulaConnectorTestSuite):
-    pass
+    supports_regex_extract_all = True
 
 
 class TestStringFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, DefaultStringFunctionFormulaConnectorTestSuite):
-    pass
+    supports_regex_extract_all = True

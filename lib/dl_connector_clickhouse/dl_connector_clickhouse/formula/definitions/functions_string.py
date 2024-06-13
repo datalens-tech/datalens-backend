@@ -130,6 +130,15 @@ DEFINITIONS_STRING = [
             ),
         ]
     ),
+    # regexp_extract_all
+    base.FuncRegexpExtractAll(
+            variants=[
+                V(
+                    D.CLICKHOUSE,
+                    lambda text, pattern: sa.func.extractAll(sa.func.assumeNotNull(text), pattern)
+                ),
+            ]
+        ),
     # regexp_extract_nth
     base.FuncRegexpExtractNth(
         variants=[
