@@ -25,7 +25,14 @@ DEFINITIONS_MATH = [
     # atan2
     base.FuncAtan2.for_dialect(D.MYSQL),
     # ceiling
-    base.FuncCeiling.for_dialect(D.MYSQL),
+    base.FuncCeiling(
+        variants=[
+            V(
+                D.MYSQL,
+                lambda num: sa.func.ceil(num) + 0,
+            )
+        ]
+    ),
     # cos
     base.FuncCos.for_dialect(D.MYSQL),
     # cot
@@ -77,8 +84,19 @@ DEFINITIONS_MATH = [
     # radians
     base.FuncRadians.for_dialect(D.MYSQL),
     # round
-    base.FuncRound1.for_dialect(D.MYSQL),
-    base.FuncRound2.for_dialect(D.MYSQL),
+    base.FuncRound1(
+        variants=[
+            V(D.MYSQL, lambda num: sa.func.round(num) + 0),
+        ],
+    ),
+    base.FuncRound2(
+        variants=[
+            V(
+                D.MYSQL,
+                lambda num, precision: sa.func.round(num, precision) + 0,
+            )
+        ]
+    ),
     # sign
     base.FuncSign.for_dialect(D.MYSQL),
     # sin
