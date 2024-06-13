@@ -6,11 +6,11 @@ from dl_constants.enums import (
     RLSSubjectType,
 )
 from dl_core.fields import BIField
+from dl_core_tests.db.base import DefaultCoreTestClass
 from dl_rls.models import (
     RLSEntry,
     RLSSubject,
 )
-from dl_core_tests.db.base import DefaultCoreTestClass
 
 
 class TestRLS(DefaultCoreTestClass):

@@ -30,8 +30,6 @@ from dl_constants.enums import (
     WhereClauseOperation,
 )
 from dl_core import multisource
-from dl_rls.rls import RLS
-from dl_rls.models import RLSEntry, RLSSubject
 from dl_core.base_models import (
     DefaultWhereClause,
     ObligatoryFilter,
@@ -76,6 +74,11 @@ from dl_model_tools.typed_values import (
     TreeStrValue,
     UuidValue,
 )
+from dl_rls.models import (
+    RLSEntry,
+    RLSSubject,
+)
+from dl_rls.rls import RLS
 
 
 class SourceAvatarSchema(DefaultStorageSchema):

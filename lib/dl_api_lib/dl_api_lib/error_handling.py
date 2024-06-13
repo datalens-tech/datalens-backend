@@ -25,8 +25,8 @@ from dl_constants.exc import (
 from dl_core import exc as common_exc
 from dl_dashsql import exc as dashsql_exc
 from dl_formula.core import exc as formula_exc
-from dl_rls import exc as rls_exc
 import dl_query_processing.exc
+from dl_rls import exc as rls_exc
 
 
 LOGGER = logging.getLogger(__name__)

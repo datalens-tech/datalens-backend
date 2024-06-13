@@ -6,7 +6,10 @@ Module implements RLS management functionality
 
 from __future__ import annotations
 
-from typing import NamedTuple, Optional
+from typing import (
+    NamedTuple,
+    Optional,
+)
 
 import attr
 
@@ -69,7 +72,7 @@ class RLS:
 
         # Pick out userid-entry, if any
         userid_entry: Optional[RLSEntry] = None
-        for idx, rls_entry in enumerate(rls_entries):
+        for rls_entry in rls_entries:
             if rls_entry.pattern_type != RLSPatternType.userid:
                 continue
             if userid_entry is not None:

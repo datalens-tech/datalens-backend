@@ -37,10 +37,6 @@ from dl_constants.enums import (
 )
 from dl_core.aio.middlewares.services_registry import services_registry_middleware
 from dl_core.aio.middlewares.us_manager import service_us_manager_middleware
-from dl_rls.models import (
-    RLS_FAILED_USER_NAME_PREFIX,
-    RLSSubject,
-)
 from dl_core.services_registry import ServicesRegistry
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
@@ -52,6 +48,10 @@ from dl_core.services_registry.rqe_caches import RQECachesSetting
 from dl_core.utils import FutureRef
 from dl_core_testing.app_test_workarounds import TestEnvManagerFactory
 from dl_core_testing.fixture_server_runner import WSGIRunner
+from dl_rls.models import (
+    RLS_FAILED_USER_NAME_PREFIX,
+    RLSSubject,
+)
 from dl_rls.subject_resolver import BaseSubjectResolver
 from dl_testing.utils import get_root_certificates
 

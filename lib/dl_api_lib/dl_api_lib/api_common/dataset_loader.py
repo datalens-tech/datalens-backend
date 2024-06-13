@@ -13,7 +13,6 @@ import attr
 from dl_api_lib import exc
 from dl_api_lib.dataset.utils import allow_rls_for_dataset
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
-from dl_rls.serializer import FieldRLSSerializer
 from dl_app_tools.profiling_base import generic_profiler
 from dl_constants.exc import (
     DEFAULT_ERR_CODE_API_PREFIX,
@@ -36,6 +35,7 @@ from dl_core.us_dataset import (
 from dl_core.us_manager.local_cache import USEntryBuffer
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_rls.serializer import FieldRLSSerializer
 from dl_utils.aio import await_sync
 
 

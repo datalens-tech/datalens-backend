@@ -17,13 +17,8 @@ from typing import (
 import attr
 import more_itertools
 
-from dl_rls import exc
-from dl_rls.utils import (
-    chunks,
-    quote_by_quote,
-    split_by_quoted_quote,
-)
 from dl_constants.enums import RLSSubjectType
+from dl_rls import exc
 from dl_rls.models import (
     RLS_ALL_SUBJECT,
     RLS_ALL_SUBJECT_NAME,
@@ -35,6 +30,12 @@ from dl_rls.models import (
     RLSSubject,
 )
 from dl_rls.subject_resolver import BaseSubjectResolver
+from dl_rls.utils import (
+    chunks,
+    quote_by_quote,
+    split_by_quoted_quote,
+)
+
 
 LOGGER = logging.getLogger(__name__)
 

@@ -1,7 +1,6 @@
 import json
 import pkgutil
 
-from dl_rls.serializer import FieldRLSSerializer
 import dl_api_lib_testing.test_data
 from dl_constants.enums import RLSSubjectType
 from dl_rls.models import (
@@ -9,6 +8,7 @@ from dl_rls.models import (
     RLSPatternType,
     RLSSubject,
 )
+from dl_rls.serializer import FieldRLSSerializer
 from dl_rls.subject_resolver import BaseSubjectResolver
 
 

@@ -29,7 +29,6 @@ from dl_api_lib.query.registry import (
     is_compeng_executable,
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
-from dl_rls.serializer import FieldRLSSerializer
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
@@ -61,6 +60,7 @@ from dl_formula.core.dialect import (
     StandardDialect,
     from_name_and_version,
 )
+from dl_rls.serializer import FieldRLSSerializer
 
 
 LOGGER = logging.getLogger(__name__)
