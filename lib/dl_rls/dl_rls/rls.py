@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import (
     NamedTuple,
     Optional,
+    cast,
 )
 
 import attr
@@ -85,7 +86,7 @@ class RLS:
         assert all(
             rls_entry.pattern_type == RLSPatternType.value for rls_entry in rls_entries
         ), "only simple values should remain at this point"
-        allowed_values = [rls_entry.allowed_value for rls_entry in rls_entries]
+        allowed_values = cast(list[str], [rls_entry.allowed_value for rls_entry in rls_entries])  # cast for mypy
         assert all(value is not None for value in allowed_values)
 
         # `userid: userid` case
