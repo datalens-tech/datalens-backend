@@ -36,6 +36,7 @@ from dl_core.us_manager.local_cache import USEntryBuffer
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_rls.serializer import FieldRLSSerializer
+import dl_rls.exc as rls_exc
 from dl_utils.aio import await_sync
 
 
@@ -305,7 +306,7 @@ class DatasetApiLoader:
                     if rlse.field_guid == field.guid
                 ]
                 if self._rls_list_to_set(saved_field_rls) != self._rls_list_to_set(rls_entries_pre):
-                    raise exc.RLSConfigParsingError(
+                    raise rls_exc.RLSConfigParsingError(
                         "For this feature to work, save dataset after editing the RLS config.", details=dict()
                     )
                 # otherwise no effective config changes (that are worth checking in preview)
