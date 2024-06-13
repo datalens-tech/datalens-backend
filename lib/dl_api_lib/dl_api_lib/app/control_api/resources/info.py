@@ -193,3 +193,17 @@ class WorkbookInfo(BIResource):
                 if dash["scope"] == "dash"
             },
         )
+
+
+@ns.route("/connectors/icons/list")
+class ConnectorIconsList(BIResource):
+    def get(self) -> dict:
+        conn_availability = self.get_service_registry().get_connector_availability()
+        return dict(icons=conn_availability.list_icons())
+
+
+@ns.route("/connectors/icons/<string:conn_type>")
+class ConnectorIcon(BIResource):
+    def get(self, conn_type: str) -> dict:
+        conn_availability = self.get_service_registry().get_connector_availability()
+        return dict(icon=conn_availability.get_icon(conn_type=conn_type))

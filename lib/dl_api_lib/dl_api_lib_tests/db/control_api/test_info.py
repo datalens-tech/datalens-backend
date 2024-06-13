@@ -83,3 +83,13 @@ class TestInfo(DefaultApiTestBase):
 
         form_resp = client.get(f"/api/v1/info/connectors/forms/{CONNECTION_TYPE_CLICKHOUSE.name}/bad_form_mode")
         assert form_resp.status_code == 400, form_resp.json
+
+    def test_get_connector_icon(self, client):
+        form_resp = client.get("/api/v1/info/connectors/icons/list")
+        assert form_resp.status_code == 200
+        resp = form_resp.json
+        assert resp["icons"]
+        assert len(resp["icons"]) > 0
+        for icons in resp["icons"]:
+            assert "type" in icons
+            assert icons["type"] == "data"
