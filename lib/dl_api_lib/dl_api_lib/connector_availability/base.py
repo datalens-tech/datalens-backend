@@ -189,6 +189,9 @@ class ConnectorIconSrcConfigUrl(ConnectorIconSrcConfig):
 
     @classmethod
     def from_settings(cls, settings: ObjectLikeConfig | ConnectorIconSrc) -> ConnectorIconSrcConfigUrl:
+        assert isinstance(
+            settings.url_prefix, str
+        ), f'Expected a string value in URL config, got "{type(settings.url_prefix)}"'
         return cls(
             icon_type=ConnectorIconSrcType.data,
             url_prefix=settings.url_prefix,
