@@ -22,6 +22,10 @@ WORKDIR /src/metapkg
 RUN poetry export --only app_dl_os_control_api --without-hashes --format=requirements.txt > requirements.txt
 RUN pip install -r requirements.txt
 
+# Configs
+ENV CONFIG_PATH="/etc/backend-configs/api.yaml"
+COPY --from=bake_ctx_app_configs /app_configs/api.yaml "$CONFIG_PATH"
+
 # Setting up the runtime user
 ARG USER=app
 ARG GID=1000
