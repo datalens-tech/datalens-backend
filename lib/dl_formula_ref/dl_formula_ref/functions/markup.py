@@ -105,6 +105,23 @@ FUNCTION_IMAGE = FunctionDocRegistryItem(
     ],
 )
 
+FUNCTION_USER_INFO = FunctionDocRegistryItem(
+    name="user_info",
+    category=CATEGORY_MARKUP,
+    description=_(
+        "Returns the marked up text by {arg:0} to display username or email depending on the {arg:1} value:\n"
+        "\n"
+        "* `email`: Returns email.\n"
+        "* `name`: Returns name.\n"
+        "\n"
+        "If the user has not been found, the function will return the original string from the source."
+    ),
+    examples=[
+        SimpleExample("USER_INFO('b1ggmp8es27t********', 'name') = 'test_user'"),
+        SimpleExample("USER_INFO([UserId], 'email') = 'test_user@example.com'"),
+    ],
+)
+
 FUNCTIONS_MARKUP = [
     FUNCTION_BOLD,
     FUNCTION_ITALIC,
@@ -114,4 +131,5 @@ FUNCTIONS_MARKUP = [
     FUNCTION_SIZE,
     FUNCTION_BR,
     FUNCTION_IMAGE,
+    FUNCTION_USER_INFO,
 ]

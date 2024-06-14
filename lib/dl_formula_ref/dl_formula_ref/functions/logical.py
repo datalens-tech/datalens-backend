@@ -4,6 +4,7 @@ from dl_formula_ref.examples.config import (
     ExampleConfig,
     ExampleSource,
 )
+from dl_formula_ref.i18n.registry import FormulaRefTranslatable as Translatable
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.example import (
@@ -11,6 +12,7 @@ from dl_formula_ref.registry.example import (
     SimpleExample,
 )
 from dl_formula_ref.registry.naming import CustomNamingProvider
+from dl_formula_ref.registry.note import Note
 from dl_formula_ref.registry.signature_base import SignaturePlacement
 from dl_formula_ref.registry.signature_gen import (
     SignatureTemplate,
@@ -227,6 +229,11 @@ IF(
             ),
         ),
     ),
+    notes=[
+        Note(
+            Translatable("Arguments {arg:1}, {arg:3}, {arg:4} must be of the same type."),
+        ),
+    ],
     examples=[
         SimpleExample(
             """

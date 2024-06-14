@@ -146,7 +146,8 @@ FUNCTION_GET_ITEM = FunctionDocRegistryItem(
     category=CATEGORY_ARRAY,
     description=_(
         "Returns the element with the index {arg:1} from the array {arg:0}. "
-        "Index must be any integer. Indexes in an array begin with one."
+        "Index must be any integer. Indexes in an array begin with one. "
+        "Returns the last item from the array if {arg:1} is `-1`."
     ),
     examples=[
         SimpleExample("GET_ITEM([array_field], 2)"),

@@ -214,7 +214,9 @@ FUNCTION_DATETIME_PARSE = FunctionDocRegistryItem(
     category=CATEGORY_TYPE_CONVERSION,
     description=_(
         "Converts the {arg:0} expression to date and time format. Unlike {ref: "
-        "DATETIME}, it supports multiple formats."
+        "DATETIME}, it supports multiple formats. The expression is processed on "
+        "the {{ CH }} source side. For more information on the supported formats, "
+        "see the relevant {{ CH }} {link: ch_parseDateTime: documentation}."
     ),
     examples=[
         SimpleExample(example_str)

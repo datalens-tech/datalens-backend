@@ -27,7 +27,9 @@ _SOURCE_INT_FLOAT_1 = ExampleSource(
         ["Moscow", "Furniture", 2, 1250.50],
         ["Moscow", "Office Supplies", 4, 85.34],
         ["San Francisco", "Office Supplies", 23, 723.0],
+        ["San Francisco", "Technology", 12, 1542.0],
         ["Detroit", "Furniture", 5, 6205.87],
+        ["Detroit", "Technology", 9, 2901.0],
     ],
 )
 
@@ -79,7 +81,20 @@ FUNCTION_SUM_IF = FunctionDocRegistryItem(
         "Applicable to numeric data types only."
     ),
     examples=[
-        SimpleExample("SUM_IF([Profit], [Profit] > 15)"),
+        DataExample(
+            example_config=ExampleConfig(
+                source=_SOURCE_INT_FLOAT_1,
+                group_by=["[City]"],
+                order_by=["[City]"],
+                show_source_table=True,
+                formula_fields=[
+                    ("City", "[City]"),
+                    ("Sum Orders", "SUM_IF([Orders], [Orders] >= 5)"),
+                    ("Sum Profit", "SUM_IF([Profit], [Profit] >= 500)"),
+                ],
+                formulas_as_names=False,
+            ),
+        ),
     ],
 )
 
@@ -90,7 +105,16 @@ FUNCTION_AVG = FunctionDocRegistryItem(
         "Returns the average of all values. Applicable to numeric data types as well as {type:DATE|DATETIME}."
     ),
     examples=[
-        SimpleExample("AVG([Profit])"),
+        DataExample(
+            example_config=ExampleConfig(
+                source=_SOURCE_INT_FLOAT_1,
+                group_by=["[City]"],
+                order_by=["[City]"],
+                show_source_table=True,
+                formula_fields=[("City", "[City]"), ("Avg Orders", "AVG([Orders])"), ("Avg Profit", "AVG([Profit])")],
+                formulas_as_names=False,
+            ),
+        ),
     ],
 )
 
@@ -117,7 +141,16 @@ FUNCTION_MAX = FunctionDocRegistryItem(
         "- string — Returns the last value in the alphabetic order.\n"
     ),
     examples=[
-        SimpleExample("MAX([Profit])"),
+        DataExample(
+            example_config=ExampleConfig(
+                source=_SOURCE_INT_FLOAT_1,
+                group_by=["[City]"],
+                order_by=["[City]"],
+                show_source_table=True,
+                formula_fields=[("City", "[City]"), ("Max Orders", "MAX([Orders])"), ("Max Profit", "MAX([Profit])")],
+                formulas_as_names=False,
+            ),
+        ),
     ],
 )
 
@@ -132,14 +165,30 @@ FUNCTION_MIN = FunctionDocRegistryItem(
         "- string — Returns the first value in the alphabetic order.\n"
     ),
     examples=[
-        SimpleExample("MIN([Profit])"),
+        DataExample(
+            example_config=ExampleConfig(
+                source=_SOURCE_INT_FLOAT_1,
+                group_by=["[City]"],
+                order_by=["[City]"],
+                show_source_table=True,
+                formula_fields=[("City", "[City]"), ("Min Orders", "MIN([Orders])"), ("Min Profit", "MIN([Profit])")],
+                formulas_as_names=False,
+            ),
+        ),
     ],
 )
 
 FUNCTION_COUNT = FunctionDocRegistryItem(
     name="count",
     category=CATEGORY_AGGREGATION,
-    description=_("Returns the number of items in the group."),
+    description=_(
+        "Returns the number of items in the group.\n"
+        "\n"
+        "Can be used with constants, such as `COUNT(1)` or `COUNT()`. "
+        "If the chart does not use other measures and dimensions, the result of such "
+        "an expression will always be `1`. This is because the function does not "
+        "include any fields, so {{ datalens-short-name }} accesses no source tables in the query."
+    ),
     examples=[
         SimpleExample("COUNT()"),
         SimpleExample("COUNT([OrderID])"),
@@ -254,6 +303,20 @@ FUNCTION_QUANTILE = FunctionDocRegistryItem(
     name="quantile",
     category=CATEGORY_AGGREGATION,
     description=_("Returns the precise {arg:1}-level quantile ({arg:1} should be in range " "from 0 to 1)."),
+    examples=[
+        DataExample(
+            example_config=ExampleConfig(
+                source=_SOURCE_TEMP,
+                show_source_table=True,
+                formulas_as_names=False,
+                formula_fields=[
+                    ("0.25 quantile", "QUANTILE([Temperature], 0.25)"),
+                    ("0.5 quantile", "QUANTILE([Temperature], 0.5)"),
+                    ("0.75 quantile", "QUANTILE([Temperature], 0.75)"),
+                ],
+            ),
+        ),
+    ],
 )
 
 FUNCTION_QUANTILE_APPROX = FunctionDocRegistryItem(
@@ -303,7 +366,16 @@ FUNCTION_ARG_MIN = FunctionDocRegistryItem(
         "encountered is returned. This makes the function non-deterministic."
     ),
     examples=[
-        SimpleExample("ARG_MIN([Sales], [Profit])"),
+        DataExample(
+            example_config=ExampleConfig(
+                source=_SOURCE_TEMP,
+                show_source_table=True,
+                formulas_as_names=False,
+                formula_fields=[
+                    ("Coldest Month", "ARG_MIN([Month],[Temperature])"),
+                ],
+            ),
+        ),
     ],
 )
 
@@ -316,7 +388,16 @@ FUNCTION_ARG_MAX = FunctionDocRegistryItem(
         "encountered is returned. This makes the function non-deterministic."
     ),
     examples=[
-        SimpleExample("ARG_MAX([Sales], [Profit])"),
+        DataExample(
+            example_config=ExampleConfig(
+                source=_SOURCE_TEMP,
+                show_source_table=True,
+                formulas_as_names=False,
+                formula_fields=[
+                    ("Warmest Month", "ARG_MAX([Month],[Temperature])"),
+                ],
+            ),
+        ),
     ],
 )
 

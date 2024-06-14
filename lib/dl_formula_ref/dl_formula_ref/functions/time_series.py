@@ -23,18 +23,19 @@ FUNCTION_AGO = FunctionDocRegistryItem(
     description=_(
         "Re-evaluate {arg:0} for a date/time with a given offset.\n"
         "The {arg:1} argument is the dimension along which the offset is made.\n"
-        "The {arg:3} argument is an integer. It can be negative.\n"
-        "The {arg:2} argument takes the following values:\n"
+        "The {arg:3} argument sets the offset in units of the {arg:2} argument. "
+        "Set as an integer. It may take negative values. The default value is `1`.\n"
+        "The {arg:2} argument sets the unit for {arg:3}. It may take the following values:\n"
         '- `"year"`;\n'
         '- `"month"`;\n'
         '- `"week"`;\n'
-        '- `"day"`;\n'
+        '- `"day"` (default value);\n'
         '- `"hour"`;\n'
         '- `"minute"`;\n'
         '- `"second"`.\n'
         "\n"
         "Can also be used as `AGO( measure, date_dimension, number )`. In this case, "
-        "the third argument is interpreted as the number of days.\n"
+        'the {arg:2} argument takes the `"day"` value.\n'
         "\n"
         "See also {ref:AT_DATE}, {ref:LAG}."
     ),
