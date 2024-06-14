@@ -150,7 +150,7 @@ class ConnectorIconSrcConfig:
 
     @classmethod
     @abc.abstractmethod
-    def from_settings(cls, settings: ObjectLikeConfig) -> ConnectorIconSrcConfig:
+    def from_settings(cls, settings: ObjectLikeConfig | ConnectorIconSrc) -> ConnectorIconSrcConfig:
         raise NotImplementedError
 
 
@@ -166,7 +166,7 @@ class ConnectorIconSrcConfigData(ConnectorIconSrcConfig):
         )
 
     @classmethod
-    def from_settings(cls, settings: ObjectLikeConfig) -> ConnectorIconSrcConfigData:
+    def from_settings(cls, settings: ObjectLikeConfig | ConnectorIconSrc) -> ConnectorIconSrcConfigData:
         return cls(
             icon_type=ConnectorIconSrcType.data,
             data=settings.data,
@@ -188,7 +188,7 @@ class ConnectorIconSrcConfigUrl(ConnectorIconSrcConfig):
         )
 
     @classmethod
-    def from_settings(cls, settings: ObjectLikeConfig) -> ConnectorIconSrcConfigUrl:
+    def from_settings(cls, settings: ObjectLikeConfig | ConnectorIconSrc) -> ConnectorIconSrcConfigUrl:
         return cls(
             icon_type=ConnectorIconSrcType.data,
             url_prefix=settings.url_prefix,
@@ -199,7 +199,7 @@ def connector_icon_src_config_factory(icon_data: ConnectorIconSrc | ObjectLikeCo
     icon_type = icon_data.icon_type
     icon_type_str = icon_type.value if isinstance(icon_type, ConnectorIconSrcType) else icon_type
 
-    cfg_class: dict[ConnectorIconSrcType, Type[ConnectorIconSrcConfig]] = {
+    cfg_class: dict[str, Type[ConnectorIconSrcConfig]] = {
         ConnectorIconSrcType.data.value: ConnectorIconSrcConfigData,
         ConnectorIconSrcType.url.value: ConnectorIconSrcConfigUrl,
     }
