@@ -25,9 +25,7 @@ class RegexpMatchesInBrackets(sqlalchemy.sql.functions.GenericFunction):
 
 
 @compiles(RegexpMatchesInBrackets)
-def compile_regexp_matches_in_brackets(
-    element: Any, compiler: sa.sql.compiler.SQLCompiler, **kw: Any
-) -> str:
+def compile_regexp_matches_in_brackets(element: Any, compiler: sa.sql.compiler.SQLCompiler, **kw: Any) -> str:
     # Need this to perform get_item (array[i]) after
     return "(REGEXP_MATCHES(%s))" % compiler.process(element.clauses, **kw)
 
@@ -37,7 +35,9 @@ def regexp_matches_in_brackets(text: str, pattern: str) -> sa.sql.expression.Typ
         sa.type_coerce(
             sa.func.RegexpMatchesInBrackets(text, pattern, "g"),
             sa_postgresql.ARRAY(sa.String),
-        )[1].label("strs")
+        )[
+            1
+        ].label("strs")
     )
     return sa.type_coerce(
         sa.select(
@@ -90,12 +90,7 @@ DEFINITIONS_STRING = [
         variants=[
             V(
                 D.POSTGRESQL,
-                lambda x, y: (
-                    sa.func.SUBSTRING(
-                        x, sa.func.char_length(x) - sa.func.char_length(y) + 1
-                    )
-                    == y
-                ),
+                lambda x, y: (sa.func.SUBSTRING(x, sa.func.char_length(x) - sa.func.char_length(y) + 1) == y),
             ),
         ]
     ),
@@ -149,9 +144,7 @@ DEFINITIONS_STRING = [
             V(
                 D.POSTGRESQL,
                 lambda text, pattern: sa.type_coerce(
-                    sa.select([sa.func.REGEXP_MATCHES(text, pattern, "g")])
-                    .limit(1)
-                    .as_scalar(),
+                    sa.select([sa.func.REGEXP_MATCHES(text, pattern, "g")]).limit(1).as_scalar(),
                     sa_postgresql.ARRAY(sa.String),
                 )[1],
             ),
@@ -172,10 +165,7 @@ DEFINITIONS_STRING = [
             V(
                 D.POSTGRESQL,
                 lambda text, pattern, ind: sa.type_coerce(
-                    sa.select([sa.func.REGEXP_MATCHES(text, pattern, "g")])
-                    .limit(1)
-                    .offset(ind - 1)
-                    .as_scalar(),
+                    sa.select([sa.func.REGEXP_MATCHES(text, pattern, "g")]).limit(1).offset(ind - 1).as_scalar(),
                     sa_postgresql.ARRAY(sa.String),
                 )[1],
             ),
@@ -224,9 +214,7 @@ DEFINITIONS_STRING = [
         variants=[
             V(
                 D.POSTGRESQL,
-                lambda text, delim, ind: sa.func.SPLIT_PART(
-                    text, delim, sa.cast(ind, sa.INTEGER)
-                ),
+                lambda text, delim, ind: sa.func.SPLIT_PART(text, delim, sa.cast(ind, sa.INTEGER)),
             ),  # FIXME: does not work with negative indices
         ]
     ),
