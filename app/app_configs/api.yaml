@@ -7,6 +7,9 @@ CONNECTORS:
   YDB:
     HAS_AUTH: false
 CONNECTOR_AVAILABILITY:
+  icon_src:
+    icon_type: data
+    data: "blank"
   sections: []
   uncategorized:
     - availability: free

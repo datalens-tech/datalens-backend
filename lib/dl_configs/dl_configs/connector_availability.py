@@ -33,13 +33,7 @@ class ConnectorIconSrcType(DynamicEnum):
 class ConnectorIconSrc:
     icon_type: ConnectorIconSrcType = attr.ib(default=ConnectorIconSrcType.data)
     url_prefix: Optional[str] = attr.ib(default=None)
-
-    def as_dict(self) -> dict[str, Any]:
-        conn_icon_settings_dict: dict[str, Any] = dict()
-        if self.icon_type == ConnectorIconSrcType.url:
-            conn_icon_settings_dict["url_prefix"] = self.url_prefix
-        conn_icon_settings_dict["icon_type"] = self.icon_type
-        return conn_icon_settings_dict
+    data: Optional[str] = attr.ib(default=None)
 
 
 @attr.s(kw_only=True)

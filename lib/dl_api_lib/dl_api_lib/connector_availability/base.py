@@ -148,6 +148,11 @@ class ConnectorIconSrcConfig:
             conn_type=conn_type,
         )
 
+    @classmethod
+    @abc.abstractmethod
+    def from_settings(cls, settings: ObjectLikeConfig | ConnectorIconSrc) -> ConnectorIconSrcConfig:
+        raise NotImplementedError
+
 
 @attr.s(kw_only=True)
 class ConnectorIconSrcConfigData(ConnectorIconSrcConfig):
@@ -158,6 +163,13 @@ class ConnectorIconSrcConfigData(ConnectorIconSrcConfig):
         return dict(
             **super().as_dict(conn_type=conn_type),
             data=data,
+        )
+
+    @classmethod
+    def from_settings(cls, settings: ObjectLikeConfig | ConnectorIconSrc) -> ConnectorIconSrcConfigData:
+        return cls(
+            icon_type=ConnectorIconSrcType.data,
+            data=settings.data,
         )
 
 
@@ -175,16 +187,27 @@ class ConnectorIconSrcConfigUrl(ConnectorIconSrcConfig):
             url=url,
         )
 
+    @classmethod
+    def from_settings(cls, settings: ObjectLikeConfig | ConnectorIconSrc) -> ConnectorIconSrcConfigUrl:
+        assert isinstance(
+            settings.url_prefix, str
+        ), f'Expected a string value in URL config, got "{type(settings.url_prefix)}"'
+        return cls(
+            icon_type=ConnectorIconSrcType.url,
+            url_prefix=settings.url_prefix,
+        )
 
-def connector_icon_src_config_factory(icon_data: ConnectorIconSrc) -> ConnectorIconSrcConfig:
-    icon_data_dict = icon_data.as_dict()
 
-    cfg_class: dict[ConnectorIconSrcType, Type[ConnectorIconSrcConfig]] = {
-        ConnectorIconSrcType.data: ConnectorIconSrcConfigData,
-        ConnectorIconSrcType.url: ConnectorIconSrcConfigUrl,
+def connector_icon_src_config_factory(icon_data: ConnectorIconSrc | ObjectLikeConfig) -> ConnectorIconSrcConfig:
+    icon_type = icon_data.icon_type
+    icon_type_str = icon_type.value if isinstance(icon_type, ConnectorIconSrcType) else icon_type
+
+    cfg_class: dict[str, Type[ConnectorIconSrcConfig]] = {
+        ConnectorIconSrcType.data.value: ConnectorIconSrcConfigData,
+        ConnectorIconSrcType.url.value: ConnectorIconSrcConfigUrl,
     }
 
-    return cfg_class[icon_data.icon_type](**icon_data_dict)
+    return cfg_class[icon_type_str].from_settings(icon_data)
 
 
 @attr.s(kw_only=True)
