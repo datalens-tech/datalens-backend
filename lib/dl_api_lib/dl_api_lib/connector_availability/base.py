@@ -193,7 +193,7 @@ class ConnectorIconSrcConfigUrl(ConnectorIconSrcConfig):
             settings.url_prefix, str
         ), f'Expected a string value in URL config, got "{type(settings.url_prefix)}"'
         return cls(
-            icon_type=ConnectorIconSrcType.data,
+            icon_type=ConnectorIconSrcType.url,
             url_prefix=settings.url_prefix,
         )
 
