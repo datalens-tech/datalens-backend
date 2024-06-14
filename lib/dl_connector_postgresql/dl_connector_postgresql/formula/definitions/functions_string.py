@@ -1,3 +1,5 @@
+from typing import Any
+
 import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as sa_postgresql
 from sqlalchemy.ext.compiler import compiles
@@ -23,7 +25,9 @@ class RegexpMatchesInBrackets(sqlalchemy.sql.functions.GenericFunction):
 
 
 @compiles(RegexpMatchesInBrackets)
-def compile_regexp_matches_in_brackets(element: sa.sql.ClauseElement, compiler: sa.ext.compiler.SQLCompiler, **kw) -> str:
+def compile_regexp_matches_in_brackets(
+    element: sa.sql.ClauseElement, compiler: sa.ext.compiler.SQLCompiler, **kw: dict[Any, Any]
+) -> str:
     # Need this to perform get_item (array[i]) after
     return "(REGEXP_MATCHES(%s))" % compiler.process(element.clauses, **kw)
 
