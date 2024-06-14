@@ -23,12 +23,12 @@ class RegexpMatchesInBrackets(sqlalchemy.sql.functions.GenericFunction):
 
 
 @compiles(RegexpMatchesInBrackets)
-def compile_regexp_matches_in_brackets(element, compiler, **kw) -> str:
+def compile_regexp_matches_in_brackets(element: sa.sql.ClauseElement, compiler: sa.ext.compiler.SQLCompiler, **kw) -> str:
     # Need this to perform get_item (array[i]) after
     return "(REGEXP_MATCHES(%s))" % compiler.process(element.clauses, **kw)
 
 
-def regexp_matches_in_brackets(text, pattern) -> sa.sql.expression.TypeCoerce:
+def regexp_matches_in_brackets(text: str, pattern: str) -> sa.sql.expression.TypeCoerce:
     regexp_matches_subquery = sa.select(
         sa.type_coerce(
             sa.func.RegexpMatchesInBrackets(text, pattern, "g"),
