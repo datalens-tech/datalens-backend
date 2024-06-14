@@ -1,7 +1,7 @@
 import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as sa_postgresql
-import sqlalchemy.sql.functions
 from sqlalchemy.ext.compiler import compiles
+import sqlalchemy.sql.functions
 
 from dl_formula.definitions.base import (
     TranslationVariant,
@@ -23,17 +23,17 @@ class RegexpMatchesInBrackets(sqlalchemy.sql.functions.GenericFunction):
 
 
 @compiles(RegexpMatchesInBrackets)
-def compile_regexp_matches_in_brackets(element, compiler, **kw):
+def compile_regexp_matches_in_brackets(element, compiler, **kw) -> str:
     # Need this to perform get_item (array[i]) after
     return "(REGEXP_MATCHES(%s))" % compiler.process(element.clauses, **kw)
 
 
-def regexp_matches_in_brackets(text, pattern):
+def regexp_matches_in_brackets(text, pattern) -> sa.sql.expression.TypeCoerce:
     regexp_matches_subquery = sa.select(
         sa.type_coerce(
             sa.func.RegexpMatchesInBrackets(text, pattern, "g"),
             sa_postgresql.ARRAY(sa.String),
-        )[1].label('strs')
+        )[1].label("strs")
     )
     return sa.type_coerce(
         sa.select(
