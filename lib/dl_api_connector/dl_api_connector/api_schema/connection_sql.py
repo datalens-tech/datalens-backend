@@ -61,6 +61,16 @@ class DBHostField(ma_fields.String):
         return user_host_str
 
 
+def db_name_no_query_params(value: Optional[str]):
+    if not value:
+        return value
+    if '?' in value:
+        raise marshmallow.ValidationError(
+            f"There must be no query params in field db_name, found: {value}"
+        )
+    return value
+
+
 class ClassicSQLConnectionSchema(ConnectionSchema):
     ALLOW_MULTI_HOST = False
 
@@ -68,5 +78,10 @@ class ClassicSQLConnectionSchema(ConnectionSchema):
     port = ma_fields.Integer(attribute="data.port", required=True, bi_extra=FieldExtra(editable=True))
     username = ma_fields.String(attribute="data.username", required=True, bi_extra=FieldExtra(editable=True))
     password = secret_string_field(attribute="data.password", bi_extra=FieldExtra(editable=True))
-    db_name = ma_fields.String(attribute="data.db_name", allow_none=True, bi_extra=FieldExtra(editable=True))
+    db_name = ma_fields.String(
+        attribute="data.db_name",
+        allow_none=True,
+        bi_extra=FieldExtra(editable=True),
+        validate=db_name_no_query_params
+    )
     cache_ttl_sec = cache_ttl_field(attribute="data.cache_ttl_sec")
