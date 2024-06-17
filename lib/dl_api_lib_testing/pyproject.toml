@@ -31,7 +31,7 @@ datalens-pivot-pandas = {path = "../dl_pivot_pandas"}
 datalens-query-processing = {path = "../dl_query_processing"}
 datalens-testing = {path = "../dl_testing"}
 datalens-cache-engine = {path = "../dl_cache_engine"}
-datalens-rls = {path = "../lib/dl_rls"}
+datalens-rls = {path = "../dl_rls"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

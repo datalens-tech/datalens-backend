@@ -36,7 +36,7 @@ datalens-dashsql = {path = "../../lib/dl_dashsql"}
 datalens-pivot = {path = "../dl_pivot"}
 datalens-pivot-pandas = {path = "../dl_pivot_pandas"}
 datalens-cache-engine = {path = "../dl_cache_engine"}
-datalens-rls = {path = "../lib/dl_rls"}
+datalens-rls = {path = "../dl_rls"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
