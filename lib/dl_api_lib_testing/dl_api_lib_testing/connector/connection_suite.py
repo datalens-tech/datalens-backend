@@ -2,12 +2,16 @@ import json
 from typing import Optional
 import uuid
 
+import pytest
+
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_testing.regulated_test import RegulatedTestCase
 
 
 class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase):
+    uses_classic_sql_connection_schema = False
+
     def test_create_connection(
         self,
         control_api_sync_client: SyncHttpClientBase,
@@ -88,6 +92,9 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         bi_headers: Optional[dict[str, str]],
         connection_params: dict,
     ) -> None:
+        if not self.uses_classic_sql_connection_schema:
+            pytest.skip()
+
         # arrange
         connection_params = connection_params.copy()
         connection_params["db_name"] = "db1?sslmode=required"

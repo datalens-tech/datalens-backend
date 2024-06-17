@@ -4,4 +4,4 @@ from dl_connector_mssql_tests.db.api.base import MSSQLConnectionTestBase
 
 
 class TestMSSQLConnection(MSSQLConnectionTestBase, DefaultConnectorConnectionTestSuite):
-    pass
+    uses_classic_sql_connection_schema = True

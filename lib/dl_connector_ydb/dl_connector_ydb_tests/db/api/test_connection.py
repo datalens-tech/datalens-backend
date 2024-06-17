@@ -4,4 +4,4 @@ from dl_connector_ydb_tests.db.api.base import YDBConnectionTestBase
 
 
 class TestYDBConnection(YDBConnectionTestBase, DefaultConnectorConnectionTestSuite):
-    pass
+    uses_classic_sql_connection_schema = True
