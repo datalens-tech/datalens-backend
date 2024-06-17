@@ -18,8 +18,9 @@ from dynamic_enum import (
 )
 
 from dl_api_commons.base_models import TenantDef
+from dl_api_connector.connection_info import ConnectionInfoProvider
 from dl_api_lib.connection_forms.registry import CONN_FORM_FACTORY_BY_TYPE
-from dl_api_lib.connection_info import get_connector_info_provider_cls
+from dl_api_lib.connection_info import get_connector_info_provider
 from dl_api_lib.i18n.localizer import Translatable
 from dl_configs.connector_availability import (
     ConnectorAvailabilityConfigSettings,
@@ -142,10 +143,10 @@ class ConnectorIconRole(DynamicEnum):
 class ConnectorIconSrcConfig:
     icon_type: ConnectorIconSrcType = attr.ib()
 
-    def as_dict(self, conn_type: str) -> dict[str, Any]:
+    def as_dict(self, conn: Connector) -> dict[str, Any] | None:
         return dict(
             type=self.icon_type.value,
-            conn_type=conn_type,
+            conn_type=conn.conn_type.value,
         )
 
     @classmethod
@@ -158,10 +159,17 @@ class ConnectorIconSrcConfig:
 class ConnectorIconSrcConfigData(ConnectorIconSrcConfig):
     data: Optional[str] = attr.ib(default=None)
 
-    def as_dict(self, conn_type: str) -> dict[str, Any]:
-        data = dict(standart="", nav="")
+    def as_dict(self, conn: Connector) -> dict[str, Any] | None:
+        data = dict(
+            standard=b"data:image/svg+xml;base64," + conn.connector_info_provider.icon_data_standard,
+            nav=b"data:image/svg+xml;base64," + conn.connector_info_provider.icon_data_nav,
+        )
+        if data["standard"] == b"data:image/svg+xml;base64," or data["nav"] == b"data:image/svg+xml;base64,":
+            return None
+        base_dict = super().as_dict(conn=conn)
+        assert base_dict
         return dict(
-            **super().as_dict(conn_type=conn_type),
+            **base_dict,
             data=data,
         )
 
@@ -177,13 +185,15 @@ class ConnectorIconSrcConfigData(ConnectorIconSrcConfig):
 class ConnectorIconSrcConfigUrl(ConnectorIconSrcConfig):
     url_prefix: str = attr.ib()
 
-    def as_dict(self, conn_type: str) -> dict[str, Any]:
+    def as_dict(self, conn: Connector) -> dict[str, Any] | None:
         url = dict(
-            standart=f"{self.url_prefix.rstrip('/')}/{ConnectorIconRole.standard.value}/{conn_type}.svg",
-            nav=f"{self.url_prefix.rstrip('/')}/{ConnectorIconRole.nav.value}/{conn_type}.svg",
+            standard=f"{self.url_prefix.rstrip('/')}/{ConnectorIconRole.standard.value}/{conn.conn_type.value}.svg",
+            nav=f"{self.url_prefix.rstrip('/')}/{ConnectorIconRole.nav.value}/{conn.conn_type.value}.svg",
         )
+        base_dict = super().as_dict(conn=conn)
+        assert base_dict
         return dict(
-            **super().as_dict(conn_type=conn_type),
+            **base_dict,
             url=url,
         )
 
@@ -235,7 +245,11 @@ class Connector(ConnectorBase):
 
     @property
     def alias(self) -> str:
-        return get_connector_info_provider_cls(self.conn_type).alias or self.conn_type_str
+        return get_connector_info_provider(self.conn_type).alias or self.conn_type_str
+
+    @property
+    def connector_info_provider(self) -> ConnectionInfoProvider:
+        return get_connector_info_provider(self.conn_type)
 
     @property
     def conn_type_str(self) -> str:
@@ -246,7 +260,7 @@ class Connector(ConnectorBase):
         return self.conn_type in CONN_FORM_FACTORY_BY_TYPE
 
     def get_title(self, localizer: Localizer) -> str:
-        return localizer.translate(get_connector_info_provider_cls(self.conn_type).title_translatable)
+        return localizer.translate(get_connector_info_provider(self.conn_type).title_translatable)
 
 
 @attr.s(kw_only=True)
@@ -317,8 +331,9 @@ class ConnectorAvailabilityConfig(SettingsBase):
             return
         for conn in self._iter_connectors():
             conn_type = conn.conn_type.value
-            icon_src = self.icon_src.as_dict(conn_type=conn_type)
-            self._icon_by_conn_type[conn_type] = deepcopy(icon_src)
+            icon_src = self.icon_src.as_dict(conn=conn)
+            if icon_src is not None:
+                self._icon_by_conn_type[conn_type] = deepcopy(icon_src)
 
     def list_icons(self) -> list[dict[str, Any]]:
         self.fill_icon_dict_by_conn_type()
