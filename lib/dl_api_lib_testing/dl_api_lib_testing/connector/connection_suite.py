@@ -82,15 +82,15 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         assert any([qt["query_type"] == "generic_query" for qt in resp.json["options"]["query_types"]])
 
     def test_create_connections__query_params_in_db_name__error(
-            self,
-            control_api_sync_client: SyncHttpClientBase,
-            saved_connection_id: str,
-            bi_headers: Optional[dict[str, str]],
-            connection_params: dict,
+        self,
+        control_api_sync_client: SyncHttpClientBase,
+        saved_connection_id: str,
+        bi_headers: Optional[dict[str, str]],
+        connection_params: dict,
     ) -> None:
         # arrange
         connection_params = connection_params.copy()
-        connection_params['db_name'] = 'db1?sslmode=required'
+        connection_params["db_name"] = "db1?sslmode=required"
         data = dict(
             name=f"{self.conn_type.name} conn {uuid.uuid4()}",
             type=self.conn_type.name,
@@ -107,5 +107,4 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
 
         # assert
         assert resp.status_code == 400
-        assert resp.json == {'db_name': ['There must be no query params in field db_name, found: db1?sslmode=required']}
-
+        assert resp.json == {"db_name": ["There must be no query params in field db_name, found: db1?sslmode=required"]}
