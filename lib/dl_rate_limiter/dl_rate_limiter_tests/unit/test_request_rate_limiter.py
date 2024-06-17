@@ -47,14 +47,21 @@ def test_check_request_limit(mocker: pytest_mock.MockFixture):
                 methods=frozenset(["GET", "PATCH"]),
                 event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                     key="key",
-                    headers=frozenset(["header"]),
+                    headers=tuple(
+                        [
+                            dl_rate_limiter.RequestEventKeyTemplateHeader(
+                                key="header",
+                                regex=re.compile("^(?P<result>.{5})"),  # first 5 characters
+                            )
+                        ]
+                    ),
                 ),
                 limit=1,
                 window_ms=1000,
-            )
+            ),
         ],
     )
-    request = dl_rate_limiter.Request(url="http://example.com", method="GET", headers={"header": "value"})
+    request = dl_rate_limiter.Request(url="http://example.com", method="GET", headers={"header": "value_value_value"})
 
     result = rate_limiter.check_limit(request=request)
     assert result is True
@@ -72,7 +79,9 @@ def test_check_request_limit(mocker: pytest_mock.MockFixture):
 
     # excessive headers
     mock_event_limiter.reset_mock()
-    result = rate_limiter.check_limit(request=attrs.evolve(request, headers={"header": "value", "header2": "value2"}))
+    result = rate_limiter.check_limit(
+        request=attrs.evolve(request, headers={"header": "value_value_value", "header2": "value2"})
+    )
     assert result is True
     mock_event_limiter.check_limit.assert_called_once_with(
         event_key="key:value",
@@ -118,7 +127,7 @@ async def test_async_check_request_limit(mocker: pytest_mock.MockFixture):
                 methods=frozenset(["GET", "PATCH"]),
                 event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                     key="key",
-                    headers=frozenset(["header"]),
+                    headers=tuple([dl_rate_limiter.RequestEventKeyTemplateHeader(key="header")]),
                 ),
                 limit=1,
                 window_ms=1000,
@@ -190,7 +199,7 @@ def test_check_request_limit_multiple_patterns(mocker: pytest_mock.MockFixture):
                 methods=frozenset(["GET", "POST"]),
                 event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                     key="all_requests",
-                    headers=frozenset(["header"]),
+                    headers=tuple([dl_rate_limiter.RequestEventKeyTemplateHeader(key="header")]),
                 ),
                 limit=1,
                 window_ms=1000,
@@ -200,7 +209,7 @@ def test_check_request_limit_multiple_patterns(mocker: pytest_mock.MockFixture):
                 methods=frozenset(["GET", "POST"]),
                 event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                     key="dot_com_requests",
-                    headers=frozenset(["header"]),
+                    headers=tuple([dl_rate_limiter.RequestEventKeyTemplateHeader(key="header")]),
                 ),
                 limit=1,
                 window_ms=1000,
@@ -252,7 +261,7 @@ async def test_async_check_request_limit_multiple_patterns(mocker: pytest_mock.M
                 methods=frozenset(["GET", "POST"]),
                 event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                     key="all_requests",
-                    headers=frozenset(["header"]),
+                    headers=tuple([dl_rate_limiter.RequestEventKeyTemplateHeader(key="header")]),
                 ),
                 limit=1,
                 window_ms=1000,
@@ -262,7 +271,7 @@ async def test_async_check_request_limit_multiple_patterns(mocker: pytest_mock.M
                 methods=frozenset(["GET", "POST"]),
                 event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                     key="dot_com_requests",
-                    headers=frozenset(["header"]),
+                    headers=tuple([dl_rate_limiter.RequestEventKeyTemplateHeader(key="header")]),
                 ),
                 limit=1,
                 window_ms=1000,

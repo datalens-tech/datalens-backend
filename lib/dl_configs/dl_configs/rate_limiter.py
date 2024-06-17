@@ -14,16 +14,36 @@ from dl_configs.utils import (
 
 
 @attr.s(frozen=True)
-class RequestEventKeyTemplate(SettingsBase):
+class RequestEventKeyTemplateHeader(SettingsBase):
     key: str = s_attrib("KEY")  # type: ignore
-    headers: tuple[str, ...] = s_attrib("HEADERS", missing_factory=tuple)  # type: ignore
+    regex: typing.Optional[str] = s_attrib("REGEX", missing=None)  # type: ignore
 
     @classmethod
     def from_json(cls, json_value: typing.Any) -> typing_extensions.Self:
+        if isinstance(json_value, str):
+            return cls(key=json_value)  # type: ignore
+
         assert isinstance(json_value, typing.Mapping)
         return cls(  # type: ignore
             key=json_value["KEY"],
-            headers=tuple(json_value["HEADERS"]),
+            regex=json_value.get("REGEX"),
+        )
+
+
+@attr.s(frozen=True)
+class RequestEventKeyTemplate(SettingsBase):
+    key: str = s_attrib("KEY")  # type: ignore
+    headers: tuple[RequestEventKeyTemplateHeader, ...] = s_attrib("HEADERS", missing_factory=tuple)  # type: ignore
+
+    @classmethod
+    def from_json(cls, json_value: typing.Any) -> typing_extensions.Self:
+        if isinstance(json_value, str):
+            return cls(key=json_value)  # type: ignore
+
+        assert isinstance(json_value, typing.Mapping)
+        return cls(  # type: ignore
+            key=json_value["KEY"],
+            headers=tuple(RequestEventKeyTemplateHeader.from_json(header) for header in json_value["HEADERS"]),
         )
 
 

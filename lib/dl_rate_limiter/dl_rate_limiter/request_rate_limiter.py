@@ -22,15 +22,38 @@ class Request:
 
 
 @attr.s(auto_attribs=True)
+class RequestEventKeyTemplateHeader:
+    key: str
+    regex: typing.Optional[re.Pattern] = None  # Should contain result group
+
+    def generate_value(self, headers: typing.Mapping[str, str]) -> str:
+        try:
+            value = headers[self.key]
+        except KeyError as exc:
+            raise TemplateError(f"Header {self.key} not found in request headers") from exc
+
+        if self.regex is None:
+            return value
+
+        match = self.regex.match(value)
+        if match is None:
+            raise TemplateError(f"Header {self.key} value {value} does not match regex {self.regex}")
+
+        result = match.group("result")
+
+        if result is None:
+            raise TemplateError(f"Header {self.key} value {value} does not contain result group")
+
+        return result
+
+
+@attr.s(auto_attribs=True)
 class RequestEventKeyTemplate:
     key: str
-    headers: frozenset[str]
+    headers: tuple[RequestEventKeyTemplateHeader]
 
     def generate_key(self, request: Request) -> str:
-        try:
-            headers_values = ":".join(request.headers[header] for header in self.headers)
-        except KeyError as exc:
-            raise TemplateError("Header not found in request headers") from exc
+        headers_values = ",".join(header.generate_value(request.headers) for header in self.headers)
 
         return f"{self.key}:{headers_values}"
 
@@ -120,6 +143,7 @@ class AsyncRequestRateLimiter:
 __all__ = [
     "AsyncRequestRateLimiter",
     "SyncRequestRateLimiter",
+    "RequestEventKeyTemplateHeader",
     "RequestEventKeyTemplate",
     "RequestPattern",
     "Request",
