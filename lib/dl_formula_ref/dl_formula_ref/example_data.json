@@ -94,6 +94,38 @@
         }
     ],
     [
+        "ARG_MAX.Example",
+        {
+            "columns": [
+                {
+                    "name": "Warmest Month",
+                    "type": "STRING"
+                }
+            ],
+            "rows": [
+                [
+                    "July"
+                ]
+            ]
+        }
+    ],
+    [
+        "ARG_MIN.Example",
+        {
+            "columns": [
+                {
+                    "name": "Coldest Month",
+                    "type": "STRING"
+                }
+            ],
+            "rows": [
+                [
+                    "January"
+                ]
+            ]
+        }
+    ],
+    [
         "ARR_AVG.Example",
         {
             "columns": [
@@ -439,6 +471,144 @@
                 [
                     1.0,
                     0.7853981633974483
+                ]
+            ]
+        }
+    ],
+    [
+        "AVG.Example",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Avg Orders",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "Avg Profit",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    7.0,
+                    4553.4349999999995
+                ],
+                [
+                    "London",
+                    4.5,
+                    435.05
+                ],
+                [
+                    "Moscow",
+                    3.0,
+                    667.92
+                ],
+                [
+                    "San Francisco",
+                    17.5,
+                    1132.5
+                ]
+            ]
+        }
+    ],
+    [
+        "AVG_IF_WINDOW.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "Date",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Profit",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "AVG_IF TOTAL",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "AVG_IF WITHIN",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "AVG_IF AMONG",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "2019-03-01",
+                    "Furniture",
+                    1000.0,
+                    2840.1,
+                    1000.0,
+                    2840.1
+                ],
+                [
+                    "2019-03-01",
+                    "Office Supplies",
+                    843.8,
+                    2840.1,
+                    1000.0,
+                    null
+                ],
+                [
+                    "2019-03-02",
+                    "Furniture",
+                    4950.5,
+                    2840.1,
+                    4950.5,
+                    2840.1
+                ],
+                [
+                    "2019-03-03",
+                    "Furniture",
+                    4000.0,
+                    2840.1,
+                    4000.0,
+                    2840.1
+                ],
+                [
+                    "2019-03-03",
+                    "Office Supplies",
+                    85.0,
+                    2840.1,
+                    4000.0,
+                    null
+                ],
+                [
+                    "2019-03-04",
+                    "Furniture",
+                    3500.0,
+                    2840.1,
+                    3500.0,
+                    2840.1
+                ],
+                [
+                    "2019-03-04",
+                    "Office Supplies",
+                    1300.0,
+                    2840.1,
+                    3500.0,
+                    null
+                ],
+                [
+                    "2019-03-05",
+                    "Furniture",
+                    750.0,
+                    2840.1,
+                    750.0,
+                    2840.1
                 ]
             ]
         }
@@ -983,6 +1153,103 @@
                     1.0,
                     3.141592653589793,
                     -8165619676597685.0
+                ]
+            ]
+        }
+    ],
+    [
+        "COUNT_IF_WINDOW.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "Date",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Profit",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "COUNT_IF TOTAL",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "COUNT_IF WITHIN",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "COUNT_IF AMONG",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "2019-03-01",
+                    "Furniture",
+                    1000.0,
+                    5.0,
+                    1.0,
+                    5.0
+                ],
+                [
+                    "2019-03-01",
+                    "Office Supplies",
+                    843.8,
+                    5.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    "2019-03-02",
+                    "Furniture",
+                    4950.5,
+                    5.0,
+                    1.0,
+                    5.0
+                ],
+                [
+                    "2019-03-03",
+                    "Furniture",
+                    4000.0,
+                    5.0,
+                    1.0,
+                    5.0
+                ],
+                [
+                    "2019-03-03",
+                    "Office Supplies",
+                    85.0,
+                    5.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    "2019-03-04",
+                    "Furniture",
+                    3500.0,
+                    5.0,
+                    1.0,
+                    5.0
+                ],
+                [
+                    "2019-03-04",
+                    "Office Supplies",
+                    1300.0,
+                    5.0,
+                    1.0,
+                    0.0
+                ],
+                [
+                    "2019-03-05",
+                    "Furniture",
+                    750.0,
+                    5.0,
+                    1.0,
+                    5.0
                 ]
             ]
         }
@@ -2401,6 +2668,47 @@
         }
     ],
     [
+        "MAX.Example",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Max Orders",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "Max Profit",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    9,
+                    6205.87
+                ],
+                [
+                    "London",
+                    8,
+                    750.0
+                ],
+                [
+                    "Moscow",
+                    4,
+                    1250.5
+                ],
+                [
+                    "San Francisco",
+                    23,
+                    1542.0
+                ]
+            ]
+        }
+    ],
+    [
         "MAX_WINDOW.Example with grouping",
         {
             "columns": [
@@ -2711,7 +3019,48 @@
             ],
             "rows": [
                 [
-                    750.0
+                    1250.5
+                ]
+            ]
+        }
+    ],
+    [
+        "MIN.Example",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Min Orders",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "Min Profit",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    5,
+                    2901.0
+                ],
+                [
+                    "London",
+                    1,
+                    120.1
+                ],
+                [
+                    "Moscow",
+                    2,
+                    85.34
+                ],
+                [
+                    "San Francisco",
+                    12,
+                    723.0
                 ]
             ]
         }
@@ -3418,6 +3767,32 @@
                     34,
                     28,
                     34
+                ]
+            ]
+        }
+    ],
+    [
+        "QUANTILE.Example",
+        {
+            "columns": [
+                {
+                    "name": "0.25 quantile",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "0.5 quantile",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "0.75 quantile",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    -1.0,
+                    7.0,
+                    18.0
                 ]
             ]
         }
@@ -5107,8 +5482,8 @@
             "rows": [
                 [
                     "Detroit",
-                    5,
-                    6205.87
+                    14,
+                    9106.869999999999
                 ],
                 [
                     "London",
@@ -5122,8 +5497,146 @@
                 ],
                 [
                     "San Francisco",
-                    23,
-                    723.0
+                    35,
+                    2265.0
+                ]
+            ]
+        }
+    ],
+    [
+        "SUM_IF.Example",
+        {
+            "columns": [
+                {
+                    "name": "City",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Sum Orders",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "Sum Profit",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "Detroit",
+                    14,
+                    9106.869999999999
+                ],
+                [
+                    "London",
+                    8,
+                    750.0
+                ],
+                [
+                    "Moscow",
+                    null,
+                    1250.5
+                ],
+                [
+                    "San Francisco",
+                    35,
+                    2265.0
+                ]
+            ]
+        }
+    ],
+    [
+        "SUM_IF_WINDOW.Example with grouping",
+        {
+            "columns": [
+                {
+                    "name": "Date",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Category",
+                    "type": "STRING"
+                },
+                {
+                    "name": "Profit",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "SUM_IF TOTAL",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "SUM_IF WITHIN",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "SUM_IF AMONG",
+                    "type": "FLOAT"
+                }
+            ],
+            "rows": [
+                [
+                    "2019-03-01",
+                    "Furniture",
+                    1000.0,
+                    14200.5,
+                    1000.0,
+                    14200.5
+                ],
+                [
+                    "2019-03-01",
+                    "Office Supplies",
+                    843.8,
+                    14200.5,
+                    1000.0,
+                    null
+                ],
+                [
+                    "2019-03-02",
+                    "Furniture",
+                    4950.5,
+                    14200.5,
+                    4950.5,
+                    14200.5
+                ],
+                [
+                    "2019-03-03",
+                    "Furniture",
+                    4000.0,
+                    14200.5,
+                    4000.0,
+                    14200.5
+                ],
+                [
+                    "2019-03-03",
+                    "Office Supplies",
+                    85.0,
+                    14200.5,
+                    4000.0,
+                    null
+                ],
+                [
+                    "2019-03-04",
+                    "Furniture",
+                    3500.0,
+                    14200.5,
+                    3500.0,
+                    14200.5
+                ],
+                [
+                    "2019-03-04",
+                    "Office Supplies",
+                    1300.0,
+                    14200.5,
+                    3500.0,
+                    null
+                ],
+                [
+                    "2019-03-05",
+                    "Furniture",
+                    750.0,
+                    14200.5,
+                    750.0,
+                    14200.5
                 ]
             ]
         }

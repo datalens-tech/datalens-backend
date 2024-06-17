@@ -121,6 +121,42 @@ def _make_rank_examples(func: str) -> List[DataExample]:
     return examples
 
 
+def _make_if_examples(func: str) -> List[DataExample]:
+    func = func.upper()
+    examples = [
+        DataExample(
+            example_config=ExampleConfig(
+                name=_("Example with grouping"),
+                source=_SOURCE_SALES_DATA_1,
+                group_by=["[Date]", "[Category]"],
+                order_by=["[Date]", "[Category]"],
+                show_source_table=True,
+                formula_fields=[("Date", "[Date]"), ("Category", "[Category]"), ("Profit", "SUM([Profit])")],
+                formulas_as_names=False,
+                additional_transformations=[
+                    [
+                        ("Date", "[Date]"),
+                        ("Category", "[Category]"),
+                        ("Profit", "[Profit]"),
+                        (f"{func} TOTAL", f"{func}([Profit], [Category] = 'Furniture' TOTAL)"),
+                        (f"{func} WITHIN", f"{func}([Profit], [Category] = 'Furniture' WITHIN [Date])"),
+                        (f"{func} AMONG", f"{func}([Profit], [Category] = 'Furniture' WITHIN [Category])"),
+                    ],
+                ],
+                override_formula_fields=[
+                    ("Date", "[Date]"),
+                    ("Category", "[Category]"),
+                    ("Profit", "SUM([Profit])"),
+                    (f"{func} TOTAL", f"{func}(SUM([Profit]), [Category] = 'Furniture' TOTAL)"),
+                    (f"{func} WITHIN", f"{func}(SUM([Profit]), [Category] = 'Furniture' WITHIN [Date])"),
+                    (f"{func} AMONG", f"{func}(SUM([Profit]), [Category] = 'Furniture' AMONG [Date])"),
+                ],
+            ),
+        ),
+    ]
+    return examples
+
+
 _RANK_RESOURCES = SimpleAliasedResourceRegistry(
     resources={
         "rank_direction_description": AliasedTextResource(
@@ -296,26 +332,7 @@ FUNCTION_SUM_IF_WINDOW = FunctionDocRegistryItem(
         "Returns the sum of all the expression values that meet the {arg:1} condition. "
         "Applicable to numeric data types only."
     ),
-    examples=[
-        SimpleExample(example_str)
-        for example_str in (
-            "SUM_IF([Profit], [Category] = 'Office Supplies' TOTAL)",  # translates into:
-            #    SUM("Profit") FILTER (WHERE "Category" = 'Office Supplies')
-            #    OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
-            "SUM_IF([Profit], [Category] = 'Office Supplies' WITHIN [Date])",  # translates into:
-            #    SUM("Profit") FILTER (WHERE "Category" = 'Office Supplies')
-            #    OVER (
-            #        PARTITION BY "Date"
-            #        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
-            #    )
-            "SUM_IF([Profit], [Category] = 'Office Supplies' AMONG [Date])",  # translates into:
-            #    SUM("Profit") FILTER (WHERE "Category" = 'Office Supplies')
-            #    OVER (
-            #        PARTITION BY <all dimensions except "Date">
-            #        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
-            #    )
-        )
-    ],
+    examples=[*_make_if_examples("sum_if")],
 )
 
 FUNCTION_COUNT_IF_WINDOW = FunctionDocRegistryItem(
@@ -326,14 +343,7 @@ FUNCTION_COUNT_IF_WINDOW = FunctionDocRegistryItem(
     ),
     category=CATEGORY_WINDOW,
     description=_("Returns the number of items in the specified window meeting the {arg:0} condition."),
-    examples=[
-        SimpleExample(example_str)
-        for example_str in (
-            "COUNT_IF([Profit], [Category] = 'Office Supplies' TOTAL)",
-            "COUNT_IF([Profit], [Category] = 'Office Supplies' WITHIN [Date])",
-            "COUNT_IF([Profit], [Category] = 'Office Supplies' AMONG [Date])",
-        )
-    ],
+    examples=[*_make_if_examples("count_if")],
 )
 
 FUNCTION_AVG_IF_WINDOW = FunctionDocRegistryItem(
@@ -347,14 +357,7 @@ FUNCTION_AVG_IF_WINDOW = FunctionDocRegistryItem(
         "Returns the average of all values that meet the {arg:1} condition. "
         "If the values don't exist, it returns `NULL`. Applicable to numeric data types only."
     ),
-    examples=[
-        SimpleExample(example_str)
-        for example_str in (
-            "AVG_IF([Profit], [Category] = 'Office Supplies' TOTAL)",
-            "AVG_IF([Profit], [Category] = 'Office Supplies' WITHIN [Date])",
-            "AVG_IF([Profit], [Category] = 'Office Supplies' AMONG [Date])",
-        )
-    ],
+    examples=[*_make_if_examples("avg_if")],
 )
 
 

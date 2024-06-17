@@ -351,13 +351,13 @@ class AggArgMinMax(AggregationFunction):
 class AggArgMin(AggArgMinMax):
     name = "arg_min"
     arg_cnt = 2
-    arg_names = ["value", "comp"]
+    arg_names = ["value", "expression_to_minimize"]
 
 
 class AggArgMax(AggArgMinMax):
     name = "arg_max"
     arg_cnt = 2
-    arg_names = ["value", "comp"]
+    arg_names = ["value", "expression_to_maximize"]
 
 
 # Blacklist of types,

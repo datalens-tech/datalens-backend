@@ -14,12 +14,20 @@ CATEGORY_TYPE_CONVERSION = FunctionDocCategory(
     keywords="",
     resources=SimpleAliasedResourceRegistry(
         resources={
-            "unix_ts": AliasedLinkResource(url=_("https://en.wikipedia.org/wiki/Unix_time")),
+            "ch_parseDateTime": AliasedLinkResource(
+                url=_(
+                    "https://clickhouse.com/docs/en/sql-reference/functions/type-conversion-functions#parsedatetime32besteffort"
+                )
+            ),
+            "ch_toStartOfInterval": AliasedLinkResource(
+                url=_("https://clickhouse.com/docs/en/sql-reference/functions/date-time-functions#tostartofinterval")
+            ),
+            "geopolygon_link": AliasedLinkResource(url=_("../concepts/data-types.md#geopolygon")),
             "timezone_link": AliasedLinkResource(
                 url=_("https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List")
             ),
-            "geopolygon_link": AliasedLinkResource(url=_("../concepts/data-types.md#geopolygon")),
             "tree_link": AliasedLinkResource(url=_("../concepts/data-types.md#tree-hierarchy")),
+            "unix_ts": AliasedLinkResource(url=_("https://en.wikipedia.org/wiki/Unix_time")),
         }
     ),
 )
