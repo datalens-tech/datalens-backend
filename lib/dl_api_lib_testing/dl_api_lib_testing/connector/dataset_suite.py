@@ -41,7 +41,6 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
 
     def test_dataset__delete_result_field__available_after_refresh(
         self,
-        saved_connection: ConnectionBase,
         saved_dataset: Dataset,
         control_api: SyncHttpDatasetApiV1,
     ) -> None:
