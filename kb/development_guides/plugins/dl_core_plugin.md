@@ -108,8 +108,6 @@ Defines a `DataModel` – this is the connection data itself, some of which is s
 
 Performs data validation when the connection is changed (`validate_new_data`).
 
-Предоставляет `ConnDTO` (`get_conn_dto()`), который содержит данные для подключения к источнику и используется для построения `ConnExecutor`а,
-также может использоваться для получения данных подключения при, например, логировании.
 Provides a `ConnDTO` (`get_conn_dto()`), which contains source connection parameters and is used to build a `ConnExecutor`.
 Note: `ConnDTO` is translated into a `TargetConnDTO` by the connection executor, it can additionally be divided into multiple DTOs (one per host) and can be supplemented with connection options.
 
