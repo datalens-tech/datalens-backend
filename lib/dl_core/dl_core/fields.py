@@ -476,4 +476,8 @@ class ResultSchema:
         self.clear_caches()
 
     def get_fields_by_source(self, source_id: str) -> List[BIField]:
-        return [field for field in self.fields if field.source == source_id]
+        return [
+            field
+            for field in self.fields
+            if isinstance(field.calc_spec, DirectCalculationSpec) and field.source == source_id
+        ]
