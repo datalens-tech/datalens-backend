@@ -50,7 +50,7 @@ class RequestEventKeyTemplateHeader:
 @attr.s(auto_attribs=True)
 class RequestEventKeyTemplate:
     key: str
-    headers: tuple[RequestEventKeyTemplateHeader]
+    headers: tuple[RequestEventKeyTemplateHeader, ...]
 
     def generate_key(self, request: Request) -> str:
         headers_values = ",".join(header.generate_value(request.headers) for header in self.headers)
