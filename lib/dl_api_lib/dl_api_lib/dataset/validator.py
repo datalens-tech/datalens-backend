@@ -1098,6 +1098,8 @@ class DatasetValidator(DatasetBaseWrapper):
 
         self._reload_sources()
 
+        if len(new_raw_schema) != len(self._ds.result_schema.get_fields_by_source(source_id)):
+            force_update_fields = True
         if not self._are_schemas_identical(new_raw_schema, old_raw_schema) or force_update_fields:
             # try to match old and new schemas against each other
             # and update result_schema fields accordingly
