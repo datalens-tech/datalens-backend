@@ -2,7 +2,7 @@
 
 ## Before you begin
 
-This guide covers the basics of connector plugins, it is intended to be a starting point before starting the development,
+This guide covers the basics of connector plugins, it is intended to be a reference point before starting the development,
 it sets up the terminology, but it cannot cover every aspect of development, therefore further digging into the code
 to gather examples is most certainly required to implement a new connector.
 
