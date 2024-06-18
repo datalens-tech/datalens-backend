@@ -25,7 +25,7 @@ Thus, the core-plugin consists of 4 parts:
   connector-specific settings
   – there may be more than one definition for a single connector
 
-- `CoreSourceDefinition` – the DataSource object, its specification and storage scheme – there is usually more than one definition for a single connector
+- `CoreSourceDefinition` – the DataSource object, its specification and storage schema – there is usually more than one definition for a single connector
 
 - `CoreConnector` – combines the definition classes listed above and defines the mapping of sqlalchemy type generators to the data types of the source
 
