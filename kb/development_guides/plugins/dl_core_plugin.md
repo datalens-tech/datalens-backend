@@ -41,7 +41,7 @@ DataSource is a part of a dataset, but it is tightly bound to the connection it 
 
 When creating a dataset, the list of DataSources is obtained from the connection as a list of parameter sets necessary for initializing the DataSource.
 
-After a specific set of parameters is added to a dataset, a DataSource is built based on it, which is added to the dataset.
+After a specific set of parameters is requested to be added to a dataset, a DataSource is built based on it, which becomes a part of a dataset.
 
 #### DataSource and DataSourceSpec
 
