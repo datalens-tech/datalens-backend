@@ -74,7 +74,7 @@ DataSources are stored only as part of a dataset, according to this marshmallow 
 
 Allows specification of a custom sqlalchemy `Query` class.
 
-Allows specification of a custom query compiler, which in turn controls quotation, column aliasing, group by policy, etc.
+Allows specification of a custom query compiler, which in turn controls quotation, column aliasing, GROUP BY policy, etc.
 
 </details>
 
