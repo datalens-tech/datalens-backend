@@ -16,6 +16,7 @@ This guide does not yet cover:
 - localization
 - auto-generated documentation (dl-formula-ref plugins)
 - in-depth overview of each class capabilities or the interaction of connections and datasets
+- testing the connector (there is a number of test suites that can let you verify that the connector functions before building the app, each connector package have a tests package, refer to existing connectors to learn more about tests)
 
 ## Connector basics and plugin system
 
