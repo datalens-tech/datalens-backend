@@ -1,0 +1,71 @@
+version: '3.7'
+
+services:
+  zitadel-db:
+    restart: 'always'
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: zitadel
+      POSTGRES_USER: zit
+      POSTGRES_PASSWORD: zit
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "zitadel", "-U", "zit"]
+      interval: '10s'
+      timeout: '30s'
+      retries: 5
+      start_period: '20s'
+    ports:
+      - "8087:5432"
+    volumes:
+      - ./compose/zitadel-db:/var/lib/postgresql/data
+
+  zitadel:
+    restart: 'always'
+    image: 'ghcr.io/zitadel/zitadel:v2.54.1'
+    command: 'start-from-init --masterkeyFile /data/secrets/zitadel_masterkey --tlsMode disabled'
+    environment:
+      - 'ZITADEL_DATABASE_POSTGRES_HOST=zitadel-db'
+      - 'ZITADEL_DATABASE_POSTGRES_PORT=5432'
+      - 'ZITADEL_DATABASE_POSTGRES_DATABASE=zitadel'
+      - 'ZITADEL_DATABASE_POSTGRES_USER_USERNAME=zit'
+      - 'ZITADEL_DATABASE_POSTGRES_USER_PASSWORD=zit'
+      - 'ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE=disable'
+      - 'ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME=zit'
+      - 'ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD=zit'
+      - 'ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE=disable'
+      - 'ZITADEL_SYSTEMDEFAULTS_SECRETGENERATORS_PASSWORDSALTCOST=1'
+      - 'ZITADEL_EXTERNALSECURE=false'
+      - 'ZITADEL_EXTERNALPORT=${ZITADEL_EXTERNALPORT:-8080}'
+      - 'ZITADEL_EXTERNALDOMAIN=${ZITADEL_EXTERNALDOMAIN:-zitadel}'
+      - 'ZITADEL_FIRSTINSTANCE_PATPATH=/data/machinekey/zitadel-admin-sa.token'
+      - 'ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_USERNAME=zitadel-admin-sa'
+      - 'ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_NAME=Admin'
+      - 'ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINEKEY_TYPE=1'
+      - 'ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_EXPIRATIONDATE=9999-01-01T00:00:00Z'
+      - 'ZITADEL_DEFAULTINSTANCE_OIDCSETTINGS_ACCESSTOKENLIFETIME=0.25h'
+      - 'ZITADEL_DEFAULTINSTANCE_OIDCSETTINGS_REFRESHTOKENEXPIRATION=336h'
+    depends_on:
+      zitadel-pre:
+        condition: 'service_completed_successfully'
+      zitadel-db:
+        condition: 'service_healthy'
+    ports:
+      - '8085:8080'
+    volumes:
+      - ./compose/zitadel:/data:rw
+
+  zitadel-pre:
+    image: ubuntu:24.04
+    command: /zitadel-pre.sh
+    volumes:
+      - ./compose/zitadel-pre.sh:/zitadel-pre.sh
+      - ./compose/zitadel/:/data:rw
+
+  zitadel-post:
+    image: ubuntu:24.04
+    command: /zitadel-post.sh
+    depends_on:
+      - zitadel
+    volumes:
+      - ./compose/zitadel-post.sh:/zitadel-post.sh
+      - ./compose/zitadel/:/data:rw
