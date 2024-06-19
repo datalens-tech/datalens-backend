@@ -1,6 +1,7 @@
 import base64
 from importlib.abc import Traversable
 from importlib.resources import as_file
+import logging
 from typing import (
     ClassVar,
     Optional,
@@ -13,6 +14,9 @@ from dl_i18n.localizer_base import (
     Localizer,
     Translatable,
 )
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 @attr.s
@@ -41,4 +45,5 @@ class ConnectionInfoProvider:
                 with open(file, "rb") as icon_file:
                     return base64.b64encode(icon_file.read())
         except Exception:
+            LOGGER.info(f"Connector icon reading by path {str(filepath)} failed")
             return b""
