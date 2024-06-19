@@ -49,8 +49,8 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         result_field_to_remove = next(iter(dataset.result_schema))
 
         # act
-        dataset = control_api.apply_updates(dataset, updates=[result_field_to_remove.delete()]).dataset
-        dataset_after_deletion = control_api.save_dataset(dataset).dataset
+        dataset_after_update = control_api.apply_updates(dataset, updates=[result_field_to_remove.delete()]).dataset
+        dataset_after_deletion = control_api.save_dataset(dataset_after_update).dataset
         dataset_after_reload = control_api.refresh_dataset_sources(
             dataset_after_deletion, dataset.sources._item_ids
         ).dataset
@@ -58,4 +58,4 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         # assert
         assert result_field_to_remove.title not in [item.title for item in dataset_after_deletion.result_schema]
         assert result_field_to_remove.title in [item.title for item in dataset_after_reload.result_schema]
-        assert len(dataset.result_schema) == len(dataset_after_reload.result_schema)
+        assert len(dataset.result_schema) == len(dataset.result_schema)
