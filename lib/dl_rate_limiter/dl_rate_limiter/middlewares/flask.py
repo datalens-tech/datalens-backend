@@ -31,6 +31,7 @@ class FlaskMiddleware:
         except Exception:
             logger.exception("Failed to check request limit")
 
+        print(flask.request.data)
         logger.info("No request limit was found")
         return None
 
