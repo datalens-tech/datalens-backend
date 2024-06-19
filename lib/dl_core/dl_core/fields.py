@@ -474,3 +474,10 @@ class ResultSchema:
         for field in fields_to_remove:
             self.fields.remove(field)
         self.clear_caches()
+
+    def get_direct_fields_by_source(self, source_id: str) -> List[BIField]:
+        return [
+            field
+            for field in self.fields
+            if isinstance(field.calc_spec, DirectCalculationSpec) and field.source == source_id
+        ]
