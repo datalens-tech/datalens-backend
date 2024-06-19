@@ -47,7 +47,7 @@ target "dl_src_app" {
 
 target "dl_app_configs" {
   contexts = {
-    app_configs = "${DL_B_PROJECT_ROOT}/app/app_configs"
+    app_configs = "${DL_B_SOURCES_ROOT}/app/app_configs"
   }
   dockerfile-inline = dl_dockerfile_prepare_src([
     { cmd = "copy", ctx = "app_configs", target_path = "app_configs" },
