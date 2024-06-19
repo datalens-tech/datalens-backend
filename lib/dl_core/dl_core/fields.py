@@ -475,7 +475,7 @@ class ResultSchema:
             self.fields.remove(field)
         self.clear_caches()
 
-    def get_fields_by_source(self, source_id: str) -> List[BIField]:
+    def get_direct_fields_by_source(self, source_id: str) -> List[BIField]:
         return [
             field
             for field in self.fields

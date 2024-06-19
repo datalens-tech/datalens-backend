@@ -58,3 +58,4 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         # assert
         assert result_field_to_remove.title not in [item.title for item in dataset_after_deletion.result_schema]
         assert result_field_to_remove.title in [item.title for item in dataset_after_reload.result_schema]
+        assert len(dataset.result_schema) == len(dataset_after_reload.result_schema)
