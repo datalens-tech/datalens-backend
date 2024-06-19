@@ -39,7 +39,7 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         dataset_resp = control_api.load_dataset(saved_dataset)
         assert dataset_resp.status_code == 200, dataset_resp.json
 
-    def test_dataset__delete_result_field__available_after_refresh(
+    def test_result_field_available_after_deletion(
         self,
         saved_dataset: Dataset,
         control_api: SyncHttpDatasetApiV1,
