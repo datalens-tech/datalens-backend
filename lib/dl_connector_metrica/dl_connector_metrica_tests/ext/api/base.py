@@ -61,8 +61,8 @@ class MetricaDataApiTestBase(MetricaDatasetTestBase, StandardizedDataApiTestBase
     @pytest.fixture(scope="class")
     def data_api_test_params(self) -> DataApiTestParams:
         return DataApiTestParams(
-            two_dims=("Домен страницы", "Просмотров в минуту"),
-            summable_field="Просмотров в минуту",
+            two_dims=("Домен страницы", "Просмотры"),
+            summable_field="Просмотры",
             range_field="Дата и время просмотра",
             distinct_field="Адрес страницы",
             date_field="Дата просмотра",
