@@ -528,3 +528,43 @@ jobs:
           task cq:check_dir_strict -- .
         env:
           VENV_PATH: /venv
+
+  check_requirements:
+    runs-on: [ self-hosted, linux, light ]
+    needs: gh_build_image
+    container:
+      # until https://github.com/github/docs/issues/25520 is resolved, using vars
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    steps:
+      - name: Cleanup build folder
+        run: |
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          fetch-depth: 1
+      - name: Find directories and check requirements
+        run: |
+          dirs=($(find app lib -name 'pyproject.toml' | awk -F / '{FS=OFS="/";$NF=""; print $(NF-1)}'))
+          code=0
+          for dir in $dirs; do
+            datalens-repmanager-cli req-check --package-name $dir > /dev/null
+            if [ $? -ne 0 ]; then
+              echo "FAILED: $dir"
+              code=1
+            else
+              echo "PASSED: $dir"
+            fi
+          done
+
+
+
+
