@@ -411,7 +411,6 @@ class RepositoryManager:
                 return package_info
         return None
 
-
     def compare_imports_and_requirements(
         self,
         package_module_name: str,
