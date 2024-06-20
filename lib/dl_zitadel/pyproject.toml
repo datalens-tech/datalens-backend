@@ -13,9 +13,12 @@ readme = "README.md"
 attrs = ">=22.2.0"
 python = ">=3.10, <3.13"
 #datalens-constants = {path = "../../lib/dl_constants"}
+httpx = "^0.27.0"
+pydantic = "^2.7.4"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -24,15 +27,22 @@ requires = [
 ]
 
 [tool.pytest.ini_options]
+log_cli = true
+log_level = "INFO"
 minversion = "6.0"
 addopts = "-ra"
 testpaths = []
-
-[datalens_ci]
-skip_test = true
 
 [tool.mypy]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[datalens.pytest.unit]
+root_dir = "dl_zitadel_tests/unit"
+skip_compose = "true"
+
+[datalens.pytest.db]
+root_dir = "dl_zitadel_tests/db"
+labels = ["fat"]

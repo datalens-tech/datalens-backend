@@ -256,8 +256,8 @@ installZitadel() {
     "$DATALENS_UI_URL/auth" \
     "$ZITADEL_DEV_MODE"
 
-  set_secret "DL_CLIENT_SECRET" "$APP_CLIENT_SECRET"
   set_secret "DL_CLIENT_ID" "$APP_CLIENT_ID"
+  set_secret "DL_CLIENT_SECRET" "$APP_CLIENT_SECRET"
 
   echo "Creating charts service user"
   SERVICE_USER_CLIENT_ID="charts"
