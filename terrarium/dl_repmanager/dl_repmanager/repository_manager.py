@@ -431,8 +431,9 @@ class RepositoryManager:
                 package_module_name=package_module_name,
             )
         except KeyError:
-            if not (package_info := self.get_package_name_from_toml(package_module_name)):
+            if not (package_info_from_toml := self.get_package_name_from_toml(package_module_name)):
                 raise ValueError(f"Can`t find {package_module_name} or it may be incorrectly configured.")
+            package_info = package_info_from_toml
 
         def _get_imports(scan_modules: Sequence[str]) -> dict[str, ReqPackageSpec]:
             _result: dict[str, ReqPackageSpec] = {}
