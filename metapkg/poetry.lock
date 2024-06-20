@@ -1032,6 +1032,7 @@ datalens-model-tools = {path = "../dl_model_tools"}
 datalens-pivot = {path = "../dl_pivot"}
 datalens-pivot-pandas = {path = "../dl_pivot_pandas"}
 datalens-query-processing = {path = "../dl_query_processing"}
+datalens-rls = {path = "../dl_rls"}
 datalens-task-processor = {path = "../dl_task_processor"}
 datalens-utils = {path = "../dl_utils"}
 flask = ">=2.2.5"
@@ -1039,7 +1040,6 @@ flask-marshmallow = ">=1.1.0"
 flask-restx = ">=1.1.0"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
-more-itertools = ">=9.1.0"
 statcommons = {path = "../statcommons"}
 werkzeug = ">=2.2.3"
 
@@ -1072,6 +1072,7 @@ datalens-formula-testing = {path = "../dl_formula_testing"}
 datalens-i18n = {path = "../dl_i18n"}
 datalens-pivot-pandas = {path = "../dl_pivot_pandas"}
 datalens-query-processing = {path = "../dl_query_processing"}
+datalens-rls = {path = "../dl_rls"}
 datalens-testing = {path = "../dl_testing"}
 datalens-utils = {path = "../dl_utils"}
 flask = ">=2.2.5"
@@ -1719,6 +1720,7 @@ datalens-constants = {path = "../dl_constants"}
 datalens-dashsql = {path = "../../lib/dl_dashsql"}
 datalens-i18n = {path = "../dl_i18n"}
 datalens-model-tools = {path = "../dl_model_tools"}
+datalens-rls = {path = "../dl_rls"}
 datalens-task-processor = {path = "../dl_task_processor"}
 datalens-utils = {path = "../dl_utils"}
 dnspython = ">=2.2.1"
@@ -2217,6 +2219,24 @@ flask = ["flask (>=2.2.5)"]
 [package.source]
 type = "directory"
 url = "../lib/dl_rate_limiter"
+
+[[package]]
+name = "datalens-rls"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+datalens-constants = {path = "../../lib/dl_constants"}
+more-itertools = ">=9.1.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_rls"
 
 [[package]]
 name = "datalens-sqlalchemy-bitrix"
@@ -6608,4 +6628,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "e885bd42bc2805174b0d15d6016baa3e0b9eb81da42058a7d80a1bc8d70f7710"
+content-hash = "35f54cf163d2eea1e130e1311802fdca170e5465e3aaca66bedb81a4c3c90b8c"

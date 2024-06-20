@@ -153,6 +153,7 @@ datalens-pivot = {path = "../lib/dl_pivot"}
 datalens-pivot-pandas = {path = "../lib/dl_pivot_pandas"}
 datalens-cache-engine = {path = "../lib/dl_cache_engine"}
 datalens-rate-limiter = {path = "../lib/dl_rate_limiter"}
+datalens-rls = {path = "../lib/dl_rls"}
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.12.1"

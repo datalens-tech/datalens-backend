@@ -6,13 +6,10 @@ Module implements RLS management functionality
 
 from __future__ import annotations
 
-import abc
-import copy
 from typing import (
-    Dict,
-    List,
+    NamedTuple,
     Optional,
-    Tuple,
+    cast,
 )
 
 import attr
@@ -21,60 +18,30 @@ from dl_constants.enums import (
     RLSPatternType,
     RLSSubjectType,
 )
-from dl_utils.utils import split_list
+from dl_rls.models import RLSEntry
 
 
-@attr.s(slots=True)
-class RLSSubject:
-    subject_type: RLSSubjectType = attr.ib()
-    subject_id: str = attr.ib()
-    subject_name: str = attr.ib()  # login, group name, etc
-
-
-# Special type subject that denotes 'all subjects'.
-RLS_ALL_SUBJECT_NAME = "*"
-RLS_ALL_SUBJECT = RLSSubject(
-    subject_type=RLSSubjectType.all, subject_id=RLS_ALL_SUBJECT_NAME, subject_name=RLS_ALL_SUBJECT_NAME
-)
-RLS_FAILED_USER_NAME_PREFIX = "!FAILED_"
-# Special type subject that denotes 'insert userid'.
-RLS_USERID_SUBJECT_NAME = "userid"
-RLS_USERID_SUBJECT = RLSSubject(subject_type=RLSSubjectType.userid, subject_id="", subject_name=RLS_USERID_SUBJECT_NAME)
-
-
-@attr.s(slots=True)
-class RLSEntry:
-    field_guid: str = attr.ib()
-    allowed_value: Optional[str] = attr.ib()
-    subject: RLSSubject = attr.ib()
-    # Note: this is a bit of a hack to avoid very extensive splitting of the
-    # RLSEntry into multiple classes.
-    # For `pattern_type=RLSPatternType.all`, `allowed_value` must be `None`.
-    # For `pattern_type=RLSPatternType.userid`, `allowed_value` must be `None`,
-    # and `subject` must be `RLSSubjectType.userid`.
-    pattern_type: RLSPatternType = attr.ib(default=RLSPatternType.value)
-
-    def ensure_removed_failed_subject_prefix(self) -> RLSEntry:
-        rls_entry = copy.deepcopy(self)
-        rls_entry.subject.subject_name = rls_entry.subject.subject_name.removeprefix(RLS_FAILED_USER_NAME_PREFIX)
-        return rls_entry
+class FieldRestrictions(NamedTuple):
+    allow_all_values: bool
+    allow_userid: bool
+    allowed_values: list[str]
 
 
 @attr.s
 class RLS:
-    items: List[RLSEntry] = attr.ib(factory=list)
+    items: list[RLSEntry] = attr.ib(factory=list)
 
     @property
     def has_restrictions(self) -> bool:
         return bool(self.items)
 
     @property
-    def fields_with_rls(self) -> List[str]:
+    def fields_with_rls(self) -> list[str]:
         return list(set(item.field_guid for item in self.items))
 
     def get_entries(
         self, field_guid: str, subject_type: RLSSubjectType, subject_id: str, add_userid_entry: bool = True
-    ) -> List[RLSEntry]:
+    ) -> list[RLSEntry]:
         return [
             item
             for item in self.items
@@ -94,7 +61,7 @@ class RLS:
         field_guid: str,
         subject_type: RLSSubjectType,
         subject_id: str,
-    ) -> Tuple[bool, bool, Optional[List[str]]]:
+    ) -> FieldRestrictions:
         """
         For subject and field, return `allow_all_values, allowed_values`.
         """
@@ -102,37 +69,42 @@ class RLS:
 
         # There's a `*: {current_user}` entry, no need to filter.
         if any(rls_entry.pattern_type == RLSPatternType.all for rls_entry in rls_entries):
-            return True, False, None
+            return FieldRestrictions(allow_all_values=True, allow_userid=False, allowed_values=[])
 
         # Pick out userid-entry, if any
-        userid_entries, rls_entries = split_list(
-            rls_entries, lambda rls_entry: rls_entry.pattern_type == RLSPatternType.userid
-        )
+        userid_entry: Optional[RLSEntry] = None
+        for rls_entry in rls_entries:
+            if rls_entry.pattern_type != RLSPatternType.userid:
+                continue
+            if userid_entry is not None:
+                raise ValueError("Expected no more than one userid entries")
+            userid_entry = rls_entry
+        if userid_entry is not None:
+            rls_entries.remove(userid_entry)
 
         # normal values
         assert all(
             rls_entry.pattern_type == RLSPatternType.value for rls_entry in rls_entries
         ), "only simple values should remain at this point"
-        allowed_values = [rls_entry.allowed_value for rls_entry in rls_entries]
+        allowed_values = cast(list[str], [rls_entry.allowed_value for rls_entry in rls_entries])  # cast for mypy
+        assert all(value is not None for value in allowed_values)
 
         # `userid: userid` case
         allow_userid = False
-        if userid_entries:
-            assert len(userid_entries) == 1
-            userid_entry = userid_entries[0]
+        if userid_entry is not None:
             assert userid_entry.pattern_type == RLSPatternType.userid
             assert userid_entry.allowed_value is None
             # only `userid: userid` makes sense
             assert userid_entry.subject.subject_type == RLSSubjectType.userid
             allow_userid = True
 
-        return False, allow_userid, allowed_values  # type: ignore  # TODO: fix
+        return FieldRestrictions(allow_all_values=False, allow_userid=allow_userid, allowed_values=allowed_values)
 
     def get_subject_restrictions(
         self,
         subject_type: RLSSubjectType,
         subject_id: str,
-    ) -> Dict[str, List[str]]:
+    ) -> dict[str, list[str]]:
         result = {}
         for field_guid in self.fields_with_rls:
             allow_all_values, allow_userid, allowed_values = self.get_field_restriction_for_subject(
@@ -144,14 +116,8 @@ class RLS:
 
             # For `userid: userid`, add the subject id to the values.
             if allow_userid:
-                allowed_values = list(allowed_values) + [subject_id]  # type: ignore  # TODO: fix
+                allowed_values = list(allowed_values) + [subject_id]
 
             result[field_guid] = allowed_values
 
-        return result  # type: ignore  # TODO: fix
-
-
-class BaseSubjectResolver(metaclass=abc.ABCMeta):
-    @abc.abstractmethod
-    def get_subjects_by_names(self, names: List[str]) -> List[RLSSubject]:
-        raise NotImplementedError
+        return result

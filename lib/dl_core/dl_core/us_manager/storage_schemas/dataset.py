@@ -30,7 +30,6 @@ from dl_constants.enums import (
     WhereClauseOperation,
 )
 from dl_core import multisource
-from dl_core import rls as rls_module
 from dl_core.base_models import (
     DefaultWhereClause,
     ObligatoryFilter,
@@ -75,6 +74,11 @@ from dl_model_tools.typed_values import (
     TreeStrValue,
     UuidValue,
 )
+from dl_rls.models import (
+    RLSEntry,
+    RLSSubject,
+)
+from dl_rls.rls import RLS
 
 
 class SourceAvatarSchema(DefaultStorageSchema):
@@ -145,13 +149,13 @@ class AvatarRelationSchema(DefaultStorageSchema):
 
 
 class RLSSchema(DefaultStorageSchema):
-    TARGET_CLS = rls_module.RLS
+    TARGET_CLS = RLS
 
     class RLSEntrySchema(DefaultStorageSchema):
-        TARGET_CLS = rls_module.RLSEntry
+        TARGET_CLS = RLSEntry
 
         class RLSSubjectSchema(DefaultStorageSchema):
-            TARGET_CLS = rls_module.RLSSubject
+            TARGET_CLS = RLSSubject
 
             subject_type = ma_fields.Enum(RLSSubjectType)
             subject_id = ma_fields.String()

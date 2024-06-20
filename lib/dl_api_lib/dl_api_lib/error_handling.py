@@ -26,6 +26,7 @@ from dl_core import exc as common_exc
 from dl_dashsql import exc as dashsql_exc
 from dl_formula.core import exc as formula_exc
 import dl_query_processing.exc
+from dl_rls import exc as rls_exc
 
 
 LOGGER = logging.getLogger(__name__)
@@ -56,8 +57,7 @@ EXCEPTION_CODES = {
     common_exc.InvalidFieldError: status.BAD_REQUEST,
     common_exc.FieldNotFound: status.BAD_REQUEST,
     common_exc.USPermissionRequired: status.FORBIDDEN,
-    exc.RLSConfigParsingError: status.BAD_REQUEST,
-    common_exc.RLSSubjectNotFound: status.BAD_REQUEST,
+    rls_exc.RLSError: status.BAD_REQUEST,
     exc.FeatureNotAvailable: status.BAD_REQUEST,
     dl_query_processing.exc.FilterError: status.BAD_REQUEST,
     exc.UnsupportedForEntityType: status.BAD_REQUEST,

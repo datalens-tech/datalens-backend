@@ -1,19 +1,13 @@
 from __future__ import annotations
 
-from contextlib import contextmanager
 from enum import Enum
 import functools
 from itertools import islice
 import operator
-from time import time
 from typing import (
     Any,
-    Callable,
-    Generator,
     Iterable,
-    List,
     Optional,
-    Tuple,
     Type,
     TypeVar,
 )
@@ -28,26 +22,6 @@ def get_type_full_name(t: Type) -> str:
     if module == "builtins":
         return qual_name
     return f"{module}.{qual_name}"
-
-
-# split_list value TypeVar
-_SL_V_TV = TypeVar("_SL_V_TV")
-
-
-def split_list(
-    iterable: Iterable[_SL_V_TV], condition: Callable[[_SL_V_TV], bool]
-) -> Tuple[List[_SL_V_TV], List[_SL_V_TV]]:
-    """
-    Split list items into `(matching, non_matching)` by `condition(item)` callable.
-    """
-    matching: List[_SL_V_TV] = []
-    non_matching: List[_SL_V_TV] = []
-    for item in iterable:
-        if condition(item):
-            matching.append(item)
-        else:
-            non_matching.append(item)
-    return matching, non_matching
 
 
 class DotDict(dict):
@@ -125,30 +99,6 @@ _ENUM_TV = TypeVar("_ENUM_TV", bound=Enum)
 def enum_not_none(val: Optional[_ENUM_TV]) -> _ENUM_TV:
     assert val is not None
     return val
-
-
-def time_it(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def wrap(*args: Any, **kwargs: Any) -> Any:
-        t0 = time()
-        print(f"Invoked {fn}({args}, {kwargs})"[:160])
-        result = fn(*args, **kwargs)
-        delta = time() - t0
-        if delta >= 0.01:
-            print(f"<< Time elapsed: {delta} for {fn}({args}, {kwargs})"[:160])
-        return result
-
-    return wrap
-
-
-@contextmanager
-def time_it_cm(label: str) -> Generator[None, None, None]:
-    # print(f'Time it for {label}')
-    t0 = time()
-    yield
-    delta = time() - t0
-    if delta >= 0.01:
-        print(f"Time elapsed for {label}: {delta}")
 
 
 def make_url(
