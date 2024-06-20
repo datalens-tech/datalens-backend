@@ -10,7 +10,6 @@ from dl_testing.regulated_test import RegulatedTestCase
 
 
 class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase):
-    uses_classic_sql_connection_schema = False
 
     def test_create_connection(
         self,
@@ -92,8 +91,8 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         bi_headers: Optional[dict[str, str]],
         connection_params: dict,
     ) -> None:
-        if not self.uses_classic_sql_connection_schema:
-            pytest.skip()
+        if "db_name" not in connection_params:
+            pytest.skip("No db_name field in schema")
 
         # arrange
         connection_params = connection_params.copy()

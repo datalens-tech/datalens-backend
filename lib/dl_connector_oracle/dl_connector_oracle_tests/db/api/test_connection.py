@@ -4,4 +4,4 @@ from dl_connector_oracle_tests.db.api.base import OracleConnectionTestBase
 
 
 class TestOracleConnection(OracleConnectionTestBase, DefaultConnectorConnectionTestSuite):
-    uses_classic_sql_connection_schema = True
+    pass
