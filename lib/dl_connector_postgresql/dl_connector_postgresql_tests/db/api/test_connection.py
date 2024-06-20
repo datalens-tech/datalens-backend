@@ -7,7 +7,6 @@ from dl_connector_postgresql_tests.db.api.base import PostgreSQLConnectionTestBa
 
 
 class TestPostgreSQLConnection(PostgreSQLConnectionTestBase, DefaultConnectorConnectionTestSuite):
-
     def test_create_connection(
         self,
         control_api_sync_client: SyncHttpClientBase,

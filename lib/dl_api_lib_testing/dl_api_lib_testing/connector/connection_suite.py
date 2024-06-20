@@ -10,7 +10,6 @@ from dl_testing.regulated_test import RegulatedTestCase
 
 
 class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase):
-
     def test_create_connection(
         self,
         control_api_sync_client: SyncHttpClientBase,
