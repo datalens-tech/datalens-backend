@@ -399,7 +399,7 @@ class RepositoryManager:
         )
         return package_info.requirement_lists
 
-    def get_package_name_from_toml(self, package_module_name: str) -> str | None:
+    def get_package_name_from_toml(self, package_module_name: str) -> PackageInfo | None:
         """
         Package name may differ from folder name
         Example: dc_public_api_proto_stubs is folder name, but to import
@@ -431,7 +431,8 @@ class RepositoryManager:
                 package_module_name=package_module_name,
             )
         except KeyError:
-            package_info = self.get_package_name_from_toml(package_module_name)
+            if not (package_info := self.get_package_name_from_toml(package_module_name)):
+                raise ValueError(f"Can`t find {package_module_name} or it may be incorrectly configured.")
 
         def _get_imports(scan_modules: Sequence[str]) -> dict[str, ReqPackageSpec]:
             _result: dict[str, ReqPackageSpec] = {}
