@@ -21,7 +21,7 @@ from dl_api_commons.base_models import TenantDef
 from dl_api_connector.connection_info import ConnectionInfoProvider
 from dl_api_lib.connection_forms.registry import CONN_FORM_FACTORY_BY_TYPE
 from dl_api_lib.connection_info import get_connector_info_provider
-from dl_api_lib.connector_availability.exc import ConnectorIconNotFoundException
+from dl_api_lib.exc import ConnectorIconNotFoundException
 from dl_api_lib.i18n.localizer import Translatable
 from dl_configs.connector_availability import (
     ConnectorAvailabilityConfigSettings,
