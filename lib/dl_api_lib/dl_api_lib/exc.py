@@ -43,3 +43,8 @@ class TooManyFieldsError(DLValidationError):
 class DLValidationFatal(_DLValidationResult):
     err_code = _DLValidationResult.err_code + ["FATAL"]
     default_message = "Validation encountered a fatal error."
+
+
+class ConnectorIconNotFoundException(DLBaseException):
+    default_message = "Connector icon not found"
+    err_code = ["ICON_NOT_FOUND"]

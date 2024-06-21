@@ -84,6 +84,7 @@ EXCEPTION_CODES = {
     dl_query_processing.exc.InvalidGroupByConfiguration: status.BAD_REQUEST,
     common_exc.WrongQueryParameterization: status.BAD_REQUEST,
     RequestTimeoutError: status.FAILED_DEPENDENCY,
+    exc.ConnectorIconNotFoundException: status.NOT_FOUND,
 }
 
 
