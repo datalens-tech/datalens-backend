@@ -45,9 +45,9 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
     proto_schema: ClassVar[str] = "grpc"
 
     def _update_connect_args(self, args: dict) -> None:
-        if self._target_dto.auth_type == YDBAuthTypeMode.oauth.value:
+        if self._target_dto.auth_type == YDBAuthTypeMode.oauth:
             args.update(auth_token=self._target_dto.password)
-        elif self._target_dto.auth_type == YDBAuthTypeMode.password.value:
+        elif self._target_dto.auth_type == YDBAuthTypeMode.password:
             driver_config = DriverConfig(
                 endpoint="{}://{}:{}".format(
                     self.proto_schema,

@@ -18,11 +18,12 @@ from dl_connector_ydb.core.ydb.us_connection import YDBConnection
 class YDBConnectionSchema(RawSQLLevelMixin, ConnectionSchema):
     TARGET_CLS = YDBConnection
 
-    auth_type = ma_fields.String(
+    auth_type = ma_fields.Enum(
+        YDBAuthTypeMode,
         attribute="data.auth_type",
         required=False,
         allow_none=True,
-        default=YDBAuthTypeMode.oauth.value,
+        default=YDBAuthTypeMode.oauth,
         bi_extra=FieldExtra(editable=True),
     )
 

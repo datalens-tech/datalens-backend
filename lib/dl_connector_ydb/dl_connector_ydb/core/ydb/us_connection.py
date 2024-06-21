@@ -41,7 +41,7 @@ class YDBConnection(ClassicConnectionSQL):
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
-        auth_type: Optional[str] = attr.ib(default=YDBAuthTypeMode.oauth.value)
+        auth_type: Optional[YDBAuthTypeMode] = attr.ib(default=YDBAuthTypeMode.oauth)
         username: Optional[str] = attr.ib(default="")
 
         token: Optional[str] = attr.ib(default=None, repr=secrepr)

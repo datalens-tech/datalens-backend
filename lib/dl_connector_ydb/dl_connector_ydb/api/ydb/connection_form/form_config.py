@@ -71,18 +71,18 @@ class YDBRowConstructor(RowConstructor):
                     options=[
                         C.SelectableOption(
                             text=self._localizer.translate(Translatable("value_auth-type-anonymous")),
-                            value=YDBAuthTypeMode.anonymous.value,
+                            value=YDBAuthTypeMode.anonymous,
                         ),
                         C.SelectableOption(
                             text=self._localizer.translate(Translatable("value_auth-type-password")),
-                            value=YDBAuthTypeMode.password.value,
+                            value=YDBAuthTypeMode.password,
                         ),
                         C.SelectableOption(
                             text=self._localizer.translate(Translatable("value_auth-type-oauth")),
-                            value=YDBAuthTypeMode.oauth.value,
+                            value=YDBAuthTypeMode.oauth,
                         ),
                     ],
-                    default_value=YDBAuthTypeMode.oauth.value,
+                    default_value=YDBAuthTypeMode.oauth,
                 ),
             ]
         )
@@ -128,7 +128,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                         text=self._localizer.translate(
                             Translatable("field_oauth_row"),
                         ),
-                        display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.oauth.value},
+                        display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.oauth},
                     ),
                     C.InputRowItem(
                         name=CommonFieldName.token,
@@ -136,7 +136,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                         default_value=None,
                         fake_value="******" if self.mode == ConnectionFormMode.edit else None,
                         control_props=C.InputRowItem.Props(type="password"),
-                        display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.oauth.value},
+                        display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.oauth},
                     ),
                 ]
             )
@@ -188,10 +188,10 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                 ydb_rc.auth_type_row(mode=self.mode),
                 *db_section_rows,
                 rc.username_row(
-                    display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.password.value},
+                    display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.password},
                 ),
                 ydb_rc.password_row(
-                    display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.password.value}, mode=self.mode
+                    display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.password}, mode=self.mode
                 ),
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
                 rc.raw_sql_level_row(),
@@ -227,7 +227,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         return [
             FormFieldApiActionCondition(
                 when=FormFieldSelector(name=YDBFieldName.auth_type),
-                equals=YDBAuthTypeMode.password.value,
+                equals=YDBAuthTypeMode.password,
                 then=[
                     FormFieldConditionalApiAction(
                         selector=FormFieldSelector(name=CommonFieldName.username),
@@ -237,7 +237,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
             ),
             FormFieldApiActionCondition(
                 when=FormFieldSelector(name=YDBFieldName.auth_type),
-                equals=YDBAuthTypeMode.anonymous.value,
+                equals=YDBAuthTypeMode.anonymous,
                 then=[
                     FormFieldConditionalApiAction(
                         selector=FormFieldSelector(name=CommonFieldName.token),
