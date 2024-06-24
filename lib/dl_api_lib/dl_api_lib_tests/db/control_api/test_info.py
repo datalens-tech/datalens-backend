@@ -90,6 +90,9 @@ class TestInfo(DefaultApiTestBase):
         resp = form_resp.json
         assert resp["icons"]
         assert len(resp["icons"]) > 0
-        for icons in resp["icons"]:
-            assert "type" in icons
-            assert icons["type"] == "data"
+        for icon in resp["icons"]:
+            assert "type" in icon
+            assert icon["type"] == "data"
+            assert "data" in icon
+            assert icon["data"].get("standard") is not None
+            assert icon["data"].get("nav") is not None
