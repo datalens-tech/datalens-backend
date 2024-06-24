@@ -9,7 +9,7 @@ services:
     environment:
       YDB_LOCAL_SURVIVE_RESTART: "true"
       GRPC_PORT: "51900"
-    # hostname: "localhost"  # you might want to uncomment this for local testing
+    hostname: "localhost"  # you might want to uncomment this for local testing
     ports:
       - "51900:51900"
 

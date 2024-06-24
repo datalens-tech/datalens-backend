@@ -121,7 +121,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                 fake_value="******" if self.mode == ConnectionFormMode.edit else None,
                 application=YDBOAuthApplication.ydb,
             )
-            if not connector_settings.HAS_MANY_AUTH_TYPES
+            if not connector_settings.ENABLE_AUTH_TYPE_PICKER
             else C.CustomizableRow(
                 items=[
                     C.LabelRowItem(
@@ -183,7 +183,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         connector_settings: Optional[ConnectorSettingsBase],
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
-        if connector_settings.HAS_MANY_AUTH_TYPES:
+        if connector_settings.ENABLE_AUTH_TYPE_PICKER:
             rows = [
                 ydb_rc.auth_type_row(mode=self.mode),
                 *db_section_rows,
@@ -259,7 +259,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         edit_api_schema = self._get_base_edit_api_schema()
         common_api_schema_items = self._get_base_common_api_schema_items(names_source=CommonFieldName)
         db_section_rows = self._get_default_db_section(rc=rc, connector_settings=connector_settings)
-        if not connector_settings.HAS_MANY_AUTH_TYPES:
+        if not connector_settings.ENABLE_AUTH_TYPE_PICKER:
             common_api_schema_items.append(
                 FormFieldApiSchema(
                     name=CommonFieldName.token,
@@ -271,7 +271,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         create_api_schema = self._get_base_create_api_schema(edit_api_schema=edit_api_schema)
         check_api_schema = self._get_base_check_api_schema(common_api_schema_items=common_api_schema_items)
 
-        if connector_settings.HAS_MANY_AUTH_TYPES:
+        if connector_settings.ENABLE_AUTH_TYPE_PICKER:
             extra_api_items = self._get_extra_items()
             extra_api_conditions = self._get_extra_conditions()
 
