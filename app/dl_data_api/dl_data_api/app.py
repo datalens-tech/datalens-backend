@@ -5,7 +5,7 @@ import os
 
 from aiohttp import web
 
-from dl_api_lib.app_settings import DataApiAppSettings
+from dl_api_lib.app_settings import DataApiAppSettingsOS
 from dl_api_lib.loader import (
     ApiLibraryConfig,
     load_api_lib,
@@ -35,7 +35,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def create_app(
-    setting: DataApiAppSettings,
+    setting: DataApiAppSettingsOS,
     connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
 ) -> web.Application:
     data_api_app_factory = StandaloneDataApiAppFactory(settings=setting)
@@ -46,7 +46,7 @@ def create_app(
 
 async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
     preload_api_lib()
-    settings = load_settings_from_env_with_fallback(DataApiAppSettings)
+    settings = load_settings_from_env_with_fallback(DataApiAppSettingsOS)
     load_api_lib(
         ApiLibraryConfig(
             api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,

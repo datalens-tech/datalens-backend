@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing
 from typing import (
     Any,
     ClassVar,
@@ -291,3 +292,46 @@ class DataApiAppSettings(AppSettings):
 class ControlApiAppTestingsSettings:
     us_auth_mode_override: Optional[USAuthMode] = attr.ib(default=None)
     fake_tenant: Optional[TenantDef] = attr.ib(default=None)
+
+
+# TODO: move to dl_api_lib_os
+@attr.s(frozen=True)
+class AuthSettingsOS:
+    TYPE: str = s_attrib("TYPE")
+    BASE_URL: str = s_attrib("BASE_URL")
+    PROJECT_ID: str = s_attrib("PROJECT_ID")
+    CLIENT_ID: str = s_attrib("CLIENT_ID")
+    CLIENT_SECRET: str = s_attrib("CLIENT_SECRET", sensitive=True)
+    APP_CLIENT_ID: str = s_attrib("APP_CLIENT_ID")
+    APP_CLIENT_SECRET: str = s_attrib("APP_CLIENT_SECRET", sensitive=True)
+
+
+@attr.s(frozen=True)
+class AppSettingsOS(AppSettings):
+    AUTH: typing.Optional[AuthSettingsOS] = s_attrib(  # type: ignore
+        "AUTH",
+        fallback_factory=(
+            lambda cfg: AuthSettingsOS(
+                TYPE=cfg.AUTH_TYPE,
+                BASE_URL=cfg.AUTH_BASE_URL,
+                PROJECT_ID=cfg.AUTH_PROJECT_ID,
+                CLIENT_ID=cfg.AUTH_CLIENT_ID,
+                CLIENT_SECRET=cfg.AUTH_CLIENT_SECRET,
+                APP_CLIENT_ID=cfg.AUTH_APP_CLIENT_ID,
+                APP_CLIENT_SECRET=cfg.AUTH_APP_CLIENT_SECRET,
+            )
+            if is_setting_applicable(cfg, "AUTH_TYPE")
+            else None
+        ),
+        missing=None,
+    )
+
+
+@attr.s(frozen=True)
+class ControlApiAppSettingsOS(AppSettingsOS, ControlApiAppSettings):
+    ...
+
+
+@attr.s(frozen=True)
+class DataApiAppSettingsOS(AppSettingsOS, DataApiAppSettings):
+    ...
