@@ -1,0 +1,19 @@
+version: 3
+
+silent: true
+
+
+tasks:
+  init:
+    desc: Initialize the environment
+    cmds:
+      - echo "Initializing python environment..."
+      - poetry install
+
+  package-create:
+    desc: Creates new package, variables PACKAGE_NAME, PACKAGE_TYPE(lib/app)
+    requires:
+      vars: [PACKAGE_NAME, PACKAGE_TYPE]
+    cmds:
+      - echo "Creating package {{.PACKAGE_NAME}} of type {{.PACKAGE_TYPE}}..."
+      - poetry run dl-repo init --package-type {{.PACKAGE_TYPE}} --package-name {{.PACKAGE_NAME}}

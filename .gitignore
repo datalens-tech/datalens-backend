@@ -16,5 +16,4 @@ ci_artifacts
 artifacts
 Taskfile.yml
 .obsidian
-terrarium/dl_repmanager/poetry.lock
 datalens-ui/

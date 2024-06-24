@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import Optional
 
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
@@ -12,7 +13,7 @@ from dl_api_lib.app_common import SRFactoryBuilder
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import (
     AppSettings,
-    DataApiAppSettings,
+    DataApiAppSettingsOS,
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_cache_engine.primitives import CacheTTLConfig
@@ -28,6 +29,9 @@ from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from dl_core.services_registry.rqe_caches import RQECachesSetting
 from dl_data_api import app_version
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class StandaloneDataApiSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
@@ -54,17 +58,17 @@ class StandaloneDataApiSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
     def _get_bleeding_edge_users(self, settings: AppSettings) -> tuple[str, ...]:
         return tuple()
 
-    def _get_rqe_caches_settings(self, settings: DataApiAppSettings) -> Optional[RQECachesSetting]:  # type: ignore[override]
+    def _get_rqe_caches_settings(self, settings: DataApiAppSettingsOS) -> Optional[RQECachesSetting]:  # type: ignore[override]
         return None
 
-    def _get_default_cache_ttl_settings(self, settings: DataApiAppSettings) -> Optional[CacheTTLConfig]:  # type: ignore[override]
+    def _get_default_cache_ttl_settings(self, settings: DataApiAppSettingsOS) -> Optional[CacheTTLConfig]:  # type: ignore[override]
         return None
 
     def _get_connector_availability(self, settings: AppSettings) -> Optional[ConnectorAvailabilityConfig]:
         return None
 
 
-class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], StandaloneDataApiSRFactoryBuilder):
+class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], StandaloneDataApiSRFactoryBuilder):
     @property
     def _is_public(self) -> bool:
         return False
@@ -126,3 +130,35 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], Standal
         )
 
         return result
+
+    def _get_auth_middleware(self) -> AIOHTTPMiddleware | None:
+        self._settings: DataApiAppSettingsOS
+
+        if self._settings.AUTH is None:
+            LOGGER.warning("No auth settings found, continuing without auth setup")
+            return None
+
+        # TODO: Add support for other auth types
+        assert self._settings.AUTH.TYPE == "ZITADEL"
+        import httpx
+
+        import dl_zitadel
+
+        zitadel_client = dl_zitadel.ZitadelAsyncClient(
+            base_client=httpx.AsyncClient(),
+            base_url=self._settings.AUTH.BASE_URL,
+            project_id=self._settings.AUTH.PROJECT_ID,
+            client_id=self._settings.AUTH.CLIENT_ID,
+            client_secret=self._settings.AUTH.CLIENT_SECRET,
+            app_client_id=self._settings.AUTH.APP_CLIENT_ID,
+            app_client_secret=self._settings.AUTH.APP_CLIENT_SECRET,
+        )
+        token_storage = dl_zitadel.ZitadelAsyncTokenStorage(
+            client=zitadel_client,
+        )
+        middleware = dl_zitadel.AioHTTPMiddleware(
+            client=zitadel_client,
+            token_storage=token_storage,
+        )
+
+        return middleware.get_middleware()

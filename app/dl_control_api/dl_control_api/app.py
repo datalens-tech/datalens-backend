@@ -9,7 +9,7 @@ from dl_api_commons.sentry_config import (
     hook_configure_configure_sentry_for_flask,
 )
 from dl_api_lib.app_settings import (
-    ControlApiAppSettings,
+    ControlApiAppSettingsOS,
     ControlApiAppTestingsSettings,
 )
 from dl_api_lib.loader import (
@@ -38,7 +38,7 @@ from dl_core.logging_config import hook_configure_logging
 
 
 def create_app(
-    app_settings: ControlApiAppSettings,
+    app_settings: ControlApiAppSettingsOS,
     connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     close_loop_after_request: bool = True,
@@ -53,7 +53,7 @@ def create_app(
 
 def create_uwsgi_app() -> flask.Flask:
     preload_api_lib()
-    settings = load_settings_from_env_with_fallback(ControlApiAppSettings)
+    settings = load_settings_from_env_with_fallback(ControlApiAppSettingsOS)
     load_api_lib(
         ApiLibraryConfig(
             api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
