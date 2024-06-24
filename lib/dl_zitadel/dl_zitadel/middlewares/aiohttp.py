@@ -36,7 +36,7 @@ class AioHTTPMiddleware:
 
             token_prefix = "Bearer "
             assert user_access_token.startswith(token_prefix)
-            user_access_token = user_access_token[len(token_prefix):]
+            user_access_token = user_access_token[len(token_prefix) :]
 
             if service_access_token is None or user_access_token is None:
                 LOGGER.info("Service or user access token is missing")
