@@ -26,15 +26,18 @@ class FlaskMiddleware:
 
     def process(self) -> flask.Response | None:
         service_access_token = flask.request.headers.get(middlewares_models.ZitadelHeaders.SERVICE_ACCESS_TOKEN)
+        if service_access_token is None:
+            LOGGER.info("Service access token is missing")
+            raise werkzeug_exceptions.Unauthorized()
+
         user_access_token = flask.request.headers.get(dl_api_commons_base_models.DLHeadersCommon.AUTHORIZATION_TOKEN)
+        if user_access_token is None:
+            LOGGER.info("User access token is missing")
+            raise werkzeug_exceptions.Unauthorized()
 
         token_prefix = "Bearer "
         assert user_access_token.startswith(token_prefix)
         user_access_token = user_access_token[len(token_prefix) :]
-
-        if service_access_token is None or user_access_token is None:
-            LOGGER.info("Service or user access token is missing")
-            raise werkzeug_exceptions.Unauthorized()
 
         service_introspect_result = self._client.introspect(token=service_access_token)
 

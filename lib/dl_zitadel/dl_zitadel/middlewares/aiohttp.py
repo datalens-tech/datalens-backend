@@ -30,17 +30,20 @@ class AioHTTPMiddleware:
             handler: aiohttp_typedefs.Handler,
         ) -> aiohttp_web.StreamResponse:
             service_access_token = app_request.get_single_header(middlewares_models.ZitadelHeaders.SERVICE_ACCESS_TOKEN)
+            if service_access_token is None:
+                LOGGER.info("Service access token is missing")
+                raise aiohttp_web.HTTPUnauthorized()
+
             user_access_token = app_request.get_single_header(
                 dl_api_commons_base_models.DLHeadersCommon.AUTHORIZATION_TOKEN
             )
+            if user_access_token is None:
+                LOGGER.info("User access token is missing")
+                raise aiohttp_web.HTTPUnauthorized()
 
             token_prefix = "Bearer "
             assert user_access_token.startswith(token_prefix)
             user_access_token = user_access_token[len(token_prefix) :]
-
-            if service_access_token is None or user_access_token is None:
-                LOGGER.info("Service or user access token is missing")
-                raise aiohttp_web.HTTPUnauthorized()
 
             # TODO: add gather to introspect in parallel
             service_introspect_result = await self._client.introspect(token=service_access_token)
