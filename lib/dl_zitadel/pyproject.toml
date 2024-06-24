@@ -51,7 +51,8 @@ strict_optional = true
 root_dir = "dl_zitadel_tests/unit"
 skip_compose = "true"
 
+[datalens.pytest.db]
+root_dir = "dl_zitadel_tests/db"
+labels = ["fat"]
 # TODO: fix for CI, not working due to mounted secrets
-#[datalens.pytest.db]
-#root_dir = "dl_zitadel_tests/db"
-#labels = ["fat"]
+skip_tests = true
