@@ -3,7 +3,10 @@ from .clients import (
     ZitadelAsyncClient,
     ZitadelSyncClient,
 )
-from .middlewares import AioHTTPMiddleware
+from .middlewares import (
+    AioHTTPMiddleware,
+    FlaskMiddleware,
+)
 from .services import (
     ZitadelAsyncTokenStorage,
     ZitadelSyncTokenStorage,
@@ -17,4 +20,5 @@ __all__ = [
     "ZitadelSyncTokenStorage",
     "ZitadelAsyncTokenStorage",
     "AioHTTPMiddleware",
+    "FlaskMiddleware",
 ]

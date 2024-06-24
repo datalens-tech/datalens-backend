@@ -1396,7 +1396,11 @@ files = [
 idna = ">=2.0"
 multidict = ">=4.0"
 
+[extras]
+aiohttp = ["aiohttp"]
+flask = ["flask"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "b46ceea3f291c8e238c6454a960b70fceb184a46815ab367b1731996439d592b"
+content-hash = "d3a4dd20f13bd84c28bd159e1c46a9f15f80d6b255c4a184bd52f8a00b8f584c"
