@@ -30,6 +30,7 @@ datalens-api-commons = {path = "../../lib/dl_api_commons"}
 datalens-cache-engine = {path = "../../lib/dl_cache_engine"}
 datalens-configs = {path = "../../lib/dl_configs"}
 datalens-constants = {path = "../../lib/dl_constants"}
+datalens-zitadel = {path = "../../lib/dl_zitadel", extras = ["flask"]}
 
 [build-system]
 requires = ["poetry-core"]
