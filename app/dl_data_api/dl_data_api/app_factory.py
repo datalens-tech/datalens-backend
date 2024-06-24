@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import typing
 from typing import Optional
 
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
@@ -158,8 +157,8 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
             client=zitadel_client,
         )
         middleware = dl_zitadel.AioHTTPMiddleware(
-           client=zitadel_client,
-           token_storage=token_storage,
+            client=zitadel_client,
+            token_storage=token_storage,
         )
 
-        return typing.cast(AIOHTTPMiddleware, middleware.process)
+        return middleware.get_middleware()
