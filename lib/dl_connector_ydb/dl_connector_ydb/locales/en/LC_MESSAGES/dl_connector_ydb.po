@@ -12,8 +12,23 @@ msgstr ""
 msgid "label_connector-ydb"
 msgstr "YDB"
 
+msgid "field_auth-type"
+msgstr "Authentication type"
+
+msgid "value_auth-type-anonymous"
+msgstr "Anonymous"
+
+msgid "value_auth-type-password"
+msgstr "Password"
+
+msgid "value_auth-type-oauth"
+msgstr "OAuth"
+
+msgid "field_password"
+msgstr "Password"
+
 msgid "field_oauth_row"
-msgstr "OAuth token"
+msgstr "OAuth-token"
 
 msgid "source_templates-tab_title-table"
 msgstr "Table"
