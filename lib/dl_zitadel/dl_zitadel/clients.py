@@ -14,6 +14,7 @@ LOGGER = logging.getLogger(__name__)
 class IntrospectResult:
     active: bool
     username: str | None = None
+    sub: str | None = None
 
 
 @attr.s(auto_attribs=True)
@@ -30,11 +31,13 @@ class Token:
 class IntrospectPostResponse(pydantic.BaseModel):
     active: bool
     username: str | None = None
+    sub: str | None = None
 
     def to_dataclass(self):
         return IntrospectResult(
             active=self.active,
             username=self.username,
+            sub=self.sub,
         )
 
 
