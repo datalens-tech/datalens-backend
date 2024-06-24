@@ -47,6 +47,7 @@ class ZitadelSyncTokenStorage(ZitadelBaseTokenStorage):
         if self._is_token_expired():
             self._token = self._client.get_token()
 
+        assert self._token is not None
         return self._token.access_token
 
 
@@ -70,6 +71,7 @@ class ZitadelAsyncTokenStorage(ZitadelBaseTokenStorage):
         if self._is_token_expired():
             self._token = await self._client.get_token()
 
+        assert self._token is not None
         return self._token.access_token
 
 

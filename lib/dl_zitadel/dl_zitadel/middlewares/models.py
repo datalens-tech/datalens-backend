@@ -12,8 +12,8 @@ class ZitadelHeaders(dl_constants_api_constants.DLHeaders):
 
 @attr.s(frozen=True)
 class ZitadelAuthData(dl_api_commons_base_models.AuthData):
-    _service_access_token: str
-    _user_access_token: str
+    _service_access_token: str = attr.ib()
+    _user_access_token: str = attr.ib()
 
     def get_headers(
         self,

@@ -297,13 +297,13 @@ class ControlApiAppTestingsSettings:
 # TODO: move to dl_api_lib_os
 @attr.s(frozen=True)
 class AuthSettingsOS:
-    TYPE: str = s_attrib("TYPE")
-    BASE_URL: str = s_attrib("BASE_URL")
-    PROJECT_ID: str = s_attrib("PROJECT_ID")
-    CLIENT_ID: str = s_attrib("CLIENT_ID")
-    CLIENT_SECRET: str = s_attrib("CLIENT_SECRET", sensitive=True)
-    APP_CLIENT_ID: str = s_attrib("APP_CLIENT_ID")
-    APP_CLIENT_SECRET: str = s_attrib("APP_CLIENT_SECRET", sensitive=True)
+    TYPE: str = s_attrib("TYPE")  # type: ignore
+    BASE_URL: str = s_attrib("BASE_URL")  # type: ignore
+    PROJECT_ID: str = s_attrib("PROJECT_ID")  # type: ignore
+    CLIENT_ID: str = s_attrib("CLIENT_ID")  # type: ignore
+    CLIENT_SECRET: str = s_attrib("CLIENT_SECRET", sensitive=True)  # type: ignore
+    APP_CLIENT_ID: str = s_attrib("APP_CLIENT_ID")  # type: ignore
+    APP_CLIENT_SECRET: str = s_attrib("APP_CLIENT_SECRET", sensitive=True)  # type: ignore
 
 
 @attr.s(frozen=True)
@@ -311,7 +311,7 @@ class AppSettingsOS(AppSettings):
     AUTH: typing.Optional[AuthSettingsOS] = s_attrib(  # type: ignore
         "AUTH",
         fallback_factory=(
-            lambda cfg: AuthSettingsOS(
+            lambda cfg: AuthSettingsOS(  # type: ignore
                 TYPE=cfg.AUTH_TYPE,
                 BASE_URL=cfg.AUTH_BASE_URL,
                 PROJECT_ID=cfg.AUTH_PROJECT_ID,

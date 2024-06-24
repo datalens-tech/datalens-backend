@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import typing
 from typing import Optional
 
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
@@ -136,7 +137,7 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
 
         if self._settings.AUTH is None:
             LOGGER.warning("No auth settings found, continuing without auth setup")
-            return
+            return None
 
         # TODO: Add support for other auth types
         assert self._settings.AUTH.TYPE == "ZITADEL"
@@ -156,8 +157,9 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
         token_storage = dl_zitadel.ZitadelAsyncTokenStorage(
             client=zitadel_client,
         )
+        middleware = dl_zitadel.AioHTTPMiddleware(
+           client=zitadel_client,
+           token_storage=token_storage,
+        )
 
-        return dl_zitadel.AioHTTPMiddleware(
-            client=zitadel_client,
-            token_storage=token_storage,
-        ).process
+        return typing.cast(AIOHTTPMiddleware, middleware.process)

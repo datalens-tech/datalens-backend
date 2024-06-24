@@ -33,7 +33,7 @@ class IntrospectPostResponse(pydantic.BaseModel):
     username: str | None = None
     sub: str | None = None
 
-    def to_dataclass(self):
+    def to_dataclass(self) -> IntrospectResult:
         return IntrospectResult(
             active=self.active,
             username=self.username,
@@ -46,7 +46,7 @@ class TokenPostResponse(pydantic.BaseModel):
     token_type: str
     expires_in: int
 
-    def to_dataclass(self):
+    def to_dataclass(self) -> Token:
         return Token(
             access_token=self.access_token,
             expires_in=self.expires_in,
