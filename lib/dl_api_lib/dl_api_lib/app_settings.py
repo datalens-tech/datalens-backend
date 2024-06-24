@@ -296,7 +296,7 @@ class ControlApiAppTestingsSettings:
 
 # TODO: move to dl_api_lib_os
 @attr.s(frozen=True)
-class AuthSettingsOS:
+class AuthSettingsOS(SettingsBase):
     TYPE: str = s_attrib("TYPE")  # type: ignore
     BASE_URL: str = s_attrib("BASE_URL")  # type: ignore
     PROJECT_ID: str = s_attrib("PROJECT_ID")  # type: ignore
