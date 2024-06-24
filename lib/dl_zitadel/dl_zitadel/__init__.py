@@ -1,7 +1,11 @@
 from .clients import (
+    Token,
     ZitadelAsyncClient,
     ZitadelSyncClient,
-    Token,
+)
+from .services import (
+    ZitadelAsyncTokenStorage,
+    ZitadelSyncTokenStorage,
 )
 
 
@@ -9,4 +13,6 @@ __all__ = [
     "ZitadelSyncClient",
     "ZitadelAsyncClient",
     "Token",
+    "ZitadelSyncTokenStorage",
+    "ZitadelAsyncTokenStorage",
 ]
