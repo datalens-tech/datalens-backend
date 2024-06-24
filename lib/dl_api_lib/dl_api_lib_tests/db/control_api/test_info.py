@@ -94,7 +94,5 @@ class TestInfo(DefaultApiTestBase):
             assert "type" in icon
             assert icon["type"] == "data"
             assert "data" in icon
-            assert "standard" in icon["data"]
-            assert icon["data"]["standard"] is not None
-            assert "nav" in icon["data"]
-            assert icon["data"]["nav"] is not None
+            assert icon["data"].get("standard") is not None
+            assert icon["data"].get("nav") is not None

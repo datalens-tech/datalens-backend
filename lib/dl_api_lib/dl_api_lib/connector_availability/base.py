@@ -161,12 +161,13 @@ class ConnectorIconSrcConfigData(ConnectorIconSrcConfig):
     data: Optional[str] = attr.ib(default=None)
 
     def as_dict(self, conn: Connector) -> dict[str, Any] | None:
+        if not conn.connector_info_provider.icon_data_standard or conn.connector_info_provider.icon_data_nav:
+            return None
+
         data = dict(
             standard=b"data:image/svg+xml;base64," + conn.connector_info_provider.icon_data_standard,
             nav=b"data:image/svg+xml;base64," + conn.connector_info_provider.icon_data_nav,
         )
-        if data["standard"] == b"data:image/svg+xml;base64," or data["nav"] == b"data:image/svg+xml;base64,":
-            return None
         base_dict = super().as_dict(conn=conn)
         assert base_dict
         return dict(
