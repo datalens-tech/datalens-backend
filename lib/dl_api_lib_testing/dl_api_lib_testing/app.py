@@ -111,23 +111,25 @@ class TestingSubjectResolver(BaseSubjectResolver):
         if it's equals to '_the_tests_asyncapp_user_name_'
         """
         subjects = []
+
         for name in names:
+            subject: RLSSubject
             if name == "_the_tests_asyncapp_user_name_":
-                subjects.append(
-                    RLSSubject(
-                        subject_id="_the_tests_asyncapp_user_id_",
-                        subject_type=RLSSubjectType.user,
-                        subject_name=name,
-                    )
+                subject = RLSSubject(
+                    subject_id="_the_tests_asyncapp_user_id_",
+                    subject_type=RLSSubjectType.user,
+                    subject_name=name,
                 )
+            elif name.startswith("user"):
+                subject = RLSSubject(subject_id="", subject_type=RLSSubjectType.user, subject_name=name)
             else:
-                subjects.append(
-                    RLSSubject(
-                        subject_id="",
-                        subject_type=RLSSubjectType.user if name.startswith("user") else RLSSubjectType.notfound,
-                        subject_name=name if name.startswith("user") else RLS_FAILED_USER_NAME_PREFIX + name,
-                    )
+                subject = RLSSubject(
+                    subject_id="",
+                    subject_type=RLSSubjectType.notfound,
+                    subject_name=RLS_FAILED_USER_NAME_PREFIX + name,
                 )
+            subjects.append(subject)
+
         return subjects
 
 

@@ -202,9 +202,7 @@ def test_rls(entrysets: dict, expected_restrictions: dict):
     }
     # Map back fields to aliases for readability
     restrictions = {
-        user_id: {
-            field_guid: field_restrictions for field_guid, field_restrictions in user_restrictions.items()
-        }
+        user_id: {field_guid: field_restrictions for field_guid, field_restrictions in user_restrictions.items()}
         for user_id, user_restrictions in restrictions.items()
     }
     assert restrictions == expected_restrictions
