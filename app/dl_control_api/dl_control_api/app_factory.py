@@ -69,28 +69,31 @@ class StandaloneControlApiAppFactory(
         testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     ) -> EnvSetupResult:
         us_auth_mode: USAuthMode
-        from dl_api_commons.flask.middlewares.trust_auth import TrustAuthService
 
-        TrustAuthService(
-            fake_user_id="_user_id_",
-            fake_user_name="_user_name_",
-            fake_tenant=None if testing_app_settings is None else testing_app_settings.fake_tenant,
-        ).set_up(app)
+        us_auth_mode = USAuthMode.regular
+        auth_setup = self._setup_auth_middleware(app=app)
 
-        us_auth_mode_override = None if testing_app_settings is None else testing_app_settings.us_auth_mode_override
-        us_auth_mode = USAuthMode.master if us_auth_mode_override is None else us_auth_mode_override
+        if not auth_setup:
+            from dl_api_commons.flask.middlewares.trust_auth import TrustAuthService
 
-        self._setup_auth_middleware(app=app)
+            TrustAuthService(
+                fake_user_id="_user_id_",
+                fake_user_name="_user_name_",
+                fake_tenant=None if testing_app_settings is None else testing_app_settings.fake_tenant,
+            ).set_up(app)
+
+            us_auth_mode_override = None if testing_app_settings is None else testing_app_settings.us_auth_mode_override
+            us_auth_mode = USAuthMode.master if us_auth_mode_override is None else us_auth_mode_override
 
         result = EnvSetupResult(us_auth_mode=us_auth_mode)
         return result
 
-    def _setup_auth_middleware(self, app: flask.Flask) -> None:
+    def _setup_auth_middleware(self, app: flask.Flask) -> bool:
         self._settings: ControlApiAppSettingsOS
 
         if self._settings.AUTH is None:
             LOGGER.warning("No auth settings found, continuing without auth setup")
-            return
+            return False
 
         # TODO: Add support for other auth types
         assert self._settings.AUTH.TYPE == "ZITADEL"
@@ -116,3 +119,4 @@ class StandaloneControlApiAppFactory(
             token_storage=token_storage,
         ).set_up(app=app)
         LOGGER.info("Zitadel auth setup complete")
+        return True
