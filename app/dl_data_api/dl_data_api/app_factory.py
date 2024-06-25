@@ -22,7 +22,10 @@ from dl_configs.enums import RequiredService
 from dl_configs.utils import get_root_certificates
 from dl_constants.enums import ConnectionType
 from dl_core.aio.middlewares.services_registry import services_registry_middleware
-from dl_core.aio.middlewares.us_manager import service_us_manager_middleware
+from dl_core.aio.middlewares.us_manager import (
+    service_us_manager_middleware,
+    us_manager_middleware,
+)
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
@@ -95,12 +98,17 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
         )
 
         # Auth middlewares
-        auth_mw_list = [
-            auth_trust_middleware(
-                fake_user_id="_user_id_",
-                fake_user_name="_user_name_",
-            )
-        ]
+        auth_mw = self._get_auth_middleware()
+
+        if auth_mw is None:
+            auth_mw_list = [
+                auth_trust_middleware(
+                    fake_user_id="_user_id_",
+                    fake_user_name="_user_name_",
+                )
+            ]
+        else:
+            auth_mw_list = [auth_mw]
 
         # SR middlewares
         sr_middleware_list = [
@@ -118,10 +126,17 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
             crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
             ca_data=ca_data,
         )
-        usm_middleware_list = [
-            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore  # 2024-01-30 # TODO: Argument "us_master_token" to "service_us_manager_middleware" has incompatible type "str | None"; expected "str"  [arg-type]
-            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw),  # type: ignore  # 2024-01-30 # TODO: Argument "us_master_token" to "service_us_manager_middleware" has incompatible type "str | None"; expected "str"  [arg-type]
-        ]
+
+        if auth_mw is None:
+            usm_middleware_list = [
+                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore  # 2024-01-30 # TODO: Argument "us_master_token" to "service_us_manager_middleware" has incompatible type "str | None"; expected "str"  [arg-type]
+                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw),  # type: ignore  # 2024-01-30 # TODO: Argument "us_master_token" to "service_us_manager_middleware" has incompatible type "str | None"; expected "str"  [arg-type]
+            ]
+        else:
+            usm_middleware_list = [
+                us_manager_middleware(**common_us_kw),  # type: ignore
+                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore
+            ]
 
         result = EnvSetupResult(
             auth_mw_list=auth_mw_list,
