@@ -1,7 +1,6 @@
 import json
 import pkgutil
 
-import dl_api_lib_testing.test_data
 from dl_constants.enums import RLSSubjectType
 from dl_rls.models import (
     RLSEntry,
@@ -13,7 +12,7 @@ from dl_rls.subject_resolver import BaseSubjectResolver
 
 
 def load_rls_config(name: str) -> str:
-    data = pkgutil.get_data(dl_api_lib_testing.test_data.__name__, "rls_configs/" + name)
+    data = pkgutil.get_data(__package__, f"rls_configs/{name}")
     assert data is not None
     return data.decode("utf-8")
 

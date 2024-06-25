@@ -1,6 +1,6 @@
 import pytest
 
-from dl_api_lib_testing.rls import (
+from dl_rls.testing.testing_data import (
     RLS_CONFIG_CASES,
     config_to_comparable,
 )
