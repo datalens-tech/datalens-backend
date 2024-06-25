@@ -302,3 +302,23 @@ tasks:
         " > {{.ROOT_DIR}}/.git/hooks/pre-commit
       - chmod +x {{.ROOT_DIR}}/.git/hooks/pre-commit
     silent: true
+
+  find_and_check_requirements:
+    shell: bash
+    vars:
+      TOML_DIRS:
+        sh: find {{.ROOT_DIR}}/app {{.ROOT_DIR}}/lib -name 'pyproject.toml' | awk -F / '{FS=OFS="/";$NF=""; print $0}'
+    cmds:
+      - for: { var: TOML_DIRS, as: TOML_DIR }
+        task: check_missing_requirements
+        vars:
+          TOML_DIR: '{{.TOML_DIR}}'
+
+  check_missing_requirements:
+    shell: bash
+    cmds:
+      - | 
+        cd "{{.TOML_DIR}}"
+        deptry . --ignore DEP004,DEP003,DEP002 --exclude ".*test.*"
+        echo -e "\033[32mPASSED\033[0m: {{.TOML_DIR}}"
+    silent: true
