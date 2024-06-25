@@ -6,6 +6,7 @@ CONNECTORS:
     CONN_CHYT_PUBLIC_CLIQUES: []
   YDB:
     HAS_AUTH: false
+    ENABLE_AUTH_TYPE_PICKER: true
 CONNECTOR_AVAILABILITY:
   icon_src:
     icon_type: data
