@@ -4,8 +4,8 @@ import pytest
 
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib_testing.app import TestingSubjectResolver
-from dl_rls.testing.testing_data import load_rls_config
 from dl_api_lib_tests.db.base import DefaultApiTestBase
+from dl_rls.testing.testing_data import load_rls_config
 
 
 class TestRLS(DefaultApiTestBase):
