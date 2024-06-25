@@ -56,6 +56,7 @@ class FlaskMiddleware:
             temp_rci.clone(
                 user_id=user_introspect_result.sub,
                 user_name=user_introspect_result.username,
+                tenant=dl_api_commons_base_models.TenantCommon(),
                 auth_data=middlewares_models.ZitadelAuthData(
                     service_access_token=self._token_storage.get_token(),
                     user_access_token=user_access_token,
