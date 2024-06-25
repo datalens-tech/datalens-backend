@@ -31,7 +31,9 @@ dl-api-commons = {path = "../../lib/dl_api_commons"}
 dl-cache-engine = {path = "../../lib/dl_cache_engine"}
 dl-configs = {path = "../../lib/dl_configs"}
 dl-constants = {path = "../../lib/dl_constants"}
-datalens-zitadel = {path = "../../lib/dl_zitadel", extras = ["zitadel"]}
+dl-zitadel = {path = "../../lib/dl_zitadel", extras = ["zitadel"]}
+httpx = "^0.27.0"
+
 
 [build-system]
 requires = ["poetry-core"]

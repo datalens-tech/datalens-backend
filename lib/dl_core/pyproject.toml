@@ -64,6 +64,7 @@ pytest-asyncio = ">=0.20.3"
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 dl-testing = {path = "../dl_testing"}
 dl-core-testing = {path = "../dl_core_testing"}
+dl-rls = {path = "../dl_rls"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

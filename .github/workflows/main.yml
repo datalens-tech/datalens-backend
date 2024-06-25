@@ -532,7 +532,6 @@ jobs:
     runs-on: [ self-hosted, linux, light ]
     needs: gh_build_image
     container:
-      # until https://github.com/github/docs/issues/25520 is resolved, using vars
       image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
       credentials:
         username: ${{ github.actor }}
@@ -552,24 +551,4 @@ jobs:
           fetch-depth: 1
       - name: Find directories and check requirements
         run: |
-          dirs=($(find app lib -name 'pyproject.toml' | awk -F / '{FS=OFS="/";$NF=""; print $0}'))
-          code=0
-          project_path=$(pwd)
-          for dir in $dirs; do
-            cd "${project_path}/${dir}"
-            deptry . --ignore DEP004,DEP003,DEP002 --exclude ".*test.*" 2> /dev/null
-            if [ $? -ne 0 ]; then
-              echo -e "\033[31mFAILED: $dir\033[0m"
-              code=1
-            else
-              echo -e "\033[32mPASSED: $dir\033[0m"
-            fi
-          done
-          cd "${project_path}"
-          if [ $code -ne 0 ]; then
-            echo -e "\033[33mConsider using\033[0m deptry . --ignore DEP004,DEP003,DEP002 --exclude \".*test.*\"  in exact directory"
-          fi
-
-
-
-
+          task cq:find_and_check_requirements
