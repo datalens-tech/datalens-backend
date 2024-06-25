@@ -43,7 +43,7 @@ class ConnectionInfoProvider:
         try:
             with as_file(filepath) as file:
                 with open(file, "rb") as icon_file:
-                    return str(base64.b64encode(icon_file.read())).lstrip("b'").rstrip("'")
+                    return (base64.b64encode(icon_file.read())).decode("ascii")
         except Exception:
             LOGGER.info(f"Connector icon reading by path {str(filepath)} failed")
             return None
