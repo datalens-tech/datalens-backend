@@ -37,7 +37,7 @@ target "ci_with_src" {
     "COPY --from=bake_ctx_dl_src_ci / /src/",
     "RUN . /venv/bin/activate && pip install -e /src/terrarium/bi_ci",
     "RUN . /venv/bin/activate && pip install -e /src/terrarium/dl_gitmanager",
-    "RUN . /venv/bin/activate && python -c 'import pyproject_hooks; print(pyproject_hooks.__version__)'"
+    "RUN . /venv/bin/activate && python -c 'import pyproject_hooks; print(pyproject_hooks.__version__)'",
     "RUN . /venv/bin/activate && cd /src/metapkg/ && poetry install --no-root --with=dev --with=ci",
     # todo: include stubs into the metapkg pyproject.toml
     "RUN . /venv/bin/activate && pip install -r /src/ci/requirements_types.txt"
