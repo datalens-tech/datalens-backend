@@ -14,7 +14,7 @@ def fixture_app(sync_request_limiter: dl_rate_limiter.SyncRequestRateLimiter) ->
     # return 200 for all requests
     @app.route("/<path:path>")
     def wildcard(path: str):
-        return "OK"
+        return flask.request.data
 
     app.config.update({"TESTING": True})
     dl_rate_limiter.FlaskMiddleware(rate_limiter=sync_request_limiter).set_up(app)
@@ -33,7 +33,7 @@ def fixture_runner(app: flask.Flask) -> flask.testing.FlaskCliRunner:
 
 
 def test_hello(client: flask.testing.FlaskClient):
-    response = client.get("/hello")
+    response = client.get("/hello", data="OK")
     assert response.data == b"OK"
 
 
@@ -58,3 +58,14 @@ def test_limited_multiple_limits(client: flask.testing.FlaskClient):
     responses = [client.get("/limited/1", headers={"X-Test-Header": "test"}) for _ in range(20)]
     assert sum(response.status_code == 429 for response in responses) == 16
     assert sum(response.status_code == 200 for response in responses) == 4
+
+
+def test_regex_limited(client: flask.testing.FlaskClient):
+    responses = [client.get("/regex/1", headers={"X-Test-Header": "test"}) for _ in range(20)]
+    assert sum(response.status_code == 429 for response in responses) == 15
+    assert sum(response.status_code == 200 for response in responses) == 5
+
+
+def test_regex_incorrect_pattern(client: flask.testing.FlaskClient):
+    responses = [client.get("/regex/1", headers={"X-Test-Header": "1"}, json={"test": "test"}) for _ in range(20)]
+    assert sum(response.status_code == 200 for response in responses) == 20
