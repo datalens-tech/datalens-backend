@@ -9,7 +9,6 @@ from typing import (
     Dict,
     Generator,
     Iterable,
-    List,
     Optional,
     Set,
     Type,
@@ -147,6 +146,7 @@ class SyncUSManager(USManagerBase):
             )
 
         entry._us_resp = resp  # type: ignore  # TODO: fix
+        await_sync(self.get_lifecycle_manager(entry=entry).post_init_async_hook())
         lifecycle_manager.post_save_hook()
 
     def delete(self, entry: USEntry) -> None:
@@ -229,7 +229,9 @@ class SyncUSManager(USManagerBase):
         for us_resp in us_entry_iterator:
             # noinspection PyBroadException
             try:
-                yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)  # type: ignore  # TODO: fix
+                obj = self._entry_dict_to_obj(us_resp, expected_type=entry_cls)
+                await_sync(self.get_lifecycle_manager(entry=obj).post_init_async_hook())
+                yield obj  # type: ignore  # TODO: Incompatible types in "yield" (actual type "USEntry", expected type "_ENTRY_TV")  [misc]
             except Exception:
                 LOGGER.exception("Failed to load US object: %s", us_resp)
                 if raise_on_broken_entry:
@@ -261,6 +263,7 @@ class SyncUSManager(USManagerBase):
         reloaded_entry = self._entry_dict_to_obj(us_resp, expected_type=type(entry))
         entry.data = reloaded_entry.data
         entry._us_resp = us_resp
+        await_sync(self.get_lifecycle_manager(entry=entry).post_init_async_hook())
 
     # Locks
     #
