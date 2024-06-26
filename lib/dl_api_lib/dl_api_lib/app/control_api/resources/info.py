@@ -195,7 +195,7 @@ class WorkbookInfo(BIResource):
         )
 
 
-@ns.route("/connectors/icons/list")
+@ns.route("/connectors/icons")
 class ConnectorIconsList(BIResource):
     def get(self) -> dict:
         conn_availability = self.get_service_registry().get_connector_availability()
