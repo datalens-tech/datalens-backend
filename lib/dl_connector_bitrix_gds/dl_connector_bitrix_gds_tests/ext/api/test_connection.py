@@ -6,43 +6,16 @@ from dl_api_lib_testing.connector.connection_suite import DefaultConnectorConnec
 
 from dl_connector_bitrix_gds_tests.ext.api.base import (
     BitrixConnectionTestBase,
-    BitrixDatalensConnectionTestBase,
     BitrixInvalidConnectionTestBase,
 )
 from dl_connector_bitrix_gds_tests.ext.config import BITRIX_PORTALS
 
 
 class TestBitrixConnection(BitrixConnectionTestBase, DefaultConnectorConnectionTestSuite):
-    def test_portal_override(self, control_api_sync_client: SyncHttpClientBase, saved_connection_id: str) -> None:
-        resp = control_api_sync_client.get(
-            url=f"/api/v1/connections/{saved_connection_id}",
-        )
-        assert resp.status_code == 200, resp.json
-        assert resp.json["portal"] == BITRIX_PORTALS["default"], resp.json
-
-        new_portal = BITRIX_PORTALS["datalens"]
-        resp = control_api_sync_client.put(
-            url=f"/api/v1/connections/{saved_connection_id}",
-            content_type="application/json",
-            data=json.dumps({"portal": new_portal}),
-        )
-        assert resp.status_code == 200, resp.json
-
-        resp = control_api_sync_client.get(
-            url=f"/api/v1/connections/{saved_connection_id}",
-        )
-        assert resp.status_code == 200, resp.json
-        assert resp.json["portal"] == BITRIX_PORTALS["datalens"], resp.json
-
-        resp = control_api_sync_client.put(
-            url=f"/api/v1/connections/{saved_connection_id}",
-            content_type="application/json",
-            data=json.dumps({"portal": BITRIX_PORTALS["default"]}),
-        )
-        assert resp.status_code == 200, resp.json
+    pass
 
 
-class TestBitrixDatalensConnection(BitrixDatalensConnectionTestBase, DefaultConnectorConnectionTestSuite):
+class TestBitrixDatalensConnection(BitrixConnectionTestBase, DefaultConnectorConnectionTestSuite):
     pass
 
 

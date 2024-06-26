@@ -43,15 +43,6 @@ class BitrixConnectionTestBase(ConnectionTestBase):
         return API_TEST_CONFIG
 
     @pytest.fixture(scope="class")
-    def connection_params(self, bitrix_token: str) -> dict:
-        return dict(
-            portal=BITRIX_PORTALS["default"],
-            token=bitrix_token,
-        )
-
-
-class BitrixDatalensConnectionTestBase(BitrixConnectionTestBase):
-    @pytest.fixture(scope="class")
     def connection_params(self, bitrix_datalens_token: str) -> dict:
         return dict(
             portal=BITRIX_PORTALS["datalens"],
@@ -61,10 +52,10 @@ class BitrixDatalensConnectionTestBase(BitrixConnectionTestBase):
 
 class BitrixInvalidConnectionTestBase(BitrixConnectionTestBase):
     @pytest.fixture(scope="class")
-    def connection_params(self, bitrix_token: str) -> dict:
+    def connection_params(self, bitrix_datalens_token: str) -> dict:
         return dict(
             portal=BITRIX_PORTALS["invalid"],
-            token=bitrix_token,
+            token=bitrix_datalens_token,
         )
 
 
@@ -81,7 +72,7 @@ class BitrixDatasetTestBase(BitrixConnectionTestBase, DatasetTestBase):
         )
 
 
-class BitrixSmartTablesDatasetTestBase(BitrixDatalensConnectionTestBase, DatasetTestBase):
+class BitrixSmartTablesDatasetTestBase(BitrixConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope="class")
     def dataset_params(self) -> dict:
         return dict(
