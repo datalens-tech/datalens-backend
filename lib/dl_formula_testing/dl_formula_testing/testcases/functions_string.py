@@ -44,6 +44,7 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
     supports_trimming_funcs: ClassVar[bool] = True
     supports_regex_extract: ClassVar[bool] = True
     supports_regex_extract_nth: ClassVar[bool] = True
+    supports_regex_extract_all: ClassVar[bool] = False
     supports_regex_replace: ClassVar[bool] = True
     supports_regex_match: ClassVar[bool] = True
     supports_split_3: ClassVar[bool] = True
@@ -125,6 +126,14 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert to_str(dbe.eval('REGEXP_EXTRACT("Lorem ipsum dolor sit amet", "abc")')) in (None, "")
         assert to_str(dbe.eval('REGEXP_EXTRACT("Карл у Клары украл кораллы", ".лары")')) == "Клары"
         assert to_str(dbe.eval('REGEXP_EXTRACT([str_null_value], "or..")', from_=data_table)) in (None, "")
+
+    def test_regexp_extract_all(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        if not self.supports_regex_extract_all:
+            pytest.skip()
+        assert dbe.eval("REGEXP_EXTRACT_ALL('100-200, 300-400', '(\\d+)-(\\d+)')") in ("['100','300']", ["100", "300"])
+        assert dbe.eval("REGEXP_EXTRACT_ALL('нет_цифр', '(\\d+)-(\\d+)')") in ("[]", None)
+        assert to_str(dbe.eval('REGEXP_EXTRACT_ALL([str_null_value], "or..")', from_=data_table)) in (None, "[]")
+        assert dbe.eval("REGEXP_EXTRACT_ALL('1а2б3в4', '\\d+([а-я]*)\\d+')") in ("['а','в']", ["а", "в"])
 
     def test_regexp_extract_nth(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         if not self.supports_regex_extract_nth:

@@ -1,5 +1,9 @@
+from typing import Any
+
 import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as sa_postgresql
+from sqlalchemy.ext.compiler import compiles
+import sqlalchemy.sql.functions
 
 from dl_formula.definitions.base import (
     TranslationVariant,
@@ -14,6 +18,33 @@ from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
+
+
+class RegexpMatchesInBrackets(sqlalchemy.sql.functions.GenericFunction):
+    inherit_cache = True
+
+
+@compiles(RegexpMatchesInBrackets)
+def compile_regexp_matches_in_brackets(element: Any, compiler: sa.sql.compiler.SQLCompiler, **kw: Any) -> str:
+    # Need this to perform get_item (array[i]) after
+    return "(REGEXP_MATCHES(%s))" % compiler.process(element.clauses, **kw)
+
+
+def regexp_matches_in_brackets(text: str, pattern: str) -> sa.sql.expression.TypeCoerce:
+    regexp_matches_subquery = sa.select(
+        sa.type_coerce(
+            sa.func.RegexpMatchesInBrackets(text, pattern, "g"),
+            sa_postgresql.ARRAY(sa.String),
+        )[
+            1
+        ].label("strs")
+    )
+    return sa.type_coerce(
+        sa.select(
+            [sa.func.array_agg(regexp_matches_subquery.c.strs)],
+        ).select_from(regexp_matches_subquery),
+        sa_postgresql.ARRAY(sa.String),
+    )
 
 
 DEFINITIONS_STRING = [
@@ -119,6 +150,15 @@ DEFINITIONS_STRING = [
             ),
         ]
     ),
+    # regexp_extract_all
+    base.FuncRegexpExtractAll(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                regexp_matches_in_brackets,
+            )
+        ]
+    ),
     # regexp_extract_nth
     base.FuncRegexpExtractNth(
         variants=[
@@ -140,7 +180,10 @@ DEFINITIONS_STRING = [
     # regexp_replace
     base.FuncRegexpReplace(
         variants=[
-            V(D.POSTGRESQL, lambda text, patt, repl: sa.func.REGEXP_REPLACE(text, patt, repl, "g")),
+            V(
+                D.POSTGRESQL,
+                lambda text, patt, repl: sa.func.REGEXP_REPLACE(text, patt, repl, "g"),
+            ),
         ]
     ),
     # replace
@@ -170,7 +213,8 @@ DEFINITIONS_STRING = [
     base.FuncSplit3(
         variants=[
             V(
-                D.POSTGRESQL, lambda text, delim, ind: sa.func.SPLIT_PART(text, delim, sa.cast(ind, sa.INTEGER))
+                D.POSTGRESQL,
+                lambda text, delim, ind: sa.func.SPLIT_PART(text, delim, sa.cast(ind, sa.INTEGER)),
             ),  # FIXME: does not work with negative indices
         ]
     ),
