@@ -165,8 +165,8 @@ class ConnectorIconSrcConfigData(ConnectorIconSrcConfig):
             return None
 
         data = dict(
-            standard=b"data:image/svg+xml;base64," + conn.connector_info_provider.icon_data_standard,
-            nav=b"data:image/svg+xml;base64," + conn.connector_info_provider.icon_data_nav,
+            standard="data:image/svg+xml;base64," + conn.connector_info_provider.icon_data_standard,
+            nav="data:image/svg+xml;base64," + conn.connector_info_provider.icon_data_nav,
         )
         base_dict = super().as_dict(conn=conn)
         assert base_dict
