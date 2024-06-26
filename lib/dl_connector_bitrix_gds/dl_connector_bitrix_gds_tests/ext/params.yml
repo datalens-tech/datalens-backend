@@ -1,3 +1,2 @@
 params:
-  BITRIX_TOKEN: {getter: $osenv, key: BITRIX_TOKEN}
   BITRIX_DATALENS_TOKEN: { getter: $osenv, key: BITRIX_DATALENS_TOKEN }

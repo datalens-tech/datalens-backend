@@ -19,10 +19,5 @@ def env_param_getter() -> GenericEnvParamGetter:
 
 
 @pytest.fixture(scope="session")
-def bitrix_token(env_param_getter):
-    return env_param_getter.get_str_value("BITRIX_TOKEN")
-
-
-@pytest.fixture(scope="session")
 def bitrix_datalens_token(env_param_getter):
     return env_param_getter.get_str_value("BITRIX_DATALENS_TOKEN")

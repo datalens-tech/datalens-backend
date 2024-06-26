@@ -23,7 +23,6 @@ API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
 )
 
 BITRIX_PORTALS = dict(
-    default="gds.office.bitrix.ru",
     datalens="datalens.bitrix24.ru",
     invalid="some_portal",
 )
