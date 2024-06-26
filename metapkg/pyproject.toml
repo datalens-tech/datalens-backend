@@ -185,6 +185,7 @@ pandas = "==2.0.3"
 platformdirs = "==3.8.0"
 clize = "==5.0.0"
 poetry = "==1.7.1"
+deptry = "==0.16.1"
 
 #
 # This section defines dependencies groups per app.
