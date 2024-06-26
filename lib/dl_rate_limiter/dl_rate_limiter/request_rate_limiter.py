@@ -94,8 +94,8 @@ class SyncRequestRateLimiter:
             logger.info("Found match for Pattern(%s)", pattern)
             try:
                 event_key = pattern.event_key_template.generate_key(request)
-            except TemplateError:
-                logger.exception(f"Template error for request {request}")
+            except TemplateError as exc:
+                logger.warning("Template error for request", exc_info=exc)
                 continue
 
             result = self._event_limiter.check_limit(
@@ -124,8 +124,8 @@ class AsyncRequestRateLimiter:
             logger.info("Found match for Pattern(%s)", pattern)
             try:
                 event_key = pattern.event_key_template.generate_key(request)
-            except TemplateError:
-                logger.exception(f"Template error for request {request}")
+            except TemplateError as exc:
+                logger.warning("Template error for request", exc_info=exc)
                 continue
 
             result = await self._event_limiter.check_limit(

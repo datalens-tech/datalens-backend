@@ -28,8 +28,8 @@ class FlaskMiddleware:
                     status=429,
                     response={"description": "Too Many Requests"},
                 )
-        except Exception:
-            logger.exception("Failed to check request limit")
+        except Exception as exc:
+            logger.warning("Failed to check request limit", exc_info=exc)
 
         logger.info("No request limit was found")
         return None
