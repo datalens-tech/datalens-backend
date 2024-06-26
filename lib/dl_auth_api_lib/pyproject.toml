@@ -1,0 +1,50 @@
+
+[tool.poetry]
+name = "datalens-auth-api-lib"
+version = "0.0.1"
+description = ""
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_auth_api_lib"}]
+license = "Apache 2.0"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+python = ">=3.10, <3.13"
+pydantic = ">=2.7.0"
+pydantic-settings = ">=2.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+
+
+[tool.poetry.group.tests.dependencies]
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+datalens-testing = {path = "../dl_testing"}
+
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[datalens_ci]
+skip_test = true
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
+
+[[tool.mypy.overrides]]
+module = [
+    "pydantic_settings",
+]
+ignore_missing_imports = true
