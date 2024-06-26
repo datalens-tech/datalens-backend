@@ -1,12 +1,12 @@
 import pytest
 
-from dl_api_lib_testing.rls import (
-    RLS_CONFIG_CASES,
-    config_to_comparable,
-)
 from dl_constants.enums import RLSSubjectType
 from dl_rls.models import RLSSubject
 from dl_rls.serializer import FieldRLSSerializer
+from dl_rls.testing.testing_data import (
+    RLS_CONFIG_CASES,
+    config_to_comparable,
+)
 
 
 def test_group_names_by_account_type():

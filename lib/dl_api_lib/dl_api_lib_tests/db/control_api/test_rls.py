@@ -9,12 +9,12 @@ from dl_api_lib.query.formalization.raw_specs import (
     RawQuerySpecUnion,
     RawSelectFieldSpec,
 )
-from dl_api_lib_testing.rls import (
+from dl_api_lib_tests.db.base import DefaultApiTestBase
+from dl_rls.testing.testing_data import (
     RLS_CONFIG_CASES,
     config_to_comparable,
     load_rls_config,
 )
-from dl_api_lib_tests.db.base import DefaultApiTestBase
 
 
 class TestRLS(DefaultApiTestBase):
