@@ -83,6 +83,21 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         assert len(resp.json["options"]["query_types"]) > 0
         assert any([qt["query_type"] == "generic_query" for qt in resp.json["options"]["query_types"]])
 
+    def test_connection_sources(
+        self,
+        control_api_sync_client: SyncHttpClientBase,
+        saved_connection_id: str,
+        bi_headers: Optional[dict[str, str]],
+    ) -> None:
+        resp = control_api_sync_client.get(
+            url=f"/api/v1/connections/{saved_connection_id}/info/sources",
+            headers=bi_headers,
+        )
+        assert resp.status_code == 200, resp.json
+        resp_data = resp.json
+        assert "sources" in resp_data, resp_data
+        assert isinstance(resp_data["sources"], list), resp_data
+
     def test_create_connections__query_params_in_db_name__error(
         self,
         control_api_sync_client: SyncHttpClientBase,

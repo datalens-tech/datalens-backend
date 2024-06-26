@@ -195,6 +195,8 @@ class RequestsTransport(object):
                 if callable(value)
                 else value)
             for key, value in self.headers.items()}
+        headers["Content-Type"] = "application/octet-stream"
+        # ^ requests does not set Content-Type with this set of arguments automatically, so we do it manually
         try:
             resp = session.post(
                 self.db_url, auth=self.auth, params=params, data=data,
