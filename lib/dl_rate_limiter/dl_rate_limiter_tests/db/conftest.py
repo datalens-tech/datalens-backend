@@ -15,7 +15,7 @@ from dl_testing.utils import wait_for_port
 @pytest.fixture(scope="session")
 def event_loop():
     """Avoid spontaneous event loop closes between tests"""
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
     yield loop
     loop.close()
 
@@ -51,4 +51,6 @@ async def fixture_async_redis_client(session_async_redis_client: redis.asyncio.R
     await session_async_redis_client.flushall()
     await session_async_redis_client.function_flush()
 
-    return session_async_redis_client
+    yield session_async_redis_client
+
+    await session_async_redis_client.aclose()
