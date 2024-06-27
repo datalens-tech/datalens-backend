@@ -18,7 +18,7 @@ class TemplateError(Exception):
 class Request:
     url: str
     method: str
-    headers: typing.Mapping[str, str] = attr.ib(factory=dict)
+    headers: typing.Mapping[str, str] = attr.ib(factory=dict, repr=False)
 
 
 @attr.s(auto_attribs=True)
@@ -89,7 +89,7 @@ class SyncRequestRateLimiter:
     _patterns: list[RequestPattern] = attr.ib(factory=list)
 
     def check_limit(self, request: Request) -> bool:
-        logger.info("Checking rate limit for Request(%s)", Request)
+        logger.info("Checking rate limit for Request(%s)", request)
         for pattern in self._patterns:
             if not pattern.matches(request):
                 continue
@@ -119,7 +119,7 @@ class AsyncRequestRateLimiter:
     _patterns: list[RequestPattern] = attr.ib(factory=list)
 
     async def check_limit(self, request: Request) -> bool:
-        logger.info("Checking rate limit for Request(%s)", Request)
+        logger.info("Checking rate limit for Request(%s)", request)
         for pattern in self._patterns:
             if not pattern.matches(request):
                 continue
