@@ -27,10 +27,6 @@ dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-app-tools = {path = "../dl_app_tools"}
 
-[tool.deptry.package_module_name_map]
-dl-api-commons = "dl_api_commons"
-dl-api-lib = "dl_api_lib"
-
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
 appmetrica_api = "dl_connector_metrica.api.connector:AppMetricaApiApiConnector"

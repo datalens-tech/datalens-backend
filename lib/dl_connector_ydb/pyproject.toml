@@ -28,7 +28,10 @@ dl-query-processing = {path = "../dl_query_processing"}
 dl_utils = {path = "../dl_utils"}
 
 [tool.deptry.per_rule_ignores]
-DEP001 = ["ydb_proto_stubs_import", "grpc"]
+DEP001 = ["ydb_proto_stubs_import"]
+
+[tool.deptry.package_module_name_map]
+grpcio = "grpc"
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
