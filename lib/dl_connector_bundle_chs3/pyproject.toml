@@ -18,7 +18,7 @@ xxhash = ">=3.2.0"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
 dl-api-commons = {path = "../dl_api_commons"}
-dl-utils = {path = "../dl-utils"}
+dl-utils = {path = "../dl_utils"}
 dl-constants = {path = "../dl_constants"}
 dl-i18n = {path = "../dl_i18n"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
@@ -29,7 +29,7 @@ dl-core = {path = "../dl_core"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-core-testing = {path = "../dl_core_testing"}
 dl-task-processor = {path = "../dl_task_processor"}
-sqlalchemy = "==1.4.52, <2.0"
+sqlalchemy = ">=1.4.46, <2.0"
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]

@@ -31,7 +31,7 @@ dl-pivot-pandas = {path = "../dl_pivot_pandas"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-testing = {path = "../dl_testing"}
 dl-cache-engine = {path = "../dl_cache_engine"}
-datalens-rls = {path = "../dl_rls"}
+dl-rls = {path = "../dl_rls"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

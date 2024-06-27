@@ -11,7 +11,7 @@ readme = "README.md"
 attrs = ">=22.2.0"
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.52, <2.0"
+sqlalchemy = ">=1.4.46, <2.0"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-utils = {path = "../dl_utils"}
 dl-constants = {path = "../dl_constants"}
@@ -22,10 +22,10 @@ dl-configs = {path = "../dl_configs"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-core = {path = "../dl_core"}
 dl-sqlalchemy-metrica-api = {path = "../dl_sqlalchemy_metrica_api"}
-dl-api-lib = {path = "../dl-api-lib"}
-dl-model-tools = {path = "../dl-model-tools"}
-dl-query-processing = {path = "../dl-query_processing"}
-dl-app-tools = {path = "../dl-app-tools"}
+dl-api-lib = {path = "../dl_api_lib"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-app-tools = {path = "../dl_app_tools"}
 
 [tool.deptry.package_module_name_map]
 dl-api-commons = "dl_api_commons"

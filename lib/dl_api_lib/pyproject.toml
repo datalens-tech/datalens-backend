@@ -38,7 +38,7 @@ dl-pivot = {path = "../dl_pivot"}
 dl-pivot-pandas = {path = "../dl_pivot_pandas"}
 dl-cache-engine = {path = "../dl_cache_engine"}
 dynamic-enum = {path = "../dynamic_enum"}
-typing-extensions = ">=4.10.0"
+typing-extensions = "==4.9.0"
 dl-rls = {path = "../dl_rls"}
 
 [tool.poetry.group.tests.dependencies]

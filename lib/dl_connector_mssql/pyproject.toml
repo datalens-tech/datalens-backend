@@ -13,7 +13,7 @@ readme = "README.md"
 attrs = ">=22.2.0"
 pyodbc = ">=5.0.1"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.52, <2.0"
+sqlalchemy = ">=1.4.46, <2.0"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-constants = {path = "../dl_constants"}
 dl-formula-ref = {path = "../dl_formula_ref"}

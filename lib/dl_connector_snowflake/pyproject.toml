@@ -16,7 +16,7 @@ python = ">=3.10, <3.13"
 requests = ">=2.28.2"
 snowflake-connector-python = ">=3.6.0"
 snowflake-sqlalchemy = ">=1.5.1"
-sqlalchemy = ">=1.4.52, <2.0"
+sqlalchemy = ">=1.4.46, <2.0"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-utils = {path = "../dl_utils"}
 dl-constants = {path = "../dl_constants"}
