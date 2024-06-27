@@ -51,9 +51,12 @@ class RequestEventKeyTemplateHeader:
 class RequestEventKeyTemplate:
     key: str
     headers: tuple[RequestEventKeyTemplateHeader, ...]
+    header_value_separator: str = "%%"
 
     def generate_key(self, request: Request) -> str:
-        headers_values = ",".join(header.generate_value(request.headers) for header in self.headers)
+        headers_values = self.header_value_separator.join(
+            header.generate_value(request.headers) for header in self.headers
+        )
 
         return f"{self.key}:{headers_values}"
 
