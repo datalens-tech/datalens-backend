@@ -32,8 +32,8 @@ dl-task-processor = {path = "../dl_task_processor"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 
-[tool.deptry.per_rule_ignores]
-DEP001 = ["cchardet"]
+[tool.deptry.package_module_name_map]
+faust-cchardet = "cchardet"
 
 
 [tool.poetry.group.tests.dependencies]
