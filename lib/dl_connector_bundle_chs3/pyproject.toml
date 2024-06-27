@@ -18,7 +18,7 @@ xxhash = ">=3.2.0"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
 dl-api-commons = {path = "../dl_api_commons"}
-dl-utils = {path = "../dl-utils"}
+dl-utils = {path = "../dl_utils"}
 dl-constants = {path = "../dl_constants"}
 dl-i18n = {path = "../dl_i18n"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}

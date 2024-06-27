@@ -22,10 +22,10 @@ dl-configs = {path = "../dl_configs"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-core = {path = "../dl_core"}
 dl-sqlalchemy-metrica-api = {path = "../dl_sqlalchemy_metrica_api"}
-dl-api-lib = {path = "../dl-api-lib"}
-dl-model-tools = {path = "../dl-model-tools"}
-dl-query-processing = {path = "../dl-query_processing"}
-dl-app-tools = {path = "../dl-app-tools"}
+dl-api-lib = {path = "../dl_api_lib"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-app-tools = {path = "../dl_app_tools"}
 
 [tool.deptry.package_module_name_map]
 dl-api-commons = "dl_api_commons"

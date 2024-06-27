@@ -23,7 +23,7 @@ dl-configs = {path = "../dl_configs"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-core = {path = "../dl_core"}
 dl-app-tools = {path = "../dl_app_tools"}
-dl-utils = {path = "../dl_util"}
+dl-utils = {path = "../dl_utils"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
