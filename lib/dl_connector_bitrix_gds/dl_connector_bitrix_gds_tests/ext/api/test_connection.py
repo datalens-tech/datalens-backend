@@ -21,9 +21,7 @@ class TestBitrixDatalensConnection(BitrixConnectionTestBase, DefaultConnectorCon
 
 class TestBitrixInvalidConnection(BitrixInvalidConnectionTestBase, DefaultConnectorConnectionTestSuite):
     test_params = RegulatedTestParams(
-        mark_tests_skipped={
-            DefaultConnectorConnectionTestSuite.test_connection_sources: "Unavailable"
-        }
+        mark_tests_skipped={DefaultConnectorConnectionTestSuite.test_connection_sources: "Unavailable"}
     )
 
     def test_test_connection(
