@@ -317,6 +317,7 @@ tasks:
   check_missing_requirements:
     dotenv:
       - .env
+    deps: [ common_deps ]
     shell: bash
     cmds:
       - | 
