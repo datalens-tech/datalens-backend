@@ -13,7 +13,7 @@ readme = "README.rst"
 asyncpg = ">=0.29.0"
 psycopg2-binary = ">=2.9.9"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.52, <2.0"
+sqlalchemy = ">=1.4.46, <2.0"
 datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 
 [tool.poetry.plugins."sqlalchemy.dialects"]

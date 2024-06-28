@@ -11,7 +11,7 @@ readme = "README.md"
 attrs = ">=22.2.0"
 marshmallow = ">=3.19.0"
 redis = ">=5.0.1"
-sqlalchemy = ">=1.4.52, <2.0"
+sqlalchemy = ">=1.4.46, <2.0"
 python = ">=3.10, <3.13"
 redis_cache_lock = {path = "../redis-cache-lock"}
 datalens-api-commons = {path = "../dl_api_commons"}

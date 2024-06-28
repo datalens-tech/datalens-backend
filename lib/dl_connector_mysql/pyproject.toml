@@ -14,7 +14,7 @@ aiomysql = ">=0.1.1"
 attrs = ">=22.2.0"
 pymysql = ">=1.1.0"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.52, <2.0"
+sqlalchemy = ">=1.4.46, <2.0"
 datalens-api-commons = {path = "../dl_api_commons"}
 datalens-constants = {path = "../dl_constants"}
 datalens-formula-ref = {path = "../dl_formula_ref"}
