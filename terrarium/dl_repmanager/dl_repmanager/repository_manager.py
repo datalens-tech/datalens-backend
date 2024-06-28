@@ -399,6 +399,18 @@ class RepositoryManager:
         )
         return package_info.requirement_lists
 
+    def get_package_name_from_toml(self, package_module_name: str) -> PackageInfo | None:
+        """
+        Package name may differ from folder name
+        Example: dc_public_api_proto_stubs is folder name, but to import
+        we use import doublecloud, because in pyproject.toml
+        'packages = [{include = "doublecloud"}]' is written
+        """
+        for package_info in self.package_index.list_package_infos():
+            if package_module_name in str(package_info.abs_path):
+                return package_info
+        return None
+
     def compare_imports_and_requirements(
         self,
         package_module_name: str,
@@ -413,9 +425,14 @@ class RepositoryManager:
                 name = name[len(ignore_prefix) :]
             return name
 
-        package_info = self.package_index.get_package_info_from_module_name(
-            package_module_name=package_module_name,
-        )
+        try:
+            package_info = self.package_index.get_package_info_from_module_name(
+                package_module_name=package_module_name,
+            )
+        except KeyError:
+            if not (package_info_from_toml := self.get_package_name_from_toml(package_module_name)):
+                raise ValueError(f"Can`t find {package_module_name} or it may be incorrectly configured.")
+            package_info = package_info_from_toml
 
         def _get_imports(scan_modules: Sequence[str]) -> dict[str, ReqPackageSpec]:
             _result: dict[str, ReqPackageSpec] = {}
