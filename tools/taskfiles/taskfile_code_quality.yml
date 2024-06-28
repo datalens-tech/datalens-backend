@@ -321,8 +321,8 @@ tasks:
     shell: bash
     cmds:
       - | 
-        cd "{{.TOML_DIR}}"
         . $VENV_PATH/bin/activate
+        cd "{{.TOML_DIR}}"
         deptry . --ignore DEP004,DEP003,DEP002 --exclude ".*test.*"
         echo -e "\033[32mPASSED\033[0m: {{.TOML_DIR}}"
     silent: true
