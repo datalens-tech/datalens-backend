@@ -1,0 +1,7 @@
+---
+auth_clients:
+  ya_client:
+    auth_type: "yandex"
+    conn_type: "ya_client"
+    client_id: "ya_client"
+    redirect_uri: "localhost"
