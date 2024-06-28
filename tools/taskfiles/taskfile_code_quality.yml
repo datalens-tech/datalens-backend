@@ -315,6 +315,8 @@ tasks:
           TOML_DIR: '{{.TOML_DIR}}'
 
   check_missing_requirements:
+    dotenv:
+      - .env
     shell: bash
     cmds:
       - | 
