@@ -307,7 +307,7 @@ tasks:
     shell: bash
     vars:
       TOML_DIRS:
-        sh: find {{.ROOT_DIR}}/app {{.ROOT_DIR}}/lib -name 'pyproject.toml' | awk -F / '{FS=OFS="/";$NF=""; print $0}'
+        sh: find {{.ROOT_DIR}} \( -path '*/app*' -o -path '*/lib*' \) -name 'pyproject.toml' -maxdepth 3 | awk -F / '{FS=OFS="/";$NF=""; print $0}'
     cmds:
       - for: { var: TOML_DIRS, as: TOML_DIR }
         task: check_missing_requirements
