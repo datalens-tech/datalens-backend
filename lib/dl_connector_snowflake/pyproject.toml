@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-connector-snowflake"
+name = "dl-connector-snowflake"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -16,18 +16,21 @@ python = ">=3.10, <3.13"
 requests = ">=2.28.2"
 snowflake-connector-python = ">=3.6.0"
 snowflake-sqlalchemy = ">=1.5.1"
-sqlalchemy = ">=1.4.46, <2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-utils = {path = "../dl_utils"}
-datalens-constants = {path = "../dl_constants"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-testing = {path = "../dl_testing"}
-datalens-formula = {path = "../dl_formula"}
-datalens-configs = {path = "../dl_configs"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-core = {path = "../dl_core"}
-datalens-model-tools = {path = "../dl_model_tools"}
-datalens-db-testing = {path = "../dl_db_testing"}
+sqlalchemy = ">=1.4.52, <2.0"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-utils = {path = "../dl_utils"}
+dl-constants = {path = "../dl_constants"}
+dl-i18n = {path = "../dl_i18n"}
+dl-testing = {path = "../dl_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-configs = {path = "../dl_configs"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-core = {path = "../dl_core"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-db-testing = {path = "../dl_db_testing"}
+
+[tool.deptry.per_rule_ignores]
+DEP001 = ["snowflake"]
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
@@ -46,10 +49,10 @@ snowflake = "dl_connector_snowflake.formula.connector:SnowFlakeFormulaConnector"
 mock = ">=4.0.3"
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
-datalens-api-lib-testing = {path = "../dl_api_lib_testing"}
-datalens-api-client = {path = "../dl_api_client"}
-datalens-formula-testing = {path = "../dl_formula_testing"}
-datalens-core-testing = {path = "../dl_core_testing"}
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-api-client = {path = "../dl_api_client"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-core-testing = {path = "../dl_core_testing"}
 
 [[tool.mypy.overrides]]
 module = "snowflake.*"

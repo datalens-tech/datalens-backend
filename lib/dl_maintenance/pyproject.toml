@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-maintenance"
+name = "dl-maintenance"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -16,15 +16,16 @@ python = ">=3.10, <3.13"
 pyyaml = ">=5.3.1"
 shortuuid = ">=1.0.11"
 tabulate = ">=0.9.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-utils = {path = "../dl_utils"}
-datalens-constants = {path = "../dl_constants"}
-datalens-configs = {path = "../dl_configs"}
-datalens-core = {path = "../dl_core"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-query-processing = {path = "../dl_query_processing"}
-datalens-api-lib = {path = "../dl_api_lib"}
-datalens-pivot = {path = "../dl_pivot"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-utils = {path = "../dl_utils"}
+dl-constants = {path = "../dl_constants"}
+dl-configs = {path = "../dl_configs"}
+dl-core = {path = "../dl_core"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-api-lib = {path = "../dl_api_lib"}
+dl-pivot = {path = "../dl_pivot"}
+dl-model-tools = {path = "../dl_model_tools"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-api-client"
+name = "dl-api-client"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -14,8 +14,8 @@ attrs = ">=22.2.0"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 python = ">=3.10, <3.13"
-datalens-constants = {path = "../dl_constants"}
-datalens-model-tools = {path = "../dl_model_tools"}
+dl-constants = {path = "../dl_constants"}
+dl-model-tools = {path = "../dl_model_tools"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-connector-promql"
+name = "dl-connector-promql"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -14,15 +14,16 @@ aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-constants = {path = "../dl_constants"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-sqlalchemy-promql = {path = "../dl_sqlalchemy_promql"}
-datalens-configs = {path = "../dl_configs"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-core = {path = "../dl_core"}
-datalens-app-tools = {path = "../dl_app_tools"}
+sqlalchemy = ">=1.4.52, <2.0"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-constants = {path = "../dl_constants"}
+dl-i18n = {path = "../dl_i18n"}
+dl-sqlalchemy-promql = {path = "../dl_sqlalchemy_promql"}
+dl-configs = {path = "../dl_configs"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-core = {path = "../dl_core"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-utils = {path = "../dl_util"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
@@ -34,9 +35,9 @@ promql = "dl_connector_promql.core.connector:PromQLCoreConnector"
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
-datalens-api-lib-testing = {path = "../dl_api_lib_testing"}
-datalens-testing = {path = "../dl_testing"}
-datalens-core-testing = {path = "../dl_core_testing"}
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-testing = {path = "../dl_testing"}
+dl-core-testing = {path = "../dl_core_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
