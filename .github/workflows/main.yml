@@ -552,17 +552,23 @@ jobs:
           fetch-depth: 1
       - name: Find directories and check requirements
         run: |
-          dirs=($(find app lib -name 'pyproject.toml' | awk -F / '{FS=OFS="/";$NF=""; print $(NF-1)}'))
+          dirs=($(find app lib -name 'pyproject.toml' | awk -F / '{FS=OFS="/";$NF=""; print $0}'))
           code=0
+          project_path=$(pwd)
           for dir in $dirs; do
-            datalens-repmanager-cli req-check --package-name $dir > /dev/null
+            cd "${project_path}/${dir}"
+            deptry . --ignore DEP004,DEP003,DEP002 --exclude ".*test.*" 2> /dev/null
             if [ $? -ne 0 ]; then
-              echo "FAILED: $dir"
+              echo -e "\033[31mFAILED: $dir\033[0m"
               code=1
             else
-              echo "PASSED: $dir"
+              echo -e "\033[32mPASSED: $dir\033[0m"
             fi
           done
+          cd "${project_path}"
+          if [ $code -ne 0 ]; then
+            echo -e "\033[33mConsider using\033[0m deptry . --ignore DEP004,DEP003,DEP002 --exclude \".*test.*\"  in exact directory"
+          fi
 
 
 
