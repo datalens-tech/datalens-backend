@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-package-boilerplate"
+name = "dl-package-boilerplate"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]

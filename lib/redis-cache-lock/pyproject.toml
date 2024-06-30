@@ -16,7 +16,7 @@ python = ">=3.10, <3.13"
 redis = ">=5.0.1"
 
 [tool.poetry.group.tests.dependencies]
-datalens-testing = {path = "../dl_testing"}
+dl-testing = {path = "../dl_testing"}
 
 [build-system]
 requires = ["poetry-core"]

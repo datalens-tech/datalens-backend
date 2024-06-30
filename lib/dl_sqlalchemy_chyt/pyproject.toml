@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-sqlalchemy-chyt"
+name = "dl-sqlalchemy-chyt"
 version = "0.7"
 description = "BI CHYT SQLAlchemy Dialect"
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -13,8 +13,8 @@ readme = "README.rst"
 python = ">=3.10, <3.13"
 sqlalchemy = ">=1.4.46, <2.0"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
-datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
+dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
 bi_chyt = "dl_sqlalchemy_chyt.base:BICHYTDialect"

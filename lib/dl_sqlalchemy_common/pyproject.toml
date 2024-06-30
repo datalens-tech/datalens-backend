@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-sqlalchemy-common"
+name = "dl-sqlalchemy-common"
 version = "0.2"
 description = "BI SQLAlchemy dialects common additions"
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -15,11 +15,11 @@ sqlalchemy = ">=1.4.46, <2.0"
 
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
-datalens-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
-datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
-datalens-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
-datalens-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
-datalens-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
+dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
+dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
+dl-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
+dl-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
+dl-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

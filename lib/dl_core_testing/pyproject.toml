@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-core-testing"
+name = "dl-core-testing"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -23,14 +23,14 @@ shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
 uwsgi = ">=2.0.23"
 statcommons = {path = "../statcommons"}
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-utils = {path = "../dl_utils"}
-datalens-constants = {path = "../dl_constants"}
-datalens-testing = {path = "../dl_testing"}
-datalens-configs = {path = "../dl_configs"}
-datalens-core = {path = "../dl_core"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-db-testing = {path = "../dl_db_testing"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-utils = {path = "../dl_utils"}
+dl-constants = {path = "../dl_constants"}
+dl-testing = {path = "../dl_testing"}
+dl-configs = {path = "../dl_configs"}
+dl-core = {path = "../dl_core"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-db-testing = {path = "../dl_db_testing"}
 
 [tool.poetry.plugins."dl_core.connectors"]
 testing = "dl_core_testing.connector:TestingCoreConnector"

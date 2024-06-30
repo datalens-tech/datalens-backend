@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-sqlalchemy-mysql"
+name = "dl-sqlalchemy-mysql"
 version = "0.3"
 description = "DL MySQL SQLAlchemy Dialect"
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -11,8 +11,8 @@ license = "Apache 2.0"
 [tool.poetry.dependencies]
 pymysql = ">=1.1.0"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
-datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+sqlalchemy = ">=1.4.52, <2.0"
+dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
 dl_mysql = "dl_sqlalchemy_mysql.base:DLMYSQLDialect"

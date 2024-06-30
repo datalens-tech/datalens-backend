@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-sqlalchemy-promql"
+name = "dl-sqlalchemy-promql"
 version = "0.1"
 description = "BI PromQL SQLAlchemy Dialect"
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]

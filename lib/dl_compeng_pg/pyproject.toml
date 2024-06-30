@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-compeng-pg"
+name = "dl-compeng-pg"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -13,13 +13,13 @@ readme = "README.md"
 aiopg = ">=1.4.0"
 asyncpg = ">=0.29.0"
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-cache-engine = {path = "../dl_cache_engine"}
-datalens-constants = {path = "../dl_constants"}
-datalens-connector-postgresql = {path = "../dl_connector_postgresql"}
-datalens-core = {path = "../dl_core"}
-datalens-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-cache-engine = {path = "../dl_cache_engine"}
+dl-constants = {path = "../dl_constants"}
+dl-connector-postgresql = {path = "../dl_connector_postgresql"}
+dl-core = {path = "../dl_core"}
+dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
+dl-utils = {path = "../dl_utils"}
 python = ">=3.10, <3.13"
 sqlalchemy = ">=1.4.46, <2.0"
 
