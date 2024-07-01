@@ -401,7 +401,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
                 FilterFieldSpec(
                     field_id=field_guid,
                     operation=WhereClauseOperation.IN,
-                    values=values,
+                    values=values,  # type: ignore  # TODO: fix
                     anonymous=True,
                 )
             )
