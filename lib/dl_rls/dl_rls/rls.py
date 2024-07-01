@@ -39,33 +39,26 @@ class RLS:
     def fields_with_rls(self) -> list[str]:
         return list(set(item.field_guid for item in self.items))
 
-    def get_entries(
-        self, field_guid: str, subject_type: RLSSubjectType, subject_id: str, add_userid_entry: bool = True
-    ) -> list[RLSEntry]:
+    def get_entries(self, field_guid: str, user_id: str) -> list[RLSEntry]:
         return [
             item
             for item in self.items
             if item.field_guid == field_guid
             and (
                 # Same subject
-                (item.subject.subject_type == subject_type and item.subject.subject_id == subject_id)
+                (item.subject.subject_type == RLSSubjectType.userid and item.subject.subject_id == user_id)
                 # 'all subjects' matches any subject.
                 or item.subject.subject_type == RLSSubjectType.all
                 # `userid: userid`
-                or (add_userid_entry and item.pattern_type == RLSPatternType.userid)
+                or item.pattern_type == RLSPatternType.userid
             )
         ]
 
-    def get_field_restriction_for_subject(
-        self,
-        field_guid: str,
-        subject_type: RLSSubjectType,
-        subject_id: str,
-    ) -> FieldRestrictions:
+    def get_field_restriction_for_user(self, field_guid: str, user_id: str) -> FieldRestrictions:
         """
-        For subject and field, return `allow_all_values, allowed_values`.
+        For user and field, return `allow_all_values, allowed_values`.
         """
-        rls_entries = self.get_entries(field_guid=field_guid, subject_type=subject_type, subject_id=subject_id)
+        rls_entries = self.get_entries(field_guid=field_guid, user_id=user_id)
 
         # There's a `*: {current_user}` entry, no need to filter.
         if any(rls_entry.pattern_type == RLSPatternType.all for rls_entry in rls_entries):
@@ -100,15 +93,11 @@ class RLS:
 
         return FieldRestrictions(allow_all_values=False, allow_userid=allow_userid, allowed_values=allowed_values)
 
-    def get_subject_restrictions(
-        self,
-        subject_type: RLSSubjectType,
-        subject_id: str,
-    ) -> dict[str, list[str]]:
+    def get_user_restrictions(self, user_id: str) -> dict[str, list[str]]:
         result = {}
         for field_guid in self.fields_with_rls:
-            allow_all_values, allow_userid, allowed_values = self.get_field_restriction_for_subject(
-                field_guid=field_guid, subject_type=subject_type, subject_id=subject_id
+            allow_all_values, allow_userid, allowed_values = self.get_field_restriction_for_user(
+                field_guid=field_guid, user_id=user_id
             )
             if allow_all_values:
                 # `*: subject` => 'not restricted'
@@ -116,7 +105,7 @@ class RLS:
 
             # For `userid: userid`, add the subject id to the values.
             if allow_userid:
-                allowed_values = list(allowed_values) + [subject_id]
+                allowed_values = list(allowed_values) + [user_id]
 
             result[field_guid] = allowed_values
 
