@@ -44,7 +44,7 @@ class AuthAPISettings(pydantic_settings.BaseSettings):
     auth_clients: Annotated[
         dict[str, pydantic.SerializeAsAny[BaseOAuthClient]],
         pydantic.BeforeValidator(make_dict_factory(BaseOAuthClient.factory)),
-    ]
+    ] = pydantic.Field(default=dict())
 
     @classmethod
     def settings_customise_sources(
