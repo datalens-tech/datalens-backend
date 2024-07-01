@@ -46,7 +46,7 @@ class RLS:
             if item.field_guid == field_guid
             and (
                 # Same subject
-                (item.subject.subject_type == RLSSubjectType.userid and item.subject.subject_id == user_id)
+                (item.subject.subject_type == RLSSubjectType.user and item.subject.subject_id == user_id)
                 # 'all subjects' matches any subject.
                 or item.subject.subject_type == RLSSubjectType.all
                 # `userid: userid`
