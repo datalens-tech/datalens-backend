@@ -23,13 +23,13 @@ class FlaskMiddleware:
                 )
             )
             if result is False:
-                logger.warning("Request was rate limited")
+                logger.info("Request was rate limited")
                 return flask.Response(
                     status=429,
                     response={"description": "Too Many Requests"},
                 )
         except Exception as exc:
-            logger.warning("Failed to check request limit", exc_info=exc)
+            logger.info("Failed to check request limit", exc_info=exc)
 
         logger.info("No request limit was found")
         return None

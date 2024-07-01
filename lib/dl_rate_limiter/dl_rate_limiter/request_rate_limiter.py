@@ -98,7 +98,7 @@ class SyncRequestRateLimiter:
             try:
                 event_key = pattern.event_key_template.generate_key(request)
             except TemplateError as exc:
-                logger.warning("Template error for request", exc_info=exc)
+                logger.info("Template error for request", exc_info=exc)
                 continue
 
             result = self._event_limiter.check_limit(
@@ -128,7 +128,7 @@ class AsyncRequestRateLimiter:
             try:
                 event_key = pattern.event_key_template.generate_key(request)
             except TemplateError as exc:
-                logger.warning("Template error for request", exc_info=exc)
+                logger.info("Template error for request", exc_info=exc)
                 continue
 
             result = await self._event_limiter.check_limit(
