@@ -24,8 +24,6 @@ from dl_constants.enums import (
     JoinType,
     ManagedBy,
     ParameterValueConstraintType,
-    RLSPatternType,
-    RLSSubjectType,
     UserDataType,
     WhereClauseOperation,
 )
@@ -74,11 +72,7 @@ from dl_model_tools.typed_values import (
     TreeStrValue,
     UuidValue,
 )
-from dl_rls.models import (
-    RLSEntry,
-    RLSSubject,
-)
-from dl_rls.rls import RLS
+from dl_rls.schema import RLSSchema
 
 
 class SourceAvatarSchema(DefaultStorageSchema):
@@ -146,37 +140,6 @@ class AvatarRelationSchema(DefaultStorageSchema):
     managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
     valid = ma_fields.Boolean(allow_none=True)
     required = ma_fields.Boolean(load_default=False, dump_default=False)
-
-
-class RLSSchema(DefaultStorageSchema):
-    TARGET_CLS = RLS
-
-    class RLSEntrySchema(DefaultStorageSchema):
-        TARGET_CLS = RLSEntry
-
-        class RLSSubjectSchema(DefaultStorageSchema):
-            TARGET_CLS = RLSSubject
-
-            subject_type = ma_fields.Enum(RLSSubjectType)
-            subject_id = ma_fields.String()
-            subject_name = ma_fields.String()  # login, group name, etc
-
-        field_guid = ma_fields.String()
-        # TODO: validate that either of these is correct for each instance:
-        #   * pattern_type=RLSPatternType.value and allowed_value is not None
-        #   * pattern_type=RLSPatternType.all and allowed_value is None
-        allowed_value = ma_fields.String(allow_none=True)
-        pattern_type = ma_fields.Enum(RLSPatternType, dump_default=RLSPatternType.value)
-        subject = ma_fields.Nested(RLSSubjectSchema)
-
-    items = ma_fields.List(ma_fields.Nested(RLSEntrySchema))
-
-    def pre_process_input_data(self, data):  # type: ignore  # TODO: fix
-        return {"items": data}
-
-    @post_dump
-    def flatten_items(self, data, **_):  # type: ignore  # TODO: fix
-        return data.get("items")
 
 
 class BaseValueSchema(DefaultStorageSchema):
