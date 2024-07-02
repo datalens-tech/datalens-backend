@@ -7,7 +7,7 @@ from dl_rls.utils import (
 
 
 TEST_DATA = ["'abc'de", "'ab''c'''de", "'ab''c'''"]
-EXPECTED = [('abc', 'de'), ("ab'c'", 'de'), ("ab'c'", '')]
+EXPECTED = [("abc", "de"), ("ab'c'", "de"), ("ab'c'", "")]
 
 
 @pytest.mark.parametrize(["string", "expected"], zip(TEST_DATA, EXPECTED))

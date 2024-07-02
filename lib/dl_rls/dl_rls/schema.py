@@ -54,7 +54,7 @@ class RLSSchema(Schema):
     @post_load
     def post_load(self, data: dict[str, list[RLSEntry]], **kwargs: Any) -> RLS:
         if list(data.keys()) != ["items"]:
-            raise ValidationError("Expected only items at this point")
+            raise ValidationError("Only items are expected at this point")
         return RLS(items=data["items"])
 
     @post_dump
