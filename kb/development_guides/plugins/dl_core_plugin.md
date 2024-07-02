@@ -5,7 +5,7 @@ Each connector implements a number of interfaces by inheriting from the base cla
 To connect the plugin, the connector defines "definition classes" (`CoreSourceDefinition`, `CoreConnectionDefinition`, `CoreBackendDefinition`),
 which specify implementations of all connector-specific interfaces - the base definition classes are contained in the module `dl_core.connectors.base.connector`.
 
-The created definition classes, in turn, are assembled into a "connector class", which is inherited from the `CoreConnector` class.
+The created definition classes, in turn, are assembled into a "connector class" inherited from the `CoreConnector` class.
 
 The created connector class is registered as an entrypoint.
 
@@ -50,7 +50,7 @@ a combination of a schema name and a table name make up a DataSourceSpec).
 
 DataSource is a wrapper for accessing DataSourceSpec data.
 
-In most cases, `SqlDataSource` or `StandardSQLDataSource` will be suitable base classes.
+In most cases, `SQLDataSource` or `StandardSQLDataSource` will be suitable base classes.
 
 A number of convenient base classes are implemented for commonly used source types (for example, `SubselectDataSource` for dataset subqueries)
 
