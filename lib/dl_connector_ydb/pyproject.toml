@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "datalens-connector-ydb"
+name = "dl-connector-ydb"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -14,16 +14,24 @@ marshmallow = ">=3.19.0"
 python = ">=3.10, <3.13"
 sqlalchemy = ">=1.4.46, <2.0"
 ydb = ">=3.5.1"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-core-testing = {path = "../dl_core_testing"}
-datalens-db-testing = {path = "../dl_db_testing"}
-datalens-formula = {path = "../dl_formula"}
-datalens-formula-ref = {path = "../dl_formula_ref"}
-datalens-i18n = {path = "../dl_i18n"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl_utils = {path = "../dl_utils"}
+
+[tool.deptry.per_rule_ignores]
+DEP001 = ["ydb_proto_stubs_import"]
+
+[tool.deptry.package_module_name_map]
+grpcio = "grpc"
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
@@ -43,7 +51,7 @@ yql = "dl_connector_ydb.formula_ref.plugin:YQLFormulaRefPlugin"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
-datalens-formula-testing = {path = "../dl_formula_testing"}
+dl-formula-testing = {path = "../dl_formula_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

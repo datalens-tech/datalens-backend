@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-file-secure-reader-lib"
+name = "dl-file-secure-reader-lib"
 version = "0.1.0"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]

@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-api-connector"
+name = "dl-api-connector"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -15,18 +15,18 @@ marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 python = ">=3.10, <3.13"
 dynamic-enum = {path = "../dynamic_enum"}
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-constants = {path = "../dl_constants"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-formula = {path = "../dl_formula"}
-datalens-configs = {path = "../dl_configs"}
-datalens-core = {path = "../dl_core"}
-datalens-query-processing = {path = "../dl_query_processing"}
-datalens-model-tools = {path = "../dl_model_tools"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-constants = {path = "../dl_constants"}
+dl-i18n = {path = "../dl_i18n"}
+dl-formula = {path = "../dl_formula"}
+dl-configs = {path = "../dl_configs"}
+dl-core = {path = "../dl_core"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-model-tools = {path = "../dl_model_tools"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
-datalens-testing = {path = "../dl_testing"}
+dl-testing = {path = "../dl_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-connector-clickhouse"
+name = "dl-connector-clickhouse"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -18,23 +18,23 @@ requests = ">=2.28.2"
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-constants = {path = "../dl_constants"}
-datalens-formula-ref = {path = "../dl_formula_ref"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-formula = {path = "../dl_formula"}
-datalens-configs = {path = "../dl_configs"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-core = {path = "../dl_core"}
-datalens-core-testing = {path = "../dl_core_testing"}
-datalens-db-testing = {path = "../dl_db_testing"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-dashsql = {path = "../dl_dashsql"}
-datalens-formula-testing = {path = "../dl_formula_testing"}
-datalens-query-processing = {path = "../dl_query_processing"}
-datalens-testing = {path = "../dl_testing"}
-datalens-utils = {path = "../dl_utils"}
+dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-constants = {path = "../dl_constants"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-formula = {path = "../dl_formula"}
+dl-configs = {path = "../dl_configs"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-core = {path = "../dl_core"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-dashsql = {path = "../dl_dashsql"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-testing = {path = "../dl_testing"}
+dl-utils = {path = "../dl_utils"}
 pytest = ">=7.2.2"
 pytz = ">=2022.7.1"
 
@@ -58,7 +58,7 @@ clickhouse = "dl_connector_clickhouse.formula_ref.plugin:ClickHouseFormulaRefPlu
 [tool.poetry.group.tests.dependencies]
 frozendict = ">=2.3.8"
 pytest-asyncio = ">=0.20.3"
-datalens-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

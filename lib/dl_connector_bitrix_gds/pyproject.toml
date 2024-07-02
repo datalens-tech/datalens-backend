@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "datalens-connector-bitrix-gds"
+name = "dl-connector-bitrix-gds"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -14,19 +14,19 @@ redis = ">=5.0.1"
 sqlalchemy = ">=1.4.46, <2.0"
 python = ">=3.10, <3.13"
 redis_cache_lock = {path = "../redis-cache-lock"}
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-utils = {path = "../dl_utils"}
-datalens-constants = {path = "../dl_constants"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-configs = {path = "../dl_configs"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-core = {path = "../dl_core"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-query-processing = {path = "../dl_query_processing"}
-datalens-sqlalchemy-bitrix = {path = "../dl_sqlalchemy_bitrix"}
-datalens-cache-engine = {path = "../dl_cache_engine"}
-datalens-formula = {path = "../dl_formula"}
-datalens-model-tools = {path = "../dl_model_tools"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-utils = {path = "../dl_utils"}
+dl-constants = {path = "../dl_constants"}
+dl-i18n = {path = "../dl_i18n"}
+dl-configs = {path = "../dl_configs"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-core = {path = "../dl_core"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-sqlalchemy-bitrix = {path = "../dl_sqlalchemy_bitrix"}
+dl-cache-engine = {path = "../dl_cache_engine"}
+dl-formula = {path = "../dl_formula"}
+dl-model-tools = {path = "../dl_model_tools"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
@@ -40,7 +40,7 @@ bitrix_gds = "dl_connector_bitrix_gds.formula.connector:BitrixGDSFormulaConnecto
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
-datalens-compeng-pg = {path = "../dl_compeng_pg"}
+dl-compeng-pg = {path = "../dl_compeng_pg"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
