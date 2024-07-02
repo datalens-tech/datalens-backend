@@ -527,28 +527,6 @@ jobs:
           task cq:check_dir_strict -- .
         env:
           VENV_PATH: /venv
-
-  check_requirements:
-    runs-on: [ self-hosted, linux, light ]
-    needs: gh_build_image
-    container:
-      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-    steps:
-      - name: Cleanup build folder
-        run: |
-          rm -rf ./* || true
-          rm -rf ./.??* || true
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          fetch-depth: 1
       - name: Find directories and check requirements
         run: |
           task cq:find_and_check_requirements
