@@ -1,11 +1,11 @@
 ## About dl-api plugin
 
-Each connector implements a number of interfaces by inheriting from the base classes defined in the `al_api_connector` package.
+Each connector implements a number of interfaces by inheriting from the base classes defined in the `dl_api_connector` package.
 
-To connect the plugin, the connector defines "definition classes" (`ApiSourceDefinition`, `ApiConnectionDefinition`, `ApiBackendDefinition`),
+To implement the plugin, the connector defines "definition classes" (`ApiSourceDefinition`, `ApiConnectionDefinition`, `ApiBackendDefinition`),
 which specify implementations of all connector-specific interfaces - the base definition classes are contained in the module `dl_api_connector.connector`.
 
-The created definition classes, in turn, are assembled into a "connector class", which is inherited from the `ApiConnector` class.
+The created definition classes, in turn, are assembled into a "connector class" inherited from the `ApiConnector` class.
 
 The created connector class is registered as an entrypoint.
 
