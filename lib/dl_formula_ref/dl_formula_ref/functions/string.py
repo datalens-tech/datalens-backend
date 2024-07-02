@@ -279,6 +279,16 @@ FUNCTION_REGEXP_EXTRACT = FunctionDocRegistryItem(
     ],
 )
 
+FUNCTION_REGEXP_EXTRACT_ALL = FunctionDocRegistryItem(
+    name="regexp_extract_all",
+    category=CATEGORY_STRING,
+    description=_("Returns all substring {arg:0} that matches the regular expression for first subgroup" "{arg:1}."),
+    notes=_REGEXP_NOTES,
+    examples=[
+        SimpleExample("REGEXP_EXTRACT_ALL('100-200, 300-400', '(\\d+)-(\\d+)') = ['100','300']"),
+    ],
+)
+
 FUNCTION_REGEXP_EXTRACT_NTH = FunctionDocRegistryItem(
     name="regexp_extract_nth",
     category=CATEGORY_STRING,
@@ -402,6 +412,7 @@ FUNCTIONS_STRING = [
     FUNCTION_TRIM,
     FUNCTION_SUBSTR,
     FUNCTION_REGEXP_EXTRACT,
+    FUNCTION_REGEXP_EXTRACT_ALL,
     FUNCTION_REGEXP_EXTRACT_NTH,
     FUNCTION_REGEXP_MATCH,
     FUNCTION_REGEXP_REPLACE,
