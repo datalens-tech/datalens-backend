@@ -29,7 +29,7 @@ dl-core = {path = "../dl_core"}
 dl-app-tools = {path = "../dl_app_tools"}
 dl-core-testing = {path = "../dl_core_testing"}
 dl-db-testing = {path = "../dl_db_testing"}
-typing-extensions = "==4.9.0"
+typing-extensions = ">=4.9.0"
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["psycopg2"]

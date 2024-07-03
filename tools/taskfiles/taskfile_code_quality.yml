@@ -321,8 +321,7 @@ tasks:
     shell: bash
     dir: "/{{.TOML_DIR}}"
     cmds:
-      - |
-        $VENV_PATH/bin/deptry . --ignore DEP004,DEP003,DEP002 --exclude ".*test.*"
-        echo -e "\033[32mPASSED\033[0m: {{.TOML_DIR}}"
+        - echo -e "\033[33mDIRECTORY\033[0m {{.TOML_DIR}}"
+        - deptry . --ignore DEP004,DEP003,DEP002 --exclude ".*test.*"
     silent: true
     ignore_error: true

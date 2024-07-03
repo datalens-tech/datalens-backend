@@ -20,7 +20,7 @@ dynamic-enum = {path = "../dynamic_enum"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-utils = {path = "../dl_utils"}
 dl-i18n = {path = "../dl_i18n"}
-typing-extensions = "==4.9.0"
+typing-extensions = ">=4.9.0"
 dl-db-testing = {path = "../dl_db_testing"}
 
 [tool.poetry.group]
