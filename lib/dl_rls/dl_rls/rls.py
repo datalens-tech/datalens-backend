@@ -30,6 +30,7 @@ class FieldRestrictions(NamedTuple):
 @attr.s
 class RLS:
     items: list[RLSEntry] = attr.ib(factory=list)
+    allowed_groups: set[str] = attr.ib(factory=set)
 
     @property
     def has_restrictions(self) -> bool:
@@ -49,6 +50,10 @@ class RLS:
             and (
                 # Same subject
                 (item.subject.subject_type == subject_type and item.subject.subject_id == subject_id)
+                # user is in the group
+                or (
+                    item.subject.subject_type == RLSSubjectType.group and item.subject.subject_id in self.allowed_groups
+                )
                 # 'all subjects' matches any subject.
                 or item.subject.subject_type == RLSSubjectType.all
                 # `userid: userid`
