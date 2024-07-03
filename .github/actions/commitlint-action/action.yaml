@@ -14,11 +14,12 @@ runs:
     - name: Setup Node
       uses: actions/setup-node@v2
       with:
-          node-version: '18'
+          node-version: '22'
 
     - name: Install Dependencies
       shell: bash
       run: |
+          npm init es6 -y
           npm install conventional-changelog-conventionalcommits
           npm install commitlint@latest
 
