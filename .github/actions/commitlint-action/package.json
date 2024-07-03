@@ -5,12 +5,14 @@
   "type": "module",
   "main": "lib/main.js",
   "scripts": {
-    "build": "rm -rf lib/ && tsc",
+    "src:all": "rm -rf lib/ && tsc",
     "format": "prettier --write '**/*.ts'",
     "format-check": "prettier --check '**/*.ts'",
     "lint": "eslint src/**/*.ts --fix",
-    "package": "rm -rf dist/ && ncc build --source-map --license licenses.txt  -s -e '@commitlint/load' -e '@commitlint/config-conventional'",
-    "all": "npm run build && npm run format && npm run lint && npm run package"
+    "dist:all": "npm run dist:build && npm run dist:copy_assets",
+    "dist:build": "rm -rf dist/ && ncc build --license licenses.txt",
+    "dist:copy_assets": "cp node_modules/@commitlint/config-validator/lib/commitlint.schema.json dist/commitlint.schema.json",
+    "all": "npm run src:all && npm run format && npm run lint && npm run dist:all"
   },
   "keywords": [],
   "author": "",
@@ -21,7 +23,8 @@
     "@commitlint/lint": "^19.2.2",
     "@commitlint/load": "^19.2.0",
     "@commitlint/format":  "^19.2.2",
-    "@commitlint/config-conventional": "^19.2.2"
+    "@commitlint/config-conventional": "^19.2.2",
+    "@commitlint/config-validator": "^19.0.3"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.14.1",

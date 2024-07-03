@@ -1,18 +1,17 @@
 {
   "compilerOptions": {
     /* Build */
-    "target": "es2022",
+    "target": "es2015",
     "lib": ["ESNext"],
-    "module": "NodeNext",
     "outDir": "./lib",
     "rootDir": "./src",
     "esModuleInterop": true,
     "sourceMap": true,
 
     /* Bundler mode */
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+//    "isolatedModules": true,
 
     /* Linting */
     "strict": true,
