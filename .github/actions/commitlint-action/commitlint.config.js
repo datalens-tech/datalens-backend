@@ -22,7 +22,6 @@ const Configuration = {
 				'docs',
 			],
 		],
-		'scope-empty': [RuleConfigSeverity.Error, 'never'],
 		'scope-enum': [
 			RuleConfigSeverity.Error,
 			'always',
@@ -41,6 +40,11 @@ const Configuration = {
 			],
 		],
     },
+	parserPreset: {
+		parserOpts: {
+			headerPattern: /^(BI-[0-9]{2,4}):(.+)$/,
+		}
+ 	 }
 }
 
 export default Configuration;
