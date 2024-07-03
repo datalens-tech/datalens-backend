@@ -22,6 +22,7 @@ const Configuration = {
 				'docs',
 			],
 		],
+		'scope-empty': [RuleConfigSeverity.Error, 'never']
 		'scope-enum': [
 			RuleConfigSeverity.Error,
 			'always',
