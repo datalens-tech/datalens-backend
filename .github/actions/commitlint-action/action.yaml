@@ -19,7 +19,8 @@ runs:
     - name: Install Dependencies
       shell: bash
       run: |
-          npm install @commitlint/{cli,config-conventional} --save-dev
+          npm install conventional-changelog-conventionalcommits
+          npm install commitlint@latest
 
     - name: Lint Commit
       shell: bash
