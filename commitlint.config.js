@@ -39,11 +39,30 @@ const Configuration = {
 				'formula',
 			],
 		],
+		'subject-case': [
+			RuleConfigSeverity.Error,
+			'never',
+			['start-case', 'pascal-case', 'upper-case'],
+		],
+		'subject-prefix': [
+			RuleConfigSeverity.Error,
+			'always',
+		],
+
     },
-	parserOpts: {
-	  headerPattern: /^(\w*)(?:\((.*)\))?: (BI-[0-9]{1,4} .*)$/,
-	  headerCorrespondence: ['type', 'scope', 'subject'],
-	}
+	plugins: [
+		{
+		  rules: {
+			'subject-prefix': ({subject}) => {
+				const PREFIX = 'BI-';
+				return [
+					subject.startsWith(PREFIX),
+					`Subject must start with ${PREFIX}`,
+				]
+			},
+		  },
+		},
+	],
 }
 
 export default Configuration;

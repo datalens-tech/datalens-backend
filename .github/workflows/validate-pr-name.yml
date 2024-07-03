@@ -21,4 +21,4 @@ jobs:
         uses: ./.github/actions/commitlint-action
         with:
           input: ${{ github.event.pull_request.title }}
-          config_path: ${{ github.workspace }}/.github/actions/commitlint-action/commitlint.config.js
+          config_path: ${{ github.workspace }}/commitlint.config.js
