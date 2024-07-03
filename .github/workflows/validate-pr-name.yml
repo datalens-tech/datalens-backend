@@ -14,8 +14,11 @@ jobs:
     name: Ensure proper PR title
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/commitlint-action
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Commitlint PR title
+        uses: ./.github/actions/commitlint-action
         with:
           input: ${{ github.event.pull_request.title }}
           config_path: ${{ github.workspace }}/.github/actions/commitlint-action/commitlint.config.js
