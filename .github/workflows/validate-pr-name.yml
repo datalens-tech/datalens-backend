@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  pr-title-lint:
+  commitlint-pr-title:
     name: Ensure proper PR title
     runs-on: ubuntu-latest
     steps:
