@@ -43,6 +43,7 @@ const Configuration = {
 	parserPreset: {
 		parserOpts: {
 			headerPattern: /^(BI-[0-9]{2,4}):(.+)$/,
+			headerCorrespondence: ['subject'],
 		}
  	 }
 }
