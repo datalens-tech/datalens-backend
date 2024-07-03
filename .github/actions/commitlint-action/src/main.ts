@@ -3,13 +3,13 @@ import { lint, formatResult } from "./lint.js";
 
 async function run(): Promise<void> {
   const input = getInput("input");
-  const configFile = getInput("commitlintConfigFile");
+  const configPath = getInput("config_path");
 
   info(`🔎 Checking if input(${input}) meets the requirements ...`);
-  info(`📄 Using commitlint config file: ${configFile}`);
+  info(`📄 Using commitlint config file: ${configPath}`);
 
   try {
-    const lintResult = await lint(input, configFile);
+    const lintResult = await lint(input, configPath);
     if (!lintResult.valid) {
       setFailed(`\\n ${formatResult(lintResult)}`);
     } else {
