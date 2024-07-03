@@ -41,7 +41,7 @@ const Configuration = {
 		],
     },
 	parserOpts: {
-	  headerPattern: /^\s(\w*)(?:\((.*)\))?: (BI-[0-9]{1,4}:.*)$/,
+	  headerPattern: /^(\w*)(?:\((.*)\))?: (BI-[0-9]{1,4}:.*)$/,
 	  headerCorrespondence: ['type', 'scope', 'subject'],
 	}
 }
