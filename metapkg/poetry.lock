@@ -2270,6 +2270,7 @@ develop = false
 [package.dependencies]
 attrs = ">=22.2.0"
 datalens-constants = {path = "../../lib/dl_constants"}
+marshmallow = ">=3.19.0"
 more-itertools = ">=9.1.0"
 
 [package.source]
