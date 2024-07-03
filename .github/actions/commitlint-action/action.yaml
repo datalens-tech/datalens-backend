@@ -1,0 +1,12 @@
+name: 'Commitlint'
+description: 'Commitlints input according to config'
+inputs:
+  input:
+    description: 'The input to commitlint'
+    required: true
+  config_path:
+    description: 'The path to the commitlint config'
+    required: true
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    /* Build */
+    "target": "es2022",
+    "lib": ["ESNext"],
+    "module": "NodeNext",
+    "outDir": "./lib",
+    "rootDir": "./src",
+    "esModuleInterop": true,
+    "sourceMap": true,
+
+    /* Bundler mode */
+    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+
+    /* Linting */
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": ["node_modules", "dist"]
+}
