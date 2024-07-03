@@ -40,12 +40,10 @@ const Configuration = {
 			],
 		],
     },
-	parserPreset: {
-		parserOpts: {
-			headerPattern: /^(BI-[0-9]{2,4}):(.+)$/,
-			headerCorrespondence: ['subject'],
-		}
- 	 }
+	parserOpts: {
+	  headerPattern: /^\s(\w*)(?:\((.*)\))?: (BI-[0-9]{1,4}:.*)$/,
+	  headerCorrespondence: ['type', 'scope', 'subject'],
+	}
 }
 
 export default Configuration;
