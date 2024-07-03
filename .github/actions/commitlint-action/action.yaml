@@ -21,7 +21,7 @@ runs:
       run: |
           npm init es6 -y
           npm install conventional-changelog-conventionalcommits
-          npm install commitlint@latest
+          npm install @commitlint/{config-conventional,cli}
 
     - name: Lint Commit
       shell: bash
