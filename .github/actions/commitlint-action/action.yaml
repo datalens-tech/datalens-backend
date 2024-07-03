@@ -8,5 +8,20 @@ inputs:
     description: 'The path to the commitlint config'
     required: true
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+  using: composite
+
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+          node-version: '20'
+
+    - name: Install Dependencies
+      shell: bash
+      run: |
+          npm install @commitlint/{cli,config-conventional} --save-dev
+
+    - name: Lint Commit
+      shell: bash
+      run: |
+          echo "${{ inputs.input }}" | npx commitlint --config ${{ inputs.config_path }}
