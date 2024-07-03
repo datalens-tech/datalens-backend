@@ -84,9 +84,10 @@ class TestInfo(DefaultApiTestBase):
         form_resp = client.get(f"/api/v1/info/connectors/forms/{CONNECTION_TYPE_CLICKHOUSE.name}/bad_form_mode")
         assert form_resp.status_code == 400, form_resp.json
 
-    def test_get_connector_icon(self, client):
+    def test_get_connector_icons(self, client):
         icons_resp = client.get("/api/v1/info/connectors/icons")
-        assert icons_resp.status_code == 200
+        assert icons_resp.status_code == 200, icons_resp.json
+
         resp_data = icons_resp.json
         assert resp_data["icons"]
         assert len(resp_data["icons"]) > 0
@@ -96,3 +97,19 @@ class TestInfo(DefaultApiTestBase):
             assert "data" in icon
             assert icon["data"].get("standard") is not None and len(icon["data"]["standard"]) > 0, icon
             assert icon["data"].get("nav") is not None and len(icon["data"]["nav"]) > 0, icon
+
+    @pytest.mark.parametrize("conn_type_name", [conn_type.name for conn_type in ConnectionType])
+    def test_get_connector_icon(self, client, conn_type_name):
+        icons_resp = client.get(f"/api/v1/info/connectors/icons/{conn_type_name}")
+        assert icons_resp.status_code == 200, icons_resp.json
+
+        resp_data = icons_resp.json
+        assert "type" in resp_data
+        assert resp_data["type"] == "data"
+        assert "data" in resp_data
+        assert resp_data["data"].get("standard") is not None and len(resp_data["data"]["standard"]) > 0, resp_data
+        assert resp_data["data"].get("nav") is not None and len(resp_data["data"]["nav"]) > 0, resp_data
+
+    def test_get_connector_icon_not_found(self, client):
+        icons_resp = client.get("/api/v1/info/connectors/icons/unknown_conn_type")
+        assert icons_resp.status_code == 404, icons_resp.json
