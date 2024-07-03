@@ -155,6 +155,7 @@ datalens-cache-engine = {path = "../lib/dl_cache_engine"}
 datalens-rate-limiter = {path = "../lib/dl_rate_limiter", extras=["flask", "aiohttp"]}
 datalens-rls = {path = "../lib/dl_rls"}
 datalens-zitadel = {path = "../lib/dl_zitadel"}
+datalens-auth-api-lib = {path = "../lib/dl_auth_api_lib"}
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.12.1"

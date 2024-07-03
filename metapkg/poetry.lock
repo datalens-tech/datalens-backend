@@ -1172,6 +1172,29 @@ type = "directory"
 url = "../lib/dl_attrs_model_mapper_doc_tools"
 
 [[package]]
+name = "datalens-auth-api-lib"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+aiohttp = ">=3.9.1"
+attrs = ">=22.2.0"
+datalens-api-commons = {path = "../dl_api_commons"}
+datalens-core = {path = "../dl_core"}
+marshmallow = ">=3.19.0"
+pydantic = ">=2.7.0"
+pydantic-settings = ">=2.2.0 <2.3.4"
+typing-extensions = ">=4.9.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_auth_api_lib"
+
+[[package]]
 name = "datalens-cache-engine"
 version = "0.0.1"
 description = ""
@@ -6883,4 +6906,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "d018196e3add58d41331a87d21b886fb086e732b1c4ea7eaa19551d42c3a471b"
+content-hash = "7ddd9b2abe58e323f4ac718a7dd2f612ba0a1f870ed0cdc43affc6d258460a70"

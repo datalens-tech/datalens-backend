@@ -14,7 +14,7 @@ from dl_api_commons.aio.middlewares.tracing import TracingService
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_auth_api_lib.settings import AuthAPISettings
 from dl_auth_api_lib.views import yandex as yandex_views
-from dl_auth_api_lib.views.base import PingView
+from dl_core.aio.ping_view import PingView
 
 
 _TSettings = TypeVar("_TSettings", bound=AuthAPISettings)
