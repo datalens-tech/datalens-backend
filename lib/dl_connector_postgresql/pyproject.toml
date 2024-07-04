@@ -31,8 +31,8 @@ dl-core-testing = {path = "../dl_core_testing"}
 dl-db-testing = {path = "../dl_db_testing"}
 typing-extensions = ">=4.9.0"
 
-[tool.deptry.per_rule_ignores]
-DEP001 = ["psycopg2"]
+[tool.deptry.package_module_name_map]
+psycopg2-binary = "psycopg2"
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
