@@ -37,7 +37,7 @@ const getChangelogConfig = async () => {
   const response = await fetch(CONFIG_SOURCE_URL);
   const data = await response.json();
 
-  console.log(`INFO::Received data from config file: ${data}`);
+  console.log(`INFO::Received data from config file: ${JSON.stringify(data)}`);
 
   const typeEnum = data.section_tags.tags.map((tag) => tag.id);
   const scopeEnum = data.component_tags.tags.map((tag) => tag.id);
