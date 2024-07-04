@@ -965,6 +965,29 @@ test = ["pretend", "pytest (>=6.2.0)", "pytest-benchmark", "pytest-cov", "pytest
 test-randomorder = ["pytest-randomly"]
 
 [[package]]
+name = "datalens-auth-api-lib"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+aiohttp = ">=3.9.1"
+attrs = ">=22.2.0"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-core = {path = "../dl_core"}
+marshmallow = ">=3.19.0"
+pydantic = ">=2.7.0"
+pydantic-settings = ">=2.2.0"
+typing-extensions = ">=4.9.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_auth_api_lib"
+
+[[package]]
 name = "decorator"
 version = "5.1.1"
 description = "Decorators for Humans"
@@ -5168,6 +5191,25 @@ files = [
 typing-extensions = ">=4.6.0,<4.7.0 || >4.7.0"
 
 [[package]]
+name = "pydantic-settings"
+version = "2.3.4"
+description = "Settings management using Pydantic"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pydantic_settings-2.3.4-py3-none-any.whl", hash = "sha256:11ad8bacb68a045f00e4f862c7a718c8a9ec766aa8fd4c32e39a0594b207b53a"},
+    {file = "pydantic_settings-2.3.4.tar.gz", hash = "sha256:c5802e3d62b78e82522319bbc9b8f8ffb28ad1c988a99311d04f2a6051fca0a7"},
+]
+
+[package.dependencies]
+pydantic = ">=2.7.0"
+python-dotenv = ">=0.21.0"
+
+[package.extras]
+toml = ["tomli (>=2.0.1)"]
+yaml = ["pyyaml (>=6.0.1)"]
+
+[[package]]
 name = "pygments"
 version = "2.16.1"
 description = "Pygments is a syntax highlighting package written in Python."
@@ -6923,4 +6965,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "963ad220e84059fffd6819a58a1fc7811942cccf985a92bca69800ae4b5828bc"
+content-hash = "24dd40fd7ef29d2f8e133cc72008dd8bd079f424afa498579e2881d13a439999"
