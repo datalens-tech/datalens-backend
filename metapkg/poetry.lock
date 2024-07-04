@@ -965,27 +965,83 @@ test = ["pretend", "pytest (>=6.2.0)", "pytest-benchmark", "pytest-cov", "pytest
 test-randomorder = ["pytest-randomly"]
 
 [[package]]
-name = "datalens-api-client"
+name = "decorator"
+version = "5.1.1"
+description = "Decorators for Humans"
+optional = false
+python-versions = ">=3.5"
+files = [
+    {file = "decorator-5.1.1-py3-none-any.whl", hash = "sha256:b8c3f85900b9dc423225913c5aace94729fe1fa9763b38939a95226f02d37186"},
+    {file = "decorator-5.1.1.tar.gz", hash = "sha256:637996211036b6385ef91435e4fae22989472f9d571faba8927ba8253acbc330"},
+]
+
+[[package]]
+name = "deptry"
+version = "0.16.1"
+description = "A command line utility to check for unused, missing and transitive dependencies in a Python project."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "deptry-0.16.1-cp38-abi3-macosx_10_12_x86_64.whl", hash = "sha256:29ed8ae61b8f5664dd484717c79eef7ec66d965940efd828fca0d3c09220a1db"},
+    {file = "deptry-0.16.1-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:738a772b538f51e9a7bb8d5cb9a61cfea8794a79371d171919b01cff0dc895bf"},
+    {file = "deptry-0.16.1-cp38-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:56b78f7c860def8000e93f88345a24809f1b91e2f7836ac9a08285cb405e2762"},
+    {file = "deptry-0.16.1-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c3e86a04ea87ddece0f68ba204feb950f588205808c8320e6628300f03ff66dc"},
+    {file = "deptry-0.16.1-cp38-abi3-win_amd64.whl", hash = "sha256:01b5098739a56c93f3e1e40efec5f20452f22a9a8436a59809d46201fcb94bcf"},
+    {file = "deptry-0.16.1-pp310-pypy310_pp73-macosx_10_12_x86_64.whl", hash = "sha256:7e29dc4c1bbb933c9482e8cef85fafe2be7f46aeb90a8a07ba5f2b22af60876f"},
+    {file = "deptry-0.16.1-pp310-pypy310_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d8dfab68c247566c87a40f55f405be8549ffe4cea0b9b5384b7ae73a6f1d5cd1"},
+    {file = "deptry-0.16.1-pp310-pypy310_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1228493926b6e59cd2df7cb6016e10c255553cc31db24edcf7fc8d5474b81be6"},
+    {file = "deptry-0.16.1-pp310-pypy310_pp73-win_amd64.whl", hash = "sha256:99c3ac60b78ad1b8fb9844c25393e7ebc969cc950601ce3c050f56d196da5a79"},
+    {file = "deptry-0.16.1.tar.gz", hash = "sha256:39fb62da4a8f4d17ed282310f7bcaadec55a95a8c471b01e0fcdf5351a7ac323"},
+]
+
+[package.dependencies]
+click = ">=8.0.0,<9"
+colorama = {version = ">=0.4.6", markers = "sys_platform == \"win32\""}
+tomli = {version = ">=2.0.1", markers = "python_version < \"3.11\""}
+
+[[package]]
+name = "dill"
+version = "0.3.6"
+description = "serialize all of python"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "dill-0.3.6-py3-none-any.whl", hash = "sha256:a07ffd2351b8c678dfc4a856a3005f8067aea51d6ba6c700796a4d9e280f39f0"},
+    {file = "dill-0.3.6.tar.gz", hash = "sha256:e5db55f3687856d8fbdab002ed78544e1c4559a130302693d839dfe8f93f2373"},
+]
+
+[package.extras]
+graph = ["objgraph (>=1.7.2)"]
+
+[[package]]
+name = "distlib"
+version = "0.3.7"
+description = "Distribution utilities"
+optional = false
+python-versions = "*"
+files = [
+    {file = "distlib-0.3.7-py2.py3-none-any.whl", hash = "sha256:2e24928bc811348f0feb63014e97aaae3037f2cf48712d51ae61df7fd6075057"},
+    {file = "distlib-0.3.7.tar.gz", hash = "sha256:9dafe54b34a028eafd95039d5e5d4851a13734540f1331060d31c9916e7147a8"},
+]
+
+[[package]]
+name = "dl-api-client"
 version = "0.0.1"
 description = ""
 optional = false
-python-versions = ">=3.10, <3.13"
+python-versions = "*"
 files = []
 develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-constants = {path = "../dl_constants"}
-datalens-model-tools = {path = "../dl_model_tools"}
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
 
 [package.source]
 type = "directory"
 url = "../lib/dl_api_client"
 
 [[package]]
-name = "datalens-api-commons"
+name = "dl-api-commons"
 version = "0.0.1"
 description = ""
 optional = false
@@ -996,14 +1052,16 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-lib = {path = "../dl_api_lib"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-utils = {path = "../dl_utils"}
 flask = ">=2.2.5"
 marshmallow = ">=3.19.0"
 multidict = ">=4.0"
 opentracing = ">=2.4.0"
+requests = ">=2.28.2"
 sentry-sdk = {version = ">=1.15.0", extras = ["flask"]}
 typing-extensions = ">=4.9.0"
 
@@ -1012,7 +1070,7 @@ type = "directory"
 url = "../lib/dl_api_commons"
 
 [[package]]
-name = "datalens-api-connector"
+name = "dl-api-connector"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1022,14 +1080,14 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-formula = {path = "../dl_formula"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-model-tools = {path = "../dl_model_tools"}
-datalens-query-processing = {path = "../dl_query_processing"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-formula = {path = "../dl_formula"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-query-processing = {path = "../dl_query_processing"}
 dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
@@ -1039,7 +1097,7 @@ type = "directory"
 url = "../lib/dl_api_connector"
 
 [[package]]
-name = "datalens-api-lib"
+name = "dl-api-lib"
 version = "0.0.0"
 description = ""
 optional = false
@@ -1050,30 +1108,33 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-cache-engine = {path = "../dl_cache_engine"}
-datalens-compeng-pg = {path = "../dl_compeng_pg"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-dashsql = {path = "../../lib/dl_dashsql"}
-datalens-formula = {path = "../dl_formula"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-model-tools = {path = "../dl_model_tools"}
-datalens-pivot = {path = "../dl_pivot"}
-datalens-pivot-pandas = {path = "../dl_pivot_pandas"}
-datalens-query-processing = {path = "../dl_query_processing"}
-datalens-rls = {path = "../dl_rls"}
-datalens-task-processor = {path = "../dl_task_processor"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-cache-engine = {path = "../dl_cache_engine"}
+dl-compeng-pg = {path = "../dl_compeng_pg"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-dashsql = {path = "../../lib/dl_dashsql"}
+dl-formula = {path = "../dl_formula"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-pivot = {path = "../dl_pivot"}
+dl-pivot-pandas = {path = "../dl_pivot_pandas"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-rls = {path = "../dl_rls"}
+dl-task-processor = {path = "../dl_task_processor"}
+dl-utils = {path = "../dl_utils"}
+dynamic-enum = {path = "../dynamic_enum"}
 flask = ">=2.2.5"
 flask-marshmallow = ">=1.1.0"
 flask-restx = ">=1.1.0"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
+more-itertools = ">=9.1.0"
 statcommons = {path = "../statcommons"}
+typing-extensions = ">=4.9.0"
 werkzeug = ">=2.2.3"
 
 [package.source]
@@ -1081,7 +1142,7 @@ type = "directory"
 url = "../lib/dl_api_lib"
 
 [[package]]
-name = "datalens-api-lib-testing"
+name = "dl-api-lib-testing"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1092,22 +1153,22 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
-datalens-api-client = {path = "../dl_api_client"}
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-api-lib = {path = "../dl_api_lib"}
-datalens-cache-engine = {path = "../dl_cache_engine"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-core-testing = {path = "../dl_core_testing"}
-datalens-formula-testing = {path = "../dl_formula_testing"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-pivot-pandas = {path = "../dl_pivot_pandas"}
-datalens-query-processing = {path = "../dl_query_processing"}
-datalens-rls = {path = "../dl_rls"}
-datalens-testing = {path = "../dl_testing"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-client = {path = "../dl_api_client"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-api-lib = {path = "../dl_api_lib"}
+dl-cache-engine = {path = "../dl_cache_engine"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-i18n = {path = "../dl_i18n"}
+dl-pivot-pandas = {path = "../dl_pivot_pandas"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-rls = {path = "../dl_rls"}
+dl-testing = {path = "../dl_testing"}
+dl-utils = {path = "../dl_utils"}
 flask = ">=2.2.5"
 pytest = ">=7.2.2"
 werkzeug = ">=2.2.3"
@@ -1117,7 +1178,7 @@ type = "directory"
 url = "../lib/dl_api_lib_testing"
 
 [[package]]
-name = "datalens-app-tools"
+name = "dl-app-tools"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1127,7 +1188,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-utils = {path = "../dl_utils"}
+dl-utils = {path = "../dl_utils"}
 opentracing = ">=2.4.0"
 six = ">=1.9.0"
 
@@ -1136,7 +1197,7 @@ type = "directory"
 url = "../lib/dl_app_tools"
 
 [[package]]
-name = "datalens-attrs-model-mapper"
+name = "dl-attrs-model-mapper"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1146,15 +1207,17 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+dl-model-tools = {path = "../dl_model_tools"}
 dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
 
 [package.source]
 type = "directory"
 url = "../lib/dl_attrs_model_mapper"
 
 [[package]]
-name = "datalens-attrs-model-mapper-doc-tools"
+name = "dl-attrs-model-mapper-doc-tools"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1164,7 +1227,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-attrs-model-mapper = {path = "../dl_attrs_model_mapper"}
+dl-attrs-model-mapper = {path = "../dl_attrs_model_mapper"}
 pyyaml = ">=5.3.1"
 
 [package.source]
@@ -1172,7 +1235,7 @@ type = "directory"
 url = "../lib/dl_attrs_model_mapper_doc_tools"
 
 [[package]]
-name = "datalens-auth-api-lib"
+name = "dl-auth-api-lib"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1183,8 +1246,8 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-core = {path = "../dl_core"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-core = {path = "../dl_core"}
 marshmallow = ">=3.19.0"
 pydantic = ">=2.7.0"
 pydantic-settings = ">=2.2.0 <2.3.4"
@@ -1195,7 +1258,7 @@ type = "directory"
 url = "../lib/dl_auth_api_lib"
 
 [[package]]
-name = "datalens-cache-engine"
+name = "dl-cache-engine"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1205,10 +1268,10 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-constants = {path = "../dl_constants"}
-datalens-model-tools = {path = "../dl_model_tools"}
-datalens-utils = {path = "../dl_utils"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-constants = {path = "../dl_constants"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-utils = {path = "../dl_utils"}
 lz4 = "==4.3.2"
 redis = "==5.0.1"
 redis_cache_lock = {path = "../redis-cache-lock"}
@@ -1218,7 +1281,7 @@ type = "directory"
 url = "../lib/dl_cache_engine"
 
 [[package]]
-name = "datalens-compeng-pg"
+name = "dl-compeng-pg"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1230,13 +1293,13 @@ develop = false
 aiopg = ">=1.4.0"
 asyncpg = ">=0.29.0"
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-cache-engine = {path = "../dl_cache_engine"}
-datalens-connector-postgresql = {path = "../dl_connector_postgresql"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-cache-engine = {path = "../dl_cache_engine"}
+dl-connector-postgresql = {path = "../dl_connector_postgresql"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
+dl-utils = {path = "../dl_utils"}
 sqlalchemy = ">=1.4.46, <2.0"
 
 [package.source]
@@ -1244,7 +1307,7 @@ type = "directory"
 url = "../lib/dl_compeng_pg"
 
 [[package]]
-name = "datalens-configs"
+name = "dl-configs"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1255,8 +1318,8 @@ develop = false
 [package.dependencies]
 attrs = ">=22.2.0"
 cryptography = ">=41.0.4"
-datalens-constants = {path = "../dl_constants"}
-datalens-utils = {path = "../dl_utils"}
+dl-constants = {path = "../dl_constants"}
+dl-utils = {path = "../dl_utils"}
 dynamic-enum = {path = "../dynamic_enum"}
 pyyaml = ">=6.0.1"
 typeguard = ">=4.1.5"
@@ -1266,7 +1329,7 @@ type = "directory"
 url = "../lib/dl_configs"
 
 [[package]]
-name = "datalens-connector-bigquery"
+name = "dl-connector-bigquery"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1276,17 +1339,17 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-db-testing = {path = "../dl_db_testing"}
-datalens-formula = {path = "../dl_formula"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-model-tools = {path = "../dl_model_tools"}
-datalens-testing = {path = "../dl_testing"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-testing = {path = "../dl_testing"}
+dl-utils = {path = "../dl_utils"}
 google-api-core = ">=2.15.0"
 google-auth = ">=2.21.0"
 google-cloud-bigquery = "==3.14.1"
@@ -1302,7 +1365,7 @@ type = "directory"
 url = "../lib/dl_connector_bigquery"
 
 [[package]]
-name = "datalens-connector-bitrix-gds"
+name = "dl-connector-bitrix-gds"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1312,19 +1375,19 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-cache-engine = {path = "../dl_cache_engine"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-formula = {path = "../dl_formula"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-model-tools = {path = "../dl_model_tools"}
-datalens-query-processing = {path = "../dl_query_processing"}
-datalens-sqlalchemy-bitrix = {path = "../dl_sqlalchemy_bitrix"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-cache-engine = {path = "../dl_cache_engine"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-formula = {path = "../dl_formula"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-sqlalchemy-bitrix = {path = "../dl_sqlalchemy_bitrix"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 redis = ">=5.0.1"
 redis_cache_lock = {path = "../redis-cache-lock"}
@@ -1335,7 +1398,7 @@ type = "directory"
 url = "../lib/dl_connector_bitrix_gds"
 
 [[package]]
-name = "datalens-connector-bundle-chs3"
+name = "dl-connector-bundle-chs3"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1347,20 +1410,21 @@ develop = false
 aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-configs = {path = "../dl_configs"}
-datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-core-testing = {path = "../dl_core_testing"}
-datalens-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-model-tools = {path = "../dl_model_tools"}
-datalens-task-processor = {path = "../dl_task_processor"}
-datalens-testing = {path = "../dl_testing"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-task-processor = {path = "../dl_task_processor"}
+dl-testing = {path = "../dl_testing"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
+sqlalchemy = ">=1.4.46, <2.0"
 xxhash = ">=3.2.0"
 
 [package.source]
@@ -1368,7 +1432,7 @@ type = "directory"
 url = "../lib/dl_connector_bundle_chs3"
 
 [[package]]
-name = "datalens-connector-chyt"
+name = "dl-connector-chyt"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1377,18 +1441,19 @@ files = []
 develop = false
 
 [package.dependencies]
+aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-configs = {path = "../dl_configs"}
-datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-db-testing = {path = "../dl_db_testing"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-i18n = {path = "../dl_i18n"}
+dl-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
 
@@ -1397,7 +1462,7 @@ type = "directory"
 url = "../lib/dl_connector_chyt"
 
 [[package]]
-name = "datalens-connector-clickhouse"
+name = "dl-connector-clickhouse"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1409,23 +1474,23 @@ develop = false
 aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-core-testing = {path = "../dl_core_testing"}
-datalens-dashsql = {path = "../dl_dashsql"}
-datalens-db-testing = {path = "../dl_db_testing"}
-datalens-formula = {path = "../dl_formula"}
-datalens-formula-ref = {path = "../dl_formula_ref"}
-datalens-formula-testing = {path = "../dl_formula_testing"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-query-processing = {path = "../dl_query_processing"}
-datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
-datalens-testing = {path = "../dl_testing"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-dashsql = {path = "../dl_dashsql"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-i18n = {path = "../dl_i18n"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
+dl-testing = {path = "../dl_testing"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 pytest = ">=7.2.2"
 pytz = ">=2022.7.1"
@@ -1438,145 +1503,7 @@ type = "directory"
 url = "../lib/dl_connector_clickhouse"
 
 [[package]]
-name = "datalens-connector-greenplum"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.13"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-configs = {path = "../dl_configs"}
-datalens-connector-postgresql = {path = "../dl_connector_postgresql"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-i18n = {path = "../dl_i18n"}
-
-[package.source]
-type = "directory"
-url = "../lib/dl_connector_greenplum"
-
-[[package]]
-name = "datalens-connector-metrica"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.13"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-formula = {path = "../dl_formula"}
-datalens-formula-ref = {path = "../dl_formula_ref"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-sqlalchemy-metrica-api = {path = "../dl_sqlalchemy_metrica_api"}
-datalens-utils = {path = "../dl_utils"}
-marshmallow = ">=3.19.0"
-sqlalchemy = ">=1.4.46, <2.0"
-
-[package.source]
-type = "directory"
-url = "../lib/dl_connector_metrica"
-
-[[package]]
-name = "datalens-connector-mssql"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.13"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-db-testing = {path = "../dl_db_testing"}
-datalens-formula = {path = "../dl_formula"}
-datalens-formula-ref = {path = "../dl_formula_ref"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
-pyodbc = ">=5.0.1"
-sqlalchemy = ">=1.4.46, <2.0"
-
-[package.source]
-type = "directory"
-url = "../lib/dl_connector_mssql"
-
-[[package]]
-name = "datalens-connector-mysql"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.13"
-files = []
-develop = false
-
-[package.dependencies]
-aiomysql = ">=0.1.1"
-attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-db-testing = {path = "../dl_db_testing"}
-datalens-formula = {path = "../dl_formula"}
-datalens-formula-ref = {path = "../dl_formula_ref"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
-pymysql = ">=1.1.0"
-sqlalchemy = ">=1.4.46, <2.0"
-
-[package.source]
-type = "directory"
-url = "../lib/dl_connector_mysql"
-
-[[package]]
-name = "datalens-connector-oracle"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.13"
-files = []
-develop = false
-
-[package.dependencies]
-attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-db-testing = {path = "../dl_db_testing"}
-datalens-formula = {path = "../dl_formula"}
-datalens-formula-ref = {path = "../dl_formula_ref"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
-marshmallow = ">=3.19.0"
-oracledb = ">=2.0.0"
-sqlalchemy = ">=1.4.46, <2.0"
-
-[package.source]
-type = "directory"
-url = "../lib/dl_connector_oracle"
-
-[[package]]
-name = "datalens-connector-postgresql"
+name = "dl-connector-greenplum"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1587,29 +1514,176 @@ develop = false
 [package.dependencies]
 asyncpg = ">=0.29.0"
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-core-testing = {path = "../dl_core_testing"}
-datalens-db-testing = {path = "../dl_db_testing"}
-datalens-formula = {path = "../dl_formula"}
-datalens-formula-ref = {path = "../dl_formula_ref"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-connector-postgresql = {path = "../dl_connector_postgresql"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-i18n = {path = "../dl_i18n"}
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_connector_greenplum"
+
+[[package]]
+name = "dl-connector-metrica"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-api-lib = {path = "../dl_api_lib"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-sqlalchemy-metrica-api = {path = "../dl_sqlalchemy_metrica_api"}
+dl-utils = {path = "../dl_utils"}
+marshmallow = ">=3.19.0"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_connector_metrica"
+
+[[package]]
+name = "dl-connector-mssql"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
+pyodbc = ">=5.0.1"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_connector_mssql"
+
+[[package]]
+name = "dl-connector-mysql"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+aiomysql = ">=0.1.1"
+attrs = ">=22.2.0"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
+pymysql = ">=1.1.0"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_connector_mysql"
+
+[[package]]
+name = "dl-connector-oracle"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-dashsql = {path = "../dl_dashsql"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
+marshmallow = ">=3.19.0"
+oracledb = ">=2.0.0"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_connector_oracle"
+
+[[package]]
+name = "dl-connector-postgresql"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+asyncpg = ">=0.29.0"
+attrs = ">=22.2.0"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 marshmallow = ">=3.19.0"
 psycopg2-binary = ">=2.9.9"
 python-dateutil = ">=2.8.2"
 sqlalchemy = ">=1.4.46, <2.0"
+typing-extensions = ">=4.9.0"
 
 [package.source]
 type = "directory"
 url = "../lib/dl_connector_postgresql"
 
 [[package]]
-name = "datalens-connector-promql"
+name = "dl-connector-promql"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1620,14 +1694,15 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-sqlalchemy-promql = {path = "../dl_sqlalchemy_promql"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-i18n = {path = "../dl_i18n"}
+dl-sqlalchemy-promql = {path = "../dl_sqlalchemy_promql"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
 
@@ -1636,7 +1711,7 @@ type = "directory"
 url = "../lib/dl_connector_promql"
 
 [[package]]
-name = "datalens-connector-snowflake"
+name = "dl-connector-snowflake"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1646,17 +1721,17 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-db-testing = {path = "../dl_db_testing"}
-datalens-formula = {path = "../dl_formula"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-model-tools = {path = "../dl_model_tools"}
-datalens-testing = {path = "../dl_testing"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-testing = {path = "../dl_testing"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 requests = ">=2.28.2"
 snowflake-connector-python = ">=3.6.0"
@@ -1668,7 +1743,7 @@ type = "directory"
 url = "../lib/dl_connector_snowflake"
 
 [[package]]
-name = "datalens-connector-ydb"
+name = "dl-connector-ydb"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1678,16 +1753,18 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-core-testing = {path = "../dl_core_testing"}
-datalens-db-testing = {path = "../dl_db_testing"}
-datalens-formula = {path = "../dl_formula"}
-datalens-formula-ref = {path = "../dl_formula_ref"}
-datalens-i18n = {path = "../dl_i18n"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl_utils = {path = "../dl_utils"}
 grpcio = ">=1.60.0"
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
@@ -1698,7 +1775,7 @@ type = "directory"
 url = "../lib/dl_connector_ydb"
 
 [[package]]
-name = "datalens-constants"
+name = "dl-constants"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1715,7 +1792,7 @@ type = "directory"
 url = "../lib/dl_constants"
 
 [[package]]
-name = "datalens-control-api"
+name = "dl-control-api"
 version = "0.0.0"
 description = ""
 optional = false
@@ -1724,34 +1801,35 @@ files = []
 develop = false
 
 [package.dependencies]
-datalens-api-commons = {path = "../../lib/dl_api_commons"}
-datalens-api-lib = {path = "../../lib/dl_api_lib"}
-datalens-app-tools = {path = "../../lib/dl_app_tools"}
-datalens-cache-engine = {path = "../../lib/dl_cache_engine"}
-datalens-configs = {path = "../../lib/dl_configs"}
-datalens-connector-chyt = {path = "../../lib/dl_connector_chyt"}
-datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
-datalens-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
-datalens-connector-mysql = {path = "../../lib/dl_connector_mysql"}
-datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
-datalens-connector-ydb = {path = "../../lib/dl_connector_ydb"}
-datalens-constants = {path = "../../lib/dl_constants"}
-datalens-core = {path = "../../lib/dl_core"}
-datalens-model-tools = {path = "../../lib/dl_model_tools"}
-datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
-datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
-datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
-datalens-utils = {path = "../../lib/dl_utils"}
-datalens-version = {path = "../../lib/dl_version"}
-datalens-zitadel = {path = "../../lib/dl_zitadel", extras = ["flask"]}
+dl-api-commons = {path = "../../lib/dl_api_commons"}
+dl-api-lib = {path = "../../lib/dl_api_lib"}
+dl-app-tools = {path = "../../lib/dl_app_tools"}
+dl-cache-engine = {path = "../../lib/dl_cache_engine"}
+dl-configs = {path = "../../lib/dl_configs"}
+dl-connector-chyt = {path = "../../lib/dl_connector_chyt"}
+dl-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
+dl-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
+dl-connector-mysql = {path = "../../lib/dl_connector_mysql"}
+dl-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
+dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
+dl-constants = {path = "../../lib/dl_constants"}
+dl-core = {path = "../../lib/dl_core"}
+dl-model-tools = {path = "../../lib/dl_model_tools"}
+dl-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
+dl-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
+dl-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
+dl-utils = {path = "../../lib/dl_utils"}
+dl-version = {path = "../../lib/dl_version"}
+dl-zitadel = {path = "../../lib/dl_zitadel", extras = ["flask"]}
 Flask = ">=2.2.5"
+httpx = "^0.27.0"
 
 [package.source]
 type = "directory"
 url = "../app/dl_control_api"
 
 [[package]]
-name = "datalens-core"
+name = "dl-core"
 version = "12.99.0"
 description = ""
 optional = false
@@ -1769,17 +1847,17 @@ attrs = ">=22.2.0"
 boto3 = ">=1.24.59"
 botocore = ">=1.27.59,<1.27.60"
 cryptography = ">=41.0.4"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-cache-engine = {path = "../dl_cache_engine"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-dashsql = {path = "../../lib/dl_dashsql"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-model-tools = {path = "../dl_model_tools"}
-datalens-rls = {path = "../dl_rls"}
-datalens-task-processor = {path = "../dl_task_processor"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-cache-engine = {path = "../dl_cache_engine"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-dashsql = {path = "../../lib/dl_dashsql"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-rls = {path = "../dl_rls"}
+dl-task-processor = {path = "../dl_task_processor"}
+dl-utils = {path = "../dl_utils"}
 dnspython = ">=2.2.1"
 Flask = ">=2.2.5"
 grpcio = ">=1.60.0"
@@ -1806,7 +1884,7 @@ type = "directory"
 url = "../lib/dl_core"
 
 [[package]]
-name = "datalens-core-testing"
+name = "dl-core-testing"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1817,14 +1895,14 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-db-testing = {path = "../dl_db_testing"}
-datalens-testing = {path = "../dl_testing"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-testing = {path = "../dl_testing"}
+dl-utils = {path = "../dl_utils"}
 Flask = ">=2.2.5"
 marshmallow = ">=3.19.0"
 psycopg2-binary = ">=2.9.9"
@@ -1841,7 +1919,7 @@ type = "directory"
 url = "../lib/dl_core_testing"
 
 [[package]]
-name = "datalens-dashsql"
+name = "dl-dashsql"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1851,10 +1929,10 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-cache-engine = {path = "../dl_cache_engine"}
-datalens-constants = {path = "../../lib/dl_constants"}
-datalens-model-tools = {path = "../dl_model_tools"}
-datalens-utils = {path = "../dl_utils"}
+dl-cache-engine = {path = "../dl_cache_engine"}
+dl-constants = {path = "../../lib/dl_constants"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
 
@@ -1863,7 +1941,7 @@ type = "directory"
 url = "../lib/dl_dashsql"
 
 [[package]]
-name = "datalens-data-api"
+name = "dl-data-api"
 version = "0.0.0"
 description = ""
 optional = false
@@ -1873,34 +1951,35 @@ develop = false
 
 [package.dependencies]
 aiohttp = ">=3.9.1"
-datalens-api-commons = {path = "../../lib/dl_api_commons"}
-datalens-api-lib = {path = "../../lib/dl_api_lib"}
-datalens-app-tools = {path = "../../lib/dl_app_tools"}
-datalens-cache-engine = {path = "../../lib/dl_cache_engine"}
-datalens-configs = {path = "../../lib/dl_configs"}
-datalens-connector-chyt = {path = "../../lib/dl_connector_chyt"}
-datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
-datalens-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
-datalens-connector-mysql = {path = "../../lib/dl_connector_mysql"}
-datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
-datalens-connector-ydb = {path = "../../lib/dl_connector_ydb"}
-datalens-constants = {path = "../../lib/dl_constants"}
-datalens-core = {path = "../../lib/dl_core"}
-datalens-model-tools = {path = "../../lib/dl_model_tools"}
-datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
-datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
-datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
-datalens-utils = {path = "../../lib/dl_utils"}
-datalens-version = {path = "../../lib/dl_version"}
-datalens-zitadel = {path = "../../lib/dl_zitadel", extras = ["zitadel"]}
+dl-api-commons = {path = "../../lib/dl_api_commons"}
+dl-api-lib = {path = "../../lib/dl_api_lib"}
+dl-app-tools = {path = "../../lib/dl_app_tools"}
+dl-cache-engine = {path = "../../lib/dl_cache_engine"}
+dl-configs = {path = "../../lib/dl_configs"}
+dl-connector-chyt = {path = "../../lib/dl_connector_chyt"}
+dl-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
+dl-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
+dl-connector-mysql = {path = "../../lib/dl_connector_mysql"}
+dl-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
+dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
+dl-constants = {path = "../../lib/dl_constants"}
+dl-core = {path = "../../lib/dl_core"}
+dl-model-tools = {path = "../../lib/dl_model_tools"}
+dl-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
+dl-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
+dl-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
+dl-utils = {path = "../../lib/dl_utils"}
+dl-version = {path = "../../lib/dl_version"}
+dl-zitadel = {path = "../../lib/dl_zitadel", extras = ["zitadel"]}
 gunicorn = ">=21.2.0"
+httpx = "^0.27.0"
 
 [package.source]
 type = "directory"
 url = "../app/dl_data_api"
 
 [[package]]
-name = "datalens-db-testing"
+name = "dl-db-testing"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1919,7 +1998,7 @@ type = "directory"
 url = "../lib/dl_db_testing"
 
 [[package]]
-name = "datalens-file-secure-reader-lib"
+name = "dl-file-secure-reader-lib"
 version = "0.1.0"
 description = ""
 optional = false
@@ -1937,7 +2016,7 @@ type = "directory"
 url = "../lib/dl_file_secure_reader_lib"
 
 [[package]]
-name = "datalens-file-uploader-api-lib"
+name = "dl-file-uploader-api-lib"
 version = "0.0.0"
 description = ""
 optional = false
@@ -1950,14 +2029,14 @@ aiogoogle = ">=5.2.0"
 aiohttp = ">=3.9.1"
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-configs = {path = "../dl_configs"}
-datalens-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-file-uploader-lib = {path = "../dl_file_uploader_lib"}
-datalens-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
-datalens-task-processor = {path = "../dl_task_processor"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-configs = {path = "../dl_configs"}
+dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-file-uploader-lib = {path = "../dl_file_uploader_lib"}
+dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+dl-task-processor = {path = "../dl_task_processor"}
 gunicorn = ">=21.2.0"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
@@ -1968,7 +2047,7 @@ type = "directory"
 url = "../lib/dl_file_uploader_api_lib"
 
 [[package]]
-name = "datalens-file-uploader-lib"
+name = "dl-file-uploader-lib"
 version = "0.0.1"
 description = ""
 optional = false
@@ -1982,12 +2061,12 @@ aiogoogle = ">=5.2.0"
 aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
 botocore = ">=1.27.59,<1.27.60"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-configs = {path = "../dl_configs"}
-datalens-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-configs = {path = "../dl_configs"}
+dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 redis = ">=5.0.1"
@@ -1999,7 +2078,7 @@ type = "directory"
 url = "../lib/dl_file_uploader_lib"
 
 [[package]]
-name = "datalens-file-uploader-task-interface"
+name = "dl-file-uploader-task-interface"
 version = "0.0.0"
 description = ""
 optional = false
@@ -2010,19 +2089,22 @@ develop = false
 [package.dependencies]
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-configs = {path = "../dl_configs"}
-datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
-datalens-core = {path = "../dl_core"}
-datalens-task-processor = {path = "../dl_task_processor"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-configs = {path = "../dl_configs"}
+dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
+dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
+dl-task-processor = {path = "../dl_task_processor"}
+dl-utils = {path = "../dl_utils"}
 
 [package.source]
 type = "directory"
 url = "../lib/dl_file_uploader_task_interface"
 
 [[package]]
-name = "datalens-file-uploader-worker-lib"
+name = "dl-file-uploader-worker-lib"
 version = "0.0.0"
 description = ""
 optional = false
@@ -2037,15 +2119,17 @@ arq = ">=0.25.0"
 attrs = ">=22.2.0"
 botocore = ">=1.27.59,<1.27.60"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-file-uploader-lib = {path = "../dl_file_uploader_lib"}
-datalens-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
-datalens-task-processor = {path = "../dl_task_processor"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
+dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-file-uploader-lib = {path = "../dl_file_uploader_lib"}
+dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+dl-task-processor = {path = "../dl_task_processor"}
+dl-utils = {path = "../dl_utils"}
 faust-cchardet = ">=2.1.19"
 redis = ">=5.0.1"
 shortuuid = ">=1.0.11"
@@ -2055,7 +2139,7 @@ type = "directory"
 url = "../lib/dl_file_uploader_worker_lib"
 
 [[package]]
-name = "datalens-formula"
+name = "dl-formula"
 version = "7.47.0"
 description = ""
 optional = false
@@ -2067,7 +2151,7 @@ develop = false
 antlr4-python3-runtime = ">=4.11.1"
 attrs = ">=22.2.0"
 ciso8601 = ">=2.2.0"
-datalens-utils = {path = "../dl_utils"}
+dl-utils = {path = "../dl_utils"}
 dynamic-enum = {path = "../dynamic_enum"}
 graphviz = ">=0.17"
 jinja2 = ">=3.1.2"
@@ -2079,7 +2163,7 @@ type = "directory"
 url = "../lib/dl_formula"
 
 [[package]]
-name = "datalens-formula-ref"
+name = "dl-formula-ref"
 version = "0.0.0"
 description = ""
 optional = false
@@ -2089,17 +2173,23 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-formula = {path = "../dl_formula"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-i18n = {path = "../dl_i18n"}
+dl-utils = {path = "../dl_utils"}
+dynamic-enum = {path = "../dynamic_enum"}
 jinja2 = ">=3.1.2"
 sqlalchemy = ">=1.4.46, <2.0"
 tabulate = ">=0.9.0"
+typing-extensions = ">=4.9.0"
 
 [package.source]
 type = "directory"
 url = "../lib/dl_formula_ref"
 
 [[package]]
-name = "datalens-formula-testing"
+name = "dl-formula-testing"
 version = "0.0.1"
 description = ""
 optional = false
@@ -2115,7 +2205,7 @@ type = "directory"
 url = "../lib/dl_formula_testing"
 
 [[package]]
-name = "datalens-i18n"
+name = "dl-i18n"
 version = "0.0.1"
 description = ""
 optional = false
@@ -2131,7 +2221,7 @@ type = "directory"
 url = "../lib/dl_i18n"
 
 [[package]]
-name = "datalens-maintenance"
+name = "dl-maintenance"
 version = "0.0.1"
 description = ""
 optional = false
@@ -2141,15 +2231,16 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-api-lib = {path = "../dl_api_lib"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-configs = {path = "../dl_configs"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-pivot = {path = "../dl_pivot"}
-datalens-query-processing = {path = "../dl_query_processing"}
-datalens-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-lib = {path = "../dl_api_lib"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-pivot = {path = "../dl_pivot"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-utils = {path = "../dl_utils"}
 pygments = ">=2.4.0"
 pyyaml = ">=5.3.1"
 shortuuid = ">=1.0.11"
@@ -2160,7 +2251,7 @@ type = "directory"
 url = "../lib/dl_maintenance"
 
 [[package]]
-name = "datalens-model-tools"
+name = "dl-model-tools"
 version = "0.0.1"
 description = ""
 optional = false
@@ -2170,7 +2261,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-constants = {path = "../dl_constants"}
+dl-constants = {path = "../dl_constants"}
 dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
@@ -2180,7 +2271,7 @@ type = "directory"
 url = "../lib/dl_model_tools"
 
 [[package]]
-name = "datalens-package-boilerplate"
+name = "dl-package-boilerplate"
 version = "0.0.1"
 description = ""
 optional = false
@@ -2196,7 +2287,7 @@ type = "directory"
 url = "../lib/dl_package_boilerplate"
 
 [[package]]
-name = "datalens-pivot"
+name = "dl-pivot"
 version = "0.0.1"
 description = ""
 optional = false
@@ -2206,16 +2297,16 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-constants = {path = "../dl_constants"}
-datalens-query-processing = {path = "../dl_query_processing"}
-datalens-utils = {path = "../dl_utils"}
+dl-constants = {path = "../dl_constants"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-utils = {path = "../dl_utils"}
 
 [package.source]
 type = "directory"
 url = "../lib/dl_pivot"
 
 [[package]]
-name = "datalens-pivot-pandas"
+name = "dl-pivot-pandas"
 version = "0.0.1"
 description = ""
 optional = false
@@ -2225,9 +2316,9 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-constants = {path = "../dl_constants"}
-datalens-pivot = {path = "../dl_pivot"}
-datalens-query-processing = {path = "../dl_query_processing"}
+dl-constants = {path = "../dl_constants"}
+dl-pivot = {path = "../dl_pivot"}
+dl-query-processing = {path = "../dl_query_processing"}
 pandas = ">=2.0.3"
 
 [package.source]
@@ -2235,7 +2326,7 @@ type = "directory"
 url = "../lib/dl_pivot_pandas"
 
 [[package]]
-name = "datalens-query-processing"
+name = "dl-query-processing"
 version = "0.0.1"
 description = ""
 optional = false
@@ -2246,11 +2337,11 @@ develop = false
 [package.dependencies]
 attrs = ">=22.2.0"
 ciso8601 = ">=2.2.0"
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-constants = {path = "../dl_constants"}
-datalens-core = {path = "../dl_core"}
-datalens-formula = {path = "../dl_formula"}
-datalens-utils = {path = "../dl_utils"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-formula = {path = "../dl_formula"}
+dl-utils = {path = "../dl_utils"}
 pytz = ">=2022.7.1"
 
 [package.source]
@@ -2258,7 +2349,7 @@ type = "directory"
 url = "../lib/dl_query_processing"
 
 [[package]]
-name = "datalens-rate-limiter"
+name = "dl-rate-limiter"
 version = "0.0.1"
 description = ""
 optional = false
@@ -2269,7 +2360,7 @@ develop = false
 [package.dependencies]
 aiohttp = {version = ">=3.9.1", optional = true}
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
+dl-api-commons = {path = "../dl_api_commons"}
 flask = {version = ">=2.2.5", optional = true}
 redis = ">=5.0.1"
 
@@ -2282,7 +2373,7 @@ type = "directory"
 url = "../lib/dl_rate_limiter"
 
 [[package]]
-name = "datalens-rls"
+name = "dl-rls"
 version = "0.0.1"
 description = ""
 optional = false
@@ -2292,7 +2383,7 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-constants = {path = "../../lib/dl_constants"}
+dl-constants = {path = "../../lib/dl_constants"}
 marshmallow = ">=3.19.0"
 more-itertools = ">=9.1.0"
 
@@ -2301,7 +2392,7 @@ type = "directory"
 url = "../lib/dl_rls"
 
 [[package]]
-name = "datalens-sqlalchemy-bitrix"
+name = "dl-sqlalchemy-bitrix"
 version = "0.0.1"
 description = "DataLens Bitrix SQLAlchemy Dialect"
 optional = false
@@ -2317,7 +2408,7 @@ type = "directory"
 url = "../lib/dl_sqlalchemy_bitrix"
 
 [[package]]
-name = "datalens-sqlalchemy-chyt"
+name = "dl-sqlalchemy-chyt"
 version = "0.7"
 description = "BI CHYT SQLAlchemy Dialect"
 optional = false
@@ -2327,8 +2418,8 @@ develop = false
 
 [package.dependencies]
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-datalens-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
-datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
+dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 sqlalchemy = ">=1.4.46, <2.0"
 
 [package.source]
@@ -2336,7 +2427,7 @@ type = "directory"
 url = "../lib/dl_sqlalchemy_chyt"
 
 [[package]]
-name = "datalens-sqlalchemy-clickhouse"
+name = "dl-sqlalchemy-clickhouse"
 version = "0.3"
 description = "BI ClickHouse SQLAlchemy Dialect Customizations"
 optional = false
@@ -2346,7 +2437,7 @@ develop = false
 
 [package.dependencies]
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 sqlalchemy = ">=1.4.46, <2.0"
 
 [package.source]
@@ -2354,7 +2445,7 @@ type = "directory"
 url = "../lib/dl_sqlalchemy_clickhouse"
 
 [[package]]
-name = "datalens-sqlalchemy-common"
+name = "dl-sqlalchemy-common"
 version = "0.2"
 description = "BI SQLAlchemy dialects common additions"
 optional = false
@@ -2370,7 +2461,7 @@ type = "directory"
 url = "../lib/dl_sqlalchemy_common"
 
 [[package]]
-name = "datalens-sqlalchemy-metrica-api"
+name = "dl-sqlalchemy-metrica-api"
 version = "0.0.1"
 description = "Yandex Metrica API dialect for SQLAlchemy"
 optional = false
@@ -2388,7 +2479,7 @@ type = "directory"
 url = "../lib/dl_sqlalchemy_metrica_api"
 
 [[package]]
-name = "datalens-sqlalchemy-mssql"
+name = "dl-sqlalchemy-mssql"
 version = "0.3"
 description = "BI MSSQL SQLAlchemy Dialect"
 optional = false
@@ -2397,7 +2488,7 @@ files = []
 develop = false
 
 [package.dependencies]
-datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 pyodbc = ">=5.0.1"
 sqlalchemy = ">=1.4.46, <2.0"
 
@@ -2406,7 +2497,7 @@ type = "directory"
 url = "../lib/dl_sqlalchemy_mssql"
 
 [[package]]
-name = "datalens-sqlalchemy-mysql"
+name = "dl-sqlalchemy-mysql"
 version = "0.3"
 description = "DL MySQL SQLAlchemy Dialect"
 optional = false
@@ -2415,7 +2506,7 @@ files = []
 develop = false
 
 [package.dependencies]
-datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 pymysql = ">=1.1.0"
 sqlalchemy = ">=1.4.46, <2.0"
 
@@ -2424,7 +2515,7 @@ type = "directory"
 url = "../lib/dl_sqlalchemy_mysql"
 
 [[package]]
-name = "datalens-sqlalchemy-oracle"
+name = "dl-sqlalchemy-oracle"
 version = "0.3"
 description = "BI Oracle SQLAlchemy Dialect"
 optional = false
@@ -2433,7 +2524,7 @@ files = []
 develop = false
 
 [package.dependencies]
-datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 oracledb = ">=2.0.0"
 sqlalchemy = ">=1.4.46, <2.0"
 
@@ -2442,7 +2533,7 @@ type = "directory"
 url = "../lib/dl_sqlalchemy_oracle"
 
 [[package]]
-name = "datalens-sqlalchemy-postgres"
+name = "dl-sqlalchemy-postgres"
 version = "0.3"
 description = "BI PostgreSQL SQLAlchemy Dialect"
 optional = false
@@ -2452,7 +2543,7 @@ develop = false
 
 [package.dependencies]
 asyncpg = ">=0.29.0"
-datalens-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 psycopg2-binary = ">=2.9.9"
 sqlalchemy = ">=1.4.46, <2.0"
 
@@ -2461,7 +2552,7 @@ type = "directory"
 url = "../lib/dl_sqlalchemy_postgres"
 
 [[package]]
-name = "datalens-sqlalchemy-promql"
+name = "dl-sqlalchemy-promql"
 version = "0.1"
 description = "BI PromQL SQLAlchemy Dialect"
 optional = false
@@ -2478,7 +2569,7 @@ type = "directory"
 url = "../lib/dl_sqlalchemy_promql"
 
 [[package]]
-name = "datalens-task-processor"
+name = "dl-task-processor"
 version = "0.0.0"
 description = ""
 optional = false
@@ -2489,16 +2580,17 @@ develop = false
 [package.dependencies]
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-configs = {path = "../dl_configs"}
-datalens-utils = {path = "../dl_utils"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-utils = {path = "../dl_utils"}
+redis = ">=5.0.1"
 
 [package.source]
 type = "directory"
 url = "../lib/dl_task_processor"
 
 [[package]]
-name = "datalens-testing"
+name = "dl-testing"
 version = "0.0.1"
 description = ""
 optional = false
@@ -2509,8 +2601,8 @@ develop = false
 [package.dependencies]
 aiobotocore = ">=2.4.2"
 attrs = ">=22.2.0"
-datalens-configs = {path = "../dl_configs"}
-datalens-utils = {path = "../dl_utils"}
+dl-configs = {path = "../dl_configs"}
+dl-utils = {path = "../dl_utils"}
 psycopg2-binary = ">=2.9.9"
 pytest = ">=7.2.2"
 python-dotenv = ">=1.0.0"
@@ -2521,7 +2613,7 @@ type = "directory"
 url = "../lib/dl_testing"
 
 [[package]]
-name = "datalens-us-client"
+name = "dl-us-client"
 version = "0.0.1"
 description = ""
 optional = false
@@ -2531,14 +2623,14 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
+dl-api-commons = {path = "../dl_api_commons"}
 
 [package.source]
 type = "directory"
 url = "../lib/dl_us_client"
 
 [[package]]
-name = "datalens-utils"
+name = "dl-utils"
 version = "0.0.1"
 description = ""
 optional = false
@@ -2555,7 +2647,7 @@ type = "directory"
 url = "../lib/dl_utils"
 
 [[package]]
-name = "datalens-version"
+name = "dl-version"
 version = "1.0.0"
 description = ""
 optional = false
@@ -2568,7 +2660,7 @@ type = "directory"
 url = "../lib/dl_version"
 
 [[package]]
-name = "datalens-zitadel"
+name = "dl-zitadel"
 version = "0.0.1"
 description = ""
 optional = false
@@ -2578,11 +2670,12 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
-datalens-api-commons = {path = "../../lib/dl_api_commons"}
-datalens-constants = {path = "../../lib/dl_constants"}
+dl-api-commons = {path = "../../lib/dl_api_commons"}
+dl-constants = {path = "../../lib/dl_constants"}
 flask = {version = ">=2.2.5", optional = true}
 httpx = "^0.27.0"
 pydantic = "^2.7.4"
+werkzeug = ">=2.2.3"
 
 [package.extras]
 aiohttp = ["aiohttp (>=3.9.1)"]
@@ -2591,42 +2684,6 @@ flask = ["flask (>=2.2.5)"]
 [package.source]
 type = "directory"
 url = "../lib/dl_zitadel"
-
-[[package]]
-name = "decorator"
-version = "5.1.1"
-description = "Decorators for Humans"
-optional = false
-python-versions = ">=3.5"
-files = [
-    {file = "decorator-5.1.1-py3-none-any.whl", hash = "sha256:b8c3f85900b9dc423225913c5aace94729fe1fa9763b38939a95226f02d37186"},
-    {file = "decorator-5.1.1.tar.gz", hash = "sha256:637996211036b6385ef91435e4fae22989472f9d571faba8927ba8253acbc330"},
-]
-
-[[package]]
-name = "dill"
-version = "0.3.6"
-description = "serialize all of python"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "dill-0.3.6-py3-none-any.whl", hash = "sha256:a07ffd2351b8c678dfc4a856a3005f8067aea51d6ba6c700796a4d9e280f39f0"},
-    {file = "dill-0.3.6.tar.gz", hash = "sha256:e5db55f3687856d8fbdab002ed78544e1c4559a130302693d839dfe8f93f2373"},
-]
-
-[package.extras]
-graph = ["objgraph (>=1.7.2)"]
-
-[[package]]
-name = "distlib"
-version = "0.3.7"
-description = "Distribution utilities"
-optional = false
-python-versions = "*"
-files = [
-    {file = "distlib-0.3.7-py2.py3-none-any.whl", hash = "sha256:2e24928bc811348f0feb63014e97aaae3037f2cf48712d51ae61df7fd6075057"},
-    {file = "distlib-0.3.7.tar.gz", hash = "sha256:9dafe54b34a028eafd95039d5e5d4851a13734540f1331060d31c9916e7147a8"},
-]
 
 [[package]]
 name = "dnspython"
@@ -4354,43 +4411,47 @@ files = [
 
 [[package]]
 name = "numpy"
-version = "1.26.0"
+version = "1.26.4"
 description = "Fundamental package for array computing in Python"
 optional = false
-python-versions = "<3.13,>=3.9"
+python-versions = ">=3.9"
 files = [
-    {file = "numpy-1.26.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:f8db2f125746e44dce707dd44d4f4efeea8d7e2b43aace3f8d1f235cfa2733dd"},
-    {file = "numpy-1.26.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:0621f7daf973d34d18b4e4bafb210bbaf1ef5e0100b5fa750bd9cde84c7ac292"},
-    {file = "numpy-1.26.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:51be5f8c349fdd1a5568e72713a21f518e7d6707bcf8503b528b88d33b57dc68"},
-    {file = "numpy-1.26.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:767254ad364991ccfc4d81b8152912e53e103ec192d1bb4ea6b1f5a7117040be"},
-    {file = "numpy-1.26.0-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:436c8e9a4bdeeee84e3e59614d38c3dbd3235838a877af8c211cfcac8a80b8d3"},
-    {file = "numpy-1.26.0-cp310-cp310-win32.whl", hash = "sha256:c2e698cb0c6dda9372ea98a0344245ee65bdc1c9dd939cceed6bb91256837896"},
-    {file = "numpy-1.26.0-cp310-cp310-win_amd64.whl", hash = "sha256:09aaee96c2cbdea95de76ecb8a586cb687d281c881f5f17bfc0fb7f5890f6b91"},
-    {file = "numpy-1.26.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:637c58b468a69869258b8ae26f4a4c6ff8abffd4a8334c830ffb63e0feefe99a"},
-    {file = "numpy-1.26.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:306545e234503a24fe9ae95ebf84d25cba1fdc27db971aa2d9f1ab6bba19a9dd"},
-    {file = "numpy-1.26.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8c6adc33561bd1d46f81131d5352348350fc23df4d742bb246cdfca606ea1208"},
-    {file = "numpy-1.26.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e062aa24638bb5018b7841977c360d2f5917268d125c833a686b7cbabbec496c"},
-    {file = "numpy-1.26.0-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:546b7dd7e22f3c6861463bebb000646fa730e55df5ee4a0224408b5694cc6148"},
-    {file = "numpy-1.26.0-cp311-cp311-win32.whl", hash = "sha256:c0b45c8b65b79337dee5134d038346d30e109e9e2e9d43464a2970e5c0e93229"},
-    {file = "numpy-1.26.0-cp311-cp311-win_amd64.whl", hash = "sha256:eae430ecf5794cb7ae7fa3808740b015aa80747e5266153128ef055975a72b99"},
-    {file = "numpy-1.26.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:166b36197e9debc4e384e9c652ba60c0bacc216d0fc89e78f973a9760b503388"},
-    {file = "numpy-1.26.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:f042f66d0b4ae6d48e70e28d487376204d3cbf43b84c03bac57e28dac6151581"},
-    {file = "numpy-1.26.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e5e18e5b14a7560d8acf1c596688f4dfd19b4f2945b245a71e5af4ddb7422feb"},
-    {file = "numpy-1.26.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7f6bad22a791226d0a5c7c27a80a20e11cfe09ad5ef9084d4d3fc4a299cca505"},
-    {file = "numpy-1.26.0-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:4acc65dd65da28060e206c8f27a573455ed724e6179941edb19f97e58161bb69"},
-    {file = "numpy-1.26.0-cp312-cp312-win32.whl", hash = "sha256:bb0d9a1aaf5f1cb7967320e80690a1d7ff69f1d47ebc5a9bea013e3a21faec95"},
-    {file = "numpy-1.26.0-cp312-cp312-win_amd64.whl", hash = "sha256:ee84ca3c58fe48b8ddafdeb1db87388dce2c3c3f701bf447b05e4cfcc3679112"},
-    {file = "numpy-1.26.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:4a873a8180479bc829313e8d9798d5234dfacfc2e8a7ac188418189bb8eafbd2"},
-    {file = "numpy-1.26.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:914b28d3215e0c721dc75db3ad6d62f51f630cb0c277e6b3bcb39519bed10bd8"},
-    {file = "numpy-1.26.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c78a22e95182fb2e7874712433eaa610478a3caf86f28c621708d35fa4fd6e7f"},
-    {file = "numpy-1.26.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:86f737708b366c36b76e953c46ba5827d8c27b7a8c9d0f471810728e5a2fe57c"},
-    {file = "numpy-1.26.0-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:b44e6a09afc12952a7d2a58ca0a2429ee0d49a4f89d83a0a11052da696440e49"},
-    {file = "numpy-1.26.0-cp39-cp39-win32.whl", hash = "sha256:5671338034b820c8d58c81ad1dafc0ed5a00771a82fccc71d6438df00302094b"},
-    {file = "numpy-1.26.0-cp39-cp39-win_amd64.whl", hash = "sha256:020cdbee66ed46b671429c7265cf00d8ac91c046901c55684954c3958525dab2"},
-    {file = "numpy-1.26.0-pp39-pypy39_pp73-macosx_10_9_x86_64.whl", hash = "sha256:0792824ce2f7ea0c82ed2e4fecc29bb86bee0567a080dacaf2e0a01fe7654369"},
-    {file = "numpy-1.26.0-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7d484292eaeb3e84a51432a94f53578689ffdea3f90e10c8b203a99be5af57d8"},
-    {file = "numpy-1.26.0-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:186ba67fad3c60dbe8a3abff3b67a91351100f2661c8e2a80364ae6279720299"},
-    {file = "numpy-1.26.0.tar.gz", hash = "sha256:f93fc78fe8bf15afe2b8d6b6499f1c73953169fad1e9a8dd086cdff3190e7fdf"},
+    {file = "numpy-1.26.4-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:9ff0f4f29c51e2803569d7a51c2304de5554655a60c5d776e35b4a41413830d0"},
+    {file = "numpy-1.26.4-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:2e4ee3380d6de9c9ec04745830fd9e2eccb3e6cf790d39d7b98ffd19b0dd754a"},
+    {file = "numpy-1.26.4-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d209d8969599b27ad20994c8e41936ee0964e6da07478d6c35016bc386b66ad4"},
+    {file = "numpy-1.26.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ffa75af20b44f8dba823498024771d5ac50620e6915abac414251bd971b4529f"},
+    {file = "numpy-1.26.4-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:62b8e4b1e28009ef2846b4c7852046736bab361f7aeadeb6a5b89ebec3c7055a"},
+    {file = "numpy-1.26.4-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:a4abb4f9001ad2858e7ac189089c42178fcce737e4169dc61321660f1a96c7d2"},
+    {file = "numpy-1.26.4-cp310-cp310-win32.whl", hash = "sha256:bfe25acf8b437eb2a8b2d49d443800a5f18508cd811fea3181723922a8a82b07"},
+    {file = "numpy-1.26.4-cp310-cp310-win_amd64.whl", hash = "sha256:b97fe8060236edf3662adfc2c633f56a08ae30560c56310562cb4f95500022d5"},
+    {file = "numpy-1.26.4-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:4c66707fabe114439db9068ee468c26bbdf909cac0fb58686a42a24de1760c71"},
+    {file = "numpy-1.26.4-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:edd8b5fe47dab091176d21bb6de568acdd906d1887a4584a15a9a96a1dca06ef"},
+    {file = "numpy-1.26.4-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7ab55401287bfec946ced39700c053796e7cc0e3acbef09993a9ad2adba6ca6e"},
+    {file = "numpy-1.26.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:666dbfb6ec68962c033a450943ded891bed2d54e6755e35e5835d63f4f6931d5"},
+    {file = "numpy-1.26.4-cp311-cp311-musllinux_1_1_aarch64.whl", hash = "sha256:96ff0b2ad353d8f990b63294c8986f1ec3cb19d749234014f4e7eb0112ceba5a"},
+    {file = "numpy-1.26.4-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:60dedbb91afcbfdc9bc0b1f3f402804070deed7392c23eb7a7f07fa857868e8a"},
+    {file = "numpy-1.26.4-cp311-cp311-win32.whl", hash = "sha256:1af303d6b2210eb850fcf03064d364652b7120803a0b872f5211f5234b399f20"},
+    {file = "numpy-1.26.4-cp311-cp311-win_amd64.whl", hash = "sha256:cd25bcecc4974d09257ffcd1f098ee778f7834c3ad767fe5db785be9a4aa9cb2"},
+    {file = "numpy-1.26.4-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:b3ce300f3644fb06443ee2222c2201dd3a89ea6040541412b8fa189341847218"},
+    {file = "numpy-1.26.4-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:03a8c78d01d9781b28a6989f6fa1bb2c4f2d51201cf99d3dd875df6fbd96b23b"},
+    {file = "numpy-1.26.4-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9fad7dcb1aac3c7f0584a5a8133e3a43eeb2fe127f47e3632d43d677c66c102b"},
+    {file = "numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:675d61ffbfa78604709862923189bad94014bef562cc35cf61d3a07bba02a7ed"},
+    {file = "numpy-1.26.4-cp312-cp312-musllinux_1_1_aarch64.whl", hash = "sha256:ab47dbe5cc8210f55aa58e4805fe224dac469cde56b9f731a4c098b91917159a"},
+    {file = "numpy-1.26.4-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:1dda2e7b4ec9dd512f84935c5f126c8bd8b9f2fc001e9f54af255e8c5f16b0e0"},
+    {file = "numpy-1.26.4-cp312-cp312-win32.whl", hash = "sha256:50193e430acfc1346175fcbdaa28ffec49947a06918b7b92130744e81e640110"},
+    {file = "numpy-1.26.4-cp312-cp312-win_amd64.whl", hash = "sha256:08beddf13648eb95f8d867350f6a018a4be2e5ad54c8d8caed89ebca558b2818"},
+    {file = "numpy-1.26.4-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:7349ab0fa0c429c82442a27a9673fc802ffdb7c7775fad780226cb234965e53c"},
+    {file = "numpy-1.26.4-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:52b8b60467cd7dd1e9ed082188b4e6bb35aa5cdd01777621a1658910745b90be"},
+    {file = "numpy-1.26.4-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d5241e0a80d808d70546c697135da2c613f30e28251ff8307eb72ba696945764"},
+    {file = "numpy-1.26.4-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f870204a840a60da0b12273ef34f7051e98c3b5961b61b0c2c1be6dfd64fbcd3"},
+    {file = "numpy-1.26.4-cp39-cp39-musllinux_1_1_aarch64.whl", hash = "sha256:679b0076f67ecc0138fd2ede3a8fd196dddc2ad3254069bcb9faf9a79b1cebcd"},
+    {file = "numpy-1.26.4-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:47711010ad8555514b434df65f7d7b076bb8261df1ca9bb78f53d3b2db02e95c"},
+    {file = "numpy-1.26.4-cp39-cp39-win32.whl", hash = "sha256:a354325ee03388678242a4d7ebcd08b5c727033fcff3b2f536aea978e15ee9e6"},
+    {file = "numpy-1.26.4-cp39-cp39-win_amd64.whl", hash = "sha256:3373d5d70a5fe74a2c1bb6d2cfd9609ecf686d47a2d7b1d37a8f3b6bf6003aea"},
+    {file = "numpy-1.26.4-pp39-pypy39_pp73-macosx_10_9_x86_64.whl", hash = "sha256:afedb719a9dcfc7eaf2287b839d8198e06dcd4cb5d276a3df279231138e83d30"},
+    {file = "numpy-1.26.4-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:95a7476c59002f2f6c590b9b7b998306fba6a5aa646b1e22ddfeaf8f78c3a29c"},
+    {file = "numpy-1.26.4-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:7e50d0a0cc3189f9cb0aeb3a6a6af18c16f59f004b866cd2be1c14b36134a4a0"},
+    {file = "numpy-1.26.4.tar.gz", hash = "sha256:2a02aba9ed12e4ac4eb3ea9421c420301a0c6460d9830d74a9df87efa4912010"},
 ]
 
 [[package]]
@@ -6906,4 +6967,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "7ddd9b2abe58e323f4ac718a7dd2f612ba0a1f870ed0cdc43affc6d258460a70"
+content-hash = "468027d96a84d5cebec42232770865c46a7266fd5671210c94f9d8a22db0b173"

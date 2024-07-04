@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-connector-chyt"
+name = "dl-connector-chyt"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -15,16 +15,17 @@ marshmallow = ">=3.19.0"
 python = ">=3.10, <3.13"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 sqlalchemy = ">=1.4.46, <2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-utils = {path = "../dl_utils"}
-datalens-constants = {path = "../dl_constants"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
-datalens-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
-datalens-configs = {path = "../dl_configs"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-core = {path = "../dl_core"}
-datalens-db-testing = {path = "../dl_db_testing"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-utils = {path = "../dl_utils"}
+dl-constants = {path = "../dl_constants"}
+dl-i18n = {path = "../dl_i18n"}
+dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+dl-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
+dl-configs = {path = "../dl_configs"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
+aiohttp = ">=3.9.1"
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]

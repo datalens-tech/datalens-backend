@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-formula-ref"
+name = "dl-formula-ref"
 version = "0.0.0"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -15,14 +15,20 @@ jinja2 = ">=3.1.2"
 python = ">=3.10, <3.13"
 sqlalchemy = ">=1.4.46, <2.0"
 tabulate = ">=0.9.0"
-datalens-formula = {path = "../dl_formula"}
+dl-formula = {path = "../dl_formula"}
+dynamic-enum = {path = "../dynamic_enum"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-utils = {path = "../dl_utils"}
+dl-i18n = {path = "../dl_i18n"}
+typing-extensions = ">=4.9.0"
+dl-db-testing = {path = "../dl_db_testing"}
 
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
 babel = ">=2.12.1"
 pytest = ">=7.2.2"
 psycopg2-binary = ">=2.9.9"
-datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

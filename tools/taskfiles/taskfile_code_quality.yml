@@ -302,3 +302,26 @@ tasks:
         " > {{.ROOT_DIR}}/.git/hooks/pre-commit
       - chmod +x {{.ROOT_DIR}}/.git/hooks/pre-commit
     silent: true
+
+  find_and_check_requirements:
+    shell: bash
+    vars:
+      TOML_DIRS:
+        sh: find {{.ROOT_DIR}} \( -path '*/app*' -o -path '*/lib*' \) -name 'pyproject.toml' -maxdepth 3 | awk -F / '{FS=OFS="/";$NF=""; print $0}'
+    cmds:
+      - for: { var: TOML_DIRS, as: TOML_DIR }
+        task: check_missing_requirements
+        vars:
+          TOML_DIR: '{{.TOML_DIR}}'
+
+  check_missing_requirements:
+    deps: [ common_deps ]
+    dotenv:
+      - .env
+    shell: bash
+    dir: "/{{.TOML_DIR}}"
+    cmds:
+        - echo -e "\033[33mDIRECTORY\033[0m {{.TOML_DIR}}"
+        - $VENV_PATH/bin/deptry . --ignore DEP004,DEP003,DEP002 --exclude ".*test.*"
+    silent: true
+    ignore_error: true

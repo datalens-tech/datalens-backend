@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-connector-bundle-chs3"
+name = "dl-connector-bundle-chs3"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -16,19 +16,20 @@ marshmallow = ">=3.19.0"
 python = ">=3.10, <3.13"
 xxhash = ">=3.2.0"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-datalens-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-utils = {path = "../dl_utils"}
-datalens-constants = {path = "../dl_constants"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-connector-clickhouse = {path = "../dl_connector_clickhouse"}
-datalens-testing = {path = "../dl_testing"}
-datalens-configs = {path = "../dl_configs"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-core = {path = "../dl_core"}
-datalens-model-tools = {path = "../dl_model_tools"}
-datalens-core-testing = {path = "../dl_core_testing"}
-datalens-task-processor = {path = "../dl_task_processor"}
+dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-utils = {path = "../dl_utils"}
+dl-constants = {path = "../dl_constants"}
+dl-i18n = {path = "../dl_i18n"}
+dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+dl-testing = {path = "../dl_testing"}
+dl-configs = {path = "../dl_configs"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-core = {path = "../dl_core"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-task-processor = {path = "../dl_task_processor"}
+sqlalchemy = ">=1.4.46, <2.0"
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]

@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-pivot-pandas"
+name = "dl-pivot-pandas"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -11,9 +11,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
-datalens-constants = {path = "../dl_constants"}
-datalens-pivot = {path = "../dl_pivot"}
-datalens-query-processing = {path = "../dl_query_processing"}
+dl-constants = {path = "../dl_constants"}
+dl-pivot = {path = "../dl_pivot"}
+dl-query-processing = {path = "../dl_query_processing"}
 pandas = ">=2.0.3"
 python = ">=3.10, <3.13"
 

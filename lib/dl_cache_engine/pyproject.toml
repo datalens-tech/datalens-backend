@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-cache-engine"
+name = "dl-cache-engine"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -12,10 +12,10 @@ readme = "README.md"
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
 python = ">=3.10, <3.13"
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-utils = {path = "../dl_utils"}
-datalens-constants = {path = "../dl_constants"}
-datalens-model-tools = {path = "../dl_model_tools"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-utils = {path = "../dl_utils"}
+dl-constants = {path = "../dl_constants"}
+dl-model-tools = {path = "../dl_model_tools"}
 lz4 = "==4.3.2"
 redis = "==5.0.1"
 redis_cache_lock = {path = "../redis-cache-lock"}

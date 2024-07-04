@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-control-api"
+name = "dl-control-api"
 version = "0.0.0"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -11,26 +11,27 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.10, <3.13"
 Flask = ">=2.2.5"
-datalens-version = {path = "../../lib/dl_version"}
-datalens-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
-datalens-utils = {path = "../../lib/dl_utils"}
-datalens-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
-datalens-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
-datalens-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
-datalens-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
-datalens-connector-ydb = {path = "../../lib/dl_connector_ydb"}
-datalens-connector-chyt = {path = "../../lib/dl_connector_chyt"}
-datalens-connector-mysql = {path = "../../lib/dl_connector_mysql"}
-datalens-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
-datalens-core = {path = "../../lib/dl_core"}
-datalens-app-tools = {path = "../../lib/dl_app_tools"}
-datalens-model-tools = {path = "../../lib/dl_model_tools"}
-datalens-api-lib = {path = "../../lib/dl_api_lib"}
-datalens-api-commons = {path = "../../lib/dl_api_commons"}
-datalens-cache-engine = {path = "../../lib/dl_cache_engine"}
-datalens-configs = {path = "../../lib/dl_configs"}
-datalens-constants = {path = "../../lib/dl_constants"}
-datalens-zitadel = {path = "../../lib/dl_zitadel", extras = ["flask"]}
+dl-version = {path = "../../lib/dl_version"}
+dl-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
+dl-utils = {path = "../../lib/dl_utils"}
+dl-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
+dl-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
+dl-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
+dl-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
+dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
+dl-connector-chyt = {path = "../../lib/dl_connector_chyt"}
+dl-connector-mysql = {path = "../../lib/dl_connector_mysql"}
+dl-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
+dl-core = {path = "../../lib/dl_core"}
+dl-app-tools = {path = "../../lib/dl_app_tools"}
+dl-model-tools = {path = "../../lib/dl_model_tools"}
+dl-api-lib = {path = "../../lib/dl_api_lib"}
+dl-api-commons = {path = "../../lib/dl_api_commons"}
+dl-cache-engine = {path = "../../lib/dl_cache_engine"}
+dl-configs = {path = "../../lib/dl_configs"}
+dl-constants = {path = "../../lib/dl_constants"}
+dl-zitadel = {path = "../../lib/dl_zitadel", extras = ["flask"]}
+httpx = "^0.27.0"
 
 [build-system]
 requires = ["poetry-core"]

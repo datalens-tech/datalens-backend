@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "datalens-file-uploader-lib"
+name = "dl-file-uploader-lib"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -19,17 +19,17 @@ python = ">=3.10, <3.13"
 redis = ">=5.0.1"
 ujson = ">=1.35"
 yarl = ">=1.9.4"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-utils = {path = "../dl_utils"}
-datalens-constants = {path = "../dl_constants"}
-datalens-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
-datalens-configs = {path = "../dl_configs"}
-datalens-core = {path = "../dl_core"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-utils = {path = "../dl_utils"}
+dl-constants = {path = "../dl_constants"}
+dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
+dl-configs = {path = "../dl_configs"}
+dl-core = {path = "../dl_core"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
-datalens-testing = {path = "../dl_testing"}
+dl-testing = {path = "../dl_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

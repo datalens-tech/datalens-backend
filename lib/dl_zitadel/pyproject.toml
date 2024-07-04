@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-zitadel"
+name = "dl-zitadel"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -16,8 +16,9 @@ attrs = ">=22.2.0"
 httpx = "^0.27.0"
 flask = { version = ">=2.2.5", optional = true }
 pydantic = "^2.7.4"
-datalens-constants = {path = "../../lib/dl_constants"}
-datalens-api-commons = {path = "../../lib/dl_api_commons"}
+dl-constants = {path = "../../lib/dl_constants"}
+dl-api-commons = {path = "../../lib/dl_api_commons"}
+werkzeug = ">=2.2.3"
 
 [tool.poetry.extras]
 aiohttp = ["aiohttp"]

@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-connector-mssql"
+name = "dl-connector-mssql"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -14,16 +14,16 @@ attrs = ">=22.2.0"
 pyodbc = ">=5.0.1"
 python = ">=3.10, <3.13"
 sqlalchemy = ">=1.4.46, <2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-constants = {path = "../dl_constants"}
-datalens-formula-ref = {path = "../dl_formula_ref"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
-datalens-formula = {path = "../dl_formula"}
-datalens-configs = {path = "../dl_configs"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-core = {path = "../dl_core"}
-datalens-db-testing = {path = "../dl_db_testing"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-constants = {path = "../dl_constants"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
+dl-formula = {path = "../dl_formula"}
+dl-configs = {path = "../dl_configs"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
@@ -47,10 +47,10 @@ aiohttp = ">=3.9.1"
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 pyodbc = ">=5.0.1"
-datalens-api-lib-testing = {path = "../dl_api_lib_testing"}
-datalens-formula-testing = {path = "../dl_formula_testing"}
-datalens-testing = {path = "../dl_testing"}
-datalens-core-testing = {path = "../dl_core_testing"}
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-testing = {path = "../dl_testing"}
+dl-core-testing = {path = "../dl_core_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
