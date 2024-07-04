@@ -35,7 +35,7 @@ const DEFAULT_SCOPE_ENUM = [
 
 const getChangelogConfig = async () => {
   const response = await fetch(CONFIG_SOURCE_URL);
-  const data = response.json();
+  const data = await response.json();
 
   console.log(`INFO::Received data from config file: ${data}`);
 
@@ -55,7 +55,7 @@ const getEnums = async () => {
   }
 };
 
-const { TYPE_ENUM, SCOPE_ENUM } = await getEnums();
+const { typeEnum, scopeEnum } = await getEnums();
 
 const subjectPrefixRule = ({ subject }) => {
   const PREFIX_REGEX = /\W*-\d*/;
@@ -65,8 +65,8 @@ const subjectPrefixRule = ({ subject }) => {
 const Configuration = {
   extends: ["@commitlint/config-conventional"],
   rules: {
-    "type-enum": [RuleConfigSeverity.Error, "always", TYPE_ENUM],
-    "scope-enum": [RuleConfigSeverity.Error, "always", SCOPE_ENUM],
+    "type-enum": [RuleConfigSeverity.Error, "always", typeEnum],
+    "scope-enum": [RuleConfigSeverity.Error, "always", scopeEnum],
     "subject-case": [RuleConfigSeverity.Error, "never", ["start-case", "pascal-case", "upper-case"]],
     "subject-prefix": [RuleConfigSeverity.Error, "always"],
   },
