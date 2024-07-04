@@ -98,17 +98,22 @@ class TestInfo(DefaultApiTestBase):
             assert icon["data"].get("standard") is not None and len(icon["data"]["standard"]) > 0, icon
             assert icon["data"].get("nav") is not None and len(icon["data"]["nav"]) > 0, icon
 
-    @pytest.mark.parametrize("conn_type_name", [conn_type.name for conn_type in ConnectionType])
+    @pytest.mark.parametrize(
+        "conn_type_name",
+        [conn_type.name for conn_type in ConnectionType if conn_type != ConnectionType.unknown],
+    )
     def test_get_connector_icon(self, client, conn_type_name):
         icons_resp = client.get(f"/api/v1/info/connectors/icons/{conn_type_name}")
         assert icons_resp.status_code == 200, icons_resp.json
 
         resp_data = icons_resp.json
-        assert "type" in resp_data
-        assert resp_data["type"] == "data"
-        assert "data" in resp_data
-        assert resp_data["data"].get("standard") is not None and len(resp_data["data"]["standard"]) > 0, resp_data
-        assert resp_data["data"].get("nav") is not None and len(resp_data["data"]["nav"]) > 0, resp_data
+        assert "icon" in resp_data
+        icon_data = resp_data["icon"]
+        assert "type" in icon_data
+        assert icon_data["type"] == "data"
+        assert "data" in icon_data
+        assert icon_data["data"].get("standard") is not None and len(icon_data["data"]["standard"]) > 0, icon_data
+        assert icon_data["data"].get("nav") is not None and len(icon_data["data"]["nav"]) > 0, icon_data
 
     def test_get_connector_icon_not_found(self, client):
         icons_resp = client.get("/api/v1/info/connectors/icons/unknown_conn_type")
