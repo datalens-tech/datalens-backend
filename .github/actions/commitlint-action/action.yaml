@@ -1,11 +1,8 @@
-name: 'Commitlint'
-description: 'Commitlints input according to config'
+name: "Commitlint"
+description: "Commitlints input according to config"
 inputs:
   input:
-    description: 'The input to commitlint'
-    required: true
-  config_path:
-    description: 'The path to the commitlint config'
+    description: "The input to commitlint"
     required: true
 runs:
   using: composite
@@ -14,16 +11,16 @@ runs:
     - name: Setup Node
       uses: actions/setup-node@v2
       with:
-          node-version: '22'
+        node-version: "22"
 
     - name: Install Dependencies
       shell: bash
+      working-directory: ${{ github.action_path }}
       run: |
-          npm init es6 -y
-          npm install conventional-changelog-conventionalcommits
-          npm install @commitlint/{config-conventional,cli,types}
+        npm ci
 
     - name: Lint Commit
       shell: bash
+      working-directory: ${{ github.action_path }}
       run: |
-          echo "${{ inputs.input }}" | npx commitlint --config ${{ inputs.config_path }}
+        echo "${{ inputs.input }}" | npx commitlint --config ${{ github.action_path }}/src/commitlint.config.js
