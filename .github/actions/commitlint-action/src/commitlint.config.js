@@ -58,7 +58,7 @@ const getEnums = async () => {
 const { typeEnum, scopeEnum } = await getEnums();
 
 const subjectPrefixRule = ({ subject }) => {
-  const PREFIX_REGEX = /\W*-\d*/;
+  const PREFIX_REGEX = /[A-Z]+-\d+/;
   return [subject.match(PREFIX_REGEX), `Subject must start with a prefix like "BI-1234"`];
 };
 
