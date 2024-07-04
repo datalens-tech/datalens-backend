@@ -153,10 +153,10 @@ dl-dashsql = {path = "../lib/dl_dashsql"}
 dl-pivot = {path = "../lib/dl_pivot"}
 dl-pivot-pandas = {path = "../lib/dl_pivot_pandas"}
 dl-cache-engine = {path = "../lib/dl_cache_engine"}
-dl-rate-limiter = {path = "../lib/dl_rate_limiter"}
+dl-rate-limiter = {path = "../lib/dl_rate_limiter", extras=["flask", "aiohttp"]}
 dl-rls = {path = "../lib/dl_rls"}
 dl-zitadel = {path = "../lib/dl_zitadel"}
-datalens-auth-api-lib = {path = "../lib/dl_auth_api_lib"}
+dl-auth-api-lib = {path = "../lib/dl_auth_api_lib"}
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.12.1"
