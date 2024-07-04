@@ -36,8 +36,8 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
             RequestBootstrap(
                 req_id_service=req_id_service,
             ).middleware,
-            commit_rci_middleware(),
             *self.get_auth_middlewares(),
+            commit_rci_middleware(),
         ]
 
         app = web.Application(
