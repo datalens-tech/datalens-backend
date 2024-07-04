@@ -1,0 +1,25 @@
+{
+  "name": "datalens-commitlint-action",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "format:fix": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:fix": "eslint --fix",
+    "all": "npm run lint:fix && npm run format:fix"
+  },
+  "dependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@commitlint/types": "^19.0.3",
+    "conventional-changelog-conventionalcommits": "^8.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.1.1",
+    "@gravity-ui/eslint-config": "github:gravity-ui/eslint-config"
+  },
+  "author": "",
+  "license": "MIT",
+  "description": ""
+}
