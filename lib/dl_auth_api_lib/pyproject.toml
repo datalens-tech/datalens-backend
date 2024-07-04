@@ -15,7 +15,7 @@ attrs = ">=22.2.0"
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.13"
 pydantic = ">=2.7.0"
-pydantic-settings = ">=2.2.0"
+pydantic-settings = ">=2.2.0 <2.3.4"
 typing-extensions = ">=4.9.0"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-core = {path = "../dl_core"}
