@@ -12,10 +12,8 @@ from dl_api_commons.base_models import (
 )
 from dl_api_commons.client.common import DLCommonAPIClient
 from dl_auth_api_lib.app import OAuthApiAppFactory
-from dl_auth_api_lib.settings import (
-    AuthAPISettings,
-    YandexOAuthClient,
-)
+from dl_auth_api_lib.oauth.yandex import YandexOAuthClient
+from dl_auth_api_lib.settings import AuthAPISettings
 from dl_testing.utils import get_default_aiohttp_session
 
 
@@ -65,6 +63,15 @@ def oauth_app_settings(monkeypatch, config_path):
                 conn_type="app_metrica",
                 client_id="app_metrica",
                 redirect_uri="localhost",
+            ),
+            custom_conn=dict(
+                auth_type="yandex",
+                conn_type="custom_conn",
+                client_id="custom_conn",
+                client_secret="pass321",
+                redirect_uri="localhost",
+                auth_url="https://oauth.yandex.com/authorize?",
+                token_url="https://oauth.yandex.com/token",
             ),
         )
     )

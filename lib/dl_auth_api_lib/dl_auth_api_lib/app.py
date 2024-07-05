@@ -12,7 +12,11 @@ from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.middlewares.tracing import TracingService
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
-from dl_auth_api_lib.settings import AuthAPISettings
+from dl_auth_api_lib.oauth.yandex import YandexOAuthClient
+from dl_auth_api_lib.settings import (
+    AuthAPISettings,
+    register_auth_client,
+)
 from dl_auth_api_lib.views import yandex as yandex_views
 from dl_core.aio.ping_view import PingView
 
@@ -53,3 +57,6 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
         app["clients"] = self._settings.auth_clients
 
         return app
+
+
+register_auth_client("yandex", YandexOAuthClient)

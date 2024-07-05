@@ -15,6 +15,10 @@ from dl_api_commons.client.base import Req
             "app_metrica",
             "https://oauth.yandex.ru/authorize?client_id=app_metrica&redirect_uri=localhost&response_type=code",
         ),
+        (
+            "custom_conn",
+            "https://oauth.yandex.com/authorize?client_id=custom_conn&redirect_uri=localhost&response_type=code",
+        ),
     ],
 )
 async def test_yandex_uri(oauth_app_client, conn_type, resp_uri):
