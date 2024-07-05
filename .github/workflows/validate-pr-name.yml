@@ -19,5 +19,3 @@ jobs:
 
       - name: Commitlint PR title
         uses: ./.github/actions/commitlint-action
-        with:
-          input: ${{ github.event.pull_request.title }}
