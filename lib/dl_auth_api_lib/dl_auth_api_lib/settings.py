@@ -46,6 +46,8 @@ class AuthAPISettings(pydantic_settings.BaseSettings):
         pydantic.BeforeValidator(make_dict_factory(BaseOAuthClient.factory)),
     ] = pydantic.Field(default=dict())
 
+    sentry_dsn: str | None = pydantic.Field(default=None)
+
     @classmethod
     def settings_customise_sources(
         cls,
