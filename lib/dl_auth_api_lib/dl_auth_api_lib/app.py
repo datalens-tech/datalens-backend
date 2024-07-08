@@ -16,6 +16,7 @@ from dl_api_commons.sentry_config import (
     SentryConfig,
     configure_sentry_for_aiohttp,
 )
+from dl_auth_api_lib.error_handler import OAuthApiErrorHandler
 from dl_auth_api_lib.oauth.yandex import YandexOAuthClient
 from dl_auth_api_lib.settings import (
     AuthAPISettings,
@@ -50,10 +51,16 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
 
         req_id_service = RequestId()
 
+        error_handler = OAuthApiErrorHandler(
+            use_sentry=(secret_sentry_dsn is not None),
+            sentry_app_name_tag="auth-api",
+        )
+
         middleware_list = [
             TracingService().middleware,
             RequestBootstrap(
                 req_id_service=req_id_service,
+                error_handler=error_handler,
             ).middleware,
             *self.get_auth_middlewares(),
             commit_rci_middleware(),

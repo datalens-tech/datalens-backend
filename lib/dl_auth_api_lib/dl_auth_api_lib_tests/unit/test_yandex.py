@@ -31,3 +31,15 @@ async def test_yandex_uri(oauth_app_client, conn_type, resp_uri):
     assert resp.status == 200
     assert "uri" in resp.json
     assert resp.json["uri"] == resp_uri
+
+
+@pytest.mark.asyncio
+async def test_request_schema_validation_error(oauth_app_client):
+    resp = await oauth_app_client.make_request(
+        Req(
+            method="get",
+            url="/oauth/uri/yandex?type_of_conn=some_conn",
+            require_ok=False,
+        )
+    )
+    assert resp.status == 400
