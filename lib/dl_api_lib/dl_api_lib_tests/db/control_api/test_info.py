@@ -95,8 +95,8 @@ class TestInfo(DefaultApiTestBase):
             assert "type" in icon
             assert icon["type"] == "data"
             assert "data" in icon
-            assert icon["data"].get("standard") is not None and len(icon["data"]["standard"]) > 0, icon
-            assert icon["data"].get("nav") is not None and len(icon["data"]["nav"]) > 0, icon
+            assert len(icon["data"].get("standard", "")) > 0, icon
+            assert len(icon["data"].get("nav", "")) > 0, icon
 
     @pytest.mark.parametrize(
         "conn_type_name",
@@ -112,8 +112,8 @@ class TestInfo(DefaultApiTestBase):
         assert "type" in icon_data
         assert icon_data["type"] == "data"
         assert "data" in icon_data
-        assert icon_data["data"].get("standard") is not None and len(icon_data["data"]["standard"]) > 0, icon_data
-        assert icon_data["data"].get("nav") is not None and len(icon_data["data"]["nav"]) > 0, icon_data
+        assert len(icon_data["data"].get("standard", "")) > 0, icon_data
+        assert len(icon_data["data"].get("nav", "")) > 0, icon_data
 
     def test_get_connector_icon_not_found(self, client):
         icons_resp = client.get("/api/v1/info/connectors/icons/unknown_conn_type")
