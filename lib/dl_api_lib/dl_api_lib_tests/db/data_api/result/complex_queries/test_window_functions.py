@@ -720,7 +720,7 @@ class TestBasicWindowFunctions(DefaultApiTestBase, DefaultBasicWindowFunctionTes
             dataset=saved_dataset,
             formulas={
                 "Group Sales": "SUM([sales])",
-                "Sales RSUM BFB": ("RSUM(SUM([sales]) TOTAL BEFORE FILTER BY [order_date])"),
+                "Sales RSUM BFB": "RSUM(SUM([sales]) TOTAL BEFORE FILTER BY [order_date])",
                 "Sales RSUM BFB MAVG BFB": (
                     "MAVG(RSUM(SUM([sales]) TOTAL BEFORE FILTER BY [order_date]), 100 BEFORE FILTER BY [order_date])"
                 ),
@@ -782,3 +782,32 @@ class TestBasicWindowFunctions(DefaultApiTestBase, DefaultBasicWindowFunctionTes
         for row_no_sum, row_with_sum in zip(data_rows_no_sum, data_rows_with_sum, strict=True):
             assert row_no_sum[0] == row_with_sum[0]  # The dimension
             assert row_no_sum[1] == row_with_sum[1]  # The measure
+
+    @pytest.mark.xfail(strict=True)  # FIXME: https://github.com/datalens-tech/datalens-backend/issues/531
+    def test_sorting_by_lag(self, control_api, data_api, saved_dataset):
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            formulas={
+                "Sales SUM": "SUM([sales])",
+                "Sales LAG": "LAG([Sales SUM], 1)",
+            },
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="order_date"),
+                ds.find_field(title="Sales LAG"),
+            ],
+            order_by=[
+                ds.find_field(title="Sales LAG"),
+            ],
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+
+        data_rows = get_data_rows(result_resp)
+        assert len(data_rows) > 1
+        lags = [row[1] for row in data_rows]
+        assert lags[0] is None
+        assert sorted(lags[1:]) == lags[1:]
