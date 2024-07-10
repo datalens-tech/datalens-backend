@@ -47,8 +47,8 @@ class FieldRLSSerializer:
     )
     userid_line: ClassVar[str] = "userid: userid"
 
-    sa_prefix: ClassVar[str] = "@sa"
-    group_prefix: ClassVar[str] = "@group"
+    sa_prefix: ClassVar[str] = "@sa:"
+    group_prefix: ClassVar[str] = "@group:"
 
     @classmethod
     def to_text_config(cls, data: Iterable[RLSEntry]) -> str:
