@@ -169,7 +169,7 @@ class FieldRLSSerializer:
     @classmethod
     def _parse_group_str(cls, group_str: str) -> RLSSubject:
         group_id = group_str.removeprefix(cls.group_prefix)
-        return RLSSubject(subject_type=RLSSubjectType.user, subject_id=group_id, subject_name=group_str)
+        return RLSSubject(subject_type=RLSSubjectType.group, subject_id=group_id, subject_name=group_str)
 
     @classmethod
     def _resolve_subject_names(
