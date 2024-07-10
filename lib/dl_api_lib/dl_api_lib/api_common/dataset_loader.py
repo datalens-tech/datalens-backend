@@ -316,7 +316,7 @@ class DatasetApiLoader:
                 # otherwise no effective config changes (that are worth checking in preview)
 
         if any(item.subject.subject_type == RLSSubjectType.group for item in dataset.rls.items):
-            dataset.rls.allowed_groups = self.subject_resolver.get_groups_by_subject(self._service_registry.rci)
+            dataset.rls.allowed_groups = set(self.subject_resolver.get_groups_by_subject(self._service_registry.rci))
 
     @classmethod
     def _update_dataset_obligatory_filters_from_body(cls, dataset: Dataset, body: dict) -> str:  # type: ignore  # TODO: fix
