@@ -4,27 +4,16 @@ import itertools
 import logging
 import re
 from typing import (
-    Any,
     ClassVar,
-    Dict,
     Iterable,
-    List,
     NamedTuple,
     Optional,
-    Tuple,
 )
-
-import attr
-import more_itertools
 
 from dl_constants.enums import RLSSubjectType
 from dl_rls import exc
 from dl_rls.models import (
-    RLS_ALL_SUBJECT,
-    RLS_ALL_SUBJECT_NAME,
     RLS_FAILED_USER_NAME_PREFIX,
-    RLS_USERID_SUBJECT,
-    RLS_USERID_SUBJECT_NAME,
     RLSEntry,
     RLSPatternType,
     RLSSubject,
@@ -43,16 +32,23 @@ LOGGER = logging.getLogger(__name__)
 class RLSConfigItem(NamedTuple):
     """Structural item of a minimally parsed RLS config"""
 
-    idxes: List[int]  # row numbers
-    names: List[str]  # user identifiers
+    idxes: list[int]  # row numbers
+    names: list[str]  # user identifiers
 
 
 class FieldRLSSerializer:
-    allow_all_subject_name: ClassVar[str] = RLS_ALL_SUBJECT_NAME  # `'value': *` cases
-    allow_all_subject: ClassVar[RLSSubject] = RLS_ALL_SUBJECT
-    userid_subject_name: ClassVar[str] = RLS_USERID_SUBJECT_NAME
-    userid_subject: ClassVar[RLSSubject] = RLS_USERID_SUBJECT
+    allow_all_subject_name: ClassVar[str] = "*"  # `'value': *` cases
+    allow_all_subject: ClassVar[RLSSubject] = RLSSubject(
+        subject_type=RLSSubjectType.all, subject_id="*", subject_name="*"
+    )
+    userid_subject_name: ClassVar[str] = "userid"
+    userid_subject: ClassVar[RLSSubject] = RLSSubject(
+        subject_type=RLSSubjectType.userid, subject_id="", subject_name="userid"
+    )
     userid_line: ClassVar[str] = "userid: userid"
+
+    sa_prefix: ClassVar[str] = "@sa"
+    group_prefix: ClassVar[str] = "@group"
 
     @classmethod
     def to_text_config(cls, data: Iterable[RLSEntry]) -> str:
@@ -95,7 +91,7 @@ class FieldRLSSerializer:
     _line_re = re.compile(r"^'.+': " + _subjects_re_s)
 
     @classmethod
-    def _parse_single_line(cls, line: str) -> Tuple[RLSPatternType, Optional[str], List[str]]:
+    def _parse_single_line(cls, line: str) -> tuple[RLSPatternType, Optional[str], list[str]]:
         """
         `'value: subjects'` line to `pattern_type, value, subject_names` tuple.
         """
@@ -140,57 +136,69 @@ class FieldRLSSerializer:
         return pattern_type, value, subject_names
 
     @classmethod
-    def _try_parse_single_line(cls, line: str, idx: int) -> Tuple[RLSPatternType, Optional[str], List[str]]:
+    def _try_parse_single_line(cls, line: str, idx: int) -> tuple[RLSPatternType, Optional[str], list[str]]:
         try:
             return cls._parse_single_line(line)
         except ValueError as exc_value:
             raise exc.RLSConfigParsingError(
                 f"RLS: Parsing failed at line {idx + 1}", details=dict(description=str(exc_value))
-            ) from None
+            ) from exc_value
+
+    class AccountGroups(NamedTuple):
+        users: list[str]  # {user_id} (without any prefixes)
+        service_accounts: list[str]  # @sa:{sa_id}
+        groups: list[str]  # @group:{group_id}
 
     @classmethod
-    def _resolve_subject_names(cls, subject_names: List[str], subject_resolver: BaseSubjectResolver) -> Dict[str, Any]:
+    def _group_subject_names_by_type(cls, subject_names: list[str]) -> AccountGroups:
+        users, service_accounts, groups = [], [], []
+        for name in subject_names:
+            if name.startswith(cls.sa_prefix):
+                service_accounts.append(name)
+            elif name.startswith(cls.group_prefix):
+                groups.append(name)
+            else:
+                users.append(name)
+        return cls.AccountGroups(users, service_accounts, groups)
+
+    @classmethod
+    def _parse_sa_str(cls, sa_str: str) -> RLSSubject:
+        sa_id = sa_str.removeprefix(cls.sa_prefix)
+        return RLSSubject(subject_type=RLSSubjectType.user, subject_id=sa_id, subject_name=sa_str)
+
+    @classmethod
+    def _parse_group_str(cls, group_str: str) -> RLSSubject:
+        group_id = group_str.removeprefix(cls.group_prefix)
+        return RLSSubject(subject_type=RLSSubjectType.user, subject_id=group_id, subject_name=group_str)
+
+    @classmethod
+    def _resolve_subject_names(
+        cls, subject_names: list[str], subject_resolver: BaseSubjectResolver
+    ) -> dict[str, RLSSubject]:
         """
         Obtain the subject infos from a subject resolver.
         """
-        name_to_subject = {}
+        name_to_subject: dict[str, RLSSubject] = {}
         # The chunk size is up to tuning,
         # the primary point is to avoid creating too large JSONs,
         # as it gets deserialized in one async iteration.
         # Note that it makes the 'Logins do not exist' error potentially incomplete.
-        names_by_account_type = cls._group_names_by_account_type(subject_names)
-        for names_chunk in chunks(names_by_account_type.regular_subject_names, 1000):
+        users, service_accounts, groups = cls._group_subject_names_by_type(subject_names)
+        for names_chunk in chunks(users, 1000):
             subjects = subject_resolver.get_subjects_by_names(names_chunk)
             for subject in subjects:
                 # User name without prefix in dict
                 name_to_subject[subject.subject_name.removeprefix(RLS_FAILED_USER_NAME_PREFIX)] = subject
-        for service_account_str in names_by_account_type.service_account_strs:
-            sa_subject: RLSSubject = cls._parse_sa_account_str(service_account_str)
+        for sa_str in service_accounts:
+            sa_subject: RLSSubject = cls._parse_sa_str(sa_str)
             name_to_subject[sa_subject.subject_name] = sa_subject
+        for group_str in service_accounts:
+            group_subject: RLSSubject = cls._parse_group_str(group_str)
+            name_to_subject[group_subject.subject_name] = group_subject
         return name_to_subject
 
-    @attr.s
-    class AccountGroups:
-        regular_subject_names: List[str] = attr.ib()
-        service_account_strs: List[str] = attr.ib()  # sa strs have the following format. @sa:{sa_id}
-
     @classmethod
-    def _group_names_by_account_type(cls, subject_names: List[str]) -> AccountGroups:
-        regular_subject_names, service_account_strs = more_itertools.partition(cls._is_sa, subject_names)
-        return cls.AccountGroups(list(regular_subject_names), list(service_account_strs))
-
-    @classmethod
-    def _is_sa(cls, subject_name: str) -> bool:
-        return subject_name.startswith("@sa:")
-
-    @classmethod
-    def _parse_sa_account_str(cls, sa_str: str) -> RLSSubject:
-        # This is a hack. sa names are passed like this -> @sa:{sa_id}
-        sa_id = sa_str.removeprefix("@sa:")
-        return RLSSubject(subject_type=RLSSubjectType.user, subject_id=sa_id, subject_name=sa_str)
-
-    @classmethod
-    def pre_parse_text_config(cls, config: str) -> Tuple[RLSConfigItem, RLSConfigItem, Dict[str, RLSConfigItem]]:
+    def pre_parse_text_config(cls, config: str) -> tuple[RLSConfigItem, RLSConfigItem, dict[str, RLSConfigItem]]:
         """
         Parse the text config into a
         `(allow_all: RLSConfigItem, {field_value: RLSConfigItem, ...})`
@@ -201,7 +209,7 @@ class FieldRLSSerializer:
         """
         allow_all_item = RLSConfigItem(idxes=[], names=[])
         userid_item = RLSConfigItem(idxes=[], names=[])
-        value_to_item: Dict[str, RLSConfigItem] = {}
+        value_to_item: dict[str, RLSConfigItem] = {}
 
         if not config:
             return allow_all_item, userid_item, value_to_item
@@ -236,7 +244,7 @@ class FieldRLSSerializer:
     @classmethod
     def from_text_config(
         cls, config: str, field_guid: str, subject_resolver: Optional[BaseSubjectResolver]
-    ) -> List[RLSEntry]:
+    ) -> list[RLSEntry]:
         if not config:
             return []
 

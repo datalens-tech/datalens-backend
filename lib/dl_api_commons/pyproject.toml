@@ -21,9 +21,7 @@ sentry-sdk = {version = ">=1.15.0", extras = ["flask"]}
 typing-extensions = ">=4.9.0"
 dl-utils = {path = "../dl_utils"}
 dl-constants = {path = "../dl_constants"}
-dl-configs = {path = "../dl_configs"}
 dl-app-tools = {path = "../dl_app_tools"}
-dl-api-lib = {path = "../dl_api_lib"}
 requests = ">=2.28.2"
 
 [tool.deptry.per_rule_ignores]

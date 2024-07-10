@@ -12,6 +12,7 @@ from typing import (
 
 import attr
 
+from dl_api_commons.base_models import RequestContextInfo
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import AppSettings
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
@@ -69,6 +70,9 @@ class NotFoundSubjectResolver(BaseSubjectResolver):
             )
             for name in names
         ]
+
+    def get_groups_by_subject(self, rci: RequestContextInfo) -> list[str]:
+        return []
 
 
 @attr.s

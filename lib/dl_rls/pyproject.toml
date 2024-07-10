@@ -12,8 +12,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
 marshmallow = ">=3.19.0"
-more-itertools = ">=9.1.0"
 python = ">=3.10, <3.13"
+dl-api-commons = {path = "../dl_api_commons"}
 dl-constants = {path = "../../lib/dl_constants"}
 
 [tool.poetry.group.tests.dependencies]

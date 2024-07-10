@@ -1052,9 +1052,7 @@ develop = false
 [package.dependencies]
 aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
-dl-api-lib = {path = "../dl_api_lib"}
 dl-app-tools = {path = "../dl_app_tools"}
-dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-utils = {path = "../dl_utils"}
 flask = ">=2.2.5"
@@ -2383,9 +2381,9 @@ develop = false
 
 [package.dependencies]
 attrs = ">=22.2.0"
+dl-api-commons = {path = "../dl_api_commons"}
 dl-constants = {path = "../../lib/dl_constants"}
 marshmallow = ">=3.19.0"
-more-itertools = ">=9.1.0"
 
 [package.source]
 type = "directory"
