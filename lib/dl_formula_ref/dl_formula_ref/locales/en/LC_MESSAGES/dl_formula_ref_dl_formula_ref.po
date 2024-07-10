@@ -1643,6 +1643,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Returns all {arg:0} substrings matching the {arg:1} regex. For regexes with "
+"subgroups, it only works for the first subgroup."
+msgstr ""
+
+msgid ""
 "Returns a substring {arg:0} that matches the regular expression pattern "
 "{arg:1} starting from the specified index."
 msgstr ""
