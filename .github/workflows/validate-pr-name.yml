@@ -1,0 +1,21 @@
+name: 🏷️ Validate PR Name
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  commitlint-pr-title:
+    name: Ensure proper PR title
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Commitlint PR title
+        uses: ./.github/actions/commitlint-action

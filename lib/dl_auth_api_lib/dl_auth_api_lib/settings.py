@@ -2,7 +2,6 @@ import os
 from typing import (
     Annotated,
     Any,
-    Optional,
     Type,
 )
 
@@ -29,13 +28,14 @@ class BaseOAuthClient(pydantic.BaseModel):
         return config_class.model_validate(data)
 
 
-class YandexOAuthClient(BaseOAuthClient):
-    auth_type: str = "yandex"
+_REGISTRY: dict[str, type[BaseOAuthClient]] = {}
 
-    client_id: str
-    client_secret: str
-    redirect_uri: str
-    scope: Optional[str] = pydantic.Field(default=None)
+
+def register_auth_client(
+    name: str,
+    auth_type: type[BaseOAuthClient],
+) -> None:
+    _REGISTRY[name] = auth_type
 
 
 class AuthAPISettings(pydantic_settings.BaseSettings):
@@ -44,7 +44,9 @@ class AuthAPISettings(pydantic_settings.BaseSettings):
     auth_clients: Annotated[
         dict[str, pydantic.SerializeAsAny[BaseOAuthClient]],
         pydantic.BeforeValidator(make_dict_factory(BaseOAuthClient.factory)),
-    ]
+    ] = pydantic.Field(default=dict())
+
+    sentry_dsn: str | None = pydantic.Field(default=None)
 
     @classmethod
     def settings_customise_sources(
@@ -63,8 +65,3 @@ class AuthAPISettings(pydantic_settings.BaseSettings):
             ),
             init_settings,
         )
-
-
-_REGISTRY = {
-    "yandex": YandexOAuthClient,
-}

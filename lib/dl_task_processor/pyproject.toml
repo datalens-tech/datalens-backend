@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-task-processor"
+name = "dl-task-processor"
 version = "0.0.0"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -13,17 +13,20 @@ readme = "README.rst"
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
 python = ">=3.10, <3.13"
-datalens-utils = {path = "../dl_utils"}
-datalens-configs = {path = "../dl_configs"}
-datalens-app-tools = {path = "../dl_app_tools"}
+dl-utils = {path = "../dl_utils"}
+dl-configs = {path = "../dl_configs"}
+dl-app-tools = {path = "../dl_app_tools"}
+redis = ">=5.0.1"
 
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 statcommons = {path = "../statcommons"}
-datalens-testing = {path = "../dl_testing"}
-datalens-core = {path = "../dl_core"}
+dl-testing = {path = "../dl_testing"}
+dl-core = {path = "../dl_core"}
+
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

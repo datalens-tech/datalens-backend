@@ -77,6 +77,12 @@ def test_check_request_limit(mocker: pytest_mock.MockFixture):
     assert result is True
     mock_event_limiter.check_limit.assert_not_called()
 
+    # invalid header
+    mock_event_limiter.reset_mock()
+    result = rate_limiter.check_limit(request=attrs.evolve(request, headers={"header": "va"}))
+    assert result is True
+    mock_event_limiter.check_limit.assert_not_called()
+
     # excessive headers
     mock_event_limiter.reset_mock()
     result = rate_limiter.check_limit(

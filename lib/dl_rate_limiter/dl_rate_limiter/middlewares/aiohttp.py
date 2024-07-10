@@ -28,13 +28,13 @@ class AioHTTPMiddleware:
                 )
             )
             if not result:
-                logger.warning("Request was rate limited")
+                logger.info("Request was rate limited")
                 return aiohttp_web.json_response(
                     status=429,
                     data={"description": "Too Many Requests"},
                 )
         except Exception as exc:
-            logger.warning("Failed to check request limit", exc_info=exc)
+            logger.info("Failed to check request limit", exc_info=exc)
 
         logger.info("No request limit was found")
         return await handler(request)

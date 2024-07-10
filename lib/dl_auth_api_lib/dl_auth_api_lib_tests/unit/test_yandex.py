@@ -15,6 +15,10 @@ from dl_api_commons.client.base import Req
             "app_metrica",
             "https://oauth.yandex.ru/authorize?client_id=app_metrica&redirect_uri=localhost&response_type=code",
         ),
+        (
+            "custom_conn",
+            "https://oauth.yandex.com/authorize?client_id=custom_conn&redirect_uri=localhost&response_type=code",
+        ),
     ],
 )
 async def test_yandex_uri(oauth_app_client, conn_type, resp_uri):
@@ -27,3 +31,15 @@ async def test_yandex_uri(oauth_app_client, conn_type, resp_uri):
     assert resp.status == 200
     assert "uri" in resp.json
     assert resp.json["uri"] == resp_uri
+
+
+@pytest.mark.asyncio
+async def test_request_schema_validation_error(oauth_app_client):
+    resp = await oauth_app_client.make_request(
+        Req(
+            method="get",
+            url="/oauth/uri/yandex?type_of_conn=some_conn",
+            require_ok=False,
+        )
+    )
+    assert resp.status == 400

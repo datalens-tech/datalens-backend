@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-dashsql"
+name = "dl-dashsql"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -11,10 +11,10 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
-datalens-constants = {path = "../../lib/dl_constants"}
-datalens-cache-engine = {path = "../dl_cache_engine"}
-datalens-model-tools = {path = "../dl_model_tools"}
-datalens-utils = {path = "../dl_utils"}
+dl-constants = {path = "../../lib/dl_constants"}
+dl-cache-engine = {path = "../dl_cache_engine"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.13"
 sqlalchemy = ">=1.4.46, <2.0"

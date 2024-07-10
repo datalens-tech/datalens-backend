@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-version"
+name = "dl-version"
 version = "1.0.0"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]

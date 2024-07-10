@@ -20,12 +20,3 @@ class BaseView(web.View, Generic[_BASE_OAUTH_TV]):
         assert conn_type in self.request.app["clients"], f"Unknown connection type: {conn_type}"
         client_settings = self.request.app["clients"][conn_type]
         return self.client_cls.from_settings(client_settings)
-
-
-class PingView(web.View):
-    async def get(self) -> web.Response:
-        return web.json_response(
-            dict(
-                result="PONG",
-            )
-        )

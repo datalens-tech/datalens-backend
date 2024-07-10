@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-file-uploader-api-lib"
+name = "dl-file-uploader-api-lib"
 version = "0.0.0"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -19,22 +19,22 @@ marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 python = ">=3.10, <3.13"
 redis = ">=5.0.1"
-datalens-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-file-uploader-lib = {path = "../dl_file_uploader_lib"}
-datalens-constants = {path = "../dl_constants"}
-datalens-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
-datalens-configs = {path = "../dl_configs"}
-datalens-core = {path = "../dl_core"}
-datalens-task-processor = {path = "../dl_task_processor"}
+dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-file-uploader-lib = {path = "../dl_file_uploader_lib"}
+dl-constants = {path = "../dl_constants"}
+dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
+dl-configs = {path = "../dl_configs"}
+dl-core = {path = "../dl_core"}
+dl-task-processor = {path = "../dl_task_processor"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
-datalens-file-secure-reader-lib = {path = "../dl_file_secure_reader_lib"}
-datalens-testing = {path = "../dl_testing"}
-datalens-core-testing = {path = "../dl_core_testing"}
-datalens-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
+dl-file-secure-reader-lib = {path = "../dl_file_secure_reader_lib"}
+dl-testing = {path = "../dl_testing"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

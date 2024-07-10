@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-connector-greenplum"
+name = "dl-connector-greenplum"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -12,13 +12,15 @@ readme = "README.md"
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
 python = ">=3.10, <3.13"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-constants = {path = "../dl_constants"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-connector-postgresql = {path = "../dl_connector_postgresql"}
-datalens-configs = {path = "../dl_configs"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-core = {path = "../dl_core"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-constants = {path = "../dl_constants"}
+dl-i18n = {path = "../dl_i18n"}
+dl-connector-postgresql = {path = "../dl_connector_postgresql"}
+dl-configs = {path = "../dl_configs"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-core = {path = "../dl_core"}
+asyncpg = ">=0.29.0"
+sqlalchemy = ">=1.4.46, <2.0"
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
@@ -29,7 +31,7 @@ greenplum = "dl_connector_greenplum.core.connector:GreenplumCoreConnector"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
-datalens-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

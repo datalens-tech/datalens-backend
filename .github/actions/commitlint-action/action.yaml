@@ -1,0 +1,25 @@
+name: "Commitlint PR Title"
+description: "Commitlints PR title input according to config"
+
+runs:
+  using: composite
+
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: "22"
+
+    - name: Install Dependencies
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: |
+        npm ci
+
+    - name: Lint Commit
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: |
+        echo "$MESSAGE" | npx commitlint --config ${{ github.action_path }}/src/commitlint.config.js
+      env:
+        MESSAGE: ${{ github.event.pull_request.title }}

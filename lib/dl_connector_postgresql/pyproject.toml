@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-connector-postgresql"
+name = "dl-connector-postgresql"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -17,18 +17,22 @@ psycopg2-binary = ">=2.9.9"
 python = ">=3.10, <3.13"
 python-dateutil = ">=2.8.2"
 sqlalchemy = ">=1.4.46, <2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
-datalens-constants = {path = "../dl_constants"}
-datalens-formula-ref = {path = "../dl_formula_ref"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-formula = {path = "../dl_formula"}
-datalens-configs = {path = "../dl_configs"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-core = {path = "../dl_core"}
-datalens-app-tools = {path = "../dl_app_tools"}
-datalens-core-testing = {path = "../dl_core_testing"}
-datalens-db-testing = {path = "../dl_db_testing"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
+dl-constants = {path = "../dl_constants"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-formula = {path = "../dl_formula"}
+dl-configs = {path = "../dl_configs"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-core = {path = "../dl_core"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-db-testing = {path = "../dl_db_testing"}
+typing-extensions = ">=4.9.0"
+
+[tool.deptry.package_module_name_map]
+psycopg2-binary = "psycopg2"
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
@@ -53,11 +57,11 @@ pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 pytz = ">=2022.7.1"
 shortuuid = ">=1.0.11"
-datalens-api-lib-testing = {path = "../dl_api_lib_testing"}
-datalens-api-client = {path = "../dl_api_client"}
-datalens-formula-testing = {path = "../dl_formula_testing"}
-datalens-query-processing = {path = "../dl_query_processing"}
-datalens-testing = {path = "../dl_testing"}
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-api-client = {path = "../dl_api_client"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-testing = {path = "../dl_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

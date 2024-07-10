@@ -197,6 +197,7 @@ class WorkbookInfo(BIResource):
 
 @ns.route("/connectors/icons")
 class ConnectorIconsList(BIResource):
+    @schematic_request(ns=ns)
     def get(self) -> dict:
         conn_availability = self.get_service_registry().get_connector_availability()
         return dict(icons=conn_availability.list_icons())
@@ -204,6 +205,7 @@ class ConnectorIconsList(BIResource):
 
 @ns.route("/connectors/icons/<string:conn_type>")
 class ConnectorIcon(BIResource):
+    @schematic_request(ns=ns)
     def get(self, conn_type: str) -> dict:
         conn_availability = self.get_service_registry().get_connector_availability()
         return dict(icon=conn_availability.get_icon(conn_type=conn_type))

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "datalens-connector-metrica"
+name = "dl-connector-metrica"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
@@ -12,16 +12,20 @@ attrs = ">=22.2.0"
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.13"
 sqlalchemy = ">=1.4.46, <2.0"
-datalens-api-commons = {path = "../dl_api_commons"}
-datalens-utils = {path = "../dl_utils"}
-datalens-constants = {path = "../dl_constants"}
-datalens-formula-ref = {path = "../dl_formula_ref"}
-datalens-i18n = {path = "../dl_i18n"}
-datalens-formula = {path = "../dl_formula"}
-datalens-configs = {path = "../dl_configs"}
-datalens-api-connector = {path = "../dl_api_connector"}
-datalens-core = {path = "../dl_core"}
-datalens-sqlalchemy-metrica-api = {path = "../dl_sqlalchemy_metrica_api"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-utils = {path = "../dl_utils"}
+dl-constants = {path = "../dl_constants"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-formula = {path = "../dl_formula"}
+dl-configs = {path = "../dl_configs"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-core = {path = "../dl_core"}
+dl-sqlalchemy-metrica-api = {path = "../dl_sqlalchemy_metrica_api"}
+dl-api-lib = {path = "../dl_api_lib"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-app-tools = {path = "../dl_app_tools"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
@@ -40,9 +44,9 @@ metrica = "dl_connector_metrica.formula_ref.plugin:MetricaFormulaRefPlugin"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
-datalens-formula-testing = {path = "../dl_formula_testing"}
-datalens-testing = {path = "../dl_testing"}
-datalens-core-testing = {path = "../dl_core_testing"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-testing = {path = "../dl_testing"}
+dl-core-testing = {path = "../dl_core_testing"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
