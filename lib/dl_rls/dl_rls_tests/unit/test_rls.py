@@ -57,10 +57,9 @@ def test_rls_simple():
     _add_rls_restrictions(rls, field_guid=field_guid, restrictions=[dict(allowed_value="QQQ", subject_id="qwerty")])
 
     assert rls.has_restrictions
-    allow_all_values, allow_userid, allowed_values = rls.get_field_restriction_for_subject(
+    allow_all_values, allow_userid, allowed_values = rls.get_field_restriction_for_user(
         field_guid=field_guid,
-        subject_id="qwerty",
-        subject_type=RLSSubjectType.user,
+        user_id="qwerty",
     )
     assert not allow_all_values
     assert not allow_userid
@@ -256,10 +255,7 @@ def test_rls(entrysets: dict, expected_restrictions: dict):
         _add_rls_restrictions(rls, field_guid, entries)
 
     assert rls.has_restrictions
-    restrictions = {
-        user_id: rls.get_subject_restrictions(subject_type=RLSSubjectType.user, subject_id=user_id)
-        for user_id in expected_restrictions.keys()
-    }
+    restrictions = {user_id: rls.get_user_restrictions(user_id=user_id) for user_id in expected_restrictions.keys()}
     # Map back fields to aliases for readability
     restrictions = {
         user_id: {field_guid: field_restrictions for field_guid, field_restrictions in user_restrictions.items()}

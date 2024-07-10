@@ -377,25 +377,25 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
             assert avatar_id is not None
             if not self._avatar_exists(avatar_id=avatar_id):
                 raise dl_core.exc.UnknownReferencedAvatar(
-                    f"Field {field.title!r} ({field_id}) references unknown source avatar " f"{field.avatar_id}."
+                    f"Field {field.title!r} ({field_id}) references unknown source avatar {field.avatar_id}."
                 )
 
         if not field.valid:
             # FIXME: BI-2714 Investigate if/why this error is happening and return the raise
             # raise exc.InvalidFieldError(
-            LOGGER.error(f"Field {field.title!r} ({field_id}) is invalid " f"and cannot be selected. Error ignored.")
+            LOGGER.error(f"Field {field.title!r} ({field_id}) is invalid and cannot be selected. Error ignored.")
 
         self._ensure_not_unsupported_type(field)
         if not block_spec.allow_measure_fields:
             self._ensure_not_measure(field)
 
-    def _make_rls_filter_specs(self, subject_type: RLSSubjectType) -> List[FilterFieldSpec]:
-        subject_id = self._rci.user_id
-        if not subject_type or not subject_id:
-            raise Exception("No subject to use in RLS")
+    def _make_rls_filter_specs(self) -> List[FilterFieldSpec]:
+        user_id = self._rci.user_id
+        if not user_id:
+            raise RuntimeError("No subject to use in RLS")
 
         result: List[FilterFieldSpec] = []
-        restrictions = self._dataset.rls.get_subject_restrictions(subject_type=subject_type, subject_id=subject_id)
+        restrictions = self._dataset.rls.get_user_restrictions(user_id=user_id)
         for field_guid, values in restrictions.items():
             result.append(
                 FilterFieldSpec(
@@ -405,7 +405,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
                     anonymous=True,
                 )
             )
-        self._log_info("RLS filters for %s %s: %s", subject_type.name, subject_id, result)
+        self._log_info("RLS filters for user %s: %s", user_id, result)
         return result
 
     def make_phantom_select_ids(
@@ -429,7 +429,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
             )
 
         if not block_spec.disable_rls:
-            filter_specs += self._make_rls_filter_specs(subject_type=RLSSubjectType.user)
+            filter_specs += self._make_rls_filter_specs()
 
         return filter_specs
 
