@@ -240,6 +240,7 @@ class DataSourceCreatedVia(DynamicEnum):
 
 class RLSSubjectType(Enum):
     user = "user"  # `{value}: {login}` meaning `value allowed for user {login}`
+    group = "group"  # `{value}: @group:{id}` meaning `value allowed for every user in group`
     all = "all"  # `{value}: *` meaning 'value allowed for all subjects'
     userid = "userid"  # 'userid: userid' meaning 'filter by `field = {userid}`'
     unknown = "unknown"  # placeholder, should not be normally used.
