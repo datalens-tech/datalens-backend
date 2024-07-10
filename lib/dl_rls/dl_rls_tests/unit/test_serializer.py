@@ -10,8 +10,10 @@ from dl_rls.testing.testing_data import (
 
 
 def test_group_names_by_account_type():
-    account_types = FieldRLSSerializer._group_subject_names_by_type(["@sa:123", "@group:g" "user1", "user2", "@sa:456"])
-    assert account_types == FieldRLSSerializer.AccountGroups(["user1", "user2"], ["@sa:123", "@sa:456"], ["@group:g"])
+    account_types = FieldRLSSerializer._group_subject_names_by_type(
+        ["@sa:123", "@group:gg", "user1", "user2", "@sa:456"]
+    )
+    assert account_types == FieldRLSSerializer.AccountGroups(["user1", "user2"], ["@sa:123", "@sa:456"], ["@group:gg"])
 
 
 def test_parse_sa_str():
@@ -20,8 +22,8 @@ def test_parse_sa_str():
 
 
 def test_parse_group_str():
-    parsed = FieldRLSSerializer._parse_group_str("@group:g")
-    assert parsed == RLSSubject(subject_type=RLSSubjectType.group, subject_id="g", subject_name="@group:g")
+    parsed = FieldRLSSerializer._parse_group_str("@group:gg")
+    assert parsed == RLSSubject(subject_type=RLSSubjectType.group, subject_id="gg", subject_name="@group:gg")
 
 
 @pytest.mark.parametrize("case", RLS_CONFIG_CASES, ids=[c["name"] for c in RLS_CONFIG_CASES])
