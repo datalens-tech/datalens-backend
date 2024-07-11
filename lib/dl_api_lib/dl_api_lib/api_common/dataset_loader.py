@@ -14,7 +14,6 @@ from dl_api_lib import exc
 from dl_api_lib.dataset.utils import allow_rls_for_dataset
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_app_tools.profiling_base import generic_profiler
-from dl_constants.enums import RLSSubjectType
 from dl_constants.exc import (
     DEFAULT_ERR_CODE_API_PREFIX,
     GLOBAL_ERR_PREFIX,
@@ -65,13 +64,6 @@ EMPTY_DS_UPDATE_INFO = DatasetUpdateInfo(
 @attr.s
 class DatasetApiLoader:
     _service_registry: ApiServiceRegistry = attr.ib(kw_only=True)
-    _subject_resolver: Optional[BaseSubjectResolver] = attr.ib(init=False, default=None)
-
-    @property
-    def subject_resolver(self) -> BaseSubjectResolver:
-        if self._subject_resolver is None:
-            self._subject_resolver = await_sync(self._service_registry.get_subject_resolver())
-        return self._subject_resolver
 
     def update_dataset_from_body(
         self,
@@ -286,6 +278,11 @@ class DatasetApiLoader:
         if not allow_rls_for_dataset(dataset):
             return
 
+        subject_resolver = None
+        if allow_rls_change:
+            # E.g. dataset editing in sync api
+            subject_resolver = await_sync(self._service_registry.get_subject_resolver())
+
         for field in dataset.result_schema:
             rls_text_config = body["rls"].get(field.guid, "")
             # TODO: split into "pre-parse all fields", "fetch all names", "make field results",
@@ -294,7 +291,7 @@ class DatasetApiLoader:
                 rls_entries = FieldRLSSerializer.from_text_config(
                     rls_text_config,
                     field.guid,
-                    subject_resolver=self.subject_resolver,
+                    subject_resolver=subject_resolver,
                 )
                 dataset.rls.items = [rlse for rlse in dataset.rls.items if rlse.field_guid != field.guid]
                 dataset.rls.items.extend(rls_entries)
@@ -314,9 +311,6 @@ class DatasetApiLoader:
                         "For this feature to work, save dataset after editing the RLS config.", details=dict()
                     )
                 # otherwise no effective config changes (that are worth checking in preview)
-
-        if any(item.subject.subject_type == RLSSubjectType.group for item in dataset.rls.items):
-            dataset.rls.allowed_groups = set(self.subject_resolver.get_groups_by_subject(self._service_registry.rci))
 
     @classmethod
     def _update_dataset_obligatory_filters_from_body(cls, dataset: Dataset, body: dict) -> str:  # type: ignore  # TODO: fix
