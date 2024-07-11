@@ -40,7 +40,10 @@ from dl_i18n.localizer_base import (
 )
 from dl_pivot.base.transformer_factory import PivotTransformerFactory
 from dl_pivot.plugin_registration import get_pivot_transformer_factory_cls
-from dl_rls.subject_resolver import BaseSubjectResolver, NotFoundSubjectResolver
+from dl_rls.subject_resolver import (
+    BaseSubjectResolver,
+    NotFoundSubjectResolver,
+)
 from dl_task_processor.arq_wrapper import create_arq_redis_settings
 
 

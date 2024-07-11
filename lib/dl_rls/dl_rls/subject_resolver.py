@@ -4,7 +4,10 @@ import attr
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_constants.enums import RLSSubjectType
-from dl_rls.models import RLSSubject, RLS_FAILED_USER_NAME_PREFIX
+from dl_rls.models import (
+    RLS_FAILED_USER_NAME_PREFIX,
+    RLSSubject,
+)
 
 
 class BaseSubjectResolver(metaclass=abc.ABCMeta):
