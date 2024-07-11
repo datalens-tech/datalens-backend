@@ -272,11 +272,7 @@ class FieldRLSSerializer:
             name_to_subject = cls._resolve_subject_names(all_names_lst, subject_resolver=subject_resolver)
         else:
             name_to_subject = {
-                name: RLSSubject(
-                    subject_type=RLSSubjectType.unknown,
-                    subject_id="",
-                    subject_name=name,
-                )
+                name: RLSSubject(subject_type=RLSSubjectType.unknown, subject_id="", subject_name=name)
                 for name in all_names_lst
             }
         # `resolve_subjects`-independent hack

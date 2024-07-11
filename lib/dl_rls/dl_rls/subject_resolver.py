@@ -1,7 +1,10 @@
 import abc
 
+import attr
+
 from dl_api_commons.base_models import RequestContextInfo
-from dl_rls.models import RLSSubject
+from dl_constants.enums import RLSSubjectType
+from dl_rls.models import RLSSubject, RLS_FAILED_USER_NAME_PREFIX
 
 
 class BaseSubjectResolver(metaclass=abc.ABCMeta):
@@ -12,3 +15,19 @@ class BaseSubjectResolver(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_groups_by_subject(self, rci: RequestContextInfo) -> list[str]:
         raise NotImplementedError
+
+
+@attr.s
+class NotFoundSubjectResolver(BaseSubjectResolver):
+    def get_subjects_by_names(self, names: list[str]) -> list[RLSSubject]:
+        return [
+            RLSSubject(
+                subject_id="",
+                subject_type=RLSSubjectType.notfound,
+                subject_name=RLS_FAILED_USER_NAME_PREFIX + name,
+            )
+            for name in names
+        ]
+
+    def get_groups_by_subject(self, rci: RequestContextInfo) -> list[str]:
+        return []

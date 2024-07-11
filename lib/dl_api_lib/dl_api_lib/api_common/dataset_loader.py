@@ -37,7 +37,6 @@ from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 import dl_rls.exc as rls_exc
 from dl_rls.serializer import FieldRLSSerializer
-from dl_rls.subject_resolver import BaseSubjectResolver
 from dl_utils.aio import await_sync
 
 

@@ -12,7 +12,6 @@ from typing import (
 
 import attr
 
-from dl_api_commons.base_models import RequestContextInfo
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import AppSettings
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
@@ -25,10 +24,7 @@ from dl_api_lib.service_registry.supported_functions_manager import SupportedFun
 from dl_cache_engine.primitives import CacheTTLConfig
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.enums import RequiredService
-from dl_constants.enums import (
-    ConnectionType,
-    RLSSubjectType,
-)
+from dl_constants.enums import ConnectionType
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.file_uploader_client_factory import FileUploaderSettings
 from dl_core.services_registry.inst_specific_sr import (
@@ -44,11 +40,7 @@ from dl_i18n.localizer_base import (
 )
 from dl_pivot.base.transformer_factory import PivotTransformerFactory
 from dl_pivot.plugin_registration import get_pivot_transformer_factory_cls
-from dl_rls.models import (
-    RLS_FAILED_USER_NAME_PREFIX,
-    RLSSubject,
-)
-from dl_rls.subject_resolver import BaseSubjectResolver
+from dl_rls.subject_resolver import BaseSubjectResolver, NotFoundSubjectResolver
 from dl_task_processor.arq_wrapper import create_arq_redis_settings
 
 
@@ -57,22 +49,6 @@ if TYPE_CHECKING:
 
 
 LOGGER = logging.getLogger(__name__)
-
-
-@attr.s
-class NotFoundSubjectResolver(BaseSubjectResolver):
-    def get_subjects_by_names(self, names: list[str]) -> list[RLSSubject]:
-        return [
-            RLSSubject(
-                subject_id="",
-                subject_type=RLSSubjectType.notfound,
-                subject_name=RLS_FAILED_USER_NAME_PREFIX + name,
-            )
-            for name in names
-        ]
-
-    def get_groups_by_subject(self, rci: RequestContextInfo) -> list[str]:
-        return []
 
 
 @attr.s
