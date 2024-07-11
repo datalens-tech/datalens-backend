@@ -134,7 +134,7 @@ class TestingSubjectResolver(BaseSubjectResolver):
         return subjects
 
     def get_groups_by_subject(self, rci: RequestContextInfo) -> list[str]:
-        return []
+        return ["_the_tests_asyncapp_group_"] if rci.user_id == "_the_tests_asyncapp_user_id_" else []
 
 
 @attr.s

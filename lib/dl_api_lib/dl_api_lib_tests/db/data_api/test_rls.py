@@ -1,5 +1,3 @@
-import re
-
 import pytest
 
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
@@ -9,12 +7,23 @@ from dl_rls.testing.testing_data import load_rls_config
 
 
 class TestRLS(DefaultApiTestBase):
-    @pytest.fixture(scope="function")
-    def dataset_with_rls(self, control_api, saved_dataset):
+    @pytest.fixture(scope="function", params=[("dl_api_lib_test_config", False), ("dl_api_lib_group_config", True)])
+    def dataset_with_rls(self, request, monkeypatch, control_api, saved_dataset):
+        def get_subjects_by_names_mock(self, names):
+            raise RuntimeError("Shouldn't be invoked in preview")
+
+        def get_groups_by_subject_mock(self, rci):
+            raise RuntimeError("Shouldn't be invoked without groups in config")
+
         ds = saved_dataset
         field_guid = ds.result_schema[1].id
-        ds.rls = {field_guid: load_rls_config("dl_api_lib_test_config")}
+        config_file, contains_groups = request.param
 
+        # monkeypatch.setattr(TestingSubjectResolver, "get_subjects_by_names", get_subjects_by_names_mock)
+        # if not contains_groups:
+        #     monkeypatch.setattr(TestingSubjectResolver, "get_groups_by_subject", get_groups_by_subject_mock)
+
+        ds.rls = {field_guid: load_rls_config(config_file)}
         control_api.save_dataset(ds, fail_ok=False)
         resp = control_api.load_dataset(ds)
         assert resp.status_code == 200, resp.json
@@ -37,7 +46,7 @@ class TestRLS(DefaultApiTestBase):
         rls_data = [row[1] for row in get_data_rows(resp)]
         assert rls_data
         # ensure all values from the RLS config are presented and no other values are
-        assert set(rls_data) == set(re.findall("'(.+?)'", load_rls_config("dl_api_lib_test_config")))
+        assert set(rls_data) == {'Naperville', 'Philadelphia'}
 
     def test_preview_with_updated_rls(self, dataset_with_rls, data_api, monkeypatch):
         resp = self._get_rls_preview_response(dataset_with_rls, data_api, monkeypatch, modify_rls=True)

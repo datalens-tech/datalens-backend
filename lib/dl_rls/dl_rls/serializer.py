@@ -192,7 +192,7 @@ class FieldRLSSerializer:
         for sa_str in service_accounts:
             sa_subject: RLSSubject = cls._parse_sa_str(sa_str)
             name_to_subject[sa_subject.subject_name] = sa_subject
-        for group_str in service_accounts:
+        for group_str in groups:
             group_subject: RLSSubject = cls._parse_group_str(group_str)
             name_to_subject[group_subject.subject_name] = group_subject
         return name_to_subject
