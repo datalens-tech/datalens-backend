@@ -1,0 +1,5 @@
+'Москва': @group:g1, user1
+'Санкт-Петербург': user1
+*: @group:g2, @group:g3, user2, user3
+'Омск': @group:g1, user1
+'Владивосток': @group:g1
