@@ -1611,7 +1611,7 @@ dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
-pymysql = ">=1.1.0"
+pymysql = ">=1.1.1"
 sqlalchemy = ">=1.4.46, <2.0"
 
 [package.source]
@@ -2507,7 +2507,7 @@ develop = false
 
 [package.dependencies]
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
-pymysql = ">=1.1.0"
+pymysql = ">=1.1.1"
 sqlalchemy = ">=1.4.46, <2.0"
 
 [package.source]
@@ -5244,13 +5244,13 @@ tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
 [[package]]
 name = "pymysql"
-version = "1.1.0"
+version = "1.1.1"
 description = "Pure Python MySQL Driver"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "PyMySQL-1.1.0-py3-none-any.whl", hash = "sha256:8969ec6d763c856f7073c4c64662882675702efcb114b4bcbb955aea3a069fa7"},
-    {file = "PyMySQL-1.1.0.tar.gz", hash = "sha256:4f13a7df8bf36a51e81dd9f3605fede45a4878fe02f9236349fd82a3f0612f96"},
+    {file = "PyMySQL-1.1.1-py3-none-any.whl", hash = "sha256:4de15da4c61dc132f4fb9ab763063e693d521a80fd0e87943b9a453dd4c19d6c"},
+    {file = "pymysql-1.1.1.tar.gz", hash = "sha256:e127611aaf2b417403c60bf4dc570124aeb4a57f5f37b8e95ae399a42f904cd0"},
 ]
 
 [package.extras]
@@ -6967,4 +6967,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "468027d96a84d5cebec42232770865c46a7266fd5671210c94f9d8a22db0b173"
+content-hash = "d620046f6c2dd5d3669773ec37a5d0053a67be07c6b3ac456903abce171fa1de"

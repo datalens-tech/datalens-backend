@@ -9,7 +9,7 @@ license = "Apache 2.0"
 
 
 [tool.poetry.dependencies]
-pymysql = ">=1.1.0"
+pymysql = ">=1.1.1"
 python = ">=3.10, <3.13"
 sqlalchemy = ">=1.4.46, <2.0"
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
