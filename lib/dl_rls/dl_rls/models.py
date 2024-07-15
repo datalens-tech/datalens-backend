@@ -36,12 +36,4 @@ class RLSEntry:
         return rls_entry
 
 
-# Special type subject that denotes 'all subjects'.
-RLS_ALL_SUBJECT_NAME = "*"
-RLS_ALL_SUBJECT = RLSSubject(
-    subject_type=RLSSubjectType.all, subject_id=RLS_ALL_SUBJECT_NAME, subject_name=RLS_ALL_SUBJECT_NAME
-)
 RLS_FAILED_USER_NAME_PREFIX = "!FAILED_"
-# Special type subject that denotes 'insert userid'.
-RLS_USERID_SUBJECT_NAME = "userid"
-RLS_USERID_SUBJECT = RLSSubject(subject_type=RLSSubjectType.userid, subject_id="", subject_name=RLS_USERID_SUBJECT_NAME)

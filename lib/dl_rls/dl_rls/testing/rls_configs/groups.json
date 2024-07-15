@@ -1,0 +1,42 @@
+[
+    {
+        "allowed_value": "Москва",
+        "subject": {"subject_type": "group", "subject_id": "g1", "subject_name": "@group:g1"}
+    },
+    {
+        "allowed_value": "Москва",
+        "subject": {"subject_type": "user", "subject_id": "1120000000000529", "subject_name": "user1"}
+    },
+    {
+        "allowed_value": "Санкт-Петербург",
+        "subject": {"subject_type": "user", "subject_id": "1120000000000529", "subject_name": "user1"}
+    },
+    {
+        "pattern_type": "all", "allowed_value": null,
+        "subject": {"subject_type": "group", "subject_id": "g2", "subject_name": "@group:g2"}
+    },
+    {
+        "pattern_type": "all", "allowed_value": null,
+        "subject": {"subject_type": "group", "subject_id": "g3", "subject_name": "@group:g3"}
+    },
+    {
+        "pattern_type": "all", "allowed_value": null,
+        "subject": {"subject_type": "user", "subject_id": "1120000000000251", "subject_name": "user2"}
+    },
+    {
+        "pattern_type": "all", "allowed_value": null,
+        "subject": {"subject_type": "user", "subject_id": "1120000000013893", "subject_name": "user3"}
+    },
+    {
+        "allowed_value": "Омск",
+        "subject": {"subject_type": "group", "subject_id": "g1", "subject_name": "@group:g1"}
+    },
+    {
+        "allowed_value": "Омск",
+        "subject": {"subject_type": "user", "subject_id": "1120000000000529", "subject_name": "user1"}
+    },
+    {
+        "allowed_value": "Владивосток",
+        "subject": {"subject_type": "group", "subject_id": "g1", "subject_name": "@group:g1"}
+    }
+]

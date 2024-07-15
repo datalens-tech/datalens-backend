@@ -56,7 +56,10 @@ from dl_app_tools.profiling_base import (
     generic_profiler,
     generic_profiler_async,
 )
-from dl_constants.enums import DataSourceRole
+from dl_constants.enums import (
+    DataSourceRole,
+    RLSSubjectType,
+)
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.base import DataSource
 from dl_core.data_source.collection import DataSourceCollectionFactory
@@ -260,6 +263,13 @@ class DatasetDataBaseView(BaseView):
             return None
         await mutation_cache.save_mutation_cache(dataset, mutation_key)
 
+    async def resolve_rls_groups_for_dataset(self, services_registry: ApiServiceRegistry) -> None:
+        if not any(item.subject.subject_type == RLSSubjectType.group for item in self.dataset.rls.items):
+            return  # no groups in the RLS config, no need to resolve
+
+        subject_resolver = await services_registry.get_subject_resolver()
+        self.dataset.rls.allowed_groups = set(subject_resolver.get_groups_by_subject(services_registry.rci))
+
     async def prepare_dataset_for_request(
         self,
         req_model: DataRequestModel,
@@ -279,12 +289,14 @@ class DatasetDataBaseView(BaseView):
                 cached_dataset = await self.try_get_dataset_from_cache(mutation_cache, mutation_key)
                 if cached_dataset:
                     self.dataset = cached_dataset
-                    return loader.update_dataset_from_body(
+                    update_info = loader.update_dataset_from_body(
                         dataset=self.dataset,
                         us_manager=us_manager,
                         dataset_data=req_model.dataset,
                         allow_rls_change=allow_rls_change,
                     )
+                    await self.resolve_rls_groups_for_dataset(services_registry)
+                    return update_info
 
             update_info = loader.update_dataset_from_body(
                 dataset=self.dataset,
@@ -292,6 +304,7 @@ class DatasetDataBaseView(BaseView):
                 dataset_data=req_model.dataset,
                 allow_rls_change=allow_rls_change,
             )
+            await self.resolve_rls_groups_for_dataset(services_registry)
             await us_manager.load_dependencies(self.dataset)
 
             services_registry = self.dl_request.services_registry

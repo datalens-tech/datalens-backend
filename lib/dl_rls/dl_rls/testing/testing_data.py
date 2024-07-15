@@ -38,7 +38,6 @@ def load_rls(name: str) -> list[RLSEntry]:
 RLS_CONFIG_CASES = [
     dict(
         name="simple",
-        field_guid="c139ac51-a519-49a9-996a-49c7656fe56b",
         config=load_rls_config("simple"),
         config_to_compare=load_rls_config("simple_to_compare"),
         rls_entries=load_rls("simple.json"),
@@ -47,14 +46,18 @@ RLS_CONFIG_CASES = [
     ),
     dict(
         name="wildcards",
-        field_guid="c139ac51-a519-49a9-996a-49c7656fe56b",
         config=load_rls_config("wildcards"),
         config_to_compare=load_rls_config("wildcards_to_compare"),
         rls_entries=load_rls("wildcards.json"),
     ),
     dict(
+        name="groups",
+        config=load_rls_config("groups"),
+        config_to_compare=load_rls_config("groups_to_compare"),
+        rls_entries=load_rls("groups.json"),
+    ),
+    dict(
         name="missing_login",
-        field_guid="c139ac51-a519-49a9-996a-49c7656fe56b",
         config=load_rls_config("missing_login"),
         config_to_compare=load_rls_config("missing_login_to_compare"),
         rls_entries=load_rls("missing_login.json"),
@@ -69,8 +72,8 @@ def config_to_comparable(conf: str) -> set[tuple]:
 
 
 def check_text_config_to_rls_entries(case: dict, subject_resolver: BaseSubjectResolver) -> None:
-    field_guid, config, expected_rls_entries = case["field_guid"], case["config"], case["rls_entries"]
-    entries = FieldRLSSerializer.from_text_config(config, field_guid, subject_resolver=subject_resolver)
+    config, expected_rls_entries = case["config"], case["rls_entries"]
+    entries = FieldRLSSerializer.from_text_config(config, "field_guid", subject_resolver=subject_resolver)
 
     assert len(entries) == len(expected_rls_entries)
 

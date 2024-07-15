@@ -8,6 +8,7 @@ import attr
 import flask
 
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
+from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.flask.middlewares.trust_auth import TrustAuthService
 from dl_api_lib.app.control_api.app import ControlApiAppFactory
 from dl_api_lib.app.control_api.app import EnvSetupResult as ControlApiEnvSetupResult
@@ -131,6 +132,9 @@ class TestingSubjectResolver(BaseSubjectResolver):
             subjects.append(subject)
 
         return subjects
+
+    def get_groups_by_subject(self, rci: RequestContextInfo) -> list[str]:
+        return ["_the_tests_asyncapp_group_"] if rci.user_id == "_the_tests_asyncapp_user_id_" else []
 
 
 @attr.s
