@@ -26,7 +26,7 @@ class FlaskMiddleware:
             logger.info("No request limit was found")
             return None
 
-        logger.info("Request was rate limited")
+        logger.info("Request was rate limited", extra={"request": request})
         return flask.Response(
             status=429,
             response={"description": "Too Many Requests"},

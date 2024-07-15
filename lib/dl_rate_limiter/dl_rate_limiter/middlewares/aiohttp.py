@@ -30,7 +30,7 @@ class AioHTTPMiddleware:
             logger.info("No request limit was found")
             return await handler(request)
 
-        logger.info("Request was rate limited")
+        logger.info("Request was rate limited", extra={"request": rate_limiter_request})
         return aiohttp_web.json_response(
             status=429,
             data={"description": "Too Many Requests"},
