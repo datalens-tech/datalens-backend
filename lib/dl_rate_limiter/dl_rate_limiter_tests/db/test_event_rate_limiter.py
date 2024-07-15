@@ -9,23 +9,26 @@ import redis.asyncio
 import dl_rate_limiter
 
 
+DEFAULT_WINDOW_MS = 1000
+
+
 class Timer:
     def __init__(self):
         self._start = time.time()
 
-    def get_time_left(self, seconds: float) -> float:
-        time_left = seconds - (time.time() - self._start)
-        return max(time_left, 0)
+    def get_milliseconds_left(self, milliseconds: float) -> float:
+        milliseconds_left = milliseconds - (time.time() - self._start) * 1000
+        return max(milliseconds_left, 0)
 
 
 class SyncTimer(Timer):
-    def sleep_from_start(self, seconds: float):
-        time.sleep(self.get_time_left(seconds))
+    def sleep_from_start(self, milliseconds: float):
+        time.sleep(self.get_milliseconds_left(milliseconds) / 1000)
 
 
 class AsyncTimer(Timer):
-    async def sleep_from_start(self, seconds: float):
-        await asyncio.sleep(self.get_time_left(seconds))
+    async def sleep_from_start(self, milliseconds: float):
+        await asyncio.sleep(self.get_milliseconds_left(milliseconds) / 1000)
 
 
 def test_sync_load_function(sync_redis_client: redis.Redis):
@@ -106,7 +109,9 @@ def test_sync_check_event_limit(sync_redis_client: redis.Redis):
 
     # checking 10 events with limit 5, expecting 5 to pass
     with ThreadPool(10) as pool:
-        results = pool.map(lambda _: rate_limiter.check_limit(event_key="key", limit=5, window_ms=1000), range(10))
+        results = pool.map(
+            lambda _: rate_limiter.check_limit(event_key="key", limit=5, window_ms=DEFAULT_WINDOW_MS), range(10)
+        )
     assert sum(1 if result else 0 for result in results) == 5
 
 
@@ -117,7 +122,7 @@ async def test_async_check_event_limit(async_redis_client: redis.asyncio.Redis):
     await rate_limiter.prepare()
 
     # checking 10 events with limit 5, expecting 5 to pass
-    tasks = [rate_limiter.check_limit(event_key="key", limit=5, window_ms=1000) for _ in range(10)]
+    tasks = [rate_limiter.check_limit(event_key="key", limit=5, window_ms=DEFAULT_WINDOW_MS) for _ in range(10)]
     results = await asyncio.gather(*tasks)
     assert sum(1 if result else 0 for result in results) == 5
 
@@ -131,15 +136,19 @@ def test_sync_check_event_limit_window_expiration(sync_redis_client: redis.Redis
 
     # checking 10 events with limit 5, expecting 5 to pass
     with ThreadPool(10) as pool:
-        results = pool.map(lambda _: rate_limiter.check_limit(event_key="key", limit=5, window_ms=10), range(10))
+        results = pool.map(
+            lambda _: rate_limiter.check_limit(event_key="key", limit=5, window_ms=DEFAULT_WINDOW_MS), range(10)
+        )
     assert sum(1 if result else 0 for result in results) == 5
 
     # waiting for window to expire
-    timer.sleep_from_start(0.02)
+    timer.sleep_from_start(DEFAULT_WINDOW_MS * 2)
 
     # checking 10 events with limit 5, expecting 5 to pass
     with ThreadPool(10) as pool:
-        results = pool.map(lambda _: rate_limiter.check_limit(event_key="key", limit=5, window_ms=10), range(10))
+        results = pool.map(
+            lambda _: rate_limiter.check_limit(event_key="key", limit=5, window_ms=DEFAULT_WINDOW_MS), range(10)
+        )
     assert sum(1 if result else 0 for result in results) == 5
 
 
@@ -151,15 +160,15 @@ async def test_async_check_event_limit_window_expiration(async_redis_client: red
 
     timer = AsyncTimer()
     # checking 10 events with limit 5, expecting 5 to pass
-    tasks = [rate_limiter.check_limit(event_key="key", limit=5, window_ms=10) for _ in range(10)]
+    tasks = [rate_limiter.check_limit(event_key="key", limit=5, window_ms=DEFAULT_WINDOW_MS) for _ in range(10)]
     results = await asyncio.gather(*tasks)
     assert sum(1 if result else 0 for result in results) == 5
 
     # waiting for window to expire
-    await timer.sleep_from_start(0.02)
+    await timer.sleep_from_start(DEFAULT_WINDOW_MS * 2)
 
     # checking 10 events with limit 5, expecting 5 to pass
-    tasks = [rate_limiter.check_limit(event_key="key", limit=5, window_ms=10) for _ in range(10)]
+    tasks = [rate_limiter.check_limit(event_key="key", limit=5, window_ms=DEFAULT_WINDOW_MS) for _ in range(10)]
     results = await asyncio.gather(*tasks)
     assert sum(1 if result else 0 for result in results) == 5
 
@@ -172,23 +181,29 @@ def test_sync_check_event_limit_window_sliding(sync_redis_client: redis.Redis):
     timer = SyncTimer()
     # checking 5 events with limit 10, expecting all to pass
     with ThreadPool(5) as pool:
-        results = pool.map(lambda _: rate_limiter.check_limit(event_key="key", limit=10, window_ms=60), range(5))
+        results = pool.map(
+            lambda _: rate_limiter.check_limit(event_key="key", limit=10, window_ms=DEFAULT_WINDOW_MS), range(5)
+        )
     assert sum(1 if result else 0 for result in results) == 5
 
-    # waiting for window to slide
-    timer.sleep_from_start(0.035)
+    # waiting for window to slide part way
+    timer.sleep_from_start(DEFAULT_WINDOW_MS * 0.6)
 
     # checking 10 events with limit 10, expecting 5 to pass
     with ThreadPool(10) as pool:
-        results = pool.map(lambda _: rate_limiter.check_limit(event_key="key", limit=10, window_ms=60), range(10))
+        results = pool.map(
+            lambda _: rate_limiter.check_limit(event_key="key", limit=10, window_ms=DEFAULT_WINDOW_MS), range(10)
+        )
     assert sum(1 if result else 0 for result in results) == 5
 
-    # waiting for window to slide
-    timer.sleep_from_start(0.070)
+    # waiting for window to slide part way
+    timer.sleep_from_start(DEFAULT_WINDOW_MS * 1.1)
 
     # checking 10 events with limit 10, expecting 5 to pass
     with ThreadPool(10) as pool:
-        results = pool.map(lambda _: rate_limiter.check_limit(event_key="key", limit=10, window_ms=60), range(10))
+        results = pool.map(
+            lambda _: rate_limiter.check_limit(event_key="key", limit=10, window_ms=DEFAULT_WINDOW_MS), range(10)
+        )
     assert sum(1 if result else 0 for result in results) == 5
 
 
@@ -200,22 +215,22 @@ async def test_async_check_event_limit_window_sliding(async_redis_client: redis.
 
     timer = AsyncTimer()
     # checking 5 events with limit 10, expecting all to pass
-    tasks = [rate_limiter.check_limit(event_key="key", limit=10, window_ms=60) for _ in range(5)]
+    tasks = [rate_limiter.check_limit(event_key="key", limit=10, window_ms=DEFAULT_WINDOW_MS) for _ in range(5)]
     results = await asyncio.gather(*tasks)
     assert sum(1 if result else 0 for result in results) == 5
 
-    # waiting for window to slide
-    await timer.sleep_from_start(0.035)
+    # waiting for window to slide part way
+    await timer.sleep_from_start(DEFAULT_WINDOW_MS * 0.6)
 
     # checking 10 events with limit 10, expecting 5 to pass
-    tasks = [rate_limiter.check_limit(event_key="key", limit=10, window_ms=60) for _ in range(10)]
+    tasks = [rate_limiter.check_limit(event_key="key", limit=10, window_ms=DEFAULT_WINDOW_MS) for _ in range(10)]
     results = await asyncio.gather(*tasks)
     assert sum(1 if result else 0 for result in results) == 5
 
-    # waiting for window to slide
-    await timer.sleep_from_start(0.070)
+    # waiting for window to slide part way
+    await timer.sleep_from_start(DEFAULT_WINDOW_MS * 1.1)
 
     # checking 10 events with limit 10, expecting 5 to pass
-    tasks = [rate_limiter.check_limit(event_key="key", limit=10, window_ms=60) for _ in range(10)]
+    tasks = [rate_limiter.check_limit(event_key="key", limit=10, window_ms=DEFAULT_WINDOW_MS) for _ in range(10)]
     results = await asyncio.gather(*tasks)
     assert sum(1 if result else 0 for result in results) == 5
