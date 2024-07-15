@@ -73,6 +73,14 @@ def oauth_app_settings(monkeypatch, config_path):
                 auth_url="https://oauth.yandex.com/authorize?",
                 token_url="https://oauth.yandex.com/token",
             ),
+            gsheets=dict(
+                auth_type="google",
+                conn_type="gsheets",
+                client_id="gsheets_id",
+                client_secret="gsheets_pass",
+                redirect_uri="localhost",
+                scope="https://www.googleapis.com/auth/spreadsheets.readonly",
+            ),
         )
     )
     yield settings
