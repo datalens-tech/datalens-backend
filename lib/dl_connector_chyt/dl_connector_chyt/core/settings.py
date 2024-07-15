@@ -1,3 +1,5 @@
+from typing import Optional
+
 import attr
 
 from dl_configs.connectors_settings import ConnectorSettingsBase
