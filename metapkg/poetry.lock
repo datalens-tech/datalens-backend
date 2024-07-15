@@ -1858,7 +1858,6 @@ dl-model-tools = {path = "../dl_model_tools"}
 dl-rls = {path = "../dl_rls"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-utils = {path = "../dl_utils"}
-dnspython = ">=2.2.1"
 Flask = ">=2.2.5"
 grpcio = ">=1.60.0"
 jaeger-client = ">=4.8.0"
@@ -2684,25 +2683,6 @@ flask = ["flask (>=2.2.5)"]
 [package.source]
 type = "directory"
 url = "../lib/dl_zitadel"
-
-[[package]]
-name = "dnspython"
-version = "2.2.1"
-description = "DNS toolkit"
-optional = false
-python-versions = ">=3.6,<4.0"
-files = [
-    {file = "dnspython-2.2.1-py3-none-any.whl", hash = "sha256:a851e51367fb93e9e1361732c1d60dab63eff98712e503ea7d92e6eccb109b4f"},
-    {file = "dnspython-2.2.1.tar.gz", hash = "sha256:0f7569a4a6ff151958b64304071d370daa3243d15941a7beedf0c9fe5105603e"},
-]
-
-[package.extras]
-curio = ["curio (>=1.2,<2.0)", "sniffio (>=1.1,<2.0)"]
-dnssec = ["cryptography (>=2.6,<37.0)"]
-doh = ["h2 (>=4.1.0)", "httpx (>=0.21.1)", "requests (>=2.23.0,<3.0.0)", "requests-toolbelt (>=0.9.1,<0.10.0)"]
-idna = ["idna (>=2.1,<4.0)"]
-trio = ["trio (>=0.14,<0.20)"]
-wmi = ["wmi (>=1.5.1,<2.0.0)"]
 
 [[package]]
 name = "docker"
@@ -6967,4 +6947,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "d620046f6c2dd5d3669773ec37a5d0053a67be07c6b3ac456903abce171fa1de"
+content-hash = "687fcd96fbbbb795f5f4c860914da11ac8538e7c8675a2fc5671341f123cc7eb"
