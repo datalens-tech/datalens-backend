@@ -1,6 +1,9 @@
+import urllib.parse
+
 import pytest
 
 from dl_api_commons.client.base import Req
+from dl_constants.api_constants import DLHeadersCommon
 
 
 @pytest.mark.asyncio
@@ -43,3 +46,18 @@ async def test_request_schema_validation_error(oauth_app_client):
         )
     )
     assert resp.status == 400
+
+
+@pytest.mark.asyncio
+async def test_origin(oauth_app_client):
+    origin = "https://example.com"
+    resp = await oauth_app_client.make_request(
+        Req(
+            method="get",
+            url="/oauth/uri/yandex?conn_type=metrica",
+            extra_headers={DLHeadersCommon.ORIGIN: origin},
+        )
+    )
+    assert resp.status == 200
+    assert "uri" in resp.json
+    assert urllib.parse.quote_plus(origin) in resp.json["uri"]

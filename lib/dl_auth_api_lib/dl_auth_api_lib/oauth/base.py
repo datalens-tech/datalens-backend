@@ -14,7 +14,7 @@ _TBaseOAuthClient = TypeVar("_TBaseOAuthClient", bound=BaseOAuthClient)
 
 class BaseOAuth(Generic[_TBaseOAuthClient], abc.ABC):
     @abc.abstractmethod
-    def get_auth_uri(self) -> str:
+    def get_auth_uri(self, origin: str | None = None) -> str:
         raise NotImplementedError
 
     @abc.abstractmethod

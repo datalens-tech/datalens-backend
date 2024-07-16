@@ -35,10 +35,10 @@ class YandexOAuth(BaseOAuth):
     auth_url: str = attr.ib(default=_AUTH_URL)
     token_url: str = attr.ib(default=_TOKEN_URL)
 
-    def get_auth_uri(self) -> str:
+    def get_auth_uri(self, origin: str | None = None) -> str:
         params = {
             "client_id": self.client_id,
-            "redirect_uri": self.redirect_uri,
+            "redirect_uri": origin or self.redirect_uri,
             "response_type": "code",
             "scope": self.scope,
         }
