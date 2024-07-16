@@ -17,11 +17,13 @@ from dl_api_commons.sentry_config import (
     configure_sentry_for_aiohttp,
 )
 from dl_auth_api_lib.error_handler import OAuthApiErrorHandler
+from dl_auth_api_lib.oauth.google import GoogleOAuthClient
 from dl_auth_api_lib.oauth.yandex import YandexOAuthClient
 from dl_auth_api_lib.settings import (
     AuthAPISettings,
     register_auth_client,
 )
+from dl_auth_api_lib.views import google as google_views
 from dl_auth_api_lib.views import yandex as yandex_views
 from dl_core.aio.ping_view import PingView
 
@@ -75,6 +77,9 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
         app.router.add_route("get", "/oauth/uri/yandex", yandex_views.YandexURIView)
         app.router.add_route("post", "/oauth/token/yandex", yandex_views.YandexTokenView)
 
+        app.router.add_route("get", "/oauth/uri/google", google_views.GoogleURIView)
+        app.router.add_route("post", "/oauth/token/google", google_views.GoogleTokenView)
+
         app["settings"] = self._settings
         app["clients"] = self._settings.auth_clients
 
@@ -82,3 +87,4 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
 
 
 register_auth_client("yandex", YandexOAuthClient)
+register_auth_client("google", GoogleOAuthClient)
