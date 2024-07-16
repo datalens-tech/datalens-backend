@@ -1,4 +1,7 @@
-from aiohttp import web
+from aiohttp import (
+    hdrs,
+    web,
+)
 
 from dl_auth_api_lib.oauth.yandex import YandexOAuth
 from dl_auth_api_lib.schemas import yandex as yandex_schemas
@@ -11,7 +14,8 @@ class YandexURIView(BaseView):
     async def get(self) -> web.StreamResponse:
         data = yandex_schemas.YandexUriRequestSchema().load(self.request.query)
         oauth_client = self.get_client(data)
-        uri = oauth_client.get_auth_uri()
+        origin = self.request.headers.get(hdrs.ORIGIN)
+        uri = oauth_client.get_auth_uri(origin=origin)
         return web.json_response(yandex_schemas.YandexUriResponseSchema().dump(dict(uri=uri)))
 
 

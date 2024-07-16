@@ -25,6 +25,7 @@ dl-core = {path = "../dl_core"}
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 datalens-testing = {path = "../dl_testing"}
+dl-constants = {path = "../dl_constants"}
 
 
 [build-system]

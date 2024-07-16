@@ -1,4 +1,7 @@
-from aiohttp import web
+from aiohttp import (
+    hdrs,
+    web,
+)
 
 from dl_auth_api_lib.oauth.google import GoogleOAuth
 from dl_auth_api_lib.schemas import google as google_schemas
@@ -11,7 +14,8 @@ class GoogleURIView(BaseView):
     async def get(self) -> web.StreamResponse:
         data = google_schemas.GoogleUriRequestSchema().load(self.request.query)
         oauth_client = self.get_client(data)
-        uri = oauth_client.get_auth_uri()
+        origin = self.request.headers.get(hdrs.ORIGIN)
+        uri = oauth_client.get_auth_uri(origin=origin)
         return web.json_response(google_schemas.GoogleUriResponseSchema().dump(dict(uri=uri)))
 
 
