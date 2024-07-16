@@ -6,6 +6,10 @@ CONNECTORS:
     CONN_CHYT_PUBLIC_CLIQUES: []
   YDB:
     ENABLE_AUTH_TYPE_PICKER: true
+  FILE:
+    CONN_FILE_CH_HOST: http://db-clickhouse
+    CONN_FILE_CH_PORT: 8123
+    CONN_FILE_CH_USERNAME: default
 CONNECTOR_AVAILABILITY:
   icon_src:
     icon_type: data
@@ -26,6 +30,8 @@ CONNECTOR_AVAILABILITY:
       availability: free
     - conn_type: mssql
       availability: free
+    - availability: free
+      conn_type: file
   visible_connectors: []
 CORS_ALLOWED_HEADERS:
 - Content-Type
@@ -48,3 +54,5 @@ DL_CRY_ACTUAL_KEY_ID: '0'
 DL_CRY_KEYMAP: {}
 SENTRY_DSN_DATASET_API: ''
 SENTRY_ENABLED: false
+S3_ENDPOINT_URL: http://s3-storage:8000
+FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME: dl-file-uploader

@@ -17,6 +17,7 @@ dl-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
 dl-utils = {path = "../../lib/dl_utils"}
 dl-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
 dl-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
+dl-connector-bundle-chs3 = {path = "../../lib/dl_connector_bundle_chs3"}
 dl-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 dl-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
 dl-connector-chyt = {path = "../../lib/dl_connector_chyt"}

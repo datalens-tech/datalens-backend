@@ -200,6 +200,12 @@ dl-control-api = {path = "../app/dl_control_api", develop = true}
 [tool.poetry.group.app_dl_os_data_api.dependencies]
 dl-data-api = {path = "../app/dl_data_api", develop = true}
 
+[tool.poetry.group.app_dl_os_file_uploader_api.dependencies]
+dl-file-uploader-api = {path = "../app/dl_file_uploader_api"}
+
+[tool.poetry.group.app_dl_os_file_uploader_worker.dependencies]
+dl-file-uploader-worker = {path = "../app/dl_file_uploader_worker"}
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

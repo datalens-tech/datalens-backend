@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "dl-file-uploader-worker"
+version = "0.0.0"
+description = ""
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_file_uploader_worker"}]
+license = "Apache 2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+aiohttp = ">=3.9.1"
+attrs = ">=22.2.0"
+gunicorn = ">=21.2.0"
+ipython = ">=8.10.0"
+python = ">=3.10, <3.13"
+dl-core = {path = "../../lib/dl_core"}
+dl-file-uploader-worker-lib = {path = "../../lib/dl_file_uploader_worker_lib"}
+dl-file-secure-reader-lib = {path = "../../lib/dl_file_secure_reader_lib"}
+dl-task-processor = {path = "../../lib/dl_task_processor"}
+dl-version = {path = "../../lib/dl_version"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+[datalens_ci]
+skip_test = true
+
+
+[tool.poetry.scripts]
+file-uploader-worker = "dl_file_uploader_worker.app:run_standalone_worker"
+file-uploader-worker-health-check = "dl_file_uploader_worker.app:run_health_check"
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
