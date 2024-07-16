@@ -5,11 +5,11 @@
     },
     {
         "allowed_value": "Москва",
-        "subject": {"subject_type": "user", "subject_id": "1120000000000529", "subject_name": "user1"}
+        "subject": {"subject_type": "user", "subject_id": "1", "subject_name": "user1"}
     },
     {
         "allowed_value": "Санкт-Петербург",
-        "subject": {"subject_type": "user", "subject_id": "1120000000000529", "subject_name": "user1"}
+        "subject": {"subject_type": "user", "subject_id": "1", "subject_name": "user1"}
     },
     {
         "pattern_type": "all", "allowed_value": null,
@@ -21,11 +21,11 @@
     },
     {
         "pattern_type": "all", "allowed_value": null,
-        "subject": {"subject_type": "user", "subject_id": "1120000000000251", "subject_name": "user2"}
+        "subject": {"subject_type": "user", "subject_id": "2", "subject_name": "user2"}
     },
     {
         "pattern_type": "all", "allowed_value": null,
-        "subject": {"subject_type": "user", "subject_id": "1120000000013893", "subject_name": "user3"}
+        "subject": {"subject_type": "user", "subject_id": "3", "subject_name": "user3"}
     },
     {
         "allowed_value": "Омск",
@@ -33,7 +33,7 @@
     },
     {
         "allowed_value": "Омск",
-        "subject": {"subject_type": "user", "subject_id": "1120000000000529", "subject_name": "user1"}
+        "subject": {"subject_type": "user", "subject_id": "1", "subject_name": "user1"}
     },
     {
         "allowed_value": "Владивосток",
