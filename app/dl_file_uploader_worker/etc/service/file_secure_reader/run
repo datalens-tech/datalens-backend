@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+
+set -x  # debug.
+set -eu
+
+if [ x"${RUN_FILE_SECURE_READER:-1}" != x"1" ]; then
+    sleep 9000
+    exit 0
+fi
+
+mkdir -p /var/sockets
+chown 1000:1000 /var/sockets
+
+socket="${SECREADER_GUNICORN_SOCKET_PATH:-/var/sockets/reader.sock}"
+workers="${SECREADER_GUNICORN_WORKERS_COUNT:-1}"
+max_rq="${SECREADER_GUNICORN_MAX_RQ:-5000}"
+max_rq_jitter="${SECREADER_GUNICORN_MAX_RQ_JITTER:-500}"
+
+portoctl exec self/secure_reader \
+    command='gunicorn \
+    dl_file_uploader_worker.app:create_secure_reader_gunicorn_app \
+    --bind unix:'$socket' \
+    --max-requests '$max_rq' \
+    --max-requests-jitter '$max_rq_jitter' \
+    --workers='$workers' \
+    --worker-class aiohttp.GunicornWebWorker' \
+    bind='/var/sockets /var/sockets rw' \
+    net=none enable_porto=false \
+    user=1000 group=1000 capabilities= hostname=secure-reader

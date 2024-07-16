@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "dl-file-uploader-api"
+version = "0.0.0"
+description = ""
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+packages = [{include = "dl_file_uploader_api"}]
+license = "Apache 2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+aiohttp = ">=3.9.1"
+attrs = ">=22.2.0"
+gunicorn = ">=21.2.0"
+python = ">=3.10, <3.13"
+dl-version = {path = "../../lib/dl_version"}
+dl-core = {path = "../../lib/dl_core"}
+dl-file-uploader-api-lib = {path = "../../lib/dl_file_uploader_api_lib"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = []
+
+
+
+[datalens_ci]
+skip_test = true
+
+[tool.mypy]
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+strict_optional = true
