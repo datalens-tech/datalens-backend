@@ -1,6 +1,9 @@
 from http import HTTPStatus
 
-from aiohttp import web
+from aiohttp import (
+    client_exceptions,
+    web,
+)
 from marshmallow import ValidationError as MValidationError
 
 from dl_api_commons.aio.middlewares.error_handling_outer import (
@@ -18,6 +21,12 @@ class OAuthApiErrorHandler(AIOHTTPErrorHandler):
                 status_code=err.status,
                 http_reason=err.reason,
                 response_body=dict(message=err.reason),
+                level=ErrorLevel.info,
+            )
+        elif isinstance(err, client_exceptions.ClientResponseError):
+            return ErrorData(
+                status_code=HTTPStatus.BAD_REQUEST,
+                response_body=dict(message=str(err)),
                 level=ErrorLevel.info,
             )
         elif isinstance(err, MValidationError):
