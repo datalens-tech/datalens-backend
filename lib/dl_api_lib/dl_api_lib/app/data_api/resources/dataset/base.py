@@ -268,7 +268,8 @@ class DatasetDataBaseView(BaseView):
             return  # no groups in the RLS config, no need to resolve
 
         subject_resolver = await services_registry.get_subject_resolver()
-        self.dataset.rls.allowed_groups = set(subject_resolver.get_groups_by_subject(services_registry.rci))
+        subject_groups = await subject_resolver.get_groups_by_subject(services_registry.rci)
+        self.dataset.rls.allowed_groups = set(subject_groups)
 
     async def prepare_dataset_for_request(
         self,
