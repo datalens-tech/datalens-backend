@@ -13,7 +13,6 @@ async def test_google_token(oauth_app_client):
                 "conn_type": "gsheets",
                 "code": "1234567",
             },
-            require_ok=False,
         )
     )
     assert resp.status == 200

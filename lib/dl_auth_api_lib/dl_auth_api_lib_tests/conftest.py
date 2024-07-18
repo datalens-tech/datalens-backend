@@ -107,3 +107,14 @@ async def oauth_app_client(oauth_app) -> DLCommonAPIClient:
             auth_data=NoAuthData(),
             session=session,
         )
+
+
+@pytest.fixture(scope="function")
+def snowflake_payload() -> dict[str, str]:
+    payload = {
+        "conn_type": "snowflake",
+        "account": "gg36894.eu-central-1",
+        "client_id": "snowflake_client_id",
+        "client_secret": "snowflake_client_secret",
+    }
+    return payload
