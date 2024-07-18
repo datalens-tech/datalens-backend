@@ -44,6 +44,7 @@ dl-rls = {path = "../dl_rls"}
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
 dl-compeng-pg = {path = "../dl_compeng_pg"}
+dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 dl-connector-postgresql = {path = "../dl_connector_postgresql"}
 dl-testing = {path = "../dl_testing"}
