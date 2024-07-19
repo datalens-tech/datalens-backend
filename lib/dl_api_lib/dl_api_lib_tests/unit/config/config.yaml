@@ -1,0 +1,40 @@
+---
+CONNECTORS:
+  FILE:
+    CONN_FILE_CH_HOST: localhost
+    CONN_FILE_CH_PORT: 8443
+    CONN_FILE_CH_USERNAME: datalens
+CONNECTOR_AVAILABILITY:
+  icon_src:
+    icon_type: data
+    data: "blank"
+  sections: []
+  uncategorized:
+    - availability: free
+      conn_type: clickhouse
+    - availability: free
+      conn_type: postgres
+  visible_connectors: [clickhouse]
+CORS_ALLOWED_HEADERS:
+- Content-Type
+- X-Request-ID
+- X-DL-TenantId
+- X-CSRF-Token
+- X-DL-Allow-Superuser
+- X-DL-Sudo
+CORS_ALLOWED_ORIGINS:
+- '*'
+CORS_EXPOSE_HEADERS:
+- X-Request-ID
+CSRF_HEADER_NAME: X-CSRF-Token
+CSRF_METHODS:
+- POST
+- PUT
+- DELETE
+CSRF_TIME_LIMIT: 43200
+DL_CRY_KEYMAP: {}
+SENTRY_DSN_DATASET_API: ''
+SENTRY_ENABLED: false
+RQE_FORCE_OFF: true
+S3_ENDPOINT_URL: http://s3-storage:8000
+FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME: bucket
