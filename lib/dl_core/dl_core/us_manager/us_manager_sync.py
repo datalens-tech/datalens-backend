@@ -119,7 +119,7 @@ class SyncUSManager(USManagerBase):
 
     # CRUD
     #
-    def save(self, entry: USEntry) -> None:
+    def save(self, entry: USEntry, update_revision: Optional[bool] = None) -> None:
         lifecycle_manager = self.get_lifecycle_manager(entry=entry, service_registry=self._services_registry)
         lifecycle_manager.pre_save_hook()
 
@@ -142,6 +142,7 @@ class SyncUSManager(USManagerBase):
             entry._stored_in_db = True
         else:
             # noinspection PyProtectedMember
+            save_params["update_revision"] = update_revision
             resp = self._us_client.update_entry(
                 entry.uuid, lock=entry._lock, **save_params  # type: ignore  # TODO: fix
             )

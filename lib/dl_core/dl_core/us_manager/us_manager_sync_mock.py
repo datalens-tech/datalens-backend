@@ -108,6 +108,7 @@ class MockedUStorageClient(UStorageClient):
         lock: Optional[str] = None,
         hidden: Optional[bool] = None,
         links: Optional[Dict[str, Any]] = None,
+        update_revision: Optional[bool] = None,
     ) -> Dict[str, Any]:
         previous_resp = self._saved_entries[entry_id]
 

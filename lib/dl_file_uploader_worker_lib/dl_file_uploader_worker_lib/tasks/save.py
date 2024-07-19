@@ -290,7 +290,11 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                             **extra_dsrc_params,
                         )
                         conn.data.component_errors.remove_errors(id=dst_source_id)
-                        await usm.save(conn)
+
+                        if self.meta.exec_mode == TaskExecutionMode.UPDATE_AND_SAVE:
+                            await usm.save(conn, update_revision=True)
+                        else:
+                            await usm.save(conn)
 
                     # sync source id with the connection to enable consistent work with dfile (e.g. polling)
                     src_source.id = dst_source_id

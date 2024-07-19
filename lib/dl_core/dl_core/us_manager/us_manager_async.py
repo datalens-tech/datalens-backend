@@ -131,7 +131,7 @@ class AsyncUSManager(USManagerBase):
 
         return obj
 
-    async def save(self, entry: USEntry) -> None:
+    async def save(self, entry: USEntry, update_revision: Optional[bool] = None) -> None:
         self.get_lifecycle_manager(entry=entry).pre_save_hook()
 
         save_params = self._get_entry_save_params(entry)
@@ -154,6 +154,8 @@ class AsyncUSManager(USManagerBase):
             entry._stored_in_db = True
         else:
             # noinspection PyProtectedMember
+            save_params["update_revision"] = update_revision
+            assert entry.uuid is not None
             resp = await self._us_client.update_entry(entry.uuid, lock=entry._lock, **save_params)
 
         entry._us_resp = resp
