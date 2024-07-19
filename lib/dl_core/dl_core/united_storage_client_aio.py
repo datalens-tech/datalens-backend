@@ -5,6 +5,7 @@ import json
 import logging
 import time
 from typing import (
+    Any,
     AsyncGenerator,
     Iterable,
     NoReturn,
@@ -202,9 +203,17 @@ class UStorageClientAIO(UStorageClientBase):
         )
         return await self._request(rq_data)
 
-    async def update_entry(  # type: ignore  # TODO: fix
-        self, entry_id, data=None, unversioned_data=None, meta=None, lock=None, hidden=None, links=None
-    ):
+    async def update_entry(
+        self,
+        entry_id: str,
+        data: Optional[dict[str, Any]] = None,
+        unversioned_data: Optional[dict[str, Any]] = None,
+        meta: Optional[dict[str, str]] = None,
+        lock: Optional[str] = None,
+        hidden: Optional[bool] = None,
+        links: Optional[dict[str, Any]] = None,
+        update_revision: Optional[bool] = None,
+    ) -> dict[str, Any]:
         return await self._request(
             self._req_data_update_entry(
                 entry_id,
@@ -214,6 +223,7 @@ class UStorageClientAIO(UStorageClientBase):
                 lock=lock,
                 hidden=hidden,
                 links=links,
+                update_revision=update_revision,
             )
         )
 

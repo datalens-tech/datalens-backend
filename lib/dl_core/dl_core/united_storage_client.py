@@ -461,23 +461,24 @@ class UStorageClientBase:
         )
 
     @classmethod
-    def _req_data_update_entry(  # type: ignore  # TODO: fix
+    def _req_data_update_entry(
         cls,
         entry_id: str,
-        data=None,
-        unversioned_data=None,
-        meta=None,
-        mode="publish",
-        lock=None,
-        hidden=None,
-        links=None,
-    ):
+        data: Optional[dict[str, Any]] = None,
+        unversioned_data: Optional[dict[str, Any]] = None,
+        meta: Optional[dict[str, str]] = None,
+        mode: str = "publish",
+        lock: Optional[str] = None,
+        hidden: Optional[bool] = None,
+        links: Optional[dict[str, Any]] = None,
+        update_revision: Optional[bool] = None,
+    ) -> RequestData:
         data = data or {}
         unversioned_data = unversioned_data or {}
         meta = meta or {}
         links = links or {}
 
-        json_data = {
+        json_data: dict[str, Any] = {
             "data": data,
             "unversionedData": unversioned_data,
             "meta": meta,
@@ -485,9 +486,11 @@ class UStorageClientBase:
             "links": links,
         }
         if hidden is not None:
-            json_data.update(hidden=hidden)
+            json_data["hidden"] = hidden
         if lock is not None:
-            json_data.update(lockToken=lock)
+            json_data["lockToken"] = lock
+        if update_revision is not None:
+            json_data["updateRevision"] = update_revision
         return cls.RequestData(
             method="post",
             relative_url="/entries/{}".format(entry_id),
@@ -727,7 +730,7 @@ class UStorageClient(UStorageClientBase):
     def move_entry(self, entry_id, destination):  # type: ignore  # TODO: fix
         return self._request(self._req_data_move_entry(entry_id, destination=destination))
 
-    def update_entry(  # type: ignore  # TODO: fix
+    def update_entry(
         self,
         entry_id: str,
         data: Optional[dict[str, Any]] = None,
@@ -736,7 +739,8 @@ class UStorageClient(UStorageClientBase):
         lock: Optional[str] = None,
         hidden: Optional[bool] = None,
         links: Optional[dict[str, Any]] = None,
-    ):
+        update_revision: Optional[bool] = None,
+    ) -> dict[str, Any]:
         return self._request(
             self._req_data_update_entry(
                 entry_id,
@@ -746,6 +750,7 @@ class UStorageClient(UStorageClientBase):
                 lock=lock,
                 hidden=hidden,
                 links=links,
+                update_revision=update_revision,
             )
         )
 

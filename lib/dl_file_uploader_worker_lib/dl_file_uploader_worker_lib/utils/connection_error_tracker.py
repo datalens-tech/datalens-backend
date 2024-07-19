@@ -125,7 +125,7 @@ class FileConnectionDataSourceErrorTracker:
                     details=error.details,
                 )
 
-            await self._usm.save(conn)
+            await self._usm.save(conn, update_revision=True)
 
         for delete_file_task in delete_tasks:
             await self._task_processor.schedule(delete_file_task)
