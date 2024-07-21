@@ -13,6 +13,7 @@ from typing import (
 import attr
 import xxhash
 
+from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_constants.enums import (
     DataSourceRole,
     FileProcessingStatus,
@@ -28,7 +29,6 @@ from dl_core.db.elements import SchemaColumn
 from dl_core.services_registry.file_uploader_client_factory import FileSourceDesc
 from dl_core.us_connection_base import (
     ConnectionBase,
-    ConnectionHardcodedDataMixin,
     DataSourceTemplate,
 )
 from dl_core.utils import (
@@ -50,7 +50,7 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings], ConnectionClickhouseBase):
+class BaseFileS3Connection(ConnectionClickhouseBase):
     is_always_internal_source: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     settings_type = FileS3ConnectorSettings
@@ -102,6 +102,12 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
             return "|".join(src.str_for_hash() for src in self.sources)
 
     data: DataModel
+
+    @property
+    def _connector_settings(self) -> FileS3ConnectorSettings:
+        settings = super()._connector_settings
+        assert isinstance(settings, FileS3ConnectorSettings)
+        return settings
 
     def get_replace_secret(self) -> str:
         return xxhash.xxh64(self.data.str_for_hash() + self._connector_settings.REPLACE_SECRET_SALT, seed=0).hexdigest()

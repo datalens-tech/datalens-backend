@@ -336,7 +336,7 @@ class DummyServiceRegistry(ServicesRegistry):
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
     def get_connectors_settings(self, conn_type: ConnectionType) -> Optional[ConnectorSettingsBase]:
-        raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
+        return None
 
     def get_data_source_collection_factory(self, us_entry_buffer: USEntryBuffer) -> DataSourceCollectionFactory:
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)

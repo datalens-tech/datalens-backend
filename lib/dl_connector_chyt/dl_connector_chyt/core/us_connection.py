@@ -20,7 +20,6 @@ from dl_core.base_models import (
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.us_connection_base import (
     ConnectionBase,
-    ConnectionHardcodedDataMixin,
     DataSourceTemplate,
     SubselectMixin,
 )
@@ -45,10 +44,9 @@ if TYPE_CHECKING:
     from dl_core.services_registry.top_level import ServicesRegistry
 
 
-class BaseConnectionCHYT(  # type: ignore  # 2024-01-24 # TODO: Definition of "us_manager" in base class "USEntry" is incompatible with definition in base class "ConnectionHardcodedDataMixin"  [misc]
+class BaseConnectionCHYT(
     SubselectMixin,
     ConnectionBase,
-    ConnectionHardcodedDataMixin[CHYTConnectorSettings],
     abc.ABC,
 ):
     allow_dashsql: ClassVar[bool] = True
@@ -64,6 +62,12 @@ class BaseConnectionCHYT(  # type: ignore  # 2024-01-24 # TODO: Definition of "u
     class DataModel(ConnCacheableDataModelMixin, ConnSubselectDataModelMixin, ConnectionBase.DataModel):
         alias: str = attr.ib()
         max_execution_time: Optional[int] = attr.ib(default=None)
+
+    @property
+    def _connector_settings(self) -> CHYTConnectorSettings:
+        settings = super()._connector_settings
+        assert isinstance(settings, CHYTConnectorSettings)
+        return settings
 
     async def validate_new_data(
         self,
