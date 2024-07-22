@@ -64,7 +64,7 @@ class MetricaDataApiTestBase(MetricaDatasetTestBase, StandardizedDataApiTestBase
             two_dims=("Домен страницы", "Просмотры"),
             summable_field="Просмотры",
             range_field="Дата и время просмотра",
-            distinct_field="Адрес страницы",
+            distinct_field="Область",
             date_field="Дата просмотра",
         )
 
