@@ -1,9 +1,8 @@
 import argparse
 import json
 from typing import (
-    Dict,
     Iterable,
-    List,
+    Optional,
     Type,
 )
 
@@ -105,7 +104,7 @@ class Cli:
     _registry: TaskRegistry = attr.ib()
 
     @classmethod
-    def parse_params(cls, args: List) -> argparse.Namespace:
+    def parse_params(cls, args: Optional[list[str]] = None) -> argparse.Namespace:
         parser = argparse.ArgumentParser(description="Task Processor controller")
         subparsers = parser.add_subparsers(dest="subparser")
 
@@ -132,7 +131,7 @@ class Cli:
         return parser.parse_args(args)
 
     async def run(self, args: argparse.Namespace) -> None:
-        def _parse_task_params(params: Iterable) -> Dict:
+        def _parse_task_params(params: Iterable) -> dict:
             return {item.split("=")[0]: item.split("=")[1] for item in params}
 
         controller = Controller(registry=self._registry, processor=self._processor)
