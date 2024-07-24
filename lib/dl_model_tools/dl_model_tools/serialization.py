@@ -83,11 +83,7 @@ class DatetimeSerializer(TypeSerializer[datetime.datetime]):
         assert all(isinstance(elem, int) for elem in parts)
 
         assert isinstance(offset_sec, float | None)
-        tzinfo = (
-            datetime.timezone(datetime.timedelta(seconds=offset_sec))
-            if offset_sec is not None
-            else None
-        )
+        tzinfo = datetime.timezone(datetime.timedelta(seconds=offset_sec)) if offset_sec is not None else None
         return datetime.datetime(*parts, tzinfo=tzinfo)
 
 
@@ -97,11 +93,7 @@ class TimeSerializer(TypeSerializer[datetime.time]):
     @staticmethod
     def to_jsonable(obj: datetime.time) -> TJSONLike:
         # Not expecting this to be valid for non-constant time tzinfos.
-        tzinfo = (
-            obj.tzinfo.utcoffset(datetime.datetime(1970, 1, 1)).total_seconds()
-            if obj.tzinfo is not None
-            else None
-        )
+        tzinfo = obj.tzinfo.utcoffset(datetime.datetime(1970, 1, 1)).total_seconds() if obj.tzinfo is not None else None
         return [obj.hour, obj.minute, obj.second, obj.microsecond], tzinfo
 
     @staticmethod
