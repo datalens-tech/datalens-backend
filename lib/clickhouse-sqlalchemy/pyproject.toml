@@ -33,9 +33,9 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = []
 
-
-[datalens_ci]
-skip_test = true
+[datalens.pytest.db]
+root_dir = "clickhouse_sqlalchemy_tests/"
+target_path = "."
 
 [datalens.meta.mypy]
 targets = []    # ignore mypy in entire module

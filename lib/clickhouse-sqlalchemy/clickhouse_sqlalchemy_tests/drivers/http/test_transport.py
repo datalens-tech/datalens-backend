@@ -108,7 +108,7 @@ class TransportCase(HttpSessionTestCase):
     @mock.activate
     def test_parse_datetime_type(self):
         mock.add(
-            mock.POST, 'http://localhost:8123', status=200,
+            mock.POST, self.url, status=200,
             body=(
                 'a\n' +
                 'DateTime\n' +
@@ -130,7 +130,7 @@ class TransportCase(HttpSessionTestCase):
     @mock.activate
     def test_parse_datetime_utc_type(self):
         mock.add(
-            mock.POST, 'http://localhost:8123', status=200,
+            mock.POST, self.url, status=200,
             body=(
                 'a\n' +
                 'DateTime(\'UTC\')\n' +
@@ -152,7 +152,7 @@ class TransportCase(HttpSessionTestCase):
     @mock.activate
     def test_parse_datetime_any_tz_type(self):
         mock.add(
-            mock.POST, 'http://localhost:8123', status=200,
+            mock.POST, self.url, status=200,
             body=(
                 'a\n' +
                 'DateTime(\'MSK\')\n' +
@@ -173,7 +173,7 @@ class TransportCase(HttpSessionTestCase):
     @mock.activate
     def test_parse_nullable_datetime_any_tz_type(self):
         mock.add(
-            mock.POST, 'http://localhost:8123', status=200,
+            mock.POST, self.url, status=200,
             body=(
                 'a\n' +
                 'Nullable(DateTime(\'EST\'))\n' +
