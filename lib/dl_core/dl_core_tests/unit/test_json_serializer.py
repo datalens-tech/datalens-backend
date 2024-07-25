@@ -67,5 +67,5 @@ def test_json_tricky_serialization():
     tricky_data_dumped = json.dumps(tricky_data, cls=RedisDatalensDataJSONEncoder)
     tricky_roundtrip = json.loads(tricky_data_dumped, cls=RedisDatalensDataJSONDecoder)
     assert tricky_roundtrip["normal"] == tricky_data["normal"], tricky_roundtrip
-    # scalar types are parsed with vanilla json, so dumped JSON string is parsed into proper object
+    # abnormal data contains __dl_type__ fields, so decoder considers them to be dumps of BI types and decodes them
     assert tricky_roundtrip["abnormal"] == tricky_data["normal"], tricky_roundtrip
