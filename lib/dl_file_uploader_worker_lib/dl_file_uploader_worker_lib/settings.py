@@ -2,7 +2,7 @@ from typing import Optional
 
 import attr
 
-from dl_configs.connectors_settings import ConnectorsConfigType
+from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 from dl_configs.settings_submodels import GoogleAppSettings
@@ -25,7 +25,7 @@ class FileUploaderConnectorsSettings(SettingsBase):
     FILE: Optional[FileS3ConnectorSettings] = s_attrib("FILE", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "FileS3ConnectorSettings | None")  [assignment]
 
 
-def file_uploader_connectors_settings_fallback(full_cfg: ConnectorsConfigType) -> FileUploaderConnectorsSettings:
+def file_uploader_connectors_settings_fallback(full_cfg: ObjectLikeConfig) -> FileUploaderConnectorsSettings:
     settings = file_s3_settings_fallback(full_cfg)
     return FileUploaderConnectorsSettings(**settings)
 

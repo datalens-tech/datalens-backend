@@ -14,5 +14,4 @@ class ConnectorSettingsBase(SettingsBase):
     """"""
 
 
-ConnectorsConfigType = ObjectLikeConfig | LegacyDefaults
-SettingsFallbackType = Callable[[ConnectorsConfigType], dict[str, ConnectorSettingsBase]]
+SettingsFallbackType = Callable[[ObjectLikeConfig], dict[str, ConnectorSettingsBase]]

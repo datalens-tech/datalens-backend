@@ -1,25 +1,16 @@
-from dl_configs.connectors_settings import (
-    ConnectorsConfigType,
-    ConnectorSettingsBase,
-)
+from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.meta_definition import required
 from dl_core.connectors.settings.primitives import (
     ConnectorSettingsDefinition,
     get_connectors_settings_config,
 )
 
-from dl_connector_bundle_chs3.chs3_base.core.settings import (
-    ConnectorsDataFileBase,
-    FileS3ConnectorSettings,
-)
+from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 
 
-def gsheets_file_s3_settings_fallback(full_cfg: ConnectorsConfigType) -> dict[str, ConnectorSettingsBase]:
-    cfg = get_connectors_settings_config(
-        full_cfg,
-        object_like_config_key="FILE",
-        connector_data_class=ConnectorsDataFileBase,
-    )
+def gsheets_file_s3_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSettingsBase]:
+    cfg = get_connectors_settings_config(full_cfg, object_like_config_key="FILE")
     if cfg is None:
         return {}
     return dict(
