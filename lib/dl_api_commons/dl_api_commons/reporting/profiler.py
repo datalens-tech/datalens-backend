@@ -141,6 +141,7 @@ class DefaultReportingProfiler(ReportingProfiler):
             query_type=(start_record.query_type.name if start_record.query_type is not None else None),
             # TODO FIX: Use value from RCI when become done
             is_public=int(self._is_public_env),
+            is_embedded=int(self.rci.is_embedded),
             dash_id=x_dl_context.get(DLContextKey.DASH_ID),
             dash_tab_id=x_dl_context.get(DLContextKey.DASH_TAB_ID),
             chart_id=x_dl_context.get(DLContextKey.CHART_ID),
