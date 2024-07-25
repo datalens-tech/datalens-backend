@@ -35,8 +35,9 @@ class TypeSerializer(Generic[_TS_TV]):
 
     @classmethod
     def typeobj(cls) -> Type[_TS_TV]:
-        # https://stackoverflow.com/a/50101934
-        return get_args(cls.__orig_bases__[0])[0]
+        # https://github.com/python/typeshed/issues/7811#issuecomment-1120840824
+        # TODO: replace with types.get_original_bases after switching to Python 3.12
+        return get_args(cls.__orig_bases__[0])[0]  # type: ignore
 
     @staticmethod
     @abc.abstractmethod
@@ -67,7 +68,8 @@ class DatetimeSerializer(TypeSerializer[datetime.datetime]):
 
     @staticmethod
     def to_jsonable(obj: datetime.datetime) -> TJSONLike:
-        tzinfo = obj.tzinfo.utcoffset(obj).total_seconds() if obj.tzinfo is not None else None
+        utcoffset = obj.utcoffset()
+        tzinfo = utcoffset.total_seconds() if utcoffset is not None else None
         return (
             [obj.year, obj.month, obj.day, obj.hour, obj.minute, obj.second, obj.microsecond],
             tzinfo,
@@ -82,9 +84,9 @@ class DatetimeSerializer(TypeSerializer[datetime.datetime]):
         assert len(parts) == 7
         assert all(isinstance(elem, int) for elem in parts)
 
-        assert isinstance(offset_sec, float | None)
+        assert offset_sec is None or isinstance(offset_sec, float)
         tzinfo = datetime.timezone(datetime.timedelta(seconds=offset_sec)) if offset_sec is not None else None
-        return datetime.datetime(*parts, tzinfo=tzinfo)
+        return datetime.datetime(*parts, tzinfo=tzinfo)  # type: ignore  # https://github.com/python/mypy/issues/6799
 
 
 class TimeSerializer(TypeSerializer[datetime.time]):
@@ -93,7 +95,8 @@ class TimeSerializer(TypeSerializer[datetime.time]):
     @staticmethod
     def to_jsonable(obj: datetime.time) -> TJSONLike:
         # Not expecting this to be valid for non-constant time tzinfos.
-        tzinfo = obj.tzinfo.utcoffset(datetime.datetime(1970, 1, 1)).total_seconds() if obj.tzinfo is not None else None
+        utcoffset = obj.tzinfo.utcoffset(datetime.datetime(1970, 1, 1)) if obj.tzinfo is not None else None
+        tzinfo = utcoffset.total_seconds() if utcoffset is not None else None
         return [obj.hour, obj.minute, obj.second, obj.microsecond], tzinfo
 
     @staticmethod
@@ -105,9 +108,9 @@ class TimeSerializer(TypeSerializer[datetime.time]):
         assert len(parts) == 4, parts
         assert all(isinstance(elem, int) for elem in parts)
 
-        assert isinstance(offset_sec, (int, float)), offset_sec
+        assert offset_sec is None or isinstance(offset_sec, (int, float)), offset_sec
         tzinfo = datetime.timezone(datetime.timedelta(seconds=offset_sec)) if offset_sec is not None else None
-        return datetime.time(*parts, tzinfo=tzinfo)
+        return datetime.time(*parts, tzinfo=tzinfo)  # type: ignore  # https://github.com/python/mypy/issues/6799
 
 
 class TimedeltaSerializer(TypeSerializer[datetime.timedelta]):
