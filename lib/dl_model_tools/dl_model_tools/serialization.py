@@ -7,6 +7,7 @@ Serialization with support for custom objects like ``date`` & ``datetime``.
 from __future__ import annotations
 
 import abc
+import base64
 import datetime
 import decimal
 import json
@@ -152,6 +153,19 @@ class UUIDSerializer(TypeSerializer[uuid.UUID]):
         return uuid.UUID(value)
 
 
+class BytesSerializer(TypeSerializer[bytes]):
+    typename = "bytes"
+
+    @staticmethod
+    def to_jsonable(value: bytes) -> TJSONLike:
+        return base64.b64encode(value).decode("ascii")
+
+    @staticmethod
+    def from_jsonable(value: TJSONLike) -> bytes:
+        assert isinstance(value, str)
+        return base64.b64decode(value, validate=True)
+
+
 COMMON_SERIALIZERS: list[Type[TypeSerializer]] = [
     DateSerializer,
     DatetimeSerializer,
@@ -159,6 +173,7 @@ COMMON_SERIALIZERS: list[Type[TypeSerializer]] = [
     TimedeltaSerializer,
     DecimalSerializer,
     UUIDSerializer,
+    BytesSerializer,
 ]
 assert len(set(cls.typename for cls in COMMON_SERIALIZERS)) == len(COMMON_SERIALIZERS), "uniqueness check"
 

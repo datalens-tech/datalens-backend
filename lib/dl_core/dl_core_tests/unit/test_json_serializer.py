@@ -26,7 +26,7 @@ SAMPLE_DATA = dict(
     some_timedelta=datetime.timedelta(seconds=1320.0231),
     some_decimal=decimal.Decimal("12345" * 9 + "." + "54321" * 9),
     some_uuid=uuid.UUID("12345678123456781234567812345678"),
-    # some_bytes=b"Another one bites",  TODO: currently not serializable
+    some_bytes=b"Another one bites",
 )
 
 
@@ -47,7 +47,7 @@ EXPECTED_DUMP = dict(
         "value": "123451234512345123451234512345123451234512345.543215432154321543215432154321543215432154321",
     },
     some_uuid={"__dl_type__": "uuid", "value": "12345678-1234-5678-1234-567812345678"},
-    # some_bytes=b"Another one bites",
+    some_bytes={"__dl_type__": "bytes", "value": "QW5vdGhlciBvbmUgYml0ZXM="},
 )
 
 
@@ -61,9 +61,7 @@ def test_json_serialization():
 
 
 def test_json_tricky_serialization():
-    data = SAMPLE_DATA
-    dumped = json.dumps(data, cls=RedisDatalensDataJSONEncoder)
-    tricky_data = dict(normal=data, abnormal=json.loads(dumped))
+    tricky_data = dict(normal=SAMPLE_DATA, abnormal=EXPECTED_DUMP)
     tricky_data_dumped = json.dumps(tricky_data, cls=RedisDatalensDataJSONEncoder)
     tricky_roundtrip = json.loads(tricky_data_dumped, cls=RedisDatalensDataJSONDecoder)
     assert tricky_roundtrip["normal"] == tricky_data["normal"], tricky_roundtrip
