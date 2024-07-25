@@ -87,6 +87,18 @@ class RequestContextInfo:
         return self.plain_headers.get(DLHeadersCommon.WORKBOOK_ID.value)
 
     @property
+    def is_embedded(self) -> bool:
+        if self.user_id is None:
+            return False
+        return "EMBEDDED" in self.user_id
+
+    @property
+    def is_public(self) -> bool:
+        if self.user_id is None:
+            return False
+        return "PUBLIC" in self.user_id
+
+    @property
     def client_ip(self) -> Optional[str]:
         if self.forwarder_for is not None:
             ip_list = [ip.strip() for ip in self.forwarder_for.split(",")]
