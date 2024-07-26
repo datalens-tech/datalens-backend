@@ -22,7 +22,3 @@ class DBAdapterScopedRCI:
             user_name=full_rci.user_name,
             client_ip=full_rci.client_ip,
         )
-
-    @classmethod
-    def create_empty(cls) -> DBAdapterScopedRCI:
-        return cls.from_full_rci(RequestContextInfo.create_empty())

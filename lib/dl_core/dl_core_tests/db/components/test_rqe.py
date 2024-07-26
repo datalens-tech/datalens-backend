@@ -60,7 +60,7 @@ class TestRQE(DefaultCoreTestClass):
             target_dto=conn_target_dto,
             dba_cls=ClickHouseAdapter,
             rqe_data=query_executor_options,
-            req_ctx_info=DBAdapterScopedRCI.create_empty(),
+            req_ctx_info=DBAdapterScopedRCI(),
             force_async_rqe=request.param,
         )
 
