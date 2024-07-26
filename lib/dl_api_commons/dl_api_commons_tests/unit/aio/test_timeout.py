@@ -3,13 +3,13 @@ import asyncio
 from aiohttp import web
 import pytest
 
-from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.middlewares.error_handling_outer import (
     AIOHTTPErrorHandler,
     ErrorData,
     ErrorLevel,
 )
+from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
+from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestView
 from dl_api_commons.exc import RequestTimeoutError
 
