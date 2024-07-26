@@ -1,5 +1,6 @@
 import contextlib
 from typing import (
+    Collection,
     Generator,
     Optional,
 )
@@ -16,7 +17,7 @@ from dl_core_testing.fixture_server_runner import WSGIRunner
 @attr.s
 class RQEConfigurationMaker:
     ext_query_executer_secret_key: str = attr.ib(kw_only=True)
-    core_connector_whitelist: Optional[list[str]] = attr.ib(kw_only=True, default=None)
+    core_connector_whitelist: Optional[Collection[str]] = attr.ib(kw_only=True, default=None)
 
     @contextlib.contextmanager
     def sync_rqe_netloc_subprocess_cm(self) -> Generator[RQEBaseURL, None, None]:

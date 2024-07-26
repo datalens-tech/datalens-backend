@@ -24,5 +24,5 @@ class DBAdapterScopedRCI:
         )
 
     @classmethod
-    def create_empty(cls):
+    def create_empty(cls) -> DBAdapterScopedRCI:
         return cls.from_full_rci(RequestContextInfo.create_empty())
