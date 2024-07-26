@@ -26,10 +26,7 @@ from dl_api_lib.app_settings import (
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.loader import preload_api_lib
-from dl_api_lib_testing.app import (
-    RQEConfigurationMaker,
-    TestingControlApiAppFactory,
-)
+from dl_api_lib_testing.app import TestingControlApiAppFactory
 from dl_api_lib_testing.client import FlaskSyncApiClient
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_configs.connectors_settings import ConnectorSettingsBase
@@ -45,6 +42,7 @@ from dl_core_testing.flask_utils import (
     FlaskTestClient,
     FlaskTestResponse,
 )
+from dl_core_testing.rqe import RQEConfigurationMaker
 from dl_testing.utils import (
     get_root_certificates,
     get_root_certificates_path,
@@ -94,7 +92,11 @@ class ApiTestBase(abc.ABC):
         self,
         bi_test_config: ApiTestEnvironmentConfiguration,
     ) -> Generator[RQEConfig, None, None]:
-        with RQEConfigurationMaker(bi_test_config=bi_test_config).rqe_config_subprocess_cm() as rqe_config:
+        whitelist = bi_test_config.core_test_config.get_core_library_config().core_connector_ep_names
+        with RQEConfigurationMaker(
+            ext_query_executer_secret_key=bi_test_config.ext_query_executer_secret_key,
+            core_connector_whitelist=whitelist,
+        ).rqe_config_subprocess_cm() as rqe_config:
             yield rqe_config
 
     @classmethod
