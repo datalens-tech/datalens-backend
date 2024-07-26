@@ -49,10 +49,10 @@ class TestRQE(DefaultCoreTestClass):
 
     @pytest.fixture(scope="function")
     async def conn_target_dto(self, async_conn_executor_factory):
-        sync_conn_executor = async_conn_executor_factory()
-        target_conn_dto_pool = await sync_conn_executor._make_target_conn_dto_pool()
+        conn_executor = async_conn_executor_factory()
+        target_conn_dto_pool = await conn_executor._make_target_conn_dto_pool()
         yield next(iter(target_conn_dto_pool))
-        await sync_conn_executor.close()
+        await conn_executor.close()
 
     @pytest.fixture(scope="function", params=[True, False])
     def remote_adapter(self, conn_target_dto, query_executor_options, request):
