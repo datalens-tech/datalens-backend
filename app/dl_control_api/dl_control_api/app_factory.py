@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import ssl
 from typing import Optional
 
 import flask
@@ -20,6 +21,7 @@ from dl_api_lib.app_settings import (
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_cache_engine.primitives import CacheTTLConfig
 from dl_configs.enums import RequiredService
+from dl_configs.utils import get_multiple_root_certificates
 from dl_constants.enums import USAuthMode
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
@@ -101,8 +103,15 @@ class StandaloneControlApiAppFactory(
 
         import dl_zitadel
 
+        ca_data = get_multiple_root_certificates(
+            self._settings.CA_FILE_PATH,
+            *self._settings.EXTRA_CA_FILE_PATHS,
+        )
+
         zitadel_client = dl_zitadel.ZitadelSyncClient(
-            base_client=httpx.Client(),
+            base_client=httpx.Client(
+                verify=ssl.create_default_context(cadata=ca_data),
+            ),
             base_url=self._settings.AUTH.BASE_URL,
             project_id=self._settings.AUTH.PROJECT_ID,
             client_id=self._settings.AUTH.CLIENT_ID,
