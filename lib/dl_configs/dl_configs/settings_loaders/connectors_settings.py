@@ -1,5 +1,4 @@
 from typing import (
-    Collection,
     Optional,
     Type,
 )
@@ -15,12 +14,9 @@ from dl_constants.enums import ConnectionType
 
 def generate_connectors_settings_class(
     settings_registry: dict[ConnectionType, Type[ConnectorSettingsBase]],
-    whitelist: Optional[Collection[ConnectionType]] = None,
 ) -> Type[attr.AttrsInstance]:
     attrs: dict[str, attr.Attribute] = {}
     for conn_type, settings_class in settings_registry.items():
-        if whitelist is not None and conn_type not in whitelist:
-            continue
         field_name = conn_type.value.upper()
         attrs[field_name] = s_attrib(field_name, type_class=Optional[settings_class], missing=None)
 
