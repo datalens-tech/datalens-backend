@@ -177,6 +177,11 @@ class AppSettings:
         missing=QueryProcessingMode.basic,
     )
     CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
+    EXTRA_CA_FILE_PATHS: tuple[str, ...] = s_attrib(  # type: ignore # 2024-07-29 # TODO
+        "EXTRA_CA_FILE_PATHS",
+        env_var_converter=split_by_comma,
+        missing_factory=tuple,
+    )
 
     PIVOT_ENGINE_TYPE: Optional[DataPivotEngineType] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "DataPivotEngineType | None")  [assignment]
         "PIVOT_ENGINE_TYPE",
@@ -276,6 +281,11 @@ class DataApiAppSettings(AppSettings):
     BI_ASYNC_APP_DISABLE_KEEPALIVE: bool = s_attrib("BI_ASYNC_APP_DISABLE_KEEPALIVE", missing=False)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
 
     CA_FILE_PATH: str = s_attrib("CA_FILE_PATH", missing=get_root_certificates_path())  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
+    EXTRA_CA_FILE_PATHS: tuple[str, ...] = s_attrib(  # type: ignore # 2024-07-29 # TODO
+        "EXTRA_CA_FILE_PATHS",
+        env_var_converter=split_by_comma,
+        missing_factory=tuple,
+    )
 
     @property
     def app_name(self) -> str:
