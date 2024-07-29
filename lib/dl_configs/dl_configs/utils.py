@@ -50,6 +50,10 @@ def get_root_certificates(path: str = DEFAULT_ROOT_CERTIFICATES_FILENAME) -> byt
     return ca_data
 
 
+def get_multiple_root_certificates(*paths: str) -> bytes:
+    return b"\n".join([get_root_certificates(path=path) for path in paths])
+
+
 def get_root_certificates_path() -> str:
     return DEFAULT_ROOT_CERTIFICATES_FILENAME
 
