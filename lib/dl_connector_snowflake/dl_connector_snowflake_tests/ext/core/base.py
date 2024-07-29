@@ -57,7 +57,7 @@ class BaseSnowFlakeTestClass(BaseConnectionTestClass[ConnectionSQLSnowFlake]):
 
 class SnowFlakeTestClassWithExpiredRefreshToken(BaseSnowFlakeTestClass):
     @pytest.fixture(scope="function")
-    def connection_creation_params_with_expired_refresh_token(self, sf_secrets) -> dict:
+    def connection_creation_params(self, sf_secrets) -> dict:
         # note: in fact any bad string could be used for this test as well ...
         return dict(
             account_name=sf_secrets.get_account_name(),
@@ -74,7 +74,7 @@ class SnowFlakeTestClassWithExpiredRefreshToken(BaseSnowFlakeTestClass):
 
 class SnowFlakeTestClassWithRefreshTokenSoonToExpire(BaseSnowFlakeTestClass):
     @pytest.fixture(scope="function")
-    def connection_creation_params_with_refresh_token_soon_to_expire(self, sf_secrets) -> dict:
+    def connection_creation_params(self, sf_secrets) -> dict:
         # note: in fact any bad string could be used for this test as well ...
         return dict(
             account_name=sf_secrets.get_account_name(),
