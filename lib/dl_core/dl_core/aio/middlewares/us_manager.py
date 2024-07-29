@@ -28,7 +28,7 @@ from dl_utils.aio import shield_wait_for_complete
 LOGGER = logging.getLogger(__name__)
 
 
-def usm_workaround_middleware(
+def usm_tenant_resolver_middleware(
     us_base_url: str,
     us_public_token: str,
     crypto_keys_config: CryptoKeysConfig,
@@ -40,10 +40,7 @@ def usm_workaround_middleware(
     us_api_type: USApiType,
 ) -> AIOHTTPMiddleware:
     """
-    This is workaround for the following public API issues:
-     1. We have no explicit tenant ID in request
-
-    For issue 1: middleware fetches dataset or connection from US and pick tenant ID from response
+    Middleware fetches dataset or connection from US and picks tenant ID from response
 
     This middleware works with temp (uncommitted) RCI.
     :param us_base_url:
