@@ -3,17 +3,12 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Optional,
-    Sequence,
     Type,
 )
 import uuid
 
 from dl_constants.enums import ConnectionType
-from dl_core.base_models import (
-    ConnectionDataModelBase,
-    EntryLocation,
-    PathEntryLocation,
-)
+from dl_core.base_models import ConnectionDataModelBase
 from dl_core.us_connection import get_connection_class
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
@@ -28,14 +23,7 @@ def make_conn_key(*args: str) -> str:
     return "/".join(["tests", *args])
 
 
-def _ensure_entry_location(loc: Optional[EntryLocation], gen_path_postfix: Sequence[str]) -> EntryLocation:
-    if loc is not None:
-        return loc
-    else:
-        return PathEntryLocation(path=make_conn_key(*gen_path_postfix))
-
-
-def make_connection_base(
+def make_connection(
     us_manager: USManagerBase,
     conn_type: ConnectionType,
     conn_name: Optional[str] = None,
@@ -64,24 +52,19 @@ def make_connection_base(
     )
 
 
-def make_connection(
+def make_connection_from_db(
     us_manager: USManagerBase,
-    db: Optional[Db] = None,
-    conn_type: Optional[ConnectionType] = None,
+    db: Db,
     conn_name: Optional[str] = None,
     data_dict: Optional[dict] = None,
 ) -> ConnectionBase:
-    credentials: dict = {}
-    if conn_type is None:
-        assert db is not None
-        conn_type = db.conn_type
-        credentials = db.get_conn_credentials()
-    assert conn_type is not None
+    conn_type = db.conn_type
+    credentials = db.get_conn_credentials()
     data_dict = {
         **credentials,
         **(data_dict or {}),
     }
-    return make_connection_base(
+    return make_connection(
         us_manager=us_manager,
         conn_type=conn_type,
         conn_name=conn_name,
@@ -91,11 +74,21 @@ def make_connection(
 
 def make_saved_connection(
     sync_usm: SyncUSManager,
-    db: Optional[Db] = None,
-    conn_type: Optional[ConnectionType] = None,
+    conn_type: ConnectionType,
     conn_name: Optional[str] = None,
     data_dict: Optional[dict] = None,
 ) -> ConnectionBase:
-    conn = make_connection(us_manager=sync_usm, db=db, conn_type=conn_type, conn_name=conn_name, data_dict=data_dict)
+    conn = make_connection(us_manager=sync_usm, conn_type=conn_type, conn_name=conn_name, data_dict=data_dict)
+    sync_usm.save(conn)
+    return conn
+
+
+def make_saved_connection_from_db(
+    sync_usm: SyncUSManager,
+    db: Db,
+    conn_name: Optional[str] = None,
+    data_dict: Optional[dict] = None,
+) -> ConnectionBase:
+    conn = make_connection_from_db(us_manager=sync_usm, db=db, conn_name=conn_name, data_dict=data_dict)
     sync_usm.save(conn)
     return conn

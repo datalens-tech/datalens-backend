@@ -3,14 +3,12 @@ import uuid
 import pytest
 
 from dl_constants.enums import FileProcessingStatus
-from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.fixtures.primitives import FixtureTableSpec
 
 from dl_connector_bundle_chs3.file.core.constants import (
     CONNECTION_TYPE_FILE,
     SOURCE_TYPE_FILE_S3_TABLE,
 )
-from dl_connector_bundle_chs3.file.core.testing.connection import make_saved_file_connection
 from dl_connector_bundle_chs3.file.core.us_connection import FileS3Connection
 from dl_connector_bundle_chs3_tests.db.base.core.base import BaseCHS3TestClass
 
@@ -35,15 +33,3 @@ class BaseFileS3TestClass(BaseCHS3TestClass[FileS3Connection]):
             status=FileProcessingStatus.ready,
             column_types=[{"name": col[0], "user_type": col[1].name} for col in sample_table_spec.table_schema],
         )
-
-    @pytest.fixture(scope="function")
-    def saved_connection(
-        self,
-        sync_us_manager: SyncUSManager,
-        connection_creation_params: dict,
-    ) -> FileS3Connection:
-        conn = make_saved_file_connection(
-            sync_usm=sync_us_manager,
-            **connection_creation_params,
-        )
-        return conn

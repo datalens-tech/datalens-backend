@@ -15,7 +15,6 @@ from dl_core_testing.testcases.dataset import BaseDatasetTestClass
 import dl_core_tests.db.config as test_config
 
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
-from dl_connector_clickhouse.core.clickhouse.testing.connection import make_clickhouse_saved_connection
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.db_testing.engine_wrapper import ClickhouseDbEngineConfig
@@ -56,15 +55,6 @@ class DefaultCoreTestClass(BaseDatasetTestClass[ConnectionClickhouse]):
             password=test_config.CoreConnectionSettings.PASSWORD,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
-
-    @pytest.fixture(scope="function")
-    def saved_connection(
-        self,
-        sync_us_manager: SyncUSManager,
-        connection_creation_params: dict,
-    ) -> ConnectionClickhouse:
-        conn = make_clickhouse_saved_connection(sync_usm=sync_us_manager, **connection_creation_params)
-        return conn
 
     @pytest.fixture(scope="function")
     def dataset_builder_factory(

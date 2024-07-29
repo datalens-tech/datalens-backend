@@ -6,12 +6,10 @@ import pytest
 import shortuuid
 
 import dl_configs.utils as bi_configs_utils
-from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.database import Db
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
-from dl_connector_postgresql.core.postgresql.testing.connection import make_postgresql_saved_connection
 from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 import dl_connector_postgresql_tests.db.config as test_config
 
@@ -43,18 +41,6 @@ class BasePostgreSQLTestClass(BaseConnectionTestClass[ConnectionPostgreSQL]):
             password=test_config.CoreConnectionSettings.PASSWORD,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
-
-    @pytest.fixture(scope="function")
-    def saved_connection(
-        self,
-        sync_us_manager: SyncUSManager,
-        connection_creation_params: dict,
-    ) -> ConnectionPostgreSQL:
-        conn = make_postgresql_saved_connection(
-            sync_usm=sync_us_manager,
-            **connection_creation_params,
-        )
-        return conn
 
     @pytest.fixture(scope="class")
     def pg_partitioned_table_name(self, db: Db) -> str:

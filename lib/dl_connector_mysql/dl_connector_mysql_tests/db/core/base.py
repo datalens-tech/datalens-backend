@@ -3,11 +3,9 @@ from typing import Generator
 
 import pytest
 
-from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 from dl_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
-from dl_connector_mysql.core.testing.connection import make_mysql_saved_connection
 from dl_connector_mysql.core.us_connection import ConnectionMySQL
 import dl_connector_mysql_tests.db.config as test_config
 
@@ -39,12 +37,3 @@ class BaseMySQLTestClass(BaseConnectionTestClass[ConnectionMySQL]):
             password=test_config.CoreConnectionSettings.PASSWORD,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
-
-    @pytest.fixture(scope="function")
-    def saved_connection(
-        self,
-        sync_us_manager: SyncUSManager,
-        connection_creation_params: dict,
-    ) -> ConnectionMySQL:
-        conn = make_mysql_saved_connection(sync_usm=sync_us_manager, **connection_creation_params)
-        return conn

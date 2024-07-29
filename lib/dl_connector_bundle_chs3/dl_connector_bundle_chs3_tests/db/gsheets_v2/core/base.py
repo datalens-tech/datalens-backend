@@ -3,14 +3,12 @@ import uuid
 import pytest
 
 from dl_constants.enums import FileProcessingStatus
-from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.fixtures.primitives import FixtureTableSpec
 
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import (
     CONNECTION_TYPE_GSHEETS_V2,
     SOURCE_TYPE_GSHEETS_V2,
 )
-from dl_connector_bundle_chs3.chs3_gsheets.core.testing.connection import make_saved_gsheets_v2_connection
 from dl_connector_bundle_chs3.chs3_gsheets.core.us_connection import GSheetsFileS3Connection
 from dl_connector_bundle_chs3_tests.db.base.core.base import BaseCHS3TestClass
 
@@ -34,15 +32,3 @@ class BaseGSheetsFileS3TestClass(BaseCHS3TestClass[GSheetsFileS3Connection]):
             raw_schema=raw_schema,
             status=FileProcessingStatus.ready,
         )
-
-    @pytest.fixture(scope="function")
-    def saved_connection(
-        self,
-        sync_us_manager: SyncUSManager,
-        connection_creation_params: dict,
-    ) -> GSheetsFileS3Connection:
-        conn = make_saved_gsheets_v2_connection(
-            sync_usm=sync_us_manager,
-            **connection_creation_params,
-        )
-        return conn

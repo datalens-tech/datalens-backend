@@ -3,7 +3,6 @@ from typing import Generator
 
 import pytest
 
-from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.database import (
     C,
     Db,
@@ -14,7 +13,6 @@ from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 from dl_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY
-from dl_connector_bigquery.core.testing.connection import make_bigquery_saved_connection
 from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
 from dl_connector_bigquery.db_testing.engine_wrapper import BigQueryDbEngineConfig
 import dl_connector_bigquery_tests.ext.config as test_config
@@ -58,15 +56,6 @@ class BaseBigQueryTestClass(BaseConnectionTestClass[ConnectionSQLBigQuery]):
             credentials=bq_secrets.get_creds(),
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
-
-    @pytest.fixture(scope="function")
-    def saved_connection(
-        self,
-        sync_us_manager: SyncUSManager,
-        connection_creation_params: dict,
-    ) -> ConnectionSQLBigQuery:
-        conn = make_bigquery_saved_connection(sync_usm=sync_us_manager, **connection_creation_params)
-        return conn
 
     @pytest.fixture(scope="class")
     def sample_table(self, db: Db, bq_secrets) -> DbTable:
