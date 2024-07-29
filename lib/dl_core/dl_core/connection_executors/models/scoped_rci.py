@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Optional
 
 import attr
@@ -13,7 +15,7 @@ class DBAdapterScopedRCI:
     client_ip: Optional[str] = attr.ib(default=None, repr=False)
 
     @classmethod
-    def from_full_rci(cls, full_rci: RequestContextInfo) -> "DBAdapterScopedRCI":
+    def from_full_rci(cls, full_rci: RequestContextInfo) -> DBAdapterScopedRCI:
         return cls(
             request_id=full_rci.request_id,
             x_dl_debug_mode=full_rci.x_dl_debug_mode,
