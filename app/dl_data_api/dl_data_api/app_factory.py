@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import ssl
 from typing import Optional
 
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
@@ -162,8 +163,15 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
 
         import dl_zitadel
 
+        ca_data = get_multiple_root_certificates(
+            self._settings.CA_FILE_PATH,
+            *self._settings.EXTRA_CA_FILE_PATHS,
+        )
+
         zitadel_client = dl_zitadel.ZitadelAsyncClient(
-            base_client=httpx.AsyncClient(),
+            base_client=httpx.AsyncClient(
+                verify=ssl.create_default_context(cadata=ca_data),
+            ),
             base_url=self._settings.AUTH.BASE_URL,
             project_id=self._settings.AUTH.PROJECT_ID,
             client_id=self._settings.AUTH.CLIENT_ID,
