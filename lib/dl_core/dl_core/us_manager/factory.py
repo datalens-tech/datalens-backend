@@ -5,6 +5,7 @@ import attr
 from dl_api_commons.base_models import RequestContextInfo
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_constants.api_constants import DLHeadersCommon
+from dl_core.enums import USApiType
 from dl_core.services_registry import ServicesRegistry
 from dl_core.united_storage_client import (
     USAuthContextEmbed,
@@ -144,3 +145,18 @@ class USMFactory:
             services_registry=services_registry,
             ca_data=self.get_ca_data(),
         )
+
+    def get_async_usm(
+        self,
+        rci: RequestContextInfo,
+        services_registry: ServicesRegistry,
+        us_api_type: USApiType,
+    ) -> AsyncUSManager:
+        usm_getters = {
+            USApiType.v1: self.get_regular_async_usm,
+            USApiType.public: self.get_public_async_usm,
+            USApiType.private: self.get_master_async_usm,
+            USApiType.embeds: self.get_embed_async_usm,
+        }
+        get_usm = usm_getters.get(us_api_type, self.get_regular_async_usm)
+        return get_usm(rci=rci, services_registry=services_registry)

@@ -18,6 +18,7 @@ from dl_api_commons.tenant_resolver import TenantResolver
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core import exc
 from dl_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
+from dl_core.enums import USApiType
 from dl_core.services_registry.top_level import DummyServiceRegistry
 from dl_core.us_manager.factory import USMFactory
 from dl_core.us_manager.us_manager_async import AsyncUSManager
@@ -27,7 +28,7 @@ from dl_utils.aio import shield_wait_for_complete
 LOGGER = logging.getLogger(__name__)
 
 
-def public_usm_workaround_middleware(
+def usm_tenant_resolver_middleware(
     us_base_url: str,
     us_public_token: str,
     crypto_keys_config: CryptoKeysConfig,
@@ -36,15 +37,10 @@ def public_usm_workaround_middleware(
     us_master_token: Optional[str],
     tenant_resolver: TenantResolver,
     ca_data: bytes,
+    us_api_type: USApiType,
 ) -> AIOHTTPMiddleware:
     """
-    This is workaround for the following public API issues:
-     1. We have no explicit tenant ID in request
-     2. Materialization connection is not public
-
-    For issue 1: middleware fetches dataset or connection from US and pick tenant ID from response
-    For issue 2: middleware fetches materialization config (with US master token) for given tenant
-      and stores it in DLRequest
+    Middleware fetches dataset or connection from US and picks tenant ID from response
 
     This middleware works with temp (uncommitted) RCI.
     :param us_base_url:
@@ -91,16 +87,16 @@ def public_usm_workaround_middleware(
             sr = DummyServiceRegistry(rci=rci)
         assert sr is not None
 
-        public_usm = usm_factory.get_public_async_usm(rci=rci, services_registry=sr)
+        usm = usm_factory.get_async_usm(rci=rci, services_registry=sr, us_api_type=us_api_type)
         try:
             try:
-                entry = await public_usm.get_by_id(entry_id)
+                entry = await usm.get_by_id(entry_id)
             except exc.USObjectNotFoundException as e:
                 raise web.HTTPNotFound() from e
             else:
                 tenant = tenant_resolver.resolve_tenant_def_by_tenant_id(entry.raw_tenant_id)
         finally:
-            await public_usm.close()
+            await usm.close()
 
         rci = attr.evolve(rci, tenant=tenant)
         dl_request.replace_temp_rci(rci)
