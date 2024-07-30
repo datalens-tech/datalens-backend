@@ -18,7 +18,7 @@ class BaseOAuth(Generic[_TBaseOAuthClient], abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def get_auth_token(self, code: str) -> dict:
+    async def get_auth_token(self, code: str, origin: str | None = None) -> dict:
         raise NotImplementedError
 
     @classmethod
