@@ -15,16 +15,15 @@ class BaseSnowflakeView(web.View):
         client_settings = SnowflakeOAuthClient(
             account=data["account"],
             client_id=data["client_id"],
-            client_secret=data["client_secret"],
+            client_secret=data.get("client_secret"),
             redirect_uri=data["redirect_uri"],
         )
         return SnowflakeOAuth.from_settings(client_settings)
 
 
 class SnowflakeURIView(BaseSnowflakeView):
-    async def post(self) -> web.StreamResponse:
-        req_data = await self.request.json()
-        data = snowflake_schemas.SnowflakeUriRequestSchema().load(req_data)
+    async def get(self) -> web.StreamResponse:
+        data = snowflake_schemas.SnowflakeUriRequestSchema().load(self.request.query)
         data["redirect_uri"] = self.request.headers.get(hdrs.ORIGIN)
         oauth_client = self.get_client(data)
         uri = oauth_client.get_auth_uri()

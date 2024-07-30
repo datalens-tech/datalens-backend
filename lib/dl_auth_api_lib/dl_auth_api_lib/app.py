@@ -81,7 +81,7 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
         app.router.add_route("get", "/oauth/uri/google", google_views.GoogleURIView)
         app.router.add_route("post", "/oauth/token/google", google_views.GoogleTokenView)
 
-        app.router.add_route("post", "/oauth/uri/snowflake", snowflake_views.SnowflakeURIView)
+        app.router.add_route("get", "/oauth/uri/snowflake", snowflake_views.SnowflakeURIView)
         app.router.add_route("post", "/oauth/token/snowflake", snowflake_views.SnowflakeTokenView)
 
         app["settings"] = self._settings

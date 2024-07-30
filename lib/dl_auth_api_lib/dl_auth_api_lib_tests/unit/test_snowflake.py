@@ -8,9 +8,9 @@ from dl_constants.api_constants import DLHeadersCommon
 async def test_snowflake_uri(oauth_app_client, snowflake_payload):
     resp = await oauth_app_client.make_request(
         Req(
-            method="post",
+            method="get",
             url="/oauth/uri/snowflake",
-            data_json=snowflake_payload,
+            params=snowflake_payload,
             extra_headers={DLHeadersCommon.ORIGIN: "https://example.com"},
         )
     )
@@ -28,9 +28,9 @@ async def test_invalid_account_name(oauth_app_client, snowflake_payload):
     snowflake_payload["account"] = "0.0.0.0:443?a="
     resp = await oauth_app_client.make_request(
         Req(
-            method="post",
+            method="get",
             url="/oauth/uri/snowflake",
-            data_json=snowflake_payload,
+            params=snowflake_payload,
             extra_headers={DLHeadersCommon.ORIGIN: "https://example.com"},
             require_ok=False,
         )

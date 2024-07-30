@@ -21,8 +21,8 @@ class SnowflakeOAuthClient(BaseOAuthClient):
 
     account: str
     client_id: str
-    client_secret: str
     redirect_uri: str
+    client_secret: str | None = pydantic.Field(default=None)
     auth_url: str = pydantic.Field(default=_AUTH_URL)
     token_url: str = pydantic.Field(default=_TOKEN_URL)
 
@@ -31,8 +31,8 @@ class SnowflakeOAuthClient(BaseOAuthClient):
 class SnowflakeOAuth(BaseOAuth):
     account: str = attr.ib()
     client_id: str = attr.ib()
-    client_secret: str = attr.ib()
     redirect_uri: str = attr.ib()
+    client_secret: str | None = attr.ib(default=None)
     auth_url: str = attr.ib(default=_AUTH_URL)
     token_url: str = attr.ib(default=_TOKEN_URL)
 
@@ -73,6 +73,7 @@ class SnowflakeOAuth(BaseOAuth):
         )
 
     def _get_session_headers(self) -> dict[str, str]:
+        assert self.client_secret is not None
         headers = {
             "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": f"Basic {b64encode(f'{self.client_id}:{self.client_secret}'.encode()).decode()}",
