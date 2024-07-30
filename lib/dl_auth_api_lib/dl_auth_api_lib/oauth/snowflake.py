@@ -4,39 +4,21 @@ import urllib.parse
 
 import aiohttp
 import attr
-import pydantic
-from typing_extensions import Self
-
-from dl_auth_api_lib.oauth.base import BaseOAuth
-from dl_auth_api_lib.settings import BaseOAuthClient
 
 
 _AUTH_URL: str = "https://{account}.snowflakecomputing.com/oauth/authorize?"
 _TOKEN_URL: str = "https://{account}.snowflakecomputing.com/oauth/token-request"
 
 
-class SnowflakeOAuthClient(BaseOAuthClient):
-    auth_type: str = "snowflake"
-    conn_type: str = "snowflake"
-
-    account: str
-    client_id: str
-    client_secret: str
-    redirect_uri: str
-    auth_url: str = pydantic.Field(default=_AUTH_URL)
-    token_url: str = pydantic.Field(default=_TOKEN_URL)
-
-
 @attr.s
-class SnowflakeOAuth(BaseOAuth):
+class SnowflakeOAuth:
     account: str = attr.ib()
     client_id: str = attr.ib()
-    client_secret: str = attr.ib()
     redirect_uri: str = attr.ib()
     auth_url: str = attr.ib(default=_AUTH_URL)
     token_url: str = attr.ib(default=_TOKEN_URL)
 
-    def get_auth_uri(self, origin: str | None = None) -> str:
+    def get_auth_uri(self) -> str:
         params = {
             "client_id": self.client_id,
             "redirect_uri": self.redirect_uri,
@@ -46,9 +28,9 @@ class SnowflakeOAuth(BaseOAuth):
         uri = self.auth_url.format(account=self.account) + urllib.parse.urlencode(params)
         return uri
 
-    async def get_auth_token(self, code: str, origin: str | None = None) -> dict[str, Any]:
+    async def get_auth_token(self, code: str, client_secret: str) -> dict[str, Any]:
         async with aiohttp.ClientSession(
-            headers=self._get_session_headers(),
+            headers=self._get_session_headers(client_secret=client_secret),
         ) as session:
             token_data = {
                 "grant_type": "authorization_code",
@@ -61,20 +43,9 @@ class SnowflakeOAuth(BaseOAuth):
                 token_response = await resp.json()
         return token_response
 
-    @classmethod
-    def from_settings(cls, settings: SnowflakeOAuthClient) -> Self:
-        return cls(
-            account=settings.account,
-            client_id=settings.client_id,
-            client_secret=settings.client_secret,
-            redirect_uri=settings.redirect_uri,
-            auth_url=settings.auth_url,
-            token_url=settings.token_url,
-        )
-
-    def _get_session_headers(self) -> dict[str, str]:
+    def _get_session_headers(self, client_secret: str) -> dict[str, str]:
         headers = {
             "Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": f"Basic {b64encode(f'{self.client_id}:{self.client_secret}'.encode()).decode()}",
+            "Authorization": f"Basic {b64encode(f'{self.client_id}:{client_secret}'.encode()).decode()}",
         }
         return headers

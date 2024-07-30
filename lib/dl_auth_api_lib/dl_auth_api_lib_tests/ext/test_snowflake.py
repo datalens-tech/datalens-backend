@@ -7,6 +7,7 @@ from dl_constants.api_constants import DLHeadersCommon
 @pytest.mark.asyncio
 async def test_snowflake_token(oauth_app_client, snowflake_payload):
     snowflake_payload["code"] = "1234567"
+    snowflake_payload["client_secret"] = "snowflake_client_secret"
     resp = await oauth_app_client.make_request(
         Req(
             method="post",
@@ -24,6 +25,7 @@ async def test_snowflake_token(oauth_app_client, snowflake_payload):
 async def test_invalid_snowflake_account(oauth_app_client, snowflake_payload):
     snowflake_payload["account"] = "aa12345.eu-central-1"
     snowflake_payload["code"] = "1234567"
+    snowflake_payload["client_secret"] = "snowflake_client_secret"
     resp = await oauth_app_client.make_request(
         Req(
             method="post",

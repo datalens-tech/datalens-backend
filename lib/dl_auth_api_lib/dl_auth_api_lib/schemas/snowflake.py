@@ -15,7 +15,6 @@ class SnowflakeBaseRequestSchema(BaseRequestSchema):
         validate=ma_validate.ContainsOnly(VALID_SYMBOLS, error="Invalid account_name"),
     )
     client_id = ma.fields.String(required=True)
-    client_secret = ma.fields.String(required=True)
 
 
 class SnowflakeUriRequestSchema(SnowflakeBaseRequestSchema):
@@ -24,6 +23,7 @@ class SnowflakeUriRequestSchema(SnowflakeBaseRequestSchema):
 
 class SnowflakeTokenRequestSchema(SnowflakeBaseRequestSchema):
     code = ma.fields.String(required=True)
+    client_secret = ma.fields.String(required=True)
 
 
 class SnowflakeUriResponseSchema(ma.Schema):

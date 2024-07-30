@@ -115,6 +115,5 @@ def snowflake_payload() -> dict[str, str]:
         "conn_type": "snowflake",
         "account": "gg36894.eu-central-1",
         "client_id": "snowflake_client_id",
-        "client_secret": "snowflake_client_secret",
     }
     return payload
