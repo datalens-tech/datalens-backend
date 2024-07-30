@@ -10,6 +10,7 @@ import abc
 import base64
 import datetime
 import decimal
+import ipaddress
 import json
 from typing import (
     Any,
@@ -166,6 +167,84 @@ class BytesSerializer(TypeSerializer[bytes]):
         return base64.b64decode(value, validate=True)
 
 
+class IPv4AddressSerializer(TypeSerializer[ipaddress.IPv4Address]):
+    typename = "ipv4_address"
+
+    @staticmethod
+    def to_jsonable(value: ipaddress.IPv4Address) -> TJSONLike:
+        return str(value)
+
+    @staticmethod
+    def from_jsonable(value: TJSONLike) -> ipaddress.IPv4Address:
+        assert isinstance(value, str)
+        return ipaddress.IPv4Address(value)
+
+
+class IPv6AddressSerializer(TypeSerializer[ipaddress.IPv6Address]):
+    typename = "ipv6_address"
+
+    @staticmethod
+    def to_jsonable(value: ipaddress.IPv6Address) -> TJSONLike:
+        return str(value)
+
+    @staticmethod
+    def from_jsonable(value: TJSONLike) -> ipaddress.IPv6Address:
+        assert isinstance(value, str)
+        return ipaddress.IPv6Address(value)
+
+
+class IPv4NetworkSerializer(TypeSerializer[ipaddress.IPv4Network]):
+    typename = "ipv4_network"
+
+    @staticmethod
+    def to_jsonable(value: ipaddress.IPv4Network) -> TJSONLike:
+        return str(value)
+
+    @staticmethod
+    def from_jsonable(value: TJSONLike) -> ipaddress.IPv4Network:
+        assert isinstance(value, str)
+        return ipaddress.IPv4Network(value)
+
+
+class IPv6NetworkSerializer(TypeSerializer[ipaddress.IPv6Network]):
+    typename = "ipv6_network"
+
+    @staticmethod
+    def to_jsonable(value: ipaddress.IPv6Network) -> TJSONLike:
+        return str(value)
+
+    @staticmethod
+    def from_jsonable(value: TJSONLike) -> ipaddress.IPv6Network:
+        assert isinstance(value, str)
+        return ipaddress.IPv6Network(value)
+
+
+class IPv4InterfaceSerializer(TypeSerializer[ipaddress.IPv4Interface]):
+    typename = "ipv4_interface"
+
+    @staticmethod
+    def to_jsonable(value: ipaddress.IPv4Interface) -> TJSONLike:
+        return str(value)
+
+    @staticmethod
+    def from_jsonable(value: TJSONLike) -> ipaddress.IPv4Interface:
+        assert isinstance(value, str)
+        return ipaddress.IPv4Interface(value)
+
+
+class IPv6InterfaceSerializer(TypeSerializer[ipaddress.IPv6Interface]):
+    typename = "ipv6_interface"
+
+    @staticmethod
+    def to_jsonable(value: ipaddress.IPv6Interface) -> TJSONLike:
+        return str(value)
+
+    @staticmethod
+    def from_jsonable(value: TJSONLike) -> ipaddress.IPv6Interface:
+        assert isinstance(value, str)
+        return ipaddress.IPv6Interface(value)
+
+
 COMMON_SERIALIZERS: list[Type[TypeSerializer]] = [
     DateSerializer,
     DatetimeSerializer,
@@ -174,6 +253,12 @@ COMMON_SERIALIZERS: list[Type[TypeSerializer]] = [
     DecimalSerializer,
     UUIDSerializer,
     BytesSerializer,
+    IPv4AddressSerializer,
+    IPv6AddressSerializer,
+    IPv4NetworkSerializer,
+    IPv6NetworkSerializer,
+    IPv4InterfaceSerializer,
+    IPv6InterfaceSerializer,
 ]
 assert len(set(cls.typename for cls in COMMON_SERIALIZERS)) == len(COMMON_SERIALIZERS), "uniqueness check"
 

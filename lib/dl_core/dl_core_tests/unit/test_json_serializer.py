@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 import decimal
+import ipaddress
 import json
 import uuid
 
@@ -27,6 +28,12 @@ SAMPLE_DATA = dict(
     some_decimal=decimal.Decimal("12345" * 9 + "." + "54321" * 9),
     some_uuid=uuid.UUID("12345678123456781234567812345678"),
     some_bytes=b"Another one bites",
+    some_ipv4_address=ipaddress.IPv4Address("192.0.2.5"),
+    some_ipv6_address=ipaddress.IPv6Address("2001:db8::1000"),
+    some_ipv4_network=ipaddress.IPv4Network("192.0.2.0/24"),
+    some_ipv6_network=ipaddress.IPv6Network("2001:db8::/64"),
+    some_ipv4_interface=ipaddress.IPv4Interface("192.0.2.5/24"),
+    some_ipv6_interface=ipaddress.IPv6Interface("2001:db8::1000/24"),
 )
 
 
@@ -48,6 +55,12 @@ EXPECTED_DUMP = dict(
     },
     some_uuid={"__dl_type__": "uuid", "value": "12345678-1234-5678-1234-567812345678"},
     some_bytes={"__dl_type__": "bytes", "value": "QW5vdGhlciBvbmUgYml0ZXM="},
+    some_ipv4_address={"__dl_type__": "ipv4_address", "value": "192.0.2.5"},
+    some_ipv6_address={"__dl_type__": "ipv6_address", "value": "2001:db8::1000"},
+    some_ipv4_network={"__dl_type__": "ipv4_network", "value": "192.0.2.0/24"},
+    some_ipv6_network={"__dl_type__": "ipv6_network", "value": "2001:db8::/64"},
+    some_ipv4_interface={"__dl_type__": "ipv4_interface", "value": "192.0.2.5/24"},
+    some_ipv6_interface={"__dl_type__": "ipv6_interface", "value": "2001:db8::1000/24"},
 )
 
 

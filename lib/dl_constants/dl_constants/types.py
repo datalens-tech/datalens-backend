@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 import decimal
+import ipaddress
 from typing import (
     AsyncGenerator,
     AsyncIterable,
@@ -23,6 +24,13 @@ TBIDataValue = Union[
     uuid.UUID,
     bytes,
     TJSONScalar,
+    # ip addresses in ClickHouse, cidr and inet in PostgreSQL, etc
+    ipaddress.IPv4Address,
+    ipaddress.IPv6Address,
+    ipaddress.IPv4Network,
+    ipaddress.IPv6Network,
+    ipaddress.IPv4Interface,
+    ipaddress.IPv6Interface,
 ]
 
 
