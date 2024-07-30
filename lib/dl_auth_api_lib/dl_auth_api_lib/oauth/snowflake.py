@@ -46,7 +46,7 @@ class SnowflakeOAuth(BaseOAuth):
         uri = self.auth_url.format(account=self.account) + urllib.parse.urlencode(params)
         return uri
 
-    async def get_auth_token(self, code: str) -> dict[str, Any]:
+    async def get_auth_token(self, code: str, origin: str | None = None) -> dict[str, Any]:
         async with aiohttp.ClientSession(
             headers=self._get_session_headers(),
         ) as session:

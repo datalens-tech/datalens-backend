@@ -45,7 +45,7 @@ class YandexOAuth(BaseOAuth):
         uri = self.auth_url + urllib.parse.urlencode({k: v for k, v in params.items() if v is not None})
         return uri
 
-    async def get_auth_token(self, code: str) -> dict[str, Any]:
+    async def get_auth_token(self, code: str, origin: str | None = None) -> dict[str, Any]:
         async with aiohttp.ClientSession(
             headers=self._get_session_headers(),
         ) as session:

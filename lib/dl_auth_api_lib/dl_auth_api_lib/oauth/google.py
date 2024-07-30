@@ -47,7 +47,7 @@ class GoogleOAuth(BaseOAuth):
         uri = self.auth_url + urllib.parse.urlencode(params)
         return uri
 
-    async def get_auth_token(self, code: str) -> dict[str, Any]:
+    async def get_auth_token(self, code: str, origin: str | None = None) -> dict[str, Any]:
         async with aiohttp.ClientSession(
             headers=self._get_session_headers(),
         ) as session:
@@ -56,7 +56,7 @@ class GoogleOAuth(BaseOAuth):
                 "code": code,
                 "client_id": self.client_id,
                 "client_secret": self.client_secret,
-                "redirect_uri": self.redirect_uri,
+                "redirect_uri": origin or self.redirect_uri,
             }
             async with session.post(self.token_url, data=token_data) as resp:
                 token_response = await resp.json()

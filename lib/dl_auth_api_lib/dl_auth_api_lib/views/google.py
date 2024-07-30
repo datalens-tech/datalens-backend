@@ -26,7 +26,8 @@ class GoogleTokenView(BaseView):
         req_data = await self.request.json()
         data = google_schemas.GoogleTokenRequestSchema().load(req_data)
         oauth_client = self.get_client(data)
-        resp_data = await oauth_client.get_auth_token(code=data["code"])
+        origin = self.request.headers.get(hdrs.ORIGIN)
+        resp_data = await oauth_client.get_auth_token(code=data["code"], origin=origin)
         if "error" in resp_data:
             return web.json_response(google_schemas.GoogleTokenErrorResponseSchema().dump(resp_data))
         return web.json_response(google_schemas.GoogleTokenResponseSchema().dump(resp_data))
