@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import asyncio
 from typing import (
     Generator,
@@ -8,7 +6,6 @@ from typing import (
 
 import pytest
 
-from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.database import (
     CoreDbConfig,
     Db,
@@ -20,10 +17,6 @@ import dl_sqlalchemy_metrica_api
 from dl_connector_metrica.core.constants import (
     CONNECTION_TYPE_APPMETRICA_API,
     CONNECTION_TYPE_METRICA_API,
-)
-from dl_connector_metrica.core.testing.connection import (
-    make_saved_appmetrica_api_connection,
-    make_saved_metrika_api_connection,
 )
 from dl_connector_metrica.core.us_connection import (
     AppMetricaApiConnection,
@@ -73,14 +66,6 @@ class BaseMetricaTestClass(MetricaTestSetup[MetrikaApiConnection]):
             token=metrica_token,
         )
 
-    @pytest.fixture(scope="function")
-    def saved_connection(
-        self,
-        sync_us_manager: SyncUSManager,
-        connection_creation_params: dict,
-    ) -> MetrikaApiConnection:
-        return make_saved_metrika_api_connection(sync_usm=sync_us_manager, **connection_creation_params)
-
 
 class BaseAppMetricaTestClass(MetricaTestSetup[AppMetricaApiConnection]):
     conn_type = CONNECTION_TYPE_APPMETRICA_API
@@ -92,11 +77,3 @@ class BaseAppMetricaTestClass(MetricaTestSetup[AppMetricaApiConnection]):
             counter_id=test_config.APPMETRICA_SAMPLE_COUNTER_ID,
             token=metrica_token,
         )
-
-    @pytest.fixture(scope="function")
-    def saved_connection(
-        self,
-        sync_us_manager: SyncUSManager,
-        connection_creation_params: dict,
-    ) -> AppMetricaApiConnection:
-        return make_saved_appmetrica_api_connection(sync_usm=sync_us_manager, **connection_creation_params)

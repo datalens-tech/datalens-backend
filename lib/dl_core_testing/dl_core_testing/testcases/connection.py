@@ -8,6 +8,7 @@ from typing import (
     Generic,
     Optional,
     TypeVar,
+    cast,
 )
 
 import pytest
@@ -19,6 +20,7 @@ from dl_core.us_connection_base import (
 )
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.connection import make_saved_connection
 from dl_core_testing.database import (
     Db,
     DbTable,
@@ -59,10 +61,14 @@ class BaseConnectionTestClass(
     def connection_creation_params(self) -> dict:
         raise NotImplementedError
 
-    @abc.abstractmethod
     @pytest.fixture(scope="function")
     def saved_connection(self, sync_us_manager: SyncUSManager, connection_creation_params: dict) -> _CONN_TV:
-        raise NotImplementedError
+        conn = make_saved_connection(
+            sync_usm=sync_us_manager,
+            conn_type=self.conn_type,
+            data_dict=connection_creation_params,
+        )
+        return cast(_CONN_TV, conn)
 
     @pytest.fixture(scope="function")
     def sync_conn_executor_factory(
