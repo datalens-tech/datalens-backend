@@ -110,7 +110,7 @@ class StandaloneControlApiAppFactory(
 
         zitadel_client = dl_zitadel.ZitadelSyncClient(
             base_client=httpx.Client(
-                verify=ssl.create_default_context(cadata=ca_data),
+                verify=ssl.create_default_context(cadata=ca_data.decode("ascii")),
             ),
             base_url=self._settings.AUTH.BASE_URL,
             project_id=self._settings.AUTH.PROJECT_ID,
