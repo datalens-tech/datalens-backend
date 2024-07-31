@@ -5,7 +5,7 @@ description = "Aux pyproject.toml for the common project properties"
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 license = "Apache 2.0"
 readme = "README.md"
-
+test
 [tool.poetry.dependencies]
 python = ">=3.10"
 
