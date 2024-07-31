@@ -1494,7 +1494,8 @@ class DatasetValidator(DatasetBaseWrapper):
             old_connection_ref = DefaultConnectionRef(conn_id=connection_data.id)
             self._sync_us_manager.ensure_entry_preloaded(old_connection_ref)
             old_connection = self._sync_us_manager.get_loaded_us_connection(old_connection_ref)
-        except common_exc.ReferencedUSEntryNotFound:
+        except (common_exc.ReferencedUSEntryNotFound, common_exc.ReferencedUSEntryAccessDenied) as e:
+            LOGGER.info(f'Failed to get the old connection, reason: "{e}"')
             old_connection = None
 
         new_connection_ref = DefaultConnectionRef(conn_id=connection_data.new_id)
