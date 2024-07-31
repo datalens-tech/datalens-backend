@@ -170,7 +170,7 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
 
         zitadel_client = dl_zitadel.ZitadelAsyncClient(
             base_client=httpx.AsyncClient(
-                verify=ssl.create_default_context(cadata=ca_data),
+                verify=ssl.create_default_context(cadata=ca_data.decode("ascii")),
             ),
             base_url=self._settings.AUTH.BASE_URL,
             project_id=self._settings.AUTH.PROJECT_ID,
