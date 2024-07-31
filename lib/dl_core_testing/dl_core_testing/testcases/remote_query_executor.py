@@ -1,9 +1,11 @@
 import asyncio
 from typing import (
+    AsyncGenerator,
     ClassVar,
     Generator,
     Generic,
     TypeVar,
+    Type,
 )
 
 from aiohttp.pytest_plugin import AiohttpClient
@@ -34,7 +36,7 @@ _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 
 class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV], Generic[_CONN_TV]):
-    ADAPTER_CLS: ClassVar[CommonBaseDirectAdapter]
+    ADAPTER_CLS: ClassVar[Type[CommonBaseDirectAdapter]]
 
     EXT_QUERY_EXECUTER_SECRET_KEY: ClassVar[str] = "very_secret_key"
 
@@ -58,6 +60,7 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
         sync_rqe_netloc_subprocess: RQEBaseURL,
         request: pytest.FixtureRequest,
     ) -> RemoteQueryExecutorData:
+        assert query_executor_app.port is not None
         return RemoteQueryExecutorData(
             hmac_key=self.EXT_QUERY_EXECUTER_SECRET_KEY.encode(),
             # Async RQE
@@ -72,7 +75,10 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
         )
 
     @pytest.fixture(scope="function")
-    async def conn_target_dto(self, async_connection_executor: AsyncConnExecutorBase) -> ConnTargetDTO:
+    async def conn_target_dto(
+        self,
+        async_connection_executor: AsyncConnExecutorBase,
+    ) -> AsyncGenerator[ConnTargetDTO, None]:
         assert isinstance(async_connection_executor, DefaultSqlAlchemyConnExecutor)
         target_conn_dto_pool = await async_connection_executor._make_target_conn_dto_pool()
         yield next(iter(target_conn_dto_pool))
