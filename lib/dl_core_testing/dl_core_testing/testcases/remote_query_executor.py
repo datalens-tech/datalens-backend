@@ -4,8 +4,8 @@ from typing import (
     ClassVar,
     Generator,
     Generic,
-    TypeVar,
     Type,
+    TypeVar,
 )
 
 from aiohttp.pytest_plugin import AiohttpClient

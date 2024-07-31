@@ -15,7 +15,7 @@ from dl_formula_testing.configuration import FormulaTestEnvironmentConfiguration
 
 @attr.s(kw_only=True)
 class ApiTestEnvironmentConfiguration:
-    core_test_config: CoreTestEnvironmentConfiguration = attr.ib(factory=CoreTestEnvironmentConfiguration)
+    core_test_config: CoreTestEnvironmentConfiguration = attr.ib()
     formula_test_config: FormulaTestEnvironmentConfiguration = attr.ib(factory=FormulaTestEnvironmentConfiguration)
 
     ext_query_executer_secret_key: str = attr.ib()
