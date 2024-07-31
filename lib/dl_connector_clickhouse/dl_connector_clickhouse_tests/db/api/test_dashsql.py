@@ -3,9 +3,11 @@ import pytest
 
 from dl_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
 
-from dl_connector_clickhouse.core.clickhouse.testing.testing_data import CLICKHOUSE_QUERY_FULL
 from dl_connector_clickhouse_tests.db.api.base import ClickHouseDashSQLConnectionTest
-from dl_connector_clickhouse_tests.db.config import DASHSQL_QUERY
+from dl_connector_clickhouse_tests.db.config import (
+    DASHSQL_QUERY,
+    DASHSQL_QUERY_FULL,
+)
 
 
 class TestClickHouseDashSQL(ClickHouseDashSQLConnectionTest, DefaultDashSQLTestSuite):
@@ -35,7 +37,7 @@ class TestClickHouseDashSQL(ClickHouseDashSQLConnectionTest, DefaultDashSQLTestS
         await self.get_dashsql_response(
             data_api_aio=data_api_lowlevel_aiohttp_client,
             conn_id=saved_connection_id,
-            query=CLICKHOUSE_QUERY_FULL,
+            query=DASHSQL_QUERY_FULL,
         )
 
     @pytest.mark.asyncio
