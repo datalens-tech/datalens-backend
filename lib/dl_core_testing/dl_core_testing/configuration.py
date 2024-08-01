@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import abc
 import logging
 from typing import (
     Collection,
@@ -62,35 +61,12 @@ class RedisSettingMaker:
         return self.get_redis_settings(self.redis_db_arq)
 
 
-@attr.s(frozen=True)
-class CoreTestEnvironmentConfigurationBase(abc.ABC):
-    @abc.abstractmethod
-    def get_us_config(self) -> UnitedStorageConfiguration:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def get_crypto_keys_config(self) -> CryptoKeysConfig:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def get_core_library_config(self) -> CoreLibraryConfig:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def get_redis_setting_maker(self) -> RedisSettingMaker:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def get_compeng_url(self) -> str:
-        raise NotImplementedError
-
-
 # These are used only for creation of local environments in tests, not actual external ones
 DEFAULT_FERNET_KEY = "h1ZpilcYLYRdWp7Nk8X1M1kBPiUi8rdjz9oBfHyUKIk="
 
 
 @attr.s(frozen=True)
-class DefaultCoreTestConfiguration(CoreTestEnvironmentConfigurationBase):
+class CoreTestEnvironmentConfiguration:
     host_us_http: str = attr.ib(kw_only=True)
     port_us_http: int = attr.ib(kw_only=True)
     host_us_pg: str = attr.ib(kw_only=True)

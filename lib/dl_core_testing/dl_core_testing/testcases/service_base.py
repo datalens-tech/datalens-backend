@@ -40,7 +40,7 @@ from dl_core.us_manager.mutation_cache.usentry_mutation_cache_factory import Def
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core.utils import FutureRef
-from dl_core_testing.configuration import CoreTestEnvironmentConfigurationBase
+from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 from dl_core_testing.database import (
     CoreDbConfig,
     CoreReInitableDbDispenser,
@@ -60,7 +60,7 @@ class USConfig(NamedTuple):
 
 class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
     conn_type: ClassVar[ConnectionType]
-    core_test_config: ClassVar[CoreTestEnvironmentConfigurationBase]
+    core_test_config: ClassVar[CoreTestEnvironmentConfiguration]
     connection_settings: ClassVar[Optional[ConnectorSettingsBase]] = None
     inst_specific_sr_factory: ClassVar[Optional[InstallationSpecificServiceRegistryFactory]] = None
     data_caches_enabled: ClassVar[bool] = False
