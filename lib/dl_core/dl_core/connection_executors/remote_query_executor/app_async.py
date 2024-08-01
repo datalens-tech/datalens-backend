@@ -4,6 +4,7 @@ import argparse
 import logging
 import pickle
 import sys
+from functools import partial
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -18,6 +19,7 @@ from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.server_header import ServerHeader
 from dl_api_commons.aio.typing import AIOHTTPMiddleware
+from dl_app_tools.profiling_base import GenericProfiler
 from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
     use_jaeger_tracer,
@@ -33,6 +35,7 @@ from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAd
 from dl_core.connection_executors.models.constants import (
     HEADER_BODY_SIGNATURE,
     HEADER_REQUEST_ID,
+    HEADER_USER_JSON_SERIALIZER,
 )
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
@@ -56,6 +59,7 @@ from dl_core.loader import (
 from dl_core.logging_config import configure_logging
 from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
 from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
+from dl_model_tools.serialization import hashable_dumps
 from dl_utils.aio import ContextVarExecutor
 
 
@@ -167,7 +171,14 @@ class ActionHandlingView(BaseView):
             events.append((RQEEventType.raw_chunk.value, raw_chunk))
         events.append((RQEEventType.finished.value, None))
 
-        return web.Response(body=pickle.dumps(events))
+        with GenericProfiler("qe_serialization"):
+            if self.request.headers.get(HEADER_USER_JSON_SERIALIZER) == "1":
+                dumps = partial(hashable_dumps, sort_keys=False, check_circular=True)
+                response = web.json_response(dict(events=events), dumps=dumps)
+            else:
+                response = web.Response(body=pickle.dumps(events))
+
+        return response
 
     async def execute_non_streamed_action(
         self,

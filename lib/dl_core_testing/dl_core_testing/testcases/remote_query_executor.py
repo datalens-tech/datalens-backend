@@ -1,4 +1,5 @@
 import asyncio
+import os
 from typing import (
     AsyncGenerator,
     ClassVar,
@@ -97,6 +98,13 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
             req_ctx_info=DBAdapterScopedRCI(),
             force_async_rqe=request.param,
         )
+
+    @pytest.fixture(scope="function", params=[True, False], autouse=True)
+    def use_json_serializer(self, request: pytest.FixtureRequest) -> Generator[None, None, None]:
+        if request.param:
+            os.environ["USE_JSON_QE_SERIALIZER"] = "1"
+        yield
+        os.environ.pop("USE_JSON_QE_SERIALIZER", None)
 
     async def execute_request(self, remote_adapter: RemoteAsyncAdapter, query: str) -> list[TBIDataRow]:
         async with remote_adapter:
