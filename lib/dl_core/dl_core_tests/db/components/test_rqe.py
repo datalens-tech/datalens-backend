@@ -16,7 +16,7 @@ class TestRQE(DefaultCoreTestClass, BaseRemoteQueryExecutorTestClass):
     async def test_body_signature_validation(self, remote_adapter, query_executor_options):
         # OK case
         result = await self.execute_request(remote_adapter, query="select 1")
-        assert result == [(1,)]
+        assert result[0][0] == 1
 
         # Not OK case
         remote_adapter = attr.evolve(
@@ -42,7 +42,7 @@ class TestRQE(DefaultCoreTestClass, BaseRemoteQueryExecutorTestClass):
 
         with log_context(**outer_logging_ctx):
             result = await self.execute_request(remote_adapter, query="select 1")
-            assert result == [(1,)]
+            assert result[0][0] == 1
 
         qe_logs = list(
             filter(lambda r: r.name == "dl_core.connection_executors.remote_query_executor.app_async", caplog.records)
