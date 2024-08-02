@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import argparse
+from functools import partial
 import logging
 import pickle
 import sys
-from functools import partial
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -35,7 +35,7 @@ from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAd
 from dl_core.connection_executors.models.constants import (
     HEADER_BODY_SIGNATURE,
     HEADER_REQUEST_ID,
-    HEADER_USER_JSON_SERIALIZER,
+    HEADER_USE_JSON_SERIALIZER,
 )
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
@@ -171,10 +171,10 @@ class ActionHandlingView(BaseView):
             events.append((RQEEventType.raw_chunk.value, raw_chunk))
         events.append((RQEEventType.finished.value, None))
 
-        with GenericProfiler("qe_serialization"):
-            if self.request.headers.get(HEADER_USER_JSON_SERIALIZER) == "1":
+        with GenericProfiler("async_qe_serialization"):
+            if self.request.headers.get(HEADER_USE_JSON_SERIALIZER) == "1":
                 dumps = partial(hashable_dumps, sort_keys=False, check_circular=True)
-                response = web.json_response(dict(events=events), dumps=dumps)
+                response = web.json_response(events, dumps=dumps)
             else:
                 response = web.Response(body=pickle.dumps(events))
 

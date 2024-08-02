@@ -51,7 +51,7 @@ from dl_core.connection_executors.models.common import (
 from dl_core.connection_executors.models.constants import (
     HEADER_BODY_SIGNATURE,
     HEADER_REQUEST_ID,
-    HEADER_USER_JSON_SERIALIZER,
+    HEADER_USE_JSON_SERIALIZER,
 )
 from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
@@ -158,7 +158,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             **tracing_headers,
         }
         if use_json_serializer is not None:
-            headers[HEADER_USER_JSON_SERIALIZER] = use_json_serializer
+            headers[HEADER_USE_JSON_SERIALIZER] = use_json_serializer
         if self._req_ctx_info.request_id:
             headers[HEADER_REQUEST_ID] = self._req_ctx_info.request_id
 
@@ -243,7 +243,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
 
     @staticmethod
     def _parse_event(event: Any) -> Tuple[RQEEventType, Any]:
-        if not isinstance(event, tuple):
+        if not isinstance(event, (list, tuple)):
             raise QueryExecutorException(f"QE parse: unexpected event type: {type(event)}")
         if len(event) != 2:
             raise QueryExecutorException(f"QE parse: event is not a pair: length={len(event)}")
@@ -357,11 +357,8 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             raise exc
 
         raw_data = await response.read()
-        with GenericProfiler("qe_serialization"):
-            if use_json_serializer == "1":
-                raw_events = common_loads(raw_data)["events"]
-            else:
-                raw_events = pickle.loads(raw_data)
+        with GenericProfiler("qe_deserialization"):
+            raw_events = common_loads(raw_data) if use_json_serializer == "1" else pickle.loads(raw_data)
 
         async def event_gen() -> AsyncGenerator[Tuple[RQEEventType, Any], None]:
             for raw_event in raw_events:

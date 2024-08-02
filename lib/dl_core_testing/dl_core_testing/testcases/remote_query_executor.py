@@ -84,7 +84,7 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
         target_conn_dto_pool = await async_connection_executor._make_target_conn_dto_pool()
         yield next(iter(target_conn_dto_pool))
 
-    @pytest.fixture(scope="function", params=[True, False])
+    @pytest.fixture(scope="function", params=[True, False], ids=["async", "sync"])
     def remote_adapter(
         self,
         conn_target_dto: ConnTargetDTO,
@@ -99,7 +99,7 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
             force_async_rqe=request.param,
         )
 
-    @pytest.fixture(scope="function", params=[True, False], autouse=True)
+    @pytest.fixture(scope="function", params=[True, False], ids=["json", "pickle"], autouse=True)
     def use_json_serializer(self, request: pytest.FixtureRequest) -> Generator[None, None, None]:
         if request.param:
             os.environ["USE_JSON_QE_SERIALIZER"] = "1"
