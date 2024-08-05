@@ -22,7 +22,7 @@ from dl_core.connection_models import TableIdent
 
 
 if TYPE_CHECKING:
-    from dl_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO  # noqa: F401
+    from dl_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO
     from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo
     from dl_core.connection_models import DBIdent
     from dl_core.connectors.base.error_transformer import DBExcKWArgs
@@ -31,7 +31,7 @@ if TYPE_CHECKING:
 
 LOGGER = logging.getLogger(__name__)
 
-_DBA_YQL_BASE_DTO_TV = TypeVar("_DBA_YQL_BASE_DTO_TV", bound="BaseSQLConnTargetDTO")
+_DBA_YQL_BASE_DTO_TV = TypeVar("_DBA_YQL_BASE_DTO_TV", bound=BaseSQLConnTargetDTO)
 
 
 @attr.s

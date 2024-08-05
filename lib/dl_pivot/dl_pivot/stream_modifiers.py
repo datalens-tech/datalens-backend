@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import (  # It thinks NamedTuple isn't used, but it is  # noqa: F401
+from typing import (
     TYPE_CHECKING,
     Dict,
     Generator,

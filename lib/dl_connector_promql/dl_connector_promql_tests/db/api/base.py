@@ -2,10 +2,7 @@ import pytest
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
-from dl_constants.enums import (
-    ConnectionType,
-    RawSQLLevel,
-)
+from dl_constants.enums import RawSQLLevel
 from dl_core_testing.database import (
     CoreDbConfig,
     Db,

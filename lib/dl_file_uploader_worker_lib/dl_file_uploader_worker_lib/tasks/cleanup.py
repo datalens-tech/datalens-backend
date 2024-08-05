@@ -5,7 +5,6 @@ from datetime import (
 import logging
 from typing import (
     Any,
-    Optional,
     cast,
 )
 

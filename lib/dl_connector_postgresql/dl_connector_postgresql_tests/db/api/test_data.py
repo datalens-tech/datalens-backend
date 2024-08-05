@@ -27,7 +27,6 @@ from dl_core_testing.database import (
 )
 from dl_core_testing.dataset import data_source_settings_from_table
 from dl_sqlalchemy_postgres.base import CITEXT
-from dl_testing.regulated_test import RegulatedTestParams
 
 from dl_connector_postgresql_tests.db.api.base import PostgreSQLDataApiTestBase
 

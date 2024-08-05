@@ -12,7 +12,6 @@ from dl_api_commons.tenant_resolver import (
     CommonTenantResolver,
     TenantResolver,
 )
-from dl_configs.utils import get_root_certificates
 from dl_core.aio.web_app_services.gsheets import GSheetsSettings
 from dl_core.aio.web_app_services.s3 import S3Service
 from dl_core.loader import (

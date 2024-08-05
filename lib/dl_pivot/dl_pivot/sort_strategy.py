@@ -18,7 +18,6 @@ from typing import (
     Callable,
     Dict,
     Optional,
-    Union,
 )
 
 import attr

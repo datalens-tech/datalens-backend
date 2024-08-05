@@ -47,7 +47,7 @@ from dl_core.connection_models import (
 
 
 if TYPE_CHECKING:
-    from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO  # noqa: F401
+    from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
     from dl_dashsql.typed_query.primitives import (
         TypedQuery,
         TypedQueryResult,
@@ -75,7 +75,7 @@ class DBAdapterQueryResult:
         return result
 
 
-_TARGET_DTO_TV = TypeVar("_TARGET_DTO_TV", bound="ConnTargetDTO")
+_TARGET_DTO_TV = TypeVar("_TARGET_DTO_TV", bound=ConnTargetDTO)
 
 
 @attr.s

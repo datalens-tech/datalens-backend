@@ -19,7 +19,6 @@ from dl_constants.enums import (
     ProcessorType,
 )
 from dl_constants.types import TBIDataRow
-from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.ids import AvatarId
 from dl_core.data_processing.prepared_components.default_manager import DefaultPreparedComponentManager
 from dl_core.data_processing.processing.operation import (
@@ -36,7 +35,6 @@ from dl_core.data_processing.stream_base import (
     DataSourceVS,
     DataStreamAsync,
 )
-from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.services_registry import ServicesRegistry
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase

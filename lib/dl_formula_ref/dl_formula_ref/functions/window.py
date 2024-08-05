@@ -15,10 +15,7 @@ from dl_formula_ref.registry.aliased_res import (
     SimpleAliasedResourceRegistry,
 )
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
-from dl_formula_ref.registry.example import (
-    DataExample,
-    SimpleExample,
-)
+from dl_formula_ref.registry.example import DataExample
 from dl_formula_ref.registry.naming import CategoryPostfixNamingProvider
 from dl_formula_ref.registry.note import (
     Note,

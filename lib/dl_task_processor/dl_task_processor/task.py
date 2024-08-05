@@ -2,7 +2,6 @@ import abc
 from collections.abc import Iterable
 import enum
 from typing import (
-    Any,
     ClassVar,
     Generic,
     NewType,

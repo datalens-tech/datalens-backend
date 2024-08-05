@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Any,
-    Optional,
-)
+from typing import Optional
 
 from sqlalchemy.sql.elements import ClauseElement
 

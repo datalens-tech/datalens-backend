@@ -4,8 +4,6 @@ import logging
 import re
 from typing import Any
 
-import attr
-
 from dl_api_commons.logging import RequestObfuscator
 
 

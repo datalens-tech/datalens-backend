@@ -23,7 +23,7 @@ from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 
 
 if TYPE_CHECKING:
-    from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO  # noqa: F401
+    from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
 
 
 _DIALECT_STRINGS: dict[ConnectionType, str] = {}  # Filled from connectors
@@ -47,7 +47,7 @@ def get_dialect_for_conn_type(conn_type: ConnectionType) -> DefaultDialect:
 
 
 _DBA_TV = TypeVar("_DBA_TV", bound="CommonBaseDirectAdapter")
-_TARGET_DTO_TV = TypeVar("_TARGET_DTO_TV", bound="ConnTargetDTO")
+_TARGET_DTO_TV = TypeVar("_TARGET_DTO_TV", bound=ConnTargetDTO)
 
 
 class CommonBaseDirectAdapter(Generic[_TARGET_DTO_TV], metaclass=abc.ABCMeta):

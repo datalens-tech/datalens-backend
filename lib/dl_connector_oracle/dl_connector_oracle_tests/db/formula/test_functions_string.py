@@ -1,5 +1,3 @@
-import os
-
 import sqlalchemy as sa
 
 from dl_formula_testing.evaluator import DbEvaluator

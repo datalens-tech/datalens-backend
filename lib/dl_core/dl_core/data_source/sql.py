@@ -5,7 +5,6 @@ from functools import wraps
 import logging
 from typing import (
     TYPE_CHECKING,
-    Any,
     Callable,
     ClassVar,
     Optional,

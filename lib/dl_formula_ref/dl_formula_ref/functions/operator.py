@@ -8,10 +8,7 @@ from dl_formula_ref.registry.aliased_res import (
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.example import SimpleExample
 from dl_formula_ref.registry.naming import CustomNamingProvider
-from dl_formula_ref.registry.note import (
-    Note,
-    NoteLevel,
-)
+from dl_formula_ref.registry.note import Note
 from dl_formula_ref.registry.signature_gen import (
     SignatureTemplate,
     TemplatedSignatureGenerator,

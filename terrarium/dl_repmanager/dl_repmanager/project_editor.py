@@ -13,7 +13,6 @@ from dl_repmanager.package_meta_reader import (
     PackageMetaIOFactory,
     PackageMetaReader,
 )
-from dl_repmanager.primitives import MetaPackageSpec
 from dl_repmanager.repository_env import RepoEnvironment
 
 

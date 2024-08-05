@@ -71,7 +71,6 @@ select = [
 ]
 ignore = [
   "E501",  # line lengh, should be checked and fixed by black
-  "F401",  # unused imports
   "B904",  # force `raise ... from err` or `raise ... from None`
 ]
 exclude = [

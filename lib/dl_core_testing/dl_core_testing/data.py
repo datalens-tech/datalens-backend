@@ -11,7 +11,6 @@ from typing import (
 
 import attr
 
-from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_constants.enums import (
     DataSourceRole,
     ProcessorType,
