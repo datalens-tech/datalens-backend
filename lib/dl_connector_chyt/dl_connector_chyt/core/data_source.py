@@ -5,7 +5,6 @@ import collections
 import logging
 from typing import (
     TYPE_CHECKING,
-    Any,
     Callable,
     Optional,
 )

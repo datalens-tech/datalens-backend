@@ -20,20 +20,13 @@ from dl_core.connection_executors import (
     ConnExecutorQuery,
     SyncConnExecutorBase,
 )
-from dl_core.connection_models.common_models import (
-    DBIdent,
-    SchemaIdent,
-)
+from dl_core.connection_models.common_models import DBIdent
 from dl_core.db.native_type import (
     ClickHouseDateTime64WithTZNativeType,
     ClickHouseDateTimeWithTZNativeType,
     ClickHouseNativeType,
     GenericNativeType,
     norm_native_type,
-)
-from dl_core_testing.database import (
-    Db,
-    DbTable,
 )
 from dl_core_testing.testcases.connection_executor import (
     DefaultAsyncConnectionExecutorTestSuite,

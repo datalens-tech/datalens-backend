@@ -41,7 +41,6 @@ if TYPE_CHECKING:
         RawSchemaInfo,
     )
     from dl_core.connection_models import (
-        DBIdent,
         SchemaIdent,
         TableDefinition,
         TableIdent,
