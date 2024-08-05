@@ -69,13 +69,13 @@ from dl_utils.utils import get_type_full_name
 
 
 if TYPE_CHECKING:
-    from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
+    from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO  # noqa: F401
 
 
 LOGGER = logging.getLogger(__name__)
 
 _DBA_SA_TV = TypeVar("_DBA_SA_TV", bound="BaseSAAdapter")
-_DBA_SA_DTO_TV = TypeVar("_DBA_SA_DTO_TV", bound=ConnTargetDTO)
+_DBA_SA_DTO_TV = TypeVar("_DBA_SA_DTO_TV", bound="ConnTargetDTO")
 
 
 @attr.s(frozen=True, auto_attribs=True)
