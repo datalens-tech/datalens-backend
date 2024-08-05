@@ -23,6 +23,7 @@ dl-configs = {path = "../dl_configs"}
 dl-core = {path = "../dl_core"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-model-tools = {path = "../dl_model_tools"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

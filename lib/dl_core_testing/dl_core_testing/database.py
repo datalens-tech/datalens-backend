@@ -24,10 +24,6 @@ from dl_constants.enums import (
     UserDataType,
 )
 from dl_core.backend_types import get_backend_type
-from dl_core.db import (
-    get_type_transformer,
-    make_sa_type,
-)
 from dl_db_testing.database.base import (
     DbBase,
     DbConfig,
@@ -38,10 +34,12 @@ from dl_db_testing.database.dispenser import (
     ReInitableDbDispenser,
 )
 from dl_db_testing.database.engine_wrapper import get_engine_wrapper_cls_for_url
+from dl_type_transformer.sa_types import make_sa_type
+from dl_type_transformer.type_transformer import get_type_transformer
 
 
 if TYPE_CHECKING:
-    from dl_core.db.conversion_base import TypeTransformer
+    from dl_type_transformer.type_transformer import TypeTransformer
 
 
 @attr.s(frozen=True)

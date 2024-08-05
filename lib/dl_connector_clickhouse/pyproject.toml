@@ -34,6 +34,7 @@ dl-dashsql = {path = "../dl_dashsql"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-testing = {path = "../dl_testing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 pytest = ">=7.2.2"
 pytz = ">=2022.7.1"

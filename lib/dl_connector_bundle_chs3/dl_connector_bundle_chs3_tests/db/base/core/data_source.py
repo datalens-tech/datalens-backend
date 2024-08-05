@@ -5,9 +5,9 @@ import pytest
 
 from dl_constants.enums import UserDataType
 from dl_core.db import SchemaColumn
-from dl_core.db.native_type import GenericNativeType
 from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
 from dl_core_testing.testcases.data_source import DefaultDataSourceTestClass
+from dl_type_transformer.native_type import GenericNativeType
 
 from dl_connector_bundle_chs3.chs3_base.core.data_source import BaseFileS3DataSource
 from dl_connector_bundle_chs3.chs3_base.core.data_source_spec import BaseFileS3DataSourceSpec

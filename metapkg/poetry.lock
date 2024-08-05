@@ -1086,6 +1086,7 @@ dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
@@ -1123,6 +1124,7 @@ dl-pivot-pandas = {path = "../dl_pivot_pandas"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-rls = {path = "../dl_rls"}
 dl-task-processor = {path = "../dl_task_processor"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 dynamic-enum = {path = "../dynamic_enum"}
 flask = ">=2.2.5"
@@ -1296,6 +1298,7 @@ dl-connector-postgresql = {path = "../dl_connector_postgresql"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 sqlalchemy = ">=1.4.46, <2.0"
 
@@ -1346,6 +1349,7 @@ dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-testing = {path = "../dl_testing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 google-api-core = ">=2.15.0"
 google-auth = ">=2.21.0"
@@ -1384,6 +1388,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-bitrix = {path = "../dl_sqlalchemy_bitrix"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 redis = ">=5.0.1"
@@ -1419,6 +1424,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-testing = {path = "../dl_testing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
@@ -1450,6 +1456,7 @@ dl-core = {path = "../dl_core"}
 dl-db-testing = {path = "../dl_db_testing"}
 dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
@@ -1487,6 +1494,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 dl-testing = {path = "../dl_testing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 pytest = ">=7.2.2"
@@ -1518,6 +1526,7 @@ dl-connector-postgresql = {path = "../dl_connector_postgresql"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-i18n = {path = "../dl_i18n"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 sqlalchemy = ">=1.4.46, <2.0"
 
 [package.source]
@@ -1548,6 +1557,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-metrica-api = {path = "../dl_sqlalchemy_metrica_api"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
@@ -1577,6 +1587,7 @@ dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 pyodbc = ">=5.0.1"
 sqlalchemy = ">=1.4.46, <2.0"
 
@@ -1608,6 +1619,7 @@ dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 pymysql = ">=1.1.1"
 sqlalchemy = ">=1.4.46, <2.0"
 
@@ -1637,6 +1649,7 @@ dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = ">=3.19.0"
 oracledb = ">=2.0.0"
 sqlalchemy = ">=1.4.46, <2.0"
@@ -1669,6 +1682,7 @@ dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = ">=3.19.0"
 psycopg2-binary = ">=2.9.9"
 python-dateutil = ">=2.8.2"
@@ -1699,6 +1713,7 @@ dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-promql = {path = "../dl_sqlalchemy_promql"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
@@ -1728,6 +1743,7 @@ dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-testing = {path = "../dl_testing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 requests = ">=2.28.2"
@@ -1761,6 +1777,7 @@ dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl_utils = {path = "../dl_utils"}
 grpcio = ">=1.60.0"
 marshmallow = ">=3.19.0"
@@ -1854,6 +1871,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-rls = {path = "../dl_rls"}
 dl-task-processor = {path = "../dl_task_processor"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 Flask = ">=2.2.5"
 grpcio = ">=1.60.0"
@@ -1898,6 +1916,7 @@ dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-db-testing = {path = "../dl_db_testing"}
 dl-testing = {path = "../dl_testing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 Flask = ">=2.2.5"
 marshmallow = ">=3.19.0"
@@ -2033,6 +2052,7 @@ dl-core = {path = "../dl_core"}
 dl-file-uploader-lib = {path = "../dl_file_uploader_lib"}
 dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
 dl-task-processor = {path = "../dl_task_processor"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 gunicorn = ">=21.2.0"
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
@@ -2062,6 +2082,7 @@ dl-configs = {path = "../dl_configs"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
@@ -2125,6 +2146,7 @@ dl-core = {path = "../dl_core"}
 dl-file-uploader-lib = {path = "../dl_file_uploader_lib"}
 dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
 dl-task-processor = {path = "../dl_task_processor"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 faust-cchardet = ">=2.1.19"
 redis = ">=5.0.1"
@@ -2607,6 +2629,27 @@ pyyaml = ">=6.0.1"
 [package.source]
 type = "directory"
 url = "../lib/dl_testing"
+
+[[package]]
+name = "dl-type-transformer"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+dl-constants = {path = "../dl_constants"}
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
+pytz = ">=2022.7.1"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_type_transformer"
 
 [[package]]
 name = "dl-us-client"
@@ -6944,4 +6987,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "687fcd96fbbbb795f5f4c860914da11ac8538e7c8675a2fc5671341f123cc7eb"
+content-hash = "a66696b35dbe3c331771f3dab5199b95d31dfadd9dfeadd2e1d059367b157206"

@@ -36,10 +36,12 @@ from dl_core.db import (
     IndexInfo,
     SchemaColumn,
     SchemaInfo,
+)
+from dl_type_transformer.exc import UnsupportedNativeTypeError
+from dl_type_transformer.type_transformer import (
     TypeTransformer,
     get_type_transformer,
 )
-from dl_core.exc import UnsupportedNativeTypeError
 
 
 if TYPE_CHECKING:

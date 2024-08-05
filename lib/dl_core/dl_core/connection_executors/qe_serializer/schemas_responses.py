@@ -17,7 +17,7 @@ from dl_core.connection_executors.models.db_adapter_data import (
     RawSchemaInfo,
 )
 from dl_core.connection_executors.qe_serializer.schema_base import BaseQEAPISchema
-from dl_core.db.native_type_schema import OneOfNativeTypeSchemaBase
+from dl_type_transformer.native_type_schema import OneOfNativeTypeSchemaBase
 
 
 class RawColumnInfoSchema(BaseQEAPISchema):

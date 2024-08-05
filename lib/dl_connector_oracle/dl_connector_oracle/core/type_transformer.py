@@ -2,7 +2,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects.oracle import base as or_types  # not all data types are imported in init in older SA versions
 
 from dl_constants.enums import UserDataType
-from dl_core.db.conversion_base import (
+from dl_type_transformer.type_transformer import (
     TypeTransformer,
     make_native_type,
 )

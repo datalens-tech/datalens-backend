@@ -23,7 +23,7 @@ from dl_core.connection_models import (
     SchemaIdent,
     TableIdent,
 )
-from dl_core.db.native_type import SATypeSpec
+from dl_type_transformer.native_type import SATypeSpec
 
 from dl_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 from dl_connector_oracle.core.target_dto import OracleConnTargetDTO

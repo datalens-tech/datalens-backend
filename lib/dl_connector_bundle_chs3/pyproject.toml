@@ -29,6 +29,7 @@ dl-core = {path = "../dl_core"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-core-testing = {path = "../dl_core_testing"}
 dl-task-processor = {path = "../dl_task_processor"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 sqlalchemy = ">=1.4.46, <2.0"
 
 [tool.poetry.plugins]

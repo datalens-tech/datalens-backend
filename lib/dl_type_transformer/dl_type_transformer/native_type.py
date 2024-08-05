@@ -5,7 +5,6 @@ from typing import (
     ClassVar,
     Optional,
     Type,
-    TypeVar,
     Union,
 )
 
@@ -65,9 +64,6 @@ class GenericNativeType:
 
     def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
-
-
-_COMMON_NATIVE_TYPE_TV = TypeVar("_COMMON_NATIVE_TYPE_TV", bound="CommonNativeType")
 
 
 @attr.s(frozen=True)

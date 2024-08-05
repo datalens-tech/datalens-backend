@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
 from dl_constants.enums import SourceBackendType
-from dl_core.db.native_type import (
+from dl_type_transformer.native_type import (
     ClickHouseDateTime64NativeType,
     ClickHouseDateTime64WithTZNativeType,
     ClickHouseDateTimeWithTZNativeType,
@@ -20,7 +20,7 @@ from dl_core.db.native_type import (
     CommonNativeType,
     GenericNativeType,
 )
-from dl_core.db.sa_types_base import make_native_type
+from dl_type_transformer.type_transformer import make_native_type
 
 from dl_connector_clickhouse.core.clickhouse_base.constants import BACKEND_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.core.clickhouse_base.type_transformer import (

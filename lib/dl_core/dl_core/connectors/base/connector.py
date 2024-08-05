@@ -44,10 +44,10 @@ if TYPE_CHECKING:
     from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
     from dl_core.connection_executors.async_base import AsyncConnExecutorBase
     from dl_core.connection_executors.common_base import ConnExecutorBase
-    from dl_core.db.conversion_base import TypeTransformer
-    from dl_core.db.native_type import GenericNativeType
     from dl_core.reporting.notifications import BaseNotification
     from dl_core.us_connection_base import ConnectionBase
+    from dl_type_transformer.native_type import GenericNativeType
+    from dl_type_transformer.type_transformer import TypeTransformer
 
 
 class CoreSourceDefinition(abc.ABC):

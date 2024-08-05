@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from sqlalchemy.dialects import mysql as my_types
 
-from dl_core.db.sa_types_base import (
+from dl_type_transformer.sa_types_base import (
     lengthed_instantiator,
-    make_native_type,
     simple_instantiator,
 )
+from dl_type_transformer.type_transformer import make_native_type
 
 from dl_connector_mysql.core.constants import BACKEND_TYPE_MYSQL
 

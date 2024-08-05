@@ -16,7 +16,7 @@ from dl_constants.enums import (
     IndexKind,
     UserDataType,
 )
-from dl_core.db.native_type import GenericNativeType
+from dl_type_transformer.native_type import GenericNativeType
 from dl_utils.utils import get_type_full_name
 
 

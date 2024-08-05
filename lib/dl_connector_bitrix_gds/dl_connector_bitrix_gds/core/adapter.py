@@ -39,8 +39,8 @@ from dl_core.connection_models import (
     TableIdent,
 )
 from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
-from dl_core.db.native_type import CommonNativeType
 from dl_core.exc import DatabaseQueryError
+from dl_type_transformer.native_type import CommonNativeType
 
 from dl_connector_bitrix_gds.core.caches import (
     bitrix_cache_deserializer,

@@ -11,9 +11,9 @@ from dl_core.connectors.base.connector import (
     CoreConnector,
     CoreSourceDefinition,
 )
-from dl_core.db.conversion_base import TypeTransformer
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_manager.storage_schemas.connection import BaseConnectionDataStorageSchema
+from dl_type_transformer.type_transformer import TypeTransformer
 
 
 CONNECTION_TYPE_TESTING = ConnectionType.declare("testing")

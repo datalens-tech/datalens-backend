@@ -24,12 +24,12 @@ from dl_app_tools.profiling_base import (
     generic_profiler,
 )
 from dl_constants.enums import UserDataType
-from dl_core import converter_types_cast
 from dl_core.aio.web_app_services.gsheets import (
     Cell,
     NumberFormatType,
 )
 from dl_core.db import SchemaColumn
+from dl_type_transformer import converter_types_cast
 
 from dl_connector_bundle_chs3.chs3_base.core.type_transformer import DatetimeFileCommonTypeCaster
 

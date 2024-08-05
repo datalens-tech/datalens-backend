@@ -26,6 +26,7 @@ dl-core = {path = "../dl_core"}
 dl-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
 dl-db-testing = {path = "../dl_db_testing"}
 dl-dashsql = {path = "../dl_dashsql"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]

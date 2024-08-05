@@ -28,31 +28,6 @@ class AIOHttpConnTimeoutError(Exception):
     """
 
 
-class UnsupportedNativeTypeError(Exception):
-    pass
-
-
-class UnsupportedBITypeError(Exception):
-    pass
-
-
-class UnsupportedDatabaseError(Exception):
-    pass
-
-
-class TypeCastError(DLBaseException):
-    err_code = DLBaseException.err_code + ["TYPE_CAST"]
-
-
-class TypeCastUnsupported(TypeCastError):
-    err_code = TypeCastError.err_code + ["UNSUPPORTED"]
-
-
-class TypeCastFailed(TypeCastError):
-    err_code = TypeCastError.err_code + ["FAILED"]
-    default_message = "Type casting failed for value"
-
-
 class SourceAccessDenied(DLBaseException):
     err_code = DLBaseException.err_code + ["SOURCE_ACCESS_DENIED"]
 

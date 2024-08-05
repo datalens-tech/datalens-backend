@@ -1,13 +1,13 @@
 from typing import ClassVar
 
 from dl_constants.enums import UserDataType
-from dl_core.db.conversion_base import (
+from dl_sqlalchemy_chyt import types as chyt_types
+from dl_type_transformer.native_type import GenericNativeType
+from dl_type_transformer.type_transformer import (
     TypeCaster,
     YTBooleanTypeCaster,
     make_native_type,
 )
-from dl_core.db.native_type import GenericNativeType
-from dl_sqlalchemy_chyt import types as chyt_types
 
 from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 

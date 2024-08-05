@@ -11,7 +11,7 @@ from marshmallow import (
 
 from dl_constants.enums import UserDataType
 from dl_core.db.elements import SchemaColumn
-from dl_core.db.native_type import GenericNativeType
+from dl_type_transformer.native_type import GenericNativeType
 
 
 class NativeTypeSchema(Schema):

@@ -27,6 +27,7 @@ dl-sqlalchemy-bitrix = {path = "../dl_sqlalchemy_bitrix"}
 dl-cache-engine = {path = "../dl_cache_engine"}
 dl-formula = {path = "../dl_formula"}
 dl-model-tools = {path = "../dl_model_tools"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]

@@ -156,6 +156,7 @@ dl-rate-limiter = {path = "../lib/dl_rate_limiter", extras=["flask", "aiohttp"]}
 dl-rls = {path = "../lib/dl_rls"}
 dl-zitadel = {path = "../lib/dl_zitadel"}
 dl-auth-api-lib = {path = "../lib/dl_auth_api_lib"}
+dl-type-transformer = {path = "../lib/dl_type_transformer"}
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.12.1"

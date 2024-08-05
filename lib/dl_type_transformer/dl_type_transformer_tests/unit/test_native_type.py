@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from dl_core.db.native_type import (
+from dl_type_transformer.native_type import (
     ClickHouseDateTime64NativeType,
     ClickHouseDateTime64WithTZNativeType,
     ClickHouseDateTimeWithTZNativeType,
@@ -11,7 +11,7 @@ from dl_core.db.native_type import (
     GenericNativeType,
     LengthedNativeType,
 )
-from dl_core.db.native_type_schema import OneOfNativeTypeSchema
+from dl_type_transformer.native_type_schema import OneOfNativeTypeSchema
 
 
 SAMPLE_NATIVE_TYPES = (

@@ -2,13 +2,13 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql as pg_types
 
 from dl_constants.enums import UserDataType
-from dl_core.db.conversion_base import (
+from dl_sqlalchemy_postgres.base import CITEXT
+from dl_type_transformer.type_transformer import (
     TypeTransformer,
     UTCDatetimeTypeCaster,
     UTCTimezoneDatetimeTypeCaster,
     make_native_type,
 )
-from dl_sqlalchemy_postgres.base import CITEXT
 
 
 PG_TYPES_INT = frozenset((pg_types.SMALLINT, pg_types.INTEGER, pg_types.BIGINT))

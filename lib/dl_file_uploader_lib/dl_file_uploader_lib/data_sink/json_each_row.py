@@ -7,6 +7,8 @@ from typing import (
     Optional,
 )
 
+from dl_type_transformer.type_transformer import get_type_transformer
+
 
 if TYPE_CHECKING:
     from types_aiobotocore_s3 import S3Client as AsyncS3Client
@@ -19,10 +21,7 @@ from dl_core.data_sink import (
     DataSink,
     DataSinkAsync,
 )
-from dl_core.db import (
-    SchemaColumn,
-    get_type_transformer,
-)
+from dl_core.db import SchemaColumn
 from dl_core.raw_data_streaming.stream import (
     DataStreamBase,
     SimpleUntypedAsyncDataStream,

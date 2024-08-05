@@ -27,6 +27,7 @@ dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 dl-configs = {path = "../dl_configs"}
 dl-core = {path = "../dl_core"}
 dl-task-processor = {path = "../dl_task_processor"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
