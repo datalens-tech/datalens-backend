@@ -298,6 +298,14 @@ class DataApiAppSettings(AppSettings):
     app_prefix: ClassVar[str] = "y"
 
 
+class FileUploaderWorkerAppSettings(AppSettings):
+    pass
+
+
+class FileUploaderApiAppSettings(AppSettings):
+    pass
+
+
 @attr.s(frozen=True, kw_only=True)
 class ControlApiAppTestingsSettings:
     us_auth_mode_override: Optional[USAuthMode] = attr.ib(default=None)
@@ -344,4 +352,14 @@ class ControlApiAppSettingsOS(AppSettingsOS, ControlApiAppSettings):
 
 @attr.s(frozen=True)
 class DataApiAppSettingsOS(AppSettingsOS, DataApiAppSettings):
+    ...
+
+
+@attr.s(frozen=True)
+class FileUploaderApiAppSettingsOS(AppSettingsOS, FileUploaderApiAppSettings):
+    ...
+
+
+@attr.s(frozen=True)
+class FileUploaderWorkerAppSettingsOS(AppSettingsOS, FileUploaderWorkerAppSettings):
     ...
