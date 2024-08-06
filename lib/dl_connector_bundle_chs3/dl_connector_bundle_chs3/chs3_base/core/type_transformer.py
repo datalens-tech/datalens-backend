@@ -19,7 +19,6 @@ from dl_core.db.conversion_base import (
     make_native_type,
 )
 
-from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 
 
