@@ -11,3 +11,7 @@ RUN apt-get update \
         # For Postgres
         libpq-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Configure libraries for MSSQL
+RUN cat /usr/share/tdsodbc/odbcinst.ini >> /etc/odbcinst.ini
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/odbc
