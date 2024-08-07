@@ -1,9 +1,7 @@
 import sqlalchemy_bigquery._types as bq_types
 
-from dl_core.db.sa_types_base import (
-    make_native_type,
-    simple_instantiator,
-)
+from dl_type_transformer.sa_types_base import simple_instantiator
+from dl_type_transformer.type_transformer import make_native_type
 
 from dl_connector_bigquery.core.constants import BACKEND_TYPE_BIGQUERY
 

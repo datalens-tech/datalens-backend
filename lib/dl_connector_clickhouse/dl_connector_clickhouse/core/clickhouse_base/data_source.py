@@ -2,10 +2,7 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import (
-    TYPE_CHECKING,
-    ClassVar,
-)
+from typing import ClassVar
 
 from dl_constants.enums import JoinType
 from dl_core.data_source.sql import (
@@ -15,14 +12,6 @@ from dl_core.data_source.sql import (
 )
 
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
-
-
-if TYPE_CHECKING:
-    from dl_core import us_connection  # noqa
-    from dl_core.db import (  # noqa
-        SchemaColumn,
-        SchemaInfo,
-    )
 
 
 LOGGER = logging.getLogger(__name__)

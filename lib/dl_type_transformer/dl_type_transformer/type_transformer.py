@@ -26,11 +26,11 @@ from dl_constants.enums import (
     ConnectionType,
     UserDataType,
 )
-from dl_core import (
+from dl_type_transformer import (
     converter_types_cast,
     exc,
 )
-from dl_core.db.native_type import (
+from dl_type_transformer.native_type import (
     CommonNativeType,
     GenericNativeType,
 )
@@ -47,7 +47,7 @@ def _if_not_none(value: _INN_TV, func: Callable[[_INN_TV], Any]) -> Any:
         try:
             return func(value)
         except ValueError as e:
-            raise exc.DataParseError(f"Cannot convert {value!r} to {func.__name__}", query=None) from e
+            raise exc.TypeCastFailed(f"Cannot convert {value!r} to {func.__name__}") from e
     return None
 
 
@@ -270,7 +270,7 @@ class TypeTransformer:
         try:
             result = self.user_to_native_map[user_t]
         except KeyError as e:
-            raise exc.UnsupportedBITypeError(user_t) from e
+            raise exc.UnsupportedNativeTypeError(user_t) from e
 
         # Assume all databases support `nullable` in a similar way, so pass it
         # along if possible.
@@ -304,4 +304,4 @@ def get_type_transformer(conn_type: ConnectionType) -> TypeTransformer:
     try:
         return TYPE_TRANSFORMER_MAP[conn_type]
     except KeyError as e:
-        raise exc.UnsupportedDatabaseError(conn_type) from e
+        raise exc.TypeTransformerNotFound(conn_type) from e

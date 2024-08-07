@@ -13,7 +13,6 @@ from dl_constants.enums import (
     UserDataType,
 )
 from dl_core.db.elements import SchemaColumn
-from dl_core.db.native_type_schema import OneOfNativeTypeSchema
 from dl_file_uploader_api_lib.schemas.base import BaseRequestSchema
 from dl_file_uploader_api_lib.schemas.errors import (
     ErrorInfoSchema,
@@ -24,6 +23,7 @@ from dl_file_uploader_lib.enums import (
     CSVEncoding,
     FileType,
 )
+from dl_type_transformer.native_type_schema import OneOfNativeTypeSchema
 
 
 class SourceInfoBaseRequestSchema(BaseRequestSchema):

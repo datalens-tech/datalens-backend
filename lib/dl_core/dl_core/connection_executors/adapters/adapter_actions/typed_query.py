@@ -26,9 +26,7 @@ from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
     ExecutionStepCursorInfo,
 )
-from dl_core.db.conversion_base import TypeTransformer
-from dl_core.db.native_type import GenericNativeType
-import dl_core.exc as exc
+from dl_core.exc import WrongQueryParameterization
 from dl_dashsql.formatting.base import (
     QueryFormatterFactory,
     QueryIncomingParameter,
@@ -40,6 +38,9 @@ from dl_dashsql.typed_query.primitives import (
     TypedQueryResult,
     TypedQueryResultColumnHeader,
 )
+from dl_type_transformer.exc import UnsupportedNativeTypeError
+from dl_type_transformer.native_type import GenericNativeType
+from dl_type_transformer.type_transformer import TypeTransformer
 
 
 if TYPE_CHECKING:
@@ -102,7 +103,7 @@ class TypedQueryToDBAQueryConverter:
                 ]
             )
         except sa_exc.ArgumentError as e:
-            raise exc.WrongQueryParameterization() from e
+            raise WrongQueryParameterization() from e
 
         return sa_text
 
@@ -156,7 +157,7 @@ class AsyncTypedQueryAdapterActionViaStandardExecute(AsyncTypedQueryAdapterActio
             if native_type:
                 try:
                     user_type = self._type_transformer.type_native_to_user(native_type)
-                except exc.UnsupportedNativeTypeError:
+                except UnsupportedNativeTypeError:
                     pass
 
             headers.append(TypedQueryResultColumnHeader(name=name, user_type=user_type))

@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo
     from dl_core.connection_models import DBIdent
     from dl_core.connectors.base.error_transformer import DBExcKWArgs
-    from dl_core.db.native_type import SATypeSpec
+    from dl_type_transformer.native_type import SATypeSpec
 
 
 LOGGER = logging.getLogger(__name__)

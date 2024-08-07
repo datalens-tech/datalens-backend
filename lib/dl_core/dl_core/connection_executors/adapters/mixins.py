@@ -15,7 +15,7 @@ from sqlalchemy.sql.type_api import TypeEngine
 
 from dl_constants.enums import ConnectionType
 from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo
-from dl_core.db.native_type import (
+from dl_type_transformer.native_type import (
     CommonNativeType,
     SATypeSpec,
 )

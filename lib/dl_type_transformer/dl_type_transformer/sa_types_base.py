@@ -6,7 +6,7 @@ from typing import (
     Type,
 )
 
-from dl_core.db.native_type import (
+from dl_type_transformer.native_type import (
     GenericNativeType,
     LengthedNativeType,
 )
@@ -16,9 +16,6 @@ if TYPE_CHECKING:
     from sqlalchemy.types import TypeEngine
 
     TypeFactory = Callable[[GenericNativeType], TypeEngine]
-
-
-make_native_type = GenericNativeType.normalize_name_and_create
 
 
 def simple_instantiator(typecls: Type[TypeEngine]) -> TypeFactory:

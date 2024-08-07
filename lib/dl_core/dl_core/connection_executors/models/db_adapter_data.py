@@ -18,7 +18,7 @@ from typing_extensions import Self
 if TYPE_CHECKING:
     from dl_constants.enums import IndexKind
     from dl_constants.types import TJSONExt
-    from dl_core.db.native_type import GenericNativeType
+    from dl_type_transformer.native_type import GenericNativeType
 
 
 class ExecutionStep:

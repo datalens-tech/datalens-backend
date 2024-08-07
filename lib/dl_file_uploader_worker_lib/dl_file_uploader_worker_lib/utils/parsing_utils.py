@@ -26,7 +26,6 @@ from dl_core.components.ids import (
     ID_VALID_SYMBOLS,
     make_readable_field_id,
 )
-from dl_core.db import get_type_transformer
 from dl_core.db.elements import SchemaColumn
 from dl_file_uploader_lib import exc
 from dl_file_uploader_lib.enums import (
@@ -41,6 +40,7 @@ from dl_file_uploader_worker_lib.utils.converter_parsing_utils import (
     merge_column_types,
     raw_schema_to_column_types,
 )
+from dl_type_transformer.type_transformer import get_type_transformer
 
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from dl_connector_bundle_chs3.chs3_yadocs.core.constants import CONNECTION_TYPE_YADOCS

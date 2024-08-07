@@ -27,6 +27,7 @@ dl-app-tools = {path = "../dl_app_tools"}
 dl-db-testing = {path = "../dl_db_testing"}
 dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
 dl-query-processing = {path = "../dl_query_processing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]

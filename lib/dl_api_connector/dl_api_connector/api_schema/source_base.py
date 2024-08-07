@@ -27,7 +27,6 @@ from dl_core.db import (
     IndexInfo,
     SchemaColumn,
 )
-from dl_core.db.native_type_schema import OneOfNativeTypeSchema
 from dl_core.marshmallow import FrozenSetField
 from dl_core.multisource import (
     BinaryCondition,
@@ -37,6 +36,7 @@ from dl_core.multisource import (
 )
 from dl_model_tools.schema.base import BaseSchema
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
+from dl_type_transformer.native_type_schema import OneOfNativeTypeSchema
 
 
 if TYPE_CHECKING:

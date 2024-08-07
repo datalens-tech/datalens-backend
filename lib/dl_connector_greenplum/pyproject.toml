@@ -19,6 +19,7 @@ dl-connector-postgresql = {path = "../dl_connector_postgresql"}
 dl-configs = {path = "../dl_configs"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-core = {path = "../dl_core"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 asyncpg = ">=0.29.0"
 sqlalchemy = ">=1.4.46, <2.0"
 

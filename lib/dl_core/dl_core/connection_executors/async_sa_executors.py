@@ -45,6 +45,7 @@ from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from dl_core.connection_models.common_models import TableDefinition
 from dl_core.db import SchemaInfo
+from dl_type_transformer.exc import UnsupportedNativeTypeError
 from dl_utils.aio import ContextVarExecutor
 
 
@@ -254,7 +255,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
             if native_type:
                 try:
                     bi_type = tt.type_native_to_user(native_type)
-                except exc.UnsupportedNativeTypeError:
+                except UnsupportedNativeTypeError:
                     pass
 
             result.append(bi_type)

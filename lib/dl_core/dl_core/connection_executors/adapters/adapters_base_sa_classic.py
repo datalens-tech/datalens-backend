@@ -33,7 +33,7 @@ from dl_core.connection_executors.models.db_adapter_data import (
     RawColumnInfo,
     RawSchemaInfo,
 )
-from dl_core.db.native_type import CommonNativeType
+from dl_type_transformer.native_type import CommonNativeType
 
 
 if TYPE_CHECKING:

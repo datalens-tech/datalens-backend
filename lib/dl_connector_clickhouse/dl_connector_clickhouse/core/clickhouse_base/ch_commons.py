@@ -18,10 +18,8 @@ from sqlalchemy.sql import schema as sa_schema
 from dl_core import exc
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from dl_core.connectors.base.error_transformer import DBExcKWArgs
-from dl_core.db import (
-    SchemaColumn,
-    make_sa_type,
-)
+from dl_core.db import SchemaColumn
+from dl_type_transformer.sa_types import make_sa_type
 
 from dl_connector_clickhouse.core.clickhouse_base.constants import BACKEND_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.core.clickhouse_base.exc import (
@@ -36,7 +34,7 @@ from dl_connector_clickhouse.core.clickhouse_base.exc import (
 
 
 if TYPE_CHECKING:
-    from dl_core.db.conversion_base import TypeTransformer
+    from dl_type_transformer.type_transformer import TypeTransformer
 
 LOGGER = logging.getLogger(__name__)
 

@@ -23,7 +23,7 @@ from dl_core.connection_models.common_models import (
     DBIdent,
     SATextTableDefinition,
 )
-from dl_core.db.native_type import SATypeSpec
+from dl_type_transformer.native_type import SATypeSpec
 
 from dl_connector_snowflake.core.constants import CONNECTION_TYPE_SNOWFLAKE
 from dl_connector_snowflake.core.error_transformer import snowflake_error_transformer

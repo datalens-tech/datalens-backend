@@ -2,8 +2,6 @@
 Marshmallow schema for the NativeType classes.
 
 Shared between storage (dl_core.us_manager.storage_schemas) and RQE api.
-
-TODO: refactor together with `dl_core.base_models`.
 """
 
 from __future__ import annotations
@@ -24,7 +22,7 @@ from marshmallow import (
 )
 from marshmallow_oneofschema import OneOfSchema
 
-from dl_core.db.native_type import (
+from dl_type_transformer.native_type import (
     ClickHouseDateTime64NativeType,
     ClickHouseDateTime64WithTZNativeType,
     ClickHouseDateTimeWithTZNativeType,

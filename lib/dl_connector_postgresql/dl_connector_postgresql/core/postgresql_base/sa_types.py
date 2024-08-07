@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from sqlalchemy.dialects import postgresql as pg_types
 
-from dl_core.db.sa_types_base import (
-    make_native_type,
+from dl_type_transformer.sa_types_base import (
     simple_instantiator,
     timezone_instantiator,
     typed_instantiator,
 )
+from dl_type_transformer.type_transformer import make_native_type
 
 from dl_connector_postgresql.core.postgresql.constants import BACKEND_TYPE_POSTGRES
 from dl_connector_postgresql.core.postgresql_base.type_transformer import (

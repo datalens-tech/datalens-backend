@@ -48,10 +48,6 @@ from dl_core.connection_models import (
     DBIdent,
     SchemaIdent,
 )
-from dl_core.db import (
-    TypeTransformer,
-    get_type_transformer,
-)
 from dl_core.i18n.localizer import Translatable
 from dl_core.us_entry import (
     BaseAttrsDataModel,
@@ -62,6 +58,10 @@ from dl_core.utils import (
     secrepr,
 )
 from dl_i18n.localizer_base import Localizer
+from dl_type_transformer.type_transformer import (
+    TypeTransformer,
+    get_type_transformer,
+)
 from dl_utils.aio import await_sync
 from dl_utils.utils import DataKey
 

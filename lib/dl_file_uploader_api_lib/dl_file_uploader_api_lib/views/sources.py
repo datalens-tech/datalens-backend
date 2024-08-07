@@ -17,7 +17,6 @@ from dl_constants.enums import (
     FileProcessingStatus,
     UserDataType,
 )
-from dl_core.db import get_type_transformer
 from dl_core.db.elements import SchemaColumn
 from dl_file_uploader_api_lib.schemas import sources as sources_schemas
 from dl_file_uploader_api_lib.views.base import FileUploaderBaseView
@@ -41,6 +40,7 @@ from dl_file_uploader_lib.redis_model.models.models import (
     YaDocsUserSourceProperties,
 )
 from dl_file_uploader_task_interface.tasks import ParseFileTask
+from dl_type_transformer.type_transformer import get_type_transformer
 
 from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 

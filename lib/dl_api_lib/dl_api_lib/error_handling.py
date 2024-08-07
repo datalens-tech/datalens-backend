@@ -26,7 +26,8 @@ from dl_core import exc as common_exc
 from dl_dashsql import exc as dashsql_exc
 from dl_formula.core import exc as formula_exc
 import dl_query_processing.exc
-from dl_rls import exc as rls_exc
+import dl_rls.exc
+import dl_type_transformer.exc
 
 
 LOGGER = logging.getLogger(__name__)
@@ -57,7 +58,7 @@ EXCEPTION_CODES = {
     common_exc.InvalidFieldError: status.BAD_REQUEST,
     common_exc.FieldNotFound: status.BAD_REQUEST,
     common_exc.USPermissionRequired: status.FORBIDDEN,
-    rls_exc.RLSError: status.BAD_REQUEST,
+    dl_rls.exc.RLSError: status.BAD_REQUEST,
     exc.FeatureNotAvailable: status.BAD_REQUEST,
     dl_query_processing.exc.FilterError: status.BAD_REQUEST,
     exc.UnsupportedForEntityType: status.BAD_REQUEST,
@@ -75,7 +76,7 @@ EXCEPTION_CODES = {
     exc.DatasetActionNotAllowedError: status.BAD_REQUEST,
     dl_query_processing.exc.LegendError: status.BAD_REQUEST,
     dl_query_processing.exc.PivotError: status.BAD_REQUEST,
-    common_exc.TypeCastFailed: status.BAD_REQUEST,
+    dl_type_transformer.exc.TypeCastFailed: status.BAD_REQUEST,
     dl_query_processing.exc.BlockSpecError: status.BAD_REQUEST,
     dl_query_processing.exc.TreeError: status.BAD_REQUEST,
     dl_query_processing.exc.ParameterError: status.BAD_REQUEST,

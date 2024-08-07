@@ -32,8 +32,8 @@ from dl_core.connection_models import (
     TableIdent,
 )
 from dl_core.connectors.base.error_transformer import DBExcKWArgs
-from dl_core.db.native_type import CommonNativeType
 import dl_core.exc as exc
+from dl_type_transformer.native_type import CommonNativeType
 
 from dl_connector_mssql.core.constants import CONNECTION_TYPE_MSSQL
 from dl_connector_mssql.core.exc import (

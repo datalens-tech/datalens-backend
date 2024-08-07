@@ -60,8 +60,9 @@ from dl_core.connection_models import (
 )
 from dl_core.connectors.base.error_transformer import DBExcKWArgs
 from dl_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
-from dl_core.db.conversion_base import get_type_transformer
-from dl_core.db.native_type import (
+from dl_dashsql.formatting.placeholder_dbapi import DBAPIQueryFormatterFactory
+from dl_dashsql.registry import get_dash_sql_param_literalizer
+from dl_type_transformer.native_type import (
     ClickHouseDateTime64NativeType,
     ClickHouseDateTime64WithTZNativeType,
     ClickHouseDateTimeWithTZNativeType,
@@ -69,8 +70,7 @@ from dl_core.db.native_type import (
     GenericNativeType,
     norm_native_type,
 )
-from dl_dashsql.formatting.placeholder_dbapi import DBAPIQueryFormatterFactory
-from dl_dashsql.registry import get_dash_sql_param_literalizer
+from dl_type_transformer.type_transformer import get_type_transformer
 from dl_utils.utils import make_url
 
 from dl_connector_clickhouse.core.clickhouse_base.ch_commons import (

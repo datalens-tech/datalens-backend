@@ -39,6 +39,7 @@ dl-cache-engine = {path = "../dl_cache_engine"}
 dynamic-enum = {path = "../dynamic_enum"}
 typing-extensions = ">=4.9.0"
 dl-rls = {path = "../dl_rls"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

@@ -20,10 +20,7 @@ from dl_api_commons.base_models import (
 )
 from dl_configs.settings_submodels import S3Settings
 from dl_constants.enums import DataSourceType
-from dl_core.db import (
-    SchemaColumn,
-    get_type_transformer,
-)
+from dl_core.db import SchemaColumn
 from dl_core.services_registry import ServicesRegistry
 from dl_core_testing.configuration import RedisSettingMaker
 from dl_core_testing.database import DbTable
@@ -39,6 +36,7 @@ from dl_testing.s3_utils import (
     create_s3_bucket,
     create_s3_client,
 )
+from dl_type_transformer.type_transformer import get_type_transformer
 
 from dl_connector_bundle_chs3.chs3_base.core.testing.utils import create_s3_native_from_ch_table
 from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection

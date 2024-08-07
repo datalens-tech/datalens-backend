@@ -28,6 +28,7 @@ dl-api-connector = {path = "../dl_api_connector"}
 dl-core = {path = "../dl_core"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-db-testing = {path = "../dl_db_testing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["snowflake"]

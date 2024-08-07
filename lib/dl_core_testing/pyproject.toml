@@ -31,6 +31,7 @@ dl-configs = {path = "../dl_configs"}
 dl-core = {path = "../dl_core"}
 dl-app-tools = {path = "../dl_app_tools"}
 dl-db-testing = {path = "../dl_db_testing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 
 [tool.poetry.plugins."dl_core.connectors"]
 testing = "dl_core_testing.connector:TestingCoreConnector"

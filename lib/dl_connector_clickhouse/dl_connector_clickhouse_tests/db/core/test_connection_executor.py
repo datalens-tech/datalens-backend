@@ -21,19 +21,19 @@ from dl_core.connection_executors import (
     SyncConnExecutorBase,
 )
 from dl_core.connection_models.common_models import DBIdent
-from dl_core.db.native_type import (
-    ClickHouseDateTime64WithTZNativeType,
-    ClickHouseDateTimeWithTZNativeType,
-    ClickHouseNativeType,
-    GenericNativeType,
-    norm_native_type,
-)
 from dl_core_testing.testcases.connection_executor import (
     DefaultAsyncConnectionExecutorTestSuite,
     DefaultSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite,
 )
 from dl_testing.regulated_test import RegulatedTestParams
+from dl_type_transformer.native_type import (
+    ClickHouseDateTime64WithTZNativeType,
+    ClickHouseDateTimeWithTZNativeType,
+    ClickHouseNativeType,
+    GenericNativeType,
+    norm_native_type,
+)
 
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from dl_connector_clickhouse_tests.db.config import CoreConnectionSettings

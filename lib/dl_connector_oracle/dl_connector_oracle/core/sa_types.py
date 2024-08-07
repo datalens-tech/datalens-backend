@@ -3,11 +3,11 @@ from __future__ import annotations
 import sqlalchemy as sa
 from sqlalchemy.dialects.oracle import base as or_types  # not all data types are imported in init in older SA versions
 
-from dl_core.db.sa_types_base import (
+from dl_type_transformer.sa_types_base import (
     lengthed_instantiator,
-    make_native_type,
     simple_instantiator,
 )
+from dl_type_transformer.type_transformer import make_native_type
 
 from dl_connector_oracle.core.constants import BACKEND_TYPE_ORACLE
 

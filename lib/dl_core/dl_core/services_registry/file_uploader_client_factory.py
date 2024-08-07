@@ -25,7 +25,7 @@ from dl_api_commons.aiohttp.aiohttp_client import (
 from dl_constants.api_constants import DLHeadersCommon
 from dl_constants.enums import UserDataType
 from dl_core.db.elements import SchemaColumn
-from dl_core.db.native_type_schema import OneOfNativeTypeSchema
+from dl_type_transformer.native_type_schema import OneOfNativeTypeSchema
 from dl_utils.aio import await_sync
 
 

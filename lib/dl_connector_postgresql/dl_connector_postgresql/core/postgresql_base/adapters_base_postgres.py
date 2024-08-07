@@ -10,7 +10,7 @@ import attr
 import sqlalchemy.dialects.postgresql as sa_pg
 
 from dl_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
-from dl_core.db.native_type import SATypeSpec
+from dl_type_transformer.native_type import SATypeSpec
 
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode

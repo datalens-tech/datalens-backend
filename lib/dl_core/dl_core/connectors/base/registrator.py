@@ -19,8 +19,6 @@ from dl_core.connectors.settings.registry import register_connector_settings_cla
 from dl_core.data_processing.query_compiler_registry import register_sa_query_compiler_cls
 from dl_core.data_source.type_mapping import register_data_source_class
 from dl_core.data_source_spec.type_mapping import register_data_source_spec_class
-from dl_core.db.conversion_base import register_type_transformer_class
-from dl_core.db.sa_types import register_sa_types
 from dl_core.db_session_utils import (
     register_query_fail_exceptions,
     register_sa_query_cls,
@@ -34,6 +32,8 @@ from dl_core.us_connection import register_connection_class
 from dl_core.us_manager.storage_schemas.connection_schema_registry import register_connection_schema
 from dl_core.us_manager.storage_schemas.data_source_spec import register_data_source_schema
 from dl_dashsql.registry import register_dash_sql_param_literalizer_cls
+from dl_type_transformer.sa_types import register_sa_types
+from dl_type_transformer.type_transformer import register_type_transformer_class
 
 
 if TYPE_CHECKING:

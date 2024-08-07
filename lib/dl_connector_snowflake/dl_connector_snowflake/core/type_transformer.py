@@ -1,7 +1,7 @@
 from snowflake import sqlalchemy as ssa
 
 from dl_constants.enums import UserDataType
-from dl_core.db.conversion_base import (
+from dl_type_transformer.type_transformer import (
     TypeTransformer,
     make_native_type,
 )

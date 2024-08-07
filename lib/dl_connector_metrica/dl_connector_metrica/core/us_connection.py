@@ -17,10 +17,7 @@ from dl_constants.enums import (
     UserDataType,
 )
 from dl_core import exc
-from dl_core.db import (
-    SchemaColumn,
-    get_type_transformer,
-)
+from dl_core.db import SchemaColumn
 from dl_core.us_connection_base import (
     ConnectionBase,
     DataSourceTemplate,
@@ -30,6 +27,7 @@ import dl_sqlalchemy_metrica_api
 from dl_sqlalchemy_metrica_api import api_client as metrika_api_client
 from dl_sqlalchemy_metrica_api.api_info.appmetrica import AppMetricaFieldsNamespaces
 from dl_sqlalchemy_metrica_api.api_info.metrika import MetrikaApiCounterSource
+from dl_type_transformer.type_transformer import get_type_transformer
 from dl_utils.utils import DataKey
 
 from dl_connector_metrica.core.constants import (

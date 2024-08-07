@@ -63,8 +63,8 @@ from dl_core.connectors.base.error_transformer import (
     DbErrorTransformer,
     make_default_transformer_with_custom_rules,
 )
-from dl_core.db.native_type import CommonNativeType
 from dl_core.db_session_utils import db_session_context
+from dl_type_transformer.native_type import CommonNativeType
 from dl_utils.utils import get_type_full_name
 
 

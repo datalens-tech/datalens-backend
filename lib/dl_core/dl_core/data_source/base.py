@@ -36,17 +36,17 @@ from dl_core.db import (
     IndexInfo,
     SchemaColumn,
     SchemaInfo,
-    get_type_transformer,
 )
 from dl_core.us_connection import get_connection_class
 from dl_core.us_connection_base import ConnectionBase
+from dl_type_transformer.type_transformer import get_type_transformer
 
 
 if TYPE_CHECKING:
     from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-    from dl_core.db.conversion_base import TypeTransformer
     from dl_core.services_registry.top_level import ServicesRegistry
     from dl_core.us_manager.local_cache import USEntryBuffer
+    from dl_type_transformer.type_transformer import TypeTransformer
 
 
 LOGGER = logging.getLogger(__name__)
