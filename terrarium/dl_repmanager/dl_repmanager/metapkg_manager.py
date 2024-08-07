@@ -8,7 +8,6 @@ from urllib.parse import urlparse
 import attr
 import tomlkit
 from tomlkit import TOMLDocument
-from tomlkit.items import Key
 
 from dl_repmanager.primitives import (
     LocalReqPackageSpec,

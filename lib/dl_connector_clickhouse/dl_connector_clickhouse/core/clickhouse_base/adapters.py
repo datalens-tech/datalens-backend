@@ -87,10 +87,7 @@ if TYPE_CHECKING:
     from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
     from dl_core.connection_models.common_models import SchemaIdent
 
-    from dl_connector_clickhouse.core.clickhouse_base.target_dto import (  # noqa: F401
-        BaseClickHouseConnTargetDTO,
-        ClickHouseConnTargetDTO,
-    )
+    from dl_connector_clickhouse.core.clickhouse_base.target_dto import BaseClickHouseConnTargetDTO
 
 LOGGER = logging.getLogger(__name__)
 

@@ -37,7 +37,7 @@ from dl_dashsql.registry import register_dash_sql_param_literalizer_cls
 
 
 if TYPE_CHECKING:
-    from dl_core.connections_security.base import ConnSecuritySettings
+    from dl_core.connections_security.base import ConnSecuritySettings  # noqa: F401
 
 
 class CoreConnectorRegistrator:

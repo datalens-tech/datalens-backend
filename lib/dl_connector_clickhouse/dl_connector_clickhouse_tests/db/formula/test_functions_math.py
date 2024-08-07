@@ -1,5 +1,3 @@
-from dl_formula_testing.evaluator import DbEvaluator
-
 from dl_connector_clickhouse.formula.testing.test_suites import MathFunctionClickHouseTestSuite
 from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
 

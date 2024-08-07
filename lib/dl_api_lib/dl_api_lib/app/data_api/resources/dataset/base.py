@@ -5,7 +5,6 @@ from contextlib import (
     asynccontextmanager,
 )
 import logging
-import os
 from typing import (
     TYPE_CHECKING,
     Any,

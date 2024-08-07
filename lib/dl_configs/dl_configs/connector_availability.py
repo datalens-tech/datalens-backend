@@ -1,7 +1,4 @@
-from typing import (
-    Any,
-    Optional,
-)
+from typing import Optional
 
 import attr
 from dynamic_enum import (

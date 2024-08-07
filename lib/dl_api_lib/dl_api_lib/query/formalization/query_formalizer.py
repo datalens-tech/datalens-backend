@@ -27,7 +27,6 @@ from dl_constants.enums import (
     FieldType,
     OrderDirection,
     RangeType,
-    RLSSubjectType,
     UserDataType,
     WhereClauseOperation,
 )

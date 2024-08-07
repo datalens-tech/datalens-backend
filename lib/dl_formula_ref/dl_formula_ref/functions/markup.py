@@ -1,9 +1,7 @@
 from dl_formula_ref.categories.markup import CATEGORY_MARKUP
-from dl_formula_ref.i18n.registry import FormulaRefTranslatable as Translatable
 from dl_formula_ref.localization import get_gettext
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.example import SimpleExample
-from dl_formula_ref.registry.note import Note
 
 
 _ = get_gettext()

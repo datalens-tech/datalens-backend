@@ -7,7 +7,6 @@ import pytest
 from dl_core.us_connection_base import DataSourceTemplate
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 
-from dl_connector_clickhouse.core.clickhouse.constants import DEFAULT_CLICKHOUSE_USER
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from dl_connector_clickhouse_tests.db.core.base import (
     BaseClickHouseDefaultUserTestClass,

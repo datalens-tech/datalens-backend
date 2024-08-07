@@ -5,7 +5,7 @@ https://www.python.org/dev/peps/pep-0249/
 
 from __future__ import annotations
 
-from sqlalchemy.types import (  # noqa; TODO: might actually be unnecessary.
+from sqlalchemy.types import (  # noqa: F401  TODO: might actually be unnecessary.
     DATE,
     DATETIME,
     FLOAT,

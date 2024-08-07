@@ -1,9 +1,5 @@
 from functools import reduce
 import logging
-from typing import (
-    Dict,
-    Optional,
-)
 
 from aiohttp import ClientResponse
 import attr
@@ -11,10 +7,7 @@ import attr
 from dl_core.connection_executors.adapters.adapter_actions.async_base import AsyncDBVersionAdapterAction
 from dl_core.connection_executors.adapters.adapter_actions.db_version import AsyncDBVersionAdapterActionEmptyString
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
-from dl_core.connection_models import (
-    DBIdent,
-    TableIdent,
-)
+from dl_core.connection_models import TableIdent
 
 from dl_connector_bundle_chs3.chs3_base.core.target_dto import BaseFileS3ConnTargetDTO
 from dl_connector_clickhouse.core.clickhouse_base.adapters import BaseAsyncClickHouseAdapter
@@ -42,7 +35,7 @@ class BaseAsyncFileS3Adapter(BaseAsyncClickHouseAdapter):
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
         return True
 
-    def get_request_params(self, dba_q: DBAdapterQuery) -> Dict[str, str]:
+    def get_request_params(self, dba_q: DBAdapterQuery) -> dict[str, str]:
         return dict(
             # TODO FIX: Move to utils
             database=dba_q.db_name or self._target_dto.db_name or "system",
