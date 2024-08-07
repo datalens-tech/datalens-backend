@@ -288,6 +288,7 @@ class RedisDatalensDataJSONEncoder(json.JSONEncoder):
 
     def default(self, obj: Any) -> Any:
         typeobj = type(obj)
+        preprocessor: Type[TypeSerializer]
         if issubclass(typeobj, GenericNativeType):
             preprocessor = NativeTypeSerializer
         else:
