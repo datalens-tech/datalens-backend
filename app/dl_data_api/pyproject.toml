@@ -22,6 +22,7 @@ dl-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
 dl-connector-chyt = {path = "../../lib/dl_connector_chyt"}
 dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
 dl-connector-mysql = {path = "../../lib/dl_connector_mysql"}
+dl-connector-mssql = {path = "../../lib/dl_connector_mssql"}
 dl-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
 dl-core = {path = "../../lib/dl_core"}
 dl-app-tools = {path = "../../lib/dl_app_tools"}

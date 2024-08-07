@@ -12,18 +12,20 @@ CONNECTOR_AVAILABILITY:
     data: "blank"
   sections: []
   uncategorized:
-    - availability: free
-      conn_type: clickhouse
-    - availability: free
-      conn_type: postgres
-    - availability: free
-      conn_type: chyt
-    - availability: free
-      conn_type: ydb
-    - availability: free
-      conn_type: mysql
-    - availability: free
-      conn_type: greenplum
+    - conn_type: clickhouse
+      availability: free
+    - conn_type: postgres
+      availability: free
+    - conn_type: chyt
+      availability: free
+    - conn_type: ydb
+      availability: free
+    - conn_type: mysql
+      availability: free
+    - conn_type: greenplum
+      availability: free
+    - conn_type: mssql
+      availability: free
   visible_connectors: []
 CORS_ALLOWED_HEADERS:
 - Content-Type
