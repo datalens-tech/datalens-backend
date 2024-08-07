@@ -12,6 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
 dl-constants = {path = "../dl_constants"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"

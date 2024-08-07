@@ -23,7 +23,7 @@ from marshmallow.exceptions import ValidationError
 from marshmallow_oneofschema import OneOfSchema
 
 
-class OneOfSchemaWithDumpLoadHooks(OneOfSchema):  # TODO: Move to bi_model_tools
+class OneOfSchemaWithDumpLoadHooks(OneOfSchema):
     """
     OneOfSchema has disabled all pre/post_dump/load hooks by default so we add the following copy-paste from marshmallow
     to be able to use those hooks

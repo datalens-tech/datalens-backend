@@ -14,8 +14,10 @@ import ipaddress
 import json
 from typing import (
     Any,
+    Callable,
     ClassVar,
     Generic,
+    Optional,
     Type,
     TypeVar,
     Union,
@@ -27,6 +29,8 @@ from dl_constants.types import (
     TJSONExt,
     TJSONLike,
 )
+from dl_type_transformer.native_type import GenericNativeType
+from dl_type_transformer.native_type_schema import OneOfNativeTypeSchema
 
 
 _TS_TV = TypeVar("_TS_TV")
@@ -245,6 +249,21 @@ class IPv6InterfaceSerializer(TypeSerializer[ipaddress.IPv6Interface]):
         return ipaddress.IPv6Interface(value)
 
 
+class NativeTypeSerializer(TypeSerializer[GenericNativeType]):
+    typename = "dl_native_type"
+
+    schema = OneOfNativeTypeSchema()
+
+    @staticmethod
+    def to_jsonable(value: GenericNativeType) -> TJSONLike:
+        return NativeTypeSerializer.schema.dump(value)
+
+    @staticmethod
+    def from_jsonable(value: TJSONLike) -> GenericNativeType:
+        assert isinstance(value, dict)
+        return NativeTypeSerializer.schema.load(value)
+
+
 COMMON_SERIALIZERS: list[Type[TypeSerializer]] = [
     DateSerializer,
     DatetimeSerializer,
@@ -259,6 +278,7 @@ COMMON_SERIALIZERS: list[Type[TypeSerializer]] = [
     IPv6NetworkSerializer,
     IPv4InterfaceSerializer,
     IPv6InterfaceSerializer,
+    NativeTypeSerializer,
 ]
 assert len(set(cls.typename for cls in COMMON_SERIALIZERS)) == len(COMMON_SERIALIZERS), "uniqueness check"
 
@@ -268,7 +288,10 @@ class RedisDatalensDataJSONEncoder(json.JSONEncoder):
 
     def default(self, obj: Any) -> Any:
         typeobj = type(obj)
-        preprocessor = self.JSONABLERS_MAP.get(typeobj)
+        if issubclass(typeobj, GenericNativeType):
+            preprocessor = NativeTypeSerializer
+        else:
+            preprocessor = self.JSONABLERS_MAP.get(typeobj)
         if preprocessor is not None:
             return dict(__dl_type__=preprocessor.typename, value=preprocessor.to_jsonable(obj))
 
@@ -278,8 +301,25 @@ class RedisDatalensDataJSONEncoder(json.JSONEncoder):
 class RedisDatalensDataJSONDecoder(json.JSONDecoder):
     DEJSONABLERS_MAP = {cls.typename: cls for cls in COMMON_SERIALIZERS}
 
-    def __init__(self, *args, **kwargs) -> None:  # type: ignore  # TODO: fix
-        super().__init__(*args, object_hook=self.object_hook, **kwargs)
+    def __init__(
+        self,
+        *,
+        object_hook: Optional[Callable[[dict[str, Any]], Any]] = None,
+        parse_float: Optional[Callable[[str], Any]] = None,
+        parse_int: Optional[Callable[[str], Any]] = None,
+        parse_constant: Optional[Callable[[str], Any]] = None,
+        strict: bool = True,
+        object_pairs_hook: Optional[Callable[[list[tuple[str, Any]]], Any]] = None,
+    ) -> None:
+        assert object_hook is None
+        super().__init__(
+            object_hook=self.object_hook,
+            parse_float=parse_float,
+            parse_int=parse_int,
+            parse_constant=parse_constant,
+            strict=strict,
+            object_pairs_hook=object_pairs_hook,
+        )
 
     def object_hook(self, obj: dict[str, Any]) -> Any:
         # WARNING: this might collide with some unexpected objects that have a `__dl_type__` key.
