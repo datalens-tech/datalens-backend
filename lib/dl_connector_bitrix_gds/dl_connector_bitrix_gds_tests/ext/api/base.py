@@ -23,6 +23,7 @@ from dl_connector_bitrix_gds_tests.ext.config import (
     DB_NAME,
     SMART_TABLE_NAME,
     TABLE_NAME,
+    UF_DATE_TABLE_NAME,
 )
 
 
@@ -85,6 +86,19 @@ class BitrixSmartTablesDatasetTestBase(BitrixConnectionTestBase, DatasetTestBase
         )
 
 
+class BitrixUfDateTablesDatasetTestBase(BitrixConnectionTestBase, DatasetTestBase):
+    @pytest.fixture(scope="class")
+    def dataset_params(self) -> dict:
+        return dict(
+            source_type=SOURCE_TYPE_BITRIX_GDS.name,
+            title=UF_DATE_TABLE_NAME,
+            parameters=dict(
+                db_name=DB_NAME,
+                table_name=UF_DATE_TABLE_NAME,
+            ),
+        )
+
+
 class BitrixDataApiTestBase(BitrixDatasetTestBase, StandardizedDataApiTestBase):
     mutation_caches_enabled = False
 
@@ -100,4 +114,8 @@ class BitrixDataApiTestBase(BitrixDatasetTestBase, StandardizedDataApiTestBase):
 
 
 class BitrixSmartTablesDataApiTestBase(BitrixSmartTablesDatasetTestBase, StandardizedDataApiTestBase):
+    mutation_caches_enabled = False
+
+
+class BitrixUfDateTablesDataApiTestBase(BitrixUfDateTablesDatasetTestBase, StandardizedDataApiTestBase):
     mutation_caches_enabled = False
