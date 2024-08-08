@@ -29,3 +29,4 @@ BITRIX_PORTALS = dict(
 DB_NAME = "default"
 TABLE_NAME = "crm_deal"
 SMART_TABLE_NAME = "crm_dynamic_items_180"
+UF_DATE_TABLE_NAME = "crm_lead_uf"

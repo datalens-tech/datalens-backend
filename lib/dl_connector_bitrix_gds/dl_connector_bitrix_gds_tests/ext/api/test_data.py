@@ -8,12 +8,16 @@ from dl_api_lib_testing.connector.data_api_suites import (
     DefaultConnectorDataRangeTestSuite,
     DefaultConnectorDataResultTestSuite,
 )
-from dl_constants.enums import WhereClauseOperation
+from dl_constants.enums import (
+    UserDataType,
+    WhereClauseOperation,
+)
 from dl_testing.regulated_test import RegulatedTestParams
 
 from dl_connector_bitrix_gds_tests.ext.api.base import (
     BitrixDataApiTestBase,
     BitrixSmartTablesDataApiTestBase,
+    BitrixUfDateTablesDataApiTestBase,
 )
 
 
@@ -67,3 +71,35 @@ class TestBitrixSmartTablesData(BitrixSmartTablesDataApiTestBase):
         )
         assert result_resp.status_code == 200, result_resp.json
         assert get_data_rows(result_resp)
+
+
+class TestBitrixUfDateTablesData(BitrixUfDateTablesDataApiTestBase):
+    def test_bitrix_user_field_filter(
+        self,
+        saved_dataset: Dataset,
+        data_api: SyncHttpDataApiV2,
+    ) -> None:
+        ds = saved_dataset
+
+        ds.result_schema["uf_bitrix_dt_field"] = ds.field(
+            avatar_id=ds.source_avatars[0].id,
+            source=ds.find_field(title="UF_CRM_1715946731433").source,
+            data_type=UserDataType.date,
+            cast=UserDataType.date,
+        )
+        self.get_preview(ds, data_api)
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[ds.find_field(title="LEAD_ID")],
+            filters=[
+                ds.find_field(title="uf_bitrix_dt_field").filter(
+                    op=WhereClauseOperation.BETWEEN,
+                    values=["2024-05-17", "2024-05-20"],
+                )
+            ],
+            order_by=[ds.find_field(title="LEAD_ID")],
+        )
+
+        assert result_resp.status_code == 200, result_resp.json
+        assert get_data_rows(result_resp) == [["5"], ["11"]]
