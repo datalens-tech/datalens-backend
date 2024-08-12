@@ -3,7 +3,10 @@ from typing import ClassVar
 import attr
 
 from dl_constants.enums import UserDataType
-from dl_core.fields import ResultSchema
+from dl_core.fields import (
+    DirectCalculationSpec,
+    ResultSchema,
+)
 import dl_formula.core.nodes as formula_nodes
 from dl_query_processing.compilation.primitives import CompiledFormulaInfo
 from dl_query_processing.enums import ExecutionLevel
@@ -26,7 +29,11 @@ class BitrixGDSMultiQuerySplitter(PrefilteredFieldMultiQuerySplitter):
         if not isinstance(expr, formula_nodes.OperationCall) or formula.original_field_id is None:
             return False
         field = self.result_schema.by_guid(formula.original_field_id)
-        if field.data_type in self.data_types and expr.name in self.expr_names:
+        if (
+            field.data_type in self.data_types
+            and expr.name in self.expr_names
+            and not (isinstance(field.calc_spec, DirectCalculationSpec) and field.source.startswith("UF_CRM_"))
+        ):
             # FIXME: Refactor this
             return True
         return False
