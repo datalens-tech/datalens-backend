@@ -10,7 +10,7 @@ from dl_api_lib_testing.connection_base import ConnectionTestBase
 
 class DatasetTestBase(ConnectionTestBase, metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def dataset_params(self) -> dict:
         raise NotImplementedError
 
