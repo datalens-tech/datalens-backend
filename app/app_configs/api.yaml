@@ -56,3 +56,19 @@ SENTRY_DSN_DATASET_API: ''
 SENTRY_ENABLED: false
 S3_ENDPOINT_URL: http://s3-storage:8000
 FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME: dl-file-uploader
+BI_API_CONNECTOR_WHITELIST:
+- clickhouse
+- postgresql
+- chyt
+- ydb
+- mysql
+- greenplum
+- file
+CORE_CONNECTOR_WHITELIST:
+- clickhouse
+- postgresql
+- chyt
+- ydb
+- mysql
+- greenplum
+- file
