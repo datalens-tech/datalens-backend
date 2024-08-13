@@ -1,4 +1,3 @@
-import logging
 from typing import (
     Any,
     Optional,
@@ -40,7 +39,7 @@ def configure_sentry(cfg: SentryConfig, extra_integrations: Sequence[Any] = ()) 
             StdlibIntegration(),
             ModulesIntegration(),
             ArgvIntegration(),
-            LoggingIntegration(event_level=logging.WARNING),
+            LoggingIntegration(),
             ThreadingIntegration(),
             #  # Custom
             *extra_integrations,
