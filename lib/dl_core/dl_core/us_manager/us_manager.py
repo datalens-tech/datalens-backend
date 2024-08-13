@@ -372,6 +372,7 @@ class USManagerBase:
             unversionedData=entry_data.pop("unversioned_data"),
             **entry_loc.to_us_resp_api_params(entry.raw_us_key),
         )
+        # FIXME: Note that post_init_async_hook is not called here. Should it be?
         return self._entry_dict_to_obj(entry_data)
 
     @staticmethod
