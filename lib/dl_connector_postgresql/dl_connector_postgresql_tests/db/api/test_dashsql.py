@@ -98,7 +98,6 @@ class TestPostgresDashSQL(PostgreSQLDashSQLConnectionTest, DefaultDashSQLTestSui
             "num_timestamp",
             "num_timestamptz",
             "num_array",
-            "some_uuid",
             "some_nan",
         ]
         assert resp_data[0]["data"]["bi_types"] == [
@@ -123,10 +122,9 @@ class TestPostgresDashSQL(PostgreSQLDashSQLConnectionTest, DefaultDashSQLTestSui
             "genericdatetime",
             "genericdatetime",
             "array_int",
-            "uuid",
             "float",
         ]
-        assert resp_data[1]["data"][-1] == "nan", "must not be a float('nan')"
+        assert resp_data[1]["data"][21] == "nan", "must not be a float('nan')"
 
     @pytest.mark.asyncio
     async def test_result_with_params(self, data_api_lowlevel_aiohttp_client: TestClient, saved_connection_id: str):
