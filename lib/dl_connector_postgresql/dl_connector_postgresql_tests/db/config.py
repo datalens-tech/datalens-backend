@@ -72,6 +72,7 @@ select
     ('2020-01-01T00:00:0' || number)::timestamp as num_timestamp,
     ('2020-01-01T00:00:0' || number)::timestamptz as num_timestamptz,
     ARRAY[number, 2, 3] as num_array,
+    gen_random_uuid() as some_uuid,
     'nan'::double precision + number as some_nan
 from base
 limit 10

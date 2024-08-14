@@ -18,6 +18,7 @@ from typing import (
     TypeVar,
 )
 from urllib.parse import quote_plus
+import uuid
 
 import asyncpg
 import asyncpg.exceptions
@@ -185,11 +186,20 @@ class AsyncPostgresAdapter(
                 # TODO ^ make up a new DL exc and wrap asyncpg.exceptions.ReadOnlySQLTransactionError
                 # There is some decimal-magic in asyncpg
                 # and this magic is incompatible with magic in sqlalchemy-psycopg2
-                # so lets disable it
+                # so let's disable it
                 await connection.set_type_codec(
                     "numeric",
                     encoder=str,
                     decoder=lambda x: x,
+                    schema="pg_catalog",
+                    format="text",
+                )
+                # asyncpg uses a custom wrapper for UUID, and we can't serialize it
+                # so use builtin UUID explicitly
+                await connection.set_type_codec(
+                    "uuid",
+                    encoder=str,
+                    decoder=lambda x: uuid.UUID(x),
                     schema="pg_catalog",
                     format="text",
                 )
