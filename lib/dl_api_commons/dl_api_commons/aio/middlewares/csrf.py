@@ -29,7 +29,7 @@ class CSRFMiddleware:
 
     csrf_header_name: str = attr.ib()
     csrf_time_limit: int = attr.ib()
-    csrf_secret: str = attr.ib()
+    csrf_secrets: tuple[str, ...] = attr.ib()
     csrf_methods: tuple[str, ...] = attr.ib(default=("POST", "PUT", "DELETE"))
 
     def validate_csrf_token(self, token_header_value: Optional[str], user_token: str) -> bool:
@@ -49,10 +49,11 @@ class CSRFMiddleware:
         if ts_now - timestamp > self.csrf_time_limit:
             return False
 
-        if not hmac.compare_digest(generate_csrf_token(user_token, timestamp, self.csrf_secret), token):
-            return False
+        for csrf_secret in self.csrf_secrets:
+            if hmac.compare_digest(generate_csrf_token(user_token, timestamp, csrf_secret), token):
+                return True
 
-        return True
+        return False
 
     @web.middleware
     @aiohttp_wrappers.DLRequestBase.use_dl_request_on_method
