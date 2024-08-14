@@ -8,7 +8,8 @@ from dl_connector_mssql_tests.db.core.base import BaseMSSQLTestClass
 
 
 class TestMSSQLRemoteQueryExecutor(BaseMSSQLTestClass, BaseRemoteQueryExecutorTestClass):
-    ADAPTER_CLS = MSSQLDefaultAdapter
+    SYNC_ADAPTER_CLS = MSSQLDefaultAdapter
+    ASYNC_ADAPTER_CLS = MSSQLDefaultAdapter
 
     @pytest.mark.asyncio
     async def test_qe_result(self, remote_adapter):

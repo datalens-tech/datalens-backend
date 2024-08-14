@@ -6,11 +6,15 @@ from dl_core.connection_executors.models.exc import QueryExecutorException
 from dl_core_testing.testcases.remote_query_executor import BaseRemoteQueryExecutorTestClass
 from dl_core_tests.db.base import DefaultCoreTestClass
 
-from dl_connector_clickhouse.core.clickhouse_base.adapters import ClickHouseAdapter
+from dl_connector_clickhouse.core.clickhouse_base.adapters import (
+    AsyncClickHouseAdapter,
+    ClickHouseAdapter,
+)
 
 
 class TestRQE(DefaultCoreTestClass, BaseRemoteQueryExecutorTestClass):
-    ADAPTER_CLS = ClickHouseAdapter
+    SYNC_ADAPTER_CLS = ClickHouseAdapter
+    ASYNC_ADAPTER_CLS = AsyncClickHouseAdapter
 
     @pytest.mark.asyncio
     async def test_body_signature_validation(self, remote_adapter, query_executor_options):

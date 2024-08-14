@@ -37,7 +37,8 @@ _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 
 class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV], Generic[_CONN_TV]):
-    ADAPTER_CLS: ClassVar[Type[CommonBaseDirectAdapter]]
+    SYNC_ADAPTER_CLS: ClassVar[Type[CommonBaseDirectAdapter]]
+    ASYNC_ADAPTER_CLS: ClassVar[Type[CommonBaseDirectAdapter]]
 
     EXT_QUERY_EXECUTER_SECRET_KEY: ClassVar[str] = "very_secret_key"
 
@@ -93,7 +94,7 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
     ) -> RemoteAsyncAdapter:
         return RemoteAsyncAdapter(
             target_dto=conn_target_dto,
-            dba_cls=self.ADAPTER_CLS,
+            dba_cls=self.ASYNC_ADAPTER_CLS if request.param else self.SYNC_ADAPTER_CLS,
             rqe_data=query_executor_options,
             req_ctx_info=DBAdapterScopedRCI(),
             force_async_rqe=request.param,
