@@ -281,6 +281,7 @@ class DatasetDataBaseView(BaseView):
         assert isinstance(services_registry, ApiServiceRegistry)
         loader = DatasetApiLoader(service_registry=services_registry)
 
+        cached_dataset: Optional[Dataset] = None
         with GenericProfiler("dataset-prepare"):
             if enable_mutation_caching:
                 mutation_cache = self.try_get_cache(allow_slave=False)
@@ -289,14 +290,6 @@ class DatasetDataBaseView(BaseView):
                 cached_dataset = await self.try_get_dataset_from_cache(mutation_cache, mutation_key)
                 if cached_dataset:
                     self.dataset = cached_dataset
-                    update_info = loader.update_dataset_from_body(
-                        dataset=self.dataset,
-                        us_manager=us_manager,
-                        dataset_data=req_model.dataset,
-                        allow_rls_change=allow_rls_change,
-                    )
-                    await self.resolve_rls_groups_for_dataset(services_registry)
-                    return update_info
 
             update_info = loader.update_dataset_from_body(
                 dataset=self.dataset,
@@ -305,6 +298,11 @@ class DatasetDataBaseView(BaseView):
                 allow_rls_change=allow_rls_change,
             )
             await self.resolve_rls_groups_for_dataset(services_registry)
+
+            if cached_dataset:
+                await self.check_for_notifications(services_registry, us_manager)
+                return update_info
+
             await us_manager.load_dependencies(self.dataset)
 
             services_registry = self.dl_request.services_registry
@@ -325,7 +323,7 @@ class DatasetDataBaseView(BaseView):
 
     async def check_for_notifications(self, services_registry: ApiServiceRegistry, us_manager: AsyncUSManager) -> None:
         ds_lc_manager = us_manager.get_lifecycle_manager(self.dataset)
-        for conn_id in ds_lc_manager.collect_links().values():
+        for conn_id in set(ds_lc_manager.collect_links().values()):
             try:
                 conn = us_manager.get_loaded_us_connection(conn_id)
             except Exception:
