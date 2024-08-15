@@ -281,6 +281,7 @@ class DatasetDataBaseView(BaseView):
         assert isinstance(services_registry, ApiServiceRegistry)
         loader = DatasetApiLoader(service_registry=services_registry)
 
+        cached_dataset: Optional[Dataset] = None
         with GenericProfiler("dataset-prepare"):
             if enable_mutation_caching:
                 mutation_cache = self.try_get_cache(allow_slave=False)
@@ -298,7 +299,7 @@ class DatasetDataBaseView(BaseView):
             )
             await self.resolve_rls_groups_for_dataset(services_registry)
 
-            if enable_mutation_caching and cached_dataset:
+            if cached_dataset:
                 await self.check_for_notifications(services_registry, us_manager)
                 return update_info
 
