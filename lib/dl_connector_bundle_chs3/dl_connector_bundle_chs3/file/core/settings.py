@@ -1,5 +1,4 @@
 from dl_configs.connectors_settings import ConnectorSettingsBase
-from dl_configs.environments import is_setting_applicable
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.meta_definition import required
 from dl_core.connectors.settings.primitives import (
