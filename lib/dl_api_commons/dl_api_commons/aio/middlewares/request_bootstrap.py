@@ -8,7 +8,6 @@ import logging
 import time
 from typing import (
     Any,
-    Iterable,
     Optional,
 )
 
@@ -75,15 +74,6 @@ class SentryRequestLoggingContextController(RequestLoggingContextController):
             self._scope.set_extra(key, val_to_write)
 
 
-@contextlib.contextmanager  # type: ignore  # TODO: fix
-def last_chance_log() -> Iterable[None]:
-    try:
-        yield
-    except Exception:
-        LOGGER.exception("Exception fired in outer_error_handling_middleware")
-        raise
-
-
 @attr.s
 class RequestBootstrap:
     req_id_service: RequestId = attr.ib()
@@ -97,7 +87,6 @@ class RequestBootstrap:
         err_code: Optional[str] = None
         try:
             with contextlib.ExitStack() as top_level_stack:
-                top_level_stack.enter_context(last_chance_log())
                 if self.error_handler is not None and self.error_handler.use_sentry:
                     scope = top_level_stack.enter_context(sentry_sdk.configure_scope())
                     if self.error_handler.sentry_app_name_tag:
@@ -120,7 +109,12 @@ class RequestBootstrap:
             if self.error_handler is not None:
                 result, err_data = self.error_handler.handle_error(err, request, req_logging_ctx_ctrl)
                 err_code = err_data.response_body.get("code", None)
+                if err_data.status_code >= 500:
+                    LOGGER.exception("Handled exception fired in outer_error_handling_middleware")
+                else:
+                    LOGGER.warning("Handled exception fired in outer_error_handling_middleware", exc_info=True)
             else:
+                LOGGER.exception("Unhandled exception fired in outer_error_handling_middleware")
                 raise
         finally:
             response_status_code = (
