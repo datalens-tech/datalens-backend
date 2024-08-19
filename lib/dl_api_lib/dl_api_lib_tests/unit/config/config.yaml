@@ -4,6 +4,7 @@ CONNECTORS:
     CONN_FILE_CH_HOST: localhost
     CONN_FILE_CH_PORT: 8443
     CONN_FILE_CH_USERNAME: datalens
+    CONN_FILE_CH_SECURE: 1
 CONNECTOR_AVAILABILITY:
   icon_src:
     icon_type: data
