@@ -142,6 +142,7 @@ class DefaultReportingProfiler(ReportingProfiler):
             # TODO FIX: Use value from RCI when become done
             is_public=int(self._is_public_env),
             is_embedded=int(self.rci.is_embedded),
+            embed_id=getattr(self.rci.auth_data, "embed_id", None),
             dash_id=x_dl_context.get(DLContextKey.DASH_ID),
             dash_tab_id=x_dl_context.get(DLContextKey.DASH_TAB_ID),
             chart_id=x_dl_context.get(DLContextKey.CHART_ID),
