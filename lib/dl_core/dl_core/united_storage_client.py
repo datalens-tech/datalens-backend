@@ -799,7 +799,7 @@ class UStorageClient(UStorageClientBase):
         while True:
             created_at_from_ts = created_at_from.timestamp()
             new_entry_ids = set()
-            page_entries = self._request(
+            resp = self._request(
                 self._req_data_iter_entries(
                     scope,
                     entry_type=entry_type,
@@ -812,13 +812,17 @@ class UStorageClient(UStorageClientBase):
                     limit=limit,
                 )
             )
-            if page_entries and isinstance(page_entries, list):
-                # TODO ^ refactor this somehow, we need this isinstance check bc US returns a list
+            page_entries: list
+            if isinstance(resp, list):
+                page_entries = resp
+            else:
+                page_entries = resp["entries"]
+            if page_entries:
                 created_at_from = self.parse_datetime(page_entries[-1]["createdAt"]) - timedelta(milliseconds=1)
                 # minus 1 ms to account for cases where entries, created during a single millisecond, happen to return
                 # on the border of two batches (one in batch 1 and the other in batch 2)
             else:
-                LOGGER.info("Got an empty tenant list in the US response, the listing is completed")
+                LOGGER.info("Got an empty entries list in the US response, the listing is completed")
                 break
 
             for entr in page_entries:
