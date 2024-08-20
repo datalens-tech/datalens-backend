@@ -2,6 +2,11 @@ from __future__ import annotations
 
 import abc
 from contextlib import contextmanager
+from datetime import (
+    datetime,
+    timedelta,
+    timezone,
+)
 from json.decoder import JSONDecodeError
 import logging
 import re
@@ -318,6 +323,13 @@ class UStorageClientBase:
             )
 
     @staticmethod
+    def parse_datetime(dt: str) -> datetime:
+        # TODO: remove after migrating to python 3.11 or above
+        if dt[-1] == "Z":
+            return datetime.fromisoformat(dt.removesuffix("Z")).replace(tzinfo=timezone.utc)
+        return datetime.fromisoformat(dt)
+
+    @staticmethod
     def _auth_ctx_to_default_headers(ctx: USAuthContextBase) -> dict[str, str]:
         headers: dict[DLHeaders, str] = {
             **ctx.get_outbound_headers(include_tenancy=False),
@@ -515,8 +527,9 @@ class UStorageClientBase:
         all_tenants: bool = False,
         include_data: bool = False,
         ids: Optional[Iterable[str]] = None,
-        page: int = 0,
         creation_time: Optional[dict[str, Union[str, int, None]]] = None,
+        created_at_from: float = 0,
+        limit: Optional[int] = None,
     ) -> RequestData:
         req_params = dict(scope=scope, includeData=int(include_data))
         if entry_type:
@@ -528,14 +541,19 @@ class UStorageClientBase:
             req_params.update({"creationTime[{}]".format(k): v for k, v in creation_time.items()})
         if ids:
             req_params["ids"] = ids
+        if limit:
+            req_params["limit"] = limit
 
         if all_tenants:
             assert include_data is False  # not supported for this endpoint
-            endpoint = "/interTenant/entries"
+            endpoint = "/inter-tenant/entries"
         else:
             endpoint = "/entries"
 
-        params: dict[Any, Any] = dict(page=page, **req_params)
+        params: dict[Any, Any] = {
+            "createdAtFrom": created_at_from,
+            **req_params,
+        }
         return cls.RequestData(
             method="get",
             relative_url=endpoint,
@@ -664,7 +682,7 @@ class UStorageClient(UStorageClientBase):
     def close(self) -> None:
         self._session.close()
 
-    def _request(self, request_data: UStorageClientBase.RequestData) -> dict[str, Any]:
+    def _request(self, request_data: UStorageClientBase.RequestData) -> dict[str, Any] | list[Any]:
         self._raise_for_disabled_interactions()
 
         url = self._get_full_url(request_data.relative_url)
@@ -764,7 +782,8 @@ class UStorageClient(UStorageClientBase):
         include_data: bool = False,
         ids: Optional[Iterable[str]] = None,
         creation_time: Optional[dict[str, Union[str, int, None]]] = None,
-    ) -> Generator[dict, None, None]:
+        limit: Optional[int] = None,
+    ) -> Generator[dict, None]:
         """
         :param scope:
         :param entry_type:
@@ -775,9 +794,12 @@ class UStorageClient(UStorageClientBase):
         :param creation_time: Filter entries by creation_time. Available filters: eq, ne, gt, gte, lt, lte
         :return:
         """
-        page = 0
+        created_at_from = datetime(1970, 1, 1)
+        previous_batch_entry_ids = set()
         while True:
-            resp = self._request(
+            created_at_from_ts = created_at_from.timestamp()
+            new_entry_ids = set()
+            page_entries: list = self._request(
                 self._req_data_iter_entries(
                     scope,
                     entry_type=entry_type,
@@ -785,21 +807,28 @@ class UStorageClient(UStorageClientBase):
                     all_tenants=all_tenants,
                     include_data=include_data,
                     ids=ids,
-                    page=page,
                     creation_time=creation_time,
+                    created_at_from=created_at_from_ts,
+                    limit=limit,
                 )
             )
-            if resp.get("entries"):
-                page_entries = resp["entries"]
+            if page_entries:
+                created_at_from = self.parse_datetime(page_entries[-1]["createdAt"]) - timedelta(milliseconds=1)
+                # minus 1 ms to account for cases where entries, created during a single millisecond, happen to return
+                # on the border of two batches (one in batch 1 and the other in batch 2)
             else:
+                LOGGER.info("Got an empty tenant list in the US response, the listing is completed")
                 break
 
             for entr in page_entries:
-                yield entr
+                if entr["entryId"] not in previous_batch_entry_ids:
+                    new_entry_ids.add(entr["entryId"])
+                    yield entr
 
-            if resp.get("nextPageToken"):
-                page = resp["nextPageToken"]
-            else:
+            previous_batch_entry_ids = new_entry_ids.copy()
+
+            if not new_entry_ids:
+                LOGGER.info("US response is not empty, but we got no unseen entries, assuming the listing is completed")
                 break
 
     def delete_entry(self, entry_id, lock=None):  # type: ignore  # TODO: fix

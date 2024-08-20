@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import (
+    datetime,
+    timedelta,
+)
 import json
 import logging
 import time
@@ -144,7 +148,7 @@ class UStorageClientAIO(UStorageClientBase):
             ca_data=ca_data,
         )
 
-    async def _request(self, request_data: UStorageClientBase.RequestData):  # type: ignore  # TODO: fix
+    async def _request(self, request_data: UStorageClientBase.RequestData) -> dict[str, Any] | list[Any]:
         self._raise_for_disabled_interactions()
         self._log_request_start(request_data)
         tracing_headers = get_current_tracing_headers()
@@ -239,42 +243,44 @@ class UStorageClientAIO(UStorageClientBase):
         include_data: bool = False,
         ids: Optional[Iterable[str]] = None,
         creation_time: Optional[dict[str, Union[str, int, None]]] = None,
+        limit: Optional[int] = None,
     ) -> AsyncGenerator[dict, None]:
-        page = 0
+        created_at_from = datetime(1970, 1, 1)
+        previous_batch_entry_ids = set()
         while True:
-            resp = await self._request(
+            created_at_from_ts = created_at_from.timestamp()
+            new_entry_ids = set()
+            page_entries: list = await self._request(
                 self._req_data_iter_entries(
                     scope,
                     entry_type=entry_type,
                     meta=meta,
                     all_tenants=all_tenants,
-                    page=page,
                     include_data=include_data,
                     ids=ids,
                     creation_time=creation_time,
+                    created_at_from=created_at_from_ts,
+                    limit=limit,
                 )
             )
-            if resp.get("entries"):
-                page_entries = resp["entries"]
+            if page_entries:
+                created_at_from = self.parse_datetime(page_entries[-1]["createdAt"]) - timedelta(milliseconds=1)
+                # minus 1 ms to account for cases where entries, created during a single millisecond, happen to return
+                # on the border of two batches (one in batch 1 and the other in batch 2)
             else:
+                LOGGER.info("Got an empty tenant list in the US response, the listing is completed")
                 break
 
             for entr in page_entries:
-                yield entr
+                if entr["entryId"] not in previous_batch_entry_ids:
+                    new_entry_ids.add(entr["entryId"])
+                    yield entr
 
-            if resp.get("nextPageToken"):
-                page = resp["nextPageToken"]
-            else:
+            previous_batch_entry_ids = new_entry_ids.copy()
+
+            if not new_entry_ids:
+                LOGGER.info("US response is not empty, but we got no unseen entries, assuming the listing is completed")
                 break
-
-    async def list_all_entries(
-        self, scope: str, entry_type: Optional[str] = None, meta: Optional[dict] = None, all_tenants: bool = False
-    ) -> list:
-        ret = []
-        async for e in self.entries_iterator(scope, entry_type, meta, all_tenants, include_data=False):
-            ret.append(e)
-
-        return ret
 
     async def acquire_lock(
         self,
