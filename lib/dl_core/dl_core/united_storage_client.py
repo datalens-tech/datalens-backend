@@ -783,7 +783,7 @@ class UStorageClient(UStorageClientBase):
         ids: Optional[Iterable[str]] = None,
         creation_time: Optional[dict[str, Union[str, int, None]]] = None,
         limit: Optional[int] = None,
-    ) -> Generator[dict, None]:
+    ) -> Generator[dict, None, None]:
         """
         :param scope:
         :param entry_type:
