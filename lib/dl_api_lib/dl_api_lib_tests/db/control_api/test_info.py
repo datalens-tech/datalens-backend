@@ -1,4 +1,5 @@
 import itertools
+import json
 
 import pytest
 
@@ -118,3 +119,14 @@ class TestInfo(DefaultApiTestBase):
     def test_get_connector_icon_not_found(self, client):
         icons_resp = client.get("/api/v1/info/connectors/icons/unknown_conn_type")
         assert icons_resp.status_code == 404, icons_resp.json
+
+    def test_dataset_publicity_checker(self, client, dataset_id):
+        resp = client.post(
+            "/api/v1/info/datasets_publicity_checker",
+            content_type="application/json",
+            data=json.dumps(dict(datasets=[dataset_id])),
+        )
+        assert resp.status_code == 200
+        resp_data = resp.json
+        assert "results" in resp_data
+        assert len(resp_data["results"]) == 1 and resp_data["results"][0]["allowed"] == True, resp_data
