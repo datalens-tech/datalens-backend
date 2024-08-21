@@ -41,7 +41,7 @@ class FileUploaderAPISettings(FileUploaderBaseSettings):
                 METHODS=cfg.CSRF_METHODS,
                 HEADER_NAME=cfg.CSRF_HEADER_NAME,
                 TIME_LIMIT=cfg.CSRF_TIME_LIMIT,
-                SECRET=required(str),
+                SECRET=required(tuple[str, ...]),
                 # TODO: move this values to a separate key
             )
             if is_setting_applicable(cfg, "CSRF_METHODS")

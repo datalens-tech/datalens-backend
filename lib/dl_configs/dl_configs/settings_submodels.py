@@ -49,7 +49,7 @@ class CsrfSettings(SettingsBase):
     METHODS: tuple[str, ...] = s_attrib("METHODS", env_var_converter=split_by_comma)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "tuple[str, ...]")  [assignment]
     HEADER_NAME: str = s_attrib("HEADER_NAME")  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
     TIME_LIMIT: int = s_attrib("TIME_LIMIT")  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "int")  [assignment]
-    SECRET: str = s_attrib("SECRET", sensitive=True, missing=None)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
+    SECRET: tuple[str, ...] = s_attrib("SECRET", sensitive=True, missing=None, env_var_converter=split_by_comma)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
 
 
 @attr.s(frozen=True)

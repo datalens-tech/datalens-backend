@@ -100,7 +100,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
             self.CSRF_MIDDLEWARE_CLS(
                 csrf_header_name=self._settings.CSRF.HEADER_NAME,
                 csrf_time_limit=self._settings.CSRF.TIME_LIMIT,
-                csrf_secret=self._settings.CSRF.SECRET,
+                csrf_secrets=self._settings.CSRF.SECRET,
                 csrf_methods=self._settings.CSRF.METHODS,
             ).middleware,
             # TODO FIX: Add when json_body_middleware will be moved to dl_core
