@@ -136,6 +136,7 @@ def prepare_united_storage_from_config(us_config: UnitedStorageConfiguration) ->
         us_master_token=us_config.us_master_token,
         us_pg_dsn=us_config.us_pg_dsn,
         force=us_config.force,
+        us_migrations=us_config.migrations,
     )
 
 
