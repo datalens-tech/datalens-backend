@@ -58,8 +58,7 @@ select
     [33, 44] as b,
     toDateTime('2020-01-02 03:04:05', 'UTC') + a as ts
 """
-DASHSQL_QUERY_FULL = r"""
-select
+DASHSQL_QUERY_FULL = r"""select
     arrayJoin(range(7)) as number,
     'test' || toString(number) as str,
     cast(number as Int64) as num_int64,

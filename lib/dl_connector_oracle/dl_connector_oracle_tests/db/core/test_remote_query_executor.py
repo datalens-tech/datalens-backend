@@ -8,7 +8,8 @@ from dl_connector_oracle_tests.db.core.base import BaseOracleTestClass
 
 
 class TestOracleRemoteQueryExecutor(BaseOracleTestClass, BaseRemoteQueryExecutorTestClass):
-    ADAPTER_CLS = OracleDefaultAdapter
+    SYNC_ADAPTER_CLS = OracleDefaultAdapter
+    ASYNC_ADAPTER_CLS = OracleDefaultAdapter
 
     @pytest.mark.asyncio
     async def test_qe_result(self, remote_adapter):

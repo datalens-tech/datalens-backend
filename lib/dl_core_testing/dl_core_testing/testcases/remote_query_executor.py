@@ -1,4 +1,5 @@
 import asyncio
+import os
 from typing import (
     AsyncGenerator,
     ClassVar,
@@ -36,7 +37,8 @@ _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 
 class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV], Generic[_CONN_TV]):
-    ADAPTER_CLS: ClassVar[Type[CommonBaseDirectAdapter]]
+    SYNC_ADAPTER_CLS: ClassVar[Type[CommonBaseDirectAdapter]]
+    ASYNC_ADAPTER_CLS: ClassVar[Type[CommonBaseDirectAdapter]]
 
     EXT_QUERY_EXECUTER_SECRET_KEY: ClassVar[str] = "very_secret_key"
 
@@ -83,7 +85,7 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
         target_conn_dto_pool = await async_connection_executor._make_target_conn_dto_pool()
         yield next(iter(target_conn_dto_pool))
 
-    @pytest.fixture(scope="function", params=[True, False])
+    @pytest.fixture(scope="function", params=[True, False], ids=["async", "sync"])
     def remote_adapter(
         self,
         conn_target_dto: ConnTargetDTO,
@@ -92,11 +94,18 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
     ) -> RemoteAsyncAdapter:
         return RemoteAsyncAdapter(
             target_dto=conn_target_dto,
-            dba_cls=self.ADAPTER_CLS,
+            dba_cls=self.ASYNC_ADAPTER_CLS if request.param else self.SYNC_ADAPTER_CLS,
             rqe_data=query_executor_options,
             req_ctx_info=DBAdapterScopedRCI(),
             force_async_rqe=request.param,
         )
+
+    @pytest.fixture(scope="function", params=[True, False], ids=["json", "pickle"], autouse=True)
+    def use_json_serializer(self, request: pytest.FixtureRequest) -> Generator[None, None, None]:
+        if request.param:
+            os.environ["USE_JSON_QE_SERIALIZER"] = "1"
+        yield
+        os.environ.pop("USE_JSON_QE_SERIALIZER", None)
 
     async def execute_request(self, remote_adapter: RemoteAsyncAdapter, query: str) -> list[TBIDataRow]:
         async with remote_adapter:
