@@ -42,8 +42,8 @@ class ObjectLikeConfig(Mapping):
     def __getattr__(self, key: Any) -> Any:
         return self._get_key(key)
 
-    def get(self, key: Any):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
-        return self._data.get(key)
+    def get(self, key: Any, default: Any | None = None) -> Any | None:
+        return self._data.get(key, default)
 
     def __getitem__(self, key: Any) -> Any:
         return self._get_key(key)
@@ -70,7 +70,7 @@ class ObjectLikeConfig(Mapping):
         return ret
 
     def to_dict(self) -> dict[str, Any]:
-        def _get_value_for_dict(v) -> Any:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+        def _get_value_for_dict(v: Any) -> Any:
             if isinstance(v, ObjectLikeConfig):
                 return v.to_dict()
             if isinstance(v, (list, tuple)):
@@ -99,7 +99,8 @@ class YamlFileConfigResolver(FallbackConfigResolver):
     def resolve(self, s_dict: SDict) -> ObjectLikeConfig:
         LOGGER.info("Resolve by YamlFileConfigResolver")
         path = self._get_config_path(s_dict)
-        with open(path) as f:  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "open" has incompatible type "str | None"; expected "int | str | bytes | PathLike[str] | PathLike[bytes]"  [arg-type]
+        assert path is not None
+        with open(path) as f:
             config = yaml.safe_load(f.read())
         return ObjectLikeConfig.from_dict(config)
 
