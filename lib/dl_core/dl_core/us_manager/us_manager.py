@@ -83,7 +83,7 @@ class CryptoKeyInfo:
 
 
 class USManagerBase:
-    ITER_ENTRIES_PAGE_SIZE: ClassVar[int] = 2000
+    ITER_ENTRIES_PAGE_SIZE: ClassVar[int] = 1500
 
     _MAP_TYPE_TO_SCHEMA: ClassVar[ChainMapGeneric[Type[BaseAttrsDataModel], Type[marshmallow.Schema]]] = ChainMap(
         MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA,  # type: ignore  # TODO: fix
