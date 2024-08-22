@@ -23,7 +23,7 @@ def file_s3_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Connector
             SECRET_ACCESS_KEY=required(str),
             S3_ENDPOINT=full_cfg.S3_ENDPOINT_URL,  # type: ignore  # 2024-01-24 # TODO: Item "LegacyDefaults" of "ObjectLikeConfig | LegacyDefaults" has no attribute "S3_ENDPOINT_URL"  [union-attr]
             BUCKET=full_cfg.FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME,  # type: ignore  # 2024-01-24 # TODO: Item "LegacyDefaults" of "ObjectLikeConfig | LegacyDefaults" has no attribute "FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME"  [union-attr]
-            SECURE=cfg.CONN_FILE_CH_SECURE,
+            SECURE=cfg.get("CONN_FILE_CH_SECURE", True),
         )
     )
 
