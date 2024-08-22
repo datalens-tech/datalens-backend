@@ -2,13 +2,28 @@ version: 3
 
 silent: true
 
+vars:
+  PYPROJECT_TOML_PATH: '{{.TASKFILE_DIR}}/pyproject.toml'
+  VENV_PATH: '{{.ROOT_DIR}}/.venv'
 
 tasks:
   init:
-    desc: Initialize the environment
+    desc: Initialize project
     cmds:
-      - echo "Initializing python environment..."
-      - poetry install
+      - echo "Ensuring python virtual environment is created"
+      - poetry install --directory={{.PYPROJECT_TOML_PATH}} --sync
+    requires:
+      vars:
+        - PYPROJECT_TOML_PATH
+
+  venv_run:
+    desc: Run poetry command
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - "{{.VENV_PATH}}/bin/{{.COMMAND}} {{.ARGS}} {{.CLI_ARGS}}"
+    requires:
+      vars:
+        - VENV_PATH
 
   package-create:
     desc: Creates new package, variables PACKAGE_NAME, PACKAGE_TYPE(lib/app)
@@ -16,4 +31,7 @@ tasks:
       vars: [PACKAGE_NAME, PACKAGE_TYPE]
     cmds:
       - echo "Creating package {{.PACKAGE_NAME}} of type {{.PACKAGE_TYPE}}..."
-      - poetry run dl-repo init --package-type {{.PACKAGE_TYPE}} --package-name {{.PACKAGE_NAME}}
+      - task: venv_run
+        vars:
+          COMMAND: dl-repo
+          ARGS: " init --package-type {{.PACKAGE_TYPE}} --package-name {{.PACKAGE_NAME}}"
