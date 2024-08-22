@@ -862,7 +862,7 @@ description = "Simple ClickHouse SQLAlchemy Dialect"
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 clickhouse-driver = ">=0.2.6"
@@ -1031,7 +1031,7 @@ description = ""
 optional = false
 python-versions = "*"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1047,7 +1047,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiohttp = ">=3.9.1"
@@ -1074,7 +1074,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1102,7 +1102,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiohttp = ">=3.9.1"
@@ -1147,7 +1147,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiohttp = ">=3.9.1"
@@ -1183,7 +1183,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1202,7 +1202,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1222,7 +1222,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1240,7 +1240,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiohttp = ">=3.9.1"
@@ -1263,7 +1263,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1286,7 +1286,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiopg = ">=1.4.0"
@@ -1313,7 +1313,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1335,7 +1335,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1372,7 +1372,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1406,7 +1406,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiohttp = ">=3.9.1"
@@ -1441,7 +1441,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiohttp = ">=3.9.1"
@@ -1472,7 +1472,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiohttp = ">=3.9.1"
@@ -1514,7 +1514,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 asyncpg = ">=0.29.0"
@@ -1540,7 +1540,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1573,7 +1573,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1602,7 +1602,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiomysql = ">=0.1.1"
@@ -1634,7 +1634,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1665,7 +1665,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 asyncpg = ">=0.29.0"
@@ -1700,7 +1700,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiohttp = ">=3.9.1"
@@ -1729,7 +1729,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1762,7 +1762,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1795,7 +1795,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 dynamic-enum = {path = "../dynamic_enum"}
@@ -1812,7 +1812,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 dl-api-commons = {path = "../../lib/dl_api_commons"}
@@ -1850,7 +1850,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiobotocore = ">=2.4.2"
@@ -1905,7 +1905,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiohttp = ">=3.9.1"
@@ -1941,7 +1941,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -1963,7 +1963,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiohttp = ">=3.9.1"
@@ -2002,7 +2002,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -2021,7 +2021,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiohttp = ">=3.9.1"
@@ -2039,7 +2039,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiogoogle = ">=5.2.0"
@@ -2071,7 +2071,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiobotocore = ">=2.4.2"
@@ -2103,7 +2103,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 arq = ">=0.25.0"
@@ -2129,7 +2129,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiogoogle = ">=5.2.0"
@@ -2165,7 +2165,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 antlr4-python3-runtime = ">=4.11.1"
@@ -2189,7 +2189,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -2215,7 +2215,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -2231,7 +2231,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -2247,7 +2247,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -2277,7 +2277,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -2298,7 +2298,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -2314,7 +2314,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -2333,7 +2333,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -2353,7 +2353,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -2400,7 +2400,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -2419,7 +2419,7 @@ description = "DataLens Bitrix SQLAlchemy Dialect"
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 sqlalchemy = ">=1.4.46, <2.0"
@@ -2435,7 +2435,7 @@ description = "BI CHYT SQLAlchemy Dialect"
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
@@ -2454,7 +2454,7 @@ description = "BI ClickHouse SQLAlchemy Dialect Customizations"
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
@@ -2472,7 +2472,7 @@ description = "BI SQLAlchemy dialects common additions"
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 sqlalchemy = ">=1.4.46, <2.0"
@@ -2488,7 +2488,7 @@ description = "Yandex Metrica API dialect for SQLAlchemy"
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 python-dateutil = ">=2.8.2"
@@ -2506,7 +2506,7 @@ description = "BI MSSQL SQLAlchemy Dialect"
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
@@ -2524,7 +2524,7 @@ description = "DL MySQL SQLAlchemy Dialect"
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
@@ -2542,7 +2542,7 @@ description = "BI Oracle SQLAlchemy Dialect"
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
@@ -2560,7 +2560,7 @@ description = "BI PostgreSQL SQLAlchemy Dialect"
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 asyncpg = ">=0.29.0"
@@ -2579,7 +2579,7 @@ description = "BI PromQL SQLAlchemy Dialect"
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 requests = ">=2.28.2"
@@ -2596,7 +2596,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 arq = ">=0.25.0"
@@ -2617,7 +2617,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aiobotocore = ">=2.4.2"
@@ -2640,7 +2640,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -2661,7 +2661,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -2678,7 +2678,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 async-timeout = ">=4.0.3"
@@ -2695,7 +2695,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.source]
 type = "directory"
@@ -2708,7 +2708,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -2840,7 +2840,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.source]
 type = "directory"
@@ -5704,7 +5704,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
@@ -6273,7 +6273,7 @@ description = "Possibly-statbox-api-related common utils and helpers and reusabl
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 flask = ">=2.2.5"
@@ -6990,4 +6990,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "a66696b35dbe3c331771f3dab5199b95d31dfadd9dfeadd2e1d059367b157206"
+content-hash = "222242c677599d9b0a0fc92c6575bbe2a5f914090da08c2c549fd00ba71ebf7a"

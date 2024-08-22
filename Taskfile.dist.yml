@@ -28,3 +28,10 @@ includes:
   e2e:
     taskfile: tools/e2e/Taskfile.yaml
     dir: tools/e2e
+
+  dev:
+    taskfile: tools/taskfiles/taskfile_dev.yml
+    vars:
+      PROJECT_ROOT_PATH: '{{.ROOT_DIR}}'
+      PYPROJECT_TOML_PATH: '{{.ROOT_DIR}}/metapkg/pyproject.toml'
+      VENV_PATH: '{{.ROOT_DIR}}/metapkg/.venv'
