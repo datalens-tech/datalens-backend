@@ -528,6 +528,7 @@ class UStorageClientBase:
         include_data: bool = False,
         ids: Optional[Iterable[str]] = None,
         creation_time: Optional[dict[str, Union[str, int, None]]] = None,
+        page: int = 0,
         created_at_from: float = 0,
         limit: Optional[int] = None,
     ) -> RequestData:
@@ -546,18 +547,17 @@ class UStorageClientBase:
 
         if all_tenants:
             assert include_data is False  # not supported for this endpoint
+            assert creation_time is None  # not supported for this endpoint
+            req_params["createdAtFrom"] = created_at_from
             endpoint = "/inter-tenant/entries"
         else:
+            req_params["page"] = page
             endpoint = "/entries"
 
-        params: dict[Any, Any] = {
-            "createdAtFrom": created_at_from,
-            **req_params,
-        }
         return cls.RequestData(
             method="get",
             relative_url=endpoint,
-            params=params,
+            params=req_params,
             json=None,
         )
 
@@ -785,6 +785,10 @@ class UStorageClient(UStorageClientBase):
         limit: Optional[int] = None,
     ) -> Generator[dict, None, None]:
         """
+        implements 2-in-1 pagination:
+        - by page number (in this case entries are returned from the US along with a nextPageToken)
+        - by creation time (entries are returned as a list ordered by creation time)
+
         :param scope:
         :param entry_type:
         :param meta: Filter entries by "meta" section values.
@@ -794,11 +798,14 @@ class UStorageClient(UStorageClientBase):
         :param creation_time: Filter entries by creation_time. Available filters: eq, ne, gt, gte, lt, lte
         :return:
         """
-        created_at_from = datetime(1970, 1, 1)
-        previous_batch_entry_ids = set()
+        created_at_from = datetime(1970, 1, 1)  # for creation time pagination
+        previous_batch_entry_ids = set()  # for deduplication
+        page = 0  # for page number pagination
+
         while True:
+            # 1. Prepare and make request
             created_at_from_ts = created_at_from.timestamp()
-            new_entry_ids = set()
+            unseen_entry_ids = set()
             resp = self._request(
                 self._req_data_iter_entries(
                     scope,
@@ -808,31 +815,41 @@ class UStorageClient(UStorageClientBase):
                     include_data=include_data,
                     ids=ids,
                     creation_time=creation_time,
+                    page=page,
                     created_at_from=created_at_from_ts,
                     limit=limit,
                 )
             )
-            page_entries: list
-            if isinstance(resp, list):
-                page_entries = resp
-            else:
-                page_entries = resp["entries"]
-            if page_entries:
-                created_at_from = self.parse_datetime(page_entries[-1]["createdAt"]) - timedelta(milliseconds=1)
-                # minus 1 ms to account for cases where entries, created during a single millisecond, happen to return
-                # on the border of two batches (one in batch 1 and the other in batch 2)
-            else:
-                LOGGER.info("Got an empty entries list in the US response, the listing is completed")
-                break
 
+            # 2. Deal with pagination
+            page_entries: list
+            if isinstance(resp, list):  # no nextPageToken, paginating by creation time
+                page_entries = resp
+                if page_entries:
+                    created_at_from = self.parse_datetime(page_entries[-1]["createdAt"]) - timedelta(milliseconds=1)
+                    # minus 1 ms to account for cases where entries, created during a single millisecond, happen to
+                    # return on the border of two batches (one in batch 1 and the other in batch 2),
+                    # hence the deduplication
+                else:
+                    LOGGER.info("Got an empty entries list in the US response, the listing is completed")
+                    break
+            else:
+                page_entries = resp.get("entries")
+                if resp.get("nextPageToken"):
+                    page = resp["nextPageToken"]
+                else:
+                    LOGGER.info("Got no nextPageToken in the US response, the listing is completed")
+                    break
+
+            # 3. Yield results
             for entr in page_entries:
                 if entr["entryId"] not in previous_batch_entry_ids:
-                    new_entry_ids.add(entr["entryId"])
+                    unseen_entry_ids.add(entr["entryId"])
                     yield entr
 
-            previous_batch_entry_ids = new_entry_ids.copy()
-
-            if not new_entry_ids:
+            # 4. Stop if got no unseen entries
+            previous_batch_entry_ids = unseen_entry_ids.copy()
+            if not unseen_entry_ids:
                 LOGGER.info("US response is not empty, but we got no unseen entries, assuming the listing is completed")
                 break
 
