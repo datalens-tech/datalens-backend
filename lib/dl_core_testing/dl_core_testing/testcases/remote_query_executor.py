@@ -101,11 +101,9 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
         )
 
     @pytest.fixture(scope="function", params=[True, False], ids=["json", "pickle"], autouse=True)
-    def use_json_serializer(self, request: pytest.FixtureRequest) -> Generator[None, None, None]:
+    def use_json_serializer(self, request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> None:
         if request.param:
-            os.environ["USE_JSON_QE_SERIALIZER"] = "1"
-        yield
-        os.environ.pop("USE_JSON_QE_SERIALIZER", None)
+            monkeypatch.setenv("USE_JSON_QE_SERIALIZER", "1")
 
     async def execute_request(self, remote_adapter: RemoteAsyncAdapter, query: str) -> list[TBIDataRow]:
         async with remote_adapter:
