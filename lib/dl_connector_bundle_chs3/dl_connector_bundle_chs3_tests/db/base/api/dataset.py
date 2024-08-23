@@ -147,7 +147,6 @@ class CHS3DatasetTestSuite(CHS3DatasetTestBase, DefaultConnectorDatasetTestSuite
             ),
         )
 
-
         # 2. Replace connection
         replace_conn_resp = control_api.replace_connection(
             dataset=ds,
