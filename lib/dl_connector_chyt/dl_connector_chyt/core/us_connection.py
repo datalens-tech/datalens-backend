@@ -207,6 +207,10 @@ class ConnectionCHYTToken(BaseConnectionCHYT):
             }
 
     @property
+    def allow_public_usage(self) -> bool:
+        return True
+    
+    @property
     def token(self) -> str:
         return self.data.token
 
