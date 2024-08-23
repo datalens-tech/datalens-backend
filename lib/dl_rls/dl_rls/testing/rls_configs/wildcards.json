@@ -13,7 +13,7 @@
     },
     {
         "pattern_type": "all", "allowed_value": null,
-        "subject": {"subject_type": "user", "subject_id": "2", "subject_name": "user4"}
+        "subject": {"subject_type": "user", "subject_id": "4", "subject_name": "user4"}
     },
     {
         "pattern_type": "all", "allowed_value": null,
