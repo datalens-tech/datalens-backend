@@ -26,6 +26,7 @@ class UnitedStorageConfiguration:
     us_master_token: str = attr.ib(kw_only=True)
     us_pg_dsn: str = attr.ib(kw_only=True)
     force: bool = attr.ib(kw_only=True, default=True)
+    migrations: Optional[list[list[str]]] = attr.ib(kw_only=True, default=None)
 
 
 @attr.s(frozen=True)
