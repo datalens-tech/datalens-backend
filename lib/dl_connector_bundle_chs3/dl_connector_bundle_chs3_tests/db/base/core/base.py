@@ -215,7 +215,7 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
 
     @pytest.fixture(scope="function")
     def saved_connection_2(self, sync_us_manager: SyncUSManager, connection_creation_params_2: dict) -> FILE_CONN_TV:
-        # TODO sшmplify second connection fixture and add one to the base test class
+        # TODO simplify second connection fixture and add one to the base test class
         conn = make_saved_connection(
             sync_usm=sync_us_manager,
             conn_type=self.conn_type,
