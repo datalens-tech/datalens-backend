@@ -1,5 +1,8 @@
 import abc
+import copy
 from http import HTTPStatus
+from typing import cast
+import uuid
 
 import pytest
 
@@ -12,6 +15,7 @@ from dl_constants.enums import (
     FileProcessingStatus,
 )
 from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core_testing.connection import make_saved_connection
 
 from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from dl_connector_bundle_chs3_tests.db.base.api.base import CHS3ConnectionApiTestBase
@@ -119,3 +123,50 @@ class CHS3DatasetTestSuite(CHS3DatasetTestBase, DefaultConnectorDatasetTestSuite
 
         old_raw_schema, new_raw_schema = orig_ds.sources[0].raw_schema, ds.sources[0].raw_schema
         assert len(new_raw_schema) == len(old_raw_schema) + 1
+
+    def test_replace_connection(
+        self,
+        sync_us_manager: SyncUSManager,
+        saved_dataset: Dataset,
+        sample_file_data_source: BaseFileS3Connection.FileDataSource,
+        control_api: SyncHttpDatasetApiV1,
+    ) -> None:
+        ds = saved_dataset
+
+        # 1. Create a second connection
+        new_file_source = copy.deepcopy(sample_file_data_source)
+        new_file_source.id = str(uuid.uuid4())
+        new_file_source.file_id = str(uuid.uuid4())
+        new_connection_creation_params = dict(sources=[new_file_source])
+        new_connection = cast(
+            FILE_CONN_TV,
+            make_saved_connection(
+                sync_usm=sync_us_manager,
+                conn_type=self.conn_type,
+                data_dict=new_connection_creation_params,
+            ),
+        )
+
+        # 2. Replace connection
+        replace_conn_resp = control_api.replace_connection(
+            dataset=ds,
+            new_connection_id=new_connection.uuid,
+            fail_ok=True,
+        )
+        assert replace_conn_resp.status_code == HTTPStatus.BAD_REQUEST, replace_conn_resp.response_errors
+        # ^ there is no seamless migrator for file connections,
+        # so manual source replacement is necessary to complete the connection replacement
+        ds = replace_conn_resp.dataset
+
+        # 3. Manually replace datasource
+        sources = control_api.get_connection_sources(new_connection.uuid).json["sources"]
+        new_source_id = str(uuid.uuid4())
+        replace_src_resp = control_api.replace_single_data_source(
+            dataset=ds,
+            new_source={
+                "id": new_source_id,
+                **sources[0],
+            },
+        )
+
+        assert replace_src_resp.status_code == HTTPStatus.OK, replace_src_resp.response_errors
