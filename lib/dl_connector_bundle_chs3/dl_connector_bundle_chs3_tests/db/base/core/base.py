@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import abc
 import asyncio
+import copy
 from typing import (
     TYPE_CHECKING,
     AsyncGenerator,
     ClassVar,
     Generator,
     TypeVar,
+    cast,
 )
 import uuid
 
@@ -22,7 +24,9 @@ from dl_configs.settings_submodels import S3Settings
 from dl_constants.enums import DataSourceType
 from dl_core.db import SchemaColumn
 from dl_core.services_registry import ServicesRegistry
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.configuration import RedisSettingMaker
+from dl_core_testing.connection import make_saved_connection
 from dl_core_testing.database import DbTable
 from dl_core_testing.fixtures.primitives import FixtureTableSpec
 from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
@@ -193,3 +197,27 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
     @pytest.fixture(scope="function")
     def connection_creation_params(self, sample_file_data_source: BaseFileS3Connection.FileDataSource) -> dict:
         return dict(sources=[sample_file_data_source])
+
+    @pytest.fixture(scope="function")
+    def connection_creation_params_2(self, sample_file_data_source_2: BaseFileS3Connection.FileDataSource) -> dict:
+        return dict(sources=[sample_file_data_source_2])
+
+    @pytest.fixture(scope="function")
+    def sample_file_data_source_2(
+        self,
+        sample_file_data_source: BaseFileS3Connection.FileDataSource,
+    ) -> BaseFileS3Connection.FileDataSource:
+        new_source = copy.deepcopy(sample_file_data_source)
+        new_source.id = str(uuid.uuid4())
+        new_source.file_id = str(uuid.uuid4())
+
+        return new_source
+
+    @pytest.fixture(scope="function")
+    def saved_connection_2(self, sync_us_manager: SyncUSManager, connection_creation_params_2: dict) -> FILE_CONN_TV:
+        conn = make_saved_connection(
+            sync_usm=sync_us_manager,
+            conn_type=self.conn_type,
+            data_dict=connection_creation_params_2,
+        )
+        return cast(FILE_CONN_TV, conn)

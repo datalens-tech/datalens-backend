@@ -1,5 +1,6 @@
 import abc
 from http import HTTPStatus
+import uuid
 
 import pytest
 
@@ -119,3 +120,36 @@ class CHS3DatasetTestSuite(CHS3DatasetTestBase, DefaultConnectorDatasetTestSuite
 
         old_raw_schema, new_raw_schema = orig_ds.sources[0].raw_schema, ds.sources[0].raw_schema
         assert len(new_raw_schema) == len(old_raw_schema) + 1
+
+    def test_replace_connection(
+        self,
+        sync_us_manager: SyncUSManager,
+        saved_dataset: Dataset,
+        saved_connection_2: FILE_CONN_TV,
+        control_api: SyncHttpDatasetApiV1,
+    ) -> None:
+        ds = saved_dataset
+
+        # 1. Replace connection
+        replace_conn_resp = control_api.replace_connection(
+            dataset=ds,
+            new_connection_id=saved_connection_2.uuid,
+            fail_ok=True,
+        )
+        assert replace_conn_resp.status_code == HTTPStatus.BAD_REQUEST, replace_conn_resp.response_errors
+        # ^ there is no seamless migrator for file connections,
+        # so manual source replacement is necessary to complete the connection replacement
+        ds = replace_conn_resp.dataset
+
+        # 2. Manually replace datasource
+        sources = control_api.get_connection_sources(saved_connection_2.uuid).json["sources"]
+        new_source_id = str(uuid.uuid4())
+        replace_src_resp = control_api.replace_single_data_source(
+            dataset=ds,
+            new_source={
+                "id": new_source_id,
+                **sources[0],
+            },
+        )
+
+        assert replace_src_resp.status_code == HTTPStatus.OK, replace_src_resp.response_errors

@@ -102,7 +102,6 @@ class BaseFileS3DataSource(ClickHouseDataSourceBase):
 
     def get_parameters(self) -> dict:
         return dict(
-            super().get_parameters(),
             origin_source_id=self.origin_source_id,
         )
 

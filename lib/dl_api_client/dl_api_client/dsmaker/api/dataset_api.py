@@ -105,6 +105,14 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
     # Override serial_adapter with subclass
     serial_adapter: DatasetApiV1SerializationAdapter = attr.ib(init=False, factory=DatasetApiV1SerializationAdapter)
 
+    def get_connection_sources(self, connection_id: str) -> HttpDatasetApiResponse:
+        response = self._request(f"/api/v1/connections/{connection_id}/info/sources", method="get")
+        return HttpDatasetApiResponse(
+            json=response.json,
+            status_code=response.status_code,
+            dataset=None,
+        )
+
     def save_dataset(
         self,
         dataset: Dataset,
@@ -282,3 +290,54 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
             ],
         )
         return refresh_resp
+
+    def replace_single_data_source(
+        self,
+        dataset: Dataset,
+        new_source: dict[str, Any],
+        fail_ok: bool = False,
+    ):
+        response = self.apply_updates(
+            dataset=dataset,
+            fail_ok=fail_ok,
+            updates=[
+                {
+                    "action": "add_source",
+                    "source": new_source,
+                },
+                {
+                    "action": "update_source_avatar",
+                    "source_avatar": {
+                        "id": dataset.source_avatars["avatar_1"].id,
+                        "source_id": new_source["id"],
+                        "title": new_source["title"],
+                    },
+                },
+                {
+                    "action": "delete_source",
+                    "source": {"id": dataset.sources["source_1"].id},
+                },
+            ],
+        )
+        return response
+
+    def replace_connection(
+        self,
+        dataset: Dataset,
+        new_connection_id: str,
+        fail_ok: bool = False,
+    ):
+        response = self.apply_updates(
+            dataset=dataset,
+            fail_ok=fail_ok,
+            updates=[
+                {
+                    "action": "replace_connection",
+                    "connection": {
+                        "id": dataset.sources[0].connection_id,
+                        "new_id": new_connection_id,
+                    },
+                },
+            ],
+        )
+        return response
