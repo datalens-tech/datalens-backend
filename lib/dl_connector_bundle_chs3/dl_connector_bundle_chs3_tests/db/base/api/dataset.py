@@ -128,12 +128,14 @@ class CHS3DatasetTestSuite(CHS3DatasetTestBase, DefaultConnectorDatasetTestSuite
         saved_connection_2: FILE_CONN_TV,
         control_api: SyncHttpDatasetApiV1,
     ) -> None:
+        new_connection = saved_connection_2
+
         ds = saved_dataset
 
         # 1. Replace connection
         replace_conn_resp = control_api.replace_connection(
             dataset=ds,
-            new_connection_id=saved_connection_2.uuid,
+            new_connection_id=new_connection.uuid,
             fail_ok=True,
         )
         assert replace_conn_resp.status_code == HTTPStatus.BAD_REQUEST, replace_conn_resp.response_errors
@@ -142,7 +144,7 @@ class CHS3DatasetTestSuite(CHS3DatasetTestBase, DefaultConnectorDatasetTestSuite
         ds = replace_conn_resp.dataset
 
         # 2. Manually replace datasource
-        sources = control_api.get_connection_sources(saved_connection_2.uuid).json["sources"]
+        sources = control_api.get_connection_sources(new_connection.uuid).json["sources"]
         new_source_id = str(uuid.uuid4())
         replace_src_resp = control_api.replace_single_data_source(
             dataset=ds,

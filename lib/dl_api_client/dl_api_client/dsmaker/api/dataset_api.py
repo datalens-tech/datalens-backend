@@ -296,7 +296,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
         dataset: Dataset,
         new_source: dict[str, Any],
         fail_ok: bool = False,
-    ):
+    ) -> HttpDatasetApiResponse:
         response = self.apply_updates(
             dataset=dataset,
             fail_ok=fail_ok,
@@ -326,7 +326,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
         dataset: Dataset,
         new_connection_id: str,
         fail_ok: bool = False,
-    ):
+    ) -> HttpDatasetApiResponse:
         response = self.apply_updates(
             dataset=dataset,
             fail_ok=fail_ok,
