@@ -47,8 +47,6 @@ class _BaseClickHouseConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_CLICKHOUSE
                     max_execution_time=self._conn_options.max_execution_time,
                     total_timeout=self._conn_options.total_timeout,
                     connect_timeout=self._conn_options.connect_timeout,
-                    insert_quorum=self._conn_options.insert_quorum,
-                    insert_quorum_timeout=self._conn_options.insert_quorum_timeout,
                     disable_value_processing=self._conn_options.disable_value_processing,
                     secure=self._conn_dto.secure,
                     ssl_ca=self._conn_dto.ssl_ca,

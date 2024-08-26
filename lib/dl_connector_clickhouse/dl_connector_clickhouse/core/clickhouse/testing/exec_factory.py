@@ -28,8 +28,6 @@ class ClickHouseExecutorFactory(ExecutorFactoryBase):
             connect_timeout=None,
             max_execution_time=None,
             total_timeout=None,
-            insert_quorum=None,
-            insert_quorum_timeout=None,
             disable_value_processing=False,
             ca_data=get_root_certificates(),
         )
