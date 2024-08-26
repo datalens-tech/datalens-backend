@@ -22,8 +22,8 @@ class BaseClickHouseConnTargetDTO(BaseSQLConnTargetDTO, BaseAiohttpConnTargetDTO
     ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
 
     # TODO remove in the next release to avoid compatibility issues
-    insert_quorum: Optional[int] = attr.ib(default=None)
-    insert_quorum_timeout: Optional[int] = attr.ib(default=None)
+    insert_quorum: Optional[int] = attr.ib(kw_only=True, default=None)
+    insert_quorum_timeout: Optional[int] = attr.ib(kw_only=True, default=None)
 
 
 class ClickHouseConnTargetDTO(BaseClickHouseConnTargetDTO):
