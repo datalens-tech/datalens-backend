@@ -17,11 +17,13 @@ class BaseClickHouseConnTargetDTO(BaseSQLConnTargetDTO, BaseAiohttpConnTargetDTO
     max_execution_time: Optional[int] = attr.ib()
     connect_timeout: Optional[int] = attr.ib()
     total_timeout: Optional[int] = attr.ib()
-    insert_quorum: Optional[int] = attr.ib()
-    insert_quorum_timeout: Optional[int] = attr.ib()
     disable_value_processing: bool = attr.ib()
     secure: bool = attr.ib(kw_only=True, default=False)
     ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
+
+    # TODO remove in the next release to avoid compatibility issues
+    insert_quorum: Optional[int] = attr.ib(kw_only=True, default=None)
+    insert_quorum_timeout: Optional[int] = attr.ib(kw_only=True, default=None)
 
 
 class ClickHouseConnTargetDTO(BaseClickHouseConnTargetDTO):

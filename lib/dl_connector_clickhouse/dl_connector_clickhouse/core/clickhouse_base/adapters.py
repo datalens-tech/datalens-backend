@@ -142,8 +142,6 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
         return get_ch_settings(
             max_execution_time=self._target_dto.max_execution_time,
             read_only_level=None,
-            insert_quorum=self._target_dto.insert_quorum,
-            insert_quorum_timeout=self._target_dto.insert_quorum_timeout,
             output_format_json_quote_denormals=1,
         )
 
@@ -410,9 +408,6 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             **get_ch_settings(
                 read_only_level=read_only_level,
                 max_execution_time=self._target_dto.max_execution_time,
-                # doesn't matter until materializer uses async ch adapter
-                insert_quorum=self._target_dto.insert_quorum,
-                insert_quorum_timeout=self._target_dto.insert_quorum_timeout,
             ),
         )
 

@@ -42,8 +42,6 @@ LOGGER = logging.getLogger(__name__)
 def get_ch_settings(
     read_only_level: Optional[int] = None,
     max_execution_time: Optional[int] = None,
-    insert_quorum: Optional[int] = None,
-    insert_quorum_timeout: Optional[int] = None,
     output_format_json_quote_denormals: Optional[int] = None,
 ) -> dict:
     settings = {
@@ -51,10 +49,6 @@ def get_ch_settings(
         # 1 — JOIN behaves the same way as in standard SQL.
         # The type of the corresponding field is converted to Nullable, and empty cells are filled with NULL.
         "join_use_nulls": 1,
-        # Limits the time to wait for a response from the servers in the cluster.
-        # If a ddl request has not been performed on all hosts, a response will contain
-        # a timeout error and a request will be executed in an async mode.
-        "distributed_ddl_task_timeout": 280,
         # https://clickhouse.com/docs/en/operations/settings/query-complexity#max-execution-time
         # Maximum query execution time in seconds.
         # By default, specify a large value to ensure there are no
@@ -64,11 +58,6 @@ def get_ch_settings(
         # TODO: get rid of this parameter or figure out a proper way to use it, bc CH's estimates seem to be way off
         "max_execution_time": max_execution_time if max_execution_time is None else 3600 * 4,
         "readonly": read_only_level,
-        # https://clickhouse.com/docs/en/operations/settings/settings#settings-insert_quorum
-        # INSERT succeeds only when ClickHouse manages to correctly write data to the insert_quorum
-        # of replicas during the insert_quorum_timeout
-        "insert_quorum": insert_quorum,
-        "insert_quorum_timeout": insert_quorum_timeout,
         # request clickhouse stat in response headers
         # otherwise clickhouse sends nulls in X-ClickHouse-Summary
         "send_progress_in_http_headers": 0,
