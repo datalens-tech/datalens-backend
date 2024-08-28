@@ -18,7 +18,10 @@ LOGGER = logging.getLogger(__name__)
 
 def parse_excel_data(data: BinaryIO) -> List:
     result = []
-    wb = load_workbook(data, data_only=True, keep_links=False)
+    try:
+        wb = load_workbook(data, data_only=True, keep_links=False)
+    except Exception:
+        raise web.HTTPUnprocessableEntity(reason="Invalid excel file")
     for sheetname in wb.sheetnames:
         sheet = wb[sheetname]
         result.append(

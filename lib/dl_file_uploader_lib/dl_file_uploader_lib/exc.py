@@ -83,6 +83,11 @@ class ParseFailed(DLFileUploaderBaseError):
     default_message = "Parsing failed"
 
 
+class InvalidExcel(ParseFailed):
+    err_code = ParseFailed.err_code + ["INVALID_EXCEL"]
+    default_message = "Excel parsing failed"
+
+
 class InvalidSource(DLFileUploaderBaseError):
     err_code = DLFileUploaderBaseError.err_code + ["INVALID_SOURCE"]
     default_message = "Specified source is not applicable"

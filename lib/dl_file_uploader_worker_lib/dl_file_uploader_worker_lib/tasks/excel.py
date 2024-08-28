@@ -103,6 +103,8 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                         url=f"{secure_reader_endpoint}/reader/excel",
                         data=mpwriter,
                     ) as resp:
+                        if resp.status != 200:
+                            raise exc.InvalidExcel()
                         file_data = await resp.json()
 
             for src in dfile.sources:
@@ -229,10 +231,12 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                 dfile.status = FileProcessingStatus.failed
                 exc_to_save = ex if isinstance(ex, exc.DLFileUploaderBaseError) else exc.ParseFailed()
                 dfile.error = FileProcessingError.from_exception(exc_to_save)
-                await dfile.save()
 
                 for src in dfile.sources or ():
-                    connection_error_tracker.add_error(src.id, dfile.error)
+                    src.status = FileProcessingStatus.failed
+                    src.error = dfile.error
+                    connection_error_tracker.add_error(src.id, src.error)
+                await dfile.save()
                 await connection_error_tracker.finalize(self.meta.exec_mode, self.meta.connection_id)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "finalize" of "FileConnectionDataSourceErrorTracker" has incompatible type "TaskExecutionMode | None"; expected "TaskExecutionMode"  [arg-type]
 
                 return Fail()

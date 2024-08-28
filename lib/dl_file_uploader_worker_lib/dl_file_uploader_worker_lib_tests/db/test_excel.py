@@ -222,3 +222,29 @@ async def test_parse_excel_non_string_header(
     preview = await DataSourcePreview.get(manager=rmm, obj_id=dsrc.preview_id)
     assert preview.id == dsrc.preview_id
     assert preview.preview_data[0] == ["1", "2", "3"]
+
+
+@pytest.mark.asyncio
+async def test_parse_invalid_excel(
+    task_processor_client,
+    task_state,
+    s3_client,
+    redis_model_manager,
+    uploaded_invalid_excel_id,
+    reader_app,
+):
+    rmm = redis_model_manager
+    df = await DataFile.get(manager=rmm, obj_id=uploaded_invalid_excel_id)
+    assert df.status == FileProcessingStatus.in_progress
+
+    task = await task_processor_client.schedule(ProcessExcelTask(file_id=uploaded_invalid_excel_id))
+    result = await wait_task(task, task_state)
+
+    await sleep(60)
+    assert result[-1] == "failed"
+
+    df = await DataFile.get(manager=rmm, obj_id=uploaded_invalid_excel_id)
+    assert df.status == FileProcessingStatus.failed
+    for src in df.sources:
+        assert src.status == FileProcessingStatus.failed
+    assert df.error.code == ["FILE", "PARSE_FAILED", "INVALID_EXCEL"]
