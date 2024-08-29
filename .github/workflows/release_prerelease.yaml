@@ -26,38 +26,19 @@ on:
 jobs:
   get_version:
     name: "Get version"
-    runs-on: ubuntu-latest
+    runs-on: [ self-hosted, linux, light ]
     permissions:
       contents: read
     outputs:
       version: ${{ steps.get_version.outputs.version }}
     steps:
-    - name: Checkout code
-      id: checkout
-      if: ${{ github.event.inputs.version == '' }}
-      uses: actions/checkout@v2
-      with:
-        ref: "${{ github.event.inputs.branch }}"
-        fetch-depth: 0
-
-    - name: Get version
-      id: get_version
-      run: |
-        version=${{ github.event.inputs.version }}
-        if [[ -z "${version}" ]]; then
-            latest_tag=$(git describe --tags --abbrev=0)
-            latest_version="${latest_tag%-rc.*}"
-            echo "Latest version is ${latest_version}"
-            version=$(.github/.scripts/shift_version.sh ${latest_version} ${{ github.event.inputs.version_shift }})
-        fi
-        
-        if [[ ! $version =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "ERROR: Version must be in format vX.Y.Z, found $version, exiting..."
-            exit 1;
-        fi
-
-        echo "::notice title=Will prerelease the following version::$version"
-        echo "version=${version}" >> $GITHUB_OUTPUT
+      - name: Get Version
+        id: get_version
+        uses: datalens-tech/get-next-release-version-action@v1
+        with:
+          version_shift: ${{ github.event.inputs.version_shift }}
+          version_override: ${{ github.event.inputs.version }}
+          release_filter_target_commitish: ${{ github.event.inputs.branch }}
 
   build_images:
     name: "Build images"
