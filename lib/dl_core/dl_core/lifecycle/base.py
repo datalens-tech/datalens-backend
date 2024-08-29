@@ -23,6 +23,16 @@ _US_ENTRY_TV = TypeVar("_US_ENTRY_TV", bound=USEntry)
 
 
 @attr.s
+class HookResult:
+    ...
+
+
+@attr.s
+class PostSaveHookResult(HookResult):
+    additional_save_needed: bool = False
+
+
+@attr.s
 class EntryLifecycleManager(abc.ABC, Generic[_US_ENTRY_TV]):
     ENTRY_CLS: ClassVar[Type[_US_ENTRY_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
@@ -38,8 +48,8 @@ class EntryLifecycleManager(abc.ABC, Generic[_US_ENTRY_TV]):
     def pre_save_hook(self) -> None:
         pass
 
-    def post_save_hook(self) -> None:
-        pass
+    def post_save_hook(self) -> PostSaveHookResult:
+        return PostSaveHookResult()
 
     def post_copy_hook(self) -> None:
         pass

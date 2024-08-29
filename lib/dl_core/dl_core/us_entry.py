@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import typing
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -50,9 +51,9 @@ class USEntry:
     hidden: bool
     links: Optional[dict] = None
 
-    _stored_in_db = False
+    _stored_in_db: bool = False
     _us_resp: Optional[dict] = None
-    _lock = None
+    _lock: typing.Optional[str] = None
     _us_manager: Optional[USManagerBase]
 
     @classmethod
@@ -140,6 +141,22 @@ class USEntry:
     def us_manager(self) -> USManagerBase:
         assert self._us_manager is not None
         return self._us_manager
+
+    @property
+    def stored_in_db(self) -> bool:
+        return self._stored_in_db
+
+    @stored_in_db.setter
+    def stored_in_db(self, value: bool) -> None:
+        self._stored_in_db = value
+
+    @property
+    def lock(self) -> typing.Optional[str]:
+        return self._lock
+
+    @lock.setter
+    def lock(self, value: typing.Optional[str]) -> None:
+        self._lock = value
 
     @property
     def _context(self) -> RequestContextInfo:

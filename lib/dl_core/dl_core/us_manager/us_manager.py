@@ -354,7 +354,7 @@ class USManagerBase:
                 decrypted_data = self._crypto_controller.decrypt(json.loads(old_data)) if old_data is not None else None
                 serializer.set_data_attr(entry, key, decrypted_data)
 
-        entry._stored_in_db = True
+        entry.stored_in_db = True
         entry._us_resp = us_resp
 
         return entry
@@ -411,7 +411,7 @@ class USManagerBase:
 
         save_params: dict[str, Any] = {}
 
-        if not entry._stored_in_db:
+        if not entry.stored_in_db:
             if entry.permissions_mode is not None:
                 save_params.update(permissionsMode=entry.permissions_mode)
             if entry.initial_permissions is not None:
@@ -446,6 +446,17 @@ class USManagerBase:
             scope=entry.scope,
             type=us_type,
         )
+
+        return save_params
+
+    def _prepare_update_entry_params(self, entry: USEntry, update_revision: Optional[bool] = None) -> dict:
+        assert entry.uuid is not None
+        save_params = self._get_entry_save_params(entry)
+        assert "data" in save_params and "unversioned_data" in save_params
+
+        save_params.pop("scope")
+        save_params.pop("type")
+        save_params["update_revision"] = update_revision
 
         return save_params
 
