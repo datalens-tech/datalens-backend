@@ -129,8 +129,7 @@ class SyncUSManager(USManagerBase):
         assert "data" in save_params and "unversioned_data" in save_params
         assert entry_loc is not None, "Can not save entry without key/workbook data"
 
-        # noinspection PyProtectedMember
-        if not entry._stored_in_db:
+        if not entry.stored_in_db:
             resp = self._us_client.create_entry(
                 key=entry_loc,
                 scope=us_scope,
@@ -138,23 +137,26 @@ class SyncUSManager(USManagerBase):
                 **save_params,
             )
             entry.uuid = resp["entryId"]
-            entry._stored_in_db = True
+            entry.stored_in_db = True
         else:
-            # noinspection PyProtectedMember
             save_params["update_revision"] = update_revision
-            resp = self._us_client.update_entry(
-                entry.uuid, lock=entry._lock, **save_params  # type: ignore  # TODO: fix
-            )
+            assert entry.uuid is not None
+            resp = self._us_client.update_entry(entry.uuid, lock=entry.lock, **save_params)
 
         entry._us_resp = resp  # type: ignore  # TODO: fix
-        lifecycle_manager.post_save_hook()
+
+        post_save_result = lifecycle_manager.post_save_hook()
+        if post_save_result.additional_save_needed:
+            save_params = self._prepare_update_entry_params(entry, False)
+            assert entry.uuid is not None
+            entry._us_resp = self._us_client.update_entry(entry.uuid, lock=entry.lock, **save_params)
 
     def delete(self, entry: USEntry) -> None:
         lifecycle_manager = self.get_lifecycle_manager(entry=entry)
         lifecycle_manager.pre_delete_hook()
 
-        self._us_client.delete_entry(entry.uuid, lock=entry._lock)
-        entry._stored_in_db = False
+        self._us_client.delete_entry(entry.uuid, lock=entry.lock)
+        entry.stored_in_db = False
         # noinspection PyBroadException
         try:
             LOGGER.info("Executing post-delete hook %s", entry.uuid)
@@ -266,14 +268,13 @@ class SyncUSManager(USManagerBase):
     #
     def acquire_lock(self, entry: USEntry, duration: Optional[int] = None, wait_timeout: Optional[int] = None) -> str:
         lock_token = self._us_client.acquire_lock(entry.uuid, duration, wait_timeout)
-        entry._lock = lock_token
+        entry.lock = lock_token
         return lock_token
 
     def release_lock(self, entry: USEntry) -> None:
-        # noinspection PyProtectedMember
-        if entry._lock:
-            self._us_client.release_lock(entry.uuid, entry._lock)
-            entry._lock = None
+        if entry.lock:
+            self._us_client.release_lock(entry.uuid, entry.lock)
+            entry.lock = None
 
     @contextlib.contextmanager  # type: ignore  # TODO: fix
     def locked_cm(  # type: ignore  # TODO: fix
@@ -297,12 +298,12 @@ class SyncUSManager(USManagerBase):
         entry = None
         try:
             entry = self.get_by_id(entry_id, expected_type=expected_type)
-            entry._lock = lock_token
+            entry.lock = lock_token
             yield entry
         finally:
             self._us_client.release_lock(entry_id, lock_token)
             if entry is not None:
-                entry._lock = None
+                entry.lock = None
 
     # Dependencies
     #

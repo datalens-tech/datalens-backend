@@ -8,6 +8,7 @@ import attr
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_core.connectors.base.lifecycle import ConnectionLifecycleManager
+from dl_core.lifecycle.base import PostSaveHookResult
 from dl_file_uploader_task_interface.tasks import (
     DeleteFileTask,
     SaveSourceTask,
@@ -94,13 +95,15 @@ class BaseFileS3ConnectionLifecycleManager(ConnectionLifecycleManager[BaseFileS3
         task_processor = task_processor_factory.make(req_id)
         return task_processor
 
-    def post_save_hook(self) -> None:
+    def post_save_hook(self) -> PostSaveHookResult:
         super().post_save_hook()
 
         rci = self._us_manager.bi_context
         task_processor = self.get_task_processor(rci.request_id)
         scheduler = FileConnTaskScheduler(task_processor=task_processor, rci=rci)
         scheduler.schedule_sources_update(self.entry)
+
+        return PostSaveHookResult()
 
     def post_delete_hook(self) -> None:
         super().post_delete_hook()
