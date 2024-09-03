@@ -178,6 +178,18 @@ async def uploaded_excel_no_header_id(uploaded_excel_no_header) -> str:
 
 
 @pytest.fixture(scope="function")
+async def uploaded_invalid_excel(uploaded_excel_file) -> DataFile:
+    filename = "invalid_excel.xlsx"
+    data_file_desc = await uploaded_excel_file(filename)
+    yield data_file_desc
+
+
+@pytest.fixture(scope="function")
+async def uploaded_invalid_excel_id(uploaded_invalid_excel) -> str:
+    yield uploaded_invalid_excel.id
+
+
+@pytest.fixture(scope="function")
 def reader_app(loop, secure_reader):
     current_app = create_reader_app()
     runner = aiohttp.web.AppRunner(current_app)
