@@ -38,8 +38,8 @@ from dl_core.connection_models import (
 )
 from dl_core.enums import QueryExecutorMode
 from dl_model_tools.serialization import (
-    RedisDatalensDataJSONDecoder,
-    RedisDatalensDataJSONEncoder,
+    DataLensJSONDecoder,
+    DataLensJSONEncoder,
 )
 from dl_utils.utils import get_type_full_name
 
@@ -82,13 +82,13 @@ class DBAdapterQueryStrSchema(BaseQEAPISchema):
         )
         if conn_params is not None:
             for k, v in conn_params.items():
-                conn_params[k] = json.dumps(v, cls=RedisDatalensDataJSONEncoder)
+                conn_params[k] = json.dumps(v, cls=DataLensJSONEncoder)
         return conn_params
 
     def load_conn_params(self, conn_params: Optional[dict]) -> Optional[Dict[str, Any]]:
         if conn_params is not None:
             for k, v in conn_params.items():
-                conn_params[k] = json.loads(v, cls=RedisDatalensDataJSONDecoder)
+                conn_params[k] = json.loads(v, cls=DataLensJSONDecoder)
         return conn_params
 
 

@@ -9,7 +9,7 @@ class MutationKey(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def get_collision_tier_breaker(self) -> Any:
+    def get_collision_tier_breaker(self) -> str:
         """Returns less collision-affected but serializable representation of key."""
         raise NotImplementedError()
 
