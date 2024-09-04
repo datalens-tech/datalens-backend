@@ -4,8 +4,8 @@ import datetime
 import decimal
 import ipaddress
 import json
-import uuid
 from typing import Any
+import uuid
 
 import pytest
 

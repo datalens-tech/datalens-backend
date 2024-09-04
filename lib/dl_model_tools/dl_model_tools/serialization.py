@@ -376,7 +376,13 @@ def common_dumps(value: TJSONExt, **kwargs: Any) -> bytes:
     ).encode("utf-8")
 
 
-def hashable_dumps(value: TJSONExt, sort_keys: bool = True, check_circular: bool = False, ensure_ascii: bool = False, **kwargs: Any) -> str:
+def hashable_dumps(
+    value: TJSONExt,
+    sort_keys: bool = True,
+    check_circular: bool = False,
+    ensure_ascii: bool = False,
+    **kwargs: Any,
+) -> str:
     return json.dumps(
         value,
         cls=DataLensJSONEncoder,
