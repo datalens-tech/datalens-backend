@@ -57,7 +57,7 @@ from dl_dashsql.typed_query.query_serialization import get_typed_query_serialize
 from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
 from dl_model_tools.serialization import (
     common_loads,
-    hashable_dumps,
+    safe_dumps,
 )
 
 
@@ -298,7 +298,7 @@ class BIJSONProvider(JSONProvider):
         return common_loads(s, **kwargs)
 
     def dumps(self, obj: Any, **kwargs: Any) -> str:
-        return hashable_dumps(obj, sort_keys=False, check_circular=True, **kwargs)
+        return safe_dumps(obj, **kwargs)
 
 
 def create_sync_app() -> flask.Flask:

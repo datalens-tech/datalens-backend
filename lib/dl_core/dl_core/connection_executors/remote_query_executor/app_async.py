@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-from functools import partial
 import logging
 import pickle
 import sys
@@ -59,7 +58,7 @@ from dl_core.loader import (
 from dl_core.logging_config import configure_logging
 from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
 from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
-from dl_model_tools.serialization import hashable_dumps
+from dl_model_tools.serialization import safe_dumps
 from dl_utils.aio import ContextVarExecutor
 
 
@@ -173,8 +172,7 @@ class ActionHandlingView(BaseView):
 
         with GenericProfiler("async_qe_serialization"):
             if self.request.headers.get(HEADER_USE_JSON_SERIALIZER) == "1":
-                dumps = partial(hashable_dumps, sort_keys=False, check_circular=True)
-                response = web.json_response(events, dumps=dumps)
+                response = web.json_response(events, dumps=safe_dumps)
             else:
                 response = web.Response(body=pickle.dumps(events))
 

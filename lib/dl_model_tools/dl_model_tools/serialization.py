@@ -1,5 +1,5 @@
 """
-RDL JSON - Redis DataLens JSON
+DataLens JSON serialization tools
 
 Serialization with support for custom objects like ``date`` & ``datetime``.
 """
@@ -12,6 +12,7 @@ import datetime
 import decimal
 import ipaddress
 import json
+import logging
 from typing import (
     Any,
     Callable,
@@ -31,6 +32,9 @@ from dl_constants.types import (
 )
 from dl_type_transformer.native_type import GenericNativeType
 from dl_type_transformer.native_type_schema import OneOfNativeTypeSchema
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 _TS_TV = TypeVar("_TS_TV")
@@ -264,6 +268,25 @@ class NativeTypeSerializer(TypeSerializer[GenericNativeType]):
         return NativeTypeSerializer.schema.load(value)
 
 
+class UnsupportedSerializer(TypeSerializer[object]):
+    """
+    Special serializer that logs warning and dumps null
+    instead of an unserializable value
+    """
+
+    typename = "unsupported"
+
+    @staticmethod
+    def to_jsonable(value: object) -> TJSONLike:
+        LOGGER.warning(f"Value of type {value.__class__.__name__} is not JSON serializable, skipping serialization")
+        return None
+
+    @staticmethod
+    def from_jsonable(value: TJSONLike) -> object:
+        assert value is None
+        return None
+
+
 COMMON_SERIALIZERS: list[Type[TypeSerializer]] = [
     DateSerializer,
     DatetimeSerializer,
@@ -279,27 +302,36 @@ COMMON_SERIALIZERS: list[Type[TypeSerializer]] = [
     IPv4InterfaceSerializer,
     IPv6InterfaceSerializer,
     NativeTypeSerializer,
+    UnsupportedSerializer,
 ]
 assert len(set(cls.typename for cls in COMMON_SERIALIZERS)) == len(COMMON_SERIALIZERS), "uniqueness check"
 
 
-class RedisDatalensDataJSONEncoder(json.JSONEncoder):
+class DataLensJSONEncoder(json.JSONEncoder):
     JSONABLERS_MAP = {cls.typeobj(): cls for cls in COMMON_SERIALIZERS}
+
+    def _get_preprocessor(self, typeobj: type) -> Optional[Type[TypeSerializer]]:
+        if issubclass(typeobj, GenericNativeType):
+            return NativeTypeSerializer
+        return self.JSONABLERS_MAP.get(typeobj)
 
     def default(self, obj: Any) -> Any:
         typeobj = type(obj)
-        preprocessor: Optional[Type[TypeSerializer]]
-        if issubclass(typeobj, GenericNativeType):
-            preprocessor = NativeTypeSerializer
-        else:
-            preprocessor = self.JSONABLERS_MAP.get(typeobj)
+        preprocessor = self._get_preprocessor(typeobj)
         if preprocessor is not None:
             return dict(__dl_type__=preprocessor.typename, value=preprocessor.to_jsonable(obj))
 
         return super().default(obj)  # effectively, raises `TypeError`
 
 
-class RedisDatalensDataJSONDecoder(json.JSONDecoder):
+class SafeDataLensJSONEncoder(DataLensJSONEncoder):
+    def _get_preprocessor(self, typeobj: type) -> Optional[Type[TypeSerializer]]:
+        if (preprocessor := super()._get_preprocessor(typeobj)) is not None:
+            return preprocessor
+        return UnsupportedSerializer  # don't raise a TypeError and log warning
+
+
+class DataLensJSONDecoder(json.JSONDecoder):
     DEJSONABLERS_MAP = {cls.typename: cls for cls in COMMON_SERIALIZERS}
 
     def __init__(
@@ -336,7 +368,7 @@ class RedisDatalensDataJSONDecoder(json.JSONDecoder):
 def common_dumps(value: TJSONExt, **kwargs: Any) -> bytes:
     return json.dumps(
         value,
-        cls=RedisDatalensDataJSONEncoder,
+        cls=DataLensJSONEncoder,
         separators=(",", ":"),
         ensure_ascii=False,
         check_circular=False,  # dangerous but faster
@@ -344,24 +376,38 @@ def common_dumps(value: TJSONExt, **kwargs: Any) -> bytes:
     ).encode("utf-8")
 
 
-def hashable_dumps(value: TJSONExt, sort_keys: bool = True, check_circular: bool = False, **kwargs: Any) -> str:
+def hashable_dumps(
+    value: TJSONExt,
+    sort_keys: bool = True,
+    check_circular: bool = False,
+    ensure_ascii: bool = False,
+    **kwargs: Any,
+) -> str:
     return json.dumps(
         value,
-        cls=RedisDatalensDataJSONEncoder,
+        cls=DataLensJSONEncoder,
         separators=(",", ":"),
-        ensure_ascii=False,
+        ensure_ascii=ensure_ascii,
         check_circular=check_circular,
         sort_keys=sort_keys,
         **kwargs,
     )
 
 
-def common_loads(value: Union[bytes, str], **kwargs: Any) -> TJSONExt:
-    return json.loads(
+def safe_dumps(value: TJSONExt, **kwargs: Any) -> str:
+    return json.dumps(
         value,
-        cls=RedisDatalensDataJSONDecoder,
+        cls=SafeDataLensJSONEncoder,
+        separators=(",", ":"),
+        ensure_ascii=False,
+        check_circular=True,
+        sort_keys=False,
         **kwargs,
     )
+
+
+def common_loads(value: Union[bytes, str], **kwargs: Any) -> TJSONExt:
+    return json.loads(value, cls=DataLensJSONDecoder, **kwargs)
 
 
 class CacheMetadataSerialization:
