@@ -32,7 +32,7 @@ class TenantDef(metaclass=abc.ABCMeta):
     def get_tenant_id(self) -> str:
         raise NotImplementedError()
 
-    def get_reporting_extra(self) -> dict[str, str | None]:
+    def get_reporting_extra(self) -> dict[str, Union[str, int, None]]:
         return dict(
             billing_folder_id=self.get_tenant_id(),
         )
@@ -161,8 +161,8 @@ class RequestContextInfo:
     def clone(self: _REQUEST_CONTEXT_INFO_TV, **kwargs: Any) -> _REQUEST_CONTEXT_INFO_TV:
         return attr.evolve(self, **kwargs)
 
-    def get_reporting_extra(self) -> dict[str, str | None]:
-        reporting_extra = dict(
+    def get_reporting_extra(self) -> dict[str, Union[str, int, None]]:
+        reporting_extra: dict[str, Union[str, int, None]] = dict(
             user_id=self.user_id,
             source=self.endpoint_code,
             username=self.user_name,
