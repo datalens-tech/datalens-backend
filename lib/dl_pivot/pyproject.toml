@@ -15,6 +15,7 @@ dl-constants = {path = "../dl_constants"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-utils = {path = "../dl_utils"}
 python = ">=3.10, <3.13"
+typing-extensions = ">=4.9.0"
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"

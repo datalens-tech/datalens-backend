@@ -1029,12 +1029,16 @@ name = "dl-api-client"
 version = "0.0.1"
 description = ""
 optional = false
-python-versions = "*"
+python-versions = ">=3.10, <3.13"
 files = []
 develop = true
 
 [package.dependencies]
 attrs = ">=22.2.0"
+dl-constants = {path = "../dl_constants"}
+dl-model-tools = {path = "../dl_model_tools"}
+marshmallow = ">=3.19.0"
+marshmallow-oneofschema = ">=3.0.1"
 
 [package.source]
 type = "directory"
@@ -1274,6 +1278,7 @@ dl-utils = {path = "../dl_utils"}
 lz4 = "==4.3.2"
 redis = "==5.0.1"
 redis_cache_lock = {path = "../redis-cache-lock"}
+typing-extensions = ">=4.9.0"
 
 [package.source]
 type = "directory"
@@ -1323,6 +1328,7 @@ dl-utils = {path = "../dl_utils"}
 dynamic-enum = {path = "../dynamic_enum"}
 pyyaml = ">=6.0.1"
 typeguard = ">=4.1.5"
+typing-extensions = ">=4.9.0"
 
 [package.source]
 type = "directory"
@@ -1502,6 +1508,7 @@ pytz = ">=2022.7.1"
 requests = ">=2.28.2"
 shortuuid = ">=1.0.11"
 sqlalchemy = ">=1.4.46, <2.0"
+typing-extensions = ">=4.9.0"
 
 [package.source]
 type = "directory"
@@ -1681,6 +1688,7 @@ dl-db-testing = {path = "../dl_db_testing"}
 dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
+dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = ">=3.19.0"
@@ -1782,6 +1790,7 @@ dl_utils = {path = "../dl_utils"}
 grpcio = ">=1.60.0"
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
+typing-extensions = ">=4.9.0"
 ydb = ">=3.5.1"
 
 [package.source]
@@ -2321,6 +2330,7 @@ attrs = ">=22.2.0"
 dl-constants = {path = "../dl_constants"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-utils = {path = "../dl_utils"}
+typing-extensions = ">=4.9.0"
 
 [package.source]
 type = "directory"
@@ -2364,6 +2374,7 @@ dl-core = {path = "../dl_core"}
 dl-formula = {path = "../dl_formula"}
 dl-utils = {path = "../dl_utils"}
 pytz = ">=2022.7.1"
+typing-extensions = ">=4.9.0"
 
 [package.source]
 type = "directory"
@@ -2647,8 +2658,10 @@ attrs = ">=22.2.0"
 dl-constants = {path = "../dl_constants"}
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
+python-dateutil = ">=2.8.2"
 pytz = ">=2022.7.1"
 sqlalchemy = ">=1.4.46, <2.0"
+typing-extensions = ">=4.9.0"
 
 [package.source]
 type = "directory"
@@ -5709,6 +5722,7 @@ develop = true
 [package.dependencies]
 attrs = ">=22.2.0"
 redis = ">=5.0.1"
+typing-extensions = ">=4.9.0"
 
 [package.source]
 type = "directory"

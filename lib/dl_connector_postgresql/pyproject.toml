@@ -29,11 +29,13 @@ dl-core = {path = "../dl_core"}
 dl-app-tools = {path = "../dl_app_tools"}
 dl-core-testing = {path = "../dl_core_testing"}
 dl-db-testing = {path = "../dl_db_testing"}
+dl-query-processing = {path = "../dl_query_processing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 typing-extensions = ">=4.9.0"
 
 [tool.deptry.package_module_name_map]
 psycopg2-binary = "psycopg2"
+python-dateutil = "dateutil"
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
@@ -61,7 +63,6 @@ shortuuid = ">=1.0.11"
 dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 dl-api-client = {path = "../dl_api_client"}
 dl-formula-testing = {path = "../dl_formula_testing"}
-dl-query-processing = {path = "../dl_query_processing"}
 dl-testing = {path = "../dl_testing"}
 
 [build-system]
