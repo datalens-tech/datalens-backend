@@ -7,13 +7,16 @@ from typing import (
     Tuple,
 )
 
+from google.api_core.exceptions import GoogleAPIError
 from google.auth.credentials import Credentials as BQCredentials
 from google.cloud.bigquery import Client as BQClient
 import google.oauth2.service_account as g_service_account
 import sqlalchemy as sa
 import sqlalchemy_bigquery._types as bq_types
 
+from dl_core import exc
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import (
+    LOGGER,
     BaseClassicAdapter,
     BaseConnLineConstructor,
 )
@@ -43,6 +46,8 @@ class BigQueryConnLineConstructor(BaseConnLineConstructor[BigQueryConnTargetDTO]
 
 
 class BigQueryDefaultAdapter(BaseClassicAdapter[BigQueryConnTargetDTO]):
+    EXTRA_EXC_CLS = (GoogleAPIError,)
+
     conn_type = CONNECTION_TYPE_BIGQUERY
     dsn_template = "{dialect}://{project_id}"
     conn_line_constructor_type = BigQueryConnLineConstructor
@@ -72,7 +77,11 @@ class BigQueryDefaultAdapter(BaseClassicAdapter[BigQueryConnTargetDTO]):
         }
 
     def _get_bq_credentials(self) -> BQCredentials:
-        credentials_info = json.loads(base64.b64decode(self._target_dto.credentials))
+        try:
+            credentials_info = json.loads(base64.b64decode(self._target_dto.credentials))
+        except (json.JSONDecodeError, UnicodeDecodeError) as e:
+            LOGGER.info("Got malformed bigquery credentials", exc_info=True)
+            raise exc.MalformedCredentialsError() from e
         credentials = g_service_account.Credentials.from_service_account_info(credentials_info)
         return credentials
 
