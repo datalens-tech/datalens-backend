@@ -29,6 +29,24 @@ class BigQueryConnectionTestBase(BaseBigQueryTestClass, ConnectionTestBase):
         )
 
 
+class BigQueryConnectionTestMalformedCreds(BigQueryConnectionTestBase):
+    @pytest.fixture(scope="class")
+    def connection_params(self, bq_secrets) -> dict:
+        return dict(
+            project_id=bq_secrets.get_project_id(),
+            credentials=bq_secrets.get_creds() + "asdf",
+        )
+
+
+class BigQueryConnectionTestBadProjectId(BigQueryConnectionTestBase):
+    @pytest.fixture(scope="class")
+    def connection_params(self, bq_secrets) -> dict:
+        return dict(
+            project_id=bq_secrets.get_project_id() + "123",
+            credentials=bq_secrets.get_creds(),
+        )
+
+
 class BigQueryDatasetTestBase(BigQueryConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope="class")
     def dataset_params(self, sample_table) -> dict:

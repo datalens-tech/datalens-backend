@@ -24,6 +24,7 @@ class BigQueryTypeTransformer(TypeTransformer):
         UserDataType.date: make_native_type(bq_types.DATE),
         UserDataType.genericdatetime: make_native_type(bq_types.DATETIME),
         UserDataType.string: make_native_type(bq_types.STRING),
+        UserDataType.uuid: make_native_type(bq_types.STRING),
         UserDataType.boolean: make_native_type(bq_types.BOOLEAN),
         UserDataType.integer: make_native_type(bq_types.INTEGER),
         UserDataType.float: make_native_type(bq_types.FLOAT),

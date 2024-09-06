@@ -8,7 +8,7 @@ from dl_connector_bigquery.core.constants import BACKEND_TYPE_BIGQUERY
 
 SQLALCHEMY_BIGQUERY_TYPES = {
     (BACKEND_TYPE_BIGQUERY, make_native_type(bq_types.DATE)): simple_instantiator(bq_types.DATE),
-    (BACKEND_TYPE_BIGQUERY, make_native_type(bq_types.DATETIME)): simple_instantiator(bq_types.DATE),
+    (BACKEND_TYPE_BIGQUERY, make_native_type(bq_types.DATETIME)): simple_instantiator(bq_types.DATETIME),
     (BACKEND_TYPE_BIGQUERY, make_native_type(bq_types.STRING)): simple_instantiator(bq_types.STRING),
     (BACKEND_TYPE_BIGQUERY, make_native_type(bq_types.BOOLEAN)): simple_instantiator(bq_types.BOOLEAN),
     (BACKEND_TYPE_BIGQUERY, make_native_type(bq_types.INTEGER)): simple_instantiator(bq_types.INTEGER),
