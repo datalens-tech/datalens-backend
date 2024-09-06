@@ -31,7 +31,6 @@ class ErrorHandlingTestBase(BigQueryConnectionTestBase, ConnectionTestBase, Regu
         resp_data = resp.json
         assert "code" in resp_data, resp_data
         assert "message" in resp_data, resp_data
-        print(resp.json)
 
 
 class TestErrorHandlingMalformedCreds(BigQueryConnectionTestMalformedCreds, ErrorHandlingTestBase):
