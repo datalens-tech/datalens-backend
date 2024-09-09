@@ -29,7 +29,7 @@ class HookResult:
 
 @attr.s
 class PostSaveHookResult(HookResult):
-    additional_save_needed: bool = False
+    additional_save_needed: bool = attr.ib(default=False)
 
 
 @attr.s
