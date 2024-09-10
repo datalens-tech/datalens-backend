@@ -13,6 +13,7 @@ grpcio = ">=1.60.0"
 marshmallow = ">=3.19.0"
 python = ">=3.10, <3.13"
 sqlalchemy = ">=1.4.46, <2.0"
+typing-extensions = ">=4.9.0"
 ydb = ">=3.5.1"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
