@@ -475,9 +475,9 @@ class ResultSchema:
             self.fields.remove(field)
         self.clear_caches()
 
-    def get_direct_fields_by_source(self, source_id: str) -> List[BIField]:
+    def get_direct_fields_for_avatars(self, avatar_ids: Collection[str]) -> List[BIField]:
         return [
             field
             for field in self.fields
-            if isinstance(field.calc_spec, DirectCalculationSpec) and field.source == source_id
+            if isinstance(field.calc_spec, DirectCalculationSpec) and field.avatar_id in avatar_ids
         ]
