@@ -16,7 +16,7 @@ from marshmallow import Schema
 from marshmallow import ValidationError as MValidationError
 from marshmallow import fields
 
-from dl_api_commons.exc import RequestTimeoutError
+from dl_api_commons import exc as api_commons_exc
 from dl_api_lib import exc
 from dl_constants.exc import (
     DEFAULT_ERR_CODE_API_PREFIX,
@@ -85,9 +85,9 @@ EXCEPTION_CODES = {
     dl_query_processing.exc.GenericInvalidRequestError: status.BAD_REQUEST,
     dl_query_processing.exc.InvalidGroupByConfiguration: status.BAD_REQUEST,
     common_exc.WrongQueryParameterization: status.BAD_REQUEST,
-    RequestTimeoutError: status.FAILED_DEPENDENCY,
+    api_commons_exc.RequestTimeoutError: status.FAILED_DEPENDENCY,
     exc.ConnectorIconNotFoundException: status.NOT_FOUND,
-    exc.FailedDependencyException: status.FAILED_DEPENDENCY,
+    api_commons_exc.FailedDependencyException: status.FAILED_DEPENDENCY,
 }
 
 

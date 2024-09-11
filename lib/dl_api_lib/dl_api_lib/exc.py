@@ -48,8 +48,3 @@ class DLValidationFatal(_DLValidationResult):
 class ConnectorIconNotFoundException(DLBaseException):
     default_message = "Connector icon not found"
     err_code = ["ICON_NOT_FOUND"]
-
-
-class FailedDependencyException(DLBaseException):
-    err_code = DLBaseException.err_code + ["FAILED_DEPENDENCY"]
-    default_message = "Failed dependency"
