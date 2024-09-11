@@ -93,27 +93,9 @@ class FlaskMiddleware:
 
         if not token_introspect_result.active:
             LOGGER.info("Access token is not active")
+            return None
 
-            if refresh_token is None:
-                LOGGER.info("Refresh token is missing")
-                return None
-
-            refreshed_tokens = self._client.refresh_token(refresh_token)
-            LOGGER.info("Tokens successfully refreshed")
-            access_token, refresh_token = (
-                refreshed_tokens.access_token,
-                refreshed_tokens.refresh_token,
-            )
-
-            token_introspect_result = self._client.introspect(token=access_token)
-
-        else:
-            LOGGER.info("Access token is active")
-
-        zitadel_cookie["passport"]["user"]["accessToken"] = access_token
-        zitadel_cookie["passport"]["user"]["refreshToken"] = refresh_token
-
-        zitadel_cookies = middlewares_models.ZitadelCookiesParser.to_raw(zitadel_cookie)
+        LOGGER.info("Access token is active")
 
         return middlewares_models.AuthResult(
             user_id=token_introspect_result.sub,
@@ -122,7 +104,7 @@ class FlaskMiddleware:
                 service_access_token=self._token_storage.get_token(),
                 user_access_token=access_token,
             ),
-            updated_cookies={middlewares_models.ZitadelCookies.ZITADEL_COOKIE: zitadel_cookies},
+            updated_cookies={},
         )
 
     def auth_service(self) -> middlewares_models.AuthResult | None:
