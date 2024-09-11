@@ -87,6 +87,7 @@ EXCEPTION_CODES = {
     common_exc.WrongQueryParameterization: status.BAD_REQUEST,
     RequestTimeoutError: status.FAILED_DEPENDENCY,
     exc.ConnectorIconNotFoundException: status.NOT_FOUND,
+    exc.FailedDependencyException: status.FAILED_DEPENDENCY,
 }
 
 
