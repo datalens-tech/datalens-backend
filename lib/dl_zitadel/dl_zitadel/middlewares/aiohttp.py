@@ -39,12 +39,9 @@ class AioHTTPMiddleware:
             return None
 
         try:
-            access_token, refresh_token = (
-                zitadel_cookie["passport"]["user"]["accessToken"],
-                zitadel_cookie["passport"]["user"]["refreshToken"],
-            )
+            access_token = zitadel_cookie["passport"]["user"]["accessToken"]
         except KeyError:
-            access_token, refresh_token = None, None
+            access_token = None
 
         if access_token is None:
             LOGGER.info("Access token is missing")
