@@ -80,3 +80,8 @@ class FlaskRCINotSet(Exception):
 class RequestTimeoutError(DLBaseException):
     err_code = DLBaseException.err_code + ["REQUEST_TIMEOUT"]
     default_message = "Backend app request timeout exceeded"
+
+
+class FailedDependencyException(DLBaseException):
+    err_code = DLBaseException.err_code + ["FAILED_DEPENDENCY"]
+    default_message = "Failed dependency"
