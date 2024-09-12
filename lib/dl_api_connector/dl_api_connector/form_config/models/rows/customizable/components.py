@@ -78,6 +78,7 @@ class SelectRowItem(ControlRowItem, PlaceholderMixin):
     @attr.s(kw_only=True, frozen=True)
     class Props(SerializableConfig):
         show_search: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("showSearch"))
+        has_clear: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("hasClear"))
 
     component_id = "select"
 
