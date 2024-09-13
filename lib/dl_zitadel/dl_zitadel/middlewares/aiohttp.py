@@ -144,9 +144,6 @@ class AioHTTPMiddleware:
             )
             response = await handler(app_request.request)
 
-            for key, value in auth_result.updated_cookies.items():
-                response.set_cookie(key, value)
-
             return response
 
         return inner

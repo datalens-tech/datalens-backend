@@ -1,9 +1,7 @@
 import logging
-from typing import Optional
 
 import attr
 import flask
-from flask import g as flask_context
 import werkzeug.exceptions as werkzeug_exceptions
 
 import dl_api_commons.base_models as dl_api_commons_base_models
@@ -27,14 +25,6 @@ class FlaskMiddleware:
 
     def set_up(self, app: flask.Flask) -> None:
         app.before_request(self.process)
-        app.teardown_request(self.process_response)
-
-    def process_response(self, exception: Optional[BaseException]) -> None:
-        if self._allow_user_auth:
-            for key, value in flask_context.get("cookies", {}).items():
-                flask.response.set_cookie(key, value)
-
-        return None
 
     def process(self) -> flask.Response | None:
         auth_result = self.auth()
@@ -51,7 +41,6 @@ class FlaskMiddleware:
                 auth_data=auth_result.data,
             )
         )
-        flask_context.cookies = auth_result.updated_cookies
 
         return None
 
@@ -74,8 +63,6 @@ class FlaskMiddleware:
         if zitadel_cookie is None:
             LOGGER.info("Zitadel cookie is missing")
             return None
-
-        flask_context.zitadel_cookie = zitadel_cookie
 
         try:
             access_token = zitadel_cookie["passport"]["user"]["accessToken"]
