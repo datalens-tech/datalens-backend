@@ -18,6 +18,7 @@ from dl_api_connector.form_config.models.common import (
     SerializableConfig,
     TFieldName,
     TopLevelFieldName,
+    inner,
     remap_skip_if_null,
 )
 from dl_api_connector.form_config.models.rows import CustomizableRow
@@ -63,6 +64,8 @@ class ConnectionForm(SerializableConfig):
     template_name: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null("templateName"))
     form_ui_override: Optional[FormUIOverride] = attr.ib(default=None, metadata=remap_skip_if_null("uiSchema"))
 
+    implicit_form_fields: set[TFieldName] = attr.ib(factory=set, metadata=inner())
+
     def validate_conditional_fields(self) -> None:
         form_field_names = self._get_form_field_names()
         fields_in_conditions = self._get_conditional_fields()
@@ -97,6 +100,8 @@ class ConnectionForm(SerializableConfig):
                     form_field_names.add(inner_field)
                 if isinstance(row, FormFieldMixin):
                     form_field_names.add(row.name)
+
+        form_field_names |= self.implicit_form_fields
 
         return form_field_names
 

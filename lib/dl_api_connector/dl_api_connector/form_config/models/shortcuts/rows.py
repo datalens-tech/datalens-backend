@@ -44,16 +44,22 @@ class RowConstructor:
         self,
         label_text: BaseTranslatable = Translatable("field_port"),  # noqa: B008
         default_value: Optional[str] = None,
+        display_conditions: Optional[TDisplayConditions] = None,
+        disabled: Optional[bool] = None,
     ) -> C.CustomizableRow:
         text = self._localizer.translate(label_text)
         return C.CustomizableRow(
             items=[
-                C.LabelRowItem(text=text),
+                C.LabelRowItem(
+                    text=text,
+                    display_conditions=display_conditions,
+                ),
                 C.InputRowItem(
                     name=CommonFieldName.port,
                     width="s",
-                    control_props=C.InputRowItem.Props(type="number"),
+                    control_props=C.InputRowItem.Props(type="number", disabled=disabled),
                     default_value=default_value,
+                    display_conditions=display_conditions,
                 ),
             ]
         )
@@ -82,30 +88,40 @@ class RowConstructor:
         label_text: BaseTranslatable = Translatable("field_username"),  # noqa: B008
         default_value: Optional[str] = None,
         display_conditions: Optional[TDisplayConditions] = None,
+        control_props: Optional[C.InputRowItem.Props] = None,
+        inner: Optional[bool] = None,
     ) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
                 C.LabelRowItem(text=self._localizer.translate(label_text), display_conditions=display_conditions),
                 C.InputRowItem(
                     name=CommonFieldName.username,
-                    width="m",
                     default_value=default_value,
                     display_conditions=display_conditions,
+                    control_props=control_props,
+                    inner=inner,
                 ),
             ]
         )
 
-    def password_row(self, mode: ConnectionFormMode) -> C.CustomizableRow:
-        label_text = self._localizer.translate(Translatable("field_password"))
+    def password_row(
+        self,
+        mode: ConnectionFormMode,
+        display_conditions: Optional[TDisplayConditions] = None,
+    ) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
-                C.LabelRowItem(text=label_text),
+                C.LabelRowItem(
+                    text=self._localizer.translate(Translatable("field_password")),
+                    display_conditions=display_conditions,
+                ),
                 C.InputRowItem(
                     name=CommonFieldName.password,
                     width="m",
                     default_value="" if mode == ConnectionFormMode.create else None,
                     fake_value="******" if mode == ConnectionFormMode.edit else None,
                     control_props=C.InputRowItem.Props(type="password"),
+                    display_conditions=display_conditions,
                 ),
             ]
         )

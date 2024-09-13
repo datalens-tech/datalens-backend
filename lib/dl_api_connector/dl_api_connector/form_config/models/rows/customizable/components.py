@@ -56,7 +56,8 @@ class InputRowItem(ControlRowItem, PlaceholderMixin):
     @attr.s(kw_only=True, frozen=True)
     class Props(SerializableConfig):
         multiline: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())  # false if undefined
-        type: Literal["text", "password", "number"] = attr.ib(default="text")
+        type: Optional[Literal["text", "password", "number"]] = attr.ib(default="text", metadata=skip_if_null())
+        disabled: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
 
     component_id = "input"
 
