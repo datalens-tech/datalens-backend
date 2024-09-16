@@ -20,20 +20,88 @@ LOGGER = logging.getLogger(__name__)
 class FlaskMiddleware:
     _client: clients.ZitadelSyncClient
     _token_storage: services.ZitadelSyncTokenStorage
+    _allow_user_auth: bool = attr.ib(default=False)
+    _allow_service_auth: bool = attr.ib(default=True)
 
     def set_up(self, app: flask.Flask) -> None:
         app.before_request(self.process)
 
     def process(self) -> flask.Response | None:
-        service_access_token = flask.request.headers.get(middlewares_models.ZitadelHeaders.SERVICE_ACCESS_TOKEN)
-        if service_access_token is None:
-            LOGGER.info("Service access token is missing")
+        auth_result = self.auth()
+
+        if auth_result is None:
             raise werkzeug_exceptions.Unauthorized()
 
+        temp_rci = dl_api_commons_flask_rci.ReqCtxInfoMiddleware.get_temp_rci()
+        dl_api_commons_flask_rci.ReqCtxInfoMiddleware.replace_temp_rci(
+            temp_rci.clone(
+                user_id=auth_result.user_id,
+                user_name=auth_result.user_name,
+                tenant=dl_api_commons_base_models.TenantCommon(),
+                auth_data=auth_result.data,
+            )
+        )
+
+        return None
+
+    def auth(self) -> middlewares_models.AuthResult | None:
+        result = None
+
+        if result is None and self._allow_user_auth:
+            result = self.auth_user()
+
+        if result is None and self._allow_service_auth:
+            result = self.auth_service()
+
+        return result
+
+    def auth_user(self) -> middlewares_models.AuthResult | None:
+        zitadel_cookie = middlewares_models.ZitadelCookiesParser.from_raw(
+            flask.request.cookies.get(middlewares_models.ZitadelCookies.ZITADEL_COOKIE)
+        )
+
+        if zitadel_cookie is None:
+            LOGGER.info("Zitadel cookie is missing")
+            return None
+
+        try:
+            access_token = zitadel_cookie["passport"]["user"]["accessToken"]
+        except KeyError:
+            access_token = None
+
+        if access_token is None:
+            LOGGER.info("Access token is missing")
+            return None
+
+        token_introspect_result = self._client.introspect(token=access_token)
+
+        if not token_introspect_result.active:
+            LOGGER.info("Access token is not active")
+            return None
+
+        LOGGER.info("Access token is active")
+
+        return middlewares_models.AuthResult(
+            user_id=token_introspect_result.sub,
+            user_name=token_introspect_result.username,
+            data=middlewares_models.ZitadelAuthData(
+                service_access_token=self._token_storage.get_token(),
+                user_access_token=access_token,
+            ),
+            updated_cookies={},
+        )
+
+    def auth_service(self) -> middlewares_models.AuthResult | None:
+        service_access_token = flask.request.headers.get(middlewares_models.ZitadelHeaders.SERVICE_ACCESS_TOKEN)
         user_access_token = flask.request.headers.get(dl_api_commons_base_models.DLHeadersCommon.AUTHORIZATION_TOKEN)
+
+        if service_access_token is None:
+            LOGGER.info("Service access token is missing")
+            return None
+
         if user_access_token is None:
             LOGGER.info("User access token is missing")
-            raise werkzeug_exceptions.Unauthorized()
+            return None
 
         token_prefix = "Bearer "
         assert user_access_token.startswith(token_prefix)
@@ -43,28 +111,23 @@ class FlaskMiddleware:
 
         if not service_introspect_result.active:
             LOGGER.info("Service access token is not active")
-            raise werkzeug_exceptions.Unauthorized()
+            return None
 
         user_introspect_result = self._client.introspect(token=user_access_token)
 
         if not user_introspect_result.active:
             LOGGER.info("User access token is not active")
-            raise werkzeug_exceptions.Unauthorized()
+            return None
 
-        temp_rci = dl_api_commons_flask_rci.ReqCtxInfoMiddleware.get_temp_rci()
-        dl_api_commons_flask_rci.ReqCtxInfoMiddleware.replace_temp_rci(
-            temp_rci.clone(
-                user_id=user_introspect_result.sub,
-                user_name=user_introspect_result.username,
-                tenant=dl_api_commons_base_models.TenantCommon(),
-                auth_data=middlewares_models.ZitadelAuthData(
-                    service_access_token=self._token_storage.get_token(),
-                    user_access_token=user_access_token,
-                ),
-            )
+        return middlewares_models.AuthResult(
+            user_id=user_introspect_result.sub,
+            user_name=user_introspect_result.username,
+            data=middlewares_models.ZitadelAuthData(
+                service_access_token=self._token_storage.get_token(),
+                user_access_token=user_access_token,
+            ),
+            updated_cookies={},
         )
-
-        return None
 
 
 __all__ = [

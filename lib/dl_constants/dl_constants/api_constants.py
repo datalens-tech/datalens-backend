@@ -10,7 +10,7 @@ class DLHeaders(str, enum.Enum):
     """
 
 
-class DLCookies(enum.Enum):
+class DLCookies(str, enum.Enum):
     """"""
 
 

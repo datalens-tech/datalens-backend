@@ -28,6 +28,11 @@ class Token:
         return self.request_datetime + datetime.timedelta(seconds=self.expires_in)
 
 
+@attr.s(auto_attribs=True)
+class RefreshedToken(Token):
+    refresh_token: str
+
+
 class IntrospectPostResponse(pydantic.BaseModel):
     active: bool
     username: str | None = None
@@ -49,6 +54,18 @@ class TokenPostResponse(pydantic.BaseModel):
     def to_dataclass(self) -> Token:
         return Token(
             access_token=self.access_token,
+            expires_in=self.expires_in,
+            request_datetime=datetime.datetime.now(),
+        )
+
+
+class RefreshTokenPostResponse(TokenPostResponse):
+    refresh_token: str
+
+    def to_dataclass(self) -> RefreshedToken:
+        return RefreshedToken(
+            access_token=self.access_token,
+            refresh_token=self.refresh_token,
             expires_in=self.expires_in,
             request_datetime=datetime.datetime.now(),
         )
@@ -96,6 +113,18 @@ class ZitadelBaseClient:
 
         return response.json()
 
+    def _refresh_token_build_request(self, refresh_token: str) -> httpx.Request:
+        data = {
+            "refresh_token": refresh_token,
+            "grant_type": "refresh_token",
+            "scope": "openid profile",
+        }
+        return self._base_client.build_request(
+            method="POST",
+            url=self._prepare_url("/oauth/v2/token"),
+            data=data,
+        )
+
     def _get_token_build_request(self) -> httpx.Request:
         data = {
             "grant_type": "client_credentials",
@@ -110,6 +139,10 @@ class ZitadelBaseClient:
     def _get_token_process_response(self, response: httpx.Response) -> Token:
         data = self._process_response(response)
         return TokenPostResponse(**data).to_dataclass()
+
+    def _refresh_token_process_response(self, response: httpx.Response) -> RefreshedToken:
+        data = self._process_response(response)
+        return RefreshTokenPostResponse(**data).to_dataclass()
 
     def _introspect_build_request(self, token: str) -> httpx.Request:
         return self._base_client.build_request(
@@ -157,6 +190,13 @@ class ZitadelSyncClient(ZitadelBaseClient):
         )
         return self._introspect_process_response(response)
 
+    def refresh_token(self, refresh_token: str) -> RefreshedToken:
+        response = self._send(
+            request=self._refresh_token_build_request(refresh_token),
+            auth=self._prepare_auth(),
+        )
+        return self._refresh_token_process_response(response)
+
 
 @attr.s(auto_attribs=True)
 class ZitadelAsyncClient(ZitadelBaseClient):
@@ -189,6 +229,13 @@ class ZitadelAsyncClient(ZitadelBaseClient):
             auth=self._prepare_app_auth(),
         )
         return self._introspect_process_response(response)
+
+    async def refresh_token(self, refresh_token: str) -> RefreshedToken:
+        response = await self._send(
+            request=self._refresh_token_build_request(refresh_token),
+            auth=self._prepare_auth(),
+        )
+        return self._refresh_token_process_response(response)
 
 
 __all__ = [
