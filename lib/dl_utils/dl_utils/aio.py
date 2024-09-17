@@ -116,12 +116,15 @@ def async_run(
 ) -> _WRAPPED_RT:
     if loop is None:
         try:
-            loop = asyncio.get_running_loop()
+            loop = asyncio.get_event_loop()
         except RuntimeError:
             loop = None
 
-    if loop is None or not loop.is_running():
+    if loop is None:
         return asyncio.run(coro)
+
+    if not loop.is_running():
+        return loop.run_until_complete(coro)
 
     thread = RunThread(coro)
     thread.start()
