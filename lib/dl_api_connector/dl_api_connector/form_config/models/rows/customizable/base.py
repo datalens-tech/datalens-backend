@@ -9,7 +9,6 @@ import attr
 from dl_api_connector.form_config.models.common import (
     MarkdownStr,
     SerializableConfig,
-    Width,
     remap_skip_if_null,
     skip_if_null,
 )
@@ -18,6 +17,7 @@ from dl_api_connector.form_config.models.rows.base import (
     FormFieldMixin,
     FormRow,
     InnerFieldMixin,
+    WidthMixin,
 )
 
 
@@ -44,10 +44,9 @@ class DefaultValueMixin(SerializableConfig):
 
 
 @attr.s(kw_only=True, frozen=True)
-class ControlRowItem(RowItem, FormFieldMixin, DisplayConditionsMixin, InnerFieldMixin, DefaultValueMixin):
+class ControlRowItem(RowItem, FormFieldMixin, DisplayConditionsMixin, InnerFieldMixin, DefaultValueMixin, WidthMixin):
     fake_value: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null("fakeValue"))
     hint_text: Optional[MarkdownStr] = attr.ib(default=None, metadata=remap_skip_if_null("hintText"))
-    width: Optional[Width] = attr.ib(default=None, metadata=skip_if_null())
 
 
 @attr.s(kw_only=True, frozen=True)

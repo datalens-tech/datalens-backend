@@ -100,6 +100,7 @@ class RowConstructor:
                     display_conditions=display_conditions,
                     control_props=control_props,
                     inner=inner,
+                    width="m",
                 ),
             ]
         )
