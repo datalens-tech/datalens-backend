@@ -8,3 +8,4 @@ from dl_connector_clickhouse.api.i18n.localizer import CONFIGS as BI_API_LIB_CON
 class TestClickhouseConnectionForm(ConnectionFormTestBase):
     CONN_FORM_FACTORY_CLS = ClickHouseConnectionFormFactory
     TRANSLATION_CONFIGS = BI_API_CONNECTOR_CONFIGS + BI_API_LIB_CONFIGS
+    OVERWRITE_EXPECTED_FORMS = False

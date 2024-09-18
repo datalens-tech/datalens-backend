@@ -8,3 +8,4 @@ from dl_connector_postgresql.api.i18n.localizer import CONFIGS as BI_CONNECTOR_P
 class TestPostgresConnectionForm(ConnectionFormTestBase):
     CONN_FORM_FACTORY_CLS = PostgreSQLConnectionFormFactory
     TRANSLATION_CONFIGS = BI_API_CONNECTOR_CONFIGS + BI_CONNECTOR_POSTGRESQL_CONFIGS
+    OVERWRITE_EXPECTED_FORMS = False
