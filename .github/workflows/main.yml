@@ -110,7 +110,7 @@ jobs:
         run: git branch --contains ${{ github.event.pull_request.base.sha }}
 
   gh_build_image:
-    runs-on: [ self-hosted, linux, light ]
+    runs-on: [ self-hosted, linux, k8s-runner ]
 
     needs: [ check-ci-allowed ]
 
@@ -157,7 +157,7 @@ jobs:
           /bin/bash ci/build_naive.sh
 
   router:
-    runs-on: [ self-hosted, linux, light ]
+    runs-on: [ self-hosted, linux, k8s-runner ]
     needs: gh_build_image
     container:
       image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/datalens_ci_with_code:${{ github.sha }}"
@@ -246,7 +246,7 @@ jobs:
 
   pytest_split:
     name: Split pytest into jobs for each test type
-    runs-on: [ self-hosted, linux, light ]
+    runs-on: [ self-hosted, linux, k8s-runner ]
 
     needs: [ router, check-skip-tests-label ]
     if: ${{ needs.check-skip-tests-label.outputs.result != 'true' }}
@@ -284,7 +284,7 @@ jobs:
 
   run_tests_base:
     name: "🐍[pytest]${{ matrix.value }}"
-    runs-on: [ self-hosted, linux, light ]
+    runs-on: [ self-hosted, linux, k8s-runner ]
     permissions:
       packages: write
       contents: read
@@ -337,7 +337,7 @@ jobs:
 
   run_tests_fat:
     name: "🐍[pytest][fat]${{ matrix.value }}"
-    runs-on: [ self-hosted, linux, fat ]
+    runs-on: [ self-hosted, linux, k8s-runner ]
     permissions:
       packages: write
       contents: read
@@ -391,7 +391,7 @@ jobs:
   run_tests_ext_public:
     name: "🐍[pytest][ext_public]${{ matrix.value }}"
     # using light runners for now, TBD: change when we have ext_public
-    runs-on: [ self-hosted, linux, light ]
+    runs-on: [ self-hosted, linux, k8s-runner ]
     permissions:
       packages: read
       contents: read
@@ -448,7 +448,7 @@ jobs:
           retention-days: 1
 
   mypy:
-    runs-on: [ self-hosted, linux, light ]
+    runs-on: [ self-hosted, linux, k8s-runner ]
     needs: gh_build_image
     container:
       # until https://github.com/github/docs/issues/25520 is resolved, using vars
@@ -503,7 +503,7 @@ jobs:
           echo "All tests passed"
 
   codestyle_all:
-    runs-on: [ self-hosted, linux, light ]
+    runs-on: [ self-hosted, linux, k8s-runner ]
     needs: gh_build_image
     container:
       # until https://github.com/github/docs/issues/25520 is resolved, using vars
