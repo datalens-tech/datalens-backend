@@ -19,6 +19,7 @@ dl-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
 dl-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 dl-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
 dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
+dl-connector-bundle-chs3 = {path = "../../lib/dl_connector_bundle_chs3"}
 dl-connector-chyt = {path = "../../lib/dl_connector_chyt"}
 dl-connector-mysql = {path = "../../lib/dl_connector_mysql"}
 dl-connector-mssql = {path = "../../lib/dl_connector_mssql"}
