@@ -5,6 +5,7 @@ from dl_api_connector.form_config.models.api_schema import (
     FormActionApiSchema,
     FormApiSchema,
     FormFieldApiSchema,
+    TFieldName,
 )
 from dl_api_connector.form_config.models.base import (
     ConnectionForm,
@@ -22,6 +23,9 @@ from dl_connector_mysql.api.connection_info import MySQLConnectionInfoProvider
 
 class MySQLConnectionFormFactory(ConnectionFormFactory):
     DEFAULT_PORT = "3306"
+
+    def _get_implicit_form_fields(self) -> set[TFieldName]:
+        return set()
 
     def _get_host_section(
         self,
@@ -140,4 +144,5 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
                 edit=edit_api_schema if self.mode == ConnectionFormMode.edit else None,
                 check=check_api_schema,
             ),
+            implicit_form_fields=self._get_implicit_form_fields(),
         )
