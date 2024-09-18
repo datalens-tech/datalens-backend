@@ -1,4 +1,6 @@
 import json
+import os
+import typing
 from typing import (
     ClassVar,
     Optional,
@@ -6,6 +8,7 @@ from typing import (
     final,
 )
 
+import attrs
 import pytest
 
 from dl_api_commons.base_models import (
@@ -27,6 +30,7 @@ from dl_i18n.localizer_base import (
 class ConnectionFormTestBase:
     CONN_FORM_FACTORY_CLS: ClassVar[Type[ConnectionFormFactory]]
     TRANSLATION_CONFIGS: ClassVar[list[TranslationConfig]]
+    OVERWRITE_EXPECTED_FORMS: ClassVar[bool] = True
 
     @pytest.fixture
     def connectors_settings(self) -> Optional[ConnectorSettingsBase]:
@@ -49,7 +53,10 @@ class ConnectionFormTestBase:
 
     @pytest.fixture
     def form_config(
-        self, connectors_settings: Optional[ConnectorSettingsBase], tenant: TenantDef, mode: ConnectionFormMode
+        self,
+        connectors_settings: Optional[ConnectorSettingsBase],
+        tenant: TenantDef,
+        mode: ConnectionFormMode,
     ) -> ConnectionForm:
         loader = LocalizerLoader(
             configs=self.TRANSLATION_CONFIGS,
@@ -60,6 +67,45 @@ class ConnectionFormTestBase:
         form_config = form_factory.get_form_config(connectors_settings, tenant)
         return form_config
 
+    @pytest.fixture(name="config_dir")
+    def fixture_config_dir(self, request: pytest.FixtureRequest) -> str:
+        dirname = os.path.dirname(request.module.__file__)
+        dirname = os.path.join(dirname, "expected_forms")
+        os.makedirs(dirname, exist_ok=True)
+        return dirname
+
+    # This fixture need to be overloaded for proper name
+    @pytest.fixture(name="expected_form_config_file")
+    def fixture_expected_form_config_file(
+        self,
+        config_dir: str,
+        connectors_settings: Optional[ConnectorSettingsBase],
+        tenant: TenantDef,
+        mode: ConnectionFormMode,
+    ) -> str:
+        parts: list[str] = []
+        if connectors_settings is not None:
+            for value in attrs.astuple(connectors_settings):
+                parts.append(str(value))
+        parts.append(str(tenant))
+        parts.append(mode.value)
+
+        filename = "_".join(parts) + ".json"
+        return os.path.join(config_dir, filename)
+
+    @pytest.fixture(name="expected_form_config")
+    def fixture_expected_form_config(
+        self,
+        expected_form_config_file: str,
+        form_config: ConnectionForm,
+    ) -> dict[str, typing.Any]:
+        if not os.path.exists(expected_form_config_file) or self.OVERWRITE_EXPECTED_FORMS:
+            with open(expected_form_config_file, mode="w") as f:
+                f.write(json.dumps(form_config.as_dict(), indent=4))
+
+        with open(expected_form_config_file, mode="r") as f:
+            return json.load(f)
+
     def test_validate_conditional_fields(self, form_config: ConnectionForm) -> None:
         form_config.validate_conditional_fields()
 
@@ -69,3 +115,12 @@ class ConnectionFormTestBase:
     def test_serialize(self, form_config: ConnectionForm) -> None:
         serializable = form_config.as_dict()
         json.dumps(serializable)
+
+    def test_config_json(
+        self,
+        expected_form_config: dict[str, typing.Any],
+        form_config: ConnectionForm,
+    ) -> None:
+        if self.OVERWRITE_EXPECTED_FORMS:
+            pytest.skip("Overwriting expected forms")
+        assert form_config.as_dict() == expected_form_config
