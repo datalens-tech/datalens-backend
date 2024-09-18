@@ -31,4 +31,4 @@ msgid "field_counter-id-appmetrica"
 msgstr "Application"
 
 msgid "placeholder_counter-id-appmetrica"
-msgstr "App ID"
+msgstr "Application ID"
