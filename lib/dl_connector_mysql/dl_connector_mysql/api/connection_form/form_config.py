@@ -1,9 +1,4 @@
-from __future__ import annotations
-
-from typing import (
-    Optional,
-    Sequence,
-)
+import typing
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_connector.form_config.models.api_schema import (
@@ -26,7 +21,59 @@ from dl_connector_mysql.api.connection_info import MySQLConnectionInfoProvider
 
 
 class MySQLConnectionFormFactory(ConnectionFormFactory):
-    def _get_base_edit_api_schema(self) -> FormActionApiSchema:
+    DEFAULT_PORT = "3306"
+
+    def _get_host_section(
+        self,
+        rc: RowConstructor,
+        connector_settings: ConnectorSettingsBase | None,
+    ) -> typing.Sequence[FormRow]:
+        return [rc.host_row()]
+
+    def _get_port_section(
+        self,
+        rc: RowConstructor,
+        connector_settings: ConnectorSettingsBase | None,
+    ) -> typing.Sequence[FormRow]:
+        return [rc.port_row(default_value=self.DEFAULT_PORT)]
+
+    def _get_db_name_section(
+        self,
+        rc: RowConstructor,
+        connector_settings: ConnectorSettingsBase | None,
+    ) -> typing.Sequence[FormRow]:
+        return [rc.db_name_row()]
+
+    def _get_username_section(
+        self,
+        rc: RowConstructor,
+        connector_settings: ConnectorSettingsBase | None,
+    ) -> typing.Sequence[FormRow]:
+        return [rc.username_row()]
+
+    def _get_password_section(
+        self,
+        rc: RowConstructor,
+        connector_settings: ConnectorSettingsBase | None,
+    ) -> typing.Sequence[FormRow]:
+        return [rc.password_row(mode=self.mode)]
+
+    def _get_common_section(
+        self,
+        rc: RowConstructor,
+        connector_settings: ConnectorSettingsBase | None,
+    ) -> typing.Sequence[FormRow]:
+        return [
+            C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
+            rc.raw_sql_level_row(),
+            rc.collapse_advanced_settings_row(),
+            rc.data_export_forbidden_row(),
+        ]
+
+    def _get_edit_api_schema(
+        self,
+        connector_settings: ConnectorSettingsBase | None,
+    ) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
                 FormFieldApiSchema(name=CommonFieldName.host, required=True),
@@ -40,13 +87,20 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
             ],
         )
 
-    def _get_base_create_api_schema(self, edit_api_schema: FormActionApiSchema) -> FormActionApiSchema:
+    def _get_create_api_schema(
+        self,
+        connector_settings: ConnectorSettingsBase | None,
+        edit_api_schema: FormActionApiSchema,
+    ) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[*edit_api_schema.items, *self._get_top_level_create_api_schema_items()],
             conditions=edit_api_schema.conditions.copy(),
         )
 
-    def _get_base_check_api_schema(self) -> FormActionApiSchema:
+    def _get_check_api_schema(
+        self,
+        connector_settings: ConnectorSettingsBase | None,
+    ) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
                 FormFieldApiSchema(name=CommonFieldName.host, required=True),
@@ -58,29 +112,27 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
             ]
         )
 
-    def _get_base_form_config(
+    def get_form_config(
         self,
-        host_section: Sequence[FormRow],
-        username_section: Sequence[FormRow],
-        db_name_section: Sequence[FormRow],
-        create_api_schema: FormActionApiSchema,
-        edit_api_schema: FormActionApiSchema,
-        check_api_schema: FormActionApiSchema,
-        rc: RowConstructor,
+        connector_settings: ConnectorSettingsBase | None,
+        tenant: TenantDef | None,
     ) -> ConnectionForm:
+        rc = RowConstructor(localizer=self._localizer)
+
+        edit_api_schema = self._get_edit_api_schema(connector_settings)
+        create_api_schema = self._get_create_api_schema(connector_settings, edit_api_schema)
+        check_api_schema = self._get_check_api_schema(connector_settings)
+
         return ConnectionForm(
             title=MySQLConnectionInfoProvider.get_title(self._localizer),
             rows=self._filter_nulls(
                 [
-                    *host_section,
-                    rc.port_row(default_value="3306"),
-                    *db_name_section,
-                    *username_section,
-                    rc.password_row(mode=self.mode),
-                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-                    rc.raw_sql_level_row(),
-                    rc.collapse_advanced_settings_row(),
-                    rc.data_export_forbidden_row(),
+                    *self._get_host_section(rc, connector_settings),
+                    *self._get_port_section(rc, connector_settings),
+                    *self._get_db_name_section(rc, connector_settings),
+                    *self._get_username_section(rc, connector_settings),
+                    *self._get_password_section(rc, connector_settings),
+                    *self._get_common_section(rc, connector_settings),
                 ]
             ),
             api_schema=FormApiSchema(
@@ -88,29 +140,4 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
                 edit=edit_api_schema if self.mode == ConnectionFormMode.edit else None,
                 check=check_api_schema,
             ),
-        )
-
-    def get_form_config(
-        self,
-        connector_settings: Optional[ConnectorSettingsBase],
-        tenant: Optional[TenantDef],
-    ) -> ConnectionForm:
-        rc = RowConstructor(localizer=self._localizer)
-
-        host_section: list[FormRow] = [rc.host_row()]
-        username_section: list[FormRow] = [rc.username_row()]
-        db_name_section: list[FormRow] = [rc.db_name_row()]
-
-        edit_api_schema = self._get_base_edit_api_schema()
-        create_api_schema = self._get_base_create_api_schema(edit_api_schema)
-        check_api_schema = self._get_base_check_api_schema()
-
-        return self._get_base_form_config(
-            host_section=host_section,
-            username_section=username_section,
-            db_name_section=db_name_section,
-            create_api_schema=create_api_schema,
-            edit_api_schema=edit_api_schema,
-            check_api_schema=check_api_schema,
-            rc=rc,
         )

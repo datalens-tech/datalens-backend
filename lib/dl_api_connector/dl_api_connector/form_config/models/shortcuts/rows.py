@@ -42,11 +42,13 @@ class RowConstructor:
 
     def port_row(
         self,
-        label_text: BaseTranslatable = Translatable("field_port"),  # noqa: B008
+        label_text: BaseTranslatable | None = None,  # noqa: B008
         default_value: Optional[str] = None,
         display_conditions: Optional[TDisplayConditions] = None,
         disabled: Optional[bool] = None,
     ) -> C.CustomizableRow:
+        if label_text is None:
+            label_text = Translatable("field_port")
         text = self._localizer.translate(label_text)
         return C.CustomizableRow(
             items=[
