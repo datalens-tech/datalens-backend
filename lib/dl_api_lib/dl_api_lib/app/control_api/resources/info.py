@@ -20,6 +20,7 @@ from dl_constants.enums import (
     UserDataType,
 )
 from dl_core.exc import EntityUsageNotAllowed
+from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_dataset import Dataset
 
 
@@ -43,6 +44,19 @@ class DatasetsPublicityCheckerResponseSchema(Schema):
         reason = ma_fields.String()
 
     result = ma_fields.Nested(DatasetResponseSchema, many=True)
+
+
+class ConnectionsPublicityCheckerRequestSchema(Schema):
+    connections = ma_fields.List(ma_fields.String())
+
+
+class ConnectionsPublicityCheckerResponseSchema(Schema):
+    class ConnectionResponseSchema(Schema):
+        connection_id = ma_fields.String()
+        allowed = ma_fields.Boolean()
+        reason = ma_fields.String()
+
+    result = ma_fields.Nested(ConnectionResponseSchema, many=True)
 
 
 ns = API.namespace("Info", path="/info")
@@ -102,6 +116,45 @@ class DatasetsPublicityChecker(BIResource):
             responses.append(
                 {
                     "dataset_id": ds.uuid,
+                    "allowed": allowed,
+                    "reason": reason,
+                }
+            )
+
+        return {"result": responses}
+
+
+@ns.route("/connections_publicity_checker")
+class ConnectionsPublicityChecker(BIResource):
+    @schematic_request(
+        ns=ns,
+        body=ConnectionsPublicityCheckerRequestSchema(),
+        responses={200: ("Success", ConnectionsPublicityCheckerResponseSchema())},
+    )
+    def post(self, body):  # type: ignore  # TODO: fix
+        conn_ids = body["connections"]
+        responses = []
+
+        public_usage_checker = PublicEnvEntityUsageChecker()
+
+        for conn in self.get_us_manager().get_collection(
+            ConnectionBase, raise_on_broken_entry=True, include_data=True, ids=conn_ids
+        ):
+            try:
+                public_usage_checker.ensure_data_connection_can_be_used(
+                    rci=self.get_current_rci(),
+                    conn=conn,
+                )
+            except EntityUsageNotAllowed as exc:
+                allowed = False
+                reason = exc.message
+            else:
+                allowed = True
+                reason = None  # type: ignore  # TODO: fix
+
+            responses.append(
+                {
+                    "connection_id": conn.uuid,
                     "allowed": allowed,
                     "reason": reason,
                 }
