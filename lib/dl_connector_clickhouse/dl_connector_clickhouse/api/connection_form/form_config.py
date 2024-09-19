@@ -5,6 +5,7 @@ from dl_api_connector.form_config.models.api_schema import (
     FormActionApiSchema,
     FormApiSchema,
     FormFieldApiSchema,
+    TFieldName,
 )
 from dl_api_connector.form_config.models.base import (
     ConnectionForm,
@@ -23,6 +24,9 @@ from dl_connector_clickhouse.api.i18n.localizer import Translatable
 
 class ClickHouseConnectionFormFactory(ConnectionFormFactory):
     DEFAULT_PORT = "8443"
+
+    def _get_implicit_form_fields(self) -> set[TFieldName]:
+        return set()
 
     @staticmethod
     def get_common_api_schema_items() -> list[FormFieldApiSchema]:
@@ -144,4 +148,5 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
                 edit=edit_api_schema if self.mode == ConnectionFormMode.edit else None,
                 check=check_api_schema,
             ),
+            implicit_form_fields=self._get_implicit_form_fields(),
         )
