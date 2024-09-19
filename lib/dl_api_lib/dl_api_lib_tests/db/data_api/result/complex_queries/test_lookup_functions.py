@@ -382,7 +382,7 @@ class TestBasicLookupFunctions(DefaultApiTestBase, DefaultBasicLookupFunctionTes
                 "sum": "SUM([int_value])",
                 "date_duplicate": "[date_value]",
                 "ago": f'AGO([sum], [date_value], "day", {day_offset})',
-                "ago_bfb": (f'AGO([sum], [date_value], "day", {day_offset} ' f"BEFORE FILTER BY [date_duplicate])"),
+                "ago_bfb": f'AGO([sum], [date_value], "day", {day_offset} ' f"BEFORE FILTER BY [date_duplicate])",
                 "ago_bfb_nested": (
                     f'AGO(AGO([sum], [date_value], "day", 1), [date_value], "day", {day_offset - 1} '
                     "BEFORE FILTER BY [date_duplicate])"
