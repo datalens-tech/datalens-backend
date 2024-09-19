@@ -33,15 +33,18 @@ class GetFieldTypeCollectionResponseSchema(Schema):
     types = ma_fields.Nested(FieldTypeInfoSchema, many=True)
 
 
+class BasePublicityCheckerResponseSchema(Schema):
+    allowed = ma_fields.Boolean()
+    reason = ma_fields.String()
+
+
 class DatasetsPublicityCheckerRequestSchema(Schema):
     datasets = ma_fields.List(ma_fields.String())
 
 
 class DatasetsPublicityCheckerResponseSchema(Schema):
-    class DatasetResponseSchema(Schema):
+    class DatasetResponseSchema(BasePublicityCheckerResponseSchema):
         dataset_id = ma_fields.String()
-        allowed = ma_fields.Boolean()
-        reason = ma_fields.String()
 
     result = ma_fields.Nested(DatasetResponseSchema, many=True)
 
@@ -51,10 +54,8 @@ class ConnectionsPublicityCheckerRequestSchema(Schema):
 
 
 class ConnectionsPublicityCheckerResponseSchema(Schema):
-    class ConnectionResponseSchema(Schema):
+    class ConnectionResponseSchema(BasePublicityCheckerResponseSchema):
         connection_id = ma_fields.String()
-        allowed = ma_fields.Boolean()
-        reason = ma_fields.String()
 
     result = ma_fields.Nested(ConnectionResponseSchema, many=True)
 
