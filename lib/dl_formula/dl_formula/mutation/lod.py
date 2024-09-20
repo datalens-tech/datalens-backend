@@ -29,21 +29,16 @@ class ExtAggregationToQueryForkMutation(DimensionResolvingMutationBase):
     """
 
     def match_node(self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
-        is_agg = is_aggregate_function(node)
-        direct_parent = parent_stack[-1]
-        already_patched = (
-            isinstance(direct_parent, fork_nodes.QueryFork)
-            and direct_parent.result_expr is node
-            and qfork_is_aggregation(direct_parent)  # is an aggregation fork (vs. AGO forks)
-        )
-        return is_agg and not already_patched
+        return is_aggregate_function(node)
 
     def make_replacement(
         self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.FuncCall)
 
-        dimensions, _, parent_dimension_set = self._generate_dimensions(node=old, parent_stack=parent_stack)
+        dimensions, _, _ = self._generate_dimensions(node=old, parent_stack=parent_stack)
+        if old.lod.list_node_type(aux_nodes.ErrorNode):  # propagate LOD errors
+            dimensions = list(old.lod.children)
         lod = nodes.FixedLodSpecifier.make(dim_list=dimensions)
 
         condition_list: List[fork_nodes.JoinConditionBase] = []
