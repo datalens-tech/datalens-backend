@@ -16,7 +16,6 @@ from dl_formula.inspect.expression import (
     is_bound_only_to,
 )
 from dl_formula.inspect.function import uses_default_ordering
-from dl_formula.inspect.node import qfork_is_window
 from dl_formula.mutation.dim_resolution import DimensionResolvingMutationBase
 from dl_formula.mutation.mutation import FormulaMutation
 

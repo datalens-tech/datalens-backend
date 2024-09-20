@@ -12,10 +12,7 @@ import dl_formula.core.exc as exc
 import dl_formula.core.fork_nodes as fork_nodes
 import dl_formula.core.nodes as nodes
 from dl_formula.inspect.expression import is_aggregate_expression
-from dl_formula.inspect.node import (
-    is_aggregate_function,
-    qfork_is_aggregation,
-)
+from dl_formula.inspect.node import is_aggregate_function
 from dl_formula.mutation.dim_resolution import DimensionResolvingMutationBase
 from dl_formula.mutation.mutation import FormulaMutation
 from dl_formula.shortcuts import n
@@ -36,9 +33,12 @@ class ExtAggregationToQueryForkMutation(DimensionResolvingMutationBase):
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.FuncCall)
 
-        dimensions, _, _ = self._generate_dimensions(node=old, parent_stack=parent_stack)
-        if old.lod.list_node_type(aux_nodes.ErrorNode):  # propagate LOD errors
+        dimensions: list[nodes.FormulaItem]
+        if old.lod.list_node_type(aux_nodes.ErrorNode):
+            # there are errors in current LODs, propagate them
             dimensions = list(old.lod.children)
+        else:
+            dimensions, _, _ = self._generate_dimensions(node=old, parent_stack=parent_stack)
         lod = nodes.FixedLodSpecifier.make(dim_list=dimensions)
 
         condition_list: List[fork_nodes.JoinConditionBase] = []
