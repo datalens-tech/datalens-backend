@@ -22,10 +22,10 @@ All packages under `lib/` can be divided into the following groups by their mean
 - the so-called app-libs – an app-lib package contains means to configure, extend and run an application,
     defines its settings, views and an app factory, these packages typically contain "api"/"worker" and "lib" in
     their name, e.g. `dl_api_lib`, `dl_auth_api_lib`
-- other packages basically isolate some kind of logic and can't be further divided into meaningful groups
+- other packages basically isolate certain logic and can't be further divided into meaningful groups
 
-Some dependency management recommendations:
-- with this amount of somewhat tangled packages it is important to make an effort to avoid transitive
+Dependency management recommendations:
+- with this amount of packages it is important to make an effort to avoid transitive
     dependencies – make sure that each imported package is listed among the package dependencies and vice versa
 - sqlalchemy dialect libraries generally should only be used as dependencies in connector packages
     where they are needed, this is important
