@@ -35,6 +35,7 @@ from dl_formula.mutation.mutation import (
     apply_mutations,
 )
 from dl_formula.mutation.optimization import (
+    OptimizeBinaryOperatorComparisonMutation,
     OptimizeConstAndOrMutation,
     OptimizeConstComparisonMutation,
     OptimizeConstFuncMutation,
@@ -260,6 +261,18 @@ class DefaultAtomicQueryMutator(AtomicQueryFormulaMutatorBase):
         return formula
 
 
+@attr.s
+class FiltersAtomicQueryMutator(DefaultAtomicQueryMutator):
+    def mutate_formula_list(
+        self,
+        formula_list: List[_COMPILED_FLA_TV],
+        query_part: QueryPart,
+    ) -> List[_COMPILED_FLA_TV]:
+        if query_part != QueryPart.filters:
+            return formula_list
+        return super().mutate_formula_list(formula_list, query_part)
+
+
 def formula_is_true(formula: formula_nodes.Formula, query_part: QueryPart) -> bool:
     return (
         query_part == QueryPart.filters
@@ -291,7 +304,7 @@ class OptimizingQueryMutator(QueryMutator):
         # Apply "preliminary" mutation
         # (must be applied before we scan for nested aggregations)
         if not self._disable_optimizations:
-            mutator: AtomicQueryMutatorBase = DefaultAtomicQueryMutator(
+            mutator = DefaultAtomicQueryMutator(
                 mutations=[
                     DoubleAggregationCollapsingMutation(),
                     OptimizeConstComparisonMutation(),
@@ -302,8 +315,15 @@ class OptimizingQueryMutator(QueryMutator):
             )
             compiled_query = mutator.mutate_query(compiled_query)
 
-        group_by_xonst_mutator = RemoveConstFromGroupByFormulaAtomicQueryMutator(self._dialect)
-        compiled_query = group_by_xonst_mutator.mutate_query(compiled_query)
+            filters_mutator = FiltersAtomicQueryMutator(
+                mutations=[
+                    OptimizeBinaryOperatorComparisonMutation(),
+                ]
+            )
+            compiled_query = filters_mutator.mutate_query(compiled_query)
+
+        group_by_const_mutator = RemoveConstFromGroupByFormulaAtomicQueryMutator(self._dialect)
+        compiled_query = group_by_const_mutator.mutate_query(compiled_query)
 
         filter_mutator = IgnoreFormulaAtomicQueryMutator(ignore_formula_checks=[formula_is_true])
         compiled_query = filter_mutator.mutate_query(compiled_query)
