@@ -122,6 +122,9 @@ class BaseSAAdapter(
     def default_chunk_size(self) -> int:
         return self._default_chunk_size
 
+    def get_target_host(self) -> Optional[str]:
+        return self._target_dto.get_effective_host()
+
     def get_extra_engine_event_listeners(self) -> list[EventListenerSpec]:
         return []
 
@@ -165,9 +168,11 @@ class BaseSAAdapter(
         # TODO FIX: Delegate query compilation for debug to error handler or make method of debug compilation
         compiled_query = query if isinstance(query, str) else compile_query_for_debug(query, engine.dialect)
 
-        with db_session_context(
-            backend_type=self.get_backend_type(), db_engine=engine
-        ) as db_session, self.handle_execution_error(compiled_query), self.execution_context():
+        with (
+            db_session_context(backend_type=self.get_backend_type(), db_engine=engine) as db_session,
+            self.handle_execution_error(compiled_query),
+            self.execution_context(),
+        ):
             with GenericProfiler("db-exec"):
                 result = db_session.execute(
                     query,
@@ -216,16 +221,18 @@ class BaseSAAdapter(
 
     @final
     def get_schema_names(self, db_ident: DBIdent) -> List[str]:
-        with self.handle_execution_error(
-            debug_compiled_query=f"<get_schema_names({db_ident})>"
-        ), self.execution_context():
+        with (
+            self.handle_execution_error(debug_compiled_query=f"<get_schema_names({db_ident})>"),
+            self.execution_context(),
+        ):
             return self._get_schema_names(db_ident)
 
     @final
     def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
-        with self.handle_execution_error(
-            debug_compiled_query=f"<get_tables({schema_ident})>"
-        ), self.execution_context():
+        with (
+            self.handle_execution_error(debug_compiled_query=f"<get_tables({schema_ident})>"),
+            self.execution_context(),
+        ):
             return self._get_tables(schema_ident)
 
     @final
@@ -254,10 +261,13 @@ class BaseSAAdapter(
                 f"Unsupported type of table table definition to get info: {get_type_full_name(type(table_def))}"
             )
 
-        with self.handle_execution_error(
-            debug_compiled_query=debug_compiled_query,
-            exc_post_processor=exc_post_processor,
-        ), self.execution_context():
+        with (
+            self.handle_execution_error(
+                debug_compiled_query=debug_compiled_query,
+                exc_post_processor=exc_post_processor,
+            ),
+            self.execution_context(),
+        ):
             if isinstance(table_def, TableIdent):
                 columns = self._get_raw_columns_info(table_def)
                 indexes: Optional[Tuple[RawIndexInfo, ...]] = None

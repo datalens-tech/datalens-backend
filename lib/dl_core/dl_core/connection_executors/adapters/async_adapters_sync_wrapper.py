@@ -100,6 +100,9 @@ class AsyncWrapperForSyncAdapter(AsyncDBAdapter):
             raw_chunk_generator=data_generator(),
         )
 
+    def get_target_host(self) -> Optional[str]:
+        return self._sync_adapter.get_target_host()
+
     async def test(self) -> None:
         await self._loop.run_in_executor(self._tpe, self._sync_adapter.test)
 

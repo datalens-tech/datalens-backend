@@ -3,6 +3,7 @@ import pytest
 
 from dl_app_tools.log.context import log_context
 from dl_core.connection_executors.models.exc import QueryExecutorException
+from dl_core.exc import SourceTimeout
 from dl_core_testing.testcases.remote_query_executor import BaseRemoteQueryExecutorTestClass
 from dl_core_tests.db.base import DefaultCoreTestClass
 
@@ -58,3 +59,14 @@ class TestRQE(DefaultCoreTestClass, BaseRemoteQueryExecutorTestClass):
         assert len(cursor_executed_logs) == 1
         rec = cursor_executed_logs[0]
         self._validate_logging_ctx(rec, outer_logging_ctx)
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("forbid_private_addr", [True, False])
+    async def test_forbid_private_hosts(self, remote_adapter, forbid_private_addr):
+        if forbid_private_addr:
+            async with remote_adapter:
+                with pytest.raises(SourceTimeout, match=r"Source timed out \(DB query: select 1\)"):
+                    await self.execute_request(remote_adapter, query="select 1")
+        else:
+            result = await self.execute_request(remote_adapter, query="select 1")
+            assert result[0][0] == 1

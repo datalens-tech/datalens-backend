@@ -52,8 +52,7 @@ class CoreSslConnectionSettings:
     PASSWORD: ClassVar[str] = "qwerty"
 
 
-DASHSQL_QUERY = r"""
-select
+DASHSQL_QUERY = r"""select
     arrayJoin([11, 22, NULL]) as a,
     [33, 44] as b,
     toDateTime('2020-01-02 03:04:05', 'UTC') + a as ts

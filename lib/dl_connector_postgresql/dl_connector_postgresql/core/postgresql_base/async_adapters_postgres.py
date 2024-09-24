@@ -159,6 +159,9 @@ class AsyncPostgresAdapter(
     def get_default_db_name(self) -> Optional[str]:
         return self._target_dto.db_name
 
+    def get_target_host(self) -> Optional[str]:
+        return self._target_dto.host
+
     def _convert_date(self, s: str, ignoretz: bool) -> datetime:
         try:
             d = dateutil_parser.parse(s, ignoretz=ignoretz)

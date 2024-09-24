@@ -112,6 +112,9 @@ class AsyncMySQLAdapter(
     def get_default_db_name(self) -> Optional[str]:
         return self._target_dto.db_name
 
+    def get_target_host(self) -> Optional[str]:
+        return self._target_dto.host
+
     async def _create_engine(self, db_name: str, use_ssl: bool = False) -> aiomysql.sa.Engine:
         # TODO: pass ca_data through *DTO
         ssl_ctx = ssl.create_default_context(cafile=get_root_certificates_path()) if use_ssl else None

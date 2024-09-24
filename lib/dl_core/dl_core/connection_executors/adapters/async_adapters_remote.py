@@ -374,6 +374,9 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
 
         return await self._execute_non_stream(query)
 
+    def get_target_host(self) -> Optional[str]:
+        return self._target_dto.get_effective_host()
+
     async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
         return await self._make_request_parse_response(
             dba_actions.ActionGetDBVersion(
