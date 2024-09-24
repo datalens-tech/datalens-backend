@@ -188,7 +188,6 @@ class ActionHandlingView(flask.views.View):
         dba: SyncDirectDBAdapter,
         action: act.ActionNonStreamExecuteQuery,
     ) -> flask.Response:
-
         try:
             db_result = dba.execute(action.db_adapter_query)
             events: list[tuple[str, Any]] = [(RQEEventType.raw_cursor_info.value, db_result.cursor_info)]
