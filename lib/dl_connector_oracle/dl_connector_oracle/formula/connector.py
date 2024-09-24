@@ -1,7 +1,7 @@
 from sqlalchemy.dialects.oracle.base import OracleDialect as SAOracleDialect
 
 from dl_formula.connectors.base.connector import FormulaConnector
-from dl_formula.mutation.general import OptimizeUnaryBoolFunctions
+from dl_formula.mutation.optimization import OptimizeUnaryBoolFunctions
 
 from dl_connector_oracle.formula.constants import OracleDialect as OracleDialectNS
 from dl_connector_oracle.formula.context_processor import OracleContextPostprocessor

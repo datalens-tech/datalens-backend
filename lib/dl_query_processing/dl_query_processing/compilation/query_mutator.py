@@ -25,12 +25,6 @@ from dl_formula.inspect.expression import (
     is_bound_only_to,
     is_window_expression,
 )
-from dl_formula.mutation.general import (
-    OptimizeConstAndOrMutation,
-    OptimizeConstComparisonMutation,
-    OptimizeConstFuncMutation,
-    OptimizeUnaryBoolFunctions,
-)
 from dl_formula.mutation.lod import (
     DoubleAggregationCollapsingMutation,
     ExtAggregationToQueryForkMutation,
@@ -39,6 +33,12 @@ from dl_formula.mutation.lookup import LookupFunctionToQueryForkMutation
 from dl_formula.mutation.mutation import (
     FormulaMutation,
     apply_mutations,
+)
+from dl_formula.mutation.optimization import (
+    OptimizeConstAndOrMutation,
+    OptimizeConstComparisonMutation,
+    OptimizeConstFuncMutation,
+    OptimizeUnaryBoolFunctions,
 )
 from dl_formula.mutation.window import WindowFunctionToQueryForkMutation
 from dl_formula.validation.aggregation import AggregationChecker
