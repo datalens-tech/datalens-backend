@@ -23,7 +23,7 @@ class TestOracleRemoteQueryExecutor(BaseOracleTestClass, BaseRemoteQueryExecutor
         if forbid_private_addr:
             async with remote_adapter:
                 with pytest.raises(SourceTimeout):
-                    await self.execute_request(remote_adapter, query="select 1")
+                    await self.execute_request(remote_adapter, query="SELECT 1 FROM DUAL")
         else:
-            result = await self.execute_request(remote_adapter, query="select 1")
+            result = await self.execute_request(remote_adapter, query="SELECT 1 FROM DUAL")
             assert result[0][0] == 1
