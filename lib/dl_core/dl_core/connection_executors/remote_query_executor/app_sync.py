@@ -241,10 +241,9 @@ class ActionHandlingView(flask.views.View):
                     LOGGER.warning("Cannot resolve host: %s", target_host, exc_info=True)
             if host is None or ipaddress.ip_address(host).is_private:
                 time.sleep(30)
+                query = None
                 if isinstance(action, (act.ActionExecuteQuery, act.ActionNonStreamExecuteQuery)):
-                    query = action.db_adapter_query.query
-                else:
-                    query = None
+                    query = action.db_adapter_query.debug_compiled_query
                 raise SourceTimeout(db_message="Source timed out", query=query)
 
         if isinstance(action, act.ActionExecuteQuery):

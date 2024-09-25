@@ -22,7 +22,7 @@ class TestMSSQLRemoteQueryExecutor(BaseMSSQLTestClass, BaseRemoteQueryExecutorTe
     async def test_forbid_private_hosts(self, remote_adapter, forbid_private_addr):
         if forbid_private_addr:
             async with remote_adapter:
-                with pytest.raises(SourceTimeout, match=r"Source timed out \(DB query: select 1\)"):
+                with pytest.raises(SourceTimeout):
                     await self.execute_request(remote_adapter, query="select 1")
         else:
             result = await self.execute_request(remote_adapter, query="select 1")
