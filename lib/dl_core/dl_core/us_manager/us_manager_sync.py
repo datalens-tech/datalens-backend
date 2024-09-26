@@ -226,6 +226,7 @@ class SyncUSManager(USManagerBase):
             include_data=include_data,
             ids=ids,
             creation_time=creation_time,
+            limit=self.ITER_ENTRIES_PAGE_SIZE,
         )
 
         for us_resp in us_entry_iterator:
@@ -251,6 +252,7 @@ class SyncUSManager(USManagerBase):
             entry_type=entry_type,
             all_tenants=all_tenants,
             include_data=False,
+            limit=self.ITER_ENTRIES_PAGE_SIZE,
         )
 
     def move(self, entry: USEntry, destination: str) -> None:
