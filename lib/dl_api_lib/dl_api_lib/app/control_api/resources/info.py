@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import typing
+
 from marshmallow import Schema
 from marshmallow import fields as ma_fields
 
@@ -20,6 +22,7 @@ from dl_constants.enums import (
     UserDataType,
 )
 from dl_core.exc import EntityUsageNotAllowed
+from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_dataset import Dataset
 
 
@@ -32,17 +35,31 @@ class GetFieldTypeCollectionResponseSchema(Schema):
     types = ma_fields.Nested(FieldTypeInfoSchema, many=True)
 
 
+class BasePublicityCheckerResponseSchema(Schema):
+    allowed = ma_fields.Boolean()
+    reason = ma_fields.String()
+
+
 class DatasetsPublicityCheckerRequestSchema(Schema):
     datasets = ma_fields.List(ma_fields.String())
 
 
 class DatasetsPublicityCheckerResponseSchema(Schema):
-    class DatasetResponseSchema(Schema):
+    class DatasetResponseSchema(BasePublicityCheckerResponseSchema):
         dataset_id = ma_fields.String()
-        allowed = ma_fields.Boolean()
-        reason = ma_fields.String()
 
     result = ma_fields.Nested(DatasetResponseSchema, many=True)
+
+
+class ConnectionsPublicityCheckerRequestSchema(Schema):
+    connections = ma_fields.List(ma_fields.String())
+
+
+class ConnectionsPublicityCheckerResponseSchema(Schema):
+    class ConnectionResponseSchema(BasePublicityCheckerResponseSchema):
+        connection_id = ma_fields.String()
+
+    result = ma_fields.Nested(ConnectionResponseSchema, many=True)
 
 
 ns = API.namespace("Info", path="/info")
@@ -75,10 +92,11 @@ class DatasetsPublicityChecker(BIResource):
         body=DatasetsPublicityCheckerRequestSchema(),
         responses={200: ("Success", DatasetsPublicityCheckerResponseSchema())},
     )
-    def post(self, body):  # type: ignore  # TODO: fix
+    def post(self, body: typing.Mapping[str, typing.Any]) -> typing.Mapping[str, typing.Any]:
         ds_ids = body["datasets"]
         responses = []
         us_manager = self.get_us_manager()
+        reason = None
 
         public_usage_checker = PublicEnvEntityUsageChecker()
 
@@ -97,11 +115,49 @@ class DatasetsPublicityChecker(BIResource):
                 reason = exc.message
             else:
                 allowed = True
-                reason = None  # type: ignore  # TODO: fix
 
             responses.append(
                 {
                     "dataset_id": ds.uuid,
+                    "allowed": allowed,
+                    "reason": reason,
+                }
+            )
+
+        return {"result": responses}
+
+
+@ns.route("/connections_publicity_checker")
+class ConnectionsPublicityChecker(BIResource):
+    @schematic_request(
+        ns=ns,
+        body=ConnectionsPublicityCheckerRequestSchema(),
+        responses={200: ("Success", ConnectionsPublicityCheckerResponseSchema())},
+    )
+    def post(self, body: typing.Mapping[str, typing.Any]) -> typing.Mapping[str, typing.Any]:
+        conn_ids = body["connections"]
+        responses = []
+        reason = None
+
+        public_usage_checker = PublicEnvEntityUsageChecker()
+
+        for conn in self.get_us_manager().get_collection(
+            ConnectionBase, raise_on_broken_entry=True, include_data=True, ids=conn_ids
+        ):
+            try:
+                public_usage_checker.ensure_data_connection_can_be_used(
+                    rci=self.get_current_rci(),
+                    conn=conn,
+                )
+            except EntityUsageNotAllowed as exc:
+                allowed = False
+                reason = exc.message
+            else:
+                allowed = True
+
+            responses.append(
+                {
+                    "connection_id": conn.uuid,
                     "allowed": allowed,
                     "reason": reason,
                 }

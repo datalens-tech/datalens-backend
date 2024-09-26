@@ -1,4 +1,5 @@
 import itertools
+import json
 
 import pytest
 
@@ -118,3 +119,37 @@ class TestInfo(DefaultApiTestBase):
     def test_get_connector_icon_not_found(self, client):
         icons_resp = client.get("/api/v1/info/connectors/icons/unknown_conn_type")
         assert icons_resp.status_code == 404, icons_resp.json
+
+    def test_public_usage_checker(self, client, saved_dataset, saved_connection_id):
+        data = dict(datasets=[saved_dataset.id])
+        response = client.post(
+            "/api/v1/info/datasets_publicity_checker",
+            content_type="application/json",
+            data=json.dumps(data),
+        )
+        expected_resp = [
+            dict(
+                reason=None,
+                dataset_id=saved_dataset.id,
+                allowed=True,
+            )
+        ]
+
+        assert response.status_code == 200
+        assert response.json["result"] == expected_resp
+
+        data = dict(connections=[saved_connection_id])
+        response = client.post(
+            "/api/v1/info/connections_publicity_checker",
+            content_type="application/json",
+            data=json.dumps(data),
+        )
+        expected_resp = [
+            dict(
+                reason=None,
+                connection_id=saved_connection_id,
+                allowed=True,
+            )
+        ]
+        assert response.status_code == 200
+        assert response.json["result"] == expected_resp
