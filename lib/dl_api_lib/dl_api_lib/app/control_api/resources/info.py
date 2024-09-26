@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import typing
+
 from marshmallow import Schema
 from marshmallow import fields as ma_fields
 
@@ -90,10 +92,11 @@ class DatasetsPublicityChecker(BIResource):
         body=DatasetsPublicityCheckerRequestSchema(),
         responses={200: ("Success", DatasetsPublicityCheckerResponseSchema())},
     )
-    def post(self, body):  # type: ignore  # TODO: fix
+    def post(self, body: typing.Mapping[str, typing.Any]) -> typing.Mapping[str, typing.Any]:
         ds_ids = body["datasets"]
         responses = []
         us_manager = self.get_us_manager()
+        reason = None
 
         public_usage_checker = PublicEnvEntityUsageChecker()
 
@@ -112,7 +115,6 @@ class DatasetsPublicityChecker(BIResource):
                 reason = exc.message
             else:
                 allowed = True
-                reason = None  # type: ignore  # TODO: fix
 
             responses.append(
                 {
@@ -132,9 +134,10 @@ class ConnectionsPublicityChecker(BIResource):
         body=ConnectionsPublicityCheckerRequestSchema(),
         responses={200: ("Success", ConnectionsPublicityCheckerResponseSchema())},
     )
-    def post(self, body):  # type: ignore  # TODO: fix
+    def post(self, body: typing.Mapping[str, typing.Any]) -> typing.Mapping[str, typing.Any]:
         conn_ids = body["connections"]
         responses = []
+        reason = None
 
         public_usage_checker = PublicEnvEntityUsageChecker()
 
@@ -151,7 +154,6 @@ class ConnectionsPublicityChecker(BIResource):
                 reason = exc.message
             else:
                 allowed = True
-                reason = None  # type: ignore  # TODO: fix
 
             responses.append(
                 {
