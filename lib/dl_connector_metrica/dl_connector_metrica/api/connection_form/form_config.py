@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import abc
-from enum import unique
 from typing import (
     ClassVar,
     Optional,
@@ -20,7 +19,6 @@ from dl_api_connector.form_config.models.base import (
 )
 from dl_api_connector.form_config.models.common import (
     CommonFieldName,
-    FormFieldName,
     OAuthApplication,
 )
 import dl_api_connector.form_config.models.rows as C
@@ -28,6 +26,8 @@ from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
 
+import dl_connector_metrica.api.connection_form.components as components
+from dl_connector_metrica.api.connection_form.components import MetricaFieldName
 from dl_connector_metrica.api.connection_form.rows import (
     AccuracyRow,
     AppMetricaCounterRowItem,
@@ -50,12 +50,6 @@ class MetricaOAuthApplication(OAuthApplication):
     appmetrica_api = "appmetrica_api"
 
 
-@unique
-class MetricaFieldName(FormFieldName):
-    counter_id = "counter_id"
-    accuracy = "accuracy"
-
-
 class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
     template_name: ClassVar[str]
     oauth_application: ClassVar[OAuthApplication]
@@ -65,7 +59,9 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _counter_row(self, manual_input: bool) -> CounterRow:
+    def _counter_row(
+        self, manual_input: bool, connector_settings: ConnectorSettingsBase
+    ) -> CounterRow | C.CustomizableRow:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -76,6 +72,10 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
     def _allow_auto_dash_creation(self, connector_settings: ConnectorSettingsBase) -> bool:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def _is_backend_driven_form(self, connector_settings: ConnectorSettingsBase) -> bool:
+        raise NotImplementedError
+
     def get_form_config(
         self,
         connector_settings: Optional[ConnectorSettingsBase],
@@ -84,15 +84,23 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
         assert connector_settings is not None
         rc = RowConstructor(localizer=self._localizer)
 
-        rows: list[FormRow] = [
+        oauth_token_row = (
             C.OAuthTokenRow(
                 name=CommonFieldName.token,
                 fake_value="******" if self.mode == ConnectionFormMode.edit else None,
                 application=self.oauth_application,
                 label_text=self._localizer.translate(Translatable("field_oauth-token")),
                 button_text=self._localizer.translate(Translatable("button_get-token")),
+            )
+            if not self._is_backend_driven_form(connector_settings)
+            else components.oauth_token_row(localizer=self._localizer, mode=self.mode)
+        )
+
+        rows: list[FormRow] = [
+            oauth_token_row,
+            self._counter_row(
+                manual_input=self._allow_manual_counter_input(connector_settings), connector_settings=connector_settings
             ),
-            self._counter_row(manual_input=self._allow_manual_counter_input(connector_settings)),
             AccuracyRow(name=MetricaFieldName.accuracy),
         ]
 
@@ -139,10 +147,25 @@ class MetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
     def _title(self) -> str:
         return MetricaConnectionInfoProvider.get_title(self._localizer)
 
-    def _counter_row(self, manual_input: bool) -> MetricaCounterRowItem:
-        return MetricaCounterRowItem(
-            name=MetricaFieldName.counter_id,
-            allow_manual_input=manual_input,
+    def _counter_row(
+        self, manual_input: bool, connector_settings: ConnectorSettingsBase
+    ) -> MetricaCounterRowItem | C.CustomizableRow:
+        return (
+            MetricaCounterRowItem(
+                name=MetricaFieldName.counter_id,
+                allow_manual_input=manual_input,
+            )
+            if not self._is_backend_driven_form(connector_settings)
+            else C.CustomizableRow(
+                items=[
+                    C.LabelRowItem(text=self._localizer.translate(Translatable("field_counter-id-metrica"))),
+                    C.InputRowItem(
+                        name=MetricaFieldName.counter_id,
+                        width="l",
+                        placeholder=self._localizer.translate(Translatable("placeholder_counter-id-metrica")),
+                    ),
+                ]
+            )
         )
 
     def _allow_manual_counter_input(self, connector_settings: ConnectorSettingsBase) -> bool:
@@ -152,6 +175,10 @@ class MetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
     def _allow_auto_dash_creation(self, connector_settings: ConnectorSettingsBase) -> bool:
         assert isinstance(connector_settings, MetricaConnectorSettings)
         return connector_settings.ALLOW_AUTO_DASH_CREATION
+
+    def _is_backend_driven_form(self, connector_settings: ConnectorSettingsBase) -> bool:
+        assert isinstance(connector_settings, MetricaConnectorSettings)
+        return connector_settings.BACKEND_DRIVEN_FORM
 
 
 class AppMetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
@@ -161,10 +188,25 @@ class AppMetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
     def _title(self) -> str:
         return AppMetricaConnectionInfoProvider.get_title(self._localizer)
 
-    def _counter_row(self, manual_input: bool) -> AppMetricaCounterRowItem:
-        return AppMetricaCounterRowItem(
-            name=MetricaFieldName.counter_id,
-            allow_manual_input=manual_input,
+    def _counter_row(
+        self, manual_input: bool, connector_settings: ConnectorSettingsBase
+    ) -> AppMetricaCounterRowItem | C.CustomizableRow:
+        return (
+            AppMetricaCounterRowItem(
+                name=MetricaFieldName.counter_id,
+                allow_manual_input=manual_input,
+            )
+            if not self._is_backend_driven_form(connector_settings)
+            else C.CustomizableRow(
+                items=[
+                    C.LabelRowItem(text=self._localizer.translate(Translatable("field_counter-id-appmetrica"))),
+                    C.InputRowItem(
+                        name=MetricaFieldName.counter_id,
+                        width="l",
+                        placeholder=self._localizer.translate(Translatable("placeholder_counter-id-appmetrica")),
+                    ),
+                ]
+            )
         )
 
     def _allow_manual_counter_input(self, connector_settings: ConnectorSettingsBase) -> bool:
@@ -174,3 +216,7 @@ class AppMetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
     def _allow_auto_dash_creation(self, connector_settings: ConnectorSettingsBase) -> bool:
         assert isinstance(connector_settings, AppmetricaConnectorSettings)
         return connector_settings.ALLOW_AUTO_DASH_CREATION
+
+    def _is_backend_driven_form(self, connector_settings: ConnectorSettingsBase) -> bool:
+        assert isinstance(connector_settings, AppmetricaConnectorSettings)
+        return connector_settings.BACKEND_DRIVEN_FORM
