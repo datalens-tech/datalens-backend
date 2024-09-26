@@ -39,7 +39,7 @@ from dl_core.connection_models import (
     TableIdent,
 )
 from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
-from dl_core.exc import DatabaseQueryError
+from dl_core.exc import DatabaseQueryError, DatabaseUnavailable
 from dl_type_transformer.native_type import CommonNativeType
 
 from dl_connector_bitrix_gds.core.caches import (
@@ -286,10 +286,17 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             "key": self._target_dto.token,
         }
         api_url: str = f"https://{self._target_dto.portal}/bitrix/tools/biconnector/gds.php?show_tables"
-        resp = await self._session.post(
-            url=api_url,
-            json=body,
-        )
+
+        with self.handle_execution_error(api_url):
+            resp = await self._session.post(
+                url=api_url,
+                json=body,
+            )
+
+            if resp.status != 200:
+                body = await resp.text()
+                raise DatabaseUnavailable(db_message=body)
+
         tables: list[str] = [table[0] for table in await resp.json()]
         return tables
 
