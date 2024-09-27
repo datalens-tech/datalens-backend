@@ -39,10 +39,9 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = ["dl_auth_api_lib_tests/ext", "dl_auth_api_lib_tests/unit"]
 
-[datalens.pytest.local]
+[datalens.pytest.unit]
 root_dir = "dl_auth_api_lib_tests/"
 target_path = "unit"
-labels = ["fat"]
 
 [datalens.pytest.ext]
 root_dir = "dl_auth_api_lib_tests/"

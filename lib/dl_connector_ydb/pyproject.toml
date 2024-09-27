@@ -70,6 +70,7 @@ testpaths = []
 root_dir = "dl_connector_ydb_tests/"
 target_path = "db"
 compose_file_base = "docker-compose"
+labels = ["fat"]
 
 [datalens.pytest.unit]
 root_dir = "dl_connector_ydb_tests/"

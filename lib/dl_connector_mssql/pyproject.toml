@@ -68,7 +68,8 @@ testpaths = ["dl_connector_mssql_tests/db", "dl_connector_mssql_tests/unit"]
 
 [datalens.pytest.db]
 root_dir = "dl_connector_mssql_tests/"
-target_path = "db unit"
+target_path = "db"
+labels=["fat"]
 
 [datalens.pytest.unit]
 root_dir = "dl_connector_mssql_tests/"
