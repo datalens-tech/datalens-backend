@@ -20,7 +20,6 @@ from typing import ChainMap as ChainMapGeneric
 import attr
 import marshmallow
 
-from dl_core import exc
 from dl_core.base_models import BaseAttrsDataModel
 from dl_core.us_dataset import Dataset
 from dl_core.us_entry import USEntry
@@ -145,18 +144,6 @@ class USEntrySerializerMarshmallow(USEntrySerializer):
     def serialize_raw(self, entry: USEntry) -> dict[str, Any]:
         dump_schema = self.get_dump_storage_schema(type(entry.data))
         data_dict = dump_schema.dump(entry.data)
-
-        # Preventing saving what we can not load
-        load_schema = self.get_load_storage_schema(type(entry.data))
-        try:
-            load_schema.load(data_dict)
-            # TODO FIX: Validate that data is equal!!!
-            # reloaded_data = load_schema.load(data_dict)
-            # assert reloaded_data == entry.data
-        except Exception as err:
-            LOGGER.exception("Deserialization of US serialized data failed. Preventing save...")
-            # TODO FIX: Custom exception
-            raise exc.DLBaseException() from err
 
         return data_dict
 
