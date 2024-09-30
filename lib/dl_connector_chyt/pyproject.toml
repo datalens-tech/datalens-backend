@@ -56,6 +56,7 @@ testpaths = []
 root_dir = "dl_connector_chyt_tests/"
 target_path = "unit"
 skip_compose = "true"
+labels = ["no_compose"]
 
 [tool.mypy]
 warn_unused_configs = true

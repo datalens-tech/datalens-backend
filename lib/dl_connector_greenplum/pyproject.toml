@@ -52,6 +52,7 @@ target_path = "db"
 root_dir = "dl_connector_greenplum_tests/"
 target_path = "unit"
 skip_compose = "true"
+labels = ["no_compose"]
 
 [tool.mypy]
 warn_unused_configs = true

@@ -64,12 +64,10 @@ target_path = "file"
 [datalens.pytest.db_gsheets_v2]
 root_dir = "dl_connector_bundle_chs3_tests/db"
 target_path = "gsheets_v2"
-labels=["fat"]
 
 [datalens.pytest.db_yadocs]
 root_dir = "dl_connector_bundle_chs3_tests/db"
 target_path = "yadocs"
-labels=["fat"]
 
 [tool.mypy]
 warn_unused_configs = true

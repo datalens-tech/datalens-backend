@@ -51,6 +51,7 @@ strict_optional = true
 [datalens.pytest.unit]
 root_dir = "dl_zitadel_tests/unit"
 skip_compose = "true"
+labels = ["no_compose"]
 
 [datalens.pytest.db]
 root_dir = "dl_zitadel_tests/db"
