@@ -297,8 +297,8 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             )
 
             if resp.status != 200:
-                body = await resp.text()
-                raise DatabaseUnavailable(db_message=body)
+                message = await resp.text()
+                raise DatabaseUnavailable(message=message)
 
         tables: list[str] = [table[0] for table in await resp.json()]
         return tables
