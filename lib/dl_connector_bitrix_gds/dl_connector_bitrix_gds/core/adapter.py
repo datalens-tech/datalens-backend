@@ -152,11 +152,11 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             json.dumps({k: (v if k != "key" else "...") for k, v in payload.json_body.items()}),
         )
 
-        request_params = {
-            "table": payload.table,
-            "consumer": "datalens",
-            "request_id": request_id,
-        }
+        request_params: dict[str, Any] = dict(
+            table=payload.table,
+            consumer="datalens",
+            request_id=request_id,
+        )
 
         limit = self._extract_limit(dba_query.query)
         if limit is not None:
@@ -227,7 +227,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
 
     def _extract_limit(self, query: ClauseElement | str) -> int | None:
         assert isinstance(query, sa.sql.Select)
-        return query._limit
+        return query._limit  # type: ignore  # TODO: "Select" has no attribute "_limit"  [attr-defined]
 
     def _parse_response_body(self, body: Any, dba_query: DBAdapterQuery) -> dict:
         assert isinstance(dba_query.query, sa.sql.Select)
