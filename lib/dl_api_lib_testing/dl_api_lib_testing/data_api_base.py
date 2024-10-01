@@ -224,7 +224,7 @@ class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=ab
         return data_resp
 
     def get_preview(self, ds: Dataset, data_api: SyncHttpDataApiV2, limit: Optional[int] = None) -> HttpDataApiResponse:
-        params = {"dataset": ds}
+        params = dict(dataset=ds)
         if limit:
             params["limit"] = limit
         data_resp = data_api.get_preview(**params)
