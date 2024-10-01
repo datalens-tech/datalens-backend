@@ -46,7 +46,17 @@ class TestBitrixDataDistinct(BitrixDataApiTestBase, DefaultConnectorDataDistinct
 
 
 class TestBitrixDataPreview(BitrixDataApiTestBase, DefaultConnectorDataPreviewTestSuite):
-    pass
+    def test_basic_preview(
+        self,
+        saved_dataset: Dataset,
+        data_api: SyncHttpDataApiV2,
+    ) -> None:
+        ds = saved_dataset
+
+        for limit in range(1, 10):
+            preview_resp = self.get_preview(ds, data_api, limit)
+            preview_rows = get_data_rows(preview_resp)
+            assert len(preview_rows) == limit
 
 
 class TestBitrixSmartTablesData(BitrixSmartTablesDataApiTestBase):
