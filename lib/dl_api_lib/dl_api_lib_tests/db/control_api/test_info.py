@@ -13,6 +13,7 @@ from dl_constants.enums import (
     UserDataType,
 )
 
+from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
 
@@ -151,5 +152,27 @@ class TestInfo(DefaultApiTestBase):
                 allowed=True,
             )
         ]
+        assert response.status_code == 200
+        assert response.json["result"] == expected_resp
+
+    def test_datasets_publicity_checker_connection_not_allowed(
+        self, client, monkeypatch, saved_dataset, saved_connection_id
+    ):
+        monkeypatch.setattr(ConnectionClickhouse, "allow_public_usage", False)
+        data = dict(datasets=[saved_dataset.id])
+        response = client.post(
+            "/api/v1/info/datasets_publicity_checker",
+            content_type="application/json",
+            data=json.dumps(data),
+        )
+        expected_resp = [
+            dict(
+                reason=f"The publication of this object or some of its dependencies is not allowed. "
+                f"Connections of type clickhouse are not available for publication (connection ID: {saved_connection_id})",
+                dataset_id=saved_dataset.id,
+                allowed=False,
+            )
+        ]
+
         assert response.status_code == 200
         assert response.json["result"] == expected_resp

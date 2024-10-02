@@ -7,6 +7,8 @@ from typing import (
     Optional,
 )
 
+from dl_i18n.localizer_base import Localizer
+
 
 if TYPE_CHECKING:
     from dl_api_commons.base_models import RequestContextInfo
@@ -34,6 +36,7 @@ class EntityUsageChecker(metaclass=abc.ABCMeta):
         rci: RequestContextInfo,
         dataset: Dataset,
         us_manager: USManagerBase,
+        localizer: Optional[Localizer] = None,
     ) -> None:
         pass
 

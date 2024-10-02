@@ -105,10 +105,12 @@ class DatasetsPublicityChecker(BIResource):
         ):
             try:
                 us_manager.load_dependencies(ds)
+                localizer = self.get_service_registry().get_localizer()
                 public_usage_checker.ensure_dataset_can_be_used(
                     rci=self.get_current_rci(),
                     dataset=ds,
                     us_manager=us_manager,
+                    localizer=localizer,
                 )
             except EntityUsageNotAllowed as exc:
                 allowed = False

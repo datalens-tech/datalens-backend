@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pytest
 
 from dl_api_commons.base_models import RequestContextInfo
@@ -10,6 +12,7 @@ from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core_tests.db.base import DefaultCoreTestClass
+from dl_i18n.localizer_base import Localizer
 
 
 class LocalEntityUsageChecker(EntityUsageChecker):
@@ -18,6 +21,7 @@ class LocalEntityUsageChecker(EntityUsageChecker):
         rci: RequestContextInfo,
         dataset: Dataset,
         us_manager: USManagerBase,
+        localizer: Optional[Localizer] = None,
     ) -> None:
         if not dataset.data.load_preview_by_default:
             raise EntityUsageNotAllowed("Preview should be enabled by default!")
