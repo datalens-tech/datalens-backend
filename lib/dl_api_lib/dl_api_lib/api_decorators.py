@@ -1,7 +1,3 @@
-""" ... """
-
-from __future__ import annotations
-
 from functools import wraps
 import json
 import logging
@@ -12,7 +8,6 @@ from typing import (
 )
 
 import flask
-from flask import current_app as capp
 from flask import request
 from flask_restx import Namespace
 from marshmallow import Schema
