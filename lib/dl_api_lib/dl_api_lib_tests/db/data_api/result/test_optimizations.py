@@ -61,3 +61,36 @@ class TestOptimizations(DefaultApiTestBase):
         assert "Furniture" in query
         assert self.const_value not in query
         assert "and" not in query.lower()
+
+    def test_optimize_binary_operator_comparison(self, control_api, data_api, saved_dataset):
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            formulas={
+                "eq": '[category] = "Furniture"',
+                "geq": "[sales] >= 300",
+            },
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="city").as_req_legend_item(),
+            ],
+            filters=[
+                ds.find_field(title="eq").filter(WhereClauseOperation.EQ, [True]),
+                ds.find_field(title="geq").filter(WhereClauseOperation.EQ, [False]),
+            ],
+            limit=1,
+            fail_ok=True,
+        )
+        assert result_resp.status_code == 200, result_resp.json
+        query = result_resp.json["blocks"][0]["query"]
+
+        # ensure no form of true/false comparison is presented; this also covers !=
+        for comparison in ("= 0", "= 1", "= true", "= false"):
+            assert comparison not in query.lower()
+
+        # ensure correct filters are presented
+        assert "= 'Furniture'" in query
+        assert "< 300" in query

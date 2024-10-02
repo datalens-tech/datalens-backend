@@ -53,6 +53,62 @@ class OptimizeConstComparisonMutation(FormulaMutation):
         return nodes.LiteralBoolean.make(value, meta=old.meta)
 
 
+class OptimizeBinaryOperatorComparisonMutation(FormulaMutation):
+    """
+    A mutation that optimizes comparison with a result of another binary comparison.
+    Originally intended to be used only for the filters section of a query, for example:
+    - WHERE (A < B) == 1 -> WHERE A < B. Also works for "== true".
+    - WHERE (A != B) == 0 -> WHERE A == B. Also works for "== false".
+    """
+
+    _opt_inversions = {
+        ">": "<=",
+        ">=": "<",
+        "<": ">=",
+        "<=": ">",
+        "==": "!=",
+        "!=": "==",
+    }
+
+    def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
+        if not isinstance(node, nodes.Binary) or node.name not in ("==", "!="):
+            return False
+
+        # should be either (binary op) ==/!= literal or literal ==/!= (binary op)
+        left, right = node.left, node.right
+        if isinstance(left, nodes.BaseLiteral) and isinstance(right, nodes.Binary):
+            left, right = right, left
+        if not isinstance(left, nodes.Binary) or not isinstance(right, nodes.BaseLiteral):
+            return False
+
+        # both a binary op and a literal should be supported
+        if left.name not in self._opt_inversions.keys() or right.value not in (0, 1):
+            return False
+        return True
+
+    def make_replacement(
+        self, old: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]
+    ) -> nodes.FormulaItem:
+        assert isinstance(old, nodes.Binary)
+        left, right = old.left, old.right
+        if isinstance(left, nodes.BaseLiteral) and isinstance(right, nodes.Binary):
+            left, right = right, left
+        assert isinstance(left, nodes.Binary) and isinstance(right, nodes.BaseLiteral)
+
+        opt, lit = left, right  # aliases for convenience
+        if (old.name == "==" and lit.value == 1) or (old.name == "!=" and lit.value == 0):
+            return opt
+        elif (old.name == "==" and lit.value == 0) or (old.name == "!=" and lit.value == 1):
+            return nodes.Binary.make(
+                name=self._opt_inversions[opt.name],
+                left=opt.left,
+                right=opt.right,
+                meta=opt.meta,
+            )
+        else:
+            raise ValueError(f"Unexpected binary operation {old.name} and/or literal {lit.value} in optimization")
+
+
 class OptimizeUnaryBoolFunctions(FormulaMutation):
     _opt_ops: dict[str, dict[Optional[DialectCombo], Callable[[Any], bool]]] = {
         "isnull": {None: lambda node: node is None},
