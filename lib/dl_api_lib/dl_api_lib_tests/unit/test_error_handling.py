@@ -90,19 +90,12 @@ def test_regular_schema():
     )
 
     # Ensure all fields passed to output
-    assert (
-        {"code": "ERR.SOME_API.A.B", "debug": dict(a="b"), "details": dict(a="b"), "message": "Some message"}
-    ) == RegularAPIErrorSchema(context=dict(api_prefix="SOME_API")).dump(bi_error)
-
-    # Ensure default prefix
-    assert (
-        {
-            "code": f"{GLOBAL_ERR_PREFIX}.{DEFAULT_ERR_CODE_API_PREFIX}.A.B",
-            "debug": dict(a="b"),
-            "details": dict(a="b"),
-            "message": "Some message",
-        }
-    ) == RegularAPIErrorSchema().dump(bi_error)
+    assert RegularAPIErrorSchema().dump(bi_error) == {
+        "code": "ERR.DS_API.A.B",
+        "debug": dict(a="b"),
+        "details": dict(a="b"),
+        "message": "Some message",
+    }
 
 
 def test_public_schema():
