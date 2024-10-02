@@ -141,12 +141,9 @@ def schematic_request(  # type: ignore  # TODO: fix
             except Exception as err:
                 _ei = sys.exc_info()
 
-                exc_api_prefix = capp.config.get("ERR_CODE_API_PREFIX")
-                error_schema = RegularAPIErrorSchema(context=dict(api_prefix=exc_api_prefix))
-
                 # TODO FIX: Make fallback for exceptions during creating error response
                 bi_error = BIError.from_exception(err)
-                error_info = error_schema.dump(bi_error)
+                error_info = RegularAPIErrorSchema().dump(bi_error)
                 error_code = bi_error.http_code
 
                 if error_code is None:
