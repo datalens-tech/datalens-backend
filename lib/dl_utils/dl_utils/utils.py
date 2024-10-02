@@ -47,6 +47,9 @@ class AddressableData:
     data: dict[str, Any] = attr.ib()
 
     def contains(self, key: DataKey) -> bool:
+        if not self.data:
+            return False
+
         try:
             self.get(key)
             return True

@@ -6,6 +6,10 @@ CONNECTORS:
     CONN_CHYT_PUBLIC_CLIQUES: []
   YDB:
     ENABLE_AUTH_TYPE_PICKER: true
+  METRIKA_API:
+    BACKEND_DRIVEN_FORM: true
+  APPMETRICA_API:
+    BACKEND_DRIVEN_FORM: true
 CONNECTOR_AVAILABILITY:
   icon_src:
     icon_type: data
@@ -25,6 +29,10 @@ CONNECTOR_AVAILABILITY:
     - conn_type: greenplum
       availability: free
     - conn_type: mssql
+      availability: free
+    - conn_type: metrika_api
+      availability: free
+    - conn_type: appmetrica_api
       availability: free
   visible_connectors: []
 CORS_ALLOWED_HEADERS:

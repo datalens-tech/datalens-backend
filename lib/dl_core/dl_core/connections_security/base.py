@@ -24,6 +24,9 @@ class DBDomainManager:
     async def normalize_db_host(self, original_host: str) -> str:
         return original_host
 
+    async def is_host_normalized(self, host: str) -> bool:
+        return False
+
 
 @attr.s
 class ConnectionSecurityManager(metaclass=abc.ABCMeta):

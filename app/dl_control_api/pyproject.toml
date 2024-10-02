@@ -20,6 +20,7 @@ dl-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 dl-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
 dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
 dl-connector-chyt = {path = "../../lib/dl_connector_chyt"}
+dl-connector-metrica = {path = "../../lib/dl_connector_metrica"}
 dl-connector-mysql = {path = "../../lib/dl_connector_mysql"}
 dl-connector-mssql = {path = "../../lib/dl_connector_mssql"}
 dl-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
