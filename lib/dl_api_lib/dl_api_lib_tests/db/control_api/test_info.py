@@ -120,7 +120,7 @@ class TestInfo(DefaultApiTestBase):
     def test_get_connector_icon_not_found(self, client):
         icons_resp = client.get("/api/v1/info/connectors/icons/unknown_conn_type")
         assert icons_resp.status_code == 404, icons_resp.json
-        
+
     def test_public_usage_checker(self, client, saved_dataset, saved_connection_id):
         data = dict(datasets=[saved_dataset.id])
         response = client.post(
@@ -154,7 +154,7 @@ class TestInfo(DefaultApiTestBase):
         ]
         assert response.status_code == 200
         assert response.json["result"] == expected_resp
-   
+
     def test_datasets_publicity_checker_connection_not_allowed(
         self, client, monkeypatch, saved_dataset, saved_connection_id
     ):
