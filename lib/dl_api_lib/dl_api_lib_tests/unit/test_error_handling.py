@@ -114,20 +114,18 @@ def test_public_schema():
         details=dict(private_code="Some private value"),
     )
 
-    assert (
-        {
-            "code": PublicAPIErrorSchema.Meta.PUBLIC_DEFAULT_ERR_CODE,
-            "debug": {},
-            "details": {},
-            "message": PublicAPIErrorSchema.Meta.PUBLIC_DEFAULT_MESSAGE,
-        }
-    ) == PublicAPIErrorSchema().dump(bi_error)
+    assert PublicAPIErrorSchema().dump(bi_error) == {
+        "code": PublicAPIErrorSchema.PUBLIC_DEFAULT_ERR_CODE,
+        "debug": {},
+        "details": {},
+        "message": PublicAPIErrorSchema.PUBLIC_DEFAULT_MESSAGE,
+    }
 
     assert (
-        len(PublicAPIErrorSchema.Meta.PUBLIC_FORWARDED_ERROR_CODES) > 0
+        len(PublicAPIErrorSchema.PUBLIC_FORWARDED_ERROR_CODES) == 2
     ), "Can not perform full public schema test without public whitelisted error codes"
 
-    for err_code_stack in PublicAPIErrorSchema.Meta.PUBLIC_FORWARDED_ERROR_CODES:
+    for err_code_stack in PublicAPIErrorSchema.PUBLIC_FORWARDED_ERROR_CODES:
         public_whitelisted_bi_error = BIError(
             message="Non user-private message",
             http_code=None,
@@ -136,11 +134,9 @@ def test_public_schema():
             details=dict(private_code="Some private value"),
         )
         # Ensure that message and error code are passed to output for whitelisted errors
-        assert (
-            {
-                "code": ".".join([GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX] + list(err_code_stack)),
-                "debug": {},
-                "details": {},
-                "message": public_whitelisted_bi_error.message,
-            }
-        ) == PublicAPIErrorSchema().dump(public_whitelisted_bi_error)
+        assert PublicAPIErrorSchema().dump(public_whitelisted_bi_error) == {
+            "code": ".".join([GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX] + list(err_code_stack)),
+            "debug": {},
+            "details": {},
+            "message": public_whitelisted_bi_error.message,
+        }

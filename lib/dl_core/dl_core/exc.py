@@ -270,6 +270,10 @@ class USAlreadyExistsException(USBadRequestException):
     err_code = USBadRequestException.err_code + ["ALREADY_EXISTS"]
 
 
+class USIncorrectEntryIdForEmbed(USBadRequestException):
+    err_code = USBadRequestException.err_code + ["INCORRECT_ENTRY_ID_FOR_EMBED"]
+
+
 class USIncorrectTenantIdException(USReqException):
     @property
     def message(self) -> str:
