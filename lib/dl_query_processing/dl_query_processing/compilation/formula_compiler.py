@@ -753,9 +753,6 @@ class FormulaCompiler:
         Apply pre-substitution mutations required for window functions to be translated correctly.
         """
 
-        # prepare mutations
-        mutations: List[FormulaMutation] = []
-
         # prepare default ordering (for patching RSUM, MSUM functions and the like)
         default_order_by = []
         ob_expr_obj: formula_nodes.FormulaItem
@@ -765,19 +762,18 @@ class FormulaCompiler:
                 ob_expr_obj = formula_nodes.OrderDescending.make(expr=ob_expr_obj)
             default_order_by.append(ob_expr_obj)
 
+        mutations = [
+            IgnoreParenthesisWrapperMutation(),
+            ConvertBlocksToFunctionsMutation(),
+            DefaultWindowOrderingMutation(default_order_by=default_order_by),
+            LookupDefaultBfbMutation(),
+        ]
+        formula_obj = apply_mutations(formula_obj, mutations=mutations)
+
         # Only measures can contain BFB clauses
         title_id_map = {f.title: f.guid for f in self._fields}
-        mutations.extend(
-            [
-                IgnoreParenthesisWrapperMutation(),
-                ConvertBlocksToFunctionsMutation(),
-                DefaultWindowOrderingMutation(default_order_by=default_order_by),
-                LookupDefaultBfbMutation(),
-                RemapBfbMutation(name_mapping=title_id_map),
-            ]
-        )
+        formula_obj = apply_mutations(formula_obj, mutations=[RemapBfbMutation(name_mapping=title_id_map)])
 
-        formula_obj = apply_mutations(formula_obj, mutations=mutations)
         return formula_obj
 
     def _apply_function_by_name(self, formula_obj: formula_nodes.Formula, func_name: str) -> formula_nodes.Formula:

@@ -247,6 +247,50 @@ def test_optimize_if_mutation():
     assert formula_obj == n.formula(n.field("then field 3"))
 
 
+def test_optimize_if_mutation_with_const_comparison():
+    # Check false comparison result in removal of a corresponding branch
+    formula_obj = n.formula(
+        n.func.IF(
+            n.binary("==", left=n.lit(2), right=n.lit(3)),
+            n.field("then field 1"),
+            n.binary("!=", left=n.lit(2), right=n.lit(2)),
+            n.field("then field 2"),
+            n.field("else field"),
+        )
+    )
+    formula_obj = apply_mutations(
+        formula_obj,
+        mutations=[
+            OptimizeConstComparisonMutation(),
+            OptimizeConstFuncMutation(),
+        ],
+    )
+    assert formula_obj == n.formula(n.field("else field"))
+
+    # Check true comparison result in single field result
+    formula_obj = n.formula(
+        n.func.IF(
+            n.field("cond 1"),
+            n.field("then field 1"),
+            n.binary("!=", left=n.lit(2), right=n.lit(2)),
+            n.field("then field 2"),
+            n.binary("==", left=n.lit(2), right=n.lit(2)),
+            n.field("then field 3"),
+            n.field("cond 4"),
+            n.field("then field 4"),
+            n.field("else field"),
+        )
+    )
+    formula_obj = apply_mutations(
+        formula_obj,
+        mutations=[
+            OptimizeConstComparisonMutation(),
+            OptimizeConstFuncMutation(),
+        ],
+    )
+    assert formula_obj == n.formula(n.field("then field 3"))
+
+
 def test_optimize_case_mutation():
     # Check removal of false conditions
     formula_obj = n.formula(

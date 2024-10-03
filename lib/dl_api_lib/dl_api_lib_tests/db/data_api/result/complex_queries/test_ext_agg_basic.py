@@ -312,7 +312,7 @@ class TestBasicExtendedAggregations(DefaultApiTestBase, DefaultBasicExtAggregati
             api_v1=control_api,
             dataset=saved_dataset,
             formulas={
-                "My Field": "SUM(SUM([sales] INCLUDE [Order ID]) / SUM([sales] FIXED))",
+                "My Field": "SUM(SUM([sales] INCLUDE [city]) / SUM([sales] FIXED))",
             },
         )
         result_resp = data_api.get_result(
@@ -829,7 +829,7 @@ class TestBasicExtendedAggregations(DefaultApiTestBase, DefaultBasicExtAggregati
         )
         assert result_resp.status_code == HTTPStatus.OK, result_resp.json
 
-    def test_bug_bi_3425_deeply_nested_bfb(self, control_api, data_api, db, saved_connection_id):
+    def test_deeply_nested_bfb(self, control_api, data_api, db, saved_connection_id):
         raw_data = [
             {"id": 10, "city": "New York", "category": "Office Supplies", "sales": 1},
             {"id": 11, "city": "New York", "category": "Office Supplies", "sales": 10},
@@ -977,7 +977,7 @@ class TestBasicExtendedAggregations(DefaultApiTestBase, DefaultBasicExtAggregati
         data_rows = get_data_rows(result_resp)
         assert len(data_rows) == 3  # There are 3 categories
 
-    def test_bi_4534_inconsistent_aggregation(self, control_api, data_api, saved_dataset):
+    def test_inconsistent_aggregation(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(
             api_v1=control_api,
             dataset=saved_dataset,
@@ -997,7 +997,7 @@ class TestBasicExtendedAggregations(DefaultApiTestBase, DefaultBasicExtAggregati
         )
         assert result_resp.status_code == HTTPStatus.OK
 
-    def test_bi_4652_measure_filter_with_total_in_select(self, control_api, data_api, saved_dataset):
+    def test_measure_filter_with_total_in_select(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(
             api_v1=control_api,
             dataset=saved_dataset,
@@ -1023,7 +1023,6 @@ class TestBasicExtendedAggregations(DefaultApiTestBase, DefaultBasicExtAggregati
         dim_values = [row[0] for row in data_rows]
         assert len(dim_values) == len(set(dim_values)), "Dimension values are not unique"
 
-    @pytest.mark.xfail(reason="https://github.com/datalens-tech/datalens-backend/issues/98")  # FIXME
     def test_fixed_with_unknown_field(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(
             api_v1=control_api,
@@ -1031,6 +1030,7 @@ class TestBasicExtendedAggregations(DefaultApiTestBase, DefaultBasicExtAggregati
             formulas={
                 "sales sum fx unknown": "SUM([sales] FIXED [unknown])",
             },
+            exp_status=HTTPStatus.BAD_REQUEST,
         )
 
         result_resp = data_api.get_result(
