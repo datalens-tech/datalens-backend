@@ -236,7 +236,25 @@ FUNCTION_MONTH = FunctionDocRegistryItem(
     category=CATEGORY_DATE,
     description=_("Returns the number of the month in the year of the specified date {arg:0}."),
     examples=[
-        SimpleExample("MONTH(#2019-01-23#) = 1"),
+        DataExample(
+            example_config=ExampleConfig(
+                name=_("Example with custom first day of the week"),
+                source=_SOURCE_DATE_1,
+                formula_fields=[
+                    ("Date", "[Date]"),
+                    ("Month", "MONTH([Date])"),
+                    (
+                        "Month name",
+                        (
+                            "CASE(MONTH([Date]), "
+                            '1, "January", 2, "February", 3, "March", 4, "April", 5, "May", 6, "June", '
+                            '7, "July", 8, "August", 9, "September", 10, "October", 11, "November", 12, "December", "Undefined")'
+                        ),
+                    ),
+                ],
+                formulas_as_names=False,
+            )
+        ),
     ],
 )
 

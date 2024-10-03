@@ -1,3 +1,5 @@
+import datetime
+
 from dl_formula.core.datatype import DataType
 from dl_formula_ref.categories.aggregation import CATEGORY_AGGREGATION
 from dl_formula_ref.examples.config import (
@@ -13,6 +15,8 @@ from dl_formula_ref.registry.example import (
 
 
 _ = get_gettext()
+
+_d = datetime.date
 
 _SOURCE_INT_FLOAT_1 = ExampleSource(
     columns=[
@@ -35,22 +39,22 @@ _SOURCE_INT_FLOAT_1 = ExampleSource(
 
 _SOURCE_TEMP = ExampleSource(
     columns=[
-        ("Month", DataType.STRING),
+        ("Date", DataType.DATE),
         ("Temperature", DataType.FLOAT),
     ],
     data=[
-        ["January", -8.0],
-        ["February", -4.0],
-        ["March", -1.0],
-        ["April", 7.0],
-        ["May", 14.0],
-        ["June", 18.0],
-        ["July", 22.0],
-        ["August", 19.0],
-        ["September", 13.0],
-        ["October", 5.0],
-        ["November", 1.0],
-        ["December", -4.0],
+        [_d(2019, 3, 1), 5.0],
+        [_d(2019, 3, 2), 0.0],
+        [_d(2019, 3, 3), -3.0],
+        [_d(2019, 3, 4), 1.0],
+        [_d(2019, 3, 5), 4.0],
+        [_d(2019, 3, 6), 5.0],
+        [_d(2019, 3, 7), 1.0],
+        [_d(2019, 3, 8), -6.0],
+        [_d(2019, 3, 9), -6.0],
+        [_d(2019, 3, 10), -4.0],
+        [_d(2019, 3, 11), -2.0],
+        [_d(2019, 3, 12), 0.0],
     ],
 )
 
@@ -372,7 +376,7 @@ FUNCTION_ARG_MIN = FunctionDocRegistryItem(
                 show_source_table=True,
                 formulas_as_names=False,
                 formula_fields=[
-                    ("Coldest Month", "ARG_MIN([Month],[Temperature])"),
+                    ("Coldest Day", "ARG_MIN([Date],[Temperature])"),
                 ],
             ),
         ),
@@ -394,7 +398,7 @@ FUNCTION_ARG_MAX = FunctionDocRegistryItem(
                 show_source_table=True,
                 formulas_as_names=False,
                 formula_fields=[
-                    ("Warmest Month", "ARG_MAX([Month],[Temperature])"),
+                    ("Warmest Day", "ARG_MAX([Date],[Temperature])"),
                 ],
             ),
         ),
