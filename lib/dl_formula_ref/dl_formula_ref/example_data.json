@@ -98,13 +98,16 @@
         {
             "columns": [
                 {
-                    "name": "Warmest Month",
-                    "type": "STRING"
+                    "name": "Warmest Day",
+                    "type": "DATE"
                 }
             ],
             "rows": [
                 [
-                    "July"
+                    {
+                        "__type__": "date",
+                        "__value__": "2019-03-01"
+                    }
                 ]
             ]
         }
@@ -114,13 +117,16 @@
         {
             "columns": [
                 {
-                    "name": "Coldest Month",
-                    "type": "STRING"
+                    "name": "Coldest Day",
+                    "type": "DATE"
                 }
             ],
             "rows": [
                 [
-                    "January"
+                    {
+                        "__type__": "date",
+                        "__value__": "2019-03-08"
+                    }
                 ]
             ]
         }
@@ -3569,6 +3575,59 @@
         }
     ],
     [
+        "MONTH.Example with custom first day of the week",
+        {
+            "columns": [
+                {
+                    "name": "Date",
+                    "type": "DATE"
+                },
+                {
+                    "name": "Month",
+                    "type": "INTEGER"
+                },
+                {
+                    "name": "Month name",
+                    "type": "STRING"
+                }
+            ],
+            "rows": [
+                [
+                    {
+                        "__type__": "date",
+                        "__value__": "2014-10-06"
+                    },
+                    10,
+                    "October"
+                ],
+                [
+                    {
+                        "__type__": "date",
+                        "__value__": "2014-10-07"
+                    },
+                    10,
+                    "October"
+                ],
+                [
+                    {
+                        "__type__": "date",
+                        "__value__": "2017-03-08"
+                    },
+                    3,
+                    "March"
+                ],
+                [
+                    {
+                        "__type__": "date",
+                        "__value__": "2024-02-12"
+                    },
+                    2,
+                    "February"
+                ]
+            ]
+        }
+    ],
+    [
         "MSUM.Example with ORDER BY",
         {
             "columns": [
@@ -3790,9 +3849,9 @@
             ],
             "rows": [
                 [
-                    -1.0,
-                    7.0,
-                    18.0
+                    -3.0,
+                    0.0,
+                    4.0
                 ]
             ]
         }
@@ -5441,7 +5500,7 @@
             ],
             "rows": [
                 [
-                    10.205464964983964
+                    3.8954129979043843
                 ]
             ]
         }
@@ -5457,7 +5516,7 @@
             ],
             "rows": [
                 [
-                    9.770988804733236
+                    3.7295740001000413
                 ]
             ]
         }

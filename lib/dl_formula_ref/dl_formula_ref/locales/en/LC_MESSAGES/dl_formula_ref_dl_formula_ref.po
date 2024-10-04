@@ -506,13 +506,13 @@ msgid ""
 "functions#parsedatetime32besteffort"
 msgstr ""
 
-msgid "../concepts/data-types.md#geopolygon"
+msgid "../dataset/data-types.md#geopolygon"
 msgstr ""
 
 msgid "https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List"
 msgstr ""
 
-msgid "../concepts/data-types.md#tree-hierarchy"
+msgid "../dataset/data-types.md#tree-hierarchy"
 msgstr ""
 
 msgid "https://en.wikipedia.org/wiki/Unix_time"

@@ -68,6 +68,7 @@ FUNCTION_CONTAINS = FunctionDocRegistryItem(
     description=_("Returns `TRUE` if {arg:0} contains {arg:1}. For case-insensitive searches, " "see {ref:ICONTAINS}."),
     examples=[
         SimpleExample('CONTAINS("RU0891923", "RU") = TRUE'),
+        SimpleExample('CONTAINS("RU0891923", "") = TRUE'),
         SimpleExample('CONTAINS("Lorem ipsum", "abc") = FALSE'),
     ],
 )
