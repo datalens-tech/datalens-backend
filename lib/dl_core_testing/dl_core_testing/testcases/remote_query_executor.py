@@ -126,7 +126,9 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("forbid_private_addr", [True])
-    async def test_forbid_private_hosts(self, remote_adapter, forbid_private_addr, basic_test_query):
+    async def test_forbid_private_hosts(
+        self, remote_adapter: RemoteAsyncAdapter, forbid_private_addr: bool, basic_test_query: str
+    ) -> None:
         async with remote_adapter:
             with pytest.raises(SourceTimeout):
                 await self.execute_request(remote_adapter, query=basic_test_query)
