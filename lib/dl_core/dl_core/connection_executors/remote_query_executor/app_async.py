@@ -243,25 +243,26 @@ class ActionHandlingView(BaseView):
         async with adapter:
             LOGGER.info("DBA for action was created: %s", adapter)
 
-            target_host = adapter.get_target_host()
-            if self.forbid_private_addr and target_host:
-                try:
-                    ipaddress.ip_address(target_host)
-                    host = target_host
-                except ValueError:
+            if self.forbid_private_addr:
+                target_host = adapter.get_target_host()
+                if target_host:
                     try:
-                        resolver = aiodns.DNSResolver()
-                        resp = await resolver.query(target_host, "A")
-                        host = resp[0].host
-                    except Exception:
-                        host = None
-                        LOGGER.warning("Cannot resolve host: %s", target_host, exc_info=True)
-                if host is None or ipaddress.ip_address(host).is_private:
-                    await asyncio.sleep(30)
-                    query = None
-                    if isinstance(action, (act.ActionExecuteQuery, act.ActionNonStreamExecuteQuery)):
-                        query = action.db_adapter_query.debug_compiled_query
-                    raise SourceTimeout(db_message="Source timed out", query=query)
+                        ipaddress.ip_address(target_host)
+                        host = target_host
+                    except ValueError:
+                        try:
+                            resolver = aiodns.DNSResolver()
+                            resp = await resolver.query(target_host, "A")
+                            host = resp[0].host
+                        except aiodns.error.DNSError:
+                            host = None
+                            LOGGER.warning("Cannot resolve host: %s", target_host, exc_info=True)
+                    if host is None or ipaddress.ip_address(host).is_private:
+                        await asyncio.sleep(30)
+                        query = None
+                        if isinstance(action, (act.ActionExecuteQuery, act.ActionNonStreamExecuteQuery)):
+                            query = action.db_adapter_query.debug_compiled_query
+                        raise SourceTimeout(db_message="Source timed out", query=query)
 
             if isinstance(action, act.ActionExecuteQuery):
                 return await self.handle_query_action(adapter, action.db_adapter_query)

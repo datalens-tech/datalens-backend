@@ -26,6 +26,7 @@ from dl_core.connection_executors.models.connection_target_dto_base import ConnT
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from dl_core.connection_executors.remote_query_executor.app_async import create_async_qe_app
+from dl_core.exc import SourceTimeout
 from dl_core.us_connection_base import ConnectionBase
 from dl_core_testing.rqe import RQEConfigurationMaker
 from dl_core_testing.testcases.connection_executor import BaseConnectionExecutorTestClass
@@ -44,6 +45,10 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
     @pytest.fixture(scope="function")
     def forbid_private_addr(self) -> bool:
         return False
+
+    @pytest.fixture(scope="class")
+    def basic_test_query(self) -> str:
+        return "select 1"
 
     @pytest.fixture(scope="function")
     def query_executor_app(
@@ -118,3 +123,10 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
             resp = await remote_adapter.execute(DBAdapterQuery(query))
             result = await alist(resp.get_all_rows())
         return result
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("forbid_private_addr", [True])
+    async def test_forbid_private_hosts(self, remote_adapter, forbid_private_addr, basic_test_query):
+        async with remote_adapter:
+            with pytest.raises(SourceTimeout):
+                await self.execute_request(remote_adapter, query=basic_test_query)
