@@ -1,3 +1,8 @@
+template: |
+  # What's Changed
+
+  $CHANGES
+
 autolabeler:
   - label: 'type/feat'
     title:
