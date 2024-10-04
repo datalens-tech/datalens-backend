@@ -245,6 +245,7 @@ class UStorageClientBase:
         (403, re.compile("Workbook isolation interruption"), exc.USWorkbookIsolationInterruptionException),
         (404, None, exc.USObjectNotFoundException),
         (409, re.compile("The entry already exists"), exc.USAlreadyExistsException),
+        (409, re.compile("Incorrect entryId for embed"), exc.USIncorrectEntryIdForEmbed),
         (409, None, exc.USIncorrectTenantIdException),
         (423, None, exc.USLockUnacquiredException),
         (451, None, exc.USReadOnlyModeEnabledException),

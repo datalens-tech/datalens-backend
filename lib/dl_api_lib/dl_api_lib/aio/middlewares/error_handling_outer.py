@@ -28,7 +28,6 @@ def bi_error_to_error_data(bi_error: BIError, public_mode: bool, reason: Optiona
     )
 
 
-# noinspection PyDataclass
 @attr.s
 class DatasetAPIErrorHandler(AIOHTTPErrorHandler):
     public_mode: bool = attr.ib(kw_only=True)
