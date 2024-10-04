@@ -223,7 +223,10 @@ class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=ab
         assert data_resp.status_code == HTTPStatus.OK, data_resp.response_errors
         return data_resp
 
-    def get_preview(self, ds: Dataset, data_api: SyncHttpDataApiV2) -> HttpDataApiResponse:
-        data_resp = data_api.get_preview(dataset=ds)
+    def get_preview(self, ds: Dataset, data_api: SyncHttpDataApiV2, limit: Optional[int] = None) -> HttpDataApiResponse:
+        if limit:
+            data_resp = data_api.get_preview(dataset=ds, limit=limit)
+        else:
+            data_resp = data_api.get_preview(dataset=ds)
         assert data_resp.status_code == HTTPStatus.OK, data_resp.response_errors
         return data_resp
