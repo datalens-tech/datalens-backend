@@ -1,0 +1,4 @@
+autolabeler:
+  - label: 'type/feat'
+    title:
+      - '/^feat:/'
