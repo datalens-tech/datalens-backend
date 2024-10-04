@@ -70,11 +70,13 @@ testpaths = []
 root_dir = "dl_connector_ydb_tests/"
 target_path = "db"
 compose_file_base = "docker-compose"
+labels = ["fat"]
 
 [datalens.pytest.unit]
 root_dir = "dl_connector_ydb_tests/"
 target_path = "unit"
 skip_compose = "true"
+labels = ["no_compose"]
 
 [tool.mypy]
 warn_unused_configs = true

@@ -63,6 +63,7 @@ labels = ["ext_public"]
 root_dir = "dl_connector_bitrix_gds_tests/"
 target_path = "unit"
 skip_compose = "true"
+labels = ["no_compose"]
 
 [tool.mypy]
 warn_unused_configs = true

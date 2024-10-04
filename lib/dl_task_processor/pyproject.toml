@@ -43,6 +43,7 @@ asyncio_mode = "auto"
 root_dir = "dl_task_processor_tests/"
 target_path = "unit"
 skip_compose = "true"
+labels = ["no_compose"]
 
 [datalens.pytest.db]
 root_dir = "dl_task_processor_tests/"

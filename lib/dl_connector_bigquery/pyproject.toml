@@ -74,6 +74,7 @@ testpaths = ["dl_connector_bigquery_tests/ext", "dl_connector_bigquery_tests/uni
 [datalens.pytest.unit]
 root_dir = "dl_connector_bigquery_tests/unit"
 skip_compose = "true"
+labels = ["no_compose"]
 
 [datalens.pytest.ext]
 root_dir = "dl_connector_bigquery_tests/ext"

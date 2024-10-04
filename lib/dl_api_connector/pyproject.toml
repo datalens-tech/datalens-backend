@@ -44,6 +44,7 @@ testpaths = ["dl_api_connector_tests/unit"]
 root_dir = "dl_api_connector_tests/"
 target_path = "unit"
 skip_compose = "true"
+labels = ["no_compose"]
 
 [tool.mypy]
 warn_unused_configs = true
