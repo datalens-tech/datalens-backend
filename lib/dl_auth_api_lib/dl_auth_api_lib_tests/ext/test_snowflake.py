@@ -26,10 +26,12 @@ async def test_snowflake_token(oauth_app_client, snowflake_payload):
     [
         ("bad-account", "513"),
         ("bad-account.eu-central-1", "unexpected response from an external API"),
+        ("another.bad-account.eu-central-1", "certificate is not valid"),
     ],
     ids=[
         "without_dot",
         "with_dot",
+        "with_2_dots",
     ],
 )
 @pytest.mark.asyncio

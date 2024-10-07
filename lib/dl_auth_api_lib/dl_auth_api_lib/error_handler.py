@@ -30,7 +30,10 @@ class OAuthApiErrorHandler(AIOHTTPErrorHandler):
                 response_body=dict(message=err.reason),
                 level=ErrorLevel.info,
             )
-        elif isinstance(err, client_exceptions.ClientResponseError):
+        elif isinstance(
+            err,
+            (client_exceptions.ClientResponseError, client_exceptions.ClientConnectorCertificateError),
+        ):
             return ErrorData(
                 status_code=HTTPStatus.BAD_REQUEST,
                 response_body=dict(message=str(err)),
