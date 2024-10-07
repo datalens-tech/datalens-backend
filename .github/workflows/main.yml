@@ -68,10 +68,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          fetch-depth: 1
 
       - name: Check user permissions
         id: check_user_permissions
@@ -113,65 +109,24 @@ jobs:
         working-directory: branch_code
         run: git branch --contains ${{ github.event.pull_request.base.sha }}
 
-#  label_pr:
-#    name: Add label (release_drafter)
-#    runs-on: ubuntu-22.04
-#
-#    needs: [ check-ci-allowed ]
-#
-#    permissions:
-#      contents: write
-#      pull-requests: write
-#
-#    env:
-#      GH_TOKEN: ${{ github.token }}
-#      OWNER: ${{ github.repository_owner }}
-#      REPO: ${{ github.event.repository.name }}
-#
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v4
-#
-#      - uses: release-drafter/release-drafter@v6
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  labeler:
-    name: Add label (multilabeler)
+  add_labels:
+    name: Add labels to PR
     runs-on: ubuntu-22.04
 
     needs: [ check-ci-allowed ]
+    if: github.event_name == 'pull_request_target'
 
     permissions:
       contents: read
       pull-requests: write
 
-#    env:
-#      GH_TOKEN: ${{ github.token }}
-#      OWNER: ${{ github.repository_owner }}
-#      REPO: ${{ github.event.repository.name }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          fetch-depth: 1
 
       - uses: fuxingloh/multi-labeler@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
-#  label-pr:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v4
-#
-#      - uses: grafana/pr-labeler-action@v0.1.0
-#        with:
-#          token: ${{ github.token }}
 
   gh_build_image:
     runs-on: [ self-hosted, linux, light ]
