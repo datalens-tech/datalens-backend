@@ -375,14 +375,14 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
     def _normalize_joining_node(
         self,
         joining_node: formula_fork_nodes.QueryForkJoiningBase,
-        expr_extract_to_alias_map: dict[NodeExtract, str],
+        extract: NodeExtract,
+        alias: str,
     ) -> formula_fork_nodes.QueryForkJoiningBase:
         def match_func(node: formula_nodes.FormulaItem, *args: Any) -> bool:
-            return node.extract in expr_extract_to_alias_map
+            return node.extract == extract
 
         def replace_func(node: formula_nodes.FormulaItem, *args: Any) -> formula_nodes.FormulaItem:
-            name = expr_extract_to_alias_map[node.extract_not_none]
-            return formula_nodes.Field.make(name=name, meta=node.meta)
+            return formula_nodes.Field.make(name=alias, meta=node.meta)
 
         joining_node = joining_node.replace_nodes(match_func=match_func, replace_func=replace_func)
         assert isinstance(joining_node, formula_fork_nodes.QueryForkJoiningBase)
@@ -415,13 +415,16 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
             # Map of expressions to aliases.
             # To replace these expressions with their column aliases
             # in the JOIN ON expressions.
-            expr_extract_to_alias_map = {
+            extract_to_alias_map = {
                 add_formula.expr.extract_not_none: add_formula.alias for add_formula in qfork_info.add_formulas
             }
-            # So apply this mapping to the `joining` node
-            joining_node = self._normalize_joining_node(
-                joining_node=qfork_info.joining_node, expr_extract_to_alias_map=expr_extract_to_alias_map
-            )
+
+            # Apply this mapping, replacing more complex formulas first.
+            # This way if mapping contains nested extracts, i.e. one extract is a child
+            # of another, we will replace the parent extract first
+            joining_node = qfork_info.joining_node
+            for extract, alias in sorted(extract_to_alias_map.items(), key=lambda t: t[0].complexity, reverse=True):
+                joining_node = self._normalize_joining_node(joining_node=joining_node, extract=extract, alias=alias)
 
             # Collect indices of filters that should be applied to the sub-query
             filter_indices: set[int] = set()
