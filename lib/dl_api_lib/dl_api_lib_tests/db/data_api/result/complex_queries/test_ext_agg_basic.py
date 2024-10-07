@@ -1041,3 +1041,25 @@ class TestBasicExtendedAggregations(DefaultApiTestBase, DefaultBasicExtAggregati
             fail_ok=True,
         )
         assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
+
+    def test_include_with_array(self, control_api, data_api, saved_dataset):
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            formulas={
+                "array": "ARRAY([city], [category] + 'lol')",
+                "include": "SUM(SUM(SUM(1) INCLUDE [city]))",
+            },
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="array"),
+                ds.find_field(title="include"),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+        data_rows = get_data_rows(result_resp)
+        assert len(data_rows) > 0
