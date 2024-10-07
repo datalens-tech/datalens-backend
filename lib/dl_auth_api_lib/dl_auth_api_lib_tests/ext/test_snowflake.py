@@ -21,9 +21,20 @@ async def test_snowflake_token(oauth_app_client, snowflake_payload):
     assert resp.json["error"] == "invalid_client"
 
 
+@pytest.mark.parametrize(
+    "account,expected_resp_substring",
+    [
+        ("bad-account", "513"),
+        ("bad-account.eu-central-1", "unexpected response from an external API"),
+    ],
+    ids=[
+        "without_dot",
+        "with_dot",
+    ],
+)
 @pytest.mark.asyncio
-async def test_invalid_snowflake_account(oauth_app_client, snowflake_payload):
-    snowflake_payload["account"] = "aa12345.eu-central-1"
+async def test_invalid_snowflake_account(oauth_app_client, snowflake_payload, account, expected_resp_substring):
+    snowflake_payload["account"] = account
     snowflake_payload["code"] = "1234567"
     snowflake_payload["client_secret"] = "snowflake_client_secret"
     resp = await oauth_app_client.make_request(
@@ -37,4 +48,4 @@ async def test_invalid_snowflake_account(oauth_app_client, snowflake_payload):
     )
     assert resp.status == 400
     assert "message" in resp.json
-    assert "513" in resp.json["message"]
+    assert expected_resp_substring in resp.json["message"], resp.json
