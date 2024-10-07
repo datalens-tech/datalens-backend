@@ -1,0 +1,6 @@
+version: v1
+
+labels:
+  - label: 'type/feat'
+    matcher:
+      title: '^feat:.*'
