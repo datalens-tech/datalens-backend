@@ -113,7 +113,7 @@ RESULT_SCHEMA = ResultSchema(
                 ),
             ),
             "valid_date",
-            True,  # FIXME BI-5836: Bitrix dialect doesn't have the DATEADD function
+            True,  # FIXME BI-5836: Bitrix dialect doesn't have the DATEADD3 function
             id="filter on DATEADD([valid_date])",
         ),
     ],
