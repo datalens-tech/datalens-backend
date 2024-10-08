@@ -5,6 +5,8 @@ import urllib.parse
 import aiohttp
 import attr
 
+from dl_auth_api_lib import exc
+
 
 _AUTH_URL: str = "https://{account}.snowflakecomputing.com/oauth/authorize?"
 _TOKEN_URL: str = "https://{account}.snowflakecomputing.com/oauth/token-request"
@@ -40,7 +42,15 @@ class SnowflakeOAuth:
             async with session.post(self.token_url.format(account=self.account), data=token_data) as resp:
                 if resp.status >= 500:
                     resp.raise_for_status()
-                token_response = await resp.json()
+                if resp.content_type != "application/json":
+                    raise exc.UnexpectedResponseError(
+                        details=dict(
+                            response=await resp.text(),
+                            status=resp.status,
+                        ),
+                    )
+                else:
+                    token_response = await resp.json()
         return token_response
 
     def _get_session_headers(self, client_secret: str) -> dict[str, str]:
