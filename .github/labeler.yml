@@ -13,11 +13,11 @@ labels:
     matcher:
       title: '^changelog*'
 
+  # types
+
   - label: 'type/breaking-change'
     matcher:
       title: '^breaking-change*'
-
-  # types
 
   - label: 'type/new-feature'
     matcher:
@@ -61,74 +61,74 @@ labels:
 
   - label: 'type/docs'
     matcher:
-      title: '^build*'
+      title: '^docs*'
 
   - label: 'type/deploy'
     matcher:
-      title: '^build*'
+      title: '^deploy*'
 
   - label: 'type/refactor'
     matcher:
-      title: '^build*'
+      title: '^refactor*'
 
   - label: 'type/perf'
     matcher:
-      title: '^build*'
+      title: '^perf*'
 
   - label: 'type/revert'
     matcher:
-      title: '^build*'
+      title: '^revert*'
 
   - label: 'type/infra'
     matcher:
-      title: '^build*'
+      title: '^infra*'
 
     # components
 
   - label: 'component/charts'
     matcher:
-      title: '[a-z]+\(charts\):*'
+      title: '[a-z]+\(.*charts.*\):*'
 
   - label: 'component/connectors'
     matcher:
-      title: '[a-z]+\(connectors\):*'
+      title: '[a-z]+\(.*connectors.*\):*'
 
   - label: 'component/navigation'
     matcher:
-      title: '[a-z]+\(navigation\):*'
+      title: '[a-z]+\(.*navigation.*\):*'
 
   - label: 'component/general'
     matcher:
-      title: '[a-z]+\(general\):*'
+      title: '[a-z]+\(.*general.*\):*'
 
   - label: 'component/dashboards'
     matcher:
-      title: '[a-z]+\(dashboards\):*'
+      title: '[a-z]+\(.*dashboards.*\):*'
 
   - label: 'component/datasets'
     matcher:
-      title: '[a-z]+\(datasets\):*'
+      title: '[a-z]+\(.*datasets.*\):*'
 
   - label: 'component/auth'
     matcher:
-      title: '[a-z]+\(auth\):*'
+      title: '[a-z]+\(.*auth.*\):*'
 
   - label: 'component/optimization'
     matcher:
-      title: '[a-z]+\(optimization\):*'
+      title: '[a-z]+\(.*optimization.*\):*'
 
   - label: 'component/role-model'
     matcher:
-      title: '[a-z]+\(role-model\):*'
+      title: '[a-z]+\(.*role-model.*\):*'
 
   - label: 'component/docs'
     matcher:
-      title: '[a-z]+\(charts\):*'
+      title: '[a-z]+\(.*docs.*\):*'
 
   - label: 'component/formula'
     matcher:
-      title: '[a-z]+\(formula\):*'
+      title: '[a-z]+\(.*formula.*\):*'
 
   - label: 'component/embeds'
     matcher:
-      title: '[a-z]+\(embeds\):*'
+      title: '[a-z]+\(.*embeds.*\):*'
