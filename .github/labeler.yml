@@ -1,18 +1,6 @@
 version: v1
 
 labels:
-  - label: 'ci-approved'
-    matcher:
-      title: '^ci-approved*'
-
-  - label: 'tests-force-skipped'
-    matcher:
-      title: '^tests-force-skipped*'
-
-  - label: 'changelog'
-    matcher:
-      title: '^changelog*'
-
   # types
 
   - label: 'type/breaking-change'
