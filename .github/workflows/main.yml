@@ -109,6 +109,25 @@ jobs:
         working-directory: branch_code
         run: git branch --contains ${{ github.event.pull_request.base.sha }}
 
+  add_labels:
+    name: Add labels to PR
+    runs-on: ubuntu-22.04
+
+    needs: [ check-ci-allowed ]
+    if: github.event_name == 'pull_request_target'
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: fuxingloh/multi-labeler@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
   gh_build_image:
     runs-on: [ self-hosted, linux, light ]
 
