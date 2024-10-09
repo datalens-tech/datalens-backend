@@ -60,7 +60,7 @@ class FromArgs(TypeStrategy):
             else:
                 raise TypeError(type(ind))
 
-        return DataType.get_common_cast_type(*use_arg_types).non_const_type
+        return DataType.get_common_cast_type(*use_arg_types)
 
 
 class DynamicIndexStrategy(FromArgs):
