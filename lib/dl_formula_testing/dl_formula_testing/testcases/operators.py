@@ -29,6 +29,7 @@ class DefaultOperatorFormulaConnectorTestSuite(FormulaConnectorTestBase):
 
     def test_addition_number_number(self, dbe: DbEvaluator, forced_literal_use: Any) -> None:
         assert dbe.eval("__LIT__(2) + 3") == 5
+        assert dbe.eval("2 + 3") == 5
 
     def test_addition_string_string(self, dbe: DbEvaluator, forced_literal_use: Any) -> None:
         assert to_str(dbe.eval('__LIT__("Lorem") + " ipsum"')) == "Lorem ipsum"
@@ -57,6 +58,7 @@ class DefaultOperatorFormulaConnectorTestSuite(FormulaConnectorTestBase):
 
     def test_subtraction_number_number(self, dbe: DbEvaluator, forced_literal_use: Any) -> None:
         assert dbe.eval("__LIT__(2) - 3") == -1
+        assert dbe.eval("2 - 3") == -1
 
     def test_subtraction_date_number(self, dbe: DbEvaluator) -> None:
         assert dbe.eval("#2019-01-06# - 2") == datetime.date(2019, 1, 4)
@@ -90,7 +92,9 @@ class DefaultOperatorFormulaConnectorTestSuite(FormulaConnectorTestBase):
 
     def test_multiplication(self, dbe: DbEvaluator, forced_literal_use: Any) -> None:
         assert dbe.eval("__LIT__(2) * 3") == 6
+        assert dbe.eval("2 * 3") == 6
         assert dbe.eval("__LIT__(2.1) * 3") == pytest.approx(6.3)
+        assert dbe.eval("2.1 * 3") == pytest.approx(6.3)
         assert to_str(dbe.eval('"Lorem" * 3')) == "LoremLoremLorem"
         assert to_str(dbe.eval('3 * "Lorem"')) == "LoremLoremLorem"
         if self.supports_string_int_multiplication:
@@ -99,9 +103,13 @@ class DefaultOperatorFormulaConnectorTestSuite(FormulaConnectorTestBase):
 
     def test_division(self, dbe: DbEvaluator, forced_literal_use: Any) -> None:
         assert dbe.eval("__LIT__(4) / 2") == 2
+        assert dbe.eval("4 / 2") == 2
         assert dbe.eval("__LIT__(5) / 2") == pytest.approx(2.5)
+        assert dbe.eval("5 / 2") == pytest.approx(2.5)
         assert dbe.eval("__LIT__(5.0) / 2") == pytest.approx(2.5)
+        assert dbe.eval("5.0 / 2") == pytest.approx(2.5)
         assert dbe.eval("__LIT__(5) / 2.0") == pytest.approx(2.5)
+        assert dbe.eval("5 / 2.0") == pytest.approx(2.5)
 
     def test_modulo(self, dbe: DbEvaluator, forced_literal_use: Any) -> None:
         assert dbe.eval("__LIT__(2) % 3") == 2
