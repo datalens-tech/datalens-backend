@@ -71,6 +71,7 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         assert dbe.eval('DATEADD(#2018-01-12#, "day")') == datetime.date(2018, 1, 13)
         assert dbe.eval('DATEADD(#2018-01-12#, "month")') == datetime.date(2018, 2, 12)
         assert dbe.eval('DATEADD(#2018-01-12#, "year")') == datetime.date(2019, 1, 12)
+        assert dbe.eval('DATEADD(#2018-01-12#, "quarter")') == datetime.date(2018, 4, 12)
 
         # 2 args (number)
         assert dbe.eval("DATEADD(#2018-01-12#, 6)") == datetime.date(2018, 1, 18)
