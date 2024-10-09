@@ -296,10 +296,17 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             "key": self._target_dto.token,
         }
         api_url: str = f"https://{self._target_dto.portal}/bitrix/tools/biconnector/gds.php?show_tables"
-        resp = await self._session.post(
-            url=api_url,
-            json=body,
-        )
+
+        with self.handle_execution_error(api_url):
+            resp = await self._session.post(
+                url=api_url,
+                json=body,
+            )
+
+            if resp.status != 200:
+                message = await resp.text()
+                raise DatabaseQueryError(db_message=message)
+
         tables: list[str] = [table[0] for table in await resp.json()]
         return tables
 
