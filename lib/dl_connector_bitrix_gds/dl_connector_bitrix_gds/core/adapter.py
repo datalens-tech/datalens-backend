@@ -39,10 +39,7 @@ from dl_core.connection_models import (
     TableIdent,
 )
 from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
-from dl_core.exc import (
-    DatabaseQueryError,
-    DatabaseUnavailable,
-)
+from dl_core.exc import DatabaseQueryError
 from dl_type_transformer.native_type import CommonNativeType
 
 from dl_connector_bitrix_gds.core.caches import (
@@ -298,7 +295,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
 
             if resp.status != 200:
                 message = await resp.text()
-                raise DatabaseUnavailable(message=message)
+                raise DatabaseQueryError(db_message=message)
 
         tables: list[str] = [table[0] for table in await resp.json()]
         return tables
