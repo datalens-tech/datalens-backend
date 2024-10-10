@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import ipaddress
 import logging
 import pickle
+import socket
+import time
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -12,6 +15,7 @@ from typing import (
 )
 
 import attr
+from flask import current_app
 from flask.json.provider import JSONProvider
 import flask.views
 from werkzeug.exceptions import (
@@ -48,6 +52,7 @@ from dl_core.connection_executors.remote_query_executor.commons import (
 from dl_core.connection_executors.remote_query_executor.crypto import get_hmac_hex_digest
 from dl_core.connection_executors.remote_query_executor.settings import RQESettings
 from dl_core.enums import RQEEventType
+from dl_core.exc import SourceTimeout
 from dl_core.loader import (
     CoreLibraryConfig,
     load_core_lib,
@@ -161,9 +166,9 @@ class ActionHandlingView(flask.views.View):
 
     def execute_execute_action(
         self,
+        dba: SyncDirectDBAdapter,
         action: act.ActionExecuteQuery,
     ) -> flask.Response:
-        dba = self.create_dba_for_action(action)
         try:
             db_result = dba.execute(action.db_adapter_query)
         except Exception:
@@ -180,10 +185,9 @@ class ActionHandlingView(flask.views.View):
 
     def execute_non_stream_execute_action(
         self,
+        dba: SyncDirectDBAdapter,
         action: act.ActionNonStreamExecuteQuery,
     ) -> flask.Response:
-        dba = self.create_dba_for_action(action)
-
         try:
             db_result = dba.execute(action.db_adapter_query)
             events: list[tuple[str, Any]] = [(RQEEventType.raw_cursor_info.value, db_result.cursor_info)]
@@ -222,15 +226,30 @@ class ActionHandlingView(flask.views.View):
     def dispatch_request(self) -> flask.Response:
         action = self.get_action()
         LOGGER.info("Got QE action request: %s", action)
+        dba = self.create_dba_for_action(action)
+
+        if current_app.config["forbid_private_addr"]:
+            target_host = dba.get_target_host()
+            if target_host:
+                try:
+                    host = socket.gethostbyname(target_host)
+                except socket.gaierror:
+                    host = None
+                    LOGGER.warning("Cannot resolve host: %s", target_host, exc_info=True)
+                if host is None or ipaddress.ip_address(host).is_private:
+                    time.sleep(30)
+                    query = None
+                    if isinstance(action, (act.ActionExecuteQuery, act.ActionNonStreamExecuteQuery)):
+                        query = action.db_adapter_query.debug_compiled_query
+                    raise SourceTimeout(db_message="Source timed out", query=query)
 
         if isinstance(action, act.ActionExecuteQuery):
-            return self.execute_execute_action(action)
+            return self.execute_execute_action(dba, action)
 
         if isinstance(action, act.ActionNonStreamExecuteQuery):
-            return self.execute_non_stream_execute_action(action)
+            return self.execute_non_stream_execute_action(dba, action)
 
         if isinstance(action, act.NonStreamAction):
-            dba = self.create_dba_for_action(action)
             try:
                 result = self.execute_non_streamed_action(dba, action)
                 return flask.jsonify(action.serialize_response(result))
@@ -332,6 +351,7 @@ def create_sync_app() -> flask.Flask:
         hmac_key=hmac_key.encode(),
     ).set_up(app)
 
+    app.config["forbid_private_addr"] = settings.FORBID_PRIVATE_ADDRESSES
     app.add_url_rule("/ping", view_func=ping_view)
     app.add_url_rule("/execute_action", view_func=ActionHandlingView.as_view("execute_action"))
 

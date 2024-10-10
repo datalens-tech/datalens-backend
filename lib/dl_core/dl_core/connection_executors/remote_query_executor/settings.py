@@ -15,3 +15,4 @@ class RQESettings:
         fallback_cfg_key="CORE_CONNECTOR_WHITELIST",
     )
     RQE_SECRET_KEY: Optional[str] = s_attrib("RQE_SECRET_KEY", missing=None, sensitive=True)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
+    FORBID_PRIVATE_ADDRESSES: bool = s_attrib("FORBID_PRIVATE_ADDRESSES", missing=False)  # type: ignore

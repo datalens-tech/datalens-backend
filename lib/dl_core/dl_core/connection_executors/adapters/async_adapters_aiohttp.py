@@ -96,6 +96,9 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
     def get_session_cookies(self) -> dict[str, str]:
         return {}
 
+    def get_target_host(self) -> Optional[str]:
+        return self._target_dto.get_effective_host()
+
     async def close(self) -> None:
         await self._session.close()
 

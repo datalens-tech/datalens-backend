@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
+import ipaddress
 import logging
 import pickle
 import sys
@@ -11,6 +13,7 @@ from typing import (
     Union,
 )
 
+import aiodns
 from aiohttp import web
 from aiohttp.typedefs import Handler
 
@@ -51,6 +54,7 @@ from dl_core.connection_executors.remote_query_executor.crypto import get_hmac_h
 from dl_core.connection_executors.remote_query_executor.error_handler_rqe import RQEErrorHandler
 from dl_core.connection_executors.remote_query_executor.settings import RQESettings
 from dl_core.enums import RQEEventType
+from dl_core.exc import SourceTimeout
 from dl_core.loader import (
     CoreLibraryConfig,
     load_core_lib,
@@ -73,6 +77,10 @@ class BaseView(web.View):
     @property
     def tpe(self) -> ContextVarExecutor:
         return self.request.app["tpe"]
+
+    @property
+    def forbid_private_addr(self) -> bool:
+        return self.request.app["forbid_private_addr"]
 
 
 def adapter_factory(
@@ -235,6 +243,27 @@ class ActionHandlingView(BaseView):
         async with adapter:
             LOGGER.info("DBA for action was created: %s", adapter)
 
+            if self.forbid_private_addr:
+                target_host = adapter.get_target_host()
+                if target_host:
+                    try:
+                        ipaddress.ip_address(target_host)
+                        host = target_host
+                    except ValueError:
+                        try:
+                            resolver = aiodns.DNSResolver()
+                            resp = await resolver.query(target_host, "A")
+                            host = resp[0].host
+                        except aiodns.error.DNSError:
+                            host = None
+                            LOGGER.warning("Cannot resolve host: %s", target_host, exc_info=True)
+                    if host is None or ipaddress.ip_address(host).is_private:
+                        await asyncio.sleep(30)
+                        query = None
+                        if isinstance(action, (act.ActionExecuteQuery, act.ActionNonStreamExecuteQuery)):
+                            query = action.db_adapter_query.debug_compiled_query
+                        raise SourceTimeout(db_message="Source timed out", query=query)
+
             if isinstance(action, act.ActionExecuteQuery):
                 return await self.handle_query_action(adapter, action.db_adapter_query)
 
@@ -270,7 +299,7 @@ def body_signature_validation_middleware(hmac_key: bytes) -> AIOHTTPMiddleware:
     return actual_middleware
 
 
-def create_async_qe_app(hmac_key: bytes) -> web.Application:
+def create_async_qe_app(hmac_key: bytes, forbid_private_addr: bool = False) -> web.Application:
     req_id_service = RequestId(
         header_name=HEADER_REQUEST_ID,
         accept_logging_ctx=True,
@@ -293,6 +322,7 @@ def create_async_qe_app(hmac_key: bytes) -> web.Application:
 
     # TODO FIX: Close on app exit
     app["tpe"] = ContextVarExecutor()
+    app["forbid_private_addr"] = forbid_private_addr
 
     app.router.add_route("get", "/ping", PingView)
     app.router.add_route("*", "/execute_action", ActionHandlingView)
@@ -315,7 +345,7 @@ def get_configured_qe_app() -> web.Application:
     if hmac_key is None:
         raise Exception("No `hmac_key` set.")
 
-    return create_async_qe_app(hmac_key.encode())
+    return create_async_qe_app(hmac_key.encode(), forbid_private_addr=settings.FORBID_PRIVATE_ADDRESSES)
 
 
 def async_qe_main() -> None:

@@ -139,6 +139,9 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
     def test(self) -> None:
         pass
 
+    def get_target_host(self) -> Optional[str]:
+        return None
+
     def execute_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
         return self._sync_typed_query_action.run_typed_query_action(typed_query=typed_query)
 

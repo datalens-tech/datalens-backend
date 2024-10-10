@@ -152,6 +152,9 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
         # Redefine this method to enable `execute_typedQuery`
         return AsyncTypedQueryActionNotImplemented()
 
+    def get_target_host(self) -> Optional[str]:
+        return None
+
     async def test(self) -> None:
         return await self._async_test_action.run_test_action()
 

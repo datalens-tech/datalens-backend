@@ -100,7 +100,8 @@ module = [
     "anyascii.*",
     "types_aiobotocore_s3.*",
     "mypy_boto3_s3.*",
-    "statcommons.*"
+    "statcommons.*",
+    "aiodns.*"
 ]
 ignore_missing_imports = true
 

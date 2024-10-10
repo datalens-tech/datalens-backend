@@ -18,12 +18,14 @@ from dl_core_testing.fixture_server_runner import WSGIRunner
 class RQEConfigurationMaker:
     ext_query_executer_secret_key: str = attr.ib(kw_only=True)
     core_connector_whitelist: Optional[Collection[str]] = attr.ib(kw_only=True, default=None)
+    forbid_private_addr: str = attr.ib(default="0")
 
     @contextlib.contextmanager
     def sync_rqe_netloc_subprocess_cm(self) -> Generator[RQEBaseURL, None, None]:
         env = dict(
             EXT_QUERY_EXECUTER_SECRET_KEY=self.ext_query_executer_secret_key,
             DEV_LOGGING="1",
+            FORBID_PRIVATE_ADDRESSES=self.forbid_private_addr,
         )
         if self.core_connector_whitelist is not None:
             env["CORE_CONNECTOR_WHITELIST"] = ",".join(self.core_connector_whitelist)
