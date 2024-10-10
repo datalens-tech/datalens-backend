@@ -69,6 +69,8 @@ class TestOptimizations(DefaultApiTestBase):
             formulas={
                 "eq": '[category] = "Furniture"',
                 "geq": "[sales] >= 300",
+                "in": '[category] in ("Furniture", "Technology")',
+                "not in": '[city] not in ("Moscow", "London")',
             },
         )
 
@@ -80,6 +82,8 @@ class TestOptimizations(DefaultApiTestBase):
             filters=[
                 ds.find_field(title="eq").filter(WhereClauseOperation.EQ, [True]),
                 ds.find_field(title="geq").filter(WhereClauseOperation.EQ, [False]),
+                ds.find_field(title="in").filter(WhereClauseOperation.EQ, [False]),
+                ds.find_field(title="not in").filter(WhereClauseOperation.EQ, [True]),
             ],
             limit=1,
             fail_ok=True,
@@ -94,3 +98,5 @@ class TestOptimizations(DefaultApiTestBase):
         # ensure correct filters are presented
         assert "= 'Furniture'" in query
         assert "< 300" in query
+        assert "NOT IN ('Furniture', 'Technology')" in query
+        assert "NOT IN ('Moscow', 'London')" in query

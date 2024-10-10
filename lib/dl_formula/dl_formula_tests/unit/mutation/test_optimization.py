@@ -136,6 +136,35 @@ def test_optimize_binary_operator_comparison_mutation():
         )
     )
 
+    formula_obj = n.formula(
+        n.binary(
+            "or",
+            n.binary(
+                "==",
+                left=n.binary("in", n.field("a"), n.lit([1, 2, 3])),
+                right=n.lit(False),
+            ),
+            n.binary(
+                "!=",
+                left=n.binary("notin", n.field("b"), n.lit([4, 5, 6])),
+                right=n.lit(1),
+            ),
+        ),
+    )
+    formula_obj = apply_mutations(
+        formula_obj,
+        mutations=[
+            OptimizeBinaryOperatorComparisonMutation(),
+        ],
+    )
+    assert formula_obj == n.formula(
+        n.binary(
+            "or",
+            n.binary("notin", n.field("a"), n.lit([1, 2, 3])),
+            n.binary("in", n.field("b"), n.lit([4, 5, 6])),
+        )
+    )
+
 
 def test_optimize_const_and_or_mutation():
     formula_obj = n.formula(n.binary("and", left=n.lit(True), right=n.field("my field")))
