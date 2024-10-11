@@ -52,7 +52,6 @@ def _datetrunc2_pg_tz_impl(date_ctx: TranslationCtx, unit_ctx: TranslationCtx) -
 DEFINITIONS_DATETIME = [
     # dateadd
     base.FuncDateadd1.for_dialect(D.POSTGRESQL),
-    # base.FuncDateadd2Unit.for_dialect(D.POSTGRESQL),
     base.FuncDateadd2Unit(
         variants=[
             V(
