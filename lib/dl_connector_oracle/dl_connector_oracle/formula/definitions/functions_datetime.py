@@ -59,7 +59,18 @@ class FuncDatetrunc2Oracle(base.FuncDatetrunc2):
 DEFINITIONS_DATETIME = [
     # dateadd
     base.FuncDateadd1.for_dialect(D.ORACLE),
-    base.FuncDateadd2Unit.for_dialect(D.ORACLE),
+    base.FuncDateadd2Unit(
+        variants=[
+            V(
+                D.ORACLE,
+                lambda date, what: (
+                    sa.cast(date + datetime_interval(un_literal(what), 1, literal_mult=True), sa.Date)
+                    if un_literal(what).lower() != "quarter"
+                    else sa.cast(date + datetime_interval("month", 3, literal_mult=True), sa.Date)
+                ),
+            ),
+        ]
+    ),
     base.FuncDateadd2Number.for_dialect(D.ORACLE),
     base.FuncDateadd3Legacy.for_dialect(D.ORACLE),
     base.FuncDateadd3DateConstNum(
@@ -68,6 +79,8 @@ DEFINITIONS_DATETIME = [
                 D.ORACLE,
                 lambda date, what, num: (
                     sa.cast(date + datetime_interval(un_literal(what), un_literal(num), literal_mult=True), sa.Date)
+                    if un_literal(what).lower() != "quarter"
+                    else sa.cast(date + datetime_interval("month", 3 * un_literal(num), literal_mult=True), sa.Date)
                 ),
             ),
         ]
@@ -78,6 +91,8 @@ DEFINITIONS_DATETIME = [
                 D.ORACLE,
                 lambda dt, what, num: (
                     sa.cast(dt + datetime_interval(what.value, num.value, literal_mult=True), sa.Date)
+                    if what.value.lower() != "quarter"
+                    else sa.cast(dt + datetime_interval("month", 3 * num.value, literal_mult=True), sa.Date)
                 ),
             ),
         ]
