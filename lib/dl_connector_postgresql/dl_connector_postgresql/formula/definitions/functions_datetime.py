@@ -52,7 +52,21 @@ def _datetrunc2_pg_tz_impl(date_ctx: TranslationCtx, unit_ctx: TranslationCtx) -
 DEFINITIONS_DATETIME = [
     # dateadd
     base.FuncDateadd1.for_dialect(D.POSTGRESQL),
-    base.FuncDateadd2Unit.for_dialect(D.POSTGRESQL),
+    # base.FuncDateadd2Unit.for_dialect(D.POSTGRESQL),
+    base.FuncDateadd2Unit(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                lambda date, what: (
+                    sa.cast(
+                        date + datetime_interval(un_literal(what), 1, literal_type=True, literal_mult=True), sa.Date
+                    )
+                    if un_literal(what).lower() != "quarter"
+                    else sa.cast(date + datetime_interval("month", 3, literal_type=True, literal_mult=True), sa.Date)
+                ),
+            ),
+        ]
+    ),
     base.FuncDateadd2Number.for_dialect(D.POSTGRESQL),
     base.FuncDateadd3Legacy.for_dialect(D.POSTGRESQL),
     base.FuncDateadd3DateConstNum(
@@ -61,8 +75,18 @@ DEFINITIONS_DATETIME = [
                 D.POSTGRESQL,
                 lambda date, what, num: (
                     sa.cast(
-                        date
-                        + datetime_interval(un_literal(what), un_literal(num), literal_type=True, literal_mult=True),
+                        (
+                            date
+                            + (
+                                datetime_interval(
+                                    un_literal(what), un_literal(num), literal_type=True, literal_mult=True
+                                )
+                                if un_literal(what).lower() != "quarter"
+                                else datetime_interval(
+                                    "month", 3 * un_literal(num), literal_type=True, literal_mult=True
+                                )
+                            )
+                        ),
                         sa.Date,
                     )
                 ),
@@ -74,7 +98,12 @@ DEFINITIONS_DATETIME = [
             V(
                 D.POSTGRESQL,
                 lambda dt, what, num: (
-                    dt + datetime_interval(what.value, num.value, literal_type=True, literal_mult=True)
+                    dt
+                    + (
+                        datetime_interval(what.value, num.value, literal_type=True, literal_mult=True)
+                        if what.value.lower() != "quarter"
+                        else datetime_interval("month", 3 * num.value, literal_type=True, literal_mult=True)
+                    )
                 ),
             ),
         ]
