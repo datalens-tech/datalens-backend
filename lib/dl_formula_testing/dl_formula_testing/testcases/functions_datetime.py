@@ -70,6 +70,7 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         # 2 args (unit)
         assert dbe.eval('DATEADD(#2018-01-12#, "day")') == datetime.date(2018, 1, 13)
         assert dbe.eval('DATEADD(#2018-01-12#, "month")') == datetime.date(2018, 2, 12)
+        assert dbe.eval('DATEADD(#2018-01-12#, "quarter")') == datetime.date(2018, 4, 12)
         assert dbe.eval('DATEADD(#2018-01-12#, "year")') == datetime.date(2019, 1, 12)
 
         # 2 args (number)
@@ -78,6 +79,7 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         # 3 args
         assert dbe.eval('DATEADD(#2018-01-12#, "day", 6)') == datetime.date(2018, 1, 18)
         assert dbe.eval('DATEADD(#2018-01-12#, "month", 6)') == datetime.date(2018, 7, 12)
+        assert dbe.eval('DATEADD(#2018-01-12#, "quarter", 6)') == datetime.date(2019, 7, 12)
         assert dbe.eval('DATEADD(#2018-01-12#, "year", 6)') == datetime.date(2024, 1, 12)
         assert dt_strip(dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "second", 6)')) == datetime.datetime(
             2018, 1, 12, 1, 2, 9
@@ -94,6 +96,9 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         assert dt_strip(dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "month", 6)')) == datetime.datetime(
             2018, 7, 12, 1, 2, 3
         )
+        assert dt_strip(dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "quarter", 6)')) == datetime.datetime(
+            2019, 7, 12, 1, 2, 3
+        )
         assert dt_strip(dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "year", 6)')) == datetime.datetime(
             2024, 1, 12, 1, 2, 3
         )
@@ -101,6 +106,7 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
             # non-const number
             assert dbe.eval('DATEADD(#2018-01-12#, "day", INT("6"))') == datetime.date(2018, 1, 18)
             assert dbe.eval('DATEADD(#2018-01-12#, "month", INT("6"))') == datetime.date(2018, 7, 12)
+            assert dbe.eval('DATEADD(#2018-01-12#, "quarter", INT("6"))') == datetime.date(2019, 7, 12)
             assert dbe.eval('DATEADD(#2018-01-12#, "year", INT("6"))') == datetime.date(2024, 1, 12)
             assert dt_strip(
                 dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "second", INT("6"))')
@@ -118,6 +124,9 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
                 dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "month", INT("6"))')
             ) == datetime.datetime(2018, 7, 12, 1, 2, 3)
             assert dt_strip(
+                dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "quarter", INT("6"))')
+            ) == datetime.datetime(2019, 7, 12, 1, 2, 3)
+            assert dt_strip(
                 dbe.eval(f'DATEADD({_dt_lit("2018-01-12 01:02:03")}, "year", INT("6"))')
             ) == datetime.datetime(2024, 1, 12, 1, 2, 3)
 
@@ -131,6 +140,7 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
 
         assert dbe.eval('DATEADD("day", 6, #2018-01-12#)') == datetime.date(2018, 1, 18)
         assert dbe.eval('DATEADD("month", 6, #2018-01-12#)') == datetime.date(2018, 7, 12)
+        assert dbe.eval('DATEADD("quarter", 6, #2018-01-12#)') == datetime.date(2019, 7, 12)
         assert dbe.eval('DATEADD("year", 6, #2018-01-12#)') == datetime.date(2024, 1, 12)
         assert dt_strip(dbe.eval(f'DATEADD("second", 6, {_dt_lit("2018-01-12 01:02:03")})')) == datetime.datetime(
             2018, 1, 12, 1, 2, 9
@@ -146,6 +156,9 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         )
         assert dt_strip(dbe.eval(f'DATEADD("month", 6, {_dt_lit("2018-01-12 01:02:03")})')) == datetime.datetime(
             2018, 7, 12, 1, 2, 3
+        )
+        assert dt_strip(dbe.eval(f'DATEADD("quarter", 6, {_dt_lit("2018-01-12 01:02:03")})')) == datetime.datetime(
+            2019, 7, 12, 1, 2, 3
         )
         assert dt_strip(dbe.eval(f'DATEADD("year", 6, {_dt_lit("2018-01-12 01:02:03")})')) == datetime.datetime(
             2024, 1, 12, 1, 2, 3
@@ -222,6 +235,7 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         assert dbe.eval('DATEPART("hour", #2018-01-12#)') == 0
         assert dbe.eval('DATEPART("day", #2018-01-12#)') == 12
         assert dbe.eval('DATEPART("month", #2018-01-12#)') == 1
+        assert dbe.eval('DATEPART("quarter", #2018-01-12#)') == 1
         assert dbe.eval('DATEPART("year", #2018-01-12#)') == 2018
         assert dbe.eval('DATEPART("dayofweek", #1971-01-14#)') == 4
         assert dbe.eval('DATEPART("dow", #1971-01-14#)') == 4
@@ -231,6 +245,7 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         assert dbe.eval('DATEPART("hour", #2018-01-12 01:02:03#)') == 1
         assert dbe.eval('DATEPART("day", #2018-01-12 01:02:03#)') == 12
         assert dbe.eval('DATEPART("month", #2018-01-12 01:02:03#)') == 1
+        assert dbe.eval('DATEPART("quarter", #2018-01-12 01:02:03#)') == 1
         assert dbe.eval('DATEPART("year", #2018-01-12 01:02:03#)') == 2018
         assert dbe.eval('DATEPART("dayofweek", #1971-01-14 01:02:03#)') == 4
         assert dbe.eval('DATEPART("dow", #1971-01-14 01:02:03#)') == 4
@@ -242,6 +257,7 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         assert dbe.eval('DATEPART(__LIT__("hour"), #2018-01-12#)') == 0
         assert dbe.eval('DATEPART(__LIT__("day"), #2018-01-12#)') == 12
         assert dbe.eval('DATEPART(__LIT__("month"), #2018-01-12#)') == 1
+        assert dbe.eval('DATEPART(__LIT__("quarter"), #2018-01-12#)') == 1
         assert dbe.eval('DATEPART(__LIT__("year"), #2018-01-12#)') == 2018
         assert dbe.eval('DATEPART(__LIT__("dayofweek"), #1971-01-14#)') == 4
         assert dbe.eval('DATEPART(__LIT__("dow"), #1971-01-14#)') == 4
@@ -251,6 +267,7 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         assert dbe.eval('DATEPART(__LIT__("hour"), #2018-01-12 01:02:03#)') == 1
         assert dbe.eval('DATEPART(__LIT__("day"), #2018-01-12 01:02:03#)') == 12
         assert dbe.eval('DATEPART(__LIT__("month"), #2018-01-12 01:02:03#)') == 1
+        assert dbe.eval('DATEPART(__LIT__("quarter"), #2018-01-12 01:02:03#)') == 1
         assert dbe.eval('DATEPART(__LIT__("year"), #2018-01-12 01:02:03#)') == 2018
         assert dbe.eval('DATEPART(__LIT__("dayofweek"), #1971-01-14 01:02:03#)') == 4
         assert dbe.eval('DATEPART(__LIT__("dow"), #1971-01-14 01:02:03#)') == 4
