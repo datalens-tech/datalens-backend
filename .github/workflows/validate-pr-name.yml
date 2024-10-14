@@ -27,14 +27,5 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Get labels to add from PR
-        working-directory: .github/.scripts
-        run: ./add_labels.sh
-        env:
-          REPO: ${{ github.event.pull_request.head.repo.full_name }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          GH_TOKEN: ${{ github.token }}
+      - name: Add labels to PR
+        uses: datalens-tech/add-labels-action@v1
