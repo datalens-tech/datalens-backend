@@ -125,7 +125,6 @@ class TestParameters(DefaultApiTestBase):
             parameters=[
                 ds.find_field(title="Param").parameter_value(90),
             ],
-            limit=1,
         )
         assert result_resp.status_code == HTTPStatus.OK, result_resp.json
         rows = get_data_rows(result_resp)
