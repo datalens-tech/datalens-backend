@@ -112,7 +112,7 @@ class TestParameters(DefaultApiTestBase):
             dataset=ds,
             formulas={
                 "Quantile": "QUANTILE([sales], 0.9)",
-                "Quantile with parameter": "QUANTILE([sales], [Param] / 100)",
+                "Quantile with parameter": "QUANTILE([sales], 1 - [Param] / 100)",
             },
         )
 
@@ -123,7 +123,7 @@ class TestParameters(DefaultApiTestBase):
                 ds.find_field(title="Quantile with parameter"),
             ],
             parameters=[
-                ds.find_field(title="Param").parameter_value(90),
+                ds.find_field(title="Param").parameter_value(10),
             ],
         )
         assert result_resp.status_code == HTTPStatus.OK, result_resp.json

@@ -48,16 +48,16 @@ def test_optimize_const_comparison_mutation():
 
 
 def test_optimize_const_math_operator_mutation():
-    formula_obj = n.formula(n.binary("+", left=n.lit(2), right=n.lit(3)))
+    formula_obj = n.formula(n.binary("+", left=n.lit(2.0), right=n.lit(3.0)))
     formula_obj = apply_mutations(
         formula_obj,
         mutations=[
             OptimizeConstMathOperatorMutation(),
         ],
     )
-    assert formula_obj == n.formula(n.lit(5))
+    assert formula_obj == n.formula(n.lit(5.0))
 
-    formula_obj = n.formula(n.binary("-", left=n.lit(2.0), right=n.lit(3.0)))
+    formula_obj = n.formula(n.binary("-", left=n.lit(2.0), right=n.lit(3)))
     formula_obj = apply_mutations(
         formula_obj,
         mutations=[

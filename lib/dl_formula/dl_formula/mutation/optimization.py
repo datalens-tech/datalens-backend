@@ -6,7 +6,6 @@ from typing import (
     Callable,
     ClassVar,
     Optional,
-    Type,
 )
 
 from dl_formula.core.dialect import DialectCombo
@@ -16,7 +15,6 @@ from dl_formula.mutation.mutation import FormulaMutation
 
 class OptimizeConstOperatorMutation(FormulaMutation, abc.ABC):
     _opt_ops: ClassVar[dict[str, Callable[[Any, Any], Any]]]
-    _arg_types: tuple[Type[nodes.BaseLiteral], ...] = (nodes.BaseLiteral,)
 
     def _get_value(self, node: nodes.FormulaItem) -> Any:
         assert isinstance(node, nodes.Binary)
@@ -24,22 +22,6 @@ class OptimizeConstOperatorMutation(FormulaMutation, abc.ABC):
         assert isinstance(left, nodes.BaseLiteral)
         assert isinstance(right, nodes.BaseLiteral)
         return self._opt_ops[node.name](left.value, right.value)
-
-    def match_node(
-        self,
-        node: nodes.FormulaItem,
-        parent_stack: tuple[nodes.FormulaItem, ...],
-    ) -> bool:
-        return (
-            isinstance(node, nodes.Binary)
-            # Operator is supported
-            and node.name in self._opt_ops
-            # Both operands are constants
-            and isinstance(node.left, self._arg_types)
-            and isinstance(node.right, self._arg_types)
-            # To stay on the safe side, only do this for same-type constants
-            and type(node.left) is type(node.right)  # noqa
-        )
 
 
 class OptimizeConstComparisonMutation(OptimizeConstOperatorMutation):
@@ -55,6 +37,22 @@ class OptimizeConstComparisonMutation(OptimizeConstOperatorMutation):
         "_!=": operator.ne,
     }
 
+    def match_node(
+        self,
+        node: nodes.FormulaItem,
+        parent_stack: tuple[nodes.FormulaItem, ...],
+    ) -> bool:
+        return (
+            isinstance(node, nodes.Binary)
+            # Operator is supported
+            and node.name in self._opt_ops
+            # Both operands are constants
+            and isinstance(node.left, nodes.BaseLiteral)
+            and isinstance(node.right, nodes.BaseLiteral)
+            # To stay on the safe side, only do this for same-type constants
+            and type(node.left) is type(node.right)  # noqa
+        )
+
     def make_replacement(
         self,
         old: nodes.FormulaItem,
@@ -69,7 +67,6 @@ class OptimizeConstMathOperatorMutation(OptimizeConstOperatorMutation):
     """
     A mutation that evaluates math operators for constants
     and replaces them with the in-Python evaluation result.
-    Additionally ensures arguments are numerical.
     """
 
     _opt_ops = {
@@ -78,7 +75,20 @@ class OptimizeConstMathOperatorMutation(OptimizeConstOperatorMutation):
         "*": operator.mul,
         "/": operator.truediv,
     }
-    _arg_types = (nodes.LiteralFloat, nodes.LiteralInteger)
+
+    def match_node(
+        self,
+        node: nodes.FormulaItem,
+        parent_stack: tuple[nodes.FormulaItem, ...],
+    ) -> bool:
+        return (
+            isinstance(node, nodes.Binary)
+            # Operator is supported
+            and node.name in self._opt_ops
+            # Both operands are constant numbers
+            and isinstance(node.left, (nodes.LiteralFloat, nodes.LiteralInteger))
+            and isinstance(node.right, (nodes.LiteralFloat, nodes.LiteralInteger))
+        )
 
     def make_replacement(
         self,
