@@ -16,7 +16,7 @@ from dl_formula.mutation.mutation import FormulaMutation
 
 class OptimizeConstOperatorMutation(FormulaMutation, abc.ABC):
     _opt_ops: ClassVar[dict[str, Callable[[Any, Any], Any]]]
-    _arg_types: tuple[Type[nodes.BaseLiteral]] = (nodes.BaseLiteral,)
+    _arg_types: tuple[Type[nodes.BaseLiteral], ...] = (nodes.BaseLiteral,)
 
     def _get_value(self, node: nodes.FormulaItem) -> Any:
         assert isinstance(node, nodes.Binary)
