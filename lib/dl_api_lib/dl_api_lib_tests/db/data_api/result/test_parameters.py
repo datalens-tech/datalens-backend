@@ -98,3 +98,36 @@ class TestParameters(DefaultApiTestBase):
         )
         assert result_resp.status_code == HTTPStatus.OK, result_resp.json
         assert int(get_data_rows(result_resp)[0][0]) == 1
+
+    def test_quantile_with_parameter(self, control_api, data_api, dataset_id):
+        ds = add_parameters_to_dataset(
+            api_v1=control_api,
+            dataset_id=dataset_id,
+            parameters={
+                "Param": (IntegerParameterValue(42), None),
+            },
+        )
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=ds,
+            formulas={
+                "Quantile": "QUANTILE([sales], 0.9)",
+                "Quantile with parameter": "QUANTILE([sales], [Param] / 100)",
+            },
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="Quantile"),
+                ds.find_field(title="Quantile with parameter"),
+            ],
+            parameters=[
+                ds.find_field(title="Param").parameter_value(90),
+            ],
+            limit=1,
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+        rows = get_data_rows(result_resp)
+        assert len(rows) == 1
+        assert rows[0][0] == rows[0][1]
