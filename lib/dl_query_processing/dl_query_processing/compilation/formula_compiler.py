@@ -86,6 +86,7 @@ from dl_formula.mutation.mutation import (
     FormulaMutation,
     apply_mutations,
 )
+from dl_formula.mutation.optimization import OptimizeConstMathOperatorMutation
 from dl_formula.mutation.window import (
     AmongToWithinGroupingMutation,
     DefaultWindowOrderingMutation,
@@ -765,6 +766,7 @@ class FormulaCompiler:
         mutations = [
             IgnoreParenthesisWrapperMutation(),
             ConvertBlocksToFunctionsMutation(),
+            OptimizeConstMathOperatorMutation(),
             DefaultWindowOrderingMutation(default_order_by=default_order_by),
             LookupDefaultBfbMutation(),
         ]

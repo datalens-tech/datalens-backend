@@ -4,6 +4,7 @@ from dl_formula.mutation.optimization import (
     OptimizeConstAndOrMutation,
     OptimizeConstComparisonMutation,
     OptimizeConstFuncMutation,
+    OptimizeConstMathOperatorMutation,
 )
 from dl_formula.shortcuts import n
 
@@ -44,6 +45,44 @@ def test_optimize_const_comparison_mutation():
         ],
     )
     assert formula_obj == n.formula(n.lit(True))
+
+
+def test_optimize_const_math_operator_mutation():
+    formula_obj = n.formula(n.binary("+", left=n.lit(2), right=n.lit(3)))
+    formula_obj = apply_mutations(
+        formula_obj,
+        mutations=[
+            OptimizeConstMathOperatorMutation(),
+        ],
+    )
+    assert formula_obj == n.formula(n.lit(5))
+
+    formula_obj = n.formula(n.binary("-", left=n.lit(2.0), right=n.lit(3.0)))
+    formula_obj = apply_mutations(
+        formula_obj,
+        mutations=[
+            OptimizeConstMathOperatorMutation(),
+        ],
+    )
+    assert formula_obj == n.formula(n.lit(-1.0))
+
+    formula_obj = n.formula(n.binary("*", left=n.lit(2), right=n.lit(3)))
+    formula_obj = apply_mutations(
+        formula_obj,
+        mutations=[
+            OptimizeConstMathOperatorMutation(),
+        ],
+    )
+    assert formula_obj == n.formula(n.lit(6))
+
+    formula_obj = n.formula(n.binary("/", left=n.lit(2), right=n.lit(5)))
+    formula_obj = apply_mutations(
+        formula_obj,
+        mutations=[
+            OptimizeConstMathOperatorMutation(),
+        ],
+    )
+    assert formula_obj == n.formula(n.lit(0.4))
 
 
 def test_optimize_binary_operator_comparison_mutation():
