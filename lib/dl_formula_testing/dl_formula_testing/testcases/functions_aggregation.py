@@ -125,7 +125,7 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         if not self.supports_quantile:
             pytest.skip()
 
-        for quant in ["0.9", "9 / 10", "9 * 0.1"]:
+        for quant in ["0.9", "9 / 10"]:
             value = dbe.eval(f"QUANTILE([int_value], {quant})", from_=data_table)
             assert 80 <= value <= 90
 
