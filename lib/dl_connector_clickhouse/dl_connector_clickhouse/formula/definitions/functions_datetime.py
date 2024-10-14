@@ -17,6 +17,7 @@ from dl_formula.definitions.common_datetime import (
     ch_date_with_tz,
     datetime_interval,
     make_ch_tz_args,
+    normalize_and_validate_datetime_interval_type,
 )
 import dl_formula.definitions.functions_datetime as base
 from dl_formula.definitions.literals import un_literal
@@ -60,6 +61,12 @@ def _datetrunc3_ch_impl_19_3_3(
     raise NotImplementedError(f"Unsupported unit {unit}")
 
 
+def _datetime_interval_ch(type_name: str, mult: int) -> ClauseElement:
+    type_name = normalize_and_validate_datetime_interval_type(type_name)
+    func_name = "toInterval{}".format(type_name.capitalize())
+    return getattr(sa.func, func_name)(mult)
+
+
 DEFINITIONS_DATETIME = [
     # dateadd
     base.FuncDateadd1.for_dialect(D.CLICKHOUSE),
@@ -71,7 +78,7 @@ DEFINITIONS_DATETIME = [
             V(
                 D.CLICKHOUSE,
                 lambda date, what, num: sa.cast(
-                    date + datetime_interval(what.value, sa.func.ifNull(num, 0), ch_func=True),
+                    date + _datetime_interval_ch(what.value, sa.func.ifNull(num, 0)),
                     ch_types.Nullable(ch_types.Date),
                 ),
             ),
@@ -82,7 +89,7 @@ DEFINITIONS_DATETIME = [
             V(
                 D.CLICKHOUSE,
                 lambda dt, what, num: (
-                    sa.func.toDateTime(dt + datetime_interval(what.value, sa.func.ifNull(num, 0), ch_func=True), "UTC")
+                    sa.func.toDateTime(dt + _datetime_interval_ch(what.value, sa.func.ifNull(num, 0)), "UTC")
                 ),
             ),
         ]
@@ -91,7 +98,7 @@ DEFINITIONS_DATETIME = [
         variants=[
             V(
                 D.CLICKHOUSE,
-                lambda dt, what, num: (dt + datetime_interval(what.value, sa.func.ifNull(num, 0), ch_func=True)),
+                lambda dt, what, num: dt + _datetime_interval_ch(what.value, sa.func.ifNull(num, 0)),
             ),
         ]
     ),
@@ -99,7 +106,7 @@ DEFINITIONS_DATETIME = [
         variants=[
             V(
                 D.CLICKHOUSE,
-                lambda dt, what, num: (dt + datetime_interval(what.value, sa.func.ifNull(num, 0), ch_func=True)),
+                lambda dt, what, num: dt + _datetime_interval_ch(what.value, sa.func.ifNull(num, 0)),
             ),
         ]
     ),
