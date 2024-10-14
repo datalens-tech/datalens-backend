@@ -68,21 +68,23 @@ class OptimizeBinaryOperatorComparisonMutation(FormulaMutation):
         "<=": ">",
         "==": "!=",
         "!=": "==",
+        "in": "notin",
+        "notin": "in",
     }
 
     def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
-        if not isinstance(node, nodes.Binary) or node.name not in ("==", "!="):
+        if not (isinstance(node, nodes.Binary) and node.name in ("==", "!=")):
             return False
 
         # should be either (binary op) ==/!= literal or literal ==/!= (binary op)
         left, right = node.left, node.right
         if isinstance(left, nodes.BaseLiteral) and isinstance(right, nodes.Binary):
             left, right = right, left
-        if not isinstance(left, nodes.Binary) or not isinstance(right, nodes.BaseLiteral):
+        if not (isinstance(left, nodes.Binary) and isinstance(right, nodes.BaseLiteral)):
             return False
 
         # both a binary op and a literal should be supported
-        if left.name not in self._opt_inversions.keys() or right.value not in (0, 1):
+        if not (left.name in self._opt_inversions.keys() and right.value in (0, 1)):
             return False
         return True
 
@@ -98,15 +100,14 @@ class OptimizeBinaryOperatorComparisonMutation(FormulaMutation):
         opt, lit = left, right  # aliases for convenience
         if (old.name == "==" and lit.value == 1) or (old.name == "!=" and lit.value == 0):
             return opt
-        elif (old.name == "==" and lit.value == 0) or (old.name == "!=" and lit.value == 1):
+        if (old.name == "==" and lit.value == 0) or (old.name == "!=" and lit.value == 1):
             return nodes.Binary.make(
                 name=self._opt_inversions[opt.name],
                 left=opt.left,
                 right=opt.right,
                 meta=opt.meta,
             )
-        else:
-            raise ValueError(f"Unexpected binary operation {old.name} and/or literal {lit.value} in optimization")
+        raise ValueError(f"Unexpected binary operation {old.name} and/or literal {lit.value} in optimization")
 
 
 class OptimizeUnaryBoolFunctions(FormulaMutation):
