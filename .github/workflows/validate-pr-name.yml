@@ -22,8 +22,8 @@ jobs:
 
   add_labels:
     runs-on: ubuntu-22.04
+    needs: commitlint-pr-title
     permissions:
-      contents: read
       pull-requests: write
 
     steps:
