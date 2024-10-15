@@ -19,3 +19,13 @@ jobs:
 
       - name: Commitlint PR title
         uses: ./.github/actions/commitlint-action
+
+  add_labels:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Add labels to PR
+        uses: datalens-tech/add-labels-action@v1
