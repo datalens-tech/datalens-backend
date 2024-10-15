@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib.metadata
 import logging
 import os
 from typing import Any
@@ -135,7 +136,12 @@ def test_common_logging_flask(caplog):
 
     client = app.test_client()
     for c_name, c_val in request_cookies.items():
-        client.set_cookie("localhost", c_name, c_val)
+        # TODO: after migration to werkzeug 3.0.3+, replace this condition with
+        # client.set_cookie(key=c_name, value=c_val)
+        if importlib.metadata.version("werkzeug") == "3.0.3":
+            client.set_cookie(key=c_name, value=c_val)
+        else:
+            client.set_cookie(server_name="localhost", key=c_name, value=c_val)
 
     resp = client.get(
         request_path,
