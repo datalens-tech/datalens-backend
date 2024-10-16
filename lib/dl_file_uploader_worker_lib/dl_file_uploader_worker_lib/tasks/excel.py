@@ -85,11 +85,18 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
             conn: aiohttp.BaseConnector
             if self._ctx.secure_reader_settings.endpoint is not None:
                 secure_reader_endpoint = self._ctx.secure_reader_settings.endpoint
+                # TODO: after migration to aiohttp 3.9.4+ replace with
+                # ssl_context: ssl.SSLContext | True = True
                 ssl_context: Optional[ssl.SSLContext] = None
                 if self._ctx.secure_reader_settings.cafile is not None:
                     ssl_context = ssl.SSLContext(protocol=ssl.PROTOCOL_TLS)
                     ssl_context.load_verify_locations(cafile=self._ctx.secure_reader_settings.cafile)
-                conn = aiohttp.TCPConnector(ssl=ssl_context)
+                # TODO: after migration to aiohttp 3.9.4+ replace condition with
+                # aiohttp.TCPConnector(ssl=ssl_context)
+                if ssl_context is not None:
+                    conn = aiohttp.TCPConnector(ssl=ssl_context)
+                else:
+                    conn = aiohttp.TCPConnector()
             else:
                 socket_path = self._ctx.secure_reader_settings.socket
                 secure_reader_endpoint = f"http+unix://{urllib.parse.quote_plus(socket_path)}"
