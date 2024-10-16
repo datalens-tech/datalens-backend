@@ -186,6 +186,44 @@
                     ]
                 }
             ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "text": "Readonly",
+                    "align": "start"
+                },
+                {
+                    "id": "select",
+                    "name": "readonly",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "defaultValue": "2",
+                    "width": "s",
+                    "availableValues": [
+                        {
+                            "content": "0",
+                            "value": "0"
+                        },
+                        {
+                            "content": "1",
+                            "value": "1"
+                        },
+                        {
+                            "content": "2",
+                            "value": "2"
+                        }
+                    ],
+                    "controlProps": {
+                        "showSearch": false
+                    }
+                }
+            ]
         }
     ],
     "apiSchema": {
@@ -223,6 +261,11 @@
                 },
                 {
                     "name": "data_export_forbidden",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "readonly",
                     "required": false,
                     "defaultAction": "include"
                 },
@@ -274,6 +317,11 @@
                 },
                 {
                     "name": "data_export_forbidden",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "readonly",
                     "required": false,
                     "defaultAction": "include"
                 }

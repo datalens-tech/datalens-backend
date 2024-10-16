@@ -2,6 +2,7 @@ from dl_api_lib_testing.connector.connection_suite import DefaultConnectorConnec
 
 from dl_connector_clickhouse_tests.db.api.base import (
     ClickHouseConnectionDefaultUserTestBase,
+    ClickHouseConnectionReadonlyUserTestBase,
     ClickHouseConnectionTestBase,
 )
 
@@ -11,4 +12,10 @@ class TestClickHouseConnection(ClickHouseConnectionTestBase, DefaultConnectorCon
 
 
 class TestClickHouseDefaultUserConnection(ClickHouseConnectionDefaultUserTestBase, DefaultConnectorConnectionTestSuite):
+    pass
+
+
+class TestClickHouseReadonlyUserConnection(
+    ClickHouseConnectionReadonlyUserTestBase, DefaultConnectorConnectionTestSuite
+):
     pass
