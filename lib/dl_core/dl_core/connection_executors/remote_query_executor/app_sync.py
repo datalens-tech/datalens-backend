@@ -238,7 +238,7 @@ class ActionHandlingView(flask.views.View):
                     host = None
                     LOGGER.warning("Cannot resolve host: %s", target_host, exc_info=True)
                 if host is None or ipaddress.ip_address(host).is_private:
-                    time.sleep(random.randint(50, 200) * 0.1)
+                    time.sleep(random.uniform(5, 20))
                     query = None
                     if isinstance(action, (act.ActionExecuteQuery, act.ActionNonStreamExecuteQuery)):
                         query = action.db_adapter_query.debug_compiled_query
