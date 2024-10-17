@@ -1,3 +1,5 @@
+import json
+
 import shortuuid
 
 from dl_api_client.dsmaker.primitives import Dataset
@@ -5,7 +7,7 @@ from dl_api_lib_tests.db.base import DefaultApiTestBase
 from dl_core.base_models import PathEntryLocation
 
 
-class TestDataset(DefaultApiTestBase):
+class TestControlApiErrors(DefaultApiTestBase):
     def test_invalid_dataset_id(self, control_api, saved_connection_id, saved_dataset, sync_us_manager):
         usm = sync_us_manager
         us_client = usm._us_client
@@ -37,3 +39,19 @@ class TestDataset(DefaultApiTestBase):
         assert resp.status_code == 400
         assert resp.json["message"] == "The entry already exists"
         assert resp.json["code"] == "ERR.DS_API.US.BAD_REQUEST.ALREADY_EXISTS"
+
+    def test_create_connection_with_null_type(self, control_api, sync_us_manager):
+        resp = control_api.client.post(
+            "/api/v1/connections",
+            data=json.dumps(
+                {
+                    "type": None,
+                    "name": shortuuid.uuid(),
+                }
+            ),
+            content_type="application/json",
+        )
+
+        assert resp.status_code == 400
+        assert resp.json["message"] == "Invalid connection type value: None"
+        assert resp.json["code"] == "ERR.DS_API.BAD_CONN_TYPE"
