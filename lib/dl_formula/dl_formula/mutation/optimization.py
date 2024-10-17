@@ -1,8 +1,10 @@
 import abc
 from functools import cached_property
+import operator
 from typing import (
     Any,
     Callable,
+    ClassVar,
     Optional,
 )
 
@@ -11,17 +13,28 @@ import dl_formula.core.nodes as nodes
 from dl_formula.mutation.mutation import FormulaMutation
 
 
-class OptimizeConstComparisonMutation(FormulaMutation):
+class OptimizeConstOperatorMutation(FormulaMutation, abc.ABC):
+    _opt_ops: ClassVar[dict[str, Callable[[Any, Any], Any]]]
+
+    def _get_value(self, node: nodes.FormulaItem) -> Any:
+        assert isinstance(node, nodes.Binary)
+        left, right = node.left, node.right
+        assert isinstance(left, nodes.BaseLiteral)
+        assert isinstance(right, nodes.BaseLiteral)
+        return self._opt_ops[node.name](left.value, right.value)
+
+
+class OptimizeConstComparisonMutation(OptimizeConstOperatorMutation):
     """
     A mutation that evaluates comparison expressions for constants
     and replaces them with the in-Python evaluation result.
     """
 
     _opt_ops = {
-        "==": lambda left, right: left == right,
-        "_==": lambda left, right: left == right,
-        "!=": lambda left, right: left != right,
-        "_!=": lambda left, right: left != right,
+        "==": operator.eq,
+        "_==": operator.eq,
+        "!=": operator.ne,
+        "_!=": operator.ne,
     }
 
     def match_node(
@@ -45,12 +58,47 @@ class OptimizeConstComparisonMutation(FormulaMutation):
         old: nodes.FormulaItem,
         parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> nodes.FormulaItem:
-        assert isinstance(old, nodes.Binary)
-        left, right = old.left, old.right
-        assert isinstance(left, nodes.BaseLiteral)
-        assert isinstance(right, nodes.BaseLiteral)
-        value = self._opt_ops[old.name](left.value, right.value)
+        value = self._get_value(old)
+        assert isinstance(value, bool)
         return nodes.LiteralBoolean.make(value, meta=old.meta)
+
+
+class OptimizeConstMathOperatorMutation(OptimizeConstOperatorMutation):
+    """
+    A mutation that evaluates math operators for constants
+    and replaces them with the in-Python evaluation result.
+    """
+
+    _opt_ops = {
+        "+": operator.add,
+        "-": operator.sub,
+        "*": operator.mul,
+        "/": operator.truediv,
+    }
+
+    def match_node(
+        self,
+        node: nodes.FormulaItem,
+        parent_stack: tuple[nodes.FormulaItem, ...],
+    ) -> bool:
+        return (
+            isinstance(node, nodes.Binary)
+            # Operator is supported
+            and node.name in self._opt_ops
+            # Both operands are constant numbers
+            and isinstance(node.left, (nodes.LiteralFloat, nodes.LiteralInteger))
+            and isinstance(node.right, (nodes.LiteralFloat, nodes.LiteralInteger))
+        )
+
+    def make_replacement(
+        self,
+        old: nodes.FormulaItem,
+        parent_stack: tuple[nodes.FormulaItem, ...],
+    ) -> nodes.FormulaItem:
+        value = self._get_value(old)
+        assert isinstance(value, (int, float))
+        node_cls = nodes.LiteralInteger if isinstance(value, int) else nodes.LiteralFloat
+        return node_cls.make(value, meta=old.meta)
 
 
 class OptimizeBinaryOperatorComparisonMutation(FormulaMutation):

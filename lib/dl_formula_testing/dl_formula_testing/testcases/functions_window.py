@@ -252,6 +252,9 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert approx(dbe.eval(f"{func_name}([int_value], -1)", from_=data_table, order_by=["[id]"], many=True)) == (
             [py_agg_func(values[i : i + 2]) for i in range(20)]
         )
+        assert approx(dbe.eval(f"{func_name}([int_value], 0 - 1)", from_=data_table, order_by=["[id]"], many=True)) == (
+            [py_agg_func(values[i : i + 2]) for i in range(20)]
+        )
         assert approx(dbe.eval(f"{func_name}([int_value], 5, 5)", from_=data_table, order_by=["[id]"], many=True)) == (
             [py_agg_func(values[max(0, i - 5) : i + 6]) for i in range(20)]
         )

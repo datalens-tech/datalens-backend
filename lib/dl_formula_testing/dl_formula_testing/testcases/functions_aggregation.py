@@ -125,8 +125,9 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         if not self.supports_quantile:
             pytest.skip()
 
-        value = dbe.eval("QUANTILE([int_value], 0.9)", from_=data_table)
-        assert 80 <= value <= 90
+        for quant in ["0.9", "9 / 10"]:
+            value = dbe.eval(f"QUANTILE([int_value], {quant})", from_=data_table)
+            assert 80 <= value <= 90
 
     def test_median(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         if not self.supports_median:
