@@ -1259,6 +1259,7 @@ develop = true
 aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
 dl-api-commons = {path = "../dl_api_commons"}
+dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 marshmallow = ">=3.19.0"
 pydantic = ">=2.7.0"
@@ -1795,7 +1796,7 @@ dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-dl_utils = {path = "../dl_utils"}
+dl-utils = {path = "../dl_utils"}
 grpcio = ">=1.60.0"
 marshmallow = ">=3.19.0"
 sqlalchemy = ">=1.4.46, <2.0"
