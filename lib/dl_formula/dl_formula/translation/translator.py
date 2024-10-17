@@ -184,7 +184,7 @@ class SqlAlchemyTranslator:
         return ctx
 
     @staticmethod
-    def _coerce_type(ctx: TranslationCtx):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def _coerce_type(ctx: TranslationCtx) -> None:
         """
         Make sure value is cast to proper Python type
         (this is done outside the DB by ``sqlalchemy``)
@@ -220,7 +220,7 @@ class SqlAlchemyTranslator:
 
         ctx.flush()
         try:
-            self._env.translation_cache.add(node=node, value=ctx)
+            self._env.translation_cache.add(node=node, value=ctx.copy())
         except exc.CacheError:
             pass  # node is not cacheable
 
@@ -229,7 +229,7 @@ class SqlAlchemyTranslator:
 
         return ctx
 
-    def _postprocess_context(self, ctx: TranslationCtx):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def _postprocess_context(self, ctx: TranslationCtx) -> None:
         """Additional contextual postprocessing of expressions (dialect dependent)"""
 
         assert ctx.data_type is not None

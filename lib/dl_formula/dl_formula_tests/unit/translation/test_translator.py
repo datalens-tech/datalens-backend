@@ -7,6 +7,7 @@ from typing import (
 
 import pytest
 import sqlalchemy as sa
+from sqlalchemy.sql.elements import BinaryExpression
 
 from dl_formula.core.aux_nodes import ErrorNode
 from dl_formula.core.datatype import DataType
@@ -160,7 +161,16 @@ def test_translation_cache():
             expression=sa.literal(123),
         ),
     )
-    assert T(FuncCall.make(name="+", args=[Field.make("qwerty"), LiteralInteger.make(456)]), env=env) == ("123 + 456")
+    assert sub_node in env.translation_cache
+
+    node = FuncCall.make(name="+", args=[Field.make("qwerty"), LiteralInteger.make(456)])
+    assert T(node, env=env) == "123 + 456"
+    assert node in env.translation_cache
+
+    # ensure cache is not polluted with TypeCoerce
+    node_cache = env.translation_cache.get(node)
+    assert node_cache is not None
+    assert isinstance(node_cache.expression, BinaryExpression)
 
 
 def test_translation_replacements():
@@ -174,4 +184,4 @@ def test_translation_replacements():
             expression=sa.literal(123),
         ),
     )
-    assert T(FuncCall.make(name="+", args=[Field.make("qwerty"), LiteralInteger.make(456)]), env=env) == ("123 + 456")
+    assert T(FuncCall.make(name="+", args=[Field.make("qwerty"), LiteralInteger.make(456)]), env=env) == "123 + 456"
