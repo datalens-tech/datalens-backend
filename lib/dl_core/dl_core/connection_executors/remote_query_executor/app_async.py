@@ -6,6 +6,7 @@ import ipaddress
 import logging
 import pickle
 import random
+import socket
 import sys
 from typing import (
     TYPE_CHECKING,
@@ -252,14 +253,10 @@ class ActionHandlingView(BaseView):
                         host = target_host
                     except ValueError:
                         resolver = aiodns.DNSResolver()
-                        for query_type in ("A", "AAAA"):
-                            try:
-                                resp = await resolver.query(target_host, query_type)
-                                host = resp[0].host
-                                break
-                            except aiodns.error.DNSError:
-                                pass
-                        else:
+                        try:
+                            resp = await resolver.gethostbyname(target_host, socket.AF_UNSPEC)
+                            host = resp.addresses[0]
+                        except aiodns.error.DNSError:
                             host = None
                             LOGGER.warning("Cannot resolve host: %s", target_host, exc_info=True)
                     if host is None or ipaddress.ip_address(host).is_private:
