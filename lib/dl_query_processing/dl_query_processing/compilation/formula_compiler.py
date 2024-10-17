@@ -86,6 +86,7 @@ from dl_formula.mutation.mutation import (
     FormulaMutation,
     apply_mutations,
 )
+from dl_formula.mutation.optimization import OptimizeConstMathOperatorMutation
 from dl_formula.mutation.window import (
     AmongToWithinGroupingMutation,
     DefaultWindowOrderingMutation,
@@ -750,7 +751,7 @@ class FormulaCompiler:
         collect_errors: bool = False,
     ) -> formula_nodes.Formula:
         """
-        Apply pre-substitution mutations required for window functions to be translated correctly.
+        Apply pre-substitution mutations required for functions to be translated correctly.
         """
 
         # prepare default ordering (for patching RSUM, MSUM functions and the like)
@@ -788,12 +789,11 @@ class FormulaCompiler:
         collect_errors: bool = False,
     ) -> formula_nodes.Formula:
         """
-        Apply the mutations required for window functions to be translated correctly.
+        Apply the mutations required for functions to be translated correctly.
         """
 
         # prepare mutations
-        mutation_lists: List[List[FormulaMutation]] = [[]]
-
+        mutation_lists: list[FormulaMutation] = [OptimizeConstMathOperatorMutation()]
         if self._field_types[field.guid] != FieldType.DIMENSION:
             # prepare global dimensions (for patching AMONG clauses)
             if self._mock_among_dimensions:
@@ -810,7 +810,7 @@ class FormulaCompiler:
                 ]
 
             if is_window_expression(node=formula_obj, env=self._inspect_env):
-                mutation_lists[-1].extend(
+                mutation_lists.extend(
                     [
                         AmongToWithinGroupingMutation(global_dimensions=global_dimensions),
                         IgnoreExtraWithinGroupingMutation(
@@ -819,11 +819,7 @@ class FormulaCompiler:
                     ]
                 )
 
-        # Apply mutation lists in the specified order
-        for mutations in mutation_lists:
-            formula_obj = apply_mutations(formula_obj, mutations=mutations)
-
-        return formula_obj
+        return apply_mutations(formula_obj, mutations=mutation_lists)
 
     def _apply_aggregation(
         self, formula_obj: formula_nodes.Formula, aggregation: AggregationFunction

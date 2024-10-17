@@ -23,7 +23,11 @@ from dl_formula.core.nodes import Formula
 from dl_formula.definitions.flags import ContextFlag
 from dl_formula.definitions.scope import Scope
 import dl_formula.inspect.expression
-from dl_formula.mutation.mutation import apply_mutations
+from dl_formula.mutation.mutation import (
+    FormulaMutation,
+    apply_mutations,
+)
+from dl_formula.mutation.optimization import OptimizeConstMathOperatorMutation
 from dl_formula.mutation.window import (
     AmongToWithinGroupingMutation,
     DefaultWindowOrderingMutation,
@@ -103,7 +107,7 @@ class DbEvaluator:
                     )
 
             # mutate
-            mutations = []
+            mutations: list[FormulaMutation] = [OptimizeConstMathOperatorMutation()]
             group_by_objs = [parser.parse(expr).expr for expr in (group_by or ())]  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "parse" of "FormulaParser" has incompatible type "str | Formula"; expected "str"  [arg-type]
             mutations.append(AmongToWithinGroupingMutation(global_dimensions=group_by_objs))
             if order_by is not None:
