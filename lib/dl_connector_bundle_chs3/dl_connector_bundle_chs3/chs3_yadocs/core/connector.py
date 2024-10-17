@@ -2,6 +2,7 @@ from dl_connector_bundle_chs3.chs3_base.core.connector import (
     BaseFileS3CoreConnectionDefinition,
     BaseFileS3CoreConnector,
     BaseFileS3TableCoreSourceDefinition,
+    CHS3CoreBackendDefinition,
 )
 from dl_connector_bundle_chs3.chs3_base.core.notifications import (
     DataUpdateFailureNotification,
@@ -10,6 +11,7 @@ from dl_connector_bundle_chs3.chs3_base.core.notifications import (
 from dl_connector_bundle_chs3.chs3_yadocs.core.adapter import AsyncYaDocsFileS3Adapter
 from dl_connector_bundle_chs3.chs3_yadocs.core.connection_executors import YaDocsFileS3AsyncAdapterConnExecutor
 from dl_connector_bundle_chs3.chs3_yadocs.core.constants import (
+    BACKEND_TYPE_YADOCS,
     CONNECTION_TYPE_YADOCS,
     SOURCE_TYPE_YADOCS,
 )
@@ -43,7 +45,12 @@ class YaDocsFileS3TableCoreSourceDefinition(BaseFileS3TableCoreSourceDefinition)
     us_storage_schema_cls = YaDocsFileS3DataSourceSpecStorageSchema
 
 
+class YaDocsFileS3CoreBackendDefinition(CHS3CoreBackendDefinition):
+    backend_type = BACKEND_TYPE_YADOCS
+
+
 class YaDocsFileS3CoreConnector(BaseFileS3CoreConnector):
+    backend_definition = YaDocsFileS3CoreBackendDefinition
     connection_definitions = (YaDocsFileS3CoreConnectionDefinition,)
     source_definitions = (YaDocsFileS3TableCoreSourceDefinition,)
     rqe_adapter_classes = frozenset({ClickHouseAdapter, AsyncYaDocsFileS3Adapter})

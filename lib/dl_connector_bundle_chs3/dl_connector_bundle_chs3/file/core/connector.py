@@ -2,10 +2,12 @@ from dl_connector_bundle_chs3.chs3_base.core.connector import (
     BaseFileS3CoreConnectionDefinition,
     BaseFileS3CoreConnector,
     BaseFileS3TableCoreSourceDefinition,
+    CHS3CoreBackendDefinition,
 )
 from dl_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
 from dl_connector_bundle_chs3.file.core.connection_executors import FileS3AsyncAdapterConnExecutor
 from dl_connector_bundle_chs3.file.core.constants import (
+    BACKEND_TYPE_FILE,
     CONNECTION_TYPE_FILE,
     SOURCE_TYPE_FILE_S3_TABLE,
 )
@@ -37,7 +39,12 @@ class FileS3TableCoreSourceDefinition(BaseFileS3TableCoreSourceDefinition):
     us_storage_schema_cls = FileS3DataSourceSpecStorageSchema
 
 
+class FileS3CoreBackendDefinition(CHS3CoreBackendDefinition):
+    backend_type = BACKEND_TYPE_FILE
+
+
 class FileS3CoreConnector(BaseFileS3CoreConnector):
+    backend_definition = FileS3CoreBackendDefinition
     connection_definitions = (FileS3CoreConnectionDefinition,)
     source_definitions = (FileS3TableCoreSourceDefinition,)
     rqe_adapter_classes = frozenset({ClickHouseAdapter, AsyncFileS3Adapter})

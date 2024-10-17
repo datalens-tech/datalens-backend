@@ -2,6 +2,7 @@ from dl_connector_bundle_chs3.chs3_base.core.connector import (
     BaseFileS3CoreConnectionDefinition,
     BaseFileS3CoreConnector,
     BaseFileS3TableCoreSourceDefinition,
+    CHS3CoreBackendDefinition,
 )
 from dl_connector_bundle_chs3.chs3_base.core.notifications import (
     DataUpdateFailureNotification,
@@ -10,6 +11,7 @@ from dl_connector_bundle_chs3.chs3_base.core.notifications import (
 from dl_connector_bundle_chs3.chs3_gsheets.core.adapter import AsyncGSheetsFileS3Adapter
 from dl_connector_bundle_chs3.chs3_gsheets.core.connection_executors import GSheetsFileS3AsyncAdapterConnExecutor
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import (
+    BACKEND_TYPE_GSHEETS_V2,
     CONNECTION_TYPE_GSHEETS_V2,
     SOURCE_TYPE_GSHEETS_V2,
 )
@@ -43,7 +45,12 @@ class GSheetsFileS3TableCoreSourceDefinition(BaseFileS3TableCoreSourceDefinition
     us_storage_schema_cls = GSheetsFileS3DataSourceSpecStorageSchema
 
 
+class GSheetsFileS3CoreBackendDefinition(CHS3CoreBackendDefinition):
+    backend_type = BACKEND_TYPE_GSHEETS_V2
+
+
 class GSheetsFileS3CoreConnector(BaseFileS3CoreConnector):
+    backend_definition = GSheetsFileS3CoreBackendDefinition
     connection_definitions = (GSheetsFileS3CoreConnectionDefinition,)
     source_definitions = (GSheetsFileS3TableCoreSourceDefinition,)
     rqe_adapter_classes = frozenset({ClickHouseAdapter, AsyncGSheetsFileS3Adapter})
