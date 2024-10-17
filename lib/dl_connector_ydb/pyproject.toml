@@ -26,7 +26,7 @@ dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
-dl_utils = {path = "../dl_utils"}
+dl-utils = {path = "../dl_utils"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 
 [tool.deptry.per_rule_ignores]
