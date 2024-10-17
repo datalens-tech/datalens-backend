@@ -39,23 +39,13 @@ def normalize_and_validate_datetime_interval_type(type_name: str) -> str:
     return type_name
 
 
-def datetime_interval_ch(type_name: str, mult: int) -> ClauseElement:
-    type_name = normalize_and_validate_datetime_interval_type(type_name)
-    func_name = "toInterval{}".format(type_name.capitalize())
-    return getattr(sa.func, func_name)(mult)
-
-
 def datetime_interval(
     type_name: str,
     mult: int,
     caps: bool = True,
     literal_mult: bool = False,
     literal_type: bool = False,
-    ch_func: bool = False,
 ) -> ClauseElement:
-    if ch_func:
-        return datetime_interval_ch(type_name, mult)
-
     type_name = normalize_and_validate_datetime_interval_type(type_name)
 
     if literal_mult:
