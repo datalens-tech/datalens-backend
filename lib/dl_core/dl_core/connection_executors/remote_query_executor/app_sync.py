@@ -3,6 +3,7 @@ from __future__ import annotations
 import ipaddress
 import logging
 import pickle
+import random
 import socket
 import time
 from typing import (
@@ -232,12 +233,16 @@ class ActionHandlingView(flask.views.View):
             target_host = dba.get_target_host()
             if target_host:
                 try:
-                    host = socket.gethostbyname(target_host)
+                    # getaddrinfo return value:
+                    # [(family, type, proto, canonname, sockaddr), ...]
+                    # sockaddr for ipv4: (address, port)
+                    # sockaddr for ipv6: (address, port, flowinfo, scope_id)
+                    host = socket.getaddrinfo(target_host, None)[0][4][0]
                 except socket.gaierror:
                     host = None
                     LOGGER.warning("Cannot resolve host: %s", target_host, exc_info=True)
                 if host is None or ipaddress.ip_address(host).is_private:
-                    time.sleep(30)
+                    time.sleep(random.uniform(5, 20))
                     query = None
                     if isinstance(action, (act.ActionExecuteQuery, act.ActionNonStreamExecuteQuery)):
                         query = action.db_adapter_query.debug_compiled_query
