@@ -5,6 +5,7 @@ import asyncio
 import ipaddress
 import logging
 import pickle
+import random
 import sys
 from typing import (
     TYPE_CHECKING,
@@ -250,15 +251,19 @@ class ActionHandlingView(BaseView):
                         ipaddress.ip_address(target_host)
                         host = target_host
                     except ValueError:
-                        try:
-                            resolver = aiodns.DNSResolver()
-                            resp = await resolver.query(target_host, "A")
-                            host = resp[0].host
-                        except aiodns.error.DNSError:
+                        resolver = aiodns.DNSResolver()
+                        for query_type in ("A", "AAAA"):
+                            try:
+                                resp = await resolver.query(target_host, query_type)
+                                host = resp[0].host
+                                break
+                            except aiodns.error.DNSError:
+                                pass
+                        else:
                             host = None
                             LOGGER.warning("Cannot resolve host: %s", target_host, exc_info=True)
                     if host is None or ipaddress.ip_address(host).is_private:
-                        await asyncio.sleep(30)
+                        await asyncio.sleep(random.randint(50, 200) * 0.1)
                         query = None
                         if isinstance(action, (act.ActionExecuteQuery, act.ActionNonStreamExecuteQuery)):
                             query = action.db_adapter_query.debug_compiled_query
