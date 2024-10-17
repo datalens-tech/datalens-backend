@@ -10,6 +10,7 @@ from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from dl_connector_clickhouse_tests.db.core.base import (
     BaseClickHouseDefaultUserTestClass,
+    BaseClickHouseReadonlyUserTestClass,
     BaseClickHouseTestClass,
     BaseSslClickHouseTestClass,
 )
@@ -50,6 +51,16 @@ class TestClickHouseDefaultUserConnection(BaseClickHouseDefaultUserTestClass, Te
         assert conn.data.username is None
         assert conn.data.secure is False
         assert conn.data.ssl_ca is None
+
+
+class TestClickHouseReadonlyUserConnection(BaseClickHouseReadonlyUserTestClass, TestClickHouseConnection):
+    def check_saved_connection(self, conn: ConnectionClickhouse, params: dict) -> None:
+        assert conn.uuid is not None
+        assert conn.data.db_name == params["db_name"]
+        assert conn.data.username == params["username"]
+        assert conn.data.secure is False
+        assert conn.data.ssl_ca is None
+        assert conn.data.readonly == "1"
 
 
 @pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")

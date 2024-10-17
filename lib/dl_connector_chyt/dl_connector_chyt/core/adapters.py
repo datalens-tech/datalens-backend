@@ -70,7 +70,6 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
 
     def get_ch_settings(self) -> dict:
         return get_ch_settings(
-            max_execution_time=self._target_dto.max_execution_time,
             read_only_level=2,
             output_format_json_quote_denormals=1,
         )
