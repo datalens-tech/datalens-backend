@@ -10,6 +10,14 @@ tasks:
       vars:
         - PYPROJECT_TOML_PATH
 
+  poetry-lock:
+    desc: Lock dependencies in metapkg
+    cmds:
+      - poetry lock --no-update --directory={{.PYPROJECT_TOML_PATH}}
+    requires:
+      vars:
+        - PYPROJECT_TOML_PATH
+
   clean:
     desc: Clean project
     cmds:
