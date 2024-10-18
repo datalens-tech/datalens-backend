@@ -56,7 +56,6 @@ pytest-asyncio = ">=0.20.3"
 dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-core-testing = {path = "../dl_core_testing"}
-dl-api-lib = {path = "../dl_api_lib"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
