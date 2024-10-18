@@ -14,6 +14,7 @@ from dl_connector_bundle_chs3.file.core.constants import (
 from dl_connector_bundle_chs3.file.core.data_source import FileS3DataSource
 from dl_connector_bundle_chs3.file.core.data_source_spec import FileS3DataSourceSpec
 from dl_connector_bundle_chs3.file.core.lifecycle import FileS3ConnectionLifecycleManager
+from dl_connector_bundle_chs3.file.core.sa_types import SQLALCHEMY_FILE_TYPES
 from dl_connector_bundle_chs3.file.core.settings import FileS3SettingDefinition
 from dl_connector_bundle_chs3.file.core.storage_schemas.connection import FileConnectionDataStorageSchema
 from dl_connector_bundle_chs3.file.core.storage_schemas.data_source_spec import FileS3DataSourceSpecStorageSchema
@@ -48,3 +49,4 @@ class FileS3CoreConnector(BaseFileS3CoreConnector):
     connection_definitions = (FileS3CoreConnectionDefinition,)
     source_definitions = (FileS3TableCoreSourceDefinition,)
     rqe_adapter_classes = frozenset({ClickHouseAdapter, AsyncFileS3Adapter})
+    sa_types = SQLALCHEMY_FILE_TYPES

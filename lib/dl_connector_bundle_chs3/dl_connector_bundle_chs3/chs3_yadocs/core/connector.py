@@ -18,6 +18,7 @@ from dl_connector_bundle_chs3.chs3_yadocs.core.constants import (
 from dl_connector_bundle_chs3.chs3_yadocs.core.data_source import YaDocsFileS3DataSource
 from dl_connector_bundle_chs3.chs3_yadocs.core.data_source_spec import YaDocsFileS3DataSourceSpec
 from dl_connector_bundle_chs3.chs3_yadocs.core.lifecycle import YaDocsFileS3ConnectionLifecycleManager
+from dl_connector_bundle_chs3.chs3_yadocs.core.sa_types import SQLALCHEMY_YADOCS_TYPES
 from dl_connector_bundle_chs3.chs3_yadocs.core.settings import YaDocsFileS3SettingDefinition
 from dl_connector_bundle_chs3.chs3_yadocs.core.storage_schemas.connection import YaDocsFileConnectionDataStorageSchema
 from dl_connector_bundle_chs3.chs3_yadocs.core.storage_schemas.data_source_spec import (
@@ -58,3 +59,4 @@ class YaDocsFileS3CoreConnector(BaseFileS3CoreConnector):
         StaleDataNotification,
         DataUpdateFailureNotification,
     )
+    sa_types = SQLALCHEMY_YADOCS_TYPES

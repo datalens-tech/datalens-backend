@@ -18,6 +18,7 @@ from dl_connector_bundle_chs3.chs3_gsheets.core.constants import (
 from dl_connector_bundle_chs3.chs3_gsheets.core.data_source import GSheetsFileS3DataSource
 from dl_connector_bundle_chs3.chs3_gsheets.core.data_source_spec import GSheetsFileS3DataSourceSpec
 from dl_connector_bundle_chs3.chs3_gsheets.core.lifecycle import GSheetsFileS3ConnectionLifecycleManager
+from dl_connector_bundle_chs3.chs3_gsheets.core.sa_types import SQLALCHEMY_GSHEETS_V2_TYPES
 from dl_connector_bundle_chs3.chs3_gsheets.core.settings import GSheetsFileS3SettingDefinition
 from dl_connector_bundle_chs3.chs3_gsheets.core.storage_schemas.connection import GSheetsFileConnectionDataStorageSchema
 from dl_connector_bundle_chs3.chs3_gsheets.core.storage_schemas.data_source_spec import (
@@ -58,3 +59,4 @@ class GSheetsFileS3CoreConnector(BaseFileS3CoreConnector):
         StaleDataNotification,
         DataUpdateFailureNotification,
     )
+    sa_types = SQLALCHEMY_GSHEETS_V2_TYPES
