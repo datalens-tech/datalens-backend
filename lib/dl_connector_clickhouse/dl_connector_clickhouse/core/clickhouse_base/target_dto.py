@@ -20,6 +20,7 @@ class BaseClickHouseConnTargetDTO(BaseSQLConnTargetDTO, BaseAiohttpConnTargetDTO
     disable_value_processing: bool = attr.ib()
     secure: bool = attr.ib(kw_only=True, default=False)
     ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
+    readonly: Optional[int] = attr.ib(kw_only=True, default=None)
 
     # TODO remove in the next release to avoid compatibility issues
     insert_quorum: Optional[int] = attr.ib(kw_only=True, default=None)

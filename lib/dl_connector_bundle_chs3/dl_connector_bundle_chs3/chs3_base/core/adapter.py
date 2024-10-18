@@ -41,7 +41,6 @@ class BaseAsyncFileS3Adapter(BaseAsyncClickHouseAdapter):
             database=dba_q.db_name or self._target_dto.db_name or "system",
             **get_ch_settings(
                 read_only_level=2,
-                max_execution_time=self._target_dto.max_execution_time,
             ),
         )
 

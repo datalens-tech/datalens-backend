@@ -57,6 +57,19 @@ class BaseClickHouseDefaultUserTestClass(BaseClickHouseTestClass):
         )
 
 
+class BaseClickHouseReadonlyUserTestClass(BaseClickHouseTestClass):
+    @pytest.fixture(scope="function")
+    def connection_creation_params(self) -> dict:
+        return dict(
+            db_name=test_config.CoreReadonlyConnectionSettings.DB_NAME,
+            host=test_config.CoreReadonlyConnectionSettings.HOST,
+            port=test_config.CoreReadonlyConnectionSettings.PORT,
+            username=test_config.CoreReadonlyConnectionSettings.USERNAME,
+            password=test_config.CoreReadonlyConnectionSettings.PASSWORD,
+            readonly="1",
+        )
+
+
 class BaseSslClickHouseTestClass(BaseClickHouseTestClass):
     @pytest.fixture(autouse=True)
     def clear_ssl_folder(self):
