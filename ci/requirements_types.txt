@@ -10,7 +10,7 @@ types-aiobotocore==2.4.2
 types-aiofiles==23.1.0
 types-cffi==1.16.0
 types-colorama==0.4.6
-types-cryptography==3.3.2
+types-cryptography==3.3.23.2
 types-decorator==5.1.1
 types-flask-sqlalchemy==2.5.1
 types-html5lib==1.1
