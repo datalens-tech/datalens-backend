@@ -1,0 +1,7 @@
+from dl_formula_testing.testcases.functions_window import DefaultWindowFunctionFormulaConnectorTestSuite
+
+from dl_connector_bundle_chs3_tests.db.gsheets_v2.formula.base import GSheetsTestBase
+
+
+class TestWindowFunctionGSheets(GSheetsTestBase, DefaultWindowFunctionFormulaConnectorTestSuite):
+    pass

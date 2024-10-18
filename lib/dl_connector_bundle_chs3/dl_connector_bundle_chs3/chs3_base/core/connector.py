@@ -5,7 +5,6 @@ from dl_core.connections_security.base import (
     NonUserInputConnectionSafetyChecker,
 )
 from dl_core.connectors.base.connector import (
-    CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
     CoreSourceDefinition,
@@ -14,6 +13,7 @@ from dl_core.connectors.base.connector import (
 from dl_connector_bundle_chs3.chs3_base.core.constants import BACKEND_TYPE_CHS3
 from dl_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
 from dl_connector_bundle_chs3.chs3_base.core.type_transformer import FileTypeTransformer
+from dl_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreBackendDefinition
 from dl_connector_clickhouse.core.clickhouse_base.query_compiler import ClickHouseQueryCompiler
 
 
@@ -26,7 +26,7 @@ class BaseFileS3TableCoreSourceDefinition(CoreSourceDefinition):
     pass
 
 
-class CHS3CoreBackendDefinition(CoreBackendDefinition):  # TODO: Why not just use CH??
+class CHS3CoreBackendDefinition(ClickHouseCoreBackendDefinition):  # TODO: Why not just use CH??
     backend_type = BACKEND_TYPE_CHS3
     query_cls = CHQuery
     compiler_cls = ClickHouseQueryCompiler
