@@ -33,7 +33,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
         return [
             FormFieldApiSchema(name=CommonFieldName.host, required=True),
             FormFieldApiSchema(name=CommonFieldName.port, required=True),
-            FormFieldApiSchema(name=CommonFieldName.username),
+            FormFieldApiSchema(name=CommonFieldName.username, nullable=True),
             FormFieldApiSchema(name=CommonFieldName.password),
             FormFieldApiSchema(name=CommonFieldName.secure),
             FormFieldApiSchema(name=CommonFieldName.ssl_ca),
