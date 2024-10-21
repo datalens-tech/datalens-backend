@@ -2,16 +2,19 @@ from dl_connector_bundle_chs3.chs3_base.core.connector import (
     BaseFileS3CoreConnectionDefinition,
     BaseFileS3CoreConnector,
     BaseFileS3TableCoreSourceDefinition,
+    CHS3CoreBackendDefinition,
 )
 from dl_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
 from dl_connector_bundle_chs3.file.core.connection_executors import FileS3AsyncAdapterConnExecutor
 from dl_connector_bundle_chs3.file.core.constants import (
+    BACKEND_TYPE_FILE,
     CONNECTION_TYPE_FILE,
     SOURCE_TYPE_FILE_S3_TABLE,
 )
 from dl_connector_bundle_chs3.file.core.data_source import FileS3DataSource
 from dl_connector_bundle_chs3.file.core.data_source_spec import FileS3DataSourceSpec
 from dl_connector_bundle_chs3.file.core.lifecycle import FileS3ConnectionLifecycleManager
+from dl_connector_bundle_chs3.file.core.sa_types import SQLALCHEMY_FILE_TYPES
 from dl_connector_bundle_chs3.file.core.settings import FileS3SettingDefinition
 from dl_connector_bundle_chs3.file.core.storage_schemas.connection import FileConnectionDataStorageSchema
 from dl_connector_bundle_chs3.file.core.storage_schemas.data_source_spec import FileS3DataSourceSpecStorageSchema
@@ -37,7 +40,13 @@ class FileS3TableCoreSourceDefinition(BaseFileS3TableCoreSourceDefinition):
     us_storage_schema_cls = FileS3DataSourceSpecStorageSchema
 
 
+class FileS3CoreBackendDefinition(CHS3CoreBackendDefinition):
+    backend_type = BACKEND_TYPE_FILE
+
+
 class FileS3CoreConnector(BaseFileS3CoreConnector):
+    backend_definition = FileS3CoreBackendDefinition
     connection_definitions = (FileS3CoreConnectionDefinition,)
     source_definitions = (FileS3TableCoreSourceDefinition,)
     rqe_adapter_classes = frozenset({ClickHouseAdapter, AsyncFileS3Adapter})
+    sa_types = SQLALCHEMY_FILE_TYPES
