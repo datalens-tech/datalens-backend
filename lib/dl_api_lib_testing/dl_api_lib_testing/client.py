@@ -36,12 +36,12 @@ class TestClientConverterAiohttpToFlask:
             assert self._json is not None
             return self._json
 
-    def set_cookie(self, server_name: str, key: str, value: str = "", **kwargs: Any) -> None:
+    def set_cookie(self, key: str, value: str = "", **kwargs: Any) -> None:
         if self._cookies is None:
             self._cookies = {}
         self._cookies.update({key: value})
 
-    def delete_cookie(self, server_name: str, key: str, **kwargs: Any) -> None:
+    def delete_cookie(self, key: str, **kwargs: Any) -> None:
         if self._cookies is not None:
             self._cookies.pop(key, None)
 
