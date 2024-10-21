@@ -416,6 +416,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             "startDate": body["dateRange"].get("startDate"),
             "endDate": body["dateRange"].get("endDate"),
             "timeFilterColumn": body.get("configParams", dict()).get("timeFilterColumn"),
+            "limit": self._extract_limit(dba_query.query),
         }
 
         return body, flatten_body
