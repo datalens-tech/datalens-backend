@@ -88,6 +88,8 @@ class OptimizeConstMathOperatorMutation(OptimizeConstOperatorMutation):
             # Both operands are constant numbers
             and isinstance(node.left, (nodes.LiteralFloat, nodes.LiteralInteger))
             and isinstance(node.right, (nodes.LiteralFloat, nodes.LiteralInteger))
+            # Avoid division by zero!
+            and not (node.name == "/" and not node.right.value)
         )
 
     def make_replacement(

@@ -84,6 +84,16 @@ def test_optimize_const_math_operator_mutation():
     )
     assert formula_obj == n.formula(n.lit(0.4))
 
+    # special case: avoid division by zero and don't mutate the formula
+    formula_obj = n.formula(n.binary("/", left=n.lit(1), right=n.lit(0)))
+    formula_obj = apply_mutations(
+        formula_obj,
+        mutations=[
+            OptimizeConstMathOperatorMutation(),
+        ],
+    )
+    assert formula_obj == n.formula(n.binary("/", left=n.lit(1), right=n.lit(0)))
+
 
 def test_optimize_binary_operator_comparison_mutation():
     formula_obj = n.formula(
