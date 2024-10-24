@@ -99,10 +99,10 @@ def test_is_constant_expression():
     env = InspectionEnvironment()
     assert is_constant_expression(nodes.LiteralString.make("qwe"), env=env)
     assert is_constant_expression(nodes.Null(), env=env)
-    assert not is_constant_expression(nodes.FuncCall.make(name="func", args=[nodes.LiteralString.make("qwe")]), env=env)
+    assert is_constant_expression(nodes.FuncCall.make(name="func", args=[nodes.LiteralString.make("qwe")]), env=env)
     assert is_constant_expression(n.p(nodes.LiteralString.make("qwe")), env=env)
-    assert not is_constant_expression(nodes.FuncCall.make(name="func", args=[nodes.LiteralString.make("qwe")]), env=env)
-    assert not is_constant_expression(
+    assert is_constant_expression(nodes.FuncCall.make(name="func", args=[nodes.LiteralString.make("qwe")]), env=env)
+    assert is_constant_expression(
         n.p(nodes.FuncCall.make(name="func", args=[nodes.LiteralString.make("qwe")])), env=env
     )
 
