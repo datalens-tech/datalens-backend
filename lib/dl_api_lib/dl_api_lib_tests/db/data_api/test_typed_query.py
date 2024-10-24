@@ -1,11 +1,11 @@
 import pytest
 
+from dl_api_lib_testing.api_base import DefaultApiTestBase
 from dl_api_lib_testing.connector.typed_query_suite import DefaultDashSQLTypedQueryTestSuite
 from dl_api_lib_testing.typed_query_base import (
     TypedQueryInfo,
     TypedQueryParam,
 )
-from dl_api_lib_testing.api_base import DefaultApiTestBase
 from dl_constants.enums import (
     DashSQLQueryType,
     RawSQLLevel,

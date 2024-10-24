@@ -9,13 +9,13 @@ from dl_api_client.dsmaker.api.data_api import HttpDataApiResponse
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_lib_testing.api_base import DefaultApiTestBase
 from dl_api_lib_testing.connector.complex_queries import DefaultBasicWindowFunctionTestSuite
 from dl_api_lib_testing.helpers.data_source import data_source_settings_from_table
 from dl_api_lib_testing.helpers.multi_query import (
     MultiQueryInterceptor,
     count_joins,
 )
-from dl_api_lib_testing.api_base import DefaultApiTestBase
 from dl_constants.enums import (
     OrderDirection,
     UserDataType,
