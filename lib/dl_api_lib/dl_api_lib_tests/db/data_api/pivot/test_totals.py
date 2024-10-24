@@ -4,7 +4,7 @@ import pytest
 
 from dl_api_client.dsmaker.pivot_utils import check_pivot_response
 from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
-from dl_api_lib_tests.db.base import DefaultApiTestBase
+from dl_api_lib_testing.api_base import DefaultApiTestBase
 from dl_constants.enums import (
     NotificationType,
     OrderDirection,

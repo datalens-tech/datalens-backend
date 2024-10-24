@@ -6,7 +6,7 @@ import pytest
 from dl_api_connector.form_config.models.base import ConnectionFormMode
 from dl_api_lib.connection_forms.registry import CONN_FORM_FACTORY_BY_TYPE
 from dl_api_lib.enums import BI_TYPE_AGGREGATIONS
-from dl_api_lib_tests.db.base import DefaultApiTestBase
+from dl_api_lib_testing.api_base import DefaultApiTestBase
 from dl_constants.enums import (
     AggregationFunction,
     ConnectionType,

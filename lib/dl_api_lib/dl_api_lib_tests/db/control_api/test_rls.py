@@ -9,7 +9,7 @@ from dl_api_lib.query.formalization.raw_specs import (
     RawQuerySpecUnion,
     RawSelectFieldSpec,
 )
-from dl_api_lib_tests.db.base import DefaultApiTestBase
+from dl_api_lib_testing.api_base import DefaultApiTestBase
 from dl_rls.testing.testing_data import (
     RLS_CONFIG_CASES,
     config_to_comparable,
