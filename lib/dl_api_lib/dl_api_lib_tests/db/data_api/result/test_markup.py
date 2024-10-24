@@ -1,27 +1,11 @@
-from __future__ import annotations
-
 import uuid
 
-import pytest
-
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
-from dl_api_lib_testing.data_api_base import DataApiTestParams
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 
 
-class TestUMarkup(DefaultApiTestBase):
-    @pytest.fixture(scope="function")
-    def data_api_test_params(self, sample_table) -> DataApiTestParams:
-        # This default is defined for the sample table
-        return DataApiTestParams(
-            two_dims=("category", "city"),
-            summable_field="sales",
-            range_field="sales",
-            distinct_field="city",
-            date_field="order_date",
-        )
-
-    def test_markup(self, saved_dataset, data_api, data_api_test_params):
+class TestMarkup(DefaultApiTestBase):
+    def test_markup(self, saved_dataset, data_api):
         ds = saved_dataset
 
         field_a, field_b, field_c, field_d, field_e, field_nulled = (str(uuid.uuid4()) for _ in range(6))
