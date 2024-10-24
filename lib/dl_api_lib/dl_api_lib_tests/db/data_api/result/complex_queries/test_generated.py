@@ -1,6 +1,6 @@
 import pytest
 
-from dl_api_lib_tests.db.base import DefaultApiTestBase
+from dl_api_lib_testing.api_base import DefaultApiTestBase
 from dl_api_lib_tests.db.data_api.result.complex_queries.generation.generator import (
     AutoGeneratorSettings,
     LODTestAutoGenerator,

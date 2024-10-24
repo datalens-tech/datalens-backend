@@ -3,7 +3,7 @@ import json
 import shortuuid
 
 from dl_api_client.dsmaker.primitives import Dataset
-from dl_api_lib_tests.db.base import DefaultApiTestBase
+from dl_api_lib_testing.api_base import DefaultApiTestBase
 from dl_core.base_models import PathEntryLocation
 
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 import shortuuid
 
-from dl_api_lib_tests.db.base import DefaultApiTestBase
+from dl_api_lib_testing.api_base import DefaultApiTestBase
 from dl_configs.enums import RequiredService
 
 

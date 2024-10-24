@@ -6,7 +6,7 @@ import pytest
 
 from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
-from dl_api_lib_tests.db.base import DefaultApiTestBase
+from dl_api_lib_testing.api_base import DefaultApiTestBase
 
 
 class TestCompengCornerCases(DefaultApiTestBase):
