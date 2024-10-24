@@ -123,3 +123,23 @@ class TestExtendedAggregationCornerCases(DefaultApiTestBase):
             fail_ok=True,
         )
         assert result_resp.status_code == HTTPStatus.BAD_REQUEST
+
+    def test_lod_with_now(self, control_api, data_api, saved_dataset):
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            formulas={
+                "Agg": "SUM(SUM([sales] FIXED [region]))",
+                "Agg with now": "CONCAT(NOW(), ': ', [Agg])",
+            },
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="Agg with now"),
+            ]
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+        rows = get_data_rows(result_resp)
+        assert len(rows) == 1
