@@ -138,19 +138,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.ROBOT_GITHUB_PACKAGES_WRITE_TOKEN }}
 
-      - name: Cleanup build folder
-        run: |
-          rm -rf ./* || true
-          rm -rf ./.??* || true
+      - uses: datalens-tech/cleanup-folder-action@v1
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
-      - name: Fix dubious ownership
-        run: .github/.scripts/git_config_save_directory.sh
-        env:
-          REPOSITORY_NAME: ${{ github.event.repository.name }}
+      - uses: datalens-tech/fix-dubious-ownership-action@v1
 
       - run: |
           export ROOT_DIR="$(realpath .)"
@@ -168,20 +162,14 @@ jobs:
       affected: ${{ steps.get_affected.outputs.affected }}
       all_affected_with_skips: ${{ steps.get_affected.outputs.all_affected_with_skips }}
     steps:
-    - name: Cleanup build folder
-      run: |
-        rm -rf ./* || true
-        rm -rf ./.??* || true
+    - uses: datalens-tech/cleanup-folder-action@v1
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         ref: ${{ github.event.pull_request.head.sha }}
         repository: ${{ github.event.pull_request.head.repo.full_name }}
         fetch-depth: 0
-    - name: Fix dubious ownership
-      run: .github/.scripts/git_config_save_directory.sh
-      env:
-        REPOSITORY_NAME: ${{ github.event.repository.name }}
+    - uses: datalens-tech/fix-dubious-ownership-action@v1
     - run: git fetch origin main
     - name: Extract base commit
       run: |
@@ -263,20 +251,14 @@ jobs:
       split_ext_public: ${{ steps.get_split.outputs.split_ext_public }}
       split_no_compose: ${{ steps.get_split.outputs.split_no_compose }}
     steps:
-      - name: Cleanup build folder
-        run: |
-          rm -rf ./* || true
-          rm -rf ./.??* || true
+      - uses: datalens-tech/cleanup-folder-action@v1
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 1
-      - name: Fix dubious ownership
-        run: .github/.scripts/git_config_save_directory.sh
-        env:
-          REPOSITORY_NAME: ${{ github.event.repository.name }}
+      - uses: datalens-tech/fix-dubious-ownership-action@v1
       - name: Run python script to split job for general and fat runners
         id: get_split
         run: |
@@ -310,7 +292,6 @@ jobs:
 
     steps:
       - run: echo "Going to run tests for  ${{ matrix.value }}"
-      - run: mkdir /report
       - run: echo "Running py tests for ${{ matrix.value }}"
       - name: Log in to the Container registry
         uses: docker/login-action@v2
@@ -329,12 +310,6 @@ jobs:
         # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always
         run: bash /src/ci/stop_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
-      - uses: actions/upload-artifact@v3
-        if: "!cancelled()"
-        with:
-          name: "pytest_reports_${{ env.compose_prj }}"
-          path: /report/
-          retention-days: 1
 
   run_tests_no_compose:
     name: "🐍[pytest][no_compose]${{ matrix.value }}"
@@ -363,7 +338,6 @@ jobs:
 
     steps:
       - run: echo "Going to run tests for  ${{ matrix.value }}"
-      - run: mkdir /report
       - run: echo "Running py tests for ${{ matrix.value }}"
       - name: Log in to the Container registry
         uses: docker/login-action@v2
@@ -382,12 +356,6 @@ jobs:
         # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always
         run: bash /src/ci/stop_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
-      - uses: actions/upload-artifact@v3
-        if: "!cancelled()"
-        with:
-          name: "pytest_reports_${{ env.compose_prj }}"
-          path: /report/
-          retention-days: 1
 
   run_tests_fat:
     name: "🐍[pytest][fat]${{ matrix.value }}"
@@ -416,7 +384,6 @@ jobs:
 
     steps:
       - run: echo "Going to run tests for  ${{ matrix.value }}"
-      - run: mkdir /report
       - run: echo "Running py tests for ${{ matrix.value }}"
       - name: Log in to the Container registry
         uses: docker/login-action@v2
@@ -435,12 +402,6 @@ jobs:
         # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always
         run: bash /src/ci/stop_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
-      - uses: actions/upload-artifact@v3
-        if: "!cancelled()"
-        with:
-          name: "pytest_reports_${{ env.compose_prj }}"
-          path: /report/
-          retention-days: 1
 
   run_tests_ext_public:
     name: "🐍[pytest][ext_public]${{ matrix.value }}"
@@ -470,7 +431,6 @@ jobs:
 
     steps:
       - run: echo "Going to run tests for  ${{ matrix.value }}"
-      - run: mkdir /report
       - run: echo "Running py tests for ${{ matrix.value }}"
       - name: Log in to the Container registry
         uses: docker/login-action@v2
@@ -494,12 +454,6 @@ jobs:
         # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always
         run: bash /src/ci/stop_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
-      - uses: actions/upload-artifact@v3
-        if: "!cancelled()"
-        with:
-          name: "pytest_reports_${{ env.compose_prj }}"
-          path: /report/
-          retention-days: 1
 
   mypy:
     runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
@@ -515,10 +469,7 @@ jobs:
     name: "🐲 mypy"
     timeout-minutes: ${{ inputs.mypy_timeout_minutes && fromJSON(inputs.mypy_timeout_minutes ) || 20 }}
     steps:
-      - name: Cleanup build folder
-        run: |
-          rm -rf ./* || true
-          rm -rf ./.??* || true
+      - uses: datalens-tech/cleanup-folder-action@v1
       - name: Checkout code, just to get access to .github/execute_mypy...
         uses: actions/checkout@v4
         with:
@@ -536,25 +487,21 @@ jobs:
     name: Test results
     runs-on: ubuntu-22.04
 
-    needs: [ check-skip-tests-label, pytest_split, run_tests_base, run_tests_fat, run_tests_ext_public ]
-    if: ${{ always() }}
+    needs:
+      - check-skip-tests-label
+      - pytest_split
+      - run_tests_base
+      - run_tests_fat
+      - run_tests_no_compose
+      - run_tests_ext_public
+
+    if: always() && !cancelled()
 
     steps:
-      - name: Test results
-        run: |
-          skip_tests=${{ needs.check-skip-tests-label.outputs.result }}
-          [[ $skip_tests == "true" ]] && exit 0
-          
-          pytest_split=${{ needs.pytest_split.result }}
-          [[ $pytest_split != "success" && $pytest_split != "skipped" ]] && echo "pytest_split failed" && exit 1
-          result_base=${{ needs.run_tests_base.result }}
-          [[ $result_base != "success" && $result_base != "skipped" ]] && echo "base failed" && exit 1
-          result_fat=${{ needs.run_tests_fat.result }}
-          [[ $result_fat != "success" && $result_fat != "skipped" ]] && echo "fat failed" && exit 1
-          result_ext_public=${{ needs.run_tests_ext_public.result }}
-          [[ $result_ext_public != "success" && $result_ext_public != "skipped" ]] && echo "ext_public failed" && exit 1
-          
-          echo "All tests passed"
+      - name: Collect Result
+        uses: ovsds/collect-needs-result-action@v1
+        with:
+          needs_json: ${{ toJson(needs) }}
 
   codestyle_all:
     runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
@@ -566,10 +513,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Cleanup build folder
-        run: |
-          rm -rf ./* || true
-          rm -rf ./.??* || true
+      - uses: datalens-tech/cleanup-folder-action@v1
       - name: Checkout code
         uses: actions/checkout@v4
         with:
