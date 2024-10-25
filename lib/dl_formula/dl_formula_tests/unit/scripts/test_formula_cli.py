@@ -131,14 +131,14 @@ def test_slice(tool):
             "--diff",
             "--levels",
             "aggregate,window,toplevel",
-            "456 + SUM(FUNC(123)) + RMAX([coeff] * AVG(456 + [qwe] + [rty] + [uio]) - 1)",
+            "456 + SUM(FUNC([field])) + RMAX([coeff] * AVG(456 + [qwe] + [rty] + [uio]) - 1)",
         ]
     )
     assert (
         stdout.strip()
         == (
-            "toplevel       ▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫ + RMAX(▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫)\n"
-            "window         456 + SUM(▫▫▫▫▫▫▫▫▫)        ▫▫▫▫▫▫▫ * AVG(▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫) - 1 \n"
-            "aggregate                FUNC(123)         [coeff]       456 + [qwe] + [rty] + [uio]      \n"
+            "toplevel       ▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫ + RMAX(▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫)\n"
+            "window         456 + SUM(▫▫▫▫▫▫▫▫▫▫▫▫▫)        ▫▫▫▫▫▫▫ * AVG(▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫) - 1 \n"
+            "aggregate                FUNC([field])         [coeff]       456 + [qwe] + [rty] + [uio]      \n"
         ).strip()
     )
