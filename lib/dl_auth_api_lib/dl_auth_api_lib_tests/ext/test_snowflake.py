@@ -24,7 +24,7 @@ async def test_snowflake_token(oauth_app_client, snowflake_payload):
 @pytest.mark.parametrize(
     "account,expected_resp_substring",
     [
-        ("bad-account", "513"),
+        ("bad-account", "unexpected response from an external API"),
         ("bad-account.eu-central-1", "unexpected response from an external API"),
         ("another.bad-account.eu-central-1", "certificate is not valid"),
     ],
