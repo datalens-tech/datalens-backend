@@ -782,3 +782,23 @@ class TestBasicWindowFunctions(DefaultApiTestBase, DefaultBasicWindowFunctionTes
         for row_no_sum, row_with_sum in zip(data_rows_no_sum, data_rows_with_sum, strict=True):
             assert row_no_sum[0] == row_with_sum[0]  # The dimension
             assert row_no_sum[1] == row_with_sum[1]  # The measure
+
+    @pytest.mark.xfail(reason="https://github.com/datalens-tech/datalens-backend/issues/531")  # FIXME
+    def test_bfb_with_unknown_field(self, control_api, data_api, saved_dataset):
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            formulas={
+                "sales sum bfb unknown": "SUM([sales] BEFORE FILTER BY [unknown])",
+            },
+            exp_status=HTTPStatus.BAD_REQUEST,
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="sales sum bfb unknown"),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json

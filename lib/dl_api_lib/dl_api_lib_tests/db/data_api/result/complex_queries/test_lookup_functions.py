@@ -2,6 +2,8 @@ import datetime
 from http import HTTPStatus
 from typing import Optional
 
+import pytest
+
 from dl_api_client.dsmaker.primitives import WhereClause
 from dl_api_client.dsmaker.shortcuts.dataset import (
     add_formulas_to_dataset,
@@ -531,3 +533,23 @@ class TestBasicLookupFunctions(DefaultApiTestBase, DefaultBasicLookupFunctionTes
         data_rows = get_data_rows(result_resp)
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=3, day_offset=1)
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=2, ago_idx=4, day_offset=1)
+
+    @pytest.mark.xfail(reason="https://github.com/datalens-tech/datalens-backend/issues/531")  # FIXME
+    def test_id_with_unknown_field(self, control_api, data_api, saved_dataset):
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            formulas={
+                "ago id unknown": "AGO(SUM([sales]), [order_date], 'month' IGNORE DIMENSIONS [unknown])",
+            },
+            exp_status=HTTPStatus.BAD_REQUEST,
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="ago id unknown"),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
