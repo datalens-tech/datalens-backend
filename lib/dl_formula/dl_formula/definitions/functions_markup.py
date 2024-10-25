@@ -173,7 +173,7 @@ class MarkupTypeStrategy(Fixed):
     def __init__(self) -> None:
         super().__init__(DataType.MARKUP)
 
-    def get_from_args(self, arg_types):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def get_from_args(self, arg_types: list[DataType]) -> DataType:
         if all(arg.casts_to(DataType.CONST_MARKUP) or arg.casts_to(DataType.CONST_STRING) for arg in arg_types):
             return DataType.CONST_MARKUP
         return DataType.MARKUP

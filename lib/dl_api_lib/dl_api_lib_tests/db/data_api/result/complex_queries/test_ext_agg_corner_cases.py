@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from http import HTTPStatus
 
+import pytest
+
 from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib_tests.db.base import DefaultApiTestBase
@@ -123,3 +125,24 @@ class TestExtendedAggregationCornerCases(DefaultApiTestBase):
             fail_ok=True,
         )
         assert result_resp.status_code == HTTPStatus.BAD_REQUEST
+
+    @pytest.mark.parametrize("function", ["COUNT()", "NOW()"])
+    def test_lod_with_avatarless_function(self, control_api, data_api, saved_dataset, function):
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            formulas={
+                "Agg": "SUM(SUM([sales] FIXED [region]))",
+                "Agg with avatarless function": f"CONCAT({function}, ': ', [Agg])",
+            },
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="Agg with avatarless function"),
+            ],
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+        rows = get_data_rows(result_resp)
+        assert len(rows) == 1
