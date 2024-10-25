@@ -21,6 +21,8 @@ from dl_formula.inspect.expression import (
     used_fields,
     used_func_calls,
 )
+from dl_formula.inspect.registry.item import NameOpItem
+from dl_formula.inspect.registry.registry import LOWLEVEL_OP_REGISTRY
 from dl_formula.shortcuts import n
 
 
@@ -96,15 +98,32 @@ def test_used_fields():
 
 
 def test_is_constant_expression():
-    env = InspectionEnvironment()
-    assert is_constant_expression(nodes.LiteralString.make("qwe"), env=env)
-    assert is_constant_expression(nodes.Null(), env=env)
-    assert is_constant_expression(nodes.FuncCall.make(name="func", args=[nodes.LiteralString.make("qwe")]), env=env)
-    assert is_constant_expression(n.p(nodes.LiteralString.make("qwe")), env=env)
-    assert is_constant_expression(nodes.FuncCall.make(name="func", args=[nodes.LiteralString.make("qwe")]), env=env)
-    assert is_constant_expression(
-        n.p(nodes.FuncCall.make(name="func", args=[nodes.LiteralString.make("qwe")])), env=env
+    LOWLEVEL_OP_REGISTRY._name_op_registry["agg_func"] = NameOpItem(
+        name="agg_func",
+        can_be_window=False,
+        can_be_aggregate=True,
+        can_be_nonwindow=True,
     )
+
+    env = InspectionEnvironment()
+    literal_string = nodes.LiteralString.make("qwe")
+    const_func_call = nodes.FuncCall.make(name="func", args=[literal_string])
+    non_const_func_call = nodes.FuncCall.make(name="func", args=[literal_string, nodes.Field.make("field")])
+    agg_func_call = nodes.FuncCall.make(name="agg_func", args=[literal_string])
+    window_func_call = nodes.WindowFuncCall.make(name="func", args=[literal_string])
+
+    try:
+        assert is_constant_expression(literal_string, env=env)
+        assert is_constant_expression(nodes.Null(), env=env)
+        assert is_constant_expression(const_func_call, env=env)
+        assert is_constant_expression(n.p(literal_string), env=env)
+        assert is_constant_expression(n.p(const_func_call), env=env)
+
+        assert not is_constant_expression(non_const_func_call, env=env)
+        assert not is_constant_expression(window_func_call, env=env)
+        assert not is_constant_expression(agg_func_call, env=env)
+    finally:
+        del LOWLEVEL_OP_REGISTRY._name_op_registry["agg_func"]
 
 
 def test_is_is_bound_only_to():

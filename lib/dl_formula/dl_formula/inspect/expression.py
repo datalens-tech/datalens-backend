@@ -59,10 +59,14 @@ def is_constant_expression(
             result = True
         elif isinstance(node, nodes.ParenthesizedExpr):
             result = is_constant_expression(node.expr, env=env)
-        # if all arguments of a function or an operator are constant, consider it
-        # constant as well; this also covers the case of 0-args functions
         elif isinstance(node, nodes.OperationCall):
-            result = all(is_constant_expression(arg, env) for arg in node.args)
+            # check if all arguments of a function or an operator are constant;
+            # avoid aggregates and WFs, for example count() or count(1)
+            result = (
+                not dl_formula.inspect.node.is_aggregate_function(node)
+                and not dl_formula.inspect.node.is_window_function(node)
+                and all(is_constant_expression(arg, env) for arg in node.args)
+            )
         else:
             result = False
 
