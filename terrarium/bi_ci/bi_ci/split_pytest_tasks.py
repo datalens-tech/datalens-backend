@@ -1,4 +1,5 @@
 import dataclasses
+import enum
 import functools
 import json
 import pathlib
@@ -65,6 +66,16 @@ class PyprojectPytestTarget:
         )
 
 
+class PrintLevel(enum.Enum):
+    ERROR = "ERROR"
+    WARNING = "WARNING"
+    INFO = "INFO"
+
+
+def print_stderr(message: str, level: PrintLevel = PrintLevel.INFO) -> None:
+    print(f"{level.value}::{message}", file=sys.stderr)
+
+
 def format_output(name: str, targets: typing.Iterable[TestTarget]) -> str:
     data = [f"{target.relative_path}:{target.section}" for target in targets]
 
@@ -80,14 +91,7 @@ def print_output(requested_modes: set[str], test_targets: typing.Iterable[TestTa
         targets = targets_by_mode.get(requested_mode, [])
         formatted_output = format_output(f"split_{requested_mode}", targets)
         print(formatted_output)
-
-
-def print_error(message: str) -> None:
-    print(f"ERROR::{message}", file=sys.stderr)
-
-
-def print_warning(message: str) -> None:
-    print(f"WARNING::{message}", file=sys.stderr)
+        print_stderr(formatted_output, PrintLevel.INFO)
 
 
 def read_package_paths(
@@ -108,7 +112,7 @@ def read_pytest_targets(absolute_path: pathlib.Path, relative_path: str) -> list
 
     if not pyproject_path.is_file():
         error_message = f"pyproject.toml not found in {relative_path}"
-        print_error(error_message)
+        print_stderr(error_message, PrintLevel.ERROR)
         raise FileNotFoundError(error_message)
 
     with open(pyproject_path, "r") as file:
@@ -133,7 +137,7 @@ def get_target_tests(
 
     if len(unused_labels) > 0:
         error_message = f"Unused labels in {relative_path}:{target.name}: {' '.join(unused_labels)}"
-        print_error(error_message)
+        print_stderr(error_message, PrintLevel.ERROR)
 
         if raise_on_unused_label:
             raise ValueError(error_message)
@@ -160,7 +164,7 @@ def get_tests_root_dirs(
         all_root_dirs.add(root_dir)
 
         if not root_dir.is_dir():
-            print_warning(f"Root dir {root_dir.name} not found in {root_dir.parent}")
+            print_stderr(f"Root dir {root_dir.name} not found in {root_dir.parent}", PrintLevel.WARNING)
 
     # deduplicating subdirectories
 
@@ -188,7 +192,7 @@ def get_tests_covered_dirs(
             covered_dirs.add(absolute_target_path)
 
             if not absolute_target_path.is_dir():
-                print_warning(f"Target dir {target_path} not found in {root_dir}")
+                print_stderr(f"Target dir {target_path} not found in {root_dir}", PrintLevel.WARNING)
 
     return covered_dirs
 
@@ -220,7 +224,7 @@ def validate_test_coverage(
                     break
             else:
                 error_message = f"Uncovered test file {file} found in {relative_path}"
-                print_error(error_message)
+                print_stderr(error_message, PrintLevel.ERROR)
 
                 if raise_on_uncovered_test:
                     raise ValueError(error_message)
@@ -247,7 +251,7 @@ def get_package_tests(
 
     for target in pytest_targets:
         if target.skip_tests:
-            print_warning(f"Skipping tests for {relative_path}:{target.name}")
+            print_stderr(f"Skipping tests for {relative_path}:{target.name}", PrintLevel.WARNING)
             continue
 
         yield from get_target_tests(
