@@ -120,6 +120,7 @@ def prepare_united_storage(
                     run_cmd_in_containers_by_label(US_SERVICE_DOCKER_COMPOSE_LABEL, migration)
                 return True, ""
         except Exception as e:
+            logging.exception("_wait_for_us failed with exception")
             return False, str(e)
 
     max_wait_time = 160.0

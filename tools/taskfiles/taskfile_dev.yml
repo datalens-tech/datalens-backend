@@ -31,7 +31,7 @@ tasks:
     desc: Run poetry command
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - "{{.VENV_PATH}}/bin/python -m {{.CLI_ARGS}}"
+      - 'PATH="{{.VENV_PATH}}/bin:$PATH" {{.VENV_PATH}}/bin/python -m {{.CLI_ARGS}}'
     requires:
       vars:
         - VENV_PATH

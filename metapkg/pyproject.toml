@@ -204,6 +204,8 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
+# log_cli = true
+# log_level = "ERROR"
 minversion = "6.0"
 addopts = "-ra"
 testpaths = []
