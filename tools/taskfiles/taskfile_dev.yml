@@ -130,3 +130,8 @@ tasks:
       - docker-compose -f {{.DOCKER_COMPOSE_FILE}} down
     vars:
       DOCKER_COMPOSE_FILE: '{{.DOCKER_COMPOSE_FILE | default "docker-compose.yml"}}'
+
+  compose_stop_all:
+    desc: Stop and remove all docker containers
+    cmds:
+      - docker stop $(docker ps -a -q)
