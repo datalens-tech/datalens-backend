@@ -59,7 +59,7 @@ googleapis-common-protos = "==1.59.1"
 grpcio = "==1.60.0"
 protobuf = "==4.24.3"
 pymysql = "==1.1.1"
-pyodbc = "==5.0.1"
+pyodbc = "==5.2.0"
 ciso8601 = "==2.2.0"
 aiomysql = "==0.2.0"
 redis = "==5.0.1"
@@ -162,7 +162,6 @@ black = "==23.12.1"
 ruff = "==0.2.1"
 isort = "==5.13.2"
 ipdb = "==0.13.13"
-pyodbc = "==5.0.1"
 pytest = "==7.2.2"
 python-dateutil = "==2.8.2"
 pytest-asyncio = "==0.21.0"
@@ -204,6 +203,8 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
+# log_cli = true
+# log_level = "ERROR"
 minversion = "6.0"
 addopts = "-ra"
 testpaths = []

@@ -1,5 +1,7 @@
 version: '3'
 
+silent: true
+
 tasks:
   init:
     desc: Initialize project
@@ -17,6 +19,25 @@ tasks:
     requires:
       vars:
         - PYPROJECT_TOML_PATH
+  
+  _venv_bin:
+    desc: Run venv bin
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - 'PATH="{{.VENV_PATH}}/bin:$PATH" {{.VENV_PATH}}/bin/{{.COMMAND}} {{.CLI_ARGS}}'
+    requires:
+      vars:
+        - VENV_PATH
+        - COMMAND
+
+  venv_run:
+    desc: Run poetry command
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - task: _venv_bin
+        vars:
+          COMMAND: "python -m {{.COMMAND}}"
+          CLI_ARGS: "{{.CLI_ARGS}}"
 
   clean:
     desc: Clean project
@@ -27,23 +48,71 @@ tasks:
       vars:
         - VENV_PATH
 
-  venv_run:
-    desc: Run poetry command
+  lint:
+    desc: Lint code
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - "{{.VENV_PATH}}/bin/python -m {{.CLI_ARGS}}"
-    requires:
-      vars:
-        - VENV_PATH
+      - echo "Running toml-sort checks..."
+      - task: _venv_bin
+        vars:
+          COMMAND: "toml-sort --check {{.TOML_FILES}}"
+
+      - echo "Running black checks..."
+      - task: venv_run
+        vars:
+          COMMAND: "black --config {{.LINTERS_PYPROJECT_TOML_PATH}} --check {{.LINT_PATH}}"
+      
+      - echo "Running isort checks..."
+      - task: venv_run
+        vars:
+          COMMAND: "isort --settings-path {{.LINTERS_PYPROJECT_TOML_PATH}} --check-only {{.LINT_PATH}}"
+      
+      - echo "Running ruff checks..."
+      - task: venv_run
+        vars:
+          COMMAND: "ruff check {{.LINT_PATH}}"
+    vars:
+      LINT_PATH: '{{.CLI_ARGS | default "."}}'
+      TOML_FILES:
+        sh: find {{.CLI_ARGS | default "."}} -name '*.toml' | tr '\n' ' '
+  
+  lint-fix:
+    desc: Lint fix code
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - echo "Running toml-sort fixes..."
+      - task: _venv_bin
+        vars:
+          COMMAND: "toml-sort --in-place {{.TOML_FILES}}"
+
+      - echo "Running black fixes..."
+      - task: venv_run
+        vars:
+          COMMAND: "black --safe --config {{.LINTERS_PYPROJECT_TOML_PATH}} {{.LINT_PATH}}"
+      
+      - echo "Running isort fixes..."
+      - task: venv_run
+        vars:
+          COMMAND: "isort --settings-path {{.LINTERS_PYPROJECT_TOML_PATH}} {{.LINT_PATH}}"
+
+      - echo "Running ruff fixes..."
+      - task: venv_run
+        vars:
+          COMMAND: "ruff check --fix {{.LINT_PATH}}"
+    vars:
+      LINT_PATH: '{{.CLI_ARGS | default "."}}'
+      TOML_FILES:
+        sh: find {{.CLI_ARGS | default "."}} -name '*.toml' | tr '\n' ' '
 
   test:
     desc: Run tests
     cmds:
       - task: venv_run
         vars:
-          CLI_ARGS: "pytest {{.TESTS_PATH}} {{.CLI_ARGS}}"
+          COMMAND: pytest
+          CLI_ARGS: "{{.CLI_ARGS}}"
     vars:
-      TESTS_PATH: '{{.TESTS_PATH | default "."}}'
+      CLI_ARGS: '{{.CLI_ARGS | default "."}}'
 
   compose_start:
     desc: Start docker-compose

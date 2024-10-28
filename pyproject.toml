@@ -63,16 +63,6 @@ known_connectors = [
 [tool.ruff]
 line-length = 120
 force-exclude = true
-select = [
-  # Pyflakes
-  "F",
-  # Bugbear
-  "B"
-]
-ignore = [
-  "E501",  # line lengh, should be checked and fixed by black
-  "B904",  # force `raise ... from err` or `raise ... from None`
-]
 exclude = [
   ".bzr",
   ".direnv",
@@ -99,4 +89,16 @@ exclude = [
   "lib/redis-cache-lock/**",
   "lib/clickhouse-sqlalchemy/**",
   "lib/dl_formula/dl_formula/parser/antlr/gen/**",
+]
+
+[tool.ruff.lint]
+select = [
+  # Pyflakes
+  "F",
+  # Bugbear
+  "B"
+]
+ignore = [
+  "E501",  # line lengh, should be checked and fixed by black
+  "B904",  # force `raise ... from err` or `raise ... from None`
 ]
