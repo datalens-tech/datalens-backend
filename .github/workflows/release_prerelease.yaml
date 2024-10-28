@@ -18,10 +18,6 @@ on:
         type: string
         description: "Target branch to release"
         default: "main"
-      with_release:
-        type: boolean
-        description: "Create green release as well"
-        default: false
 
 jobs:
   get_version:
@@ -93,7 +89,6 @@ jobs:
         ./run-project-bake "${bake_target}" \
           --push \
           --set "${bake_target}.tags=${image_url_rc}"
-          ${{ github.event.inputs.with_release == 'true' && '--set "${bake_target}.tags=${image_url_release}"' || '' }}
 
         echo "image-version=${image_version}-rc.1" >> $GITHUB_OUTPUT
 
@@ -133,19 +128,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           release_tag: "${{ env.version }}-rc.1"
-
-      - name: Create release
-        id: create_release
-        if: ${{ github.event.inputs.with_release == 'true' }}
-        run: |
-          gh release create \
-            --repo ${{ github.repository_owner }}/${{ github.event.repository.name }} \
-            ${{ env.release_tag }} \
-            --target ${{ env.release_branch }} \
-            --generate-notes
-        env:
-          GH_TOKEN: ${{ github.token }}
-          release_tag: "${{ env.version }}"
 
   run_e2e_tests:
     name: "Run E2E tests"
