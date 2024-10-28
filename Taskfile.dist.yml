@@ -35,3 +35,4 @@ includes:
       PROJECT_ROOT_PATH: '{{.ROOT_DIR}}'
       PYPROJECT_TOML_PATH: '{{.ROOT_DIR}}/metapkg/pyproject.toml'
       VENV_PATH: '{{.ROOT_DIR}}/metapkg/.venv'
+      LINTERS_PYPROJECT_TOML_PATH: '{{.ROOT_DIR}}/pyproject.toml'
