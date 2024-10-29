@@ -135,3 +135,30 @@ tasks:
     desc: Stop and remove all docker containers
     cmds:
       - docker stop $(docker ps -a -q)
+
+  ssh_forward_start:
+    desc: Forward docker ports to localhost
+    requires:
+      vars:
+        - HOST
+    cmds:
+      - for port in $PORTS; do
+          echo "Forwarding port $port";
+          ssh -f -N -L $port:localhost:$port {{.HOST}};
+        done;
+        wait
+    var:
+    env:
+      PORTS:
+        sh: DOCKER_HOST=ssh://{{.HOST}} docker ps --format "{{`{{.Ports}}`}}" 
+          | grep -o ':[0-9]*->' 
+          | sed 's/->//g'
+          | sed 's/://g' 
+          | uniq
+  
+  ssh_forward_stop:
+    desc: Stop SSH port forwarding for Docker containers
+    cmds:
+      - echo "Next processes will be killed:"
+      - ps -ef | grep "ssh -f -N -L" | grep --invert-match "grep"
+      - pkill -f "ssh -f -N -L"
