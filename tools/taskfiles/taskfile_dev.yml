@@ -6,13 +6,23 @@ tasks:
   init:
     desc: Initialize project
     cmds:
-      - echo "Ensuring python virtual environment is created"
+      - echo "Cleaning unused envs in {{.VENV_PATH}}"
+      - for env in "$UNUSED_ENVS"; do
+          echo "Removing $env";
+          poetry env remove $env --directory={{.PYPROJECT_TOML_PATH}};
+        done;
+      - echo "Initializing python virtual environment in {{.VENV_PATH}}"
       - poetry install --directory={{.PYPROJECT_TOML_PATH}} --sync --no-root
     requires:
       vars:
         - PYPROJECT_TOML_PATH
+    vars:
+      UNUSED_ENVS:
+        sh: poetry env list --no-ansi --directory={{.PYPROJECT_TOML_PATH}} 
+          | sed 's/ (Activated)//g'
+          | grep -v \".venv\"
 
-  poetry-lock:
+  poetry_lock:
     desc: Lock dependencies in metapkg
     cmds:
       - poetry lock --no-update --directory={{.PYPROJECT_TOML_PATH}}
