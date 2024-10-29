@@ -28,10 +28,7 @@ jobs:
           - dl_repmanager
     name: "🐊[pytest] ${{ matrix.value }}"
     steps:
-      - name: 'Cleanup build folder'
-        run: |
-          rm -rf ./* || true
-          rm -rf ./.??* || true
+      - uses: datalens-tech/cleanup-folder-action@v1
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Setup common tools
@@ -63,10 +60,7 @@ jobs:
           - dl_repmanager
     name: "🐊[mypy] ${{ matrix.value }}"
     steps:
-      - name: 'Cleanup build folder'
-        run: |
-          rm -rf ./* || true
-          rm -rf ./.??* || true
+      - uses: datalens-tech/cleanup-folder-action@v1
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Setup common tools
