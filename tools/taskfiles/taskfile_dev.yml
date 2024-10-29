@@ -1,10 +1,45 @@
 version: '3'
 
-silent: true
-
 tasks:
+  help:
+    desc: Show help
+    silent: true
+    cmds:
+      - echo 'Taskfile namespace used for development.'
+      - echo 'General:'
+      - echo '`task dev:init` to initialize the environment'
+      - echo '`task dev:clean` to clean the environment'
+      - echo ''
+      - echo 'Linting:'
+      - echo '`task dev:lint` to lint the code in current directory'
+      - echo '`task dev:lint-fix` to fix linting issues the code in current directory'
+      - echo ''
+      - echo 'Testing:'
+      - echo '`task dev:test` to run tests in current directory'
+      - echo ''
+      - echo '`task dev:compose_start` to start docker-compose'
+      - echo '`task dev:compose_stop` to stop docker-compose'
+      - echo '`task dev:compose_stop_all` to stop all running docker containers'
+      - echo 'All `dev:compose_*` tasks could be used with DOCKER_HOST, f.e. `DOCKER_HOST=ssh://dl-vm task dev:compose_start`'
+      - echo ''
+      - echo 'If compose is started remotely via SSH, use `task dev:ssh_forward_start` to forward ports to localhost'
+      - echo 'Use `task dev:ssh_forward_stop` to stop all SSH port forwarding'
+      - echo ''
+      - echo 'Development workflow example:'
+      - echo '0. source environment variables'
+      - echo '1. `cd %PACKAGE_DIR%`'
+      - echo '2. `task dev:init`'
+      - echo '3. `DOCKER_HOST=ssh://dl-vm task dev:compose_start`'
+      - echo '4. `HOST=dl-vm task dev:ssh_forward_start`'
+      - echo '5. Write some code'
+      - echo '6. `task dev:lint-fix`'
+      - echo '7. `task dev:test`'
+      - echo '8. Repeat 5-7'
+      - echo '9. `HOST=dl-vm task dev:ssh_forward_stop`'
+      - echo '10. `DOCKER_HOST=ssh://dl-vm task dev:compose_stop`'
+
   init:
-    desc: Initialize project
+    desc: Initialize environment
     cmds:
       - echo "Cleaning unused envs in {{.VENV_PATH}}"
       - for env in "$UNUSED_ENVS"; do
@@ -50,7 +85,7 @@ tasks:
           CLI_ARGS: "{{.CLI_ARGS}}"
 
   clean:
-    desc: Clean project
+    desc: Clean environment
     cmds:
       - echo "Cleaning python virtual environment"
       - rm -rf {{.VENV_PATH}}
@@ -142,7 +177,7 @@ tasks:
       DOCKER_COMPOSE_FILE: '{{.DOCKER_COMPOSE_FILE | default "docker-compose.yml"}}'
 
   compose_stop_all:
-    desc: Stop and remove all docker containers
+    desc: Stop all docker containers
     cmds:
       - docker stop $(docker ps -a -q)
 
