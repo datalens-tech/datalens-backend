@@ -284,11 +284,13 @@ class AsyncUSManager(USManagerBase):
         entry_scope: str,
         entry_type: Optional[str] = None,
         all_tenants: bool = False,
+        creation_time: Optional[dict[str, Union[str, int, None]]] = None,
     ) -> AsyncIterable[dict]:
         return self._us_client.entries_iterator(
             scope=entry_scope,
             entry_type=entry_type,
             all_tenants=all_tenants,
+            creation_time=creation_time,
             include_data=False,
         )
 
