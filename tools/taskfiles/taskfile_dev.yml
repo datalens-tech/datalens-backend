@@ -55,7 +55,7 @@ tasks:
       UNUSED_ENVS:
         sh: poetry env list --no-ansi --directory={{.PYPROJECT_TOML_PATH}} 
           | sed 's/ (Activated)//g'
-          | grep -v \".venv\"
+          | grep -v \".venv\" || true
 
   poetry_lock:
     desc: Lock dependencies in metapkg
@@ -65,24 +65,22 @@ tasks:
       vars:
         - PYPROJECT_TOML_PATH
   
-  _venv_bin:
+  venv_bin:
     desc: Run venv bin
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - 'PATH="{{.VENV_PATH}}/bin:$PATH" {{.VENV_PATH}}/bin/{{.COMMAND}} {{.CLI_ARGS}}'
+      - 'PATH="{{.VENV_PATH}}/bin:$PATH" {{.VENV_PATH}}/bin/{{.CLI_ARGS}}'
     requires:
       vars:
         - VENV_PATH
-        - COMMAND
 
   venv_run:
     desc: Run poetry command
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - task: _venv_bin
+      - task: venv_bin
         vars:
-          COMMAND: "python -m {{.COMMAND}}"
-          CLI_ARGS: "{{.CLI_ARGS}}"
+          COMMAND: "python -m {{.COMMAND}} {{.CLI_ARGS}}"
 
   clean:
     desc: Clean environment
@@ -97,11 +95,6 @@ tasks:
     desc: Lint code
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - echo "Running toml-sort checks..."
-      - task: _venv_bin
-        vars:
-          COMMAND: "toml-sort --check {{.TOML_FILES}}"
-
       - echo "Running black checks..."
       - task: venv_run
         vars:
@@ -125,11 +118,6 @@ tasks:
     desc: Lint fix code
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - echo "Running toml-sort fixes..."
-      - task: _venv_bin
-        vars:
-          COMMAND: "toml-sort --in-place {{.TOML_FILES}}"
-
       - echo "Running black fixes..."
       - task: venv_run
         vars:
