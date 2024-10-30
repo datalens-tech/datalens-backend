@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 import logging
 import ssl
 from typing import Optional
@@ -30,6 +31,11 @@ from dl_core.services_registry.rqe_caches import RQECachesSetting
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+@dataclasses.dataclass
+class AuthSetupResult:
+    us_auth_mode: USAuthMode
 
 
 class StandaloneControlApiSRFactoryBuilder(SRFactoryBuilder[ControlApiAppSettingsOS]):
@@ -70,35 +76,49 @@ class StandaloneControlApiAppFactory(
         app: flask.Flask,
         testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     ) -> EnvSetupResult:
-        us_auth_mode: USAuthMode
+        auth_setup_result = self._setup_auth_middleware(app=app)
 
-        us_auth_mode = USAuthMode.regular
-        auth_setup = self._setup_auth_middleware(app=app)
+        return EnvSetupResult(us_auth_mode=auth_setup_result.us_auth_mode)
 
-        if not auth_setup:
-            from dl_api_commons.flask.middlewares.trust_auth import TrustAuthService
-
-            TrustAuthService(
-                fake_user_id="_user_id_",
-                fake_user_name="_user_name_",
-                fake_tenant=None if testing_app_settings is None else testing_app_settings.fake_tenant,
-            ).set_up(app)
-
-            us_auth_mode_override = None if testing_app_settings is None else testing_app_settings.us_auth_mode_override
-            us_auth_mode = USAuthMode.master if us_auth_mode_override is None else us_auth_mode_override
-
-        result = EnvSetupResult(us_auth_mode=us_auth_mode)
-        return result
-
-    def _setup_auth_middleware(self, app: flask.Flask) -> bool:
+    def _setup_auth_middleware(
+        self,
+        app: flask.Flask,
+        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+    ) -> AuthSetupResult:
         self._settings: ControlApiAppSettingsOS
 
-        if self._settings.AUTH is None:
-            LOGGER.warning("No auth settings found, continuing without auth setup")
-            return False
+        if self._settings.AUTH is None or self._settings.AUTH.TYPE == "NONE":
+            return self._setup_auth_middleware_none(app=app, testing_app_settings=testing_app_settings)
 
-        # TODO: Add support for other auth types
-        assert self._settings.AUTH.TYPE == "ZITADEL"
+        if self._settings.AUTH.TYPE == "ZITADEL":
+            return self._setup_auth_middleware_zitadel(app=app)
+
+        raise ValueError(f"Unknown auth type: {self._settings.AUTH.TYPE}")
+
+    def _setup_auth_middleware_none(
+        self,
+        app: flask.Flask,
+        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+    ) -> AuthSetupResult:
+        from dl_api_commons.flask.middlewares.trust_auth import TrustAuthService
+
+        TrustAuthService(
+            fake_user_id="_user_id_",
+            fake_user_name="_user_name_",
+            fake_tenant=None if testing_app_settings is None else testing_app_settings.fake_tenant,
+        ).set_up(app)
+
+        us_auth_mode_override = None if testing_app_settings is None else testing_app_settings.us_auth_mode_override
+        us_auth_mode = USAuthMode.master if us_auth_mode_override is None else us_auth_mode_override
+
+        return AuthSetupResult(us_auth_mode=us_auth_mode)
+
+    def _setup_auth_middleware_zitadel(
+        self,
+        app: flask.Flask,
+    ) -> AuthSetupResult:
+        assert self._settings.AUTH is not None
+
         import httpx
 
         import dl_zitadel
@@ -128,4 +148,5 @@ class StandaloneControlApiAppFactory(
             token_storage=token_storage,
         ).set_up(app=app)
         LOGGER.info("Zitadel auth setup complete")
-        return True
+
+        return AuthSetupResult(us_auth_mode=USAuthMode.regular)
