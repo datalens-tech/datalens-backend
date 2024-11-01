@@ -30,6 +30,7 @@ class BitrixGDSDataSource(PseudoSQLDataSource):
             JoinType.right,
         }
     )
+    supports_schema_update: ClassVar[bool] = True
     conn_type = CONNECTION_TYPE_BITRIX24
 
     @property
