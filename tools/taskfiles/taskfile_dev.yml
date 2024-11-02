@@ -41,6 +41,8 @@ tasks:
   init:
     desc: Initialize environment
     cmds:
+      - poetry env use $(cat {{.ROOT_DIR}}/.python-version) --directory={{.PYPROJECT_TOML_PATH}}
+      - poetry env info
       - echo "Cleaning unused envs in {{.VENV_PATH}}"
       - for env in "$UNUSED_ENVS"; do
           echo "Removing $env";
