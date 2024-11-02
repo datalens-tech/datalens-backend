@@ -79,7 +79,7 @@ async def wait_task(task: TaskInstance, state: TaskState, timeout: float = 10, i
     while spent_time < timeout:
         current_state = state.get_state(task)
         # Has the task reached the final state?
-        if {"success", "failed"} & set(state.get_state(task)):
+        if {"success", "failed", "aborted"} & set(state.get_state(task)):
             return current_state
         await asyncio.sleep(interval)
         spent_time += interval

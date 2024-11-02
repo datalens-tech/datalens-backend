@@ -103,6 +103,7 @@ class WorkerSettings:
         ),
     )
     health_check_suffix: str = attr.ib(default="bihealthcheck")
+    allow_abort_jobs: bool = attr.ib(default=False)
 
 
 @attr.s
@@ -129,6 +130,7 @@ class ArqWorker:
             max_tries=self._worker_settings.retry_hard_limit,
             job_timeout=timedelta(seconds=self._worker_settings.job_timeout),
             retry_jobs=True,
+            allow_abort_jobs=self._worker_settings.allow_abort_jobs,
             health_check_key=self.health_check_key,
             handle_signals=False,
             health_check_interval=self._worker_settings.health_check_interval,
