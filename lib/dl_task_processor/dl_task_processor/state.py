@@ -13,19 +13,19 @@ from dl_task_processor.task import (
 # i will change it later
 class BaseTaskStateImpl(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def set_state(self, task: TaskInstance, state: str) -> None:
+    def set_state(self, instance_id: InstanceID, state: str) -> None:
         pass
 
     @abc.abstractmethod
-    def get_state(self, task: TaskInstance) -> list:
+    def get_state(self, instance_id: InstanceID) -> list:
         pass
 
 
 class DummyStateImpl(BaseTaskStateImpl):
-    def set_state(self, task: TaskInstance, state: str) -> None:
+    def set_state(self, instance_id: InstanceID, state: str) -> None:
         pass
 
-    def get_state(self, task: TaskInstance) -> list:
+    def get_state(self, instance_id: InstanceID) -> list:
         return []
 
 
@@ -34,11 +34,11 @@ class DummyStateImpl(BaseTaskStateImpl):
 class BITaskStateImpl(BaseTaskStateImpl):
     _states: dict[InstanceID, list[str]] = attr.ib(default=defaultdict(list))
 
-    def set_state(self, task: TaskInstance, state: str) -> None:
-        self._states[task.instance_id].append(state)
+    def set_state(self, instance_id: InstanceID, state: str) -> None:
+        self._states[instance_id].append(state)
 
-    def get_state(self, task: TaskInstance) -> list:
-        return self._states[task.instance_id]
+    def get_state(self, instance_id: InstanceID) -> list:
+        return self._states[instance_id]
 
 
 # i will change it later
@@ -46,26 +46,26 @@ class BITaskStateImpl(BaseTaskStateImpl):
 class TaskState:
     _impl: BaseTaskStateImpl = attr.ib()
 
-    def set_scheduled(self, task: TaskInstance) -> None:
-        self._impl.set_state(task, "scheduled")
+    def set_scheduled(self, instance_id: InstanceID) -> None:
+        self._impl.set_state(instance_id, "scheduled")
 
-    def set_started(self, task: TaskInstance) -> None:
-        self._impl.set_state(task, "started")
+    def set_started(self, instance_id: InstanceID) -> None:
+        self._impl.set_state(instance_id, "started")
 
-    def set_failed(self, task: TaskInstance) -> None:
-        self._impl.set_state(task, "failed")
+    def set_failed(self, instance_id: InstanceID) -> None:
+        self._impl.set_state(instance_id, "failed")
 
-    def set_retry(self, task: TaskInstance) -> None:
-        self._impl.set_state(task, "retry")
+    def set_retry(self, instance_id: InstanceID) -> None:
+        self._impl.set_state(instance_id, "retry")
 
-    def set_aborted(self, task: TaskInstance) -> None:
-        self._impl.set_state(task, "aborted")
+    def set_aborted(self, instance_id: InstanceID) -> None:
+        self._impl.set_state(instance_id, "aborted")
 
-    def set_success(self, task: TaskInstance) -> None:
-        self._impl.set_state(task, "success")
+    def set_success(self, instance_id: InstanceID) -> None:
+        self._impl.set_state(instance_id, "success")
 
-    def get_state(self, task: TaskInstance) -> list:
-        return self._impl.get_state(task)
+    def get_state(self, instance_id: InstanceID) -> list:
+        return self._impl.get_state(instance_id)
 
 
 # temporary task result checker for arq
@@ -77,9 +77,9 @@ async def wait_task(task: TaskInstance, state: TaskState, timeout: float = 10, i
     """
     spent_time = 0.0
     while spent_time < timeout:
-        current_state = state.get_state(task)
+        current_state = state.get_state(task.instance_id)
         # Has the task reached the final state?
-        if {"success", "failed", "aborted"} & set(state.get_state(task)):
+        if {"success", "failed", "aborted"} & set(state.get_state(task.instance_id)):
             return current_state
         await asyncio.sleep(interval)
         spent_time += interval

@@ -59,7 +59,7 @@ async def test_schedule_task_by_task(task_processor_client, task_state):
 @pytest.mark.parametrize("worker_settings", [WorkerSettings(allow_abort_jobs=True)], indirect=True)
 async def test_schedule_and_cancel_arq_task(task_processor_arq_client, task_state):
     task = await task_processor_arq_client.schedule(WaitingTaskInterface(seconds_to_wait=15))
-    await task_processor_arq_client.cancel(task)
+    await task_processor_arq_client.cancel(task.instance_id)
     result = await wait_task(task, task_state)
     assert result[-1] == "aborted"
     assert "success" not in result

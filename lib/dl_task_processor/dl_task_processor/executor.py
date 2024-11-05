@@ -31,13 +31,13 @@ class Executor:
     def _update_status(self, task: TaskInstance, task_result: TaskResult) -> None:
         if isinstance(task_result, Fail):
             LOGGER.info("Task has been failed")
-            self._state.set_failed(task)
+            self._state.set_failed(task.instance_id)
         elif isinstance(task_result, Success):
             LOGGER.info("Finish task")
-            self._state.set_success(task)
+            self._state.set_success(task.instance_id)
         elif isinstance(task_result, Retry):
             LOGGER.info("Task needs to be retried")
-            self._state.set_retry(task)
+            self._state.set_retry(task.instance_id)
         else:
             LOGGER.warning("Unknown result type %s", task_result)
 
@@ -60,7 +60,7 @@ class Executor:
                 run_id=run_id,
                 request_id=task.request_id,
             )
-            self._state.set_started(task)
+            self._state.set_started(task.instance_id)
             try:
                 LOGGER.info("Run task %s", task.instance_id.to_str())
                 with GenericProfiler("run-task-processor-task"):

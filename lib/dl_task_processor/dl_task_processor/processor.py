@@ -110,14 +110,14 @@ class TaskProcessor:
             task.get_params(),
             task_instance.instance_id.to_str(),
         )
-        self._state.set_scheduled(task_instance)
+        self._state.set_scheduled(task_instance.instance_id)
         await self._impl.schedule(task_instance)
         return task_instance
 
-    async def cancel(self, task_instance: TaskInstance) -> None:
-        LOGGER.info("Cancelling task with instance_id %s", task_instance.instance_id.to_str())
-        self._state.set_aborted(task_instance)
-        await self._impl.cancel(task_instance.instance_id)
+    async def cancel(self, instance_id: InstanceID) -> None:
+        LOGGER.info("Cancelling task with instance_id %s", instance_id.to_str())
+        self._state.set_aborted(instance_id)
+        await self._impl.cancel(instance_id)
 
 
 def make_task_processor(redis_pool: arq.ArqRedis, request_id: Optional[str] = None) -> TaskProcessor:
