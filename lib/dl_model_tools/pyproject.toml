@@ -16,6 +16,7 @@ dl-type-transformer = {path = "../dl_type_transformer"}
 dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
+msgpack = ">=1.1.0"
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
@@ -47,3 +48,7 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+
+[[tool.mypy.overrides]]
+module = ["msgpack.*"]
+ignore_missing_imports = true

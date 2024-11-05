@@ -11,6 +11,7 @@ from typing import (
     Any,
     Iterable,
     Optional,
+    Sequence,
     Tuple,
     Union,
 )
@@ -187,7 +188,7 @@ class ActionHandlingView(flask.views.View):
     ) -> flask.Response:
         try:
             db_result = dba.execute(action.db_adapter_query)
-            events: list[tuple[str, Any]] = [(RQEEventType.raw_cursor_info.value, db_result.cursor_info)]
+            events: Sequence[tuple[str, Any]] = [(RQEEventType.raw_cursor_info.value, db_result.cursor_info)]
             for raw_chunk in db_result.data_chunks:
                 events.append((RQEEventType.raw_chunk.value, raw_chunk))
             events.append((RQEEventType.finished.value, None))

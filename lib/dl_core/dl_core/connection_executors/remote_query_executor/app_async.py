@@ -11,6 +11,7 @@ import sys
 from typing import (
     TYPE_CHECKING,
     Any,
+    Sequence,
     Type,
     Union,
 )
@@ -175,7 +176,7 @@ class ActionHandlingView(BaseView):
             LOGGER.exception("Exception during execution")
             raise
 
-        events: list[tuple[str, Any]] = [(RQEEventType.raw_cursor_info.value, result.raw_cursor_info)]
+        events: Sequence[tuple[str, Any]] = [(RQEEventType.raw_cursor_info.value, result.raw_cursor_info)]
         async for raw_chunk in result.raw_chunk_generator:
             events.append((RQEEventType.raw_chunk.value, raw_chunk))
         events.append((RQEEventType.finished.value, None))
