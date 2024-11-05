@@ -69,10 +69,11 @@ tasks:
     desc: Run venv bin
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - 'PATH="{{.VENV_PATH}}/bin:$PATH" {{.VENV_PATH}}/bin/{{.CLI_ARGS}}'
+      - 'PATH="{{.VENV_PATH}}/bin:$PATH" {{.VENV_PATH}}/bin/{{.COMMAND}}'
     requires:
       vars:
         - VENV_PATH
+        - COMMAND
 
   venv_run:
     desc: Run poetry command
