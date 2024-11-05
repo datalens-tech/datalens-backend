@@ -167,6 +167,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
                 url=api_url,
                 params=request_params,
                 json=payload.json_body,
+                allow_redirects=False,
             )
 
             if resp.status != 200:
@@ -301,6 +302,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             resp = await self._session.post(
                 url=api_url,
                 json=body,
+                allow_redirects=False,
             )
 
             if resp.status != 200:
