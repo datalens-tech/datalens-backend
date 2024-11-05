@@ -40,7 +40,7 @@ def rebuild_prometheus_data(data):
 class SyncPromQLClient:
     def __init__(self, base_url, username, password, **kwargs):
         self._closed = False
-        self._session = requests.Session()
+        self._session = requests.Session(max_redirects=0)
         for prefix in ("http://", "https://"):
             self._session.mount(
                 prefix,
