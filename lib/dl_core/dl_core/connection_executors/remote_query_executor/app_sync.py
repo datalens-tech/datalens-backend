@@ -17,7 +17,6 @@ from typing import (
 
 import attr
 from flask import current_app
-from flask.json.provider import JSONProvider
 import flask.views
 from werkzeug.exceptions import (
     Forbidden,

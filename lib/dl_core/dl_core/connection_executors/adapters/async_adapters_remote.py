@@ -357,6 +357,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             raise exc
 
         raw_data = await response.read()
+        raw_events: Any
         with GenericProfiler("qe_deserialization"):
             if use_json_serializer == "1":
                 serializer = DLSafeMessagePackSerializer()

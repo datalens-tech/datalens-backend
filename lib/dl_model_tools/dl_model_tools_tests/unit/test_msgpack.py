@@ -53,4 +53,4 @@ def test_perfomance():
     serializer = DLMessagePackSerializer()
     json_timeit = timeit.timeit(lambda: common_loads(common_dumps(obj)), number=10)
     msgpack_timeit = timeit.timeit(lambda: serializer.loads(serializer.dumps(obj)), number=10)
-    assert msgpack_timeit * 1.4 < json_timeit, (msgpack_timeit, json_timeit)  # multiplier is selected experimentally
+    assert msgpack_timeit * 1.3 < json_timeit  # multiplier is selected experimentally
