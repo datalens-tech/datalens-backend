@@ -73,7 +73,7 @@ from dl_dashsql.typed_query.primitives import (
 )
 from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
 from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
-from dl_model_tools.serialization import common_loads
+from dl_model_tools.msgpack import DLSafeMessagePackSerializer
 from dl_utils.utils import make_url
 
 
@@ -358,7 +358,11 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
 
         raw_data = await response.read()
         with GenericProfiler("qe_deserialization"):
-            raw_events = common_loads(raw_data) if use_json_serializer == "1" else pickle.loads(raw_data)
+            if use_json_serializer == "1":
+                serializer = DLSafeMessagePackSerializer()
+                raw_events = serializer.loads(raw_data)
+            else:
+                raw_events = pickle.loads(raw_data)
 
         async def event_gen() -> AsyncGenerator[Tuple[RQEEventType, Any], None]:
             for raw_event in raw_events:
