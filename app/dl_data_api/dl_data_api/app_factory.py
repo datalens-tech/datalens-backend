@@ -84,7 +84,6 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
         self,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> EnvSetupResult:
-        auth_mw_list: list[AIOHTTPMiddleware]
         sr_middleware_list: list[AIOHTTPMiddleware]
         usm_middleware_list: list[AIOHTTPMiddleware]
 
@@ -104,16 +103,6 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
         # Auth middlewares
         auth_mw = self._get_auth_middleware()
 
-        if auth_mw is None:
-            auth_mw_list = [
-                auth_trust_middleware(
-                    fake_user_id="_user_id_",
-                    fake_user_name="_user_name_",
-                )
-            ]
-        else:
-            auth_mw_list = [auth_mw]
-
         # SR middlewares
         sr_middleware_list = [
             services_registry_middleware(
@@ -131,7 +120,7 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
             ca_data=ca_data,
         )
 
-        if auth_mw is None:
+        if self._settings.AUTH is not None and self._settings.AUTH == "NONE":
             usm_middleware_list = [
                 service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore  # 2024-01-30 # TODO: Argument "us_master_token" to "service_us_manager_middleware" has incompatible type "str | None"; expected "str"  [arg-type]
                 service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw),  # type: ignore  # 2024-01-30 # TODO: Argument "us_master_token" to "service_us_manager_middleware" has incompatible type "str | None"; expected "str"  [arg-type]
@@ -143,22 +132,42 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
             ]
 
         result = EnvSetupResult(
-            auth_mw_list=auth_mw_list,
+            auth_mw_list=[auth_mw],
             sr_middleware_list=sr_middleware_list,
             usm_middleware_list=usm_middleware_list,
         )
 
         return result
 
-    def _get_auth_middleware(self) -> AIOHTTPMiddleware | None:
+    def _get_auth_middleware(self) -> AIOHTTPMiddleware:
+        if self._settings.AUTH is None or self._settings.AUTH.TYPE == "NONE":
+            return self._get_auth_middleware_none()
+
+        if self._settings.AUTH.TYPE == "ZITADEL":
+            return self._get_auth_middleware_zitadel(
+                ca_data=get_multiple_root_certificates(
+                    self._settings.CA_FILE_PATH,
+                    *self._settings.EXTRA_CA_FILE_PATHS,
+                ),
+            )
+
+        raise ValueError(f"Unknown auth type: {self._settings.AUTH.TYPE}")
+
+    def _get_auth_middleware_none(
+        self,
+    ) -> AIOHTTPMiddleware:
+        return auth_trust_middleware(
+            fake_user_id="_user_id_",
+            fake_user_name="_user_name_",
+        )
+
+    def _get_auth_middleware_zitadel(
+        self,
+        ca_data: bytes,
+    ) -> AIOHTTPMiddleware:
         self._settings: DataApiAppSettingsOS
+        assert self._settings.AUTH is not None
 
-        if self._settings.AUTH is None:
-            LOGGER.warning("No auth settings found, continuing without auth setup")
-            return None
-
-        # TODO: Add support for other auth types
-        assert self._settings.AUTH.TYPE == "ZITADEL"
         import httpx
 
         import dl_zitadel

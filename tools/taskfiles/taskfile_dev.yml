@@ -53,7 +53,7 @@ tasks:
         - PYPROJECT_TOML_PATH
     vars:
       UNUSED_ENVS:
-        sh: poetry env list --no-ansi --directory={{.PYPROJECT_TOML_PATH}} 
+        sh: poetry env list --no-ansi --directory={{.PYPROJECT_TOML_PATH}}
           | sed 's/ (Activated)//g'
           | grep -v \".venv\" || true
 
@@ -64,7 +64,7 @@ tasks:
     requires:
       vars:
         - PYPROJECT_TOML_PATH
-  
+
   venv_bin:
     desc: Run venv bin
     dir: "{{.USER_WORKING_DIR}}"
@@ -81,7 +81,7 @@ tasks:
     cmds:
       - task: venv_bin
         vars:
-          COMMAND: "python -m {{.COMMAND}} {{.CLI_ARGS}}"
+          CLI_ARGS: "python -m {{.COMMAND}} {{.CLI_ARGS}}"
 
   clean:
     desc: Clean environment
@@ -100,12 +100,12 @@ tasks:
       - task: venv_run
         vars:
           COMMAND: "black --config {{.LINTERS_PYPROJECT_TOML_PATH}} --check {{.LINT_PATH}}"
-      
+
       - echo "Running isort checks..."
       - task: venv_run
         vars:
           COMMAND: "isort --settings-path {{.LINTERS_PYPROJECT_TOML_PATH}} --check-only {{.LINT_PATH}}"
-      
+
       - echo "Running ruff checks..."
       - task: venv_run
         vars:
@@ -114,7 +114,7 @@ tasks:
       LINT_PATH: '{{.CLI_ARGS | default "."}}'
       TOML_FILES:
         sh: find {{.CLI_ARGS | default "."}} -name '*.toml' | tr '\n' ' '
-  
+
   lint-fix:
     desc: Lint fix code
     dir: "{{.USER_WORKING_DIR}}"
@@ -123,7 +123,7 @@ tasks:
       - task: venv_run
         vars:
           COMMAND: "black --safe --config {{.LINTERS_PYPROJECT_TOML_PATH}} {{.LINT_PATH}}"
-      
+
       - echo "Running isort fixes..."
       - task: venv_run
         vars:
@@ -184,12 +184,12 @@ tasks:
     var:
     env:
       PORTS:
-        sh: DOCKER_HOST=ssh://{{.HOST}} docker ps --format "{{`{{.Ports}}`}}" 
-          | grep -o ':[0-9]*->' 
+        sh: DOCKER_HOST=ssh://{{.HOST}} docker ps --format "{{`{{.Ports}}`}}"
+          | grep -o ':[0-9]*->'
           | sed 's/->//g'
-          | sed 's/://g' 
+          | sed 's/://g'
           | uniq
-  
+
   ssh_forward_stop:
     desc: Stop SSH port forwarding for Docker containers
     cmds:
