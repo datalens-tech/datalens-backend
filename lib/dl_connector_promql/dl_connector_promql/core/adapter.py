@@ -145,6 +145,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
                 "end": conn_params["to"],
                 "step": conn_params["step"],
             },
+            allow_redirects=False,
         )
         return resp
 
@@ -236,6 +237,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
     async def test(self) -> None:
         await self._session.get(
             url=urljoin(self._url, "-/ready"),
+            allow_redirects=False,
         )
 
     async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
