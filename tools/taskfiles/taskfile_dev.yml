@@ -73,6 +73,7 @@ tasks:
     requires:
       vars:
         - VENV_PATH
+        - COMMAND
 
   venv_run:
     desc: Run poetry command
