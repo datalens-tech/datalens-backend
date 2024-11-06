@@ -133,29 +133,13 @@ def make_cron_task(task: BaseTaskMeta, schedule: CronSchedule) -> CronTask:
 
 async def arq_base_task(context: Dict, params: Dict) -> None:
     LOGGER.info("Run arq task with params %s", params)
-    # transition
-    # i'll delete it later
-    if "task_params" in params:
-        name = params["name"]
-        instance_id = params["instance_id"]
-        task_params = params["task_params"]
-        request_id = params.get("request_id")
-        task_instance = TaskInstance(
-            name=name,
-            params=task_params,
-            instance_id=instance_id,
-            request_id=request_id,
-            attempt=context["job_try"] - 1,  # it starts from 1 o_O
-        )
-    else:
-        name = params.pop("name")
-        instance_id = params.pop("instance_id")
-        task_instance = TaskInstance(
-            name=name,
-            params=params,
-            instance_id=instance_id,
-            attempt=context["job_try"] - 1,  # it starts from 1 o_O
-        )
+    task_instance = TaskInstance(
+        name=params["name"],
+        params=params["task_params"],
+        instance_id=params["instance_id"],
+        request_id=params.get("request_id"),
+        attempt=context["job_try"] - 1,  # it starts from 1 o_O
+    )
     executor: Executor = context[EXECUTOR_KEY]
     job_result = await executor.run_job(task_instance)
     if isinstance(job_result, Retry):

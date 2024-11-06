@@ -3,6 +3,7 @@ import logging
 from typing import Optional
 
 import arq
+import arq.jobs
 import attr
 
 from dl_task_processor.arq_wrapper import (
@@ -40,9 +41,16 @@ class BaseTaskProcessorImpl(metaclass=abc.ABCMeta):
     async def schedule(self, task: TaskInstance) -> None:
         pass
 
+    @abc.abstractmethod
+    async def cancel(self, instance_id: InstanceID) -> None:
+        pass
+
 
 class DummyTaskProcessorImpl(BaseTaskProcessorImpl):
     async def schedule(self, task: TaskInstance) -> None:
+        pass
+
+    async def cancel(self, instance_id: InstanceID) -> None:
         pass
 
 
@@ -54,20 +62,22 @@ class ARQProcessorImpl(BaseTaskProcessorImpl):
         await self.pool.enqueue_job(
             "arq_base_task",
             dict(
-                {
-                    "name": task.name,
-                    "instance_id": task.instance_id,
-                    "request_id": task.request_id,
-                    "task_params": task.params,
-                },
+                name=task.name,
+                instance_id=task.instance_id,
+                request_id=task.request_id,
+                task_params=task.params,
             ),
+            _job_id=task.instance_id.to_str(),
         )
+
+    async def cancel(self, instance_id: InstanceID) -> None:
+        job = arq.jobs.Job(job_id=instance_id.to_str(), redis=self.pool)
+        await job.abort(timeout=10.0)
 
 
 @attr.s
 class LocalProcessorImpl(BaseTaskProcessorImpl):
     _executor: Executor = attr.ib()
-    _is_sync: bool = attr.ib(default=False)
 
     async def schedule(self, task: TaskInstance) -> None:
         while True:
@@ -75,6 +85,9 @@ class LocalProcessorImpl(BaseTaskProcessorImpl):
             if not isinstance(result, Retry):
                 return
             task.attempt += 1
+
+    async def cancel(self, instance_id: InstanceID) -> None:
+        pass
 
 
 @attr.s
@@ -97,9 +110,14 @@ class TaskProcessor:
             task.get_params(),
             task_instance.instance_id.to_str(),
         )
-        self._state.set_scheduled(task_instance)
+        self._state.set_scheduled(task_instance.instance_id)
         await self._impl.schedule(task_instance)
         return task_instance
+
+    async def cancel(self, instance_id: InstanceID) -> None:
+        LOGGER.info("Cancelling task with instance_id %s", instance_id.to_str())
+        self._state.set_aborted(instance_id)
+        await self._impl.cancel(instance_id)
 
 
 def make_task_processor(redis_pool: arq.ArqRedis, request_id: Optional[str] = None) -> TaskProcessor:

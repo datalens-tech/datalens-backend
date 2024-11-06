@@ -3,12 +3,14 @@ import logging
 import pytest
 
 from dl_task_processor.state import wait_task
+from dl_task_processor.worker import WorkerSettings
 from dl_task_processor_tests.utils import (
     BrokenTaskInterface,
     RetryTaskInterface,
     ScheduleFromTaskTaskInterface,
     SomeTaskInterface,
     TestIdsTaskInterface,
+    WaitingTaskInterface,
 )
 
 
@@ -51,3 +53,13 @@ async def test_task_ids(task_processor_client, task_state, request_id):
 async def test_schedule_task_by_task(task_processor_client, task_state):
     task = await task_processor_client.schedule(ScheduleFromTaskTaskInterface())
     assert await wait_task(task, task_state) == ["scheduled", "started", "success"]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("worker_settings", [WorkerSettings(allow_abort_jobs=True)], indirect=True)
+async def test_schedule_and_cancel_arq_task(task_processor_arq_client, task_state):
+    task = await task_processor_arq_client.schedule(WaitingTaskInterface(seconds_to_wait=15))
+    await task_processor_arq_client.cancel(task.instance_id)
+    result = await wait_task(task, task_state)
+    assert result[-1] == "aborted"
+    assert "success" not in result
