@@ -38,7 +38,7 @@ from dl_core import profiling_middleware
 from dl_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
 from dl_core.connection_executors.models.constants import (
     HEADER_BODY_SIGNATURE,
-    HEADER_USE_JSON_SERIALIZER,
+    HEADER_USE_NEW_QE_SERIALIZER,
 )
 from dl_core.connection_executors.qe_serializer import (
     ActionSerializer,
@@ -194,7 +194,7 @@ class ActionHandlingView(flask.views.View):
 
             response_body: bytes
             with GenericProfiler("sync_qe_serialization"):
-                if flask.request.headers.get(HEADER_USE_JSON_SERIALIZER) == "1":
+                if flask.request.headers.get(HEADER_USE_NEW_QE_SERIALIZER) == "1":
                     serializer = DLSafeMessagePackSerializer()
                     response_body = serializer.dumps(events)
                 else:

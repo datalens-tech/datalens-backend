@@ -39,7 +39,7 @@ from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAd
 from dl_core.connection_executors.models.constants import (
     HEADER_BODY_SIGNATURE,
     HEADER_REQUEST_ID,
-    HEADER_USE_JSON_SERIALIZER,
+    HEADER_USE_NEW_QE_SERIALIZER,
 )
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
@@ -182,7 +182,7 @@ class ActionHandlingView(BaseView):
 
         response_body: bytes
         with GenericProfiler("async_qe_serialization"):
-            if self.request.headers.get(HEADER_USE_JSON_SERIALIZER) == "1":
+            if self.request.headers.get(HEADER_USE_NEW_QE_SERIALIZER) == "1":
                 serializer = DLSafeMessagePackSerializer()
                 response_body = serializer.dumps(events)
             else:
