@@ -17,26 +17,26 @@ tasks:
       - echo 'Testing:'
       - echo '`task dev:test` to run tests in current directory'
       - echo ''
-      - echo '`task dev:compose_start` to start docker-compose'
-      - echo '`task dev:compose_stop` to stop docker-compose'
-      - echo '`task dev:compose_stop_all` to stop all running docker containers'
-      - echo 'All `dev:compose_*` tasks could be used with DOCKER_HOST, f.e. `DOCKER_HOST=ssh://dl-vm task dev:compose_start`'
+      - echo '`task dev:compose-start` to start docker-compose'
+      - echo '`task dev:compose-stop` to stop docker-compose'
+      - echo '`task dev:compose-stop-all` to stop all running docker containers'
+      - echo 'All `dev:compose_*` tasks could be used with DOCKER_HOST, f.e. `DOCKER_HOST=ssh://dl-vm task dev:compose-start`'
       - echo ''
-      - echo 'If compose is started remotely via SSH, use `task dev:ssh_forward_start` to forward ports to localhost'
-      - echo 'Use `task dev:ssh_forward_stop` to stop all SSH port forwarding'
+      - echo 'If compose is started remotely via SSH, use `task dev:ssh-forward-start` to forward ports to localhost'
+      - echo 'Use `task dev:ssh-forward-stop` to stop all SSH port forwarding'
       - echo ''
       - echo 'Development workflow example:'
       - echo '0. source environment variables'
       - echo '1. `cd %PACKAGE_DIR%`'
       - echo '2. `task dev:init`'
-      - echo '3. `DOCKER_HOST=ssh://dl-vm task dev:compose_start`'
-      - echo '4. `HOST=dl-vm task dev:ssh_forward_start`'
+      - echo '3. `DOCKER_HOST=ssh://dl-vm task dev:compose-start`'
+      - echo '4. `HOST=dl-vm task dev:ssh-forward-start`'
       - echo '5. Write some code'
       - echo '6. `task dev:lint-fix`'
       - echo '7. `task dev:test`'
       - echo '8. Repeat 5-7'
-      - echo '9. `HOST=dl-vm task dev:ssh_forward_stop`'
-      - echo '10. `DOCKER_HOST=ssh://dl-vm task dev:compose_stop`'
+      - echo '9. `HOST=dl-vm task dev:ssh-forward-stop`'
+      - echo '10. `DOCKER_HOST=ssh://dl-vm task dev:compose-stop`'
 
   init:
     desc: Initialize environment
@@ -57,7 +57,7 @@ tasks:
           | sed 's/ (Activated)//g'
           | grep -v \".venv\" || true
 
-  poetry_lock:
+  poetry-lock:
     desc: Lock dependencies in metapkg
     cmds:
       - poetry lock --no-update --directory={{.PYPROJECT_TOML_PATH}}
@@ -65,23 +65,22 @@ tasks:
       vars:
         - PYPROJECT_TOML_PATH
 
-  venv_bin:
+  venv-bin:
     desc: Run venv bin
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - 'PATH="{{.VENV_PATH}}/bin:$PATH" {{.VENV_PATH}}/bin/{{.COMMAND}}'
+      - 'PATH="{{.VENV_PATH}}/bin:$PATH" {{.VENV_PATH}}/bin/{{.CLI_ARGS}}'
     requires:
       vars:
         - VENV_PATH
-        - COMMAND
 
-  venv_run:
+  venv-python:
     desc: Run poetry command
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - task: venv_bin
+      - task: venv-bin
         vars:
-          CLI_ARGS: "python -m {{.COMMAND}} {{.CLI_ARGS}}"
+          CLI_ARGS: "python -m {{.CLI_ARGS}}"
 
   clean:
     desc: Clean environment
@@ -97,19 +96,19 @@ tasks:
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
       - echo "Running black checks..."
-      - task: venv_run
+      - task: venv-python
         vars:
-          COMMAND: "black --config {{.LINTERS_PYPROJECT_TOML_PATH}} --check {{.LINT_PATH}}"
+          CLI_ARGS: "black --config {{.LINTERS_PYPROJECT_TOML_PATH}} --check {{.LINT_PATH}}"
 
       - echo "Running isort checks..."
-      - task: venv_run
+      - task: venv-python
         vars:
-          COMMAND: "isort --settings-path {{.LINTERS_PYPROJECT_TOML_PATH}} --check-only {{.LINT_PATH}}"
+          CLI_ARGS: "isort --settings-path {{.LINTERS_PYPROJECT_TOML_PATH}} --check-only {{.LINT_PATH}}"
 
       - echo "Running ruff checks..."
-      - task: venv_run
+      - task: venv-python
         vars:
-          COMMAND: "ruff check {{.LINT_PATH}}"
+          CLI_ARGS: "ruff check {{.LINT_PATH}}"
     vars:
       LINT_PATH: '{{.CLI_ARGS | default "."}}'
       TOML_FILES:
@@ -120,19 +119,19 @@ tasks:
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
       - echo "Running black fixes..."
-      - task: venv_run
+      - task: venv-python
         vars:
-          COMMAND: "black --safe --config {{.LINTERS_PYPROJECT_TOML_PATH}} {{.LINT_PATH}}"
+          CLI_ARGS: "black --safe --config {{.LINTERS_PYPROJECT_TOML_PATH}} {{.LINT_PATH}}"
 
       - echo "Running isort fixes..."
-      - task: venv_run
+      - task: venv-python
         vars:
-          COMMAND: "isort --settings-path {{.LINTERS_PYPROJECT_TOML_PATH}} {{.LINT_PATH}}"
+          CLI_ARGS: "isort --settings-path {{.LINTERS_PYPROJECT_TOML_PATH}} {{.LINT_PATH}}"
 
       - echo "Running ruff fixes..."
-      - task: venv_run
+      - task: venv-python
         vars:
-          COMMAND: "ruff check --fix {{.LINT_PATH}}"
+          CLI_ARGS: "ruff check --fix {{.LINT_PATH}}"
     vars:
       LINT_PATH: '{{.CLI_ARGS | default "."}}'
       TOML_FILES:
@@ -141,14 +140,13 @@ tasks:
   test:
     desc: Run tests
     cmds:
-      - task: venv_run
+      - task: venv-python
         vars:
-          COMMAND: pytest
-          CLI_ARGS: "{{.CLI_ARGS}}"
+          CLI_ARGS: "pytest {{.CLI_ARGS}}"
     vars:
       CLI_ARGS: '{{.CLI_ARGS | default "."}}'
 
-  compose_start:
+  compose-start:
     desc: Start docker-compose
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
@@ -157,7 +155,7 @@ tasks:
       DETACH: '{{.DETACH | default true }}'
       DOCKER_COMPOSE_FILE: '{{.DOCKER_COMPOSE_FILE | default "docker-compose.yml"}}'
 
-  compose_stop:
+  compose-stop:
     desc: Stop docker-compose
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
@@ -165,12 +163,12 @@ tasks:
     vars:
       DOCKER_COMPOSE_FILE: '{{.DOCKER_COMPOSE_FILE | default "docker-compose.yml"}}'
 
-  compose_stop_all:
+  compose-stop-all:
     desc: Stop all docker containers
     cmds:
       - docker stop $(docker ps -a -q)
 
-  ssh_forward_start:
+  ssh-forward-start:
     desc: Forward docker ports to localhost
     requires:
       vars:
@@ -190,7 +188,7 @@ tasks:
           | sed 's/://g'
           | uniq
 
-  ssh_forward_stop:
+  ssh-forward-stop:
     desc: Stop SSH port forwarding for Docker containers
     cmds:
       - echo "Next processes will be killed:"
