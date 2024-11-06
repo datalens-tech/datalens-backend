@@ -6,7 +6,6 @@ from typing import (
 
 import msgpack
 
-from dl_constants.types import TJSONExt
 from dl_model_tools.serialization import (
     COMMON_SERIALIZERS,
     NativeTypeSerializer,
