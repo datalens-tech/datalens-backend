@@ -32,7 +32,7 @@ class DLMessagePackSerializer:
             return dict(__dl_type__=preprocessor.typename, value=preprocessor.to_jsonable(obj))
         raise TypeError(f"Object of type {obj.__class__.__name__} is not MessagePack serializable")
 
-    def dumps(self, value: TJSONExt) -> bytes:
+    def dumps(self, value: Any) -> bytes:
         return msgpack.packb(value, default=self._default)
 
     def _object_hook(self, obj: dict[str, Any]) -> Any:
@@ -45,7 +45,7 @@ class DLMessagePackSerializer:
                 return postprocessor.from_jsonable(obj["value"])
         return obj
 
-    def loads(self, value: bytes) -> TJSONExt:
+    def loads(self, value: bytes) -> Any:
         return msgpack.loads(value, object_hook=self._object_hook)
 
 
