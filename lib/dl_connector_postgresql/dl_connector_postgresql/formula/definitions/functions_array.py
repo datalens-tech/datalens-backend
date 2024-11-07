@@ -46,11 +46,6 @@ def _array_notcontains(array: ClauseElement, value: ClauseElement) -> ClauseElem
         )
 
 
-# def _arrays_intersect(arrays: List[ClauseElement]) -> ClauseElement:
-#     # return sa.intersect_all(sa.select(sa.func.unnest(arrays[0])))
-#     return sa.func.array(sa.select(sa.func.unnest(arrays[0])))
-
-
 DEFINITIONS_ARRAY = [
     # arr_remove
     base.FuncArrayRemoveLiteralNull(
