@@ -71,8 +71,8 @@ class TestOptimizations(DefaultApiTestBase):
                 "geq": "[sales] >= 300",
                 "in": "[category] in ('Furniture', 'Technology')",
                 "not in": "[city] not in ('Moscow', 'London')",
-                "or": "[category] = 'Furniture' OR [sales] >= 300 OR [sales] < 100",
-                "and": "[sales] < 300 AND [sales] >= 100 AND [category] = 'Furniture'",
+                "or": "[category] = 'Furniture' OR [sales] >= 300 OR [sales] < 200",
+                "and": "[sales] < 300 AND [sales] >= 200 AND [category] = 'Furniture'",
             },
         )
 

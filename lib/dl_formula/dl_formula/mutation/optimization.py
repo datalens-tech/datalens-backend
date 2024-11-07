@@ -127,9 +127,9 @@ class OptimizeZeroOneComparisonMutation(FormulaMutation, abc.ABC):
         return True
 
     @abc.abstractmethod
-    def _make_negative_replacement(self, opt: nodes.FormulaItem) -> nodes.FormulaItem:
+    def _make_negative_replacement(self, opt: nodes.Binary) -> nodes.FormulaItem:
         """Replacement for == 0 and != 1"""
-        raise NotImplemented
+        raise NotImplementedError
 
     def make_replacement(
         self, old: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]
@@ -168,7 +168,7 @@ class OptimizeBinaryOperatorComparisonMutation(OptimizeZeroOneComparisonMutation
     }
     _supported_operators = tuple(_opt_inversions.keys())
 
-    def _make_negative_replacement(self, opt: nodes.FormulaItem) -> nodes.FormulaItem:
+    def _make_negative_replacement(self, opt: nodes.Binary) -> nodes.FormulaItem:
         return nodes.Binary.make(
             name=self._opt_inversions[opt.name],
             left=opt.left,
@@ -187,7 +187,7 @@ class OptimizeAndOrComparisonMutation(OptimizeZeroOneComparisonMutation):
 
     _supported_operators = ("and", "or")
 
-    def _make_negative_replacement(self, opt: nodes.FormulaItem) -> nodes.FormulaItem:
+    def _make_negative_replacement(self, opt: nodes.Binary) -> nodes.FormulaItem:
         return nodes.Unary.make(name="not", expr=opt)
 
 
