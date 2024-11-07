@@ -35,6 +35,7 @@ from dl_formula.mutation.mutation import (
     apply_mutations,
 )
 from dl_formula.mutation.optimization import (
+    OptimizeAndOrComparisonMutation,
     OptimizeBinaryOperatorComparisonMutation,
     OptimizeConstAndOrMutation,
     OptimizeConstComparisonMutation,
@@ -318,6 +319,7 @@ class OptimizingQueryMutator(QueryMutator):
             filters_mutator = FiltersAtomicQueryMutator(
                 mutations=[
                     OptimizeBinaryOperatorComparisonMutation(),
+                    OptimizeAndOrComparisonMutation(),
                 ]
             )
             compiled_query = filters_mutator.mutate_query(compiled_query)
