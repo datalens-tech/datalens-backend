@@ -46,6 +46,11 @@ def _array_notcontains(array: ClauseElement, value: ClauseElement) -> ClauseElem
         )
 
 
+# def _arrays_intersect(arrays: List[ClauseElement]) -> ClauseElement:
+#     # return sa.intersect_all(sa.select(sa.func.unnest(arrays[0])))
+#     return sa.func.array(sa.select(sa.func.unnest(arrays[0])))
+
+
 DEFINITIONS_ARRAY = [
     # arr_remove
     base.FuncArrayRemoveLiteralNull(
@@ -324,6 +329,17 @@ DEFINITIONS_ARRAY = [
     base.FuncUnnestArrayStr(
         variants=[
             V(D.POSTGRESQL, lambda arr: sa.func.unnest(arr)),
+        ]
+    ),
+    # intersect
+    base.FuncArrayIntersect(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                lambda *arrays: sa.func.array(
+                    sa.intersect(*[sa.select(sa.func.unnest(arr)) for arr in arrays]).scalar_subquery()
+                ),
+            )
         ]
     ),
 ]
