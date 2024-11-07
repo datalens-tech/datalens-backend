@@ -1,7 +1,10 @@
 import abc
+from typing import Optional
 
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
+from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_lib.enums import DatasetAction
 from dl_api_lib_testing.dataset_base import DatasetTestBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_testing.regulated_test import RegulatedTestCase
@@ -54,3 +57,30 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         assert result_field_to_remove.title not in [item.title for item in dataset_after_deletion.result_schema]
         assert result_field_to_remove.title in [item.title for item in dataset_after_reload.result_schema]
         assert len(dataset.result_schema) == len(dataset.result_schema)
+
+    def test_replace_connection(
+        self,
+        saved_dataset: Dataset,
+        saved_connection_id: str,
+        control_api_sync_client: SyncHttpClientBase,
+        connection_params: dict,
+        bi_headers: Optional[dict[str, str]],
+        control_api: SyncHttpDatasetApiV1,
+    ) -> None:
+        with self.create_connection(
+            control_api_sync_client=control_api_sync_client,
+            connection_params=connection_params,
+            bi_headers=bi_headers,
+        ) as new_connection_id:
+            dataset = control_api.apply_updates(
+                saved_dataset,
+                updates=[
+                    {
+                        "action": DatasetAction.replace_connection.value,
+                        "connection": {"id": saved_connection_id, "new_id": new_connection_id},
+                    },
+                ]
+            ).dataset
+            dataset = control_api.save_dataset(dataset).dataset
+            assert len(dataset.sources) == 1
+            assert dataset.sources[0].id == new_connection_id
