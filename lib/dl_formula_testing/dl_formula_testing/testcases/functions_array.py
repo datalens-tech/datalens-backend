@@ -315,3 +315,92 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("ARR_REMOVE([arr_float_value], GET_ITEM([arr_float_value], 1))", from_=data_table) == dbe.eval(
             "ARRAY(45, 0.123, NULL)"
         )
+
+    def test_array_intersection(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2))", from_=data_table) in (
+            dbe.eval("ARRAY(1, 2)"),
+            dbe.eval("ARRAY(2, 1)"),
+        )
+        assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2), ARRAY(1, 2))", from_=data_table) in (
+            dbe.eval("ARRAY(1, 2)"),
+            dbe.eval("ARRAY(2, 1)"),
+        )
+        assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2, 2), ARRAY(1, 2, 2))", from_=data_table) in (
+            dbe.eval("ARRAY(1, 2)"),
+            dbe.eval("ARRAY(2, 1)"),
+        )
+        assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2), ARRAY(3, 4), ARRAY(5, 6))", from_=data_table) in ([], "[]")
+        assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2), ARRAY(2, 3), ARRAY(3, 4))", from_=data_table) in ([], "[]")
+        assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2), ARRAY(2), ARRAY(2, 2, 3))", from_=data_table) == dbe.eval(
+            "ARRAY(2)"
+        )
+        assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2, 3), ARRAY(2, 3, 4))", from_=data_table) in (
+            dbe.eval("ARRAY(2, 3)"),
+            dbe.eval("ARRAY(3, 2)"),
+        )
+        assert dbe.eval("ARR_INTERSECT(ARRAY(2, 3), ARRAY(1, 2, 3, 4))", from_=data_table) in (
+            dbe.eval("ARRAY(2, 3)"),
+            dbe.eval("ARRAY(3, 2)"),
+        )
+        assert dbe.eval("ARR_INTERSECT(ARRAY(2, 3, 2, 2, 4), ARRAY(1, 2, 3, 2), ARRAY(2, 3, 2))", from_=data_table) in (
+            dbe.eval("ARRAY(2, 3)"),
+            dbe.eval("ARRAY(3, 2)"),
+        )
+        assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2, 3, NULL), ARRAY(2, 3, 4))", from_=data_table) in (
+            dbe.eval("ARRAY(2, 3)"),
+            dbe.eval("ARRAY(3, 2)"),
+        )
+        assert dbe.eval(
+            "ARR_INTERSECT(ARRAY(0, 2, NULL, NULL), ARRAY(0, NULL), ARRAY(2, NULL, 0))", from_=data_table
+        ) in (dbe.eval("ARRAY(0, NULL)"), dbe.eval("ARRAY(NULL, 0)"))
+        assert dbe.eval("ARR_INTERSECT(ARRAY(0, NULL, NULL), ARRAY(NULL, 0, NULL, NULL))", from_=data_table) in (
+            dbe.eval("ARRAY(0, NULL)"),
+            dbe.eval("ARRAY(NULL, 0)"),
+        )
+
+        assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(0, 5.0), ARRAY(4.999))", from_=data_table) in (
+            [],
+            "[]",
+        )
+        if self.make_decimal_cast:
+            assert dbe.eval("ARR_INTERSECT(ARRAY(5, 49.999), ARRAY(5, 49.999))", from_=data_table) in (
+                dbe.eval(
+                    f'ARRAY(DB_CAST(5.0, "{self.make_decimal_cast}", 2, 1), DB_CAST(49.999, "{self.make_decimal_cast}", 5, 3))'
+                ),
+                dbe.eval(
+                    f'ARRAY(DB_CAST(49.999, "{self.make_decimal_cast}", 5, 3), DB_CAST(5.0, "{self.make_decimal_cast}", 2, 1))'
+                ),
+            )
+            assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(0, 5.0))", from_=data_table) in (
+                dbe.eval(
+                    f'ARRAY(DB_CAST(0.0, "{self.make_decimal_cast}", 2, 1), DB_CAST(5.0, "{self.make_decimal_cast}", 2, 1))'
+                ),
+                dbe.eval(
+                    f'ARRAY(DB_CAST(5.0, "{self.make_decimal_cast}", 2, 1), DB_CAST(0.0, "{self.make_decimal_cast}", 2, 1))'
+                ),
+            )
+            assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(4.999))", from_=data_table) == dbe.eval(
+                f'ARRAY(DB_CAST(4.999, "{self.make_decimal_cast}", 4, 3))'
+            )
+        else:
+            assert dbe.eval("ARR_INTERSECT(ARRAY(5, 49.999), ARRAY(5, 49.999))", from_=data_table) in (
+                dbe.eval("ARRAY(5.0, 49.999)"),
+                dbe.eval("ARRAY(49.999, 5.0)"),
+            )
+            assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(0, 5.0))", from_=data_table) in (
+                dbe.eval("ARRAY(0, 5.0)"),
+                dbe.eval("ARRAY(5.0, 0)"),
+            )
+            assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(4.999))", from_=data_table) == dbe.eval(
+                "ARRAY(4.999)"
+            )
+
+        assert dbe.eval('ARR_INTERSECT(ARRAY("a", "b", "c"), ARRAY("abc"))', from_=data_table) in ([], "[]")
+        assert dbe.eval('ARR_INTERSECT(ARRAY("a", "b", "c"), ARRAY("a", "bc"))', from_=data_table) == dbe.eval(
+            'ARRAY("a")'
+        )
+        assert dbe.eval('ARR_INTERSECT(ARRAY("cba"), ARRAY("abc"))', from_=data_table) in ([], "[]")
+        assert dbe.eval(
+            'ARR_INTERSECT(ARRAY("ab", "c", "c"), ARRAY("ab", "b", "c", "c"), ARRAY("a", "c", "c", "ab"))',
+            from_=data_table,
+        ) in (dbe.eval('ARRAY("ab", "c")'), dbe.eval('ARRAY("c", "ab")'))
