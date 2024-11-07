@@ -79,7 +79,7 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
                         "action": DatasetAction.replace_connection.value,
                         "connection": {"id": saved_connection_id, "new_id": new_connection_id},
                     },
-                ]
+                ],
             ).dataset
             assert dataset.sources
             assert all(source.connection_id == new_connection_id for source in dataset.sources)
