@@ -83,4 +83,4 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
             ).dataset
             dataset = control_api.save_dataset(dataset).dataset
             assert dataset.sources
-            assert all(source.id == new_connection_id for source in dataset.sources)
+            assert all(source.id == new_connection_id for source in dataset.sources), list(dataset.sources)
