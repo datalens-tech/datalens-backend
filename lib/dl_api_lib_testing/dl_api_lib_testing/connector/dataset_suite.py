@@ -82,4 +82,4 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
                 ]
             ).dataset
             assert dataset.sources
-            assert all(source.connection_id == new_connection_id for source in dataset.sources), (saved_connection_id, new_connection_id, list(dataset.sources))
+            assert all(source.connection_id == new_connection_id for source in dataset.sources)
