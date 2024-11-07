@@ -215,6 +215,7 @@ def test_optimize_binary_operator_comparison_mutation():
         )
     )
 
+
 def test_optimize_and_or_comparison_mutation():
     formula_obj = n.formula(
         n.binary(
