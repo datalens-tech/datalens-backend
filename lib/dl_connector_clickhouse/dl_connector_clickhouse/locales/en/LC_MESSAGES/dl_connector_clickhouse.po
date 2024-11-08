@@ -12,6 +12,9 @@ msgstr ""
 msgid "label_connector-clickhouse"
 msgstr "ClickHouse"
 
+msgid "field_readonly-mode"
+msgstr "Readonly"
+
 msgid "field_click-house-port"
 msgstr "HTTP interface port"
 

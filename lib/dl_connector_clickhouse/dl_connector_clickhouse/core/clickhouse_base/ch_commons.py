@@ -41,7 +41,6 @@ LOGGER = logging.getLogger(__name__)
 
 def get_ch_settings(
     read_only_level: Optional[int] = None,
-    max_execution_time: Optional[int] = None,
     output_format_json_quote_denormals: Optional[int] = None,
 ) -> dict:
     settings = {
@@ -49,14 +48,6 @@ def get_ch_settings(
         # 1 — JOIN behaves the same way as in standard SQL.
         # The type of the corresponding field is converted to Nullable, and empty cells are filled with NULL.
         "join_use_nulls": 1,
-        # https://clickhouse.com/docs/en/operations/settings/query-complexity#max-execution-time
-        # Maximum query execution time in seconds.
-        # By default, specify a large value to ensure there are no
-        # forever-running queries (which is also known to break old-version CH
-        # hosts at around 100_000 second long queries).
-        # Note that in CH the value is rounded down to integer, and 0 seems to mean 'no limit'.
-        # TODO: get rid of this parameter or figure out a proper way to use it, bc CH's estimates seem to be way off
-        "max_execution_time": max_execution_time if max_execution_time is None else 3600 * 4,
         "readonly": read_only_level,
         # request clickhouse stat in response headers
         # otherwise clickhouse sends nulls in X-ClickHouse-Summary

@@ -38,3 +38,4 @@ class ClickHouseConnectionSchema(
         load_default=None,
         load_only=True,
     )
+    readonly = ma_fields.Integer(attribute="data.readonly", bi_extra=FieldExtra(editable=True))

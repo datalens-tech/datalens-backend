@@ -140,7 +140,6 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
     # TODO FIX: Move to utils
     def get_ch_settings(self) -> dict:
         return get_ch_settings(
-            max_execution_time=self._target_dto.max_execution_time,
             read_only_level=None,
             output_format_json_quote_denormals=1,
         )
@@ -401,13 +400,17 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         }
 
     def get_request_params(self, dba_q: DBAdapterQuery) -> dict[str, str]:
-        read_only_level = None if dba_q.trusted_query else 2
+        if dba_q.trusted_query:
+            read_only_level = None
+        elif self._target_dto.readonly == 1:
+            read_only_level = 1
+        else:
+            read_only_level = 2
         return dict(
             # TODO FIX: Move to utils
             database=dba_q.db_name or self._target_dto.db_name or "system",
             **get_ch_settings(
                 read_only_level=read_only_level,
-                max_execution_time=self._target_dto.max_execution_time,
             ),
         )
 
