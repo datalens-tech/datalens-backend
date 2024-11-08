@@ -66,7 +66,7 @@ class BaseClickHouseReadonlyUserTestClass(BaseClickHouseTestClass):
             port=test_config.CoreReadonlyConnectionSettings.PORT,
             username=test_config.CoreReadonlyConnectionSettings.USERNAME,
             password=test_config.CoreReadonlyConnectionSettings.PASSWORD,
-            readonly="1",
+            readonly=1,
         )
 
 
