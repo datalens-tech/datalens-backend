@@ -59,7 +59,6 @@ class DefaultDbDatasetSourceGenerator(DatasetSourceGenerator):
     def generate_source_params(self) -> DataSourceCreationSpec:
         db_table = make_table(self.db)
         source_type = self.connection.source_type
-        assert source_type is not None
         return DataSourceCreationSpec(
             connection=self.connection, source_type=source_type, dsrc_params=self._get_table_source_params(db_table)
         )

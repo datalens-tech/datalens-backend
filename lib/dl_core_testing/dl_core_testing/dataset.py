@@ -104,9 +104,7 @@ def make_dataset(
 
 def get_created_from(db: Db) -> DataSourceType:
     conn_cls = get_connection_class(conn_type=db.conn_type)
-    source_type = conn_cls.source_type
-    assert source_type is not None
-    return source_type
+    return conn_cls.source_type
 
 
 def data_source_settings_from_table(table: DbTable, db_name: Optional[str] = None) -> dict:

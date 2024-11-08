@@ -1476,7 +1476,7 @@ class DatasetValidator(DatasetBaseWrapper):
         except common_exc.DataSourceMigrationImpossible:
             # Failed to migrate anything.
             # Let's just go with an empty default data source
-            return {}, new_connection.source_type  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "tuple[dict[Any, Any], DataSourceType | None]", expected "tuple[dict[Any, Any], DataSourceType]")  [return-value]
+            return {}, new_connection.source_type
 
         new_dsrc_cls = get_data_source_class(new_dsrc_spec.source_type)
         new_dsrc_dummy = new_dsrc_cls(

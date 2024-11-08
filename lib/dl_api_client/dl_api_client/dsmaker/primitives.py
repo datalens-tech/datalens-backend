@@ -214,8 +214,8 @@ class Container(Generic[_ITEM_TV]):
 
 @attr.s
 class DataSource(ApiProxyObject):
-    connection_id: str = attr.ib(default=None)
-    source_type: Optional[DataSourceType] = attr.ib(default=None, converter=DataSourceType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    connection_id: str = attr.ib(kw_only=True)
+    source_type: DataSourceType = attr.ib(kw_only=True, converter=DataSourceType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
     parameters: dict = attr.ib(default=None)
     raw_schema: list = attr.ib(factory=list)
     index_info_set: Optional[list] = attr.ib(default=None)

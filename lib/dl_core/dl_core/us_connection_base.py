@@ -138,7 +138,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     scope: ClassVar[str] = "connection"  # type: ignore  # TODO: fix
 
     conn_type: ConnectionType
-    source_type: ClassVar[Optional[DataSourceType]] = None
+    source_type: ClassVar[DataSourceType]
     allowed_source_types: ClassVar[Optional[frozenset[DataSourceType]]] = None
     allow_dashsql: ClassVar[bool] = False
     allow_cache: ClassVar[bool] = False
@@ -211,9 +211,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     def get_provided_source_types(cls) -> frozenset[DataSourceType]:
         if cls.allowed_source_types is not None:
             return cls.allowed_source_types
-        if cls.source_type is not None:
-            return frozenset((cls.source_type,))
-        return frozenset()
+        return frozenset((cls.source_type,))
 
     @property
     def conn_ref(self) -> Optional[ConnectionRef]:
@@ -542,7 +540,7 @@ class ConnectionSQL(SubselectMixin, ConnectionBase):  # type: ignore  # TODO: fi
             DataSourceTemplate(
                 title=self.get_data_source_template_title(parameters),
                 group=self.get_data_source_template_group(parameters),
-                source_type=self.source_type,  # type: ignore  # TODO: fix
+                source_type=self.source_type,
                 connection_id=self.uuid,  # type: ignore  # TODO: fix
                 parameters=parameters,
             )

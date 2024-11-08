@@ -159,7 +159,6 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[DataSourceTemplate]:
-        assert self.source_type is not None
         return [
             DataSourceTemplate(
                 title=source.title,

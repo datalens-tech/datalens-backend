@@ -47,7 +47,7 @@ class ObligatoryFilterUpdateSchema(DefaultSchema[ObligatoryFilter]):
 class BaseApiV1SerializationAdapter:
     # TODO: switch to marshmallow
 
-    def dump_item(self, item: ApiProxyObject, action: Action = None) -> dict:  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "action" (default has type "None", argument has type "Action")  [assignment]
+    def dump_item(self, item: ApiProxyObject, action: Action) -> dict:
         """
         Dump item data for API request. Return dict
 
@@ -69,7 +69,7 @@ class BaseApiV1SerializationAdapter:
             return dict(
                 id=item.id,
                 connection_id=item.connection_id,
-                source_type=item.source_type.name,  # type: ignore  # 2024-01-24 # TODO: Item "None" of "DataSourceType | None" has no attribute "name"  [union-attr]
+                source_type=item.source_type.name,
                 title=item.title,
                 raw_schema=[
                     dict(
