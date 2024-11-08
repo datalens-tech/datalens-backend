@@ -55,7 +55,7 @@ class ClickHouseConnectionReadonlyUserTestBase(ClickHouseConnectionTestBase):
             port=CoreReadonlyConnectionSettings.PORT,
             username=CoreReadonlyConnectionSettings.USERNAME,
             password=CoreReadonlyConnectionSettings.PASSWORD,
-            readonly="1",
+            readonly=1,
         )
 
 
