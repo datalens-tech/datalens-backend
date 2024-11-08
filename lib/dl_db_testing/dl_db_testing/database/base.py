@@ -173,7 +173,7 @@ class DbTableBase:
                 rest = data
                 while rest:
                     chunk = rest[:chunk_size]
-                    self.db.execute(self.table.insert(chunk))
+                    self.db.execute(self.table.insert(), chunk)
                     rest = rest[chunk_size:]
             else:
                 for row in data:
