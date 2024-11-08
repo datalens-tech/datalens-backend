@@ -1,5 +1,5 @@
 # United Storage with predefined env
-FROM ghcr.io/datalens-tech/datalens-us:latest
+FROM ghcr.io/datalens-tech/datalens-us:release
 
 ENV DEV_MODE="true"
 ENV SQL_DEBUG="true"
