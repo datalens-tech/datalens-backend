@@ -608,6 +608,7 @@ class UnknownConnection(ConnectionBase):
     """
 
     conn_type = ConnectionType.unknown
+    source_type = DataSourceType.UNKNOWN
 
     @attr.s(kw_only=True)
     class DataModel(ConnectionBase.DataModel):

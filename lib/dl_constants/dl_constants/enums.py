@@ -216,6 +216,8 @@ class WhereClauseOperation(Enum):
 
 
 class DataSourceType(DynamicEnum):
+    UNKNOWN = AutoEnumValue()
+
     @classmethod
     def normalize(cls, value: DataSourceType | str | None) -> Optional[DataSourceType]:
         # FIXME: Remove this hack (used only in dsmaker)
