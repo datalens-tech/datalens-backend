@@ -110,7 +110,7 @@ jobs:
         run: git branch --contains ${{ github.event.pull_request.base.sha }}
 
   gh_build_image:
-    runs-on: [ self-hosted, linux, light ]
+    runs-on: [ self-hosted, linux, k8s-runner-build ]
 
     needs: [ check-ci-allowed ]
 
@@ -267,7 +267,7 @@ jobs:
 
   run_tests_base:
     name: "🐍[pytest]${{ matrix.value }}"
-    runs-on: [ self-hosted, linux, light ]
+    runs-on: [ self-hosted, linux, k8s-runner-light ]
     permissions:
       packages: write
       contents: read
@@ -359,7 +359,7 @@ jobs:
 
   run_tests_fat:
     name: "🐍[pytest][fat]${{ matrix.value }}"
-    runs-on: [ self-hosted, linux, fat ]
+    runs-on: [ self-hosted, linux, k8s-runner-fat ]
     permissions:
       packages: write
       contents: read
