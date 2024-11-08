@@ -168,16 +168,10 @@ class DbTableBase:
         if isinstance(data, dict):
             self.db.execute(self.table.insert(data))
         elif isinstance(data, list):
-            if chunk_size > 1:
-                # TODO: Change to itertools.batched after switching to Python 3.12
-                rest = data
-                while rest:
-                    chunk = rest[:chunk_size]
-                    self.db.execute(self.table.insert(), chunk)
-                    rest = rest[chunk_size:]
-            else:
-                for row in data:
-                    self.insert(row)
+            # TODO: Change to itertools.batched after switching to Python 3.12
+            for pos in range(0, len(data), chunk_size):
+                chunk = data[pos : pos + chunk_size]
+                self.db.execute(self.table.insert(), chunk)
         else:
             raise TypeError(type(data))
 
