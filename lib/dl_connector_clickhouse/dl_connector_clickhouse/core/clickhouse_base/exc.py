@@ -53,7 +53,10 @@ class CHIncorrectData(CHQueryError):
 
 class CHReadonlyUser(CHQueryError):
     err_code = CHQueryError.err_code + ["READONLY_USER"]
-    default_message = "Clickhouse user should have parameter readonly set to 0 or 2"
+    default_message = (
+        "Clickhouse user must be correctly configured to use readonly 1 option (see docs). "
+        "For other readonly options user should have parameter readonly set to 0 or 2."
+    )
 
 
 class EstimatedExecutionTooLong(exc.DatabaseQueryError):

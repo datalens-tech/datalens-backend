@@ -7,7 +7,10 @@ from dl_api_lib_testing.connector.data_api_suites import (
     DefaultConnectorDataResultTestSuite,
 )
 
-from dl_connector_clickhouse_tests.db.api.base import ClickHouseDataApiTestBase
+from dl_connector_clickhouse_tests.db.api.base import (
+    ClickHouseDataApiReadonlyUserTestBase,
+    ClickHouseDataApiTestBase,
+)
 
 
 class TestClickHouseDataResult(ClickHouseDataApiTestBase, DefaultConnectorDataResultTestSuite):
@@ -32,3 +35,7 @@ class TestClickHouseDataPreview(ClickHouseDataApiTestBase, DefaultConnectorDataP
 
 class TestClickHouseDataCache(ClickHouseDataApiTestBase, DefaultConnectorDataCacheTestSuite):
     data_caches_enabled = True
+
+
+class TestClickHouseReadonlyUserDataResult(ClickHouseDataApiReadonlyUserTestBase, DefaultConnectorDataResultTestSuite):
+    pass
