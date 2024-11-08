@@ -1,6 +1,10 @@
+from enum import unique
 import typing
 
+import attr
+
 from dl_api_commons.base_models import TenantDef
+from dl_api_connector.form_config.models import rows as C
 from dl_api_connector.form_config.models.api_schema import (
     FormActionApiSchema,
     FormApiSchema,
@@ -12,14 +16,50 @@ from dl_api_connector.form_config.models.base import (
     ConnectionFormFactory,
     ConnectionFormMode,
 )
-from dl_api_connector.form_config.models.common import CommonFieldName
-import dl_api_connector.form_config.models.rows as api_rows
+from dl_api_connector.form_config.models.common import (
+    CommonFieldName,
+    FormFieldName,
+)
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_i18n.localizer_base import Localizer
 
 from dl_connector_clickhouse.api.connection_info import ClickHouseConnectionInfoProvider
 from dl_connector_clickhouse.api.i18n.localizer import Translatable
+
+
+@unique
+class ClickHouseFieldName(FormFieldName):
+    readonly = "readonly"
+
+
+@attr.s
+class ClickHouseRowConstructor:
+    _localizer: Localizer = attr.ib()
+
+    def readonly_mode_row(self) -> C.CustomizableRow:
+        return C.CustomizableRow(
+            items=[
+                C.LabelRowItem(
+                    align="start",
+                    text=self._localizer.translate(Translatable("field_readonly-mode")),
+                    display_conditions={CommonFieldName.advanced_settings: "opened"},
+                ),
+                C.SelectRowItem(
+                    name=ClickHouseFieldName.readonly,
+                    width="s",
+                    available_values=[
+                        C.SelectOption(content="0", value="0"),
+                        C.SelectOption(content="1", value="1"),
+                        C.SelectOption(content="2", value="2"),
+                    ],
+                    default_value="2",
+                    control_props=C.SelectRowItem.Props(show_search=False),
+                    display_conditions={CommonFieldName.advanced_settings: "opened"},
+                ),
+            ]
+        )
 
 
 class ClickHouseConnectionFormFactory(ConnectionFormFactory):
@@ -38,6 +78,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=CommonFieldName.secure),
             FormFieldApiSchema(name=CommonFieldName.ssl_ca),
             FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
+            FormFieldApiSchema(name=ClickHouseFieldName.readonly),
         ]
 
     def _get_edit_api_schema(
@@ -109,8 +150,9 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
         rc: RowConstructor,
         connector_settings: ConnectorSettingsBase | None,
     ) -> typing.Sequence[FormRow]:
+        clickhouse_rc = ClickHouseRowConstructor(localizer=self._localizer)
         return [
-            api_rows.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
+            C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
             rc.raw_sql_level_row(),
             rc.collapse_advanced_settings_row(),
             *rc.ssl_rows(
@@ -119,6 +161,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
                 enabled_default_value=True,
             ),
             rc.data_export_forbidden_row(),
+            clickhouse_rc.readonly_mode_row(),
         ]
 
     def get_form_config(
