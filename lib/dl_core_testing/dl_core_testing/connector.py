@@ -21,6 +21,8 @@ SOURCE_TYPE_TESTING = DataSourceType.declare("TESTING")
 
 
 class TestingConnection(ConnectionBase):
+    source_type = SOURCE_TYPE_TESTING
+
     def get_conn_dto(self) -> connection_models.ConnDTO:
         raise NotImplementedError
 
