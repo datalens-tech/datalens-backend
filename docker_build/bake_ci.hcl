@@ -41,4 +41,7 @@ target "ci_with_src" {
     # todo: include stubs into the metapkg pyproject.toml
     "RUN . /venv/bin/activate && pip install -r /src/ci/requirements_types.txt"
   ])
+
+  cache-from = ["type=gha"]
+  cache-to = ["type=gha,mode=max"]
 }
