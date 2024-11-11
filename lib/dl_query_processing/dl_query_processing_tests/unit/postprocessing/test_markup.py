@@ -97,6 +97,3 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
 def test_markup_postprocessing():
     _test_markup_postprocessing_i(MarkupProcessing, check_nodes=True)
     _test_markup_postprocessing_i(MarkupProcessingDC, check_nodes=False)
-
-
-test_markup_postprocessing()
