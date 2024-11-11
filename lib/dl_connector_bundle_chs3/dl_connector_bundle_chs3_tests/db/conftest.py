@@ -3,6 +3,7 @@ from typing import Any
 import pytest
 
 from dl_api_lib_testing.initialization import initialize_api_lib_test
+from dl_formula_testing.forced_literal import forced_literal_use
 from dl_testing.utils import get_root_certificates
 
 from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
@@ -24,3 +25,9 @@ def patch_get_full_s3_filename(monkeypatch: pytest.MonkeyPatch) -> None:
 @pytest.fixture(scope="session")
 def root_certificates() -> bytes:
     return get_root_certificates()
+
+
+__all__ = (
+    # auto-use fixtures:
+    "forced_literal_use",
+)

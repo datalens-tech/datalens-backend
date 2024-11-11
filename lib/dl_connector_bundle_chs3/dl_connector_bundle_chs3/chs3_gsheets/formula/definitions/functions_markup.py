@@ -1,0 +1,5 @@
+from dl_connector_bundle_chs3.chs3_gsheets.formula.utils import clickhouse_funcs_for_gsheets_v2_dialect
+from dl_connector_clickhouse.formula.definitions.functions_markup import DEFINITIONS_MARKUP as CH_DEFINITIONS_MARKUP
+
+
+DEFINITIONS_MARKUP = clickhouse_funcs_for_gsheets_v2_dialect(CH_DEFINITIONS_MARKUP)

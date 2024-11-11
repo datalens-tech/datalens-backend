@@ -1431,6 +1431,9 @@ dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-core-testing = {path = "../dl_core_testing"}
 dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-formula-testing = {path = "../dl_formula_testing"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-task-processor = {path = "../dl_task_processor"}
@@ -1438,6 +1441,7 @@ dl-testing = {path = "../dl_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
+pytest = ">=7.2.2"
 sqlalchemy = ">=1.4.46, <2.0"
 xxhash = ">=3.2.0"
 
