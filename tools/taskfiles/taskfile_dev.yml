@@ -16,6 +16,9 @@ tasks:
       - echo ''
       - echo 'Testing:'
       - echo '`task dev:test` to run tests in current directory'
+      - echo '`task dev:test -- -k test_name` to run tests with specific name pattern'
+      - echo '`task dev:test -- path/to/tests` to run tests in specific directory'
+      - echo '`LOG_LEVEL=DEBUG task dev:test` to run tests with specific logging level'
       - echo ''
       - echo '`task dev:compose-start` to start docker-compose'
       - echo '`task dev:compose-stop` to stop docker-compose'
@@ -142,8 +145,11 @@ tasks:
     cmds:
       - task: venv-python
         vars:
-          CLI_ARGS: "pytest {{.CLI_ARGS}}"
+          CLI_ARGS: |
+            pytest {{.CLI_ARGS}} \
+            {{ if .LOG_LEVEL }}--log-cli-level={{.LOG_LEVEL}}{{ end }}
     vars:
+      LOG_LEVEL: '{{.LOG_LEVEL | default ""}}'
       CLI_ARGS: '{{.CLI_ARGS | default "."}}'
 
   compose-start:
