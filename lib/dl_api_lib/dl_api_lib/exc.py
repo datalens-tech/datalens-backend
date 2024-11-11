@@ -8,7 +8,7 @@ class FeatureNotAvailable(DLBaseException):
 
 
 class DatasetActionNotAllowedError(DLBaseException):
-    err_code = DLBaseException.err_code + ["ACTION_NOT_ALLOWED"]
+    err_code = DLBaseException.err_code + ["ACTION_NOT_ALLOWED"]  # test
 
 
 class UnsupportedForEntityType(DLBaseException):
