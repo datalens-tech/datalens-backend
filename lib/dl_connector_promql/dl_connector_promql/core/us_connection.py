@@ -9,6 +9,7 @@ import attr
 
 from dl_core.us_connection_base import ClassicConnectionSQL
 
+from dl_connector_promql.core.constants import SOURCE_TYPE_PROMQL
 from dl_connector_promql.core.dto import PromQLConnDTO
 
 
@@ -16,6 +17,7 @@ class PromQLConnection(ClassicConnectionSQL):
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
     allow_dashsql: ClassVar[bool] = True
+    source_type = SOURCE_TYPE_PROMQL
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
