@@ -62,15 +62,17 @@ class TestOptimizations(DefaultApiTestBase):
         assert self.const_value not in query
         assert "and" not in query.lower()
 
-    def test_optimize_binary_operator_comparison(self, control_api, data_api, saved_dataset):
+    def test_optimize_zero_one_comparison(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(
             api_v1=control_api,
             dataset=saved_dataset,
             formulas={
-                "eq": '[category] = "Furniture"',
+                "eq": "[category] = 'Furniture'",
                 "geq": "[sales] >= 300",
-                "in": '[category] in ("Furniture", "Technology")',
-                "not in": '[city] not in ("Moscow", "London")',
+                "in": "[category] in ('Furniture', 'Technology')",
+                "not in": "[city] not in ('Moscow', 'London')",
+                "or": "[category] = 'Furniture' OR [sales] >= 300 OR [sales] < 200",
+                "and": "[sales] < 300 AND [sales] >= 200 AND [category] = 'Furniture'",
             },
         )
 
@@ -84,6 +86,8 @@ class TestOptimizations(DefaultApiTestBase):
                 ds.find_field(title="geq").filter(WhereClauseOperation.EQ, [False]),
                 ds.find_field(title="in").filter(WhereClauseOperation.EQ, [False]),
                 ds.find_field(title="not in").filter(WhereClauseOperation.EQ, [True]),
+                ds.find_field(title="or").filter(WhereClauseOperation.EQ, [True]),
+                ds.find_field(title="and").filter(WhereClauseOperation.EQ, [False]),
             ],
             limit=1,
             fail_ok=True,
@@ -96,7 +100,9 @@ class TestOptimizations(DefaultApiTestBase):
             assert comparison not in query.lower()
 
         # ensure correct filters are presented
+        assert "!= 'Furniture'" not in query
         assert "= 'Furniture'" in query
         assert "< 300" in query
         assert "NOT IN ('Furniture', 'Technology')" in query
         assert "NOT IN ('Moscow', 'London')" in query
+        assert query.count("NOT (") == 1  # from [and], not from [or]

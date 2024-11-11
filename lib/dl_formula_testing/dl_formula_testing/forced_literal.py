@@ -41,7 +41,7 @@ class ForcedLiteral(MultiVariantTranslation):
             OPERATION_REGISTRY.unregister(def_item)
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def forced_literal_use() -> Generator[None, None, None]:
     with ForcedLiteral.use():
         yield None

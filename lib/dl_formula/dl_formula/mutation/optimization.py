@@ -103,7 +103,52 @@ class OptimizeConstMathOperatorMutation(OptimizeConstOperatorMutation):
         return node_cls.make(value, meta=old.meta)
 
 
-class OptimizeBinaryOperatorComparisonMutation(FormulaMutation):
+class OptimizeZeroOneComparisonMutation(FormulaMutation, abc.ABC):
+    """
+    Base class for optimizing ==/!= with 0/1.
+    """
+
+    _supported_operators: ClassVar[tuple[str, ...]]
+
+    def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
+        if not (isinstance(node, nodes.Binary) and node.name in ("==", "!=")):
+            return False
+
+        # should be either (binary op) ==/!= literal or literal ==/!= (binary op)
+        left, right = node.left, node.right
+        if isinstance(left, nodes.BaseLiteral) and isinstance(right, nodes.Binary):
+            left, right = right, left
+        if not (isinstance(left, nodes.Binary) and isinstance(right, nodes.BaseLiteral)):
+            return False
+
+        # both a binary op and a literal should be supported
+        if not (left.name in self._supported_operators and right.value in (0, 1)):
+            return False
+        return True
+
+    @abc.abstractmethod
+    def _make_negative_replacement(self, opt: nodes.Binary) -> nodes.FormulaItem:
+        """Replacement for == 0 and != 1"""
+        raise NotImplementedError
+
+    def make_replacement(
+        self, old: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]
+    ) -> nodes.FormulaItem:
+        assert isinstance(old, nodes.Binary)
+        left, right = old.left, old.right
+        if isinstance(left, nodes.BaseLiteral) and isinstance(right, nodes.Binary):
+            left, right = right, left
+        assert isinstance(left, nodes.Binary) and isinstance(right, nodes.BaseLiteral)
+
+        opt, lit = left, right  # aliases for convenience
+        if (old.name == "==" and lit.value == 1) or (old.name == "!=" and lit.value == 0):
+            return opt
+        if (old.name == "==" and lit.value == 0) or (old.name == "!=" and lit.value == 1):
+            return self._make_negative_replacement(opt)
+        raise ValueError(f"Unexpected binary operation {old.name} and/or literal {lit.value} in optimization")
+
+
+class OptimizeBinaryOperatorComparisonMutation(OptimizeZeroOneComparisonMutation):
     """
     A mutation that optimizes comparison with a result of another binary comparison.
     Originally intended to be used only for the filters section of a query, for example:
@@ -121,43 +166,29 @@ class OptimizeBinaryOperatorComparisonMutation(FormulaMutation):
         "in": "notin",
         "notin": "in",
     }
+    _supported_operators = tuple(_opt_inversions.keys())
 
-    def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
-        if not (isinstance(node, nodes.Binary) and node.name in ("==", "!=")):
-            return False
+    def _make_negative_replacement(self, opt: nodes.Binary) -> nodes.FormulaItem:
+        return nodes.Binary.make(
+            name=self._opt_inversions[opt.name],
+            left=opt.left,
+            right=opt.right,
+            meta=opt.meta,
+        )
 
-        # should be either (binary op) ==/!= literal or literal ==/!= (binary op)
-        left, right = node.left, node.right
-        if isinstance(left, nodes.BaseLiteral) and isinstance(right, nodes.Binary):
-            left, right = right, left
-        if not (isinstance(left, nodes.Binary) and isinstance(right, nodes.BaseLiteral)):
-            return False
 
-        # both a binary op and a literal should be supported
-        if not (left.name in self._opt_inversions.keys() and right.value in (0, 1)):
-            return False
-        return True
+class OptimizeAndOrComparisonMutation(OptimizeZeroOneComparisonMutation):
+    """
+    A mutation that optimizes comparison with a result of AND/OR operators.
+    Originally intended to be used only for the filters section of a query, for example:
+    - WHERE (A < B OR C < D) == 1 -> WHERE A < B OR C < D. Also works for "== true".
+    - WHERE (A < B OR C < D) == 0 -> WHERE NOT (A < B OR C < D). Also works for "== false".
+    """
 
-    def make_replacement(
-        self, old: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]
-    ) -> nodes.FormulaItem:
-        assert isinstance(old, nodes.Binary)
-        left, right = old.left, old.right
-        if isinstance(left, nodes.BaseLiteral) and isinstance(right, nodes.Binary):
-            left, right = right, left
-        assert isinstance(left, nodes.Binary) and isinstance(right, nodes.BaseLiteral)
+    _supported_operators = ("and", "or")
 
-        opt, lit = left, right  # aliases for convenience
-        if (old.name == "==" and lit.value == 1) or (old.name == "!=" and lit.value == 0):
-            return opt
-        if (old.name == "==" and lit.value == 0) or (old.name == "!=" and lit.value == 1):
-            return nodes.Binary.make(
-                name=self._opt_inversions[opt.name],
-                left=opt.left,
-                right=opt.right,
-                meta=opt.meta,
-            )
-        raise ValueError(f"Unexpected binary operation {old.name} and/or literal {lit.value} in optimization")
+    def _make_negative_replacement(self, opt: nodes.Binary) -> nodes.FormulaItem:
+        return nodes.Unary.make(name="not", expr=opt)
 
 
 class OptimizeUnaryBoolFunctions(FormulaMutation):

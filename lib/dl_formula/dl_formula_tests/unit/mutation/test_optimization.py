@@ -1,5 +1,6 @@
 from dl_formula.mutation.mutation import apply_mutations
 from dl_formula.mutation.optimization import (
+    OptimizeAndOrComparisonMutation,
     OptimizeBinaryOperatorComparisonMutation,
     OptimizeConstAndOrMutation,
     OptimizeConstComparisonMutation,
@@ -213,6 +214,68 @@ def test_optimize_binary_operator_comparison_mutation():
             n.binary("in", n.field("b"), n.lit([4, 5, 6])),
         )
     )
+
+
+def test_optimize_and_or_comparison_mutation():
+    formula_obj = n.formula(
+        n.binary(
+            "==",
+            left=n.binary("or", n.field("a"), n.field("b")),
+            right=n.lit(1),
+        ),
+    )
+    formula_obj = apply_mutations(
+        formula_obj,
+        mutations=[
+            OptimizeAndOrComparisonMutation(),
+        ],
+    )
+    assert formula_obj == n.formula(n.binary("or", n.field("a"), n.field("b")))
+
+    formula_obj = n.formula(
+        n.binary(
+            "==",
+            left=n.binary("and", n.field("a"), n.field("b")),
+            right=n.lit(False),
+        ),
+    )
+    formula_obj = apply_mutations(
+        formula_obj,
+        mutations=[
+            OptimizeAndOrComparisonMutation(),
+        ],
+    )
+    assert formula_obj == n.formula(n.unary("not", n.binary("and", n.field("a"), n.field("b"))))
+
+    formula_obj = n.formula(
+        n.binary(
+            "!=",
+            left=n.binary("or", n.field("a"), n.field("b")),
+            right=n.lit(True),
+        ),
+    )
+    formula_obj = apply_mutations(
+        formula_obj,
+        mutations=[
+            OptimizeAndOrComparisonMutation(),
+        ],
+    )
+    assert formula_obj == n.formula(n.unary("not", n.binary("or", n.field("a"), n.field("b"))))
+
+    formula_obj = n.formula(
+        n.binary(
+            "!=",
+            left=n.binary("and", n.field("a"), n.field("b")),
+            right=n.lit(0),
+        ),
+    )
+    formula_obj = apply_mutations(
+        formula_obj,
+        mutations=[
+            OptimizeAndOrComparisonMutation(),
+        ],
+    )
+    assert formula_obj == n.formula(n.binary("and", n.field("a"), n.field("b")))
 
 
 def test_optimize_const_and_or_mutation():
