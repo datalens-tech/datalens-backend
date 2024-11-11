@@ -278,7 +278,7 @@ class UnsupportedSerializer(TypeSerializer[object]):
 
     @staticmethod
     def to_jsonable(value: object) -> TJSONLike:
-        LOGGER.warning(f"Value of type {value.__class__.__name__} is not JSON serializable, skipping serialization")
+        LOGGER.warning(f"Value of type {value.__class__.__name__} is not serializable, skipping serialization")
         return None
 
     @staticmethod

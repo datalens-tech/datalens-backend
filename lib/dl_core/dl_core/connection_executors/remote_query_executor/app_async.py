@@ -39,7 +39,7 @@ from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAd
 from dl_core.connection_executors.models.constants import (
     HEADER_BODY_SIGNATURE,
     HEADER_REQUEST_ID,
-    HEADER_USE_JSON_SERIALIZER,
+    HEADER_USE_NEW_QE_SERIALIZER,
 )
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
@@ -64,7 +64,7 @@ from dl_core.loader import (
 from dl_core.logging_config import configure_logging
 from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
 from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
-from dl_model_tools.serialization import safe_dumps
+from dl_model_tools.msgpack import DLSafeMessagePackSerializer
 from dl_utils.aio import ContextVarExecutor
 
 
@@ -180,13 +180,15 @@ class ActionHandlingView(BaseView):
             events.append((RQEEventType.raw_chunk.value, raw_chunk))
         events.append((RQEEventType.finished.value, None))
 
+        response_body: bytes
         with GenericProfiler("async_qe_serialization"):
-            if self.request.headers.get(HEADER_USE_JSON_SERIALIZER) == "1":
-                response = web.json_response(events, dumps=safe_dumps)
+            if self.request.headers.get(HEADER_USE_NEW_QE_SERIALIZER) == "1":
+                serializer = DLSafeMessagePackSerializer()
+                response_body = serializer.dumps(events)
             else:
-                response = web.Response(body=pickle.dumps(events))
+                response_body = pickle.dumps(events)
 
-        return response
+        return web.Response(body=response_body)
 
     async def execute_non_streamed_action(
         self,

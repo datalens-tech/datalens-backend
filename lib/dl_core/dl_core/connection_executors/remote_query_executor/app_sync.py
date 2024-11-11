@@ -17,7 +17,6 @@ from typing import (
 
 import attr
 from flask import current_app
-from flask.json.provider import JSONProvider
 import flask.views
 from werkzeug.exceptions import (
     Forbidden,
@@ -39,7 +38,7 @@ from dl_core import profiling_middleware
 from dl_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
 from dl_core.connection_executors.models.constants import (
     HEADER_BODY_SIGNATURE,
-    HEADER_USE_JSON_SERIALIZER,
+    HEADER_USE_NEW_QE_SERIALIZER,
 )
 from dl_core.connection_executors.qe_serializer import (
     ActionSerializer,
@@ -61,10 +60,7 @@ from dl_core.loader import (
 from dl_core.logging_config import hook_configure_logging as _hook_configure_logging
 from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
 from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
-from dl_model_tools.serialization import (
-    common_loads,
-    safe_dumps,
-)
+from dl_model_tools.msgpack import DLSafeMessagePackSerializer
 
 
 if TYPE_CHECKING:
@@ -196,13 +192,15 @@ class ActionHandlingView(flask.views.View):
                 events.append((RQEEventType.raw_chunk.value, raw_chunk))
             events.append((RQEEventType.finished.value, None))
 
+            response_body: bytes
             with GenericProfiler("sync_qe_serialization"):
-                if flask.request.headers.get(HEADER_USE_JSON_SERIALIZER) == "1":
-                    response = flask.jsonify(events)
+                if flask.request.headers.get(HEADER_USE_NEW_QE_SERIALIZER) == "1":
+                    serializer = DLSafeMessagePackSerializer()
+                    response_body = serializer.dumps(events)
                 else:
-                    response = flask.Response(response=pickle.dumps(events))
+                    response_body = pickle.dumps(events)
 
-            return response
+            return flask.Response(response=response_body)
         except Exception:
             # noinspection PyBroadException
             self.try_close_dba(dba)
@@ -317,14 +315,6 @@ def _handle_exception(err: Exception) -> Tuple[flask.Response, int]:
         return flask.jsonify(ActionSerializer().serialize_exc(err)), 500
 
 
-class BIJSONProvider(JSONProvider):
-    def loads(self, s: str | bytes, **kwargs: Any) -> Any:
-        return common_loads(s, **kwargs)
-
-    def dumps(self, obj: Any, **kwargs: Any) -> str:
-        return safe_dumps(obj, **kwargs)
-
-
 def create_sync_app() -> flask.Flask:
     settings = load_settings_from_env_with_fallback(RQESettings)
     hmac_key = settings.RQE_SECRET_KEY
@@ -334,7 +324,6 @@ def create_sync_app() -> flask.Flask:
     load_core_lib(core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST))
 
     app = flask.Flask(__name__)
-    app.json = BIJSONProvider(app)  # custom flask.jsonify serializer
     TracingMiddleware(
         url_prefix_exclude=(
             "/ping",

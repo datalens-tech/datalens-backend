@@ -51,7 +51,7 @@ from dl_core.connection_executors.models.common import (
 from dl_core.connection_executors.models.constants import (
     HEADER_BODY_SIGNATURE,
     HEADER_REQUEST_ID,
-    HEADER_USE_JSON_SERIALIZER,
+    HEADER_USE_NEW_QE_SERIALIZER,
 )
 from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
@@ -73,7 +73,7 @@ from dl_dashsql.typed_query.primitives import (
 )
 from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
 from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
-from dl_model_tools.serialization import common_loads
+from dl_model_tools.msgpack import DLSafeMessagePackSerializer
 from dl_utils.utils import make_url
 
 
@@ -136,7 +136,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
         self,
         req_obj: dba_actions.RemoteDBAdapterAction,
         rel_path: Optional[str] = None,
-        use_json_serializer: Optional[str] = None,
+        use_new_qe_serializer: Optional[str] = None,
     ) -> aiohttp.ClientResponse:
         if rel_path is None:
             rel_path = self.DEFAULT_REL_PATH
@@ -157,8 +157,8 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             "Content-Type": "application/json",
             **tracing_headers,
         }
-        if use_json_serializer is not None:
-            headers[HEADER_USE_JSON_SERIALIZER] = use_json_serializer
+        if use_new_qe_serializer is not None:
+            headers[HEADER_USE_NEW_QE_SERIALIZER] = use_new_qe_serializer
         if self._req_ctx_info.request_id:
             headers[HEADER_REQUEST_ID] = self._req_ctx_info.request_id
 
@@ -340,7 +340,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
         return await self._get_execution_result(events)
 
     async def _execute_non_stream(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:
-        use_json_serializer = os.environ.get("USE_JSON_QE_SERIALIZER")
+        use_new_qe_serializer = os.environ.get("USE_NEW_QE_SERIALIZER")
         response = await self._make_request(
             dba_actions.ActionNonStreamExecuteQuery(
                 db_adapter_query=query,
@@ -348,7 +348,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
                 dba_cls=self._dba_cls,
                 req_ctx_info=self._req_ctx_info,
             ),
-            use_json_serializer=use_json_serializer,
+            use_new_qe_serializer=use_new_qe_serializer,
         )
 
         if response.status != 200:
@@ -357,8 +357,13 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             raise exc
 
         raw_data = await response.read()
+        raw_events: Any
         with GenericProfiler("qe_deserialization"):
-            raw_events = common_loads(raw_data) if use_json_serializer == "1" else pickle.loads(raw_data)
+            if use_new_qe_serializer == "1":
+                serializer = DLSafeMessagePackSerializer()
+                raw_events = serializer.loads(raw_data)
+            else:
+                raw_events = pickle.loads(raw_data)
 
         async def event_gen() -> AsyncGenerator[Tuple[RQEEventType, Any], None]:
             for raw_event in raw_events:
