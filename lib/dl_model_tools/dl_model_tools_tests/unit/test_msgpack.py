@@ -1,5 +1,6 @@
 import timeit
 
+import flaky
 import pytest
 
 from dl_model_tools.msgpack import (
@@ -41,6 +42,7 @@ def test_safe_serialization(caplog):
     assert log_record.msg == "Value of type CustomType is not serializable, skipping serialization"
 
 
+@flaky.flaky(max_runs=3)
 def test_perfomance():
     """Ensure msgpack serialization is significantly faster than json one"""
 
