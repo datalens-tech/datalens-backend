@@ -60,7 +60,7 @@ class TestClickHouseReadonlyUserConnection(BaseClickHouseReadonlyUserTestClass, 
         assert conn.data.username == params["username"]
         assert conn.data.secure is False
         assert conn.data.ssl_ca is None
-        assert conn.data.readonly == 1
+        assert conn.data.readonly == "1"
 
 
 @pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")
