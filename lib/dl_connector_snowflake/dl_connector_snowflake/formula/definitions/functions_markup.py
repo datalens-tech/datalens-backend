@@ -28,4 +28,7 @@ DEFINITIONS_MARKUP = [
     base.FuncImage2.for_dialect(D.SNOWFLAKE),
     base.FuncImage3.for_dialect(D.SNOWFLAKE),
     base.FuncImage4.for_dialect(D.SNOWFLAKE),
+    # tooltip
+    base.FuncTooltip2.for_dialect(D.SNOWFLAKE),
+    base.FuncTooltip3.for_dialect(D.SNOWFLAKE),
 ]

@@ -28,4 +28,7 @@ DEFINITIONS_MARKUP = [
     base.FuncImage2.for_dialect(D.POSTGRESQL),
     base.FuncImage3.for_dialect(D.POSTGRESQL),
     base.FuncImage4.for_dialect(D.POSTGRESQL),
+    # tooltip
+    base.FuncTooltip2.for_dialect(D.POSTGRESQL),
+    base.FuncTooltip3.for_dialect(D.POSTGRESQL),
 ]

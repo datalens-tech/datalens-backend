@@ -19,6 +19,7 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
         MPP.n_cl(MPP.n_sz("col2", "L"), "#dddddd"),
         MPP.n_userinfo("123", "email"),
         MPP.n_img("src", "", 18, None),
+        MPP.n_tooltip("tooltip_text", "tooltip_tooltip"),
     )
     if MPP._dbg:
         print("formulated:", formulated)
@@ -36,6 +37,7 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
             ("cl", ("sz", "col2", "L"), "#dddddd"),
             ("userinfo", "123", "email"),
             ("img", "src", "", 18, None),
+            ("tooltip", "tooltip_text", "tooltip_tooltip"),
         )
         assert formulated == expected
     dumped = MPP.dump(formulated)
@@ -43,7 +45,7 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
         print("dumped:", repr(dumped))
     assert (
         dumped
-        == '(c "url: """ (a "col1" "col2") """; """ (i (b (a "col3" "col4"))) """" "" (br ) (cl (sz "col2" "L") "#dddddd") (userinfo "123" "email") (img "src" "" "18" ""))'
+        == '(c "url: """ (a "col1" "col2") """; """ (i (b (a "col3" "col4"))) """" "" (br ) (cl (sz "col2" "L") "#dddddd") (userinfo "123" "email") (img "src" "" "18" "") (tooltip "tooltip_text" "tooltip_tooltip"))'
     )
     parsed = MPP.parse(dumped)
     if MPP._dbg:
@@ -81,6 +83,12 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
                 "height": 18,
                 "alt": None,
             },
+            {
+                "type": "tooltip",
+                "content": {"type": "text", "content": "tooltip_text"},
+                "tooltip": {"type": "text", "content": "tooltip_tooltip"},
+                "placement": "right",
+            },
         ],
     }
     assert verbalized == expected
@@ -89,3 +97,6 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
 def test_markup_postprocessing():
     _test_markup_postprocessing_i(MarkupProcessing, check_nodes=True)
     _test_markup_postprocessing_i(MarkupProcessingDC, check_nodes=False)
+
+
+test_markup_postprocessing()

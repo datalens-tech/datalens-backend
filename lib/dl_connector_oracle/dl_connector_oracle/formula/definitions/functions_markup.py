@@ -28,4 +28,7 @@ DEFINITIONS_MARKUP = [
     base.FuncImage2.for_dialect(D.ORACLE),
     base.FuncImage3.for_dialect(D.ORACLE),
     base.FuncImage4.for_dialect(D.ORACLE),
+    # tooltip
+    base.FuncTooltip2.for_dialect(D.ORACLE),
+    base.FuncTooltip3.for_dialect(D.ORACLE),
 ]
