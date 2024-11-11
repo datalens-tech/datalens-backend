@@ -24,7 +24,7 @@ class ConnectionClickhouse(ConnectionClickhouseBase):
     Should not be used for internal clickhouses.
     """
 
-    source_type = SOURCE_TYPE_CH_TABLE
+    source_type = SOURCE_TYPE_CH_TABLE  # test
     allowed_source_types = frozenset((SOURCE_TYPE_CH_TABLE, SOURCE_TYPE_CH_SUBSELECT))
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
