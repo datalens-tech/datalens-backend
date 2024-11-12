@@ -11,6 +11,7 @@ from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TY
 from dl_connector_clickhouse_tests.db.config import (
     API_TEST_CONFIG,
     CoreConnectionSettings,
+    CoreReadonlyConnectionSettings,
 )
 from dl_connector_clickhouse_tests.db.core.base import BaseClickHouseTestClass
 
@@ -45,6 +46,19 @@ class ClickHouseConnectionDefaultUserTestBase(ClickHouseConnectionTestBase):
         )
 
 
+class ClickHouseConnectionReadonlyUserTestBase(ClickHouseConnectionTestBase):
+    @pytest.fixture(scope="class")
+    def connection_params(self) -> dict:
+        return dict(
+            db_name=CoreReadonlyConnectionSettings.DB_NAME,
+            host=CoreReadonlyConnectionSettings.HOST,
+            port=CoreReadonlyConnectionSettings.PORT,
+            username=CoreReadonlyConnectionSettings.USERNAME,
+            password=CoreReadonlyConnectionSettings.PASSWORD,
+            readonly=1,
+        )
+
+
 class ClickHouseDashSQLConnectionTest(ClickHouseConnectionTestBase):
     raw_sql_level = RawSQLLevel.dashsql
 
@@ -61,5 +75,13 @@ class ClickHouseDatasetTestBase(ClickHouseConnectionTestBase, DatasetTestBase):
         )
 
 
+class ClickHouseDatasetReadonlyUserTestBase(ClickHouseConnectionReadonlyUserTestBase, ClickHouseDatasetTestBase):
+    pass
+
+
 class ClickHouseDataApiTestBase(ClickHouseDatasetTestBase, StandardizedDataApiTestBase):
+    mutation_caches_enabled = False
+
+
+class ClickHouseDataApiReadonlyUserTestBase(ClickHouseDatasetReadonlyUserTestBase, StandardizedDataApiTestBase):
     mutation_caches_enabled = False

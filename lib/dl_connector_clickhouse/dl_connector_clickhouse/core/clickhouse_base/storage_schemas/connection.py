@@ -22,3 +22,4 @@ class ConnectionClickHouseBaseDataStorageSchema(
     endpoint = ma_fields.String(required=False, allow_none=True, load_default=None, dump_default=None)
     cluster_name = ma_fields.String(required=False, allow_none=True, load_default=None, dump_default=None)
     max_execution_time = ma_fields.Integer(required=False, allow_none=True, load_default=None, dump_default=None)
+    readonly = ma_fields.Integer(required=False, allow_none=True, load_default=None, dump_default=2)
