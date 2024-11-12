@@ -291,6 +291,14 @@ jobs:
         value: ${{fromJson(needs.pytest_split.outputs.split_base)}}
 
     steps:
+      - uses: datalens-tech/cleanup-folder-action@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          fetch-depth: 1
+      - uses: datalens-tech/fix-dubious-ownership-action@v1
       - run: echo "Going to run tests for  ${{ matrix.value }}"
       - run: echo "Running py tests for ${{ matrix.value }}"
       - name: Log in to the Container registry
@@ -337,6 +345,14 @@ jobs:
         value: ${{fromJson(needs.pytest_split.outputs.split_no_compose)}}
 
     steps:
+      - uses: datalens-tech/cleanup-folder-action@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          fetch-depth: 1
+      - uses: datalens-tech/fix-dubious-ownership-action@v1
       - run: echo "Going to run tests for  ${{ matrix.value }}"
       - run: echo "Running py tests for ${{ matrix.value }}"
       - name: Log in to the Container registry
@@ -383,6 +399,14 @@ jobs:
         value: ${{fromJson(needs.pytest_split.outputs.split_fat)}}
 
     steps:
+      - uses: datalens-tech/cleanup-folder-action@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          fetch-depth: 1
+      - uses: datalens-tech/fix-dubious-ownership-action@v1
       - run: echo "Going to run tests for  ${{ matrix.value }}"
       - run: echo "Running py tests for ${{ matrix.value }}"
       - name: Log in to the Container registry
@@ -430,6 +454,14 @@ jobs:
         value: ${{fromJson(needs.pytest_split.outputs.split_ext_public)}}
 
     steps:
+      - uses: datalens-tech/cleanup-folder-action@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          fetch-depth: 1
+      - uses: datalens-tech/fix-dubious-ownership-action@v1
       - run: echo "Going to run tests for  ${{ matrix.value }}"
       - run: echo "Running py tests for ${{ matrix.value }}"
       - name: Log in to the Container registry
