@@ -35,7 +35,7 @@ class BaseAsyncFileS3Adapter(BaseAsyncClickHouseAdapter):
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
         return True
 
-    def get_request_params(self, dba_q: DBAdapterQuery) -> dict[str, str]:
+    def get_request_params(self, dba_q: DBAdapterQuery) -> dict[str, str]:  # test
         return dict(
             # TODO FIX: Move to utils
             database=dba_q.db_name or self._target_dto.db_name or "system",
