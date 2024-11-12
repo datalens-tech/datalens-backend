@@ -292,6 +292,7 @@ class AsyncUSManager(USManagerBase):
             all_tenants=all_tenants,
             creation_time=creation_time,
             include_data=False,
+            limit=self.ITER_ENTRIES_PAGE_SIZE,
         )
 
     async def get_collection(
@@ -330,6 +331,7 @@ class AsyncUSManager(USManagerBase):
             include_data=include_data,
             ids=ids,
             creation_time=creation_time,
+            limit=self.ITER_ENTRIES_PAGE_SIZE,
         )
 
         async for us_resp in us_entry_iterator:

@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import (
+    datetime,
+    timedelta,
+)
 import json
 import logging
 import time
@@ -239,42 +243,77 @@ class UStorageClientAIO(UStorageClientBase):
         include_data: bool = False,
         ids: Optional[Iterable[str]] = None,
         creation_time: Optional[dict[str, Union[str, int, None]]] = None,
+        limit: Optional[int] = None,
     ) -> AsyncGenerator[dict, None]:
-        page = 0
-        while True:
+        """
+        implements 2-in-1 pagination:
+        - by page number (in this case entries are returned from the US along with a nextPageToken)
+        - by creation time (entries are returned as a list ordered by creation time)
+
+        :param scope:
+        :param entry_type:
+        :param meta: Filter entries by "meta" section values.
+        :param all_tenants: Look up across all tenants. False by default.
+        :param include_data: Return full US entry data. False by default.
+        :param ids: Filter entries by uuid.
+        :param creation_time: Filter entries by creation_time. Available filters: eq, ne, gt, gte, lt, lte
+        :return:
+        """
+        created_at_from: datetime = datetime(1970, 1, 1)  # for creation time pagination
+        previous_page_entry_ids = set()  # for deduplication
+        page: int = 0  # for page number pagination
+
+        done = False
+        while not done:
+            # 1. Prepare and make request
+            created_at_from_ts = created_at_from.timestamp()
+            unseen_entry_ids = set()
             resp = await self._request(
                 self._req_data_iter_entries(
                     scope,
                     entry_type=entry_type,
                     meta=meta,
                     all_tenants=all_tenants,
-                    page=page,
                     include_data=include_data,
                     ids=ids,
                     creation_time=creation_time,
+                    page=page,
+                    created_at_from=created_at_from_ts,
+                    limit=limit,
                 )
             )
-            if resp.get("entries"):
-                page_entries = resp["entries"]
-            else:
-                break
 
+            # 2. Deal with pagination
+            page_entries: list
+            if isinstance(resp, list):
+                page_entries = resp
+                if page_entries:
+                    created_at_from = self.parse_datetime(page_entries[-1]["createdAt"]) - timedelta(milliseconds=1)
+                    # minus 1 ms to account for cases where entries, created during a single millisecond, happen to
+                    # return on the border of two batches (one in batch 1 and the other in batch 2),
+                    # hence the deduplication
+                else:
+                    LOGGER.info("Got an empty entries list in the US response, the listing is completed")
+                    done = True
+            else:
+                page_entries = resp.get("entries", [])
+                if resp.get("nextPageToken"):
+                    page = resp["nextPageToken"]
+                else:
+                    LOGGER.info("Got no nextPageToken in the US response, the listing is completed")
+                    done = True
+
+            # 3. Yield results
             for entr in page_entries:
-                yield entr
+                if entr["entryId"] not in previous_page_entry_ids:
+                    unseen_entry_ids.add(entr["entryId"])
+                    yield entr
 
-            if resp.get("nextPageToken"):
-                page = resp["nextPageToken"]
-            else:
-                break
-
-    async def list_all_entries(
-        self, scope: str, entry_type: Optional[str] = None, meta: Optional[dict] = None, all_tenants: bool = False
-    ) -> list:
-        ret = []
-        async for e in self.entries_iterator(scope, entry_type, meta, all_tenants, include_data=False):
-            ret.append(e)
-
-        return ret
+            # 4. Stop if got no nextPageToken or unseen entries
+            previous_page_entry_ids = unseen_entry_ids.copy()
+            if not unseen_entry_ids:
+                LOGGER.info("US response is not empty, but we got no unseen entries, assuming the listing is completed")
+                done = True
 
     async def acquire_lock(
         self,
