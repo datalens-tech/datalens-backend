@@ -143,7 +143,7 @@ tasks:
   test:
     desc: Run tests
     cmds:
-      - task: venv-python
+      - task: venv-bin
         vars:
           CLI_ARGS: |
             pytest {{.CLI_ARGS}} \
@@ -173,7 +173,7 @@ tasks:
     desc: Stop all docker containers
     cmds:
       - docker stop $(docker ps -a -q)
-    
+
   compose-show-logs:
     desc: Show docker-compose logs
     dir: "{{.USER_WORKING_DIR}}"
