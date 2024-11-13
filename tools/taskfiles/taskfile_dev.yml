@@ -1,5 +1,8 @@
 version: '3'
 
+vars:
+  VM_HOST: dl-vm
+
 tasks:
   help:
     desc: Show help
@@ -20,10 +23,13 @@ tasks:
       - echo '`task dev:test -- path/to/tests` to run tests in specific directory'
       - echo '`LOG_LEVEL=DEBUG task dev:test` to run tests with specific logging level'
       - echo ''
+      - echo 'Docker-compose:'
       - echo '`task dev:compose-start` to start docker-compose'
       - echo '`task dev:compose-stop` to stop docker-compose'
       - echo '`task dev:compose-stop-all` to stop all running docker containers'
-      - echo 'All `dev:compose_*` tasks could be used with DOCKER_HOST, f.e. `DOCKER_HOST=ssh://dl-vm task dev:compose-start`'
+      - echo '`task dev:compose-logs` to show docker-compose logs'
+      - echo 'All `dev:compose-*` tasks could be used with DOCKER_HOST, f.e. `DOCKER_HOST=ssh://{{.VM_HOST}} task dev:compose-start`'
+      - echo 'Alternatively, use `task dev:compose-remote-*` assuming that `{{.VM_HOST}}` alias is set'
       - echo ''
       - echo 'If compose is started remotely via SSH, use `task dev:ssh-forward-start` to forward ports to localhost'
       - echo 'Use `task dev:ssh-forward-stop` to stop all SSH port forwarding'
@@ -32,14 +38,14 @@ tasks:
       - echo '0. source environment variables'
       - echo '1. `cd %PACKAGE_DIR%`'
       - echo '2. `task dev:init`'
-      - echo '3. `DOCKER_HOST=ssh://dl-vm task dev:compose-start`'
-      - echo '4. `HOST=dl-vm task dev:ssh-forward-start`'
+      - echo '3. `task dev:compose-remote-start`'
+      - echo '4. `task dev:ssh-forward-start`'
       - echo '5. Write some code'
       - echo '6. `task dev:lint-fix`'
       - echo '7. `task dev:test`'
       - echo '8. Repeat 5-7'
-      - echo '9. `HOST=dl-vm task dev:ssh-forward-stop`'
-      - echo '10. `DOCKER_HOST=ssh://dl-vm task dev:compose-stop`'
+      - echo '9. `task dev:ssh-forward-stop`'
+      - echo '10. `task dev:compose-remote-stop`'
 
   init:
     desc: Initialize environment
@@ -152,51 +158,95 @@ tasks:
       LOG_LEVEL: '{{.LOG_LEVEL | default ""}}'
       CLI_ARGS: '{{.CLI_ARGS | default "."}}'
 
+  _compose:
+    dir: "{{.USER_WORKING_DIR}}"
+    requires:
+      vars:
+        - CLI_ARGS
+    cmds:
+      - |
+        {{ if .DOCKER_HOST }}DOCKER_HOST={{.DOCKER_HOST}}{{ end }} \
+        docker-compose \
+        -f {{.DOCKER_COMPOSE_FILE}} \
+        {{.CLI_ARGS}}
+    vars:
+      DOCKER_COMPOSE_FILE: '{{.DOCKER_COMPOSE_FILE | default "docker-compose.yml"}}'
+      DOCKER_HOST: '{{.DOCKER_HOST | default ""}}'
+
   compose-start:
     desc: Start docker-compose
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - docker-compose -f {{.DOCKER_COMPOSE_FILE}} up {{if .DETACH}}-d{{end}} --build
+      - task: _compose
+        vars:
+          CLI_ARGS: up {{if eq .DETACH "true"}}-d{{end}} --build
+          DOCKER_HOST: '{{.DOCKER_HOST | default ""}}'
     vars:
       DETACH: '{{.DETACH | default true }}'
-      DOCKER_COMPOSE_FILE: '{{.DOCKER_COMPOSE_FILE | default "docker-compose.yml"}}'
+
+  compose-remote-start:
+    desc: Start docker-compose remotely
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - task: compose-start
+        vars:
+          DOCKER_HOST: "ssh://{{.VM_HOST}}"
 
   compose-stop:
     desc: Stop docker-compose
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - docker-compose -f {{.DOCKER_COMPOSE_FILE}} down --volumes --remove-orphans
-    vars:
-      DOCKER_COMPOSE_FILE: '{{.DOCKER_COMPOSE_FILE | default "docker-compose.yml"}}'
+      - task: _compose
+        vars:
+          CLI_ARGS: down --volumes --remove-orphans
+          DOCKER_HOST: '{{.DOCKER_HOST | default ""}}'
+
+  compose-remote-stop:
+    desc: Stop docker-compose remotely
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - task: compose-stop
+        vars:
+          DOCKER_HOST: "ssh://{{.VM_HOST}}"
 
   compose-stop-all:
     desc: Stop all docker containers
     cmds:
-      - docker stop $(docker ps -a -q)
+      - docker stop $(docker ps -q)
 
-  compose-show-logs:
+  compose-remote-stop-all:
+    desc: Stop all docker containers remotely
+    cmds:
+      - DOCKER_HOST=ssh://{{.VM_HOST}} docker stop $(DOCKER_HOST=ssh://{{.VM_HOST}} docker ps -q)
+
+  compose-logs:
     desc: Show docker-compose logs
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - docker-compose -f {{.DOCKER_COMPOSE_FILE}} logs --follow
-    vars:
-      DOCKER_COMPOSE_FILE: '{{.DOCKER_COMPOSE_FILE | default "docker-compose.yml"}}'
+      - task: _compose
+        vars:
+          CLI_ARGS: logs --follow
+          DOCKER_HOST: '{{.DOCKER_HOST | default ""}}'
+
+  compose-remote-logs:
+    desc: Show docker-compose logs remotely
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - task: compose-logs
+        vars:
+          DOCKER_HOST: "ssh://{{.VM_HOST}}"
 
   ssh-forward-start:
     desc: Forward docker ports to localhost
-    requires:
-      vars:
-        - HOST
     cmds:
       - for port in $PORTS; do
           echo "Forwarding port $port";
-          ssh -f -N -L $port:localhost:$port {{.HOST}};
+          ssh -f -N -L $port:localhost:$port {{.VM_HOST}};
         done;
         wait
-    var:
     env:
       PORTS:
-        sh: DOCKER_HOST=ssh://{{.HOST}} docker ps --format "{{`{{.Ports}}`}}"
+        sh: DOCKER_HOST=ssh://{{.VM_HOST}} docker ps --format "{{`{{.Ports}}`}}"
           | grep -o ':[0-9]*->'
           | sed 's/->//g'
           | sed 's/://g'
