@@ -6,7 +6,6 @@ from typing import (
     Iterator,
     Optional,
     TypeVar,
-    Union,
 )
 
 
@@ -62,28 +61,6 @@ class SimpleDataStream(DataStreamBase):
     def __next__(self) -> dict:
         row = next(self._data_iter)
         self._rows_read += 1
-        return row
-
-
-class LazyDataStream(DataStreamBase):
-    """
-    Data stream with progress percentage set from the outside.
-    Does no calculations by itself.
-    """
-
-    def __init__(self, data_iter: Iterator[dict]):
-        self._data_iter = data_iter
-
-        self._progress = 0
-
-    def set_progress_percent(self, progress: Union[int, float]) -> None:
-        self._progress = int(progress)
-
-    def get_progress_percent(self) -> int:
-        return self._progress
-
-    def __next__(self) -> dict:
-        row = next(self._data_iter)
         return row
 
 

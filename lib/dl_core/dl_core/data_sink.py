@@ -5,37 +5,43 @@ import logging
 from typing import (
     Any,
     Generic,
-    List,
     Optional,
     Type,
     TypeVar,
 )
 
-from dl_core.db.elements import SchemaColumn
-from dl_core.raw_data_streaming.stream import DataStreamBase
+from dl_core.raw_data_streaming.stream import (
+    AsyncDataStreamBase,
+    DataStreamBase,
+)
 
 
 LOGGER = logging.getLogger(__name__)
 
 
-class DataSink:
+_DATA_STREAM_TV = TypeVar("_DATA_STREAM_TV", bound=DataStreamBase)
+
+
+class DataSink(Generic[_DATA_STREAM_TV], metaclass=abc.ABCMeta):
     """Object that accepts data in batches and stores it somewhere"""
 
-    def __init__(self, bi_schema: List[SchemaColumn]):
-        self._bi_schema = bi_schema
-
+    @abc.abstractmethod
     def initialize(self) -> None:
         """Create table, start external service, etc. - whatever is needed to get it running"""
 
-    def dump_data_stream(self, data_stream: DataStreamBase) -> None:
+    @abc.abstractmethod
+    def dump_data_stream(self, data_stream: _DATA_STREAM_TV) -> None:
         """Send stream of entries (list of dicts) to storage"""
 
+    @abc.abstractmethod
     def finalize(self) -> None:
         """Finalize materialization"""
 
+    @abc.abstractmethod
     def cleanup(self) -> None:
         """Cleanup tmp data"""
 
+    @abc.abstractmethod
     def close(self) -> None:
         """Close conn executor and all closable entities"""
 
@@ -52,24 +58,29 @@ class DataSink:
         self.close()
 
 
-_DATA_STREAM_TV = TypeVar("_DATA_STREAM_TV")
+_ASYNC_DATA_STREAM_TV = TypeVar("_ASYNC_DATA_STREAM_TV", bound=AsyncDataStreamBase)
 
 
-class DataSinkAsync(Generic[_DATA_STREAM_TV], metaclass=abc.ABCMeta):
+class DataSinkAsync(Generic[_ASYNC_DATA_STREAM_TV], metaclass=abc.ABCMeta):
     """Object that accepts data in batches and stores it somewhere"""
 
+    @abc.abstractmethod
     async def initialize(self) -> None:
         """Create table, start external service, etc. - whatever is needed to get it running"""
 
-    async def dump_data_stream(self, data_stream: _DATA_STREAM_TV) -> None:
+    @abc.abstractmethod
+    async def dump_data_stream(self, data_stream: _ASYNC_DATA_STREAM_TV) -> None:
         """Send stream of entries (list of dicts) to storage"""
 
+    @abc.abstractmethod
     async def finalize(self) -> None:
         """Finalize materialization"""
 
+    @abc.abstractmethod
     async def cleanup(self) -> None:
         """Cleanup tmp data"""
 
+    @abc.abstractmethod
     async def close(self) -> None:
         """Close conn executor and all closable entities"""
 
