@@ -41,10 +41,6 @@ class DataSink(Generic[_DATA_STREAM_TV], metaclass=abc.ABCMeta):
     def cleanup(self) -> None:
         """Cleanup tmp data"""
 
-    @abc.abstractmethod
-    def close(self) -> None:
-        """Close conn executor and all closable entities"""
-
     def __enter__(self) -> DataSink:
         self.initialize()
         return self
@@ -55,7 +51,6 @@ class DataSink(Generic[_DATA_STREAM_TV], metaclass=abc.ABCMeta):
         else:
             LOGGER.exception("Exception occurred in DataSink")
         self.cleanup()
-        self.close()
 
 
 _ASYNC_DATA_STREAM_TV = TypeVar("_ASYNC_DATA_STREAM_TV", bound=AsyncDataStreamBase)
@@ -80,10 +75,6 @@ class DataSinkAsync(Generic[_ASYNC_DATA_STREAM_TV], metaclass=abc.ABCMeta):
     async def cleanup(self) -> None:
         """Cleanup tmp data"""
 
-    @abc.abstractmethod
-    async def close(self) -> None:
-        """Close conn executor and all closable entities"""
-
     async def __aenter__(self) -> DataSinkAsync:
         await self.initialize()
         return self
@@ -92,4 +83,3 @@ class DataSinkAsync(Generic[_ASYNC_DATA_STREAM_TV], metaclass=abc.ABCMeta):
         if exc_type is None:
             await self.finalize()
         await self.cleanup()
-        await self.close()
