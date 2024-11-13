@@ -156,7 +156,7 @@ tasks:
     desc: Start docker-compose
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - docker-compose -f {{.DOCKER_COMPOSE_FILE}} up {{if .DETACH}}-d{{end}}
+      - docker-compose -f {{.DOCKER_COMPOSE_FILE}} up {{if .DETACH}}-d{{end}} --build
     vars:
       DETACH: '{{.DETACH | default true }}'
       DOCKER_COMPOSE_FILE: '{{.DOCKER_COMPOSE_FILE | default "docker-compose.yml"}}'
@@ -165,7 +165,7 @@ tasks:
     desc: Stop docker-compose
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - docker-compose -f {{.DOCKER_COMPOSE_FILE}} down
+      - docker-compose -f {{.DOCKER_COMPOSE_FILE}} down --volumes --remove-orphans
     vars:
       DOCKER_COMPOSE_FILE: '{{.DOCKER_COMPOSE_FILE | default "docker-compose.yml"}}'
 
@@ -173,6 +173,14 @@ tasks:
     desc: Stop all docker containers
     cmds:
       - docker stop $(docker ps -a -q)
+    
+  compose-show-logs:
+    desc: Show docker-compose logs
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - docker-compose -f {{.DOCKER_COMPOSE_FILE}} logs --follow
+    vars:
+      DOCKER_COMPOSE_FILE: '{{.DOCKER_COMPOSE_FILE | default "docker-compose.yml"}}'
 
   ssh-forward-start:
     desc: Forward docker ports to localhost
