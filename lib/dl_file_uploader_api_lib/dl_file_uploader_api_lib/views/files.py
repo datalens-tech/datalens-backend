@@ -45,10 +45,8 @@ from dl_file_uploader_task_interface.tasks import (
     ProcessExcelTask,
     TaskExecutionMode,
 )
-from dl_s3.data_sink import (
-    RawBytesAsyncDataStream,
-    S3RawFileAsyncDataSink,
-)
+from dl_s3.data_sink import S3RawFileAsyncDataSink
+from dl_s3.stream import RawBytesAsyncDataStream
 
 
 LOGGER = logging.getLogger(__name__)

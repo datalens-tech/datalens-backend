@@ -26,10 +26,8 @@ from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
 from dl_file_uploader_task_interface.tasks import TaskExecutionMode
 from dl_file_uploader_worker_lib.utils.connection_error_tracker import FileConnectionDataSourceErrorTracker
-from dl_s3.data_sink import (
-    RawBytesAsyncDataStream,
-    S3RawFileAsyncDataSink,
-)
+from dl_s3.data_sink import S3RawFileAsyncDataSink
+from dl_s3.stream import RawBytesAsyncDataStream
 from dl_task_processor.task import (
     BaseExecutorTask,
     Fail,
