@@ -11,7 +11,7 @@ from dl_constants.enums import (
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core_testing.connection import make_conn_key
 from dl_file_uploader_lib import exc
-from dl_file_uploader_lib.data_sink.json_each_row import S3JsonEachRowUntypedFileAsyncDataSink
+from dl_s3.data_sink import S3JsonEachRowUntypedFileAsyncDataSink
 from dl_file_uploader_lib.enums import FileType
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import (

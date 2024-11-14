@@ -2236,13 +2236,11 @@ files = []
 develop = true
 
 [package.dependencies]
-aiobotocore = ">=2.4.2"
 aiodns = ">=3.1.1"
 aiohttp = ">=3.9.1"
 anyascii = ">=0.3.2"
 arq = ">=0.25.0"
 attrs = ">=22.2.0"
-boto3 = ">=1.24.59"
 botocore = ">=1.27.59,<1.27.60"
 cryptography = ">=41.0.4"
 dl-api-commons = {path = "../dl_api_commons"}
@@ -2438,6 +2436,7 @@ dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-file-uploader-lib = {path = "../dl_file_uploader_lib"}
 dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+dl-s3 = {path = "../dl_s3"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 gunicorn = ">=21.2.0"
@@ -2459,7 +2458,6 @@ files = []
 develop = true
 
 [package.dependencies]
-aiobotocore = ">=2.4.2"
 aiogoogle = ">=5.2.0"
 aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
@@ -2474,7 +2472,6 @@ dl-utils = {path = "../dl_utils"}
 marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 redis = ">=5.0.1"
-ujson = ">=1.35"
 yarl = ">=1.9.4"
 
 [package.source]
@@ -2532,6 +2529,7 @@ dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-file-uploader-lib = {path = "../dl_file_uploader_lib"}
 dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+dl-s3 = {path = "../dl_s3"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
@@ -2799,6 +2797,27 @@ marshmallow = ">=3.19.0"
 [package.source]
 type = "directory"
 url = "../lib/dl_rls"
+
+[[package]]
+name = "dl-s3"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.dependencies]
+aiobotocore = ">=2.4.2"
+aiohttp = ">=3.9.1"
+attrs = ">=22.2.0"
+boto3 = ">=1.24.59"
+dl-constants = {path = "../dl_constants"}
+ujson = ">=1.35"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_s3"
 
 [[package]]
 name = "dl-sqlalchemy-bitrix"

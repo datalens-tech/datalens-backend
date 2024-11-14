@@ -12,7 +12,7 @@ import attr
 from dl_constants.enums import FileProcessingStatus
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_file_uploader_lib import exc
-from dl_file_uploader_lib.data_sink.raw_bytes import (
+from dl_s3.data_sink import (
     RawBytesAsyncDataStream,
     S3RawFileAsyncDataSink,
 )

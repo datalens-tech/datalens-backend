@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 from typing import (
     TYPE_CHECKING,
-    AsyncIterator,
     ClassVar,
     Optional,
 )
@@ -12,39 +11,15 @@ from typing import (
 if TYPE_CHECKING:
     from types_aiobotocore_s3 import S3Client
 
-from dl_constants.enums import ConnectionType
-from dl_core.data_sink import DataSinkAsync
-from dl_core.raw_data_streaming.stream import AsyncDataStreamBase
+from dl_s3.data_sink.base import DataSinkAsync
+from dl_s3.stream import RawBytesAsyncDataStream
 from dl_file_uploader_lib import exc
-
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
 LOGGER = logging.getLogger(__name__)
 
 
-class RawBytesAsyncDataStream(AsyncDataStreamBase[bytes]):
-    def __init__(self, data_iter: AsyncIterator[bytes], bytes_to_copy: Optional[int] = None):
-        self._data_iter = data_iter
-        self.bytes_to_copy = bytes_to_copy
-
-        self._bytes_read = 0
-
-    def get_progress_percent(self) -> int:
-        if self.bytes_to_copy is None:
-            return 0
-        if self.bytes_to_copy == 0:
-            return 100
-        return min(self.max_percent, int((self._bytes_read / self.bytes_to_copy) * 100))
-
-    async def __anext__(self) -> bytes:
-        chunk = await self._data_iter.__anext__()
-        self._bytes_read += len(chunk)
-        return chunk
-
-
 class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
-    conn_type: ConnectionType = CONNECTION_TYPE_FILE
     batch_size_in_bytes: int = 10 * 1024**2
     max_batch_size: Optional[int] = None
     max_file_size_bytes: ClassVar[int] = 200 * 1024**2

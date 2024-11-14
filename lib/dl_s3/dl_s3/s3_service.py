@@ -69,7 +69,7 @@ class S3Service:
         await self._client.close()
 
     @classmethod
-    def get_app_instance(cls, app: web.Application) -> "S3Service":
+    def get_app_instance(cls, app: web.Application) -> S3Service:
         service = app.get(cls.APP_KEY, None)
         if service is None:
             raise ValueError("S3BucketService was not initiated for application")

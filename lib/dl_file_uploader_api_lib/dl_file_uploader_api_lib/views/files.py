@@ -26,7 +26,7 @@ from dl_file_uploader_api_lib.data_file_preparer import (
 from dl_file_uploader_api_lib.schemas import files as files_schemas
 from dl_file_uploader_api_lib.views.base import FileUploaderBaseView
 from dl_file_uploader_lib.common_locks import get_update_connection_source_lock
-from dl_file_uploader_lib.data_sink.raw_bytes import (
+from dl_s3.data_sink import (
     RawBytesAsyncDataStream,
     S3RawFileAsyncDataSink,
 )

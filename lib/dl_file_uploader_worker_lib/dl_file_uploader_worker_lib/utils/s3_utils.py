@@ -12,9 +12,9 @@ from typing import (
 
 from clickhouse_sqlalchemy.quoting import Quoter
 
+from dl_constants.enums import ConnectionType
 from dl_core.db import SchemaColumn
-from dl_core.raw_data_streaming.stream import SimpleDataStream
-from dl_file_uploader_lib.data_sink.json_each_row import S3JsonEachRowFileDataSink
+from dl_s3.stream import SimpleDataStream
 from dl_file_uploader_lib.enums import FileType
 from dl_file_uploader_lib.redis_model.models import CSVFileSettings
 from dl_file_uploader_lib.redis_model.models.models import (
@@ -26,6 +26,10 @@ from dl_file_uploader_lib.redis_model.models.models import (
 from dl_file_uploader_worker_lib.utils.parsing_utils import get_csv_raw_data_iterator
 from dl_type_transformer.type_transformer import get_type_transformer
 
+from dl_s3.data_sink import S3FileDataSink
+
+from dl_type_transformer.type_transformer import get_type_transformer
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from dl_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
 from dl_connector_clickhouse.core.clickhouse_base.ch_commons import create_column_sql
@@ -61,6 +65,26 @@ def make_s3_table_func_sql_source(
         access_key_id = q(conn.s3_access_key_id)
         secret_access_key = q(conn.s3_secret_access_key)
     return f"s3({s3_path}, {access_key_id}, {secret_access_key}, {file_fmt}, {schema_str})"
+
+
+class S3JsonEachRowFileDataSink(S3FileDataSink[SimpleDataStream, dict]):
+    conn_type: ConnectionType = CONNECTION_TYPE_FILE
+
+    def __init__(
+        self,
+        bi_schema: list[SchemaColumn],
+        s3: SyncS3Client,
+        s3_key: str,
+        bucket_name: str,
+    ) -> None:
+        super().__init__(s3=s3, s3_key=s3_key, bucket_name=bucket_name)
+
+        self._bi_schema = bi_schema
+        self._tt = get_type_transformer(self.conn_type)
+
+    def _process_row(self, row_data: dict) -> bytes:
+        cast_row_data = [self._tt.cast_for_input(row_data[col.name], user_t=col.user_type) for col in self._bi_schema]
+        return json.dumps(cast_row_data).encode("utf-8")
 
 
 class S3Object(NamedTuple):

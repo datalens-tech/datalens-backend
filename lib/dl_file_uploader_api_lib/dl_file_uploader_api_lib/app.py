@@ -23,7 +23,7 @@ from dl_api_commons.sentry_config import (
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.aio.metrics_view import MetricsView
 from dl_core.aio.ping_view import PingView
-from dl_core.aio.web_app_services.s3 import S3Service
+from dl_s3.s3_service import S3Service
 from dl_core.loader import (
     CoreLibraryConfig,
     load_core_lib,

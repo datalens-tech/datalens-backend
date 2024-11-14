@@ -16,9 +16,9 @@ import attr
 
 from dl_constants.enums import FileProcessingStatus
 from dl_core.db import SchemaColumn
-from dl_core.raw_data_streaming.stream import SimpleUntypedDataStream
+from dl_s3.stream import SimpleUntypedDataStream
 from dl_file_uploader_lib import exc
-from dl_file_uploader_lib.data_sink.json_each_row import S3JsonEachRowUntypedFileDataSink
+from dl_s3.data_sink import S3JsonEachRowUntypedFileDataSink
 from dl_file_uploader_lib.enums import FileType
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import (

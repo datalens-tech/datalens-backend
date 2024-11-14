@@ -22,10 +22,10 @@ from dl_core.aio.web_app_services.gsheets import (
     Sheet,
 )
 from dl_core.db import SchemaColumn
-from dl_core.raw_data_streaming.stream import SimpleUntypedAsyncDataStream
+from dl_s3.stream import SimpleUntypedAsyncDataStream
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_file_uploader_lib import exc
-from dl_file_uploader_lib.data_sink.json_each_row import S3JsonEachRowUntypedFileAsyncDataSink
+from dl_s3.data_sink import S3JsonEachRowUntypedFileAsyncDataSink
 from dl_file_uploader_lib.gsheets_client import (
     GSheetsClient,
     GSheetsOAuth2,
