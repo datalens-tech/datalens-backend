@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import abc
 import logging
 from typing import (
     TYPE_CHECKING,
     ClassVar,
+    Generic,
     Optional,
+    TypeVar,
 )
 
 from dl_type_transformer.type_transformer import get_type_transformer
@@ -35,8 +38,11 @@ from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 LOGGER = logging.getLogger(__name__)
 
 
-class S3JsonEachRowFileDataSink(DataSink):
-    conn_type: ConnectionType = CONNECTION_TYPE_FILE
+_ITER_TV = TypeVar("_ITER_TV")
+_DATA_STREAM_TV = TypeVar("_DATA_STREAM_TV", bound=DataStreamBase)
+
+
+class S3FileDataSink(DataSink[_DATA_STREAM_TV], Generic[_DATA_STREAM_TV, _ITER_TV], metaclass=abc.ABCMeta):
     batch_size_in_bytes: int = 30 * 1024**2
     max_batch_size: Optional[int] = None
 
@@ -45,22 +51,13 @@ class S3JsonEachRowFileDataSink(DataSink):
     _part_number: int = 1
     _multipart_upload_started: bool = False
 
-    def __init__(
-        self,
-        bi_schema: list[SchemaColumn],
-        s3: SyncS3Client,
-        s3_key: str,
-        bucket_name: str,
-    ):
-        super().__init__(bi_schema=bi_schema)
-
+    def __init__(self, s3: SyncS3Client, s3_key: str, bucket_name: str) -> None:
         self._s3 = s3
         self._s3_key = s3_key
         self._bucket_name = bucket_name
 
         self._row_index = 0
         self._rows_saved = 0
-        self._tt = get_type_transformer(self.conn_type)
         self._batch_size = None
 
     def initialize(self) -> None:
@@ -122,9 +119,9 @@ class S3JsonEachRowFileDataSink(DataSink):
         self._rows_saved += len(batch)
         LOGGER.info(f"Copied: {self._rows_saved} rows ({progress}%%) to S3")
 
-    def _process_row(self, row_data: dict) -> bytes:
-        cast_row_data = [self._tt.cast_for_input(row_data[col.name], user_t=col.user_type) for col in self._bi_schema]
-        return json.dumps(cast_row_data).encode("utf-8")
+    @abc.abstractmethod
+    def _process_row(self, row_data: _ITER_TV) -> bytes:
+        raise NotImplementedError
 
     def _should_dump_batch(self, batch: list[bytes], batch_size: int) -> bool:
         assert self.batch_size_in_bytes
@@ -132,7 +129,7 @@ class S3JsonEachRowFileDataSink(DataSink):
             return False
         return batch_size >= self.batch_size_in_bytes
 
-    def _dump_data_stream_base(self, data_stream: DataStreamBase) -> None:
+    def dump_data_stream(self, data_stream: _DATA_STREAM_TV) -> None:
         batch: list[bytes] = []
         batch_size = 0
         for row_data in data_stream:
@@ -150,34 +147,33 @@ class S3JsonEachRowFileDataSink(DataSink):
         if batch:
             self._dump_data_batch(batch, progress=data_stream.get_progress_percent())
 
-    def dump_data_stream(self, data_stream: DataStreamBase) -> None:
-        self._dump_data_stream_base(data_stream)
 
+class S3JsonEachRowFileDataSink(S3FileDataSink[DataStreamBase, dict]):
+    conn_type: ConnectionType = CONNECTION_TYPE_FILE
 
-class S3JsonEachRowUntypedFileDataSink(S3JsonEachRowFileDataSink):
     def __init__(
         self,
+        bi_schema: list[SchemaColumn],
         s3: SyncS3Client,
         s3_key: str,
         bucket_name: str,
-    ):
-        super().__init__(
-            bi_schema=[],  # ignore bi_schema
-            s3=s3,
-            s3_key=s3_key,
-            bucket_name=bucket_name,
-        )
+    ) -> None:
+        super().__init__(s3=s3, s3_key=s3_key, bucket_name=bucket_name)
 
-    def _process_row(self, row_data: list) -> bytes:  # type: ignore  # 2024-01-30 # TODO: Argument 1 of "_process_row" is incompatible with supertype "S3JsonEachRowFileDataSink"; supertype defines the argument type as "dict[Any, Any]"  [override]
-        # skip type casts
+        self._bi_schema = bi_schema
+        self._tt = get_type_transformer(self.conn_type)
+
+    def _process_row(self, row_data: dict) -> bytes:
+        cast_row_data = [self._tt.cast_for_input(row_data[col.name], user_t=col.user_type) for col in self._bi_schema]
+        return json.dumps(cast_row_data).encode("utf-8")
+
+
+class S3JsonEachRowUntypedFileDataSink(S3FileDataSink[SimpleUntypedDataStream, list]):
+    def _process_row(self, row_data: list) -> bytes:
         return json.dumps(row_data).encode("utf-8")
-
-    def dump_data_stream(self, data_stream: SimpleUntypedDataStream) -> None:  # type: ignore  # 2024-01-30 # TODO: Argument 1 of "dump_data_stream" is incompatible with supertype "S3JsonEachRowFileDataSink"; supertype defines the argument type as "DataStreamBase[Any]"  [override]
-        self._dump_data_stream_base(data_stream)
 
 
 class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncDataStream]):
-    conn_type: ConnectionType = CONNECTION_TYPE_FILE
     batch_size_in_bytes: int = 30 * 1024**2
     max_batch_size: Optional[int] = None
     max_file_size_bytes: ClassVar[int] = 200 * 1024**2
