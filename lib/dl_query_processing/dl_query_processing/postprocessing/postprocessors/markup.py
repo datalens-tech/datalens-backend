@@ -12,6 +12,8 @@ from typing import (
     Union,
 )
 
+from dl_formula.core.exc import ValidationError
+
 
 _NODE_TV = TypeVar("_NODE_TV")
 NodeActual = Union[_NODE_TV, str]  # what can act as a node
@@ -34,6 +36,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
     node_br: ClassVar[str] = "br"
     node_userinfo: ClassVar[str] = "userinfo"
     node_image: ClassVar[str] = "img"
+    node_tooltip: ClassVar[str] = "tooltip"
 
     _node_cls: ClassVar[Type[_NODE_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
@@ -115,6 +118,12 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
 
     def n_img(self, src: str, width: int, height: int, alt: str) -> _NODE_TV:
         return self._make_node(self.node_image, src, width, height, alt)
+
+    def n_tooltip(self, text: NodeInput, tooltip: NodeInput, placement: Optional[str] = "") -> _NODE_TV:
+        if placement:
+            return self._make_node(self.node_tooltip, self._proc_arg(text), self._proc_arg(tooltip), str(placement))
+        else:
+            return self._make_node(self.node_tooltip, self._proc_arg(text), self._proc_arg(tooltip))
 
     # Node-structure into a string
 
@@ -258,6 +267,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
         node_br: dict(name="br"),
         node_userinfo: dict(name="user_info", argnames=("content", "user_info")),
         node_image: dict(name="image", argnames=("src", "width", "height", "alt")),
+        node_tooltip: dict(name="tooltip", argnames=("text", "tooltip", "placement")),
     }
 
     def _argcount_mismatch(self, node, **kwargs):  # type: ignore  # TODO: fix
@@ -317,17 +327,31 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
             if width != "":
                 width = int(width)
                 if width < 0:
-                    raise ValueError("Width can only be greater than 0")
+                    raise ValidationError("Width can only be greater than 0")
             else:
                 width = None
 
             if height != "":
                 height = int(height)
                 if height < 0:
-                    raise ValueError("Height can only be greater than 0")
+                    raise ValidationError("Height can only be greater than 0")
             else:
                 height = None
             return dict(type="img", src=src, width=width, height=height, alt=alt)
+        if funcname == self.node_tooltip:
+            if len(funcargs) == 3:
+                text, tooltip, placement = funcargs
+            elif len(funcargs) == 2:
+                text, tooltip = funcargs
+                placement = "right"
+            else:
+                return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
+            if placement not in ["top", "right", "bottom", "left"]:
+                raise ValidationError('Placement can only be "top", "right", "bottom" or "left"')
+
+            return dict(
+                type="tooltip", content=self._verbalize_i(text), tooltip=self._verbalize_i(tooltip), placement=placement
+            )
 
         raise self.DumpError("Unknown func", node)
 

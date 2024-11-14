@@ -39,6 +39,12 @@ class DefaultMarkupFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert to_str(dbe.eval("image('src1', 15)")) == '(img "src1" "15" "" "")'
         assert to_str(dbe.eval("image('src1', 15, 16)")) == '(img "src1" "15" "16" "")'
 
+        assert to_str(dbe.eval("tooltip('some_text', 'some_tooltip')")) == '(tooltip "some_text" "some_tooltip")'
+        assert (
+            to_str(dbe.eval("TOOLTIP(SIZE('Hello', '12px'), URL('https://ya.ru', 'Yandex'), 'top')"))
+            == '(tooltip (sz "Hello" "12px") (a "https://ya.ru" "Yandex") "top")'
+        )
+
         # TODO: Decide the desired behavior.
         assert (dbe.eval("'abc' + NULL + 'qwe'") is None) == (dbe.eval("italic(NULL) + '...'") is None)
         assert to_str(dbe.eval("italic('text00') + 'text01'")) == '(c (i "text00") "text01")'

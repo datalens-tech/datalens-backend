@@ -275,6 +275,30 @@ class FuncBr(FuncMarkup):
     variants = make_variants("br")
 
 
+class FuncTooltipBase(FuncMarkup):
+    name = "tooltip"
+    variants = make_variants("tooltip")
+    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
+
+
+class FuncTooltip2(FuncTooltipBase):
+    arg_cnt = 2
+    arg_names = ["text", "tooltip"]
+    argument_types = [
+        # tooltip(markup|str, markup|str)
+        ArgTypeSequence([MARKUP_EFFECTIVELY, MARKUP_EFFECTIVELY]),
+    ]
+
+
+class FuncTooltip3(FuncTooltipBase):
+    arg_cnt = 3
+    arg_names = ["text", "tooltip", "placement"]
+    argument_types = [
+        # tooltip(markup|str, markup|str, str)
+        ArgTypeSequence([MARKUP_EFFECTIVELY, MARKUP_EFFECTIVELY, DataType.STRING]),
+    ]
+
+
 class NullImageMarkupNode:
     data_type: ClassVar[Enum] = DataType.NULL
     base_token: ClassVar[str] = "image"
@@ -389,4 +413,7 @@ DEFINITIONS_MARKUP = [
     FuncImage2,
     FuncImage3,
     FuncImage4,
+    # tooltip
+    FuncTooltip2,
+    FuncTooltip3,
 ]

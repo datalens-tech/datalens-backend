@@ -28,4 +28,7 @@ DEFINITIONS_MARKUP = [
     base.FuncImage2.for_dialect(D.MYSQL),
     base.FuncImage3.for_dialect(D.MYSQL),
     base.FuncImage4.for_dialect(D.MYSQL),
+    # tooltip
+    base.FuncTooltip2.for_dialect(D.MYSQL),
+    base.FuncTooltip3.for_dialect(D.MYSQL),
 ]

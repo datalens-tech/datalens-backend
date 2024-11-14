@@ -28,4 +28,7 @@ DEFINITIONS_MARKUP = [
     base.FuncImage2.for_dialect(D.YQL),
     base.FuncImage3.for_dialect(D.YQL),
     base.FuncImage4.for_dialect(D.YQL),
+    # tooltip
+    base.FuncTooltip2.for_dialect(D.YQL),
+    base.FuncTooltip3.for_dialect(D.YQL),
 ]
