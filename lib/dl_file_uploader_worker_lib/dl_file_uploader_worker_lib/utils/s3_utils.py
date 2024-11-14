@@ -14,7 +14,6 @@ from clickhouse_sqlalchemy.quoting import Quoter
 
 from dl_constants.enums import ConnectionType
 from dl_core.db import SchemaColumn
-from dl_s3.stream import SimpleDataStream
 from dl_file_uploader_lib.enums import FileType
 from dl_file_uploader_lib.redis_model.models import CSVFileSettings
 from dl_file_uploader_lib.redis_model.models.models import (
@@ -24,14 +23,13 @@ from dl_file_uploader_lib.redis_model.models.models import (
     SpreadsheetFileSourceSettings,
 )
 from dl_file_uploader_worker_lib.utils.parsing_utils import get_csv_raw_data_iterator
-from dl_type_transformer.type_transformer import get_type_transformer
-
 from dl_s3.data_sink import S3FileDataSink
-
+from dl_s3.stream import SimpleDataStream
 from dl_type_transformer.type_transformer import get_type_transformer
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+
 from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 from dl_connector_bundle_chs3.file.core.adapter import AsyncFileS3Adapter
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from dl_connector_clickhouse.core.clickhouse_base.ch_commons import create_column_sql
 
 

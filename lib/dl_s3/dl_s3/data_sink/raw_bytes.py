@@ -11,9 +11,9 @@ from typing import (
 if TYPE_CHECKING:
     from types_aiobotocore_s3 import S3Client
 
+from dl_file_uploader_lib import exc
 from dl_s3.data_sink.base import DataSinkAsync
 from dl_s3.stream import RawBytesAsyncDataStream
-from dl_file_uploader_lib import exc
 
 
 LOGGER = logging.getLogger(__name__)

@@ -23,7 +23,6 @@ from dl_api_commons.sentry_config import (
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.aio.metrics_view import MetricsView
 from dl_core.aio.ping_view import PingView
-from dl_s3.s3_service import S3Service
 from dl_core.loader import (
     CoreLibraryConfig,
     load_core_lib,
@@ -37,6 +36,7 @@ from dl_file_uploader_api_lib.views import files as files_views
 from dl_file_uploader_api_lib.views import misc as misc_views
 from dl_file_uploader_api_lib.views import sources as sources_views
 from dl_file_uploader_lib.settings_utils import init_redis_service
+from dl_s3.s3_service import S3Service
 from dl_task_processor.arq_wrapper import create_arq_redis_settings
 
 

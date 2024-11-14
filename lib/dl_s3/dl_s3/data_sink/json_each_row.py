@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 
 import ujson as json
 
+from dl_file_uploader_lib import exc
 from dl_s3.data_sink.base import (
     DataSink,
     DataSinkAsync,
@@ -26,7 +27,6 @@ from dl_s3.stream import (
     SimpleUntypedAsyncDataStream,
     SimpleUntypedDataStream,
 )
-from dl_file_uploader_lib import exc
 
 
 LOGGER = logging.getLogger(__name__)

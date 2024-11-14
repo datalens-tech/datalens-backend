@@ -10,9 +10,9 @@ from dl_api_commons.base_models import RequestContextInfo
 from dl_configs.crypto_keys import get_dummy_crypto_keys_config
 from dl_constants.enums import FileProcessingStatus
 from dl_file_uploader_api_lib_tests.req_builder import ReqBuilder
-from dl_s3.data_sink import S3RawFileAsyncDataSink
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import DataFile
+from dl_s3.data_sink import S3RawFileAsyncDataSink
 
 
 @pytest.mark.asyncio
