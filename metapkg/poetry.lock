@@ -2813,6 +2813,7 @@ aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
 boto3 = ">=1.24.59"
 dl-constants = {path = "../dl_constants"}
+typing_extensions = ">=4.1.0"
 ujson = ">=1.35"
 
 [package.source]

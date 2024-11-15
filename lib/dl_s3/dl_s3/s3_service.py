@@ -12,6 +12,7 @@ from aiobotocore.session import get_session
 from aiohttp import web
 import attr
 import boto3
+import typing_extensions
 
 
 if TYPE_CHECKING:
@@ -69,11 +70,12 @@ class S3Service:
         await self._client.close()
 
     @classmethod
-    def get_app_instance(cls, app: web.Application) -> S3Service:
+    def get_app_instance(cls, app: web.Application) -> typing_extensions.Self:
         service = app.get(cls.APP_KEY, None)
         if service is None:
             raise ValueError("S3BucketService was not initiated for application")
 
+        assert isinstance(service, cls)
         return service
 
     def get_client(self) -> AsyncS3Client:
