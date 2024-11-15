@@ -86,6 +86,7 @@ implicit_dependencies = [
 ]
 
 [tool.mypy]
+exclude = ["dl_api_lib_tests"]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

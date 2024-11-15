@@ -56,7 +56,7 @@ tasks:
           poetry env remove $env --directory={{.PYPROJECT_TOML_PATH}};
         done;
       - echo "Initializing python virtual environment in {{.VENV_PATH}}"
-      - poetry install --directory={{.PYPROJECT_TOML_PATH}} --sync --no-root
+      - poetry install --directory={{.PYPROJECT_TOML_PATH}} --sync --no-root --with mypy
     requires:
       vars:
         - PYPROJECT_TOML_PATH
@@ -118,6 +118,10 @@ tasks:
       - task: venv-python
         vars:
           CLI_ARGS: "ruff check {{.LINT_PATH}}"
+
+      - task: mypy
+        vars:
+          CLI_ARGS: '{{.LINT_PATH}}'
     vars:
       LINT_PATH: '{{.CLI_ARGS | default "."}}'
       TOML_FILES:
@@ -141,10 +145,25 @@ tasks:
       - task: venv-python
         vars:
           CLI_ARGS: "ruff check --fix {{.LINT_PATH}}"
+
+      - task: mypy
+        vars:
+          CLI_ARGS: '{{.LINT_PATH}}'
     vars:
       LINT_PATH: '{{.CLI_ARGS | default "."}}'
       TOML_FILES:
         sh: find {{.CLI_ARGS | default "."}} -name '*.toml' | tr '\n' ' '
+
+  mypy:
+    desc: Run mypy on package
+    dir: "{{.USER_WORKING_DIR}}"
+    vars:
+      PACKAGE_DIR:
+        sh: echo $(cd {{.USER_WORKING_DIR}}; until [ -f pyproject.toml ] ; do cd ..; done; pwd)
+    cmds:
+      - task: venv-python
+        vars:
+          CLI_ARGS: 'mypy {{.CLI_ARGS | default "."}} --config-file {{.PACKAGE_DIR}}/pyproject.toml'
 
   test:
     desc: Run tests
