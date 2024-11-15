@@ -17,7 +17,6 @@ from dl_file_uploader_lib.redis_model.base import (
     RedisModelNotFound,
 )
 from dl_file_uploader_lib.redis_model.models import models
-import dl_s3.exc as s3_exc
 
 
 STATUS_CODES = {
@@ -25,7 +24,7 @@ STATUS_CODES = {
     exc.DocumentNotFound: HTTPStatus.BAD_REQUEST,
     exc.DownloadFailed: HTTPStatus.INTERNAL_SERVER_ERROR,
     exc.EmptyDocument: HTTPStatus.BAD_REQUEST,
-    s3_exc.FileLimitError: HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
+    exc.FileLimitError: HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
     exc.InvalidFieldCast: HTTPStatus.BAD_REQUEST,
     exc.InvalidLink: HTTPStatus.BAD_REQUEST,
     exc.YaDocsInvalidLinkPrefix: HTTPStatus.BAD_REQUEST,
@@ -61,7 +60,7 @@ class FileUploaderErrorHandler(AIOHTTPErrorHandler):
             return ErrorData(HTTPStatus.NOT_FOUND, response_body={}, level=ErrorLevel.info)
         elif isinstance(err, (models.EmptySourcesError, models.SourceNotFoundError)):
             return ErrorData(HTTPStatus.NOT_FOUND, response_body={}, level=ErrorLevel.info)
-        elif isinstance(err, (exc.DLFileUploaderBaseError, s3_exc.DLS3Exception)):
+        elif isinstance(err, exc.DLFileUploaderBaseError):
             status_code = STATUS_CODES.get(err.__class__, HTTPStatus.INTERNAL_SERVER_ERROR)
             body = dict(
                 message=err.message,

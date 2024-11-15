@@ -156,6 +156,7 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
                 s3=s3.client,
                 s3_key=dfile.s3_key,
                 bucket_name=s3.tmp_bucket_name,
+                max_file_size_exc=exc.FileLimitError,
             ) as data_sink:
                 await data_sink.dump_data_stream(data_stream)
 

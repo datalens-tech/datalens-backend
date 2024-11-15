@@ -5,13 +5,14 @@ from typing import (
     TYPE_CHECKING,
     ClassVar,
     Optional,
+    Type,
 )
 
 
 if TYPE_CHECKING:
     from types_aiobotocore_s3 import S3Client
 
-from dl_file_uploader_lib import exc
+from dl_constants.exc import DLBaseException
 from dl_s3.data_sink.base import DataSinkAsync
 from dl_s3.stream import RawBytesAsyncDataStream
 
@@ -31,10 +32,11 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
     _chunks_saved: int = 0
     _bytes_saved: int = 0
 
-    def __init__(self, s3: S3Client, s3_key: str, bucket_name: str):
+    def __init__(self, s3: S3Client, s3_key: str, bucket_name: str, max_file_size_exc: Type[DLBaseException]) -> None:
         self._s3 = s3
         self._s3_key = s3_key
         self._bucket_name = bucket_name
+        self._max_file_size_exc = max_file_size_exc
 
         self._chunks_saved = 0
         self._bytes_saved = 0
@@ -79,6 +81,8 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
             self._multipart_upload_started = False
 
     async def _dump_data_batch(self, batch: bytes, progress: int) -> None:
+        if self._bytes_saved + len(batch) > self.max_file_size_bytes:
+            raise self._max_file_size_exc
         LOGGER.info(f"Dumping {len(batch)} data rows into s3 file {self._s3_key}.")
         assert self._upload_id is not None
         part_resp = await self._s3.upload_part(
@@ -105,9 +109,6 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
     async def _dump_data_stream_base(self, data_stream: RawBytesAsyncDataStream) -> None:
         batch = b""
         async for chunk in data_stream:
-            if self._bytes_saved > self.max_file_size_bytes:
-                raise exc.FileLimitError
-
             if self._should_dump_batch(batch):
                 await self._dump_data_batch(batch, progress=data_stream.get_progress_percent())
                 batch = b""
@@ -116,9 +117,6 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
             self._chunks_saved += 1
 
         if batch:
-            actual_size = self._bytes_saved + len(batch)
-            if actual_size > self.max_file_size_bytes:
-                raise exc.FileLimitError
             await self._dump_data_batch(batch, progress=data_stream.get_progress_percent())
 
     async def dump_data_stream(self, data_stream: RawBytesAsyncDataStream) -> None:

@@ -7,6 +7,7 @@ from typing import (
     ClassVar,
     Generic,
     Optional,
+    Type,
     TypeVar,
 )
 
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
 
 import ujson as json
 
-from dl_file_uploader_lib import exc
+from dl_constants.exc import DLBaseException
 from dl_s3.data_sink.base import (
     DataSink,
     DataSinkAsync,
@@ -157,10 +158,13 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
     _part_number: int = 1
     _multipart_upload_started: bool = False
 
-    def __init__(self, s3: AsyncS3Client, s3_key: str, bucket_name: str):
+    def __init__(
+        self, s3: AsyncS3Client, s3_key: str, bucket_name: str, max_file_size_exc: Type[DLBaseException]
+    ) -> None:
         self._s3 = s3
         self._s3_key = s3_key
         self._bucket_name = bucket_name
+        self._max_file_size_exc = max_file_size_exc
 
         self._row_index = 0
         self._rows_saved = 0
@@ -210,6 +214,8 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
         return b"\n".join(batch) + b"\n"
 
     async def _dump_data_batch(self, batch: list[bytes], progress: int) -> None:
+        if self._bytes_saved + len(batch) > self.max_file_size_bytes:
+            raise self._max_file_size_exc
         LOGGER.info(f"Dumping {len(batch)} data rows into s3 file {self._s3_key}.")
         assert self._upload_id is not None
         batch_to_write = self._prepare_chunk_body(batch)
@@ -244,9 +250,6 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
         async for row_data in data_stream:
             processed_row = self._process_row(row_data)
 
-            if self._bytes_saved > self.max_file_size_bytes:
-                raise exc.FileLimitError
-
             if self._should_dump_batch(batch, batch_size=batch_size):
                 await self._dump_data_batch(batch, progress=data_stream.get_progress_percent())
                 batch.clear()
@@ -257,9 +260,6 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
             self._row_index += 1
 
         if batch:
-            actual_size = self._bytes_saved + len(batch)
-            if actual_size > self.max_file_size_bytes:
-                raise exc.FileLimitError
             await self._dump_data_batch(batch, progress=data_stream.get_progress_percent())
 
     async def dump_data_stream(self, data_stream: SimpleUntypedAsyncDataStream) -> None:
