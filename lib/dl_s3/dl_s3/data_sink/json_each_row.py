@@ -7,10 +7,9 @@ from typing import (
     ClassVar,
     Generic,
     Optional,
+    Type,
     TypeVar,
 )
-
-from dl_type_transformer.type_transformer import get_type_transformer
 
 
 if TYPE_CHECKING:
@@ -19,20 +18,16 @@ if TYPE_CHECKING:
 
 import ujson as json
 
-from dl_constants.enums import ConnectionType
-from dl_core.data_sink import (
+from dl_constants.exc import DLBaseException
+from dl_s3.data_sink.base import (
     DataSink,
     DataSinkAsync,
 )
-from dl_core.db import SchemaColumn
-from dl_core.raw_data_streaming.stream import (
+from dl_s3.stream import (
     DataStreamBase,
     SimpleUntypedAsyncDataStream,
     SimpleUntypedDataStream,
 )
-from dl_file_uploader_lib import exc
-
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
 LOGGER = logging.getLogger(__name__)
@@ -148,26 +143,6 @@ class S3FileDataSink(DataSink[_DATA_STREAM_TV], Generic[_DATA_STREAM_TV, _ITER_T
             self._dump_data_batch(batch, progress=data_stream.get_progress_percent())
 
 
-class S3JsonEachRowFileDataSink(S3FileDataSink[DataStreamBase, dict]):
-    conn_type: ConnectionType = CONNECTION_TYPE_FILE
-
-    def __init__(
-        self,
-        bi_schema: list[SchemaColumn],
-        s3: SyncS3Client,
-        s3_key: str,
-        bucket_name: str,
-    ) -> None:
-        super().__init__(s3=s3, s3_key=s3_key, bucket_name=bucket_name)
-
-        self._bi_schema = bi_schema
-        self._tt = get_type_transformer(self.conn_type)
-
-    def _process_row(self, row_data: dict) -> bytes:
-        cast_row_data = [self._tt.cast_for_input(row_data[col.name], user_t=col.user_type) for col in self._bi_schema]
-        return json.dumps(cast_row_data).encode("utf-8")
-
-
 class S3JsonEachRowUntypedFileDataSink(S3FileDataSink[SimpleUntypedDataStream, list]):
     def _process_row(self, row_data: list) -> bytes:
         return json.dumps(row_data).encode("utf-8")
@@ -183,10 +158,13 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
     _part_number: int = 1
     _multipart_upload_started: bool = False
 
-    def __init__(self, s3: AsyncS3Client, s3_key: str, bucket_name: str):
+    def __init__(
+        self, s3: AsyncS3Client, s3_key: str, bucket_name: str, max_file_size_exc: Type[DLBaseException]
+    ) -> None:
         self._s3 = s3
         self._s3_key = s3_key
         self._bucket_name = bucket_name
+        self._max_file_size_exc = max_file_size_exc
 
         self._row_index = 0
         self._rows_saved = 0
@@ -236,6 +214,8 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
         return b"\n".join(batch) + b"\n"
 
     async def _dump_data_batch(self, batch: list[bytes], progress: int) -> None:
+        if self._bytes_saved + len(batch) > self.max_file_size_bytes:
+            raise self._max_file_size_exc
         LOGGER.info(f"Dumping {len(batch)} data rows into s3 file {self._s3_key}.")
         assert self._upload_id is not None
         batch_to_write = self._prepare_chunk_body(batch)
@@ -270,9 +250,6 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
         async for row_data in data_stream:
             processed_row = self._process_row(row_data)
 
-            if self._bytes_saved > self.max_file_size_bytes:
-                raise exc.FileLimitError
-
             if self._should_dump_batch(batch, batch_size=batch_size):
                 await self._dump_data_batch(batch, progress=data_stream.get_progress_percent())
                 batch.clear()
@@ -283,9 +260,6 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
             self._row_index += 1
 
         if batch:
-            actual_size = self._bytes_saved + len(batch)
-            if actual_size > self.max_file_size_bytes:
-                raise exc.FileLimitError
             await self._dump_data_batch(batch, progress=data_stream.get_progress_percent())
 
     async def dump_data_stream(self, data_stream: SimpleUntypedAsyncDataStream) -> None:

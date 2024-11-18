@@ -1,8 +1,8 @@
 from dl_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
-from dl_core.aio.web_app_services.s3 import S3Service
 from dl_file_uploader_api_lib.aiohttp_services.arq_redis import ArqRedisService
 from dl_file_uploader_api_lib.aiohttp_services.crypto import CryptoService
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
+from dl_s3.s3_service import S3Service
 from dl_task_processor.processor import (
     TaskProcessor,
     make_task_processor,

@@ -12,10 +12,6 @@ import attr
 from dl_constants.enums import FileProcessingStatus
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_file_uploader_lib import exc
-from dl_file_uploader_lib.data_sink.raw_bytes import (
-    RawBytesAsyncDataStream,
-    S3RawFileAsyncDataSink,
-)
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import (
     DataFile,
@@ -30,6 +26,8 @@ from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
 from dl_file_uploader_task_interface.tasks import TaskExecutionMode
 from dl_file_uploader_worker_lib.utils.connection_error_tracker import FileConnectionDataSourceErrorTracker
+from dl_s3.data_sink import S3RawFileAsyncDataSink
+from dl_s3.stream import RawBytesAsyncDataStream
 from dl_task_processor.task import (
     BaseExecutorTask,
     Fail,
@@ -158,6 +156,7 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
                 s3=s3.client,
                 s3_key=dfile.s3_key,
                 bucket_name=s3.tmp_bucket_name,
+                max_file_size_exc=exc.FileLimitError,
             ) as data_sink:
                 await data_sink.dump_data_stream(data_stream)
 

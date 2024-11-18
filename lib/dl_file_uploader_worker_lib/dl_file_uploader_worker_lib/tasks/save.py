@@ -15,7 +15,6 @@ from dl_constants.enums import (
     FileProcessingStatus,
 )
 from dl_core import exc as core_exc
-from dl_core.aio.web_app_services.s3 import S3Service
 from dl_core.connection_executors import ConnExecutorQuery
 from dl_core.db import SchemaColumn
 from dl_core.us_manager.us_manager_async import AsyncUSManager
@@ -42,6 +41,7 @@ from dl_file_uploader_worker_lib.utils.s3_utils import (
     copy_from_s3_to_s3,
     make_s3_table_func_sql_source,
 )
+from dl_s3.s3_service import S3Service
 from dl_task_processor.task import (
     BaseExecutorTask,
     Fail,

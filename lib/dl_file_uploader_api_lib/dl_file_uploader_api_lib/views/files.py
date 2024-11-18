@@ -25,11 +25,8 @@ from dl_file_uploader_api_lib.data_file_preparer import (
 )
 from dl_file_uploader_api_lib.schemas import files as files_schemas
 from dl_file_uploader_api_lib.views.base import FileUploaderBaseView
+from dl_file_uploader_lib import exc
 from dl_file_uploader_lib.common_locks import get_update_connection_source_lock
-from dl_file_uploader_lib.data_sink.raw_bytes import (
-    RawBytesAsyncDataStream,
-    S3RawFileAsyncDataSink,
-)
 from dl_file_uploader_lib.enums import FileType
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import (
@@ -49,6 +46,8 @@ from dl_file_uploader_task_interface.tasks import (
     ProcessExcelTask,
     TaskExecutionMode,
 )
+from dl_s3.data_sink import S3RawFileAsyncDataSink
+from dl_s3.stream import RawBytesAsyncDataStream
 
 
 LOGGER = logging.getLogger(__name__)
@@ -107,6 +106,7 @@ class FilesView(FileUploaderBaseView):
             s3=s3.client,
             s3_key=df.s3_key,
             bucket_name=s3.tmp_bucket_name,
+            max_file_size_exc=exc.FileLimitError,
         ) as data_sink:
             await data_sink.dump_data_stream(data_stream)
 

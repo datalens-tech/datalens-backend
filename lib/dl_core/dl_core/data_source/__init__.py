@@ -11,7 +11,6 @@ from dl_core.data_source.sql import (
 )
 from dl_core.data_source.type_mapping import get_data_source_class
 from dl_core.data_source.utils import get_parameters_hash
-from dl_core.raw_data_streaming.stream import DataStreamBase
 
 from .collection import (
     DataSourceCollection,
@@ -30,6 +29,5 @@ __all__ = (
     "DataSourceCollectionBase",
     "DataSourceCollection",
     "DataSourceCollectionFactory",
-    "DataStreamBase",
     "get_parameters_hash",
 )

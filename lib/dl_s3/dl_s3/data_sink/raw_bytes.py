@@ -3,48 +3,24 @@ from __future__ import annotations
 import logging
 from typing import (
     TYPE_CHECKING,
-    AsyncIterator,
     ClassVar,
     Optional,
+    Type,
 )
 
 
 if TYPE_CHECKING:
     from types_aiobotocore_s3 import S3Client
 
-from dl_constants.enums import ConnectionType
-from dl_core.data_sink import DataSinkAsync
-from dl_core.raw_data_streaming.stream import AsyncDataStreamBase
-from dl_file_uploader_lib import exc
-
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+from dl_constants.exc import DLBaseException
+from dl_s3.data_sink.base import DataSinkAsync
+from dl_s3.stream import RawBytesAsyncDataStream
 
 
 LOGGER = logging.getLogger(__name__)
 
 
-class RawBytesAsyncDataStream(AsyncDataStreamBase[bytes]):
-    def __init__(self, data_iter: AsyncIterator[bytes], bytes_to_copy: Optional[int] = None):
-        self._data_iter = data_iter
-        self.bytes_to_copy = bytes_to_copy
-
-        self._bytes_read = 0
-
-    def get_progress_percent(self) -> int:
-        if self.bytes_to_copy is None:
-            return 0
-        if self.bytes_to_copy == 0:
-            return 100
-        return min(self.max_percent, int((self._bytes_read / self.bytes_to_copy) * 100))
-
-    async def __anext__(self) -> bytes:
-        chunk = await self._data_iter.__anext__()
-        self._bytes_read += len(chunk)
-        return chunk
-
-
 class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
-    conn_type: ConnectionType = CONNECTION_TYPE_FILE
     batch_size_in_bytes: int = 10 * 1024**2
     max_batch_size: Optional[int] = None
     max_file_size_bytes: ClassVar[int] = 200 * 1024**2
@@ -56,10 +32,11 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
     _chunks_saved: int = 0
     _bytes_saved: int = 0
 
-    def __init__(self, s3: S3Client, s3_key: str, bucket_name: str):
+    def __init__(self, s3: S3Client, s3_key: str, bucket_name: str, max_file_size_exc: Type[DLBaseException]) -> None:
         self._s3 = s3
         self._s3_key = s3_key
         self._bucket_name = bucket_name
+        self._max_file_size_exc = max_file_size_exc
 
         self._chunks_saved = 0
         self._bytes_saved = 0
@@ -104,6 +81,8 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
             self._multipart_upload_started = False
 
     async def _dump_data_batch(self, batch: bytes, progress: int) -> None:
+        if self._bytes_saved + len(batch) > self.max_file_size_bytes:
+            raise self._max_file_size_exc
         LOGGER.info(f"Dumping {len(batch)} data rows into s3 file {self._s3_key}.")
         assert self._upload_id is not None
         part_resp = await self._s3.upload_part(
@@ -130,9 +109,6 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
     async def _dump_data_stream_base(self, data_stream: RawBytesAsyncDataStream) -> None:
         batch = b""
         async for chunk in data_stream:
-            if self._bytes_saved > self.max_file_size_bytes:
-                raise exc.FileLimitError
-
             if self._should_dump_batch(batch):
                 await self._dump_data_batch(batch, progress=data_stream.get_progress_percent())
                 batch = b""
@@ -141,9 +117,6 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
             self._chunks_saved += 1
 
         if batch:
-            actual_size = self._bytes_saved + len(batch)
-            if actual_size > self.max_file_size_bytes:
-                raise exc.FileLimitError
             await self._dump_data_batch(batch, progress=data_stream.get_progress_percent())
 
     async def dump_data_stream(self, data_stream: RawBytesAsyncDataStream) -> None:

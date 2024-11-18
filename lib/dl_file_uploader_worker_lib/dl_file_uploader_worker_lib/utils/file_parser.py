@@ -12,7 +12,6 @@ from typing import (
 import attr
 
 from dl_constants.enums import FileProcessingStatus
-from dl_core.aio.web_app_services.s3 import S3Service
 from dl_core.db import SchemaColumn
 from dl_file_uploader_lib.enums import (
     CSVDelimiter,
@@ -38,6 +37,7 @@ from dl_file_uploader_worker_lib.utils.parsing_utils import (
     prepare_preview_from_json_each_row,
     reguess_header_and_schema_spreadsheet,
 )
+from dl_s3.s3_service import S3Service
 from dl_utils.aio import ContextVarExecutor
 
 

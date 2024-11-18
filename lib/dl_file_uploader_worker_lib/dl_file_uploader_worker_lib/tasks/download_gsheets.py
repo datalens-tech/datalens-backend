@@ -22,10 +22,8 @@ from dl_core.aio.web_app_services.gsheets import (
     Sheet,
 )
 from dl_core.db import SchemaColumn
-from dl_core.raw_data_streaming.stream import SimpleUntypedAsyncDataStream
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_file_uploader_lib import exc
-from dl_file_uploader_lib.data_sink.json_each_row import S3JsonEachRowUntypedFileAsyncDataSink
 from dl_file_uploader_lib.gsheets_client import (
     GSheetsClient,
     GSheetsOAuth2,
@@ -45,6 +43,8 @@ import dl_file_uploader_task_interface.tasks as task_interface
 from dl_file_uploader_task_interface.tasks import TaskExecutionMode
 from dl_file_uploader_worker_lib.utils.connection_error_tracker import FileConnectionDataSourceErrorTracker
 from dl_file_uploader_worker_lib.utils.parsing_utils import guess_header_and_schema_gsheet
+from dl_s3.data_sink import S3JsonEachRowUntypedFileAsyncDataSink
+from dl_s3.stream import SimpleUntypedAsyncDataStream
 from dl_task_processor.task import (
     BaseExecutorTask,
     Fail,
@@ -284,6 +284,7 @@ class DownloadGSheetTask(BaseExecutorTask[task_interface.DownloadGSheetTask, Fil
                                     s3=s3.get_client(),
                                     s3_key=src.s3_key,
                                     bucket_name=s3.tmp_bucket_name,
+                                    max_file_size_exc=exc.FileLimitError,
                                 ) as data_sink:
                                     await data_sink.dump_data_stream(data_stream)
                             except exc.DLFileUploaderBaseError as e:

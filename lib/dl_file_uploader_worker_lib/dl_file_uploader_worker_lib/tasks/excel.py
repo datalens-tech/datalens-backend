@@ -16,9 +16,7 @@ import attr
 
 from dl_constants.enums import FileProcessingStatus
 from dl_core.db import SchemaColumn
-from dl_core.raw_data_streaming.stream import SimpleUntypedDataStream
 from dl_file_uploader_lib import exc
-from dl_file_uploader_lib.data_sink.json_each_row import S3JsonEachRowUntypedFileDataSink
 from dl_file_uploader_lib.enums import FileType
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import (
@@ -35,6 +33,8 @@ import dl_file_uploader_task_interface.tasks as task_interface
 from dl_file_uploader_task_interface.tasks import TaskExecutionMode
 from dl_file_uploader_worker_lib.utils.connection_error_tracker import FileConnectionDataSourceErrorTracker
 from dl_file_uploader_worker_lib.utils.parsing_utils import guess_header_and_schema_excel
+from dl_s3.data_sink import S3JsonEachRowUntypedFileDataSink
+from dl_s3.stream import SimpleUntypedDataStream
 from dl_task_processor.task import (
     BaseExecutorTask,
     Fail,

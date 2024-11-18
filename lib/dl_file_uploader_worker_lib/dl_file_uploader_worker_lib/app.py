@@ -13,7 +13,6 @@ from dl_api_commons.tenant_resolver import (
     TenantResolver,
 )
 from dl_core.aio.web_app_services.gsheets import GSheetsSettings
-from dl_core.aio.web_app_services.s3 import S3Service
 from dl_core.loader import (
     CoreLibraryConfig,
     load_core_lib,
@@ -26,6 +25,7 @@ from dl_file_uploader_task_interface.context import (
 from dl_file_uploader_task_interface.tasks import CleanS3LifecycleRulesTask
 from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 from dl_file_uploader_worker_lib.tasks import REGISTRY
+from dl_s3.s3_service import S3Service
 from dl_task_processor.arq_wrapper import (
     CronSchedule,
     create_arq_redis_settings,

@@ -106,3 +106,23 @@ class SimpleUntypedAsyncDataStream(AsyncDataStreamBase):
         row = await self._data_iter.__anext__()
         self._rows_read += 1
         return row
+
+
+class RawBytesAsyncDataStream(AsyncDataStreamBase[bytes]):
+    def __init__(self, data_iter: AsyncIterator[bytes], bytes_to_copy: Optional[int] = None):
+        self._data_iter = data_iter
+        self.bytes_to_copy = bytes_to_copy
+
+        self._bytes_read = 0
+
+    def get_progress_percent(self) -> int:
+        if self.bytes_to_copy is None:
+            return 0
+        if self.bytes_to_copy == 0:
+            return 100
+        return min(self.max_percent, int((self._bytes_read / self.bytes_to_copy) * 100))
+
+    async def __anext__(self) -> bytes:
+        chunk = await self._data_iter.__anext__()
+        self._bytes_read += len(chunk)
+        return chunk

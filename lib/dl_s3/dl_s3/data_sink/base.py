@@ -10,7 +10,7 @@ from typing import (
     TypeVar,
 )
 
-from dl_core.raw_data_streaming.stream import (
+from dl_s3.stream import (
     AsyncDataStreamBase,
     DataStreamBase,
 )
