@@ -19,6 +19,7 @@ from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
 
 from dl_connector_mysql.api.connection_info import MySQLConnectionInfoProvider
+from dl_connector_mysql.api.i18n.localizer import Translatable
 
 
 class MySQLConnectionFormFactory(ConnectionFormFactory):
@@ -71,6 +72,11 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
             C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
             rc.raw_sql_level_row(),
             rc.collapse_advanced_settings_row(),
+            *rc.ssl_rows(
+                enabled_name=CommonFieldName.ssl_enable,
+                enabled_help_text=self._localizer.translate(Translatable("label_mysql-ssl-enabled-tooltip")),
+                enabled_default_value=False,
+            ),
             rc.data_export_forbidden_row(),
         ]
 
@@ -87,6 +93,8 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
                 FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
+                FormFieldApiSchema(name=CommonFieldName.ssl_enable),
+                FormFieldApiSchema(name=CommonFieldName.ssl_ca),
                 FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
             ],
         )
@@ -112,6 +120,8 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
                 FormFieldApiSchema(name=CommonFieldName.db_name, required=True),
                 FormFieldApiSchema(name=CommonFieldName.username, required=True),
                 FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
+                FormFieldApiSchema(name=CommonFieldName.ssl_enable),
+                FormFieldApiSchema(name=CommonFieldName.ssl_ca),
                 *self._get_top_level_check_api_schema_items(),
             ]
         )

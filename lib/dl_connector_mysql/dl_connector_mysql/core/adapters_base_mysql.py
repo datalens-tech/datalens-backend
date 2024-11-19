@@ -9,13 +9,14 @@ from typing import (
 import attr
 import sqlalchemy.dialects.mysql as sa_mysql
 
+from dl_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
 from dl_type_transformer.native_type import SATypeSpec
 
 from dl_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
 
 
 @attr.s(cmp=False)
-class BaseMySQLAdapter:
+class BaseMySQLAdapter(BaseSSLCertAdapter):
     conn_type = CONNECTION_TYPE_MYSQL
 
     # Notes about type codes:

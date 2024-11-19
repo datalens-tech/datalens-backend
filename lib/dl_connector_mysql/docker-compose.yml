@@ -24,8 +24,30 @@ services:
       MYSQL_PASSWORD: "qwerty"
     ports:
       - "52001:3306"
+  db-mysql-8-0-ssl:
+    # image: "mysql:8.0.40"
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-mysql-8.0.40-ssl
+    depends_on:
+      - ssl-provider
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+      MYSQL_DATABASE: "test_data"
+      MYSQL_USER: "datalens"
+      MYSQL_PASSWORD: "qwerty"
+      CERT_SERVER_URL: "http://ssl-provider"
+    ports:
+      - "52002:3306"
 
   # INFRA
+  ssl-provider:
+    build:
+      context: ../testenv-common/images
+      dockerfile: Dockerfile.ssl-provider
+    ports:
+      - "8080:80"
+
   pg-us:
     extends:
       file: ../testenv-common/docker-compose.common.yml
