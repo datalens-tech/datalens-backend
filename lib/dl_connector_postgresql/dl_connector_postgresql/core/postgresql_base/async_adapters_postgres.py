@@ -17,7 +17,6 @@ from typing import (
     Type,
     TypeVar,
 )
-from urllib.parse import quote_plus
 import uuid
 
 import asyncpg
