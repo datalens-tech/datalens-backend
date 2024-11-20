@@ -465,18 +465,3 @@ class AsyncPGConnLineConstructor(ClassicSQLConnLineConstructor[PostgresConnTarge
         return {
             "sslmode": "require" if self._target_dto.ssl_enable else "prefer",
         }
-
-    def _get_dsn_params(
-        self,
-        safe_db_symbols: tuple[str, ...] = (),
-        db_name: Optional[str] = None,
-        standard_auth: Optional[bool] = True,
-    ) -> dict:
-        return dict(
-            dialect=self._dialect_name,
-            user=quote_plus(self._target_dto.username) if standard_auth else None,
-            passwd=quote_plus(self._target_dto.password) if standard_auth else None,
-            host=quote_plus(self._target_dto.host),
-            port=quote_plus(str(self._target_dto.port)),
-            db_name=db_name or quote_plus(self._target_dto.db_name or "", safe="".join(safe_db_symbols)),
-        )
