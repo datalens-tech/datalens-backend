@@ -25,6 +25,7 @@ from dl_formula.definitions.functions_string import (
     FuncStartswith,
 )
 from dl_formula.definitions.literals import un_literal
+from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import (
     Fixed,
     FromArgs,
@@ -558,6 +559,7 @@ class FuncArrayRemoveDefault(FuncArrayRemoveBase):
 
 class FuncArrayIntersect(ArrayFunction):
     name = "arr_intersect"
+    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
     arg_names = ["array_1", "array_2", "array_3"]
     arg_cnt = None
     argument_types = [
