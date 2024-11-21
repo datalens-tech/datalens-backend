@@ -1,8 +1,5 @@
 version: '3.7'
 
-x-constants:
-  US_MASTER_TOKEN: &c-us-master-token "AC1ofiek8coB"
-
 services:
   db-oracle:
     labels:

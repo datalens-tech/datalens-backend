@@ -1,15 +1,10 @@
 version: '3.7'
 
-x-constants:
-  US_MASTER_TOKEN: &c-us-master-token "AC1ofiek8coB"
-  REDIS_PASSWORD: &c-redis-password "AwockEuvavDyinmeakmiRiopanbesBepsensUrdIz5"
-
-
 services:
   redis:
     image: "bitnami/redis:5.0.8@sha256:3127620da977815556439a9dc347fff89432a79b6bb6e93a16f20ac4a34ce337"
     environment:
-      REDIS_PASSWORD: *c-redis-password
+      REDIS_PASSWORD: AwockEuvavDyinmeakmiRiopanbesBepsensUrdIz5
     ports:
       - 52604:6379
 
