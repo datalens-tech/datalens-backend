@@ -28,6 +28,9 @@ services:
   us:
     extends:
       file: ../testenv-common/docker-compose.common.yml
-      service: db-postgres
+      service: us
+    depends_on:
+      db-postgres:
+        condition: service_healthy
     ports:
      - "52500:8083"
