@@ -30,28 +30,16 @@ services:
 
   # INFRA
   pg-us:
-    build:
-      context: ../testenv-common/images
-      dockerfile: Dockerfile.pg-us
-    environment:
-      POSTGRES_DB: us-db-ci_purgeable
-      POSTGRES_USER: us
-      POSTGRES_PASSWORD: us
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: pg-us
     ports:
      - "52010:5432"
 
   us:
-    labels:
-      datalens.ci.service: united-storage
-    build:
-      context: ../testenv-common/images
-      dockerfile: Dockerfile.us
-    depends_on:
-      - pg-us
-    environment:
-      POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
-      AUTH_POLICY: "required"
-      MASTER_TOKEN: *c-us-master-token
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: us
     ports:
      - "52011:8083"
 
