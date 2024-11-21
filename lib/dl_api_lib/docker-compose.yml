@@ -18,7 +18,7 @@ services:
       dockerfile: Dockerfile.db-clickhouse
 
   # PostgreSQL is used both for US and COMPENG
-  db-postgres:
+  pg-us:
     extends:
       file: ../testenv-common/docker-compose.common.yml
       service: pg-us
@@ -29,8 +29,5 @@ services:
     extends:
       file: ../testenv-common/docker-compose.common.yml
       service: us
-    depends_on:
-      db-postgres:
-        condition: service_healthy
     ports:
      - "52500:8083"
