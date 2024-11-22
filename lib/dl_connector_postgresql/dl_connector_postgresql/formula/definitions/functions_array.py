@@ -326,4 +326,15 @@ DEFINITIONS_ARRAY = [
             V(D.POSTGRESQL, lambda arr: sa.func.unnest(arr)),
         ]
     ),
+    # intersect
+    base.FuncArrayIntersect(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                lambda *arrays: sa.func.array(
+                    sa.intersect(*[sa.select(sa.func.unnest(arr)) for arr in arrays]).scalar_subquery()
+                ),
+            )
+        ]
+    ),
 ]

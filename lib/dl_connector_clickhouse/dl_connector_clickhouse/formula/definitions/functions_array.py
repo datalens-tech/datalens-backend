@@ -286,4 +286,6 @@ DEFINITIONS_ARRAY = [
             V(D.CLICKHOUSE, sa.func.arrayJoin),
         ]
     ),
+    # intersect
+    base.FuncArrayIntersect(variants=[V(D.CLICKHOUSE, sa.func.arrayIntersect)]),
 ]

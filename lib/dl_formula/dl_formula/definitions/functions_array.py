@@ -25,6 +25,7 @@ from dl_formula.definitions.functions_string import (
     FuncStartswith,
 )
 from dl_formula.definitions.literals import un_literal
+from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import (
     Fixed,
     FromArgs,
@@ -556,6 +557,19 @@ class FuncArrayRemoveDefault(FuncArrayRemoveBase):
     ]
 
 
+class FuncArrayIntersect(ArrayFunction):
+    name = "arr_intersect"
+    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
+    arg_names = ["array_1", "array_2", "array_3"]
+    arg_cnt = None
+    argument_types = [
+        ArgTypeForAll(DataType.ARRAY_STR, require_type_match={DataType.ARRAY_STR, DataType.CONST_ARRAY_STR}),
+        ArgTypeForAll(DataType.ARRAY_INT, require_type_match={DataType.ARRAY_INT, DataType.CONST_ARRAY_INT}),
+        ArgTypeForAll(DataType.ARRAY_FLOAT, require_type_match={DataType.ARRAY_FLOAT, DataType.CONST_ARRAY_FLOAT}),
+    ]
+    return_type = FromArgs(0)
+
+
 DEFINITIONS_ARRAY = [
     # arr_avg
     FuncArrayAvg,
@@ -628,4 +642,6 @@ DEFINITIONS_ARRAY = [
     FuncUnnestArrayFloat,
     FuncUnnestArrayInt,
     FuncUnnestArrayStr,
+    # intersect
+    FuncArrayIntersect,
 ]
