@@ -16,13 +16,13 @@ from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
     host_us_http=get_test_container_hostport("us", fallback_port=52500).host,
     port_us_http=get_test_container_hostport("us", fallback_port=52500).port,
-    host_us_pg=get_test_container_hostport("db-postgres", fallback_port=52509).host,
-    port_us_pg_5432=get_test_container_hostport("db-postgres", fallback_port=52509).port,
+    host_us_pg=get_test_container_hostport("pg-us", fallback_port=52509).host,
+    port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=52509).port,
     us_master_token="AC1ofiek8coB",
     core_connector_ep_names=["clickhouse", "postgresql"],
     compeng_url=(
         f"postgresql://us:us@"
-        f'{get_test_container_hostport("db-postgres", fallback_port=52509).as_pair()}/us-db-ci_purgeable'
+        f'{get_test_container_hostport("pg-us", fallback_port=52509).as_pair()}/us-db-ci_purgeable'
     ),
     redis_host=get_test_container_hostport("redis-caches").host,
     redis_port=get_test_container_hostport("redis-caches", fallback_port=52505).port,
