@@ -17,8 +17,6 @@ services:
       interval: 5s
       retries: 10
       start_period: 3s
-    ports:
-     - "50009:5432"
 
   us:
     labels:
@@ -33,5 +31,3 @@ services:
       POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
       AUTH_POLICY: "required"
       MASTER_TOKEN: *c-us-master-token
-    ports:
-     - "50000:8083"
