@@ -147,6 +147,8 @@ class DefaultReportingProfiler(ReportingProfiler):
             dash_tab_id=x_dl_context.get(DLContextKey.DASH_TAB_ID),
             chart_id=x_dl_context.get(DLContextKey.CHART_ID),
             chart_kind=x_dl_context.get(DLContextKey.CHART_KIND),
+            report_id=x_dl_context.get(DLContextKey.REPORT_ID),
+            report_page=x_dl_context.get(DLContextKey.REPORT_PAGE),
             response_status_code=response_status_code,
             workbook_id=start_record.workbook_id,
             **start_record.conn_reporting_data,
