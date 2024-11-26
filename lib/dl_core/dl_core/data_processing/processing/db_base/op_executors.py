@@ -176,36 +176,12 @@ class CalcOpExecutorAsync(OpExecutorAsync):
     def make_data_key(self, op: BaseOp) -> LocalKeyRepresentation:
         assert isinstance(op, CalcOp)
         source_stream = self.ctx.get_stream(op.source_stream_id)
-
-        # TODO: Remove legacy version
-
-        # Legacy procedure
-        from_info = self.get_from_info_from_stream(source_stream=source_stream)  # type: ignore  # 2024-01-24 # TODO: Argument "source_stream" to "get_from_info_from_stream" of "CalcOpExecutorAsync" has incompatible type "AbstractStream | None"; expected "AbstractStream"  [arg-type]
-        query_compiler = from_info.query_compiler
-        query = query_compiler.compile_select(
-            bi_query=op.bi_query,
-            # The info about the real source is already contained in the previous key parts,
-            # and, also, we want to avoid the randomized table names (in compeng) to appear in the key.
-            # So just use a fake table here.
-            sql_source=sa.table("table"),
-        )
-        legacy_data_key = self.db_ex_adapter.get_data_key(
-            query=query,
-            user_types=source_stream.user_types,  # type: ignore  # 2024-01-24 # TODO: Item "None" of "AbstractStream | None" has no attribute "user_types"  [union-attr]
-            from_info=from_info,
-            base_key=source_stream.data_key,  # type: ignore  # 2024-01-24 # TODO: Item "None" of "AbstractStream | None" has no attribute "data_key"  [union-attr]
-        )
-
-        # New procedure
-        new_data_key = source_stream.data_key.extend("query", op.data_key_data)  # type: ignore  # 2024-01-24 # TODO: Item "None" of "AbstractStream | None" has no attribute "data_key"  [union-attr]
-
-        LOGGER.info(
-            f"Preliminary cache key info for query: "
-            f"legacy key: {legacy_data_key.key_parts_hash} ; "  # type: ignore  # 2024-01-24 # TODO: Item "None" of "LocalKeyRepresentation | None" has no attribute "key_parts_hash"  [union-attr]
-            f"new key: {new_data_key.key_parts_hash}"
-        )
-
-        return new_data_key
+        assert source_stream is not None
+        base_data_key = source_stream.data_key
+        assert base_data_key is not None
+        data_key = base_data_key.extend("query", op.data_key_data)
+        LOGGER.info(f"Preliminary cache key info for query: " f"key: {data_key.key_parts_hash}")
+        return data_key
 
     @log_op  # type: ignore  # TODO: fix
     async def execute(self, op: BaseOp) -> DataSourceVS:  # type: ignore  # TODO: fix
