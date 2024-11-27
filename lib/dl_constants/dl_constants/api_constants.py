@@ -19,6 +19,8 @@ class DLContextKey(str, enum.Enum):
     CHART_ID = "chartId"
     CHART_KIND = "chartKind"
     DASH_TAB_ID = "dashTabId"
+    REPORT_ID = "reportId"
+    REPORT_PAGE = "reportPage"
 
 
 class DLHeadersCommon(DLHeaders):
