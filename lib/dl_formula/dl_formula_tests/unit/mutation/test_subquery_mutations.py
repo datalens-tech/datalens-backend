@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dl_formula.core.fork_nodes import BfbFilterMutation
 from dl_formula.mutation.lookup import (
     LookupDefaultBfbMutation,
     LookupFunctionToQueryForkMutation,
@@ -38,6 +39,12 @@ def test_ago_to_query_fork_mutation():
                     ],
                 ),
                 lod=n.inherited(),
+                bfb_filter_mutations=(
+                    BfbFilterMutation(
+                        original=n.field("date"),
+                        replacement=n.func.DATEADD(n.field("date")),
+                    ),
+                ),
             )
         ),
     )
