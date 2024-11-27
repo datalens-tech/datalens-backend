@@ -11,7 +11,12 @@ from dl_formula.core.index import NodeHierarchyIndex
 import dl_formula.core.nodes as formula_nodes
 from dl_formula.inspect.env import InspectionEnvironment
 import dl_formula.inspect.expression as inspect_expression
+from dl_formula.inspect.expression import contains_node
 import dl_formula.inspect.node as inspect_node
+from dl_formula.mutation.mutation import (
+    FormulaMutation,
+    apply_mutations,
+)
 from dl_query_processing.compilation.primitives import CompiledQuery
 from dl_query_processing.enums import QueryPart
 from dl_query_processing.multi_query.splitters.mask_based import (
@@ -42,11 +47,26 @@ class SubqueryForkSignature:
 
 
 @attr.s(frozen=True)
+class ReplacementFormulaMutation(FormulaMutation):
+    original: formula_nodes.FormulaItem = attr.ib()
+    replacement: formula_nodes.FormulaItem = attr.ib()
+
+    def match_node(self, node: formula_nodes.FormulaItem, parent_stack: tuple[formula_nodes.FormulaItem, ...]) -> bool:
+        return node == self.original
+
+    def make_replacement(
+        self, old: formula_nodes.FormulaItem, parent_stack: tuple[formula_nodes.FormulaItem, ...]
+    ) -> formula_nodes.FormulaItem:
+        return self.replacement
+
+
+@attr.s(frozen=True)
 class QueryForkInfo:
     subquery_type: SubqueryType = attr.ib(kw_only=True)
     joining_node: formula_fork_nodes.QueryForkJoiningBase = attr.ib(kw_only=True)
     bfb_field_ids: frozenset[str] = attr.ib(kw_only=True)
     add_formulas: tuple[AddFormulaInfo, ...] = attr.ib(kw_only=True)
+    bfb_filter_mutations: tuple[ReplacementFormulaMutation, ...] = attr.ib(kw_only=True)
     join_type: JoinType = attr.ib(kw_only=True)
     aliases_by_extract: dict[NodeExtract, str] = attr.ib(kw_only=True, factory=dict)
     formula_split_masks: list[AliasedFormulaSplitMask] = attr.ib(kw_only=True, factory=list)
@@ -338,12 +358,21 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
                             )
 
                 add_formulas = tuple(dim_add_formulas + non_dim_add_formulas)
+                bfb_filter_mutations = tuple(
+                    ReplacementFormulaMutation(
+                        original=mutation.original,
+                        replacement=mutation.replacement,
+                    )
+                    for mutation in qfork_node.bfb_filter_mutations
+                )
+
                 qfork_info = QueryForkInfo(
                     subquery_type=subquery_type,
                     add_formulas=add_formulas,
                     joining_node=joining,
                     join_type=join_type,
                     bfb_field_ids=normalized_bfb,
+                    bfb_filter_mutations=bfb_filter_mutations,
                 )
                 qforks_by_signature[qfork_signature] = qfork_info
                 result.append(qfork_info)
@@ -426,11 +455,21 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
             for extract, alias in sorted(extract_to_alias_map.items(), key=lambda t: t[0].complexity, reverse=True):
                 joining_node = self._normalize_joining_node(joining_node=joining_node, extract=extract, alias=alias)
 
+            add_filters = []
+
             # Collect indices of filters that should be applied to the sub-query
             filter_indices: set[int] = set()
             for filter_idx, filter_formula in enumerate(query.filters):
                 if filter_formula.original_field_id in qfork_info.bfb_field_ids:
-                    # Filter field is in BFB, so exclude it.
+                    # Filter field is in BFB, so exclude it unless it is mutated by one of the BFB mutations
+                    if any(
+                        contains_node(filter_formula.formula_obj, mutation.original)
+                        for mutation in qfork_info.bfb_filter_mutations
+                    ):
+                        new_filter = filter_formula.clone(
+                            formula_obj=apply_mutations(filter_formula.formula_obj, qfork_info.bfb_filter_mutations),
+                        )
+                        add_filters.append(new_filter)
                     continue
                 if filter_idx in split_filter_indices:
                     # This filter can only be applied to a higher-level query
@@ -446,6 +485,7 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
                 subquery_id=query_id_gen.get_id(),
                 formula_split_masks=tuple(qfork_info.formula_split_masks),
                 filter_indices=frozenset(filter_indices),
+                add_filters=tuple(add_filters),
                 add_formulas=qfork_info.add_formulas,
                 join_type=qfork_info.join_type,
                 joining_node=joining_node,

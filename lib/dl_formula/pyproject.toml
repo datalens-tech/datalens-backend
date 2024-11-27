@@ -70,6 +70,7 @@ labels = ["no_compose"]
 bi-formula-cli = "dl_formula.scripts.formula_cli:main"
 
 [tool.mypy]
+exclude = ["dl_formula_tests/"]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
