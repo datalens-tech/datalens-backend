@@ -55,7 +55,7 @@ class MySQLApiBackendDefinition(ApiBackendDefinition):
     multi_query_mutation_factories = ApiBackendDefinition.multi_query_mutation_factories + (
         MQMFactorySettingItem(
             query_proc_mode=QueryProcessingMode.native_wf,
-            dialects=MySQLDialect.and_above(MySQLDialect.MYSQL_8_0_40).to_list(),
+            dialects=MySQLDialect.and_above(MySQLDialect.MYSQL_8_0_12).to_list(),
             factory_cls=NoCompengMultiQueryMutatorFactory,
         ),
     )
