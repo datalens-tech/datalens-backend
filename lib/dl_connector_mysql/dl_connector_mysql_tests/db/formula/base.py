@@ -19,5 +19,5 @@ class MySQL_5_7TestBase(MySQLTestBase):
     dialect = D.MYSQL_5_7
 
 
-class MySQL_8_0_12TestBase(MySQLTestBase):
-    dialect = D.MYSQL_8_0_12
+class MySQL_8_0_40TestBase(MySQLTestBase):
+    dialect = D.MYSQL_8_0_40

@@ -1,7 +1,7 @@
 from dl_formula_testing.testcases.functions_window import DefaultWindowFunctionFormulaConnectorTestSuite
 
-from dl_connector_mysql_tests.db.formula.base import MySQL_8_0_12TestBase
+from dl_connector_mysql_tests.db.formula.base import MySQL_8_0_40TestBase
 
 
-class TestWindowFunctionMySQL_8_0_12(MySQL_8_0_12TestBase, DefaultWindowFunctionFormulaConnectorTestSuite):
+class TestWindowFunctionMySQL_8_0_40(MySQL_8_0_40TestBase, DefaultWindowFunctionFormulaConnectorTestSuite):
     pass

@@ -85,13 +85,13 @@ DEFINITIONS_STRING = [
     # regexp_extract
     base.FuncRegexpExtract(
         variants=[
-            V(D.and_above(D.MYSQL_8_0_12), sa.func.REGEXP_SUBSTR),
+            V(D.and_above(D.MYSQL_8_0_40), sa.func.REGEXP_SUBSTR),
         ]
     ),
     # regexp_extract_nth
     base.FuncRegexpExtractNth(
         variants=[
-            V(D.and_above(D.MYSQL_8_0_12), lambda text, pattern, ind: sa.func.REGEXP_SUBSTR(text, pattern, 1, ind)),
+            V(D.and_above(D.MYSQL_8_0_40), lambda text, pattern, ind: sa.func.REGEXP_SUBSTR(text, pattern, 1, ind)),
         ]
     ),
     # regexp_match
@@ -103,7 +103,7 @@ DEFINITIONS_STRING = [
     # regexp_replace
     base.FuncRegexpReplace(
         variants=[
-            V(D.and_above(D.MYSQL_8_0_12), sa.func.REGEXP_REPLACE),
+            V(D.and_above(D.MYSQL_8_0_40), sa.func.REGEXP_REPLACE),
         ]
     ),
     # replace
