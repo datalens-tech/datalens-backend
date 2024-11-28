@@ -65,6 +65,7 @@ class Dataset(USEntry):
         name: str = attr.ib()
         revision_id: Optional[str] = attr.ib(default=None)
         load_preview_by_default: Optional[bool] = attr.ib(default=True)
+        schema_version: int = attr.ib(default=1)
         result_schema: ResultSchema = attr.ib(factory=ResultSchema)
         source_collections: list[DataSourceCollectionSpecBase] = attr.ib(factory=list)
         source_avatars: list[multisource.SourceAvatar] = attr.ib(factory=list)
@@ -220,3 +221,7 @@ class Dataset(USEntry):
 
     def rename_field_id_usages(self, old_id: str, new_id: str) -> None:
         self.error_registry.rename_pack(old_id=old_id, new_id=new_id)
+
+    @property
+    def schema_version(self) -> int:
+        return self.data.schema_version
