@@ -11,7 +11,7 @@ from dl_connector_mysql.formula.type_constructor import MySQLTypeConstructor
 class MySQLFormulaConnector(FormulaConnector):
     dialect_ns_cls = MySQLDialectNS
     dialects = MySQLDialectNS.MYSQL
-    default_dialect = MySQLDialectNS.MYSQL_8_0_40
+    default_dialect = MySQLDialectNS.MYSQL_8_0_12
     op_definitions = DEFINITIONS
     literalizer_cls = MySQLLiteralizer
     type_constructor_cls = MySQLTypeConstructor

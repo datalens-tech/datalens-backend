@@ -76,9 +76,9 @@ select
 DB_URLS = {
     # “Mysql uses sockets when the host is 'localhost' and tcp/ip when the host is anything else”
     D.MYSQL_5_7: f'dl_mysql://datalens:qwerty@{get_test_container_hostport("db-mysql-5-7", fallback_port=52000).as_pair()}/test_data?charset=utf8',
-    D.MYSQL_8_0_40: f'dl_mysql://datalens:qwerty@{get_test_container_hostport("db-mysql-8-0", fallback_port=52001).as_pair()}/test_data?charset=utf8',
+    D.MYSQL_8_0_12: f'dl_mysql://datalens:qwerty@{get_test_container_hostport("db-mysql-8-0", fallback_port=52001).as_pair()}/test_data?charset=utf8',
 }
-DB_CORE_URL = DB_URLS[D.MYSQL_8_0_40]
+DB_CORE_URL = DB_URLS[D.MYSQL_8_0_12]
 
 API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
     api_connector_ep_names=["mysql"],

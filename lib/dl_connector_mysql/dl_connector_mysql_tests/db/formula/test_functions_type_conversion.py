@@ -11,7 +11,7 @@ from dl_formula_testing.testcases.functions_type_conversion import (
 
 from dl_connector_mysql_tests.db.formula.base import (
     MySQL_5_7TestBase,
-    MySQL_8_0_40TestBase,
+    MySQL_8_0_12TestBase,
 )
 
 
@@ -22,7 +22,7 @@ class TestStrTypeFunctionMySQL_5_7(MySQL_5_7TestBase, DefaultStrTypeFunctionForm
     skip_custom_tz = True
 
 
-class TestStrTypeFunctionMySQL_8_0_40(MySQL_8_0_40TestBase, DefaultStrTypeFunctionFormulaConnectorTestSuite):
+class TestStrTypeFunctionMySQL_8_0_12(MySQL_8_0_12TestBase, DefaultStrTypeFunctionFormulaConnectorTestSuite):
     skip_custom_tz = True
 
 
@@ -33,7 +33,7 @@ class TestFloatTypeFunctionMySQL_5_7(MySQL_5_7TestBase, DefaultFloatTypeFunction
     pass
 
 
-class TestFloatTypeFunctionMySQL_8_0_40(MySQL_8_0_40TestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
+class TestFloatTypeFunctionMySQL_8_0_12(MySQL_8_0_12TestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
@@ -44,7 +44,7 @@ class TestBoolTypeFunctionMySQL_5_7(MySQL_5_7TestBase, DefaultBoolTypeFunctionFo
     pass
 
 
-class TestBoolTypeFunctionMySQL_8_0_40(MySQL_8_0_40TestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
+class TestBoolTypeFunctionMySQL_8_0_12(MySQL_8_0_12TestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
@@ -55,7 +55,7 @@ class TestIntTypeFunctionMySQL_5_7(MySQL_5_7TestBase, DefaultIntTypeFunctionForm
     pass
 
 
-class TestIntTypeFunctionMySQL_8_0_40(MySQL_8_0_40TestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
+class TestIntTypeFunctionMySQL_8_0_12(MySQL_8_0_12TestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
@@ -66,7 +66,7 @@ class TestDateTypeFunctionMySQL_5_7(MySQL_5_7TestBase, DefaultDateTypeFunctionFo
     pass
 
 
-class TestDateTypeFunctionMySQL_8_0_40(MySQL_8_0_40TestBase, DefaultDateTypeFunctionFormulaConnectorTestSuite):
+class TestDateTypeFunctionMySQL_8_0_12(MySQL_8_0_12TestBase, DefaultDateTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
@@ -80,8 +80,8 @@ class TestGenericDatetimeTypeFunctionMySQL_5_7(
     pass
 
 
-class TestGenericDatetimeTypeFunctionMySQL_8_0_40(
-    MySQL_8_0_40TestBase,
+class TestGenericDatetimeTypeFunctionMySQL_8_0_12(
+    MySQL_8_0_12TestBase,
     DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
@@ -97,8 +97,8 @@ class TestGeopointTypeFunctionMySQL_5_7(
     pass
 
 
-class TestGeopointTypeFunctionMySQL_8_0_40(
-    MySQL_8_0_40TestBase,
+class TestGeopointTypeFunctionMySQL_8_0_12(
+    MySQL_8_0_12TestBase,
     DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
@@ -114,8 +114,8 @@ class TestGeopolygonTypeFunctionMySQL_5_7(
     pass
 
 
-class TestGeopolygonTypeFunctionMySQL_8_0_40(
-    MySQL_8_0_40TestBase,
+class TestGeopolygonTypeFunctionMySQL_8_0_12(
+    MySQL_8_0_12TestBase,
     DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
 ):
     pass

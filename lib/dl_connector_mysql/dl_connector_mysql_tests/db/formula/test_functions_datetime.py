@@ -2,7 +2,7 @@ from dl_formula_testing.testcases.functions_datetime import DefaultDateTimeFunct
 
 from dl_connector_mysql_tests.db.formula.base import (
     MySQL_5_7TestBase,
-    MySQL_8_0_40TestBase,
+    MySQL_8_0_12TestBase,
 )
 
 
@@ -15,5 +15,5 @@ class TestDateTimeFunctionMySQL_5_7(MySQL_5_7TestBase, DateTimeFunctionMySQLTest
     pass
 
 
-class TestDateTimeFunctionMySQL_8_0_40(MySQL_8_0_40TestBase, DateTimeFunctionMySQLTestSuite):
+class TestDateTimeFunctionMySQL_8_0_12(MySQL_8_0_12TestBase, DateTimeFunctionMySQLTestSuite):
     pass

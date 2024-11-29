@@ -2,7 +2,7 @@ from dl_formula_testing.testcases.functions_string import DefaultStringFunctionF
 
 from dl_connector_mysql_tests.db.formula.base import (
     MySQL_5_7TestBase,
-    MySQL_8_0_40TestBase,
+    MySQL_8_0_12TestBase,
 )
 
 
@@ -16,5 +16,5 @@ class TestStringFunctionMySQL_5_7(MySQL_5_7TestBase, StringFunctionMySQLTestSuit
     supports_regex_replace = False
 
 
-class TestStringFunctionMySQL_8_0_40(MySQL_8_0_40TestBase, StringFunctionMySQLTestSuite):
+class TestStringFunctionMySQL_8_0_12(MySQL_8_0_12TestBase, StringFunctionMySQLTestSuite):
     pass
