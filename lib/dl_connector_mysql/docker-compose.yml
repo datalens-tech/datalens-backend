@@ -13,10 +13,10 @@ services:
     ports:
       - "52000:3306"
   db-mysql-8-0:
-    # image: "mysql:8.0.12"
+    # image: "mysql:8.0.40"
     build:
       context: docker-compose
-      dockerfile: Dockerfile.db-mysql-8.0.12
+      dockerfile: Dockerfile.db-mysql-8.0.40
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "1"
       MYSQL_DATABASE: "test_data"

@@ -60,17 +60,17 @@ DEFINITIONS_TYPE = [
     ),
     base.FuncFloatFromDate(
         variants=[
-            V(D.MYSQL, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), sa_mysql.FLOAT)),
+            V(D.MYSQL, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), sa_mysql.DOUBLE)),
         ]
     ),
     base.FuncFloatFromDatetime(
         variants=[
-            V(D.MYSQL, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), sa_mysql.FLOAT)),
+            V(D.MYSQL, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), sa_mysql.DOUBLE)),
         ]
     ),
     base.FuncFloatFromGenericDatetime(
         variants=[
-            V(D.MYSQL, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), sa_mysql.FLOAT)),
+            V(D.MYSQL, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), sa_mysql.DOUBLE)),
         ]
     ),
     # genericdatetime
