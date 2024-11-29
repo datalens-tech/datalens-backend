@@ -443,7 +443,6 @@ class TestBasicWindowFunctions(DefaultApiTestBase, DefaultBasicWindowFunctionTes
                     ELSE "H2"
                     END
                 """,
-                # "order_period": "[quantity] + (1 - 1)",
                 "Group Sales": "SUM([sales])",
                 "RSum": "RSUM([Group Sales])",
             },
