@@ -16,8 +16,8 @@ HUMAN_DIALECTS = {
         Translatable("`MySQL` version `5.7`"),
     ),
     MySQLDialect.MYSQL_8_0_40: StyledDialect(
-        "`MySQL 8.0.40`",
-        "`MySQL`<br/>`8.0.40`",
-        Translatable("`MySQL` version `8.0.40`"),
+        "`MySQL 8.0.12`",
+        "`MySQL`<br/>`8.0.12`",
+        Translatable("`MySQL` version `8.0.12`"),
     ),
 }

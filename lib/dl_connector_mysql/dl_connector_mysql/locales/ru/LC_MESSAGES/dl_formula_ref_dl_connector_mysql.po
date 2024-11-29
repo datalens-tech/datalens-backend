@@ -13,5 +13,5 @@ msgstr ""
 msgid "`MySQL` version `5.7`"
 msgstr "`MySQL` версии `5.7`"
 
-msgid "`MySQL` version `8.0.40`"
-msgstr "`MySQL` версии `8.0.40`"
+msgid "`MySQL` version `8.0.12`"
+msgstr "`MySQL` версии `8.0.12`"
