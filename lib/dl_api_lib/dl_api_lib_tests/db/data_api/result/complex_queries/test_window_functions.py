@@ -465,7 +465,6 @@ class TestBasicWindowFunctions(DefaultApiTestBase, DefaultBasicWindowFunctionTes
         data_rows = get_data_rows(result_resp)  # [['H1', '161667.14076359986'], ['H2', '228798.99612549983']]
         assert len(data_rows) == 2
 
-
     def test_order_by_multilevel_window_function(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(
             api_v1=control_api,
