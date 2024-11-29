@@ -868,7 +868,7 @@ class FormulaCompiler:
             for dim_field_id in self._group_by_ids:
                 dim_field = self._fields.get(id=dim_field_id)
                 try:
-                    dim_formula_obj = self._process_field_stage_aggregation(dim_field, collect_errors=collect_errors)
+                    dim_formula_obj = self._process_field_stage_mutation(dim_field, collect_errors=collect_errors)
                 except formula_exc.FormulaError:
                     # error has been registered, so when the field will be rendered explicitly the error will be raised
                     # here we can just skip it since there's nothing to register as a dimension

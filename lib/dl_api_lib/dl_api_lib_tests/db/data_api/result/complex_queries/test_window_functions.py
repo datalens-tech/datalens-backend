@@ -432,6 +432,40 @@ class TestBasicWindowFunctions(DefaultApiTestBase, DefaultBasicWindowFunctionTes
 
         assert result_resp.status_code == HTTPStatus.OK, result_resp.json
 
+    def test_const_ops_in_window_ordering_dimension(self, control_api, data_api, saved_dataset):
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            formulas={
+                "order_day_in_year": "[order_date] - DATETRUNC([order_date], 'year')",
+                "order_period": """
+                    IF [order_day_in_year] <= (365 * 1 / 2) THEN "H1"
+                    ELSE "H2"
+                    END
+                """,
+                # "order_period": "[quantity] + (1 - 1)",
+                "Group Sales": "SUM([sales])",
+                "RSum": "RSUM([Group Sales])",
+            },
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="order_period"),
+                ds.find_field(title="RSum"),
+            ],
+            order_by=[
+                ds.find_field(title="order_period"),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+
+        data_rows = get_data_rows(result_resp)  # [['H1', '161667.14076359986'], ['H2', '228798.99612549983']]
+        assert len(data_rows) == 2
+
+
     def test_order_by_multilevel_window_function(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(
             api_v1=control_api,
