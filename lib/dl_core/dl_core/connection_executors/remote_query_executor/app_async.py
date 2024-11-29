@@ -17,12 +17,11 @@ from typing import (
 
 import aiodns
 from aiohttp import web
-from aiohttp.typedefs import Handler
 
+from dl_api_commons.aio.middlewares.body_signature import body_signature_validation_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.server_header import ServerHeader
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_app_tools.profiling_base import GenericProfiler
 from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
@@ -52,7 +51,6 @@ from dl_core.connection_executors.remote_query_executor.commons import (
     DEFAULT_CHUNK_SIZE,
     SUPPORTED_ADAPTER_CLS,
 )
-from dl_core.connection_executors.remote_query_executor.crypto import get_hmac_hex_digest
 from dl_core.connection_executors.remote_query_executor.error_handler_rqe import RQEErrorHandler
 from dl_core.connection_executors.remote_query_executor.settings import RQESettings
 from dl_core.enums import RQEEventType
@@ -282,27 +280,6 @@ class ActionHandlingView(BaseView):
             raise NotImplementedError(f"Action {action} is not implemented in QE")
 
 
-def body_signature_validation_middleware(hmac_key: bytes) -> AIOHTTPMiddleware:
-    @web.middleware
-    async def actual_middleware(request: web.Request, handler: Handler) -> web.StreamResponse:
-        if not hmac_key:  # do not consider an empty hmac key as valid.
-            raise Exception("body_signature_validation_middleware: no hmac_key.")
-
-        if request.method in ("HEAD", "OPTIONS", "GET"):
-            return await handler(request)
-
-        body_bytes = await request.read()
-        expected_signature = get_hmac_hex_digest(body_bytes, secret_key=hmac_key)
-        signature_str_from_header = request.headers.get(HEADER_BODY_SIGNATURE)
-
-        if expected_signature != signature_str_from_header:
-            raise web.HTTPForbidden(reason="Invalid signature")
-
-        return await handler(request)
-
-    return actual_middleware
-
-
 def create_async_qe_app(hmac_key: bytes, forbid_private_addr: bool = False) -> web.Application:
     req_id_service = RequestId(
         header_name=HEADER_REQUEST_ID,
@@ -318,7 +295,7 @@ def create_async_qe_app(hmac_key: bytes, forbid_private_addr: bool = False) -> w
                 error_handler=error_handler,
             ).middleware,
             # TODO FIX: Add profiling middleware.
-            body_signature_validation_middleware(hmac_key=hmac_key),
+            body_signature_validation_middleware(hmac_key=hmac_key, header=HEADER_BODY_SIGNATURE),
         ]
     )
     app.on_response_prepare.append(req_id_service.on_response_prepare)

@@ -15,15 +15,12 @@ from typing import (
     Union,
 )
 
-import attr
 from flask import current_app
 import flask.views
-from werkzeug.exceptions import (
-    Forbidden,
-    HTTPException,
-)
+from werkzeug.exceptions import HTTPException
 
 from dl_api_commons.flask.middlewares.aio_event_loop_middleware import AIOEventLoopMiddleware
+from dl_api_commons.flask.middlewares.body_signature import BodySignatureValidator
 from dl_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from dl_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
 from dl_api_commons.flask.middlewares.request_id import RequestIDService
@@ -49,7 +46,6 @@ from dl_core.connection_executors.remote_query_executor.commons import (
     DEFAULT_CHUNK_SIZE,
     SUPPORTED_ADAPTER_CLS,
 )
-from dl_core.connection_executors.remote_query_executor.crypto import get_hmac_hex_digest
 from dl_core.connection_executors.remote_query_executor.settings import RQESettings
 from dl_core.enums import RQEEventType
 from dl_core.exc import SourceTimeout
@@ -262,30 +258,6 @@ class ActionHandlingView(flask.views.View):
         raise NotImplementedError(f"Action {action} is not implemented in QE")
 
 
-@attr.s
-class BodySignatureValidator:
-    hmac_key: bytes = attr.ib()
-
-    def validate_request_body(self) -> None:
-        if flask.request.method in ("HEAD", "OPTIONS", "GET"):  # no body to validate.
-            return
-
-        # For import-test reasons, can't verify this when getting it;
-        # but allowing requests when the key is empty is too dangerous.
-        if not self.hmac_key:
-            raise Exception("validate_request_body: no hmac_key")
-
-        body_bytes = flask.request.get_data()
-        expected_signature = get_hmac_hex_digest(body_bytes, secret_key=self.hmac_key)
-        signature_str_from_header = flask.request.headers.get(HEADER_BODY_SIGNATURE)
-
-        if expected_signature != signature_str_from_header:
-            raise Forbidden("Invalid signature")
-
-    def set_up(self, app: flask.Flask) -> None:
-        app.before_request(self.validate_request_body)
-
-
 def ping_view() -> flask.Response:
     return flask.jsonify(dict(result="PONG"))
 
@@ -343,6 +315,7 @@ def create_sync_app() -> flask.Flask:
     profiling_middleware.set_up(app, accept_outer_stages=True)
     BodySignatureValidator(
         hmac_key=hmac_key.encode(),
+        header=HEADER_BODY_SIGNATURE,
     ).set_up(app)
 
     app.config["forbid_private_addr"] = settings.FORBID_PRIVATE_ADDRESSES
