@@ -26,6 +26,7 @@ from aiohttp import (
 from aiohttp.client_exceptions import ServerTimeoutError
 import attr
 
+from dl_api_commons.crypto import get_hmac_hex_digest
 from dl_api_commons.headers import (
     HEADER_LOGGING_CONTEXT,
     INTERNAL_HEADER_PROFILING_STACK,
@@ -64,7 +65,6 @@ from dl_core.connection_executors.qe_serializer import (
     ResponseTypes,
 )
 from dl_core.connection_executors.qe_serializer import dba_actions as dba_actions
-from dl_core.connection_executors.remote_query_executor.crypto import get_hmac_hex_digest
 from dl_core.connection_models.conn_options import ConnectOptions
 from dl_core.enums import RQEEventType
 from dl_dashsql.typed_query.primitives import (
