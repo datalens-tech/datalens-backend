@@ -8,7 +8,7 @@ from dl_connector_mysql.formula.constants import MySQLDialect as D
 
 V = TranslationVariant.make
 
-SUPPORTED_DIALECTS = D.and_above(D.MYSQL_8_0_12)
+SUPPORTED_DIALECTS = D.and_above(D.MYSQL_8_0_40)
 
 
 DEFINITIONS_WINDOW = [
