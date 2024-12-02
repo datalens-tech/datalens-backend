@@ -202,14 +202,14 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         sample_table_name: Optional[str] = attr.ib(default=None)
         name: Optional[str] = attr.ib(default=None)
         data_export_forbidden: bool = attr.ib(default=False)
-        schema_version: int = attr.ib(default=1)
+        schema_version: str = attr.ib(default="1")
 
     @property
     def data_export_forbidden(self) -> bool:
         return self.data.data_export_forbidden if hasattr(self.data, "data_export_forbidden") else False
 
     @property
-    def schema_version(self) -> int:
+    def schema_version(self) -> str:
         return self.data.schema_version
 
     @classmethod

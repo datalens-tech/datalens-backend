@@ -33,7 +33,7 @@ class SchemaVersionCrawler(USEntryCrawler):
         self, entry: USEntry, logging_extra: dict[str, Any], usm: Optional[AsyncUSManager] = None
     ) -> tuple[bool, str]:
         if entry.data.get("schema_version") is None:
-            entry.data["schema_version"] = 1
+            entry.data["schema_version"] = "1"
             return True, "Schema version is set"
 
         return False, "Entry skipped"
