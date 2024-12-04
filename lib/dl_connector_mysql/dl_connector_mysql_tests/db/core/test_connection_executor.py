@@ -21,9 +21,7 @@ from dl_testing.regulated_test import RegulatedTestParams
 
 from dl_connector_mysql.core.us_connection import ConnectionMySQL
 from dl_connector_mysql_tests.db.config import CoreConnectionSettings
-from dl_connector_mysql_tests.db.core.base import (
-    BaseMySQLTestClass,
-)
+from dl_connector_mysql_tests.db.core.base import BaseMySQLTestClass
 
 
 class MySQLSyncAsyncConnectionExecutorCheckBase(
