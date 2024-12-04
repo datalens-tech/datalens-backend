@@ -1,4 +1,4 @@
-from ydb_sqlalchemy import YqlDialect as SAYqlDialect
+from ydb_sqlalchemy.sqlalchemy import YqlDialect as SAYqlDialect
 
 from dl_formula.connectors.base.connector import FormulaConnector
 from dl_query_processing.compilation.query_mutator import RemoveConstFromGroupByFormulaAtomicQueryMutator

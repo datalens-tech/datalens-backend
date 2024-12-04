@@ -87,7 +87,7 @@ check_untyped_defs = true
 strict_optional = true
 
 [[tool.mypy.overrides]]
-module = ["ydb_proto_stubs_import.*", "ydb.*"]
+module = ["ydb_proto_stubs_import.*", "ydb.*", "ydb_sqlalchemy.*", "ydb_dbapi.*"]
 ignore_missing_imports = true
 
 [datalens.i18n.domains]
