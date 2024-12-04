@@ -14,9 +14,6 @@ from dl_connector_mysql.core.us_connection import ConnectionMySQL
 import dl_connector_mysql_tests.db.config as test_config
 
 
-CERT_PROVIDER_URL = "http://127.0.0.1:8080"
-
-
 class BaseMySQLTestClass(BaseConnectionTestClass[ConnectionMySQL]):
     conn_type = CONNECTION_TYPE_MYSQL
     core_test_config = test_config.CORE_TEST_CONFIG
@@ -51,7 +48,8 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
     def ssl_ca_path(self) -> str:
         ssl_ca_path = os.path.join(bi_configs_utils.get_temp_root_certificates_folder_path(), "ca.pem")
 
-        response = requests.get(f"{CERT_PROVIDER_URL}/ca.pem")
+        uri = f"{test_config.CoreSslConnectionSettings.CERT_PROVIDER_URL}/ca.pem"
+        response = requests.get(uri)
         with open(ssl_ca_path, "w") as f:
             f.write(response.text)
 
