@@ -21,7 +21,9 @@ from dl_testing.regulated_test import RegulatedTestParams
 
 from dl_connector_mysql.core.us_connection import ConnectionMySQL
 from dl_connector_mysql_tests.db.config import CoreConnectionSettings
-from dl_connector_mysql_tests.db.core.base import BaseMySQLTestClass
+from dl_connector_mysql_tests.db.core.base import (
+    BaseMySQLTestClass,
+)
 
 
 class MySQLSyncAsyncConnectionExecutorCheckBase(
@@ -131,3 +133,29 @@ class TestMySQLAsyncConnectionExecutor(
             DefaultAsyncConnectionExecutorTestSuite.test_get_table_schema_info_for_nonexistent_table: "Not implemented",
         },
     )
+
+
+# # @pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")
+# class TestSslMySQLSyncConnectionExecutor(
+#     BaseSslMySQLTestClass,
+#     TestMySQLSyncConnectionExecutor,
+# ):
+#     def test_test(self, sync_connection_executor: SyncConnExecutorBase) -> None:
+#         super().test_test(sync_connection_executor)
+#         self.check_ssl_directory_is_empty()
+
+
+# # @pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")
+# class TestSslMySQLAsyncConnectionExecutor(
+#     BaseSslMySQLTestClass,
+#     TestMySQLAsyncConnectionExecutor,
+# ):
+#     async def test_test(self, async_connection_executor: AsyncConnExecutorBase) -> None:
+#         await super().test_test(async_connection_executor)
+#         await asyncio.sleep(0.1)
+#         self.check_ssl_directory_is_empty()
+
+#     async def test_multiple_connection_test(self, async_connection_executor: AsyncConnExecutorBase) -> None:
+#         await super().test_multiple_connection_test(async_connection_executor)
+#         await asyncio.sleep(0.1)
+#         self.check_ssl_directory_is_empty()
