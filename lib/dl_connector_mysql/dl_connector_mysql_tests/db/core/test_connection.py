@@ -4,7 +4,7 @@ from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 from dl_connector_mysql.core.us_connection import ConnectionMySQL
 from dl_connector_mysql_tests.db.core.base import (
     BaseMySQLTestClass,
-    # BaseSslMySQLTestClass,
+    BaseSslMySQLTestClass,
 )
 
 
@@ -34,27 +34,27 @@ class TestMySQLConnection(
             assert dsrc_tmpl.title
 
 
-# class TestSslMySQLConnection(
-#     BaseSslMySQLTestClass,
-#     DefaultConnectionTestClass[ConnectionMySQL],
-# ):
-#     do_check_data_export_flag = True
+class TestSslMySQLConnection(
+    BaseSslMySQLTestClass,
+    DefaultConnectionTestClass[ConnectionMySQL],
+):
+    do_check_data_export_flag = True
 
-#     def check_saved_connection(self, conn: ConnectionMySQL, params: dict) -> None:
-#         assert conn.uuid is not None
-#         assert conn.data.db_name == params["db_name"]
-#         assert conn.data.host == params["host"]
-#         assert conn.data.port == params["port"]
-#         assert conn.data.username == params["username"]
-#         assert conn.data.password == params["password"]
-#         assert conn.data.ssl_enable is True
-#         assert conn.data.ssl_ca is params["ssl_ca"]
+    def check_saved_connection(self, conn: ConnectionMySQL, params: dict) -> None:
+        assert conn.uuid is not None
+        assert conn.data.db_name == params["db_name"]
+        assert conn.data.host == params["host"]
+        assert conn.data.port == params["port"]
+        assert conn.data.username == params["username"]
+        assert conn.data.password == params["password"]
+        assert conn.data.ssl_enable is True
+        assert conn.data.ssl_ca is params["ssl_ca"]
 
-#     def check_data_source_templates(
-#         self,
-#         conn: ConnectionMySQL,
-#         dsrc_templates: list[DataSourceTemplate],
-#     ) -> None:
-#         assert dsrc_templates
-#         for dsrc_tmpl in dsrc_templates:
-#             assert dsrc_tmpl.title
+    def check_data_source_templates(
+        self,
+        conn: ConnectionMySQL,
+        dsrc_templates: list[DataSourceTemplate],
+    ) -> None:
+        assert dsrc_templates
+        for dsrc_tmpl in dsrc_templates:
+            assert dsrc_tmpl.title

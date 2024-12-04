@@ -14,7 +14,7 @@ from dl_connector_mysql.core.us_connection import ConnectionMySQL
 import dl_connector_mysql_tests.db.config as test_config
 
 
-# CERT_PROVIDER_URL = "http://127.0.0.1:8080"
+CERT_PROVIDER_URL = "http://127.0.0.1:8080"
 
 
 class BaseMySQLTestClass(BaseConnectionTestClass[ConnectionMySQL]):
@@ -46,53 +46,52 @@ class BaseMySQLTestClass(BaseConnectionTestClass[ConnectionMySQL]):
         )
 
 
-# class BaseSslMySQLTestClass(BaseMySQLTestClass):
-#     @pytest.fixture(scope="class")
-#     def ssl_ca_path(self) -> str:
-#         return os.path.join(bi_configs_utils.get_temp_root_certificates_folder_path(), "ca.pem")
+class BaseSslMySQLTestClass(BaseMySQLTestClass):
+    @pytest.fixture(scope="class")
+    def ssl_ca_path(self) -> str:
+        ssl_ca_path = os.path.join(bi_configs_utils.get_temp_root_certificates_folder_path(), "ca.pem")
 
-#     @pytest.fixture(autouse=True, scope="class")
-#     def fetch_ssl_ca(self, ssl_ca_path: str) -> None:
-#         response = requests.get(f"{CERT_PROVIDER_URL}/ca.pem")
-#         print(response.text)
-#         with open(ssl_ca_path, "w") as f:
-#             f.write(response.text)
+        response = requests.get(f"{CERT_PROVIDER_URL}/ca.pem")
+        with open(ssl_ca_path, "w") as f:
+            f.write(response.text)
 
-#     @pytest.fixture(scope="class")
-#     def ssl_ca(self, ssl_ca_path: str) -> str:
-#         with open(ssl_ca_path) as f:
-#             return f.read()
+        return ssl_ca_path
 
-#     @pytest.fixture(scope="class")
-#     def engine_params(self, ssl_ca_path: str) -> dict:
-#         engine_params = {
-#             "connect_args": frozendict(
-#                 {
-#                     "ssl": frozendict(
-#                         {
-#                             "ssl_mode": "VERIFY_CA",
-#                             "ca": ssl_ca_path,
-#                         }
-#                     ),
-#                 }
-#             ),
-#         }
-#         return engine_params
+    @pytest.fixture(scope="class")
+    def ssl_ca(self, ssl_ca_path: str) -> str:
+        with open(ssl_ca_path) as f:
+            return f.read()
 
-#     @pytest.fixture(scope="class")
-#     def db_url(self, ssl_ca_path: str) -> str:
-#         db_url = test_config.DB_CORE_SSL_URL
-#         return db_url
+    @pytest.fixture(scope="class")
+    def engine_params(self, ssl_ca_path: str) -> dict:
+        engine_params = {
+            "connect_args": frozendict(
+                {
+                    "ssl": frozendict(
+                        {
+                            "ca": ssl_ca_path,
+                            # "check_hostname": False,
+                        }
+                    ),
+                }
+            ),
+        }
+        return engine_params
 
-#     @pytest.fixture(scope="function")
-#     def connection_creation_params(self, ssl_ca: str) -> dict:
-#         return dict(
-#             db_name=test_config.CoreSslConnectionSettings.DB_NAME,
-#             host=test_config.CoreSslConnectionSettings.HOST,
-#             port=test_config.CoreSslConnectionSettings.PORT,
-#             username=test_config.CoreSslConnectionSettings.USERNAME,
-#             password=test_config.CoreSslConnectionSettings.PASSWORD,
-#             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
-#             ssl_enable=True,
-#             ssl_ca=ssl_ca,
-#         )
+    @pytest.fixture(scope="class")
+    def db_url(self) -> str:
+        db_url = test_config.DB_CORE_SSL_URL
+        return db_url
+
+    @pytest.fixture(scope="function")
+    def connection_creation_params(self, ssl_ca: str) -> dict:
+        return dict(
+            db_name=test_config.CoreSslConnectionSettings.DB_NAME,
+            host=test_config.CoreSslConnectionSettings.HOST,
+            port=test_config.CoreSslConnectionSettings.PORT,
+            username=test_config.CoreSslConnectionSettings.USERNAME,
+            password=test_config.CoreSslConnectionSettings.PASSWORD,
+            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            ssl_enable=True,
+            ssl_ca=ssl_ca,
+        )
