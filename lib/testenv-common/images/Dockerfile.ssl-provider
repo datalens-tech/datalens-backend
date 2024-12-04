@@ -9,7 +9,8 @@ RUN mkdir -p certs certs/private certs/newcerts && \
     cp /etc/ssl/openssl.cnf ./openssl.cnf && \
     touch certs/index.txt && \
     echo "01" > certs/serial && \
-    sed -i "s|./demoCA|./certs|g" openssl.cnf
+    sed -i "s|./demoCA|./certs|g" openssl.cnf && \
+    echo -e "[SAN]\nsubjectAltName=IP:127.0.0.1" >> openssl.cnf
 
 # Generate certificates
 RUN \
@@ -18,16 +19,15 @@ RUN \
         -days 3600 -config openssl.cnf \
         -subj "/C=RU/ST=Moscow/L=Moscow/O=Test/OU=Test/CN=TestCA" && \
     # Generate server request and key
-    openssl req -new -nodes -keyout certs/server-key.pem -out \
-        certs/server-req.pem -days 3600 -config openssl.cnf \
-        -subj "/C=RU/ST=Moscow/L=Moscow/O=Test/OU=Test/CN=TestServer" && \
-    # Sign server certificate
-    openssl ca -cert certs/ca.pem -keyfile certs/private/cakey.pem -policy policy_anything \
-        -out certs/server-cert.pem -config openssl.cnf -batch \
-        -infiles certs/server-req.pem && \
+    openssl req -new -nodes -keyout certs/server-key.pem -out certs/server-req.pem \
+        -days 3600 -config openssl.cnf \
+        -subj "/C=RU/ST=Moscow/L=Moscow/O=Test/OU=Test/CN=127.0.0.1" && \
+    # Sign server certificate with SAN extension
+    openssl x509 -req -in certs/server-req.pem -CA certs/ca.pem -CAkey certs/private/cakey.pem \
+        -CAcreateserial -out certs/server-cert.pem -days 3600 -extfile openssl.cnf -extensions SAN && \
     # Generate client request and key
-    openssl req -new -nodes -keyout certs/client-key.pem -out \
-        certs/client-req.pem -days 3600 -config openssl.cnf \
+    openssl req -new -nodes -keyout certs/client-key.pem -out certs/client-req.pem \
+        -days 3600 -config openssl.cnf \
         -subj "/C=RU/ST=Moscow/L=Moscow/O=Test/OU=Test/CN=TestClient" && \
     # Sign client certificate
     openssl ca -cert certs/ca.pem -keyfile certs/private/cakey.pem -policy policy_anything \
@@ -49,6 +49,7 @@ RUN cd certs && \
     cp server-key.pem $APACHE_WEB_ROOT/ && \
     cp client-cert.pem $APACHE_WEB_ROOT && \
     cp client-key.pem $APACHE_WEB_ROOT && \
+    cp ../openssl.cnf $APACHE_WEB_ROOT/ && \
     chmod 644 /var/www/localhost/htdocs/*
 
 # Expose HTTP port
