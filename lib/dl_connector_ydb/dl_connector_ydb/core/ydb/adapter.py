@@ -11,7 +11,7 @@ from typing import (
 import attr
 import grpc
 from ydb import DriverConfig
-import ydb.dbapi as ydb_dbapi
+import ydb_dbapi
 from ydb.driver import credentials_impl
 import ydb.issues as ydb_cli_err
 

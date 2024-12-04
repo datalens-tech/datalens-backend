@@ -14,7 +14,9 @@ marshmallow = ">=3.19.0"
 python = ">=3.10, <3.13"
 sqlalchemy = ">=1.4.46, <2.0"
 typing-extensions = ">=4.9.0"
-ydb = ">=3.5.1"
+ydb = ">=3.18.10"
+ydb-sqlalchemy = ">=0.1.4"
+ydb-dbapi = ">=0.1.5"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-configs = {path = "../dl_configs"}

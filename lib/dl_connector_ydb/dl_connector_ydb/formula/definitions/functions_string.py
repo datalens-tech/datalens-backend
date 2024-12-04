@@ -1,5 +1,5 @@
 import sqlalchemy as sa
-import ydb.sqlalchemy as ydb_sa
+import ydb_sqlalchemy as ydb_sa
 
 from dl_formula.definitions.base import TranslationVariant
 from dl_formula.definitions.common import (
