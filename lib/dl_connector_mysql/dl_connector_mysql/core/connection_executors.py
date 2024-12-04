@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from typing import (
+from typing import (  # Sequence,
     List,
-    Sequence,
     TypeVar,
 )
 
@@ -10,7 +9,6 @@ import attr
 
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
-from dl_core.connection_models.conn_options import ConnectOptions
 
 from dl_connector_mysql.core.adapters_mysql import MySQLAdapter
 from dl_connector_mysql.core.async_adapters_mysql import AsyncMySQLAdapter
@@ -18,13 +16,16 @@ from dl_connector_mysql.core.dto import MySQLConnDTO
 from dl_connector_mysql.core.target_dto import MySQLConnTargetDTO
 
 
+# from dl_core.connection_models.conn_options import ConnectOptions
+
+
 _BASE_MYSQL_ADAPTER_TV = TypeVar("_BASE_MYSQL_ADAPTER_TV", bound=CommonBaseDirectAdapter)
 
 
 class _BaseMySQLConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_MYSQL_ADAPTER_TV]):
     _conn_dto: MySQLConnDTO = attr.ib()
-    _conn_options: ConnectOptions = attr.ib()
-    _conn_hosts_pool: Sequence[str] = attr.ib()
+    # _conn_options: ConnectOptions = attr.ib()
+    # _conn_hosts_pool: Sequence[str] = attr.ib()
 
     async def _make_target_conn_dto_pool(self) -> List[MySQLConnTargetDTO]:  # type: ignore  # TODO: fix
         dto_pool = []
@@ -39,6 +40,8 @@ class _BaseMySQLConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_MYSQL_ADAPTER_T
                     db_name=self._conn_dto.db_name,
                     username=self._conn_dto.username,
                     password=self._conn_dto.password,
+                    ssl_enable=self._conn_dto.ssl_enable,
+                    ssl_ca=self._conn_dto.ssl_ca,
                 )
             )
         return dto_pool
