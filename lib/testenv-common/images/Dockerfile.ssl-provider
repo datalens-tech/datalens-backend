@@ -4,13 +4,15 @@ RUN apk update && apk add --no-cache openssl apache2
 
 WORKDIR /app
 
+ARG CERTIFIED_DOMAIN
+
 # Create directories for certificates and configuration
 RUN mkdir -p certs certs/private certs/newcerts && \
     cp /etc/ssl/openssl.cnf ./openssl.cnf && \
     touch certs/index.txt && \
     echo "01" > certs/serial && \
     sed -i "s|./demoCA|./certs|g" openssl.cnf && \
-    echo -e "[SAN]\nsubjectAltName=IP:127.0.0.1,DNS:db-mysql-8-0-ssl" >> openssl.cnf
+    echo -e "[SAN]\nsubjectAltName=IP:127.0.0.1,DNS:${CERTIFIED_DOMAIN}" >> openssl.cnf
 
 # Generate certificates
 RUN \
@@ -49,7 +51,6 @@ RUN cd certs && \
     cp server-key.pem $APACHE_WEB_ROOT/ && \
     cp client-cert.pem $APACHE_WEB_ROOT && \
     cp client-key.pem $APACHE_WEB_ROOT && \
-    cp ../openssl.cnf $APACHE_WEB_ROOT/ && \
     chmod 644 /var/www/localhost/htdocs/*
 
 # Expose HTTP port

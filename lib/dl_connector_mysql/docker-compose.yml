@@ -45,6 +45,8 @@ services:
     build:
       context: ../testenv-common/images
       dockerfile: Dockerfile.ssl-provider
+      args:
+        CERTIFIED_DOMAIN: "db-mysql-8-0-ssl"
     ports:
       - "8080:80"
 
