@@ -6,6 +6,7 @@ from typing import (
     Generic,
     Optional,
     TypeVar,
+    final,
 )
 
 import attr
@@ -49,6 +50,7 @@ if TYPE_CHECKING:
     from dl_core.connection_models import ConnectOptions
     from dl_core.us_connection_base import ConnectionBase
 
+from dl_api_lib.app.control_api.resources.connections import BIResource, ConnectionExportItem, ns as connections_namespace
 
 @attr.s(frozen=True)
 class EnvSetupResult:
@@ -61,6 +63,14 @@ TControlApiAppSettings = TypeVar("TControlApiAppSettings", bound=ControlApiAppSe
 @attr.s(kw_only=True)
 class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], abc.ABC):
     _settings: TControlApiAppSettings = attr.ib()
+
+    def get_connection_export_resource(self) -> type[BIResource]:
+        return ConnectionExportItem
+
+    @final
+    def register_additional_handlers(self) -> None:
+        connection_export_resource = self.get_connection_export_resource()
+        connections_namespace.add_resource(connection_export_resource, "/export/<connection_id>")
 
     @abc.abstractmethod
     def set_up_environment(
@@ -92,7 +102,6 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         close_loop_after_request: bool = True,
     ) -> flask.Flask:
         app = Flask(__name__)
-
         TracingMiddleware(
             url_prefix_exclude=(
                 "/ping",
