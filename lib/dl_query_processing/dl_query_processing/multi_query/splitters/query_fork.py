@@ -363,7 +363,7 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
                         original=mutation.original,
                         replacement=mutation.replacement,
                     )
-                    for mutation in qfork_node.bfb_filter_mutations
+                    for mutation in qfork_node.bfb_filter_mutations.mutations
                 )
 
                 qfork_info = QueryForkInfo(
