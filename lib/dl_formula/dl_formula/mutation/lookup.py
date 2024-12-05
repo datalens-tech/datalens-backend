@@ -253,14 +253,14 @@ class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
 
         joining = fork_nodes.QueryForkJoiningWithList.make(condition_list=condition_list)
         lod = nodes.InheritedLodSpecifier()
-        bfb_filter_mutations = (
-            fork_nodes.BfbFilterMutation(
+        bfb_filter_mutations = fork_nodes.BfbFilterMutations.make(
+            fork_nodes.BfbFilterMutation.make(
                 original=lookup_dimension,
                 replacement=nodes.FuncCall.make(
                     name="dateadd",
                     args=[lookup_dimension, *old.args[2:]],
                 ),
-            ),
+            )
         )
 
         new_node = fork_nodes.QueryFork.make(
