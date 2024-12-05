@@ -26,7 +26,6 @@ class ClickHouseConnectionSchema(
         attribute="data.password",
         required=False,
         allow_none=True,
-        bi_extra=FieldExtra(editable=True),
     )
 
     secure = core_ma_fields.OnOffField(attribute="data.secure", bi_extra=FieldExtra(editable=True))

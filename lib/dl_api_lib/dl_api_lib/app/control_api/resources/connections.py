@@ -17,6 +17,7 @@ from dl_api_connector.api_schema.connection_base import ConnectionOptionsSchema
 from dl_api_connector.api_schema.extras import (
     CreateMode,
     EditMode,
+    ExportMode,
 )
 from dl_api_lib import exc
 from dl_api_lib.api_decorators import schematic_request
@@ -209,6 +210,27 @@ class ConnectionItem(BIResource):
                 original_version=conn_orig,
             )
             us_manager.save(conn)
+
+
+class ConnectionExportItem(BIResource):
+    @put_to_request_context(endpoint_code="ConnectionGet")
+    @schematic_request(
+        ns=ns,
+        responses={
+            # 200: ('Success', GetConnectionResponseSchema()),
+        },
+    )
+    def get(self, connection_id: str) -> dict:
+        conn = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+        need_permission_on_entry(conn, USPermissionKind.read)
+        assert isinstance(conn, ConnectionBase)
+
+        if not conn.allow_export:
+            raise exc.UnsupportedForEntityType(f"Connector {conn.conn_type.name} does not support export")
+
+        result = GenericConnectionSchema(context=self.get_schema_ctx(ExportMode.export)).dump(conn)
+        result.update(options=ConnectionOptionsSchema().dump(conn.get_options()))
+        return result
 
 
 def _dump_source_templates(tpls: Optional[list[DataSourceTemplate]]) -> Optional[list[dict[str, Any]]]:

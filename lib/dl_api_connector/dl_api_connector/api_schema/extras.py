@@ -25,6 +25,10 @@ class EditMode(OperationsMode):
     test = enum.auto()
 
 
+class ExportMode(OperationsMode):
+    export = enum.auto()
+
+
 class SchemaKWArgs(TypedDict):
     only: Optional[Sequence[str]]
     partial: Union[Sequence[str], bool]
@@ -38,3 +42,4 @@ class FieldExtra:
     partial_in: Sequence[OperationsMode] = ()
     exclude_in: Sequence[OperationsMode] = ()
     editable: Union[bool, Sequence[OperationsMode]] = ()
+    export_fake: Optional[bool] = False
