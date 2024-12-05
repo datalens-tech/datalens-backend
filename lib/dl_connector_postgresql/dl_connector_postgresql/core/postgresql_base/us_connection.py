@@ -19,6 +19,7 @@ from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceColl
 class ConnectionPostgreSQLBase(ClassicConnectionSQL):
     has_schema = True
     default_schema_name = "public"
+    allow_export = True
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
