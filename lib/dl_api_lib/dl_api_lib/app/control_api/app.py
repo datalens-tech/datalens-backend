@@ -68,17 +68,18 @@ TControlApiAppSettings = TypeVar("TControlApiAppSettings", bound=ControlApiAppSe
 @attr.s(kw_only=True)
 class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], abc.ABC):
     _settings: TControlApiAppSettings = attr.ib()
-    _started: bool = False
 
     def get_connection_export_resource(self) -> type[BIResource]:
         return ConnectionExportItem
 
     @final
-    def register_additional_handlers(self) -> None:
+    def register_additional_handlers(self, app: flask.Flask) -> None:
+        for route in app.url_map.iter_rules():
+            if "/export/<connection_id>" in str(route):
+                return
 
-        if not self._started:
-            connection_export_resource = self.get_connection_export_resource()
-            connections_namespace.add_resource(connection_export_resource, "/export/<connection_id>")
+        connection_export_resource = self.get_connection_export_resource()
+        connections_namespace.add_resource(connection_export_resource, "/export/<connection_id>")
 
     @abc.abstractmethod
     def set_up_environment(
@@ -109,7 +110,6 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
         close_loop_after_request: bool = True,
     ) -> flask.Flask:
-        
         app = Flask(__name__)
 
         TracingMiddleware(
@@ -179,7 +179,6 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         ma.init_app(app)
 
         init_apis(app)
-        self.register_additional_handlers()
+        self.register_additional_handlers(app)
 
-        self._started = True
         return app
