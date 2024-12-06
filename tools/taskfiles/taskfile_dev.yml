@@ -33,6 +33,7 @@ tasks:
       - echo ''
       - echo 'If compose is started remotely via SSH, use `task dev:ssh-forward-start` to forward ports to localhost'
       - echo 'Use `task dev:ssh-forward-stop` to stop all SSH port forwarding'
+      - echo 'Also export `DOCKER_HOST` before running `task dev:test` to allow connection to docker from tests'
       - echo ''
       - echo 'Development workflow example:'
       - echo '0. source environment variables'
