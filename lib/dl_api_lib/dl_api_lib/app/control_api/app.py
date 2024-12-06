@@ -107,6 +107,9 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         close_loop_after_request: bool = True,
     ) -> flask.Flask:
         app = Flask(__name__)
+
+        self.register_additional_handlers()
+
         TracingMiddleware(
             url_prefix_exclude=(
                 "/ping",
@@ -173,7 +176,6 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         ma = Marshmallow()
         ma.init_app(app)
 
-        self.register_additional_handlers()
         init_apis(app)
 
         return app

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import copy
 from copy import deepcopy
-
 import itertools
 import logging
 import os
@@ -21,9 +20,9 @@ from typing import (
 import marshmallow
 from marshmallow import (
     missing,
+    post_dump,
     post_load,
     pre_load,
-    post_dump,
 )
 from marshmallow import Schema
 from marshmallow import fields as ma_fields
@@ -246,7 +245,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
     @post_dump(pass_many=False)
     def post_dump(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         data = deepcopy(data)
-        if isinstance(self.operations_mode, ExportMode): 
+        if isinstance(self.operations_mode, ExportMode):
             for secret_field in self.fieldnames_with_extra_export_fake_info():
                 data[secret_field] = "******"
         return data
