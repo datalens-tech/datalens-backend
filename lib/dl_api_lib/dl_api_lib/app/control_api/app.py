@@ -95,6 +95,9 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
     ) -> flask.Flask:
         app = Flask(__name__)
 
+        from dl_api_lib.app.control_api.resources.connections import BIResource
+        connections_namespace.add_resource(BIResource, "/export/<connection_id>")
+
         TracingMiddleware(
             url_prefix_exclude=(
                 "/ping",
@@ -162,7 +165,5 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         ma.init_app(app)
 
         init_apis(app)
-        from dl_api_lib.app.control_api.resources.connections import BIResource
-        connections_namespace.add_resource(BIResource, "/export/<connection_id>")
 
         return app
