@@ -73,11 +73,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         return ConnectionExportItem
 
     @final
-    def register_additional_handlers(self, app: flask.Flask) -> None:
-        for route in app.url_map.iter_rules():
-            if "/export/<connection_id>" in str(route):
-                return
-
+    def register_additional_handlers(self) -> None:
         connection_export_resource = self.get_connection_export_resource()
         connections_namespace.add_resource(connection_export_resource, "/export/<connection_id>")
 
@@ -179,6 +175,6 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         ma.init_app(app)
 
         init_apis(app)
-        self.register_additional_handlers(app)
+        app.before_first_request(self.register_additional_handlers)
 
         return app
