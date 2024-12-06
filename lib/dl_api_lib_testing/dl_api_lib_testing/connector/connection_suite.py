@@ -2,14 +2,13 @@ import json
 from typing import Optional
 import uuid
 
-from dl_api_lib.exc import UnsupportedForEntityType
 import pytest
 
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_lib_testing.connection_base import ConnectionTestBase
-from dl_testing.regulated_test import RegulatedTestCase
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_testing.regulated_test import RegulatedTestCase
 
 
 class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase):
@@ -33,26 +32,23 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         bi_headers: Optional[dict[str, str]],
         sync_us_manager: SyncUSManager,
     ) -> None:
-
         conn = sync_us_manager.get_by_id(saved_connection_id, expected_type=ConnectionBase)
         assert isinstance(conn, ConnectionBase)
 
-
         resp = control_api_sync_client.get(
-                url=f"/api/v1/connections/export/{saved_connection_id}",
-                headers=bi_headers,
+            url=f"/api/v1/connections/export/{saved_connection_id}",
+            headers=bi_headers,
         )
         print(resp)
-        
+
         if not conn.allow_export:
             assert resp.status_code == 400
             return
 
         assert resp.status_code == 200, resp.json
-        password = resp.json.get("password", None)
-        if password:
+        if hasattr(conn.data, "password"):
+            password = resp.json.get("password", None)
             assert password == "******"
-
 
     def test_test_connection(
         self,

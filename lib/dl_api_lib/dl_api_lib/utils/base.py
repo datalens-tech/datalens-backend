@@ -5,7 +5,6 @@ from __future__ import annotations
 import cProfile
 from contextlib import contextmanager
 import datetime
-import enum
 import logging
 import os
 from typing import (
@@ -15,8 +14,6 @@ from typing import (
 )
 import uuid
 
-from dl_api_commons.base_models import TenantCommon, TenantDef
-from dl_api_lib import exc
 from dl_api_lib.enums import USPermissionKind
 import dl_core.exc as common_exc
 
@@ -74,18 +71,3 @@ def need_permission_on_entry(us_entry: USEntry, permission: USPermissionKind) ->
     assert us_entry.uuid is not None
     if not us_entry.permissions[permission.name]:
         raise common_exc.USPermissionRequired(us_entry.uuid, permission.name)
-
-
-def check_export_allowed(tenant: Optional[TenantDef], error_message: str) -> None:
-
-    if not tenant or isinstance(tenant, TenantCommon):
-        return
-    
-    if not tenant.is_business():
-        tenant_id = tenant.get_tenant_id()
-        if tenant_id == "org_yc.organization-manager.yandex":
-            skip_system_org = os.getenv("SKIP_BUSINESS_CHECK_FOR_SYSTEM_ORG", "0")  # "0" / "1"
-            if skip_system_org == "1":
-                LOGGER.warning("Got FREE billing for the system org, but allowing feature because of override")
-                return
-        raise exc.FeatureNotAvailable("Connection export requires business rate")

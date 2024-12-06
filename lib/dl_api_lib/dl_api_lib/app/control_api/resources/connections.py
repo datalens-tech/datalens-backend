@@ -5,6 +5,7 @@ from typing import (
     TYPE_CHECKING,
     NoReturn,
 )
+
 from flask import request
 from flask_restx import abort
 from marshmallow import ValidationError as MValidationError
@@ -47,6 +48,7 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 ns = API.namespace("Connections", path="/connections")
+
 
 def _handle_conn_test_exc(exception: Exception) -> NoReturn:
     if isinstance(exception, DLBaseException):

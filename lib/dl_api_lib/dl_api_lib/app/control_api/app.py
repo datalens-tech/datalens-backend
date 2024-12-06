@@ -50,7 +50,12 @@ if TYPE_CHECKING:
     from dl_core.connection_models import ConnectOptions
     from dl_core.us_connection_base import ConnectionBase
 
-from dl_api_lib.app.control_api.resources.connections import BIResource, ConnectionExportItem, ns as connections_namespace
+from dl_api_lib.app.control_api.resources.connections import (
+    BIResource,
+    ConnectionExportItem,
+)
+from dl_api_lib.app.control_api.resources.connections import ns as connections_namespace
+
 
 @attr.s(frozen=True)
 class EnvSetupResult:
@@ -168,6 +173,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         ma = Marshmallow()
         ma.init_app(app)
 
+        self.register_additional_handlers()
         init_apis(app)
 
         return app
