@@ -175,6 +175,6 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         ma.init_app(app)
 
         init_apis(app)
-        app.before_first_request(self.register_additional_handlers)
+        self.register_additional_handlers()
 
         return app
