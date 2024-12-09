@@ -121,6 +121,7 @@ class QuerySplitMask:
     formula_split_masks: tuple[AliasedFormulaSplitMask, ...] = attr.ib(kw_only=True)
     add_formulas: tuple[AddFormulaInfo, ...] = attr.ib(kw_only=True)
     filter_indices: frozenset[int] = attr.ib(kw_only=True)
+    add_filters: tuple[CompiledFormulaInfo, ...] = attr.ib(kw_only=True)
     join_type: Optional[JoinType] = attr.ib(kw_only=True)
     joining_node: Optional[formula_fork_nodes.QueryForkJoiningBase] = attr.ib(kw_only=True)
     is_base: bool = attr.ib(kw_only=True, default=False)
@@ -254,6 +255,8 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
         filters: list[CompiledFormulaInfo] = [
             formula for filter_idx, formula in enumerate(query.filters) if filter_idx in split_mask.filter_indices
         ]
+        for filter in split_mask.add_filters:
+            filters.append(filter)
 
         join_on = query.join_on
         joined_from = query.joined_from
@@ -850,6 +853,7 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
             formula_split_masks=tuple(base_formula_split_masks),
             add_formulas=tuple(new_add_formulas),
             filter_indices=frozenset(new_filter_indices),
+            add_filters=tuple(),
             join_type=None,
             joining_node=None,
             is_base=True,
