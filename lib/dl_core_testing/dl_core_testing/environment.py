@@ -3,7 +3,10 @@ from __future__ import annotations
 import logging
 import os
 import time
-from typing import Optional
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+)
 
 import requests
 
@@ -11,6 +14,10 @@ from dl_core.logging_config import setup_jaeger_client
 from dl_core_testing.configuration import UnitedStorageConfiguration
 from dl_db_testing.loader import load_db_testing_lib
 from dl_utils.wait import wait_for
+
+
+if TYPE_CHECKING:
+    from docker import DockerClient
 
 
 LOGGER = logging.getLogger(__name__)
@@ -51,30 +58,37 @@ def _wait_for_pg(dsn: str, timeout: int = 300, interval: float = 1.0) -> None:
                 raise Exception("Unexpected result", res)
 
 
-def restart_container(container_name: str) -> None:
+def is_docker_host_ssh() -> bool:
+    docker_host = os.environ.get("DOCKER_HOST", "")
+    use_ssh_client = docker_host.startswith("ssh://")
+    return use_ssh_client
+
+
+def make_docker_cli(timeout: int = 300) -> DockerClient:
     import docker
 
-    docker_cli = docker.from_env(timeout=300)
+    docker_cli = docker.from_env(timeout=timeout, use_ssh_client=is_docker_host_ssh())
+    return docker_cli
+
+
+def restart_container(container_name: str) -> None:
+    docker_cli = make_docker_cli()
     container = docker_cli.containers.list(filters=dict(name=container_name), all=True)[0]
     container.restart()
 
 
 def run_cmd_in_containers_by_label(label: str, cmd: list[str]) -> None:
-    import docker
-
-    docker_cli = docker.from_env(timeout=300)
+    docker_cli = make_docker_cli()
     containers = docker_cli.containers.list(
         filters=dict(label=[f"datalens.ci.service={label}"]),
     )
     for container in containers:
         LOGGER.debug(f"Running command {cmd} in container {container.name}")
-        container.exec_run(cmd)
+        container.exec_run(cmd, socket=is_docker_host_ssh())
 
 
 def restart_container_by_label(label: str, compose_project: str) -> None:
-    import docker
-
-    docker_cli = docker.from_env(timeout=300)
+    docker_cli = make_docker_cli()
     container = docker_cli.containers.list(
         filters=dict(
             label=[
