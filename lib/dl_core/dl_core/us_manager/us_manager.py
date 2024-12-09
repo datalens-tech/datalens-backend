@@ -433,6 +433,8 @@ class USManagerBase:
                 data_pack = USDataPack(data=data_dict)
 
             for key, secret in data_pack.secrets.items():
+                if isinstance(secret, dict):
+                    secret = json.dumps(secret)
                 assert secret is None or isinstance(secret, str)
                 data_pack.secrets[key] = self._crypto_controller.encrypt_with_actual_key(secret)
 
