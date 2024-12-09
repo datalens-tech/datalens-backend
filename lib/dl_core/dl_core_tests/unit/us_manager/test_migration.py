@@ -11,18 +11,22 @@ from dl_core.us_manager.schema_migration.base import (
 
 @attr.s
 class Level1EntrySchemaMigration(BaseEntrySchemaMigration):
-    _MIGRATIONS = [
-        Migration(
-            "2022-12-04 13:00:00",
-            "Second level 1 migration",
-            lambda entry: Level1EntrySchemaMigration._migrate_v2_to_v3(entry),
-        ),
-        Migration(
-            "2022-12-01 12:00:00",
-            "First level 1 migration",
-            lambda entry: Level1EntrySchemaMigration._migrate_v1_to_v2(entry),
-        ),
-    ]
+    @property
+    def migrations(self) -> list[Migration]:
+        migrations = [
+            Migration(
+                "2022-12-04 13:00:00",
+                "Second level 1 migration",
+                Level1EntrySchemaMigration._migrate_v2_to_v3,
+            ),
+            Migration(
+                "2022-12-01 12:00:00",
+                "First level 1 migration",
+                Level1EntrySchemaMigration._migrate_v1_to_v2,
+            ),
+        ]
+        migrations.extend(super().migrations)
+        return migrations
 
     @staticmethod
     def _migrate_v1_to_v2(entry: dict) -> dict:
@@ -37,18 +41,22 @@ class Level1EntrySchemaMigration(BaseEntrySchemaMigration):
 
 @attr.s
 class Level2EntrySchemaMigration(Level1EntrySchemaMigration):
-    _MIGRATIONS = [
-        Migration(
-            "2022-12-03 13:00:00",
-            "Second level 2 migration",
-            lambda entry: Level2EntrySchemaMigration._migrate_v2_to_v3(entry),
-        ),
-        Migration(
-            "2022-12-02 12:00:00",
-            "First level 2 migration",
-            lambda entry: Level2EntrySchemaMigration._migrate_v1_to_v2(entry),
-        ),
-    ]
+    @property
+    def migrations(self) -> list[Migration]:
+        migrations = [
+            Migration(
+                "2022-12-03 13:00:00",
+                "Second level 2 migration",
+                Level2EntrySchemaMigration._migrate_v2_to_v3,
+            ),
+            Migration(
+                "2022-12-02 12:00:00",
+                "First level 2 migration",
+                Level2EntrySchemaMigration._migrate_v1_to_v2,
+            ),
+        ]
+        migrations.extend(super().migrations)
+        return migrations
 
     @staticmethod
     def _migrate_v1_to_v2(entry: dict) -> dict:
@@ -61,17 +69,38 @@ class Level2EntrySchemaMigration(Level1EntrySchemaMigration):
         return entry
 
 
+@attr.s
+class Level3EntrySchemaMigration(Level2EntrySchemaMigration):
+    @property
+    def migrations(self) -> list[Migration]:
+        migrations = [
+            Migration("2022-12-03 13:00:00", "Third level 2 migration", Level3EntrySchemaMigration._migrate_v3_to_v1),
+        ]
+        migrations.extend(super().migrations)
+        return migrations
+
+    @staticmethod
+    def _migrate_v3_to_v1(entry: dict) -> dict:
+        entry["data"]["abs_field"] = "one more new value"
+        return entry
+
+
 @pytest.fixture
-def migrator():
+def l2_migrator():
     return Level2EntrySchemaMigration(strict_migration=True)
 
 
 @pytest.fixture
-def nonstrict_migrator():
-    return Level2EntrySchemaMigration()
+def l3_migrator():
+    return Level3EntrySchemaMigration(strict_migration=True)
 
 
-def test_successful_migration(migrator):
+@pytest.fixture
+def l3_nonstrict_migrator():
+    return Level3EntrySchemaMigration()
+
+
+def test_successful_migration(l2_migrator):
     entry = {
         "data": {
             "old_field": "value1",
@@ -86,11 +115,11 @@ def test_successful_migration(migrator):
             "schema_version": "2022-12-04 13:00:00",
         }
     }
-    result = migrator.migrate(entry)
+    result = l2_migrator.migrate(entry)
     assert result == expected
 
 
-def test_no_migration_needed(migrator):
+def test_no_migration_needed(l2_migrator):
     entry = {
         "data": {
             "new_field": "default_value",
@@ -99,54 +128,36 @@ def test_no_migration_needed(migrator):
             "schema_version": "2022-12-04 13:00:00",
         }
     }
-    result = migrator.migrate(entry)
+    result = l2_migrator.migrate(entry)
     assert result == entry
 
 
-def test_invalid_data_format(migrator):
+def test_invalid_data_format(l2_migrator):
     entry = {
         "data": "invalid_data_format",
     }
     with pytest.raises(ValueError, match="Invalid entry: 'data' should be a dict"):
-        migrator.migrate(entry)
+        l2_migrator.migrate(entry)
 
 
-def test_missing_data_key(migrator):
+def test_missing_data_key(l2_migrator):
     entry = {}
     with pytest.raises(ValueError, match="Invalid entry: 'data' should be a dict"):
-        migrator.migrate(entry)
+        l2_migrator.migrate(entry)
 
 
-def test_cyclic_migration(migrator):
-    @staticmethod
-    def _migrate_v3_to_v1(entry: dict) -> dict:
-        entry["data"]["abs_field"] = "one more new value"
-        return entry
-
-    migrator.__class__._MIGRATIONS.append(
-        Migration("2022-12-03 13:00:00", "Third level 2 migration", _migrate_v3_to_v1)
-    )
-
+def test_cyclic_migration(l3_migrator):
     entry = {
         "data": {
             "old_field": "value1",
             "schema_version": "1",
         }
     }
-
     with pytest.raises(ValueError, match="Double migration detected"):
-        migrator.migrate(entry)
+        l3_migrator.migrate(entry)
 
 
-def test_migration_failure(nonstrict_migrator):
-    @staticmethod
-    def broken_migration(entry: dict) -> dict:
-        raise RuntimeError("Migration failed")
-
-    nonstrict_migrator.__class__._MIGRATIONS.append(
-        Migration("2022-12-03 13:00:00", "Third level 2 migration", broken_migration)
-    )
-
+def test_migration_failure(l3_nonstrict_migrator):
     entry = {
         "data": {
             "old_field": "value1",
@@ -155,5 +166,23 @@ def test_migration_failure(nonstrict_migrator):
     }
     original_entry = deepcopy(entry)
 
-    result = nonstrict_migrator.migrate(entry)
+    result = l3_nonstrict_migrator.migrate(entry)
     assert result == original_entry
+
+
+@pytest.mark.parametrize(
+    "migration_version",
+    (
+        "some string",
+        "2022-13-03 23:00:00",
+        "2022-12-40 23:00:00",
+        "2022-12-03 33:00:00",
+    ),
+)
+def test_wrong_migration_version(migration_version):
+    with pytest.raises(ValueError):
+        Migration(
+            migration_version,
+            "Broken version migration",
+            lambda x: x,
+        )
