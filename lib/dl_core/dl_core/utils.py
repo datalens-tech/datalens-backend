@@ -270,8 +270,6 @@ SECREPR_SIDE_SIZE = 0
 
 def secrepr(value: Optional[str]) -> str:
     """Convenience function for attrs-repr of secrets"""
-    if value is None:
-        return repr(value)
     if not value:
         return repr(value)
     if not isinstance(value, str):
@@ -282,6 +280,12 @@ def secrepr(value: Optional[str]) -> str:
     if not side_size or len(value) <= side_size * 3:
         return "..."
     return repr(f"{value[:side_size]}...{value[-side_size:]}")
+
+
+def secrepr_dict(d: dict[str, Optional[str]]) -> str:
+    if not d:
+        return repr(d)
+    return repr({key: secrepr(value) for key, value in d.items()})
 
 
 def _multidict_to_list(md: CIMultiDictProxy[str]) -> Iterable[tuple[str, str]]:
