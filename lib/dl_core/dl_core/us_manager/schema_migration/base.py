@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 from copy import deepcopy
 from datetime import datetime
 import logging
 from typing import (
+    TYPE_CHECKING,
     Any,
     Callable,
 )
@@ -9,9 +12,12 @@ from typing import (
 import attr
 from typing_extensions import Self
 
-from dl_api_commons.base_models import RequestContextInfo
 from dl_app_tools.profiling_base import generic_profiler
-from dl_core.services_registry import ServicesRegistry
+
+
+if TYPE_CHECKING:
+    from dl_api_commons.base_models import RequestContextInfo
+    from dl_core.services_registry import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)

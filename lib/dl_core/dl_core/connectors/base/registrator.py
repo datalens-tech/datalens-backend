@@ -67,6 +67,7 @@ class CoreConnectorRegistrator:
             allow_ct_override=True,
             conn_type=conn_def.conn_type,
             lifecycle_manager_cls=conn_def.lifecycle_manager_cls,
+            schema_migration_cls=conn_def.schema_migration_cls,
         )
         register_connection_backend_type(conn_type=conn_def.conn_type, backend_type=backend_type)
         register_connection_schema(conn_cls=conn_def.connection_cls, schema_cls=conn_def.us_storage_schema_cls)  # type: ignore  # 2024-01-30 # TODO: Argument "schema_cls" to "register_connection_schema" has incompatible type "type[Schema] | None"; expected "type[Schema]"  [arg-type]
