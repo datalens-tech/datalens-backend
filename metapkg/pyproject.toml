@@ -14,7 +14,7 @@ aiopg = "==1.4.0"
 anyascii = "==0.3.2"
 attrs = "==22.2.0"
 arq = "==0.25.0"
-certifi = "==2023.7.22"
+certifi = "==2024.8.30"
 openpyxl = "==3.0.10"
 aiobotocore = "==2.4.2"
 aiogoogle = "==5.2.0"
@@ -71,7 +71,7 @@ typing-extensions = "==4.9.0"
 aiodns = "==3.1.1"
 jaeger-client = "==4.8.0"
 pytest = "==7.2.2"
-tornado = "==6.3.3"
+tornado = "==6.4.2"
 cryptography = "==43.0.1"
 typeguard = "==4.1.5"
 more-itertools = "==9.1.0"
@@ -84,6 +84,7 @@ google-resumable-media = "==2.5.0"
 google-cloud-core = "==2.4.1"
 orjson = "==3.9.15"
 msgpack = "==1.1.0"
+urllib3 = "==1.26.20"
 
 [tool.poetry.group.ci.dependencies]
 #
@@ -161,7 +162,7 @@ dl-type-transformer = {path = "../lib/dl_type_transformer", develop = true}
 dl-s3 = {path = "../lib/dl_s3", develop = true}
 
 [tool.poetry.group.dev.dependencies]
-black = "==23.12.1"
+black = "==24.3.0"
 ruff = "==0.2.1"
 isort = "==5.13.2"
 ipdb = "==0.13.13"
@@ -231,7 +232,7 @@ types-tabulate = "==0.9.0"
 types-toml = "==0.10.2"
 types-tzlocal = "==5.0.1"
 types-ujson = "==5.8.0.1"
-types-urllib3 = "==1.26.16"
+types-urllib3 = "==1.26.20"
 
 #
 # This section defines dependencies groups per app.
