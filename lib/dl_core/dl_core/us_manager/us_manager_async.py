@@ -32,6 +32,7 @@ from dl_core.us_manager.broken_link import (
     BrokenUSLink,
     BrokenUSLinkErrorKind,
 )
+from dl_core.us_manager.schema_migration.factory_base import EntrySchemaMigrationFactoryBase
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_utils.aio import shield_wait_for_complete
 
@@ -60,6 +61,7 @@ class AsyncUSManager(USManagerBase):
         crypto_keys_config: Optional[CryptoKeysConfig] = None,
         us_api_prefix: Optional[str] = None,
         lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
+        schema_migration_factory: Optional[EntrySchemaMigrationFactoryBase] = None,
     ):
         self._us_client = UStorageClientAIO(
             host=us_base_url,
@@ -80,6 +82,7 @@ class AsyncUSManager(USManagerBase):
             us_auth_context=us_auth_context,
             services_registry=services_registry,
             lifecycle_manager_factory=lifecycle_manager_factory,
+            schema_migration_factory=schema_migration_factory,
         )
 
     @property
