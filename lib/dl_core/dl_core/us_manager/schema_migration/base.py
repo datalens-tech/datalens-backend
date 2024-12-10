@@ -10,6 +10,7 @@ import attr
 from typing_extensions import Self
 
 from dl_api_commons.base_models import RequestContextInfo
+from dl_app_tools.profiling_base import generic_profiler
 from dl_core.services_registry import ServicesRegistry
 
 
@@ -79,13 +80,14 @@ class BaseEntrySchemaMigration:
             entry = migration.migrate(entry)
         return entry
 
+    @generic_profiler("migrate_entry")
     def migrate(self, entry: dict) -> dict:
-        original_entry = deepcopy(entry)
+        entry_copy = deepcopy(entry)
 
         try:
-            return self._migrate(entry)
+            return self._migrate(entry_copy)
         except Exception as exc:
             if self.strict_migration:
                 raise exc
             LOGGER.warning("Entry migration failed", exc_info=True)
-            return original_entry
+            return deepcopy(entry)
