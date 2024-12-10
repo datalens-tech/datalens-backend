@@ -162,7 +162,7 @@ dl-type-transformer = {path = "../lib/dl_type_transformer", develop = true}
 dl-s3 = {path = "../lib/dl_s3", develop = true}
 
 [tool.poetry.group.dev.dependencies]
-black = "==24.3.0"
+black = "==23.12.1"
 ruff = "==0.2.1"
 isort = "==5.13.2"
 ipdb = "==0.13.13"
