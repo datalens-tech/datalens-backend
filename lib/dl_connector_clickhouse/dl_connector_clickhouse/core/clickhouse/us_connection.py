@@ -28,6 +28,7 @@ class ConnectionClickhouse(ConnectionClickhouseBase):
     allowed_source_types = frozenset((SOURCE_TYPE_CH_TABLE, SOURCE_TYPE_CH_SUBSELECT))
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
+    allow_export: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = False  # TODO: should be `True`, but need some cleanup for that.
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
