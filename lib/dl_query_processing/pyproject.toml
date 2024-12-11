@@ -46,6 +46,7 @@ skip_compose = "true"
 labels = ["no_compose"]
 
 [tool.mypy]
+exclude = ["dl_query_processing_tests"]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
