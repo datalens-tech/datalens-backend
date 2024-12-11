@@ -46,35 +46,55 @@ tasks:
     cmds:
       - npm ci
 
-  docker-build-backend:
+  image-scan:
+    desc: Scan images for vulnerabilities
+    requires:
+      vars:
+        - IMAGE_TAG
+    cmds:
+      - echo 'Scanning image for vulnerabilities...'
+      - trivy image
+        --config trivy.yaml
+        {{.IMAGE_TAG}}
+
+  image-backend-build:
     desc: Build backend containers
     dir: ../../docker_build
     cmds:
       - ./run-project-bake
-        {{.CONTROL_API_TARGET}} 
+        {{.CONTROL_API_TARGET}}
         {{.DATA_API_TARGET}}
         --set "{{.CONTROL_API_TARGET}}.tags={{.CONTROL_API_TAG}}"
         --set "{{.DATA_API_TARGET}}.tags={{.DATA_API_TAG}}"
+        --load
 
-  docker-build-frontend:
+  image-backend-scan:
+    desc: Scan backend images for vulnerabilities
+    cmds:
+      - task: image-scan
+        vars: { IMAGE_TAG: "{{.CONTROL_API_TAG}}" }
+      - task: image-scan
+        vars: { IMAGE_TAG: "{{.DATA_API_TAG}}" }
+
+  image-frontend-build:
     desc: Build frontend container
     dir: "{{.DATALENS_UI_FOLDER}}"
     cmds:
       - task: datalens-ui-repo-update
-      - docker build 
-        --tag {{.UI_TAG}} 
-        --network=host 
+      - docker build
+        --tag {{.UI_TAG}}
+        --network=host
         .
 
   docker-build:
     desc: Prepare fresh backend and frontend dev containers
     cmds:
-      - task: docker-build-backend
-      - task: docker-build-frontend
+      - task: image-backend-build
+      - task: image-frontend-build
 
   docker-start:
     desc: |
-      Start services, options: 
+      Start services, options:
       - DETACH to run in foreground mode, e.g. `task docker-start DETACH=false`, default is true
     cmds:
       - task: _docker
