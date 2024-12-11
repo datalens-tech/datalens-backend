@@ -44,21 +44,22 @@ class BaseMySQLTestClass(BaseConnectionTestClass[ConnectionMySQL]):
 
 
 class BaseSslMySQLTestClass(BaseMySQLTestClass):
-    @pytest.fixture(scope="class")
-    def ssl_ca_path(self) -> str:
-        ssl_ca_path = os.path.join(bi_configs_utils.get_temp_root_certificates_folder_path(), "ca.pem")
 
+    @pytest.fixture(scope="class")
+    def ssl_ca(self) -> str:
         uri = f"{test_config.CoreSslConnectionSettings.CERT_PROVIDER_URL}/ca.pem"
         response = requests.get(uri)
+        assert response.status_code == 200, response.text
+
+        return response.text
+    
+    @pytest.fixture(scope="class")
+    def ssl_ca_path(self, ssl_ca: str) -> str:
+        ssl_ca_path = os.path.join(bi_configs_utils.get_temp_root_certificates_folder_path(), "ca.pem")
         with open(ssl_ca_path, "w") as f:
-            f.write(response.text)
+            f.write(ssl_ca)
 
         return ssl_ca_path
-
-    @pytest.fixture(scope="class")
-    def ssl_ca(self, ssl_ca_path: str) -> str:
-        with open(ssl_ca_path) as f:
-            return f.read()
 
     @pytest.fixture(scope="class")
     def engine_params(self, ssl_ca_path: str) -> dict:
@@ -68,7 +69,7 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
                     "ssl": frozendict(
                         {
                             "ca": ssl_ca_path,
-                            # "check_hostname": False,
+                            "check_hostname": True,
                         }
                     ),
                 }
@@ -83,6 +84,7 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
 
     @pytest.fixture(scope="function")
     def connection_creation_params(self, ssl_ca: str) -> dict:
+        fake_ssl_ca = "fake_ssl_ca"   # TODO: replace with real SSL CA then fake one will start to fail
         return dict(
             db_name=test_config.CoreSslConnectionSettings.DB_NAME,
             host=test_config.CoreSslConnectionSettings.HOST,
@@ -91,5 +93,5 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
             password=test_config.CoreSslConnectionSettings.PASSWORD,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
             ssl_enable=True,
-            ssl_ca=ssl_ca,
+            ssl_ca=fake_ssl_ca,
         )
