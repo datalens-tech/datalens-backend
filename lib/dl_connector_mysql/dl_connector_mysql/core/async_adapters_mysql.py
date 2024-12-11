@@ -1,19 +1,19 @@
 from __future__ import annotations
-import os
 
 import asyncio
 import contextlib
 from functools import partial
 import logging
+import os
 import ssl
 from typing import (
     Any,
     AsyncIterator,
+    ContextManager,
+    Generator,
     Optional,
     Type,
     TypeVar,
-    Generator,
-    ContextManager,
 )
 
 import aiomysql.sa
@@ -121,10 +121,15 @@ class AsyncMySQLAdapter(
         return self._target_dto.host
 
     # TODO: get rid of use_ssl_backwards_compatibility after migration to TLS
-    async def _create_engine(self, db_name: str, use_ssl_backwards_compatibility: Optional[bool] = None) -> aiomysql.sa.Engine:
-
+    async def _create_engine(
+        self, db_name: str, use_ssl_backwards_compatibility: Optional[bool] = None
+    ) -> aiomysql.sa.Engine:
         if use_ssl_backwards_compatibility is not None:
-            ssl_ctx = ssl.create_default_context(cafile=get_root_certificates_path()) if use_ssl_backwards_compatibility else None
+            ssl_ctx = (
+                ssl.create_default_context(cafile=get_root_certificates_path())
+                if use_ssl_backwards_compatibility
+                else None
+            )
         else:
             ssl_ctx = (
                 ssl.create_default_context(
