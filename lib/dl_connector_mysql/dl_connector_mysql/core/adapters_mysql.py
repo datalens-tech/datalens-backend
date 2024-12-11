@@ -33,7 +33,9 @@ class MySQLAdapter(BaseMySQLAdapter, BaseClassicAdapter[MySQLConnTargetDTO]):
                     "ca": self.get_ssl_cert_path(self._target_dto.ssl_ca),
                 }
                 if self._target_dto.ssl_ca
-                else {}
+                else {
+                    "ssl_check_hostname": False,
+                }
             )
 
         return connect_args
