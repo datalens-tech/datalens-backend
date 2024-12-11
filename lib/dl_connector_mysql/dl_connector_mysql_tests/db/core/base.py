@@ -84,7 +84,6 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
 
     @pytest.fixture(scope="function")
     def connection_creation_params(self, ssl_ca: str) -> dict:
-        fake_ssl_ca = "fake_ssl_ca"   # TODO: replace with real SSL CA then fake one will start to fail
         return dict(
             db_name=test_config.CoreSslConnectionSettings.DB_NAME,
             host=test_config.CoreSslConnectionSettings.HOST,
@@ -93,5 +92,5 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
             password=test_config.CoreSslConnectionSettings.PASSWORD,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
             ssl_enable=True,
-            ssl_ca=fake_ssl_ca,
+            ssl_ca=ssl_ca,
         )
