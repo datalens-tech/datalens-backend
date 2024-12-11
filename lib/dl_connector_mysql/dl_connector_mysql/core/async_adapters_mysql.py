@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-from functools import partial
 import logging
 import os
 import ssl
@@ -122,24 +121,18 @@ class AsyncMySQLAdapter(
 
     # TODO: get rid of use_ssl_backwards_compatibility after migration to TLS
     async def _create_engine(
-        self, db_name: str, use_ssl_backwards_compatibility: Optional[bool] = None
+        self,
+        db_name: str,
     ) -> aiomysql.sa.Engine:
-        if use_ssl_backwards_compatibility is not None:
-            ssl_ctx = (
-                ssl.create_default_context(cafile=get_root_certificates_path())
-                if use_ssl_backwards_compatibility
-                else None
+        ssl_ctx = (
+            ssl.create_default_context(
+                cafile=self.get_ssl_cert_path(self._target_dto.ssl_ca)
+                if self._target_dto.ssl_ca
+                else get_root_certificates_path()
             )
-        else:
-            ssl_ctx = (
-                ssl.create_default_context(
-                    cafile=self.get_ssl_cert_path(self._target_dto.ssl_ca)
-                    if self._target_dto.ssl_ca
-                    else get_root_certificates_path()
-                )
-                if self._target_dto.ssl_enable
-                else None
-            )
+            if self._target_dto.ssl_enable
+            else None
+        )
 
         return await aiomysql.sa.create_engine(
             host=self._target_dto.host,
@@ -150,21 +143,6 @@ class AsyncMySQLAdapter(
             dialect=self._dialect,
             ssl=ssl_ctx,
         )
-
-    # TODO: get rid of _get_engine after migration to TLS
-    async def _get_engine(self, db_name: str) -> aiomysql.sa.Engine:
-        try:
-            create_engine_using_no_ssl = partial(self._create_engine, use_ssl_backwards_compatibility=False)
-            return await self._engines.get(db_name, generator=create_engine_using_no_ssl)
-        except OperationalError as err:
-            # 3159 = Connections using insecure transport are prohibited while --require_secure_transport=ON.
-            # This means we have to use SSL
-            if err.args[0] == 3159:
-                LOGGER.info("Using SSL for async MySQL connection")
-                create_engine_using_ssl = partial(self._create_engine, use_ssl_backwards_compatibility=True)
-                return await self._engines.get(db_name, generator=create_engine_using_ssl)
-            else:
-                raise
 
     @contextlib.contextmanager
     def execution_context(self) -> Generator[None, None, None]:
@@ -181,15 +159,10 @@ class AsyncMySQLAdapter(
             finally:
                 stack.close()
 
-    # TODO: get rid of MYSQL_USE_TLS after migration to TLS
     @contextlib.asynccontextmanager
     async def _get_connection(self, db_name_from_query: Optional[str]) -> AsyncIterator[aiomysql.sa.SAConnection]:
         db_name = self.get_db_name_for_query(db_name_from_query)
-
-        if not MYSQL_USE_TLS:
-            engine = await self._get_engine(db_name)
-        else:
-            engine = await self._engines.get(db_name, generator=self._create_engine)
+        engine = await self._engines.get(db_name, generator=self._create_engine)
 
         async with engine.acquire() as connection:
             yield connection
