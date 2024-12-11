@@ -20,6 +20,10 @@ RUN \
     openssl req -new -x509 -nodes -keyout certs/private/cakey.pem -out certs/ca.pem \
         -days 3600 -config openssl.cnf \
         -subj "/C=RU/ST=Moscow/L=Moscow/O=Test/OU=Test/CN=TestCA" && \
+    # Generate Invalid Certificate Authority (Invalid CA)
+    openssl req -new -x509 -nodes -keyout certs/private/invalid-cakey.pem -out certs/invalid-ca.pem \
+        -days 3600 -config openssl.cnf \
+        -subj "/C=RU/ST=Invalid/L=Invalid/O=Invalid/OU=Invalid/CN=InvalidCA" && \
     # Generate server request and key
     openssl req -new -nodes -keyout certs/server-key.pem -out certs/server-req.pem \
         -days 3600 -config openssl.cnf \
@@ -39,6 +43,7 @@ RUN \
 # Copy certificates to the Apache web root
 # ca.pem               Self-signed CA certificate
 # ca-key.pem           CA private key (not distributed)
+# invalid-ca.pem       Invalid CA certificate
 # server-cert.pem      Server certificate
 # server-key.pem       Server private key
 # client-cert.pem      Client certificate
@@ -47,6 +52,7 @@ RUN cd certs && \
     APACHE_WEB_ROOT=/var/www/localhost/htdocs && \
     mkdir -p $APACHE_WEB_ROOT && \
     cp ca.pem $APACHE_WEB_ROOT/ && \
+    cp invalid-ca.pem $APACHE_WEB_ROOT/ && \
     cp server-cert.pem $APACHE_WEB_ROOT/ && \
     cp server-key.pem $APACHE_WEB_ROOT/ && \
     cp client-cert.pem $APACHE_WEB_ROOT && \

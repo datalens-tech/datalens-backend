@@ -44,7 +44,6 @@ class BaseMySQLTestClass(BaseConnectionTestClass[ConnectionMySQL]):
 
 
 class BaseSslMySQLTestClass(BaseMySQLTestClass):
-
     @pytest.fixture(scope="class")
     def ssl_ca(self) -> str:
         uri = f"{test_config.CoreSslConnectionSettings.CERT_PROVIDER_URL}/ca.pem"
@@ -52,7 +51,7 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
         assert response.status_code == 200, response.text
 
         return response.text
-    
+
     @pytest.fixture(scope="class")
     def ssl_ca_path(self, ssl_ca: str) -> str:
         ssl_ca_path = os.path.join(bi_configs_utils.get_temp_root_certificates_folder_path(), "ca.pem")
@@ -69,7 +68,7 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
                     "ssl": frozendict(
                         {
                             "ca": ssl_ca_path,
-                            "check_hostname": True,
+                            "check_hostname": False,
                         }
                     ),
                 }
