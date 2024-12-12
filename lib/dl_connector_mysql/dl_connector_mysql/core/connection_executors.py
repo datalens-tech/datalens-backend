@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import (  # Sequence,
+from typing import (
     List,
     TypeVar,
 )
@@ -16,16 +16,11 @@ from dl_connector_mysql.core.dto import MySQLConnDTO
 from dl_connector_mysql.core.target_dto import MySQLConnTargetDTO
 
 
-# from dl_core.connection_models.conn_options import ConnectOptions
-
-
 _BASE_MYSQL_ADAPTER_TV = TypeVar("_BASE_MYSQL_ADAPTER_TV", bound=CommonBaseDirectAdapter)
 
 
 class _BaseMySQLConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_MYSQL_ADAPTER_TV]):
     _conn_dto: MySQLConnDTO = attr.ib()
-    # _conn_options: ConnectOptions = attr.ib()
-    # _conn_hosts_pool: Sequence[str] = attr.ib()
 
     async def _make_target_conn_dto_pool(self) -> List[MySQLConnTargetDTO]:  # type: ignore  # TODO: fix
         dto_pool = []

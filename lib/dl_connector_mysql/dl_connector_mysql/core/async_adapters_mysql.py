@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import logging
-import os
 import ssl
 from typing import (
     Any,
@@ -65,8 +64,6 @@ LOGGER = logging.getLogger(__name__)
 
 _DBA_ASYNC_MYSQL_TV = TypeVar("_DBA_ASYNC_MYSQL_TV", bound="AsyncMySQLAdapter")
 
-MYSQL_USE_TLS = int(os.environ.get("MYSQL_USE_TLS", 0))
-
 
 @attr.s(cmp=False, kw_only=True)
 class AsyncMySQLAdapter(
@@ -119,7 +116,6 @@ class AsyncMySQLAdapter(
     def get_target_host(self) -> Optional[str]:
         return self._target_dto.host
 
-    # TODO: get rid of use_ssl_backwards_compatibility after migration to TLS
     async def _create_engine(
         self,
         db_name: str,

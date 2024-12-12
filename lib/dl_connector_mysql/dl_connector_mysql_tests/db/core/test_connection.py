@@ -33,7 +33,7 @@ class TestMySQLConnection(
         assert conn.data.port == params["port"]
         assert conn.data.username == params["username"]
         assert conn.data.password == params["password"]
-        assert conn.data.ssl_enable is False
+        assert conn.data.ssl_enable == False
         assert conn.data.ssl_ca is None
 
     def check_data_source_templates(
@@ -59,8 +59,8 @@ class TestSslMySQLConnection(
         assert conn.data.port == params["port"]
         assert conn.data.username == params["username"]
         assert conn.data.password == params["password"]
-        assert conn.data.ssl_enable is True
-        assert conn.data.ssl_ca is params["ssl_ca"]
+        assert conn.data.ssl_enable == True
+        assert conn.data.ssl_ca == params["ssl_ca"]
 
     def check_data_source_templates(
         self,
@@ -94,8 +94,13 @@ class TestSslMySQLConnection(
             return sync_conn_executor_factory()
 
         uri = f"{test_config.CoreSslConnectionSettings.CERT_PROVIDER_URL}/{ssl_ca_filename}"
-        response = requests.get(uri)
-        assert response.status_code == 200, response.text
+        try:
+            response = requests.get(uri)
+            response.raise_for_status()
+            assert response.text
+        except Exception as e:
+            pytest.fail(f"Failed to fetch {uri} from ssl-provider container: {e}")
+
         ssl_ca = response.text
 
         saved_connection.data.ssl_ca = ssl_ca
