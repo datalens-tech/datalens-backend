@@ -160,6 +160,7 @@ dl-zitadel = {path = "../lib/dl_zitadel", develop = true}
 dl-auth-api-lib = {path = "../lib/dl_auth_api_lib", develop = true}
 dl-type-transformer = {path = "../lib/dl_type_transformer", develop = true}
 dl-s3 = {path = "../lib/dl_s3", develop = true}
+datalens-auth-native = {path = "../lib/dl_auth_native", develop = true}
 
 [tool.poetry.group.dev.dependencies]
 black = "==23.12.1"
