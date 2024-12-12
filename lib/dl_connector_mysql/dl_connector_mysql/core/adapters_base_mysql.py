@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ssl
 from typing import (
     Any,
     Dict,
@@ -9,14 +10,17 @@ from typing import (
 import attr
 import sqlalchemy.dialects.mysql as sa_mysql
 
-from dl_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
+from dl_configs.utils import get_root_certificates_path
 from dl_type_transformer.native_type import SATypeSpec
 
 from dl_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
+from dl_connector_mysql.core.target_dto import MySQLConnTargetDTO
 
 
 @attr.s(cmp=False)
-class BaseMySQLAdapter(BaseSSLCertAdapter):
+class BaseMySQLAdapter:
+    _target_dto: MySQLConnTargetDTO = attr.ib()
+
     conn_type = CONNECTION_TYPE_MYSQL
 
     # Notes about type codes:
@@ -74,3 +78,13 @@ class BaseMySQLAdapter(BaseSSLCertAdapter):
         # Another important note: these types don't designate *arrays* by
         # themselves. Might have to look into the data for that.
     }
+
+    def _get_ssl_ctx(self, force_ssl: bool = False) -> Optional[ssl.SSLContext]:
+        if self._target_dto.ssl_enable or force_ssl:
+            ssl_ctx = ssl.create_default_context()
+            if self._target_dto.ssl_ca:
+                ssl_ctx.load_verify_locations(cadata=self._target_dto.ssl_ca)
+            else:
+                ssl_ctx.load_verify_locations(cafile=get_root_certificates_path())
+            return ssl_ctx
+        return None

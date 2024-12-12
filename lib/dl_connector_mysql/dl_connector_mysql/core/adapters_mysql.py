@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import contextlib
 import typing
 
 import attr
@@ -21,36 +20,9 @@ class MySQLAdapter(BaseMySQLAdapter, BaseClassicAdapter[MySQLConnTargetDTO]):
     _error_transformer: typing.ClassVar[DbErrorTransformer] = sync_mysql_db_error_transformer
 
     def get_connect_args(self) -> dict:
-        connect_args = dict(
+        return dict(
             super().get_connect_args(),
             charset="utf8",
             local_infile=0,
+            ssl=self._get_ssl_ctx(),
         )
-
-        if self._target_dto.ssl_enable:
-            connect_args["ssl"] = (
-                {
-                    "ca": self.get_ssl_cert_path(self._target_dto.ssl_ca),
-                }
-                if self._target_dto.ssl_ca
-                else {
-                    "ssl_check_hostname": False,
-                }
-            )
-
-        return connect_args
-
-    @contextlib.contextmanager
-    def execution_context(self) -> typing.Generator[None, None, None]:
-        contexts: list[typing.ContextManager[None]] = [super().execution_context()]
-
-        if self._target_dto.ssl_ca is not None:
-            contexts.append(self.ssl_cert_context(self._target_dto.ssl_ca))
-
-        with contextlib.ExitStack() as stack:
-            for context in contexts:
-                stack.enter_context(context)
-            try:
-                yield
-            finally:
-                stack.close()

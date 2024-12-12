@@ -1,12 +1,11 @@
 import asyncio
-import os
+import ssl
 from typing import Generator
 
 from frozendict import frozendict
 import pytest
 import requests
 
-import dl_configs.utils as bi_configs_utils
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 from dl_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
@@ -53,24 +52,11 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
         return response.text
 
     @pytest.fixture(scope="class")
-    def ssl_ca_path(self, ssl_ca: str) -> str:
-        ssl_ca_path = os.path.join(bi_configs_utils.get_temp_root_certificates_folder_path(), "ca.pem")
-        with open(ssl_ca_path, "w") as f:
-            f.write(ssl_ca)
-
-        return ssl_ca_path
-
-    @pytest.fixture(scope="class")
-    def engine_params(self, ssl_ca_path: str) -> dict:
+    def engine_params(self, ssl_ca: str) -> dict:
         engine_params = {
             "connect_args": frozendict(
                 {
-                    "ssl": frozendict(
-                        {
-                            "ca": ssl_ca_path,
-                            "check_hostname": False,
-                        }
-                    ),
+                    "ssl": ssl.create_default_context(cadata=ssl_ca),
                 }
             ),
         }

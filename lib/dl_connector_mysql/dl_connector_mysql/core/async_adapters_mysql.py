@@ -4,12 +4,9 @@ import asyncio
 import contextlib
 from functools import partial
 import logging
-import ssl
 from typing import (
     Any,
     AsyncIterator,
-    ContextManager,
-    Generator,
     Optional,
     Type,
     TypeVar,
@@ -24,7 +21,6 @@ from pymysql.err import (
 import sqlalchemy as sa
 
 from dl_app_tools.profiling_base import generic_profiler_async
-from dl_configs.utils import get_root_certificates_path
 from dl_constants.types import TBIChunksGen
 from dl_core.connection_executors.adapters.adapter_actions.async_base import AsyncDBVersionAdapterAction
 from dl_core.connection_executors.adapters.adapter_actions.db_version import AsyncDBVersionAdapterActionViaFunctionQuery
@@ -75,7 +71,6 @@ class AsyncMySQLAdapter(
     AsyncDirectDBAdapter,
     WithMinimalCursorInfo,
 ):
-    _target_dto: MySQLConnTargetDTO = attr.ib()
     _req_ctx_info: DBAdapterScopedRCI = attr.ib()
     _default_chunk_size: int = attr.ib()
 
@@ -122,16 +117,6 @@ class AsyncMySQLAdapter(
         db_name: str,
         force_ssl: bool = False,
     ) -> aiomysql.sa.Engine:
-        ssl_ctx = (
-            ssl.create_default_context(
-                cafile=self.get_ssl_cert_path(self._target_dto.ssl_ca)
-                if self._target_dto.ssl_ca
-                else get_root_certificates_path()
-            )
-            if self._target_dto.ssl_enable or force_ssl
-            else None
-        )
-
         return await aiomysql.sa.create_engine(
             host=self._target_dto.host,
             port=self._target_dto.port,
@@ -139,7 +124,7 @@ class AsyncMySQLAdapter(
             password=self._target_dto.password,
             db=db_name,
             dialect=self._dialect,
-            ssl=ssl_ctx,
+            ssl=self._get_ssl_ctx(force_ssl),
         )
 
     async def _get_engine(self, db_name: str) -> aiomysql.sa.Engine:
@@ -154,21 +139,6 @@ class AsyncMySQLAdapter(
                 return await self._engines.get(db_name, generator=create_engine_using_ssl)
             else:
                 raise
-
-    @contextlib.contextmanager
-    def execution_context(self) -> Generator[None, None, None]:
-        contexts: list[ContextManager[None]] = []
-
-        if self._target_dto.ssl_ca is not None:
-            contexts.append(self.ssl_cert_context(self._target_dto.ssl_ca))
-
-        with contextlib.ExitStack() as stack:
-            for context in contexts:
-                stack.enter_context(context)
-            try:
-                yield
-            finally:
-                stack.close()
 
     @contextlib.asynccontextmanager
     async def _get_connection(self, db_name_from_query: Optional[str]) -> AsyncIterator[aiomysql.sa.SAConnection]:
@@ -195,7 +165,7 @@ class AsyncMySQLAdapter(
             else:
                 debug_query = query if isinstance(query, str) else compile_query_for_debug(query, self._dialect)
 
-        with self.handle_execution_error(debug_query), self.execution_context():
+        with self.handle_execution_error(debug_query):
             async with self._get_connection(db_adapter_query.db_name) as conn:
                 result = await conn.execute(compiled_query, compiled_query_parameters)
                 cursor_info = ExecutionStepCursorInfo(
