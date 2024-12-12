@@ -346,15 +346,17 @@ class DatasetVersionFieldValidator(DatasetResource):
         code = _make_api_err_code(exc.DLValidationError.err_code) if field_errors else CODE_OK
         message = exc.DLValidationError.default_message if field_errors else VALIDATION_OK_MESSAGE
         error_data = {
-            "field_errors": [
-                {
-                    "title": body["field"].get("title"),
-                    "guid": body["field"].get("guid"),
-                    "errors": field_errors,
-                }
-            ]
-            if field_errors
-            else [],
+            "field_errors": (
+                [
+                    {
+                        "title": body["field"].get("title"),
+                        "guid": body["field"].get("guid"),
+                        "errors": field_errors,
+                    }
+                ]
+                if field_errors
+                else []
+            ),
             "code": code,
             "message": message,
         }

@@ -6,9 +6,11 @@ import json
 import logging
 
 from aiohttp import web
-from aiohttp.typedefs import Handler
+from aiohttp.typedefs import (
+    Handler,
+    Middleware,
+)
 
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.logging import RequestObfuscator
 from dl_api_lib.aio.aiohttp_wrappers import DSAPIRequest
 from dl_api_lib.app.data_api.resources.base import (
@@ -20,7 +22,7 @@ from dl_api_lib.app.data_api.resources.base import (
 LOGGER = logging.getLogger(__name__)
 
 
-def json_body_middleware() -> AIOHTTPMiddleware:
+def json_body_middleware() -> Middleware:
     @web.middleware
     @DSAPIRequest.use_dl_request
     async def actual_body_log_middleware(dl_request: DSAPIRequest, handler: Handler) -> web.StreamResponse:

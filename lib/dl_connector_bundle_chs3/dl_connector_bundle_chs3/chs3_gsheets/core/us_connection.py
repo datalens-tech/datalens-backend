@@ -27,13 +27,14 @@ class GSheetsFileS3Connection(BaseFileS3Connection):
     source_type = SOURCE_TYPE_GSHEETS_V2
     allowed_source_types = frozenset((SOURCE_TYPE_GSHEETS_V2,))
 
-    editable_data_source_parameters: ClassVar[
-        tuple[str, ...]
-    ] = BaseFileS3Connection.editable_data_source_parameters + (
-        "spreadsheet_id",
-        "sheet_id",
-        "first_line_is_header",
-        "data_updated_at",
+    editable_data_source_parameters: ClassVar[tuple[str, ...]] = (
+        BaseFileS3Connection.editable_data_source_parameters
+        + (
+            "spreadsheet_id",
+            "sheet_id",
+            "first_line_is_header",
+            "data_updated_at",
+        )
     )
 
     @attr.s(eq=False, kw_only=True)

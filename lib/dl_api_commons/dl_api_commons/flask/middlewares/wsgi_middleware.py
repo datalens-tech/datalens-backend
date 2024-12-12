@@ -5,6 +5,7 @@ Usage example:
     app = Flask(__name__)
     FlaskWSGIMiddleware().wrap_flask_app(app)
 """
+
 from __future__ import annotations
 
 import abc

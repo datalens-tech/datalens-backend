@@ -1,6 +1,7 @@
 """
 Simple methods to get package info from public PyPI
 """
+
 import requests
 
 

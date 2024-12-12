@@ -37,8 +37,7 @@ CONTEXT_KEY = "bi_context"
 
 
 class WorkerMetricsSenderProtocol(Protocol):
-    async def send(self, timestamp: float, metrics: dict[str, Any]) -> None:
-        ...
+    async def send(self, timestamp: float, metrics: dict[str, Any]) -> None: ...
 
 
 class DLArqWorker(Worker):

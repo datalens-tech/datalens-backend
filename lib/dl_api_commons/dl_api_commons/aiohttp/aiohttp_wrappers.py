@@ -19,12 +19,8 @@ from typing import (
 )
 
 from aiohttp import web
-from aiohttp.typedefs import Handler
+from aiohttp.typedefs import Handler, Middleware
 
-from dl_api_commons.aio.typing import (
-    AIOHTTPMethodMiddleware,
-    AIOHTTPMiddleware,
-)
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.exc import InvalidHeaderException
 from dl_api_commons.logging import RequestLoggingContextController
@@ -239,7 +235,7 @@ class DLRequestBase:
     @classmethod
     def use_dl_request(
         cls: Type[_SELF_TYPE], coro: Callable[[_SELF_TYPE, Handler], Awaitable[web.StreamResponse]]
-    ) -> AIOHTTPMiddleware:
+    ) -> Middleware:
         if not inspect.iscoroutinefunction(coro):
             raise ValueError("This decorator may only be applied to a coroutine")
 
@@ -259,7 +255,7 @@ class DLRequestBase:
     @classmethod
     def use_dl_request_on_method(
         cls, coro: Callable[[Any, _SELF_TYPE, Handler], Awaitable[web.StreamResponse]]
-    ) -> AIOHTTPMethodMiddleware:
+    ) -> Middleware:
         if not inspect.iscoroutinefunction(coro):
             raise ValueError("This decorator may only be applied to a coroutine")
 

@@ -14,15 +14,13 @@ import bi_ci.split_pytest_tasks as split_pytest_tasks
 
 
 class FolderContext(typing.Protocol):
-    def __call__(self, path: typing.Optional[str] = None) -> typing.ContextManager[str]:
-        ...
+    def __call__(self, path: typing.Optional[str] = None) -> typing.ContextManager[str]: ...
 
 
 class FileContext(typing.Protocol):
     def __call__(
         self, path: typing.Optional[str] = None, data: typing.Optional[str] = None
-    ) -> typing.ContextManager[str]:
-        ...
+    ) -> typing.ContextManager[str]: ...
 
 
 @pytest.fixture(name="folder_context")
@@ -91,8 +89,7 @@ class LibContext:
 
 
 class LibsPyprojectsContext(typing.Protocol):
-    def __call__(self, libs: dict[str, LibContext]) -> typing.ContextManager[str]:
-        ...
+    def __call__(self, libs: dict[str, LibContext]) -> typing.ContextManager[str]: ...
 
 
 @pytest.fixture(name="libs_context")
@@ -143,9 +140,10 @@ def test_split_tests_skip_tests(
     skip_tests = true
     """
 
-    with test_targets_json_context(["package"]) as test_targets_json_path, libs_context(
-        {"package": LibContext(pyproject=pyproject, pytest_files=["tests/test_random.py"])}
-    ) as root_path:
+    with (
+        test_targets_json_context(["package"]) as test_targets_json_path,
+        libs_context({"package": LibContext(pyproject=pyproject, pytest_files=["tests/test_random.py"])}) as root_path,
+    ):
         split_pytest_tasks.split_tests("base", root_path, test_targets_json_path, raise_on_uncovered_test=True)
 
     mocked_print.assert_has_calls(
@@ -171,9 +169,10 @@ def test_split_tests_without_targets(
     requested_mode: str,
     result: str,
 ):
-    with test_targets_json_context(["package"]) as test_targets_json_path, libs_context(
-        {"package": LibContext()}
-    ) as root_path:
+    with (
+        test_targets_json_context(["package"]) as test_targets_json_path,
+        libs_context({"package": LibContext()}) as root_path,
+    ):
         split_pytest_tasks.split_tests(requested_mode, root_path, test_targets_json_path)
 
     mocked_print.assert_has_calls([mock.call(f"split_{requested_mode}={result}")])
@@ -197,9 +196,10 @@ def test_split_tests_without_label(
     [datalens.pytest.unit]
     root_dir = "tests"
     """
-    with test_targets_json_context(["package"]) as test_targets_json_path, libs_context(
-        {"package": LibContext(pyproject=pyproject)}
-    ) as root_path:
+    with (
+        test_targets_json_context(["package"]) as test_targets_json_path,
+        libs_context({"package": LibContext(pyproject=pyproject)}) as root_path,
+    ):
         split_pytest_tasks.split_tests(requested_mode, root_path, test_targets_json_path)
 
     mocked_print.assert_has_calls([mock.call(f"split_{requested_mode}={result}")])
@@ -218,9 +218,10 @@ def test_split_tests_with_label(
     labels = ["{requested_mode}"]
     """
 
-    with test_targets_json_context(["package"]) as test_targets_json_path, libs_context(
-        {"package": LibContext(pyproject=pyproject)}
-    ) as root_path:
+    with (
+        test_targets_json_context(["package"]) as test_targets_json_path,
+        libs_context({"package": LibContext(pyproject=pyproject)}) as root_path,
+    ):
         split_pytest_tasks.split_tests(requested_mode, root_path, test_targets_json_path)
 
     mocked_print.assert_has_calls([mock.call(f'split_{requested_mode}=["package:unit"]')])
@@ -256,9 +257,10 @@ def test_split_tests_multiple(
     root_dir = "tests"
     """
 
-    with test_targets_json_context(["a", "b"]) as test_targets_json_path, libs_context(
-        {"a": LibContext(pyproject=a_pyproject), "b": LibContext(pyproject=b_pyproject)}
-    ) as root_path:
+    with (
+        test_targets_json_context(["a", "b"]) as test_targets_json_path,
+        libs_context({"a": LibContext(pyproject=a_pyproject), "b": LibContext(pyproject=b_pyproject)}) as root_path,
+    ):
         split_pytest_tasks.split_tests("base,fat,ext", root_path, test_targets_json_path)
 
     mocked_print.assert_has_calls(
@@ -276,9 +278,10 @@ def test_split_tests_nested(
     test_targets_json_context: TestTargetsJsonContext,
     libs_context: LibsPyprojectsContext,
 ):
-    with test_targets_json_context(["lib/package"]) as test_targets_json_path, libs_context(
-        {"lib/package": LibContext()}
-    ) as root_path:
+    with (
+        test_targets_json_context(["lib/package"]) as test_targets_json_path,
+        libs_context({"lib/package": LibContext()}) as root_path,
+    ):
         split_pytest_tasks.split_tests("base", root_path, test_targets_json_path)
 
     mocked_print.assert_has_calls([mock.call('split_base=["lib/package:__default__"]')])
@@ -295,9 +298,10 @@ def test_split_tests_raise_on_unused_label(
     labels = ["unused"]
     """
 
-    with test_targets_json_context(["package"]) as test_targets_json_path, libs_context(
-        {"package": LibContext(pyproject=pyproject)}
-    ) as root_path:
+    with (
+        test_targets_json_context(["package"]) as test_targets_json_path,
+        libs_context({"package": LibContext(pyproject=pyproject)}) as root_path,
+    ):
         with pytest.raises(ValueError):
             split_pytest_tasks.split_tests(
                 "base,not_base",
@@ -320,9 +324,10 @@ def test_split_tests_not_raise_on_unused_label_if_no_flag(
     labels = ["unused"]
     """
 
-    with test_targets_json_context(["package"]) as test_targets_json_path, libs_context(
-        {"package": LibContext(pyproject=pyproject)}
-    ) as root_path:
+    with (
+        test_targets_json_context(["package"]) as test_targets_json_path,
+        libs_context({"package": LibContext(pyproject=pyproject)}) as root_path,
+    ):
         split_pytest_tasks.split_tests("base,not_base", root_path, test_targets_json_path)
 
     mocked_print.assert_has_calls(
@@ -356,9 +361,12 @@ def test_split_tests_raise_on_uncovered_test(
     libs_context: LibsPyprojectsContext,
     pyproject: str,
 ):
-    with test_targets_json_context(["package"]) as test_targets_json_path, libs_context(
-        {"package": LibContext(pyproject=pyproject, pytest_files=["package_tests/not_unit/test_random.py"])}
-    ) as root_path:
+    with (
+        test_targets_json_context(["package"]) as test_targets_json_path,
+        libs_context(
+            {"package": LibContext(pyproject=pyproject, pytest_files=["package_tests/not_unit/test_random.py"])}
+        ) as root_path,
+    ):
         with pytest.raises(ValueError):
             split_pytest_tasks.split_tests(
                 "base",
@@ -388,9 +396,12 @@ def test_split_tests_absent_target_path_covers_all_root_dir(
     root_dir = "tests"
     """
 
-    with test_targets_json_context(["package"]) as test_targets_json_path, libs_context(
-        {"package": LibContext(pyproject=pyproject, pytest_files=["tests/not_unit/test_random.py"])}
-    ) as root_path:
+    with (
+        test_targets_json_context(["package"]) as test_targets_json_path,
+        libs_context(
+            {"package": LibContext(pyproject=pyproject, pytest_files=["tests/not_unit/test_random.py"])}
+        ) as root_path,
+    ):
         split_pytest_tasks.split_tests("base", root_path, test_targets_json_path, raise_on_uncovered_test=True)
 
     mocked_print.assert_has_calls([mock.call('split_base=["package:unit"]')])
@@ -401,9 +412,10 @@ def test_split_tests_absent_target_covers_default_tests_folder(
     test_targets_json_context: TestTargetsJsonContext,
     libs_context: LibsPyprojectsContext,
 ):
-    with test_targets_json_context(["package"]) as test_targets_json_path, libs_context(
-        {"package": LibContext(pyproject="", pytest_files=["package_tests/test_random.py"])}
-    ) as root_path:
+    with (
+        test_targets_json_context(["package"]) as test_targets_json_path,
+        libs_context({"package": LibContext(pyproject="", pytest_files=["package_tests/test_random.py"])}) as root_path,
+    ):
         split_pytest_tasks.split_tests("base", root_path, test_targets_json_path, raise_on_uncovered_test=True)
 
     mocked_print.assert_has_calls([mock.call('split_base=["package:__default__"]')])

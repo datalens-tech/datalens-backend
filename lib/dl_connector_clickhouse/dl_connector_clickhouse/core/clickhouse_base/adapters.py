@@ -589,9 +589,11 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
                     if evt_type == et.DATACHUNK:
                         yield tuple(
                             tuple(
-                                _safe_col_converter(col_converter, val)  # type: ignore  # TODO: fix
-                                if col_converter is not None
-                                else val
+                                (
+                                    _safe_col_converter(col_converter, val)  # type: ignore  # TODO: fix
+                                    if col_converter is not None
+                                    else val
+                                )
                                 for val, col_converter in zip(raw_row, row_converters, strict=True)
                             )
                             for raw_row in evt_data

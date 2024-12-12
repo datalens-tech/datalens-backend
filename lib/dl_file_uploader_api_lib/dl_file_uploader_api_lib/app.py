@@ -6,6 +6,7 @@ from typing import (
 )
 
 from aiohttp import web
+from aiohttp.typedefs import Middleware
 import attr
 
 from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
@@ -15,7 +16,6 @@ from dl_api_commons.aio.middlewares.master_key import master_key_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.middlewares.tracing import TracingService
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.sentry_config import (
     SentryConfig,
     configure_sentry_for_aiohttp,
@@ -50,7 +50,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
     _settings: _TSettings = attr.ib()
 
     @abc.abstractmethod
-    def get_auth_middlewares(self) -> list[AIOHTTPMiddleware]:
+    def get_auth_middlewares(self) -> list[Middleware]:
         raise NotImplementedError()
 
     def set_up_sentry(self, secret_sentry_dsn: str, release: str) -> None:
@@ -79,7 +79,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
             sentry_app_name_tag="file-uploader",
         )
 
-        middleware_list = [
+        middleware_list: list[Middleware] = [
             TracingService().middleware,
             cors_middleware(
                 allow_origins=self._settings.CORS.ALLOWED_ORIGINS,
@@ -97,7 +97,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
             ),
             *self.get_auth_middlewares(),
             commit_rci_middleware(),
-            self.CSRF_MIDDLEWARE_CLS(
+            self.CSRF_MIDDLEWARE_CLS(  # type: ignore[misc,list-item]
                 csrf_header_name=self._settings.CSRF.HEADER_NAME,
                 csrf_time_limit=self._settings.CSRF.TIME_LIMIT,
                 csrf_secrets=self._settings.CSRF.SECRET,

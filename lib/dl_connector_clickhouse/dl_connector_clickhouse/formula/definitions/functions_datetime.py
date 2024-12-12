@@ -147,13 +147,15 @@ DEFINITIONS_DATETIME = [
                         sa.func.toDate(date), datetime_interval(unit.value, num.value, caps=False)
                     )
                     if base.norm_datetrunc_unit(unit) in {"year", "quarter", "month", "week"}
-                    else sa.func.toDate(
-                        sa.func.toStartOfInterval(
-                            sa.func.toDate(date), datetime_interval(unit.value, num.value, caps=False)
+                    else (
+                        sa.func.toDate(
+                            sa.func.toStartOfInterval(
+                                sa.func.toDate(date), datetime_interval(unit.value, num.value, caps=False)
+                            )
                         )
+                        if base.norm_datetrunc_unit(unit) == "day"
+                        else sa.func.toDate(date)
                     )
-                    if base.norm_datetrunc_unit(unit) == "day"
-                    else sa.func.toDate(date)
                 ),
             ),
         ]

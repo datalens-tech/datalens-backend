@@ -9,10 +9,12 @@ from typing import (
 )
 
 from aiohttp import web
-from aiohttp.typedefs import Handler
+from aiohttp.typedefs import (
+    Handler,
+    Middleware,
+)
 import attr
 
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.aiohttp import aiohttp_wrappers
 from dl_api_commons.tenant_resolver import TenantResolver
 from dl_configs.crypto_keys import CryptoKeysConfig
@@ -38,7 +40,7 @@ def usm_tenant_resolver_middleware(
     tenant_resolver: TenantResolver,
     ca_data: bytes,
     us_api_type: USApiType,
-) -> AIOHTTPMiddleware:
+) -> Middleware:
     """
     Middleware fetches dataset or connection from US and picks tenant ID from response
 
@@ -124,7 +126,7 @@ def us_manager_middleware(
     crypto_keys_config: CryptoKeysConfig,
     ca_data: bytes,
     embed: bool = False,
-) -> AIOHTTPMiddleware:
+) -> Middleware:
     usm_factory = USMFactory(
         us_base_url=us_base_url,
         crypto_keys_config=crypto_keys_config,
@@ -160,7 +162,7 @@ def public_us_manager_middleware(
     us_public_token: str,
     crypto_keys_config: CryptoKeysConfig,
     ca_data: bytes,
-) -> AIOHTTPMiddleware:
+) -> Middleware:
     """
     Middleware to create public US manager. Works with committed RCI.
     Must be used after `public_usm_workaround_middleware`.
@@ -198,7 +200,7 @@ def service_us_manager_middleware(
     crypto_keys_config: CryptoKeysConfig,
     ca_data: bytes,
     as_user_usm: bool = False,
-) -> AIOHTTPMiddleware:
+) -> Middleware:
     usm_factory = USMFactory(
         us_base_url=us_base_url,
         crypto_keys_config=crypto_keys_config,

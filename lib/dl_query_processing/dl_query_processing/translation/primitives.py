@@ -71,9 +71,11 @@ class TranslatedQueryMetaInfo(QueryMetaInfo):
         return QueryElementExtract(
             values=(
                 *super().extract,
-                (dt.extract if dt is not None else None for dt in self.detailed_types)
-                if self.detailed_types is not None
-                else None,
+                (
+                    (dt.extract if dt is not None else None for dt in self.detailed_types)
+                    if self.detailed_types is not None
+                    else None
+                ),
             )
         )
 

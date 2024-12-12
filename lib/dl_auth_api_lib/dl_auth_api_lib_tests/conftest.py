@@ -3,9 +3,9 @@ import logging
 import os
 
 import aiohttp.pytest_plugin
+from aiohttp.typedefs import Middleware
 import pytest
 
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.base_models import (
     NoAuthData,
     TenantCommon,
@@ -87,7 +87,7 @@ def oauth_app_settings(monkeypatch, config_path):
 
 
 class TestingOAuthApiAppFactory(OAuthApiAppFactory[AuthAPISettings]):
-    def get_auth_middlewares(self) -> list[AIOHTTPMiddleware]:
+    def get_auth_middlewares(self) -> list[Middleware]:
         return []
 
 

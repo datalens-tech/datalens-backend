@@ -104,9 +104,11 @@ def make_ch_tz_args(date_ctx) -> Tuple[Tuple[Any, ...], Tuple[Any, ...]]:  # typ
         (
             (date_ctx.data_type_params.timezone,)
             if date_ctx.data_type in (DataType.DATETIMETZ, DataType.CONST_DATETIMETZ)
-            else ()
-            if date_ctx.data_type in (DataType.GENERICDATETIME, DataType.CONST_GENERICDATETIME)
-            else UTC_CH_TZ_ARGS
+            else (
+                ()
+                if date_ctx.data_type in (DataType.GENERICDATETIME, DataType.CONST_GENERICDATETIME)
+                else UTC_CH_TZ_ARGS
+            )
         ),
         # output-case TZ args
         (() if date_ctx.data_type in (DataType.GENERICDATETIME, DataType.CONST_GENERICDATETIME) else ("UTC",)),

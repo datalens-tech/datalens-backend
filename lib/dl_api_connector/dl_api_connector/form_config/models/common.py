@@ -21,8 +21,7 @@ WidthVariant = Literal["s", "m", "l", "auto"]
 Width = Union[WidthVariant, int, float]
 
 
-class MarkdownString(str):
-    ...
+class MarkdownString(str): ...
 
 
 MarkdownStr = Union[MarkdownString, str]  # marker type to show if a field supports markdown or not

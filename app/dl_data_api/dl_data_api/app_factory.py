@@ -4,8 +4,9 @@ import logging
 import ssl
 from typing import Optional
 
+from aiohttp.typedefs import Middleware
+
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_lib.app.data_api.app import (
     DataApiAppFactory,
     EnvSetupResult,
@@ -84,8 +85,8 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
         self,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> EnvSetupResult:
-        sr_middleware_list: list[AIOHTTPMiddleware]
-        usm_middleware_list: list[AIOHTTPMiddleware]
+        sr_middleware_list: list[Middleware]
+        usm_middleware_list: list[Middleware]
 
         ca_data = get_multiple_root_certificates(
             self._settings.CA_FILE_PATH,
@@ -139,7 +140,7 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
 
         return result
 
-    def _get_auth_middleware(self) -> AIOHTTPMiddleware:
+    def _get_auth_middleware(self) -> Middleware:
         if self._settings.AUTH is None or self._settings.AUTH.TYPE == "NONE":
             return self._get_auth_middleware_none()
 
@@ -155,7 +156,7 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
 
     def _get_auth_middleware_none(
         self,
-    ) -> AIOHTTPMiddleware:
+    ) -> Middleware:
         return auth_trust_middleware(
             fake_user_id="_user_id_",
             fake_user_name="_user_name_",
@@ -164,7 +165,7 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
     def _get_auth_middleware_zitadel(
         self,
         ca_data: bytes,
-    ) -> AIOHTTPMiddleware:
+    ) -> Middleware:
         self._settings: DataApiAppSettingsOS
         assert self._settings.AUTH is not None
 

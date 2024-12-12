@@ -19,7 +19,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 class CITEXT(sqltypes.TEXT):
-
     """Provide the PostgreSQL CITEXT type.
 
     .. versionadded:: 2.0.7

@@ -92,11 +92,11 @@ class RequestObfuscator:
         return tuple(
             (
                 name,
-                self._obfuscate_value(val)
-                if self._is_secret_header(name)
-                else self._obfuscate_cookie_header_value(val)
-                if name.lower() == "cookie"
-                else val,
+                (
+                    self._obfuscate_value(val)
+                    if self._is_secret_header(name)
+                    else self._obfuscate_cookie_header_value(val) if name.lower() == "cookie" else val
+                ),
             )
             for name, val in headers
         )

@@ -71,21 +71,23 @@ class BaseApiV1SerializationAdapter:
                 connection_id=item.connection_id,
                 source_type=item.source_type.name,  # type: ignore  # 2024-01-24 # TODO: Item "None" of "DataSourceType | None" has no attribute "name"  [union-attr]
                 title=item.title,
-                raw_schema=[
-                    dict(
-                        name=col.name,
-                        title=col.title,
-                        user_type=col.user_type.name,
-                        native_type=col.native_type,
-                        description=col.description,
-                        nullable=col.nullable,
-                        has_auto_aggregation=col.has_auto_aggregation,
-                        lock_aggregation=col.lock_aggregation,
-                    )
-                    for col in item.raw_schema
-                ]
-                if item.raw_schema is not None
-                else None,
+                raw_schema=(
+                    [
+                        dict(
+                            name=col.name,
+                            title=col.title,
+                            user_type=col.user_type.name,
+                            native_type=col.native_type,
+                            description=col.description,
+                            nullable=col.nullable,
+                            has_auto_aggregation=col.has_auto_aggregation,
+                            lock_aggregation=col.lock_aggregation,
+                        )
+                        for col in item.raw_schema
+                    ]
+                    if item.raw_schema is not None
+                    else None
+                ),
                 index_info_set=None if item.index_info_set is None else list(item.index_info_set),
                 parameters=item.parameters,
                 managed_by=item.managed_by.name,
@@ -163,9 +165,11 @@ class BaseApiV1SerializationAdapter:
                 avatar_id=item.avatar_id,
                 managed_by=item.managed_by.name,
                 default_value=item.default_value.value if item.default_value is not None else None,
-                value_constraint=ParameterValueConstraintSchema().dump(item.value_constraint)
-                if item.value_constraint is not None
-                else None,
+                value_constraint=(
+                    ParameterValueConstraintSchema().dump(item.value_constraint)
+                    if item.value_constraint is not None
+                    else None
+                ),
             )
         else:
             return dict(guid=item.id)

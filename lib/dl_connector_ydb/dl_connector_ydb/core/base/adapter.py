@@ -102,11 +102,11 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
     def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> Tuple[Optional[Callable[[Any], Any]], ...]:
         type_names_norm = [col[1].lower().strip("?") for col in cursor_info.raw_cursor_description]
         return tuple(
-            self._convert_bytes
-            if type_name_norm == "string"
-            else self._convert_ts
-            if type_name_norm == "timestamp"
-            else None
+            (
+                self._convert_bytes
+                if type_name_norm == "string"
+                else self._convert_ts if type_name_norm == "timestamp" else None
+            )
             for type_name_norm in type_names_norm
         )
 

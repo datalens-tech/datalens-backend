@@ -74,8 +74,7 @@ def conn_type_set_env_var_converter(s: str) -> set[ConnectionType]:
 
 class ConstructableSettingsProtocol(typing.Protocol):
     @classmethod
-    def from_json(cls, json_value: typing.Any) -> typing_extensions.Self:
-        ...
+    def from_json(cls, json_value: typing.Any) -> typing_extensions.Self: ...
 
 
 SettingsT = typing.TypeVar("SettingsT", bound=ConstructableSettingsProtocol)

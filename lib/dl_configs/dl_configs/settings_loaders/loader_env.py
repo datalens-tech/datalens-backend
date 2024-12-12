@@ -526,13 +526,15 @@ class EnvSettingsLoader:
                     key_prefix=key_prefix + (field_s_meta.name,),
                     default=field_default,
                     json_converter=field_s_meta.json_converter,
-                    field_enables_flag_extractor=None  # type: ignore  # 2024-01-24 # TODO: Argument "field_enables_flag_extractor" to "build_composite_extractor" of "EnvSettingsLoader" has incompatible type "ScalarExtractor | DictExtractor | None"; expected "ScalarExtractor | None"  [arg-type]
-                    if enabled_key_name is None
-                    else cls.build_default_extractor(
-                        name="enabled",
-                        field_type=bool,
-                        meta=SMeta(enabled_key_name),
-                        default=NOT_SET,
+                    field_enables_flag_extractor=(
+                        None  # type: ignore  # 2024-01-24 # TODO: Argument "field_enables_flag_extractor" to "build_composite_extractor" of "EnvSettingsLoader" has incompatible type "ScalarExtractor | DictExtractor | None"; expected "ScalarExtractor | None"  [arg-type]
+                        if enabled_key_name is None
+                        else cls.build_default_extractor(
+                            name="enabled",
+                            field_type=bool,
+                            meta=SMeta(enabled_key_name),
+                            default=NOT_SET,
+                        )
                     ),
                 )
             else:
