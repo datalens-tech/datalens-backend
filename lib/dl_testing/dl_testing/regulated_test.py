@@ -188,13 +188,15 @@ class RegulatedTestCase:
 
 
 @overload
-def regulated_test_case(test_cls: type, /) -> type: ...
+def regulated_test_case(test_cls: type, /) -> type:
+    ...
 
 
 @overload
 def regulated_test_case(
     *, test_params: RegulatedTestParams = RegulatedTestParams()  # noqa: B008
-) -> Callable[[type], type]: ...
+) -> Callable[[type], type]:
+    ...
 
 
 def regulated_test_case(*args: Any, **kwargs: Any) -> Any:

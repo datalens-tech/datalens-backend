@@ -19,7 +19,10 @@ from typing import (
 )
 
 from aiohttp import web
-from aiohttp.typedefs import Handler, Middleware
+from aiohttp.typedefs import (
+    Handler,
+    Middleware,
+)
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.exc import InvalidHeaderException

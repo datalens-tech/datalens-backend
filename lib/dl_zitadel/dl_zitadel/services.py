@@ -29,7 +29,8 @@ class ZitadelBaseTokenStorage:
 
 
 class SyncClientProtocol(typing.Protocol):
-    def get_token(self) -> dl_zitadel_clients.Token: ...
+    def get_token(self) -> dl_zitadel_clients.Token:
+        ...
 
 
 class ZitadelSyncTokenStorage(ZitadelBaseTokenStorage):
@@ -51,7 +52,8 @@ class ZitadelSyncTokenStorage(ZitadelBaseTokenStorage):
 
 
 class AsyncClientProtocol(typing.Protocol):
-    async def get_token(self) -> dl_zitadel_clients.Token: ...
+    async def get_token(self) -> dl_zitadel_clients.Token:
+        ...
 
 
 # TODO: add soft refresh timeout to avoid multiple requests on timeout

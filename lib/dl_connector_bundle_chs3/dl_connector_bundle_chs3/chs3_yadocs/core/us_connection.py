@@ -27,15 +27,14 @@ class YaDocsFileS3Connection(BaseFileS3Connection):
     source_type = SOURCE_TYPE_YADOCS
     allowed_source_types = frozenset((SOURCE_TYPE_YADOCS,))
 
-    editable_data_source_parameters: ClassVar[tuple[str, ...]] = (
-        BaseFileS3Connection.editable_data_source_parameters
-        + (
-            "public_link",
-            "private_path",
-            "sheet_id",
-            "first_line_is_header",
-            "data_updated_at",
-        )
+    editable_data_source_parameters: ClassVar[
+        tuple[str, ...]
+    ] = BaseFileS3Connection.editable_data_source_parameters + (
+        "public_link",
+        "private_path",
+        "sheet_id",
+        "first_line_is_header",
+        "data_updated_at",
     )
 
     @attr.s(eq=False, kw_only=True)

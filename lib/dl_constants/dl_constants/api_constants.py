@@ -61,4 +61,5 @@ class DLHeadersCommon(DLHeaders):
     ORG_ID = "X-YaCloud-OrgId"
 
 
-class DLCookiesCommon(DLCookies): ...
+class DLCookiesCommon(DLCookies):
+    ...

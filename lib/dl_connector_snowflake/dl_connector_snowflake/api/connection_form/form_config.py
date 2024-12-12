@@ -176,11 +176,9 @@ class SnowFlakeConnectionFormFactory(ConnectionFormFactory):
                 fake_value="******" if self.mode == ConnectionFormMode.edit else None,
             ),
             OAuthSnowFlakeRow(
-                button_text=(
-                    None
-                    if self.mode == ConnectionFormMode.create
-                    else self._localizer.translate(Translatable("button_get-new-token"))
-                ),
+                button_text=None
+                if self.mode == ConnectionFormMode.create
+                else self._localizer.translate(Translatable("button_get-new-token")),
                 display_conditions=on_auth_opened,
                 fake_value="******" if self.mode == ConnectionFormMode.edit else None,
             ),

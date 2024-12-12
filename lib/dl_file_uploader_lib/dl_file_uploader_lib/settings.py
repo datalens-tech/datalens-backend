@@ -50,15 +50,13 @@ class FileUploaderBaseSettings:
     S3: S3Settings = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "S3Settings")  [assignment]
         "S3",
         fallback_factory=(
-            lambda cfg: (
-                S3Settings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "ACCESS_KEY_ID" for "S3Settings"  [call-arg]
-                    ACCESS_KEY_ID=required(str),
-                    SECRET_ACCESS_KEY=required(str),
-                    ENDPOINT_URL=cfg.S3_ENDPOINT_URL,
-                )
-                if is_setting_applicable(cfg, "S3_ENDPOINT_URL")
-                else None
+            lambda cfg: S3Settings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "ACCESS_KEY_ID" for "S3Settings"  [call-arg]
+                ACCESS_KEY_ID=required(str),
+                SECRET_ACCESS_KEY=required(str),
+                ENDPOINT_URL=cfg.S3_ENDPOINT_URL,
             )
+            if is_setting_applicable(cfg, "S3_ENDPOINT_URL")
+            else None
         ),
     )
     S3_TMP_BUCKET_NAME: str = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]

@@ -165,21 +165,17 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
                 services_registry_ref=sr_ref,
                 is_bleeding_edge_user=self.is_bleeding_edge_user(request_context_info),
             ),
-            file_uploader_client_factory=(
-                FileUploaderClientFactory(
-                    self.file_uploader_settings,
-                    ca_data=self.ca_data,  # type: ignore  # 2024-01-24 # TODO: Argument "ca_data" to "FileUploaderClientFactory" has incompatible type "bytes | None"; expected "bytes"  [arg-type]
-                )
-                if self.file_uploader_settings
-                else None
-            ),
-            task_processor_factory=(
-                ARQTaskProcessorFactory(
-                    redis_pool_settings=self.redis_pool_settings,
-                )
-                if self.redis_pool_settings
-                else None
-            ),
+            file_uploader_client_factory=FileUploaderClientFactory(
+                self.file_uploader_settings,
+                ca_data=self.ca_data,  # type: ignore  # 2024-01-24 # TODO: Argument "ca_data" to "FileUploaderClientFactory" has incompatible type "bytes | None"; expected "bytes"  [arg-type]
+            )
+            if self.file_uploader_settings
+            else None,
+            task_processor_factory=ARQTaskProcessorFactory(
+                redis_pool_settings=self.redis_pool_settings,
+            )
+            if self.redis_pool_settings
+            else None,
             rqe_caches_settings=self.rqe_caches_settings,
             required_services=self.required_services,
             inst_specific_sr=(
