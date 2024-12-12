@@ -75,7 +75,7 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
             *rc.ssl_rows(
                 enabled_name=CommonFieldName.ssl_enable,
                 enabled_help_text=self._localizer.translate(Translatable("label_mysql-ssl-enabled-tooltip")),
-                enabled_default_value=False,
+                enabled_default_value=True,
             ),
             rc.data_export_forbidden_row(),
         ]
