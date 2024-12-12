@@ -14,5 +14,4 @@ msgstr "MySQL"
 
 msgid "label_mysql-ssl-enabled-tooltip"
 msgstr ""
-"Когда опция включена, параметр sslmode принимает значение required, когда "
-"выключена — prefer"
+"Если данная опция включена, использование ssl для подключения становится обязательным."

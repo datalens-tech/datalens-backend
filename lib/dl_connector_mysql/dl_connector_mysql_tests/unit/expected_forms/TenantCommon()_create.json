@@ -130,7 +130,7 @@
                         "advanced_settings": "opened"
                     },
                     "text": "TLS",
-                    "helpText": "When the option is enabled, the sslmode parameter takes the value required, and when disabled \u2014 prefer"
+                    "helpText": "When the option is enabled, it ensures mandatory use of ssl for connection."
                 },
                 {
                     "id": "radio_button",
