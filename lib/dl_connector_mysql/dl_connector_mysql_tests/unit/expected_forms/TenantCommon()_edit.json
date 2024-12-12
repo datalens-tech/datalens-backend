@@ -138,7 +138,7 @@
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
-                    "defaultValue": "off",
+                    "defaultValue": "on",
                     "options": [
                         {
                             "text": "Off",
