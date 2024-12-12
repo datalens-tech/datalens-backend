@@ -36,6 +36,7 @@ from dl_core.us_manager.broken_link import (
     BrokenUSLink,
     BrokenUSLinkErrorKind,
 )
+from dl_core.us_manager.schema_migration.factory_base import EntrySchemaMigrationFactoryBase
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_utils.aio import await_sync
 
@@ -64,6 +65,7 @@ class SyncUSManager(USManagerBase):
         # caches_redis: Optional[aioredis.Redis] = None,
         request_timeout_sec: int = 30,  # WARNING: unused.
         lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
+        schema_migration_factory: Optional[EntrySchemaMigrationFactoryBase] = None,
     ):
         super().__init__(
             bi_context=bi_context,
@@ -73,6 +75,7 @@ class SyncUSManager(USManagerBase):
             us_auth_context=us_auth_context,
             services_registry=services_registry,
             lifecycle_manager_factory=lifecycle_manager_factory,
+            schema_migration_factory=schema_migration_factory,
         )
         self._us_client = self._create_us_client()
 
