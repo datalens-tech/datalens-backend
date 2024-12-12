@@ -97,7 +97,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
             ),
             *self.get_auth_middlewares(),
             commit_rci_middleware(),
-            self.CSRF_MIDDLEWARE_CLS(  # type: ignore[misc,list-item]
+            self.CSRF_MIDDLEWARE_CLS(  # type: ignore[misc,list-item]  # TODO: Invalid self argument "CSRFMiddleware" to attribute function "middleware" with type "Callable[[Request, Callable[[Request], Awaitable[StreamResponse]]], Awaitable[StreamResponse]]"
                 csrf_header_name=self._settings.CSRF.HEADER_NAME,
                 csrf_time_limit=self._settings.CSRF.TIME_LIMIT,
                 csrf_secrets=self._settings.CSRF.SECRET,
