@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+from functools import partial
 import logging
 import ssl
 from typing import (
@@ -119,6 +120,7 @@ class AsyncMySQLAdapter(
     async def _create_engine(
         self,
         db_name: str,
+        force_ssl: bool = False,
     ) -> aiomysql.sa.Engine:
         ssl_ctx = (
             ssl.create_default_context(
@@ -126,7 +128,7 @@ class AsyncMySQLAdapter(
                 if self._target_dto.ssl_ca
                 else get_root_certificates_path()
             )
-            if self._target_dto.ssl_enable
+            if self._target_dto.ssl_enable or force_ssl
             else None
         )
 
@@ -139,6 +141,19 @@ class AsyncMySQLAdapter(
             dialect=self._dialect,
             ssl=ssl_ctx,
         )
+
+    async def _get_engine(self, db_name: str) -> aiomysql.sa.Engine:
+        try:
+            return await self._engines.get(db_name, generator=self._create_engine)
+        except OperationalError as err:
+            # 3159 = Connections using insecure transport are prohibited while --require_secure_transport=ON.
+            # This means we have to use SSL
+            if err.args[0] == 3159:
+                LOGGER.info("Using SSL for async MySQL connection")
+                create_engine_using_ssl = partial(self._create_engine, force_ssl=True)
+                return await self._engines.get(db_name, generator=create_engine_using_ssl)
+            else:
+                raise
 
     @contextlib.contextmanager
     def execution_context(self) -> Generator[None, None, None]:
@@ -158,7 +173,7 @@ class AsyncMySQLAdapter(
     @contextlib.asynccontextmanager
     async def _get_connection(self, db_name_from_query: Optional[str]) -> AsyncIterator[aiomysql.sa.SAConnection]:
         db_name = self.get_db_name_for_query(db_name_from_query)
-        engine = await self._engines.get(db_name, generator=self._create_engine)
+        engine = await self._get_engine(db_name)
 
         async with engine.acquire() as connection:
             yield connection
