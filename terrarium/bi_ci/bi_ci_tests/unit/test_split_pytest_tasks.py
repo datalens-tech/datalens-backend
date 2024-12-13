@@ -235,10 +235,10 @@ def test_split_tests_multiple(
     [datalens.pytest.unit]
     root_dir = "tests"
     labels = ["base"]
-    
+
     [datalens.pytest.integration]
     root_dir = "tests"
-    
+
     [datalens.pytest.e2e]
     root_dir = "tests"
     labels = ["fat"]
@@ -247,11 +247,11 @@ def test_split_tests_multiple(
     [datalens.pytest.unit]
     root_dir = "tests"
     labels = ["base"]
-    
+
     [datalens.pytest.integration]
     root_dir = "tests"
     labels = ["fat"]
-    
+
     [datalens.pytest.e2e]
     root_dir = "tests"
     """

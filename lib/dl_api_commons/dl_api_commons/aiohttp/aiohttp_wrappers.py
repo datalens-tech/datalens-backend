@@ -19,18 +19,20 @@ from typing import (
 )
 
 from aiohttp import web
-from aiohttp.typedefs import Handler
-
-from dl_api_commons.aio.typing import (
-    AIOHTTPMethodMiddleware,
-    AIOHTTPMiddleware,
+from aiohttp.typedefs import (
+    Handler,
+    Middleware,
 )
+
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.exc import InvalidHeaderException
 from dl_api_commons.logging import RequestLoggingContextController
 from dl_api_commons.reporting.profiler import ReportingProfiler
 from dl_api_commons.reporting.registry import ReportingRegistry
 from dl_constants.api_constants import DLHeaders
+
+
+AIOHTTPMethodMiddleware = Callable[[Any, web.Request, Handler], Awaitable[web.StreamResponse]]
 
 
 class RequiredResource(enum.Enum):
@@ -239,7 +241,7 @@ class DLRequestBase:
     @classmethod
     def use_dl_request(
         cls: Type[_SELF_TYPE], coro: Callable[[_SELF_TYPE, Handler], Awaitable[web.StreamResponse]]
-    ) -> AIOHTTPMiddleware:
+    ) -> Middleware:
         if not inspect.iscoroutinefunction(coro):
             raise ValueError("This decorator may only be applied to a coroutine")
 

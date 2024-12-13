@@ -11,13 +11,13 @@ from typing import (
 
 import aiohttp.pytest_plugin
 import aiohttp.test_utils
+from aiohttp.typedefs import Middleware
 import aiohttp.web
 import attr
 import pytest
 import redis.asyncio
 
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.base_models import (
     NoAuthData,
     RequestContextInfo,
@@ -212,7 +212,7 @@ def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_setting
 
 
 class TestingFileUploaderApiAppFactory(FileUploaderApiAppFactory[FileUploaderAPISettings]):
-    def get_auth_middlewares(self) -> list[AIOHTTPMiddleware]:
+    def get_auth_middlewares(self) -> list[Middleware]:
         return [
             auth_trust_middleware(
                 fake_user_id="_the_tests_file_uploader_api_user_id_",

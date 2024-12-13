@@ -5,13 +5,13 @@ from typing import (
 )
 
 from aiohttp import web
+from aiohttp.typedefs import Middleware
 import attr
 
 from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.middlewares.tracing import TracingService
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.sentry_config import (
     SentryConfig,
     configure_sentry_for_aiohttp,
@@ -37,7 +37,7 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
     _settings: _TSettings = attr.ib()
 
     @abc.abstractmethod
-    def get_auth_middlewares(self) -> list[AIOHTTPMiddleware]:
+    def get_auth_middlewares(self) -> list[Middleware]:
         raise NotImplementedError()
 
     def set_up_sentry(self, secret_sentry_dsn: str, release: str | None) -> None:

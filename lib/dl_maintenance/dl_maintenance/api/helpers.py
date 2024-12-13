@@ -13,7 +13,6 @@ dump_entry_data(entry)
 
 """
 
-
 import json
 
 from dl_core.us_dataset import Dataset
