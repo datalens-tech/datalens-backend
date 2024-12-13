@@ -1,4 +1,4 @@
-import typing
+from typing import Sequence
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_connector.form_config.models.api_schema import (
@@ -32,42 +32,42 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
         self,
         rc: RowConstructor,
         connector_settings: ConnectorSettingsBase | None,
-    ) -> typing.Sequence[FormRow]:
+    ) -> Sequence[FormRow]:
         return [rc.host_row()]
 
     def _get_port_section(
         self,
         rc: RowConstructor,
         connector_settings: ConnectorSettingsBase | None,
-    ) -> typing.Sequence[FormRow]:
+    ) -> Sequence[FormRow]:
         return [rc.port_row(default_value=self.DEFAULT_PORT)]
 
     def _get_db_name_section(
         self,
         rc: RowConstructor,
         connector_settings: ConnectorSettingsBase | None,
-    ) -> typing.Sequence[FormRow]:
+    ) -> Sequence[FormRow]:
         return [rc.db_name_row()]
 
     def _get_username_section(
         self,
         rc: RowConstructor,
         connector_settings: ConnectorSettingsBase | None,
-    ) -> typing.Sequence[FormRow]:
+    ) -> Sequence[FormRow]:
         return [rc.username_row()]
 
     def _get_password_section(
         self,
         rc: RowConstructor,
         connector_settings: ConnectorSettingsBase | None,
-    ) -> typing.Sequence[FormRow]:
+    ) -> Sequence[FormRow]:
         return [rc.password_row(mode=self.mode)]
 
     def _get_common_section(
         self,
         rc: RowConstructor,
         connector_settings: ConnectorSettingsBase | None,
-    ) -> typing.Sequence[FormRow]:
+    ) -> Sequence[FormRow]:
         return [
             C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
             rc.raw_sql_level_row(),

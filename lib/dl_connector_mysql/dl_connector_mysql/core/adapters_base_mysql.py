@@ -80,11 +80,10 @@ class BaseMySQLAdapter:
     }
 
     def _get_ssl_ctx(self, force_ssl: bool = False) -> Optional[ssl.SSLContext]:
-        if self._target_dto.ssl_enable or force_ssl:
-            ssl_ctx = ssl.create_default_context()
-            if self._target_dto.ssl_ca:
-                ssl_ctx.load_verify_locations(cadata=self._target_dto.ssl_ca)
-            else:
-                ssl_ctx.load_verify_locations(cafile=get_root_certificates_path())
-            return ssl_ctx
-        return None
+        if not self._target_dto.ssl_enable and not force_ssl:
+            return None
+
+        if self._target_dto.ssl_ca:
+            return ssl.create_default_context(cadata=self._target_dto.ssl_ca)
+
+        return ssl.create_default_context(cafile=get_root_certificates_path())

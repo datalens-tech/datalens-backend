@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import typing
+from typing import ClassVar
 
 import attr
 
@@ -17,7 +17,7 @@ class MySQLAdapter(BaseMySQLAdapter, BaseClassicAdapter[MySQLConnTargetDTO]):
     execution_options = {
         "stream_results": True,
     }
-    _error_transformer: typing.ClassVar[DbErrorTransformer] = sync_mysql_db_error_transformer
+    _error_transformer: ClassVar[DbErrorTransformer] = sync_mysql_db_error_transformer
 
     def get_connect_args(self) -> dict:
         return dict(
