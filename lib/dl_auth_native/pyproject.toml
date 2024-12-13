@@ -10,10 +10,13 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
+aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
+flask = ">=2.2.5"
 pyjwt = ">=2.4.0"
 pydantic = ">=2.7.0"
 python = ">=3.10, <3.13"
+werkzeug = ">=2.2.3"
 dl-constants = {path = "../../lib/dl_constants"}
 dl-api-commons = {path = "../../lib/dl_api_commons"}
 

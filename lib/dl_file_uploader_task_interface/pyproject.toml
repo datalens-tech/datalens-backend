@@ -24,6 +24,7 @@ dl-task-processor = {path = "../dl_task_processor"}
 dl-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
 dl-constants = {path = "../dl_constants"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
+dl-s3 = {path = "../dl_s3"}
 
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]

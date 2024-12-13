@@ -1342,11 +1342,14 @@ files = []
 develop = true
 
 [package.dependencies]
+aiohttp = ">=3.9.1"
 attrs = ">=22.2.0"
 dl-api-commons = {path = "../../lib/dl_api_commons"}
 dl-constants = {path = "../../lib/dl_constants"}
+flask = ">=2.2.5"
 pydantic = ">=2.7.0"
 pyjwt = ">=2.4.0"
+werkzeug = ">=2.2.3"
 
 [package.source]
 type = "directory"
@@ -1454,6 +1457,7 @@ opentracing = ">=2.4.0"
 requests = ">=2.28.2"
 sentry-sdk = {version = ">=1.15.0", extras = ["flask"]}
 typing-extensions = ">=4.9.0"
+werkzeug = ">=2.2.3"
 
 [package.source]
 type = "directory"
@@ -2275,7 +2279,7 @@ dl-rls = {path = "../dl_rls"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-Flask = ">=2.2.5"
+flask = ">=2.2.5"
 grpcio = ">=1.60.0"
 jaeger-client = ">=4.8.0"
 marshmallow = ">=3.19.0"
@@ -2293,7 +2297,7 @@ sqlalchemy = ">=1.4.46, <2.0"
 statcommons = {path = "../statcommons"}
 typing-extensions = ">=4.9.0"
 uwsgi = ">=2.0.23"
-Werkzeug = ">=2.2.3"
+werkzeug = ">=2.2.3"
 xxhash = ">=3.2.0"
 
 [package.source]
@@ -2517,6 +2521,7 @@ dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
+dl-s3 = {path = "../dl_s3"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-utils = {path = "../dl_utils"}
 
@@ -8329,4 +8334,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "4f50fed411ae463f94f43d4b56593690875902d9f59273522eed2ae3420ed95b"
+content-hash = "b1700a96597f4b1dc3d0b1c3fd548723dca092b1af5a33dd9997491afb3ff7d2"
