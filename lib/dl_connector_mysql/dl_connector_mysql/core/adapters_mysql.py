@@ -14,6 +14,8 @@ from dl_connector_mysql.core.target_dto import MySQLConnTargetDTO
 
 @attr.s()
 class MySQLAdapter(BaseMySQLAdapter, BaseClassicAdapter[MySQLConnTargetDTO]):
+    _target_dto: MySQLConnTargetDTO = attr.ib()
+
     execution_options = {
         "stream_results": True,
     }
