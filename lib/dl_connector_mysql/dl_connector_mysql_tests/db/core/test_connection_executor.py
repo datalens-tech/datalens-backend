@@ -21,7 +21,10 @@ from dl_testing.regulated_test import RegulatedTestParams
 
 from dl_connector_mysql.core.us_connection import ConnectionMySQL
 from dl_connector_mysql_tests.db.config import CoreConnectionSettings
-from dl_connector_mysql_tests.db.core.base import BaseMySQLTestClass
+from dl_connector_mysql_tests.db.core.base import (
+    BaseMySQLTestClass,
+    BaseSslMySQLTestClass,
+)
 
 
 class MySQLSyncAsyncConnectionExecutorCheckBase(
@@ -131,3 +134,17 @@ class TestMySQLAsyncConnectionExecutor(
             DefaultAsyncConnectionExecutorTestSuite.test_get_table_schema_info_for_nonexistent_table: "Not implemented",
         },
     )
+
+
+class TestSslMySQLSyncConnectionExecutor(
+    BaseSslMySQLTestClass,
+    TestMySQLSyncConnectionExecutor,
+):
+    pass
+
+
+class TestSslMySQLAsyncConnectionExecutor(
+    BaseSslMySQLTestClass,
+    TestMySQLAsyncConnectionExecutor,
+):
+    pass

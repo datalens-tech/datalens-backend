@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from typing import ClassVar
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 import attr
 
@@ -26,7 +29,8 @@ class ConnectionMySQL(ClassicConnectionSQL):
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
-        pass
+        ssl_enable: bool = attr.ib(kw_only=True, default=False)
+        ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
 
     def get_conn_dto(self) -> MySQLConnDTO:
         return MySQLConnDTO(
@@ -37,6 +41,8 @@ class ConnectionMySQL(ClassicConnectionSQL):
             db_name=self.data.db_name,
             username=self.data.username,
             password=self.password,  # type: ignore  # 2024-01-24 # TODO: Argument "password" to "MySQLConnDTO" has incompatible type "str | None"; expected "str"  [arg-type]
+            ssl_enable=self.data.ssl_enable,
+            ssl_ca=self.data.ssl_ca,
         )
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:

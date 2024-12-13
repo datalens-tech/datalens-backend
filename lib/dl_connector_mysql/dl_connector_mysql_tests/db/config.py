@@ -28,6 +28,14 @@ class CoreConnectionSettings:
     PASSWORD: ClassVar[str] = "qwerty"
 
 
+class CoreSslConnectionSettings(CoreConnectionSettings):
+    HOST: ClassVar[str] = get_test_container_hostport("db-mysql-8-0-ssl", fallback_port=52002).host
+    PORT: ClassVar[int] = get_test_container_hostport("db-mysql-8-0-ssl", fallback_port=52002).port
+    CERT_PROVIDER_URL: ClassVar[
+        str
+    ] = f"http://{get_test_container_hostport('ssl-provider', fallback_port=8080).as_pair()}"
+
+
 SUBSELECT_QUERY_FULL = r"""
 select
     number as num,  -- `int(1)`
@@ -77,8 +85,13 @@ DB_URLS = {
     # “Mysql uses sockets when the host is 'localhost' and tcp/ip when the host is anything else”
     D.MYSQL_5_7: f'dl_mysql://datalens:qwerty@{get_test_container_hostport("db-mysql-5-7", fallback_port=52000).as_pair()}/test_data?charset=utf8',
     D.MYSQL_8_0_12: f'dl_mysql://datalens:qwerty@{get_test_container_hostport("db-mysql-8-0", fallback_port=52001).as_pair()}/test_data?charset=utf8',
+    (
+        D.MYSQL_8_0_12,
+        "ssl",
+    ): f'dl_mysql://datalens:qwerty@{get_test_container_hostport("db-mysql-8-0-ssl", fallback_port=52002).as_pair()}/test_data?charset=utf8',
 }
 DB_CORE_URL = DB_URLS[D.MYSQL_8_0_12]
+DB_CORE_SSL_URL = DB_URLS[(D.MYSQL_8_0_12, "ssl")]
 
 API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
     api_connector_ep_names=["mysql"],

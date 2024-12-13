@@ -1,7 +1,10 @@
 import asyncio
+import ssl
 from typing import Generator
 
+from frozendict import frozendict
 import pytest
+import requests
 
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
@@ -36,4 +39,43 @@ class BaseMySQLTestClass(BaseConnectionTestClass[ConnectionMySQL]):
             username=test_config.CoreConnectionSettings.USERNAME,
             password=test_config.CoreConnectionSettings.PASSWORD,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+        )
+
+
+class BaseSslMySQLTestClass(BaseMySQLTestClass):
+    @pytest.fixture(scope="class")
+    def ssl_ca(self) -> str:
+        uri = f"{test_config.CoreSslConnectionSettings.CERT_PROVIDER_URL}/ca.pem"
+        response = requests.get(uri)
+        assert response.status_code == 200, response.text
+
+        return response.text
+
+    @pytest.fixture(scope="class")
+    def engine_params(self, ssl_ca: str) -> dict:
+        engine_params = {
+            "connect_args": frozendict(
+                {
+                    "ssl": ssl.create_default_context(cadata=ssl_ca),
+                }
+            ),
+        }
+        return engine_params
+
+    @pytest.fixture(scope="class")
+    def db_url(self) -> str:
+        db_url = test_config.DB_CORE_SSL_URL
+        return db_url
+
+    @pytest.fixture(scope="function")
+    def connection_creation_params(self, ssl_ca: str) -> dict:
+        return dict(
+            db_name=test_config.CoreSslConnectionSettings.DB_NAME,
+            host=test_config.CoreSslConnectionSettings.HOST,
+            port=test_config.CoreSslConnectionSettings.PORT,
+            username=test_config.CoreSslConnectionSettings.USERNAME,
+            password=test_config.CoreSslConnectionSettings.PASSWORD,
+            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            ssl_enable=True,
+            ssl_ca=ssl_ca,
         )

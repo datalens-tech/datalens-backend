@@ -4,7 +4,6 @@ import asyncio
 import contextlib
 from functools import partial
 import logging
-import ssl
 from typing import (
     Any,
     AsyncIterator,
@@ -22,7 +21,6 @@ from pymysql.err import (
 import sqlalchemy as sa
 
 from dl_app_tools.profiling_base import generic_profiler_async
-from dl_configs.utils import get_root_certificates_path
 from dl_constants.types import TBIChunksGen
 from dl_core.connection_executors.adapters.adapter_actions.async_base import AsyncDBVersionAdapterAction
 from dl_core.connection_executors.adapters.adapter_actions.db_version import AsyncDBVersionAdapterActionViaFunctionQuery
@@ -73,7 +71,6 @@ class AsyncMySQLAdapter(
     AsyncDirectDBAdapter,
     WithMinimalCursorInfo,
 ):
-    _target_dto: MySQLConnTargetDTO = attr.ib()
     _req_ctx_info: DBAdapterScopedRCI = attr.ib()
     _default_chunk_size: int = attr.ib()
 
@@ -115,9 +112,11 @@ class AsyncMySQLAdapter(
     def get_target_host(self) -> Optional[str]:
         return self._target_dto.host
 
-    async def _create_engine(self, db_name: str, use_ssl: bool = False) -> aiomysql.sa.Engine:
-        # TODO: pass ca_data through *DTO
-        ssl_ctx = ssl.create_default_context(cafile=get_root_certificates_path()) if use_ssl else None
+    async def _create_engine(
+        self,
+        db_name: str,
+        force_ssl: bool = False,
+    ) -> aiomysql.sa.Engine:
         return await aiomysql.sa.create_engine(
             host=self._target_dto.host,
             port=self._target_dto.port,
@@ -125,7 +124,7 @@ class AsyncMySQLAdapter(
             password=self._target_dto.password,
             db=db_name,
             dialect=self._dialect,
-            ssl=ssl_ctx,
+            ssl=self._get_ssl_ctx(force_ssl),
         )
 
     async def _get_engine(self, db_name: str) -> aiomysql.sa.Engine:
@@ -136,7 +135,7 @@ class AsyncMySQLAdapter(
             # This means we have to use SSL
             if err.args[0] == 3159:
                 LOGGER.info("Using SSL for async MySQL connection")
-                create_engine_using_ssl = partial(self._create_engine, use_ssl=True)
+                create_engine_using_ssl = partial(self._create_engine, force_ssl=True)
                 return await self._engines.get(db_name, generator=create_engine_using_ssl)
             else:
                 raise
@@ -145,6 +144,7 @@ class AsyncMySQLAdapter(
     async def _get_connection(self, db_name_from_query: Optional[str]) -> AsyncIterator[aiomysql.sa.SAConnection]:
         db_name = self.get_db_name_for_query(db_name_from_query)
         engine = await self._get_engine(db_name)
+
         async with engine.acquire() as connection:
             yield connection
 
