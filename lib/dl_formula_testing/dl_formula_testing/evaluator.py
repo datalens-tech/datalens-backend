@@ -194,6 +194,7 @@ class DbEvaluator:
                         return [convert(row[0]) for row in self.db.execute(query).fetchall()]
                     else:
                         result = convert(self.db.execute(query).scalar())
+                        print("result:", result)  # TODO remove debug
                         return result
                 except Exception as exc:
                     exc_str = str(exc)
