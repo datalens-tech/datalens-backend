@@ -1,0 +1,56 @@
+import os
+import typing
+
+import pydantic_settings
+
+
+class BaseSettings(pydantic_settings.BaseSettings):
+    ...
+
+
+class BaseRootSettings(BaseSettings):
+    model_config = pydantic_settings.SettingsConfigDict(
+        env_nested_delimiter="__",
+    )
+
+    @classmethod
+    def _get_yaml_source_paths(cls) -> list[str]:
+        config_paths = os.environ.get("CONFIG_PATH", None)
+
+        if not config_paths:
+            return []
+
+        return [path.strip() for path in config_paths.split(",")]
+
+    @classmethod
+    def _get_yaml_sources(cls) -> list[pydantic_settings.YamlConfigSettingsSource]:
+        return [
+            pydantic_settings.YamlConfigSettingsSource(
+                cls,
+                yaml_file=yaml_file,
+            )
+            for yaml_file in cls._get_yaml_source_paths()
+        ]
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: typing.Type[pydantic_settings.BaseSettings],
+        init_settings: pydantic_settings.PydanticBaseSettingsSource,
+        env_settings: pydantic_settings.PydanticBaseSettingsSource,
+        dotenv_settings: pydantic_settings.PydanticBaseSettingsSource,
+        file_secret_settings: pydantic_settings.PydanticBaseSettingsSource,
+    ) -> tuple[pydantic_settings.PydanticBaseSettingsSource, ...]:
+        return (
+            env_settings,
+            *cls._get_yaml_sources(),
+            dotenv_settings,
+            file_secret_settings,
+            init_settings,
+        )
+
+
+__all__ = [
+    "BaseSettings",
+    "BaseRootSettings",
+]
