@@ -67,11 +67,9 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
     def get_connect_args(self) -> dict:
         target_dto = self._target_dto
         args = dict(
-            endpoint="{}://{}:{}".format(
-                self.proto_schema,
-                target_dto.host,
-                target_dto.port,
-            ),
+            host=target_dto.host,
+            port=target_dto.port,
+            protocol=self.proto_schema,
             database=target_dto.db_name,
         )
         self._update_connect_args(args)
