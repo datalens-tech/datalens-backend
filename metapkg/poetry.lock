@@ -2846,6 +2846,22 @@ type = "directory"
 url = "../lib/dl_s3"
 
 [[package]]
+name = "dl-settings"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+attrs = ">=22.2.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_settings"
+
+[[package]]
 name = "dl-sqlalchemy-bitrix"
 version = "0.0.1"
 description = "DataLens Bitrix SQLAlchemy Dialect"
@@ -8326,4 +8342,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "946847c38e227d8445213d8d8362a57db98162a67939511a6dac571af1c27a9d"
+content-hash = "6c824afd7cc15ba7a6f3afefc0f63bbd32f88724f44fb153524b677904ebed3d"
