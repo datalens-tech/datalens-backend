@@ -67,7 +67,7 @@ class YQLTypeTransformer(TypeTransformer):
         make_native_type(sa_type): bi_type
         for bi_type, sa_types in _base_type_map.items()
         for sa_type in sa_types
-        # if bi_type != UserDataType.datetime
+        if bi_type != UserDataType.datetime
     }
     user_to_native_map = {
         **{bi_type: make_native_type(sa_types[0]) for bi_type, sa_types in _base_type_map.items()},
