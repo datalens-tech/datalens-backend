@@ -1,6 +1,6 @@
 
 [tool.poetry]
-name = "datalens-auth-native"
+name = "dl-auth-native"
 version = "0.0.1"
 description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
