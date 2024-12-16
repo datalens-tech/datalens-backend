@@ -11,7 +11,7 @@ from typing import (
 import attr
 import grpc
 from ydb import DriverConfig
-from ydb.driver import credentials_impl
+from ydb.driver import credentials_impl, Driver
 import ydb.issues as ydb_cli_err
 import ydb_dbapi
 
@@ -83,7 +83,7 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
         connection = db_engine.connect()
         try:
             # SA db_engine -> SA connection -> DBAPI connection -> YDB driver
-            driver = connection.connection.driver  # type: ignore  # 2024-01-24 # TODO: "DBAPIConnection" has no attribute "driver"  [attr-defined]
+            driver: Driver = connection.connection._driver  # type: ignore  # 2024-01-24 # TODO: "DBAPIConnection" has no attribute "driver"  [attr-defined]
             assert driver
 
             queue = [db_name]

@@ -18,7 +18,7 @@ CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
     core_connector_ep_names=["ydb"],
 )
 
-_DB_URL = f'yql://{get_test_container_hostport("db-ydb", fallback_port=51900).host}:{get_test_container_hostport("db-ydb", fallback_port=51900).port}/?database=%2Flocal'
+_DB_URL = f'yql://{get_test_container_hostport("db-ydb", fallback_port=51900).host}:{get_test_container_hostport("db-ydb", fallback_port=51900).port}/local'
 DB_CORE_URL = _DB_URL
 DB_CONFIGURATIONS = {
     D.YDB: _DB_URL,
