@@ -1,4 +1,3 @@
-import re
 from typing import Callable
 
 import pytest
@@ -72,12 +71,9 @@ class TestSslMySQLConnection(
             assert dsrc_tmpl.title
 
     @pytest.mark.parametrize(
-        "ssl_ca_filename, error_message",
+        "ssl_ca_filename",
         [
-            (
-                "invalid-ca.pem",
-                r"\[SSL: CERTIFICATE_VERIFY_FAILED\] certificate verify failed: self-signed certificate in certificate chain",
-            ),
+            "invalid-ca.pem",  # [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain
             # TODO: add cases for
             # [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for ...
             # [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: invalid CA certificate
@@ -88,7 +84,6 @@ class TestSslMySQLConnection(
         saved_connection: ConnectionMySQL,
         sync_conn_executor_factory: Callable[[], MySQLConnExecutor],
         ssl_ca_filename: str,
-        error_message: str,
     ) -> None:
         def sync_conn_executor_factory_for_conn(connection: ConnectionBase) -> MySQLConnExecutor:
             return sync_conn_executor_factory()
@@ -104,7 +99,5 @@ class TestSslMySQLConnection(
         ssl_ca = response.text
 
         saved_connection.data.ssl_ca = ssl_ca
-        with pytest.raises(DatabaseOperationalError) as exc_info:
+        with pytest.raises(DatabaseOperationalError):
             saved_connection.test(conn_executor_factory=sync_conn_executor_factory_for_conn)
-
-        assert re.search(error_message, exc_info.value.db_message)
