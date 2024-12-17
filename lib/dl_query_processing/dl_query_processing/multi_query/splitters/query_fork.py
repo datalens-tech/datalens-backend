@@ -47,7 +47,7 @@ class SubqueryForkSignature:
 
 
 @attr.s(frozen=True)
-class ReplacementFormulaMutation(FormulaMutation):
+class SimpleReplacementFormulaMutation(FormulaMutation):
     original: formula_nodes.FormulaItem = attr.ib()
     replacement: formula_nodes.FormulaItem = attr.ib()
 
@@ -66,7 +66,7 @@ class QueryForkInfo:
     joining_node: formula_fork_nodes.QueryForkJoiningBase = attr.ib(kw_only=True)
     bfb_field_ids: frozenset[str] = attr.ib(kw_only=True)
     add_formulas: tuple[AddFormulaInfo, ...] = attr.ib(kw_only=True)
-    bfb_filter_mutations: tuple[ReplacementFormulaMutation, ...] = attr.ib(kw_only=True)
+    bfb_filter_mutations: tuple[SimpleReplacementFormulaMutation, ...] = attr.ib(kw_only=True)
     join_type: JoinType = attr.ib(kw_only=True)
     aliases_by_extract: dict[NodeExtract, str] = attr.ib(kw_only=True, factory=dict)
     formula_split_masks: list[AliasedFormulaSplitMask] = attr.ib(kw_only=True, factory=list)
@@ -359,7 +359,7 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
 
                 add_formulas = tuple(dim_add_formulas + non_dim_add_formulas)
                 bfb_filter_mutations = tuple(
-                    ReplacementFormulaMutation(
+                    SimpleReplacementFormulaMutation(
                         original=mutation.original,
                         replacement=mutation.replacement,
                     )

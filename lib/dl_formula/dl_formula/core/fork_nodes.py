@@ -120,7 +120,7 @@ class QueryForkJoiningWithList(QueryForkJoiningBase):
         return all(isinstance(child, SelfEqualityJoinCondition) for child in self.children)
 
 
-class BfbFilterMutation(nodes.FormulaItem):
+class BfbFilterMutationSpec(nodes.FormulaItem):
     __slots__ = ()
 
     show_names = nodes.FormulaItem.show_names + ("original", "replacement")
@@ -135,24 +135,24 @@ class BfbFilterMutation(nodes.FormulaItem):
         replacement: nodes.FormulaItem,
         *,
         meta: Optional[nodes.NodeMeta] = None,
-    ) -> BfbFilterMutation:
+    ) -> BfbFilterMutationSpec:
         children = (original, replacement)
         return cls(*children, meta=meta)
 
 
-class BfbFilterMutations(nodes.FormulaItem):
+class BfbFilterMutationCollectionSpec(nodes.FormulaItem):
     __slots__ = ()
 
     show_names = nodes.FormulaItem.show_names + ("mutations",)
 
-    mutations: nodes.MultiChild[BfbFilterMutation] = nodes.MultiChild(slice(0, None))
+    mutations: nodes.MultiChild[BfbFilterMutationSpec] = nodes.MultiChild(slice(0, None))
 
     @classmethod
     def make(
         cls,
-        *mutations: BfbFilterMutation,
+        *mutations: BfbFilterMutationSpec,
         meta: Optional[nodes.NodeMeta] = None,
-    ) -> BfbFilterMutations:
+    ) -> BfbFilterMutationCollectionSpec:
         children = mutations
         return cls(*children, meta=meta)
 
@@ -172,7 +172,7 @@ class QueryFork(nodes.FormulaItem):
     result_expr: nodes.Child[nodes.FormulaItem] = nodes.Child(1)
     before_filter_by: nodes.Child[nodes.BeforeFilterBy] = nodes.Child(2)
     lod: nodes.Child[nodes.LodSpecifier] = nodes.Child(3)
-    bfb_filter_mutations: nodes.Child[BfbFilterMutations] = nodes.Child(4)
+    bfb_filter_mutations: nodes.Child[BfbFilterMutationCollectionSpec] = nodes.Child(4)
 
     @classmethod
     def make(
@@ -182,7 +182,7 @@ class QueryFork(nodes.FormulaItem):
         result_expr: nodes.FormulaItem,
         before_filter_by: Optional[nodes.BeforeFilterBy] = None,
         lod: Optional[nodes.LodSpecifier] = None,
-        bfb_filter_mutations: Optional[BfbFilterMutations] = None,
+        bfb_filter_mutations: Optional[BfbFilterMutationCollectionSpec] = None,
         meta: Optional[nodes.NodeMeta] = None,
     ) -> QueryFork:
         if before_filter_by is None:
@@ -190,7 +190,7 @@ class QueryFork(nodes.FormulaItem):
         if lod is None:
             lod = nodes.InheritedLodSpecifier()
         if bfb_filter_mutations is None:
-            bfb_filter_mutations = BfbFilterMutations.make()
+            bfb_filter_mutations = BfbFilterMutationCollectionSpec.make()
 
         children = (joining, result_expr, before_filter_by, lod, bfb_filter_mutations)
         internal_value = (join_type,)
