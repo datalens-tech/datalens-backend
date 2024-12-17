@@ -1621,6 +1621,7 @@ attrs = ">=22.2.0"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
+dl-settings = {path = "../dl_settings"}
 marshmallow = ">=3.19.0"
 pydantic = ">=2.7.0"
 pydantic-settings = ">=2.2.0 <2.3.4"
@@ -2844,6 +2845,24 @@ ujson = ">=1.35"
 [package.source]
 type = "directory"
 url = "../lib/dl_s3"
+
+[[package]]
+name = "dl-settings"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.dependencies]
+attrs = ">=22.2.0"
+pydantic = ">=2.7.0"
+pydantic-settings = ">=2.2.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_settings"
 
 [[package]]
 name = "dl-sqlalchemy-bitrix"
@@ -8326,4 +8345,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "946847c38e227d8445213d8d8362a57db98162a67939511a6dac571af1c27a9d"
+content-hash = "98cd4b66a61d41513ebecc7b42987a45cd650aa97c32a331f62e3c432e2a1ab5"

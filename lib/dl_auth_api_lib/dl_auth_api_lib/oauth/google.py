@@ -15,7 +15,7 @@ _TOKEN_URL: str = "https://oauth2.googleapis.com/token"
 
 
 class GoogleOAuthClient(BaseOAuthClient):
-    auth_type: str = "google"
+    type: str = pydantic.Field(alias="auth_type", default="google")
 
     client_id: str
     client_secret: str

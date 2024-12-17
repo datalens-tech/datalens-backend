@@ -20,6 +20,7 @@ typing-extensions = ">=4.9.0"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-core = {path = "../dl_core"}
 dl-constants = {path = "../dl_constants"}
+dl-settings = {path = "../dl_settings"}
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
@@ -48,6 +49,7 @@ target_path = "ext"
 labels = ["ext_public"]
 
 [tool.mypy]
+exclude = ["dl_auth_api_lib_tests/"]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

@@ -21,7 +21,7 @@ from dl_auth_api_lib.oauth.google import GoogleOAuthClient
 from dl_auth_api_lib.oauth.yandex import YandexOAuthClient
 from dl_auth_api_lib.settings import (
     AuthAPISettings,
-    register_auth_client,
+    BaseOAuthClient,
 )
 from dl_auth_api_lib.views import google as google_views
 from dl_auth_api_lib.views import snowflake as snowflake_views
@@ -90,5 +90,5 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
         return app
 
 
-register_auth_client("yandex", YandexOAuthClient)
-register_auth_client("google", GoogleOAuthClient)
+BaseOAuthClient.register("yandex", YandexOAuthClient)
+BaseOAuthClient.register("google", GoogleOAuthClient)

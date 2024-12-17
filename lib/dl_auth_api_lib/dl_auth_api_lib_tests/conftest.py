@@ -1,10 +1,10 @@
-import asyncio
 import logging
 import os
 
-import aiohttp.pytest_plugin
+from aiohttp.pytest_plugin import aiohttp_client
 from aiohttp.typedefs import Middleware
 import pytest
+import pytest_asyncio
 
 from dl_api_commons.base_models import (
     NoAuthData,
@@ -20,22 +20,8 @@ from dl_testing.utils import get_default_aiohttp_session
 LOGGER = logging.getLogger(__name__)
 
 
-pytest_plugins = ("aiohttp.pytest_plugin",)
-
-try:
-    del aiohttp.pytest_plugin.loop
-except AttributeError:
-    pass
-
-
-@pytest.fixture(autouse=True)
-def loop(event_loop):
-    """
-    Preventing creation of new loop by `aiohttp.pytest_plugin` loop fixture in favor of pytest-asyncio one
-    And set loop pytest-asyncio created loop as default for thread
-    """
-    asyncio.set_event_loop(event_loop)
-    return event_loop
+# Fixtures
+aiohttp_client = aiohttp_client
 
 
 @pytest.fixture(scope="function")
@@ -98,7 +84,7 @@ def oauth_app(loop, aiohttp_client, oauth_app_settings):
     return loop.run_until_complete(aiohttp_client(app))
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def oauth_app_client(oauth_app) -> DLCommonAPIClient:
     async with get_default_aiohttp_session() as session:
         yield DLCommonAPIClient(
