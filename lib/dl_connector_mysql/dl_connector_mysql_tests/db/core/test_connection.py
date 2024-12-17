@@ -73,7 +73,7 @@ class TestSslMySQLConnection(
     @pytest.mark.parametrize(
         "ssl_ca_filename",
         [
-            "invalid-ca.pem", # [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain
+            "invalid-ca.pem",  # [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain
             # TODO: add cases for
             # [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for ...
             # [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: invalid CA certificate
