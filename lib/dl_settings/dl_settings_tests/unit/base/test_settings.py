@@ -137,7 +137,12 @@ def test_nested_multiple_sources(
     class Settings(dl_settings.BaseRootSettings):
         nested: NestedSettings = pydantic.Field(default_factory=NestedSettings)
 
-    config = {"nested": {"field2": "config_value"}}
+    config = {
+        "nested": {
+            "field1": "config_value",
+            "field2": "config_value",
+        }
+    }
     config_path = tmp_configs.add(config)
 
     monkeypatch.setenv("NESTED__FIELD1", "env_value")
