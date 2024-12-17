@@ -334,7 +334,7 @@ class NodeShortcut:
         before_filter_by: Optional[List[Union[nodes.Field, builtins.str]]] = None,
         lod: Optional[nodes.FixedLodSpecifier] = None,
         join_type: fork_nodes.JoinType = fork_nodes.JoinType.left,
-        bfb_filter_mutations: Optional[fork_nodes.BfbFilterMutations] = None,
+        bfb_filter_mutations: Optional[fork_nodes.BfbFilterMutationCollectionSpec] = None,
     ) -> fork_nodes.QueryFork:
         before_filter_by_node = self._normalize_raw_bfb(before_filter_by=before_filter_by)
         return fork_nodes.QueryFork.make(
