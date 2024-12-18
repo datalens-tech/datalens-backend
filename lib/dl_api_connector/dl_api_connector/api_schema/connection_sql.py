@@ -75,7 +75,7 @@ class ClassicSQLConnectionSchema(ConnectionSchema):
     host = DBHostField(attribute="data.host", required=True, bi_extra=FieldExtra(editable=True))
     port = ma_fields.Integer(attribute="data.port", required=True, bi_extra=FieldExtra(editable=True))
     username = ma_fields.String(attribute="data.username", required=True, bi_extra=FieldExtra(editable=True))
-    password = secret_string_field(attribute="data.password", bi_extra=FieldExtra(editable=True))
+    password = secret_string_field(attribute="data.password")
     db_name = ma_fields.String(
         attribute="data.db_name", allow_none=True, bi_extra=FieldExtra(editable=True), validate=db_name_no_query_params
     )

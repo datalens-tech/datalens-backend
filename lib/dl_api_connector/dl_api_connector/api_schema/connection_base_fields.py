@@ -47,7 +47,7 @@ def secret_string_field(
     required: bool = True,
     allow_none: bool = False,
     default: Optional[str] = None,
-    bi_extra: FieldExtra = FieldExtra(editable=True),  # noqa: B008
+    bi_extra: FieldExtra = FieldExtra(editable=True, export_fake=True),  # noqa: B008
 ) -> ma_fields.String:
     return ma_fields.String(
         attribute=attribute,
