@@ -16,6 +16,7 @@ from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import (
     AppSettings,
     DataApiAppSettingsOS,
+    ZitadelAuthSettingsOS,
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_cache_engine.primitives import CacheTTLConfig
@@ -73,7 +74,10 @@ class StandaloneDataApiSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
         return None
 
 
-class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], StandaloneDataApiSRFactoryBuilder):
+class StandaloneDataApiAppFactory(
+    DataApiAppFactory[DataApiAppSettingsOS],  # type: ignore # DataApiAppSettingsOS is not subtype of AppSettings due to migration to new settings
+    StandaloneDataApiSRFactoryBuilder,
+):
     @property
     def _is_public(self) -> bool:
         return False
@@ -141,10 +145,10 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
         return result
 
     def _get_auth_middleware(self) -> Middleware:
-        if self._settings.AUTH is None or self._settings.AUTH.TYPE == "NONE":
+        if self._settings.AUTH is None or self._settings.AUTH.type == "NONE":
             return self._get_auth_middleware_none()
 
-        if self._settings.AUTH.TYPE == "ZITADEL":
+        if self._settings.AUTH.type == "ZITADEL":
             return self._get_auth_middleware_zitadel(
                 ca_data=get_multiple_root_certificates(
                     self._settings.CA_FILE_PATH,
@@ -152,7 +156,7 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
                 ),
             )
 
-        raise ValueError(f"Unknown auth type: {self._settings.AUTH.TYPE}")
+        raise ValueError(f"Unknown auth type: {self._settings.AUTH.type}")
 
     def _get_auth_middleware_none(
         self,
@@ -167,7 +171,7 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
         ca_data: bytes,
     ) -> Middleware:
         self._settings: DataApiAppSettingsOS
-        assert self._settings.AUTH is not None
+        assert isinstance(self._settings.AUTH, ZitadelAuthSettingsOS)
 
         import httpx
 
