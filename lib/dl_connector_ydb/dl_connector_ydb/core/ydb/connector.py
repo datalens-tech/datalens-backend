@@ -1,5 +1,3 @@
-from ydb.sqlalchemy import register_dialect as yql_register_dialect
-
 from dl_core.connectors.base.connector import (
     CoreBackendDefinition,
     CoreConnectionDefinition,
@@ -72,7 +70,3 @@ class YDBCoreConnector(CoreConnector):
         YDBCoreSubselectSourceDefinition,
     )
     rqe_adapter_classes = frozenset({YDBAdapter})
-
-    @classmethod
-    def registration_hook(cls) -> None:
-        yql_register_dialect()
