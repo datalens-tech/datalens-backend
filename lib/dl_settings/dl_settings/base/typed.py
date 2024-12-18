@@ -12,17 +12,8 @@ class TypedMeta(pydantic_model_construction.ModelMetaclass):
         cls._classes: dict[str, type[base_settings.BaseSettings]] = {}
 
 
-class TypedBaseModel(base_settings.BaseSettings, metaclass=TypedMeta):
-    type: str = pydantic.Field(alias="type")
-
-    @classmethod
-    def __get_type_field_name(cls) -> str:
-        alias = cls.model_fields["type"].alias
-
-        if alias is None:
-            raise ValueError("Field 'type' must have alias")
-
-        return alias
+class TypedBaseSettings(base_settings.BaseSettings, metaclass=TypedMeta):
+    type: str
 
     @classmethod
     def register(cls, name: str, class_: typing.Type) -> None:
@@ -42,7 +33,11 @@ class TypedBaseModel(base_settings.BaseSettings, metaclass=TypedMeta):
         if not isinstance(data, dict):
             raise ValueError("Data must be dict")
 
-        class_name = data[cls.__get_type_field_name()]
+        type_key = cls.model_fields["type"].alias or "type"
+        if type_key not in data:
+            raise ValueError(f"Data must contain '{type_key}' key")
+
+        class_name = data[type_key]
         if class_name not in cls._classes:
             raise ValueError(f"Unknown type: {class_name}")
 
@@ -62,38 +57,34 @@ class TypedBaseModel(base_settings.BaseSettings, metaclass=TypedMeta):
         if not isinstance(data, dict):
             raise ValueError("Data must be mapping for dict factory")
 
-        import logging
-
-        logging.error(data)
-
         return {key: cls.factory(value) for key, value in data.items()}
 
 
-TypedBaseModelT = typing.TypeVar("TypedBaseModelT", bound=TypedBaseModel)
+TypedBaseSettingsT = typing.TypeVar("TypedBaseSettingsT", bound=TypedBaseSettings)
 
 
 if typing.TYPE_CHECKING:
-    TypedAnnotation = typing.Annotated[TypedBaseModelT, ...]
-    TypedListAnnotation = typing.Annotated[list[TypedBaseModelT], ...]
-    TypedDictAnnotation = typing.Annotated[dict[str, TypedBaseModelT], ...]
+    TypedAnnotation = typing.Annotated[TypedBaseSettingsT, ...]
+    TypedListAnnotation = typing.Annotated[list[TypedBaseSettingsT], ...]
+    TypedDictAnnotation = typing.Annotated[dict[str, TypedBaseSettingsT], ...]
 else:
 
     class TypedAnnotation:
-        def __class_getitem__(cls, base_class: TypedBaseModelT) -> typing.Any:
+        def __class_getitem__(cls, base_class: TypedBaseSettingsT) -> typing.Any:
             return typing.Annotated[
                 pydantic.SerializeAsAny[base_class],
                 pydantic.BeforeValidator(base_class.factory),
             ]
 
     class TypedListAnnotation:
-        def __class_getitem__(cls, base_class: TypedBaseModelT) -> typing.Any:
+        def __class_getitem__(cls, base_class: TypedBaseSettingsT) -> typing.Any:
             return typing.Annotated[
                 list[pydantic.SerializeAsAny[base_class]],
                 pydantic.BeforeValidator(base_class.list_factory),
             ]
 
     class TypedDictAnnotation:
-        def __class_getitem__(cls, base_class: TypedBaseModelT) -> typing.Any:
+        def __class_getitem__(cls, base_class: TypedBaseSettingsT) -> typing.Any:
             return typing.Annotated[
                 dict[str, pydantic.SerializeAsAny[base_class]],
                 pydantic.BeforeValidator(base_class.dict_factory),
@@ -101,7 +92,7 @@ else:
 
 
 __all__ = [
-    "TypedBaseModel",
+    "TypedBaseSettings",
     "TypedAnnotation",
     "TypedListAnnotation",
     "TypedDictAnnotation",

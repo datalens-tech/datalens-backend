@@ -3,7 +3,7 @@ import pydantic
 import dl_settings
 
 
-class BaseOAuthClient(dl_settings.TypedBaseModel):
+class BaseOAuthClient(dl_settings.TypedBaseSettings):
     type: str = pydantic.Field(alias="auth_type")
     conn_type: str
 

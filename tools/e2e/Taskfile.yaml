@@ -36,7 +36,7 @@ tasks:
     dir: "{{.DATALENS_UI_FOLDER}}"
     desc: Checkout latest datalens-ui
     cmds:
-      - git fetch --all
+      - git fetch
       - git checkout main
       - git pull
 
