@@ -452,17 +452,6 @@ def contains_lookup_functions(node: nodes.FormulaItem) -> bool:
     return False
 
 
-def contains_node(node: nodes.FormulaItem, target_node: nodes.FormulaItem) -> bool:
-    if node == target_node:
-        return True
-
-    for child in autonomous_children(node):
-        if contains_node(child, target_node):
-            return True
-
-    return False
-
-
 def resolve_dimensions(
     node_stack: Iterable[nodes.FormulaItem],
     dimensions: List[nodes.FormulaItem],  # TODO: rename to global_dimensions

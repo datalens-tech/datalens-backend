@@ -11,7 +11,6 @@ from dl_formula.core.index import NodeHierarchyIndex
 import dl_formula.core.nodes as formula_nodes
 from dl_formula.inspect.env import InspectionEnvironment
 import dl_formula.inspect.expression as inspect_expression
-from dl_formula.inspect.expression import contains_node
 import dl_formula.inspect.node as inspect_node
 from dl_formula.mutation.mutation import (
     FormulaMutation,
@@ -462,13 +461,10 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
             for filter_idx, filter_formula in enumerate(query.filters):
                 if filter_formula.original_field_id in qfork_info.bfb_field_ids:
                     # Filter field is in BFB, so exclude it unless it is mutated by one of the BFB mutations
-                    if any(
-                        contains_node(filter_formula.formula_obj, mutation.original)
-                        for mutation in qfork_info.bfb_filter_mutations
-                    ):
-                        new_filter = filter_formula.clone(
-                            formula_obj=apply_mutations(filter_formula.formula_obj, qfork_info.bfb_filter_mutations),
-                        )
+                    new_formula_obj = apply_mutations(filter_formula.formula_obj, qfork_info.bfb_filter_mutations)
+
+                    if new_formula_obj is not filter_formula.formula_obj:
+                        new_filter = filter_formula.clone(formula_obj=new_formula_obj)
                         add_filters.append(new_filter)
                     continue
                 if filter_idx in split_filter_indices:
