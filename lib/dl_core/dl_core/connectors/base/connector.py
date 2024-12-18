@@ -23,6 +23,10 @@ from dl_core.connectors.base.lifecycle import (
     DefaultConnectionLifecycleManager,
 )
 from dl_core.connectors.base.query_compiler import QueryCompiler
+from dl_core.connectors.base.schema_migration import (
+    ConnectionSchemaMigration,
+    DefaultConnectionSchemaMigration,
+)
 from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
 from dl_core.data_source.base import DataSource
 from dl_core.data_source_spec.base import DataSourceSpec
@@ -65,6 +69,7 @@ class CoreConnectionDefinition(abc.ABC):
     sync_conn_executor_cls: ClassVar[Optional[Type[ConnExecutorBase]]] = None
     async_conn_executor_cls: ClassVar[Optional[Type[AsyncConnExecutorBase]]] = None
     lifecycle_manager_cls: ClassVar[Type[ConnectionLifecycleManager]] = DefaultConnectionLifecycleManager
+    schema_migration_cls: ClassVar[Type[ConnectionSchemaMigration]] = DefaultConnectionSchemaMigration
     dialect_string: ClassVar[str]
     data_source_migrator_cls: ClassVar[Type[DataSourceMigrator]] = DefaultDataSourceMigrator
     settings_definition: ClassVar[Optional[Type[ConnectorSettingsDefinition]]] = None

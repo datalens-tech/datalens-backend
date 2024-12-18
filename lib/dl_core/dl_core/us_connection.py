@@ -7,6 +7,10 @@ from dl_core.connectors.base.lifecycle import (
     ConnectionLifecycleManager,
     DefaultConnectionLifecycleManager,
 )
+from dl_core.connectors.base.schema_migration import (
+    ConnectionSchemaMigration,
+    DefaultConnectionSchemaMigration,
+)
 from dl_core.us_connection_base import (
     ConnectionBase,
     UnknownConnection,
@@ -18,6 +22,9 @@ CONNECTION_TYPES: dict[ConnectionType, Type[ConnectionBase]] = {
 }
 CONNECTION_LIFECYCLE_MGR_CLASSES: dict[ConnectionType, Type[ConnectionLifecycleManager]] = {
     ConnectionType.unknown: DefaultConnectionLifecycleManager,
+}
+CONNECTION_SHEMA_MIGRATION_CLASSES: dict[str, Type[ConnectionSchemaMigration]] = {
+    ConnectionType.unknown.name: DefaultConnectionSchemaMigration,
 }
 
 
@@ -31,10 +38,16 @@ def get_lifecycle_manager_cls(conn_type: ConnectionType) -> Type[ConnectionLifec
     return CONNECTION_LIFECYCLE_MGR_CLASSES[conn_type]
 
 
+def get_schema_migration_cls(conn_type_name: str) -> Type[ConnectionSchemaMigration]:
+    """Return class for given connection type"""
+    return CONNECTION_SHEMA_MIGRATION_CLASSES[conn_type_name]
+
+
 def register_connection_class(
     new_conn_cls: Type[ConnectionBase],
     conn_type: ConnectionType,
     lifecycle_manager_cls: Type[ConnectionLifecycleManager] = DefaultConnectionLifecycleManager,
+    schema_migration_cls: Type[ConnectionSchemaMigration] = DefaultConnectionSchemaMigration,
     allow_ct_override: bool = False,
 ) -> None:
     if conn_type is None:
@@ -49,3 +62,4 @@ def register_connection_class(
 
     CONNECTION_TYPES[conn_type] = new_conn_cls
     CONNECTION_LIFECYCLE_MGR_CLASSES[conn_type] = lifecycle_manager_cls
+    CONNECTION_SHEMA_MIGRATION_CLASSES[conn_type.name] = schema_migration_cls

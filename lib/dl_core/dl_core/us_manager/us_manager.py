@@ -54,6 +54,8 @@ from dl_core.us_entry import (
 )
 from dl_core.us_manager.crypto.main import CryptoController
 from dl_core.us_manager.local_cache import USEntryBuffer
+from dl_core.us_manager.schema_migration.factory import DefaultEntrySchemaMigrationFactory
+from dl_core.us_manager.schema_migration.factory_base import EntrySchemaMigrationFactoryBase
 from dl_core.us_manager.storage_schemas.connection_schema_registry import MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA
 from dl_core.us_manager.storage_schemas.dataset import DatasetStorageSchema
 from dl_core.us_manager.us_entry_serializer import (
@@ -100,6 +102,7 @@ class USManagerBase:
     _us_client: UStorageClientBase
     _fake_us_client: FakeUSClient
     _lifecycle_manager_factory: EntryLifecycleManagerFactoryBase
+    _schema_migration_factory: EntrySchemaMigrationFactoryBase
 
     def __init__(
         self,
@@ -110,6 +113,7 @@ class USManagerBase:
         us_auth_context: USAuthContextBase,
         services_registry: ServicesRegistry,
         lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
+        schema_migration_factory: Optional[EntrySchemaMigrationFactoryBase] = None,
     ):
         # TODO FIX: Try to connect it together to eliminate possible divergence
         if services_registry is not None:
@@ -143,6 +147,10 @@ class USManagerBase:
         lifecycle_manager_factory = lifecycle_manager_factory or DefaultEntryLifecycleManagerFactory()
         assert lifecycle_manager_factory is not None
         self._lifecycle_manager_factory = lifecycle_manager_factory
+
+        schema_migration_factory = schema_migration_factory or DefaultEntrySchemaMigrationFactory()
+        assert schema_migration_factory is not None
+        self._schema_migration_factory = schema_migration_factory
 
     def get_entry_buffer(self) -> USEntryBuffer:
         return self._loaded_entries
