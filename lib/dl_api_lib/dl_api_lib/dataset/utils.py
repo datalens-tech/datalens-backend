@@ -22,6 +22,7 @@ from dl_core.data_source.collection import (
     DataSourceCollectionBase,
     DataSourceCollectionFactory,
 )
+import dl_core.exc as exc
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.local_cache import USEntryBuffer
 from dl_core.us_manager.us_manager import USManagerBase
@@ -50,7 +51,7 @@ def _iter_data_source_collections(
 
 def check_permissions_for_origin_sources(
     dataset: Dataset,
-    source_ids: Iterable[str],
+    source_ids: Optional[Iterable[str]],
     permission_kind: USPermissionKind,
     us_entry_buffer: USEntryBuffer,
 ) -> None:
@@ -62,7 +63,10 @@ def check_permissions_for_origin_sources(
     ):
         data_source = dsrc_coll.get_opt(role=DataSourceRole.origin)
         if data_source is not None:
-            bi_utils.need_permission_on_entry(data_source.connection, permission_kind)
+            try:
+                bi_utils.need_permission_on_entry(data_source.connection, permission_kind)
+            except exc.ReferencedUSEntryNotFound:
+                LOGGER.info(f"Connection for source {data_source.id} not found => skipping permission check")
 
 
 def log_dataset_field_stats(dataset: Dataset) -> None:
