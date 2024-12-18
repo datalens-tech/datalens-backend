@@ -86,9 +86,11 @@ class TestBasicLookupFunctions(DefaultApiTestBase, DefaultBasicLookupFunctionTes
         assert result_resp.status_code == HTTPStatus.OK, result_resp.json
 
         query: str = result_resp.json["blocks"][0]["query"]
-        expected_query_pattern = r"JOIN[\S\s]*\([\S\s]*order_date[\S\s]*5[\S\s]*>=[\S\s]*2014-01-06[\S\s]*\)[\S\s]*ON"
+        expected_query_pattern = r"JOIN.*\(.*order_date.*5.*>=.*2014-01-06.*\).*ON"
         assert re.search(
-            expected_query_pattern, query
+            expected_query_pattern,
+            query,
+            flags=re.DOTALL,
         ), "Expected to find pattern 'JOIN (... order_date >= 2014-01-06 ...) ON' in query"
 
     def test_ago_variants(self, control_api, data_api, saved_dataset):
