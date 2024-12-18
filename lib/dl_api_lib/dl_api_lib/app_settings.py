@@ -8,6 +8,7 @@ from typing import (
 )
 
 import attr
+import pydantic
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
@@ -34,6 +35,7 @@ from dl_constants.enums import (
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_formula.parser.factory import ParserType
 from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
+import dl_settings
 
 
 @attr.s(frozen=True)
@@ -304,44 +306,60 @@ class ControlApiAppTestingsSettings:
     fake_tenant: Optional[TenantDef] = attr.ib(default=None)
 
 
-# TODO: move to dl_api_lib_os
 @attr.s(frozen=True)
-class AuthSettingsOS(SettingsBase):
-    TYPE: str = s_attrib("TYPE")  # type: ignore
-    BASE_URL: str = s_attrib("BASE_URL")  # type: ignore
-    PROJECT_ID: str = s_attrib("PROJECT_ID")  # type: ignore
-    CLIENT_ID: str = s_attrib("CLIENT_ID")  # type: ignore
-    CLIENT_SECRET: str = s_attrib("CLIENT_SECRET", sensitive=True)  # type: ignore
-    APP_CLIENT_ID: str = s_attrib("APP_CLIENT_ID")  # type: ignore
-    APP_CLIENT_SECRET: str = s_attrib("APP_CLIENT_SECRET", sensitive=True)  # type: ignore
-
-
-@attr.s(frozen=True)
-class AppSettingsOS(AppSettings):
-    AUTH: typing.Optional[AuthSettingsOS] = s_attrib(  # type: ignore
-        "AUTH",
-        fallback_factory=(
-            lambda cfg: AuthSettingsOS(  # type: ignore
-                TYPE=cfg.AUTH_TYPE,
-                BASE_URL=cfg.AUTH_BASE_URL,
-                PROJECT_ID=cfg.AUTH_PROJECT_ID,
-                CLIENT_ID=cfg.AUTH_CLIENT_ID,
-                CLIENT_SECRET=cfg.AUTH_CLIENT_SECRET,
-                APP_CLIENT_ID=cfg.AUTH_APP_CLIENT_ID,
-                APP_CLIENT_SECRET=cfg.AUTH_APP_CLIENT_SECRET,
-            )
-            if is_setting_applicable(cfg, "AUTH_TYPE")
-            else None
-        ),
-        missing=None,
-    )
-
-
-@attr.s(frozen=True)
-class ControlApiAppSettingsOS(AppSettingsOS, ControlApiAppSettings):
+class DeprecatedControlApiAppSettingsOS(ControlApiAppSettings):
     ...
 
 
 @attr.s(frozen=True)
-class DataApiAppSettingsOS(AppSettingsOS, DataApiAppSettings):
+class DeprecatedDataApiAppSettingsOS(DataApiAppSettings):
+    ...
+
+
+class BaseAuthSettingsOS(dl_settings.TypedBaseSettings):
+    ...
+
+
+class NullAuthSettingsOS(BaseAuthSettingsOS):
+    ...
+
+
+BaseAuthSettingsOS.register("NONE", NullAuthSettingsOS)
+
+
+class ZitadelAuthSettingsOS(BaseAuthSettingsOS):
+    BASE_URL: str
+    PROJECT_ID: str
+    CLIENT_ID: str
+    CLIENT_SECRET: str = pydantic.Field(repr=False)
+    APP_CLIENT_ID: str
+    APP_CLIENT_SECRET: str = pydantic.Field(repr=False)
+
+
+BaseAuthSettingsOS.register("ZITADEL", ZitadelAuthSettingsOS)
+
+
+class AppSettingsOS(
+    dl_settings.WithFallbackGetAttr,
+    dl_settings.WithFallbackEnvSource,
+    dl_settings.BaseRootSettings,
+):
+    AUTH: typing.Optional[dl_settings.TypedAnnotation[BaseAuthSettingsOS]] = None
+
+    fallback_env_keys = {
+        "AUTH__TYPE": "AUTH_TYPE",
+        "AUTH__BASE_URL": "AUTH_BASE_URL",
+        "AUTH__PROJECT_ID": "AUTH_PROJECT_ID",
+        "AUTH__CLIENT_ID": "AUTH_CLIENT_ID",
+        "AUTH__CLIENT_SECRET": "AUTH_CLIENT_SECRET",
+        "AUTH__APP_CLIENT_ID": "AUTH_APP_CLIENT_ID",
+        "AUTH__APP_CLIENT_SECRET": "AUTH_APP_CLIENT_SECRET",
+    }
+
+
+class ControlApiAppSettingsOS(AppSettingsOS):
+    ...
+
+
+class DataApiAppSettingsOS(AppSettingsOS):
     ...

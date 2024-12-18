@@ -5,7 +5,10 @@ import os
 
 from aiohttp import web
 
-from dl_api_lib.app_settings import DataApiAppSettingsOS
+from dl_api_lib.app_settings import (
+    DataApiAppSettingsOS,
+    DeprecatedDataApiAppSettingsOS,
+)
 from dl_api_lib.loader import (
     ApiLibraryConfig,
     load_api_lib,
@@ -46,7 +49,8 @@ def create_app(
 
 async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
     preload_api_lib()
-    settings = load_settings_from_env_with_fallback(DataApiAppSettingsOS)
+    deprecated_settings = load_settings_from_env_with_fallback(DeprecatedDataApiAppSettingsOS)
+    settings = DataApiAppSettingsOS(fallback=deprecated_settings)
     load_api_lib(
         ApiLibraryConfig(
             api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,

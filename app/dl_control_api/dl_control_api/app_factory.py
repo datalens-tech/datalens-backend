@@ -18,6 +18,7 @@ from dl_api_lib.app_common import (
 from dl_api_lib.app_settings import (
     ControlApiAppSettingsOS,
     ControlApiAppTestingsSettings,
+    ZitadelAuthSettingsOS,
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_cache_engine.primitives import CacheTTLConfig
@@ -38,7 +39,9 @@ class AuthSetupResult:
     us_auth_mode: USAuthMode
 
 
-class StandaloneControlApiSRFactoryBuilder(SRFactoryBuilder[ControlApiAppSettingsOS]):
+class StandaloneControlApiSRFactoryBuilder(
+    SRFactoryBuilder[ControlApiAppSettingsOS]  # type: ignore # ControlApiAppSettingsOS is not subtype of AppSettings due to migration to new settings
+):
     def _get_required_services(self, settings: ControlApiAppSettingsOS) -> set[RequiredService]:
         return set()
 
@@ -69,7 +72,8 @@ class StandaloneControlApiSRFactoryBuilder(SRFactoryBuilder[ControlApiAppSetting
 
 
 class StandaloneControlApiAppFactory(
-    ControlApiAppFactory[ControlApiAppSettingsOS], StandaloneControlApiSRFactoryBuilder
+    ControlApiAppFactory[ControlApiAppSettingsOS],  # type: ignore # ControlApiAppSettingsOS is not subtype of AppSettings
+    StandaloneControlApiSRFactoryBuilder,
 ):
     def set_up_environment(
         self,
@@ -87,13 +91,13 @@ class StandaloneControlApiAppFactory(
     ) -> AuthSetupResult:
         self._settings: ControlApiAppSettingsOS
 
-        if self._settings.AUTH is None or self._settings.AUTH.TYPE == "NONE":
+        if self._settings.AUTH is None or self._settings.AUTH.type == "NONE":
             return self._setup_auth_middleware_none(app=app, testing_app_settings=testing_app_settings)
 
-        if self._settings.AUTH.TYPE == "ZITADEL":
+        if self._settings.AUTH.type == "ZITADEL":
             return self._setup_auth_middleware_zitadel(app=app)
 
-        raise ValueError(f"Unknown auth type: {self._settings.AUTH.TYPE}")
+        raise ValueError(f"Unknown auth type: {self._settings.AUTH.type}")
 
     def _setup_auth_middleware_none(
         self,
@@ -117,7 +121,7 @@ class StandaloneControlApiAppFactory(
         self,
         app: flask.Flask,
     ) -> AuthSetupResult:
-        assert self._settings.AUTH is not None
+        assert isinstance(self._settings.AUTH, ZitadelAuthSettingsOS)
 
         import httpx
 

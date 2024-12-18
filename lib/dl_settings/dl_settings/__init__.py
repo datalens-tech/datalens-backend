@@ -2,17 +2,21 @@ from .base import (
     BaseRootSettings,
     BaseSettings,
     TypedAnnotation,
-    TypedBaseModel,
+    TypedBaseSettings,
     TypedDictAnnotation,
     TypedListAnnotation,
+    WithFallbackEnvSource,
+    WithFallbackGetAttr,
 )
 
 
 __all__ = [
     "BaseSettings",
     "BaseRootSettings",
-    "TypedBaseModel",
+    "TypedBaseSettings",
     "TypedAnnotation",
     "TypedListAnnotation",
     "TypedDictAnnotation",
+    "WithFallbackGetAttr",
+    "WithFallbackEnvSource",
 ]

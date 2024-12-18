@@ -11,6 +11,7 @@ from dl_api_commons.sentry_config import (
 from dl_api_lib.app_settings import (
     ControlApiAppSettingsOS,
     ControlApiAppTestingsSettings,
+    DeprecatedControlApiAppSettingsOS,
 )
 from dl_api_lib.loader import (
     ApiLibraryConfig,
@@ -53,7 +54,8 @@ def create_app(
 
 def create_uwsgi_app() -> flask.Flask:
     preload_api_lib()
-    settings = load_settings_from_env_with_fallback(ControlApiAppSettingsOS)
+    deprecated_settings = load_settings_from_env_with_fallback(DeprecatedControlApiAppSettingsOS)
+    settings = ControlApiAppSettingsOS(fallback=deprecated_settings)
     load_api_lib(
         ApiLibraryConfig(
             api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
