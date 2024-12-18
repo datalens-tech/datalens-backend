@@ -1,4 +1,5 @@
 import sqlalchemy as sa
+import ydb_sqlalchemy as ydb_sa
 
 from dl_formula.definitions.base import TranslationVariant
 from dl_formula.definitions.common_datetime import DAY_USEC
@@ -24,12 +25,12 @@ DEFINITIONS_BINARY = [
     base.BinaryPlusStrings.for_dialect(D.YQL),
     base.BinaryPlusDateInt(
         variants=[
-            V(D.YQL, lambda date, days: date + sa.func.DateTime.IntervalFromDays(days)),
+            V(D.YQL, lambda date, days: date + sa.func.DateTime.IntervalFromDays(sa.cast(days, ydb_sa.types.Int32))),
         ]
     ),
     base.BinaryPlusDateFloat(
         variants=[
-            V(D.YQL, lambda date, days: date + sa.func.DateTime.IntervalFromDays(sa.cast(days, sa.INTEGER))),
+            V(D.YQL, lambda date, days: date + sa.func.DateTime.IntervalFromDays(sa.cast(days, ydb_sa.types.Int32))),
         ]
     ),
     base.BinaryPlusDatetimeNumber(
@@ -57,7 +58,7 @@ DEFINITIONS_BINARY = [
     base.BinaryMinusNumbers.for_dialect(D.YQL),
     base.BinaryMinusDateInt(
         variants=[
-            V(D.YQL, lambda date, days: date - sa.func.DateTime.IntervalFromDays(days)),
+            V(D.YQL, lambda date, days: date - sa.func.DateTime.IntervalFromDays(sa.cast(days, ydb_sa.types.Int32))),
         ]
     ),
     base.BinaryMinusDateFloat(
@@ -65,7 +66,7 @@ DEFINITIONS_BINARY = [
             V(
                 D.YQL,
                 lambda date, days: (
-                    date - sa.func.DateTime.IntervalFromDays(sa.cast(sa.func.Math.Ceil(days), sa.INTEGER))
+                    date - sa.func.DateTime.IntervalFromDays(sa.cast(sa.func.Math.Ceil(days), ydb_sa.types.Int32))
                 ),
             ),
         ]

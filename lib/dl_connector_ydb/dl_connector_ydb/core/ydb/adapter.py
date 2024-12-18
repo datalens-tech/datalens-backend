@@ -11,7 +11,10 @@ from typing import (
 import attr
 import grpc
 from ydb import DriverConfig
-from ydb.driver import credentials_impl, Driver
+from ydb.driver import (
+    Driver,
+    credentials_impl,
+)
 import ydb.issues as ydb_cli_err
 import ydb_dbapi
 
