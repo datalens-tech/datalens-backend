@@ -1147,6 +1147,14 @@ class DatasetValidator(DatasetBaseWrapper):
     ) -> None:
         """Apply update to the data source configuration"""
 
+        self._sync_us_manager.load_dependencies(self._ds)
+        check_permissions_for_origin_sources(  # any source update requires sufficient permissions on the connection
+            dataset=self._ds,
+            source_ids=None,
+            permission_kind=USPermissionKind.read,
+            us_entry_buffer=self._us_manager.get_entry_buffer(),
+        )
+
         source_data = source_data.copy()
         source_id = source_data.pop("id") or str(uuid.uuid4())
         component_ref = DatasetComponentRef(component_type=ComponentType.data_source, component_id=source_id)
