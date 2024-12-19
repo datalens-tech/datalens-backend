@@ -98,7 +98,7 @@ tasks:
       - DETACH to run in foreground mode, e.g. `task docker-start DETACH=false`, default is true
     cmds:
       - task: _docker
-        vars: { COMMAND: 'up {{if eq .DETACH "true"}} --detach {{end}}  {{.CLI_ARGS}}' }
+        vars: { COMMAND: 'up {{if eq .DETACH "true"}} --detach {{end}} --no-build --quiet-pull datalens-from-image {{.CLI_ARGS}}' }
     vars:
       DETACH: '{{.DETACH | default "true"}}'
 
