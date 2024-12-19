@@ -1,5 +1,6 @@
 from typing import (
     Mapping,
+    Optional,
     Sequence,
     Type,
     TypeVar,
@@ -78,3 +79,30 @@ class TypedQueryResult:
     query_type: DashSQLQueryType = attr.ib()
     column_headers: Sequence[TypedQueryResultColumnHeader] = attr.ib()
     data_rows: Sequence[TBIDataRow] = attr.ib()
+
+
+# TODO: check
+@attr.s(frozen=True, kw_only=True)
+class TypedQueryRawParameters:
+    path: str = attr.ib()
+    method: str = attr.ib()
+    body: Optional[dict] = attr.ib()  # dict or Any?
+
+
+@attr.s(frozen=True, kw_only=True)
+class TypedQueryRaw:
+    query_type: DashSQLQueryType = attr.ib()
+    parameters: TypedQueryRawParameters = attr.ib()
+
+
+@attr.s(frozen=True, kw_only=True)
+class TypedQueryRawResultData:
+    status: int = attr.ib()
+    headers: dict = attr.ib()
+    json: Optional[dict] = attr.ib()
+
+
+@attr.s(frozen=True, kw_only=True)
+class TypedQueryRawResult:
+    query_type: DashSQLQueryType = attr.ib()
+    data: TypedQueryRawResultData = attr.ib()
