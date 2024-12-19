@@ -1,12 +1,14 @@
-version: "3.7"
-
 services:
+  us:
+    extra_hosts: !reset null
+
   control-api:
     image: ${CONTROL_API_TAG}
 
   data-api:
     image: ${DATA_API_TAG}
 
-  datalens:
+  datalens-from-image:
     image: ${DATALENS_UI_TAG}
-    build: !reset null
+    ports:
+      - 8080:8080
