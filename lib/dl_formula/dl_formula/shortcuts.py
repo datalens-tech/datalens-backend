@@ -334,6 +334,7 @@ class NodeShortcut:
         before_filter_by: Optional[List[Union[nodes.Field, builtins.str]]] = None,
         lod: Optional[nodes.FixedLodSpecifier] = None,
         join_type: fork_nodes.JoinType = fork_nodes.JoinType.left,
+        bfb_filter_mutations: Optional[fork_nodes.BfbFilterMutationCollectionSpec] = None,
     ) -> fork_nodes.QueryFork:
         before_filter_by_node = self._normalize_raw_bfb(before_filter_by=before_filter_by)
         return fork_nodes.QueryFork.make(
@@ -342,6 +343,7 @@ class NodeShortcut:
             result_expr=result_expr,
             before_filter_by=before_filter_by_node,
             lod=lod,
+            bfb_filter_mutations=bfb_filter_mutations,
         )
 
     def bin_condition(self, expr: nodes.FormulaItem, fork_expr: nodes.FormulaItem) -> fork_nodes.BinaryJoinCondition:

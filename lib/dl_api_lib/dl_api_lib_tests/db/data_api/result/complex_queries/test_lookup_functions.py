@@ -1,5 +1,6 @@
 import datetime
 from http import HTTPStatus
+import re
 from typing import Optional
 
 import pytest
@@ -54,6 +55,43 @@ class TestBasicLookupFunctions(DefaultApiTestBase, DefaultBasicLookupFunctionTes
         assert result_resp.status_code == HTTPStatus.OK, result_resp.json
         data_rows = get_data_rows(result_resp)
         check_ago_data(data_rows=data_rows, date_idx=1, value_idx=2, ago_idx=3, day_offset=1)
+
+    def test_ago_filtered(self, control_api, data_api, saved_dataset):
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            formulas={
+                "Sales Sum": "SUM([sales])",
+                "Sales Sum Yesterday": 'AGO([Sales Sum], [order_date], "day", 5)',
+            },
+        )
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="category"),
+                ds.find_field(title="order_date"),
+                ds.find_field(title="Sales Sum"),
+                ds.find_field(title="Sales Sum Yesterday"),
+            ],
+            order_by=[
+                ds.find_field(title="category"),
+                ds.find_field(title="order_date"),
+            ],
+            filters=[
+                ds.find_field(title="category").filter(op=WhereClauseOperation.EQ, values=["Office Supplies"]),
+                ds.find_field(title="order_date").filter(op=WhereClauseOperation.GTE, values=["2014-01-06"]),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+
+        query: str = result_resp.json["blocks"][0]["query"]
+        expected_query_pattern = r"JOIN.*\(.*order_date.*5.*>=.*2014-01-06.*\).*ON"
+        assert re.search(
+            expected_query_pattern,
+            query,
+            flags=re.DOTALL,
+        ), "Expected to find pattern 'JOIN (... order_date >= 2014-01-06 ...) ON' in query"
 
     def test_ago_variants(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(
