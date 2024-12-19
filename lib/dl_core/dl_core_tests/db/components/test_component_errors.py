@@ -8,6 +8,7 @@ class TestComponentErrors(DefaultCoreTestClass):
     def test_component_errors(self, sync_us_manager, saved_dataset):
         dataset = saved_dataset
         source_id = dataset.get_single_data_source_id()
+        assert source_id is not None
         erreg = dataset.error_registry
         erreg.add_error(id=source_id, type=ComponentType.data_source, message="This is an error", code=["ERR", "1"])
         assert len(erreg.get_pack(id=source_id).errors) == 1
