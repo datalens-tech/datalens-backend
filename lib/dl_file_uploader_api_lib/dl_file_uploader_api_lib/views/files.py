@@ -141,9 +141,9 @@ class MakePresignedUrlView(FileUploaderBaseView):
         url = await s3.client.generate_presigned_post(
             Bucket=s3.tmp_bucket_name,
             Key=s3_key,
-            ExpiresIn=60 * 60,  # 1 hour  # TODO config?
+            ExpiresIn=60 * 60,  # 1 hour
             Conditions=[
-                ["content-length-range", 1, 200 * 1024 * 1024],  # 1B .. 200MB  # TODO use constant
+                ["content-length-range", 1, 200 * 1024 * 1024],  # 1B .. 200MB  # TODO use constant from DataSink
                 {"Content-MD5": content_md5},
             ],
         )
