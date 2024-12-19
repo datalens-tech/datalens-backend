@@ -136,6 +136,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
         app.router.add_route("get", "/api/v2/metrics", MetricsView)
 
         app.router.add_route("post", "/api/v2/files", files_views.FilesView)
+        app.router.add_route("post", "/api/v2/make_presigned_url", files_views.MakePresignedUrlView)
         app.router.add_route("post", "/api/v2/links", files_views.LinksView)
         app.router.add_route("post", "/api/v2/documents", files_views.DocumentsView)
         app.router.add_route("post", "/api/v2/update_connection_data", files_views.UpdateConnectionDataView)

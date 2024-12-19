@@ -224,6 +224,7 @@ class DataFileSchema(BaseModelSchema):
     class Meta(BaseModelSchema.Meta):
         target = DataFile
 
+    s3_key = fields.String(load_default=None, dump_default=None)  # TODO remove defaults after transition
     filename = fields.String()
     file_type = fields.Enum(FileType, allow_none=True)
     file_settings = fields.Nested(FileSettingsSchema, allow_none=True)

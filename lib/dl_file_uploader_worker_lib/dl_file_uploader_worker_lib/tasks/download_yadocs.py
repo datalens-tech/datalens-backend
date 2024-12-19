@@ -154,7 +154,7 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
             data_stream = RawBytesAsyncDataStream(data_iter=_chunk_iter())
             async with S3RawFileAsyncDataSink(
                 s3=s3.client,
-                s3_key=dfile.s3_key,
+                s3_key=dfile.s3_key_old,
                 bucket_name=s3.tmp_bucket_name,
                 max_file_size_exc=exc.FileLimitError,
             ) as data_sink:

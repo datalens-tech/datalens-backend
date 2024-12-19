@@ -9,6 +9,7 @@ from typing import (
     ClassVar,
     Optional,
 )
+import uuid
 
 from aiohttp import web
 from aiohttp.multipart import BodyPartReader
@@ -82,13 +83,13 @@ class FilesView(FileUploaderBaseView):
         s3 = self.dl_request.get_s3_service()
 
         rmm = self.dl_request.get_redis_model_manager()
-        df = DataFile(
+        dfile = DataFile(
             manager=rmm,
             filename=filename,
             file_type=file_type,
             status=FileProcessingStatus.in_progress,
         )
-        LOGGER.info(f"Data file id: {df.id}")
+        LOGGER.info(f"Data file id: {dfile.id}")
 
         async def _chunk_iter(chunk_size: int = 10 * 1024 * 1024) -> AsyncGenerator[bytes, None]:
             assert isinstance(field, BodyPartReader)
@@ -104,7 +105,7 @@ class FilesView(FileUploaderBaseView):
         data_stream = RawBytesAsyncDataStream(data_iter=_chunk_iter())
         async with S3RawFileAsyncDataSink(
             s3=s3.client,
-            s3_key=df.s3_key,
+            s3_key=dfile.s3_key_old,
             bucket_name=s3.tmp_bucket_name,
             max_file_size_exc=exc.FileLimitError,
         ) as data_sink:
@@ -112,20 +113,44 @@ class FilesView(FileUploaderBaseView):
 
         # df.size = size    # TODO
 
-        await df.save()
+        await dfile.save()
         LOGGER.info(f'Uploaded file "{filename}".')
 
         task_processor = self.dl_request.get_task_processor()
         if file_type == FileType.xlsx:
-            await task_processor.schedule(ProcessExcelTask(file_id=df.id))
-            LOGGER.info(f"Scheduled ProcessExcelTask for file_id {df.id}")
+            await task_processor.schedule(ProcessExcelTask(file_id=dfile.id))
+            LOGGER.info(f"Scheduled ProcessExcelTask for file_id {dfile.id}")
         else:
-            await task_processor.schedule(ParseFileTask(file_id=df.id))
-            LOGGER.info(f"Scheduled ParseFileTask for file_id {df.id}")
+            await task_processor.schedule(ParseFileTask(file_id=dfile.id))
+            LOGGER.info(f"Scheduled ParseFileTask for file_id {dfile.id}")
 
         return web.json_response(
-            files_schemas.FileUploadResponseSchema().dump({"file_id": df.id, "title": df.filename}),
+            files_schemas.FileUploadResponseSchema().dump({"file_id": dfile.id, "title": dfile.filename}),
             status=HTTPStatus.CREATED,
+        )
+
+
+class MakePresignedUrlView(FileUploaderBaseView):
+    async def post(self) -> web.StreamResponse:
+        req_data = await self._load_post_request_schema_data(files_schemas.MakePresignedUrlRequestSchema)
+        content_md5: str = req_data["content_md5"]
+
+        s3 = self.dl_request.get_s3_service()
+        s3_key = "{}_{}".format(self.dl_request.rci.user_id or "unknown", str(uuid.uuid4()))
+
+        url = await s3.client.generate_presigned_post(
+            Bucket=s3.tmp_bucket_name,
+            Key=s3_key,
+            ExpiresIn=60 * 60,  # 1 hour
+            Conditions=[
+                ["content-length-range", 1, 200 * 1024 * 1024],  # 1B .. 200MB  # TODO use constant from DataSink
+                {"Content-MD5": content_md5},
+            ],
+        )
+
+        return web.json_response(
+            files_schemas.PresignedUrlSchema().dump(url),
+            status=HTTPStatus.OK,
         )
 
 

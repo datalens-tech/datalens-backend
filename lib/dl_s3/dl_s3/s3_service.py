@@ -8,6 +8,7 @@ from typing import (
 )
 
 from aiobotocore.client import AioBaseClient
+from aiobotocore.config import AioConfig
 from aiobotocore.session import get_session
 from aiohttp import web
 import attr
@@ -59,6 +60,7 @@ class S3Service:
             aws_access_key_id=self._access_key_id,
             aws_secret_access_key=self._secret_access_key,
             endpoint_url=self._endpoint_url,
+            config=AioConfig(signature_version="s3v4"),
         )
 
         session = get_session()
