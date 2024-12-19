@@ -78,7 +78,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
 
             s3_resp = await s3.client.get_object(
                 Bucket=s3.tmp_bucket_name,
-                Key=dfile.s3_key,
+                Key=dfile.s3_key_old,
             )
             file_obj = await s3_resp["Body"].read()
 
