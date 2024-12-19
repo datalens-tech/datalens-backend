@@ -35,6 +35,12 @@ services:
     extends:
       file: ../testenv-common/docker-compose.common.yml
       service: pg-us
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "us-db-ci_purgeable"]
+      # test: ["CMD", "pg_isready", "-d", "us-db-ci_purgeable", "&&", "sleep", "5"]
+      interval: 5s
+      retries: 10
+      start_period: 30s
     ports:
       - 51409:5432
 
