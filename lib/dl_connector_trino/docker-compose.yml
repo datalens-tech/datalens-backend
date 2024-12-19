@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+  engine-trino-468:
+    # image: "trinodb/trino:468"
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.engine-trino-468
+    environment:
+      TRINO_ENVIRONMENT: "test"
+    ports:
+      - "21124:8080"
+
+  # INFRA
+  pg-us:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: pg-us
+    ports:
+     - "22087:5432"
+
+  us:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: us
+    ports:
+     - "21133:8083"
+
+  redis-caches:
+    image: "bitnami/redis:5.0.8@sha256:3127620da977815556439a9dc347fff89432a79b6bb6e93a16f20ac4a34ce337"
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+     - "22569:6379"
