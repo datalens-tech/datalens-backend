@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.9'
 
 x-constants:
   US_MASTER_TOKEN: &c-us-master-token "AC1ofiek8coB"
@@ -27,7 +27,9 @@ services:
     depends_on:
       pg-us:
         condition: service_healthy
+#        restart: true
     environment:
       POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
       AUTH_POLICY: "required"
       MASTER_TOKEN: *c-us-master-token
+    restart: on-failure
