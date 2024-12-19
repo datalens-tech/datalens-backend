@@ -102,7 +102,7 @@ class ReqBuilder:
     def presigned_url(cls, content_md5: str, *, require_ok: bool = True) -> Req:
         return Req(
             method="post",
-            url=f"/api/v2/make_presigned_url",
+            url="/api/v2/make_presigned_url",
             data_json={
                 "content_md5": content_md5,
             },

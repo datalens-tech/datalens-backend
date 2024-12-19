@@ -131,8 +131,6 @@ class FilesView(FileUploaderBaseView):
 
 
 class MakePresignedUrlView(FileUploaderBaseView):
-    REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResource]] = frozenset()  # Don't skip CSRF check
-
     async def post(self) -> web.StreamResponse:
         req_data = await self._load_post_request_schema_data(files_schemas.MakePresignedUrlRequestSchema)
         content_md5: str = req_data["content_md5"]
@@ -140,14 +138,14 @@ class MakePresignedUrlView(FileUploaderBaseView):
         s3 = self.dl_request.get_s3_service()
         s3_key = "{}_{}".format(self.dl_request.rci.user_id or "unknown", str(uuid.uuid4()))
 
-        url = s3.client.generate_presigned_post(
+        url = await s3.client.generate_presigned_post(
             Bucket=s3.tmp_bucket_name,
             Key=s3_key,
             ExpiresIn=60 * 60,  # 1 hour  # TODO config?
             Conditions=[
                 ["content-length-range", 1, 200 * 1024 * 1024],  # 1B .. 200MB  # TODO use constant
                 {"Content-MD5": content_md5},
-            ]
+            ],
         )
 
         return web.json_response(
