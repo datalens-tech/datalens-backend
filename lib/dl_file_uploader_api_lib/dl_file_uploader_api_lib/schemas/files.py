@@ -72,6 +72,26 @@ class FileUploadResponseSchema(ma.Schema):
     title = ma.fields.String()
 
 
+class MakePresignedUrlRequestSchema(ma.Schema):
+    content_md5 = ma.fields.String(required=True)
+
+
+class PresignedUrlSchema(ma.Schema):
+    class PresignedUrlFields(ma.Schema):
+        class Meta:
+            unknown = ma.INCLUDE
+
+        key = ma.fields.String()
+        x_amz_algorithm = ma.fields.String(data_key="x-amz-algorithm")
+        x_amz_credential = ma.fields.String(data_key="x-amz-credential")
+        x_amz_date = ma.fields.String(data_key="x-amz-date")
+        policy = ma.fields.String()
+        x_amz_signature = ma.fields.String(data_key="x-amz-signature")
+
+    url = ma.fields.String(required=True)
+    fields = ma.fields.Nested(PresignedUrlFields)
+
+
 class FileStatusRequestSchema(BaseRequestSchema):
     file_id = ma.fields.String(required=True)
 

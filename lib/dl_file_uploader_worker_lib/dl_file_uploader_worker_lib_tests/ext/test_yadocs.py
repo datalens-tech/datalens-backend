@@ -20,17 +20,17 @@ async def test_download_yadocs_task(
     s3_tmp_bucket,
     reader_app,
 ):
-    df = DataFile(
+    dfile = DataFile(
         filename="",
         file_type=FileType.yadocs,
         manager=redis_model_manager,
         status=FileProcessingStatus.in_progress,
         user_source_properties=YaDocsUserSourceProperties(public_link="https://disk.yandex.lt/i/OyzdmFI0MUEEgA"),
     )
-    await df.save()
+    await dfile.save()
 
-    task = await task_processor_client.schedule(DownloadYaDocsTask(file_id=df.id, authorized=False))
+    task = await task_processor_client.schedule(DownloadYaDocsTask(file_id=dfile.id, authorized=False))
     result = await wait_task(task, task_state)
 
     assert result[-1] == "success"
-    assert await s3_file_exists(key=df.s3_key, bucket=s3_tmp_bucket, s3_client=s3_client)
+    assert await s3_file_exists(key=dfile.s3_key_old, bucket=s3_tmp_bucket, s3_client=s3_client)

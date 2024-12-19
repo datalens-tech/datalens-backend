@@ -73,7 +73,7 @@ async def _prepare_file(
     dst_source_id: str,
     conn_raw_schema: list[SchemaColumn],
 ) -> str:
-    src_filename = dfile.s3_key if dfile.file_type == FileType.csv else src_source.s3_key
+    src_filename = dfile.s3_key_old if dfile.file_type == FileType.csv else src_source.s3_key
 
     tmp_s3_filename = _make_tmp_source_s3_filename(dst_source_id)
 

@@ -26,7 +26,7 @@ LOGGER = logging.getLogger(__name__)
 @pytest.fixture(scope="function")
 async def upload_file(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_model_manager):
     async def uploader(csv_data: bytes) -> DataFile:
-        data_file_desc = DataFile(
+        dfile = DataFile(
             manager=redis_model_manager,
             filename="test_file.csv",
             file_type=FileType.csv,
@@ -36,12 +36,12 @@ async def upload_file(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_mode
         await s3_client.put_object(
             ACL="private",
             Bucket=s3_tmp_bucket,
-            Key=data_file_desc.s3_key,
+            Key=dfile.s3_key_old,
             Body=csv_data,
         )
 
-        await data_file_desc.save()
-        return data_file_desc
+        await dfile.save()
+        return dfile
 
     yield uploader
 
@@ -96,7 +96,7 @@ async def uploaded_file_dt_id(uploaded_file_dt) -> str:
 async def uploaded_10mb_file_id(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_model_manager) -> str:
     csv_data = generate_sample_csv_data_str(row_count=10000, str_cols_count=30).encode("utf-8")
 
-    data_file_desc = DataFile(
+    dfile = DataFile(
         manager=redis_model_manager,
         filename="test_file_10mb.csv",
         file_type=FileType.csv,
@@ -106,18 +106,18 @@ async def uploaded_10mb_file_id(s3_tmp_bucket, s3_persistent_bucket, s3_client, 
     await s3_client.put_object(
         ACL="private",
         Bucket=s3_tmp_bucket,
-        Key=data_file_desc.s3_key,
+        Key=dfile.s3_key_old,
         Body=csv_data,
     )
 
-    await data_file_desc.save()
-    yield data_file_desc.id
+    await dfile.save()
+    yield dfile.id
 
 
 @pytest.fixture(scope="function")
 async def uploaded_excel_file(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_model_manager):
     async def uploader(filename: str) -> DataFile:
-        data_file_desc = DataFile(
+        dfile = DataFile(
             manager=redis_model_manager,
             filename=filename,
             file_type=FileType.xlsx,
@@ -131,12 +131,12 @@ async def uploaded_excel_file(s3_tmp_bucket, s3_persistent_bucket, s3_client, re
             await s3_client.put_object(
                 ACL="private",
                 Bucket=s3_tmp_bucket,
-                Key=data_file_desc.s3_key,
+                Key=dfile.s3_key_old,
                 Body=fd.read(),
             )
 
-        await data_file_desc.save()
-        return data_file_desc
+        await dfile.save()
+        return dfile
 
     yield uploader
 
