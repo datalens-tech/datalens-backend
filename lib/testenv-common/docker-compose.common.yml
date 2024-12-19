@@ -16,7 +16,7 @@ services:
       test: ["CMD", "pg_isready", "-d", "us-db-ci_purgeable"]
       interval: 5s
       retries: 10
-      start_period: 3s
+      start_period: 15s
 
   us:
     labels:

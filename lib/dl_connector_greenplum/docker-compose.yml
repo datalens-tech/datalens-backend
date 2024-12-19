@@ -25,6 +25,9 @@ services:
     extends:
       file: ../testenv-common/docker-compose.common.yml
       service: us
+    depends_on:
+      pg-us:
+        condition: service_healthy
     ports:
      - "52311:8083"
 
