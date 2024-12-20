@@ -1148,7 +1148,7 @@ class DatasetValidator(DatasetBaseWrapper):
         """Apply update to the data source configuration"""
 
         self._sync_us_manager.load_dependencies(self._ds)
-        ssions_for_origin_sources(  # any source update requires sufficient permissions on the connection
+        check_permissions_for_origin_sources(  # any source update requires sufficient permissions on the connection
             dataset=self._ds,
             source_ids=None,
             permission_kind=USPermissionKind.read,
