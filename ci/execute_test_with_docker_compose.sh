@@ -29,7 +29,7 @@ if [ "$(do-we-need-compose "/src" $TARGET_PATH)" == "1" ]; then
     cat "docker-compose.fixed.yml"
 
     docker compose -f "docker-compose.fixed.yml" build --pull
-    docker compose -f "docker-compose.fixed.yml" up  --force-recreate -d
+    docker compose -f "docker-compose.fixed.yml" up  --force-recreate
 fi
 
 # echo "0" > _debug

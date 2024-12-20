@@ -16,7 +16,7 @@ services:
       test: ["CMD", "pg_isready", "-d", "us-db-ci_purgeable"]
       interval: 5s
       retries: 10
-      start_period: 3s
+      start_period: 15s
 
   us:
     labels:
@@ -27,6 +27,7 @@ services:
     depends_on:
       pg-us:
         condition: service_healthy
+        restart: true
     environment:
       POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
       AUTH_POLICY: "required"
