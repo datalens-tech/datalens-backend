@@ -262,7 +262,11 @@ class DatasetDataBaseView(BaseView):
             return None
         await mutation_cache.save_mutation_cache(dataset, mutation_key)
 
-    async def resolve_rls_groups_for_dataset(self, services_registry: ApiServiceRegistry) -> None:
+    async def resolve_rls_groups_for_dataset(
+        self,
+        req_model: DataRequestModel,
+        services_registry: ApiServiceRegistry,
+    ) -> None:
         if not any(item.subject.subject_type == RLSSubjectType.group for item in self.dataset.rls.items):
             return  # no groups in the RLS config, no need to resolve
 
@@ -298,7 +302,7 @@ class DatasetDataBaseView(BaseView):
                 dataset_data=req_model.dataset,
                 allow_rls_change=allow_rls_change,
             )
-            await self.resolve_rls_groups_for_dataset(services_registry)
+            await self.resolve_rls_groups_for_dataset(req_model, services_registry)
 
             if cached_dataset:
                 await self.check_for_notifications(services_registry, us_manager)
