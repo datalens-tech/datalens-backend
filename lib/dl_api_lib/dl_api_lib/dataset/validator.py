@@ -1148,7 +1148,7 @@ class DatasetValidator(DatasetBaseWrapper):
         """Apply update to the data source configuration"""
 
         self._sync_us_manager.load_dependencies(self._ds)
-        check_permissions_for_origin_sources(  # any source update requires sufficient permissions on the connection
+        ssions_for_origin_sources(  # any source update requires sufficient permissions on the connection
             dataset=self._ds,
             source_ids=None,
             permission_kind=USPermissionKind.read,
@@ -1184,13 +1184,6 @@ class DatasetValidator(DatasetBaseWrapper):
                 created_from=source_data["source_type"],
                 title=title,
                 parameters=source_data["parameters"],
-            )
-
-            check_permissions_for_origin_sources(
-                dataset=self._ds,
-                source_ids=[source_id],
-                permission_kind=USPermissionKind.read,
-                us_entry_buffer=self._us_manager.get_entry_buffer(),
             )
 
         if action in (DatasetAction.update_source, DatasetAction.delete_source):
