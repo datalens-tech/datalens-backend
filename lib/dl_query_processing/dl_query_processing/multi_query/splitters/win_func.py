@@ -108,6 +108,7 @@ class WinFuncQuerySplitter(MultiQuerySplitter):
             formula_split_masks=tuple(formula_split_masks),
             filter_indices=frozenset(),
             add_formulas=(),
+            add_filters=(),
             join_type=JoinType.inner,
             joining_node=formula_fork_nodes.QueryForkJoiningWithList.make(condition_list=[]),
         )

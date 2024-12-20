@@ -86,6 +86,7 @@ class MyMultiQuerySplitter(MultiQuerySplitter):
                         is_group_by=True,
                     ),
                 ),
+                add_filters=(),
             )
         ]
 
