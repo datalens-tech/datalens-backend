@@ -83,19 +83,6 @@ async def get_lc_rules_number(s3_client: AsyncS3Client, bucket: str) -> int:
     return len(lc_config["Rules"])
 
 
-async def s3_file_exists(s3_client: AsyncS3Client, bucket: str, key: str) -> bool:
-    try:
-        s3_resp = await s3_client.head_object(
-            Bucket=bucket,
-            Key=key,
-        )
-    except botocore.exceptions.ClientError as ex:
-        if ex.response["ResponseMetadata"]["HTTPStatusCode"] == 404:
-            return False
-        raise
-    return s3_resp["ResponseMetadata"]["HTTPStatusCode"] == 200
-
-
 S3_TBL_FUNC_TEMPLATE = """s3(
 '{s3_endpoint}/{bucket}/{filename}',
 '{key_id}',
