@@ -32,5 +32,6 @@ services:
     depends_on:
       pg-us:
         condition: service_healthy
+        restart: true
     ports:
      - "52500:8083"
