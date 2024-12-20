@@ -27,6 +27,7 @@ services:
     depends_on:
       pg-us:
         condition: service_healthy
+        restart: true
     environment:
       POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
       AUTH_POLICY: "required"
