@@ -1,10 +1,14 @@
+from .fallback import (
+    WithFallbackEnvSource,
+    WithFallbackGetAttr,
+)
 from .settings import (
     BaseRootSettings,
     BaseSettings,
 )
 from .typed import (
     TypedAnnotation,
-    TypedBaseModel,
+    TypedBaseSettings,
     TypedDictAnnotation,
     TypedListAnnotation,
 )
@@ -13,8 +17,10 @@ from .typed import (
 __all__ = [
     "BaseSettings",
     "BaseRootSettings",
-    "TypedBaseModel",
+    "TypedBaseSettings",
     "TypedAnnotation",
     "TypedListAnnotation",
     "TypedDictAnnotation",
+    "WithFallbackGetAttr",
+    "WithFallbackEnvSource",
 ]

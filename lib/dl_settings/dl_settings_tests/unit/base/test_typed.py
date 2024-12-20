@@ -7,7 +7,7 @@ import dl_settings
 
 
 def test_default_settings() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
     class Child(Base):
@@ -24,7 +24,7 @@ def test_default_settings() -> None:
 
 
 def test_type_field_name_alias() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         type: str = pydantic.Field(alias="test_type_field_name")
 
     class Child(Base):
@@ -36,7 +36,7 @@ def test_type_field_name_alias() -> None:
 
 
 def test_already_deseialized() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
     class Child(Base):
@@ -49,7 +49,7 @@ def test_already_deseialized() -> None:
 
 
 def test_not_a_dict_data() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
     class Child(Base):
@@ -65,7 +65,7 @@ def test_not_a_dict_data() -> None:
 
 
 def test_already_registered() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
     class Child(Base):
@@ -77,10 +77,10 @@ def test_already_registered() -> None:
 
 
 def test_not_subclass() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
-    class Base2(dl_settings.TypedBaseModel):
+    class Base2(dl_settings.TypedBaseSettings):
         ...
 
     class Child(Base2):
@@ -91,7 +91,7 @@ def test_not_subclass() -> None:
 
 
 def test_unknown_type() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
     with pytest.raises(ValueError):
@@ -99,10 +99,10 @@ def test_unknown_type() -> None:
 
 
 def test_multiple_bases() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
-    class Base2(dl_settings.TypedBaseModel):
+    class Base2(dl_settings.TypedBaseSettings):
         ...
 
     class Child(Base):
@@ -119,7 +119,7 @@ def test_multiple_bases() -> None:
 
 
 def test_list_factory_default() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
     class Child(Base):
@@ -133,7 +133,7 @@ def test_list_factory_default() -> None:
 
 
 def test_list_factory_not_sequence() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
     class Child(Base):
@@ -146,7 +146,7 @@ def test_list_factory_not_sequence() -> None:
 
 
 def test_dict_factory_default() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
     class Child(Base):
@@ -160,7 +160,7 @@ def test_dict_factory_default() -> None:
 
 
 def test_dict_factory_not_dict() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
     class Child(Base):
@@ -173,7 +173,7 @@ def test_dict_factory_not_dict() -> None:
 
 
 def test_annotation() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
     class Child(Base):
@@ -189,8 +189,30 @@ def test_annotation() -> None:
     assert isinstance(root.child, Child)
 
 
+def test_optional_annotation() -> None:
+    class Base(dl_settings.TypedBaseSettings):
+        ...
+
+    class Child(Base):
+        ...
+
+    Base.register("child", Child)
+
+    class Root(dl_settings.BaseSettings):
+        child: typing.Optional[dl_settings.TypedAnnotation[Base]] = None
+
+    root = Root.model_validate({"child": {"type": "child"}})
+    assert isinstance(root.child, Child)
+
+    root = Root.model_validate({"child": None})
+    assert root.child is None
+
+    root = Root.model_validate({})
+    assert root.child is None
+
+
 def test_list_annotation() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
     class Child(Base):
@@ -207,7 +229,7 @@ def test_list_annotation() -> None:
 
 
 def test_dict_annotation() -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
     class Child(Base):
@@ -226,7 +248,7 @@ def test_dict_annotation() -> None:
 def test_dict_annotation_with_env(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    class Base(dl_settings.TypedBaseModel):
+    class Base(dl_settings.TypedBaseSettings):
         ...
 
     class Child(Base):
