@@ -1,17 +1,32 @@
 version: '3.7'
 
 services:
-  engine-trino-468:
+  trino:
     # image: "trinodb/trino:468"
     build:
       context: docker-compose
       dockerfile: Dockerfile.engine-trino-468
-    environment:
-      TRINO_ENVIRONMENT: "test"
+
+  trino-tls-nginx:
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.trino-tls-nginx
+    depends_on:
+      - trino
+      - ssl-provider
     ports:
-      - "21124:8080"
+      - "21124:443"
 
   # INFRA
+  ssl-provider:
+    build:
+      context: ../testenv-common/images
+      dockerfile: Dockerfile.ssl-provider
+      args:
+        CERTIFIED_DOMAIN: "trino-tls-nginx"
+    ports:
+      - "26002:80"
+
   pg-us:
     extends:
       file: ../testenv-common/docker-compose.common.yml
