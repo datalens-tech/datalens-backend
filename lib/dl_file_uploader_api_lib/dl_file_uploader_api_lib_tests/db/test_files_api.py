@@ -4,6 +4,7 @@ import json
 import uuid
 
 import attr
+from dl_file_uploader_api_lib.views.files import S3_KEY_PARTS_SEPARATOR
 import pytest
 
 from dl_api_commons.base_models import RequestContextInfo
@@ -28,7 +29,7 @@ async def test_file_upload_cors(fu_client, s3_tmp_bucket, upload_file_req):
 
 
 @pytest.mark.asyncio
-async def test_make_presigned_url(fu_client, s3_tmp_bucket):
+async def test_make_presigned_url(fu_client, s3_tmp_bucket, rci):
     expected_url_fields = ("key", "x-amz-algorithm", "x-amz-credential", "x-amz-date", "policy", "x-amz-signature")
 
     resp = await fu_client.make_request(ReqBuilder.presigned_url("mymd5"))
@@ -36,6 +37,15 @@ async def test_make_presigned_url(fu_client, s3_tmp_bucket):
     assert "url" in resp.json, resp.json
     assert "fields" in resp.json, resp.json
     assert all(field in resp.json["fields"] for field in expected_url_fields), resp.json
+    key = resp.json["fields"]["key"]
+    key_parts = key.split(S3_KEY_PARTS_SEPARATOR)
+    assert len(key_parts) == 2, key_parts
+    assert key_parts[0] == rci.user_id
+
+
+@pytest.mark.asyncio
+async def test_download_presigned_url(fu_client, s3_tmp_bucket, rci):
+    # TODO test
 
 
 @pytest.mark.asyncio
