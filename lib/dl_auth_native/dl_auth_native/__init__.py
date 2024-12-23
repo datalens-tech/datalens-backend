@@ -1,6 +1,7 @@
 from .middlewares import (
     AioHTTPMiddleware,
     FlaskMiddleware,
+    MiddlewareSettings,
 )
 from .token import (
     DecodeError,
@@ -14,6 +15,7 @@ from .token import (
 __all__ = [
     "AioHTTPMiddleware",
     "FlaskMiddleware",
+    "MiddlewareSettings",
     "Decoder",
     "DecoderProtocol",
     "Payload",

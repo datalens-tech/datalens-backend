@@ -1,6 +1,7 @@
 import typing
 
 import attr
+import typing_extensions
 
 import dl_api_commons.base_models as dl_api_commons_base_models
 import dl_auth_native.token as token
@@ -34,11 +35,28 @@ class AuthResult:
     auth_data: AuthData = attr.ib()
 
 
+@attr.s(frozen=True)
+class MiddlewareSettings:
+    decoder_key: str = attr.ib()
+    decoder_algorithms: list[str] = attr.ib()
+
+
 @attr.s()
 class BaseMiddleware:
     _token_decoder: token.DecoderProtocol = attr.ib()
     _user_access_header_key: str = attr.ib(default=dl_api_commons_base_models.DLHeadersCommon.AUTHORIZATION_TOKEN)
     _token_type: str = attr.ib(default="Bearer")
+
+    @classmethod
+    def from_settings(cls, settings: MiddlewareSettings) -> typing_extensions.Self:
+        token_decoder = token.Decoder(
+            key=settings.decoder_key,
+            algorithms=settings.decoder_algorithms,
+        )
+
+        return cls(
+            token_decoder=token_decoder,
+        )
 
     @attr.s(frozen=True)
     class Unauthorized(Exception):
@@ -72,4 +90,5 @@ __all__ = [
     "BaseMiddleware",
     "AuthResult",
     "AuthData",
+    "MiddlewareSettings",
 ]
