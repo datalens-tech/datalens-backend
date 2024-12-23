@@ -9,6 +9,7 @@ from typing import (
 
 import attr
 import pydantic
+import pydantic_settings
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
@@ -344,6 +345,10 @@ class AppSettingsOS(
     dl_settings.WithFallbackEnvSource,
     dl_settings.BaseRootSettings,
 ):
+    model_config = pydantic_settings.SettingsConfigDict(
+        extra=pydantic.Extra.ignore,
+    )
+
     AUTH: typing.Optional[dl_settings.TypedAnnotation[BaseAuthSettingsOS]] = None
 
     fallback_env_keys = {
