@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import (
-    TYPE_CHECKING,
     Optional,
     Type,
 )
@@ -13,10 +12,7 @@ from dl_core.us_connection import get_connection_class
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.database import Db
-
-
-if TYPE_CHECKING:
-    from dl_core.us_connection_base import ConnectionBase
+from dl_core.us_connection_base import ConnectionBase
 
 
 def make_conn_key(*args: str) -> str:
