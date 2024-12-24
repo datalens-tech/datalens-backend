@@ -83,10 +83,10 @@ def make_saved_connection(
     conn_id = conn.uuid
     if conn_id is None:
         raise ValueError("Connection ID is None")
-    
-    conn = sync_usm.get_by_id(conn_id)
-    assert isinstance(conn, ConnectionBase)  # for typing
-    return conn
+
+    conn_us = sync_usm.get_by_id(conn_id)
+    assert isinstance(conn_us, ConnectionBase)  # for typing
+    return conn_us
 
 
 def make_saved_connection_from_db(
