@@ -98,6 +98,10 @@ except AttributeError:
     pass
 
 
+_TESTS_USER_ID = "_the_tests_asyncapp_user_id_"
+_TESTS_USER_NAME = "_the_tests_asyncapp_user_name_"
+
+
 def pytest_configure(config: Any) -> None:  # noqa
     common_pytest_configure(tracing_service_name="tests_bi_file_uploader")
 
@@ -215,8 +219,8 @@ class TestingFileUploaderApiAppFactory(FileUploaderApiAppFactory[FileUploaderAPI
     def get_auth_middlewares(self) -> list[Middleware]:
         return [
             auth_trust_middleware(
-                fake_user_id="_the_tests_file_uploader_api_user_id_",
-                fake_user_name="_the_tests_file_uploader_api_user_name_",
+                fake_user_id=_TESTS_USER_ID,
+                fake_user_name=_TESTS_USER_NAME,
             )
         ]
 
@@ -312,7 +316,7 @@ def connectors_settings(s3_settings):
             ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
             SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
             BUCKET="bi-file-uploader",
-            S3_ENDPOINT="http://s3-storage:8000",
+            S3_ENDPOINT="http://s3-storage:9000",
         ),
     )
 

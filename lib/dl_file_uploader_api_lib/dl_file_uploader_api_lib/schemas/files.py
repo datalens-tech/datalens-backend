@@ -76,6 +76,11 @@ class MakePresignedUrlRequestSchema(ma.Schema):
     content_md5 = ma.fields.String(required=True)
 
 
+class DownloadPresignedUrlRequestSchema(ma.Schema):
+    filename = ma.fields.String(required=True)
+    key = ma.fields.String(required=True)
+
+
 class PresignedUrlSchema(ma.Schema):
     class PresignedUrlFields(ma.Schema):
         class Meta:

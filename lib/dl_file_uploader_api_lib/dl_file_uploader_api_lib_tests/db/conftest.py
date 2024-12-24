@@ -1,4 +1,6 @@
 import asyncio
+import base64
+import hashlib
 import logging
 import os
 
@@ -7,6 +9,7 @@ import pytest
 from dl_api_commons.client.common import Req
 from dl_file_uploader_api_lib_tests.req_builder import ReqBuilder
 from dl_file_uploader_lib.testing.data_gen import generate_sample_csv_data_str
+from dl_s3.utils import upload_to_s3_by_presigned
 
 
 LOGGER = logging.getLogger(__name__)
@@ -64,21 +67,43 @@ def upload_file_req_12mb() -> Req:
 
 
 @pytest.fixture(scope="function")
-async def uploaded_file_id(s3_tmp_bucket, fu_client, upload_file_req) -> str:
-    resp = await fu_client.make_request(upload_file_req)
-    assert resp.status == 201
+async def uploaded_file_id(s3_tmp_bucket, fu_client, csv_data) -> str:
+    content_md5 = base64.b64encode(hashlib.md5(csv_data.encode("utf-8")).digest()).decode("utf-8")
+    presigned_url_resp = await fu_client.make_request(ReqBuilder.presigned_url(content_md5))
+    assert presigned_url_resp.status == 200, presigned_url_resp.json
+
+    upload_resp = await upload_to_s3_by_presigned(presigned_url_resp.json, content_md5, csv_data)
+    assert upload_resp.status == 204
+
+    download_resp = await fu_client.make_request(
+        ReqBuilder.presigned_url_download(presigned_url_resp.json["fields"]["key"], "csv_data.csv")
+    )
+    assert download_resp.status == 201, download_resp.json
+
+    assert download_resp.status == 201
     await asyncio.sleep(3)
-    return resp.json["file_id"]
+    return download_resp.json["file_id"]
 
 
 @pytest.fixture(scope="function")
 async def uploaded_excel_id(
     s3_tmp_bucket,
     fu_client,
-    upload_excel_req,
+    excel_data,
     reader_app,
 ) -> str:
-    resp = await fu_client.make_request(upload_excel_req)
-    assert resp.status == 201
+    content_md5 = base64.b64encode(hashlib.md5(excel_data).digest()).decode("utf-8")
+    presigned_url_resp = await fu_client.make_request(ReqBuilder.presigned_url(content_md5))
+    assert presigned_url_resp.status == 200, presigned_url_resp.json
+
+    upload_resp = await upload_to_s3_by_presigned(presigned_url_resp.json, content_md5, excel_data)
+    assert upload_resp.status == 204
+
+    download_resp = await fu_client.make_request(
+        ReqBuilder.presigned_url_download(presigned_url_resp.json["fields"]["key"], "data.xlsx")
+    )
+    assert download_resp.status == 201, download_resp.json
+
+    assert download_resp.status == 201
     await asyncio.sleep(3)
-    return resp.json["file_id"]
+    return download_resp.json["file_id"]
