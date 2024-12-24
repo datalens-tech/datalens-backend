@@ -60,7 +60,7 @@ class S3Service:
             aws_access_key_id=self._access_key_id,
             aws_secret_access_key=self._secret_access_key,
             endpoint_url=self._endpoint_url,
-            config=AioConfig(signature_version="s3v4"),
+            config=AioConfig(signature_version="s3v4"),  # v4 signature is required to generate presigned URLs with restriction policies
         )
 
         session = get_session()

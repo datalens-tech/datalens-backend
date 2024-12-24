@@ -54,7 +54,7 @@ from dl_s3.stream import RawBytesAsyncDataStream
 
 LOGGER = logging.getLogger(__name__)
 
-S3_KEY_PARTS_SEPARATOR = "--"  # used to separate author user_id from the rest of the s3 object key to sign it
+S3_KEY_PARTS_SEPARATOR = "/"  # used to separate author user_id from the rest of the s3 object key to sign it
 
 
 def get_file_type_from_name(
@@ -134,6 +134,10 @@ class FilesView(FileUploaderBaseView):
 
 
 class MakePresignedUrlView(FileUploaderBaseView):
+    PRESIGNED_URL_EXPIRATION_SECONDS: ClassVar[int] = 60 * 60  # 1 hour
+    PRESIGNED_URL_MIN_BYTES: ClassVar[int] = 1
+    PRESIGNED_URL_MAX_BYTES: ClassVar[int] = 200 * 1024 ** 2  # 200 MB
+
     async def post(self) -> web.StreamResponse:
         req_data = await self._load_post_request_schema_data(files_schemas.MakePresignedUrlRequestSchema)
         content_md5: str = req_data["content_md5"]
@@ -147,9 +151,9 @@ class MakePresignedUrlView(FileUploaderBaseView):
         url = await s3.client.generate_presigned_post(
             Bucket=s3.tmp_bucket_name,
             Key=s3_key,
-            ExpiresIn=60 * 60,  # 1 hour
+            ExpiresIn=self.PRESIGNED_URL_EXPIRATION_SECONDS,
             Conditions=[
-                ["content-length-range", 1, 200 * 1024 * 1024],  # 1B .. 200MB  # TODO use constant from DataSink
+                ["content-length-range", self.PRESIGNED_URL_MIN_BYTES, self.PRESIGNED_URL_MAX_BYTES],
                 {"Content-MD5": content_md5},
             ],
         )
@@ -164,22 +168,23 @@ class DownloadPresignedUrlView(FileUploaderBaseView):
     async def post(self) -> web.StreamResponse:
         req_data = await self._load_post_request_schema_data(files_schemas.DownloadPresignedUrlRequestSchema)
         filename: str = req_data["filename"]
-        key: str = req_data["key"]
+        s3_key: str = req_data["key"]
 
         file_type = get_file_type_from_name(filename=filename, allow_xlsx=self.request.app["ALLOW_XLSX"])
 
         s3 = self.dl_request.get_s3_service()
 
-        file_exists = await s3_file_exists(s3.client, s3.tmp_bucket_name, key)
+        file_exists = await s3_file_exists(s3.client, s3.tmp_bucket_name, s3_key)
         if not file_exists:
             raise exc.DocumentNotFound()
 
-        user_id_from_key = key.split(S3_KEY_PARTS_SEPARATOR)[0]
-        if user_id_from_key != self.dl_request.rci.user_id:
+        s3_key_parts = s3_key.split(S3_KEY_PARTS_SEPARATOR)
+        if len(s3_key_parts) != 2 or s3_key_parts[0] != self.dl_request.rci.user_id:
             exc.PermissionDenied()
 
         rmm = self.dl_request.get_redis_model_manager()
         dfile = DataFile(
+            s3_key=s3_key,
             manager=rmm,
             filename=filename,
             file_type=file_type,

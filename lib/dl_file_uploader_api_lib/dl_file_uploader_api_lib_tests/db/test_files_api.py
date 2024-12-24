@@ -1,10 +1,16 @@
 import asyncio
 import http
+import io
 import json
 import uuid
+import hashlib
+from urllib.parse import urlparse
+import base64
 
+import aiohttp
 import attr
-from dl_file_uploader_api_lib.views.files import S3_KEY_PARTS_SEPARATOR
+from dl_file_uploader_api_lib.views.files import S3_KEY_PARTS_SEPARATOR, MakePresignedUrlView
+from dl_s3.utils import upload_to_s3_by_presigned
 import pytest
 
 from dl_api_commons.base_models import RequestContextInfo
@@ -44,8 +50,42 @@ async def test_make_presigned_url(fu_client, s3_tmp_bucket, rci):
 
 
 @pytest.mark.asyncio
-async def test_download_presigned_url(fu_client, s3_tmp_bucket, rci):
-    # TODO test
+async def test_download_presigned_url(fu_client, s3_tmp_bucket, rci, csv_data):
+    content_md5 = base64.b64encode(hashlib.md5(csv_data.encode("utf-8")).digest()).decode("utf-8")
+
+    presigned_url_resp = await fu_client.make_request(ReqBuilder.presigned_url(content_md5))
+    assert presigned_url_resp.status == 200, presigned_url_resp.json
+
+    upload_resp = await upload_to_s3_by_presigned(presigned_url_resp.json, content_md5, csv_data)
+    upload_resp_data = await upload_resp.read()
+    assert upload_resp.status == 204, upload_resp_data
+
+    download_resp = await fu_client.make_request(ReqBuilder.presigned_url_download(presigned_url_resp.json["fields"]["key"], "csv_data.csv"))
+    assert download_resp.status == 201, download_resp.json
+
+
+async def test_upload_presigned_too_large_file(monkeypatch, fu_client, s3_tmp_bucket, rci, csv_data):
+    monkeypatch.setattr(MakePresignedUrlView, "PRESIGNED_URL_MAX_BYTES", 32)
+
+    content_md5 = base64.b64encode(hashlib.md5(csv_data.encode("utf-8")).digest()).decode("utf-8")
+
+    presigned_url_resp = await fu_client.make_request(ReqBuilder.presigned_url(content_md5))
+    assert presigned_url_resp.status == 200, presigned_url_resp.json
+
+    with pytest.raises(aiohttp.ClientResponseError):
+        await upload_to_s3_by_presigned(presigned_url_resp.json, content_md5, csv_data)
+
+
+async def test_upload_presigned_bad_key(monkeypatch, fu_client, s3_tmp_bucket, rci, csv_data):
+    content_md5 = base64.b64encode(hashlib.md5(csv_data.encode("utf-8")).digest()).decode("utf-8")
+
+    presigned_url_resp = await fu_client.make_request(ReqBuilder.presigned_url(content_md5))
+    assert presigned_url_resp.status == 200, presigned_url_resp.json
+
+    presigned_url_resp.json["fields"]["key"] = "hacker/file"
+
+    with pytest.raises(aiohttp.ClientResponseError):
+        await upload_to_s3_by_presigned(presigned_url_resp.json, content_md5, csv_data)
 
 
 @pytest.mark.asyncio
