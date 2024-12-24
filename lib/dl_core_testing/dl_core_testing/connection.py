@@ -81,10 +81,10 @@ def make_saved_connection(
     conn = make_connection(us_manager=sync_usm, conn_type=conn_type, conn_name=conn_name, data_dict=data_dict)
     sync_usm.save(conn)
     conn_id = conn.uuid
-    if isinstance(conn_id, str):
-        return sync_usm.get_by_id(conn_id)
+    if conn_id is None:
+        raise ValueError("Connection ID is None")
     
-    raise ValueError(f"Unexpected conn_id type: {type(conn_id)}")
+    return sync_usm.get_by_id(conn_id)
 
 
 def make_saved_connection_from_db(
