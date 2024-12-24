@@ -5,11 +5,14 @@ import typing
 import aiohttp
 import botocore.exceptions
 
+
 if typing.TYPE_CHECKING:
     from types_aiobotocore_s3 import S3Client as AsyncS3Client
 
 
-async def upload_to_s3_by_presigned(presigned_url: dict[str, typing.Any], content_md5: str, data: str) -> aiohttp.ClientResponse:
+async def upload_to_s3_by_presigned(
+    presigned_url: dict[str, typing.Any], content_md5: str, data: str
+) -> aiohttp.ClientResponse:
     upload_url = presigned_url["url"]
     upload_url_fields = presigned_url["fields"]
     upload_url_fields["content-md5"] = content_md5
@@ -17,10 +20,14 @@ async def upload_to_s3_by_presigned(presigned_url: dict[str, typing.Any], conten
     async with aiohttp.ClientSession() as session:
         with aiohttp.MultipartWriter("form-data") as mpwriter:
             for k, v in upload_url_fields.items():
-                part = mpwriter.append(v, {'Content-Type': 'text/plain', 'Content-Disposition': f'attachment; name="{k}"'})
+                part = mpwriter.append(
+                    v, {"Content-Type": "text/plain", "Content-Disposition": f'attachment; name="{k}"'}
+                )
                 part.set_content_disposition("form-data", name=k)
 
-            part = mpwriter.append(data, {'Content-Type': 'text/plain', 'Content-Disposition': f'attachment; filename="mydata"'})
+            part = mpwriter.append(
+                data, {"Content-Type": "text/plain", "Content-Disposition": 'attachment; filename="mydata"'}
+            )
             part.set_content_disposition("form-data", name="file")
 
             async with session.post(

@@ -13,7 +13,6 @@ import uuid
 
 from aiohttp import web
 from aiohttp.multipart import BodyPartReader
-from dl_s3.utils import s3_file_exists
 from redis.asyncio.lock import Lock as RedisLock
 
 from dl_api_commons.aiohttp.aiohttp_wrappers import (
@@ -50,6 +49,7 @@ from dl_file_uploader_task_interface.tasks import (
 )
 from dl_s3.data_sink import S3RawFileAsyncDataSink
 from dl_s3.stream import RawBytesAsyncDataStream
+from dl_s3.utils import s3_file_exists
 
 
 LOGGER = logging.getLogger(__name__)
@@ -136,17 +136,19 @@ class FilesView(FileUploaderBaseView):
 class MakePresignedUrlView(FileUploaderBaseView):
     PRESIGNED_URL_EXPIRATION_SECONDS: ClassVar[int] = 60 * 60  # 1 hour
     PRESIGNED_URL_MIN_BYTES: ClassVar[int] = 1
-    PRESIGNED_URL_MAX_BYTES: ClassVar[int] = 200 * 1024 ** 2  # 200 MB
+    PRESIGNED_URL_MAX_BYTES: ClassVar[int] = 200 * 1024**2  # 200 MB
 
     async def post(self) -> web.StreamResponse:
         req_data = await self._load_post_request_schema_data(files_schemas.MakePresignedUrlRequestSchema)
         content_md5: str = req_data["content_md5"]
 
         s3 = self.dl_request.get_s3_service()
-        s3_key = S3_KEY_PARTS_SEPARATOR.join((
-            self.dl_request.rci.user_id or "unknown",
-            str(uuid.uuid4()),
-        ))
+        s3_key = S3_KEY_PARTS_SEPARATOR.join(
+            (
+                self.dl_request.rci.user_id or "unknown",
+                str(uuid.uuid4()),
+            )
+        )
 
         url = await s3.client.generate_presigned_post(
             Bucket=s3.tmp_bucket_name,

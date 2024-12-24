@@ -1,25 +1,26 @@
 import asyncio
+import base64
+import hashlib
 import http
-import io
 import json
 import uuid
-import hashlib
-from urllib.parse import urlparse
-import base64
 
 import aiohttp
 import attr
-from dl_file_uploader_api_lib.views.files import S3_KEY_PARTS_SEPARATOR, MakePresignedUrlView
-from dl_s3.utils import upload_to_s3_by_presigned
 import pytest
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_configs.crypto_keys import get_dummy_crypto_keys_config
 from dl_constants.enums import FileProcessingStatus
+from dl_file_uploader_api_lib.views.files import (
+    S3_KEY_PARTS_SEPARATOR,
+    MakePresignedUrlView,
+)
 from dl_file_uploader_api_lib_tests.req_builder import ReqBuilder
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import DataFile
 from dl_s3.data_sink import S3RawFileAsyncDataSink
+from dl_s3.utils import upload_to_s3_by_presigned
 
 
 @pytest.mark.asyncio
@@ -60,7 +61,9 @@ async def test_download_presigned_url(fu_client, s3_tmp_bucket, rci, csv_data):
     upload_resp_data = await upload_resp.read()
     assert upload_resp.status == 204, upload_resp_data
 
-    download_resp = await fu_client.make_request(ReqBuilder.presigned_url_download(presigned_url_resp.json["fields"]["key"], "csv_data.csv"))
+    download_resp = await fu_client.make_request(
+        ReqBuilder.presigned_url_download(presigned_url_resp.json["fields"]["key"], "csv_data.csv")
+    )
     assert download_resp.status == 201, download_resp.json
 
 

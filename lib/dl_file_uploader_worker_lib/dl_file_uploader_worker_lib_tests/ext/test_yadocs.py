@@ -7,8 +7,8 @@ from dl_file_uploader_lib.redis_model.models import (
     YaDocsUserSourceProperties,
 )
 from dl_file_uploader_task_interface.tasks import DownloadYaDocsTask
-from dl_task_processor.state import wait_task
 from dl_s3.utils import s3_file_exists
+from dl_task_processor.state import wait_task
 
 
 @pytest.mark.asyncio
