@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import (
     Optional,
     Type,
+    cast,
 )
 import uuid
 
@@ -81,8 +82,7 @@ def make_saved_connection(
         raise ValueError("Connection ID is None")
 
     conn_us = sync_usm.get_by_id(conn_id)
-    assert isinstance(conn_us, ConnectionBase)  # for typing
-    return conn_us
+    return cast(ConnectionBase, conn_us)
 
 
 def make_saved_connection_from_db(
