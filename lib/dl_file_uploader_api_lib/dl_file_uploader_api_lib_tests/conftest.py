@@ -316,7 +316,7 @@ def connectors_settings(s3_settings):
             ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
             SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
             BUCKET="bi-file-uploader",
-            S3_ENDPOINT="http://s3-storage:8000",
+            S3_ENDPOINT="http://s3-storage:9000",
         ),
     )
 
