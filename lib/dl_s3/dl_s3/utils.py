@@ -19,16 +19,10 @@ async def upload_to_s3_by_presigned(
 
     async with aiohttp.ClientSession() as session:
         with aiohttp.MultipartWriter("form-data") as mpwriter:
-            for k, v in upload_url_fields.items():
-                part = mpwriter.append(
-                    v, {"Content-Type": "text/plain", "Content-Disposition": f'attachment; name="{k}"'}
-                )
-                part.set_content_disposition("form-data", name=k)
+            for key, value in upload_url_fields.items():
+                mpwriter.append(value, {"Content-Disposition": f'form-data; name="{key}"'})
 
-            part = mpwriter.append(
-                data, {"Content-Type": "text/plain", "Content-Disposition": 'attachment; filename="mydata"'}
-            )
-            part.set_content_disposition("form-data", name="file")
+            mpwriter.append(data, {"Content-Disposition": 'form-data; name=file; filename="mydata"'})
 
             async with session.post(
                 url=upload_url,
