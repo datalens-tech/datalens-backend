@@ -174,15 +174,14 @@ class DownloadPresignedUrlView(FileUploaderBaseView):
 
         file_type = get_file_type_from_name(filename=filename, allow_xlsx=self.request.app["ALLOW_XLSX"])
 
-        s3 = self.dl_request.get_s3_service()
+        s3_key_parts = s3_key.split(S3_KEY_PARTS_SEPARATOR)
+        if len(s3_key_parts) != 2 or s3_key_parts[0] != self.dl_request.rci.user_id:
+            raise exc.PermissionDenied()
 
+        s3 = self.dl_request.get_s3_service()
         file_exists = await s3_file_exists(s3.client, s3.tmp_bucket_name, s3_key)
         if not file_exists:
             raise exc.DocumentNotFound()
-
-        s3_key_parts = s3_key.split(S3_KEY_PARTS_SEPARATOR)
-        if len(s3_key_parts) != 2 or s3_key_parts[0] != self.dl_request.rci.user_id:
-            exc.PermissionDenied()
 
         rmm = self.dl_request.get_redis_model_manager()
         dfile = DataFile(
