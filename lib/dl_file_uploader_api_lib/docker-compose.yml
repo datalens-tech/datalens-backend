@@ -16,9 +16,9 @@ services:
       MINIO_ROOT_USER: accessKey1
       MINIO_ROOT_PASSWORD: verySecretKey1
       MINIO_DOMAIN: local
-    command: server /export
+    command: server --address ":8000" /export
     ports:
-      - "51420:9000"
+      - 51420:8000
 
   init-db:
     depends_on:
