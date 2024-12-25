@@ -340,6 +340,14 @@ class ZitadelAuthSettingsOS(BaseAuthSettingsOS):
 BaseAuthSettingsOS.register("ZITADEL", ZitadelAuthSettingsOS)
 
 
+class NativeAuthSettingsOS(BaseAuthSettingsOS):
+    JWT_KEY: str
+    JWT_ALGORITHM: str
+
+
+BaseAuthSettingsOS.register("NATIVE", NativeAuthSettingsOS)
+
+
 class AppSettingsOS(
     dl_settings.WithFallbackGetAttr,
     dl_settings.WithFallbackEnvSource,

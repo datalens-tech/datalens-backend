@@ -16,6 +16,8 @@ from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import (
     AppSettings,
     DataApiAppSettingsOS,
+    NativeAuthSettingsOS,
+    NullAuthSettingsOS,
     ZitadelAuthSettingsOS,
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
@@ -145,18 +147,24 @@ class StandaloneDataApiAppFactory(
         return result
 
     def _get_auth_middleware(self) -> Middleware:
-        if self._settings.AUTH is None or self._settings.AUTH.type == "NONE":
+        settings = self._settings.AUTH
+
+        if settings is None or isinstance(settings, NullAuthSettingsOS):
             return self._get_auth_middleware_none()
 
-        if self._settings.AUTH.type == "ZITADEL":
+        if isinstance(settings, ZitadelAuthSettingsOS):
             return self._get_auth_middleware_zitadel(
-                ca_data=get_multiple_root_certificates(
+                settings=settings,
+                cadata=get_multiple_root_certificates(
                     self._settings.CA_FILE_PATH,
                     *self._settings.EXTRA_CA_FILE_PATHS,
                 ),
             )
 
-        raise ValueError(f"Unknown auth type: {self._settings.AUTH.type}")
+        if isinstance(settings, NativeAuthSettingsOS):
+            return self._get_auth_middleware_native(settings)
+
+        raise ValueError(f"Unknown auth type: {settings.type}")
 
     def _get_auth_middleware_none(
         self,
@@ -168,30 +176,24 @@ class StandaloneDataApiAppFactory(
 
     def _get_auth_middleware_zitadel(
         self,
-        ca_data: bytes,
+        settings: ZitadelAuthSettingsOS,
+        cadata: bytes,
     ) -> Middleware:
-        self._settings: DataApiAppSettingsOS
-        assert isinstance(self._settings.AUTH, ZitadelAuthSettingsOS)
-
         import httpx
 
         import dl_zitadel
 
-        ca_data = get_multiple_root_certificates(
-            self._settings.CA_FILE_PATH,
-            *self._settings.EXTRA_CA_FILE_PATHS,
+        httpx_client = httpx.AsyncClient(
+            verify=ssl.create_default_context(cadata=cadata.decode("ascii")),
         )
-
         zitadel_client = dl_zitadel.ZitadelAsyncClient(
-            base_client=httpx.AsyncClient(
-                verify=ssl.create_default_context(cadata=ca_data.decode("ascii")),
-            ),
-            base_url=self._settings.AUTH.BASE_URL,
-            project_id=self._settings.AUTH.PROJECT_ID,
-            client_id=self._settings.AUTH.CLIENT_ID,
-            client_secret=self._settings.AUTH.CLIENT_SECRET,
-            app_client_id=self._settings.AUTH.APP_CLIENT_ID,
-            app_client_secret=self._settings.AUTH.APP_CLIENT_SECRET,
+            base_client=httpx_client,
+            base_url=settings.BASE_URL,
+            project_id=settings.PROJECT_ID,
+            client_id=settings.CLIENT_ID,
+            client_secret=settings.CLIENT_SECRET,
+            app_client_id=settings.APP_CLIENT_ID,
+            app_client_secret=settings.APP_CLIENT_SECRET,
         )
         token_storage = dl_zitadel.ZitadelAsyncTokenStorage(
             client=zitadel_client,
@@ -200,5 +202,20 @@ class StandaloneDataApiAppFactory(
             client=zitadel_client,
             token_storage=token_storage,
         )
+        LOGGER.info("Zitadel auth middleware is set up")
+        return middleware.get_middleware()
 
+    def _get_auth_middleware_native(
+        self,
+        settings: NativeAuthSettingsOS,
+    ) -> Middleware:
+        import dl_auth_native
+
+        middleware = dl_auth_native.AioHTTPMiddleware.from_settings(
+            settings=dl_auth_native.MiddlewareSettings(
+                decoder_key=settings.JWT_KEY,
+                decoder_algorithms=[settings.JWT_ALGORITHM],
+            )
+        )
+        LOGGER.info("Native auth middleware is set up")
         return middleware.get_middleware()
