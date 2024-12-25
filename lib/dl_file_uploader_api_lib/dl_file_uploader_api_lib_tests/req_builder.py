@@ -110,6 +110,18 @@ class ReqBuilder:
         )
 
     @classmethod
+    def presigned_url_download(cls, key: str, filename: str, *, require_ok: bool = True) -> Req:
+        return Req(
+            method="post",
+            url="/api/v2/download_presigned_url",
+            data_json={
+                "key": key,
+                "filename": filename,
+            },
+            require_ok=require_ok,
+        )
+
+    @classmethod
     def file_status(cls, file_id: str) -> Req:
         return Req(
             method="get",

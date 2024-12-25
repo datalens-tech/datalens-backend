@@ -49,9 +49,12 @@ from dl_file_uploader_task_interface.tasks import (
 )
 from dl_s3.data_sink import S3RawFileAsyncDataSink
 from dl_s3.stream import RawBytesAsyncDataStream
+from dl_s3.utils import s3_file_exists
 
 
 LOGGER = logging.getLogger(__name__)
+
+S3_KEY_PARTS_SEPARATOR = "/"  # used to separate author user_id from the rest of the s3 object key to sign it
 
 
 def get_file_type_from_name(
@@ -131,19 +134,28 @@ class FilesView(FileUploaderBaseView):
 
 
 class MakePresignedUrlView(FileUploaderBaseView):
+    PRESIGNED_URL_EXPIRATION_SECONDS: ClassVar[int] = 60 * 60  # 1 hour
+    PRESIGNED_URL_MIN_BYTES: ClassVar[int] = 1
+    PRESIGNED_URL_MAX_BYTES: ClassVar[int] = 200 * 1024**2  # 200 MB
+
     async def post(self) -> web.StreamResponse:
         req_data = await self._load_post_request_schema_data(files_schemas.MakePresignedUrlRequestSchema)
         content_md5: str = req_data["content_md5"]
 
         s3 = self.dl_request.get_s3_service()
-        s3_key = "{}_{}".format(self.dl_request.rci.user_id or "unknown", str(uuid.uuid4()))
+        s3_key = S3_KEY_PARTS_SEPARATOR.join(
+            (
+                self.dl_request.rci.user_id or "unknown",
+                str(uuid.uuid4()),
+            )
+        )
 
         url = await s3.client.generate_presigned_post(
             Bucket=s3.tmp_bucket_name,
             Key=s3_key,
-            ExpiresIn=60 * 60,  # 1 hour
+            ExpiresIn=self.PRESIGNED_URL_EXPIRATION_SECONDS,
             Conditions=[
-                ["content-length-range", 1, 200 * 1024 * 1024],  # 1B .. 200MB  # TODO use constant from DataSink
+                ["content-length-range", self.PRESIGNED_URL_MIN_BYTES, self.PRESIGNED_URL_MAX_BYTES],
                 {"Content-MD5": content_md5},
             ],
         )
@@ -151,6 +163,49 @@ class MakePresignedUrlView(FileUploaderBaseView):
         return web.json_response(
             files_schemas.PresignedUrlSchema().dump(url),
             status=HTTPStatus.OK,
+        )
+
+
+class DownloadPresignedUrlView(FileUploaderBaseView):
+    async def post(self) -> web.StreamResponse:
+        req_data = await self._load_post_request_schema_data(files_schemas.DownloadPresignedUrlRequestSchema)
+        filename: str = req_data["filename"]
+        s3_key: str = req_data["key"]
+
+        file_type = get_file_type_from_name(filename=filename, allow_xlsx=self.request.app["ALLOW_XLSX"])
+
+        s3_key_parts = s3_key.split(S3_KEY_PARTS_SEPARATOR)
+        if len(s3_key_parts) != 2 or s3_key_parts[0] != self.dl_request.rci.user_id:
+            raise exc.PermissionDenied()
+
+        s3 = self.dl_request.get_s3_service()
+        file_exists = await s3_file_exists(s3.client, s3.tmp_bucket_name, s3_key)
+        if not file_exists:
+            raise exc.DocumentNotFound()
+
+        rmm = self.dl_request.get_redis_model_manager()
+        dfile = DataFile(
+            s3_key=s3_key,
+            manager=rmm,
+            filename=filename,
+            file_type=file_type,
+            status=FileProcessingStatus.in_progress,
+        )
+        LOGGER.info(f"Data file id: {dfile.id}")
+
+        await dfile.save()
+
+        task_processor = self.dl_request.get_task_processor()
+        if file_type == FileType.xlsx:
+            await task_processor.schedule(ProcessExcelTask(file_id=dfile.id))
+            LOGGER.info(f"Scheduled ProcessExcelTask for file_id {dfile.id}")
+        else:
+            await task_processor.schedule(ParseFileTask(file_id=dfile.id))
+            LOGGER.info(f"Scheduled ParseFileTask for file_id {dfile.id}")
+
+        return web.json_response(
+            files_schemas.FileUploadResponseSchema().dump({"file_id": dfile.id, "title": dfile.filename}),
+            status=HTTPStatus.CREATED,
         )
 
 
