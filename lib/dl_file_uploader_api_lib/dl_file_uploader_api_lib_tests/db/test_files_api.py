@@ -84,6 +84,7 @@ async def test_download_presigned_url_bad_user(fu_client, s3_tmp_bucket, csv_dat
     assert download_resp.json["code"] == "ERR.FILE.PERMISSION_DENIED"
 
 
+@pytest.mark.asyncio
 async def test_upload_presigned_too_large_file(monkeypatch, fu_client, s3_tmp_bucket, csv_data):
     monkeypatch.setattr(MakePresignedUrlView, "PRESIGNED_URL_MAX_BYTES", 32)
 
@@ -96,6 +97,7 @@ async def test_upload_presigned_too_large_file(monkeypatch, fu_client, s3_tmp_bu
         await upload_to_s3_by_presigned(presigned_url_resp.json, content_md5, csv_data)
 
 
+@pytest.mark.asyncio
 async def test_upload_presigned_bad_key(monkeypatch, fu_client, s3_tmp_bucket, csv_data):
     content_md5 = base64.b64encode(hashlib.md5(csv_data.encode("utf-8")).digest()).decode("utf-8")
 
