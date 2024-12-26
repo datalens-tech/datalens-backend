@@ -32,9 +32,6 @@ from dl_api_commons.reporting.registry import ReportingRegistry
 from dl_constants.api_constants import DLHeaders
 
 
-AIOHTTPMethodMiddleware = Callable[[Any, web.Request, Handler], Awaitable[web.StreamResponse]]
-
-
 class RequiredResource(enum.Enum):
     pass
 
@@ -261,7 +258,7 @@ class DLRequestBase:
     @classmethod
     def use_dl_request_on_method(
         cls, coro: Callable[[Any, _SELF_TYPE, Handler], Awaitable[web.StreamResponse]]
-    ) -> AIOHTTPMethodMiddleware:
+    ) -> Middleware:
         if not inspect.iscoroutinefunction(coro):
             raise ValueError("This decorator may only be applied to a coroutine")
 
@@ -270,7 +267,7 @@ class DLRequestBase:
             dl_request = request[cls.KEY_DL_REQUEST]
             return await coro(self, dl_request, handler)
 
-        return wrapper
+        return wrapper  # type: ignore[return-value]  # TODO FIX: method-based middlewares are not covered by aiohttp typing
 
 
 _DL_REQUEST_TV = TypeVar("_DL_REQUEST_TV", bound=DLRequestBase)

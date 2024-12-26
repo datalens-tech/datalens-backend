@@ -99,7 +99,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                     conn = aiohttp.TCPConnector()
             else:
                 socket_path = self._ctx.secure_reader_settings.socket
-                secure_reader_endpoint = f"http+unix://{urllib.parse.quote_plus(socket_path)}"
+                secure_reader_endpoint = f"unix://{urllib.parse.quote_plus(socket_path)}"
                 conn = aiohttp.UnixConnector(path=socket_path)
 
             async with aiohttp.ClientSession(connector=conn, loop=loop) as session:
