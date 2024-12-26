@@ -1186,6 +1186,18 @@ class DatasetValidator(DatasetBaseWrapper):
                 parameters=source_data["parameters"],
             )
 
+            # need to check permissions again in case added source refers to an unchecked connection
+            # this can only happen when the first source is being added,
+            # because we don't support more than one connection in a single ds (see `source_can_be_added`)
+            existing_source_id = self._ds.get_single_data_source_id(ignore_source_ids=[source_id])
+            if existing_source_id is None:  # dataset is empty
+                check_permissions_for_origin_sources(
+                    dataset=self._ds,
+                    source_ids=[source_id],
+                    permission_kind=USPermissionKind.read,
+                    us_entry_buffer=self._us_manager.get_entry_buffer(),
+                )
+
         if action in (DatasetAction.update_source, DatasetAction.delete_source):
             dsrc_coll = self._get_data_source_coll_strict(source_id=source_id)
             old_title = dsrc_coll.title
