@@ -32,8 +32,6 @@ services:
       - 51500:8083
 
   db-clickhouse:
-    depends_on:
-      - zookeeper-1
     build:
       context: docker-compose
       dockerfile: Dockerfile.db-clickhouse
