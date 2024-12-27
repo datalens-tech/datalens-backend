@@ -77,7 +77,6 @@ from dl_testing.s3_utils import (
 from dl_testing.utils import (
     get_default_aiohttp_session,
     get_root_certificates,
-    wait_for_initdb,
 )
 
 from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
@@ -114,11 +113,6 @@ def loop(event_loop):
     """
     asyncio.set_event_loop(event_loop)
     return event_loop
-
-
-@pytest.fixture(scope="session")
-def initdb_ready():
-    return wait_for_initdb(initdb_port=51408)
 
 
 @pytest.fixture(scope="session")
@@ -250,14 +244,14 @@ async def s3_client(s3_settings) -> AsyncS3Client:
 
 
 @pytest.fixture(scope="function")
-async def s3_tmp_bucket(initdb_ready, s3_client, app_settings) -> str:
+async def s3_tmp_bucket(s3_client, app_settings) -> str:
     bucket_name = app_settings.S3_TMP_BUCKET_NAME
     await create_s3_bucket(s3_client, bucket_name, max_attempts=1)
     return bucket_name
 
 
 @pytest.fixture(scope="function")
-async def s3_persistent_bucket(initdb_ready, s3_client, app_settings) -> str:
+async def s3_persistent_bucket(s3_client, app_settings) -> str:
     bucket_name = app_settings.S3_PERSISTENT_BUCKET_NAME
     await create_s3_bucket(s3_client, bucket_name, max_attempts=1)
     return bucket_name

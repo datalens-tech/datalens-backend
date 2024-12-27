@@ -51,10 +51,9 @@ services:
       ALLOW_EMPTY_PASSWORD: 'yes'
     image: some.cr.example/datalens/redis@sha256:3127620da977815556439a9dc347fff89432a79b6bb6e93a16f20ac4a34ce337
   s3-storage:
-    build:
-      context: ../../lib/testenv-common/images
-      dockerfile: Dockerfile.s3-storage
-    command: bash /data/entrypoint.sh
+    extends:
+      file: ../../lib/testenv-common/docker-compose.common.yml
+      service: s3-storage
   us:
     build:
       context: ../../lib/testenv-common/images
