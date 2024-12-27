@@ -16,11 +16,9 @@ from dl_api_lib.app.data_api.resources.base import (
 )
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.schemas.typed_query_raw import (
-    PlainTypedQueryContentSchema,
     RawTypedQueryRaw,
-    RawTypedQueryParameter,
-    TypedQueryResultSchema,
     TypedQueryRawSchema,
+    TypedQueryRawResultSchema
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_api_lib.utils.base import need_permission_on_entry
@@ -33,16 +31,6 @@ from dl_dashsql.typed_query.primitives import (
     TypedQueryRawParameters,
     TypedQueryRawResult,
 )
-
-
-class TypedQueryResultSerializer:
-    """Serializes the result (meta and data)"""
-
-    def serialize_typed_query_result(self, typed_query_result: TypedQueryResult) -> Any:
-        return {
-            "query_type": typed_query_result.query_type.name,
-            "data": TypedQueryResultSchema().dump(typed_query_result),
-        }
 
 
 @requires(RequiredResourceCommon.US_MANAGER)
@@ -98,18 +86,19 @@ class DashSQLTypedQueryRawView(BaseView):
 
     async def execute_query(self, connection: ConnectionBase, typed_query: TypedQueryRaw) -> TypedQueryRawResult:
         """Prepare everything for execution and execute"""
-        tq_processor_factory = self.api_service_registry.get_typed_query_processor_factory()
+        tq_processor_factory = self.api_service_registry.get_typed_query_raw_processor_factory()
         tq_processor = tq_processor_factory.get_typed_query_processor(connection=connection)
-        typed_query_result = await tq_processor.process_typed_query(typed_query=typed_query)
+        typed_query_result = await tq_processor.process_typed_query_raw(typed_query_raw=typed_query)
         return typed_query_result
 
-    def make_response_data(self, typed_query_result: TypedQueryResult) -> dict:
+    def make_response_data(self, typed_query_result: TypedQueryRawResult) -> dict:
         """Serialize output"""
-        result_serializer = TypedQueryResultSerializer()  # TODO: Get serializer from somewhere
-        response_data = result_serializer.serialize_typed_query_result(typed_query_result)
-        return response_data
+        return {
+            "query_type": typed_query_result.query_type.name,
+            "data": TypedQueryRawResultSchema().dump(typed_query_result),
+        }
 
-    @generic_profiler_async("dashsql-typed-query")
+    @generic_profiler_async("dashsql-typed-query-raw")
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> web.Response:
         """The main view method. Handle typed query execution"""

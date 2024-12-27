@@ -38,6 +38,8 @@ if TYPE_CHECKING:
     from dl_dashsql.typed_query.primitives import (
         TypedQuery,
         TypedQueryResult,
+        TypedQueryRaw,
+        TypedQueryRawResult
     )
 
 
@@ -112,6 +114,16 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
         :return: Chunks of result
         """
         return await self._execute_typed_query(typed_query)
+    
+    @final
+    @init_required
+    async def execute_typed_query_raw(self, typed_query_raw: TypedQueryRaw) -> TypedQueryRawResult:
+        """
+        This method should not be overridden!
+        :param query:
+        :return: Chunks of result
+        """
+        return await self._execute_typed_query_raw(typed_query_raw)
 
     @final
     @init_required
@@ -155,6 +167,10 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     async def _execute_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
+        pass
+
+    @abc.abstractmethod
+    async def _execute_typed_query_raw(self, typed_query: TypedQueryRaw) -> TypedQueryRawResult:
         pass
 
     @abc.abstractmethod
