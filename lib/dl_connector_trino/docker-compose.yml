@@ -1,11 +1,12 @@
-version: '3.7'
-
 services:
   trino:
     # image: "trinodb/trino:468"
     build:
       context: docker-compose
       dockerfile: Dockerfile.engine-trino-468
+  #   Auth types:
+  #     HTTPS PASSWORD:
+  #       trino_user : trino_password
 
   trino-tls-nginx:
     build:
