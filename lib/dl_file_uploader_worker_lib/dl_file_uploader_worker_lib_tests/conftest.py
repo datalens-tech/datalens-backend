@@ -68,10 +68,7 @@ from dl_testing.s3_utils import (
     create_s3_client,
     create_sync_s3_client,
 )
-from dl_testing.utils import (
-    get_root_certificates,
-    wait_for_initdb,
-)
+from dl_testing.utils import get_root_certificates
 
 from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 
@@ -101,11 +98,6 @@ def loop(event_loop):
     """
     asyncio.set_event_loop(event_loop)
     return event_loop
-
-
-@pytest.fixture(scope="session")
-def initdb_ready():
-    return wait_for_initdb(initdb_port=get_test_container_hostport("init-db", fallback_port=51508).port)
 
 
 @pytest.fixture(scope="function")
@@ -321,14 +313,14 @@ def redis_model_manager(redis_cli, rci) -> RedisModelManager:
 
 
 @pytest.fixture(scope="function")
-async def s3_tmp_bucket(initdb_ready, s3_client, file_uploader_worker_settings) -> str:
+async def s3_tmp_bucket(s3_client, file_uploader_worker_settings) -> str:
     bucket_name = file_uploader_worker_settings.S3_TMP_BUCKET_NAME
     await create_s3_bucket(s3_client, bucket_name, max_attempts=1)
     return bucket_name
 
 
 @pytest.fixture(scope="function")
-async def s3_persistent_bucket(initdb_ready, s3_client, file_uploader_worker_settings) -> str:
+async def s3_persistent_bucket(s3_client, file_uploader_worker_settings) -> str:
     bucket_name = file_uploader_worker_settings.S3_PERSISTENT_BUCKET_NAME
     await create_s3_bucket(s3_client, bucket_name, max_attempts=1)
     return bucket_name

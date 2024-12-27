@@ -17,13 +17,9 @@ services:
       - 52611:9000
 
   s3-storage:
-    build:
-      context: ../testenv-common/images
-      dockerfile: Dockerfile.s3-storage
-    command: bash /data/entrypoint.sh
-    environment:
-      S3BACKEND: "mem"
-      REMOTE_MANAGEMENT_DISABLE: 1
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: s3-storage
     ports:
       - 52620:8000
 

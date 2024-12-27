@@ -11,25 +11,11 @@ services:
       - 51504:6379
 
   s3-storage:
-    build:
-      context: ../testenv-common/images
-      dockerfile: Dockerfile.s3-storage
-    command: bash /data/entrypoint.sh
-    environment:
-      S3BACKEND: "mem"
-      REMOTE_MANAGEMENT_DISABLE: 1
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: s3-storage
     ports:
       - 51520:8000
-
-  init-db:
-    depends_on:
-      - redis
-      - s3-storage
-    build:
-      context: docker-compose
-      dockerfile: Dockerfile.init-db
-    ports:
-     - "51508:8000"
 
   pg-us:
     extends:
@@ -44,13 +30,6 @@ services:
       service: us
     ports:
       - 51500:8083
-
-  zookeeper-1:
-    # image: "zookeeper:3.4"
-    image: "zookeeper:3.4@sha256:d2b1ea8db9241d31daed9b1b90e22b62d9ffb14e29d355d0d0c8d0a87819d929"
-    environment:
-      ZOO_MY_ID: 1
-      ZOO_SERVERS: server.1=0.0.0.0:2888:3888
 
   db-clickhouse:
     depends_on:

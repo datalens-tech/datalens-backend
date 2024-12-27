@@ -117,9 +117,8 @@ services:
      - "50305:6379"
 
   s3-storage:
-    build:
-      context: ../../lib/testenv-common/images
-      dockerfile: Dockerfile.s3-storage
-    command: bash /data/entrypoint.sh
+    extends:
+      file: ../../lib/testenv-common/docker-compose.common.yml
+      service: s3-storage
     ports:
       - "51620:8000"
