@@ -42,7 +42,7 @@ LOGGER = logging.getLogger(__name__)
 @attr.s()
 class USDataPack:
     data: dict[str, Any] = attr.ib()
-    secrets: dict[str, Optional[str | dict | EncryptedData]] = attr.ib(repr=False, factory=dict)
+    secrets: dict[str, Optional[str | dict[str, str] | EncryptedData]] = attr.ib(repr=False, factory=dict)
 
 
 class USEntrySerializer(abc.ABC):
@@ -106,7 +106,6 @@ class USEntrySerializer(abc.ABC):
         for sec_key in secret_keys:
             sec_val = raw_addressable.pop(sec_key)
             secrets_addressable.set(sec_key, sec_val)
-
         return USDataPack(
             data=raw_addressable.data,
             secrets=secrets_addressable.data,
