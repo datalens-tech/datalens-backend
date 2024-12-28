@@ -26,5 +26,5 @@ class MySQLAdapter(BaseMySQLAdapter, BaseClassicAdapter[MySQLConnTargetDTO]):
             super().get_connect_args(),
             charset="utf8",
             local_infile=0,
-            ssl=self._get_ssl_ctx(),
+            ssl=self._get_ssl_ctx() or {"ssl_check_hostname": False},
         )
