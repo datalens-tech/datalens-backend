@@ -2,6 +2,9 @@ version: '3'
 
 vars:
   VM_HOST: dl-vm
+  _USE_DOCKER_COMPOSE_V1:
+    sh: if command -v docker-compose &>/dev/null; then echo "1"; else echo ""; fi
+  DOCKER_COMPOSE_CMD: '{{if ._USE_DOCKER_COMPOSE_V1}}docker-compose{{else}}docker compose{{end}}'
 
 tasks:
   help:
@@ -186,7 +189,7 @@ tasks:
     cmds:
       - |
         {{ if .DOCKER_HOST }}DOCKER_HOST={{.DOCKER_HOST}}{{ end }} \
-        docker-compose \
+        {{.DOCKER_COMPOSE_CMD}} \
         -f {{.DOCKER_COMPOSE_FILE}} \
         {{.CLI_ARGS}}
     vars:
