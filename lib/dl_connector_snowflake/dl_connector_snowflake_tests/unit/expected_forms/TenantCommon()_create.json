@@ -1,0 +1,318 @@
+{
+    "title": "Snowflake",
+    "rows": [
+        {
+            "type": "collapse",
+            "name": "snowflake_auth",
+            "text": "Authentication",
+            "componentProps": {
+                "defaultIsExpand": true
+            }
+        },
+        {
+            "type": "snowflake_oauth_integration",
+            "displayConditions": {
+                "snowflake_auth": "opened"
+            }
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "snowflake_auth": "opened"
+                    },
+                    "text": "ACCOUNT_NAME",
+                    "helpText": "Learn more in the [documentation](https://docs.snowflake.com/en/user-guide/client-redirect.html#snowsight-the-snowflake-web-interface)"
+                },
+                {
+                    "id": "input",
+                    "name": "account_name",
+                    "displayConditions": {
+                        "snowflake_auth": "opened"
+                    },
+                    "width": "m"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "snowflake_auth": "opened"
+                    },
+                    "text": "CLIENT_ID",
+                    "helpText": "Learn more in the [documentation](https://docs.snowflake.com/en/sql-reference/functions/system_show_oauth_client_secrets.html#system-show-oauth-client-secrets)"
+                },
+                {
+                    "id": "input",
+                    "name": "client_id",
+                    "displayConditions": {
+                        "snowflake_auth": "opened"
+                    },
+                    "width": "m"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "snowflake_auth": "opened"
+                    },
+                    "text": "CLIENT_SECRET",
+                    "helpText": "Learn more in the [documentation](https://docs.snowflake.com/en/sql-reference/functions/system_show_oauth_client_secrets.html#system-show-oauth-client-secrets)"
+                },
+                {
+                    "id": "input",
+                    "name": "client_secret",
+                    "displayConditions": {
+                        "snowflake_auth": "opened"
+                    },
+                    "width": "m",
+                    "controlProps": {
+                        "type": "password"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "oauth_snowflake",
+            "displayConditions": {
+                "snowflake_auth": "opened"
+            }
+        },
+        {
+            "items": [
+                {
+                    "id": "hidden",
+                    "name": "refresh_token_expire_time"
+                }
+            ]
+        },
+        {
+            "type": "collapse",
+            "name": "snowflake_db_details",
+            "text": "Database details",
+            "componentProps": {
+                "defaultIsExpand": false
+            }
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "snowflake_db_details": "opened"
+                    },
+                    "text": "User name",
+                    "helpText": "Learn more in the [documentation](https://docs.snowflake.com/en/sql-reference/sql/create-user.html#create-user)"
+                },
+                {
+                    "id": "input",
+                    "name": "user_name",
+                    "displayConditions": {
+                        "snowflake_db_details": "opened"
+                    },
+                    "width": "m"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "snowflake_db_details": "opened"
+                    },
+                    "text": "Database name",
+                    "helpText": "Learn more in the [documentation](https://docs.snowflake.com/en/sql-reference/sql/create-database.html#create-database)"
+                },
+                {
+                    "id": "input",
+                    "name": "db_name",
+                    "displayConditions": {
+                        "snowflake_db_details": "opened"
+                    },
+                    "width": "m"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "snowflake_db_details": "opened"
+                    },
+                    "text": "Database schema",
+                    "helpText": "Learn more in the [documentation](https://docs.snowflake.com/en/sql-reference/sql/create-schema.html#create-schema)"
+                },
+                {
+                    "id": "input",
+                    "name": "schema",
+                    "displayConditions": {
+                        "snowflake_db_details": "opened"
+                    },
+                    "width": "m"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "snowflake_db_details": "opened"
+                    },
+                    "text": "Warehouse",
+                    "helpText": "Learn more in the [documentation](https://docs.snowflake.com/en/sql-reference/sql/create-warehouse.html#create-warehouse)"
+                },
+                {
+                    "id": "input",
+                    "name": "warehouse",
+                    "displayConditions": {
+                        "snowflake_db_details": "opened"
+                    },
+                    "width": "m"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "snowflake_db_details": "opened"
+                    },
+                    "text": "User role",
+                    "helpText": "Learn more in the [documentation](https://docs.snowflake.com/en/sql-reference/sql/create-role.html#create-role)"
+                },
+                {
+                    "id": "input",
+                    "name": "user_role",
+                    "displayConditions": {
+                        "snowflake_db_details": "opened"
+                    },
+                    "width": "m"
+                }
+            ]
+        }
+    ],
+    "apiSchema": {
+        "create": {
+            "items": [
+                {
+                    "name": "account_name",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "client_id",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "client_secret",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "refresh_token",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "user_name",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "db_name",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "schema",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "warehouse",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "refresh_token_expire_time",
+                    "required": false,
+                    "nullable": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "user_role",
+                    "required": false,
+                    "nullable": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "type",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        },
+        "check": {
+            "items": [
+                {
+                    "name": "account_name",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "client_id",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "client_secret",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "refresh_token",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "user_name",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "db_name",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "schema",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "warehouse",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "type",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        }
+    }
+}

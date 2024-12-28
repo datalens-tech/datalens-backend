@@ -52,7 +52,7 @@ class AggMedianDateSF(base.AggMedian):
                 sa.func.TO_TIMESTAMP(
                     within_group(
                         sa.func.PERCENTILE_DISC(0.5),
-                        sa.func.DATE_PART("EPOCH_SECOND", expr.desc()),
+                        sa.func.DATE_PART("EPOCH_SECOND", expr).desc(),
                     )
                 )
             ),
@@ -69,7 +69,7 @@ class AggMedianDateTimeSF(base.AggMedian):
             lambda expr: sa.func.TO_TIMESTAMP(
                 within_group(
                     sa.func.PERCENTILE_DISC(0.5),
-                    sa.func.DATE_PART("EPOCH_SECOND", expr.desc()),
+                    sa.func.DATE_PART("EPOCH_SECOND", expr).desc(),
                 )
             ),
         ),

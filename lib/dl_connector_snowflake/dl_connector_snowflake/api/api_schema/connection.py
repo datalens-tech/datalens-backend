@@ -3,6 +3,7 @@ from marshmallow import fields as ma_fields
 from dl_api_connector.api_schema.connection_base import ConnectionSchema
 from dl_api_connector.api_schema.connection_base_fields import secret_string_field
 from dl_api_connector.api_schema.connection_mixins import RawSQLLevelMixin
+from dl_api_connector.api_schema.connection_sql import db_name_no_query_params
 from dl_api_connector.api_schema.extras import FieldExtra
 
 from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
@@ -46,6 +47,7 @@ class SnowFlakeConnectionSchema(ConnectionSchema, RawSQLLevelMixin):
         attribute="data.db_name",
         required=True,
         bi_extra=FieldExtra(editable=True),
+        validate=db_name_no_query_params,
     )
     warehouse = ma_fields.String(
         attribute="data.warehouse",
