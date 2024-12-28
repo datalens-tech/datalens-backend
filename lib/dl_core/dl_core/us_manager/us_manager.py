@@ -353,7 +353,11 @@ class USManagerBase:
             secret_keys = serializer.get_secret_keys(entry_cls)
             for key in secret_keys:
                 old_data = serializer.get_data_attr(entry, key)
-                decrypted_data = self._crypto_controller.decrypt(json.loads(old_data)) if old_data is not None else None
+                if isinstance(old_data, str):
+                    decrypted_data = self._crypto_controller.decrypt(json.loads(old_data))
+                else:  # dict or None
+                    decrypted_str_data = self._crypto_controller.decrypt(old_data)
+                    decrypted_data = json.loads(decrypted_str_data) if decrypted_str_data else None
                 serializer.set_data_attr(entry, key, decrypted_data)
 
         entry.stored_in_db = True
