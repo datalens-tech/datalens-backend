@@ -1147,6 +1147,14 @@ class DatasetValidator(DatasetBaseWrapper):
     ) -> None:
         """Apply update to the data source configuration"""
 
+        self._sync_us_manager.load_dependencies(self._ds)
+        check_permissions_for_origin_sources(  # any source update requires sufficient permissions on the connection
+            dataset=self._ds,
+            source_ids=None,
+            permission_kind=USPermissionKind.read,
+            us_entry_buffer=self._us_manager.get_entry_buffer(),
+        )
+
         source_data = source_data.copy()
         source_id = source_data.pop("id") or str(uuid.uuid4())
         component_ref = DatasetComponentRef(component_type=ComponentType.data_source, component_id=source_id)
@@ -1178,12 +1186,17 @@ class DatasetValidator(DatasetBaseWrapper):
                 parameters=source_data["parameters"],
             )
 
-            check_permissions_for_origin_sources(
-                dataset=self._ds,
-                source_ids=[source_id],
-                permission_kind=USPermissionKind.read,
-                us_entry_buffer=self._us_manager.get_entry_buffer(),
-            )
+            # need to check permissions again in case added source refers to an unchecked connection
+            # this can only happen when the first source is being added,
+            # because we don't support more than one connection in a single ds (see `source_can_be_added`)
+            existing_source_id = self._ds.get_single_data_source_id(ignore_source_ids=[source_id])
+            if existing_source_id is None:  # dataset is empty
+                check_permissions_for_origin_sources(
+                    dataset=self._ds,
+                    source_ids=[source_id],
+                    permission_kind=USPermissionKind.read,
+                    us_entry_buffer=self._us_manager.get_entry_buffer(),
+                )
 
         if action in (DatasetAction.update_source, DatasetAction.delete_source):
             dsrc_coll = self._get_data_source_coll_strict(source_id=source_id)
