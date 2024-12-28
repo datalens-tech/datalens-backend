@@ -24,7 +24,11 @@ class TestSnowFlakeDataRange(SnowFlakeDataApiTestBase, DefaultConnectorDataRange
 
 
 class TestSnowFlakeDataDistinct(SnowFlakeDataApiTestBase, DefaultConnectorDataDistinctTestSuite):
-    pass
+    test_params = RegulatedTestParams(
+        mark_tests_failed={
+            DefaultConnectorDataDistinctTestSuite.test_date_filter_distinct: "Requires db fixture, but it is not defined for Snowflake",
+        }
+    )
 
 
 class TestSnowFlakeDataGroupBy(SnowFlakeDataApiTestBase, DefaultConnectorDataGroupByFormulaTestSuite):
@@ -37,3 +41,9 @@ class TestSnowFlakeDataPreview(SnowFlakeDataApiTestBase, DefaultConnectorDataPre
 
 class TestSnowFlakeDataCache(SnowFlakeDataApiTestBase, DefaultConnectorDataCacheTestSuite):
     data_caches_enabled = True
+
+    test_params = RegulatedTestParams(
+        mark_tests_failed={
+            DefaultConnectorDataCacheTestSuite.test_cache_with_filter_with_constants: "Requires db fixture, but it is not defined for Snowflake",
+        }
+    )

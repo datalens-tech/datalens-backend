@@ -50,6 +50,14 @@ class TestSnowFlakeConnectionWithExpiredRefreshToken(
         with pytest.raises(SnowflakeGetAccessTokenError):
             conn_executor.execute(ConnExecutorQuery(query="select 1"))
 
+    def test_connection_get_data_source_templates(self, saved_connection, sync_conn_executor_factory) -> None:
+        def sync_conn_executor_factory_for_conn(connection):
+            return sync_conn_executor_factory()
+
+        conn = saved_connection
+        with pytest.raises(SnowflakeGetAccessTokenError):
+            conn.get_data_source_templates(conn_executor_factory=sync_conn_executor_factory_for_conn)
+
 
 class TestSnowFlakeConnectionWithRefreshTokenSoonToExpire(
     TestSnowFlakeConnection,
