@@ -158,7 +158,7 @@ class USEntrySerializerMarshmallow(USEntrySerializer):
         schema = self.get_load_storage_schema(data_cls)
         secret_keys = self.get_secret_keys(cls)
         for key in secret_keys:
-            if raw_data[key.parts[-1]] and isinstance(
+            if raw_data.get(key.parts[-1]) and isinstance(
                 schema.declared_fields.get(key.parts[-1]), marshmallow.fields.String
             ):
                 raw_data[key.parts[-1]] = json.dumps(raw_data[key.parts[-1]])
