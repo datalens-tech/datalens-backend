@@ -99,7 +99,7 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
         yield next(iter(target_conn_dto_pool))
 
     @pytest.fixture(scope="function", params=[True, False], ids=["async", "sync"])
-    def remote_adapter(
+    async def remote_adapter(
         self,
         conn_target_dto: ConnTargetDTO,
         query_executor_options: RemoteQueryExecutorData,

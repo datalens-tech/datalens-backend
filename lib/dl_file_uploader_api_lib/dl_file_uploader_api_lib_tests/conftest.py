@@ -393,8 +393,7 @@ def prepare_us(us_config):
 
 
 @pytest.fixture(scope="function")
-@pytest.mark.usefixtures("loop")
-def default_async_usm_per_test(bi_context, prepare_us, us_config, root_certificates):
+async def default_async_usm_per_test(bi_context, prepare_us, us_config, root_certificates):
     rci = RequestContextInfo.create_empty()
     return AsyncUSManager(
         us_base_url=us_config.base_url,

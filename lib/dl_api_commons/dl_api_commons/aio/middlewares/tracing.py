@@ -54,7 +54,7 @@ class TracingService:
         span.set_tag(tag_name, tag_value)
 
     @web.middleware
-    async def middleware(self, request: web.Request, handler: Handler) -> web.StreamResponse:  # type: ignore  # TODO: fix
+    async def middleware(self, request: web.Request, handler: Handler) -> web.StreamResponse:  # type: ignore[return]
         root_span: Optional[opentracing.Span] = None
         operation_name = get_endpoint_code(request)
 
