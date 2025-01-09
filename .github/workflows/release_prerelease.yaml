@@ -85,7 +85,7 @@ jobs:
         image_version="${version#"v"}"
         image_url_rc="${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}-rc.1"
         image_url_release="${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}"
-        
+
         ./run-project-bake "${bake_target}" \
           --push \
           --set "${bake_target}.tags=${image_url_rc}"
@@ -120,12 +120,13 @@ jobs:
         id: create_prerelease
         run: |
           gh release create \
-            --repo ${{ github.repository_owner }}/${{ github.event.repository.name }} \
+            --repo $REPOSITORY_NAME \
             ${{ env.release_tag }} \
             --target ${{ env.release_branch }} \
             --prerelease \
             --generate-notes
         env:
+          REPOSITORY_NAME: ${{ github.repository_owner }}/${{ github.event.repository.name }}
           GH_TOKEN: ${{ github.token }}
           release_tag: "${{ env.version }}-rc.1"
 

@@ -18,6 +18,7 @@ jobs:
       contents: write
       pull-requests: write
     env:
+      version: ${{ github.event.inputs.version }}
       branch: "release/${{ github.event.inputs.version }}"
     steps:
 
@@ -32,13 +33,12 @@ jobs:
       id: create_branch
       working-directory: .github/.scripts
       run: |
-        version=${{ github.event.inputs.version }}
         hotfix_version=$(./shift_version.sh ${version} patch)
         hotfix_branch="release/${hotfix_version}"
-        
+
         git checkout -b ${hotfix_branch} "${{ env.branch }}"
         git push origin ${hotfix_branch}
-        
+
         echo "hotfix_version=${hotfix_version}" >> $GITHUB_OUTPUT
         echo "hotfix_branch=${hotfix_branch}" >> $GITHUB_OUTPUT
 
@@ -46,10 +46,10 @@ jobs:
       id: create_pr_branch
       run: |
         hotfix_pr_branch="hotfix/${{ steps.create_branch.outputs.hotfix_version }}"
-        
+
         git checkout -b ${hotfix_pr_branch} ${{ steps.create_branch.outputs.hotfix_branch }}
         git push origin ${hotfix_pr_branch}
-        
+
         echo "hotfix_pr_branch=${hotfix_pr_branch}" >> $GITHUB_OUTPUT
 
     - name: Setup git user
@@ -63,18 +63,21 @@ jobs:
       id: cherry_pick
       if: ${{ github.event.inputs.cherry_pick_commits != '' }}
       run: |
-        git cherry-pick ${{ github.event.inputs.cherry_pick_commits }}
+        git cherry-pick $CHERRY_PICK_COMMITS
         git push origin ${{ steps.create_pr_branch.outputs.hotfix_pr_branch }}
+      env:
+        CHERRY_PICK_COMMITS: ${{ github.event.inputs.cherry_pick_commits }}
 
     - name: Create pull request
       id: create_pull_request
       if: ${{ github.event.inputs.cherry_pick_commits != '' }}
       run: |
         gh pr create \
-          --repo ${{ github.repository_owner }}/${{ github.event.repository.name }} \
+          --repo $REPOSITORY_NAME \
           --base ${{ steps.create_branch.outputs.hotfix_branch }} \
           --head ${{ steps.create_pr_branch.outputs.hotfix_pr_branch }} \
           --title "Hotfix ${{ steps.create_branch.outputs.hotfix_version }}" \
           --body "Hotfix ${{ steps.create_branch.outputs.hotfix_version }}"
       env:
+        REPOSITORY_NAME: ${{ github.repository_owner }}/${{ github.event.repository.name }}
         GH_TOKEN: ${{ secrets.ROBOT_GITHUB_PUBLIC_REPO_CREATE_HOTFIX_TOKEN }}
