@@ -186,7 +186,7 @@ tasks:
     cmds:
       - |
         {{ if .DOCKER_HOST }}DOCKER_HOST={{.DOCKER_HOST}}{{ end }} \
-        docker-compose \
+        docker compose \
         -f {{.DOCKER_COMPOSE_FILE}} \
         {{.CLI_ARGS}}
     vars:
