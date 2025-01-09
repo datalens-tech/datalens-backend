@@ -51,9 +51,7 @@ from dl_core.us_entry import (
     USEntry,
     USMigrationEntry,
 )
-from dl_core.us_manager.crypto.main import (
-    CryptoController,
-)
+from dl_core.us_manager.crypto.main import CryptoController
 from dl_core.us_manager.local_cache import USEntryBuffer
 from dl_core.us_manager.storage_schemas.connection_schema_registry import MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA
 from dl_core.us_manager.storage_schemas.dataset import DatasetStorageSchema
@@ -344,7 +342,7 @@ class USManagerBase:
             )
 
             for key, secret in data_pack.secrets.items():
-                data_pack.secrets[key] = self._crypto_controller.decrypt(secret)
+                data_pack.secrets[key] = self._crypto_controller.decrypt(secret)  # type: ignore # TODO: Argument 1 to "decrypt" of "CryptoController" has incompatible type "str | EncryptedData | None"; expected "EncryptedData | None"  [arg-type]
 
             entry = serializer.deserialize(
                 entry_cls,
