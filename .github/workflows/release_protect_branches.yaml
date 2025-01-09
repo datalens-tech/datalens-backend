@@ -26,17 +26,19 @@ jobs:
       - name: Check if tag already exists
         id: check_tag
         run: |
-          branch_name=${{ github.event.pull_request.base.ref }}
+          branch_name=$PULL_REQUEST_HEAD_REF
           version=${branch_name#"release/"}
           git fetch --tags
-          
+
           echo "Checking if tag ${version} already exists..."
           if [[ -n $(git tag -l "${version}") ]]; then
             echo "Release tag ${version} already exists, thus this branch cannot be changed."
             exit 1;
           fi
-          
+
           if [[ -n $(git tag -l "${version}-rc.*") ]]; then
             echo "Release candidate tag ${version}-rc.* already exists, thus this branch cannot be changed."
             exit 1;
           fi
+        env:
+          PULL_REQUEST_HEAD_REF: ${{ github.event.pull_request.head.ref }}

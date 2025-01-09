@@ -5,7 +5,8 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  pull_request_target:
+  # Subject to change back to pull_request when we have a better solution for the CI with forked PRs
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
     types:
       - opened
       - reopened
@@ -39,16 +40,21 @@ jobs:
       - name: Drop label
         env:
           GH_TOKEN: ${{ github.token }}
+          REPOSITORY_FULL_NAME: ${{ github.event.repository.full_name }}
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_ACTION: ${{ github.event.action }}
         run: |
-          [[ ${{ github.event_name }} != "pull_request_target" ]] && exit 0
-          
-          action=${{ github.event.action }}
+          [[ $EVENT_NAME != "pull_request_target" ]] && exit 0
+
+          action=$EVENT_ACTION
           [[ $action == "labeled" || $action == "unlabeled" || $action == "opened" ]] && exit 0
-          
+
           gh pr edit \
-            --repo ${{ github.event.repository.full_name }} \
+            --repo $REPOSITORY_FULL_NAME \
             --remove-label "ci-approved" \
-            ${{ github.event.pull_request.number }}
+            $PULL_REQUEST_NUMBER
+
 
   check-ci-allowed:
     name: Check if CI allowed for PR
@@ -89,9 +95,9 @@ jobs:
         run: |
           user_allowed=${{ steps.check_user_permissions.outputs.result }}
           pr_allowed=${{ steps.check_pr_permissions.outputs.result }}
-          
+
           [[ $user_allowed == "true" || $pr_allowed == "true" ]] && exit 0
-          
+
           echo "ERROR: User have no permissions to run CI and PR is not approved"
           exit 1
 
@@ -107,7 +113,9 @@ jobs:
       - name: Check fork PR branch contains latest base sha
         if: ${{ github.event_name != 'workflow_dispatch' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
         working-directory: branch_code
-        run: git branch --contains ${{ github.event.pull_request.base.sha }}
+        run: git branch --contains $PULL_REQUEST_BASE_SHA
+        env:
+          PULL_REQUEST_BASE_SHA: ${{ github.event.pull_request.base.sha }}
 
   gh_build_image:
     runs-on: [ self-hosted, linux, k8s-runner-build ]
@@ -161,6 +169,8 @@ jobs:
     outputs:
       affected: ${{ steps.get_affected.outputs.affected }}
       all_affected_with_skips: ${{ steps.get_affected.outputs.all_affected_with_skips }}
+    env:
+      PULL_REQUEST_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
     - uses: datalens-tech/cleanup-folder-action@v1
     - name: Checkout code
@@ -173,7 +183,7 @@ jobs:
     - run: git fetch origin main
     - name: Extract base commit
       run: |
-        result="${{ github.event.pull_request.base.sha }}"
+        result="$PULL_REQUEST_HEAD_SHA"
         if [ -z "$result" ]; then
             result=$(git rev-parse origin/main)
         fi
@@ -181,7 +191,7 @@ jobs:
       id: extract_base_commit
     - name: Extract head commit
       run: |
-        result="${{ github.event.pull_request.head.sha }}"
+        result="$PULL_REQUEST_HEAD_SHA"
         if [ -z "$result" ]; then
             result=$(git rev-parse HEAD)
         fi
@@ -290,26 +300,36 @@ jobs:
       matrix:
         value: ${{fromJson(needs.pytest_split.outputs.split_base)}}
 
+    env:
+      TEST_NAME: ${{ matrix.value }}
+
     steps:
-      - run: echo "Going to run tests for  ${{ matrix.value }}"
-      - run: echo "Running py tests for ${{ matrix.value }}"
+      - run: echo "Running py tests for $TEST_NAME"
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
           registry: "ghcr.io"
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo compose_path="/src/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
-      - run: cd "${{ env.compose_path }}" && echo compose_prj="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_ENV"
+      - id: get_compose_prj
+        run: |
+          compose_path="/src/$(echo $TEST_NAME | cut -d ":" -f1)/"
+          cd "$compose_path" && echo result="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_OUTPUT"
       # We need to set custom compose project name to ensure "unique" container names in the host docker env
       - name: run bash script with all logic for starting compose and running tests
         run: |
-          bash /src/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}" \
+          bash /src/ci/execute_test_with_docker_compose.sh "$TEST_NAME" "$CONTAINER_NETWORK" "$COMPOSE_PROJECT" \
             WE_ARE_IN_CI=1
+        env:
+          CONTAINER_NETWORK: "${{ job.container.network }}"
+          COMPOSE_PROJECT: "${{ steps.get_compose_prj.outputs.result }}"
       - name: Stop compose if provided
         # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always
-        run: bash /src/ci/stop_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+        run: bash /src/ci/stop_compose.sh "$TEST_NAME" "$CONTAINER_NETWORK" "$COMPOSE_PROJECT"
+        env:
+          CONTAINER_NETWORK: "${{ job.container.network }}"
+          COMPOSE_PROJECT: "${{ steps.get_compose_prj.outputs.result }}"
 
   run_tests_no_compose:
     name: "🐍[pytest][no_compose]${{ matrix.value }}"
@@ -336,26 +356,36 @@ jobs:
       matrix:
         value: ${{fromJson(needs.pytest_split.outputs.split_no_compose)}}
 
+    env:
+      TEST_NAME: ${{ matrix.value }}
+
     steps:
-      - run: echo "Going to run tests for  ${{ matrix.value }}"
-      - run: echo "Running py tests for ${{ matrix.value }}"
+      - run: echo "Running py tests for $TEST_NAME"
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
           registry: "ghcr.io"
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo compose_path="/src/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
-      - run: cd "${{ env.compose_path }}" && echo compose_prj="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_ENV"
+      - id: get_compose_prj
+        run: |
+          compose_path="/src/$(echo $TEST_NAME | cut -d ":" -f1)/"
+          cd "$compose_path" && echo result="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_OUTPUT"
       # We need to set custom compose project name to ensure "unique" container names in the host docker env
       - name: run bash script with all logic for starting compose and running tests
         run: |
-          bash /src/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}" \
+          bash /src/ci/execute_test_with_docker_compose.sh "$TEST_NAME" "$CONTAINER_NETWORK" "$COMPOSE_PROJECT" \
             WE_ARE_IN_CI=1
+        env:
+          CONTAINER_NETWORK: "${{ job.container.network }}"
+          COMPOSE_PROJECT: "${{ steps.get_compose_prj.outputs.result }}"
       - name: Stop compose if provided
         # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always
-        run: bash /src/ci/stop_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+        run: bash /src/ci/stop_compose.sh "$TEST_NAME" "$CONTAINER_NETWORK" "$COMPOSE_PROJECT"
+        env:
+          CONTAINER_NETWORK: "${{ job.container.network }}"
+          COMPOSE_PROJECT: "${{ steps.get_compose_prj.outputs.result }}"
 
   run_tests_fat:
     name: "🐍[pytest][fat]${{ matrix.value }}"
@@ -382,26 +412,36 @@ jobs:
       matrix:
         value: ${{fromJson(needs.pytest_split.outputs.split_fat)}}
 
+    env:
+      TEST_NAME: ${{ matrix.value }}
+
     steps:
-      - run: echo "Going to run tests for  ${{ matrix.value }}"
-      - run: echo "Running py tests for ${{ matrix.value }}"
+      - run: echo "Running py tests for $TEST_NAME"
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
           registry: "ghcr.io"
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo compose_path="/src/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
-      - run: cd "${{ env.compose_path }}" && echo compose_prj="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_ENV"
+      - id: get_compose_prj
+        run: |
+          compose_path="/src/$(echo $TEST_NAME | cut -d ":" -f1)/"
+          cd "$compose_path" && echo result="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_OUTPUT"
       # We need to set custom compose project name to ensure "unique" container names in the host docker env
       - name: run bash script with all logic for starting compose and running tests
         run: |
-          bash /src/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}" \
+          bash /src/ci/execute_test_with_docker_compose.sh "$TEST_NAME" "$CONTAINER_NETWORK" "$COMPOSE_PROJECT" \
             WE_ARE_IN_CI=1
+        env:
+          CONTAINER_NETWORK: "${{ job.container.network }}"
+          COMPOSE_PROJECT: "${{ steps.get_compose_prj.outputs.result }}"
       - name: Stop compose if provided
         # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always
-        run: bash /src/ci/stop_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+        run: bash /src/ci/stop_compose.sh "$TEST_NAME" "$CONTAINER_NETWORK" "$COMPOSE_PROJECT"
+        env:
+          CONTAINER_NETWORK: "${{ job.container.network }}"
+          COMPOSE_PROJECT: "${{ steps.get_compose_prj.outputs.result }}"
 
   run_tests_ext_public:
     name: "🐍[pytest][ext_public]${{ matrix.value }}"
@@ -429,23 +469,29 @@ jobs:
       matrix:
         value: ${{fromJson(needs.pytest_split.outputs.split_ext_public)}}
 
+    env:
+      TEST_NAME: ${{ matrix.value }}
+
     steps:
-      - run: echo "Going to run tests for  ${{ matrix.value }}"
-      - run: echo "Running py tests for ${{ matrix.value }}"
+      - run: echo "Running py tests for $TEST_NAME"
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
           registry: "ghcr.io"
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo compose_path="/src/$(echo ${{ matrix.value }} | cut -d ":" -f1)/" >>  "$GITHUB_ENV"
-      - run: cd "${{ env.compose_path }}" && echo compose_prj="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_ENV"
+      - id: get_compose_prj
+        run: |
+          compose_path="/src/$(echo $TEST_NAME | cut -d ":" -f1)/"
+          cd "$compose_path" && echo result="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_OUTPUT"
       # We need to set custom compose project name to ensure "unique" container names in the host docker env
       - name: run bash script with all logic for starting compose and running tests
         run: |
-          bash /src/ci/execute_test_with_docker_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}" \
+          bash /src/ci/execute_test_with_docker_compose.sh "$TEST_NAME" "$CONTAINER_NETWORK" "$COMPOSE_PROJECT" \
             WE_ARE_IN_CI=1
         env:
+          CONTAINER_NETWORK: "${{ job.container.network }}"
+          COMPOSE_PROJECT: "${{ steps.get_compose_prj.outputs.result }}"
           GOOGLE_API_KEY: "${{ secrets.EXT_GOOGLE_API_KEY }}"
           BITRIX_DATALENS_TOKEN: "${{ secrets.EXT_BITRIX_DATALENS_TOKEN }}"
           METRIKA_OAUTH: "${{ secrets.EXT_METRIKA_OAUTH }}"
@@ -453,7 +499,10 @@ jobs:
       - name: Stop compose if provided
         # We could not put this into bash script, since job could be cancelled by user request
         if: always()  # yes! always
-        run: bash /src/ci/stop_compose.sh "${{ matrix.value }}" "${{ job.container.network }}" "${{ env.compose_prj }}"
+        run: bash /src/ci/stop_compose.sh "$TEST_NAME" "$CONTAINER_NETWORK" "$COMPOSE_PROJECT"
+        env:
+          CONTAINER_NETWORK: "${{ job.container.network }}"
+          COMPOSE_PROJECT: "${{ steps.get_compose_prj.outputs.result }}"
 
   mypy:
     runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
