@@ -4,7 +4,6 @@ import abc
 from collections import ChainMap
 import copy
 from functools import reduce
-import json
 import logging
 from typing import (
     ClassVar,
@@ -42,7 +41,7 @@ LOGGER = logging.getLogger(__name__)
 @attr.s()
 class USDataPack:
     data: dict[str, Any] = attr.ib()
-    secrets: dict[str, Optional[str | dict[str, str] | EncryptedData]] = attr.ib(repr=False, factory=dict)
+    secrets: dict[str, Optional[str | EncryptedData]] = attr.ib(repr=False, factory=dict)
 
 
 class USEntrySerializer(abc.ABC):
@@ -106,6 +105,7 @@ class USEntrySerializer(abc.ABC):
         for sec_key in secret_keys:
             sec_val = raw_addressable.pop(sec_key)
             secrets_addressable.set(sec_key, sec_val)
+
         return USDataPack(
             data=raw_addressable.data,
             secrets=secrets_addressable.data,
@@ -131,6 +131,7 @@ class USEntrySerializer(abc.ABC):
             if secret_source_addressable.contains(secret_key):
                 sec_val = secret_source_addressable.pop(secret_key)
                 raw_addressable.set(secret_key, sec_val)
+
         if secret_source_addressable.data:
             LOGGER.warning("Undeclared secrets found")
 
@@ -156,13 +157,7 @@ class USEntrySerializerMarshmallow(USEntrySerializer):
         data_cls = cls.DataModel
         assert data_cls is not None and issubclass(data_cls, BaseAttrsDataModel)
         schema = self.get_load_storage_schema(data_cls)
-        secret_keys = self.get_secret_keys(cls)
-        for key in secret_keys:
-            if raw_data.get(key.parts[-1]) and isinstance(
-                schema.declared_fields.get(key.parts[-1]), marshmallow.fields.String
-            ):
-                raw_data[key.parts[-1]] = json.dumps(raw_data[key.parts[-1]])
-            # else secret is None or secret type is dict[str: str], there are no other secrets types
+
         data = schema.load(raw_data)
         entry = cls(
             uuid=entry_id,
