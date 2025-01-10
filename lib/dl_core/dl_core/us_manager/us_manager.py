@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from collections import ChainMap
 from contextlib import contextmanager
-import json
 import logging
 from typing import (
     ClassVar,
@@ -342,6 +341,9 @@ class USManagerBase:
                 secrets=us_resp.get("unversionedData"),  # type: ignore  # 2024-01-30 # TODO: Argument "secrets" to "USDataPack" has incompatible type "Any | None"; expected "dict[str, str | EncryptedData | None]"  [arg-type]
             )
 
+            for key, secret in data_pack.secrets.items():
+                data_pack.secrets[key] = self._crypto_controller.decrypt(secret)  # type: ignore # TODO: Argument 1 to "decrypt" of "CryptoController" has incompatible type "str | EncryptedData | None"; expected "EncryptedData | None"  [arg-type]
+
             entry = serializer.deserialize(
                 entry_cls,
                 data_pack,
@@ -350,11 +352,6 @@ class USManagerBase:
                 common_properties=common_properties,
                 data_strict=False,
             )
-            secret_keys = serializer.get_secret_keys(entry_cls)
-            for key in secret_keys:
-                old_data = serializer.get_data_attr(entry, key)
-                decrypted_data = self._crypto_controller.decrypt(json.loads(old_data)) if old_data is not None else None
-                serializer.set_data_attr(entry, key, decrypted_data)
 
         entry.stored_in_db = True
         entry._us_resp = us_resp
@@ -433,8 +430,6 @@ class USManagerBase:
                 data_pack = USDataPack(data=data_dict)
 
             for key, secret in data_pack.secrets.items():
-                if isinstance(secret, dict):
-                    secret = json.dumps(secret)
                 assert secret is None or isinstance(secret, str)
                 data_pack.secrets[key] = self._crypto_controller.encrypt_with_actual_key(secret)
 
