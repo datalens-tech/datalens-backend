@@ -13,6 +13,8 @@ from dl_core.connection_models import (
 from dl_dashsql.typed_query.primitives import (
     TypedQuery,
     TypedQueryResult,
+    TypedQueryRaw,
+    TypedQueryRawResult
 )
 
 
@@ -73,6 +75,13 @@ class AsyncTypedQueryAdapterAction(AsyncAdapterAction):
     @abc.abstractmethod
     async def run_typed_query_action(self, typed_query: TypedQuery) -> TypedQueryResult:
         raise NotImplementedError
+    
+
+@attr.s(frozen=True)
+class AsyncTypedQueryRawAdapterAction(AsyncAdapterAction):
+    @abc.abstractmethod
+    async def run_typed_query_raw_action(self, typed_query_raw: TypedQueryRaw) -> TypedQueryRawResult:
+        raise NotImplementedError
 
 
 # Dummy "NotImplemented" implementations
@@ -117,4 +126,10 @@ class AsyncTableExistsActionNotImplemented(AsyncTableExistsAdapterAction):
 @attr.s(frozen=True)
 class AsyncTypedQueryActionNotImplemented(AsyncTypedQueryAdapterAction):
     async def run_typed_query_action(self, typed_query: TypedQuery) -> TypedQueryResult:
+        raise NotImplementedError
+    
+
+@attr.s(frozen=True)
+class AsyncTypedQueryRawActionNotImplemented(AsyncTypedQueryRawAdapterAction):
+    async def run_typed_query_raw_action(self, typed_query_raw: TypedQueryRaw) -> TypedQueryRawResult:
         raise NotImplementedError
