@@ -524,12 +524,6 @@ class FormulaCompiler:
         self._group_by_ids = set(group_by_ids)
         self._order_by_specs = list(order_by_specs)
 
-    def get_expression_hash(self, expr: str) -> str:
-        expr = expr.strip()
-        # TODO: replace with formula_obj.extract
-        expr = BIField.rename_in_formula(formula=expr, key_map=self._fields.titles_to_guids)
-        return expr
-
     def _try_parse_formula(
         self, field: BIField, collect_errors: bool = False
     ) -> Tuple[Optional[formula_nodes.Formula], List[FormulaErrorCtx]]:

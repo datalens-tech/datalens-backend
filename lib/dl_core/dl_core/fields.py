@@ -351,18 +351,14 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
 
     @staticmethod
     def rename_in_formula(formula: str, key_map: Dict[str, str]) -> str:
-        found_keys = FIELD_RE.findall(formula)
-
-        for key in found_keys:
-            try:
-                value = key_map[key]
-            except KeyError:
+        def replace(match: re.Match) -> str:
+            key = match.group(1)
+            if (value := key_map.get(key)) is None:
                 LOGGER.warning("Unknown field: %s", key)
-                continue
+                return key
+            return value
 
-            formula = formula.replace("[{}]".format(key), "[{}]".format(value))
-
-        return formula
+        return FIELD_RE.sub(replace, formula)
 
     def depends_on(self, field: BIField) -> bool:
         return self.calc_spec.depends_on(field)

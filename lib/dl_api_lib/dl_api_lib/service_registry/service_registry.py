@@ -11,10 +11,7 @@ import attr
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.service_registry.field_id_generator_factory import FieldIdGeneratorFactory
 from dl_api_lib.service_registry.formula_parser_factory import FormulaParserFactory
-from dl_api_lib.service_registry.multi_query_mutator_factory import (
-    DefaultSRMultiQueryMutatorFactory,
-    SRMultiQueryMutatorFactory,
-)
+from dl_api_lib.service_registry.multi_query_mutator_factory import SRMultiQueryMutatorFactory
 from dl_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
 from dl_api_lib.service_registry.typed_query_processor_factory import (
     DefaultQueryProcessorFactory,
@@ -96,6 +93,14 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
     _pivot_transformer_factory: Optional[PivotTransformerFactory] = attr.ib(kw_only=True, default=None)
     _typed_query_processor_factory: TypedQueryProcessorFactory = attr.ib(kw_only=True)
 
+    _multi_query_mutator_factory_factory: SRMultiQueryMutatorFactory = attr.ib(
+        init=False,
+        default=attr.Factory(
+            lambda self: SRMultiQueryMutatorFactory(query_proc_mode=self._query_proc_mode),
+            takes_self=True,
+        ),
+    )
+
     @_formula_parser_factory.default  # noqa
     def _default_formula_parser_factory(self) -> FormulaParserFactory:
         return FormulaParserFactory(default_formula_parser_type=self._default_formula_parser_type)
@@ -140,7 +145,7 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
         return self._connector_availability
 
     def get_multi_query_mutator_factory_factory(self) -> SRMultiQueryMutatorFactory:
-        return DefaultSRMultiQueryMutatorFactory(query_proc_mode=self._query_proc_mode)
+        return self._multi_query_mutator_factory_factory
 
     def get_pivot_transformer_factory(self) -> PivotTransformerFactory:
         assert self._pivot_transformer_factory is not None
