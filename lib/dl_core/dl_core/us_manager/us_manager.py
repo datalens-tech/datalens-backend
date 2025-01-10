@@ -278,7 +278,7 @@ class USManagerBase:
     def _entry_dict_to_obj(self, us_resp: dict, expected_type: Optional[Type[USEntry]] = None) -> USEntry:
         """
         Deserialize US entry dict.
-        :param us_resp: US response as-is ()
+        :param us_resp: US response as-is
         :param expected_type: If not none - type/scope will be checked to that actual class is subclass of expected one.
          If check fails or if there is no mapping for type/scope `TypeError` will be thrown.
          `USEntry` is special value. Actual class will not be determined and base `USEntry` will be constructed
