@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import ChainMap
 from contextlib import contextmanager
+import copy
 import logging
 from typing import (
     ClassVar,
@@ -277,7 +278,7 @@ class USManagerBase:
     def _entry_dict_to_obj(self, us_resp: dict, expected_type: Optional[Type[USEntry]] = None) -> USEntry:
         """
         Deserialize US entry dict.
-        :param us_resp: US response as-is
+        :param us_resp: US response as-is ()
         :param expected_type: If not none - type/scope will be checked to that actual class is subclass of expected one.
          If check fails or if there is no mapping for type/scope `TypeError` will be thrown.
          `USEntry` is special value. Actual class will not be determined and base `USEntry` will be constructed
@@ -341,8 +342,10 @@ class USManagerBase:
                 secrets=us_resp.get("unversionedData"),  # type: ignore  # 2024-01-30 # TODO: Argument "secrets" to "USDataPack" has incompatible type "Any | None"; expected "dict[str, str | EncryptedData | None]"  [arg-type]
             )
 
-            for key, secret in data_pack.secrets.items():
-                data_pack.secrets[key] = self._crypto_controller.decrypt(secret)  # type: ignore # TODO: Argument 1 to "decrypt" of "CryptoController" has incompatible type "str | EncryptedData | None"; expected "EncryptedData | None"  [arg-type]
+            data_pack = copy.deepcopy(data_pack)
+            if data_pack.secrets:
+                for key, secret in data_pack.secrets.items():
+                    data_pack.secrets[key] = self._crypto_controller.decrypt(secret)  # type: ignore # TODO: Argument 1 to "decrypt" of "CryptoController" has incompatible type "str | EncryptedData | None"; expected "EncryptedData | None"  [arg-type]
 
             entry = serializer.deserialize(
                 entry_cls,

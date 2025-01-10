@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import abc
 from collections import ChainMap
-import copy
 from functools import reduce
 import logging
 from typing import (
@@ -121,7 +120,6 @@ class USEntrySerializer(abc.ABC):
         data_strict: bool = True,
     ) -> USEntry:
         # Assumed that data_pack's dicts was decoupled with initial US response
-        data_pack = copy.deepcopy(data_pack)
         secret_source_addressable = AddressableData(data_pack.secrets)
         raw_addressable = AddressableData(data_pack.data)
 
