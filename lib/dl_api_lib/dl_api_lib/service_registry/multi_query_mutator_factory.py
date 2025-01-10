@@ -19,10 +19,13 @@ from dl_query_processing.multi_query.mutators.base import MultiQueryMutatorBase
 
 LOGGER = logging.getLogger(__name__)
 
+
 @attr.s
 class SRMultiQueryMutatorFactory:
     _query_proc_mode: QueryProcessingMode = attr.ib(kw_only=True)
-    _mqm_factory_cls_cache: dict[tuple[SourceBackendType, DialectCombo], Type[MultiQueryMutatorFactoryBase]] = attr.ib(init=False, factory=dict)
+    _mqm_factory_cls_cache: dict[tuple[SourceBackendType, DialectCombo], Type[MultiQueryMutatorFactoryBase]] = attr.ib(
+        init=False, factory=dict
+    )
 
     def get_mqm_factory_cls(
         self,

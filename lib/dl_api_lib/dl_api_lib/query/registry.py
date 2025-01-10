@@ -9,7 +9,6 @@ from dl_constants.enums import (
     QueryProcessingMode,
     SourceBackendType,
 )
-from dl_core.fields import ResultSchema
 from dl_formula.core.dialect import (
     DialectCombo,
     DialectName,
