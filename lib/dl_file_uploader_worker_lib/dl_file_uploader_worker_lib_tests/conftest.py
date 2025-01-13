@@ -144,7 +144,6 @@ def redis_arq_settings(redis_app_settings):
 def s3_settings() -> S3Settings:
     return S3Settings(
         ENDPOINT_URL=f'http://{get_test_container_hostport("s3-storage").as_pair()}',
-        # default access and secrets for zenko/cloudserver
         ACCESS_KEY_ID="accessKey1",
         SECRET_ACCESS_KEY="verySecretKey1",
     )
