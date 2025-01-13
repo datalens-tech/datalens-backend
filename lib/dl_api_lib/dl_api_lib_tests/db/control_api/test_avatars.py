@@ -1,7 +1,7 @@
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 
 
-class TestResultWithTrees(DefaultApiTestBase):
+class TestAvatars(DefaultApiTestBase):
     def test_delete_avatar_with_formula_fields(self, control_api, saved_dataset):
         ds = saved_dataset
         field_count = len(saved_dataset.result_schema)
