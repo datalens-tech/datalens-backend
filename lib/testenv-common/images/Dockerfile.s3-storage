@@ -1,6 +1,0 @@
-FROM zenko/cloudserver@sha256:b53e57829cf7df357323e60a19c9f98d2218f1b7ccb1d7cea5761a5a227a9ee3
-# ^ zenko/cloudserver:latest
-# https://hub.docker.com/layers/zenko/cloudserver/latest/images/sha256-b53e57829cf7df357323e60a19c9f98d2218f1b7ccb1d7cea5761a5a227a9ee3?context=explore
-
-COPY s3-storage /data
-CMD /s3-storage/entrypoint.sh
