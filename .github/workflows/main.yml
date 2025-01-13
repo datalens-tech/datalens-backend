@@ -170,6 +170,7 @@ jobs:
       affected: ${{ steps.get_affected.outputs.affected }}
       all_affected_with_skips: ${{ steps.get_affected.outputs.all_affected_with_skips }}
     env:
+      PULL_REQUEST_BASE_SHA: ${{ github.event.pull_request.base.sha }}
       PULL_REQUEST_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
     - uses: datalens-tech/cleanup-folder-action@v1
@@ -183,7 +184,7 @@ jobs:
     - run: git fetch origin main
     - name: Extract base commit
       run: |
-        result="$PULL_REQUEST_HEAD_SHA"
+        result="$PULL_REQUEST_BASE_SHA"
         if [ -z "$result" ]; then
             result=$(git rev-parse origin/main)
         fi
