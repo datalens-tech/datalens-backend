@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dl_core.us_connection import get_schema_migration_cls
 from dl_core.us_manager.schema_migration.base import BaseEntrySchemaMigration
 from dl_core.us_manager.schema_migration.dataset import DatasetSchemaMigration

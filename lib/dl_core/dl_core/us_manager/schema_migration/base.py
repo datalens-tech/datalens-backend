@@ -1,10 +1,7 @@
-from __future__ import annotations
-
 from copy import deepcopy
 from datetime import datetime
 import logging
 from typing import (
-    TYPE_CHECKING,
     Any,
     Callable,
 )
@@ -13,11 +10,6 @@ import attr
 from typing_extensions import Self
 
 from dl_app_tools.profiling_base import generic_profiler
-
-
-if TYPE_CHECKING:
-    from dl_api_commons.base_models import RequestContextInfo
-    from dl_core.services_registry import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
@@ -48,8 +40,6 @@ class Migration:
 
 @attr.s
 class BaseEntrySchemaMigration:
-    bi_context: RequestContextInfo | None = attr.ib(default=None)
-    services_registry: ServicesRegistry | None = attr.ib(default=None)
     strict_migration: bool = attr.ib(default=False)
 
     @property

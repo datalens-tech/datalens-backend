@@ -1,11 +1,6 @@
-from __future__ import annotations
-
 import abc
-from typing import TYPE_CHECKING
 
-
-if TYPE_CHECKING:
-    from dl_core.us_manager.schema_migration.base import BaseEntrySchemaMigration
+from dl_core.us_manager.schema_migration.base import BaseEntrySchemaMigration
 
 
 class EntrySchemaMigrationFactoryBase(abc.ABC):
