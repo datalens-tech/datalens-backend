@@ -18,11 +18,13 @@ class Level1EntrySchemaMigration(BaseEntrySchemaMigration):
                 "2022-12-04 13:00:00",
                 "Second level 1 migration",
                 Level1EntrySchemaMigration._migrate_v2_to_v3,
+                Level1EntrySchemaMigration._migrate_v2_to_v3_async,
             ),
             Migration(
                 "2022-12-01 12:00:00",
                 "First level 1 migration",
                 Level1EntrySchemaMigration._migrate_v1_to_v2,
+                Level1EntrySchemaMigration._migrate_v1_to_v2_async,
             ),
         ]
         migrations.extend(super().migrations)
@@ -34,9 +36,17 @@ class Level1EntrySchemaMigration(BaseEntrySchemaMigration):
         return entry
 
     @staticmethod
+    async def _migrate_v1_to_v2_async(entry: dict) -> dict:
+        return Level1EntrySchemaMigration._migrate_v1_to_v2(entry)
+
+    @staticmethod
     def _migrate_v2_to_v3(entry: dict) -> dict:
         entry["data"]["l1_field"] = "added_in_l1"
         return entry
+
+    @staticmethod
+    async def _migrate_v2_to_v3_async(entry: dict) -> dict:
+        return Level1EntrySchemaMigration._migrate_v2_to_v3(entry)
 
 
 @attr.s
@@ -74,7 +84,11 @@ class Level3EntrySchemaMigration(Level2EntrySchemaMigration):
     @property
     def migrations(self) -> list[Migration]:
         migrations = [
-            Migration("2022-12-03 13:00:00", "Third level 2 migration", Level3EntrySchemaMigration._migrate_v3_to_v1),
+            Migration(
+                "2022-12-03 13:00:00",
+                "Third level 2 migration",
+                Level3EntrySchemaMigration._migrate_v3_to_v1,
+            ),
         ]
         migrations.extend(super().migrations)
         return migrations
