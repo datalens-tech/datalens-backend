@@ -13,6 +13,10 @@ class TypedMeta(pydantic_model_construction.ModelMetaclass):
 
 
 class TypedBaseSettings(base_settings.BaseSettings, metaclass=TypedMeta):
+    """
+    Settings class that should be used as a base for all typed settings classes.
+    """
+
     type: str
 
     @classmethod

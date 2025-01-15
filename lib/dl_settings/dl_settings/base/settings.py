@@ -1,14 +1,23 @@
 import os
 import typing
 
+import pydantic
 import pydantic_settings
 
 
-class BaseSettings(pydantic_settings.BaseSettings):
+class BaseSettings(pydantic.BaseModel):
+    """
+    Base settings class that should be used for sub-models and mixins.
+    """
+
     ...
 
 
-class BaseRootSettings(BaseSettings):
+class BaseRootSettings(pydantic_settings.BaseSettings):
+    """
+    Base settings class that should be used for the root settings model.
+    """
+
     model_config = pydantic_settings.SettingsConfigDict(
         env_nested_delimiter="__",
     )
