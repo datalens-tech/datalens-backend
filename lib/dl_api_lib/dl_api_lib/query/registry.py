@@ -9,7 +9,6 @@ from dl_constants.enums import (
     QueryProcessingMode,
     SourceBackendType,
 )
-from dl_core.fields import ResultSchema
 from dl_formula.core.dialect import (
     DialectCombo,
     DialectName,
@@ -64,12 +63,11 @@ def _get_default_mqm_factory_cls() -> Type[MultiQueryMutatorFactoryBase]:
     return DefaultMultiQueryMutatorFactory
 
 
-def get_multi_query_mutator_factory(
+def get_multi_query_mutator_factory_class(
     query_proc_mode: QueryProcessingMode,
     backend_type: SourceBackendType,
     dialect: DialectCombo,
-    result_schema: ResultSchema,
-) -> MultiQueryMutatorFactoryBase:
+) -> Type[MultiQueryMutatorFactoryBase]:
     prioritized_keys = (
         # First try with exact dialect and mode (exact match)
         MQMFactoryKey(query_proc_mode=query_proc_mode, backend_type=backend_type, dialect=dialect),
@@ -96,7 +94,7 @@ def get_multi_query_mutator_factory(
         factory_cls = _get_default_mqm_factory_cls()
 
     assert factory_cls is not None
-    return factory_cls(result_schema=result_schema)
+    return factory_cls
 
 
 def register_multi_query_mutator_factory_cls(
