@@ -1,4 +1,12 @@
 services:
+  trino-no-auth:
+    # image: "trinodb/trino:468"
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.engine-trino-no-auth-468
+    ports:
+      - "21123:8080"
+
   trino:
     # image: "trinodb/trino:468"
     build:
