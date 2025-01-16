@@ -355,8 +355,8 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
             key = match.group(1)
             if (value := key_map.get(key)) is None:
                 LOGGER.warning("Unknown field: %s", key)
-                return key
-            return value
+                return f"[{key}]"
+            return f"[{value}]"
 
         return FIELD_RE.sub(replace, formula)
 
