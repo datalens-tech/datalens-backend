@@ -102,9 +102,12 @@ class USEntryMutationCache:
         return self._usm._entry_dict_to_obj(entry_dict)
 
     async def save_mutation_cache(self, entry: USEntry, mutation_key: MutationKey) -> None:
+        assert entry.uuid is not None
+        assert entry.scope is not None
+        assert entry.revision_id is not None
         key = USEntryMutationCacheKey(
-            scope=entry.scope,  # type: ignore  # TODO: Fix
-            entry_id=entry.uuid,  # type: ignore  # TODO: Fix
+            scope=entry.scope,
+            entry_id=entry.uuid,
             entry_revision_id=entry.revision_id,
             mutation_key_hash=mutation_key.get_hash(),
         )

@@ -158,6 +158,7 @@ class SyncUSManager(USManagerBase):
         lifecycle_manager = self.get_lifecycle_manager(entry=entry)
         lifecycle_manager.pre_delete_hook()
 
+        assert entry.uuid is not None
         self._us_client.delete_entry(entry.uuid, lock=entry.lock)
         entry.stored_in_db = False
         # noinspection PyBroadException
@@ -259,6 +260,7 @@ class SyncUSManager(USManagerBase):
         )
 
     def move(self, entry: USEntry, destination: str) -> None:
+        assert entry.uuid is not None
         self._us_client.move_entry(entry.uuid, destination)
         self.reload_data(entry)  # maybe we have to update only entry_key
 
@@ -272,12 +274,14 @@ class SyncUSManager(USManagerBase):
     # Locks
     #
     def acquire_lock(self, entry: USEntry, duration: Optional[int] = None, wait_timeout: Optional[int] = None) -> str:
+        assert entry.uuid is not None
         lock_token = self._us_client.acquire_lock(entry.uuid, duration, wait_timeout)
         entry.lock = lock_token
         return lock_token
 
     def release_lock(self, entry: USEntry) -> None:
         if entry.lock:
+            assert entry.uuid is not None
             self._us_client.release_lock(entry.uuid, entry.lock)
             entry.lock = None
 
