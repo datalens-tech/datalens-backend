@@ -17,7 +17,7 @@ SOURCE_TYPE_TRINO_SUBSELECT = DataSourceType.declare("TRINO_SUBSELECT")
 
 
 @unique
-class TrinoAuthType(Enum):
+class TrinoAuthType(str, Enum):
     NONE = "none"
     PASSWORD = "password"
     OAUTH2 = "oauth2"
@@ -25,3 +25,6 @@ class TrinoAuthType(Enum):
     CERTIFICATE = "certificate"
     JWT = "jwt"
     HEADER = "header"
+
+    def __str__(self) -> str:
+        return self.value
