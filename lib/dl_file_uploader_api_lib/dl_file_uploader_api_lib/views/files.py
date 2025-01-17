@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from http import HTTPStatus
 import logging
 from typing import (
@@ -179,8 +180,16 @@ class DownloadPresignedUrlView(FileUploaderBaseView):
             raise exc.PermissionDenied()
 
         s3 = self.dl_request.get_s3_service()
-        file_exists = await s3_file_exists(s3.client, s3.tmp_bucket_name, s3_key)
-        if not file_exists:
+        # sometimes after uploading to s3 the object is not accessible immediately, so we do a few seconds worth of retries
+        max_attempts = 6
+        retry_delay = 0.5
+        for attempt_idx in range(max_attempts):
+            file_exists = await s3_file_exists(s3.client, s3.tmp_bucket_name, s3_key)
+            if file_exists:
+                break
+            LOGGER.debug("File %s not found on attempt %s, retrying in %ss", s3_key, attempt_idx, retry_delay)
+            await asyncio.sleep(retry_delay)
+        else:
             raise exc.DocumentNotFound()
 
         rmm = self.dl_request.get_redis_model_manager()
