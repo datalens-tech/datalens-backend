@@ -180,7 +180,7 @@ class DownloadPresignedUrlView(FileUploaderBaseView):
             raise exc.PermissionDenied()
 
         s3 = self.dl_request.get_s3_service()
-        # sometimes after uploading to s3 the object is not accessible immediately, so we do a few of seconds worth of retries
+        # sometimes after uploading to s3 the object is not accessible immediately, so we do a few seconds worth of retries
         max_attempts = 6
         retry_delay = 0.5
         for attempt_idx in range(max_attempts):
