@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import typing
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -53,7 +52,7 @@ class USEntry:
 
     _stored_in_db: bool = False
     _us_resp: Optional[dict] = None
-    _lock: typing.Optional[str] = None
+    _lock: Optional[str] = None
     _us_manager: Optional[USManagerBase]
 
     @classmethod
@@ -151,18 +150,19 @@ class USEntry:
         self._stored_in_db = value
 
     @property
-    def lock(self) -> typing.Optional[str]:
+    def lock(self) -> Optional[str]:
         return self._lock
 
     @lock.setter
-    def lock(self, value: typing.Optional[str]) -> None:
+    def lock(self, value: Optional[str]) -> None:
         self._lock = value
 
     @property
     def _context(self) -> RequestContextInfo:
-        return self._us_manager.bi_context  # type: ignore  # TODO: fix
+        assert self._us_manager is not None
+        return self._us_manager.bi_context
 
-    def on_updated(self):  # type: ignore  # TODO: fix
+    def on_updated(self) -> None:
         """Post-update actions go here"""
 
     def _load_data(self, data: dict, strict: bool = True) -> Union[BaseAttrsDataModel, DotDict]:
@@ -242,20 +242,20 @@ class USEntry:
         return ret
 
     @property
-    def created_by(self):  # type: ignore  # TODO: fix
-        return self._us_resp.get("createdBy") if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
+    def created_by(self) -> Optional[str]:
+        return self._us_resp.get("createdBy") if isinstance(self._us_resp, dict) else None
 
     @property
-    def created_at(self):  # type: ignore  # TODO: fix
-        return self._us_resp.get("createdAt") if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
+    def created_at(self) -> Optional[str]:
+        return self._us_resp.get("createdAt") if isinstance(self._us_resp, dict) else None
 
     @property
-    def updated_at(self):  # type: ignore  # TODO: fix
-        return self._us_resp.get("updatedAt") if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
+    def updated_at(self) -> Optional[str]:
+        return self._us_resp.get("updatedAt") if isinstance(self._us_resp, dict) else None
 
     @property
-    def revision_id(self):  # type: ignore  # TODO: fix
-        return self._us_resp.get("revId") if isinstance(self._us_resp, dict) else None  # type: ignore  # TODO: fix
+    def revision_id(self) -> Optional[str]:
+        return self._us_resp.get("revId") if isinstance(self._us_resp, dict) else None
 
     @property
     def raw_tenant_id(self) -> Optional[str]:
@@ -323,4 +323,5 @@ class USMigrationEntry(USEntry):
 
     @property
     def unversioned_data(self) -> DotDict:
-        return self._unversioned_data  # type: ignore  # TODO: fix
+        assert self._unversioned_data is not None
+        return self._unversioned_data
