@@ -114,22 +114,43 @@ class AsyncUSManager(USManagerBase):
             LOGGER.warning("Error during closing AsyncUSManager", exc_info=True)
 
     @overload
-    async def get_by_id(self, entry_id: str, expected_type: type(None) = None) -> USEntry:  # type: ignore  # TODO: fix
+    async def get_by_id(
+        self,
+        entry_id: str,
+        expected_type: None = None,
+        params: Optional[dict[str, str]] = None,
+    ) -> USEntry:
         pass
 
-    @overload  # noqa
-    async def get_by_id(self, entry_id: str, expected_type: Type[_ENTRY_TV] = None) -> _ENTRY_TV:  # type: ignore  # TODO: fix
+    @overload
+    async def get_by_id(
+        self,
+        entry_id: str,
+        expected_type: Optional[Type[_ENTRY_TV]] = None,
+        params: Optional[dict[str, str]] = None,
+    ) -> _ENTRY_TV:
         pass
 
-    @generic_profiler_async("us-fetch-entity")
-    async def get_by_id(self, entry_id: str, expected_type: Type[_ENTRY_TV] = None) -> _ENTRY_TV:  # type: ignore  # TODO: fix
+    @generic_profiler_async("us-fetch-entity")  # type: ignore  # TODO: fix
+    async def get_by_id(
+        self,
+        entry_id: str,
+        expected_type: Optional[Type[USEntry]] = None,
+        params: Optional[dict[str, str]] = None,
+    ) -> USEntry:
         with self._enrich_us_exception(
             entry_id=entry_id,
             entry_scope=expected_type.scope if expected_type is not None else None,
         ):
-            us_resp = await self._us_client.get_entry(entry_id)
+            us_resp = await self._us_client.get_entry(entry_id, params=params)
 
-        obj: _ENTRY_TV = self._entry_dict_to_obj(us_resp, expected_type)  # type: ignore  # TODO: fix
+        schema_migration = self.get_schema_migration(
+            entry_scope=us_resp["scope"],
+            entry_type=us_resp["type"],
+        )
+        us_resp = await schema_migration.migrate_async(us_resp)
+
+        obj = self._entry_dict_to_obj(us_resp, expected_type)
         await self.get_lifecycle_manager(entry=obj).post_init_async_hook()
 
         return obj
@@ -184,6 +205,11 @@ class AsyncUSManager(USManagerBase):
     async def reload_data(self, entry: USEntry) -> None:
         assert entry.uuid is not None
         us_resp = await self._us_client.get_entry(entry.uuid)
+        schema_migration = self.get_schema_migration(
+            entry_scope=us_resp["scope"],
+            entry_type=us_resp["type"],
+        )
+        us_resp = await schema_migration.migrate_async(us_resp)
         reloaded_entry = self._entry_dict_to_obj(us_resp, expected_type=type(entry))
         entry.data = reloaded_entry.data
         entry._us_resp = us_resp
@@ -206,8 +232,8 @@ class AsyncUSManager(USManagerBase):
         )
 
         try:
-            entry = await self.get_by_id(entry_id, expected_type)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "USEntry", variable has type "_ENTRY_TV | None")  [assignment]
-            entry._lock = lock_token  # type: ignore  # TODO: fix
+            entry = await self.get_by_id(entry_id, expected_type)
+            entry._lock = lock_token
             assert entry is not None
             yield entry
 
@@ -248,7 +274,8 @@ class AsyncUSManager(USManagerBase):
 
         if isinstance(conn, BrokenUSLink):
             if referrer is not None:
-                conn.add_referrer_id(referrer.uuid)  # type: ignore  # TODO: fix
+                assert referrer.uuid is not None
+                conn.add_referrer_id(referrer.uuid)
             return None
         elif isinstance(conn, ConnectionBase):
             return conn
@@ -277,7 +304,7 @@ class AsyncUSManager(USManagerBase):
 
             refs_to_load_queue.update(
                 self._get_entry_links(
-                    resolved_ref,  # type: ignore  # TODO: fix
+                    resolved_ref,
                 )
                 - processed_refs
             )
@@ -300,7 +327,7 @@ class AsyncUSManager(USManagerBase):
 
     async def get_collection(
         self,
-        entry_cls: Optional[Type[USEntry]],
+        entry_cls: Optional[Type[_ENTRY_TV]],
         entry_type: Optional[str] = None,
         entry_scope: Optional[str] = None,
         meta: Optional[dict[str, Union[str, int, None]]] = None,
@@ -309,7 +336,7 @@ class AsyncUSManager(USManagerBase):
         ids: Optional[Iterable[str]] = None,
         creation_time: Optional[dict[str, Union[str, int, None]]] = None,
         raise_on_broken_entry: bool = False,
-    ) -> AsyncGenerator[USEntry, None]:
+    ) -> AsyncGenerator[_ENTRY_TV, None]:
         if all_tenants and include_data:
             raise ValueError("all_tenants and include_data cannot both be True")
 
@@ -338,12 +365,15 @@ class AsyncUSManager(USManagerBase):
         )
 
         async for us_resp in us_entry_iterator:
-            if us_resp:
-                # noinspection PyBroadException
-                try:
-                    obj: USEntry = self._entry_dict_to_obj(us_resp, entry_cls)
-                    yield obj
-                except Exception:
-                    LOGGER.exception("Failed to load US object: %s", us_resp)
-                    if raise_on_broken_entry:
-                        raise
+            # noinspection PyBroadException
+            try:
+                schema_migration = self.get_schema_migration(
+                    entry_scope=us_resp["scope"],
+                    entry_type=us_resp["type"],
+                )
+                us_resp = await schema_migration.migrate_async(us_resp)
+                yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)  # type: ignore  # TODO: fix
+            except Exception:
+                LOGGER.exception("Failed to load US object: %s", us_resp)
+                if raise_on_broken_entry:
+                    raise

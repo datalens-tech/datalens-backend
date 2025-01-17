@@ -179,8 +179,18 @@ class UStorageClientAIO(UStorageClientBase):
         )
         return self._get_us_json_from_response(response_adapter)
 
-    async def get_entry(self, entry_id: str) -> dict:
-        return await self._request(self._req_data_get_entry(entry_id=entry_id))
+    async def get_entry(
+        self,
+        entry_id: str,
+        params: Optional[dict[str, str]] = None,
+        include_permissions: bool = True,
+        include_links: bool = True,
+    ) -> dict:
+        return await self._request(
+            self._req_data_get_entry(
+                entry_id=entry_id, params=params, include_permissions=include_permissions, include_links=include_links
+            )
+        )
 
     async def create_entry(
         self,
@@ -304,10 +314,10 @@ class UStorageClientAIO(UStorageClientBase):
                     done = True
 
             # 3. Yield results
-            for entr in page_entries:
-                if entr["entryId"] not in previous_page_entry_ids:
-                    unseen_entry_ids.add(entr["entryId"])
-                    yield entr
+            for entry in page_entries:
+                if entry["entryId"] not in previous_page_entry_ids:
+                    unseen_entry_ids.add(entry["entryId"])
+                    yield entry
 
             # 4. Stop if got no nextPageToken or unseen entries
             previous_page_entry_ids = unseen_entry_ids.copy()

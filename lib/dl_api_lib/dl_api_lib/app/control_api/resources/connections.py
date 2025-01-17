@@ -3,7 +3,9 @@ from __future__ import annotations
 import logging
 from typing import (
     TYPE_CHECKING,
+    Any,
     NoReturn,
+    Optional,
 )
 
 from flask import request
@@ -37,7 +39,10 @@ from dl_core.exc import (
     DatabaseUnavailable,
     USPermissionRequired,
 )
-from dl_core.us_connection_base import ConnectionBase
+from dl_core.us_connection_base import (
+    ConnectionBase,
+    DataSourceTemplate,
+)
 
 
 if TYPE_CHECKING:
@@ -205,28 +210,28 @@ class ConnectionItem(BIResource):
             us_manager.save(conn)
 
 
-def _dump_source_templates(tpls) -> dict:  # type: ignore  # TODO: fix
+def _dump_source_templates(tpls: Optional[list[DataSourceTemplate]]) -> Optional[list[dict[str, Any]]]:
     if tpls is None:
-        return None  # type: ignore  # TODO: fix
-    return [dict(tpl._asdict(), parameter_hash=tpl.get_param_hash()) for tpl in tpls]  # type: ignore  # TODO: fix
+        return None
+    return [dict(tpl._asdict(), parameter_hash=tpl.get_param_hash()) for tpl in tpls]
 
 
 @ns.route("/<connection_id>/info/metadata_sources")
 class ConnectionInfoMetadataSources(BIResource):
     @schematic_request(ns=ns, responses={200: ("Success", ConnectionSourceTemplatesResponseSchema())})
-    def get(self, connection_id):  # type: ignore  # TODO: fix
-        connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+    def get(self, connection_id: str) -> dict[str, Optional[list[dict[str, Any]]]]:
+        connection: ConnectionBase = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
 
         localizer = self.get_service_registry().get_localizer()
-        source_template_templates = connection.get_data_source_template_templates(localizer=localizer)  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "get_data_source_template_templates"  [attr-defined]
+        source_template_templates = connection.get_data_source_template_templates(localizer=localizer)
 
-        source_templates = []
+        source_templates: Optional[list[DataSourceTemplate]] = []
         try:
             need_permission_on_entry(connection, USPermissionKind.read)
         except USPermissionRequired:
             pass
         else:
-            source_templates = connection.get_data_source_local_templates()  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "get_data_source_local_templates"  [attr-defined]
+            source_templates = connection.get_data_source_local_templates()
 
         return {
             "sources": _dump_source_templates(source_templates),
