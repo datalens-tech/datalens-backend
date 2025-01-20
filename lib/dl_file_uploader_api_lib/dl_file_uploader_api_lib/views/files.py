@@ -139,10 +139,7 @@ class MakePresignedUrlView(FileUploaderBaseView):
     PRESIGNED_URL_MIN_BYTES: ClassVar[int] = 1
     PRESIGNED_URL_MAX_BYTES: ClassVar[int] = 200 * 1024**2  # 200 MB
 
-    async def post(self) -> web.StreamResponse:
-        req_data = await self._load_post_request_schema_data(files_schemas.MakePresignedUrlRequestSchema)
-        content_md5: str = req_data["content_md5"]
-
+    async def get(self) -> web.StreamResponse:
         s3 = self.dl_request.get_s3_service()
         s3_key = S3_KEY_PARTS_SEPARATOR.join(
             (
@@ -157,7 +154,6 @@ class MakePresignedUrlView(FileUploaderBaseView):
             ExpiresIn=self.PRESIGNED_URL_EXPIRATION_SECONDS,
             Conditions=[
                 ["content-length-range", self.PRESIGNED_URL_MIN_BYTES, self.PRESIGNED_URL_MAX_BYTES],
-                {"Content-MD5": content_md5},
             ],
         )
 

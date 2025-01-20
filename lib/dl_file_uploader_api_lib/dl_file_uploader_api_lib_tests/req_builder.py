@@ -101,7 +101,7 @@ class ReqBuilder:
     @classmethod
     def presigned_url(cls, *, require_ok: bool = True) -> Req:
         return Req(
-            method="post",
+            method="get",
             url="/api/v2/make_presigned_url",
             require_ok=require_ok,
         )
