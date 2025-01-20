@@ -1,6 +1,4 @@
 import asyncio
-import base64
-import hashlib
 import logging
 import os
 
@@ -68,11 +66,10 @@ def upload_file_req_12mb() -> Req:
 
 @pytest.fixture(scope="function")
 async def uploaded_file_id(s3_tmp_bucket, fu_client, csv_data) -> str:
-    content_md5 = base64.b64encode(hashlib.md5(csv_data.encode("utf-8")).digest()).decode("utf-8")
-    presigned_url_resp = await fu_client.make_request(ReqBuilder.presigned_url(content_md5))
+    presigned_url_resp = await fu_client.make_request(ReqBuilder.presigned_url())
     assert presigned_url_resp.status == 200, presigned_url_resp.json
 
-    upload_resp = await upload_to_s3_by_presigned(presigned_url_resp.json, content_md5, csv_data)
+    upload_resp = await upload_to_s3_by_presigned(presigned_url_resp.json, csv_data)
     assert upload_resp.status == 204
 
     download_resp = await fu_client.make_request(
@@ -92,11 +89,10 @@ async def uploaded_excel_id(
     excel_data,
     reader_app,
 ) -> str:
-    content_md5 = base64.b64encode(hashlib.md5(excel_data).digest()).decode("utf-8")
-    presigned_url_resp = await fu_client.make_request(ReqBuilder.presigned_url(content_md5))
+    presigned_url_resp = await fu_client.make_request(ReqBuilder.presigned_url())
     assert presigned_url_resp.status == 200, presigned_url_resp.json
 
-    upload_resp = await upload_to_s3_by_presigned(presigned_url_resp.json, content_md5, excel_data)
+    upload_resp = await upload_to_s3_by_presigned(presigned_url_resp.json, excel_data)
     assert upload_resp.status == 204
 
     download_resp = await fu_client.make_request(

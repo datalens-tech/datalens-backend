@@ -15,7 +15,6 @@ async def upload_to_s3_by_presigned(
 ) -> aiohttp.ClientResponse:
     upload_url = presigned_url["url"]
     upload_url_fields = presigned_url["fields"]
-    upload_url_fields["content-md5"] = content_md5
 
     async with aiohttp.ClientSession() as session:
         with aiohttp.MultipartWriter("form-data") as mpwriter:
