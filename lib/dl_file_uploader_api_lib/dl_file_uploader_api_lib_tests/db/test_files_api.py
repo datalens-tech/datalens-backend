@@ -37,7 +37,7 @@ async def test_file_upload_cors(fu_client, s3_tmp_bucket, upload_file_req):
 async def test_make_presigned_url(fu_client, s3_tmp_bucket, rci):
     expected_url_fields = ("key", "x-amz-algorithm", "x-amz-credential", "x-amz-date", "policy", "x-amz-signature")
 
-    resp = await fu_client.make_request(ReqBuilder.presigned_url("mymd5"))
+    resp = await fu_client.make_request(ReqBuilder.presigned_url())
     assert resp.status == 200
     assert "url" in resp.json, resp.json
     assert "fields" in resp.json, resp.json
