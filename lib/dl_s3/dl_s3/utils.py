@@ -11,7 +11,7 @@ if typing.TYPE_CHECKING:
 
 
 async def upload_to_s3_by_presigned(
-    presigned_url: dict[str, typing.Any], content_md5: str, data: str
+    presigned_url: dict[str, typing.Any], data: str
 ) -> aiohttp.ClientResponse:
     upload_url = presigned_url["url"]
     upload_url_fields = presigned_url["fields"]
