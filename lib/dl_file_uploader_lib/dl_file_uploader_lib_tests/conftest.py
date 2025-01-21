@@ -2,7 +2,6 @@ import pytest
 import redis.asyncio
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_testing.constants import TestUserID
 from dl_configs.crypto_keys import (
     CryptoKeysConfig,
     get_dummy_crypto_keys_config,
@@ -10,6 +9,7 @@ from dl_configs.crypto_keys import (
 from dl_configs.enums import RedisMode
 from dl_configs.settings_submodels import RedisSettings
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
+from dl_testing.constants import TEST_USER_ID
 from dl_testing.containers import get_test_container_hostport
 
 
@@ -18,7 +18,7 @@ pytest_plugins = ("aiohttp.pytest_plugin",)
 
 @pytest.fixture(scope="function")
 def rci() -> RequestContextInfo:
-    return RequestContextInfo(user_id=TestUserID.APP_ASYNC.value)
+    return RequestContextInfo(user_id=TEST_USER_ID)
 
 
 @pytest.fixture(scope="session")

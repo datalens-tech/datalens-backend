@@ -15,7 +15,6 @@ from dl_api_commons.base_models import (
     RequestContextInfo,
     TenantCommon,
 )
-from dl_testing.constants import TestUserID
 from dl_configs.crypto_keys import get_dummy_crypto_keys_config
 from dl_configs.enums import RedisMode
 from dl_configs.settings_submodels import (
@@ -63,6 +62,7 @@ from dl_task_processor.state import (
     TaskState,
 )
 from dl_task_processor.worker import ArqWorkerTestWrapper
+from dl_testing.constants import TEST_USER_ID
 from dl_testing.containers import get_test_container_hostport
 from dl_testing.s3_utils import (
     create_s3_bucket,
@@ -103,7 +103,7 @@ def loop(event_loop):
 
 @pytest.fixture(scope="function")
 def rci() -> RequestContextInfo:
-    return RequestContextInfo(user_id=TestUserID.APP_ASYNC.value)
+    return RequestContextInfo(user_id=TEST_USER_ID)
 
 
 @pytest.fixture(scope="session", autouse=True)

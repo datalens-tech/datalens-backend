@@ -24,10 +24,6 @@ from dl_api_commons.base_models import (
     TenantCommon,
 )
 from dl_api_commons.client.common import DLCommonAPIClient
-from dl_testing.constants import (
-    TestUserID,
-    TestUserName,
-)
 from dl_configs.crypto_keys import (
     CryptoKeysConfig,
     get_dummy_crypto_keys_config,
@@ -72,6 +68,10 @@ from dl_task_processor.processor import TaskProcessor
 from dl_task_processor.state import (
     BITaskStateImpl,
     TaskState,
+)
+from dl_testing.constants import (
+    TEST_USER_ID,
+    TEST_USER_NAME,
 )
 from dl_testing.containers import get_test_container_hostport
 from dl_testing.s3_utils import (
@@ -213,8 +213,8 @@ class TestingFileUploaderApiAppFactory(FileUploaderApiAppFactory[FileUploaderAPI
     def get_auth_middlewares(self) -> list[Middleware]:
         return [
             auth_trust_middleware(
-                fake_user_id=TestUserID.APP_ASYNC.value,
-                fake_user_name=TestUserName.APP_ASYNC.value,
+                fake_user_id=TEST_USER_ID,
+                fake_user_name=TEST_USER_NAME,
             )
         ]
 
@@ -269,7 +269,7 @@ def redis_cli(redis_app_settings) -> redis.asyncio.Redis:
 
 @pytest.fixture(scope="function")
 def rci() -> RequestContextInfo:
-    return RequestContextInfo(user_id=TestUserID.APP_ASYNC.value)
+    return RequestContextInfo(user_id=TEST_USER_ID)
 
 
 @pytest.fixture(scope="session")
