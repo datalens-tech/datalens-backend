@@ -99,13 +99,10 @@ class ReqBuilder:
         )
 
     @classmethod
-    def presigned_url(cls, content_md5: str, *, require_ok: bool = True) -> Req:
+    def presigned_url(cls, *, require_ok: bool = True) -> Req:
         return Req(
-            method="post",
+            method="get",
             url="/api/v2/make_presigned_url",
-            data_json={
-                "content_md5": content_md5,
-            },
             require_ok=require_ok,
         )
 
