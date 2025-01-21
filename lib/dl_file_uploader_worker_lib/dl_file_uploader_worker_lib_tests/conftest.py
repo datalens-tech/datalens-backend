@@ -62,6 +62,7 @@ from dl_task_processor.state import (
     TaskState,
 )
 from dl_task_processor.worker import ArqWorkerTestWrapper
+from dl_testing.constants import TEST_USER_ID
 from dl_testing.containers import get_test_container_hostport
 from dl_testing.s3_utils import (
     create_s3_bucket,
@@ -102,7 +103,7 @@ def loop(event_loop):
 
 @pytest.fixture(scope="function")
 def rci() -> RequestContextInfo:
-    return RequestContextInfo(user_id="_the_tests_asyncapp_user_id_")
+    return RequestContextInfo(user_id=TEST_USER_ID)
 
 
 @pytest.fixture(scope="session", autouse=True)
