@@ -13,8 +13,6 @@ class TrinoConnectionDataStorageSchema(ConnectionSQLDataStorageSchema[Connection
         TrinoAuthType,
         required=True,
         allow_none=False,
-        dump_default=TrinoAuthType.NONE,
-        load_default=TrinoAuthType.NONE,
     )
     ssl_ca = ma_fields.String(
         required=False,
