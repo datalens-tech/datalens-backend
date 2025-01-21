@@ -2,6 +2,7 @@ import pytest
 import redis.asyncio
 
 from dl_api_commons.base_models import RequestContextInfo
+from dl_testing.constants import TestUserID
 from dl_configs.crypto_keys import (
     CryptoKeysConfig,
     get_dummy_crypto_keys_config,
@@ -17,7 +18,7 @@ pytest_plugins = ("aiohttp.pytest_plugin",)
 
 @pytest.fixture(scope="function")
 def rci() -> RequestContextInfo:
-    return RequestContextInfo(user_id="_the_tests_asyncapp_user_id_")
+    return RequestContextInfo(user_id=TestUserID.APP_ASYNC.value)
 
 
 @pytest.fixture(scope="session")

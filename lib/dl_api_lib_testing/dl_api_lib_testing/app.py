@@ -19,6 +19,10 @@ from dl_api_lib.app_settings import (
     DataApiAppSettings,
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+from dl_testing.constants import (
+    TestUserID,
+    TestUserName,
+)
 from dl_cache_engine.primitives import CacheTTLConfig
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.enums import RequiredService
@@ -52,15 +56,15 @@ class TestingSubjectResolver(BaseSubjectResolver):
     def get_subjects_by_names(self, names: list[str]) -> list[RLSSubject]:
         """
         Mock resolver. Considers a user real if the name starts with a 'user' or
-        if it's equals to '_the_tests_asyncapp_user_name_'
+        if it equals to TestUserName.APP_ASYNC.value
         """
         subjects = []
 
         for name in names:
             subject: RLSSubject
-            if name == "_the_tests_asyncapp_user_name_":
+            if name == TestUserName.APP_ASYNC.value:
                 subject = RLSSubject(
-                    subject_id="_the_tests_asyncapp_user_id_",
+                    subject_id=TestUserID.APP_ASYNC.value,
                     subject_type=RLSSubjectType.user,
                     subject_name=name,
                 )
@@ -77,7 +81,7 @@ class TestingSubjectResolver(BaseSubjectResolver):
         return subjects
 
     async def get_groups_by_subject(self, rci: RequestContextInfo) -> list[str]:
-        return ["_the_tests_asyncapp_group_"] if rci.user_id == "_the_tests_asyncapp_user_id_" else []
+        return ["_the_tests_asyncapp_group_"] if rci.user_id == TestUserID.APP_ASYNC.value else []
 
 
 @attr.s
@@ -132,8 +136,8 @@ class TestingControlApiAppFactory(ControlApiAppFactory[ControlApiAppSettings], T
     ) -> ControlApiEnvSetupResult:
         us_auth_mode: USAuthMode
         TrustAuthService(
-            fake_user_id="_the_tests_syncapp_user_id_",
-            fake_user_name="_the_tests_syncapp_user_name_",
+            fake_user_id=TestUserID.APP_SYNC.value,
+            fake_user_name=TestUserName.APP_SYNC.value,
             fake_tenant=None if testing_app_settings is None else testing_app_settings.fake_tenant,
         ).set_up(app)
 
@@ -171,8 +175,8 @@ class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRF
 
         auth_mw_list = [
             auth_trust_middleware(
-                fake_user_id="_the_tests_asyncapp_user_id_",
-                fake_user_name="_the_tests_asyncapp_user_name_",
+                fake_user_id=TestUserID.APP_ASYNC.value,
+                fake_user_name=TestUserName.APP_ASYNC.value,
             )
         ]
 

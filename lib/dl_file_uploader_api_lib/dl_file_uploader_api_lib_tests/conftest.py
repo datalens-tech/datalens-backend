@@ -24,6 +24,10 @@ from dl_api_commons.base_models import (
     TenantCommon,
 )
 from dl_api_commons.client.common import DLCommonAPIClient
+from dl_testing.constants import (
+    TestUserID,
+    TestUserName,
+)
 from dl_configs.crypto_keys import (
     CryptoKeysConfig,
     get_dummy_crypto_keys_config,
@@ -95,10 +99,6 @@ try:
     del aiohttp.pytest_plugin.loop
 except AttributeError:
     pass
-
-
-_TESTS_USER_ID = "_the_tests_asyncapp_user_id_"
-_TESTS_USER_NAME = "_the_tests_asyncapp_user_name_"
 
 
 def pytest_configure(config: Any) -> None:  # noqa
@@ -213,8 +213,8 @@ class TestingFileUploaderApiAppFactory(FileUploaderApiAppFactory[FileUploaderAPI
     def get_auth_middlewares(self) -> list[Middleware]:
         return [
             auth_trust_middleware(
-                fake_user_id=_TESTS_USER_ID,
-                fake_user_name=_TESTS_USER_NAME,
+                fake_user_id=TestUserID.APP_ASYNC.value,
+                fake_user_name=TestUserName.APP_ASYNC.value,
             )
         ]
 
@@ -269,7 +269,7 @@ def redis_cli(redis_app_settings) -> redis.asyncio.Redis:
 
 @pytest.fixture(scope="function")
 def rci() -> RequestContextInfo:
-    return RequestContextInfo(user_id="_the_tests_asyncapp_user_id_")
+    return RequestContextInfo(user_id=TestUserID.APP_ASYNC.value)
 
 
 @pytest.fixture(scope="session")
