@@ -201,12 +201,6 @@ class SyncUSManager(USManagerBase):
         ):
             us_resp = self._us_client.get_entry(entry_id, params=params)
 
-        schema_migration = self.get_schema_migration(
-            entry_scope=us_resp["scope"],
-            entry_type=us_resp["type"],
-        )
-        us_resp = schema_migration.migrate(us_resp)
-
         obj = self._entry_dict_to_obj(us_resp, expected_type)
         await_sync(self.get_lifecycle_manager(entry=obj).post_init_async_hook())
 
@@ -263,11 +257,6 @@ class SyncUSManager(USManagerBase):
         for us_resp in us_entry_iterator:
             # noinspection PyBroadException
             try:
-                schema_migration = self.get_schema_migration(
-                    entry_scope=us_resp["scope"],
-                    entry_type=us_resp["type"],
-                )
-                us_resp = schema_migration.migrate(us_resp)
                 yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)  # type: ignore  # TODO: fix
             except Exception:
                 LOGGER.exception("Failed to load US object: %s", us_resp)
@@ -296,11 +285,6 @@ class SyncUSManager(USManagerBase):
     def reload_data(self, entry: USEntry) -> None:
         assert entry.uuid is not None
         us_resp = self._us_client.get_entry(entry.uuid)
-        schema_migration = self.get_schema_migration(
-            entry_scope=us_resp["scope"],
-            entry_type=us_resp["type"],
-        )
-        us_resp = schema_migration.migrate(us_resp)
         reloaded_entry = self._entry_dict_to_obj(us_resp, expected_type=type(entry))
         entry.data = reloaded_entry.data
         entry._us_resp = us_resp
