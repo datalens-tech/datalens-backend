@@ -210,7 +210,7 @@ class DLRequestBase:
         elif len(header_value_list) > 1:
             raise InvalidHeaderException("Expecting single header but multiple received", header_name=header_name)
 
-        return header_value_list[0]  # type: ignore  # 2024-01-24 # TODO: Tuple index out of range  [misc]
+        return header_value_list[0]
 
     def get_single_json_header(self, header: DLHeaders) -> Union[bool, int, float, list, dict, None]:
         raw_header = self.request.headers.get(header.value)

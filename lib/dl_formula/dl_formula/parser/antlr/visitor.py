@@ -47,15 +47,15 @@ class CustomDataLensVisitor(DataLensVisitor):
         last_ctx = ctxes[-1]
         return nodes.NodeMeta(
             position=self._make_position(*ctxes),
-            original_text=self._text[first_ctx.start.start : last_ctx.stop.stop + 1],  # type: ignore  # TODO: fix
+            original_text=self._text[first_ctx.start.start : last_ctx.stop.stop + 1],
         )
 
-    def _make_position(self, *ctxes: antlr4.ParserRuleContext) -> Optional[Position]:  # type: ignore  # TODO: fix
+    def _make_position(self, *ctxes: antlr4.ParserRuleContext) -> Optional[Position]:
         first_ctx = ctxes[0]
         last_ctx = ctxes[-1]
         return self._pos_conv.merge_positions(
-            start_position=self._pos_conv.idx_to_position(first_ctx.start.start),  # type: ignore  # TODO: fix
-            end_position=self._pos_conv.idx_to_position(last_ctx.stop.stop + 1),  # type: ignore  # TODO: fix
+            start_position=self._pos_conv.idx_to_position(first_ctx.start.start),
+            end_position=self._pos_conv.idx_to_position(last_ctx.stop.stop + 1),
         )
 
     def _separate_children(
@@ -66,7 +66,7 @@ class CustomDataLensVisitor(DataLensVisitor):
     ) -> Tuple[List[str], List[nodes.FormulaItem]]:
         str_children = []
         node_children = []
-        for child in ctx.children:  # type: ignore  # TODO: fix
+        for child in ctx.children:
             if isinstance(child, TerminalNodeImpl):
                 child_str = str(child)
                 if lower_str:
@@ -389,9 +389,9 @@ class CustomDataLensVisitor(DataLensVisitor):
         ) -> List[antlr4.ParserRuleContext]:
             if is_cmp(_ctx):
                 return [
-                    *_flatten_and_visit_cmp_ctx(_ctx.children[0]),  # type: ignore  # TODO: fix
-                    str(_ctx.children[1]),  # type: ignore  # TODO: fix
-                    self.visit(_ctx.children[2]),  # type: ignore  # TODO: fix
+                    *_flatten_and_visit_cmp_ctx(_ctx.children[0]),
+                    str(_ctx.children[1]),
+                    self.visit(_ctx.children[2]),
                 ]
             return [self.visit(_ctx)]
 
@@ -413,8 +413,8 @@ class CustomDataLensVisitor(DataLensVisitor):
 
         latest_pair = None
         latest_left = left
-        for op_name, right in parts:  # type: ignore  # TODO: fix
-            if op_name == "=":  # type: ignore  # TODO: fix
+        for op_name, right in parts:
+            if op_name == "=":
                 op_name = "=="
             if op_name == "<>":
                 op_name = "!="

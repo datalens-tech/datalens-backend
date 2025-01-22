@@ -113,9 +113,7 @@ class ServicesRegistry(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_mutation_cache_engine_factory(
-        self, cache_type: Type[GenericCacheEngine]
-    ) -> MutationCacheEngineFactory:  # type: ignore  # TODO: fix
+    def get_mutation_cache_engine_factory(self, cache_type: Type[GenericCacheEngine]) -> MutationCacheEngineFactory:
         pass
 
     @abc.abstractmethod
@@ -148,7 +146,7 @@ class ServicesRegistry(metaclass=abc.ABCMeta):
 
 
 @attr.s(hash=False)
-class DefaultServicesRegistry(ServicesRegistry):  # type: ignore  # TODO: fix
+class DefaultServicesRegistry(ServicesRegistry):
     _rci: RequestContextInfo = attr.ib()
     _reporting_registry: ReportingRegistry = attr.ib()
     _mutations_cache_factory: Optional[USEntryMutationCacheFactory] = attr.ib()
@@ -178,7 +176,7 @@ class DefaultServicesRegistry(ServicesRegistry):  # type: ignore  # TODO: fix
 
     @_data_processor_factory.default  # noqa
     def _default_data_processor_factory(self) -> BaseClosableDataProcessorFactory:
-        return DefaultDataProcessorFactory(  # type: ignore  # TODO: fix
+        return DefaultDataProcessorFactory(
             services_registry_ref=FutureRef.fulfilled(self),
         )
 
@@ -219,9 +217,7 @@ class DefaultServicesRegistry(ServicesRegistry):  # type: ignore  # TODO: fix
     def get_mutation_cache_factory(self) -> Optional[USEntryMutationCacheFactory]:
         return self._mutations_cache_factory
 
-    def get_mutation_cache_engine_factory(
-        self, cache_type: Type[GenericCacheEngine]
-    ) -> MutationCacheEngineFactory:  # type: ignore  # TODO: fix
+    def get_mutation_cache_engine_factory(self, cache_type: Type[GenericCacheEngine]) -> MutationCacheEngineFactory:
         # TODO: Save already created CacheEngine's?
         return DefaultMutationCacheEngineFactory(services_registry_ref=FutureRef.fulfilled(self), cache_type=cache_type)
 
@@ -324,9 +320,7 @@ class DummyServiceRegistry(ServicesRegistry):
     def get_mutation_cache_factory(self) -> Optional[USEntryMutationCacheFactory]:
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
-    def get_mutation_cache_engine_factory(
-        self, cache_type: Type[GenericCacheEngine]
-    ) -> MutationCacheEngineFactory:  # type: ignore  # TODO: fix
+    def get_mutation_cache_engine_factory(self, cache_type: Type[GenericCacheEngine]) -> MutationCacheEngineFactory:
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
     def get_data_processor_service_factory(self) -> Optional[Callable[[ProcessorType], DataProcessorService]]:

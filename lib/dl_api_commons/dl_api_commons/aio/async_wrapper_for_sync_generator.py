@@ -150,7 +150,7 @@ class SynchronizedJobState(Generic[_STATE_ITEM_TV]):
         return self._monitor.__enter__()
 
     def __exit__(self, *args, **kwargs):  # type: ignore  # TODO: fix
-        return self._monitor.__exit__(*args, **kwargs)  # type: ignore  # TODO: fix
+        return self._monitor.__exit__(*args, **kwargs)
 
 
 _JOB_ITEM_TV = TypeVar("_JOB_ITEM_TV")

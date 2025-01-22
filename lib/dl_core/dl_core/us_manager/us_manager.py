@@ -310,7 +310,7 @@ class USManagerBase:
         if expected_type == USMigrationEntry:
             entry_cls = USMigrationEntry
         else:
-            entry_cls = self._get_entry_class(  # type: ignore  # TODO: fix
+            entry_cls = self._get_entry_class(
                 us_type=us_resp["type"],
                 us_scope=us_resp["scope"],
                 entry_key=entry_loc,

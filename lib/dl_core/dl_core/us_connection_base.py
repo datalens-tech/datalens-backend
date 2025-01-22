@@ -270,7 +270,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         return resp
 
     @classmethod
-    def create_from_dict(  # type: ignore  # TODO: fix
+    def create_from_dict(
         cls: Type[_CB_TV],
         data_dict: Union[dict, BaseAttrsDataModel],
         ds_key: Union[EntryLocation, str, None] = None,
@@ -487,7 +487,7 @@ class SubselectMixin:
         ]
 
 
-class ConnectionSQL(SubselectMixin, ConnectionBase):  # type: ignore  # TODO: fix
+class ConnectionSQL(SubselectMixin, ConnectionBase):
     has_schema: ClassVar[bool] = False
     default_schema_name: ClassVar[Optional[str]] = None
 

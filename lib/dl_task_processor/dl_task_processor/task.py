@@ -158,7 +158,7 @@ class TaskRegistry:
         assert sorted(
             [t.name() for t in tasks],
         ) == sorted(list(set([t.name() for t in tasks]))), "Some tasks has the same name"
-        return cls(tasks={task.name(): task for task in tasks})  # type: ignore  # 2024-01-24 # TODO: Value expression in dictionary comprehension has incompatible type "type[BaseExecutorTask[Any, Any]]"; expected type "BaseExecutorTask[Any, Any]"  [misc]
+        return cls(tasks={task.name(): task for task in tasks})
 
     def get_task(self, name: TaskName) -> Type[BaseExecutorTask]:
         return self._tasks[name]

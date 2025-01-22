@@ -29,7 +29,7 @@ CH_TYPES_DATE = frozenset((ch_types.Date, ch_types.Date32))
 
 class ClickHouseTypeTransformer(TypeTransformer):
     native_to_user_map = {
-        **{make_native_type(typecls): UserDataType.integer for typecls in CH_TYPES_INT},  # type: ignore  # TODO: fix
+        **{make_native_type(typecls): UserDataType.integer for typecls in CH_TYPES_INT},
         **{make_native_type(typecls): UserDataType.string for typecls in (ch_types.String,)},  # TODO: FixedString
         make_native_type(ch_types.Enum8): UserDataType.string,
         make_native_type(ch_types.Enum16): UserDataType.string,

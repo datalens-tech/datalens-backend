@@ -234,7 +234,7 @@ class DataSourceCollectionBase:
             # "import" raw schema from origin dsrc to current one
             tt = origin_dsrc.type_transformer
             raw_schema = [
-                col.clone(  # type: ignore  # TODO: fix
+                col.clone(
                     # convert data type to match data source type
                     user_type=col.user_type
                     or tt.type_native_to_user(native_t=col.native_type),

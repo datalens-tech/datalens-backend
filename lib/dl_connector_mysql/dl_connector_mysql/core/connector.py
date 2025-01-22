@@ -66,4 +66,4 @@ class MySQLCoreConnector(CoreConnector):
         MySQLSubselectCoreSourceDefinition,
     )
     rqe_adapter_classes = frozenset({MySQLAdapter, AsyncMySQLAdapter})
-    sa_types = SQLALCHEMY_MYSQL_TYPES  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[GenericNativeType, function]", base class "CoreConnector" defined the type as "dict[GenericNativeType, Callable[[GenericNativeType], TypeEngine]] | None")  [assignment]
+    sa_types = SQLALCHEMY_MYSQL_TYPES

@@ -106,7 +106,7 @@ class SqlAlchemyTranslator:
             signature = FunctionStatsSignature(
                 name=func_name,
                 arg_types=tuple(at.name for at in arg_types),  # type: ignore  # TODO: fix
-                dialect=dialect_name,  # type: ignore  # TODO: fix
+                dialect=dialect_name,
                 is_window=isinstance(node, nodes.WindowFuncCall),
             )
             self._env.translation_stats.add_function_hit(signature)

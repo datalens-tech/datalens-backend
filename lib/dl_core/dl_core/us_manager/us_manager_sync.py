@@ -146,7 +146,7 @@ class SyncUSManager(USManagerBase):
             assert entry.uuid is not None
             resp = self._us_client.update_entry(entry.uuid, lock=entry.lock, **save_params)
 
-        entry._us_resp = resp  # type: ignore  # TODO: fix
+        entry._us_resp = resp
 
         post_save_result = lifecycle_manager.post_save_hook()
         if post_save_result.additional_save_needed:

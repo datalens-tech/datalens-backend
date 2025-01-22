@@ -13,7 +13,7 @@ class OracleServerTypeTransformer(TypeTransformer):
         # No separate type for integer. Number acts as DECIMAL with customizable precision.
         **{make_native_type(t): UserDataType.integer for t in (sa.Integer,)},  # pseudo type used if scale == 0
         **{
-            make_native_type(t): UserDataType.float  # type: ignore  # TODO: fix
+            make_native_type(t): UserDataType.float
             for t in (or_types.NUMBER, or_types.BINARY_FLOAT, or_types.BINARY_DOUBLE)
         },
         **{
@@ -27,10 +27,7 @@ class OracleServerTypeTransformer(TypeTransformer):
                 or_types.NVARCHAR2,
             )
         },
-        **{
-            make_native_type(t): UserDataType.genericdatetime  # type: ignore  # TODO: fix
-            for t in (or_types.DATE, or_types.TIMESTAMP)
-        },
+        **{make_native_type(t): UserDataType.genericdatetime for t in (or_types.DATE, or_types.TIMESTAMP)},
         # No separate type for date, it's the same as for datetime
         make_native_type(sa.sql.sqltypes.NullType): UserDataType.unsupported,
     }

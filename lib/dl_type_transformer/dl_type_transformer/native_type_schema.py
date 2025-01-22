@@ -59,7 +59,7 @@ class NativeTypeSchemaBase(Schema, Generic[_TARGET_TV]):
             data = data.copy()
             data.pop("conn_type")
 
-        return self.TARGET_CLS(**data)  # type: ignore  # TODO: fix
+        return self.TARGET_CLS(**data)
 
 
 class GenericNativeTypeSchema(NativeTypeSchemaBase[GenericNativeType]):

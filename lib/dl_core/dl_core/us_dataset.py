@@ -58,7 +58,7 @@ LOGGER = logging.getLogger(__name__)
 
 class Dataset(USEntry):
     dir_name = ""  # type: ignore  # TODO: fix
-    scope = "dataset"  # type: ignore  # TODO: fix
+    scope = "dataset"
 
     @attr.s
     class DataModel(BaseAttrsDataModel):
@@ -133,7 +133,7 @@ class Dataset(USEntry):
 
         def spec_matches_parameters(existing_spec: DataSourceSpec) -> bool:
             # FIXME: Refactor
-            for key, value in parameters.items():  # type: ignore  # TODO: fix
+            for key, value in parameters.items():
                 if getattr(existing_spec, key, None) != value:
                     return False
             return True

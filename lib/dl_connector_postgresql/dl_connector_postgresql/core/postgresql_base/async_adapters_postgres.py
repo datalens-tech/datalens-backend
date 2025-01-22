@@ -252,7 +252,7 @@ class AsyncPostgresAdapter(
                 dict(
                     name=str(a.name),
                     postgresql_oid=a.type.oid,
-                    postgresql_typname=OID_KNOWLEDGE.get(a.type.oid),  # type: ignore  # TODO: fix
+                    postgresql_typname=OID_KNOWLEDGE.get(a.type.oid),
                 )
                 for a in query_attrs
             ],
