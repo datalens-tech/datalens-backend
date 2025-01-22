@@ -1147,12 +1147,15 @@ class DatasetValidator(DatasetBaseWrapper):
     ) -> None:
         """Apply update to the data source configuration"""
 
-        check_permissions_for_origin_sources(  # any source update requires sufficient permissions on the connection
-            dataset=self._ds,
-            source_ids=None,
-            permission_kind=USPermissionKind.read,
-            us_entry_buffer=self._us_manager.get_entry_buffer(),
-        )
+        if action != DatasetAction.refresh_source:
+            # any source update requires sufficient permissions on the connection,
+            # but you still can refresh fields
+            check_permissions_for_origin_sources(
+                dataset=self._ds,
+                source_ids=None,
+                permission_kind=USPermissionKind.read,
+                us_entry_buffer=self._us_manager.get_entry_buffer(),
+            )
 
         source_data = source_data.copy()
         source_id = source_data.pop("id") or str(uuid.uuid4())
