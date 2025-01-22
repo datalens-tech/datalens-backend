@@ -25,7 +25,7 @@ from dl_maintenance.api.common import MaintenanceEnvironmentManager
 
 def get_migration_entry(m_manager: MaintenanceEnvironmentManager, entry_id: str) -> USMigrationEntry:
     usm = m_manager.get_usm_from_env(use_sr_factory=False, is_async_env=False)
-    return usm.get_by_id(entry_id=entry_id, expected_type=USMigrationEntry)  # type: ignore  # 2024-01-29 # TODO: Incompatible return value type (got "USEntry", expected "USMigrationEntry")  [return-value]
+    return usm.get_by_id(entry_id=entry_id, expected_type=USMigrationEntry)
 
 
 def get_entry(m_manager: MaintenanceEnvironmentManager, entry_id: str, is_async_env: bool = True) -> USEntry:
@@ -35,7 +35,7 @@ def get_entry(m_manager: MaintenanceEnvironmentManager, entry_id: str, is_async_
 
 def get_dataset(m_manager: MaintenanceEnvironmentManager, entry_id: str, is_async_env: bool = True) -> Dataset:
     usm = m_manager.get_usm_from_env(is_async_env=is_async_env)
-    return usm.get_by_id(entry_id=entry_id, expected_type=Dataset)  # type: ignore  # 2024-01-29 # TODO: Incompatible return value type (got "USEntry", expected "Dataset")  [return-value]
+    return usm.get_by_id(entry_id=entry_id, expected_type=Dataset)
 
 
 def dump_entry_data(entry: USMigrationEntry) -> str:

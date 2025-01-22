@@ -186,7 +186,7 @@ class DatasetDataBaseView(BaseView):
             )
         else:
             try:
-                dataset = await us_manager.get_by_id(self.dataset_id, Dataset)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "USEntry", variable has type "Dataset")  [assignment]
+                dataset = await us_manager.get_by_id(self.dataset_id, Dataset)
             except USObjectNotFoundException as e:
                 raise web.HTTPNotFound(reason="Entity not found") from e
 
