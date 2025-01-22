@@ -78,6 +78,9 @@ class TrinoDefaultAdapter(BaseClassicAdapter, BaseSAAdapter[TrinoConnTargetDTO])
 
     def get_default_db_name(self) -> Optional[str]:
         return None
+    
+    def get_db_name_for_query(self, db_name_from_query: Optional[str]) -> str:
+        return ""  # Not my fault, it's unnecessary for Trino
 
     def _get_db_engine(self, db_name: str, disable_streaming: bool = False) -> Engine:
         if disable_streaming:
