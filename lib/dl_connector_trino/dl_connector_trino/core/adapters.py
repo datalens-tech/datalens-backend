@@ -63,7 +63,7 @@ def construct_creator_func(target_dto: TrinoConnTargetDTO) -> Callable[[], sa.en
 
             session = requests.Session()
             session.mount("https://", CustomHTTPAdapter())
-            params["session"] = session
+            params["http_session"] = session
 
         conn = trino_connect(**params)
         return conn
