@@ -92,7 +92,6 @@ class DBAdapterQueryStrSchema(BaseQEAPISchema):
         return conn_params
 
 
-# noinspection PyMethodMayBeStatic
 class DBAdapterQuerySQLASchema(DBAdapterQueryStrSchema):
     query = fields.Method(serialize="dump_query", deserialize="load_query")  # type: ignore  # TODO: fix
     tables = fields.Method(serialize="dump_tables", deserialize="load_tables")

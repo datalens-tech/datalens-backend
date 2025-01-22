@@ -163,7 +163,6 @@ class SyncUSManager(USManagerBase):
         assert entry.uuid is not None
         self._us_client.delete_entry(entry.uuid, lock=entry.lock)
         entry.stored_in_db = False
-        # noinspection PyBroadException
         try:
             LOGGER.info("Executing post-delete hook %s", entry.uuid)
             lifecycle_manager.post_delete_hook()
@@ -255,7 +254,6 @@ class SyncUSManager(USManagerBase):
         )
 
         for us_resp in us_entry_iterator:
-            # noinspection PyBroadException
             try:
                 yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)  # type: ignore  # TODO: fix
             except Exception:

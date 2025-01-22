@@ -171,7 +171,6 @@ class AsyncUSManager(USManagerBase):
             entry.uuid = resp["entryId"]
             entry.stored_in_db = True
         else:
-            # noinspection PyProtectedMember
             save_params["update_revision"] = update_revision
             assert entry.uuid is not None
             resp = await self._us_client.update_entry(entry.uuid, lock=entry._lock, **save_params)
@@ -185,11 +184,9 @@ class AsyncUSManager(USManagerBase):
         if entry.uuid is None:
             raise ValueError("Entry has no id")
 
-        # noinspection PyProtectedMember
         await self._us_client.delete_entry(entry.uuid, lock=entry._lock)
         entry.stored_in_db = False
 
-        # noinspection PyBroadException
         try:
             # TODO FIX: Use post_delete_async_hook!!!
             self.get_lifecycle_manager(entry=entry).post_delete_hook()
@@ -354,7 +351,6 @@ class AsyncUSManager(USManagerBase):
         )
 
         async for us_resp in us_entry_iterator:
-            # noinspection PyBroadException
             try:
                 yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)  # type: ignore  # TODO: fix
             except Exception:

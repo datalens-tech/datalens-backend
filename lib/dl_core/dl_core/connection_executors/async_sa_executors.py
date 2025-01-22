@@ -225,7 +225,6 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
         else:
             raise NotImplementedError(f"Unsupported execution mode {self._exec_mode}")
 
-    # noinspection PyMethodMayBeStatic
     def executor_query_to_db_adapter_query(self, conn_exec_query: ConnExecutorQuery) -> DBAdapterQuery:
         return DBAdapterQuery(
             query=conn_exec_query.query,
@@ -312,7 +311,6 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
 
     async def _close(self) -> None:
         if self._async_dba_pool is not None:
-            # noinspection PyBroadException
             for dba in self._async_dba_pool:
                 try:
                     # TODO FIX: May be make timeout

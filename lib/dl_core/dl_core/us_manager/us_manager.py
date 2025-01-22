@@ -236,7 +236,6 @@ class USManagerBase:
 
     def get_sensitive_fields_key_info(self, entry: USEntry) -> Dict[str, CryptoKeyInfo]:
         if isinstance(entry, USMigrationEntry):
-            # noinspection PyProtectedMember
             us_resp = entry._us_resp
             assert us_resp is not None
             entry_cls = self._get_entry_class(
