@@ -263,7 +263,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
             common_api_schema_items.append(
                 FormFieldApiSchema(
                     name=CommonFieldName.token,
-                    required=self.mode == ConnectionFormMode.create,  # type: ignore  # 2024-01-24 # TODO: Argument "required" to "FormFieldApiSchema" has incompatible type "bool | None"; expected "bool"  [arg-type]
+                    required=self.mode == ConnectionFormMode.create,
                 )
             )
         edit_api_schema.items.extend(common_api_schema_items)

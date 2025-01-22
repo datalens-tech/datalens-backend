@@ -350,7 +350,7 @@ class DatasetValidator(DatasetBaseWrapper):
             )
             formula_comp_multi_query = self.process_compiled_query(compiled_query=formula_comp_query)
             multi_translator = self.make_multi_query_translator()
-            errors += multi_translator.collect_errors(  # type: ignore  # TODO: fix
+            errors += multi_translator.collect_errors(
                 compiled_multi_query=formula_comp_multi_query, feature_errors=feature_errors
             )
         except formula_exc.FormulaError:
@@ -1242,7 +1242,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
             if (set(source_data) - {"title", "id", "source_type", "parameters"}) or parameters:
                 # something besides the title was updated
-                self.refresh_data_source(source_id=source_id, old_raw_schema=old_raw_schema)  # type: ignore  # TODO: fix
+                self.refresh_data_source(source_id=source_id, old_raw_schema=old_raw_schema)
 
         elif action == DatasetAction.delete_source:
             self._ds_editor.remove_data_source_collection(source_id=source_id)
@@ -1530,7 +1530,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 parameters, new_source_type = self._migrate_source_parameters(
                     old_connection=old_connection,
                     new_connection=new_connection,
-                    dsrc=dsrc,  # type: ignore  # TODO: fix
+                    dsrc=dsrc,
                 )
 
                 # migrate parameters for new source type

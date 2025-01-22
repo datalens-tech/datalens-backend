@@ -514,7 +514,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
         explicitly_required_avatar_ids |= avatar_ids_by_required_relations
 
         # Normalize avatars (fix them if there are no user-managed ones)
-        explicitly_required_avatar_ids = normalize_explicit_avatar_ids(  # type: ignore  # TODO: fix
+        explicitly_required_avatar_ids = normalize_explicit_avatar_ids(
             dataset=self._dataset, required_avatar_ids=explicitly_required_avatar_ids
         )
         if not explicitly_required_avatar_ids:

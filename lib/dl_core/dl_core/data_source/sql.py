@@ -129,10 +129,10 @@ class BaseSQLDataSource(DataSource):
         return self._exists
 
     def get_dialect(self) -> DefaultDialect:
-        return self.connection.get_dialect()  # type: ignore  # 2024-01-24 # TODO: "ConnectionBase" has no attribute "get_dialect"  [attr-defined]
+        return self.connection.get_dialect()
 
     def quote(self, value) -> sa.sql.quoted_name:  # type: ignore  # TODO: fix  # subclass of str
-        return self.connection.quote(value)  # type: ignore  # 2024-01-24 # TODO: "ConnectionBase" has no attribute "quote"  [attr-defined]
+        return self.connection.quote(value)
 
     def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         raise NotImplementedError()

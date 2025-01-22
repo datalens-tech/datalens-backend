@@ -87,6 +87,9 @@ target_path = "db"
 labels = ["fat"]
 
 [tool.mypy]
+exclude = ["dl_connector_clickhouse_tests"]
+warn_unused_ignores = true
+warn_redundant_casts = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

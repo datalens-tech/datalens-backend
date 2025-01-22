@@ -121,7 +121,7 @@ class DatasetItem(BIResource):
             404: ("Not found", None),  # type: ignore  # TODO: fix
         },
     )
-    def delete(self, dataset_id):  # type: ignore  # TODO: fix
+    def delete(self, dataset_id):
         """Delete dataset"""
         us_manager = self.get_us_manager()
         ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={})
@@ -285,14 +285,14 @@ class DatasetVersionValidator(DatasetResource):
     def post(self, dataset_id: str = None, version: str = None, body: dict = None):  # type: ignore  # TODO: fix
         """Validate dataset version schema"""
         us_manager = self.get_us_manager()
-        dataset, _ = self.get_dataset(dataset_id=dataset_id, body=body)  # type: ignore  # TODO: fix
+        dataset, _ = self.get_dataset(dataset_id=dataset_id, body=body)
         dataset_validator_factory = self.get_service_registry().get_dataset_validator_factory()
         ds_validator = dataset_validator_factory.get_dataset_validator(ds=dataset, us_manager=us_manager)
         data = {}
 
         # apply updates
         try:
-            ds_validator.apply_batch(action_batch=body.get("updates", ()))  # type: ignore  # TODO: fix
+            ds_validator.apply_batch(action_batch=body.get("updates", ()))
         except exc.DLValidationFatal as err:
             any_errors = True
             code = _make_api_err_code(exc.DLValidationFatal.err_code)

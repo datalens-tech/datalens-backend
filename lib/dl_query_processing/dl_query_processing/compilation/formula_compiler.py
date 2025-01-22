@@ -23,7 +23,6 @@ from typing import (
     Tuple,
     Type,
     Union,
-    cast,
     overload,
 )
 import uuid
@@ -390,7 +389,7 @@ class FormulaCompiler:
         self._mock_among_dimensions = mock_among_dimensions
         self._suppress_double_aggregations = suppress_double_aggregations
         self._allow_nested_window_functions = allow_nested_window_functions
-        self._field_wrappers = cast(Dict[str, SelectWrapperSpec], field_wrappers or {})
+        self._field_wrappers = field_wrappers or {}
         self._validate_aggregations = validate_aggregations
 
         self._inspect_env = inspect_env if inspect_env is not None else InspectionEnvironment()

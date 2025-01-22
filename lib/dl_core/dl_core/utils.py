@@ -200,7 +200,7 @@ def attrs_evolve_to_subclass(cls: Type[_MODEL_TYPE_TV], inst: Any, **kwargs) -> 
     assert issubclass(cls, super_cls), f"Expected subclass of {super_cls.__name__}, got {cls.__name__}"
     all_attrs = {f.name: getattr(inst, f.name.lstrip("_")) for f in attr.fields(super_cls) if f.init}
     all_attrs.update(kwargs)
-    return cls(**all_attrs)  # type: ignore  # TODO: fix
+    return cls(**all_attrs)
 
 
 def attrs_evolve_to_superclass(cls: Type[_MODEL_TYPE_TV], inst: Any, **kwargs) -> _MODEL_TYPE_TV:  # type: ignore  # TODO: fix
@@ -218,7 +218,7 @@ def attrs_evolve_to_superclass(cls: Type[_MODEL_TYPE_TV], inst: Any, **kwargs) -
     assert issubclass(sub_cls, cls), f"Expected superclass of {sub_cls.__name__}, got {cls.__name__}"
     all_attrs = {f.name: getattr(inst, f.name.lstrip("_")) for f in attr.fields(cls) if f.init}
     all_attrs.update(kwargs)
-    return cls(**all_attrs)  # type: ignore  # TODO: fix
+    return cls(**all_attrs)
 
 
 def get_current_w3c_tracing_headers(

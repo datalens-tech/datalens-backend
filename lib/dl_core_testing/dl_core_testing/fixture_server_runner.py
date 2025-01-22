@@ -28,7 +28,7 @@ class ForkPopenHack(subprocess.Popen):
 
     def __init__(self, target, **kwargs):  # type: ignore  # TODO: fix
         self._target = target
-        super().__init__(args=(), **kwargs)  # type: ignore  # TODO: fix
+        super().__init__(args=(), **kwargs)
 
     def _execute_child(self, *args, **kwargs):  # type: ignore  # TODO: fix
         # Most of the arguments are ignored,

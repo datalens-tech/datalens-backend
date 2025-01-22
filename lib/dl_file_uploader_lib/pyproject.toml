@@ -51,6 +51,8 @@ target_path = "ext"
 labels = ["ext_public"]
 
 [tool.mypy]
+warn_unused_ignores = true
+warn_redundant_casts = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true

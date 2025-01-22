@@ -13,7 +13,7 @@ from dl_constants.enums import (
 # FIXME: This is practically a dummy. Add tests please
 
 
-def test_field_condition_operators():
+def test_field_condition_operators() -> None:
     field_1 = ResultField(
         title="field_1",
         id="12345",

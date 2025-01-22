@@ -107,7 +107,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             redis_conn_params = None
         self._redis_cli_acm = get_redis_cli_acm_from_params(redis_conn_params)
 
-    @generic_profiler_async("db-query-cached")  # type: ignore  # TODO: fix
+    @generic_profiler_async("db-query-cached")
     async def _run_query_cached(self, dba_query: DBAdapterQuery) -> Any:
         async def wrap_run_query() -> Any:
             result = await self._run_query(dba_query)
@@ -137,7 +137,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
 
         return result
 
-    @generic_profiler_async("db-query")  # type: ignore  # TODO: fix
+    @generic_profiler_async("db-query")
     async def _run_query(self, dba_query: DBAdapterQuery) -> Any:
         query_text = self.compile_query_for_execution(dba_query.query)
         payload = self._build_request_payload(dba_query)

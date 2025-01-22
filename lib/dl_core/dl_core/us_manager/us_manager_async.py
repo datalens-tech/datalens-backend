@@ -121,7 +121,7 @@ class AsyncUSManager(USManagerBase):
     async def get_by_id(self, entry_id: str, expected_type: Type[_ENTRY_TV] = None) -> _ENTRY_TV:  # type: ignore  # TODO: fix
         pass
 
-    @generic_profiler_async("us-fetch-entity")  # type: ignore  # TODO: fix
+    @generic_profiler_async("us-fetch-entity")
     async def get_by_id(self, entry_id: str, expected_type: Type[_ENTRY_TV] = None) -> _ENTRY_TV:  # type: ignore  # TODO: fix
         with self._enrich_us_exception(
             entry_id=entry_id,
@@ -188,7 +188,7 @@ class AsyncUSManager(USManagerBase):
         entry.data = reloaded_entry.data
         entry._us_resp = us_resp
 
-    @asynccontextmanager  # type: ignore  # TODO: fix
+    @asynccontextmanager
     async def locked_entry_cm(
         self,
         entry_id: str,

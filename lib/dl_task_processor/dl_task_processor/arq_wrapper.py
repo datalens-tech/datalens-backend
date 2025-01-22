@@ -6,7 +6,6 @@ from typing import (
     Optional,
     Protocol,
     TypeAlias,
-    cast,
     runtime_checkable,
 )
 
@@ -128,7 +127,7 @@ def make_cron_task(task: BaseTaskMeta, schedule: CronSchedule) -> CronTask:
         name=task.name,
         **attr.asdict(schedule),
     )
-    return cast(CronTask, cron_task)
+    return cron_task
 
 
 async def arq_base_task(context: Dict, params: Dict) -> None:

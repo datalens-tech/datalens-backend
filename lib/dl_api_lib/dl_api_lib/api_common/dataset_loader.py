@@ -155,7 +155,7 @@ class DatasetApiLoader:
                     **source_data["parameters"],
                 )  # not that this does not include title and raw_schema updates
                 old_raw_schema = old_src_coll.get_cached_raw_schema(role=DataSourceRole.origin)
-                schema_updated = not are_raw_schemas_same(old_raw_schema, source_data["raw_schema"])  # type: ignore  # TODO: fix
+                schema_updated = not are_raw_schemas_same(old_raw_schema, source_data["raw_schema"])
 
                 old_index_info_set = old_src_coll.get_strict(role=DataSourceRole.origin).saved_index_info_set
                 new_index_info_set = source_data["index_info_set"]

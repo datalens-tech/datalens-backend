@@ -126,8 +126,8 @@ def schematic_request(  # type: ignore  # TODO: fix
                 else:
                     code = status.OK
                 code = int(code)
-                if dump and code in responses:  # type: ignore  # TODO: fix
-                    response_schema = responses[code][1]  # type: ignore  # TODO: fix
+                if dump and code in responses:
+                    response_schema = responses[code][1]
                     if response_schema:
                         result = response_schema.dump(result)
             except HTTPException:

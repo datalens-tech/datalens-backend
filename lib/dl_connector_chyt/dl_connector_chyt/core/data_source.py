@@ -82,7 +82,7 @@ class CHYTDataSourceBaseMixin(ClickHouseBaseMixin):
             return raw_value.rstrip("/")
         parsed_url = urllib.parse.urlparse(raw_value)
         parsed_query = urllib.parse.parse_qs(parsed_url.query)
-        res = parsed_query.get("path", [None])[0]  # type: ignore  # 2024-01-30 # TODO: List item 0 has incompatible type "None"; expected "str"  [list-item]
+        res = parsed_query.get("path", [None])[0]
         if res:
             return res  # No extra normalization
         raise exc.TableNameInvalidError("Invalid CHYT table path")

@@ -50,5 +50,5 @@ class ExecutorBasedOperationProcessor(OperationProcessorAsyncBase):
 
     async def execute_operation(self, op: BaseOp, ctx: OpExecutionContext) -> AbstractStream:
         opex_cls: Type[OpExecutorAsync] = self.get_executor_class(type(op))
-        opex = opex_cls(db_ex_adapter=self.db_ex_adapter, ctx=ctx)  # type: ignore  # TODO: fix
+        opex = opex_cls(db_ex_adapter=self.db_ex_adapter, ctx=ctx)
         return await opex.execute(op)

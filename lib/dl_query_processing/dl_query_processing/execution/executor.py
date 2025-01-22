@@ -375,9 +375,9 @@ class QueryExecutor(QueryExecutorBase):
             )
 
         source_db_queries = [
-            out_s.meta.query  # type: ignore  # TODO: fix
+            out_s.meta.query
             for _, out_s in sorted(streams_by_result_id.items())
-            if out_s.meta.query is not None and out_s.meta.pass_db_query_to_user  # type: ignore  # TODO: fix
+            if out_s.meta.query is not None and out_s.meta.pass_db_query_to_user
         ]
         query_for_response = "\n;\n\n".join(source_db_queries) or None
 

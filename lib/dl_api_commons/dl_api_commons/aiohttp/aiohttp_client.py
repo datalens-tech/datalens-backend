@@ -161,7 +161,7 @@ class BIAioHTTPClient:
             sock_connect=conn_timeout_sec or self.conn_timeout_sec,
             sock_read=read_timeout_sec or self.read_timeout_sec,
         )
-        return await self._session.request(  # type: ignore  # 2024-01-24 # TODO: Item "None" of "ClientSession | None" has no attribute "request"  [union-attr]
+        return await self._session.request(
             method=method,
             url=self.url(path),
             params=params,
