@@ -44,7 +44,7 @@ def construct_creator_func(target_dto: TrinoConnTargetDTO) -> Callable[[], sa.en
         params = dict(
             host=target_dto.host,
             port=target_dto.port,
-            username=target_dto.username,
+            user=target_dto.username,
             http_scheme="http" if target_dto.auth_type is TrinoAuthType.NONE else "https",
         )
         if target_dto.auth_type is TrinoAuthType.PASSWORD:
