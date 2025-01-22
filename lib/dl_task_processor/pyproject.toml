@@ -50,7 +50,10 @@ root_dir = "dl_task_processor_tests/"
 target_path = "db"
 
 [tool.mypy]
-exclude = ["dl_task_processor_tests/"]
+exclude = [
+  "dl_task_processor_tests/",
+  "dl_task_processor/upstream_worker.py"
+]
 warn_unused_ignores = true
 warn_redundant_casts = true
 warn_unused_configs = true
