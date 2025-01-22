@@ -3,7 +3,9 @@ from __future__ import annotations
 import logging
 from typing import (
     TYPE_CHECKING,
+    Any,
     NoReturn,
+    Optional,
 )
 
 from flask import request
@@ -37,7 +39,10 @@ from dl_core.exc import (
     DatabaseUnavailable,
     USPermissionRequired,
 )
-from dl_core.us_connection_base import ConnectionBase
+from dl_core.us_connection_base import (
+    ConnectionBase,
+    DataSourceTemplate,
+)
 
 
 if TYPE_CHECKING:
@@ -101,7 +106,7 @@ class ConnectionTester(BIResource):
             need_permission_on_entry(conn, USPermissionKind.edit)
         schema_ctx = self.get_schema_ctx(schema_operations_mode=EditMode.test, editable_object=None)
 
-        schema_cls = GenericConnectionSchema().get_edit_schema_cls(conn)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "get_edit_schema_cls" of "GenericConnectionSchema" has incompatible type "USEntry"; expected "ConnectionBase"  [arg-type]
+        schema_cls = GenericConnectionSchema().get_edit_schema_cls(conn)
         schema = schema_cls(context=schema_ctx)
 
         try:
@@ -110,12 +115,12 @@ class ConnectionTester(BIResource):
         except MValidationError as err:
             return err.messages, 400
 
-        conn.validate_new_data_sync(services_registry=service_registry, changes=changes, original_version=conn_orig)  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "validate_new_data_sync"  [attr-defined]
+        conn.validate_new_data_sync(services_registry=service_registry, changes=changes, original_version=conn_orig)
 
         try:
-            conn.test(conn_executor_factory=service_registry.get_conn_executor_factory().get_sync_conn_executor)  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "test"  [attr-defined]
+            conn.test(conn_executor_factory=service_registry.get_conn_executor_factory().get_sync_conn_executor)
         except NotImplementedError as err:
-            raise exc.UnsupportedForEntityType(f"Connector {conn.conn_type.name} does not support testing") from err  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "conn_type"  [attr-defined]
+            raise exc.UnsupportedForEntityType(f"Connector {conn.conn_type.name} does not support testing") from err
         except Exception as e:
             _handle_conn_test_exc(e)
 
@@ -186,7 +191,7 @@ class ConnectionItem(BIResource):
         with us_manager.get_locked_entry_cm(ConnectionBase, connection_id) as conn:  # type: ignore  # TODO: fix
             need_permission_on_entry(conn, USPermissionKind.edit)
             conn_orig = us_manager.clone_entry_instance(conn)
-            assert isinstance(conn_orig, ConnectionBase)  # for typing
+            assert isinstance(conn_orig, ConnectionBase)
             schema_ctx = self.get_schema_ctx(schema_operations_mode=EditMode.edit, editable_object=None)
 
             schema_cls = GenericConnectionSchema(context=schema_ctx).get_edit_schema_cls(conn)
@@ -197,7 +202,8 @@ class ConnectionItem(BIResource):
                 schema.update_object(conn, changes)
             except MValidationError as e:
                 return e.messages, 400
-            conn.validate_new_data_sync(  # type: ignore  # 2024-01-24 # TODO: <nothing> has no attribute "validate_new_data_sync"  [attr-defined]
+            assert isinstance(conn, ConnectionBase)
+            conn.validate_new_data_sync(  # type: ignore # 2025-01-22 # TODO: Never has no attribute "validate_new_data_sync"  [attr-defined]
                 services_registry=self.get_service_registry(),
                 changes=changes,
                 original_version=conn_orig,
@@ -205,28 +211,28 @@ class ConnectionItem(BIResource):
             us_manager.save(conn)
 
 
-def _dump_source_templates(tpls) -> dict:  # type: ignore  # TODO: fix
+def _dump_source_templates(tpls: Optional[list[DataSourceTemplate]]) -> Optional[list[dict[str, Any]]]:
     if tpls is None:
-        return None  # type: ignore  # TODO: fix
-    return [dict(tpl._asdict(), parameter_hash=tpl.get_param_hash()) for tpl in tpls]  # type: ignore  # TODO: fix
+        return None
+    return [dict(tpl._asdict(), parameter_hash=tpl.get_param_hash()) for tpl in tpls]
 
 
 @ns.route("/<connection_id>/info/metadata_sources")
 class ConnectionInfoMetadataSources(BIResource):
     @schematic_request(ns=ns, responses={200: ("Success", ConnectionSourceTemplatesResponseSchema())})
-    def get(self, connection_id):  # type: ignore  # TODO: fix
-        connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+    def get(self, connection_id: str) -> dict[str, Optional[list[dict[str, Any]]]]:
+        connection: ConnectionBase = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
 
         localizer = self.get_service_registry().get_localizer()
-        source_template_templates = connection.get_data_source_template_templates(localizer=localizer)  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "get_data_source_template_templates"  [attr-defined]
+        source_template_templates = connection.get_data_source_template_templates(localizer=localizer)
 
-        source_templates = []
+        source_templates: Optional[list[DataSourceTemplate]] = []
         try:
             need_permission_on_entry(connection, USPermissionKind.read)
         except USPermissionRequired:
             pass
         else:
-            source_templates = connection.get_data_source_local_templates()  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "get_data_source_local_templates"  [attr-defined]
+            source_templates = connection.get_data_source_local_templates()
 
         return {
             "sources": _dump_source_templates(source_templates),
@@ -246,7 +252,7 @@ class ConnectionInfoSources(BIResource):
 
         service_registry = self.get_service_registry()
         localizer = service_registry.get_localizer()
-        source_template_templates = connection.get_data_source_template_templates(localizer=localizer)  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "get_data_source_template_templates"  [attr-defined]
+        source_template_templates = connection.get_data_source_template_templates(localizer=localizer)
 
         source_templates = []
         try:
@@ -254,7 +260,7 @@ class ConnectionInfoSources(BIResource):
         except USPermissionRequired:
             pass
         else:
-            source_templates = connection.get_data_source_templates(  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "get_data_source_templates"  [attr-defined]
+            source_templates = connection.get_data_source_templates(
                 conn_executor_factory=service_registry.get_conn_executor_factory().get_sync_conn_executor,
             )
 
@@ -284,17 +290,17 @@ class ConnectionInfoSourceSchema(BIResource):
         sr = self.get_service_registry()
 
         def conn_executor_factory_func() -> SyncConnExecutorBase:
-            conn_executor = sr.get_conn_executor_factory().get_sync_conn_executor(conn=connection)  # type: ignore  # 2024-01-24 # TODO: Argument "conn" to "get_sync_conn_executor" of "ConnExecutorFactory" has incompatible type "USEntry"; expected "ConnectionBase"  [arg-type]
+            conn_executor = sr.get_conn_executor_factory().get_sync_conn_executor(conn=connection)
             return conn_executor
 
         need_permission_on_entry(connection, USPermissionKind.read)
-        if not connection.is_dashsql_allowed:  # type: ignore  # 2024-01-24 # TODO: "USEntry" has no attribute "is_dashsql_allowed"  [attr-defined]
+        if not connection.is_dashsql_allowed:
             abort(400, "Not supported for connector without dashsql allowed")
 
         src = body["source"]
         dsrc_spec = make_spec_from_dict(source_type=src["source_type"], data=src["parameters"])
         dsrc_cls = get_data_source_class(src["source_type"])
-        dsrc = dsrc_cls(spec=dsrc_spec, connection=connection)  # type: ignore  # 2024-01-30 # TODO: Argument "connection" to "DataSource" has incompatible type "USEntry"; expected "ConnectionBase | None"  [arg-type]
+        dsrc = dsrc_cls(spec=dsrc_spec, connection=connection)
 
         schema_info = dsrc.get_schema_info(conn_executor_factory=conn_executor_factory_func)
 

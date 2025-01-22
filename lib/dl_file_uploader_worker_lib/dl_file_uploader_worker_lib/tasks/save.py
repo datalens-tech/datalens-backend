@@ -211,7 +211,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
 
                     def _construct_insert_from_select_query(for_debug: bool = False) -> str:
                         src_sql = make_s3_table_func_sql_source(
-                            conn=conn,  # type: ignore  # 2024-01-24 # TODO: Argument "conn" to "make_s3_table_func_sql_source" has incompatible type "USEntry"; expected "BaseFileS3Connection"  [arg-type]
+                            conn=conn,
                             source_id=dst_source_id,
                             bucket=s3_service.tmp_bucket_name,
                             filename=tmp_s3_filename,
@@ -220,7 +220,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                             raw_schema_override=raw_schema_override,
                         )
                         dst_sql = make_s3_table_func_sql_source(
-                            conn=conn,  # type: ignore  # 2024-01-24 # TODO: Argument "conn" to "make_s3_table_func_sql_source" has incompatible type "USEntry"; expected "BaseFileS3Connection"  [arg-type]
+                            conn=conn,
                             source_id=dst_source_id,
                             bucket=s3_service.persistent_bucket_name,
                             filename=new_s3_filename,

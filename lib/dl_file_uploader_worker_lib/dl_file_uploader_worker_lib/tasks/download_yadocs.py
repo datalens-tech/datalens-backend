@@ -54,7 +54,7 @@ async def _get_yadocs_oauth_token(
     if dfile_token is not None:  # if there is a token in dfile, then use it
         oauth_token = dfile_token
     elif conn_id is not None:  # otherwise, use the one from the connection
-        conn: YaDocsFileS3Connection = await usm.get_by_id(conn_id, YaDocsFileS3Connection)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "USEntry", variable has type "YaDocsFileS3Connection")  [assignment]
+        conn: YaDocsFileS3Connection = await usm.get_by_id(conn_id, YaDocsFileS3Connection)
         if conn.data.oauth_token is None:
             raise NoToken()
         oauth_token = conn.data.oauth_token

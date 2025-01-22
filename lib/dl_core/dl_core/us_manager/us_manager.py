@@ -54,6 +54,7 @@ from dl_core.us_entry import (
 )
 from dl_core.us_manager.crypto.main import CryptoController
 from dl_core.us_manager.local_cache import USEntryBuffer
+from dl_core.us_manager.schema_migration.base import BaseEntrySchemaMigration
 from dl_core.us_manager.schema_migration.factory import DefaultEntrySchemaMigrationFactory
 from dl_core.us_manager.schema_migration.factory_base import EntrySchemaMigrationFactoryBase
 from dl_core.us_manager.storage_schemas.connection_schema_registry import MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA
@@ -171,6 +172,13 @@ class USManagerBase:
         return self._lifecycle_manager_factory.get_lifecycle_manager(
             entry=entry, us_manager=self, service_registry=service_registry
         )
+
+    def get_schema_migration(
+        self, entry_scope: str, entry_type: str, service_registry: Optional[ServicesRegistry] = None
+    ) -> BaseEntrySchemaMigration:
+        if service_registry is None:
+            service_registry = self.get_services_registry()
+        return self._schema_migration_factory.get_schema_migration(entry_scope, entry_type, service_registry)
 
     # TODO FIX: Prevent saving entries with tenant ID that doesn't match current tenant ID
     def set_tenant_override(self, tenant: TenantDef) -> None:
@@ -343,18 +351,23 @@ class USManagerBase:
                 **common_properties,
             )
         else:
-            data = us_resp.get("data")
-            serializer = self.get_us_entry_serializer(entry_cls)
+            data = us_resp.get("data", dict())
+            secrets = us_resp.get("unversionedData", dict())
+
+            assert isinstance(data, dict)
+            assert isinstance(secrets, dict)
             data_pack = USDataPack(
-                data=data,  # type: ignore  # 2024-01-30 # TODO: Argument "data" to "USDataPack" has incompatible type "Any | None"; expected "dict[str, Any]"  [arg-type]
-                secrets=us_resp.get("unversionedData"),  # type: ignore  # 2024-01-30 # TODO: Argument "secrets" to "USDataPack" has incompatible type "Any | None"; expected "dict[str, str | EncryptedData | None]"  [arg-type]
+                data=data,
+                secrets=secrets,
             )
 
             data_pack = copy.deepcopy(data_pack)
             if data_pack.secrets:
                 for key, secret in data_pack.secrets.items():
-                    data_pack.secrets[key] = self._crypto_controller.decrypt(secret)  # type: ignore # TODO: Argument 1 to "decrypt" of "CryptoController" has incompatible type "str | EncryptedData | None"; expected "EncryptedData | None"  [arg-type]
+                    assert not isinstance(secret, str)
+                    data_pack.secrets[key] = self._crypto_controller.decrypt(secret)
 
+            serializer = self.get_us_entry_serializer(entry_cls)
             entry = serializer.deserialize(
                 entry_cls,
                 data_pack,
@@ -523,7 +536,7 @@ class USManagerBase:
 
         return entry
 
-    def _get_entry_links(self, entry: USEntry) -> Set[ConnectionRef]:
+    def _get_entry_links(self, entry: Optional[USEntry]) -> Set[ConnectionRef]:
         if isinstance(entry, Dataset):
             lifecycle_manager = self.get_lifecycle_manager(entry=entry)
             linked_entries_refs: Set[ConnectionRef] = {
