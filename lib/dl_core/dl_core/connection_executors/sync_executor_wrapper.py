@@ -111,7 +111,6 @@ class SyncWrapperForAsyncConnExecutor(SyncConnExecutorBase):
             self.initialize()
 
         if isinstance(actual_executor, DefaultSqlAlchemyConnExecutor):
-            # noinspection PyProtectedMember
             sa_adapter = actual_executor._get_sync_sa_adapter()
             if sa_adapter is None and raise_on_not_exists:
                 raise ValueError(f"Async conn executor {actual_executor} has no sync SA adapter.")

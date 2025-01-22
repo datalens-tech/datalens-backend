@@ -91,7 +91,6 @@ class BaseClosableDataProcessorFactory(DataProcessorFactory):
 
     async def close_async(self) -> None:
         async def close_processor(s: ExecutorBasedOperationProcessor) -> None:
-            # noinspection PyBroadException
             try:
                 await s.end()
             except Exception:

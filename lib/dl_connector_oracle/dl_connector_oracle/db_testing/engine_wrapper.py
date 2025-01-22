@@ -20,7 +20,6 @@ class OracleEngineWrapper(EngineWrapperBase):
         return super().execute(query, *multiparams, **params)
 
     def count_sql_sessions(self) -> int:
-        # noinspection SqlDialectInspection
         cur = self.execute("SELECT * FROM sys.V_$SESSION")
         try:
             lines = cur.fetchall()

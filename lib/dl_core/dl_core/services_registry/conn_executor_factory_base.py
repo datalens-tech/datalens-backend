@@ -196,7 +196,6 @@ class BaseClosableExecutorFactory(ConnExecutorFactory, metaclass=abc.ABCMeta):
             if pair.sync_wrapper is not None
         ]
         for sync_wrapper in all_created_sync_wrappers:
-            # noinspection PyBroadException
             try:
                 sync_wrapper.close()
             except Exception:
@@ -206,7 +205,6 @@ class BaseClosableExecutorFactory(ConnExecutorFactory, metaclass=abc.ABCMeta):
     @ensure_env(async_env=True)
     async def close_async(self) -> None:
         async def close_executor(executor: AsyncConnExecutorBase) -> None:
-            # noinspection PyBroadException
             try:
                 await executor.close()
             except Exception:

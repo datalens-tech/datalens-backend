@@ -57,7 +57,6 @@ class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
         if value is not None and not isinstance(value, str):
             raise ValueError(f"Unexpected type of sentry_app_name_tag: '{value}'")
 
-    # noinspection PyUnusedLocal,PyMethodMayBeStatic
     def make_response(self, err_data: ErrorData, err: Exception, request: web.Request) -> web.Response:
         return web.json_response(err_data.response_body, status=err_data.status_code, reason=err_data.http_reason)
 

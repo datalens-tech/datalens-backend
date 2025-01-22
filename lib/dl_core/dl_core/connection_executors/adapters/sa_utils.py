@@ -27,7 +27,6 @@ def compile_query_for_debug(query: ClauseElement, dialect: Dialect) -> str:
     This function is only suitable for logging and not execution of the result.
     Its result might not be valid SQL if query contains date/datetime literals.
     """
-    # noinspection PyBroadException
     try:
         try:
             return str(query.compile(dialect=dialect, compile_kwargs={"literal_binds": True}))

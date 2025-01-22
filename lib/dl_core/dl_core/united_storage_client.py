@@ -189,7 +189,6 @@ class USAuthContextEmbed(USAuthContextBase):
         return self.auth_data.get_cookies(AuthTarget.UNITED_STORAGE)
 
 
-# noinspection PyCallByClass
 class UStorageClientBase:
     class RequestAdapter(metaclass=abc.ABCMeta):
         @property
