@@ -1,5 +1,5 @@
 # To enable: `git config blame.ignoreRevsFile .git-blame-ignore-revs`
 # To disable: `git config --unset blame.ignoreRevsFile`
 
-# ci: add mypy warn_unused_ignores, warn_redundant_casts options
-# TODO: add
+# ci: BI-0 add mypy warn_unused_ignores, warn_redundant_casts options (#794)
+0ece01f162c02a5e6f7cd3fca0f3b4f7869ce798
