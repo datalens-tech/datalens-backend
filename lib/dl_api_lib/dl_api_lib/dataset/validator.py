@@ -1150,7 +1150,7 @@ class DatasetValidator(DatasetBaseWrapper):
         if action != DatasetAction.refresh_source:
             # any source update requires sufficient permissions on the connection,
             # but you still can refresh fields
-            source_ids = set(self._ds_accessor.get_data_source_id_list()) - set(ignore_source_ids)
+            source_ids = set(self._ds_accessor.get_data_source_id_list()) - set(ignore_source_ids or ())
             check_permissions_for_origin_sources(
                 dataset=self._ds,
                 source_ids=source_ids,
