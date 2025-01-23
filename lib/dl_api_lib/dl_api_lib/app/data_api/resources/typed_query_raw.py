@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import abc
 from typing import (
-    Any,
     Optional,
 )
 
@@ -17,13 +15,12 @@ from dl_api_lib.app.data_api.resources.base import (
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.schemas.typed_query_raw import (
     RawTypedQueryRaw,
+    TypedQueryRawResultSchema,
     TypedQueryRawSchema,
-    TypedQueryRawResultSchema
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_api_lib.utils.base import need_permission_on_entry
 from dl_app_tools.profiling_base import generic_profiler_async
-from dl_constants.enums import DashSQLQueryType
 import dl_core.exc as core_exc
 from dl_core.us_connection_base import ConnectionBase
 from dl_dashsql.typed_query.primitives import (
@@ -38,10 +35,6 @@ class DashSQLTypedQueryRawView(BaseView):
     """
     Perform a query using the given connection.
     The behavior is connection- and query type-specific.
-
-    Main use cases:
-    - QL charts (charts using user-written queries)
-    - selectors for QL charts
     """
 
     endpoint_code = "DashSQLTypedQueryRaw"
@@ -79,8 +72,8 @@ class DashSQLTypedQueryRawView(BaseView):
             parameters=TypedQueryRawParameters(
                 path=raw_typed_query.parameters.path,
                 method=raw_typed_query.parameters.method,
-                body=raw_typed_query.parameters.body
-            )
+                body=raw_typed_query.parameters.body,
+            ),
         )
         return typed_query
 
