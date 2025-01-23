@@ -37,8 +37,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 @attr.s(frozen=True)
-class ParameterValueConstraint:
-    type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.all)
+class BaseParameterValueConstraint:
+    type: ParameterValueConstraintType
 
     def is_valid(self, value: Any) -> bool:
         if isinstance(value, BIValue):
@@ -53,7 +53,15 @@ class ParameterValueConstraint:
 
 
 @attr.s(frozen=True)
-class RangeParameterValueConstraint(ParameterValueConstraint):
+class AllParameterValueConstraint(BaseParameterValueConstraint):
+    type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.all)
+
+    def _is_valid(self, value: Any) -> bool:
+        return True
+
+
+@attr.s(frozen=True)
+class RangeParameterValueConstraint(BaseParameterValueConstraint):
     min: Optional[BIValue] = attr.ib(default=None)
     max: Optional[BIValue] = attr.ib(default=None)
     type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.range)
@@ -63,7 +71,7 @@ class RangeParameterValueConstraint(ParameterValueConstraint):
 
 
 @attr.s(frozen=True)
-class SetParameterValueConstraint(ParameterValueConstraint):
+class SetParameterValueConstraint(BaseParameterValueConstraint):
     values: List[BIValue] = attr.ib(factory=list)
     type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.set)
 
@@ -137,7 +145,7 @@ class ParameterCalculationSpec(CalculationSpec):
     default_value: Optional[BIValue] = attr.ib(kw_only=True, default=None)
     # Value constraint of the parameter
     # (defines the restrictions and origins of possible values).
-    value_constraint: Optional[ParameterValueConstraint] = attr.ib(kw_only=True, default=None)
+    value_constraint: Optional[BaseParameterValueConstraint] = attr.ib(kw_only=True, default=None)
 
 
 _CALCULATION_SPECS_BY_MODE = {
@@ -326,7 +334,7 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
         return self.calc_spec.default_value
 
     @property
-    def value_constraint(self) -> Optional[ParameterValueConstraint]:
+    def value_constraint(self) -> Optional[BaseParameterValueConstraint]:
         assert isinstance(self.calc_spec, ParameterCalculationSpec)
         return self.calc_spec.value_constraint
 

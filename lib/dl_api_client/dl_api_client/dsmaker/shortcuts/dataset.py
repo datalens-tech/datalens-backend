@@ -9,9 +9,9 @@ from typing import (
 
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.primitives import (
+    BaseParameterValueConstraint,
     Dataset,
     ParameterValue,
-    ParameterValueConstraint,
 )
 
 
@@ -71,7 +71,7 @@ def add_parameters_to_dataset(
     api_v1: SyncHttpDatasetApiV1,  # FIXME: Rename to control_api
     dataset: Optional[Dataset] = None,
     dataset_id: Optional[str] = None,
-    parameters: Dict[str, Tuple[ParameterValue, Optional[ParameterValueConstraint]]],
+    parameters: Dict[str, Tuple[ParameterValue, Optional[BaseParameterValueConstraint]]],
     exp_status: int = HTTPStatus.OK,
     save: bool = True,
 ) -> Dataset:
