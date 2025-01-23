@@ -3,9 +3,7 @@ from typing import Optional
 import attr
 from marshmallow import fields as ma_fields
 
-from dl_constants.enums import (
-    DashSQLQueryType,
-)
+from dl_constants.enums import DashSQLQueryType
 from dl_model_tools.schema.base import (
     BaseSchema,
     DefaultSchema,
