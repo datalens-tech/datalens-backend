@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   db-ydb:
     image: "cr.yandex/yc/yandex-docker-local-ydb:latest"

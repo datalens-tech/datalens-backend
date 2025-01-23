@@ -72,7 +72,6 @@ services:
       ZOO_SERVERS: server.1=0.0.0.0:2888:3888
       ports: 1,2,3,just for test
     image: some.cr.example/datalens/zookeeper@sha256:ad460bd234a3166cb37e14a1526d677052f7c42e1d1dccd040ca3e24ed1bec1f
-version: '3.7'
 x-constants:
   DB_MSSQL_CONTAINER_NAME: bi-core_db-mssql
   DB_ORACLE_CONTAINER_NAME: bi-core_db-oracle

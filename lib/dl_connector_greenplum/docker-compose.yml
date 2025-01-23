@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   # yes, greenplum tests run on a postgres db
   db-postgres-13:
