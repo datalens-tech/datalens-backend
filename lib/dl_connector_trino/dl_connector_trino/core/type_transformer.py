@@ -10,7 +10,6 @@ from dl_type_transformer.type_transformer import (
 # from sqlalchemy.sql import sqltypes as trino_sa
 
 
-
 TRINO_TYPES_INT = frozenset(
     (
         trino_sa.BIGINT,

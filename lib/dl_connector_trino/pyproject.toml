@@ -76,6 +76,7 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+exclude = ["dl_connector_trino_tests"]
 
 [[tool.mypy.overrides]]
 module = "trino.*"
