@@ -31,8 +31,8 @@ dl-core = { path = "../dl_core" }
 # [tool.poetry.plugins."dl_api_lib.connectors"]
 # trino = "dl_connector_trino.api.connector:TrinoApiConnector"
 
-# [tool.poetry.plugins."dl_core.connectors"]
-# trino = "dl_connector_trino.core.connector:TrinoCoreConnector"
+[tool.poetry.plugins."dl_core.connectors"]
+trino = "dl_connector_trino.core.connector:TrinoCoreConnector"
 
 [tool.poetry.plugins."dl_db_testing.connectors"]
 trino = "dl_connector_trino.db_testing.connector:TrinoDbTestingConnector"
