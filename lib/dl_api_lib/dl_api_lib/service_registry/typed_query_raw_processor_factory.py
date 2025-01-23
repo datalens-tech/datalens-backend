@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import abc
-from typing import (
-    TYPE_CHECKING,
-    Optional,
-)
+from typing import TYPE_CHECKING
 
 import attr
 
@@ -12,14 +9,9 @@ from dl_core.data_processing.typed_query_raw import CEBasedTypedQueryRawProcesso
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.utils import FutureRef
 from dl_dashsql.typed_query.processor.base import TypedQueryRawProcessorBase
-from dl_dashsql.typed_query.processor.cache import (
-    CachedTypedQueryProcessor,
-    DefaultTypedQueryCacheKeyBuilder,
-)
 
 
 if TYPE_CHECKING:
-    from dl_cache_engine.engine import EntityCacheEngineAsync
     from dl_core.services_registry.top_level import ServicesRegistry  # noqa
 
 

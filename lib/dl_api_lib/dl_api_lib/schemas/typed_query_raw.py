@@ -1,10 +1,10 @@
+from typing import Optional
+
 import attr
 from marshmallow import fields as ma_fields
-from typing import Optional
 
 from dl_constants.enums import (
     DashSQLQueryType,
-    UserDataType,
 )
 from dl_model_tools.schema.base import (
     BaseSchema,

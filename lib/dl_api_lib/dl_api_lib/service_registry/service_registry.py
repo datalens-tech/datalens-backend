@@ -81,7 +81,7 @@ class ApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_typed_query_processor_factory(self) -> TypedQueryProcessorFactory:
         raise NotImplementedError
-    
+
     @abc.abstractmethod
     def get_typed_query_raw_processor_factory(self) -> TypedQueryRawProcessorFactory:
         raise NotImplementedError
@@ -121,7 +121,7 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
     @_typed_query_processor_factory.default  # noqa
     def _default_typed_query_processor_factory(self) -> TypedQueryProcessorFactory:
         return DefaultQueryProcessorFactory(service_registry_ref=FutureRef.fulfilled(self))
-    
+
     @_typed_query_raw_processor_factory.default  # noqa
     def _default_typed_query_raw_processor_factory(self) -> TypedQueryRawProcessorFactory:
         return DefaultRawQueryProcessorFactory(service_registry_ref=FutureRef.fulfilled(self))
@@ -166,7 +166,7 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
 
     def get_typed_query_processor_factory(self) -> TypedQueryProcessorFactory:
         return self._typed_query_processor_factory
-    
+
     def get_typed_query_raw_processor_factory(self) -> TypedQueryRawProcessorFactory:
         return self._typed_query_raw_processor_factory
 
