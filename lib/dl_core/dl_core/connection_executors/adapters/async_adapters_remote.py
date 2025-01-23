@@ -69,10 +69,15 @@ from dl_core.connection_models.conn_options import ConnectOptions
 from dl_core.enums import RQEEventType
 from dl_dashsql.typed_query.primitives import (
     TypedQuery,
+    TypedQueryRaw,
+    TypedQueryRawResult,
     TypedQueryResult,
 )
 from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
-from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
+from dl_dashsql.typed_query.result_serialization import (
+    DefaultTypedQueryRawResultSerializer,
+    get_typed_query_result_serializer,
+)
 from dl_model_tools.msgpack import DLSafeMessagePackSerializer
 from dl_utils.utils import make_url
 
@@ -455,6 +460,22 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             ),
         )
         tq_result_serializer = get_typed_query_result_serializer(query_type=typed_query.query_type)
+        tq_result = tq_result_serializer.deserialize(tq_result_str)
+        return tq_result
+
+    async def execute_typed_query_raw(self, typed_query_raw: TypedQueryRaw) -> TypedQueryRawResult:
+        tq_serializer = get_typed_query_serializer(query_type=typed_query_raw.query_type)
+        typed_query_str = tq_serializer.serialize(typed_query_raw)
+        tq_result_str = await self._make_request_parse_response(
+            dba_actions.ActionExecuteTypedQueryRaw(
+                target_conn_dto=self._target_dto,
+                dba_cls=self._dba_cls,
+                req_ctx_info=self._req_ctx_info,
+                query_type=typed_query_raw.query_type,
+                typed_query_str=typed_query_str,
+            ),
+        )
+        tq_result_serializer = DefaultTypedQueryRawResultSerializer()
         tq_result = tq_result_serializer.deserialize(tq_result_str)
         return tq_result
 

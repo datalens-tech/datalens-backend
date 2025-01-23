@@ -12,9 +12,9 @@ from dl_core.connection_models import (
 )
 from dl_dashsql.typed_query.primitives import (
     TypedQuery,
-    TypedQueryResult,
     TypedQueryRaw,
-    TypedQueryRawResult
+    TypedQueryRawResult,
+    TypedQueryResult,
 )
 
 
@@ -75,7 +75,7 @@ class AsyncTypedQueryAdapterAction(AsyncAdapterAction):
     @abc.abstractmethod
     async def run_typed_query_action(self, typed_query: TypedQuery) -> TypedQueryResult:
         raise NotImplementedError
-    
+
 
 @attr.s(frozen=True)
 class AsyncTypedQueryRawAdapterAction(AsyncAdapterAction):
@@ -127,7 +127,7 @@ class AsyncTableExistsActionNotImplemented(AsyncTableExistsAdapterAction):
 class AsyncTypedQueryActionNotImplemented(AsyncTypedQueryAdapterAction):
     async def run_typed_query_action(self, typed_query: TypedQuery) -> TypedQueryResult:
         raise NotImplementedError
-    
+
 
 @attr.s(frozen=True)
 class AsyncTypedQueryRawActionNotImplemented(AsyncTypedQueryRawAdapterAction):

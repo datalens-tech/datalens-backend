@@ -2,9 +2,9 @@ import abc
 
 from dl_dashsql.typed_query.primitives import (
     TypedQuery,
-    TypedQueryResult,
     TypedQueryRaw,
-    TypedQueryRawResult
+    TypedQueryRawResult,
+    TypedQueryResult,
 )
 
 
@@ -18,4 +18,3 @@ class TypedQueryRawProcessorBase(abc.ABC):
     @abc.abstractmethod
     async def process_typed_query_raw(self, typed_query_raw: TypedQueryRaw) -> TypedQueryRawResult:
         raise NotImplementedError
-    

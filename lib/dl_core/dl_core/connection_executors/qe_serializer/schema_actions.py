@@ -123,3 +123,11 @@ class ActionExecuteTypedQuerySchema(DBAdapterActionBaseSchema):
 
     def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionExecuteTypedQuery:
         return dba_actions.ActionExecuteTypedQuery(**data)
+
+
+class ActionExecuteTypedQueryRawSchema(DBAdapterActionBaseSchema):
+    query_type = DynamicEnumField(DashSQLQueryType)
+    typed_query_str = fields.String()
+
+    def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionExecuteTypedQueryRaw:
+        return dba_actions.ActionExecuteTypedQueryRaw(**data)

@@ -6,6 +6,7 @@ from .components import (
     FileInputRowItem,
     HiddenRowItem,
     InputRowItem,
+    KeyValueRowItem,
     LabelRowItem,
     PlainTextRowItem,
     RadioButtonRowItem,
@@ -14,6 +15,7 @@ from .components import (
     SelectableOption,
     SelectOption,
     SelectRowItem,
+    StyleItem,
 )
 
 
@@ -33,4 +35,6 @@ __all__ = (
     "PlainTextRowItem",
     "DescriptionRowItem",
     "FileInputRowItem",
+    "StyleItem",
+    "KeyValueRowItem",
 )

@@ -37,13 +37,18 @@ if TYPE_CHECKING:
     )
     from dl_dashsql.typed_query.primitives import (
         TypedQuery,
-        TypedQueryResult,
         TypedQueryRaw,
-        TypedQueryRawResult
+        TypedQueryRawResult,
+        TypedQueryResult,
     )
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+@attr.s
+class AsyncJsonExecutionResult:
+    result: dict[str, Any] = attr.ib(factory=dict)
 
 
 @attr.s
@@ -114,7 +119,7 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
         :return: Chunks of result
         """
         return await self._execute_typed_query(typed_query)
-    
+
     @final
     @init_required
     async def execute_typed_query_raw(self, typed_query_raw: TypedQueryRaw) -> TypedQueryRawResult:
