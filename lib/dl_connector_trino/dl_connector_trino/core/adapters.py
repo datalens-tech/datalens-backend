@@ -13,7 +13,6 @@ from requests.adapters import HTTPAdapter
 import sqlalchemy as sa
 from sqlalchemy.engine import Engine
 from trino.auth import BasicAuthentication
-
 from trino.dbapi import connect as trino_connect
 
 from dl_core.connection_executors.adapters.adapters_base_sa import BaseSAAdapter
@@ -58,7 +57,7 @@ def construct_creator_func(target_dto: TrinoConnTargetDTO) -> Callable[[], sa.en
                 ) -> None:
                     # Use a secure context with the provided SSL CA
                     context = ssl.create_default_context(cadata=target_dto.ssl_ca)
-                    context.check_hostname = False # TODO: Resolve "ValueError: check_hostname requires server_hostname" and enable check_hostname!!!
+                    context.check_hostname = False  # TODO: Resolve "ValueError: check_hostname requires server_hostname" and enable check_hostname!!!
                     super().init_poolmanager(connections, maxsize, block, ssl_context=context, **pool_kwargs)
 
             session = requests.Session()
@@ -78,7 +77,7 @@ class TrinoDefaultAdapter(BaseClassicAdapter, BaseSAAdapter[TrinoConnTargetDTO])
 
     def get_default_db_name(self) -> Optional[str]:
         return None
-    
+
     def get_db_name_for_query(self, db_name_from_query: Optional[str]) -> str:
         return ""  # Not my fault, it's unnecessary for Trino
 

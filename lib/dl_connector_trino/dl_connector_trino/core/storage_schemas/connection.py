@@ -2,8 +2,8 @@ from marshmallow import fields as ma_fields
 
 from dl_core.us_manager.storage_schemas.connection import ConnectionSQLDataStorageSchema
 
-from dl_connector_trino.core.us_connection import ConnectionTrino
 from dl_connector_trino.core.constants import TrinoAuthType
+from dl_connector_trino.core.us_connection import ConnectionTrino
 
 
 class TrinoConnectionDataStorageSchema(ConnectionSQLDataStorageSchema[ConnectionTrino.DataModel]):
