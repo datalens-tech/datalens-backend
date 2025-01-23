@@ -80,6 +80,7 @@ class SelectRowItem(ControlRowItem, PlaceholderMixin):
     class Props(SerializableConfig):
         show_search: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("showSearch"))
         has_clear: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("hasClear"))
+        multiple: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("multiple"))
 
     component_id = "select"
 
@@ -171,3 +172,28 @@ class DescriptionRowItem(RowItem, DisplayConditionsMixin):
 @attr.s(kw_only=True, frozen=True)
 class FileInputRowItem(RowItem, FormFieldMixin, InnerFieldMixin, DisplayConditionsMixin):
     component_id = "file-input"
+
+
+@attr.s(kw_only=True, frozen=True)
+class StyleItem(SerializableConfig):
+    width: Optional[Width] = attr.ib(default=None, metadata=skip_if_null())
+
+
+@attr.s(kw_only=True, frozen=True)
+class KeyValueRowItem(RowItem, FormFieldMixin, DisplayConditionsMixin):
+    component_id = "key_value"
+
+    @attr.s(kw_only=True, frozen=True)
+    class KeySelectProps(SerializableConfig):
+        placeholder: Optional[str] = attr.ib(default=None, metadata=skip_if_null())
+        width: Optional[Width] = attr.ib(default=None, metadata=skip_if_null())
+
+    @attr.s(kw_only=True, frozen=True)
+    class ValueInputProps(SerializableConfig):
+        placeholder: Optional[str] = attr.ib(default=None, metadata=skip_if_null())
+        style: Optional[StyleItem] = attr.ib(default=None, metadata=skip_if_null())
+
+    secret: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("secret"))
+    keys: Optional[list[SelectOption]] = attr.ib(default=None, metadata=remap_skip_if_null("keys"))
+    key_select_props: Optional[KeySelectProps] = attr.ib(default=None, metadata=remap_skip_if_null("keySelectProps"))
+    value_input_props: Optional[ValueInputProps] = attr.ib(default=None, metadata=remap_skip_if_null("valueInputProps"))

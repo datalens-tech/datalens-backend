@@ -15,8 +15,10 @@ from dl_constants.enums import (
 )
 from dl_dashsql.typed_query.primitives import (
     PlainTypedQuery,
-    TypedQuery,
+    TypedQueryBase,
     TypedQueryParameter,
+    TypedQueryRaw,
+    TypedQueryRawParameters,
 )
 from dl_model_tools.schema.base import DefaultSchema
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
@@ -26,7 +28,7 @@ from dl_model_tools.schema.typed_values import (
 )
 
 
-_TYPED_QUERY_TV = TypeVar("_TYPED_QUERY_TV", bound=TypedQuery)
+_TYPED_QUERY_TV = TypeVar("_TYPED_QUERY_TV", bound=TypedQueryBase)
 
 
 class TypedQuerySerializer(abc.ABC, Generic[_TYPED_QUERY_TV]):
@@ -72,10 +74,25 @@ class PlainTypedQuerySerializerSchema(DefaultSchema[PlainTypedQuery]):
     parameters = ma_fields.List(ma_fields.Nested(TypedQuerySerializerParameterSchema), required=True)
 
 
+class TypedQueryRawSerializerParametersSchema(DefaultSchema[TypedQueryRawParameters]):
+    TARGET_CLS = TypedQueryRawParameters
+
+    path = ma_fields.String()
+    method = ma_fields.String(required=True)
+    body = ma_fields.Raw()
+
+
+class TypedQueryRawSerializerSchema(DefaultSchema[TypedQueryRaw]):
+    TARGET_CLS = TypedQueryRaw
+
+    parameters = ma_fields.Nested(TypedQueryRawSerializerParametersSchema, required=True)
+
+
 _TYPED_QUERY_SERIALIZER_REGISTRY: dict[DashSQLQueryType, TypedQuerySerializer] = {
     DashSQLQueryType.generic_query: MarshmallowTypedQuerySerializer(schema_cls=PlainTypedQuerySerializerSchema),
     DashSQLQueryType.generic_label_values: MarshmallowTypedQuerySerializer(schema_cls=PlainTypedQuerySerializerSchema),
     DashSQLQueryType.generic_label_names: MarshmallowTypedQuerySerializer(schema_cls=PlainTypedQuerySerializerSchema),
+    DashSQLQueryType.raw_query: MarshmallowTypedQuerySerializer(schema_cls=TypedQueryRawSerializerSchema),
 }
 
 

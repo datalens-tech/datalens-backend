@@ -282,7 +282,7 @@ def secrepr(value: Optional[str]) -> str:
     return repr(f"{value[:side_size]}...{value[-side_size:]}")
 
 
-def secrepr_dict(d: dict[str, Optional[str]]) -> str:
+def secrepr_dict(d: Optional[dict[str, Optional[str]]]) -> str:
     if not d:
         return repr(d)
     return repr({key: secrepr(value) for key, value in d.items()})

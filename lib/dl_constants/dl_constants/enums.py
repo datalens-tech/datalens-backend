@@ -339,6 +339,8 @@ class DashSQLQueryType(DynamicEnum):
     generic_label_names = AutoEnumValue()
     generic_label_values = AutoEnumValue()
     generic_label_names = AutoEnumValue()
+    # Type for queries with only json body
+    raw_query = AutoEnumValue()
 
     # Connector-specific query types should be defined as "<connector_name>_<query_type>"
 

@@ -37,11 +37,18 @@ if TYPE_CHECKING:
     )
     from dl_dashsql.typed_query.primitives import (
         TypedQuery,
+        TypedQueryRaw,
+        TypedQueryRawResult,
         TypedQueryResult,
     )
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+@attr.s
+class AsyncJsonExecutionResult:
+    result: dict[str, Any] = attr.ib(factory=dict)
 
 
 @attr.s
@@ -115,6 +122,16 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
 
     @final
     @init_required
+    async def execute_typed_query_raw(self, typed_query_raw: TypedQueryRaw) -> TypedQueryRawResult:
+        """
+        This method should not be overridden!
+        :param query:
+        :return: Chunks of result
+        """
+        return await self._execute_typed_query_raw(typed_query_raw)
+
+    @final
+    @init_required
     async def test(self) -> None:
         await self._test()
 
@@ -155,6 +172,10 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     async def _execute_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
+        pass
+
+    @abc.abstractmethod
+    async def _execute_typed_query_raw(self, typed_query: TypedQueryRaw) -> TypedQueryRawResult:
         pass
 
     @abc.abstractmethod
