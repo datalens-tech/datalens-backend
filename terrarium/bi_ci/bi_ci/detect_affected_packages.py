@@ -17,21 +17,21 @@ from .pkg_ref import PkgRef
 class Config:
     root_dir: Path = attr.ib()
     roots: list[str] = attr.ib()
-    changed_paths: list[str] = attr.ib()
+    changed_paths: list[Path] = attr.ib()
 
 
 def collect_affected_packages(
     refs: list[PkgRef],
-    paths: list[str],
+    paths: list[Path],
 ) -> list[PkgRef]:
     # path relative to project root
     seen = set()
-    pkg_by_path = {str(p.partial_parent_path): p for p in refs}
+    pkg_by_path = {p.partial_parent_path: p for p in refs}
 
     # slow, but should work ...
     for p in paths:
         for pkg_path in pkg_by_path:
-            if pkg_path in p:
+            if p.is_relative_to(pkg_path):
                 seen.add(pkg_path)
                 continue
 
@@ -156,7 +156,7 @@ def main() -> None:
     args = parser.parse_args()
 
     with open(Path(args.changes_file)) as fh:
-        changed_paths = fh.read().strip().split(" ")
+        changed_paths = [Path(p) for p in fh.read().strip().split(" ")]
 
     cfg = Config(
         root_dir=Path(args.repo),
