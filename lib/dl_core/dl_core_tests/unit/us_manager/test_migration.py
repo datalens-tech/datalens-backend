@@ -31,21 +31,21 @@ class Level1EntrySchemaMigration(BaseEntrySchemaMigration):
         return migrations
 
     @staticmethod
-    def _migrate_v1_to_v2(entry: dict) -> dict:
+    def _migrate_v1_to_v2(entry: dict, **kwargs) -> dict:
         entry["data"]["new_field"] = entry["data"].pop("old_field", "default_value")
         return entry
 
     @staticmethod
-    async def _migrate_v1_to_v2_async(entry: dict) -> dict:
+    async def _migrate_v1_to_v2_async(entry: dict, **kwargs) -> dict:
         return Level1EntrySchemaMigration._migrate_v1_to_v2(entry)
 
     @staticmethod
-    def _migrate_v2_to_v3(entry: dict) -> dict:
+    def _migrate_v2_to_v3(entry: dict, **kwargs) -> dict:
         entry["data"]["l1_field"] = "added_in_l1"
         return entry
 
     @staticmethod
-    async def _migrate_v2_to_v3_async(entry: dict) -> dict:
+    async def _migrate_v2_to_v3_async(entry: dict, **kwargs) -> dict:
         return Level1EntrySchemaMigration._migrate_v2_to_v3(entry)
 
 
@@ -69,12 +69,12 @@ class Level2EntrySchemaMigration(Level1EntrySchemaMigration):
         return migrations
 
     @staticmethod
-    def _migrate_v1_to_v2(entry: dict) -> dict:
+    def _migrate_v1_to_v2(entry: dict, **kwargs) -> dict:
         entry["data"]["new_field"] = "default_value"
         return entry
 
     @staticmethod
-    def _migrate_v2_to_v3(entry: dict) -> dict:
+    def _migrate_v2_to_v3(entry: dict, **kwargs) -> dict:
         entry["data"]["l2_field"] = "added_in_l2"
         return entry
 

@@ -6,8 +6,7 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Awaitable,
-    Callable,
+    Protocol,
 )
 
 import attr
@@ -30,12 +29,30 @@ def isoformat_validator(instance: Any, attribute: attr.Attribute, value: str) ->
     datetime.fromisoformat(value)
 
 
+class MigrationFunction(Protocol):
+    def __call__(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
+        ...
+
+
+class AwaitMigrationFunction(Protocol):
+    async def __call__(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
+        ...
+
+
 @attr.s
 class Migration:
+    """
+    Note:
+        It is recommended to release migrations with only the downgrade functions described first,
+        and only after that, add the upgrade function and release it.
+    """
+
     version: str = attr.ib(validator=isoformat_validator)
     name: str = attr.ib()
-    function: Callable[[dict], dict] = attr.ib()
-    await_function: Callable[[dict], Awaitable[dict]] | None = attr.ib(default=None)
+    up_function: MigrationFunction | None = attr.ib(default=None)
+    await_up_function: AwaitMigrationFunction | None = attr.ib(default=None)
+    down_function: MigrationFunction | None = attr.ib(default=None)
+    await_down_function: AwaitMigrationFunction | None = attr.ib(default=None)
     id: int = attr.ib(init=False)
 
     def __attrs_post_init__(self) -> None:
@@ -44,17 +61,36 @@ class Migration:
     def __lt__(self, other: Self) -> bool:
         return self.id < other.id
 
-    def migrate(self, entry: dict) -> dict:
-        entry = self.function(entry)
-        entry["data"]["schema_version"] = self.version
+    @property
+    def downgrade_version(self) -> str:
+        return datetime.fromtimestamp(self.id - 1).isoformat()
+
+    def migrate_up(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
+        if self.up_function is not None:
+            entry = self.up_function(entry, services_registry=services_registry)
+            entry["data"]["schema_version"] = self.version
         return entry
 
-    async def migrate_async(self, entry: dict) -> dict:
-        if self.await_function is not None:
-            entry = await self.await_function(entry)
-        else:
-            entry = self.function(entry)
-        entry["data"]["schema_version"] = self.version
+    def migrate_down(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
+        if self.down_function is not None:
+            entry = self.down_function(entry, services_registry=services_registry)
+            entry["data"]["schema_version"] = self.downgrade_version
+        return entry
+
+    async def migrate_up_async(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
+        if self.await_up_function is not None:
+            entry = await self.await_up_function(entry, services_registry=services_registry)
+            entry["data"]["schema_version"] = self.version
+        elif self.up_function is not None:
+            entry = self.up_function(entry, services_registry=services_registry)
+        return entry
+
+    async def migrate_down_async(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
+        if self.await_down_function is not None:
+            entry = await self.await_down_function(entry, services_registry=services_registry)
+            entry["data"]["schema_version"] = self.downgrade_version
+        elif self.down_function is not None:
+            entry = self.down_function(entry, services_registry=services_registry)
         return entry
 
 
@@ -96,8 +132,13 @@ class BaseEntrySchemaMigration:
                 if migration.version in seen_versions:
                     raise ValueError(f"Double migration detected for migration version: {migration.version}")
                 LOGGER.info(f"Apply migration ver={migration.version}, {migration.name}")
-                entry_copy = migration.migrate(entry_copy)
+                entry_copy = migration.migrate_up(entry_copy, self.services_registry)
                 seen_versions.add(migration.version)
+            # Rollback last migration if it needed
+            last_migration = self.sorted_migrations[-1]
+            if last_migration.id == entry_schema_id and last_migration.migrate_up is None:
+                LOGGER.info(f"Rollback migration ver={last_migration.version}, {last_migration.name}")
+                entry_copy = last_migration.migrate_down(entry_copy, self.services_registry)
             return entry_copy
         except Exception as exc:
             if self.strict_migration:
@@ -118,8 +159,13 @@ class BaseEntrySchemaMigration:
                 if migration.version in seen_versions:
                     raise ValueError(f"Double migration detected for migration version: {migration.version}")
                 LOGGER.info(f"Apply migration ver={migration.version}, {migration.name}")
-                entry_copy = await migration.migrate_async(entry_copy)
+                entry_copy = await migration.migrate_up_async(entry_copy, self.services_registry)
                 seen_versions.add(migration.version)
+            # Rollback last migration if it needed
+            last_migration = self.sorted_migrations[-1]
+            if last_migration.id == entry_schema_id and last_migration.migrate_up_async is None:
+                LOGGER.info(f"Rollback migration ver={last_migration.version}, {last_migration.name}")
+                entry_copy = await last_migration.migrate_down_async(entry_copy, self.services_registry)
             return entry_copy
         except Exception as exc:
             if self.strict_migration:
