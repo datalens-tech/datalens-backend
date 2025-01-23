@@ -301,24 +301,24 @@ class SyncUSManager(USManagerBase):
             self._us_client.release_lock(entry.uuid, entry.lock)
             entry.lock = None
 
-    @contextlib.contextmanager  # type: ignore  # TODO: fix
-    def locked_cm(  # type: ignore  # TODO: fix
+    @contextlib.contextmanager
+    def locked_cm(
         self, entry: USEntry, duration: Optional[int] = None, wait_timeout: Optional[int] = None
-    ) -> ContextManager:
+    ) -> Generator[None, None, None]:
         self.acquire_lock(entry, duration=duration, wait_timeout=wait_timeout)
         try:
             yield
         finally:
             self.release_lock(entry)
 
-    @contextlib.contextmanager  # type: ignore  # TODO: fix
-    def get_locked_entry_cm(  # type: ignore  # TODO: fix
+    @contextlib.contextmanager
+    def get_locked_entry_cm(
         self,
         expected_type: Type[_ENTRY_TV],
         entry_id: str,
         duration: Optional[int] = None,
         wait_timeout: Optional[int] = None,
-    ) -> ContextManager[_ENTRY_TV]:
+    ) -> Generator[_ENTRY_TV, None, None]:
         lock_token = self._us_client.acquire_lock(entry_id, duration, wait_timeout)
         entry = None
         try:
