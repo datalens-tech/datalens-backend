@@ -15,4 +15,4 @@ class CEBasedTypedQueryRawProcessor(TypedQueryRawProcessorBase):
     async_conn_executor: AsyncConnExecutorBase = attr.ib(kw_only=True)
 
     async def process_typed_query_raw(self, typed_query_raw: TypedQueryRaw) -> TypedQueryRawResult:
-        return await self.async_conn_executor.execute_typed_query_raw(typed_query=typed_query_raw)
+        return await self.async_conn_executor.execute_typed_query_raw(typed_query_raw=typed_query_raw)

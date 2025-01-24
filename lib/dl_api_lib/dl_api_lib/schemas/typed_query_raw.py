@@ -39,7 +39,11 @@ class TypedQueryRawSchema(DefaultSchema[RawTypedQueryRaw]):
     parameters = ma_fields.Nested(TypedQueryRawParametersSchema, required=True)
 
 
-class TypedQueryRawResultSchema(BaseSchema):
-    json = ma_fields.Raw(load_default=None)
-    headers = ma_fields.Dict()  # TODO: required? or load_default = None?
+class TypedQueryRawResultDataSchema(BaseSchema):
+    body = ma_fields.Dict(load_default=None)
+    headers = ma_fields.Dict()
     status = ma_fields.Integer(required=True)
+
+
+class TypedQueryRawResultSchema(BaseSchema):
+    data = ma_fields.Nested(TypedQueryRawResultDataSchema)

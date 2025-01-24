@@ -84,10 +84,7 @@ class DashSQLTypedQueryRawView(BaseView):
 
     def make_response_data(self, typed_query_result: TypedQueryRawResult) -> dict:
         """Serialize output"""
-        return {
-            "query_type": typed_query_result.query_type.name,
-            "data": TypedQueryRawResultSchema().dump(typed_query_result),
-        }
+        return TypedQueryRawResultSchema().dump(typed_query_result)
 
     @generic_profiler_async("dashsql-typed-query-raw")
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
