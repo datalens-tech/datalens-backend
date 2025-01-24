@@ -203,7 +203,7 @@ class ConnectionItem(BIResource):
             except MValidationError as e:
                 return e.messages, 400
             assert isinstance(conn, ConnectionBase)
-            conn.validate_new_data_sync(
+            conn.validate_new_data_sync(  # type: ignore # 2025-01-22 # TODO: Never has no attribute "validate_new_data_sync"  [attr-defined]
                 services_registry=self.get_service_registry(),
                 changes=changes,
                 original_version=conn_orig,

@@ -87,7 +87,7 @@ implicit_dependencies = [
 ]
 
 [tool.mypy]
-warn_unused_ignores = true
+warn_unused_ignores = false  # TODO: investigate faulty warnings
 warn_redundant_casts = true
 exclude = ["dl_api_lib_tests"]
 warn_unused_configs = true
