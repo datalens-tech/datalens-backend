@@ -320,6 +320,36 @@ class TestBasicLookupFunctions(DefaultApiTestBase, DefaultBasicLookupFunctionTes
         # [ago_igdim] should act the same way as a regular AGO under regular circumstances
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=3, day_offset=1)
 
+    def test_at_date_filtered(self, control_api, data_api, saved_dataset):
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            formulas={
+                "Sales Sum": "SUM([sales])",
+                "Sales Sum Fixed": "AT_DATE([Sales Sum], [order_date], #2014-02-02#)",
+            },
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="category"),
+                ds.find_field(title="order_date"),
+                ds.find_field(title="Sales Sum"),
+                ds.find_field(title="Sales Sum Fixed"),
+            ],
+            order_by=[
+                ds.find_field(title="category"),
+                ds.find_field(title="order_date"),
+            ],
+            filters=[
+                ds.find_field(title="category").filter(op=WhereClauseOperation.EQ, values=["Office Supplies"]),
+                ds.find_field(title="order_date").filter(op=WhereClauseOperation.GTE, values=["2014-01-06"]),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+
     def test_at_date(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(
             api_v1=control_api,

@@ -54,6 +54,15 @@ class LookupFunctionMutatorBase(abc.ABC):
     ) -> List[fork_nodes.JoinConditionBase]:
         raise NotImplementedError
 
+    @classmethod
+    @abc.abstractmethod
+    def get_bfb_filter_mutations(
+        cls,
+        lookup_dimension: nodes.FormulaItem,
+        func_args: Sequence[nodes.FormulaItem],
+    ) -> List[fork_nodes.BfbFilterMutationSpec]:
+        raise NotImplementedError
+
 
 LOOKUP_MUTATOR_REGISTRY: Dict[str, Type[LookupFunctionMutatorBase]] = {}
 
@@ -122,6 +131,22 @@ class AgoLookupFunctionMutator(DateLookupFunctionMutatorBase):
 
         return conditions
 
+    @classmethod
+    def get_bfb_filter_mutations(
+        cls,
+        lookup_dimension: nodes.FormulaItem,
+        func_args: Sequence[nodes.FormulaItem],
+    ) -> List[fork_nodes.BfbFilterMutationSpec]:
+        return [
+            fork_nodes.BfbFilterMutationSpec.make(
+                original=lookup_dimension,
+                replacement=nodes.FuncCall.make(
+                    name="dateadd",
+                    args=[lookup_dimension, *func_args[2:]],
+                ),
+            )
+        ]
+
 
 @register_lookup_mutator
 class AtDateLookupFunctionMutator(DateLookupFunctionMutatorBase):
@@ -136,6 +161,14 @@ class AtDateLookupFunctionMutator(DateLookupFunctionMutatorBase):
         lookup_dimension = cls.get_lookup_dimension(func_args)
         lookup_condition = fork_nodes.BinaryJoinCondition.make(expr=func_args[2], fork_expr=lookup_dimension)
         return [lookup_condition]
+
+    @classmethod
+    def get_bfb_filter_mutations(
+        cls,
+        lookup_dimension: nodes.FormulaItem,
+        func_args: Sequence[nodes.FormulaItem],
+    ) -> List[fork_nodes.BfbFilterMutationSpec]:
+        return []
 
 
 def _get_arg_error_node(node: nodes.FuncCall) -> Optional[aux_nodes.ErrorNode]:
@@ -158,7 +191,7 @@ def _get_arg_error_node(node: nodes.FuncCall) -> Optional[aux_nodes.ErrorNode]:
 @attr.s
 class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
     """
-    A mutation that converts all lookup (`AGO`) function calls to ``QueryFork`` nodes
+    A mutation that converts all lookup (`AGO` and `AT_DATE`) function calls to ``QueryFork`` nodes
     using a list of explicit joining conditions.
     """
 
@@ -168,7 +201,9 @@ class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
         return isinstance(node, nodes.FuncCall) and node.name in LOOKUP_MUTATOR_REGISTRY
 
     def make_replacement(
-        self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
+        self,
+        old: nodes.FormulaItem,
+        parent_stack: Tuple[nodes.FormulaItem, ...],
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.FuncCall)
         func_name = old.name
@@ -254,13 +289,7 @@ class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
         joining = fork_nodes.QueryForkJoiningWithList.make(condition_list=condition_list)
         lod = nodes.InheritedLodSpecifier()
         bfb_filter_mutations = fork_nodes.BfbFilterMutationCollectionSpec.make(
-            fork_nodes.BfbFilterMutationSpec.make(
-                original=lookup_dimension,
-                replacement=nodes.FuncCall.make(
-                    name="dateadd",
-                    args=[lookup_dimension, *old.args[2:]],
-                ),
-            )
+            *mutator.get_bfb_filter_mutations(lookup_dimension, old.args)
         )
 
         new_node = fork_nodes.QueryFork.make(
