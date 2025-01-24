@@ -51,7 +51,7 @@ def _iter_data_source_collections(
 
 def check_permissions_for_origin_sources(
     dataset: Dataset,
-    source_ids: Optional[Iterable[str]],
+    source_ids: Iterable[str],
     permission_kind: USPermissionKind,
     us_entry_buffer: USEntryBuffer,
 ) -> None:
