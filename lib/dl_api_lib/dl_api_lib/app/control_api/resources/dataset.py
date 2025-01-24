@@ -232,9 +232,7 @@ class DatasetVersionItem(DatasetResource):
     def put(self, dataset_id: str, version: str, body: Dict[str, Any]) -> dict:
         """Update dataset version"""
         us_manager = self.get_us_manager()
-        with us_manager.get_locked_entry_cm(
-            Dataset, dataset_id, wait_timeout=DEFAULT_DATASET_LOCK_WAIT_TIMEOUT
-        ) as ds:  # type: Dataset
+        with us_manager.get_locked_entry_cm(Dataset, dataset_id, wait_timeout=DEFAULT_DATASET_LOCK_WAIT_TIMEOUT) as ds:
             utils.need_permission_on_entry(ds, USPermissionKind.edit)
             us_manager.load_dependencies(ds)
 

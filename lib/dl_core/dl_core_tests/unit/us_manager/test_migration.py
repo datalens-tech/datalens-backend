@@ -17,14 +17,14 @@ class Level1EntrySchemaMigration(BaseEntrySchemaMigration):
             Migration(
                 "2022-12-04 13:00:00",
                 "Second level 1 migration",
-                Level1EntrySchemaMigration._migrate_v2_to_v3,
-                Level1EntrySchemaMigration._migrate_v2_to_v3_async,
+                up_function=Level1EntrySchemaMigration._migrate_v2_to_v3,
+                down_function=Level1EntrySchemaMigration._migrate_v3_to_v2,
             ),
             Migration(
                 "2022-12-01 12:00:00",
                 "First level 1 migration",
-                Level1EntrySchemaMigration._migrate_v1_to_v2,
-                Level1EntrySchemaMigration._migrate_v1_to_v2_async,
+                up_function=Level1EntrySchemaMigration._migrate_v1_to_v2,
+                down_function=Level1EntrySchemaMigration._migrate_v2_to_v1,
             ),
         ]
         migrations.extend(super().migrations)
@@ -36,8 +36,9 @@ class Level1EntrySchemaMigration(BaseEntrySchemaMigration):
         return entry
 
     @staticmethod
-    async def _migrate_v1_to_v2_async(entry: dict, **kwargs) -> dict:
-        return Level1EntrySchemaMigration._migrate_v1_to_v2(entry)
+    def _migrate_v2_to_v1(entry: dict, **kwargs) -> dict:
+        entry["data"]["old_field"] = entry["data"].pop("new_field", "default_value")
+        return entry
 
     @staticmethod
     def _migrate_v2_to_v3(entry: dict, **kwargs) -> dict:
@@ -45,8 +46,9 @@ class Level1EntrySchemaMigration(BaseEntrySchemaMigration):
         return entry
 
     @staticmethod
-    async def _migrate_v2_to_v3_async(entry: dict, **kwargs) -> dict:
-        return Level1EntrySchemaMigration._migrate_v2_to_v3(entry)
+    def _migrate_v3_to_v2(entry: dict, **kwargs) -> dict:
+        entry["data"].pop("l1_field")
+        return entry
 
 
 @attr.s
@@ -57,12 +59,14 @@ class Level2EntrySchemaMigration(Level1EntrySchemaMigration):
             Migration(
                 "2022-12-03 13:00:00",
                 "Second level 2 migration",
-                Level2EntrySchemaMigration._migrate_v2_to_v3,
+                up_function=Level2EntrySchemaMigration._migrate_v2_to_v3,
+                down_function=Level2EntrySchemaMigration._migrate_v3_to_v2,
             ),
             Migration(
                 "2022-12-02 12:00:00",
                 "First level 2 migration",
-                Level2EntrySchemaMigration._migrate_v1_to_v2,
+                up_function=Level2EntrySchemaMigration._migrate_v1_to_v2,
+                down_function=Level2EntrySchemaMigration._migrate_v2_to_v1,
             ),
         ]
         migrations.extend(super().migrations)
@@ -74,8 +78,18 @@ class Level2EntrySchemaMigration(Level1EntrySchemaMigration):
         return entry
 
     @staticmethod
+    def _migrate_v2_to_v1(entry: dict, **kwargs) -> dict:
+        entry["data"].pop("new_field")
+        return entry
+
+    @staticmethod
     def _migrate_v2_to_v3(entry: dict, **kwargs) -> dict:
         entry["data"]["l2_field"] = "added_in_l2"
+        return entry
+
+    @staticmethod
+    def _migrate_v3_to_v2(entry: dict, **kwargs) -> dict:
+        entry["data"].pop("l2_field")
         return entry
 
 
@@ -87,15 +101,21 @@ class Level3EntrySchemaMigration(Level2EntrySchemaMigration):
             Migration(
                 "2022-12-03 13:00:00",
                 "Third level 2 migration",
-                Level3EntrySchemaMigration._migrate_v3_to_v1,
+                up_function=Level3EntrySchemaMigration._migrate_v3_to_v4,
+                down_function=Level3EntrySchemaMigration._migrate_v4_to_v3,
             ),
         ]
         migrations.extend(super().migrations)
         return migrations
 
     @staticmethod
-    def _migrate_v3_to_v1(entry: dict) -> dict:
+    def _migrate_v3_to_v4(entry: dict) -> dict:
         entry["data"]["abs_field"] = "one more new value"
+        return entry
+
+    @staticmethod
+    def _migrate_v4_to_v3(entry: dict) -> dict:
+        entry["data"].pop("abs_field")
         return entry
 
 
@@ -198,5 +218,6 @@ def test_wrong_migration_version(migration_version):
         Migration(
             migration_version,
             "Broken version migration",
-            lambda x: x,
+            up_function=lambda x: x,
+            down_function=lambda x: x,
         )

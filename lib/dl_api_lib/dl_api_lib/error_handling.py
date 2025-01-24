@@ -88,6 +88,7 @@ EXCEPTION_CODES = {
     api_commons_exc.RequestTimeoutError: status.FAILED_DEPENDENCY,
     exc.ConnectorIconNotFoundException: status.NOT_FOUND,
     api_commons_exc.FailedDependencyException: status.FAILED_DEPENDENCY,
+    common_exc.UnknownEntryMigration: status.NOT_IMPLEMENTED,
 }
 
 

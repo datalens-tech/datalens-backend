@@ -647,3 +647,7 @@ class USPermissionRequired(USReqException):
 
 class DataSourceMigrationImpossible(DLBaseException):
     err_code = DLBaseException.err_code + ["DSRC_MIGRATION_IMPOSSIBLE"]
+
+
+class UnknownEntryMigration(DLBaseException):
+    err_code = DLBaseException.err_code + ["UNKNOWN_ENTRY_MIGRATION"]
