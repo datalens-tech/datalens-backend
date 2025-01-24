@@ -156,7 +156,7 @@ def main() -> None:
     args = parser.parse_args()
 
     with open(Path(args.changes_file)) as fh:
-        changed_paths = [Path(p) for p in fh.read().strip().split(" ")]
+        changed_paths = [Path(p.strip()) for p in fh.read().split("\n")]
 
     cfg = Config(
         root_dir=Path(args.repo),
