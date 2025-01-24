@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   db-mysql-5-7:
     # the earliest version supported by DL

@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   db-clickhouse:
   # chsq-tests-db-clickhouse-1592508713:
