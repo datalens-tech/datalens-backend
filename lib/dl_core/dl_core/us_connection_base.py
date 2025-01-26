@@ -127,6 +127,7 @@ class ConnectionOptions:
     allow_dashsql_usage: bool = attr.ib(kw_only=True)
     allow_dataset_usage: bool = attr.ib(kw_only=True)
     allow_typed_query_usage: bool = attr.ib(kw_only=True)
+    allow_typed_query_raw_usage: bool = attr.ib(kw_only=True)
     query_types: list[QueryTypeInfo] = attr.ib(kw_only=True)
 
 
@@ -242,6 +243,10 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     @property
     def is_typed_query_allowed(self) -> bool:
+        return False
+
+    @property
+    def is_typed_query_raw_allowed(self) -> bool:
         return False
 
     def as_dict(self, short=False):  # type: ignore  # TODO: fix
@@ -385,6 +390,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             allow_dashsql_usage=self.is_dashsql_allowed,
             allow_dataset_usage=self.is_dataset_allowed,
             allow_typed_query_usage=self.is_typed_query_allowed,
+            allow_typed_query_raw_usage=self.is_typed_query_raw_allowed,
             query_types=query_type_info_list,
         )
 

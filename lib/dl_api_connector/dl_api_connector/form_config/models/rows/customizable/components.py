@@ -193,7 +193,7 @@ class KeyValueRowItem(RowItem, FormFieldMixin, DisplayConditionsMixin):
         placeholder: Optional[str] = attr.ib(default=None, metadata=skip_if_null())
         style: Optional[StyleItem] = attr.ib(default=None, metadata=skip_if_null())
 
-    secret: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("secret"))
-    keys: Optional[list[SelectOption]] = attr.ib(default=None, metadata=remap_skip_if_null("keys"))
+    secret: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
+    keys: Optional[list[SelectOption]] = attr.ib(default=None, metadata=skip_if_null())
     key_select_props: Optional[KeySelectProps] = attr.ib(default=None, metadata=remap_skip_if_null("keySelectProps"))
     value_input_props: Optional[ValueInputProps] = attr.ib(default=None, metadata=remap_skip_if_null("valueInputProps"))

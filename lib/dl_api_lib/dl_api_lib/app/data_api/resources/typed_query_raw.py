@@ -59,7 +59,7 @@ class DashSQLTypedQueryRawView(BaseView):
     def validate_connection(self, connection: ConnectionBase) -> None:
         """Check whether we can use this connection to execute the query"""
         need_permission_on_entry(connection, USPermissionKind.execute)
-        if not connection.is_typed_query_allowed or not connection.is_dashsql_allowed:
+        if not connection.is_typed_query_raw_allowed:
             raise core_exc.DashSQLNotAllowed()
 
     def make_typed_query(self) -> TypedQueryRaw:
