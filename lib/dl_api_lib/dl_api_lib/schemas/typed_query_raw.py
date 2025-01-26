@@ -29,7 +29,7 @@ class TypedQueryRawParametersSchema(DefaultSchema[TypedQueryRawParameters]):
 
     path = ma_fields.String(load_default="")
     method = ma_fields.String(required=True)
-    body = ma_fields.Dict(load_default=None)  # or ma_fields.Raw?
+    body = ma_fields.Dict(load_default=dict)
 
 
 class TypedQueryRawSchema(DefaultSchema[RawTypedQueryRaw]):
@@ -40,7 +40,7 @@ class TypedQueryRawSchema(DefaultSchema[RawTypedQueryRaw]):
 
 
 class TypedQueryRawResultDataSchema(BaseSchema):
-    body = ma_fields.Dict(load_default=None)
+    body = ma_fields.Dict(load_default=dict)
     headers = ma_fields.Dict()
     status = ma_fields.Integer(required=True)
 
