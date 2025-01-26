@@ -80,7 +80,7 @@ class SelectRowItem(ControlRowItem, PlaceholderMixin):
     class Props(SerializableConfig):
         show_search: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("showSearch"))
         has_clear: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("hasClear"))
-        multiple: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("multiple"))
+        multiple: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
 
     component_id = "select"
 
