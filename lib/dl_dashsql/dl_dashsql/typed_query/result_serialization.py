@@ -48,7 +48,7 @@ class TypedQueryRawResultSerializerSchema(DefaultSchema[TypedQueryRawResult]):
     class ResultDataSchema(BaseSchema):
         status = ma_fields.Integer(required=True)
         headers = ma_fields.Dict()
-        json = ma_fields.Dict()
+        body = ma_fields.Dict()
 
     query_type = DynamicEnumField(DashSQLQueryType)
     data = ma_fields.Nested(ResultDataSchema(), required=True)
