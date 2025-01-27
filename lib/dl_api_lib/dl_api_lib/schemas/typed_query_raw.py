@@ -29,7 +29,7 @@ class TypedQueryRawParametersSchema(DefaultSchema[TypedQueryRawParameters]):
 
     path = ma_fields.String(load_default="")
     method = ma_fields.String(required=True)
-    body = ma_fields.Dict(load_default=None)  # or ma_fields.Raw?
+    body = ma_fields.Dict(load_default=None)
 
 
 class TypedQueryRawSchema(DefaultSchema[RawTypedQueryRaw]):
