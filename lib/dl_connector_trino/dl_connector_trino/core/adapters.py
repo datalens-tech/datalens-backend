@@ -17,6 +17,12 @@ from trino.dbapi import connect as trino_connect
 
 from dl_core.connection_executors.adapters.adapters_base_sa import BaseSAAdapter
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
+from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from dl_core.connection_models.common_models import (
+    DBIdent,
+    SchemaIdent,
+    TableIdent,
+)
 
 from dl_connector_trino.core.constants import (
     CONNECTION_TYPE_TRINO,
@@ -24,17 +30,6 @@ from dl_connector_trino.core.constants import (
 )
 from dl_connector_trino.core.error_transformer import trino_error_transformer
 from dl_connector_trino.core.target_dto import TrinoConnTargetDTO
-
-
-# from dl_core.connection_executors.models.db_adapter_data import (
-#     DBAdapterQuery,
-#     RawSchemaInfo,
-# )
-# from dl_core.connection_models.common_models import (
-#     DBIdent,
-#     SATextTableDefinition,
-# )
-# from dl_type_transformer.native_type import SATypeSpec
 
 
 def construct_creator_func(target_dto: TrinoConnTargetDTO) -> Callable[[], sa.engine.Connection]:
@@ -57,7 +52,7 @@ def construct_creator_func(target_dto: TrinoConnTargetDTO) -> Callable[[], sa.en
                 ) -> None:
                     # Use a secure context with the provided SSL CA
                     context = ssl.create_default_context(cadata=target_dto.ssl_ca)
-                    context.check_hostname = False  # TODO: Resolve "ValueError: check_hostname requires server_hostname" and enable check_hostname!!!
+                    context.check_hostname = False  # TODO: @khamitovdr Resolve "ValueError: check_hostname requires server_hostname" and enable check_hostname!!!
                     super().init_poolmanager(connections, maxsize, block, ssl_context=context, **pool_kwargs)
 
             session = requests.Session()
@@ -88,3 +83,31 @@ class TrinoDefaultAdapter(BaseClassicAdapter, BaseSAAdapter[TrinoConnTargetDTO])
             "trino://",
             creator=construct_creator_func(self._target_dto),
         ).execution_options(compiled_cache=None)
+
+    def get_db_version(self, db_ident: DBIdent) -> str:
+        result = self.execute(DBAdapterQuery("SELECT VERSION()"))
+        return result.get_all()[0][0]
+
+    def get_catalogs(self) -> list[DBIdent]:
+        result = self.execute(DBAdapterQuery("SHOW CATALOGS"))
+        return [DBIdent(db_name=row[0]) for row in result.get_all()]
+
+    def get_schema_names(self, db_ident: DBIdent) -> list[SchemaIdent]:
+        result = self.execute(DBAdapterQuery(f"SHOW SCHEMAS FROM {db_ident.db_name}"))
+        return [SchemaIdent(db_name=db_ident.db_name, schema_name=row[0]) for row in result.get_all()]
+
+    def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+        query = (
+            f"SHOW TABLES FROM {schema_ident}"
+            if schema_ident.schema_name is not None
+            else f"SHOW TABLES FROM {schema_ident.db_name}"
+        )
+        result = self.execute(DBAdapterQuery(query))
+        return [
+            TableIdent(
+                db_name=schema_ident.db_name,
+                schema_name=schema_ident.schema_name,
+                table_name=row[0],
+            )
+            for row in result.get_all()
+        ]

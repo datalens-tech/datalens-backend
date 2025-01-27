@@ -1,17 +1,25 @@
 from __future__ import annotations
 
 from typing import (
+    Callable,
     ClassVar,
     Optional,
 )
 
 import attr
 
-from dl_core.us_connection_base import ClassicConnectionSQL  # DataSourceTemplate,
-
-# from dl_i18n.localizer_base import Localizer
+from dl_core.connection_models.common_models import (
+    DBIdent,
+    SchemaIdent,
+)
+from dl_core.us_connection_base import (
+    ClassicConnectionSQL,
+    ConnectionBase,
+)
 from dl_core.utils import secrepr
 
+from dl_connector_trino.core.adapters import TrinoDefaultAdapter
+from dl_connector_trino.core.connection_executors import TrinoConnExecutor
 from dl_connector_trino.core.constants import (
     CONNECTION_TYPE_TRINO,
     SOURCE_TYPE_TRINO_SUBSELECT,
@@ -19,6 +27,16 @@ from dl_connector_trino.core.constants import (
     TrinoAuthType,
 )
 from dl_connector_trino.core.dto import TrinoConnDTO
+
+
+TRINO_SYSTEM_CATALOGS = (
+    "system",
+    "tpch",
+    "tpcds",
+    "jmx",
+)
+
+TRINO_SYSTEM_SCHEMAS = ("information_schema",)
 
 
 class ConnectionTrino(ClassicConnectionSQL):
@@ -47,9 +65,42 @@ class ConnectionTrino(ClassicConnectionSQL):
             ssl_ca=self.data.ssl_ca,
         )
 
-    # @property
-    # def allow_public_usage(self) -> bool:
-    #     return True
+    def get_catalogs(
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], TrinoConnExecutor],
+    ) -> list[DBIdent]:
+        conn_executor = conn_executor_factory(self)
+        adapter: TrinoDefaultAdapter = conn_executor._extract_sync_sa_adapter()
+        return adapter.get_catalogs()
 
-    # def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
-    #     return self._make_subselect_templates(source_type=SOURCE_TYPE_TRINO_SUBSELECT, localizer=localizer)
+    def get_parameter_combinations(
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], TrinoConnExecutor],
+    ) -> list[dict]:
+        parameter_combinations = []
+        catalogs = self.get_catalogs(conn_executor_factory=conn_executor_factory)
+        for catalog in catalogs:
+            if catalog.db_name in TRINO_SYSTEM_CATALOGS:
+                continue
+
+            schemas: list[SchemaIdent] = self.get_schema_names(
+                conn_executor_factory=conn_executor_factory, db_name=catalog.db_name
+            )
+
+            if not schemas:
+                for table in self.get_tables(conn_executor_factory=conn_executor_factory, db_name=catalog.db_name):
+                    parameter_combinations.append(dict(db_name=catalog.db_name, table_name=table.table_name))
+                break
+
+            for schema in schemas:
+                if schema.schema_name in TRINO_SYSTEM_SCHEMAS:
+                    continue
+
+                for table in self.get_tables(
+                    conn_executor_factory=conn_executor_factory, db_name=catalog.db_name, schema_name=schema.schema_name
+                ):
+                    parameter_combinations.append(
+                        dict(db_name=catalog.db_name, schema_name=schema.schema_name, table_name=table.table_name)
+                    )
+
+        return parameter_combinations
