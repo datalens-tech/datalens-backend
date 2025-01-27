@@ -47,6 +47,14 @@ class TypedBaseSettings(base_settings.BaseSettings, metaclass=TypedMeta):
 
         class_ = cls._classes[class_name]
 
+        # replace keys in data with field names for case-insensitive matching
+        field_names: dict[str, str] = {}
+        for field_name, field in class_.model_fields.items():
+            key = field.alias or field_name
+            field_names[key.lower()] = key
+
+        data = {field_names.get(key.lower(), key): value for key, value in data.items()}
+
         return class_.model_validate(data)
 
     @classmethod
