@@ -3,6 +3,7 @@ from copy import deepcopy
 import attr
 import pytest
 
+from dl_core.exc import UnknownEntryMigration
 from dl_core.us_manager.schema_migration.base import (
     BaseEntrySchemaMigration,
     Migration,
@@ -15,16 +16,18 @@ class Level1EntrySchemaMigration(BaseEntrySchemaMigration):
     def migrations(self) -> list[Migration]:
         migrations = [
             Migration(
-                "2022-12-04 13:00:00",
+                "2022-12-04T13:00:00",
                 "Second level 1 migration",
                 up_function=Level1EntrySchemaMigration._migrate_v2_to_v3,
                 down_function=Level1EntrySchemaMigration._migrate_v3_to_v2,
+                downgrade_only=False,
             ),
             Migration(
-                "2022-12-01 12:00:00",
+                "2022-12-01T12:00:00",
                 "First level 1 migration",
                 up_function=Level1EntrySchemaMigration._migrate_v1_to_v2,
                 down_function=Level1EntrySchemaMigration._migrate_v2_to_v1,
+                downgrade_only=False,
             ),
         ]
         migrations.extend(super().migrations)
@@ -57,16 +60,18 @@ class Level2EntrySchemaMigration(Level1EntrySchemaMigration):
     def migrations(self) -> list[Migration]:
         migrations = [
             Migration(
-                "2022-12-03 13:00:00",
+                "2022-12-03T13:00:00",
                 "Second level 2 migration",
                 up_function=Level2EntrySchemaMigration._migrate_v2_to_v3,
                 down_function=Level2EntrySchemaMigration._migrate_v3_to_v2,
+                downgrade_only=False,
             ),
             Migration(
-                "2022-12-02 12:00:00",
+                "2022-12-02T12:00:00",
                 "First level 2 migration",
                 up_function=Level2EntrySchemaMigration._migrate_v1_to_v2,
                 down_function=Level2EntrySchemaMigration._migrate_v2_to_v1,
+                downgrade_only=False,
             ),
         ]
         migrations.extend(super().migrations)
@@ -94,15 +99,42 @@ class Level2EntrySchemaMigration(Level1EntrySchemaMigration):
 
 
 @attr.s
+class Level2EntrySchemaMigrationDowngradeOnly(Level1EntrySchemaMigration):
+    @property
+    def migrations(self) -> list[Migration]:
+        migrations = [
+            Migration(
+                "2022-12-05T13:00:00",
+                "Second level 2 migration",
+                up_function=Level2EntrySchemaMigration._migrate_v2_to_v3,
+                down_function=Level2EntrySchemaMigration._migrate_v3_to_v2,
+            ),
+        ]
+        migrations.extend(super().migrations)
+        return migrations
+
+    @staticmethod
+    def _migrate_v2_to_v3(entry: dict, **kwargs) -> dict:
+        entry["data"]["l2_field"] = "added_in_l2"
+        return entry
+
+    @staticmethod
+    def _migrate_v3_to_v2(entry: dict, **kwargs) -> dict:
+        entry["data"].pop("l2_field")
+        return entry
+
+
+@attr.s
 class Level3EntrySchemaMigration(Level2EntrySchemaMigration):
     @property
     def migrations(self) -> list[Migration]:
         migrations = [
             Migration(
-                "2022-12-03 13:00:00",
+                "2022-12-03T13:00:00",
                 "Third level 2 migration",
                 up_function=Level3EntrySchemaMigration._migrate_v3_to_v4,
                 down_function=Level3EntrySchemaMigration._migrate_v4_to_v3,
+                downgrade_only=False,
             ),
         ]
         migrations.extend(super().migrations)
@@ -122,6 +154,11 @@ class Level3EntrySchemaMigration(Level2EntrySchemaMigration):
 @pytest.fixture
 def l2_migrator():
     return Level2EntrySchemaMigration(strict_migration=True)
+
+
+@pytest.fixture
+def l2_downgrade_migrator():
+    return Level2EntrySchemaMigrationDowngradeOnly(strict_migration=True)
 
 
 @pytest.fixture
@@ -146,7 +183,7 @@ def test_successful_migration(l2_migrator):
             "new_field": "default_value",
             "l1_field": "added_in_l1",
             "l2_field": "added_in_l2",
-            "schema_version": "2022-12-04 13:00:00",
+            "schema_version": "2022-12-04T13:00:00",
         }
     }
     result = l2_migrator.migrate(entry)
@@ -159,7 +196,7 @@ def test_no_migration_needed(l2_migrator):
             "new_field": "default_value",
             "l1_field": "added_in_l1",
             "l2_field": "added_in_l2",
-            "schema_version": "2022-12-04 13:00:00",
+            "schema_version": "2022-12-04T13:00:00",
         }
     }
     result = l2_migrator.migrate(entry)
@@ -208,9 +245,9 @@ def test_migration_failure(l3_nonstrict_migrator):
     "migration_version",
     (
         "some string",
-        "2022-13-03 23:00:00",
-        "2022-12-40 23:00:00",
-        "2022-12-03 33:00:00",
+        "2022-13-03T23:00:00",
+        "2022-12-40T23:00:00",
+        "2022-12-03T33:00:00",
     ),
 )
 def test_wrong_migration_version(migration_version):
@@ -220,4 +257,56 @@ def test_wrong_migration_version(migration_version):
             "Broken version migration",
             up_function=lambda x: x,
             down_function=lambda x: x,
+            downgrade_only=False,
         )
+
+
+def test_downgrade_only_up_migration(l2_downgrade_migrator):
+    entry = {
+        "data": {
+            "old_field": "value1",
+            "schema_version": "1",
+        }
+    }
+    expected = {
+        "data": {
+            "new_field": "value1",
+            "l1_field": "added_in_l1",
+            "schema_version": "2022-12-04T13:00:00",
+        }
+    }
+    result = l2_downgrade_migrator.migrate(entry)
+    assert result == expected
+
+
+def test_downgrade_only_down_migration(l2_downgrade_migrator):
+    entry = {
+        "data": {
+            "new_field": "value1",
+            "l1_field": "added_in_l1",
+            "l2_field": "added_in_l2",
+            "schema_version": "2022-12-05T13:00:00",
+        }
+    }
+    expected = {
+        "data": {
+            "new_field": "value1",
+            "l1_field": "added_in_l1",
+            "schema_version": "2022-12-05T12:59:59",
+        }
+    }
+    result = l2_downgrade_migrator.migrate(entry)
+    assert result == expected
+
+
+def test_unknown_entry_migration(l2_downgrade_migrator):
+    entry = {
+        "data": {
+            "new_field": "value1",
+            "l1_field": "added_in_l1",
+            "l2_field": "added_in_l2",
+            "schema_version": "2022-12-06T13:00:00",
+        }
+    }
+    with pytest.raises(UnknownEntryMigration):
+        l2_downgrade_migrator.migrate(entry)

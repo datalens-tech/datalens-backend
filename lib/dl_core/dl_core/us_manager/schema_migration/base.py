@@ -55,7 +55,7 @@ class Migration:
     down_function: MigrationFunction = attr.ib()
     await_up_function: AwaitMigrationFunction | None = attr.ib(default=None)
     await_down_function: AwaitMigrationFunction | None = attr.ib(default=None)
-    downgrade_only: bool = attr.ib(default=False)
+    downgrade_only: bool = attr.ib(default=True)
     id: int = attr.ib(init=False)
 
     def __attrs_post_init__(self) -> None:
@@ -69,9 +69,9 @@ class Migration:
         return datetime.fromtimestamp(self.id - 1).isoformat()
 
     def migrate_up(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
-        assert not self.downgrade_only, "This migration is downgrade only"
-        entry = self.up_function(entry, services_registry=services_registry)
-        entry["data"]["schema_version"] = self.version
+        if not self.downgrade_only:
+            entry = self.up_function(entry, services_registry=services_registry)
+            entry["data"]["schema_version"] = self.version
         return entry
 
     def migrate_down(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
@@ -80,21 +80,18 @@ class Migration:
         return entry
 
     async def migrate_up_async(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
-        assert not self.downgrade_only, "This migration is downgrade only"
-        if self.await_up_function is not None:
+        if not self.downgrade_only and self.await_up_function is not None:
             entry = await self.await_up_function(entry, services_registry=services_registry)
             entry["data"]["schema_version"] = self.version
-        else:
-            entry = self.up_function(entry, services_registry=services_registry)
-        return entry
+            return entry
+        return self.up_function(entry, services_registry=services_registry)
 
     async def migrate_down_async(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
         if self.await_down_function is not None:
             entry = await self.await_down_function(entry, services_registry=services_registry)
             entry["data"]["schema_version"] = self.downgrade_version
-        else:
-            entry = self.down_function(entry, services_registry=services_registry)
-        return entry
+            return entry
+        return self.down_function(entry, services_registry=services_registry)
 
 
 @attr.s
@@ -138,7 +135,7 @@ class BaseEntrySchemaMigration:
                     f"Unknown entry version: {datetime.fromtimestamp(entry_schema_id).isoformat()}"
                 )
             for migration in self.sorted_migrations:
-                if migration.id <= entry_schema_id:
+                if migration.id <= entry_schema_id or migration.downgrade_only:
                     continue
                 if migration.version in seen_versions:
                     raise ValueError(f"Double migration detected for migration version: {migration.version}")
@@ -171,7 +168,7 @@ class BaseEntrySchemaMigration:
                     f"Unknown entry version: {datetime.fromtimestamp(entry_schema_id).isoformat()}"
                 )
             for migration in self.sorted_migrations:
-                if migration.id <= entry_schema_id:
+                if migration.id <= entry_schema_id or migration.downgrade_only:
                     continue
                 if migration.version in seen_versions:
                     raise ValueError(f"Double migration detected for migration version: {migration.version}")
