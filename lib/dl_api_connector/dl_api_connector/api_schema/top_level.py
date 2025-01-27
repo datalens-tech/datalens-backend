@@ -192,7 +192,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
 
         cleaned_data = {}
         for field_name, field_value in data.items():
-            if field_name in self.fields:
+            if field_name in self.fields and not self.fields[field_name].dump_only == True:
                 cleaned_data[field_name] = field_value
 
         return cleaned_data

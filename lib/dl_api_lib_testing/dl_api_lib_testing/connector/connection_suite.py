@@ -49,6 +49,52 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
             password = resp.json["connection"]["password"]
             assert password == "******"
 
+    def test_import_connection(
+        self,
+        control_api_sync_client: SyncHttpClientBase,
+        saved_connection_id: str,
+        bi_headers: Optional[dict[str, str]],
+        sync_us_manager: SyncUSManager,
+    ) -> None:
+        conn = sync_us_manager.get_by_id(saved_connection_id, expected_type=ConnectionBase)
+        assert isinstance(conn, ConnectionBase)
+        if not conn.allow_export:
+            return
+
+        export_resp = control_api_sync_client.get(
+            url=f"/api/v1/connections/export/{saved_connection_id}",
+            headers=bi_headers,
+        )
+
+        export_resp.json["connection"][
+            "name"
+        ] = f"{self.conn_type.name} conn {uuid.uuid4()}"  # in case of response with workbook, 'name'-field is in export response by default
+
+        import_request = json.dumps(
+            {
+                "data": {
+                    # "workbook_id" : "1234567890000", # can't test with workbook in case of ERR.DS_API.US.OBJ_NOT_FOUND
+                    "connection": export_resp.json["connection"]
+                }
+            }
+        )
+
+        import_response = control_api_sync_client.post(
+            url="/api/v1/connections/import",
+            headers=bi_headers,
+            data=import_request,
+            content_type="application/json",
+        )
+        assert import_response.status_code == 200, import_response.json
+        assert import_response.json["id"]
+        assert import_response.json["id"] != saved_connection_id
+        assert import_response.json["notifications"]
+
+        export_resp = control_api_sync_client.delete(
+            url=f"/api/v1/connections/{import_response.json['id']}",
+            headers=bi_headers,
+        )
+
     def test_test_connection(
         self,
         control_api_sync_client: SyncHttpClientBase,
