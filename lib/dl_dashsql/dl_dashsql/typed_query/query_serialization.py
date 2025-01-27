@@ -79,7 +79,7 @@ class TypedQueryRawSerializerParametersSchema(DefaultSchema[TypedQueryRawParamet
 
     path = ma_fields.String()
     method = ma_fields.String(required=True)
-    body = ma_fields.Raw()
+    body = ma_fields.Raw(load_default=None)
 
 
 class TypedQueryRawSerializerSchema(DefaultSchema[TypedQueryRaw]):
