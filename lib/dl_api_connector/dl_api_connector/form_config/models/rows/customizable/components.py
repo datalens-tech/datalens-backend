@@ -192,7 +192,7 @@ class KeyValueRowItem(RowItem, FormFieldMixin, DisplayConditionsMixin):
     class ValueInputProps(SerializableConfig):
         placeholder: Optional[str] = attr.ib(default=None, metadata=skip_if_null())
         style: Optional[StyleItem] = attr.ib(default=None, metadata=skip_if_null())
-        hide_reveal_button: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
+        hide_reveal_button: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("hideRevealButton"))
 
     secret: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
     keys: Optional[list[SelectOption]] = attr.ib(default=None, metadata=skip_if_null())
