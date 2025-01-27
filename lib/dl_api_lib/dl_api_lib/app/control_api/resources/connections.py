@@ -137,7 +137,7 @@ class ConnectionsImportList(BIResource):
     def post(self):  # type: ignore  # TODO: fix
         us_manager = self.get_us_manager()
         notifications = [
-            dict(message="Password fields must be changed and resaved", levvel=NotificationLevel.info)
+            dict(message="Password fields must be changed and resaved", level=NotificationLevel.info)
         ]  # TODO: localize message
 
         conn_availability = self.get_service_registry().get_connector_availability()
@@ -153,7 +153,8 @@ class ConnectionsImportList(BIResource):
             abort(400, "This connection type is not available")
             raise exc.UnsupportedForEntityType("Connector %s is not available in current env", conn_type)
 
-        conn_data["workbook_id"] = request.json and request.json["data"]["workbook_id"]
+        conn_data["workbook_id"] = request.json and request.json["data"].get("workbook_id", None)
+        conn_data["type"] = conn_type
         schema = GenericConnectionSchema(
             context=self.get_schema_ctx(schema_operations_mode=ImportMode.create_from_import)
         )
