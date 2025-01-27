@@ -19,9 +19,7 @@ import attr
 import sqlalchemy as sa
 from sqlalchemy.engine.default import DefaultDialect
 
-from dl_api_commons.reporting.models import (
-    NotificationReportingRecord,
-)
+from dl_api_commons.reporting.models import NotificationReportingRecord
 from dl_cache_engine.primitives import (
     DataKeyPart,
     LocalKeyRepresentation,
