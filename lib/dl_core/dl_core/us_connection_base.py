@@ -19,7 +19,9 @@ import attr
 import sqlalchemy as sa
 from sqlalchemy.engine.default import DefaultDialect
 
-from dl_api_commons.reporting.models import NotificationReportingRecord
+from dl_api_commons.reporting.models import (
+    NotificationReportingRecord,
+)
 from dl_cache_engine.primitives import (
     DataKeyPart,
     LocalKeyRepresentation,
@@ -369,6 +371,9 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         )
 
     def check_for_notifications(self) -> list[Optional[NotificationReportingRecord]]:
+        return []
+
+    def get_warnings_list(self, localizer: Optional[Localizer] = None) -> list[dict]:
         return []
 
     def get_cache_key_part(self) -> LocalKeyRepresentation:

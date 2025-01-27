@@ -18,6 +18,7 @@ from dl_api_connector.api_schema.extras import (
     CreateMode,
     EditMode,
     ExportMode,
+    ImportMode,
 )
 from dl_api_lib import exc
 from dl_api_lib.api_decorators import schematic_request
@@ -32,7 +33,10 @@ from dl_api_lib.schemas.connection import (
     GenericConnectionSchema,
 )
 from dl_api_lib.utils import need_permission_on_entry
-from dl_constants.enums import ConnectionType
+from dl_constants.enums import (
+    ConnectionType,
+    NotificationLevel,
+)
 from dl_constants.exc import DLBaseException
 from dl_core.data_source.type_mapping import get_data_source_class
 from dl_core.data_source_merge_tools import make_spec_from_dict
@@ -126,6 +130,49 @@ class ConnectionTester(BIResource):
             _handle_conn_test_exc(e)
 
 
+@ns.route("/import")
+class ConnectionsImportList(BIResource):
+    @put_to_request_context(endpoint_code="ConnectionImport")
+    @schematic_request(ns=ns)
+    def post(self):  # type: ignore  # TODO: fix
+        us_manager = self.get_us_manager()
+        notifications = [
+            dict(message="Password fields must be changed and resaved", levvel=NotificationLevel.info)
+        ]  # TODO: localize message
+
+        conn_availability = self.get_service_registry().get_connector_availability()
+        conn_data = request.json and request.json["data"]["connection"]
+        assert conn_data
+        conn_type = conn_data["db_type"]
+        if not conn_type or conn_type not in ConnectionType:
+            raise exc.BadConnectionType(f"Invalid connection type value: {conn_type}")
+        conn_type_is_available = conn_availability.check_connector_is_available(ConnectionType[conn_type])
+
+        if not conn_type_is_available:
+            # TODO: remove `abort` after migration to schematic_request decorator with common error handling
+            abort(400, "This connection type is not available")
+            raise exc.UnsupportedForEntityType("Connector %s is not available in current env", conn_type)
+
+        conn_data["workbook_id"] = request.json and request.json["data"]["workbook_id"]
+        schema = GenericConnectionSchema(
+            context=self.get_schema_ctx(schema_operations_mode=ImportMode.create_from_import)
+        )
+        try:
+            conn: ConnectionBase = schema.load(conn_data)
+        except MValidationError as e:
+            return e.messages, 400
+
+        conn.validate_new_data_sync(services_registry=self.get_service_registry())
+
+        conn_warnings = conn.get_warnings_list()
+        if conn_warnings:
+            notifications.extend(conn_warnings)
+
+        us_manager.save(conn)
+
+        return dict(id=conn.uuid, notifications=notifications)
+
+
 @ns.route("/")
 class ConnectionsList(BIResource):
     @put_to_request_context(endpoint_code="ConnectionCreate")
@@ -213,7 +260,7 @@ class ConnectionItem(BIResource):
 
 
 class ConnectionExportItem(BIResource):
-    @put_to_request_context(endpoint_code="ConnectionGet")
+    @put_to_request_context(endpoint_code="ConnectionExport")
     @schematic_request(
         ns=ns,
         responses={
@@ -221,6 +268,8 @@ class ConnectionExportItem(BIResource):
         },
     )
     def get(self, connection_id: str) -> dict:
+        notifications: list[dict] = []
+
         conn = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
         need_permission_on_entry(conn, USPermissionKind.read)
         assert isinstance(conn, ConnectionBase)
@@ -230,7 +279,7 @@ class ConnectionExportItem(BIResource):
 
         result = GenericConnectionSchema(context=self.get_schema_ctx(ExportMode.export)).dump(conn)
         result.update(options=ConnectionOptionsSchema().dump(conn.get_options()))
-        return result
+        return dict(connection=result, notifications=notifications)
 
 
 def _dump_source_templates(tpls: Optional[list[DataSourceTemplate]]) -> Optional[list[dict[str, Any]]]:
