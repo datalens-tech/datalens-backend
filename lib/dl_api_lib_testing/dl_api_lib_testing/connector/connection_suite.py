@@ -46,7 +46,7 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
 
         assert resp.status_code == 200, resp.json
         if hasattr(conn.data, "password"):
-            password = resp.json.get("password", None)
+            password = resp.json["connection"]["password"]
             assert password == "******"
 
     def test_test_connection(

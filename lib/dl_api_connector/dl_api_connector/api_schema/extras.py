@@ -20,6 +20,10 @@ class CreateMode(OperationsMode):
     test = enum.auto()
 
 
+class ImportMode(OperationsMode):
+    create_from_import = enum.auto()
+
+
 class EditMode(OperationsMode):
     edit = enum.auto()
     test = enum.auto()

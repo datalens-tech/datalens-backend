@@ -31,5 +31,5 @@ class TestYDBConnection(YDBConnectionTestBase, DefaultConnectorConnectionTestSui
 
         assert resp.status_code == 200, resp.json
         if hasattr(conn.data, "token"):
-            token = resp.json.get("token", None)
+            token = resp.json["connection"]["token"]
             assert token == "******"

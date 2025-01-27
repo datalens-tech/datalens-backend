@@ -32,6 +32,7 @@ from dl_api_connector.api_schema.extras import (
     EditMode,
     ExportMode,
     FieldExtra,
+    ImportMode,
     OperationsMode,
     SchemaKWArgs,
 )
@@ -87,7 +88,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
         return f.metadata.get("bi_extra", None)
 
     @property
-    def operations_mode(self) -> Optional[CreateMode]:
+    def operations_mode(self) -> Optional[CreateMode | ImportMode]:
         return self.context.get(self.CTX_KEY_OPERATIONS_MODE)
 
     @classmethod
@@ -169,7 +170,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
                 return data
             assert isinstance(editable_object, self.TARGET_CLS)
             return self.update_object(editable_object, data)
-        if isinstance(self.operations_mode, CreateMode):
+        if isinstance(self.operations_mode, CreateMode) or isinstance(self.operations_mode, ImportMode):
             return self.create_object(data)
         raise ValueError(f"Can not perform load. Unknown operations mode: {self.operations_mode!r}")
 
@@ -180,6 +181,21 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
         Main purpose: create a transition period for frontend to adopt to schema changes.
         """
         return set()
+
+    @final
+    def delete_unknown_fields(self, data: dict[str, Any]) -> dict[str, Any]:
+        LOGGER.info(
+            "Got unknown fields for schema %s/%s. Unknown fields will be removed.",
+            type(self).__qualname__,
+            self.operations_mode,
+        )
+
+        cleaned_data = {}
+        for field_name, field_value in data.items():
+            if field_name in self.fields:
+                cleaned_data[field_name] = field_value
+
+        return cleaned_data
 
     @final
     def handle_unknown_fields(self, data: dict[str, Any]) -> dict[str, Any]:
@@ -240,6 +256,10 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
                 schema_input_keys=all_data_keys,
             ),
         )
+
+        if isinstance(self.operations_mode, ImportMode):
+            return self.delete_unknown_fields(data)
+
         return self.handle_unknown_fields(data)
 
     @post_dump(pass_many=False)
