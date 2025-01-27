@@ -172,6 +172,28 @@ def test_dict_factory_not_dict() -> None:
         Base.dict_factory(typing.cast(dict, "test"))
 
 
+def test_factory_ignores_case(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Base(dl_settings.TypedBaseSettings):
+        ...
+
+    class Child(Base):
+        INNER_FIELD: str
+
+    class RootSettings(dl_settings.BaseRootSettings):
+        child: dl_settings.TypedAnnotation[Base]
+
+    Base.register("child", Child)
+
+    monkeypatch.setenv("CHILD__TYPE", "child")
+    monkeypatch.setenv("CHILD__inner_field", "value")
+
+    root = RootSettings()  # type: ignore
+
+    assert isinstance(root.child, Child)
+
+
 def test_annotation() -> None:
     class Base(dl_settings.TypedBaseSettings):
         ...
