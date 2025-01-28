@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from datetime import datetime
+from datetime import (
+    datetime,
+    timedelta,
+)
 import logging
 from typing import (
     TYPE_CHECKING,
-    Any,
     Protocol,
 )
 
@@ -24,10 +26,6 @@ if TYPE_CHECKING:
 
 
 LOGGER = logging.getLogger(__name__)
-
-
-def isoformat_validator(instance: Any, attribute: attr.Attribute, value: str) -> None:
-    datetime.fromisoformat(value)
 
 
 class MigrationFunction(Protocol):
@@ -49,7 +47,7 @@ class Migration:
         After the release, the `downgrade_only` flag should be removed to enable the migration upwards.
     """
 
-    version: str = attr.ib(validator=isoformat_validator)
+    version: datetime = attr.ib(validator=attr.validators.instance_of(datetime))
     name: str = attr.ib()
     up_function: MigrationFunction = attr.ib()
     down_function: MigrationFunction = attr.ib()
@@ -59,19 +57,23 @@ class Migration:
     id: int = attr.ib(init=False)
 
     def __attrs_post_init__(self) -> None:
-        self.id = int(datetime.fromisoformat(self.version).timestamp())
+        self.id = int(self.version.timestamp())
 
     def __lt__(self, other: Self) -> bool:
         return self.id < other.id
 
     @property
+    def upgrade_version(self) -> str:
+        return self.version.isoformat()
+
+    @property
     def downgrade_version(self) -> str:
-        return datetime.fromtimestamp(self.id - 1).isoformat()
+        return (self.version - timedelta(seconds=1)).isoformat()
 
     def migrate_up(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
         if not self.downgrade_only:
             entry = self.up_function(entry, services_registry=services_registry)
-            entry["data"]["schema_version"] = self.version
+            entry["data"]["schema_version"] = self.upgrade_version
         return entry
 
     def migrate_down(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
@@ -82,7 +84,7 @@ class Migration:
     async def migrate_up_async(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
         if not self.downgrade_only and self.await_up_function is not None:
             entry = await self.await_up_function(entry, services_registry=services_registry)
-            entry["data"]["schema_version"] = self.version
+            entry["data"]["schema_version"] = self.upgrade_version
             return entry
         return self.up_function(entry, services_registry=services_registry)
 
