@@ -218,7 +218,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
             dataset=dataset,
         )
 
-    def apply_updates(  # type: ignore  # TODO: fix
+    def apply_updates(
         self,
         dataset: Dataset,
         updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]

@@ -108,12 +108,12 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
                 dict(
                     name=str(column[0]),
                     postgresql_oid=column[1],
-                    postgresql_typname=OID_KNOWLEDGE.get(column[1]),  # type: ignore  # TODO: fix
+                    postgresql_typname=OID_KNOWLEDGE.get(column[1]),
                 )
                 for column in cursor.description
             ],
             # dashsql convenience:
-            postgresql_typnames=[OID_KNOWLEDGE.get(column[1]) for column in cursor.description],  # type: ignore  # TODO: fix
+            postgresql_typnames=[OID_KNOWLEDGE.get(column[1]) for column in cursor.description],
         )
 
     def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> Tuple[Optional[Callable[[Any], Any]], ...]:

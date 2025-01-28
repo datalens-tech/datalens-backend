@@ -83,7 +83,7 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
     """Loads data from a database table"""
 
     @log_op  # type: ignore  # TODO: fix
-    async def execute(self, op: BaseOp) -> DataStreamAsync:  # type: ignore  # TODO: fix
+    async def execute(self, op: BaseOp) -> DataStreamAsync:
         assert isinstance(op, DownloadOp)
 
         source_stream = self.ctx.get_stream(op.source_stream_id)
@@ -208,7 +208,7 @@ class CalcOpExecutorAsync(OpExecutorAsync):
         return new_data_key
 
     @log_op  # type: ignore  # TODO: fix
-    async def execute(self, op: BaseOp) -> DataSourceVS:  # type: ignore  # TODO: fix
+    async def execute(self, op: BaseOp) -> DataSourceVS:
         assert isinstance(op, CalcOp)
 
         source_stream = self.ctx.get_stream(op.source_stream_id)
@@ -261,7 +261,7 @@ class CalcOpExecutorAsync(OpExecutorAsync):
 
 class JoinOpExecutorAsync(OpExecutorAsync):
     @log_op  # type: ignore  # TODO: fix
-    async def execute(self, op: BaseOp) -> JointDataSourceVS:  # type: ignore  # TODO: fix
+    async def execute(self, op: BaseOp) -> JointDataSourceVS:
         assert isinstance(op, JoinOp)
 
         prepared_sources: list[PreparedSingleFromInfo] = []
@@ -310,7 +310,7 @@ class UploadOpExecutorAsync(OpExecutorAsync):
         return source_stream.data_key  # type: ignore  # 2024-01-24 # TODO: Item "None" of "AbstractStream | None" has no attribute "data_key"  [union-attr]
 
     @log_op  # type: ignore  # TODO: fix
-    async def execute(self, op: BaseOp) -> DataSourceVS:  # type: ignore  # TODO: fix
+    async def execute(self, op: BaseOp) -> DataSourceVS:
         assert isinstance(op, UploadOp)
 
         source_stream = self.ctx.get_stream(op.source_stream_id)

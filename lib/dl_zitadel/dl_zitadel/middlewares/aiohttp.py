@@ -4,7 +4,6 @@ import aiohttp.typedefs as aiohttp_typedefs
 import aiohttp.web as aiohttp_web
 import attr
 
-import dl_api_commons.aio.typing as dl_api_commons_aio_typing
 import dl_api_commons.aiohttp.aiohttp_wrappers as dl_api_commons_aiohttp_aiohttp_wrappers
 import dl_api_commons.base_models as dl_api_commons_base_models
 import dl_zitadel.clients as clients
@@ -121,7 +120,7 @@ class AioHTTPMiddleware:
 
         return result
 
-    def get_middleware(self) -> dl_api_commons_aio_typing.AIOHTTPMiddleware:
+    def get_middleware(self) -> aiohttp_typedefs.Middleware:
         @aiohttp_web.middleware
         @dl_api_commons_aiohttp_aiohttp_wrappers.DLRequestBase.use_dl_request
         async def inner(

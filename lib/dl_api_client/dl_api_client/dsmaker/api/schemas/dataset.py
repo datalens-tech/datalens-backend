@@ -17,10 +17,12 @@ from marshmallow_oneofschema import OneOfSchema
 
 from dl_api_client.dsmaker.api.schemas.base import DefaultSchema
 from dl_api_client.dsmaker.primitives import (
+    AllParameterValueConstraint,
     ArrayFloatParameterValue,
     ArrayIntParameterValue,
     ArrayStrParameterValue,
     AvatarRelation,
+    BaseParameterValueConstraint,
     BooleanParameterValue,
     Column,
     ComponentError,
@@ -42,7 +44,6 @@ from dl_api_client.dsmaker.primitives import (
     MarkupParameterValue,
     ObligatoryFilter,
     ParameterValue,
-    ParameterValueConstraint,
     RangeParameterValueConstraint,
     ResultField,
     ResultFieldJoinPart,
@@ -188,8 +189,8 @@ class ValueSchema(OneOfSchemaWithDumpLoadHooks):
         return getattr(obj, self.type_field).name
 
 
-class AllParameterValueConstraintSchema(DefaultSchema[ParameterValueConstraint]):
-    TARGET_CLS = ParameterValueConstraint
+class AllParameterValueConstraintSchema(DefaultSchema[AllParameterValueConstraint]):
+    TARGET_CLS = AllParameterValueConstraint
 
 
 class RangeParameterValueConstraintSchema(DefaultSchema[RangeParameterValueConstraint]):
@@ -213,7 +214,7 @@ class ParameterValueConstraintSchema(OneOfSchema):
         ParameterValueConstraintType.set.name: SetParameterValueConstraintSchema,
     }
 
-    def get_obj_type(self, obj: ParameterValueConstraint) -> str:
+    def get_obj_type(self, obj: BaseParameterValueConstraint) -> str:
         return getattr(obj, self.type_field).name
 
 

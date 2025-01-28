@@ -19,7 +19,7 @@ class MetricaConnectionLifecycleManager(ConnectionLifecycleManager[MetrikaBaseMi
     def pre_save_hook(self) -> None:
         super().pre_save_hook()
 
-        if self.entry.counter_id != self.entry._initial_counter_id or not self.entry.data.counter_creation_date:  # type: ignore  # TODO: fix
+        if self.entry.counter_id != self.entry._initial_counter_id or not self.entry.data.counter_creation_date:
             LOGGER.info(
                 "initial counter_id = %s, current counter_id = %s. "
                 "Retrieving current counter creation date from Metrika API",
@@ -27,6 +27,6 @@ class MetricaConnectionLifecycleManager(ConnectionLifecycleManager[MetrikaBaseMi
                 self.entry.counter_id,  # noqa
             )
             try:
-                self.entry.data.counter_creation_date = self.entry.get_counter_creation_date()  # type: ignore  # TODO: fix
+                self.entry.data.counter_creation_date = self.entry.get_counter_creation_date()
             except MetrikaApiAccessDeniedException as ex:
                 raise exc.ConnectionConfigurationError("No access to counter info. Check your OAuth token.") from ex

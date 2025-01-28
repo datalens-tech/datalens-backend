@@ -109,15 +109,15 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
         }
 
         if merged_stream.meta.blocks[0].debug_query and query_type in cls._SHOW_QUERY_FOR_QUERY_TYPES:
-            data["result"]["query"] = merged_stream.meta.blocks[0].debug_query  # type: ignore  # TODO: fix
+            data["result"]["query"] = merged_stream.meta.blocks[0].debug_query
         if totals is not None or totals_query is not None:
             # Note: `totals is None` also happens when everything was filtered out.
-            data["result"]["totals"] = totals  # type: ignore  # TODO: fix
-            data["result"]["totals_query"] = totals_query  # type: ignore  # TODO: fix
+            data["result"]["totals"] = totals
+            data["result"]["totals_query"] = totals_query
         if data_export_forbidden is not None:
-            data["result"]["data_export_forbidden"] = data_export_forbidden  # type: ignore  # TODO: fix
+            data["result"]["data_export_forbidden"] = data_export_forbidden
         if fields_data is not None:
-            data["result"]["fields"] = fields_data  # type: ignore  # TODO: fix
+            data["result"]["fields"] = fields_data
 
         return data
 

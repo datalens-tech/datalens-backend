@@ -2,6 +2,7 @@
 Middleware to extract OpenTracing context from HTTP headers and creating root request span.
 Should be placed after ContextVarMiddleware
 """
+
 from __future__ import annotations
 
 import contextlib

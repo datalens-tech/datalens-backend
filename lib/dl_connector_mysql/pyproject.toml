@@ -77,10 +77,13 @@ skip_compose = "true"
 labels = ["no_compose"]
 
 [tool.mypy]
+warn_unused_ignores = true
+warn_redundant_casts = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
+exclude = ["dl_connector_mysql_tests"]
 
 [[tool.mypy.overrides]]
 module = [

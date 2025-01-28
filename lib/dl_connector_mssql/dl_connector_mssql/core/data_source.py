@@ -30,9 +30,9 @@ class MSSQLDataSourceMixin(BaseSQLDataSource):
         return source_type in (SOURCE_TYPE_MSSQL_TABLE, SOURCE_TYPE_MSSQL_SUBSELECT)
 
 
-class MSSQLDataSource(MSSQLDataSourceMixin, StandardSchemaSQLDataSource):  # type: ignore  # TODO: fix
+class MSSQLDataSource(MSSQLDataSourceMixin, StandardSchemaSQLDataSource):
     """MSSQL table"""
 
 
-class MSSQLSubselectDataSource(MSSQLDataSourceMixin, SubselectDataSource):  # type: ignore  # TODO: fix
+class MSSQLSubselectDataSource(MSSQLDataSourceMixin, SubselectDataSource):
     """MSSQL table"""

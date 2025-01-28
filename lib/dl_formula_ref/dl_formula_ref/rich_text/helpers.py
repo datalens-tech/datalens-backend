@@ -28,9 +28,9 @@ def get_human_data_type_list(types: Collection[DataType]) -> List[str]:
     type_combos = [type_combo for type_combo in HUMAN_DATA_TYPES if isinstance(type_combo, tuple)]
     type_combos = sorted(type_combos, key=len, reverse=True)
     for type_combo in type_combos:
-        if set(type_combo).issubset(types_set):  # type: ignore  # TODO: fix
+        if set(type_combo).issubset(types_set):
             result_types.add(HUMAN_DATA_TYPES[type_combo])
-            types_set -= set(type_combo)  # type: ignore  # TODO: fix
+            types_set -= set(type_combo)
 
     for hidden_t in HIDDEN_TYPES:
         types_set.discard(hidden_t)

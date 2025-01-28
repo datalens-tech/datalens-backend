@@ -459,7 +459,7 @@ async def test_datetime64(
     )
 
     rmm = redis_model_manager
-    df = DataFile(
+    dfile = DataFile(
         manager=rmm,
         filename="test_file.csv",
         file_type=FileType.csv,
@@ -469,32 +469,32 @@ async def test_datetime64(
     await s3_client.put_object(
         ACL="private",
         Bucket=s3_tmp_bucket,
-        Key=df.s3_key,
+        Key=dfile.s3_key_old,
         Body=csv_data,
     )
-    await df.save()
+    await dfile.save()
 
-    df = await DataFile.get(manager=rmm, obj_id=df.id)
-    assert df.status == FileProcessingStatus.in_progress
+    dfile = await DataFile.get(manager=rmm, obj_id=dfile.id)
+    assert dfile.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=df.id))
+    task = await task_processor_client.schedule(ParseFileTask(file_id=dfile.id))
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
-    df = await DataFile.get(manager=rmm, obj_id=df.id)
-    assert df.status == FileProcessingStatus.ready
+    dfile = await DataFile.get(manager=rmm, obj_id=dfile.id)
+    assert dfile.status == FileProcessingStatus.ready
 
-    assert len(df.sources) == 1
-    source = df.sources[0]
+    assert len(dfile.sources) == 1
+    source = dfile.sources[0]
     assert source.status == FileProcessingStatus.ready
 
-    conn = await create_file_connection(usm, df.id, source.id, source.raw_schema)
+    conn = await create_file_connection(usm, dfile.id, source.id, source.raw_schema)
     assert conn.get_file_source_by_id(source.id).status == FileProcessingStatus.in_progress
 
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
             tenant_id="common",
-            file_id=df.id,
+            file_id=dfile.id,
             src_source_id=source.id,
             dst_source_id=source.id,
             connection_id=conn.uuid,
@@ -526,7 +526,7 @@ async def test_datetime_tz(
 
     usm = default_async_usm_per_test
     rmm = redis_model_manager
-    df = DataFile(
+    dfile = DataFile(
         manager=rmm,
         filename="test_file.csv",
         file_type=FileType.csv,
@@ -536,32 +536,32 @@ async def test_datetime_tz(
     await s3_client.put_object(
         ACL="private",
         Bucket=s3_tmp_bucket,
-        Key=df.s3_key,
+        Key=dfile.s3_key_old,
         Body=csv_data,
     )
-    await df.save()
+    await dfile.save()
 
-    df = await DataFile.get(manager=rmm, obj_id=df.id)
-    assert df.status == FileProcessingStatus.in_progress
+    dfile = await DataFile.get(manager=rmm, obj_id=dfile.id)
+    assert dfile.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=df.id))
+    task = await task_processor_client.schedule(ParseFileTask(file_id=dfile.id))
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
-    df = await DataFile.get(manager=rmm, obj_id=df.id)
-    assert df.status == FileProcessingStatus.ready
+    dfile = await DataFile.get(manager=rmm, obj_id=dfile.id)
+    assert dfile.status == FileProcessingStatus.ready
 
-    assert len(df.sources) == 1
-    source = df.sources[0]
+    assert len(dfile.sources) == 1
+    source = dfile.sources[0]
     assert source.status == FileProcessingStatus.ready
 
-    conn = await create_file_connection(usm, df.id, source.id, source.raw_schema)
+    conn = await create_file_connection(usm, dfile.id, source.id, source.raw_schema)
     assert conn.get_file_source_by_id(source.id).status == FileProcessingStatus.in_progress
 
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
             tenant_id="common",
-            file_id=df.id,
+            file_id=dfile.id,
             src_source_id=source.id,
             dst_source_id=source.id,
             connection_id=conn.uuid,
@@ -625,7 +625,7 @@ async def test_too_many_columns_csv(
     csv_data = generate_sample_csv_data_str(3, 11).encode("utf-8")
 
     rmm = redis_model_manager
-    df = DataFile(
+    dfile = DataFile(
         manager=rmm,
         filename="too_many_columns.csv",
         file_type=FileType.csv,
@@ -635,24 +635,24 @@ async def test_too_many_columns_csv(
     await s3_client.put_object(
         ACL="private",
         Bucket=s3_tmp_bucket,
-        Key=df.s3_key,
+        Key=dfile.s3_key_old,
         Body=csv_data,
     )
-    await df.save()
+    await dfile.save()
 
-    df = await DataFile.get(manager=rmm, obj_id=df.id)
-    assert df.status == FileProcessingStatus.in_progress
+    dfile = await DataFile.get(manager=rmm, obj_id=dfile.id)
+    assert dfile.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=df.id))
+    task = await task_processor_client.schedule(ParseFileTask(file_id=dfile.id))
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
-    df = await DataFile.get(manager=rmm, obj_id=df.id)
-    assert df.status == FileProcessingStatus.failed
-    assert df.error is not None and df.error.code == exc.TooManyColumnsError.err_code
+    dfile = await DataFile.get(manager=rmm, obj_id=dfile.id)
+    assert dfile.status == FileProcessingStatus.failed
+    assert dfile.error is not None and dfile.error.code == exc.TooManyColumnsError.err_code
 
-    assert len(df.sources) == 1
-    assert df.sources[0].error.code == exc.TooManyColumnsError.err_code
+    assert len(dfile.sources) == 1
+    assert dfile.sources[0].error.code == exc.TooManyColumnsError.err_code
 
 
 @pytest.mark.asyncio

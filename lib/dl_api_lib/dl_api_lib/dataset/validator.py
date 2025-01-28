@@ -350,7 +350,7 @@ class DatasetValidator(DatasetBaseWrapper):
             )
             formula_comp_multi_query = self.process_compiled_query(compiled_query=formula_comp_query)
             multi_translator = self.make_multi_query_translator()
-            errors += multi_translator.collect_errors(  # type: ignore  # TODO: fix
+            errors += multi_translator.collect_errors(
                 compiled_multi_query=formula_comp_multi_query, feature_errors=feature_errors
             )
         except formula_exc.FormulaError:
@@ -1147,6 +1147,17 @@ class DatasetValidator(DatasetBaseWrapper):
     ) -> None:
         """Apply update to the data source configuration"""
 
+        if action != DatasetAction.refresh_source:
+            # any source update requires sufficient permissions on the connection,
+            # but you still can refresh fields
+            source_ids = set(self._ds_accessor.get_data_source_id_list()) - set(ignore_source_ids or ())
+            check_permissions_for_origin_sources(
+                dataset=self._ds,
+                source_ids=source_ids,
+                permission_kind=USPermissionKind.read,
+                us_entry_buffer=self._us_manager.get_entry_buffer(),
+            )
+
         source_data = source_data.copy()
         source_id = source_data.pop("id") or str(uuid.uuid4())
         component_ref = DatasetComponentRef(component_type=ComponentType.data_source, component_id=source_id)
@@ -1178,12 +1189,17 @@ class DatasetValidator(DatasetBaseWrapper):
                 parameters=source_data["parameters"],
             )
 
-            check_permissions_for_origin_sources(
-                dataset=self._ds,
-                source_ids=[source_id],
-                permission_kind=USPermissionKind.read,
-                us_entry_buffer=self._us_manager.get_entry_buffer(),
-            )
+            # need to check permissions again in case added source refers to an unchecked connection
+            # this can only happen when the first source is being added,
+            # because we don't support more than one connection in a single ds (see `source_can_be_added`)
+            existing_source_id = self._ds.get_single_data_source_id(ignore_source_ids=[source_id])
+            if existing_source_id is None:  # dataset is empty
+                check_permissions_for_origin_sources(
+                    dataset=self._ds,
+                    source_ids=[source_id],
+                    permission_kind=USPermissionKind.read,
+                    us_entry_buffer=self._us_manager.get_entry_buffer(),
+                )
 
         if action in (DatasetAction.update_source, DatasetAction.delete_source):
             dsrc_coll = self._get_data_source_coll_strict(source_id=source_id)
@@ -1230,7 +1246,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
             if (set(source_data) - {"title", "id", "source_type", "parameters"}) or parameters:
                 # something besides the title was updated
-                self.refresh_data_source(source_id=source_id, old_raw_schema=old_raw_schema)  # type: ignore  # TODO: fix
+                self.refresh_data_source(source_id=source_id, old_raw_schema=old_raw_schema)
 
         elif action == DatasetAction.delete_source:
             self._ds_editor.remove_data_source_collection(source_id=source_id)
@@ -1518,7 +1534,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 parameters, new_source_type = self._migrate_source_parameters(
                     old_connection=old_connection,
                     new_connection=new_connection,
-                    dsrc=dsrc,  # type: ignore  # TODO: fix
+                    dsrc=dsrc,
                 )
 
                 # migrate parameters for new source type

@@ -6,6 +6,7 @@ import logging
 from types import TracebackType
 from typing import (
     TYPE_CHECKING,
+    Any,
     AsyncIterable,
     Awaitable,
     Callable,
@@ -33,6 +34,8 @@ from dl_core.connection_executors.adapters.adapter_actions.async_base import (
     AsyncTestAdapterActionNotImplemented,
     AsyncTypedQueryActionNotImplemented,
     AsyncTypedQueryAdapterAction,
+    AsyncTypedQueryRawActionNotImplemented,
+    AsyncTypedQueryRawAdapterAction,
 )
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from dl_core.connection_executors.models.db_adapter_data import (
@@ -54,11 +57,18 @@ if TYPE_CHECKING:
     )
     from dl_dashsql.typed_query.primitives import (
         TypedQuery,
+        TypedQueryRaw,
+        TypedQueryRawResult,
         TypedQueryResult,
     )
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+@attr.s
+class AsyncRawJsonExecutionResult:
+    raw_data: dict[str, Any] = attr.ib()
 
 
 @attr.s
@@ -109,6 +119,7 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
     _async_table_info_action: AsyncTableInfoAdapterAction = attr.ib(init=False)
     _async_table_exists_action: AsyncTableExistsAdapterAction = attr.ib(init=False)
     _async_typed_query_action: AsyncTypedQueryAdapterAction = attr.ib(init=False)
+    _async_typed_query_raw_action: AsyncTypedQueryRawAdapterAction = attr.ib(init=False)
 
     def __attrs_post_init__(self) -> None:
         self._initialize_actions()
@@ -121,6 +132,7 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
         self._async_table_info_action = self._make_async_table_info_action()
         self._async_table_exists_action = self._make_async_table_exists_action()
         self._async_typed_query_action = self._make_async_typed_query_action()
+        self._async_typed_query_raw_action = self._make_async_typed_query_raw_action()
 
     # Action factory methods
 
@@ -152,6 +164,10 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
         # Redefine this method to enable `execute_typedQuery`
         return AsyncTypedQueryActionNotImplemented()
 
+    def _make_async_typed_query_raw_action(self) -> AsyncTypedQueryRawAdapterAction:
+        # Redefine this method to enable `execute_typedQueryRaw`
+        return AsyncTypedQueryRawActionNotImplemented()
+
     def get_target_host(self) -> Optional[str]:
         return None
 
@@ -160,6 +176,9 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
 
     async def execute_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
         return await self._async_typed_query_action.run_typed_query_action(typed_query=typed_query)
+
+    async def execute_typed_query_raw(self, typed_query_raw: TypedQueryRaw) -> TypedQueryRawResult:
+        return await self._async_typed_query_raw_action.run_typed_query_raw_action(typed_query_raw=typed_query_raw)
 
     @abc.abstractmethod
     async def execute(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:  # TODO: Implement via action

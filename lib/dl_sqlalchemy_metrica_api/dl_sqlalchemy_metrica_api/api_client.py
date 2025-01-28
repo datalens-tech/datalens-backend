@@ -44,7 +44,6 @@ def _get_retriable_requests_session():
     for schema in ["http://", "https://"]:
         session.mount(
             schema,
-            # noinspection PyUnresolvedReferences
             requests.adapters.HTTPAdapter(
                 max_retries=requests.packages.urllib3.util.Retry(
                     total=5,

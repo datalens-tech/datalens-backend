@@ -73,8 +73,8 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
             raise TypeError(f"Root data source has non-SQL type: {type(dsrc)}")
 
         def get_columns():  # type: ignore  # TODO: fix
-            with self._handle_incomplete_source(avatar=avatar):  # type: ignore  # TODO: fix
-                columns = dsrc.saved_raw_schema  # type: ignore  # TODO: fix
+            with self._handle_incomplete_source(avatar=avatar):
+                columns = dsrc.saved_raw_schema
                 if columns is None:
                     raise exc.TableNameNotConfiguredError()
                 return columns
@@ -85,7 +85,7 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
         connection = dsrc.connection
         conn_type = connection.conn_type
         backend_type = get_backend_type(conn_type=conn_type)
-        sa_dialect = connection.get_dialect()  # type: ignore  # 2024-01-24 # TODO: "ConnectionBase" has no attribute "get_dialect"  [attr-defined]
+        sa_dialect = connection.get_dialect()
         query_compiler_cls = get_sa_query_compiler_cls(backend_type=backend_type)
         query_compiler = query_compiler_cls(dialect=sa_dialect)
 
@@ -96,7 +96,7 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
             fields = [sa.literal_column(query_compiler.quote(col_name)) for col_name in col_names] or ["*"]
             sql_source = (
                 sa.select(fields)
-                .select_from(dsrc.get_sql_source())  # type: ignore  # TODO: fix
+                .select_from(dsrc.get_sql_source())
                 .limit(subquery_limit or DataAPILimits.DEFAULT_SUBQUERY_LIMIT)
                 .alias(alias)
             )

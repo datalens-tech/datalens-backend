@@ -3,6 +3,7 @@ Information about the outside context for all environments.
 
 All the classes (instead of dicts) for static checking.
 """
+
 from __future__ import annotations
 
 

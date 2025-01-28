@@ -3,7 +3,6 @@ from dl_db_testing.database.engine_wrapper import EngineWrapperBase
 
 class PGEngineWrapperBase(EngineWrapperBase):
     def count_sql_sessions(self) -> int:
-        # noinspection SqlDialectInspection
         cur = self.execute("select * from pg_stat_activity")
         try:
             lines = cur.fetchall()

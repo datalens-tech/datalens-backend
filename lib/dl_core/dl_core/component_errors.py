@@ -45,7 +45,7 @@ class ComponentErrorPack:
             cond = lambda err: err.code == code
         elif code_prefix is not None:
             code_prefix = list(code_prefix)
-            cond = lambda err: err.code[: len(code_prefix)] == code_prefix  # type: ignore  # TODO: fix
+            cond = lambda err: err.code[: len(code_prefix)] == code_prefix
         else:
             cond = lambda err: True
         return [err for err in self.errors if cond(err)]

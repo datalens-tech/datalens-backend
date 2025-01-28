@@ -77,7 +77,7 @@ def _make_logging_config(
         logging_config = {
             **base,
             "loggers": {
-                **base.get("loggers", {}),  # type: ignore  # TODO: fix
+                **base.get("loggers", {}),
                 "dl_core": {
                     "handlers": ["stream"],
                     "level": "INFO",
@@ -85,7 +85,7 @@ def _make_logging_config(
                 },
             },
             "root": {
-                **base.get("root", {}),  # type: ignore  # TODO: fix
+                **base.get("root", {}),
                 "level": "INFO",
             },
         }
@@ -93,25 +93,25 @@ def _make_logging_config(
     else:
         base = statcommons.log_config.BASE_LOGGING_CONFIG
         # Handlers for root and for every non-propagated logger
-        common_handlers = base["root"]["handlers"]  # type: ignore  # TODO: fix
+        common_handlers = base["root"]["handlers"]
         # ^ ['debug_log', 'fast_log', 'event_log']
 
         default_handlers = ["stream"] + common_handlers  # everything to stdout
         logging_config = {
             **base,
             "filters": {
-                **base.get("filters", {}),  # type: ignore  # TODO: fix
+                **base.get("filters", {}),
                 "fastlogs": {"()": "dl_core.logging_config.FastlogsFilter"},
             },
             "formatters": {
-                **base.get("formatters", {}),  # type: ignore  # TODO: fix
+                **base.get("formatters", {}),
                 "json": {"()": "dl_core.logging_config.StdoutFormatter"},
             },
             "handlers": {
-                **(base.get("handlers") or {}),  # type: ignore  # TODO: fix
+                **(base.get("handlers") or {}),
             },
             "loggers": {
-                **(base.get("loggers") or {}),  # type: ignore  # TODO: fix
+                **(base.get("loggers") or {}),
                 # Set minimal level to some unhelpful libraries' logging:
                 "jaeger_tracing": {"level": "WARNING", "propagate": False, "handlers": default_handlers},
                 "asyncio": {"level": "INFO", "propagate": False, "handlers": default_handlers},
@@ -120,7 +120,7 @@ def _make_logging_config(
                 "ydb": {"level": "WARNING", "propagate": False, "handlers": default_handlers},
             },
             "root": {
-                **(base.get("root") or {}),  # type: ignore  # TODO: fix
+                **(base.get("root") or {}),
                 "handlers": default_handlers,
                 "level": "DEBUG",
             },

@@ -58,8 +58,8 @@ class MetrikaBaseMixin(ConnectionBase):
     metrica_host: Optional[str] = None
 
     def __init__(self, *args, **kwargs):  # type: ignore  # TODO: fix
-        super().__init__(*args, **kwargs)  # type: ignore  # TODO: fix
-        self._initial_counter_id = self.data.counter_id if self._data is not None else None  # type: ignore  # TODO: fix
+        super().__init__(*args, **kwargs)
+        self._initial_counter_id = self.data.counter_id if self._data is not None else None
 
     @property
     def allow_public_usage(self) -> bool:
@@ -67,11 +67,11 @@ class MetrikaBaseMixin(ConnectionBase):
 
     @property
     def metrika_oauth(self):  # type: ignore  # TODO: fix
-        return self.data.token  # type: ignore  # TODO: fix
+        return self.data.token
 
     @property
     def counter_id(self):  # type: ignore  # TODO: fix
-        return self.data.counter_id  # type: ignore  # TODO: fix
+        return self.data.counter_id
 
     def get_metrica_api_cli(self) -> metrika_api_client.MetrikaApiClient:
         return metrika_api_client.MetrikaApiClient(oauth_token=self.metrika_oauth, host=self.metrica_host)
@@ -84,7 +84,7 @@ class MetrikaBaseMixin(ConnectionBase):
 
     @property
     def counter_creation_date(self):  # type: ignore  # TODO: fix
-        return self.data.counter_creation_date  # type: ignore  # TODO: fix
+        return self.data.counter_creation_date
 
     def get_available_counters(self) -> list[dict]:
         return self.get_metrica_api_cli().get_available_counters()
@@ -95,7 +95,7 @@ class MetrikaBaseMixin(ConnectionBase):
         changes: Optional[dict] = None,
         original_version: Optional[ConnectionBase] = None,
     ) -> None:
-        await super().validate_new_data(  # type: ignore  # TODO: fix  # mixin
+        await super().validate_new_data(
             services_registry=services_registry,
             changes=changes,
             original_version=original_version,
@@ -106,13 +106,13 @@ class MetrikaBaseMixin(ConnectionBase):
         data_changes = changes.get("data") or {}
         if data_changes.get("token"):
             return  # token provided, nothing to check
-        current_counter_id = self.data.counter_id  # type: ignore  # TODO: fix  # mixin
+        current_counter_id = self.data.counter_id  # mixin
         if str(data_changes.get("counter_id") or "") == str(current_counter_id):
             return  # no counter_id change
         raise exc.ConnectionConfigurationError('"token" must be specified if "counter_id" is changing.')
 
 
-class MetrikaApiConnection(MetrikaBaseMixin, ConnectionBase):  # type: ignore  # TODO: fix
+class MetrikaApiConnection(MetrikaBaseMixin, ConnectionBase):
     is_always_internal_source: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
 

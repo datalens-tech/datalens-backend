@@ -83,7 +83,7 @@ class SRFactory(Generic[SERVICE_REGISTRY_TV], metaclass=abc.ABCMeta):
 
 
 @attr.s
-class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO: fix
+class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):
     ca_data: bytes = attr.ib()
     rqe_config: Optional[RQEConfig] = attr.ib()
     async_env: bool = attr.ib()
@@ -167,7 +167,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):  # type: ignore  # TODO:
             ),
             file_uploader_client_factory=FileUploaderClientFactory(
                 self.file_uploader_settings,
-                ca_data=self.ca_data,  # type: ignore  # 2024-01-24 # TODO: Argument "ca_data" to "FileUploaderClientFactory" has incompatible type "bytes | None"; expected "bytes"  [arg-type]
+                ca_data=self.ca_data,
             )
             if self.file_uploader_settings
             else None,

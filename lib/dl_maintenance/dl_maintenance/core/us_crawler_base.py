@@ -126,7 +126,7 @@ class USEntryCrawler:
     ) -> AsyncGenerator[Optional[USEntry], None]:
         if self._dry_run:
             try:
-                entry = await usm.get_by_id(entry_id, expected_type=self.ENTRY_TYPE)  # type: ignore  # TODO: fix
+                entry = await usm.get_by_id(entry_id, expected_type=self.ENTRY_TYPE)
             except Exception:
                 logging_extra.update(us_entry_crawler_exc_stage="entry_locked_load")
                 raise
@@ -290,7 +290,7 @@ class USEntryCrawler:
     ) -> EntryHandlingResult:
         entry_id = raw_entry["entryId"]
         usm = self.usm
-        async with self.locked_entry_cm(entry_id, entry_handling_extra, usm=usm) as target_entry:  # type: ignore  # TODO: fix
+        async with self.locked_entry_cm(entry_id, entry_handling_extra, usm=usm) as target_entry:
             assert target_entry is not None
             # For future diff calculation reliability
             # (see `dl_maintenance.diff_utils.get_pre_save_top_level_dict`)

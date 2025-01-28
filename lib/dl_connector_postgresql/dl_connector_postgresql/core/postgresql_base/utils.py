@@ -32,7 +32,7 @@ def compile_pg_query(
         compiled = query.compile(dialect=dialect, compile_kwargs={"render_postcompile": True})
         compiled_params = sorted(compiled.params.items())
         if add_types and hasattr(dialect, "dbapi"):
-            pg_types = dialect.dbapi.pg_types  # type: ignore  # TODO: fix
+            pg_types = dialect.dbapi.pg_types
             input_sizes = compiled._get_set_input_sizes_lookup(exclude_types=exclude_types)
         else:
             pg_types = {}

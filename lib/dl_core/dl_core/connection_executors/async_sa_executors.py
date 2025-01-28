@@ -29,6 +29,7 @@ from dl_core.connection_executors.adapters.async_adapters_base import (
     AsyncDBAdapter,
     AsyncDirectDBAdapter,
     AsyncRawExecutionResult,
+    AsyncRawJsonExecutionResult,
 )
 from dl_core.connection_executors.adapters.async_adapters_remote import RemoteAsyncAdapter
 from dl_core.connection_executors.adapters.async_adapters_sync_wrapper import AsyncWrapperForSyncAdapter
@@ -59,6 +60,8 @@ if TYPE_CHECKING:
     )
     from dl_dashsql.typed_query.primitives import (
         TypedQuery,
+        TypedQueryRaw,
+        TypedQueryRawResult,
         TypedQueryResult,
     )
 
@@ -225,7 +228,6 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
         else:
             raise NotImplementedError(f"Unsupported execution mode {self._exec_mode}")
 
-    # noinspection PyMethodMayBeStatic
     def executor_query_to_db_adapter_query(self, conn_exec_query: ConnExecutorQuery) -> DBAdapterQuery:
         return DBAdapterQuery(
             query=conn_exec_query.query,
@@ -239,7 +241,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
         )
 
     @_common_exec_wrapper
-    async def _execute_query(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:
+    async def _execute_query(self, query: DBAdapterQuery) -> AsyncRawExecutionResult | AsyncRawJsonExecutionResult:
         return await self._target_dba.execute(query)
 
     def _autodetect_user_types(self, raw_cursor_info: dict) -> Optional[List[UserDataType]]:
@@ -264,6 +266,9 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
 
     async def _execute_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
         return await self._target_dba.execute_typed_query(typed_query=typed_query)
+
+    async def _execute_typed_query_raw(self, typed_query_raw: TypedQueryRaw) -> TypedQueryRawResult:
+        return await self._target_dba.execute_typed_query_raw(typed_query_raw=typed_query_raw)
 
     async def _execute(self, query: ConnExecutorQuery) -> AsyncExecutionResult:
         raw_result = await self._execute_query(self.executor_query_to_db_adapter_query(query))
@@ -312,7 +317,6 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
 
     async def _close(self) -> None:
         if self._async_dba_pool is not None:
-            # noinspection PyBroadException
             for dba in self._async_dba_pool:
                 try:
                     # TODO FIX: May be make timeout

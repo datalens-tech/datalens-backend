@@ -79,7 +79,6 @@ class DLBaseException(Exception):
         data = {**data}
         cls_name = data.pop("cls_name")
         target_cls = cls._MAP_CLASS_NAME_CLASS[cls_name]
-        # noinspection PyProtectedMember
         return target_cls._from_jsonable_dict(data)
 
     @classmethod

@@ -77,10 +77,10 @@ def _colorize_diff(text: str) -> str:
 
     return highlight(
         text,
-        lexer=lexers.DiffLexer(),  # type: ignore  # TODO: fix
+        lexer=lexers.DiffLexer(),
         # formatter=formatters.TerminalFormatter(),
         # Try also:
-        formatter=formatters.Terminal256Formatter(),  # type: ignore  # TODO: fix
+        formatter=formatters.Terminal256Formatter(),
     )
 
 

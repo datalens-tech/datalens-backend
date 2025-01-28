@@ -2,6 +2,7 @@
 Here we test old autonomous loaders of sub-configs (which actually use new declarative framework).
 In future all loaders which are tested here must be removed.
 """
+
 from dl_configs.rqe import (
     RQEConfig,
     rqe_config_from_env,

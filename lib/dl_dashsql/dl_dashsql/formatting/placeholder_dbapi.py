@@ -2,7 +2,6 @@
 Query formatting for DBAPI-compliant interfaces
 """
 
-
 from enum import Enum
 from typing import ClassVar
 

@@ -559,7 +559,6 @@ class EntityCacheEngineBase:
 
     def _get_key_query_cache_entry(self, local_key_rep: LocalKeyRepresentation) -> str:
         local_key_rep.validate()
-        # noinspection PyProtectedMember
         return "{entity_root_key}/{local_key_rep_str}".format(
             entity_root_key=self._get_key_root(),
             local_key_rep_str=local_key_rep.key_parts_hash,
@@ -586,7 +585,6 @@ class EntityCacheEngineBase:
 
         full_key = self._get_key_query_cache_entry(local_key_rep=local_key_rep)
 
-        # noinspection PyProtectedMember
         entry_data, details = ResultCacheEntry(
             key_parts_str=local_key_rep.key_parts_str,
             result_data=result,

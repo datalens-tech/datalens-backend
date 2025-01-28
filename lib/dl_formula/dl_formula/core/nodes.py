@@ -1158,16 +1158,13 @@ class WindowFuncCall(FuncCall):
         if ordering is None:
             ordering = Ordering()
 
-        return cast(
-            WindowFuncCall,
-            super().make(
-                name=name,
-                args=[*args, ordering, grouping],
-                lod=lod,
-                before_filter_by=before_filter_by,
-                ignore_dimensions=ignore_dimensions,
-                meta=meta,
-            ),
+        return super().make(
+            name=name,
+            args=[*args, ordering, grouping],
+            lod=lod,
+            before_filter_by=before_filter_by,
+            ignore_dimensions=ignore_dimensions,
+            meta=meta,
         )
 
     @classmethod

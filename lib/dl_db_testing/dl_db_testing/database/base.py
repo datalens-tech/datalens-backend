@@ -10,7 +10,6 @@ from typing import (
     Sequence,
     TypeVar,
     Union,
-    cast,
 )
 
 import attr
@@ -45,7 +44,7 @@ class DbBase(Generic[_DB_CONFIG_TV]):
 
     @property
     def config(self) -> _DB_CONFIG_TV:
-        return cast(_DB_CONFIG_TV, self._config)
+        return self._config
 
     @property
     def url(self) -> sqlalchemy.engine.url.URL:

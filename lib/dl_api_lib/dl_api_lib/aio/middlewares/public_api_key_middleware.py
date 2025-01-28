@@ -3,9 +3,11 @@ from __future__ import annotations
 import logging
 
 from aiohttp import web
-from aiohttp.typedefs import Handler
+from aiohttp.typedefs import (
+    Handler,
+    Middleware,
+)
 
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
 from dl_api_commons.base_models import TenantCommon
 from dl_api_lib.aio.aiohttp_wrappers import DSAPIRequest
@@ -15,7 +17,7 @@ from dl_constants.api_constants import DLHeadersCommon
 LOGGER = logging.getLogger(__name__)
 
 
-def public_api_key_middleware(api_keys: tuple[str, ...]) -> AIOHTTPMiddleware:
+def public_api_key_middleware(api_keys: tuple[str, ...]) -> Middleware:
     if not isinstance(api_keys, tuple):
         raise TypeError(f"API key must be a tuple, not '{type(api_keys)}'")
 

@@ -102,7 +102,7 @@ class CSVFileParser(FileParser):
 
         s3_resp = await self.s3.client.get_object(
             Bucket=self.s3.tmp_bucket_name,
-            Key=self.dfile.s3_key,
+            Key=self.dfile.s3_key_old,
             Range=f"bytes=0-{self.sample_size}",
         )
         sample_bytes = await s3_resp["Body"].read()
@@ -165,7 +165,7 @@ class CSVFileParser(FileParser):
             has_header = self.file_settings["first_line_is_header"]
             LOGGER.info(f"Overriding `has_header` with user defined: has_header={has_header}")
 
-        data_stream = await loop.run_in_executor(self.tpe, self._get_sync_s3_data_stream, self.dfile.s3_key)
+        data_stream = await loop.run_in_executor(self.tpe, self._get_sync_s3_data_stream, self.dfile.s3_key_old)
         has_header, raw_schema = await loop.run_in_executor(
             self.tpe,
             guess_header_and_schema,

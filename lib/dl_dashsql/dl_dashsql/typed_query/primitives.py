@@ -1,5 +1,6 @@
 from typing import (
     Mapping,
+    Optional,
     Sequence,
     Type,
     TypeVar,
@@ -51,8 +52,12 @@ class TypedQueryParamGetter:
 
 
 @attr.s(frozen=True, kw_only=True)
-class TypedQuery:
+class TypedQueryBase:
     query_type: DashSQLQueryType = attr.ib()
+
+
+@attr.s(frozen=True, kw_only=True)
+class TypedQuery(TypedQueryBase):
     parameters: tuple[TypedQueryParameter, ...] = attr.ib()
     # internal
     param_getter: TypedQueryParamGetter = attr.ib(init=False)
@@ -74,7 +79,32 @@ class TypedQueryResultColumnHeader:
 
 
 @attr.s(frozen=True, kw_only=True)
-class TypedQueryResult:
-    query_type: DashSQLQueryType = attr.ib()
+class TypedQueryResult(TypedQueryBase):
     column_headers: Sequence[TypedQueryResultColumnHeader] = attr.ib()
     data_rows: Sequence[TBIDataRow] = attr.ib()
+
+
+# Typed query RAW
+@attr.s(frozen=True, kw_only=True)
+class TypedQueryRawParameters:
+    path: str = attr.ib()
+    method: str = attr.ib()
+    body: Optional[dict] = attr.ib(factory=dict)
+
+
+@attr.s(frozen=True, kw_only=True)
+class TypedQueryRaw(TypedQueryBase):
+    query_type: DashSQLQueryType = attr.ib(default=DashSQLQueryType.raw_query)
+    parameters: TypedQueryRawParameters = attr.ib()
+
+
+@attr.s(frozen=True, kw_only=True)
+class TypedQueryRawResultData:
+    status: int = attr.ib()
+    headers: dict = attr.ib()
+    body: Optional[dict] = attr.ib()
+
+
+@attr.s(frozen=True, kw_only=True)
+class TypedQueryRawResult(TypedQueryBase):
+    data: TypedQueryRawResultData = attr.ib()

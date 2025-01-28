@@ -34,6 +34,6 @@ class AsyncpgOperationProcessor(PostgreSQLOperationProcessor[AsyncpgPoolWrapper,
         assert self._db_ex_adapter is not None
         assert self._cmstack is not None
         self._db_ex_adapter = None
-        await self._cmstack.aclose()  # type: ignore  # TODO: fix
+        await self._cmstack.aclose()
         self._pg_conn = None
         self._cmstack = None

@@ -18,6 +18,9 @@ from dl_api_lib.app_common import (
 from dl_api_lib.app_settings import (
     ControlApiAppSettingsOS,
     ControlApiAppTestingsSettings,
+    NativeAuthSettingsOS,
+    NullAuthSettingsOS,
+    ZitadelAuthSettingsOS,
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_cache_engine.primitives import CacheTTLConfig
@@ -38,7 +41,9 @@ class AuthSetupResult:
     us_auth_mode: USAuthMode
 
 
-class StandaloneControlApiSRFactoryBuilder(SRFactoryBuilder[ControlApiAppSettingsOS]):
+class StandaloneControlApiSRFactoryBuilder(
+    SRFactoryBuilder[ControlApiAppSettingsOS]  # type: ignore # ControlApiAppSettingsOS is not subtype of AppSettings due to migration to new settings
+):
     def _get_required_services(self, settings: ControlApiAppSettingsOS) -> set[RequiredService]:
         return set()
 
@@ -69,7 +74,8 @@ class StandaloneControlApiSRFactoryBuilder(SRFactoryBuilder[ControlApiAppSetting
 
 
 class StandaloneControlApiAppFactory(
-    ControlApiAppFactory[ControlApiAppSettingsOS], StandaloneControlApiSRFactoryBuilder
+    ControlApiAppFactory[ControlApiAppSettingsOS],  # type: ignore # ControlApiAppSettingsOS is not subtype of AppSettings
+    StandaloneControlApiSRFactoryBuilder,
 ):
     def set_up_environment(
         self,
@@ -86,14 +92,25 @@ class StandaloneControlApiAppFactory(
         testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     ) -> AuthSetupResult:
         self._settings: ControlApiAppSettingsOS
+        settings = self._settings.AUTH
 
-        if self._settings.AUTH is None or self._settings.AUTH.TYPE == "NONE":
+        if settings is None or isinstance(settings, NullAuthSettingsOS):
             return self._setup_auth_middleware_none(app=app, testing_app_settings=testing_app_settings)
 
-        if self._settings.AUTH.TYPE == "ZITADEL":
-            return self._setup_auth_middleware_zitadel(app=app)
+        if isinstance(settings, ZitadelAuthSettingsOS):
+            return self._setup_auth_middleware_zitadel(
+                settings=settings,
+                cadata=get_multiple_root_certificates(
+                    self._settings.CA_FILE_PATH,
+                    *self._settings.EXTRA_CA_FILE_PATHS,
+                ),
+                app=app,
+            )
 
-        raise ValueError(f"Unknown auth type: {self._settings.AUTH.TYPE}")
+        if isinstance(settings, NativeAuthSettingsOS):
+            return self._setup_auth_middleware_native(settings=settings, app=app)
+
+        raise ValueError(f"Unknown auth type: {settings.type}")
 
     def _setup_auth_middleware_none(
         self,
@@ -115,29 +132,25 @@ class StandaloneControlApiAppFactory(
 
     def _setup_auth_middleware_zitadel(
         self,
+        settings: ZitadelAuthSettingsOS,
+        cadata: bytes,
         app: flask.Flask,
     ) -> AuthSetupResult:
-        assert self._settings.AUTH is not None
-
         import httpx
 
         import dl_zitadel
 
-        ca_data = get_multiple_root_certificates(
-            self._settings.CA_FILE_PATH,
-            *self._settings.EXTRA_CA_FILE_PATHS,
+        httpx_client = httpx.Client(
+            verify=ssl.create_default_context(cadata=cadata.decode("ascii")),
         )
-
         zitadel_client = dl_zitadel.ZitadelSyncClient(
-            base_client=httpx.Client(
-                verify=ssl.create_default_context(cadata=ca_data.decode("ascii")),
-            ),
-            base_url=self._settings.AUTH.BASE_URL,
-            project_id=self._settings.AUTH.PROJECT_ID,
-            client_id=self._settings.AUTH.CLIENT_ID,
-            client_secret=self._settings.AUTH.CLIENT_SECRET,
-            app_client_id=self._settings.AUTH.APP_CLIENT_ID,
-            app_client_secret=self._settings.AUTH.APP_CLIENT_SECRET,
+            base_client=httpx_client,
+            base_url=settings.BASE_URL,
+            project_id=settings.PROJECT_ID,
+            client_id=settings.CLIENT_ID,
+            client_secret=settings.CLIENT_SECRET,
+            app_client_id=settings.APP_CLIENT_ID,
+            app_client_secret=settings.APP_CLIENT_SECRET,
         )
         token_storage = dl_zitadel.ZitadelSyncTokenStorage(
             client=zitadel_client,
@@ -148,5 +161,24 @@ class StandaloneControlApiAppFactory(
             token_storage=token_storage,
         ).set_up(app=app)
         LOGGER.info("Zitadel auth setup complete")
+
+        return AuthSetupResult(us_auth_mode=USAuthMode.regular)
+
+    def _setup_auth_middleware_native(
+        self,
+        settings: NativeAuthSettingsOS,
+        app: flask.Flask,
+    ) -> AuthSetupResult:
+        assert isinstance(settings, NativeAuthSettingsOS)
+
+        import dl_auth_native
+
+        dl_auth_native.FlaskMiddleware.from_settings(
+            settings=dl_auth_native.MiddlewareSettings(
+                decoder_key=settings.JWT_KEY,
+                decoder_algorithms=[settings.JWT_ALGORITHM],
+            )
+        ).set_up(app=app)
+        LOGGER.info("Native auth setup complete")
 
         return AuthSetupResult(us_auth_mode=USAuthMode.regular)

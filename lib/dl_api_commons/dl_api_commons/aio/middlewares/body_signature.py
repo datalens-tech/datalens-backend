@@ -1,11 +1,13 @@
 from aiohttp import web
-from aiohttp.typedefs import Handler
+from aiohttp.typedefs import (
+    Handler,
+    Middleware,
+)
 
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.crypto import get_hmac_hex_digest
 
 
-def body_signature_validation_middleware(hmac_key: bytes, header: str) -> AIOHTTPMiddleware:
+def body_signature_validation_middleware(hmac_key: bytes, header: str) -> Middleware:
     @web.middleware
     async def actual_middleware(request: web.Request, handler: Handler) -> web.StreamResponse:
         if not hmac_key:  # do not consider an empty hmac key as valid.

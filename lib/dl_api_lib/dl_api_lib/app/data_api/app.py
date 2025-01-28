@@ -9,6 +9,7 @@ from typing import (
 )
 
 from aiohttp import web
+from aiohttp.typedefs import Middleware
 import attr
 
 from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
@@ -16,7 +17,6 @@ from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.middlewares.tracing import TracingService
 from dl_api_commons.aio.server_header import ServerHeader
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.sentry_config import (
     SentryConfig,
     configure_sentry_for_aiohttp,
@@ -56,6 +56,7 @@ from dl_api_lib.app.data_api.resources.ping import (
     PingView,
 )
 from dl_api_lib.app.data_api.resources.typed_query import DashSQLTypedQueryView
+from dl_api_lib.app.data_api.resources.typed_query_raw import DashSQLTypedQueryRawView
 from dl_api_lib.app.data_api.resources.unistat import UnistatView
 from dl_api_lib.app_common import SRFactoryBuilder
 from dl_api_lib.app_settings import DataApiAppSettings
@@ -101,9 +102,9 @@ async def add_connection_close(request: web.Request, response: web.StreamRespons
 
 @attr.s(frozen=True)
 class EnvSetupResult:
-    auth_mw_list: list[AIOHTTPMiddleware] = attr.ib(kw_only=True)
-    sr_middleware_list: list[AIOHTTPMiddleware] = attr.ib(kw_only=True)
-    usm_middleware_list: list[AIOHTTPMiddleware] = attr.ib(kw_only=True)
+    auth_mw_list: list[Middleware] = attr.ib(kw_only=True)
+    sr_middleware_list: list[Middleware] = attr.ib(kw_only=True)
+    usm_middleware_list: list[Middleware] = attr.ib(kw_only=True)
 
 
 TDataApiSettings = TypeVar("TDataApiSettings", bound=DataApiAppSettings)
@@ -143,6 +144,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
         app.router.add_route("post", "/api/v1/connections/{conn_id}/dashsql", DashSQLView)  # FIXME: Remove
         app.router.add_route("post", "/api/data/v1/connections/{conn_id}/dashsql", DashSQLView)
         app.router.add_route("post", "/api/data/v1/connections/{conn_id}/typed_query", DashSQLTypedQueryView)
+        app.router.add_route("post", "/api/data/v1/connections/{conn_id}/typed_query_raw", DashSQLTypedQueryRawView)
         app.router.add_route(
             "post", "/api/v1/datasets/{ds_id}/versions/draft/result", DatasetResultViewV1
         )  # FIXME: Remove

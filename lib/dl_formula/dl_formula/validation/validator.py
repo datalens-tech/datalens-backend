@@ -52,13 +52,13 @@ class Validator:
         return ValidatorProxy(validator=self, checker_cls=type(checker))
 
     def get_all_errors(self, node: nodes.FormulaItem) -> List[FormulaErrorCtx]:
-        errors = []  # type: ignore  # TODO: fix
+        errors = []
         for error_cache in self._env.generic_cache_valid.values():
             info = error_cache.get(node)
             if info is None:
                 continue
-            if info.is_error and info.exception is not None:  # type: ignore  # TODO: fix
-                errors.extend(info.exception.errors)  # type: ignore  # TODO: fix
+            if info.is_error and info.exception is not None:
+                errors.extend(info.exception.errors)
         return errors
 
 

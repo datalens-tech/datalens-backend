@@ -4,8 +4,9 @@ import logging
 import ssl
 from typing import Optional
 
+from aiohttp.typedefs import Middleware
+
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_lib.app.data_api.app import (
     DataApiAppFactory,
     EnvSetupResult,
@@ -15,6 +16,9 @@ from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import (
     AppSettings,
     DataApiAppSettingsOS,
+    NativeAuthSettingsOS,
+    NullAuthSettingsOS,
+    ZitadelAuthSettingsOS,
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_cache_engine.primitives import CacheTTLConfig
@@ -72,7 +76,10 @@ class StandaloneDataApiSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
         return None
 
 
-class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], StandaloneDataApiSRFactoryBuilder):
+class StandaloneDataApiAppFactory(
+    DataApiAppFactory[DataApiAppSettingsOS],  # type: ignore # DataApiAppSettingsOS is not subtype of AppSettings due to migration to new settings
+    StandaloneDataApiSRFactoryBuilder,
+):
     @property
     def _is_public(self) -> bool:
         return False
@@ -84,8 +91,8 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
         self,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
     ) -> EnvSetupResult:
-        sr_middleware_list: list[AIOHTTPMiddleware]
-        usm_middleware_list: list[AIOHTTPMiddleware]
+        sr_middleware_list: list[Middleware]
+        usm_middleware_list: list[Middleware]
 
         ca_data = get_multiple_root_certificates(
             self._settings.CA_FILE_PATH,
@@ -122,13 +129,15 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
 
         if self._settings.AUTH is not None and self._settings.AUTH == "NONE":
             usm_middleware_list = [
-                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore  # 2024-01-30 # TODO: Argument "us_master_token" to "service_us_manager_middleware" has incompatible type "str | None"; expected "str"  [arg-type]
-                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw),  # type: ignore  # 2024-01-30 # TODO: Argument "us_master_token" to "service_us_manager_middleware" has incompatible type "str | None"; expected "str"  [arg-type]
+                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),
+                service_us_manager_middleware(
+                    us_master_token=self._settings.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw
+                ),
             ]
         else:
             usm_middleware_list = [
-                us_manager_middleware(**common_us_kw),  # type: ignore
-                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore
+                us_manager_middleware(**common_us_kw),
+                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),
             ]
 
         result = EnvSetupResult(
@@ -139,23 +148,29 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
 
         return result
 
-    def _get_auth_middleware(self) -> AIOHTTPMiddleware:
-        if self._settings.AUTH is None or self._settings.AUTH.TYPE == "NONE":
+    def _get_auth_middleware(self) -> Middleware:
+        settings = self._settings.AUTH
+
+        if settings is None or isinstance(settings, NullAuthSettingsOS):
             return self._get_auth_middleware_none()
 
-        if self._settings.AUTH.TYPE == "ZITADEL":
+        if isinstance(settings, ZitadelAuthSettingsOS):
             return self._get_auth_middleware_zitadel(
-                ca_data=get_multiple_root_certificates(
+                settings=settings,
+                cadata=get_multiple_root_certificates(
                     self._settings.CA_FILE_PATH,
                     *self._settings.EXTRA_CA_FILE_PATHS,
                 ),
             )
 
-        raise ValueError(f"Unknown auth type: {self._settings.AUTH.TYPE}")
+        if isinstance(settings, NativeAuthSettingsOS):
+            return self._get_auth_middleware_native(settings)
+
+        raise ValueError(f"Unknown auth type: {settings.type}")
 
     def _get_auth_middleware_none(
         self,
-    ) -> AIOHTTPMiddleware:
+    ) -> Middleware:
         return auth_trust_middleware(
             fake_user_id="_user_id_",
             fake_user_name="_user_name_",
@@ -163,30 +178,24 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
 
     def _get_auth_middleware_zitadel(
         self,
-        ca_data: bytes,
-    ) -> AIOHTTPMiddleware:
-        self._settings: DataApiAppSettingsOS
-        assert self._settings.AUTH is not None
-
+        settings: ZitadelAuthSettingsOS,
+        cadata: bytes,
+    ) -> Middleware:
         import httpx
 
         import dl_zitadel
 
-        ca_data = get_multiple_root_certificates(
-            self._settings.CA_FILE_PATH,
-            *self._settings.EXTRA_CA_FILE_PATHS,
+        httpx_client = httpx.AsyncClient(
+            verify=ssl.create_default_context(cadata=cadata.decode("ascii")),
         )
-
         zitadel_client = dl_zitadel.ZitadelAsyncClient(
-            base_client=httpx.AsyncClient(
-                verify=ssl.create_default_context(cadata=ca_data.decode("ascii")),
-            ),
-            base_url=self._settings.AUTH.BASE_URL,
-            project_id=self._settings.AUTH.PROJECT_ID,
-            client_id=self._settings.AUTH.CLIENT_ID,
-            client_secret=self._settings.AUTH.CLIENT_SECRET,
-            app_client_id=self._settings.AUTH.APP_CLIENT_ID,
-            app_client_secret=self._settings.AUTH.APP_CLIENT_SECRET,
+            base_client=httpx_client,
+            base_url=settings.BASE_URL,
+            project_id=settings.PROJECT_ID,
+            client_id=settings.CLIENT_ID,
+            client_secret=settings.CLIENT_SECRET,
+            app_client_id=settings.APP_CLIENT_ID,
+            app_client_secret=settings.APP_CLIENT_SECRET,
         )
         token_storage = dl_zitadel.ZitadelAsyncTokenStorage(
             client=zitadel_client,
@@ -195,5 +204,20 @@ class StandaloneDataApiAppFactory(DataApiAppFactory[DataApiAppSettingsOS], Stand
             client=zitadel_client,
             token_storage=token_storage,
         )
+        LOGGER.info("Zitadel auth middleware is set up")
+        return middleware.get_middleware()
 
+    def _get_auth_middleware_native(
+        self,
+        settings: NativeAuthSettingsOS,
+    ) -> Middleware:
+        import dl_auth_native
+
+        middleware = dl_auth_native.AioHTTPMiddleware.from_settings(
+            settings=dl_auth_native.MiddlewareSettings(
+                decoder_key=settings.JWT_KEY,
+                decoder_algorithms=[settings.JWT_ALGORITHM],
+            )
+        )
+        LOGGER.info("Native auth middleware is set up")
         return middleware.get_middleware()

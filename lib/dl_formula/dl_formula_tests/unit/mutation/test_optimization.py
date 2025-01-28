@@ -385,7 +385,35 @@ def test_optimize_if_mutation():
             OptimizeConstFuncMutation(),
         ],
     )
-    assert formula_obj == n.formula(n.field("then field 3"))
+    assert formula_obj == n.formula(
+        n.func.IF(
+            n.field("cond 1"),
+            n.field("then field 1"),
+            n.field("then field 3"),
+        )
+    )
+
+    # Check true as the first condition
+    formula_obj = n.formula(
+        n.func.IF(
+            n.lit(True),
+            n.field("then field 1"),
+            n.lit(False),
+            n.field("then field 2"),
+            n.lit(True),
+            n.field("then field 3"),
+            n.field("cond 4"),
+            n.field("then field 4"),
+            n.field("else field"),
+        )
+    )
+    formula_obj = apply_mutations(
+        formula_obj,
+        mutations=[
+            OptimizeConstFuncMutation(),
+        ],
+    )
+    assert formula_obj == n.formula(n.field("then field 1"))
 
 
 def test_optimize_if_mutation_with_const_comparison():
@@ -411,14 +439,12 @@ def test_optimize_if_mutation_with_const_comparison():
     # Check true comparison result in single field result
     formula_obj = n.formula(
         n.func.IF(
-            n.field("cond 1"),
+            n.binary("==", left=n.lit(2), right=n.lit(2)),
             n.field("then field 1"),
             n.binary("!=", left=n.lit(2), right=n.lit(2)),
             n.field("then field 2"),
-            n.binary("==", left=n.lit(2), right=n.lit(2)),
+            n.field("cond 3"),
             n.field("then field 3"),
-            n.field("cond 4"),
-            n.field("then field 4"),
             n.field("else field"),
         )
     )
@@ -429,7 +455,7 @@ def test_optimize_if_mutation_with_const_comparison():
             OptimizeConstFuncMutation(),
         ],
     )
-    assert formula_obj == n.formula(n.field("then field 3"))
+    assert formula_obj == n.formula(n.field("then field 1"))
 
 
 def test_optimize_case_mutation():
@@ -505,4 +531,34 @@ def test_optimize_case_mutation():
             OptimizeConstFuncMutation(),
         ],
     )
-    assert formula_obj == n.formula(n.field("then field 3"))
+    assert formula_obj == n.formula(
+        n.func.CASE(
+            n.lit("what"),
+            n.field("when 1"),
+            n.field("then field 1"),
+            n.field("then field 3"),
+        )
+    )
+
+    # Check match in the first condition
+    formula_obj = n.formula(
+        n.func.CASE(
+            n.lit("what"),
+            n.lit("what"),
+            n.field("then field 1"),
+            n.lit("qwerty"),
+            n.field("then field 2"),
+            n.lit("what"),
+            n.field("then field 3"),
+            n.field("when 4"),
+            n.field("then field 4"),
+            n.field("else field"),
+        )
+    )
+    formula_obj = apply_mutations(
+        formula_obj,
+        mutations=[
+            OptimizeConstFuncMutation(),
+        ],
+    )
+    assert formula_obj == n.formula(n.field("then field 1"))

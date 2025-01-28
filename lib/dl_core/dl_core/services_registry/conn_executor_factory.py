@@ -50,7 +50,6 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-# noinspection PyDataclass
 @attr.s(frozen=True)
 class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
     rqe_config: Optional[RQEConfig] = attr.ib()
@@ -119,7 +118,6 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
         self,
         conn: ConnectionBase,
     ) -> ConnExecutorRecipe:
-        # noinspection PyProtectedMember
         assert conn._context is self.req_ctx_info, "Divergence in RCI between CE factory and US connection"
 
         dto = conn.get_conn_dto()

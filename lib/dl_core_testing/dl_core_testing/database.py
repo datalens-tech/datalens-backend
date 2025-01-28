@@ -236,7 +236,7 @@ def make_table(
         schema=schema,
         table_name=name,
     )
-    db_table = DbTable(db=db, table=table, schema=schema)  # type: ignore  # TODO: fix
+    db_table = DbTable(db=db, table=table, schema=schema)
     # now = datetime.datetime.utcnow().replace(tzinfo=None, microsecond=0)
     if data is None:
         data = make_sample_data(columns=columns, rows=rows, start_value=start_value)
@@ -268,7 +268,7 @@ def make_pg_table_with_enums(  # TODO: move to pg connector package
         table_name=name,
     )
     db.create_table(table)
-    db_table = DbTable(db=db, table=table, schema=schema)  # type: ignore  # TODO: fix
+    db_table = DbTable(db=db, table=table, schema=schema)
     db_table.insert(
         [
             {"col1": "var1", "col2": "str1", "col3": 1},
@@ -319,7 +319,7 @@ class DbView(NamedTuple):
 def make_view(db: Db, query: str, schema: str = None, name: str = None) -> DbView:  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "schema" (default has type "None", argument has type "str")  [assignment]
     name = name or "test_view_{}".format(uuid.uuid4().hex[:10])
     db.create_view(query=query, schema=schema, name=name)
-    return DbView(db=db, schema=schema, name=name, query=query)  # type: ignore  # TODO: fix
+    return DbView(db=db, schema=schema, name=name, query=query)
 
 
 def make_view_from_table(db_table: DbTable, name: str = None, schema: str = None) -> DbView:  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "name" (default has type "None", argument has type "str")  [assignment]

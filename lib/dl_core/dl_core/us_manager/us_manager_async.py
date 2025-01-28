@@ -32,6 +32,7 @@ from dl_core.us_manager.broken_link import (
     BrokenUSLink,
     BrokenUSLinkErrorKind,
 )
+from dl_core.us_manager.schema_migration.factory_base import EntrySchemaMigrationFactoryBase
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_utils.aio import shield_wait_for_complete
 
@@ -60,6 +61,7 @@ class AsyncUSManager(USManagerBase):
         crypto_keys_config: Optional[CryptoKeysConfig] = None,
         us_api_prefix: Optional[str] = None,
         lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
+        schema_migration_factory: Optional[EntrySchemaMigrationFactoryBase] = None,
     ):
         self._us_client = UStorageClientAIO(
             host=us_base_url,
@@ -80,6 +82,7 @@ class AsyncUSManager(USManagerBase):
             us_auth_context=us_auth_context,
             services_registry=services_registry,
             lifecycle_manager_factory=lifecycle_manager_factory,
+            schema_migration_factory=schema_migration_factory,
         )
 
     @property
@@ -111,22 +114,37 @@ class AsyncUSManager(USManagerBase):
             LOGGER.warning("Error during closing AsyncUSManager", exc_info=True)
 
     @overload
-    async def get_by_id(self, entry_id: str, expected_type: type(None) = None) -> USEntry:  # type: ignore  # TODO: fix
+    async def get_by_id(
+        self,
+        entry_id: str,
+        expected_type: None = None,
+        params: Optional[dict[str, str]] = None,
+    ) -> USEntry:
         pass
 
-    @overload  # noqa
-    async def get_by_id(self, entry_id: str, expected_type: Type[_ENTRY_TV] = None) -> _ENTRY_TV:  # type: ignore  # TODO: fix
+    @overload
+    async def get_by_id(
+        self,
+        entry_id: str,
+        expected_type: Optional[Type[_ENTRY_TV]] = None,
+        params: Optional[dict[str, str]] = None,
+    ) -> _ENTRY_TV:
         pass
 
     @generic_profiler_async("us-fetch-entity")  # type: ignore  # TODO: fix
-    async def get_by_id(self, entry_id: str, expected_type: Type[_ENTRY_TV] = None) -> _ENTRY_TV:  # type: ignore  # TODO: fix
+    async def get_by_id(
+        self,
+        entry_id: str,
+        expected_type: Optional[Type[USEntry]] = None,
+        params: Optional[dict[str, str]] = None,
+    ) -> USEntry:
         with self._enrich_us_exception(
             entry_id=entry_id,
             entry_scope=expected_type.scope if expected_type is not None else None,
         ):
-            us_resp = await self._us_client.get_entry(entry_id)
+            us_resp = await self._us_client.get_entry(entry_id, params=params)
 
-        obj: _ENTRY_TV = self._entry_dict_to_obj(us_resp, expected_type)  # type: ignore  # TODO: fix
+        obj = self._entry_dict_to_obj(us_resp, expected_type)
         await self.get_lifecycle_manager(entry=obj).post_init_async_hook()
 
         return obj
@@ -153,7 +171,6 @@ class AsyncUSManager(USManagerBase):
             entry.uuid = resp["entryId"]
             entry.stored_in_db = True
         else:
-            # noinspection PyProtectedMember
             save_params["update_revision"] = update_revision
             assert entry.uuid is not None
             resp = await self._us_client.update_entry(entry.uuid, lock=entry._lock, **save_params)
@@ -167,11 +184,9 @@ class AsyncUSManager(USManagerBase):
         if entry.uuid is None:
             raise ValueError("Entry has no id")
 
-        # noinspection PyProtectedMember
         await self._us_client.delete_entry(entry.uuid, lock=entry._lock)
         entry.stored_in_db = False
 
-        # noinspection PyBroadException
         try:
             # TODO FIX: Use post_delete_async_hook!!!
             self.get_lifecycle_manager(entry=entry).post_delete_hook()
@@ -185,7 +200,7 @@ class AsyncUSManager(USManagerBase):
         entry.data = reloaded_entry.data
         entry._us_resp = us_resp
 
-    @asynccontextmanager  # type: ignore  # TODO: fix
+    @asynccontextmanager
     async def locked_entry_cm(
         self,
         entry_id: str,
@@ -203,8 +218,8 @@ class AsyncUSManager(USManagerBase):
         )
 
         try:
-            entry = await self.get_by_id(entry_id, expected_type)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "USEntry", variable has type "_ENTRY_TV | None")  [assignment]
-            entry._lock = lock_token  # type: ignore  # TODO: fix
+            entry = await self.get_by_id(entry_id, expected_type)
+            entry._lock = lock_token
             assert entry is not None
             yield entry
 
@@ -245,7 +260,8 @@ class AsyncUSManager(USManagerBase):
 
         if isinstance(conn, BrokenUSLink):
             if referrer is not None:
-                conn.add_referrer_id(referrer.uuid)  # type: ignore  # TODO: fix
+                assert referrer.uuid is not None
+                conn.add_referrer_id(referrer.uuid)
             return None
         elif isinstance(conn, ConnectionBase):
             return conn
@@ -274,7 +290,7 @@ class AsyncUSManager(USManagerBase):
 
             refs_to_load_queue.update(
                 self._get_entry_links(
-                    resolved_ref,  # type: ignore  # TODO: fix
+                    resolved_ref,
                 )
                 - processed_refs
             )
@@ -297,7 +313,7 @@ class AsyncUSManager(USManagerBase):
 
     async def get_collection(
         self,
-        entry_cls: Optional[Type[USEntry]],
+        entry_cls: Optional[Type[_ENTRY_TV]],
         entry_type: Optional[str] = None,
         entry_scope: Optional[str] = None,
         meta: Optional[dict[str, Union[str, int, None]]] = None,
@@ -306,7 +322,7 @@ class AsyncUSManager(USManagerBase):
         ids: Optional[Iterable[str]] = None,
         creation_time: Optional[dict[str, Union[str, int, None]]] = None,
         raise_on_broken_entry: bool = False,
-    ) -> AsyncGenerator[USEntry, None]:
+    ) -> AsyncGenerator[_ENTRY_TV, None]:
         if all_tenants and include_data:
             raise ValueError("all_tenants and include_data cannot both be True")
 
@@ -335,12 +351,9 @@ class AsyncUSManager(USManagerBase):
         )
 
         async for us_resp in us_entry_iterator:
-            if us_resp:
-                # noinspection PyBroadException
-                try:
-                    obj: USEntry = self._entry_dict_to_obj(us_resp, entry_cls)
-                    yield obj
-                except Exception:
-                    LOGGER.exception("Failed to load US object: %s", us_resp)
-                    if raise_on_broken_entry:
-                        raise
+            try:
+                yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)  # type: ignore  # TODO: fix
+            except Exception:
+                LOGGER.exception("Failed to load US object: %s", us_resp)
+                if raise_on_broken_entry:
+                    raise

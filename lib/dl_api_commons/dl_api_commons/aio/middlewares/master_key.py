@@ -3,9 +3,11 @@ from __future__ import annotations
 import logging
 
 from aiohttp import web
-from aiohttp.typedefs import Handler
+from aiohttp.typedefs import (
+    Handler,
+    Middleware,
+)
 
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.aiohttp.aiohttp_wrappers import (
     DLRequestBase,
     RequiredResourceCommon,
@@ -22,7 +24,7 @@ LOGGER = logging.getLogger(__name__)
 def master_key_middleware(
     master_key: str,
     header: DLHeaders = DLHeadersCommon.API_KEY,
-) -> AIOHTTPMiddleware:
+) -> Middleware:
     @web.middleware
     @DLRequestBase.use_dl_request
     async def actual_master_key_middleware(dl_request: DLRequestBase, handler: Handler) -> web.StreamResponse:

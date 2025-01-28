@@ -91,7 +91,6 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
         )
         return ensure_db_message(exc_cls, kw)
 
-    # noinspection PyMethodMayBeStatic
     async def _fetch_yt_sorting_columns(
         self,
         host: str,

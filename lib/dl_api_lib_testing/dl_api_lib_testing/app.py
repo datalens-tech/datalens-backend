@@ -44,6 +44,10 @@ from dl_rls.models import (
     RLSSubject,
 )
 from dl_rls.subject_resolver import BaseSubjectResolver
+from dl_testing.constants import (
+    TEST_USER_ID,
+    TEST_USER_NAME,
+)
 from dl_testing.utils import get_root_certificates
 
 
@@ -52,15 +56,15 @@ class TestingSubjectResolver(BaseSubjectResolver):
     def get_subjects_by_names(self, names: list[str]) -> list[RLSSubject]:
         """
         Mock resolver. Considers a user real if the name starts with a 'user' or
-        if it's equals to '_the_tests_asyncapp_user_name_'
+        if it equals to TEST_USER_NAME
         """
         subjects = []
 
         for name in names:
             subject: RLSSubject
-            if name == "_the_tests_asyncapp_user_name_":
+            if name == TEST_USER_NAME:
                 subject = RLSSubject(
-                    subject_id="_the_tests_asyncapp_user_id_",
+                    subject_id=TEST_USER_ID,
                     subject_type=RLSSubjectType.user,
                     subject_name=name,
                 )
@@ -77,7 +81,7 @@ class TestingSubjectResolver(BaseSubjectResolver):
         return subjects
 
     async def get_groups_by_subject(self, rci: RequestContextInfo) -> list[str]:
-        return ["_the_tests_asyncapp_group_"] if rci.user_id == "_the_tests_asyncapp_user_id_" else []
+        return ["_the_tests_asyncapp_group_"] if rci.user_id == TEST_USER_ID else []
 
 
 @attr.s
@@ -132,8 +136,8 @@ class TestingControlApiAppFactory(ControlApiAppFactory[ControlApiAppSettings], T
     ) -> ControlApiEnvSetupResult:
         us_auth_mode: USAuthMode
         TrustAuthService(
-            fake_user_id="_the_tests_syncapp_user_id_",
-            fake_user_name="_the_tests_syncapp_user_name_",
+            fake_user_id=TEST_USER_ID,
+            fake_user_name=TEST_USER_NAME,
             fake_tenant=None if testing_app_settings is None else testing_app_settings.fake_tenant,
         ).set_up(app)
 
@@ -171,8 +175,8 @@ class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRF
 
         auth_mw_list = [
             auth_trust_middleware(
-                fake_user_id="_the_tests_asyncapp_user_id_",
-                fake_user_name="_the_tests_asyncapp_user_name_",
+                fake_user_id=TEST_USER_ID,
+                fake_user_name=TEST_USER_NAME,
             )
         ]
 

@@ -11,13 +11,13 @@ from typing import (
 
 import aiohttp.pytest_plugin
 import aiohttp.test_utils
+from aiohttp.typedefs import Middleware
 import aiohttp.web
 import attr
 import pytest
 import redis.asyncio
 
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.base_models import (
     NoAuthData,
     RequestContextInfo,
@@ -69,6 +69,10 @@ from dl_task_processor.state import (
     BITaskStateImpl,
     TaskState,
 )
+from dl_testing.constants import (
+    TEST_USER_ID,
+    TEST_USER_NAME,
+)
 from dl_testing.containers import get_test_container_hostport
 from dl_testing.s3_utils import (
     create_s3_bucket,
@@ -77,7 +81,6 @@ from dl_testing.s3_utils import (
 from dl_testing.utils import (
     get_default_aiohttp_session,
     get_root_certificates,
-    wait_for_initdb,
 )
 
 from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
@@ -110,11 +113,6 @@ def loop(event_loop):
     """
     asyncio.set_event_loop(event_loop)
     return event_loop
-
-
-@pytest.fixture(scope="session")
-def initdb_ready():
-    return wait_for_initdb(initdb_port=51408)
 
 
 @pytest.fixture(scope="session")
@@ -212,11 +210,11 @@ def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_setting
 
 
 class TestingFileUploaderApiAppFactory(FileUploaderApiAppFactory[FileUploaderAPISettings]):
-    def get_auth_middlewares(self) -> list[AIOHTTPMiddleware]:
+    def get_auth_middlewares(self) -> list[Middleware]:
         return [
             auth_trust_middleware(
-                fake_user_id="_the_tests_file_uploader_api_user_id_",
-                fake_user_name="_the_tests_file_uploader_api_user_name_",
+                fake_user_id=TEST_USER_ID,
+                fake_user_name=TEST_USER_NAME,
             )
         ]
 
@@ -246,14 +244,14 @@ async def s3_client(s3_settings) -> AsyncS3Client:
 
 
 @pytest.fixture(scope="function")
-async def s3_tmp_bucket(initdb_ready, s3_client, app_settings) -> str:
+async def s3_tmp_bucket(s3_client, app_settings) -> str:
     bucket_name = app_settings.S3_TMP_BUCKET_NAME
     await create_s3_bucket(s3_client, bucket_name, max_attempts=1)
     return bucket_name
 
 
 @pytest.fixture(scope="function")
-async def s3_persistent_bucket(initdb_ready, s3_client, app_settings) -> str:
+async def s3_persistent_bucket(s3_client, app_settings) -> str:
     bucket_name = app_settings.S3_PERSISTENT_BUCKET_NAME
     await create_s3_bucket(s3_client, bucket_name, max_attempts=1)
     return bucket_name
@@ -271,7 +269,7 @@ def redis_cli(redis_app_settings) -> redis.asyncio.Redis:
 
 @pytest.fixture(scope="function")
 def rci() -> RequestContextInfo:
-    return RequestContextInfo(user_id="_the_tests_asyncapp_user_id_")
+    return RequestContextInfo(user_id=TEST_USER_ID)
 
 
 @pytest.fixture(scope="session")
@@ -395,8 +393,7 @@ def prepare_us(us_config):
 
 
 @pytest.fixture(scope="function")
-@pytest.mark.usefixtures("loop")
-def default_async_usm_per_test(bi_context, prepare_us, us_config, root_certificates):
+async def default_async_usm_per_test(bi_context, prepare_us, us_config, root_certificates):
     rci = RequestContextInfo.create_empty()
     return AsyncUSManager(
         us_base_url=us_config.base_url,

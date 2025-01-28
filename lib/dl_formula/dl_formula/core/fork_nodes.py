@@ -120,6 +120,43 @@ class QueryForkJoiningWithList(QueryForkJoiningBase):
         return all(isinstance(child, SelfEqualityJoinCondition) for child in self.children)
 
 
+class BfbFilterMutationSpec(nodes.FormulaItem):
+    __slots__ = ()
+
+    show_names = nodes.FormulaItem.show_names + ("original", "replacement")
+
+    original: nodes.Child[nodes.FormulaItem] = nodes.Child(0)
+    replacement: nodes.Child[nodes.FormulaItem] = nodes.Child(1)
+
+    @classmethod
+    def make(
+        cls,
+        original: nodes.FormulaItem,
+        replacement: nodes.FormulaItem,
+        *,
+        meta: Optional[nodes.NodeMeta] = None,
+    ) -> BfbFilterMutationSpec:
+        children = (original, replacement)
+        return cls(*children, meta=meta)
+
+
+class BfbFilterMutationCollectionSpec(nodes.FormulaItem):
+    __slots__ = ()
+
+    show_names = nodes.FormulaItem.show_names + ("mutations",)
+
+    mutations: nodes.MultiChild[BfbFilterMutationSpec] = nodes.MultiChild(slice(0, None))
+
+    @classmethod
+    def make(
+        cls,
+        *mutations: BfbFilterMutationSpec,
+        meta: Optional[nodes.NodeMeta] = None,
+    ) -> BfbFilterMutationCollectionSpec:
+        children = mutations
+        return cls(*children, meta=meta)
+
+
 class QueryFork(nodes.FormulaItem):
     """
     Represents a point where the query should be forked in two:
@@ -129,12 +166,13 @@ class QueryFork(nodes.FormulaItem):
 
     __slots__ = ()
 
-    show_names = nodes.FormulaItem.show_names + ("join_type", "joining", "result_expr", "lod")
+    show_names = nodes.FormulaItem.show_names + ("join_type", "joining", "result_expr", "lod", "bfb_filter_mutations")
 
     joining: nodes.Child[QueryForkJoiningBase] = nodes.Child(0)
     result_expr: nodes.Child[nodes.FormulaItem] = nodes.Child(1)
     before_filter_by: nodes.Child[nodes.BeforeFilterBy] = nodes.Child(2)
     lod: nodes.Child[nodes.LodSpecifier] = nodes.Child(3)
+    bfb_filter_mutations: nodes.Child[BfbFilterMutationCollectionSpec] = nodes.Child(4)
 
     @classmethod
     def make(
@@ -144,20 +182,23 @@ class QueryFork(nodes.FormulaItem):
         result_expr: nodes.FormulaItem,
         before_filter_by: Optional[nodes.BeforeFilterBy] = None,
         lod: Optional[nodes.LodSpecifier] = None,
+        bfb_filter_mutations: Optional[BfbFilterMutationCollectionSpec] = None,
         meta: Optional[nodes.NodeMeta] = None,
     ) -> QueryFork:
         if before_filter_by is None:
             before_filter_by = nodes.BeforeFilterBy.make()
         if lod is None:
             lod = nodes.InheritedLodSpecifier()
+        if bfb_filter_mutations is None:
+            bfb_filter_mutations = BfbFilterMutationCollectionSpec.make()
 
-        children = (joining, result_expr, before_filter_by, lod)
+        children = (joining, result_expr, before_filter_by, lod, bfb_filter_mutations)
         internal_value = (join_type,)
         return cls(*children, internal_value=internal_value, meta=meta)
 
     @classmethod
     def validate_children(cls, children: Sequence[nodes.FormulaItem]) -> None:
-        assert len(children) == 4
+        assert len(children) == 5
 
     @classmethod
     def validate_internal_value(cls, internal_value: tuple[Optional[Hashable], ...]) -> None:

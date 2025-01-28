@@ -165,7 +165,6 @@ class ActionHandlingView(flask.views.View):
         try:
             db_result = dba.execute(action.db_adapter_query)
         except Exception:
-            # noinspection PyBroadException
             self.try_close_dba(dba)
             raise
 
@@ -198,7 +197,6 @@ class ActionHandlingView(flask.views.View):
 
             return flask.Response(response=response_body)
         except Exception:
-            # noinspection PyBroadException
             self.try_close_dba(dba)
             raise
 

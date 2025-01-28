@@ -125,3 +125,12 @@ class ActionExecuteTypedQuery(NonStreamAction[str]):
 
     class ResultSchema(PrimitivesResponseSchema):
         value = fields.String()  # type: ignore  # TODO: fix
+
+
+@attr.s(frozen=True)
+class ActionExecuteTypedQueryRaw(NonStreamAction[str]):
+    query_type: DashSQLQueryType = attr.ib(kw_only=True, default=DashSQLQueryType.raw_query)
+    typed_query_str: str = attr.ib(kw_only=True)
+
+    class ResultSchema(PrimitivesResponseSchema):
+        value = fields.String()  # type: ignore  # TODO: fix

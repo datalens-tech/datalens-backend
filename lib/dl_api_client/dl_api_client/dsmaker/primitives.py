@@ -459,19 +459,24 @@ class TreeStrParameterValue(ParameterValue[List[str]]):
 
 
 @attr.s
-class ParameterValueConstraint:
+class BaseParameterValueConstraint:
+    type: ParameterValueConstraintType
+
+
+@attr.s
+class AllParameterValueConstraint(BaseParameterValueConstraint):
     type: ParameterValueConstraintType = ParameterValueConstraintType.all
 
 
 @attr.s
-class RangeParameterValueConstraint(ParameterValueConstraint):
+class RangeParameterValueConstraint(BaseParameterValueConstraint):
     type: ParameterValueConstraintType = ParameterValueConstraintType.range
     min: Optional[ParameterValue] = attr.ib(default=None)
     max: Optional[ParameterValue] = attr.ib(default=None)
 
 
 @attr.s
-class SetParameterValueConstraint(ParameterValueConstraint):
+class SetParameterValueConstraint(BaseParameterValueConstraint):
     type: ParameterValueConstraintType = ParameterValueConstraintType.set
     values: List[ParameterValue] = attr.ib(factory=list)
 
@@ -531,7 +536,7 @@ class _ResultField(ApiProxyObject):
     avatar_id: Optional[str] = attr.ib(default=None)
     managed_by: ManagedBy = attr.ib(default=ManagedBy.user, converter=ManagedBy.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
     default_value: Optional[ParameterValue] = attr.ib(default=None)
-    value_constraint: Optional[ParameterValueConstraint] = attr.ib(default=None)
+    value_constraint: Optional[BaseParameterValueConstraint] = attr.ib(default=None)
 
     def set_name(self, name: str) -> None:
         if self.title is None:

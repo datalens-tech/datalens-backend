@@ -62,16 +62,14 @@ from dl_task_processor.state import (
     TaskState,
 )
 from dl_task_processor.worker import ArqWorkerTestWrapper
+from dl_testing.constants import TEST_USER_ID
 from dl_testing.containers import get_test_container_hostport
 from dl_testing.s3_utils import (
     create_s3_bucket,
     create_s3_client,
     create_sync_s3_client,
 )
-from dl_testing.utils import (
-    get_root_certificates,
-    wait_for_initdb,
-)
+from dl_testing.utils import get_root_certificates
 
 from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
 
@@ -103,14 +101,9 @@ def loop(event_loop):
     return event_loop
 
 
-@pytest.fixture(scope="session")
-def initdb_ready():
-    return wait_for_initdb(initdb_port=get_test_container_hostport("init-db", fallback_port=51508).port)
-
-
 @pytest.fixture(scope="function")
 def rci() -> RequestContextInfo:
-    return RequestContextInfo(user_id="_the_tests_asyncapp_user_id_")
+    return RequestContextInfo(user_id=TEST_USER_ID)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -152,7 +145,6 @@ def redis_arq_settings(redis_app_settings):
 def s3_settings() -> S3Settings:
     return S3Settings(
         ENDPOINT_URL=f'http://{get_test_container_hostport("s3-storage").as_pair()}',
-        # default access and secrets for zenko/cloudserver
         ACCESS_KEY_ID="accessKey1",
         SECRET_ACCESS_KEY="verySecretKey1",
     )
@@ -321,14 +313,14 @@ def redis_model_manager(redis_cli, rci) -> RedisModelManager:
 
 
 @pytest.fixture(scope="function")
-async def s3_tmp_bucket(initdb_ready, s3_client, file_uploader_worker_settings) -> str:
+async def s3_tmp_bucket(s3_client, file_uploader_worker_settings) -> str:
     bucket_name = file_uploader_worker_settings.S3_TMP_BUCKET_NAME
     await create_s3_bucket(s3_client, bucket_name, max_attempts=1)
     return bucket_name
 
 
 @pytest.fixture(scope="function")
-async def s3_persistent_bucket(initdb_ready, s3_client, file_uploader_worker_settings) -> str:
+async def s3_persistent_bucket(s3_client, file_uploader_worker_settings) -> str:
     bucket_name = file_uploader_worker_settings.S3_PERSISTENT_BUCKET_NAME
     await create_s3_bucket(s3_client, bucket_name, max_attempts=1)
     return bucket_name
@@ -375,8 +367,7 @@ def default_sync_usm(bi_context, prepare_us, us_config):
 
 
 @pytest.fixture(scope="function")
-@pytest.mark.usefixtures("loop")
-def default_async_usm_per_test(bi_context, prepare_us, us_config, root_certificates):
+async def default_async_usm_per_test(bi_context, prepare_us, us_config, root_certificates):
     rci = RequestContextInfo.create_empty()
     return AsyncUSManager(
         us_base_url=us_config.base_url,

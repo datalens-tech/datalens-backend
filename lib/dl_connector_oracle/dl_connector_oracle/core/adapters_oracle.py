@@ -8,7 +8,7 @@ from typing import (
     Type,
 )
 
-import oracledb  # type: ignore  # TODO: fix
+import oracledb
 import sqlalchemy as sa
 import sqlalchemy.dialects.oracle.base as sa_ora  # not all data types are imported in init in older SA versions
 from sqlalchemy.sql.type_api import TypeEngine

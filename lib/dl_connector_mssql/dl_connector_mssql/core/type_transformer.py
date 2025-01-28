@@ -12,7 +12,7 @@ from dl_type_transformer.type_transformer import (
 class MSSQLServerTypeTransformer(TypeTransformer):
     native_to_user_map = {
         **{
-            make_native_type(t): UserDataType.integer  # type: ignore  # TODO: fix
+            make_native_type(t): UserDataType.integer
             for t in (ms_types.TINYINT, ms_types.SMALLINT, ms_types.INTEGER, ms_types.BIGINT)
         },
         **{
@@ -54,6 +54,6 @@ class MSSQLServerTypeTransformer(TypeTransformer):
         UserDataType.unsupported: make_native_type(sa.sql.sqltypes.NullType),
     }
     casters = {
-        **TypeTransformer.casters,  # type: ignore  # TODO: fix
+        **TypeTransformer.casters,
         UserDataType.uuid: LowercaseTypeCaster(),
     }

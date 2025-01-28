@@ -37,8 +37,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 @attr.s(frozen=True)
-class ParameterValueConstraint:
-    type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.all)
+class BaseParameterValueConstraint:
+    type: ParameterValueConstraintType
 
     def is_valid(self, value: Any) -> bool:
         if isinstance(value, BIValue):
@@ -53,7 +53,15 @@ class ParameterValueConstraint:
 
 
 @attr.s(frozen=True)
-class RangeParameterValueConstraint(ParameterValueConstraint):
+class AllParameterValueConstraint(BaseParameterValueConstraint):
+    type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.all)
+
+    def _is_valid(self, value: Any) -> bool:
+        return True
+
+
+@attr.s(frozen=True)
+class RangeParameterValueConstraint(BaseParameterValueConstraint):
     min: Optional[BIValue] = attr.ib(default=None)
     max: Optional[BIValue] = attr.ib(default=None)
     type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.range)
@@ -63,7 +71,7 @@ class RangeParameterValueConstraint(ParameterValueConstraint):
 
 
 @attr.s(frozen=True)
-class SetParameterValueConstraint(ParameterValueConstraint):
+class SetParameterValueConstraint(BaseParameterValueConstraint):
     values: List[BIValue] = attr.ib(factory=list)
     type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.set)
 
@@ -137,7 +145,7 @@ class ParameterCalculationSpec(CalculationSpec):
     default_value: Optional[BIValue] = attr.ib(kw_only=True, default=None)
     # Value constraint of the parameter
     # (defines the restrictions and origins of possible values).
-    value_constraint: Optional[ParameterValueConstraint] = attr.ib(kw_only=True, default=None)
+    value_constraint: Optional[BaseParameterValueConstraint] = attr.ib(kw_only=True, default=None)
 
 
 _CALCULATION_SPECS_BY_MODE = {
@@ -326,7 +334,7 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
         return self.calc_spec.default_value
 
     @property
-    def value_constraint(self) -> Optional[ParameterValueConstraint]:
+    def value_constraint(self) -> Optional[BaseParameterValueConstraint]:
         assert isinstance(self.calc_spec, ParameterCalculationSpec)
         return self.calc_spec.value_constraint
 
@@ -351,18 +359,14 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
 
     @staticmethod
     def rename_in_formula(formula: str, key_map: Dict[str, str]) -> str:
-        found_keys = FIELD_RE.findall(formula)
-
-        for key in found_keys:
-            try:
-                value = key_map[key]
-            except KeyError:
+        def replace(match: re.Match) -> str:
+            key = match.group(1)
+            if (value := key_map.get(key)) is None:
                 LOGGER.warning("Unknown field: %s", key)
-                continue
+                return f"[{key}]"
+            return f"[{value}]"
 
-            formula = formula.replace("[{}]".format(key), "[{}]".format(value))
-
-        return formula
+        return FIELD_RE.sub(replace, formula)
 
     def depends_on(self, field: BIField) -> bool:
         return self.calc_spec.depends_on(field)

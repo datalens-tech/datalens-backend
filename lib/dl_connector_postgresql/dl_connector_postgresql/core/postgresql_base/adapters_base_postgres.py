@@ -337,7 +337,7 @@ OID_KNOWLEDGE_RAW = """
 11746,user_mapping_options
 11750,user_mappings
 """
-OID_KNOWLEDGE = {  # type: ignore  # TODO: fix
+OID_KNOWLEDGE = {
     int(oid): typname for oid, typname in (item.split(",", 1) for item in OID_KNOWLEDGE_RAW.strip().splitlines())
 }
 

@@ -252,7 +252,7 @@ class BaseSAAdapter(
             # A catch-point intended for adding `query` and `db_message` only for subselect-schema errors.
             def exc_post_processor(db_exc: exc.DatabaseQueryError) -> None:
                 assert isinstance(db_exc, exc.DatabaseQueryError)
-                db_exc.query = "SELECT * FROM {}".format(table_def.text)  # type: ignore  # TODO: fix
+                db_exc.query = "SELECT * FROM {}".format(table_def.text)
                 db_exc.details.setdefault("query", db_exc.query)
                 db_exc.details.setdefault("db_message", db_exc.db_message)
 

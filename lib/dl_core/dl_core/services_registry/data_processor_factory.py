@@ -113,14 +113,14 @@ class DefaultDataProcessorFactory(BaseClosableDataProcessorFactory):
     @_source_data_processor_factory.default
     def _make_source_data_processor_factory(self) -> SourceDataProcessorFactory:
         return SourceDataProcessorFactory(
-            services_registry_ref=self._services_registry_ref,  # type: ignore  # mypy bug
+            services_registry_ref=self._services_registry_ref,
             is_bleeding_edge_user=self._is_bleeding_edge_user,
         )
 
     @_compeng_data_processor_factory.default
     def _make_compeng_data_processor_factory(self) -> CompengDataProcessorFactory:
         return CompengDataProcessorFactory(
-            services_registry_ref=self._services_registry_ref,  # type: ignore  # mypy bug
+            services_registry_ref=self._services_registry_ref,
         )
 
     async def get_data_processor(

@@ -1,6 +1,7 @@
 """
 Query formatting with usage of parameter values
 """
+
 import abc
 import datetime
 from typing import Any

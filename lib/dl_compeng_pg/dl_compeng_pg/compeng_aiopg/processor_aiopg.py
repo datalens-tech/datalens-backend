@@ -17,7 +17,7 @@ class AiopgOperationProcessor(PostgreSQLOperationProcessor[AiopgPoolWrapper, aio
             reporting_enabled=self._reporting_enabled,
             conn=self._pg_conn,  # type: ignore  # 2024-01-29 # TODO: Argument "conn" to "AiopgExecAdapter" has incompatible type "SAConnection | None"; expected "SAConnection"  [arg-type]
             cache_options_builder=self._cache_options_builder,
-        )  # type: ignore  # TODO: fix
+        )
 
     async def end(self) -> None:
         self._db_ex_adapter = None

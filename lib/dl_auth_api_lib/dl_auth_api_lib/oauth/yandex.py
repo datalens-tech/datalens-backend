@@ -16,7 +16,7 @@ _TOKEN_URL: str = "https://oauth.yandex.ru/token"
 
 
 class YandexOAuthClient(BaseOAuthClient):
-    auth_type: str = "yandex"
+    type: str = pydantic.Field(alias="auth_type", default="yandex")
 
     client_id: str
     client_secret: str

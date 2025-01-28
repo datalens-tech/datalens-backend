@@ -11,11 +11,11 @@ from dl_type_transformer.type_transformer import (
 class MySQLTypeTransformer(TypeTransformer):
     native_to_user_map = {
         **{
-            make_native_type(t): UserDataType.integer  # type: ignore  # TODO: fix
+            make_native_type(t): UserDataType.integer
             for t in (my_types.TINYINT, my_types.SMALLINT, my_types.MEDIUMINT, my_types.INTEGER, my_types.BIGINT)
         },
         **{
-            make_native_type(t): UserDataType.float  # type: ignore  # TODO: fix
+            make_native_type(t): UserDataType.float
             for t in (
                 my_types.FLOAT,
                 my_types.DOUBLE,
@@ -38,10 +38,7 @@ class MySQLTypeTransformer(TypeTransformer):
             )
         },
         make_native_type(my_types.DATE): UserDataType.date,
-        **{
-            make_native_type(t): UserDataType.genericdatetime  # type: ignore  # TODO: fix
-            for t in (my_types.DATETIME, my_types.TIMESTAMP)
-        },
+        **{make_native_type(t): UserDataType.genericdatetime for t in (my_types.DATETIME, my_types.TIMESTAMP)},
         make_native_type(my_types.ENUM): UserDataType.string,
         make_native_type(sa.sql.sqltypes.NullType): UserDataType.unsupported,
     }

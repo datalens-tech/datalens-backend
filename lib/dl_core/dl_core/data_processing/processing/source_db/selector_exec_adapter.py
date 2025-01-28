@@ -139,7 +139,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
                 max_count=row_count_hard_limit,
                 limit_exception=exc.ResultRowCountLimitExceeded,
             )
-        return result_iter  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "LazyAsyncChunked[list[date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None]]", expected "AsyncChunkedBase[Sequence[date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None]]")  [return-value]
+        return result_iter
 
     async def _execute_and_fetch(
         self,

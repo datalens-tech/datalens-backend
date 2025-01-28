@@ -33,7 +33,7 @@ class DefaultSchema(BaseSchema, Generic[_TARGET_OBJECT_TV]):
         return cls.TARGET_CLS
 
     def to_object(self, data: dict) -> _TARGET_OBJECT_TV:
-        return self.get_target_cls()(**data)  # type: ignore[call-arg]
+        return self.get_target_cls()(**data)
 
     @post_load(pass_many=False)
     def post_load(self, data: Dict[str, Any], **_: Any) -> _TARGET_OBJECT_TV:

@@ -99,7 +99,7 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
         yield next(iter(target_conn_dto_pool))
 
     @pytest.fixture(scope="function", params=[True, False], ids=["async", "sync"])
-    def remote_adapter(
+    async def remote_adapter(
         self,
         conn_target_dto: ConnTargetDTO,
         query_executor_options: RemoteQueryExecutorData,
@@ -124,7 +124,6 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
             result = await alist(resp.get_all_rows())
         return result
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize("forbid_private_addr", [True])
     async def test_forbid_private_hosts(
         self, remote_adapter: RemoteAsyncAdapter, forbid_private_addr: bool, basic_test_query: str

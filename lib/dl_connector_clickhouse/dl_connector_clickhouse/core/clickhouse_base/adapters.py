@@ -584,7 +584,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
                 async for evt_tuple in events_generator:
                     evt_type, evt_data = evt_tuple
                     if evt_type not in expected_types:
-                        raise exc.SourceProtocolError()  # type: ignore  # TODO: fix
+                        raise exc.SourceProtocolError()
 
                     if evt_type == et.DATACHUNK:
                         yield tuple(
@@ -607,7 +607,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
 
             if evt_type != et.FINISHED:
                 # TODO: For user databases this should probably be passed to the user.
-                raise exc.SourceProtocolError(  # type: ignore  # TODO: fix
+                raise exc.SourceProtocolError(
                     debug_info=dict(msg="Unexpected last event", event=evt_type, data=evt_data)
                 )
 

@@ -56,7 +56,7 @@ class DefaultQueryCompiler(RawQueryCompilerBase):
     _filter_compiler: FilterFormulaCompiler = attr.ib(kw_only=True)
     _wrapper_applicator: ExpressionWrapperApplicator = attr.ib(kw_only=True, factory=ExpressionWrapperApplicator)
 
-    _alias_cnt: it_count = attr.ib(init=False, factory=it_count)  # type: ignore  # TODO: fix
+    _alias_cnt: it_count = attr.ib(init=False, factory=it_count)
     _alias_node_mapping: NodeValueMap[str] = attr.ib(init=False, factory=NodeValueMap)
     _ds_accessor: DatasetComponentAccessor = attr.ib(init=False)
 

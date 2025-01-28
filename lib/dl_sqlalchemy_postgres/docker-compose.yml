@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   db-postgres:
     # image: "postgres:13-alpine3.20"

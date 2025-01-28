@@ -1,0 +1,66 @@
+FROM alpine:3.20@sha256:1e42bbe2508154c9126d48c2b8a75420c3544343bf86fd041fb7527e017a4b4a
+
+RUN apk update && apk add --no-cache openssl apache2
+
+WORKDIR /app
+
+ARG CERTIFIED_DOMAIN
+
+# Create directories for certificates and configuration
+RUN mkdir -p certs certs/private certs/newcerts && \
+    cp /etc/ssl/openssl.cnf ./openssl.cnf && \
+    touch certs/index.txt && \
+    echo "01" > certs/serial && \
+    sed -i "s|./demoCA|./certs|g" openssl.cnf && \
+    echo -e "[SAN]\nsubjectAltName=IP:127.0.0.1,DNS:${CERTIFIED_DOMAIN}" >> openssl.cnf
+
+# Generate certificates
+RUN \
+    # Generate Certificate Authority (CA)
+    openssl req -new -x509 -nodes -keyout certs/private/cakey.pem -out certs/ca.pem \
+        -days 3600 -config openssl.cnf \
+        -subj "/C=RU/ST=Moscow/L=Moscow/O=Test/OU=Test/CN=TestCA" && \
+    # Generate Invalid Certificate Authority (Invalid CA)
+    openssl req -new -x509 -nodes -keyout certs/private/invalid-cakey.pem -out certs/invalid-ca.pem \
+        -days 3600 -config openssl.cnf \
+        -subj "/C=RU/ST=Invalid/L=Invalid/O=Invalid/OU=Invalid/CN=InvalidCA" && \
+    # Generate server request and key
+    openssl req -new -nodes -keyout certs/server-key.pem -out certs/server-req.pem \
+        -days 3600 -config openssl.cnf \
+        -subj "/C=RU/ST=Moscow/L=Moscow/O=Test/OU=Test/CN=127.0.0.1" && \
+    # Sign server certificate with SAN extension
+    openssl x509 -req -in certs/server-req.pem -CA certs/ca.pem -CAkey certs/private/cakey.pem \
+        -CAcreateserial -out certs/server-cert.pem -days 3600 -extfile openssl.cnf -extensions SAN && \
+    # Generate client request and key
+    openssl req -new -nodes -keyout certs/client-key.pem -out certs/client-req.pem \
+        -days 3600 -config openssl.cnf \
+        -subj "/C=RU/ST=Moscow/L=Moscow/O=Test/OU=Test/CN=TestClient" && \
+    # Sign client certificate
+    openssl ca -cert certs/ca.pem -keyfile certs/private/cakey.pem -policy policy_anything \
+        -out certs/client-cert.pem -config openssl.cnf -batch \
+        -infiles certs/client-req.pem
+
+# Copy certificates to the Apache web root
+# ca.pem               Self-signed CA certificate
+# ca-key.pem           CA private key (not distributed)
+# invalid-ca.pem       Invalid CA certificate
+# server-cert.pem      Server certificate
+# server-key.pem       Server private key
+# client-cert.pem      Client certificate
+# client-key.pem       Client private key
+RUN cd certs && \
+    APACHE_WEB_ROOT=/var/www/localhost/htdocs && \
+    mkdir -p $APACHE_WEB_ROOT && \
+    cp ca.pem $APACHE_WEB_ROOT/ && \
+    cp invalid-ca.pem $APACHE_WEB_ROOT/ && \
+    cp server-cert.pem $APACHE_WEB_ROOT/ && \
+    cp server-key.pem $APACHE_WEB_ROOT/ && \
+    cp client-cert.pem $APACHE_WEB_ROOT && \
+    cp client-key.pem $APACHE_WEB_ROOT && \
+    chmod 644 /var/www/localhost/htdocs/*
+
+# Expose HTTP port
+EXPOSE 80
+
+# Start the Apache server
+CMD ["httpd", "-D", "FOREGROUND"]

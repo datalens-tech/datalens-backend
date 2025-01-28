@@ -98,11 +98,11 @@ class DatasetResource(BIResource):
 
         loader = cls.create_dataset_api_loader()
         update_info = loader.update_dataset_from_body(
-            dataset=dataset,  # type: ignore  # 2024-01-24 # TODO: Argument "dataset" to "update_dataset_from_body" of "DatasetApiLoader" has incompatible type "USEntry"; expected "Dataset"  [arg-type]
+            dataset=dataset,
             us_manager=us_manager,
             dataset_data=body.get("dataset"),
         )
-        return dataset, update_info  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "tuple[USEntry, DatasetUpdateInfo]", expected "tuple[Dataset, DatasetUpdateInfo]")  [return-value]
+        return dataset, update_info
 
     @classmethod
     def dump_dataset_data(

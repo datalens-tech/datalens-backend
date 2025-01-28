@@ -44,7 +44,7 @@ SAMPLE_NATIVE_TYPES = (
 @pytest.mark.parametrize(
     "native_type", SAMPLE_NATIVE_TYPES, ids=[obj.native_type_class_name for obj in SAMPLE_NATIVE_TYPES]
 )
-def test_native_type_schema(native_type):
+def test_native_type_schema(native_type: GenericNativeType) -> None:
     dumped = OneOfNativeTypeSchema().dump(native_type)
     assert dumped["native_type_class_name"] == native_type.native_type_class_name
     assert dumped["name"] == native_type.name

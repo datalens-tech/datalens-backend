@@ -91,7 +91,7 @@ class DotTranslator:
             style="filled",
             fillcolor="#bba7fc",
         )
-        for i, child in enumerate(node.children):  # type: ignore  # TODO: fix
+        for i, child in enumerate(node.children):
             child_name = self.translate_node(child, dot)
             dot.edge(node_name, child_name, label="[{}]".format(i))
 
@@ -184,7 +184,7 @@ class DotTranslator:
         }[type(node)]
         dot.node(node_name, label=keyword, shape="octagon", style="filled", fillcolor="#ff898b")
         for i, child in enumerate(node.children):
-            child_name = self.translate_node(child, dot)  # type: ignore  # TODO: fix
+            child_name = self.translate_node(child, dot)
             dot.edge(node_name, child_name, label="DIM {}".format(i))
 
         return node_name
@@ -193,7 +193,7 @@ class DotTranslator:
     def _translate_node_ordering(self, node: nodes.Ordering, dot: graphviz.Digraph) -> str:
         node_name = make_name()
         dot.node(node_name, label="ORDER BY", shape="octagon", style="filled", fillcolor="#ff898b")
-        for i, child in enumerate(node.children):  # type: ignore  # TODO: fix
+        for i, child in enumerate(node.children):
             child_name = self.translate_node(child, dot)
             dot.edge(node_name, child_name, label="EXPR {}".format(i))
 

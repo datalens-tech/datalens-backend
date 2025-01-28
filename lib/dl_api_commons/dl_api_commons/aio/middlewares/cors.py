@@ -4,9 +4,10 @@ from aiohttp import (
     hdrs,
     web,
 )
-from aiohttp.typedefs import Handler
-
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
+from aiohttp.typedefs import (
+    Handler,
+    Middleware,
+)
 
 
 ALL_METHODS = ("DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT")
@@ -19,7 +20,7 @@ def cors_middleware(
     allow_methods: tuple[str, ...] = ALL_METHODS,
     allow_credentials: bool = False,
     max_age: Optional[int] = None,
-) -> AIOHTTPMiddleware:
+) -> Middleware:
     @web.middleware
     async def middleware(request: web.Request, handler: Handler) -> web.StreamResponse:
         is_options_request = request.method == "OPTIONS"

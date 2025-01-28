@@ -41,7 +41,7 @@ class PostgreSQLExecAdapterAsync(Generic[_CONN_TV], ProcessorDbExecAdapterBase, 
     _conn: _CONN_TV = attr.ib(kw_only=True)
     _tt: PostgreSQLTypeTransformer = attr.ib(factory=PostgreSQLTypeTransformer, init=False)
 
-    _log: ClassVar[logging.Logger] = LOGGER.getChild("PostgreSQLExecAdapterAsync")  # type: ignore  # TODO: fix
+    _log: ClassVar[logging.Logger] = LOGGER.getChild("PostgreSQLExecAdapterAsync")
 
     @property
     def dialect(self) -> DefaultDialect:

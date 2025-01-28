@@ -23,7 +23,6 @@ from typing import (
     Tuple,
     Type,
     Union,
-    cast,
     overload,
 )
 import uuid
@@ -390,7 +389,7 @@ class FormulaCompiler:
         self._mock_among_dimensions = mock_among_dimensions
         self._suppress_double_aggregations = suppress_double_aggregations
         self._allow_nested_window_functions = allow_nested_window_functions
-        self._field_wrappers = cast(Dict[str, SelectWrapperSpec], field_wrappers or {})
+        self._field_wrappers = field_wrappers or {}
         self._validate_aggregations = validate_aggregations
 
         self._inspect_env = inspect_env if inspect_env is not None else InspectionEnvironment()
@@ -523,12 +522,6 @@ class FormulaCompiler:
     ) -> None:
         self._group_by_ids = set(group_by_ids)
         self._order_by_specs = list(order_by_specs)
-
-    def get_expression_hash(self, expr: str) -> str:
-        expr = expr.strip()
-        # TODO: replace with formula_obj.extract
-        expr = BIField.rename_in_formula(formula=expr, key_map=self._fields.titles_to_guids)
-        return expr
 
     def _try_parse_formula(
         self, field: BIField, collect_errors: bool = False

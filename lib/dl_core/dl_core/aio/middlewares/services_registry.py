@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from aiohttp import web
-from aiohttp.typedefs import Handler
+from aiohttp.typedefs import (
+    Handler,
+    Middleware,
+)
 
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
 from dl_core.services_registry.sr_factories import SRFactory
 from dl_core.us_manager.mutation_cache.usentry_mutation_cache_factory import DefaultUSEntryMutationCacheFactory
@@ -14,7 +16,7 @@ def services_registry_middleware(
     use_query_cache: bool = True,
     use_mutation_cache: bool = False,
     mutation_cache_default_ttl: float = 60,
-) -> AIOHTTPMiddleware:
+) -> Middleware:
     """
 
     :param services_registry_factory:

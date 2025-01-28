@@ -42,19 +42,20 @@ jobs:
     - name: Push release tag
       id: push_image
       run: |
-        version="${{ github.event.inputs.version }}"
         image_version="${version#"v"}"
-        
+
         image_url_rc="${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}-rc.1"
         echo "Pulling release candidate image: ${image_url_rc}"
         docker pull ${image_url_rc}
-        
+
         image_url_release="${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}"
         echo "Pushing release image: ${image_url_release}"
         docker tag "${image_url_rc}" "${image_url_release}"
         docker push "${image_url_release}"
 
         echo "image-version=${image_version}" >> $GITHUB_OUTPUT
+      env:
+        version: ${{ github.event.inputs.version }}
 
   run_e2e_tests:
     name: "Run E2E tests"
@@ -86,11 +87,13 @@ jobs:
       working-directory: .github/.scripts
       run: |
         gh release create \
-          --repo ${{ github.repository_owner }}/${{ github.event.repository.name }} \
-          ${{ github.event.inputs.version }} \
+          --repo $REPOSITORY_NAME \
+          $VERSION \
           --target ${{ env.branch }} \
           ${{ github.event.inputs.make_latest == 'true' && '--latest' || '' }} \
           ${{ github.event.inputs.draft == 'true' && '--draft' || '' }} \
           --generate-notes
       env:
+        VERSION: ${{ github.event.inputs.version }}
+        REPOSITORY_NAME: ${{ github.repository_owner }}/${{ github.event.repository.name }}
         GH_TOKEN: ${{ github.token }}

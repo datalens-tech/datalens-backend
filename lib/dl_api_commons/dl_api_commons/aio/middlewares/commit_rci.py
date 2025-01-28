@@ -6,10 +6,12 @@ from typing import (
 )
 
 from aiohttp import web
-from aiohttp.typedefs import Handler
+from aiohttp.typedefs import (
+    Handler,
+    Middleware,
+)
 from multidict import CIMultiDict
 
-from dl_api_commons.aio.typing import AIOHTTPMiddleware
 from dl_api_commons.aiohttp import aiohttp_wrappers
 from dl_api_commons.headers import (
     DEFAULT_RCI_PLAIN_HEADERS,
@@ -21,7 +23,7 @@ from dl_api_commons.headers import (
 def commit_rci_middleware(
     rci_extra_plain_headers: Optional[Sequence[str]] = None,
     rci_extra_secret_headers: Optional[Sequence[str]] = None,
-) -> AIOHTTPMiddleware:
+) -> Middleware:
     plain_headers_to_rci = append_extra_headers_and_normalize(DEFAULT_RCI_PLAIN_HEADERS, rci_extra_plain_headers or ())
     secret_headers_to_rci = append_extra_headers_and_normalize(
         DEFAULT_RCI_SECRET_HEADERS, rci_extra_secret_headers or ()

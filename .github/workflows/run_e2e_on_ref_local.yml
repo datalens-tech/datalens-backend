@@ -34,19 +34,21 @@ jobs:
 
     - name: Switch to PR head
       working-directory: datalens-backend
-      run: gh pr checkout ${{ github.event.inputs.pr }}
+      run: gh pr checkout $INPUT_PR
       env:
         GH_TOKEN: ${{ github.token }}
+        INPUT_PR: ${{ github.event.inputs.pr }}
     - name: Validate SHA
       working-directory: datalens-backend
       run: |
         export HEAD_SHA=$(git rev-parse HEAD)
-        export INPUT_SHA="${{ github.event.inputs.sha }}"
         echo "Calculated latest commit in PR: $HEAD_SHA"
         if [ x"$HEAD_SHA" != x"$INPUT_SHA" ]; then
           echo "The branch was updated since the workflow was triggered, exiting"
           exit 1
         fi
+      env:
+        INPUT_SHA: ${{ github.event.inputs.sha }}
 
     - name: Install Task
       uses: arduino/setup-task@v1

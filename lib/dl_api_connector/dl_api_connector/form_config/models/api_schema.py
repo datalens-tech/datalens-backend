@@ -34,7 +34,7 @@ class FormFieldApiAction(Enum):
 @attr.s(kw_only=True, frozen=True)
 class FormFieldApiSchema(SerializableConfig):
     name: TFieldName = attr.ib()
-    type: Optional[Literal["string", "boolean"]] = attr.ib(default=None, metadata=skip_if_null())
+    type: Optional[Literal["string", "boolean", "object"]] = attr.ib(default=None, metadata=skip_if_null())
     required: bool = attr.ib(default=False)
     length: Optional[int] = attr.ib(default=None, metadata=skip_if_null())
     nullable: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())

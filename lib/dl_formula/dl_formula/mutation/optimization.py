@@ -303,7 +303,7 @@ class OptimizeConstFuncMutation(FormulaMutation):
             raise NotImplementedError()
 
         @abc.abstractmethod
-        def optimize(self, node: nodes.FuncCall) -> nodes.FuncCall:
+        def optimize(self, node: nodes.FuncCall) -> nodes.FormulaItem:
             raise NotImplementedError()
 
     class IfFuncOptimizer(ConstFuncOptimizer):
@@ -317,7 +317,7 @@ class OptimizeConstFuncMutation(FormulaMutation):
 
             return False
 
-        def optimize(self, node: nodes.FuncCall) -> nodes.FuncCall:
+        def optimize(self, node: nodes.FuncCall) -> nodes.FormulaItem:
             new_args: list[nodes.FormulaItem] = []
             for cond_arg, then_arg in zip(node.args[:-1:2], node.args[1:-1:2], strict=True):
                 if isinstance(cond_arg, nodes.BaseLiteral):
@@ -325,23 +325,25 @@ class OptimizeConstFuncMutation(FormulaMutation):
                         # The condition is false, so skip this branch (don't add it to the optimized IF)
                         pass
                     if cond_arg.value is True:
-                        # This is the first true condition, so just return its "then"
-                        return then_arg  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "FormulaItem", expected "FuncCall")  [return-value]
+                        # This is the first true condition, so the following branches are obsolete;
+                        # add its "then" part as an "else" branch of the optimized IF and stop
+                        new_args.append(then_arg)
+                        break
 
                 else:
                     # Add the args without changes
                     new_args.append(cond_arg)
                     new_args.append(then_arg)
-
-            new_args.append(node.args[-1])  # the "else"
+            else:  # if no break occurred, we haven't optimized the "else" branch out, add it back
+                new_args.append(node.args[-1])
 
             if len(new_args) == len(node.args):
                 # Nothing seems to have changed
                 return node
 
-            if len(new_args) == 1:  # All conditions turned out to be false (only "else" in new args)
-                # the "else"
-                return node.args[-1]  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "FormulaItem", expected "FuncCall")  [return-value]
+            if len(new_args) == 1:
+                # precisely one condition left ("else" or a single "then"), return it as is
+                return new_args[-1]
 
             return nodes.FuncCall.make("if", args=new_args, meta=node.meta)
 
@@ -359,7 +361,7 @@ class OptimizeConstFuncMutation(FormulaMutation):
 
             return False
 
-        def optimize(self, node: nodes.FuncCall) -> nodes.FuncCall:
+        def optimize(self, node: nodes.FuncCall) -> nodes.FormulaItem:
             case_expr_node = node.args[0]
             if not isinstance(case_expr_node, nodes.BaseLiteral):
                 return node
@@ -371,27 +373,29 @@ class OptimizeConstFuncMutation(FormulaMutation):
                 if isinstance(when_arg, nodes.BaseLiteral):
                     when_expr_value = when_arg.value
                     if when_expr_value != case_expr_value:
-                        # The "when" is not the same aas "case", so skip this branch
+                        # The "when" is not the same as "case", so skip this branch
                         # (don't add it to the optimized CASE)
                         pass
                     else:  # They are equal
-                        # This is the first matching "when", so just return its "then"
-                        return then_arg  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "FormulaItem", expected "FuncCall")  [return-value]
+                        # This is the first matching "when", so the following branches are obsolete;
+                        # add its "then" part as an "else" branch of the optimized CASE and stop
+                        new_args.append(then_arg)
+                        break
 
                 else:
                     # Add the args without changes
                     new_args.append(when_arg)
                     new_args.append(then_arg)
-
-            new_args.append(node.args[-1])  # the "else"
+            else:  # if no break occurred, we haven't optimized the "else" branch out, add it back
+                new_args.append(node.args[-1])
 
             if len(new_args) == len(node.args):
                 # Nothing seems to have changed
                 return node
 
-            if len(new_args) == 2:  # All conditions turned out to be false
-                # the "else"
-                return node.args[-1]  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "FormulaItem", expected "FuncCall")  [return-value]
+            if len(new_args) == 2:
+                # precisely one condition left ("else" or a single "then"), return it as is
+                return new_args[-1]
 
             return nodes.FuncCall.make("case", args=new_args, meta=node.meta)
 

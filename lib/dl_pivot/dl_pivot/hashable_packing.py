@@ -53,7 +53,7 @@ class JsonHashableValuePacker(HashableValuePackerBase):
             value = json.loads(hashable_value.json)
 
         assert isinstance(value, get_args(PostprocessedValue))
-        return value  # type: ignore  # (see assert above)
+        return value
 
 
 class HashableWrapper:
@@ -121,4 +121,4 @@ class FastJsonHashableValuePacker(HashableValuePackerBase):
             value = hashable_value.value
 
         assert isinstance(value, get_args(PostprocessedValue))
-        return value  # type: ignore  # (see assert above)
+        return value

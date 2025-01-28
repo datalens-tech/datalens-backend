@@ -8,7 +8,8 @@ from marshmallow_oneofschema import OneOfSchema
 
 from dl_constants.enums import ParameterValueConstraintType
 from dl_core.fields import (
-    ParameterValueConstraint,
+    AllParameterValueConstraint,
+    BaseParameterValueConstraint,
     RangeParameterValueConstraint,
     SetParameterValueConstraint,
 )
@@ -27,7 +28,7 @@ class ParameterValueConstraintSchema(OneOfSchema):
         type = ma_fields.Enum(ParameterValueConstraintType)
 
     class AllParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
-        TARGET_CLS = ParameterValueConstraint
+        TARGET_CLS = AllParameterValueConstraint
 
     class RangeParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
         TARGET_CLS = RangeParameterValueConstraint
@@ -47,5 +48,5 @@ class ParameterValueConstraintSchema(OneOfSchema):
     }
 
     def get_obj_type(self, obj: Any) -> str:
-        assert isinstance(obj, ParameterValueConstraint)
+        assert isinstance(obj, BaseParameterValueConstraint)
         return obj.type.name

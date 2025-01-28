@@ -1,0 +1,128 @@
+from __future__ import annotations
+
+from copy import deepcopy
+from datetime import datetime
+import logging
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Awaitable,
+    Callable,
+)
+
+import attr
+from typing_extensions import Self
+
+from dl_app_tools.profiling_base import (
+    generic_profiler,
+    generic_profiler_async,
+)
+
+
+if TYPE_CHECKING:
+    from dl_core.services_registry import ServicesRegistry
+
+
+LOGGER = logging.getLogger(__name__)
+
+
+def isoformat_validator(instance: Any, attribute: attr.Attribute, value: str) -> None:
+    datetime.fromisoformat(value)
+
+
+@attr.s
+class Migration:
+    version: str = attr.ib(validator=isoformat_validator)
+    name: str = attr.ib()
+    function: Callable[[dict], dict] = attr.ib()
+    await_function: Callable[[dict], Awaitable[dict]] | None = attr.ib(default=None)
+    id: int = attr.ib(init=False)
+
+    def __attrs_post_init__(self) -> None:
+        self.id = int(datetime.fromisoformat(self.version).timestamp())
+
+    def __lt__(self, other: Self) -> bool:
+        return self.id < other.id
+
+    def migrate(self, entry: dict) -> dict:
+        entry = self.function(entry)
+        entry["data"]["schema_version"] = self.version
+        return entry
+
+    async def migrate_async(self, entry: dict) -> dict:
+        if self.await_function is not None:
+            entry = await self.await_function(entry)
+        else:
+            entry = self.function(entry)
+        entry["data"]["schema_version"] = self.version
+        return entry
+
+
+@attr.s
+class BaseEntrySchemaMigration:
+    services_registry: ServicesRegistry | None = attr.ib(default=None)
+    strict_migration: bool = attr.ib(default=False)
+
+    @property
+    def migrations(self) -> list[Migration]:
+        return []
+
+    @property
+    def sorted_migrations(self) -> list[Migration]:
+        return sorted(self.migrations)
+
+    @staticmethod
+    def _get_entry_schema_id(entry: dict) -> int:
+        entry_data = entry.get("data")
+        if not isinstance(entry_data, dict):
+            raise ValueError(f"Invalid entry: 'data' should be a dict, got {type(entry_data).__name__}")
+
+        schema_version = entry_data.get("schema_version", "")
+        entry_schema_id = 1
+        if schema_version != "1":
+            entry_schema_id = int(datetime.fromisoformat(schema_version).timestamp())
+        return entry_schema_id
+
+    @generic_profiler("migrate_entry")
+    def migrate(self, entry: dict) -> dict:
+        entry_copy = deepcopy(entry)
+        seen_versions = set()
+
+        try:
+            entry_schema_id = self._get_entry_schema_id(entry_copy)
+            for migration in self.sorted_migrations:
+                if migration.id <= entry_schema_id:
+                    continue
+                if migration.version in seen_versions:
+                    raise ValueError(f"Double migration detected for migration version: {migration.version}")
+                LOGGER.info(f"Apply migration ver={migration.version}, {migration.name}")
+                entry_copy = migration.migrate(entry_copy)
+                seen_versions.add(migration.version)
+            return entry_copy
+        except Exception as exc:
+            if self.strict_migration:
+                raise exc
+            LOGGER.warning("Entry migration failed", exc_info=True)
+            return deepcopy(entry)
+
+    @generic_profiler_async("migrate_entry")  # type: ignore  # TODO: fix
+    async def migrate_async(self, entry: dict) -> dict:
+        entry_copy = deepcopy(entry)
+        seen_versions = set()
+
+        try:
+            entry_schema_id = self._get_entry_schema_id(entry_copy)
+            for migration in self.sorted_migrations:
+                if migration.id <= entry_schema_id:
+                    continue
+                if migration.version in seen_versions:
+                    raise ValueError(f"Double migration detected for migration version: {migration.version}")
+                LOGGER.info(f"Apply migration ver={migration.version}, {migration.name}")
+                entry_copy = await migration.migrate_async(entry_copy)
+                seen_versions.add(migration.version)
+            return entry_copy
+        except Exception as exc:
+            if self.strict_migration:
+                raise exc
+            LOGGER.warning("Entry migration failed", exc_info=True)
+            return deepcopy(entry)

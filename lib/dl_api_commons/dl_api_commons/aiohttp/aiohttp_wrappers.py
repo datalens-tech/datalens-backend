@@ -19,12 +19,11 @@ from typing import (
 )
 
 from aiohttp import web
-from aiohttp.typedefs import Handler
-
-from dl_api_commons.aio.typing import (
-    AIOHTTPMethodMiddleware,
-    AIOHTTPMiddleware,
+from aiohttp.typedefs import (
+    Handler,
+    Middleware,
 )
+
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.exc import InvalidHeaderException
 from dl_api_commons.logging import RequestLoggingContextController
@@ -211,7 +210,7 @@ class DLRequestBase:
         elif len(header_value_list) > 1:
             raise InvalidHeaderException("Expecting single header but multiple received", header_name=header_name)
 
-        return header_value_list[0]  # type: ignore  # 2024-01-24 # TODO: Tuple index out of range  [misc]
+        return header_value_list[0]
 
     def get_single_json_header(self, header: DLHeaders) -> Union[bool, int, float, list, dict, None]:
         raw_header = self.request.headers.get(header.value)
@@ -239,7 +238,7 @@ class DLRequestBase:
     @classmethod
     def use_dl_request(
         cls: Type[_SELF_TYPE], coro: Callable[[_SELF_TYPE, Handler], Awaitable[web.StreamResponse]]
-    ) -> AIOHTTPMiddleware:
+    ) -> Middleware:
         if not inspect.iscoroutinefunction(coro):
             raise ValueError("This decorator may only be applied to a coroutine")
 
@@ -259,7 +258,7 @@ class DLRequestBase:
     @classmethod
     def use_dl_request_on_method(
         cls, coro: Callable[[Any, _SELF_TYPE, Handler], Awaitable[web.StreamResponse]]
-    ) -> AIOHTTPMethodMiddleware:
+    ) -> Middleware:
         if not inspect.iscoroutinefunction(coro):
             raise ValueError("This decorator may only be applied to a coroutine")
 
@@ -268,7 +267,7 @@ class DLRequestBase:
             dl_request = request[cls.KEY_DL_REQUEST]
             return await coro(self, dl_request, handler)
 
-        return wrapper
+        return wrapper  # type: ignore[return-value]  # TODO FIX: method-based middlewares are not covered by aiohttp typing
 
 
 _DL_REQUEST_TV = TypeVar("_DL_REQUEST_TV", bound=DLRequestBase)

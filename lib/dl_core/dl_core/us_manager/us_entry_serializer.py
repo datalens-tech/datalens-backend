@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import abc
 from collections import ChainMap
-import copy
 from functools import reduce
-import json
 import logging
 from typing import (
     ClassVar,
@@ -122,7 +120,6 @@ class USEntrySerializer(abc.ABC):
         data_strict: bool = True,
     ) -> USEntry:
         # Assumed that data_pack's dicts was decoupled with initial US response
-        data_pack = copy.deepcopy(data_pack)
         secret_source_addressable = AddressableData(data_pack.secrets)
         raw_addressable = AddressableData(data_pack.data)
 
@@ -131,8 +128,7 @@ class USEntrySerializer(abc.ABC):
         for secret_key in declared_secret_keys:
             if secret_source_addressable.contains(secret_key):
                 sec_val = secret_source_addressable.pop(secret_key)
-                sec_val_str = json.dumps(sec_val)
-                raw_addressable.set(secret_key, sec_val_str)
+                raw_addressable.set(secret_key, sec_val)
 
         if secret_source_addressable.data:
             LOGGER.warning("Undeclared secrets found")

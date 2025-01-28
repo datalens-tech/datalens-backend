@@ -127,6 +127,7 @@ class ConnectionOptions:
     allow_dashsql_usage: bool = attr.ib(kw_only=True)
     allow_dataset_usage: bool = attr.ib(kw_only=True)
     allow_typed_query_usage: bool = attr.ib(kw_only=True)
+    allow_typed_query_raw_usage: bool = attr.ib(kw_only=True)
     query_types: list[QueryTypeInfo] = attr.ib(kw_only=True)
 
 
@@ -245,6 +246,10 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     def is_typed_query_allowed(self) -> bool:
         return False
 
+    @property
+    def is_typed_query_raw_allowed(self) -> bool:
+        return False
+
     def as_dict(self, short=False):  # type: ignore  # TODO: fix
         resp = super().as_dict(short=short)
         if short:
@@ -271,7 +276,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         return resp
 
     @classmethod
-    def create_from_dict(  # type: ignore  # TODO: fix
+    def create_from_dict(
         cls: Type[_CB_TV],
         data_dict: Union[dict, BaseAttrsDataModel],
         ds_key: Union[EntryLocation, str, None] = None,
@@ -389,6 +394,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             allow_dashsql_usage=self.is_dashsql_allowed,
             allow_dataset_usage=self.is_dataset_allowed,
             allow_typed_query_usage=self.is_typed_query_allowed,
+            allow_typed_query_raw_usage=self.is_typed_query_raw_allowed,
             query_types=query_type_info_list,
         )
 
@@ -491,7 +497,7 @@ class SubselectMixin:
         ]
 
 
-class ConnectionSQL(SubselectMixin, ConnectionBase):  # type: ignore  # TODO: fix
+class ConnectionSQL(SubselectMixin, ConnectionBase):
     has_schema: ClassVar[bool] = False
     default_schema_name: ClassVar[Optional[str]] = None
 

@@ -17,9 +17,10 @@ from dl_api_commons.base_models import (
 
 
 if TYPE_CHECKING:
-    from aiohttp.typedefs import Handler
-
-    from dl_api_commons.aio.typing import AIOHTTPMiddleware
+    from aiohttp.typedefs import (
+        Handler,
+        Middleware,
+    )
 
 
 def auth_trust_middleware(
@@ -27,7 +28,7 @@ def auth_trust_middleware(
     fake_user_name: Optional[str] = None,
     fake_tenant: Optional[TenantDef] = None,
     fake_auth: Optional[AuthData] = None,
-) -> AIOHTTPMiddleware:
+) -> Middleware:
     @web.middleware
     @aiohttp_wrappers.DLRequestBase.use_dl_request
     async def actual_auth_trust_middleware(

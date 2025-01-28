@@ -159,7 +159,7 @@ class DashSQLSelector:
     def make_ce_query(self) -> ConnExecutorQuery:
         sa_text, debug_compiled_query = self._make_sa_query()
         return ConnExecutorQuery(
-            query=sa_text,  # type: ignore  # TODO: fixC
+            query=sa_text,
             # # TODO: try:
             # query=sql_query,
             debug_compiled_query=debug_compiled_query,

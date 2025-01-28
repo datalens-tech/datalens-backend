@@ -58,7 +58,7 @@ from dl_constants.enums import (
 from dl_core.base_models import DefaultConnectionRef
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.collection import DataSourceCollectionFactory
-from dl_core.fields import ParameterValueConstraint
+from dl_core.fields import BaseParameterValueConstraint
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_model_tools.typed_values import BIValue
@@ -90,7 +90,7 @@ class SimpleDatasetUpdateGen:
         cast: Optional[UserDataType] = None,
         aggregation: AggregationFunction = AggregationFunction.none,
         default_value: Optional[BIValue] = None,
-        value_constraint: Optional[ParameterValueConstraint] = None,
+        value_constraint: Optional[BaseParameterValueConstraint] = None,
     ) -> FieldAction:
         if default_value is not None:
             calc_mode = CalcMode.parameter

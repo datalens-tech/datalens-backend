@@ -96,8 +96,8 @@ class TaskProcessor:
     _state: TaskState = attr.ib()
     _request_id: Optional[str] = attr.ib(default=None)
 
-    async def schedule(self, task: BaseTaskMeta) -> TaskInstance:
-        instance_id = InstanceID.make()
+    async def schedule(self, task: BaseTaskMeta, instance_id: Optional[InstanceID] = None) -> TaskInstance:
+        instance_id = instance_id or InstanceID.make()
         task_instance = TaskInstance(
             name=task.name,
             instance_id=instance_id,

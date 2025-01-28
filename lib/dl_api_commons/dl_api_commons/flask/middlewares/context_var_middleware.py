@@ -1,6 +1,7 @@
 """
 Middleware to reset context on each request.
 """
+
 from __future__ import annotations
 
 import contextvars

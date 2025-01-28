@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   redis:
     image: "bitnami/redis:5.0.8@sha256:3127620da977815556439a9dc347fff89432a79b6bb6e93a16f20ac4a34ce337"
@@ -17,13 +15,9 @@ services:
       - 52611:9000
 
   s3-storage:
-    build:
-      context: ../testenv-common/images
-      dockerfile: Dockerfile.s3-storage
-    command: bash /data/entrypoint.sh
-    environment:
-      S3BACKEND: "mem"
-      REMOTE_MANAGEMENT_DISABLE: 1
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: s3-storage
     ports:
       - 52620:8000
 

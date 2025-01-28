@@ -7,6 +7,7 @@ import pytest
 from dl_api_client.dsmaker.primitives import (
     IntegerParameterValue,
     RangeParameterValueConstraint,
+    StringParameterValue,
 )
 from dl_api_client.dsmaker.shortcuts.dataset import (
     add_formulas_to_dataset,
@@ -130,3 +131,35 @@ class TestParameters(DefaultApiTestBase):
         rows = get_data_rows(result_resp)
         assert len(rows) == 1
         assert rows[0][0] == rows[0][1]
+
+    def test_if_with_parameter(self, control_api, data_api, dataset_id):
+        ds = add_parameters_to_dataset(
+            api_v1=control_api,
+            dataset_id=dataset_id,
+            parameters={
+                "Param": (StringParameterValue("param"), None),
+            },
+        )
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=ds,
+            formulas={
+                "if with parameter": "IF([Param] = 'activate' AND [category] = 'Office Supplies', 'Office Supplies',"
+                "   [Param] = 'activate', 'Unknown ' + [category],"
+                "   'Wrong parameter value')",
+            },
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="if with parameter"),
+            ],
+            parameters=[
+                ds.find_field(title="Param").parameter_value("activate"),
+            ],
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+        rows = get_data_rows(result_resp)
+        assert len(rows) == 3
+        assert {row[0] for row in rows} == {"Office Supplies", "Unknown Furniture", "Unknown Technology"}

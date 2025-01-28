@@ -425,7 +425,7 @@ class DlRepManagerTool(CliToolBase):
         formatted_imports = [
             (
                 f"{str(import_spec.source_path)[base_path_len:]}:"
-                f"{import_spec.import_ast.lineno}: "
+                f"{import_spec.import_ast.lineno}: "  # type: ignore[attr-defined]  # 2024-12-10 # TODO: "AST" has no attribute "lineno"  [attr-defined]
                 f"{import_spec.import_module_name}"
             )
             for import_spec in sorted(import_specs, key=lambda item: item.source_path)

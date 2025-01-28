@@ -1,22 +1,19 @@
 from __future__ import annotations
 
 from typing import (
-    TYPE_CHECKING,
     Optional,
     Type,
+    cast,
 )
 import uuid
 
 from dl_constants.enums import ConnectionType
 from dl_core.base_models import ConnectionDataModelBase
 from dl_core.us_connection import get_connection_class
+from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.database import Db
-
-
-if TYPE_CHECKING:
-    from dl_core.us_connection_base import ConnectionBase
 
 
 def make_conn_key(*args: str) -> str:
@@ -80,7 +77,12 @@ def make_saved_connection(
 ) -> ConnectionBase:
     conn = make_connection(us_manager=sync_usm, conn_type=conn_type, conn_name=conn_name, data_dict=data_dict)
     sync_usm.save(conn)
-    return conn
+    conn_id = conn.uuid
+    if conn_id is None:
+        raise ValueError("Connection ID is None")
+
+    conn_us = sync_usm.get_by_id(conn_id)
+    return cast(ConnectionBase, conn_us)
 
 
 def make_saved_connection_from_db(

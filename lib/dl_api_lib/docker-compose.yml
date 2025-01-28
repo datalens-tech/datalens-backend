@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   redis-caches:
     # image: "bitnami/redis:5.0.8"

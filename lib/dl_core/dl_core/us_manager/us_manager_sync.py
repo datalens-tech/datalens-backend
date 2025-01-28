@@ -17,6 +17,8 @@ from typing import (
     overload,
 )
 
+from typing_extensions import Self
+
 from dl_api_commons.base_models import RequestContextInfo
 from dl_app_tools.profiling_base import generic_profiler
 from dl_configs.crypto_keys import CryptoKeysConfig
@@ -36,6 +38,7 @@ from dl_core.us_manager.broken_link import (
     BrokenUSLink,
     BrokenUSLinkErrorKind,
 )
+from dl_core.us_manager.schema_migration.factory_base import EntrySchemaMigrationFactoryBase
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_utils.aio import await_sync
 
@@ -64,6 +67,7 @@ class SyncUSManager(USManagerBase):
         # caches_redis: Optional[aioredis.Redis] = None,
         request_timeout_sec: int = 30,  # WARNING: unused.
         lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
+        schema_migration_factory: Optional[EntrySchemaMigrationFactoryBase] = None,
     ):
         super().__init__(
             bi_context=bi_context,
@@ -73,6 +77,7 @@ class SyncUSManager(USManagerBase):
             us_auth_context=us_auth_context,
             services_registry=services_registry,
             lifecycle_manager_factory=lifecycle_manager_factory,
+            schema_migration_factory=schema_migration_factory,
         )
         self._us_client = self._create_us_client()
 
@@ -86,7 +91,7 @@ class SyncUSManager(USManagerBase):
             context_workbook_id=self._bi_context.workbook_id,
         )
 
-    def clone(self, **kwargs):  # type: ignore  # TODO: fix
+    def clone(self, **kwargs: Any) -> Self:
         """This should've been an `attr.evolve` wrapper"""
         base_kwargs = dict(
             us_auth_context=self._us_auth_context,
@@ -143,7 +148,7 @@ class SyncUSManager(USManagerBase):
             assert entry.uuid is not None
             resp = self._us_client.update_entry(entry.uuid, lock=entry.lock, **save_params)
 
-        entry._us_resp = resp  # type: ignore  # TODO: fix
+        entry._us_resp = resp
 
         post_save_result = lifecycle_manager.post_save_hook()
         if post_save_result.additional_save_needed:
@@ -155,9 +160,9 @@ class SyncUSManager(USManagerBase):
         lifecycle_manager = self.get_lifecycle_manager(entry=entry)
         lifecycle_manager.pre_delete_hook()
 
+        assert entry.uuid is not None
         self._us_client.delete_entry(entry.uuid, lock=entry.lock)
         entry.stored_in_db = False
-        # noinspection PyBroadException
         try:
             LOGGER.info("Executing post-delete hook %s", entry.uuid)
             lifecycle_manager.post_delete_hook()
@@ -165,33 +170,50 @@ class SyncUSManager(USManagerBase):
             LOGGER.exception("Error during post-delete hook execution for entry %s", entry.uuid)
 
     @overload
-    def get_by_id(self, entry_id: str, expected_type: type(None) = None) -> USEntry:  # type: ignore  # TODO: fix
+    def get_by_id(
+        self,
+        entry_id: str,
+        expected_type: None = None,
+        params: Optional[dict[str, str]] = None,
+    ) -> USEntry:
         pass
 
-    @overload  # noqa
-    def get_by_id(self, entry_id: str, expected_type: Type[_ENTRY_TV] = None) -> _ENTRY_TV:  # type: ignore  # TODO: fix
+    @overload
+    def get_by_id(
+        self,
+        entry_id: str,
+        expected_type: Optional[Type[_ENTRY_TV]] = None,
+        params: Optional[dict[str, str]] = None,
+    ) -> _ENTRY_TV:
         pass
 
     @generic_profiler("us-fetch-entity")
-    def get_by_id(self, entry_id: str, expected_type: Optional[Type[USEntry]] = None) -> USEntry:
+    def get_by_id(
+        self,
+        entry_id: str,
+        expected_type: Optional[Type[USEntry]] = None,
+        params: Optional[dict[str, str]] = None,
+    ) -> USEntry:
         with self._enrich_us_exception(
             entry_id=entry_id,
             entry_scope=expected_type.scope if expected_type is not None else None,
         ):
-            us_resp = self._us_client.get_entry(entry_id)
+            us_resp = self._us_client.get_entry(entry_id, params=params)
+
         obj = self._entry_dict_to_obj(us_resp, expected_type)
         await_sync(self.get_lifecycle_manager(entry=obj).post_init_async_hook())
+
         return obj
 
     @overload
-    def get_by_key(self, entry_key: str, expected_type: type(None) = None) -> USEntry:  # type: ignore  # TODO: fix
+    def get_by_key(self, entry_key: str, expected_type: None = None) -> USEntry:
         pass
 
-    @overload  # noqa
-    def get_by_key(self, entry_key: str, expected_type: Type[_ENTRY_TV] = None) -> _ENTRY_TV:  # type: ignore  # TODO: fix
+    @overload
+    def get_by_key(self, entry_key: str, expected_type: Optional[Type[_ENTRY_TV]] = None) -> _ENTRY_TV:
         pass
 
-    def get_by_key(self, entry_key: str, expected_type=None):  # type: ignore  # TODO: fix  # noqa
+    def get_by_key(self, entry_key: str, expected_type: Optional[Type[USEntry]] = None) -> USEntry:
         raise NotImplementedError()
 
     def get_collection(
@@ -206,16 +228,18 @@ class SyncUSManager(USManagerBase):
         creation_time: Optional[Dict[str, Union[str, int, None]]] = None,
         raise_on_broken_entry: bool = False,
     ) -> Generator[_ENTRY_TV, None, None]:
+        entry_cls_scope = entry_cls.scope if entry_cls is not None else None
+        entry_cls_type = entry_cls.type_ if entry_cls is not None else None
         if all_tenants and include_data:
             # Not supported; see _req_data_iter_entries
             raise ValueError("all_tenants and include_data cannot both be True")
-        if entry_scope and entry_cls.scope:  # type: ignore  # TODO: fix
+        if entry_scope and entry_cls_scope:
             raise ValueError("US scope can not be provided in entry class and in parameters simultaneously")
-        if not entry_scope and not entry_cls.scope:  # type: ignore  # TODO: fix
+        if not entry_scope and not entry_cls_scope:
             raise ValueError("US scope not provided neither in entry class nor in parameters")
 
-        effective_scope = entry_scope or entry_cls.scope  # type: ignore  # TODO: fix
-        effective_type = entry_type or entry_cls.type_  # type: ignore  # TODO: fix
+        effective_scope = entry_scope or entry_cls_scope
+        effective_type = entry_type or entry_cls_type
         assert isinstance(effective_scope, str)
 
         us_entry_iterator = self._us_client.entries_iterator(
@@ -230,16 +254,12 @@ class SyncUSManager(USManagerBase):
         )
 
         for us_resp in us_entry_iterator:
-            # noinspection PyBroadException
             try:
                 yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)  # type: ignore  # TODO: fix
             except Exception:
                 LOGGER.exception("Failed to load US object: %s", us_resp)
                 if raise_on_broken_entry:
                     raise
-
-    def get_raw_entry(self, entry_id: str, include_permissions: bool = True, include_links: bool = True) -> dict:
-        return self._us_client.get_entry(entry_id, include_permissions=include_permissions, include_links=include_links)
 
     def get_raw_collection(
         self,
@@ -256,6 +276,7 @@ class SyncUSManager(USManagerBase):
         )
 
     def move(self, entry: USEntry, destination: str) -> None:
+        assert entry.uuid is not None
         self._us_client.move_entry(entry.uuid, destination)
         self.reload_data(entry)  # maybe we have to update only entry_key
 
@@ -269,12 +290,14 @@ class SyncUSManager(USManagerBase):
     # Locks
     #
     def acquire_lock(self, entry: USEntry, duration: Optional[int] = None, wait_timeout: Optional[int] = None) -> str:
+        assert entry.uuid is not None
         lock_token = self._us_client.acquire_lock(entry.uuid, duration, wait_timeout)
         entry.lock = lock_token
         return lock_token
 
     def release_lock(self, entry: USEntry) -> None:
         if entry.lock:
+            assert entry.uuid is not None
             self._us_client.release_lock(entry.uuid, entry.lock)
             entry.lock = None
 
@@ -350,7 +373,8 @@ class SyncUSManager(USManagerBase):
 
         if isinstance(conn, BrokenUSLink):
             if referrer is not None:
-                conn.add_referrer_id(referrer.uuid)  # type: ignore  # TODO: fix
+                assert referrer.uuid is not None
+                conn.add_referrer_id(referrer.uuid)
             return None
         elif isinstance(conn, ConnectionBase):
             return conn
@@ -379,7 +403,7 @@ class SyncUSManager(USManagerBase):
 
             refs_to_load_queue.update(
                 self._get_entry_links(
-                    resolved_ref,  # type: ignore  # TODO: fix
+                    resolved_ref,
                 )
                 - processed_refs
             )
