@@ -19,4 +19,5 @@ __all__ = [
     "TypedDictAnnotation",
     "WithFallbackGetAttr",
     "WithFallbackEnvSource",
+    "decode_multilines_validator",
 ]
