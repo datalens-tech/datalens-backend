@@ -54,7 +54,7 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
         cluster_name: Optional[str] = attr.ib(default=None)
         max_execution_time: Optional[int] = attr.ib(default=None)
         ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
-        readonly: Optional[int] = attr.ib(kw_only=True)
+        readonly: Optional[int] = attr.ib(kw_only=True, default=None)
 
     def get_conn_dto(self) -> ClickHouseConnDTO:
         return ClickHouseConnDTO(
