@@ -11,8 +11,8 @@ import attr
 from dl_core.connection_executors import SyncConnExecutorBase
 from dl_core.connection_models.common_models import DBIdent
 from dl_core.us_connection_base import (
-    ClassicConnectionSQL,
     ConnectionBase,
+    ConnectionSQL,
 )
 from dl_core.utils import secrepr
 
@@ -36,7 +36,7 @@ TRINO_SYSTEM_CATALOGS = (
 TRINO_SYSTEM_SCHEMAS = ("information_schema",)
 
 
-class ConnectionTrino(ClassicConnectionSQL):
+class ConnectionTrino(ConnectionSQL):
     conn_type = CONNECTION_TYPE_TRINO
     has_schema: ClassVar[bool] = True
     default_schema_name = None
@@ -47,7 +47,7 @@ class ConnectionTrino(ClassicConnectionSQL):
     is_always_user_source: ClassVar[bool] = True
 
     @attr.s(kw_only=True)
-    class DataModel(ClassicConnectionSQL.DataModel):
+    class DataModel(ConnectionSQL.DataModel):
         auth_type: TrinoAuthType = attr.ib(default=TrinoAuthType.NONE)
         ssl_ca: Optional[str] = attr.ib(repr=secrepr, default=None)
 
@@ -58,7 +58,7 @@ class ConnectionTrino(ClassicConnectionSQL):
             port=self.data.port,
             username=self.data.username,
             auth_type=self.data.auth_type,
-            password=self.password,
+            password=self.data.password,
             ssl_ca=self.data.ssl_ca,
         )
 
