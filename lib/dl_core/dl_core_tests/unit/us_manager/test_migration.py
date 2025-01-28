@@ -1,4 +1,5 @@
 from copy import deepcopy
+from datetime import datetime
 
 import attr
 import pytest
@@ -16,14 +17,14 @@ class Level1EntrySchemaMigration(BaseEntrySchemaMigration):
     def migrations(self) -> list[Migration]:
         migrations = [
             Migration(
-                "2022-12-04T13:00:00",
+                datetime(2022, 12, 4, 13, 0, 0),
                 "Second level 1 migration",
                 up_function=Level1EntrySchemaMigration._migrate_v2_to_v3,
                 down_function=Level1EntrySchemaMigration._migrate_v3_to_v2,
                 downgrade_only=False,
             ),
             Migration(
-                "2022-12-01T12:00:00",
+                datetime(2022, 12, 1, 12, 0, 0),
                 "First level 1 migration",
                 up_function=Level1EntrySchemaMigration._migrate_v1_to_v2,
                 down_function=Level1EntrySchemaMigration._migrate_v2_to_v1,
@@ -60,14 +61,14 @@ class Level2EntrySchemaMigration(Level1EntrySchemaMigration):
     def migrations(self) -> list[Migration]:
         migrations = [
             Migration(
-                "2022-12-03T13:00:00",
+                datetime(2022, 12, 3, 13, 0, 0),
                 "Second level 2 migration",
                 up_function=Level2EntrySchemaMigration._migrate_v2_to_v3,
                 down_function=Level2EntrySchemaMigration._migrate_v3_to_v2,
                 downgrade_only=False,
             ),
             Migration(
-                "2022-12-02T12:00:00",
+                datetime(2022, 12, 2, 12, 0, 0),
                 "First level 2 migration",
                 up_function=Level2EntrySchemaMigration._migrate_v1_to_v2,
                 down_function=Level2EntrySchemaMigration._migrate_v2_to_v1,
@@ -104,7 +105,7 @@ class Level2EntrySchemaMigrationDowngradeOnly(Level1EntrySchemaMigration):
     def migrations(self) -> list[Migration]:
         migrations = [
             Migration(
-                "2022-12-05T13:00:00",
+                datetime(2022, 12, 5, 13, 0, 0),
                 "Second level 2 migration",
                 up_function=Level2EntrySchemaMigration._migrate_v2_to_v3,
                 down_function=Level2EntrySchemaMigration._migrate_v3_to_v2,
@@ -130,7 +131,7 @@ class Level3EntrySchemaMigration(Level2EntrySchemaMigration):
     def migrations(self) -> list[Migration]:
         migrations = [
             Migration(
-                "2022-12-03T13:00:00",
+                datetime(2022, 12, 3, 13, 0, 0),
                 "Third level 2 migration",
                 up_function=Level3EntrySchemaMigration._migrate_v3_to_v4,
                 down_function=Level3EntrySchemaMigration._migrate_v4_to_v3,
@@ -245,13 +246,11 @@ def test_migration_failure(l3_nonstrict_migrator):
     "migration_version",
     (
         "some string",
-        "2022-13-03T23:00:00",
-        "2022-12-40T23:00:00",
-        "2022-12-03T33:00:00",
+        "2022-12-03T23:00:00",
     ),
 )
 def test_wrong_migration_version(migration_version):
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         Migration(
             migration_version,
             "Broken version migration",
