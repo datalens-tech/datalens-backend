@@ -16,7 +16,6 @@ from trino.auth import BasicAuthentication
 from trino.dbapi import connect as trino_connect
 
 from dl_core.connection_executors.adapters.adapters_base_sa import BaseSAAdapter
-from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_models.common_models import (
     DBIdent,
@@ -66,7 +65,7 @@ def construct_creator_func(target_dto: TrinoConnTargetDTO) -> Callable[[], sa.en
 
 
 @attr.s(kw_only=True)
-class TrinoDefaultAdapter(BaseClassicAdapter, BaseSAAdapter[TrinoConnTargetDTO]):
+class TrinoDefaultAdapter(BaseSAAdapter[TrinoConnTargetDTO]):
     conn_type = CONNECTION_TYPE_TRINO
     _error_transformer = trino_error_transformer
 
