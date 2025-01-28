@@ -8,10 +8,8 @@ from typing import (
 
 import attr
 
-from dl_core.connection_models.common_models import (
-    DBIdent,
-    SchemaIdent,
-)
+from dl_core.connection_executors import SyncConnExecutorBase
+from dl_core.connection_models.common_models import DBIdent
 from dl_core.us_connection_base import (
     ClassicConnectionSQL,
     ConnectionBase,
@@ -19,7 +17,6 @@ from dl_core.us_connection_base import (
 from dl_core.utils import secrepr
 
 from dl_connector_trino.core.adapters import TrinoDefaultAdapter
-from dl_connector_trino.core.connection_executors import TrinoConnExecutor
 from dl_connector_trino.core.constants import (
     CONNECTION_TYPE_TRINO,
     SOURCE_TYPE_TRINO_SUBSELECT,
@@ -67,7 +64,7 @@ class ConnectionTrino(ClassicConnectionSQL):
 
     def get_catalogs(
         self,
-        conn_executor_factory: Callable[[ConnectionBase], TrinoConnExecutor],
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[DBIdent]:
         conn_executor = conn_executor_factory(self)
         adapter: TrinoDefaultAdapter = conn_executor._extract_sync_sa_adapter()
@@ -75,7 +72,7 @@ class ConnectionTrino(ClassicConnectionSQL):
 
     def get_parameter_combinations(
         self,
-        conn_executor_factory: Callable[[ConnectionBase], TrinoConnExecutor],
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[dict]:
         parameter_combinations = []
         catalogs = self.get_catalogs(conn_executor_factory=conn_executor_factory)
@@ -83,24 +80,22 @@ class ConnectionTrino(ClassicConnectionSQL):
             if catalog.db_name in TRINO_SYSTEM_CATALOGS:
                 continue
 
-            schemas: list[SchemaIdent] = self.get_schema_names(
-                conn_executor_factory=conn_executor_factory, db_name=catalog.db_name
-            )
+            schemas = self.get_schema_names(conn_executor_factory=conn_executor_factory, db_name=catalog.db_name)
 
             if not schemas:
                 for table in self.get_tables(conn_executor_factory=conn_executor_factory, db_name=catalog.db_name):
                     parameter_combinations.append(dict(db_name=catalog.db_name, table_name=table.table_name))
                 break
 
-            for schema in schemas:
-                if schema.schema_name in TRINO_SYSTEM_SCHEMAS:
+            for schema_name in schemas:
+                if schema_name in TRINO_SYSTEM_SCHEMAS:
                     continue
 
                 for table in self.get_tables(
-                    conn_executor_factory=conn_executor_factory, db_name=catalog.db_name, schema_name=schema.schema_name
+                    conn_executor_factory=conn_executor_factory, db_name=catalog.db_name, schema_name=schema_name
                 ):
                     parameter_combinations.append(
-                        dict(db_name=catalog.db_name, schema_name=schema.schema_name, table_name=table.table_name)
+                        dict(db_name=catalog.db_name, schema_name=schema_name, table_name=table.table_name)
                     )
 
         return parameter_combinations

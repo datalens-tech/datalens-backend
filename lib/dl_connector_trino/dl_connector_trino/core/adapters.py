@@ -83,7 +83,7 @@ class TrinoDefaultAdapter(BaseSAAdapter[TrinoConnTargetDTO]):
             creator=construct_creator_func(self._target_dto),
         ).execution_options(compiled_cache=None)
 
-    def get_db_version(self, db_ident: DBIdent) -> str:
+    def _get_db_version(self, db_ident: DBIdent) -> str:
         result = self.execute(DBAdapterQuery("SELECT VERSION()"))
         return result.get_all()[0][0]
 
@@ -91,11 +91,11 @@ class TrinoDefaultAdapter(BaseSAAdapter[TrinoConnTargetDTO]):
         result = self.execute(DBAdapterQuery("SHOW CATALOGS"))
         return [DBIdent(db_name=row[0]) for row in result.get_all()]
 
-    def get_schema_names(self, db_ident: DBIdent) -> list[SchemaIdent]:
+    def _get_schema_names(self, db_ident: DBIdent) -> list[str]:
         result = self.execute(DBAdapterQuery(f"SHOW SCHEMAS FROM {db_ident.db_name}"))
-        return [SchemaIdent(db_name=db_ident.db_name, schema_name=row[0]) for row in result.get_all()]
+        return [row[0] for row in result.get_all()]
 
-    def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         query = (
             f"SHOW TABLES FROM {schema_ident}"
             if schema_ident.schema_name is not None
