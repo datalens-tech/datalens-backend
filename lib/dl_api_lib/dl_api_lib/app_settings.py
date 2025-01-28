@@ -37,6 +37,7 @@ from dl_core.components.ids import FieldIdGeneratorType
 from dl_formula.parser.factory import ParserType
 from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 import dl_settings
+import dl_settings.validators as dl_settings_validators
 
 
 @attr.s(frozen=True)
@@ -341,7 +342,7 @@ BaseAuthSettingsOS.register("ZITADEL", ZitadelAuthSettingsOS)
 
 
 class NativeAuthSettingsOS(BaseAuthSettingsOS):
-    JWT_KEY: str
+    JWT_KEY: typing.Annotated[str, pydantic.BeforeValidator(dl_settings_validators.decode_multiline)]
     JWT_ALGORITHM: str
 
 
