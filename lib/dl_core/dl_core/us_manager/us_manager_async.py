@@ -143,11 +143,24 @@ class AsyncUSManager(USManagerBase):
             entry_scope=expected_type.scope if expected_type is not None else None,
         ):
             us_resp = await self._us_client.get_entry(entry_id, params=params)
+        us_resp = await self._migrate_response(us_resp)
 
         obj = self._entry_dict_to_obj(us_resp, expected_type)
         await self.get_lifecycle_manager(entry=obj).post_init_async_hook()
 
         return obj
+
+    async def _migrate_response(self, us_resp: dict) -> dict:
+        initial_type = us_resp["type"]
+        while True:
+            schema_migration = self.get_schema_migration(
+                entry_scope=us_resp["scope"],
+                entry_type=us_resp["type"],
+            )
+            us_resp = await schema_migration.migrate_async(us_resp)
+            if us_resp["type"] == initial_type:
+                break
+        return us_resp
 
     async def save(self, entry: USEntry, update_revision: Optional[bool] = None) -> None:
         lifecycle_manager = self.get_lifecycle_manager(entry=entry)
@@ -196,6 +209,7 @@ class AsyncUSManager(USManagerBase):
     async def reload_data(self, entry: USEntry) -> None:
         assert entry.uuid is not None
         us_resp = await self._us_client.get_entry(entry.uuid)
+        us_resp = await self._migrate_response(us_resp)
         reloaded_entry = self._entry_dict_to_obj(us_resp, expected_type=type(entry))
         entry.data = reloaded_entry.data
         entry._us_resp = us_resp
@@ -352,6 +366,7 @@ class AsyncUSManager(USManagerBase):
 
         async for us_resp in us_entry_iterator:
             try:
+                us_resp = await self._migrate_response(us_resp)
                 yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)  # type: ignore  # TODO: fix
             except Exception:
                 LOGGER.exception("Failed to load US object: %s", us_resp)
