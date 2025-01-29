@@ -76,7 +76,46 @@ class SetParameterValueConstraint(BaseParameterValueConstraint):
     type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.set)
 
     def _is_valid(self, value: Any) -> bool:
-        return any([v.value == value for v in self.values])
+        return any(v.value == value for v in self.values)
+
+
+@attr.s(frozen=True)
+class EqualsParameterValueConstraint(BaseParameterValueConstraint):
+    value: BIValue = attr.ib()
+    type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.equals)
+
+    def _is_valid(self, value: Any) -> bool:
+        return self.value.value == value
+
+
+@attr.s(frozen=True)
+class NotEqualsParameterValueConstraint(BaseParameterValueConstraint):
+    value: BIValue = attr.ib()
+    type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.not_equals)
+
+    def _is_valid(self, value: Any) -> bool:
+        return self.value.value != value
+
+
+@attr.s(frozen=True)
+class RegexParameterValueConstraint(BaseParameterValueConstraint):
+    pattern: str = attr.ib()
+    type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.regex)
+
+    def _is_valid(self, value: Any) -> bool:
+        if not isinstance(value, str):
+            value = str(value)
+
+        return re.match(self.pattern, value) is not None
+
+
+@attr.s(frozen=True)
+class CollectionParameterValueConstraint(BaseParameterValueConstraint):
+    constraints: List[BaseParameterValueConstraint] = attr.ib(factory=list)
+    type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.collection)
+
+    def _is_valid(self, value: Any) -> bool:
+        return all(c.is_valid(value) for c in self.constraints)
 
 
 @attr.s(frozen=True)

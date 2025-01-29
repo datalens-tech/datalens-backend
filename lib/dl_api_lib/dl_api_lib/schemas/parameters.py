@@ -10,7 +10,11 @@ from dl_constants.enums import ParameterValueConstraintType
 from dl_core.fields import (
     AllParameterValueConstraint,
     BaseParameterValueConstraint,
+    CollectionParameterValueConstraint,
+    EqualsParameterValueConstraint,
+    NotEqualsParameterValueConstraint,
     RangeParameterValueConstraint,
+    RegexParameterValueConstraint,
     SetParameterValueConstraint,
 )
 from dl_model_tools.schema.base import DefaultSchema
@@ -41,10 +45,35 @@ class ParameterValueConstraintSchema(OneOfSchema):
 
         values = ma_fields.List(ma_fields.Nested(ValueSchema))
 
+    class EqualsParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+        TARGET_CLS = EqualsParameterValueConstraint
+
+        value = ma_fields.Nested(ValueSchema)
+
+    class NotEqualsParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+        TARGET_CLS = NotEqualsParameterValueConstraint
+
+        value = ma_fields.Nested(ValueSchema)
+
+    class RegexParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+        TARGET_CLS = RegexParameterValueConstraint
+
+        pattern = ma_fields.String()
+
+    class CollectionParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+        TARGET_CLS = CollectionParameterValueConstraint
+
+        # using lambda to avoid circular import in recursive schema
+        constraints = ma_fields.List(ma_fields.Nested(lambda: ParameterValueConstraintSchema()))
+
     type_schemas = {
         ParameterValueConstraintType.all.name: AllParameterValueConstraintSchema,
         ParameterValueConstraintType.range.name: RangeParameterValueConstraintSchema,
         ParameterValueConstraintType.set.name: SetParameterValueConstraintSchema,
+        ParameterValueConstraintType.equals.name: EqualsParameterValueConstraintSchema,
+        ParameterValueConstraintType.not_equals.name: NotEqualsParameterValueConstraintSchema,
+        ParameterValueConstraintType.regex.name: RegexParameterValueConstraintSchema,
+        ParameterValueConstraintType.collection.name: CollectionParameterValueConstraintSchema,
     }
 
     def get_obj_type(self, obj: Any) -> str:
