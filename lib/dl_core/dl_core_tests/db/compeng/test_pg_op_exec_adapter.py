@@ -14,6 +14,7 @@ import aiopg.sa
 import asyncpg
 import flaky
 import pytest
+import pytest_asyncio
 
 from dl_compeng_pg.compeng_aiopg.exec_adapter_aiopg import AiopgExecAdapter
 from dl_compeng_pg.compeng_asyncpg.exec_adapter_asyncpg import AsyncpgExecAdapter
@@ -55,7 +56,7 @@ class BaseTestPGOpExecAdapter(DefaultCoreTestClass):
     min_size: int = 1
     max_size: int = 5
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def pg_adapter(
         self,
         loop,

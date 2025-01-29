@@ -12,6 +12,7 @@ from typing import (
 import uuid
 
 import pytest
+import pytest_asyncio
 import sqlalchemy as sa
 
 from dl_cache_engine.primitives import LocalKeyRepresentation
@@ -49,7 +50,7 @@ class PGOpRunnerTestBase(DefaultCoreTestClass):
     PG_POOL_WRAPPER_CLS: ClassVar[Type[BasePgPoolWrapper]]
     PG_PROCESSOR_CLS: ClassVar[Type[PostgreSQLOperationProcessor]]
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def pg_op_processor(self, loop, conn_default_service_registry) -> PostgreSQLOperationProcessor:
         reporting_registry = conn_default_service_registry.get_reporting_registry()
         compeng_pg_dsn = self.core_test_config.get_compeng_url()

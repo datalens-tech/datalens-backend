@@ -11,6 +11,7 @@ from typing import (
 from aiohttp.pytest_plugin import AiohttpClient
 from aiohttp.test_utils import TestClient
 import pytest
+import pytest_asyncio
 
 from dl_configs.rqe import (
     RQEBaseURL,
@@ -89,7 +90,7 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
             execute_request_mode=request.param,
         )
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def conn_target_dto(
         self,
         async_connection_executor: AsyncConnExecutorBase,
@@ -98,7 +99,7 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
         target_conn_dto_pool = await async_connection_executor._make_target_conn_dto_pool()
         yield next(iter(target_conn_dto_pool))
 
-    @pytest.fixture(scope="function", params=[True, False], ids=["async", "sync"])
+    @pytest_asyncio.fixture(scope="function", params=[True, False], ids=["async", "sync"])
     async def remote_adapter(
         self,
         conn_target_dto: ConnTargetDTO,

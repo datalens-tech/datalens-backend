@@ -12,6 +12,7 @@ from typing import (
 )
 
 import pytest
+import pytest_asyncio
 from redis.asyncio import Redis
 
 from dl_api_commons.base_models import RequestContextInfo
@@ -102,7 +103,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             await redis_client.close()
             await redis_client.connection_pool.disconnect()
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def caches_redis_client_factory(self) -> AsyncGenerator[Optional[Callable[[bool], Redis]], None]:
         if not self.data_caches_enabled:
             yield None
@@ -116,7 +117,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
                     await redis_client.close()
                     await redis_client.connection_pool.disconnect()
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def data_processor_service_factory(
         self,
     ) -> AsyncGenerator[Optional[Callable[[ProcessorType], DataProcessorService]], None]:
