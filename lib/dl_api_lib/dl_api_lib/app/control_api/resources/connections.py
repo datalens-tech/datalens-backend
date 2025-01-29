@@ -280,6 +280,7 @@ class ConnectionExportItem(BIResource):
 
         result = GenericConnectionSchema(context=self.get_schema_ctx(ExportMode.export)).dump(conn)
         result.update(options=ConnectionOptionsSchema().dump(conn.get_options()))
+        result.pop("id")
         return dict(connection=result, notifications=notifications)
 
 
