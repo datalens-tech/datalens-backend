@@ -98,6 +98,7 @@ class AsyncUSManager(USManagerBase):
             bi_context=self._bi_context,
             services_registry=self._services_registry,
             lifecycle_manager_factory=self._lifecycle_manager_factory,
+            schema_migration_factory=self._schema_migration_factory,
             ca_data=self._ca_data,
         )
 
@@ -142,13 +143,16 @@ class AsyncUSManager(USManagerBase):
             entry_id=entry_id,
             entry_scope=expected_type.scope if expected_type is not None else None,
         ):
-            us_resp = await self._us_client.get_entry(entry_id, params=params)
-        us_resp = await self._migrate_response(us_resp)
+            us_resp = await self.get_migrated_entry(entry_id, params=params)
 
         obj = self._entry_dict_to_obj(us_resp, expected_type)
         await self.get_lifecycle_manager(entry=obj).post_init_async_hook()
 
         return obj
+
+    async def get_migrated_entry(self, entry_id: str, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
+        us_resp = await self._us_client.get_entry(entry_id, params=params)
+        return await self._migrate_response(us_resp)
 
     async def _migrate_response(self, us_resp: dict) -> dict:
         initial_type = us_resp["type"]
@@ -208,8 +212,7 @@ class AsyncUSManager(USManagerBase):
 
     async def reload_data(self, entry: USEntry) -> None:
         assert entry.uuid is not None
-        us_resp = await self._us_client.get_entry(entry.uuid)
-        us_resp = await self._migrate_response(us_resp)
+        us_resp = await self.get_migrated_entry(entry.uuid)
         reloaded_entry = self._entry_dict_to_obj(us_resp, expected_type=type(entry))
         entry.data = reloaded_entry.data
         entry._us_resp = us_resp
