@@ -8,6 +8,7 @@ from typing import (
 )
 
 import pytest
+import pytest_asyncio
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_core import exc
@@ -30,7 +31,7 @@ class BaseAsyncAdapterTestClass(BaseConnectionExecutorTestClass, Generic[_TARGET
 
     ASYNC_ADAPTER_CLS: ClassVar[Type[AsyncDirectDBAdapter]]  # TODO add tests for other adapters
 
-    @pytest.fixture
+    @pytest_asyncio.fixture
     async def target_conn_dto(self, async_connection_executor: AsyncConnExecutorBase) -> _TARGET_DTO_TV:
         target_conn_dto_pool = await async_connection_executor._make_target_conn_dto_pool()  # type: ignore  # 2024-01-29 # TODO: "AsyncConnExecutorBase" has no attribute "_make_target_conn_dto_pool"  [attr-defined]
         return next(iter(target_conn_dto_pool))

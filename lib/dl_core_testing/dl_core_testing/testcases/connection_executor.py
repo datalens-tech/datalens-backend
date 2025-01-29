@@ -17,6 +17,7 @@ from typing import (
 
 import attr
 import pytest
+import pytest_asyncio
 import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
@@ -67,7 +68,7 @@ class BaseConnectionExecutorTestClass(RegulatedTestCase, BaseConnectionTestClass
         yield sync_conn_executor_factory()
         sync_conn_executor.close()
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def async_connection_executor(
         self,
         async_conn_executor_factory: Callable[[], AsyncConnExecutorBase],
