@@ -102,7 +102,7 @@ class TrinoDefaultAdapter(BaseSAAdapter[TrinoConnTargetDTO]):
         return [row[0] for row in result.get_all() if row[0] not in TRINO_SYSTEM_CATALOGS]
 
     def _get_schema_names(self, db_ident: DBIdent) -> list[str]:
-        if db_ident.db_name is None:  # No use cases for now
+        if db_ident.db_name is not None:  # No use cases for now
             result = self.execute(DBAdapterQuery(f"SHOW SCHEMAS FROM {db_ident.db_name}"))
             return [row[0] for row in result.get_all()]
 
