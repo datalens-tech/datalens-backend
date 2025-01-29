@@ -31,6 +31,16 @@ from dl_connector_trino.core.error_transformer import trino_error_transformer
 from dl_connector_trino.core.target_dto import TrinoConnTargetDTO
 
 
+TRINO_SYSTEM_CATALOGS = (
+    "system",
+    "tpch",
+    "tpcds",
+    "jmx",
+)
+
+TRINO_SYSTEM_SCHEMAS = ("information_schema",)
+
+
 def construct_creator_func(target_dto: TrinoConnTargetDTO) -> Callable[[], sa.engine.Connection]:
     def get_connection() -> sa.engine.Connection:
         params = dict(
@@ -87,13 +97,24 @@ class TrinoDefaultAdapter(BaseSAAdapter[TrinoConnTargetDTO]):
         result = self.execute(DBAdapterQuery("SELECT VERSION()"))
         return result.get_all()[0][0]
 
-    def get_catalogs(self) -> list[DBIdent]:
+    def _get_catalogs(self) -> list[str]:
         result = self.execute(DBAdapterQuery("SHOW CATALOGS"))
-        return [DBIdent(db_name=row[0]) for row in result.get_all()]
+        return [row[0] for row in result.get_all() if row[0] not in TRINO_SYSTEM_CATALOGS]
 
     def _get_schema_names(self, db_ident: DBIdent) -> list[str]:
-        result = self.execute(DBAdapterQuery(f"SHOW SCHEMAS FROM {db_ident.db_name}"))
-        return [row[0] for row in result.get_all()]
+        if db_ident.db_name is None:  # No use cases for now
+            result = self.execute(DBAdapterQuery(f"SHOW SCHEMAS FROM {db_ident.db_name}"))
+            return [row[0] for row in result.get_all()]
+
+        schema_names: list[str] = []  # schema_names in "catalog.schema" format.
+        catalogs = self._get_catalogs()
+        for catalog in catalogs:
+            result = self.execute(DBAdapterQuery(f"SHOW SCHEMAS FROM {catalog}"))
+            schema_names.extend(
+                [f"{catalog}.{row[0]}" for row in result.get_all() if row[0] not in TRINO_SYSTEM_SCHEMAS]
+            )
+
+        return schema_names
 
     def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         query = (
