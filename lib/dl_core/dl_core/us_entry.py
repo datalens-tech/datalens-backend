@@ -301,6 +301,7 @@ class USMigrationEntry(USEntry):
         links: Optional[dict] = None,
         hidden: bool = False,
         data_strict: bool = True,
+        migrated: bool = False,
         *,
         us_manager: USManagerBase,
         unversioned_data: Optional[dict[str, Any]],
@@ -319,6 +320,7 @@ class USMigrationEntry(USEntry):
             links=links,
             hidden=hidden,
             data_strict=data_strict,
+            migrated=migrated,
             us_manager=us_manager,
         )
 
