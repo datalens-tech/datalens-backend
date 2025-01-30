@@ -49,6 +49,7 @@ class USEntry:
     permissions: Optional[dict[str, bool]] = None
     hidden: bool
     links: Optional[dict] = None
+    migrated: bool = False
 
     _stored_in_db: bool = False
     _us_resp: Optional[dict] = None
@@ -116,6 +117,7 @@ class USEntry:
         links: Optional[dict] = None,
         hidden: bool = False,
         data_strict: bool = True,
+        migrated: bool = False,
         *,
         us_manager: USManagerBase,
     ):
@@ -135,6 +137,7 @@ class USEntry:
         self.permissions = permissions
         self.links = links
         self.hidden = hidden
+        self.migrated = migrated
 
     @property
     def us_manager(self) -> USManagerBase:

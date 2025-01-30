@@ -74,6 +74,7 @@ class Migration:
         if not self.downgrade_only:
             entry = self.up_function(entry, services_registry=services_registry)
             entry["data"]["schema_version"] = self.upgrade_version
+            entry["migrated"] = True
         return entry
 
     def migrate_down(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
@@ -85,6 +86,7 @@ class Migration:
         if not self.downgrade_only and self.await_up_function is not None:
             entry = await self.await_up_function(entry, services_registry=services_registry)
             entry["data"]["schema_version"] = self.upgrade_version
+            entry["migrated"] = True
             return entry
         return self.up_function(entry, services_registry=services_registry)
 

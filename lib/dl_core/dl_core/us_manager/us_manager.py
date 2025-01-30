@@ -337,6 +337,7 @@ class USManagerBase:
             permissions=us_resp.get("permissions") or {},
             links=us_resp.get("links") or {},
             hidden=us_resp["hidden"],
+            migrated=us_resp.get("migrated", False),
         )
 
         entry: USEntry
