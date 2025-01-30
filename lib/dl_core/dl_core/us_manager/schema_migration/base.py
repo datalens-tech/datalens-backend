@@ -130,6 +130,9 @@ class BaseEntrySchemaMigration:
         entry_copy = deepcopy(entry)
         seen_versions = set()
 
+        if not self.migrations:
+            return entry_copy
+
         try:
             entry_schema_id = self._get_entry_schema_id(entry_copy)
             if entry_schema_id != 1 and entry_schema_id not in self.migration_ids:
@@ -162,6 +165,9 @@ class BaseEntrySchemaMigration:
     async def migrate_async(self, entry: dict) -> dict:
         entry_copy = deepcopy(entry)
         seen_versions = set()
+
+        if not self.migrations:
+            return entry_copy
 
         try:
             entry_schema_id = self._get_entry_schema_id(entry_copy)
