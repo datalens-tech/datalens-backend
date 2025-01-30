@@ -185,7 +185,8 @@ def test_successful_migration(l2_migrator):
             "l1_field": "added_in_l1",
             "l2_field": "added_in_l2",
             "schema_version": "2022-12-04T13:00:00",
-        }
+        },
+        "migrated": True,
     }
     result = l2_migrator.migrate(entry)
     assert result == expected
@@ -272,7 +273,8 @@ def test_downgrade_only_up_migration(l2_downgrade_migrator):
             "new_field": "value1",
             "l1_field": "added_in_l1",
             "schema_version": "2022-12-04T13:00:00",
-        }
+        },
+        "migrated": True,
     }
     result = l2_downgrade_migrator.migrate(entry)
     assert result == expected
