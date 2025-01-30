@@ -39,6 +39,18 @@ TRINO_SYSTEM_CATALOGS = (
 TRINO_SYSTEM_SCHEMAS = ("information_schema",)
 
 
+class CustomHTTPAdapter(HTTPAdapter):
+    def __init__(self, ssl_ca: str, *args: Any, **kwargs: Any) -> None:
+        self.ssl_ca = ssl_ca
+        super().__init__(*args, **kwargs)
+
+    def init_poolmanager(self, connections: int, maxsize: int, block: bool = False, **pool_kwargs: Any) -> None:
+        # Use a secure context with the provided SSL CA
+        context = ssl.create_default_context(cadata=self.ssl_ca)
+        context.check_hostname = False  # TODO: @khamitovdr Resolve "ValueError: check_hostname requires server_hostname" and enable check_hostname!!!
+        super().init_poolmanager(connections, maxsize, block, ssl_context=context, **pool_kwargs)
+
+
 def construct_creator_func(target_dto: TrinoConnTargetDTO) -> Callable[[], sa.engine.Connection]:
     def get_connection() -> sa.engine.Connection:
         params = dict(
@@ -61,18 +73,8 @@ def construct_creator_func(target_dto: TrinoConnTargetDTO) -> Callable[[], sa.en
             raise NotImplementedError("Header authentication is not supported yet")
 
         if target_dto.ssl_ca:
-
-            class CustomHTTPAdapter(HTTPAdapter):
-                def init_poolmanager(
-                    self, connections: int, maxsize: int, block: bool = False, **pool_kwargs: Any
-                ) -> None:
-                    # Use a secure context with the provided SSL CA
-                    context = ssl.create_default_context(cadata=target_dto.ssl_ca)
-                    context.check_hostname = False  # TODO: @khamitovdr Resolve "ValueError: check_hostname requires server_hostname" and enable check_hostname!!!
-                    super().init_poolmanager(connections, maxsize, block, ssl_context=context, **pool_kwargs)
-
             session = requests.Session()
-            session.mount("https://", CustomHTTPAdapter())
+            session.mount("https://", CustomHTTPAdapter(target_dto.ssl_ca))
             params["http_session"] = session
 
         conn = trino_connect(**params)
@@ -90,11 +92,13 @@ class TrinoDefaultAdapter(BaseSAAdapter[TrinoConnTargetDTO]):
         return None
 
     def get_db_name_for_query(self, db_name_from_query: Optional[str]) -> str:
-        return ""  # Not my fault, it's unnecessary for Trino
+        # Trino doesn't require db_name to connect, but has catalogs.
+        # TODO: @khamitovdr Study possible usage of db_name_from_query.
+        return ""
 
     def _get_db_engine(self, db_name: str, disable_streaming: bool = False) -> Engine:
         if disable_streaming:
-            raise Exception("`disable_streaming` is not applicable here")
+            raise Exception("`disable_streaming` is not applicable for Trino")
         return sa.create_engine(
             "trino://",
             creator=construct_creator_func(self._target_dto),
