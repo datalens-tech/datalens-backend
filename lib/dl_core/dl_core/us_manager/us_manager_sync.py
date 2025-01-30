@@ -101,6 +101,7 @@ class SyncUSManager(USManagerBase):
             # request_timeout_sec=self._request_timeout_sec,
             services_registry=self._services_registry,
             lifecycle_manager_factory=self._lifecycle_manager_factory,
+            schema_migration_factory=self._schema_migration_factory,
         )
         kwargs = {
             **base_kwargs,
@@ -197,12 +198,28 @@ class SyncUSManager(USManagerBase):
             entry_id=entry_id,
             entry_scope=expected_type.scope if expected_type is not None else None,
         ):
-            us_resp = self._us_client.get_entry(entry_id, params=params)
+            us_resp = self.get_migrated_entry(entry_id, params=params)
 
         obj = self._entry_dict_to_obj(us_resp, expected_type)
         await_sync(self.get_lifecycle_manager(entry=obj).post_init_async_hook())
 
         return obj
+
+    def get_migrated_entry(self, entry_id: str, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
+        us_resp = self._us_client.get_entry(entry_id, params=params)
+        return self._migrate_response(us_resp)
+
+    def _migrate_response(self, us_resp: dict) -> dict:
+        initial_type = us_resp["type"]
+        while True:
+            schema_migration = self.get_schema_migration(
+                entry_scope=us_resp["scope"],
+                entry_type=us_resp["type"],
+            )
+            us_resp = schema_migration.migrate(us_resp)
+            if us_resp["type"] == initial_type:
+                break
+        return us_resp
 
     @overload
     def get_by_key(self, entry_key: str, expected_type: None = None) -> USEntry:
@@ -254,6 +271,7 @@ class SyncUSManager(USManagerBase):
 
         for us_resp in us_entry_iterator:
             try:
+                us_resp = self._migrate_response(us_resp)
                 yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)  # type: ignore  # TODO: fix
             except Exception:
                 LOGGER.exception("Failed to load US object: %s", us_resp)
@@ -281,7 +299,7 @@ class SyncUSManager(USManagerBase):
 
     def reload_data(self, entry: USEntry) -> None:
         assert entry.uuid is not None
-        us_resp = self._us_client.get_entry(entry.uuid)
+        us_resp = self.get_migrated_entry(entry.uuid)
         reloaded_entry = self._entry_dict_to_obj(us_resp, expected_type=type(entry))
         entry.data = reloaded_entry.data
         entry._us_resp = us_resp
