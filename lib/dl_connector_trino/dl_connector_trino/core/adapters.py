@@ -117,18 +117,22 @@ class TrinoDefaultAdapter(BaseSAAdapter[TrinoConnTargetDTO]):
         catalogs = self._get_catalogs()
         for catalog in catalogs:
             result = self.execute(DBAdapterQuery(f"SHOW SCHEMAS FROM {catalog}"))
-            schema_names.extend(
-                [f"{catalog}.{row[0]}" for row in result.get_all() if row[0] not in TRINO_SYSTEM_SCHEMAS]
-            )
+            for row in result.get_all():
+                if row[0] in TRINO_SYSTEM_SCHEMAS:
+                    continue
+
+                schema_names.append(f"{catalog}.{row[0]}")
 
         return schema_names
 
     def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-        query = (
-            f"SHOW TABLES FROM {schema_ident}"
-            if schema_ident.schema_name is not None
-            else f"SHOW TABLES FROM {schema_ident.db_name}"
-        )
+        if schema_ident.schema_name is not None:
+            source_name = str(schema_ident)
+        else:
+            assert schema_ident.db_name is not None
+            source_name = schema_ident.db_name
+
+        query = f"SHOW TABLES FROM {source_name}"
         result = self.execute(DBAdapterQuery(query))
         return [
             TableIdent(
