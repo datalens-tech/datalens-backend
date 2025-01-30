@@ -135,6 +135,10 @@ class ParameterValueConstraintType(Enum):
     all = "all"
     range = "range"
     set = "set"
+    equals = "equals"
+    not_equals = "not_equals"
+    regex = "regex"
+    collection = "collection"
 
 
 @unique

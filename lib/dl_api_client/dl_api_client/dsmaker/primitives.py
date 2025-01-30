@@ -481,6 +481,29 @@ class SetParameterValueConstraint(BaseParameterValueConstraint):
     values: List[ParameterValue] = attr.ib(factory=list)
 
 
+@attr.s
+class EqualsParameterValueConstraint(BaseParameterValueConstraint):
+    type: ParameterValueConstraintType = ParameterValueConstraintType.equals
+    value: ParameterValue = attr.ib()
+
+
+@attr.s
+class NotEqualsParameterValueConstraint(BaseParameterValueConstraint):
+    type: ParameterValueConstraintType = ParameterValueConstraintType.not_equals
+    value: ParameterValue = attr.ib()
+
+
+@attr.s
+class RegexParameterValueConstraint(BaseParameterValueConstraint):
+    type: ParameterValueConstraintType = ParameterValueConstraintType.regex
+    pattern: str = attr.ib()
+
+
+class CollectionParameterValueConstraint(BaseParameterValueConstraint):
+    type: ParameterValueConstraintType = ParameterValueConstraintType.collection
+    constraints: List[BaseParameterValueConstraint]
+
+
 def _make_pivot_role_spec(
     role: PivotRole,
     annotation_type: Optional[str] = None,

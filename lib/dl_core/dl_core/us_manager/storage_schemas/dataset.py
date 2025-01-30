@@ -41,10 +41,14 @@ from dl_core.fields import (
     BaseParameterValueConstraint,
     BIField,
     CalculationSpec,
+    CollectionParameterValueConstraint,
     DirectCalculationSpec,
+    EqualsParameterValueConstraint,
     FormulaCalculationSpec,
+    NotEqualsParameterValueConstraint,
     ParameterCalculationSpec,
     RangeParameterValueConstraint,
+    RegexParameterValueConstraint,
     ResultSchema,
     SetParameterValueConstraint,
     del_calc_spec_kwargs_from,
@@ -273,6 +277,31 @@ class SetParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
     TARGET_CLS = SetParameterValueConstraint
 
     values = ma_fields.List(ma_fields.Nested(ValueSchema))
+
+
+class EqualsParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+    TARGET_CLS = EqualsParameterValueConstraint
+
+    value = ma_fields.Nested(ValueSchema)
+
+
+class NotEqualsParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+    TARGET_CLS = NotEqualsParameterValueConstraint
+
+    value = ma_fields.Nested(ValueSchema)
+
+
+class RegexParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+    TARGET_CLS = RegexParameterValueConstraint
+
+    pattern = ma_fields.String()
+
+
+class CollectionParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+    TARGET_CLS = CollectionParameterValueConstraint
+
+    # using lambda to avoid circular import in recursive schema
+    constraints = ma_fields.List(ma_fields.Nested(lambda: ParameterValueConstraintSchema()))
 
 
 class ParameterValueConstraintSchema(OneOfSchema):

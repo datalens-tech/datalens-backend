@@ -24,6 +24,7 @@ from dl_api_client.dsmaker.primitives import (
     AvatarRelation,
     BaseParameterValueConstraint,
     BooleanParameterValue,
+    CollectionParameterValueConstraint,
     Column,
     ComponentError,
     ComponentErrorPack,
@@ -34,6 +35,7 @@ from dl_api_client.dsmaker.primitives import (
     DateTimeParameterValue,
     DateTimeTZParameterValue,
     DirectJoinPart,
+    EqualsParameterValueConstraint,
     FloatParameterValue,
     FormulaJoinPart,
     GenericDateTimeParameterValue,
@@ -42,9 +44,11 @@ from dl_api_client.dsmaker.primitives import (
     IntegerParameterValue,
     JoinCondition,
     MarkupParameterValue,
+    NotEqualsParameterValueConstraint,
     ObligatoryFilter,
     ParameterValue,
     RangeParameterValueConstraint,
+    RegexParameterValueConstraint,
     ResultField,
     ResultFieldJoinPart,
     ResultSchemaAux,
@@ -206,12 +210,41 @@ class SetParameterValueConstraintSchema(DefaultSchema[SetParameterValueConstrain
     values = ma_fields.List(ma_fields.Nested(ValueSchema))
 
 
+class EqualsParameterValueConstraintSchema(DefaultSchema[EqualsParameterValueConstraint]):
+    TARGET_CLS = EqualsParameterValueConstraint
+
+    value = ma_fields.Nested(ValueSchema)
+
+
+class NotEqualsParameterValueConstraintSchema(DefaultSchema[NotEqualsParameterValueConstraint]):
+    TARGET_CLS = NotEqualsParameterValueConstraint
+
+    value = ma_fields.Nested(ValueSchema)
+
+
+class RegexParameterValueConstraintSchema(DefaultSchema[RegexParameterValueConstraint]):
+    TARGET_CLS = RegexParameterValueConstraint
+
+    pattern = ma_fields.String()
+
+
+class CollectionParameterValueConstraintSchema(DefaultSchema[CollectionParameterValueConstraint]):
+    TARGET_CLS = CollectionParameterValueConstraint
+
+    # using lambda to avoid circular import in recursive schema
+    constraints = ma_fields.List(ma_fields.Nested(lambda: ParameterValueConstraintSchema()))
+
+
 class ParameterValueConstraintSchema(OneOfSchema):
     type_field = "type"
     type_schemas = {
         ParameterValueConstraintType.all.name: AllParameterValueConstraintSchema,
         ParameterValueConstraintType.range.name: RangeParameterValueConstraintSchema,
         ParameterValueConstraintType.set.name: SetParameterValueConstraintSchema,
+        ParameterValueConstraintType.equals.name: EqualsParameterValueConstraintSchema,
+        ParameterValueConstraintType.not_equals.name: NotEqualsParameterValueConstraintSchema,
+        ParameterValueConstraintType.regex.name: RegexParameterValueConstraintSchema,
+        ParameterValueConstraintType.collection.name: CollectionParameterValueConstraintSchema,
     }
 
     def get_obj_type(self, obj: BaseParameterValueConstraint) -> str:
