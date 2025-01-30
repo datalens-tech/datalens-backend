@@ -39,8 +39,6 @@ services:
       MYSQL_DATABASE: "test_data"
       MYSQL_USER: "datalens"
       MYSQL_PASSWORD: "qwerty"
-    # ports:
-    #   - "52001:3306"
 
   # INFRA
   ssl-provider:
