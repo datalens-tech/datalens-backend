@@ -49,7 +49,16 @@ def construct_creator_func(target_dto: TrinoConnTargetDTO) -> Callable[[], sa.en
         )
         if target_dto.auth_type is TrinoAuthType.PASSWORD:
             params["auth"] = BasicAuthentication(target_dto.username, target_dto.password)
-        # As new auth types are supported, add them here
+        elif target_dto.auth_type is TrinoAuthType.OAUTH2:
+            raise NotImplementedError("OAuth2 authentication is not supported yet")
+        elif target_dto.auth_type is TrinoAuthType.KERBEROS:
+            raise NotImplementedError("Kerberos authentication is not supported yet")
+        elif target_dto.auth_type is TrinoAuthType.CERTIFICATE:
+            raise NotImplementedError("Certificate authentication is not supported yet")
+        elif target_dto.auth_type is TrinoAuthType.JWT:
+            raise NotImplementedError("JWT authentication is not supported yet")
+        elif target_dto.auth_type is TrinoAuthType.HEADER:
+            raise NotImplementedError("Header authentication is not supported yet")
 
         if target_dto.ssl_ca:
 
