@@ -13,7 +13,6 @@ class TrinoConnTargetDTO(ConnTargetDTO):
     port: int = attr.ib()
     username: str = attr.ib()
     auth_type: TrinoAuthType = attr.ib(kw_only=True, default=TrinoAuthType.NONE)
-    # ssl_enable is inferred from auth_type (if auth_type is not NONE, then ssl_enable is True)
     password: Optional[str] = attr.ib(repr=False, kw_only=True, default=None)
     ssl_ca: Optional[str] = attr.ib(repr=False, kw_only=True, default=None)
 

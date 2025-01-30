@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import TypeVar
 
 import attr
@@ -19,7 +17,7 @@ _BASE_TRINO_ADAPTER_TV = TypeVar("_BASE_TRINO_ADAPTER_TV", bound=CommonBaseDirec
 class BaseTrinoConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_TRINO_ADAPTER_TV]):
     _conn_dto: TrinoConnDTO = attr.ib()
 
-    async def _make_target_conn_dto_pool(self) -> list[TrinoConnTargetDTO]:  # type: ignore  # TODO: fix
+    async def _make_target_conn_dto_pool(self) -> list[TrinoConnTargetDTO]:
         return [
             TrinoConnTargetDTO(
                 conn_id=self._conn_dto.conn_id,
