@@ -30,6 +30,7 @@ from dl_constants.enums import (
     DashSQLQueryType,
     DataSourceRole,
     DataSourceType,
+    MigrationStatus,
     RawSQLLevel,
     UserDataType,
 )
@@ -163,7 +164,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         links: Optional[dict] = None,
         hidden: bool = False,
         data_strict: bool = True,
-        migration_status: Optional[str] = None,
+        migration_status: str = MigrationStatus.non_migrated.value,
         *,
         us_manager: USManagerBase,
     ):

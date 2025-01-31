@@ -14,6 +14,7 @@ from typing import (
 )
 
 from dl_api_commons.base_models import RequestContextInfo
+from dl_constants.enums import MigrationStatus
 from dl_core.base_models import (
     BaseAttrsDataModel,
     EntryLocation,
@@ -49,7 +50,7 @@ class USEntry:
     permissions: Optional[dict[str, bool]] = None
     hidden: bool
     links: Optional[dict] = None
-    migration_status: Optional[str] = None
+    migration_status: str = MigrationStatus.non_migrated.value
 
     _stored_in_db: bool = False
     _us_resp: Optional[dict] = None
@@ -117,7 +118,7 @@ class USEntry:
         links: Optional[dict] = None,
         hidden: bool = False,
         data_strict: bool = True,
-        migration_status: Optional[str] = None,
+        migration_status: str = MigrationStatus.non_migrated.value,
         *,
         us_manager: USManagerBase,
     ):
@@ -301,7 +302,7 @@ class USMigrationEntry(USEntry):
         links: Optional[dict] = None,
         hidden: bool = False,
         data_strict: bool = True,
-        migration_status: Optional[str] = None,
+        migration_status: str = MigrationStatus.non_migrated.value,
         *,
         us_manager: USManagerBase,
         unversioned_data: Optional[dict[str, Any]],

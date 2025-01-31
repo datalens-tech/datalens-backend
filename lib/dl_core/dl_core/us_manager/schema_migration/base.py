@@ -18,6 +18,7 @@ from dl_app_tools.profiling_base import (
     generic_profiler,
     generic_profiler_async,
 )
+from dl_constants.enums import MigrationStatus
 from dl_core.exc import UnknownEntryMigration
 
 
@@ -74,20 +75,20 @@ class Migration:
         if not self.downgrade_only:
             entry = self.up_function(entry, services_registry=services_registry)
             entry["data"]["schema_version"] = self.upgrade_version
-            entry["migration_status"] = "migrated_up"
+            entry["migration_status"] = MigrationStatus.migrated_up.value
         return entry
 
     def migrate_down(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
         entry = self.down_function(entry, services_registry=services_registry)
         entry["data"]["schema_version"] = self.downgrade_version
-        entry["migration_status"] = "migrated_down"
+        entry["migration_status"] = MigrationStatus.migrated_down.value
         return entry
 
     async def migrate_up_async(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
         if not self.downgrade_only and self.await_up_function is not None:
             entry = await self.await_up_function(entry, services_registry=services_registry)
             entry["data"]["schema_version"] = self.upgrade_version
-            entry["migration_status"] = "migrated_up"
+            entry["migration_status"] = MigrationStatus.migrated_up.value
             return entry
         return self.up_function(entry, services_registry=services_registry)
 
@@ -95,7 +96,7 @@ class Migration:
         if self.await_down_function is not None:
             entry = await self.await_down_function(entry, services_registry=services_registry)
             entry["data"]["schema_version"] = self.downgrade_version
-            entry["migration_status"] = "migrated_down"
+            entry["migration_status"] = MigrationStatus.migrated_down.value
             return entry
         return self.down_function(entry, services_registry=services_registry)
 
@@ -132,7 +133,7 @@ class BaseEntrySchemaMigration:
     @generic_profiler("migrate_entry")
     def migrate(self, entry: dict) -> dict:
         entry_copy = deepcopy(entry)
-        entry_copy["migration_status"] = "non_migrated"
+        entry_copy["migration_status"] = MigrationStatus.non_migrated.value
         seen_versions = set()
 
         if not self.migrations:
@@ -165,13 +166,13 @@ class BaseEntrySchemaMigration:
                 raise exc
             LOGGER.warning("Entry migration failed", exc_info=True)
             entry_copy = deepcopy(entry)
-            entry_copy["migration_status"] = "error"
+            entry_copy["migration_status"] = MigrationStatus.error.value
             return entry_copy
 
     @generic_profiler_async("migrate_entry")  # type: ignore  # TODO: fix
     async def migrate_async(self, entry: dict) -> dict:
         entry_copy = deepcopy(entry)
-        entry_copy["migration_status"] = "non_migrated"
+        entry_copy["migration_status"] = MigrationStatus.non_migrated.value
         seen_versions = set()
 
         if not self.migrations:
@@ -204,5 +205,5 @@ class BaseEntrySchemaMigration:
                 raise exc
             LOGGER.warning("Entry migration failed", exc_info=True)
             entry_copy = deepcopy(entry)
-            entry_copy["migration_status"] = "error"
+            entry_copy["migration_status"] = MigrationStatus.error.value
             return entry_copy

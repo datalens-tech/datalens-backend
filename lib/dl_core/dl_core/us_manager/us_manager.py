@@ -337,7 +337,7 @@ class USManagerBase:
             permissions=us_resp.get("permissions") or {},
             links=us_resp.get("links") or {},
             hidden=us_resp["hidden"],
-            migration_status=us_resp.get("migration_status"),
+            migration_status=us_resp["migration_status"],
         )
 
         entry: USEntry
@@ -393,6 +393,7 @@ class USManagerBase:
         entry_data.update(
             entryId=entry.uuid,
             unversionedData=entry_data.pop("unversioned_data"),
+            migration_status=entry.migration_status,
             **entry_loc.to_us_resp_api_params(entry.raw_us_key),
         )
         return self._entry_dict_to_obj(entry_data)
