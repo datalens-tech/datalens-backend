@@ -33,7 +33,11 @@ class TypedQueryRawChecker(abc.ABC):
 class DefaultTypedQueryRawChecker(TypedQueryRawChecker):
     def get_typed_query_raw(self) -> TypedQueryRaw:
         return TypedQueryRaw(
-            query_type=DashSQLQueryType.raw_query, parameters=TypedQueryRawParameters(path="/json", method="GET")
+            query_type=DashSQLQueryType.raw_query,
+            parameters=TypedQueryRawParameters(
+                path="/json",
+                method="GET",
+            ),
         )
 
     def check_typed_query_raw_result(self, typed_query_raw_result: TypedQueryRawResult) -> None:

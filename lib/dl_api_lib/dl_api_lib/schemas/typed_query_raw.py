@@ -15,6 +15,7 @@ from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 class TypedQueryRawParameters:
     path: str = attr.ib(kw_only=True)
     method: str = attr.ib(kw_only=True)
+    content_type: str = attr.ib(kw_only=True)
     body: Optional[dict] = attr.ib(kw_only=True)  # is really dict? or Any because we send it as is?
 
 
@@ -29,6 +30,7 @@ class TypedQueryRawParametersSchema(DefaultSchema[TypedQueryRawParameters]):
 
     path = ma_fields.String(load_default="")
     method = ma_fields.String(required=True)
+    content_type = ma_fields.String(required=False, load_default="application/json")
     body = ma_fields.Dict(load_default=None)
 
 
