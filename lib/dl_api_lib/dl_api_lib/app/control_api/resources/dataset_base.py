@@ -115,6 +115,7 @@ class DatasetResource(BIResource):
         dataset: Dataset,
         service_registry: ServicesRegistry,
         us_entry_buffer: USEntryBuffer,
+        conn_id_mapping: Optional[dict] = None,
     ) -> dict:
         ds_accessor = DatasetComponentAccessor(dataset=dataset)
         dsrc_coll_factory = service_registry.get_data_source_collection_factory(us_entry_buffer=us_entry_buffer)
@@ -133,7 +134,7 @@ class DatasetResource(BIResource):
                 {
                     "id": source_id,
                     "title": dsrc_coll.title or origin_dsrc.default_title,
-                    "connection_id": connection_id,
+                    "connection_id": connection_id if not conn_id_mapping else conn_id_mapping.get(connection_id),
                     "managed_by": dsrc_coll.managed_by,
                     "valid": dsrc_coll.valid,
                     "source_type": origin_dsrc.spec.source_type,
@@ -355,12 +356,15 @@ class DatasetResource(BIResource):
 
         return {"options": opt_data}
 
-    def make_dataset_response_data(self, dataset: Dataset, us_entry_buffer: USEntryBuffer) -> dict:
+    def make_dataset_response_data(
+        self, dataset: Dataset, us_entry_buffer: USEntryBuffer, conn_id_mapping: Optional[dict] = None
+    ) -> dict:
         service_registry = self.get_service_registry()
         ds_dict = self.dump_dataset_data(
             dataset=dataset,
             us_entry_buffer=us_entry_buffer,
             service_registry=service_registry,
+            conn_id_mapping=conn_id_mapping,
         )
         ds_dict.update(
             self.dump_option_data(
