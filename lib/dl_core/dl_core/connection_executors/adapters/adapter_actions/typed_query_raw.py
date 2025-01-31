@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from typing import TYPE_CHECKING
 
 import attr
@@ -28,15 +27,15 @@ class TypedQueryRawToDBAQueryConverter:
     """
 
     def make_dba_query(self, typed_query_raw: TypedQueryRaw) -> DBAdapterQuery:
-        params = dict(
-            method=typed_query_raw.parameters.method,
-            content_type=typed_query_raw.parameters.content_type,
-            body=typed_query_raw.parameters.body,
-        )
+        params = typed_query_raw.parameters
         dba_query = DBAdapterQuery(
-            query=typed_query_raw.parameters.path,
-            connector_specific_params=params,
-            debug_compiled_query=json.dumps(dict(path=typed_query_raw.parameters.path, **params)),
+            query=params.path,
+            connector_specific_params=dict(
+                method=params.method,
+                content_type=params.content_type,
+                body=params.body,
+            ),
+            debug_compiled_query=f"{params.method} {params.path} [Content-Type: {params.content_type}]",
         )
         return dba_query
 
