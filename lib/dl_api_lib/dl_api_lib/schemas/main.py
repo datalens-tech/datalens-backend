@@ -15,8 +15,14 @@ from flask_restx.model import RawModel
 from marshmallow import Schema
 from marshmallow import fields as ma_fields
 
-from dl_api_lib.schemas.dataset_base import DatasetContentSchema
-from dl_constants.enums import DataSourceCreatedVia
+from dl_api_lib.schemas.dataset_base import (
+    DatasetContentInternalSchema,
+    DatasetContentSchema,
+)
+from dl_constants.enums import (
+    DataSourceCreatedVia,
+    NotificationLevel,
+)
 from dl_model_tools.schema.base import BaseSchema
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
@@ -90,6 +96,10 @@ class CreateDatasetSchema(DatasetContentSchema):
     created_via = DynamicEnumField(DataSourceCreatedVia, load_default=DataSourceCreatedVia.user)
 
 
+class ExportDatasetSchema(CreateDatasetSchema):
+    pass
+
+
 class CreateDatasetResponseSchema(DatasetContentSchema):
     id = ma_fields.String()
 
@@ -157,3 +167,42 @@ class DashSQLRequestSchema(BaseSchema):
     params = ma_fields.Dict(ma_fields.String(), ma_fields.Nested(DashSQLBindParam()), required=False)
     db_params = ma_fields.Dict(ma_fields.String(), ma_fields.String(), required=False)
     connector_specific_params = ma_fields.Dict(ma_fields.String(), ma_fields.String(), required=False)
+
+
+class IdMappingContentSchema(BaseSchema):
+    id_mapping = ma_fields.Dict(ma_fields.String(), ma_fields.String())
+
+
+class DatasetExportRequestSchema(IdMappingContentSchema):
+    pass
+
+
+class NotificationContentSchema(BaseSchema):
+    code = ma_fields.String(required=False)
+    message = ma_fields.String()
+    level = ma_fields.Enum(NotificationLevel)
+
+
+class DatasetExportResponseSchema(DatasetContentSchema):
+    notifications = ma_fields.Nested(NotificationContentSchema, many=True)
+
+
+class DatasetImportSchema(DatasetContentSchema):
+    pass
+
+
+class DatasetContentImportSchema(DatasetContentInternalSchema):
+    class DatasetContentInternalImportSchema(DatasetContentInternalSchema):
+        name = ma_fields.String()
+
+    dataset = ma_fields.Nested(DatasetContentInternalImportSchema)
+    workbook_id = ma_fields.String(allow_none=True)
+
+
+class DatasetImportRequestSchema(IdMappingContentSchema):
+    data = ma_fields.Nested(DatasetContentImportSchema)
+
+
+class DatasetImportResponseSchema(IdMappingContentSchema):
+    notifications = ma_fields.Nested(NotificationContentSchema, many=True)
+    id = ma_fields.String(required=True)

@@ -240,6 +240,7 @@ class DataSourceCollectionType(Enum):
 
 class DataSourceCreatedVia(DynamicEnum):
     user = AutoEnumValue()
+    workbook_copy = AutoEnumValue()
 
 
 class RLSSubjectType(Enum):
