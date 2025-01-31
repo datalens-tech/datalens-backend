@@ -14,6 +14,7 @@ class TrinoConnTargetDTO(ConnTargetDTO):
     username: str = attr.ib()
     auth_type: TrinoAuthType = attr.ib(kw_only=True, default=TrinoAuthType.NONE)
     password: Optional[str] = attr.ib(repr=False, kw_only=True, default=None)
+    jwt: Optional[str] = attr.ib(repr=False, kw_only=True, default=None)
     ssl_ca: Optional[str] = attr.ib(repr=False, kw_only=True, default=None)
 
     def get_effective_host(self) -> Optional[str]:

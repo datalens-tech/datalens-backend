@@ -10,7 +10,10 @@ import requests
 from requests.adapters import HTTPAdapter
 import sqlalchemy as sa
 from sqlalchemy.engine import Engine
-from trino.auth import BasicAuthentication
+from trino.auth import (
+    BasicAuthentication,
+    JWTAuthentication,
+)
 from trino.dbapi import connect as trino_connect
 
 from dl_core.connection_executors.adapters.adapters_base_sa import BaseSAAdapter
@@ -68,7 +71,7 @@ def construct_creator_func(target_dto: TrinoConnTargetDTO) -> Callable[[], sa.en
         elif target_dto.auth_type is TrinoAuthType.CERTIFICATE:
             raise NotImplementedError("Certificate authentication is not supported yet")
         elif target_dto.auth_type is TrinoAuthType.JWT:
-            raise NotImplementedError("JWT authentication is not supported yet")
+            params["auth"] = JWTAuthentication(target_dto.jwt)
         elif target_dto.auth_type is TrinoAuthType.HEADER:
             raise NotImplementedError("Header authentication is not supported yet")
 

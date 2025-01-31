@@ -28,6 +28,7 @@ class BaseTrinoConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_TRINO_ADAPTER_TV
                 username=self._conn_dto.username,
                 auth_type=self._conn_dto.auth_type,
                 password=self._conn_dto.password,
+                jwt=self._conn_dto.jwt,
                 ssl_ca=self._conn_dto.ssl_ca,
             )
         ]

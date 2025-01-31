@@ -1,14 +1,17 @@
 import asyncio
-import ssl
 from typing import Generator
 
 from frozendict import frozendict
 import pytest
 import requests
-from trino.auth import BasicAuthentication
+from trino.auth import (
+    BasicAuthentication,
+    JWTAuthentication,
+)
 
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
+from dl_connector_trino.core.adapters import CustomHTTPAdapter
 from dl_connector_trino.core.constants import (
     CONNECTION_TYPE_TRINO,
     TrinoAuthType,
@@ -60,14 +63,8 @@ class BaseTrinoSslTestClass(BaseTrinoTestClass):
 
     @pytest.fixture(scope="session")
     def https_session(self, ssl_ca: str) -> requests.Session:
-        class CustomHTTPAdapter(requests.adapters.HTTPAdapter):
-            def init_poolmanager(self, *args, **kwargs):
-                context = ssl.create_default_context(cadata=ssl_ca)
-                context.check_hostname = False
-                super().init_poolmanager(*args, **kwargs, ssl_context=context)
-
         session = requests.Session()
-        session.mount("https://", CustomHTTPAdapter())
+        session.mount("https://", CustomHTTPAdapter(ssl_ca=ssl_ca))
         return session
 
     @pytest.fixture(scope="function")
@@ -107,4 +104,31 @@ class BaseTrinoPasswordTestClass(BaseTrinoSslTestClass):
         return ssl_connection_creation_params | dict(
             auth_type=TrinoAuthType.PASSWORD,
             password=test_config.CorePasswordConnectionSettings.PASSWORD,
+        )
+
+
+class BaseTrinoJwtTestClass(BaseTrinoSslTestClass):
+    @pytest.fixture(scope="session")
+    def jwt_session(self, https_session: requests.Session) -> requests.Session:
+        auth = JWTAuthentication(test_config.CoreJwtConnectionSettings.JWT)
+        session = auth.set_http_session(https_session)
+        return session
+
+    @pytest.fixture(scope="class")
+    def engine_params(self, jwt_session: requests.Session) -> dict:
+        engine_params = {
+            "connect_args": frozendict(
+                {
+                    "http_scheme": "https",
+                    "http_session": jwt_session,
+                }
+            ),
+        }
+        return engine_params
+
+    @pytest.fixture(scope="function")
+    def connection_creation_params(self, ssl_connection_creation_params: dict) -> dict:
+        return ssl_connection_creation_params | dict(
+            auth_type=TrinoAuthType.JWT,
+            jwt=test_config.CoreJwtConnectionSettings.JWT,
         )

@@ -41,6 +41,18 @@ class CorePasswordConnectionSettings(CoreSslConnectionSettings):
     AUTH_TYPE: ClassVar[str] = TrinoAuthType.PASSWORD
 
 
+class CoreJwtConnectionSettings(CoreSslConnectionSettings):
+    JWT: ClassVar[str] = (
+        "ewogICJhbGciOiAiUlMyNTYiLAogICJ0eXAiOiAiSldUIgp9Cg.ewogICJpc3MiOiAidGVzdF9qd3RfaXNzdWVyIiwKICAiYXVkI"
+        "jogInRlc3RfdHJpbm9fY29vcmRpbmF0b3IiLAogICJzdWIiOiAidHJpbm9fdXNlciIsCiAgImlhdCI6IDE3MzgzMzkxOTIKfQo.k"
+        "hyhr2nRZuGRG2cKCEM5vlcOxV7dh4vMSzRQ1VLa6F5-KwvytVbhgO0VvEr0FDJTs8sekU56BtzhN-bfDijQIcVdP5ePojVjrwoHs"
+        "haZIPmS0fhBpR8G9XAphIToBB-WtxW3bzAqVAsmUFctUSzRw7iKilcfzS6He8YhIqGOEQ7GFQxHHiquuwo0HoH60LuDoZVPhnIRw"
+        "oKkShhF7QYokB2a-9nE8OUrhvfdy4Ix_9u_FnaToXZUhTomEIOV4Fut9QihslkSlKetTsZFtD5J5oZ292wa_mI8P_jE13tMP7iZl"
+        "mUhNcNenmf7WsxqSP7SZDmItS-pPdfrAWSYw4EyHw"
+    )
+    AUTH_TYPE: ClassVar[str] = TrinoAuthType.JWT
+
+
 DB_URLS = {
     D.TRINO_468: f"trino://datalens@"
     f'{get_test_container_hostport("trino-no-auth", fallback_port=21123).as_pair()}/test_memory_catalog',

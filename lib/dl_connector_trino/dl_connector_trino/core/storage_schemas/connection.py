@@ -20,3 +20,9 @@ class TrinoConnectionDataStorageSchema(ConnectionSQLDataStorageSchema[Connection
         dump_default=None,
         load_default=None,
     )
+    jwt = ma_fields.String(
+        required=False,
+        allow_none=True,
+        dump_default=None,
+        load_default=None,
+    )
