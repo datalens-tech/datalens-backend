@@ -89,6 +89,7 @@ class TypedQueryResult(TypedQueryBase):
 class TypedQueryRawParameters:
     path: str = attr.ib()
     method: str = attr.ib()
+    content_type: str = attr.ib(default="application/json")
     body: Optional[dict] = attr.ib(factory=dict)
 
 

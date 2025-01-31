@@ -79,6 +79,7 @@ class TypedQueryRawSerializerParametersSchema(DefaultSchema[TypedQueryRawParamet
 
     path = ma_fields.String()
     method = ma_fields.String(required=True)
+    content_type = ma_fields.String(required=False, load_default="application/json")
     body = ma_fields.Raw(load_default=None)
 
 

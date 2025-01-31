@@ -70,6 +70,7 @@ class DashSQLTypedQueryRawView(BaseView):
             parameters=TypedQueryRawParameters(
                 path=raw_typed_query.parameters.path,
                 method=raw_typed_query.parameters.method,
+                content_type=raw_typed_query.parameters.content_type,
                 body=raw_typed_query.parameters.body,
             ),
         )

@@ -30,7 +30,9 @@ class TypedQueryRawToDBAQueryConverter:
         dba_query = DBAdapterQuery(
             query=typed_query_raw.parameters.path,
             connector_specific_params=dict(
-                method=typed_query_raw.parameters.method, body=typed_query_raw.parameters.body
+                method=typed_query_raw.parameters.method,
+                content_type=typed_query_raw.parameters.content_type,
+                body=typed_query_raw.parameters.body,
             ),
         )
         return dba_query
