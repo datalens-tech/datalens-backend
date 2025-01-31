@@ -66,9 +66,8 @@ class TestMigration(DefaultCoreTestClass):
     def test_migration(self, sync_us_migration_manager, saved_dataset):
         dataset = saved_dataset
         assert "test_field" not in dataset.meta
-        assert not dataset.migrated
         sync_us_migration_manager.save(dataset)
         dataset = sync_us_migration_manager.get_by_id(entry_id=dataset.uuid)
         assert "test_field" in dataset.meta
         assert dataset.meta["test_field"] == "test_value"
-        assert dataset.migrated
+        assert dataset.migration_status == "migrated_up"

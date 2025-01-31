@@ -163,7 +163,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         links: Optional[dict] = None,
         hidden: bool = False,
         data_strict: bool = True,
-        migrated: bool = False,
+        migration_status: Optional[str] = None,
         *,
         us_manager: USManagerBase,
     ):
@@ -181,7 +181,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             links=links,
             hidden=hidden,
             data_strict=data_strict,
-            migrated=migrated,
+            migration_status=migration_status,
             us_manager=us_manager,
         )
 
