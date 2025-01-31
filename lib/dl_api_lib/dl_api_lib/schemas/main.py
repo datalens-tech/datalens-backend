@@ -96,10 +96,6 @@ class CreateDatasetSchema(DatasetContentSchema):
     created_via = DynamicEnumField(DataSourceCreatedVia, load_default=DataSourceCreatedVia.user)
 
 
-class ExportDatasetSchema(CreateDatasetSchema):
-    pass
-
-
 class CreateDatasetResponseSchema(DatasetContentSchema):
     id = ma_fields.String()
 
@@ -185,10 +181,6 @@ class NotificationContentSchema(BaseSchema):
 
 class DatasetExportResponseSchema(DatasetContentSchema):
     notifications = ma_fields.Nested(NotificationContentSchema, many=True)
-
-
-class DatasetImportSchema(DatasetContentSchema):
-    pass
 
 
 class DatasetContentImportSchema(DatasetContentInternalSchema):
