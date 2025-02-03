@@ -1,5 +1,6 @@
 import abc
 from typing import Optional
+import uuid
 
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
@@ -83,3 +84,25 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
             ).dataset
             assert dataset.sources
             assert all(source.connection_id == new_connection_id for source in dataset.sources)
+
+    def test_export_import_dataset(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_connection_id: str,
+        saved_dataset: Dataset,
+        sync_us_manager: SyncUSManager,
+    ) -> None:
+        export_data = {"id_mapping": {saved_connection_id: "conn_id_1"}}
+        export_resp = control_api.export_dataset(saved_dataset, data=export_data)
+        assert export_resp.status_code == 200
+        assert export_resp.json["dataset"]["sources"][0]["connection_id"] == "conn_id_1"
+
+        export_resp.json["dataset"]["name"] = "Dataset " + str(uuid.uuid4())
+        import_data: dict = {
+            "id_mapping": {"conn_id_1": saved_connection_id},
+            "data": {"workbook_id": None, "dataset": export_resp.json["dataset"]},
+        }
+        import_resp = control_api.import_dataset(data=import_data)
+        assert import_resp.status_code == 200, import_resp.json["dataset"] != export_resp.json["dataset"]
+
+        control_api.delete_dataset(dataset_id=import_resp.json["id"])
