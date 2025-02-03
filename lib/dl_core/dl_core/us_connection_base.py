@@ -164,7 +164,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         links: Optional[dict] = None,
         hidden: bool = False,
         data_strict: bool = True,
-        migration_status: str = MigrationStatus.non_migrated.value,
+        migration_status: MigrationStatus = MigrationStatus.non_migrated,
         *,
         us_manager: USManagerBase,
     ):

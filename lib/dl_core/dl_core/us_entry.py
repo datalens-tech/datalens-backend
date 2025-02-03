@@ -50,7 +50,7 @@ class USEntry:
     permissions: Optional[dict[str, bool]] = None
     hidden: bool
     links: Optional[dict] = None
-    migration_status: str = MigrationStatus.non_migrated.value
+    migration_status: MigrationStatus = MigrationStatus.non_migrated
 
     _stored_in_db: bool = False
     _us_resp: Optional[dict] = None
@@ -118,7 +118,7 @@ class USEntry:
         links: Optional[dict] = None,
         hidden: bool = False,
         data_strict: bool = True,
-        migration_status: str = MigrationStatus.non_migrated.value,
+        migration_status: MigrationStatus = MigrationStatus.non_migrated,
         *,
         us_manager: USManagerBase,
     ):
@@ -302,7 +302,7 @@ class USMigrationEntry(USEntry):
         links: Optional[dict] = None,
         hidden: bool = False,
         data_strict: bool = True,
-        migration_status: str = MigrationStatus.non_migrated.value,
+        migration_status: MigrationStatus = MigrationStatus.non_migrated,
         *,
         us_manager: USManagerBase,
         unversioned_data: Optional[dict[str, Any]],
