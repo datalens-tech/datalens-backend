@@ -1,0 +1,4 @@
+FROM trinodb/trino:468@sha256:a2b6d3d46c2776c9c1ec3dcdac170d19f98dc538f2c9f2c454f2a364e7f37b87
+
+COPY trino/config/* /etc/trino/
+COPY trino/catalog/* /etc/trino/catalog/

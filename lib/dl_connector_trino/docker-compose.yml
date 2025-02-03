@@ -1,0 +1,72 @@
+services:
+  trino-no-auth:
+    # image: "trinodb/trino:468"
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.engine-trino-no-auth-468
+    depends_on:
+      - db-mysql-8-0
+    ports:
+      - "21123:8080"
+
+  trino:
+    # image: "trinodb/trino:468"
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.engine-trino-468
+  #   Auth types:
+  #     HTTPS PASSWORD:
+  #       trino_user : trino_password
+
+  trino-tls-nginx:
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.trino-tls-nginx
+    depends_on:
+      - trino
+      - ssl-provider
+      - db-mysql-8-0
+    ports:
+      - "21124:443"
+
+  # SOURCES
+  db-mysql-8-0:
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-mysql-8.0.40
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+      MYSQL_DATABASE: "test_data"
+      MYSQL_USER: "datalens"
+      MYSQL_PASSWORD: "qwerty"
+
+  # INFRA
+  ssl-provider:
+    build:
+      context: ../testenv-common/images
+      dockerfile: Dockerfile.ssl-provider
+      args:
+        CERTIFIED_DOMAIN: "trino-tls-nginx"
+    ports:
+      - "26002:80"
+
+  pg-us:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: pg-us
+    ports:
+     - "22087:5432"
+
+  us:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: us
+    ports:
+     - "21133:8083"
+
+  redis-caches:
+    image: "bitnami/redis:5.0.8@sha256:3127620da977815556439a9dc347fff89432a79b6bb6e93a16f20ac4a34ce337"
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+     - "22569:6379"
