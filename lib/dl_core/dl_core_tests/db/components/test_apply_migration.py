@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 import attr
 import pytest
 
+from dl_constants.enums import MigrationStatus
 from dl_core.us_manager.schema_migration.base import (
     BaseEntrySchemaMigration,
     Migration,
@@ -70,4 +71,4 @@ class TestMigration(DefaultCoreTestClass):
         dataset = sync_us_migration_manager.get_by_id(entry_id=dataset.uuid)
         assert "test_field" in dataset.meta
         assert dataset.meta["test_field"] == "test_value"
-        assert dataset.migration_status == "migrated_up"
+        assert dataset.migration_status == MigrationStatus.migrated_up
