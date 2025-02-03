@@ -340,7 +340,7 @@ class USManagerBase:
             permissions=us_resp.get("permissions") or {},
             links=us_resp.get("links") or {},
             hidden=us_resp["hidden"],
-            migration_status=MigrationStatus[us_resp["migration_status"]],
+            migration_status=MigrationStatus(us_resp["migration_status"]),
         )
 
         entry: USEntry
