@@ -5,3 +5,7 @@ COPY nginx/fetch-certificates.sh /docker-entrypoint.d/
 
 RUN mkdir -p /etc/nginx/certs && \
     chmod +x /docker-entrypoint.d/fetch-certificates.sh
+
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=5 \
+    CMD curl -fsS https://localhost/v1/info/state | grep -q '"ACTIVE"'
