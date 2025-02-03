@@ -26,7 +26,6 @@ class ClickHouseConnectionSchema(
         attribute="data.password",
         required=False,
         allow_none=True,
-        bi_extra=FieldExtra(editable=True),
     )
 
     secure = core_ma_fields.OnOffField(attribute="data.secure", bi_extra=FieldExtra(editable=True))
@@ -38,4 +37,4 @@ class ClickHouseConnectionSchema(
         load_default=None,
         load_only=True,
     )
-    readonly = ma_fields.Integer(attribute="data.readonly", bi_extra=FieldExtra(editable=True))
+    readonly = ma_fields.Integer(attribute="data.readonly", bi_extra=FieldExtra(editable=True), load_default=2)

@@ -36,7 +36,6 @@ class SnowFlakeConnectionSchema(ConnectionSchema, RawSQLLevelMixin):
     client_secret = secret_string_field(
         attribute="data.client_secret",
         required=True,
-        bi_extra=FieldExtra(editable=True),
     )
     schema = ma_fields.String(
         attribute="data.schema",
@@ -57,7 +56,6 @@ class SnowFlakeConnectionSchema(ConnectionSchema, RawSQLLevelMixin):
     refresh_token = secret_string_field(
         attribute="data.refresh_token",
         required=False,
-        bi_extra=FieldExtra(editable=True),
     )
     refresh_token_expire_time = ma_fields.DateTime(
         attribute="data.refresh_token_expire_time",

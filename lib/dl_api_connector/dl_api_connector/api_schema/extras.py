@@ -20,9 +20,17 @@ class CreateMode(OperationsMode):
     test = enum.auto()
 
 
+class ImportMode(OperationsMode):
+    create_from_import = enum.auto()
+
+
 class EditMode(OperationsMode):
     edit = enum.auto()
     test = enum.auto()
+
+
+class ExportMode(OperationsMode):
+    export = enum.auto()
 
 
 class SchemaKWArgs(TypedDict):
@@ -38,3 +46,4 @@ class FieldExtra:
     partial_in: Sequence[OperationsMode] = ()
     exclude_in: Sequence[OperationsMode] = ()
     editable: Union[bool, Sequence[OperationsMode]] = ()
+    export_fake: Optional[bool] = False

@@ -144,6 +144,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     allowed_source_types: ClassVar[Optional[frozenset[DataSourceType]]] = None
     allow_dashsql: ClassVar[bool] = False
     allow_cache: ClassVar[bool] = False
+    allow_export: ClassVar[bool] = False
     is_always_internal_source: ClassVar[bool] = False
     is_always_user_source: ClassVar[bool] = False
 
@@ -368,6 +369,9 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         )
 
     def check_for_notifications(self) -> list[Optional[NotificationReportingRecord]]:
+        return []
+
+    def get_warnings_list(self, localizer: Optional[Localizer] = None) -> list[dict]:
         return []
 
     def get_cache_key_part(self) -> LocalKeyRepresentation:
