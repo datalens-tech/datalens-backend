@@ -40,7 +40,7 @@ def get_lifecycle_manager_cls(conn_type: ConnectionType) -> Type[ConnectionLifec
 
 def get_schema_migration_cls(conn_type_name: str) -> Type[ConnectionSchemaMigration]:
     """Return class for given connection type"""
-    return CONNECTION_SHEMA_MIGRATION_CLASSES[conn_type_name]
+    return CONNECTION_SHEMA_MIGRATION_CLASSES.get(conn_type_name, DefaultConnectionSchemaMigration)
 
 
 def register_connection_class(
