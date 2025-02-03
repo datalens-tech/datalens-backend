@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 import attr
 import pytest
 
+from dl_constants.enums import MigrationStatus
 from dl_core.us_manager.schema_migration.base import (
     BaseEntrySchemaMigration,
     Migration,
@@ -20,15 +21,15 @@ if TYPE_CHECKING:
 
 
 @attr.s
-class TestEntrySchemaMigration(BaseEntrySchemaMigration):
+class SimpleEntrySchemaMigration(BaseEntrySchemaMigration):
     @property
     def migrations(self) -> list[Migration]:
         migrations = [
             Migration(
                 datetime(2025, 1, 1, 12, 0, 0),
                 "Test migration",
-                up_function=TestEntrySchemaMigration._migrate_v1_to_v2,
-                down_function=TestEntrySchemaMigration._migrate_v2_to_v1,
+                up_function=SimpleEntrySchemaMigration._migrate_v1_to_v2,
+                down_function=SimpleEntrySchemaMigration._migrate_v2_to_v1,
                 downgrade_only=False,
             ),
         ]
@@ -46,21 +47,21 @@ class TestEntrySchemaMigration(BaseEntrySchemaMigration):
         return entry
 
 
-class TestEntrySchemaMigrationFactory(EntrySchemaMigrationFactoryBase):
+class SimpleEntrySchemaMigrationFactory(EntrySchemaMigrationFactoryBase):
     def get_schema_migration(
         self,
         entry_scope: str,
         entry_type: str,
         service_registry: ServicesRegistry | None = None,
     ) -> BaseEntrySchemaMigration:
-        return TestEntrySchemaMigration()
+        return SimpleEntrySchemaMigration()
 
 
 class TestMigration(DefaultCoreTestClass):
     @pytest.fixture(scope="function")
     def sync_us_migration_manager(self, conn_default_sync_us_manager: SyncUSManager) -> SyncUSManager:
         return conn_default_sync_us_manager.clone(
-            schema_migration_factory=TestEntrySchemaMigrationFactory(),
+            schema_migration_factory=SimpleEntrySchemaMigrationFactory(),
         )
 
     def test_migration(self, sync_us_migration_manager, saved_dataset):
@@ -70,3 +71,4 @@ class TestMigration(DefaultCoreTestClass):
         dataset = sync_us_migration_manager.get_by_id(entry_id=dataset.uuid)
         assert "test_field" in dataset.meta
         assert dataset.meta["test_field"] == "test_value"
+        assert dataset.migration_status == MigrationStatus.migrated_up

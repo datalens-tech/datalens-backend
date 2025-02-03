@@ -399,3 +399,10 @@ class QueryProcessingMode(DynamicEnum):
 
 class DataPivotEngineType(DynamicEnum):
     pass
+
+
+class MigrationStatus(Enum):
+    non_migrated = "non_migrated"
+    migrated_up = "migrated_up"
+    migrated_down = "migrated_down"
+    error = "error"

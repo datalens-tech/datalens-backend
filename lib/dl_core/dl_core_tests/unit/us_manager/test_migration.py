@@ -1,9 +1,9 @@
-from copy import deepcopy
 from datetime import datetime
 
 import attr
 import pytest
 
+from dl_constants.enums import MigrationStatus
 from dl_core.exc import UnknownEntryMigration
 from dl_core.us_manager.schema_migration.base import (
     BaseEntrySchemaMigration,
@@ -185,7 +185,8 @@ def test_successful_migration(l2_migrator):
             "l1_field": "added_in_l1",
             "l2_field": "added_in_l2",
             "schema_version": "2022-12-04T13:00:00",
-        }
+        },
+        "migration_status": MigrationStatus.migrated_up.value,
     }
     result = l2_migrator.migrate(entry)
     assert result == expected
@@ -200,8 +201,17 @@ def test_no_migration_needed(l2_migrator):
             "schema_version": "2022-12-04T13:00:00",
         }
     }
+    expected = {
+        "data": {
+            "new_field": "default_value",
+            "l1_field": "added_in_l1",
+            "l2_field": "added_in_l2",
+            "schema_version": "2022-12-04T13:00:00",
+        },
+        "migration_status": MigrationStatus.non_migrated.value,
+    }
     result = l2_migrator.migrate(entry)
-    assert result == entry
+    assert result == expected
 
 
 def test_invalid_data_format(l2_migrator):
@@ -236,10 +246,15 @@ def test_migration_failure(l3_nonstrict_migrator):
             "schema_version": "1",
         }
     }
-    original_entry = deepcopy(entry)
-
+    expected = {
+        "data": {
+            "old_field": "value1",
+            "schema_version": "1",
+        },
+        "migration_status": MigrationStatus.error.value,
+    }
     result = l3_nonstrict_migrator.migrate(entry)
-    assert result == original_entry
+    assert result == expected
 
 
 @pytest.mark.parametrize(
@@ -272,7 +287,8 @@ def test_downgrade_only_up_migration(l2_downgrade_migrator):
             "new_field": "value1",
             "l1_field": "added_in_l1",
             "schema_version": "2022-12-04T13:00:00",
-        }
+        },
+        "migration_status": MigrationStatus.migrated_up.value,
     }
     result = l2_downgrade_migrator.migrate(entry)
     assert result == expected
@@ -292,7 +308,8 @@ def test_downgrade_only_down_migration(l2_downgrade_migrator):
             "new_field": "value1",
             "l1_field": "added_in_l1",
             "schema_version": "2022-12-05T12:59:59",
-        }
+        },
+        "migration_status": MigrationStatus.migrated_down.value,
     }
     result = l2_downgrade_migrator.migrate(entry)
     assert result == expected

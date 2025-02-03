@@ -30,7 +30,10 @@ from dl_configs.crypto_keys import (
     CryptoKeysConfig,
     get_crypto_keys_config_from_env,
 )
-from dl_constants.enums import ConnectionType
+from dl_constants.enums import (
+    ConnectionType,
+    MigrationStatus,
+)
 from dl_core import exc
 from dl_core.base_models import (
     ConnectionRef,
@@ -337,6 +340,7 @@ class USManagerBase:
             permissions=us_resp.get("permissions") or {},
             links=us_resp.get("links") or {},
             hidden=us_resp["hidden"],
+            migration_status=MigrationStatus(us_resp["migration_status"]),
         )
 
         entry: USEntry
@@ -392,6 +396,7 @@ class USManagerBase:
         entry_data.update(
             entryId=entry.uuid,
             unversionedData=entry_data.pop("unversioned_data"),
+            migration_status=entry.migration_status,
             **entry_loc.to_us_resp_api_params(entry.raw_us_key),
         )
         return self._entry_dict_to_obj(entry_data)
