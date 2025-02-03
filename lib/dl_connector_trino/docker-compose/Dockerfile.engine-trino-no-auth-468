@@ -4,4 +4,4 @@ COPY trino/no_auth_config/* /etc/trino/
 COPY trino/catalog/* /etc/trino/catalog/
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=5 \
-    CMD trino --execute "SELECT 1"
+    CMD curl -fsS http://localhost:8080/v1/info/state | grep -q '"ACTIVE"'

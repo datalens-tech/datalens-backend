@@ -8,4 +8,4 @@ RUN mkdir -p /etc/nginx/certs && \
 
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=5 \
-    CMD curl -fsS https://localhost/v1/info/state | grep -q '"ACTIVE"'
+    CMD curl -fsS -k -u trino_user:trino_password --fail https://localhost/v1/statement -H 'X-Trino-User: trino_user' -H 'X-Trino-Source: healthcheck' --data 'SELECT 1' | grep -q '"QUEUED"'

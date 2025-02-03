@@ -16,12 +16,6 @@ services:
       dockerfile: Dockerfile.engine-trino-468
     depends_on:
       - db-mysql-8-0
-    healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost:8080/v1/info/state"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
 
   trino-tls-nginx:
     build:
