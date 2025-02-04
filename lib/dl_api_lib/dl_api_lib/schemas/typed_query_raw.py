@@ -1,4 +1,6 @@
-from typing import Optional
+from typing import (
+    Any,
+)
 
 import attr
 from marshmallow import fields as ma_fields
@@ -16,7 +18,7 @@ class TypedQueryRawParameters:
     path: str = attr.ib(kw_only=True)
     method: str = attr.ib(kw_only=True)
     content_type: str = attr.ib(kw_only=True)
-    body: Optional[dict] = attr.ib(kw_only=True)  # is really dict? or Any because we send it as is?
+    body: Any = attr.ib(kw_only=True)
 
 
 @attr.s(frozen=True)
@@ -31,7 +33,7 @@ class TypedQueryRawParametersSchema(DefaultSchema[TypedQueryRawParameters]):
     path = ma_fields.String(load_default="")
     method = ma_fields.String(required=True)
     content_type = ma_fields.String(required=False, load_default="application/json")
-    body = ma_fields.Dict(load_default=None)
+    body = ma_fields.Raw(load_default=None)
 
 
 class TypedQueryRawSchema(DefaultSchema[RawTypedQueryRaw]):
