@@ -109,6 +109,7 @@ def compile_query_for_debug(query, dialect):  # type: ignore  # TODO: fix
             compiled = query.compile(dialect=dialect)
             return "{0}; {1!r}".format(str(query), compiled.params)
     except Exception:
+        LOGGER.exception("Failed to compile query for debug")
         return "-"
 
 
