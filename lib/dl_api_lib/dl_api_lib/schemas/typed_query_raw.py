@@ -1,6 +1,4 @@
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 from marshmallow import fields as ma_fields
