@@ -1,5 +1,8 @@
 import asyncio
-from typing import Generator
+from typing import (
+    Callable,
+    Generator,
+)
 
 from frozendict import frozendict
 import pytest
@@ -10,6 +13,7 @@ from trino.auth import (
 )
 
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
+from dl_utils.wait import wait_for
 
 from dl_connector_trino.core.adapters import CustomHTTPAdapter
 from dl_connector_trino.core.constants import (
@@ -23,6 +27,30 @@ import dl_connector_trino_tests.db.config as test_config
 class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     conn_type = CONNECTION_TYPE_TRINO
     core_test_config = test_config.CORE_TEST_CONFIG
+
+    @pytest.fixture(scope="session")
+    def check_trino_liveness(self) -> Callable[[], bool]:
+        def check() -> bool:
+            request_state_url = f"http://{test_config.CoreConnectionSettings.HOST}:{test_config.CoreConnectionSettings.PORT}/v1/info/state"
+            try:
+                response = requests.get(request_state_url)
+                response.raise_for_status()
+                if '"ACTIVE"' in response.text:
+                    return True
+                return False
+            except requests.RequestException:
+                return False
+
+        return check
+
+    @pytest.fixture(scope="session", autouse=True)
+    def wait_for_trino(self, check_trino_liveness: Callable[[], bool]) -> None:
+        wait_for(
+            name="Trino readiness",
+            condition=check_trino_liveness,
+            timeout=90,
+            require=True,
+        )
 
     @pytest.fixture(autouse=True)
     # FIXME: This fixture is a temporary solution for failing core tests when they are run together with api tests
@@ -49,6 +77,32 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
 
 
 class BaseTrinoSslTestClass(BaseTrinoTestClass):
+    @pytest.fixture(scope="session")
+    def check_trino_liveness(self) -> Callable[[], bool]:
+        def check() -> bool:
+            post_statement_url = f"https://{test_config.CoreSslConnectionSettings.HOST}:{test_config.CoreSslConnectionSettings.PORT}/v1/statement"
+            headers = {
+                "X-Trino-User": test_config.CoreSslConnectionSettings.USERNAME,
+                "X-Trino-Source": "healthcheck",
+            }
+            auth = (test_config.CoreSslConnectionSettings.USERNAME, test_config.CorePasswordConnectionSettings.PASSWORD)
+            try:
+                response = requests.post(
+                    post_statement_url,
+                    headers=headers,
+                    auth=auth,
+                    data="SELECT 1",
+                    verify=False,
+                )
+                response.raise_for_status()
+                if '"QUEUED"' in response.text:
+                    return True
+                return False
+            except requests.RequestException:
+                return False
+
+        return check
+
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
         return test_config.DB_CORE_SSL_URL
