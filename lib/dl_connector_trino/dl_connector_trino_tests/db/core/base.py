@@ -29,13 +29,36 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     core_test_config = test_config.CORE_TEST_CONFIG
 
     @pytest.fixture(scope="session")
-    def check_trino_liveness(self) -> Callable[[], bool]:
+    def check_trino_params(self):
+        return dict(
+            scheme="http",
+            host=test_config.CoreConnectionSettings.HOST,
+            port=test_config.CoreConnectionSettings.PORT,
+            username=test_config.CoreConnectionSettings.USERNAME,
+            auth=None,
+        )
+
+    @pytest.fixture(scope="session")
+    def check_trino_liveness(self, check_trino_params: dict) -> Callable[[], bool]:
+        post_statement_url = (
+            f"{check_trino_params['scheme']}://{check_trino_params['host']}:{check_trino_params['port']}/v1/statement"
+        )
+        headers = {
+            "X-Trino-User": check_trino_params["username"],
+            "X-Trino-Source": "healthcheck",
+        }
+
         def check() -> bool:
-            request_state_url = f"http://{test_config.CoreConnectionSettings.HOST}:{test_config.CoreConnectionSettings.PORT}/v1/info/state"
             try:
-                response = requests.get(request_state_url)
+                response = requests.post(
+                    post_statement_url,
+                    headers=headers,
+                    auth=check_trino_params["auth"],
+                    data="SELECT 1",
+                    verify=False,
+                )
                 response.raise_for_status()
-                if '"ACTIVE"' in response.text:
+                if '"QUEUED"' in response.text:
                     return True
                 return False
             except requests.RequestException:
@@ -78,30 +101,14 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
 
 class BaseTrinoSslTestClass(BaseTrinoTestClass):
     @pytest.fixture(scope="session")
-    def check_trino_liveness(self) -> Callable[[], bool]:
-        def check() -> bool:
-            post_statement_url = f"https://{test_config.CoreSslConnectionSettings.HOST}:{test_config.CoreSslConnectionSettings.PORT}/v1/statement"
-            headers = {
-                "X-Trino-User": test_config.CoreSslConnectionSettings.USERNAME,
-                "X-Trino-Source": "healthcheck",
-            }
-            auth = (test_config.CoreSslConnectionSettings.USERNAME, test_config.CorePasswordConnectionSettings.PASSWORD)
-            try:
-                response = requests.post(
-                    post_statement_url,
-                    headers=headers,
-                    auth=auth,
-                    data="SELECT 1",
-                    verify=False,
-                )
-                response.raise_for_status()
-                if '"QUEUED"' in response.text:
-                    return True
-                return False
-            except requests.RequestException:
-                return False
-
-        return check
+    def check_trino_params(self):
+        return dict(
+            scheme="https",
+            host=test_config.CoreSslConnectionSettings.HOST,
+            port=test_config.CoreSslConnectionSettings.PORT,
+            username=test_config.CoreSslConnectionSettings.USERNAME,
+            auth=(test_config.CoreSslConnectionSettings.USERNAME, test_config.CorePasswordConnectionSettings.PASSWORD),
+        )
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
