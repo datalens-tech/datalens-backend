@@ -1,8 +1,5 @@
 import asyncio
-from typing import (
-    Callable,
-    Generator,
-)
+from typing import Generator
 
 from frozendict import frozendict
 import pytest
@@ -35,25 +32,24 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
             host=test_config.CoreConnectionSettings.HOST,
             port=test_config.CoreConnectionSettings.PORT,
             username=test_config.CoreConnectionSettings.USERNAME,
-            auth=None,
         )
 
-    @pytest.fixture(scope="session")
-    def check_trino_liveness(self, check_trino_params: dict) -> Callable[[], bool]:
-        post_statement_url = (
-            f"{check_trino_params['scheme']}://{check_trino_params['host']}:{check_trino_params['port']}/v1/statement"
-        )
+    @pytest.fixture(scope="session", autouse=True)
+    def wait_for_trino(self, check_trino_params: dict) -> None:
+        scheme, host, port = check_trino_params["scheme"], check_trino_params["host"], check_trino_params["port"]
+        post_statement_url = f"{scheme}://{host}:{port}/v1/statement"
         headers = {
             "X-Trino-User": check_trino_params["username"],
             "X-Trino-Source": "healthcheck",
         }
+        auth = check_trino_params.get("auth")
 
-        def check() -> bool:
+        def check_trino_liveness() -> bool:
             try:
                 response = requests.post(
                     post_statement_url,
                     headers=headers,
-                    auth=check_trino_params["auth"],
+                    auth=auth,
                     data="SELECT 1",
                     verify=False,
                 )
@@ -64,10 +60,6 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
             except requests.RequestException:
                 return False
 
-        return check
-
-    @pytest.fixture(scope="session", autouse=True)
-    def wait_for_trino(self, check_trino_liveness: Callable[[], bool]) -> None:
         wait_for(
             name="Trino readiness",
             condition=check_trino_liveness,
