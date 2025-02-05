@@ -54,8 +54,7 @@ class CoreJwtConnectionSettings(CoreSslConnectionSettings):
 
 
 DB_URLS = {
-    D.TRINO_468: f"trino://datalens@"
-    f'{get_test_container_hostport("trino-no-auth", fallback_port=21123).as_pair()}',
+    D.TRINO_468: f"trino://datalens@" f'{get_test_container_hostport("trino-no-auth", fallback_port=21123).as_pair()}',
     (D.TRINO_468, "ssl"): f"trino://trino_user@"
     f'{get_test_container_hostport("trino-tls-nginx", fallback_port=21124).as_pair()}',
 }

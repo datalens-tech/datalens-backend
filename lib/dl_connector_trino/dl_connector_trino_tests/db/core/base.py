@@ -25,24 +25,23 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     conn_type = CONNECTION_TYPE_TRINO
     core_test_config = test_config.CORE_TEST_CONFIG
 
-    @pytest.fixture(scope="session")
-    def check_trino_params(self):
-        return dict(
-            scheme="http",
-            host=test_config.CoreConnectionSettings.HOST,
-            port=test_config.CoreConnectionSettings.PORT,
-            username=test_config.CoreConnectionSettings.USERNAME,
-        )
-
     @pytest.fixture(scope="session", autouse=True)
-    def wait_for_trino(self, check_trino_params: dict) -> None:
-        scheme, host, port = check_trino_params["scheme"], check_trino_params["host"], check_trino_params["port"]
+    def wait_for_trino(self, connection_creation_params: dict) -> None:
+        host, port = connection_creation_params["host"], connection_creation_params["port"]
+        scheme = "http" if connection_creation_params["auth_type"] is TrinoAuthType.NONE else "https"
         post_statement_url = f"{scheme}://{host}:{port}/v1/statement"
         headers = {
-            "X-Trino-User": check_trino_params["username"],
+            "X-Trino-User": test_config.CorePasswordConnectionSettings.USERNAME,
             "X-Trino-Source": "healthcheck",
         }
-        auth = check_trino_params.get("auth")
+        auth = (
+            (
+                test_config.CorePasswordConnectionSettings.USERNAME,
+                test_config.CorePasswordConnectionSettings.PASSWORD,
+            )
+            if connection_creation_params["auth_type"] is not TrinoAuthType.NONE
+            else None
+        )
 
         def check_trino_liveness() -> bool:
             try:
@@ -80,7 +79,7 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     def db_url(self) -> str:
         return test_config.DB_CORE_URL
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture(scope="session")
     def connection_creation_params(self) -> dict:
         return dict(
             host=test_config.CoreConnectionSettings.HOST,
@@ -92,16 +91,6 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
 
 
 class BaseTrinoSslTestClass(BaseTrinoTestClass):
-    @pytest.fixture(scope="session")
-    def check_trino_params(self):
-        return dict(
-            scheme="https",
-            host=test_config.CoreSslConnectionSettings.HOST,
-            port=test_config.CoreSslConnectionSettings.PORT,
-            username=test_config.CoreSslConnectionSettings.USERNAME,
-            auth=(test_config.CoreSslConnectionSettings.USERNAME, test_config.CorePasswordConnectionSettings.PASSWORD),
-        )
-
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
         return test_config.DB_CORE_SSL_URL
@@ -120,7 +109,7 @@ class BaseTrinoSslTestClass(BaseTrinoTestClass):
         session.mount("https://", CustomHTTPAdapter(ssl_ca=ssl_ca))
         return session
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture(scope="session")
     def ssl_connection_creation_params(self, ssl_ca: str) -> dict:
         return dict(
             host=test_config.CoreSslConnectionSettings.HOST,
@@ -152,7 +141,7 @@ class BaseTrinoPasswordTestClass(BaseTrinoSslTestClass):
         }
         return engine_params
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture(scope="session")
     def connection_creation_params(self, ssl_connection_creation_params: dict) -> dict:
         return ssl_connection_creation_params | dict(
             auth_type=TrinoAuthType.PASSWORD,
@@ -179,7 +168,7 @@ class BaseTrinoJwtTestClass(BaseTrinoSslTestClass):
         }
         return engine_params
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture(scope="session")
     def connection_creation_params(self, ssl_connection_creation_params: dict) -> dict:
         return ssl_connection_creation_params | dict(
             auth_type=TrinoAuthType.JWT,
