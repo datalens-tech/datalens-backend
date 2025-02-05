@@ -1,5 +1,4 @@
 import asyncio
-from time import sleep
 from typing import (
     Callable,
     Generator,
@@ -46,7 +45,6 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
 
     @pytest.fixture(scope="session", autouse=True)
     def wait_for_trino(self, check_trino_liveness: Callable[[], bool]) -> None:
-        sleep(360)
         wait_for(
             name="Trino readiness",
             condition=check_trino_liveness,
