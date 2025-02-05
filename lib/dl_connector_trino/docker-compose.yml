@@ -27,7 +27,7 @@ services:
       trino:
         condition: service_healthy
     ports:
-      - "21124:8123"
+      - "21124:21124"
 
   # SOURCES
   db-mysql-8-0:
