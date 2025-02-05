@@ -1,4 +1,5 @@
 from typing import (
+    Any,
     Mapping,
     Optional,
     Sequence,
@@ -90,7 +91,7 @@ class TypedQueryRawParameters:
     path: str = attr.ib()
     method: str = attr.ib()
     content_type: str = attr.ib(default="application/json")
-    body: Optional[dict] = attr.ib(factory=dict)
+    body: Any = attr.ib(default=None)
 
 
 @attr.s(frozen=True, kw_only=True)
