@@ -33,7 +33,7 @@ class TestParameters(DefaultApiTestBase):
     )
     def test_parameter_in_formula(
         self,
-        control_api: SyncHttpDataApiV2,
+        control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         saved_dataset: Dataset,
         multiplier: int | None,
