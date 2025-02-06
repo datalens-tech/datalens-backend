@@ -148,18 +148,15 @@ class DatasetValidator(DatasetBaseWrapper):
 
     # TODO: refactor the class's structure (separate into several classes: one per action)
     _validation_mode = True
-    _is_bleeding_edge_user: bool = False
 
     def __init__(
         self,
         ds: Dataset,
         us_manager: USManagerBase,
         is_data_api: bool = False,
-        is_bleeding_edge_user: bool = False,
     ):
         super().__init__(ds=ds, us_manager=us_manager)
         self._is_data_api = is_data_api
-        self._is_bleeding_edge_user = is_bleeding_edge_user
 
         self._ds_ca = DatasetComponentAbstraction(dataset=self._ds, us_entry_buffer=self._us_manager.get_entry_buffer())
         self._remapped_source_ids: dict[str, str] = {}

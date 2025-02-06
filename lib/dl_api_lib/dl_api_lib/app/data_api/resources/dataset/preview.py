@@ -71,7 +71,6 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
 
         update_info = await self.prepare_dataset_for_request(
             req_model=req_model,
-            allow_rls_change=False,
         )
 
         new_sources = update_info.added_own_source_ids + update_info.updated_own_source_ids
