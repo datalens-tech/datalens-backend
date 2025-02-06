@@ -28,20 +28,20 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     @pytest.fixture(scope="session", autouse=True)
     def wait_for_trino(self, connection_creation_params: dict) -> None:
         host, port = connection_creation_params["host"], connection_creation_params["port"]
-        scheme = "http" if connection_creation_params["auth_type"] is TrinoAuthType.NONE else "https"
+        if connection_creation_params["auth_type"] is TrinoAuthType.NONE:
+            scheme = "http"
+            auth = None
+        else:
+            scheme = "https"
+            auth = (
+                test_config.CorePasswordConnectionSettings.USERNAME,
+                test_config.CorePasswordConnectionSettings.PASSWORD,
+            )
         post_statement_url = f"{scheme}://{host}:{port}/v1/statement"
         headers = {
             "X-Trino-User": test_config.CorePasswordConnectionSettings.USERNAME,
             "X-Trino-Source": "healthcheck",
         }
-        auth = (
-            (
-                test_config.CorePasswordConnectionSettings.USERNAME,
-                test_config.CorePasswordConnectionSettings.PASSWORD,
-            )
-            if connection_creation_params["auth_type"] is not TrinoAuthType.NONE
-            else None
-        )
 
         def check_trino_liveness() -> bool:
             try:
