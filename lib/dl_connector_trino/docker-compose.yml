@@ -14,20 +14,20 @@ services:
     build:
       context: docker-compose
       dockerfile: Dockerfile.engine-trino-468
-  #   Auth types:
-  #     HTTPS PASSWORD:
-  #       trino_user : trino_password
+    depends_on:
+      - db-mysql-8-0
 
   trino-tls-nginx:
     build:
       context: docker-compose
       dockerfile: Dockerfile.trino-tls-nginx
     depends_on:
-      - trino
-      - ssl-provider
-      - db-mysql-8-0
+      ssl-provider:
+        condition: service_started
+      trino:
+        condition: service_healthy
     ports:
-      - "21124:443"
+      - "21124:21124"
 
   # SOURCES
   db-mysql-8-0:

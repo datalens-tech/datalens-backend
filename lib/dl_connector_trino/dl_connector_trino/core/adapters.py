@@ -62,7 +62,9 @@ def construct_creator_func(target_dto: TrinoConnTargetDTO) -> Callable[[], sa.en
             user=target_dto.username,
             http_scheme="http" if target_dto.auth_type is TrinoAuthType.NONE else "https",
         )
-        if target_dto.auth_type is TrinoAuthType.PASSWORD:
+        if target_dto.auth_type is TrinoAuthType.NONE:
+            pass
+        elif target_dto.auth_type is TrinoAuthType.PASSWORD:
             params["auth"] = BasicAuthentication(target_dto.username, target_dto.password)
         elif target_dto.auth_type is TrinoAuthType.JWT:
             params["auth"] = JWTAuthentication(target_dto.jwt)

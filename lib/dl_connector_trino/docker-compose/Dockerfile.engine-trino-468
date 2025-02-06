@@ -2,3 +2,6 @@ FROM trinodb/trino:468@sha256:a2b6d3d46c2776c9c1ec3dcdac170d19f98dc538f2c9f2c454
 
 COPY trino/config/* /etc/trino/
 COPY trino/catalog/* /etc/trino/catalog/
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=5 \
+    CMD curl -fsS http://localhost:8080/v1/info/state | grep -q '"ACTIVE"'

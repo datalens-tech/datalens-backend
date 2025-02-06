@@ -10,6 +10,7 @@ from trino.auth import (
 )
 
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
+from dl_utils.wait import wait_for
 
 from dl_connector_trino.core.adapters import CustomHTTPAdapter
 from dl_connector_trino.core.constants import (
@@ -24,6 +25,47 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     conn_type = CONNECTION_TYPE_TRINO
     core_test_config = test_config.CORE_TEST_CONFIG
 
+    @pytest.fixture(scope="session", autouse=True)
+    def wait_for_trino(self, connection_creation_params: dict) -> None:
+        host, port = connection_creation_params["host"], connection_creation_params["port"]
+        if connection_creation_params["auth_type"] is TrinoAuthType.NONE:
+            scheme = "http"
+            auth = None
+        else:
+            scheme = "https"
+            auth = (
+                test_config.CorePasswordConnectionSettings.USERNAME,
+                test_config.CorePasswordConnectionSettings.PASSWORD,
+            )
+        post_statement_url = f"{scheme}://{host}:{port}/v1/statement"
+        headers = {
+            "X-Trino-User": test_config.CorePasswordConnectionSettings.USERNAME,
+            "X-Trino-Source": "healthcheck",
+        }
+
+        def check_trino_liveness() -> bool:
+            try:
+                response = requests.post(
+                    post_statement_url,
+                    headers=headers,
+                    auth=auth,
+                    data="SELECT 1",
+                    verify=False,
+                )
+                response.raise_for_status()
+                if '"QUEUED"' in response.text:
+                    return True
+                return False
+            except requests.RequestException:
+                return False
+
+        wait_for(
+            name="Trino readiness",
+            condition=check_trino_liveness,
+            timeout=90,
+            require=True,
+        )
+
     @pytest.fixture(autouse=True)
     # FIXME: This fixture is a temporary solution for failing core tests when they are run together with api tests
     def loop(self, event_loop: asyncio.AbstractEventLoop) -> Generator[asyncio.AbstractEventLoop, None, None]:
@@ -37,7 +79,7 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     def db_url(self) -> str:
         return test_config.DB_CORE_URL
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture(scope="session")
     def connection_creation_params(self) -> dict:
         return dict(
             host=test_config.CoreConnectionSettings.HOST,
@@ -67,7 +109,7 @@ class BaseTrinoSslTestClass(BaseTrinoTestClass):
         session.mount("https://", CustomHTTPAdapter(ssl_ca=ssl_ca))
         return session
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture(scope="session")
     def ssl_connection_creation_params(self, ssl_ca: str) -> dict:
         return dict(
             host=test_config.CoreSslConnectionSettings.HOST,
@@ -99,7 +141,7 @@ class BaseTrinoPasswordTestClass(BaseTrinoSslTestClass):
         }
         return engine_params
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture(scope="session")
     def connection_creation_params(self, ssl_connection_creation_params: dict) -> dict:
         return ssl_connection_creation_params | dict(
             auth_type=TrinoAuthType.PASSWORD,
@@ -126,7 +168,7 @@ class BaseTrinoJwtTestClass(BaseTrinoSslTestClass):
         }
         return engine_params
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture(scope="session")
     def connection_creation_params(self, ssl_connection_creation_params: dict) -> dict:
         return ssl_connection_creation_params | dict(
             auth_type=TrinoAuthType.JWT,
