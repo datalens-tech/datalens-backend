@@ -60,10 +60,10 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = ["dl_connector_trino_tests/db", "dl_connector_trino_tests/unit"]
 
-[datalens.pytest.db]
-root_dir = "dl_connector_trino_tests/"
-target_path = "db"
-labels = ["fat"]
+# [datalens.pytest.db]
+# root_dir = "dl_connector_trino_tests/"
+# target_path = "db"
+# labels = ["fat"]
 
 # [datalens.pytest.unit]
 # root_dir = "dl_connector_trino_tests/"
