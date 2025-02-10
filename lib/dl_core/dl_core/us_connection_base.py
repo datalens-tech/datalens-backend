@@ -30,11 +30,8 @@ from dl_constants.enums import (
     DashSQLQueryType,
     DataSourceRole,
     DataSourceType,
-<<<<<<< HEAD
     MigrationStatus,
-=======
     NotificationLevel,
->>>>>>> 165dcb8ec (Review fixes)
     RawSQLLevel,
     UserDataType,
 )
