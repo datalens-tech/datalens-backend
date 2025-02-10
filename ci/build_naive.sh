@@ -42,6 +42,7 @@ fi
 
 echo "Building & pushing CI docker image with sources"
 DL_B_EXT_CACHED_TARGET_BASE_CI="${DKR_IMG_CACHED_TARGET_DL_CI_BASE}" \
+BUILDX_BAKE_ENTITLEMENTS_FS="0" \
   "${BAKE_EXECUTABLE}" "${BAKE_TARGET_CI_W_SRC}" \
   --set "${BAKE_TARGET_CI_W_SRC}.tags=${DKR_IMG_TARGET_DL_CI_WITH_SRC}" \
   --progress=plain \
