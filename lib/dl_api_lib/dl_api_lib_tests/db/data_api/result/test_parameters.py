@@ -17,6 +17,7 @@ from dl_api_client.dsmaker.shortcuts.dataset import (
     add_parameters_to_dataset,
 )
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_lib.enums import DatasetAction
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 from dl_constants.enums import UserDataType
 
@@ -82,11 +83,11 @@ class TestParameters(DefaultApiTestBase):
                 assert int(row[0]) * int(row[1]) == int(row[2])
 
     @pytest.mark.parametrize(
-        ("default_value", "expected_status_code"),
+        ("default_value", "expected_status_code", "expected_bi_status_code"),
         (
-            ("42", HTTPStatus.OK),
-            ("142", HTTPStatus.BAD_REQUEST),
-            ("abc", HTTPStatus.BAD_REQUEST),
+            ("42", HTTPStatus.OK, None),
+            ("142", HTTPStatus.BAD_REQUEST, "ERR.DS_API.PARAMETER.INVALID_VALUE"),
+            ("abc", HTTPStatus.BAD_REQUEST, "ERR.DS_API"),
         ),
     )
     def test_parameter_constraint_default_value_mutation(
@@ -96,6 +97,7 @@ class TestParameters(DefaultApiTestBase):
         saved_dataset: Dataset,
         default_value: str,
         expected_status_code: HTTPStatus,
+        expected_bi_status_code: str | None,
     ):
         ds = add_parameters_to_dataset(
             api_v1=control_api,
@@ -112,16 +114,64 @@ class TestParameters(DefaultApiTestBase):
         result_resp = data_api.get_result(
             dataset=ds,
             fields=[parameter],
+            updates=[
+                {
+                    "action": DatasetAction.update_field.value,
+                    "field": {
+                        "guid": parameter.id,
+                        "cast": "integer",
+                        "default_value": default_value,
+                    },
+                },
+            ],
+            fail_ok=True,
         )
 
-        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+        assert result_resp.status_code == expected_status_code, result_resp.json
+        assert result_resp.bi_status_code == expected_bi_status_code
+
+    def test_parameter_constraint_mutation_forbidden(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ):
+        ds = add_parameters_to_dataset(
+            api_v1=control_api,
+            dataset_id=saved_dataset.id,
+            parameters={
+                "Param": (
+                    IntegerParameterValue(42),
+                    RangeParameterValueConstraint(min=IntegerParameterValue(0), max=IntegerParameterValue(100)),
+                ),
+            },
+        )
+
+        parameter = ds.find_field(title="Param")
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[parameter],
+            updates=[
+                {
+                    "action": DatasetAction.update_field.value,
+                    "field": {
+                        "guid": parameter.id,
+                        "value_constraint": {"type": "all"},
+                    },
+                },
+            ],
+            fail_ok=True,
+        )
+
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
+        assert result_resp.bi_status_code == "ERR.DS_API.ACTION_NOT_ALLOWED"
 
     @pytest.mark.parametrize(
-        ("param_value", "expected_status_code"),
+        ("param_value", "expected_status_code", "expected_bi_status_code"),
         (
-            (42, HTTPStatus.OK),
-            (142, HTTPStatus.BAD_REQUEST),
-            ("abc", HTTPStatus.BAD_REQUEST),
+            (42, HTTPStatus.OK, None),
+            (142, HTTPStatus.BAD_REQUEST, "ERR.DS_API.PARAMETER.INVALID_VALUE"),
+            ("abc", HTTPStatus.BAD_REQUEST, "ERR.DS_API.PARAMETER.INVALID_VALUE"),
         ),
     )
     def test_parameter_constraint_parameter_value(
@@ -131,6 +181,7 @@ class TestParameters(DefaultApiTestBase):
         saved_dataset: Dataset,
         param_value: str | int,
         expected_status_code: HTTPStatus,
+        expected_bi_status_code: str | None,
     ):
         ds = add_parameters_to_dataset(
             api_v1=control_api,
@@ -151,6 +202,7 @@ class TestParameters(DefaultApiTestBase):
         )
 
         assert result_resp.status_code == expected_status_code, result_resp.json
+        assert result_resp.bi_status_code == expected_bi_status_code
 
     def test_parameter_no_constraint(
         self,

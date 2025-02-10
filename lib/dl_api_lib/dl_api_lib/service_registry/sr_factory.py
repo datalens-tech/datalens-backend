@@ -49,9 +49,7 @@ class DefaultApiSRFactory(DefaultSRFactory[DefaultApiServiceRegistry]):
     ) -> dict[str, Any]:
         return dict(
             default_formula_parser_type=self._default_formula_parser_type,
-            dataset_validator_factory=DefaultDatasetValidatorFactory(
-                is_bleeding_edge_user=self.is_bleeding_edge_user(request_context_info),
-            ),
+            dataset_validator_factory=DefaultDatasetValidatorFactory(),
             field_id_generator_factory=FieldIdGeneratorFactory(
                 field_id_generator_type=self._field_id_generator_type,
             ),

@@ -148,18 +148,15 @@ class DatasetValidator(DatasetBaseWrapper):
 
     # TODO: refactor the class's structure (separate into several classes: one per action)
     _validation_mode = True
-    _is_bleeding_edge_user: bool = False
 
     def __init__(
         self,
         ds: Dataset,
         us_manager: USManagerBase,
         is_data_api: bool = False,
-        is_bleeding_edge_user: bool = False,
     ):
         super().__init__(ds=ds, us_manager=us_manager)
         self._is_data_api = is_data_api
-        self._is_bleeding_edge_user = is_bleeding_edge_user
 
         self._ds_ca = DatasetComponentAbstraction(dataset=self._ds, us_entry_buffer=self._us_manager.get_entry_buffer())
         self._remapped_source_ids: dict[str, str] = {}
@@ -707,6 +704,14 @@ class DatasetValidator(DatasetBaseWrapper):
                 )
                 self._ds.rename_field_id_usages(old_id=field_id, new_id=new_field_id)
                 return
+            if (
+                self._is_data_api
+                and old_field.calc_mode == CalcMode.parameter
+                and old_field.value_constraint != field_data_dict.get("value_constraint")
+                and field_data_dict.get("value_constraint") is not None
+            ):
+                raise exc.DatasetActionNotAllowedError("parameter value_constraint cannot be updated")
+
             # Update existing field
             new_field = old_field.clone(**field_data_dict)
             if new_field == old_field:
