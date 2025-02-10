@@ -10,6 +10,7 @@ from trino.auth import (
 )
 
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
+from dl_db_testing.database.engine_wrapper import DbEngineConfig
 from dl_utils.wait import wait_for
 
 from dl_connector_trino.core.adapters import CustomHTTPAdapter
@@ -65,6 +66,10 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
             timeout=90,
             require=True,
         )
+
+    @pytest.fixture(scope="class")
+    def engine_config(self, db_url: str, engine_params: dict, wait_for_trino: None) -> DbEngineConfig:
+        return DbEngineConfig(url=db_url, engine_params=engine_params)
 
     @pytest.fixture(autouse=True)
     # FIXME: This fixture is a temporary solution for failing core tests when they are run together with api tests
