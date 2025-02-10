@@ -130,6 +130,42 @@ class TestParameters(DefaultApiTestBase):
         assert result_resp.status_code == expected_status_code, result_resp.json
         assert result_resp.bi_status_code == expected_bi_status_code
 
+    def test_parameter_constraint_mutation_forbidden(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ):
+        ds = add_parameters_to_dataset(
+            api_v1=control_api,
+            dataset_id=saved_dataset.id,
+            parameters={
+                "Param": (
+                    IntegerParameterValue(42),
+                    RangeParameterValueConstraint(min=IntegerParameterValue(0), max=IntegerParameterValue(100)),
+                ),
+            },
+        )
+
+        parameter = ds.find_field(title="Param")
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[parameter],
+            updates=[
+                {
+                    "action": DatasetAction.update_field.value,
+                    "field": {
+                        "guid": parameter.id,
+                        "value_constraint": {"type": "all"},
+                    },
+                },
+            ],
+            fail_ok=True,
+        )
+
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
+        assert result_resp.bi_status_code == "ERR.DS_API.ACTION_NOT_ALLOWED"
+
     @pytest.mark.parametrize(
         ("param_value", "expected_status_code", "expected_bi_status_code"),
         (

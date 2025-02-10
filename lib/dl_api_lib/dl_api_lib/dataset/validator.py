@@ -704,6 +704,14 @@ class DatasetValidator(DatasetBaseWrapper):
                 )
                 self._ds.rename_field_id_usages(old_id=field_id, new_id=new_field_id)
                 return
+            if (
+                self._is_data_api
+                and old_field.calc_mode == CalcMode.parameter
+                and old_field.value_constraint != field_data_dict.get("value_constraint")
+                and field_data_dict.get("value_constraint") is not None
+            ):
+                raise exc.DatasetActionNotAllowedError("parameter value_constraint cannot be updated")
+
             # Update existing field
             new_field = old_field.clone(**field_data_dict)
             if new_field == old_field:

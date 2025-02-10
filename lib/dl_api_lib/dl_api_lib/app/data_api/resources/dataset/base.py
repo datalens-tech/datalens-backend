@@ -317,7 +317,9 @@ class DatasetDataBaseView(BaseView):
 
             dataset_validator_factory = services_registry.get_dataset_validator_factory()
             ds_validator = dataset_validator_factory.get_dataset_validator(
-                ds=self.dataset, us_manager=us_manager, is_data_api=True
+                ds=self.dataset,
+                us_manager=us_manager,
+                is_data_api=True,
             )
             executor = services_registry.get_compute_executor()
             await executor.execute(lambda: ds_validator.apply_batch(action_batch=req_model.updates))
