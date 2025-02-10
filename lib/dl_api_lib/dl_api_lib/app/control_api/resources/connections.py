@@ -33,10 +33,7 @@ from dl_api_lib.schemas.connection import (
     GenericConnectionSchema,
 )
 from dl_api_lib.utils import need_permission_on_entry
-from dl_constants.enums import (
-    ConnectionType,
-    NotificationLevel,
-)
+from dl_constants.enums import ConnectionType
 from dl_constants.exc import DLBaseException
 from dl_core.data_source.type_mapping import get_data_source_class
 from dl_core.data_source_merge_tools import make_spec_from_dict
@@ -136,25 +133,22 @@ class ConnectionsImportList(BIResource):
     @schematic_request(ns=ns)
     def post(self):  # type: ignore  # TODO: fix
         us_manager = self.get_us_manager()
-        notifications = [
-            dict(message="Password fields must be changed and resaved", level=NotificationLevel.info)
-        ]  # TODO: localize message
+        notifications = []
 
-        conn_availability = self.get_service_registry().get_connector_availability()
         conn_data = request.json and request.json["data"]["connection"]
-        assert conn_data
+        
         conn_type = conn_data["db_type"]
         if not conn_type or conn_type not in ConnectionType:
             raise exc.BadConnectionType(f"Invalid connection type value: {conn_type}")
+        
+        conn_availability = self.get_service_registry().get_connector_availability()
         conn_type_is_available = conn_availability.check_connector_is_available(ConnectionType[conn_type])
-
         if not conn_type_is_available:
-            # TODO: remove `abort` after migration to schematic_request decorator with common error handling
-            abort(400, "This connection type is not available")
             raise exc.UnsupportedForEntityType("Connector %s is not available in current env", conn_type)
 
         conn_data["workbook_id"] = request.json and request.json["data"].get("workbook_id", None)
         conn_data["type"] = conn_type
+
         schema = GenericConnectionSchema(
             context=self.get_schema_ctx(schema_operations_mode=ImportMode.create_from_import)
         )
@@ -165,7 +159,7 @@ class ConnectionsImportList(BIResource):
 
         conn.validate_new_data_sync(services_registry=self.get_service_registry())
 
-        conn_warnings = conn.get_warnings_list()
+        conn_warnings = conn.get_import_warnings_list()
         if conn_warnings:
             notifications.extend(conn_warnings)
 
@@ -264,9 +258,7 @@ class ConnectionExportItem(BIResource):
     @put_to_request_context(endpoint_code="ConnectionExport")
     @schematic_request(
         ns=ns,
-        responses={
-            # 200: ('Success', GetConnectionResponseSchema()),
-        },
+        responses={},
     )
     def get(self, connection_id: str) -> dict:
         notifications: list[dict] = []
@@ -281,6 +273,11 @@ class ConnectionExportItem(BIResource):
         result = GenericConnectionSchema(context=self.get_schema_ctx(ExportMode.export)).dump(conn)
         result.update(options=ConnectionOptionsSchema().dump(conn.get_options()))
         result.pop("id")
+
+        conn_warnings = conn.get_export_warnings_list()
+        if conn_warnings:
+            notifications.extend(conn_warnings)
+
         return dict(connection=result, notifications=notifications)
 
 

@@ -170,7 +170,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
                 return data
             assert isinstance(editable_object, self.TARGET_CLS)
             return self.update_object(editable_object, data)
-        if isinstance(self.operations_mode, CreateMode) or isinstance(self.operations_mode, ImportMode):
+        if isinstance(self.operations_mode, CreateMode | ImportMode):
             return self.create_object(data)
         raise ValueError(f"Can not perform load. Unknown operations mode: {self.operations_mode!r}")
 
@@ -192,7 +192,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
 
         cleaned_data = {}
         for field_name, field_value in data.items():
-            if field_name in self.fields and not self.fields[field_name].dump_only == True:
+            if field_name in self.fields and not self.fields[field_name].dump_only:
                 cleaned_data[field_name] = field_value
 
         return cleaned_data

@@ -28,7 +28,7 @@ class GSheetsFileS3ConnectionSchema(BaseFileS3ConnectionSchema):
         load_default=None,
         allow_none=True,
         load_only=True,
-        bi_extra=FieldExtra(editable=True),
+        bi_extra=FieldExtra(editable=True, export_fake=True),
     )
     refresh_enabled = fields.Boolean(attribute="data.refresh_enabled", bi_extra=FieldExtra(editable=True))
     authorized = fields.Boolean(dump_only=True)
