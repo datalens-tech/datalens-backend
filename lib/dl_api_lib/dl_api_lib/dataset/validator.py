@@ -286,11 +286,22 @@ class DatasetValidator(DatasetBaseWrapper):
 
     def _get_field_errors(self, field: BIField) -> list[FormulaErrorCtx]:
         errors = self.formula_compiler.get_field_errors(field=field)
+        if not self._has_sources:
+            errors.append(
+                FormulaErrorCtx(
+                    message="Data source is not set for the dataset",
+                    code=tuple(common_exc.DatasetConfigurationError.err_code),
+                    level=MessageLevel.ERROR,
+                )
+            )
+            return errors
         try:
             formula_info = self.formula_compiler.compile_field_formula(field=field, collect_errors=True)
             assert self._column_reg is not None
             formula_comp_query = single_formula_comp_query_for_validation(
-                formula=formula_info, ds_accessor=self._ds_accessor, column_reg=self._column_reg
+                formula=formula_info,
+                ds_accessor=self._ds_accessor,
+                column_reg=self._column_reg,
             )
             formula_comp_multi_query = self.process_compiled_query(compiled_query=formula_comp_query)
             multi_translator = self.make_multi_query_translator()
