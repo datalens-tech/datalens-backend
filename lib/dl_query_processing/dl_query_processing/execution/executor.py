@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import asyncio
 import logging
 from typing import (
@@ -35,6 +33,7 @@ from dl_core.data_processing.stream_base import (
     DataSourceVS,
     DataStreamAsync,
 )
+from dl_core.query.bi_query import BIQuery
 from dl_core.services_registry import ServicesRegistry
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
@@ -46,12 +45,14 @@ from dl_query_processing.enums import (
     QueryType,
 )
 from dl_query_processing.execution.exec_info import QueryExecutionInfo
-from dl_query_processing.execution.executor_base import QueryExecutorBase
 from dl_query_processing.execution.primitives import (
     ExecutedQuery,
     ExecutedQueryMetaInfo,
 )
-from dl_query_processing.translation.primitives import TranslatedMultiQueryBase
+from dl_query_processing.translation.primitives import (
+    TranslatedFlatQuery,
+    TranslatedMultiQueryBase,
+)
 
 
 LOGGER = logging.getLogger(__name__)
@@ -64,18 +65,46 @@ class SourceDbBaseSourceInfo:
 
 
 @attr.s
-class QueryExecutor(QueryExecutorBase):
+class QueryExecutor:
     _dataset: Dataset = attr.ib(kw_only=True)
     _compeng_processor_type: ProcessorType = attr.ib(kw_only=True)
     _source_db_processor_type: ProcessorType = attr.ib(kw_only=True)
     _allow_cache_usage: bool = attr.ib(kw_only=True)
-    _avatar_alias_mapper: Optional[Callable[[str], str]] = attr.ib(kw_only=True, default=None)  # noqa
+    _avatar_alias_mapper: Optional[Callable[[str], str]] = attr.ib(kw_only=True, default=None)
     _us_manager: USManagerBase = attr.ib(kw_only=True)
     _compeng_semaphore: asyncio.Semaphore = attr.ib(kw_only=True)
 
     @property
     def _service_registry(self) -> ServicesRegistry:
         return self._us_manager.get_services_registry()
+
+    def _make_bi_query(
+        self,
+        *,
+        translated_flat_query: TranslatedFlatQuery,
+        is_top_level: bool = False,
+        distinct: bool = False,
+        row_count_hard_limit: int,
+    ) -> BIQuery:
+        limit = translated_flat_query.limit
+
+        # Limit query size if hard limit is set to minimize the amount of downloaded data
+        if is_top_level:  # only for queries that will be downloaded
+            if limit is None or limit > row_count_hard_limit:
+                limit = row_count_hard_limit + 1
+
+        bi_query = BIQuery(
+            select_expressions=translated_flat_query.select,
+            group_by_expressions=translated_flat_query.group_by,
+            order_by_expressions=translated_flat_query.order_by,
+            dimension_filters=translated_flat_query.where,
+            measure_filters=translated_flat_query.having,
+            limit=limit,
+            offset=translated_flat_query.offset,
+            distinct=distinct if is_top_level else False,
+        )
+
+        return bi_query
 
     async def _get_compeng_data_processor(self) -> OperationProcessorAsyncBase:
         factory = self._service_registry.get_data_processor_factory()
@@ -220,7 +249,7 @@ class QueryExecutor(QueryExecutorBase):
                 source_result_id = next(iter(required_avatar_ids))
                 calc_op_source_stream_id = result_to_stream_id_map[source_result_id]
 
-            bi_query = self.make_bi_query(
+            bi_query = self._make_bi_query(
                 translated_flat_query=translated_flat_query,
                 is_top_level=is_top_level,
                 distinct=distinct,

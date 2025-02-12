@@ -28,7 +28,6 @@ from dl_core.us_manager.us_manager import USManagerBase
 from dl_query_processing.enums import QueryType
 from dl_query_processing.execution.exec_info import QueryExecutionInfo
 from dl_query_processing.execution.executor import QueryExecutor
-from dl_query_processing.execution.executor_base import QueryExecutorBase
 from dl_query_processing.execution.primitives import ExecutedQuery
 from dl_query_processing.legend.block_legend import BlockSpec
 
@@ -172,7 +171,7 @@ class DatasetView(DatasetBaseWrapper):
         filter_cmp_cls = get_filter_formula_compiler_cls(backend_type=backend_type)
         return filter_cmp_cls(formula_compiler=self.formula_compiler)
 
-    def make_query_executor(self, allow_cache_usage: bool) -> QueryExecutorBase:
+    def make_query_executor(self, allow_cache_usage: bool) -> QueryExecutor:
         return QueryExecutor(
             dataset=self._ds,
             avatar_alias_mapper=self._avatar_alias_mapper,
