@@ -1,5 +1,7 @@
 from typing import ClassVar
 
+from trino.sqlalchemy import URL
+
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 from dl_testing.containers import get_test_container_hostport
@@ -54,9 +56,20 @@ class CoreJwtConnectionSettings(CoreSslConnectionSettings):
 
 
 DB_URLS = {
-    D.TRINO_468: f"trino://datalens@" f'{get_test_container_hostport("trino-no-auth", fallback_port=21123).as_pair()}',
-    (D.TRINO_468, "ssl"): f"trino://trino_user@"
-    f'{get_test_container_hostport("trino-tls-nginx", fallback_port=21124).as_pair()}',
+    D.TRINO_468: URL(
+        host=CoreConnectionSettings.HOST,
+        port=CoreConnectionSettings.PORT,
+        user=CoreConnectionSettings.USERNAME,
+        catalog="test_mysql_catalog",
+        schema="test_data",
+    ),
+    (D.TRINO_468, "ssl"): URL(
+        host=CoreSslConnectionSettings.HOST,
+        port=CoreSslConnectionSettings.PORT,
+        user=CoreSslConnectionSettings.USERNAME,
+        catalog="test_mysql_catalog",
+        schema="test_data",
+    ),
 }
 DB_CORE_URL = DB_URLS[D.TRINO_468]
 DB_CORE_SSL_URL = DB_URLS[(D.TRINO_468, "ssl")]
