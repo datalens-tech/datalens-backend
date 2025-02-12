@@ -23,7 +23,6 @@ from dl_formula.collections import (
 )
 import dl_formula.core.nodes as formula_nodes
 from dl_query_processing.column_registry import ColumnRegistry
-from dl_query_processing.compilation.base import RawQueryCompilerBase
 from dl_query_processing.compilation.filter_compiler import FilterFormulaCompiler
 from dl_query_processing.compilation.formula_compiler import FormulaCompiler
 from dl_query_processing.compilation.helpers import make_joined_from_for_avatars
@@ -49,7 +48,7 @@ _COMPILED_FORMULA_INFO_TV = TypeVar("_COMPILED_FORMULA_INFO_TV", bound=CompiledF
 
 
 @attr.s
-class DefaultQueryCompiler(RawQueryCompilerBase):
+class QueryCompiler:
     _dataset: Dataset = attr.ib(kw_only=True)
     _column_reg: ColumnRegistry = attr.ib(kw_only=False)
     _formula_compiler: FormulaCompiler = attr.ib(kw_only=False)

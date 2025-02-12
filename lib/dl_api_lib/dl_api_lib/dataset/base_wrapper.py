@@ -51,14 +51,13 @@ from dl_formula.definitions.scope import Scope
 from dl_formula.inspect.env import InspectionEnvironment
 from dl_formula.parser.base import FormulaParser
 from dl_query_processing.column_registry import ColumnRegistry
-from dl_query_processing.compilation.base import RawQueryCompilerBase
 from dl_query_processing.compilation.formula_compiler import FormulaCompiler
 from dl_query_processing.compilation.primitives import (
     CompiledMultiQuery,
     CompiledMultiQueryBase,
     CompiledQuery,
 )
-from dl_query_processing.compilation.query_compiler import DefaultQueryCompiler
+from dl_query_processing.compilation.query_compiler import QueryCompiler
 from dl_query_processing.compilation.query_mutator import (
     ExtendedAggregationQueryMutator,
     OptimizingQueryMutator,
@@ -211,9 +210,9 @@ class DatasetBaseWrapper:
     def make_filter_compiler(self) -> FilterFormulaCompiler:
         raise NotImplementedError
 
-    def make_query_compiler(self) -> RawQueryCompilerBase:
+    def make_query_compiler(self) -> QueryCompiler:
         assert self._column_reg is not None
-        return DefaultQueryCompiler(
+        return QueryCompiler(
             dataset=self._ds,
             column_reg=self._column_reg,
             formula_compiler=self.formula_compiler,
