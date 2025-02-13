@@ -559,7 +559,6 @@ class FuncArrayRemoveDefault(FuncArrayRemoveBase):
 
 class FuncArrayIntersect(ArrayFunction):
     name = "arr_intersect"
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
     arg_names = ["array_1", "array_2", "array_3"]
     arg_cnt = None
     argument_types = [
