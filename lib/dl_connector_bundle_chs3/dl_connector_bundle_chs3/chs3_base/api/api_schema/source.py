@@ -18,6 +18,7 @@ from dl_api_connector.api_schema.source_base import (
     SQLDataSourceSchema,
     SQLDataSourceTemplateSchema,
 )
+from dl_api_connector.api_schema.top_level import BaseTopLevelSchema
 from dl_constants.enums import (
     FileProcessingStatus,
     UserDataType,
@@ -33,14 +34,14 @@ class RawSchemaColumnSchema(Schema):
     user_type = fields.Enum(UserDataType)
 
 
-class BaseFileSourceSchema(Schema):
+class BaseFileSourceSchema(BaseTopLevelSchema):
     class Meta:
         unknown = RAISE
 
         target: Type[BaseFileS3Connection.FileDataSource]
 
     @post_load(pass_many=False)
-    def to_object(self, data: dict[str, Any], **kwargs: Any) -> BaseFileS3Connection.FileDataSource:
+    def post_load(self, data: dict[str, Any], **kwargs: Any) -> BaseFileS3Connection.FileDataSource:
         return self.Meta.target(**data)
 
     id = fields.String()
