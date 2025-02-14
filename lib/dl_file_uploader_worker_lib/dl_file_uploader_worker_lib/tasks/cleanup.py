@@ -92,7 +92,6 @@ class CleanupTenantTask(BaseExecutorTask[task_interface.CleanupTenantTask, FileU
                     LifecycleConfiguration=dict(
                         Rules=lc_rules + [new_rule],
                     ),
-                    ChecksumAlgorithm="CRC32",
                 )
 
                 LOGGER.info(f'Updated LC rules to remove objects with prefix "{obj_prefix}"')

@@ -419,7 +419,6 @@ async def test_regular_bucket_lifecycle_cleanup_task(
             LifecycleConfiguration=dict(
                 Rules=lc_rules,
             ),
-            ChecksumAlgorithm="CRC32",
         )
 
     rules = [make_cleanup_rule(str(uuid.uuid4())) for _ in range(100)]
