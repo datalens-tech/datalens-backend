@@ -25,7 +25,6 @@ from dl_formula.definitions.functions_string import (
     FuncStartswith,
 )
 from dl_formula.definitions.literals import un_literal
-from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import (
     Fixed,
     FromArgs,
