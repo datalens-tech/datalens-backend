@@ -2,7 +2,10 @@ from __future__ import annotations
 
 from typing import (
     Any,
+    ClassVar,
+    Optional,
     Type,
+    final,
 )
 
 import marshmallow as ma
@@ -11,14 +14,18 @@ from marshmallow import (
     Schema,
     fields,
     post_load,
+    pre_load,
 )
 
-from dl_api_connector.api_schema.extras import FieldExtra
+from dl_api_connector.api_schema.extras import (
+    CreateMode,
+    FieldExtra,
+    ImportMode,
+)
 from dl_api_connector.api_schema.source_base import (
     SQLDataSourceSchema,
     SQLDataSourceTemplateSchema,
 )
-from dl_api_connector.api_schema.top_level import BaseTopLevelSchema
 from dl_constants.enums import (
     FileProcessingStatus,
     UserDataType,
@@ -34,7 +41,9 @@ class RawSchemaColumnSchema(Schema):
     user_type = fields.Enum(UserDataType)
 
 
-class BaseFileSourceSchema(BaseTopLevelSchema):
+class BaseFileSourceSchema(Schema):
+    CTX_KEY_OPERATIONS_MODE: ClassVar[str] = "operations_mode"
+
     class Meta:
         unknown = RAISE
 
@@ -43,6 +52,25 @@ class BaseFileSourceSchema(BaseTopLevelSchema):
     @post_load(pass_many=False)
     def post_load(self, data: dict[str, Any], **kwargs: Any) -> BaseFileS3Connection.FileDataSource:
         return self.Meta.target(**data)
+
+    @property
+    def operations_mode(self) -> Optional[CreateMode | ImportMode]:
+        return self.context.get(self.CTX_KEY_OPERATIONS_MODE)
+
+    @final
+    def delete_unknown_fields(self, data: dict[str, Any]) -> dict[str, Any]:
+        cleaned_data = {}
+        for field_name, field_value in data.items():
+            if field_name in self.fields and not self.fields[field_name].dump_only:
+                cleaned_data[field_name] = field_value
+
+        return cleaned_data
+
+    @pre_load(pass_many=False)
+    def pre_load(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
+        if isinstance(self.operations_mode, ImportMode):
+            return self.delete_unknown_fields(data)
+        return data
 
     id = fields.String()
     file_id = fields.String(load_default=None)
