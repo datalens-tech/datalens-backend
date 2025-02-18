@@ -1,6 +1,6 @@
 services:
   db-ydb:
-    image: "cr.yandex/yc/yandex-docker-local-ydb:latest"
+    image: "ydbplatform/local-ydb:trunk"
     environment:
       YDB_LOCAL_SURVIVE_RESTART: "true"
       GRPC_PORT: "51900"

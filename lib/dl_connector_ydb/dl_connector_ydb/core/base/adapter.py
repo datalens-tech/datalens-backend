@@ -96,8 +96,8 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         return value.decode("utf-8", errors="replace")
 
     @staticmethod
-    def _convert_ts(value: int) -> datetime.datetime:
-        return datetime.datetime.utcfromtimestamp(value / 1e6).replace(tzinfo=datetime.timezone.utc)
+    def _convert_ts(value: datetime.datetime) -> datetime.datetime:
+        return value.replace(tzinfo=datetime.timezone.utc)
 
     def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> Tuple[Optional[Callable[[Any], Any]], ...]:
         type_names_norm = [col[1].lower().strip("?") for col in cursor_info.raw_cursor_description]
