@@ -124,7 +124,7 @@ class DatasetItem(BIResource):
     def delete(self, dataset_id):
         """Delete dataset"""
         us_manager = self.get_us_manager()
-        ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={})
+        ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={}, load_dependencies=False)
         utils.need_permission_on_entry(ds, USPermissionKind.admin)
 
         us_manager.delete(ds)
@@ -141,7 +141,7 @@ class DatasetItemFields(BIResource):
         },
     )
     def get(self, dataset_id):  # type: ignore  # TODO: fix
-        ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={})
+        ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={}, load_dependencies=False)
         fields = [
             {
                 "title": f.title,
@@ -172,7 +172,6 @@ class DatasetCopy(DatasetResource):
         copy_us_key = body["new_key"]
         us_manager = self.get_us_manager()
         ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
-        us_manager.load_dependencies(ds)
         orig_ds_loc = ds.entry_key
         copy_ds_loc: PathEntryLocation
 
@@ -216,7 +215,6 @@ class DatasetVersionItem(DatasetResource):
 
         ds_dict["is_favorite"] = ds.is_favorite
 
-        us_manager.load_dependencies(ds)
         ds_dict.update(self.make_dataset_response_data(dataset=ds, us_entry_buffer=us_manager.get_entry_buffer()))
         return ds_dict
 
