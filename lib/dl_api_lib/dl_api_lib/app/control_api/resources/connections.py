@@ -17,6 +17,8 @@ from dl_api_connector.api_schema.connection_base import ConnectionOptionsSchema
 from dl_api_connector.api_schema.extras import (
     CreateMode,
     EditMode,
+    ExportMode,
+    ImportMode,
 )
 from dl_api_lib import exc
 from dl_api_lib.api_decorators import schematic_request
@@ -125,6 +127,48 @@ class ConnectionTester(BIResource):
             _handle_conn_test_exc(e)
 
 
+@ns.route("/import")
+class ConnectionsImportList(BIResource):
+    @put_to_request_context(endpoint_code="ConnectionImport")
+    @schematic_request(ns=ns)
+    def post(self):  # type: ignore  # TODO: fix
+        us_manager = self.get_us_manager()
+        notifications = []
+
+        conn_data = request.json and request.json["data"]["connection"]
+        assert conn_data
+
+        conn_type = conn_data["db_type"]
+        if not conn_type or conn_type not in ConnectionType:
+            raise exc.BadConnectionType(f"Invalid connection type value: {conn_type}")
+
+        conn_availability = self.get_service_registry().get_connector_availability()
+        conn_type_is_available = conn_availability.check_connector_is_available(ConnectionType[conn_type])
+        if not conn_type_is_available:
+            raise exc.UnsupportedForEntityType("Connector %s is not available in current env", conn_type)
+
+        conn_data["workbook_id"] = request.json and request.json["data"].get("workbook_id", None)
+        conn_data["type"] = conn_type
+
+        schema = GenericConnectionSchema(
+            context=self.get_schema_ctx(schema_operations_mode=ImportMode.create_from_import)
+        )
+        try:
+            conn: ConnectionBase = schema.load(conn_data)
+        except MValidationError as e:
+            return e.messages, 400
+
+        conn.validate_new_data_sync(services_registry=self.get_service_registry())
+
+        conn_warnings = conn.get_import_warnings_list()
+        if conn_warnings:
+            notifications.extend(conn_warnings)
+
+        us_manager.save(conn)
+
+        return dict(id=conn.uuid, notifications=notifications)
+
+
 @ns.route("/")
 class ConnectionsList(BIResource):
     @put_to_request_context(endpoint_code="ConnectionCreate")
@@ -209,6 +253,33 @@ class ConnectionItem(BIResource):
                 original_version=conn_orig,
             )
             us_manager.save(conn)
+
+
+class ConnectionExportItem(BIResource):
+    @put_to_request_context(endpoint_code="ConnectionExport")
+    @schematic_request(
+        ns=ns,
+        responses={},
+    )
+    def get(self, connection_id: str) -> dict:
+        notifications: list[dict] = []
+
+        conn = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+        need_permission_on_entry(conn, USPermissionKind.read)
+        assert isinstance(conn, ConnectionBase)
+
+        if not conn.allow_export:
+            raise exc.UnsupportedForEntityType(f"Connector {conn.conn_type.name} does not support export")
+
+        result = GenericConnectionSchema(context=self.get_schema_ctx(ExportMode.export)).dump(conn)
+        result.update(options=ConnectionOptionsSchema().dump(conn.get_options()))
+        result.pop("id")
+
+        conn_warnings = conn.get_export_warnings_list()
+        if conn_warnings:
+            notifications.extend(conn_warnings)
+
+        return dict(connection=result, notifications=notifications)
 
 
 def _dump_source_templates(tpls: Optional[list[DataSourceTemplate]]) -> Optional[list[dict[str, Any]]]:

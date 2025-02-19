@@ -56,7 +56,6 @@ class PromQLConnectionSchema(ConnectionMetaMixin, ClassicSQLConnectionSchema):
         attribute="data.password",
         required=False,
         allow_none=True,
-        bi_extra=FieldExtra(editable=True),
     )
     path = DBPathField(
         attribute="data.path",

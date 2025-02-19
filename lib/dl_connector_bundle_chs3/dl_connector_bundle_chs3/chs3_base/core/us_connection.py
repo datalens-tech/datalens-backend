@@ -54,6 +54,7 @@ class BaseFileS3Connection(ConnectionHardcodedDataMixin[FileS3ConnectorSettings]
     is_always_internal_source: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     settings_type = FileS3ConnectorSettings
+    allow_export: ClassVar[bool] = True
 
     editable_data_source_parameters: ClassVar[tuple[str, ...]] = (
         "file_id",

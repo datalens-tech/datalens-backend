@@ -28,7 +28,7 @@ class CHYTConnectionSchema(ConnectionMetaMixin, RawSQLLevelMixin, DataExportForb
 
     host = DBHostField(attribute="data.host", required=True, bi_extra=FieldExtra(editable=True))
     port = ma.fields.Integer(attribute="data.port", required=True, bi_extra=FieldExtra(editable=True))
-    token = secret_string_field(attribute="data.token", required=True, bi_extra=FieldExtra(editable=True))
+    token = secret_string_field(attribute="data.token", required=True)
     alias = alias_string_field(attribute="data.alias")
     secure = ma.fields.Boolean(attribute="data.secure", bi_extra=FieldExtra(editable=True))
     cache_ttl_sec = cache_ttl_field(attribute="data.cache_ttl_sec")

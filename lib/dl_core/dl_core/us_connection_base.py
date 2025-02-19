@@ -31,6 +31,7 @@ from dl_constants.enums import (
     DataSourceRole,
     DataSourceType,
     MigrationStatus,
+    NotificationLevel,
     RawSQLLevel,
     UserDataType,
 )
@@ -144,6 +145,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     allowed_source_types: ClassVar[Optional[frozenset[DataSourceType]]] = None
     allow_dashsql: ClassVar[bool] = False
     allow_cache: ClassVar[bool] = False
+    allow_export: ClassVar[bool] = False
     is_always_internal_source: ClassVar[bool] = False
     is_always_user_source: ClassVar[bool] = False
 
@@ -368,6 +370,17 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         )
 
     def check_for_notifications(self) -> list[Optional[NotificationReportingRecord]]:
+        return []
+
+    def get_import_warnings_list(self, localizer: Optional[Localizer] = None) -> list[dict]:
+        return [
+            dict(
+                message="Secret fields like password, token etc. must be changed and resaved",
+                level=NotificationLevel.info,
+            )
+        ]  # TODO: localize message
+
+    def get_export_warnings_list(self, localizer: Optional[Localizer] = None) -> list[dict]:
         return []
 
     def get_cache_key_part(self) -> LocalKeyRepresentation:

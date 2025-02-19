@@ -17,6 +17,7 @@ class PromQLConnection(ClassicConnectionSQL):
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
     allow_dashsql: ClassVar[bool] = True
+    allow_export: ClassVar[bool] = True
     source_type = SOURCE_TYPE_PROMQL
 
     @attr.s(kw_only=True)
