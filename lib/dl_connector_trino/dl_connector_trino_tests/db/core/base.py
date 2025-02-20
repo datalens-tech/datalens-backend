@@ -67,6 +67,7 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
             require=True,
         )
 
+    # Here only for wait_for_trino dependency
     @pytest.fixture(scope="class")
     def engine_config(self, db_url: str, engine_params: dict, wait_for_trino: None) -> DbEngineConfig:
         return DbEngineConfig(url=db_url, engine_params=engine_params)
