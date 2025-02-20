@@ -4,13 +4,23 @@ from typing import Generator
 from frozendict import frozendict
 import pytest
 import requests
+from sqlalchemy.sql.type_api import TypeEngine
 from trino.auth import (
     BasicAuthentication,
     JWTAuthentication,
 )
+from trino.sqlalchemy.datatype import parse_sqltype
 
+from dl_constants.enums import SourceBackendType
+from dl_core_testing.database import (
+    C,
+    Db,
+    DbTable,
+)
+from dl_core_testing.fixtures.primitives import FixtureTableSpec
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 from dl_db_testing.database.engine_wrapper import DbEngineConfig
+from dl_type_transformer.type_transformer import TypeTransformer
 from dl_utils.wait import wait_for
 
 from dl_connector_trino.core.adapters import CustomHTTPAdapter
@@ -20,6 +30,11 @@ from dl_connector_trino.core.constants import (
 )
 from dl_connector_trino.core.us_connection import ConnectionTrino
 import dl_connector_trino_tests.db.config as test_config
+
+
+def avoid_get_sa_type(self: C, tt: TypeTransformer, backend_type: SourceBackendType) -> TypeEngine:
+    native_type = tt.type_user_to_native(user_t=self.user_type)
+    return parse_sqltype(native_type.name)
 
 
 class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
@@ -94,6 +109,12 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
             auth_type=TrinoAuthType.NONE,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
+
+    @pytest.fixture(scope="class")
+    def sample_table(self, sample_table_spec: FixtureTableSpec, db: Db) -> DbTable:
+        monkeypatch = pytest.MonkeyPatch()
+        monkeypatch.setattr(C, "get_sa_type", avoid_get_sa_type)
+        return self.db_table_dispenser.get_csv_table(db=db, spec=sample_table_spec)
 
 
 class BaseTrinoSslTestClass(BaseTrinoTestClass):
