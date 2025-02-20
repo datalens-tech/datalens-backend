@@ -153,7 +153,7 @@ class DatasetApiLoader:
                     connection_id=connection_id,
                     source_type=source_type,
                     **source_data["parameters"],
-                )  # not that this does not include title and raw_schema updates
+                )  # note that this does not include title and raw_schema updates
                 old_raw_schema = old_src_coll.get_cached_raw_schema(role=DataSourceRole.origin)
                 schema_updated = not are_raw_schemas_same(old_raw_schema, source_data["raw_schema"])
 

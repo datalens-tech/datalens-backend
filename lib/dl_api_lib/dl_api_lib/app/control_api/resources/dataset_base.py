@@ -4,10 +4,7 @@ from copy import deepcopy
 import logging
 from typing import (
     Any,
-    List,
     Optional,
-    Set,
-    Tuple,
 )
 
 from dl_api_lib.api_common.dataset_loader import (
@@ -83,7 +80,12 @@ class DatasetResource(BIResource):
         )
 
     @classmethod
-    def get_dataset(cls, dataset_id: Optional[str], body: dict) -> Tuple[Dataset, DatasetUpdateInfo]:
+    def get_dataset(
+        cls,
+        dataset_id: Optional[str],
+        body: dict,
+        load_dependencies: bool = True,
+    ) -> tuple[Dataset, DatasetUpdateInfo]:
         us_manager = cls.get_us_manager()
         if dataset_id:
             try:
@@ -95,6 +97,9 @@ class DatasetResource(BIResource):
                 Dataset.DataModel(name=""),  # TODO: Remove name - it's not used, but is required
                 us_manager=us_manager,
             )
+
+        if load_dependencies:
+            us_manager.load_dependencies(dataset)
 
         loader = cls.create_dataset_api_loader()
         update_info = loader.update_dataset_from_body(
@@ -254,7 +259,7 @@ class DatasetResource(BIResource):
 
         opt_data["sources"] = dict(items=[])
         connection_ids = set()
-        connection_types: Set[Optional[ConnectionType]] = set()
+        connection_types: set[Optional[ConnectionType]] = set()
         for source_id in ds_accessor.get_data_source_id_list():
             dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
             dsrc_coll = dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
@@ -297,7 +302,7 @@ class DatasetResource(BIResource):
                 )
             )
 
-        compatible_conn_types: List[dict] = []
+        compatible_conn_types: list[dict] = []
         for conn_type in capabilities.get_compatible_connection_types():
             if connection_ids:  # There already are connections in the dataset
                 continue
