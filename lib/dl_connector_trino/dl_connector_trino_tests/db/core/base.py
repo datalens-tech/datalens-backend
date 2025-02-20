@@ -1,5 +1,10 @@
 import asyncio
-from typing import Generator
+from typing import (
+    Generator,
+    List,
+    Optional,
+    Union,
+)
 
 from frozendict import frozendict
 import pytest
@@ -19,6 +24,7 @@ from dl_core_testing.database import (
 )
 from dl_core_testing.fixtures.primitives import FixtureTableSpec
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
+from dl_db_testing.database.base import DbTableBase
 from dl_db_testing.database.engine_wrapper import DbEngineConfig
 from dl_type_transformer.type_transformer import TypeTransformer
 from dl_utils.wait import wait_for
@@ -35,6 +41,25 @@ import dl_connector_trino_tests.db.config as test_config
 def avoid_get_sa_type(self: C, tt: TypeTransformer, backend_type: SourceBackendType) -> TypeEngine:
     native_type = tt.type_user_to_native(user_t=self.user_type)
     return parse_sqltype(native_type.name)
+
+
+def optimized_insert(self: DbTableBase, data: Union[dict, List[dict]], chunk_size: Optional[int] = None) -> None:
+    chunk_size = chunk_size or 1000
+    assert chunk_size is not None
+
+    # TODO: Use insert_into_table
+    if not self.can_insert:
+        raise RuntimeError("Can't insert into table")
+    if isinstance(data, dict):
+        self.db.execute(self.table.insert(data))
+    elif isinstance(data, list):
+        # TODO: Change to itertools.batched after switching to Python 3.12
+        for pos in range(0, len(data), chunk_size):
+            chunk = data[pos : pos + chunk_size]
+            insert = self.table.insert(chunk)
+            self.db.execute(insert)
+    else:
+        raise TypeError(type(data))
 
 
 class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
@@ -114,6 +139,7 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     def sample_table(self, sample_table_spec: FixtureTableSpec, db: Db) -> DbTable:
         monkeypatch = pytest.MonkeyPatch()
         monkeypatch.setattr(C, "get_sa_type", avoid_get_sa_type)
+        monkeypatch.setattr(DbTableBase, "insert", optimized_insert)
         return self.db_table_dispenser.get_csv_table(db=db, spec=sample_table_spec)
 
 
