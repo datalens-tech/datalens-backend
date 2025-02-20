@@ -94,7 +94,7 @@ class DashSQLTypedQueryRawView(BaseView):
                 dict(
                     path=params.path,
                     method=params.method,
-                    content_type=params.method,
+                    content_type=params.content_type,
                     body="***" if params.body else None,  # TODO: or leave body as is?
                 )
             )
