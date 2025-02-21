@@ -17,6 +17,7 @@ from dl_constants.enums import (
     DataSourceType,
     FieldType,
     ManagedBy,
+    NotificationLevel,
     UserDataType,
 )
 from dl_core import multisource
@@ -46,6 +47,7 @@ from dl_core.us_entry import (
     BaseAttrsDataModel,
     USEntry,
 )
+from dl_i18n.localizer_base import Localizer
 from dl_rls.rls import RLS
 
 
@@ -225,3 +227,25 @@ class Dataset(USEntry):
     @property
     def schema_version(self) -> str:
         return self.data.schema_version
+
+    def get_import_warnings_list(self, localizer: Optional[Localizer] = None) -> list[dict]:
+        warnings_list = []
+        if self.rls.items:
+            warnings_list.append(
+                dict(
+                    message="RLS was exported as is. Correct functioning of rls after import is not guaranteed.",
+                    level=NotificationLevel.info,
+                )
+            )  # TODO: localize message
+        return warnings_list
+
+    def get_export_warnings_list(self, localizer: Optional[Localizer] = None) -> list[dict]:
+        warnings_list = []
+        if self.rls.items:
+            warnings_list.append(
+                dict(
+                    message="RLS will be exported as is. Correct functioning of rls after import is not guaranteed.",
+                    level=NotificationLevel.info,
+                )
+            )  # TODO: localize message
+        return warnings_list
