@@ -178,6 +178,13 @@ tasks:
       LOG_LEVEL: '{{.LOG_LEVEL | default ""}}'
       CLI_ARGS: '{{.CLI_ARGS | default "."}}'
 
+  test-remote:
+    desc: Run tests with remote docker-compose
+    cmds:
+      - task: test
+        env:
+          DOCKER_HOST: "ssh://{{.VM_HOST}}"
+
   _compose:
     dir: "{{.USER_WORKING_DIR}}"
     requires:
