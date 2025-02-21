@@ -39,11 +39,27 @@ import dl_connector_trino_tests.db.config as test_config
 
 
 def avoid_get_sa_type(self: C, tt: TypeTransformer, backend_type: SourceBackendType) -> TypeEngine:
+    """
+    `BaseTrinoTestClass` has `sample_table` fixture that uses `get_sa_type` method from `C` class.
+    This method is used to get SQLAlchemy type from user type.
+    We need to avoid using this method because it's not implemented for Trino, Trino totally
+    relies on `TypeTransformer`.
+
+    This method is used to monkeypatch `get_sa_type` method in `sample_table` fixture.
+    """
     native_type = tt.type_user_to_native(user_t=self.user_type)
     return parse_sqltype(native_type.name)
 
 
 def optimized_insert(self: DbTableBase, data: Union[dict, List[dict]], chunk_size: Optional[int] = None) -> None:
+    """
+    `BaseTrinoTestClass` has `sample_table` fixture that uses `insert` method from `DbTableBase` class.
+    This method is used to insert data into the test table.
+    `insert` method uses batches for inserting data into the table, but Trino client doesn't support batched insert
+    via `executemany` method. So, we need construct insert query for each chunk manually.
+
+    This method is used to monkeypatch `insert` method in `sample_table` fixture.
+    """
     chunk_size = chunk_size or 1000
     assert chunk_size is not None
 
