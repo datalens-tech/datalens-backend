@@ -1,10 +1,5 @@
 import asyncio
-from typing import (
-    Generator,
-    List,
-    Optional,
-    Union,
-)
+from typing import Generator
 
 from frozendict import frozendict
 import pytest
@@ -19,12 +14,12 @@ from trino.sqlalchemy.datatype import parse_sqltype
 from dl_constants.enums import SourceBackendType
 from dl_core_testing.database import (
     C,
+    CoreDbConfig,
     Db,
     DbTable,
 )
 from dl_core_testing.fixtures.primitives import FixtureTableSpec
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
-from dl_db_testing.database.base import DbTableBase
 from dl_db_testing.database.engine_wrapper import DbEngineConfig
 from dl_type_transformer.type_transformer import TypeTransformer
 from dl_utils.wait import wait_for
@@ -51,36 +46,10 @@ def avoid_get_sa_type(self: C, tt: TypeTransformer, backend_type: SourceBackendT
     return parse_sqltype(native_type.name)
 
 
-def optimized_insert(self: DbTableBase, data: Union[dict, List[dict]], chunk_size: Optional[int] = None) -> None:
-    """
-    `BaseTrinoTestClass` has `sample_table` fixture that uses `insert` method from `DbTableBase` class.
-    This method is used to insert data into the test table.
-    `insert` method uses batches for inserting data into the table, but Trino client doesn't support batched insert
-    via `executemany` method. So, we need construct insert query for each chunk manually.
-
-    This method is used to monkeypatch `insert` method in `sample_table` fixture.
-    """
-    chunk_size = chunk_size or 1000
-    assert chunk_size is not None
-
-    # TODO: Use insert_into_table
-    if not self.can_insert:
-        raise RuntimeError("Can't insert into table")
-    if isinstance(data, dict):
-        self.db.execute(self.table.insert(data))
-    elif isinstance(data, list):
-        # TODO: Change to itertools.batched after switching to Python 3.12
-        for pos in range(0, len(data), chunk_size):
-            chunk = data[pos : pos + chunk_size]
-            insert = self.table.insert(chunk)
-            self.db.execute(insert)
-    else:
-        raise TypeError(type(data))
-
-
 class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     conn_type = CONNECTION_TYPE_TRINO
     core_test_config = test_config.CORE_TEST_CONFIG
+    supports_executemany = False
 
     @pytest.fixture(scope="session", autouse=True)
     def wait_for_trino(self, connection_creation_params: dict) -> None:
@@ -128,6 +97,14 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     def engine_config(self, db_url: str, engine_params: dict, wait_for_trino: None) -> DbEngineConfig:
         return DbEngineConfig(url=db_url, engine_params=engine_params)
 
+    @pytest.fixture(scope="class")
+    def db_config(self, engine_config: DbEngineConfig) -> CoreDbConfig:
+        return CoreDbConfig(
+            engine_config=engine_config,
+            conn_type=self.conn_type,
+            supports_executemany=self.supports_executemany,
+        )
+
     @pytest.fixture(autouse=True)
     # FIXME: This fixture is a temporary solution for failing core tests when they are run together with api tests
     def loop(self, event_loop: asyncio.AbstractEventLoop) -> Generator[asyncio.AbstractEventLoop, None, None]:
@@ -155,7 +132,6 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     def sample_table(self, sample_table_spec: FixtureTableSpec, db: Db) -> DbTable:
         monkeypatch = pytest.MonkeyPatch()
         monkeypatch.setattr(C, "get_sa_type", avoid_get_sa_type)
-        monkeypatch.setattr(DbTableBase, "insert", optimized_insert)
         return self.db_table_dispenser.get_csv_table(db=db, spec=sample_table_spec)
 
 
