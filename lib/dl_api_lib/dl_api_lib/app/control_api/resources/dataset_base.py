@@ -133,7 +133,7 @@ class DatasetResource(BIResource):
             connection_id = dsrc_coll.get_connection_id(DataSourceRole.origin)
             if conn_id_mapping:
                 try:
-                    connection_id = conn_id_mapping["connection_id"]
+                    connection_id = conn_id_mapping[connection_id]
                 except KeyError:
                     raise DLValidationError(f"Error to find {connection_id} in connection_id_mapping")
             sources.append(
