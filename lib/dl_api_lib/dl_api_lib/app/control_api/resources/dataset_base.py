@@ -140,7 +140,7 @@ class DatasetResource(BIResource):
                 {
                     "id": source_id,
                     "title": dsrc_coll.title or origin_dsrc.default_title,
-                    "connection_id": connection_id if not conn_id_mapping else conn_id_mapping.get(connection_id),
+                    "connection_id": connection_id,
                     "managed_by": dsrc_coll.managed_by,
                     "valid": dsrc_coll.valid,
                     "source_type": origin_dsrc.spec.source_type,
