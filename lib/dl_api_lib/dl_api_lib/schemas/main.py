@@ -174,7 +174,7 @@ class DatasetExportRequestSchema(IdMappingContentSchema):
 
 
 class NotificationContentSchema(BaseSchema):
-    code = ma_fields.String(required=False)
+    code = ma_fields.String()
     message = ma_fields.String()
     level = ma_fields.Enum(NotificationLevel)
 

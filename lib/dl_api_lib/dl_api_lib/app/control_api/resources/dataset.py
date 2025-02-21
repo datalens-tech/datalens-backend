@@ -33,7 +33,6 @@ import dl_api_lib.schemas.validation
 from dl_constants.enums import (
     DataSourceCreatedVia,
     ManagedBy,
-    NotificationLevel,
 )
 from dl_constants.exc import (
     CODE_OK,
@@ -288,7 +287,7 @@ class DatasetExportItem(DatasetResource):
         us_manager = self.get_us_manager()
         ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
         utils.need_permission_on_entry(ds, USPermissionKind.read)
-        ds_dict = ds.as_dict()  # FIXME
+        ds_dict = ds.as_dict()
 
         dl_loc = ds.entry_key
         ds_name = None
@@ -304,10 +303,9 @@ class DatasetExportItem(DatasetResource):
         if ds_name:
             ds_dict["dataset"]["name"] = ds_name
 
-        if ds.rls.items:
-            notifications.append(
-                dict(level=NotificationLevel.info, message="RLS will be exported as is")
-            )  # TODO: localize message
+        ds_warnings = ds.get_export_warnings_list()
+        if ds_warnings:
+            notifications.extend(ds_warnings)
 
         return dict(dataset=ds_dict["dataset"], notifications=notifications)
 
@@ -351,7 +349,7 @@ class DatasetImportCollection(DatasetResource):
 
         us_manager = self.get_us_manager()
         dataset = Dataset.create_from_dict(
-            Dataset.DataModel(name=""),  # TODO: Remove name - it's not used, but is required
+            Dataset.DataModel(name=""),
             ds_key=self.generate_dataset_location(data),
             us_manager=us_manager,
         )
@@ -369,6 +367,10 @@ class DatasetImportCollection(DatasetResource):
         us_manager.save(dataset)
 
         LOGGER.info("New dataset was saved with ID %s", dataset.uuid)
+
+        ds_warnings = dataset.get_import_warnings_list()
+        if ds_warnings:
+            notifications.extend(ds_warnings)
 
         return dict(id=dataset.uuid, notifications=notifications)
 
