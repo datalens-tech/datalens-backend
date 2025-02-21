@@ -24,6 +24,7 @@ import dl_db_testing.database.engine_wrapper as ew
 @attr.s(frozen=True)
 class DbConfig:
     engine_config: ew.DbEngineConfig = attr.ib(kw_only=True)
+    supports_executemany: bool = attr.ib(kw_only=True, default=True)
 
 
 _DB_CONFIG_TV = TypeVar("_DB_CONFIG_TV", bound=DbConfig)
@@ -170,7 +171,10 @@ class DbTableBase:
             # TODO: Change to itertools.batched after switching to Python 3.12
             for pos in range(0, len(data), chunk_size):
                 chunk = data[pos : pos + chunk_size]
-                self.db.execute(self.table.insert(chunk))
+                if self.db.config.supports_executemany:
+                    self.db.execute(self.table.insert(), chunk)
+                else:
+                    self.db.execute(self.table.insert(chunk))
         else:
             raise TypeError(type(data))
 
