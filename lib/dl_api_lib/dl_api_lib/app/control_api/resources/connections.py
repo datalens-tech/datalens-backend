@@ -255,6 +255,7 @@ class ConnectionItem(BIResource):
             us_manager.save(conn)
 
 
+@ns.route("/export/<connection_id>")
 class ConnectionExportItem(BIResource):
     @put_to_request_context(endpoint_code="ConnectionExport")
     @schematic_request(
