@@ -59,7 +59,7 @@ DB_URLS = {
     D.TRINO: URL(
         host=CoreConnectionSettings.HOST,
         port=CoreConnectionSettings.PORT,
-        user=CoreConnectionSettings.USERNAME,
+        user="tests_init_worker",
         catalog="test_mysql_catalog",
         schema="test_data",
     ),
