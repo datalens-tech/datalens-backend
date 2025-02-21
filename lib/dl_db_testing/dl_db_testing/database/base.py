@@ -170,7 +170,7 @@ class DbTableBase:
             # TODO: Change to itertools.batched after switching to Python 3.12
             for pos in range(0, len(data), chunk_size):
                 chunk = data[pos : pos + chunk_size]
-                self.db.execute(self.table.insert(), chunk)
+                self.db.execute(self.table.insert(chunk))
         else:
             raise TypeError(type(data))
 
