@@ -95,8 +95,9 @@ class DashSQLTypedQueryRawView(BaseView):
                     path=params.path,
                     method=params.method,
                     content_type=params.content_type,
-                    body="***" if params.body else None,  # TODO: or leave body as is?
-                )
+                    body="***" if params.body else None,
+                ),
+                sort_keys=True,
             )
 
         tq_processor_factory = self.api_service_registry.get_typed_query_raw_processor_factory()
