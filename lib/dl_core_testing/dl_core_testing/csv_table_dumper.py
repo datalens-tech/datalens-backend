@@ -73,6 +73,10 @@ class CsvTableDumper:
         if not table_name_prefix.endswith("_"):
             table_name_prefix = f"{table_name_prefix}_"
         table_name = f"{table_name_prefix}{shortuuid.uuid()}".lower()
+        
+        # TODO: This is a workaround for Oracle. Remove it when the issue is fixed.
+        if self.db.config.conn_type.name == "oracle":
+            table_name = table_name.upper()
 
         type_schema = [user_type for col_name, user_type in table_schema]
         data = self._load_table_data(raw_csv_data=raw_csv_data, type_schema=type_schema)
