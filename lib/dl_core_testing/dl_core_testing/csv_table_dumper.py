@@ -89,6 +89,11 @@ class CsvTableDumper:
         ]
 
         db_table = make_table(
-            db=self.db, schema=schema_name, name=table_name, columns=columns, rows=len(data), chunk_size=chunk_size
+            db=self.db,
+            schema=schema_name,
+            name=table_name,
+            columns=columns,
+            rows=len(data),
+            chunk_size=chunk_size,
         )
         return db_table
