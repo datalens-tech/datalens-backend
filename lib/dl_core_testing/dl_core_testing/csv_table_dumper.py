@@ -72,7 +72,7 @@ class CsvTableDumper:
         table_name_prefix = table_name_prefix or "table_"
         if not table_name_prefix.endswith("_"):
             table_name_prefix = f"{table_name_prefix}_"
-        table_name = f"{table_name_prefix}{shortuuid.uuid()}"
+        table_name = f"{table_name_prefix}{shortuuid.uuid()}".lower()
 
         type_schema = [user_type for col_name, user_type in table_schema]
         data = self._load_table_data(raw_csv_data=raw_csv_data, type_schema=type_schema)
