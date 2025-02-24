@@ -10,7 +10,7 @@ from dl_dashsql.typed_query.processor.base import TypedQueryRawProcessorBase
 
 @attr.s
 class CEBasedTypedQueryRawProcessor(TypedQueryRawProcessorBase):
-    """A simple typed query processor that delegates all of its logic to a connection executor"""
+    """A simple typed query raw processor that delegates all of its logic to a connection executor"""
 
     async_conn_executor: AsyncConnExecutorBase = attr.ib(kw_only=True)
 
