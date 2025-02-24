@@ -64,6 +64,7 @@ class CsvTableDumper:
         self,
         raw_csv_data: str,
         table_schema: Sequence[tuple[str, UserDataType]],
+        schema_name: Optional[str] = None,
         table_name_prefix: Optional[str] = None,
         nullable: bool = True,
         chunk_size: Optional[int] = None,
@@ -87,5 +88,7 @@ class CsvTableDumper:
             for col_idx, (name, user_type) in enumerate(table_schema)
         ]
 
-        db_table = make_table(db=self.db, name=table_name, columns=columns, rows=len(data), chunk_size=chunk_size)
+        db_table = make_table(
+            db=self.db, schema=schema_name, name=table_name, columns=columns, rows=len(data), chunk_size=chunk_size
+        )
         return db_table
