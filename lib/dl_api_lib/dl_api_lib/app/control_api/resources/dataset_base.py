@@ -21,6 +21,7 @@ from dl_api_lib.enums import (
     BI_TYPE_AGGREGATIONS,
     CASTS_BY_TYPE,
 )
+from dl_api_lib.exc import DLValidationError
 from dl_api_lib.query.registry import (
     get_compeng_dialect,
     is_compeng_executable,
@@ -115,6 +116,7 @@ class DatasetResource(BIResource):
         dataset: Dataset,
         service_registry: ServicesRegistry,
         us_entry_buffer: USEntryBuffer,
+        conn_id_mapping: Optional[dict] = None,
     ) -> dict:
         ds_accessor = DatasetComponentAccessor(dataset=dataset)
         dsrc_coll_factory = service_registry.get_data_source_collection_factory(us_entry_buffer=us_entry_buffer)
@@ -129,6 +131,11 @@ class DatasetResource(BIResource):
 
             origin_dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
             connection_id = dsrc_coll.get_connection_id(DataSourceRole.origin)
+            if conn_id_mapping:
+                try:
+                    connection_id = conn_id_mapping[connection_id]
+                except KeyError:
+                    raise DLValidationError(f"Error to find {connection_id} in connection_id_mapping")
             sources.append(
                 {
                     "id": source_id,
@@ -355,12 +362,15 @@ class DatasetResource(BIResource):
 
         return {"options": opt_data}
 
-    def make_dataset_response_data(self, dataset: Dataset, us_entry_buffer: USEntryBuffer) -> dict:
+    def make_dataset_response_data(
+        self, dataset: Dataset, us_entry_buffer: USEntryBuffer, conn_id_mapping: Optional[dict] = None
+    ) -> dict:
         service_registry = self.get_service_registry()
         ds_dict = self.dump_dataset_data(
             dataset=dataset,
             us_entry_buffer=us_entry_buffer,
             service_registry=service_registry,
+            conn_id_mapping=conn_id_mapping,
         )
         ds_dict.update(
             self.dump_option_data(
