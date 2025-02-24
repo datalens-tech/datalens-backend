@@ -23,11 +23,12 @@ class DbCsvTableDispenser:
         assert byte_data is not None
         return byte_data.decode()
 
-    def _make_new_csv_table(self, db: Db, spec: FixtureTableSpec) -> DbTable:
+    def _make_new_csv_table(self, db: Db, spec: FixtureTableSpec, schema_name: Optional[str]) -> DbTable:
         dumper = CsvTableDumper(db=db)
         db_table = dumper.make_table_from_csv(
             raw_csv_data=self._get_raw_csv_data(spec.csv_name),
             table_schema=spec.table_schema,
+            schema_name=schema_name,
             nullable=spec.nullable,
             table_name_prefix=self._table_name_prefix,
             chunk_size=self._chunk_size,
@@ -37,8 +38,8 @@ class DbCsvTableDispenser:
         self._tables[db.config][spec] = db_table
         return db_table
 
-    def get_csv_table(self, db: Db, spec: FixtureTableSpec) -> DbTable:
+    def get_csv_table(self, db: Db, spec: FixtureTableSpec, schema_name: Optional[str] = None) -> DbTable:
         try:
             return self._tables[db.config][spec]
         except KeyError:
-            return self._make_new_csv_table(db=db, spec=spec)
+            return self._make_new_csv_table(db=db, spec=spec, schema_name=schema_name)
