@@ -981,6 +981,12 @@ msgstr ""
 msgid "Removes all {arg:0} elements equal to {arg:1}."
 msgstr ""
 
+msgid ""
+"Returns an array containing the elements present in each of the given "
+"arrays. The intersection does not consider duplicate elements and the result "
+"can contain elements in any order."
+msgstr ""
+
 msgid "Returns the number of the {arg:0} items."
 msgstr ""
 

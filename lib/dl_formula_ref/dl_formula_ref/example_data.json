@@ -175,6 +175,47 @@
         }
     ],
     [
+        "ARR_INTERSECT.Example",
+        {
+            "columns": [
+                {
+                    "name": "array1",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "array2",
+                    "type": "ARRAY_INT"
+                },
+                {
+                    "name": "arr_intersect",
+                    "type": "ARRAY_INT"
+                }
+            ],
+            "rows": [
+                [
+                    "[1,2,3]",
+                    "[2,3,4]",
+                    "[2,3]"
+                ],
+                [
+                    "[1,2,2]",
+                    "[2,2,3]",
+                    "[2]"
+                ],
+                [
+                    "[1,2,3]",
+                    "[4,5,6]",
+                    "[]"
+                ],
+                [
+                    "[NULL,1,1,NULL]",
+                    "[1,NULL,2,NULL]",
+                    "[NULL,1]"
+                ]
+            ]
+        }
+    ],
+    [
         "ARR_MAX.Example",
         {
             "columns": [

@@ -98,6 +98,19 @@ _EXAMPLE_SOURCE_CONTAINS_SUBSEQUENCE = ExampleSource(
     ],
 )
 
+_EXAMPLE_SOURCE_INTERSECT = ExampleSource(
+    columns=[
+        ("array1", DataType.ARRAY_INT),
+        ("array2", DataType.ARRAY_INT),
+    ],
+    data=[
+        [[1, 2, 3], [2, 3, 4]],
+        [[1, 2, 2], [2, 2, 3]],
+        [[1, 2, 3], [4, 5, 6]],
+        [[None, 1, 1, None], [1, None, 2, None]],
+    ],
+)
+
 _EXAMPLE_SOURCE_ARRAY_AGGREGATION_FUNCTIONS = ExampleSource(
     columns=[
         ("float_array", DataType.ARRAY_FLOAT),
@@ -497,6 +510,31 @@ FUNCTION_ARR_REMOVE = FunctionDocRegistryItem(
     ],
 )
 
+FUNCTION_ARR_INTERSECT = FunctionDocRegistryItem(
+    name="arr_intersect",
+    category=CATEGORY_ARRAY,
+    impl_selector=ArgAwareImplementationSelector(
+        exp_arg_types={
+            0: {DataType.ARRAY_INT, DataType.ARRAY_FLOAT, DataType.ARRAY_STR},
+        },
+    ),
+    description=_(
+        "Returns an array containing the elements present in each of the given arrays. The intersection does not consider duplicate elements and the result can contain elements in any order."
+    ),
+    examples=[
+        DataExample(
+            example_config=ExampleConfig(
+                source=_EXAMPLE_SOURCE_INTERSECT,
+                formula_fields=[
+                    ("array1", "[array1]"),
+                    ("array2", "[array2]"),
+                    ("arr_intersect", "ARR_INTERSECT([array1], [array2])"),
+                ],
+            ),
+        ),
+    ],
+)
+
 FUNCTION_LEN_ARRAY = FunctionDocRegistryItem(
     name="len",
     category=CATEGORY_ARRAY,
@@ -537,5 +575,6 @@ FUNCTIONS_ARRAY = [
     FUNCTION_ARR_AVG,
     FUNCTION_ARR_PRODUCT,
     FUNCTION_ARR_REMOVE,
+    FUNCTION_ARR_INTERSECT,
     FUNCTION_LEN_ARRAY,
 ]
