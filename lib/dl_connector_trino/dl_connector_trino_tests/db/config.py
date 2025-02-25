@@ -22,14 +22,19 @@ CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
 )
 
 
-class CoreConnectionSettings:
+class BaseConnectionSettings:
+    CATALOG: ClassVar[str] = "test_mysql_catalog"
+    SCHEMA: ClassVar[str] = "test_data"  # for source MySQL server this is the database name
+
+
+class CoreConnectionSettings(BaseConnectionSettings):
     HOST: ClassVar[str] = get_test_container_hostport("trino-no-auth", fallback_port=21123).host
     PORT: ClassVar[int] = get_test_container_hostport("trino-no-auth", fallback_port=21123).port
     USERNAME: ClassVar[str] = "datalens"
     AUTH_TYPE: ClassVar[str] = TrinoAuthType.NONE
 
 
-class CoreSslConnectionSettings:
+class CoreSslConnectionSettings(BaseConnectionSettings):
     HOST: ClassVar[str] = get_test_container_hostport("trino-tls-nginx", fallback_port=21124).host
     PORT: ClassVar[int] = get_test_container_hostport("trino-tls-nginx", fallback_port=21124).port
     USERNAME: ClassVar[str] = "trino_user"
@@ -60,15 +65,13 @@ DB_URLS = {
         host=CoreConnectionSettings.HOST,
         port=CoreConnectionSettings.PORT,
         user="tests_init_worker",
-        catalog="test_mysql_catalog",
-        schema="test_data",
+        catalog=CoreConnectionSettings.CATALOG,
     ),
     (D.TRINO, "ssl"): URL(
         host=CoreSslConnectionSettings.HOST,
         port=CoreSslConnectionSettings.PORT,
         user=CoreSslConnectionSettings.USERNAME,
-        catalog="test_mysql_catalog",
-        schema="test_data",
+        catalog=CoreSslConnectionSettings.CATALOG,
     ),
 }
 DB_CORE_URL = DB_URLS[D.TRINO]
