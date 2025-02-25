@@ -53,7 +53,7 @@ def schematic_request(  # type: ignore  # TODO: fix
     ns: Namespace,
     body: Optional[Schema] = None,
     query: Optional[Schema] = None,
-    responses: Optional[dict[int, tuple[str, Schema]]] = None,
+    responses: Optional[dict[int, tuple[str, Optional[Schema]]]] = None,
     dump: bool = True,
 ):
     """
