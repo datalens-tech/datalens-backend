@@ -8,7 +8,15 @@ import sqlalchemy as sa
 from sqlalchemy.dialects.oracle import base as oracle_types
 
 from dl_constants.enums import UserDataType
-from dl_core.connection_models.common_models import DBIdent
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
+from dl_core.connection_models.common_models import (
+    DBIdent,
+    SchemaIdent,
+)
+from dl_core_testing.database import (
+    Db,
+    DbTable,
+)
 from dl_core_testing.testcases.connection_executor import (
     DefaultAsyncConnectionExecutorTestSuite,
     DefaultSyncAsyncConnectionExecutorCheckBase,
@@ -75,6 +83,22 @@ class TestOracleSyncConnectionExecutor(
                 self.CD(oracle_types.TIMESTAMP(), UserDataType.genericdatetime),
             ],
         }
+
+    def test_get_table_names(
+        self,
+        sample_table: DbTable,
+        db: Db,
+        sync_connection_executor: SyncConnExecutorBase,
+    ) -> None:
+        # at the moment, checks that sample table is listed among the others
+
+        tables = [sample_table]
+        expected_table_names = set(table.name.upper() for table in tables)
+
+        actual_tables = sync_connection_executor.get_tables(SchemaIdent(db_name=db.name, schema_name=None))
+        actual_table_names = [tid.table_name for tid in actual_tables]
+
+        assert set(actual_table_names).issuperset(expected_table_names)
 
 
 class TestOracleAsyncConnectionExecutor(
