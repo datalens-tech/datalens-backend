@@ -136,7 +136,6 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
     def test_get_table_names(
         self,
         sample_table: DbTable,
-        existing_table_ident: TableIdent,  # by default, the sample_table
         sync_connection_executor: SyncConnExecutorBase,
     ) -> None:
         # at the moment, checks that sample table is listed among the others
@@ -146,8 +145,8 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
 
         actual_tables = sync_connection_executor.get_tables(
             SchemaIdent(
-                db_name=existing_table_ident.db_name,
-                schema_name=existing_table_ident.schema_name,
+                db_name=sample_table.db.name,
+                schema_name=sample_table.schema,
             )
         )
         actual_table_names = [tid.table_name for tid in actual_tables]
