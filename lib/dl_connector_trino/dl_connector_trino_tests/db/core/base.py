@@ -132,7 +132,11 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     def sample_table(self, sample_table_spec: FixtureTableSpec, db: Db) -> DbTable:
         monkeypatch = pytest.MonkeyPatch()
         monkeypatch.setattr(C, "get_sa_type", avoid_get_sa_type)
-        return self.db_table_dispenser.get_csv_table(db=db, spec=sample_table_spec)
+        return self.db_table_dispenser.get_csv_table(
+            db=db,
+            spec=sample_table_spec,
+            schema_name=test_config.BaseConnectionSettings.SCHEMA,
+        )
 
 
 class BaseTrinoSslTestClass(BaseTrinoTestClass):
