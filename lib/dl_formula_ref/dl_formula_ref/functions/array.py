@@ -519,7 +519,9 @@ FUNCTION_ARR_INTERSECT = FunctionDocRegistryItem(
         },
     ),
     description=_(
-        "Returns an array containing the elements present in each of the given arrays. The intersection does not consider duplicate elements and the result can contain elements in any order."
+        "Returns an array of elements that occur in every array provided as an argument. "
+        "The function does not put such elements in any particular order. "
+        "Duplicate elements are only added once."
     ),
     examples=[
         DataExample(
