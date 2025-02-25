@@ -138,13 +138,19 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
         sample_table: DbTable,
         db: Db,
         sync_connection_executor: SyncConnExecutorBase,
+        existing_table_ident: TableIdent,  # by default, the sample_table
     ) -> None:
         # at the moment, checks that sample table is listed among the others
 
         tables = [sample_table]
         expected_table_names = set(table.name for table in tables)
 
-        actual_tables = sync_connection_executor.get_tables(SchemaIdent(db_name=db.name, schema_name=None))
+        actual_tables = sync_connection_executor.get_tables(
+            SchemaIdent(
+                db_name=existing_table_ident.db_name,
+                schema_name=existing_table_ident.schema_name,
+            )
+        )
         actual_table_names = [tid.table_name for tid in actual_tables]
 
         assert set(actual_table_names).issuperset(expected_table_names)
