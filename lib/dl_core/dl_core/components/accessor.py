@@ -7,6 +7,8 @@ from typing import (
 
 import attr
 
+from dl_core.data_source_spec.collection import DataSourceCollectionSpec
+from dl_core.data_source_spec.sql import SubselectDataSourceSpec
 import dl_core.exc as exc
 
 
@@ -64,13 +66,31 @@ class DatasetComponentAccessor:
     def get_data_source_id_list(self) -> list[str]:
         return [dsrc_coll_spec.id for dsrc_coll_spec in self.get_data_source_coll_spec_list()]
 
+    def _template(self, string: str) -> str:
+        for parameter, bi_value in self._dataset.parameter_values.items():
+            string = string.replace(f"{{{parameter}}}", str(bi_value.value))
+
+        return string
+
+    def _template_source_spec(self, spec: DataSourceCollectionSpec) -> DataSourceCollectionSpec:
+        origin = spec.origin
+
+        if isinstance(origin, SubselectDataSourceSpec):
+            origin = attr.evolve(
+                origin,
+                subsql=None if origin.subsql is None else self._template(origin.subsql),
+            )
+            spec = attr.evolve(spec, origin=origin)
+
+        return spec
+
     def get_data_source_coll_spec_list(self) -> list[DataSourceCollectionSpec]:
-        return [dsrc_coll_spec for dsrc_coll_spec in self._dataset.data.source_collections]
+        return [self._template_source_spec(dsrc_coll_spec) for dsrc_coll_spec in self._dataset.data.source_collections]
 
     def get_data_source_coll_spec_opt(self, source_id: str) -> Optional[DataSourceCollectionSpec]:
         for dsrc_coll_spec in self._dataset.data.source_collections:
             if dsrc_coll_spec.id == source_id:
-                return dsrc_coll_spec
+                return self._template_source_spec(dsrc_coll_spec)
         return None
 
     def get_data_source_coll_spec_strict(self, source_id: str) -> DataSourceCollectionSpec:
