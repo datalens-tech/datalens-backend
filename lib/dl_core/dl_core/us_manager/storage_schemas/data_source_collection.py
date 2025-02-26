@@ -1,22 +1,11 @@
 from __future__ import annotations
 
 import logging
-from typing import (
-    Any,
-    Optional,
-)
 
 from marshmallow import fields
-from marshmallow_oneofschema import OneOfSchema
 
-from dl_constants.enums import (
-    DataSourceCollectionType,
-    ManagedBy,
-)
-from dl_core.data_source_spec.collection import (
-    DataSourceCollectionSpec,
-    DataSourceCollectionSpecBase,
-)
+from dl_constants.enums import ManagedBy
+from dl_core.data_source_spec.collection import DataSourceCollectionSpec
 from dl_core.us_manager.storage_schemas.base import (
     BaseStorageSchema,
     CtxKey,
@@ -56,19 +45,3 @@ class DataSourceCollectionSpecStorageSchema(BaseStorageSchema[DataSourceCollecti
             sample=data["sample"],
             valid=data["valid"],
         )
-
-
-class GenericDataSourceCollectionStorageSchema(OneOfSchema):
-    type_field = "type"
-    type_field_remove = True
-    type_schemas = {
-        k.name: v
-        for k, v in {
-            DataSourceCollectionType.collection: DataSourceCollectionSpecStorageSchema,
-        }.items()
-    }
-
-    def get_obj_type(self, obj: Any) -> Optional[DataSourceCollectionType]:
-        if isinstance(obj, DataSourceCollectionSpecBase):
-            return obj.dsrc_coll_type.name  # type: ignore  # TODO: fix
-        return None

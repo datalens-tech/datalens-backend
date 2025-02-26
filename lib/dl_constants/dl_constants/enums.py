@@ -234,10 +234,6 @@ class DataSourceRole(Enum):
     materialization = "materialization"
 
 
-class DataSourceCollectionType(Enum):
-    collection = "collection"
-
-
 class DataSourceCreatedVia(DynamicEnum):
     user = AutoEnumValue()
     workbook_copy = AutoEnumValue()

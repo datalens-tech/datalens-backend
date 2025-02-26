@@ -32,7 +32,7 @@ from dl_core.components.ids import (
 )
 from dl_core.data_source.base import DataSource
 from dl_core.data_source.collection import (
-    DataSourceCollectionBase,
+    DataSourceCollection,
     DataSourceCollectionFactory,
 )
 from dl_core.dataset_capabilities import DatasetCapabilities
@@ -186,7 +186,7 @@ class DatasetBaseWrapper:
             verbose_logging=self._verbose_logging,
         )
 
-    def _get_data_source_coll_strict(self, source_id: str) -> DataSourceCollectionBase:
+    def _get_data_source_coll_strict(self, source_id: str) -> DataSourceCollection:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
         dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
         return dsrc_coll

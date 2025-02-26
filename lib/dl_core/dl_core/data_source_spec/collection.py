@@ -1,15 +1,10 @@
 from __future__ import annotations
 
-import abc
-from typing import (
-    ClassVar,
-    Optional,
-)
+from typing import Optional
 
 import attr
 
 from dl_constants.enums import (
-    DataSourceCollectionType,
     DataSourceRole,
     ManagedBy,
 )
@@ -18,29 +13,18 @@ from dl_core.data_source_spec.base import DataSourceSpec
 
 
 @attr.s
-class DataSourceCollectionSpecBase(abc.ABC):
-    dsrc_coll_type: ClassVar[DataSourceCollectionType]
-
+class DataSourceCollectionSpec:  # noqa
     id: str = attr.ib(kw_only=True)
     title: Optional[str] = attr.ib(kw_only=True, default=None)
     managed_by: ManagedBy = attr.ib(kw_only=True, default=None)
     valid: bool = attr.ib(kw_only=True, default=True)
 
-    def __attrs_post_init__(self) -> None:
-        self.managed_by = self.managed_by or ManagedBy.user
-
-    @abc.abstractmethod
-    def collect_links(self) -> dict[str, str]:
-        raise NotImplementedError
-
-
-@attr.s
-class DataSourceCollectionSpec(DataSourceCollectionSpecBase):  # noqa
-    dsrc_coll_type = DataSourceCollectionType.collection
-
     origin: Optional[DataSourceSpec] = attr.ib(kw_only=True, default=None)
     materialization: Optional[DataSourceSpec] = attr.ib(kw_only=True, default=None)
     sample: Optional[DataSourceSpec] = attr.ib(kw_only=True, default=None)
+
+    def __attrs_post_init__(self) -> None:
+        self.managed_by = self.managed_by or ManagedBy.user
 
     def get_for_role(self, role: DataSourceRole) -> Optional[DataSourceSpec]:
         return getattr(self, role.name)

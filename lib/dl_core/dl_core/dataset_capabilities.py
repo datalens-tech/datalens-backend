@@ -33,7 +33,7 @@ from dl_core.us_dataset import Dataset
 
 if TYPE_CHECKING:
     from dl_core.data_source.collection import (
-        DataSourceCollectionBase,
+        DataSourceCollection,
         DataSourceCollectionFactory,
     )
 
@@ -96,7 +96,7 @@ class DatasetCapabilities:
     def _get_first_dsrc_collection(
         self,
         ignore_source_ids: Optional[Collection[str]] = None,
-    ) -> Optional["data_source.DataSourceCollectionBase"]:
+    ) -> Optional["data_source.DataSourceCollection"]:
         source_id = self._dataset.get_single_data_source_id(ignore_source_ids=ignore_source_ids)
         if source_id is not None:
             dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_opt(source_id)
@@ -171,7 +171,7 @@ class DatasetCapabilities:
             comp_types &= get_compatible_source_types(dsrc_type)
         return comp_types
 
-    def _get_data_source_collections(self) -> dict[str, DataSourceCollectionBase]:
+    def _get_data_source_collections(self) -> dict[str, DataSourceCollection]:
         result = {}
         for dsrc_coll_spec in self._ds_accessor.get_data_source_coll_spec_list():
             result[dsrc_coll_spec.id] = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)

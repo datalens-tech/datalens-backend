@@ -12,7 +12,7 @@ import dl_core.exc as exc
 
 if TYPE_CHECKING:
     from dl_core.base_models import ObligatoryFilter
-    from dl_core.data_source_spec.collection import DataSourceCollectionSpecBase
+    from dl_core.data_source_spec.collection import DataSourceCollectionSpec
     from dl_core.multisource import (
         AvatarRelation,
         SourceAvatar,
@@ -64,16 +64,16 @@ class DatasetComponentAccessor:
     def get_data_source_id_list(self) -> list[str]:
         return [dsrc_coll_spec.id for dsrc_coll_spec in self.get_data_source_coll_spec_list()]
 
-    def get_data_source_coll_spec_list(self) -> list[DataSourceCollectionSpecBase]:
+    def get_data_source_coll_spec_list(self) -> list[DataSourceCollectionSpec]:
         return [dsrc_coll_spec for dsrc_coll_spec in self._dataset.data.source_collections]
 
-    def get_data_source_coll_spec_opt(self, source_id: str) -> Optional[DataSourceCollectionSpecBase]:
+    def get_data_source_coll_spec_opt(self, source_id: str) -> Optional[DataSourceCollectionSpec]:
         for dsrc_coll_spec in self._dataset.data.source_collections:
             if dsrc_coll_spec.id == source_id:
                 return dsrc_coll_spec
         return None
 
-    def get_data_source_coll_spec_strict(self, source_id: str) -> DataSourceCollectionSpecBase:
+    def get_data_source_coll_spec_strict(self, source_id: str) -> DataSourceCollectionSpec:
         dsrc_coll_spec = self.get_data_source_coll_spec_opt(source_id=source_id)
         if dsrc_coll_spec is None:
             raise exc.DataSourceNotFound(f"Unknown data source: {source_id}")

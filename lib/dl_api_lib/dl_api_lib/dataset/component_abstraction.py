@@ -17,7 +17,7 @@ from dl_constants.enums import (
 from dl_core.base_models import ObligatoryFilter
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.editor import DatasetComponentEditor
-from dl_core.data_source import DataSourceCollectionBase
+from dl_core.data_source import DataSourceCollection
 from dl_core.data_source.collection import DataSourceCollectionFactory
 import dl_core.exc as common_exc
 from dl_core.fields import (
@@ -33,7 +33,7 @@ from dl_core.us_manager.local_cache import USEntryBuffer
 
 
 DatasetComponent = Union[
-    DataSourceCollectionBase,
+    DataSourceCollection,
     SourceAvatar,
     AvatarRelation,
     BIField,
@@ -81,12 +81,12 @@ class DatasetComponentAbstraction:
     def _ds(self) -> Dataset:  # FIXME
         return self._dataset
 
-    def _get_data_source_coll_strict(self, source_id: str) -> DataSourceCollectionBase:
+    def _get_data_source_coll_strict(self, source_id: str) -> DataSourceCollection:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
         dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
         return dsrc_coll
 
-    def _get_data_source_coll_opt(self, source_id: str) -> Optional[DataSourceCollectionBase]:
+    def _get_data_source_coll_opt(self, source_id: str) -> Optional[DataSourceCollection]:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_opt(source_id=source_id)
         if not dsrc_coll_spec:
             return None

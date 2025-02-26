@@ -67,7 +67,7 @@ from dl_core.base_models import (
 from dl_core.connectors.base.data_source_migration import get_data_source_migrator
 from dl_core.constants import DatasetConstraints
 from dl_core.data_source.base import DataSource
-from dl_core.data_source.collection import DataSourceCollectionBase
+from dl_core.data_source.collection import DataSourceCollection
 from dl_core.data_source.sql import BaseSQLDataSource
 from dl_core.data_source.type_mapping import get_data_source_class
 from dl_core.db import (
@@ -968,7 +968,7 @@ class DatasetValidator(DatasetBaseWrapper):
         }[component_ref.component_type]
 
         for other_component in self._ds_ca.iter_dataset_components_by_type(component_type=component_ref.component_type):
-            if not isinstance(other_component, (DataSourceCollectionBase, SourceAvatar, BIField)):
+            if not isinstance(other_component, (DataSourceCollection, SourceAvatar, BIField)):
                 raise TypeError(f"Component type {type(other_component)} is not supported here")
 
             other_component_id = other_component.guid if isinstance(other_component, BIField) else other_component.id
