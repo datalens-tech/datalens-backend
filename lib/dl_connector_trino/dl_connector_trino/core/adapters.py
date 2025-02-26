@@ -22,6 +22,7 @@ from dl_core.connection_models.common_models import (
 )
 
 from dl_connector_trino.core.constants import (
+    ADAPTER_SOURCE_NAME,
     CONNECTION_TYPE_TRINO,
     TrinoAuthType,
 )
@@ -57,31 +58,40 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
     _error_transformer = trino_error_transformer
 
     def get_conn_line(self, db_name: Optional[str] = None, params: Optional[dict[str, Any]] = None) -> str:
+        # We do not expect to transfer any additional parameters when creating the engine.
+        # This check is needed to track if it still passed.
+        assert params is None
+
+        params = params or {}
         return trino_url(
             host=self._target_dto.host,
             port=self._target_dto.port,
             user=self._target_dto.username,
+            catalog=db_name,
+            source=ADAPTER_SOURCE_NAME,
+            **params,
         )
 
     def get_connect_args(self) -> dict[str, Any]:
-        connect_args: dict[str, Any] = {
+        args: dict[str, Any] = {
+            **super().get_connect_args(),
             "http_scheme": "http" if self._target_dto.auth_type is TrinoAuthType.NONE else "https",
         }
         if self._target_dto.auth_type is TrinoAuthType.NONE:
             pass
         elif self._target_dto.auth_type is TrinoAuthType.PASSWORD:
-            connect_args["auth"] = BasicAuthentication(self._target_dto.username, self._target_dto.password)
+            args["auth"] = BasicAuthentication(self._target_dto.username, self._target_dto.password)
         elif self._target_dto.auth_type is TrinoAuthType.JWT:
-            connect_args["auth"] = JWTAuthentication(self._target_dto.jwt)
+            args["auth"] = JWTAuthentication(self._target_dto.jwt)
         else:
             raise NotImplementedError(f"{self._target_dto.auth_type.name} authentication is not supported yet")
 
         if self._target_dto.ssl_ca:
             session = requests.Session()
             session.mount("https://", CustomHTTPAdapter(self._target_dto.ssl_ca))
-            connect_args["http_session"] = session
+            args["http_session"] = session
 
-        return connect_args
+        return args
 
     def get_default_db_name(self) -> Optional[str]:
         return None
