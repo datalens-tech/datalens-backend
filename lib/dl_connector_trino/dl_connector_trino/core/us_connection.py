@@ -57,11 +57,10 @@ class ConnectionTrino(ConnectionSQL):
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[str]:
-        # It is impossible to define `get_catalog_names` in `TrinoConnExecutor` and call it here
+        # It is impossible to define `get_catalog_names` in `TrinoConnExecutor` and call it from here
         # because `conn_executor_factory` returns `SyncWrapperForAsyncConnExecutor`, not `TrinoConnExecutor` (surprise!).
         # So, `SyncWrapperForAsyncConnExecutor` sets a set of methods that can be defined in `TrinoConnExecutor`.
         # To keep source querying logic in `Adapter`, we need this hack with `_extract_sync_sa_adapter`.
-        # sa_adapter: TrinoDefaultAdapter = conn_executor._extract_sync_sa_adapter(raise_on_not_exists=True)
         conn_executor = cast(SyncWrapperForAsyncConnExecutor, conn_executor_factory(self))
         sa_adapter = cast(TrinoDefaultAdapter, conn_executor._extract_sync_sa_adapter(raise_on_not_exists=True))
         return sa_adapter.get_catalog_names()
