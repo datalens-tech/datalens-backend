@@ -36,10 +36,8 @@ from dl_core.connection_models.common_models import (
 import dl_core.exc as core_exc
 from dl_core.us_connection_base import ConnectionBase
 from dl_core_testing.database import (
-    C,
     Db,
     DbTable,
-    make_table,
 )
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 from dl_testing.regulated_test import RegulatedTestCase
