@@ -93,13 +93,8 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
 
         return args
 
-    def get_default_db_name(self) -> Optional[str]:
-        return None
-
-    def get_db_name_for_query(self, db_name_from_query: Optional[str]) -> str:
-        # Trino doesn't require db_name to connect, but has catalogs.
-        # TODO: @khamitovdr Study possible usage of db_name_from_query.
-        return ""
+    def get_default_db_name(self) -> str:
+        return ""  # Trino doesn't require db_name to connect.
 
     def _get_db_version(self, db_ident: DBIdent) -> str:
         result = self.execute(DBAdapterQuery("SELECT VERSION()"))
