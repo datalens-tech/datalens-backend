@@ -92,16 +92,6 @@ class DefaultSyncAsyncConnectionExecutorCheckBase(BaseConnectionExecutorTestClas
             table_name=sample_table.name,
         )
 
-    @pytest.fixture(scope="class")
-    def db_table_columns(self, db: Db) -> list[C]:
-        return C.full_house()
-
-    @pytest.fixture(scope="function")
-    def db_table(self, db: Db, db_table_columns: list[C]) -> Generator[DbTable, None, None]:
-        db_table = make_table(db, columns=db_table_columns)
-        yield db_table
-        db.drop_table(db_table.table)
-
     @pytest.fixture(scope="function")
     def nonexistent_table_ident(self, existing_table_ident: TableIdent) -> TableIdent:
         return existing_table_ident.clone(table_name=f"nonexistent_table_{shortuuid.uuid()}")
@@ -157,7 +147,6 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
         self,
         sync_connection_executor: SyncConnExecutorBase,
         existing_table_ident: TableIdent,
-        db_table: DbTable,
     ) -> None:
         assert sync_connection_executor.is_table_exists(existing_table_ident)
 
@@ -253,7 +242,6 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
         case: str,
         sync_connection_executor: SyncConnExecutorBase,
         existing_table_ident: TableIdent,
-        db_table: DbTable,
     ) -> None:
         # Just tests that the adapter can successfully retrieve the schema.
         # Data source tests check this in more detail
@@ -366,7 +354,6 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
         self,
         async_connection_executor: AsyncConnExecutorBase,
         existing_table_ident: TableIdent,
-        db_table: DbTable,
     ) -> None:
         # Just tests that the adapter can successfully retrieve the schema.
         # Data source tests check this in more detail
