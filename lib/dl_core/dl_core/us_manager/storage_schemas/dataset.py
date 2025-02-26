@@ -56,7 +56,7 @@ from dl_core.fields import (
 )
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.storage_schemas.base import DefaultStorageSchema
-from dl_core.us_manager.storage_schemas.data_source_collection import GenericDataSourceCollectionStorageSchema
+from dl_core.us_manager.storage_schemas.data_source_collection import DataSourceCollectionSpecStorageSchema
 from dl_core.us_manager.storage_schemas.error_registry import ComponentErrorListSchema
 from dl_model_tools.typed_values import (
     ArrayFloatValue,
@@ -468,7 +468,7 @@ class DatasetStorageSchema(DefaultStorageSchema):
     load_preview_by_default = ma_fields.Boolean(allow_none=True, dump_default=True, load_default=True)
     result_schema = ma_fields.Nested(ResultSchemaStorageSchema, allow_none=False)
     result_schema_aux = ma_fields.Nested(ResultSchemaAuxSchema, allow_none=False)
-    source_collections = ma_fields.List(ma_fields.Nested(GenericDataSourceCollectionStorageSchema, allow_none=False))
+    source_collections = ma_fields.List(ma_fields.Nested(DataSourceCollectionSpecStorageSchema, allow_none=False))
     source_avatars = ma_fields.List(ma_fields.Nested(SourceAvatarSchema, allow_none=False))
     avatar_relations = ma_fields.List(ma_fields.Nested(AvatarRelationSchema, allow_none=False))
     rls = ma_fields.Nested(RLSSchema, allow_none=False)

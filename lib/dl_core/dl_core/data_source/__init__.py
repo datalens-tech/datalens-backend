@@ -14,7 +14,6 @@ from dl_core.data_source.utils import get_parameters_hash
 
 from .collection import (
     DataSourceCollection,
-    DataSourceCollectionBase,
     DataSourceCollectionFactory,
 )
 
@@ -26,7 +25,7 @@ __all__ = (
     "StandardSQLDataSource",
     "BaseSQLDataSource",
     "get_data_source_class",
-    "DataSourceCollectionBase",
+    "DataSourceCollection",
     "DataSourceCollection",
     "DataSourceCollectionFactory",
     "get_parameters_hash",

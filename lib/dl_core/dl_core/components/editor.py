@@ -32,10 +32,7 @@ from dl_core.data_source_merge_tools import (
     make_spec_from_dict,
     update_spec_from_dict,
 )
-from dl_core.data_source_spec.collection import (
-    DataSourceCollectionSpec,
-    DataSourceCollectionSpecBase,
-)
+from dl_core.data_source_spec.collection import DataSourceCollectionSpec
 from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from dl_core.db.elements import (
     IndexInfo,
@@ -80,7 +77,7 @@ class DatasetComponentEditor:
         title: Optional[str],
         managed_by: ManagedBy = ManagedBy.user,
         valid: bool = True,
-    ) -> DataSourceCollectionSpecBase:
+    ) -> DataSourceCollectionSpec:
         """Add a new data source collection configuration entry. Return its ID"""
 
         dsrc_coll_spec = DataSourceCollectionSpec(

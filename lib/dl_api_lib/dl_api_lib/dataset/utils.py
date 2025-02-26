@@ -19,7 +19,7 @@ from dl_constants.enums import (
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.editor import DatasetComponentEditor
 from dl_core.data_source.collection import (
-    DataSourceCollectionBase,
+    DataSourceCollection,
     DataSourceCollectionFactory,
 )
 import dl_core.exc as exc
@@ -35,7 +35,7 @@ def _iter_data_source_collections(
     dataset: Dataset,
     us_entry_buffer: USEntryBuffer,
     source_ids: Optional[Iterable[str]] = None,
-) -> Generator[DataSourceCollectionBase, None, None]:
+) -> Generator[DataSourceCollection, None, None]:
     ds_accessor = DatasetComponentAccessor(dataset=dataset)
 
     if source_ids is None:

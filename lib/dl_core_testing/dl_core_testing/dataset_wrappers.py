@@ -28,11 +28,11 @@ from dl_core.components.editor import DatasetComponentEditor
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.data_source.base import DataSource
 from dl_core.data_source.collection import (
-    DataSourceCollectionBase,
+    DataSourceCollection,
     DataSourceCollectionFactory,
 )
 from dl_core.data_source.sql import BaseSQLDataSource
-from dl_core.data_source_spec.collection import DataSourceCollectionSpecBase
+from dl_core.data_source_spec.collection import DataSourceCollectionSpec
 from dl_core.dataset_capabilities import DatasetCapabilities
 from dl_core.db.elements import (
     IndexInfo,
@@ -107,21 +107,21 @@ class DatasetTestWrapper:
     def get_avatar_strict(self, avatar_id: str) -> SourceAvatar:
         return self._ds_accessor.get_avatar_strict(avatar_id=avatar_id)
 
-    def get_data_source_coll_spec_opt(self, source_id: str) -> Optional[DataSourceCollectionSpecBase]:
+    def get_data_source_coll_spec_opt(self, source_id: str) -> Optional[DataSourceCollectionSpec]:
         return self._ds_accessor.get_data_source_coll_spec_opt(source_id=source_id)
 
-    def get_data_source_coll_spec_strict(self, source_id: str) -> DataSourceCollectionSpecBase:
+    def get_data_source_coll_spec_strict(self, source_id: str) -> DataSourceCollectionSpec:
         return self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
 
-    def get_data_source_coll_list(self) -> list[DataSourceCollectionBase]:
+    def get_data_source_coll_list(self) -> list[DataSourceCollection]:
         return [self.get_data_source_coll_strict(source_id=source_id) for source_id in self.get_data_source_id_list()]
 
-    def get_data_source_coll_opt(self, source_id: str) -> Optional[DataSourceCollectionBase]:
+    def get_data_source_coll_opt(self, source_id: str) -> Optional[DataSourceCollection]:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
         dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
         return dsrc_coll
 
-    def get_data_source_coll_strict(self, source_id: str) -> DataSourceCollectionBase:
+    def get_data_source_coll_strict(self, source_id: str) -> DataSourceCollection:
         dsrc_coll = self.get_data_source_coll_opt(source_id=source_id)
         assert dsrc_coll is not None
         return dsrc_coll

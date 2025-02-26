@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Callable,
-    ClassVar,
     Optional,
     Union,
 )
@@ -11,7 +10,6 @@ from typing import (
 import attr
 
 from dl_constants.enums import (
-    DataSourceCollectionType,
     DataSourceRole,
     DataSourceType,
     JoinType,
@@ -28,10 +26,7 @@ from dl_core.data_source import (
 )
 from dl_core.data_source.utils import get_parameters_hash
 from dl_core.data_source_spec.base import DataSourceSpec
-from dl_core.data_source_spec.collection import (
-    DataSourceCollectionSpec,
-    DataSourceCollectionSpecBase,
-)
+from dl_core.data_source_spec.collection import DataSourceCollectionSpec
 from dl_core.db import SchemaColumn
 from dl_core.enums import RoleReason
 import dl_core.exc as exc
@@ -55,15 +50,14 @@ LazyDataSourceType = Union[base.DataSource, dict]  # data source instance or par
 
 
 @attr.s
-class DataSourceCollectionBase:
-    dsrc_coll_type: ClassVar[DataSourceCollectionType]
+class DataSourceCollection:
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
-
-    _spec: DataSourceCollectionSpecBase = attr.ib(default=None)
+    _spec: DataSourceCollectionSpec = attr.ib(default=None)
+    _loaded_sources: dict[DataSourceRole, Optional[base.DataSource]] = attr.ib(init=False, factory=dict)
 
     @property
-    def spec(self) -> DataSourceCollectionSpecBase:
-        assert isinstance(self._spec, DataSourceCollectionSpecBase)
+    def spec(self) -> DataSourceCollectionSpec:
+        assert isinstance(self._spec, DataSourceCollectionSpec)
         return self._spec
 
     @property
@@ -116,15 +110,6 @@ class DataSourceCollectionBase:
         connection = self._us_entry_buffer.get_entry(connection_ref)
         assert isinstance(connection, ConnectionBase)
         return connection
-
-    def __contains__(self, role: DataSourceRole) -> bool:
-        raise NotImplementedError
-
-    def exists(self, role: DataSourceRole) -> bool:
-        raise NotImplementedError
-
-    def invalidate(self, role: DataSourceRole) -> None:
-        pass
 
     def are_schemas_compatible(self, role_1: DataSourceRole, role_2: DataSourceRole) -> bool:
         """
@@ -206,16 +191,10 @@ class DataSourceCollectionBase:
             raise exc.NoCommonRoleError()
         return role_priorities[0]
 
-    def get_opt(self, role: Optional[DataSourceRole] = None, for_preview: bool = False) -> Optional["base.DataSource"]:
-        raise NotImplementedError
-
     def get_strict(self, role: Optional[DataSourceRole] = None, for_preview: bool = False) -> base.DataSource:
         dsrc = self.get_opt(role=role, for_preview=for_preview)
         assert dsrc is not None
         return dsrc
-
-    def _get_spec_for_role(self, role: DataSourceRole) -> Optional[DataSourceSpec]:
-        raise NotImplementedError
 
     def get_cached_raw_schema(
         self,
@@ -277,21 +256,6 @@ class DataSourceCollectionBase:
 
         return [col.clone(source_id=self.id) for col in raw_schema]
 
-    def get_param_hash(self) -> str:
-        raise NotImplementedError
-
-
-@attr.s
-class DataSourceCollection(DataSourceCollectionBase):
-    dsrc_coll_type = DataSourceCollectionType.collection
-
-    _loaded_sources: dict[DataSourceRole, Optional[base.DataSource]] = attr.ib(init=False, factory=dict)
-
-    @property
-    def spec(self) -> DataSourceCollectionSpec:
-        assert isinstance(self._spec, DataSourceCollectionSpec)
-        return self._spec
-
     def _initialize_dsrc(self, dsrc_spec: DataSourceSpec) -> "base.DataSource":
         dsrc_cls = type_mapping.get_data_source_class(dsrc_spec.source_type)
         dsrc = dsrc_cls(id=self.id, us_entry_buffer=self._us_entry_buffer, spec=dsrc_spec)
@@ -347,7 +311,7 @@ class DataSourceCollection(DataSourceCollectionBase):
 class DataSourceCollectionFactory:  # TODO: Move to service_registry
     _us_entry_buffer: USEntryBuffer = attr.ib(default=None)
 
-    def get_data_source_collection(self, spec: DataSourceCollectionSpecBase) -> DataSourceCollectionBase:
+    def get_data_source_collection(self, spec: DataSourceCollectionSpec) -> DataSourceCollection:
         if isinstance(spec, DataSourceCollectionSpec):
             return DataSourceCollection(us_entry_buffer=self._us_entry_buffer, spec=spec)
         raise TypeError(f"Invalid spec type: {spec})")

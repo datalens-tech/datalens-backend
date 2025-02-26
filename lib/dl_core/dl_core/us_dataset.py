@@ -33,10 +33,7 @@ from dl_core.components.ids import (
     resolve_id_collisions,
 )
 from dl_core.data_source_spec.base import DataSourceSpec
-from dl_core.data_source_spec.collection import (
-    DataSourceCollectionSpec,
-    DataSourceCollectionSpecBase,
-)
+from dl_core.data_source_spec.collection import DataSourceCollectionSpec
 from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from dl_core.db import SchemaColumn
 from dl_core.fields import (
@@ -69,7 +66,7 @@ class Dataset(USEntry):
         load_preview_by_default: Optional[bool] = attr.ib(default=True)
         schema_version: str = attr.ib(default="1")
         result_schema: ResultSchema = attr.ib(factory=ResultSchema)
-        source_collections: list[DataSourceCollectionSpecBase] = attr.ib(factory=list)
+        source_collections: list[DataSourceCollectionSpec] = attr.ib(factory=list)
         source_avatars: list[multisource.SourceAvatar] = attr.ib(factory=list)
         avatar_relations: list[multisource.AvatarRelation] = attr.ib(factory=list)
         rls: RLS = attr.ib(factory=RLS)

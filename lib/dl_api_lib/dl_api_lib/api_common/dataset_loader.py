@@ -25,7 +25,7 @@ from dl_core.base_models import (
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.editor import DatasetComponentEditor
 from dl_core.data_source import get_parameters_hash
-from dl_core.data_source.collection import DataSourceCollectionBase
+from dl_core.data_source.collection import DataSourceCollection
 from dl_core.db import are_raw_schemas_same
 import dl_core.exc as core_exc
 from dl_core.us_dataset import (
@@ -133,7 +133,7 @@ class DatasetApiLoader:
         updated_own_source_ids = []
         added_own_source_ids = []
         handled_source_ids = set()
-        old_src_coll: Optional[DataSourceCollectionBase]
+        old_src_coll: Optional[DataSourceCollection]
         for source_data in body.get("sources", []):
             source_id = source_data["id"]
             title = source_data.get("title") or None
