@@ -108,6 +108,10 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
             return [catalog for catalog in dialect.get_catalog_names(conn) if catalog not in TRINO_SYSTEM_CATALOGS]
 
     def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+        """
+        Regardless accepting schema_ident, this method returns all tables from the catalog (schema_ident.db_name).
+        schema_ident.schema_name is ignored.
+        """
         tables = sa.Table(
             "tables",
             sa.MetaData(),
@@ -115,8 +119,18 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
             sa.Column("table_name", sa.String),
             schema="information_schema",
         )
-        query = sa.select(tables.c.table_schema, tables.c.table_name).order_by(
-            tables.c.table_schema, tables.c.table_name
+        query = (
+            sa.select(
+                tables.c.table_schema,
+                tables.c.table_name,
+            )
+            .where(
+                ~tables.c.table_schema.in_(TRINO_SYSTEM_SCHEMAS),
+            )
+            .order_by(
+                tables.c.table_schema,
+                tables.c.table_name,
+            )
         )
         result = self.execute(DBAdapterQuery(query, db_name=schema_ident.db_name))
         return [
@@ -126,5 +140,4 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
                 table_name=table_name,
             )
             for schema_name, table_name in result.get_all()
-            if schema_name not in TRINO_SYSTEM_SCHEMAS  # TODO: @khamitovdr move filtering to the query
         ]
