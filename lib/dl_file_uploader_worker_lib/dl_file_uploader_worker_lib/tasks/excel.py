@@ -86,7 +86,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
             if self._ctx.secure_reader_settings.endpoint is not None:
                 secure_reader_endpoint = self._ctx.secure_reader_settings.endpoint
                 ssl_context = ssl.create_default_context(
-                    purpose=ssl.Purpose.SERVER_AUTH, 
+                    purpose=ssl.Purpose.SERVER_AUTH,
                     cafile=self._ctx.secure_reader_settings.cafile,
                 )
                 conn = aiohttp.TCPConnector(ssl=ssl_context)
