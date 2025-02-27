@@ -198,16 +198,23 @@ class DatasetVersionItem(DatasetResource):
     @put_to_request_context(endpoint_code="DatasetGet")
     @schematic_request(
         ns=ns,
+        query=dl_api_lib.schemas.main.GetDatasetVersionQuerySchema(),
         responses={
             200: ("Success", dl_api_lib.schemas.main.GetDatasetVersionResponseSchema()),
             400: ("Failed", dl_api_lib.schemas.main.BadRequestResponseSchema()),
         },
     )
-    def get(self, dataset_id: str, version: str) -> dict:
+    def get(self, dataset_id: str, version: str, query: dict) -> dict:
         """Get dataset version"""
         us_manager = self.get_us_manager()
         ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
         utils.need_permission_on_entry(ds, USPermissionKind.read)
+        revision_id = ds.revision_id
+
+        if "rev_id" in query:
+            utils.need_permission_on_entry(ds, USPermissionKind.edit)
+            ds, _ = self.get_dataset(dataset_id=dataset_id, body={}, params={"revId": query["rev_id"]})
+
         ds_dict = ds.as_dict()  # FIXME
         # TODO FIX: determine desired behaviour in case of workbooks
         ds_dict["key"] = ds.raw_us_key
@@ -219,6 +226,8 @@ class DatasetVersionItem(DatasetResource):
         ds_dict["is_favorite"] = ds.is_favorite
 
         ds_dict.update(self.make_dataset_response_data(dataset=ds, us_entry_buffer=us_manager.get_entry_buffer()))
+        ds_dict["dataset"]["revision_id"] = revision_id
+
         return ds_dict
 
     @put_to_request_context(endpoint_code="DatasetUpdate")

@@ -86,11 +86,12 @@ class DatasetResource(BIResource):
         dataset_id: Optional[str],
         body: dict,
         load_dependencies: bool = True,
+        params: Optional[dict] = None,
     ) -> tuple[Dataset, DatasetUpdateInfo]:
         us_manager = cls.get_us_manager()
         if dataset_id:
             try:
-                dataset = us_manager.get_by_id(dataset_id, expected_type=Dataset)
+                dataset = us_manager.get_by_id(dataset_id, expected_type=Dataset, params=params)
             except UnexpectedUSEntryType as e:
                 raise USObjectNotFoundException("Dataset with id {} does not exist".format(dataset_id)) from e
         else:
