@@ -1234,6 +1234,11 @@ msgid ""
 "from the source."
 msgstr ""
 
+msgid ""
+"Enables adding a short popup hint and change its position relative to the "
+"cell. {arg:2} can be 'top', 'right', 'bottom' or 'left'; default – 'right'."
+msgstr ""
+
 msgid "Returns the absolute value of {arg:0}."
 msgstr ""
 
