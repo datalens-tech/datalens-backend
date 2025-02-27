@@ -1,11 +1,6 @@
 import pytest
 
-from dl_constants.enums import UserDataType
 from dl_core.connection_models.common_models import DBIdent
-from dl_core_testing.database import (
-    C,
-    Db,
-)
 from dl_core_testing.testcases.connection_executor import (
     DefaultAsyncConnectionExecutorTestSuite,
     DefaultSyncAsyncConnectionExecutorCheckBase,
@@ -27,19 +22,6 @@ class BigQuerySyncAsyncConnectionExecutorCheckBase(
             DefaultAsyncConnectionExecutorTestSuite.test_closing_sql_sessions: "Not implemented",
         },
     )
-
-    @pytest.fixture(scope="class")
-    def db_table_columns(self, db: Db) -> list[C]:
-        return [
-            col_spec
-            for col_spec in C.full_house()
-            if col_spec.user_type
-            not in (
-                UserDataType.uuid,  # UUID is not supported
-                UserDataType.datetime,
-                UserDataType.genericdatetime,  # datetimes with fractional seconds are not supported  # FIXME
-            )
-        ]
 
     @pytest.fixture(scope="function")
     def db_ident(self) -> DBIdent:
