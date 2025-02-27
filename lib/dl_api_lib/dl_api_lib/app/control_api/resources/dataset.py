@@ -207,13 +207,18 @@ class DatasetVersionItem(DatasetResource):
     def get(self, dataset_id: str, version: str, query: dict) -> dict:
         """Get dataset version"""
         us_manager = self.get_us_manager()
-        ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
-        utils.need_permission_on_entry(ds, USPermissionKind.read)
-        revision_id = ds.revision_id
 
         if "rev_id" in query:
-            utils.need_permission_on_entry(ds, USPermissionKind.edit)
             ds, _ = self.get_dataset(dataset_id=dataset_id, body={}, params={"revId": query["rev_id"]})
+            utils.need_permission_on_entry(ds, USPermissionKind.edit)
+            # raw entry to avoid double deserialization
+            ds_raw = us_manager.get_migrated_entry(dataset_id)
+            # latest data revision_id for concurrent edit checks
+            revision_id = ds_raw["data"]["revision_id"]
+        else:
+            ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
+            utils.need_permission_on_entry(ds, USPermissionKind.read)
+            revision_id = ds.revision_id
 
         ds_dict = ds.as_dict()  # FIXME
         # TODO FIX: determine desired behaviour in case of workbooks
