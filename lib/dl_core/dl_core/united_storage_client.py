@@ -605,6 +605,15 @@ class UStorageClientBase:
             json=None,
         )
 
+    @classmethod
+    def _req_data_entry_revisions(cls, entry_id: str) -> RequestData:
+        return cls.RequestData(
+            method="get",
+            relative_url="/entries/{}/revisions".format(entry_id),
+            params=None,
+            json=None,
+        )
+
 
 class UStorageClient(UStorageClientBase):
     class RequestAdapter(UStorageClientBase.RequestAdapter):
@@ -909,4 +918,8 @@ class UStorageClient(UStorageClientBase):
                 page_idx=0,
             )
         )
+        return resp["entries"]
+
+    def get_entry_revisions(self, entry_id: str) -> list[dict[str, Any]]:
+        resp = self._request(self._req_data_entry_revisions(entry_id))
         return resp["entries"]

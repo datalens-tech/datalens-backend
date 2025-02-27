@@ -361,3 +361,7 @@ class UStorageClientAIO(UStorageClientBase):
 
     async def close(self) -> None:
         await self._bi_http_client.close()
+
+    async def get_entry_revisions(self, entry_id: str) -> list[dict[str, Any]]:
+        resp = await self._request(self._req_data_entry_revisions(entry_id))
+        return resp["entries"]
