@@ -149,7 +149,7 @@ class EngineWrapperBase:
         schema: Optional[str] = None,
         table_name: Optional[str] = None,
     ) -> sa.Table:
-        table_name = table_name or f"test_table_{shortuuid.uuid()[:10]}"
+        table_name = table_name or f"test_table_{shortuuid.uuid()[:10].lower()}"
         table = sa.Table(table_name, sa.MetaData(), *columns, schema=schema)
         return table
 
