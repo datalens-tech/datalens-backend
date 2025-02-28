@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-@attr.s
+@attr.s(kw_only=True)
 class S3Service:
     APP_KEY: ClassVar[str] = "S3_SERVICE"
 
