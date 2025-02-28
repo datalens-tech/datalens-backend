@@ -316,7 +316,7 @@ class UploadOpExecutorAsync(OpExecutorAsync):
         source_stream = self.ctx.get_stream(op.source_stream_id)
         assert isinstance(source_stream, DataStreamAsync)
 
-        table_name = shortuuid.uuid()
+        table_name = shortuuid.uuid().lower()
         executed = False
 
         async def upload_data() -> None:

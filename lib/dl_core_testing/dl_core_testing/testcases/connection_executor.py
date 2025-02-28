@@ -92,7 +92,7 @@ class DefaultSyncAsyncConnectionExecutorCheckBase(BaseConnectionExecutorTestClas
 
     @pytest.fixture(scope="function")
     def nonexistent_table_ident(self, existing_table_ident: TableIdent) -> TableIdent:
-        return existing_table_ident.clone(table_name=f"nonexistent_table_{shortuuid.uuid()}")
+        return existing_table_ident.clone(table_name=f"nonexistent_table_{shortuuid.uuid().lower()}")
 
     def check_db_version(self, db_version: Optional[str]) -> None:
         pass
