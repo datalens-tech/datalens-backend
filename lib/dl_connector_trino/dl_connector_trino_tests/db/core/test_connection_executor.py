@@ -36,11 +36,29 @@ class TestTrinoSyncConnectionExecutor(
     TrinoSyncConnectionExecutorBase,
     DefaultSyncConnectionExecutorTestSuite[ConnectionTrino],
 ):
+    @pytest.mark.parametrize(
+        "layer, exception_params_key",
+        [
+            ("table_name", "table_definition"),
+            ("schema_name", "schema_definition"),
+            ("db_name", "catalog_definition"),
+        ],
+    )
     def test_error_on_select_from_nonexistent_source(
         self,
+        layer: str,
+        exception_params_key: str,
         sync_connection_executor: SyncConnExecutorBase,
-        nonexistent_table_ident: TableIdent,
+        existing_table_ident: TableIdent,
     ) -> None:
+        nonexistent_table_features = dict(
+            db_name=existing_table_ident.db_name,
+            schema_name=existing_table_ident.schema_name,
+            table_name=existing_table_ident.table_name,
+        )
+        nonexistent_table_features[layer] = "nonexistent_" + nonexistent_table_features[layer]
+        nonexistent_table_ident = TableIdent(**nonexistent_table_features)
+
         nonexistent_table = sa.Table(
             nonexistent_table_ident.table_name,
             sa.MetaData(),
@@ -49,5 +67,8 @@ class TestTrinoSyncConnectionExecutor(
         )
         sa_query = nonexistent_table.select()
         conn_executor_query = ConnExecutorQuery(sa_query, db_name=nonexistent_table_ident.db_name)
-        with pytest.raises(core_exc.SourceDoesNotExist):
+        with pytest.raises(core_exc.SourceDoesNotExist) as exc_info:
             sync_connection_executor.execute(conn_executor_query)
+
+        exc_instance = exc_info.value
+        assert exception_params_key in exc_instance.params
