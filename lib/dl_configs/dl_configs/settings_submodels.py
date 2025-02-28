@@ -57,6 +57,7 @@ class S3Settings(SettingsBase):
     ACCESS_KEY_ID: str = s_attrib("ACCESS_KEY_ID", sensitive=True, missing=None)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
     SECRET_ACCESS_KEY: str = s_attrib("SECRET_ACCESS_KEY", sensitive=True, missing=None)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
     ENDPOINT_URL: str = s_attrib("ENDPOINT_URL")  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
+    USE_VIRTUAL_HOST_ADDRESSING: bool = s_attrib("USE_VIRTUAL_HOST_ADDRESSING", missing=False)  # type: ignore  # 2025-02-25 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
 
 
 @attr.s(frozen=True)

@@ -31,6 +31,7 @@ class S3Service:
     _access_key_id: str = attr.ib(repr=False)
     _secret_access_key: str = attr.ib(repr=False)
     _endpoint_url: str = attr.ib()
+    _use_virtual_host_addressing: bool = attr.ib(default=False)
 
     tmp_bucket_name: str = attr.ib()
     persistent_bucket_name: str = attr.ib()
@@ -60,8 +61,10 @@ class S3Service:
             aws_access_key_id=self._access_key_id,
             aws_secret_access_key=self._secret_access_key,
             endpoint_url=self._endpoint_url,
-            config=AioConfig(signature_version="s3v4"),
-            # ^ v4 signature is required to generate presigned URLs with restriction policies
+            config=AioConfig(
+                signature_version="s3v4",  # v4 signature is required to generate presigned URLs with restriction policies
+                s3={"addressing_style": "virtual" if self._use_virtual_host_addressing else "auto"},
+            ),
         )
 
         session = get_session()
