@@ -1783,7 +1783,6 @@ msgstr "Как блок"
 msgid "Example with data table"
 msgstr "Пример с таблицей данных"
 
-#, fuzzy, python-brace-format
 msgid ""
 "Checks conditional expressions {arg:0}, {arg:1}, ... and returns the "
 "matching result for the first condition found to be `TRUE`. IF all "
