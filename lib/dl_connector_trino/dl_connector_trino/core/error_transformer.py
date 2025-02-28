@@ -35,18 +35,20 @@ class TrinoErrorTransformer(ChainedDbErrorTransformer):
     def _get_error_kw(
         debug_compiled_query: Optional[str], orig_exc: Optional[Exception], wrapper_exc: Exception
     ) -> DBExcKWArgs:
-        assert isinstance(orig_exc, TrinoQueryError)
-        return dict(
-            db_message=orig_exc.message,
-            query=debug_compiled_query,
-            orig=orig_exc,
-            details={
-                "error_name": orig_exc.error_name,
-                "error_type": orig_exc.error_type,
-                "error_code": orig_exc.error_code,
-                "query_id": orig_exc.query_id,
-            },
-        )
+        if isinstance(orig_exc, TrinoQueryError):
+            return dict(
+                db_message=orig_exc.message,
+                query=debug_compiled_query,
+                orig=orig_exc,
+                details={
+                    "error_name": orig_exc.error_name,
+                    "error_type": orig_exc.error_type,
+                    "error_code": orig_exc.error_code,
+                    "query_id": orig_exc.query_id,
+                },
+            )
+
+        return ChainedDbErrorTransformer._get_error_kw(debug_compiled_query, orig_exc, wrapper_exc)
 
 
 def trino_user_error_or_none(exc: Exception) -> Optional[TrinoUserError]:
