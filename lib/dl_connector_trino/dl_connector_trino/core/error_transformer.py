@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Optional
 
 import sqlalchemy
@@ -16,7 +17,17 @@ from dl_core.connectors.base.error_transformer import (
 )
 from dl_core.connectors.base.error_transformer import ErrorTransformerRule as Rule
 
-from dl_connector_trino.core.exc import TrinoSourceDoesNotExistError
+from dl_connector_trino.core.exc import (
+    TrinoCatalogDoesNotExistError,
+    TrinoSchemaDoesNotExistError,
+    TrinoTableDoesNotExistError,
+)
+
+
+class TrinoSourceDoesNotExistErrorType(str, Enum):
+    TABLE_NOT_FOUND = "TABLE_NOT_FOUND"
+    SCHEMA_NOT_FOUND = "SCHEMA_NOT_FOUND"
+    CATALOG_NOT_FOUND = "CATALOG_NOT_FOUND"
 
 
 class TrinoErrorTransformer(ChainedDbErrorTransformer):
@@ -38,16 +49,46 @@ class TrinoErrorTransformer(ChainedDbErrorTransformer):
         )
 
 
-def is_table_does_not_exist_sync_error() -> ExcMatchCondition:
-    def _(exc: Exception) -> bool:
-        if isinstance(exc, sqlalchemy.exc.ProgrammingError):
-            orig = getattr(exc, "orig", None)
-            if not isinstance(orig, TrinoUserError):
-                return False
+def trino_user_error_or_none(exc: Exception) -> Optional[TrinoUserError]:
+    if not isinstance(exc, sqlalchemy.exc.ProgrammingError):
+        return None
 
-            if orig.error_name == "TABLE_NOT_FOUND":
-                return True
-        return False
+    orig = getattr(exc, "orig", None)
+    if isinstance(orig, TrinoUserError):
+        return orig
+
+    return None
+
+
+def is_trino_table_does_not_exist_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        orig = trino_user_error_or_none(exc)
+        if orig is None:
+            return False
+
+        return orig.error_name == TrinoSourceDoesNotExistErrorType.TABLE_NOT_FOUND
+
+    return _
+
+
+def is_trino_schema_does_not_exist_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        orig = trino_user_error_or_none(exc)
+        if orig is None:
+            return False
+
+        return orig.error_name == TrinoSourceDoesNotExistErrorType.SCHEMA_NOT_FOUND
+
+    return _
+
+
+def is_trino_catalog_does_not_exist_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        orig = trino_user_error_or_none(exc)
+        if orig is None:
+            return False
+
+        return orig.error_name == TrinoSourceDoesNotExistErrorType.CATALOG_NOT_FOUND
 
     return _
 
@@ -55,8 +96,16 @@ def is_table_does_not_exist_sync_error() -> ExcMatchCondition:
 trino_error_transformer = TrinoErrorTransformer(
     rule_chain=(
         Rule(
-            when=is_table_does_not_exist_sync_error(),
-            then_raise=TrinoSourceDoesNotExistError,
+            when=is_trino_table_does_not_exist_error(),
+            then_raise=TrinoTableDoesNotExistError,
+        ),
+        Rule(
+            when=is_trino_schema_does_not_exist_error(),
+            then_raise=TrinoSchemaDoesNotExistError,
+        ),
+        Rule(
+            when=is_trino_catalog_does_not_exist_error(),
+            then_raise=TrinoCatalogDoesNotExistError,
         ),
     )
     + default_error_transformer_rules

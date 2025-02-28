@@ -1,16 +1,17 @@
-from __future__ import annotations
-
+from abc import ABC
 import re
 from typing import (
     Any,
+    ClassVar,
     Optional,
 )
 
 from dl_core import exc
 
 
-class TrinoSourceDoesNotExistError(exc.SourceDoesNotExist):
-    ERR_RE = re.compile(r".*Table\s(?P<table>.*)\sdoes not exist.*")
+class TrinoSourceDoesNotExistError(exc.SourceDoesNotExist, ABC):
+    ERR_RE: ClassVar[re.Pattern[str]]
+    SOURCE_TYPE: ClassVar[str]
 
     def __init__(
         self,
@@ -32,5 +33,20 @@ class TrinoSourceDoesNotExistError(exc.SourceDoesNotExist):
             params=params,
         )
         if self.db_message and (match := self.ERR_RE.match(self.db_message)):
-            if table := match.group("table"):
-                self.params["table_definition"] = table.strip("\"'")
+            if table := match.group(self.SOURCE_TYPE):
+                self.params[f"{self.SOURCE_TYPE}_definition"] = table.strip("\"'")
+
+
+class TrinoTableDoesNotExistError(TrinoSourceDoesNotExistError):
+    SOURCE_TYPE = "table"
+    ERR_RE = re.compile(r".*Table\s(?P<table>.*)\sdoes not exist.*")
+
+
+class TrinoSchemaDoesNotExistError(TrinoSourceDoesNotExistError):
+    SOURCE_TYPE = "schema"
+    ERR_RE = re.compile(r".*Schema\s(?P<schema>.*)\sdoes not exist.*")
+
+
+class TrinoCatalogDoesNotExistError(TrinoSourceDoesNotExistError):
+    SOURCE_TYPE = "catalog"
+    ERR_RE = re.compile(r".*Catalog\s(?P<catalog>.*)\snot found.*")
