@@ -142,6 +142,10 @@ class DatasetCopyResponseSchema(DatasetContentSchema):
     id = ma_fields.String(required=True)
 
 
+class GetDatasetVersionQuerySchema(BaseSchema):
+    rev_id = ma_fields.String()
+
+
 class GetDatasetVersionResponseSchema(GetDatasetResponseSchema):
     key = ma_fields.String()
     workbook_id = ma_fields.String()
