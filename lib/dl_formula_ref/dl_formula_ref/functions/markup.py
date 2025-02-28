@@ -123,7 +123,9 @@ FUNCTION_USER_INFO = FunctionDocRegistryItem(
 FUNCTION_TOOLTIP = FunctionDocRegistryItem(
     name="tooltip",
     category=CATEGORY_MARKUP,
-    description=_("Enables adding a short popup hint and change its position relative to the cell. {arg:2} can be 'top', 'right', 'bottom' or 'left'; default – 'right'."),
+    description=_(
+        "Enables adding a short popup hint and change its position relative to the cell. {arg:2} can be 'top', 'right', 'bottom' or 'left'; default – 'right'."
+    ),
     examples=[
         SimpleExample("TOOLTIP(SIZE('Hello', '12px'), URL('https://ya.ru', 'Yandex'), 'top')"),
         SimpleExample("TOOLTIP([main_text], [tooltip_text])"),
