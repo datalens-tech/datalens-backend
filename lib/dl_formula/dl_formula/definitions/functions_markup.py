@@ -278,7 +278,6 @@ class FuncBr(FuncMarkup):
 class FuncTooltipBase(FuncMarkup):
     name = "tooltip"
     variants = make_variants("tooltip")
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class FuncTooltip2(FuncTooltipBase):
