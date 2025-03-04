@@ -294,7 +294,7 @@ def make_table_with_arrays(
 
 
 def make_schema(db: Db, schema_name: Optional[str] = None) -> str:
-    schema_name = schema_name or f"sch_{shortuuid.uuid()}"
+    schema_name = schema_name or f"sch_{shortuuid.uuid().lower()}"
     assert schema_name is not None
     db.create_schema(schema_name=schema_name)
     return schema_name
