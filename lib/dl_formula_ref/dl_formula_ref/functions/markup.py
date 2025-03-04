@@ -124,7 +124,7 @@ FUNCTION_TOOLTIP = FunctionDocRegistryItem(
     name="tooltip",
     category=CATEGORY_MARKUP,
     description=_(
-        "Enables adding a short popup hint and change its position relative to the cell. {arg:2} can be 'top', 'right', 'bottom' or 'left'; default – 'right'."
+        "Adds a small tooltip to a text or other markup function results. The {arg:2} argument manages the text positioning: `top`, `right`, `bottom` or `left`. The default value is `right`."
     ),
     examples=[
         SimpleExample("TOOLTIP(SIZE('Hello', '12px'), URL('https://ya.ru', 'Yandex'), 'top')"),
