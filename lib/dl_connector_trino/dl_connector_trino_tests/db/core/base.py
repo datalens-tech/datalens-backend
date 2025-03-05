@@ -51,7 +51,7 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     core_test_config = test_config.CORE_TEST_CONFIG
     supports_executemany = False
 
-    @pytest.fixture(scope="session", autouse=True)
+    @pytest.fixture(scope="class", autouse=True)
     def wait_for_trino(self, connection_creation_params: dict) -> None:
         host, port = connection_creation_params["host"], connection_creation_params["port"]
         if connection_creation_params["auth_type"] is TrinoAuthType.NONE:
