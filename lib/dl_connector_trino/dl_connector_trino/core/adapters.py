@@ -1,7 +1,6 @@
 import ssl
 from typing import (
     Any,
-    Callable,
     Optional,
 )
 
@@ -9,14 +8,14 @@ import attr
 import requests
 from requests.adapters import HTTPAdapter
 import sqlalchemy as sa
-from sqlalchemy.engine import Engine
 from trino.auth import (
     BasicAuthentication,
     JWTAuthentication,
 )
-from trino.dbapi import connect as trino_connect
+from trino.sqlalchemy import URL as trino_url
+from trino.sqlalchemy.dialect import TrinoDialect
 
-from dl_core.connection_executors.adapters.adapters_base_sa import BaseSAAdapter
+from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_models.common_models import (
     DBIdent,
@@ -25,6 +24,7 @@ from dl_core.connection_models.common_models import (
 )
 
 from dl_connector_trino.core.constants import (
+    ADAPTER_SOURCE_NAME,
     CONNECTION_TYPE_TRINO,
     TrinoAuthType,
 )
@@ -54,94 +54,91 @@ class CustomHTTPAdapter(HTTPAdapter):
         super().init_poolmanager(connections, maxsize, block, ssl_context=context, **pool_kwargs)
 
 
-def construct_creator_func(target_dto: TrinoConnTargetDTO) -> Callable[[], sa.engine.Connection]:
-    def get_connection() -> sa.engine.Connection:
-        params = dict(
-            host=target_dto.host,
-            port=target_dto.port,
-            user=target_dto.username,
-            http_scheme="http" if target_dto.auth_type is TrinoAuthType.NONE else "https",
-        )
-        if target_dto.auth_type is TrinoAuthType.NONE:
-            pass
-        elif target_dto.auth_type is TrinoAuthType.PASSWORD:
-            params["auth"] = BasicAuthentication(target_dto.username, target_dto.password)
-        elif target_dto.auth_type is TrinoAuthType.JWT:
-            params["auth"] = JWTAuthentication(target_dto.jwt)
-        else:
-            raise NotImplementedError(f"{target_dto.auth_type.name} authentication is not supported yet")
-
-        if target_dto.ssl_ca:
-            session = requests.Session()
-            session.mount("https://", CustomHTTPAdapter(target_dto.ssl_ca))
-            params["http_session"] = session
-
-        conn = trino_connect(**params)
-        return conn
-
-    return get_connection
-
-
 @attr.s(kw_only=True)
-class TrinoDefaultAdapter(BaseSAAdapter[TrinoConnTargetDTO]):
+class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
     conn_type = CONNECTION_TYPE_TRINO
     _error_transformer = trino_error_transformer
 
-    def get_default_db_name(self) -> Optional[str]:
-        return None
+    def get_conn_line(self, db_name: Optional[str] = None, params: Optional[dict[str, Any]] = None) -> str:
+        # We do not expect to transfer any additional parameters when creating the engine.
+        # This check is needed to track if it still passed.
+        assert params is None
 
-    def get_db_name_for_query(self, db_name_from_query: Optional[str]) -> str:
-        # Trino doesn't require db_name to connect, but has catalogs.
-        # TODO: @khamitovdr Study possible usage of db_name_from_query.
-        return ""
+        params = params or {}
+        return trino_url(
+            host=self._target_dto.host,
+            port=self._target_dto.port,
+            user=self._target_dto.username,
+            catalog=db_name,
+            source=ADAPTER_SOURCE_NAME,
+            **params,
+        )
 
-    def _get_db_engine(self, db_name: str, disable_streaming: bool = False) -> Engine:
-        if disable_streaming:
-            raise Exception("`disable_streaming` is not applicable for Trino")
-        return sa.create_engine(
-            "trino://",
-            creator=construct_creator_func(self._target_dto),
-        ).execution_options(compiled_cache=None)
+    def get_connect_args(self) -> dict[str, Any]:
+        args: dict[str, Any] = {
+            **super().get_connect_args(),
+            "legacy_primitive_types": True,
+            "http_scheme": "http" if self._target_dto.auth_type is TrinoAuthType.NONE else "https",
+        }
+        if self._target_dto.auth_type is TrinoAuthType.NONE:
+            pass
+        elif self._target_dto.auth_type is TrinoAuthType.PASSWORD:
+            args["auth"] = BasicAuthentication(self._target_dto.username, self._target_dto.password)
+        elif self._target_dto.auth_type is TrinoAuthType.JWT:
+            args["auth"] = JWTAuthentication(self._target_dto.jwt)
+        else:
+            raise NotImplementedError(f"{self._target_dto.auth_type.name} authentication is not supported yet")
+
+        if self._target_dto.ssl_ca:
+            session = requests.Session()
+            session.mount("https://", CustomHTTPAdapter(self._target_dto.ssl_ca))
+            args["http_session"] = session
+
+        return args
+
+    def get_default_db_name(self) -> str:
+        return ""  # Trino doesn't require db_name to connect.
 
     def _get_db_version(self, db_ident: DBIdent) -> str:
-        result = self.execute(DBAdapterQuery("SELECT VERSION()"))
-        return result.get_all()[0][0]
+        dialect = self.get_dialect()
+        return dialect.server_version_info[0]
 
-    def _get_catalogs(self) -> list[str]:
-        result = self.execute(DBAdapterQuery("SHOW CATALOGS"))
-        return [row[0] for row in result.get_all() if row[0] not in TRINO_SYSTEM_CATALOGS]
-
-    def _get_schema_names(self, db_ident: DBIdent) -> list[str]:
-        # Trino doesn't require db_name to connect, but has catalogs. Idea is to incorporate catalogs into schema_names.
-        # At some point it may explode, but we'll exactly know where our assumptions are.
-        assert db_ident.db_name is None
-
-        schema_names: list[str] = []  # schema_names in "catalog.schema" format.
-        catalogs = self._get_catalogs()
-        for catalog in catalogs:
-            result = self.execute(DBAdapterQuery(f"SHOW SCHEMAS FROM {catalog}"))
-            for row in result.get_all():
-                if row[0] in TRINO_SYSTEM_SCHEMAS:
-                    continue
-
-                schema_names.append(f"{catalog}.{row[0]}")
-
-        return schema_names
+    def get_catalog_names(self) -> list[str]:
+        dialect: TrinoDialect = self.get_dialect()
+        with self.get_db_engine(db_name=None).connect() as conn:
+            return [catalog for catalog in dialect.get_catalog_names(conn) if catalog not in TRINO_SYSTEM_CATALOGS]
 
     def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-        if schema_ident.schema_name is not None:
-            source_name = str(schema_ident)
-        else:
-            assert schema_ident.db_name is not None
-            source_name = schema_ident.db_name
-
-        query = f"SHOW TABLES FROM {source_name}"
-        result = self.execute(DBAdapterQuery(query))
+        """
+        Regardless accepting schema_ident, this method returns all tables from the catalog (schema_ident.db_name).
+        schema_ident.schema_name is ignored.
+        """
+        tables = sa.Table(
+            "tables",
+            sa.MetaData(),
+            sa.Column("table_schema", sa.String),
+            sa.Column("table_name", sa.String),
+            schema="information_schema",
+        )
+        query = (
+            sa.select(
+                tables.c.table_schema,
+                tables.c.table_name,
+            )
+            .where(
+                ~tables.c.table_schema.in_(TRINO_SYSTEM_SCHEMAS),
+            )
+            .order_by(
+                tables.c.table_schema,
+                tables.c.table_name,
+            )
+        )
+        result = self.execute(DBAdapterQuery(query, db_name=schema_ident.db_name))
         return [
             TableIdent(
                 db_name=schema_ident.db_name,
-                schema_name=schema_ident.schema_name,
-                table_name=row[0],
+                schema_name=schema_name,
+                table_name=table_name,
             )
-            for row in result.get_all()
+            for schema_name, table_name in result.get_all()
         ]

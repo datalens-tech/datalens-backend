@@ -1,5 +1,7 @@
 from typing import ClassVar
 
+from trino.sqlalchemy import URL
+
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 from dl_testing.containers import get_test_container_hostport
@@ -20,14 +22,20 @@ CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
 )
 
 
-class CoreConnectionSettings:
+class BaseConnectionSettings:
+    CATALOG_MEMORY: ClassVar[str] = "test_memory_catalog"
+    CATALOG_MYSQL: ClassVar[str] = "test_mysql_catalog"
+    SCHEMA: ClassVar[str] = "default"
+
+
+class CoreConnectionSettings(BaseConnectionSettings):
     HOST: ClassVar[str] = get_test_container_hostport("trino-no-auth", fallback_port=21123).host
     PORT: ClassVar[int] = get_test_container_hostport("trino-no-auth", fallback_port=21123).port
     USERNAME: ClassVar[str] = "datalens"
     AUTH_TYPE: ClassVar[str] = TrinoAuthType.NONE
 
 
-class CoreSslConnectionSettings:
+class CoreSslConnectionSettings(BaseConnectionSettings):
     HOST: ClassVar[str] = get_test_container_hostport("trino-tls-nginx", fallback_port=21124).host
     PORT: ClassVar[int] = get_test_container_hostport("trino-tls-nginx", fallback_port=21124).port
     USERNAME: ClassVar[str] = "trino_user"
@@ -54,11 +62,27 @@ class CoreJwtConnectionSettings(CoreSslConnectionSettings):
 
 
 DB_URLS = {
-    D.TRINO: f"trino://datalens@" f'{get_test_container_hostport("trino-no-auth", fallback_port=21123).as_pair()}',
-    (D.TRINO, "ssl"): f"trino://trino_user@"
-    f'{get_test_container_hostport("trino-tls-nginx", fallback_port=21124).as_pair()}',
+    (D.TRINO, "memory_catalog"): URL(
+        host=CoreConnectionSettings.HOST,
+        port=CoreConnectionSettings.PORT,
+        user="tests_init_worker",
+        catalog=CoreConnectionSettings.CATALOG_MEMORY,
+    ),
+    (D.TRINO, "mysql_catalog"): URL(
+        host=CoreConnectionSettings.HOST,
+        port=CoreConnectionSettings.PORT,
+        user="tests_init_worker",
+        catalog=CoreConnectionSettings.CATALOG_MYSQL,
+    ),
+    (D.TRINO, "ssl"): URL(
+        host=CoreSslConnectionSettings.HOST,
+        port=CoreSslConnectionSettings.PORT,
+        user=CoreSslConnectionSettings.USERNAME,
+        catalog=CoreSslConnectionSettings.CATALOG_MYSQL,
+    ),
 }
-DB_CORE_URL = DB_URLS[D.TRINO]
+DB_CORE_URL_MEMORY_CATALOG = DB_URLS[(D.TRINO, "memory_catalog")]
+DB_CORE_URL_MYSQL_CATALOG = DB_URLS[(D.TRINO, "mysql_catalog")]
 DB_CORE_SSL_URL = DB_URLS[(D.TRINO, "ssl")]
 
 API_TEST_CONFIG = ApiTestEnvironmentConfiguration(

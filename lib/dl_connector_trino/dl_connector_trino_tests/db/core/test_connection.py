@@ -1,6 +1,10 @@
 from dl_core.us_connection_base import DataSourceTemplate
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 
+from dl_connector_trino.core.adapters import (
+    TRINO_SYSTEM_CATALOGS,
+    TRINO_SYSTEM_SCHEMAS,
+)
 from dl_connector_trino.core.constants import TrinoAuthType
 from dl_connector_trino.core.us_connection import ConnectionTrino
 from dl_connector_trino_tests.db.core.base import (
@@ -29,11 +33,17 @@ class TestTrinoConnection(
         dsrc_templates: list[DataSourceTemplate],
     ) -> None:
         assert dsrc_templates
-        for dsrc_tmpl in dsrc_templates:
-            assert dsrc_tmpl.title
 
-        tmpl_db_names = {dsrc_tmpl.group[0] for dsrc_tmpl in dsrc_templates}
-        assert "system" not in tmpl_db_names
+        tmpl_info = {(dsrc_tmpl.title, *dsrc_tmpl.group) for dsrc_tmpl in dsrc_templates}
+        tmpl_titles, tmpl_db_names, tmpl_schema_names = zip(*tmpl_info)
+
+        assert "sample" in tmpl_titles
+
+        assert "test_data" in tmpl_schema_names  # for source MySQL server this is the database name
+        assert len(set(tmpl_schema_names) & set(TRINO_SYSTEM_SCHEMAS)) == 0
+
+        assert "test_mysql_catalog" in tmpl_db_names
+        assert len(set(tmpl_db_names) & set(TRINO_SYSTEM_CATALOGS)) == 0
 
 
 class TestTrinoPasswordConnection(BaseTrinoPasswordTestClass, TestTrinoConnection):
