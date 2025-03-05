@@ -23,8 +23,9 @@ CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
 
 
 class BaseConnectionSettings:
-    CATALOG: ClassVar[str] = "test_mysql_catalog"
-    SCHEMA: ClassVar[str] = "test_data"  # for source MySQL server this is the database name
+    CATALOG_MEMORY: ClassVar[str] = "test_memory_catalog"
+    CATALOG_MYSQL: ClassVar[str] = "test_mysql_catalog"
+    SCHEMA: ClassVar[str] = "default"
 
 
 class CoreConnectionSettings(BaseConnectionSettings):
@@ -61,20 +62,27 @@ class CoreJwtConnectionSettings(CoreSslConnectionSettings):
 
 
 DB_URLS = {
-    D.TRINO: URL(
+    (D.TRINO, "memory_catalog"): URL(
         host=CoreConnectionSettings.HOST,
         port=CoreConnectionSettings.PORT,
         user="tests_init_worker",
-        catalog=CoreConnectionSettings.CATALOG,
+        catalog=CoreConnectionSettings.CATALOG_MEMORY,
+    ),
+    (D.TRINO, "mysql_catalog"): URL(
+        host=CoreConnectionSettings.HOST,
+        port=CoreConnectionSettings.PORT,
+        user="tests_init_worker",
+        catalog=CoreConnectionSettings.CATALOG_MYSQL,
     ),
     (D.TRINO, "ssl"): URL(
         host=CoreSslConnectionSettings.HOST,
         port=CoreSslConnectionSettings.PORT,
         user=CoreSslConnectionSettings.USERNAME,
-        catalog=CoreSslConnectionSettings.CATALOG,
+        catalog=CoreSslConnectionSettings.CATALOG_MYSQL,
     ),
 }
-DB_CORE_URL = DB_URLS[D.TRINO]
+DB_CORE_URL_MEMORY_CATALOG = DB_URLS[(D.TRINO, "memory_catalog")]
+DB_CORE_URL_MYSQL_CATALOG = DB_URLS[(D.TRINO, "mysql_catalog")]
 DB_CORE_SSL_URL = DB_URLS[(D.TRINO, "ssl")]
 
 API_TEST_CONFIG = ApiTestEnvironmentConfiguration(

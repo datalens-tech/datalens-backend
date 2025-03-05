@@ -15,10 +15,7 @@ from dl_constants.enums import SourceBackendType
 from dl_core_testing.database import (
     C,
     CoreDbConfig,
-    Db,
-    DbTable,
 )
-from dl_core_testing.fixtures.primitives import FixtureTableSpec
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 from dl_db_testing.database.engine_wrapper import DbEngineConfig
 from dl_type_transformer.type_transformer import TypeTransformer
@@ -116,7 +113,7 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
-        return test_config.DB_CORE_URL
+        return test_config.DB_CORE_URL_MYSQL_CATALOG
 
     @pytest.fixture(scope="session")
     def connection_creation_params(self) -> dict:
@@ -127,16 +124,12 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
             auth_type=TrinoAuthType.NONE,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
-
+    
     @pytest.fixture(scope="class")
-    def sample_table(self, sample_table_spec: FixtureTableSpec, db: Db) -> DbTable:
+    def sample_table_schema(self) -> str:
         monkeypatch = pytest.MonkeyPatch()
         monkeypatch.setattr(C, "get_sa_type", avoid_get_sa_type)
-        return self.db_table_dispenser.get_csv_table(
-            db=db,
-            spec=sample_table_spec,
-            schema_name=test_config.BaseConnectionSettings.SCHEMA,
-        )
+        return "default"
 
 
 class BaseTrinoSslTestClass(BaseTrinoTestClass):
