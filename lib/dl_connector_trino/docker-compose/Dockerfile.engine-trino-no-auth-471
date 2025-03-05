@@ -1,5 +1,6 @@
 FROM trinodb/trino:471@sha256:23b08b7d42978e12493a271d49288ecb31aa36bc3fcf736cbf0e9960698f7f01
 
+COPY trino/base_config/* /etc/trino/
 COPY trino/no_auth_config/* /etc/trino/
 COPY trino/catalog/* /etc/trino/catalog/
 
