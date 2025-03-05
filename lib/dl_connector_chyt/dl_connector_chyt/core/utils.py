@@ -43,7 +43,7 @@ class CHYTUtils(ClickHouseBaseUtils):
     }
     chyt_fallback_exc_cls = chyt_exc.CHYTQueryError
     clique_expr_exc = {
-        r'User "(?P<user>[-0-9a-zA-Z]+)" has no access to clique (?P<clique>\*\S+)': chyt_exc.CHYTCliqueAccessDenied,
+        r'User "(?P<user>[-0-9a-zA-Z]+)" has no access to clique \*?(?P<clique>\S+)': chyt_exc.CHYTCliqueAccessDenied,
         r"Clique (?P<clique>\*\S+) is not running": chyt_exc.CHYTCliqueIsNotRunning,
         r"Clique (?P<clique>\*\S+) is suspended": chyt_exc.CHYTCliqueIsSuspended,
         r"Invalid clique specification": chyt_exc.CHYTCliqueNotExists,
