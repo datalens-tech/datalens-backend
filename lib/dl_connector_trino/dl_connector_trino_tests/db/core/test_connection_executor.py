@@ -21,8 +21,8 @@ from dl_core_testing.testcases.connection_executor import (
 )
 
 from dl_connector_trino.core.us_connection import ConnectionTrino
-from dl_connector_trino_tests.db.core.base import BaseTrinoTestClass
 import dl_connector_trino_tests.db.config as test_config
+from dl_connector_trino_tests.db.core.base import BaseTrinoTestClass
 
 
 class TrinoSyncConnectionExecutorBase(
@@ -32,7 +32,7 @@ class TrinoSyncConnectionExecutorBase(
     @pytest.fixture(scope="function")
     def db_ident(self) -> DBIdent:
         return None
-    
+
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
         return test_config.DB_CORE_URL_MEMORY_CATALOG

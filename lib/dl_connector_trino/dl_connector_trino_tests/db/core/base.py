@@ -124,7 +124,7 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
             auth_type=TrinoAuthType.NONE,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
-    
+
     @pytest.fixture(scope="class")
     def sample_table_schema(self) -> str:
         monkeypatch = pytest.MonkeyPatch()
