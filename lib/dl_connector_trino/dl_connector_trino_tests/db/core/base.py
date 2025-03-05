@@ -9,6 +9,8 @@ from trino.auth import (
     BasicAuthentication,
     JWTAuthentication,
 )
+from trino.dbapi import connect
+from trino.exceptions import TrinoQueryError
 from trino.sqlalchemy.datatype import parse_sqltype
 
 from dl_constants.enums import SourceBackendType
@@ -56,30 +58,26 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
             auth = None
         else:
             scheme = "https"
-            auth = (
+            auth = BasicAuthentication(
                 test_config.CorePasswordConnectionSettings.USERNAME,
                 test_config.CorePasswordConnectionSettings.PASSWORD,
             )
-        post_statement_url = f"{scheme}://{host}:{port}/v1/statement"
-        headers = {
-            "X-Trino-User": test_config.CorePasswordConnectionSettings.USERNAME,
-            "X-Trino-Source": "healthcheck",
-        }
+
+        conn = connect(
+            host=host,
+            port=port,
+            user=auth._username if auth else "healthcheck",
+            auth=auth,
+            http_scheme=scheme,
+            verify=False,
+        )
+        cur = conn.cursor()
 
         def check_trino_liveness() -> bool:
             try:
-                response = requests.post(
-                    post_statement_url,
-                    headers=headers,
-                    auth=auth,
-                    data="SELECT 1",
-                    verify=False,
-                )
-                response.raise_for_status()
-                if '"QUEUED"' in response.text:
-                    return True
-                return False
-            except requests.RequestException:
+                cur.execute("SELECT 1").fetchall()
+                return True
+            except TrinoQueryError:
                 return False
 
         wait_for(
