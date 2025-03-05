@@ -120,6 +120,19 @@ FUNCTION_USER_INFO = FunctionDocRegistryItem(
     ],
 )
 
+FUNCTION_TOOLTIP = FunctionDocRegistryItem(
+    name="tooltip",
+    category=CATEGORY_MARKUP,
+    description=_(
+        "Adds a small tooltip to a text or other markup function results. The {arg:2} argument manages the text positioning: `top`, `right`, `bottom` or `left`. The default value is `right`."
+    ),
+    examples=[
+        SimpleExample("TOOLTIP(SIZE('Hello', '12px'), URL('https://ya.ru', 'Yandex'), 'top')"),
+        SimpleExample("TOOLTIP([main_text], [tooltip_text])"),
+    ],
+)
+
+
 FUNCTIONS_MARKUP = [
     FUNCTION_BOLD,
     FUNCTION_ITALIC,
@@ -130,4 +143,5 @@ FUNCTIONS_MARKUP = [
     FUNCTION_BR,
     FUNCTION_IMAGE,
     FUNCTION_USER_INFO,
+    FUNCTION_TOOLTIP,
 ]
