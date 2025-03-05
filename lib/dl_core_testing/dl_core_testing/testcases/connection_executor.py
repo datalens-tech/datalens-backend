@@ -183,14 +183,18 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
         }
 
     def test_type_recognition(
-        self, request: pytest.FixtureRequest, db: Db, sync_connection_executor: SyncConnExecutorBase
+        self,
+        request: pytest.FixtureRequest,
+        db: Db,
+        sample_table_schema: Optional[str],
+        sync_connection_executor: SyncConnExecutorBase,
     ) -> None:
         for schema_name, type_schema in self.get_schemas_for_type_recognition().items():
             columns = [
                 sa.Column(name=f"c_{shortuuid.uuid().lower()}", type_=column_data.sa_type)
                 for column_data in type_schema
             ]
-            sa_table = db.table_from_columns(columns=columns)
+            sa_table = db.table_from_columns(columns=columns, schema=sample_table_schema)
 
             db.create_table(sa_table)
             request.addfinalizer(functools.partial(db.drop_table, sa_table))
