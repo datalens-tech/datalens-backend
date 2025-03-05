@@ -1,8 +1,13 @@
-from typing import Optional
+from typing import (
+    Optional,
+    Sequence,
+)
 
 import pytest
 import sqlalchemy as sa
+import trino.sqlalchemy.datatype as trino_types
 
+from dl_constants.enums import UserDataType
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.connection_models.common_models import (
@@ -77,3 +82,32 @@ class TestTrinoSyncConnectionExecutor(
 
         exc_instance = exc_info.value
         assert exception_params_key in exc_instance.params
+
+    def get_schemas_for_type_recognition(self) -> dict[str, Sequence[DefaultSyncConnectionExecutorTestSuite.CD]]:
+        return {
+            "types_trino_number": [
+                self.CD(sa.BOOLEAN(), UserDataType.boolean),
+                self.CD(sa.SMALLINT(), UserDataType.integer),
+                self.CD(sa.INTEGER(), UserDataType.integer),
+                self.CD(sa.BIGINT(), UserDataType.integer),
+                self.CD(sa.REAL(), UserDataType.float),
+                self.CD(trino_types.DOUBLE(), UserDataType.float),
+                self.CD(sa.DECIMAL(), UserDataType.float),
+            ],
+            "types_trino_string": [
+                self.CD(sa.VARCHAR(), UserDataType.string),
+                self.CD(sa.CHAR(), UserDataType.string),
+                self.CD(sa.VARBINARY(), UserDataType.string),
+                self.CD(trino_types.JSON(), UserDataType.string),
+            ],
+            "types_trino_date": [
+                self.CD(sa.DATE(), UserDataType.date),
+                self.CD(trino_types.TIME(), UserDataType.datetimetz),
+                self.CD(trino_types.TIMESTAMP(), UserDataType.genericdatetime),
+            ],
+            "types_trino_array": [
+                self.CD(sa.ARRAY(sa.BIGINT()), UserDataType.array_int),
+                self.CD(sa.ARRAY(trino_types.DOUBLE()), UserDataType.array_float),
+                self.CD(sa.ARRAY(sa.VARCHAR()), UserDataType.array_str),
+            ],
+        }
