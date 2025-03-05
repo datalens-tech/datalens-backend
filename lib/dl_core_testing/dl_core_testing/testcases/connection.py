@@ -95,12 +95,21 @@ class BaseConnectionTestClass(
         return factory
 
     @pytest.fixture(scope="class")
+    def sample_table_schema(self) -> Optional[str]:
+        return None
+
+    @pytest.fixture(scope="class")
     def sample_table_spec(self) -> FixtureTableSpec:
         return TABLE_SPEC_SAMPLE_SUPERSTORE
 
     @pytest.fixture(scope="class")
-    def sample_table(self, sample_table_spec: FixtureTableSpec, db: Db) -> DbTable:
-        return self.db_table_dispenser.get_csv_table(db=db, spec=sample_table_spec)
+    def sample_table(
+        self,
+        sample_table_schema: Optional[str],
+        sample_table_spec: FixtureTableSpec,
+        db: Db,
+    ) -> DbTable:
+        return self.db_table_dispenser.get_csv_table(db=db, spec=sample_table_spec, schema_name=sample_table_schema)
 
 
 class DefaultConnectionTestClass(RegulatedTestCase, BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):
