@@ -42,24 +42,24 @@ TRINO_SYSTEM_CATALOGS = (
 TRINO_SYSTEM_SCHEMAS = ("information_schema",)
 
 
-trino_tables = sa.Table(
+TRINO_TABLES = sa.Table(
     "tables",
     sa.MetaData(),
     sa.Column("table_schema", sa.String),
     sa.Column("table_name", sa.String),
     schema="information_schema",
 )
-get_trino_tables_query = (
+GET_TRINO_TABLES_QUERY = (
     sa.select(
-        trino_tables.c.table_schema,
-        trino_tables.c.table_name,
+        TRINO_TABLES.c.table_schema,
+        TRINO_TABLES.c.table_name,
     )
     .where(
-        ~trino_tables.c.table_schema.in_(TRINO_SYSTEM_SCHEMAS),
+        ~TRINO_TABLES.c.table_schema.in_(TRINO_SYSTEM_SCHEMAS),
     )
     .order_by(
-        trino_tables.c.table_schema,
-        trino_tables.c.table_name,
+        TRINO_TABLES.c.table_schema,
+        TRINO_TABLES.c.table_name,
     )
 )
 
@@ -135,7 +135,7 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         Regardless accepting schema_ident, this method returns all tables from the catalog (schema_ident.db_name).
         schema_ident.schema_name is ignored.
         """
-        result = self.execute(DBAdapterQuery(get_trino_tables_query, db_name=schema_ident.db_name))
+        result = self.execute(DBAdapterQuery(GET_TRINO_TABLES_QUERY, db_name=schema_ident.db_name))
         return [
             TableIdent(
                 db_name=schema_ident.db_name,
