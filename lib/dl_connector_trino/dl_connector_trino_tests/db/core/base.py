@@ -14,7 +14,10 @@ from trino.exceptions import TrinoQueryError
 from trino.sqlalchemy.datatype import parse_sqltype
 
 from dl_constants.enums import SourceBackendType
-from dl_core_testing.database import C
+from dl_core_testing.database import (
+    C,
+    CoreDbConfig,
+)
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 from dl_db_testing.database.engine_wrapper import DbEngineConfig
 from dl_type_transformer.type_transformer import TypeTransformer
@@ -45,6 +48,7 @@ def avoid_get_sa_type(self: C, tt: TypeTransformer, backend_type: SourceBackendT
 class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     conn_type = CONNECTION_TYPE_TRINO
     core_test_config = test_config.CORE_TEST_CONFIG
+    supports_executemany = False
 
     @pytest.fixture(scope="class", autouse=True)
     def wait_for_trino(self, connection_creation_params: dict) -> None:
@@ -88,6 +92,14 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     def engine_config(self, db_url: str, engine_params: dict, wait_for_trino: None) -> DbEngineConfig:
         return DbEngineConfig(url=db_url, engine_params=engine_params)
 
+    @pytest.fixture(scope="class")
+    def db_config(self, engine_config: DbEngineConfig) -> CoreDbConfig:
+        return CoreDbConfig(
+            engine_config=engine_config,
+            conn_type=self.conn_type,
+            supports_executemany=self.supports_executemany,
+        )
+
     @pytest.fixture(autouse=True)
     # FIXME: This fixture is a temporary solution for failing core tests when they are run together with api tests
     def loop(self, event_loop: asyncio.AbstractEventLoop) -> Generator[asyncio.AbstractEventLoop, None, None]:
@@ -99,7 +111,7 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
-        return test_config.DB_CORE_URL
+        return test_config.DB_CORE_URL_MYSQL_CATALOG
 
     @pytest.fixture(scope="session")
     def connection_creation_params(self) -> dict:

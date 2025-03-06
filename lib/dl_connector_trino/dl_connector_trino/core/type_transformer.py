@@ -1,4 +1,5 @@
-from sqlalchemy import types as trino_sa
+import sqlalchemy as sa
+import trino.sqlalchemy.datatype as trino_types
 
 from dl_constants.enums import UserDataType
 from dl_type_transformer.type_transformer import (
@@ -7,33 +8,26 @@ from dl_type_transformer.type_transformer import (
 )
 
 
-# from sqlalchemy.sql import sqltypes as trino_sa
-
-
 TRINO_TYPES_INT = frozenset(
     (
-        trino_sa.BIGINT,
-        trino_sa.SMALLINT,
-        trino_sa.INTEGER,
-        # trino_sa.TINYINT,
+        sa.SMALLINT,
+        sa.INTEGER,
+        sa.BIGINT,
     )
 )
 TRINO_TYPES_FLOAT = frozenset(
     (
-        trino_sa.FLOAT,
-        trino_sa.DECIMAL,
-        # trino_sa.DEC,
-        # trino_sa.DOUBLE,
-        trino_sa.REAL,
+        sa.REAL,
+        trino_types.DOUBLE,
+        sa.DECIMAL,
     )
 )
 TRINO_TYPES_STRING = frozenset(
     (
-        # trino_sa.STRING,
-        trino_sa.VARCHAR,
-        trino_sa.CHAR,
-        # trino_sa.CHARACTER,
-        trino_sa.TEXT,
+        sa.VARCHAR,
+        sa.CHAR,
+        sa.VARBINARY,
+        trino_types.JSON,
     )
 )
 
@@ -42,20 +36,35 @@ class TrinoTypeTransformer(TypeTransformer):
     # https://trino.io/docs/current/language/types.html
 
     native_to_user_map = {
-        make_native_type(trino_sa.DATE): UserDataType.date,
-        make_native_type(trino_sa.TIMESTAMP): UserDataType.genericdatetime,
+        make_native_type(sa.BOOLEAN): UserDataType.boolean,
         **{make_native_type(t): UserDataType.integer for t in TRINO_TYPES_INT},
         **{make_native_type(t): UserDataType.float for t in TRINO_TYPES_FLOAT},
         **{make_native_type(t): UserDataType.string for t in TRINO_TYPES_STRING},
-        make_native_type(trino_sa.BOOLEAN): UserDataType.boolean,
+        # make_native_type(sa.Uuid) : UserDataType.uuid, # Uuid is not supported by sqlalchemy v1.4.46
+        make_native_type(sa.DATE): UserDataType.date,
+        make_native_type(trino_types.TIME): UserDataType.datetimetz,
+        make_native_type(trino_types.TIMESTAMP): UserDataType.genericdatetime,
+        **{make_native_type(sa.ARRAY(t)): UserDataType.array_int for t in TRINO_TYPES_INT},
+        **{make_native_type(sa.ARRAY(t)): UserDataType.array_float for t in TRINO_TYPES_FLOAT},
+        **{make_native_type(sa.ARRAY(t)): UserDataType.array_str for t in TRINO_TYPES_STRING},
+        make_native_type(sa.sql.sqltypes.NullType): UserDataType.unsupported,
     }
     user_to_native_map = {
-        UserDataType.date: make_native_type(trino_sa.DATE),
-        UserDataType.genericdatetime: make_native_type(trino_sa.TIMESTAMP),
-        UserDataType.integer: make_native_type(trino_sa.INTEGER),
-        UserDataType.string: make_native_type(trino_sa.VARCHAR),
-        UserDataType.boolean: make_native_type(trino_sa.BOOLEAN),
-    }
-    casters = {
-        **TypeTransformer.casters,
+        UserDataType.string: make_native_type(sa.VARCHAR),
+        UserDataType.integer: make_native_type(sa.BIGINT),
+        UserDataType.float: make_native_type(trino_types.DOUBLE),
+        UserDataType.boolean: make_native_type(sa.BOOLEAN),
+        UserDataType.date: make_native_type(sa.DATE),
+        UserDataType.datetime: make_native_type(trino_types.TIMESTAMP),
+        UserDataType.datetimetz: make_native_type(trino_types.TIME),
+        UserDataType.genericdatetime: make_native_type(trino_types.TIMESTAMP),
+        UserDataType.geopoint: make_native_type(sa.VARCHAR),
+        UserDataType.geopolygon: make_native_type(sa.VARCHAR),
+        UserDataType.uuid: make_native_type(sa.VARCHAR),
+        UserDataType.markup: make_native_type(sa.VARCHAR),
+        UserDataType.unsupported: make_native_type(sa.sql.sqltypes.NullType),
+        UserDataType.array_int: make_native_type(sa.ARRAY(sa.BIGINT)),
+        UserDataType.array_float: make_native_type(sa.ARRAY(trino_types.DOUBLE)),
+        UserDataType.array_str: make_native_type(sa.ARRAY(sa.VARCHAR)),
+        UserDataType.tree_str: make_native_type(sa.ARRAY(sa.VARCHAR)),
     }
