@@ -42,6 +42,28 @@ TRINO_SYSTEM_CATALOGS = (
 TRINO_SYSTEM_SCHEMAS = ("information_schema",)
 
 
+trino_tables = sa.Table(
+    "tables",
+    sa.MetaData(),
+    sa.Column("table_schema", sa.String),
+    sa.Column("table_name", sa.String),
+    schema="information_schema",
+)
+get_trino_tables_query = (
+    sa.select(
+        trino_tables.c.table_schema,
+        trino_tables.c.table_name,
+    )
+    .where(
+        ~trino_tables.c.table_schema.in_(TRINO_SYSTEM_SCHEMAS),
+    )
+    .order_by(
+        trino_tables.c.table_schema,
+        trino_tables.c.table_name,
+    )
+)
+
+
 class CustomHTTPAdapter(HTTPAdapter):
     def __init__(self, ssl_ca: str, *args: Any, **kwargs: Any) -> None:
         self.ssl_ca = ssl_ca
@@ -113,27 +135,7 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         Regardless accepting schema_ident, this method returns all tables from the catalog (schema_ident.db_name).
         schema_ident.schema_name is ignored.
         """
-        tables = sa.Table(
-            "tables",
-            sa.MetaData(),
-            sa.Column("table_schema", sa.String),
-            sa.Column("table_name", sa.String),
-            schema="information_schema",
-        )
-        query = (
-            sa.select(
-                tables.c.table_schema,
-                tables.c.table_name,
-            )
-            .where(
-                ~tables.c.table_schema.in_(TRINO_SYSTEM_SCHEMAS),
-            )
-            .order_by(
-                tables.c.table_schema,
-                tables.c.table_name,
-            )
-        )
-        result = self.execute(DBAdapterQuery(query, db_name=schema_ident.db_name))
+        result = self.execute(DBAdapterQuery(get_trino_tables_query, db_name=schema_ident.db_name))
         return [
             TableIdent(
                 db_name=schema_ident.db_name,
