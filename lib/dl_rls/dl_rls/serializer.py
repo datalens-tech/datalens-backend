@@ -14,6 +14,8 @@ from dl_constants.enums import RLSSubjectType
 from dl_rls import exc
 from dl_rls.models import (
     RLS_FAILED_USER_NAME_PREFIX,
+    RLS2ConfigEntry,
+    RLS2Subject,
     RLSEntry,
     RLSPatternType,
     RLSSubject,
@@ -312,4 +314,42 @@ class FieldRLSSerializer:
                 )
             )
 
+        return rls_entries
+
+    @classmethod
+    def to_v2_config(cls, data: list[RLSEntry]) -> list[RLS2ConfigEntry]:
+        return [
+            RLS2ConfigEntry(
+                field_guid=entry.field_guid,
+                pattern_type=entry.pattern_type,
+                allowed_value=entry.allowed_value,
+                subject=RLS2Subject(
+                    subject_id=entry.subject.subject_id,
+                    subject_type=entry.subject.subject_type,
+                    subject_name=entry.subject.subject_name,
+                ),
+            )
+            for entry in data
+        ]
+
+    @classmethod
+    def from_v2_config(cls, data: list[RLS2ConfigEntry], field_guid: str) -> list[RLSEntry]:
+        rls_entries = []
+        for entry in data:
+            if entry.pattern_type == RLSPatternType.value and entry.allowed_value is None:
+                raise Exception("allowed_value must be not None for value RLS pattern type")
+            if entry.pattern_type != RLSPatternType.value and entry.allowed_value is not None:
+                raise Exception(f"allowed_value must be None for {entry.pattern_type.value} RLS pattern type")
+            rls_entries.append(
+                RLSEntry(
+                    field_guid=field_guid,
+                    pattern_type=entry.pattern_type,
+                    allowed_value=entry.allowed_value,
+                    subject=RLSSubject(
+                        subject_type=entry.subject.subject_type,
+                        subject_id=entry.subject.subject_id,
+                        subject_name=entry.subject.subject_name or entry.subject.subject_id,
+                    ),
+                )
+            )
         return rls_entries

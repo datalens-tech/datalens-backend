@@ -282,24 +282,26 @@ class DatasetApiLoader:
             # E.g. dataset editing in sync api
             subject_resolver = await_sync(self._service_registry.get_subject_resolver())
 
+        rls_v2 = body.get("rls2")
         for field in dataset.result_schema:
-            rls_text_config = body["rls"].get(field.guid, "")
-            # TODO: split into "pre-parse all fields", "fetch all names", "make field results",
-            # to combine name-to-info fetching for all fields.
-            if allow_rls_change:
+            if rls_v2:
+                rls_entries = FieldRLSSerializer.from_v2_config(rls_v2.get(field.guid, []), field_guid=field.guid)
+            else:
+                rls_text_config = body["rls"].get(field.guid, "")
                 rls_entries = FieldRLSSerializer.from_text_config(
                     rls_text_config,
                     field.guid,
                     subject_resolver=subject_resolver,
                 )
+
+            if allow_rls_change:
                 dataset.rls.items = [rlse for rlse in dataset.rls.items if rlse.field_guid != field.guid]
                 dataset.rls.items.extend(rls_entries)
-
-            else:
-                # e.g. preview request in async api
+            elif not rls_v2:
                 rls_entries_pre = FieldRLSSerializer.from_text_config(
                     rls_text_config, field.guid, subject_resolver=None
                 )
+                # e.g. preview request in async api
                 saved_field_rls = [
                     rlse.ensure_removed_failed_subject_prefix()
                     for rlse in dataset.rls.items

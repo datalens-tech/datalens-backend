@@ -37,3 +37,18 @@ class RLSEntry:
 
 
 RLS_FAILED_USER_NAME_PREFIX = "!FAILED_"
+
+
+@attr.s
+class RLS2Subject:
+    subject_type: RLSSubjectType = attr.ib()
+    subject_id: str = attr.ib()
+    subject_name: Optional[str] = attr.ib(default=None)
+
+
+@attr.s
+class RLS2ConfigEntry:
+    subject: RLS2Subject = attr.ib()
+    field_guid: Optional[str] = attr.ib(default=None)
+    allowed_value: Optional[str] = attr.ib(default=None)
+    pattern_type: RLSPatternType = attr.ib(default=RLSPatternType.value)

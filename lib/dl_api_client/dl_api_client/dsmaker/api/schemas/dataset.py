@@ -72,11 +72,17 @@ from dl_constants.enums import (
     JoinType,
     ManagedBy,
     ParameterValueConstraintType,
+    RLSPatternType,
+    RLSSubjectType,
     UserDataType,
     WhereClauseOperation,
 )
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 from dl_model_tools.schema.oneofschema import OneOfSchemaWithDumpLoadHooks
+from dl_rls.models import (
+    RLS2ConfigEntry,
+    RLS2Subject,
+)
 
 
 if TYPE_CHECKING:
@@ -430,6 +436,22 @@ class ComponentErrorListSchema(DefaultSchema[ComponentErrorRegistry]):
     items = ma_fields.List(ma_fields.Nested(ComponentErrorPackSchema))
 
 
+class RLS2ConfigEntrySchema(DefaultSchema[RLS2ConfigEntry]):
+    TARGET_CLS = RLS2ConfigEntry
+
+    class RLS2SubjectSchema(DefaultSchema[RLS2Subject]):
+        TARGET_CLS = RLS2Subject
+
+        subject_id = ma_fields.String(required=True)
+        subject_type = ma_fields.Enum(RLSSubjectType)
+        subject_name = ma_fields.String(load_default=None, allow_none=True)
+
+    field_guid = ma_fields.String(dump_default=None, load_default=None)
+    allowed_value = ma_fields.String(dump_default=None, load_default=None)
+    pattern_type = ma_fields.Enum(RLSPatternType, load_default=RLSPatternType.value)
+    subject = ma_fields.Nested(RLS2SubjectSchema, required=True)
+
+
 class DatasetContentInternalSchema(DefaultSchema[Dataset]):
     """
     A base class for schemas that need to contain the full dataset description
@@ -443,6 +465,13 @@ class DatasetContentInternalSchema(DefaultSchema[Dataset]):
     result_schema = ma_fields.Nested(ResultFieldSchema, many=True, required=False)
     result_schema_aux = ma_fields.Nested(ResultSchemaAuxSchema, allow_none=False)
     rls = ma_fields.Dict(load_default=dict, required=False)
+    rls2 = ma_fields.Dict(
+        ma_fields.String,
+        ma_fields.List(ma_fields.Nested(RLS2ConfigEntrySchema)),
+        required=False,
+        load_default=dict,
+        dump_default=dict,
+    )
     component_errors = ma_fields.Nested(ComponentErrorListSchema, required=False)
     obligatory_filters = ma_fields.Nested(ObligatoryFilterSchema, many=True, load_default=list)
     revision_id = ma_fields.String(allow_none=True, dump_default=None, load_default=None)

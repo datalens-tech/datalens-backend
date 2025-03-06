@@ -20,6 +20,7 @@ from dl_api_client.dsmaker.api.schemas.dataset import (
     ObligatoryFilterSchema,
     ResultFieldSchema,
     ResultSchemaAuxSchema,
+    RLS2ConfigEntrySchema,
     SourceAvatarSchema,
 )
 from dl_api_client.dsmaker.api.serialization_base import BaseApiV1SerializationAdapter
@@ -68,7 +69,7 @@ class DatasetApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
             id=new_id,
             revision_id=body.get("revision_id"),
             load_preview_by_default=body.get("load_preview_by_default", dataset.load_preview_by_default),
-            rls=body.get("rls") or {},
+            rls=body.get("rls", {}),
             component_errors=ComponentErrorListSchema().load(body.get("component_errors") or {}),
             result_schema_aux=ResultSchemaAuxSchema().load(body.get("result_schema_aux") or {}),
             obligatory_filters=[
@@ -95,6 +96,10 @@ class DatasetApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
             field_id = field_data["guid"]
             field_alias = dataset.result_schema.get_alias(field_id) or field_id
             new_dataset.result_schema[field_alias] = ResultFieldSchema().load(field_data)
+
+        for field_guid, rls2_data in body.get("rls2", {}).items():
+            assert isinstance(field_guid, str)
+            new_dataset.rls2[field_guid] = [RLS2ConfigEntrySchema().load(rls2_entry) for rls2_entry in rls2_data]
 
         return new_dataset
 
