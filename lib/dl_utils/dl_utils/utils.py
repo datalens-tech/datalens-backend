@@ -114,3 +114,17 @@ def make_url(
     if path is None:
         path = ""
     return f"{protocol}://{host}:{port}/{path.lstrip('/')}"
+
+
+def hide_url_args(url_or_path: str) -> str:
+    """Example:
+    /api/v1/query?order_by=category&token=mytoken → /api/v1/query?order_by=[hidden]&token=[hidden]
+
+    Only for logging purposes. Does not perform url validation!
+    """
+    if not url_or_path or "?" not in url_or_path:
+        return url_or_path
+    path, _, params = url_or_path.partition("?")
+    fragment = "".join(params.partition("#")[1:])
+    hidden_params = "&".join(f"{p.partition('=')[0]}=[hidden]" for p in params.split("&") if "=" in p)
+    return f"{path}?{hidden_params}{fragment}"

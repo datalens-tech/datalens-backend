@@ -35,6 +35,7 @@ from dl_dashsql.typed_query.primitives import (
     TypedQueryRawParameters,
     TypedQueryRawResult,
 )
+from dl_utils.utils import hide_url_args
 
 
 @requires(RequiredResourceCommon.US_MANAGER)
@@ -92,7 +93,7 @@ class DashSQLTypedQueryRawView(BaseView):
             params = typed_query_raw.parameters
             return json.dumps(
                 dict(
-                    path=params.path,
+                    path=hide_url_args(params.path),
                     method=params.method,
                     content_type=params.content_type,
                     body="***" if params.body else None,

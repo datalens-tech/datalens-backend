@@ -13,6 +13,7 @@ from dl_dashsql.typed_query.primitives import (
     TypedQueryRawResult,
     TypedQueryRawResultData,
 )
+from dl_utils.utils import hide_url_args
 
 
 if TYPE_CHECKING:
@@ -35,7 +36,7 @@ class TypedQueryRawToDBAQueryConverter:
                 content_type=params.content_type,
                 body=params.body,
             ),
-            debug_compiled_query=f"{params.method} {params.path} [Content-Type: {params.content_type}]",
+            debug_compiled_query=f"{params.method} {hide_url_args(params.path)} [Content-Type: {params.content_type}]",
         )
         return dba_query
 
