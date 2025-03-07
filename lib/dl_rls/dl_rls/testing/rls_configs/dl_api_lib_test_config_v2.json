@@ -1,0 +1,12 @@
+[
+    {
+        "allowed_value": "Naperville",
+        "pattern_type": "value",
+        "subject": {"subject_id": "_the_tests_user_id_", "subject_type": "user", "subject_name": "_the_tests_user_name_"}
+    },
+    {
+        "allowed_value": "Philadelphia",
+        "pattern_type": "value",
+        "subject": {"subject_id": "*", "subject_type": "all", "subject_name": "*"}
+    }
+]
