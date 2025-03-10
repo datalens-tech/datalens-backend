@@ -17,12 +17,12 @@ from dl_connector_trino.core.constants import (
     SOURCE_TYPE_TRINO_TABLE,
 )
 from dl_connector_trino.core.data_source import (
-    TrinoDataSource,
     TrinoSubselectDataSource,
+    TrinoTableDataSource,
 )
 from dl_connector_trino.core.us_connection import ConnectionTrino
-from dl_connector_trino_tests.db.core.base import BaseTrinoTestClass
 import dl_connector_trino_tests.db.config as test_config
+from dl_connector_trino_tests.db.core.base import BaseTrinoTestClass
 
 
 class TestTrinoTableDataSource(
@@ -30,10 +30,10 @@ class TestTrinoTableDataSource(
     DefaultDataSourceTestClass[
         ConnectionTrino,
         StandardSQLDataSourceSpec,
-        TrinoDataSource,
+        TrinoTableDataSource,
     ],
 ):
-    DSRC_CLS = TrinoDataSource
+    DSRC_CLS = TrinoTableDataSource
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:

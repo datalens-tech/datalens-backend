@@ -41,7 +41,7 @@ class TrinoDataSourceMixin(BaseSQLDataSource):
         return source_type in (SOURCE_TYPE_TRINO_TABLE, SOURCE_TYPE_TRINO_SUBSELECT)
 
 
-class TrinoDataSource(TrinoDataSourceMixin, StandardSQLDataSource):
+class TrinoTableDataSource(TrinoDataSourceMixin, StandardSQLDataSource):
     """Trino table"""
 
 
