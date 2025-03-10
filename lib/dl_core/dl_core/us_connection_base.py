@@ -376,7 +376,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         return [
             dict(
                 message="Secret fields like password, token etc. must be changed and resaved",
-                level=NotificationLevel.info,
+                level=NotificationLevel.info.value,
             )
         ]  # TODO: localize message
 
