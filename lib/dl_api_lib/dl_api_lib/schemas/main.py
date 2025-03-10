@@ -187,7 +187,7 @@ class DatasetExportResponseSchema(DatasetContentSchema):
     notifications = ma_fields.Nested(NotificationContentSchema, many=True)
 
 
-class DatasetContentImportSchema(DatasetContentInternalSchema):
+class DatasetContentImportSchema:
     class DatasetContentInternalImportSchema(DatasetContentInternalSchema):
         name = ma_fields.String()
 
