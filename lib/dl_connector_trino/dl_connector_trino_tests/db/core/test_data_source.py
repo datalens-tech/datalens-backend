@@ -66,6 +66,10 @@ class TestTrinoSubselectDataSource(
     raw_sql_level = RawSQLLevel.subselect
 
     @pytest.fixture(scope="class")
+    def db_url(self) -> str:
+        return test_config.DB_CORE_URL_MEMORY_CATALOG
+
+    @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table: DbTable) -> SubselectDataSourceSpec:
         dsrc_spec = SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_TRINO_SUBSELECT,
