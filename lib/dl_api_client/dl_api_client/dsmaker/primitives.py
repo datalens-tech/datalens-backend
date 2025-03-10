@@ -47,6 +47,7 @@ from dl_constants.enums import (
     UserDataType,
     WhereClauseOperation,
 )
+from dl_rls.models import RLS2ConfigEntry
 
 
 class Action(Enum):
@@ -942,6 +943,7 @@ class Dataset(ApiProxyObject):
     result_schema: Container[ResultField] = attr.ib(factory=Container, converter=Container)
     result_schema_aux: ResultSchemaAux = attr.ib(factory=ResultSchemaAux)
     rls: dict = attr.ib(factory=dict)
+    rls2: dict[str, List[RLS2ConfigEntry]] = attr.ib(factory=dict)
     component_errors: ComponentErrorRegistry = attr.ib(factory=ComponentErrorRegistry)
     obligatory_filters: List[ObligatoryFilter] = attr.ib(default=attr.Factory(list))
 
