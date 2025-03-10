@@ -134,8 +134,9 @@ class ConnectionsImportList(BIResource):
     def post(self):  # type: ignore  # TODO: fix
         us_manager = self.get_us_manager()
         notifications = []
+        body_json = dict(request.json)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "dict" has incompatible type "Any | None"; expected "SupportsKeysAndGetItem[Any, Any]"  [arg-type]
 
-        conn_data = request.json and request.json["data"]["connection"]
+        conn_data = body_json["data"]["connection"]
         assert conn_data
 
         conn_type = conn_data["db_type"]
@@ -147,7 +148,7 @@ class ConnectionsImportList(BIResource):
         if not conn_type_is_available:
             raise exc.UnsupportedForEntityType("Connector %s is not available in current env", conn_type)
 
-        conn_data["workbook_id"] = request.json and request.json["data"].get("workbook_id", None)
+        conn_data["workbook_id"] = body_json["data"].get("workbook_id", None)
         conn_data["type"] = conn_type
 
         schema = GenericConnectionSchema(
