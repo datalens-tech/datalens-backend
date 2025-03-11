@@ -17,6 +17,7 @@ from dl_constants.enums import SourceBackendType
 from dl_core_testing.database import (
     C,
     CoreDbConfig,
+    Db,
 )
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 from dl_db_testing.database.engine_wrapper import DbEngineConfig
@@ -30,6 +31,12 @@ from dl_connector_trino.core.constants import (
 )
 from dl_connector_trino.core.us_connection import ConnectionTrino
 import dl_connector_trino_tests.db.config as test_config
+
+
+TEST_CATALOG_SCHEMA_MAP = {
+    "test_memory_catalog": "default",
+    "test_mysql_catalog": "test_data",
+}
 
 
 def avoid_get_sa_type(self: C, tt: TypeTransformer, backend_type: SourceBackendType) -> TypeEngine:
@@ -124,10 +131,10 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
         )
 
     @pytest.fixture(scope="class")
-    def sample_table_schema(self) -> str:
+    def sample_table_schema(self, db: Db) -> str:
         monkeypatch = pytest.MonkeyPatch()
         monkeypatch.setattr(C, "get_sa_type", avoid_get_sa_type)
-        return "default"
+        return TEST_CATALOG_SCHEMA_MAP[db.name]
 
 
 class BaseTrinoSslTestClass(BaseTrinoTestClass):

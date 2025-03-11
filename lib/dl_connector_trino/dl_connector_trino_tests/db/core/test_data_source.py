@@ -21,7 +21,6 @@ from dl_connector_trino.core.data_source import (
     TrinoTableDataSource,
 )
 from dl_connector_trino.core.us_connection import ConnectionTrino
-import dl_connector_trino_tests.db.config as test_config
 from dl_connector_trino_tests.db.core.base import BaseTrinoTestClass
 
 
@@ -34,10 +33,6 @@ class TestTrinoTableDataSource(
     ],
 ):
     DSRC_CLS = TrinoTableDataSource
-
-    @pytest.fixture(scope="class")
-    def db_url(self) -> str:
-        return test_config.DB_CORE_URL_MEMORY_CATALOG
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table: DbTable) -> StandardSchemaSQLDataSourceSpec:
@@ -64,10 +59,6 @@ class TestTrinoSubselectDataSource(
     DSRC_CLS = TrinoSubselectDataSource
 
     raw_sql_level = RawSQLLevel.subselect
-
-    @pytest.fixture(scope="class")
-    def db_url(self) -> str:
-        return test_config.DB_CORE_URL_MEMORY_CATALOG
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table: DbTable) -> SubselectDataSourceSpec:
