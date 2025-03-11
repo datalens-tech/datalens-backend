@@ -10,7 +10,7 @@ from dl_constants.enums import (
 )
 from dl_core.data_source.sql import (
     BaseSQLDataSource,
-    StandardSQLDataSource,
+    StandardSchemaSQLDataSource,
     SubselectDataSource,
 )
 
@@ -41,7 +41,7 @@ class TrinoDataSourceMixin(BaseSQLDataSource):
         return source_type in (SOURCE_TYPE_TRINO_TABLE, SOURCE_TYPE_TRINO_SUBSELECT)
 
 
-class TrinoTableDataSource(TrinoDataSourceMixin, StandardSQLDataSource):
+class TrinoTableDataSource(TrinoDataSourceMixin, StandardSchemaSQLDataSource):
     """Trino table"""
 
 

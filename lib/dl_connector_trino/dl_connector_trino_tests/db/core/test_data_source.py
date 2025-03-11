@@ -5,7 +5,7 @@ from dl_constants.enums import (
     UserDataType,
 )
 from dl_core.data_source_spec.sql import (
-    StandardSQLDataSourceSpec,
+    StandardSchemaSQLDataSourceSpec,
     SubselectDataSourceSpec,
 )
 from dl_core_testing.database import DbTable
@@ -29,7 +29,7 @@ class TestTrinoTableDataSource(
     BaseTrinoTestClass,
     DefaultDataSourceTestClass[
         ConnectionTrino,
-        StandardSQLDataSourceSpec,
+        StandardSchemaSQLDataSourceSpec,
         TrinoTableDataSource,
     ],
 ):
@@ -40,11 +40,11 @@ class TestTrinoTableDataSource(
         return test_config.DB_CORE_URL_MEMORY_CATALOG
 
     @pytest.fixture(scope="class")
-    def initial_data_source_spec(self, sample_table: DbTable) -> StandardSQLDataSourceSpec:
-        dsrc_spec = StandardSQLDataSourceSpec(
+    def initial_data_source_spec(self, sample_table: DbTable) -> StandardSchemaSQLDataSourceSpec:
+        dsrc_spec = StandardSchemaSQLDataSourceSpec(
             source_type=SOURCE_TYPE_TRINO_TABLE,
             db_name=sample_table.db.name,
-            # schema_name=?
+            schema_name=sample_table.schema,
             table_name=sample_table.name,
         )
         return dsrc_spec
@@ -73,7 +73,7 @@ class TestTrinoSubselectDataSource(
     def initial_data_source_spec(self, sample_table: DbTable) -> SubselectDataSourceSpec:
         dsrc_spec = SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_TRINO_SUBSELECT,
-            subsql=f'SELECT * FROM "{sample_table.name}"',
+            subsql=f"SELECT * FROM {sample_table.db.name}.{sample_table.schema}.{sample_table.name}",
         )
         return dsrc_spec
 

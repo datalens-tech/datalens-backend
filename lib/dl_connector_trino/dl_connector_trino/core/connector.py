@@ -5,7 +5,7 @@ from dl_core.connectors.base.connector import (
     CoreSourceDefinition,
 )
 from dl_core.connectors.sql_base.connector import SQLSubselectCoreSourceDefinitionBase
-from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
+from dl_core.data_source_spec.sql import StandardSchemaSQLDataSourceSpec
 from dl_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 
 from dl_connector_trino.core.adapters import TrinoDefaultAdapter
@@ -43,7 +43,7 @@ class TrinoCoreConnectionDefinition(CoreConnectionDefinition):
 class TrinoCoreTableSourceDefinition(CoreSourceDefinition):
     source_type = SOURCE_TYPE_TRINO_TABLE
     source_cls = TrinoTableDataSource
-    source_spec_cls = StandardSQLDataSourceSpec
+    source_spec_cls = StandardSchemaSQLDataSourceSpec
     us_storage_schema_cls = SQLDataSourceSpecStorageSchema
 
 
