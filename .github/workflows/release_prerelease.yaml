@@ -76,6 +76,9 @@ jobs:
       uses: docker/setup-qemu-action@v3
       with:
         platforms: 'arm64'
+        # fix QEMU build for arm64
+        # https://github.com/tonistiigi/binfmt/issues/245
+        image: tonistiigi/binfmt:qemu-v7.0.0
 
     - name: Checkout code
       id: checkout
