@@ -1,6 +1,7 @@
 from typing import Optional
 
 import attr
+from typing_extensions import Self
 
 from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
 
@@ -19,3 +20,8 @@ class TrinoConnTargetDTO(ConnTargetDTO):
 
     def get_effective_host(self) -> Optional[str]:
         return self.host
+
+    @classmethod
+    def _from_jsonable_dict(cls, data: dict) -> Self:
+        data["auth_type"] = TrinoAuthType(data["auth_type"])
+        return cls(**data)
