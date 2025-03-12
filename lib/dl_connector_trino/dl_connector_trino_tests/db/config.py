@@ -61,6 +61,59 @@ class CoreJwtConnectionSettings(CoreSslConnectionSettings):
     AUTH_TYPE: ClassVar[str] = TrinoAuthType.JWT
 
 
+SUBSELECT_QUERY_FULL = r"""
+select
+    number,
+    cast(number as boolean) as num_bool,
+    cast(number as tinyint) as num_tinyint,
+    cast(number as smallint) as num_smallint,
+    cast(number as integer) as num_integer,
+    cast(number as bigint) as num_bigint,
+    cast(number as real) as num_real,
+    cast(number as double) as num_double,
+    cast(number as decimal(9, 3)) as num_decimal_9_3,
+    cast(char_value as char(3)) as char_3,
+    cast(char_value as varchar(3)) as varchar_3,
+    cast(json_string as json) as json,
+    cast(date_value as date) as date,
+    cast(time_value as time) as time,
+    cast(times_with_timezone as time with time zone) as time_with_timezone,
+    cast(timestamp_value as timestamp) as timestamp,
+    cast(timestamp_with_timezone as timestamp with time zone) as timestamp_with_timezone
+from
+    (
+        select 
+            0 as number, 
+            '0' as char_value,
+            '{["0"]}' as json_string,
+            '2025-01-01' as date_value,
+            '00:00:00' as time_value,
+            '01:02:03.456 -08:00' as times_with_timezone,
+            '2025-01-01 00:00:00' as timestamp_value,
+            '2001-08-22 03:04:05.321 America/New_York' as timestamp_with_timezone
+        union all
+        select 
+            1, 
+            '1',
+            '{["1"]}',
+            '2025-01-02',
+            '00:00:01',
+            '01:02:03.456 -08:00',
+            '2025-01-02 00:00:01',
+            '2025-01-02 00:00:01.000 America/Denver'
+        union all
+        select 
+            6, 
+            '6',
+            '{["6"]}',
+            '2025-01-07',
+            '00:00:06',
+            '01:02:03.456 -08:00',
+            '2025-01-07 00:00:06',
+            '2025-01-07 00:00:06.000 America/Los_Angeles'
+    ) as base
+"""
+
 DB_URLS = {
     (D.TRINO, "memory_catalog"): URL(
         host=CoreConnectionSettings.HOST,
