@@ -60,7 +60,31 @@ def app_factory():
     settings = AppSettings()
 ```
 
-New style of settings uses double underscore to separate nested settings, which can break backward compatibility. To fix this we can use `dl_settings.WithFallbackEnvSource` class. NEVER USE FOR NEW SETTINGS, ONLY FOR MIGRATION. Eventually we should remove old settings names and fallbacks (while using fallback settings warning is spammed to console).
+New style of settings uses double underscore to separate nested settings, which can break backward compatibility. To fix this we can use `dl_settings.WithFallbackEnvSource` class. NEVER USE FOR NEW SETTINGS, ONLY FOR MIGRATION.
+
+Old settings:
+
+```python
+class NestedSettings(SettingsBase):
+    var1: bool = s_attrib("VAR1", missing=False)
+
+    @classmethod
+    def from_json(cls, json_value: typing.Any) -> typing_extensions.Self:
+        assert isinstance(json_value, typing.Mapping)
+        return cls(
+            var1=json_value.get("VAR1", False),
+        )
+
+
+@attr.s(frozen=True)
+class AppSettings:
+    NESTED: NestedSettings = s_attrib(
+      "NESTED",
+      fallback_factory=lambda cfg: NestedSettings.from_json(cfg.get("NESTED")),
+    )
+```
+
+New settings:
 
 ```python
 class NestedSettings(dl_settings.BaseSettings):
@@ -76,4 +100,17 @@ class AppSettings(
     fallback_env_keys = {
         "NESTED__VAR1": "NESTED_VAR1",
     }
+```
+
+Eventually we should remove old settings names and fallbacks (while using fallback settings warning is spammed to console).
+
+```python
+class NestedSettings(dl_settings.BaseSettings):
+    var1: bool = False
+
+
+class AppSettings(
+    dl_settings.BaseRootSettings,
+):
+    nested: NestedSettings = NestedSettings()
 ```
