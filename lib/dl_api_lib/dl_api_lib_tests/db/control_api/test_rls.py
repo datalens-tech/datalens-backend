@@ -19,9 +19,13 @@ from dl_rls.testing.testing_data import (
 
 class TestRLS(DefaultApiTestBase):
     @staticmethod
-    def add_rls_to_dataset(control_api, dataset, rls_config):
+    def add_rls_to_dataset(control_api, dataset, rls_config, rls2_config=None):
         field_guid = dataset.result_schema[0].id
         dataset.rls = {field_guid: rls_config}
+        if rls2_config:
+            dataset.rls2 = {field_guid: rls2_config}
+        else:
+            dataset.rls2 = {}
         resp = control_api.save_dataset(dataset, fail_ok=True)
         return field_guid, resp
 
@@ -50,6 +54,30 @@ class TestRLS(DefaultApiTestBase):
         assert resp.status_code == 200, resp.json
         assert config_to_comparable(resp.dataset.rls[field_guid]) == config_to_comparable(config_updated)
 
+    def test_create_rls_v2(self, control_api, saved_dataset):
+        case = RLS_CONFIG_CASES[0]  # test only simple case
+        config_v1 = case["config"]
+        config_v2 = case["config_v2"]  # rls from v2 config != rls from v1 config
+
+        ds = saved_dataset
+        # if both config are passed v2 has priority
+        field_guid, rls_resp = self.add_rls_to_dataset(control_api, ds, config_v1, config_v2)
+        assert rls_resp.status_code == 200, rls_resp.json
+
+        resp = control_api.load_dataset(ds)
+        assert resp.status_code == 200, resp.json
+        ds = resp.dataset
+
+        # v2 has priority => check if v1 config is obtained from v2
+        # 'config_to_compare_v2' - config_v2 data in v1 format, differs from 'config_to_compare'
+        assert config_to_comparable(ds.rls[field_guid]) == config_to_comparable(case["config_to_compare_v2"])
+
+        # check if v2 from rls looks like expected
+        for item1, item2 in zip(sorted(ds.rls2[field_guid]), sorted(config_v2)):
+            assert item1.subject == item2.subject
+            assert item1.pattern_type == item2.pattern_type
+            assert item1.allowed_value == item2.allowed_value
+
     def test_create_rls_for_nonexistent_user(self, control_api, saved_dataset):
         config = load_rls_config("bad_login")
         ds = saved_dataset
@@ -73,6 +101,7 @@ class TestRLS(DefaultApiTestBase):
         config = load_rls_config("dl_api_lib_test_config")
         field_a, field_b = saved_dataset.result_schema[0].id, saved_dataset.result_schema[1].id
         saved_dataset.rls = {field_a: config, field_b: config}
+        saved_dataset.rls2 = {}
         control_api.save_dataset(saved_dataset, fail_ok=False)
 
         ds = sync_us_manager.get_by_id(saved_dataset.id)

@@ -3,22 +3,36 @@ import pytest
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib_testing.app import TestingSubjectResolver
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_rls.testing.testing_data import load_rls_config
+from dl_rls.testing.testing_data import (
+    load_rls_config,
+    load_rls_v2_config,
+)
 
 
 class TestRLS(DefaultApiTestBase):
-    @pytest.fixture(scope="function", params=[("dl_api_lib_test_config", False), ("dl_api_lib_group_config", True)])
+    @pytest.fixture(
+        scope="function",
+        params=[
+            ("dl_api_lib_test_config", False, "1"),
+            ("dl_api_lib_group_config", True, "1"),
+            ("dl_api_lib_test_config", False, "2"),
+            ("dl_api_lib_group_config", True, "2"),
+            ("dl_api_lib_test_config", False, "12"),
+            ("dl_api_lib_group_config", True, "12"),
+        ],
+    )
     def dataset_with_rls(self, request, monkeypatch, control_api, saved_dataset):
         def get_groups_by_subject_mock(self, rci):
             raise RuntimeError("Shouldn't be invoked without groups in config")
 
         ds = saved_dataset
         field_guid = ds.result_schema[1].id
-        config_file, contains_groups = request.param
+        config_file, contains_groups, rls_type = request.param
         if not contains_groups:
             monkeypatch.setattr(TestingSubjectResolver, "get_groups_by_subject", get_groups_by_subject_mock)
 
-        ds.rls = {field_guid: load_rls_config(config_file)}
+        ds.rls = {field_guid: load_rls_config(config_file)} if "1" in rls_type else {}
+        ds.rls2 = {field_guid: load_rls_v2_config(f"{config_file}_v2.json")} if "2" in rls_type else {}
         control_api.save_dataset(ds, fail_ok=False)
         resp = control_api.load_dataset(ds)
         assert resp.status_code == 200, resp.json
@@ -31,6 +45,7 @@ class TestRLS(DefaultApiTestBase):
 
         rls_val_modifier = "\n'x': *\n" if modify_rls else ""
         ds.rls = {key: val + rls_val_modifier for key, val in ds.rls.items() if val}
+        ds.rls2 = {}
         monkeypatch.setattr(TestingSubjectResolver, "get_subjects_by_names", get_subjects_by_names_mock)
         return data_api.get_preview(dataset=ds, fail_ok=True)
 
