@@ -771,3 +771,20 @@ def test_inconceivably_long_if_block(parser):
     expected_result = n.formula(IfBlock.make(if_list=if_list, else_expr=LiteralString.make("")))
     actual_result = parser.parse(formula)
     assert actual_result == expected_result
+
+
+def test_recursion_error(parser):
+    # Create large code that will cause RecursionError
+    num = 1000
+
+    code = ""
+    for if_num in range(num):
+        code += f'if([v] = {if_num}, "v_{if_num}", '
+    code += '"v_max"'
+    code += ")" * num
+
+    with pytest.raises(exc.ParseError) as exc_info:
+        parser.parse(code)
+
+    err = exc_info.value
+    assert err.error.code == ("FORMULA", "PARSE", "RECURSION")

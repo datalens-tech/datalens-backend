@@ -53,6 +53,28 @@ class TestResultErrors(DefaultApiTestBase):
         assert result_resp.status_code == 400
         assert result_resp.bi_status_code == "ERR.DS_API.FORMULA.PARSE.UNEXPECTED_EOF.EMPTY_FORMULA"
 
+    def test_validate_formula_recursion_error(self, saved_dataset, data_api):
+        # Create large code that will cause RecursionError
+        num = 1000
+
+        code = ""
+        for if_num in range(num):
+            code += f'if([row_id] = {if_num}, "row_id_{if_num}", '
+        code += '"row_id_max"'
+        code += ")" * num
+
+        ds = saved_dataset
+        title = "row_id to string"
+        ds.result_schema[title] = ds.field(
+            title=title,
+            calc_mode=CalcMode.formula,
+            formula=code,
+        )
+
+        result_resp = data_api.get_result(dataset=ds, fields=[ds.find_field(title)], fail_ok=True)
+        assert result_resp.status_code == 400
+        assert result_resp.bi_status_code == "ERR.DS_API.FORMULA.PARSE.RECURSION"
+
     def test_filter_errors(self, saved_dataset, data_api):
         ds = saved_dataset
         ds.result_schema["New date"] = ds.field(formula="DATE(NOW())")  # just a date field
