@@ -330,6 +330,7 @@ class FieldRLSSerializer:
                 ),
             )
             for entry in data
+            if entry.subject.subject_type != RLSSubjectType.notfound
         ]
 
     @classmethod
@@ -337,9 +338,11 @@ class FieldRLSSerializer:
         rls_entries = []
         for entry in data:
             if entry.pattern_type == RLSPatternType.value and entry.allowed_value is None:
-                raise Exception("allowed_value must be not None for value RLS pattern type")
+                raise exc.RLSConfigParsingError("allowed_value must be not None for value RLS pattern type")
             if entry.pattern_type != RLSPatternType.value and entry.allowed_value is not None:
-                raise Exception(f"allowed_value must be None for {entry.pattern_type.value} RLS pattern type")
+                raise exc.RLSConfigParsingError(
+                    f"allowed_value must be None for {entry.pattern_type.value} RLS pattern type"
+                )
             rls_entries.append(
                 RLSEntry(
                     field_guid=field_guid,

@@ -14,6 +14,7 @@ from dl_api_lib import exc
 from dl_api_lib.dataset.utils import allow_rls_for_dataset
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_app_tools.profiling_base import generic_profiler
+from dl_constants.enums import RLSSubjectType
 from dl_constants.exc import (
     DEFAULT_ERR_CODE_API_PREFIX,
     GLOBAL_ERR_PREFIX,
@@ -262,12 +263,12 @@ class DatasetApiLoader:
         return handled_avatar_relation_ids
 
     @staticmethod
-    def _rls_list_to_set(rls_list: list[RLSEntry]) -> set[tuple]:
+    def _rls_list_to_set(rls_list: list[RLSEntry], by_name: bool = True) -> set[tuple]:
         return set(
             (
                 rlse.field_guid,
                 rlse.allowed_value,
-                rlse.subject.subject_name,
+                rlse.subject.subject_name if by_name else rlse.subject.subject_id,
                 rlse.pattern_type,
             )
             for rlse in rls_list
@@ -297,17 +298,29 @@ class DatasetApiLoader:
             if allow_rls_change:
                 dataset.rls.items = [rlse for rlse in dataset.rls.items if rlse.field_guid != field.guid]
                 dataset.rls.items.extend(rls_entries)
-            elif not rls_v2:
-                rls_entries_pre = FieldRLSSerializer.from_text_config(
-                    rls_text_config, field.guid, subject_resolver=None
-                )
+            else:
                 # e.g. preview request in async api
-                saved_field_rls = [
-                    rlse.ensure_removed_failed_subject_prefix()
-                    for rlse in dataset.rls.items
-                    if rlse.field_guid == field.guid
-                ]
-                if self._rls_list_to_set(saved_field_rls) != self._rls_list_to_set(rls_entries_pre):
+                if rls_v2:
+                    rls_entries_pre = rls_entries
+                    saved_field_rls = [
+                        rlse
+                        for rlse in dataset.rls.items
+                        if rlse.field_guid == field.guid and rlse.subject.subject_type != RLSSubjectType.notfound
+                    ]
+                    compare_by_name = False
+                else:
+                    rls_entries_pre = FieldRLSSerializer.from_text_config(
+                        rls_text_config, field.guid, subject_resolver=None
+                    )
+                    saved_field_rls = [
+                        rlse.ensure_removed_failed_subject_prefix()
+                        for rlse in dataset.rls.items
+                        if rlse.field_guid == field.guid
+                    ]
+                    compare_by_name = True
+                if self._rls_list_to_set(saved_field_rls, compare_by_name) != self._rls_list_to_set(
+                    rls_entries_pre, compare_by_name
+                ):
                     raise rls_exc.RLSConfigParsingError(
                         "For this feature to work, save dataset after editing the RLS config.", details=dict()
                     )
