@@ -9,5 +9,4 @@ DIALECT_NAME_TRINO = DialectName.declare("TRINO")
 
 
 class TrinoDialect(DialectNamespace):
-    TRINO_471 = simple_combo(name=DIALECT_NAME_TRINO, version=(471,))
-    TRINO = TRINO_471
+    TRINO = simple_combo(name=DIALECT_NAME_TRINO)
