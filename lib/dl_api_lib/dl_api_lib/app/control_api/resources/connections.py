@@ -27,6 +27,7 @@ from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.schemas.connection import (
     ConnectionInfoSourceSchemaQuerySchema,
     ConnectionInfoSourceSchemaResponseSchema,
+    ConnectionItemQuerySchema,
     ConnectionSourcesQuerySchema,
     ConnectionSourceTemplatesResponseSchema,
     GenericConnectionSchema,
@@ -208,13 +209,25 @@ class ConnectionItem(BIResource):
     @put_to_request_context(endpoint_code="ConnectionGet")
     @schematic_request(
         ns=ns,
+        query=ConnectionItemQuerySchema(),
         responses={
             # 200: ('Success', GetConnectionResponseSchema()),
         },
     )
-    def get(self, connection_id: str) -> dict:
-        conn = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
-        need_permission_on_entry(conn, USPermissionKind.read)
+    def get(self, connection_id: str, query: dict) -> dict:
+        us_manager = self.get_us_manager()
+
+        if "rev_id" in query:
+            conn = us_manager.get_by_id(
+                connection_id,
+                expected_type=ConnectionBase,
+                params={"revId": query["rev_id"]},
+            )
+            need_permission_on_entry(conn, USPermissionKind.edit)
+        else:
+            conn = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
+            need_permission_on_entry(conn, USPermissionKind.read)
+
         assert isinstance(conn, ConnectionBase)
 
         result = GenericConnectionSchema(context=self.get_schema_ctx(EditMode.edit)).dump(conn)

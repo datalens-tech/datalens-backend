@@ -36,6 +36,10 @@ class ConnectionSourcesQuerySchema(BaseSchema):
     limit = ma_fields.Integer(required=False, load_default=10_000)
 
 
+class ConnectionItemQuerySchema(BaseSchema):
+    rev_id = ma_fields.String()
+
+
 class ConnectionInfoSourceSchemaQuerySchema(BaseSchema):
     source = ma_fields.Nested(DataSourceSchema, required=True)
 
