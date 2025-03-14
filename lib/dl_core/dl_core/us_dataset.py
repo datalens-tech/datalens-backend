@@ -12,6 +12,7 @@ import attr
 
 from dl_constants.enums import (
     AggregationFunction,
+    CalcMode,
     DataSourceCreatedVia,
     DataSourceRole,
     DataSourceType,
@@ -45,6 +46,7 @@ from dl_core.us_entry import (
     USEntry,
 )
 from dl_i18n.localizer_base import Localizer
+from dl_model_tools.typed_values import BIValue
 from dl_rls.rls import RLS
 
 
@@ -198,6 +200,14 @@ class Dataset(USEntry):
     @property
     def result_schema(self) -> ResultSchema:
         return self.data.result_schema
+
+    @property
+    def parameter_values(self) -> dict[str, BIValue]:
+        return {
+            field.title: field.default_value
+            for field in self.result_schema.fields
+            if field.calc_mode == CalcMode.parameter and field.default_value is not None
+        }
 
     def _dump_rls(self):  # type: ignore  # TODO: fix
         """Remove rls entries for non-existing in result_schema fields"""
