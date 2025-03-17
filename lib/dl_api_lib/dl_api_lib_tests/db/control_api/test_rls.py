@@ -21,10 +21,11 @@ class TestRLS(DefaultApiTestBase):
     @staticmethod
     def add_rls_to_dataset(control_api, dataset, rls_config, rls2_config=None):
         field_guid = dataset.result_schema[0].id
-        dataset.rls = {field_guid: rls_config}
         if rls2_config:
             dataset.rls2 = {field_guid: rls2_config}
+            dataset.rls = {}
         else:
+            dataset.rls = {field_guid: rls_config}
             dataset.rls2 = {}
         resp = control_api.save_dataset(dataset, fail_ok=True)
         return field_guid, resp

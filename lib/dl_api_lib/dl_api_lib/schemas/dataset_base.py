@@ -198,6 +198,12 @@ class DatasetContentInternalSchema(BaseSchema):
 
         return in_data
 
+    @pre_load
+    def check_rls(self, in_data: Dict[str, Any], *args: Any, **kwargs: Any) -> Dict[str, Any]:
+        if in_data.get("rls") and in_data.get("rls2"):
+            raise ValidationError("RLS can be specified in only one of the two fields: rls or rls2")
+        return in_data
+
 
 class DatasetContentSchema(OptionsMixin):
     dataset = ma_fields.Nested(DatasetContentInternalSchema, required=False)
