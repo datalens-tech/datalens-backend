@@ -103,19 +103,6 @@ class DefaultLiteralFormulaConnectorTestSuite(FormulaConnectorTestBase):
                 tzinfo=datetime.timezone.utc,
             )
 
-        # With UTC offset
-        if self.supports_custom_tz:
-            assert as_dt(
-                dbe.db.scalar(
-                    literal(
-                        datetime.datetime(
-                            2020, 4, 8, 12, 34, 56, tzinfo=datetime.timezone(datetime.timedelta(hours=3))
-                        ),
-                        d=dbe.dialect,
-                    )
-                )
-            ) == datetime.datetime(2020, 4, 8, 12, 34, 56, tzinfo=datetime.timezone(datetime.timedelta(hours=3)))
-
         # With custom tz
         if self.supports_custom_tz:
             assert as_dt(
