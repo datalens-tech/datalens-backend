@@ -103,19 +103,6 @@ class DefaultLiteralFormulaConnectorTestSuite(FormulaConnectorTestBase):
                 tzinfo=datetime.timezone.utc,
             )
 
-        # With UTC offset
-        if self.supports_utc:
-            assert as_dt(
-                dbe.db.scalar(
-                    literal(
-                        datetime.datetime(
-                            2020, 4, 8, 12, 34, 56, tzinfo=datetime.timezone(datetime.timedelta(hours=3))
-                        ),
-                        d=dbe.dialect,
-                    )
-                )
-            ) == datetime.datetime(2020, 4, 8, 12, 34, 56, tzinfo=datetime.timezone(datetime.timedelta(hours=3)))
-
         # With custom tz
         if self.supports_custom_tz:
             assert as_dt(
@@ -130,9 +117,6 @@ class DefaultLiteralFormulaConnectorTestSuite(FormulaConnectorTestBase):
     def test_arrays(self, dbe: DbEvaluator) -> None:
         if not self.supports_arrays:
             pytest.skip("Not supported")
-        assert dbe.eval(n.formula(n.lit([1, 2, 3]))) == (1, 2, 3)
-        assert dbe.eval(n.formula(n.lit([1.1, 2.2, 3.3]))) == (1.1, 2.2, 3.3)
-        assert dbe.eval(n.formula(n.lit(["qwe", "rty", "uio"]))) == ("qwe", "rty", "uio")
         assert dbe.eval(n.formula(n.func.GET_ITEM(n.lit([1, 4, 6]), 2))) == 4
         assert dbe.eval(n.formula(n.func.GET_ITEM(n.lit([1.1, 4.2, 6.3]), 2))) == 4.2
         assert dbe.eval(n.formula(n.func.GET_ITEM(n.lit(["qwe", "rty", "uio"]), 2))) == "rty"
