@@ -151,17 +151,21 @@ class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
             dbe.db.drop_table(table)
 
     @pytest.fixture(scope="class")
-    def null_data_table(self, dbe: DbEvaluator) -> Generator[sa.Table, None, None]:
-        with self.make_null_data_table(dbe=dbe) as table:
+    def null_data_table(self, dbe: DbEvaluator, table_schema_name: Optional[str]) -> Generator[sa.Table, None, None]:
+        with self.make_null_data_table(dbe=dbe, table_schema_name=table_schema_name) as table:
             yield table
 
     @contextlib.contextmanager
-    def make_null_data_table(self, dbe: DbEvaluator) -> Generator[sa.Table, None, None]:
+    def make_null_data_table(
+        self, dbe: DbEvaluator, table_schema_name: Optional[str]
+    ) -> Generator[sa.Table, None, None]:
         column_specs = NULL_DATA_TABLE_SPEC
         table_spec = self.generate_table_spec("null_test_table")
 
         columns = self.make_columns(column_specs)
-        table = self.lowlevel_make_sa_table(db=dbe.db, table_spec=table_spec, columns=columns)
+        table = self.lowlevel_make_sa_table(
+            db=dbe.db, table_spec=table_spec, table_schema_name=table_schema_name, columns=columns
+        )
         table_data = [{column.name: None for column in column_specs}]
 
         dbe.db.create_table(table)
@@ -174,12 +178,14 @@ class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
 
     @contextlib.contextmanager
     def make_scalar_table(
-        self, dbe: DbEvaluator, col_name: str, data_type: DataType, value: Any
+        self, dbe: DbEvaluator, table_schema_name: Optional[str], col_name: str, data_type: DataType, value: Any
     ) -> Generator[sa.Table, None, None]:
         table_spec = self.generate_table_spec(table_name_prefix="scalar_test_table")
         column_specs = [ColumnSpec(name=col_name, data_type=data_type)]
         columns = self.make_columns(column_specs)
-        table = self.lowlevel_make_sa_table(db=dbe.db, table_spec=table_spec, columns=columns)
+        table = self.lowlevel_make_sa_table(
+            db=dbe.db, table_spec=table_spec, table_schema_name=table_schema_name, columns=columns
+        )
         table_data = [{col_name: value}]
         dbe.db.create_table(table)
         dbe.db.insert_into_table(table, table_data)
