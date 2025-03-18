@@ -89,6 +89,7 @@ EXCEPTION_CODES = {
     exc.ConnectorIconNotFoundException: status.NOT_FOUND,
     api_commons_exc.FailedDependencyException: status.FAILED_DEPENDENCY,
     common_exc.UnknownEntryMigration: status.NOT_IMPLEMENTED,
+    common_exc.FailedToLoadSchema: status.BAD_REQUEST,
 }
 
 

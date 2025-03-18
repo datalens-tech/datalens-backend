@@ -119,6 +119,10 @@ class ParseClauseError(ParseError):
     default_code = FormulaError.default_code + ("CLAUSE",)
 
 
+class ParseRecursionError(ParseError):
+    default_code = ParseError.default_code + ("RECURSION",)
+
+
 # Validation Errors
 
 

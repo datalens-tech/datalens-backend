@@ -37,8 +37,8 @@ trino = "dl_connector_trino.core.connector:TrinoCoreConnector"
 [tool.poetry.plugins."dl_db_testing.connectors"]
 trino = "dl_connector_trino.db_testing.connector:TrinoDbTestingConnector"
 
-# [tool.poetry.plugins."dl_formula.connectors"]
-# trino = "dl_connector_trino.formula.connector:TrinoFormulaConnector"
+[tool.poetry.plugins."dl_formula.connectors"]
+trino = "dl_connector_trino.formula.connector:TrinoFormulaConnector"
 
 [tool.poetry.group.tests.dependencies]
 # mock = ">=4.0.3"

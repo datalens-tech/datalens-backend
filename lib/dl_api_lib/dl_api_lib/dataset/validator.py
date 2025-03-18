@@ -290,7 +290,7 @@ class DatasetValidator(DatasetBaseWrapper):
             errors.append(
                 FormulaErrorCtx(
                     message="Data source is not set for the dataset",
-                    code=tuple(common_exc.DatasetConfigurationError.err_code),
+                    code=tuple(common_exc.DataSourceNotFound.err_code),
                     level=MessageLevel.ERROR,
                 )
             )
@@ -1237,6 +1237,8 @@ class DatasetValidator(DatasetBaseWrapper):
         self._ds.error_registry.remove_errors(id=source_id)
 
         if action == DatasetAction.add_source:
+            for field in self._ds.error_registry.for_type(ComponentType.field):
+                self._ds.error_registry.remove_errors(id=field.id, code=common_exc.DataSourceNotFound.err_code)
             add_source(title=source_data.get("title") or None)  # type: ignore  # TODO: fix
             self.refresh_data_source(source_id=source_id, old_raw_schema=None)
             new_title = source_data["title"]

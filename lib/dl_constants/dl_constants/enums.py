@@ -249,7 +249,7 @@ class RLSSubjectType(Enum):
 
 
 class RLSPatternType(Enum):
-    value = "user"
+    value = "value"
     all = "all"
     userid = "userid"
 

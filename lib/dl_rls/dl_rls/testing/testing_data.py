@@ -3,6 +3,8 @@ import pkgutil
 
 from dl_constants.enums import RLSSubjectType
 from dl_rls.models import (
+    RLS2ConfigEntry,
+    RLS2Subject,
     RLSEntry,
     RLSPatternType,
     RLSSubject,
@@ -15,6 +17,18 @@ def load_rls_config(name: str) -> str:
     data = pkgutil.get_data(__package__, f"rls_configs/{name}")
     assert data is not None
     return data.decode("utf-8")
+
+
+def load_rls_v2_config(name: str) -> list[RLS2ConfigEntry]:
+    data = json.loads(load_rls_config(name))
+    result: list[RLS2ConfigEntry] = []
+    for entry in data:
+        rls_entry = RLS2ConfigEntry(**entry)
+        rls_entry.pattern_type = RLSPatternType[entry.get("pattern_type", "value")]
+        rls_entry.subject = RLS2Subject(**entry["subject"])
+        rls_entry.subject.subject_type = RLSSubjectType[entry["subject"]["subject_type"]]
+        result.append(rls_entry)
+    return result
 
 
 def load_rls(name: str) -> list[RLSEntry]:
@@ -39,7 +53,9 @@ RLS_CONFIG_CASES = [
     dict(
         name="simple",
         config=load_rls_config("simple"),
+        config_v2=load_rls_v2_config("simple_v2.json"),
         config_to_compare=load_rls_config("simple_to_compare"),
+        config_to_compare_v2=load_rls_config("simple_v1_from_v2"),
         rls_entries=load_rls("simple.json"),
         config_updated=load_rls_config("simple_updated"),
         rls_entries_updated=load_rls("simple_updated.json"),

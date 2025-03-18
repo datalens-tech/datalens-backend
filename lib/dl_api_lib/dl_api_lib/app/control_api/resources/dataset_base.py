@@ -180,11 +180,14 @@ class DatasetResource(BIResource):
 
         # rls
         rls = {}
+        rls_v2 = {}
         if allow_rls_for_dataset(dataset):
             for field in dataset.result_schema:
                 field_rls = [e for e in dataset.rls.items if e.field_guid == field.guid]
                 rls[field.guid] = FieldRLSSerializer.to_text_config(field_rls)
+                rls_v2[field.guid] = FieldRLSSerializer.to_v2_config(field_rls)
         data["rls"] = rls
+        data["rls2"] = rls_v2
 
         data["obligatory_filters"] = ds_accessor.get_obligatory_filter_list()
 

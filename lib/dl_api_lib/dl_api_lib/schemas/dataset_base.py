@@ -32,6 +32,8 @@ from dl_constants.enums import (
     CalcMode,
     FieldType,
     ManagedBy,
+    RLSPatternType,
+    RLSSubjectType,
     UserDataType,
 )
 from dl_core.fields import (
@@ -50,6 +52,10 @@ from dl_model_tools.schema.base import (
 from dl_model_tools.schema.typed_values import (
     ValueSchema,
     WithNestedValueSchema,
+)
+from dl_rls.models import (
+    RLS2ConfigEntry,
+    RLS2Subject,
 )
 
 
@@ -72,6 +78,22 @@ class ParameterCalculationSpecSchema(DefaultSchema[ParameterCalculationSpec]):
 
     default_value = ma_fields.Nested(ValueSchema, allow_none=True)
     value_constraint = ma_fields.Nested(ParameterValueConstraintSchema, allow_none=True)
+
+
+class RLS2ConfigEntrySchema(DefaultSchema[RLS2ConfigEntry]):
+    TARGET_CLS = RLS2ConfigEntry
+
+    class RLS2SubjectSchema(DefaultSchema[RLS2Subject]):
+        TARGET_CLS = RLS2Subject
+
+        subject_id = ma_fields.String(required=True)
+        subject_type = ma_fields.Enum(RLSSubjectType)
+        subject_name = ma_fields.String(load_default=None, allow_none=True)
+
+    field_guid = ma_fields.String(dump_default=None, load_default=None)
+    allowed_value = ma_fields.String(dump_default=None, load_default=None)
+    pattern_type = ma_fields.Enum(RLSPatternType, load_default=RLSPatternType.value)
+    subject = ma_fields.Nested(RLS2SubjectSchema, required=True)
 
 
 class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
@@ -155,6 +177,13 @@ class DatasetContentInternalSchema(BaseSchema):
     result_schema = ma_fields.List(ma_fields.Nested(ResultSchemaSchema, required=False))
     result_schema_aux = ma_fields.Nested(ResultSchemaAuxSchema, allow_none=False)
     rls = ma_fields.Dict(load_default=dict, required=False)
+    rls2 = ma_fields.Dict(
+        ma_fields.String,
+        ma_fields.List(ma_fields.Nested(RLS2ConfigEntrySchema)),
+        required=False,
+        load_default=dict,
+        dump_default=dict,
+    )
     preview_enabled = ma_fields.Boolean(load_default=False)
     component_errors = ma_fields.Nested(ComponentErrorListSchema, required=False)
     obligatory_filters = ma_fields.Nested(ObligatoryFilterSchema, many=True, load_default=list)

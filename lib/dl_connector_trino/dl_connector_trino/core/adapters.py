@@ -13,6 +13,7 @@ from trino.auth import (
     JWTAuthentication,
 )
 from trino.sqlalchemy import URL as trino_url
+from trino.sqlalchemy.datatype import parse_sqltype
 from trino.sqlalchemy.dialect import TrinoDialect
 
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
@@ -22,6 +23,7 @@ from dl_core.connection_models.common_models import (
     SchemaIdent,
     TableIdent,
 )
+from dl_type_transformer.native_type import SATypeSpec
 
 from dl_connector_trino.core.constants import (
     ADAPTER_SOURCE_NAME,
@@ -144,3 +146,6 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
             )
             for schema_name, table_name in result.get_all()
         ]
+
+    def _cursor_column_to_sa(self, cursor_col: tuple[Any, ...], require: bool = True) -> Optional[SATypeSpec]:
+        return parse_sqltype(cursor_col[1])

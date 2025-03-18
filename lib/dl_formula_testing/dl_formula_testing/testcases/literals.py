@@ -114,7 +114,7 @@ class DefaultLiteralFormulaConnectorTestSuite(FormulaConnectorTestBase):
                 )
             ) == datetime.datetime(2020, 4, 8, 12, 34, 56, tzinfo=datetime.timezone.utc)
 
-    def test_arrays(self, dbe) -> None:  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def test_arrays(self, dbe: DbEvaluator) -> None:
         if not self.supports_arrays:
             pytest.skip("Not supported")
         assert dbe.eval(n.formula(n.func.GET_ITEM(n.lit([1, 4, 6]), 2))) == 4

@@ -64,7 +64,12 @@ def parse(formula: str) -> nodes.Formula:
 
 class AntlrPyFormulaParser(FormulaParser):
     def _parse(self, formula: str) -> nodes.Formula:
-        return parse(formula)
+        try:
+            return parse(formula)
+        except RecursionError as err:
+            raise exc.ParseRecursionError(
+                "Failed to parse formula: maximum recursion depth exceeded",
+            ) from err
 
     def _get_global_stats(self) -> Dict[str, _CacheInfo]:
         return parse.cache_info()  # type: ignore  # 2024-01-30 # TODO: "Callable[..., Any]" has no attribute "cache_info"  [attr-defined]

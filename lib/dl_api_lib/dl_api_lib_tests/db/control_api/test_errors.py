@@ -2,7 +2,10 @@ import json
 
 import shortuuid
 
-from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import (
+    CalcMode,
+    Dataset,
+)
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 from dl_core.base_models import PathEntryLocation
 
@@ -55,3 +58,30 @@ class TestControlApiErrors(DefaultApiTestBase):
         assert resp.status_code == 400
         assert resp.json["message"] == "Invalid connection type value: None"
         assert resp.json["code"] == "ERR.DS_API.BAD_CONN_TYPE"
+
+    def test_validate_formula_recursion_error(self, saved_dataset, control_api):
+        # Create large code that will cause RecursionError
+        num = 1000
+
+        code = ""
+        for if_num in range(num):
+            code += f'if([row_id] = {if_num}, "row_id_{if_num}", '
+        code += '"row_id_max"'
+        code += ")" * num
+
+        ds = saved_dataset
+        title = "row_id to string"
+        ds.result_schema[title] = ds.field(
+            title=title,
+            calc_mode=CalcMode.formula,
+            formula=code,
+        )
+
+        resp = control_api.validate_field(dataset=saved_dataset, field=ds.find_field(title))
+        assert resp.status_code == 400
+        assert resp.json["message"] == "Validation finished with errors."
+        assert resp.json["code"] == "ERR.DS_API.VALIDATION.ERROR"
+        errors = resp.json["field_errors"][0]["errors"]
+        assert len(errors) == 1
+        assert errors[0]["message"] == "Failed to parse formula: maximum recursion depth exceeded"
+        assert errors[0]["code"] == "FORMULA.PARSE.RECURSION"
