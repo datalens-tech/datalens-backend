@@ -5,6 +5,7 @@ import trino.sqlalchemy.datatype as tsa
 
 from dl_formula.definitions.base import TranslationVariant
 from dl_formula.definitions.common import TransCallResult
+from dl_formula.definitions.common_datetime import DAY_SEC
 import dl_formula.definitions.operators_binary as base
 
 from dl_connector_trino.formula.constants import TrinoDialect as D
@@ -16,14 +17,12 @@ def generic_datetime_plus_number_factory(operator: str) -> Callable:
     def _func(datetime: sa.sql.ColumnElement, days: sa.sql.ColumnElement) -> TransCallResult:
         signed_days = days if operator == "+" else -days
 
-        # If days is an integer, we can use date_add function directly
         if isinstance(days.type, sa.Integer):
             return sa.func.date_add("day", signed_days, datetime)
 
-        int_days = sa.cast(sa.func.floor(signed_days), sa.BIGINT)
-        milliseconds = (signed_days - int_days) * 24 * 60 * 60 * 1000
+        milliseconds = signed_days * DAY_SEC * 1000
         int_milliseconds = sa.cast(sa.func.floor(milliseconds), sa.BIGINT)
-        return sa.func.date_add("millisecond", int_milliseconds, sa.func.date_add("day", int_days, datetime))
+        return sa.func.date_add("millisecond", int_milliseconds, datetime)
 
     return _func
 
