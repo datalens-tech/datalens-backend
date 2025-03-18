@@ -14,3 +14,7 @@ class TrinoFormulaTestBase(FormulaConnectorTestBase):
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
         return test_config.DB_CORE_URL_MEMORY_CATALOG
+
+    @pytest.fixture(scope="class")
+    def table_schema_name(self) -> str:
+        return "default"
