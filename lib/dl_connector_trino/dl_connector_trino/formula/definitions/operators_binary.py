@@ -41,12 +41,12 @@ DEFINITIONS_BINARY = [
     # %
     base.BinaryModInteger(
         variants=[
-            V(D.TRINO, sa.func.MOD),
+            V(D.TRINO, sa.func.mod),
         ]
     ),
     base.BinaryModFloat(
         variants=[
-            V(D.TRINO, sa.func.MOD),
+            V(D.TRINO, sa.func.mod),
         ]
     ),
     # *
@@ -54,14 +54,14 @@ DEFINITIONS_BINARY = [
     base.BinaryMultStringConst.for_dialect(D.TRINO),
     base.BinaryMultStringNonConst(
         variants=[
-            V(D.TRINO, lambda string, num: sa.func.CONCAT_WS("", sa.func.REPEAT(string, num))),
+            V(D.TRINO, lambda string, num: sa.func.concat_ws("", sa.func.repeat(string, num))),
         ]
     ),
     # +
     base.BinaryPlusNumbers.for_dialect(D.TRINO),
     base.BinaryPlusStrings(
         variants=[
-            V(D.TRINO, sa.func.CONCAT),
+            V(D.TRINO, sa.func.concat),
         ]
     ),
     base.BinaryPlusDateInt(
@@ -74,11 +74,7 @@ DEFINITIONS_BINARY = [
             V(D.TRINO, lambda date, days: sa.func.date_add("day", sa.cast(days, sa.Integer), date)),
         ]
     ),
-    base.BinaryPlusDatetimeNumber(
-        variants=[
-            V(D.TRINO, lambda date, days: sa.func.date_add("day", days, date)),
-        ]
-    ),
+    # base.BinaryPlusDatetimeNumber.for_dialect(D.TRINO),
     base.BinaryPlusGenericDatetimeNumber(
         variants=[
             V(D.TRINO, generic_datetime_plus_number_factory("+")),
@@ -96,11 +92,7 @@ DEFINITIONS_BINARY = [
             V(D.TRINO, lambda date, days: sa.func.date_add("day", sa.cast(-sa.func.ceil(days), sa.BIGINT), date)),
         ]
     ),
-    base.BinaryMinusDatetimeNumber(
-        variants=[
-            V(D.TRINO, lambda dt, days: dt - days),
-        ]
-    ),
+    # base.BinaryMinusDatetimeNumber.for_dialect(D.TRINO),
     base.BinaryMinusGenericDatetimeNumber(
         variants=[
             V(D.TRINO, generic_datetime_plus_number_factory("-")),
@@ -111,11 +103,7 @@ DEFINITIONS_BINARY = [
             V(D.TRINO, lambda left, right: sa.func.date_diff("day", right, left)),
         ]
     ),
-    # base.BinaryMinusDatetimes(
-    #     variants=[
-    #         V(D.TRINO, lambda left, right: sa.func.date_diff('day', right, left)),
-    #     ]
-    # ),
+    # # base.BinaryMinusDatetimes.for_dialect(D.TRINO),
     base.BinaryMinusGenericDatetimes(
         variants=[
             V(D.TRINO, generic_datetime_diff),
@@ -141,15 +129,15 @@ DEFINITIONS_BINARY = [
     # ^
     base.BinaryPower(
         variants=[
-            V(D.TRINO, sa.func.POWER),
+            V(D.TRINO, sa.func.power),
         ]
     ),
     # _!=
-    base.BinaryNotEqualInternal.for_dialect(D.TRINO),
+    # base.BinaryNotEqualInternal.for_dialect(D.TRINO),
     # _==
-    base.BinaryEqualInternal.for_dialect(D.TRINO),
+    # base.BinaryEqualInternal.for_dialect(D.TRINO),
     # _dneq
-    base.BinaryEqualDenullified.for_dialect(D.TRINO),
+    # base.BinaryEqualDenullified.for_dialect(D.TRINO),
     # and
     base.BinaryAnd.for_dialect(D.TRINO),
     # in
@@ -161,5 +149,5 @@ DEFINITIONS_BINARY = [
     # notlike
     base.BinaryNotLike.for_dialect(D.TRINO),
     # or
-    base.BinaryOr.for_dialect(D.TRINO),
+    # base.BinaryOr.for_dialect(D.TRINO),
 ]
