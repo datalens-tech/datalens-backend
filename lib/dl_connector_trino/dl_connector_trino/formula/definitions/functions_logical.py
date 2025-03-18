@@ -21,11 +21,7 @@ DEFINITIONS_LOGICAL = [
     # iif
     # base.FuncIif3Legacy.for_dialect(D.TRINO),
     # isnull
-    base.FuncIsnull(
-        variants=[
-            V(D.TRINO, lambda x: x.is_(None)),
-        ]
-    ),
+    base.FuncIsnull.for_dialect(D.TRINO),
     # zn
     # base.FuncZn(
     #     variants=[
