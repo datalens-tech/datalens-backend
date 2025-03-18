@@ -373,7 +373,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         return []
 
     def get_import_warnings_list(self, localizer: Optional[Localizer] = None) -> list[dict]:
-        CODE_PREFIX = "NOTIF.WB_IMPORT.CONN"
+        CODE_PREFIX = "NOTIF.WB_IMPORT.CONN."
         return [
             dict(
                 message="Secret fields like password, token etc. must be changed and resaved",
@@ -383,7 +383,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         ]  # TODO: localize message
 
     def get_export_warnings_list(self, localizer: Optional[Localizer] = None) -> list[dict]:
-        CODE_PREFIX = "NOTIF.WB_EXPORT.CONN"
+        CODE_PREFIX = "NOTIF.WB_EXPORT.CONN."
         return [
             dict(
                 message="Secret fields like password, token etc. must be changed and resaved",
