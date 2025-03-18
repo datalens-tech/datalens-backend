@@ -5,8 +5,10 @@ import uuid
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_lib.app_settings import ControlApiAppSettings
 from dl_api_lib.enums import DatasetAction
 from dl_api_lib_testing.dataset_base import DatasetTestBase
+from dl_constants.api_constants import DLHeadersCommon
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_testing.regulated_test import RegulatedTestCase
 
@@ -91,9 +93,19 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         saved_connection_id: str,
         saved_dataset: Dataset,
         sync_us_manager: SyncUSManager,
+        control_api_app_settings: ControlApiAppSettings,
+        bi_headers: Optional[dict[str, str]],
     ) -> None:
+        us_master_token = control_api_app_settings.US_MASTER_TOKEN
+        assert us_master_token
+
+        if bi_headers is None:
+            bi_headers = dict()
+
+        bi_headers[DLHeadersCommon.US_MASTER_TOKEN.value] = us_master_token
+
         export_data = {"id_mapping": {saved_connection_id: "conn_id_1"}}
-        export_resp = control_api.export_dataset(saved_dataset, data=export_data)
+        export_resp = control_api.export_dataset(saved_dataset, data=export_data, bi_headers=bi_headers)
         assert export_resp.status_code == 200
         assert export_resp.json["dataset"]["sources"][0]["connection_id"] == "conn_id_1"
 
@@ -102,7 +114,7 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
             "id_mapping": {"conn_id_1": saved_connection_id},
             "data": {"workbook_id": None, "dataset": export_resp.json["dataset"]},
         }
-        import_resp = control_api.import_dataset(data=import_data)
+        import_resp = control_api.import_dataset(data=import_data, bi_headers=bi_headers)
         assert import_resp.status_code == 200, import_resp.json["dataset"] != export_resp.json["dataset"]
 
         control_api.delete_dataset(dataset_id=import_resp.json["id"])

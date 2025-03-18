@@ -7,6 +7,10 @@ import attr
 import flask
 
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
+from dl_api_commons.flask.required_resources import (
+    RequiredResourceCommon,
+    get_required_resources,
+)
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_constants.enums import USAuthMode
 from dl_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware
@@ -54,8 +58,12 @@ class USManagerFlaskMiddleware:
         )
         assert services_registry is not None, "Service registry must be enabled!"
 
+        required_resources = get_required_resources()
+
         if bi_context.user_id is None:
             LOGGER.info("User US manager will not be created due to no user info in RCI")
+        if RequiredResourceCommon.US_HEADERS_TOKEN in required_resources:
+            LOGGER.info("User US manager will not be created due to US_HEADERS_TOKEN flag in target view")
         else:
             LOGGER.info("Creating user US manager")
             usm: SyncUSManager
@@ -69,8 +77,15 @@ class USManagerFlaskMiddleware:
 
             flask.g.us_manager = usm
 
-        if self.us_master_token is not None:
-            LOGGER.info("Creating service US manager")
+        if RequiredResourceCommon.US_HEADERS_TOKEN in required_resources:
+            LOGGER.info("Creating service US manager with master token from headers")
+            flask.g.service_us_manager = self._usm_factory.get_master_sync_usm(
+                rci=bi_context,
+                services_registry=services_registry,
+                is_token_stored=False,
+            )
+        elif self.us_master_token is not None:
+            LOGGER.info("Creating service US manager with master token from settings")
             flask.g.service_us_manager = self._usm_factory.get_master_sync_usm(
                 rci=bi_context,
                 services_registry=services_registry,

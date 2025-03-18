@@ -7,6 +7,7 @@ from typing import (
     Optional,
 )
 
+from dl_api_commons.flask.required_resources import RequiredResourceCommon
 from dl_api_lib.api_common.dataset_loader import (
     DatasetApiLoader,
     DatasetUpdateInfo,
@@ -88,7 +89,11 @@ class DatasetResource(BIResource):
         load_dependencies: bool = True,
         params: Optional[dict] = None,
     ) -> tuple[Dataset, DatasetUpdateInfo]:
-        us_manager = cls.get_us_manager()
+        us_manager = (
+            cls.get_service_us_manager()
+            if RequiredResourceCommon.US_HEADERS_TOKEN in cls.REQUIRED_RESOURCES
+            else cls.get_us_manager()
+        )
         if dataset_id:
             try:
                 dataset = us_manager.get_by_id(dataset_id, expected_type=Dataset, params=params)

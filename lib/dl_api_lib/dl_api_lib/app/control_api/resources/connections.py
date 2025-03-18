@@ -4,6 +4,7 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Any,
+    ClassVar,
     NoReturn,
     Optional,
 )
@@ -13,6 +14,7 @@ from flask_restx import abort
 from marshmallow import ValidationError as MValidationError
 
 from dl_api_commons.flask.middlewares.logging_context import put_to_request_context
+from dl_api_commons.flask.required_resources import RequiredResourceCommon
 from dl_api_connector.api_schema.connection_base import ConnectionOptionsSchema
 from dl_api_connector.api_schema.extras import (
     CreateMode,
@@ -129,10 +131,14 @@ class ConnectionTester(BIResource):
 
 @ns.route("/import")
 class ConnectionsImportList(BIResource):
+    REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
+        {RequiredResourceCommon.SKIP_AUTH, RequiredResourceCommon.US_HEADERS_TOKEN}
+    )
+
     @put_to_request_context(endpoint_code="ConnectionImport")
     @schematic_request(ns=ns)
     def post(self):  # type: ignore  # TODO: fix
-        us_manager = self.get_us_manager()
+        us_manager = self.get_service_us_manager()
         notifications = []
 
         conn_data = request.json and request.json["data"]["connection"]
@@ -257,6 +263,10 @@ class ConnectionItem(BIResource):
 
 @ns.route("/export/<connection_id>")
 class ConnectionExportItem(BIResource):
+    REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
+        {RequiredResourceCommon.SKIP_AUTH, RequiredResourceCommon.US_HEADERS_TOKEN}
+    )
+
     @put_to_request_context(endpoint_code="ConnectionExport")
     @schematic_request(
         ns=ns,
@@ -265,7 +275,7 @@ class ConnectionExportItem(BIResource):
     def get(self, connection_id: str) -> dict:
         notifications: list[dict] = []
 
-        conn = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+        conn = self.get_service_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
         need_permission_on_entry(conn, USPermissionKind.read)
         assert isinstance(conn, ConnectionBase)
 
