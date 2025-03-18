@@ -227,22 +227,28 @@ class Dataset(USEntry):
 
     def get_import_warnings_list(self, localizer: Optional[Localizer] = None) -> list[dict]:
         warnings_list = []
+        CODE_PREFIX = "NOTIF.WB_IMPORT.DS."
+
         if self.rls.items:
             warnings_list.append(
                 dict(
                     message="RLS was exported as is. Correct functioning of rls after import is not guaranteed.",
                     level=NotificationLevel.info,
+                    code=CODE_PREFIX + "RLS",
                 )
             )  # TODO: localize message
         return warnings_list
 
     def get_export_warnings_list(self, localizer: Optional[Localizer] = None) -> list[dict]:
         warnings_list = []
+        CODE_PREFIX = "NOTIF.WB_EXPORT.DS."
+
         if self.rls.items:
             warnings_list.append(
                 dict(
                     message="RLS will be exported as is. Correct functioning of rls after import is not guaranteed.",
                     level=NotificationLevel.info,
+                    code=CODE_PREFIX + "RLS",
                 )
             )  # TODO: localize message
         return warnings_list
