@@ -29,7 +29,7 @@ def generic_datetime_plus_number_factory(operator: str) -> Callable:
 
 def generic_datetime_diff(left: sa.sql.ColumnElement, right: sa.sql.ColumnElement) -> TransCallResult:
     milliseconds = sa.func.date_diff("millisecond", right, left)
-    return sa.cast(milliseconds, tsa.DOUBLE) / (24 * 60 * 60 * 1000)
+    return sa.cast(milliseconds, tsa.DOUBLE) / (DAY_SEC * 1000)
 
 
 V = TranslationVariant.make
