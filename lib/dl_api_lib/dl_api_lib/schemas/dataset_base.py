@@ -9,6 +9,7 @@ import uuid
 
 from marshmallow import (
     post_dump,
+    post_load,
     pre_load,
     validates_schema,
 )
@@ -54,8 +55,8 @@ from dl_model_tools.schema.typed_values import (
     WithNestedValueSchema,
 )
 from dl_rls.models import (
-    RLS2ConfigEntry,
-    RLS2Subject,
+    RLSEntry,
+    RLSSubject,
 )
 
 
@@ -80,11 +81,11 @@ class ParameterCalculationSpecSchema(DefaultSchema[ParameterCalculationSpec]):
     value_constraint = ma_fields.Nested(ParameterValueConstraintSchema, allow_none=True)
 
 
-class RLS2ConfigEntrySchema(DefaultSchema[RLS2ConfigEntry]):
-    TARGET_CLS = RLS2ConfigEntry
+class RLS2ConfigEntrySchema(DefaultSchema[RLSEntry]):
+    TARGET_CLS = RLSEntry
 
-    class RLS2SubjectSchema(DefaultSchema[RLS2Subject]):
-        TARGET_CLS = RLS2Subject
+    class RLSSubjectSchema(DefaultSchema[RLSSubject]):
+        TARGET_CLS = RLSSubject
 
         subject_id = ma_fields.String(required=True)
         subject_type = ma_fields.Enum(RLSSubjectType)
@@ -93,7 +94,7 @@ class RLS2ConfigEntrySchema(DefaultSchema[RLS2ConfigEntry]):
     field_guid = ma_fields.String(dump_default=None, load_default=None)
     allowed_value = ma_fields.String(dump_default=None, load_default=None)
     pattern_type = ma_fields.Enum(RLSPatternType, load_default=RLSPatternType.value)
-    subject = ma_fields.Nested(RLS2SubjectSchema, required=True)
+    subject = ma_fields.Nested(RLSSubjectSchema, required=True)
 
 
 class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
@@ -203,6 +204,22 @@ class DatasetContentInternalSchema(BaseSchema):
         if in_data.get("rls") and in_data.get("rls2"):
             raise ValidationError("RLS can be specified in only one of the two fields: rls or rls2")
         return in_data
+
+    @post_load
+    def validate_and_postload_rls2(self, item: Dict[str, Any], *args: Any, **kwargs: Any) -> Dict[str, Any]:
+        for key, entries in item["rls2"].items():
+            for entry in entries:
+                if entry.pattern_type == RLSPatternType.value and entry.allowed_value is None:
+                    raise ValidationError(
+                        "RLS validation error: allowed_value must be not None for 'value' RLS pattern type"
+                    )
+                if entry.pattern_type != RLSPatternType.value and entry.allowed_value is not None:
+                    raise ValidationError(
+                        f"RLS validation error: allowed_value must be None for '{entry.pattern_type}' RLS pattern type"
+                    )
+                entry.field_guid = key
+                entry.subject.subject_name = entry.subject.subject_name or entry.subject.subject_id
+        return item
 
 
 class DatasetContentSchema(OptionsMixin):

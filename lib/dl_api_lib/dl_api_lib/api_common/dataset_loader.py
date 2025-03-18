@@ -286,7 +286,7 @@ class DatasetApiLoader:
         rls_v2 = body.get("rls2")
         for field in dataset.result_schema:
             if rls_v2:
-                rls_entries = FieldRLSSerializer.from_v2_config(rls_v2.get(field.guid, []), field_guid=field.guid)
+                rls_entries = rls_v2.get(field.guid, [])
             else:
                 rls_text_config = body["rls"].get(field.guid, "")
                 rls_entries = FieldRLSSerializer.from_text_config(
