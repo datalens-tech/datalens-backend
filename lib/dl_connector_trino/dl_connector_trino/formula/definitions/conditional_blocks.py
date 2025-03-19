@@ -8,5 +8,5 @@ DEFINITIONS_COND_BLOCKS = [
     base.CaseBlock.for_dialect(D.TRINO),
     # _if_block_
     base.IfBlock3.for_dialect(D.TRINO),
-    # base.IfBlockMulti.for_dialect(D.TRINO),
+    base.IfBlockMulti.for_dialect(D.TRINO),
 ]
