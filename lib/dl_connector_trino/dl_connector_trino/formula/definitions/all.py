@@ -1,11 +1,12 @@
+from dl_connector_trino.formula.definitions.conditional_blocks import DEFINITIONS_COND_BLOCKS
 from dl_connector_trino.formula.definitions.functions_logical import DEFINITIONS_LOGICAL
 from dl_connector_trino.formula.definitions.functions_math import DEFINITIONS_MATH
+from dl_connector_trino.formula.definitions.functions_special import DEFINITIONS_SPECIAL
 from dl_connector_trino.formula.definitions.operators_binary import DEFINITIONS_BINARY
 from dl_connector_trino.formula.definitions.operators_ternary import DEFINITIONS_TERNARY
 from dl_connector_trino.formula.definitions.operators_unary import DEFINITIONS_UNARY
 
 
-# from dl_connector_trino.formula.definitions.conditional_blocks import DEFINITIONS_COND_BLOCKS
 # from dl_connector_trino.formula.definitions.functions_aggregation import DEFINITIONS_AGG
 # from dl_connector_trino.formula.definitions.functions_datetime import DEFINITIONS_DATETIME
 # from dl_connector_trino.formula.definitions.functions_markup import DEFINITIONS_MARKUP
@@ -15,7 +16,7 @@ from dl_connector_trino.formula.definitions.operators_unary import DEFINITIONS_U
 
 
 DEFINITIONS = [
-    # *DEFINITIONS_COND_BLOCKS,
+    *DEFINITIONS_COND_BLOCKS,
     # *DEFINITIONS_AGG,
     # *DEFINITIONS_DATETIME,
     *DEFINITIONS_LOGICAL,
@@ -27,4 +28,5 @@ DEFINITIONS = [
     *DEFINITIONS_UNARY,
     *DEFINITIONS_BINARY,
     *DEFINITIONS_TERNARY,
+    *DEFINITIONS_SPECIAL,
 ]
