@@ -247,7 +247,6 @@ class Dataset(USEntry):
         if self.rls.items:
             warnings_list.append(
                 dict(
-                    # message="RLS will be exported as is. Correct functioning of rls after import is not guaranteed.",
                     message=localizer.translate(Translatable("notif_rls")),
                     level=NotificationLevel.info,
                     code=CODE_PREFIX + "RLS",
