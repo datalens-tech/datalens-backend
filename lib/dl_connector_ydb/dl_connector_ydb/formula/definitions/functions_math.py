@@ -1,4 +1,5 @@
 import sqlalchemy as sa
+import ydb_sqlalchemy as ydb_sa
 
 from dl_formula.definitions.base import (
     TranslationVariant,
@@ -162,7 +163,7 @@ DEFINITIONS_MATH = [
     base.FuncRound2(
         variants=[
             # in YQL Math::Round takes power of 10 instead of precision, so we have to invert the `num` value
-            V(D.YQL, lambda x, num: sa.func.Math.Round(x, -num)),
+            V(D.YQL, lambda x, num: sa.func.Math.Round(x, -sa.cast(num, ydb_sa.types.Int32))),
         ]
     ),
     # sign
