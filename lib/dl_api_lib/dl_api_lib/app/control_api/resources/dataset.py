@@ -317,7 +317,8 @@ class DatasetExportItem(DatasetResource):
         if ds_name:
             ds_dict["dataset"]["name"] = ds_name
 
-        ds_warnings = ds.get_export_warnings_list()
+        localizer = self.get_service_registry().get_localizer()
+        ds_warnings = ds.get_export_warnings_list(localizer=localizer)
         if ds_warnings:
             notifications.extend(ds_warnings)
 
@@ -382,7 +383,8 @@ class DatasetImportCollection(DatasetResource):
 
         LOGGER.info("New dataset was saved with ID %s", dataset.uuid)
 
-        ds_warnings = dataset.get_import_warnings_list()
+        localizer = self.get_service_registry().get_localizer()
+        ds_warnings = dataset.get_import_warnings_list(localizer=localizer)
         if ds_warnings:
             notifications.extend(ds_warnings)
 

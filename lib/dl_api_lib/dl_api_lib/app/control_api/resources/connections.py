@@ -164,7 +164,8 @@ class ConnectionsImportList(BIResource):
 
         conn.validate_new_data_sync(services_registry=self.get_service_registry())
 
-        conn_warnings = conn.get_import_warnings_list()
+        localizer = self.get_service_registry().get_localizer()
+        conn_warnings = conn.get_import_warnings_list(localizer=localizer)
         if conn_warnings:
             notifications.extend(conn_warnings)
 
@@ -295,7 +296,8 @@ class ConnectionExportItem(BIResource):
         result.update(options=ConnectionOptionsSchema().dump(conn.get_options()))
         result.pop("id")
 
-        conn_warnings = conn.get_export_warnings_list()
+        localizer = self.get_service_registry().get_localizer()
+        conn_warnings = conn.get_export_warnings_list(localizer=localizer)
         if conn_warnings:
             notifications.extend(conn_warnings)
 
