@@ -44,6 +44,9 @@ class FileUploaderTaskContext(BaseContext):
     tenant_resolver: TenantResolver = attr.ib()
     ca_data: bytes = attr.ib()
 
+    def get_rci(self) -> RequestContextInfo:
+        return RequestContextInfo.create_empty()
+
     def get_service_registry(self, rci: Optional[RequestContextInfo] = None) -> ServicesRegistry:
         rci = rci or RequestContextInfo.create_empty()
         return create_sr_factory_from_env_vars(
