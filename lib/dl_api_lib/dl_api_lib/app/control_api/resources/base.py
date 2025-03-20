@@ -4,6 +4,7 @@ import os
 import re
 from typing import (
     Any,
+    ClassVar,
     Optional,
 )
 
@@ -12,6 +13,7 @@ from flask_restx import Resource
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
+from dl_api_commons.flask.required_resources import RequiredResourceCommon
 from dl_api_connector.api_schema.extras import OperationsMode
 from dl_api_lib import api_decorators
 from dl_api_lib.schemas.tools import prepare_schema_context
@@ -94,6 +96,8 @@ class BIResourceMeta(type(Resource)):  # type: ignore  # TODO: fix
 class BIResource(Resource, metaclass=BIResourceMeta):
     """Base class for all BI handler classes"""
 
+    REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset()
+
     @classmethod
     def get_current_rci(cls) -> RequestContextInfo:
         return ReqCtxInfoMiddleware.get_request_context_info()
@@ -103,7 +107,9 @@ class BIResource(Resource, metaclass=BIResourceMeta):
         cls, schema_operations_mode: Optional[OperationsMode] = None, editable_object: Any = None
     ) -> dict:
         return prepare_schema_context(
-            usm=cls.get_us_manager(),
+            usm=cls.get_service_us_manager()
+            if RequiredResourceCommon.US_HEADERS_TOKEN in cls.REQUIRED_RESOURCES
+            else cls.get_us_manager(),
             op_mode=schema_operations_mode,
             editable_object=editable_object,
         )
@@ -118,7 +124,12 @@ class BIResource(Resource, metaclass=BIResourceMeta):
 
     @classmethod
     def get_service_registry(cls) -> ApiServiceRegistry:
-        service_registry = cls.get_us_manager().get_services_registry()
+        usm = (
+            cls.get_service_us_manager()
+            if RequiredResourceCommon.US_HEADERS_TOKEN in cls.REQUIRED_RESOURCES
+            else cls.get_us_manager()
+        )
+        service_registry = usm.get_services_registry()
         assert isinstance(service_registry, ApiServiceRegistry)
         return service_registry
 

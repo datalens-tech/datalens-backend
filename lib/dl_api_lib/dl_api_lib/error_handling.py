@@ -90,6 +90,7 @@ EXCEPTION_CODES = {
     api_commons_exc.FailedDependencyException: status.FAILED_DEPENDENCY,
     common_exc.UnknownEntryMigration: status.NOT_IMPLEMENTED,
     common_exc.FailedToLoadSchema: status.BAD_REQUEST,
+    common_exc.InvalidRequestError: status.BAD_REQUEST,
 }
 
 

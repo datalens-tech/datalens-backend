@@ -6,6 +6,10 @@ import werkzeug.exceptions as werkzeug_exceptions
 
 import dl_api_commons.base_models as dl_api_commons_base_models
 import dl_api_commons.flask.middlewares.commit_rci_middleware as dl_api_commons_flask_rci
+from dl_api_commons.flask.required_resources import (
+    RequiredResourceCommon,
+    get_required_resources,
+)
 import dl_zitadel.clients as clients
 import dl_zitadel.middlewares.models as middlewares_models
 import dl_zitadel.services as services
@@ -27,6 +31,12 @@ class FlaskMiddleware:
         app.before_request(self.process)
 
     def process(self) -> flask.Response | None:
+        required_resources = get_required_resources()
+
+        if RequiredResourceCommon.SKIP_AUTH in required_resources:
+            LOGGER.info("Auth was skipped due to SKIP_AUTH flag in target view")
+            return None
+
         auth_result = self.auth()
 
         if auth_result is None:

@@ -5,6 +5,10 @@ import flask
 import werkzeug.exceptions as werkzeug_exceptions
 
 import dl_api_commons.flask.middlewares.commit_rci_middleware as dl_api_commons_flask_rci
+from dl_api_commons.flask.required_resources import (
+    RequiredResourceCommon,
+    get_required_resources,
+)
 import dl_auth_native.middlewares.base as middlewares_base
 
 
@@ -17,6 +21,12 @@ class FlaskMiddleware(middlewares_base.BaseMiddleware):
         app.before_request(self.process)
 
     def process(self) -> None:
+        required_resources = get_required_resources()
+
+        if RequiredResourceCommon.SKIP_AUTH in required_resources:
+            LOGGER.info("Auth was skipped due to SKIP_AUTH flag in target view")
+            return None
+
         user_access_token_header = flask.request.headers.get(self._user_access_header_key)
 
         try:

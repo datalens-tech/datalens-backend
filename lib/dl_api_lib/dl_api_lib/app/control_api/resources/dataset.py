@@ -4,12 +4,14 @@ from http import HTTPStatus
 import logging
 from typing import (
     Any,
+    ClassVar,
     Dict,
     Sequence,
 )
 import uuid
 
 from dl_api_commons.flask.middlewares.logging_context import put_to_request_context
+from dl_api_commons.flask.required_resources import RequiredResourceCommon
 from dl_api_connector.api_schema.top_level import resolve_entry_loc_from_api_req_body
 from dl_api_lib import (
     exc,
@@ -285,6 +287,10 @@ class DatasetVersionItem(DatasetResource):
 
 @ns.route("/export/<dataset_id>")
 class DatasetExportItem(DatasetResource):
+    REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
+        {RequiredResourceCommon.SKIP_AUTH, RequiredResourceCommon.US_HEADERS_TOKEN}
+    )
+
     @put_to_request_context(endpoint_code="DatasetExport")
     @schematic_request(
         ns=ns,
@@ -298,7 +304,7 @@ class DatasetExportItem(DatasetResource):
         """Export dataset"""
 
         notifications = []
-        us_manager = self.get_us_manager()
+        us_manager = self.get_service_us_manager()
         ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
         utils.need_permission_on_entry(ds, USPermissionKind.read)
         ds_dict = ds.as_dict()
@@ -327,6 +333,10 @@ class DatasetExportItem(DatasetResource):
 
 @ns.route("/import")
 class DatasetImportCollection(DatasetResource):
+    REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
+        {RequiredResourceCommon.SKIP_AUTH, RequiredResourceCommon.US_HEADERS_TOKEN}
+    )
+
     @classmethod
     def generate_dataset_location(cls, body: dict) -> EntryLocation:
         name = body.get("name", "Dataset {}".format(str(uuid.uuid4())))
@@ -362,7 +372,7 @@ class DatasetImportCollection(DatasetResource):
 
         self.replace_conn_ids(data, body["id_mapping"])
 
-        us_manager = self.get_us_manager()
+        us_manager = self.get_service_us_manager()
         dataset = Dataset.create_from_dict(
             Dataset.DataModel(name=""),
             ds_key=self.generate_dataset_location(data),
