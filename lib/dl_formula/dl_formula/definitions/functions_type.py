@@ -527,7 +527,6 @@ class FuncStrFromString(FuncStr):
     variants = [V(D.DUMMY | D.SQLITE, lambda value: value)]
     argument_types = [
         ArgTypeSequence([DataType.STRING]),
-        ArgTypeSequence([DataType.DATE]),
     ]
 
 
