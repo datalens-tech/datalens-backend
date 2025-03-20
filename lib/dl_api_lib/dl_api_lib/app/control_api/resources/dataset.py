@@ -323,6 +323,8 @@ class DatasetExportItem(DatasetResource):
         if ds_name:
             ds_dict["dataset"]["name"] = ds_name
 
+        ds_dict["dataset"]["revision_id"] = None
+
         localizer = self.get_service_registry().get_localizer()
         ds_warnings = ds.get_export_warnings_list(localizer=localizer)
         if ds_warnings:
