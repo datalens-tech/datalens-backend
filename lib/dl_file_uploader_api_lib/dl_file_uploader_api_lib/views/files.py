@@ -121,7 +121,7 @@ class FilesView(FileUploaderBaseView):
         LOGGER.info(f'Uploaded file "{filename}".')
 
         assert self.dl_request.rci.tenant is not None
-        tenant_id = self.dl_request.rci.tenant
+        tenant_id = self.dl_request.rci.tenant.get_tenant_id()
         task_processor = self.dl_request.get_task_processor()
         if file_type == FileType.xlsx:
             await task_processor.schedule(ProcessExcelTask(file_id=dfile.id, tenant_id=tenant_id))
@@ -203,7 +203,7 @@ class DownloadPresignedUrlView(FileUploaderBaseView):
         await dfile.save()
 
         assert self.dl_request.rci.tenant is not None
-        tenant_id = self.dl_request.rci.tenant
+        tenant_id = self.dl_request.rci.tenant.get_tenant_id()
         task_processor = self.dl_request.get_task_processor()
         if file_type == FileType.xlsx:
             await task_processor.schedule(ProcessExcelTask(file_id=dfile.id, tenant_id=tenant_id))
@@ -243,7 +243,7 @@ class LinksView(FileUploaderBaseView):
         await df.save()
 
         assert self.dl_request.rci.tenant is not None
-        tenant_id = self.dl_request.rci.tenant
+        tenant_id = self.dl_request.rci.tenant.get_tenant_id()
         task_processor = self.dl_request.get_task_processor()
         await task_processor.schedule(
             DownloadGSheetTask(
@@ -289,7 +289,7 @@ class DocumentsView(FileUploaderBaseView):
         await df.save()
 
         assert self.dl_request.rci.tenant is not None
-        tenant_id = self.dl_request.rci.tenant
+        tenant_id = self.dl_request.rci.tenant.get_tenant_id()
         task_processor = self.dl_request.get_task_processor()
         await task_processor.schedule(
             DownloadYaDocsTask(
@@ -426,7 +426,7 @@ class UpdateConnectionDataView(FileUploaderBaseView):
             assert tenant_id is not None
         else:
             assert self.dl_request.rci.tenant is not None
-        tenant_id = self.dl_request.rci.tenant
+            tenant_id = self.dl_request.rci.tenant.get_tenant_id()
         for dfile in dfile_by_source_properties.values():
             await dfile.save()
 
