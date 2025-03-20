@@ -651,3 +651,8 @@ class DataSourceMigrationImpossible(DLBaseException):
 
 class UnknownEntryMigration(DLBaseException):
     err_code = DLBaseException.err_code + ["UNKNOWN_ENTRY_MIGRATION"]
+
+
+class InvalidRequestError(DLBaseException):
+    err_code = DLBaseException.err_code + ["INVALID_REQUEST"]
+    default_message = "Invalid request"

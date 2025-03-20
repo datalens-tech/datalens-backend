@@ -7,6 +7,7 @@ from dl_api_commons.base_models import RequestContextInfo
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.enums import USApiType
+from dl_core.exc import InvalidRequestError
 from dl_core.services_registry import ServicesRegistry
 from dl_core.united_storage_client import (
     USAuthContextEmbed,
@@ -57,9 +58,10 @@ class USMFactory:
 
     def get_master_auth_context_from_headers(self) -> USAuthContextMaster:
         us_master_token = flask.request.headers.get(DLHeadersCommon.US_MASTER_TOKEN.value)
-        assert (
-            us_master_token is not None
-        ), f"US master token must be set in header {DLHeadersCommon.US_MASTER_TOKEN.value} to create USAuthContextMaster"
+        if us_master_token is None:
+            raise InvalidRequestError(
+                f"US master token must be set in header {DLHeadersCommon.US_MASTER_TOKEN.value} to create USAuthContextMaster"
+            )
         return USAuthContextMaster(us_master_token=us_master_token)
 
     def get_ca_data(self) -> bytes:
