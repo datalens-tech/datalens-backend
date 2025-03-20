@@ -81,31 +81,31 @@ DEFINITIONS_TYPE = [
             V(D.TRINO, lambda value: sa.cast(value, tsa.DOUBLE)),
         ]
     ),
-    # base.FuncFloatString(
-    #     variants=[
-    #         V(D.TRINO, lambda value: value + sa.literal(0.0)),  # explicit cast to float is not supported
-    #     ]
-    # ),
-    # base.FuncFloatFromBool(
-    #     variants=[
-    #         V(D.TRINO, lambda value: value + sa.literal(0.0)),  # explicit cast to float is not supported
-    #     ]
-    # ),
-    # base.FuncFloatFromDate(
-    #     variants=[
-    #         V(D.TRINO, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), tsa.DOUBLE)),
-    #     ]
-    # ),
-    # base.FuncFloatFromDatetime(
-    #     variants=[
-    #         V(D.TRINO, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), tsa.DOUBLE)),
-    #     ]
-    # ),
-    # base.FuncFloatFromGenericDatetime(
-    #     variants=[
-    #         V(D.TRINO, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), tsa.DOUBLE)),
-    #     ]
-    # ),
+    base.FuncFloatString(
+        variants=[
+            V(D.TRINO, lambda value: sa.cast(value, tsa.DOUBLE)),
+        ]
+    ),
+    base.FuncFloatFromBool(
+        variants=[
+            V(D.TRINO, lambda value: sa.cast(value, tsa.DOUBLE)),
+        ]
+    ),
+    base.FuncFloatFromDate(
+        variants=[
+            V(D.TRINO, lambda value: sa.func.to_unixtime(value)),
+        ]
+    ),
+    base.FuncFloatFromDatetime(
+        variants=[
+            V(D.TRINO, lambda value: sa.func.to_unixtime(value)),
+        ]
+    ),
+    base.FuncFloatFromGenericDatetime(
+        variants=[
+            V(D.TRINO, lambda value: sa.func.to_unixtime(value)),
+        ]
+    ),
     # genericdatetime
     base.FuncGenericDatetime1FromNull.for_dialect(D.TRINO),
     # base.FuncGenericDatetime1FromDatetime.for_dialect(D.TRINO),

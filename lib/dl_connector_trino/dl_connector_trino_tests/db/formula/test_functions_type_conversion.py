@@ -1,4 +1,7 @@
-from dl_formula_testing.testcases.functions_type_conversion import DefaultStrTypeFunctionFormulaConnectorTestSuite
+from dl_formula_testing.testcases.functions_type_conversion import (
+    DefaultFloatTypeFunctionFormulaConnectorTestSuite,
+    DefaultStrTypeFunctionFormulaConnectorTestSuite,
+)
 
 from dl_connector_trino_tests.db.formula.base import TrinoFormulaTestBase
 
@@ -6,7 +9,6 @@ from dl_connector_trino_tests.db.formula.base import TrinoFormulaTestBase
 # from dl_formula_testing.testcases.functions_type_conversion import (
 #     DefaultBoolTypeFunctionFormulaConnectorTestSuite,
 #     DefaultDateTypeFunctionFormulaConnectorTestSuite,
-#     DefaultFloatTypeFunctionFormulaConnectorTestSuite,
 #     DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
 #     DefaultIntTypeFunctionFormulaConnectorTestSuite,
 # )
@@ -22,8 +24,8 @@ class TestStrTypeFunctionTrino(TrinoFormulaTestBase, DefaultStrTypeFunctionFormu
 # FLOAT
 
 
-# class TestFloatTypeFunctionTrino(TrinoFormulaTestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
-#     pass
+class TestFloatTypeFunctionTrino(TrinoFormulaTestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
+    pass
 
 
 # BOOL
