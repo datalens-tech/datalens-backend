@@ -30,6 +30,19 @@ class CoreConnectionSettings:
     PORT: ClassVar[int] = get_test_container_hostport("db-oracle", fallback_port=51800).port
     USERNAME: ClassVar[str] = "datalens"
     PASSWORD: ClassVar[str] = "qwerty"
+    SSL_ENABLE: ClassVar[bool] = False
+
+
+class CoreSSLConnectionSettings:
+    DB_NAME: ClassVar[str] = "XEPDB1"
+    HOST: ClassVar[str] = get_test_container_hostport("db-oracle-ssl", fallback_port=51801).host
+    PORT: ClassVar[int] = get_test_container_hostport("db-oracle-ssl", fallback_port=51801).port
+    USERNAME: ClassVar[str] = "datalens"
+    PASSWORD: ClassVar[str] = "qwerty"
+    SSL_ENABLE: ClassVar[bool] = True
+    CERT_PROVIDER_URL: ClassVar[
+        str
+    ] = f"http://{get_test_container_hostport('ssl-provider', fallback_port=8080).as_pair()}"
 
 
 DEFAULT_ORACLE_SCHEMA_NAME = "DATALENS"
@@ -85,16 +98,29 @@ FROM dual
 """
 
 _DB_URL = (
-    f'oracle://datalens:qwerty@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={get_test_container_hostport("db-oracle", fallback_port=51800).host})'
-    f'(PORT={get_test_container_hostport("db-oracle", fallback_port=51800).port}))(CONNECT_DATA=(SERVICE_NAME={CoreConnectionSettings.DB_NAME})))'
+    f"oracle://datalens:qwerty@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={CoreConnectionSettings.HOST})"
+    f"(PORT={CoreConnectionSettings.PORT}))(CONNECT_DATA=(SERVICE_NAME={CoreConnectionSettings.DB_NAME})))"
 )
 SYSDBA_URL = (
-    f'oracle://sys:qwerty@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={get_test_container_hostport("db-oracle", fallback_port=51800).host})'
-    f'(PORT={get_test_container_hostport("db-oracle", fallback_port=51800).port}))(CONNECT_DATA=(SERVICE_NAME={CoreConnectionSettings.DB_NAME})))?mode=sysdba'
+    f"oracle://sys:qwerty@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={CoreConnectionSettings.HOST})"
+    f"(PORT={CoreConnectionSettings.PORT}))(CONNECT_DATA=(SERVICE_NAME={CoreConnectionSettings.DB_NAME})))?mode=sysdba"
 )
 DB_CORE_URL = _DB_URL
 DB_URLS = {
     D.ORACLE_12_0: _DB_URL,
+}
+
+_DB_URL_SSL = (
+    f"oracle://datalens:qwerty@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCPS)(HOST={CoreSSLConnectionSettings.HOST})"
+    f"(PORT={CoreSSLConnectionSettings.PORT}))(CONNECT_DATA=(SERVICE_NAME={CoreSSLConnectionSettings.DB_NAME})))"
+)
+SYSDBA_URL_SSL = (
+    f"oracle://sys:qwerty@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCPS)(HOST={CoreSSLConnectionSettings.HOST})"
+    f"(PORT={CoreSSLConnectionSettings.PORT}))(CONNECT_DATA=(SERVICE_NAME={CoreSSLConnectionSettings.DB_NAME})))?mode=sysdba"
+)
+DB_CORE_URL_SSL = _DB_URL_SSL
+DB_URLS_SSL = {
+    D.ORACLE_12_0: _DB_URL_SSL,
 }
 
 API_TEST_CONFIG = ApiTestEnvironmentConfiguration(

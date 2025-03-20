@@ -12,3 +12,15 @@ class ConnectionSQLOracleDataStorageSchema(
     TARGET_CLS = ConnectionSQLOracle.DataModel
 
     db_name_type = ma_fields.Enum(OracleDbNameType, required=True, allow_none=False)
+    ssl_enable = ma_fields.Boolean(
+        required=False,
+        allow_none=False,
+        dump_default=False,
+        load_default=False,
+    )
+    ssl_ca = ma_fields.String(
+        required=False,
+        allow_none=True,
+        dump_default=None,
+        load_default=None,
+    )

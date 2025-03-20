@@ -1,0 +1,9 @@
+FROM ghcr.io/gvenzl/oracle-xe:18-full-faststart@sha256:e3e60add5e10f622d8ad12ff5680e8899fd7e437021d281816b22730c5b6a81a
+
+COPY db-oracle-ssl/listener.ora /opt/oracle/product/18c/dbhomeXE/network/admin/listener.ora
+COPY db-oracle-ssl/listener.ora /opt/oracle/product/18c/dbhomeXE/network/admin/sqlnet.ora
+COPY db-oracle-ssl/listener.ora /opt/oracle/product/18c/dbhomeXE/network/admin/tnsnames.ora
+
+COPY tests/fetch-certificates.sh /usr/local/bin/fetch-certificates.sh
+
+ENTRYPOINT ["bash", "fetch-certificates.sh"]

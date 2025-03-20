@@ -31,6 +31,8 @@ class OracleDefaultConnExecutor(DefaultSqlAlchemyConnExecutor[OracleDefaultAdapt
                     db_name_type=self._conn_dto.db_name_type,
                     username=self._conn_dto.username,
                     password=self._conn_dto.password,
+                    ssl_enable=self._conn_dto.ssl_enable,
+                    ssl_ca=self._conn_dto.ssl_ca,
                 )
             )
         return dto_pool

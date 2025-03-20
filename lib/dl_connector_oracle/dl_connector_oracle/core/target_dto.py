@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
+    Optional,
     Type,
     TypeVar,
 )
@@ -23,12 +24,16 @@ _CT_DTO_TV = TypeVar("_CT_DTO_TV", bound="OracleConnTargetDTO")
 @attr.s(frozen=True)
 class OracleConnTargetDTO(BaseSQLConnTargetDTO):
     db_name_type: OracleDbNameType = attr.ib()
+    ssl_enable: bool = attr.ib(kw_only=True, default=False)
+    ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
 
     def to_jsonable_dict(self) -> dict[str, TJSONLike]:
         d = super().to_jsonable_dict()
         return {
             **d,
             "db_name_type": self.db_name_type.name,
+            "ssl_enable": self.ssl_enable,
+            "ssl_ca": self.ssl_ca,
         }
 
     @classmethod
