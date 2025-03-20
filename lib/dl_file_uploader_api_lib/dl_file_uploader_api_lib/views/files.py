@@ -120,12 +120,14 @@ class FilesView(FileUploaderBaseView):
         await dfile.save()
         LOGGER.info(f'Uploaded file "{filename}".')
 
+        assert self.dl_request.rci.tenant is not None
+        tenant_id = self.dl_request.rci.tenant.get_tenant_id()
         task_processor = self.dl_request.get_task_processor()
         if file_type == FileType.xlsx:
-            await task_processor.schedule(ProcessExcelTask(file_id=dfile.id))
+            await task_processor.schedule(ProcessExcelTask(file_id=dfile.id, tenant_id=tenant_id))
             LOGGER.info(f"Scheduled ProcessExcelTask for file_id {dfile.id}")
         else:
-            await task_processor.schedule(ParseFileTask(file_id=dfile.id))
+            await task_processor.schedule(ParseFileTask(file_id=dfile.id, tenant_id=tenant_id))
             LOGGER.info(f"Scheduled ParseFileTask for file_id {dfile.id}")
 
         return web.json_response(
@@ -200,12 +202,14 @@ class DownloadPresignedUrlView(FileUploaderBaseView):
 
         await dfile.save()
 
+        assert self.dl_request.rci.tenant is not None
+        tenant_id = self.dl_request.rci.tenant.get_tenant_id()
         task_processor = self.dl_request.get_task_processor()
         if file_type == FileType.xlsx:
-            await task_processor.schedule(ProcessExcelTask(file_id=dfile.id))
+            await task_processor.schedule(ProcessExcelTask(file_id=dfile.id, tenant_id=tenant_id))
             LOGGER.info(f"Scheduled ProcessExcelTask for file_id {dfile.id}")
         else:
-            await task_processor.schedule(ParseFileTask(file_id=dfile.id))
+            await task_processor.schedule(ParseFileTask(file_id=dfile.id, tenant_id=tenant_id))
             LOGGER.info(f"Scheduled ParseFileTask for file_id {dfile.id}")
 
         return web.json_response(
@@ -238,10 +242,13 @@ class LinksView(FileUploaderBaseView):
         LOGGER.info(f"Data file id: {df.id}")
         await df.save()
 
+        assert self.dl_request.rci.tenant is not None
+        tenant_id = self.dl_request.rci.tenant.get_tenant_id()
         task_processor = self.dl_request.get_task_processor()
         await task_processor.schedule(
             DownloadGSheetTask(
                 file_id=df.id,
+                tenant_id=tenant_id,
                 authorized=authorized,
                 connection_id=connection_id,
             )
@@ -281,11 +288,14 @@ class DocumentsView(FileUploaderBaseView):
         LOGGER.info(f"Data file id: {df.id}")
         await df.save()
 
+        assert self.dl_request.rci.tenant is not None
+        tenant_id = self.dl_request.rci.tenant.get_tenant_id()
         task_processor = self.dl_request.get_task_processor()
         await task_processor.schedule(
             DownloadYaDocsTask(
                 file_id=df.id,
                 authorized=authorized,
+                tenant_id=tenant_id,
                 connection_id=connection_id,
             )
         )
@@ -413,10 +423,10 @@ class UpdateConnectionDataView(FileUploaderBaseView):
         exec_mode = TaskExecutionMode.UPDATE_AND_SAVE if req_data["save"] else TaskExecutionMode.UPDATE_NO_SAVE
         if req_data.get("tenant_id") is not None:
             tenant_id = req_data["tenant_id"]
+            assert tenant_id is not None
         else:
             assert self.dl_request.rci.tenant is not None
             tenant_id = self.dl_request.rci.tenant.get_tenant_id()
-        assert tenant_id is not None
         for dfile in dfile_by_source_properties.values():
             await dfile.save()
 

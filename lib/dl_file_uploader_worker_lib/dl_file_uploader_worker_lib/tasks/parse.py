@@ -50,6 +50,7 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
     async def run(self) -> TaskResult:
         dfile: Optional[DataFile] = None
         usm = self._ctx.get_async_usm()
+        usm.set_tenant_override(self._ctx.tenant_resolver.resolve_tenant_def_by_tenant_id(self.meta.tenant_id))
         task_processor = self._ctx.make_task_processor(self._request_id)
         redis = self._ctx.redis_service.get_redis()
         connection_error_tracker = FileConnectionDataSourceErrorTracker(usm, task_processor, redis, self._request_id)
