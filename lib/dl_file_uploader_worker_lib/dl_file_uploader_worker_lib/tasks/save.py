@@ -154,6 +154,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
             # TODO: init all this stuff in a proper place, not in task
             rci = self._ctx.get_rci()
             usm = self._ctx.get_async_usm(rci=rci)
+            usm.set_tenant_override(self._ctx.tenant_resolver.resolve_tenant_def_by_tenant_id(self.meta.tenant_id))
             service_registry = self._ctx.get_service_registry(rci=rci)
             release_update_source_lock_flag = False
             async with usm:

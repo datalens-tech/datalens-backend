@@ -252,10 +252,12 @@ class SourceApplySettingsView(FileUploaderBaseView):
 
         LOGGER.info(f'Settings to apply: {req_data["data_settings"]}')
 
+        assert self.dl_request.rci.tenant is not None
         task_processor = self.dl_request.get_task_processor()
         await task_processor.schedule(
             ParseFileTask(
                 file_id=dfile.id,
+                tenant_id=self.dl_request.rci.tenant.get_tenant_id(),
                 source_id=source.id,
                 file_settings=sources_schemas.CSVSettingsSchema().dump(req_data["data_settings"]),
                 source_settings={},
