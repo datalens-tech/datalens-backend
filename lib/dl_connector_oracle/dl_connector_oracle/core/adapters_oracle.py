@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ssl
 from typing import (
     Any,
     ClassVar,
@@ -13,6 +14,7 @@ import sqlalchemy as sa
 import sqlalchemy.dialects.oracle.base as sa_ora  # not all data types are imported in init in older SA versions
 from sqlalchemy.sql.type_api import TypeEngine
 
+from dl_configs.utils import get_root_certificates_path
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import (
     BaseClassicAdapter,
     ClassicSQLConnLineConstructor,
@@ -43,6 +45,7 @@ class OracleConnLineConstructor(ClassicSQLConnLineConstructor[OracleConnTargetDT
                 standard_auth=standard_auth,
             ),
             db_name_type=self._target_dto.db_name_type.value.upper(),
+            protocol="TCPS" if self._target_dto.ssl_enable else "TCP",
         )
 
 
@@ -52,7 +55,7 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
 
     dsn_template = (
         "{dialect}://{user}:{passwd}@(DESCRIPTION="
-        "(ADDRESS=(PROTOCOL=TCP)(HOST={host})(PORT={port}))"
+        "(ADDRESS=(PROTOCOL={protocol})(HOST={host})(PORT={port}))"
         "(CONNECT_DATA=({db_name_type}={db_name})))"
     )
 
@@ -210,3 +213,18 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
     @staticmethod
     def _cursor_type_to_str(value: Any) -> str:
         return value.name.lower()
+
+    def _get_ssl_ctx(self) -> Optional[ssl.SSLContext]:
+        if not self._target_dto.ssl_enable:
+            return None
+
+        if self._target_dto.ssl_ca:
+            return ssl.create_default_context(cadata=self._target_dto.ssl_ca)
+
+        return ssl.create_default_context(cafile=get_root_certificates_path())
+
+    def get_connect_args(self) -> dict:
+        return dict(
+            super().get_connect_args(),
+            ssl_context=self._get_ssl_ctx(),
+        )

@@ -17,3 +17,8 @@ msgstr "Service name"
 
 msgid "value_db-connect-method-sid"
 msgstr "SID"
+
+msgid "label_oracle-ssl-enabled-tooltip"
+msgstr ""
+"When the option is enabled, the TCPS protocol is used when interacting with "
+"the database, and when disabled — TCP"

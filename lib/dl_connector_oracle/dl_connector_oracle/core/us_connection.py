@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import (
     Callable,
     ClassVar,
+    Optional,
 )
 
 import attr
@@ -38,6 +39,8 @@ class ConnectionSQLOracle(ClassicConnectionSQL):
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
         db_name_type: OracleDbNameType = attr.ib(default=OracleDbNameType.service_name)
+        ssl_enable: bool = attr.ib(kw_only=True, default=False)
+        ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
 
     def get_conn_dto(self) -> OracleConnDTO:
         return OracleConnDTO(
@@ -49,6 +52,8 @@ class ConnectionSQLOracle(ClassicConnectionSQL):
             db_name_type=self.data.db_name_type,
             username=self.data.username,
             password=self.password,  # type: ignore  # 2024-01-24 # TODO: Argument "password" to "OracleConnDTO" has incompatible type "str | None"; expected "str"  [arg-type]
+            ssl_enable=self.data.ssl_enable,
+            ssl_ca=self.data.ssl_ca,
         )
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:

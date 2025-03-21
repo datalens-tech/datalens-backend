@@ -31,6 +31,8 @@ RUN \
     # Sign server certificate with SAN extension
     openssl x509 -req -in certs/server-req.pem -CA certs/ca.pem -CAkey certs/private/cakey.pem \
         -CAcreateserial -out certs/server-cert.pem -days 3600 -extfile openssl.cnf -extensions SAN && \
+    # Convert server key to PKCS8 format
+    openssl pkcs8 -topk8 -in certs/server-key.pem -out certs/server-key.pk8 -passout pass:Passw0rd && \
     # Generate client request and key
     openssl req -new -nodes -keyout certs/client-key.pem -out certs/client-req.pem \
         -days 3600 -config openssl.cnf \
@@ -55,6 +57,7 @@ RUN cd certs && \
     cp invalid-ca.pem $APACHE_WEB_ROOT/ && \
     cp server-cert.pem $APACHE_WEB_ROOT/ && \
     cp server-key.pem $APACHE_WEB_ROOT/ && \
+    cp server-key.pk8 $APACHE_WEB_ROOT && \
     cp client-cert.pem $APACHE_WEB_ROOT && \
     cp client-key.pem $APACHE_WEB_ROOT && \
     chmod 644 /var/www/localhost/htdocs/*
