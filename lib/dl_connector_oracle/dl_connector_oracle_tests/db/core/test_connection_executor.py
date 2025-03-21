@@ -25,9 +25,7 @@ from dl_core_testing.testcases.connection_executor import (
 from dl_testing.regulated_test import RegulatedTestParams
 
 from dl_connector_oracle.core.us_connection import ConnectionSQLOracle
-from dl_connector_oracle_tests.db.config import (
-    CoreConnectionSettings,
-)
+from dl_connector_oracle_tests.db.config import CoreConnectionSettings
 from dl_connector_oracle_tests.db.core.base import (
     BaseOracleTestClass,
     BaseSSLOracleTestClass,
