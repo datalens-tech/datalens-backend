@@ -1,6 +1,5 @@
 import abc
 from typing import Optional
-import uuid
 
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
