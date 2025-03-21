@@ -1,3 +1,4 @@
+from frozendict import frozendict
 import pytest
 
 from dl_formula_testing.testcases.base import FormulaConnectorTestBase
@@ -18,3 +19,14 @@ class TrinoFormulaTestBase(FormulaConnectorTestBase):
     @pytest.fixture(scope="class")
     def table_schema_name(self) -> str:
         return "default"
+
+    @pytest.fixture(scope="class")
+    def engine_params(self) -> dict:
+        engine_params = {
+            "connect_args": frozendict(
+                {
+                    "timezone": "UTC",
+                }
+            ),
+        }
+        return engine_params
