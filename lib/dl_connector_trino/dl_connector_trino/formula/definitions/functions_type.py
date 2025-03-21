@@ -49,10 +49,10 @@ class FuncGenericDatetime2Trino(FuncTypeGenericDatetime2TrinoImpl):
 DEFINITIONS_TYPE = [
     # bool
     base.FuncBoolFromNull.for_dialect(D.TRINO),
-    # base.FuncBoolFromNumber.for_dialect(D.TRINO),
-    # base.FuncBoolFromBool.for_dialect(D.TRINO),
-    # base.FuncBoolFromStrGeo.for_dialect(D.TRINO),
-    # base.FuncBoolFromDateDatetime.for_dialect(D.TRINO),
+    base.FuncBoolFromNumber.for_dialect(D.TRINO),
+    base.FuncBoolFromBool.for_dialect(D.TRINO),
+    base.FuncBoolFromStrGeo.for_dialect(D.TRINO),
+    base.FuncBoolFromDateDatetime.for_dialect(D.TRINO),
     # date
     base.FuncDate1FromNull.for_dialect(D.TRINO),
     # base.FuncDate1FromDatetime.for_dialect(D.TRINO),
