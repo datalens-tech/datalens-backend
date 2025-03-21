@@ -1,6 +1,7 @@
 from dl_formula_testing.testcases.functions_type_conversion import (
     DefaultBoolTypeFunctionFormulaConnectorTestSuite,
     DefaultFloatTypeFunctionFormulaConnectorTestSuite,
+    DefaultIntTypeFunctionFormulaConnectorTestSuite,
     DefaultStrTypeFunctionFormulaConnectorTestSuite,
 )
 
@@ -10,7 +11,6 @@ from dl_connector_trino_tests.db.formula.base import TrinoFormulaTestBase
 # from dl_formula_testing.testcases.functions_type_conversion import (
 #     DefaultDateTypeFunctionFormulaConnectorTestSuite,
 #     DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
-#     DefaultIntTypeFunctionFormulaConnectorTestSuite,
 # )
 
 
@@ -38,8 +38,8 @@ class TestBoolTypeFunctionTrino(TrinoFormulaTestBase, DefaultBoolTypeFunctionFor
 # INT
 
 
-# class TestIntTypeFunctionTrino(TrinoFormulaTestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
-#     pass
+class TestIntTypeFunctionTrino(TrinoFormulaTestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
+    pass
 
 
 # DATE

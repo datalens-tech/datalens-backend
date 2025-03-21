@@ -133,36 +133,36 @@ DEFINITIONS_TYPE = [
         ]
     ),
     # base.FuncIntFromInt.for_dialect(D.TRINO),
-    # base.FuncIntFromFloat(
-    #     variants=[
-    #         V(D.TRINO, lambda value: sa.cast(sa.func.FLOOR(value), sa.BIGINT)),
-    #     ]
-    # ),
-    # base.FuncIntFromBool(
-    #     variants=[
-    #         V(D.TRINO, lambda value: value),
-    #     ]
-    # ),
-    # base.FuncIntFromStr(
-    #     variants=[
-    #         V(D.TRINO, lambda value: sa.cast(value, sa.BIGINT)),
-    #     ]
-    # ),
-    # base.FuncIntFromDate(
-    #     variants=[
-    #         V(D.TRINO, sa.func.UNIX_TIMESTAMP),
-    #     ]
-    # ),
-    # base.FuncIntFromDatetime(
-    #     variants=[
-    #         V(D.TRINO, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), sa.BIGINT)),
-    #     ]
-    # ),
-    # base.FuncIntFromGenericDatetime(
-    #     variants=[
-    #         V(D.TRINO, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), sa.BIGINT)),
-    #     ]
-    # ),
+    base.FuncIntFromFloat(
+        variants=[
+            V(D.TRINO, lambda value: sa.cast(sa.func.floor(value), sa.BIGINT)),
+        ]
+    ),
+    base.FuncIntFromBool(
+        variants=[
+            V(D.TRINO, lambda value: sa.cast(value, sa.SMALLINT)),
+        ]
+    ),
+    base.FuncIntFromStr(
+        variants=[
+            V(D.TRINO, lambda value: sa.cast(value, sa.BIGINT)),
+        ]
+    ),
+    base.FuncIntFromDate(
+        variants=[
+            V(D.TRINO, lambda value: sa.cast(sa.func.floor(sa.func.to_unixtime(value)), sa.BIGINT)),
+        ]
+    ),
+    base.FuncIntFromDatetime(
+        variants=[
+            V(D.TRINO, lambda value: sa.cast(sa.func.floor(sa.func.to_unixtime(value)), sa.BIGINT)),
+        ]
+    ),
+    base.FuncIntFromGenericDatetime(
+        variants=[
+            V(D.TRINO, lambda value: sa.cast(sa.func.floor(sa.func.to_unixtime(value)), sa.BIGINT)),
+        ]
+    ),
     # str
     # base.FuncStrFromUnsupported(
     #     variants=[
