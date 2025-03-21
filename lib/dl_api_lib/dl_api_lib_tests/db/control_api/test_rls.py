@@ -21,10 +21,12 @@ class TestRLS(DefaultApiTestBase):
     @staticmethod
     def add_rls_to_dataset(control_api, dataset, rls_config, rls2_config=None):
         field_guid = dataset.result_schema[0].id
-        dataset.rls = {field_guid: rls_config}
+        # only one nonempty rls can be passed
         if rls2_config:
             dataset.rls2 = {field_guid: rls2_config}
+            dataset.rls = {}
         else:
+            dataset.rls = {field_guid: rls_config}
             dataset.rls2 = {}
         resp = control_api.save_dataset(dataset, fail_ok=True)
         return field_guid, resp
@@ -60,7 +62,7 @@ class TestRLS(DefaultApiTestBase):
         config_v2 = case["config_v2"]  # rls from v2 config != rls from v1 config
 
         ds = saved_dataset
-        # if both config are passed v2 has priority
+        # if both config are passed only v2 has priority in add_rls_to_dataset method
         field_guid, rls_resp = self.add_rls_to_dataset(control_api, ds, config_v1, config_v2)
         assert rls_resp.status_code == 200, rls_resp.json
 
@@ -73,7 +75,10 @@ class TestRLS(DefaultApiTestBase):
         assert config_to_comparable(ds.rls[field_guid]) == config_to_comparable(case["config_to_compare_v2"])
 
         # check if v2 from rls looks like expected
-        for item1, item2 in zip(sorted(ds.rls2[field_guid]), sorted(config_v2)):
+        for item1, item2 in zip(
+            sorted(ds.rls2[field_guid], key=lambda x: (x.allowed_value, x.subject.subject_id)),
+            sorted(config_v2, key=lambda x: (x.allowed_value, x.subject.subject_id)),
+        ):
             assert item1.subject == item2.subject
             assert item1.pattern_type == item2.pattern_type
             assert item1.allowed_value == item2.allowed_value

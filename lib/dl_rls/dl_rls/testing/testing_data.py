@@ -1,16 +1,26 @@
 import json
 import pkgutil
+from typing import Optional
+
+import attr
 
 from dl_constants.enums import RLSSubjectType
 from dl_rls.models import (
-    RLS2ConfigEntry,
-    RLS2Subject,
     RLSEntry,
     RLSPatternType,
     RLSSubject,
 )
 from dl_rls.serializer import FieldRLSSerializer
 from dl_rls.subject_resolver import BaseSubjectResolver
+
+
+@attr.s
+class RLS2ConfigEntry:
+    # model only for testing with allowed missing values
+    subject: RLSSubject = attr.ib()
+    field_guid: Optional[str] = attr.ib(default=None)
+    allowed_value: Optional[str] = attr.ib(default=None)
+    pattern_type: RLSPatternType = attr.ib(default=RLSPatternType.value)
 
 
 def load_rls_config(name: str) -> str:
@@ -25,7 +35,7 @@ def load_rls_v2_config(name: str) -> list[RLS2ConfigEntry]:
     for entry in data:
         rls_entry = RLS2ConfigEntry(**entry)
         rls_entry.pattern_type = RLSPatternType[entry.get("pattern_type", "value")]
-        rls_entry.subject = RLS2Subject(**entry["subject"])
+        rls_entry.subject = RLSSubject(**entry["subject"])
         rls_entry.subject.subject_type = RLSSubjectType[entry["subject"]["subject_type"]]
         result.append(rls_entry)
     return result
