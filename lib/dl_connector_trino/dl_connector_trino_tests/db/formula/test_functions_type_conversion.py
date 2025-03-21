@@ -3,6 +3,7 @@ from dl_formula_testing.testcases.functions_type_conversion import (
     DefaultDateTypeFunctionFormulaConnectorTestSuite,
     DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
+    DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
     DefaultIntTypeFunctionFormulaConnectorTestSuite,
     DefaultStrTypeFunctionFormulaConnectorTestSuite,
 )
@@ -52,4 +53,11 @@ class TestGenericDatetimeTypeFunctionTrino(
     TrinoFormulaTestBase,
     DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
 ):
+    pass
+
+
+# GEOPOINT
+
+
+class TestGeopointTypeFunctionTrino(TrinoFormulaTestBase, DefaultGeopointTypeFunctionFormulaConnectorTestSuite):
     pass

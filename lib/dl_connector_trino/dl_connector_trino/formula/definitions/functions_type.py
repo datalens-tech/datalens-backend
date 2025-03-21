@@ -123,7 +123,7 @@ DEFINITIONS_TYPE = [
     FuncGenericDatetime2Trino(),
     # geopoint
     base.FuncGeopointFromStr.for_dialect(D.TRINO),
-    # base.FuncGeopointFromCoords.for_dialect(D.TRINO),
+    base.FuncGeopointFromCoords.for_dialect(D.TRINO),
     # geopolygon
     base.FuncGeopolygon.for_dialect(D.TRINO),
     # int
