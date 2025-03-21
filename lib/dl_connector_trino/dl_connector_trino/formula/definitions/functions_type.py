@@ -93,17 +93,17 @@ DEFINITIONS_TYPE = [
     ),
     base.FuncFloatFromDate(
         variants=[
-            V(D.TRINO, lambda value: sa.func.to_unixtime(value)),
+            V(D.TRINO, sa.func.to_unixtime),
         ]
     ),
     base.FuncFloatFromDatetime(
         variants=[
-            V(D.TRINO, lambda value: sa.func.to_unixtime(value)),
+            V(D.TRINO, sa.func.to_unixtime),
         ]
     ),
     base.FuncFloatFromGenericDatetime(
         variants=[
-            V(D.TRINO, lambda value: sa.func.to_unixtime(value)),
+            V(D.TRINO, sa.func.to_unixtime),
         ]
     ),
     # genericdatetime
