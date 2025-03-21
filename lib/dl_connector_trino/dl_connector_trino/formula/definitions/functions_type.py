@@ -55,13 +55,13 @@ DEFINITIONS_TYPE = [
     base.FuncBoolFromDateDatetime.for_dialect(D.TRINO),
     # date
     base.FuncDate1FromNull.for_dialect(D.TRINO),
-    # base.FuncDate1FromDatetime.for_dialect(D.TRINO),
-    # base.FuncDate1FromString.for_dialect(D.TRINO),
-    # base.FuncDate1FromNumber(
-    #     variants=[
-    #         V(D.TRINO, lambda expr: sa.cast(sa.func.FROM_UNIXTIME(expr), sa.DATE)),
-    #     ]
-    # ),
+    base.FuncDate1FromDatetime.for_dialect(D.TRINO),
+    base.FuncDate1FromString.for_dialect(D.TRINO),
+    base.FuncDate1FromNumber(
+        variants=[
+            V(D.TRINO, lambda value: sa.cast(sa.func.from_unixtime(value), sa.DATE)),
+        ]
+    ),
     # datetime
     base.FuncDatetime1FromNull.for_dialect(D.TRINO),
     # base.FuncDatetime1FromDatetime.for_dialect(D.TRINO),
