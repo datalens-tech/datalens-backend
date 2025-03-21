@@ -64,14 +64,14 @@ DEFINITIONS_TYPE = [
     ),
     # datetime
     base.FuncDatetime1FromNull.for_dialect(D.TRINO),
-    # base.FuncDatetime1FromDatetime.for_dialect(D.TRINO),
-    # base.FuncDatetime1FromDate.for_dialect(D.TRINO),
-    # base.FuncDatetime1FromNumber(
-    #     variants=[
-    #         V(D.TRINO, lambda expr: sa.func.FROM_UNIXTIME(expr)),
-    #     ]
-    # ),
-    # base.FuncDatetime1FromString.for_dialect(D.TRINO),
+    base.FuncDatetime1FromDatetime.for_dialect(D.TRINO),
+    base.FuncDatetime1FromDate.for_dialect(D.TRINO),
+    base.FuncDatetime1FromNumber(
+        variants=[
+            V(D.TRINO, sa.func.from_unixtime),
+        ]
+    ),
+    base.FuncDatetime1FromString.for_dialect(D.TRINO),
     FuncDatetime2Trino(),
     # datetimetz
     # base.FuncDatetimeTZConst.for_dialect(D.TRINO),
@@ -108,18 +108,18 @@ DEFINITIONS_TYPE = [
     ),
     # genericdatetime
     base.FuncGenericDatetime1FromNull.for_dialect(D.TRINO),
-    # base.FuncGenericDatetime1FromDatetime.for_dialect(D.TRINO),
-    # base.FuncGenericDatetime1FromDate.for_dialect(D.TRINO),
-    # base.FuncGenericDatetime1FromNumber(
-    #     variants=[
-    #         V(D.TRINO, lambda expr: sa.func.FROM_UNIXTIME(expr)),
-    #     ]
-    # ),
-    # base.FuncGenericDatetime1FromString(
-    #     variants = [
-    #         V(D.TRINO, lambda expr: sa.cast(expr, tsa.TIMESTAMP)),
-    #     ]
-    # ),
+    base.FuncGenericDatetime1FromDatetime.for_dialect(D.TRINO),
+    base.FuncGenericDatetime1FromDate.for_dialect(D.TRINO),
+    base.FuncGenericDatetime1FromNumber(
+        variants=[
+            V(D.TRINO, sa.func.from_unixtime),
+        ]
+    ),
+    base.FuncGenericDatetime1FromString(
+        variants=[
+            V(D.TRINO, lambda expr: sa.cast(expr, tsa.TIMESTAMP)),
+        ]
+    ),
     FuncGenericDatetime2Trino(),
     # geopoint
     base.FuncGeopointFromStr.for_dialect(D.TRINO),
