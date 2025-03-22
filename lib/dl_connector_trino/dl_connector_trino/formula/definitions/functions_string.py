@@ -4,6 +4,7 @@ from dl_formula.definitions.base import (
     TranslationVariant,
     TranslationVariantWrapped,
 )
+from dl_formula.definitions.common import TransCallResult
 import dl_formula.definitions.functions_string as base
 from dl_formula.shortcuts import n
 
@@ -14,15 +15,25 @@ V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 
 
+def find3(string: sa.sql.ColumnElement, substring: sa.sql.ColumnElement, pos: sa.sql.ColumnElement) -> TransCallResult:
+    tail = sa.func.substring(string, pos)
+    pos_in_tail = sa.func.strpos(tail, substring)
+    return sa.func.if_(pos_in_tail > 0, pos_in_tail + pos - 1, 0)
+
+
 DEFINITIONS_STRING = [
     # ascii
-    # base.FuncAscii.for_dialect(D.TRINO),
+    base.FuncAscii(
+        variants=[
+            V(D.TRINO, sa.func.codepoint),
+        ]
+    ),
     # char
-    # base.FuncChar(
-    #     variants=[
-    #         V(D.TRINO, sa.func.CHR),
-    #     ]
-    # ),
+    base.FuncChar(
+        variants=[
+            V(D.TRINO, sa.func.chr),
+        ]
+    ),
     # concat
     # base.Concat1.for_dialect((D.TRINO)),
     # base.ConcatMultiStrConst.for_dialect(D.TRINO),
@@ -66,23 +77,16 @@ DEFINITIONS_STRING = [
     # ),
     # base.FuncEndswithNonString.for_dialect(D.TRINO),
     # find
-    # base.FuncFind2(
-    #     variants=[
-    #         V(D.TRINO, sa.func.STRPOS),
-    #     ]
-    # ),
-    # base.FuncFind3(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda x, y, z: n.if_(sa.func.STRPOS(sa.func.SUBSTRING(x, z), y) > 0)  # type: ignore  # TODO: fix
-    #             .then(
-    #                 sa.func.STRPOS(sa.func.SUBSTRING(x, z), y) + z - 1,
-    #             )
-    #             .else_(0),
-    #         ),
-    #     ]
-    # ),
+    base.FuncFind2(
+        variants=[
+            V(D.TRINO, sa.func.strpos),
+        ]
+    ),
+    base.FuncFind3(
+        variants=[
+            V(D.TRINO, find3),
+        ]
+    ),
     # icontains
     # base.FuncIContainsConst.for_dialect(D.TRINO),
     # base.FuncIContainsNonConst.for_dialect(D.TRINO),
@@ -96,7 +100,11 @@ DEFINITIONS_STRING = [
     # base.FuncIStartswithNonConst.for_dialect(D.TRINO),
     # base.FuncIStartswithNonString.for_dialect(D.TRINO),
     # left
-    # base.FuncLeft.for_dialect(D.TRINO),
+    base.FuncLeft(
+        variants=[
+            V(D.TRINO, lambda string, pos: sa.func.substring(string, 1, pos)),
+        ]
+    ),
     # len
     # base.FuncLenString(
     #     variants=[
@@ -159,7 +167,11 @@ DEFINITIONS_STRING = [
     # replace
     # base.FuncReplace.for_dialect(D.TRINO),
     # right
-    # base.FuncRight.for_dialect(D.TRINO),
+    base.FuncRight(
+        variants=[
+            V(D.TRINO, lambda string, pos: sa.func.substring(string, -pos)),
+        ]
+    ),
     # rtrim
     # base.FuncRtrim.for_dialect(D.TRINO),
     # space
