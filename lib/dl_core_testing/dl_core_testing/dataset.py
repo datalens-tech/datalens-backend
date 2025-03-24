@@ -31,6 +31,38 @@ def make_ds_key(*args: str) -> str:
     return "/".join(["tests", *args])
 
 
+def add_dataset_source(
+    sync_usm: SyncUSManager,
+    connection: ConnectionBase,
+    dataset: Dataset,
+    editable_dataset_wrapper: EditableDatasetTestWrapper,
+    created_from: DataSourceType,
+    dsrc_params: dict,
+    title: Optional[str] = None,
+) -> None:
+    def conn_executor_factory() -> SyncConnExecutorBase:
+        return sync_usm.get_services_registry().get_conn_executor_factory().get_sync_conn_executor(conn=connection)
+
+    source_id = str(uuid.uuid4())
+    editable_dataset_wrapper.add_data_source(
+        source_id=source_id,
+        role=DataSourceRole.origin,
+        connection_id=connection.uuid,
+        created_from=created_from,
+        parameters=dsrc_params,
+        title=title,
+    )
+    sync_usm.load_dependencies(dataset)
+    dsrc = editable_dataset_wrapper.get_data_source_strict(source_id=source_id, role=DataSourceRole.origin)
+    editable_dataset_wrapper.update_data_source(
+        source_id=source_id,
+        role=DataSourceRole.origin,
+        raw_schema=dsrc.get_schema_info(conn_executor_factory=conn_executor_factory).schema,
+    )
+
+    editable_dataset_wrapper.add_avatar(avatar_id=str(uuid.uuid4()), source_id=source_id, title="Main Avatar")
+
+
 def make_dataset(
     sync_usm: SyncUSManager,
     connection: Optional[ConnectionBase] = None,
@@ -45,7 +77,6 @@ def make_dataset(
     dsrc_params: Optional[dict] = None,
     created_via: Optional[DataSourceCreatedVia] = None,
 ) -> Dataset:
-    service_registry = sync_usm.get_services_registry()
     ds_info = dict(ds_info or {})
     db = db_table.db if db_table else None
     table_name = table_name or (db_table.name if db_table else None)
@@ -76,28 +107,15 @@ def make_dataset(
             **(dsrc_params or {}),
         }
         dsrc_params = {key: value for key, value in dsrc_params.items() if value is not None}
-        source_id = str(uuid.uuid4())
-
-        def conn_executor_factory() -> SyncConnExecutorBase:
-            return service_registry.get_conn_executor_factory().get_sync_conn_executor(conn=connection)
-
         assert created_from is not None
-        ds_wrapper.add_data_source(
-            source_id=source_id,
-            role=DataSourceRole.origin,
-            connection_id=connection.uuid,
+        add_dataset_source(
+            sync_usm=sync_usm,
+            connection=connection,
+            dataset=dataset,
+            editable_dataset_wrapper=ds_wrapper,
             created_from=created_from,
-            parameters=dsrc_params,
+            dsrc_params=dsrc_params,
         )
-        sync_usm.load_dependencies(dataset)
-        dsrc = ds_wrapper.get_data_source_strict(source_id=source_id, role=DataSourceRole.origin)
-        ds_wrapper.update_data_source(
-            source_id=source_id,
-            role=DataSourceRole.origin,
-            raw_schema=dsrc.get_schema_info(conn_executor_factory=conn_executor_factory).schema,
-        )
-
-        ds_wrapper.add_avatar(avatar_id=str(uuid.uuid4()), source_id=source_id, title="Main Avatar")
 
     return dataset
 
