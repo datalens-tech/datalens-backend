@@ -1,5 +1,9 @@
 import os
+import ssl
 from typing import ClassVar
+
+from frozendict import frozendict
+import requests
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
@@ -30,6 +34,19 @@ class CoreConnectionSettings:
     PORT: ClassVar[int] = get_test_container_hostport("db-oracle", fallback_port=51800).port
     USERNAME: ClassVar[str] = "datalens"
     PASSWORD: ClassVar[str] = "qwerty"
+    SSL_ENABLE: ClassVar[bool] = False
+
+
+class CoreSSLConnectionSettings:
+    DB_NAME: ClassVar[str] = "XEPDB1"
+    HOST: ClassVar[str] = get_test_container_hostport("db-oracle-ssl", fallback_port=51801).host
+    PORT: ClassVar[int] = get_test_container_hostport("db-oracle-ssl", fallback_port=51801).port
+    USERNAME: ClassVar[str] = "datalens"
+    PASSWORD: ClassVar[str] = "qwerty"
+    SSL_ENABLE: ClassVar[bool] = True
+    CERT_PROVIDER_URL: ClassVar[
+        str
+    ] = f"http://{get_test_container_hostport('ssl-provider', fallback_port=8080).as_pair()}"
 
 
 DEFAULT_ORACLE_SCHEMA_NAME = "DATALENS"
@@ -85,16 +102,29 @@ FROM dual
 """
 
 _DB_URL = (
-    f'oracle://datalens:qwerty@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={get_test_container_hostport("db-oracle", fallback_port=51800).host})'
-    f'(PORT={get_test_container_hostport("db-oracle", fallback_port=51800).port}))(CONNECT_DATA=(SERVICE_NAME={CoreConnectionSettings.DB_NAME})))'
+    f"oracle://datalens:qwerty@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={CoreConnectionSettings.HOST})"
+    f"(PORT={CoreConnectionSettings.PORT}))(CONNECT_DATA=(SERVICE_NAME={CoreConnectionSettings.DB_NAME})))"
 )
 SYSDBA_URL = (
-    f'oracle://sys:qwerty@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={get_test_container_hostport("db-oracle", fallback_port=51800).host})'
-    f'(PORT={get_test_container_hostport("db-oracle", fallback_port=51800).port}))(CONNECT_DATA=(SERVICE_NAME={CoreConnectionSettings.DB_NAME})))?mode=sysdba'
+    f"oracle://sys:qwerty@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={CoreConnectionSettings.HOST})"
+    f"(PORT={CoreConnectionSettings.PORT}))(CONNECT_DATA=(SERVICE_NAME={CoreConnectionSettings.DB_NAME})))?mode=sysdba"
 )
 DB_CORE_URL = _DB_URL
 DB_URLS = {
     D.ORACLE_12_0: _DB_URL,
+}
+
+_DB_URL_SSL = (
+    f"oracle://datalens:qwerty@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCPS)(HOST={CoreSSLConnectionSettings.HOST})"
+    f"(PORT={CoreSSLConnectionSettings.PORT}))(CONNECT_DATA=(SERVICE_NAME={CoreSSLConnectionSettings.DB_NAME})))"
+)
+SYSDBA_URL_SSL = (
+    f"oracle://sys:qwerty@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCPS)(HOST={CoreSSLConnectionSettings.HOST})"
+    f"(PORT={CoreSSLConnectionSettings.PORT}))(CONNECT_DATA=(SERVICE_NAME={CoreSSLConnectionSettings.DB_NAME})))?mode=sysdba"
+)
+DB_CORE_URL_SSL = _DB_URL_SSL
+DB_URLS_SSL = {
+    D.ORACLE_12_0: _DB_URL_SSL,
 }
 
 API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
@@ -102,3 +132,22 @@ API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key="_some_test_secret_key_",
 )
+
+
+def fetch_ca_certificate() -> str:
+    uri = f"{CoreSSLConnectionSettings.CERT_PROVIDER_URL}/ca.pem"
+    response = requests.get(uri)
+    assert response.status_code == 200, response.text
+
+    return response.text
+
+
+def make_ssl_engine_params(ssl_ca: str) -> dict:
+    engine_params = {
+        "connect_args": frozendict(
+            {
+                "ssl_context": ssl.create_default_context(cadata=fetch_ca_certificate()),
+            }
+        ),
+    }
+    return engine_params

@@ -10,6 +10,9 @@ from dl_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
 from dl_connector_oracle_tests.db.config import (
     API_TEST_CONFIG,
     SYSDBA_URL,
+    SYSDBA_URL_SSL,
+    fetch_ca_certificate,
+    make_ssl_engine_params,
 )
 
 
@@ -27,6 +30,16 @@ def initialize_db():
     sysdba_db_config = CoreDbConfig(engine_config=DbEngineConfig(url=SYSDBA_URL), conn_type=CONNECTION_TYPE_ORACLE)
     sysdba_db = db_dispenser.get_database(db_config=sysdba_db_config)
     sysdba_db.execute("GRANT SELECT ON sys.V_$SESSION TO datalens")
+
+    sysdba_db_ssl_config = CoreDbConfig(
+        engine_config=DbEngineConfig(
+            url=SYSDBA_URL_SSL,
+            engine_params=make_ssl_engine_params(fetch_ca_certificate()),
+        ),
+        conn_type=CONNECTION_TYPE_ORACLE,
+    )
+    sysdba_db_ssl = db_dispenser.get_database(db_config=sysdba_db_ssl_config)
+    sysdba_db_ssl.execute("GRANT SELECT ON sys.V_$SESSION TO datalens")
 
 
 __all__ = (
