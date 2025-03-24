@@ -32,7 +32,7 @@ services:
     restart: on-failure
 
   s3-storage:
-    image: minio/minio:RELEASE.2024-12-18T13-15-44Z@sha256:1dce27c494a16bae114774f1cec295493f3613142713130c2d22dd5696be6ad3
+    image: minio/minio:RELEASE.2025-02-07T23-21-09Z@sha256:640c22768ed5dbc92eacc14502a1b06a1c708fa60431345c78dfc22917062e93
     environment:
       MINIO_ROOT_USER: accessKey1
       MINIO_ROOT_PASSWORD: verySecretKey1
