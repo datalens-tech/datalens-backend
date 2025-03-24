@@ -183,7 +183,11 @@ class NotificationContentSchema(BaseSchema):
     level = ma_fields.Enum(NotificationLevel)
 
 
-class DatasetExportResponseSchema(DatasetContentSchema):
+class DatasetExportResponseSchema(BaseSchema):
+    class DatasetContentInternalExportSchema(DatasetContentInternalSchema):
+        name = ma_fields.String()
+
+    dataset = ma_fields.Nested(DatasetContentInternalExportSchema)
     notifications = ma_fields.Nested(NotificationContentSchema, many=True)
 
 
