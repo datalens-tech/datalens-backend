@@ -1,6 +1,5 @@
 import abc
 from typing import Optional
-import uuid
 
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
@@ -109,7 +108,6 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         assert export_resp.status_code == 200
         assert export_resp.json["dataset"]["sources"][0]["connection_id"] == "conn_id_1"
 
-        export_resp.json["dataset"]["name"] = "Dataset " + str(uuid.uuid4())
         import_data: dict = {
             "id_mapping": {"conn_id_1": saved_connection_id},
             "data": {"workbook_id": None, "dataset": export_resp.json["dataset"]},
