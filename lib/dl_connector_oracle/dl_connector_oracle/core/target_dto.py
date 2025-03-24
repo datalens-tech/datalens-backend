@@ -32,8 +32,6 @@ class OracleConnTargetDTO(BaseSQLConnTargetDTO):
         return {
             **d,
             "db_name_type": self.db_name_type.name,
-            "ssl_enable": self.ssl_enable,
-            "ssl_ca": self.ssl_ca,
         }
 
     @classmethod

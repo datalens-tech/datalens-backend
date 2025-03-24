@@ -48,6 +48,7 @@ RUN \
 # invalid-ca.pem       Invalid CA certificate
 # server-cert.pem      Server certificate
 # server-key.pem       Server private key
+# server-key.pk8       Server private key in PKC8 format
 # client-cert.pem      Client certificate
 # client-key.pem       Client private key
 RUN cd certs && \

@@ -1,5 +1,9 @@
 import os
+import ssl
 from typing import ClassVar
+
+from frozendict import frozendict
+import requests
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
@@ -128,3 +132,22 @@ API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key="_some_test_secret_key_",
 )
+
+
+def fetch_ca_certificate() -> str:
+    uri = f"{CoreSSLConnectionSettings.CERT_PROVIDER_URL}/ca.pem"
+    response = requests.get(uri)
+    assert response.status_code == 200, response.text
+
+    return response.text
+
+
+def make_ssl_engine_params(ssl_ca: str) -> dict:
+    engine_params = {
+        "connect_args": frozendict(
+            {
+                "ssl_context": ssl.create_default_context(cadata=fetch_ca_certificate()),
+            }
+        ),
+    }
+    return engine_params

@@ -1,7 +1,3 @@
-import ssl
-
-import requests
-
 from dl_api_lib_testing.initialization import initialize_api_lib_test
 from dl_core_testing.database import (
     CoreDbConfig,
@@ -15,7 +11,8 @@ from dl_connector_oracle_tests.db.config import (
     API_TEST_CONFIG,
     SYSDBA_URL,
     SYSDBA_URL_SSL,
-    CoreSSLConnectionSettings,
+    fetch_ca_certificate,
+    make_ssl_engine_params,
 )
 
 
@@ -34,20 +31,10 @@ def initialize_db():
     sysdba_db = db_dispenser.get_database(db_config=sysdba_db_config)
     sysdba_db.execute("GRANT SELECT ON sys.V_$SESSION TO datalens")
 
-    # Fetch certificates and make ssl context for one-time connection
-    uri = f"{CoreSSLConnectionSettings.CERT_PROVIDER_URL}/ca.pem"
-    response = requests.get(uri)
-    assert response.status_code == 200, response.text
-    ssl_ca = response.text
-
     sysdba_db_ssl_config = CoreDbConfig(
         engine_config=DbEngineConfig(
             url=SYSDBA_URL_SSL,
-            engine_params={
-                "connect_args": {
-                    "ssl_context": ssl.create_default_context(cadata=ssl_ca),
-                },
-            },
+            engine_params=make_ssl_engine_params(fetch_ca_certificate()),
         ),
         conn_type=CONNECTION_TYPE_ORACLE,
     )

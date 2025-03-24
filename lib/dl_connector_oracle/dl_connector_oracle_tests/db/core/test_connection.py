@@ -35,6 +35,8 @@ class TestOracleConnection(
         assert conn.data.port == params["port"]
         assert conn.data.username == params["username"]
         assert conn.data.password == params["password"]
+        assert conn.data.ssl_enable is False
+        assert conn.data.ssl_ca is None
 
     def check_data_source_templates(
         self,

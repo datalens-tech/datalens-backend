@@ -1,11 +1,8 @@
 import asyncio
-import ssl
 from typing import Generator
 import uuid
 
-from frozendict import frozendict
 import pytest
-import requests
 
 from dl_core_testing.database import Db
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
@@ -53,22 +50,11 @@ class BaseOracleTestClass(BaseConnectionTestClass[ConnectionSQLOracle]):
 class BaseSSLOracleTestClass(BaseOracleTestClass):
     @pytest.fixture(scope="class")
     def ssl_ca(self) -> str:
-        uri = f"{test_config.CoreSSLConnectionSettings.CERT_PROVIDER_URL}/ca.pem"
-        response = requests.get(uri)
-        assert response.status_code == 200, response.text
-
-        return response.text
+        return test_config.fetch_ca_certificate()
 
     @pytest.fixture(scope="class")
     def engine_params(self, ssl_ca: str) -> dict:
-        engine_params = {
-            "connect_args": frozendict(
-                {
-                    "ssl_context": ssl.create_default_context(cadata=ssl_ca),
-                }
-            ),
-        }
-        return engine_params
+        return test_config.make_ssl_engine_params(test_config.fetch_ca_certificate())
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:

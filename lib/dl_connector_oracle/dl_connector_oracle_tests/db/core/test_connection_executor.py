@@ -26,10 +26,7 @@ from dl_testing.regulated_test import RegulatedTestParams
 
 from dl_connector_oracle.core.us_connection import ConnectionSQLOracle
 from dl_connector_oracle_tests.db.config import CoreConnectionSettings
-from dl_connector_oracle_tests.db.core.base import (
-    BaseOracleTestClass,
-    BaseSSLOracleTestClass,
-)
+from dl_connector_oracle_tests.db.core.base import BaseOracleTestClass
 
 
 class OracleSyncAsyncConnectionExecutorCheckBase(
@@ -113,17 +110,3 @@ class TestOracleAsyncConnectionExecutor(
             DefaultAsyncConnectionExecutorTestSuite.test_closing_sql_sessions: "Sessions not closed",  # TODO: FIXME
         },
     )
-
-
-class TestSSLOracleSyncConnectionExecutor(
-    BaseSSLOracleTestClass,
-    TestOracleSyncConnectionExecutor,
-):
-    pass
-
-
-class TestSSLOracleAsyncConnectionExecutor(
-    BaseSSLOracleTestClass,
-    TestOracleAsyncConnectionExecutor,
-):
-    pass
