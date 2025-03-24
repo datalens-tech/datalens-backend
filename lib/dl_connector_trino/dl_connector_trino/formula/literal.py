@@ -11,6 +11,11 @@ from dl_formula.connectors.base.literal import (
 from dl_formula.core.dialect import DialectCombo
 
 
+def array_to_str(array: Union[tuple, list]) -> str:
+    values_repr = [(repr(x) if x is not None else "NULL") for x in array]
+    return ",".join(values_repr)
+
+
 class TrinoLiteralizer(Literalizer):
     def literal_datetime(self, value: datetime.datetime, dialect: DialectCombo) -> Literal:
         precision = 6 if value.microsecond else None
@@ -30,4 +35,4 @@ class TrinoLiteralizer(Literalizer):
         )
 
     def literal_array(self, value: Union[tuple, list], dialect: DialectCombo) -> Literal:
-        return sa.literal_column(f"ARRAY{str(list(value))}")
+        return sa.literal_column(f"ARRAY[{array_to_str(value)}]")
