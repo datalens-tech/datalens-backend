@@ -1,4 +1,5 @@
 import datetime
+from typing import Union
 
 import sqlalchemy as sa
 from trino.sqlalchemy.datatype import TIMESTAMP
@@ -27,3 +28,6 @@ class TrinoLiteralizer(Literalizer):
                 precision=precision,
             ),
         )
+
+    def literal_array(self, value: Union[tuple, list], dialect: DialectCombo) -> Literal:
+        return sa.literal_column(f"ARRAY{str(list(value))}")

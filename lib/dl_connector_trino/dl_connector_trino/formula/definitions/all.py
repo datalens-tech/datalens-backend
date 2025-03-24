@@ -1,4 +1,5 @@
 from dl_connector_trino.formula.definitions.conditional_blocks import DEFINITIONS_COND_BLOCKS
+from dl_connector_trino.formula.definitions.functions_array import DEFINITIONS_ARRAY
 from dl_connector_trino.formula.definitions.functions_logical import DEFINITIONS_LOGICAL
 from dl_connector_trino.formula.definitions.functions_math import DEFINITIONS_MATH
 from dl_connector_trino.formula.definitions.functions_special import DEFINITIONS_SPECIAL
@@ -29,4 +30,5 @@ DEFINITIONS = [
     *DEFINITIONS_BINARY,
     *DEFINITIONS_TERNARY,
     *DEFINITIONS_SPECIAL,
+    *DEFINITIONS_ARRAY,
 ]
