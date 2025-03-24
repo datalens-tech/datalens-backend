@@ -308,16 +308,20 @@ class DatasetExportItem(DatasetResource):
         ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
         utils.need_permission_on_entry(ds, USPermissionKind.read)
         ds_dict = ds.as_dict()
+
+        dl_loc = ds.entry_key
+        ds_name = None
+        if isinstance(dl_loc, WorkbookEntryLocation):
+            ds_name = dl_loc.entry_name
+
         us_manager.load_dependencies(ds)
         ds_dict.update(
             self.make_dataset_response_data(
                 dataset=ds, us_entry_buffer=us_manager.get_entry_buffer(), conn_id_mapping=body["id_mapping"]
             )
         )
-
-        key = ds.raw_us_key
-        if key:
-            ds_dict["dataset"]["name"] = key.split("/")[-1]
+        if ds_name:
+            ds_dict["dataset"]["name"] = ds_name
 
         ds_dict["dataset"]["revision_id"] = None
 
