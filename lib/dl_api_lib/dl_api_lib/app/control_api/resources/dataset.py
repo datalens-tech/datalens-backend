@@ -315,9 +315,9 @@ class DatasetExportItem(DatasetResource):
             )
         )
 
-        key = ds.raw_us_key
-        if key:
-            ds_dict["dataset"]["name"] = key.split("/")[-1]
+        dl_loc = ds.entry_key
+        if isinstance(dl_loc, WorkbookEntryLocation):
+            ds_dict["dataset"]["name"] = dl_loc.entry_name
 
         ds_dict["dataset"]["revision_id"] = None
 
