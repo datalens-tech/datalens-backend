@@ -19,10 +19,8 @@ from dl_connector_trino.formula.constants import TrinoDialect as D
 # from sqlalchemy.sql.type_api import TypeEngine
 
 
-
 # from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 # from dl_connector_postgresql.formula.definitions.common import PG_INT_64_TO_CHAR_FMT
-
 
 
 V = TranslationVariant.make
@@ -81,9 +79,9 @@ DEFINITIONS_ARRAY = [
     #     ]
     # ),
     # array
-    # base.FuncConstArrayFloat.for_dialect(D.TRINO),
-    # base.FuncConstArrayInt.for_dialect(D.TRINO),
-    # base.FuncConstArrayStr.for_dialect(D.TRINO),
+    base.FuncConstArrayFloat.for_dialect(D.TRINO),
+    base.FuncConstArrayInt.for_dialect(D.TRINO),
+    base.FuncConstArrayStr.for_dialect(D.TRINO),
     # base.FuncNonConstArrayInt(
     #     variants=[
     #         V(D.TRINO, lambda *args: sa_postgresql.array(args)),

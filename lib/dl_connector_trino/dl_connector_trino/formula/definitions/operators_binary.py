@@ -1,6 +1,7 @@
 from typing import Callable
 
 import sqlalchemy as sa
+import sqlalchemy.sql.expression as sa_expr
 import trino.sqlalchemy.datatype as tsa
 
 from dl_formula.definitions.base import TranslationVariant
@@ -61,6 +62,11 @@ DEFINITIONS_BINARY = [
     base.BinaryPlusStrings(
         variants=[
             V(D.TRINO, sa.func.concat),
+        ]
+    ),
+    base.BinaryPlusArray(
+        variants=[
+            V(D.TRINO, lambda left, right: sa_expr.BinaryExpression(left, right, sa_expr.custom_op("||"))),
         ]
     ),
     base.BinaryPlusDateInt(
