@@ -93,6 +93,49 @@ class FuncDbCastTrino4(FuncDbCastTrino, base.FuncDbCast4):
     pass
 
 
+class FuncStrFromArrayIntTrino(base.FuncStrFromArray):
+    variants = [
+        V(D.TRINO, lambda value: "[" + sa.func.array_join(value, ",", "NULL") + "]"),
+    ]
+    argument_types = [
+        ArgTypeSequence([DataType.ARRAY_INT]),
+    ]
+
+
+class FuncStrFromArrayFloatTrino(base.FuncStrFromArray):
+    variants = [
+        V(
+            D.TRINO,
+            lambda value: "["
+            + sa.func.array_join(
+                sa.func.transform(value, sa.text("x -> regexp_extract(format('%.8f', x), '^(-?\d+\.\d+?)(0*)$', 1)")),
+                ",",
+                "NULL",
+            )
+            + "]",
+        ),
+    ]
+    argument_types = [
+        ArgTypeSequence([DataType.ARRAY_FLOAT]),
+    ]
+
+
+class FuncStrFromArrayStrTrino(base.FuncStrFromArray):
+    variants = [
+        V(
+            D.TRINO,
+            lambda value: "["
+            + sa.func.array_join(
+                sa.func.transform(value, sa.text("x -> if(x IS NULL, 'NULL', format('''%s''', x))")), ","
+            )
+            + "]",
+        ),
+    ]
+    argument_types = [
+        ArgTypeSequence([DataType.ARRAY_STR]),
+    ]
+
+
 # Note: `SingleVariantTranslationBase` here essentially acts as a mixin, providing
 # custom `get_variants` implementation that plugs into `cls.dialects` and `cls._translate_main`.
 class FuncTypeGenericDatetime2TrinoImpl(SingleVariantTranslationBase, base.FuncTypeGenericDatetime2Impl):
@@ -274,4 +317,7 @@ DEFINITIONS_TYPE = [
         ]
     ),
     base.FuncStrFromString.for_dialect(D.TRINO),
+    FuncStrFromArrayIntTrino(),
+    FuncStrFromArrayFloatTrino(),
+    FuncStrFromArrayStrTrino(),
 ]
