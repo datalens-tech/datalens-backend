@@ -35,4 +35,7 @@ class TrinoLiteralizer(Literalizer):
         )
 
     def literal_array(self, value: Union[tuple, list], dialect: DialectCombo) -> Literal:
+        if value and any(isinstance(x, float) for x in value):
+            return sa.literal_column(f"cast(ARRAY[{array_to_str(value)}] AS array(double))")
+
         return sa.literal_column(f"ARRAY[{array_to_str(value)}]")
