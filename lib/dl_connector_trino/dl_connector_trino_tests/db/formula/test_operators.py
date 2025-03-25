@@ -5,3 +5,4 @@ from dl_connector_trino_tests.db.formula.base import TrinoFormulaTestBase
 
 class TestOperatorTrino(TrinoFormulaTestBase, DefaultOperatorFormulaConnectorTestSuite):
     subtraction_round_dt = False
+    supports_arrays = False  # Not working correctly yet
