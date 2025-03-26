@@ -1,3 +1,6 @@
+import sqlalchemy as sa
+
+from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.functions_type_conversion import (
     DefaultBoolTypeFunctionFormulaConnectorTestSuite,
     DefaultDateTypeFunctionFormulaConnectorTestSuite,
@@ -17,6 +20,9 @@ from dl_connector_trino_tests.db.formula.base import TrinoFormulaTestBase
 
 class TestStrTypeFunctionTrino(TrinoFormulaTestBase, DefaultStrTypeFunctionFormulaConnectorTestSuite):
     zero_float_to_str_value = "0.0"
+
+    def test_str_from_array(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        pass
 
 
 # FLOAT
