@@ -46,14 +46,10 @@ class FuncDbCastTrino(base.FuncDbCastBase):
                 base.WhitelistTypeSpec(name="date", sa_type=sa.DATE),
             ],
             DataType.DATETIME: [
-                base.WhitelistTypeSpec(name="time", sa_type=tsa.TIME),
-                base.WhitelistTypeSpec(name="time with time zone", sa_type=tsa.TIME),
                 base.WhitelistTypeSpec(name="timestamp", sa_type=tsa.TIMESTAMP),
                 base.WhitelistTypeSpec(name="timestamp with time zone", sa_type=tsa.TIMESTAMP),
             ],
             DataType.GENERICDATETIME: [
-                base.WhitelistTypeSpec(name="time", sa_type=tsa.TIME),
-                base.WhitelistTypeSpec(name="time with time zone", sa_type=tsa.TIME),
                 base.WhitelistTypeSpec(name="timestamp", sa_type=tsa.TIMESTAMP),
                 base.WhitelistTypeSpec(name="timestamp with time zone", sa_type=tsa.TIMESTAMP),
             ],
