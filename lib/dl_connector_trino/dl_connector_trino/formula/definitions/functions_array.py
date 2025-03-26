@@ -38,9 +38,9 @@ DEFINITIONS_ARRAY = [
     #     ]
     # ),
     # array
-    # base.FuncConstArrayFloat.for_dialect(D.TRINO),
-    # base.FuncConstArrayInt.for_dialect(D.TRINO),
-    # base.FuncConstArrayStr.for_dialect(D.TRINO),
+    base.FuncConstArrayFloat.for_dialect(D.TRINO),
+    base.FuncConstArrayInt.for_dialect(D.TRINO),
+    base.FuncConstArrayStr.for_dialect(D.TRINO),
     # base.FuncNonConstArrayInt(
     #     variants=[
     #         V(D.TRINO, lambda *args: sa_postgresql.array(args)),
