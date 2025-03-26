@@ -188,6 +188,10 @@ DEFINITIONS_TYPE = [
     FuncDatetime2Trino(),
     # datetimetz
     # base.FuncDatetimeTZConst.for_dialect(D.TRINO),
+    # db_cast
+    FuncDbCastTrino2(),
+    FuncDbCastTrino3(),
+    FuncDbCastTrino4(),
     # float
     base.FuncFloatNumber(
         variants=[
