@@ -210,9 +210,7 @@ DEFINITIONS_ARRAY = [
                         array == None,
                         None,
                         sa.func.array_length(array, 1)
-                        - sa.func.coalesce(sa.func.array_length(
-                            sa.func.array_remove(array, value), 1
-                        ), 0)
+                        - sa.func.coalesce(sa.func.array_length(sa.func.array_remove(array, value), 1), 0),
                     )
                 ),
             ),
@@ -228,9 +226,16 @@ DEFINITIONS_ARRAY = [
                         array == None,
                         None,
                         sa.func.array_length(array, 1)
-                        - sa.func.coalesce(sa.func.array_length(
-                            sa.func.array_remove(sa.cast(array, sa.ARRAY(sa_postgresql.DOUBLE_PRECISION)), sa.cast(value, sa_postgresql.DOUBLE_PRECISION)), 1
-                        ), 0)
+                        - sa.func.coalesce(
+                            sa.func.array_length(
+                                sa.func.array_remove(
+                                    sa.cast(array, sa.ARRAY(sa_postgresql.DOUBLE_PRECISION)),
+                                    sa.cast(value, sa_postgresql.DOUBLE_PRECISION),
+                                ),
+                                1,
+                            ),
+                            0,
+                        ),
                     )
                 ),
             ),
@@ -246,9 +251,7 @@ DEFINITIONS_ARRAY = [
                         array == None,
                         None,
                         sa.func.array_length(array, 1)
-                        - sa.func.coalesce(sa.func.array_length(
-                            sa.func.array_remove(array, value), 1
-                        ), 0)
+                        - sa.func.coalesce(sa.func.array_length(sa.func.array_remove(array, value), 1), 0),
                     )
                 ),
             ),
@@ -286,11 +289,14 @@ DEFINITIONS_ARRAY = [
     base.FuncLenArray(
         variants=[
             # len for null array should be null
-            V(D.POSTGRESQL, lambda val: n.func.IF(
-                val == None,
-                sa.cast(None, sa_postgresql.INTEGER),
-                sa.func.coalesce(sa.func.ARRAY_LENGTH(val, 1), 0),
-            )),
+            V(
+                D.POSTGRESQL,
+                lambda val: n.func.IF(
+                    val == None,
+                    sa.cast(None, sa_postgresql.INTEGER),
+                    sa.func.coalesce(sa.func.ARRAY_LENGTH(val, 1), 0),
+                ),
+            ),
         ]
     ),
     # replace

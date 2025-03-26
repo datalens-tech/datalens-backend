@@ -311,15 +311,28 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
     @pytest.mark.xfail
     def test_array_contains_all_float_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
-        assert dbe.eval(f"CONTAINS_ALL({('[arr_float_null_value]')}, {self._float_array_cast('ARRAY(1.2, NULL)')})", from_=data_table) is None
-        assert not dbe.eval(f"CONTAINS_ALL({self._float_array_cast('ARRAY(1.2, 2.3)')}, {self._float_array_cast('[arr_float_null_value]')})", from_=data_table)
+        assert (
+            dbe.eval(
+                f"CONTAINS_ALL({('[arr_float_null_value]')}, {self._float_array_cast('ARRAY(1.2, NULL)')})",
+                from_=data_table,
+            )
+            is None
+        )
+        assert not dbe.eval(
+            f"CONTAINS_ALL({self._float_array_cast('ARRAY(1.2, 2.3)')}, {self._float_array_cast('[arr_float_null_value]')})",
+            from_=data_table,
+        )
 
     def test_array_contains_all_str(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         assert dbe.eval('CONTAINS_ALL(ARRAY("a", "bc", "potato"), ARRAY("a"))', from_=data_table)
         assert dbe.eval('CONTAINS_ALL(ARRAY("a", "bc", "potato"), ARRAY("a", "potato"))', from_=data_table)
         assert dbe.eval('CONTAINS_ALL(ARRAY("a", "bc", "potato", NULL), ARRAY("a", "potato"))', from_=data_table)
-        assert dbe.eval('CONTAINS_ALL(ARRAY("a", "bc", "potato", NULL), ARRAY("a", "a", "a", "a", "a", "potato"))', from_=data_table)
-        assert dbe.eval('CONTAINS_ALL(ARRAY("a", "bc", "potato", "a", "potato"), ARRAY("a", "potato"))', from_=data_table)
+        assert dbe.eval(
+            'CONTAINS_ALL(ARRAY("a", "bc", "potato", NULL), ARRAY("a", "a", "a", "a", "a", "potato"))', from_=data_table
+        )
+        assert dbe.eval(
+            'CONTAINS_ALL(ARRAY("a", "bc", "potato", "a", "potato"), ARRAY("a", "potato"))', from_=data_table
+        )
         assert dbe.eval('CONTAINS_ALL(ARRAY("a", "potato"), ARRAY("a", "potato"))', from_=data_table)
         assert dbe.eval('CONTAINS_ALL(ARRAY("a", "potato", "a", "potato"), ARRAY("a", "potato"))', from_=data_table)
         assert not dbe.eval('CONTAINS_ALL(ARRAY("a", "potato"), ARRAY("a", "cheese"))', from_=data_table)
@@ -336,8 +349,17 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
     @pytest.mark.xfail
     def test_array_contains_all_str_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
-        assert dbe.eval(f"""CONTAINS_ALL({self._str_array_cast('[arr_str_null_value]')}, {self._str_array_cast('ARRAY("cat", NULL)')})""", from_=data_table) is None
-        assert not dbe.eval(f"""CONTAINS_ALL({self._str_array_cast('ARRAY("cat", NULL)')}, {self._str_array_cast('[arr_str_null_value]')})""", from_=data_table)
+        assert (
+            dbe.eval(
+                f"""CONTAINS_ALL({self._str_array_cast('[arr_str_null_value]')}, {self._str_array_cast('ARRAY("cat", NULL)')})""",
+                from_=data_table,
+            )
+            is None
+        )
+        assert not dbe.eval(
+            f"""CONTAINS_ALL({self._str_array_cast('ARRAY("cat", NULL)')}, {self._str_array_cast('[arr_str_null_value]')})""",
+            from_=data_table,
+        )
 
     def test_array_contains_all_column(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         assert dbe.eval("CONTAINS_ALL([arr_int_value], ARRAY(23, 456))", from_=data_table)
@@ -418,22 +440,43 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
     @pytest.mark.xfail
     def test_array_contains_any_float_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
-        assert dbe.eval(f"CONTAINS_ANY({self._float_array_cast('[arr_float_null_value]')}, {self._float_array_cast('ARRAY(1.2, NULL)')})", from_=data_table) is None
-        assert not dbe.eval(f"CONTAINS_ANY({self._float_array_cast('ARRAY(1.2, NULL)')}, {self._float_array_cast('[arr_float_null_value]')})", from_=data_table)
+        assert (
+            dbe.eval(
+                f"CONTAINS_ANY({self._float_array_cast('[arr_float_null_value]')}, {self._float_array_cast('ARRAY(1.2, NULL)')})",
+                from_=data_table,
+            )
+            is None
+        )
+        assert not dbe.eval(
+            f"CONTAINS_ANY({self._float_array_cast('ARRAY(1.2, NULL)')}, {self._float_array_cast('[arr_float_null_value]')})",
+            from_=data_table,
+        )
 
     def test_array_contains_any_str(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         assert dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", "potato"), ARRAY("foo"))', from_=data_table)
         assert dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", "potato"), ARRAY("foo", "potato"))', from_=data_table)
         assert dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", "potato"), ARRAY("foo", "tomato"))', from_=data_table)
-        assert dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", "potato"), ARRAY("foo", "foo", "foo", "foo", "foo", "tomato"))', from_=data_table)
-        assert dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", "potato"), ARRAY("foo", "foo", "foo", "foo", "foo", "potato"))', from_=data_table)
+        assert dbe.eval(
+            'CONTAINS_ANY(ARRAY("foo", "bar", "potato"), ARRAY("foo", "foo", "foo", "foo", "foo", "tomato"))',
+            from_=data_table,
+        )
+        assert dbe.eval(
+            'CONTAINS_ANY(ARRAY("foo", "bar", "potato"), ARRAY("foo", "foo", "foo", "foo", "foo", "potato"))',
+            from_=data_table,
+        )
         assert dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar"), ARRAY("foo", "bar"))', from_=data_table)
         assert dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", NULL), ARRAY("foo", "tomato"))', from_=data_table)
         assert dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", NULL), ARRAY("foo", "tomato", NULL))', from_=data_table)
         assert not dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", "potato"), ARRAY("tomato", "cheese"))', from_=data_table)
-        assert not dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", "potato", NULL), ARRAY("tomato", "cheese"))', from_=data_table)
-        assert not dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", "potato"), ARRAY("tomato", "cheese", NULL))', from_=data_table)
-        assert dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", "potato", NULL), ARRAY("banana", "tomato", NULL))', from_=data_table)
+        assert not dbe.eval(
+            'CONTAINS_ANY(ARRAY("foo", "bar", "potato", NULL), ARRAY("tomato", "cheese"))', from_=data_table
+        )
+        assert not dbe.eval(
+            'CONTAINS_ANY(ARRAY("foo", "bar", "potato"), ARRAY("tomato", "cheese", NULL))', from_=data_table
+        )
+        assert dbe.eval(
+            'CONTAINS_ANY(ARRAY("foo", "bar", "potato", NULL), ARRAY("banana", "tomato", NULL))', from_=data_table
+        )
         assert dbe.eval('CONTAINS_ANY(ARRAY("foo"), ARRAY("foo"))', from_=data_table)
         assert dbe.eval('CONTAINS_ANY(ARRAY("foo", "foo"), ARRAY("foo"))', from_=data_table)
         assert dbe.eval('CONTAINS_ANY(ARRAY("foo"), ARRAY("foo", "foo"))', from_=data_table)
@@ -454,17 +497,31 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert not dbe.eval('CONTAINS_ANY(ARRAY("foo", "foo", NULL), ARRAY("banana", "NULL"))', from_=data_table)
 
     @pytest.mark.xfail
-    def test_array_contains_any_str(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+    def test_array_contains_any_str_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
-        assert dbe.eval(f"""CONTAINS_ANY({self._str_array_cast('[arr_str_null_value]')}, {self._str_array_cast('ARRAY("cat", NULL)')})""", from_=data_table) is None
-        assert not dbe.eval(f"""CONTAINS_ANY({self._str_array_cast('ARRAY("cat", NULL)')}, {self._str_array_cast('[arr_str_null_value]')})""", from_=data_table)
+        assert (
+            dbe.eval(
+                f"""CONTAINS_ANY({self._str_array_cast('[arr_str_null_value]')}, {self._str_array_cast('ARRAY("cat", NULL)')})""",
+                from_=data_table,
+            )
+            is None
+        )
+        assert not dbe.eval(
+            f"""CONTAINS_ANY({self._str_array_cast('ARRAY("cat", NULL)')}, {self._str_array_cast('[arr_str_null_value]')})""",
+            from_=data_table,
+        )
 
     def test_array_contains_any_column(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         assert dbe.eval("CONTAINS_ANY([arr_int_value], ARRAY(24, 456))", from_=data_table)
         assert not dbe.eval("CONTAINS_ANY([arr_int_value], ARRAY(24, 457))", from_=data_table)
 
-        assert dbe.eval(f"CONTAINS_ANY([arr_float_value], {self._float_array_cast('ARRAY(19, 0.123)')})", from_=data_table)
-        assert not dbe.eval(f"CONTAINS_ANY({self._float_array_cast('[arr_float_value]')}, {self._float_array_cast('ARRAY(190, 0.0123)')})", from_=data_table)
+        assert dbe.eval(
+            f"CONTAINS_ANY([arr_float_value], {self._float_array_cast('ARRAY(19, 0.123)')})", from_=data_table
+        )
+        assert not dbe.eval(
+            f"CONTAINS_ANY({self._float_array_cast('[arr_float_value]')}, {self._float_array_cast('ARRAY(190, 0.0123)')})",
+            from_=data_table,
+        )
 
         assert dbe.eval("CONTAINS_ANY([arr_int_value], SLICE([arr_int_value], 2, 1))", from_=data_table)
         assert dbe.eval("CONTAINS_ANY(ARRAY(0, 23, 456, NULL, 123), [arr_int_value])", from_=data_table)
@@ -550,33 +607,71 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("REPLACE(ARRAY(1, 2, 3, NULL), NULL, 9)") == dbe.eval("ARRAY(1, 2, 3, 9)")
 
     def test_replace_array_float(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        assert dbe.eval(self._float_array_cast('REPLACE(ARRAY(1.1), 1.1, 7.9)')) == dbe.eval(self._float_array_cast("ARRAY(7.9)"))
-        assert dbe.eval(self._float_array_cast('REPLACE(ARRAY(1.1), 2.2, 7.9)')) == dbe.eval(self._float_array_cast("ARRAY(1.1)"))
-        assert dbe.eval(self._float_array_cast('REPLACE(ARRAY(1.1, 1.1, 1.1), 1.1, 7.9)')) == dbe.eval(self._float_array_cast("ARRAY(7.9, 7.9, 7.9)"))
-        assert dbe.eval(self._float_array_cast('REPLACE(ARRAY(1.1, 1.1, 1.1), 2.2, 7.9)')) == dbe.eval(self._float_array_cast("ARRAY(1.1, 1.1, 1.1)"))
-        assert dbe.eval(self._float_array_cast('REPLACE(ARRAY(1.1, 2.2, 3.3), 1.1, 7.9)')) == dbe.eval(self._float_array_cast("ARRAY(7.9, 2.2, 3.3)"))
-        assert dbe.eval(self._float_array_cast('REPLACE(ARRAY(1.1, 1.1, 2.2, 3.3), 1.1, 7.9)')) == dbe.eval(self._float_array_cast("ARRAY(7.9, 7.9, 2.2, 3.3)"))
-        assert dbe.eval(self._float_array_cast('REPLACE(ARRAY(1.1, 2.2, 3.3), 6.6, 7.9)')) == dbe.eval(self._float_array_cast("ARRAY(1.1, 2.2, 3.3)"))
-        assert dbe.eval(self._float_array_cast('REPLACE(ARRAY(1.1), 1.1, 1.1)')) == dbe.eval(self._float_array_cast("ARRAY(1.1)"))
-        assert dbe.eval(self._float_array_cast('REPLACE(ARRAY(1.1, 2.2, 3.3), 1.1, 1.1)')) == dbe.eval(self._float_array_cast("ARRAY(1.1, 2.2, 3.3)"))
+        assert dbe.eval(self._float_array_cast("REPLACE(ARRAY(1.1), 1.1, 7.9)")) == dbe.eval(
+            self._float_array_cast("ARRAY(7.9)")
+        )
+        assert dbe.eval(self._float_array_cast("REPLACE(ARRAY(1.1), 2.2, 7.9)")) == dbe.eval(
+            self._float_array_cast("ARRAY(1.1)")
+        )
+        assert dbe.eval(self._float_array_cast("REPLACE(ARRAY(1.1, 1.1, 1.1), 1.1, 7.9)")) == dbe.eval(
+            self._float_array_cast("ARRAY(7.9, 7.9, 7.9)")
+        )
+        assert dbe.eval(self._float_array_cast("REPLACE(ARRAY(1.1, 1.1, 1.1), 2.2, 7.9)")) == dbe.eval(
+            self._float_array_cast("ARRAY(1.1, 1.1, 1.1)")
+        )
+        assert dbe.eval(self._float_array_cast("REPLACE(ARRAY(1.1, 2.2, 3.3), 1.1, 7.9)")) == dbe.eval(
+            self._float_array_cast("ARRAY(7.9, 2.2, 3.3)")
+        )
+        assert dbe.eval(self._float_array_cast("REPLACE(ARRAY(1.1, 1.1, 2.2, 3.3), 1.1, 7.9)")) == dbe.eval(
+            self._float_array_cast("ARRAY(7.9, 7.9, 2.2, 3.3)")
+        )
+        assert dbe.eval(self._float_array_cast("REPLACE(ARRAY(1.1, 2.2, 3.3), 6.6, 7.9)")) == dbe.eval(
+            self._float_array_cast("ARRAY(1.1, 2.2, 3.3)")
+        )
+        assert dbe.eval(self._float_array_cast("REPLACE(ARRAY(1.1), 1.1, 1.1)")) == dbe.eval(
+            self._float_array_cast("ARRAY(1.1)")
+        )
+        assert dbe.eval(self._float_array_cast("REPLACE(ARRAY(1.1, 2.2, 3.3), 1.1, 1.1)")) == dbe.eval(
+            self._float_array_cast("ARRAY(1.1, 2.2, 3.3)")
+        )
         # null
-        assert dbe.eval(self._float_array_cast('REPLACE(ARRAY(1.1, 2.2, 3.3, NULL), NULL, 9.9)')) == dbe.eval(self._float_array_cast("ARRAY(1.1, 2.2, 3.3, 9.9)"))
+        assert dbe.eval(self._float_array_cast("REPLACE(ARRAY(1.1, 2.2, 3.3, NULL), NULL, 9.9)")) == dbe.eval(
+            self._float_array_cast("ARRAY(1.1, 2.2, 3.3, 9.9)")
+        )
 
     def test_replace_array_str(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         assert dbe.eval('REPLACE(ARRAY("cheese"), "cheese", "burger")') == dbe.eval('ARRAY("burger")')
         assert dbe.eval('REPLACE(ARRAY("cheese"), "potato", "burger")') == dbe.eval('ARRAY("cheese")')
-        assert dbe.eval('REPLACE(ARRAY("cheese", "cheese", "cheese"), "cheese", "burger")') == dbe.eval('ARRAY("burger", "burger", "burger")')
-        assert dbe.eval('REPLACE(ARRAY("cheese", "cheese", "cheese"), "potato", "burger")') == dbe.eval('ARRAY("cheese", "cheese", "cheese")')
-        assert dbe.eval('REPLACE(ARRAY("cheese", "burger", "cat"), "cheese", "bread")') == dbe.eval('ARRAY("bread", "burger", "cat")')
-        assert dbe.eval('REPLACE(ARRAY("cheese", "cheese", "burger", "cat"), "cheese", "bread")') == dbe.eval('ARRAY("bread", "bread", "burger", "cat")')
-        assert dbe.eval('REPLACE(ARRAY("cheese", "burger", "cat"), "salad", "potato")') == dbe.eval('ARRAY("cheese", "burger", "cat")')
+        assert dbe.eval('REPLACE(ARRAY("cheese", "cheese", "cheese"), "cheese", "burger")') == dbe.eval(
+            'ARRAY("burger", "burger", "burger")'
+        )
+        assert dbe.eval('REPLACE(ARRAY("cheese", "cheese", "cheese"), "potato", "burger")') == dbe.eval(
+            'ARRAY("cheese", "cheese", "cheese")'
+        )
+        assert dbe.eval('REPLACE(ARRAY("cheese", "burger", "cat"), "cheese", "bread")') == dbe.eval(
+            'ARRAY("bread", "burger", "cat")'
+        )
+        assert dbe.eval('REPLACE(ARRAY("cheese", "cheese", "burger", "cat"), "cheese", "bread")') == dbe.eval(
+            'ARRAY("bread", "bread", "burger", "cat")'
+        )
+        assert dbe.eval('REPLACE(ARRAY("cheese", "burger", "cat"), "salad", "potato")') == dbe.eval(
+            'ARRAY("cheese", "burger", "cat")'
+        )
         assert dbe.eval('REPLACE(ARRAY("cheese"), "cheese", "cheese")') == dbe.eval('ARRAY("cheese")')
-        assert dbe.eval('REPLACE(ARRAY("cheese", "burger", "cat"), "cheese", "cheese")') == dbe.eval('ARRAY("cheese", "burger", "cat")')
+        assert dbe.eval('REPLACE(ARRAY("cheese", "burger", "cat"), "cheese", "cheese")') == dbe.eval(
+            'ARRAY("cheese", "burger", "cat")'
+        )
         # null
-        assert dbe.eval('REPLACE(ARRAY("cheese", "burger", "cat", NULL), NULL, "bread")') == dbe.eval('ARRAY("cheese", "burger", "cat", "bread")')
+        assert dbe.eval('REPLACE(ARRAY("cheese", "burger", "cat", NULL), NULL, "bread")') == dbe.eval(
+            'ARRAY("cheese", "burger", "cat", "bread")'
+        )
         # "null"
-        assert dbe.eval('REPLACE(ARRAY("cheese", "burger", "cat", "NULL"), NULL, "bread")') == dbe.eval('ARRAY("cheese", "burger", "cat", "NULL")')
-        assert dbe.eval('REPLACE(ARRAY("cheese", "burger", "cat", NULL), "NULL", "bread")') == dbe.eval('ARRAY("cheese", "burger", "cat", NULL)')
+        assert dbe.eval('REPLACE(ARRAY("cheese", "burger", "cat", "NULL"), NULL, "bread")') == dbe.eval(
+            'ARRAY("cheese", "burger", "cat", "NULL")'
+        )
+        assert dbe.eval('REPLACE(ARRAY("cheese", "burger", "cat", NULL), "NULL", "bread")') == dbe.eval(
+            'ARRAY("cheese", "burger", "cat", NULL)'
+        )
 
     def test_replace_array_column(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         assert dbe.eval("REPLACE([arr_int_value], -2, 1000)", from_=data_table) == dbe.eval("ARRAY(0, 23, 456, NULL)")
@@ -692,7 +787,9 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
 
         # with ARRAY func remove const
         assert dbe.eval("ARR_REMOVE(ARRAY(1, 2), 1)", from_=data_table) == dbe.eval("ARRAY(2)")
-        assert dbe.eval(self._float_array_cast("ARR_REMOVE(ARRAY(1.1, 2.2), 1.1)"), from_=data_table) == dbe.eval(self._float_array_cast("ARRAY(2.2)"))
+        assert dbe.eval(self._float_array_cast("ARR_REMOVE(ARRAY(1.1, 2.2), 1.1)"), from_=data_table) == dbe.eval(
+            self._float_array_cast("ARRAY(2.2)")
+        )
         assert dbe.eval("ARR_REMOVE(ARRAY('1', '2'), '1')", from_=data_table) == dbe.eval("ARRAY('2')")
         assert dbe.eval("LEN(ARR_REMOVE(ARRAY(1), 1))", from_=data_table) == 0
         assert dbe.eval("LEN(ARR_REMOVE(ARRAY(1.1), 1.1))", from_=data_table) == 0
