@@ -56,6 +56,9 @@ FIELD_TYPES = {
     "arr_int_value": DataType.ARRAY_INT,
     "arr_float_value": DataType.ARRAY_FLOAT,
     "arr_str_value": DataType.ARRAY_STR,
+    "arr_int_null_value": DataType.ARRAY_INT,
+    "arr_float_null_value": DataType.ARRAY_FLOAT,
+    "arr_str_null_value": DataType.ARRAY_STR,
     # for NULL data
     "int_null": DataType.INTEGER,
     "float_null": DataType.FLOAT,
