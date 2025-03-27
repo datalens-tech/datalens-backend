@@ -1,5 +1,7 @@
 import sqlalchemy as sa
 
+from dl_formula.core.datatype import DataType
+from dl_formula.definitions.args import ArgTypeSequence
 from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_array as base
 
@@ -7,6 +9,78 @@ from dl_connector_trino.formula.constants import TrinoDialect as D
 
 
 V = TranslationVariant.make
+
+
+drop_null = lambda array: sa.func.filter(array, sa.text("x -> x IS NOT NULL"))
+format_float = lambda array_float: sa.func.transform(
+    array_float, sa.text("x -> regexp_extract(format('%.8f', x), '^(-?\d+(\.[1-9]+)?)(\.?0*)$', 1)")
+)
+
+
+class FuncArrStr3Trino(base.FuncArrStr3):
+    variants = [
+        V(D.TRINO, lambda array, delimiter, null_str: sa.func.array_join(array, delimiter, null_str)),
+    ]
+    argument_types = [
+        ArgTypeSequence([DataType.ARRAY_INT]),
+        ArgTypeSequence([DataType.ARRAY_STR]),
+    ]
+
+
+class FuncFloatArrStr3Trino(base.FuncArrStr3):
+    variants = [
+        V(
+            D.TRINO,
+            lambda array, delimiter, null_str: sa.func.array_join(format_float(array), delimiter, null_str),
+        ),
+    ]
+    argument_types = [
+        ArgTypeSequence([DataType.ARRAY_FLOAT]),
+    ]
+
+
+class FuncArrStr2Trino(base.FuncArrStr2):
+    variants = [
+        V(D.TRINO, lambda array, delimiter: sa.func.array_join(drop_null(array), delimiter)),
+    ]
+    argument_types = [
+        ArgTypeSequence([DataType.ARRAY_INT]),
+        ArgTypeSequence([DataType.ARRAY_STR]),
+    ]
+
+
+class FuncFloatArrStr2Trino(base.FuncArrStr2):
+    variants = [
+        V(
+            D.TRINO,
+            lambda array, delimiter: sa.func.array_join(format_float(drop_null(array)), delimiter),
+        ),
+    ]
+    argument_types = [
+        ArgTypeSequence([DataType.ARRAY_FLOAT]),
+    ]
+
+
+class FuncArrStr1Trino(base.FuncArrStr1):
+    variants = [
+        V(D.TRINO, lambda array: sa.func.array_join(drop_null(array), ",")),
+    ]
+    argument_types = [
+        ArgTypeSequence([DataType.ARRAY_INT]),
+        ArgTypeSequence([DataType.ARRAY_STR]),
+    ]
+
+
+class FuncFloatArrStr1Trino(base.FuncArrStr1):
+    variants = [
+        V(
+            D.TRINO,
+            lambda array: sa.func.array_join(format_float(drop_null(array)), ","),
+        ),
+    ]
+    argument_types = [
+        ArgTypeSequence([DataType.ARRAY_FLOAT]),
+    ]
 
 
 DEFINITIONS_ARRAY = [
@@ -22,21 +96,12 @@ DEFINITIONS_ARRAY = [
     #     ]
     # ),
     # arr_str
-    # base.FuncArrStr1(
-    #     variants=[
-    #         V(D.TRINO, lambda array: sa.func.array_to_string(array, ",")),
-    #     ]
-    # ),
-    # base.FuncArrStr2(
-    #     variants=[
-    #         V(D.TRINO, lambda array, sep: sa.func.array_to_string(array, sep)),
-    #     ]
-    # ),
-    # base.FuncArrStr3(
-    #     variants=[
-    #         V(D.TRINO, lambda array, sep, null_str: sa.func.array_to_string(array, sep, null_str)),
-    #     ]
-    # ),
+    FuncArrStr1Trino(),
+    FuncFloatArrStr1Trino(),
+    FuncArrStr2Trino(),
+    FuncFloatArrStr2Trino(),
+    FuncArrStr3Trino(),
+    FuncFloatArrStr3Trino(),
     # array
     base.FuncConstArrayFloat.for_dialect(D.TRINO),
     base.FuncConstArrayInt.for_dialect(D.TRINO),
