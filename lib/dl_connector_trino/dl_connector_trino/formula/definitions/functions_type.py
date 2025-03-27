@@ -14,6 +14,7 @@ from dl_formula.definitions.scope import Scope
 from dl_formula.translation.context import TranslationCtx
 
 from dl_connector_trino.formula.constants import TrinoDialect as D
+from dl_connector_trino.formula.definitions.functions_array import format_float
 
 
 V = TranslationVariant.make
@@ -89,46 +90,22 @@ class FuncDbCastTrino4(FuncDbCastTrino, base.FuncDbCast4):
     pass
 
 
-class FuncStrFromArrayIntTrino(base.FuncStrFromArray):
+class FuncStrFromArrayTrino(base.FuncStrFromArray):
     variants = [
         V(D.TRINO, lambda value: "[" + sa.func.array_join(value, ",", "NULL") + "]"),
     ]
     argument_types = [
         ArgTypeSequence([DataType.ARRAY_INT]),
+        ArgTypeSequence([DataType.ARRAY_STR]),
     ]
 
 
 class FuncStrFromArrayFloatTrino(base.FuncStrFromArray):
     variants = [
-        V(
-            D.TRINO,
-            lambda value: "["
-            + sa.func.array_join(
-                sa.func.transform(value, sa.text("x -> regexp_extract(format('%.8f', x), '^(-?\d+\.\d+?)(0*)$', 1)")),
-                ",",
-                "NULL",
-            )
-            + "]",
-        ),
+        V(D.TRINO, lambda value: "[" + sa.func.array_join(format_float(value), ",", "NULL") + "]"),
     ]
     argument_types = [
         ArgTypeSequence([DataType.ARRAY_FLOAT]),
-    ]
-
-
-class FuncStrFromArrayStrTrino(base.FuncStrFromArray):
-    variants = [
-        V(
-            D.TRINO,
-            lambda value: "["
-            + sa.func.array_join(
-                sa.func.transform(value, sa.text("x -> if(x IS NULL, 'NULL', format('''%s''', x))")), ","
-            )
-            + "]",
-        ),
-    ]
-    argument_types = [
-        ArgTypeSequence([DataType.ARRAY_STR]),
     ]
 
 
@@ -313,7 +290,6 @@ DEFINITIONS_TYPE = [
         ]
     ),
     base.FuncStrFromString.for_dialect(D.TRINO),
-    FuncStrFromArrayIntTrino(),
+    FuncStrFromArrayTrino(),
     FuncStrFromArrayFloatTrino(),
-    FuncStrFromArrayStrTrino(),
 ]
