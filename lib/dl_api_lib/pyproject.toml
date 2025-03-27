@@ -59,8 +59,8 @@ requires = [
 ]
 
 [tool.pytest.ini_options]
-# log_cli = true
-# log_level = "DEBUG"
+log_cli = true
+log_level = "DEBUG"
 minversion = "6.0"
 addopts = "-ra"
 testpaths = ["dl_api_lib_tests/unit", "dl_api_lib_tests/db"]

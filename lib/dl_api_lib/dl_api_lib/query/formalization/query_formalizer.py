@@ -39,6 +39,7 @@ from dl_core.components.ids import (
 from dl_core.constants import DataAPILimits
 from dl_core.data_source.base import DataSource
 from dl_core.data_source.collection import DataSourceCollectionFactory
+from dl_core.data_source_spec_mutator import DataSourceCollectionSpecMutator
 import dl_core.exc
 from dl_core.fields import BIField
 from dl_core.us_dataset import Dataset
@@ -105,6 +106,7 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
 
     _ds_accessor: DatasetComponentAccessor = attr.ib(init=False)
+    _dsrc_coll_spec_mutator: DataSourceCollectionSpecMutator = attr.ib(init=False)
     _dsrc_coll_factory: DataSourceCollectionFactory = attr.ib(init=False)
     _field_resolver: FieldResolver = attr.ib(init=False)
     _avatar_resolution_cache: Dict[str, bool] = attr.ib(init=False, factory=dict)
@@ -112,6 +114,10 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
     @_ds_accessor.default
     def _make_ds_accessor(self) -> DatasetComponentAccessor:
         return DatasetComponentAccessor(dataset=self._dataset)
+
+    @_dsrc_coll_spec_mutator.default
+    def _make_dsrc_coll_spec_mutator(self) -> DataSourceCollectionSpecMutator:
+        return DataSourceCollectionSpecMutator(dataset=self._dataset)
 
     @_dsrc_coll_factory.default
     def _make_dsrc_coll_factory(self) -> DataSourceCollectionFactory:
@@ -124,7 +130,8 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
     def _get_data_source_strict(self, source_id: str, role: DataSourceRole) -> DataSource:
         assert role is not None
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
-        dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
+        mutated_dsrc_coll_spec = self._dsrc_coll_spec_mutator.mutate(spec=dsrc_coll_spec)
+        dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=mutated_dsrc_coll_spec)
         dsrc = dsrc_coll.get_strict(role=role)
         return dsrc
 

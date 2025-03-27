@@ -33,6 +33,7 @@ from dl_core.data_source.collection import (
 )
 from dl_core.data_source.sql import BaseSQLDataSource
 from dl_core.data_source_spec.collection import DataSourceCollectionSpec
+from dl_core.data_source_spec_mutator import DataSourceCollectionSpecMutator
 from dl_core.dataset_capabilities import DatasetCapabilities
 from dl_core.db.elements import (
     IndexInfo,
@@ -67,6 +68,7 @@ class DatasetTestWrapper:
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
 
     _ds_accessor: DatasetComponentAccessor = attr.ib(init=False)
+    _dsrc_coll_spec_mutator: DataSourceCollectionSpecMutator = attr.ib(init=False)
     _dsrc_coll_factory: DataSourceCollectionFactory = attr.ib(init=False)
     _ds_capabilities: DatasetCapabilities = attr.ib(init=False)
 
@@ -79,6 +81,10 @@ class DatasetTestWrapper:
     @_ds_accessor.default
     def _make_ds_accessor(self) -> DatasetComponentAccessor:
         return DatasetComponentAccessor(dataset=self._dataset)
+
+    @_dsrc_coll_spec_mutator.default
+    def _make_dsrc_coll_spec_mutator(self) -> DataSourceCollectionSpecMutator:
+        return DataSourceCollectionSpecMutator(dataset=self._dataset)
 
     @_dsrc_coll_factory.default
     def _make_dsrc_coll_factory(self) -> DataSourceCollectionFactory:
@@ -118,6 +124,7 @@ class DatasetTestWrapper:
 
     def get_data_source_coll_opt(self, source_id: str) -> Optional[DataSourceCollection]:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
+        dsrc_coll_spec = self._dsrc_coll_spec_mutator.mutate(spec=dsrc_coll_spec)
         dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
         return dsrc_coll
 

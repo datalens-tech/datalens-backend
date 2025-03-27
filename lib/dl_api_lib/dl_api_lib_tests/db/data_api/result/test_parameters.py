@@ -1,6 +1,5 @@
-from __future__ import annotations
-
 from http import HTTPStatus
+import typing
 
 import pytest
 
@@ -19,7 +18,11 @@ from dl_api_client.dsmaker.shortcuts.dataset import (
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib.enums import DatasetAction
 from dl_api_lib_tests.db.base import DefaultApiTestBase
+import dl_constants.enums as dl_constants_enums
 from dl_constants.enums import UserDataType
+from dl_core_testing.database import DbTable
+
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_SUBSELECT
 
 
 class TestParameters(DefaultApiTestBase):
@@ -311,3 +314,50 @@ class TestParameters(DefaultApiTestBase):
         rows = get_data_rows(result_resp)
         assert len(rows) == 3
         assert {row[0] for row in rows} == {"Office Supplies", "Unknown Furniture", "Unknown Technology"}
+
+
+class TestParameterSourceTemplates(DefaultApiTestBase):
+    raw_sql_level = dl_constants_enums.RawSQLLevel.subselect
+
+    @pytest.fixture(scope="function")
+    def saved_dataset(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_connection_id: str,
+        sample_table: DbTable,
+    ) -> typing.Generator[Dataset, None, None]:
+        ds = Dataset()
+        parameter = StringParameterValue(value=sample_table.name)
+        ds.result_schema["table_name"] = ds.field(
+            cast=parameter.type,
+            default_value=parameter,
+            value_constraint=None,
+        )
+
+        ds.sources["source_1"] = ds.source(
+            connection_id=saved_connection_id,
+            source_type=SOURCE_TYPE_CH_SUBSELECT.name,
+            parameters=dict(subsql="SELECT * FROM {table_name}"),
+        )
+        ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
+        ds = control_api.apply_updates(dataset=ds).dataset
+        ds = control_api.save_dataset(dataset=ds).dataset
+        yield ds
+        control_api.delete_dataset(dataset_id=ds.id)
+
+    def test_default(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ):
+        ds = saved_dataset
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="discount"),
+                ds.find_field(title="city"),
+            ],
+        )
+
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json

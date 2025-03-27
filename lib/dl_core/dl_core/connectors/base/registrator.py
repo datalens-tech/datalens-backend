@@ -19,6 +19,7 @@ from dl_core.connectors.settings.registry import register_connector_settings_cla
 from dl_core.data_processing.query_compiler_registry import register_sa_query_compiler_cls
 from dl_core.data_source.type_mapping import register_data_source_class
 from dl_core.data_source_spec.type_mapping import register_data_source_spec_class
+from dl_core.data_source_spec_mutator.type_mapping import register_data_source_spec_mutator_class
 from dl_core.db_session_utils import (
     register_query_fail_exceptions,
     register_sa_query_cls,
@@ -46,6 +47,10 @@ class CoreConnectorRegistrator:
         register_data_source_spec_class(
             source_type=source_def.source_type,
             spec_cls=source_def.source_spec_cls,
+        )
+        register_data_source_spec_mutator_class(
+            source_type=source_def.source_type,
+            mutator_cls=source_def.source_spec_mutator_cls,
         )
         register_data_source_class(
             source_type=source_def.source_type,
