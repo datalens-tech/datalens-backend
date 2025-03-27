@@ -35,6 +35,7 @@ from dl_core.data_source.collection import (
     DataSourceCollection,
     DataSourceCollectionFactory,
 )
+from dl_core.data_source_spec_mutator import DataSourceCollectionSpecMutator
 from dl_core.dataset_capabilities import DatasetCapabilities
 from dl_core.exc import (
     FieldNotFound,
@@ -137,6 +138,7 @@ class DatasetBaseWrapper:
         self._service_registry: ApiServiceRegistry = service_registry
         self._ds_accessor = DatasetComponentAccessor(dataset=ds)
         self._ds_editor = DatasetComponentEditor(dataset=ds)
+        self._dsrc_coll_spec_mutator = DataSourceCollectionSpecMutator(dataset=ds)
         self._dsrc_coll_factory = DataSourceCollectionFactory(us_entry_buffer=self._us_manager.get_entry_buffer())
         self._function_scopes = function_scopes
         self._capabilities = DatasetCapabilities(
@@ -188,6 +190,7 @@ class DatasetBaseWrapper:
 
     def _get_data_source_coll_strict(self, source_id: str) -> DataSourceCollection:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
+        dsrc_coll_spec = self._dsrc_coll_spec_mutator.mutate(spec=dsrc_coll_spec)
         dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
         return dsrc_coll
 

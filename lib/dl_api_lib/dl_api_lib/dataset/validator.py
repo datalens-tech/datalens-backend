@@ -181,11 +181,27 @@ class DatasetValidator(DatasetBaseWrapper):
             f"Unsupported type of USManager ({type(us_manager).__qualname__}). " f"Only SyncUSManager supported."
         )
 
+    def _get_action_order_index(self, action: Action) -> int:
+        # Fields with calc_mode=parameter should be added first so that sources can reference them
+        if (
+            isinstance(action, FieldAction)
+            and action.action == DatasetAction.add_field
+            and isinstance(action.field, UpdateField)
+            and action.field.calc_mode == CalcMode.parameter
+        ):
+            return 0
+
+        return 100
+
+    def _sort_action_batch(self, action_batch: Sequence[Action]) -> Sequence[Action]:
+        return sorted(action_batch, key=self._get_action_order_index)
+
     @generic_profiler("validator-apply-action-batch")
     def apply_batch(self, action_batch: Sequence[Action]) -> None:
         self.update_unpatched_fields()  # TODO: remove after all fields have been patched
+        sorted_action_batch = self._sort_action_batch(action_batch)
         try:
-            for action_patch in action_batch:
+            for action_patch in sorted_action_batch:
                 self.apply_action(
                     item_data=action_patch,
                 )

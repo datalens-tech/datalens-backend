@@ -26,6 +26,7 @@ from dl_core.backend_types import get_backend_type
 from dl_core.components.accessor import DatasetComponentAccessor
 import dl_core.data_source as data_source
 from dl_core.data_source.type_mapping import list_registered_source_types
+from dl_core.data_source_spec_mutator import DataSourceCollectionSpecMutator
 import dl_core.exc as exc
 from dl_core.us_connection import CONNECTION_TYPES
 from dl_core.us_dataset import Dataset
@@ -81,7 +82,12 @@ def get_conn_types_compatible_with_src_types(source_types: FrozenSet[DataSourceT
 class DatasetCapabilities:
     _dataset: Dataset = attr.ib(kw_only=True)
     _dsrc_coll_factory: DataSourceCollectionFactory = attr.ib(kw_only=True)
+    _dsrc_coll_spec_mutator: DataSourceCollectionSpecMutator = attr.ib(init=False)
     _ds_accessor: DatasetComponentAccessor = attr.ib(init=False)
+
+    @_dsrc_coll_spec_mutator.default
+    def _make_dsrc_coll_spec_mutator(self) -> DataSourceCollectionSpecMutator:
+        return DataSourceCollectionSpecMutator(dataset=self._dataset)
 
     @_ds_accessor.default
     def _make_ds_accessor(self) -> DatasetComponentAccessor:
@@ -89,6 +95,7 @@ class DatasetCapabilities:
 
     def _get_data_source_strict(self, source_id: str, role: DataSourceRole) -> data_source.DataSource:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
+        dsrc_coll_spec = self._dsrc_coll_spec_mutator.mutate(spec=dsrc_coll_spec)
         dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
         dsrc = dsrc_coll.get_strict(role=role)
         return dsrc
@@ -101,6 +108,7 @@ class DatasetCapabilities:
         if source_id is not None:
             dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_opt(source_id)
             if dsrc_coll_spec is not None:
+                dsrc_coll_spec = self._dsrc_coll_spec_mutator.mutate(spec=dsrc_coll_spec)
                 return self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
 
         return None
@@ -174,6 +182,7 @@ class DatasetCapabilities:
     def _get_data_source_collections(self) -> dict[str, DataSourceCollection]:
         result = {}
         for dsrc_coll_spec in self._ds_accessor.get_data_source_coll_spec_list():
+            dsrc_coll_spec = self._dsrc_coll_spec_mutator.mutate(spec=dsrc_coll_spec)
             result[dsrc_coll_spec.id] = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
         return result
 

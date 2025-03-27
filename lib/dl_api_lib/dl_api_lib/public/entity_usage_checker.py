@@ -11,7 +11,11 @@ from dl_api_lib.i18n.localizer import Translatable
 from dl_constants.enums import DataSourceRole
 from dl_core import us_dataset
 from dl_core.components.accessor import DatasetComponentAccessor
-from dl_core.data_source.collection import DataSourceCollectionFactory
+from dl_core.data_source import (
+    DataSourceCollection,
+    DataSourceCollectionFactory,
+)
+from dl_core.data_source_spec_mutator import DataSourceCollectionSpecMutator
 from dl_core.dataset_capabilities import DatasetCapabilities
 from dl_core.exc import EntityUsageNotAllowed
 from dl_core.services_registry.entity_checker import EntityUsageChecker
@@ -36,6 +40,7 @@ class PublicEnvEntityUsageChecker(EntityUsageChecker):
         localizer: Optional[Localizer] = None,
     ) -> None:
         ds_accessor = DatasetComponentAccessor(dataset=dataset)
+        dsrc_coll_spec_mutator = DataSourceCollectionSpecMutator(dataset=dataset)
         dsrc_coll_factory = DataSourceCollectionFactory(us_entry_buffer=us_manager.get_entry_buffer())
         capabilities = DatasetCapabilities(dataset=dataset, dsrc_coll_factory=dsrc_coll_factory)
         LOGGER.info("Checking if dataset %s can be used in public env", dataset.uuid)
@@ -48,10 +53,13 @@ class PublicEnvEntityUsageChecker(EntityUsageChecker):
         elif main_source_role == DataSourceRole.origin:
             LOGGER.info("Dataset source role is %s. Underlying connections will be checked", main_source_role)
             dsrc_coll_spec_list = ds_accessor.get_data_source_coll_spec_list()
-            dsrc_coll_list = [
-                dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
-                for dsrc_coll_spec in dsrc_coll_spec_list
-            ]
+
+            dsrc_coll_list: list[DataSourceCollection] = []
+            for dsrc_coll_spec in dsrc_coll_spec_list:
+                dsrc_coll_spec = dsrc_coll_spec_mutator.mutate(spec=dsrc_coll_spec)
+                dsrc_coll = dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
+                dsrc_coll_list.append(dsrc_coll)
+
             effective_data_source_list = [dsrc_coll.get_strict() for dsrc_coll in dsrc_coll_list]
             conn_set = {dsrc.connection for dsrc in effective_data_source_list}
             LOGGER.info(
