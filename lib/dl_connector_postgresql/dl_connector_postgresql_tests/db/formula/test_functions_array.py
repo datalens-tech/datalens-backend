@@ -12,6 +12,8 @@ from dl_connector_postgresql_tests.db.formula.base import (
 class ArrayFunctionPostgreTestSuite(DefaultArrayFunctionFormulaConnectorTestSuite):
     make_decimal_cast = "numeric"
     make_float_cast = "double precision"
+    make_float_array_cast = "double precision[]"
+    make_str_array_cast = "text[]"
 
     def test_startswith_string_array(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         assert dbe.eval("STARTSWITH([arr_str_value], [arr_str_value])", from_=data_table)

@@ -9,6 +9,7 @@ from dl_connector_postgresql_tests.db.formula.base import (
 class OperatorPostgreSQLTestSuite(DefaultOperatorFormulaConnectorTestSuite):
     subtraction_round_dt = False
     make_float_array_cast = "double precision[]"
+    make_str_array_cast = "text[]"
 
 
 class TestOperatorPostgreSQL_9_3(PostgreSQL_9_3TestBase, OperatorPostgreSQLTestSuite):
