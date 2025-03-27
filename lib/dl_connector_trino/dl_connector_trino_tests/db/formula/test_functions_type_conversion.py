@@ -22,7 +22,9 @@ class TestStrTypeFunctionTrino(TrinoFormulaTestBase, DefaultStrTypeFunctionFormu
     zero_float_to_str_value = "0.0"
 
     def test_str_from_array(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        pass
+        assert dbe.eval("STR([arr_int_value])", from_=data_table) == "[0,23,456,NULL]"
+        assert dbe.eval("STR([arr_float_value])", from_=data_table) == "[0,45,0.123,NULL]"
+        assert dbe.eval("STR([arr_str_value])", from_=data_table) == "[,,cde,NULL]"
 
 
 # FLOAT
