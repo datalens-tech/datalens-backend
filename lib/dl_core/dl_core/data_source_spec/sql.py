@@ -1,9 +1,6 @@
-from __future__ import annotations
-
 from typing import (
     Any,
     FrozenSet,
-    Optional,
 )
 
 import attr
@@ -15,22 +12,22 @@ from dl_utils.utils import get_type_full_name
 
 @attr.s
 class SQLDataSourceSpecBase(DataSourceSpec):
-    db_version: Optional[str] = attr.ib(kw_only=True, default=None)
+    db_version: str | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s
 class SubselectDataSourceSpec(SQLDataSourceSpecBase):
-    subsql: Optional[str] = attr.ib(kw_only=True, default=None)
+    subsql: str | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s
 class DbSQLDataSourceSpec(SQLDataSourceSpecBase):
-    db_name: Optional[str] = attr.ib(kw_only=True, default=None)
+    db_name: str | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s
 class TableSQLDataSourceSpec(SQLDataSourceSpecBase):
-    table_name: Optional[str] = attr.ib(kw_only=True, default=None)
+    table_name: str | None = attr.ib(kw_only=True, default=None)
 
     @property
     def is_configured(self) -> bool:
@@ -39,7 +36,7 @@ class TableSQLDataSourceSpec(SQLDataSourceSpecBase):
 
 @attr.s
 class IndexedSQLDataSourceSpec(SQLDataSourceSpecBase):
-    index_info_set: Optional[FrozenSet[IndexInfo]] = attr.ib(kw_only=True, default=None)
+    index_info_set: FrozenSet[IndexInfo] | None = attr.ib(kw_only=True, default=None)
 
     @index_info_set.validator
     def check_indexes(self, attribute: Any, value: Any) -> None:
@@ -60,7 +57,7 @@ class StandardSQLDataSourceSpec(
 
 @attr.s
 class SchemaSQLDataSourceSpec(SQLDataSourceSpecBase):
-    schema_name: Optional[str] = attr.ib(kw_only=True, default=None)
+    schema_name: str | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s

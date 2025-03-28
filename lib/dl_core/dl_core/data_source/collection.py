@@ -1,11 +1,4 @@
-from __future__ import annotations
-
-from typing import (
-    TYPE_CHECKING,
-    Callable,
-    Optional,
-    Union,
-)
+from typing import Callable
 
 import attr
 
@@ -20,6 +13,7 @@ from dl_core.base_models import (
     DefaultConnectionRef,
     InternalMaterializationConnectionRef,
 )
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.data_source import (
     base,
     type_mapping,
@@ -30,12 +24,8 @@ from dl_core.data_source_spec.collection import DataSourceCollectionSpec
 from dl_core.db import SchemaColumn
 from dl_core.enums import RoleReason
 import dl_core.exc as exc
-
-
-if TYPE_CHECKING:
-    from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-    from dl_core.us_connection_base import ConnectionBase
-    from dl_core.us_manager.local_cache import USEntryBuffer
+from dl_core.us_connection_base import ConnectionBase
+from dl_core.us_manager.local_cache import USEntryBuffer
 
 
 @attr.s(slots=True)
@@ -46,14 +36,14 @@ class RoleResolutionInfo:
     priorities: list[DataSourceRole] = attr.ib(kw_only=True, factory=list)
 
 
-LazyDataSourceType = Union[base.DataSource, dict]  # data source instance or param dict
+LazyDataSourceType = base.DataSource | dict
 
 
 @attr.s
 class DataSourceCollection:
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
     _spec: DataSourceCollectionSpec = attr.ib(default=None)
-    _loaded_sources: dict[DataSourceRole, Optional[base.DataSource]] = attr.ib(init=False, factory=dict)
+    _loaded_sources: dict[DataSourceRole, base.DataSource | None] = attr.ib(init=False, factory=dict)
 
     @property
     def spec(self) -> DataSourceCollectionSpec:
@@ -69,14 +59,14 @@ class DataSourceCollection:
         return self.spec.valid
 
     @property
-    def title(self) -> Optional[str]:
+    def title(self) -> str | None:
         return self.spec.title
 
     @property
     def managed_by(self) -> ManagedBy:
         return self.spec.managed_by
 
-    def get_connection_id(self, role: Optional[DataSourceRole] = None) -> Optional[str]:
+    def get_connection_id(self, role: DataSourceRole | None = None) -> str | None:
         conn_ref = self.get_strict(role=role).connection_ref
         if isinstance(conn_ref, DefaultConnectionRef):
             return conn_ref.conn_id
@@ -86,7 +76,7 @@ class DataSourceCollection:
             raise TypeError(f"Unexpected conn_ref class: {type(conn_ref)}")
 
     @property
-    def effective_connection_id(self) -> Optional[str]:
+    def effective_connection_id(self) -> str | None:
         return self.get_connection_id()
 
     @property
@@ -96,7 +86,7 @@ class DataSourceCollection:
     def supports_join_type(
         self,
         join_type: JoinType,
-        role: Optional[DataSourceRole] = None,
+        role: DataSourceRole | None = None,
         for_preview: bool = False,
     ) -> bool:
         if role is None:
@@ -191,18 +181,18 @@ class DataSourceCollection:
             raise exc.NoCommonRoleError()
         return role_priorities[0]
 
-    def get_strict(self, role: Optional[DataSourceRole] = None, for_preview: bool = False) -> base.DataSource:
+    def get_strict(self, role: DataSourceRole | None = None, for_preview: bool = False) -> base.DataSource:
         dsrc = self.get_opt(role=role, for_preview=for_preview)
         assert dsrc is not None
         return dsrc
 
     def get_cached_raw_schema(
         self,
-        role: Optional[DataSourceRole] = None,
+        role: DataSourceRole | None = None,
         for_preview: bool = False,
-    ) -> Optional[list[SchemaColumn]]:
+    ) -> list[SchemaColumn] | None:
         dsrc = self.get_strict(role=role, for_preview=for_preview)
-        raw_schema: Optional[list[SchemaColumn]] = dsrc.saved_raw_schema or []
+        raw_schema: list[SchemaColumn] | None = dsrc.saved_raw_schema or []
         if not raw_schema and role != DataSourceRole.origin:
             # we need to at least have BI types, so deduce them from the original raw schema
             origin_dsrc = self.get_strict(role=DataSourceRole.origin)
@@ -227,9 +217,9 @@ class DataSourceCollection:
     def get_raw_schema(
         self,
         conn_executor_factory: Callable[[], SyncConnExecutorBase],
-        role: Optional[DataSourceRole] = None,
+        role: DataSourceRole | None = None,
         for_preview: bool = False,
-    ) -> Optional[list[SchemaColumn]]:
+    ) -> list[SchemaColumn] | None:
         """
         Return raw schema of data source.
         Since the underlying data source might be a reference to an external one,
@@ -243,13 +233,11 @@ class DataSourceCollection:
         """
 
         dsrc = self.get_strict(role=role, for_preview=for_preview)
-        raw_schema: Optional[list[SchemaColumn]] = dsrc.get_schema_info(
-            conn_executor_factory=conn_executor_factory
-        ).schema
+        raw_schema: list[SchemaColumn] | None = dsrc.get_schema_info(conn_executor_factory=conn_executor_factory).schema
         raw_schema = self._patch_raw_schema(raw_schema)
         return raw_schema
 
-    def _patch_raw_schema(self, raw_schema: Optional[list[SchemaColumn]]) -> Optional[list[SchemaColumn]]:
+    def _patch_raw_schema(self, raw_schema: list[SchemaColumn] | None) -> list[SchemaColumn] | None:
         """Patch all raw_schema columns with own source_id"""
         if raw_schema is None:
             return None
@@ -261,7 +249,7 @@ class DataSourceCollection:
         dsrc = dsrc_cls(id=self.id, us_entry_buffer=self._us_entry_buffer, spec=dsrc_spec)
         return dsrc
 
-    def _get_spec_for_role(self, role: DataSourceRole) -> Optional[DataSourceSpec]:
+    def _get_spec_for_role(self, role: DataSourceRole) -> DataSourceSpec | None:
         if role == DataSourceRole.origin:
             return self.spec.origin
         if role == DataSourceRole.materialization:
@@ -273,7 +261,7 @@ class DataSourceCollection:
     def __contains__(self, role: DataSourceRole) -> bool:
         return self._get_spec_for_role(role) is not None
 
-    def get_opt(self, role: Optional[DataSourceRole] = None, for_preview: bool = False) -> Optional["base.DataSource"]:
+    def get_opt(self, role: DataSourceRole | None = None, for_preview: bool = False) -> base.DataSource | None:
         """Return data source for role. Initialize it if it isn't initialized yet"""
         if role is None:
             role = self.resolve_role(for_preview=for_preview)

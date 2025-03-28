@@ -1,7 +1,3 @@
-from __future__ import annotations
-
-from typing import Optional
-
 import attr
 
 from dl_constants.enums import DataSourceType
@@ -12,9 +8,9 @@ from dl_core.db.elements import SchemaColumn
 @attr.s
 class DataSourceSpec:
     source_type: DataSourceType = attr.ib(kw_only=True)
-    connection_ref: Optional[ConnectionRef] = attr.ib(kw_only=True, default=None)
-    raw_schema: Optional[list[SchemaColumn]] = attr.ib(kw_only=True, default=None)
-    data_dump_id: Optional[str] = attr.ib(kw_only=True, default=None)
+    connection_ref: ConnectionRef | None = attr.ib(kw_only=True, default=None)
+    raw_schema: list[SchemaColumn] | None = attr.ib(kw_only=True, default=None)
+    data_dump_id: str | None = attr.ib(kw_only=True, default=None)
 
     @property
     def is_configured(self) -> bool:

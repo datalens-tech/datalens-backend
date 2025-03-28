@@ -1,14 +1,9 @@
-from __future__ import annotations
-
 import abc
 from functools import wraps
 import logging
 from typing import (
-    TYPE_CHECKING,
     Callable,
     ClassVar,
-    Optional,
-    Type,
 )
 
 import attr
@@ -18,6 +13,8 @@ from sqlalchemy.sql.elements import ClauseElement
 
 from dl_constants.enums import JoinType
 from dl_core import exc
+from dl_core.connection_executors.async_base import AsyncConnExecutorBase
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.connection_models import (
     DBIdent,
     SATextTableDefinition,
@@ -47,11 +44,6 @@ from dl_core.db import (
 from dl_core.utils import sa_plain_text
 
 
-if TYPE_CHECKING:
-    from dl_core.connection_executors.async_base import AsyncConnExecutorBase
-    from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-
-
 LOGGER = logging.getLogger(__name__)
 
 
@@ -77,10 +69,10 @@ class BaseSQLDataSource(DataSource):
             JoinType.left,
         }
     )
-    compiler_cls: Type[QueryCompiler] = QueryCompiler
+    compiler_cls: type[QueryCompiler] = QueryCompiler
 
     # Instance attrs
-    _exists: Optional[bool] = attr.ib(default=None, init=False, eq=False, hash=False)
+    _exists: bool | None = attr.ib(default=None, init=False, eq=False, hash=False)
 
     @property
     def spec(self) -> SQLDataSourceSpecBase:
@@ -88,7 +80,7 @@ class BaseSQLDataSource(DataSource):
         return self._spec
 
     @property
-    def db_version(self) -> Optional[str]:
+    def db_version(self) -> str | None:
         return self.spec.db_version
 
     def get_parameters(self) -> dict:
@@ -134,7 +126,7 @@ class BaseSQLDataSource(DataSource):
     def quote(self, value) -> sa.sql.quoted_name:  # type: ignore  # TODO: fix  # subclass of str
         return self.connection.quote(value)
 
-    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
+    def get_sql_source(self, alias: str | None = None) -> ClauseElement:
         raise NotImplementedError()
 
     def get_table_definition(self) -> TableDefinition:
@@ -147,7 +139,7 @@ class BaseSQLDataSource(DataSource):
         schema_info = conn_executor.get_table_schema_info(table_def)
         return self._postprocess_raw_schema_from_db(schema_info)
 
-    def _get_db_version(self, conn_executor_factory: Callable[[], SyncConnExecutorBase]) -> Optional[str]:
+    def _get_db_version(self, conn_executor_factory: Callable[[], SyncConnExecutorBase]) -> str | None:
         conn_executor = conn_executor_factory()
         return conn_executor.get_db_version(
             db_ident=DBIdent(db_name=None),
@@ -176,7 +168,7 @@ class SubselectDataSource(BaseSQLDataSource):
     `select … from (select …) …` source (for user-input inner-select).
     """
 
-    _subsql: Optional[str] = attr.ib(default=None)
+    _subsql: str | None = attr.ib(default=None)
 
     @property
     def spec(self) -> SubselectDataSourceSpec:
@@ -184,7 +176,7 @@ class SubselectDataSource(BaseSQLDataSource):
         return self._spec
 
     @property
-    def subsql(self) -> Optional[str]:
+    def subsql(self) -> str | None:
         return self.spec.subsql
 
     def get_parameters(self) -> dict:
@@ -196,7 +188,7 @@ class SubselectDataSource(BaseSQLDataSource):
     _subquery_alias_joiner = " AS "
     _subquery_auto_alias = "source"
 
-    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
+    def get_sql_source(self, alias: str | None = None) -> ClauseElement:
         if not self.connection.is_subselect_allowed:  # type: ignore  # 2024-01-24 # TODO: "ConnectionBase" has no attribute "is_subselect_allowed"  [attr-defined]
             raise exc.SubselectNotAllowed()
 
@@ -229,19 +221,19 @@ class SQLDataSource(abc.ABC, BaseSQLDataSource):
 
     @property
     @abc.abstractmethod
-    def db_name(self) -> Optional[str]:
+    def db_name(self) -> str | None:
         raise NotImplementedError
 
     @property
     @abc.abstractmethod
-    def table_name(self) -> Optional[str]:
+    def table_name(self) -> str | None:
         raise NotImplementedError
 
     @property
     def default_title(self) -> str:
         return self.table_name  # type: ignore  # TODO: fix
 
-    def _get_db_version(self, conn_executor_factory: Callable[[], SyncConnExecutorBase]) -> Optional[str]:
+    def _get_db_version(self, conn_executor_factory: Callable[[], SyncConnExecutorBase]) -> str | None:
         conn_executor = conn_executor_factory()
         return conn_executor.get_db_version(
             db_ident=DBIdent(db_name=self.db_name),
@@ -268,7 +260,7 @@ class SQLDataSource(abc.ABC, BaseSQLDataSource):
         return super().source_exists(conn_executor_factory=conn_executor_factory, force_refresh=force_refresh)
 
     @require_table_name
-    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
+    def get_sql_source(self, alias: str | None = None) -> ClauseElement:
         q = self.quote
         alias_str = "" if alias is None else f" AS {q(alias)}"
         return sa_plain_text(f"{q(self.db_name)}.{q(self.table_name)}{alias_str}")
@@ -289,7 +281,7 @@ class DbSQLDataSourceMixin(BaseSQLDataSource):
     """SQL data source with db_name"""
 
     @property
-    def db_name(self) -> Optional[str]:
+    def db_name(self) -> str | None:
         assert isinstance(self._spec, DbSQLDataSourceSpec)
         if self._spec.db_name:
             return self._spec.db_name
@@ -309,7 +301,7 @@ class TableSQLDataSourceMixin(BaseSQLDataSource):
     """SQL data source with table_name"""
 
     @property
-    def table_name(self) -> Optional[str]:
+    def table_name(self) -> str | None:
         assert isinstance(self._spec, TableSQLDataSourceSpec)
         if self._spec.table_name:
             return self._spec.table_name
@@ -329,7 +321,7 @@ class IndexedSQLDataSourceMixin(BaseSQLDataSource):
     """SQL data source with index info"""
 
     @property
-    def saved_index_info_set(self) -> Optional[frozenset[IndexInfo]]:
+    def saved_index_info_set(self) -> frozenset[IndexInfo] | None:
         assert isinstance(self._spec, IndexedSQLDataSourceSpec)
         return self._spec.index_info_set
 
@@ -361,14 +353,14 @@ class PseudoSQLDataSource(IncompatibleDataSourceMixin, StandardSQLDataSource):
     supports_schema_update: ClassVar[bool] = False
 
     @require_table_name
-    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
+    def get_sql_source(self, alias: str | None = None) -> ClauseElement:
         # ignore alias
         return sa.table(self.table_name)
 
 
 class SchemaSQLDataSourceMixin(BaseSQLDataSource):
     @property
-    def schema_name(self) -> Optional[str]:
+    def schema_name(self) -> str | None:
         assert isinstance(self._spec, SchemaSQLDataSourceSpec)
         # TODO FIX: DO NOT DO THIS IN PROPERTY!!!!!
         #  USE METHOD get_effective schema name or dump from connection on initial data source creation
@@ -377,7 +369,7 @@ class SchemaSQLDataSourceMixin(BaseSQLDataSource):
 
 @attr.s
 class StandardSchemaSQLDataSource(StandardSQLDataSource, SchemaSQLDataSourceMixin):
-    _schema_name: Optional[str] = attr.ib(default=None)
+    _schema_name: str | None = attr.ib(default=None)
 
     @property
     def spec(self) -> StandardSchemaSQLDataSourceSpec:
@@ -391,7 +383,7 @@ class StandardSchemaSQLDataSource(StandardSQLDataSource, SchemaSQLDataSourceMixi
         )
 
     @require_table_name
-    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
+    def get_sql_source(self, alias: str | None = None) -> ClauseElement:
         if not self.schema_name:
             return super().get_sql_source(alias=alias)
         q = self.quote

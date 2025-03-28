@@ -1,16 +1,11 @@
-from __future__ import annotations
-
 import abc
 import logging
 from typing import (
-    TYPE_CHECKING,
     Any,
     Callable,
     ClassVar,
     Iterable,
     NamedTuple,
-    Optional,
-    Type,
 )
 
 import attr
@@ -30,6 +25,7 @@ from dl_core.base_models import (
     ConnectionRef,
     SourceFilterSpec,
 )
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.connectors.base.query_compiler import QueryCompiler
 from dl_core.data_source_spec.base import DataSourceSpec
 from dl_core.db import (
@@ -37,23 +33,21 @@ from dl_core.db import (
     SchemaColumn,
     SchemaInfo,
 )
+from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.us_connection import get_connection_class
 from dl_core.us_connection_base import ConnectionBase
-from dl_type_transformer.type_transformer import get_type_transformer
-
-
-if TYPE_CHECKING:
-    from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-    from dl_core.services_registry.top_level import ServicesRegistry
-    from dl_core.us_manager.local_cache import USEntryBuffer
-    from dl_type_transformer.type_transformer import TypeTransformer
+from dl_core.us_manager.local_cache import USEntryBuffer
+from dl_type_transformer.type_transformer import (
+    TypeTransformer,
+    get_type_transformer,
+)
 
 
 LOGGER = logging.getLogger(__name__)
 
 
 class DbInfo(NamedTuple):
-    version: Optional[str]
+    version: str | None
 
 
 @attr.s()
@@ -77,15 +71,15 @@ class DataSource(metaclass=abc.ABCMeta):
     default_chunk_row_count: ClassVar[int] = 10000
     chunk_size_bytes: ClassVar[int] = 3 * 1024**2
 
-    compiler_cls: Type[QueryCompiler] = QueryCompiler
+    compiler_cls: type[QueryCompiler] = QueryCompiler
     conn_type: ClassVar[ConnectionType]  # TODO unbind DataSource and Connection classes BI-4083
 
     # TODO FIX: Remove ASAP
     _id: str = attr.ib(default=None)
     _us_entry_buffer: USEntryBuffer = attr.ib(default=None, eq=False)
-    _spec: Optional[DataSourceSpec] = attr.ib(kw_only=True, default=None)
+    _spec: DataSourceSpec | None = attr.ib(kw_only=True, default=None)
 
-    _connection: Optional[ConnectionBase] = attr.ib(default=None)
+    _connection: ConnectionBase | None = attr.ib(default=None)
 
     _cache_enabled: bool = attr.ib(default=True)
 
@@ -113,7 +107,7 @@ class DataSource(metaclass=abc.ABCMeta):
         self._validate_connection()
 
     @classmethod
-    def get_connection_cls(cls) -> Type[ConnectionBase]:
+    def get_connection_cls(cls) -> type[ConnectionBase]:
         """
         Method should return connection class for this data source.
         Class var not used to do not import connection on module level.
@@ -140,7 +134,7 @@ class DataSource(metaclass=abc.ABCMeta):
         return {}
 
     @property
-    def id(self) -> Optional[str]:
+    def id(self) -> str | None:
         return self._id
 
     @property
@@ -181,7 +175,7 @@ class DataSource(metaclass=abc.ABCMeta):
         return connection_ref
 
     @property
-    def data_dump_id(self) -> Optional[str]:
+    def data_dump_id(self) -> str | None:
         return self.spec.data_dump_id
 
     @property
@@ -197,17 +191,17 @@ class DataSource(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @property
-    def saved_raw_schema(self) -> Optional[list[SchemaColumn]]:
+    def saved_raw_schema(self) -> list[SchemaColumn] | None:
         if self.spec.raw_schema is not None:
             return self.spec.raw_schema
         return None
 
     @property
-    def saved_index_info_set(self) -> Optional[frozenset[IndexInfo]]:
+    def saved_index_info_set(self) -> frozenset[IndexInfo] | None:
         return None
 
     @abc.abstractmethod
-    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
+    def get_sql_source(self, alias: str | None = None) -> ClauseElement:
         """
         Return something that can be used in a ``select_from`` ``SQLAlchemy`` clause for fetching data.
         Optionally assign the source an alias that can be used in the query to refer to it.
