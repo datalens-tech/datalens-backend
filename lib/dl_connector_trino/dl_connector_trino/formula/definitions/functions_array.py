@@ -44,14 +44,6 @@ count_item = lambda array, value: (
     )
 )
 
-contains = lambda array, value: (
-    sa.func.if_(
-        value.isnot(None),
-        sa.func.contains(array, value),
-        sa.func.cardinality(sa.func.filter(array, sa.text("x -> x IS NULL"))) > 0,
-    )
-)
-
 
 class FuncArrStr3Trino(base.FuncArrStr3):
     variants = [
@@ -212,13 +204,13 @@ DEFINITIONS_ARRAY = [
     # contains
     base.FuncArrayContains(
         variants=[
-            V(D.TRINO, contains),
+            V(D.TRINO, lambda array, value: count_item(array, value) > 0),
         ]
     ),
     # notcontains
     base.FuncArrayNotContains(
         variants=[
-            V(D.TRINO, contains),
+            V(D.TRINO, lambda array, value: count_item(array, value) == 0),
         ]
     ),
     # contains_all
