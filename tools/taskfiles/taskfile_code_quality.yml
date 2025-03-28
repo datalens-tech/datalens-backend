@@ -305,6 +305,7 @@ tasks:
 
   find_and_check_requirements:
     shell: bash
+    dir: ..
     vars:
       TOML_DIRS:
         sh: find {{.ROOT_DIR}} \( -path '*/app*' -o -path '*/lib*' \) -name 'pyproject.toml' -maxdepth 3 | awk -F / '{ORS=" ";FS=OFS="/";$NF=""; print $0}'
