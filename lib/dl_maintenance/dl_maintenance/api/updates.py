@@ -130,8 +130,15 @@ class SimpleDatasetUpdateGen:
         assert source_type.name.endswith("_SUBSELECT"), "Must be a *_SUBSELECT source type"
 
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=id)
-        dsrc_coll_factory = DataSourceCollectionFactory(us_entry_buffer=self._us_manager.get_entry_buffer())
-        dsrc_coll = dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
+        dsrc_coll_factory = DataSourceCollectionFactory(
+            us_entry_buffer=self._us_manager.get_entry_buffer(),
+        )
+
+        dataset_parameter_values = self._ds_accessor.get_parameter_values()
+        dsrc_coll = dsrc_coll_factory.get_data_source_collection(
+            spec=dsrc_coll_spec,
+            dataset_parameter_values=dataset_parameter_values,
+        )
 
         dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
         assert dsrc is not None

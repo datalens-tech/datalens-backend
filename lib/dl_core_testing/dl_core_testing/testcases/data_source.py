@@ -71,6 +71,7 @@ class BaseDataSourceTestClass(
             us_entry_buffer=sync_us_manager.get_entry_buffer(),
             connection=saved_connection,
             spec=initial_data_source_spec,
+            dataset_parameter_values={},
         )
         return dsrc
 

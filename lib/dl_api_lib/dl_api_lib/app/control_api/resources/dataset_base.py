@@ -132,9 +132,13 @@ class DatasetResource(BIResource):
         # generate info about sources
         sources = []
         preview_enabled_result = True
+        dataset_parameter_values = ds_accessor.get_parameter_values()
         for source_id in ds_accessor.get_data_source_id_list():
             dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
-            dsrc_coll = dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
+            dsrc_coll = dsrc_coll_factory.get_data_source_collection(
+                spec=dsrc_coll_spec,
+                dataset_parameter_values=dataset_parameter_values,
+            )
 
             origin_dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
             connection_id = dsrc_coll.get_connection_id(DataSourceRole.origin)
@@ -239,7 +243,11 @@ class DatasetResource(BIResource):
         if one_source_id is not None:
             try:
                 dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_strict(source_id=one_source_id)
-                dsrc_coll = dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
+                dataset_parameter_values = ds_accessor.get_parameter_values()
+                dsrc_coll = dsrc_coll_factory.get_data_source_collection(
+                    spec=dsrc_coll_spec,
+                    dataset_parameter_values=dataset_parameter_values,
+                )
                 dsrc = dsrc_coll.get_strict(role=role)
                 db_info = dsrc.get_cached_db_info()
             except ReferencedUSEntryNotFound:
@@ -282,7 +290,10 @@ class DatasetResource(BIResource):
         connection_types: set[Optional[ConnectionType]] = set()
         for source_id in ds_accessor.get_data_source_id_list():
             dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
-            dsrc_coll = dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
+            dataset_parameter_values = ds_accessor.get_parameter_values()
+            dsrc_coll = dsrc_coll_factory.get_data_source_collection(
+                spec=dsrc_coll_spec, dataset_parameter_values=dataset_parameter_values
+            )
             if dsrc_coll.managed_by != ManagedBy.user:
                 continue
             dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
@@ -342,7 +353,10 @@ class DatasetResource(BIResource):
         )
         for avatar in ds_accessor.get_avatar_list():
             dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_strict(source_id=avatar.source_id)
-            dsrc_coll = dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
+            dataset_parameter_values = ds_accessor.get_parameter_values()
+            dsrc_coll = dsrc_coll_factory.get_data_source_collection(
+                spec=dsrc_coll_spec, dataset_parameter_values=dataset_parameter_values
+            )
             dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
             opt_data["source_avatars"]["items"].append(
                 dict(
