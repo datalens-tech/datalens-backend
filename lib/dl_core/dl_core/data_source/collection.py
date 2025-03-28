@@ -30,6 +30,7 @@ from dl_core.data_source_spec.collection import DataSourceCollectionSpec
 from dl_core.db import SchemaColumn
 from dl_core.enums import RoleReason
 import dl_core.exc as exc
+from dl_model_tools.typed_values import BIValue
 
 
 if TYPE_CHECKING:
@@ -52,7 +53,8 @@ LazyDataSourceType = Union[base.DataSource, dict]  # data source instance or par
 @attr.s
 class DataSourceCollection:
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
-    _spec: DataSourceCollectionSpec = attr.ib(default=None)
+    _spec: DataSourceCollectionSpec = attr.ib()
+    _dataset_parameter_values: dict[str, BIValue] = attr.ib(factory=dict)
     _loaded_sources: dict[DataSourceRole, Optional[base.DataSource]] = attr.ib(init=False, factory=dict)
 
     @property
@@ -258,7 +260,12 @@ class DataSourceCollection:
 
     def _initialize_dsrc(self, dsrc_spec: DataSourceSpec) -> "base.DataSource":
         dsrc_cls = type_mapping.get_data_source_class(dsrc_spec.source_type)
-        dsrc = dsrc_cls(id=self.id, us_entry_buffer=self._us_entry_buffer, spec=dsrc_spec)
+        dsrc = dsrc_cls(
+            id=self.id,
+            us_entry_buffer=self._us_entry_buffer,
+            spec=dsrc_spec,
+            dataset_parameter_values=self._dataset_parameter_values,
+        )
         return dsrc
 
     def _get_spec_for_role(self, role: DataSourceRole) -> Optional[DataSourceSpec]:
@@ -311,7 +318,15 @@ class DataSourceCollection:
 class DataSourceCollectionFactory:  # TODO: Move to service_registry
     _us_entry_buffer: USEntryBuffer = attr.ib(default=None)
 
-    def get_data_source_collection(self, spec: DataSourceCollectionSpec) -> DataSourceCollection:
+    def get_data_source_collection(
+        self,
+        spec: DataSourceCollectionSpec,
+        dataset_parameter_values: dict[str, BIValue],
+    ) -> DataSourceCollection:
         if isinstance(spec, DataSourceCollectionSpec):
-            return DataSourceCollection(us_entry_buffer=self._us_entry_buffer, spec=spec)
+            return DataSourceCollection(
+                us_entry_buffer=self._us_entry_buffer,
+                spec=spec,
+                dataset_parameter_values=dataset_parameter_values,
+            )
         raise TypeError(f"Invalid spec type: {spec})")

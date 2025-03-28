@@ -498,7 +498,11 @@ class DatasetDataBaseView(BaseView):
         for avatar_id in avatar_ids:
             avatar = self.ds_accessor.get_avatar_strict(avatar_id=avatar_id)
             dsrc_coll_spec = self.ds_accessor.get_data_source_coll_spec_strict(source_id=avatar.source_id)
-            dsrc_coll = dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
+            dataset_parameter_values = self.ds_accessor.get_parameter_values()
+            dsrc_coll = dsrc_coll_factory.get_data_source_collection(
+                spec=dsrc_coll_spec,
+                dataset_parameter_values=dataset_parameter_values,
+            )
 
             dsrc: DataSource
             if DataSourceRole.origin in dsrc_coll:

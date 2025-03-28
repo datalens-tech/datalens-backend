@@ -67,7 +67,11 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
     ) -> PreparedSingleFromInfo:
         avatar = self._ds_accessor.get_avatar_strict(avatar_id=avatar_id)
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=avatar.source_id)
-        dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
+        dataset_parameter_values = self._ds_accessor.get_parameter_values()
+        dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(
+            spec=dsrc_coll_spec,
+            dataset_parameter_values=dataset_parameter_values,
+        )
         dsrc = dsrc_coll.get_strict(role=self._role)
         if not isinstance(dsrc, dl_core.data_source.sql.BaseSQLDataSource):
             raise TypeError(f"Root data source has non-SQL type: {type(dsrc)}")
