@@ -133,11 +133,6 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    env:
-      REPO_OWNER: ${{ github.repository_owner }}
-      REPO_NAME: ${{ github.event.repository.name }}
-      GIT_SHA: "${{ github.sha }}"
-
     steps:
       - name: Log in to the Container registry
         uses: docker/login-action@v2
@@ -157,6 +152,11 @@ jobs:
       - run: |
           export ROOT_DIR="$(realpath .)"
           /bin/bash ci/build_naive.sh
+        env:
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          # if pull_request_target use head sha, otherwise use github.sha
+          GIT_SHA: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
 
   router:
     runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
