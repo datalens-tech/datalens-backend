@@ -222,26 +222,15 @@ DEFINITIONS_ARRAY = [
         ]
     ),
     # contains_all
-    # base.FuncArrayContainsAll(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda array_1, array_2: n.func.IF(
-    #                 array_2 != sa.func.array_remove(array_2, None),  # array_2 contains null
-    #                 n.func.IF(
-    #                     array_1 != sa.func.array_remove(array_1, None),  # array_1 contains null
-    #                     sa.type_coerce(array_1, sa_postgresql.ARRAY(TypeEngine)).contains(
-    #                         sa.type_coerce(sa.func.array_remove(array_2, None), sa_postgresql.ARRAY(TypeEngine))
-    #                     ),
-    #                     False,
-    #                 ),
-    #                 sa.type_coerce(array_1, sa_postgresql.ARRAY(TypeEngine)).contains(
-    #                     sa.type_coerce(array_2, sa_postgresql.ARRAY(TypeEngine))
-    #                 ),
-    #             ),
-    #         ),
-    #     ]
-    # ),
+    base.FuncArrayContainsAll(
+        variants=[
+            V(
+                D.TRINO,
+                lambda array_1, array_2: sa.func.cardinality(sa.func.array_intersect(array_1, array_2))
+                == sa.func.cardinality(sa.func.array_distinct(array_2)),
+            ),
+        ]
+    ),
     # contains_any
     # base.FuncArrayContainsAny(
     #     variants=[
@@ -313,16 +302,11 @@ DEFINITIONS_ARRAY = [
     #     ]
     # ),
     # slice
-    # base.FuncArraySlice(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda array, offset, length: Grouping(sa.type_coerce(array, sa_postgresql.ARRAY(TypeEngine)))[  # type: ignore  # 2024-01-24 # TODO: Argument 2 has incompatible type "Callable[[Any, Any, Any], ColumnOperators[Any]]"; expected "Callable[..., ClauseElement | FormulaItem]"  [arg-type]
-    #                 offset : offset + length - 1
-    #             ],
-    #         ),
-    #     ]
-    # ),
+    base.FuncArraySlice(
+        variants=[
+            V(D.TRINO, sa.func.slice),
+        ]
+    ),
     # startswith
     # base.FuncStartswithArrayConst(
     #     variants=[
