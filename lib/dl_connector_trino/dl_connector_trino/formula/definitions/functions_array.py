@@ -22,8 +22,8 @@ class FuncArrStr3Trino(base.FuncArrStr3):
         V(D.TRINO, lambda array, delimiter, null_str: sa.func.array_join(array, delimiter, null_str)),
     ]
     argument_types = [
-        ArgTypeSequence([DataType.ARRAY_INT]),
-        ArgTypeSequence([DataType.ARRAY_STR]),
+        ArgTypeSequence([DataType.ARRAY_INT, DataType.CONST_STRING, DataType.CONST_STRING]),
+        ArgTypeSequence([DataType.ARRAY_STR, DataType.CONST_STRING, DataType.CONST_STRING]),
     ]
 
 
@@ -35,7 +35,7 @@ class FuncFloatArrStr3Trino(base.FuncArrStr3):
         ),
     ]
     argument_types = [
-        ArgTypeSequence([DataType.ARRAY_FLOAT]),
+        ArgTypeSequence([DataType.ARRAY_FLOAT, DataType.CONST_STRING, DataType.CONST_STRING]),
     ]
 
 
@@ -44,8 +44,8 @@ class FuncArrStr2Trino(base.FuncArrStr2):
         V(D.TRINO, lambda array, delimiter: sa.func.array_join(drop_null(array), delimiter)),
     ]
     argument_types = [
-        ArgTypeSequence([DataType.ARRAY_INT]),
-        ArgTypeSequence([DataType.ARRAY_STR]),
+        ArgTypeSequence([DataType.ARRAY_INT, DataType.CONST_STRING]),
+        ArgTypeSequence([DataType.ARRAY_STR, DataType.CONST_STRING]),
     ]
 
 
@@ -57,7 +57,7 @@ class FuncFloatArrStr2Trino(base.FuncArrStr2):
         ),
     ]
     argument_types = [
-        ArgTypeSequence([DataType.ARRAY_FLOAT]),
+        ArgTypeSequence([DataType.ARRAY_FLOAT, DataType.CONST_STRING]),
     ]
 
 
