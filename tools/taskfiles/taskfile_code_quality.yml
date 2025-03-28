@@ -42,9 +42,9 @@ tasks:
     cmds:
       - |
         set +ex
-        if [ "$SKIP_RUFF" == "true" ]; then exit 0; fi        
+        if [ "$SKIP_RUFF" == "true" ]; then exit 0; fi
         . $VENV_PATH/bin/activate
-        cd {{.ROOT_DIR}}     
+        cd {{.ROOT_DIR}}
         ruff {{.FIX_FLAG}}  {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
     status:
@@ -71,14 +71,14 @@ tasks:
           eval 'isort "$file" {{.CHECK_FLAG}}'
           exit_code=$(expr $exit_code + $?)
         done
-        
+
         if [ "{{.STRICT|default false}}" == "true" ]
-        then 
+        then
           if [ "$exit_code" -gt 0 ]; then
             exit 1
           else
             exit 0
-          fi        
+          fi
         fi
     silent: true
     status:
@@ -260,11 +260,11 @@ tasks:
       - .env
     cmds:
       - rm -f {{.ROOT_DIR}}/.git/pre-commit
-      - |        
+      - |
         echo "#!/usr/bin/env bash
         task cq:check_changed
         task cq:check_changed_strict 1> /dev/null 2>/dev/null
-        
+
         " > {{.ROOT_DIR}}/.git/hooks/pre-commit
       - chmod +x {{.ROOT_DIR}}/.git/hooks/pre-commit
     silent: true
@@ -278,7 +278,7 @@ tasks:
       - |
         echo "#!/usr/bin/env bash
         task cq:check_changed
-        
+
         " > {{.ROOT_DIR}}/.git/hooks/pre-commit
       - chmod +x {{.ROOT_DIR}}/.git/hooks/pre-commit
     silent: true
@@ -290,9 +290,9 @@ tasks:
     cmds:
       - rm -f {{.ROOT_DIR}}/.git/pre-commit
       - |
-        echo "#!/usr/bin/env bash        
+        echo "#!/usr/bin/env bash
         task cq:check_changed_strict || task ld:fix_changed
-        unstaged=\$(git diff --name-only)     
+        unstaged=\$(git diff --name-only)
         if [ \"\$unstaged\" == \"\"  ]; then exit 0; fi;
         echo ''
         echo \"There are some un-staged files, please review before commit.\"
@@ -316,12 +316,16 @@ tasks:
 
   check_missing_requirements:
     deps: [ common_deps ]
+    vars:
+      IGNORE_ERRORS:
+        sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     dotenv:
       - .env
     shell: bash
-    dir: "/{{.TOML_DIR}}"
     cmds:
         - echo -e "\033[33mDIRECTORY\033[0m {{.TOML_DIR}}"
-        - $VENV_PATH/bin/deptry . --ignore DEP002 --exclude ".*test.*"
+        - |
+          . $VENV_PATH/bin/activate
+          cd /{{.TOML_DIR}}
+          deptry . --ignore DEP002 --exclude ".*test.*" {{.IGNORE_ERRORS}}
     silent: true
-    ignore_error: true
