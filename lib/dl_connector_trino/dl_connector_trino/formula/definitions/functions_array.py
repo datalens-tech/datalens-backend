@@ -34,6 +34,16 @@ format_float = lambda array_float: sa.func.transform(
     array_float, sa.text("x -> regexp_extract(format('%.8f', x), '^(-?\d+(\.[1-9]+)?)(\.?0*)$', 1)")
 )
 
+count_item = lambda array, value: (
+    sa.func.if_(
+        value.is_(None),
+        sa.func.cardinality(sa.func.filter(array, sa.text("x -> x IS NULL"))),
+        sa.func.cardinality(
+            sa.func.filter(array, sa.text(f"x -> x = {value.compile(compile_kwargs=dict(literal_binds=True))}"))
+        ),
+    )
+)
+
 
 class FuncArrStr3Trino(base.FuncArrStr3):
     variants = [
@@ -246,39 +256,21 @@ DEFINITIONS_ARRAY = [
     #     ]
     # ),
     # count_item
-    # base.FuncArrayCountItemInt(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda array, value: (
-    #                 sa.func.array_length(array, 1) - sa.func.array_length(sa.func.array_remove(array, value), 1)
-    #             ),
-    #         ),
-    #     ]
-    # ),
-    # base.FuncArrayCountItemFloat(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda array, value: (
-    #                 sa.func.array_length(array, 1)
-    #                 - sa.func.array_length(
-    #                     sa.func.array_remove(array, sa.cast(value, sa_postgresql.DOUBLE_PRECISION)), 1
-    #                 )
-    #             ),
-    #         ),
-    #     ]
-    # ),
-    # base.FuncArrayCountItemStr(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda array, value: (
-    #                 sa.func.array_length(array, 1) - sa.func.array_length(sa.func.array_remove(array, value), 1)
-    #             ),
-    #         ),
-    #     ]
-    # ),
+    base.FuncArrayCountItemInt(
+        variants=[
+            V(D.TRINO, count_item),
+        ]
+    ),
+    base.FuncArrayCountItemFloat(
+        variants=[
+            V(D.TRINO, count_item),
+        ]
+    ),
+    base.FuncArrayCountItemStr(
+        variants=[
+            V(D.TRINO, count_item),
+        ]
+    ),
     # get_item
     base.FuncGetArrayItemFloat(
         variants=[
@@ -296,11 +288,11 @@ DEFINITIONS_ARRAY = [
         ]
     ),
     # len
-    # base.FuncLenArray(
-    #     variants=[
-    #         V(D.TRINO, lambda val: sa.func.ARRAY_LENGTH(val, 1)),
-    #     ]
-    # ),
+    base.FuncLenArray(
+        variants=[
+            V(D.TRINO, sa.func.cardinality),
+        ]
+    ),
     # replace
     # base.FuncReplaceArrayLiteralNull(
     #     variants=[
