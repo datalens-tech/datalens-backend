@@ -44,6 +44,14 @@ count_item = lambda array, value: (
     )
 )
 
+contains = lambda array, value: (
+    sa.func.if_(
+        value.isnot(None),
+        sa.func.contains(array, value),
+        sa.func.cardinality(sa.func.filter(array, sa.text("x -> x IS NULL"))) > 0,
+    )
+)
+
 
 class FuncArrStr3Trino(base.FuncArrStr3):
     variants = [
@@ -202,17 +210,17 @@ DEFINITIONS_ARRAY = [
     # [NULL, 1, 2].contains([NULL, 1]) = False in postgres, that is why branching on null containment needed
     # In PostgreSQL 9.5+ use sa.func.array_position(array, None) != None instead of array_remove comparison
     # contains
-    # base.FuncArrayContains(
-    #     variants=[
-    #         V(D.TRINO, _array_contains),
-    #     ]
-    # ),
+    base.FuncArrayContains(
+        variants=[
+            V(D.TRINO, contains),
+        ]
+    ),
     # notcontains
-    # base.FuncArrayNotContains(
-    #     variants=[
-    #         V(D.TRINO, _array_notcontains),
-    #     ]
-    # ),
+    base.FuncArrayNotContains(
+        variants=[
+            V(D.TRINO, contains),
+        ]
+    ),
     # contains_all
     # base.FuncArrayContainsAll(
     #     variants=[
