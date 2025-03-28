@@ -1,4 +1,8 @@
 import sqlalchemy as sa
+from sqlalchemy.sql.elements import (
+    ClauseElement,
+    TextClause,
+)
 
 from dl_formula.core.datatype import DataType
 from dl_formula.definitions.args import ArgTypeSequence
@@ -9,6 +13,20 @@ from dl_connector_trino.formula.constants import TrinoDialect as D
 
 
 V = TranslationVariant.make
+
+
+def create_non_const_array(*args: list[ClauseElement]) -> TextClause:
+    compiled_args = []
+    for arg in args:
+        if isinstance(arg, ClauseElement):
+            compiled_args.append(str(arg.compile(compile_kwargs={"literal_binds": True})))
+        elif arg is None:
+            compiled_args.append("NULL")
+        else:
+            compiled_args.append(str(arg))
+
+    array_elements = ",".join(compiled_args)
+    return sa.text(f"ARRAY[{array_elements}]")
 
 
 drop_null = lambda array: sa.func.filter(array, sa.text("x -> x IS NOT NULL"))
@@ -106,21 +124,21 @@ DEFINITIONS_ARRAY = [
     base.FuncConstArrayFloat.for_dialect(D.TRINO),
     base.FuncConstArrayInt.for_dialect(D.TRINO),
     base.FuncConstArrayStr.for_dialect(D.TRINO),
-    # base.FuncNonConstArrayInt(
-    #     variants=[
-    #         V(D.TRINO, lambda *args: sa_postgresql.array(args)),
-    #     ]
-    # ),
+    base.FuncNonConstArrayInt(
+        variants=[
+            V(D.TRINO, create_non_const_array),
+        ]
+    ),
     # base.FuncNonConstArrayFloat(
     #     variants=[
     #         V(D.TRINO, lambda *args: sa_postgresql.array(args)),
     #     ]
     # ),
-    # base.FuncNonConstArrayStr(
-    #     variants=[
-    #         V(D.TRINO, lambda *args: sa_postgresql.array(args)),
-    #     ]
-    # ),
+    base.FuncNonConstArrayStr(
+        variants=[
+            V(D.TRINO, create_non_const_array),
+        ]
+    ),
     # cast_arr_float
     # base.FuncFloatArrayFromIntArray(
     #     variants=[
