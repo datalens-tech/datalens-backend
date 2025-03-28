@@ -42,9 +42,9 @@ tasks:
     cmds:
       - |
         set +ex
-        if [ "$SKIP_RUFF" == "true" ]; then exit 0; fi        
+        if [ "$SKIP_RUFF" == "true" ]; then exit 0; fi
         . $VENV_PATH/bin/activate
-        cd {{.ROOT_DIR}}     
+        cd {{.ROOT_DIR}}
         ruff {{.FIX_FLAG}}  {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
     status:
@@ -71,14 +71,14 @@ tasks:
           eval 'isort "$file" {{.CHECK_FLAG}}'
           exit_code=$(expr $exit_code + $?)
         done
-        
+
         if [ "{{.STRICT|default false}}" == "true" ]
-        then 
+        then
           if [ "$exit_code" -gt 0 ]; then
             exit 1
           else
             exit 0
-          fi        
+          fi
         fi
     silent: true
     status:
@@ -260,11 +260,11 @@ tasks:
       - .env
     cmds:
       - rm -f {{.ROOT_DIR}}/.git/pre-commit
-      - |        
+      - |
         echo "#!/usr/bin/env bash
         task cq:check_changed
         task cq:check_changed_strict 1> /dev/null 2>/dev/null
-        
+
         " > {{.ROOT_DIR}}/.git/hooks/pre-commit
       - chmod +x {{.ROOT_DIR}}/.git/hooks/pre-commit
     silent: true
@@ -278,7 +278,7 @@ tasks:
       - |
         echo "#!/usr/bin/env bash
         task cq:check_changed
-        
+
         " > {{.ROOT_DIR}}/.git/hooks/pre-commit
       - chmod +x {{.ROOT_DIR}}/.git/hooks/pre-commit
     silent: true
@@ -290,9 +290,9 @@ tasks:
     cmds:
       - rm -f {{.ROOT_DIR}}/.git/pre-commit
       - |
-        echo "#!/usr/bin/env bash        
+        echo "#!/usr/bin/env bash
         task cq:check_changed_strict || task ld:fix_changed
-        unstaged=\$(git diff --name-only)     
+        unstaged=\$(git diff --name-only)
         if [ \"\$unstaged\" == \"\"  ]; then exit 0; fi;
         echo ''
         echo \"There are some un-staged files, please review before commit.\"
@@ -305,23 +305,35 @@ tasks:
 
   find_and_check_requirements:
     shell: bash
+    dir: ..
     vars:
       TOML_DIRS:
-        sh: find {{.ROOT_DIR}} \( -path '*/app*' -o -path '*/lib*' \) -name 'pyproject.toml' -maxdepth 3 | awk -F / '{FS=OFS="/";$NF=""; print $0}'
+        sh: find {{.ROOT_DIR}} \( -path '*/app*' -o -path '*/lib*' \) -name 'pyproject.toml' -maxdepth 3 | awk -F / '{ORS=" ";FS=OFS="/";$NF=""; print $0}'
     cmds:
-      - for: { var: TOML_DIRS, as: TOML_DIR }
-        task: check_missing_requirements
-        vars:
-          TOML_DIR: '{{.TOML_DIR}}'
+      - |
+        result_status=0
+        set +e
+        for dir in {{.TOML_DIRS}}
+        do
+          task cq:check_missing_requirements TOML_DIR=$dir STRICT={{.STRICT}}
+          iter_status=$?
+          if [ $iter_status -ne 0 ]; then result_status=1; fi
+        done
+        set -e
+        exit $result_status
 
   check_missing_requirements:
     deps: [ common_deps ]
+    vars:
+      IGNORE_ERRORS:
+        sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     dotenv:
       - .env
     shell: bash
-    dir: "/{{.TOML_DIR}}"
     cmds:
         - echo -e "\033[33mDIRECTORY\033[0m {{.TOML_DIR}}"
-        - $VENV_PATH/bin/deptry . --ignore DEP002 --exclude ".*test.*"
+        - |
+          . $VENV_PATH/bin/activate
+          cd /{{.TOML_DIR}}
+          deptry . --ignore DEP002 --exclude ".*test.*" {{.IGNORE_ERRORS}}
     silent: true
-    ignore_error: true
