@@ -64,7 +64,6 @@ testpaths = ["dl_connector_trino_tests/db"]
 root_dir = "dl_connector_trino_tests/"
 target_path = "db"
 labels = ["fat"]
-skip_tests = true
 
 [tool.mypy]
 warn_unused_configs = true
