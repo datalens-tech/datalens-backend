@@ -14,10 +14,8 @@ from dl_core.base_models import (
     InternalMaterializationConnectionRef,
 )
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-from dl_core.data_source import (
-    base,
-    type_mapping,
-)
+import dl_core.data_source.base as base
+import dl_core.data_source.type_mapping as type_mapping
 from dl_core.data_source.utils import get_parameters_hash
 from dl_core.data_source_spec.base import DataSourceSpec
 from dl_core.data_source_spec.collection import DataSourceCollectionSpec

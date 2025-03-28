@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import abc
 from enum import (
     Enum,
@@ -5,13 +7,18 @@ from enum import (
 )
 import random
 import string
-from typing import Any
+from typing import (
+    TYPE_CHECKING,
+    Any,
+)
 import uuid
 
 from anyascii import anyascii
 import attr
 
-from dl_core.us_dataset import Dataset
+
+if TYPE_CHECKING:
+    from dl_core.us_dataset import Dataset
 
 
 ID_LENGTH = 36

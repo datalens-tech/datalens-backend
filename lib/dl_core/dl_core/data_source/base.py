@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 import abc
 import logging
 from typing import (
+    TYPE_CHECKING,
     Any,
     Callable,
     ClassVar,
@@ -33,7 +36,6 @@ from dl_core.db import (
     SchemaColumn,
     SchemaInfo,
 )
-from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.us_connection import get_connection_class
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_manager.local_cache import USEntryBuffer
@@ -41,6 +43,10 @@ from dl_type_transformer.type_transformer import (
     TypeTransformer,
     get_type_transformer,
 )
+
+
+if TYPE_CHECKING:
+    from dl_core.services_registry.top_level import ServicesRegistry
 
 
 LOGGER = logging.getLogger(__name__)
