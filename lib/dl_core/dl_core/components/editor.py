@@ -1,13 +1,9 @@
-from __future__ import annotations
-
 from collections import defaultdict
 import logging
 from typing import (
-    TYPE_CHECKING,
     Any,
     FrozenSet,
     Iterable,
-    Optional,
 )
 
 import attr
@@ -48,11 +44,8 @@ from dl_core.multisource import (
     BinaryCondition,
     SourceAvatar,
 )
-
-
-if TYPE_CHECKING:
-    from dl_core.us_connection_base import ConnectionBase
-    from dl_core.us_dataset import Dataset
+from dl_core.us_connection_base import ConnectionBase
+from dl_core.us_dataset import Dataset
 
 
 LOGGER = logging.getLogger(__name__)
@@ -74,7 +67,7 @@ class DatasetComponentEditor:
         self,
         *,
         source_id: str,
-        title: Optional[str],
+        title: str | None,
         managed_by: ManagedBy = ManagedBy.user,
         valid: bool = True,
     ) -> DataSourceCollectionSpec:
@@ -90,7 +83,7 @@ class DatasetComponentEditor:
         return dsrc_coll_spec
 
     def update_data_source_collection(
-        self, source_id: str, title: Optional[str] = None, valid: Optional[bool] = None
+        self, source_id: str, title: str | None = None, valid: bool | None = None
     ) -> None:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
 
@@ -123,12 +116,12 @@ class DatasetComponentEditor:
         source_id: str,
         role: DataSourceRole = DataSourceRole.origin,
         created_from: DataSourceType,
-        connection_id: Optional[str] = None,
-        title: Optional[str] = None,
-        raw_schema: Optional[list[SchemaColumn]] = None,
-        index_info_set: Optional[FrozenSet[IndexInfo]] = None,
-        managed_by: Optional[ManagedBy] = None,
-        parameters: Optional[dict[str, Any]] = None,
+        connection_id: str | None = None,
+        title: str | None = None,
+        raw_schema: list[SchemaColumn] | None = None,
+        index_info_set: FrozenSet[IndexInfo] | None = None,
+        managed_by: ManagedBy | None = None,
+        parameters: dict[str, Any] | None = None,
     ) -> None:
         """Add a new data source to the dataset"""
 
@@ -165,11 +158,11 @@ class DatasetComponentEditor:
     def update_data_source(
         self,
         source_id: str,
-        role: Optional[DataSourceRole] = None,
-        connection_id: Optional[str] = None,
-        created_from: Optional[DataSourceType] = None,
-        raw_schema: Optional[list] = None,
-        index_info_set: Optional[FrozenSet[IndexInfo]] = None,
+        role: DataSourceRole | None = None,
+        connection_id: str | None = None,
+        created_from: DataSourceType | None = None,
+        raw_schema: list | None = None,
+        index_info_set: FrozenSet[IndexInfo] | None = None,
         **parameters: Any,
     ) -> None:
         """Update data source config data"""
@@ -233,7 +226,7 @@ class DatasetComponentEditor:
         avatar_id: str,
         source_id: str,
         title: str,
-        managed_by: Optional[ManagedBy] = None,
+        managed_by: ManagedBy | None = None,
         valid: bool = True,
     ) -> None:
         is_root = not self._dataset.data.source_avatars  # first avatar is always root
@@ -252,9 +245,9 @@ class DatasetComponentEditor:
     def update_avatar(
         self,
         avatar_id: str,
-        source_id: Optional[str] = None,
-        title: Optional[str] = None,
-        valid: Optional[bool] = None,
+        source_id: str | None = None,
+        title: str | None = None,
+        valid: bool | None = None,
     ) -> None:
         avatar = self._ds_accessor.get_avatar_opt(avatar_id=avatar_id)
         if avatar is not None:
@@ -316,8 +309,8 @@ class DatasetComponentEditor:
         left_avatar_id: str,
         right_avatar_id: str,
         conditions: list[BinaryCondition],
-        join_type: Optional[JoinType] = None,
-        managed_by: Optional[ManagedBy] = None,
+        join_type: JoinType | None = None,
+        managed_by: ManagedBy | None = None,
         valid: bool = True,
         required: bool = False,
     ) -> None:
@@ -348,10 +341,10 @@ class DatasetComponentEditor:
     def update_avatar_relation(
         self,
         relation_id: str,
-        conditions: Optional[list[BinaryCondition]] = None,
-        join_type: Optional[JoinType] = None,
-        valid: Optional[bool] = None,
-        required: Optional[bool] = None,
+        conditions: list[BinaryCondition] | None = None,
+        join_type: JoinType | None = None,
+        valid: bool | None = None,
+        required: bool | None = None,
     ) -> None:
         # left/right avatar IDs cannot be changed. Delete/create new relation to do that
         relation = self._ds_accessor.get_avatar_relation_opt(relation_id=relation_id)
@@ -371,7 +364,7 @@ class DatasetComponentEditor:
         raise RuntimeError("Relation rebuilding is not supported")
 
     def remove_avatar_relation(self, relation_id: str) -> None:
-        found_ind: Optional[int] = None
+        found_ind: int | None = None
         for i, relation_config in enumerate(self._dataset.data.avatar_relations):
             if relation_config.id == relation_id:
                 found_ind = i
@@ -383,7 +376,7 @@ class DatasetComponentEditor:
         obfilter_id: str,
         field_guid: str,
         default_filters: list[DefaultWhereClause],
-        managed_by: Optional[ManagedBy] = None,
+        managed_by: ManagedBy | None = None,
         valid: bool = True,
     ) -> None:
         for filter_object in self._dataset.data.obligatory_filters:
@@ -402,8 +395,8 @@ class DatasetComponentEditor:
     def update_obligatory_filter(
         self,
         obfilter_id: str,
-        default_filters: Optional[list[DefaultWhereClause]] = None,
-        valid: Optional[bool] = None,
+        default_filters: list[DefaultWhereClause] | None = None,
+        valid: bool | None = None,
     ) -> None:
         for filter_object in self._dataset.data.obligatory_filters:
             if filter_object.id == obfilter_id:
@@ -427,10 +420,10 @@ class DatasetComponentEditor:
             result_schema = ResultSchema(fields=list(result_schema))
         self._dataset.data.result_schema = result_schema
 
-    def set_revision_id(self, revision_id: Optional[str]) -> None:
+    def set_revision_id(self, revision_id: str | None) -> None:
         self._dataset.data.revision_id = revision_id
 
-    def set_load_preview_by_default(self, load_preview_by_default: Optional[bool]) -> None:
+    def set_load_preview_by_default(self, load_preview_by_default: bool | None) -> None:
         self._dataset.data.load_preview_by_default = load_preview_by_default
 
     def set_created_via(self, created_via: DataSourceCreatedVia) -> None:

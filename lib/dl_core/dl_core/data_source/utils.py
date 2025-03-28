@@ -1,10 +1,5 @@
-from __future__ import annotations
-
 import itertools
-from typing import (
-    Any,
-    Optional,
-)
+from typing import Any
 
 import xxhash
 
@@ -14,7 +9,7 @@ from dl_constants.enums import DataSourceType
 _IGNORE_IN_HASH = frozenset(("db_version",))
 
 
-def get_parameters_hash(source_type: DataSourceType, connection_id: Optional[str], **parameters: Any) -> str:
+def get_parameters_hash(source_type: DataSourceType, connection_id: str | None, **parameters: Any) -> str:
     data = (
         source_type,
         connection_id,

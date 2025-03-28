@@ -10,10 +10,6 @@ import string
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    Optional,
-    Set,
-    Type,
 )
 import uuid
 
@@ -51,7 +47,7 @@ def make_source_id() -> SourceId:
     return str(uuid.uuid4())
 
 
-def resolve_id_collisions(item: str, existing_items: Set[str], formatter: str = "{} ({})") -> str:
+def resolve_id_collisions(item: str, existing_items: set[str], formatter: str = "{} ({})") -> str:
     idx = 1
     orig_item = item
     while item in existing_items:
@@ -100,7 +96,7 @@ class ReadableFieldIdGenerator(FieldIdGenerator):
     _id_length: int = ID_LENGTH
     _id_formatter: str = "{}_{}"
 
-    def make_field_id(self, *args: Any, title: Optional[str] = None, **kwargs: Any) -> FieldId:
+    def make_field_id(self, *args: Any, title: str | None = None, **kwargs: Any) -> FieldId:
         if title is None:
             return str(uuid.uuid4())
         field_id = make_readable_field_id(title, self._id_valid_symbols, self._id_length)
@@ -119,14 +115,14 @@ class ReadableFieldIdGenerator(FieldIdGenerator):
 
 @attr.s
 class ReadableFieldIdGeneratorWithPrefix(ReadableFieldIdGenerator):
-    def make_field_id(self, *args: Any, title: Optional[str] = None, **kwargs: Any) -> FieldId:
+    def make_field_id(self, *args: Any, title: str | None = None, **kwargs: Any) -> FieldId:
         field_id = super().make_field_id(title=title)
         return "_".join([generate_random_str(), field_id])
 
 
 @attr.s
 class ReadableFieldIdGeneratorWithSuffix(ReadableFieldIdGenerator):
-    def make_field_id(self, *args: Any, title: Optional[str] = None, **kwargs: Any) -> FieldId:
+    def make_field_id(self, *args: Any, title: str | None = None, **kwargs: Any) -> FieldId:
         field_id = super().make_field_id(title=title)
         return "_".join([field_id, generate_random_str()])
 
@@ -142,7 +138,7 @@ class FieldIdGeneratorType(Enum):
 DEFAULT_FIELD_ID_GENERATOR_TYPE: FieldIdGeneratorType = FieldIdGeneratorType.readable
 
 
-FIELD_ID_GENERATOR_MAP: Dict[FieldIdGeneratorType, Type[FieldIdGenerator]] = {
+FIELD_ID_GENERATOR_MAP: dict[FieldIdGeneratorType, type[FieldIdGenerator]] = {
     FieldIdGeneratorType.default: DefaultFieldIdGenerator,
     FieldIdGeneratorType.readable: ReadableFieldIdGenerator,
     FieldIdGeneratorType.prefix: ReadableFieldIdGeneratorWithPrefix,
