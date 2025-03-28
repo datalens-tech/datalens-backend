@@ -46,8 +46,9 @@ class YQLEngineWrapper(EngineWrapperBase):
 
     def get_conn_credentials(self, full: bool = False) -> dict:
         return dict(
-            endpoint=self.engine.url.query["endpoint"],
-            db_name=self.engine.url.query["database"],
+            host=self.engine.url.host,
+            port=self.engine.url.port,
+            db_name=self.engine.url.database,
         )
 
     def get_version(self) -> Optional[str]:
@@ -63,12 +64,12 @@ class YQLEngineWrapper(EngineWrapperBase):
         return table.with_primary_keys(*primary_keys)
 
     def _get_table_path(self, table: sa.Table) -> str:
-        return os.path.join(self.engine.url.query["database"], table.name)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "join" has incompatible type "str | tuple[str, ...]"; expected "str"  [arg-type]
+        return os.path.join(self.engine.url.database, table.name)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "join" has incompatible type "str | tuple[str, ...]"; expected "str"  [arg-type]
 
     def _get_connection_params(self) -> ydb.DriverConfig:
         return ydb.DriverConfig(
-            endpoint=self.engine.url.query["endpoint"],
-            database=self.engine.url.query["database"],
+            endpoint=f"{self.engine.url.host}:{self.engine.url.port}",
+            database=self.engine.url.database,
         )
 
     def table_from_columns(
@@ -94,8 +95,8 @@ class YQLEngineWrapper(EngineWrapperBase):
 
     def insert_into_table(self, table: sa.Table, data: Sequence[dict]) -> None:
         connection_params = ydb.DriverConfig(
-            endpoint=self.engine.url.query["endpoint"],
-            database=self.engine.url.query["database"],
+            endpoint=f"{self.engine.url.host}:{self.engine.url.port}",
+            database=self.engine.url.database,
         )
         driver = ydb.Driver(connection_params)
         driver.wait(timeout=5)

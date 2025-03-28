@@ -1,5 +1,6 @@
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
+import ydb_sqlalchemy as ydb_sa
 
 from dl_formula.connectors.base.literal import Literal
 from dl_formula.definitions.base import (
@@ -55,6 +56,8 @@ def _date_datetime_add_yql(
         type_name = "day"
         mult_expr = mult_expr * 7  # type: ignore  # 2024-04-02 # TODO: Unsupported operand types for * ("ClauseElement" and "int")  [operator]
 
+    mult_expr = sa.func.UNWRAP(sa.cast(mult_expr, ydb_sa.types.Int32))
+
     func_name = YQL_INTERVAL_FUNCS.get(type_name)
     if func_name is not None:
         func = getattr(sa.func.DateTime, func_name)
@@ -98,7 +101,7 @@ def _datetrunc2_yql_impl(date_ctx: TranslationCtx, unit_ctx: TranslationCtx) -> 
         return sa.func.DateTime.MakeDatetime(
             sa.func.DateTime.StartOf(
                 date_expr,
-                func(amount),
+                func(sa.cast(amount, ydb_sa.types.Int32)),
             )
         )
 

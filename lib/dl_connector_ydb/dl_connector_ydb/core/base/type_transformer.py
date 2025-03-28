@@ -7,7 +7,7 @@ from typing import (
 )
 
 import sqlalchemy as sa
-import ydb.sqlalchemy as ydb_sa
+import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_constants.enums import UserDataType
 from dl_type_transformer.type_transformer import (
