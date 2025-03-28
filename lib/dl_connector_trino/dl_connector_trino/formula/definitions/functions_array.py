@@ -232,26 +232,14 @@ DEFINITIONS_ARRAY = [
         ]
     ),
     # contains_any
-    # base.FuncArrayContainsAny(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda array_1, array_2: n.func.IF(
-    #                 array_2 != sa.func.array_remove(array_2, None),  # array_2 contains null
-    #                 n.func.IF(
-    #                     array_1 != sa.func.array_remove(array_1, None),  # array_1 contains null
-    #                     True,
-    #                     sa.type_coerce(array_1, sa_postgresql.ARRAY(TypeEngine)).overlap(
-    #                         sa.type_coerce(sa.func.array_remove(array_2, None), sa_postgresql.ARRAY(TypeEngine))
-    #                     ),
-    #                 ),
-    #                 sa.type_coerce(array_1, sa_postgresql.ARRAY(TypeEngine)).overlap(
-    #                     sa.type_coerce(array_2, sa_postgresql.ARRAY(TypeEngine))
-    #                 ),
-    #             ),
-    #         ),
-    #     ]
-    # ),
+    base.FuncArrayContainsAny(
+        variants=[
+            V(
+                D.TRINO,
+                lambda array_1, array_2: sa.func.cardinality(sa.func.array_intersect(array_1, array_2)) > 0,
+            ),
+        ]
+    ),
     # count_item
     base.FuncArrayCountItemInt(
         variants=[
