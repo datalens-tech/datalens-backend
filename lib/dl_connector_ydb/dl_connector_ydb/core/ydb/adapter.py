@@ -11,9 +11,12 @@ from typing import (
 import attr
 import grpc
 from ydb import DriverConfig
-import ydb.dbapi as ydb_dbapi
-from ydb.driver import credentials_impl
+from ydb.driver import (
+    Driver,
+    credentials_impl,
+)
 import ydb.issues as ydb_cli_err
+import ydb_dbapi
 
 from dl_constants.enums import ConnectionType
 from dl_core import exc
@@ -67,11 +70,9 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
     def get_connect_args(self) -> dict:
         target_dto = self._target_dto
         args = dict(
-            endpoint="{}://{}:{}".format(
-                self.proto_schema,
-                target_dto.host,
-                target_dto.port,
-            ),
+            host=target_dto.host,
+            port=target_dto.port,
+            protocol=self.proto_schema,
             database=target_dto.db_name,
         )
         self._update_connect_args(args)
@@ -85,7 +86,7 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
         connection = db_engine.connect()
         try:
             # SA db_engine -> SA connection -> DBAPI connection -> YDB driver
-            driver = connection.connection.driver  # type: ignore  # 2024-01-24 # TODO: "DBAPIConnection" has no attribute "driver"  [attr-defined]
+            driver: Driver = connection.connection._driver  # type: ignore  # 2024-01-24 # TODO: "DBAPIConnection" has no attribute "driver"  [attr-defined]
             assert driver
 
             queue = [db_name]

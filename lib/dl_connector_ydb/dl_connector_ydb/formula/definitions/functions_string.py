@@ -1,5 +1,5 @@
 import sqlalchemy as sa
-import ydb.sqlalchemy as ydb_sa
+import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_formula.definitions.base import TranslationVariant
 from dl_formula.definitions.common import (
@@ -22,7 +22,11 @@ DEFINITIONS_STRING = [
             V(
                 D.YQL,
                 lambda x: sa.func.ListHead(
-                    sa.func.Unicode.ToCodePointList(sa.func.Unicode.Substring(sa.cast(x, sa.TEXT), 0, 1))
+                    sa.func.Unicode.ToCodePointList(
+                        sa.func.Unicode.Substring(
+                            sa.cast(x, sa.TEXT), sa.cast(0, ydb_sa.types.UInt64), sa.cast(1, ydb_sa.types.UInt64)
+                        )
+                    )
                 ),
             ),
         ]
@@ -41,7 +45,7 @@ DEFINITIONS_STRING = [
                     sa.func.Unicode.FromCodePointList(
                         sa.func.AsList(
                             # coalesce is needed to un-Nullable the type.
-                            sa.func.COALESCE(sa.cast(value, ydb_sa.types.UInt32), 0),
+                            sa.func.COALESCE(sa.cast(value, ydb_sa.types.UInt32), sa.cast(0, ydb_sa.types.UInt32)),
                         )
                     ),
                 ),
@@ -110,7 +114,10 @@ DEFINITIONS_STRING = [
             # In YQL indices start from 0, but we count them from 1, so have to do -1/+1 here
             V(
                 D.YQL,
-                lambda text, piece, startpos: sa.func.COALESCE(sa.func.Unicode.Find(text, piece, startpos), -1) + 1,
+                lambda text, piece, startpos: sa.func.COALESCE(
+                    sa.func.Unicode.Find(text, piece, sa.cast(startpos, ydb_sa.types.UInt64)), -1
+                )
+                + 1,
             ),
         ]
     ),
@@ -126,7 +133,12 @@ DEFINITIONS_STRING = [
     # left
     base.FuncLeft(
         variants=[
-            V(D.YQL, lambda x, y: sa.func.Unicode.Substring(sa.cast(x, sa.TEXT), 0, y)),
+            V(
+                D.YQL,
+                lambda x, y: sa.func.Unicode.Substring(
+                    sa.cast(x, sa.TEXT), sa.cast(0, ydb_sa.types.UInt64), sa.cast(y, ydb_sa.types.UInt64)
+                ),
+            ),
         ]
     ),
     # len
@@ -168,7 +180,7 @@ DEFINITIONS_STRING = [
                 D.YQL,
                 lambda x, y: sa.func.Unicode.Substring(
                     sa.cast(x, sa.TEXT),
-                    sa.func.Unicode.GetLength(sa.cast(x, sa.TEXT)) - y,
+                    sa.cast(sa.func.Unicode.GetLength(sa.cast(x, sa.TEXT)) - y, ydb_sa.types.UInt64),
                 ),
             ),
         ]
@@ -190,7 +202,7 @@ DEFINITIONS_STRING = [
                 lambda text, delim, ind: sa.func.ListHead(
                     sa.func.ListSkip(
                         sa.func.Unicode.SplitToList(sa.cast(text, sa.TEXT), delim),  # must be non-nullable
-                        ind - 1,
+                        sa.func.UNWRAP(sa.cast(ind - 1, ydb_sa.types.UInt32)),
                     )
                 ),
             ),
@@ -213,13 +225,25 @@ DEFINITIONS_STRING = [
     base.FuncSubstr2(
         variants=[
             # In YQL indices start from 0, but we count them from 1, so have to do -1 here
-            V(D.YQL, lambda val, start: sa.func.Unicode.Substring(sa.cast(val, sa.TEXT), start - 1)),
+            V(
+                D.YQL,
+                lambda val, start: sa.func.Unicode.Substring(
+                    sa.cast(val, sa.TEXT), sa.func.UNWRAP(sa.cast(start - 1, ydb_sa.types.UInt64))
+                ),
+            ),
         ]
     ),
     base.FuncSubstr3(
         variants=[
             # In YQL indices start from 0, but we count them from 1, so have to do -1 here
-            V(D.YQL, lambda val, start, length: sa.func.Unicode.Substring(sa.cast(val, sa.TEXT), start - 1, length)),
+            V(
+                D.YQL,
+                lambda val, start, length: sa.func.Unicode.Substring(
+                    sa.cast(val, sa.TEXT),
+                    sa.func.UNWRAP(sa.cast(start - 1, ydb_sa.types.UInt64)),
+                    sa.func.UNWRAP(sa.cast(length, ydb_sa.types.UInt64)),
+                ),
+            ),
         ]
     ),
     # upper
