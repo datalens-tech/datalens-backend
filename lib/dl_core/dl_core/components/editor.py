@@ -1,4 +1,5 @@
 from collections import defaultdict
+from copy import deepcopy
 import logging
 from typing import (
     Any,
@@ -146,7 +147,7 @@ class DatasetComponentEditor:
             raw_schema = None
 
         connection_ref = connection_ref_from_id(connection_id=connection_id)
-        parameters = parameters or {}
+        parameters = deepcopy(parameters or {})
         parameters["connection_ref"] = connection_ref
         parameters["raw_schema"] = raw_schema
         parameters["index_info_set"] = index_info_set

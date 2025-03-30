@@ -198,6 +198,7 @@ class DefaultDatasetTestSuite(RegulatedTestCase, BaseDatasetTestClass[_CONN_TV],
         dataset = saved_dataset
         service_registry = conn_default_service_registry
         source_id = dataset.get_single_data_source_id()
+        assert source_id is not None
         dsrc_coll = dataset_wrapper.get_data_source_coll_strict(source_id=source_id)
         hash_from_dataset = dsrc_coll.get_param_hash()
 
