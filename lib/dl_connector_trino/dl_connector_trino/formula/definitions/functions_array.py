@@ -34,6 +34,34 @@ format_float = lambda array_float: sa.func.transform(
     array_float, sa.text("x -> regexp_extract(format('%.8f', x), '^(-?\d+(\.[1-9]+)?)(\.?0*)$', 1)")
 )
 
+
+def array_equals(x: ClauseElement, y: ClauseElement) -> ClauseElement:
+    pairwise_non_distinct = sa.func.zip_with(
+        x,
+        y,
+        sa.text("(x, y) -> x IS NOT DISTINCT FROM y"),
+    )
+    return sa.func.reduce(
+        pairwise_non_distinct,
+        True,
+        sa.text("(x, y) -> x AND y"),
+        sa.text("x -> x"),
+    )
+
+
+def array_startswith(x: ClauseElement, y: ClauseElement) -> ClauseElement:
+    len_y = sa.func.cardinality(y)
+    x_slice = sa.func.slice(x, 1, len_y)
+    return sa.func.if_(
+        sa.func.cardinality(x) < len_y,
+        False,
+        array_equals(
+            x_slice,
+            y,
+        ),
+    )
+
+
 count_item = lambda array, value: (
     sa.func.if_(
         value.is_(None),
@@ -306,26 +334,16 @@ DEFINITIONS_ARRAY = [
         ]
     ),
     # startswith
-    # base.FuncStartswithArrayConst(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda x, y, _env: Grouping(sa.type_coerce(x, sa_postgresql.ARRAY(TypeEngine)))[1 : len(un_literal(y))]  # type: ignore  # 2024-01-24 # TODO: Invalid index type "slice" for "Grouping"; expected type "int"  [index]
-    #             == y,
-    #         ),
-    #     ]
-    # ),
-    # base.FuncStartswithArrayNonConst(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda x, y, _env: Grouping(sa.type_coerce(x, sa_postgresql.ARRAY(TypeEngine)))[  # type: ignore  # 2024-01-24 # TODO: Invalid index type "slice" for "Grouping"; expected type "int"  [index]
-    #                 1 : sa.func.array_length(y, 1)
-    #             ]
-    #             == y,
-    #         ),
-    #     ]
-    # ),
+    base.FuncStartswithArrayConst(
+        variants=[
+            V(D.TRINO, array_startswith),
+        ]
+    ),
+    base.FuncStartswithArrayNonConst(
+        variants=[
+            V(D.TRINO, array_startswith),
+        ]
+    ),
     # unnest
     # base.FuncUnnestArrayFloat(
     #     variants=[
