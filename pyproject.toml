@@ -96,9 +96,30 @@ select = [
   # Pyflakes
   "F",
   # Bugbear
-  "B"
+  "B",
+  # pyupgrade
+  "UP"
 ]
 ignore = [
-  "E501",  # line lengh, should be checked and fixed by black
+  "E501",  # line length, should be checked and fixed by black
   "B904",  # force `raise ... from err` or `raise ... from None`
+  "UP007", # Use `X | Y` for type annotations
+  "UP006", # Use ... instead of ... for type annotation
+  "UP032", # [*] Use f-string instead of `format` call
+  "UP026", # [*] `mock` is deprecated, use `unittest.mock`
+  "UP037", # [*] Remove quotes from type annotation
+  "UP034", # [*] Avoid extraneous parentheses
+  "UP008", # Use `super()` instead of `super(__class__, self)`
+  "UP010", # [*] Unnecessary `__future__` import ...
+  "UP004", # [*] Class ... inherits from `object`
+  "UP015", # [*] Unnecessary open mode parameters
+  "UP028", # Replace `yield` over `for` loop with `yield from`
+  "UP009", # [*] UTF-8 encoding declaration is unnecessary
+  "UP014", # Convert `RequestData` from `NamedTuple` functional to class syntax
+  "UP030", # Use implicit references for positional format fields
+  "UP012", # [*] Unnecessary UTF-8 `encoding` argument to `encode`
+  "UP027", # [*] Replace unpacked list comprehension with a generator expression
+  "UP031", # Use format specifiers instead of percent format
+  "UP018", # [*] Unnecessary `int` call (rewrite as a literal)
+  "UP024", # [*] Replace aliased errors with `OSError`
 ]
