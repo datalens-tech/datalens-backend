@@ -276,16 +276,34 @@ DEFINITIONS_ARRAY = [
     #         V(D.TRINO, sa.func.array_replace),
     #     ]
     # ),
-    # base.FuncReplaceArrayDefault(
-    #     variants=[
-    #         V(D.TRINO, sa.func.array_replace),
-    #     ]
-    # ),
+    base.FuncReplaceArrayDefault(
+        variants=[
+            V(
+                D.TRINO,
+                lambda array, old_value, new_value: sa.func.if_(
+                    old_value.is_(None),
+                    sa.func.transform(
+                        array,
+                        sa.text(f"x -> if(x IS NULL, {new_value.compile(compile_kwargs=dict(literal_binds=True))}, x)"),
+                    ),
+                    sa.func.transform(
+                        array,
+                        sa.text(
+                            f"x -> if(x = {old_value.compile(compile_kwargs=dict(literal_binds=True))}, {new_value.compile(compile_kwargs=dict(literal_binds=True))}, x)"
+                        ),
+                    ),
+                ),
+            ),
+        ]
+    ),
     # slice
     base.FuncArraySlice(
         variants=[
             # V(D.TRINO, sa.func.slice),  # Due to bug in sqlalchemy, pure slice doesn't work
-            V(D.TRINO, lambda array, start, offset: sa.func.filter(sa.func.slice(array, start, offset), sa.text("x -> true"))),
+            V(
+                D.TRINO,
+                lambda array, start, offset: sa.func.filter(sa.func.slice(array, start, offset), sa.text("x -> true")),
+            ),
         ]
     ),
     # startswith
