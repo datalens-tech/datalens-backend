@@ -284,7 +284,8 @@ DEFINITIONS_ARRAY = [
     # slice
     base.FuncArraySlice(
         variants=[
-            V(D.TRINO, sa.func.slice),
+            # V(D.TRINO, sa.func.slice),  # Due to bug in sqlalchemy, pure slice doesn't work
+            V(D.TRINO, lambda array, start, offset: sa.func.filter(sa.func.slice(array, start, offset), sa.text("x -> true"))),
         ]
     ),
     # startswith
