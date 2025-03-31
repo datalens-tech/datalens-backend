@@ -62,6 +62,17 @@ def array_startswith(x: ClauseElement, y: ClauseElement) -> ClauseElement:
     )
 
 
+def array_intersect(*arrays: list[ClauseElement]) -> ClauseElement:
+    return sa.func.reduce(
+        sa.text(
+            f"ARRAY[{','.join([str(arr.compile(compile_kwargs=dict(literal_binds=True))) for arr in arrays[1:]])}]"
+        ),
+        arrays[0],
+        sa.text("(x, y) -> array_intersect(x, y)"),
+        sa.text("x -> x"),
+    )
+
+
 count_item = lambda array, value: (
     sa.func.if_(
         value.is_(None),
@@ -361,14 +372,9 @@ DEFINITIONS_ARRAY = [
     #     ]
     # ),
     # intersect
-    # base.FuncArrayIntersect(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda *arrays: sa.func.array(
-    #                 sa.intersect(*[sa.select(sa.func.unnest(arr)) for arr in arrays]).scalar_subquery()
-    #             ),
-    #         )
-    #     ]
-    # ),
+    base.FuncArrayIntersect(
+        variants=[
+            V(D.TRINO, array_intersect),
+        ]
+    ),
 ]
