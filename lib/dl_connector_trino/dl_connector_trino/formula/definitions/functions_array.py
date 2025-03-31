@@ -62,7 +62,7 @@ def array_startswith(x: ClauseElement, y: ClauseElement) -> ClauseElement:
     )
 
 
-def array_intersect(*arrays: list[ClauseElement]) -> ClauseElement:
+def array_intersect(*arrays: ClauseElement) -> ClauseElement:
     return sa.func.reduce(
         sa.text(
             f"ARRAY[{','.join([str(arr.compile(compile_kwargs=dict(literal_binds=True))) for arr in arrays[1:]])}]"

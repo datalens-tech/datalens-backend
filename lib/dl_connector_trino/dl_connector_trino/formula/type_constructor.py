@@ -10,7 +10,7 @@ class TrinoTypeConstructor(DefaultSATypeConstructor):
     def get_sa_type(self, data_type: DataType) -> TypeEngine:
         type_map: dict[DataType, TypeEngine] = {
             **{
-                str_type: sa.VARCHAR
+                str_type: sa.VARCHAR()
                 for str_type in (
                     DataType.STRING,
                     DataType.GEOPOINT,
@@ -18,9 +18,9 @@ class TrinoTypeConstructor(DefaultSATypeConstructor):
                     DataType.UUID,
                 )
             },
-            DataType.INTEGER: sa.BIGINT,
-            DataType.FLOAT: tsa.DOUBLE,
-            DataType.DATETIME: tsa.TIMESTAMP,
+            DataType.INTEGER: sa.BIGINT(),
+            DataType.FLOAT: tsa.DOUBLE(),
+            DataType.DATETIME: tsa.TIMESTAMP(),
             DataType.ARRAY_INT: sa.ARRAY(sa.BIGINT),
             DataType.ARRAY_FLOAT: sa.ARRAY(tsa.DOUBLE),
             DataType.ARRAY_STR: sa.ARRAY(sa.VARCHAR),
