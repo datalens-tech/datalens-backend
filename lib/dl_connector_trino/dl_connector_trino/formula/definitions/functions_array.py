@@ -1,8 +1,14 @@
+from typing import cast
+
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import (
+    BinaryExpression,
+    BindParameter,
     ClauseElement,
+    ColumnClause,
     TextClause,
 )
+from sqlalchemy.sql.functions import Function
 
 from dl_formula.core.datatype import DataType
 from dl_formula.definitions.args import ArgTypeSequence
@@ -15,27 +21,24 @@ from dl_connector_trino.formula.constants import TrinoDialect as D
 V = TranslationVariant.make
 
 
-def create_non_const_array(*args: list[ClauseElement]) -> TextClause:
-    compiled_args = []
-    for arg in args:
-        if isinstance(arg, ClauseElement):
-            compiled_args.append(str(arg.compile(compile_kwargs={"literal_binds": True})))
-        elif arg is None:
-            compiled_args.append("NULL")
-        else:
-            compiled_args.append(str(arg))
-
+def create_non_const_array(*args: ColumnClause) -> TextClause:
+    compiled_args = [str(arg.compile(compile_kwargs={"literal_binds": True})) for arg in args]
     array_elements = ",".join(compiled_args)
     return sa.text(f"ARRAY[{array_elements}]")
 
 
-drop_null = lambda array: sa.func.filter(array, sa.text("x -> x IS NOT NULL"))
-format_float = lambda array_float: sa.func.transform(
-    array_float, sa.text("x -> regexp_extract(format('%.8f', x), '^(-?\d+(\.[1-9]+)?)(\.?0*)$', 1)")
-)
+def drop_null(array: ClauseElement) -> Function:
+    return sa.func.filter(array, sa.text("x -> x IS NOT NULL"))
 
 
-def array_equals(x: ClauseElement, y: ClauseElement) -> ClauseElement:
+def format_float(array_float: ClauseElement) -> Function:
+    return sa.func.transform(
+        array_float,
+        sa.text("x -> regexp_extract(format('%.16f', x), '^(-?\\d+(\\.[1-9]+)?)(\\.?0*)$', 1)"),
+    )
+
+
+def array_equals(x: ColumnClause, y: ColumnClause) -> Function:
     pairwise_non_distinct = sa.func.zip_with(
         x,
         y,
@@ -49,7 +52,7 @@ def array_equals(x: ClauseElement, y: ClauseElement) -> ClauseElement:
     )
 
 
-def array_startswith(x: ClauseElement, y: ClauseElement) -> ClauseElement:
+def array_startswith(x: ColumnClause, y: ColumnClause) -> Function:
     len_y = sa.func.cardinality(y)
     x_slice = sa.func.slice(x, 1, len_y)
     return sa.func.if_(
@@ -62,26 +65,50 @@ def array_startswith(x: ClauseElement, y: ClauseElement) -> ClauseElement:
     )
 
 
-def array_intersect(*arrays: ClauseElement) -> ClauseElement:
+def array_intersect(*arrays: ColumnClause) -> Function:
     return sa.func.reduce(
-        sa.text(
-            f"ARRAY[{','.join([str(arr.compile(compile_kwargs=dict(literal_binds=True))) for arr in arrays[1:]])}]"
-        ),
+        create_non_const_array(*arrays[1:]),
         arrays[0],
         sa.text("(x, y) -> array_intersect(x, y)"),
         sa.text("x -> x"),
     )
 
 
-count_item = lambda array, value: (
-    sa.func.if_(
+def count_item(array: ColumnClause, value: BindParameter) -> Function:
+    return sa.func.if_(
         value.is_(None),
         sa.func.cardinality(sa.func.filter(array, sa.text("x -> x IS NULL"))),
         sa.func.cardinality(
-            sa.func.filter(array, sa.text(f"x -> x = {value.compile(compile_kwargs=dict(literal_binds=True))}"))
+            sa.func.filter(
+                array,
+                sa.text(f"x -> x IS NOT DISTINCT FROM {value.compile(compile_kwargs=dict(literal_binds=True))}"),
+            )
         ),
     )
-)
+
+
+def array_contains(array: ColumnClause, value: BindParameter) -> BinaryExpression:
+    return cast(BinaryExpression, count_item(array, value) > 0)
+
+
+def array_not_contains(array: ColumnClause, value: BindParameter) -> BinaryExpression:
+    return cast(BinaryExpression, count_item(array, value) == 0)
+
+
+def replace_array(array: ColumnClause, old_value: BindParameter, new_value: BindParameter) -> Function:
+    old_value_repr = old_value.compile(compile_kwargs=dict(literal_binds=True))
+    new_value_repr = new_value.compile(compile_kwargs=dict(literal_binds=True))
+    return sa.func.if_(
+        old_value.is_(None),
+        sa.func.transform(
+            array,
+            sa.text(f"x -> if(x IS NULL, {new_value_repr}, x)"),
+        ),
+        sa.func.transform(
+            array,
+            sa.text(f"x -> if(x = {old_value_repr}, {new_value_repr}, x)"),
+        ),
+    )
 
 
 class FuncArrStr3Trino(base.FuncArrStr3):
@@ -242,13 +269,13 @@ DEFINITIONS_ARRAY = [
     # contains
     base.FuncArrayContains(
         variants=[
-            V(D.TRINO, lambda array, value: count_item(array, value) > 0),
+            V(D.TRINO, array_contains),
         ]
     ),
     # notcontains
     base.FuncArrayNotContains(
         variants=[
-            V(D.TRINO, lambda array, value: count_item(array, value) == 0),
+            V(D.TRINO, array_not_contains),
         ]
     ),
     # contains_all
@@ -316,22 +343,7 @@ DEFINITIONS_ARRAY = [
     # ),
     base.FuncReplaceArrayDefault(
         variants=[
-            V(
-                D.TRINO,
-                lambda array, old_value, new_value: sa.func.if_(
-                    old_value.is_(None),
-                    sa.func.transform(
-                        array,
-                        sa.text(f"x -> if(x IS NULL, {new_value.compile(compile_kwargs=dict(literal_binds=True))}, x)"),
-                    ),
-                    sa.func.transform(
-                        array,
-                        sa.text(
-                            f"x -> if(x = {old_value.compile(compile_kwargs=dict(literal_binds=True))}, {new_value.compile(compile_kwargs=dict(literal_binds=True))}, x)"
-                        ),
-                    ),
-                ),
-            ),
+            V(D.TRINO, replace_array),
         ]
     ),
     # slice
@@ -340,7 +352,10 @@ DEFINITIONS_ARRAY = [
             # V(D.TRINO, sa.func.slice),  # Due to bug in sqlalchemy, pure slice doesn't work
             V(
                 D.TRINO,
-                lambda array, start, offset: sa.func.filter(sa.func.slice(array, start, offset), sa.text("x -> true")),
+                lambda array, start, offset: sa.func.filter(
+                    sa.func.slice(array, start, offset),
+                    sa.text("x -> true"),
+                ),
             ),
         ]
     ),
