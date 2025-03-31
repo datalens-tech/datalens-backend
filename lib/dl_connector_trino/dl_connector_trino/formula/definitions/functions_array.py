@@ -150,57 +150,56 @@ DEFINITIONS_ARRAY = [
         ]
     ),
     # cast_arr_float
-    # base.FuncFloatArrayFromIntArray(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda arr: sa.func.array(sa.select(sa.cast(sa.func.unnest(arr), sa_postgresql.DOUBLE_PRECISION))),
-    #         ),
-    #     ]
-    # ),
-    # base.FuncFloatArrayFromFloatArray.for_dialect(D.TRINO),
-    # base.FuncFloatArrayFromStringArray(
-    #     variants=[
-    #         V(D.TRINO, lambda arr: sa.func.array(sa.select(sa.cast(sa.func.unnest(arr), sa.FLOAT)))),
-    #     ]
-    # ),
+    base.FuncFloatArrayFromIntArray(
+        variants=[
+            V(
+                D.TRINO,
+                lambda arr: sa.func.transform(arr, sa.text("x -> cast(x as double)")),
+            ),
+        ]
+    ),
+    base.FuncFloatArrayFromFloatArray.for_dialect(D.TRINO),
+    base.FuncFloatArrayFromStringArray(
+        variants=[
+            V(
+                D.TRINO,
+                lambda arr: sa.func.transform(arr, sa.text("x -> cast(x as double)")),
+            ),
+        ]
+    ),
     # cast_arr_int
-    # base.FuncIntArrayFromIntArray.for_dialect(D.TRINO),
-    # base.FuncIntArrayFromFloatArray(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda arr: sa.func.array(sa.select(sa.cast(sa.func.floor(sa.func.unnest(arr)), sa.BIGINT))),
-    #         ),
-    #     ]
-    # ),
-    # base.FuncIntArrayFromStringArray(
-    #     variants=[
-    #         V(D.TRINO, lambda arr: sa.func.array(sa.select(sa.cast(sa.func.unnest(arr), sa.BIGINT)))),
-    #     ]
-    # ),
+    base.FuncIntArrayFromIntArray.for_dialect(D.TRINO),
+    base.FuncIntArrayFromFloatArray(
+        variants=[
+            V(
+                D.TRINO,
+                lambda arr: sa.func.transform(arr, sa.text("x -> cast(x as bigint)")),
+            ),
+        ]
+    ),
+    base.FuncIntArrayFromStringArray(
+        variants=[
+            V(
+                D.TRINO,
+                lambda arr: sa.func.transform(arr, sa.text("x -> cast(x as bigint)")),
+            ),
+        ]
+    ),
     # cast_arr_str
-    # base.FuncStringArrayFromIntArray(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda arr: sa.func.array(sa.select(sa.func.to_char(sa.func.unnest(arr), PG_INT_64_TO_CHAR_FMT))),
-    #         ),
-    #     ]
-    # ),
-    # base.FuncStringArrayFromFloatArray(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda arr: sa.func.array(sa.select(sa.func.to_char(sa.func.unnest(arr), "FM999999999990.0999999999"))),
-    #         ),
-    #     ]
-    # ),
-    # base.FuncStringArrayFromStringArray.for_dialect(D.TRINO),
-    # Array contains(_all, _any) functions comment:
-    # Straight-forward `array_1.contains(array_2)` doesn't work due to postgres specifics in NULL and arrays interaction
-    # [NULL, 1, 2].contains([NULL, 1]) = False in postgres, that is why branching on null containment needed
-    # In PostgreSQL 9.5+ use sa.func.array_position(array, None) != None instead of array_remove comparison
+    base.FuncStringArrayFromIntArray(
+        variants=[
+            V(
+                D.TRINO,
+                lambda arr: sa.func.transform(arr, sa.text("x -> cast(x as varchar)")),
+            ),
+        ]
+    ),
+    base.FuncStringArrayFromFloatArray(
+        variants=[
+            V(D.TRINO, format_float),
+        ]
+    ),
+    base.FuncStringArrayFromStringArray.for_dialect(D.TRINO),
     # contains
     base.FuncArrayContains(
         variants=[
