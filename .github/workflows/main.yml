@@ -594,6 +594,6 @@ jobs:
           VENV_PATH: /venv
       - name: Find directories and check requirements
         run: |
-          task cq:find_and_check_requirements
+          task cq:find_and_check_requirements STRICT=true
         env:
           VENV_PATH: /venv
