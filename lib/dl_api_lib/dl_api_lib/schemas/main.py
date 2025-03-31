@@ -170,7 +170,7 @@ class DashSQLRequestSchema(BaseSchema):
 
 
 class IdMappingContentSchema(BaseSchema):
-    id_mapping = ma_fields.Dict(ma_fields.String(), ma_fields.String())
+    id_mapping = ma_fields.Dict(ma_fields.String(), ma_fields.String(), required=True)
 
 
 class DatasetExportRequestSchema(IdMappingContentSchema):
@@ -195,12 +195,12 @@ class DatasetContentImportSchema(BaseSchema):
     class DatasetContentInternalImportSchema(DatasetContentInternalSchema):
         name = ma_fields.String()
 
-    dataset = ma_fields.Nested(DatasetContentInternalImportSchema)
-    workbook_id = ma_fields.String(allow_none=True)
+    dataset = ma_fields.Nested(DatasetContentInternalImportSchema, required=True)
+    workbook_id = ma_fields.String(allow_none=True, required=True)
 
 
 class DatasetImportRequestSchema(IdMappingContentSchema):
-    data = ma_fields.Nested(DatasetContentImportSchema)
+    data = ma_fields.Nested(DatasetContentImportSchema, required=True)
 
 
 class DatasetImportResponseSchema(IdMappingContentSchema):
