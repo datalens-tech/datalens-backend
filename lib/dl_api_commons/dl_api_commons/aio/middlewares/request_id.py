@@ -4,7 +4,6 @@ import json
 import logging
 from typing import (
     Optional,
-    Type,
 )
 
 from aiohttp import web
@@ -40,7 +39,7 @@ LOG_HELPER = RequestLogHelper(logger=LOGGER)
 @attr.s
 class RequestId:
     header_name: str = attr.ib(default="X-Request-ID")
-    dl_request_cls: Type[aiohttp_wrappers.DLRequestBase] = attr.ib(default=aiohttp_wrappers.DLRequestBase)
+    dl_request_cls: type[aiohttp_wrappers.DLRequestBase] = attr.ib(default=aiohttp_wrappers.DLRequestBase)
     append_own_req_id: bool = attr.ib(default=False)
     app_prefix: Optional[str] = attr.ib(default=None)
     accept_logging_ctx: bool = attr.ib(default=False)

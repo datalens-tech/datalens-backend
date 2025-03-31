@@ -11,7 +11,6 @@ from typing import (
     Any,
     Iterable,
     Optional,
-    Tuple,
     Union,
 )
 
@@ -277,7 +276,7 @@ def hook_init_logging(
     )
 
 
-def _handle_exception(err: Exception) -> Tuple[flask.Response, int]:
+def _handle_exception(err: Exception) -> tuple[flask.Response, int]:
     LOGGER.exception("Exception occurred in sync RQE")
     if isinstance(err, HTTPException):
         return flask.jsonify(ActionSerializer().serialize_exc(err)), err.code or 500

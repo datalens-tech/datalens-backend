@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    List,
     Optional,
-    Type,
     TypeVar,
 )
 
@@ -25,7 +23,7 @@ class ExecutedQueryMetaInfo(TranslatedQueryMetaInfo):
 
     @classmethod
     def from_trans_meta(
-        cls: Type[_META_TV],
+        cls: type[_META_TV],
         trans_meta: TranslatedQueryMetaInfo,
         debug_query: Optional[str] = None,
         target_connection_ids: Optional[set[str]] = None,
@@ -40,7 +38,7 @@ class ExecutedQueryMetaInfo(TranslatedQueryMetaInfo):
 
 @attr.s
 class ExecutedQuery:
-    rows: List[TBIDataRow] = attr.ib(kw_only=True)
+    rows: list[TBIDataRow] = attr.ib(kw_only=True)
     meta: ExecutedQueryMetaInfo = attr.ib(kw_only=True, factory=ExecutedQueryMetaInfo)
 
     def clone(self, **updates: Any) -> ExecutedQuery:

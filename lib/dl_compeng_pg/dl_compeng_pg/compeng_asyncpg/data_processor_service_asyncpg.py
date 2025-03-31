@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Type
 
 import attr
 
@@ -14,7 +13,7 @@ from dl_core.data_processing.processing.processor import OperationProcessorAsync
 
 @attr.s
 class AsyncpgCompEngService(CompEngPgService[AsyncpgPoolWrapper]):
-    def _get_pool_wrapper_cls(self) -> Type[BasePgPoolWrapper]:
+    def _get_pool_wrapper_cls(self) -> type[BasePgPoolWrapper]:
         return AsyncpgPoolWrapper
 
     def get_data_processor(  # type: ignore  # 2024-01-29 # TODO: Return type "OperationProcessorAsyncBase" of "get_data_processor" incompatible with return type "ExecutorBasedOperationProcessor" in supertype "DataProcessorService"  [override]

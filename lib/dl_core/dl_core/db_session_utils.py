@@ -7,7 +7,6 @@ import logging
 from typing import (
     Collection,
     Generator,
-    Type,
 )
 
 from sqlalchemy.engine import Engine
@@ -26,17 +25,17 @@ from dl_core import exc
 LOGGER = logging.getLogger(__name__)
 
 
-_SA_QUERY_CLASSES: dict[SourceBackendType, Type[Query]] = {}
+_SA_QUERY_CLASSES: dict[SourceBackendType, type[Query]] = {}
 
 
-def register_sa_query_cls(backend_type: SourceBackendType, query_cls: Type[Query]) -> None:
+def register_sa_query_cls(backend_type: SourceBackendType, query_cls: type[Query]) -> None:
     if backend_type in _SA_QUERY_CLASSES:
         assert _SA_QUERY_CLASSES[backend_type] is query_cls
     else:
         _SA_QUERY_CLASSES[backend_type] = query_cls
 
 
-def get_sa_query_cls(backend_type: SourceBackendType) -> Type[Query]:
+def get_sa_query_cls(backend_type: SourceBackendType) -> type[Query]:
     return _SA_QUERY_CLASSES[backend_type]
 
 
@@ -60,17 +59,17 @@ def get_db_session(db_engine: Engine, backend_type: SourceBackendType) -> Sessio
     return SessionCls(**session_kwargs)
 
 
-_QUERY_FAIL_EXCEPTIONS: set[Type[Exception]] = {
+_QUERY_FAIL_EXCEPTIONS: set[type[Exception]] = {
     sqlalchemy.exc.InvalidRequestError,
     sqlalchemy.exc.DBAPIError,
 }
 
 
-def register_query_fail_exceptions(exception_classes: Collection[Type[Exception]]) -> None:
+def register_query_fail_exceptions(exception_classes: Collection[type[Exception]]) -> None:
     _QUERY_FAIL_EXCEPTIONS.update(exception_classes)
 
 
-def get_query_fail_exceptions() -> tuple[Type[Exception], ...]:
+def get_query_fail_exceptions() -> tuple[type[Exception], ...]:
     return tuple(_QUERY_FAIL_EXCEPTIONS)
 
 

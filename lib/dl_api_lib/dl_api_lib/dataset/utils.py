@@ -5,9 +5,7 @@ import logging
 from typing import (
     Generator,
     Iterable,
-    List,
     Optional,
-    Tuple,
 )
 
 from dl_api_lib import utils as bi_utils
@@ -91,8 +89,8 @@ def allow_rls_for_dataset(dataset: Dataset) -> bool:
 def get_dataset_conn_types(
     dataset: Dataset,
     us_entry_buffer: USEntryBuffer,
-    roles: Tuple[DataSourceRole] = (DataSourceRole.origin,),
-) -> List[ConnectionType]:
+    roles: tuple[DataSourceRole] = (DataSourceRole.origin,),
+) -> list[ConnectionType]:
     colls = list(_iter_data_source_collections(dataset=dataset, us_entry_buffer=us_entry_buffer))
     if not colls:
         return []
@@ -107,7 +105,7 @@ def get_dataset_conn_types(
     return result
 
 
-def invalidate_sample_sources(dataset: Dataset, source_ids: List[str], us_manager: USManagerBase) -> None:
+def invalidate_sample_sources(dataset: Dataset, source_ids: list[str], us_manager: USManagerBase) -> None:
     """
     Remove sample data sources for given source IDs.
     """

@@ -4,7 +4,6 @@ from typing import (
     Any,
     ClassVar,
     Optional,
-    Type,
     final,
 )
 
@@ -47,7 +46,7 @@ class BaseFileSourceSchema(Schema):
     class Meta:
         unknown = RAISE
 
-        target: Type[BaseFileS3Connection.FileDataSource]
+        target: type[BaseFileS3Connection.FileDataSource]
 
     @post_load(pass_many=False)
     def post_load(self, data: dict[str, Any], **kwargs: Any) -> BaseFileS3Connection.FileDataSource:

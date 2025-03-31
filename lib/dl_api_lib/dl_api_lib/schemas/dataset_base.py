@@ -3,7 +3,6 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import (
     Any,
-    Dict,
 )
 import uuid
 
@@ -136,7 +135,7 @@ class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
     virtual = VirtualFlagField(attribute="managed_by", dump_only=True)
 
     @post_dump(pass_many=False)
-    def add_calc_spec(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
+    def add_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         data = deepcopy(data)
         calc_spec_data = data.pop("calc_spec")
         calc_spec_data["calc_mode"] = calc_spec_data.pop("mode")
@@ -149,7 +148,7 @@ class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
         return data
 
     @pre_load(pass_many=False)
-    def extract_calc_spec(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
+    def extract_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         data = deepcopy(data)
         mode = data["calc_mode"]
         data["calc_spec"] = dict(filter_calc_spec_kwargs(mode, data), mode=mode)
@@ -157,7 +156,7 @@ class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
 
     @validates_schema
     def check_source_is_set_for_direct_and_aggregation_types(
-        self, data: Dict[str, Any], *args: Any, **kwargs: Any
+        self, data: dict[str, Any], *args: Any, **kwargs: Any
     ) -> None:
         if data["calc_spec"].mode == CalcMode.direct.name:
             if not data["calc_spec"].source:
@@ -192,7 +191,7 @@ class DatasetContentInternalSchema(BaseSchema):
     load_preview_by_default = ma_fields.Boolean(allow_none=True, dump_default=True, load_default=True)
 
     @pre_load
-    def prepare_guids(self, in_data: Dict[str, Any], *args: Any, **kwargs: Any) -> Dict[str, Any]:
+    def prepare_guids(self, in_data: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:
         for item in in_data.get("result_schema", ()):
             if not item.get("guid"):
                 item["guid"] = str(uuid.uuid4())
@@ -200,13 +199,13 @@ class DatasetContentInternalSchema(BaseSchema):
         return in_data
 
     @pre_load
-    def check_rls(self, in_data: Dict[str, Any], *args: Any, **kwargs: Any) -> Dict[str, Any]:
+    def check_rls(self, in_data: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:
         if in_data.get("rls") and in_data.get("rls2"):
             raise ValidationError("RLS can be specified in only one of the two fields: rls or rls2")
         return in_data
 
     @post_load
-    def validate_and_postload_rls2(self, item: Dict[str, Any], *args: Any, **kwargs: Any) -> Dict[str, Any]:
+    def validate_and_postload_rls2(self, item: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:
         for key, entries in item["rls2"].items():
             for entry in entries:
                 if entry.pattern_type == RLSPatternType.value and entry.allowed_value is None:

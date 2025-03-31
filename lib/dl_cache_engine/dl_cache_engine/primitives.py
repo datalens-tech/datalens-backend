@@ -6,7 +6,6 @@ from typing import (
     Hashable,
     NamedTuple,
     Optional,
-    Tuple,
 )
 
 import attr
@@ -63,7 +62,7 @@ class DataKeyPart(NamedTuple):
 
 @attr.s(slots=True)
 class LocalKeyRepresentation:
-    _key_parts: Tuple[DataKeyPart, ...] = attr.ib(default=())
+    _key_parts: tuple[DataKeyPart, ...] = attr.ib(default=())
     _key_parts_str: Optional[str] = attr.ib(init=False, default=None)
     _key_parts_hash: Optional[str] = attr.ib(init=False, default=None)
 
@@ -74,7 +73,7 @@ class LocalKeyRepresentation:
             key_part.validate()
 
     @property
-    def key_parts(self) -> Tuple[DataKeyPart, ...]:
+    def key_parts(self) -> tuple[DataKeyPart, ...]:
         return self._key_parts
 
     @property

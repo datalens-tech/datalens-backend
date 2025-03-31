@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 from typing import (
     Any,
-    Dict,
 )
 
 from marshmallow import fields
@@ -33,7 +32,7 @@ class DataSourceRawSchemaEntryStorageSchema(BaseStorageSchema[SchemaColumn]):
 
     native_type = fields.Nested(OneOfNativeTypeSchema, required=False, load_default=None)
 
-    def to_object(self, data: Dict[str, Any]) -> SchemaColumn:
+    def to_object(self, data: dict[str, Any]) -> SchemaColumn:
         return SchemaColumn(
             source_id=self.context.get(CtxKey.dsc_id),
             name=data["name"],

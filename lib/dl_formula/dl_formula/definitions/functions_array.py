@@ -1,9 +1,5 @@
 from __future__ import annotations
 
-from typing import (
-    List,
-    Type,
-)
 
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import StandardDialect as D
@@ -47,7 +43,7 @@ class FuncCreateArray(ArrayFunction):
     arg_cnt = None
 
 
-def _normalize_arr_items(val: List[TranslationCtx], item_type: Type) -> list:
+def _normalize_arr_items(val: list[TranslationCtx], item_type: type) -> list:
     """Unliteralize and convert array items"""
     result = []
     for item in val:

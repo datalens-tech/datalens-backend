@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Dict,
     Optional,
 )
 
@@ -201,11 +200,11 @@ class USReqException(DLBaseException):
     def __init__(
         self,
         message: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None,
+        details: Optional[dict[str, Any]] = None,
         orig: Optional[Exception] = None,
         orig_exc: Optional[Exception] = None,
-        debug_info: Optional[Dict[str, Any]] = None,
-        params: Optional[Dict[str, Any]] = None,
+        debug_info: Optional[dict[str, Any]] = None,
+        params: Optional[dict[str, Any]] = None,
     ):
         self.orig_exc = orig_exc  # TODO: stop using '.orig_exc' and '.orig
         super().__init__(
@@ -316,10 +315,10 @@ class DatabaseQueryError(DLBaseException):
         db_message: Optional[str] = None,
         query: Optional[str] = None,
         message: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None,
+        details: Optional[dict[str, Any]] = None,
         orig: Optional[Exception] = None,
-        debug_info: Optional[Dict[str, Any]] = None,
-        params: Optional[Dict[str, Any]] = None,
+        debug_info: Optional[dict[str, Any]] = None,
+        params: Optional[dict[str, Any]] = None,
     ):
         super().__init__(message=message, details=details, orig=orig, debug_info=debug_info, params=params)
         self.db_message = db_message
@@ -337,7 +336,7 @@ class DatabaseQueryError(DLBaseException):
         self.debug_info.setdefault("query", query)
 
     @classmethod
-    def _from_jsonable_dict(cls, data: Dict) -> "DLBaseException":
+    def _from_jsonable_dict(cls, data: dict) -> "DLBaseException":
         new_exc = cls(
             db_message=data.pop("db_message"),
             query=data.pop("query"),
@@ -348,7 +347,7 @@ class DatabaseQueryError(DLBaseException):
         new_exc.params = data.pop("params", dict())
         return new_exc
 
-    def to_jsonable_dict(self) -> Dict[str, TJSONLike]:
+    def to_jsonable_dict(self) -> dict[str, TJSONLike]:
         d = super().to_jsonable_dict()
         d.update(
             db_message=self.db_message,
@@ -377,10 +376,10 @@ class SourceDoesNotExist(DatabaseQueryError):
         db_message: Optional[str] = None,
         query: Optional[str] = None,
         message: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None,
+        details: Optional[dict[str, Any]] = None,
         orig: Optional[Exception] = None,
-        debug_info: Optional[Dict[str, Any]] = None,
-        params: Optional[Dict[str, Any]] = None,
+        debug_info: Optional[dict[str, Any]] = None,
+        params: Optional[dict[str, Any]] = None,
     ):
         super(SourceDoesNotExist, self).__init__(
             db_message=db_message,
@@ -576,7 +575,7 @@ class DataStreamValidationError(Exception):
             return {"unexpected_value_type": str(type(val)), "str_val": str(val)}
 
     # TODO FIX: Replace with schema
-    def get_context_dict(self) -> Dict[str, TJSONLike]:
+    def get_context_dict(self) -> dict[str, TJSONLike]:
         return dict(
             line_idx=self.jsonify_value(self.line_idx),
             line_value=self.jsonify_value(self.line_value),

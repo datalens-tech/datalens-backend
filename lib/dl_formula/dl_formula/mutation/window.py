@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from typing import (
-    List,
     Sequence,
-    Tuple,
 )
 
 import attr
@@ -26,11 +24,11 @@ class AmongToWithinGroupingMutation(DimensionResolvingMutationBase):
     to (absolute) ``AMONG`` groupings.
     """
 
-    def match_node(self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
+    def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
         return isinstance(node, nodes.WindowGroupingAmong)
 
     def make_replacement(
-        self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
+        self, old: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.WindowGroupingAmong)
         dimensions, _, _ = self._generate_dimensions(node=old, parent_stack=parent_stack)
@@ -53,15 +51,15 @@ class IgnoreExtraWithinGroupingMutation(DimensionResolvingMutationBase):
     that are not listed among dimensions or are not aggregate expressions.
     """
 
-    def match_node(self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
+    def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
         return isinstance(node, nodes.WindowGroupingWithin)
 
     def make_replacement(
-        self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
+        self, old: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.WindowGroupingWithin)
         _, dimension_set, _ = self._generate_dimensions(node=old, parent_stack=parent_stack)
-        new_dimensions: List[nodes.FormulaItem] = [
+        new_dimensions: list[nodes.FormulaItem] = [
             dimension
             for dimension in old.dim_list
             if (
@@ -88,11 +86,11 @@ class DefaultWindowOrderingMutation(FormulaMutation):
     def __init__(self, default_order_by: Sequence[nodes.FormulaItem]):
         self._default_order_by = list(default_order_by)
 
-    def match_node(self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
+    def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
         return isinstance(node, nodes.WindowFuncCall) and uses_default_ordering(node.name)
 
     def make_replacement(
-        self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
+        self, old: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.WindowFuncCall)
 
@@ -133,18 +131,18 @@ class WindowFunctionToQueryForkMutation(DimensionResolvingMutationBase):
     A mutation that wraps all window functions into `QueryFork` nodes
     """
 
-    def match_node(self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
+    def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
         return isinstance(node, nodes.WindowFuncCall)
 
     def make_replacement(
-        self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
+        self, old: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.WindowFuncCall)
 
         dimensions, _, _ = self._generate_dimensions(node=old, parent_stack=parent_stack)
         lod = nodes.FixedLodSpecifier.make(dim_list=dimensions)
 
-        condition_list: List[fork_nodes.JoinConditionBase] = []
+        condition_list: list[fork_nodes.JoinConditionBase] = []
         for dimension_expr in dimensions:
             dim_condition = fork_nodes.SelfEqualityJoinCondition.make(expr=dimension_expr)
             condition_list.append(dim_condition)

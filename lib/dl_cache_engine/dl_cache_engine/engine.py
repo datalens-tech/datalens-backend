@@ -78,11 +78,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     AsyncGenerator,
-    Deque,
-    Dict,
     Optional,
-    Tuple,
-    Type,
 )
 
 import attr
@@ -123,7 +119,7 @@ class _CacheUpdateRequest:
     full_key: str
     ttl_sec: float
     entry_data: bytes
-    details: Dict[str, Any]  # debug/stats, to be dumped into logging.
+    details: dict[str, Any]  # debug/stats, to be dumped into logging.
 
 
 @attr.s(auto_attribs=True, slots=True)
@@ -135,8 +131,8 @@ class ResultCacheEntry:
     """
 
     key_parts_str: str
-    metadata: Optional[Dict[str, Any]] = None
-    details: Optional[Dict[str, Any]] = None
+    metadata: Optional[dict[str, Any]] = None
+    details: Optional[dict[str, Any]] = None
 
     _result_data: Optional[TJSONExt] = None
     _result_data_redis_repr: Optional[bytes] = None
@@ -210,7 +206,7 @@ class ResultCacheEntry:
     def from_redis_data(
         cls,
         redis_data: bytes,
-        details: Optional[Dict[str, Any]] = None,
+        details: Optional[dict[str, Any]] = None,
     ) -> ResultCacheEntry:
         ser_obj = CacheMetadataSerialization(redis_data)
         metadata = ser_obj.metadata
@@ -249,7 +245,7 @@ class ResultCacheEntry:
 
     def to_redis_data_and_log_details(
         self, compress: bool = False, compress_alg: Optional[CompressAlg] = None
-    ) -> Tuple[bytes, Dict[str, Any]]:
+    ) -> tuple[bytes, dict[str, Any]]:
         result_data = self._result_data
         assert result_data is not None
         assert isinstance(result_data, list)
@@ -271,7 +267,7 @@ class ResultCacheEntry:
                 elif compress_alg == CompressAlg.GZIP:
                     result_data_to_store = gzip.compress(serialized_result_data)
 
-        details: Dict[str, Any] = dict(
+        details: dict[str, Any] = dict(
             cache_row_count=len(result_data),
             cache_serialized_bytesize=len(serialized_result_data),
             cache_serializer_timing=prof_serialize.exec_time_sec,
@@ -422,7 +418,7 @@ class EntityCacheEntryLockedManagerAsync(EntityCacheEntryManagerAsyncBase):
         finally:
             await cli.aclose(close_connection_pool=False)  # type: ignore # TODO: Not relevant mypy stubs
 
-    def _make_rcl(self) -> Tuple[RedisCacheLock, HistoryHolder]:
+    def _make_rcl(self) -> tuple[RedisCacheLock, HistoryHolder]:
         cache_engine = self.cache_engine
         local_key_rep = self.local_key_rep
         local_key_rep.validate()
@@ -575,7 +571,7 @@ class EntityCacheEngineBase:
         compress: bool = False,
         compress_alg: Optional[CompressAlg] = None,
         ttl_sec: Optional[float] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> _CacheUpdateRequest:
         if ttl_sec is None:
             ttl_sec = self.DEFAULT_TTL_SEC
@@ -613,7 +609,7 @@ class EntityCacheEngineBase:
         self,
         local_key_rep: LocalKeyRepresentation,
         new_ttl_sec: Optional[float] = None,
-    ) -> Tuple[str, dict]:
+    ) -> tuple[str, dict]:
         full_key = self._get_key_query_cache_entry(local_key_rep)
 
         details = dict(
@@ -628,7 +624,7 @@ class EntityCacheEngineBase:
         self,
         local_key_rep: LocalKeyRepresentation,
         cache_entry_redis_data: Optional[bytes],
-        details: Dict[str, Any],
+        details: dict[str, Any],
         allow_error_entry: bool = False,
     ) -> Optional[ResultCacheEntry]:
         if not cache_entry_redis_data:
@@ -685,12 +681,12 @@ class EntityCacheEngineBase:
     def _log_after_read(self, full_key: str, cache_entry: ResultCacheEntry) -> None:
         LOGGER.info("Cache read from %r", full_key, extra=cache_entry.details)
 
-    def _log_cache_miss(self, reason: str, details: Dict[str, Any], message: Optional[str] = None) -> None:
+    def _log_cache_miss(self, reason: str, details: dict[str, Any], message: Optional[str] = None) -> None:
         full_key = details["cache_key"]
         details = dict(details, cache_miss_reason=reason)
         LOGGER.info("Cache miss at %r: %r: %r", full_key, reason, message or "-", extra=details)
 
-    def _log_cache_timeout(self, timeout: float, details: Dict[str, Any], message: Optional[str] = None) -> None:
+    def _log_cache_timeout(self, timeout: float, details: dict[str, Any], message: Optional[str] = None) -> None:
         full_key = details["cache_key"]
         details = dict(
             details,
@@ -717,7 +713,7 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
     CACHE_SAVE_BACKGROUND: bool = True
     CACHE_CHECK_SLAVE: bool = False  # does not go well when the slave is in another country.
 
-    entity_cache_entry_manager_cls: Type[EntityCacheEntryManagerAsyncBase] = EntityCacheEntryManagerAsync
+    entity_cache_entry_manager_cls: type[EntityCacheEntryManagerAsyncBase] = EntityCacheEntryManagerAsync
 
     def as_lockable(self) -> EntityCacheEngineAsync:
         """
@@ -736,7 +732,7 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
     async def _delete_keys_by_pattern(self, pattern: str) -> None:
         """SCAN is used to prevent redis lockout with KEYS command."""
         LOGGER.info("Invalidating cache for entity %s", self.entity_id)
-        all_keys: Deque[bytes] = collections.deque()
+        all_keys: collections.deque[bytes] = collections.deque()
         cur = 0
         started = False
         while cur or not started:
@@ -755,7 +751,7 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
         self,
         local_key_rep: LocalKeyRepresentation,
         result: TJSONExt,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
         ttl_sec: Optional[float] = None,
     ) -> None:
         update_request = self._make_cache_update_request(

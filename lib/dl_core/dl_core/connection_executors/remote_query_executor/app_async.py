@@ -11,7 +11,6 @@ import sys
 from typing import (
     TYPE_CHECKING,
     Any,
-    Type,
     Union,
 )
 
@@ -88,7 +87,7 @@ class BaseView(web.View):
 
 def adapter_factory(
     target_conn_dto: ConnTargetDTO,
-    dba_cls: Type[CommonBaseDirectAdapter],
+    dba_cls: type[CommonBaseDirectAdapter],
     req_ctx_info: DBAdapterScopedRCI,
     tpe: ContextVarExecutor,
 ) -> AsyncDBAdapter:

@@ -3,8 +3,6 @@ from __future__ import annotations
 from itertools import chain
 from typing import (
     TYPE_CHECKING,
-    List,
-    Tuple,
 )
 
 import attr
@@ -25,12 +23,12 @@ class DimensionResolvingMutationBase(FormulaMutation):
     A mutation base class that can resolve the expression's dimensions at any depth.
     """
 
-    _global_dimensions: List[nodes.FormulaItem] = attr.ib(kw_only=True)
+    _global_dimensions: list[nodes.FormulaItem] = attr.ib(kw_only=True)
     _inspect_env: InspectionEnvironment = attr.ib(kw_only=True, factory=InspectionEnvironment)
 
     def _generate_dimensions(
-        self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
-    ) -> Tuple[List[nodes.FormulaItem], NodeSet, NodeSet]:
+        self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]
+    ) -> tuple[list[nodes.FormulaItem], NodeSet, NodeSet]:
         """
         Return dimension list for ``old`` and dimensions of the parent node
         ("the surrounding environment")

@@ -4,7 +4,6 @@ import asyncio
 import logging
 from typing import (
     TYPE_CHECKING,
-    Type,
 )
 
 from dl_api_commons.base_models import RequestContextInfo
@@ -147,7 +146,7 @@ class DatasetView(DatasetBaseWrapper):
         )
 
     def make_formalizer(self, query_type: QueryType) -> DataQuerySpecFormalizer:
-        query_form_cls: Type[DataQuerySpecFormalizer]
+        query_form_cls: type[DataQuerySpecFormalizer]
         if query_type == QueryType.value_range:
             query_form_cls = ValueRangeSpecFormalizer
         elif query_type == QueryType.distinct:

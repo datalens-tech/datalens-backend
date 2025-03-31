@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Dict,
 )
 
 from marshmallow import (
@@ -27,7 +26,7 @@ class RawColumnInfoSchema(BaseQEAPISchema):
     # Note: using the non-transition schema in the hopes that RQE and app codebases always match.
     native_type = fields.Nested(OneOfNativeTypeSchemaBase)
 
-    def to_object(self, data: Dict[str, Any]) -> RawColumnInfo:
+    def to_object(self, data: dict[str, Any]) -> RawColumnInfo:
         return RawColumnInfo(**data)
 
 
@@ -36,7 +35,7 @@ class IndexInfoSchema(BaseQEAPISchema):
     kind = fields.Enum(IndexKind, allow_none=True)
     unique = fields.Boolean()
 
-    def to_object(self, data: Dict[str, Any]) -> RawIndexInfo:
+    def to_object(self, data: dict[str, Any]) -> RawIndexInfo:
         columns = tuple(data.pop("columns"))
         return RawIndexInfo(columns=columns, **data)
 
@@ -45,7 +44,7 @@ class RawSchemaInfoSchema(BaseQEAPISchema):
     columns = fields.Nested(RawColumnInfoSchema, many=True)
     indexes = fields.Nested(IndexInfoSchema, many=True, allow_none=True)
 
-    def to_object(self, data: Dict[str, Any]) -> RawSchemaInfo:
+    def to_object(self, data: dict[str, Any]) -> RawSchemaInfo:
         return RawSchemaInfo(**data)
 
 
@@ -53,8 +52,8 @@ class PrimitivesResponseSchema(BaseQEAPISchema):
     value = fields.Raw()
 
     @pre_dump(pass_many=False)
-    def wrap(self, data: Any, **__: Any) -> Dict:
+    def wrap(self, data: Any, **__: Any) -> dict:
         return {"value": data}
 
-    def to_object(self, data: Dict[str, Any]) -> Any:
+    def to_object(self, data: dict[str, Any]) -> Any:
         return data["value"]

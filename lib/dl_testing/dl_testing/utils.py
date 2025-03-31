@@ -11,10 +11,8 @@ from typing import (
     Any,
     Callable,
     Generator,
-    List,
     Literal,
     Optional,
-    Tuple,
     overload,
 )
 
@@ -52,7 +50,7 @@ def wait_for_initdb(
     initdb_host = initdb_host or get_test_container_hostport("init-db").host
     # TODO: initdb_port?
 
-    def check_initdb_liveness() -> Tuple[bool, Any]:
+    def check_initdb_liveness() -> tuple[bool, Any]:
         try:
             conn = http.client.HTTPConnection(initdb_host, initdb_port)
             conn.request("GET", "/")
@@ -99,7 +97,7 @@ def get_log_record(  # type: ignore  # 2024-01-24 # TODO: Overloaded function si
 @overload
 def get_log_record(
     caplog: Any, predicate: Callable[[logging.LogRecord], bool], single: Literal[False] = False
-) -> List[logging.LogRecord]:
+) -> list[logging.LogRecord]:
     pass
 
 
@@ -113,7 +111,7 @@ def get_log_record(caplog, predicate, single=False):  # type: ignore  # 2024-01-
     return log_records
 
 
-def guids_from_titles(result_schema: List[dict], titles: List[str]) -> List[str]:
+def guids_from_titles(result_schema: list[dict], titles: list[str]) -> list[str]:
     fields = [f["field"] if "field" in f else f for f in result_schema]
     guid_by_title = {f["title"]: f["guid"] for f in fields if f.get("title") in titles and f.get("guid")}
     return [guid_by_title[title] for title in titles]

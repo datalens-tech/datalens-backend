@@ -6,7 +6,6 @@ from typing import (
     Any,
     ClassVar,
     Collection,
-    Dict,
     Optional,
 )
 
@@ -81,7 +80,7 @@ class DatasetRangeView(DatasetDataBaseView, abc.ABC):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         raise NotImplementedError()
 
     async def execute_query(
@@ -170,7 +169,7 @@ class DatasetRangeViewV1(DatasetRangeView):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return self._make_response_v1(req_model=req_model, merged_stream=merged_stream)
 
 
@@ -190,7 +189,7 @@ class DatasetRangeViewV1_5(DatasetRangeView):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return self._make_response_v1(req_model=req_model, merged_stream=merged_stream)
 
 
@@ -210,5 +209,5 @@ class DatasetRangeViewV2(DatasetRangeView):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return self._make_response_v2(merged_stream=merged_stream)

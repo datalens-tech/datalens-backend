@@ -12,7 +12,6 @@ from typing import (
     Callable,
     Generic,
     Optional,
-    Type,
     TypeVar,
 )
 
@@ -211,7 +210,7 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
 
     async def __aexit__(
         self,
-        exc_type: Optional[Type[BaseException]],
+        exc_type: Optional[type[BaseException]],
         exc_val: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> None:

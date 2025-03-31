@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Dict,
 )
 
 import attr
@@ -12,7 +11,7 @@ from dl_core.data_source_spec.base import DataSourceSpec
 from dl_core.data_source_spec.type_mapping import get_data_source_spec_class
 
 
-def make_spec_from_dict(source_type: DataSourceType, data: Dict[str, Any]) -> DataSourceSpec:
+def make_spec_from_dict(source_type: DataSourceType, data: dict[str, Any]) -> DataSourceSpec:
     dsrc_spec_cls = get_data_source_spec_class(ds_type=source_type)
     field_names = {
         field.name.lstrip("_")
@@ -27,7 +26,7 @@ def make_spec_from_dict(source_type: DataSourceType, data: Dict[str, Any]) -> Da
 
 
 def update_spec_from_dict(
-    source_type: DataSourceType, data: Dict[str, Any], old_spec: DataSourceSpec
+    source_type: DataSourceType, data: dict[str, Any], old_spec: DataSourceSpec
 ) -> DataSourceSpec:
     merged_data = {
         # collect old attributes

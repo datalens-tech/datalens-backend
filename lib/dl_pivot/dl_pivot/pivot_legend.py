@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from collections import defaultdict
 from typing import (
-    Dict,
-    List,
     Optional,
     Sequence,
 )
@@ -53,9 +51,9 @@ class PivotLegendItem:
 
 @attr.s
 class PivotLegend:
-    _items: List[PivotLegendItem] = attr.ib(kw_only=True)
-    _piid_to_item: Dict[int, PivotLegendItem] = attr.ib(init=False)
-    _liid_to_piid: Dict[int, list[int]] = attr.ib(init=False)
+    _items: list[PivotLegendItem] = attr.ib(kw_only=True)
+    _piid_to_item: dict[int, PivotLegendItem] = attr.ib(init=False)
+    _liid_to_piid: dict[int, list[int]] = attr.ib(init=False)
 
     def __attrs_post_init__(self) -> None:
         self._piid_to_item = {}
@@ -92,10 +90,10 @@ class PivotLegend:
     def list_for_role(self, role: PivotRole) -> Sequence[PivotLegendItem]:
         return tuple(item for item in self._items if item.role_spec.role == role)
 
-    def get_measure_name_pivot_item_ids(self) -> List[int]:
+    def get_measure_name_pivot_item_ids(self) -> list[int]:
         return [item.pivot_item_id for item in self.items if item.item_type == PivotItemType.measure_name]
 
-    def get_dimension_name_pivot_item_ids(self) -> List[int]:
+    def get_dimension_name_pivot_item_ids(self) -> list[int]:
         return [item.pivot_item_id for item in self.items if item.item_type == PivotItemType.dimension_name]
 
     def get_unused_pivot_item_id(self) -> int:

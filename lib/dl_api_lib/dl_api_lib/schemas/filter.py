@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Dict,
 )
 
 from marshmallow import fields as ma_fields
@@ -46,7 +45,7 @@ class ObligatoryFilterSchema(DefaultValidateSchema[AddUpdateObligatoryFilter]):
     valid = ma_fields.Boolean(load_default=True)
 
     @post_dump
-    def set_where_column(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
+    def set_where_column(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         if data.get("field_guid"):
             for filter in data["default_filters"]:
                 if not filter.get("column"):

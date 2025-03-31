@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import List
 
 import attr
 
@@ -17,7 +16,7 @@ class OracleDefaultConnExecutor(DefaultSqlAlchemyConnExecutor[OracleDefaultAdapt
 
     _conn_dto: OracleConnDTO = attr.ib()
 
-    async def _make_target_conn_dto_pool(self) -> List[OracleConnTargetDTO]:  # type: ignore  # TODO: fix
+    async def _make_target_conn_dto_pool(self) -> list[OracleConnTargetDTO]:  # type: ignore  # TODO: fix
         dto_pool = []
         for host in self._conn_hosts_pool:
             dto_pool.append(

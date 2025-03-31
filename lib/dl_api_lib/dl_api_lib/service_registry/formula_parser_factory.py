@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 from typing import (
-    Dict,
     Optional,
 )
 
@@ -23,7 +22,7 @@ LOGGER = logging.getLogger(__name__)
 @attr.s
 class FormulaParserFactory:
     _default_formula_parser_type: Optional[ParserType] = attr.ib(kw_only=True, default=None)
-    _saved_parsers: Dict[ParserType, FormulaParser] = attr.ib(init=False, factory=dict)
+    _saved_parsers: dict[ParserType, FormulaParser] = attr.ib(init=False, factory=dict)
 
     def get_formula_parser(self, parser_type: Optional[ParserType] = None) -> FormulaParser:
         if parser_type is None:

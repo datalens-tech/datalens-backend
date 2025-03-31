@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Type
 
 from dl_constants.enums import ConnectionType
 from dl_core.connectors.base.lifecycle import (
@@ -17,37 +16,37 @@ from dl_core.us_connection_base import (
 )
 
 
-CONNECTION_TYPES: dict[ConnectionType, Type[ConnectionBase]] = {
+CONNECTION_TYPES: dict[ConnectionType, type[ConnectionBase]] = {
     ConnectionType.unknown: UnknownConnection,
 }
-CONNECTION_LIFECYCLE_MGR_CLASSES: dict[ConnectionType, Type[ConnectionLifecycleManager]] = {
+CONNECTION_LIFECYCLE_MGR_CLASSES: dict[ConnectionType, type[ConnectionLifecycleManager]] = {
     ConnectionType.unknown: DefaultConnectionLifecycleManager,
 }
-CONNECTION_SHEMA_MIGRATION_CLASSES: dict[str, Type[ConnectionSchemaMigration]] = {
+CONNECTION_SHEMA_MIGRATION_CLASSES: dict[str, type[ConnectionSchemaMigration]] = {
     ConnectionType.unknown.name: DefaultConnectionSchemaMigration,
 }
 
 
-def get_connection_class(conn_type: ConnectionType) -> Type[ConnectionBase]:
+def get_connection_class(conn_type: ConnectionType) -> type[ConnectionBase]:
     """Return class for given connection type"""
     return CONNECTION_TYPES[conn_type]
 
 
-def get_lifecycle_manager_cls(conn_type: ConnectionType) -> Type[ConnectionLifecycleManager]:
+def get_lifecycle_manager_cls(conn_type: ConnectionType) -> type[ConnectionLifecycleManager]:
     """Return class for given connection type"""
     return CONNECTION_LIFECYCLE_MGR_CLASSES[conn_type]
 
 
-def get_schema_migration_cls(conn_type_name: str) -> Type[ConnectionSchemaMigration]:
+def get_schema_migration_cls(conn_type_name: str) -> type[ConnectionSchemaMigration]:
     """Return class for given connection type"""
     return CONNECTION_SHEMA_MIGRATION_CLASSES.get(conn_type_name, DefaultConnectionSchemaMigration)
 
 
 def register_connection_class(
-    new_conn_cls: Type[ConnectionBase],
+    new_conn_cls: type[ConnectionBase],
     conn_type: ConnectionType,
-    lifecycle_manager_cls: Type[ConnectionLifecycleManager] = DefaultConnectionLifecycleManager,
-    schema_migration_cls: Type[ConnectionSchemaMigration] = DefaultConnectionSchemaMigration,
+    lifecycle_manager_cls: type[ConnectionLifecycleManager] = DefaultConnectionLifecycleManager,
+    schema_migration_cls: type[ConnectionSchemaMigration] = DefaultConnectionSchemaMigration,
     allow_ct_override: bool = False,
 ) -> None:
     if conn_type is None:

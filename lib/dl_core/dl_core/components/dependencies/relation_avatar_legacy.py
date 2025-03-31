@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from typing import (
     AbstractSet,
-    Dict,
 )
 
 import attr
@@ -19,7 +18,7 @@ from dl_core.query.expression import ExpressionCtx
 
 @attr.s
 class LegacyRelationAvatarDependencyManager(RelationAvatarDependencyManagerBase):
-    _relation_expressions: Dict[RelationId, ExpressionCtx] = attr.ib(kw_only=True)
+    _relation_expressions: dict[RelationId, ExpressionCtx] = attr.ib(kw_only=True)
 
     def get_relation_avatar_references(self, relation_id: RelationId) -> AbstractSet[AvatarId]:
         """

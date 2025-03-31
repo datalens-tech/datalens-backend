@@ -3,7 +3,6 @@ from __future__ import annotations
 import itertools
 from typing import (
     Generator,
-    Set,
 )
 
 import attr
@@ -11,7 +10,7 @@ import attr
 
 @attr.s
 class IdGenerator:
-    _used_ids: Set[int] = attr.ib(factory=set)
+    _used_ids: set[int] = attr.ib(factory=set)
     _item_counter: Generator[int, None, None] = attr.ib(init=False, factory=itertools.count)
 
     def add_id(self, item_id: int) -> None:

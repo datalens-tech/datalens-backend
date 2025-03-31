@@ -7,7 +7,6 @@ from typing import (
     Generator,
     Optional,
     Sequence,
-    Type,
 )
 import urllib.parse
 
@@ -48,9 +47,9 @@ class TableSpec:
 @attr.s
 class EngineWrapperBase:
     URL_PREFIX: ClassVar[str]
-    POOL_CLS: ClassVar[Type[Pool]] = NullPool
+    POOL_CLS: ClassVar[type[Pool]] = NullPool
     TABLE_AVAILABILITY_TIMEOUT: ClassVar[float] = 0.0
-    CONFIG_CLS: ClassVar[Type[DbEngineConfig]] = DbEngineConfig
+    CONFIG_CLS: ClassVar[type[DbEngineConfig]] = DbEngineConfig
 
     _config: DbEngineConfig = attr.ib(repr=False)
 
@@ -196,14 +195,14 @@ class EngineWrapperBase:
             return True
 
 
-_REGISTERED_ENGINE_WRAPPERS: dict[str, Type[EngineWrapperBase]] = {}
+_REGISTERED_ENGINE_WRAPPERS: dict[str, type[EngineWrapperBase]] = {}
 
 
-def register_engine_wrapper_cls(engine_wrapper_cls: Type[EngineWrapperBase]) -> None:
+def register_engine_wrapper_cls(engine_wrapper_cls: type[EngineWrapperBase]) -> None:
     _REGISTERED_ENGINE_WRAPPERS[engine_wrapper_cls.URL_PREFIX] = engine_wrapper_cls
 
 
-def get_engine_wrapper_cls_for_url(url: str | URL) -> Type[EngineWrapperBase]:
+def get_engine_wrapper_cls_for_url(url: str | URL) -> type[EngineWrapperBase]:
     if isinstance(url, str):
         url = make_url(url)
     assert isinstance(url, URL)

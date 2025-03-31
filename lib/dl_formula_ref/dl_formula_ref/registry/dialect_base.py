@@ -3,7 +3,6 @@ from __future__ import annotations
 import abc
 from typing import (
     TYPE_CHECKING,
-    Set,
 )
 
 
@@ -19,5 +18,5 @@ class DialectExtractorBase(abc.ABC):
         self,
         item: _registry_base.FunctionDocRegistryItem,
         env: GenerationEnvironment,
-    ) -> Set[DialectCombo]:
+    ) -> set[DialectCombo]:
         raise NotImplementedError

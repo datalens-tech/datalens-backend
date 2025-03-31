@@ -5,7 +5,6 @@ import functools
 from typing import (
     TYPE_CHECKING,
     Any,
-    Tuple,
 )
 
 import sqlalchemy as sa
@@ -89,7 +88,7 @@ def ensure_naive_first_arg(func):  # type: ignore  # 2024-01-24 # TODO: Function
 UTC_CH_TZ_ARGS = ("UTC",)  # TODO later: make empty (backwards-incompatible change)
 
 
-def make_ch_tz_args(date_ctx) -> Tuple[Tuple[Any, ...], Tuple[Any, ...]]:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+def make_ch_tz_args(date_ctx) -> tuple[tuple[Any, ...], tuple[Any, ...]]:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
     """
     For a datetime TranslationCtx argument,
     return a pair of CH function `*args`:
@@ -113,7 +112,7 @@ def make_ch_tz_args(date_ctx) -> Tuple[Tuple[Any, ...], Tuple[Any, ...]]:  # typ
     )
 
 
-def ch_date_with_tz(date_ctx) -> Tuple[ClauseElement, ...]:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+def ch_date_with_tz(date_ctx) -> tuple[ClauseElement, ...]:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
     """Primarily intended for functions that return a non-datetime, such as toSecond()"""
     date_expr = date_ctx.expression
     data_type = date_ctx.data_type

@@ -12,7 +12,6 @@ from typing import (
     ClassVar,
     Optional,
     Sequence,
-    Type,
 )
 
 import attr
@@ -58,7 +57,7 @@ EVT_CODE_RUN_END = "us_entry_crawler_run_end"
 
 @attr.s
 class USEntryCrawler:
-    ENTRY_TYPE: ClassVar[Type[USEntry]] = None  # type: ignore  # TODO: fix  # Must be set in subclass
+    ENTRY_TYPE: ClassVar[type[USEntry]] = None  # type: ignore  # TODO: fix  # Must be set in subclass
 
     _dry_run: bool = attr.ib()  # should always be specified explicitly.
     _usm: Optional[AsyncUSManager] = attr.ib(default=None)

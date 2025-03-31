@@ -11,7 +11,6 @@ from typing import (
     Iterable,
     NamedTuple,
     Optional,
-    Type,
     TypeVar,
     Union,
 )
@@ -291,7 +290,7 @@ class TranslationVariant(ValueVariant[FuncTranslationImplementationBase]):
 
     @classmethod
     def make(
-        cls: Type[_TRANS_VAR_TV],
+        cls: type[_TRANS_VAR_TV],
         dialects: DialectCombo,
         translation: Callable[..., TransCallResult],
         unwrap_args: bool = True,
@@ -361,7 +360,7 @@ class TranslationVariantWrapped(TranslationVariant):
     """
 
     @classmethod
-    def make(cls: Type[_TRANS_VAR_WR_TV], *args: Any, **kwargs: Any) -> _TRANS_VAR_WR_TV:
+    def make(cls: type[_TRANS_VAR_WR_TV], *args: Any, **kwargs: Any) -> _TRANS_VAR_WR_TV:
         return super().make(*args, unwrap_args=False, **kwargs)  # type: ignore  # TODO: fix
 
 
@@ -452,12 +451,12 @@ class NodeTranslation:
         raise NotImplementedError
 
     @classmethod
-    def for_trans_var(cls: Type[_NODE_TRANS_TV], variant: TranslationVariant) -> _NODE_TRANS_TV:
+    def for_trans_var(cls: type[_NODE_TRANS_TV], variant: TranslationVariant) -> _NODE_TRANS_TV:
         raise NotImplementedError
 
     @classmethod
     def for_dialect(
-        cls: Type[_NODE_TRANS_TV],
+        cls: type[_NODE_TRANS_TV],
         dialects: DialectCombo,
         arg_transformer: Optional[ArgTransformer] = None,
     ) -> _NODE_TRANS_TV:
@@ -610,12 +609,12 @@ class MultiVariantTranslation(NodeTranslation):
         return dialects
 
     @classmethod
-    def for_trans_var(cls: Type[_MULTI_NODE_TRANS_TV], variant: TranslationVariant) -> _MULTI_NODE_TRANS_TV:
+    def for_trans_var(cls: type[_MULTI_NODE_TRANS_TV], variant: TranslationVariant) -> _MULTI_NODE_TRANS_TV:
         return cls(variants=[variant])
 
     @classmethod
     def for_dialect(
-        cls: Type[_MULTI_NODE_TRANS_TV],
+        cls: type[_MULTI_NODE_TRANS_TV],
         dialects: DialectCombo,
         arg_transformer: Optional[ArgTransformer] = None,
     ) -> _MULTI_NODE_TRANS_TV:
@@ -679,12 +678,12 @@ class SingleVariantTranslationBase(MultiVariantTranslation):
         return [TranslationVariantWrapped.make(self._inst_dialects, self._translate_main)]
 
     @classmethod
-    def for_trans_var(cls: Type[_SINGLE_NODE_TRANS_TV], variant: TranslationVariant) -> _SINGLE_NODE_TRANS_TV:
+    def for_trans_var(cls: type[_SINGLE_NODE_TRANS_TV], variant: TranslationVariant) -> _SINGLE_NODE_TRANS_TV:
         raise NotImplementedError
 
     @classmethod
     def for_dialect(
-        cls: Type[_SINGLE_NODE_TRANS_TV],
+        cls: type[_SINGLE_NODE_TRANS_TV],
         dialects: DialectCombo,
         arg_transformer: Optional[ArgTransformer] = None,
     ) -> _SINGLE_NODE_TRANS_TV:

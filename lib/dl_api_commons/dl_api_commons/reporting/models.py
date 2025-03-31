@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Optional,
-    Tuple,
 )
 
 import attr
@@ -49,7 +48,7 @@ class DataProcessingReportingRecord(ReportingRecord):
 
 @attr.s(frozen=True, auto_attribs=True)
 class DataProcessingStartReportingRecord(DataProcessingReportingRecord):
-    source_query_ids: Tuple[str, ...]
+    source_query_ids: tuple[str, ...]
 
 
 @attr.s(frozen=True, auto_attribs=True)

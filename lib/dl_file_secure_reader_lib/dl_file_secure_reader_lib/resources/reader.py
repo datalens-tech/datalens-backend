@@ -5,7 +5,6 @@ import io
 import logging
 from typing import (
     BinaryIO,
-    List,
 )
 
 from aiohttp import web
@@ -16,7 +15,7 @@ from openpyxl import load_workbook
 LOGGER = logging.getLogger(__name__)
 
 
-def parse_excel_data(data: BinaryIO) -> List:
+def parse_excel_data(data: BinaryIO) -> list:
     result = []
     try:
         wb = load_workbook(data, data_only=True, keep_links=False)

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Optional,
-    Type,
 )
 
 import aiopg.sa
@@ -22,7 +21,7 @@ class AiopgPoolWrapper(BasePgPoolWrapper):
 
     @classmethod
     async def connect(
-        cls: Type["AiopgPoolWrapper"],
+        cls: type["AiopgPoolWrapper"],
         url: str,
         pool_min_size: int = DEFAULT_POOL_MIN_SIZE,  # Initial pool size
         pool_max_size: int = DEFAULT_POOL_MAX_SIZE,  # Maximum pool size

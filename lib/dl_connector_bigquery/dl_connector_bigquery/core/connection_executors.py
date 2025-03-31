@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import List
 
 import attr
 
@@ -17,7 +16,7 @@ class BigQueryAsyncConnExecutor(DefaultSqlAlchemyConnExecutor[BigQueryDefaultAda
 
     _conn_dto: BigQueryConnDTO = attr.ib()
 
-    async def _make_target_conn_dto_pool(self) -> List[BigQueryConnTargetDTO]:
+    async def _make_target_conn_dto_pool(self) -> list[BigQueryConnTargetDTO]:
         dto_pool: list[BigQueryConnTargetDTO] = []
         dto_pool.append(
             BigQueryConnTargetDTO(

@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 from typing import (
     ClassVar,
-    FrozenSet,
 )
 
 from dl_constants.enums import (
@@ -27,7 +26,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class MySQLDataSourceMixin(BaseSQLDataSource):
-    supported_join_types: ClassVar[FrozenSet[JoinType]] = frozenset(
+    supported_join_types: ClassVar[frozenset[JoinType]] = frozenset(
         {
             JoinType.inner,
             JoinType.left,

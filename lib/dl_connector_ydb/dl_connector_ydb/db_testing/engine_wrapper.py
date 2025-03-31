@@ -7,7 +7,6 @@ from typing import (
     NamedTuple,
     Optional,
     Sequence,
-    Type,
 )
 
 import shortuuid
@@ -23,7 +22,7 @@ class YdbTypeSpec(NamedTuple):
     to_sql_str: Callable[[Any], str]
 
 
-SA_TYPE_TO_YDB_TYPE: dict[Type[TypeEngine], YdbTypeSpec] = {
+SA_TYPE_TO_YDB_TYPE: dict[type[TypeEngine], YdbTypeSpec] = {
     sa.SmallInteger: YdbTypeSpec(type=ydb.PrimitiveType.Uint8, to_sql_str=str),
     sa.Integer: YdbTypeSpec(type=ydb.PrimitiveType.Int32, to_sql_str=str),
     sa.BigInteger: YdbTypeSpec(type=ydb.PrimitiveType.Int64, to_sql_str=str),

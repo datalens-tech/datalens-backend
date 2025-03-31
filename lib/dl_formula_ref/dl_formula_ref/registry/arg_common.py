@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    List,
     NamedTuple,
     Optional,
     Sequence,
@@ -45,8 +44,8 @@ class TypeStrategyInspector:
     def _extract_common_type_args(
         cls,
         ret_type_strat: TypeStrategy,
-        args: List[FuncArg],
-    ) -> List[FuncArg]:
+        args: list[FuncArg],
+    ) -> list[FuncArg]:
         ct_args = []
         if isinstance(ret_type_strat, FromArgs):
             # in this case the return type is determined from types of arguments
@@ -65,7 +64,7 @@ class TypeStrategyInspector:
         cls,
         ret_type_strat: TypeStrategy,
         inf_args: bool,
-        args: List[FuncArg],
+        args: list[FuncArg],
     ) -> str:
         ct_args = cls._extract_common_type_args(ret_type_strat, args)
         arg_str = ", ".join("`{}`".format(a.name) for a in ct_args)

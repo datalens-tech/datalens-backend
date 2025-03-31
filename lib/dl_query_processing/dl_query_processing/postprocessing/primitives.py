@@ -2,10 +2,8 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    List,
     Optional,
     Tuple,
-    Type,
     TypeVar,
     Union,
 )
@@ -32,7 +30,7 @@ _META_TV = TypeVar("_META_TV", bound="ExecutedQueryMetaInfo")
 class PostprocessedQueryMetaInfo(ExecutedQueryMetaInfo):
     @classmethod
     def from_exec_meta(
-        cls: Type[_META_TV],
+        cls: type[_META_TV],
         exec_meta: ExecutedQueryMetaInfo,
     ) -> _META_TV:
         return attrs_evolve_to_subclass(
@@ -65,7 +63,7 @@ class PostprocessedQueryBlock(BlockSpec):
 
 @attr.s(frozen=True)
 class PostprocessedQueryUnion:
-    blocks: List[PostprocessedQueryBlock] = attr.ib(kw_only=True)
+    blocks: list[PostprocessedQueryBlock] = attr.ib(kw_only=True)
     legend: Legend = attr.ib(kw_only=True)
     offset: Optional[int] = attr.ib(kw_only=True)
     limit: Optional[int] = attr.ib(kw_only=True)

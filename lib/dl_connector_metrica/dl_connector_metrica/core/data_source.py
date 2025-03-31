@@ -8,7 +8,6 @@ from typing import (
     Callable,
     ClassVar,
     Optional,
-    Tuple,
 )
 
 from dl_constants.enums import UserDataType
@@ -66,7 +65,7 @@ class MetrikaApiDataSource(PseudoSQLDataSource):
             )
         ]
 
-    def get_expression_value_range(self, col_name: str) -> Tuple[Any, Any]:
+    def get_expression_value_range(self, col_name: str) -> tuple[Any, Any]:
         """Date/datetime column value ranges are defined as ``(<counter creation>, <now>)``"""
         try:
             assert self.saved_raw_schema is not None

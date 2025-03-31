@@ -1,9 +1,5 @@
 from __future__ import annotations
 
-from typing import (
-    List,
-    Tuple,
-)
 
 import attr
 
@@ -25,11 +21,11 @@ class ExtAggregationToQueryForkMutation(DimensionResolvingMutationBase):
     for future LOD handling.
     """
 
-    def match_node(self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
+    def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
         return is_aggregate_function(node)
 
     def make_replacement(
-        self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
+        self, old: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.FuncCall)
 
@@ -41,7 +37,7 @@ class ExtAggregationToQueryForkMutation(DimensionResolvingMutationBase):
             dimensions, _, _ = self._generate_dimensions(node=old, parent_stack=parent_stack)
         lod = nodes.FixedLodSpecifier.make(dim_list=dimensions)
 
-        condition_list: List[fork_nodes.JoinConditionBase] = []
+        condition_list: list[fork_nodes.JoinConditionBase] = []
         for dimension_expr in dimensions:
             if is_aggregate_expression(dimension_expr, env=self._inspect_env):
                 return aux_nodes.ErrorNode.make(
@@ -93,7 +89,7 @@ class DoubleAggregationCollapsingMutation(FormulaMutation):
         # 'min' is a bit tricky (converts int -> float)
     }
 
-    def match_node(self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
+    def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
         """
         Match if node is agg, and "main" argument is also an agg
         and they have the same LOD and BFB.
@@ -124,7 +120,7 @@ class DoubleAggregationCollapsingMutation(FormulaMutation):
         return True
 
     def make_replacement(
-        self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
+        self, old: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.FuncCall)
 

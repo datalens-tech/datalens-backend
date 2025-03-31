@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import List
 
 import pytest
 
@@ -15,7 +14,7 @@ from dl_formula.validation.env import ValidationEnvironment
 from dl_formula.validation.validator import validate
 
 
-def get_dims() -> List[nodes.FormulaItem]:
+def get_dims() -> list[nodes.FormulaItem]:
     return [
         nodes.Field.make("Dim Field"),
         nodes.FuncCall.make(
@@ -36,7 +35,7 @@ def get_dims() -> List[nodes.FormulaItem]:
 def validate_aggregations(
     node: nodes.FormulaItem,
     env: ValidationEnvironment,
-    dimensions: List[nodes.FormulaItem],
+    dimensions: list[nodes.FormulaItem],
     collect_errors: bool = False,
 ) -> None:
     validate(

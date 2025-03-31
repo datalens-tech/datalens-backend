@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from typing import Dict
 
 from dl_constants.enums import SourceBackendType
 from dl_formula.core.dialect import DialectName
 
 
-_DIALECT_NAMES_FROM_SA: Dict[SourceBackendType, DialectName] = {}
+_DIALECT_NAMES_FROM_SA: dict[SourceBackendType, DialectName] = {}
 
 
 def register_dialect_name(backend_type: SourceBackendType, dialect_name: DialectName) -> None:

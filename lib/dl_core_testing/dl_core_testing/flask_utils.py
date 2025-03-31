@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 from typing import (
-    Dict,
     Optional,
 )
 
@@ -27,7 +26,7 @@ class FlaskTestClient(FlaskClient):
         """To split US directories for different users to prevent permissions issues"""
         raise NotImplementedError()
 
-    def get_default_headers(self) -> Dict[str, Optional[str]]:
+    def get_default_headers(self) -> dict[str, Optional[str]]:
         return {}
 
     def post_process_response(self, resp) -> None:  # type: ignore  # TODO: fix

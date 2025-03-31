@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Type
 
 from dl_constants.exc import (
     GLOBAL_ERR_PREFIX,
@@ -9,7 +8,7 @@ from dl_constants.exc import (
 from dl_file_uploader_lib.enums import ErrorLevel
 
 
-def make_err_code(exc: Type[DLFileUploaderBaseError] | DLFileUploaderBaseError) -> str:
+def make_err_code(exc: type[DLFileUploaderBaseError] | DLFileUploaderBaseError) -> str:
     return ".".join([GLOBAL_ERR_PREFIX] + exc.err_code)
 
 

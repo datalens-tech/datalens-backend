@@ -9,7 +9,6 @@ from typing import (
     Collection,
     Optional,
     Sequence,
-    Type,
     Union,
 )
 
@@ -73,7 +72,7 @@ FIELD_TYPES = {
 class DbEvaluator:
     db: Db = attr.ib(kw_only=True)
     attempts: int = attr.ib(kw_only=True, default=1)
-    retry_on_exceptions: Collection[tuple[Type[Exception], re.Pattern]] = attr.ib(kw_only=True, default=())
+    retry_on_exceptions: Collection[tuple[type[Exception], re.Pattern]] = attr.ib(kw_only=True, default=())
     retry_delay: int = attr.ib(kw_only=True, default=5)
 
     @property

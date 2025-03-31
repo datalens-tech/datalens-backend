@@ -3,7 +3,6 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import (
     Any,
-    Dict,
 )
 
 from marshmallow import (
@@ -371,7 +370,7 @@ class ResultSchemaStorageSchema(DefaultStorageSchema):
         calc_spec = ma_fields.Nested(CalculationSpecSchema)
 
         @post_dump(pass_many=False)
-        def add_calc_spec(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
+        def add_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
             data = deepcopy(data)
             calc_spec_data = data.pop("calc_spec")
             calc_spec_data["calc_mode"] = calc_spec_data.pop("mode")
@@ -384,7 +383,7 @@ class ResultSchemaStorageSchema(DefaultStorageSchema):
             return data
 
         @pre_load(pass_many=False)
-        def extract_calc_spec(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
+        def extract_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
             data = deepcopy(data)
             mode = data["calc_mode"]
             data["calc_spec"] = dict(filter_calc_spec_kwargs(mode, data), mode=mode)
@@ -403,7 +402,7 @@ class ResultSchemaStorageSchema(DefaultStorageSchema):
         return data.get("fields")
 
     @post_load
-    def make_missing_formulas(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
+    def make_missing_formulas(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         field: BIField
         titles_to_guids = {field.title: field.guid for field in data["fields"]}
         guids_to_titles = {field.guid: field.title for field in data["fields"]}

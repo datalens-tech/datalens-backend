@@ -5,12 +5,9 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
     Generator,
     Iterable,
     Optional,
-    Set,
-    Type,
     TypeVar,
     Union,
     overload,
@@ -182,7 +179,7 @@ class SyncUSManager(USManagerBase):
     def get_by_id(
         self,
         entry_id: str,
-        expected_type: Optional[Type[_ENTRY_TV]] = None,
+        expected_type: Optional[type[_ENTRY_TV]] = None,
         params: Optional[dict[str, str]] = None,
     ) -> _ENTRY_TV:
         pass
@@ -191,7 +188,7 @@ class SyncUSManager(USManagerBase):
     def get_by_id(
         self,
         entry_id: str,
-        expected_type: Optional[Type[USEntry]] = None,
+        expected_type: Optional[type[USEntry]] = None,
         params: Optional[dict[str, str]] = None,
     ) -> USEntry:
         with self._enrich_us_exception(
@@ -226,22 +223,22 @@ class SyncUSManager(USManagerBase):
         pass
 
     @overload
-    def get_by_key(self, entry_key: str, expected_type: Optional[Type[_ENTRY_TV]] = None) -> _ENTRY_TV:
+    def get_by_key(self, entry_key: str, expected_type: Optional[type[_ENTRY_TV]] = None) -> _ENTRY_TV:
         pass
 
-    def get_by_key(self, entry_key: str, expected_type: Optional[Type[USEntry]] = None) -> USEntry:
+    def get_by_key(self, entry_key: str, expected_type: Optional[type[USEntry]] = None) -> USEntry:
         raise NotImplementedError()
 
     def get_collection(
         self,
-        entry_cls: Optional[Type[_ENTRY_TV]],
+        entry_cls: Optional[type[_ENTRY_TV]],
         entry_type: Optional[str] = None,
         entry_scope: Optional[str] = None,
-        meta: Optional[Dict[str, Union[str, int, None]]] = None,
+        meta: Optional[dict[str, Union[str, int, None]]] = None,
         all_tenants: bool = False,
         include_data: bool = True,
         ids: Optional[Iterable[str]] = None,
-        creation_time: Optional[Dict[str, Union[str, int, None]]] = None,
+        creation_time: Optional[dict[str, Union[str, int, None]]] = None,
         raise_on_broken_entry: bool = False,
     ) -> Generator[_ENTRY_TV, None, None]:
         entry_cls_scope = entry_cls.scope if entry_cls is not None else None
@@ -331,7 +328,7 @@ class SyncUSManager(USManagerBase):
     @contextlib.contextmanager
     def get_locked_entry_cm(
         self,
-        expected_type: Type[_ENTRY_TV],
+        expected_type: type[_ENTRY_TV],
         entry_id: str,
         duration: Optional[int] = None,
         wait_timeout: Optional[int] = None,
@@ -403,7 +400,7 @@ class SyncUSManager(USManagerBase):
         if not isinstance(entry, Dataset):
             raise NotImplementedError("Links loading is supported only for dataset")
 
-        processed_refs: Set[ConnectionRef] = set()
+        processed_refs: set[ConnectionRef] = set()
         # TODO FIX: Find a way to track direct source of link
         refs_to_load_queue = self._get_entry_links(
             entry,

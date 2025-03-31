@@ -58,12 +58,12 @@ class ProfileResult:
 class GenericProfiler:
     EVENT_CODE = "profiling_result"
 
-    CTX_OUTER_STAGES: ContextVar[Tuple[str, ...]] = ContextVar("CTX_OUTER_STAGES")
-    CTX_LOCAL_PROFILER_STACK: ContextVar[List[GenericProfiler]] = ContextVar("CTX_LOCAL_PROFILER_STACK")
+    CTX_OUTER_STAGES: ContextVar[tuple[str, ...]] = ContextVar("CTX_OUTER_STAGES")
+    CTX_LOCAL_PROFILER_STACK: ContextVar[list[GenericProfiler]] = ContextVar("CTX_LOCAL_PROFILER_STACK")
     USE_CTX_VARS = True
 
     @classmethod
-    def get_outer_stages(cls) -> Tuple[str, ...]:
+    def get_outer_stages(cls) -> tuple[str, ...]:
         outer_stages = cls.CTX_OUTER_STAGES.get(None)
         if outer_stages is None:
             outer_stages = ()
@@ -71,7 +71,7 @@ class GenericProfiler:
         return outer_stages
 
     @classmethod
-    def get_profilers_stack(cls) -> List["GenericProfiler"]:
+    def get_profilers_stack(cls) -> list["GenericProfiler"]:
         profilers_stack = cls.CTX_LOCAL_PROFILER_STACK.get(None)
         if profilers_stack is None:
             profilers_stack = []
@@ -110,7 +110,7 @@ class GenericProfiler:
         cls.reset_outer_stages(outer_stages)
 
     @classmethod
-    def get_current_stages_stack(cls) -> Tuple[str, ...]:
+    def get_current_stages_stack(cls) -> tuple[str, ...]:
         return tuple(it.chain(cls.get_outer_stages(), (p.stage for p in cls.get_profilers_stack())))
 
     @classmethod
@@ -122,7 +122,7 @@ class GenericProfiler:
         return "/".join(stage_stack)
 
     @staticmethod
-    def load_stage_stack(stage_stack_str: str) -> Tuple[str, ...]:
+    def load_stage_stack(stage_stack_str: str) -> tuple[str, ...]:
         return tuple(stage_stack_str.split("/"))
 
     def __init__(
@@ -156,7 +156,7 @@ class GenericProfiler:
         self.pre_profile()
         return self.profile_result
 
-    def __exit__(self, exc_type: Type[Exception], exc_val: Exception, exc_tb: TTraceback) -> None:
+    def __exit__(self, exc_type: type[Exception], exc_val: Exception, exc_tb: TTraceback) -> None:
         try:
             self.post_profile()
 
@@ -189,7 +189,7 @@ class GenericProfiler:
     def post_profile(self) -> None:
         pass
 
-    def _save_profiling_log(self, exc_type: Type[Exception], exc_info: Optional[TExcInfo] = None) -> TLogData:
+    def _save_profiling_log(self, exc_type: type[Exception], exc_info: Optional[TExcInfo] = None) -> TLogData:
         assert self.end_time is not None
         assert self.start_time is not None
         time_diff = self.end_time - self.start_time

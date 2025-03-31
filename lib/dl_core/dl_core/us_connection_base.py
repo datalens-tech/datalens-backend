@@ -10,7 +10,6 @@ from typing import (
     Generic,
     NamedTuple,
     Optional,
-    Type,
     TypeVar,
     Union,
 )
@@ -281,7 +280,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     @classmethod
     def create_from_dict(
-        cls: Type[_CB_TV],
+        cls: type[_CB_TV],
         data_dict: Union[dict, BaseAttrsDataModel],
         ds_key: Union[EntryLocation, str, None] = None,
         type_: Optional[str] = None,
@@ -606,7 +605,7 @@ class ConnectionHardcodedDataMixin(Generic[CONNECTOR_SETTINGS_TV], metaclass=abc
     """Connector type specific data is loaded from dl_configs.connectors_settings"""
 
     conn_type: ConnectionType
-    settings_type: Type[CONNECTOR_SETTINGS_TV]
+    settings_type: type[CONNECTOR_SETTINGS_TV]
     us_manager: SyncUSManager
 
     # TODO: remove

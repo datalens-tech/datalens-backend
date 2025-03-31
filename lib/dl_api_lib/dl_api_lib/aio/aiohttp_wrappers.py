@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-import typing
 from typing import (
     Any,
-    Dict,
 )
 
 from aiohttp import web
@@ -35,7 +33,7 @@ class DSAPIRequest(DLRequestDataCore):
 
     # TODO FIX: Remove this property after all middleware will be switched to grab resources from view object
     @property
-    def required_resources(self) -> typing.FrozenSet[RequiredResource]:
+    def required_resources(self) -> frozenset[RequiredResource]:
         from dl_api_lib.app.data_api.resources.base import BaseView
 
         view_cls = self.request.match_info.handler
@@ -47,12 +45,12 @@ class DSAPIRequest(DLRequestDataCore):
     KEY_BODY_JSON = "body_json"
 
     # TODO FIX: Move to common
-    def store_parsed_json_body(self, val: Dict[str, Any]) -> None:
+    def store_parsed_json_body(self, val: dict[str, Any]) -> None:
         self._set_attr_once(self.KEY_BODY_JSON, val)
 
     # TODO FIX: Move to common
     @property
-    def json(self) -> Dict[str, Any]:
+    def json(self) -> dict[str, Any]:
         if self.KEY_BODY_JSON in self.request:
             return self.request[self.KEY_BODY_JSON]
         raise ValueError("JSON was not parsed for this request")

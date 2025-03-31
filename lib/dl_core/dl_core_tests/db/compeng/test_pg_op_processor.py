@@ -7,7 +7,6 @@ from datetime import (
 )
 from typing import (
     ClassVar,
-    Type,
 )
 import uuid
 
@@ -47,8 +46,8 @@ from dl_utils.streaming import AsyncChunked
 
 
 class PGOpRunnerTestBase(DefaultCoreTestClass):
-    PG_POOL_WRAPPER_CLS: ClassVar[Type[BasePgPoolWrapper]]
-    PG_PROCESSOR_CLS: ClassVar[Type[PostgreSQLOperationProcessor]]
+    PG_POOL_WRAPPER_CLS: ClassVar[type[BasePgPoolWrapper]]
+    PG_PROCESSOR_CLS: ClassVar[type[PostgreSQLOperationProcessor]]
 
     @pytest_asyncio.fixture(scope="function")
     async def pg_op_processor(self, loop, conn_default_service_registry) -> PostgreSQLOperationProcessor:

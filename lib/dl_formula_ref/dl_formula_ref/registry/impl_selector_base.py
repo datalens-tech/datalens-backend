@@ -3,7 +3,6 @@ from __future__ import annotations
 import abc
 from typing import (
     TYPE_CHECKING,
-    List,
 )
 
 
@@ -19,5 +18,5 @@ class ImplementationSelectorBase(abc.ABC):
         self,
         item: FunctionDocRegistryItem,
         env: GenerationEnvironment,
-    ) -> List[FunctionImplementationSpec]:
+    ) -> list[FunctionImplementationSpec]:
         raise NotImplementedError
