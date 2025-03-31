@@ -141,16 +141,16 @@ class FuncFloatArrStr1Trino(base.FuncArrStr1):
 
 DEFINITIONS_ARRAY = [
     # arr_remove
-    # base.FuncArrayRemoveLiteralNull(
-    #     variants=[
-    #         V(D.TRINO, sa.func.array_remove),
-    #     ]
-    # ),
-    # base.FuncArrayRemoveDefault(
-    #     variants=[
-    #         V(D.TRINO, sa.func.array_remove),
-    #     ]
-    # ),
+    base.FuncArrayRemoveLiteralNull(
+        variants=[
+            V(D.TRINO, lambda array, _null: sa.func.filter(array, sa.text("x -> x IS NOT NULL"))),
+        ]
+    ),
+    base.FuncArrayRemoveDefault(
+        variants=[
+            V(D.TRINO, sa.func.array_remove),
+        ]
+    ),
     # arr_str
     FuncArrStr1Trino(),
     FuncFloatArrStr1Trino(),
