@@ -12,4 +12,5 @@ class TestArrayFunctionTrino(TrinoFormulaTestBase, DefaultArrayFunctionFormulaCo
         pytest.skip("Not implemented")
 
     def test_startswith_string_array(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        pytest.skip("Not implemented")
+        assert dbe.eval("STARTSWITH([arr_str_value], [arr_str_value])", from_=data_table)
+        assert not dbe.eval('STARTSWITH([arr_str_value], ARRAY("", "cde", NULL))', from_=data_table)
