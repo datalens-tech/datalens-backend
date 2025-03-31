@@ -71,7 +71,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("LEN([arr_float_value])", from_=data_table) == SAMPLE_DATA_ARRAYS_LENGTH
         assert dbe.eval("LEN([arr_str_value])", from_=data_table) == SAMPLE_DATA_ARRAYS_LENGTH
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_len_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert dbe.eval("LEN([arr_int_null_value])", from_=data_table) is None
@@ -83,13 +83,13 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("GET_ITEM([arr_float_value], 3)", from_=data_table) == 0.123
         assert dbe.eval("GET_ITEM([arr_str_value], 3)", from_=data_table) == "cde"
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_get_item_out_of_bounds(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         assert dbe.eval("GET_ITEM(ARRAY(42), 99999)", from_=data_table) is None
         assert dbe.eval("GET_ITEM(ARRAY(1.23), 99999)", from_=data_table) is None
         assert dbe.eval('GET_ITEM(ARRAY("cat"), 99999)', from_=data_table) is None
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_get_item_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert dbe.eval("GET_ITEM([arr_int_null_value], 0)", from_=data_table) is None
@@ -109,7 +109,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert to_str(dbe.eval("ARR_STR([arr_float_value], ';', '*')", from_=data_table)) == "0;45;0.123;*"
         assert to_str(dbe.eval("ARR_STR([arr_str_value], ';', '*')", from_=data_table)) == ";;cde;*"
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_str_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert to_str(dbe.eval("ARR_STR([arr_int_null_value])", from_=data_table)) is None
@@ -149,7 +149,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("COUNT_ITEM(ARRAY(3, NULL), NULL)", from_=data_table) == 1
         assert dbe.eval("COUNT_ITEM(ARRAY(3, NULL, NULL), NULL)", from_=data_table) == 2
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_count_item_int_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert dbe.eval("COUNT_ITEM([arr_int_null_value], 1)", from_=data_table) is None
@@ -169,7 +169,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("COUNT_ITEM(ARRAY(0.2, NULL), NULL)", from_=data_table) == 1
         assert dbe.eval("COUNT_ITEM(ARRAY(0.2, NULL, NULL), NULL)", from_=data_table) == 2
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_count_item_float_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert dbe.eval("COUNT_ITEM([arr_float_null_value], 1.2)", from_=data_table) is None
@@ -197,7 +197,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval('COUNT_ITEM(ARRAY("NULL"), NULL)', from_=data_table) == 0
         # assert dbe.eval('COUNT_ITEM(ARRAY(NULL), "NULL")', from_=data_table) == 0
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_count_item_str_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert dbe.eval('COUNT_ITEM([arr_str_null_value], "cat")', from_=data_table) is None
@@ -214,7 +214,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("CONTAINS(ARRAY(1, NULL, NULL), NULL)", from_=data_table)
         assert dbe.eval("CONTAINS(ARRAY(1, 1, NULL, NULL), NULL)", from_=data_table)
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_contains_int_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert dbe.eval("CONTAINS([arr_int_null_value], 1)", from_=data_table) is None
@@ -231,7 +231,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("CONTAINS(ARRAY(1.1, NULL, NULL), NULL)", from_=data_table)
         assert dbe.eval("CONTAINS(ARRAY(1.1, 1.1, NULL, NULL), NULL)", from_=data_table)
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_contains_float_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert dbe.eval("CONTAINS([arr_float_null_value], 1.2)", from_=data_table) is None
@@ -252,7 +252,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval('CONTAINS(ARRAY("a", NULL, NULL), NULL)', from_=data_table)
         assert dbe.eval('CONTAINS(ARRAY("a", "a", NULL, NULL), NULL)', from_=data_table)
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_contains_str_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert dbe.eval('CONTAINS([arr_str_null_value], "cat")', from_=data_table) is None
@@ -284,7 +284,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert not dbe.eval("CONTAINS_ALL(ARRAY(1, 2), ARRAY(1, NULL))", from_=data_table)
         assert dbe.eval("CONTAINS_ALL(ARRAY(1, 2, NULL), ARRAY(1, NULL))", from_=data_table)
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_contains_all_int_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert dbe.eval("CONTAINS_ALL([arr_int_null_value], ARRAY(1, NULL))", from_=data_table) is None
@@ -308,7 +308,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("CONTAINS_ALL(ARRAY(1.1, 2.9, NULL), ARRAY(1.1, NULL))", from_=data_table)
         assert dbe.eval("CONTAINS_ALL(ARRAY(1, 2.9, NULL), ARRAY(2.9, NULL))", from_=data_table)
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_contains_all_float_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert (
@@ -346,7 +346,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert not dbe.eval('CONTAINS_ALL(ARRAY("a", "potato"), ARRAY("a", NULL))', from_=data_table)
         assert dbe.eval('CONTAINS_ALL(ARRAY("a", "potato", NULL), ARRAY("a", NULL))', from_=data_table)
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_contains_all_str_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert (
@@ -403,7 +403,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("CONTAINS_ANY(ARRAY(1, NULL), ARRAY(1, 1))", from_=data_table)
         assert dbe.eval("CONTAINS_ANY(ARRAY(1, 1, NULL), ARRAY(1, 1))", from_=data_table)
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_contains_any_int_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert dbe.eval("CONTAINS_ANY([arr_int_null_value], ARRAY(1, NULL))", from_=data_table) is None
@@ -437,7 +437,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("CONTAINS_ANY(ARRAY(0.1, NULL), ARRAY(0.1, 0.1))", from_=data_table)
         assert dbe.eval("CONTAINS_ANY(ARRAY(0.1, 0.1, NULL), ARRAY(0.1, 0.1))", from_=data_table)
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_contains_any_float_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert (
@@ -496,7 +496,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert not dbe.eval('CONTAINS_ANY(ARRAY("foo", "foo", "NULL"), ARRAY("banana", NULL))', from_=data_table)
         assert not dbe.eval('CONTAINS_ANY(ARRAY("foo", "foo", NULL), ARRAY("banana", "NULL"))', from_=data_table)
 
-    @pytest.mark.xfail
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_contains_any_str_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
         assert (
