@@ -303,8 +303,7 @@ class ConnectionExportItem(BIResource):
             raise exc.UnsupportedForEntityType(f"Connector {conn.conn_type.name} does not support export")
 
         result = GenericConnectionSchema(context=self.get_schema_ctx(ExportMode.export)).dump(conn)
-        result.update(options=ConnectionOptionsSchema().dump(conn.get_options()))
-        result.pop("id")
+        result["db_type"] = conn.conn_type.value
 
         localizer = self.get_service_registry().get_localizer()
         conn_warnings = conn.get_export_warnings_list(localizer=localizer)
