@@ -175,19 +175,26 @@ DEFINITIONS_STRING = [
         ]
     ),
     # split
-    # base.FuncSplit1(
-    #     variants=[
-    #         V(D.TRINO, lambda text: sa.func.string_to_array(text, ",")),
-    #     ]
-    # ),
-    # base.FuncSplit2(
-    #     variants=[
-    #         V(D.TRINO, lambda text, delim: sa.func.string_to_array(text, delim)),
-    #     ]
-    # ),
+    base.FuncSplit1(
+        variants=[
+            V(D.TRINO, lambda text: sa.func.split(text, ",")),
+        ]
+    ),
+    base.FuncSplit2(
+        variants=[
+            V(D.TRINO, sa.func.split),
+        ]
+    ),
     base.FuncSplit3(
         variants=[
-            V(D.TRINO, sa.func.split_part),
+            V(
+                D.TRINO,
+                lambda text, delim, pos: sa.func.if_(
+                    pos > 0,
+                    sa.func.split_part(text, delim, pos),
+                    sa.func.split_part(text, delim, sa.func.cardinality(sa.func.split(text, delim)) + pos + 1),
+                ),
+            ),
         ]
     ),
     # startswith
