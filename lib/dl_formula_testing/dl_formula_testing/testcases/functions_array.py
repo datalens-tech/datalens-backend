@@ -144,7 +144,6 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("COUNT_ITEM(ARRAY(4, 4), 4)", from_=data_table) == 2
         assert dbe.eval("COUNT_ITEM(ARRAY(4), 4)", from_=data_table) == 1
         # NULL
-        # assert dbe.eval("COUNT_ITEM(ARRAY(NULL), 3)", from_=data_table) == 0
         assert dbe.eval("COUNT_ITEM(ARRAY(3), NULL)", from_=data_table) == 0
         assert dbe.eval("COUNT_ITEM(ARRAY(3, NULL), NULL)", from_=data_table) == 1
         assert dbe.eval("COUNT_ITEM(ARRAY(3, NULL, NULL), NULL)", from_=data_table) == 2
@@ -164,7 +163,6 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("COUNT_ITEM(ARRAY(18.3, 18.3), 18.3)", from_=data_table) == 2
         assert dbe.eval("COUNT_ITEM(ARRAY(18.3), 18.3)", from_=data_table) == 1
         # NULL
-        # assert dbe.eval("COUNT_ITEM(ARRAY(NULL), 0.2)", from_=data_table) == 0
         assert dbe.eval("COUNT_ITEM(ARRAY(0.2), NULL)", from_=data_table) == 0
         assert dbe.eval("COUNT_ITEM(ARRAY(0.2, NULL), NULL)", from_=data_table) == 1
         assert dbe.eval("COUNT_ITEM(ARRAY(0.2, NULL, NULL), NULL)", from_=data_table) == 2
@@ -185,7 +183,6 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval('COUNT_ITEM(ARRAY("a", "b", "a"), "a")', from_=data_table) == 2
         assert dbe.eval('COUNT_ITEM(ARRAY("a"), "a")', from_=data_table) == 1
         # NULL
-        # assert dbe.eval('COUNT_ITEM(ARRAY(NULL), "p")', from_=data_table) == 0
         assert dbe.eval('COUNT_ITEM(ARRAY("p"), NULL)', from_=data_table) == 0
         assert dbe.eval('COUNT_ITEM(ARRAY("p", NULL), NULL)', from_=data_table) == 1
         assert dbe.eval('COUNT_ITEM(ARRAY("p", NULL, NULL), NULL)', from_=data_table) == 2
@@ -195,7 +192,6 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval('COUNT_ITEM(ARRAY("b"), "B")', from_=data_table) == 0
         # "null"
         assert dbe.eval('COUNT_ITEM(ARRAY("NULL"), NULL)', from_=data_table) == 0
-        # assert dbe.eval('COUNT_ITEM(ARRAY(NULL), "NULL")', from_=data_table) == 0
 
     @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_count_item_str_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
