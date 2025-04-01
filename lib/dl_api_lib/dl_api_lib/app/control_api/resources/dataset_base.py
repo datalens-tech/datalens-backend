@@ -207,6 +207,8 @@ class DatasetResource(BIResource):
 
         data["load_preview_by_default"] = dataset.load_preview_by_default
 
+        data["data_export_forbidden"] = dataset.data_export_forbidden
+
         return {"dataset": data}
 
     @classmethod
