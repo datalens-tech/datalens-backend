@@ -65,7 +65,7 @@ class Dataset(USEntry):
         name: str = attr.ib()
         revision_id: Optional[str] = attr.ib(default=None)
         load_preview_by_default: Optional[bool] = attr.ib(default=True)
-        data_export_forbidden:  Optional[bool] = attr.ib(default=False)
+        data_export_forbidden: Optional[bool] = attr.ib(default=False)
         schema_version: str = attr.ib(default="1")
         result_schema: ResultSchema = attr.ib(factory=ResultSchema)
         source_collections: list[DataSourceCollectionSpec] = attr.ib(factory=list)
