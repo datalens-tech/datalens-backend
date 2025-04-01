@@ -3,9 +3,7 @@ from __future__ import annotations
 import datetime
 from decimal import Decimal
 import json
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 

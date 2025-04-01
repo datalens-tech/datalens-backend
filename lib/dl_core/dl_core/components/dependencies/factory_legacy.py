@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-
 import attr
 
 from dl_core.components.dependencies.factory import ComponentDependencyManagerFactory

@@ -3,9 +3,7 @@ from __future__ import annotations
 import asyncio
 import io
 import logging
-from typing import (
-    BinaryIO,
-)
+from typing import BinaryIO
 
 from aiohttp import web
 from aiohttp.multipart import BodyPartReader

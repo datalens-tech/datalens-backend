@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 import pytest
 
 from dl_formula.core import (

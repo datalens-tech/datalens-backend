@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 from dl_constants.enums import (
     DataSourceType,

@@ -9,9 +9,7 @@ import subprocess
 import sys
 import time
 from types import TracebackType
-from typing import (
-    Optional,
-)
+from typing import Optional
 
 import attr
 import requests

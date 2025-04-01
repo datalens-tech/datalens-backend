@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Any,
-)
+from typing import Any
 
 import marshmallow as ma
 from marshmallow_oneofschema import OneOfSchema

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from dl_formula_ref.functions.aggregation import FUNCTIONS_AGGREGATION
 from dl_formula_ref.functions.array import FUNCTIONS_ARRAY
 from dl_formula_ref.functions.date import FUNCTIONS_DATE

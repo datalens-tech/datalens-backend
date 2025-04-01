@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-from typing import (
-    AbstractSet,
-)
+from typing import AbstractSet
 
 import attr
 

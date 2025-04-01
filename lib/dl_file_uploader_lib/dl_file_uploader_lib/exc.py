@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from dl_constants.exc import (
     GLOBAL_ERR_PREFIX,
     DLBaseException,

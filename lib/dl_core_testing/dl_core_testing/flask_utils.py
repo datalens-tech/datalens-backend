@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import (
-    Optional,
-)
+from typing import Optional
 
 from flask.testing import FlaskClient
 import werkzeug

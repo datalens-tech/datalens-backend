@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import StandardDialect as D
 import dl_formula.core.nodes as nodes

@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import (
-    Optional,
-)
+from typing import Optional
 
 from aiohttp import web
 import attr

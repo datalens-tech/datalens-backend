@@ -5,9 +5,7 @@ from datetime import (
     timedelta,
     timezone,
 )
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 import uuid
 
 import pytest

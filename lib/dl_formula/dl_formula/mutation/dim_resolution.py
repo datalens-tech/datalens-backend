@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from itertools import chain
-from typing import (
-    TYPE_CHECKING,
-)
+from typing import TYPE_CHECKING
 
 import attr
 

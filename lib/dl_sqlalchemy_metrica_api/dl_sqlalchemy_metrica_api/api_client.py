@@ -3,9 +3,7 @@ from __future__ import annotations
 import datetime
 from json.decoder import JSONDecodeError
 import logging
-from typing import (
-    Optional,
-)
+from typing import Optional
 
 import requests
 from requests.exceptions import RequestException

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from dl_api_commons.aio.middlewares.error_handling_outer import ErrorLevel
 from dl_constants.exc import (
     GLOBAL_ERR_PREFIX,

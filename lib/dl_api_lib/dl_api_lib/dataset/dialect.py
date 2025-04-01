@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from dl_constants.enums import SourceBackendType
 from dl_formula.core.dialect import DialectName
 

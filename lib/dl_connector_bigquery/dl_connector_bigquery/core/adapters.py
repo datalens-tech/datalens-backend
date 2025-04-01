@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import base64
 import json
-from typing import (
-    Optional,
-)
+from typing import Optional
 
 from google.api_core.exceptions import GoogleAPIError
 from google.auth.credentials import Credentials as BQCredentials

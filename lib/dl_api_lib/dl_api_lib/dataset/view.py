@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import (
-    TYPE_CHECKING,
-)
+from typing import TYPE_CHECKING
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_lib.dataset.base_wrapper import DatasetBaseWrapper

@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import abc
-from typing import (
-    Any,
-)
+from typing import Any
 
 from marshmallow import (
     Schema,

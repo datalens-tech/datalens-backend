@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import (
-    Any,
-)
+from typing import Any
 
 from marshmallow import (
     post_dump,

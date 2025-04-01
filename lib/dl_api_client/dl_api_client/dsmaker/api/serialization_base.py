@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from functools import singledispatchmethod
-from typing import (
-    Union,
-)
+from typing import Union
 
 import attr
 from marshmallow import fields as ma_fields

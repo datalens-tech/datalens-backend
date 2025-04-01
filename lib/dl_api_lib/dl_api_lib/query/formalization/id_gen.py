@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import itertools
-from typing import (
-    Generator,
-)
+from typing import Generator
 
 import attr
 

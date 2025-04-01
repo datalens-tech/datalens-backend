@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 import dl_formula.core.nodes as nodes
 from dl_formula.mutation.mutation import (
     FormulaMutation,

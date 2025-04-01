@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 import attr
 
 from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor

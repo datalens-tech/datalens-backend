@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 
 

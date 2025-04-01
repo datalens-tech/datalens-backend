@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 import attr
 
 import dl_formula.core.aux_nodes as aux_nodes
