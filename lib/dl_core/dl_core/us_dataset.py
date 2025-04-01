@@ -65,6 +65,7 @@ class Dataset(USEntry):
         name: str = attr.ib()
         revision_id: Optional[str] = attr.ib(default=None)
         load_preview_by_default: Optional[bool] = attr.ib(default=True)
+        data_export_forbidden:  Optional[bool] = attr.ib(default=False)
         schema_version: str = attr.ib(default="1")
         result_schema: ResultSchema = attr.ib(factory=ResultSchema)
         source_collections: list[DataSourceCollectionSpec] = attr.ib(factory=list)
@@ -218,6 +219,10 @@ class Dataset(USEntry):
     @property
     def load_preview_by_default(self) -> Optional[bool]:
         return self.data.load_preview_by_default
+
+    @property
+    def data_export_forbidden(self) -> Optional[bool]:
+        return self.data.data_export_forbidden
 
     def rename_field_id_usages(self, old_id: str, new_id: str) -> None:
         self.error_registry.rename_pack(old_id=old_id, new_id=new_id)

@@ -384,6 +384,7 @@ class DatasetApiLoader:
             raise exc.DatasetRevisionMismatch()
 
         ds_editor.set_load_preview_by_default(body["load_preview_by_default"])
+        ds_editor.set_data_export_forbidden(body["data_export_forbidden"])
 
         # fields (result_schema)
         ds_editor.set_result_schema(body.get("result_schema", []))

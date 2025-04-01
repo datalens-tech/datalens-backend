@@ -942,6 +942,7 @@ class Dataset(ApiProxyObject):
     name: str = attr.ib(default=None)
     revision_id: Optional[str] = attr.ib(default=None)
     load_preview_by_default: Optional[bool] = attr.ib(default=True)
+    data_export_forbidden: Optional[bool] = attr.ib(default=False)
     sources: Container[DataSource] = attr.ib(factory=Container, converter=Container)
     source_avatars: Container[SourceAvatar] = attr.ib(factory=Container, converter=Container)
     avatar_relations: Container[AvatarRelation] = attr.ib(factory=Container, converter=Container)
