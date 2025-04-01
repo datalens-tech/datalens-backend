@@ -4,7 +4,6 @@ import abc
 from collections import defaultdict
 from typing import (
     Callable,
-    Dict,
     Generic,
     Optional,
     TypeVar,
@@ -51,9 +50,9 @@ class DbDispenserBase(abc.ABC, Generic[_DB_CONFIG_TV, _DB_TV]):
 @attr.s
 class ReInitableDbDispenser(DbDispenserBase[_DB_CONFIG_TV, _DB_TV], Generic[_DB_CONFIG_TV, _DB_TV]):
     _max_reinit_count: int = attr.ib(kw_only=True, default=4)
-    _db_cache: Dict[_DB_CONFIG_TV, _DB_TV] = attr.ib(init=False, factory=dict)
-    _reinit_hooks: Dict[_DB_CONFIG_TV, Callable[[], None]] = attr.ib(init=False, factory=dict)
-    _db_reinit_counts: Dict[_DB_CONFIG_TV, int] = attr.ib(init=False, factory=lambda: defaultdict(lambda: 0))
+    _db_cache: dict[_DB_CONFIG_TV, _DB_TV] = attr.ib(init=False, factory=dict)
+    _reinit_hooks: dict[_DB_CONFIG_TV, Callable[[], None]] = attr.ib(init=False, factory=dict)
+    _db_reinit_counts: dict[_DB_CONFIG_TV, int] = attr.ib(init=False, factory=lambda: defaultdict(lambda: 0))
 
     def get_database(self, db_config: _DB_CONFIG_TV) -> _DB_TV:
         if db_config not in self._db_cache:

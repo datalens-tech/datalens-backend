@@ -3,9 +3,7 @@ from __future__ import annotations
 import difflib
 from typing import (
     Any,
-    Dict,
     Iterable,
-    List,
     Optional,
     Sequence,
 )
@@ -48,7 +46,7 @@ class EntryFieldsDiff:
         return any(attr.asdict(self).values())
 
 
-def get_dict_top_level_diff(a: Dict[str, Any], b: Dict[str, Any]) -> DictFieldsDiff:
+def get_dict_top_level_diff(a: dict[str, Any], b: dict[str, Any]) -> DictFieldsDiff:
     a_fields = set(a.keys())
     b_fields = set(b.keys())
 
@@ -84,7 +82,7 @@ def _colorize_diff(text: str) -> str:
     )
 
 
-def dump_yaml_for_diff(value: Any) -> List[str]:
+def dump_yaml_for_diff(value: Any) -> list[str]:
     return yaml.safe_dump(
         value,
         default_flow_style=False,

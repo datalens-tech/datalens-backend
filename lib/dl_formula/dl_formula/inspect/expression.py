@@ -3,14 +3,9 @@ from __future__ import annotations
 from typing import (
     AbstractSet,
     Callable,
-    Dict,
     Generator,
     Iterable,
-    List,
     Optional,
-    Set,
-    Tuple,
-    Type,
 )
 
 from dl_formula.collections import NodeSet
@@ -28,11 +23,11 @@ import dl_formula.inspect.node
 import dl_formula.translation.ext_nodes as ext_nodes
 
 
-def used_fields(item: nodes.FormulaItem) -> List[nodes.Field]:
+def used_fields(item: nodes.FormulaItem) -> list[nodes.Field]:
     return item.list_node_type(nodes.Field)
 
 
-def used_func_calls(item: nodes.FormulaItem) -> List[nodes.FuncCall]:
+def used_func_calls(item: nodes.FormulaItem) -> list[nodes.FuncCall]:
     return item.list_node_type(nodes.FuncCall)
 
 
@@ -231,7 +226,7 @@ def get_query_fork_nesting_level(
 
 def infer_data_type(
     node: nodes.FormulaItem,
-    field_types: Dict[str, DataType],
+    field_types: dict[str, DataType],
     env: "dl_formula.inspect.env.InspectionEnvironment",
 ) -> DataType:
     """Calculate the data type that should be returned by the given expression"""
@@ -290,7 +285,7 @@ def infer_data_type(
 def enumerate_fields(
     node: nodes.FormulaItem,
     prefix: NodeHierarchyIndex = NodeHierarchyIndex(),  # noqa: B008
-) -> Generator[Tuple[NodeHierarchyIndex, nodes.Field], None, None]:
+) -> Generator[tuple[NodeHierarchyIndex, nodes.Field], None, None]:
     """Just like ``enumerate``, but yields only field nodes."""
     for index, sub_node in node.enumerate(prefix=prefix):
         if isinstance(sub_node, nodes.Field):
@@ -300,9 +295,9 @@ def enumerate_fields(
 def enumerate_autonomous_children(
     node: nodes.FormulaItem,
     prefix: NodeHierarchyIndex = NodeHierarchyIndex(),  # noqa: B008
-    exclude_node_types: Tuple[Type[nodes.FormulaItem], ...] = (),
-    parent_stack: Tuple[nodes.FormulaItem, ...] = (),
-) -> Iterable[Tuple[NodeHierarchyIndex, nodes.FormulaItem, Tuple[nodes.FormulaItem, ...]]]:
+    exclude_node_types: tuple[type[nodes.FormulaItem], ...] = (),
+    parent_stack: tuple[nodes.FormulaItem, ...] = (),
+) -> Iterable[tuple[NodeHierarchyIndex, nodes.FormulaItem, tuple[nodes.FormulaItem, ...]]]:
     """
     Return relative hierarchy indexes and nodes for all logical children -
     nodes that can be interpreted as standalone expressions.
@@ -328,9 +323,9 @@ def enumerate_autonomous_children(
 
 def autonomous_children_w_stack(
     node: nodes.FormulaItem,
-    exclude_node_types: Tuple[Type[nodes.FormulaItem], ...] = (),
-    parent_stack: Tuple[nodes.FormulaItem, ...] = (),
-) -> Iterable[Tuple[nodes.FormulaItem, Tuple[nodes.FormulaItem, ...]]]:
+    exclude_node_types: tuple[type[nodes.FormulaItem], ...] = (),
+    parent_stack: tuple[nodes.FormulaItem, ...] = (),
+) -> Iterable[tuple[nodes.FormulaItem, tuple[nodes.FormulaItem, ...]]]:
     for _, child, stack in enumerate_autonomous_children(
         node,
         exclude_node_types=exclude_node_types,
@@ -341,14 +336,14 @@ def autonomous_children_w_stack(
 
 def autonomous_children(
     node: nodes.FormulaItem,
-    exclude_node_types: Tuple[Type[nodes.FormulaItem], ...] = (),
+    exclude_node_types: tuple[type[nodes.FormulaItem], ...] = (),
 ) -> Iterable[nodes.FormulaItem]:
     for _, child, _ in enumerate_autonomous_children(node, exclude_node_types=exclude_node_types):
         yield child
 
 
 def collect_tags(node: nodes.FormulaItem) -> AbstractSet[LevelTag]:
-    result: Set[LevelTag] = set()
+    result: set[LevelTag] = set()
     for _, child in node.enumerate():
         level_tag = child.level_tag
         if level_tag is not None:
@@ -454,10 +449,10 @@ def contains_lookup_functions(node: nodes.FormulaItem) -> bool:
 
 def resolve_dimensions(
     node_stack: Iterable[nodes.FormulaItem],
-    dimensions: List[nodes.FormulaItem],  # TODO: rename to global_dimensions
+    dimensions: list[nodes.FormulaItem],  # TODO: rename to global_dimensions
     env: "dl_formula.inspect.env.InspectionEnvironment",
     exclude_constants: bool = True,
-) -> Tuple[List[nodes.FormulaItem], NodeSet, NodeSet]:
+) -> tuple[list[nodes.FormulaItem], NodeSet, NodeSet]:
     """
     Return dimension list for current node and set of dimension extracts of the parent node
     ("the surrounding environment")

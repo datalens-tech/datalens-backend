@@ -8,7 +8,6 @@ from typing import (
     ClassVar,
     Generic,
     Optional,
-    Type,
     TypeVar,
 )
 from urllib.parse import (
@@ -105,7 +104,7 @@ class ClassicSQLConnLineConstructor(
 class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
     dsn_template: ClassVar[str] = "{dialect}://{user}:{passwd}@{host}:{port}/{db_name}"
     execution_options: ClassVar[dict[str, Any]] = {}
-    conn_line_constructor_type: ClassVar[Type[BaseConnLineConstructor]] = ClassicSQLConnLineConstructor
+    conn_line_constructor_type: ClassVar[type[BaseConnLineConstructor]] = ClassicSQLConnLineConstructor
 
     # Instance attributes
     _target_dto: _CONN_DTO_TV = attr.ib()

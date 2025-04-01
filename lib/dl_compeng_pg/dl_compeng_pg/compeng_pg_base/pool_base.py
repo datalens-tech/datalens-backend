@@ -4,7 +4,6 @@ import abc
 from contextlib import asynccontextmanager
 from typing import (
     AsyncGenerator,
-    Type,
     TypeVar,
 )
 
@@ -20,7 +19,7 @@ class BasePgPoolWrapper(metaclass=abc.ABCMeta):
     @classmethod
     @abc.abstractmethod
     async def connect(
-        cls: Type[_POOL_WRAPPER_TV],
+        cls: type[_POOL_WRAPPER_TV],
         url: str,
         pool_min_size: int = DEFAULT_POOL_MIN_SIZE,  # Initial pool size
         pool_max_size: int = DEFAULT_POOL_MAX_SIZE,  # Maximum pool size
@@ -35,7 +34,7 @@ class BasePgPoolWrapper(metaclass=abc.ABCMeta):
     @classmethod
     @asynccontextmanager
     async def context(
-        cls: Type[_POOL_WRAPPER_TV],
+        cls: type[_POOL_WRAPPER_TV],
         url: str,
         pool_min_size: int = DEFAULT_POOL_MIN_SIZE,
         pool_max_size: int = DEFAULT_POOL_MAX_SIZE,

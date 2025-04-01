@@ -8,9 +8,7 @@ import sys
 from typing import (
     TYPE_CHECKING,
     Generator,
-    List,
     Optional,
-    Tuple,
     Union,
 )
 
@@ -278,7 +276,7 @@ class FormulaCliTool:
                 return earliest_super_cls
 
     @classmethod
-    def _get_func_source_info(cls, name: str) -> Tuple[str, int]:
+    def _get_func_source_info(cls, name: str) -> tuple[str, int]:
         """Get file name and line number for given function"""
         func_cls = cls._get_func_base_class(name)
         filename = inspect.getsourcefile(func_cls)  # type: ignore  # TODO: fix
@@ -295,7 +293,7 @@ class FormulaCliTool:
             os.system('{0} --line {2} "{1}"'.format(editor_exe, filename, lineno))
 
     @classmethod
-    def slice(cls, text: str, levels: List[str], diff: bool = False) -> None:
+    def slice(cls, text: str, levels: list[str], diff: bool = False) -> None:
         boundaries = {
             "aggregate": AggregateFunctionLevelBoundary(name="aggregate"),
             "window": WindowFunctionLevelBoundary(name="window"),

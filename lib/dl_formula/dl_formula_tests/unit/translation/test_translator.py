@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Dict,
-    Optional,
-)
+from typing import Optional
 
 import pytest
 import sqlalchemy as sa
@@ -55,7 +52,7 @@ def T(
     x,
     dialect=D.DUMMY,
     restrict_funcs=False,
-    field_types: Dict[str, DataType] = None,
+    field_types: dict[str, DataType] = None,
     table_name: str = None,
     env: Optional[TranslationEnvironment] = None,
 ):

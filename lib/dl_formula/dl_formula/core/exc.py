@@ -5,10 +5,8 @@ from __future__ import annotations
 from typing import (
     Any,
     ClassVar,
-    List,
     Optional,
     Sequence,
-    Tuple,
     Union,
 )
 
@@ -45,7 +43,7 @@ def _ifnone(first, second):  # type: ignore  # 2024-01-24 # TODO: Function is mi
 
 
 class FormulaError(Exception):
-    default_code: ClassVar[Tuple[str, ...]] = ("FORMULA",)
+    default_code: ClassVar[tuple[str, ...]] = ("FORMULA",)
 
     def __init__(
         self,
@@ -56,7 +54,7 @@ class FormulaError(Exception):
     ):
         super().__init__()
 
-        self.errors: List[FormulaErrorCtx] = []
+        self.errors: list[FormulaErrorCtx] = []
         for error in errors:
             if not isinstance(error, FormulaErrorCtx):
                 error = FormulaErrorCtx(

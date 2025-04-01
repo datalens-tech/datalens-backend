@@ -3,10 +3,7 @@ from __future__ import annotations
 from itertools import chain
 from typing import (
     ClassVar,
-    List,
     Sequence,
-    Tuple,
-    Type,
 )
 
 import attr
@@ -32,9 +29,9 @@ class AggregationChecker(Checker):
     _valid_env: ValidationEnvironment = attr.ib()
     _allow_nested_agg: bool = attr.ib(default=False)
     _allow_inconsistent_inside_agg: bool = attr.ib(default=False)
-    _global_dimensions: List[nodes.FormulaItem] = attr.ib(kw_only=True)
+    _global_dimensions: list[nodes.FormulaItem] = attr.ib(kw_only=True)
 
-    _exclude_node_types: ClassVar[Tuple[Type[nodes.FormulaItem], ...]] = (
+    _exclude_node_types: ClassVar[tuple[type[nodes.FormulaItem], ...]] = (
         fork_nodes.QueryForkJoiningBase,
         nodes.LodSpecifier,
     )
@@ -59,7 +56,7 @@ class AggregationChecker(Checker):
         self,
         validator: ValidatorProxy,
         node: nodes.FormulaItem,
-        parent_stack: Tuple[nodes.FormulaItem, ...],
+        parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> None:
         if not dl_formula.inspect.expression.is_aggregate_expression(node, env=self._inspect_env):
             # node has no aggregations in it,

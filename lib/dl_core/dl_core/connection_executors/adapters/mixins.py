@@ -6,9 +6,7 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Dict,
     Optional,
-    Tuple,
 )
 
 from sqlalchemy.sql.type_api import TypeEngine
@@ -30,7 +28,7 @@ class SAColumnTypeNormalizer:
 
 
 class SATypeTransformer(SAColumnTypeNormalizer):
-    _type_code_to_sa: Optional[Dict[Any, SATypeSpec]] = None
+    _type_code_to_sa: Optional[dict[Any, SATypeSpec]] = None
     conn_type: ClassVar[ConnectionType]
 
     @staticmethod
@@ -41,10 +39,10 @@ class SATypeTransformer(SAColumnTypeNormalizer):
             return value  # type: ignore  # TODO: fix
         return str(value).lower()
 
-    def _cursor_column_to_name(self, cursor_col: Tuple[Any, ...], dialect: Any = None) -> str:
+    def _cursor_column_to_name(self, cursor_col: tuple[Any, ...], dialect: Any = None) -> str:
         return cursor_col[0]
 
-    def _cursor_column_to_sa(self, cursor_col: Tuple[Any, ...], require: bool = True) -> Optional[SATypeSpec]:
+    def _cursor_column_to_sa(self, cursor_col: tuple[Any, ...], require: bool = True) -> Optional[SATypeSpec]:
         type_code_to_sa = self._type_code_to_sa
         if not type_code_to_sa:
             if not require:
@@ -55,13 +53,13 @@ class SATypeTransformer(SAColumnTypeNormalizer):
         sa_type = type_code_to_sa.get(type_code)
         return sa_type
 
-    def _cursor_column_to_nullable(self, cursor_col: Tuple[Any, ...]) -> Optional[bool]:
+    def _cursor_column_to_nullable(self, cursor_col: tuple[Any, ...]) -> Optional[bool]:
         # No known `nullable=False` cases for subselects in PG and MySQL and
         # Oracle. But that might change.
         return True
 
     def _cursor_column_to_native_type(
-        self, cursor_col: Tuple[Any, ...], require: bool = True
+        self, cursor_col: tuple[Any, ...], require: bool = True
     ) -> Optional[CommonNativeType]:
         sa_type = self._cursor_column_to_sa(cursor_col, require=require)
         if sa_type is None:
@@ -132,5 +130,5 @@ class WithDatabaseNameOverride:
 
 
 class WithNoneRowConverters:
-    def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> Tuple[Optional[Callable[[Any], Any]], ...]:
+    def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> tuple[Optional[Callable[[Any], Any]], ...]:
         return tuple(None for _ in cursor_info.raw_cursor_description)

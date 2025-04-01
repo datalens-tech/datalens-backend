@@ -6,7 +6,6 @@ from enum import (
     unique,
 )
 from typing import (
-    FrozenSet,
     Hashable,
     Optional,
 )
@@ -91,7 +90,7 @@ class DataType(Enum):
         return DataType["CONST_" + self.name]
 
     @property
-    def autocast_types(self) -> FrozenSet[DataType]:
+    def autocast_types(self) -> frozenset[DataType]:
         return frozenset(_AUTOCAST_FROM_TYPES.get(self, ()))
 
 

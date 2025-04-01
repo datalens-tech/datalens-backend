@@ -2,10 +2,8 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    List,
     Optional,
     Sequence,
-    Set,
 )
 
 import attr
@@ -75,7 +73,7 @@ class FunctionDocRegistryItem:
     _is_window: bool = attr.ib(kw_only=True, default=False)
     _description: str = attr.ib(kw_only=True)
     _scopes: int = attr.ib(kw_only=True, default=SCOPES_DEFAULT)
-    _notes: List[Note] = attr.ib(kw_only=True, factory=list)
+    _notes: list[Note] = attr.ib(kw_only=True, factory=list)
     _examples: Sequence[ExampleBase] = attr.ib(kw_only=True, factory=list)
     _impl_selector: ImplementationSelectorBase = attr.ib(kw_only=True, factory=DefaultImplementationSelector)
     _signature_gen: _signature_base.SignatureGeneratorBase = attr.ib(kw_only=True, factory=DefaultSignatureGenerator)
@@ -126,16 +124,16 @@ class FunctionDocRegistryItem:
     def all_resources(self) -> AliasedResourceRegistryBase:
         return self._category.resources + self._resources
 
-    def get_explicit_notes(self, env: GenerationEnvironment) -> List[Note]:
+    def get_explicit_notes(self, env: GenerationEnvironment) -> list[Note]:
         return [note for note in self._notes if note.scopes & env.scopes == env.scopes]
 
     def get_examples(self, env: GenerationEnvironment) -> Sequence[ExampleBase]:
         return [example for example in self._examples if example.scopes & env.scopes == env.scopes]
 
-    def get_notes(self, env: GenerationEnvironment) -> List[ParameterizedNote]:
+    def get_notes(self, env: GenerationEnvironment) -> list[ParameterizedNote]:
         return self._note_extractor.get_notes(self, env=env)
 
-    def get_implementation_specs(self, env: GenerationEnvironment) -> List[FunctionImplementationSpec]:
+    def get_implementation_specs(self, env: GenerationEnvironment) -> list[FunctionImplementationSpec]:
         return self._impl_selector.get_implementations(item=self, env=env)
 
     def get_signatures(self, env: GenerationEnvironment) -> _signature_base.FunctionSignatureCollection:
@@ -144,7 +142,7 @@ class FunctionDocRegistryItem:
     def get_return_type(self, env: GenerationEnvironment) -> ParameterizedText:
         return self._return_type_extractor.get_return_type(item=self, env=env)
 
-    def get_dialects(self, env: GenerationEnvironment) -> Set[DialectCombo]:
+    def get_dialects(self, env: GenerationEnvironment) -> set[DialectCombo]:
         return self._dialect_extractor.get_dialects(item=self, env=env)
 
     def _get_one_implementation_spec(self, env: GenerationEnvironment) -> Optional[FunctionImplementationSpec]:
@@ -165,7 +163,7 @@ class FunctionDocRegistryItem:
             scopes = impl.scopes
         return scopes & env.scopes == env.scopes
 
-    def get_args(self, env: GenerationEnvironment) -> List[_arg_base.FuncArg]:
+    def get_args(self, env: GenerationEnvironment) -> list[_arg_base.FuncArg]:
         return self._arg_extractor.get_args(self, env=env)
 
     def extend(self, dialect: DialectCombo, notes: tuple[Note, ...]) -> FunctionExtension:

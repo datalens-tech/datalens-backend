@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Callable,
-    Type,
 )
 
 from dl_type_transformer.native_type import (
@@ -18,14 +17,14 @@ if TYPE_CHECKING:
     TypeFactory = Callable[[GenericNativeType], TypeEngine]
 
 
-def simple_instantiator(typecls: Type[TypeEngine]) -> TypeFactory:
+def simple_instantiator(typecls: type[TypeEngine]) -> TypeFactory:
     def type_gen(nt: GenericNativeType) -> TypeEngine:
         return typecls()
 
     return type_gen
 
 
-def lengthed_instantiator(typecls: Type[TypeEngine], default_length: int = 255) -> TypeFactory:
+def lengthed_instantiator(typecls: type[TypeEngine], default_length: int = 255) -> TypeFactory:
     def type_gen(nt: GenericNativeType) -> TypeEngine:
         if isinstance(nt, LengthedNativeType):
             length = nt.length or default_length
@@ -36,14 +35,14 @@ def lengthed_instantiator(typecls: Type[TypeEngine], default_length: int = 255) 
     return type_gen
 
 
-def timezone_instantiator(typecls: Type[TypeEngine]) -> TypeFactory:
+def timezone_instantiator(typecls: type[TypeEngine]) -> TypeFactory:
     def type_gen(nt: GenericNativeType) -> TypeEngine:
         return typecls(timezone=True)  # type: ignore  # TODO: fix
 
     return type_gen
 
 
-def typed_instantiator(typecls: Type[TypeEngine], inner_type: Type[TypeEngine]) -> TypeFactory:
+def typed_instantiator(typecls: type[TypeEngine], inner_type: type[TypeEngine]) -> TypeFactory:
     def type_gen(nt: GenericNativeType) -> TypeEngine:
         return typecls(inner_type)  # type: ignore  # TODO: fix
 

@@ -9,7 +9,6 @@ from typing import (
     AsyncIterable,
     Iterable,
     Optional,
-    Type,
     TypeVar,
     Union,
     overload,
@@ -127,7 +126,7 @@ class AsyncUSManager(USManagerBase):
     async def get_by_id(
         self,
         entry_id: str,
-        expected_type: Optional[Type[_ENTRY_TV]] = None,
+        expected_type: Optional[type[_ENTRY_TV]] = None,
         params: Optional[dict[str, str]] = None,
     ) -> _ENTRY_TV:
         pass
@@ -136,7 +135,7 @@ class AsyncUSManager(USManagerBase):
     async def get_by_id(
         self,
         entry_id: str,
-        expected_type: Optional[Type[USEntry]] = None,
+        expected_type: Optional[type[USEntry]] = None,
         params: Optional[dict[str, str]] = None,
     ) -> USEntry:
         with self._enrich_us_exception(
@@ -221,7 +220,7 @@ class AsyncUSManager(USManagerBase):
     async def locked_entry_cm(
         self,
         entry_id: str,
-        expected_type: Type[_ENTRY_TV],
+        expected_type: type[_ENTRY_TV],
         wait_timeout_sec: int = 30,
         duration_sec: int = 300,
         force: bool = False,
@@ -330,7 +329,7 @@ class AsyncUSManager(USManagerBase):
 
     async def get_collection(
         self,
-        entry_cls: Optional[Type[_ENTRY_TV]],
+        entry_cls: Optional[type[_ENTRY_TV]],
         entry_type: Optional[str] = None,
         entry_scope: Optional[str] = None,
         meta: Optional[dict[str, Union[str, int, None]]] = None,

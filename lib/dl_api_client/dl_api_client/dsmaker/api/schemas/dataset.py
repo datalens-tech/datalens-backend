@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
     Mapping,
 )
 
@@ -191,12 +190,12 @@ class ValueSchema(OneOfSchemaWithDumpLoadHooks):
     }
 
     @pre_load(pass_many=False)
-    def wrap_value_with_type(self, data: Any, **_: Any) -> Dict[str, Any]:
+    def wrap_value_with_type(self, data: Any, **_: Any) -> dict[str, Any]:
         type = getattr(self, "context", {}).get(self.CONTEXT_KEY)
         return {"type": type, "value": data}
 
     @post_dump(pass_many=False)
-    def extract_value(self, data: Dict[str, Any], **_: Any) -> Any:
+    def extract_value(self, data: dict[str, Any], **_: Any) -> Any:
         return data["value"]
 
     def get_obj_type(self, obj: ParameterValue) -> str:
@@ -482,7 +481,7 @@ class DatasetContentInternalSchema(DefaultSchema[Dataset]):
     load_preview_by_default = ma_fields.Boolean(allow_none=True, dump_default=True, load_default=True)
 
     @post_load
-    def validate_rls2(self, item: Dict[str, Any], *args: Any, **kwargs: Any) -> Dict[str, Any]:
+    def validate_rls2(self, item: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:
         for key, entries in item["rls2"].items():
             for entry in entries:
                 if entry.pattern_type == RLSPatternType.value and entry.allowed_value is None:

@@ -2,10 +2,8 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    List,
     Optional,
     Sequence,
-    Tuple,
 )
 
 import attr
@@ -18,15 +16,15 @@ from dl_formula_ref.texts import EXAMPLE_TITLE
 
 @attr.s(frozen=True)
 class ExampleSource:
-    columns: List[Tuple[str, DataType]] = attr.ib(kw_only=True)
-    data: List[List[Any]] = attr.ib(kw_only=True)
+    columns: list[tuple[str, DataType]] = attr.ib(kw_only=True)
+    data: list[list[Any]] = attr.ib(kw_only=True)
 
 
 @attr.s(frozen=True)
 class ExampleConfig:
     source: ExampleSource = attr.ib(kw_only=True)
     # e.g. formula_fields = (('My Field', 'STR([col1])'),)
-    formula_fields: List[Tuple[str, str]] = attr.ib(kw_only=True)
+    formula_fields: list[tuple[str, str]] = attr.ib(kw_only=True)
     dialect: Optional[DialectCombo] = attr.ib(kw_only=True, default=None)
     name: str = attr.ib(kw_only=True, default=EXAMPLE_TITLE)
     # group_by and order_by are lists of formulas
@@ -37,10 +35,10 @@ class ExampleConfig:
     float_format: str = attr.ib(kw_only=True, default="{:.02f}")
     # Sequence of transformations described by formulas just like in `formula_fields`
     # They are applied to the result table in the same sequence as they are defined.
-    additional_transformations: Sequence[List[Tuple[str, str]]] = attr.ib(kw_only=True, default=())
+    additional_transformations: Sequence[list[tuple[str, str]]] = attr.ib(kw_only=True, default=())
     # If additional transformations are applied,
     # then one might want to disguise real formulas used for the result with these overrides
-    override_formula_fields: Optional[List[Tuple[str, str]]] = attr.ib(kw_only=True, default=None)
+    override_formula_fields: Optional[list[tuple[str, str]]] = attr.ib(kw_only=True, default=None)
 
 
 @attr.s(frozen=True)

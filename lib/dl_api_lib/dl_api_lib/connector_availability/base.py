@@ -8,7 +8,6 @@ from typing import (
     Any,
     Iterator,
     Optional,
-    Type,
 )
 
 import attr
@@ -214,7 +213,7 @@ def connector_icon_src_config_factory(icon_data: ConnectorIconSrc | ObjectLikeCo
     icon_type = icon_data.icon_type
     icon_type_str = icon_type.value if isinstance(icon_type, ConnectorIconSrcType) else icon_type
 
-    cfg_class: dict[str, Type[ConnectorIconSrcConfig]] = {
+    cfg_class: dict[str, type[ConnectorIconSrcConfig]] = {
         ConnectorIconSrcType.data.value: ConnectorIconSrcConfigData,
         ConnectorIconSrcType.url.value: ConnectorIconSrcConfigUrl,
     }

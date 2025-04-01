@@ -8,9 +8,7 @@ from http import HTTPStatus
 import logging
 from typing import (
     Any,
-    Dict,
     Optional,
-    Tuple,
 )
 
 from aiohttp import web
@@ -34,7 +32,7 @@ class ErrorLevel(enum.Enum):
 @attr.s(auto_attribs=True)
 class ErrorData:
     status_code: int
-    response_body: Dict[str, Any]
+    response_body: dict[str, Any]
     level: ErrorLevel = attr.ib(validator=[attr.validators.instance_of(ErrorLevel)])
     http_reason: Optional[str] = attr.ib(default=None)
 
@@ -66,7 +64,7 @@ class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
 
     def handle_error(
         self, err: Exception, request: web.Request, req_logging_ctx_ctrl: RequestLoggingContextController
-    ) -> Tuple[web.Response, ErrorData]:
+    ) -> tuple[web.Response, ErrorData]:
         if isinstance(err, CancelledError):
             LOGGER.warning("Client request was cancelled", exc_info=True)
             raise  # noqa

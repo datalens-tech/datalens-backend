@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import List
-
 from dl_formula_ref.functions.aggregation import FUNCTIONS_AGGREGATION
 from dl_formula_ref.functions.array import FUNCTIONS_ARRAY
 from dl_formula_ref.functions.date import FUNCTIONS_DATE
@@ -17,7 +15,7 @@ from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.registry import FUNC_REFERENCE_REGISTRY
 
 
-EXPLICITLY_DEFINED_FUNCTIONS: List[FunctionDocRegistryItem] = [
+EXPLICITLY_DEFINED_FUNCTIONS: list[FunctionDocRegistryItem] = [
     *FUNCTIONS_AGGREGATION,
     *FUNCTIONS_ARRAY,
     *FUNCTIONS_DATE,

@@ -5,7 +5,6 @@ from typing import (
     Iterable,
     NamedTuple,
     Optional,
-    Set,
 )
 
 import attr
@@ -54,7 +53,7 @@ class RenderedFunc(NamedTuple):
     category_description: str
     category_keywords: list[str]
     args: list[LocalizedFuncArg]
-    dialects: Set[DialectCombo]
+    dialects: set[DialectCombo]
     human_dialects: list[str]
     description: str
     top_notes: list[RenderedNote]

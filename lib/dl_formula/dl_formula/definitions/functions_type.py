@@ -6,9 +6,7 @@ from typing import (
     NamedTuple,
     Optional,
     Sequence,
-    Set,
     Tuple,
-    Type,
     Union,
 )
 
@@ -657,7 +655,7 @@ class DbCastArgTypes(ArgTypeSequence):
         # The rest can have any types and will be validated by the translation
         return super().match_arg_types(arg_types[: len(self._exp_arg_types)])
 
-    def get_possible_arg_types_at_pos(self, pos: int, total: int) -> Set[DataType]:
+    def get_possible_arg_types_at_pos(self, pos: int, total: int) -> set[DataType]:
         if pos < len(self._exp_arg_types):
             return super().get_possible_arg_types_at_pos(pos=pos, total=total)
         return set(DataType)
@@ -668,9 +666,9 @@ DataTypeSpec = Union[DataType, Tuple[DataType, ...]]
 
 class WhitelistTypeSpec(NamedTuple):
     name: str
-    sa_type: Type[TypeEngine]
-    nested_sa_type: Optional[Type[TypeEngine]] = None
-    arg_types: Tuple[DataTypeSpec, ...] = ()
+    sa_type: type[TypeEngine]
+    nested_sa_type: Optional[type[TypeEngine]] = None
+    arg_types: tuple[DataTypeSpec, ...] = ()
 
 
 DECIMAL_CAST_ARG_T = (DataType.CONST_INTEGER, DataType.CONST_INTEGER)

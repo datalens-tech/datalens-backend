@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     ClassVar,
-    Dict,
     Mapping,
     cast,
 )
@@ -64,12 +63,12 @@ class ValueSchema(OneOfSchemaWithDumpLoadHooks):
         unknown = EXCLUDE
 
     @pre_load(pass_many=False)
-    def wrap_value_with_type(self, data: Any, **_: Any) -> Dict[str, Any]:
+    def wrap_value_with_type(self, data: Any, **_: Any) -> dict[str, Any]:
         type = getattr(self, "context", {}).get(VALUE_TYPE_CONTEXT_KEY)
         return {"type": type, "value": data}
 
     @post_dump(pass_many=False)
-    def extract_value(self, data: Dict[str, Any], **_: Any) -> Any:
+    def extract_value(self, data: dict[str, Any], **_: Any) -> Any:
         return data["value"]
 
     class BaseValueSchema(DefaultSchema):

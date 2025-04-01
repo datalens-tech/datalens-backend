@@ -7,7 +7,6 @@ from typing import (
     Callable,
     ClassVar,
     Optional,
-    Type,
 )
 
 from sqlalchemy.orm import Query
@@ -56,46 +55,46 @@ if TYPE_CHECKING:
 
 class CoreSourceDefinition(abc.ABC):
     source_type: ClassVar[DataSourceType]
-    source_cls: ClassVar[Type[DataSource]] = DataSource  # type: ignore  # 2024-01-30 # TODO: Can only assign concrete classes to a variable of type "type[DataSource]"  [type-abstract]
-    source_spec_cls: ClassVar[Type[DataSourceSpec]] = DataSourceSpec
-    us_storage_schema_cls: ClassVar[Type[DataSourceSpecStorageSchema]] = DataSourceSpecStorageSchema
+    source_cls: ClassVar[type[DataSource]] = DataSource  # type: ignore  # 2024-01-30 # TODO: Can only assign concrete classes to a variable of type "type[DataSource]"  [type-abstract]
+    source_spec_cls: ClassVar[type[DataSourceSpec]] = DataSourceSpec
+    us_storage_schema_cls: ClassVar[type[DataSourceSpecStorageSchema]] = DataSourceSpecStorageSchema
 
 
 class CoreConnectionDefinition(abc.ABC):
     conn_type: ClassVar[ConnectionType]
-    connection_cls: ClassVar[Type[ConnectionBase]]
-    us_storage_schema_cls: ClassVar[Optional[Type[Schema]]] = None
-    type_transformer_cls: ClassVar[Type[TypeTransformer]]  # TODO: Move to CoreBackendDefinition
-    sync_conn_executor_cls: ClassVar[Optional[Type[ConnExecutorBase]]] = None
-    async_conn_executor_cls: ClassVar[Optional[Type[AsyncConnExecutorBase]]] = None
-    lifecycle_manager_cls: ClassVar[Type[ConnectionLifecycleManager]] = DefaultConnectionLifecycleManager
-    schema_migration_cls: ClassVar[Type[ConnectionSchemaMigration]] = DefaultConnectionSchemaMigration
+    connection_cls: ClassVar[type[ConnectionBase]]
+    us_storage_schema_cls: ClassVar[Optional[type[Schema]]] = None
+    type_transformer_cls: ClassVar[type[TypeTransformer]]  # TODO: Move to CoreBackendDefinition
+    sync_conn_executor_cls: ClassVar[Optional[type[ConnExecutorBase]]] = None
+    async_conn_executor_cls: ClassVar[Optional[type[AsyncConnExecutorBase]]] = None
+    lifecycle_manager_cls: ClassVar[type[ConnectionLifecycleManager]] = DefaultConnectionLifecycleManager
+    schema_migration_cls: ClassVar[type[ConnectionSchemaMigration]] = DefaultConnectionSchemaMigration
     dialect_string: ClassVar[str]
-    data_source_migrator_cls: ClassVar[Type[DataSourceMigrator]] = DefaultDataSourceMigrator
-    settings_definition: ClassVar[Optional[Type[ConnectorSettingsDefinition]]] = None
+    data_source_migrator_cls: ClassVar[type[DataSourceMigrator]] = DefaultDataSourceMigrator
+    settings_definition: ClassVar[Optional[type[ConnectorSettingsDefinition]]] = None
     custom_dashsql_key_names: frozenset[str] = frozenset()
 
 
 class CoreBackendDefinition(abc.ABC):
     backend_type: ClassVar[SourceBackendType] = SourceBackendType.NONE
-    compiler_cls: ClassVar[Type[QueryCompiler]] = QueryCompiler
-    query_cls: ClassVar[Type[Query]] = Query
-    dashsql_literalizer_cls: ClassVar[Type[DashSQLParamLiteralizer]] = DefaultDashSQLParamLiteralizer
+    compiler_cls: ClassVar[type[QueryCompiler]] = QueryCompiler
+    query_cls: ClassVar[type[Query]] = Query
+    dashsql_literalizer_cls: ClassVar[type[DashSQLParamLiteralizer]] = DefaultDashSQLParamLiteralizer
 
 
 class CoreConnector(abc.ABC):
     # others
-    backend_definition: Type[CoreBackendDefinition]
-    connection_definitions: ClassVar[tuple[Type[CoreConnectionDefinition], ...]] = ()
-    source_definitions: ClassVar[tuple[Type[CoreSourceDefinition], ...]] = ()
+    backend_definition: type[CoreBackendDefinition]
+    connection_definitions: ClassVar[tuple[type[CoreConnectionDefinition], ...]] = ()
+    source_definitions: ClassVar[tuple[type[CoreSourceDefinition], ...]] = ()
     # TODO: Move to CoreBackendDefinition:
     sa_types: ClassVar[
         Optional[dict[tuple[SourceBackendType, GenericNativeType], Callable[[GenericNativeType], TypeEngine]]]
     ] = None
-    rqe_adapter_classes: ClassVar[AbstractSet[Type[CommonBaseDirectAdapter]]] = frozenset()
+    rqe_adapter_classes: ClassVar[AbstractSet[type[CommonBaseDirectAdapter]]] = frozenset()
     conn_security: ClassVar[AbstractSet[ConnSecuritySettings]] = frozenset()
-    query_fail_exceptions: frozenset[Type[Exception]] = frozenset()
-    notification_classes: ClassVar[tuple[Type[BaseNotification], ...]] = ()
+    query_fail_exceptions: frozenset[type[Exception]] = frozenset()
+    notification_classes: ClassVar[tuple[type[BaseNotification], ...]] = ()
 
     @classmethod
     def registration_hook(cls) -> None:

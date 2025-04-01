@@ -7,7 +7,6 @@ from typing import (
     ClassVar,
     Dict,
     Generic,
-    Type,
     TypeVar,
 )
 
@@ -38,10 +37,10 @@ _TARGET_TV = TypeVar("_TARGET_TV")
 
 
 class BaseStorageSchema(Schema, Generic[_TARGET_TV]):
-    TARGET_CLS: ClassVar[Type[_TARGET_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
+    TARGET_CLS: ClassVar[type[_TARGET_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
     @classmethod
-    def get_target_cls(cls) -> Type[_TARGET_TV]:
+    def get_target_cls(cls) -> type[_TARGET_TV]:
         return cls.TARGET_CLS
 
     @property
@@ -90,7 +89,7 @@ class BaseStorageSchema(Schema, Generic[_TARGET_TV]):
         return obj
 
     @post_dump(pass_many=False)
-    def post_dump(self, data: Dict[str, Any], **_) -> Dict[str, Any]:  # type: ignore  # TODO: fix
+    def post_dump(self, data: dict[str, Any], **_) -> dict[str, Any]:  # type: ignore  # TODO: fix
         normalized_data = self.post_process_output_data(data)
         return normalized_data
 

@@ -6,7 +6,6 @@ from typing import (
     Any,
     Iterable,
     Optional,
-    Type,
 )
 
 import attr
@@ -58,19 +57,19 @@ class FieldBundle:
 
 @attr.s(frozen=True, auto_attribs=True)
 class SchemaBundle:
-    schema_cls: Type[marshmallow.Schema]
+    schema_cls: type[marshmallow.Schema]
     amm_schema: AmmSchema
 
 
 @attr.s(frozen=True, auto_attribs=True)
 class RegularSchemaBundle(SchemaBundle):
-    schema_cls: Type[BaseSchema]
+    schema_cls: type[BaseSchema]
     amm_schema: AmmRegularSchema
 
 
 @attr.s(frozen=True, auto_attribs=True)
 class GenericSchemaBundle(SchemaBundle):
-    schema_cls: Type[BaseOneOfSchema]
+    schema_cls: type[BaseOneOfSchema]
     amm_schema: AmmGenericSchema
 
 
@@ -78,7 +77,7 @@ class GenericSchemaBundle(SchemaBundle):
 class ModelMapperMarshmallow:
     _map_complex_type_schema_bundle: dict[type, SchemaBundle] = attr.ib(factory=dict)
 
-    _map_scalar_type_field_cls: dict[type, Type[marshmallow.fields.Field]] = attr.ib(
+    _map_scalar_type_field_cls: dict[type, type[marshmallow.fields.Field]] = attr.ib(
         factory=lambda: {
             int: fields.Integer,
             str: fields.String,
@@ -89,7 +88,7 @@ class ModelMapperMarshmallow:
         }
     )
 
-    _map_scalar_type_schema_cls: dict[type, Type[marshmallow.Schema]] = attr.ib(factory=dict)
+    _map_scalar_type_schema_cls: dict[type, type[marshmallow.Schema]] = attr.ib(factory=dict)
 
     def handle_single_attr_ib(self, attr_ib: attr.Attribute) -> FieldBundle:
         attrib_descriptor = AttribDescriptor.from_attrib(attr_ib)
@@ -164,7 +163,7 @@ class ModelMapperMarshmallow:
 
     def create_field_for_unwrapped_type(
         self,
-        the_type: Type,
+        the_type: type,
         attrib_descriptor: Optional[AttribDescriptor],
         common_ma_field_kwargs: CommonAttributeProps,
     ) -> FieldBundle:
@@ -224,7 +223,7 @@ class ModelMapperMarshmallow:
         else:
             raise TypeError(f"Can not build field for {the_type!r}")
 
-    def link_to_parents(self, the_type: Type, the_schema_bundle: RegularSchemaBundle) -> None:
+    def link_to_parents(self, the_type: type, the_schema_bundle: RegularSchemaBundle) -> None:
         the_type_model_descriptor = ModelDescriptor.get_for_type(the_type)
         assert not the_type_model_descriptor.is_abstract
 
@@ -246,7 +245,7 @@ class ModelMapperMarshmallow:
                 the_schema_bundle.amm_schema, the_type_model_descriptor.effective_type_discriminator
             )
 
-    def link_to_children(self, the_type: Type, generic_bundle: GenericSchemaBundle) -> None:
+    def link_to_children(self, the_type: type, generic_bundle: GenericSchemaBundle) -> None:
         the_type_model_descriptor = ModelDescriptor.get_for_type(the_type)
         assert the_type_model_descriptor.is_abstract
 
@@ -283,15 +282,15 @@ class ModelMapperMarshmallow:
 
         return attr_ib.name
 
-    def get_schema_for_attrs_class(self, target_type: Type) -> Type[marshmallow.Schema]:
+    def get_schema_for_attrs_class(self, target_type: type) -> type[marshmallow.Schema]:
         if target_type in self._map_complex_type_schema_bundle:
             return self._map_complex_type_schema_bundle[target_type].schema_cls
         raise AssertionError(f"Schema for {type} was not created")
 
-    def get_or_create_schema_for_attrs_class(self, target: Type) -> Type[marshmallow.Schema]:
+    def get_or_create_schema_for_attrs_class(self, target: type) -> type[marshmallow.Schema]:
         return self.get_or_create_schema_bundle_for_attrs_class(target).schema_cls
 
-    def get_or_create_schema_bundle_for_attrs_class(self, target: Type) -> SchemaBundle:
+    def get_or_create_schema_bundle_for_attrs_class(self, target: type) -> SchemaBundle:
         assert attr.has(target), f"Schema creation requested for non-attrs class: {target}"
         target_model_descriptor = ModelDescriptor.get_for_type(target)
 

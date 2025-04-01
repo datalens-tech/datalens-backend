@@ -7,7 +7,6 @@ from typing import (
     ClassVar,
     Generic,
     Optional,
-    Type,
     TypeVar,
 )
 
@@ -159,7 +158,7 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
     _multipart_upload_started: bool = False
 
     def __init__(
-        self, s3: AsyncS3Client, s3_key: str, bucket_name: str, max_file_size_exc: Type[DLBaseException]
+        self, s3: AsyncS3Client, s3_key: str, bucket_name: str, max_file_size_exc: type[DLBaseException]
     ) -> None:
         self._s3 = s3
         self._s3_key = s3_key

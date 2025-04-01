@@ -3,7 +3,6 @@ from __future__ import annotations
 from os import environ
 from typing import (
     Any,
-    Dict,
     Mapping,
     Optional,
 )
@@ -18,7 +17,7 @@ from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 
 @attr.s(frozen=True)
 class CryptoKeysConfig(SettingsBase):
-    map_id_key: Dict[str, str] = s_attrib("KEY_VAL_ID", sensitive=True)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "dict[str, str]")  [assignment]
+    map_id_key: dict[str, str] = s_attrib("KEY_VAL_ID", sensitive=True)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "dict[str, str]")  [assignment]
     actual_key_id: str = s_attrib("ACTUAL_KEY_ID")  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
 
     @actual_key_id.default  # type: ignore  # 2024-01-24 # TODO: "str" has no attribute "default"  [attr-defined]
@@ -33,7 +32,7 @@ class CryptoKeysConfig(SettingsBase):
             raise ValueError()
 
     @classmethod
-    def from_json(cls, json_value: Dict[str, Any]) -> CryptoKeysConfig:
+    def from_json(cls, json_value: dict[str, Any]) -> CryptoKeysConfig:
         try:
             actual_key_id = json_value["actual_key_id"]
         except KeyError as exc:

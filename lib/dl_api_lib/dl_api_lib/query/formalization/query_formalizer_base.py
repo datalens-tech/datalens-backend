@@ -5,10 +5,8 @@ import logging
 from typing import (
     AbstractSet,
     Collection,
-    List,
     Optional,
     Sequence,
-    Tuple,
 )
 
 import attr
@@ -53,15 +51,15 @@ class QuerySpecFormalizerBase(abc.ABC):
         self,
         block_spec: BlockSpec,
         order_by_specs: Sequence[OrderByFieldSpec],
-    ) -> List[FieldId]:
+    ) -> list[FieldId]:
         raise NotImplementedError
 
     @abc.abstractmethod
     def make_select_specs(
         self,
         block_spec: BlockSpec,
-        phantom_select_ids: List[FieldId],
-    ) -> List[SelectFieldSpec]:
+        phantom_select_ids: list[FieldId],
+    ) -> list[SelectFieldSpec]:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -69,49 +67,49 @@ class QuerySpecFormalizerBase(abc.ABC):
         self,
         block_spec: BlockSpec,
         select_specs: Sequence[SelectFieldSpec],
-    ) -> List[GroupByFieldSpec]:
+    ) -> list[GroupByFieldSpec]:
         raise NotImplementedError
 
     @abc.abstractmethod
     def make_filter_specs(
         self,
         block_spec: BlockSpec,
-    ) -> List[FilterFieldSpec]:
+    ) -> list[FilterFieldSpec]:
         raise NotImplementedError
 
     @abc.abstractmethod
     def make_order_by_specs(
         self,
         block_spec: BlockSpec,
-    ) -> List[OrderByFieldSpec]:
+    ) -> list[OrderByFieldSpec]:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def make_source_column_filter_specs(self) -> List[FilterSourceColumnSpec]:
+    def make_source_column_filter_specs(self) -> list[FilterSourceColumnSpec]:
         raise NotImplementedError
 
     @abc.abstractmethod
     def make_relation_and_avatar_specs(
         self,
         used_field_ids: Collection[FieldId],
-    ) -> Tuple[List[RelationSpec], AbstractSet[AvatarId], Optional[AvatarId]]:
+    ) -> tuple[list[RelationSpec], AbstractSet[AvatarId], Optional[AvatarId]]:
         raise NotImplementedError
 
     @abc.abstractmethod
     def make_parameter_value_specs(
         self,
         block_spec: BlockSpec,
-    ) -> List[ParameterValueSpec]:
+    ) -> list[ParameterValueSpec]:
         raise NotImplementedError
 
-    def make_limit_offset(self, block_spec: BlockSpec) -> Tuple[Optional[int], Optional[int]]:
+    def make_limit_offset(self, block_spec: BlockSpec) -> tuple[Optional[int], Optional[int]]:
         return block_spec.limit, block_spec.offset
 
     def make_query_meta(
         self,
         block_spec: BlockSpec,
-        phantom_select_ids: List[FieldId],
-        select_specs: List[SelectFieldSpec],
+        phantom_select_ids: list[FieldId],
+        select_specs: list[SelectFieldSpec],
         root_avatar_id: Optional[AvatarId],
     ) -> QueryMetaInfo:
         row_count_hard_limit = block_spec.row_count_hard_limit

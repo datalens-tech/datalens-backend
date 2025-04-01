@@ -9,9 +9,7 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    FrozenSet,
     Generator,
-    List,
     Mapping,
     Optional,
     Sequence,
@@ -63,7 +61,7 @@ class ExecutionMode(enum.Enum):
 @attr.s
 class ConnExecutorQuery:
     query: ClauseElement | str = attr.ib()
-    user_types: Optional[List[UserDataType]] = attr.ib(default=None)
+    user_types: Optional[list[UserDataType]] = attr.ib(default=None)
     debug_compiled_query: Optional[str] = attr.ib(default=None)
     chunk_size: Optional[int] = attr.ib(default=None)
     connector_specific_params: Optional[Mapping[str, TJSONExt]] = attr.ib(default=None)
@@ -78,7 +76,7 @@ class ConnExecutorQuery:
 @attr.s(cmp=False, hash=False)
 class ConnExecutorBase(metaclass=abc.ABCMeta):
     default_chunk_size: ClassVar[int] = 100
-    supported_exec_mode: ClassVar[FrozenSet[ExecutionMode]] = frozenset(ExecutionMode)
+    supported_exec_mode: ClassVar[frozenset[ExecutionMode]] = frozenset(ExecutionMode)
 
     _conn_dto: ConnDTO = attr.ib()
     _conn_options: ConnectOptions = attr.ib()
@@ -161,7 +159,7 @@ class ConnExecutorBase(metaclass=abc.ABCMeta):
             )
             schema.append(schema_col)
 
-        index_info_set: Optional[FrozenSet[IndexInfo]] = None
+        index_info_set: Optional[frozenset[IndexInfo]] = None
 
         if raw_schema_info.indexes is not None:
             index_info_set = frozenset(

@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import (
-    Optional,
-    Type,
-)
+from typing import Optional
 
 import asyncpg
 import attr
@@ -23,7 +20,7 @@ class AsyncpgPoolWrapper(BasePgPoolWrapper):
 
     @classmethod
     async def connect(
-        cls: Type["AsyncpgPoolWrapper"],
+        cls: type["AsyncpgPoolWrapper"],
         url: str,
         pool_min_size: int = DEFAULT_POOL_MIN_SIZE,  # Initial pool size
         pool_max_size: int = DEFAULT_POOL_MAX_SIZE,  # Maximum pool size

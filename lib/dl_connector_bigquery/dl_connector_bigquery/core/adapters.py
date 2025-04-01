@@ -2,10 +2,7 @@ from __future__ import annotations
 
 import base64
 import json
-from typing import (
-    Optional,
-    Tuple,
-)
+from typing import Optional
 
 from google.api_core.exceptions import GoogleAPIError
 from google.auth.credentials import Credentials as BQCredentials
@@ -35,7 +32,7 @@ from dl_connector_bigquery.core.target_dto import BigQueryConnTargetDTO
 class BigQueryConnLineConstructor(BaseConnLineConstructor[BigQueryConnTargetDTO]):
     def _get_dsn_params(
         self,
-        safe_db_symbols: Tuple[str, ...] = (),
+        safe_db_symbols: tuple[str, ...] = (),
         db_name: Optional[str] = None,
         standard_auth: Optional[bool] = True,
     ) -> dict:

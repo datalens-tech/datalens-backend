@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import enum
 import logging
-import typing
 
 from flask import (
     current_app,
@@ -18,7 +17,7 @@ class RequiredResourceCommon(enum.Enum):
     SKIP_AUTH = enum.auto()
 
 
-def get_required_resources() -> typing.FrozenSet[RequiredResourceCommon]:
+def get_required_resources() -> frozenset[RequiredResourceCommon]:
     if request.url_rule:
         view_func = current_app.view_functions.get(request.url_rule.endpoint, None)
     else:

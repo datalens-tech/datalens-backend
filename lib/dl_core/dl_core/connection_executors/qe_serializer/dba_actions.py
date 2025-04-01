@@ -5,7 +5,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Dict,
     Generic,
     List,
     Optional,
@@ -45,7 +44,7 @@ if TYPE_CHECKING:
 class RemoteDBAdapterAction:
     target_conn_dto: ConnTargetDTO = attr.ib()
     req_ctx_info: DBAdapterScopedRCI = attr.ib()
-    dba_cls: Type[CommonBaseDirectAdapter] = attr.ib()
+    dba_cls: type[CommonBaseDirectAdapter] = attr.ib()
 
 
 @attr.s(frozen=True)
@@ -59,10 +58,10 @@ _RES_SCHEMA_TV = TypeVar("_RES_SCHEMA_TV")
 class NonStreamAction(Generic[_RES_SCHEMA_TV], RemoteDBAdapterAction, metaclass=abc.ABCMeta):
     ResultSchema = ClassVar[Type[BaseQEAPISchema]]
 
-    def serialize_response(self, val: _RES_SCHEMA_TV) -> Dict:
+    def serialize_response(self, val: _RES_SCHEMA_TV) -> dict:
         return self.ResultSchema().dump(val)  # type: ignore  # TODO: fix
 
-    def deserialize_response(self, data: Dict) -> _RES_SCHEMA_TV:
+    def deserialize_response(self, data: dict) -> _RES_SCHEMA_TV:
         return self.ResultSchema().load(data)  # type: ignore  # TODO: fix
 
 
@@ -74,7 +73,7 @@ class ActionNonStreamExecuteQuery(RemoteDBAdapterAction):
 @attr.s(frozen=True)
 class ActionTest(NonStreamAction[None]):
     class ResultSchema(BaseQEAPISchema):
-        def to_object(self, data: Dict[str, Any]) -> Any:
+        def to_object(self, data: dict[str, Any]) -> Any:
             return None
 
 

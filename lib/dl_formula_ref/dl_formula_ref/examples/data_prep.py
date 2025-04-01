@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    TYPE_CHECKING,
-    Dict,
-)
+from typing import TYPE_CHECKING
 
 import attr
 
@@ -34,13 +31,13 @@ if TYPE_CHECKING:
 
 @attr.s
 class DataPreparer:
-    _db_by_dialect: Dict[DialectCombo, Db] = attr.ib(kw_only=True)
+    _db_by_dialect: dict[DialectCombo, Db] = attr.ib(kw_only=True)
     _storage_filename: str = attr.ib(kw_only=True)
     _function_scopes: int = attr.ib(kw_only=True, default=Scope.EXPLICIT_USAGE)
     _query_gen: QueryGenerator = attr.ib(kw_only=True, factory=QueryGenerator)
-    _dumper_by_dialect: Dict[DialectCombo, DataDumper] = attr.ib(init=False, factory=dict)
+    _dumper_by_dialect: dict[DialectCombo, DataDumper] = attr.ib(init=False, factory=dict)
     _storage: WritableDataStorage = attr.ib(init=False)
-    _sa_compiler_by_dialect: Dict[DialectCombo, SaQueryCompiler] = attr.ib(init=False, factory=dict)
+    _sa_compiler_by_dialect: dict[DialectCombo, SaQueryCompiler] = attr.ib(init=False, factory=dict)
     _default_example_dialect: DialectCombo = attr.ib(kw_only=True, default=D.DUMMY)
 
     def __attrs_post_init__(self) -> None:

@@ -10,11 +10,8 @@ from typing import (
     TYPE_CHECKING,
     Any,
     AsyncGenerator,
-    List,
     Optional,
     Sequence,
-    Tuple,
-    Type,
     TypeVar,
 )
 
@@ -101,7 +98,7 @@ _RESP_TV = TypeVar("_RESP_TV", bound=ResponseTypes)
 class RemoteAsyncAdapter(AsyncDBAdapter):
     _target_dto: ConnTargetDTO = attr.ib()
     _req_ctx_info: DBAdapterScopedRCI = attr.ib()
-    _dba_cls: Type[CommonBaseDirectAdapter] = attr.ib()
+    _dba_cls: type[CommonBaseDirectAdapter] = attr.ib()
     _rqe_data: RemoteQueryExecutorData = attr.ib()
     _conn_options: ConnectOptions = attr.ib(factory=ConnectOptions)
     _session: aiohttp.ClientSession = attr.ib(init=False)
@@ -247,7 +244,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             raise QueryExecutorException("Unexpected response JSON schema") from resp_deserialization_exc
 
     @staticmethod
-    def _parse_event(event: Any) -> Tuple[RQEEventType, Any]:
+    def _parse_event(event: Any) -> tuple[RQEEventType, Any]:
         if not isinstance(event, (list, tuple)):
             raise QueryExecutorException(f"QE parse: unexpected event type: {type(event)}")
         if len(event) != 2:
@@ -264,7 +261,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
 
     async def _get_execution_result(
         self,
-        events: typing.AsyncGenerator[Tuple[RQEEventType, Any], None],
+        events: typing.AsyncGenerator[tuple[RQEEventType, Any], None],
     ) -> AsyncRawExecutionResult:
         ev_type, ev_data = await events.__anext__()
         if ev_type == RQEEventType.raw_cursor_info:
@@ -316,7 +313,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             exc = self._parse_exception(resp_body_json)
             raise exc
 
-        async def event_gen() -> AsyncGenerator[Tuple[RQEEventType, Any], None]:
+        async def event_gen() -> AsyncGenerator[tuple[RQEEventType, Any], None]:
             buf = b""
 
             while True:
@@ -370,7 +367,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             else:
                 raw_events = pickle.loads(raw_data)
 
-        async def event_gen() -> AsyncGenerator[Tuple[RQEEventType, Any], None]:
+        async def event_gen() -> AsyncGenerator[tuple[RQEEventType, Any], None]:
             for raw_event in raw_events:
                 yield self._parse_event(raw_event)
 
@@ -397,7 +394,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             ),
         )
 
-    async def get_schema_names(self, db_ident: DBIdent) -> List[str]:
+    async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
         return await self._make_request_parse_response(
             dba_actions.ActionGetSchemaNames(
                 target_conn_dto=self._target_dto,
@@ -407,7 +404,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             ),
         )
 
-    async def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         return await self._make_request_parse_response(  # type: ignore  # TODO: fix
             dba_actions.ActionGetTables(
                 target_conn_dto=self._target_dto,

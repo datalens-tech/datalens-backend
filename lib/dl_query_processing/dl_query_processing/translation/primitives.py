@@ -5,11 +5,9 @@ from typing import (
     AbstractSet,
     Any,
     Iterable,
-    List,
     NamedTuple,
     Optional,
     Sequence,
-    Type,
     TypeVar,
 )
 
@@ -79,7 +77,7 @@ class TranslatedQueryMetaInfo(QueryMetaInfo):
 
     @classmethod
     def from_comp_meta(
-        cls: Type[_META_TV],
+        cls: type[_META_TV],
         comp_meta: QueryMetaInfo,
         detailed_types: Optional[list[Optional[DetailedType]]] = None,
     ) -> _META_TV:
@@ -121,12 +119,12 @@ class TranslatedFlatQuery:
     alias: str = attr.ib(kw_only=True)
     level_type: ExecutionLevel = attr.ib(kw_only=True)
 
-    select: List[ExpressionCtxExt] = attr.ib(kw_only=True)
-    where: List[ExpressionCtx] = attr.ib(kw_only=True)
-    group_by: List[ExpressionCtx] = attr.ib(kw_only=True)
-    having: List[ExpressionCtx] = attr.ib(kw_only=True)
-    order_by: List[OrderByExpressionCtx] = attr.ib(kw_only=True)
-    join_on: List[JoinOnExpressionCtx] = attr.ib(kw_only=True)
+    select: list[ExpressionCtxExt] = attr.ib(kw_only=True)
+    where: list[ExpressionCtx] = attr.ib(kw_only=True)
+    group_by: list[ExpressionCtx] = attr.ib(kw_only=True)
+    having: list[ExpressionCtx] = attr.ib(kw_only=True)
+    order_by: list[OrderByExpressionCtx] = attr.ib(kw_only=True)
+    join_on: list[JoinOnExpressionCtx] = attr.ib(kw_only=True)
     joined_from: TranslatedJoinedFromObject = attr.ib(kw_only=True)
     limit: Optional[int] = attr.ib(kw_only=True)
     offset: Optional[int] = attr.ib(kw_only=True)

@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Any,
-    Type,
-)
+from typing import Any
 
 from aiohttp.client import ClientSession
 
@@ -11,7 +8,7 @@ from dl_file_uploader_lib import exc as file_upl_exc
 
 
 def yadocs_error_to_file_uploader_exception(status_code: int, resp_info: dict) -> file_upl_exc.DLFileUploaderBaseError:
-    err_cls: Type[file_upl_exc.DLFileUploaderBaseError]
+    err_cls: type[file_upl_exc.DLFileUploaderBaseError]
 
     if status_code == 401:
         err_cls = file_upl_exc.PermissionDenied

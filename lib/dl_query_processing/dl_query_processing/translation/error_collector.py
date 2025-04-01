@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     Optional,
-    Type,
 )
 
 import attr
@@ -26,7 +25,7 @@ class FormulaErrorCollector:
     def __enter__(self) -> "FormulaErrorCollector":
         return self
 
-    def __exit__(self, exc_type: Optional[Type[Exception]], exc_val: Optional[Exception], exc_tb: Any) -> bool:
+    def __exit__(self, exc_type: Optional[type[Exception]], exc_val: Optional[Exception], exc_tb: Any) -> bool:
         if isinstance(exc_val, dl_query_processing.exc.FormulaHandlingError):
             self._errors += exc_val.errors
             return True

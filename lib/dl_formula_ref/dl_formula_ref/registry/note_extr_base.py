@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import abc
-from typing import (
-    TYPE_CHECKING,
-    List,
-)
+from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
@@ -19,5 +16,5 @@ class NoteExtractorBase(abc.ABC):
         self,
         item: _registry_base.FunctionDocRegistryItem,
         env: GenerationEnvironment,
-    ) -> List[ParameterizedNote]:
+    ) -> list[ParameterizedNote]:
         raise NotImplementedError

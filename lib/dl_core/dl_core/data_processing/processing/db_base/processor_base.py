@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     ClassVar,
     Optional,
-    Type,
 )
 
 import attr
@@ -29,7 +28,7 @@ from dl_core.data_processing.stream_base import AbstractStream
 
 @attr.s
 class ExecutorBasedOperationProcessor(OperationProcessorAsyncBase):
-    _executors: ClassVar[dict[Type[BaseOp], Type[OpExecutorAsync]]] = {
+    _executors: ClassVar[dict[type[BaseOp], type[OpExecutorAsync]]] = {
         DownloadOp: DownloadOpExecutorAsync,
         CalcOp: CalcOpExecutorAsync,
         JoinOp: JoinOpExecutorAsync,
@@ -45,10 +44,10 @@ class ExecutorBasedOperationProcessor(OperationProcessorAsyncBase):
     async def stop(self) -> None:
         pass
 
-    def get_executor_class(self, op_type: Type[BaseOp]) -> Type[OpExecutorAsync]:
+    def get_executor_class(self, op_type: type[BaseOp]) -> type[OpExecutorAsync]:
         return self._executors[op_type]
 
     async def execute_operation(self, op: BaseOp, ctx: OpExecutionContext) -> AbstractStream:
-        opex_cls: Type[OpExecutorAsync] = self.get_executor_class(type(op))
+        opex_cls: type[OpExecutorAsync] = self.get_executor_class(type(op))
         opex = opex_cls(db_ex_adapter=self.db_ex_adapter, ctx=ctx)
         return await opex.execute(op)

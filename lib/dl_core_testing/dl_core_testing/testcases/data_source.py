@@ -7,7 +7,6 @@ from typing import (
     ClassVar,
     Generic,
     Sequence,
-    Type,
     TypeVar,
 )
 import uuid
@@ -52,7 +51,7 @@ class BaseDataSourceTestClass(
     BaseConnectionTestClass[_CONN_TV],
     Generic[_CONN_TV, _DSRC_SPEC_TV, _DSRC_TV],
 ):
-    DSRC_CLS: ClassVar[Type[_DSRC_TV]]  # type: ignore  # 2024-01-29 # TODO: ClassVar cannot contain type variables  [misc]
+    DSRC_CLS: ClassVar[type[_DSRC_TV]]  # type: ignore  # 2024-01-29 # TODO: ClassVar cannot contain type variables  [misc]
 
     @abc.abstractmethod
     @pytest.fixture(scope="class")

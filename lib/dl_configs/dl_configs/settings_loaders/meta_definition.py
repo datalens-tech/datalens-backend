@@ -5,7 +5,6 @@ from typing import (
     Callable,
     ClassVar,
     Optional,
-    Type,
     TypeVar,
     cast,
 )
@@ -91,7 +90,7 @@ class RequiredValue:
     message: Optional[str] = attr.ib(default=None)
 
 
-def required(t: Type[_REQUIRED_TV]) -> _REQUIRED_TV:
+def required(t: type[_REQUIRED_TV]) -> _REQUIRED_TV:
     """
     Usage: set constructor args of attrs objects in fallback_config_factory.
     Fields with `REQUIRED_VALUE` value must be replaced by settings loader or exception must be thrown

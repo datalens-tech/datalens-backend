@@ -2,10 +2,8 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Dict,
     Iterable,
     NamedTuple,
-    Tuple,
 )
 
 import attr
@@ -25,13 +23,13 @@ class RefFunctionKey(NamedTuple):
 
 @attr.s
 class FunctionReferenceRegistry:
-    _registry: Dict[RefFunctionKey, FunctionDocRegistryItem] = attr.ib(kw_only=True, factory=dict)
+    _registry: dict[RefFunctionKey, FunctionDocRegistryItem] = attr.ib(kw_only=True, factory=dict)
 
     def add_item(self, item: FunctionDocRegistryItem) -> None:
         key = RefFunctionKey.normalized(name=item.name, category_name=item.category.name)
         self._registry[key] = item
 
-    def items(self) -> Iterable[Tuple[RefFunctionKey, FunctionDocRegistryItem]]:
+    def items(self) -> Iterable[tuple[RefFunctionKey, FunctionDocRegistryItem]]:
         return sorted(self._registry.items())
 
     def __contains__(self, key: Any) -> bool:

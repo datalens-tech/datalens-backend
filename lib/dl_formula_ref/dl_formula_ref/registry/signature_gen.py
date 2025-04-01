@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    List,
     Sequence,
 )
 
@@ -38,7 +37,7 @@ if TYPE_CHECKING:
 
 @attr.s(frozen=True)
 class StaticSignatureGenerator(SignatureGeneratorBase):
-    signatures: List[FunctionSignature] = attr.ib(kw_only=True)
+    signatures: list[FunctionSignature] = attr.ib(kw_only=True)
 
     def get_signatures(
         self,
@@ -94,7 +93,7 @@ class DefaultSignatureGenerator(SignatureGeneratorBase):
     def _get_signature_from_args(
         self,
         func_name: str,
-        args: List[_arg_base.FuncArg],
+        args: list[_arg_base.FuncArg],
         inf_args: bool,
         is_window: bool,
         is_extended_syntax: bool,
@@ -119,7 +118,7 @@ class DefaultSignatureGenerator(SignatureGeneratorBase):
         if cur_opt_level > 0:
             args_str += " ]" * cur_opt_level
 
-        modifiers: List[str] = []
+        modifiers: list[str] = []
         description: list[str] = []
         if requires_grouping(func_name, is_window=is_window):
             modifiers.append("TOTAL | WITHIN ... | AMONG ...")
@@ -182,7 +181,7 @@ class DefaultSignatureGenerator(SignatureGeneratorBase):
             is_extended_syntax_values.append(True)
 
         args = item.get_args(env=env)
-        signatures: List[FunctionSignature] = [
+        signatures: list[FunctionSignature] = [
             self._get_signature_from_args(
                 func_name=func_name,
                 args=args,

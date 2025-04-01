@@ -5,7 +5,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
 )
 
 from aiohttp import web
@@ -69,7 +68,7 @@ class DatasetDistinctView(DatasetDataBaseView, abc.ABC):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         raise NotImplementedError()
 
 
@@ -87,7 +86,7 @@ class DatasetDistinctViewV1(DatasetDistinctView):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return self._make_response_v1(req_model=req_model, merged_stream=merged_stream)
 
 
@@ -105,7 +104,7 @@ class DatasetDistinctViewV1_5(DatasetDistinctView):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return self._make_response_v1(req_model=req_model, merged_stream=merged_stream)
 
 
@@ -123,5 +122,5 @@ class DatasetDistinctViewV2(DatasetDistinctView):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return self._make_response_v2(merged_stream=merged_stream)

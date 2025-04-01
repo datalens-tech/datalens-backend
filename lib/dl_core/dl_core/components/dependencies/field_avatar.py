@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    AbstractSet,
-    Set,
-)
+from typing import AbstractSet
 
 import attr
 
@@ -25,7 +22,7 @@ class FieldAvatarDependencyManager(FieldAvatarDependencyManagerBase):
     def get_field_avatar_references(self, dep_field_id: FieldId) -> AbstractSet[AvatarId]:
         deep_refs = self._deep.get_field_deep_references(dep_field_id=dep_field_id) | {dep_field_id}
 
-        avatar_refs: Set[AvatarId] = set()
+        avatar_refs: set[AvatarId] = set()
         for ref_field_if in deep_refs:
             field = self._result_schema.by_guid(ref_field_if)
             if field.calc_mode == CalcMode.direct:

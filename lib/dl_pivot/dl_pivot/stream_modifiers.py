@@ -3,16 +3,12 @@ from __future__ import annotations
 import logging
 from typing import (
     TYPE_CHECKING,
-    Dict,
     Generator,
     Iterable,
     Iterator,
-    List,
     NamedTuple,
     Optional,
     Sequence,
-    Set,
-    Tuple,
 )
 
 import attr
@@ -116,7 +112,7 @@ class DataCellConverter:
 
 
 class TransposedDataRow(NamedTuple):
-    dimensions: Tuple[DataCellVector, ...]
+    dimensions: tuple[DataCellVector, ...]
     value: Optional[DataCellVector]
 
 
@@ -135,10 +131,10 @@ class MeasureDataTransposer:
     _cell_packer: HashableValuePackerBase = attr.ib(kw_only=True)
 
     # Internal
-    _dimension_pivot_item_ids: Set[int] = attr.ib(init=False)
-    _measure_name_pivot_item_ids: List[int] = attr.ib(init=False)
-    _measure_piid_and_name_mask_transp: Sequence[Tuple[int, str]] = attr.ib(init=False)
-    _anno_piid_list_by_measure_liid: Dict[int, List[int]] = attr.ib(init=False)
+    _dimension_pivot_item_ids: set[int] = attr.ib(init=False)
+    _measure_name_pivot_item_ids: list[int] = attr.ib(init=False)
+    _measure_piid_and_name_mask_transp: Sequence[tuple[int, str]] = attr.ib(init=False)
+    _anno_piid_list_by_measure_liid: dict[int, list[int]] = attr.ib(init=False)
     _should_add_fake_measure: bool = attr.ib(init=False)
     _measure_name_legend_item_id: Optional[int] = attr.ib(init=False)
 
@@ -194,7 +190,7 @@ class MeasureDataTransposer:
         common_dim_part = tuple(
             DataCellVector(cells=(cell,)) for cell in row if cell[2] in self._dimension_pivot_item_ids
         )
-        measure_value_dict: Dict[int, DataCell] = {
+        measure_value_dict: dict[int, DataCell] = {
             cell[2]: cell for cell in row if cell[2] not in self._dimension_pivot_item_ids  # pivot_item_id: cell
         }
 

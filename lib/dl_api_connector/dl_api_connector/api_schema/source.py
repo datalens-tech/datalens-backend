@@ -7,7 +7,6 @@ from typing import (
     Mapping,
     Optional,
     Sequence,
-    Type,
     Union,
 )
 
@@ -30,7 +29,7 @@ class DataSourceSchema(OneOfSchema):
 
     type_field_remove = False
     type_field = "source_type"
-    type_schemas: dict[str, Type[DataSourceBaseSchema]] = {}  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[DataSourceBaseSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
+    type_schemas: dict[str, type[DataSourceBaseSchema]] = {}  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[DataSourceBaseSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
 
     def get_obj_type(self, obj: dict[str, Any]) -> str:
         return obj[self.type_field].name
@@ -59,17 +58,17 @@ class DataSourceTemplateResponseSchema(OneOfSchema):
 
     type_field_remove = False
     type_field = "source_type"
-    type_schemas: dict[str, Type[DataSourceTemplateBaseSchema]] = {}  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[DataSourceTemplateBaseSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
+    type_schemas: dict[str, type[DataSourceTemplateBaseSchema]] = {}  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[DataSourceTemplateBaseSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
 
     def get_obj_type(self, obj: dict[str, Any]) -> str:
         return obj[self.type_field].name
 
 
-def register_source_api_schema(source_type: DataSourceType, schema_cls: Type[DataSourceBaseSchema]) -> None:
+def register_source_api_schema(source_type: DataSourceType, schema_cls: type[DataSourceBaseSchema]) -> None:
     DataSourceSchema.type_schemas[source_type.name] = schema_cls
 
 
 def register_source_template_api_schema(
-    source_type: DataSourceType, schema_cls: Type[DataSourceTemplateBaseSchema]
+    source_type: DataSourceType, schema_cls: type[DataSourceTemplateBaseSchema]
 ) -> None:
     DataSourceTemplateResponseSchema.type_schemas[source_type.name] = schema_cls

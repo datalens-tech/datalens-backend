@@ -5,8 +5,6 @@ from contextlib import asynccontextmanager
 from typing import (
     Any,
     AsyncGenerator,
-    Dict,
-    List,
 )
 import uuid
 
@@ -28,7 +26,7 @@ from dl_core_tests.db.base import DefaultCoreTestClass
 from dl_utils.streaming import AsyncChunked
 
 
-async def get_active_queries(pg_adapter: PostgreSQLExecAdapterAsync) -> List[Dict[str, Any]]:
+async def get_active_queries(pg_adapter: PostgreSQLExecAdapterAsync) -> list[dict[str, Any]]:
     columns = """
     datid datname pid usesysid usename application_name
     client_addr client_hostname client_port

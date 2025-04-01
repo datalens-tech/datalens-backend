@@ -8,7 +8,6 @@ from typing import (
     Any,
     AsyncIterator,
     Optional,
-    Type,
     TypeVar,
 )
 
@@ -99,7 +98,7 @@ class AsyncMySQLAdapter(
 
     @classmethod
     def create(
-        cls: Type[_DBA_ASYNC_MYSQL_TV],
+        cls: type[_DBA_ASYNC_MYSQL_TV],
         target_dto: MySQLConnTargetDTO,
         req_ctx_info: DBAdapterScopedRCI,
         default_chunk_size: int,

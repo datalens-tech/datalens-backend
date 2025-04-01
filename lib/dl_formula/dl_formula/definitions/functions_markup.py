@@ -4,7 +4,6 @@ from enum import Enum
 from typing import (
     ClassVar,
     Sequence,
-    Set,
 )
 
 from dl_formula.core.datatype import DataType
@@ -52,7 +51,7 @@ class StrictMarkupCompatibleArgTypes(ArgTypeForAll):
 
         return bool(self._required_types & set(arg_types))
 
-    def get_possible_arg_types_at_pos(self, pos: int, total: int) -> Set[DataType]:
+    def get_possible_arg_types_at_pos(self, pos: int, total: int) -> set[DataType]:
         return set(MARKUP_EFFECTIVELY)
 
 

@@ -9,7 +9,6 @@ from typing import (
     Any,
     Callable,
     Optional,
-    Type,
 )
 import uuid
 
@@ -112,7 +111,7 @@ class DashSQLView(BaseView):
 
     endpoint_code = "DashSQL"
     profiler_prefix = "dashsql_result"
-    dashsql_selector_cls: Type[DashSQLCachedSelector] = DashSQLCachedSelector
+    dashsql_selector_cls: type[DashSQLCachedSelector] = DashSQLCachedSelector
 
     @property
     def conn_id(self) -> Optional[str]:

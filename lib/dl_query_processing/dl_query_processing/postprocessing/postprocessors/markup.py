@@ -6,8 +6,6 @@ from typing import (
     ClassVar,
     Generic,
     Optional,
-    Tuple,
-    Type,
     TypeVar,
     Union,
 )
@@ -38,7 +36,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
     node_image: ClassVar[str] = "img"
     node_tooltip: ClassVar[str] = "tooltip"
 
-    _node_cls: ClassVar[Type[_NODE_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
+    _node_cls: ClassVar[type[_NODE_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
     _dbg: bool = False
 
@@ -52,7 +50,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
     def _make_node(self, funcname: str, *funcargs: NodeActual) -> _NODE_TV:
         raise NotImplementedError
 
-    def _unpack_node(self, node: _NODE_TV) -> Tuple[str, Tuple[NodeActual, ...]]:
+    def _unpack_node(self, node: _NODE_TV) -> tuple[str, tuple[NodeActual, ...]]:
         raise NotImplementedError
 
     class DumpError(ValueError):
@@ -171,7 +169,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
         except ValueError:
             return None
 
-    def _parse_i(self, data: str, pos: int = 0) -> Tuple[NodeActual, int]:
+    def _parse_i(self, data: str, pos: int = 0) -> tuple[NodeActual, int]:
         if self._dbg:
             self._dbg_print("_parse_i(%r <-%r-> %r)", data[:pos], pos, data[pos:])
 
@@ -372,20 +370,20 @@ _TNodeActual = Union[_TNode, str]
 
 
 class MarkupProcessing(MarkupProcessingBase[_TNode]):
-    _node_cls: ClassVar[Type[_TNode]] = tuple  # Node  # for isinstance checks
+    _node_cls: ClassVar[type[_TNode]] = tuple  # Node  # for isinstance checks
 
     def _make_node(self, funcname: str, *funcargs: _TNodeActual) -> _TNode:
         # return self._node_cls(funcname, *funcargs)
         return self._node_cls((funcname,) + funcargs)
 
-    def _unpack_node(self, node: _TNode) -> Tuple[str, Tuple[_TNodeActual, ...]]:
+    def _unpack_node(self, node: _TNode) -> tuple[str, tuple[_TNodeActual, ...]]:
         return node[0], node[1:]
 
 
 @dataclass
 class DCNode:
     funcname: str
-    funcargs: Tuple[NodeActual, ...]
+    funcargs: tuple[NodeActual, ...]
 
 
 _DCNode = DCNode
@@ -393,12 +391,12 @@ _DCNodeActual = Union[_DCNode, str]
 
 
 class MarkupProcessingDC(MarkupProcessingBase[_DCNode]):
-    _node_cls: ClassVar[Type[_DCNode]] = DCNode
+    _node_cls: ClassVar[type[_DCNode]] = DCNode
 
     def _make_node(self, funcname: str, *funcargs: _DCNodeActual) -> _DCNode:
         return self._node_cls(funcname=funcname, funcargs=funcargs)
 
-    def _unpack_node(self, node: _DCNode) -> Tuple[str, Tuple[_DCNodeActual, ...]]:
+    def _unpack_node(self, node: _DCNode) -> tuple[str, tuple[_DCNodeActual, ...]]:
         return node.funcname, node.funcargs
 
 

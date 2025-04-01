@@ -15,9 +15,7 @@ from typing import (
     Awaitable,
     Callable,
     Iterable,
-    List,
     Optional,
-    Type,
     TypeVar,
     cast,
 )
@@ -154,7 +152,7 @@ def to_sync_iterable(
     return wrapper()
 
 
-async def alist(aiterable: AsyncIterable[_ITERABLE_T]) -> List[_ITERABLE_T]:
+async def alist(aiterable: AsyncIterable[_ITERABLE_T]) -> list[_ITERABLE_T]:
     """Gather an async iterable into a single list"""
     result = []
     async for item in aiterable:
@@ -180,7 +178,7 @@ class BIAsyncTimeout:
 
     async def __aexit__(
         self,
-        exc_type: Optional[Type[BaseException]],
+        exc_type: Optional[type[BaseException]],
         exc_val: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> Optional[bool]:

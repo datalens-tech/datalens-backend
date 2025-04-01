@@ -5,11 +5,8 @@ import logging
 from typing import (
     Callable,
     Collection,
-    Dict,
     NamedTuple,
     Optional,
-    Set,
-    Tuple,
 )
 
 from dl_core.components.ids import (
@@ -41,13 +38,13 @@ class ColumnRegistry:
     def __init__(
         self,
         db_columns: Optional[Collection[SchemaColumn]] = None,
-        avatar_source_map: Optional[Dict[AvatarId, SourceId]] = None,
+        avatar_source_map: Optional[dict[AvatarId, SourceId]] = None,
     ):
         self._db_columns = list(db_columns) if db_columns is not None else []
         self._avatar_source_map = avatar_source_map.copy() if avatar_source_map is not None else {}
 
-        self._column_ids: Dict[Tuple[AvatarId, str], ColumnId] = {}
-        self._columns: Dict[ColumnId, AvatarColumn] = {}
+        self._column_ids: dict[tuple[AvatarId, str], ColumnId] = {}
+        self._columns: dict[ColumnId, AvatarColumn] = {}
 
         for avatar_id, source_id in self._avatar_source_map.items():
             self.register_avatar(avatar_id=avatar_id, source_id=source_id)
@@ -113,17 +110,17 @@ class ColumnRegistry:
                 del self._column_ids[(avatar_id, col.name)]
         del self._avatar_source_map[avatar_id]
 
-    def get_used_avatar_ids_for_formula_obj(self, formula_obj: formula_nodes.Formula) -> Set[str]:
+    def get_used_avatar_ids_for_formula_obj(self, formula_obj: formula_nodes.Formula) -> set[str]:
         column_ids = {field_node.name for field_node in used_fields(formula_obj)}
         return {self._columns.get(column_id).avatar_id for column_id in column_ids}  # type: ignore  # TODO: fix
 
-    def get_multipart_column_names(self, avatar_alias_mapper: Callable[[AvatarId], str]) -> Dict[str, Tuple[str, str]]:
+    def get_multipart_column_names(self, avatar_alias_mapper: Callable[[AvatarId], str]) -> dict[str, tuple[str, str]]:
         return {
             column_id: (avatar_alias_mapper(av_column.avatar_id), av_column.column.name)
             for column_id, av_column in self._columns.items()
         }
 
-    def get_column_formula_types(self) -> Dict[str, DataType]:
+    def get_column_formula_types(self) -> dict[str, DataType]:
         return {
             column_id: BI_TO_FORMULA_TYPES[av_column.column.user_type] for column_id, av_column in self._columns.items()
         }
@@ -141,12 +138,12 @@ class ColumnRegistry:
                 code=formula_exc.UnknownSourceColumnError.default_code,
             ) from e
 
-    def get_column_ids(self) -> Dict[Tuple[str, str], str]:
+    def get_column_ids(self) -> dict[tuple[str, str], str]:
         return {
             (av_column.avatar_id, av_column.column.name): column_id for column_id, av_column in self._columns.items()
         }
 
-    def get_column_avatar_ids(self) -> Dict[Tuple[str, str], str]:
+    def get_column_avatar_ids(self) -> dict[tuple[str, str], str]:
         return {
             column_id: av_column.avatar_id  # type: ignore  # TODO: fix
             for column_id, av_column in self._columns.items()

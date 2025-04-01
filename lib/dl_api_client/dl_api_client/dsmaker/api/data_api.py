@@ -4,8 +4,6 @@ from http import HTTPStatus
 from typing import (
     Any,
     ClassVar,
-    Dict,
-    List,
     Optional,
     Union,
 )
@@ -61,7 +59,7 @@ class HttpDataApiResponse(HttpApiResponse):
         return self._data
 
     @classmethod
-    def extract_response_errors(cls, response_json: Dict[str, Any]) -> List[str]:
+    def extract_response_errors(cls, response_json: dict[str, Any]) -> list[str]:
         errors = super().extract_response_errors(response_json)
         if "message" in response_json:
             errors.append(response_json["message"])
@@ -74,9 +72,9 @@ class DataApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
         self,
         *,
         dataset: Dataset,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         data = self.dump_dataset(dataset)
         updates = list(updates or ()) + self.generate_implicit_updates(dataset)  # type: ignore  # TODO: fix
         data["updates"] = self.dump_updates(updates)
@@ -93,14 +91,14 @@ class DataApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
         dataset: Optional[Dataset] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-        fields: Optional[List[ResultField]] = None,
-        group_by: Optional[List[ResultField]] = None,
-        order_by: Optional[List[Union[ResultField, OrderedField]]] = None,
-        where: Optional[List[WhereClause]] = None,
+        fields: Optional[list[ResultField]] = None,
+        group_by: Optional[list[ResultField]] = None,
+        order_by: Optional[list[Union[ResultField, OrderedField]]] = None,
+        where: Optional[list[WhereClause]] = None,
         disable_group_by: Optional[bool] = None,
         with_totals: Optional[bool] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
-    ) -> Dict[str, Any]:
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+    ) -> dict[str, Any]:
         if dataset is not None:
             data = self.dump_dataset(dataset)
             updates = list(updates or ()) + self.generate_implicit_updates(dataset)  # type: ignore  # TODO: fix
@@ -142,9 +140,9 @@ class DataApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
         *,
         dataset: Optional[Dataset] = None,
         field: ResultField,
-        filters: Optional[List[WhereClause]] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
-    ) -> Dict[str, Any]:
+        filters: Optional[list[WhereClause]] = None,
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+    ) -> dict[str, Any]:
         if dataset is not None:
             data = self.dump_dataset(dataset)
             updates = list(updates or ()) + self.generate_implicit_updates(dataset)  # type: ignore  # TODO: fix
@@ -168,10 +166,10 @@ class DataApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
         dataset: Optional[Dataset] = None,
         limit: Optional[int] = None,
         field: ResultField,
-        filters: Optional[List[WhereClause]] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        filters: Optional[list[WhereClause]] = None,
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         ignore_nonexistent_filters: Optional[bool] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         if dataset is not None:
             data = self.dump_dataset(dataset)
             updates = list(updates or ()) + self.generate_implicit_updates(dataset)  # type: ignore  # TODO: fix
@@ -268,7 +266,7 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
         self,
         *,
         dataset: Dataset,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         fail_ok: bool = False,
     ) -> HttpDataApiResponse:
@@ -297,14 +295,14 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         offset: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "offset" (default has type "None", argument has type "int")  [assignment]
-        fields: Optional[List[ResultField]] = None,
-        group_by: Optional[List[ResultField]] = None,
-        order_by: Optional[List[Union[ResultField, OrderedField]]] = None,
-        where: Optional[List[WhereClause]] = None,  # TODO: Rename -> filters
-        filters: Optional[List[WhereClause]] = None,
+        fields: Optional[list[ResultField]] = None,
+        group_by: Optional[list[ResultField]] = None,
+        order_by: Optional[list[Union[ResultField, OrderedField]]] = None,
+        where: Optional[list[WhereClause]] = None,  # TODO: Rename -> filters
+        filters: Optional[list[WhereClause]] = None,
         disable_group_by: Optional[bool] = None,
         with_totals: Optional[bool] = None,
         fail_ok: bool = False,
@@ -339,9 +337,9 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
         *,
         dataset: Optional[Dataset],
         field: ResultField,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
-        where: Optional[List[WhereClause]] = None,  # TODO: Rename -> filters
-        filters: Optional[List[WhereClause]] = None,
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        where: Optional[list[WhereClause]] = None,  # TODO: Rename -> filters
+        filters: Optional[list[WhereClause]] = None,
         fail_ok: bool = False,
     ) -> HttpDataApiResponse:
         filters = filters or where
@@ -372,11 +370,11 @@ class SyncHttpDataApiV1(SyncHttpDataApiBase):
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         field: ResultField,
-        where: Optional[List[WhereClause]] = None,  # TODO: Rename -> filters
-        filters: Optional[List[WhereClause]] = None,
+        where: Optional[list[WhereClause]] = None,  # TODO: Rename -> filters
+        filters: Optional[list[WhereClause]] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
         fail_ok: bool = False,
     ) -> HttpDataApiResponse:
@@ -419,16 +417,16 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
         dataset: Optional[Dataset] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-        fields: Optional[List[Union[ResultField, RequestLegendItem]]] = None,
-        order_by: Optional[List[Union[ResultField, OrderedField]]] = None,
-        filters: Optional[List[WhereClause]] = None,
-        parameters: Optional[List[Union[ResultField, ParameterFieldValue]]] = None,
-        blocks: Optional[List[BlockSpec]] = None,
+        fields: Optional[list[Union[ResultField, RequestLegendItem]]] = None,
+        order_by: Optional[list[Union[ResultField, OrderedField]]] = None,
+        filters: Optional[list[WhereClause]] = None,
+        parameters: Optional[list[Union[ResultField, ParameterFieldValue]]] = None,
+        blocks: Optional[list[BlockSpec]] = None,
         autofill_legend: bool = False,
         ignore_nonexistent_filters: Optional[bool] = None,
         row_count_hard_limit: Optional[int] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
-    ) -> Dict[str, Any]:
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+    ) -> dict[str, Any]:
         if dataset is not None:
             data = self.dump_dataset(dataset)
             updates = list(updates or ()) + self.generate_implicit_updates(dataset)  # type: ignore  # TODO: fix
@@ -443,7 +441,7 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
 
         if fields is not None:
             fields_item_schema = QueryFieldsItemSchema()
-            legend_data: List[dict] = []
+            legend_data: list[dict] = []
             for field in fields:
                 if isinstance(field, ResultField):
                     field = field.as_req_legend_item(role=FieldRole.row)
@@ -452,7 +450,7 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
             data["fields"] = legend_data
 
         if order_by is not None:
-            order_by_data: List[dict] = []
+            order_by_data: list[dict] = []
             for ob_field in order_by:
                 if isinstance(ob_field, ResultField):
                     ob_field = ob_field.asc
@@ -467,14 +465,14 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
             data["order_by"] = order_by_data
 
         if filters is not None:
-            filter_data: List[dict] = []
+            filter_data: list[dict] = []
             filter_schema = FilterClauseSchema()
             for condition in filters:
                 filter_data.append(filter_schema.dump(condition))
             data["filters"] = filter_data
 
         if parameters is not None:
-            parameters_data: List[dict] = []
+            parameters_data: list[dict] = []
             for param_field in parameters:
                 if isinstance(param_field, ResultField):
                     param_field = param_field.parameter_value()
@@ -492,7 +490,7 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
             data["parameter_values"] = parameters_data
 
         if blocks is not None:
-            block_data: List[dict] = []
+            block_data: list[dict] = []
             block_schema = QueryBlockSchema()
             for block in blocks:
                 block_data.append(block_schema.dump(block))
@@ -515,9 +513,9 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
         self,
         *,
         dataset: Dataset,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         data = self.dump_dataset(dataset)
         updates = list(updates or ()) + self.generate_implicit_updates(dataset)  # type: ignore  # 2024-01-24 # TODO: Unsupported operand types for + ("list[UpdateAction | dict[Any, Any]]" and "list[UpdateAction]")  [operator]
         data["updates"] = self.dump_updates(updates)
@@ -533,18 +531,18 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
         dataset: Optional[Dataset] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-        fields: Optional[List[Union[ResultField, RequestLegendItem]]] = None,
-        order_by: Optional[List[Union[ResultField, OrderedField]]] = None,
-        filters: Optional[List[WhereClause]] = None,
-        parameters: Optional[List[Union[ResultField, ParameterFieldValue]]] = None,
-        blocks: Optional[List[BlockSpec]] = None,
+        fields: Optional[list[Union[ResultField, RequestLegendItem]]] = None,
+        order_by: Optional[list[Union[ResultField, OrderedField]]] = None,
+        filters: Optional[list[WhereClause]] = None,
+        parameters: Optional[list[Union[ResultField, ParameterFieldValue]]] = None,
+        blocks: Optional[list[BlockSpec]] = None,
         disable_group_by: Optional[bool] = None,
         with_totals: Optional[bool] = None,
         result_with_totals: Optional[bool] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
         row_count_hard_limit: Optional[int] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
-    ) -> Dict[str, Any]:
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+    ) -> dict[str, Any]:
         data = self.make_req_data_common(
             dataset=dataset,
             limit=limit,
@@ -573,12 +571,12 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
         *,
         dataset: Optional[Dataset] = None,
         field: ResultField,
-        filters: Optional[List[WhereClause]] = None,
-        parameters: Optional[List[Union[ResultField, ParameterFieldValue]]] = None,
-        blocks: Optional[List[BlockSpec]] = None,
+        filters: Optional[list[WhereClause]] = None,
+        parameters: Optional[list[Union[ResultField, ParameterFieldValue]]] = None,
+        blocks: Optional[list[BlockSpec]] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
-    ) -> Dict[str, Any]:
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+    ) -> dict[str, Any]:
         fields = [
             field.as_req_legend_item(role=FieldRole.range, range_type=RangeType.min),
             field.as_req_legend_item(role=FieldRole.range, range_type=RangeType.max),
@@ -602,13 +600,13 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
         field: Union[ResultField, RequestLegendItem],
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-        order_by: Optional[List[Union[ResultField, OrderedField]]] = None,
-        filters: Optional[List[WhereClause]] = None,
-        parameters: Optional[List[Union[ResultField, ParameterFieldValue]]] = None,
-        blocks: Optional[List[BlockSpec]] = None,
+        order_by: Optional[list[Union[ResultField, OrderedField]]] = None,
+        filters: Optional[list[WhereClause]] = None,
+        parameters: Optional[list[Union[ResultField, ParameterFieldValue]]] = None,
+        blocks: Optional[list[BlockSpec]] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
-    ) -> Dict[str, Any]:
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+    ) -> dict[str, Any]:
         field_li: RequestLegendItem
         if isinstance(field, RequestLegendItem):
             assert field.role_spec.role == FieldRole.distinct
@@ -637,18 +635,18 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
         dataset: Optional[Dataset] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-        fields: Optional[List[Union[ResultField, RequestLegendItem]]] = None,
-        order_by: Optional[List[OrderedField]] = None,
-        filters: Optional[List[WhereClause]] = None,
-        blocks: Optional[List[BlockSpec]] = None,
+        fields: Optional[list[Union[ResultField, RequestLegendItem]]] = None,
+        order_by: Optional[list[OrderedField]] = None,
+        filters: Optional[list[WhereClause]] = None,
+        blocks: Optional[list[BlockSpec]] = None,
         autofill_legend: bool = False,
         ignore_nonexistent_filters: Optional[bool] = None,
         pivot_pagination: Optional[PivotPagination] = None,
         pivot_structure: Optional[list[RequestPivotItem]] = None,
         pivot_totals: Optional[PivotTotals] = None,
         with_totals: Optional[bool] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
-    ) -> Dict[str, Any]:
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+    ) -> dict[str, Any]:
         data = self.make_req_data_common(
             dataset=dataset,
             limit=limit,
@@ -735,7 +733,7 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
         self,
         *,
         dataset: Dataset,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         fail_ok: bool = False,
     ) -> HttpDataApiResponse:
@@ -760,14 +758,14 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-        fields: Optional[List[Union[ResultField, RequestLegendItem]]] = None,
-        order_by: Optional[List[Union[ResultField, OrderedField]]] = None,
-        filters: Optional[List[WhereClause]] = None,
-        parameters: Optional[List[Union[ResultField, ParameterFieldValue]]] = None,
-        blocks: Optional[List[BlockSpec]] = None,
+        fields: Optional[list[Union[ResultField, RequestLegendItem]]] = None,
+        order_by: Optional[list[Union[ResultField, OrderedField]]] = None,
+        filters: Optional[list[WhereClause]] = None,
+        parameters: Optional[list[Union[ResultField, ParameterFieldValue]]] = None,
+        blocks: Optional[list[BlockSpec]] = None,
         disable_group_by: Optional[bool] = None,
         with_totals: Optional[bool] = None,
         result_with_totals: Optional[bool] = None,
@@ -809,8 +807,8 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
         *,
         dataset: Optional[Dataset],
         field: ResultField,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
-        filters: Optional[List[WhereClause]] = None,
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        filters: Optional[list[WhereClause]] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
         fail_ok: bool = False,
     ) -> HttpDataApiResponse:
@@ -838,10 +836,10 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         field: ResultField,
-        filters: Optional[List[WhereClause]] = None,
+        filters: Optional[list[WhereClause]] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
         fail_ok: bool = False,
     ) -> HttpDataApiResponse:
@@ -870,13 +868,13 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         offset: Optional[int] = None,
-        fields: Optional[List[Union[ResultField, RequestLegendItem]]] = None,
-        order_by: Optional[List[OrderedField]] = None,
-        filters: Optional[List[WhereClause]] = None,
-        blocks: Optional[List[BlockSpec]] = None,
+        fields: Optional[list[Union[ResultField, RequestLegendItem]]] = None,
+        order_by: Optional[list[OrderedField]] = None,
+        filters: Optional[list[WhereClause]] = None,
+        blocks: Optional[list[BlockSpec]] = None,
         autofill_legend: bool = False,
         pivot_structure: Optional[list[RequestPivotItem]] = None,
         pivot_pagination: Optional[PivotPagination] = None,
@@ -976,7 +974,7 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
         self,
         *,
         dataset: Dataset,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         fail_ok: bool = False,
     ) -> HttpDataApiResponse:
@@ -1000,14 +998,14 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-        fields: Optional[List[Union[ResultField, RequestLegendItem]]] = None,
-        order_by: Optional[List[Union[ResultField, OrderedField]]] = None,
-        filters: Optional[List[WhereClause]] = None,
-        parameters: Optional[List[Union[ResultField, ParameterFieldValue]]] = None,
-        blocks: Optional[List[BlockSpec]] = None,
+        fields: Optional[list[Union[ResultField, RequestLegendItem]]] = None,
+        order_by: Optional[list[Union[ResultField, OrderedField]]] = None,
+        filters: Optional[list[WhereClause]] = None,
+        parameters: Optional[list[Union[ResultField, ParameterFieldValue]]] = None,
+        blocks: Optional[list[BlockSpec]] = None,
         disable_group_by: Optional[bool] = None,
         with_totals: Optional[bool] = None,
         result_with_totals: Optional[bool] = None,
@@ -1048,8 +1046,8 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
         *,
         dataset: Optional[Dataset],
         field: ResultField,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
-        filters: Optional[List[WhereClause]] = None,
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        filters: Optional[list[WhereClause]] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
         fail_ok: bool = False,
     ) -> HttpDataApiResponse:
@@ -1076,10 +1074,10 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         field: ResultField,
-        filters: Optional[List[WhereClause]] = None,
+        filters: Optional[list[WhereClause]] = None,
         ignore_nonexistent_filters: Optional[bool] = None,
         fail_ok: bool = False,
     ) -> HttpDataApiResponse:
@@ -1107,13 +1105,13 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
         self,
         *,
         dataset: Optional[Dataset] = None,
-        updates: List[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         limit: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "limit" (default has type "None", argument has type "int")  [assignment]
         offset: Optional[int] = None,
-        fields: Optional[List[Union[ResultField, RequestLegendItem]]] = None,
-        order_by: Optional[List[OrderedField]] = None,
-        filters: Optional[List[WhereClause]] = None,
-        blocks: Optional[List[BlockSpec]] = None,
+        fields: Optional[list[Union[ResultField, RequestLegendItem]]] = None,
+        order_by: Optional[list[OrderedField]] = None,
+        filters: Optional[list[WhereClause]] = None,
+        blocks: Optional[list[BlockSpec]] = None,
         autofill_legend: bool = False,
         pivot_structure: Optional[list[RequestPivotItem]] = None,
         pivot_pagination: Optional[PivotPagination] = None,

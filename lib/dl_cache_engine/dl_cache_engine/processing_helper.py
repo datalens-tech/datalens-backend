@@ -9,7 +9,6 @@ from typing import (
     Callable,
     ClassVar,
     Optional,
-    Tuple,
 )
 
 import attr
@@ -92,7 +91,7 @@ class CacheProcessingHelper:
         cache_options: BIQueryCacheOptions,
         allow_cache_read: bool = True,
         use_locked_cache: bool = False,
-    ) -> Tuple[CacheSituation, Optional[TJSONExtChunkStream]]:
+    ) -> tuple[CacheSituation, Optional[TJSONExtChunkStream]]:
         cem = await self.get_cache_entry_manager(
             cache_options=cache_options,
             allow_cache_read=allow_cache_read,

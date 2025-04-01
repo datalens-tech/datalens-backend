@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     AbstractSet,
     Collection,
-    List,
     Optional,
 )
 
@@ -22,7 +21,7 @@ class FieldShallowInterDependencyManager(FieldShallowInterDependencyManagerBase)
     _inter_dep_info: FieldInterDependencyInfo = attr.ib(kw_only=FieldInterDependencyInfo)  # type: ignore  # TODO: fix
 
     @property
-    def _direct_dependencies(self) -> List[FieldInterDependencyItem]:
+    def _direct_dependencies(self) -> list[FieldInterDependencyItem]:
         return self._inter_dep_info.deps
 
     def _get_item_for_field(self, dep_field_id: FieldId) -> Optional[FieldInterDependencyItem]:

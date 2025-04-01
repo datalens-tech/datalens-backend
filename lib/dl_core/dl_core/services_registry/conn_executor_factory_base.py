@@ -9,11 +9,8 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Dict,
-    List,
     Optional,
     Sequence,
-    Type,
     TypeVar,
 )
 
@@ -57,7 +54,7 @@ class ConnExecutorFactory(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_async_conn_executor_cls(self, conn: ConnectionBase) -> Type[AsyncConnExecutorBase]:
+    def get_async_conn_executor_cls(self, conn: ConnectionBase) -> type[AsyncConnExecutorBase]:
         pass
 
     @abc.abstractmethod
@@ -109,7 +106,7 @@ def ensure_env(async_env: bool = True) -> Callable[[Callable[..., _RESULT_TV]], 
 class ConnExecutorRecipe:
     """Class that represent all data to create"""
 
-    ce_cls: Type
+    ce_cls: type
     conn_dto: ConnDTO
     connect_options: ConnectOptions
     exec_mode: ExecutionMode
@@ -133,7 +130,7 @@ class BaseClosableExecutorFactory(ConnExecutorFactory, metaclass=abc.ABCMeta):
         async_ce: AsyncConnExecutorBase
         sync_wrapper: Optional[SyncWrapperForAsyncConnExecutor]
 
-    _map_recipe_created_ce_pair: Dict[ConnExecutorRecipe, List[_CECreationResult]] = attr.ib(init=False, factory=dict)
+    _map_recipe_created_ce_pair: dict[ConnExecutorRecipe, list[_CECreationResult]] = attr.ib(init=False, factory=dict)
 
     _async_env: bool = attr.ib()
     _services_registry_ref: FutureRef[ServicesRegistry] = attr.ib()

@@ -8,7 +8,6 @@ from typing import (
     NamedTuple,
     Optional,
     Sequence,
-    Tuple,
 )
 
 from dl_formula.core.position import Position
@@ -25,7 +24,7 @@ class FormulaErrorCtx(NamedTuple):
     level: MessageLevel
     position: Position = Position()
     token: Optional[str] = None
-    code: Tuple[str, ...] = ()
+    code: tuple[str, ...] = ()
 
     def is_error(self) -> bool:
         return self.level is MessageLevel.ERROR
@@ -37,7 +36,7 @@ class FormulaErrorCtx(NamedTuple):
         return self.message
 
     @property
-    def coords(self) -> Tuple[Optional[int], Optional[int]]:
+    def coords(self) -> tuple[Optional[int], Optional[int]]:
         """Convert position to 2-dimensional coords"""
         return self.position.start_row, self.position.start_col
 

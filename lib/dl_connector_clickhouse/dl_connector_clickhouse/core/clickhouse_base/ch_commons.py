@@ -7,7 +7,6 @@ from typing import (
     ClassVar,
     Optional,
     Pattern,
-    Type,
 )
 
 import attr
@@ -74,7 +73,7 @@ class ClickHouseBaseUtils:
 
     # ClickHouse error codes list: https://github.com/ClickHouse/ClickHouse/blob/master/src/Common/ErrorCodes.cpp
     # TODO: verify codes meaning and pick some other useful codes from CH list.
-    map_err_code_exc_cls: ClassVar[dict[int, Type[exc.DatabaseQueryError]]] = {
+    map_err_code_exc_cls: ClassVar[dict[int, type[exc.DatabaseQueryError]]] = {
         10: exc.ColumnDoesNotExist,
         36: InvalidSplitSeparator,
         41: exc.CannotParseDateTime,
@@ -118,13 +117,13 @@ class ClickHouseBaseUtils:
     @classmethod
     def get_exc_class_by_parsed_message(
         cls, msg: ParsedErrorMsg
-    ) -> Optional[tuple[Type[exc.DatabaseQueryError], dict[str, str]]]:
+    ) -> Optional[tuple[type[exc.DatabaseQueryError], dict[str, str]]]:
         if msg.code in cls.map_err_code_exc_cls:
             return cls.map_err_code_exc_cls[msg.code], {}
         return None
 
     @classmethod
-    def get_exc_class(cls, err_msg: str) -> Optional[tuple[Type[exc.DatabaseQueryError], dict[str, str]]]:
+    def get_exc_class(cls, err_msg: str) -> Optional[tuple[type[exc.DatabaseQueryError], dict[str, str]]]:
         parse_msg = cls.parse_message(err_msg)
         if parse_msg:
             return cls.get_exc_class_by_parsed_message(parse_msg)
@@ -187,9 +186,9 @@ def create_column_sql(
 
 
 def ensure_db_message(
-    exc_cls: Type[exc.DatabaseQueryError],
+    exc_cls: type[exc.DatabaseQueryError],
     kw: DBExcKWArgs,
-) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
+) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
     db_message = kw.get("db_message")
     details = kw.get("details")
     if db_message and details is not None and not details.get("db_message"):

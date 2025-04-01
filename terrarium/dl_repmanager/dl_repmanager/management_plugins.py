@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Generator,
-    Type,
 )
 
 import attr
@@ -253,12 +252,12 @@ class DependencyReregistrationRepositoryManagementPlugin(RepositoryManagementPlu
                         )
 
 
-_PLUGIN_CLASSES: dict[str, Type[RepositoryManagementPlugin]] = {
+_PLUGIN_CLASSES: dict[str, type[RepositoryManagementPlugin]] = {
     "common_tooling": CommonToolingRepositoryManagementPlugin,
     "toml_registration": MainTomlRepositoryManagementPlugin,
     "dependency_registration": DependencyReregistrationRepositoryManagementPlugin,
 }
 
 
-def get_plugin_cls(plugin_type: str) -> Type[RepositoryManagementPlugin]:
+def get_plugin_cls(plugin_type: str) -> type[RepositoryManagementPlugin]:
     return _PLUGIN_CLASSES[plugin_type]

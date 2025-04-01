@@ -4,7 +4,6 @@ import logging
 from typing import (
     Awaitable,
     Callable,
-    Dict,
     Sequence,
 )
 
@@ -28,7 +27,7 @@ pytestmark = [pytest.mark.asyncio]
 class _AppConfig:
     request_id: RequestId = attr.ib()
     extra_mw: Sequence = attr.ib(default=())
-    extra_handlers: Dict[str, Handler] = attr.ib(factory=dict)
+    extra_handlers: dict[str, Handler] = attr.ib(factory=dict)
 
 
 _AppFactory = Callable[[_AppConfig], Awaitable[TestClient]]

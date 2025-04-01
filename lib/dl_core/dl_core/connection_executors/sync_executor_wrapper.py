@@ -8,9 +8,7 @@ from typing import (
     Awaitable,
     Callable,
     Generator,
-    List,
     Optional,
-    Type,
     TypeVar,
     overload,
 )
@@ -194,14 +192,14 @@ class SyncWrapperForAsyncConnExecutor(SyncConnExecutorBase):
         return self._await_sync(self._async_conn_executor.get_db_version(db_ident))
 
     @init_required
-    def get_schema_names(self, db_ident: DBIdent) -> List[str]:
+    def get_schema_names(self, db_ident: DBIdent) -> list[str]:
         sa_adapter = self._extract_sync_sa_adapter(raise_on_not_exists=False)
         if sa_adapter is not None:
             return sa_adapter.get_schema_names(db_ident)
         return self._await_sync(self._async_conn_executor.get_schema_names(db_ident))
 
     @init_required
-    def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+    def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         sa_adapter = self._extract_sync_sa_adapter(raise_on_not_exists=False)
         if sa_adapter is not None:
             return sa_adapter.get_tables(schema_ident)
@@ -231,5 +229,5 @@ class SyncWrapperForAsyncConnExecutor(SyncConnExecutorBase):
     def __enter__(self) -> SyncWrapperForAsyncConnExecutor:
         return self
 
-    def __exit__(self, exc_type: Optional[Type[Exception]], exc_val: Optional[Exception], exc_tb: Any) -> None:
+    def __exit__(self, exc_type: Optional[type[Exception]], exc_val: Optional[Exception], exc_tb: Any) -> None:
         self.close()

@@ -4,7 +4,6 @@ from typing import (
     Any,
     Collection,
     Optional,
-    Type,
 )
 
 from dl_formula.core.dialect import (
@@ -53,7 +52,7 @@ class FuncReference:  # TODO: Merge with FunctionReferenceRegistry
         return self.filter()
 
 
-def _is_deprecated(defn: Type[MultiVariantTranslation]) -> bool:
+def _is_deprecated(defn: type[MultiVariantTranslation]) -> bool:
     if not defn.return_flags:
         return False
     for dialect in get_all_basic_dialects():

@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    AbstractSet,
-    List,
-    Set,
-)
+from typing import AbstractSet
 
 import attr
 
@@ -25,7 +21,7 @@ from dl_core.multisource import (
 
 @attr.s
 class RelationAvatarDependencyManager(RelationAvatarDependencyManagerBase):
-    _avatar_relations: List[AvatarRelation] = attr.ib(kw_only=True)  # FIXME: Replace with RelationManager or smth?
+    _avatar_relations: list[AvatarRelation] = attr.ib(kw_only=True)  # FIXME: Replace with RelationManager or smth?
     _field_avatar_mgr: FieldAvatarDependencyManagerBase = attr.ib(kw_only=True)
 
     def _get_relation(self, relation_id: RelationId) -> AvatarRelation:
@@ -60,7 +56,7 @@ class RelationAvatarDependencyManager(RelationAvatarDependencyManagerBase):
 
     def get_relation_avatar_references(self, relation_id: RelationId) -> AbstractSet[AvatarId]:
         relation = self._get_relation(relation_id)
-        avatar_refs: Set[AvatarId] = set()
+        avatar_refs: set[AvatarId] = set()
         for condition in relation.conditions:
             assert isinstance(condition, BinaryCondition)
             avatar_refs |= self._get_condition_avatar_ids(relation=relation, condition=condition)

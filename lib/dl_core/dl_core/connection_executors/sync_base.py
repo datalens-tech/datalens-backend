@@ -5,7 +5,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Iterable,
-    List,
     Optional,
     Sequence,
 )
@@ -43,7 +42,7 @@ class SyncExecutionResult:
         """
         :return: All fetched data
         """
-        result: List[Sequence] = []
+        result: list[Sequence] = []
         for chunk in self.result:
             result.extend(chunk)
 
@@ -76,11 +75,11 @@ class SyncConnExecutorBase(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_schema_names(self, db_ident: DBIdent) -> List[str]:
+    def get_schema_names(self, db_ident: DBIdent) -> list[str]:
         pass
 
     @abc.abstractmethod
-    def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+    def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         pass
 
     @abc.abstractmethod

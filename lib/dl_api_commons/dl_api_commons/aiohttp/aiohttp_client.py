@@ -15,7 +15,6 @@ from typing import (
     Awaitable,
     Callable,
     Optional,
-    Type,
 )
 
 import aiohttp
@@ -51,7 +50,7 @@ class PredefinedIntervalsRetrier(BaseRetrier):
     retry_intervals: tuple[float, ...] = attr.ib(default=(0.5, 1.0, 2.0))
     retry_codes: set[int] = attr.ib(default={408, 429, 500, 502, 503, 504})
     retry_methods: set[str] = attr.ib(default={"GET"})
-    retry_exception_classes: tuple[Type[Exception]] = attr.ib(default=(aiohttp.ClientError,))
+    retry_exception_classes: tuple[type[Exception]] = attr.ib(default=(aiohttp.ClientError,))
 
     @retry_methods.validator
     def check_all_chars_upper(self, attribute: str, value: set[str]) -> None:
@@ -127,7 +126,7 @@ class BIAioHTTPClient:
         return self
 
     async def __aexit__(
-        self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+        self, exc_type: Optional[type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
     ) -> None:
         await self.close()
 

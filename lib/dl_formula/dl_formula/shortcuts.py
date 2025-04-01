@@ -5,11 +5,8 @@ import datetime as datetime_mod
 from functools import wraps
 from typing import (
     Any,
-    FrozenSet,
-    List,
     Optional,
     Sequence,
-    Tuple,
     Union,
 )
 import uuid as uuid_mod
@@ -25,7 +22,7 @@ from dl_formula.translation import ext_nodes
 from dl_formula.translation.context import TranslationCtx
 
 
-def _require_type(expected_type: Union[type, Tuple[Union[type, nodes.Array], ...], nodes.Array]):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+def _require_type(expected_type: Union[type, tuple[Union[type, nodes.Array], ...], nodes.Array]):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
     def decorator(func):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         @wraps(func)
         def wrapper(self, value):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
@@ -164,7 +161,7 @@ class NodeShortcut:
 
     def _normalize_raw_bfb(
         self,
-        before_filter_by: Optional[List[Union[nodes.Field, builtins.str]]] = None,
+        before_filter_by: Optional[list[Union[nodes.Field, builtins.str]]] = None,
     ) -> nodes.BeforeFilterBy:
         return nodes.BeforeFilterBy.make(
             field_names=frozenset([f.name if isinstance(f, nodes.Field) else f for f in (before_filter_by or ())]),
@@ -187,10 +184,10 @@ class NodeShortcut:
                 *pos_args: nodes.FormulaItem,
                 grouping: Optional[nodes.WindowGrouping] = None,
                 total: Optional[bool] = None,
-                within: Optional[List[nodes.FormulaItem]] = None,
-                among: Optional[List[nodes.FormulaItem]] = None,
-                order_by: Optional[List[nodes.FormulaItem]] = None,
-                before_filter_by: Optional[List[Union[nodes.Field, str]]] = None,
+                within: Optional[list[nodes.FormulaItem]] = None,
+                among: Optional[list[nodes.FormulaItem]] = None,
+                order_by: Optional[list[nodes.FormulaItem]] = None,
+                before_filter_by: Optional[list[Union[nodes.Field, str]]] = None,
                 ignore_dimensions: Optional[nodes.IgnoreDimensions] = None,
                 lod: Optional[nodes.LodSpecifier] = None,
                 args: Sequence[nodes.FormulaItem] = (),
@@ -321,7 +318,7 @@ class NodeShortcut:
 
     def level_tag(
         self,
-        names: FrozenSet[builtins.str],
+        names: frozenset[builtins.str],
         nesting: builtins.int,
         qfork_nesting: builtins.int = 0,
     ) -> LevelTag:
@@ -331,7 +328,7 @@ class NodeShortcut:
         self,
         joining: fork_nodes.QueryForkJoiningBase,
         result_expr: nodes.FormulaItem,
-        before_filter_by: Optional[List[Union[nodes.Field, builtins.str]]] = None,
+        before_filter_by: Optional[list[Union[nodes.Field, builtins.str]]] = None,
         lod: Optional[nodes.FixedLodSpecifier] = None,
         join_type: fork_nodes.JoinType = fork_nodes.JoinType.left,
         bfb_filter_mutations: Optional[fork_nodes.BfbFilterMutationCollectionSpec] = None,

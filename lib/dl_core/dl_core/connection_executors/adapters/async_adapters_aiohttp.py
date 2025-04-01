@@ -9,7 +9,6 @@ from typing import (
     Generator,
     Optional,
     Sequence,
-    Type,
     TypeVar,
 )
 
@@ -69,7 +68,7 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
 
     @classmethod
     def create(
-        cls: Type[_DBA_TV],
+        cls: type[_DBA_TV],
         target_dto: BaseAiohttpConnTargetDTO,
         req_ctx_info: DBAdapterScopedRCI,
         default_chunk_size: int,
@@ -102,7 +101,7 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
     async def close(self) -> None:
         await self._session.close()
 
-    execute_err_map: Sequence[tuple[Type[Exception], Type[exc.DatabaseQueryError]]] = (
+    execute_err_map: Sequence[tuple[type[Exception], type[exc.DatabaseQueryError]]] = (
         (aiohttp.client_exceptions.ClientConnectorError, exc.SourceConnectError),
         (exc.AIOHttpConnTimeoutError, exc.SourceConnectError),
         (aiohttp.client_exceptions.ServerTimeoutError, exc.SourceTimeout),

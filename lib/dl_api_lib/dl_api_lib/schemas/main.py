@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 from typing import (
     Any,
-    Dict,
     Optional,
 )
 
@@ -31,7 +30,7 @@ def get_api_model(
     ma_schema: Optional[Schema],
     ns: Namespace,
     name: Optional[str] = None,
-    schema_fields: Optional[Dict[str, ma_fields.Field]] = None,
+    schema_fields: Optional[dict[str, ma_fields.Field]] = None,
 ) -> RawModel:
     """Generate a ``flask_restx`` schema that will be used for generating Swagger documentation."""
 

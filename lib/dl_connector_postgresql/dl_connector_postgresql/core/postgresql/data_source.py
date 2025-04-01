@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    ClassVar,
-    FrozenSet,
-)
+from typing import ClassVar
 
 from dl_constants.enums import (
     DataSourceType,
@@ -23,7 +20,7 @@ from dl_connector_postgresql.core.postgresql.constants import (
 
 
 class PostgreSQLDataSourceMixin(BaseSQLDataSource):
-    supported_join_types: ClassVar[FrozenSet[JoinType]] = frozenset(
+    supported_join_types: ClassVar[frozenset[JoinType]] = frozenset(
         {
             JoinType.inner,
             JoinType.left,

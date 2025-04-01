@@ -3,10 +3,7 @@ from __future__ import annotations
 import datetime
 from typing import (
     Iterable,
-    List,
     Optional,
-    Tuple,
-    Type,
 )
 
 import antlr4
@@ -63,7 +60,7 @@ class CustomDataLensVisitor(DataLensVisitor):
         ctx: antlr4.ParserRuleContext,
         exclude: Iterable[str] = (),
         lower_str: bool = False,
-    ) -> Tuple[List[str], List[nodes.FormulaItem]]:
+    ) -> tuple[list[str], list[nodes.FormulaItem]]:
         str_children = []
         node_children = []
         for child in ctx.children:
@@ -167,7 +164,7 @@ class CustomDataLensVisitor(DataLensVisitor):
         str_nodes, node_children = self._separate_children(ctx)
         kind = str_nodes[0].lower()
 
-        lod_cls: Type[nodes.LodSpecifier] = {
+        lod_cls: type[nodes.LodSpecifier] = {
             "fixed": nodes.FixedLodSpecifier,
             "include": nodes.IncludeLodSpecifier,
             "exclude": nodes.ExcludeLodSpecifier,
@@ -191,7 +188,7 @@ class CustomDataLensVisitor(DataLensVisitor):
 
     def visitBeforeFilterBy(self, ctx: DataLensParser.BeforeFilterByContext):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         _, node_children = self._separate_children(ctx)
-        field_names: List[str] = []
+        field_names: list[str] = []
         for field in node_children:
             assert isinstance(field, nodes.Field)
             field_names.append(field.name)
@@ -386,7 +383,7 @@ class CustomDataLensVisitor(DataLensVisitor):
 
         def _flatten_and_visit_cmp_ctx(
             _ctx: antlr4.ParserRuleContext,
-        ) -> List[antlr4.ParserRuleContext]:
+        ) -> list[antlr4.ParserRuleContext]:
             if is_cmp(_ctx):
                 return [
                     *_flatten_and_visit_cmp_ctx(_ctx.children[0]),

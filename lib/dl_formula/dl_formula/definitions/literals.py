@@ -5,7 +5,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Optional,
-    Type,
 )
 
 import sqlalchemy as sa
@@ -41,7 +40,7 @@ def get_literalizer(dialect: DialectCombo) -> Literalizer:
     return Literalizer()  # FIXME: remove fallback after all dialects become connectors
 
 
-def register_literalizer(dialect: DialectCombo, literalizer_cls: Type[Literalizer]) -> None:
+def register_literalizer(dialect: DialectCombo, literalizer_cls: type[Literalizer]) -> None:
     if dialect in _LITERALIZER_REGISTRY:
         assert isinstance(_LITERALIZER_REGISTRY[dialect], literalizer_cls)
         return

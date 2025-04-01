@@ -5,7 +5,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
     Optional,
 )
 
@@ -50,7 +49,7 @@ class DefaultCacheEngineFactory(CacheEngineFactory):
         redis_client_slave = self.service_registry.get_caches_redis_client(allow_slave=True)
 
         # Avoid unexpectedly overriding the default of the `EntityCacheEngineAsync` itself.
-        kwargs: Dict[str, Any] = {}
+        kwargs: dict[str, Any] = {}
         c_s_bg = self.cache_save_background
         if c_s_bg is not None:
             kwargs.update(CACHE_SAVE_BACKGROUND=c_s_bg)

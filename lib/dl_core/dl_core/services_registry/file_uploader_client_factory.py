@@ -8,7 +8,6 @@ from typing import (
     Any,
     ClassVar,
     Optional,
-    Type,
     Union,
 )
 
@@ -181,7 +180,7 @@ class UpdateConnectionDataRequestSchemaYaDocs(UpdateConnectionDataRequestSchemaB
 
 
 class UpdateConnectionDataRequestSchema(FileTypeOneOfSchema):
-    type_schemas: dict[str, Type[UpdateConnectionDataRequestSchemaBase]] = {
+    type_schemas: dict[str, type[UpdateConnectionDataRequestSchemaBase]] = {
         # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[UpdateConnectionDataRequestSchemaBase]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
         FileType.gsheets.name: UpdateConnectionDataRequestSchemaGSheets,
         FileType.yadocs.name: UpdateConnectionDataRequestSchemaYaDocs,
@@ -270,7 +269,7 @@ class FileUploaderClient(BIAioHTTPClient):
         return self
 
     async def __aexit__(
-        self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+        self, exc_type: Optional[type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
     ) -> None:
         await self.close()
 
@@ -278,7 +277,7 @@ class FileUploaderClient(BIAioHTTPClient):
         return self
 
     def __exit__(
-        self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+        self, exc_type: Optional[type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
     ) -> None:
         self.close_sync()
 
@@ -294,7 +293,7 @@ class FileUploaderClientFactory:
     _file_uploader_settings: FileUploaderSettings = attr.ib()
     _ca_data: bytes = attr.ib()
 
-    _file_uploader_client_cls: ClassVar[Type[FileUploaderClient]] = FileUploaderClient  # tests mockup point
+    _file_uploader_client_cls: ClassVar[type[FileUploaderClient]] = FileUploaderClient  # tests mockup point
 
     def get_client(self, headers: Optional[THeaders] = None, cookies: Optional[TCookies] = None) -> FileUploaderClient:
         full_headers = headers.copy() if headers is not None else {}

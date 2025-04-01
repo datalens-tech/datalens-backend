@@ -4,7 +4,6 @@ from typing import (
     Hashable,
     NamedTuple,
     Optional,
-    Tuple,
 )
 
 
@@ -17,7 +16,7 @@ class NodeExtract(NamedTuple):
 
     type_name: str
     value: Optional[Hashable] = None  # Python primitive for internal non-FormulaItem attributes
-    children: Tuple["NodeExtract", ...] = ()
+    children: tuple["NodeExtract", ...] = ()
     complexity: int = 1  # A simple and fast way to know the complexity of the expression
 
     def __repr__(self) -> str:

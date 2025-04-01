@@ -5,7 +5,6 @@ from typing import (
     TYPE_CHECKING,
     Callable,
     Optional,
-    Type,
     TypeVar,
 )
 
@@ -113,7 +112,7 @@ class ServicesRegistry(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_mutation_cache_engine_factory(self, cache_type: Type[GenericCacheEngine]) -> MutationCacheEngineFactory:
+    def get_mutation_cache_engine_factory(self, cache_type: type[GenericCacheEngine]) -> MutationCacheEngineFactory:
         pass
 
     @abc.abstractmethod
@@ -141,7 +140,7 @@ class ServicesRegistry(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_installation_specific_service_registry(self, issr_cls: Type[_ISSR_T]) -> _ISSR_T:
+    def get_installation_specific_service_registry(self, issr_cls: type[_ISSR_T]) -> _ISSR_T:
         pass
 
 
@@ -217,7 +216,7 @@ class DefaultServicesRegistry(ServicesRegistry):
     def get_mutation_cache_factory(self) -> Optional[USEntryMutationCacheFactory]:
         return self._mutations_cache_factory
 
-    def get_mutation_cache_engine_factory(self, cache_type: Type[GenericCacheEngine]) -> MutationCacheEngineFactory:
+    def get_mutation_cache_engine_factory(self, cache_type: type[GenericCacheEngine]) -> MutationCacheEngineFactory:
         # TODO: Save already created CacheEngine's?
         return DefaultMutationCacheEngineFactory(services_registry_ref=FutureRef.fulfilled(self), cache_type=cache_type)
 
@@ -249,7 +248,7 @@ class DefaultServicesRegistry(ServicesRegistry):
             return self._task_processor_factory
         raise ValueError("TaskProcessorFactory hasn't been initialized.")
 
-    def get_installation_specific_service_registry(self, issr_cls: Type[_ISSR_T]) -> _ISSR_T:
+    def get_installation_specific_service_registry(self, issr_cls: type[_ISSR_T]) -> _ISSR_T:
         if isinstance(self._inst_specific_sr, issr_cls):
             return self._inst_specific_sr
         raise ValueError(f"Invalid ISST type: expected {issr_cls}, got {type(self._inst_specific_sr)}")
@@ -320,7 +319,7 @@ class DummyServiceRegistry(ServicesRegistry):
     def get_mutation_cache_factory(self) -> Optional[USEntryMutationCacheFactory]:
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
-    def get_mutation_cache_engine_factory(self, cache_type: Type[GenericCacheEngine]) -> MutationCacheEngineFactory:
+    def get_mutation_cache_engine_factory(self, cache_type: type[GenericCacheEngine]) -> MutationCacheEngineFactory:
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
     def get_data_processor_service_factory(self) -> Optional[Callable[[ProcessorType], DataProcessorService]]:
@@ -347,7 +346,7 @@ class DummyServiceRegistry(ServicesRegistry):
     def get_required_services(self) -> set[RequiredService]:
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
-    def get_installation_specific_service_registry(self, issr_cls: Type[_ISSR_T]) -> _ISSR_T:
+    def get_installation_specific_service_registry(self, issr_cls: type[_ISSR_T]) -> _ISSR_T:
         if isinstance(self._inst_specific_sr, issr_cls):
             return self._inst_specific_sr
         raise ValueError(f"Invalid ISST type: expected {issr_cls}, got {type(self._inst_specific_sr)}")

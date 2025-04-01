@@ -8,11 +8,8 @@ from typing import (
     Any,
     ClassVar,
     Collection,
-    Dict,
-    List,
     NamedTuple,
     Optional,
-    Type,
     Union,
 )
 
@@ -72,7 +69,7 @@ class RangeParameterValueConstraint(BaseParameterValueConstraint):
 
 @attr.s(frozen=True)
 class SetParameterValueConstraint(BaseParameterValueConstraint):
-    values: List[BIValue] = attr.ib(factory=list)
+    values: list[BIValue] = attr.ib(factory=list)
     type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.set)
 
     def _is_valid(self, value: Any) -> bool:
@@ -111,7 +108,7 @@ class RegexParameterValueConstraint(BaseParameterValueConstraint):
 
 @attr.s(frozen=True)
 class CollectionParameterValueConstraint(BaseParameterValueConstraint):
-    constraints: List[BaseParameterValueConstraint] = attr.ib(factory=list)
+    constraints: list[BaseParameterValueConstraint] = attr.ib(factory=list)
     type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.collection)
 
     def _is_valid(self, value: Any) -> bool:
@@ -194,21 +191,21 @@ _CALCULATION_SPECS_BY_MODE = {
 }
 
 
-def filter_calc_spec_kwargs(mode: str, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+def filter_calc_spec_kwargs(mode: str, kwargs: dict[str, Any]) -> dict[str, Any]:
     spec_cls = _CALCULATION_SPECS_BY_MODE[mode]
     field_keys = {f.name for f in attr.fields(spec_cls)}
     return {key: value for key, value in kwargs.items() if key in field_keys}
 
 
-def create_calc_spec_from(kwargs: Dict[str, Any]) -> CalculationSpec:
+def create_calc_spec_from(kwargs: dict[str, Any]) -> CalculationSpec:
     mode = kwargs["calc_mode"]
     spec_cls = _CALCULATION_SPECS_BY_MODE[mode.name]
     return spec_cls(**filter_calc_spec_kwargs(mode.name, kwargs))
 
 
 def del_calc_spec_kwargs_from(
-    kwargs: Dict[str, Any], spec_cls: Optional[Type[CalculationSpec]] = None
-) -> Dict[str, Any]:
+    kwargs: dict[str, Any], spec_cls: Optional[type[CalculationSpec]] = None
+) -> dict[str, Any]:
     spec_classes = _CALCULATION_SPECS_BY_MODE.values() if spec_cls is None else [spec_cls]
     keys = [f.name for s in spec_classes for f in attr.fields(s)] + ["calc_mode"]
     return {key: value for key, value in kwargs.items() if key not in keys}
@@ -397,7 +394,7 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
         )
 
     @staticmethod
-    def rename_in_formula(formula: str, key_map: Dict[str, str]) -> str:
+    def rename_in_formula(formula: str, key_map: dict[str, str]) -> str:
         def replace(match: re.Match) -> str:
             key = match.group(1)
             if (value := key_map.get(key)) is None:
@@ -432,9 +429,9 @@ FIELD_RE = re.compile(r"\[([^]]*)\]")
 
 @attr.s
 class ResultSchema:
-    fields: List[BIField] = attr.ib(default=attr.Factory(list))
-    _guid_cache: Dict[FieldId, BIField] = attr.ib(init=False, eq=False)
-    _title_cache: Dict[str, BIField] = attr.ib(init=False, eq=False)
+    fields: list[BIField] = attr.ib(default=attr.Factory(list))
+    _guid_cache: dict[FieldId, BIField] = attr.ib(init=False, eq=False)
+    _title_cache: dict[str, BIField] = attr.ib(init=False, eq=False)
     valid: bool = attr.ib(default=True)
 
     def __attrs_post_init__(self) -> None:
@@ -475,11 +472,11 @@ class ResultSchema:
             raise FieldNotFound(f"Unknown field {title}") from e
 
     @property
-    def titles_to_guids(self) -> Dict[str, FieldId]:
+    def titles_to_guids(self) -> dict[str, FieldId]:
         return {f.title: f.guid for f in self.fields}
 
     @property
-    def guids_to_titles(self) -> Dict[FieldId, str]:
+    def guids_to_titles(self) -> dict[FieldId, str]:
         return {f.guid: f.title for f in self.fields}
 
     def __iter__(self):  # type: ignore  # TODO: fix
@@ -518,7 +515,7 @@ class ResultSchema:
             self.fields.remove(field)
         self.clear_caches()
 
-    def get_direct_fields_for_avatars(self, avatar_ids: Collection[str]) -> List[BIField]:
+    def get_direct_fields_for_avatars(self, avatar_ids: Collection[str]) -> list[BIField]:
         return [
             field
             for field in self.fields

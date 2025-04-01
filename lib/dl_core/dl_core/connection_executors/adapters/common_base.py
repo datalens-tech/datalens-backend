@@ -6,7 +6,6 @@ from typing import (
     ClassVar,
     Generic,
     Optional,
-    Type,
     TypeVar,
 )
 
@@ -64,7 +63,7 @@ class CommonBaseDirectAdapter(Generic[_TARGET_DTO_TV], metaclass=abc.ABCMeta):
     @classmethod
     @abc.abstractmethod
     def create(
-        cls: Type[_DBA_TV], target_dto: _TARGET_DTO_TV, req_ctx_info: DBAdapterScopedRCI, default_chunk_size: int
+        cls: type[_DBA_TV], target_dto: _TARGET_DTO_TV, req_ctx_info: DBAdapterScopedRCI, default_chunk_size: int
     ) -> _DBA_TV:
         """Generic way to create"""
 

@@ -3,10 +3,7 @@ from __future__ import annotations
 import copy
 from typing import (
     Any,
-    Dict,
-    List,
     Optional,
-    Tuple,
 )
 
 from sqlalchemy.sql.elements import ClauseElement
@@ -71,7 +68,7 @@ class TranslationCtx:
     ):
         self.collect_errors = collect_errors if collect_errors is not None else self.default_collect_errors
         self.base_token = base_token
-        self.children: List[TranslationCtx] = []
+        self.children: list[TranslationCtx] = []
         self.forked = False  # TODO: think about removing this completely
         self.data_type = data_type
         self.data_type_params = data_type_params
@@ -80,7 +77,7 @@ class TranslationCtx:
         self.node = node
         self.required_scopes: int = required_scopes
 
-        self._messages: Dict[MessageLevel, List[FormulaErrorCtx]] = {
+        self._messages: dict[MessageLevel, list[FormulaErrorCtx]] = {
             MessageLevel.ERROR: [],
             MessageLevel.WARNING: [],
         }
@@ -109,12 +106,12 @@ class TranslationCtx:
         return self.node.extract if self.node is not None else None
 
     @property
-    def errors(self) -> List[FormulaErrorCtx]:
+    def errors(self) -> list[FormulaErrorCtx]:
         """Return list of registered errors."""
         return self._messages[MessageLevel.ERROR]
 
     @property
-    def warnings(self) -> List[FormulaErrorCtx]:
+    def warnings(self) -> list[FormulaErrorCtx]:
         """Return list of registered warnings."""
         return self._messages[MessageLevel.WARNING]
 
@@ -166,7 +163,7 @@ class TranslationCtx:
         level: MessageLevel,
         message: str,
         token: Optional[str] = None,
-        code: Optional[Tuple[str, ...]] = None,
+        code: Optional[tuple[str, ...]] = None,
     ) -> None:
         token = token if token is not None else self.base_token
         position = self.node.position if self.node is not None else Position()
@@ -183,10 +180,10 @@ class TranslationCtx:
 
         self._messages[level].append(error)
 
-    def add_error(self, message: str, token: Optional[str] = None, code: Optional[Tuple[str, ...]] = None) -> None:
+    def add_error(self, message: str, token: Optional[str] = None, code: Optional[tuple[str, ...]] = None) -> None:
         return self._add_message(level=MessageLevel.ERROR, message=message, token=token, code=code)
 
-    def add_warning(self, message: str, token: Optional[str] = None, code: Optional[Tuple[str, ...]] = None) -> None:
+    def add_warning(self, message: str, token: Optional[str] = None, code: Optional[tuple[str, ...]] = None) -> None:
         return self._add_message(level=MessageLevel.WARNING, message=message, token=token, code=code)
 
     def set_type(self, data_type: DataType, data_type_params: Optional[DataTypeParams] = None) -> None:

@@ -6,7 +6,6 @@ from typing import (
     Any,
     ClassVar,
     Iterable,
-    List,
     Optional,
     TypeVar,
     Union,
@@ -120,7 +119,7 @@ class RawTemplateRoleSpec(RawDimensionRoleSpec):
 class RawTreeRoleSpec(RawDimensionRoleSpec):
     level: int = attr.ib(kw_only=True)
     prefix: str = attr.ib(kw_only=True)
-    dimension_values: List[DimensionValueSpec] = attr.ib(kw_only=True, factory=list)
+    dimension_values: list[DimensionValueSpec] = attr.ib(kw_only=True, factory=list)
 
 
 @attr.s(frozen=True)
@@ -151,7 +150,7 @@ class RawFilterFieldSpec(RawFieldSpec):  # noqa
     """
 
     operation: WhereClauseOperation = attr.ib(kw_only=True)
-    values: List[FilterArgType] = attr.ib(kw_only=True)
+    values: list[FilterArgType] = attr.ib(kw_only=True)
     block_id: Optional[int] = attr.ib(kw_only=True, default=None)
 
 
@@ -180,12 +179,12 @@ class RawQuerySpecUnion:
     allow_measure_fields: bool = attr.ib(kw_only=True, default=True)
     meta: RawQueryMetaInfo = attr.ib(kw_only=True, factory=RawQueryMetaInfo)
     # item lists
-    select_specs: List[RawSelectFieldSpec] = attr.ib(kw_only=True, factory=list)
-    group_by_specs: List[RawGroupByFieldSpec] = attr.ib(kw_only=True, factory=list)
-    order_by_specs: List[RawOrderByFieldSpec] = attr.ib(kw_only=True, factory=list)
-    filter_specs: List[RawFilterFieldSpec] = attr.ib(kw_only=True, factory=list)
-    parameter_value_specs: List[RawParameterValueSpec] = attr.ib(kw_only=True, factory=list)
-    block_specs: List[RawBlockSpec] = attr.ib(kw_only=True, factory=list)
+    select_specs: list[RawSelectFieldSpec] = attr.ib(kw_only=True, factory=list)
+    group_by_specs: list[RawGroupByFieldSpec] = attr.ib(kw_only=True, factory=list)
+    order_by_specs: list[RawOrderByFieldSpec] = attr.ib(kw_only=True, factory=list)
+    filter_specs: list[RawFilterFieldSpec] = attr.ib(kw_only=True, factory=list)
+    parameter_value_specs: list[RawParameterValueSpec] = attr.ib(kw_only=True, factory=list)
+    block_specs: list[RawBlockSpec] = attr.ib(kw_only=True, factory=list)
 
     def clone(self, **updates: Any) -> RawQuerySpecUnion:
         return attr.evolve(self, **updates)
@@ -223,7 +222,7 @@ class RawRootBlockPlacement(RawBlockPlacement):
 class RawAfterBlockPlacement(RawBlockPlacement):
     type = QueryBlockPlacementType.after
 
-    dimension_values: Optional[List[RawDimensionValueSpec]] = attr.ib(default=None)
+    dimension_values: Optional[list[RawDimensionValueSpec]] = attr.ib(default=None)
 
 
 @attr.s

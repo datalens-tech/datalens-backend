@@ -7,7 +7,6 @@ import logging
 from typing import (
     ClassVar,
     Optional,
-    Type,
 )
 from typing import (
     TYPE_CHECKING,
@@ -44,7 +43,7 @@ class USDataPack:
 
 
 class USEntrySerializer(abc.ABC):
-    _MAP_TYPE_TO_SCHEMA: ClassVar[ChainMapGeneric[Type[BaseAttrsDataModel], Type[marshmallow.Schema]]] = ChainMap(
+    _MAP_TYPE_TO_SCHEMA: ClassVar[ChainMapGeneric[type[BaseAttrsDataModel], type[marshmallow.Schema]]] = ChainMap(
         MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA,  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "ChainMap" has incompatible type "dict[type[DataModel], type[Schema]]"; expected "MutableMapping[type[BaseAttrsDataModel], type[Schema]]"  [arg-type]
         {
             Dataset.DataModel: DatasetStorageSchema,
@@ -52,12 +51,12 @@ class USEntrySerializer(abc.ABC):
     )
 
     @classmethod
-    def get_load_storage_schema(cls, data_cls: Type[BaseAttrsDataModel]) -> marshmallow.Schema:
+    def get_load_storage_schema(cls, data_cls: type[BaseAttrsDataModel]) -> marshmallow.Schema:
         schema_cls = cls._MAP_TYPE_TO_SCHEMA[data_cls]
         return schema_cls()
 
     @classmethod
-    def get_dump_storage_schema(cls, data_cls: Type[BaseAttrsDataModel]) -> marshmallow.Schema:
+    def get_dump_storage_schema(cls, data_cls: type[BaseAttrsDataModel]) -> marshmallow.Schema:
         schema_cls = cls._MAP_TYPE_TO_SCHEMA[data_cls]
         return schema_cls()
 
@@ -70,7 +69,7 @@ class USEntrySerializer(abc.ABC):
     @abc.abstractmethod
     def deserialize_raw(
         self,
-        cls: Type[USEntry],
+        cls: type[USEntry],
         raw_data: dict[str, Any],
         entry_id: str,
         us_manager: USManagerBase,
@@ -82,7 +81,7 @@ class USEntrySerializer(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def get_secret_keys(self, cls: Type[USEntry]) -> set[DataKey]:
+    def get_secret_keys(self, cls: type[USEntry]) -> set[DataKey]:
         raise NotImplementedError()
 
     @abc.abstractmethod
@@ -112,7 +111,7 @@ class USEntrySerializer(abc.ABC):
 
     def deserialize(
         self,
-        cls: Type[USEntry],
+        cls: type[USEntry],
         data_pack: USDataPack,
         entry_id: str,
         us_manager: USManagerBase,
@@ -145,7 +144,7 @@ class USEntrySerializerMarshmallow(USEntrySerializer):
 
     def deserialize_raw(
         self,
-        cls: Type[USEntry],
+        cls: type[USEntry],
         raw_data: dict[str, Any],
         entry_id: str,
         us_manager: USManagerBase,
@@ -167,7 +166,7 @@ class USEntrySerializerMarshmallow(USEntrySerializer):
 
         return entry
 
-    def get_secret_keys(self, cls: Type[USEntry]) -> set[DataKey]:
+    def get_secret_keys(self, cls: type[USEntry]) -> set[DataKey]:
         data_cls = cls.DataModel
         assert data_cls is not None and issubclass(data_cls, BaseAttrsDataModel)
         return data_cls.get_secret_keys()

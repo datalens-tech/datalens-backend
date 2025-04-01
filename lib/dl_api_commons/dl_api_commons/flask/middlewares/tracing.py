@@ -11,10 +11,7 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    List,
     Sequence,
-    Tuple,
 )
 
 import attr
@@ -44,7 +41,7 @@ class TracingMiddleware(FlaskWSGIMiddleware):
     url_prefix_exclude: Sequence[str] = attr.ib(default=())
 
     @staticmethod
-    def normalize_headers(wsgi_environ: Dict[str, str]) -> Dict[str, str]:
+    def normalize_headers(wsgi_environ: dict[str, str]) -> dict[str, str]:
         prefix = "HTTP_"
         headers = {
             key[len(prefix) :].replace("_", "-").lower(): val
@@ -78,7 +75,7 @@ class TracingMiddleware(FlaskWSGIMiddleware):
 
                 @functools.wraps(start_response)
                 def start_response_set_span_tags(
-                    status: str, response_headers: List[Tuple[str, str]], exc_info: Any = None
+                    status: str, response_headers: list[tuple[str, str]], exc_info: Any = None
                 ) -> Any:
                     try:
                         status_code = int(status.split(" ")[0])

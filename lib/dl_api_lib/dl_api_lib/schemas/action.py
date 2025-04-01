@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import (
-    Any,
-    Dict,
-)
+from typing import Any
 
 from marshmallow import EXCLUDE
 from marshmallow import fields as ma_fields
@@ -263,5 +260,5 @@ class ActionSchema(OneOfSchema):
         DatasetAction.delete_obligatory_filter.name: DeleteObligatoryFilterActionSchema,
     }
 
-    def get_obj_type(self, obj: Dict[str, Any]) -> str:
+    def get_obj_type(self, obj: dict[str, Any]) -> str:
         return obj[self.type_field].name

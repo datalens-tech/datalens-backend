@@ -6,8 +6,6 @@ from typing import (
     Collection,
     Hashable,
     Optional,
-    Tuple,
-    Type,
 )
 
 import attr
@@ -30,8 +28,8 @@ from dl_core.query.expression import JoinOnExpressionCtx
 class BaseOp:
     """Base class for all operations"""
 
-    supported_source_types: ClassVar[Tuple[Type[AbstractStream], ...]] = ()
-    supported_dest_types: ClassVar[Tuple[Type[AbstractStream], ...]] = ()
+    supported_source_types: ClassVar[tuple[type[AbstractStream], ...]] = ()
+    supported_dest_types: ClassVar[tuple[type[AbstractStream], ...]] = ()
 
     dest_stream_id: str = attr.ib(kw_only=True)
 

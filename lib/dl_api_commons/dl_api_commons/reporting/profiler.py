@@ -6,10 +6,7 @@ import time
 import traceback
 from typing import (
     TYPE_CHECKING,
-    Dict,
     Optional,
-    Tuple,
-    Type,
     TypeVar,
     Union,
 )
@@ -66,16 +63,16 @@ class DefaultReportingProfiler(ReportingProfiler):
 
     def _find_record_of_type(
         self,
-        records: Tuple[ReportingRecord, ...],
-        rtype: Type[_RECORD_TV],
+        records: tuple[ReportingRecord, ...],
+        rtype: type[_RECORD_TV],
     ) -> Optional[_RECORD_TV]:
         return next((r for r in records if isinstance(r, rtype)), None)
 
-    def get_selector_records_for_query(self, query_id: str) -> Tuple[QueryExecutionReportingRecord, ...]:
+    def get_selector_records_for_query(self, query_id: str) -> tuple[QueryExecutionReportingRecord, ...]:
         records = self.reporting_registry.get_reporting_records()
         return tuple(r for r in records if isinstance(r, QueryExecutionReportingRecord) and r.query_id == query_id)
 
-    def get_data_proc_records_for_query(self, query_id: str) -> Tuple[DataProcessingReportingRecord, ...]:
+    def get_data_proc_records_for_query(self, query_id: str) -> tuple[DataProcessingReportingRecord, ...]:
         records = self.reporting_registry.get_reporting_records()
         proc_ids = {
             r.processing_id
@@ -124,7 +121,7 @@ class DefaultReportingProfiler(ReportingProfiler):
             error_text = traceback.format_exception_only(type(error), error)[-1]
 
         x_dl_context = self.rci.x_dl_context
-        extra: Dict[str, Union[str, int, float, None]] = dict(
+        extra: dict[str, Union[str, int, float, None]] = dict(
             event_code="profile_db_request",
             dataset_id=start_record.dataset_id,
             # auto: request_id

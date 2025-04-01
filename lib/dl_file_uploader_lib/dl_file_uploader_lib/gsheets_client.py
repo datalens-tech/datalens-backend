@@ -11,8 +11,6 @@ from typing import (
     Any,
     ClassVar,
     Optional,
-    Tuple,
-    Type,
     Union,
 )
 
@@ -78,7 +76,7 @@ def google_api_error_to_file_uploader_exception(err: HTTPError) -> file_upl_exc.
         orig_status_code = err.res.status_code
         orig_reason = None
 
-    err_cls: Type[file_upl_exc.DLFileUploaderBaseError]
+    err_cls: type[file_upl_exc.DLFileUploaderBaseError]
     if orig_status_code == 403:
         err_cls = file_upl_exc.PermissionDenied
     elif orig_status_code == 404:
@@ -228,7 +226,7 @@ class GSheetsClient:
 
     def _process_values(
         self, raw_values: list[list[Any]], user_types: list[UserDataType | str]
-    ) -> Tuple[list[list[Any]], list[UserDataType | str]]:
+    ) -> tuple[list[list[Any]], list[UserDataType | str]]:
         """
         Tries to convert values to passed BITypes and falls back to string when fails to do so
         But the fallback happens only on return, i.e. it tries to convert all values to the original passed type
@@ -572,7 +570,7 @@ class GSheetsClient:
 
     async def get_single_values_range(
         self, spreadsheet_id: str, range: Range, user_types: list[UserDataType | str]
-    ) -> Tuple[list[list[Any]], list[UserDataType | str]]:
+    ) -> tuple[list[list[Any]], list[UserDataType | str]]:
         resp_json = await self._request_values(spreadsheet_id=spreadsheet_id, range=str(range))
 
         raw_values = resp_json.get("values", [])

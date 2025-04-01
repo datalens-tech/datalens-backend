@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import (
     AbstractSet,
     Any,
-    Dict,
     Iterable,
-    List,
     Mapping,
     Optional,
     Sequence,
@@ -58,7 +56,7 @@ class OneOfSchemaWithDumpLoadHooks(OneOfSchema):
         **kwargs: Any,
     ) -> Any:
         error_store = ErrorStore()
-        errors: Dict[str, List[str]] = {}
+        errors: dict[str, list[str]] = {}
         many = self.many if many is None else bool(many)
         unknown = unknown or self.unknown
         if partial is None:

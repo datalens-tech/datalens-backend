@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     Iterable,
-    List,
     NamedTuple,
     Optional,
     Sequence,
@@ -25,7 +24,7 @@ class MergedQueryBlockMetaInfo:
 
 @attr.s(frozen=True)
 class MergedQueryMetaInfo:
-    blocks: List[MergedQueryBlockMetaInfo] = attr.ib(kw_only=True)
+    blocks: list[MergedQueryBlockMetaInfo] = attr.ib(kw_only=True)
     offset: Optional[int] = attr.ib(kw_only=True, default=None)
     limit: Optional[int] = attr.ib(kw_only=True, default=None)
     target_connection_ids: set[str] = attr.ib(kw_only=True, factory=set)

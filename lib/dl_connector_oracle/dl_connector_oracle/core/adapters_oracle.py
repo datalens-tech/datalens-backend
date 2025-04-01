@@ -5,8 +5,6 @@ from typing import (
     Any,
     ClassVar,
     Optional,
-    Tuple,
-    Type,
 )
 
 import oracledb
@@ -34,7 +32,7 @@ from dl_connector_oracle.core.target_dto import OracleConnTargetDTO
 class OracleConnLineConstructor(ClassicSQLConnLineConstructor[OracleConnTargetDTO]):
     def _get_dsn_params(
         self,
-        safe_db_symbols: Tuple[str, ...] = (),
+        safe_db_symbols: tuple[str, ...] = (),
         db_name: Optional[str] = None,
         standard_auth: Optional[bool] = True,
     ) -> dict:
@@ -51,7 +49,7 @@ class OracleConnLineConstructor(ClassicSQLConnLineConstructor[OracleConnTargetDT
 
 class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
     conn_type = CONNECTION_TYPE_ORACLE
-    conn_line_constructor_type: ClassVar[Type[OracleConnLineConstructor]] = OracleConnLineConstructor
+    conn_line_constructor_type: ClassVar[type[OracleConnLineConstructor]] = OracleConnLineConstructor
 
     dsn_template = (
         "{dialect}://{user}:{passwd}@(DESCRIPTION="

@@ -5,9 +5,7 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Generator,
-    List,
     Optional,
-    Set,
 )
 import weakref
 
@@ -50,7 +48,7 @@ class AsyncWrapperForSyncAdapter(AsyncDBAdapter):
     _sync_adapter: SyncDirectDBAdapter = attr.ib()
     _tpe: ContextVarExecutor = attr.ib()
     _loop: asyncio.AbstractEventLoop = attr.ib(init=False, factory=asyncio.get_running_loop)
-    _gen_wrappers_weak_set: Set[Job] = attr.ib(init=False, factory=weakref.WeakSet)
+    _gen_wrappers_weak_set: set[Job] = attr.ib(init=False, factory=weakref.WeakSet)
 
     @attr.s(cmp=False, hash=False)
     class AdapterExecuteJob(Job[ExecutionStep]):  # noqa
@@ -109,10 +107,10 @@ class AsyncWrapperForSyncAdapter(AsyncDBAdapter):
     async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
         return await self._loop.run_in_executor(self._tpe, self._sync_adapter.get_db_version, db_ident)
 
-    async def get_schema_names(self, db_ident: DBIdent) -> List[str]:
+    async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
         return await self._loop.run_in_executor(self._tpe, self._sync_adapter.get_schema_names, db_ident)
 
-    async def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         return await self._loop.run_in_executor(self._tpe, self._sync_adapter.get_tables, schema_ident)
 
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:

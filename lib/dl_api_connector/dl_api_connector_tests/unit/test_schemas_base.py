@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     Dict,
-    Set,
 )
 
 from marshmallow import (
@@ -37,14 +36,14 @@ def test_allowed_unknown_fields(caplog):
         a = fields.String(required=True)
         b = fields.String(required=True, bi_extra=FieldExtra(editable=True))
 
-        def create_object(self, data: Dict[str, Any]) -> dict:
+        def create_object(self, data: dict[str, Any]) -> dict:
             return dict(data)
 
-        def update_object(self, obj: dict, data: Dict[str, Any]) -> dict:
+        def update_object(self, obj: dict, data: dict[str, Any]) -> dict:
             obj.update(data)
             return obj
 
-        def get_allowed_unknown_fields(self) -> Set[str]:
+        def get_allowed_unknown_fields(self) -> set[str]:
             super_fields = super().get_allowed_unknown_fields()
             super_fields.update(
                 [

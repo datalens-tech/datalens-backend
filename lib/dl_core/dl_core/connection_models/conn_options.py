@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     Optional,
-    Type,
     TypeVar,
 )
 
@@ -21,7 +20,7 @@ class ConnectOptions:
     pass_db_messages_to_user: bool = attr.ib(default=False)
     pass_db_query_to_user: bool = attr.ib(default=False)
 
-    def to_subclass(self, subcls: Type[_CONNECT_OPTIONS_TV], **kwargs: Any) -> _CONNECT_OPTIONS_TV:
+    def to_subclass(self, subcls: type[_CONNECT_OPTIONS_TV], **kwargs: Any) -> _CONNECT_OPTIONS_TV:
         assert issubclass(subcls, type(self))
         full_kwargs = {
             **attr.asdict(self),

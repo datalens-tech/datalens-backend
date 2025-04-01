@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import json
 from typing import (
-    Dict,
     Iterable,
-    List,
     Optional,
     Sequence,
     Sized,
@@ -42,9 +40,9 @@ class SC:
 @attr.s
 class Table:
     name: str = attr.ib()
-    schema: List[SC] = attr.ib()
-    partition_key: List[str] = attr.ib(factory=lambda: [])
-    meta: Dict[str, str] = attr.ib(factory=lambda: {})
+    schema: list[SC] = attr.ib()
+    partition_key: list[str] = attr.ib(factory=lambda: [])
+    meta: dict[str, str] = attr.ib(factory=lambda: {})
     data: Iterable[Sequence[TJSONLike]] = attr.ib(factory=lambda: [])
     _data_length: Optional[int] = attr.ib(default=None)
 
@@ -61,7 +59,7 @@ class Table:
 
 @attr.s
 class TablesRegistry:
-    tbl_list: List[Table] = attr.ib(factory=lambda: [])
+    tbl_list: list[Table] = attr.ib(factory=lambda: [])
 
     def get_table(self, table_name: str) -> Optional[Table]:
         return next((t for t in self.tbl_list if t.name == table_name), None)

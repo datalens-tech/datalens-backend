@@ -3,12 +3,8 @@ from __future__ import annotations
 import abc
 from typing import (
     ClassVar,
-    Dict,
-    List,
     Optional,
     Sequence,
-    Tuple,
-    Type,
 )
 
 import attr
@@ -28,7 +24,7 @@ from dl_formula.mutation.mutation import FormulaMutation
 
 class LookupFunctionMutatorBase(abc.ABC):
     name: ClassVar[str]
-    supported_arg_counts: Tuple[int, ...]
+    supported_arg_counts: tuple[int, ...]
 
     @classmethod
     @abc.abstractmethod
@@ -51,7 +47,7 @@ class LookupFunctionMutatorBase(abc.ABC):
     def get_lookup_conditions(
         cls,
         func_args: Sequence[nodes.FormulaItem],
-    ) -> List[fork_nodes.JoinConditionBase]:
+    ) -> list[fork_nodes.JoinConditionBase]:
         raise NotImplementedError
 
     @classmethod
@@ -60,14 +56,14 @@ class LookupFunctionMutatorBase(abc.ABC):
         cls,
         lookup_dimension: nodes.FormulaItem,
         func_args: Sequence[nodes.FormulaItem],
-    ) -> List[fork_nodes.BfbFilterMutationSpec]:
+    ) -> list[fork_nodes.BfbFilterMutationSpec]:
         raise NotImplementedError
 
 
-LOOKUP_MUTATOR_REGISTRY: Dict[str, Type[LookupFunctionMutatorBase]] = {}
+LOOKUP_MUTATOR_REGISTRY: dict[str, type[LookupFunctionMutatorBase]] = {}
 
 
-def register_lookup_mutator(mutator_cls: Type[LookupFunctionMutatorBase]) -> Type[LookupFunctionMutatorBase]:
+def register_lookup_mutator(mutator_cls: type[LookupFunctionMutatorBase]) -> type[LookupFunctionMutatorBase]:
     LOOKUP_MUTATOR_REGISTRY[mutator_cls.name] = mutator_cls
     return mutator_cls
 
@@ -100,7 +96,7 @@ class AgoLookupFunctionMutator(DateLookupFunctionMutatorBase):
     def get_lookup_conditions(
         cls,
         func_args: Sequence[nodes.FormulaItem],
-    ) -> List[fork_nodes.JoinConditionBase]:
+    ) -> list[fork_nodes.JoinConditionBase]:
         lookup_dimension = cls.get_lookup_dimension(func_args)
         fork_join_expr = nodes.FuncCall.make(
             name="dateadd",
@@ -108,7 +104,7 @@ class AgoLookupFunctionMutator(DateLookupFunctionMutatorBase):
         )
         main_lookup_condition = fork_nodes.BinaryJoinCondition.make(expr=lookup_dimension, fork_expr=fork_join_expr)
 
-        conditions: List[fork_nodes.JoinConditionBase] = [main_lookup_condition]
+        conditions: list[fork_nodes.JoinConditionBase] = [main_lookup_condition]
 
         # An additional condition is needed for cases when the unit is month-based
         # to avoid date duplication for months with different lengths
@@ -136,7 +132,7 @@ class AgoLookupFunctionMutator(DateLookupFunctionMutatorBase):
         cls,
         lookup_dimension: nodes.FormulaItem,
         func_args: Sequence[nodes.FormulaItem],
-    ) -> List[fork_nodes.BfbFilterMutationSpec]:
+    ) -> list[fork_nodes.BfbFilterMutationSpec]:
         return [
             fork_nodes.BfbFilterMutationSpec.make(
                 original=lookup_dimension,
@@ -157,7 +153,7 @@ class AtDateLookupFunctionMutator(DateLookupFunctionMutatorBase):
     def get_lookup_conditions(
         cls,
         func_args: Sequence[nodes.FormulaItem],
-    ) -> List[fork_nodes.JoinConditionBase]:
+    ) -> list[fork_nodes.JoinConditionBase]:
         lookup_dimension = cls.get_lookup_dimension(func_args)
         lookup_condition = fork_nodes.BinaryJoinCondition.make(expr=func_args[2], fork_expr=lookup_dimension)
         return [lookup_condition]
@@ -167,7 +163,7 @@ class AtDateLookupFunctionMutator(DateLookupFunctionMutatorBase):
         cls,
         lookup_dimension: nodes.FormulaItem,
         func_args: Sequence[nodes.FormulaItem],
-    ) -> List[fork_nodes.BfbFilterMutationSpec]:
+    ) -> list[fork_nodes.BfbFilterMutationSpec]:
         return []
 
 
@@ -197,13 +193,13 @@ class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
 
     _allow_empty_dimensions: bool = attr.ib(kw_only=True)
 
-    def match_node(self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
+    def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
         return isinstance(node, nodes.FuncCall) and node.name in LOOKUP_MUTATOR_REGISTRY
 
     def make_replacement(
         self,
         old: nodes.FormulaItem,
-        parent_stack: Tuple[nodes.FormulaItem, ...],
+        parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.FuncCall)
         func_name = old.name
@@ -243,7 +239,7 @@ class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
                 meta=old.meta,
             )
 
-        lookup_condition_used_fields: List[nodes.Field] = []
+        lookup_condition_used_fields: list[nodes.Field] = []
         for lookup_condition in lookup_conditions:
             lookup_condition_used_fields.extend(used_fields(lookup_condition))
         if not lookup_condition_used_fields:
@@ -255,8 +251,8 @@ class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
 
         dimensions, _, _ = self._generate_dimensions(node=old, parent_stack=parent_stack)
 
-        condition_list: List[fork_nodes.JoinConditionBase] = []
-        dim_list: List[nodes.FormulaItem] = []
+        condition_list: list[fork_nodes.JoinConditionBase] = []
+        dim_list: list[nodes.FormulaItem] = []
         found_conditional_dimension = False
         for dimension_expr in dimensions:
             if dimension_expr in ignore_dimensions_set:
@@ -311,11 +307,11 @@ class LookupDefaultBfbMutation(FormulaMutation):
     to the `BEFORE FILTER BY` clause.
     """
 
-    def match_node(self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
+    def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
         return isinstance(node, nodes.FuncCall) and node.name in LOOKUP_MUTATOR_REGISTRY
 
     def make_replacement(
-        self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
+        self, old: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.FuncCall)
         func_name = old.name

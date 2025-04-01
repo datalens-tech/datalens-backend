@@ -3,7 +3,6 @@ from __future__ import annotations
 import abc
 from functools import singledispatchmethod
 from typing import (
-    List,
     Mapping,
     Optional,
 )
@@ -50,7 +49,7 @@ class MdRichTextRenderer(RichTextRenderer):
 
     @_render.register
     def _render_rich_text(self, value: RichText, env: RichTextRenderEnvironment) -> str:
-        parts: List[str] = []
+        parts: list[str] = []
         last_idx = 0
         for key, element in sorted(value.replacements.items()):
             parts.append(value.text[last_idx : key.start_pos])
