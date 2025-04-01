@@ -1,9 +1,11 @@
 import sqlalchemy as sa
+import sqlalchemy.sql.expression as sa_expr
 
 from dl_formula.definitions.base import (
     TranslationVariant,
     TranslationVariantWrapped,
 )
+from dl_formula.definitions.common import TransCallResult
 import dl_formula.definitions.functions_string as base
 from dl_formula.shortcuts import n
 
@@ -14,15 +16,25 @@ V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 
 
+def find3(string: sa.sql.ColumnElement, substring: sa.sql.ColumnElement, pos: sa.sql.ColumnElement) -> TransCallResult:
+    tail = sa.func.substring(string, pos)
+    pos_in_tail = sa.func.strpos(tail, substring)
+    return sa.func.if_(pos_in_tail > 0, pos_in_tail + pos - 1, 0)
+
+
 DEFINITIONS_STRING = [
     # ascii
-    # base.FuncAscii.for_dialect(D.TRINO),
+    base.FuncAscii(
+        variants=[
+            V(D.TRINO, sa.func.codepoint),
+        ]
+    ),
     # char
-    # base.FuncChar(
-    #     variants=[
-    #         V(D.TRINO, sa.func.CHR),
-    #     ]
-    # ),
+    base.FuncChar(
+        variants=[
+            V(D.TRINO, sa.func.chr),
+        ]
+    ),
     # concat
     # base.Concat1.for_dialect((D.TRINO)),
     # base.ConcatMultiStrConst.for_dialect(D.TRINO),
@@ -43,165 +55,174 @@ DEFINITIONS_STRING = [
         ]
     ),
     # contains
-    # base.FuncContainsConst.for_dialect(D.TRINO),
-    # base.FuncContainsNonConst(
-    #     variants=[
-    #         V(D.TRINO, lambda x, y: sa.func.STRPOS(x, y) > 0),
-    #     ]
-    # ),
-    # base.FuncContainsNonString.for_dialect(D.TRINO),
+    base.FuncContainsConst.for_dialect(D.TRINO),
+    base.FuncContainsNonConst(
+        variants=[
+            V(
+                D.TRINO,
+                lambda text, pattern: sa.func.position(sa_expr.BinaryExpression(pattern, text, sa_expr.custom_op("IN")))
+                > 0,
+            ),
+        ]
+    ),
+    base.FuncContainsNonString.for_dialect(D.TRINO),
     # notcontains
-    # base.FuncNotContainsConst.for_dialect(D.TRINO),
-    # base.FuncNotContainsNonConst.for_dialect(D.TRINO),
-    # base.FuncNotContainsNonString.for_dialect(D.TRINO),
+    base.FuncNotContainsConst.for_dialect(D.TRINO),
+    base.FuncNotContainsNonConst.for_dialect(D.TRINO),
+    base.FuncNotContainsNonString.for_dialect(D.TRINO),
     # endswith
-    # base.FuncEndswithConst.for_dialect(D.TRINO),
-    # base.FuncEndswithNonConst(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda x, y: (sa.func.SUBSTRING(x, sa.func.char_length(x) - sa.func.char_length(y) + 1) == y),
-    #         ),
-    #     ]
-    # ),
-    # base.FuncEndswithNonString.for_dialect(D.TRINO),
+    base.FuncEndswithConst.for_dialect(D.TRINO),
+    base.FuncEndswithNonConst(
+        variants=[
+            V(
+                D.TRINO,
+                lambda text, pattern: n.func.STARTSWITH(sa.func.reverse(text), sa.func.reverse(pattern)),
+            ),
+        ]
+    ),
+    base.FuncEndswithNonString.for_dialect(D.TRINO),
     # find
-    # base.FuncFind2(
-    #     variants=[
-    #         V(D.TRINO, sa.func.STRPOS),
-    #     ]
-    # ),
-    # base.FuncFind3(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda x, y, z: n.if_(sa.func.STRPOS(sa.func.SUBSTRING(x, z), y) > 0)  # type: ignore  # TODO: fix
-    #             .then(
-    #                 sa.func.STRPOS(sa.func.SUBSTRING(x, z), y) + z - 1,
-    #             )
-    #             .else_(0),
-    #         ),
-    #     ]
-    # ),
+    base.FuncFind2(
+        variants=[
+            V(D.TRINO, sa.func.strpos),
+        ]
+    ),
+    base.FuncFind3(
+        variants=[
+            V(D.TRINO, find3),
+        ]
+    ),
     # icontains
-    # base.FuncIContainsConst.for_dialect(D.TRINO),
-    # base.FuncIContainsNonConst.for_dialect(D.TRINO),
-    # base.FuncIContainsNonString.for_dialect(D.TRINO),
+    base.FuncIContainsConst.for_dialect(D.TRINO),
+    base.FuncIContainsNonConst.for_dialect(D.TRINO),
+    base.FuncIContainsNonString.for_dialect(D.TRINO),
     # iendswith
-    # base.FuncIEndswithConst.for_dialect(D.TRINO),
-    # base.FuncIEndswithNonConst.for_dialect(D.TRINO),
-    # base.FuncIEndswithNonString.for_dialect(D.TRINO),
+    base.FuncIEndswithConst.for_dialect(D.TRINO),
+    base.FuncIEndswithNonConst.for_dialect(D.TRINO),
+    base.FuncIEndswithNonString.for_dialect(D.TRINO),
     # istartswith
-    # base.FuncIStartswithConst.for_dialect(D.TRINO),
-    # base.FuncIStartswithNonConst.for_dialect(D.TRINO),
-    # base.FuncIStartswithNonString.for_dialect(D.TRINO),
+    base.FuncIStartswithConst.for_dialect(D.TRINO),
+    base.FuncIStartswithNonConst.for_dialect(D.TRINO),
+    base.FuncIStartswithNonString.for_dialect(D.TRINO),
     # left
-    # base.FuncLeft.for_dialect(D.TRINO),
+    base.FuncLeft(
+        variants=[
+            V(D.TRINO, lambda string, pos: sa.func.substring(string, 1, pos)),
+        ]
+    ),
     # len
-    # base.FuncLenString(
-    #     variants=[
-    #         V(D.TRINO, sa.func.LENGTH),
-    #     ]
-    # ),
+    base.FuncLenString(
+        variants=[
+            V(D.TRINO, sa.func.length),
+        ]
+    ),
     # lower
-    # base.FuncLowerConst.for_dialect(D.TRINO),
-    # base.FuncLowerNonConst.for_dialect(D.TRINO),
+    base.FuncLowerConst.for_dialect(D.TRINO),
+    base.FuncLowerNonConst.for_dialect(D.TRINO),
     # ltrim
-    # base.FuncLtrim.for_dialect(D.TRINO),
+    base.FuncLtrim(
+        variants=[
+            V(D.TRINO, lambda string: sa.func.regexp_replace(string, "^ *", "")),
+        ]
+    ),
     # regexp_extract
-    # base.FuncRegexpExtract(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda text, pattern: sa.type_coerce(
-    #                 sa.select([sa.func.REGEXP_MATCHES(text, pattern, "g")]).limit(1).as_scalar(),
-    #                 sa_postgresql.ARRAY(sa.String),
-    #             )[1],
-    #         ),
-    #     ]
-    # ),
+    base.FuncRegexpExtract(
+        variants=[
+            V(D.TRINO, sa.func.regexp_extract),
+        ]
+    ),
     # regexp_extract_all
-    # base.FuncRegexpExtractAll(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             regexp_matches_in_brackets,
-    #         )
-    #     ]
-    # ),
+    base.FuncRegexpExtractAll(
+        variants=[
+            V(D.TRINO, lambda text, pattern: sa.func.regexp_extract_all(text, pattern, 1)),
+        ]
+    ),
     # regexp_extract_nth
-    # base.FuncRegexpExtractNth(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda text, pattern, ind: sa.type_coerce(
-    #                 sa.select([sa.func.REGEXP_MATCHES(text, pattern, "g")]).limit(1).offset(ind - 1).as_scalar(),
-    #                 sa_postgresql.ARRAY(sa.String),
-    #             )[1],
-    #         ),
-    #     ]
-    # ),
+    base.FuncRegexpExtractNth(
+        variants=[
+            V(
+                D.TRINO,
+                lambda text, pattern, ind: sa.func.element_at(sa.func.regexp_extract_all(text, pattern), ind),
+            ),
+        ]
+    ),
     # regexp_match
-    # base.FuncRegexpMatch(
-    #     variants=[
-    #         V(D.TRINO, lambda text, pattern: text.op("~")(pattern)),
-    #     ]
-    # ),
+    base.FuncRegexpMatch(
+        variants=[
+            V(D.TRINO, sa.func.regexp_like),
+        ]
+    ),
     # regexp_replace
-    # base.FuncRegexpReplace(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda text, patt, repl: sa.func.REGEXP_REPLACE(text, patt, repl, "g"),
-    #         ),
-    #     ]
-    # ),
+    base.FuncRegexpReplace(
+        variants=[
+            V(D.TRINO, sa.func.regexp_replace),
+        ]
+    ),
     # replace
-    # base.FuncReplace.for_dialect(D.TRINO),
+    base.FuncReplace.for_dialect(D.TRINO),
     # right
-    # base.FuncRight.for_dialect(D.TRINO),
+    base.FuncRight(
+        variants=[
+            V(D.TRINO, lambda string, pos: sa.func.substring(string, -pos)),
+        ]
+    ),
     # rtrim
-    # base.FuncRtrim.for_dialect(D.TRINO),
+    base.FuncRtrim(
+        variants=[
+            V(D.TRINO, lambda string: sa.func.regexp_replace(string, " *$", "")),
+        ]
+    ),
     # space
-    # base.FuncSpaceConst.for_dialect(D.TRINO),
-    # base.FuncSpaceNonConst(
-    #     variants=[
-    #         V(D.TRINO, lambda size: sa.func.REPEAT(" ", size)),
-    #     ]
-    # ),
+    base.FuncSpaceConst.for_dialect(D.TRINO),
+    base.FuncSpaceNonConst(
+        variants=[
+            V(D.TRINO, lambda size: sa.func.array_join(sa.func.repeat(" ", size), "")),
+        ]
+    ),
     # split
-    # base.FuncSplit1(
-    #     variants=[
-    #         V(D.TRINO, lambda text: sa.func.string_to_array(text, ",")),
-    #     ]
-    # ),
-    # base.FuncSplit2(
-    #     variants=[
-    #         V(D.TRINO, lambda text, delim: sa.func.string_to_array(text, delim)),
-    #     ]
-    # ),
-    # base.FuncSplit3(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda text, delim, ind: sa.func.SPLIT_PART(text, delim, sa.cast(ind, sa.INTEGER)),
-    #         ),  # FIXME: does not work with negative indices
-    #     ]
-    # ),
+    base.FuncSplit1(
+        variants=[
+            V(D.TRINO, lambda text: sa.func.split(text, ",")),
+        ]
+    ),
+    base.FuncSplit2(
+        variants=[
+            V(D.TRINO, sa.func.split),
+        ]
+    ),
+    base.FuncSplit3(
+        variants=[
+            V(
+                D.TRINO,
+                lambda text, delim, pos: sa.func.if_(
+                    pos > 0,
+                    sa.func.split_part(text, delim, pos),
+                    sa.func.split_part(text, delim, sa.func.cardinality(sa.func.split(text, delim)) + pos + 1),
+                ),
+            ),
+        ]
+    ),
     # startswith
-    # base.FuncStartswithConst.for_dialect(D.TRINO),
-    # base.FuncStartswithNonConst(
-    #     variants=[
-    #         V(D.TRINO, lambda x, y: sa.func.STRPOS(x, y) == 1),
-    #     ]
-    # ),
-    # base.FuncStartswithNonString.for_dialect(D.TRINO),
+    base.FuncStartswithConst.for_dialect(D.TRINO),
+    base.FuncStartswithNonConst(
+        variants=[
+            V(D.TRINO, sa.func.starts_with),
+        ]
+    ),
+    base.FuncStartswithNonString.for_dialect(D.TRINO),
     # substr
-    # base.FuncSubstr2.for_dialect(D.TRINO),
-    # base.FuncSubstr3.for_dialect(D.TRINO),
+    base.FuncSubstr2.for_dialect(D.TRINO),
+    base.FuncSubstr3.for_dialect(D.TRINO),
     # trim
-    # base.FuncTrim.for_dialect(D.TRINO),
+    base.FuncTrim(
+        variants=[
+            V(
+                D.TRINO,
+                lambda string: sa.func.regexp_replace(string, "^ *| *$", ""),
+            ),
+        ]
+    ),
     # upper
-    # base.FuncUpperConst.for_dialect(D.TRINO),
-    # base.FuncUpperNonConst.for_dialect(D.TRINO),
+    base.FuncUpperConst.for_dialect(D.TRINO),
+    base.FuncUpperNonConst.for_dialect(D.TRINO),
 ]
