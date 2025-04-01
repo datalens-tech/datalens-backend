@@ -602,6 +602,24 @@ class ClassicConnectionSQL(ConnectionSQL):
 CONNECTOR_SETTINGS_TV = TypeVar("CONNECTOR_SETTINGS_TV", bound=ConnectorSettingsBase)
 
 
+def _get_connector_settings(
+    usm: SyncUSManager,
+    conn_type: ConnectionType,
+    settings_type: Type[CONNECTOR_SETTINGS_TV],
+) -> CONNECTOR_SETTINGS_TV:
+    sr = usm.get_services_registry()
+    connector_settings = sr.get_connectors_settings(conn_type)
+
+    if connector_settings is None:
+        try:
+            connector_settings = settings_type()
+        except TypeError:
+            raise ValueError(f"Failed to instantiate settings of type {settings_type}")
+
+    assert isinstance(connector_settings, settings_type)
+    return connector_settings
+
+
 class ConnectionHardcodedDataMixin(Generic[CONNECTOR_SETTINGS_TV], metaclass=abc.ABCMeta):
     """Connector type specific data is loaded from dl_configs.connectors_settings"""
 
@@ -609,22 +627,13 @@ class ConnectionHardcodedDataMixin(Generic[CONNECTOR_SETTINGS_TV], metaclass=abc
     settings_type: Type[CONNECTOR_SETTINGS_TV]
     us_manager: SyncUSManager
 
-    # TODO: remove
     @classmethod
     def _get_connector_settings(cls, usm: SyncUSManager) -> CONNECTOR_SETTINGS_TV:
-        sr = usm.get_services_registry()
-        connectors_settings = sr.get_connectors_settings(cls.conn_type)
-        assert connectors_settings is not None
-        assert isinstance(connectors_settings, cls.settings_type)
-        return connectors_settings
+        return _get_connector_settings(usm, cls.conn_type, cls.settings_type)
 
     @property
     def _connector_settings(self) -> CONNECTOR_SETTINGS_TV:
-        sr = self.us_manager.get_services_registry()
-        connectors_settings = sr.get_connectors_settings(self.conn_type)
-        assert connectors_settings is not None
-        assert isinstance(connectors_settings, self.settings_type)
-        return connectors_settings
+        return _get_connector_settings(self.us_manager, self.conn_type, self.settings_type)
 
 
 class HiddenDatabaseNameMixin(ConnectionSQL):

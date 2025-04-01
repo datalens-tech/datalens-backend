@@ -15,6 +15,7 @@ from dl_connector_clickhouse.core.clickhouse.data_source import (
     ClickHouseSubselectDataSource,
 )
 from dl_connector_clickhouse.core.clickhouse.data_source_migration import ClickHouseDataSourceMigrator
+from dl_connector_clickhouse.core.clickhouse.settings import ClickHouseSettingDefinition
 from dl_connector_clickhouse.core.clickhouse.storage_schemas.connection import ConnectionClickhouseDataStorageSchema
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 from dl_connector_clickhouse.core.clickhouse_base.connection_executors import (
@@ -35,6 +36,7 @@ class ClickHouseCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = AsyncClickHouseConnExecutor
     dialect_string = "bi_clickhouse"
     data_source_migrator_cls = ClickHouseDataSourceMigrator
+    settings_definition = ClickHouseSettingDefinition
 
 
 class ClickHouseTableCoreSourceDefinition(CoreSourceDefinition):
