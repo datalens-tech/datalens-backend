@@ -1,4 +1,5 @@
 import sqlalchemy as sa
+import sqlalchemy.sql.expression as sa_expr
 
 from dl_formula.definitions.base import (
     TranslationVariant,
@@ -54,17 +55,21 @@ DEFINITIONS_STRING = [
         ]
     ),
     # contains
-    # base.FuncContainsConst.for_dialect(D.TRINO),
-    # base.FuncContainsNonConst(
-    #     variants=[
-    #         V(D.TRINO, lambda x, y: sa.func.STRPOS(x, y) > 0),
-    #     ]
-    # ),
-    # base.FuncContainsNonString.for_dialect(D.TRINO),
+    base.FuncContainsConst.for_dialect(D.TRINO),
+    base.FuncContainsNonConst(
+        variants=[
+            V(
+                D.TRINO,
+                lambda text, pattern: sa.func.position(sa_expr.BinaryExpression(pattern, text, sa_expr.custom_op("IN")))
+                > 0,
+            ),
+        ]
+    ),
+    base.FuncContainsNonString.for_dialect(D.TRINO),
     # notcontains
-    # base.FuncNotContainsConst.for_dialect(D.TRINO),
-    # base.FuncNotContainsNonConst.for_dialect(D.TRINO),
-    # base.FuncNotContainsNonString.for_dialect(D.TRINO),
+    base.FuncNotContainsConst.for_dialect(D.TRINO),
+    base.FuncNotContainsNonConst.for_dialect(D.TRINO),
+    base.FuncNotContainsNonString.for_dialect(D.TRINO),
     # endswith
     # base.FuncEndswithConst.for_dialect(D.TRINO),
     # base.FuncEndswithNonConst(
@@ -88,9 +93,9 @@ DEFINITIONS_STRING = [
         ]
     ),
     # icontains
-    # base.FuncIContainsConst.for_dialect(D.TRINO),
-    # base.FuncIContainsNonConst.for_dialect(D.TRINO),
-    # base.FuncIContainsNonString.for_dialect(D.TRINO),
+    base.FuncIContainsConst.for_dialect(D.TRINO),
+    base.FuncIContainsNonConst.for_dialect(D.TRINO),
+    base.FuncIContainsNonString.for_dialect(D.TRINO),
     # iendswith
     # base.FuncIEndswithConst.for_dialect(D.TRINO),
     # base.FuncIEndswithNonConst.for_dialect(D.TRINO),
