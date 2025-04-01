@@ -168,12 +168,12 @@ DEFINITIONS_STRING = [
         ]
     ),
     # space
-    # base.FuncSpaceConst.for_dialect(D.TRINO),
-    # base.FuncSpaceNonConst(
-    #     variants=[
-    #         V(D.TRINO, lambda size: sa.func.REPEAT(" ", size)),
-    #     ]
-    # ),
+    base.FuncSpaceConst.for_dialect(D.TRINO),
+    base.FuncSpaceNonConst(
+        variants=[
+            V(D.TRINO, lambda size: sa.func.array_join(sa.func.repeat(" ", size), "")),
+        ]
+    ),
     # split
     # base.FuncSplit1(
     #     variants=[
@@ -185,14 +185,11 @@ DEFINITIONS_STRING = [
     #         V(D.TRINO, lambda text, delim: sa.func.string_to_array(text, delim)),
     #     ]
     # ),
-    # base.FuncSplit3(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda text, delim, ind: sa.func.SPLIT_PART(text, delim, sa.cast(ind, sa.INTEGER)),
-    #         ),  # FIXME: does not work with negative indices
-    #     ]
-    # ),
+    base.FuncSplit3(
+        variants=[
+            V(D.TRINO, sa.func.split_part),
+        ]
+    ),
     # startswith
     # base.FuncStartswithConst.for_dialect(D.TRINO),
     # base.FuncStartswithNonConst(
