@@ -36,7 +36,7 @@ DEFINITIONS_MATH = [
     # base.FuncDivSafe2.for_dialect(D.TRINO),
     # base.FuncDivSafe3.for_dialect(D.TRINO),
     # # exp
-    # base.FuncExp.for_dialect(D.TRINO),
+    base.FuncExp.for_dialect(D.TRINO),
     # # floor
     # base.FuncFloor.for_dialect(D.TRINO),
     # # greatest
@@ -48,11 +48,11 @@ DEFINITIONS_MATH = [
     # base.FuncLeastMain.for_dialect(D.TRINO),
     # base.LeastMulti.for_dialect(D.TRINO),
     # # ln
-    # base.FuncLn.for_dialect(D.TRINO),
+    base.FuncLn.for_dialect(D.TRINO),
     # # log
-    # base.FuncLog.for_dialect(D.TRINO),
+    base.FuncLog.for_dialect(D.TRINO),
     # # log10
-    # base.FuncLog10.for_dialect(D.TRINO),
+    base.FuncLog10.for_dialect(D.TRINO),
     # # pi
     base.FuncPi.for_dialect(D.TRINO),
     # # power
@@ -67,9 +67,13 @@ DEFINITIONS_MATH = [
     # # sin
     base.FuncSin.for_dialect(D.TRINO),
     # # sqrt
-    # base.FuncSqrt.for_dialect(D.TRINO),
+    base.FuncSqrt.for_dialect(D.TRINO),
     # # square
-    # base.FuncSquare.for_dialect(D.TRINO),
+    base.FuncSquare(
+        variants=[
+            V(D.TRINO, lambda x: n.func.POWER(x, 2)),
+        ]
+    ),
     # # tan
     base.FuncTan.for_dialect(D.TRINO),
 ]
