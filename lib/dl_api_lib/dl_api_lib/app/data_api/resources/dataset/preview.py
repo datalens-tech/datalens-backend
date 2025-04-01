@@ -26,6 +26,7 @@ from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.dataset_capabilities import DatasetCapabilities
 import dl_core.exc as common_exc
+from dl_query_processing.compilation.specs import ParameterValueSpec
 from dl_query_processing.legend.block_legend import BlockSpec
 from dl_query_processing.merging.primitives import MergedQueryDataStream
 from dl_query_processing.postprocessing.primitives import PostprocessedQuery
@@ -94,6 +95,7 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
         block_spec: BlockSpec,
         possible_data_lengths: Optional[Collection] = None,
         profiling_postfix: str = "",
+        parameter_value_specs: list[ParameterValueSpec] | None = None,
     ) -> PostprocessedQuery:
         ds_accessor = DatasetComponentAccessor(dataset=self.dataset)
         if not ds_accessor.get_data_source_id_list():
@@ -102,6 +104,7 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
         return await super().execute_query(
             block_spec=block_spec,
             profiling_postfix=profiling_postfix,
+            parameter_value_specs=parameter_value_specs,
         )
 
     def load_req_model(self) -> DataRequestModel:

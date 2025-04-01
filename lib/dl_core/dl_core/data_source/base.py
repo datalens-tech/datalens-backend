@@ -39,6 +39,7 @@ from dl_core.db import (
 from dl_core.us_connection import get_connection_class
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_manager.local_cache import USEntryBuffer
+from dl_model_tools.typed_values import BIValue
 from dl_type_transformer.type_transformer import (
     TypeTransformer,
     get_type_transformer,
@@ -84,6 +85,7 @@ class DataSource(metaclass=abc.ABCMeta):
     _id: str = attr.ib(default=None)
     _us_entry_buffer: USEntryBuffer = attr.ib(default=None, eq=False)
     _spec: DataSourceSpec | None = attr.ib(kw_only=True, default=None)
+    _dataset_parameter_values: dict[str, BIValue] = attr.ib(kw_only=True)
 
     _connection: ConnectionBase | None = attr.ib(default=None)
 
@@ -213,6 +215,19 @@ class DataSource(metaclass=abc.ABCMeta):
         Optionally assign the source an alias that can be used in the query to refer to it.
         """
         raise NotImplementedError()
+
+    def _render_dataset_parameter_values(
+        self,
+        value: str,
+    ) -> str:
+        if self._connection is None or not self._connection.is_datasource_template_allowed:
+            return value
+
+        new_value = value
+        for param_name, param_value in self._dataset_parameter_values.items():
+            new_value = new_value.replace(f"{{{param_name}}}", str(param_value.value))
+
+        return new_value
 
     def source_exists(
         self,

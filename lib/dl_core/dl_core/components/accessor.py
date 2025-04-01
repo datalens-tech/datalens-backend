@@ -1,5 +1,6 @@
 import attr
 
+from dl_constants.enums import CalcMode
 from dl_core.base_models import ObligatoryFilter
 from dl_core.data_source_spec.collection import DataSourceCollectionSpec
 import dl_core.exc as exc
@@ -8,6 +9,8 @@ from dl_core.multisource import (
     SourceAvatar,
 )
 from dl_core.us_dataset import Dataset
+from dl_model_tools.typed_values import BIValue
+from dl_query_processing.compilation.specs import ParameterValueSpec
 
 
 @attr.s(frozen=True)
@@ -174,3 +177,23 @@ class DatasetComponentAccessor:
         if obfilter is None:
             raise exc.ObligatoryFilterNotFound(f"Unknown obligatory filter: {obfilter_id, field_guid}")
         return obfilter
+
+    def get_parameter_values(self) -> dict[str, BIValue]:
+        result = {
+            field.title: field.default_value
+            for field in self._dataset.result_schema.fields
+            if field.calc_mode == CalcMode.parameter and field.default_value is not None
+        }
+
+        return result
+
+    def get_parameter_values_from_specs(
+        self,
+        parameter_value_specs: list[ParameterValueSpec],
+    ) -> dict[str, BIValue]:
+        result = {}
+        for parameter_value_spec in parameter_value_specs:
+            field = self._dataset.result_schema.by_guid(parameter_value_spec.field_id)
+            assert field.default_value is not None
+            result[field.title] = attr.evolve(field.default_value, value=parameter_value_spec.value)
+        return result

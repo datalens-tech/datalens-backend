@@ -25,6 +25,7 @@ from dl_core.multisource import SourceAvatar
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.local_cache import USEntryBuffer
+from dl_query_processing.compilation.specs import ParameterValueSpec
 
 
 @attr.s
@@ -38,6 +39,7 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
     _role: DataSourceRole = attr.ib(kw_only=True, default=DataSourceRole.origin)
     _ds_accessor: DatasetComponentAccessor = attr.ib(init=False)
     _dsrc_coll_factory: DataSourceCollectionFactory = attr.ib(init=False)
+    _parameter_value_specs: list[ParameterValueSpec] | None = attr.ib(kw_only=True, default=None)
 
     @_ds_accessor.default
     def _make_ds_accessor(self) -> DatasetComponentAccessor:
@@ -63,11 +65,23 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
                 raise
 
     def get_prepared_source(
-        self, avatar_id: AvatarId, alias: str, from_subquery: bool, subquery_limit: Optional[int]
+        self,
+        avatar_id: AvatarId,
+        alias: str,
+        from_subquery: bool,
+        subquery_limit: Optional[int],
     ) -> PreparedSingleFromInfo:
         avatar = self._ds_accessor.get_avatar_strict(avatar_id=avatar_id)
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=avatar.source_id)
-        dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
+        dataset_parameter_values = self._ds_accessor.get_parameter_values()
+        if self._parameter_value_specs:
+            dataset_parameter_values.update(
+                self._ds_accessor.get_parameter_values_from_specs(parameter_value_specs=self._parameter_value_specs)
+            )
+        dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(
+            spec=dsrc_coll_spec,
+            dataset_parameter_values=dataset_parameter_values,
+        )
         dsrc = dsrc_coll.get_strict(role=self._role)
         if not isinstance(dsrc, dl_core.data_source.sql.BaseSQLDataSource):
             raise TypeError(f"Root data source has non-SQL type: {type(dsrc)}")

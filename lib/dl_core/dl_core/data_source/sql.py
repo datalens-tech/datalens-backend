@@ -196,6 +196,8 @@ class SubselectDataSource(BaseSQLDataSource):
         if not subsql:
             raise exc.TableNameNotConfiguredError
 
+        subsql = self._render_dataset_parameter_values(subsql)
+
         from_sql = "(\n{}\n)".format(subsql)
 
         # e.g. PG doesn't allow unaliased subqueries at all.

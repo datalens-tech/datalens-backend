@@ -39,6 +39,7 @@ from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.utils import make_id
 from dl_query_processing import exc
+from dl_query_processing.compilation.specs import ParameterValueSpec
 from dl_query_processing.enums import (
     EmptyQueryMode,
     ExecutionLevel,
@@ -73,6 +74,7 @@ class QueryExecutor:
     _avatar_alias_mapper: Optional[Callable[[str], str]] = attr.ib(kw_only=True, default=None)
     _us_manager: USManagerBase = attr.ib(kw_only=True)
     _compeng_semaphore: asyncio.Semaphore = attr.ib(kw_only=True)
+    _parameter_value_specs: list[ParameterValueSpec] | None = attr.ib(kw_only=True, default=None)
 
     @property
     def _service_registry(self) -> ServicesRegistry:
@@ -313,6 +315,7 @@ class QueryExecutor:
             dataset=self._dataset,
             role=role,
             us_entry_buffer=self._us_manager.get_entry_buffer(),
+            parameter_value_specs=self._parameter_value_specs,
         )
 
         streams_by_result_id: Dict[AvatarId, AbstractStream] = {}

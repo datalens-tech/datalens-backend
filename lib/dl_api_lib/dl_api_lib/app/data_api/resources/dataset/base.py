@@ -57,6 +57,7 @@ from dl_app_tools.profiling_base import (
 )
 from dl_constants.enums import (
     DataSourceRole,
+    FieldRole,
     RLSSubjectType,
 )
 from dl_core.components.accessor import DatasetComponentAccessor
@@ -72,9 +73,11 @@ from dl_core.us_manager.mutation_cache.usentry_mutation_cache import (
     USEntryMutationCache,
 )
 from dl_core.us_manager.us_manager_async import AsyncUSManager
+from dl_query_processing.compilation.specs import ParameterValueSpec
 from dl_query_processing.enums import QueryType
 from dl_query_processing.execution.exec_info import QueryExecutionInfo
 from dl_query_processing.legend.block_legend import BlockSpec
+from dl_query_processing.legend.field_legend import ParameterRoleSpec
 from dl_query_processing.merging.merger import DataStreamMerger
 from dl_query_processing.merging.primitives import MergedQueryDataStream
 from dl_query_processing.pagination.paginator import QueryPaginator
@@ -320,6 +323,7 @@ class DatasetDataBaseView(BaseView):
                 ds=self.dataset,
                 us_manager=us_manager,
                 is_data_api=True,
+                parameter_value_specs=self._get_parameter_value_specs(req_model.raw_query_spec_union),
             )
             executor = services_registry.get_compute_executor()
             await executor.execute(lambda: ds_validator.apply_batch(action_batch=req_model.updates))
@@ -327,6 +331,24 @@ class DatasetDataBaseView(BaseView):
                 await self.try_save_dataset_to_cache(mutation_cache, mutation_key, self.dataset)  # noqa
 
         return update_info
+
+    def _get_parameter_value_specs(
+        self,
+        raw_query_spec_union: RawQuerySpecUnion,
+    ) -> List[ParameterValueSpec]:
+        legend_formalizer = self.make_legend_formalizer(query_type=raw_query_spec_union.meta.query_type)
+        legend = legend_formalizer.make_legend(raw_query_spec_union=raw_query_spec_union)
+
+        result: List[ParameterValueSpec] = []
+        for legend_parameter_spec in legend.list_for_role(FieldRole.parameter):
+            parameter_role_spec = legend_parameter_spec.role_spec
+            assert isinstance(parameter_role_spec, ParameterRoleSpec)
+            field_id = legend_parameter_spec.id
+
+            parameter_value_spec = ParameterValueSpec(field_id=field_id, value=parameter_role_spec.value)
+            result.append(parameter_value_spec)
+
+        return result
 
     async def check_for_notifications(self, services_registry: ApiServiceRegistry, us_manager: AsyncUSManager) -> None:
         ds_lc_manager = us_manager.get_lifecycle_manager(self.dataset)
@@ -383,6 +405,7 @@ class DatasetDataBaseView(BaseView):
         block_spec: BlockSpec,
         possible_data_lengths: Optional[Collection] = None,
         profiling_postfix: str = "",
+        parameter_value_specs: list[ParameterValueSpec] | None = None,
     ) -> PostprocessedQuery:
         # TODO: Move to a separate class
 
@@ -393,6 +416,7 @@ class DatasetDataBaseView(BaseView):
             us_manager=us_manager,
             block_spec=block_spec,
             rci=self.dl_request.rci,
+            parameter_value_specs=parameter_value_specs,
         )
 
         with GenericProfiler(f"{self.profiler_prefix}-query-build{profiling_postfix}"):
@@ -438,7 +462,12 @@ class DatasetDataBaseView(BaseView):
 
         runner = ConcurrentTaskRunner()
         for block_spec in block_legend.blocks:
-            await runner.schedule(self.execute_query(block_spec=block_spec))
+            await runner.schedule(
+                self.execute_query(
+                    block_spec=block_spec,
+                    parameter_value_specs=self._get_parameter_value_specs(raw_query_spec_union=raw_query_spec_union),
+                )
+            )
         executed_queries = await runner.finalize()
         postprocessed_query_blocks = [
             PostprocessedQueryBlock.from_block_spec(block_spec, postprocessed_query=postprocessed_query)
@@ -498,7 +527,11 @@ class DatasetDataBaseView(BaseView):
         for avatar_id in avatar_ids:
             avatar = self.ds_accessor.get_avatar_strict(avatar_id=avatar_id)
             dsrc_coll_spec = self.ds_accessor.get_data_source_coll_spec_strict(source_id=avatar.source_id)
-            dsrc_coll = dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
+            dataset_parameter_values = self.ds_accessor.get_parameter_values()
+            dsrc_coll = dsrc_coll_factory.get_data_source_collection(
+                spec=dsrc_coll_spec,
+                dataset_parameter_values=dataset_parameter_values,
+            )
 
             dsrc: DataSource
             if DataSourceRole.origin in dsrc_coll:

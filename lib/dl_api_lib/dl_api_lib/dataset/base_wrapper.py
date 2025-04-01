@@ -50,6 +50,7 @@ import dl_formula.core.exc as formula_exc
 from dl_formula.definitions.scope import Scope
 from dl_formula.inspect.env import InspectionEnvironment
 from dl_formula.parser.base import FormulaParser
+from dl_model_tools.typed_values import BIValue
 from dl_query_processing.column_registry import ColumnRegistry
 from dl_query_processing.compilation.formula_compiler import FormulaCompiler
 from dl_query_processing.compilation.primitives import (
@@ -146,7 +147,6 @@ class DatasetBaseWrapper:
         self._ds_dep_mgr_factory = self.make_dep_mgr_factory()
         if block_spec is None:
             block_spec = BlockSpec(block_id=0, legend=Legend(items=[]), parent_block_id=None)
-        assert block_spec is not None
         self._formalizer = self.make_formalizer(query_type=block_spec.query_type)
         self._avatar_alias_mapper = AvatarAliasMapper()
 
@@ -186,9 +186,24 @@ class DatasetBaseWrapper:
             verbose_logging=self._verbose_logging,
         )
 
+    def _get_dataset_parameter_values(self) -> dict[str, BIValue]:
+        result = self._ds_accessor.get_parameter_values()
+
+        if self._query_spec is not None:
+            result.update(
+                self._ds_accessor.get_parameter_values_from_specs(
+                    parameter_value_specs=self._query_spec.parameter_value_specs,
+                )
+            )
+
+        return result
+
     def _get_data_source_coll_strict(self, source_id: str) -> DataSourceCollection:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
-        dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
+        dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(
+            spec=dsrc_coll_spec,
+            dataset_parameter_values=self._get_dataset_parameter_values(),
+        )
         return dsrc_coll
 
     def _get_data_source_strict(self, source_id: str, role: Optional[DataSourceRole] = None) -> DataSource:

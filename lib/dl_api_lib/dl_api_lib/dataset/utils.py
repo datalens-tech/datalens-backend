@@ -45,7 +45,11 @@ def _iter_data_source_collections(
     dsrc_coll_factory = DataSourceCollectionFactory(us_entry_buffer=us_entry_buffer)
     for source_id in source_ids:
         dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
-        dsrc_coll = dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
+        dataset_parameter_values = ds_accessor.get_parameter_values()
+        dsrc_coll = dsrc_coll_factory.get_data_source_collection(
+            spec=dsrc_coll_spec,
+            dataset_parameter_values=dataset_parameter_values,
+        )
         yield dsrc_coll
 
 

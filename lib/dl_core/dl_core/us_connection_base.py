@@ -251,6 +251,10 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         return False
 
     @property
+    def is_datasource_template_allowed(self) -> bool:
+        return False
+
+    @property
     def is_typed_query_raw_allowed(self) -> bool:
         return False
 

@@ -124,7 +124,11 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
     def _get_data_source_strict(self, source_id: str, role: DataSourceRole) -> DataSource:
         assert role is not None
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
-        dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
+        dataset_parameter_values = self._ds_accessor.get_parameter_values()
+        dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(
+            spec=dsrc_coll_spec,
+            dataset_parameter_values=dataset_parameter_values,
+        )
         dsrc = dsrc_coll.get_strict(role=role)
         return dsrc
 

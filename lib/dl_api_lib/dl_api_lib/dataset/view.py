@@ -25,6 +25,7 @@ from dl_core.fields import BIField
 from dl_core.us_connection_base import ClassicConnectionSQL
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
+from dl_query_processing.compilation.specs import ParameterValueSpec
 from dl_query_processing.enums import QueryType
 from dl_query_processing.execution.exec_info import QueryExecutionInfo
 from dl_query_processing.execution.executor import QueryExecutor
@@ -138,9 +139,11 @@ class DatasetView(DatasetBaseWrapper):
         us_manager: USManagerBase,
         block_spec: BlockSpec,
         rci: RequestContextInfo,
+        parameter_value_specs: list[ParameterValueSpec] | None = None,
     ):
         self._rci = rci
         self._query_type = block_spec.query_type  # FIXME: Remove
+        self._parameter_value_specs = parameter_value_specs
         self._compeng_semaphore = asyncio.Semaphore()
         super().__init__(
             ds=ds, block_spec=block_spec, us_manager=us_manager, debug_mode=self._rci.x_dl_debug_mode or False
@@ -180,6 +183,7 @@ class DatasetView(DatasetBaseWrapper):
             allow_cache_usage=allow_cache_usage,
             us_manager=self._us_manager,
             compeng_semaphore=self._compeng_semaphore,
+            parameter_value_specs=self._parameter_value_specs,
         )
 
     @property

@@ -97,7 +97,9 @@ from dl_formula.core.message_ctx import (
     FormulaErrorCtx,
     MessageLevel,
 )
+from dl_model_tools.typed_values import BIValue
 from dl_query_processing.compilation.helpers import single_formula_comp_query_for_validation
+from dl_query_processing.compilation.specs import ParameterValueSpec
 import dl_query_processing.exc
 from dl_query_processing.legend.block_legend import BlockSpec
 from dl_utils.utils import enum_not_none
@@ -154,7 +156,9 @@ class DatasetValidator(DatasetBaseWrapper):
         ds: Dataset,
         us_manager: USManagerBase,
         is_data_api: bool = False,
+        parameter_value_specs: list[ParameterValueSpec] | None = None,
     ):
+        self._parameter_value_specs = parameter_value_specs
         super().__init__(ds=ds, us_manager=us_manager)
         self._is_data_api = is_data_api
 
@@ -172,6 +176,17 @@ class DatasetValidator(DatasetBaseWrapper):
         block_spec = block_legend.blocks[0]
         super()._reload_formalized_specs(block_spec=block_spec)
 
+    def _get_dataset_parameter_values(self) -> dict[str, BIValue]:
+        result = super()._get_dataset_parameter_values()
+        if self._parameter_value_specs is not None:
+            result.update(
+                self._ds_accessor.get_parameter_values_from_specs(
+                    parameter_value_specs=self._parameter_value_specs,
+                ),
+            )
+
+        return result
+
     @property
     def _sync_us_manager(self) -> SyncUSManager:
         us_manager = self._us_manager
@@ -181,11 +196,27 @@ class DatasetValidator(DatasetBaseWrapper):
             f"Unsupported type of USManager ({type(us_manager).__qualname__}). " f"Only SyncUSManager supported."
         )
 
+    def _get_action_order_index(self, action: Action) -> int:
+        # Fields with calc_mode=parameter should be added first so that sources can reference them
+        if (
+            isinstance(action, FieldAction)
+            and action.action == DatasetAction.add_field
+            and isinstance(action.field, UpdateField)
+            and action.field.calc_mode == CalcMode.parameter
+        ):
+            return 0
+
+        return 100
+
+    def _sort_action_batch(self, action_batch: Sequence[Action]) -> Sequence[Action]:
+        return sorted(action_batch, key=self._get_action_order_index)
+
     @generic_profiler("validator-apply-action-batch")
     def apply_batch(self, action_batch: Sequence[Action]) -> None:
         self.update_unpatched_fields()  # TODO: remove after all fields have been patched
+        sorted_action_batch = self._sort_action_batch(action_batch)
         try:
-            for action_patch in action_batch:
+            for action_patch in sorted_action_batch:
                 self.apply_action(
                     item_data=action_patch,
                 )
@@ -1517,6 +1548,7 @@ class DatasetValidator(DatasetBaseWrapper):
             id="",
             spec=new_dsrc_spec,
             us_entry_buffer=self._us_manager.get_entry_buffer(),
+            dataset_parameter_values={},
         )
         new_dsrc_parameters = new_dsrc_dummy.get_parameters()
         return new_dsrc_parameters, new_dsrc_spec.source_type
