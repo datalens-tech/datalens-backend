@@ -4,6 +4,7 @@ from typing import ClassVar
 
 from dl_constants.enums import DashSQLQueryType
 from dl_core.us_connection_base import (
+    ConnectionHardcodedDataMixin,
     DataSourceTemplate,
     QueryTypeInfo,
 )
@@ -14,11 +15,15 @@ from dl_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_SUBSELECT,
     SOURCE_TYPE_CH_TABLE,
 )
+from dl_connector_clickhouse.core.clickhouse.settings import ClickHouseConnectorSettings
 from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 from dl_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 
 
-class ConnectionClickhouse(ConnectionClickhouseBase):
+class ConnectionClickhouse(
+    ConnectionHardcodedDataMixin[ClickHouseConnectorSettings],
+    ConnectionClickhouseBase,
+):
     """
     User's ClickHouse database.
     Should not be used for internal clickhouses.
@@ -26,6 +31,8 @@ class ConnectionClickhouse(ConnectionClickhouseBase):
 
     source_type = SOURCE_TYPE_CH_TABLE
     allowed_source_types = frozenset((SOURCE_TYPE_CH_TABLE, SOURCE_TYPE_CH_SUBSELECT))
+    settings_type = ClickHouseConnectorSettings
+
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     allow_export: ClassVar[bool] = True
