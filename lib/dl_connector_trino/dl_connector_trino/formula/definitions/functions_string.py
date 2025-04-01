@@ -71,16 +71,16 @@ DEFINITIONS_STRING = [
     base.FuncNotContainsNonConst.for_dialect(D.TRINO),
     base.FuncNotContainsNonString.for_dialect(D.TRINO),
     # endswith
-    # base.FuncEndswithConst.for_dialect(D.TRINO),
-    # base.FuncEndswithNonConst(
-    #     variants=[
-    #         V(
-    #             D.TRINO,
-    #             lambda x, y: (sa.func.SUBSTRING(x, sa.func.char_length(x) - sa.func.char_length(y) + 1) == y),
-    #         ),
-    #     ]
-    # ),
-    # base.FuncEndswithNonString.for_dialect(D.TRINO),
+    base.FuncEndswithConst.for_dialect(D.TRINO),
+    base.FuncEndswithNonConst(
+        variants=[
+            V(
+                D.TRINO,
+                lambda text, pattern: n.func.STARTSWITH(sa.func.reverse(text), sa.func.reverse(pattern)),
+            ),
+        ]
+    ),
+    base.FuncEndswithNonString.for_dialect(D.TRINO),
     # find
     base.FuncFind2(
         variants=[
@@ -97,13 +97,13 @@ DEFINITIONS_STRING = [
     base.FuncIContainsNonConst.for_dialect(D.TRINO),
     base.FuncIContainsNonString.for_dialect(D.TRINO),
     # iendswith
-    # base.FuncIEndswithConst.for_dialect(D.TRINO),
-    # base.FuncIEndswithNonConst.for_dialect(D.TRINO),
-    # base.FuncIEndswithNonString.for_dialect(D.TRINO),
+    base.FuncIEndswithConst.for_dialect(D.TRINO),
+    base.FuncIEndswithNonConst.for_dialect(D.TRINO),
+    base.FuncIEndswithNonString.for_dialect(D.TRINO),
     # istartswith
-    # base.FuncIStartswithConst.for_dialect(D.TRINO),
-    # base.FuncIStartswithNonConst.for_dialect(D.TRINO),
-    # base.FuncIStartswithNonString.for_dialect(D.TRINO),
+    base.FuncIStartswithConst.for_dialect(D.TRINO),
+    base.FuncIStartswithNonConst.for_dialect(D.TRINO),
+    base.FuncIStartswithNonString.for_dialect(D.TRINO),
     # left
     base.FuncLeft(
         variants=[
@@ -203,13 +203,13 @@ DEFINITIONS_STRING = [
         ]
     ),
     # startswith
-    # base.FuncStartswithConst.for_dialect(D.TRINO),
-    # base.FuncStartswithNonConst(
-    #     variants=[
-    #         V(D.TRINO, lambda x, y: sa.func.STRPOS(x, y) == 1),
-    #     ]
-    # ),
-    # base.FuncStartswithNonString.for_dialect(D.TRINO),
+    base.FuncStartswithConst.for_dialect(D.TRINO),
+    base.FuncStartswithNonConst(
+        variants=[
+            V(D.TRINO, sa.func.starts_with),
+        ]
+    ),
+    base.FuncStartswithNonString.for_dialect(D.TRINO),
     # substr
     base.FuncSubstr2.for_dialect(D.TRINO),
     base.FuncSubstr3.for_dialect(D.TRINO),
