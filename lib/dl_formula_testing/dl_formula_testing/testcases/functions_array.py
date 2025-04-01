@@ -325,12 +325,8 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval('CONTAINS_ALL(ARRAY("a", "bc", "potato"), ARRAY("a"))')
         assert dbe.eval('CONTAINS_ALL(ARRAY("a", "bc", "potato"), ARRAY("a", "potato"))')
         assert dbe.eval('CONTAINS_ALL(ARRAY("a", "bc", "potato", NULL), ARRAY("a", "potato"))')
-        assert dbe.eval(
-            'CONTAINS_ALL(ARRAY("a", "bc", "potato", NULL), ARRAY("a", "a", "a", "a", "a", "potato"))'
-        )
-        assert dbe.eval(
-            'CONTAINS_ALL(ARRAY("a", "bc", "potato", "a", "potato"), ARRAY("a", "potato"))'
-        )
+        assert dbe.eval('CONTAINS_ALL(ARRAY("a", "bc", "potato", NULL), ARRAY("a", "a", "a", "a", "a", "potato"))')
+        assert dbe.eval('CONTAINS_ALL(ARRAY("a", "bc", "potato", "a", "potato"), ARRAY("a", "potato"))')
         assert dbe.eval('CONTAINS_ALL(ARRAY("a", "potato"), ARRAY("a", "potato"))')
         assert dbe.eval('CONTAINS_ALL(ARRAY("a", "potato", "a", "potato"), ARRAY("a", "potato"))')
         assert not dbe.eval('CONTAINS_ALL(ARRAY("a", "potato"), ARRAY("a", "cheese"))')
@@ -466,15 +462,9 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", NULL), ARRAY("foo", "tomato"))')
         assert dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", NULL), ARRAY("foo", "tomato", NULL))')
         assert not dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", "potato"), ARRAY("tomato", "cheese"))')
-        assert not dbe.eval(
-            'CONTAINS_ANY(ARRAY("foo", "bar", "potato", NULL), ARRAY("tomato", "cheese"))'
-        )
-        assert not dbe.eval(
-            'CONTAINS_ANY(ARRAY("foo", "bar", "potato"), ARRAY("tomato", "cheese", NULL))'
-        )
-        assert dbe.eval(
-            'CONTAINS_ANY(ARRAY("foo", "bar", "potato", NULL), ARRAY("banana", "tomato", NULL))'
-        )
+        assert not dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", "potato", NULL), ARRAY("tomato", "cheese"))')
+        assert not dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", "potato"), ARRAY("tomato", "cheese", NULL))')
+        assert dbe.eval('CONTAINS_ANY(ARRAY("foo", "bar", "potato", NULL), ARRAY("banana", "tomato", NULL))')
         assert dbe.eval('CONTAINS_ANY(ARRAY("foo"), ARRAY("foo"))')
         assert dbe.eval('CONTAINS_ANY(ARRAY("foo", "foo"), ARRAY("foo"))')
         assert dbe.eval('CONTAINS_ANY(ARRAY("foo"), ARRAY("foo", "foo"))')
@@ -584,9 +574,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert not dbe.eval("NOTCONTAINS([arr_str_value], GET_ITEM([arr_str_value], 4))", from_=data_table)
 
     def test_array_slice(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        assert dbe.eval("SLICE([arr_int_value], 2, 2)", from_=data_table) == dbe.eval(
-            "ARRAY(23, 456)"
-        )
+        assert dbe.eval("SLICE([arr_int_value], 2, 2)", from_=data_table) == dbe.eval("ARRAY(23, 456)")
         assert dbe.eval("SLICE(ARRAY(1, 2, 3, 4), 2, 2)") == dbe.eval("ARRAY(2, 3)")
         assert dbe.eval("SLICE(ARRAY(1, 2, 3, 4), 2, 1)") == dbe.eval("ARRAY(2)")
         assert str(dbe.eval("SLICE(ARRAY(1, 2, 3, 4), 2, 0)")) == "[]"
@@ -679,25 +667,17 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("REPLACE(ARRAY(45, 1, 45), GET_ITEM(ARRAY(24, 45), 2), 22 + 2)") == dbe.eval("ARRAY(24, 1, 24)")
 
     def test_array_cast(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        assert dbe.eval("CAST_ARR_INT([arr_float_value])", from_=data_table) == dbe.eval(
-            "ARRAY(0, 45, 0, NULL)"
-        )
+        assert dbe.eval("CAST_ARR_INT([arr_float_value])", from_=data_table) == dbe.eval("ARRAY(0, 45, 0, NULL)")
         assert dbe.eval("CAST_ARR_INT([arr_int_value])", from_=data_table) == dbe.eval(
             "[arr_int_value]", from_=data_table
         )
-        assert dbe.eval('CAST_ARR_INT(ARRAY("1", "3", "2", NULL))') == dbe.eval(
-            "ARRAY(1, 3, 2, NULL)"
-        )
+        assert dbe.eval('CAST_ARR_INT(ARRAY("1", "3", "2", NULL))') == dbe.eval("ARRAY(1, 3, 2, NULL)")
 
         assert dbe.eval("CAST_ARR_FLOAT([arr_float_value])", from_=data_table) == dbe.eval(
             "[arr_float_value]", from_=data_table
         )
-        assert dbe.eval("CAST_ARR_FLOAT([arr_int_value])", from_=data_table) == dbe.eval(
-            "ARRAY(0, 23.0, 456, NULL)"
-        )
-        assert dbe.eval('CAST_ARR_FLOAT(ARRAY("1", "3.3", "2", NULL))') == dbe.eval(
-            "ARRAY(1, 3.3, 2, NULL)"
-        )
+        assert dbe.eval("CAST_ARR_FLOAT([arr_int_value])", from_=data_table) == dbe.eval("ARRAY(0, 23.0, 456, NULL)")
+        assert dbe.eval('CAST_ARR_FLOAT(ARRAY("1", "3.3", "2", NULL))') == dbe.eval("ARRAY(1, 3.3, 2, NULL)")
 
         assert dbe.eval("CAST_ARR_STR([arr_float_value])", from_=data_table) in (
             dbe.eval('ARRAY("0.0", "45.0", "0.123", NULL)'),
@@ -705,9 +685,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
             dbe.eval('ARRAY("0.0", "45.0", "0.123", NULL)'),
             dbe.eval('ARRAY("0", "45", "0.123", NULL)'),
         )
-        assert dbe.eval("CAST_ARR_STR([arr_int_value])", from_=data_table) == dbe.eval(
-            'ARRAY("0", "23", "456", NULL)'
-        )
+        assert dbe.eval("CAST_ARR_STR([arr_int_value])", from_=data_table) == dbe.eval('ARRAY("0", "23", "456", NULL)')
         assert dbe.eval("CAST_ARR_STR([arr_str_value])", from_=data_table) == dbe.eval(
             "[arr_str_value]", from_=data_table
         )
@@ -722,9 +700,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("GET_ITEM(SLICE([arr_int_value], 2, 2), 2)", from_=data_table) == 456
 
         assert dbe.eval(f"SLICE(SLICE({src}, 2, 1), 1, 1)") == dbe.eval('ARRAY("rty")')
-        assert dbe.eval("SLICE(SLICE([arr_int_value], 2, 1), 1, 1)", from_=data_table) == dbe.eval(
-            "ARRAY(23)"
-        )
+        assert dbe.eval("SLICE(SLICE([arr_int_value], 2, 1), 1, 1)", from_=data_table) == dbe.eval("ARRAY(23)")
 
         assert dbe.eval("STARTSWITH(SLICE(ARRAY(1, 2, 3, 4, 5), 1, 4), SLICE(ARRAY(1, 2, 3), 1, 2))")
         assert not dbe.eval("STARTSWITH(SLICE([arr_int_value], 1, 4), ARRAY(1, 2, 3))", from_=data_table)
@@ -845,9 +821,7 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         )
         assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2), ARRAY(3, 4), ARRAY(5, 6))") in ([], "[]")
         assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2), ARRAY(2, 3), ARRAY(3, 4))") in ([], "[]")
-        assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2), ARRAY(2), ARRAY(2, 2, 3))") == dbe.eval(
-            "ARRAY(2)"
-        )
+        assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2), ARRAY(2), ARRAY(2, 2, 3))") == dbe.eval("ARRAY(2)")
         assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2, 3), ARRAY(2, 3, 4))") in (
             dbe.eval("ARRAY(2, 3)"),
             dbe.eval("ARRAY(3, 2)"),
@@ -867,9 +841,10 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
             dbe.eval("ARRAY(2, 3)"),
             dbe.eval("ARRAY(3, 2)"),
         )
-        assert dbe.eval(
-            "ARR_INTERSECT(ARRAY(0, 2, NULL, NULL), ARRAY(0, NULL), ARRAY(2, NULL, 0))"
-        ) in (dbe.eval("ARRAY(0, NULL)"), dbe.eval("ARRAY(NULL, 0)"))
+        assert dbe.eval("ARR_INTERSECT(ARRAY(0, 2, NULL, NULL), ARRAY(0, NULL), ARRAY(2, NULL, 0))") in (
+            dbe.eval("ARRAY(0, NULL)"),
+            dbe.eval("ARRAY(NULL, 0)"),
+        )
         assert dbe.eval("ARR_INTERSECT(ARRAY(0, NULL, NULL), ARRAY(NULL, 0, NULL, NULL))") in (
             dbe.eval("ARRAY(0, NULL)"),
             dbe.eval("ARRAY(NULL, 0)"),
@@ -914,14 +889,10 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
                 dbe.eval("ARRAY(0, 5.0)"),
                 dbe.eval("ARRAY(5.0, 0)"),
             )
-            assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(4.999))") == dbe.eval(
-                "ARRAY(4.999)"
-            )
+            assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(4.999))") == dbe.eval("ARRAY(4.999)")
 
         assert dbe.eval('ARR_INTERSECT(ARRAY("a", "b", "c"), ARRAY("abc"))') in ([], "[]")
-        assert dbe.eval('ARR_INTERSECT(ARRAY("a", "b", "c"), ARRAY("a", "bc"))') == dbe.eval(
-            'ARRAY("a")'
-        )
+        assert dbe.eval('ARR_INTERSECT(ARRAY("a", "b", "c"), ARRAY("a", "bc"))') == dbe.eval('ARRAY("a")')
         assert dbe.eval('ARR_INTERSECT(ARRAY("cba"), ARRAY("abc"))') in ([], "[]")
         assert dbe.eval(
             'ARR_INTERSECT(ARRAY("ab", "c", "c"), ARRAY("ab", "b", "c", "c"), ARRAY("a", "c", "c", "ab"))',
