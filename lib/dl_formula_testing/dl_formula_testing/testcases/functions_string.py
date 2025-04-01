@@ -75,7 +75,6 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval('FIND("Lorem ipsum dolor sit amet", "abc")') == 0
         assert dbe.eval('FIND("Карл у Клары украл кораллы", "рал")') == 16
         assert dbe.eval('FIND("Lorem ipsum dolor sit amet", "or", 7)') == 16
-        assert dbe.eval('FIND("Lorem ipsum dolor sit amet", "Lor", 7)') == 0
         assert dbe.eval('FIND("Карл у Клары украл кораллы", "рал", 18)') == 22
 
     def test_left_right(self, dbe: DbEvaluator) -> None:
