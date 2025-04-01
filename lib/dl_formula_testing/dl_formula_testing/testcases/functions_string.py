@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import (
     Any,
     ClassVar,
@@ -75,6 +73,7 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval('FIND("Lorem ipsum dolor sit amet", "abc")') == 0
         assert dbe.eval('FIND("Карл у Клары украл кораллы", "рал")') == 16
         assert dbe.eval('FIND("Lorem ipsum dolor sit amet", "or", 7)') == 16
+        assert dbe.eval('FIND("Lorem ipsum dolor sit amet", "Lor", 7)') == 0
         assert dbe.eval('FIND("Карл у Клары украл кораллы", "рал", 18)') == 22
 
     def test_left_right(self, dbe: DbEvaluator) -> None:
@@ -130,9 +129,10 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
     def test_regexp_extract_all(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         if not self.supports_regex_extract_all:
             pytest.skip()
+
         assert dbe.eval("REGEXP_EXTRACT_ALL('100-200, 300-400', '(\\d+)-(\\d+)')") in ("['100','300']", ["100", "300"])
-        assert dbe.eval("REGEXP_EXTRACT_ALL('нет_цифр', '(\\d+)-(\\d+)')") in ("[]", None)
-        assert to_str(dbe.eval('REGEXP_EXTRACT_ALL([str_null_value], "or..")', from_=data_table)) in (None, "[]")
+        assert dbe.eval("REGEXP_EXTRACT_ALL('нет_цифр', '(\\d+)-(\\d+)')") in ("[]", [], None)
+        assert to_str(dbe.eval('REGEXP_EXTRACT_ALL([str_null_value], "or..")', from_=data_table)) in (None, [], "[]")
         assert dbe.eval("REGEXP_EXTRACT_ALL('1а2б3в4', '\\d+([а-я]*)\\d+')") in ("['а','в']", ["а", "в"])
 
     def test_regexp_extract_nth(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
@@ -171,13 +171,14 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert (
             to_str(dbe.eval("SPACE(4)")) == "    "
         )  # SPACE(<int literal>) is evaluated in Python rather than in the DB,
-        assert to_str(dbe.eval("SPACE(2 + 2)")) == "    "  # while this version actually uses the DB function(s)
+        assert to_str(dbe.eval("SPACE(LEN('aaaa'))")) == "    "  # while this version actually uses the DB function(s)
 
     def test_split_3(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         if not self.supports_split_3:
             pytest.skip()
 
         assert to_str(dbe.eval('SPLIT("Lorem ipsum dolor sit amet", " ", 3)')) == "dolor"
+        assert to_str(dbe.eval('SPLIT("Lorem ipsum dolor sit amet", " ", -2)')) == "sit"
         assert to_str(dbe.eval('SPLIT([str_null_value], " ", 3)', from_=data_table)) in (None, "")
 
     def test_split_1_2(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
