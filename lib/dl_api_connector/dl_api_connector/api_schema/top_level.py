@@ -268,8 +268,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
             data = deepcopy(data)
             for secret_field in self.fieldnames_with_extra_export_fake_info():
                 data[secret_field] = "******"
-            return self.delete_unknown_fields(data)
-        return data
+        return self.delete_unknown_fields(data)
 
 
 _US_ENTRY_TV = TypeVar("_US_ENTRY_TV", bound=USEntry)
