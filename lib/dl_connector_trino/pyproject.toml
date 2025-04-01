@@ -15,17 +15,18 @@ marshmallow = ">=3.19.0"
 trino = { extras = ["sqlalchemy"], version = ">=0.331.0, <0.332" }
 sqlalchemy = ">=1.4.46, <2.0"
 dl-core = { path = "../dl_core" }
-# requests = ">=2.28.2"
+requests = ">=2.28.2"
+typing_extensions = ">=4.9.0"
+dl-constants = {path = "../dl_constants"}
+dl-formula = {path = "../dl_formula"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 # dl-api-commons = {path = "../dl_api_commons"}
 # dl-utils = {path = "../dl_utils"}
-# dl-constants = {path = "../dl_constants"}
 # dl-i18n = {path = "../dl_i18n"}
-# dl-formula = {path = "../dl_formula"}
 # dl-configs = {path = "../dl_configs"}
 # dl-api-connector = {path = "../dl_api_connector"}
 # dl-model-tools = {path = "../dl_model_tools"}
 # dl-db-testing = {path = "../dl_db_testing"}
-# dl-type-transformer = {path = "../dl_type_transformer"}
 
 [tool.poetry.plugins]
 # [tool.poetry.plugins."dl_api_lib.connectors"]
@@ -44,7 +45,6 @@ trino = "dl_connector_trino.formula.connector:TrinoFormulaConnector"
 # mock = ">=4.0.3"
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
-requests = ">=2.28.2"
 # dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 # dl-api-client = {path = "../dl_api_client"}
 # dl-core-testing = {path = "../dl_core_testing"}

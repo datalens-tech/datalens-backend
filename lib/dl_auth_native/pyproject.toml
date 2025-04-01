@@ -21,6 +21,9 @@ werkzeug = ">=2.2.3"
 dl-constants = {path = "../../lib/dl_constants"}
 dl-api-commons = {path = "../../lib/dl_api_commons"}
 
+[tool.deptry.package_module_name_map]
+pyjwt = "jwt"
+
 [tool.poetry.extras]
 aiohttp = ["aiohttp"]
 flask = ["flask"]
