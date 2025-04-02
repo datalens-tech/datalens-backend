@@ -37,6 +37,9 @@ TABLE_SPEC_ARRAYS = (
     ColumnSpec(name="arr_int_value", data_type=DataType.ARRAY_INT),
     ColumnSpec(name="arr_float_value", data_type=DataType.ARRAY_FLOAT),
     ColumnSpec(name="arr_str_value", data_type=DataType.ARRAY_STR),
+    ColumnSpec(name="arr_int_null_value", data_type=DataType.ARRAY_INT),
+    ColumnSpec(name="arr_float_null_value", data_type=DataType.ARRAY_FLOAT),
+    ColumnSpec(name="arr_str_null_value", data_type=DataType.ARRAY_STR),
 )
 
 
@@ -74,6 +77,9 @@ def generate_sample_data(
                 arr_int_value=[1 * idx, 23 + idx, 456, None],
                 arr_float_value=[1.23 * idx, 45.0 + idx, 0.123, None],
                 arr_str_value=["a" * idx, "bb" * idx, "cde", None],
+                arr_int_null_value=None,
+                arr_float_null_value=None,
+                arr_str_null_value=None,
             )
         data.append(row)
     return data

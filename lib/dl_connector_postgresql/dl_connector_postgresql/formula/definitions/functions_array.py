@@ -205,7 +205,13 @@ DEFINITIONS_ARRAY = [
             V(
                 D.POSTGRESQL,
                 lambda array, value: (
-                    sa.func.array_length(array, 1) - sa.func.array_length(sa.func.array_remove(array, value), 1)
+                    # count_item for null array should be null
+                    n.func.IF(
+                        array == None,
+                        None,
+                        sa.func.array_length(array, 1)
+                        - sa.func.coalesce(sa.func.array_length(sa.func.array_remove(array, value), 1), 0),
+                    )
                 ),
             ),
         ]
@@ -215,9 +221,21 @@ DEFINITIONS_ARRAY = [
             V(
                 D.POSTGRESQL,
                 lambda array, value: (
-                    sa.func.array_length(array, 1)
-                    - sa.func.array_length(
-                        sa.func.array_remove(array, sa.cast(value, sa_postgresql.DOUBLE_PRECISION)), 1
+                    # count_item for null array should be null
+                    n.func.IF(
+                        array == None,
+                        None,
+                        sa.func.array_length(array, 1)
+                        - sa.func.coalesce(
+                            sa.func.array_length(
+                                sa.func.array_remove(
+                                    sa.cast(array, sa.ARRAY(sa_postgresql.DOUBLE_PRECISION)),
+                                    sa.cast(value, sa_postgresql.DOUBLE_PRECISION),
+                                ),
+                                1,
+                            ),
+                            0,
+                        ),
                     )
                 ),
             ),
@@ -228,7 +246,13 @@ DEFINITIONS_ARRAY = [
             V(
                 D.POSTGRESQL,
                 lambda array, value: (
-                    sa.func.array_length(array, 1) - sa.func.array_length(sa.func.array_remove(array, value), 1)
+                    # count_item for null array should be null
+                    n.func.IF(
+                        array == None,
+                        None,
+                        sa.func.array_length(array, 1)
+                        - sa.func.coalesce(sa.func.array_length(sa.func.array_remove(array, value), 1), 0),
+                    )
                 ),
             ),
         ]
@@ -264,7 +288,15 @@ DEFINITIONS_ARRAY = [
     # len
     base.FuncLenArray(
         variants=[
-            V(D.POSTGRESQL, lambda val: sa.func.ARRAY_LENGTH(val, 1)),
+            # len for null array should be null
+            V(
+                D.POSTGRESQL,
+                lambda val: n.func.IF(
+                    val == None,
+                    sa.cast(None, sa_postgresql.INTEGER),
+                    sa.func.coalesce(sa.func.ARRAY_LENGTH(val, 1), 0),
+                ),
+            ),
         ]
     ),
     # replace
