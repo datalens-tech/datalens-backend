@@ -1,6 +1,6 @@
 FROM cr.yandex/yc/yandex-docker-local-ydb:latest
 
-RUN apt update && apt install -y python3 net-tools
+RUN apt update && apt install -y python3
 
 COPY db-ydb/ydb-custom-entrypoint.sh /ydb-custom-entrypoint.sh
 
