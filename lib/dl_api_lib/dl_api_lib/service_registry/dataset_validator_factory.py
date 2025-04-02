@@ -13,7 +13,10 @@ from dl_core.us_manager.us_manager import USManagerBase
 class DatasetValidatorFactory(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_dataset_validator(
-        self, ds: Dataset, us_manager: USManagerBase, is_data_api: bool = False
+        self,
+        ds: Dataset,
+        us_manager: USManagerBase,
+        is_data_api: bool = False,
     ) -> DatasetValidator:
         pass
 
@@ -21,7 +24,10 @@ class DatasetValidatorFactory(metaclass=abc.ABCMeta):
 @attr.s(frozen=True)
 class DefaultDatasetValidatorFactory(DatasetValidatorFactory):
     def get_dataset_validator(
-        self, ds: Dataset, us_manager: USManagerBase, is_data_api: bool = False
+        self,
+        ds: Dataset,
+        us_manager: USManagerBase,
+        is_data_api: bool = False,
     ) -> DatasetValidator:
         return DatasetValidator(
             ds=ds,

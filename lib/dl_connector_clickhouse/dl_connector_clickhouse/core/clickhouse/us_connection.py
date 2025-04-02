@@ -65,3 +65,7 @@ class ConnectionClickhouse(
     @property
     def is_typed_query_allowed(self) -> bool:
         return True
+
+    @property
+    def is_datasource_template_allowed(self) -> bool:
+        return self._connector_settings.ENABLE_DATASOURCE_TEMPLATE

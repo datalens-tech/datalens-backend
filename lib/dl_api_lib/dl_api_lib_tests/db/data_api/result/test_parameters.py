@@ -1,6 +1,5 @@
-from __future__ import annotations
-
 from http import HTTPStatus
+import typing
 
 import pytest
 
@@ -19,7 +18,17 @@ from dl_api_client.dsmaker.shortcuts.dataset import (
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib.enums import DatasetAction
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import UserDataType
+from dl_configs.connectors_settings import ConnectorSettingsBase
+import dl_constants.enums as dl_constants_enums
+from dl_constants.enums import (
+    ConnectionType,
+    UserDataType,
+)
+from dl_core_testing.database import DbTable
+
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_SUBSELECT
+from dl_connector_clickhouse.core.clickhouse.settings import ClickHouseConnectorSettings
+from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
 
 class TestParameters(DefaultApiTestBase):
@@ -311,3 +320,104 @@ class TestParameters(DefaultApiTestBase):
         rows = get_data_rows(result_resp)
         assert len(rows) == 3
         assert {row[0] for row in rows} == {"Office Supplies", "Unknown Furniture", "Unknown Technology"}
+
+
+class TestParameterSourceTemplates(DefaultApiTestBase):
+    raw_sql_level = dl_constants_enums.RawSQLLevel.subselect
+
+    @pytest.fixture(scope="class")
+    def connectors_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:
+        return {CONNECTION_TYPE_CLICKHOUSE: ClickHouseConnectorSettings(ENABLE_DATASOURCE_TEMPLATE=True)}
+
+    @pytest.fixture(scope="function")
+    def saved_dataset(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_connection_id: str,
+        sample_table: DbTable,
+    ) -> typing.Generator[Dataset, None, None]:
+        ds = Dataset()
+        parameter = StringParameterValue(value=sample_table.name)
+        ds.result_schema["table_name"] = ds.field(
+            cast=parameter.type,
+            default_value=parameter,
+            value_constraint=None,
+        )
+
+        ds.sources["source_1"] = ds.source(
+            connection_id=saved_connection_id,
+            source_type=SOURCE_TYPE_CH_SUBSELECT.name,
+            parameters=dict(subsql="SELECT * FROM {table_name}"),
+        )
+        ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
+        ds = control_api.apply_updates(dataset=ds).dataset
+        ds = control_api.save_dataset(dataset=ds).dataset
+        yield ds
+        control_api.delete_dataset(dataset_id=ds.id)
+
+    def test_default(
+        self,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ):
+        ds = saved_dataset
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="discount"),
+                ds.find_field(title="city"),
+            ],
+        )
+
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+
+    def test_invalid_update_parameter_default_value(
+        self,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ):
+        ds = saved_dataset
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="discount"),
+                ds.find_field(title="city"),
+            ],
+            updates=[
+                {
+                    "action": DatasetAction.update_field.value,
+                    "field": {
+                        "guid": ds.find_field(title="table_name").id,
+                        "cast": "string",
+                        "default_value": "invalid_table_name",
+                    },
+                },
+            ],
+            fail_ok=True,
+        )
+
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
+        assert result_resp.bi_status_code == "ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST"
+        assert "invalid_table_name" in result_resp.json["message"]
+
+    def test_invalid_parameters_value(
+        self,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ):
+        ds = saved_dataset
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="discount"),
+                ds.find_field(title="city"),
+            ],
+            parameters=[
+                ds.find_field(title="table_name").parameter_value("invalid_table_name"),
+            ],
+            fail_ok=True,
+        )
+
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
+        assert result_resp.bi_status_code == "ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST"
+        assert "invalid_table_name" in result_resp.json["message"]

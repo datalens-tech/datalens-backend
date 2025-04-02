@@ -21,6 +21,7 @@ from dl_api_lib.dataset.view import DatasetView
 import dl_api_lib.schemas.data
 import dl_api_lib.schemas.main
 from dl_app_tools.profiling_base import generic_profiler_async
+from dl_query_processing.compilation.specs import ParameterValueSpec
 from dl_query_processing.execution.primitives import (
     ExecutedQuery,
     ExecutedQueryMetaInfo,
@@ -89,6 +90,7 @@ class DatasetRangeView(DatasetDataBaseView, abc.ABC):
         block_spec: BlockSpec,
         possible_data_lengths: Optional[Collection] = None,
         profiling_postfix: str = "",
+        parameter_value_specs: list[ParameterValueSpec] | None = None,
     ) -> PostprocessedQuery:
         us_manager = self.dl_request.us_manager
 
@@ -97,6 +99,7 @@ class DatasetRangeView(DatasetDataBaseView, abc.ABC):
             us_manager=us_manager,
             block_spec=block_spec,
             rci=self.dl_request.rci,
+            parameter_value_specs=parameter_value_specs,
         )
 
         # try getting cached values from source (MetricaAPI)
