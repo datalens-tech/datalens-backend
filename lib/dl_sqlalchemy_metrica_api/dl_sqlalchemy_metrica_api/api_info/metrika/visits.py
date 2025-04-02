@@ -1006,13 +1006,6 @@ visits_fields = [
         "title": "Начало декаминуты первого визита",
         "type": "datetime",
     },
-    {
-        "description": None,
-        "is_dim": True,
-        "name": "ym:s:offlinePointRegionName",
-        "title": "Регион",
-        "type": "string",
-    },
     # {
     #     'description': 'Интервал дат с параметризацией размера интервала',
     #    #     'is_dim': True,
