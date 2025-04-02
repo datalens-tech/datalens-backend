@@ -1,4 +1,7 @@
-from typing import Optional
+from typing import (
+    ClassVar,
+    Optional,
+)
 
 import pytest
 
@@ -14,6 +17,7 @@ from dl_connector_ydb.core.ydb.settings import YDBConnectorSettings
 class TestYDBConnectionForm(ConnectionFormTestBase):
     CONN_FORM_FACTORY_CLS = YDBConnectionFormFactory
     TRANSLATION_CONFIGS = DL_API_CONNECTOR_CONFIGS + DL_CONNECTOR_YDB_CONFIGS
+    OVERWRITE_EXPECTED_FORMS: ClassVar[bool] = False
 
     @pytest.fixture
     def connectors_settings(self) -> Optional[ConnectorSettingsBase]:
