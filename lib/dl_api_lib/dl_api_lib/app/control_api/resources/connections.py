@@ -27,6 +27,7 @@ from dl_api_lib.app.control_api.resources import API
 from dl_api_lib.app.control_api.resources.base import BIResource
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.schemas.connection import (
+    ConnectionImportRequestSchema,
     ConnectionInfoSourceSchemaQuerySchema,
     ConnectionInfoSourceSchemaResponseSchema,
     ConnectionItemQuerySchema,
@@ -34,6 +35,7 @@ from dl_api_lib.schemas.connection import (
     ConnectionSourceTemplatesResponseSchema,
     GenericConnectionSchema,
 )
+from dl_api_lib.schemas.main import ImportResponseSchema
 from dl_api_lib.utils import need_permission_on_entry
 from dl_constants.enums import ConnectionType
 from dl_constants.exc import DLBaseException
@@ -151,13 +153,18 @@ class ConnectionsImportList(BIResource):
         return field
 
     @put_to_request_context(endpoint_code="ConnectionImport")
-    @schematic_request(ns=ns)
-    def post(self) -> dict | tuple[list | dict, int]:
+    @schematic_request(
+        ns=ns,
+        body=ConnectionImportRequestSchema(),
+        responses={
+            200: ("Success", ImportResponseSchema()),
+        },
+    )
+    def post(self, body: dict) -> dict | tuple[list | dict, int]:
         us_manager = self.get_service_us_manager()
         notifications = []
 
-        data = self.get_from_request(request.json, "data")
-        conn_data = self.get_from_request(data, "connection")
+        conn_data = body["data"]["connection"]
 
         conn_type = self.get_from_request(conn_data, "db_type")
         if conn_type not in ConnectionType:
@@ -168,7 +175,7 @@ class ConnectionsImportList(BIResource):
         if not conn_type_is_available:
             raise exc.UnsupportedForEntityType(f"Connector {conn_type} is not available in current env")
 
-        conn_data["workbook_id"] = data.get("workbook_id")
+        conn_data["workbook_id"] = body["data"].get("workbook_id")
         conn_data["type"] = conn_type
 
         schema = GenericConnectionSchema(

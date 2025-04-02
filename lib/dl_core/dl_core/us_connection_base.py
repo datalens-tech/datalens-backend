@@ -378,7 +378,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         return [
             dict(
                 message=localizer.translate(Translatable("notif_check-creds")),
-                level=NotificationLevel.info.value,
+                level=NotificationLevel.info,
                 code=CODE_PREFIX + "CHECK_CREDENTIALS",
             )
         ]
@@ -388,7 +388,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         return [
             dict(
                 message=localizer.translate(Translatable("notif_check-creds")),
-                level=NotificationLevel.info.value,
+                level=NotificationLevel.info,
                 code=CODE_PREFIX + "CHECK_CREDENTIALS",
             )
         ]
