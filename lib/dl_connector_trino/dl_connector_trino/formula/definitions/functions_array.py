@@ -6,7 +6,6 @@ from sqlalchemy.sql.elements import (
     BindParameter,
     ClauseElement,
     ColumnClause,
-    TextClause,
 )
 from sqlalchemy.sql.functions import Function
 
@@ -16,15 +15,10 @@ from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_array as base
 
 from dl_connector_trino.formula.constants import TrinoDialect as D
+from dl_connector_trino.formula.definitions.custom_constructors import TrinoNonConstArray
 
 
 V = TranslationVariant.make
-
-
-def create_non_const_array(*args: ColumnClause) -> TextClause:
-    compiled_args = [str(arg.compile(compile_kwargs={"literal_binds": True})) for arg in args]
-    array_elements = ",".join(compiled_args)
-    return sa.text(f"ARRAY[{array_elements}]")
 
 
 def drop_null(array: ClauseElement) -> Function:
@@ -67,7 +61,7 @@ def array_startswith(x: ColumnClause, y: ColumnClause) -> Function:
 
 def array_intersect(*arrays: ColumnClause) -> Function:
     return sa.func.reduce(
-        create_non_const_array(*arrays[1:]),
+        TrinoNonConstArray(*arrays[1:]),
         arrays[0],
         sa.text("(x, y) -> array_intersect(x, y)"),
         sa.text("x -> x"),
@@ -202,17 +196,13 @@ DEFINITIONS_ARRAY = [
     base.FuncConstArrayStr.for_dialect(D.TRINO),
     base.FuncNonConstArrayInt(
         variants=[
-            V(D.TRINO, create_non_const_array),
+            V(D.TRINO, lambda *args: TrinoNonConstArray(*args)),
         ]
     ),
-    # base.FuncNonConstArrayFloat(
-    #     variants=[
-    #         V(D.TRINO, lambda *args: sa_postgresql.array(args)),
-    #     ]
-    # ),
+    # base.FuncNonConstArrayFloat.for_dialect(D.TRINO),
     base.FuncNonConstArrayStr(
         variants=[
-            V(D.TRINO, create_non_const_array),
+            V(D.TRINO, lambda *args: TrinoNonConstArray(*args)),
         ]
     ),
     # cast_arr_float
@@ -336,11 +326,7 @@ DEFINITIONS_ARRAY = [
         ]
     ),
     # replace
-    # base.FuncReplaceArrayLiteralNull(
-    #     variants=[
-    #         V(D.TRINO, sa.func.array_replace),
-    #     ]
-    # ),
+    # base.FuncReplaceArrayLiteralNull.for_dialect(D.TRINO),
     base.FuncReplaceArrayDefault(
         variants=[
             V(D.TRINO, replace_array),
@@ -371,21 +357,9 @@ DEFINITIONS_ARRAY = [
         ]
     ),
     # unnest
-    # base.FuncUnnestArrayFloat(
-    #     variants=[
-    #         V(D.TRINO, lambda arr: sa.func.unnest(arr)),
-    #     ]
-    # ),
-    # base.FuncUnnestArrayInt(
-    #     variants=[
-    #         V(D.TRINO, lambda arr: sa.func.unnest(arr)),
-    #     ]
-    # ),
-    # base.FuncUnnestArrayStr(
-    #     variants=[
-    #         V(D.TRINO, lambda arr: sa.func.unnest(arr)),
-    #     ]
-    # ),
+    # base.FuncUnnestArrayFloat.for_dialect(D.TRINO),
+    # base.FuncUnnestArrayInt.for_dialect(D.TRINO),
+    # base.FuncUnnestArrayStr.for_dialect(D.TRINO),
     # intersect
     base.FuncArrayIntersect(
         variants=[
