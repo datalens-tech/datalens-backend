@@ -35,3 +35,7 @@ msgstr "Table"
 
 msgid "source_templates-label-ydb_table"
 msgstr "YDB table path"
+
+msgid "label_ydb-ssl-enabled-tooltip"
+msgstr ""
+"When the option is enabled, it ensures mandatory use of ssl for connection."
