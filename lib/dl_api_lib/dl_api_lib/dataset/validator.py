@@ -97,9 +97,7 @@ from dl_formula.core.message_ctx import (
     FormulaErrorCtx,
     MessageLevel,
 )
-from dl_model_tools.typed_values import BIValue
 from dl_query_processing.compilation.helpers import single_formula_comp_query_for_validation
-from dl_query_processing.compilation.specs import ParameterValueSpec
 import dl_query_processing.exc
 from dl_query_processing.legend.block_legend import BlockSpec
 from dl_utils.utils import enum_not_none
@@ -156,9 +154,7 @@ class DatasetValidator(DatasetBaseWrapper):
         ds: Dataset,
         us_manager: USManagerBase,
         is_data_api: bool = False,
-        parameter_value_specs: list[ParameterValueSpec] | None = None,
     ):
-        self._parameter_value_specs = parameter_value_specs
         super().__init__(ds=ds, us_manager=us_manager)
         self._is_data_api = is_data_api
 
@@ -175,17 +171,6 @@ class DatasetValidator(DatasetBaseWrapper):
         )
         block_spec = block_legend.blocks[0]
         super()._reload_formalized_specs(block_spec=block_spec)
-
-    def _get_dataset_parameter_values(self) -> dict[str, BIValue]:
-        result = super()._get_dataset_parameter_values()
-        if self._parameter_value_specs is not None:
-            result.update(
-                self._ds_accessor.get_parameter_values_from_specs(
-                    parameter_value_specs=self._parameter_value_specs,
-                ),
-            )
-
-        return result
 
     @property
     def _sync_us_manager(self) -> SyncUSManager:

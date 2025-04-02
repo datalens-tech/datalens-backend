@@ -7,7 +7,6 @@ import attr
 from dl_api_lib.dataset.validator import DatasetValidator
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
-from dl_query_processing.compilation.specs import ParameterValueSpec
 
 
 @attr.s(frozen=True)
@@ -18,7 +17,6 @@ class DatasetValidatorFactory(metaclass=abc.ABCMeta):
         ds: Dataset,
         us_manager: USManagerBase,
         is_data_api: bool = False,
-        parameter_value_specs: list[ParameterValueSpec] | None = None,
     ) -> DatasetValidator:
         pass
 
@@ -30,11 +28,9 @@ class DefaultDatasetValidatorFactory(DatasetValidatorFactory):
         ds: Dataset,
         us_manager: USManagerBase,
         is_data_api: bool = False,
-        parameter_value_specs: list[ParameterValueSpec] | None = None,
     ) -> DatasetValidator:
         return DatasetValidator(
             ds=ds,
             us_manager=us_manager,
             is_data_api=is_data_api,
-            parameter_value_specs=parameter_value_specs,
         )

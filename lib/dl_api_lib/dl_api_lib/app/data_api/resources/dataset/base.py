@@ -323,7 +323,6 @@ class DatasetDataBaseView(BaseView):
                 ds=self.dataset,
                 us_manager=us_manager,
                 is_data_api=True,
-                parameter_value_specs=self._get_parameter_value_specs(req_model.raw_query_spec_union),
             )
             executor = services_registry.get_compute_executor()
             await executor.execute(lambda: ds_validator.apply_batch(action_batch=req_model.updates))
