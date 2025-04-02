@@ -30,6 +30,7 @@ from dl_core.connectors.base.schema_migration import (
 from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
 from dl_core.data_source.base import DataSource
 from dl_core.data_source_spec.base import DataSourceSpec
+from dl_core.data_source_spec_mutator.base import DataSourceSpecMutator
 from dl_core.us_manager.storage_schemas.data_source_spec_base import DataSourceSpecStorageSchema
 from dl_dashsql.literalizer import (
     DashSQLParamLiteralizer,
@@ -58,6 +59,7 @@ class CoreSourceDefinition(abc.ABC):
     source_type: ClassVar[DataSourceType]
     source_cls: ClassVar[Type[DataSource]] = DataSource  # type: ignore  # 2024-01-30 # TODO: Can only assign concrete classes to a variable of type "type[DataSource]"  [type-abstract]
     source_spec_cls: ClassVar[Type[DataSourceSpec]] = DataSourceSpec
+    source_spec_mutator_cls: ClassVar[Type[DataSourceSpecMutator]] = DataSourceSpecMutator
     us_storage_schema_cls: ClassVar[Type[DataSourceSpecStorageSchema]] = DataSourceSpecStorageSchema
 
 

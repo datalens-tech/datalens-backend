@@ -20,6 +20,7 @@ from dl_core.data_processing.prepared_components.primitives import PreparedSingl
 from dl_core.data_processing.query_compiler_registry import get_sa_query_compiler_cls
 from dl_core.data_source.collection import DataSourceCollectionFactory
 import dl_core.data_source.sql
+from dl_core.data_source_spec_mutator import DataSourceCollectionSpecMutator
 import dl_core.exc as exc
 from dl_core.multisource import SourceAvatar
 from dl_core.us_connection_base import ConnectionBase
@@ -37,11 +38,16 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
     _role: DataSourceRole = attr.ib(kw_only=True, default=DataSourceRole.origin)
     _ds_accessor: DatasetComponentAccessor = attr.ib(init=False)
+    _dsrc_coll_spec_mutator: DataSourceCollectionSpecMutator = attr.ib(init=False)
     _dsrc_coll_factory: DataSourceCollectionFactory = attr.ib(init=False)
 
     @_ds_accessor.default
     def _make_ds_accessor(self) -> DatasetComponentAccessor:
         return DatasetComponentAccessor(dataset=self._dataset)
+
+    @_dsrc_coll_spec_mutator.default
+    def _make_dsrc_coll_spec_mutator(self) -> DataSourceCollectionSpecMutator:
+        return DataSourceCollectionSpecMutator(dataset=self._dataset)
 
     @_dsrc_coll_factory.default
     def _make_dsrc_coll_factory(self) -> DataSourceCollectionFactory:
@@ -67,6 +73,7 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
     ) -> PreparedSingleFromInfo:
         avatar = self._ds_accessor.get_avatar_strict(avatar_id=avatar_id)
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=avatar.source_id)
+        dsrc_coll_spec = self._dsrc_coll_spec_mutator.mutate(spec=dsrc_coll_spec)
         dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
         dsrc = dsrc_coll.get_strict(role=self._role)
         if not isinstance(dsrc, dl_core.data_source.sql.BaseSQLDataSource):

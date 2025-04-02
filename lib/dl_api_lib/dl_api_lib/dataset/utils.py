@@ -22,6 +22,7 @@ from dl_core.data_source.collection import (
     DataSourceCollection,
     DataSourceCollectionFactory,
 )
+from dl_core.data_source_spec_mutator import DataSourceCollectionSpecMutator
 import dl_core.exc as exc
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.local_cache import USEntryBuffer
@@ -42,9 +43,11 @@ def _iter_data_source_collections(
         source_ids = ds_accessor.get_data_source_id_list()
     assert source_ids is not None
 
+    dsrc_coll_spec_mutator = DataSourceCollectionSpecMutator(dataset=dataset)
     dsrc_coll_factory = DataSourceCollectionFactory(us_entry_buffer=us_entry_buffer)
     for source_id in source_ids:
         dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
+        dsrc_coll_spec = dsrc_coll_spec_mutator.mutate(spec=dsrc_coll_spec)
         dsrc_coll = dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
         yield dsrc_coll
 

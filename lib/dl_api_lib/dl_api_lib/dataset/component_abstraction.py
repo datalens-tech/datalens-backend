@@ -19,6 +19,7 @@ from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.editor import DatasetComponentEditor
 from dl_core.data_source import DataSourceCollection
 from dl_core.data_source.collection import DataSourceCollectionFactory
+from dl_core.data_source_spec_mutator import DataSourceCollectionSpecMutator
 import dl_core.exc as common_exc
 from dl_core.fields import (
     BIField,
@@ -53,6 +54,7 @@ class DatasetComponentAbstraction:
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
     _ds_accessor: DatasetComponentAccessor = attr.ib(init=False)
     _ds_editor: DatasetComponentEditor = attr.ib(init=False)
+    _dsrc_coll_spec_mutator: DataSourceCollectionSpecMutator = attr.ib(init=False)
     _dsrc_coll_factory: DataSourceCollectionFactory = attr.ib(init=False)
 
     _can_check_valid: ClassVar[frozenset[ComponentType]] = frozenset(
@@ -73,6 +75,10 @@ class DatasetComponentAbstraction:
     def _make_ds_editor(self) -> DatasetComponentEditor:
         return DatasetComponentEditor(dataset=self._dataset)
 
+    @_dsrc_coll_spec_mutator.default
+    def _make_dsrc_coll_spec_mutator(self) -> DataSourceCollectionSpecMutator:
+        return DataSourceCollectionSpecMutator(dataset=self._dataset)
+
     @_dsrc_coll_factory.default
     def _make_dsrc_coll_factory(self) -> DataSourceCollectionFactory:
         return DataSourceCollectionFactory(us_entry_buffer=self._us_entry_buffer)
@@ -83,6 +89,7 @@ class DatasetComponentAbstraction:
 
     def _get_data_source_coll_strict(self, source_id: str) -> DataSourceCollection:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
+        dsrc_coll_spec = self._dsrc_coll_spec_mutator.mutate(spec=dsrc_coll_spec)
         dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
         return dsrc_coll
 
@@ -90,6 +97,7 @@ class DatasetComponentAbstraction:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_opt(source_id=source_id)
         if not dsrc_coll_spec:
             return None
+        dsrc_coll_spec = self._dsrc_coll_spec_mutator.mutate(spec=dsrc_coll_spec)
         dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(spec=dsrc_coll_spec)
         return dsrc_coll
 
