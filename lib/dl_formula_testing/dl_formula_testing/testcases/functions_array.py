@@ -741,7 +741,6 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval('ARR_REMOVE(ARRAY("a", "b", NULL), "a")') == dbe.eval('ARRAY("b", NULL)')
         if self.make_decimal_cast:
             assert dbe.eval("ARR_REMOVE(ARRAY(1.1, 2.2, NULL), 1.1)") == dbe.eval(
-            assert dbe.eval("ARR_REMOVE(ARRAY(1.1, 2.2, NULL), 1.1)") == dbe.eval(
                 f'ARRAY(DB_CAST(2.2, "{self.make_decimal_cast}", 2, 1), NULL)'
             )
         else:
@@ -754,7 +753,6 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("ARR_REMOVE(ARRAY(1, 2, NULL), NULL)") == dbe.eval("ARRAY(1, 2)")
         assert dbe.eval('ARR_REMOVE(ARRAY("a", "b", NULL), NULL)') == dbe.eval('ARRAY("a", "b")')
         if self.make_decimal_cast:
-            assert dbe.eval("ARR_REMOVE(ARRAY(1.1, 2.2, NULL), NULL)") == dbe.eval(
             assert dbe.eval("ARR_REMOVE(ARRAY(1.1, 2.2, NULL), NULL)") == dbe.eval(
                 f'ARRAY(DB_CAST(1.1, "{self.make_decimal_cast}", 2, 1), DB_CAST(2.2, "{self.make_decimal_cast}", 2, 1))'
             )
@@ -805,16 +803,13 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
 
     def test_array_intersection(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2))") in (
-        assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2))") in (
             dbe.eval("ARRAY(1, 2)"),
             dbe.eval("ARRAY(2, 1)"),
         )
         assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2), ARRAY(1, 2))") in (
-        assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2), ARRAY(1, 2))") in (
             dbe.eval("ARRAY(1, 2)"),
             dbe.eval("ARRAY(2, 1)"),
         )
-        assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2, 2), ARRAY(1, 2, 2))") in (
         assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2, 2), ARRAY(1, 2, 2))") in (
             dbe.eval("ARRAY(1, 2)"),
             dbe.eval("ARRAY(2, 1)"),
@@ -827,16 +822,13 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
             dbe.eval("ARRAY(3, 2)"),
         )
         assert dbe.eval("ARR_INTERSECT(ARRAY(2, 3), ARRAY(1, 2, 3, 4))") in (
-        assert dbe.eval("ARR_INTERSECT(ARRAY(2, 3), ARRAY(1, 2, 3, 4))") in (
             dbe.eval("ARRAY(2, 3)"),
             dbe.eval("ARRAY(3, 2)"),
         )
         assert dbe.eval("ARR_INTERSECT(ARRAY(2, 3, 2, 2, 4), ARRAY(1, 2, 3, 2), ARRAY(2, 3, 2))") in (
-        assert dbe.eval("ARR_INTERSECT(ARRAY(2, 3, 2, 2, 4), ARRAY(1, 2, 3, 2), ARRAY(2, 3, 2))") in (
             dbe.eval("ARRAY(2, 3)"),
             dbe.eval("ARRAY(3, 2)"),
         )
-        assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2, 3, NULL), ARRAY(2, 3, 4))") in (
         assert dbe.eval("ARR_INTERSECT(ARRAY(1, 2, 3, NULL), ARRAY(2, 3, 4))") in (
             dbe.eval("ARRAY(2, 3)"),
             dbe.eval("ARRAY(3, 2)"),
@@ -851,12 +843,10 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         )
 
         assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(0, 5.0), ARRAY(4.999))") in (
-        assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(0, 5.0), ARRAY(4.999))") in (
             [],
             "[]",
         )
         if self.make_decimal_cast:
-            assert dbe.eval("ARR_INTERSECT(ARRAY(5, 49.999), ARRAY(5, 49.999))") in (
             assert dbe.eval("ARR_INTERSECT(ARRAY(5, 49.999), ARRAY(5, 49.999))") in (
                 dbe.eval(
                     f'ARRAY(DB_CAST(5.0, "{self.make_decimal_cast}", 2, 1), DB_CAST(49.999, "{self.make_decimal_cast}", 5, 3))'
@@ -866,7 +856,6 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
                 ),
             )
             assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(0, 5.0))") in (
-            assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(0, 5.0))") in (
                 dbe.eval(
                     f'ARRAY(DB_CAST(0.0, "{self.make_decimal_cast}", 2, 1), DB_CAST(5.0, "{self.make_decimal_cast}", 2, 1))'
                 ),
@@ -875,16 +864,13 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
                 ),
             )
             assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(4.999))") == dbe.eval(
-            assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(4.999))") == dbe.eval(
                 f'ARRAY(DB_CAST(4.999, "{self.make_decimal_cast}", 4, 3))'
             )
         else:
             assert dbe.eval("ARR_INTERSECT(ARRAY(5, 49.999), ARRAY(5, 49.999))") in (
-            assert dbe.eval("ARR_INTERSECT(ARRAY(5, 49.999), ARRAY(5, 49.999))") in (
                 dbe.eval("ARRAY(5.0, 49.999)"),
                 dbe.eval("ARRAY(49.999, 5.0)"),
             )
-            assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(0, 5.0))") in (
             assert dbe.eval("ARR_INTERSECT(ARRAY(0, 5, 4.999), ARRAY(0, 5.0))") in (
                 dbe.eval("ARRAY(0, 5.0)"),
                 dbe.eval("ARRAY(5.0, 0)"),
