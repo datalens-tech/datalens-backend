@@ -271,7 +271,11 @@ class DatasetDataBaseView(BaseView):
             return  # no groups in the RLS config, no need to resolve
 
         subject_resolver = await services_registry.get_subject_resolver()
-        subject_groups = await subject_resolver.get_groups_by_subject(services_registry.rci)
+        try:
+            subject_groups = await subject_resolver.get_groups_by_subject(services_registry.rci)
+        except Exception as exc:
+            LOGGER.error(f"Error while resolving RLS groups: {str(exc)}", exc_info=True)
+            raise web.HTTPBadRequest(reason="Error while resolving RLS groups")
         LOGGER.info(f"Subject groups for RLS: {subject_groups}")
         self.dataset.rls.allowed_groups = set(subject_groups)
 
