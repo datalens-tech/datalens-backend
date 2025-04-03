@@ -607,7 +607,7 @@ CONNECTOR_SETTINGS_TV = TypeVar("CONNECTOR_SETTINGS_TV", bound=ConnectorSettings
 
 
 def _get_connector_settings(
-    usm: SyncUSManager,
+    usm: USManagerBase,
     conn_type: ConnectionType,
     settings_type: Type[CONNECTOR_SETTINGS_TV],
 ) -> CONNECTOR_SETTINGS_TV:
@@ -617,11 +617,21 @@ def _get_connector_settings(
     if connector_settings is None:
         try:
             connector_settings = settings_type()
-        except TypeError:
-            raise ValueError(f"Failed to instantiate settings of type {settings_type}")
+        except Exception as exc:
+            raise ValueError(f"Failed to instantiate settings of type {settings_type}") from exc
 
     assert isinstance(connector_settings, settings_type)
     return connector_settings
+
+
+class ConnectionSettingsMixin(ConnectionBase, Generic[CONNECTOR_SETTINGS_TV], metaclass=abc.ABCMeta):
+    """Connector type specific data is loaded from dl_configs.connectors_settings"""
+
+    settings_type: Type[CONNECTOR_SETTINGS_TV]
+
+    @property
+    def _connector_settings(self) -> CONNECTOR_SETTINGS_TV:
+        return _get_connector_settings(self.us_manager, self.conn_type, self.settings_type)
 
 
 class ConnectionHardcodedDataMixin(Generic[CONNECTOR_SETTINGS_TV], metaclass=abc.ABCMeta):
