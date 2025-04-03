@@ -18,6 +18,7 @@ from typing import (
 )
 
 from aiohttp import web
+from requests import HTTPError
 
 from dl_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
 from dl_api_lib import utils
@@ -273,9 +274,11 @@ class DatasetDataBaseView(BaseView):
         subject_resolver = await services_registry.get_subject_resolver()
         try:
             subject_groups = await subject_resolver.get_groups_by_subject(services_registry.rci)
-        except Exception as exc:
+        except HTTPError as exc:
+            if exc.response.status_code == 404:
+                raise web.HTTPNotFound(reason="Cannot find RLS groups for subject")
             LOGGER.error(f"Error while resolving RLS groups: {str(exc)}", exc_info=True)
-            raise web.HTTPBadRequest(reason="Error while resolving RLS groups")
+            raise exc
         LOGGER.info(f"Subject groups for RLS: {subject_groups}")
         self.dataset.rls.allowed_groups = set(subject_groups)
 
