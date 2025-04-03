@@ -12,7 +12,7 @@ from dl_formula.connectors.base.literal import (
 from dl_formula.core.dialect import DialectCombo
 
 
-def trino_array(values: list) -> TextClause:
+def trino_array(values: Union[tuple, list]) -> TextClause:
     binds = [sa.bindparam(f"v_{i}", v) for i, v in enumerate(values)]
     array_sql = "ARRAY[" + ",".join(f":{b.key}" for b in binds) + "]"
     return sa.text(array_sql).bindparams(*binds)
@@ -37,4 +37,4 @@ class TrinoLiteralizer(Literalizer):
         )
 
     def literal_array(self, value: Union[tuple, list], dialect: DialectCombo) -> Literal:
-        return trino_array(value)
+        return sa.literal_column(str(trino_array(value).compile(compile_kwargs={"literal_binds": True})))
