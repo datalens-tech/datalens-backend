@@ -4,7 +4,7 @@ from typing import ClassVar
 
 from dl_constants.enums import DashSQLQueryType
 from dl_core.us_connection_base import (
-    ConnectionHardcodedDataMixin,
+    ConnectionSettingsMixin,
     DataSourceTemplate,
     QueryTypeInfo,
 )
@@ -21,7 +21,7 @@ from dl_connector_clickhouse.core.clickhouse_base.us_connection import Connectio
 
 
 class ConnectionClickhouse(
-    ConnectionHardcodedDataMixin[ClickHouseConnectorSettings],
+    ConnectionSettingsMixin[ClickHouseConnectorSettings],
     ConnectionClickhouseBase,
 ):
     """
