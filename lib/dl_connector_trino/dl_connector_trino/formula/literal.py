@@ -1,5 +1,8 @@
 import datetime
-from typing import Union
+from typing import (
+    Union,
+    cast,
+)
 
 import sqlalchemy as sa
 import trino.sqlalchemy.datatype as tsa
@@ -10,7 +13,7 @@ from dl_formula.connectors.base.literal import (
 )
 from dl_formula.core.dialect import DialectCombo
 
-from dl_connector_trino.formula.definitions.custom_constructors import trino_array_literal
+from dl_connector_trino.formula.definitions.custom_constructors import TrinoArray
 
 
 class TrinoLiteralizer(Literalizer):
@@ -32,4 +35,4 @@ class TrinoLiteralizer(Literalizer):
         )
 
     def literal_array(self, value: Union[tuple, list], dialect: DialectCombo) -> Literal:
-        return trino_array_literal(value)
+        return cast(Literal, TrinoArray(*value))
