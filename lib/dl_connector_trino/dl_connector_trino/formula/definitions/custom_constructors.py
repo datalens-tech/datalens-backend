@@ -1,5 +1,3 @@
-from abc import abstractmethod
-from collections.abc import Sequence
 from typing import (
     Any,
     Union,
@@ -8,49 +6,34 @@ from typing import (
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql.compiler import SQLCompiler
 from sqlalchemy.sql.elements import (
-    ClauseElement,
-    ClauseList,
-)
-from sqlalchemy.sql.expression import (
-    FunctionElement,
     literal,
+    literal_column,
 )
+from sqlalchemy.sql.expression import FunctionElement
+
+from dl_formula.connectors.base.literal import Literal
 
 
-class BaseTrinoArray(FunctionElement):
-    """Base class for Trino array constructors"""
-
-    name: str
-    inherit_cache: bool = True
-
-    def __init__(self, *elements: Any) -> None:
-        super().__init__()
-        self.clauses = ClauseList(*self._process_elements(elements))
-
-    @abstractmethod
-    def _process_elements(self, elements: Sequence[Any]) -> list[ClauseElement]:
-        raise NotImplementedError
+def trino_array_literal(values: Union[tuple, list]) -> Literal:
+    """Create a literal array for Trino."""
+    compiled_items = [str(literal(v).compile(compile_kwargs={"literal_binds": True})) for v in values]
+    sql = f"ARRAY[{', '.join(compiled_items)}]"
+    return literal_column(sql)
 
 
-@compiles(BaseTrinoArray)
-def _compile_trino_array(element: BaseTrinoArray, compiler: SQLCompiler, **kw: Any) -> str:
-    clauses: list[str] = [compiler.process(c, **kw) for c in element.clauses]  # type: ignore[attr-defined]
+class TrinoArray(FunctionElement):
+    """Custom array constructor for Trino"""
+
+    name = "trino_array"
+    inherit_cache = True
+
+
+@compiles(TrinoArray)
+def _compile_trino_array(element: TrinoArray, compiler: SQLCompiler, **kw: Any) -> str:
+    # Handle both column references and literal values
+    clauses = []
+    for clause in element.clauses:
+        # Process each clause with the compiler
+        clauses.append(compiler.process(clause, **kw))
+
     return f"ARRAY[{', '.join(clauses)}]"
-
-
-class TrinoNonConstArray(BaseTrinoArray):
-    """Array constructor for SQL expressions/columns"""
-
-    name: str = "trino_non_const_array"
-
-    def _process_elements(self, elements: Sequence[ClauseElement]) -> list[ClauseElement]:
-        return list(elements)
-
-
-class TrinoConstArray(BaseTrinoArray):
-    """Array constructor for literal values"""
-
-    name: str = "trino_const_array"
-
-    def _process_elements(self, elements: Sequence[Union[int, float, str, bool, None]]) -> list[ClauseElement]:
-        return [literal(e) for e in elements]

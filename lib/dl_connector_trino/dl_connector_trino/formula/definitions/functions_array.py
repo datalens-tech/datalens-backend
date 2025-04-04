@@ -15,7 +15,7 @@ from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_array as base
 
 from dl_connector_trino.formula.constants import TrinoDialect as D
-from dl_connector_trino.formula.definitions.custom_constructors import TrinoNonConstArray
+from dl_connector_trino.formula.definitions.custom_constructors import TrinoArray
 
 
 V = TranslationVariant.make
@@ -61,7 +61,7 @@ def array_startswith(x: ColumnClause, y: ColumnClause) -> Function:
 
 def array_intersect(*arrays: ColumnClause) -> Function:
     return sa.func.reduce(
-        TrinoNonConstArray(*arrays[1:]),
+        TrinoArray(*arrays[1:]),
         arrays[0],
         sa.text("(x, y) -> array_intersect(x, y)"),
         sa.text("x -> x"),
@@ -196,13 +196,13 @@ DEFINITIONS_ARRAY = [
     base.FuncConstArrayStr.for_dialect(D.TRINO),
     base.FuncNonConstArrayInt(
         variants=[
-            V(D.TRINO, lambda *args: TrinoNonConstArray(*args)),
+            V(D.TRINO, lambda *args: TrinoArray(*args)),
         ]
     ),
     # base.FuncNonConstArrayFloat.for_dialect(D.TRINO),
     base.FuncNonConstArrayStr(
         variants=[
-            V(D.TRINO, lambda *args: TrinoNonConstArray(*args)),
+            V(D.TRINO, lambda *args: TrinoArray(*args)),
         ]
     ),
     # cast_arr_float

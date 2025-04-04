@@ -2,8 +2,7 @@ import datetime
 from typing import Union
 
 import sqlalchemy as sa
-from sqlalchemy.sql.expression import TextClause
-from trino.sqlalchemy.datatype import TIMESTAMP
+import trino.sqlalchemy.datatype as tsa
 
 from dl_formula.connectors.base.literal import (
     Literal,
@@ -11,11 +10,7 @@ from dl_formula.connectors.base.literal import (
 )
 from dl_formula.core.dialect import DialectCombo
 
-
-def trino_array(values: Union[tuple, list]) -> TextClause:
-    binds = [sa.bindparam(f"v_{i}", v) for i, v in enumerate(values)]
-    array_sql = "ARRAY[" + ",".join(f":{b.key}" for b in binds) + "]"
-    return sa.text(array_sql).bindparams(*binds)
+from dl_connector_trino.formula.definitions.custom_constructors import trino_array_literal
 
 
 class TrinoLiteralizer(Literalizer):
@@ -30,11 +25,11 @@ class TrinoLiteralizer(Literalizer):
 
         return sa.cast(
             value,
-            TIMESTAMP(
+            tsa.TIMESTAMP(
                 timezone=has_tz,
                 precision=precision,
             ),
         )
 
     def literal_array(self, value: Union[tuple, list], dialect: DialectCombo) -> Literal:
-        return sa.literal_column(str(trino_array(value).compile(compile_kwargs={"literal_binds": True})))
+        return trino_array_literal(value)
