@@ -426,6 +426,9 @@ class DatasetComponentEditor:
     def set_load_preview_by_default(self, load_preview_by_default: bool | None) -> None:
         self._dataset.data.load_preview_by_default = load_preview_by_default
 
+    def set_data_export_forbidden(self, data_export_forbidden: bool | None) -> None:
+        self._dataset.data.data_export_forbidden = data_export_forbidden
+
     def set_created_via(self, created_via: DataSourceCreatedVia) -> None:
         self._dataset.meta["created_via"] = created_via.name
 
