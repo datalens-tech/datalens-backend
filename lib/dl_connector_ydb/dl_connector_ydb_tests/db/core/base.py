@@ -3,7 +3,6 @@ from typing import Generator
 
 import pytest
 
-from dl_core_testing.database import Db
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 from dl_connector_ydb.core.ydb.constants import CONNECTION_TYPE_YDB
