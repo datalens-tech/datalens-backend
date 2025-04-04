@@ -28,7 +28,7 @@ class BaseYDBTestClass(BaseConnectionTestClass[YDBConnection]):
         return test_config.DB_CORE_URL
 
     @pytest.fixture(scope="function")
-    def connection_creation_params(self, _empty_table) -> dict:
+    def connection_creation_params(self) -> dict:
         return dict(
             **test_config.CONNECTION_PARAMS,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
@@ -49,7 +49,7 @@ class BaseSSLYDBTestClass(BaseYDBTestClass):
         return test_config.DB_CORE_URL_SSL
 
     @pytest.fixture(scope="function")
-    def connection_creation_params(self, _empty_table) -> dict:
+    def connection_creation_params(self) -> dict:
         return dict(
             **test_config.SSL_CONNECTION_PARAMS,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
