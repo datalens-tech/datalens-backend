@@ -81,6 +81,18 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
 
         bi_headers[DLHeadersCommon.US_MASTER_TOKEN.value] = us_master_token
 
+        # test invalid request
+        import_request = json.dumps({})
+
+        import_response = control_api_sync_client.post(
+            url="/api/v1/connections/import",
+            headers=bi_headers,
+            data=import_request,
+            content_type="application/json",
+        )
+        assert import_response.status_code == 400
+
+        # test common import
         export_resp = control_api_sync_client.get(
             url=f"/api/v1/connections/export/{saved_connection_id}",
             headers=bi_headers,

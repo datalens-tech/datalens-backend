@@ -27,6 +27,7 @@ from dl_api_lib.app.control_api.resources import API
 from dl_api_lib.app.control_api.resources.base import BIResource
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.schemas.connection import (
+    ConnectionImportRequestSchema,
     ConnectionInfoSourceSchemaQuerySchema,
     ConnectionInfoSourceSchemaResponseSchema,
     ConnectionItemQuerySchema,
@@ -34,6 +35,7 @@ from dl_api_lib.schemas.connection import (
     ConnectionSourceTemplatesResponseSchema,
     GenericConnectionSchema,
 )
+from dl_api_lib.schemas.main import ImportResponseSchema
 from dl_api_lib.utils import need_permission_on_entry
 from dl_constants.enums import ConnectionType
 from dl_constants.exc import DLBaseException
@@ -41,6 +43,7 @@ from dl_core.data_source.type_mapping import get_data_source_class
 from dl_core.data_source_merge_tools import make_spec_from_dict
 from dl_core.exc import (
     DatabaseUnavailable,
+    InvalidRequestError,
     USPermissionRequired,
 )
 from dl_core.us_connection_base import (
@@ -139,25 +142,40 @@ class ConnectionsImportList(BIResource):
         {RequiredResourceCommon.SKIP_AUTH, RequiredResourceCommon.US_HEADERS_TOKEN}
     )
 
+    @classmethod
+    def get_from_request(cls, body: Any, field_name: str) -> Any:
+        if not body or type(body) != dict:
+            raise InvalidRequestError("Unexpected request schema")
+
+        field = body.get(field_name)
+        if not field:
+            raise InvalidRequestError(f"Missing data for required field: {field_name}")
+        return field
+
     @put_to_request_context(endpoint_code="ConnectionImport")
-    @schematic_request(ns=ns)
-    def post(self) -> dict | tuple[list | dict, int]:
+    @schematic_request(
+        ns=ns,
+        body=ConnectionImportRequestSchema(),
+        responses={
+            200: ("Success", ImportResponseSchema()),
+        },
+    )
+    def post(self, body: dict) -> dict | tuple[list | dict, int]:
         us_manager = self.get_service_us_manager()
         notifications = []
 
-        conn_data = request.json and request.json["data"]["connection"]
-        assert conn_data
+        conn_data = body["data"]["connection"]
 
-        conn_type = conn_data["db_type"]
-        if not conn_type or conn_type not in ConnectionType:
+        conn_type = self.get_from_request(conn_data, "db_type")
+        if conn_type not in ConnectionType:
             raise exc.BadConnectionType(f"Invalid connection type value: {conn_type}")
 
         conn_availability = self.get_service_registry().get_connector_availability()
         conn_type_is_available = conn_availability.check_connector_is_available(ConnectionType[conn_type])
         if not conn_type_is_available:
-            raise exc.UnsupportedForEntityType("Connector %s is not available in current env", conn_type)
+            raise exc.UnsupportedForEntityType(f"Connector {conn_type} is not available in current env")
 
-        conn_data["workbook_id"] = request.json and request.json["data"].get("workbook_id", None)
+        conn_data["workbook_id"] = body["data"].get("workbook_id")
         conn_data["type"] = conn_type
 
         schema = GenericConnectionSchema(

@@ -57,6 +57,15 @@ class ConnectionInfoSourceSchemaResponseSchema(BaseSchema):
     raw_schema = ma_fields.Nested(RawSchemaColumnSchema, many=True, allow_none=True)
 
 
+class ConnectionDataContentImportSchema(BaseSchema):
+    connection = ma_fields.Raw(required=True)
+    workbook_id = ma_fields.String()
+
+
+class ConnectionImportRequestSchema(BaseSchema):
+    data = ma_fields.Nested(ConnectionDataContentImportSchema, required=True)
+
+
 class GenericConnectionSchema(OneOfSchema):
     type_schemas: dict[str, Type[ConnectionSchema]] = {}  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[ConnectionSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
     supported_connections: ClassVar[set[Type[ConnectionBase]]] = set()

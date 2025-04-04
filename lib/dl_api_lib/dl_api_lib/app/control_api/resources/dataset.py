@@ -354,7 +354,7 @@ class DatasetImportCollection(DatasetResource):
         ns=ns,
         body=dl_api_main_schemas.DatasetImportRequestSchema(),
         responses={
-            200: ("Success", dl_api_main_schemas.DatasetImportResponseSchema()),
+            200: ("Success", dl_api_main_schemas.ImportResponseSchema()),
         },
     )
     def post(self, body: dict) -> dict:
