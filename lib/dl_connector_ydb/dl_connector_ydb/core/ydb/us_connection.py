@@ -47,6 +47,9 @@ class YDBConnection(ClassicConnectionSQL):
 
         token: Optional[str] = attr.ib(default=None, repr=secrepr)
 
+        ssl_enable: bool = attr.ib(kw_only=True, default=False)
+        ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
+
         @classmethod
         def get_secret_keys(cls) -> set[DataKey]:
             return {
@@ -65,6 +68,8 @@ class YDBConnection(ClassicConnectionSQL):
             username=self.data.username,
             password=self.data.token,
             auth_type=self.data.auth_type,
+            ssl_enable=self.data.ssl_enable,
+            ssl_ca=self.data.ssl_ca,
         )
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:

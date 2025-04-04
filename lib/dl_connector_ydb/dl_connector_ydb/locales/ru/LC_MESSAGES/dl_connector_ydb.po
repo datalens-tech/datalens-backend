@@ -35,3 +35,8 @@ msgstr "Таблица"
 
 msgid "source_templates-label-ydb_table"
 msgstr "Путь к таблице в YDB"
+
+msgid "label_ydb-ssl-enabled-tooltip"
+msgstr ""
+"Если данная опция включена, использование ssl для подключения становится "
+"обязательным."

@@ -1,3 +1,5 @@
+from frozendict import frozendict
+import requests
 import sqlalchemy as sa
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
@@ -18,17 +20,50 @@ CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
     core_connector_ep_names=["ydb"],
 )
 
-_DB_URL = f'yql:///?endpoint={get_test_container_hostport("db-ydb", fallback_port=51900).host}%3A{get_test_container_hostport("db-ydb", fallback_port=51900).port}&database=%2Flocal'
+CERT_PROVIDER_URL = f"http://{get_test_container_hostport('db-ydb', fallback_port=51904).host}:{51904}"
+
+
+def fetch_ca_certificate() -> str:
+    uri = f"{CERT_PROVIDER_URL}/ca.pem"
+    response = requests.get(uri)
+    assert response.status_code == 200, response.text
+
+    return response.text
+
+
+def make_ssl_engine_params(ssl_ca: str) -> dict:
+    engine_params = {
+        "connect_args": frozendict(
+            {
+                "ca_cert": ssl_ca,
+                "root_certificates": ssl_ca.encode("ascii"),
+            }
+        ),
+    }
+    return engine_params
+
+
+CONNECTION_PARAMS = dict(
+    host=get_test_container_hostport("db-ydb", fallback_port=51900).host,
+    port=51900,
+    db_name="/local",
+)
+SSL_CONNECTION_PARAMS = dict(
+    host=get_test_container_hostport("db-ydb", fallback_port=51902).host,
+    port=51902,
+    db_name="/local",
+    ssl_enable=True,
+    ssl_ca=fetch_ca_certificate(),
+)
+
+_DB_URL = f'yql:///?endpoint={CONNECTION_PARAMS["host"]}%3A{CONNECTION_PARAMS["port"]}&database=%2Flocal'
+_DB_URL_SSL = f'yql:///?endpoint={SSL_CONNECTION_PARAMS["host"]}%3A{SSL_CONNECTION_PARAMS["port"]}&database=%2Flocal'
 DB_CORE_URL = _DB_URL
+DB_CORE_URL_SSL = _DB_URL_SSL
 DB_CONFIGURATIONS = {
     D.YDB: _DB_URL,
 }
 
-CONNECTION_PARAMS = dict(
-    host=get_test_container_hostport("db-ydb", fallback_port=51900).host,
-    port=get_test_container_hostport("db-ydb", fallback_port=51900).port,
-    db_name="/local",
-)
 TABLE_SCHEMA = (
     ("id", UserDataType.integer, sa.Integer),
     ("some_int32", UserDataType.integer, sa.Integer),

@@ -1,14 +1,21 @@
 services:
   db-ydb:
-    image: "cr.yandex/yc/yandex-docker-local-ydb:latest"
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-ydb
     environment:
       YDB_LOCAL_SURVIVE_RESTART: "true"
       GRPC_PORT: "51900"
-    # hostname: "localhost"  # you might want to uncomment this for local testing
+      YDB_GRPC_ENABLE_TLS: 1
+      GRPC_TLS_PORT: "51902"
+      YDB_GRPC_TLS_DATA_PATH: "/ydb_certs"
+    # hostname: "127.0.0.1"  # you might want to uncomment this for local testing
+    hostname: "db-ydb"
     ports:
       - "51900:51900"
+      - "51902:51902"
+      - "51904:51904"
 
-  # INFRA
   pg-us:
     extends:
       file: ../testenv-common/docker-compose.common.yml

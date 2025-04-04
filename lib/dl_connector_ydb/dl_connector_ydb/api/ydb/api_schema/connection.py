@@ -13,6 +13,7 @@ from dl_api_connector.api_schema.connection_sql import (
     db_name_no_query_params,
 )
 from dl_api_connector.api_schema.extras import FieldExtra
+import dl_core.marshmallow as core_ma_fields
 
 from dl_connector_ydb.core.ydb.constants import YDBAuthTypeMode
 from dl_connector_ydb.core.ydb.us_connection import YDBConnection
@@ -46,3 +47,18 @@ class YDBConnectionSchema(RawSQLLevelMixin, ConnectionSchema):
     )
 
     cache_ttl_sec = cache_ttl_field(attribute="data.cache_ttl_sec")
+
+    ssl_enable = core_ma_fields.OnOffField(
+        attribute="data.ssl_enable",
+        required=False,
+        load_default=False,
+        bi_extra=FieldExtra(editable=True),
+    )
+    ssl_ca = core_ma_fields.Base64StringField(
+        attribute="data.ssl_ca",
+        required=False,
+        allow_none=True,
+        load_only=True,
+        load_default=None,
+        bi_extra=FieldExtra(editable=True),
+    )

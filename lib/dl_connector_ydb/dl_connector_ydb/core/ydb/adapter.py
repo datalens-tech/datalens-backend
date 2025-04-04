@@ -5,6 +5,7 @@ from typing import (
     TYPE_CHECKING,
     ClassVar,
     Iterable,
+    Optional,
     TypeVar,
 )
 
@@ -15,6 +16,7 @@ import ydb.dbapi as ydb_dbapi
 from ydb.driver import credentials_impl
 import ydb.issues as ydb_cli_err
 
+from dl_configs.utils import get_root_certificates
 from dl_constants.enums import ConnectionType
 from dl_core import exc
 from dl_core.connection_models import TableIdent
@@ -42,7 +44,14 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
     conn_type: ClassVar[ConnectionType] = CONNECTION_TYPE_YDB
     dsn_template: ClassVar[str] = "{dialect}:///ydb/"  # 'yql:///ydb/'
 
-    proto_schema: ClassVar[str] = "grpc"
+    def _get_ssl_ca(self) -> Optional[bytes]:
+        if not self._target_dto.ssl_enable:
+            return None
+
+        if self._target_dto.ssl_ca:
+            return self._target_dto.ssl_ca.encode("ascii")
+
+        return get_root_certificates()
 
     def _update_connect_args(self, args: dict) -> None:
         if self._target_dto.auth_type == YDBAuthTypeMode.oauth:
@@ -50,11 +59,12 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
         elif self._target_dto.auth_type == YDBAuthTypeMode.password:
             driver_config = DriverConfig(
                 endpoint="{}://{}:{}".format(
-                    self.proto_schema,
+                    "grpcs" if self._target_dto.ssl_enable else "grpc",
                     self._target_dto.host,
                     self._target_dto.port,
                 ),
                 database=self._target_dto.db_name,
+                root_certificates=self._get_ssl_ca(),
             )
             args.update(
                 credentials=credentials_impl.StaticCredentials(
@@ -68,11 +78,12 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
         target_dto = self._target_dto
         args = dict(
             endpoint="{}://{}:{}".format(
-                self.proto_schema,
+                "grpcs" if self._target_dto.ssl_enable else "grpc",
                 target_dto.host,
                 target_dto.port,
             ),
             database=target_dto.db_name,
+            root_certificates=self._get_ssl_ca(),
         )
         self._update_connect_args(args)
         return args
