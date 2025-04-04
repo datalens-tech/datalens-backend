@@ -27,7 +27,7 @@ class TestYDBConnection(
         conn: YDBConnection,
         dsrc_templates: list[DataSourceTemplate],
     ) -> None:
-        # TODO: Implement check after implementing _empty_table
+        # TODO: Implement check using new SDK
         pass
 
 
@@ -48,5 +48,5 @@ class TestSSLYDBConnection(
         conn: YDBConnection,
         dsrc_templates: list[DataSourceTemplate],
     ) -> None:
-        # TODO: Implement check after implementing _empty_table
+        # TODO: Implement check using new SDK
         pass

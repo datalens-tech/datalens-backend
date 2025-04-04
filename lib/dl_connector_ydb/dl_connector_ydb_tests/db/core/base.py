@@ -35,11 +35,6 @@ class BaseYDBTestClass(BaseConnectionTestClass[YDBConnection]):
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
 
-    @pytest.fixture(scope="class")
-    def _empty_table(self, db: Db) -> None:
-        # TODO: Implement create table using new ydb library version
-        pass
-
 
 class BaseSSLYDBTestClass(BaseYDBTestClass):
     @pytest.fixture(scope="class")
