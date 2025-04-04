@@ -1634,6 +1634,7 @@ marshmallow = ">=3.19.0"
 marshmallow-oneofschema = ">=3.0.1"
 pydantic = ">=2.7.0"
 pydantic-settings = ">=2.2.1"
+requests = ">=2.28.2"
 statcommons = {path = "../statcommons"}
 typing-extensions = ">=4.9.0"
 werkzeug = ">=2.2.3"
