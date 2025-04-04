@@ -62,7 +62,7 @@ class USManagerFlaskMiddleware:
 
         if bi_context.user_id is None:
             LOGGER.info("User US manager will not be created due to no user info in RCI")
-        if RequiredResourceCommon.US_HEADERS_TOKEN in required_resources:
+        elif RequiredResourceCommon.US_HEADERS_TOKEN in required_resources:
             LOGGER.info("User US manager will not be created due to US_HEADERS_TOKEN flag in target view")
         else:
             LOGGER.info("Creating user US manager")
