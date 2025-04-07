@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-from typing import TypeVar
-
 import attr
-
-from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 
 from dl_connector_clickhouse.core.clickhouse.adapters import (
     DLAsyncClickHouseAdapter,
@@ -13,10 +9,10 @@ from dl_connector_clickhouse.core.clickhouse.adapters import (
 from dl_connector_clickhouse.core.clickhouse.dto import DLClickHouseConnDTO
 from dl_connector_clickhouse.core.clickhouse.target_dto import DLClickHouseConnTargetDTO
 from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
-from dl_connector_clickhouse.core.clickhouse_base.connection_executors import _BaseClickHouseConnExecutor
-
-
-_BASE_CLICKHOUSE_ADAPTER_TV = TypeVar("_BASE_CLICKHOUSE_ADAPTER_TV", bound=CommonBaseDirectAdapter)
+from dl_connector_clickhouse.core.clickhouse_base.connection_executors import (
+    _BASE_CLICKHOUSE_ADAPTER_TV,
+    _BaseClickHouseConnExecutor,
+)
 
 
 @attr.s(cmp=False, hash=False)
