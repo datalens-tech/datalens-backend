@@ -400,12 +400,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         }
 
     def get_request_params(self, dba_q: DBAdapterQuery) -> dict[str, str]:
-        if dba_q.trusted_query:
-            read_only_level = None
-        elif self._target_dto.readonly == 1:
-            read_only_level = 1
-        else:
-            read_only_level = 2
+        read_only_level = None if dba_q.trusted_query else 2
         return dict(
             # TODO FIX: Move to utils
             database=dba_q.db_name or self._target_dto.db_name or "system",

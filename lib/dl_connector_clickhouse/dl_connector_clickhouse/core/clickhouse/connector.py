@@ -6,6 +6,10 @@ from dl_core.connectors.sql_base.connector import SQLSubselectCoreSourceDefiniti
 from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from dl_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 
+from dl_connector_clickhouse.core.clickhouse.connection_executors import (
+    DLAsyncClickHouseConnExecutor,
+    DLClickHouseConnExecutor,
+)
 from dl_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_SUBSELECT,
     SOURCE_TYPE_CH_TABLE,
@@ -18,10 +22,6 @@ from dl_connector_clickhouse.core.clickhouse.data_source_migration import ClickH
 from dl_connector_clickhouse.core.clickhouse.settings import ClickHouseSettingDefinition
 from dl_connector_clickhouse.core.clickhouse.storage_schemas.connection import ConnectionClickhouseDataStorageSchema
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
-from dl_connector_clickhouse.core.clickhouse_base.connection_executors import (
-    AsyncClickHouseConnExecutor,
-    ClickHouseConnExecutor,
-)
 from dl_connector_clickhouse.core.clickhouse_base.connector import ClickHouseCoreConnectorBase
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
@@ -32,8 +32,8 @@ class ClickHouseCoreConnectionDefinition(CoreConnectionDefinition):
     connection_cls = ConnectionClickhouse
     us_storage_schema_cls = ConnectionClickhouseDataStorageSchema
     type_transformer_cls = ClickHouseTypeTransformer
-    sync_conn_executor_cls = ClickHouseConnExecutor
-    async_conn_executor_cls = AsyncClickHouseConnExecutor
+    sync_conn_executor_cls = DLClickHouseConnExecutor
+    async_conn_executor_cls = DLAsyncClickHouseConnExecutor
     dialect_string = "bi_clickhouse"
     data_source_migrator_cls = ClickHouseDataSourceMigrator
     settings_definition = ClickHouseSettingDefinition

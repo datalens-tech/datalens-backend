@@ -1,38 +1,34 @@
 from __future__ import annotations
 
-from typing import (
-    Optional,
-    TypeVar,
-)
+from typing import TypeVar
 
 import attr
-from typing_extensions import Self
 
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
-from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 
-from dl_connector_clickhouse.core.clickhouse_base.adapters import (
-    AsyncClickHouseAdapter,
-    ClickHouseAdapter,
+from dl_connector_clickhouse.core.clickhouse.adapters import (
+    DLAsyncClickHouseAdapter,
+    DLClickHouseAdapter,
 )
+from dl_connector_clickhouse.core.clickhouse.dto import DLClickHouseConnDTO
+from dl_connector_clickhouse.core.clickhouse.target_dto import DLClickHouseConnTargetDTO
 from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
-from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
-from dl_connector_clickhouse.core.clickhouse_base.target_dto import ClickHouseConnTargetDTO
+from dl_connector_clickhouse.core.clickhouse_base.connection_executors import _BaseClickHouseConnExecutor
 
 
 _BASE_CLICKHOUSE_ADAPTER_TV = TypeVar("_BASE_CLICKHOUSE_ADAPTER_TV", bound=CommonBaseDirectAdapter)
 
 
 @attr.s(cmp=False, hash=False)
-class _BaseClickHouseConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_CLICKHOUSE_ADAPTER_TV]):
-    _conn_dto: ClickHouseConnDTO = attr.ib()
+class _DLBaseClickHouseConnExecutor(_BaseClickHouseConnExecutor[_BASE_CLICKHOUSE_ADAPTER_TV]):
+    _conn_dto: DLClickHouseConnDTO = attr.ib()
     _conn_options: CHConnectOptions = attr.ib()
 
-    async def _make_target_conn_dto_pool(self) -> list[ClickHouseConnTargetDTO]:  # type: ignore  # TODO: fix
+    async def _make_target_conn_dto_pool(self) -> list[DLClickHouseConnTargetDTO]:  # type: ignore  # TODO: fix
         dto_pool = []
         for host in self._conn_hosts_pool:
             dto_pool.append(
-                ClickHouseConnTargetDTO(
+                DLClickHouseConnTargetDTO(
                     conn_id=self._conn_dto.conn_id,
                     pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
                     pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
@@ -51,25 +47,17 @@ class _BaseClickHouseConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_CLICKHOUSE
                     secure=self._conn_dto.secure,
                     ssl_ca=self._conn_dto.ssl_ca,
                     ca_data=self._ca_data.decode("ascii"),
+                    readonly=self._conn_dto.readonly,
                 )
             )
         return dto_pool
 
-    def mutate_for_dashsql(self, db_params: Optional[dict[str, str]] = None) -> Self:
-        if db_params:  # TODO.
-            raise Exception("`db_params` are not supported at the moment")
-        return self.clone(
-            conn_options=self._conn_options.clone(
-                disable_value_processing=True,
-            ),
-        )
+
+@attr.s(cmp=False, hash=False)
+class DLClickHouseConnExecutor(_DLBaseClickHouseConnExecutor[DLClickHouseAdapter]):
+    TARGET_ADAPTER_CLS = DLClickHouseAdapter
 
 
 @attr.s(cmp=False, hash=False)
-class ClickHouseConnExecutor(_BaseClickHouseConnExecutor[ClickHouseAdapter]):
-    TARGET_ADAPTER_CLS = ClickHouseAdapter
-
-
-@attr.s(cmp=False, hash=False)
-class AsyncClickHouseConnExecutor(_BaseClickHouseConnExecutor[AsyncClickHouseAdapter]):
-    TARGET_ADAPTER_CLS = AsyncClickHouseAdapter
+class DLAsyncClickHouseConnExecutor(_DLBaseClickHouseConnExecutor[DLAsyncClickHouseAdapter]):
+    TARGET_ADAPTER_CLS = DLAsyncClickHouseAdapter
