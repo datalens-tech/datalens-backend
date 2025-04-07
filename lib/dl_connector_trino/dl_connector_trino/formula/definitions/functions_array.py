@@ -7,7 +7,9 @@ from sqlalchemy.sql.elements import (
     ClauseElement,
     ColumnClause,
 )
+from sqlalchemy.sql.expression import custom_op
 from sqlalchemy.sql.functions import Function
+import trino.sqlalchemy.datatype as tsa
 
 from dl_formula.core.datatype import DataType
 from dl_formula.definitions.args import ArgTypeSequence
@@ -15,20 +17,58 @@ from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_array as base
 
 from dl_connector_trino.formula.constants import TrinoDialect as D
-from dl_connector_trino.formula.definitions.custom_constructors import TrinoArray
+from dl_connector_trino.formula.definitions.custom_constructors import (
+    TrinoArray,
+    TrinoLambda,
+)
 
 
 V = TranslationVariant.make
 
+lambda_identical = TrinoLambda(sa.column("x"), sa.column("x"))
+lambda_true = TrinoLambda(sa.column("x"), True)
+lambda_is_null = TrinoLambda(sa.column("x"), sa.column("x").is_(None))
+lambda_is_not_null = TrinoLambda(sa.column("x"), sa.column("x").isnot(None))
+lambda_and = TrinoLambda(
+    sa.column("x"),
+    sa.column("y"),
+    sa.column("x") & sa.column("y"),
+)
+lambda_is_not_distinct_from = TrinoLambda(
+    sa.column("x"),
+    sa.column("y"),
+    BinaryExpression(sa.column("x"), sa.column("y"), custom_op("IS NOT DISTINCT FROM")),
+)
+lambda_format_float = TrinoLambda(
+    sa.column("x"),
+    sa.func.regexp_extract(
+        sa.func.format("%.16f", sa.column("x")),
+        "^(-?\\d+(\\.[1-9]+)?)(\\.?0*)$",
+        1,
+    ),
+)
+lambda_cast_double = TrinoLambda(
+    sa.column("x"),
+    sa.func.cast(sa.column("x"), tsa.DOUBLE()),
+)
+lambda_cast_bigint = TrinoLambda(
+    sa.column("x"),
+    sa.func.cast(sa.column("x"), sa.BIGINT()),
+)
+lambda_cast_varchar = TrinoLambda(
+    sa.column("x"),
+    sa.func.cast(sa.column("x"), sa.VARCHAR()),
+)
+
 
 def drop_null(array: ClauseElement) -> Function:
-    return sa.func.filter(array, sa.text("x -> x IS NOT NULL"))
+    return sa.func.filter(array, lambda_is_not_null)
 
 
 def format_float(array_float: ClauseElement) -> Function:
     return sa.func.transform(
         array_float,
-        sa.text("x -> regexp_extract(format('%.16f', x), '^(-?\\d+(\\.[1-9]+)?)(\\.?0*)$', 1)"),
+        lambda_format_float,
     )
 
 
@@ -36,13 +76,13 @@ def array_equals(x: ColumnClause, y: ColumnClause) -> Function:
     pairwise_non_distinct = sa.func.zip_with(
         x,
         y,
-        sa.text("(x, y) -> x IS NOT DISTINCT FROM y"),
+        lambda_is_not_distinct_from,
     )
     return sa.func.reduce(
         pairwise_non_distinct,
         True,
-        sa.text("(x, y) -> x AND y"),
-        sa.text("x -> x"),
+        lambda_and,
+        lambda_identical,
     )
 
 
@@ -63,19 +103,26 @@ def array_intersect(*arrays: ColumnClause) -> Function:
     return sa.func.reduce(
         TrinoArray(*arrays[1:]),
         arrays[0],
-        sa.text("(x, y) -> array_intersect(x, y)"),
-        sa.text("x -> x"),
+        TrinoLambda(
+            sa.column("x"),
+            sa.column("y"),
+            sa.func.array_intersect(sa.column("x"), sa.column("y")),
+        ),
+        lambda_identical,
     )
 
 
 def count_item(array: ColumnClause, value: BindParameter) -> Function:
     return sa.func.if_(
         value.is_(None),
-        sa.func.cardinality(sa.func.filter(array, sa.text("x -> x IS NULL"))),
+        sa.func.cardinality(sa.func.filter(array, lambda_is_null)),
         sa.func.cardinality(
             sa.func.filter(
                 array,
-                sa.text(f"x -> x IS NOT DISTINCT FROM {value.compile(compile_kwargs=dict(literal_binds=True))}"),
+                TrinoLambda(
+                    sa.column("x"),
+                    sa.column("x") == value,
+                ),
             )
         ),
     )
@@ -90,17 +137,29 @@ def array_not_contains(array: ColumnClause, value: BindParameter) -> BinaryExpre
 
 
 def replace_array(array: ColumnClause, old_value: BindParameter, new_value: BindParameter) -> Function:
-    old_value_repr = old_value.compile(compile_kwargs=dict(literal_binds=True))
-    new_value_repr = new_value.compile(compile_kwargs=dict(literal_binds=True))
     return sa.func.if_(
         old_value.is_(None),
         sa.func.transform(
             array,
-            sa.text(f"x -> if(x IS NULL, {new_value_repr}, x)"),
+            TrinoLambda(
+                sa.column("x"),
+                sa.func.if_(
+                    sa.column("x").is_(None),
+                    new_value,
+                    sa.column("x"),
+                ),
+            ),
         ),
         sa.func.transform(
             array,
-            sa.text(f"x -> if(x = {old_value_repr}, {new_value_repr}, x)"),
+            TrinoLambda(
+                sa.column("x"),
+                sa.func.if_(
+                    sa.column("x") == old_value,
+                    new_value,
+                    sa.column("x"),
+                ),
+            ),
         ),
     )
 
@@ -175,7 +234,10 @@ DEFINITIONS_ARRAY = [
     # arr_remove
     base.FuncArrayRemoveLiteralNull(
         variants=[
-            V(D.TRINO, lambda array, _null: sa.func.filter(array, sa.text("x -> x IS NOT NULL"))),
+            V(
+                D.TRINO,
+                lambda array, _null: sa.func.filter(array, lambda_is_not_null),
+            ),
         ]
     ),
     base.FuncArrayRemoveDefault(
@@ -210,7 +272,7 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.TRINO,
-                lambda arr: sa.func.transform(arr, sa.text("x -> cast(x as double)")),
+                lambda arr: sa.func.transform(arr, lambda_cast_double),
             ),
         ]
     ),
@@ -219,7 +281,7 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.TRINO,
-                lambda arr: sa.func.transform(arr, sa.text("x -> cast(x as double)")),
+                lambda arr: sa.func.transform(arr, lambda_cast_double),
             ),
         ]
     ),
@@ -229,7 +291,7 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.TRINO,
-                lambda arr: sa.func.transform(arr, sa.text("x -> cast(x as bigint)")),
+                lambda arr: sa.func.transform(arr, lambda_cast_bigint),
             ),
         ]
     ),
@@ -237,7 +299,7 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.TRINO,
-                lambda arr: sa.func.transform(arr, sa.text("x -> cast(x as bigint)")),
+                lambda arr: sa.func.transform(arr, lambda_cast_bigint),
             ),
         ]
     ),
@@ -246,7 +308,7 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.TRINO,
-                lambda arr: sa.func.transform(arr, sa.text("x -> cast(x as varchar)")),
+                lambda arr: sa.func.transform(arr, lambda_cast_varchar),
             ),
         ]
     ),
@@ -340,7 +402,7 @@ DEFINITIONS_ARRAY = [
                 D.TRINO,
                 lambda array, start, offset: sa.func.filter(
                     sa.func.slice(array, start, offset),
-                    sa.text("x -> true"),
+                    lambda_true,
                 ),
             ),
         ]
