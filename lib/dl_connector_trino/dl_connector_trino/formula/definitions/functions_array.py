@@ -25,39 +25,41 @@ from dl_connector_trino.formula.definitions.custom_constructors import (
 
 V = TranslationVariant.make
 
-lambda_identical = TrinoLambda(sa.column("x"), sa.column("x"))
-lambda_true = TrinoLambda(sa.column("x"), True)
-lambda_is_null = TrinoLambda(sa.column("x"), sa.column("x").is_(None))
-lambda_is_not_null = TrinoLambda(sa.column("x"), sa.column("x").isnot(None))
+x_col, y_col = sa.column("x"), sa.column("y")
+
+lambda_identical = TrinoLambda(x_col, x_col)
+lambda_true = TrinoLambda(x_col, True)
+lambda_is_null = TrinoLambda(x_col, x_col.is_(None))
+lambda_is_not_null = TrinoLambda(x_col, x_col.isnot(None))
 lambda_and = TrinoLambda(
-    sa.column("x"),
-    sa.column("y"),
-    sa.column("x") & sa.column("y"),
+    x_col,
+    y_col,
+    x_col & y_col,
 )
 lambda_is_not_distinct_from = TrinoLambda(
-    sa.column("x"),
-    sa.column("y"),
-    BinaryExpression(sa.column("x"), sa.column("y"), custom_op("IS NOT DISTINCT FROM")),
+    x_col,
+    y_col,
+    BinaryExpression(x_col, y_col, custom_op("IS NOT DISTINCT FROM")),
 )
 lambda_format_float = TrinoLambda(
-    sa.column("x"),
+    x_col,
     sa.func.regexp_extract(
-        sa.func.format("%.16f", sa.column("x")),
+        sa.func.format("%.16f", x_col),
         "^(-?\\d+(\\.[1-9]+)?)(\\.?0*)$",
         1,
     ),
 )
 lambda_cast_double = TrinoLambda(
-    sa.column("x"),
-    sa.func.cast(sa.column("x"), tsa.DOUBLE()),
+    x_col,
+    sa.func.cast(x_col, tsa.DOUBLE()),
 )
 lambda_cast_bigint = TrinoLambda(
-    sa.column("x"),
-    sa.func.cast(sa.column("x"), sa.BIGINT()),
+    x_col,
+    sa.func.cast(x_col, sa.BIGINT()),
 )
 lambda_cast_varchar = TrinoLambda(
-    sa.column("x"),
-    sa.func.cast(sa.column("x"), sa.VARCHAR()),
+    x_col,
+    sa.func.cast(x_col, sa.VARCHAR()),
 )
 
 
@@ -104,9 +106,9 @@ def array_intersect(*arrays: ColumnClause) -> Function:
         TrinoArray(*arrays[1:]),
         arrays[0],
         TrinoLambda(
-            sa.column("x"),
-            sa.column("y"),
-            sa.func.array_intersect(sa.column("x"), sa.column("y")),
+            x_col,
+            y_col,
+            sa.func.array_intersect(x_col, y_col),
         ),
         lambda_identical,
     )
@@ -120,8 +122,8 @@ def count_item(array: ColumnClause, value: BindParameter) -> Function:
             sa.func.filter(
                 array,
                 TrinoLambda(
-                    sa.column("x"),
-                    sa.column("x") == value,
+                    x_col,
+                    x_col == value,
                 ),
             )
         ),
@@ -142,22 +144,22 @@ def replace_array(array: ColumnClause, old_value: BindParameter, new_value: Bind
         sa.func.transform(
             array,
             TrinoLambda(
-                sa.column("x"),
+                x_col,
                 sa.func.if_(
-                    sa.column("x").is_(None),
+                    x_col.is_(None),
                     new_value,
-                    sa.column("x"),
+                    x_col,
                 ),
             ),
         ),
         sa.func.transform(
             array,
             TrinoLambda(
-                sa.column("x"),
+                x_col,
                 sa.func.if_(
-                    sa.column("x") == old_value,
+                    x_col == old_value,
                     new_value,
-                    sa.column("x"),
+                    x_col,
                 ),
             ),
         ),
