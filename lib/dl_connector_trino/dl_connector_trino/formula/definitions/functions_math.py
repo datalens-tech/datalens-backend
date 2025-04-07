@@ -14,7 +14,7 @@ V = TranslationVariant.make
 
 DEFINITIONS_MATH = [
     # # abs
-    # base.FuncAbs.for_dialect(D.TRINO),
+    base.FuncAbs.for_dialect(D.TRINO),
     # # acos
     base.FuncAcos.for_dialect(D.TRINO),
     # # asin
@@ -124,7 +124,7 @@ DEFINITIONS_MATH = [
         ],
     ),
     # # sign
-    # base.FuncSign.for_dialect(D.TRINO),
+    base.FuncSign.for_dialect(D.TRINO),
     # # sin
     base.FuncSin.for_dialect(D.TRINO),
     # # sqrt
