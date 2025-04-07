@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
 
 import attr
-from clickhouse_sqlalchemy.drivers.http.transport import _get_type  # noqa
 
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 
@@ -19,9 +17,6 @@ from dl_connector_clickhouse.core.clickhouse_base.ch_commons import (
 )
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
-
-if TYPE_CHECKING:
-    pass
 
 LOGGER = logging.getLogger(__name__)
 
