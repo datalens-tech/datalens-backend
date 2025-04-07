@@ -19,7 +19,10 @@ from typing import (
 from typing_extensions import Self
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_app_tools.profiling_base import generic_profiler
+from dl_app_tools.profiling_base import (
+    GenericProfiler,
+    generic_profiler,
+)
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core import exc
 from dl_core.base_models import (
@@ -201,7 +204,39 @@ class SyncUSManager(USManagerBase):
             us_resp = self.get_migrated_entry(entry_id, params=params)
 
         obj = self._entry_dict_to_obj(us_resp, expected_type)
-        await_sync(self.get_lifecycle_manager(entry=obj).post_init_async_hook())
+        with GenericProfiler("us-fetch-post-init-hook"):
+            await_sync(self.get_lifecycle_manager(entry=obj).post_init_async_hook())
+
+        return obj
+
+    @generic_profiler("us-fetch-entity-raw")  # type: ignore  # TODO: fix
+    def get_by_id_raw(
+        self,
+        entry_id: str,
+        expected_type: Optional[Type[USEntry]] = None,
+        params: Optional[dict[str, str]] = None,
+    ) -> dict[str, Any]:
+        """Get raw `u_resp` from response without deserialization"""
+
+        with self._enrich_us_exception(
+            entry_id=entry_id,
+            entry_scope=expected_type.scope if expected_type is not None else None,
+        ):
+            us_resp = self.get_migrated_entry(entry_id, params=params)
+
+        return us_resp
+
+    @generic_profiler("us-fetch-entity-raw")  # type: ignore  # TODO: fix
+    def deserialize_us_resp(
+        self,
+        us_resp: dict[str, Any],
+        expected_type: Optional[Type[USEntry]] = None,
+    ) -> USEntry:
+        """Used on result of `get_by_id_raw()` call for proper deserialization flow"""
+
+        obj = self._entry_dict_to_obj(us_resp, expected_type)
+        with GenericProfiler("us-fetch-post-init-hook"):
+            await_sync(self.get_lifecycle_manager(entry=obj).post_init_async_hook())
 
         return obj
 

@@ -48,7 +48,6 @@ class DatasetPivotView(DatasetDataBaseView):
     #     responses={200: ('Success', dl_api_lib.schemas.data.DatasetVersionResultResponseSchema())}
     # )
     @generic_profiler_async("ds-pivot-full")
-    @DatasetDataBaseView.with_resolved_entities
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> Response:
         schema = dl_api_lib.schemas.data.PivotDataRequestBaseSchema()
@@ -57,8 +56,7 @@ class DatasetPivotView(DatasetDataBaseView):
         req_normalizer = PivotRequestModelNormalizer()
         req_model = req_normalizer.normalize_drm(req_model)
 
-        enable_mutation_caching = self.dl_request.services_registry.get_mutation_cache_factory() is not None
-        await self.prepare_dataset_for_request(req_model=req_model, enable_mutation_caching=enable_mutation_caching)
+        await self.prepare_dataset_with_mutation_cache(req_model=req_model)
 
         merged_stream = await self.execute_all_queries(
             raw_query_spec_union=req_model.raw_query_spec_union,
