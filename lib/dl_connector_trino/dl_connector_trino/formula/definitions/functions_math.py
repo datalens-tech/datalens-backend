@@ -5,9 +5,11 @@ import dl_formula.definitions.functions_math as base
 from dl_formula.shortcuts import n
 
 from dl_connector_trino.formula.constants import TrinoDialect as D
+from dl_connector_trino.formula.definitions.custom_constructors import TrinoArray
 
 
 V = TranslationVariant.make
+
 
 DEFINITIONS_MATH = [
     # # abs
@@ -49,13 +51,21 @@ DEFINITIONS_MATH = [
     # # floor
     base.FuncFloor.for_dialect(D.TRINO),
     # # greatest
-    # base.FuncGreatest1.for_dialect(D.TRINO),
+    base.FuncGreatest1.for_dialect(D.TRINO),
     # base.FuncGreatestMain.for_dialect(D.TRINO),
-    # base.GreatestMulti.for_dialect(D.TRINO),
+    base.GreatestMulti(
+        variants=[
+            V(D.TRINO, lambda *args: sa.func.array_max(TrinoArray(*args))),
+        ]
+    ),
     # # least
-    # base.FuncLeast1.for_dialect(D.TRINO),
+    base.FuncLeast1.for_dialect(D.TRINO),
     # base.FuncLeastMain.for_dialect(D.TRINO),
-    # base.LeastMulti.for_dialect(D.TRINO),
+    base.LeastMulti(
+        variants=[
+            V(D.TRINO, lambda *args: sa.func.array_min(TrinoArray(*args))),
+        ]
+    ),
     # # ln
     base.FuncLn.for_dialect(D.TRINO),
     # # log
