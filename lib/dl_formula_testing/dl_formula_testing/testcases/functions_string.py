@@ -128,7 +128,6 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
     def test_regexp_extract_all(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         if not self.supports_regex_extract_all:
             pytest.skip()
-
         assert dbe.eval("REGEXP_EXTRACT_ALL('100-200, 300-400', '(\\d+)-(\\d+)')") in ("['100','300']", ["100", "300"])
         assert dbe.eval("REGEXP_EXTRACT_ALL('нет_цифр', '(\\d+)-(\\d+)')") in ("[]", None)
         assert to_str(dbe.eval('REGEXP_EXTRACT_ALL([str_null_value], "or..")', from_=data_table)) in (None, "[]")
@@ -170,7 +169,7 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert (
             to_str(dbe.eval("SPACE(4)")) == "    "
         )  # SPACE(<int literal>) is evaluated in Python rather than in the DB,
-        assert to_str(dbe.eval("SPACE(LEN('aaaa'))")) == "    "  # while this version actually uses the DB function(s)
+        assert to_str(dbe.eval("SPACE(2 + 2)")) == "    "  # while this version actually uses the DB function(s)
 
     def test_split_3(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         if not self.supports_split_3:
