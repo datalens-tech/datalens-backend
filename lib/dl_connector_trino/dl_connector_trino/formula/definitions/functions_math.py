@@ -1,4 +1,5 @@
 import sqlalchemy as sa
+import trino.sqlalchemy.datatype as tsa
 
 from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_math as base
@@ -42,12 +43,45 @@ DEFINITIONS_MATH = [
     # # degrees
     base.FuncDegrees.for_dialect(D.TRINO),
     # # div
-    # base.FuncDivBasic.for_dialect(D.TRINO),
+    base.FuncDivBasic(
+        variants=[
+            V(D.TRINO, lambda x, y: sa.cast(x, sa.BIGINT()) / sa.cast(y, sa.BIGINT())),
+        ]
+    ),
     # # div_safe
-    # base.FuncDivSafe2.for_dialect(D.TRINO),
-    # base.FuncDivSafe3.for_dialect(D.TRINO),
+    base.FuncDivSafe2(
+        variants=[
+            V(D.TRINO, lambda x, y: n.func.DIV_SAFE(x, y, None)),
+        ]
+    ),
+    base.FuncDivSafe3(
+        variants=[
+            V(
+                D.TRINO,
+                lambda x, y, default: sa.case(
+                    [(y == 0, default)], else_=sa.cast(x, sa.BIGINT()) / sa.cast(y, sa.BIGINT())
+                ),
+            ),
+        ]
+    ),
     # # exp
     base.FuncExp.for_dialect(D.TRINO),
+    # fdiv_safe
+    base.FuncFDivSafe2(
+        variants=[
+            V(D.TRINO, lambda x, y: n.func.FDIV_SAFE(x, y, None)),
+        ]
+    ),
+    base.FuncFDivSafe3(
+        variants=[
+            V(
+                D.TRINO,
+                lambda x, y, default: sa.case(
+                    [(y == 0, default)], else_=sa.cast(x, tsa.DOUBLE()) / sa.cast(y, tsa.DOUBLE())
+                ),
+            ),
+        ]
+    ),
     # # floor
     base.FuncFloor.for_dialect(D.TRINO),
     # # greatest
