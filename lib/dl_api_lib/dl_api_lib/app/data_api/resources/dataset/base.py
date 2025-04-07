@@ -175,6 +175,7 @@ class DatasetDataBaseView(BaseView):
         capabilities = DatasetCapabilities(dataset=dataset, dsrc_coll_factory=dsrc_coll_factory)
         return capabilities.resolve_source_role(log_reasons=log_reasons)
 
+    @generic_profiler_async("resolve-entities")
     async def resolve_entities(self) -> None:
         us_manager = self.dl_request.us_manager
         if self.dl_request.log_ctx_controller:

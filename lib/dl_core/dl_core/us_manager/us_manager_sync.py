@@ -205,10 +205,12 @@ class SyncUSManager(USManagerBase):
 
         return obj
 
+    @generic_profiler("us-get-migrated-entity")
     def get_migrated_entry(self, entry_id: str, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
         us_resp = self._us_client.get_entry(entry_id, params=params)
         return self._migrate_response(us_resp)
 
+    @generic_profiler("us-migrate-response")
     def _migrate_response(self, us_resp: dict) -> dict:
         initial_type = us_resp["type"]
         while True:
@@ -399,6 +401,7 @@ class SyncUSManager(USManagerBase):
             raise ValueError("Entry was in cache but it is not a connection: %s", type(conn))
 
     # TODO FIX: Think about cache control
+    @generic_profiler("us-load-dependencies")
     def load_dependencies(self, entry: USEntry) -> None:
         if not isinstance(entry, Dataset):
             raise NotImplementedError("Links loading is supported only for dataset")

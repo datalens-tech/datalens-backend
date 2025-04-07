@@ -16,7 +16,10 @@ from typing import (
 )
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_app_tools.profiling_base import generic_profiler_async
+from dl_app_tools.profiling_base import (
+    GenericProfiler,
+    generic_profiler_async,
+)
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core import exc
 from dl_core.base_models import (
@@ -146,14 +149,17 @@ class AsyncUSManager(USManagerBase):
             us_resp = await self.get_migrated_entry(entry_id, params=params)
 
         obj = self._entry_dict_to_obj(us_resp, expected_type)
-        await self.get_lifecycle_manager(entry=obj).post_init_async_hook()
+        with GenericProfiler("us-detch-post-init-hook"):
+            await self.get_lifecycle_manager(entry=obj).post_init_async_hook()
 
         return obj
 
+    @generic_profiler_async("us-get-migrated-entity")
     async def get_migrated_entry(self, entry_id: str, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
         us_resp = await self._us_client.get_entry(entry_id, params=params)
         return await self._migrate_response(us_resp)
 
+    @generic_profiler_async("us-migrate-response")
     async def _migrate_response(self, us_resp: dict) -> dict:
         initial_type = us_resp["type"]
         while True:
@@ -286,6 +292,7 @@ class AsyncUSManager(USManagerBase):
             raise ValueError("Entry was in cache but it is not a connection: %s", type(conn))
 
     # TODO FIX: Think about cache control
+    @generic_profiler_async("us-load-dependencies")
     async def load_dependencies(self, entry: USEntry) -> None:
         if not isinstance(entry, Dataset):
             raise NotImplementedError("Links loading is supported only for dataset")
