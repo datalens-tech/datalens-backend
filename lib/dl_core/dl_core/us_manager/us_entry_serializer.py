@@ -18,6 +18,10 @@ from typing import ChainMap as ChainMapGeneric
 import attr
 import marshmallow
 
+from dl_app_tools.profiling_base import (
+    GenericProfiler,
+    generic_profiler,
+)
 from dl_core.base_models import BaseAttrsDataModel
 from dl_core.us_dataset import Dataset
 from dl_core.us_entry import USEntry
@@ -93,6 +97,7 @@ class USEntrySerializer(abc.ABC):
     def get_data_attr(self, entry: USEntry, key: DataKey) -> Any:
         raise NotImplementedError()
 
+    @generic_profiler("us-serialize")
     def serialize(self, obj: USEntry) -> USDataPack:
         raw_dict = self.serialize_raw(obj)
 
@@ -110,6 +115,7 @@ class USEntrySerializer(abc.ABC):
             secrets=secrets_addressable.data,
         )
 
+    @generic_profiler("us-deserialize")
     def deserialize(
         self,
         cls: Type[USEntry],
@@ -133,7 +139,8 @@ class USEntrySerializer(abc.ABC):
         if secret_source_addressable.data:
             LOGGER.warning("Undeclared secrets found")
 
-        return self.deserialize_raw(cls, raw_addressable.data, entry_id, us_manager, common_properties, data_strict)
+        with GenericProfiler("us-deserialize-raw"):
+            return self.deserialize_raw(cls, raw_addressable.data, entry_id, us_manager, common_properties, data_strict)
 
 
 class USEntrySerializerMarshmallow(USEntrySerializer):
