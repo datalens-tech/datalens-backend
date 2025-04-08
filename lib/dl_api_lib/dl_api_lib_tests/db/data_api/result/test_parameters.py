@@ -347,7 +347,7 @@ class TestParameterSourceTemplates(DefaultApiTestBase):
         ds.sources["source_1"] = ds.source(
             connection_id=saved_connection_id,
             source_type=SOURCE_TYPE_CH_SUBSELECT.name,
-            parameters=dict(subsql="SELECT * FROM {table_name}"),
+            parameters=dict(subsql="SELECT * FROM {{table_name}}"),
         )
         ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
         ds = control_api.apply_updates(dataset=ds).dataset
@@ -369,6 +369,37 @@ class TestParameterSourceTemplates(DefaultApiTestBase):
             ],
         )
 
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+
+    def test_update_parameter_default_value(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ):
+        ds = saved_dataset
+        table_name = ds.result_schema["table_name"].default_value.value
+        ds.result_schema["table_name"].default_value = StringParameterValue(value="invalid_table_name")
+        ds = control_api.apply_updates(dataset=ds).dataset
+        ds = control_api.save_dataset(dataset=ds).dataset
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="discount"),
+                ds.find_field(title="city"),
+            ],
+            updates=[
+                {
+                    "action": DatasetAction.update_field.value,
+                    "field": {
+                        "guid": ds.find_field(title="table_name").id,
+                        "cast": "string",
+                        "default_value": table_name,
+                    },
+                },
+            ],
+        )
         assert result_resp.status_code == HTTPStatus.OK, result_resp.json
 
     def test_invalid_update_parameter_default_value(
@@ -399,6 +430,30 @@ class TestParameterSourceTemplates(DefaultApiTestBase):
         assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
         assert result_resp.bi_status_code == "ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST"
         assert "invalid_table_name" in result_resp.json["message"]
+
+    def test_update_parameter_value(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ):
+        ds = saved_dataset
+        table_name = ds.result_schema["table_name"].default_value.value
+        ds.result_schema["table_name"].default_value = StringParameterValue(value="invalid_table_name")
+        ds = control_api.apply_updates(dataset=ds).dataset
+        ds = control_api.save_dataset(dataset=ds).dataset
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="discount"),
+                ds.find_field(title="city"),
+            ],
+            parameters=[
+                ds.find_field(title="table_name").parameter_value(table_name),
+            ],
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
 
     def test_invalid_parameters_value(
         self,

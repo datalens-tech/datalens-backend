@@ -36,6 +36,7 @@ from dl_core.db import (
     SchemaColumn,
     SchemaInfo,
 )
+from dl_core.exc import TemplateInvalidError
 from dl_core.us_connection import get_connection_class
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_manager.local_cache import USEntryBuffer
@@ -55,6 +56,56 @@ LOGGER = logging.getLogger(__name__)
 
 class DbInfo(NamedTuple):
     version: str | None
+
+
+@attr.s()
+class DataSourceRenderer:
+    values: dict[str, BIValue] = attr.ib()
+
+    def _render_bi_value(self, value: BIValue) -> str:
+        return str(value.value)
+
+    def _render(self, value: str) -> str:
+        value = value.strip()
+
+        if value in self.values:
+            return self._render_bi_value(self.values[value])
+
+        raise TemplateInvalidError(f"Key {value} not found in {self.values}")
+
+    def render(self, value: str) -> str:
+        result = []
+
+        i = 0
+        substring_start = -1
+
+        while i < len(value):
+            if value[i] == "{":
+                if substring_start != -1:
+                    raise TemplateInvalidError(f"Unexpected character {value[i]} at position {i} in {value}")
+                i += 1
+                if i >= len(value):
+                    raise TemplateInvalidError(f"Unexpected end of string in {value}")
+                if value[i] != "{":
+                    raise TemplateInvalidError(f"Unexpected character {value[i]} at position {i} in {value}")
+                substring_start = i + 1
+            elif value[i] == "}":
+                i += 1
+                if i >= len(value):
+                    raise TemplateInvalidError(f"Unexpected end of string in {value}")
+                if value[i] != "}":
+                    raise TemplateInvalidError(f"Unexpected character {value[i]} at position {i} in {value}")
+                substring = value[substring_start : i - 1]
+                result.append(self._render(substring))
+                substring_start = -1
+            elif substring_start == -1:
+                result.append(value[i])
+            i += 1
+
+        if substring_start != -1:
+            raise TemplateInvalidError(f"Unexpected end of string in {value}")
+
+        return "".join(result)
 
 
 @attr.s()
@@ -223,11 +274,9 @@ class DataSource(metaclass=abc.ABCMeta):
         if self._connection is None or not self._connection.is_datasource_template_allowed:
             return value
 
-        new_value = value
-        for param_name, param_value in self._dataset_parameter_values.items():
-            new_value = new_value.replace(f"{{{param_name}}}", str(param_value.value))
+        renderer = DataSourceRenderer(values=self._dataset_parameter_values)
 
-        return new_value
+        return renderer.render(value)
 
     def source_exists(
         self,

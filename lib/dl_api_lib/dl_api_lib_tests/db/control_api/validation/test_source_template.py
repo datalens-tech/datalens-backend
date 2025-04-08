@@ -40,14 +40,14 @@ class TestSourceTemplate(DefaultApiTestBase):
         ds.sources["source_1"] = ds.source(
             connection_id=saved_connection_id,
             source_type=SOURCE_TYPE_CH_SUBSELECT.name,
-            parameters=dict(subsql="SELECT * FROM {table_name}"),
+            parameters=dict(subsql="SELECT * FROM {{table_name}}"),
         )
 
         ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
         ds = control_api.apply_updates(dataset=ds).dataset
         ds = control_api.save_dataset(dataset=ds).dataset
 
-        assert ds.sources["source_1"].parameters["subsql"] == "SELECT * FROM {table_name}"
+        assert ds.sources["source_1"].parameters["subsql"] == "SELECT * FROM {{table_name}}"
         assert len(ds.sources["source_1"].raw_schema) == 21  # raw schema is properly fetched
 
     def test_default_value_no_datasource(
@@ -65,7 +65,7 @@ class TestSourceTemplate(DefaultApiTestBase):
         ds.sources["source_1"] = ds.source(
             connection_id=saved_connection_id,
             source_type=SOURCE_TYPE_CH_SUBSELECT.name,
-            parameters=dict(subsql="SELECT * FROM {table_name}"),
+            parameters=dict(subsql="SELECT * FROM {{table_name}}"),
         )
 
         ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
@@ -104,7 +104,7 @@ class TestSettingsDisabledSourceTemplate(DefaultApiTestBase):
         ds.sources["source_1"] = ds.source(
             connection_id=saved_connection_id,
             source_type=SOURCE_TYPE_CH_SUBSELECT.name,
-            parameters=dict(subsql="SELECT * FROM {table_name}"),
+            parameters=dict(subsql="SELECT * FROM {{table_name}}"),
         )
 
         ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
