@@ -323,7 +323,7 @@ class TestParameters(DefaultApiTestBase):
 
 
 class TestParameterSourceTemplates(DefaultApiTestBase):
-    raw_sql_level = dl_constants_enums.RawSQLLevel.subselect
+    raw_sql_level = dl_constants_enums.RawSQLLevel.template
 
     @pytest.fixture(scope="class")
     def connectors_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:

@@ -17,7 +17,7 @@ from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TY
 
 
 class TestSourceTemplate(DefaultApiTestBase):
-    raw_sql_level = dl_constants_enums.RawSQLLevel.subselect
+    raw_sql_level = dl_constants_enums.RawSQLLevel.template
 
     @pytest.fixture(scope="class")
     def connectors_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:
@@ -80,12 +80,51 @@ class TestSourceTemplate(DefaultApiTestBase):
         assert component_errors[0]["errors"][0]["code"] == "ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST"
 
 
-class TestDisabledSourceTemplate(DefaultApiTestBase):
-    raw_sql_level = dl_constants_enums.RawSQLLevel.subselect
+class TestSettingsDisabledSourceTemplate(DefaultApiTestBase):
+    raw_sql_level = dl_constants_enums.RawSQLLevel.template
 
     @pytest.fixture(scope="class")
     def connectors_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:
         return {CONNECTION_TYPE_CLICKHOUSE: ClickHouseConnectorSettings(ENABLE_DATASOURCE_TEMPLATE=False)}
+
+    def test_default(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_connection_id: str,
+        sample_table: DbTable,
+    ):
+        table_name = sample_table.name
+        ds = Dataset()
+        parameter = StringParameterValue(value=table_name)
+        ds.result_schema["table_name"] = ds.field(
+            cast=parameter.type,
+            default_value=parameter,
+            value_constraint=None,
+        )
+        ds.sources["source_1"] = ds.source(
+            connection_id=saved_connection_id,
+            source_type=SOURCE_TYPE_CH_SUBSELECT.name,
+            parameters=dict(subsql="SELECT * FROM {table_name}"),
+        )
+
+        ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
+        response = control_api.apply_updates(dataset=ds, fail_ok=True)
+
+        assert response.status_code == 400
+        assert response.bi_status_code == "ERR.DS_API.VALIDATION.ERROR"
+        component_errors = response.json["dataset"]["component_errors"]["items"]
+
+        assert len(component_errors) == 1
+        assert component_errors[0]["type"] == "data_source"
+        assert component_errors[0]["errors"][0]["code"] == "ERR.DS_API.DB.INVALID_QUERY"
+
+
+class TestConnectionDisabledSourceTemplate(DefaultApiTestBase):
+    raw_sql_level = dl_constants_enums.RawSQLLevel.subselect
+
+    @pytest.fixture(scope="class")
+    def connectors_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:
+        return {CONNECTION_TYPE_CLICKHOUSE: ClickHouseConnectorSettings(ENABLE_DATASOURCE_TEMPLATE=True)}
 
     def test_default(
         self,

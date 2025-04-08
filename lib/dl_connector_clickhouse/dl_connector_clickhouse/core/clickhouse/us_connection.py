@@ -2,7 +2,10 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from dl_constants.enums import DashSQLQueryType
+from dl_constants.enums import (
+    DashSQLQueryType,
+    is_raw_sql_level_template_allowed,
+)
 from dl_core.us_connection_base import (
     ConnectionSettingsMixin,
     DataSourceTemplate,
@@ -68,4 +71,10 @@ class ConnectionClickhouse(
 
     @property
     def is_datasource_template_allowed(self) -> bool:
-        return self._connector_settings.ENABLE_DATASOURCE_TEMPLATE
+        if not self._connector_settings.ENABLE_DATASOURCE_TEMPLATE:
+            return False
+
+        if not is_raw_sql_level_template_allowed(self.data.raw_sql_level):
+            return False
+
+        return True
