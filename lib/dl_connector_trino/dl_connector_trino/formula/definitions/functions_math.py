@@ -11,6 +11,8 @@ from dl_connector_trino.formula.definitions.custom_constructors import TrinoArra
 
 V = TranslationVariant.make
 
+cast_int = lambda x: sa.cast(sa.func.floor(x), sa.BIGINT())
+
 
 DEFINITIONS_MATH = [
     # # abs
@@ -45,7 +47,7 @@ DEFINITIONS_MATH = [
     # # div
     base.FuncDivBasic(
         variants=[
-            V(D.TRINO, lambda x, y: sa.cast(x / y, sa.BIGINT())),
+            V(D.TRINO, lambda x, y: cast_int(x / y)),
         ]
     ),
     # # div_safe
@@ -58,7 +60,7 @@ DEFINITIONS_MATH = [
         variants=[
             V(
                 D.TRINO,
-                lambda x, y, default: sa.case([(y == 0, default)], else_=sa.cast(x / y, sa.BIGINT())),
+                lambda x, y, default: sa.case([(y == 0, default)], else_=cast_int(x / y)),
             ),
         ]
     ),
