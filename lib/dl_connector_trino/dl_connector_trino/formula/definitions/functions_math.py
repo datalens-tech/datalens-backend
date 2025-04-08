@@ -45,7 +45,7 @@ DEFINITIONS_MATH = [
     # # div
     base.FuncDivBasic(
         variants=[
-            V(D.TRINO, lambda x, y: sa.cast(x, sa.BIGINT()) / sa.cast(y, sa.BIGINT())),
+            V(D.TRINO, lambda x, y: sa.cast(x / y, sa.BIGINT())),
         ]
     ),
     # # div_safe
@@ -58,9 +58,7 @@ DEFINITIONS_MATH = [
         variants=[
             V(
                 D.TRINO,
-                lambda x, y, default: sa.case(
-                    [(y == 0, default)], else_=sa.cast(x, sa.BIGINT()) / sa.cast(y, sa.BIGINT())
-                ),
+                lambda x, y, default: sa.case([(y == 0, default)], else_=sa.cast(x / y, sa.BIGINT())),
             ),
         ]
     ),
