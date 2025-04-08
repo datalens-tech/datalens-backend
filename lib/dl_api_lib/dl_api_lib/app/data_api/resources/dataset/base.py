@@ -223,8 +223,8 @@ class DatasetDataBaseView(BaseView):
             )
 
             revision_id = dataset.revision_id
-            permission = dataset.permissions
-            permission_mode = dataset.permissions_mode
+            permission = dataset.permissions  # noqa
+            permission_mode = dataset.permissions_mode  # noqa
         else:  # case 2
             try:
                 dataset = None
@@ -273,7 +273,7 @@ class DatasetDataBaseView(BaseView):
                 if self.dataset_id is None:  # case 1
                     self.datset = dataset
                 else:
-                    self.dataset = await us_manager.deserialize_us_resp(us_resp, Dataset)
+                    self.dataset = await us_manager.deserialize_us_resp(us_resp, Dataset)  # type: ignore  # TODO: fix
 
                     await us_manager.load_dependencies(self.dataset)
 
@@ -318,7 +318,9 @@ class DatasetDataBaseView(BaseView):
         return self.try_get_mutation_key_for_dataset(self.dataset_id, self.dataset.revision_id, updates)
 
     @staticmethod
-    def try_get_mutation_key_for_dataset(dataset_id: Optional[str], revision_id: Optional[str], updates: List[Action]) -> Optional[MutationKey]:
+    def try_get_mutation_key_for_dataset(
+        dataset_id: Optional[str], revision_id: Optional[str], updates: List[Action]
+    ) -> Optional[MutationKey]:
         if dataset_id is not None and revision_id is not None:
             if DatasetDataBaseView._updates_only_fields(updates):
                 return UpdateDatasetMutationKey.create(revision_id, updates)  # type: ignore  # 2024-01-30 # TODO: Argument 2 to "create" of "UpdateDatasetMutationKey" has incompatible type "list[Action]"; expected "list[FieldAction]"  [arg-type]
@@ -347,7 +349,7 @@ class DatasetDataBaseView(BaseView):
         mutation_cache: Optional[USEntryMutationCache],
         mutation_key: Optional[MutationKey],
     ) -> Optional[Dataset]:
-        cached_dataset = self.try_get_dataset_from_cache_by_id(
+        cached_dataset = await self.try_get_dataset_from_cache_by_id(
             self.dataset_id,
             self.dataset.revision_id,
             mutation_cache,
