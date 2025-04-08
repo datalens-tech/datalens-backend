@@ -399,8 +399,13 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             **self.ch_utils.get_context_headers(self._req_ctx_info),
         }
 
+    def _get_readonly_param(self, dba_q: DBAdapterQuery) -> int | None:
+        if dba_q.trusted_query:
+            return None
+        return 2
+
     def get_request_params(self, dba_q: DBAdapterQuery) -> dict[str, str]:
-        read_only_level = None if dba_q.trusted_query else 2
+        read_only_level = self._get_readonly_param(dba_q)
         return dict(
             # TODO FIX: Move to utils
             database=dba_q.db_name or self._target_dto.db_name or "system",

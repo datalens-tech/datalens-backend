@@ -6,6 +6,10 @@ from dl_core.connectors.sql_base.connector import SQLSubselectCoreSourceDefiniti
 from dl_core.data_source_spec.sql import StandardSQLDataSourceSpec
 from dl_core.us_manager.storage_schemas.data_source_spec_base import SQLDataSourceSpecStorageSchema
 
+from dl_connector_clickhouse.core.clickhouse.adapters import (
+    DLAsyncClickHouseAdapter,
+    DLClickHouseAdapter,
+)
 from dl_connector_clickhouse.core.clickhouse.connection_executors import (
     DLAsyncClickHouseConnExecutor,
     DLClickHouseConnExecutor,
@@ -56,4 +60,10 @@ class ClickHouseCoreConnector(ClickHouseCoreConnectorBase):
     source_definitions = (
         ClickHouseTableCoreSourceDefinition,
         ClickHouseSubselectCoreSourceDefinition,
+    )
+    rqe_adapter_classes = frozenset(
+        {
+            DLClickHouseAdapter,
+            DLAsyncClickHouseAdapter,
+        }
     )

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import attr
 
 from dl_connector_clickhouse.core.clickhouse.adapters import (
