@@ -16,10 +16,7 @@ from typing import (
 )
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_app_tools.profiling_base import (
-    GenericProfiler,
-    generic_profiler_async,
-)
+from dl_app_tools.profiling_base import generic_profiler_async
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core import exc
 from dl_core.base_models import (
@@ -149,8 +146,7 @@ class AsyncUSManager(USManagerBase):
             us_resp = await self.get_migrated_entry(entry_id, params=params)
 
         obj = self._entry_dict_to_obj(us_resp, expected_type)
-        with GenericProfiler("us-fetch-post-init-hook"):
-            await self.get_lifecycle_manager(entry=obj).post_init_async_hook()
+        await self.get_lifecycle_manager(entry=obj).post_init_async_hook()
 
         return obj
 
@@ -180,8 +176,7 @@ class AsyncUSManager(USManagerBase):
         """Used on result of `get_by_id_raw()` call for proper deserialization flow"""
 
         obj = self._entry_dict_to_obj(us_resp, expected_type)
-        with GenericProfiler("us-fetch-post-init-hook"):
-            await self.get_lifecycle_manager(entry=obj).post_init_async_hook()
+        await self.get_lifecycle_manager(entry=obj).post_init_async_hook()
 
         return obj
 
@@ -190,7 +185,6 @@ class AsyncUSManager(USManagerBase):
         us_resp = await self._us_client.get_entry(entry_id, params=params)
         return await self._migrate_response(us_resp)
 
-    @generic_profiler_async("us-migrate-response")
     async def _migrate_response(self, us_resp: dict) -> dict:
         initial_type = us_resp["type"]
         while True:

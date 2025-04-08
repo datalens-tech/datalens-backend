@@ -26,10 +26,7 @@ from dl_api_commons.base_models import (
     RequestContextInfo,
     TenantDef,
 )
-from dl_app_tools.profiling_base import (
-    GenericProfiler,
-    generic_profiler,
-)
+from dl_app_tools.profiling_base import generic_profiler
 from dl_configs.crypto_keys import (
     CryptoKeysConfig,
     get_crypto_keys_config_from_env,
@@ -369,12 +366,11 @@ class USManagerBase:
                 secrets=secrets,
             )
 
-            with GenericProfiler("us-deserialize-secrets"):
-                data_pack = copy.deepcopy(data_pack)
-                if data_pack.secrets:
-                    for key, secret in data_pack.secrets.items():
-                        assert not isinstance(secret, str)
-                        data_pack.secrets[key] = self._crypto_controller.decrypt(secret)
+            data_pack = copy.deepcopy(data_pack)
+            if data_pack.secrets:
+                for key, secret in data_pack.secrets.items():
+                    assert not isinstance(secret, str)
+                    data_pack.secrets[key] = self._crypto_controller.decrypt(secret)
 
             serializer = self.get_us_entry_serializer(entry_cls)
             entry = serializer.deserialize(
