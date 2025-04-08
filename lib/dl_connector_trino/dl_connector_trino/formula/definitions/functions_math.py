@@ -15,17 +15,17 @@ cast_int = lambda x: sa.cast(sa.func.floor(x), sa.BIGINT())
 
 
 DEFINITIONS_MATH = [
-    # # abs
+    # abs
     base.FuncAbs.for_dialect(D.TRINO),
-    # # acos
+    # acos
     base.FuncAcos.for_dialect(D.TRINO),
-    # # asin
+    # asin
     base.FuncAsin.for_dialect(D.TRINO),
-    # # atan
+    # atan
     base.FuncAtan.for_dialect(D.TRINO),
-    # # atan2
+    # atan2
     base.FuncAtan2.for_dialect(D.TRINO),
-    # # ceiling
+    # ceiling
     base.FuncCeiling(
         variants=[
             V(
@@ -34,23 +34,23 @@ DEFINITIONS_MATH = [
             )
         ]
     ),
-    # # cos
+    # cos
     base.FuncCos.for_dialect(D.TRINO),
-    # # cot
+    # cot
     base.FuncCot(
         variants=[
             V(D.TRINO, lambda x: n.func.POWER(n.func.TAN(x), -1)),
         ]
     ),
-    # # degrees
+    # degrees
     base.FuncDegrees.for_dialect(D.TRINO),
-    # # div
+    # div
     base.FuncDivBasic(
         variants=[
             V(D.TRINO, lambda x, y: cast_int(x / y)),
         ]
     ),
-    # # div_safe
+    # div_safe
     base.FuncDivSafe2(
         variants=[
             V(D.TRINO, lambda x, y: n.func.DIV_SAFE(x, y, None)),
@@ -64,7 +64,7 @@ DEFINITIONS_MATH = [
             ),
         ]
     ),
-    # # exp
+    # exp
     base.FuncExp.for_dialect(D.TRINO),
     # fdiv_safe
     base.FuncFDivSafe2(
@@ -82,7 +82,7 @@ DEFINITIONS_MATH = [
             ),
         ]
     ),
-    # # floor
+    # floor
     base.FuncFloor.for_dialect(D.TRINO),
     # # greatest
     base.FuncGreatest1.for_dialect(D.TRINO),
@@ -92,7 +92,7 @@ DEFINITIONS_MATH = [
             V(D.TRINO, lambda *args: sa.func.array_max(TrinoArray(*args))),
         ]
     ),
-    # # least
+    # least
     base.FuncLeast1.for_dialect(D.TRINO),
     # base.FuncLeastMain.for_dialect(D.TRINO),
     base.LeastMulti(
@@ -100,19 +100,19 @@ DEFINITIONS_MATH = [
             V(D.TRINO, lambda *args: sa.func.array_min(TrinoArray(*args))),
         ]
     ),
-    # # ln
+    # ln
     base.FuncLn.for_dialect(D.TRINO),
-    # # log
+    # log
     base.FuncLog.for_dialect(D.TRINO),
-    # # log10
+    # log10
     base.FuncLog10.for_dialect(D.TRINO),
-    # # pi
+    # pi
     base.FuncPi.for_dialect(D.TRINO),
-    # # power
+    # power
     base.FuncPower.for_dialect(D.TRINO),
-    # # radians
+    # radians
     base.FuncRadians.for_dialect(D.TRINO),
-    # # round
+    # round
     base.FuncRound1(
         variants=[
             V(D.TRINO, lambda num: sa.func.round(num) + 0),
@@ -123,18 +123,18 @@ DEFINITIONS_MATH = [
             V(D.TRINO, lambda num, precision: sa.func.round(num, precision) + 0),
         ],
     ),
-    # # sign
+    # sign
     base.FuncSign.for_dialect(D.TRINO),
-    # # sin
+    # sin
     base.FuncSin.for_dialect(D.TRINO),
-    # # sqrt
+    # sqrt
     base.FuncSqrt.for_dialect(D.TRINO),
-    # # square
+    # square
     base.FuncSquare(
         variants=[
             V(D.TRINO, lambda x: n.func.POWER(x, 2)),
         ]
     ),
-    # # tan
+    # tan
     base.FuncTan.for_dialect(D.TRINO),
 ]
