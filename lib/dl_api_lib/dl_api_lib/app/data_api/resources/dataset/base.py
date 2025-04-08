@@ -234,8 +234,8 @@ class DatasetDataBaseView(BaseView):
 
             # Very bad
             revision_id = us_resp["data"]["revision_id"]
-            permissions = us_resp["permissions"]
-            permissions_mode = us_resp["permissions_mode"]
+            permissions = us_resp.get("permissions", None)
+            permissions_mode = us_resp.get("permissions_mode", None)
 
         # Validate revision from request
         self._check_dataset_revision_id(revision_id, req_model)
@@ -266,6 +266,8 @@ class DatasetDataBaseView(BaseView):
                 self.dataset.permissions = permissions
                 self.dataset.permissions_mode = permissions_mode
 
+                await us_manager.load_dependencies(self.dataset)
+
             # Forced to deserialize
             else:
                 if self.dataset_id is None:  # case 1
@@ -273,11 +275,9 @@ class DatasetDataBaseView(BaseView):
                 else:
                     self.dataset = await us_manager.deserialize_us_resp(us_resp, Dataset)
 
-                    await us_manager.load_dependencies(dataset)
+                    await us_manager.load_dependencies(self.dataset)
 
-            # TODO: This is called only inside `resolve_entities`, but not after we get dataset from cache
-            # TODO: Maybe need to construct if from partial dataset as it may rely on live copy from us rather than on cache (for example, new permissions or flags)
-            self.ds_accessor = DatasetComponentAccessor(dataset=dataset)
+            self.ds_accessor = DatasetComponentAccessor(dataset=self.dataset)
 
             update_info = loader.update_dataset_from_body(
                 dataset=self.dataset,
@@ -290,8 +290,6 @@ class DatasetDataBaseView(BaseView):
             if cached_dataset:
                 await self.check_for_notifications(services_registry, us_manager)
                 return update_info
-
-            await us_manager.load_dependencies(self.dataset)
 
             services_registry = self.dl_request.services_registry
             assert isinstance(services_registry, ApiServiceRegistry)
@@ -319,6 +317,7 @@ class DatasetDataBaseView(BaseView):
     def try_get_mutation_key(self, updates: List[Action]) -> Optional[MutationKey]:
         return self.try_get_mutation_key_for_dataset(self.dataset_id, self.dataset.revision_id, updates)
 
+    @staticmethod
     def try_get_mutation_key_for_dataset(dataset_id: Optional[str], revision_id: Optional[str], updates: List[Action]) -> Optional[MutationKey]:
         if dataset_id is not None and revision_id is not None:
             if DatasetDataBaseView._updates_only_fields(updates):

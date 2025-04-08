@@ -161,7 +161,7 @@ class AsyncUSManager(USManagerBase):
         expected_type: Optional[Type[USEntry]] = None,
         params: Optional[dict[str, str]] = None,
     ) -> dict[str, Any]:
-        """Get raw `u_resp` from response without deserialization"""
+        """Get raw `us_resp` from response without deserialization"""
 
         with self._enrich_us_exception(
             entry_id=entry_id,
