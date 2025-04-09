@@ -13,13 +13,21 @@ VW = TranslationVariantWrapped.make
 
 DEFINITIONS_DATETIME = [
     # dateadd
-    # base.FuncDateadd1.for_dialect(D.TRINO),
-    # base.FuncDateadd2Unit.for_dialect(D.TRINO),
-    # base.FuncDateadd2Number.for_dialect(D.TRINO),
-    # base.FuncDateadd3Legacy.for_dialect(D.TRINO),
-    # base.FuncDateadd3DateNonConstNum.for_dialect(D.TRINO),
+    base.FuncDateadd1.for_dialect(D.TRINO),
+    base.FuncDateadd2Unit.for_dialect(D.TRINO),
+    base.FuncDateadd2Number.for_dialect(D.TRINO),
+    base.FuncDateadd3Legacy.for_dialect(D.TRINO),
+    base.FuncDateadd3DateNonConstNum(
+        variants=[
+            V(D.TRINO, lambda timestamp, unit, num: sa.func.date_add(unit, num, timestamp)),
+        ]
+    ),
     # base.FuncDateadd3DatetimeNonConstNum.for_dialect(D.TRINO),
-    # base.FuncDateadd3GenericDatetimeNonConstNum.for_dialect(D.TRINO),
+    base.FuncDateadd3GenericDatetimeNonConstNum(
+        variants=[
+            V(D.TRINO, lambda timestamp, unit, num: sa.func.date_add(unit, num, timestamp)),
+        ]
+    ),
     # base.FuncDateadd3DatetimeTZNonConstNum.for_dialect(D.TRINO),
     # datepart
     # base.FuncDatepart2Legacy.for_dialect(D.TRINO),
