@@ -4,8 +4,10 @@ from typing import ClassVar
 
 import attr
 
-from dl_constants.enums import DashSQLQueryType
-
+from dl_constants.enums import (
+    DashSQLQueryType,
+    is_raw_sql_level_template_allowed,
+)
 from dl_core.us_connection_base import (
     ConnectionSettingsMixin,
     DataSourceTemplate,
