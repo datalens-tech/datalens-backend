@@ -60,11 +60,23 @@ DEFINITIONS_DATETIME = [
     # base.FuncDatetrunc3Date.for_dialect(D.TRINO),
     # base.FuncDatetrunc3Datetime.for_dialect(D.TRINO),
     # day
-    # base.FuncDay.for_dialect(D.TRINO),
+    base.FuncDay(
+        variants=[
+            V(D.TRINO, sa.func.day),
+        ]
+    ),
     # base.FuncDayDatetimeTZ.for_dialect(D.TRINO),
     # dayofweek
-    # base.FuncDayofweek1.for_dialect(D.TRINO),
-    # base.FuncDayofweek2.for_dialect(D.TRINO),
+    base.FuncDayofweek1(
+        variants=[
+            V(D.TRINO, sa.func.day_of_week),
+        ]
+    ),
+    base.FuncDayofweek2(
+        variants=[
+            V(D.TRINO, lambda date, firstday: base.dow_firstday_shift(sa.func.day_of_week(date), firstday)),
+        ]
+    ),
     # base.FuncDayofweek2TZ.for_dialect(D.TRINO),
     # genericnow
     base.FuncGenericNow(
@@ -73,15 +85,35 @@ DEFINITIONS_DATETIME = [
         ]
     ),
     # hour
-    # base.FuncHourDate.for_dialect(D.TRINO),
-    # base.FuncHourDatetime.for_dialect(D.TRINO),
+    base.FuncHourDate(
+        variants=[
+            V(D.TRINO, sa.func.hour),
+        ]
+    ),
+    base.FuncHourDatetime(
+        variants=[
+            V(D.TRINO, sa.func.hour),
+        ]
+    ),
     # base.FuncHourDatetimeTZ.for_dialect(D.TRINO),
     # minute
-    # base.FuncMinuteDate.for_dialect(D.TRINO),
-    # base.FuncMinuteDatetime.for_dialect(D.TRINO),
+    base.FuncMinuteDate(
+        variants=[
+            V(D.TRINO, sa.func.minute),
+        ]
+    ),
+    base.FuncMinuteDatetime(
+        variants=[
+            V(D.TRINO, sa.func.minute),
+        ]
+    ),
     # base.FuncMinuteDatetimeTZ.for_dialect(D.TRINO),
     # month
-    # base.FuncMonth.for_dialect(D.TRINO),
+    base.FuncMonth(
+        variants=[
+            V(D.TRINO, sa.func.month),
+        ]
+    ),
     # base.FuncMonthDatetimeTZ.for_dialect(D.TRINO),
     # now
     base.FuncNow(
@@ -90,11 +122,23 @@ DEFINITIONS_DATETIME = [
         ]
     ),
     # quarter
-    # base.FuncQuarter.for_dialect(D.TRINO),
+    base.FuncQuarter(
+        variants=[
+            V(D.TRINO, sa.func.quarter),
+        ]
+    ),
     # base.FuncQuarterDatetimeTZ.for_dialect(D.TRINO),
     # second
-    # base.FuncSecondDate.for_dialect(D.TRINO),
-    # base.FuncSecondDatetime.for_dialect(D.TRINO),
+    base.FuncSecondDate(
+        variants=[
+            V(D.TRINO, sa.func.second),
+        ]
+    ),
+    base.FuncSecondDatetime(
+        variants=[
+            V(D.TRINO, sa.func.second),
+        ]
+    ),
     # base.FuncSecondDatetimeTZ.for_dialect(D.TRINO),
     # today
     base.FuncToday(
@@ -103,9 +147,17 @@ DEFINITIONS_DATETIME = [
         ]
     ),
     # week
-    # base.FuncWeek.for_dialect(D.TRINO),
+    base.FuncWeek(
+        variants=[
+            V(D.TRINO, sa.func.week),
+        ]
+    ),
     # base.FuncWeekTZ.for_dialect(D.TRINO),
     # year
-    # base.FuncYear.for_dialect(D.TRINO),
+    base.FuncYear(
+        variants=[
+            V(D.TRINO, sa.func.year),
+        ]
+    ),
     # base.FuncYearDatetimeTZ.for_dialect(D.TRINO),
 ]
