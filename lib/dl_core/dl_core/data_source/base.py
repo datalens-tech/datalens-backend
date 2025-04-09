@@ -82,11 +82,12 @@ class DataSourceRenderer:
         while i < len(value):
             if i + 1 < len(value) and value[i : i + 2] == "{{":
                 if block_start != -1:
+                    # We are already in a block, add it as is including opening brackets, shifting the block start
                     result.append(value[block_start - 2 : i])
                     block_start = -1
 
                 i += 2
-                while value[i] == "{":
+                while i < len(value) and value[i] == "{":
                     i += 1
                     result.append("{")
 
@@ -104,6 +105,7 @@ class DataSourceRenderer:
                     result.append(value[i])
                 i += 1
 
+        # If we are still in a block, add it as is including opening brackets
         if block_start != -1:
             result.append(value[block_start - 2 :])
 

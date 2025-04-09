@@ -52,9 +52,11 @@ def test_unmatched_brackets(renderer: DataSourceRenderer):
     assert renderer.render("{{{string_key}}") == "{test_value"
     assert renderer.render("{{{{string_key}}") == "{{test_value"
     assert renderer.render("{{ {{string_key}}") == "{{ test_value"
+    assert renderer.render("{{{{{") == "{{{{{"
 
     assert renderer.render("{{string_key}}}") == "test_value}"
     assert renderer.render("{{string_key}}}}") == "test_value}}"
     assert renderer.render("{{string_key}} }}") == "test_value }}"
+    assert renderer.render("}}}}}") == "}}}}}"
 
     assert renderer.render("{{ {{string_key}} }}") == "{{ test_value }}"
