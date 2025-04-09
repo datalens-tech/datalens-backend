@@ -348,7 +348,7 @@ class DatasetDataBaseView(BaseView):
         self,
         mutation_cache: Optional[USEntryMutationCache],
         mutation_key: Optional[MutationKey],
-    ) -> Optional[Dataset]:
+    ) -> Optional[Dataset]:  # type: ignore  # TODO: fix
         cached_dataset = await self.try_get_dataset_from_cache_by_id(
             self.dataset_id,
             self.dataset.revision_id,

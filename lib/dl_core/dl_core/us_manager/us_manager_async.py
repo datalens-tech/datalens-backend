@@ -180,7 +180,7 @@ class AsyncUSManager(USManagerBase):
 
         return obj
 
-    @generic_profiler_async("us-get-migrated-entity")
+    @generic_profiler_async("us-get-migrated-entity")  # type: ignore  # TODO: fix
     async def get_migrated_entry(self, entry_id: str, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
         us_resp = await self._us_client.get_entry(entry_id, params=params)
         return await self._migrate_response(us_resp)
@@ -317,7 +317,7 @@ class AsyncUSManager(USManagerBase):
             raise ValueError("Entry was in cache but it is not a connection: %s", type(conn))
 
     # TODO FIX: Think about cache control
-    @generic_profiler_async("us-load-dependencies")
+    @generic_profiler_async("us-load-dependencies")  # type: ignore  # TODO: fix
     async def load_dependencies(self, entry: USEntry) -> None:
         if not isinstance(entry, Dataset):
             raise NotImplementedError("Links loading is supported only for dataset")
@@ -402,7 +402,7 @@ class AsyncUSManager(USManagerBase):
         async for us_resp in us_entry_iterator:
             try:
                 us_resp = await self._migrate_response(us_resp)
-                yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)  # type: ignore  # TODO: fix
+                yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)
             except Exception:
                 LOGGER.exception("Failed to load US object: %s", us_resp)
                 if raise_on_broken_entry:

@@ -205,7 +205,7 @@ class SyncUSManager(USManagerBase):
 
         return obj
 
-    @generic_profiler("us-fetch-entity-raw")  # type: ignore  # TODO: fix
+    @generic_profiler("us-fetch-entity-raw")
     def get_by_id_raw(
         self,
         entry_id: str,
@@ -222,7 +222,7 @@ class SyncUSManager(USManagerBase):
 
         return us_resp
 
-    @generic_profiler("us-deserialize-entity-raw")  # type: ignore  # TODO: fix
+    @generic_profiler("us-deserialize-entity-raw")
     def deserialize_us_resp(
         self,
         us_resp: dict[str, Any],
@@ -303,7 +303,7 @@ class SyncUSManager(USManagerBase):
         for us_resp in us_entry_iterator:
             try:
                 us_resp = self._migrate_response(us_resp)
-                yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)  # type: ignore  # TODO: fix
+                yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)
             except Exception:
                 LOGGER.exception("Failed to load US object: %s", us_resp)
                 if raise_on_broken_entry:
