@@ -54,7 +54,7 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
         cluster_name: Optional[str] = attr.ib(default=None)
         max_execution_time: Optional[int] = attr.ib(default=None)
         ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
-        readonly: Optional[int] = attr.ib(kw_only=True, default=None)
+        readonly: int = attr.ib(kw_only=True, default=2)
 
     def get_conn_dto(self) -> ClickHouseConnDTO:
         return ClickHouseConnDTO(
@@ -70,7 +70,6 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
             password=self.password,  # type: ignore  # 2024-01-24 # TODO: Argument "password" to "ClickHouseConnDTO" has incompatible type "str | None"; expected "str"  [arg-type]
             secure=self.data.secure,
             ssl_ca=self.data.ssl_ca,
-            readonly=self.data.readonly,
         )
 
     @staticmethod

@@ -27,4 +27,3 @@ class ClickHouseConnDTO(ClickHouseBaseDTO, DefaultSQLDTO):  # noqa
     # TODO CONSIDER: Is really optional
     endpoint: Optional[str] = attr.ib(kw_only=True)
     cluster_name: str = attr.ib(kw_only=True)
-    readonly: Optional[int] = attr.ib(kw_only=True, default=None)
