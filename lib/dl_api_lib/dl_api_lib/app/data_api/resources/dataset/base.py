@@ -175,7 +175,7 @@ class DatasetDataBaseView(BaseView):
         capabilities = DatasetCapabilities(dataset=dataset, dsrc_coll_factory=dsrc_coll_factory)
         return capabilities.resolve_source_role(log_reasons=log_reasons)
 
-    @generic_profiler_async("resolve-entities")
+    @generic_profiler_async("resolve-entities")  # type: ignore  # TODO: fix
     async def resolve_entities(self) -> None:
         us_manager = self.dl_request.us_manager
         if self.dl_request.log_ctx_controller:
@@ -200,7 +200,7 @@ class DatasetDataBaseView(BaseView):
         self.dataset = dataset
         self.ds_accessor = DatasetComponentAccessor(dataset=dataset)
 
-    @generic_profiler_async("prepare-dataset-with-mutation-cache")
+    @generic_profiler_async("prepare-dataset-with-mutation-cache")  # type: ignore  # TODO: fix
     async def prepare_dataset_with_mutation_cache(
         self,
         req_model: DataRequestModel,
@@ -365,8 +365,8 @@ class DatasetDataBaseView(BaseView):
 
         return cached_dataset
 
-    @staticmethod
-    @generic_profiler_async("mutation-cache-get")  # type: ignore  # TODO: fix
+    @staticmethod  # type: ignore  # TODO: fix
+    @generic_profiler_async("mutation-cache-get")
     async def try_get_dataset_from_cache_by_id(
         dataset_id: Optional[str],
         revision_id: Optional[str],
