@@ -30,29 +30,10 @@ DEFINITIONS_DATETIME = [
     ),
     # base.FuncDateadd3DatetimeTZNonConstNum.for_dialect(D.TRINO),
     # datepart
-    # base.FuncDatepart2Legacy.for_dialect(D.TRINO),
-    base.FuncDatepart2(
-        variants=[
-            V(
-                D.TRINO,
-                lambda timestamp, unit: sa.case(
-                    [
-                        (unit == "second", sa.func.second(timestamp)),
-                        (unit == "minute", sa.func.minute(timestamp)),
-                        (unit == "hour", sa.func.hour(timestamp)),
-                        (unit == "day", sa.func.day(timestamp)),
-                        (unit == "week", sa.func.week(timestamp)),
-                        (unit == "month", sa.func.month(timestamp)),
-                        (unit == "quarter", sa.func.quarter(timestamp)),
-                        (unit == "year", sa.func.year(timestamp)),
-                        ((unit == "dayofweek") | (unit == "dow"), sa.func.day_of_week(timestamp)),
-                    ],
-                ),
-            ),
-        ]
-    ),
+    base.FuncDatepart2Legacy.for_dialect(D.TRINO),
+    base.FuncDatepart2.for_dialect(D.TRINO),
     # base.FuncDatepart3Const.for_dialect(D.TRINO),
-    # base.FuncDatepart3NonConst.for_dialect(D.TRINO),
+    base.FuncDatepart3NonConst.for_dialect(D.TRINO),
     # datetrunc
     # base.FuncDatetrunc2Date.for_dialect(D.TRINO),
     # base.FuncDatetrunc2Datetime.for_dialect(D.TRINO),
