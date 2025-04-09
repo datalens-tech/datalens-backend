@@ -42,27 +42,19 @@ def test_with_invalid_values(renderer: DataSourceRenderer):
         renderer.render("{{test_another_key}}")
 
 
-def test_nested(renderer: DataSourceRenderer):
-    with pytest.raises(TemplateInvalidError):
-        renderer.render("{{ {{string_key}} }}")
-
-
-def test_single_opening_bracket(renderer: DataSourceRenderer):
-    with pytest.raises(TemplateInvalidError):
-        renderer.render("test{")
-
-    with pytest.raises(TemplateInvalidError):
-        renderer.render("test{string_key")
-
-
-def test_single_closing_bracket(renderer: DataSourceRenderer):
-    with pytest.raises(TemplateInvalidError):
-        renderer.render("{{string_key}")
-
-    with pytest.raises(TemplateInvalidError):
-        renderer.render("{{string_key}test")
-
-
 def test_unmatched_brackets(renderer: DataSourceRenderer):
-    with pytest.raises(TemplateInvalidError):
-        renderer.render("{{string_key")
+    assert renderer.render("test{") == "test{"
+    assert renderer.render("test{string_key") == "test{string_key"
+    assert renderer.render("{{string_key}test") == "{{string_key}test"
+    assert renderer.render("{{string_key}") == "{{string_key}"
+    assert renderer.render("{{string_key") == "{{string_key"
+
+    assert renderer.render("{{{string_key}}") == "{test_value"
+    assert renderer.render("{{{{string_key}}") == "{{test_value"
+    assert renderer.render("{{ {{string_key}}") == "{{ test_value"
+
+    assert renderer.render("{{string_key}}}") == "test_value}"
+    assert renderer.render("{{string_key}}}}") == "test_value}}"
+    assert renderer.render("{{string_key}} }}") == "test_value }}"
+
+    assert renderer.render("{{ {{string_key}} }}") == "{{ test_value }}"

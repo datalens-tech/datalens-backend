@@ -77,33 +77,35 @@ class DataSourceRenderer:
         result = []
 
         i = 0
-        substring_start = -1
+        block_start = -1
 
         while i < len(value):
-            if value[i] == "{":
-                if substring_start != -1:
-                    raise TemplateInvalidError(f"Unexpected character {value[i]} at position {i} in {value}")
-                i += 1
-                if i >= len(value):
-                    raise TemplateInvalidError(f"Unexpected end of string in {value}")
-                if value[i] != "{":
-                    raise TemplateInvalidError(f"Unexpected character {value[i]} at position {i} in {value}")
-                substring_start = i + 1
-            elif value[i] == "}":
-                i += 1
-                if i >= len(value):
-                    raise TemplateInvalidError(f"Unexpected end of string in {value}")
-                if value[i] != "}":
-                    raise TemplateInvalidError(f"Unexpected character {value[i]} at position {i} in {value}")
-                substring = value[substring_start : i - 1]
-                result.append(self._render(substring))
-                substring_start = -1
-            elif substring_start == -1:
-                result.append(value[i])
-            i += 1
+            if i + 1 < len(value) and value[i : i + 2] == "{{":
+                if block_start != -1:
+                    result.append(value[block_start - 2 : i])
+                    block_start = -1
 
-        if substring_start != -1:
-            raise TemplateInvalidError(f"Unexpected end of string in {value}")
+                i += 2
+                while value[i] == "{":
+                    i += 1
+                    result.append("{")
+
+                block_start = i
+            elif i + 1 < len(value) and value[i : i + 2] == "}}":
+                if block_start == -1:
+                    result.append(value[i : i + 2])
+                else:
+                    block = value[block_start:i]
+                    result.append(self._render(block))
+                    block_start = -1
+                i += 2
+            else:
+                if block_start == -1:
+                    result.append(value[i])
+                i += 1
+
+        if block_start != -1:
+            result.append(value[block_start - 2 :])
 
         return "".join(result)
 
