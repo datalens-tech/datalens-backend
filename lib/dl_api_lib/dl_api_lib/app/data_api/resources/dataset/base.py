@@ -175,6 +175,7 @@ class DatasetDataBaseView(BaseView):
         capabilities = DatasetCapabilities(dataset=dataset, dsrc_coll_factory=dsrc_coll_factory)
         return capabilities.resolve_source_role(log_reasons=log_reasons)
 
+    @generic_profiler_async("resolve-entities")  # type: ignore  # TODO: fix
     async def resolve_entities(self) -> None:
         us_manager = self.dl_request.us_manager
         if self.dl_request.log_ctx_controller:
@@ -199,15 +200,130 @@ class DatasetDataBaseView(BaseView):
         self.dataset = dataset
         self.ds_accessor = DatasetComponentAccessor(dataset=dataset)
 
+    @generic_profiler_async("prepare-dataset-with-mutation-cache")  # type: ignore  # TODO: fix
+    async def prepare_dataset_with_mutation_cache(
+        self,
+        req_model: DataRequestModel,
+        allow_rls_change: bool = False,
+    ) -> DatasetUpdateInfo:
+        """Try take dataset from mutation cache to avoid double deserialization"""
+
+        us_manager = self.dl_request.us_manager
+        if self.dl_request.log_ctx_controller:
+            self.dl_request.log_ctx_controller.put_to_context("dataset_id", self.dataset_id)
+
+        if self.dataset_id is None:  # case 1
+            if self.STORED_DATASET_REQUIRED:
+                raise ValueError(f"View {self} requires stored dataset, but no ID found in match info")
+
+            us_resp = None
+            dataset = Dataset.create_from_dict(
+                Dataset.DataModel(name=""),  # TODO: Remove name - it's not used, but is required
+                us_manager=us_manager,  # type: ignore  # TODO: fix # WTF??? sync or async??
+            )
+
+            revision_id = dataset.revision_id
+            permission = dataset.permissions  # noqa
+            permission_mode = dataset.permissions_mode  # noqa
+        else:  # case 2
+            try:
+                dataset = None
+                us_resp = await us_manager.get_by_id_raw(self.dataset_id)
+            except USObjectNotFoundException as e:
+                raise web.HTTPNotFound(reason="Entity not found") from e
+
+            # Very bad
+            revision_id = us_resp["data"]["revision_id"]
+            permissions = us_resp.get("permissions", None)
+            permissions_mode = us_resp.get("permissions_mode", None)
+
+        # Validate revision from request
+        self._check_dataset_revision_id(revision_id, req_model)
+
+        enable_mutation_caching = self.dl_request.services_registry.get_mutation_cache_factory() is not None
+        us_manager = self.dl_request.us_manager
+        services_registry = self.dl_request.services_registry
+        assert isinstance(services_registry, ApiServiceRegistry)
+        loader = DatasetApiLoader(service_registry=services_registry)
+
+        cached_dataset: Optional[Dataset] = None
+        with GenericProfiler("dataset-prepare"):
+            # Try from cache
+            if enable_mutation_caching:
+                mutation_cache = self.try_get_cache(allow_slave=False)
+                # TODO consider: ^ analyze profiling & maybe use allow_slave=True when reading from cache
+                mutation_key = self.try_get_mutation_key_for_dataset(self.dataset_id, revision_id, req_model.updates)
+                cached_dataset = await self.try_get_dataset_from_cache_by_id(
+                    self.dataset_id,
+                    revision_id,
+                    mutation_cache,
+                    mutation_key,
+                )
+
+            # Got from cache
+            if cached_dataset:
+                self.dataset = cached_dataset
+                self.dataset.permissions = permissions
+                self.dataset.permissions_mode = permissions_mode
+
+                await us_manager.load_dependencies(self.dataset)
+
+            # Forced to deserialize
+            else:
+                if self.dataset_id is None:  # case 1
+                    self.datset = dataset
+                else:
+                    self.dataset = await us_manager.deserialize_us_resp(us_resp, Dataset)  # type: ignore  # TODO: fix
+
+                    await us_manager.load_dependencies(self.dataset)
+
+            self.ds_accessor = DatasetComponentAccessor(dataset=self.dataset)
+
+            update_info = loader.update_dataset_from_body(
+                dataset=self.dataset,
+                us_manager=us_manager,
+                dataset_data=req_model.dataset,
+                allow_rls_change=allow_rls_change,
+            )
+            await self.resolve_rls_groups_for_dataset(req_model, services_registry)
+
+            if cached_dataset:
+                await self.check_for_notifications(services_registry, us_manager)
+                return update_info
+
+            services_registry = self.dl_request.services_registry
+            assert isinstance(services_registry, ApiServiceRegistry)
+
+            await self.check_for_notifications(services_registry, us_manager)
+
+            dataset_validator_factory = services_registry.get_dataset_validator_factory()
+            ds_validator = dataset_validator_factory.get_dataset_validator(
+                ds=self.dataset,
+                us_manager=us_manager,
+                is_data_api=True,
+            )
+            executor = services_registry.get_compute_executor()
+            await executor.execute(lambda: ds_validator.apply_batch(action_batch=req_model.updates))
+            if enable_mutation_caching:
+                await self.try_save_dataset_to_cache(mutation_cache, mutation_key, self.dataset)  # noqa
+
+        return update_info
+
     @staticmethod
     def _updates_only_fields(updates: List[Action]) -> bool:
         # Checks if updates has only field updates
         return all([isinstance(upd, FieldAction) for upd in updates])
 
     def try_get_mutation_key(self, updates: List[Action]) -> Optional[MutationKey]:
-        if self.dataset_id is not None and self.dataset.revision_id is not None:
-            if self._updates_only_fields(updates):
-                return UpdateDatasetMutationKey.create(self.dataset.revision_id, updates)  # type: ignore  # 2024-01-30 # TODO: Argument 2 to "create" of "UpdateDatasetMutationKey" has incompatible type "list[Action]"; expected "list[FieldAction]"  [arg-type]
+        return self.try_get_mutation_key_for_dataset(self.dataset_id, self.dataset.revision_id, updates)
+
+    @staticmethod
+    def try_get_mutation_key_for_dataset(
+        dataset_id: Optional[str], revision_id: Optional[str], updates: List[Action]
+    ) -> Optional[MutationKey]:
+        if dataset_id is not None and revision_id is not None:
+            if DatasetDataBaseView._updates_only_fields(updates):
+                return UpdateDatasetMutationKey.create(revision_id, updates)  # type: ignore  # 2024-01-30 # TODO: Argument 2 to "create" of "UpdateDatasetMutationKey" has incompatible type "list[Action]"; expected "list[FieldAction]"  [arg-type]
         return None
 
     @generic_profiler("mutation-cache-init")
@@ -228,29 +344,53 @@ class DatasetDataBaseView(BaseView):
             LOGGER.error("Mutation cache error", exc_info=True)
             return None
 
-    @generic_profiler_async("mutation-cache-get")  # type: ignore  # TODO: fix
     async def try_get_dataset_from_cache(
         self,
+        mutation_cache: Optional[USEntryMutationCache],
+        mutation_key: Optional[MutationKey],
+    ) -> Optional[Dataset]:  # type: ignore  # TODO: fix
+        cached_dataset = await self.try_get_dataset_from_cache_by_id(
+            self.dataset_id,
+            self.dataset.revision_id,
+            mutation_cache,
+            mutation_key,
+        )
+
+        if cached_dataset is None:
+            return None
+
+        LOGGER.info("Found dataset in mutation cache")
+        cached_dataset.permissions_mode = self.dataset.permissions_mode
+        cached_dataset.permissions = self.dataset.permissions
+
+        return cached_dataset
+
+    @staticmethod  # type: ignore  # TODO: fix
+    @generic_profiler_async("mutation-cache-get")
+    async def try_get_dataset_from_cache_by_id(
+        dataset_id: Optional[str],
+        revision_id: Optional[str],
         mutation_cache: Optional[USEntryMutationCache],
         mutation_key: Optional[MutationKey],
     ) -> Optional[Dataset]:
         if mutation_key is None or mutation_cache is None:
             return None
-        if self.dataset_id is None or self.dataset.revision_id is None:
+        if dataset_id is None or revision_id is None:
             return None
 
         cached_dataset = await mutation_cache.get_mutated_entry_from_cache(
             Dataset,
-            self.dataset_id,
-            self.dataset.revision_id,
+            dataset_id,
+            revision_id,
             mutation_key,
         )
         if cached_dataset is None:
             return None
+
         LOGGER.info("Found dataset in mutation cache")
-        cached_dataset.permissions_mode = self.dataset.permissions_mode
-        cached_dataset.permissions = self.dataset.permissions
+
         assert isinstance(cached_dataset, Dataset)
+
         return cached_dataset
 
     @generic_profiler_async("mutation-cache-save")  # type: ignore  # TODO: fix
@@ -551,9 +691,16 @@ class DatasetDataBaseView(BaseView):
         return False
 
     def check_dataset_revision_id(self, req_model: DataRequestModel) -> None:
-        dataset_revision_id = req_model.dataset_revision_id
-        if dataset_revision_id is not None and dataset_revision_id != self.dataset.revision_id:
+        self._check_dataset_revision_id(
+            dataset_revision_id=self.dataset.revision_id,
+            req_model=req_model,
+        )
+
+    @staticmethod
+    def _check_dataset_revision_id(dataset_revision_id: Optional[str], req_model: DataRequestModel) -> None:
+        req_dataset_revision_id = req_model.dataset_revision_id
+        if req_dataset_revision_id is not None and req_dataset_revision_id != dataset_revision_id:
             LOGGER.warning(
-                f"Dataset revision id mismatch: got {dataset_revision_id} from the request, "
-                f"but found {self.dataset.revision_id} in the current dataset"
+                f"Dataset revision id mismatch: got {req_dataset_revision_id} from the request, "
+                f"but found {dataset_revision_id} in the current dataset"
             )
