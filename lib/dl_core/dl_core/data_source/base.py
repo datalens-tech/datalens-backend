@@ -36,6 +36,7 @@ from dl_core.db import (
     SchemaColumn,
     SchemaInfo,
 )
+from dl_core.exc import TemplateInvalidError
 from dl_core.us_connection import get_connection_class
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_manager.local_cache import USEntryBuffer
@@ -55,6 +56,60 @@ LOGGER = logging.getLogger(__name__)
 
 class DbInfo(NamedTuple):
     version: str | None
+
+
+@attr.s()
+class DataSourceRenderer:
+    values: dict[str, BIValue] = attr.ib()
+
+    def _render_bi_value(self, value: BIValue) -> str:
+        return str(value.value)
+
+    def _render(self, value: str) -> str:
+        value = value.strip()
+
+        if value in self.values:
+            return self._render_bi_value(self.values[value])
+
+        raise TemplateInvalidError(f"Key {value} not found in {self.values}")
+
+    def render(self, value: str) -> str:
+        result = []
+
+        i = 0
+        block_start = -1
+
+        while i < len(value):
+            if i + 1 < len(value) and value[i : i + 2] == "{{":
+                if block_start != -1:
+                    # We are already in a block, add it as is including opening brackets, shifting the block start
+                    result.append(value[block_start - 2 : i])
+                    block_start = -1
+
+                i += 2
+                while i < len(value) and value[i] == "{":
+                    i += 1
+                    result.append("{")
+
+                block_start = i
+            elif i + 1 < len(value) and value[i : i + 2] == "}}":
+                if block_start == -1:
+                    result.append(value[i : i + 2])
+                else:
+                    block = value[block_start:i]
+                    result.append(self._render(block))
+                    block_start = -1
+                i += 2
+            else:
+                if block_start == -1:
+                    result.append(value[i])
+                i += 1
+
+        # If we are still in a block, add it as is including opening brackets
+        if block_start != -1:
+            result.append(value[block_start - 2 :])
+
+        return "".join(result)
 
 
 @attr.s()
@@ -223,11 +278,9 @@ class DataSource(metaclass=abc.ABCMeta):
         if self._connection is None or not self._connection.is_datasource_template_allowed:
             return value
 
-        new_value = value
-        for param_name, param_value in self._dataset_parameter_values.items():
-            new_value = new_value.replace(f"{{{param_name}}}", str(param_value.value))
+        renderer = DataSourceRenderer(values=self._dataset_parameter_values)
 
-        return new_value
+        return renderer.render(value)
 
     def source_exists(
         self,

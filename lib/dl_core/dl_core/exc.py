@@ -61,6 +61,11 @@ class MalformedCredentialsError(DataSourceConfigurationError):
     default_message = "Malformed credentials"
 
 
+class TemplateInvalidError(DataSourceConfigurationError):
+    err_code = DataSourceConfigurationError.err_code + ["TEMPLATE_INVALID"]
+    default_message = "Invalid template"
+
+
 class DatasetConfigurationError(DLBaseException):
     err_code = DLBaseException.err_code + ["DS_CONFIG"]
 
