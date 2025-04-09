@@ -32,8 +32,9 @@ from dl_constants.enums import (
     DataSourceType,
     MigrationStatus,
     NotificationLevel,
-    RawSQLLevel,
     UserDataType,
+    is_raw_sql_level_dashsql_allowed,
+    is_raw_sql_level_subselect_allowed,
 )
 from dl_core import connection_models
 from dl_core.base_models import (
@@ -482,15 +483,14 @@ class SubselectMixin:
 
     @property
     def is_subselect_allowed(self) -> bool:
-        return self.data.raw_sql_level in (RawSQLLevel.subselect, RawSQLLevel.dashsql)  # type: ignore  # TODO: fix
+        return is_raw_sql_level_subselect_allowed(self.data.raw_sql_level)  # type: ignore  # TODO: add raw_sql_level
 
     @property
     def is_dashsql_allowed(self) -> bool:
         if not self.allow_dashsql:  # type: ignore  # TODO: fix
             return False
-        if self.data.raw_sql_level == RawSQLLevel.dashsql:  # type: ignore  # TODO: fix
-            return True
-        return False
+
+        return is_raw_sql_level_dashsql_allowed(self.data.raw_sql_level)  # type: ignore  # TODO: add raw_sql_level
 
     def _make_subselect_templates(
         self,

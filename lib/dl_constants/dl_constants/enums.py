@@ -328,7 +328,27 @@ class ProcessorType(Enum):
 class RawSQLLevel(Enum):
     off = "off"  # no raw sql allowed
     subselect = "subselect"  # wrapped raw SQL with `edit` permissions
+    template = "template"  # wrapped raw SQL with `edit` and parameterized `execute` permissions
     dashsql = "dashsql"  # unwrapped raw SQL with `execute` permissions
+
+
+def is_raw_sql_level_subselect_allowed(raw_sql_level: RawSQLLevel) -> bool:
+    return raw_sql_level in (
+        RawSQLLevel.subselect,
+        RawSQLLevel.template,
+        RawSQLLevel.dashsql,
+    )
+
+
+def is_raw_sql_level_template_allowed(raw_sql_level: RawSQLLevel) -> bool:
+    return raw_sql_level in (
+        RawSQLLevel.template,
+        RawSQLLevel.dashsql,
+    )
+
+
+def is_raw_sql_level_dashsql_allowed(raw_sql_level: RawSQLLevel) -> bool:
+    return raw_sql_level in (RawSQLLevel.dashsql,)
 
 
 class DashSQLQueryType(DynamicEnum):
