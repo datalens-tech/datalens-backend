@@ -16,7 +16,6 @@ from dl_connector_trino.formula.constants import TrinoDialect as D
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 
-
 DEFINITIONS_DATETIME = [
     # dateadd
     base.FuncDateadd1.for_dialect(D.TRINO),
