@@ -11,6 +11,7 @@ from dl_core.fields import (
     AllParameterValueConstraint,
     BaseParameterValueConstraint,
     CollectionParameterValueConstraint,
+    DefaultParameterValueConstraint,
     EqualsParameterValueConstraint,
     NotEqualsParameterValueConstraint,
     RangeParameterValueConstraint,
@@ -60,6 +61,9 @@ class ParameterValueConstraintSchema(OneOfSchema):
 
         pattern = ma_fields.String()
 
+    class DefaultParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+        TARGET_CLS = DefaultParameterValueConstraint
+
     class CollectionParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
         TARGET_CLS = CollectionParameterValueConstraint
 
@@ -73,6 +77,7 @@ class ParameterValueConstraintSchema(OneOfSchema):
         ParameterValueConstraintType.equals.name: EqualsParameterValueConstraintSchema,
         ParameterValueConstraintType.not_equals.name: NotEqualsParameterValueConstraintSchema,
         ParameterValueConstraintType.regex.name: RegexParameterValueConstraintSchema,
+        ParameterValueConstraintType.default.name: DefaultParameterValueConstraintSchema,
         ParameterValueConstraintType.collection.name: CollectionParameterValueConstraintSchema,
     }
 

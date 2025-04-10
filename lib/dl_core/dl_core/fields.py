@@ -102,11 +102,21 @@ class RegexParameterValueConstraint(BaseParameterValueConstraint):
     pattern: str = attr.ib()
     type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.regex)
 
+    @property
+    def _full_pattern(self) -> str:
+        return f"^{self.pattern}$"
+
     def _is_valid(self, value: Any) -> bool:
         if not isinstance(value, str):
             value = str(value)
 
-        return re.match(self.pattern, value) is not None
+        return re.match(self._full_pattern, value) is not None
+
+
+@attr.s(frozen=True)
+class DefaultParameterValueConstraint(RegexParameterValueConstraint):
+    type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.default)
+    pattern: str = attr.ib(init=False, default="[a-zA-Z0-9]*")
 
 
 @attr.s(frozen=True)

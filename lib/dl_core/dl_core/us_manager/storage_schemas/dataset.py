@@ -42,6 +42,7 @@ from dl_core.fields import (
     BIField,
     CalculationSpec,
     CollectionParameterValueConstraint,
+    DefaultParameterValueConstraint,
     DirectCalculationSpec,
     EqualsParameterValueConstraint,
     FormulaCalculationSpec,
@@ -295,6 +296,10 @@ class RegexParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
     TARGET_CLS = RegexParameterValueConstraint
 
     pattern = ma_fields.String()
+
+
+class DefaultParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+    TARGET_CLS = DefaultParameterValueConstraint
 
 
 class CollectionParameterValueConstraintSchema(BaseParameterValueConstraintSchema):

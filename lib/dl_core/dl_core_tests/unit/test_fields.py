@@ -3,6 +3,7 @@ from dl_core.fields import (
     AllParameterValueConstraint,
     BIField,
     CollectionParameterValueConstraint,
+    DefaultParameterValueConstraint,
     EqualsParameterValueConstraint,
     NotEqualsParameterValueConstraint,
     RangeParameterValueConstraint,
@@ -65,11 +66,34 @@ def test_not_equals_parameter_value_constraint():
 
 
 def test_regex_parameter_value_constraint():
-    constraint = RegexParameterValueConstraint(pattern="^foo")
+    constraint = RegexParameterValueConstraint(pattern="foo.*")
     assert constraint.type == ParameterValueConstraintType.regex
     assert constraint.is_valid(StringValue("foo"))
     assert constraint.is_valid(StringValue("foobar"))
     assert not constraint.is_valid(StringValue("bar"))
+    assert not constraint.is_valid(StringValue("barfoo"))
+
+    constraint = RegexParameterValueConstraint(pattern=".*bar")
+    assert constraint.type == ParameterValueConstraintType.regex
+    assert constraint.is_valid(StringValue("bar"))
+    assert constraint.is_valid(StringValue("foobar"))
+    assert not constraint.is_valid(StringValue("foo"))
+    assert not constraint.is_valid(StringValue("barfoo"))
+
+    constraint = RegexParameterValueConstraint(pattern="^.*$")
+    assert constraint.type == ParameterValueConstraintType.regex
+    assert constraint.is_valid(StringValue("foo"))
+
+
+def test_default_parameter_value_constraint():
+    constraint = DefaultParameterValueConstraint()
+    assert constraint.type == ParameterValueConstraintType.default
+    assert constraint.is_valid(StringValue("foo"))
+    assert constraint.is_valid(StringValue("BaR"))
+    assert constraint.is_valid(IntegerValue(42))
+
+    for char in "!@#$%^&*()_+-=[]{}|;':\",.<>?/":
+        assert not constraint.is_valid(StringValue(char))
 
 
 def test_collection_parameter_value_constraint():
