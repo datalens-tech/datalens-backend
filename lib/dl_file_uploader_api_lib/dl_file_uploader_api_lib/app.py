@@ -23,11 +23,11 @@ from dl_api_commons.sentry_config import (
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.aio.metrics_view import MetricsView
 from dl_core.aio.ping_view import PingView
+from dl_core.aio.web_app_services.arq_redis import ArqRedisService
 from dl_core.loader import (
     CoreLibraryConfig,
     load_core_lib,
 )
-from dl_file_uploader_api_lib.aiohttp_services.arq_redis import ArqRedisService
 from dl_file_uploader_api_lib.aiohttp_services.crypto import CryptoService
 from dl_file_uploader_api_lib.aiohttp_services.error_handler import FileUploaderErrorHandler
 from dl_file_uploader_api_lib.dl_request import FileUploaderDLRequest
