@@ -14,6 +14,7 @@ from dl_model_tools.schema.typed_values import VALUE_TYPE_CONTEXT_KEY
         ({"type": "equals", "value": 42}, ParameterValueConstraintType.equals),
         ({"type": "not_equals", "value": 42}, ParameterValueConstraintType.not_equals),
         ({"type": "regex", "pattern": ".*"}, ParameterValueConstraintType.regex),
+        ({"type": "default"}, ParameterValueConstraintType.default),
     ],
 )
 def test_parameter_value_constraint_schema(data: dict, expected_type: ParameterValueConstraintType):

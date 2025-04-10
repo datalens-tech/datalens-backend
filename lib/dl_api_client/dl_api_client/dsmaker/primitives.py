@@ -500,6 +500,11 @@ class RegexParameterValueConstraint(BaseParameterValueConstraint):
     pattern: str = attr.ib()
 
 
+@attr.s
+class DefaultParameterValueConstraint(BaseParameterValueConstraint):
+    type: ParameterValueConstraintType = ParameterValueConstraintType.default
+
+
 class CollectionParameterValueConstraint(BaseParameterValueConstraint):
     type: ParameterValueConstraintType = ParameterValueConstraintType.collection
     constraints: List[BaseParameterValueConstraint]

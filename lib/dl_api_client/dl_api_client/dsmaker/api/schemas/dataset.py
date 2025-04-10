@@ -38,6 +38,7 @@ from dl_api_client.dsmaker.primitives import (
     DateParameterValue,
     DateTimeParameterValue,
     DateTimeTZParameterValue,
+    DefaultParameterValueConstraint,
     DirectJoinPart,
     EqualsParameterValueConstraint,
     FloatParameterValue,
@@ -238,6 +239,10 @@ class RegexParameterValueConstraintSchema(DefaultSchema[RegexParameterValueConst
     pattern = ma_fields.String()
 
 
+class DefaultParameterValueConstraintSchema(DefaultSchema[DefaultParameterValueConstraint]):
+    TARGET_CLS = DefaultParameterValueConstraint
+
+
 class CollectionParameterValueConstraintSchema(DefaultSchema[CollectionParameterValueConstraint]):
     TARGET_CLS = CollectionParameterValueConstraint
 
@@ -254,6 +259,7 @@ class ParameterValueConstraintSchema(OneOfSchema):
         ParameterValueConstraintType.equals.name: EqualsParameterValueConstraintSchema,
         ParameterValueConstraintType.not_equals.name: NotEqualsParameterValueConstraintSchema,
         ParameterValueConstraintType.regex.name: RegexParameterValueConstraintSchema,
+        ParameterValueConstraintType.default.name: DefaultParameterValueConstraintSchema,
         ParameterValueConstraintType.collection.name: CollectionParameterValueConstraintSchema,
     }
 

@@ -138,6 +138,7 @@ class ParameterValueConstraintType(Enum):
     equals = "equals"
     not_equals = "not_equals"
     regex = "regex"
+    default = "default"
     collection = "collection"
 
 
