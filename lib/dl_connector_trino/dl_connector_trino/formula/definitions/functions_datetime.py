@@ -6,6 +6,8 @@ from dl_formula.definitions.base import (
 )
 
 # from sqlalchemy.sql.elements import ClauseElement
+# import trino.sqlalchemy.datatype as tsa
+# from dl_formula.shortcuts import n
 import dl_formula.definitions.functions_datetime as base
 
 from dl_connector_trino.formula.constants import TrinoDialect as D
@@ -13,6 +15,7 @@ from dl_connector_trino.formula.constants import TrinoDialect as D
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
+
 
 DEFINITIONS_DATETIME = [
     # dateadd
@@ -38,8 +41,24 @@ DEFINITIONS_DATETIME = [
     # base.FuncDatepart3Const.for_dialect(D.TRINO),
     base.FuncDatepart3NonConst.for_dialect(D.TRINO),
     # datetrunc
-    # base.FuncDatetrunc2Date.for_dialect(D.TRINO),
-    # base.FuncDatetrunc2Datetime.for_dialect(D.TRINO),
+    base.FuncDatetrunc2Date(
+        variants=[
+            V(
+                D.TRINO,
+                lambda date, unit: date
+                if base.norm_datetrunc_unit(unit) in ("second", "minute", "hour", "day")
+                else sa.func.date_trunc(unit, date),
+            ),
+        ]
+    ),
+    base.FuncDatetrunc2Datetime(
+        variants=[
+            V(
+                D.TRINO,
+                lambda datetime, unit: sa.func.date_trunc(base.norm_datetrunc_unit(unit), datetime),
+            ),
+        ]
+    ),
     # base.FuncDatetrunc2DatetimeTZ.for_dialect(D.TRINO),
     # base.FuncDatetrunc3Date.for_dialect(D.TRINO),
     # base.FuncDatetrunc3Datetime.for_dialect(D.TRINO),
