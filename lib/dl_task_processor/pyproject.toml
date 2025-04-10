@@ -17,6 +17,8 @@ dl-utils = {path = "../dl_utils"}
 dl-configs = {path = "../dl_configs"}
 dl-app-tools = {path = "../dl_app_tools"}
 redis = ">=5.0.1"
+aiohttp = ">=3.9.1"
+
 
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
