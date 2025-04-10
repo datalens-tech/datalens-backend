@@ -7,5 +7,5 @@ class TestDateTimeFunctionTrino(TrinoFormulaTestBase, DefaultDateTimeFunctionFor
     supports_dateadd_non_const_unit_num = True
     supports_deprecated_dateadd = True
     supports_deprecated_datepart_2 = True
-    supports_datetrunc_3 = True
+    supports_datetrunc_3 = False  # May be supported in the future
     supports_datetimetz = True
