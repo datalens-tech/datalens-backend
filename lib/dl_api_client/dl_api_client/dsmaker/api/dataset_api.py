@@ -69,6 +69,7 @@ class DatasetApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
             id=new_id,
             revision_id=body.get("revision_id"),
             load_preview_by_default=body.get("load_preview_by_default", dataset.load_preview_by_default),
+            data_export_forbidden=body.get("data_export_forbidden", dataset.data_export_forbidden),
             rls=body.get("rls", {}),
             component_errors=ComponentErrorListSchema().load(body.get("component_errors") or {}),
             result_schema_aux=ResultSchemaAuxSchema().load(body.get("result_schema_aux") or {}),
