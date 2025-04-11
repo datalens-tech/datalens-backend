@@ -27,7 +27,6 @@ from dl_core.loader import (
     CoreLibraryConfig,
     load_core_lib,
 )
-from dl_file_uploader_api_lib.aiohttp_services.arq_redis import ArqRedisService
 from dl_file_uploader_api_lib.aiohttp_services.crypto import CryptoService
 from dl_file_uploader_api_lib.aiohttp_services.error_handler import FileUploaderErrorHandler
 from dl_file_uploader_api_lib.dl_request import FileUploaderDLRequest
@@ -37,6 +36,7 @@ from dl_file_uploader_api_lib.views import misc as misc_views
 from dl_file_uploader_api_lib.views import sources as sources_views
 from dl_file_uploader_lib.settings_utils import init_redis_service
 from dl_s3.s3_service import S3Service
+from dl_task_processor.arq_redis import ArqRedisService
 from dl_task_processor.arq_wrapper import create_arq_redis_settings
 
 
