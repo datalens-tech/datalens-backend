@@ -4,10 +4,6 @@ from dl_formula.definitions.base import (
     TranslationVariant,
     TranslationVariantWrapped,
 )
-
-# from sqlalchemy.sql.elements import ClauseElement
-# import trino.sqlalchemy.datatype as tsa
-# from dl_formula.shortcuts import n
 import dl_formula.definitions.functions_datetime as base
 
 from dl_connector_trino.formula.constants import TrinoDialect as D
