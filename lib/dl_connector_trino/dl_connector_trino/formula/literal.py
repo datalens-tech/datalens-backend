@@ -5,6 +5,7 @@ from typing import (
 )
 
 import sqlalchemy as sa
+import trino.sqlalchemy.datatype as tsa
 
 from dl_formula.connectors.base.literal import (
     Literal,
@@ -18,11 +19,16 @@ from dl_connector_trino.formula.definitions.custom_constructors import TrinoArra
 class TrinoLiteralizer(Literalizer):
     def literal_datetime(self, value: datetime.datetime, dialect: DialectCombo) -> Literal:
         datetime_repr = value.strftime("%Y-%m-%d %H:%M:%S")
+        precision = None
         if value.microsecond:
             datetime_repr += f".{value.microsecond:06}"
+            precision = 6
 
         if value.tzinfo is None:
-            return sa.text(f"TIMESTAMP '{datetime_repr}'")
+            return sa.cast(
+                datetime_repr,
+                tsa.TIMESTAMP(precision=precision),
+            )
 
         if value.tzinfo == datetime.timezone.utc:
             timezone_repr = "UTC"
@@ -33,6 +39,7 @@ class TrinoLiteralizer(Literalizer):
 
         elif isinstance(value.tzinfo, datetime.timezone):
             # Calculate the offset in hours and minutes
+            # (most likely will never be used since we are using pytz for timezone handling)
             total_seconds = int(value.tzinfo.utcoffset(value).total_seconds())
             sign = "+" if total_seconds >= 0 else "-"
             total_seconds = abs(total_seconds)
@@ -43,7 +50,10 @@ class TrinoLiteralizer(Literalizer):
         else:
             raise TypeError(f"Unsupported tzinfo type: {type(value.tzinfo)}")
 
-        return sa.text(f"TIMESTAMP '{datetime_repr} {timezone_repr}'")
+        return sa.cast(
+            f"{datetime_repr} {timezone_repr}",
+            tsa.TIMESTAMP(timezone=True, precision=precision),
+        )
 
     def literal_array(self, value: Union[tuple, list], dialect: DialectCombo) -> Literal:
         return cast(Literal, TrinoArray(*value))
