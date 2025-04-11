@@ -1,7 +1,7 @@
 target "dl_control_api" {
   pull     = false
   contexts = {
-    bake_ctx_base_img    = "target:base_jammy_db"
+    bake_ctx_base_img    = "target:base_noble_db"
     bake_ctx_src_lib     = "target:dl_src_lib"
     bake_ctx_metapkg     = "target:dl_src_metapkg"
     bake_ctx_app_configs = "target:dl_app_configs"
@@ -13,7 +13,7 @@ target "dl_control_api" {
 target "dl_data_api" {
   pull     = false
   contexts = {
-    bake_ctx_base_img    = "target:base_jammy_db"
+    bake_ctx_base_img    = "target:base_noble_db"
     bake_ctx_src_lib     = "target:dl_src_lib"
     bake_ctx_metapkg     = "target:dl_src_metapkg"
     bake_ctx_app_configs = "target:dl_app_configs"

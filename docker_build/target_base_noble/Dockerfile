@@ -1,5 +1,5 @@
 #syntax=docker/dockerfile:1.4
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 # Installing deb tools
 ENV DEBIAN_FRONTEND noninteractive
