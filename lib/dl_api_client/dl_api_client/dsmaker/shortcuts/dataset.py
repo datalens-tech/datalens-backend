@@ -1,10 +1,10 @@
 from http import HTTPStatus
+import typing
 from typing import (
     Any,
     Callable,
     Dict,
     Optional,
-    Tuple,
 )
 
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
@@ -66,19 +66,28 @@ def add_formulas_to_dataset(
     )
 
 
+class Parameter(typing.NamedTuple):
+    default_value: ParameterValue
+    constraint: Optional[BaseParameterValueConstraint]
+    template_enabled: bool
+
+
 def add_parameters_to_dataset(
     *,
     api_v1: SyncHttpDatasetApiV1,  # FIXME: Rename to control_api
     dataset: Optional[Dataset] = None,
     dataset_id: Optional[str] = None,
-    parameters: Dict[str, Tuple[ParameterValue, Optional[BaseParameterValueConstraint]]],
+    parameters: Dict[str, Parameter],
     exp_status: int = HTTPStatus.OK,
     save: bool = True,
 ) -> Dataset:
     def _add_parameters(ds: Dataset) -> Dataset:
         for field_name, parameter in parameters.items():
             ds.result_schema[field_name] = ds.field(
-                cast=parameter[0].type, default_value=parameter[0], value_constraint=parameter[1]
+                cast=parameter.default_value.type,
+                default_value=parameter.default_value,
+                value_constraint=parameter.constraint,
+                template_enabled=parameter.template_enabled,
             )
         return ds
 

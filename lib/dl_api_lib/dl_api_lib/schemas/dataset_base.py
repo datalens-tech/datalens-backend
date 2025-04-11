@@ -79,6 +79,7 @@ class ParameterCalculationSpecSchema(DefaultSchema[ParameterCalculationSpec]):
 
     default_value = ma_fields.Nested(ValueSchema, allow_none=True)
     value_constraint = ma_fields.Nested(ParameterValueConstraintSchema, allow_none=True)
+    template_enabled = ma_fields.Bool(load_default=False)
 
 
 class RLS2ConfigEntrySchema(DefaultSchema[RLSEntry]):

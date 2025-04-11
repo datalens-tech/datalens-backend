@@ -182,7 +182,7 @@ class DatasetComponentAccessor:
         result = {
             field.title: field.default_value
             for field in self._dataset.result_schema.fields
-            if field.calc_mode == CalcMode.parameter and field.default_value is not None
+            if field.calc_mode == CalcMode.parameter and field.default_value is not None and field.template_enabled
         }
 
         return result
@@ -194,6 +194,7 @@ class DatasetComponentAccessor:
         result = {}
         for parameter_value_spec in parameter_value_specs:
             field = self._dataset.result_schema.by_guid(parameter_value_spec.field_id)
-            assert field.default_value is not None
-            result[field.title] = attr.evolve(field.default_value, value=parameter_value_spec.value)
+            if field.template_enabled:
+                assert field.default_value is not None
+                result[field.title] = attr.evolve(field.default_value, value=parameter_value_spec.value)
         return result
