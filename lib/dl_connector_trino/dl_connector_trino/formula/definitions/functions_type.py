@@ -109,6 +109,28 @@ class FuncStrFromArrayFloatTrino(base.FuncStrFromArray):
     ]
 
 
+class FuncDatetimeTZTrino(
+    base.FuncDatetimeTZConst,
+):
+    dialects = D.TRINO
+    argument_types = [
+        ArgTypeSequence(
+            [
+                {
+                    DataType.STRING,
+                    DataType.CONST_DATETIME,
+                    DataType.CONST_GENERICDATETIME,
+                    DataType.CONST_DATETIMETZ,
+                    DataType.CONST_INTEGER,
+                    DataType.CONST_FLOAT,
+                    DataType.CONST_STRING,
+                },
+                DataType.CONST_STRING,
+            ]
+        ),
+    ]
+
+
 # Note: `SingleVariantTranslationBase` here essentially acts as a mixin, providing
 # custom `get_variants` implementation that plugs into `cls.dialects` and `cls._translate_main`.
 class FuncTypeGenericDatetime2TrinoImpl(SingleVariantTranslationBase, base.FuncTypeGenericDatetime2Impl):
@@ -164,7 +186,7 @@ DEFINITIONS_TYPE = [
     base.FuncDatetime1FromString.for_dialect(D.TRINO),
     FuncDatetime2Trino(),
     # datetimetz
-    # base.FuncDatetimeTZConst.for_dialect(D.TRINO),
+    FuncDatetimeTZTrino(),
     # db_cast
     FuncDbCastTrino2(),
     FuncDbCastTrino3(),
