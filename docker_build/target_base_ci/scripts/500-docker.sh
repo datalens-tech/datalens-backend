@@ -17,7 +17,7 @@ case $(arch) in
     arch="amd64"
     ;;
 esac
-echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu jammy stable" > /etc/apt/sources.list.d/docker.list
+echo "deb [arch=${arch} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu noble stable" > /etc/apt/sources.list.d/docker.list
 
 apt-get update
 # apt-get install --yes  docker-ce-cli docker-compose-plugin
