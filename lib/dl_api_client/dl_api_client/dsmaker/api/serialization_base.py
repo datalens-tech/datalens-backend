@@ -166,6 +166,7 @@ class BaseApiV1SerializationAdapter:
                 value_constraint=ParameterValueConstraintSchema().dump(item.value_constraint)
                 if item.value_constraint is not None
                 else None,
+                template_enabled=item.template_enabled,
             )
         else:
             return dict(guid=item.id)

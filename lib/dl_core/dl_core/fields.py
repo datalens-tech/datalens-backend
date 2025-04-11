@@ -195,6 +195,7 @@ class ParameterCalculationSpec(CalculationSpec):
     # Value constraint of the parameter
     # (defines the restrictions and origins of possible values).
     value_constraint: Optional[BaseParameterValueConstraint] = attr.ib(kw_only=True, default=None)
+    template_enabled: bool = attr.ib(kw_only=True, default=False)
 
 
 _CALCULATION_SPECS_BY_MODE = {
@@ -386,6 +387,11 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
     def value_constraint(self) -> Optional[BaseParameterValueConstraint]:
         assert isinstance(self.calc_spec, ParameterCalculationSpec)
         return self.calc_spec.value_constraint
+
+    @property
+    def template_enabled(self) -> bool:
+        assert isinstance(self.calc_spec, ParameterCalculationSpec)
+        return self.calc_spec.template_enabled
 
     @property
     def autoaggregated(self) -> bool:

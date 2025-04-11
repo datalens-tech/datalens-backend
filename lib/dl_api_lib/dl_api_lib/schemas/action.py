@@ -82,6 +82,7 @@ class UpdateFieldActionSchema(FieldActionBaseSchema, DefaultValidateSchema[Field
         new_id = ma_fields.String(allow_none=True)
         default_value = ma_fields.Nested(ValueSchema, allow_none=True)
         value_constraint = ma_fields.Nested(ParameterValueConstraintSchema, allow_none=True)
+        template_enabled = ma_fields.Bool(allow_none=True)
 
     class UpdateFieldSchema(UpdateFieldBaseSchema, DefaultValidateSchema[UpdateField]):
         TARGET_CLS = UpdateField
