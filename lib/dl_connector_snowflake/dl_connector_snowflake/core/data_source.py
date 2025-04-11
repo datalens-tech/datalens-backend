@@ -4,7 +4,6 @@ from typing import (
     TYPE_CHECKING,
     Callable,
     Optional,
-    Type,
 )
 
 from sqlalchemy.sql.elements import ClauseElement
@@ -44,7 +43,7 @@ class SnowFlakeDataSourceMixin(BaseSQLDataSource):
     conn_type = CONNECTION_TYPE_SNOWFLAKE
 
     @classmethod
-    def get_connection_cls(cls) -> Type[ConnectionSQLSnowFlake]:
+    def get_connection_cls(cls) -> type[ConnectionSQLSnowFlake]:
         return ConnectionSQLSnowFlake
 
     @classmethod

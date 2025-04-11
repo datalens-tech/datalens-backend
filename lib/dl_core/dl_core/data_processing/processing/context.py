@@ -3,10 +3,7 @@ from __future__ import annotations
 from typing import (
     Any,
     Collection,
-    Dict,
     Optional,
-    Set,
-    Tuple,
 )
 
 from dl_core.data_processing.processing.operation import (
@@ -22,20 +19,20 @@ from dl_core.data_processing.stream_base import (
 
 class OpExecutionContext:
     _processing_id: str
-    _streams: Dict[str, AbstractStream]
-    _operations: Tuple[BaseOp, ...]
+    _streams: dict[str, AbstractStream]
+    _operations: tuple[BaseOp, ...]
 
     def __init__(self, processing_id: str, streams: Collection[AbstractStream], operations: Collection[BaseOp]):
         self._processing_id = processing_id
         self._streams = {stream.id: stream for stream in streams}
         self._operations = tuple(op for op in operations)
-        self._operations_by_output: Dict[str, BaseOp] = {}
+        self._operations_by_output: dict[str, BaseOp] = {}
 
         for op in operations:
             self._operations_by_output[op.dest_stream_id] = op
 
     @property
-    def operations(self) -> Tuple[BaseOp, ...]:
+    def operations(self) -> tuple[BaseOp, ...]:
         return self._operations
 
     @property
@@ -59,7 +56,7 @@ class OpExecutionContext:
     def remove_stream(self, stream: AbstractStream) -> None:
         del self._streams[stream.id]
 
-    def get_stream_ids_for_operation(self, op: BaseOp) -> Set[str]:
+    def get_stream_ids_for_operation(self, op: BaseOp) -> set[str]:
         result = set()
         if isinstance(op, SingleSourceOp):
             result.add(op.source_stream_id)

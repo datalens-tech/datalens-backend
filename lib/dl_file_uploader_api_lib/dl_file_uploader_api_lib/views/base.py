@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     ClassVar,
-    Type,
 )
 
 from marshmallow import Schema
@@ -21,7 +20,7 @@ class FileUploaderBaseView(DLRequestView[FileUploaderDLRequest]):
 
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResource]] = frozenset({RequiredResourceCommon.SKIP_CSRF})
 
-    async def _load_post_request_schema_data(self, schema_cls: Type[Schema]) -> dict[str, Any]:
+    async def _load_post_request_schema_data(self, schema_cls: type[Schema]) -> dict[str, Any]:
         json_data = await self.request.json() if self.request.can_read_body else {}
         req_data = schema_cls().load(
             {

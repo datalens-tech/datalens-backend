@@ -6,11 +6,7 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Collection,
-    Dict,
-    FrozenSet,
     Optional,
-    Set,
-    Tuple,
 )
 
 import attr
@@ -42,7 +38,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize=200)
-def get_compatible_source_types(source_type: DataSourceType) -> FrozenSet[DataSourceType]:
+def get_compatible_source_types(source_type: DataSourceType) -> frozenset[DataSourceType]:
     """Return frozen set of data source types compatible with ``ds_type``"""
 
     raw_comp_types = frozenset(list_registered_source_types())
@@ -56,7 +52,7 @@ def get_compatible_source_types(source_type: DataSourceType) -> FrozenSet[DataSo
     return frozenset(compat_types)
 
 
-_SOURCE_CONNECTION_COMPATIBILITY: Dict[DataSourceType, FrozenSet[ConnectionType]] = {}
+_SOURCE_CONNECTION_COMPATIBILITY: dict[DataSourceType, frozenset[ConnectionType]] = {}
 
 
 def _populate_compatibility_map() -> None:
@@ -68,7 +64,7 @@ def _populate_compatibility_map() -> None:
 
 
 @lru_cache(maxsize=100)
-def get_conn_types_compatible_with_src_types(source_types: FrozenSet[DataSourceType]) -> FrozenSet[ConnectionType]:
+def get_conn_types_compatible_with_src_types(source_types: frozenset[DataSourceType]) -> frozenset[ConnectionType]:
     if not _SOURCE_CONNECTION_COMPATIBILITY:
         _populate_compatibility_map()
     assert _SOURCE_CONNECTION_COMPATIBILITY
@@ -124,7 +120,7 @@ class DatasetCapabilities:
     def get_supported_join_types(
         self,
         ignore_source_ids: Optional[Collection[str]] = None,
-    ) -> Set[JoinType]:
+    ) -> set[JoinType]:
         ignore_source_ids = ignore_source_ids or ()
         role = self.resolve_source_role(ignore_source_ids=ignore_source_ids)
         result = set(jt for jt in JoinType)
@@ -164,7 +160,7 @@ class DatasetCapabilities:
     def get_compatible_source_types(
         self,
         ignore_source_ids: Optional[Collection[str]] = None,
-    ) -> FrozenSet[DataSourceType]:
+    ) -> frozenset[DataSourceType]:
         """Return a frozen set of source types compatible with dataset's current state"""
 
         ignore_source_ids = ignore_source_ids or ()
@@ -192,7 +188,7 @@ class DatasetCapabilities:
     def get_compatible_connection_types(
         self,
         ignore_connection_ids: Optional[Collection[str]] = None,
-    ) -> FrozenSet[ConnectionType]:
+    ) -> frozenset[ConnectionType]:
         """Return a frozen set of connection types compatible with dataset's current state"""
 
         ignore_connection_ids = ignore_connection_ids or ()
@@ -272,7 +268,7 @@ class DatasetCapabilities:
         if not common_priorities:
             raise exc.NoCommonRoleError()
 
-        def role_sorting_key(role_priority_pair: Tuple[DataSourceRole, int]) -> Tuple[int, str]:
+        def role_sorting_key(role_priority_pair: tuple[DataSourceRole, int]) -> tuple[int, str]:
             # first priority, then name (so that it's deterministic for matching priorities)
             return role_priority_pair[1], role_priority_pair[0].name
 

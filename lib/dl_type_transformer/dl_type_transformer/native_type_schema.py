@@ -10,7 +10,6 @@ import logging
 from typing import (
     ClassVar,
     Generic,
-    Type,
     TypeVar,
 )
 
@@ -50,7 +49,7 @@ class NativeTypeSchemaBase(Schema, Generic[_TARGET_TV]):
         # TODO: Eventually datasets should be migrated so that this can be removed
         unknown = EXCLUDE
 
-    TARGET_CLS: ClassVar[Type[_TARGET_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
+    TARGET_CLS: ClassVar[type[_TARGET_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
     @post_load(pass_many=False)
     def to_object(self, data: dict, **_):  # type: ignore  # TODO: fix

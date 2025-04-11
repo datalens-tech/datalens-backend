@@ -6,10 +6,8 @@ import inspect
 from typing import (
     Any,
     ClassVar,
-    List,
     Optional,
     Sequence,
-    Type,
     TypeVar,
     Union,
     final,
@@ -27,21 +25,21 @@ _DESCRIPTOR_T = TypeVar("_DESCRIPTOR_T", bound="BaseClassDescriptor")
 
 @attr.s(kw_only=True)
 class BaseClassDescriptor(metaclass=abc.ABCMeta):
-    _REGISTRY: ClassVar[dict[Type, BaseClassDescriptor]]
+    _REGISTRY: ClassVar[dict[type, BaseClassDescriptor]]
 
     _registered: bool = attr.ib(init=False, default=False)
-    _target_cls: Optional[Type] = attr.ib(init=False, default=None)
+    _target_cls: Optional[type] = attr.ib(init=False, default=None)
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         # Override registry for each subclass
         cls._REGISTRY = {}
 
     @classmethod
-    def has(cls, the_type: Type) -> bool:
+    def has(cls, the_type: type) -> bool:
         return the_type in cls._REGISTRY
 
     @classmethod
-    def get_for_type(cls: Type[_DESCRIPTOR_T], the_type: Type) -> _DESCRIPTOR_T:
+    def get_for_type(cls: type[_DESCRIPTOR_T], the_type: type) -> _DESCRIPTOR_T:
         if not cls.has(the_type):
             raise AssertionError(f"Class {the_type!r} has no a {cls.__name__}")
         ret = cls._REGISTRY[the_type]
@@ -59,7 +57,7 @@ class BaseClassDescriptor(metaclass=abc.ABCMeta):
         cls._REGISTRY[the_type] = descriptor
 
     @abc.abstractmethod
-    def pre_registration_hook(self, cls: Type) -> None:
+    def pre_registration_hook(self, cls: type) -> None:
         raise NotImplementedError()
 
     @final
@@ -90,8 +88,8 @@ class ModelDescriptor(BaseClassDescriptor):
     type_discriminator: Optional[str] = attr.ib(default=None)
     children_type_discriminator_attr_name: Optional[str] = attr.ib(default=None)
     children_type_discriminator_aliases_attr_name: Optional[str] = attr.ib(default=None)
-    api_types: List[enum.Enum] = attr.ib(factory=list)
-    api_types_exclude: List[enum.Enum] = attr.ib(factory=list)
+    api_types: list[enum.Enum] = attr.ib(factory=list)
+    api_types_exclude: list[enum.Enum] = attr.ib(factory=list)
     description: Optional[MText] = attr.ib(default=None)
 
     # Next fields will be filled during
@@ -111,11 +109,11 @@ class ModelDescriptor(BaseClassDescriptor):
         return ret
 
     @classmethod
-    def get_registered_parents_for(cls, the_type: Type) -> Sequence[Type]:
+    def get_registered_parents_for(cls, the_type: type) -> Sequence[type]:
         return [parent_cls for parent_cls in inspect.getmro(the_type) if parent_cls in cls._REGISTRY]
 
     @classmethod
-    def resolve_type_discriminator_attr_name(cls, model_cls: Type) -> Optional[str]:
+    def resolve_type_discriminator_attr_name(cls, model_cls: type) -> Optional[str]:
         registered_parents_mro = cls.get_registered_parents_for(model_cls)
         parent_model_descriptors_with_children_type_discriminator_attr_name = [
             ModelDescriptor.get_for_type(parent_model_cls)
@@ -137,7 +135,7 @@ class ModelDescriptor(BaseClassDescriptor):
         )
 
     @classmethod
-    def resolve_type_discriminator_aliases_attr_name(cls, model_cls: Type) -> Optional[str]:
+    def resolve_type_discriminator_aliases_attr_name(cls, model_cls: type) -> Optional[str]:
         registered_parents_mro = cls.get_registered_parents_for(model_cls)
         parent_model_descriptors_with_children_type_discriminator_attr_name = [
             ModelDescriptor.get_for_type(parent_model_cls)
@@ -158,7 +156,7 @@ class ModelDescriptor(BaseClassDescriptor):
             None,
         )
 
-    def pre_registration_hook(self, cls: Type) -> None:
+    def pre_registration_hook(self, cls: type) -> None:
         if self.is_abstract:
             pass
 
@@ -166,7 +164,7 @@ class ModelDescriptor(BaseClassDescriptor):
             self.set_effective_type_discriminator(cls)
             self.set_effective_type_discriminator_aliases(cls)
 
-    def set_effective_type_discriminator(self, cls: Type) -> None:
+    def set_effective_type_discriminator(self, cls: type) -> None:
         assert self.children_type_discriminator_attr_name is None
         children_type_discriminator_attr_name = self.resolve_type_discriminator_attr_name(cls)
         if children_type_discriminator_attr_name is not None:
@@ -186,8 +184,8 @@ class ModelDescriptor(BaseClassDescriptor):
             else:
                 raise AssertionError(f"Unknown type of type discriminator for {cls}: {type_discriminator_candidate}")
 
-    def set_effective_type_discriminator_aliases(self, cls: Type) -> None:
-        ret: List[str] = list()
+    def set_effective_type_discriminator_aliases(self, cls: type) -> None:
+        ret: list[str] = list()
         children_type_discriminator_aliases_attr_name = self.resolve_type_discriminator_aliases_attr_name(cls)
         if children_type_discriminator_aliases_attr_name is not None:
             type_discriminator_alias_candidate = (

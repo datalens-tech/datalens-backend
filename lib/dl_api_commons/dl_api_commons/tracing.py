@@ -1,16 +1,13 @@
 from __future__ import annotations
 
-from typing import (
-    Dict,
-    Optional,
-)
+from typing import Optional
 
 import opentracing
 
 
-def get_current_tracing_headers(tracer: Optional[opentracing.Tracer] = None) -> Dict[str, str]:
+def get_current_tracing_headers(tracer: Optional[opentracing.Tracer] = None) -> dict[str, str]:
     actual_tracer = opentracing.global_tracer() if tracer is None else tracer
-    tracing_headers: Dict[str, str] = {}
+    tracing_headers: dict[str, str] = {}
     active_span = actual_tracer.active_span
 
     if active_span is not None:

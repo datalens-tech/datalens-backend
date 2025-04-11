@@ -7,10 +7,7 @@ from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     Collection,
-    Dict,
-    List,
     Optional,
-    Type,
 )
 
 import attr
@@ -85,14 +82,14 @@ class OperationProcessorAsyncBase(abc.ABC):
 
     async def __aexit__(
         self,
-        exc_type: Optional[Type[BaseException]],
+        exc_type: Optional[type[BaseException]],
         exc_val: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> None:
         await self.end()
 
-    async def prepare_output_streams(self, output_streams: List[AbstractStream]) -> List[DataStreamAsync]:
-        result: List[DataStreamAsync] = []
+    async def prepare_output_streams(self, output_streams: list[AbstractStream]) -> list[DataStreamAsync]:
+        result: list[DataStreamAsync] = []
         for stream in output_streams:
             assert isinstance(
                 stream, DataStreamAsync
@@ -119,8 +116,8 @@ class OperationProcessorAsyncBase(abc.ABC):
         self,
         ctx: OpExecutionContext,
         output_stream_ids: Collection[str],
-    ) -> List[DataStreamAsync]:
-        ready_streams: Dict[str, AbstractStream] = {stream.id: stream for stream in ctx.streams}
+    ) -> list[DataStreamAsync]:
+        ready_streams: dict[str, AbstractStream] = {stream.id: stream for stream in ctx.streams}
         assert all(ready_streams.values())
 
         async def _make_output_streams_ready_recursive(req_out_stream_ids: Collection[str]) -> None:
@@ -158,7 +155,7 @@ class OperationProcessorAsyncBase(abc.ABC):
         operations: Collection[BaseOp],
         streams: Collection[AbstractStream],
         output_stream_ids: Collection[str],
-    ) -> List[DataStreamAsync]:
+    ) -> list[DataStreamAsync]:
         processing_id = shortuuid.uuid()
         LOGGER.info(f"Initializing processing context {processing_id}")
         ctx = OpExecutionContext(

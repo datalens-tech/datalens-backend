@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Optional,
-    Type,
 )
 
 import attr
@@ -36,8 +35,8 @@ if TYPE_CHECKING:
 
 @attr.s(kw_only=True)
 class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
-    _app_settings_cls: Type[AppSettings] = attr.ib()
-    _app_factory_cls: Optional[Type[SRFactoryBuilder]] = attr.ib(default=None)
+    _app_settings_cls: type[AppSettings] = attr.ib()
+    _app_factory_cls: Optional[type[SRFactoryBuilder]] = attr.ib(default=None)
 
     def get_app_settings(self) -> AppSettings:
         preload_api_lib()

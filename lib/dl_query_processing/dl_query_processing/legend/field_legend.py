@@ -4,9 +4,7 @@ from collections import defaultdict
 from typing import (
     Any,
     Collection,
-    Dict,
     Iterator,
-    List,
     Optional,
     Sequence,
 )
@@ -48,7 +46,7 @@ class OrderByRoleSpec(RoleSpec):
 @attr.s(frozen=True)
 class FilterRoleSpec(RoleSpec):
     operation: WhereClauseOperation = attr.ib(kw_only=True)
-    values: List[Any] = attr.ib(kw_only=True)
+    values: list[Any] = attr.ib(kw_only=True)
 
 
 @attr.s(frozen=True)
@@ -80,7 +78,7 @@ class TemplateRoleSpec(DimensionRoleSpec):
 class TreeRoleSpec(DimensionRoleSpec):
     level: int = attr.ib(kw_only=True)
     prefix: list = attr.ib(kw_only=True)
-    dimension_values: List[DimensionValueSpec] = attr.ib(kw_only=True, factory=list)
+    dimension_values: list[DimensionValueSpec] = attr.ib(kw_only=True, factory=list)
 
 
 @attr.s(frozen=True)
@@ -162,10 +160,10 @@ SELECTABLE_ROLES = set(FieldRole) - NON_SELECTABLE_ROLES
 
 @attr.s
 class Legend:
-    _items: List[LegendItem] = attr.ib(kw_only=True)
-    _liid_to_item: Dict[int, LegendItem] = attr.ib(init=False)
-    _liid_to_field_id_map: Dict[int, str] = attr.ib(init=False)
-    _field_id_to_liid_list_map: Dict[str, List[int]] = attr.ib(init=False)
+    _items: list[LegendItem] = attr.ib(kw_only=True)
+    _liid_to_item: dict[int, LegendItem] = attr.ib(init=False)
+    _liid_to_field_id_map: dict[int, str] = attr.ib(init=False)
+    _field_id_to_liid_list_map: dict[str, list[int]] = attr.ib(init=False)
 
     def __attrs_post_init__(self) -> None:
         self._liid_to_item = {}
@@ -196,13 +194,13 @@ class Legend:
             self._liid_to_field_id_map[item.legend_item_id] = item.id
             self._field_id_to_liid_list_map[item.id].append(item.legend_item_id)
 
-    def get_measure_name_legend_item_ids(self) -> List[int]:
+    def get_measure_name_legend_item_ids(self) -> list[int]:
         return self.field_id_to_leg_item_id_list(MEASURE_NAME_ID)
 
-    def get_dimension_name_legend_item_ids(self) -> List[int]:
+    def get_dimension_name_legend_item_ids(self) -> list[int]:
         return self.field_id_to_leg_item_id_list(DIMENSION_NAME_ID)
 
-    def field_id_to_leg_item_id_list(self, field_id: str) -> List[int]:
+    def field_id_to_leg_item_id_list(self, field_id: str) -> list[int]:
         return self._field_id_to_liid_list_map[field_id]
 
     def __iter__(self) -> Iterator[LegendItem]:
@@ -219,7 +217,7 @@ class Legend:
             items=[item for item in self.items if item.block_id is None or item.block_id == block_id],
         )
 
-    def list_selectable_items(self) -> List[LegendItem]:
+    def list_selectable_items(self) -> list[LegendItem]:
         """List the items that can be selected from the data source"""
         items = [
             item

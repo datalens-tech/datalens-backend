@@ -7,11 +7,8 @@ from base64 import (
 import json
 from typing import (
     Any,
-    Dict,
-    List,
     Optional,
     Sequence,
-    Tuple,
 )
 
 from marshmallow import fields
@@ -66,7 +63,7 @@ class DBAdapterQueryStrSchema(BaseQEAPISchema):
     )
     is_dashsql_query = fields.Boolean()
 
-    def to_object(self, data: Dict) -> DBAdapterQuery:
+    def to_object(self, data: dict) -> DBAdapterQuery:
         return DBAdapterQuery(
             query=data["query"],
             chunk_size=data["chunk_size"],
@@ -85,7 +82,7 @@ class DBAdapterQueryStrSchema(BaseQEAPISchema):
                 conn_params[k] = json.dumps(v, cls=DataLensJSONEncoder)
         return conn_params
 
-    def load_conn_params(self, conn_params: Optional[dict]) -> Optional[Dict[str, Any]]:
+    def load_conn_params(self, conn_params: Optional[dict]) -> Optional[dict[str, Any]]:
         if conn_params is not None:
             for k, v in conn_params.items():
                 conn_params[k] = json.loads(v, cls=DataLensJSONDecoder)
@@ -103,7 +100,7 @@ class DBAdapterQuerySQLASchema(DBAdapterQueryStrSchema):
     def load_query(self, data: str) -> str:
         return data
 
-    def dump_tables(self, dba_query: DBAdapterQuery) -> Dict[str, List[str]]:
+    def dump_tables(self, dba_query: DBAdapterQuery) -> dict[str, list[str]]:
         tables_dict = {}
 
         query = dba_query.query
@@ -124,7 +121,7 @@ class DBAdapterQuerySQLASchema(DBAdapterQueryStrSchema):
 
         return metadata
 
-    def to_object(self, data: Dict[str, Any]) -> DBAdapterQuery:
+    def to_object(self, data: dict[str, Any]) -> DBAdapterQuery:
         patched_data = dict(data)
         metadata = patched_data.pop("tables")
         dumped_sa_query = patched_data.pop("query")
@@ -151,10 +148,10 @@ class GenericDBAQuerySchema(OneOfSchema):
 
 # TODO FIX: Validation
 class CIMultiDictField(fields.Field):
-    def _serialize(self, value: CIMultiDict, attr: Any, obj: Any, **kwargs: Any) -> Tuple[Tuple[str, str], ...]:
+    def _serialize(self, value: CIMultiDict, attr: Any, obj: Any, **kwargs: Any) -> tuple[tuple[str, str], ...]:
         return tuple((item[0], item[1]) for item in value.items())
 
-    def _deserialize(self, value: Sequence[Tuple[str, str]], attr: Any, data: Any, **kwargs: Any) -> CIMultiDict:
+    def _deserialize(self, value: Sequence[tuple[str, str]], attr: Any, data: Any, **kwargs: Any) -> CIMultiDict:
         return CIMultiDict(value)
 
 
@@ -164,7 +161,7 @@ class DBAdapterScopedRCISchema(BaseQEAPISchema):
     x_dl_debug_mode = fields.Boolean(allow_none=True)
     client_ip = fields.String(allow_none=True)
 
-    def to_object(self, data: Dict[str, Any]) -> DBAdapterScopedRCI:
+    def to_object(self, data: dict[str, Any]) -> DBAdapterScopedRCI:
         return DBAdapterScopedRCI(
             request_id=data["request_id"],
             user_name=data["user_name"],
@@ -176,7 +173,7 @@ class DBAdapterScopedRCISchema(BaseQEAPISchema):
 class DBIdentSchema(BaseQEAPISchema):
     db_name = fields.String(allow_none=True)
 
-    def to_object(self, data: Dict[str, Any]) -> DBIdent:
+    def to_object(self, data: dict[str, Any]) -> DBIdent:
         return DBIdent(**data)
 
 
@@ -184,7 +181,7 @@ class SchemaIdentSchema(BaseQEAPISchema):
     schema_name = fields.String(allow_none=True)
     db_name = fields.String(allow_none=True)
 
-    def to_object(self, data: Dict[str, Any]) -> Any:
+    def to_object(self, data: dict[str, Any]) -> Any:
         return SchemaIdent(**data)
 
 
@@ -193,14 +190,14 @@ class TableIdentSchema(BaseQEAPISchema):
     db_name = fields.String(allow_none=True)
     schema_name = fields.String(allow_none=True)
 
-    def to_object(self, data: Dict[str, Any]) -> TableIdent:
+    def to_object(self, data: dict[str, Any]) -> TableIdent:
         return TableIdent(**data)
 
 
 class SATextTableDefinitionSchema(BaseQEAPISchema):
     text = SATextField()
 
-    def to_object(self, data: Dict[str, Any]) -> SATextTableDefinition:
+    def to_object(self, data: dict[str, Any]) -> SATextTableDefinition:
         return SATextTableDefinition(**data)
 
 

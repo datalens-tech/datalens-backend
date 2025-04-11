@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     ClassVar,
-    Type,
 )
 
 from marshmallow import Schema
@@ -20,7 +19,7 @@ from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 
 class ConnectionSchema(USEntryBaseSchema):
-    TARGET_CLS: ClassVar[Type[ConnectionBase]]
+    TARGET_CLS: ClassVar[type[ConnectionBase]]
     CONN_TYPE_CTX_KEY: ClassVar[str] = "conn_type"
 
     # From ConnectionBase.as_dict()

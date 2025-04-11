@@ -104,7 +104,6 @@ ignore = [
   "E501",  # line length, should be checked and fixed by black
   "B904",  # force `raise ... from err` or `raise ... from None`
   "UP007", # Use `X | Y` for type annotations
-  "UP006", # Use ... instead of ... for type annotation
   "UP032", # [*] Use f-string instead of `format` call
   "UP026", # [*] `mock` is deprecated, use `unittest.mock`
   "UP037", # [*] Remove quotes from type annotation

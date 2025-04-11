@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Dict,
     Optional,
 )
 
@@ -386,7 +385,7 @@ class BasePostgresAdapter(BaseSSLCertAdapter):
     # It is potentially possible to plug into the sqlalchemy logic
     # (with a few extra raw sql queries),
     # but for now, a more simple mapping is preferred.
-    _type_code_to_sa: Optional[Dict[Any, SATypeSpec]] = {
+    _type_code_to_sa: Optional[dict[Any, SATypeSpec]] = {
         16: sa_pg.BOOLEAN,
         17: sa_pg.BYTEA,  # unsupported
         # 19: 'name',

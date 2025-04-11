@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Optional,
-    Tuple,
-)
+from typing import Optional
 
 import attr
 import shortuuid
@@ -100,7 +97,7 @@ def make_formula_field(field_id: FieldId) -> BIField:
     )
 
 
-def make_result_schema(shallow_info) -> Tuple[ResultSchema, AvatarId, AvatarId]:
+def make_result_schema(shallow_info) -> tuple[ResultSchema, AvatarId, AvatarId]:
     avatar_1_id = shortuuid.uuid()
     avatar_2_id = shortuuid.uuid()
     return (

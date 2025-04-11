@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Optional,
-    Type,
     TypeVar,
 )
 
@@ -36,7 +35,7 @@ class PostgresConnTargetDTO(BaseSQLConnTargetDTO):
         }
 
     @classmethod
-    def _from_jsonable_dict(cls: Type[_CT_DTO_TV], data: dict) -> _CT_DTO_TV:
+    def _from_jsonable_dict(cls: type[_CT_DTO_TV], data: dict) -> _CT_DTO_TV:
         return cls(
             **{
                 **data,

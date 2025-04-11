@@ -14,7 +14,6 @@ from typing import (
     Generator,
     Optional,
     Sequence,
-    Type,
     TypeVar,
 )
 
@@ -121,8 +120,8 @@ class BaseClickHouseConnLineConstructor(ClassicSQLConnLineConstructor[_TARGET_DT
 @attr.s
 class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], BaseSSLCertAdapter):
     allow_sa_text_as_columns_source = True
-    ch_utils: ClassVar[Type[ClickHouseBaseUtils]] = ClickHouseBaseUtils
-    conn_line_constructor_type: ClassVar[Type[BaseClickHouseConnLineConstructor]] = BaseClickHouseConnLineConstructor
+    ch_utils: ClassVar[type[ClickHouseBaseUtils]] = ClickHouseBaseUtils
+    conn_line_constructor_type: ClassVar[type[BaseClickHouseConnLineConstructor]] = BaseClickHouseConnLineConstructor
 
     _dt_with_system_tz = True
 
@@ -184,10 +183,10 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
     @classmethod
     def make_exc(  # TODO:  Move to ErrorTransformer
         cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
-    ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
+    ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
         exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_compiled_query)
 
-        ch_exc_cls: Optional[Type[exc.DatabaseQueryError]] = None
+        ch_exc_cls: Optional[type[exc.DatabaseQueryError]] = None
         if isinstance(wrapper_exc, ch_exc.DatabaseException):
             # Special case for ClickHouse
             # try to differentiate errors by error code
@@ -356,7 +355,7 @@ class ClickHouseAdapter(BaseClickHouseAdapter):
 
 @attr.s(kw_only=True)
 class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
-    ch_utils: ClassVar[Type[ClickHouseBaseUtils]] = ClickHouseBaseUtils
+    ch_utils: ClassVar[type[ClickHouseBaseUtils]] = ClickHouseBaseUtils
 
     _target_dto: BaseClickHouseConnTargetDTO = attr.ib()
 
@@ -644,7 +643,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         err_body: str,
         debug_compiled_query: Optional[str] = None,
     ) -> exc.DatabaseQueryError:
-        exc_cls: Type[exc.DatabaseQueryError]
+        exc_cls: type[exc.DatabaseQueryError]
         try:
             exc_cls, exc_params = self.ch_utils.get_exc_class(err_body) or (exc.DatabaseQueryError, None)
         except Exception:  # noqa
@@ -672,7 +671,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
 
     @classmethod
     def create(  # type: ignore  # TODO: fix
-        cls: Type[_DBA_TV],
+        cls: type[_DBA_TV],
         target_dto: _TARGET_DTO_TV,
         req_ctx_info: DBAdapterScopedRCI,
         default_chunk_size: int,

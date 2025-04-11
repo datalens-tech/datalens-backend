@@ -8,7 +8,6 @@ from enum import (
     Enum,
     unique,
 )
-from typing import Set
 
 from dl_constants.enums import (
     UserDataType,
@@ -212,7 +211,7 @@ class DatasetAction(Enum):
         return _LEGACY_ACTIONS.get(action, action)
 
     @staticmethod
-    def get_actions_whitelist_for_data_api() -> Set["DatasetAction"]:
+    def get_actions_whitelist_for_data_api() -> set["DatasetAction"]:
         return {DatasetAction.add_field, DatasetAction.update_field, DatasetAction.delete_field}
 
 

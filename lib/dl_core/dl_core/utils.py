@@ -8,7 +8,6 @@ from typing import (
     Generic,
     Iterable,
     Optional,
-    Type,
     TypeVar,
 )
 from urllib.parse import urlparse
@@ -186,7 +185,7 @@ def make_id() -> str:
 _MODEL_TYPE_TV = TypeVar("_MODEL_TYPE_TV", bound=attr.AttrsInstance)
 
 
-def attrs_evolve_to_subclass(cls: Type[_MODEL_TYPE_TV], inst: Any, **kwargs) -> _MODEL_TYPE_TV:  # type: ignore  # TODO: fix
+def attrs_evolve_to_subclass(cls: type[_MODEL_TYPE_TV], inst: Any, **kwargs) -> _MODEL_TYPE_TV:  # type: ignore  # TODO: fix
     """
     Evolve an attr.s instance to a subclass instance with additional attributes.
     Note that this works correctly only for attributes with ``init=True``.
@@ -204,7 +203,7 @@ def attrs_evolve_to_subclass(cls: Type[_MODEL_TYPE_TV], inst: Any, **kwargs) -> 
     return cls(**all_attrs)
 
 
-def attrs_evolve_to_superclass(cls: Type[_MODEL_TYPE_TV], inst: Any, **kwargs) -> _MODEL_TYPE_TV:  # type: ignore  # TODO: fix
+def attrs_evolve_to_superclass(cls: type[_MODEL_TYPE_TV], inst: Any, **kwargs) -> _MODEL_TYPE_TV:  # type: ignore  # TODO: fix
     """
     Evolve an attr.s instance to a superclass instance with additional attributes.
     Note that this works correctly only for attributes with ``init=True``.

@@ -2,11 +2,8 @@ from __future__ import annotations
 
 from typing import (
     ClassVar,
-    Dict,
-    FrozenSet,
     List,
     Optional,
-    Type,
     Union,
 )
 
@@ -25,7 +22,7 @@ ResponseTypes = Union[RawSchemaInfo, List[str], Optional[str], None, bool, int]
 
 
 class ActionSerializer:
-    MAP_ACT_TYPE_SCHEMA_CLS: ClassVar[Dict[Type[dba_actions.RemoteDBAdapterAction], Type[Schema]]] = {
+    MAP_ACT_TYPE_SCHEMA_CLS: ClassVar[dict[type[dba_actions.RemoteDBAdapterAction], type[Schema]]] = {
         dba_actions.ActionExecuteQuery: schema_actions.ActionExecuteQuerySchema,
         dba_actions.ActionNonStreamExecuteQuery: schema_actions.ActionNonStreamExecuteQuerySchema,
         dba_actions.ActionTest: schema_actions.ActionTestSchema,
@@ -40,7 +37,7 @@ class ActionSerializer:
 
     EXC_SCHEMA_CLS = schemas_exc.GenericExcSchema
 
-    def serialize_action(self, obj: dba_actions.RemoteDBAdapterAction) -> Dict:
+    def serialize_action(self, obj: dba_actions.RemoteDBAdapterAction) -> dict:
         schema = self.MAP_ACT_TYPE_SCHEMA_CLS[type(obj)]()
         result = schema.dump(obj)
         result["type"] = type(obj).__qualname__
@@ -48,8 +45,8 @@ class ActionSerializer:
 
     def deserialize_action(
         self,
-        data: Dict,
-        allowed_dba_classes: FrozenSet[Type[CommonBaseDirectAdapter]],
+        data: dict,
+        allowed_dba_classes: frozenset[type[CommonBaseDirectAdapter]],
     ) -> dba_actions.RemoteDBAdapterAction:
         action_cls_qualname = data.pop("type", None)
         action_cls = next(
@@ -66,9 +63,9 @@ class ActionSerializer:
 
         return obj
 
-    def serialize_exc(self, exc: Exception) -> Dict:
+    def serialize_exc(self, exc: Exception) -> dict:
         return self.EXC_SCHEMA_CLS().dump(exc)
 
-    def deserialize_exc(self, data: Dict) -> Exception:
+    def deserialize_exc(self, data: dict) -> Exception:
         # TODO FIX: Validate type
         return self.EXC_SCHEMA_CLS().load(data)

@@ -8,12 +8,8 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Dict,
     Generator,
-    List,
     Optional,
-    Tuple,
-    Type,
     TypeVar,
     Union,
 )
@@ -100,7 +96,7 @@ class BaseSAAdapter(
     _target_dto: _DBA_SA_DTO_TV = attr.ib()
     _req_ctx_info: DBAdapterScopedRCI = attr.ib()
     # Internals
-    _engine_cache: Dict[Tuple[Optional[str], bool], Engine] = attr.ib(init=False, factory=lambda: {})
+    _engine_cache: dict[tuple[Optional[str], bool], Engine] = attr.ib(init=False, factory=lambda: {})
     _error_transformer: ClassVar[DbErrorTransformer] = make_default_transformer_with_custom_rules()
 
     _COMMON_ENGINE_EVENT_LISTENERS: ClassVar[list[EventListenerSpec]] = [
@@ -110,7 +106,7 @@ class BaseSAAdapter(
 
     @classmethod
     def create(
-        cls: Type[_DBA_SA_TV], target_dto: _DBA_SA_DTO_TV, req_ctx_info: DBAdapterScopedRCI, default_chunk_size: int
+        cls: type[_DBA_SA_TV], target_dto: _DBA_SA_DTO_TV, req_ctx_info: DBAdapterScopedRCI, default_chunk_size: int
     ) -> _DBA_SA_TV:
         return cls(target_dto=target_dto, default_chunk_size=default_chunk_size, req_ctx_info=req_ctx_info)
 
@@ -132,7 +128,7 @@ class BaseSAAdapter(
     def get_db_engine(self, db_name: Optional[str], disable_streaming: bool = False) -> Engine:
         effective_db_name = self.get_db_name_for_query(db_name_from_query=db_name)
 
-        cache_key: Tuple[Optional[str], bool] = effective_db_name, disable_streaming
+        cache_key: tuple[Optional[str], bool] = effective_db_name, disable_streaming
 
         if cache_key not in self._engine_cache:
             new_engine = self._get_db_engine(db_name=effective_db_name, disable_streaming=disable_streaming)
@@ -220,7 +216,7 @@ class BaseSAAdapter(
             return self._get_db_version(db_ident)
 
     @final
-    def get_schema_names(self, db_ident: DBIdent) -> List[str]:
+    def get_schema_names(self, db_ident: DBIdent) -> list[str]:
         with (
             self.handle_execution_error(debug_compiled_query=f"<get_schema_names({db_ident})>"),
             self.execution_context(),
@@ -228,7 +224,7 @@ class BaseSAAdapter(
             return self._get_schema_names(db_ident)
 
     @final
-    def get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+    def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         with (
             self.handle_execution_error(debug_compiled_query=f"<get_tables({schema_ident})>"),
             self.execution_context(),
@@ -270,7 +266,7 @@ class BaseSAAdapter(
         ):
             if isinstance(table_def, TableIdent):
                 columns = self._get_raw_columns_info(table_def)
-                indexes: Optional[Tuple[RawIndexInfo, ...]] = None
+                indexes: Optional[tuple[RawIndexInfo, ...]] = None
 
                 if fetch_idx_info and isinstance(table_def, TableIdent):
                     try:
@@ -304,11 +300,11 @@ class BaseSAAdapter(
         """Return database version string for this connection"""
         return self.execute(get_db_version_query(db_ident)).get_all()[0][0]
 
-    def _get_schema_names(self, db_ident: DBIdent) -> List[str]:
+    def _get_schema_names(self, db_ident: DBIdent) -> list[str]:
         db_engine = self.get_db_engine(db_ident.db_name)
         return sa.inspect(db_engine).get_schema_names()
 
-    def _get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+    def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         db_name = schema_ident.db_name
         schema_name = schema_ident.schema_name
 
@@ -324,7 +320,7 @@ class BaseSAAdapter(
             for name in table_list + view_list
         ]
 
-    def _get_sa_table_columns(self, table_def: TableDefinition) -> List[Dict[str, Any]]:
+    def _get_sa_table_columns(self, table_def: TableDefinition) -> list[dict[str, Any]]:
         db_engine: sa.engine.Engine
         columns_source: Union[str, sa.sql.elements.TextClause]
         if isinstance(table_def, TableIdent):
@@ -346,7 +342,7 @@ class BaseSAAdapter(
         table_columns = list(table_columns)
         return table_columns
 
-    def _get_raw_columns_info(self, table_def: TableDefinition) -> Tuple[RawColumnInfo, ...]:
+    def _get_raw_columns_info(self, table_def: TableDefinition) -> tuple[RawColumnInfo, ...]:
         table_columns = self._get_sa_table_columns(table_def)
 
         return tuple(
@@ -362,11 +358,11 @@ class BaseSAAdapter(
             for column in table_columns
         )
 
-    def _get_table_indexes(self, table_ident: TableIdent) -> Tuple[RawIndexInfo, ...]:
+    def _get_table_indexes(self, table_ident: TableIdent) -> tuple[RawIndexInfo, ...]:
         db_engine = self.get_db_engine(table_ident.db_name)
         inspection = sa.inspect(db_engine)
 
-        idx_list: List[Dict[str, Any]] = inspection.get_indexes(table_ident.table_name, schema=table_ident.schema_name)
+        idx_list: list[dict[str, Any]] = inspection.get_indexes(table_ident.table_name, schema=table_ident.schema_name)
 
         return tuple(
             RawIndexInfo(

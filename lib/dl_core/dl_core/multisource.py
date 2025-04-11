@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import List
-
 import attr
 
 from dl_constants.enums import (
@@ -78,7 +76,7 @@ class AvatarRelation:
     id: RelationId = attr.ib()
     left_avatar_id: AvatarId = attr.ib()
     right_avatar_id: AvatarId = attr.ib()
-    conditions: List[BinaryCondition] = attr.ib(factory=list)
+    conditions: list[BinaryCondition] = attr.ib(factory=list)
     join_type: JoinType = attr.ib(default=JoinType.inner)
     managed_by: ManagedBy = attr.ib(default=ManagedBy.user)
     valid: bool = attr.ib(default=True)

@@ -49,7 +49,6 @@ from typing import (
     Generator,
     Optional,
     Sequence,
-    Type,
     TypeVar,
 )
 
@@ -75,7 +74,7 @@ class AutoEnumValue:
         self.__name = name
         owner.declare(name)
 
-    def __get__(self, instance: Optional[DynamicEnum], owner: Type[_DYNAMIC_ENUM_TV]) -> _DYNAMIC_ENUM_TV:
+    def __get__(self, instance: Optional[DynamicEnum], owner: type[_DYNAMIC_ENUM_TV]) -> _DYNAMIC_ENUM_TV:
         if self.__name is None:  # has not been set yet
             raise RuntimeError("Property is not bound to any class")
 
@@ -131,7 +130,7 @@ class DynamicEnumMetaclass(type):
 
         return super().__new__(mcs, name, bases, attrs)
 
-    def __call__(cls: Type[_ANY_TV], *args: Any, **kwargs: Any) -> _ANY_TV:
+    def __call__(cls: type[_ANY_TV], *args: Any, **kwargs: Any) -> _ANY_TV:
         value = _get_value_from_dyn_enum_args(args, kwargs)
 
         # Deduplicate instances with the same value
@@ -143,13 +142,13 @@ class DynamicEnumMetaclass(type):
 
         return cls_instances[value]
 
-    def __getitem__(cls: Type[_ANY_TV], item: str) -> _ANY_TV:
+    def __getitem__(cls: type[_ANY_TV], item: str) -> _ANY_TV:
         return cls(item)  # type: ignore  # 2024-01-30 # TODO: Too many arguments for "object"  [call-arg]
 
     def __contains__(cls: DynamicEnumMetaclass, item: str) -> bool:
         return cls.is_declared(item)  # type: ignore  # 2024-01-30 # TODO: "DynamicEnumMetaclass" has no attribute "is_declared"  [attr-defined]
 
-    def __iter__(cls: Type[_ANY_TV]) -> Generator[_ANY_TV, None, None]:
+    def __iter__(cls: type[_ANY_TV]) -> Generator[_ANY_TV, None, None]:
         yield from cls.iter_items()  # type: ignore  # 2024-01-30 # TODO: "type[_ANY_TV]" has no attribute "iter_items"  [attr-defined]
 
     @property
@@ -161,7 +160,7 @@ class DynamicEnum(metaclass=DynamicEnumMetaclass):
     __slots__ = ("__value",)
     __value: str
 
-    __declared_values: ClassVar[dict[Type[DynamicEnum], set[str]]] = {}
+    __declared_values: ClassVar[dict[type[DynamicEnum], set[str]]] = {}
     __subclassable: ClassVar[bool] = True
 
     def __init_subclass__(cls) -> None:
@@ -178,7 +177,7 @@ class DynamicEnum(metaclass=DynamicEnumMetaclass):
         # This way we avoid situations like:
         # MyString.my_value != MyStringSubclass.my_value
 
-    def __new__(cls: Type[_DYNAMIC_ENUM_TV], *args: Any, **kwargs: Any) -> _DYNAMIC_ENUM_TV:
+    def __new__(cls: type[_DYNAMIC_ENUM_TV], *args: Any, **kwargs: Any) -> _DYNAMIC_ENUM_TV:
         """
         Validates creation of instances:
         1. Forbids direct instantiation of `DynamicEnum`.
@@ -207,14 +206,14 @@ class DynamicEnum(metaclass=DynamicEnumMetaclass):
         return cls in cls.__declared_values and value in cls.__declared_values[cls]
 
     @classmethod
-    def iter_items(cls: Type[_DYNAMIC_ENUM_TV]) -> Generator[_DYNAMIC_ENUM_TV, None, None]:
+    def iter_items(cls: type[_DYNAMIC_ENUM_TV]) -> Generator[_DYNAMIC_ENUM_TV, None, None]:
         if cls not in cls.__declared_values:
             yield from ()
         for value in cls.__declared_values[cls]:
             yield cls(value)
 
     @classmethod
-    def declare(cls: Type[_DYNAMIC_ENUM_TV], value: str) -> _DYNAMIC_ENUM_TV:
+    def declare(cls: type[_DYNAMIC_ENUM_TV], value: str) -> _DYNAMIC_ENUM_TV:
         if cls not in cls.__declared_values:
             cls.__declared_values[cls] = set()
 

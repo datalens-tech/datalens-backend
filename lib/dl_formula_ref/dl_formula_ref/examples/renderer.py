@@ -8,7 +8,6 @@ from typing import (
     Callable,
     Optional,
     Sequence,
-    Tuple,
 )
 
 import attr
@@ -36,7 +35,7 @@ class ExampleResult:
     source: Optional[str] = attr.ib(kw_only=True, default=None)
     group_by: Sequence[str] = attr.ib(kw_only=True, factory=list)
     order_by: Sequence[str] = attr.ib(kw_only=True, factory=list)
-    formula_fields: Sequence[Tuple[str, str]] = attr.ib(kw_only=True, factory=list)
+    formula_fields: Sequence[tuple[str, str]] = attr.ib(kw_only=True, factory=list)
 
 
 @attr.s

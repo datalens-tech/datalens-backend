@@ -7,10 +7,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Dict,
-    List,
     Optional,
-    Tuple,
 )
 
 import attr
@@ -53,7 +50,7 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
         )
 
     def get_engine_kwargs(self) -> dict:
-        result: Dict = {}
+        result: dict = {}
         enforce_collate = self._get_enforce_collate(self._target_dto)
         if enforce_collate:
             result.update(enforce_collate=enforce_collate)
@@ -74,7 +71,7 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
             finally:
                 stack.close()
 
-    def _get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+    def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         db_name = schema_ident.db_name
         db_engine = self.get_db_engine(db_name)
 
@@ -116,7 +113,7 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
             postgresql_typnames=[OID_KNOWLEDGE.get(column[1]) for column in cursor.description],
         )
 
-    def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> Tuple[Optional[Callable[[Any], Any]], ...]:
+    def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> tuple[Optional[Callable[[Any], Any]], ...]:
         return tuple(
             self._convert_bytea if col.type_code == 17 else None  # `bytea`
             for col in cursor_info.raw_cursor_description

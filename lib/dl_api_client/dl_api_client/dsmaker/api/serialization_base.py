@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 from functools import singledispatchmethod
-from typing import (
-    List,
-    Union,
-)
+from typing import Union
 
 import attr
 from marshmallow import fields as ma_fields
@@ -194,7 +191,7 @@ class BaseApiV1SerializationAdapter:
         dataset_data = DatasetContentInternalSchema().dump(stripped_dataset)
         return {"dataset": dataset_data}
 
-    def generate_implicit_updates(self, dataset: Dataset) -> List[UpdateAction]:
+    def generate_implicit_updates(self, dataset: Dataset) -> list[UpdateAction]:
         updates = []
         for dsrc in dataset.sources:
             if not dsrc.created_:
@@ -224,7 +221,7 @@ class BaseApiV1SerializationAdapter:
             ObligatoryFilter: "obligatory_filter",
         }[type(item)]
 
-    def dump_updates(self, updates: List[Union[UpdateAction, dict]] = None) -> List[dict]:  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+    def dump_updates(self, updates: list[Union[UpdateAction, dict]] = None) -> list[dict]:  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
         result = []
         for update in updates or ():
             if isinstance(update, UpdateAction):

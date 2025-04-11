@@ -2,13 +2,12 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    FrozenSet,
     NamedTuple,
 )
 
 
 class LevelTag(NamedTuple):
-    bfb_names: FrozenSet
+    bfb_names: frozenset
     func_nesting: int
     qfork_nesting: int
 

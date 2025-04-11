@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import (
-    Dict,
-    Optional,
-)
+from typing import Optional
 
 import attr
 
@@ -21,4 +18,4 @@ class ErrInfo:
 @attr.s
 class ValidationEnvironment:
     cache_dim_bound: NodeValueMap[bool] = attr.ib(factory=NodeValueMap)
-    generic_cache_valid: Dict[type, NodeValueMap[ErrInfo]] = attr.ib(factory=lambda: defaultdict(NodeValueMap))
+    generic_cache_valid: dict[type, NodeValueMap[ErrInfo]] = attr.ib(factory=lambda: defaultdict(NodeValueMap))

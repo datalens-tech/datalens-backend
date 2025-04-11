@@ -16,7 +16,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Dict,
     Optional,
 )
 
@@ -141,10 +140,10 @@ class DimensionSortValueNormalizer(BaseSortValueNormalizer):
 
 @attr.s
 class MeasureNameSortValueNormalizer(SortValueNormalizer):
-    _measure_name_order_values: Dict[MeasureNameValue, int] = attr.ib(init=False)
+    _measure_name_order_values: dict[MeasureNameValue, int] = attr.ib(init=False)
 
     @_measure_name_order_values.default
-    def _make_measure_name_order_values(self) -> Dict[MeasureNameValue, int]:
+    def _make_measure_name_order_values(self) -> dict[MeasureNameValue, int]:
         return {
             MeasureNameValue(value=item.title, measure_piid=item.pivot_item_id): order_value
             for order_value, item in enumerate(self._pivot_legend.list_for_role(role=PivotRole.pivot_measure))

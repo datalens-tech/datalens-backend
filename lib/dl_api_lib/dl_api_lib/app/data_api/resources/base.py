@@ -25,10 +25,10 @@ class RequiredResourceDSAPI(RequiredResource):
 class BaseView(DLRequestView[aiohttp_wrappers.DSAPIRequest]):
     dl_request_cls = aiohttp_wrappers.DSAPIRequest
 
-    _COMMON_REQUIRED_RESOURCES: typing.ClassVar[typing.FrozenSet[RequiredResource]] = frozenset()
+    _COMMON_REQUIRED_RESOURCES: typing.ClassVar[frozenset[RequiredResource]] = frozenset()
 
     @classmethod
-    def get_required_resources(cls, method_name: str) -> typing.FrozenSet[RequiredResource]:
+    def get_required_resources(cls, method_name: str) -> frozenset[RequiredResource]:
         method_name = method_name.lower()
         if hasattr(cls, method_name):
             method = getattr(cls, method_name)

@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Callable,
-    List,
     Sequence,
     Union,
 )
@@ -33,7 +32,7 @@ class Fixed(TypeStrategy):
     def type(self) -> DataType:
         return self._type
 
-    def get_from_args(self, arg_types: List[DataType]) -> DataType:
+    def get_from_args(self, arg_types: list[DataType]) -> DataType:
         return self._type
 
 
@@ -43,12 +42,12 @@ class FromArgs(TypeStrategy):
     def __init__(self, *indices: Union[int, slice]):
         self._indices = indices or [slice(0, None)]
 
-    def get_from_args(self, arg_types: List[DataType]) -> DataType:
+    def get_from_args(self, arg_types: list[DataType]) -> DataType:
         return self._get_from_args_and_indices(arg_types, self._indices)
 
     @staticmethod
     def _get_from_args_and_indices(
-        arg_types: List[DataType],
+        arg_types: list[DataType],
         indices: Sequence[Union[int, slice]],
     ) -> DataType:
         use_arg_types = []
@@ -66,10 +65,10 @@ class FromArgs(TypeStrategy):
 class DynamicIndexStrategy(FromArgs):
     __slots__ = ()
 
-    def get_indices(self, arg_cnt: int) -> List[Union[int, slice]]:
+    def get_indices(self, arg_cnt: int) -> list[Union[int, slice]]:
         return list(range(arg_cnt))
 
-    def get_from_args(self, arg_types: List[DataType]) -> DataType:
+    def get_from_args(self, arg_types: list[DataType]) -> DataType:
         return self._get_from_args_and_indices(arg_types, self.get_indices(len(arg_types))).non_const_type
 
 
@@ -84,7 +83,7 @@ class Combined(TypeStrategy):
                 substrat = Fixed(substrat)
             self._substrats.append(substrat)
 
-    def get_from_args(self, arg_types: List[DataType]) -> DataType:
+    def get_from_args(self, arg_types: list[DataType]) -> DataType:
         types = set()
         for substrat in self._substrats:
             types.add(substrat.get_from_args(arg_types))
@@ -100,7 +99,7 @@ class Combined(TypeStrategy):
 class CaseTypeStrategy(DynamicIndexStrategy):
     __slots__ = ()
 
-    def get_indices(self, arg_cnt: int) -> List[Union[int, slice]]:
+    def get_indices(self, arg_cnt: int) -> list[Union[int, slice]]:
         if arg_cnt < 2 or arg_cnt % 2 != 0:
             raise exc.TranslationError(f"Invalid number of arguments for CASE: {arg_cnt}")
         num_of_whens = (arg_cnt - 1) // 2  # 1 for main CASE value arg, 2 for each WHEN part
@@ -110,7 +109,7 @@ class CaseTypeStrategy(DynamicIndexStrategy):
 class IfTypeStrategy(DynamicIndexStrategy):
     __slots__ = ()
 
-    def get_indices(self, arg_cnt: int) -> List[Union[int, slice]]:
+    def get_indices(self, arg_cnt: int) -> list[Union[int, slice]]:
         if arg_cnt < 3 or arg_cnt % 2 != 1:
             raise exc.TranslationError(f"Invalid number of arguments for IF: {arg_cnt}")
         num_of_if_parts = arg_cnt // 2
@@ -118,15 +117,15 @@ class IfTypeStrategy(DynamicIndexStrategy):
 
 
 class ParamsEmpty(TypeParamsStrategy):
-    def get_from_arg_values(self, args: List[TranslationCtx]) -> DataTypeParams:
+    def get_from_arg_values(self, args: list[TranslationCtx]) -> DataTypeParams:
         return DataTypeParams()
 
 
 class ParamsCustom(TypeParamsStrategy):
-    def __init__(self, func: Callable[[List[TranslationCtx]], DataTypeParams]):
+    def __init__(self, func: Callable[[list[TranslationCtx]], DataTypeParams]):
         self._func = func
 
-    def get_from_arg_values(self, args: List[TranslationCtx]) -> DataTypeParams:
+    def get_from_arg_values(self, args: list[TranslationCtx]) -> DataTypeParams:
         return self._func(args)
 
 
@@ -134,5 +133,5 @@ class ParamsFromArgs(TypeParamsStrategy):
     def __init__(self, index: int):
         self._index = index
 
-    def get_from_arg_values(self, args: List[TranslationCtx]) -> DataTypeParams:
+    def get_from_arg_values(self, args: list[TranslationCtx]) -> DataTypeParams:
         return args[self._index].data_type_params  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "DataTypeParams | None", expected "DataTypeParams")  [return-value]

@@ -4,8 +4,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    List,
     Optional,
     Sequence,
 )
@@ -44,7 +42,7 @@ class DataRequestResponseSerializerV2Mixin:
     # TODO: Split this into subclasses
 
     @classmethod
-    def make_data_response_v2_block_meta(cls, merged_stream: MergedQueryDataStream) -> List[Dict[str, Any]]:
+    def make_data_response_v2_block_meta(cls, merged_stream: MergedQueryDataStream) -> list[dict[str, Any]]:
         return [
             {
                 "block_id": block.block_id,
@@ -65,7 +63,7 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
     )
 
     @staticmethod
-    def get_yql_schema(legend_items: List[LegendItem]) -> list:
+    def get_yql_schema(legend_items: list[LegendItem]) -> list:
         """
         Create YQL schema for given list of fields (`self._query_spec.select_specs`).
         Is needed in the API response to be used by frontend to render results
@@ -91,15 +89,15 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
         totals: Optional[Sequence] = None,
         totals_query: Optional[str] = None,
         data_export_forbidden: Optional[bool] = None,
-        fields_data: Optional[List[Dict[str, Any]]] = None,
-    ) -> Dict[str, Any]:
+        fields_data: Optional[list[dict[str, Any]]] = None,
+    ) -> dict[str, Any]:
         legend_item_ids = merged_stream.legend_item_ids
         assert legend_item_ids is not None  # in v1 there is only one stream
         query_type = merged_stream.meta.blocks[0].query_type
         if query_type == QueryType.value_range:
             legend_item_ids = [legend_item_ids[0]]
         legend_items = [merged_stream.legend.get_item(liid) for liid in legend_item_ids]
-        data: Dict[str, Any] = {
+        data: dict[str, Any] = {
             "result": {
                 "data": {
                     "Data": [row.data for row in merged_stream.rows],
@@ -127,15 +125,15 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
         merged_stream: MergedQueryDataStream,
         reporting_registry: Optional[ReportingRegistry] = None,
         data_export_forbidden: Optional[bool] = None,
-    ) -> Dict[str, Any]:
-        data: Dict[str, Any] = {}
+    ) -> dict[str, Any]:
+        data: dict[str, Any] = {}
 
         if data_export_forbidden is not None:
             data["data_export_forbidden"] = data_export_forbidden
 
         data["fields"] = merged_stream.legend.items
 
-        data_rows: List[dict] = [{"data": row.data, "legend": row.legend_item_ids} for row in merged_stream.rows]
+        data_rows: list[dict] = [{"data": row.data, "legend": row.legend_item_ids} for row in merged_stream.rows]
         data["result_data"] = [{"rows": data_rows}]
 
         data["blocks"] = cls.make_data_response_v2_block_meta(merged_stream=merged_stream)
@@ -146,7 +144,7 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
         return data
 
 
-def get_fields_data_raw(dataset: Dataset, for_result: bool = False) -> List[Dict[str, Any]]:
+def get_fields_data_raw(dataset: Dataset, for_result: bool = False) -> list[dict[str, Any]]:
     return [
         {
             "title": fld.title,
@@ -167,7 +165,7 @@ def get_fields_data_raw(dataset: Dataset, for_result: bool = False) -> List[Dict
     ]
 
 
-def get_fields_data_serializable(dataset: Dataset, for_result: bool = False) -> List[Dict[str, TJSONLike]]:
+def get_fields_data_serializable(dataset: Dataset, for_result: bool = False) -> list[dict[str, TJSONLike]]:
     fields = get_fields_data_raw(dataset, for_result=for_result)
     return DatasetFieldsResponseSchema().dump(dict(fields=fields))["fields"]
 

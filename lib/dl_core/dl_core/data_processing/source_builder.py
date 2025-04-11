@@ -7,12 +7,8 @@ from typing import (
     Any,
     ClassVar,
     Collection,
-    Dict,
-    List,
     NamedTuple,
     Optional,
-    Set,
-    Tuple,
     Union,
 )
 
@@ -54,8 +50,8 @@ class SqlSourceBuilder:
     """
 
     # Constants
-    _COMMON_JOIN_PARAMS: ClassVar[Dict[str, bool]] = dict(all=False, any=False, global_=False)
-    _JOIN_PARAMS_BY_TYPE: ClassVar[Dict[JoinType, Dict[str, Any]]] = {
+    _COMMON_JOIN_PARAMS: ClassVar[dict[str, bool]] = dict(all=False, any=False, global_=False)
+    _JOIN_PARAMS_BY_TYPE: ClassVar[dict[JoinType, dict[str, Any]]] = {
         JoinType.inner: {"type": "inner"},
         JoinType.left: {"isouter": True, "type": "left"},
         JoinType.right: {"type": "right"},
@@ -84,12 +80,12 @@ class SqlSourceBuilder:
         root_avatar_id: AvatarId,
         required_avatar_ids: Collection[AvatarId],
         join_on_expressions: Collection[JoinOnExpressionCtx] = (),
-    ) -> Tuple[Set[AvatarId], List[AvatarJoinInfo]]:
-        avatar_join_info_list: List[AvatarJoinInfo] = []
-        used_avatar_ids: Set[AvatarId] = {root_avatar_id}
-        used_avatar_ids_as_list: List[AvatarId] = []
+    ) -> tuple[set[AvatarId], list[AvatarJoinInfo]]:
+        avatar_join_info_list: list[AvatarJoinInfo] = []
+        used_avatar_ids: set[AvatarId] = {root_avatar_id}
+        used_avatar_ids_as_list: list[AvatarId] = []
 
-        relations_by_left: Dict[Optional[AvatarId], List[JoinOnExpressionCtx]] = defaultdict(list)
+        relations_by_left: dict[Optional[AvatarId], list[JoinOnExpressionCtx]] = defaultdict(list)
         for rel in join_on_expressions:
             relations_by_left[rel.left_id].append(rel)
 
@@ -132,10 +128,10 @@ class SqlSourceBuilder:
         self,
         *,
         root_avatar_id: AvatarId,
-        avatar_join_info_list: List[AvatarJoinInfo],
+        avatar_join_info_list: list[AvatarJoinInfo],
         prepared_sources: Collection[PreparedSingleFromInfo],
     ) -> SqlSourceType:
-        prep_sources_as_dict: Dict[AvatarId, PreparedSingleFromInfo] = {psi.id: psi for psi in prepared_sources}
+        prep_sources_as_dict: dict[AvatarId, PreparedSingleFromInfo] = {psi.id: psi for psi in prepared_sources}
 
         root_prep_src_info = prep_sources_as_dict[root_avatar_id]
         source = root_prep_src_info.non_null_sql_source

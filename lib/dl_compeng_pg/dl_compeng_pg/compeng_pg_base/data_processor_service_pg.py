@@ -7,7 +7,6 @@ from typing import (
     ClassVar,
     Generic,
     Optional,
-    Type,
     TypeVar,
 )
 
@@ -57,7 +56,7 @@ class CompEngPgService(DataProcessorService, Generic[_POOL_TV], metaclass=abc.AB
         await self._init_pool()
 
     @abc.abstractmethod
-    def _get_pool_wrapper_cls(self) -> Type[BasePgPoolWrapper]:
+    def _get_pool_wrapper_cls(self) -> type[BasePgPoolWrapper]:
         raise NotImplementedError
 
     async def _init_pool(self) -> None:
@@ -80,7 +79,7 @@ class CompEngPgService(DataProcessorService, Generic[_POOL_TV], metaclass=abc.AB
         LOGGER.info("Tear down compeng pg pool %r: done.", self)
 
     @classmethod
-    def from_config(cls: Type[_COMPENG_PR_SRV_TV], config: DataProcessorConfig) -> _COMPENG_PR_SRV_TV:
+    def from_config(cls: type[_COMPENG_PR_SRV_TV], config: DataProcessorConfig) -> _COMPENG_PR_SRV_TV:
         assert isinstance(config, CompEngPgConfig)
         return cls(
             pg_url=config.url,

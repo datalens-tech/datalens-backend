@@ -8,9 +8,7 @@ import os
 import statistics
 import time
 from typing import (
-    Dict,
     Generator,
-    List,
     NamedTuple,
     Optional,
 )
@@ -34,16 +32,16 @@ FORMULA_CACHE_SIZE = int(os.environ.get("FORMULA_CACHE_SIZE", 1000))
 
 
 class ParserStats(NamedTuple):
-    global_cache_hits: Dict[str, int]
-    global_cache_misses: Dict[str, int]
-    global_cache_maxsize: Dict[str, Optional[int]]
-    global_cache_currsize: Dict[str, int]
+    global_cache_hits: dict[str, int]
+    global_cache_misses: dict[str, int]
+    global_cache_maxsize: dict[str, Optional[int]]
+    global_cache_currsize: dict[str, int]
     call_count: int
     call_time: float
     avg_length: Optional[float]
-    length_counts: Dict[int, int]
-    length_avg_times: Dict[int, float]
-    length_median_times: Dict[int, float]
+    length_counts: dict[int, int]
+    length_avg_times: dict[int, float]
+    length_median_times: dict[int, float]
 
 
 @attr.s
@@ -51,7 +49,7 @@ class FormulaParser(abc.ABC):
     call_count: int = attr.ib(init=False, default=0)
     call_time: float = attr.ib(init=False, default=0.0)
     length_sum: int = attr.ib(init=False, default=0)
-    by_length: Dict[int, List[float]] = attr.ib(init=False, factory=lambda: defaultdict(list))
+    by_length: dict[int, list[float]] = attr.ib(init=False, factory=lambda: defaultdict(list))
 
     @contextmanager
     def _parse_cm(self, formula: str) -> Generator[None, None, None]:
@@ -73,7 +71,7 @@ class FormulaParser(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get_global_stats(self) -> Dict[str, _CacheInfo]:
+    def _get_global_stats(self) -> dict[str, _CacheInfo]:
         raise NotImplementedError
 
     def get_usage_stats(self) -> ParserStats:

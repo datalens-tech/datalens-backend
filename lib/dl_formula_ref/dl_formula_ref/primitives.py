@@ -8,11 +8,8 @@ from typing import (
     Callable,
     Collection,
     Iterable,
-    List,
     Optional,
     Sequence,
-    Set,
-    Tuple,
 )
 
 import attr
@@ -32,11 +29,11 @@ from dl_formula_ref.registry.signature_base import FunctionSignatureCollection
 from dl_formula_ref.registry.text import ParameterizedText
 
 
-TOP_NOTE_LEVELS: Collection[Tuple[Optional[NoteType], Optional[NoteLevel]]] = [
+TOP_NOTE_LEVELS: Collection[tuple[Optional[NoteType], Optional[NoteLevel]]] = [
     (NoteType.REGULAR, NoteLevel.alert),
     (NoteType.REGULAR, NoteLevel.warning),
 ]
-BOTTOM_NOTE_LEVELS: Collection[Tuple[Optional[NoteType], Optional[NoteLevel]]] = [
+BOTTOM_NOTE_LEVELS: Collection[tuple[Optional[NoteType], Optional[NoteLevel]]] = [
     (NoteType.REGULAR, NoteLevel.info),
     (NoteType.ARG_RESTRICTION, None),
 ]
@@ -49,14 +46,14 @@ class RawFunc:
     _short_title_factory: Callable[[str], str] = attr.ib(kw_only=True)
     _internal_name: str = attr.ib(kw_only=True)
     _description: str = attr.ib(kw_only=True)
-    _args: List[FuncArg] = attr.ib(kw_only=True)
+    _args: list[FuncArg] = attr.ib(kw_only=True)
     _signature_coll: FunctionSignatureCollection = attr.ib(kw_only=True)
-    _notes: List[ParameterizedNote] = attr.ib(kw_only=True)
+    _notes: list[ParameterizedNote] = attr.ib(kw_only=True)
     _return_type: ParameterizedText = attr.ib(kw_only=True)
     _category: FunctionDocCategory = attr.ib(kw_only=True)
     _resources: AliasedResourceRegistryBase = attr.ib(kw_only=True)
     _examples: Sequence[ExampleBase] = attr.ib(kw_only=True)
-    _dialects: Set[DialectCombo] = attr.ib(kw_only=True)
+    _dialects: set[DialectCombo] = attr.ib(kw_only=True)
 
     @property
     def name(self) -> str:
@@ -79,7 +76,7 @@ class RawFunc:
         return self._examples
 
     @property
-    def args(self) -> List[FuncArg]:
+    def args(self) -> list[FuncArg]:
         return self._args
 
     @property
@@ -109,15 +106,15 @@ class RawFunc:
         return self._signature_coll
 
     @property
-    def dialects(self) -> Set[DialectCombo]:
+    def dialects(self) -> set[DialectCombo]:
         return self._dialects
 
     def _filter_notes(
         self,
         notes: Iterable[ParameterizedNote],
-        levels: Collection[Tuple[Optional[NoteType], Optional[NoteLevel]]],
-    ) -> List[ParameterizedNote]:
-        result: List[ParameterizedNote] = []
+        levels: Collection[tuple[Optional[NoteType], Optional[NoteLevel]]],
+    ) -> list[ParameterizedNote]:
+        result: list[ParameterizedNote] = []
         for note in notes or ():
             for note_type_mask, note_level_mask in levels:
                 if (note_type_mask is None or note.type == note_type_mask) and (
@@ -129,11 +126,11 @@ class RawFunc:
         return result
 
     @property
-    def bottom_notes(self) -> List[ParameterizedNote]:
+    def bottom_notes(self) -> list[ParameterizedNote]:
         return self._filter_notes(notes=self._notes, levels=BOTTOM_NOTE_LEVELS)
 
     @property
-    def top_notes(self) -> List[ParameterizedNote]:
+    def top_notes(self) -> list[ParameterizedNote]:
         return self._filter_notes(notes=self._notes, levels=TOP_NOTE_LEVELS)
 
 
