@@ -12,6 +12,7 @@ from dl_api_client.dsmaker.primitives import (
     StringParameterValue,
 )
 from dl_api_client.dsmaker.shortcuts.dataset import (
+    Parameter,
     add_formulas_to_dataset,
     add_parameters_to_dataset,
 )
@@ -54,9 +55,10 @@ class TestParameters(DefaultApiTestBase):
             api_v1=control_api,
             dataset_id=saved_dataset.id,
             parameters={
-                "Multiplier": (
+                "Multiplier": Parameter(
                     IntegerParameterValue(default_multiplier),
                     RangeParameterValueConstraint(min=IntegerParameterValue(default_multiplier)),
+                    False,
                 ),
             },
         )
@@ -112,9 +114,10 @@ class TestParameters(DefaultApiTestBase):
             api_v1=control_api,
             dataset_id=saved_dataset.id,
             parameters={
-                "Param": (
+                "Param": Parameter(
                     IntegerParameterValue(42),
                     RangeParameterValueConstraint(min=IntegerParameterValue(0), max=IntegerParameterValue(100)),
+                    False,
                 ),
             },
         )
@@ -139,19 +142,28 @@ class TestParameters(DefaultApiTestBase):
         assert result_resp.status_code == expected_status_code, result_resp.json
         assert result_resp.bi_status_code == expected_bi_status_code
 
+    @pytest.mark.parametrize(
+        ("new_constraint"),
+        (
+            None,
+            {"type": "all"},
+        ),
+    )
     def test_parameter_constraint_mutation_forbidden(
         self,
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         saved_dataset: Dataset,
+        new_constraint: dict | None,
     ):
         ds = add_parameters_to_dataset(
             api_v1=control_api,
             dataset_id=saved_dataset.id,
             parameters={
-                "Param": (
+                "Param": Parameter(
                     IntegerParameterValue(42),
                     RangeParameterValueConstraint(min=IntegerParameterValue(0), max=IntegerParameterValue(100)),
+                    False,
                 ),
             },
         )
@@ -165,7 +177,52 @@ class TestParameters(DefaultApiTestBase):
                     "action": DatasetAction.update_field.value,
                     "field": {
                         "guid": parameter.id,
-                        "value_constraint": {"type": "all"},
+                        "value_constraint": new_constraint,
+                    },
+                },
+            ],
+            fail_ok=True,
+        )
+
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
+        assert result_resp.bi_status_code == "ERR.DS_API.ACTION_NOT_ALLOWED"
+
+    @pytest.mark.parametrize(
+        ("new_template_enabled"),
+        (
+            True,
+            None,
+        ),
+    )
+    def test_template_enabled_mutation(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+        new_template_enabled: bool | None,
+    ):
+        ds = add_parameters_to_dataset(
+            api_v1=control_api,
+            dataset_id=saved_dataset.id,
+            parameters={
+                "Param": Parameter(
+                    IntegerParameterValue(42),
+                    RangeParameterValueConstraint(min=IntegerParameterValue(0), max=IntegerParameterValue(100)),
+                    False,
+                ),
+            },
+        )
+
+        parameter = ds.find_field(title="Param")
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[parameter],
+            updates=[
+                {
+                    "action": DatasetAction.update_field.value,
+                    "field": {
+                        "guid": parameter.id,
+                        "template_enabled": new_template_enabled,
                     },
                 },
             ],
@@ -196,9 +253,10 @@ class TestParameters(DefaultApiTestBase):
             api_v1=control_api,
             dataset_id=saved_dataset.id,
             parameters={
-                "Param": (
+                "Param": Parameter(
                     IntegerParameterValue(0),
                     RangeParameterValueConstraint(min=IntegerParameterValue(0), max=IntegerParameterValue(100)),
+                    False,
                 ),
             },
         )
@@ -223,7 +281,7 @@ class TestParameters(DefaultApiTestBase):
             api_v1=control_api,
             dataset_id=dataset_id,
             parameters={
-                "Param": (IntegerParameterValue(0), None),
+                "Param": Parameter(IntegerParameterValue(0), None, False),
             },
         )
         ds = add_formulas_to_dataset(
@@ -257,7 +315,7 @@ class TestParameters(DefaultApiTestBase):
             api_v1=control_api,
             dataset_id=dataset_id,
             parameters={
-                "Param": (IntegerParameterValue(42), None),
+                "Param": Parameter(IntegerParameterValue(42), None, False),
             },
         )
         ds = add_formulas_to_dataset(
@@ -294,7 +352,7 @@ class TestParameters(DefaultApiTestBase):
             api_v1=control_api,
             dataset_id=dataset_id,
             parameters={
-                "Param": (StringParameterValue("param"), None),
+                "Param": Parameter(StringParameterValue("param"), None, False),
             },
         )
         ds = add_formulas_to_dataset(
@@ -342,6 +400,7 @@ class TestParameterSourceTemplates(DefaultApiTestBase):
             cast=parameter.type,
             default_value=parameter,
             value_constraint=None,
+            template_enabled=True,
         )
 
         ds.sources["source_1"] = ds.source(

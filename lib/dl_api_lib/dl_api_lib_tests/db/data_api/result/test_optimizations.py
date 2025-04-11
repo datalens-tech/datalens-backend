@@ -1,5 +1,6 @@
 from dl_api_client.dsmaker.primitives import StringParameterValue
 from dl_api_client.dsmaker.shortcuts.dataset import (
+    Parameter,
     add_formulas_to_dataset,
     add_parameters_to_dataset,
 )
@@ -40,7 +41,7 @@ class TestOptimizations(DefaultApiTestBase):
             api_v1=control_api,
             dataset=saved_dataset,
             parameters={
-                "Param": (StringParameterValue(self.const_value), None),
+                "Param": Parameter(StringParameterValue(self.const_value), None, False),
             },
         )
 

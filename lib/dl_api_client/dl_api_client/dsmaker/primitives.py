@@ -566,6 +566,7 @@ class _ResultField(ApiProxyObject):
     managed_by: ManagedBy = attr.ib(default=ManagedBy.user, converter=ManagedBy.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
     default_value: Optional[ParameterValue] = attr.ib(default=None)
     value_constraint: Optional[BaseParameterValueConstraint] = attr.ib(default=None)
+    template_enabled: Optional[bool] = attr.ib(default=None)
 
     def set_name(self, name: str) -> None:
         if self.title is None:
@@ -578,11 +579,13 @@ class _ResultField(ApiProxyObject):
             self.formula = ""
             self.default_value = None
             self.value_constraint = None
+            self.template_enabled = None
         elif self.formula and not self.source and self.default_value is None:
             self.calc_mode = CalcMode.formula
             self.source = ""
             self.default_value = None
             self.value_constraint = None
+            self.template_enabled = None
         elif self.default_value is not None and not self.source and not self.formula:
             self.calc_mode = CalcMode.parameter
             self.source = ""
