@@ -31,7 +31,6 @@ class SourceDbOperationProcessor(ExecutorBasedOperationProcessor):
     _dataset: Dataset = attr.ib(kw_only=True)
     _row_count_hard_limit: Optional[int] = attr.ib(kw_only=True, default=None)
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
-    _is_bleeding_edge_user: bool = attr.ib(default=False)
     _default_cache_ttl_config: CacheTTLConfig = attr.ib(default=None)
     _ce_factory: ConnExecutorFactory = attr.ib(kw_only=True)
     _rci: RequestContextInfo = attr.ib(kw_only=True)
@@ -39,8 +38,6 @@ class SourceDbOperationProcessor(ExecutorBasedOperationProcessor):
     def _make_cache_options_builder(self) -> DatasetOptionsBuilder:
         return SelectorCacheOptionsBuilder(
             default_ttl_config=self._default_cache_ttl_config,
-            is_bleeding_edge_user=self._is_bleeding_edge_user,
-            us_entry_buffer=self._us_entry_buffer,
         )
 
     def _make_db_ex_adapter(self) -> Optional[ProcessorDbExecAdapterBase]:
