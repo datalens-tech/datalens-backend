@@ -1,7 +1,7 @@
 # All variables should be prefixed with `DL_B_`
 
 variable BASE_LINUX {
-  default = "ubuntu:22.04"
+  default = "ubuntu:24.04"
 }
 
 variable DL_B_PROJECT_ROOT {
