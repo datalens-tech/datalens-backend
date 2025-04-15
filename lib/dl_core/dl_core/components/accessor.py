@@ -198,3 +198,6 @@ class DatasetComponentAccessor:
                 assert field.default_value is not None
                 result[field.title] = attr.evolve(field.default_value, value=parameter_value_spec.value)
         return result
+
+    def get_template_enabled(self) -> bool:
+        return self._dataset.template_enabled

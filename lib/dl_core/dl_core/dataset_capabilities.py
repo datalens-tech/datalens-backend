@@ -88,11 +88,10 @@ class DatasetCapabilities:
         return DatasetComponentAccessor(dataset=self._dataset)
 
     def _get_data_source_strict(self, source_id: str, role: DataSourceRole) -> data_source.DataSource:
-        dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
-        dataset_parameter_values = self._ds_accessor.get_parameter_values()
         dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(
-            spec=dsrc_coll_spec,
-            dataset_parameter_values=dataset_parameter_values,
+            spec=self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id),
+            dataset_parameter_values=self._ds_accessor.get_parameter_values(),
+            dataset_template_enabled=self._ds_accessor.get_template_enabled(),
         )
         dsrc = dsrc_coll.get_strict(role=role)
         return dsrc
@@ -105,10 +104,10 @@ class DatasetCapabilities:
         if source_id is not None:
             dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_opt(source_id)
             if dsrc_coll_spec is not None:
-                dataset_parameter_values = self._ds_accessor.get_parameter_values()
                 return self._dsrc_coll_factory.get_data_source_collection(
                     spec=dsrc_coll_spec,
-                    dataset_parameter_values=dataset_parameter_values,
+                    dataset_parameter_values=self._ds_accessor.get_parameter_values(),
+                    dataset_template_enabled=self._ds_accessor.get_template_enabled(),
                 )
 
         return None
@@ -182,10 +181,12 @@ class DatasetCapabilities:
     def _get_data_source_collections(self) -> dict[str, DataSourceCollection]:
         result = {}
         dataset_parameter_values = self._ds_accessor.get_parameter_values()
+        dataset_template_enabled = self._ds_accessor.get_template_enabled()
         for dsrc_coll_spec in self._ds_accessor.get_data_source_coll_spec_list():
             result[dsrc_coll_spec.id] = self._dsrc_coll_factory.get_data_source_collection(
                 spec=dsrc_coll_spec,
                 dataset_parameter_values=dataset_parameter_values,
+                dataset_template_enabled=dataset_template_enabled,
             )
         return result
 

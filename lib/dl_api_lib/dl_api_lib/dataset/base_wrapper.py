@@ -203,6 +203,7 @@ class DatasetBaseWrapper:
         dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(
             spec=dsrc_coll_spec,
             dataset_parameter_values=self._get_dataset_parameter_values(),
+            dataset_template_enabled=self._ds_accessor.get_template_enabled(),
         )
         return dsrc_coll
 

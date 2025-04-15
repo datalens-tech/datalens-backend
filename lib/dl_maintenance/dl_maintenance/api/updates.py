@@ -134,10 +134,10 @@ class SimpleDatasetUpdateGen:
             us_entry_buffer=self._us_manager.get_entry_buffer(),
         )
 
-        dataset_parameter_values = self._ds_accessor.get_parameter_values()
         dsrc_coll = dsrc_coll_factory.get_data_source_collection(
             spec=dsrc_coll_spec,
-            dataset_parameter_values=dataset_parameter_values,
+            dataset_parameter_values=self._ds_accessor.get_parameter_values(),
+            dataset_template_enabled=self._ds_accessor.get_template_enabled(),
         )
 
         dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)

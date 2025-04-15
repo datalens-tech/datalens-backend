@@ -135,6 +135,8 @@ class DatasetApiLoader:
         added_own_source_ids = []
         handled_source_ids = set()
         old_src_coll: Optional[DataSourceCollection]
+        dataset_parameter_values = ds_accessor.get_parameter_values()
+        dataset_template_enabled = ds_accessor.get_template_enabled()
         for source_data in body.get("sources", []):
             source_id = source_data["id"]
             title = source_data.get("title") or None
@@ -145,12 +147,12 @@ class DatasetApiLoader:
 
             # check whether it exists already
             old_dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_opt(source_id=source_id)
-            dataset_parameter_values = ds_accessor.get_parameter_values()
 
             if old_dsrc_coll_spec is not None:
                 old_src_coll = dsrc_coll_factory.get_data_source_collection(
                     spec=old_dsrc_coll_spec,
                     dataset_parameter_values=dataset_parameter_values,
+                    dataset_template_enabled=dataset_template_enabled,
                 )
                 LOGGER.info("Source %s already exists, checking if it needs to be updated.", source_id)
                 old_hash = old_src_coll.get_param_hash()

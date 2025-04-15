@@ -43,12 +43,16 @@ def _iter_data_source_collections(
     assert source_ids is not None
 
     dsrc_coll_factory = DataSourceCollectionFactory(us_entry_buffer=us_entry_buffer)
+    dataset_parameter_values = ds_accessor.get_parameter_values()
+    dataset_template_enabled = ds_accessor.get_template_enabled()
+
     for source_id in source_ids:
         dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
-        dataset_parameter_values = ds_accessor.get_parameter_values()
+
         dsrc_coll = dsrc_coll_factory.get_data_source_collection(
             spec=dsrc_coll_spec,
             dataset_parameter_values=dataset_parameter_values,
+            dataset_template_enabled=dataset_template_enabled,
         )
         yield dsrc_coll
 

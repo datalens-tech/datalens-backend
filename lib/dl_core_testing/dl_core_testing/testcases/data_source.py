@@ -72,6 +72,7 @@ class BaseDataSourceTestClass(
             connection=saved_connection,
             spec=initial_data_source_spec,
             dataset_parameter_values={},
+            dataset_template_enabled=False,
         )
         return dsrc
 

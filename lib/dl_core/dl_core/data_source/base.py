@@ -141,6 +141,7 @@ class DataSource(metaclass=abc.ABCMeta):
     _us_entry_buffer: USEntryBuffer = attr.ib(default=None, eq=False)
     _spec: DataSourceSpec | None = attr.ib(kw_only=True, default=None)
     _dataset_parameter_values: dict[str, BIValue] = attr.ib(kw_only=True)
+    _dataset_template_enabled: bool = attr.ib(kw_only=True)
 
     _connection: ConnectionBase | None = attr.ib(default=None)
 

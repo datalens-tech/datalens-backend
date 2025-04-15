@@ -43,6 +43,7 @@ class DataSourceCollection:
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
     _spec: DataSourceCollectionSpec = attr.ib()
     _dataset_parameter_values: dict[str, BIValue] = attr.ib(factory=dict)
+    _dataset_template_enabled: bool = attr.ib(default=False)
     _loaded_sources: dict[DataSourceRole, base.DataSource | None] = attr.ib(init=False, factory=dict)
 
     @property
@@ -251,6 +252,7 @@ class DataSourceCollection:
             us_entry_buffer=self._us_entry_buffer,
             spec=dsrc_spec,
             dataset_parameter_values=self._dataset_parameter_values,
+            dataset_template_enabled=self._dataset_template_enabled,
         )
         return dsrc
 
@@ -308,11 +310,13 @@ class DataSourceCollectionFactory:  # TODO: Move to service_registry
         self,
         spec: DataSourceCollectionSpec,
         dataset_parameter_values: dict[str, BIValue],
+        dataset_template_enabled: bool = False,
     ) -> DataSourceCollection:
         if isinstance(spec, DataSourceCollectionSpec):
             return DataSourceCollection(
                 us_entry_buffer=self._us_entry_buffer,
                 spec=spec,
                 dataset_parameter_values=dataset_parameter_values,
+                dataset_template_enabled=dataset_template_enabled,
             )
         raise TypeError(f"Invalid spec type: {spec})")

@@ -48,12 +48,12 @@ class PublicEnvEntityUsageChecker(EntityUsageChecker):
         elif main_source_role == DataSourceRole.origin:
             LOGGER.info("Dataset source role is %s. Underlying connections will be checked", main_source_role)
             dsrc_coll_spec_list = ds_accessor.get_data_source_coll_spec_list()
-            dataset_parameter_values = ds_accessor.get_parameter_values()
 
             dsrc_coll_list = [
                 dsrc_coll_factory.get_data_source_collection(
                     spec=dsrc_coll_spec,
-                    dataset_parameter_values=dataset_parameter_values,
+                    dataset_parameter_values=ds_accessor.get_parameter_values(),
+                    dataset_template_enabled=ds_accessor.get_template_enabled(),
                 )
                 for dsrc_coll_spec in dsrc_coll_spec_list
             ]
