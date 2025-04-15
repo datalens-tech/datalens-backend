@@ -86,6 +86,7 @@ class UpdateField(FieldBase):
     new_id: Optional[str] = attr.ib(default=None)
     default_value: Optional[BIValue] = attr.ib(default=None)
     value_constraint: dict = attr.ib(default=None)
+    template_enabled: Optional[bool] = attr.ib(default=None)
 
 
 @attr.s(frozen=True, kw_only=True)
