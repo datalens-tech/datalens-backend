@@ -17,6 +17,7 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         """Additional dataset checks can be defined here"""
         assert ds.id
         assert ds.load_preview_by_default
+        assert not ds.template_enabled
         assert not ds.data_export_forbidden
         assert len(ds.result_schema)
 

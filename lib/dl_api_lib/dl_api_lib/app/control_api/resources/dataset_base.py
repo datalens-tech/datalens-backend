@@ -210,6 +210,7 @@ class DatasetResource(BIResource):
         data["revision_id"] = dataset.revision_id
 
         data["load_preview_by_default"] = dataset.load_preview_by_default
+        data["template_enabled"] = dataset.template_enabled
 
         data["data_export_forbidden"] = dataset.data_export_forbidden
 

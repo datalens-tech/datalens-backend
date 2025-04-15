@@ -71,6 +71,7 @@ class TestServicesRegistry(DefaultCoreTestClass):
         rci = RequestContextInfo.create_empty()
         assert checker.ensure_dataset_can_be_used(rci, empty_saved_dataset, sync_us_manager) is None
         empty_saved_dataset.data.load_preview_by_default = False
+        empty_saved_dataset.data.template_enabled = False
         empty_saved_dataset.data.data_export_forbidden = False
         with pytest.raises(EntityUsageNotAllowed, match="^Preview should be enabled by default!$"):
             checker.ensure_dataset_can_be_used(rci, empty_saved_dataset, sync_us_manager)
