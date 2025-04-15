@@ -8,12 +8,12 @@ from marshmallow_oneofschema import OneOfSchema
 
 from dl_constants.enums import ParameterValueConstraintType
 from dl_core.fields import (
-    AllParameterValueConstraint,
     BaseParameterValueConstraint,
     CollectionParameterValueConstraint,
     DefaultParameterValueConstraint,
     EqualsParameterValueConstraint,
     NotEqualsParameterValueConstraint,
+    NullParameterValueConstraint,
     RangeParameterValueConstraint,
     RegexParameterValueConstraint,
     SetParameterValueConstraint,
@@ -32,8 +32,8 @@ class ParameterValueConstraintSchema(OneOfSchema):
     class BaseParameterValueConstraintSchema(DefaultSchema):
         type = ma_fields.Enum(ParameterValueConstraintType)
 
-    class AllParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
-        TARGET_CLS = AllParameterValueConstraint
+    class NullParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+        TARGET_CLS = NullParameterValueConstraint
 
     class RangeParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
         TARGET_CLS = RangeParameterValueConstraint
@@ -71,7 +71,7 @@ class ParameterValueConstraintSchema(OneOfSchema):
         constraints = ma_fields.List(ma_fields.Nested(lambda: ParameterValueConstraintSchema()))
 
     type_schemas = {
-        ParameterValueConstraintType.all.name: AllParameterValueConstraintSchema,
+        ParameterValueConstraintType.null.name: NullParameterValueConstraintSchema,
         ParameterValueConstraintType.range.name: RangeParameterValueConstraintSchema,
         ParameterValueConstraintType.set.name: SetParameterValueConstraintSchema,
         ParameterValueConstraintType.equals.name: EqualsParameterValueConstraintSchema,

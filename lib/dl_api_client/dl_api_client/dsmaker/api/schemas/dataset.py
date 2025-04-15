@@ -21,7 +21,6 @@ from marshmallow_oneofschema import OneOfSchema
 
 from dl_api_client.dsmaker.api.schemas.base import DefaultSchema
 from dl_api_client.dsmaker.primitives import (
-    AllParameterValueConstraint,
     ArrayFloatParameterValue,
     ArrayIntParameterValue,
     ArrayStrParameterValue,
@@ -50,6 +49,7 @@ from dl_api_client.dsmaker.primitives import (
     JoinCondition,
     MarkupParameterValue,
     NotEqualsParameterValueConstraint,
+    NullParameterValueConstraint,
     ObligatoryFilter,
     ParameterValue,
     RangeParameterValueConstraint,
@@ -204,8 +204,8 @@ class ValueSchema(OneOfSchemaWithDumpLoadHooks):
         return getattr(obj, self.type_field).name
 
 
-class AllParameterValueConstraintSchema(DefaultSchema[AllParameterValueConstraint]):
-    TARGET_CLS = AllParameterValueConstraint
+class NullParameterValueConstraintSchema(DefaultSchema[NullParameterValueConstraint]):
+    TARGET_CLS = NullParameterValueConstraint
 
 
 class RangeParameterValueConstraintSchema(DefaultSchema[RangeParameterValueConstraint]):
@@ -253,7 +253,7 @@ class CollectionParameterValueConstraintSchema(DefaultSchema[CollectionParameter
 class ParameterValueConstraintSchema(OneOfSchema):
     type_field = "type"
     type_schemas = {
-        ParameterValueConstraintType.all.name: AllParameterValueConstraintSchema,
+        ParameterValueConstraintType.null.name: NullParameterValueConstraintSchema,
         ParameterValueConstraintType.range.name: RangeParameterValueConstraintSchema,
         ParameterValueConstraintType.set.name: SetParameterValueConstraintSchema,
         ParameterValueConstraintType.equals.name: EqualsParameterValueConstraintSchema,

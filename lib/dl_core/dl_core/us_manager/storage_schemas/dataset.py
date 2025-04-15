@@ -37,7 +37,6 @@ from dl_core.components.dependencies.primitives import (
     FieldInterDependencyItem,
 )
 from dl_core.fields import (
-    AllParameterValueConstraint,
     BaseParameterValueConstraint,
     BIField,
     CalculationSpec,
@@ -47,6 +46,7 @@ from dl_core.fields import (
     EqualsParameterValueConstraint,
     FormulaCalculationSpec,
     NotEqualsParameterValueConstraint,
+    NullParameterValueConstraint,
     ParameterCalculationSpec,
     RangeParameterValueConstraint,
     RegexParameterValueConstraint,
@@ -263,8 +263,8 @@ class BaseParameterValueConstraintSchema(DefaultStorageSchema):
     type = ma_fields.Enum(ParameterValueConstraintType)
 
 
-class AllParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
-    TARGET_CLS = AllParameterValueConstraint
+class NullParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
+    TARGET_CLS = NullParameterValueConstraint
 
 
 class RangeParameterValueConstraintSchema(BaseParameterValueConstraintSchema):
@@ -312,9 +312,14 @@ class CollectionParameterValueConstraintSchema(BaseParameterValueConstraintSchem
 class ParameterValueConstraintSchema(OneOfSchema):
     type_field = "type"
     type_schemas = {
-        ParameterValueConstraintType.all.name: AllParameterValueConstraintSchema,
+        ParameterValueConstraintType.null.name: NullParameterValueConstraintSchema,
         ParameterValueConstraintType.range.name: RangeParameterValueConstraintSchema,
         ParameterValueConstraintType.set.name: SetParameterValueConstraintSchema,
+        ParameterValueConstraintType.equals.name: EqualsParameterValueConstraintSchema,
+        ParameterValueConstraintType.not_equals.name: NotEqualsParameterValueConstraintSchema,
+        ParameterValueConstraintType.regex.name: RegexParameterValueConstraintSchema,
+        ParameterValueConstraintType.default.name: DefaultParameterValueConstraintSchema,
+        ParameterValueConstraintType.collection.name: CollectionParameterValueConstraintSchema,
     }
 
     def get_obj_type(self, obj: BaseParameterValueConstraint) -> str:

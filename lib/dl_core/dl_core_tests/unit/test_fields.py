@@ -1,11 +1,11 @@
 from dl_constants.enums import ParameterValueConstraintType
 from dl_core.fields import (
-    AllParameterValueConstraint,
     BIField,
     CollectionParameterValueConstraint,
     DefaultParameterValueConstraint,
     EqualsParameterValueConstraint,
     NotEqualsParameterValueConstraint,
+    NullParameterValueConstraint,
     RangeParameterValueConstraint,
     RegexParameterValueConstraint,
     SetParameterValueConstraint,
@@ -27,8 +27,8 @@ def test_rename_in_formula(caplog):
 
 
 def test_all_parameter_value_constraint():
-    constraint = AllParameterValueConstraint()
-    assert constraint.type == ParameterValueConstraintType.all
+    constraint = NullParameterValueConstraint()
+    assert constraint.type == ParameterValueConstraintType.null
     assert constraint.is_valid(StringValue("foo"))
     assert constraint.is_valid(IntegerValue(42))
 

@@ -53,8 +53,8 @@ class BaseParameterValueConstraint:
 
 
 @attr.s(frozen=True)
-class AllParameterValueConstraint(BaseParameterValueConstraint):
-    type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.all)
+class NullParameterValueConstraint(BaseParameterValueConstraint):
+    type: ParameterValueConstraintType = attr.ib(default=ParameterValueConstraintType.null)
 
     def _is_valid(self, value: Any) -> bool:
         return True
