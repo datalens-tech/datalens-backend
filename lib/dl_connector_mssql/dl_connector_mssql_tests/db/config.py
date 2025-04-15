@@ -54,8 +54,7 @@ select
     cast(number as datetime) as num_datetime,
     cast(concat('2020-01-01T00:00:0', number) as datetime2) as num_datetime2,
     cast(number as smalldatetime) as num_smalldatetime,
-    cast(concat('2020-01-01T00:00:00+00:0',
-    number) as datetimeoffset) as num_datetimeoffset,
+    cast(concat('2020-01-01T00:00:00+00:0', number) as datetimeoffset) as num_datetimeoffset,
     NEWID() as uuid
 from
     (
