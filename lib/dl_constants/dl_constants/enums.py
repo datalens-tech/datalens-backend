@@ -132,7 +132,7 @@ class QueryItemRefType(Enum):
 
 @unique
 class ParameterValueConstraintType(Enum):
-    all = "all"
+    null = "null"
     range = "range"
     set = "set"
     equals = "equals"

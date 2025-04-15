@@ -465,8 +465,8 @@ class BaseParameterValueConstraint:
 
 
 @attr.s
-class AllParameterValueConstraint(BaseParameterValueConstraint):
-    type: ParameterValueConstraintType = ParameterValueConstraintType.all
+class NullParameterValueConstraint(BaseParameterValueConstraint):
+    type: ParameterValueConstraintType = ParameterValueConstraintType.null
 
 
 @attr.s

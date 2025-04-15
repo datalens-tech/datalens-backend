@@ -165,7 +165,7 @@ class TestParameters(DefaultApiTestBase):
                     "action": DatasetAction.update_field.value,
                     "field": {
                         "guid": parameter.id,
-                        "value_constraint": {"type": "all"},
+                        "value_constraint": {"type": "null"},
                     },
                 },
             ],
