@@ -1,10 +1,13 @@
 #!/usr/bin/env sh
 
-set -x  # debug.
 set -eu
 
 HTTP_BIND_PORT="8080"
-if [ "${BISYS_USE_IPV6:-1}" = "1" ]; then HTTP_BIND_ADDR="[::]"; else HTTP_BIND_ADDR="0.0.0.0"; fi
+HTTP_BIND_ADDR="0.0.0.0"
+
+if [ -f "/proc/net/if_inet6" ] || [ "${BISYS_USE_IPV6:-0}" = "1" ]; then
+  HTTP_BIND_ADDR="[::]"
+fi
 
 BI_API_UWSGI_WORKERS_COUNT="${BI_API_UWSGI_WORKERS_COUNT:-40}"
 
