@@ -424,6 +424,7 @@ class ConnectionInfoSourceSchema(BIResource):
             spec=dsrc_spec,
             connection=connection,
             dataset_parameter_values={},
+            dataset_template_enabled=False,
         )
 
         schema_info = dsrc.get_schema_info(conn_executor_factory=conn_executor_factory_func)

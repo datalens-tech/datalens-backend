@@ -530,13 +530,16 @@ class DatasetDataBaseView(BaseView):
         role = self.resolve_dataset_source_role(dataset=self.dataset)
         avatar_ids = [avatar.id for avatar in self.ds_accessor.get_avatar_list()]
         dsrc_coll_factory = DataSourceCollectionFactory(us_entry_buffer=self.dl_request.us_manager.get_entry_buffer())
+        dataset_parameter_values = self.ds_accessor.get_parameter_values()
+        dataset_template_enabled = self.ds_accessor.get_template_enabled()
+
         for avatar_id in avatar_ids:
             avatar = self.ds_accessor.get_avatar_strict(avatar_id=avatar_id)
             dsrc_coll_spec = self.ds_accessor.get_data_source_coll_spec_strict(source_id=avatar.source_id)
-            dataset_parameter_values = self.ds_accessor.get_parameter_values()
             dsrc_coll = dsrc_coll_factory.get_data_source_collection(
                 spec=dsrc_coll_spec,
                 dataset_parameter_values=dataset_parameter_values,
+                dataset_template_enabled=dataset_template_enabled,
             )
 
             dsrc: DataSource

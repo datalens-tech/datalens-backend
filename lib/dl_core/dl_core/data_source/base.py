@@ -36,7 +36,10 @@ from dl_core.db import (
     SchemaColumn,
     SchemaInfo,
 )
-from dl_core.exc import TemplateInvalidError
+from dl_core.exc import (
+    ConnectionTemplateDisabledError,
+    TemplateInvalidError,
+)
 from dl_core.us_connection import get_connection_class
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_manager.local_cache import USEntryBuffer
@@ -141,6 +144,7 @@ class DataSource(metaclass=abc.ABCMeta):
     _us_entry_buffer: USEntryBuffer = attr.ib(default=None, eq=False)
     _spec: DataSourceSpec | None = attr.ib(kw_only=True, default=None)
     _dataset_parameter_values: dict[str, BIValue] = attr.ib(kw_only=True)
+    _dataset_template_enabled: bool = attr.ib(kw_only=True)
 
     _connection: ConnectionBase | None = attr.ib(default=None)
 
@@ -275,8 +279,11 @@ class DataSource(metaclass=abc.ABCMeta):
         self,
         value: str,
     ) -> str:
-        if self._connection is None or not self._connection.is_datasource_template_allowed:
+        if not self._dataset_template_enabled:
             return value
+
+        if self._connection is None or not self._connection.is_datasource_template_allowed:
+            raise ConnectionTemplateDisabledError
 
         renderer = DataSourceRenderer(values=self._dataset_parameter_values)
 

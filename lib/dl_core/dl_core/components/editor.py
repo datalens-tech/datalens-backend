@@ -426,6 +426,9 @@ class DatasetComponentEditor:
     def set_load_preview_by_default(self, load_preview_by_default: bool | None) -> None:
         self._dataset.data.load_preview_by_default = load_preview_by_default
 
+    def set_template_enabled(self, template_enabled: bool | None) -> None:
+        self._dataset.data.template_enabled = template_enabled
+
     def set_data_export_forbidden(self, data_export_forbidden: bool | None) -> None:
         self._dataset.data.data_export_forbidden = data_export_forbidden
 

@@ -1539,6 +1539,7 @@ class DatasetValidator(DatasetBaseWrapper):
             spec=new_dsrc_spec,
             us_entry_buffer=self._us_manager.get_entry_buffer(),
             dataset_parameter_values={},
+            dataset_template_enabled=False,
         )
         new_dsrc_parameters = new_dsrc_dummy.get_parameters()
         return new_dsrc_parameters, new_dsrc_spec.source_type

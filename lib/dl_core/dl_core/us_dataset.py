@@ -65,6 +65,7 @@ class Dataset(USEntry):
         name: str = attr.ib()
         revision_id: Optional[str] = attr.ib(default=None)
         load_preview_by_default: Optional[bool] = attr.ib(default=True)
+        template_enabled: bool = attr.ib(default=False)
         data_export_forbidden: Optional[bool] = attr.ib(default=False)
         schema_version: str = attr.ib(default="1")
         result_schema: ResultSchema = attr.ib(factory=ResultSchema)
@@ -219,6 +220,10 @@ class Dataset(USEntry):
     @property
     def load_preview_by_default(self) -> Optional[bool]:
         return self.data.load_preview_by_default
+
+    @property
+    def template_enabled(self) -> bool:
+        return self.data.template_enabled
 
     @property
     def data_export_forbidden(self) -> Optional[bool]:

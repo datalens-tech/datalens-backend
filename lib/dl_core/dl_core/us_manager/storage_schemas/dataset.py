@@ -477,6 +477,7 @@ class DatasetStorageSchema(DefaultStorageSchema):
     name = ma_fields.String(allow_none=True, load_default=None)
     revision_id = ma_fields.String(allow_none=True, dump_default=None, load_default=None)
     load_preview_by_default = ma_fields.Boolean(dump_default=True, load_default=True)
+    template_enabled = ma_fields.Boolean(dump_default=False, load_default=False)
     data_export_forbidden = ma_fields.Boolean(dump_default=False, load_default=False)
     result_schema = ma_fields.Nested(ResultSchemaStorageSchema, allow_none=False)
     result_schema_aux = ma_fields.Nested(ResultSchemaAuxSchema, allow_none=False)

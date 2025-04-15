@@ -1,10 +1,12 @@
 from http import HTTPStatus
+import json
 import typing
 
 import pytest
 
 from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
+from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_client.dsmaker.primitives import (
     Dataset,
     IntegerParameterValue,
@@ -378,7 +380,7 @@ class TestParameterSourceTemplates(DefaultApiTestBase):
         saved_connection_id: str,
         sample_table: DbTable,
     ) -> typing.Generator[Dataset, None, None]:
-        ds = Dataset()
+        ds = Dataset(template_enabled=True)
         parameter = StringParameterValue(value=sample_table.name)
         ds.result_schema["table_name"] = ds.field(
             cast=parameter.type,
@@ -413,6 +415,53 @@ class TestParameterSourceTemplates(DefaultApiTestBase):
         )
 
         assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+
+    def test_invalid_template(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ):
+        ds = saved_dataset
+        ds.sources["source_1"].parameters["subsql"] = "SELECT * FROM {{table_name}} WHERE {{invalid_parameter}}"
+        ds = control_api.apply_updates(dataset=ds).dataset
+        ds = control_api.save_dataset(dataset=ds).dataset
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="discount"),
+                ds.find_field(title="city"),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
+        assert result_resp.bi_status_code == "ERR.DS_API.SOURCE_CONFIG.TEMPLATE_INVALID"
+
+    def test_connection_template_disabled(
+        self,
+        control_api_sync_client: SyncHttpClientBase,
+        data_api: SyncHttpDataApiV2,
+        saved_connection_id: str,
+        saved_dataset: Dataset,
+    ):
+        control_api_sync_client.put(
+            f"/api/v1/connections/{saved_connection_id}",
+            data=json.dumps({"raw_sql_level": dl_constants_enums.RawSQLLevel.subselect.value}),
+            content_type="application/json",
+        )
+
+        ds = saved_dataset
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="discount"),
+                ds.find_field(title="city"),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
+        assert result_resp.bi_status_code == "ERR.DS_API.SOURCE_CONFIG.CONNECTION_TEMPLATE_DISABLED"
 
     def test_update_parameter_default_value(
         self,

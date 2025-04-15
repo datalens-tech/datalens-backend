@@ -30,7 +30,7 @@ class TestSourceTemplate(DefaultApiTestBase):
         sample_table: DbTable,
     ):
         table_name = sample_table.name
-        ds = Dataset()
+        ds = Dataset(template_enabled=True)
         parameter = StringParameterValue(value=table_name)
         ds.result_schema["table_name"] = ds.field(
             cast=parameter.type,
@@ -51,6 +51,38 @@ class TestSourceTemplate(DefaultApiTestBase):
         assert ds.sources["source_1"].parameters["subsql"] == "SELECT * FROM {{table_name}}"
         assert len(ds.sources["source_1"].raw_schema) == 21  # raw schema is properly fetched
 
+    def test_dataset_template_disabled(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_connection_id: str,
+        sample_table: DbTable,
+    ):
+        table_name = sample_table.name
+        ds = Dataset(template_enabled=False)
+        parameter = StringParameterValue(value=table_name)
+        ds.result_schema["table_name"] = ds.field(
+            cast=parameter.type,
+            default_value=parameter,
+            value_constraint=None,
+            template_enabled=True,
+        )
+        ds.sources["source_1"] = ds.source(
+            connection_id=saved_connection_id,
+            source_type=SOURCE_TYPE_CH_SUBSELECT.name,
+            parameters=dict(subsql="SELECT * FROM {{table_name}}"),
+        )
+
+        ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
+        response = control_api.apply_updates(dataset=ds, fail_ok=True)
+
+        assert response.status_code == 400
+        assert response.bi_status_code == "ERR.DS_API.VALIDATION.ERROR"
+        component_errors = response.json["dataset"]["component_errors"]["items"]
+
+        assert len(component_errors) == 1
+        assert component_errors[0]["type"] == "data_source"
+        assert component_errors[0]["errors"][0]["code"] == "ERR.DS_API.DB.INVALID_QUERY"
+
     def test_parameter_template_disabled(
         self,
         control_api: SyncHttpDatasetApiV1,
@@ -58,7 +90,7 @@ class TestSourceTemplate(DefaultApiTestBase):
         sample_table: DbTable,
     ):
         table_name = sample_table.name
-        ds = Dataset()
+        ds = Dataset(template_enabled=True)
         parameter = StringParameterValue(value=table_name)
         ds.result_schema["table_name"] = ds.field(
             cast=parameter.type,
@@ -87,7 +119,7 @@ class TestSourceTemplate(DefaultApiTestBase):
         control_api: SyncHttpDatasetApiV1,
         saved_connection_id: str,
     ):
-        ds = Dataset()
+        ds = Dataset(template_enabled=True)
         parameter = StringParameterValue(value="invalid_table_name")
         ds.result_schema["table_name"] = ds.field(
             cast=parameter.type,
@@ -127,7 +159,7 @@ class TestSettingsDisabledSourceTemplate(DefaultApiTestBase):
         sample_table: DbTable,
     ):
         table_name = sample_table.name
-        ds = Dataset()
+        ds = Dataset(template_enabled=True)
         parameter = StringParameterValue(value=table_name)
         ds.result_schema["table_name"] = ds.field(
             cast=parameter.type,
@@ -150,7 +182,7 @@ class TestSettingsDisabledSourceTemplate(DefaultApiTestBase):
 
         assert len(component_errors) == 1
         assert component_errors[0]["type"] == "data_source"
-        assert component_errors[0]["errors"][0]["code"] == "ERR.DS_API.DB.INVALID_QUERY"
+        assert component_errors[0]["errors"][0]["code"] == "ERR.DS_API.SOURCE_CONFIG.CONNECTION_TEMPLATE_DISABLED"
 
 
 class TestConnectionDisabledSourceTemplate(DefaultApiTestBase):
@@ -167,7 +199,7 @@ class TestConnectionDisabledSourceTemplate(DefaultApiTestBase):
         sample_table: DbTable,
     ):
         table_name = sample_table.name
-        ds = Dataset()
+        ds = Dataset(template_enabled=True)
         parameter = StringParameterValue(value=table_name)
         ds.result_schema["table_name"] = ds.field(
             cast=parameter.type,
@@ -189,4 +221,4 @@ class TestConnectionDisabledSourceTemplate(DefaultApiTestBase):
 
         assert len(component_errors) == 1
         assert component_errors[0]["type"] == "data_source"
-        assert component_errors[0]["errors"][0]["code"] == "ERR.DS_API.DB.INVALID_QUERY"
+        assert component_errors[0]["errors"][0]["code"] == "ERR.DS_API.SOURCE_CONFIG.CONNECTION_TEMPLATE_DISABLED"
