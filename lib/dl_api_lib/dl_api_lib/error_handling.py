@@ -91,6 +91,7 @@ EXCEPTION_CODES = {
     common_exc.UnknownEntryMigration: status.NOT_IMPLEMENTED,
     common_exc.FailedToLoadSchema: status.BAD_REQUEST,
     common_exc.InvalidRequestError: status.BAD_REQUEST,
+    exc.DatasetExportError: status.BAD_REQUEST,
 }
 
 

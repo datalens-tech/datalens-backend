@@ -26,6 +26,21 @@ class DatasetRevisionMismatch(DLBaseException):
     default_message = "Dataset version mismatch. Refresh the page to continue."
 
 
+class WorkbookExportError(DLBaseException):
+    err_code = DLBaseException.err_code + ["WB_EXPORT"]
+    default_message = "Error while performing workbook export."
+
+
+class DatasetExportError(DLBaseException):
+    err_code = WorkbookExportError.err_code + ["DS"]
+    default_message = "Error while performing dataset export."
+
+
+class ConnectionExportError(DLBaseException):
+    err_code = WorkbookExportError.err_code + ["CONN"]
+    default_message = "Error while performing connection export."
+
+
 class _DLValidationResult(DLBaseException):
     err_code = DLBaseException.err_code + ["VALIDATION"]
     default_message = ""
