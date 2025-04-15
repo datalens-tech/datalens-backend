@@ -109,6 +109,10 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         export_resp = control_api.export_dataset(saved_dataset, data=export_data, bi_headers=bi_headers)
         assert export_resp.status_code == 400
 
+        export_data: dict = {"id_mapping": {}}
+        export_resp = control_api.export_dataset(saved_dataset, data=export_data, bi_headers=bi_headers)
+        assert export_resp.status_code == 400
+
         # test common export
         export_data = {"id_mapping": {saved_connection_id: "conn_id_1"}}
         export_resp = control_api.export_dataset(saved_dataset, data=export_data, bi_headers=bi_headers)
