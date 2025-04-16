@@ -4,7 +4,9 @@ from dl_formula.definitions.base import (
     TranslationVariant,
     TranslationVariantWrapped,
 )
+from dl_formula.definitions.common_datetime import ensure_naive_first_arg
 import dl_formula.definitions.functions_datetime as base
+from dl_formula.shortcuts import n
 
 from dl_connector_trino.formula.constants import TrinoDialect as D
 
@@ -29,7 +31,11 @@ DEFINITIONS_DATETIME = [
             V(D.TRINO, lambda timestamp, unit, num: sa.func.date_add(unit, num, timestamp)),
         ]
     ),
-    # base.FuncDateadd3DatetimeTZNonConstNum.for_dialect(D.TRINO),
+    base.FuncDateadd3DatetimeTZNonConstNum(
+        variants=[
+            V(D.TRINO, lambda timestamp, unit, num: sa.func.date_add(unit, num, timestamp)),
+        ]
+    ),
     # datepart
     base.FuncDatepart2Legacy.for_dialect(D.TRINO),
     base.FuncDatepart2.for_dialect(D.TRINO),
@@ -54,7 +60,14 @@ DEFINITIONS_DATETIME = [
             ),
         ]
     ),
-    # base.FuncDatetrunc2DatetimeTZ.for_dialect(D.TRINO),
+    base.FuncDatetrunc2DatetimeTZ(
+        variants=[
+            V(
+                D.TRINO,
+                lambda datetime, unit: sa.func.date_trunc(base.norm_datetrunc_unit(unit), datetime),
+            ),
+        ]
+    ),
     # base.FuncDatetrunc3Date.for_dialect(D.TRINO),
     # base.FuncDatetrunc3Datetime.for_dialect(D.TRINO),
     # day
@@ -63,7 +76,11 @@ DEFINITIONS_DATETIME = [
             V(D.TRINO, sa.func.day),
         ]
     ),
-    # base.FuncDayDatetimeTZ.for_dialect(D.TRINO),
+    base.FuncDayDatetimeTZ(
+        variants=[
+            VW(D.TRINO, ensure_naive_first_arg(n.func.DAY)),
+        ]
+    ),
     # dayofweek
     base.FuncDayofweek1(
         variants=[
@@ -75,7 +92,11 @@ DEFINITIONS_DATETIME = [
             V(D.TRINO, lambda date, firstday: base.dow_firstday_shift(sa.func.day_of_week(date), firstday)),
         ]
     ),
-    # base.FuncDayofweek2TZ.for_dialect(D.TRINO),
+    base.FuncDayofweek2TZ(
+        variants=[
+            V(D.TRINO, lambda date, firstday: base.dow_firstday_shift(sa.func.day_of_week(date), firstday)),
+        ]
+    ),
     # genericnow
     base.FuncGenericNow(
         variants=[
@@ -93,7 +114,11 @@ DEFINITIONS_DATETIME = [
             V(D.TRINO, sa.func.hour),
         ]
     ),
-    # base.FuncHourDatetimeTZ.for_dialect(D.TRINO),
+    base.FuncHourDatetimeTZ(
+        variants=[
+            VW(D.TRINO, ensure_naive_first_arg(n.func.HOUR)),
+        ]
+    ),
     # minute
     base.FuncMinuteDate(
         variants=[
@@ -105,14 +130,22 @@ DEFINITIONS_DATETIME = [
             V(D.TRINO, sa.func.minute),
         ]
     ),
-    # base.FuncMinuteDatetimeTZ.for_dialect(D.TRINO),
+    base.FuncMinuteDatetimeTZ(
+        variants=[
+            VW(D.TRINO, ensure_naive_first_arg(n.func.MINUTE)),
+        ]
+    ),
     # month
     base.FuncMonth(
         variants=[
             V(D.TRINO, sa.func.month),
         ]
     ),
-    # base.FuncMonthDatetimeTZ.for_dialect(D.TRINO),
+    base.FuncMonthDatetimeTZ(
+        variants=[
+            VW(D.TRINO, ensure_naive_first_arg(n.func.MONTH)),
+        ]
+    ),
     # now
     base.FuncNow(
         variants=[
@@ -125,7 +158,11 @@ DEFINITIONS_DATETIME = [
             V(D.TRINO, sa.func.quarter),
         ]
     ),
-    # base.FuncQuarterDatetimeTZ.for_dialect(D.TRINO),
+    base.FuncQuarterDatetimeTZ(
+        variants=[
+            VW(D.TRINO, ensure_naive_first_arg(n.func.QUARTER)),
+        ]
+    ),
     # second
     base.FuncSecondDate(
         variants=[
@@ -137,7 +174,11 @@ DEFINITIONS_DATETIME = [
             V(D.TRINO, sa.func.second),
         ]
     ),
-    # base.FuncSecondDatetimeTZ.for_dialect(D.TRINO),
+    base.FuncSecondDatetimeTZ(
+        variants=[
+            VW(D.TRINO, ensure_naive_first_arg(n.func.SECOND)),
+        ]
+    ),
     # today
     base.FuncToday(
         variants=[
@@ -150,12 +191,20 @@ DEFINITIONS_DATETIME = [
             V(D.TRINO, sa.func.week),
         ]
     ),
-    # base.FuncWeekTZ.for_dialect(D.TRINO),
+    base.FuncWeekTZ(
+        variants=[
+            VW(D.TRINO, ensure_naive_first_arg(n.func.WEEK)),
+        ]
+    ),
     # year
     base.FuncYear(
         variants=[
             V(D.TRINO, sa.func.year),
         ]
     ),
-    # base.FuncYearDatetimeTZ.for_dialect(D.TRINO),
+    base.FuncYearDatetimeTZ(
+        variants=[
+            VW(D.TRINO, ensure_naive_first_arg(n.func.YEAR)),
+        ]
+    ),
 ]

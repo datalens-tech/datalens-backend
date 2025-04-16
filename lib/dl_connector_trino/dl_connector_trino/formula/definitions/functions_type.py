@@ -1,5 +1,6 @@
 import sqlalchemy as sa
 from sqlalchemy.sql import functions
+from sqlalchemy.sql.elements import ClauseElement
 import trino.sqlalchemy.datatype as tsa
 
 from dl_formula.core.datatype import DataType
@@ -8,9 +9,12 @@ from dl_formula.definitions.base import (
     Function,
     SingleVariantTranslationBase,
     TranslationVariant,
+    TranslationVariantWrapped,
 )
+from dl_formula.definitions.common_datetime import ensure_naive_first_arg
 import dl_formula.definitions.functions_type as base
 from dl_formula.definitions.scope import Scope
+from dl_formula.shortcuts import n
 from dl_formula.translation.context import TranslationCtx
 
 from dl_connector_trino.formula.constants import TrinoDialect as D
@@ -18,6 +22,7 @@ from dl_connector_trino.formula.definitions.functions_array import format_float
 
 
 V = TranslationVariant.make
+VW = TranslationVariantWrapped.make
 
 
 class FuncDbCastTrino(base.FuncDbCastBase):
@@ -109,26 +114,62 @@ class FuncStrFromArrayFloatTrino(base.FuncStrFromArray):
     ]
 
 
-class FuncDatetimeTZTrino(
-    base.FuncDatetimeTZConst,
-):
+class FuncDatetimeTZTrino(SingleVariantTranslationBase, base.FuncDatetimeTZ):
     dialects = D.TRINO
     argument_types = [
         ArgTypeSequence(
             [
                 {
+                    DataType.DATETIME,
+                    DataType.GENERICDATETIME,
+                    DataType.DATETIMETZ,
+                    DataType.INTEGER,
+                    DataType.FLOAT,
                     DataType.STRING,
-                    DataType.CONST_DATETIME,
-                    DataType.CONST_GENERICDATETIME,
-                    DataType.CONST_DATETIMETZ,
-                    DataType.CONST_INTEGER,
-                    DataType.CONST_FLOAT,
-                    DataType.CONST_STRING,
                 },
                 DataType.CONST_STRING,
             ]
         ),
     ]
+
+    @classmethod
+    def _translate_main(cls, value_ctx: TranslationCtx, tz_ctx: TranslationCtx) -> ClauseElement:
+        value = value_ctx.expression
+        value_type = value_ctx.data_type
+        tz = tz_ctx.expression
+
+        if value_type in (DataType.DATETIMETZ, DataType.GENERICDATETIME):
+            assert value
+            return value
+
+        elif value_type is DataType.DATETIME:
+            dt = value
+
+        elif value_type is DataType.STRING:
+            dt = sa.cast(sa.func.from_iso8601_timestamp(value), tsa.TIMESTAMP(timezone=False))
+
+        elif value_type in (DataType.INTEGER, DataType.FLOAT):
+            dt = sa.func.from_unixtime(value)
+
+        else:
+            raise Exception("Unexpected value type, likely a translation definition error", value_type)
+
+        dt_tz = sa.func.with_timezone(dt, tz)
+        return sa.func.at_timezone(dt_tz, "UTC")
+
+
+class FuncDatetimeTZToNaiveTrino(base.FuncDatetimeTZToNaive):
+    dialects = D.TRINO
+
+    @classmethod
+    def _translate_main(cls, value_ctx: TranslationCtx) -> ClauseElement:
+        expr = value_ctx.expression
+        assert value_ctx.data_type_params
+        tz = value_ctx.data_type_params.timezone
+        assert tz
+
+        tz_unaware = sa.cast(sa.func.at_timezone(expr, tz), tsa.TIMESTAMP(timezone=False))
+        return sa.func.with_timezone(tz_unaware, "UTC")
 
 
 # Note: `SingleVariantTranslationBase` here essentially acts as a mixin, providing
@@ -168,6 +209,11 @@ DEFINITIONS_TYPE = [
     # date
     base.FuncDate1FromNull.for_dialect(D.TRINO),
     base.FuncDate1FromDatetime.for_dialect(D.TRINO),
+    base.FuncDate1FromDatetimeTZ(
+        variants=[
+            V(D.TRINO, lambda expr: sa.cast(expr.expression, sa.DATE)),
+        ]
+    ),
     base.FuncDate1FromString.for_dialect(D.TRINO),
     base.FuncDate1FromNumber(
         variants=[
@@ -186,7 +232,10 @@ DEFINITIONS_TYPE = [
     base.FuncDatetime1FromString.for_dialect(D.TRINO),
     FuncDatetime2Trino(),
     # datetimetz
+    base.FuncDatetimeTZConst.for_dialect(D.TRINO),
     FuncDatetimeTZTrino(),
+    # datetimetz_to_naive
+    FuncDatetimeTZToNaiveTrino(),
     # db_cast
     FuncDbCastTrino2(),
     FuncDbCastTrino3(),
@@ -309,6 +358,11 @@ DEFINITIONS_TYPE = [
     base.FuncStrFromDatetime(
         variants=[
             V(D.TRINO, lambda value: sa.func.date_format(value, "%Y-%m-%d %H:%i:%s")),
+        ]
+    ),
+    base.FuncStrFromDatetimeTZ(
+        variants=[
+            VW(D.TRINO, ensure_naive_first_arg(n.func.STR)),
         ]
     ),
     base.FuncStrFromString.for_dialect(D.TRINO),
