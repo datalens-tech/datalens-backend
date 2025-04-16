@@ -305,6 +305,9 @@ class DatasetExportItem(DatasetResource):
 
         notifications = []
         us_manager = self.get_service_us_manager()
+
+        self.enrich_us_with_tenant_header(us_manager)
+
         ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
         utils.need_permission_on_entry(ds, USPermissionKind.read)
         ds_dict = ds.as_dict()
@@ -371,6 +374,12 @@ class DatasetImportCollection(DatasetResource):
         self.replace_conn_ids(data, body["id_mapping"])
 
         us_manager = self.get_service_us_manager()
+        self.enrich_us_with_tenant_header(us_manager)
+
+        tenant = self.get_current_rci().tenant
+        if tenant is not None:
+            us_manager.set_tenant_override(tenant)
+
         dataset = Dataset.create_from_dict(
             Dataset.DataModel(name=""),
             ds_key=self.generate_dataset_location(data),

@@ -133,4 +133,10 @@ class BIResource(Resource, metaclass=BIResourceMeta):
         assert isinstance(service_registry, ApiServiceRegistry)
         return service_registry
 
+    @classmethod
+    def enrich_us_with_tenant_header(cls, usm: SyncUSManager) -> None:
+        tenant = cls.get_current_rci().tenant
+        if tenant is not None:
+            usm.set_tenant_override(tenant)
+
     profile_methods = ("get", "post", "delete", "put", "patch", "options", "head")
