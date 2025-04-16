@@ -11,7 +11,7 @@ fi
 
 GUNICORN_LISTEN_PORT="${BI_API_GUNICORN_LISTEN_PORT:-${GUNICORN_LISTEN_PORT:-${HTTP_BIND_PORT}}}"
 
-exec gunicorn eas_data_api.app:create_gunicorn_app \
+exec gunicorn dl_data_api.app:create_gunicorn_app \
     --config "${BI_API_GUNICORN_CONFIG:-${GUNICORN_CONFIG}}" \
     --log-config "${BI_API_GUNICORN_LOG_CONFIG:-${GUNICORN_LOG_CONFIG}}" \
     --bind "${HTTP_BIND_ADDR}:${GUNICORN_LISTEN_PORT}" \
