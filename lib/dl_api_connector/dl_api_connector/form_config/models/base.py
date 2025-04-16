@@ -40,6 +40,9 @@ class FormUIOverride(SerializableConfig):
     show_create_ql_chart_btn: Optional[bool] = attr.ib(
         default=None, metadata=remap_skip_if_null("showCreateQlChartButton")
     )
+    show_create_editor_chart_btn: Optional[bool] = attr.ib(
+        default=None, metadata=remap_skip_if_null("showCreateEditorChartButton")
+    )
 
 
 TOP_LEVEL_NON_CONFIG_FIELDS: set[TopLevelFieldName] = {field_name for field_name in TopLevelFieldName}
