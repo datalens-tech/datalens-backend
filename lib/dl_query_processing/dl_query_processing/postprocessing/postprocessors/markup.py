@@ -343,10 +343,10 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
                 text, tooltip, placement = funcargs
             elif len(funcargs) == 2:
                 text, tooltip = funcargs
-                placement = "right"
+                placement = "auto"
             else:
                 return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
-            if placement not in ["top", "right", "bottom", "left"]:
+            if placement not in ["top", "right", "bottom", "left", "auto"]:
                 raise ValidationError('Placement can only be "top", "right", "bottom" or "left"')
 
             return dict(

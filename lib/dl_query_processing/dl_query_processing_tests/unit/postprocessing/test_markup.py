@@ -87,7 +87,7 @@ def _test_markup_postprocessing_i(cls, check_nodes=True):
                 "type": "tooltip",
                 "content": {"type": "text", "content": "tooltip_text"},
                 "tooltip": {"type": "text", "content": "tooltip_tooltip"},
-                "placement": "right",
+                "placement": "auto",
             },
         ],
     }
