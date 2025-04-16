@@ -10,13 +10,14 @@ import attr
 from dl_core.base_models import (
     ConnCacheableDataModelMixin,
     ConnectionDataModelBase,
-    ConnSubselectDataModelMixin,
+    ConnRawSqlLevelDataModelMixin,
 )
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.us_connection_base import (
     ConnectionBase,
     ConnectionSQL,
     DataSourceTemplate,
+    make_subselect_datasource_template,
 )
 from dl_i18n.localizer_base import Localizer
 from dl_utils.utils import DataKey
@@ -41,7 +42,11 @@ class ConnectionSQLBigQuery(ConnectionSQL):
     is_always_user_source: ClassVar[bool] = True
 
     @attr.s
-    class DataModel(ConnCacheableDataModelMixin, ConnSubselectDataModelMixin, ConnectionDataModelBase):
+    class DataModel(
+        ConnCacheableDataModelMixin,
+        ConnRawSqlLevelDataModelMixin,
+        ConnectionDataModelBase,
+    ):
         credentials: str = attr.ib(kw_only=True)
         project_id: str = attr.ib(kw_only=True)
         data_export_forbidden: bool = attr.ib(default=False)
@@ -79,7 +84,14 @@ class ConnectionSQLBigQuery(ConnectionSQL):
         ]
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
-        return self._make_subselect_templates(source_type=SOURCE_TYPE_BIGQUERY_SUBSELECT, localizer=localizer)
+        return [
+            make_subselect_datasource_template(
+                connection_id=self.uuid,  # type: ignore
+                source_type=SOURCE_TYPE_BIGQUERY_SUBSELECT,
+                localizer=localizer,
+                disabled=not self.is_subselect_allowed,
+            )
+        ]
 
     @property
     def allow_public_usage(self) -> bool:

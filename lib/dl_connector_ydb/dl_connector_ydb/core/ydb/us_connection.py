@@ -14,6 +14,7 @@ from dl_core.us_connection_base import (
     ClassicConnectionSQL,
     ConnectionBase,
     DataSourceTemplate,
+    make_subselect_datasource_template,
 )
 from dl_core.utils import secrepr
 from dl_i18n.localizer_base import Localizer
@@ -92,11 +93,14 @@ class YDBConnection(ClassicConnectionSQL):
                 group=[],
                 connection_id=self.uuid,  # type: ignore  # TODO: fix
             ),
-        ] + self._make_subselect_templates(
-            title="Subselect over YDB",
-            source_type=SOURCE_TYPE_YDB_SUBSELECT,
-            localizer=localizer,
-        )
+            make_subselect_datasource_template(
+                connection_id=self.uuid,  # type: ignore
+                source_type=SOURCE_TYPE_YDB_SUBSELECT,
+                localizer=localizer,
+                disabled=not self.is_subselect_allowed,
+                title="Subselect over YDB",
+            ),
+        ]
 
     def get_tables(
         self,

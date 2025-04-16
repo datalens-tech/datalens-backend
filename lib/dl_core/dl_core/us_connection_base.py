@@ -32,6 +32,7 @@ from dl_constants.enums import (
     DataSourceType,
     MigrationStatus,
     NotificationLevel,
+    RawSQLLevel,
     UserDataType,
     is_raw_sql_level_dashsql_allowed,
     is_raw_sql_level_subselect_allowed,
@@ -41,7 +42,7 @@ from dl_core.base_models import (
     ConnCacheableDataModelMixin,
     ConnectionDataModelBase,
     ConnectionRef,
-    ConnSubselectDataModelMixin,
+    ConnRawSqlLevelDataModelMixin,
     DefaultConnectionRef,
     EntryLocation,
     WorkbookEntryLocation,
@@ -103,6 +104,35 @@ class DataSourceTemplate(NamedTuple):
         )
 
 
+def make_subselect_datasource_template(
+    connection_id: str,
+    source_type: DataSourceType,
+    localizer: Localizer,
+    disabled: bool,
+    title: str = "SQL",
+    field_doc_key: str = "ANY_SUBSELECT/subsql",
+) -> DataSourceTemplate:
+    return DataSourceTemplate(
+        title=title,
+        tab_title=localizer.translate(Translatable("source_templates-tab_title-sql")),
+        source_type=source_type,
+        form=[
+            {
+                "name": "subsql",
+                "input_type": "sql",
+                "default": "select 1 as a",
+                "required": True,  # Note: `required` means `disallow an empty value` (e.g. an empty string).
+                "title": localizer.translate(Translatable("source_templates-label-subquery")),
+                "field_doc_key": field_doc_key,
+            },
+        ],
+        disabled=disabled,
+        group=[],
+        connection_id=connection_id,
+        parameters={},
+    )
+
+
 @attr.s(frozen=True)
 class RequiredParameterInfo:
     name: str = attr.ib(kw_only=True)
@@ -144,7 +174,6 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     conn_type: ConnectionType
     source_type: ClassVar[Optional[DataSourceType]] = None
     allowed_source_types: ClassVar[Optional[frozenset[DataSourceType]]] = None
-    allow_dashsql: ClassVar[bool] = False
     allow_cache: ClassVar[bool] = False
     allow_export: ClassVar[bool] = False
     is_always_internal_source: ClassVar[bool] = False
@@ -240,7 +269,6 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     @property
     def is_dashsql_allowed(self) -> bool:
-        """Placeholder, should normally be overridden by `SubselectMixin`"""
         return False
 
     @property
@@ -478,57 +506,40 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         return conn_executor.get_tables(SchemaIdent(db_name=db_name, schema_name=schema_name))
 
 
-class SubselectMixin:
-    # Not included: DataModel.raw_sql_level
+class RawSqlLevelConnectionMixin(ConnectionBase):
+    allow_dashsql: ClassVar[bool] = False
+
+    @property
+    def _raw_sql_level(self) -> RawSQLLevel:
+        assert isinstance(self.data, ConnRawSqlLevelDataModelMixin)
+        return self.data.raw_sql_level
 
     @property
     def is_subselect_allowed(self) -> bool:
-        return is_raw_sql_level_subselect_allowed(self.data.raw_sql_level)  # type: ignore  # TODO: add raw_sql_level
+        return is_raw_sql_level_subselect_allowed(self._raw_sql_level)
+
+    @property
+    def is_template_allowed(self) -> bool:
+        return is_raw_sql_level_subselect_allowed(self._raw_sql_level)
 
     @property
     def is_dashsql_allowed(self) -> bool:
-        if not self.allow_dashsql:  # type: ignore  # TODO: fix
+        if not self.allow_dashsql:
             return False
 
-        return is_raw_sql_level_dashsql_allowed(self.data.raw_sql_level)  # type: ignore  # TODO: add raw_sql_level
-
-    def _make_subselect_templates(
-        self,
-        source_type: DataSourceType,
-        localizer: Localizer,
-        title: str = "SQL",
-        field_doc_key: str = "ANY_SUBSELECT/subsql",
-    ) -> list[DataSourceTemplate]:
-        allowed = self.is_subselect_allowed
-        return [
-            DataSourceTemplate(
-                title=title,
-                tab_title=localizer.translate(Translatable("source_templates-tab_title-sql")),
-                source_type=source_type,
-                form=[
-                    {
-                        "name": "subsql",
-                        "input_type": "sql",
-                        "default": "select 1 as a",
-                        "required": True,  # Note: `required` means `disallow an empty value` (e.g. an empty string).
-                        "title": localizer.translate(Translatable("source_templates-label-subquery")),
-                        "field_doc_key": field_doc_key,
-                    },
-                ],
-                disabled=not allowed,
-                group=[],
-                connection_id=self.uuid,  # type: ignore  # TODO: fix
-                parameters={},
-            ),
-        ]
+        return is_raw_sql_level_dashsql_allowed(self._raw_sql_level)
 
 
-class ConnectionSQL(SubselectMixin, ConnectionBase):
+class ConnectionSQL(RawSqlLevelConnectionMixin, ConnectionBase):
     has_schema: ClassVar[bool] = False
     default_schema_name: ClassVar[Optional[str]] = None
 
     @attr.s(kw_only=True)
-    class DataModel(ConnCacheableDataModelMixin, ConnSubselectDataModelMixin, ConnectionBase.DataModel):
+    class DataModel(
+        ConnCacheableDataModelMixin,
+        ConnRawSqlLevelDataModelMixin,
+        ConnectionBase.DataModel,
+    ):
         host: Optional[str] = attr.ib(default=None)
         port: Optional[int] = attr.ib(default=None)
         db_name: Optional[str] = attr.ib(default=None)

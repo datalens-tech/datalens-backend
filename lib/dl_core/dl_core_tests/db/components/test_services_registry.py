@@ -1,4 +1,4 @@
-from typing import Optional
+import typing
 
 import pytest
 
@@ -16,18 +16,20 @@ from dl_i18n.localizer_base import Localizer
 
 
 class LocalEntityUsageChecker(EntityUsageChecker):
+    IS_DASHSQL_ALLOWED: typing.ClassVar[bool] = True
+
     def ensure_dataset_can_be_used(
         self,
         rci: RequestContextInfo,
         dataset: Dataset,
         us_manager: USManagerBase,
-        localizer: Optional[Localizer] = None,
+        localizer: Localizer | None = None,
     ) -> None:
         if not dataset.data.load_preview_by_default:
             raise EntityUsageNotAllowed("Preview should be enabled by default!")
 
     def ensure_data_connection_can_be_used(self, rci: RequestContextInfo, conn: ConnectionBase):
-        if not conn.allow_dashsql:
+        if not self.IS_DASHSQL_ALLOWED:
             raise EntityUsageNotAllowed("DashSQL should be allowed!")
 
 
@@ -62,7 +64,7 @@ class TestServicesRegistry(DefaultCoreTestClass):
 
         # test ensure_data_connection_can_be_used
         assert ce_factory.get_async_conn_executor(saved_connection) is not None
-        saved_connection.allow_dashsql = False
+        LocalEntityUsageChecker.IS_DASHSQL_ALLOWED = False
         with pytest.raises(EntityUsageNotAllowed, match="^DashSQL should be allowed!$"):
             ce_factory.get_async_conn_executor(saved_connection)
 

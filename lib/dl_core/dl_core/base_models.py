@@ -140,5 +140,5 @@ class ConnCacheableDataModelMixin:
 
 
 @attr.s
-class ConnSubselectDataModelMixin:
+class ConnRawSqlLevelDataModelMixin:
     raw_sql_level: RawSQLLevel = attr.ib(kw_only=True, default=RawSQLLevel.off)
