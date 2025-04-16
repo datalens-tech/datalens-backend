@@ -8,7 +8,6 @@ from dl_core.data_source_spec.sql import (
     StandardSchemaSQLDataSourceSpec,
     SubselectDataSourceSpec,
 )
-from dl_core.db import SchemaColumn
 from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
 from dl_core_testing.testcases.data_source import (
     DataSourceTestByViewClass,
@@ -73,13 +72,7 @@ class TestMSSQLSubselectDataSource(
         return dsrc_spec
 
     def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
-        remapped_types = {UserDataType.date: UserDataType.string}
-        expected_schema = [
-            # MSSQL cannot identify dates in sub-queries correctly
-            (name, remapped_types.get(user_type, user_type))
-            for name, user_type in TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema
-        ]
-        return expected_schema
+        return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)
 
 
 class TestMSSQLSubselectByView(
@@ -101,14 +94,3 @@ class TestMSSQLSubselectByView(
             subsql=SUBSELECT_QUERY_FULL,
         )
         return dsrc_spec
-
-    def postprocess_view_schema_column(self, schema_col: SchemaColumn) -> SchemaColumn:
-        # MSSQL subselect schema does not use a cursor-based types
-        # (it uses `sp_describe_first_result_set`)
-        # but it still manages to make some critical failures,
-        # representing date/datetime type as a string type.
-        if schema_col.native_type.name in ("date", "datetime2", "datetimeoffset"):
-            schema_col = schema_col.clone(
-                user_type=UserDataType.string, native_type=schema_col.native_type.clone(name="nvarchar")
-            )
-        return schema_col

@@ -70,6 +70,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
         bool: ms_types.BIT,
         str: ms_types.NTEXT,
         datetime.datetime: ms_types.DATETIME,
+        datetime.date: ms_types.DATE,
     }
 
     MSSQL_LIST_SOURCES_ALL_SCHEMAS_SQL = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.TABLES;"
