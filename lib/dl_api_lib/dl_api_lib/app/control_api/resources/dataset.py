@@ -376,10 +376,6 @@ class DatasetImportCollection(DatasetResource):
         us_manager = self.get_service_us_manager()
         self.enrich_us_with_tenant_header(us_manager)
 
-        tenant = self.get_current_rci().tenant
-        if tenant is not None:
-            us_manager.set_tenant_override(tenant)
-
         dataset = Dataset.create_from_dict(
             Dataset.DataModel(name=""),
             ds_key=self.generate_dataset_location(data),
