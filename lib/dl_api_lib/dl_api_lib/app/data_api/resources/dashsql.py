@@ -34,7 +34,7 @@ from dl_core.data_processing.dashsql import (
 from dl_core.exc import UnexpectedUSEntryType
 from dl_core.us_connection_base import (
     ConnectionBase,
-    SubselectMixin,
+    RawSqlLevelConnectionMixin,
 )
 from dl_dashsql.exc import DashSQLError
 from dl_dashsql.formatting.base import QueryIncomingParameter
@@ -227,7 +227,7 @@ class DashSQLView(BaseView):
 
         self.enrich_logging_context(conn)
 
-        if not isinstance(conn, SubselectMixin) or not isinstance(conn, ConnectionBase):
+        if not isinstance(conn, RawSqlLevelConnectionMixin):
             raise UnexpectedUSEntryType("Expecting a subselect-compatible connection")
 
         # A slightly more explicit check (which should have been done in `get_by_id` anyway):

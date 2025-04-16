@@ -10,6 +10,7 @@ import attr
 from dl_core.us_connection_base import (
     ClassicConnectionSQL,
     DataSourceTemplate,
+    make_subselect_datasource_template,
 )
 from dl_i18n.localizer_base import Localizer
 
@@ -47,7 +48,14 @@ class ConnectionMySQL(ClassicConnectionSQL):
         )
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
-        return self._make_subselect_templates(source_type=SOURCE_TYPE_MYSQL_SUBSELECT, localizer=localizer)
+        return [
+            make_subselect_datasource_template(
+                connection_id=self.uuid,  # type: ignore
+                source_type=SOURCE_TYPE_MYSQL_SUBSELECT,
+                localizer=localizer,
+                disabled=not self.is_subselect_allowed,
+            )
+        ]
 
     @property
     def allow_public_usage(self) -> bool:

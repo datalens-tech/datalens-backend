@@ -13,6 +13,7 @@ from dl_core.us_connection_base import (
     ClassicConnectionSQL,
     ConnectionBase,
     DataSourceTemplate,
+    make_subselect_datasource_template,
 )
 from dl_i18n.localizer_base import Localizer
 
@@ -57,7 +58,14 @@ class ConnectionSQLOracle(ClassicConnectionSQL):
         )
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
-        return self._make_subselect_templates(source_type=SOURCE_TYPE_ORACLE_SUBSELECT, localizer=localizer)
+        return [
+            make_subselect_datasource_template(
+                connection_id=self.uuid,  # type: ignore
+                source_type=SOURCE_TYPE_ORACLE_SUBSELECT,
+                localizer=localizer,
+                disabled=not self.is_subselect_allowed,
+            )
+        ]
 
     def get_parameter_combinations(
         self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase]
