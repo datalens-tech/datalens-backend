@@ -56,13 +56,37 @@ DEFINITIONS_AGG = [
     # max
     base.AggMax.for_dialect(D.TRINO),
     # median
-    # base.AggMedian.for_dialect(D.TRINO),
+    base.AggMedian(
+        variants=[
+            V(
+                D.TRINO,
+                lambda expr: sa.func.element_at(
+                    sa.func.array_sort(sa.func.array_agg(expr)),
+                    sa.func.count(expr) / 2 + 1,
+                ),
+            ),
+        ]
+    ),
     # min
     base.AggMin.for_dialect(D.TRINO),
     # quantile
-    # base.AggQuantile.for_dialect(D.TRINO),
+    base.AggQuantile(
+        variants=[
+            V(
+                D.TRINO,
+                lambda expr, q: sa.func.element_at(
+                    sa.func.array_sort(sa.func.array_agg(expr)),
+                    sa.cast(sa.func.floor(q * (sa.func.count(expr) - 1)), sa.BIGINT) + 1,
+                ),
+            ),
+        ]
+    ),
     # quantile_approx
-    # base.AggQuantileApproximate.for_dialect(D.TRINO),
+    base.AggQuantileApproximate(
+        variants=[
+            V(D.TRINO, sa.func.approx_percentile),
+        ]
+    ),
     # stdev
     base.AggStdev.for_dialect(D.TRINO),
     # stdevp
