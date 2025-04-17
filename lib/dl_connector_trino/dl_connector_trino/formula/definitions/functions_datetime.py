@@ -39,7 +39,7 @@ DEFINITIONS_DATETIME = [
     # datepart
     base.FuncDatepart2Legacy.for_dialect(D.TRINO),
     base.FuncDatepart2.for_dialect(D.TRINO),
-    # base.FuncDatepart3Const.for_dialect(D.TRINO),
+    base.FuncDatepart3Const.for_dialect(D.TRINO),
     base.FuncDatepart3NonConst.for_dialect(D.TRINO),
     # datetrunc
     base.FuncDatetrunc2Date(
