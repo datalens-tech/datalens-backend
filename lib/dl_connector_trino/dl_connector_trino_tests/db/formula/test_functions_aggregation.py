@@ -9,5 +9,5 @@ class TestMainAggFunctionTrino(TrinoFormulaTestBase, DefaultMainAggFunctionFormu
     supports_median = False
     supports_arg_min_max = True
     supports_any = True
-    supports_all_concat = True
-    supports_top_concat = True
+    supports_all_concat = False  # Can be implemented similar to UNNEST
+    supports_top_concat = False
