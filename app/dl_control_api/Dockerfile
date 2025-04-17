@@ -19,6 +19,7 @@ COPY /README.md /src/$APP_DIR/README.md
 
 # Installation
 WORKDIR /src/metapkg
+ENV SETUPTOOLS_USE_DISTUTILS=stdlib
 RUN poetry export --only app_dl_os_control_api --without-hashes --format=requirements.txt > requirements.txt
 RUN pip install -r requirements.txt
 
@@ -30,7 +31,8 @@ COPY --from=bake_ctx_app_configs /app_configs/api.yaml "$CONFIG_PATH"
 ARG USER=app
 ARG GID=1000
 ARG UID=1000
-RUN groupadd -r -g ${GID} ${USER} && \
+RUN userdel -r ubuntu && \
+    groupadd -r -g ${GID} ${USER} && \
     useradd -mr -g ${USER} -u ${UID} -s /bin/bash ${USER}
 USER ${USER}
 

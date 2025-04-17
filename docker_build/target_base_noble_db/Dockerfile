@@ -5,7 +5,7 @@ RUN apt-get update \
     && apt-get -y upgrade -o Dpkg::Options::="--force-confold" \
     && apt-get install -y --fix-missing \
         # For Oracle
-        libaio1 \
+        libaio1t64 \
         # For MSSQL
         freetds-dev tdsodbc unixodbc unixodbc-dev libtcmalloc-minimal4 \
         # For Postgres

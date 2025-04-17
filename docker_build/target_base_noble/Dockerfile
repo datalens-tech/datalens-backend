@@ -1,5 +1,5 @@
 #syntax=docker/dockerfile:1.4
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 # Installing deb tools
 ENV DEBIAN_FRONTEND noninteractive
@@ -24,8 +24,7 @@ RUN mkdir -p /install
 COPY install_py_310.sh /install/install_py_310.sh
 
 RUN bash /install/install_py_310.sh
-RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
-RUN python3 -m pip install -U pip
+RUN apt-get install --only-upgrade python3-pip
 # TODO FIX: try to install j2cli to dedicated venv & make symlink in /usr/local/bin
 # TODO FIX: pyproject-hooks fix version: https://github.com/python-poetry/poetry/issues/9351
 RUN python3 -m pip install poetry==1.7.1 j2cli==0.3.10 pyproject-hooks==1.0.0
