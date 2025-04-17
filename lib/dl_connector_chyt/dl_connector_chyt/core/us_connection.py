@@ -20,7 +20,7 @@ from dl_core.base_models import (
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.us_connection_base import (
     ConnectionBase,
-    ConnectionHardcodedDataMixin,
+    ConnectionSettingsMixin,
     DataSourceTemplate,
     RawSqlLevelConnectionMixin,
     make_subselect_datasource_template,
@@ -46,10 +46,10 @@ if TYPE_CHECKING:
     from dl_core.services_registry.top_level import ServicesRegistry
 
 
-class BaseConnectionCHYT(  # type: ignore  # 2024-01-24 # TODO: Definition of "us_manager" in base class "USEntry" is incompatible with definition in base class "ConnectionHardcodedDataMixin"  [misc]
+class BaseConnectionCHYT(
     RawSqlLevelConnectionMixin,
+    ConnectionSettingsMixin[CHYTConnectorSettings],
     ConnectionBase,
-    ConnectionHardcodedDataMixin[CHYTConnectorSettings],
     abc.ABC,
 ):
     allow_dashsql: ClassVar[bool] = True

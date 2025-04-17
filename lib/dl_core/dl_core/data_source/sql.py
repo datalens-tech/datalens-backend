@@ -189,7 +189,7 @@ class SubselectDataSource(BaseSQLDataSource):
     _subquery_auto_alias = "source"
 
     def get_sql_source(self, alias: str | None = None) -> ClauseElement:
-        if not self.connection.is_subselect_allowed:  # type: ignore  # 2024-01-24 # TODO: "ConnectionBase" has no attribute "is_subselect_allowed"  [attr-defined]
+        if not self.connection.is_subselect_allowed:
             raise exc.SubselectNotAllowed()
 
         subsql = self.subsql

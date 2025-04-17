@@ -36,6 +36,7 @@ from dl_constants.enums import (
     UserDataType,
     is_raw_sql_level_dashsql_allowed,
     is_raw_sql_level_subselect_allowed,
+    is_raw_sql_level_template_allowed,
 )
 from dl_core import connection_models
 from dl_core.base_models import (
@@ -266,6 +267,10 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     @property
     def type_transformer(self) -> TypeTransformer:
         return get_type_transformer(self.conn_type)
+
+    @property
+    def is_subselect_allowed(self) -> bool:
+        return False
 
     @property
     def is_dashsql_allowed(self) -> bool:
@@ -519,8 +524,8 @@ class RawSqlLevelConnectionMixin(ConnectionBase):
         return is_raw_sql_level_subselect_allowed(self._raw_sql_level)
 
     @property
-    def is_template_allowed(self) -> bool:
-        return is_raw_sql_level_subselect_allowed(self._raw_sql_level)
+    def _is_raw_sql_level_template_allowed(self) -> bool:
+        return is_raw_sql_level_template_allowed(self._raw_sql_level)
 
     @property
     def is_dashsql_allowed(self) -> bool:
@@ -557,6 +562,10 @@ class ConnectionSQL(RawSqlLevelConnectionMixin, ConnectionBase):
     @property
     def db_name(self) -> Optional[str]:
         return self.data.db_name
+
+    @property
+    def is_datasource_template_allowed(self) -> bool:
+        return self._is_raw_sql_level_template_allowed
 
     def get_parameter_combinations(
         self,
@@ -644,21 +653,9 @@ class ConnectionSettingsMixin(ConnectionBase, Generic[CONNECTOR_SETTINGS_TV], me
     def _connector_settings(self) -> CONNECTOR_SETTINGS_TV:
         return _get_connector_settings(self.us_manager, self.conn_type, self.settings_type)
 
-
-class ConnectionHardcodedDataMixin(Generic[CONNECTOR_SETTINGS_TV], metaclass=abc.ABCMeta):
-    """Connector type specific data is loaded from dl_configs.connectors_settings"""
-
-    conn_type: ConnectionType
-    settings_type: Type[CONNECTOR_SETTINGS_TV]
-    us_manager: SyncUSManager
-
     @classmethod
     def _get_connector_settings(cls, usm: SyncUSManager) -> CONNECTOR_SETTINGS_TV:
         return _get_connector_settings(usm, cls.conn_type, cls.settings_type)
-
-    @property
-    def _connector_settings(self) -> CONNECTOR_SETTINGS_TV:
-        return _get_connector_settings(self.us_manager, self.conn_type, self.settings_type)
 
 
 class HiddenDatabaseNameMixin(ConnectionSQL):
