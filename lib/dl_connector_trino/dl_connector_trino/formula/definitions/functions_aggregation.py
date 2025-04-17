@@ -35,7 +35,7 @@ DEFINITIONS_AGG = [
     base.AggAvgFromNumber.for_dialect(D.TRINO),
     base.AggAvgFromDate.for_dialect(D.TRINO),
     base.AggAvgFromDatetime.for_dialect(D.TRINO),
-    # base.AggAvgFromDatetimeTZ.for_dialect(D.TRINO),
+    base.AggAvgFromDatetimeTZ.for_dialect(D.TRINO),
     # avg_if
     base.AggAvgIf.for_dialect(D.TRINO),
     # count
