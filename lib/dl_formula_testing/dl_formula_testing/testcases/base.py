@@ -38,9 +38,10 @@ from dl_formula_testing.table import (
     generate_sample_data,
     get_column_sa_type,
 )
+from dl_testing.regulated_test import RegulatedTestCase
 
 
-class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
+class FormulaConnectorTestBase(RegulatedTestCase, metaclass=abc.ABCMeta):
     dialect: ClassVar[DialectCombo]
     eval_attempts: ClassVar[int] = 1
     retry_on_exceptions: ClassVar[tuple[tuple[Type[Exception], re.Pattern], ...]] = ()
