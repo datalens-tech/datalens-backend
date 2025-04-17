@@ -131,8 +131,8 @@ class DefaultMathFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         if self.supports_float_div:
             assert dbe.eval("DIV(5.0, 2)") == 2
             assert dbe.eval("DIV(5, 2.0)") == 2
-            assert dbe.eval("DIV(1, 0.001)") == 1000
-            assert dbe.eval("DIV_SAFE(1, 0.001)") == 1000
+            assert dbe.eval("DIV(1.0, 0.001)") == 1000
+            assert dbe.eval("DIV_SAFE(1.0, 0.001)") == 1000
             assert dbe.eval("DIV_SAFE(5.0, 2)") == 2
             assert dbe.eval("DIV_SAFE(5.0, 0)") is None
             assert dbe.eval("DIV_SAFE(5.0, 0, 42)") == 42
