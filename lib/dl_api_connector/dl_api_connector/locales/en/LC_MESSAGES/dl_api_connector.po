@@ -30,20 +30,6 @@ msgstr "Path to database"
 msgid "value_raw-sql-level-off"
 msgstr "Forbid"
 
-msgid "value_raw-sql-level-subselect"
-msgstr "Allow subselects in datasets"
-
-msgid "value_raw-sql-level-subselect-note"
-msgstr "This option allows you to describe dataset sources using SQL queries"
-
-msgid "value_raw-sql-level-dashsql"
-msgstr "Allow subselects in datasets and queries from charts"
-
-msgid "value_raw-sql-level-dashsql-note"
-msgstr ""
-"This option allows you to describe dataset sources using SQL queries and "
-"create QL charts"
-
 msgid "label_allow-subselect-hint-2"
 msgstr ""
 "We do not recommend combining subqueries in datasets with RLS or "
@@ -92,3 +78,21 @@ msgstr "Off"
 
 msgid "value_data-export-forbidden-on"
 msgstr "On"
+
+#~ msgid "value_raw-sql-level-template-1"
+#~ msgstr "Allow %s"
+
+#~ msgid "value_raw-sql-level-template-2"
+#~ msgstr "Allow %s and %s"
+
+#~ msgid "value_raw-sql-level-template-3"
+#~ msgstr "Allow %s, %s and %s"
+
+#~ msgid "value_raw-sql-level-value-subselect"
+#~ msgstr "subselects in datasets"
+
+#~ msgid "value_raw-sql-level-value-template"
+#~ msgstr "source parametrization"
+
+#~ msgid "value_raw-sql-level-value-dashsql"
+#~ msgstr "QL-charts"
