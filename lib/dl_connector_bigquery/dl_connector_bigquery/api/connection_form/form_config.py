@@ -84,10 +84,7 @@ class BigQueryConnectionFormFactory(ConnectionFormFactory):
                     ]
                 ),
                 rc.raw_sql_level_row(
-                    options=[
-                        rc.raw_sql_level_to_radio_group_option(RawSQLLevel.off),
-                        rc.raw_sql_level_to_radio_group_option(RawSQLLevel.subselect),
-                    ],
+                    raw_sql_levels=[RawSQLLevel.off, RawSQLLevel.subselect]
                 ),
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
             ],

@@ -30,20 +30,6 @@ msgstr "Путь к базе данных"
 msgid "value_raw-sql-level-off"
 msgstr "Запретить"
 
-msgid "value_raw-sql-level-subselect"
-msgstr "Разрешить подзапросы в датасетах"
-
-msgid "value_raw-sql-level-subselect-note"
-msgstr "Опция позволяет описывать источники датасета с помощью SQL-запросов"
-
-msgid "value_raw-sql-level-dashsql"
-msgstr "Разрешить подзапросы в датасетах и запросы из чартов"
-
-msgid "value_raw-sql-level-dashsql-note"
-msgstr ""
-"Опция позволяет описывать источники датасета с помощью SQL-запросов и "
-"создавать QL-чарты"
-
 msgid "label_allow-subselect-hint-2"
 msgstr ""
 "Не рекомендуем совмещать подзапросы в датасетах с RLS или каким-либо "
@@ -91,3 +77,21 @@ msgstr "Выкл"
 
 msgid "value_data-export-forbidden-on"
 msgstr "Вкл"
+
+#~ msgid "value_raw-sql-level-template-1"
+#~ msgstr "Разрешить %s"
+
+#~ msgid "value_raw-sql-level-template-2"
+#~ msgstr "Разрешить %s и %s"
+
+#~ msgid "value_raw-sql-level-template-3"
+#~ msgstr "Разрешить %s, %s и %s"
+
+#~ msgid "value_raw-sql-level-value-subselect"
+#~ msgstr "подзапросы в датасетах"
+
+#~ msgid "value_raw-sql-level-value-template"
+#~ msgstr "параметризация источников"
+
+#~ msgid "value_raw-sql-level-value-dashsql"
+#~ msgstr "QL-чарты"
