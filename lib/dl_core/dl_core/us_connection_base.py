@@ -110,6 +110,7 @@ def make_subselect_datasource_template(
     source_type: DataSourceType,
     localizer: Localizer,
     disabled: bool,
+    template_enabled: bool = False,
     title: str = "SQL",
     field_doc_key: str = "ANY_SUBSELECT/subsql",
 ) -> DataSourceTemplate:
@@ -125,6 +126,7 @@ def make_subselect_datasource_template(
                 "required": True,  # Note: `required` means `disallow an empty value` (e.g. an empty string).
                 "title": localizer.translate(Translatable("source_templates-label-subquery")),
                 "field_doc_key": field_doc_key,
+                "template_enabled": template_enabled,
             },
         ],
         disabled=disabled,
