@@ -8,3 +8,4 @@ from dl_connector_promql.api.i18n.localizer import CONFIGS as BI_CONNECTOR_PROMQ
 class TestPromQLConnectionForm(ConnectionFormTestBase):
     CONN_FORM_FACTORY_CLS = PromQLConnectionFormFactory
     TRANSLATION_CONFIGS = BI_API_CONNECTOR_CONFIGS + BI_CONNECTOR_PROMQL_CONFIGS
+    OVERWRITE_EXPECTED_FORMS = False

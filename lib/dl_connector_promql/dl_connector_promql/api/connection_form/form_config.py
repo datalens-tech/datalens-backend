@@ -34,9 +34,9 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
             items=[
                 FormFieldApiSchema(name=CommonFieldName.host, required=True),
                 FormFieldApiSchema(name=CommonFieldName.port, required=True),
-                FormFieldApiSchema(name=CommonFieldName.path),
-                FormFieldApiSchema(name=CommonFieldName.username),
-                FormFieldApiSchema(name=CommonFieldName.password),
+                FormFieldApiSchema(name=CommonFieldName.path, nullable=True),
+                FormFieldApiSchema(name=CommonFieldName.username, nullable=True),
+                FormFieldApiSchema(name=CommonFieldName.password, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.secure, type="boolean"),
             ]
@@ -53,9 +53,9 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
             items=[
                 FormFieldApiSchema(name=CommonFieldName.host, required=True),
                 FormFieldApiSchema(name=CommonFieldName.port, required=True),
-                FormFieldApiSchema(name=CommonFieldName.path),
-                FormFieldApiSchema(name=CommonFieldName.username),
-                FormFieldApiSchema(name=CommonFieldName.password),
+                FormFieldApiSchema(name=CommonFieldName.path, nullable=True),
+                FormFieldApiSchema(name=CommonFieldName.username, nullable=True),
+                FormFieldApiSchema(name=CommonFieldName.password, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.secure, type="boolean"),
                 *self._get_top_level_check_api_schema_items(),
             ]

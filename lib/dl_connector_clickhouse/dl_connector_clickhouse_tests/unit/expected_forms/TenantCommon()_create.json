@@ -242,6 +242,7 @@
                 {
                     "name": "username",
                     "required": false,
+                    "nullable": true,
                     "defaultAction": "include"
                 },
                 {
@@ -303,6 +304,7 @@
                 {
                     "name": "username",
                     "required": false,
+                    "nullable": true,
                     "defaultAction": "include"
                 },
                 {
