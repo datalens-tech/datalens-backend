@@ -20,6 +20,7 @@ from dl_api_connector.api_schema.source_base import (
     DataSourceTemplateResponseField,
     RawSchemaColumnSchema,
 )
+from dl_api_lib.schemas.main import NotificationContentSchema
 from dl_constants.enums import ConnectionType as CT
 from dl_core.us_connection_base import (
     ConnectionBase,
@@ -55,6 +56,11 @@ class ConnectionSourceTemplatesResponseSchema(BaseSchema):
 
 class ConnectionInfoSourceSchemaResponseSchema(BaseSchema):
     raw_schema = ma_fields.Nested(RawSchemaColumnSchema, many=True, allow_none=True)
+
+
+class ConnectionExportResponseSchema(BaseSchema):
+    connection = ma_fields.Raw(required=True)
+    notifications = ma_fields.Nested(NotificationContentSchema, many=True)
 
 
 class ConnectionDataContentImportSchema(BaseSchema):
