@@ -27,22 +27,44 @@ msgstr "Password"
 msgid "field_db-name"
 msgstr "Path to database"
 
+msgid "value_raw-sql-level-template-1"
+msgstr "Allow {0}"
+
+msgid "value_raw-sql-level-template-2"
+msgstr "Allow {0} and {1}"
+
+msgid "value_raw-sql-level-template-3"
+msgstr "Allow {0}, {1} and {2}"
+
+msgid "value_raw-sql-level-value-subselect"
+msgstr "subselects in datasets"
+
+msgid "value_raw-sql-level-value-template"
+msgstr "source parametrization"
+
+msgid "value_raw-sql-level-value-dashsql"
+msgstr "QL-charts"
+
+msgid "value_raw-sql-level-hint-template-1"
+msgstr "This option allows you to {0}"
+
+msgid "value_raw-sql-level-hint-template-2"
+msgstr "This option allows you to {0} and {1}"
+
+msgid "value_raw-sql-level-hint-template-3"
+msgstr "This option allows you to {0}, {1} and {2}"
+
+msgid "value_raw-sql-level-value-hint-subselect"
+msgstr "describe dataset sources using SQL queries"
+
+msgid "value_raw-sql-level-value-hint-template"
+msgstr "use templates in dataset sources"
+
+msgid "value_raw-sql-level-value-hint-dashsql"
+msgstr "create QL charts"
+
 msgid "value_raw-sql-level-off"
 msgstr "Forbid"
-
-msgid "value_raw-sql-level-subselect"
-msgstr "Allow subselects in datasets"
-
-msgid "value_raw-sql-level-subselect-note"
-msgstr "This option allows you to describe dataset sources using SQL queries"
-
-msgid "value_raw-sql-level-dashsql"
-msgstr "Allow subselects in datasets and queries from charts"
-
-msgid "value_raw-sql-level-dashsql-note"
-msgstr ""
-"This option allows you to describe dataset sources using SQL queries and "
-"create QL charts"
 
 msgid "label_allow-subselect-hint-2"
 msgstr ""

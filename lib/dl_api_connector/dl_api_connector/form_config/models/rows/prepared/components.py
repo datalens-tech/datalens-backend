@@ -14,6 +14,10 @@ from dl_api_connector.form_config.models.rows.base import (
     FormFieldMixin,
     InnerFieldMixin,
 )
+from dl_api_connector.form_config.models.rows.customizable.components import (
+    LabelRowItem,
+    RadioGroupRowItem,
+)
 from dl_api_connector.form_config.models.rows.prepared.base import (
     DisabledMixin,
     PreparedRow,
@@ -51,3 +55,13 @@ class CollapseRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, InnerFiel
 
     text: str = attr.ib()
     component_props: Optional[Props] = attr.ib(default=None, metadata=remap_skip_if_null("componentProps"))
+
+
+@attr.s(kw_only=True, frozen=True)
+class RawSqlLevelRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin):
+    type = "raw_sql_level"
+
+    default_value: str = attr.ib(metadata=remap_skip_if_null("defaultValue"))
+    switch_off_value: str = attr.ib(metadata=remap_skip_if_null("switchOffValue"))
+    label: LabelRowItem = attr.ib()
+    radio_group: RadioGroupRowItem = attr.ib(metadata=remap_skip_if_null("radioGroup"))
