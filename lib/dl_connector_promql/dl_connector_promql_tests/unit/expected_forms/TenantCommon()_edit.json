@@ -1,0 +1,175 @@
+{
+    "title": "Prometheus",
+    "rows": [
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Hostname"
+                },
+                {
+                    "id": "input",
+                    "name": "host",
+                    "width": "l"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Port"
+                },
+                {
+                    "id": "input",
+                    "name": "port",
+                    "width": "s",
+                    "controlProps": {
+                        "type": "number"
+                    }
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "URL path"
+                },
+                {
+                    "id": "input",
+                    "name": "path",
+                    "width": "l"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Username"
+                },
+                {
+                    "id": "input",
+                    "name": "username",
+                    "width": "m"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Password"
+                },
+                {
+                    "id": "input",
+                    "name": "password",
+                    "width": "m",
+                    "fakeValue": "******",
+                    "controlProps": {
+                        "type": "password"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "cache_ttl_sec",
+            "name": "cache_ttl_sec"
+        },
+        {
+            "items": [
+                {
+                    "id": "checkbox",
+                    "name": "secure",
+                    "defaultValue": true,
+                    "text": "HTTPS"
+                }
+            ]
+        }
+    ],
+    "apiSchema": {
+        "edit": {
+            "items": [
+                {
+                    "name": "host",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "port",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "path",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "username",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "password",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "cache_ttl_sec",
+                    "required": false,
+                    "nullable": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "secure",
+                    "type": "boolean",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        },
+        "check": {
+            "items": [
+                {
+                    "name": "host",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "port",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "path",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "username",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "password",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "secure",
+                    "type": "boolean",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        }
+    },
+    "uiSchema": {
+        "showCreateDatasetButton": false,
+        "showCreateQlChartButton": true
+    }
+}
