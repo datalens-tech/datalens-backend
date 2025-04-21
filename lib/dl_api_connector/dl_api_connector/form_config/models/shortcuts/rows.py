@@ -147,47 +147,117 @@ class RowConstructor:
             ]
         )
 
-    def raw_sql_level_to_radio_group_option(
+    def _get_raw_sql_level_radio_group_option_text(
+        self,
+        levels: list[RawSQLLevel],
+    ) -> str:
+        if len(levels) == 1:
+            template = self._localizer.translate(Translatable("value_raw-sql-level-template-1"))
+        elif len(levels) == 2:
+            template = self._localizer.translate(Translatable("value_raw-sql-level-template-2"))
+        elif len(levels) == 3:
+            template = self._localizer.translate(Translatable("value_raw-sql-level-template-3"))
+        else:
+            raise ValueError("Invalid number of levels")
+
+        values = []
+        for level in levels:
+            if level == RawSQLLevel.subselect:
+                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-subselect"))
+            elif level == RawSQLLevel.template:
+                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-template"))
+            elif level == RawSQLLevel.dashsql:
+                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-dashsql"))
+            else:
+                raise ValueError("Invalid level")
+
+            values.append(level_text)
+
+        return template.format(*values)
+
+    def _get_raw_sql_level_radio_group_option_hint_text(
+        self,
+        levels: list[RawSQLLevel],
+    ) -> str:
+        if len(levels) == 1:
+            template = self._localizer.translate(Translatable("value_raw-sql-level-hint-template-1"))
+        elif len(levels) == 2:
+            template = self._localizer.translate(Translatable("value_raw-sql-level-hint-template-2"))
+        elif len(levels) == 3:
+            template = self._localizer.translate(Translatable("value_raw-sql-level-hint-template-3"))
+        else:
+            raise ValueError("Invalid number of levels")
+
+        values = []
+        for level in levels:
+            if level == RawSQLLevel.subselect:
+                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-hint-subselect"))
+            elif level == RawSQLLevel.template:
+                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-hint-template"))
+            elif level == RawSQLLevel.dashsql:
+                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-hint-dashsql"))
+            else:
+                raise ValueError("Invalid level")
+
+            values.append(level_text)
+
+        return template.format(*values)
+
+    def _raw_sql_level_to_radio_group_option(
         self,
         raw_sql_level: RawSQLLevel,
+        all_raw_sql_levels: list[RawSQLLevel],
     ) -> C.RadioGroupRowItemOption:
-        return {
-            RawSQLLevel.off: C.RadioGroupRowItemOption(
+        if raw_sql_level == RawSQLLevel.off:
+            return C.RadioGroupRowItemOption(
                 value=raw_sql_level.value,
                 content=C.RadioGroupRowItemOption.ValueContent(
                     text=self._localizer.translate(Translatable("value_raw-sql-level-off")),
                 ),
-            ),
-            RawSQLLevel.subselect: C.RadioGroupRowItemOption(
-                value=raw_sql_level.value,
-                content=C.RadioGroupRowItemOption.ValueContent(
-                    text=self._localizer.translate(Translatable("value_raw-sql-level-subselect")),
-                    hint_text=self._localizer.translate(Translatable("value_raw-sql-level-subselect-note")),
-                ),
-            ),
-            RawSQLLevel.dashsql: C.RadioGroupRowItemOption(
-                value=raw_sql_level.value,
-                content=C.RadioGroupRowItemOption.ValueContent(
-                    text=self._localizer.translate(Translatable("value_raw-sql-level-dashsql")),
-                    hint_text=self._localizer.translate(Translatable("value_raw-sql-level-dashsql-note")),
-                ),
-            ),
-        }[raw_sql_level]
+            )
 
-    def _raw_sql_level_default_options(self) -> list[C.RadioGroupRowItemOption]:
+        included_levels = []
+        for level in [RawSQLLevel.subselect, RawSQLLevel.template, RawSQLLevel.dashsql]:
+            if level in all_raw_sql_levels:
+                included_levels.append(level)
+
+            if level == raw_sql_level:
+                break
+
+        content_text = self._get_raw_sql_level_radio_group_option_text(included_levels)
+        content_hint_text = self._get_raw_sql_level_radio_group_option_hint_text(included_levels)
+
+        return C.RadioGroupRowItemOption(
+            value=raw_sql_level.value,
+            content=C.RadioGroupRowItemOption.ValueContent(
+                text=content_text,
+                hint_text=content_hint_text,
+            ),
+        )
+
+    def _get_raw_sql_level_radio_group_options(
+        self,
+        raw_sql_levels: list[RawSQLLevel],
+    ) -> list[C.RadioGroupRowItemOption]:
         return [
-            self.raw_sql_level_to_radio_group_option(raw_sql_level)
-            for raw_sql_level in (RawSQLLevel.off, RawSQLLevel.subselect, RawSQLLevel.dashsql)
+            self._raw_sql_level_to_radio_group_option(raw_sql_level, raw_sql_levels) for raw_sql_level in raw_sql_levels
         ]
 
     def raw_sql_level_row(
         self,
         default_value: RawSQLLevel = RawSQLLevel.off,
-        options: Optional[list[C.RadioGroupRowItemOption]] = None,
+        raw_sql_levels: Optional[list[RawSQLLevel]] = None,
         disabled: Optional[bool] = None,
     ) -> C.CustomizableRow:
+        if raw_sql_levels is None:
+            raw_sql_levels = [RawSQLLevel.off, RawSQLLevel.subselect, RawSQLLevel.dashsql]
+
+        if default_value not in raw_sql_levels:
+            raise ValueError("default_value must be in raw_sql_levels")
+
         label_allow_subselect_hint_2 = self._localizer.translate(Translatable("label_allow-subselect-hint-2"))
         label_allow_subselect_hint_3 = self._localizer.translate(Translatable("label_allow-subselect-hint-3"))
+
         return C.CustomizableRow(
             items=[
                 C.LabelRowItem(
@@ -197,11 +267,44 @@ class RowConstructor:
                 ),
                 C.RadioGroupRowItem(
                     name=CommonFieldName.raw_sql_level,
-                    options=options if options is not None else self._raw_sql_level_default_options(),
-                    default_value=self.raw_sql_level_to_radio_group_option(default_value).value,
+                    options=self._get_raw_sql_level_radio_group_options(raw_sql_levels),
+                    default_value=default_value.value,
                     control_props=C.RadioGroupRowItem.Props(disabled=disabled),
                 ),
             ]
+        )
+
+    def raw_sql_level_row_v2(
+        self,
+        default_value: RawSQLLevel = RawSQLLevel.off,
+        switch_off_value: RawSQLLevel = RawSQLLevel.off,
+        raw_sql_levels: Optional[list[RawSQLLevel]] = None,
+    ) -> C.RawSqlLevelRow:
+        if raw_sql_levels is None:
+            raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.template, RawSQLLevel.dashsql]
+
+        if switch_off_value in raw_sql_levels:
+            raise ValueError("switch_off_value must not be in raw_sql_levels")
+
+        if default_value not in raw_sql_levels:
+            raise ValueError("default_value must be in raw_sql_levels")
+
+        label_allow_subselect_hint_2 = self._localizer.translate(Translatable("label_allow-subselect-hint-2"))
+        label_allow_subselect_hint_3 = self._localizer.translate(Translatable("label_allow-subselect-hint-3"))
+
+        return C.RawSqlLevelRow(
+            name=CommonFieldName.raw_sql_level,
+            default_value=default_value.value,
+            switch_off_value=switch_off_value.value,
+            label=C.LabelRowItem(
+                align="start",
+                text=self._localizer.translate(Translatable("field_raw-sql-level")),
+                help_text=f"- {label_allow_subselect_hint_2}\n- {label_allow_subselect_hint_3}",
+            ),
+            radio_group=C.RadioGroupRowItem(
+                name=CommonFieldName.raw_sql_level,
+                options=self._get_raw_sql_level_radio_group_options(raw_sql_levels),
+            ),
         )
 
     def access_token_input_row(

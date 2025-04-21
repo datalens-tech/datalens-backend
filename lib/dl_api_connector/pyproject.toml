@@ -49,6 +49,7 @@ labels = ["no_compose"]
 [tool.mypy]
 warn_unused_ignores = true
 warn_redundant_casts = true
+exclude = ["dl_api_connector_tests"]
 warn_unused_configs = true
 disallow_untyped_defs = true
 check_untyped_defs = true
