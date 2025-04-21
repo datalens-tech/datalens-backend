@@ -30,7 +30,7 @@ class ConnDTO:
 @attr.s(frozen=True)
 class DefaultSQLDTO(ConnDTO):  # noqa
     host: str = attr.ib(kw_only=True)
-    multihosts: tuple[str, ...] = attr.ib(kw_only=True, converter=tuple)
+    multihosts: tuple[str, ...] = attr.ib(kw_only=True, converter=lambda x: tuple(x))
     port: int = attr.ib(kw_only=True)
     db_name: str = attr.ib(kw_only=True)
     username: str = attr.ib(kw_only=True)
