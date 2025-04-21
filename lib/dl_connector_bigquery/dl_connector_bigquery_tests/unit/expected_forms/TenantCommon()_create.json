@@ -1,0 +1,118 @@
+{
+    "title": "BigQuery",
+    "rows": [
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Project ID"
+                },
+                {
+                    "id": "input",
+                    "name": "project_id",
+                    "width": "m"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Service account private key"
+                },
+                {
+                    "id": "file-input",
+                    "name": "credentials"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Raw SQL level",
+                    "align": "start",
+                    "helpText": "- We do not recommend combining subqueries in datasets with RLS or restrictions on viewing tables.\n- SQL queries from charts enter the connection directly and do not take into account the RLS configured in the datasets."
+                },
+                {
+                    "id": "radio_group",
+                    "name": "raw_sql_level",
+                    "options": [
+                        {
+                            "content": {
+                                "text": "Forbid"
+                            },
+                            "value": "off"
+                        },
+                        {
+                            "content": {
+                                "text": "Allow subselects in datasets",
+                                "hintText": "This option allows you to describe dataset sources using SQL queries"
+                            },
+                            "value": "subselect"
+                        }
+                    ],
+                    "defaultValue": "off",
+                    "controlProps": {}
+                }
+            ]
+        },
+        {
+            "type": "cache_ttl_sec",
+            "name": "cache_ttl_sec"
+        }
+    ],
+    "apiSchema": {
+        "create": {
+            "items": [
+                {
+                    "name": "project_id",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "credentials",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "cache_ttl_sec",
+                    "required": false,
+                    "nullable": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "raw_sql_level",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "type",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        },
+        "check": {
+            "items": [
+                {
+                    "name": "project_id",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "credentials",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "type",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        }
+    }
+}

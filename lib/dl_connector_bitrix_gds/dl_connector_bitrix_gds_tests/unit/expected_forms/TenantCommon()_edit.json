@@ -1,0 +1,67 @@
+{
+    "title": "Bitrix24",
+    "rows": [
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Portal"
+                },
+                {
+                    "id": "input",
+                    "name": "portal"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Token"
+                },
+                {
+                    "id": "input",
+                    "name": "token",
+                    "width": "l",
+                    "fakeValue": "******",
+                    "controlProps": {
+                        "type": "password"
+                    }
+                }
+            ]
+        }
+    ],
+    "apiSchema": {
+        "edit": {
+            "items": [
+                {
+                    "name": "portal",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "token",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        },
+        "check": {
+            "items": [
+                {
+                    "name": "portal",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "token",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        }
+    },
+    "templateName": "bitrix24"
+}

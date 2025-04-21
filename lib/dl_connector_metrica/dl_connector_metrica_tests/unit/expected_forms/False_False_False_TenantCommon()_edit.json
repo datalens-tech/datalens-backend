@@ -1,0 +1,46 @@
+{
+    "title": "AppMetrica",
+    "rows": [
+        {
+            "type": "oauth",
+            "name": "token",
+            "fakeValue": "******",
+            "application": "appmetrica_api",
+            "labelText": "OAuth token",
+            "buttonText": "Get token"
+        },
+        {
+            "type": "appmetrica_counter",
+            "name": "counter_id",
+            "allowManualInput": false
+        },
+        {
+            "type": "metrica_accuracy",
+            "name": "accuracy"
+        }
+    ],
+    "apiSchema": {
+        "edit": {
+            "items": [
+                {
+                    "name": "counter_id",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "token",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "accuracy",
+                    "required": false,
+                    "nullable": true,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        }
+    },
+    "templateName": "appmetrica_api"
+}
