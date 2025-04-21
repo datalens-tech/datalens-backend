@@ -141,7 +141,7 @@ class BaseFileS3Connection(
             replace_secret=self.get_replace_secret(),
             protocol="https" if cs.SECURE else "http",
             host=cs.HOST,
-            multihosts=parse_comma_separated_hosts(cs.HOST),  # type: ignore  # 2024-01-30 # TODO: Argument "multihosts" to "BaseFileS3ConnDTO" has incompatible type "tuple[str, ...]"; expected "Iterable[_T_co]"  [arg-type]
+            multihosts=parse_comma_separated_hosts(cs.HOST),
             port=cs.PORT,
             username=cs.USERNAME,
             password=cs.PASSWORD,
