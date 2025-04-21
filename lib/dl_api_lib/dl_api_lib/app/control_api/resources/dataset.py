@@ -110,6 +110,8 @@ class DatasetCollection(DatasetResource):
         loader = self.create_dataset_api_loader()
         loader.populate_dataset_from_body(dataset=dataset, body=body["dataset"], us_manager=us_manager)
 
+        ds_editor.set_revision_id(revision_id=generate_revision_id())
+
         us_manager.save(dataset)
 
         LOGGER.info("New dataset was saved with ID %s", dataset.uuid)
@@ -379,6 +381,7 @@ class DatasetImportCollection(DatasetResource):
         )
         ds_editor = DatasetComponentEditor(dataset=dataset)
 
+        ds_editor.set_revision_id(revision_id=generate_revision_id())
         ds_editor.set_created_via(created_via=DataSourceCreatedVia.workbook_copy)
 
         result_schema = data["dataset"].get("result_schema", [])

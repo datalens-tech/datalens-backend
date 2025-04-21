@@ -232,7 +232,7 @@ class DatasetDataBaseView(BaseView):
             except USObjectNotFoundException as e:
                 raise web.HTTPNotFound(reason="Entity not found") from e
 
-            # Very bad
+            # TODO: Try using partial deserialization instead of direct dict lookup if possible
             revision_id = us_resp["data"]["revision_id"]
             permissions = us_resp.get("permissions", None)
             permissions_mode = us_resp.get("permissions_mode", None)
@@ -271,7 +271,7 @@ class DatasetDataBaseView(BaseView):
             # Forced to deserialize
             else:
                 if self.dataset_id is None:  # case 1
-                    self.datset = dataset
+                    self.dataset = dataset  # type: ignore  # TODO: fix
                 else:
                     self.dataset = await us_manager.deserialize_us_resp(us_resp, Dataset)  # type: ignore  # TODO: fix
 
