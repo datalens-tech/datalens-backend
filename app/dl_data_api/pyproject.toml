@@ -35,7 +35,7 @@ dl-configs = {path = "../../lib/dl_configs"}
 dl-constants = {path = "../../lib/dl_constants"}
 dl-zitadel = {path = "../../lib/dl_zitadel", extras = ["aiohttp"]}
 dl-auth-native = {path = "../../lib/dl_auth_native", extras = ["aiohttp"]}
-httpx = "^0.27.0"
+httpx = ">=0.27.0"
 
 
 [build-system]
