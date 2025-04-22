@@ -1,12 +1,12 @@
 from dl_core.us_connection_base import DataSourceTemplate
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 
-from dl_connector_trino.core.adapters import (
-    TRINO_SYSTEM_CATALOGS,
-    TRINO_SYSTEM_SCHEMAS,
-)
+from dl_connector_trino.core.adapters import TRINO_SYSTEM_SCHEMAS
 from dl_connector_trino.core.constants import TrinoAuthType
-from dl_connector_trino.core.us_connection import ConnectionTrino
+from dl_connector_trino.core.us_connection import (
+    TRINO_SYSTEM_CATALOGS,
+    ConnectionTrino,
+)
 from dl_connector_trino_tests.db.core.base import (
     BaseTrinoJwtTestClass,
     BaseTrinoPasswordTestClass,
