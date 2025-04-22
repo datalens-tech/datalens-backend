@@ -11,7 +11,7 @@ from dl_constants.enums import (  # NotificationType,
 
 
 BACKEND_TYPE_TRINO = SourceBackendType.declare("TRINO")
-CONNECTION_TYPE_TRINO = ConnectionType.declare("trino")  # FIXME: Move the declaration here
+CONNECTION_TYPE_TRINO = ConnectionType.declare("trino")
 SOURCE_TYPE_TRINO_TABLE = DataSourceType.declare("TRINO_TABLE")
 SOURCE_TYPE_TRINO_SUBSELECT = DataSourceType.declare("TRINO_SUBSELECT")
 

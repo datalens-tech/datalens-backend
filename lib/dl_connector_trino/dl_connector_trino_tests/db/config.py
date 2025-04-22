@@ -32,7 +32,7 @@ class CoreConnectionSettings(BaseConnectionSettings):
     HOST: ClassVar[str] = get_test_container_hostport("trino-no-auth", fallback_port=21123).host
     PORT: ClassVar[int] = get_test_container_hostport("trino-no-auth", fallback_port=21123).port
     USERNAME: ClassVar[str] = "datalens"
-    AUTH_TYPE: ClassVar[str] = TrinoAuthType.NONE
+    AUTH_TYPE: ClassVar[TrinoAuthType] = TrinoAuthType.NONE
 
 
 class CoreSslConnectionSettings(BaseConnectionSettings):
@@ -46,7 +46,7 @@ class CoreSslConnectionSettings(BaseConnectionSettings):
 
 class CorePasswordConnectionSettings(CoreSslConnectionSettings):
     PASSWORD: ClassVar[str] = "trino_password"
-    AUTH_TYPE: ClassVar[str] = TrinoAuthType.PASSWORD
+    AUTH_TYPE: ClassVar[TrinoAuthType] = TrinoAuthType.PASSWORD
 
 
 class CoreJwtConnectionSettings(CoreSslConnectionSettings):
@@ -82,8 +82,8 @@ select
     cast(timestamp_with_timezone as timestamp with time zone) as timestamp_with_timezone
 from
     (
-        select 
-            0 as number, 
+        select
+            0 as number,
             '0' as char_value,
             '{["0"]}' as json_string,
             '2025-01-01' as date_value,
@@ -92,8 +92,8 @@ from
             '2025-01-01 00:00:00' as timestamp_value,
             '2001-08-22 03:04:05.321 America/New_York' as timestamp_with_timezone
         union all
-        select 
-            1, 
+        select
+            1,
             '1',
             '{["1"]}',
             '2025-01-02',
@@ -102,8 +102,8 @@ from
             '2025-01-02 00:00:01',
             '2025-01-02 00:00:01.000 America/Denver'
         union all
-        select 
-            6, 
+        select
+            6,
             '6',
             '{["6"]}',
             '2025-01-07',
