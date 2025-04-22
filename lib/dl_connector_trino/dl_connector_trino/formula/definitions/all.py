@@ -8,12 +8,10 @@ from dl_connector_trino.formula.definitions.functions_math import DEFINITIONS_MA
 from dl_connector_trino.formula.definitions.functions_special import DEFINITIONS_SPECIAL
 from dl_connector_trino.formula.definitions.functions_string import DEFINITIONS_STRING
 from dl_connector_trino.formula.definitions.functions_type import DEFINITIONS_TYPE
+from dl_connector_trino.formula.definitions.functions_window import DEFINITIONS_WINDOW
 from dl_connector_trino.formula.definitions.operators_binary import DEFINITIONS_BINARY
 from dl_connector_trino.formula.definitions.operators_ternary import DEFINITIONS_TERNARY
 from dl_connector_trino.formula.definitions.operators_unary import DEFINITIONS_UNARY
-
-
-# from dl_connector_trino.formula.definitions.functions_window import DEFINITIONS_WINDOW
 
 
 DEFINITIONS = [
@@ -25,7 +23,7 @@ DEFINITIONS = [
     *DEFINITIONS_MATH,
     *DEFINITIONS_STRING,
     *DEFINITIONS_TYPE,
-    # *DEFINITIONS_WINDOW,
+    *DEFINITIONS_WINDOW,
     *DEFINITIONS_UNARY,
     *DEFINITIONS_BINARY,
     *DEFINITIONS_TERNARY,
