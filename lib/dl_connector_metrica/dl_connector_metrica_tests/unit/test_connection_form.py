@@ -33,6 +33,7 @@ class MetricaLikeConnectionFormTestBase(ConnectionFormTestBase):
 class TestMetricaAPIConnectionForm(MetricaLikeConnectionFormTestBase):
     CONN_FORM_FACTORY_CLS = MetricaAPIConnectionFormFactory
     TRANSLATION_CONFIGS = BI_API_CONNECTOR_CONFIGS + BI_CONNECTOR_METRICA_CONFIGS
+    EXPECTED_FORMS_DIR = "expected_forms/Metrica"
 
     @pytest.fixture
     def connectors_settings(  # noqa
@@ -49,6 +50,7 @@ class TestMetricaAPIConnectionForm(MetricaLikeConnectionFormTestBase):
 class TestAppMetricaAPIConnectionForm(MetricaLikeConnectionFormTestBase):
     CONN_FORM_FACTORY_CLS = AppMetricaAPIConnectionFormFactory
     TRANSLATION_CONFIGS = BI_API_CONNECTOR_CONFIGS + BI_CONNECTOR_METRICA_CONFIGS
+    EXPECTED_FORMS_DIR = "expected_forms/AppMetrica"
 
     @pytest.fixture
     def connectors_settings(  # noqa

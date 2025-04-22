@@ -8,4 +8,3 @@ from dl_connector_mysql.api.i18n.localizer import CONFIGS as BI_CONNECTOR_MYSQL_
 class TestMySQLConnectionForm(ConnectionFormTestBase):
     CONN_FORM_FACTORY_CLS = MySQLConnectionFormFactory
     TRANSLATION_CONFIGS = BI_API_CONNECTOR_CONFIGS + BI_CONNECTOR_MYSQL_CONFIGS
-    OVERWRITE_EXPECTED_FORMS = False

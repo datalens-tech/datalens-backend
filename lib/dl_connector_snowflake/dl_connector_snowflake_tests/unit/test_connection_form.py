@@ -8,4 +8,3 @@ from dl_connector_snowflake.api.i18n.localizer import CONFIGS as BI_CONNECTOR_SN
 class TestSnowFlakeConnectionForm(ConnectionFormTestBase):
     CONN_FORM_FACTORY_CLS = SnowFlakeConnectionFormFactory
     TRANSLATION_CONFIGS = BI_CONNECTOR_SNOWFLAKE_CONFIGS + BI_API_CONNECTOR_CONFIGS
-    OVERWRITE_EXPECTED_FORMS = False

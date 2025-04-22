@@ -8,4 +8,3 @@ from dl_connector_oracle.api.i18n.localizer import CONFIGS as BI_CONNECTOR_ORACL
 class TestOracleConnectionForm(ConnectionFormTestBase):
     CONN_FORM_FACTORY_CLS = OracleConnectionFormFactory
     TRANSLATION_CONFIGS = BI_CONNECTOR_ORACLE_CONFIGS + BI_API_CONNECTOR_CONFIGS
-    OVERWRITE_EXPECTED_FORMS = False

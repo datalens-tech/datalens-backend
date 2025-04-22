@@ -1,0 +1,46 @@
+{
+    "title": "Metrica",
+    "rows": [
+        {
+            "type": "oauth",
+            "name": "token",
+            "fakeValue": "******",
+            "application": "metrika_api",
+            "labelText": "OAuth token",
+            "buttonText": "Get token"
+        },
+        {
+            "type": "metrica_counter",
+            "name": "counter_id",
+            "allowManualInput": true
+        },
+        {
+            "type": "metrica_accuracy",
+            "name": "accuracy"
+        }
+    ],
+    "apiSchema": {
+        "edit": {
+            "items": [
+                {
+                    "name": "counter_id",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "token",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "accuracy",
+                    "required": false,
+                    "nullable": true,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        }
+    },
+    "templateName": "metrica_api"
+}
