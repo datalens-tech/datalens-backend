@@ -29,8 +29,8 @@ dl-type-transformer = {path = "../dl_type_transformer"}
 # dl-db-testing = {path = "../dl_db_testing"}
 
 [tool.poetry.plugins]
-# [tool.poetry.plugins."dl_api_lib.connectors"]
-# trino = "dl_connector_trino.api.connector:TrinoApiConnector"
+[tool.poetry.plugins."dl_api_lib.connectors"]
+trino = "dl_connector_trino.api.connector:TrinoApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 trino = "dl_connector_trino.core.connector:TrinoCoreConnector"
