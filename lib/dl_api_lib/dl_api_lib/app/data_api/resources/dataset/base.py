@@ -271,9 +271,14 @@ class DatasetDataBaseView(BaseView):
             # Forced to deserialize
             else:
                 if self.dataset_id is None:  # case 1
-                    self.dataset = dataset  # type: ignore  # TODO: fix
-                else:
-                    self.dataset = await us_manager.deserialize_us_resp(us_resp, Dataset)  # type: ignore  # TODO: fix
+                    assert dataset is not None
+                    self.dataset = dataset
+                else:  # case 2
+                    assert us_resp is not None
+                    dataset_entry = await us_manager.deserialize_us_resp(us_resp, Dataset)
+                    assert isinstance(dataset_entry, Dataset)
+
+                    self.dataset = dataset_entry
 
                     await us_manager.load_dependencies(self.dataset)
 
@@ -348,7 +353,7 @@ class DatasetDataBaseView(BaseView):
         self,
         mutation_cache: Optional[USEntryMutationCache],
         mutation_key: Optional[MutationKey],
-    ) -> Optional[Dataset]:  # type: ignore  # TODO: fix
+    ) -> Optional[Dataset]:
         cached_dataset = await self.try_get_dataset_from_cache_by_id(
             self.dataset_id,
             self.dataset.revision_id,
