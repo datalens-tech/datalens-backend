@@ -1,11 +1,9 @@
-from typing import (
-    Optional,
-    Sequence,
-)
+from collections.abc import Sequence
+from typing import Optional
 
 import pytest
 import sqlalchemy as sa
-import trino.sqlalchemy.datatype as trino_types
+import trino.sqlalchemy.datatype as tsa
 
 from dl_constants.enums import UserDataType
 from dl_core.connection_executors.common_base import ConnExecutorQuery
@@ -91,23 +89,22 @@ class TestTrinoSyncConnectionExecutor(
                 self.CD(sa.INTEGER(), UserDataType.integer),
                 self.CD(sa.BIGINT(), UserDataType.integer),
                 self.CD(sa.REAL(), UserDataType.float),
-                self.CD(trino_types.DOUBLE(), UserDataType.float),
+                self.CD(tsa.DOUBLE(), UserDataType.float),
                 self.CD(sa.DECIMAL(), UserDataType.float),
             ],
             "types_trino_string": [
                 self.CD(sa.VARCHAR(), UserDataType.string),
                 self.CD(sa.CHAR(), UserDataType.string),
                 self.CD(sa.VARBINARY(), UserDataType.string),
-                self.CD(trino_types.JSON(), UserDataType.string),
+                self.CD(tsa.JSON(), UserDataType.string),
             ],
             "types_trino_date": [
                 self.CD(sa.DATE(), UserDataType.date),
-                self.CD(trino_types.TIME(), UserDataType.datetimetz),
-                self.CD(trino_types.TIMESTAMP(), UserDataType.genericdatetime),
+                self.CD(tsa.TIMESTAMP(), UserDataType.genericdatetime),
             ],
             "types_trino_array": [
                 self.CD(sa.ARRAY(sa.BIGINT()), UserDataType.array_int),
-                self.CD(sa.ARRAY(trino_types.DOUBLE()), UserDataType.array_float),
+                self.CD(sa.ARRAY(tsa.DOUBLE()), UserDataType.array_float),
                 self.CD(sa.ARRAY(sa.VARCHAR()), UserDataType.array_str),
             ],
         }

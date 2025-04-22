@@ -1,0 +1,64 @@
+{
+    "title": "AppMetrica",
+    "rows": [
+        {
+            "type": "oauth",
+            "name": "token",
+            "application": "appmetrica_api",
+            "labelText": "OAuth token",
+            "buttonText": "Get token"
+        },
+        {
+            "type": "appmetrica_counter",
+            "name": "counter_id",
+            "allowManualInput": true
+        },
+        {
+            "type": "metrica_accuracy",
+            "name": "accuracy"
+        },
+        {
+            "items": [
+                {
+                    "id": "checkbox",
+                    "name": "is_auto_create_dashboard",
+                    "inner": true,
+                    "defaultValue": true,
+                    "text": "Automatically create a dashboard, charts, and a dataset on the connection",
+                    "controlProps": {
+                        "qa": "conn-auto-create-dash-checkbox"
+                    }
+                }
+            ]
+        }
+    ],
+    "apiSchema": {
+        "create": {
+            "items": [
+                {
+                    "name": "counter_id",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "token",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "accuracy",
+                    "required": false,
+                    "nullable": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "type",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        }
+    },
+    "templateName": "appmetrica_api"
+}

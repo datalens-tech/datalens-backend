@@ -27,6 +27,7 @@ from dl_api_lib.app.control_api.resources import API
 from dl_api_lib.app.control_api.resources.base import BIResource
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.schemas.connection import (
+    ConnectionExportResponseSchema,
     ConnectionImportRequestSchema,
     ConnectionInfoSourceSchemaQuerySchema,
     ConnectionInfoSourceSchemaResponseSchema,
@@ -308,7 +309,9 @@ class ConnectionExportItem(BIResource):
     @put_to_request_context(endpoint_code="ConnectionExport")
     @schematic_request(
         ns=ns,
-        responses={},
+        responses={
+            200: ("Success", ConnectionExportResponseSchema()),
+        },
     )
     def get(self, connection_id: str) -> dict:
         notifications: list[dict] = []

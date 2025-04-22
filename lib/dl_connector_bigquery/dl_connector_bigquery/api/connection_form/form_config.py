@@ -83,12 +83,7 @@ class BigQueryConnectionFormFactory(ConnectionFormFactory):
                         C.FileInputRowItem(name=BigQueryFieldName.credentials),
                     ]
                 ),
-                rc.raw_sql_level_row(
-                    options=[
-                        rc.raw_sql_level_to_radio_group_option(RawSQLLevel.off),
-                        rc.raw_sql_level_to_radio_group_option(RawSQLLevel.subselect),
-                    ],
-                ),
+                rc.raw_sql_level_row(raw_sql_levels=[RawSQLLevel.off, RawSQLLevel.subselect]),
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
             ],
             api_schema=FormApiSchema(

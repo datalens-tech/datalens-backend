@@ -61,7 +61,7 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
             conn_id=self.uuid,
             protocol="https" if self.data.secure else "http",
             host=self.data.host,
-            multihosts=self.parse_multihosts(),  # type: ignore  # TODO: fix
+            multihosts=self.parse_multihosts(),
             port=self.data.port,
             endpoint=self.data.endpoint,
             cluster_name=self.data.cluster_name,

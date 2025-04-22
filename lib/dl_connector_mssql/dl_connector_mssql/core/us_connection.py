@@ -41,7 +41,7 @@ class ConnectionMSSQL(ClassicConnectionSQL):
         return MSSQLConnDTO(
             conn_id=self.uuid,
             host=self.data.host,
-            multihosts=self.parse_multihosts(),  # type: ignore  # TODO: fix
+            multihosts=self.parse_multihosts(),
             port=self.data.port,
             db_name=self.data.db_name,
             username=self.data.username,

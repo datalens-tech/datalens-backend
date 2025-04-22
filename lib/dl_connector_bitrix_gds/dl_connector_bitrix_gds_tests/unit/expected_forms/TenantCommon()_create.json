@@ -1,0 +1,91 @@
+{
+    "title": "Bitrix24",
+    "rows": [
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Portal"
+                },
+                {
+                    "id": "input",
+                    "name": "portal"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Token"
+                },
+                {
+                    "id": "input",
+                    "name": "token",
+                    "defaultValue": "",
+                    "width": "l",
+                    "controlProps": {
+                        "type": "password"
+                    }
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "checkbox",
+                    "name": "is_auto_create_dashboard",
+                    "inner": true,
+                    "defaultValue": true,
+                    "text": "Automatically create a dashboard, charts, and a dataset on the connection",
+                    "controlProps": {
+                        "qa": "conn-auto-create-dash-checkbox"
+                    }
+                }
+            ]
+        }
+    ],
+    "apiSchema": {
+        "create": {
+            "items": [
+                {
+                    "name": "portal",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "token",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "type",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        },
+        "check": {
+            "items": [
+                {
+                    "name": "portal",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "token",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "type",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        }
+    },
+    "templateName": "bitrix24"
+}

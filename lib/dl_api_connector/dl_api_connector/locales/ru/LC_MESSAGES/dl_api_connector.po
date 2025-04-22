@@ -27,22 +27,44 @@ msgstr "Пароль"
 msgid "field_db-name"
 msgstr "Путь к базе данных"
 
+msgid "value_raw-sql-level-template-1"
+msgstr "Разрешить {0}"
+
+msgid "value_raw-sql-level-template-2"
+msgstr "Разрешить {0} и {1}"
+
+msgid "value_raw-sql-level-template-3"
+msgstr "Разрешить {0}, {1} и {2}"
+
+msgid "value_raw-sql-level-value-subselect"
+msgstr "подзапросы в датасетах"
+
+msgid "value_raw-sql-level-value-template"
+msgstr "параметризация источников"
+
+msgid "value_raw-sql-level-value-dashsql"
+msgstr "QL-чарты"
+
+msgid "value_raw-sql-level-hint-template-1"
+msgstr "Опция позволяет {0}"
+
+msgid "value_raw-sql-level-hint-template-2"
+msgstr "Опция позволяет {0} и {1}"
+
+msgid "value_raw-sql-level-hint-template-3"
+msgstr "Опция позволяет {0}, {1} и {2}"
+
+msgid "value_raw-sql-level-value-hint-subselect"
+msgstr "описывать источники датасета с помощью SQL-запросов"
+
+msgid "value_raw-sql-level-value-hint-template"
+msgstr "использовать параметризацию источников"
+
+msgid "value_raw-sql-level-value-hint-dashsql"
+msgstr "создавать QL-чарты"
+
 msgid "value_raw-sql-level-off"
 msgstr "Запретить"
-
-msgid "value_raw-sql-level-subselect"
-msgstr "Разрешить подзапросы в датасетах"
-
-msgid "value_raw-sql-level-subselect-note"
-msgstr "Опция позволяет описывать источники датасета с помощью SQL-запросов"
-
-msgid "value_raw-sql-level-dashsql"
-msgstr "Разрешить подзапросы в датасетах и запросы из чартов"
-
-msgid "value_raw-sql-level-dashsql-note"
-msgstr ""
-"Опция позволяет описывать источники датасета с помощью SQL-запросов и "
-"создавать QL-чарты"
 
 msgid "label_allow-subselect-hint-2"
 msgstr ""
