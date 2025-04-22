@@ -149,7 +149,7 @@ class FuncDatetimeTZTrino(SingleVariantTranslationBase, base.FuncDatetimeTZ):
             dt = sa.cast(sa.func.from_iso8601_timestamp(value), tsa.TIMESTAMP(timezone=False))
 
         elif value_type in (DataType.INTEGER, DataType.FLOAT):
-            dt = sa.func.from_unixtime(value)
+            dt = sa.cast(sa.func.from_unixtime(value, "UTC"), tsa.TIMESTAMP(timezone=False))
 
         else:
             raise Exception("Unexpected value type, likely a translation definition error", value_type)
@@ -324,6 +324,11 @@ DEFINITIONS_TYPE = [
         ]
     ),
     base.FuncIntFromGenericDatetime(
+        variants=[
+            V(D.TRINO, lambda value: sa.cast(sa.func.floor(sa.func.to_unixtime(value)), sa.BIGINT)),
+        ]
+    ),
+    base.FuncIntFromDatetimeTZ(
         variants=[
             V(D.TRINO, lambda value: sa.cast(sa.func.floor(sa.func.to_unixtime(value)), sa.BIGINT)),
         ]
