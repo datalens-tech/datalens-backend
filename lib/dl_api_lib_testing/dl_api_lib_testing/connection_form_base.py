@@ -30,7 +30,8 @@ from dl_i18n.localizer_base import (
 class ConnectionFormTestBase:
     CONN_FORM_FACTORY_CLS: ClassVar[Type[ConnectionFormFactory]]
     TRANSLATION_CONFIGS: ClassVar[list[TranslationConfig]]
-    OVERWRITE_EXPECTED_FORMS: ClassVar[bool] = True
+    OVERWRITE_EXPECTED_FORMS: ClassVar[bool] = False
+    EXPECTED_FORMS_DIR: ClassVar[str] = "expected_forms"
 
     @pytest.fixture
     def connectors_settings(self) -> Optional[ConnectorSettingsBase]:
@@ -70,7 +71,7 @@ class ConnectionFormTestBase:
     @pytest.fixture(name="config_dir")
     def fixture_config_dir(self, request: pytest.FixtureRequest) -> str:
         dirname = os.path.dirname(request.module.__file__)
-        dirname = os.path.join(dirname, "expected_forms")
+        dirname = os.path.join(dirname, self.EXPECTED_FORMS_DIR)
         os.makedirs(dirname, exist_ok=True)
         return dirname
 
