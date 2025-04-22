@@ -132,6 +132,7 @@ class QueryItemRefType(Enum):
 
 @unique
 class ParameterValueConstraintType(Enum):
+    all = "all"  # backport compatibility after renaming all->null
     null = "null"
     range = "range"
     set = "set"

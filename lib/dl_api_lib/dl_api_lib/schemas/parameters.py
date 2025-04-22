@@ -72,6 +72,7 @@ class ParameterValueConstraintSchema(OneOfSchema):
 
     type_schemas = {
         ParameterValueConstraintType.null.name: NullParameterValueConstraintSchema,
+        ParameterValueConstraintType.all.name: NullParameterValueConstraintSchema,
         ParameterValueConstraintType.range.name: RangeParameterValueConstraintSchema,
         ParameterValueConstraintType.set.name: SetParameterValueConstraintSchema,
         ParameterValueConstraintType.equals.name: EqualsParameterValueConstraintSchema,
