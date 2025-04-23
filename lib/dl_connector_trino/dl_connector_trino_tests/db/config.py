@@ -61,7 +61,7 @@ class CoreJwtConnectionSettings(CoreSslConnectionSettings):
     AUTH_TYPE: ClassVar[str] = TrinoAuthType.JWT
 
 
-SUBSELECT_QUERY_FULL = r"""
+SUBSELECT_QUERY = r"""
 select
     number,
     cast(number as boolean) as num_bool,
@@ -76,10 +76,8 @@ select
     cast(char_value as varchar(3)) as varchar_3,
     cast(json_string as json) as json,
     cast(date_value as date) as date,
-    cast(time_value as time) as time,
-    cast(times_with_timezone as time with time zone) as time_with_timezone,
     cast(timestamp_value as timestamp) as timestamp,
-    cast(timestamp_with_timezone as timestamp with time zone) as timestamp_with_timezone
+    cast(timestamp_with_timezone_value as timestamp with time zone) as timestamp_with_timezone
 from
     (
         select
@@ -87,17 +85,15 @@ from
             '0' as char_value,
             '{["0"]}' as json_string,
             '2025-01-01' as date_value,
-            '00:00:00' as time_value,
             '01:02:03.456 -08:00' as times_with_timezone,
             '2025-01-01 00:00:00' as timestamp_value,
-            '2001-08-22 03:04:05.321 America/New_York' as timestamp_with_timezone
+            '2001-08-22 03:04:05.321 America/New_York' as timestamp_with_timezone_value
         union all
         select
             1,
             '1',
             '{["1"]}',
             '2025-01-02',
-            '00:00:01',
             '01:02:03.456 -08:00',
             '2025-01-02 00:00:01',
             '2025-01-02 00:00:01.000 America/Denver'
@@ -107,11 +103,32 @@ from
             '6',
             '{["6"]}',
             '2025-01-07',
-            '00:00:06',
             '01:02:03.456 -08:00',
             '2025-01-07 00:00:06',
             '2025-01-07 00:00:06.000 America/Los_Angeles'
     ) as base
+"""
+
+QUERY_WITH_PARAMS = r"""
+select
+    'normal '':string''' as v1_normal_string,
+    'extended:string
+with
+newlines' as v2_ext_string,
+    {{some_string}} as v3_param_string,
+    {{some_integer}} as v4_param_integer,
+    {{some_float}} as v5_param_float,
+    {{some_boolean}} as v6_param_boolean,
+    {{some_other_boolean}} as v7_param_boolean,
+    {{some_date}} as v8_param_date,
+    {{some_datetime}} as v9_param_datetime,
+    {{3xtr4 ше1гd param}} as v10_weird_name,
+    {{3xtr4 же1гd param}} as v11_weird_name,
+    1 in {{intvalues}} as v12_int_in,
+    0 in {{intvalues}} as v13_int_in_2,
+    'a' in {{strvalues}} as v14_str_in,
+    'z' in {{strvalues}} as v14_str_in_2,
+    1 as stuff
 """
 
 DB_URLS = {
