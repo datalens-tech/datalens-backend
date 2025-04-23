@@ -66,42 +66,40 @@
             "name": "cache_ttl_sec"
         },
         {
-            "items": [
-                {
-                    "id": "label",
-                    "text": "Raw SQL level",
-                    "align": "start",
-                    "helpText": "- We do not recommend combining subqueries in datasets with RLS or restrictions on viewing tables.\n- SQL queries from charts enter the connection directly and do not take into account the RLS configured in the datasets."
-                },
-                {
-                    "id": "radio_group",
-                    "name": "raw_sql_level",
-                    "options": [
-                        {
-                            "content": {
-                                "text": "Forbid"
-                            },
-                            "value": "off"
+            "type": "raw_sql_level",
+            "name": "raw_sql_level",
+            "defaultValue": "off",
+            "switchOffValue": "off",
+            "label": {
+                "id": "label",
+                "text": "Raw SQL level",
+                "align": "start",
+                "helpText": "- We do not recommend combining subqueries in datasets with RLS or restrictions on viewing tables.\n- SQL queries from charts enter the connection directly and do not take into account the RLS configured in the datasets."
+            },
+            "radioGroup": {
+                "id": "radio_group",
+                "name": "raw_sql_level",
+                "options": [
+                    {
+                        "content": {
+                            "text": "Allow subselects in datasets",
+                            "hintText": "This option allows you to describe dataset sources using SQL queries"
                         },
-                        {
-                            "content": {
-                                "text": "Allow subselects in datasets",
-                                "hintText": "This option allows you to describe dataset sources using SQL queries"
-                            },
-                            "value": "subselect"
+                        "value": "subselect"
+                    },
+                    {
+                        "content": {
+                            "text": "Allow subselects in datasets and QL-charts",
+                            "hintText": "This option allows you to describe dataset sources using SQL queries and create QL charts",
+                            "textEndIcon": {
+                                "name": "CircleExclamation",
+                                "view": "error"
+                            }
                         },
-                        {
-                            "content": {
-                                "text": "Allow subselects in datasets and QL-charts",
-                                "hintText": "This option allows you to describe dataset sources using SQL queries and create QL charts"
-                            },
-                            "value": "dashsql"
-                        }
-                    ],
-                    "defaultValue": "off",
-                    "controlProps": {}
-                }
-            ]
+                        "value": "dashsql"
+                    }
+                ]
+            }
         },
         {
             "type": "collapse",

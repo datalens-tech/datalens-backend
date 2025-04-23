@@ -21,6 +21,7 @@ import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_constants.enums import RawSQLLevel
 
 from dl_connector_greenplum.api.connection_info import GreenplumConnectionInfoProvider
 from dl_connector_postgresql.api.connection_form.form_config import (
@@ -93,7 +94,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
                     *username_section,
                     rc.password_row(mode=self.mode),
                     C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-                    rc.raw_sql_level_row(),
+                    rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
                     rc.collapse_advanced_settings_row(),
                     postgres_rc.enforce_collate_row(),
                     rc.data_export_forbidden_row(),

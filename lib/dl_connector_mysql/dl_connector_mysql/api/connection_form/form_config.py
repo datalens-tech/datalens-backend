@@ -17,6 +17,7 @@ import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_constants.enums import RawSQLLevel
 
 from dl_connector_mysql.api.connection_info import MySQLConnectionInfoProvider
 from dl_connector_mysql.api.i18n.localizer import Translatable
@@ -70,7 +71,7 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
     ) -> Sequence[FormRow]:
         return [
             C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-            rc.raw_sql_level_row(),
+            rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
             rc.collapse_advanced_settings_row(),
             *rc.ssl_rows(
                 enabled_name=CommonFieldName.ssl_enable,
