@@ -78,7 +78,7 @@ module = "trino.*"
 ignore_missing_imports = true
 
 [datalens.i18n.domains]
-dl_connector_snowflake = [
+dl_connector_trino = [
     {path = "dl_connector_trino/api"},
     {path = "dl_connector_trino/core"},
 ]
