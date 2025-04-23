@@ -200,53 +200,110 @@ class DatasetDataBaseView(BaseView):
         self.dataset = dataset
         self.ds_accessor = DatasetComponentAccessor(dataset=dataset)
 
-    @generic_profiler_async("prepare-dataset-with-mutation-cache")  # type: ignore  # TODO: fix
-    async def prepare_dataset_with_mutation_cache(
+    async def _apply_updates_to_dataset(
+        self,
+        req_model: DataRequestModel,
+        us_manager: AsyncUSManager,
+        allow_rls_change: bool,
+        cached_dataset: Optional[Dataset],
+    ) -> DatasetUpdateInfo:
+        services_registry = self.dl_request.services_registry
+        assert isinstance(services_registry, ApiServiceRegistry)
+        loader = DatasetApiLoader(service_registry=services_registry)
+
+        update_info = loader.update_dataset_from_body(
+            dataset=self.dataset,
+            us_manager=us_manager,
+            dataset_data=req_model.dataset,
+            allow_rls_change=allow_rls_change,
+        )
+
+        await self.resolve_rls_groups_for_dataset(req_model, services_registry)
+        await self.check_for_notifications(services_registry, us_manager)
+
+        if cached_dataset:
+            return update_info
+
+        # Apply updates
+        dataset_validator_factory = services_registry.get_dataset_validator_factory()
+        ds_validator = dataset_validator_factory.get_dataset_validator(
+            ds=self.dataset,
+            us_manager=us_manager,
+            is_data_api=True,
+        )
+        executor = services_registry.get_compute_executor()
+        await executor.execute(lambda: ds_validator.apply_batch(action_batch=req_model.updates))
+
+        return update_info
+
+    async def _prepare_dataset_from_cache_without_dataset_id(
         self,
         req_model: DataRequestModel,
         allow_rls_change: bool = False,
     ) -> DatasetUpdateInfo:
-        """Try take dataset from mutation cache to avoid double deserialization"""
-
         us_manager = self.dl_request.us_manager
-        if self.dl_request.log_ctx_controller:
-            self.dl_request.log_ctx_controller.put_to_context("dataset_id", self.dataset_id)
 
-        if self.dataset_id is None:  # case 1
-            if self.STORED_DATASET_REQUIRED:
-                raise ValueError(f"View {self} requires stored dataset, but no ID found in match info")
+        if self.STORED_DATASET_REQUIRED:
+            raise ValueError(f"View {self} requires stored dataset, but no ID found in match info")
 
-            us_resp = None
-            dataset = Dataset.create_from_dict(
-                Dataset.DataModel(name=""),  # TODO: Remove name - it's not used, but is required
-                us_manager=us_manager,  # type: ignore  # TODO: fix # WTF??? sync or async??
+        dataset = Dataset.create_from_dict(
+            Dataset.DataModel(name=""),  # TODO: Remove name - it's not used, but is required
+            us_manager=us_manager,  # type: ignore  # TODO: fix # WTF??? sync or async??
+        )
+
+        # Validate revision from request
+        self._check_dataset_revision_id(dataset.revision_id, req_model)
+
+        with GenericProfiler("dataset-prepare"):
+            # Empty dataset, possibly can't be in cache
+            self.dataset = dataset
+
+            await us_manager.load_dependencies(self.dataset)
+
+            self.ds_accessor = DatasetComponentAccessor(dataset=self.dataset)
+
+            update_info = await self._apply_updates_to_dataset(
+                req_model,
+                us_manager,
+                allow_rls_change,
+                cached_dataset=None,
             )
 
-            revision_id = dataset.revision_id
-            permission = dataset.permissions  # noqa
-            permission_mode = dataset.permissions_mode  # noqa
-        else:  # case 2
-            try:
-                dataset = None
-                us_resp = await us_manager.get_by_id_raw(self.dataset_id)
-            except USObjectNotFoundException as e:
-                raise web.HTTPNotFound(reason="Entity not found") from e
+            enable_mutation_caching = self.dl_request.services_registry.get_mutation_cache_factory() is not None
 
-            # TODO: Try using partial deserialization instead of direct dict lookup if possible
-            revision_id = us_resp["data"]["revision_id"]
-            permissions = us_resp.get("permissions", None)
-            permissions_mode = us_resp.get("permissions_mode", None)
+            if enable_mutation_caching:
+                mutation_cache = self.try_get_cache(allow_slave=False)
+                mutation_key = self.try_get_mutation_key_for_dataset(
+                    self.dataset_id, dataset.revision_id, req_model.updates
+                )
+
+                await self.try_save_dataset_to_cache(mutation_cache, mutation_key, self.dataset)  # noqa
+
+        return update_info
+
+    async def _prepare_dataset_from_cache_with_dataset_id(
+        self,
+        req_model: DataRequestModel,
+        allow_rls_change: bool = False,
+    ) -> DatasetUpdateInfo:
+        us_manager = self.dl_request.us_manager
+
+        try:
+            assert self.dataset_id is not None
+            us_resp = await us_manager.get_by_id_raw(self.dataset_id)
+        except USObjectNotFoundException as e:
+            raise web.HTTPNotFound(reason="Entity not found") from e
+
+        # TODO: Try using partial deserialization instead of direct dict lookup if possible
+        revision_id = us_resp["data"]["revision_id"]
+        permissions = us_resp.get("permissions", None)
+        permissions_mode = us_resp.get("permissions_mode", None)
 
         # Validate revision from request
         self._check_dataset_revision_id(revision_id, req_model)
 
         enable_mutation_caching = self.dl_request.services_registry.get_mutation_cache_factory() is not None
-        us_manager = self.dl_request.us_manager
-        services_registry = self.dl_request.services_registry
-        assert isinstance(services_registry, ApiServiceRegistry)
-        loader = DatasetApiLoader(service_registry=services_registry)
 
-        cached_dataset: Optional[Dataset] = None
         with GenericProfiler("dataset-prepare"):
             # Try from cache
             if enable_mutation_caching:
@@ -260,59 +317,53 @@ class DatasetDataBaseView(BaseView):
                     mutation_key,
                 )
 
-            # Got from cache
             if cached_dataset:
                 self.dataset = cached_dataset
                 self.dataset.permissions = permissions
                 self.dataset.permissions_mode = permissions_mode
-
-                await us_manager.load_dependencies(self.dataset)
-
-            # Forced to deserialize
             else:
-                if self.dataset_id is None:  # case 1
-                    assert dataset is not None
-                    self.dataset = dataset
-                else:  # case 2
-                    assert us_resp is not None
-                    dataset_entry = await us_manager.deserialize_us_resp(us_resp, Dataset)
-                    assert isinstance(dataset_entry, Dataset)
+                assert us_resp is not None
+                dataset = await us_manager.deserialize_us_resp(us_resp, Dataset)
+                assert isinstance(dataset, Dataset)
 
-                    self.dataset = dataset_entry
+                self.dataset = dataset
 
-                    await us_manager.load_dependencies(self.dataset)
+            await us_manager.load_dependencies(self.dataset)
 
             self.ds_accessor = DatasetComponentAccessor(dataset=self.dataset)
 
-            update_info = loader.update_dataset_from_body(
-                dataset=self.dataset,
-                us_manager=us_manager,
-                dataset_data=req_model.dataset,
-                allow_rls_change=allow_rls_change,
+            update_info = await self._apply_updates_to_dataset(
+                req_model,
+                us_manager,
+                allow_rls_change,
+                cached_dataset=cached_dataset,
             )
-            await self.resolve_rls_groups_for_dataset(req_model, services_registry)
 
-            if cached_dataset:
-                await self.check_for_notifications(services_registry, us_manager)
-                return update_info
-
-            services_registry = self.dl_request.services_registry
-            assert isinstance(services_registry, ApiServiceRegistry)
-
-            await self.check_for_notifications(services_registry, us_manager)
-
-            dataset_validator_factory = services_registry.get_dataset_validator_factory()
-            ds_validator = dataset_validator_factory.get_dataset_validator(
-                ds=self.dataset,
-                us_manager=us_manager,
-                is_data_api=True,
-            )
-            executor = services_registry.get_compute_executor()
-            await executor.execute(lambda: ds_validator.apply_batch(action_batch=req_model.updates))
-            if enable_mutation_caching:
-                await self.try_save_dataset_to_cache(mutation_cache, mutation_key, self.dataset)  # noqa
+            if enable_mutation_caching and cached_dataset is None:
+                await self.try_save_dataset_to_cache(mutation_cache, mutation_key, self.dataset)
 
         return update_info
+
+    @generic_profiler_async("prepare-dataset-with-mutation-cache")  # type: ignore  # TODO: fix
+    async def prepare_dataset_with_mutation_cache(
+        self,
+        req_model: DataRequestModel,
+        allow_rls_change: bool = False,
+    ) -> DatasetUpdateInfo:
+        """Try take dataset from mutation cache to avoid double deserialization"""
+        if self.dl_request.log_ctx_controller:
+            self.dl_request.log_ctx_controller.put_to_context("dataset_id", self.dataset_id)
+
+        if self.dataset_id is None:
+            return await self._prepare_dataset_from_cache_without_dataset_id(
+                req_model=req_model,
+                allow_rls_change=allow_rls_change,
+            )
+        else:
+            return await self._prepare_dataset_from_cache_with_dataset_id(
+                req_model=req_model,
+                allow_rls_change=allow_rls_change,
+            )
 
     @staticmethod
     def _updates_only_fields(updates: List[Action]) -> bool:
