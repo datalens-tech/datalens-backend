@@ -1,3 +1,4 @@
+import enum
 from typing import (
     Literal,
     Optional,
@@ -101,8 +102,20 @@ class RadioButtonRowItem(ControlRowItem):
 class RadioGroupRowItemOption(SerializableConfig):
     @attr.s(kw_only=True, frozen=True)
     class ValueContent(SerializableConfig):
+        @attr.s(kw_only=True, frozen=True)
+        class TextEndIcon(SerializableConfig):
+            class Name(enum.Enum):
+                circle_exclamation = "CircleExclamation"
+
+            class View(enum.Enum):
+                error = "error"
+
+            name: Name = attr.ib()
+            view: View = attr.ib()
+
         text: str = attr.ib()
         hint_text: Optional[MarkdownStr] = attr.ib(default=None, metadata=remap_skip_if_null("hintText"))
+        text_end_icon: Optional[TextEndIcon] = attr.ib(default=None, metadata=remap_skip_if_null("textEndIcon"))
 
     content: ValueContent = attr.ib()
     value: str = attr.ib()

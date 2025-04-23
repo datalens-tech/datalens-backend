@@ -203,10 +203,23 @@ class RowConstructor:
 
         return template.format(*values)
 
+    def _get_raw_sql_level_radio_group_option_text_end_icon(
+        self,
+        raw_sql_level: RawSQLLevel,
+    ) -> Optional[C.RadioGroupRowItemOption.ValueContent.TextEndIcon]:
+        if raw_sql_level == RawSQLLevel.dashsql:
+            return C.RadioGroupRowItemOption.ValueContent.TextEndIcon(
+                name=C.RadioGroupRowItemOption.ValueContent.TextEndIcon.Name.circle_exclamation,
+                view=C.RadioGroupRowItemOption.ValueContent.TextEndIcon.View.error,
+            )
+
+        return None
+
     def _raw_sql_level_to_radio_group_option(
         self,
         raw_sql_level: RawSQLLevel,
         all_raw_sql_levels: list[RawSQLLevel],
+        with_text_end_icon: bool = True,
     ) -> C.RadioGroupRowItemOption:
         if raw_sql_level == RawSQLLevel.off:
             return C.RadioGroupRowItemOption(
@@ -226,23 +239,35 @@ class RowConstructor:
 
         content_text = self._get_raw_sql_level_radio_group_option_text(included_levels)
         content_hint_text = self._get_raw_sql_level_radio_group_option_hint_text(included_levels)
+        if with_text_end_icon:
+            text_end_icon = self._get_raw_sql_level_radio_group_option_text_end_icon(raw_sql_level)
+        else:
+            text_end_icon = None
 
         return C.RadioGroupRowItemOption(
             value=raw_sql_level.value,
             content=C.RadioGroupRowItemOption.ValueContent(
                 text=content_text,
                 hint_text=content_hint_text,
+                text_end_icon=text_end_icon,
             ),
         )
 
     def _get_raw_sql_level_radio_group_options(
         self,
         raw_sql_levels: list[RawSQLLevel],
+        with_text_end_icon: bool = True,
     ) -> list[C.RadioGroupRowItemOption]:
         return [
-            self._raw_sql_level_to_radio_group_option(raw_sql_level, raw_sql_levels) for raw_sql_level in raw_sql_levels
+            self._raw_sql_level_to_radio_group_option(
+                raw_sql_level=raw_sql_level,
+                all_raw_sql_levels=raw_sql_levels,
+                with_text_end_icon=with_text_end_icon,
+            )
+            for raw_sql_level in raw_sql_levels
         ]
 
+    # deprecated - use raw_sql_level_row_v2 instead
     def raw_sql_level_row(
         self,
         default_value: RawSQLLevel = RawSQLLevel.off,
@@ -267,7 +292,10 @@ class RowConstructor:
                 ),
                 C.RadioGroupRowItem(
                     name=CommonFieldName.raw_sql_level,
-                    options=self._get_raw_sql_level_radio_group_options(raw_sql_levels),
+                    options=self._get_raw_sql_level_radio_group_options(
+                        raw_sql_levels=raw_sql_levels,
+                        with_text_end_icon=False,
+                    ),
                     default_value=default_value.value,
                     control_props=C.RadioGroupRowItem.Props(disabled=disabled),
                 ),
@@ -286,8 +314,8 @@ class RowConstructor:
         if switch_off_value in raw_sql_levels:
             raise ValueError("switch_off_value must not be in raw_sql_levels")
 
-        if default_value not in raw_sql_levels:
-            raise ValueError("default_value must be in raw_sql_levels")
+        if default_value not in raw_sql_levels and switch_off_value != default_value:
+            raise ValueError("default_value must be in raw_sql_levels or equal switch_off_value")
 
         label_allow_subselect_hint_2 = self._localizer.translate(Translatable("label_allow-subselect-hint-2"))
         label_allow_subselect_hint_3 = self._localizer.translate(Translatable("label_allow-subselect-hint-3"))
