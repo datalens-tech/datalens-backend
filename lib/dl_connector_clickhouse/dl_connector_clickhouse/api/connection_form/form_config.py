@@ -28,6 +28,7 @@ from dl_i18n.localizer_base import Localizer
 
 from dl_connector_clickhouse.api.connection_info import ClickHouseConnectionInfoProvider
 from dl_connector_clickhouse.api.i18n.localizer import Translatable
+from dl_connector_clickhouse.core.clickhouse.settings import ClickHouseConnectorSettings
 
 
 @unique
@@ -152,9 +153,17 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
         connector_settings: ConnectorSettingsBase | None,
     ) -> typing.Sequence[FormRow]:
         clickhouse_rc = ClickHouseRowConstructor(localizer=self._localizer)
+
+        raw_sql_levels = [RawSQLLevel.subselect]
+        if connector_settings:
+            assert isinstance(connector_settings, ClickHouseConnectorSettings)
+            if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
+                raw_sql_levels.append(RawSQLLevel.template)
+        raw_sql_levels.append(RawSQLLevel.dashsql)
+
         return [
             C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-            rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
+            rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
             rc.collapse_advanced_settings_row(),
             *rc.ssl_rows(
                 enabled_name=CommonFieldName.secure,
