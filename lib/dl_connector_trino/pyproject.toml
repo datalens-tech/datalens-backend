@@ -26,6 +26,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-configs = {path = "../dl_configs"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-db-testing = {path = "../dl_db_testing"}
+dl-query-processing = {path = "../dl_query_processing"}
 # dl-model-tools = {path = "../dl_model_tools"}
 
 [tool.poetry.plugins]
