@@ -306,6 +306,7 @@ class DatasetDataBaseView(BaseView):
 
         with GenericProfiler("dataset-prepare"):
             # Try from cache
+            cached_dataset = None
             if enable_mutation_caching:
                 mutation_cache = self.try_get_cache(allow_slave=False)
                 # TODO consider: ^ analyze profiling & maybe use allow_slave=True when reading from cache
