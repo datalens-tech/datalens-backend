@@ -1,3 +1,4 @@
+from functools import lru_cache
 import ssl
 from typing import (
     Any,
@@ -116,8 +117,14 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         return ""  # Trino doesn't require db_name to connect.
 
     def _get_db_version(self, db_ident: DBIdent) -> str:
-        dialect = self.get_dialect()
-        return dialect.server_version_info[0]
+        @lru_cache(maxsize=1)
+        def query_db_version() -> str:
+            result = self.execute(DBAdapterQuery(sa.text("SELECT version()"))).get_all()
+            version = result[0][0]
+            assert isinstance(version, str)
+            return version
+
+        return query_db_version()
 
     def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         """
