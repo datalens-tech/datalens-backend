@@ -70,6 +70,7 @@ EXCEPTION_CODES = {
     common_exc.DataSourceTitleConflict: status.BAD_REQUEST,
     common_exc.DataSourcesInconsistent: status.BAD_REQUEST,
     common_exc.TemplateInvalidError: status.BAD_REQUEST,
+    common_exc.ParameterValueInvalidError: status.BAD_REQUEST,
     common_exc.ConnectionTemplateDisabledError: status.BAD_REQUEST,
     dl_query_processing.exc.EmptyQuery: status.BAD_REQUEST,
     dl_query_processing.exc.InvalidQueryStructure: status.BAD_REQUEST,

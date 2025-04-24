@@ -676,6 +676,12 @@ class DatasetValidator(DatasetBaseWrapper):
             elif "guid_formula" in field_data_dict and "formula" not in field_data_dict:
                 field_data_dict["formula"] = ""
 
+            if self._is_data_api:
+                # forbidden fields to be mutated via Data API
+                for field_name in ("value_constraint", "template_enabled"):
+                    if field_name in field_data_dict:
+                        del field_data_dict[field_name]
+
         if action in (DatasetAction.update_field, DatasetAction.delete_field):
             try:
                 old_field = self.get_field_by_id(field_id)
@@ -731,18 +737,6 @@ class DatasetValidator(DatasetBaseWrapper):
                 )
                 self._ds.rename_field_id_usages(old_id=field_id, new_id=new_field_id)
                 return
-            if self._is_data_api and old_field.calc_mode == CalcMode.parameter:
-                if (
-                    "value_constraint" in field_data_dict
-                    and old_field.value_constraint != field_data_dict["value_constraint"]
-                ):
-                    raise exc.DatasetActionNotAllowedError("parameter value_constraint cannot be updated")
-
-                if (
-                    "template_enabled" in field_data_dict
-                    and old_field.template_enabled != field_data_dict["template_enabled"]
-                ):
-                    raise exc.DatasetActionNotAllowedError("parameter template_enabled cannot be updated")
 
             # Update existing field
             new_field = old_field.clone(**field_data_dict)

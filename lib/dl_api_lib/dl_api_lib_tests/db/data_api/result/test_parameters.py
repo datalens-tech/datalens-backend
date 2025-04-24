@@ -11,6 +11,7 @@ from dl_api_client.dsmaker.primitives import (
     Dataset,
     IntegerParameterValue,
     RangeParameterValueConstraint,
+    RegexParameterValueConstraint,
     StringParameterValue,
 )
 from dl_api_client.dsmaker.shortcuts.dataset import (
@@ -143,80 +144,6 @@ class TestParameters(DefaultApiTestBase):
 
         assert result_resp.status_code == expected_status_code, result_resp.json
         assert result_resp.bi_status_code == expected_bi_status_code
-
-    def test_parameter_constraint_mutation_forbidden(
-        self,
-        control_api: SyncHttpDatasetApiV1,
-        data_api: SyncHttpDataApiV2,
-        saved_dataset: Dataset,
-    ):
-        ds = add_parameters_to_dataset(
-            api_v1=control_api,
-            dataset_id=saved_dataset.id,
-            parameters={
-                "Param": Parameter(
-                    IntegerParameterValue(42),
-                    RangeParameterValueConstraint(min=IntegerParameterValue(0), max=IntegerParameterValue(100)),
-                    False,
-                ),
-            },
-        )
-
-        parameter = ds.find_field(title="Param")
-        result_resp = data_api.get_result(
-            dataset=ds,
-            fields=[parameter],
-            updates=[
-                {
-                    "action": DatasetAction.update_field.value,
-                    "field": {
-                        "guid": parameter.id,
-                        "value_constraint": {"type": "null"},
-                    },
-                },
-            ],
-            fail_ok=True,
-        )
-
-        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
-        assert result_resp.bi_status_code == "ERR.DS_API.ACTION_NOT_ALLOWED"
-
-    def test_template_enabled_mutation(
-        self,
-        control_api: SyncHttpDatasetApiV1,
-        data_api: SyncHttpDataApiV2,
-        saved_dataset: Dataset,
-    ):
-        ds = add_parameters_to_dataset(
-            api_v1=control_api,
-            dataset_id=saved_dataset.id,
-            parameters={
-                "Param": Parameter(
-                    IntegerParameterValue(42),
-                    RangeParameterValueConstraint(min=IntegerParameterValue(0), max=IntegerParameterValue(100)),
-                    False,
-                ),
-            },
-        )
-
-        parameter = ds.find_field(title="Param")
-        result_resp = data_api.get_result(
-            dataset=ds,
-            fields=[parameter],
-            updates=[
-                {
-                    "action": DatasetAction.update_field.value,
-                    "field": {
-                        "guid": parameter.id,
-                        "template_enabled": True,
-                    },
-                },
-            ],
-            fail_ok=True,
-        )
-
-        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
-        assert result_resp.bi_status_code == "ERR.DS_API.ACTION_NOT_ALLOWED"
 
     @pytest.mark.parametrize(
         ("param_value", "expected_status_code", "expected_bi_status_code"),
@@ -385,7 +312,7 @@ class TestParameterSourceTemplates(DefaultApiTestBase):
         ds.result_schema["table_name"] = ds.field(
             cast=parameter.type,
             default_value=parameter,
-            value_constraint=None,
+            value_constraint=RegexParameterValueConstraint(pattern="table_.*"),
             template_enabled=True,
         )
 
@@ -463,7 +390,90 @@ class TestParameterSourceTemplates(DefaultApiTestBase):
         assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
         assert result_resp.bi_status_code == "ERR.DS_API.SOURCE_CONFIG.CONNECTION_TEMPLATE_DISABLED"
 
-    def test_update_parameter_default_value(
+    def test_parameter_template_disabled(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ):
+        ds = saved_dataset
+        ds.result_schema["table_name"].template_enabled = False
+        ds = control_api.apply_updates(dataset=ds).dataset
+        ds = control_api.save_dataset(dataset=ds).dataset
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="discount"),
+                ds.find_field(title="city"),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
+        assert result_resp.bi_status_code == "ERR.DS_API.SOURCE_CONFIG.TEMPLATE_INVALID"
+
+    def test_update_value_constraint_ignored(
+        self,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ):
+        ds = saved_dataset
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="discount"),
+                ds.find_field(title="city"),
+            ],
+            updates=[
+                {
+                    "action": DatasetAction.update_field.value,
+                    "field": {
+                        "guid": ds.find_field(title="table_name").id,
+                        "cast": "string",
+                        "value_constraint": {"type": "null"},
+                        "default_value": "invalid_table_name",
+                    },
+                },
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
+        assert result_resp.bi_status_code == "ERR.DS_API.PARAMETER.INVALID_VALUE"
+
+    def test_update_template_enabled_ignored(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ):
+        ds = saved_dataset
+        ds.result_schema["table_name"].template_enabled = False
+        ds = control_api.apply_updates(dataset=ds).dataset
+        ds = control_api.save_dataset(dataset=ds).dataset
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="discount"),
+                ds.find_field(title="city"),
+            ],
+            updates=[
+                {
+                    "action": DatasetAction.update_field.value,
+                    "field": {
+                        "guid": ds.find_field(title="table_name").id,
+                        "cast": "string",
+                        "template_enabled": True,
+                    },
+                },
+            ],
+            fail_ok=True,
+        )
+
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
+        assert result_resp.bi_status_code == "ERR.DS_API.SOURCE_CONFIG.TEMPLATE_INVALID"
+
+    def test_update_default_value(
         self,
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
@@ -471,7 +481,7 @@ class TestParameterSourceTemplates(DefaultApiTestBase):
     ):
         ds = saved_dataset
         table_name = ds.result_schema["table_name"].default_value.value
-        ds.result_schema["table_name"].default_value = StringParameterValue(value="invalid_table_name")
+        ds.result_schema["table_name"].default_value = StringParameterValue(value="table_invalid")
         ds = control_api.apply_updates(dataset=ds).dataset
         ds = control_api.save_dataset(dataset=ds).dataset
 
@@ -494,7 +504,36 @@ class TestParameterSourceTemplates(DefaultApiTestBase):
         )
         assert result_resp.status_code == HTTPStatus.OK, result_resp.json
 
-    def test_invalid_update_parameter_default_value(
+    def test_update_default_value_invalid(
+        self,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ):
+        ds = saved_dataset
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="discount"),
+                ds.find_field(title="city"),
+            ],
+            updates=[
+                {
+                    "action": DatasetAction.update_field.value,
+                    "field": {
+                        "guid": ds.find_field(title="table_name").id,
+                        "cast": "string",
+                        "default_value": "table_invalid",
+                    },
+                },
+            ],
+            fail_ok=True,
+        )
+
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
+        assert result_resp.bi_status_code == "ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST"
+        assert "table_invalid" in result_resp.json["message"]
+
+    def test_update_default_value_fails_constraint(
         self,
         data_api: SyncHttpDataApiV2,
         saved_dataset: Dataset,
@@ -520,7 +559,7 @@ class TestParameterSourceTemplates(DefaultApiTestBase):
         )
 
         assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
-        assert result_resp.bi_status_code == "ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST"
+        assert result_resp.bi_status_code == "ERR.DS_API.PARAMETER.INVALID_VALUE"
         assert "invalid_table_name" in result_resp.json["message"]
 
     def test_update_parameter_value(
@@ -531,7 +570,7 @@ class TestParameterSourceTemplates(DefaultApiTestBase):
     ):
         ds = saved_dataset
         table_name = ds.result_schema["table_name"].default_value.value
-        ds.result_schema["table_name"].default_value = StringParameterValue(value="invalid_table_name")
+        ds.result_schema["table_name"].default_value = StringParameterValue(value="table_invalid")
         ds = control_api.apply_updates(dataset=ds).dataset
         ds = control_api.save_dataset(dataset=ds).dataset
 
@@ -547,7 +586,29 @@ class TestParameterSourceTemplates(DefaultApiTestBase):
         )
         assert result_resp.status_code == HTTPStatus.OK, result_resp.json
 
-    def test_invalid_parameters_value(
+    def test_update_parameter_value_invalid(
+        self,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ):
+        ds = saved_dataset
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="discount"),
+                ds.find_field(title="city"),
+            ],
+            parameters=[
+                ds.find_field(title="table_name").parameter_value("table_invalid_table_name"),
+            ],
+            fail_ok=True,
+        )
+
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
+        assert result_resp.bi_status_code == "ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST"
+        assert "invalid_table_name" in result_resp.json["message"]
+
+    def test_update_parameter_value_fails_constraint(
         self,
         data_api: SyncHttpDataApiV2,
         saved_dataset: Dataset,
@@ -566,5 +627,5 @@ class TestParameterSourceTemplates(DefaultApiTestBase):
         )
 
         assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
-        assert result_resp.bi_status_code == "ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST"
+        assert result_resp.bi_status_code == "ERR.DS_API.SOURCE_CONFIG.PARAMETER_VALUE_INVALID"
         assert "invalid_table_name" in result_resp.json["message"]
