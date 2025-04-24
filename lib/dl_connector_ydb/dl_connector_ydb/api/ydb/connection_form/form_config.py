@@ -202,7 +202,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                 *rc.ssl_rows(
                     enabled_name=CommonFieldName.ssl_enable,
                     enabled_help_text=self._localizer.translate(Translatable("label_ydb-ssl-enabled-tooltip")),
-                    enabled_default_value=True,
+                    enabled_default_value=connector_settings.DEFAULT_SSL_ENABLE_VALUE,
                 ),
             ]
         else:
@@ -214,7 +214,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                 *rc.ssl_rows(
                     enabled_name=CommonFieldName.ssl_enable,
                     enabled_help_text=self._localizer.translate(Translatable("label_ydb-ssl-enabled-tooltip")),
-                    enabled_default_value=True,
+                    enabled_default_value=connector_settings.DEFAULT_SSL_ENABLE_VALUE,
                 ),
             ]
         return ConnectionForm(
