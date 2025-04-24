@@ -15,6 +15,7 @@ from dl_core.connectors.settings.primitives import (
 class YDBConnectorSettings(ConnectorSettingsBase):
     ENABLE_AUTH_TYPE_PICKER: Optional[bool] = s_attrib("ENABLE_AUTH_TYPE_PICKER", missing=False)  # type: ignore
     DEFAULT_HOST_VALUE: Optional[str] = s_attrib("DEFAULT_HOST_VALUE", missing=None)  # type: ignore
+    DEFAULT_SSL_ENABLE_VALUE: bool = s_attrib("DEFAULT_SSL_ENABLE_VALUE", missing=True)  # type: ignore
 
 
 def ydb_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSettingsBase]:
