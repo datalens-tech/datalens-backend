@@ -1,6 +1,6 @@
 from dl_api_connector.api_schema.source_base import (
-    SQLDataSourceSchema,
-    SQLDataSourceTemplateSchema,
+    SchematizedSQLDataSourceSchema,
+    SchematizedSQLDataSourceTemplateSchema,
     SubselectDataSourceSchema,
     SubselectDataSourceTemplateSchema,
 )
@@ -32,8 +32,8 @@ from dl_connector_trino.formula.constants import (
 
 class TrinoApiTableSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = TrinoCoreTableSourceDefinition
-    api_schema_cls = SQLDataSourceSchema
-    template_api_schema_cls = SQLDataSourceTemplateSchema
+    api_schema_cls = SchematizedSQLDataSourceSchema
+    template_api_schema_cls = SchematizedSQLDataSourceTemplateSchema
 
 
 class TrinoApiSubselectSourceDefinition(ApiSourceDefinition):
