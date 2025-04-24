@@ -71,6 +71,11 @@ class TemplateInvalidError(DataSourceConfigurationError):
     default_message = "Invalid template"
 
 
+class ParameterValueInvalidError(DataSourceConfigurationError):
+    err_code = DataSourceConfigurationError.err_code + ["PARAMETER_VALUE_INVALID"]
+    default_message = "Invalid parameter value"
+
+
 class DatasetConfigurationError(DLBaseException):
     err_code = DLBaseException.err_code + ["DS_CONFIG"]
 

@@ -179,11 +179,18 @@ class DatasetComponentAccessor:
         return obfilter
 
     def get_parameter_values(self) -> dict[str, BIValue]:
-        result = {
-            field.title: field.default_value
-            for field in self._dataset.result_schema.fields
-            if field.calc_mode == CalcMode.parameter and field.default_value is not None and field.template_enabled
-        }
+        result: dict[str, BIValue] = {}
+
+        for field in self._dataset.result_schema.fields:
+            if field.calc_mode != CalcMode.parameter or field.default_value is None or not field.template_enabled:
+                continue
+
+            if field.value_constraint and not field.value_constraint.is_valid(field.default_value):
+                raise exc.ParameterValueInvalidError(
+                    f"Default value for field {field.title} is not valid: {field.default_value}"
+                )
+
+            result[field.title] = field.default_value
 
         return result
 
@@ -196,6 +203,11 @@ class DatasetComponentAccessor:
             field = self._dataset.result_schema.by_guid(parameter_value_spec.field_id)
             if field.template_enabled:
                 assert field.default_value is not None
+                if field.value_constraint and not field.value_constraint.is_valid(parameter_value_spec.value):
+                    raise exc.ParameterValueInvalidError(
+                        f"Default value for field {field.title} is not valid: {parameter_value_spec.value}"
+                    )
+
                 result[field.title] = attr.evolve(field.default_value, value=parameter_value_spec.value)
         return result
 
