@@ -305,6 +305,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                         if self.meta.exec_mode == TaskExecutionMode.UPDATE_AND_SAVE:
                             delete_file_task = task_interface.DeleteFileTask(
                                 s3_filename=orig_s3_filename,
+                                tenant_id=self.meta.tenant_id,
                                 preview_id=orig_preview_id,
                             )
                             task_processor = self._ctx.make_task_processor(self._request_id)

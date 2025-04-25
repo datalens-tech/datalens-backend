@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     BinaryIO,
     Iterator,
-    NamedTuple,
     Optional,
 )
 
@@ -22,6 +21,7 @@ from dl_file_uploader_lib.redis_model.models.models import (
     FileSourceSettings,
     SpreadsheetFileSourceSettings,
 )
+from dl_file_uploader_lib.utils.s3_utils import S3Object
 from dl_file_uploader_worker_lib.utils.parsing_utils import get_csv_raw_data_iterator
 from dl_s3.data_sink import S3FileDataSink
 from dl_s3.stream import SimpleDataStream
@@ -85,11 +85,6 @@ class S3JsonEachRowFileDataSink(S3FileDataSink[SimpleDataStream, dict]):
         return json.dumps(cast_row_data).encode("utf-8")
 
 
-class S3Object(NamedTuple):
-    bucket: str
-    key: str
-
-
 def copy_from_s3_to_s3(
     s3_sync_cli: SyncS3Client,
     src_file: S3Object,
@@ -100,7 +95,7 @@ def copy_from_s3_to_s3(
     raw_schema: list[SchemaColumn],
 ) -> None:
     s3_sync_resp = s3_sync_cli.get_object(Bucket=src_file.bucket, Key=src_file.key)
-    s3_data_stream: BinaryIO = s3_sync_resp["Body"]
+    s3_data_stream: BinaryIO = s3_sync_resp["Body"]  # type: ignore[assignment] # TODO: Incompatible types in assignment (expression has type "StreamingBody", variable has type "BinaryIO")
 
     def spreadsheet_data_iter() -> Iterator[dict]:
         fieldnames = tuple(sch.name for sch in raw_schema)

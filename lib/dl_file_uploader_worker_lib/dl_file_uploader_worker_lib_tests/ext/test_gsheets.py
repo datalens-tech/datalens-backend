@@ -202,7 +202,12 @@ async def downloaded_gsheet_file_id(
     await df.save()
 
     task = await task_processor_client.schedule(
-        DownloadGSheetTask(file_id=df.id, authorized=False, schedule_parsing=False)
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            schedule_parsing=False,
+            tenant_id="common",
+        )
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
@@ -235,7 +240,12 @@ async def test_download_gsheet_task(
     await df.save()
 
     task = await task_processor_client.schedule(
-        DownloadGSheetTask(file_id=df.id, authorized=False, schedule_parsing=False)
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            schedule_parsing=False,
+            tenant_id="common",
+        )
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
@@ -507,7 +517,13 @@ async def test_download_and_parse_gsheet(
     )
     await df.save()
 
-    task = await task_processor_client.schedule(DownloadGSheetTask(file_id=df.id, authorized=False))
+    task = await task_processor_client.schedule(
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -640,7 +656,13 @@ async def test_download_and_parse_big_gsheets(
     await df.save()
 
     # Download and Parse
-    task = await task_processor_client.schedule(DownloadGSheetTask(file_id=df.id, authorized=False))
+    task = await task_processor_client.schedule(
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -707,7 +729,13 @@ async def test_gsheets_full_pipeline(
     await df.save()
 
     # Download and Parse
-    task = await task_processor_client.schedule(DownloadGSheetTask(file_id=df.id, authorized=False))
+    task = await task_processor_client.schedule(
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -811,7 +839,13 @@ async def test_too_many_columns_gsheets(
     )
     await df.save()
 
-    task = await task_processor_client.schedule(DownloadGSheetTask(file_id=df.id, authorized=False))
+    task = await task_processor_client.schedule(
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -866,7 +900,13 @@ async def test_too_large_sheet(
     )
     await df.save()
 
-    task = await task_processor_client.schedule(DownloadGSheetTask(file_id=df.id, authorized=False))
+    task = await task_processor_client.schedule(
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -909,7 +949,12 @@ async def test_url_params_encoding(
     await df.save()
 
     task = await task_processor_client.schedule(
-        DownloadGSheetTask(file_id=df.id, authorized=False, schedule_parsing=False)
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            schedule_parsing=False,
+            tenant_id="common",
+        )
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"

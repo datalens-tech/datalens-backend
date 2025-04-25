@@ -14,17 +14,20 @@ from dl_utils.aio import ContextVarExecutor
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.mark.asyncio
-async def test_number_format_types(env_param_getter, redis_model_manager):
+@pytest.mark.asyncio  # type: ignore # error: Function is missing a type annotation  [no-untyped-def]
+async def test_number_format_types(env_param_getter, redis_model_manager) -> None:
+    api_key = env_param_getter.get_str_value("GOOGLE_API_KEY")
+    assert api_key
+
     gsheets_settings = GSheetsSettings(
-        api_key=env_param_getter.get_str_value("GOOGLE_API_KEY"),
+        api_key=api_key,
         client_id="dummy",
         client_secret="dummy",
     )
     spreadsheet_id = "1vTeWZz2M8c3bvTdRIrqsNhN9m4YwjUguwAnAqBahxi0"
     auth = None
 
-    with ContextVarExecutor(max_workers=min(32, os.cpu_count() * 3 + 4)) as tpe:
+    with ContextVarExecutor(max_workers=min(32, (os.cpu_count() or 1) * 3 + 4)) as tpe:
         async with GSheetsClient(settings=gsheets_settings, auth=auth, tpe=tpe) as sheets_client:
             spreadsheet = await sheets_client.get_spreadsheet_sample(
                 spreadsheet_id=spreadsheet_id,
@@ -32,8 +35,9 @@ async def test_number_format_types(env_param_getter, redis_model_manager):
 
     for sheet in spreadsheet.sheets[1:]:  # the first sheet contains test data
         data = sheet.data
+        assert data is not None
         header = data[0]  # the first row contains expected number format types
-        expected_types = [NumberFormatType(cell.value.upper()) for cell in header]
+        expected_types = [NumberFormatType(str(cell.value).upper()) for cell in header]
         for row_idx, row in enumerate(data[1:]):
             for col_idx, (cell, expected_fmt) in enumerate(zip(row, expected_types, strict=True)):
                 assert cell.number_format_type == expected_fmt, f"Failed at [{row_idx + 1}, {col_idx}], {cell=}"

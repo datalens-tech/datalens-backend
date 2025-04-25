@@ -299,7 +299,15 @@ async def test_delete_file_task(
     df = await DataFile.get(manager=redis_model_manager, obj_id=uploaded_file.id)
     source = df.sources[0]
 
-    task = await task_processor_client.schedule(DeleteFileTask(filename, source.preview_id))
+    tenant_id = "common"
+
+    task = await task_processor_client.schedule(
+        DeleteFileTask(
+            s3_filename=filename,
+            tenant_id=tenant_id,
+            preview_id=source.preview_id,
+        )
+    )
     await wait_task(task, task_state)
 
     with pytest.raises(ClientError) as ex:
@@ -310,7 +318,13 @@ async def test_delete_file_task(
         assert ex["ResponseMetadata"]["HTTPStatusCode"] == 404
 
     # and now try with not existing file
-    task = await task_processor_client.schedule(DeleteFileTask(filename, source.preview_id))
+    task = await task_processor_client.schedule(
+        DeleteFileTask(
+            s3_filename=filename,
+            tenant_id=tenant_id,
+            preview_id=source.preview_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 

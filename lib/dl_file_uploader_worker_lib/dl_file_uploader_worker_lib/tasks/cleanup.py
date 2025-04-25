@@ -24,6 +24,11 @@ from dl_file_uploader_lib.redis_model.models import (
     PreviewSet,
     RenameTenantStatusModel,
 )
+from dl_file_uploader_lib.s3_model.base import (
+    S3ModelManager,
+    S3ModelNotFound,
+)
+from dl_file_uploader_lib.s3_model.models import S3DataSourcePreview
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
 from dl_file_uploader_worker_lib.tasks.save import make_source_s3_filename_suffix
@@ -191,14 +196,31 @@ class CleanupTenantFilePreviewsTask(
                 redis=self._ctx.redis_service.get_redis(),
                 crypto_keys_config=self._ctx.crypto_keys_config,
             )
+            s3mm = S3ModelManager(
+                s3_service=self._ctx.s3_service,
+                crypto_keys_config=self._ctx.crypto_keys_config,
+                tenant_id=tenant_id,
+            )
             preview_set = PreviewSet(redis=redis, id=tenant_id)
             async for preview_id in preview_set.sscan_iter():
                 try:
-                    preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
-                    await preview.delete()
+                    s3_preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=preview_id)
+                    assert isinstance(s3_preview, S3DataSourcePreview)
+
+                    await s3_preview.delete()
+
                     LOGGER.info(f"Successfully deleted preview id={preview_id} for tenant {tenant_id}")
-                except RedisModelNotFound:
-                    LOGGER.info(f"Preview id={preview_id} not found for tenant {tenant_id}")
+                except S3ModelNotFound:
+                    try:
+                        # Fallback to redis
+                        redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
+                        assert isinstance(redis_preview, DataSourcePreview)
+
+                        await redis_preview.delete()
+
+                        LOGGER.info(f"Successfully deleted preview id={preview_id} for tenant {tenant_id}")
+                    except RedisModelNotFound:
+                        LOGGER.info(f"Preview id={preview_id} not found for tenant {tenant_id}")
 
             LOGGER.info(f"Done with previews for tenant {tenant_id}, going to delete Redis Set {preview_set.key}")
             await preview_set.delete()

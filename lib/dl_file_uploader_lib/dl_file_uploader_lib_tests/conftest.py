@@ -35,7 +35,7 @@ def redis_app_settings() -> RedisSettings:
 
 
 @pytest.fixture(scope="function")
-def redis_cli(redis_app_settings) -> redis.asyncio.Redis:
+def redis_cli(redis_app_settings: RedisSettings) -> redis.asyncio.Redis:
     return redis.asyncio.Redis(
         host=redis_app_settings.HOSTS[0],
         port=redis_app_settings.PORT,
@@ -45,5 +45,9 @@ def redis_cli(redis_app_settings) -> redis.asyncio.Redis:
 
 
 @pytest.fixture(scope="function")
-def redis_model_manager(redis_cli, rci, crypto_keys_config) -> RedisModelManager:
+def redis_model_manager(
+    redis_cli: redis.asyncio.Redis,
+    rci: RequestContextInfo,
+    crypto_keys_config: CryptoKeysConfig,
+) -> RedisModelManager:
     return RedisModelManager(redis=redis_cli, rci=rci, crypto_keys_config=crypto_keys_config)

@@ -36,6 +36,7 @@ class FileConnectionDataSourceErrorTracker:
     _usm: AsyncUSManager = attr.ib()
     _task_processor: TaskProcessor = attr.ib()
     _redis: redis.asyncio.Redis = attr.ib()
+    _tenant_id: str = attr.ib()
     _request_id: Optional[str] = attr.ib(default=None)
 
     _error_registry: dict[str, FileProcessingError] = attr.ib(init=False, factory=dict)
@@ -95,6 +96,7 @@ class FileConnectionDataSourceErrorTracker:
                         delete_tasks.append(
                             DeleteFileTask(
                                 s3_filename=src.s3_filename,
+                                tenant_id=self._tenant_id,
                                 preview_id=src.preview_id,
                             )
                         )

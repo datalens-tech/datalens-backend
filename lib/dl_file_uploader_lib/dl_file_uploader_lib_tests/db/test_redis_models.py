@@ -1,5 +1,6 @@
 from enum import Enum
 import json
+from typing import ClassVar
 import uuid
 
 import attr
@@ -51,7 +52,7 @@ class SomeModel(RedisModel):
     sub_model: SomeSubModel = attr.ib()
     sub_model_with_secret: SomeSubModelWithSecret = attr.ib()
 
-    KEY_PREFIX: str = "some"
+    KEY_PREFIX: ClassVar[str] = "some"
 
     def get_secret_keys(self) -> set[DataKey]:
         lower_level_keys = self.sub_model_with_secret.get_secret_keys()
@@ -63,7 +64,7 @@ class SomeAuthorizedModel(RedisModelUserIdAuth):
     title: str = attr.ib()
     value: int = attr.ib()
 
-    KEY_PREFIX: str = "some_auth"
+    KEY_PREFIX: ClassVar[str] = "some_auth"
 
 
 class SomeSubModelSchema(BaseSchema):
@@ -105,7 +106,7 @@ register_redis_model_storage_schema(SomeModel, SomeModelSchema)
 register_redis_model_storage_schema(SomeAuthorizedModel, SomeAuthorizedModelSchema)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio  # type: ignore # error: Function is missing a type annotation  [no-untyped-def]
 async def test_redis_model(redis_cli):
     rmm = RedisModelManager(redis=redis_cli, crypto_keys_config=get_dummy_crypto_keys_config())
 
@@ -128,6 +129,8 @@ async def test_redis_model(redis_cli):
     await obj.save()
 
     redis_data = await redis_cli.get(f"some/{obj.id}")
+    assert isinstance(redis_data, (bytes, bytearray))
+
     decoded_data = json.loads(redis_data.decode())
     assert decoded_data.pop("id")
     assert "cypher_text" in json.loads(decoded_data.pop("sub_model_with_secret")["secret"])
@@ -148,7 +151,7 @@ async def test_redis_model(redis_cli):
         await SomeModel.get(manager=rmm, obj_id=obj.id)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio  # type: ignore # error: Function is missing a type annotation  [no-untyped-def]
 async def test_authorized_redis_model(redis_cli):
     crypto_keys_config = get_dummy_crypto_keys_config()
     rmm_no_auth = RedisModelManager(redis=redis_cli, crypto_keys_config=crypto_keys_config)
@@ -182,7 +185,7 @@ class SomeRedisSet(RedisSetManager):
     KEY_PREFIX = "some_set_prefix"
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio  # type: ignore # error: Function is missing a type annotation  [no-untyped-def]
 async def test_redis_set(redis_cli):
     some_set = SomeRedisSet(redis=redis_cli, id=str(uuid.uuid4()))
 

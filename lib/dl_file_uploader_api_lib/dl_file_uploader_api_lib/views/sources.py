@@ -39,7 +39,16 @@ from dl_file_uploader_lib.redis_model.models.models import (
     YaDocsUserSourceDataSourceProperties,
     YaDocsUserSourceProperties,
 )
-from dl_file_uploader_task_interface.tasks import ParseFileTask
+from dl_file_uploader_lib.s3_model.base import (
+    S3ModelManager,
+    S3ModelNotFound,
+)
+from dl_file_uploader_lib.s3_model.models.models import S3DataSourcePreview
+from dl_file_uploader_task_interface.tasks import (
+    MigratePreviewRedisToS3Task,
+    ParseFileTask,
+)
+from dl_task_processor.processor import TaskProcessor
 from dl_type_transformer.type_transformer import get_type_transformer
 
 from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
@@ -133,6 +142,40 @@ def get_raw_schema_with_overrides(raw_schema: RawSchemaType, schema_overrides: R
     return raw_schema_with_overrides
 
 
+async def get_preview_data(
+    rmm: RedisModelManager,
+    s3mm: S3ModelManager,
+    task_processor: TaskProcessor,
+    tenant_id: str,
+    preview_id: Optional[str],
+) -> list[list[Optional[str]]]:
+    if preview_id is None:
+        preview_data = []
+    else:
+        try:
+            s3_preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=preview_id)
+            assert isinstance(s3_preview, S3DataSourcePreview)
+
+            preview_data = s3_preview.preview_data
+        except S3ModelNotFound:
+            # Fallback to redis
+            redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
+            assert isinstance(redis_preview, DataSourcePreview)
+
+            preview_data = redis_preview.preview_data
+
+            # Start migration task
+            await task_processor.schedule(
+                MigratePreviewRedisToS3Task(
+                    tenant_id=tenant_id,
+                    preview_id=preview_id,
+                )
+            )
+            LOGGER.info(f"Scheduled MigratePreviewRedisToS3Task for preview id={preview_id}, tenant {tenant_id}")
+
+    return preview_data
+
+
 class SourceInfoView(FileUploaderBaseView):
     async def _make_source_resp(
         self,
@@ -141,13 +184,21 @@ class SourceInfoView(FileUploaderBaseView):
         source: DataSource,
         column_type_overrides: RawSchemaType,
         rmm: RedisModelManager,
+        s3mm: S3ModelManager,
     ) -> dict[Any, Any]:
         preview_id = source.preview_id
-        if preview_id is not None:
-            preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
-            assert isinstance(preview, DataSourcePreview)
-        else:
-            preview = DataSourcePreview(preview_data=[])
+
+        task_processor = self.dl_request.get_task_processor()
+        assert self.dl_request.rci.tenant is not None
+        tenant_id = self.dl_request.rci.tenant.get_tenant_id()
+
+        preview_data = await get_preview_data(
+            rmm=rmm,
+            s3mm=s3mm,
+            task_processor=task_processor,
+            tenant_id=tenant_id,
+            preview_id=preview_id,
+        )
 
         raw_schema = get_raw_schema_with_overrides(source.raw_schema, column_type_overrides)
 
@@ -171,7 +222,7 @@ class SourceInfoView(FileUploaderBaseView):
             title=source.title,
             is_valid=True,  # TODO
             raw_schema=raw_schema,
-            preview=cast_preview_data(preview.preview_data, raw_schema),
+            preview=cast_preview_data(preview_data, raw_schema),
             error=source.error,
             **extra,
         )
@@ -203,6 +254,7 @@ class SourceInfoView(FileUploaderBaseView):
 
     async def _prepare_source_info(self, req_data: dict[str, Any]) -> web.StreamResponse:
         rmm = self.dl_request.get_redis_model_manager()
+        s3mm = self.dl_request.get_s3_model_manager()
         dfile = await DataFile.get_authorized(manager=rmm, obj_id=req_data["file_id"])
         assert isinstance(dfile, DataFile)
         source = dfile.get_source_by_id(req_data["source_id"])
@@ -216,6 +268,7 @@ class SourceInfoView(FileUploaderBaseView):
             source=source,
             column_type_overrides=[] if dfile.file_type == FileType.gsheets else req_data["column_types"],
             rmm=rmm,
+            s3mm=s3mm,
         )
 
         assert dfile.file_type is not None
@@ -252,12 +305,14 @@ class SourceApplySettingsView(FileUploaderBaseView):
 
         LOGGER.info(f'Settings to apply: {req_data["data_settings"]}')
 
-        assert self.dl_request.rci.tenant is not None
         task_processor = self.dl_request.get_task_processor()
+        assert self.dl_request.rci.tenant is not None
+        tenant_id = self.dl_request.rci.tenant.get_tenant_id()
+
         await task_processor.schedule(
             ParseFileTask(
                 file_id=dfile.id,
-                tenant_id=self.dl_request.rci.tenant.get_tenant_id(),
+                tenant_id=tenant_id,
                 source_id=source.id,
                 file_settings=sources_schemas.CSVSettingsSchema().dump(req_data["data_settings"]),
                 source_settings={},
@@ -279,14 +334,26 @@ class SourcePreviewInternalView(FileUploaderBaseView):
     async def post(self) -> web.StreamResponse:
         req_data = await self._load_post_request_schema_data(sources_schemas.SourcePreviewRequestSchema)
         rmm = self.dl_request.get_redis_model_manager()
+        s3mm = self.dl_request.get_s3_model_manager()
 
-        preview = await DataSourcePreview.get(manager=rmm, obj_id=req_data["preview_id"])
-        assert isinstance(preview, DataSourcePreview)
+        preview_id = req_data["preview_id"]
+
+        task_processor = self.dl_request.get_task_processor()
+        assert self.dl_request.rci.tenant is not None
+        tenant_id = self.dl_request.rci.tenant.get_tenant_id()
+
+        preview_data = await get_preview_data(
+            rmm=rmm,
+            s3mm=s3mm,
+            task_processor=task_processor,
+            tenant_id=tenant_id,
+            preview_id=preview_id,
+        )
 
         return web.json_response(
             sources_schemas.SourcePreviewResultSchema().dump(
                 dict(
-                    preview=cast_preview_data(preview.preview_data, req_data["raw_schema"]),
+                    preview=cast_preview_data(preview_data, req_data["raw_schema"]),
                 )
             ),
         )
