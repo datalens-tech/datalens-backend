@@ -60,7 +60,13 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
         usm.set_tenant_override(self._ctx.tenant_resolver.resolve_tenant_def_by_tenant_id(self.meta.tenant_id))
         task_processor = self._ctx.make_task_processor(self._request_id)
         redis = self._ctx.redis_service.get_redis()
-        connection_error_tracker = FileConnectionDataSourceErrorTracker(usm, task_processor, redis, self._request_id)
+        connection_error_tracker = FileConnectionDataSourceErrorTracker(
+            usm=usm,
+            task_processor=task_processor,
+            redis=redis,
+            tenant_id=self.meta.tenant_id,
+            request_id=self._request_id,
+        )
 
         try:
             LOGGER.info(f"ProcessExcelTask. File: {self.meta.file_id}")

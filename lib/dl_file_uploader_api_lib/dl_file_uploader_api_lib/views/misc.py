@@ -35,6 +35,7 @@ class CleanupTenantView(FileUploaderBaseView):
     async def post(self) -> web.StreamResponse:
         req_data = await self._load_post_request_schema_data(misc_schemas.CleanupRequestSchema)
         tenant_id = req_data["tenant_id"]
+        assert tenant_id is not None
 
         task_processor = self.dl_request.get_task_processor()
         await task_processor.schedule(
@@ -69,6 +70,7 @@ class RenameTenantFilesView(FileUploaderBaseView):
         req_data = await self._load_post_request_schema_data(misc_schemas.RenameFilesRequestSchema)
         tenant_id = req_data["tenant_id"]
         old_tenant_id = req_data["old_tenant_id"]
+        assert tenant_id is not None
 
         rmm = self.dl_request.get_redis_model_manager()
         await RenameTenantStatusModel(manager=rmm, id=tenant_id, status=RenameTenantStatus.scheduled).save()

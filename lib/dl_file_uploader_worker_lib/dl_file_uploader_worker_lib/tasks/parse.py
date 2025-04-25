@@ -15,6 +15,7 @@ from dl_file_uploader_lib.redis_model.models import (
     DataFile,
     FileProcessingError,
 )
+from dl_file_uploader_lib.s3_model.base import S3ModelManager
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
 from dl_file_uploader_task_interface.tasks import TaskExecutionMode
@@ -53,12 +54,23 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
         usm.set_tenant_override(self._ctx.tenant_resolver.resolve_tenant_def_by_tenant_id(self.meta.tenant_id))
         task_processor = self._ctx.make_task_processor(self._request_id)
         redis = self._ctx.redis_service.get_redis()
-        connection_error_tracker = FileConnectionDataSourceErrorTracker(usm, task_processor, redis, self._request_id)
+        connection_error_tracker = FileConnectionDataSourceErrorTracker(
+            usm=usm,
+            task_processor=task_processor,
+            redis=redis,
+            tenant_id=self.meta.tenant_id,
+            request_id=self._request_id,
+        )
         try:
             LOGGER.info(f"ParseFileTask. Mode: {self.meta.exec_mode.name}. File: {self.meta.file_id}")
 
             redis = self._ctx.redis_service.get_redis()
             rmm = RedisModelManager(redis=redis, crypto_keys_config=self._ctx.crypto_keys_config)
+            s3mm = S3ModelManager(
+                s3_service=self._ctx.s3_service,
+                crypto_keys_config=self._ctx.crypto_keys_config,
+                tenant_id=self.meta.tenant_id,
+            )
             dfile = await DataFile.get(manager=rmm, obj_id=self.meta.file_id)
             assert dfile is not None
 
@@ -94,9 +106,9 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
                 dsrc.raw_schema = raw_schema
                 dsrc.file_source_settings = dsrc_settings
 
-                preview = await file_parser.prepare_preview(dsrc, rmm)
+                preview = await file_parser.prepare_preview(dsrc, s3mm)
                 await preview.save(
-                    ttl=12 * 12 * 60
+                    persistent=False,
                 )  # save preview temporarily, so it is deleted if source never gets saved
                 dsrc.preview_id = preview.id
 
