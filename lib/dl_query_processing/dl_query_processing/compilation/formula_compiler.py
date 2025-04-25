@@ -684,11 +684,14 @@ class FormulaCompiler:
             )
 
         value = None
-        try:
-            value = next(spec.value for spec in self._parameter_value_specs if spec.field_id == field.guid)
-        except StopIteration:
-            if field.default_value is not None:
-                value = field.default_value.value
+        for spec in self._parameter_value_specs:
+            if spec.field_id == field.guid:
+                value = spec.value
+                break
+
+        if value is None and field.default_value is not None:
+            value = field.default_value.value
+
         if value is None:
             raise dl_query_processing.exc.ParameterValueError(
                 f"No value can be found for parameter field {field.title}"
