@@ -83,6 +83,10 @@ class RedisModel(SecretContainingMixin, metaclass=abc.ABCMeta):
         assert self._manager
         await self._manager.delete(self)
 
+    async def is_persistent(self) -> bool:
+        assert self._manager
+        return await self._manager.is_persistent(self)
+
 
 @attr.s(init=True, kw_only=True)
 class RedisModelUserIdAuth(RedisModel, metaclass=abc.ABCMeta):
@@ -140,6 +144,11 @@ class RedisSetManager(metaclass=abc.ABCMeta):
 
     async def add(self, value: str) -> None:
         cmd = self._redis.sadd(self.key, value)
+        assert isinstance(cmd, Awaitable)
+        await cmd
+
+    async def remove(self, value: str) -> None:
+        cmd = self._redis.srem(self.key, value)
         assert isinstance(cmd, Awaitable)
         await cmd
 
@@ -249,6 +258,15 @@ class RedisModelManager:
             await self._redis.setex(obj_key, ttl, data_json)
         else:
             await self._redis.set(obj_key, data_json)
+
+    async def is_persistent(self, obj: RedisModel) -> bool:
+        """Check if object in redis has infinite ttl"""
+
+        obj_key = obj.generate_key()
+
+        ttl = await self._redis.getex(obj_key)
+
+        return ttl is None
 
     async def delete(self, obj: RedisModel) -> None:
         obj_key = obj.generate_key()

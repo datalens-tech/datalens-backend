@@ -21,11 +21,11 @@ class DownloadGSheetTask(BaseTaskMeta):
 
     file_id: str = attr.ib()
     authorized: bool = attr.ib()
-    schedule_parsing: bool = attr.ib(default=True)
 
-    tenant_id: Optional[str] = attr.ib(default=None)
+    tenant_id: str = attr.ib()
     connection_id: Optional[str] = attr.ib(default=None)
     exec_mode: TaskExecutionMode = attr.ib(default=TaskExecutionMode.BASIC)
+    schedule_parsing: bool = attr.ib(default=True)
 
 
 @attr.s
@@ -35,7 +35,7 @@ class DownloadYaDocsTask(BaseTaskMeta):
     file_id: str = attr.ib()
     authorized: bool = attr.ib()
 
-    tenant_id: Optional[str] = attr.ib(default=None)
+    tenant_id: str = attr.ib()
     connection_id: Optional[str] = attr.ib(default=None)
     exec_mode: TaskExecutionMode = attr.ib(default=TaskExecutionMode.BASIC)
 
@@ -45,13 +45,13 @@ class ParseFileTask(BaseTaskMeta):
     name = TaskName("parse_file")
 
     file_id: str = attr.ib()
-    source_id: Optional[str] = attr.ib(default=None)
-    file_settings: Optional[dict] = attr.ib(factory=dict)
-    source_settings: Optional[dict] = attr.ib(factory=dict)
 
-    tenant_id: Optional[str] = attr.ib(default=None)
+    tenant_id: str = attr.ib()
+    source_id: Optional[str] = attr.ib(default=None)
     connection_id: Optional[str] = attr.ib(default=None)
     exec_mode: TaskExecutionMode = attr.ib(default=TaskExecutionMode.BASIC)
+    file_settings: Optional[dict] = attr.ib(factory=dict)
+    source_settings: Optional[dict] = attr.ib(factory=dict)
 
 
 @attr.s
@@ -59,9 +59,9 @@ class ProcessExcelTask(BaseTaskMeta):
     name = TaskName("process_excel")
 
     file_id: str = attr.ib()
-    exec_mode: Optional[TaskExecutionMode] = attr.ib(default=TaskExecutionMode.BASIC)
-    tenant_id: Optional[str] = attr.ib(default=None)
+    tenant_id: str = attr.ib()
     connection_id: Optional[str] = attr.ib(default=None)
+    exec_mode: Optional[TaskExecutionMode] = attr.ib(default=TaskExecutionMode.BASIC)
 
 
 @attr.s
@@ -92,7 +92,16 @@ class DeleteFileTask(BaseTaskMeta):
     name = TaskName("delete_file")
 
     s3_filename: str = attr.ib()
+    tenant_id: str = attr.ib()
     preview_id: Optional[str] = attr.ib(default=None)
+
+
+@attr.s
+class MigratePreviewRedisToS3Task(BaseTaskMeta):
+    name = TaskName("migrate_preview")
+
+    tenant_id: str = attr.ib()
+    preview_id: Optional[str] = attr.ib()
 
 
 @attr.s
