@@ -1,8 +1,5 @@
 import ssl
-from typing import (
-    Any,
-    Optional,
-)
+from typing import Any
 
 import attr
 import requests
@@ -76,7 +73,7 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
     _error_transformer = trino_error_transformer
     _db_version: str | None = None
 
-    def get_conn_line(self, db_name: Optional[str] = None, params: dict[str, Any] | None = None) -> str:
+    def get_conn_line(self, db_name: str | None = None, params: dict[str, Any] | None = None) -> str:
         # We do not expect to transfer any additional parameters when creating the engine.
         # This check is needed to track if it still passed.
         assert params is None
