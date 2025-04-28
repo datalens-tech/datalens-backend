@@ -19,6 +19,7 @@ from dl_connector_postgresql.core.postgresql.data_source import (
     PostgreSQLSubselectDataSource,
 )
 from dl_connector_postgresql.core.postgresql.data_source_migration import PostgreSQLDataSourceMigrator
+from dl_connector_postgresql.core.postgresql.settings import PostgreSQLSettingDefinition
 from dl_connector_postgresql.core.postgresql.storage_schemas.connection import ConnectionPostgreSQLDataStorageSchema
 from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPostgreSQL
 from dl_connector_postgresql.core.postgresql_base.adapters_postgres import PostgresAdapter
@@ -41,6 +42,7 @@ class PostgreSQLCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = AsyncPostgresConnExecutor
     dialect_string = "bi_postgresql"
     data_source_migrator_cls = PostgreSQLDataSourceMigrator
+    settings_definition = PostgreSQLSettingDefinition
 
 
 class PostgreSQLTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):

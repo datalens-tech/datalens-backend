@@ -24,6 +24,7 @@ from dl_connector_oracle.core.data_source import (
 from dl_connector_oracle.core.data_source_migration import OracleDataSourceMigrator
 from dl_connector_oracle.core.query_compiler import OracleQueryCompiler
 from dl_connector_oracle.core.sa_types import SQLALCHEMY_ORACLE_TYPES
+from dl_connector_oracle.core.settings import OracleSettingDefinition
 from dl_connector_oracle.core.storage_schemas.connection import ConnectionSQLOracleDataStorageSchema
 from dl_connector_oracle.core.type_transformer import OracleServerTypeTransformer
 from dl_connector_oracle.core.us_connection import ConnectionSQLOracle
@@ -38,6 +39,7 @@ class OracleCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = OracleDefaultConnExecutor
     dialect_string = "bi_oracle"
     data_source_migrator_cls = OracleDataSourceMigrator
+    settings_definition = OracleSettingDefinition
 
 
 class OracleTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):
