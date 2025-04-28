@@ -80,7 +80,7 @@ from dl_dashsql.typed_query.result_serialization import (
 )
 from dl_model_tools.msgpack import DLSafeMessagePackSerializer
 from dl_utils.utils import make_url
-
+from dl_core.connection_models import TableIdent
 
 if TYPE_CHECKING:
     from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
@@ -88,7 +88,6 @@ if TYPE_CHECKING:
         DBIdent,
         SchemaIdent,
         TableDefinition,
-        TableIdent,
     )
 
 
@@ -429,6 +428,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
         )
 
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
+        # table_ident = TableIdent(db_name='test_mysql_catalog', schema_name='test_data', table_name='table_ueopabpvy53rqgtrqqyeos')
         return await self._make_request_parse_response(
             dba_actions.ActionIsTableExists(
                 target_conn_dto=self._target_dto,
