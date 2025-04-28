@@ -48,6 +48,7 @@ class TrinoDatasetTestBase(TrinoConnectionTestBase, DatasetTestBase):
             source_type=SOURCE_TYPE_TRINO_TABLE.name,
             parameters=dict(
                 db_name=sample_table.db.name,
+                schema_name=sample_table.schema,
                 table_name=sample_table.name,
             ),
         )
