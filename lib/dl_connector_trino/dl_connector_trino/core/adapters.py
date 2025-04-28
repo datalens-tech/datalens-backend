@@ -1,4 +1,3 @@
-from functools import lru_cache
 import ssl
 from typing import (
     Any,
@@ -75,8 +74,9 @@ class CustomHTTPAdapter(HTTPAdapter):
 class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
     conn_type = CONNECTION_TYPE_TRINO
     _error_transformer = trino_error_transformer
+    _db_version: str | None = None
 
-    def get_conn_line(self, db_name: Optional[str] = None, params: Optional[dict[str, Any]] = None) -> str:
+    def get_conn_line(self, db_name: Optional[str] = None, params: dict[str, Any] | None = None) -> str:
         # We do not expect to transfer any additional parameters when creating the engine.
         # This check is needed to track if it still passed.
         assert params is None
@@ -117,14 +117,15 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         return ""  # Trino doesn't require db_name to connect.
 
     def _get_db_version(self, db_ident: DBIdent) -> str:
-        @lru_cache(maxsize=1)
         def query_db_version() -> str:
             result = self.execute(DBAdapterQuery(sa.text("SELECT version()"))).get_all()
             version = result[0][0]
             assert isinstance(version, str)
             return version
 
-        return query_db_version()
+        if self._db_version is None:
+            self._db_version = query_db_version()
+        return self._db_version
 
     def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         """
@@ -141,5 +142,5 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
             for schema_name, table_name in result.get_all()
         ]
 
-    def _cursor_column_to_sa(self, cursor_col: tuple[Any, ...], require: bool = True) -> Optional[SATypeSpec]:
+    def _cursor_column_to_sa(self, cursor_col: tuple[Any, ...], require: bool = True) -> SATypeSpec | None:
         return parse_sqltype(cursor_col[1])
