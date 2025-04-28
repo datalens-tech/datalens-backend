@@ -25,6 +25,7 @@ from dl_connector_mssql.core.data_source import (
 from dl_connector_mssql.core.data_source_migration import MSSQLDataSourceMigrator
 from dl_connector_mssql.core.query_compiler import MSSQLQueryCompiler
 from dl_connector_mssql.core.sa_types import SQLALCHEMY_MSSQL_TYPES
+from dl_connector_mssql.core.settings import MSSQLSettingDefinition
 from dl_connector_mssql.core.storage_schemas.connection import ConnectionMSSQLDataStorageSchema
 from dl_connector_mssql.core.type_transformer import MSSQLServerTypeTransformer
 from dl_connector_mssql.core.us_connection import ConnectionMSSQL
@@ -39,6 +40,7 @@ class MSSQLCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = MSSQLConnExecutor
     dialect_string = "bi_mssql"
     data_source_migrator_cls = MSSQLDataSourceMigrator
+    settings_definition = MSSQLSettingDefinition
 
 
 class MSSQLTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):
