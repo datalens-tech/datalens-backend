@@ -80,15 +80,21 @@ class ConnectionTrino(ConnectionSQL):
             ssl_ca=self.data.ssl_ca,
         )
 
+    def get_catalogs(
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+    ) -> list[str]:
+        conn_executor = conn_executor_factory(self)
+        catalogs_query = ConnExecutorQuery(query=GET_TRINO_CATALOGS_QUERY, db_name="system")
+        catalogs_res = conn_executor.execute(query=catalogs_query)
+        return [catalog_row[0] for catalog_row in catalogs_res.get_all()]
+
     def get_parameter_combinations(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[dict]:
         parameter_combinations: list[dict] = []
-        conn_executor = conn_executor_factory(self)
-        catalogs_query = ConnExecutorQuery(query=GET_TRINO_CATALOGS_QUERY, db_name="system")
-        for catalog_row in conn_executor.execute(query=catalogs_query).get_all():
-            catalog_name = catalog_row[0]
+        for catalog_name in self.get_catalogs(conn_executor_factory=conn_executor_factory):
             tables = self.get_tables(conn_executor_factory=conn_executor_factory, db_name=catalog_name)
             parameter_combinations.extend(
                 dict(
