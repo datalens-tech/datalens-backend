@@ -114,14 +114,11 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         return ""  # Trino doesn't require db_name to connect.
 
     def _get_db_version(self, db_ident: DBIdent) -> str:
-        def query_db_version() -> str:
+        if self._db_version is None:
             result = self.execute(DBAdapterQuery(sa.text("SELECT version()"))).get_all()
             version = result[0][0]
-            assert isinstance(version, str)
-            return version
+            self._db_version = version
 
-        if self._db_version is None:
-            self._db_version = query_db_version()
         return self._db_version
 
     def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
