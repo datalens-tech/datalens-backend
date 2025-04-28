@@ -116,8 +116,7 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
     def _get_db_version(self, db_ident: DBIdent) -> str:
         if self._db_version is None:
             result = self.execute(DBAdapterQuery(sa.text("SELECT version()"))).get_all()
-            version = result[0][0]
-            self._db_version = version
+            self._db_version = result[0][0]
 
         return self._db_version
 
