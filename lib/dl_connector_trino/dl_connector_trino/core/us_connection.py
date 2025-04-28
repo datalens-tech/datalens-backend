@@ -2,20 +2,20 @@ from typing import (
     Callable,
     ClassVar,
     Optional,
-    cast,
 )
 
 import attr
+import sqlalchemy as sa
+from trino.sqlalchemy.dialect import TrinoDialect
 
 from dl_core.connection_executors import SyncConnExecutorBase
-from dl_core.connection_executors.sync_executor_wrapper import SyncWrapperForAsyncConnExecutor
+from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.us_connection_base import (
     ConnectionBase,
     ConnectionSQL,
 )
 from dl_core.utils import secrepr
 
-from dl_connector_trino.core.adapters import TrinoDefaultAdapter
 from dl_connector_trino.core.constants import (
     CONNECTION_TYPE_TRINO,
     SOURCE_TYPE_TRINO_SUBSELECT,
@@ -23,6 +23,33 @@ from dl_connector_trino.core.constants import (
     TrinoAuthType,
 )
 from dl_connector_trino.core.dto import TrinoConnDTO
+
+
+TRINO_SYSTEM_CATALOGS = (
+    "system",
+    "tpch",
+    "tpcds",
+    "jmx",
+)
+
+TRINO_CATALOGS = sa.Table(
+    "catalogs",
+    sa.MetaData(),
+    sa.Column("table_cat", sa.String),
+    schema="jdbc",
+)
+GET_TRINO_CATALOGS_QUERY = str(
+    sa.select(
+        TRINO_CATALOGS.c.table_cat,
+    )
+    .where(
+        ~TRINO_CATALOGS.c.table_cat.in_(TRINO_SYSTEM_CATALOGS),
+    )
+    .order_by(
+        TRINO_CATALOGS.c.table_cat,
+    )
+    .compile(dialect=TrinoDialect(), compile_kwargs={"literal_binds": True})
+)
 
 
 class ConnectionTrino(ConnectionSQL):
@@ -53,25 +80,15 @@ class ConnectionTrino(ConnectionSQL):
             ssl_ca=self.data.ssl_ca,
         )
 
-    def get_catalog_names(
-        self,
-        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
-    ) -> list[str]:
-        # It is impossible to define `get_catalog_names` in `TrinoConnExecutor` and call it from here
-        # because `conn_executor_factory` returns `SyncWrapperForAsyncConnExecutor`, not `TrinoConnExecutor` (surprise!).
-        # So, `SyncWrapperForAsyncConnExecutor` sets a set of methods that can be defined in `TrinoConnExecutor`.
-        # To keep source querying logic in `Adapter`, we need this hack with `_extract_sync_sa_adapter`.
-        conn_executor = cast(SyncWrapperForAsyncConnExecutor, conn_executor_factory(self))
-        sa_adapter = cast(TrinoDefaultAdapter, conn_executor._extract_sync_sa_adapter(raise_on_not_exists=True))
-        return sa_adapter.get_catalog_names()
-
     def get_parameter_combinations(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[dict]:
         parameter_combinations: list[dict] = []
-        catalog_names = self.get_catalog_names(conn_executor_factory=conn_executor_factory)
-        for catalog_name in catalog_names:
+        conn_executor = conn_executor_factory(self)
+        catalogs_query = ConnExecutorQuery(query=GET_TRINO_CATALOGS_QUERY, db_name="system")
+        for catalog_row in conn_executor.execute(query=catalogs_query).get_all():
+            catalog_name = catalog_row[0]
             tables = self.get_tables(conn_executor_factory=conn_executor_factory, db_name=catalog_name)
             parameter_combinations.extend(
                 dict(

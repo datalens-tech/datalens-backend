@@ -1,3 +1,4 @@
+from functools import lru_cache
 import ssl
 from typing import (
     Any,
@@ -14,7 +15,6 @@ from trino.auth import (
 )
 from trino.sqlalchemy import URL as trino_url
 from trino.sqlalchemy.datatype import parse_sqltype
-from trino.sqlalchemy.dialect import TrinoDialect
 
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
@@ -33,13 +33,6 @@ from dl_connector_trino.core.constants import (
 from dl_connector_trino.core.error_transformer import trino_error_transformer
 from dl_connector_trino.core.target_dto import TrinoConnTargetDTO
 
-
-TRINO_SYSTEM_CATALOGS = (
-    "system",
-    "tpch",
-    "tpcds",
-    "jmx",
-)
 
 TRINO_SYSTEM_SCHEMAS = ("information_schema",)
 
@@ -124,13 +117,14 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         return ""  # Trino doesn't require db_name to connect.
 
     def _get_db_version(self, db_ident: DBIdent) -> str:
-        dialect = self.get_dialect()
-        return dialect.server_version_info[0]
+        @lru_cache(maxsize=1)
+        def query_db_version() -> str:
+            result = self.execute(DBAdapterQuery(sa.text("SELECT version()"))).get_all()
+            version = result[0][0]
+            assert isinstance(version, str)
+            return version
 
-    def get_catalog_names(self) -> list[str]:
-        dialect: TrinoDialect = self.get_dialect()
-        with self.get_db_engine(db_name=None).connect() as conn:
-            return [catalog for catalog in dialect.get_catalog_names(conn) if catalog not in TRINO_SYSTEM_CATALOGS]
+        return query_db_version()
 
     def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         """
