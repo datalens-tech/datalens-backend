@@ -177,6 +177,10 @@ class BaseConnectionCHYT(
             ),
         ]
 
+    @property
+    def is_datasource_template_allowed(self) -> bool:
+        return self._connector_settings.ENABLE_DATASOURCE_TEMPLATE and self._is_raw_sql_level_template_allowed
+
 
 class ConnectionCHYTToken(BaseConnectionCHYT):
     allow_cache: ClassVar[bool] = True

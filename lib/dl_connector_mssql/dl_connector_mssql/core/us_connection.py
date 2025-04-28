@@ -11,6 +11,7 @@ from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.us_connection_base import (
     ClassicConnectionSQL,
     ConnectionBase,
+    ConnectionSettingsMixin,
     DataSourceTemplate,
     make_subselect_datasource_template,
 )
@@ -21,9 +22,13 @@ from dl_connector_mssql.core.constants import (
     SOURCE_TYPE_MSSQL_TABLE,
 )
 from dl_connector_mssql.core.dto import MSSQLConnDTO
+from dl_connector_mssql.core.settings import MSSQLConnectorSettings
 
 
-class ConnectionMSSQL(ClassicConnectionSQL):
+class ConnectionMSSQL(
+    ConnectionSettingsMixin[MSSQLConnectorSettings],
+    ClassicConnectionSQL,
+):
     has_schema: ClassVar[bool] = True
     default_schema_name = "dbo"
     source_type = SOURCE_TYPE_MSSQL_TABLE
@@ -32,6 +37,7 @@ class ConnectionMSSQL(ClassicConnectionSQL):
     allow_cache: ClassVar[bool] = True
     allow_export: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
+    settings_type = MSSQLConnectorSettings
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
@@ -75,3 +81,7 @@ class ConnectionMSSQL(ClassicConnectionSQL):
     @property
     def allow_public_usage(self) -> bool:
         return True
+
+    @property
+    def is_datasource_template_allowed(self) -> bool:
+        return self._connector_settings.ENABLE_DATASOURCE_TEMPLATE and super().is_datasource_template_allowed

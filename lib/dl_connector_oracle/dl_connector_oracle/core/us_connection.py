@@ -12,6 +12,7 @@ from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.us_connection_base import (
     ClassicConnectionSQL,
     ConnectionBase,
+    ConnectionSettingsMixin,
     DataSourceTemplate,
     make_subselect_datasource_template,
 )
@@ -23,9 +24,13 @@ from dl_connector_oracle.core.constants import (
     OracleDbNameType,
 )
 from dl_connector_oracle.core.dto import OracleConnDTO
+from dl_connector_oracle.core.settings import OracleConnectorSettings
 
 
-class ConnectionSQLOracle(ClassicConnectionSQL):
+class ConnectionSQLOracle(
+    ConnectionSettingsMixin[OracleConnectorSettings],
+    ClassicConnectionSQL,
+):
     has_schema: ClassVar[bool] = True
     # Default schema is usually defined on a per-user basis,
     # so it's better to omit the schema if it isn't explicitly specified.
@@ -36,6 +41,7 @@ class ConnectionSQLOracle(ClassicConnectionSQL):
     allow_cache: ClassVar[bool] = True
     allow_export: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
+    settings_type = OracleConnectorSettings
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
@@ -82,3 +88,7 @@ class ConnectionSQLOracle(ClassicConnectionSQL):
     @property
     def allow_public_usage(self) -> bool:
         return True
+
+    @property
+    def is_datasource_template_allowed(self) -> bool:
+        return self._connector_settings.ENABLE_DATASOURCE_TEMPLATE and super().is_datasource_template_allowed

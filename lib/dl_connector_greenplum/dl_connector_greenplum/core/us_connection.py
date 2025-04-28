@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import ClassVar
 
 from dl_core.us_connection_base import (
+    ConnectionSettingsMixin,
     DataSourceTemplate,
     make_subselect_datasource_template,
 )
@@ -13,15 +14,20 @@ from dl_connector_greenplum.core.constants import (
     SOURCE_TYPE_GP_TABLE,
 )
 from dl_connector_greenplum.core.dto import GreenplumConnDTO
+from dl_connector_greenplum.core.settings import GreenplumConnectorSettings
 from dl_connector_postgresql.core.postgresql_base.us_connection import ConnectionPostgreSQLBase
 
 
-class GreenplumConnection(ConnectionPostgreSQLBase):
+class GreenplumConnection(
+    ConnectionSettingsMixin[GreenplumConnectorSettings],
+    ConnectionPostgreSQLBase,
+):
     source_type = SOURCE_TYPE_GP_TABLE
     allowed_source_types = frozenset((SOURCE_TYPE_GP_TABLE, SOURCE_TYPE_GP_SUBSELECT))
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
+    settings_type = GreenplumConnectorSettings
 
     def get_conn_dto(self) -> GreenplumConnDTO:
         return GreenplumConnDTO(
@@ -49,3 +55,7 @@ class GreenplumConnection(ConnectionPostgreSQLBase):
     @property
     def allow_public_usage(self) -> bool:
         return True
+
+    @property
+    def is_datasource_template_allowed(self) -> bool:
+        return self._connector_settings.ENABLE_DATASOURCE_TEMPLATE and super().is_datasource_template_allowed
