@@ -13,6 +13,7 @@ from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.us_connection_base import (
     ClassicConnectionSQL,
     ConnectionBase,
+    ConnectionSettingsMixin,
     DataSourceTemplate,
     make_subselect_datasource_template,
 )
@@ -27,17 +28,22 @@ from dl_connector_ydb.core.ydb.constants import (
     YDBAuthTypeMode,
 )
 from dl_connector_ydb.core.ydb.dto import YDBConnDTO
+from dl_connector_ydb.core.ydb.settings import YDBConnectorSettings
 
 
 if TYPE_CHECKING:
     from dl_core.connection_models.common_models import TableIdent
 
 
-class YDBConnection(ClassicConnectionSQL):
+class YDBConnection(
+    ConnectionSettingsMixin[YDBConnectorSettings],
+    ClassicConnectionSQL,
+):
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
     allow_dashsql: ClassVar[bool] = True
     allow_export: ClassVar[bool] = True
+    settings_type = YDBConnectorSettings
 
     source_type = SOURCE_TYPE_YDB_TABLE
 
@@ -120,3 +126,7 @@ class YDBConnection(ClassicConnectionSQL):
     @property
     def allow_public_usage(self) -> bool:
         return True
+
+    @property
+    def is_datasource_template_allowed(self) -> bool:
+        return self._connector_settings.ENABLE_DATASOURCE_TEMPLATE and super().is_datasource_template_allowed

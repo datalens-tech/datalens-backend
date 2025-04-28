@@ -9,6 +9,7 @@ import attr
 
 from dl_core.us_connection_base import (
     ClassicConnectionSQL,
+    ConnectionSettingsMixin,
     DataSourceTemplate,
     make_subselect_datasource_template,
 )
@@ -19,15 +20,20 @@ from dl_connector_mysql.core.constants import (
     SOURCE_TYPE_MYSQL_TABLE,
 )
 from dl_connector_mysql.core.dto import MySQLConnDTO
+from dl_connector_mysql.core.settings import MySQLConnectorSettings
 
 
-class ConnectionMySQL(ClassicConnectionSQL):
+class ConnectionMySQL(
+    ConnectionSettingsMixin[MySQLConnectorSettings],
+    ClassicConnectionSQL,
+):
     source_type = SOURCE_TYPE_MYSQL_TABLE
     allowed_source_types = frozenset((SOURCE_TYPE_MYSQL_TABLE, SOURCE_TYPE_MYSQL_SUBSELECT))
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     allow_export: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
+    settings_type = MySQLConnectorSettings
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
@@ -60,3 +66,7 @@ class ConnectionMySQL(ClassicConnectionSQL):
     @property
     def allow_public_usage(self) -> bool:
         return True
+
+    @property
+    def is_datasource_template_allowed(self) -> bool:
+        return self._connector_settings.ENABLE_DATASOURCE_TEMPLATE and super().is_datasource_template_allowed

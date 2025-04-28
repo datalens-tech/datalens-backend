@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import ClassVar
 
 from dl_core.us_connection_base import (
+    ConnectionSettingsMixin,
     DataSourceTemplate,
     make_subselect_datasource_template,
 )
@@ -13,15 +14,20 @@ from dl_connector_postgresql.core.postgresql.constants import (
     SOURCE_TYPE_PG_TABLE,
 )
 from dl_connector_postgresql.core.postgresql.dto import PostgresConnDTO
+from dl_connector_postgresql.core.postgresql.settings import PostgreSQLConnectorSettings
 from dl_connector_postgresql.core.postgresql_base.us_connection import ConnectionPostgreSQLBase
 
 
-class ConnectionPostgreSQL(ConnectionPostgreSQLBase):
+class ConnectionPostgreSQL(
+    ConnectionSettingsMixin[PostgreSQLConnectorSettings],
+    ConnectionPostgreSQLBase,
+):
     source_type = SOURCE_TYPE_PG_TABLE
     allowed_source_types = frozenset((SOURCE_TYPE_PG_TABLE, SOURCE_TYPE_PG_SUBSELECT))
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
+    settings_type = PostgreSQLConnectorSettings
 
     def get_conn_dto(self) -> PostgresConnDTO:
         return PostgresConnDTO(
@@ -51,3 +57,7 @@ class ConnectionPostgreSQL(ConnectionPostgreSQLBase):
     @property
     def allow_public_usage(self) -> bool:
         return True
+
+    @property
+    def is_datasource_template_allowed(self) -> bool:
+        return self._connector_settings.ENABLE_DATASOURCE_TEMPLATE and super().is_datasource_template_allowed
