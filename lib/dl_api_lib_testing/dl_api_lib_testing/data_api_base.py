@@ -160,6 +160,10 @@ class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=ab
             date_field="order_date",
         )
 
+    @pytest.fixture(scope="class")
+    def table_schema_name(self) -> Optional[str]:
+        return None
+
     def get_dataset_params(self, dataset_params: dict, db_table: DbTable) -> dict:
         return dataset_params | dict(
             parameters=dataset_params.get("parameters", {})
