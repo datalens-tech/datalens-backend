@@ -93,6 +93,7 @@ class DefaultBasicExtAggregationTestSuite(
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         db: Db,
+        sample_table_schema: str | None,
         saved_connection_id: str,
     ) -> None:
         connection_id = saved_connection_id
@@ -111,7 +112,7 @@ class DefaultBasicExtAggregationTestSuite(
             C("category", UserDataType.string, vg=lambda rn, **kwargs: raw_data[rn]["category"]),
             C("sales", UserDataType.integer, vg=lambda rn, **kwargs: raw_data[rn]["sales"]),
         ]
-        db_table = make_table(db, columns=columns, rows=len(raw_data))
+        db_table = make_table(db, sample_table_schema, columns=columns, rows=len(raw_data))
         request.addfinalizer(functools.partial(db.drop_table, db_table.table))
 
         ds = Dataset()
@@ -199,9 +200,10 @@ class DefaultBasicExtAggregationTestSuite(
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         db: Db,
+        sample_table_schema: str | None,
         saved_connection_id: str,
     ) -> None:
-        db_table = make_table(db=db)
+        db_table = make_table(db, sample_table_schema)
         request.addfinalizer(functools.partial(db.drop_table, db_table.table))
         ds = create_basic_dataset(
             api_v1=control_api,
@@ -249,9 +251,10 @@ class DefaultBasicExtAggregationTestSuite(
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         db: Db,
+        sample_table_schema: str | None,
         saved_connection_id: str,
     ) -> None:
-        db_table = make_table(db=db)
+        db_table = make_table(db, sample_table_schema)
         request.addfinalizer(functools.partial(db.drop_table, db_table.table))
 
         data_api = data_api
@@ -300,9 +303,10 @@ class DefaultBasicLookupFunctionTestSuite(
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         db: Db,
+        sample_table_schema: str | None,
         saved_connection_id: str,
     ) -> None:
-        db_table = make_table(db=db)
+        db_table = make_table(db, sample_table_schema)
         request.addfinalizer(functools.partial(db.drop_table, db_table.table))
         ds = create_basic_dataset(
             api_v1=control_api,
@@ -337,9 +341,10 @@ class DefaultBasicLookupFunctionTestSuite(
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         db: Db,
+        sample_table_schema: str | None,
         saved_connection_id: str,
     ) -> None:
-        db_table = make_table(db)
+        db_table = make_table(db, sample_table_schema)
         request.addfinalizer(functools.partial(db.drop_table, db_table.table))
         ds = create_basic_dataset(
             api_v1=control_api,
@@ -380,11 +385,12 @@ class DefaultBasicLookupFunctionTestSuite(
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         db: Db,
+        sample_table_schema: str | None,
         saved_connection_id: str,
     ) -> None:
         connection_id = saved_connection_id
-        table_1 = make_table(db)
-        table_2 = make_table(db)
+        table_1 = make_table(db, sample_table_schema)
+        table_2 = make_table(db, sample_table_schema)
 
         def teardown(db: Db, *tables: sa.Table) -> None:
             for table in tables:
@@ -441,9 +447,10 @@ class DefaultBasicLookupFunctionTestSuite(
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         db: Db,
+        sample_table_schema: str | None,
         saved_connection_id: str,
     ) -> None:
-        db_table = make_table(db)
+        db_table = make_table(db, sample_table_schema)
         request.addfinalizer(functools.partial(db.drop_table, db_table.table))
         ds = create_basic_dataset(
             api_v1=control_api,
@@ -484,9 +491,10 @@ class DefaultBasicLookupFunctionTestSuite(
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         db: Db,
+        sample_table_schema: str | None,
         saved_connection_id: str,
     ) -> None:
-        any_db_table_200 = make_table(db, rows=200)
+        any_db_table_200 = make_table(db, sample_table_schema, rows=200)
         request.addfinalizer(functools.partial(db.drop_table, any_db_table_200.table))
 
         ds = create_basic_dataset(
