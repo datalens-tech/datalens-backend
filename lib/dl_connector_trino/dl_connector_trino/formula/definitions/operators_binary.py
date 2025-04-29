@@ -138,11 +138,11 @@ DEFINITIONS_BINARY = [
         ]
     ),
     # _!=
-    # base.BinaryNotEqualInternal.for_dialect(D.TRINO),
+    base.BinaryNotEqualInternal.for_dialect(D.TRINO),
     # _==
-    # base.BinaryEqualInternal.for_dialect(D.TRINO),
+    base.BinaryEqualInternal.for_dialect(D.TRINO),
     # _dneq
-    # base.BinaryEqualDenullified.for_dialect(D.TRINO),
+    base.BinaryEqualDenullified.for_dialect(D.TRINO),
     # and
     base.BinaryAnd.for_dialect(D.TRINO),
     # in
@@ -154,5 +154,5 @@ DEFINITIONS_BINARY = [
     # notlike
     base.BinaryNotLike.for_dialect(D.TRINO),
     # or
-    # base.BinaryOr.for_dialect(D.TRINO),
+    base.BinaryOr.for_dialect(D.TRINO),
 ]
