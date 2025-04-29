@@ -143,6 +143,10 @@ class ApiTestBase(abc.ABC):
             rqe_config_subprocess=rqe_config_subprocess,
         )
 
+    @pytest.fixture(scope="class")
+    def sample_table_schema(self) -> Optional[str]:
+        return None
+
     @pytest.fixture(scope="session")
     def ca_data(self) -> bytes:
         return get_root_certificates()

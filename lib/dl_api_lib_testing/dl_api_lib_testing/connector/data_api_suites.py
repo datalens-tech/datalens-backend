@@ -84,6 +84,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         self,
         request: pytest.FixtureRequest,
         db: Db,
+        schema_name: str | None,
         saved_connection_id: str,
         dataset_params: dict,
         control_api: SyncHttpDatasetApiV1,
@@ -104,7 +105,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
                 vg=lambda rn, **kwargs: [i / 100.0 for i in reversed(range(rn))],
             ),
         ]
-        db_table = make_table(db, columns=columns)
+        db_table = make_table(db, schema=schema_name, columns=columns)
         request.addfinalizer(functools.partial(db.drop_table, db_table.table))
 
         params = self.get_dataset_params(dataset_params, db_table)
@@ -146,13 +147,21 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         self,
         request: pytest.FixtureRequest,
         db: Db,
+        sample_table_schema: str | None,
         saved_connection_id: str,
         dataset_params: dict,
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
     ) -> None:
         self._test_contains(
-            request, db, saved_connection_id, dataset_params, control_api, data_api, WhereClauseOperation.CONTAINS
+            request,
+            db,
+            sample_table_schema,
+            saved_connection_id,
+            dataset_params,
+            control_api,
+            data_api,
+            WhereClauseOperation.CONTAINS,
         )
 
     @for_features(array_support)
@@ -160,13 +169,21 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         self,
         request: pytest.FixtureRequest,
         db: Db,
+        sample_table_schema: str | None,
         saved_connection_id: str,
         dataset_params: dict,
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
     ) -> None:
         self._test_contains(
-            request, db, saved_connection_id, dataset_params, control_api, data_api, WhereClauseOperation.NOTCONTAINS
+            request,
+            db,
+            sample_table_schema,
+            saved_connection_id,
+            dataset_params,
+            control_api,
+            data_api,
+            WhereClauseOperation.NOTCONTAINS,
         )
 
     @pytest.mark.parametrize(
@@ -185,6 +202,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         self,
         request: pytest.FixtureRequest,
         db: Db,
+        sample_table_schema: str | None,
         saved_connection_id: str,
         dataset_params: dict,
         control_api: SyncHttpDatasetApiV1,
@@ -206,7 +224,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
                 vg=lambda rn, **kwargs: [i / 100.0 if i != 5 else None for i in reversed(range(rn))],
             ),
         ]
-        db_table = make_table(db, columns=columns)
+        db_table = make_table(db, schema=sample_table_schema, columns=columns)
         request.addfinalizer(functools.partial(db.drop_table, db_table.table))
         params = self.get_dataset_params(dataset_params, db_table)
         ds = self.make_basic_dataset(control_api, connection_id=saved_connection_id, dataset_params=params)
@@ -415,6 +433,7 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, Regulat
         self,
         request: pytest.FixtureRequest,
         db: Db,
+        sample_table_schema: str | None,
         saved_connection_id: str,
         dataset_params: dict,
         control_api: SyncHttpDatasetApiV1,
@@ -427,7 +446,7 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, Regulat
             {"date_val": datetime.date(2002, 1, 2)},
             {"date_val": datetime.date(2023, 4, 2)},
         ]
-        db_table = make_table(db, columns=columns, data=data)
+        db_table = make_table(db, schema=sample_table_schema, columns=columns, data=data)
         request.addfinalizer(functools.partial(db.drop_table, db_table.table))
 
         params = self.get_dataset_params(dataset_params, db_table)
@@ -484,6 +503,7 @@ class DefaultConnectorDataCacheTestSuite(StandardizedDataApiTestBase, RegulatedT
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         db: Db,
+        sample_table_schema: str | None,
         saved_connection_id: str,
     ) -> None:
         """
@@ -494,7 +514,7 @@ class DefaultConnectorDataCacheTestSuite(StandardizedDataApiTestBase, RegulatedT
 
         assert self.data_caches_enabled, "Cache should be enabled for this test"
 
-        db_table = make_table(db)
+        db_table = make_table(db, schema=sample_table_schema)
         ds = Dataset()
         ds.sources["source_1"] = ds.source(
             connection_id=saved_connection_id,
