@@ -35,7 +35,7 @@ def chyt_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSet
             PUBLIC_CLIQUES=tuple(cfg.CONN_CHYT_PUBLIC_CLIQUES),
             FORBIDDEN_CLIQUES=tuple(cfg.CONN_CHYT_FORBIDDEN_CLIQUES),
             DEFAULT_CLIQUE=cfg.CONN_CHYT_DEFAULT_CLIQUE,
-            ENABLE_DATASOURCE_TEMPLATE=cfg.ENABLE_DATASOURCE_TEMPLATE,
+            ENABLE_DATASOURCE_TEMPLATE=cfg.get("ENABLE_DATASOURCE_TEMPLATE", False),
         )
     return dict(CHYT=settings)
 

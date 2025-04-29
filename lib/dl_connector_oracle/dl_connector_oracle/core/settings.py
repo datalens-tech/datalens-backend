@@ -20,7 +20,7 @@ def oracle_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorS
         settings = OracleConnectorSettings()
     else:
         settings = OracleConnectorSettings(  # type: ignore
-            ENABLE_DATASOURCE_TEMPLATE=cfg.ENABLE_DATASOURCE_TEMPLATE,
+            ENABLE_DATASOURCE_TEMPLATE=cfg.get("ENABLE_DATASOURCE_TEMPLATE", False),
         )
     return dict(ORACLE=settings)
 

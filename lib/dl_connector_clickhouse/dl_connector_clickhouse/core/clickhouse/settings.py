@@ -19,8 +19,8 @@ def clickhouse_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Connec
     if cfg is None:
         settings = ClickHouseConnectorSettings()
     else:
-        settings = ClickHouseConnectorSettings(
-            ENABLE_DATASOURCE_TEMPLATE=cfg.ENABLE_DATASOURCE_TEMPLATE,  # type: ignore
+        settings = ClickHouseConnectorSettings(  # type: ignore
+            ENABLE_DATASOURCE_TEMPLATE=cfg.get("ENABLE_DATASOURCE_TEMPLATE", False),
         )
 
     return dict(CLICKHOUSE=settings)

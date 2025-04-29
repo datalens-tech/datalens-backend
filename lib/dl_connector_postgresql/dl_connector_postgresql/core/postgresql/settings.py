@@ -15,14 +15,14 @@ class PostgreSQLConnectorSettings(ConnectorSettingsBase, DatasourceTemplateSetti
 
 
 def postgresql_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSettingsBase]:
-    cfg = get_connectors_settings_config(full_cfg, object_like_config_key="POSTGRESQL")
+    cfg = get_connectors_settings_config(full_cfg, object_like_config_key="POSTGRES")
     if cfg is None:
         settings = PostgreSQLConnectorSettings()
     else:
         settings = PostgreSQLConnectorSettings(  # type: ignore
-            ENABLE_DATASOURCE_TEMPLATE=cfg.ENABLE_DATASOURCE_TEMPLATE,
+            ENABLE_DATASOURCE_TEMPLATE=cfg.get("ENABLE_DATASOURCE_TEMPLATE", False),
         )
-    return dict(POSTGRESQL=settings)
+    return dict(POSTGRES=settings)
 
 
 class PostgreSQLSettingDefinition(ConnectorSettingsDefinition):
