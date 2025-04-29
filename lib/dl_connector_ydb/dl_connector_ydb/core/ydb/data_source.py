@@ -38,6 +38,7 @@ class YDBTableDataSource(YDBDataSourceMixin, StandardSQLDataSource):
 
         # Unlike `super()`, not adding the database name here.
         q = self.quote
+        q = self._render_dataset_parameter_values(q)
         alias_str = "" if alias is None else f" AS {q(alias)}"
         return sa_plain_text(f"{q(self.table_name)}{alias_str}")
 

@@ -105,6 +105,7 @@ class BaseCHYTTableDataSource(CHYTDataSourceBaseMixin, TableSQLDataSourceMixin, 
             return sa.alias(self.get_sql_source(), name=alias)
         path = self.spec.table_name
         assert path is not None
+        path = self._render_dataset_parameter_values(path)
         path = self.normalize_path(path)
         return sa.table(path)
 
@@ -185,6 +186,7 @@ class BaseCHYTTableListDataSource(BaseCHYTTableFuncDataSource, abc.ABC):
     def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         if not self.spec.table_names:
             raise exc.TableNameNotConfiguredError
+        table_names = [self._render_dataset_parameter_values(table_name) for table_name in self.spec.table_names]
         table_names = self.normalize_tables_paths(self.spec.table_names)
         return CHYTTablesConcat(*table_names, alias=alias)
 
@@ -232,9 +234,24 @@ class BaseCHYTTableRangeDataSource(BaseCHYTTableFuncDataSource, abc.ABC):
     def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         if not self.directory_path:
             raise exc.TableNameNotConfiguredError
-        path = self.directory_path
-        path = self.normalize_path(path)
-        return CHYTTablesRange(directory=path, start=self.range_from, end=self.range_to, alias=alias)
+        directory = self.directory_path
+        directory = self._render_dataset_parameter_values(self.directory_path)
+        directory = self.normalize_path(directory)
+
+        start = self._range_from
+        if start is not None:
+            start = self._render_dataset_parameter_values(start)
+
+        end = self._range_to
+        if end is not None:
+            end = self._render_dataset_parameter_values(end)
+
+        return CHYTTablesRange(
+            directory=directory,
+            start=start,
+            end=end,
+            alias=alias,
+        )
 
     @property
     def default_title(self) -> str:
@@ -261,6 +278,8 @@ class BaseCHYTTableSubselectDataSource(BaseCHYTSpecialDataSource, CommonClickHou
         subsql = self.subsql
         if not subsql:
             raise exc.TableNameNotConfiguredError
+
+        subsql = self._render_dataset_parameter_values(subsql)
         return CHYTTableSubselect(subsql, alias=alias)
 
     @property
