@@ -49,6 +49,7 @@ class GreenplumConnection(
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
                 field_doc_key="PG_SUBSELECT/subsql",  # shared, currently.
+                template_enabled=self.is_datasource_template_allowed,
             )
         ]
 
