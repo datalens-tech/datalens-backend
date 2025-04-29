@@ -62,6 +62,7 @@ class ConnectionMSSQL(
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
                 field_doc_key="MSSQL_SUBSELECT/subsql",
+                template_enabled=self.is_datasource_template_allowed,
             )
         ]
 

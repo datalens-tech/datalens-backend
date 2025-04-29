@@ -94,6 +94,7 @@ class YDBConnection(
                         "required": True,
                         "title": localizer.translate(Translatable("source_templates-label-ydb_table")),
                         "field_doc_key": "YDB_TABLE/table_name",
+                        "template_enabled": self.is_datasource_template_allowed,
                     },
                 ],
                 group=[],
@@ -105,6 +106,7 @@ class YDBConnection(
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
                 title="Subselect over YDB",
+                template_enabled=self.is_datasource_template_allowed,
             ),
         ]
 

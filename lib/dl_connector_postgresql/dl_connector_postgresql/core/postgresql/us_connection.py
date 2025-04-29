@@ -51,6 +51,7 @@ class ConnectionPostgreSQL(
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
                 field_doc_key="PG_SUBSELECT/subsql",
+                template_enabled=self.is_datasource_template_allowed,
             )
         ]
 

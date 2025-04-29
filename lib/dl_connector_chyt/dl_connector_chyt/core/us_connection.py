@@ -117,6 +117,7 @@ class BaseConnectionCHYT(
                         "required": True,
                         "title": localizer.translate(Translatable("source_templates-label-ytsaurus_table")),
                         "field_doc_key": "YTsaurus/CHYT_TABLE/table_name",
+                        "template_enabled": self.is_datasource_template_allowed,
                     },
                 ],
                 **common,
@@ -133,6 +134,7 @@ class BaseConnectionCHYT(
                         "required": True,
                         "title": localizer.translate(Translatable("source_templates-label-ytasurus_table_list")),
                         "field_doc_key": "YTsaurus/CHYT_TABLE_LIST/table_names",
+                        "template_enabled": self.is_datasource_template_allowed,
                     },
                 ],
                 **common,
@@ -149,6 +151,7 @@ class BaseConnectionCHYT(
                         "required": True,
                         "title": localizer.translate(Translatable("source_templates-label-ytsaurus_dir")),
                         "field_doc_key": "YTsaurus/CHYT_TABLE_RANGE/directory_path",
+                        "template_enabled": self.is_datasource_template_allowed,
                     },
                     {
                         "name": "range_from",
@@ -156,6 +159,7 @@ class BaseConnectionCHYT(
                         "default": "",
                         "required": False,
                         "title": localizer.translate(Translatable("source_templates-label-range_from")),
+                        "template_enabled": self.is_datasource_template_allowed,
                     },
                     {
                         "name": "range_to",
@@ -163,6 +167,7 @@ class BaseConnectionCHYT(
                         "default": "",
                         "required": False,
                         "title": localizer.translate(Translatable("source_templates-label-range_to")),
+                        "template_enabled": self.is_datasource_template_allowed,
                     },
                 ],
                 **common,
@@ -174,6 +179,7 @@ class BaseConnectionCHYT(
                 disabled=not self.is_subselect_allowed,
                 title="SQL query via CHYT",
                 field_doc_key="YTsaurus/CHYT_SUBSELECT/subsql",
+                template_enabled=self.is_datasource_template_allowed,
             ),
         ]
 

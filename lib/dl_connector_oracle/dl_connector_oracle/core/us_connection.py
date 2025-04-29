@@ -70,6 +70,7 @@ class ConnectionSQLOracle(
                 source_type=SOURCE_TYPE_ORACLE_SUBSELECT,
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
+                template_enabled=self.is_datasource_template_allowed,
             )
         ]
 

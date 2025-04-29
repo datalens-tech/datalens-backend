@@ -60,6 +60,7 @@ class ConnectionMySQL(
                 source_type=SOURCE_TYPE_MYSQL_SUBSELECT,
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
+                template_enabled=self.is_datasource_template_allowed,
             )
         ]
 
