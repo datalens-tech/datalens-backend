@@ -20,7 +20,7 @@ def mysql_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSe
         settings = MySQLConnectorSettings()
     else:
         settings = MySQLConnectorSettings(  # type: ignore
-            ENABLE_DATASOURCE_TEMPLATE=cfg.ENABLE_DATASOURCE_TEMPLATE,
+            ENABLE_DATASOURCE_TEMPLATE=cfg.get("ENABLE_DATASOURCE_TEMPLATE", False),
         )
     return dict(MYSQL=settings)
 

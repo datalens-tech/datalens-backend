@@ -20,7 +20,7 @@ def greenplum_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Connect
         settings = GreenplumConnectorSettings()
     else:
         settings = GreenplumConnectorSettings(  # type: ignore
-            ENABLE_DATASOURCE_TEMPLATE=cfg.ENABLE_DATASOURCE_TEMPLATE,
+            ENABLE_DATASOURCE_TEMPLATE=cfg.get("ENABLE_DATASOURCE_TEMPLATE", False),
         )
     return dict(GREENPLUM=settings)
 
