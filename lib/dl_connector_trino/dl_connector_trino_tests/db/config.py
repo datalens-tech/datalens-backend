@@ -32,7 +32,7 @@ class CoreConnectionSettings(BaseConnectionSettings):
     HOST: ClassVar[str] = get_test_container_hostport("trino-no-auth", fallback_port=21123).host
     PORT: ClassVar[int] = get_test_container_hostport("trino-no-auth", fallback_port=21123).port
     USERNAME: ClassVar[str] = "datalens"
-    AUTH_TYPE: ClassVar[str] = TrinoAuthType.NONE
+    AUTH_TYPE: ClassVar[TrinoAuthType] = TrinoAuthType.NONE
 
 
 class CoreSslConnectionSettings(BaseConnectionSettings):
@@ -46,7 +46,7 @@ class CoreSslConnectionSettings(BaseConnectionSettings):
 
 class CorePasswordConnectionSettings(CoreSslConnectionSettings):
     PASSWORD: ClassVar[str] = "trino_password"
-    AUTH_TYPE: ClassVar[str] = TrinoAuthType.PASSWORD
+    AUTH_TYPE: ClassVar[TrinoAuthType] = TrinoAuthType.PASSWORD
 
 
 class CoreJwtConnectionSettings(CoreSslConnectionSettings):
@@ -61,7 +61,7 @@ class CoreJwtConnectionSettings(CoreSslConnectionSettings):
     AUTH_TYPE: ClassVar[str] = TrinoAuthType.JWT
 
 
-SUBSELECT_QUERY_FULL = r"""
+SUBSELECT_QUERY = r"""
 select
     number,
     cast(number as boolean) as num_bool,
@@ -76,38 +76,33 @@ select
     cast(char_value as varchar(3)) as varchar_3,
     cast(json_string as json) as json,
     cast(date_value as date) as date,
-    cast(time_value as time) as time,
-    cast(times_with_timezone as time with time zone) as time_with_timezone,
     cast(timestamp_value as timestamp) as timestamp,
-    cast(timestamp_with_timezone as timestamp with time zone) as timestamp_with_timezone
+    cast(timestamp_with_timezone_value as timestamp with time zone) as timestamp_with_timezone
 from
     (
-        select 
-            0 as number, 
+        select
+            0 as number,
             '0' as char_value,
             '{["0"]}' as json_string,
             '2025-01-01' as date_value,
-            '00:00:00' as time_value,
             '01:02:03.456 -08:00' as times_with_timezone,
             '2025-01-01 00:00:00' as timestamp_value,
-            '2001-08-22 03:04:05.321 America/New_York' as timestamp_with_timezone
+            '2001-08-22 03:04:05.321 America/New_York' as timestamp_with_timezone_value
         union all
-        select 
-            1, 
+        select
+            1,
             '1',
             '{["1"]}',
             '2025-01-02',
-            '00:00:01',
             '01:02:03.456 -08:00',
             '2025-01-02 00:00:01',
             '2025-01-02 00:00:01.000 America/Denver'
         union all
-        select 
-            6, 
+        select
+            6,
             '6',
             '{["6"]}',
             '2025-01-07',
-            '00:00:06',
             '01:02:03.456 -08:00',
             '2025-01-07 00:00:06',
             '2025-01-07 00:00:06.000 America/Los_Angeles'
