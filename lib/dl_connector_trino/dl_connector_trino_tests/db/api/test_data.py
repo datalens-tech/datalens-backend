@@ -25,7 +25,6 @@ class TestTrinoDataResult(TrinoDataApiTestBase, DefaultConnectorDataResultTestSu
     def test_datetime_filter_with_zulu_timezone(
         self,
         saved_dataset: Dataset,
-        control_api: SyncHttpDatasetApiV1,
         data_api_test_params: DataApiTestParams,
         data_api: SyncHttpDataApiV2,
     ) -> None:
