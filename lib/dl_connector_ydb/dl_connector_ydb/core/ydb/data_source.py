@@ -37,9 +37,16 @@ class YDBTableDataSource(YDBDataSourceMixin, StandardSQLDataSource):
         assert not self.db_name or self.db_name == self.connection.db_name  # type: ignore  # 2024-01-24 # TODO: "ConnectionBase" has no attribute "db_name"; maybe "dir_name"?  [attr-defined]
 
         # Unlike `super()`, not adding the database name here.
-        q = self.quote
-        alias_str = "" if alias is None else f" AS {q(alias)}"
-        return sa_plain_text(f"{q(self.table_name)}{alias_str}")
+        table_name = self.table_name
+        if table_name is not None:
+            table_name = self._render_dataset_parameter_values(table_name)
+        quoted_table = self.quote(table_name)
+
+        if alias is None:
+            return sa_plain_text(quoted_table)
+
+        quoted_alias = self.quote(alias)
+        return sa_plain_text(f"{quoted_table} AS {quoted_alias}")
 
 
 class YDBSubselectDataSource(YDBDataSourceMixin, SubselectDataSource):
