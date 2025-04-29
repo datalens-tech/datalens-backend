@@ -161,7 +161,7 @@ class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=ab
         )
 
     @pytest.fixture(scope="class")
-    def table_schema_name(self) -> Optional[str]:
+    def sample_table_schema(self) -> Optional[str]:
         return None
 
     def get_dataset_params(self, dataset_params: dict, db_table: DbTable) -> dict:
