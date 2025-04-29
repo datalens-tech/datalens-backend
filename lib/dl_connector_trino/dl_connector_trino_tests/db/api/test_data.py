@@ -1,5 +1,7 @@
 from datetime import datetime
 
+import pytest
+
 from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.primitives import Dataset
@@ -14,6 +16,7 @@ from dl_api_lib_testing.connector.data_api_suites import (
 )
 from dl_api_lib_testing.data_api_base import DataApiTestParams
 from dl_constants.enums import WhereClauseOperation
+from dl_core_testing.database import Db
 
 from dl_connector_trino_tests.db.api.base import TrinoDataApiTestBase
 
@@ -46,6 +49,58 @@ class TestTrinoDataResult(TrinoDataApiTestBase, DefaultConnectorDataResultTestSu
         assert filtered_result_resp.status_code == 200, filtered_result_resp.json
         rows = get_data_rows(filtered_result_resp)
         assert len(rows) == len(values)  # no filtration should occur
+
+    @pytest.mark.parametrize(
+        "field_title,filter_field_title,is_numeric",
+        (
+            ("array_int_value", "int_value", True),
+            ("array_str_value", "str_value", False),
+            ("array_str_value", "concat_const", False),
+            pytest.param(
+                "array_str_value",
+                "concat_field",
+                False,
+                marks=pytest.mark.xfail(reason="BI-6239"),
+            ),
+            ("array_float_value", "float_value", True),
+            ("array_float_value", "none_value", False),
+        ),
+    )
+    def test_array_contains_field(
+        self,
+        request: pytest.FixtureRequest,
+        db: Db,
+        sample_table_schema: str | None,
+        saved_connection_id: str,
+        dataset_params: dict,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        field_title: str,
+        filter_field_title: str,
+        is_numeric: bool,
+    ) -> None:
+        super().test_array_contains_field(
+            request=request,
+            db=db,
+            sample_table_schema=sample_table_schema,
+            saved_connection_id=saved_connection_id,
+            dataset_params=dataset_params,
+            control_api=control_api,
+            data_api=data_api,
+            field_title=field_title,
+            filter_field_title=filter_field_title,
+            is_numeric=is_numeric,
+        )
+
+    @pytest.mark.xfail(reason="BI-6239")
+    def test_get_result_with_formula_in_where(
+        self, saved_dataset: Dataset, data_api_test_params: DataApiTestParams, data_api: SyncHttpDataApiV2
+    ) -> None:
+        super().test_get_result_with_formula_in_where(
+            saved_dataset=saved_dataset,
+            data_api_test_params=data_api_test_params,
+            data_api=data_api,
+        )
 
 
 class TestTrinoDataGroupBy(TrinoDataApiTestBase, DefaultConnectorDataGroupByFormulaTestSuite):
