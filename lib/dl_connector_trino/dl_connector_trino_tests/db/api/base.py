@@ -28,10 +28,6 @@ class TrinoConnectionTestBase(BaseTrinoTestClass, ConnectionTestBase):
         return DB_CORE_URL_MEMORY_CATALOG
 
     @pytest.fixture(scope="class")
-    def table_schema_name(self) -> str:
-        return "default"
-
-    @pytest.fixture(scope="class")
     def bi_test_config(self) -> ApiTestEnvironmentConfiguration:
         return API_TEST_CONFIG
 
