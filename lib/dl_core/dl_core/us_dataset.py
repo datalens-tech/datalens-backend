@@ -91,7 +91,7 @@ class Dataset(USEntry):
     def error_registry(self) -> ComponentErrorRegistry:
         return self.data.component_errors
 
-    def get_single_data_source_id(self, ignore_source_ids: Optional[Collection[str]] = None) -> str:  # type: ignore  # TODO: fix
+    def get_single_data_source_id(self, ignore_source_ids: Optional[Collection[str]] = None) -> Optional[str]:
         # FIXME: remove in the future
         ignore_source_ids = ignore_source_ids or ()
         for dsrc_coll_spec in self.data.source_collections or ():
@@ -99,6 +99,7 @@ class Dataset(USEntry):
             if dsrc_coll_spec.id in ignore_source_ids or managed_by != ManagedBy.user:
                 continue
             return dsrc_coll_spec.id
+        return None
 
     def get_own_materialized_tables(self, source_id: Optional[str] = None) -> Generator[str, None, None]:
         for dsrc_coll_spec in self.data.source_collections or ():
@@ -114,7 +115,7 @@ class Dataset(USEntry):
                 if dsrc_spec.table_name is not None:
                     yield dsrc_spec.table_name
 
-    def find_data_source_configuration(  # type: ignore  # TODO: fix
+    def find_data_source_configuration(
         self,
         connection_id: Optional[str],
         created_from: Optional[DataSourceType] = None,
@@ -153,6 +154,7 @@ class Dataset(USEntry):
             ):
                 # reference matches params
                 return dsrc_coll_spec.id
+        return None
 
     def create_result_schema_field(
         self,
