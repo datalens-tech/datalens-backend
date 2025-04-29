@@ -44,9 +44,9 @@ class YDBTableDataSource(YDBDataSourceMixin, StandardSQLDataSource):
 
         if alias is None:
             return sa_plain_text(quoted_table)
-        else:
-            quoted_alias = self.quote(alias)
-            return sa_plain_text(f"{quoted_table} AS {quoted_alias}")
+
+        quoted_alias = self.quote(alias)
+        return sa_plain_text(f"{quoted_table} AS {quoted_alias}")
 
 
 class YDBSubselectDataSource(YDBDataSourceMixin, SubselectDataSource):
