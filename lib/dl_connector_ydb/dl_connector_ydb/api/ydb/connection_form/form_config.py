@@ -186,6 +186,11 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         connector_settings: Optional[ConnectorSettingsBase],
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
+
+        raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
+        if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
+            raw_sql_levels.append(RawSQLLevel.template)
+
         if connector_settings.ENABLE_AUTH_TYPE_PICKER:
             rows = [
                 ydb_rc.auth_type_row(mode=self.mode),
@@ -197,7 +202,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                     display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.password.value}, mode=self.mode
                 ),
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-                rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
+                rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
                 rc.collapse_advanced_settings_row(),
                 *rc.ssl_rows(
                     enabled_name=CommonFieldName.ssl_enable,
@@ -209,7 +214,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
             rows = [
                 *db_section_rows,
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-                rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
+                rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
                 rc.collapse_advanced_settings_row(),
                 *rc.ssl_rows(
                     enabled_name=CommonFieldName.ssl_enable,

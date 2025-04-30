@@ -98,6 +98,10 @@ class CHYTConnectionFormFactory(ConnectionFormFactory):
             ]
         )
 
+        raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
+        if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
+            raw_sql_levels.append(RawSQLLevel.template)
+
         return ConnectionForm(
             title=CHYTConnectionInfoProvider.get_title(self._localizer),
             rows=[
@@ -106,7 +110,7 @@ class CHYTConnectionFormFactory(ConnectionFormFactory):
                 clique_alias_row,
                 token_row,
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-                rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
+                rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
                 secure_row,
                 rc.collapse_advanced_settings_row(),
                 rc.data_export_forbidden_row(),

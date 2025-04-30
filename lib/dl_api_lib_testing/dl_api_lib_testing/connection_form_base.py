@@ -125,3 +125,9 @@ class ConnectionFormTestBase:
         if self.OVERWRITE_EXPECTED_FORMS:
             pytest.skip("Overwriting expected forms")
         assert form_config.as_dict() == expected_form_config
+
+
+class DatasourceTemplateConnectionFormTestMixin:
+    @pytest.fixture(name="enable_datasource_template", params=[True, False])
+    def fixture_enable_datasource_template(self, request: pytest.FixtureRequest) -> bool:
+        return request.param

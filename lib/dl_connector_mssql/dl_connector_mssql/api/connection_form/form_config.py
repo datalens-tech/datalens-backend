@@ -20,6 +20,7 @@ from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_constants.enums import RawSQLLevel
 
 from dl_connector_mssql.api.connection_info import MSSQLConnectionInfoProvider
+from dl_connector_mssql.core.settings import MSSQLConnectorSettings
 
 
 class MSSQLConnectionFormFactory(ConnectionFormFactory):
@@ -28,6 +29,8 @@ class MSSQLConnectionFormFactory(ConnectionFormFactory):
         connector_settings: Optional[ConnectorSettingsBase],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
+        assert connector_settings is not None and isinstance(connector_settings, MSSQLConnectorSettings)
+
         rc = RowConstructor(localizer=self._localizer)
 
         common_api_schema_items: list[FormFieldApiSchema] = [
@@ -61,6 +64,10 @@ class MSSQLConnectionFormFactory(ConnectionFormFactory):
             ]
         )
 
+        raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
+        if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
+            raw_sql_levels.append(RawSQLLevel.template)
+
         return ConnectionForm(
             title=MSSQLConnectionInfoProvider.get_title(self._localizer),
             rows=[
@@ -70,7 +77,7 @@ class MSSQLConnectionFormFactory(ConnectionFormFactory):
                 rc.username_row(),
                 rc.password_row(self.mode),
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-                rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
+                rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
                 rc.collapse_advanced_settings_row(),
                 rc.data_export_forbidden_row(),
             ],

@@ -26,6 +26,7 @@ from dl_constants.enums import RawSQLLevel
 from dl_connector_oracle.api.connection_info import OracleConnectionInfoProvider
 from dl_connector_oracle.api.i18n.localizer import Translatable
 from dl_connector_oracle.core.constants import OracleDbNameType
+from dl_connector_oracle.core.settings import OracleConnectorSettings
 
 
 @unique
@@ -39,6 +40,7 @@ class OracleConnectionFormFactory(ConnectionFormFactory):
         connector_settings: Optional[ConnectorSettingsBase],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
+        assert connector_settings is not None and isinstance(connector_settings, OracleConnectorSettings)
         rc = RowConstructor(self._localizer)
 
         common_api_schema_items: list[FormFieldApiSchema] = [
@@ -95,6 +97,10 @@ class OracleConnectionFormFactory(ConnectionFormFactory):
             ]
         )
 
+        raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
+        if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
+            raw_sql_levels.append(RawSQLLevel.template)
+
         return ConnectionForm(
             title=OracleConnectionInfoProvider.get_title(self._localizer),
             rows=[
@@ -104,7 +110,7 @@ class OracleConnectionFormFactory(ConnectionFormFactory):
                 rc.username_row(),
                 rc.password_row(self.mode),
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-                rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
+                rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
                 rc.collapse_advanced_settings_row(),
                 *rc.ssl_rows(
                     enabled_name=CommonFieldName.ssl_enable,

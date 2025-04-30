@@ -24,6 +24,7 @@ from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_constants.enums import RawSQLLevel
 
 from dl_connector_greenplum.api.connection_info import GreenplumConnectionInfoProvider
+from dl_connector_greenplum.core.settings import GreenplumConnectorSettings
 from dl_connector_postgresql.api.connection_form.form_config import (
     PostgreSQLFieldName,
     PostgresRowConstructor,
@@ -75,6 +76,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
 
     def _get_base_form_config(
         self,
+        connector_settings: Optional[ConnectorSettingsBase],
         host_section: Sequence[FormRow],
         username_section: Sequence[FormRow],
         db_name_section: Sequence[FormRow],
@@ -84,6 +86,12 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
         rc: RowConstructor,
         postgres_rc: PostgresRowConstructor,
     ) -> ConnectionForm:
+        assert connector_settings is not None and isinstance(connector_settings, GreenplumConnectorSettings)
+
+        raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
+        if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
+            raw_sql_levels.append(RawSQLLevel.template)
+
         return ConnectionForm(
             title=GreenplumConnectionInfoProvider.get_title(self._localizer),
             rows=self._filter_nulls(
@@ -94,7 +102,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
                     *username_section,
                     rc.password_row(mode=self.mode),
                     C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-                    rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
+                    rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
                     rc.collapse_advanced_settings_row(),
                     postgres_rc.enforce_collate_row(),
                     rc.data_export_forbidden_row(),
@@ -124,6 +132,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
         check_api_schema = self._get_base_check_api_schema()
 
         return self._get_base_form_config(
+            connector_settings=connector_settings,
             host_section=host_section,
             username_section=username_section,
             db_name_section=db_name_section,

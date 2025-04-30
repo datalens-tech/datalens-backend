@@ -12,7 +12,10 @@ from dl_api_connector.form_config.models.common import (
 )
 from dl_api_connector.form_config.models.rows.base import TDisplayConditions
 from dl_api_connector.i18n.localizer import Translatable
-from dl_constants.enums import RawSQLLevel
+from dl_constants.enums import (
+    RawSQLLevel,
+    sort_raw_sql_levels,
+)
 from dl_i18n.localizer_base import Localizer
 from dl_i18n.localizer_base import Translatable as BaseTranslatable
 
@@ -228,14 +231,14 @@ class RowConstructor:
                     text=self._localizer.translate(Translatable("value_raw-sql-level-off")),
                 ),
             )
+        all_raw_sql_levels = sort_raw_sql_levels(all_raw_sql_levels)
 
-        included_levels = []
-        for level in [RawSQLLevel.subselect, RawSQLLevel.template, RawSQLLevel.dashsql]:
-            if level in all_raw_sql_levels:
-                included_levels.append(level)
-
+        for i, level in enumerate(all_raw_sql_levels):
             if level == raw_sql_level:
+                included_levels = all_raw_sql_levels[: i + 1]
                 break
+        else:
+            raise ValueError(f"RawSQLLevel {raw_sql_level} not found in all_raw_sql_levels {all_raw_sql_levels}")
 
         content_text = self._get_raw_sql_level_radio_group_option_text(included_levels)
         content_hint_text = self._get_raw_sql_level_radio_group_option_hint_text(included_levels)
@@ -267,41 +270,6 @@ class RowConstructor:
             for raw_sql_level in raw_sql_levels
         ]
 
-    # deprecated - use raw_sql_level_row_v2 instead
-    def raw_sql_level_row(
-        self,
-        default_value: RawSQLLevel = RawSQLLevel.off,
-        raw_sql_levels: Optional[list[RawSQLLevel]] = None,
-        disabled: Optional[bool] = None,
-    ) -> C.CustomizableRow:
-        if raw_sql_levels is None:
-            raw_sql_levels = [RawSQLLevel.off, RawSQLLevel.subselect, RawSQLLevel.dashsql]
-
-        if default_value not in raw_sql_levels:
-            raise ValueError("default_value must be in raw_sql_levels")
-
-        label_allow_subselect_hint_2 = self._localizer.translate(Translatable("label_allow-subselect-hint-2"))
-        label_allow_subselect_hint_3 = self._localizer.translate(Translatable("label_allow-subselect-hint-3"))
-
-        return C.CustomizableRow(
-            items=[
-                C.LabelRowItem(
-                    align="start",
-                    text=self._localizer.translate(Translatable("field_raw-sql-level")),
-                    help_text=f"- {label_allow_subselect_hint_2}\n- {label_allow_subselect_hint_3}",
-                ),
-                C.RadioGroupRowItem(
-                    name=CommonFieldName.raw_sql_level,
-                    options=self._get_raw_sql_level_radio_group_options(
-                        raw_sql_levels=raw_sql_levels,
-                        with_text_end_icon=False,
-                    ),
-                    default_value=default_value.value,
-                    control_props=C.RadioGroupRowItem.Props(disabled=disabled),
-                ),
-            ]
-        )
-
     def raw_sql_level_row_v2(
         self,
         default_value: RawSQLLevel = RawSQLLevel.off,
@@ -310,6 +278,11 @@ class RowConstructor:
     ) -> C.RawSqlLevelRow:
         if raw_sql_levels is None:
             raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.template, RawSQLLevel.dashsql]
+
+        if RawSQLLevel.off in raw_sql_levels:
+            raw_sql_levels.remove(RawSQLLevel.off)
+
+        raw_sql_levels = sort_raw_sql_levels(raw_sql_levels)
 
         if switch_off_value in raw_sql_levels:
             raise ValueError("switch_off_value must not be in raw_sql_levels")
