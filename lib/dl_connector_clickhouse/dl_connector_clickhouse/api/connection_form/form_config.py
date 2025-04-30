@@ -152,14 +152,12 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
         rc: RowConstructor,
         connector_settings: ConnectorSettingsBase | None,
     ) -> typing.Sequence[FormRow]:
+        assert connector_settings is not None and isinstance(connector_settings, ClickHouseConnectorSettings)
         clickhouse_rc = ClickHouseRowConstructor(localizer=self._localizer)
 
-        raw_sql_levels = [RawSQLLevel.subselect]
-        if connector_settings:
-            assert isinstance(connector_settings, ClickHouseConnectorSettings)
-            if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
-                raw_sql_levels.append(RawSQLLevel.template)
-        raw_sql_levels.append(RawSQLLevel.dashsql)
+        raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
+        if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
+            raw_sql_levels.append(RawSQLLevel.template)
 
         return [
             C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),

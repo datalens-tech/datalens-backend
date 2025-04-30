@@ -21,6 +21,7 @@ from dl_constants.enums import RawSQLLevel
 
 from dl_connector_mysql.api.connection_info import MySQLConnectionInfoProvider
 from dl_connector_mysql.api.i18n.localizer import Translatable
+from dl_connector_mysql.core.settings import MySQLConnectorSettings
 
 
 class MySQLConnectionFormFactory(ConnectionFormFactory):
@@ -69,9 +70,15 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
         rc: RowConstructor,
         connector_settings: ConnectorSettingsBase | None,
     ) -> Sequence[FormRow]:
+        assert connector_settings is not None and isinstance(connector_settings, MySQLConnectorSettings)
+
+        raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
+        if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
+            raw_sql_levels.append(RawSQLLevel.template)
+
         return [
             C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-            rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
+            rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
             rc.collapse_advanced_settings_row(),
             *rc.ssl_rows(
                 enabled_name=CommonFieldName.ssl_enable,

@@ -28,6 +28,7 @@ from dl_i18n.localizer_base import Localizer
 
 from dl_connector_postgresql.api.connection_info import PostgreSQLConnectionInfoProvider
 from dl_connector_postgresql.api.i18n.localizer import Translatable
+from dl_connector_postgresql.core.postgresql.settings import PostgreSQLConnectorSettings
 from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 
 
@@ -160,11 +161,16 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
         rc: RowConstructor,
         connector_settings: ConnectorSettingsBase | None,
     ) -> typing.Sequence[FormRow]:
+        assert connector_settings is not None and isinstance(connector_settings, PostgreSQLConnectorSettings)
         postgres_rc = PostgresRowConstructor(localizer=self._localizer)
+
+        raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
+        if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
+            raw_sql_levels.append(RawSQLLevel.template)
 
         return [
             C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-            rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
+            rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
             rc.collapse_advanced_settings_row(),
             postgres_rc.enforce_collate_row(),
             *rc.ssl_rows(
