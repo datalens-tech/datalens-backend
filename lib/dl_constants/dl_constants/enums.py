@@ -347,7 +347,6 @@ def sort_raw_sql_levels(
 ) -> list[RawSQLLevel]:
     """
     Sorts raw_sql_levels in a way that the most permissive level is first.
-    If last_level is provided, all levels after it will be dropped.
     """
     if not raw_sql_levels:
         return []

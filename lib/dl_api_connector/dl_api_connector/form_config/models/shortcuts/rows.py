@@ -279,9 +279,6 @@ class RowConstructor:
         if raw_sql_levels is None:
             raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.template, RawSQLLevel.dashsql]
 
-        if RawSQLLevel.off in raw_sql_levels:
-            raw_sql_levels.remove(RawSQLLevel.off)
-
         raw_sql_levels = sort_raw_sql_levels(raw_sql_levels)
 
         if switch_off_value in raw_sql_levels:
