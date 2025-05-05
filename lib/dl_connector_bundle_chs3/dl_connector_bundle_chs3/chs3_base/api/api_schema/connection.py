@@ -9,7 +9,6 @@ from marshmallow import (
     validate,
 )
 
-from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from dl_api_connector.api_schema.component_errors import ComponentErrorListSchema
 from dl_api_connector.api_schema.connection_base import ConnectionSchema
 from dl_api_connector.api_schema.extras import FieldExtra
@@ -19,10 +18,6 @@ from dl_constants.exc import (
 )
 from dl_core import exc
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
-from dl_core.utils import (
-    make_user_auth_cookies,
-    make_user_auth_headers,
-)
 
 from dl_connector_bundle_chs3.chs3_base.api.api_schema.source import (
     BaseFileSourceSchema,
@@ -61,16 +56,12 @@ class BaseFileS3ConnectionSchema(ConnectionSchema):
     def load_preview(self, data: dict[str, Any], conn: BaseFileS3Connection, **kwargs: Any) -> dict[str, Any]:
         # TODO: read preview data from s3 if status == FileProcessingStatus.ready ???
 
-        rci = ReqCtxInfoMiddleware.get_request_context_info()
-        headers = make_user_auth_headers(rci=rci)
-        cookies = make_user_auth_cookies(rci=rci)
-
         usm = USManagerFlaskMiddleware.get_request_service_us_manager()
         service_registry = usm.get_services_registry()
         fu_client_factory = service_registry.get_file_uploader_client_factory()
 
         file_sources = [src.get_desc() for src in conn.data.sources]
-        with fu_client_factory.get_client(headers=headers, cookies=cookies) as fu_client:
+        with fu_client_factory.get_client() as fu_client:
             sources_preview = fu_client.get_preview_batch_sync(file_sources)
         preview_by_source_id = {sp.source_id: sp.preview for sp in sources_preview}
 
