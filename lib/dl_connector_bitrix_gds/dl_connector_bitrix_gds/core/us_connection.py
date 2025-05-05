@@ -34,8 +34,8 @@ class BitrixGDSConnectOptions(ConnectOptions):
 
 class BitrixGDSConnection(ConnectionBase):
     allow_cache: ClassVar[bool] = True
-    source_type = SOURCE_TYPE_BITRIX_GDS
     allow_export: ClassVar[bool] = True
+    source_type = SOURCE_TYPE_BITRIX_GDS
 
     @attr.s(kw_only=True)
     class DataModel(ConnCacheableDataModelMixin, ConnectionBase.DataModel):

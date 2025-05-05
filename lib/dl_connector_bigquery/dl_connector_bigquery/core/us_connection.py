@@ -39,6 +39,7 @@ class ConnectionSQLBigQuery(ConnectionSQL):
     allowed_source_types = frozenset((SOURCE_TYPE_BIGQUERY_TABLE, SOURCE_TYPE_BIGQUERY_SUBSELECT))
     allow_dashsql: ClassVar[bool] = False
     allow_cache: ClassVar[bool] = True
+    allow_export: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
 
     @attr.s
