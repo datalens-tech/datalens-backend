@@ -284,19 +284,20 @@ class DatasetApiLoader:
         if not allow_rls_for_dataset(dataset):
             return
 
-        subject_resolver = None
-        if allow_rls_change:
-            # E.g. dataset editing in sync api
-            subject_resolver = await_sync(self._service_registry.get_subject_resolver())
-
-        rls_v2 = body.get("rls2")
+        rls_v2: dict = body.get("rls2", {})
+        rls_text_config: dict = body.get("rls", {})
+        use_rls_v2 = bool(rls_v2 or not rls_text_config)
         for field in dataset.result_schema:
-            if rls_v2:
+            if use_rls_v2:
                 rls_entries = rls_v2.get(field.guid, [])
             else:
-                rls_text_config = body["rls"].get(field.guid, "")
+                subject_resolver = None
+                if allow_rls_change:
+                    # E.g. dataset editing in sync api
+                    subject_resolver = await_sync(self._service_registry.get_subject_resolver())
+                rls_field_text_config = rls_text_config.get(field.guid, "")
                 rls_entries = FieldRLSSerializer.from_text_config(
-                    rls_text_config,
+                    rls_field_text_config,
                     field.guid,
                     subject_resolver=subject_resolver,
                 )
@@ -306,7 +307,7 @@ class DatasetApiLoader:
                 dataset.rls.items.extend(rls_entries)
             else:
                 # e.g. preview request in async api
-                if rls_v2:
+                if use_rls_v2:
                     rls_entries_pre = rls_entries
                     saved_field_rls = [
                         rlse
@@ -316,7 +317,7 @@ class DatasetApiLoader:
                     compare_by_name = False
                 else:
                     rls_entries_pre = FieldRLSSerializer.from_text_config(
-                        rls_text_config, field.guid, subject_resolver=None
+                        rls_field_text_config, field.guid, subject_resolver=None
                     )
                     saved_field_rls = [
                         rlse.ensure_removed_failed_subject_prefix()
