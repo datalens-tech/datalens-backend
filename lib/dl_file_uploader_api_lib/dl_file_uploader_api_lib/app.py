@@ -153,7 +153,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
         )
         app.router.add_route("post", "/api/v2/files/{file_id}/sources/{source_id}", sources_views.SourceInfoView)
         app.router.add_route(
-            "post", "/api/v2/files/{file_id}/sources/{source_id}/preview", sources_views.SourcePreviewView
+            "post", "/api/v2/files/{file_id}/sources/{source_id}/preview", sources_views.SourcePreviewInternalView
         )
         app.router.add_route(
             "post",

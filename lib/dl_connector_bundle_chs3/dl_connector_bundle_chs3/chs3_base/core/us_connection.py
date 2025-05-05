@@ -31,11 +31,7 @@ from dl_core.us_connection_base import (
     ConnectionSettingsMixin,
     DataSourceTemplate,
 )
-from dl_core.utils import (
-    make_user_auth_cookies,
-    make_user_auth_headers,
-    parse_comma_separated_hosts,
-)
+from dl_core.utils import parse_comma_separated_hosts
 
 from dl_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
 from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
@@ -307,9 +303,6 @@ class BaseFileS3Connection(
                 # Restore original internal source properties
                 self.restore_source_params_from_orig(src_id, original_version)
 
-        rci = self.us_manager.bi_context
-        headers = make_user_auth_headers(rci=rci)
-        cookies = make_user_auth_cookies(rci=rci)
         fu_client_factory = self.us_manager.get_services_registry().get_file_uploader_client_factory()
 
         sources_desc = []
@@ -318,7 +311,7 @@ class BaseFileS3Connection(
             sources_desc.append(src.get_desc())
 
         if sources_desc:
-            async with fu_client_factory.get_client(headers=headers, cookies=cookies) as fu_client:
+            async with fu_client_factory.get_client() as fu_client:
                 internal_params = await fu_client.get_internal_params_batch(sources_desc)
 
             for src_order, src_id in enumerate(sources_to_add):

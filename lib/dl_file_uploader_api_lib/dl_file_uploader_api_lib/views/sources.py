@@ -267,10 +267,11 @@ class SourceApplySettingsView(FileUploaderBaseView):
         return web.Response()
 
 
-class SourcePreviewView(FileUploaderBaseView):
+class SourcePreviewInternalView(FileUploaderBaseView):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResource]] = frozenset(
         {
             RequiredResourceCommon.SKIP_CSRF,
+            RequiredResourceCommon.SKIP_AUTH,
             RequiredResourceCommon.MASTER_KEY,
         }
     )
@@ -295,6 +296,7 @@ class SourceInternalParamsView(FileUploaderBaseView):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResource]] = frozenset(
         {
             RequiredResourceCommon.SKIP_CSRF,
+            RequiredResourceCommon.SKIP_AUTH,
             RequiredResourceCommon.MASTER_KEY,
         }
     )
@@ -302,8 +304,11 @@ class SourceInternalParamsView(FileUploaderBaseView):
     async def post(self) -> web.StreamResponse:
         req_data = await self._load_post_request_schema_data(sources_schemas.SourceInternalParamsRequestSchema)
         rmm = self.dl_request.get_redis_model_manager()
-        dfile = await DataFile.get_authorized(manager=rmm, obj_id=req_data["file_id"])
+
+        # this view is master-key-only, so not using get_authorized
+        dfile = await DataFile.get(manager=rmm, obj_id=req_data["file_id"])
         assert isinstance(dfile, DataFile)
+
         source = dfile.get_source_by_id(req_data["source_id"])
         preview_id = source.preview_id
 
