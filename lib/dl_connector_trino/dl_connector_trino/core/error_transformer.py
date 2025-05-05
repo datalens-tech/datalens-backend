@@ -16,6 +16,7 @@ from dl_core.connectors.base.error_transformer import (
     default_error_transformer_rules,
 )
 from dl_core.connectors.base.error_transformer import ErrorTransformerRule as Rule
+import dl_core.exc as exc
 
 from dl_connector_trino.core.exc import (
     TrinoCatalogDoesNotExistError,
@@ -95,6 +96,17 @@ def is_trino_catalog_does_not_exist_error() -> ExcMatchCondition:
     return _
 
 
+def is_trino_syntax_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        orig = trino_user_error_or_none(exc)
+        if orig is None:
+            return False
+
+        return orig.error_name == "SYNTAX_ERROR"
+
+    return _
+
+
 trino_error_transformer = TrinoErrorTransformer(
     rule_chain=(
         Rule(
@@ -108,6 +120,10 @@ trino_error_transformer = TrinoErrorTransformer(
         Rule(
             when=is_trino_catalog_does_not_exist_error(),
             then_raise=TrinoCatalogDoesNotExistError,
+        ),
+        Rule(
+            when=is_trino_syntax_error(),
+            then_raise=exc.InvalidQuery,
         ),
     )
     + default_error_transformer_rules
