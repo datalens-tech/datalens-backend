@@ -165,6 +165,8 @@ class ConnectionsImportList(BIResource):
         us_manager = self.get_service_us_manager()
         notifications = []
 
+        self.enrich_us_with_tenant_header(us_manager)
+
         conn_data = body["data"]["connection"]
 
         conn_type = self.get_from_request(conn_data, "db_type")
@@ -316,7 +318,11 @@ class ConnectionExportItem(BIResource):
     def get(self, connection_id: str) -> dict:
         notifications: list[dict] = []
 
-        conn = self.get_service_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+        usm = self.get_service_us_manager()
+
+        self.enrich_us_with_tenant_header(usm)
+
+        conn = usm.get_by_id(connection_id, expected_type=ConnectionBase)
         need_permission_on_entry(conn, USPermissionKind.read)
         assert isinstance(conn, ConnectionBase)
 
