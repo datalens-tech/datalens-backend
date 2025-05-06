@@ -31,6 +31,14 @@ class FlaskMiddleware:
         app.before_request(self.process)
 
     def process(self) -> flask.Response | None:
+        # TODO BI-6257 move tenant resolution into a separate middleware
+        temp_rci = dl_api_commons_flask_rci.ReqCtxInfoMiddleware.get_temp_rci()
+        dl_api_commons_flask_rci.ReqCtxInfoMiddleware.replace_temp_rci(
+            temp_rci.clone(
+                tenant=dl_api_commons_base_models.TenantCommon(),
+            )
+        )
+
         required_resources = get_required_resources()
 
         if RequiredResourceCommon.SKIP_AUTH in required_resources:
@@ -47,7 +55,6 @@ class FlaskMiddleware:
             temp_rci.clone(
                 user_id=auth_result.user_id,
                 user_name=auth_result.user_name,
-                tenant=dl_api_commons_base_models.TenantCommon(),
                 auth_data=auth_result.data,
             )
         )

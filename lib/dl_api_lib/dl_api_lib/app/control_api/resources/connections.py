@@ -163,7 +163,9 @@ class ConnectionsImportList(BIResource):
     )
     def post(self, body: dict) -> dict | tuple[list | dict, int]:
         us_manager = self.get_service_us_manager()
-        notifications = []
+        tenant = self.get_current_rci().tenant
+        assert tenant is not None
+        us_manager.set_tenant_override(tenant)
 
         conn_data = body["data"]["connection"]
 
@@ -189,6 +191,7 @@ class ConnectionsImportList(BIResource):
 
         conn.validate_new_data_sync(services_registry=self.get_service_registry())
 
+        notifications = []
         localizer = self.get_service_registry().get_localizer()
         conn_warnings = conn.get_import_warnings_list(localizer=localizer)
         if conn_warnings:
@@ -314,10 +317,12 @@ class ConnectionExportItem(BIResource):
         },
     )
     def get(self, connection_id: str) -> dict:
-        notifications: list[dict] = []
+        us_manager = self.get_service_us_manager()
+        tenant = self.get_current_rci().tenant
+        assert tenant is not None
+        us_manager.set_tenant_override(tenant)
 
-        conn = self.get_service_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
-        need_permission_on_entry(conn, USPermissionKind.read)
+        conn = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
         assert isinstance(conn, ConnectionBase)
 
         if not conn.allow_export:
@@ -326,6 +331,7 @@ class ConnectionExportItem(BIResource):
         result = GenericConnectionSchema(context=self.get_schema_ctx(ExportMode.export)).dump(conn)
         result["db_type"] = conn.conn_type.value
 
+        notifications: list[dict] = []
         localizer = self.get_service_registry().get_localizer()
         conn_warnings = conn.get_export_warnings_list(localizer=localizer)
         if conn_warnings:
