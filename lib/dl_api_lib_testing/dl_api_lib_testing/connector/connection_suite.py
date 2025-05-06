@@ -6,6 +6,7 @@ import pytest
 
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_lib.app_settings import ControlApiAppSettings
+from dl_api_lib.schemas.connection import GenericConnectionSchema
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.us_connection_base import ConnectionBase
@@ -56,7 +57,9 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
             return
 
         assert resp.status_code == 200, resp.json
-        if hasattr(conn.data, "password"):
+        conn_edit_schema_cls = GenericConnectionSchema().get_edit_schema_cls(conn)
+        if hasattr(conn_edit_schema_cls(), "password"):
+            # TODO check all secret fields according to conn.data.get_secret_keys(), not just "password"
             password = resp.json["connection"]["password"]
             assert password == "******"
 
