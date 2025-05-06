@@ -4,12 +4,11 @@ import logging
 import ssl
 from types import TracebackType
 from typing import (
-    Any,
     AsyncGenerator,
-    Awaitable,
-    Callable,
     Iterator,
+    Protocol,
 )
+from urllib.parse import urljoin
 
 import attrs
 import httpx
@@ -19,30 +18,32 @@ from typing_extensions import Self
 LOGGER = logging.getLogger(__name__)
 
 
+class SyncHandler(Protocol):
+    def __call__(self, request: httpx.Request) -> httpx.Response:
+        ...
+
+
+class AsyncHandler(Protocol):
+    async def __call__(self, request: httpx.Request) -> httpx.Response:
+        ...
+
+
 class BaseRetrier(abc.ABC):
     @abc.abstractmethod
-    def retry_request(
-        self, req_func: Callable[..., httpx.Response], request: httpx.Request, *args: Any, **kwargs: Any
-    ) -> httpx.Response:
+    def retry_request(self, req_func: SyncHandler, request: httpx.Request) -> httpx.Response:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    async def retry_request_async(
-        self, req_func: Callable[..., Awaitable[httpx.Response]], request: httpx.Request, *args: Any, **kwargs: Any
-    ) -> httpx.Response:
+    async def retry_request_async(self, req_func: AsyncHandler, request: httpx.Request) -> httpx.Response:
         raise NotImplementedError()
 
 
 class NoRetriesRetrier(BaseRetrier):
-    def retry_request(
-        self, req_func: Callable[..., httpx.Response], request: httpx.Request, *args: Any, **kwargs: Any
-    ) -> httpx.Response:
-        return req_func(request, *args, **kwargs)
+    def retry_request(self, req_func: SyncHandler, request: httpx.Request) -> httpx.Response:
+        return req_func(request)
 
-    async def retry_request_async(
-        self, req_func: Callable[..., Awaitable[httpx.Response]], request: httpx.Request, *args: Any, **kwargs: Any
-    ) -> httpx.Response:
-        return await req_func(request, *args, **kwargs)
+    async def retry_request_async(self, req_func: AsyncHandler, request: httpx.Request) -> httpx.Response:
+        return await req_func(request)
 
 
 @attrs.define(kw_only=True)
@@ -71,15 +72,15 @@ class BIHttpxBaseClient:
         )
 
     def url(self, path: str) -> str:
-        return "/".join(map(lambda s: s.strip("/"), (self.base_url, path)))
+        return urljoin(self.base_url, path)
 
 
 @attrs.define(kw_only=True)
 class BIHttpxClient(BIHttpxBaseClient):
-    client: httpx.Client | None = attrs.field(init=False, default=None)
+    client: httpx.Client = attrs.field(init=False)
 
-    def _make_client(self) -> httpx.Client:
-        return httpx.Client(
+    def __attrs_post_init__(self) -> None:
+        self.client = httpx.Client(
             base_url=self.base_url,
             cookies=self.cookies,
             headers=self.headers,
@@ -88,13 +89,9 @@ class BIHttpxClient(BIHttpxBaseClient):
         )
 
     def close(self) -> None:
-        if self.client is not None:
-            self.client.close()
-            self.client = None
+        self.client.close()
 
     def __enter__(self) -> Self:
-        if self.client is None:
-            self.client = self._make_client()
         return self
 
     def __exit__(
@@ -106,26 +103,23 @@ class BIHttpxClient(BIHttpxBaseClient):
         self.close()
 
     @contextlib.contextmanager
-    def send(self, request: httpx.Request, *args: Any, **kwargs: Any) -> Iterator[httpx.Response]:
-        response = self.retrier.retry_request(self._send, request, *args, **kwargs)
+    def send(self, request: httpx.Request) -> Iterator[httpx.Response]:
+        response = self.retrier.retry_request(self._send, request)
         if self.raise_for_status:
             response.raise_for_status()
         yield response
         response.close()
 
     def _send(self, request: httpx.Request) -> httpx.Response:
-        if self.client is None:
-            self.client = self._make_client()
-
         return self.client.send(request=request)
 
 
 @attrs.define(kw_only=True)
 class BIHttpxAsyncClient(BIHttpxBaseClient):
-    client: httpx.AsyncClient | None = attrs.field(init=False, default=None)
+    client: httpx.AsyncClient = attrs.field(init=False)
 
-    def _make_client(self) -> httpx.AsyncClient:
-        return httpx.AsyncClient(
+    def __attrs_post_init__(self) -> None:
+        self.client = httpx.AsyncClient(
             base_url=self.base_url,
             cookies=self.cookies,
             headers=self.headers,
@@ -134,13 +128,9 @@ class BIHttpxAsyncClient(BIHttpxBaseClient):
         )
 
     async def close(self) -> None:
-        if self.client is not None:
-            await self.client.aclose()
-            self.client = None
+        await self.client.aclose()
 
     async def __aenter__(self) -> Self:
-        if self.client is None:
-            self.client = self._make_client()
         return self
 
     async def __aexit__(
@@ -152,17 +142,14 @@ class BIHttpxAsyncClient(BIHttpxBaseClient):
         await self.close()
 
     @contextlib.asynccontextmanager
-    async def send(self, request: httpx.Request, *args: Any, **kwargs: Any) -> AsyncGenerator[httpx.Response, None]:
-        response = await self.retrier.retry_request_async(self._send, request, *args, **kwargs)
+    async def send(self, request: httpx.Request) -> AsyncGenerator[httpx.Response, None]:
+        response = await self.retrier.retry_request_async(self._send, request)
         if self.raise_for_status:
             response.raise_for_status()
         yield response
         await response.aclose()
 
     async def _send(self, request: httpx.Request) -> httpx.Response:
-        if self.client is None:
-            self.client = self._make_client()
-
         return await self.client.send(request=request)
 
 
