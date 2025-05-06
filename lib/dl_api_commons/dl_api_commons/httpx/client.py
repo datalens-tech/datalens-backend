@@ -54,6 +54,7 @@ class BIHttpxBaseClient:
 
     conn_timeout_sec: float = attrs.field(default=1.0)
     read_timeout_sec: float = attrs.field(default=10.0)
+    write_timeout_sec: float = attrs.field(default=30.0)
 
     verify: str | bool | ssl.SSLContext = attrs.field(default=True)
 
@@ -65,6 +66,8 @@ class BIHttpxBaseClient:
         return httpx.Timeout(
             connect=self.conn_timeout_sec,
             read=self.read_timeout_sec,
+            write=self.write_timeout_sec,
+            pool=None,
         )
 
     def url(self, path: str) -> str:
