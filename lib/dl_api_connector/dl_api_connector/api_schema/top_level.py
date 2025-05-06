@@ -28,13 +28,15 @@ from marshmallow import Schema
 from marshmallow import fields as ma_fields
 
 from dl_api_connector.api_schema.extras import (
+    FieldExtra,
+    SchemaKWArgs,
+)
+from dl_constants.enums import (
     CreateMode,
     EditMode,
     ExportMode,
-    FieldExtra,
     ImportMode,
     OperationsMode,
-    SchemaKWArgs,
 )
 from dl_core import exc as bi_core_exc
 from dl_core.base_models import (
