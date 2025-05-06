@@ -6,11 +6,11 @@ from typing import (
     Optional,
 )
 
-from dl_api_connector.api_schema.extras import OperationsMode
 from dl_api_connector.api_schema.top_level import (
     BaseTopLevelSchema,
     USEntryBaseSchema,
 )
+from dl_constants.enums import OperationsMode
 from dl_core.us_manager.us_manager import USManagerBase
 
 

@@ -20,7 +20,6 @@ import sqlalchemy as sa
 from sqlalchemy.engine.default import DefaultDialect
 
 from dl_api_commons.reporting.models import NotificationReportingRecord
-from dl_api_connector.api_schema.extras import OperationsMode
 from dl_cache_engine.primitives import (
     DataKeyPart,
     LocalKeyRepresentation,
@@ -33,6 +32,7 @@ from dl_constants.enums import (
     DataSourceType,
     MigrationStatus,
     NotificationLevel,
+    OperationsMode,
     RawSQLLevel,
     UserDataType,
     is_raw_sql_level_dashsql_allowed,

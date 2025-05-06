@@ -14,8 +14,10 @@ from typing import (
 )
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_api_connector.api_schema.extras import OperationsMode
-from dl_constants.enums import MigrationStatus
+from dl_constants.enums import (
+    MigrationStatus,
+    OperationsMode,
+)
 from dl_core.base_models import (
     BaseAttrsDataModel,
     EntryLocation,

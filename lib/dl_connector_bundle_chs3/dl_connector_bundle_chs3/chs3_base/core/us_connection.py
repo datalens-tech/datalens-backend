@@ -13,10 +13,10 @@ from typing import (
 import attr
 import xxhash
 
-from dl_api_connector.api_schema.extras import ImportMode
 from dl_constants.enums import (
     DataSourceRole,
     FileProcessingStatus,
+    ImportMode,
 )
 from dl_core import (
     connection_models,
@@ -262,7 +262,7 @@ class BaseFileS3Connection(
 
     _saved_sources: Optional[list[FileDataSource]] = None
 
-    async def _update_added_sources(self, sources_to_add: list[str]) -> None:
+    async def _update_added_sources(self, sources_to_add: set[str]) -> None:
         """enriches freshly added or replaced sources with info from respective DataFiles from file-uploader-api"""
 
         fu_client_factory = self.us_manager.get_services_registry().get_file_uploader_client_factory()
@@ -292,7 +292,7 @@ class BaseFileS3Connection(
     ) -> None:
         assert isinstance(original_version, (type(self), type(None)))
         if original_version is None:
-            saved_sources = set()
+            saved_sources: set[str] = set()
         else:
             saved_sources = set(src.id for src in original_version.data.sources)
 

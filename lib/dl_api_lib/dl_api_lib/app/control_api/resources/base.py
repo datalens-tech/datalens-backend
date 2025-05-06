@@ -14,10 +14,10 @@ from flask_restx import Resource
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from dl_api_commons.flask.required_resources import RequiredResourceCommon
-from dl_api_connector.api_schema.extras import OperationsMode
 from dl_api_lib import api_decorators
 from dl_api_lib.schemas.tools import prepare_schema_context
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
+from dl_constants.enums import OperationsMode
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 
