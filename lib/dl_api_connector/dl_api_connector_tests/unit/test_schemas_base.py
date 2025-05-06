@@ -12,12 +12,12 @@ from marshmallow import (
 )
 import pytest
 
-from dl_api_connector.api_schema.extras import (
+from dl_api_connector.api_schema.extras import FieldExtra
+from dl_api_connector.api_schema.top_level import BaseTopLevelSchema
+from dl_constants.enums import (
     CreateMode,
     EditMode,
-    FieldExtra,
 )
-from dl_api_connector.api_schema.top_level import BaseTopLevelSchema
 from dl_testing.utils import get_log_record
 
 
