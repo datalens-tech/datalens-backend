@@ -303,10 +303,12 @@ class DatasetExportItem(DatasetResource):
     def post(self, dataset_id: str, body: dict) -> dict:
         """Export dataset"""
 
-        notifications = []
         us_manager = self.get_service_us_manager()
+        tenant = self.get_current_rci().tenant
+        assert tenant is not None
+        us_manager.set_tenant_override(tenant)
+
         ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
-        utils.need_permission_on_entry(ds, USPermissionKind.read)
         ds_dict = ds.as_dict()
         us_manager.load_dependencies(ds)
         ds_dict.update(
@@ -322,6 +324,7 @@ class DatasetExportItem(DatasetResource):
         ds_dict["dataset"]["revision_id"] = None
         del ds_dict["dataset"]["rls"]
 
+        notifications = []
         localizer = self.get_service_registry().get_localizer()
         ds_warnings = ds.get_export_warnings_list(localizer=localizer)
         if ds_warnings:
@@ -372,6 +375,10 @@ class DatasetImportCollection(DatasetResource):
         self.replace_conn_ids(data, body["id_mapping"])
 
         us_manager = self.get_service_us_manager()
+        tenant = self.get_current_rci().tenant
+        assert tenant is not None
+        us_manager.set_tenant_override(tenant)
+
         dataset = Dataset.create_from_dict(
             Dataset.DataModel(name=""),
             ds_key=self.generate_dataset_location(data),
