@@ -321,6 +321,7 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
                 workbook_id=entry_wb_id,
             ),
             us_manager=self.us_manager,
+            entry_op_mode=self.operations_mode,
         )
 
     # TODO FIX: Find a way to specify return type

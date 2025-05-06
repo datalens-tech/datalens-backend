@@ -20,6 +20,7 @@ import sqlalchemy as sa
 from sqlalchemy.engine.default import DefaultDialect
 
 from dl_api_commons.reporting.models import NotificationReportingRecord
+from dl_api_connector.api_schema.extras import OperationsMode
 from dl_cache_engine.primitives import (
     DataKeyPart,
     LocalKeyRepresentation,
@@ -200,6 +201,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         hidden: bool = False,
         data_strict: bool = True,
         migration_status: MigrationStatus = MigrationStatus.non_migrated,
+        entry_op_mode: Optional[OperationsMode] = None,
         *,
         us_manager: USManagerBase,
     ):
@@ -218,6 +220,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             hidden=hidden,
             data_strict=data_strict,
             migration_status=migration_status,
+            entry_op_mode=entry_op_mode,
             us_manager=us_manager,
         )
 

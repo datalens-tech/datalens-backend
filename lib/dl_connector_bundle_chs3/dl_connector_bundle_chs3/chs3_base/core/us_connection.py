@@ -13,6 +13,7 @@ from typing import (
 import attr
 import xxhash
 
+from dl_api_connector.api_schema.extras import ImportMode
 from dl_constants.enums import (
     DataSourceRole,
     FileProcessingStatus,
@@ -261,6 +262,28 @@ class BaseFileS3Connection(
 
     _saved_sources: Optional[list[FileDataSource]] = None
 
+    async def _update_added_sources(self, sources_to_add: list[str]) -> None:
+        """enriches freshly added or replaced sources with info from respective DataFiles from file-uploader-api"""
+
+        fu_client_factory = self.us_manager.get_services_registry().get_file_uploader_client_factory()
+
+        sources_desc = []
+        for src_id in sources_to_add:
+            src = self.get_file_source_by_id(src_id)
+            sources_desc.append(src.get_desc())
+
+        if sources_desc:
+            async with fu_client_factory.get_client() as fu_client:
+                internal_params = await fu_client.get_internal_params_batch(sources_desc)
+
+            for src_order, src_id in enumerate(sources_to_add):
+                self.update_data_source(
+                    src_id,
+                    role=DataSourceRole.origin,
+                    raw_schema=internal_params[src_order].raw_schema,
+                    preview_id=internal_params[src_order].preview_id,
+                )
+
     async def validate_new_data(
         self,
         services_registry: ServicesRegistry,
@@ -303,28 +326,16 @@ class BaseFileS3Connection(
                 # Restore original internal source properties
                 self.restore_source_params_from_orig(src_id, original_version)
 
-        fu_client_factory = self.us_manager.get_services_registry().get_file_uploader_client_factory()
+        if self.entry_op_mode == ImportMode.create_from_import:
+            # nothing else to do for an imported connection, because original `DataFile`s most certainly don't exist
+            return
 
-        sources_desc = []
-        for src_id in sources_to_add:
-            src = self.get_file_source_by_id(src_id)
-            sources_desc.append(src.get_desc())
+        await self._update_added_sources(sources_to_add)
 
-        if sources_desc:
-            async with fu_client_factory.get_client() as fu_client:
-                internal_params = await fu_client.get_internal_params_batch(sources_desc)
-
-            for src_order, src_id in enumerate(sources_to_add):
-                self.update_data_source(
-                    src_id,
-                    role=DataSourceRole.origin,
-                    raw_schema=internal_params[src_order].raw_schema,
-                    preview_id=internal_params[src_order].preview_id,
-                )
-
+        # trigger re-save for sources, that are marked for update, by removing them from _saved_sources
         if self._saved_sources is not None:
             saved_source_ids = set(src.id for src in self._saved_sources)
-            for src_id in sources_to_update & saved_source_ids:  # trigger update by removing source from _saved_sources
+            for src_id in sources_to_update & saved_source_ids:
                 self._remove_saved_source_by_id(src_id)
 
         # clear errors for updated sources
