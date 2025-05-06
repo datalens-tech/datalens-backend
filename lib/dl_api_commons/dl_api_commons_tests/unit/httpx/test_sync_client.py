@@ -17,7 +17,7 @@ class TestBIHttpxClient:
         )
 
         with BIHttpxClient(base_url="https://example.com") as client:
-            request = httpx.Request("GET", client.url("/api/data"))
+            request = client.client.build_request("GET", client.url("/api/data"))
             with client.send(request) as response:
                 assert response.status_code == 200
                 assert response.json() == {"message": "Success", "data": [1, 2, 3]}
@@ -36,7 +36,7 @@ class TestBIHttpxClient:
 
         with BIHttpxClient(base_url="https://example.com") as client:
             payload = {"name": "New Item", "description": "A new item"}
-            request = httpx.Request(
+            request = client.client.build_request(
                 "POST",
                 client.url("/api/items"),
                 json=payload,
@@ -48,9 +48,9 @@ class TestBIHttpxClient:
 
                 assert mock_route.called
                 assert mock_route.call_count == 1
-                request = mock_route.calls[0].request
+                request = mock_route.calls.last.request
                 assert request.method == "POST"
-                assert request.content == json.dumps(payload).encode()
+                assert request.content == json.dumps(payload, separators=(",", ":")).encode()
                 assert request.headers["Content-Type"] == "application/json"
 
     @respx.mock
@@ -59,12 +59,12 @@ class TestBIHttpxClient:
         headers = {"Authorization": "Bearer token123", "X-API-Key": "abc456"}
 
         with BIHttpxClient(base_url="https://example.com", headers=headers) as client:
-            request = httpx.Request("GET", client.url("/api/secure"))
+            request = client.client.build_request("GET", client.url("/api/secure"))
             with client.send(request) as response:
                 assert response.status_code == 200
 
                 assert mock_route.called
-                request = mock_route.calls[0].request
+                request = mock_route.calls.last.request
                 assert request.headers["Authorization"] == "Bearer token123"
                 assert request.headers["X-API-Key"] == "abc456"
 
@@ -75,19 +75,19 @@ class TestBIHttpxClient:
         respx.get("https://example.com/api/forbidden").respond(status_code=403)
 
         with BIHttpxClient(base_url="https://example.com") as client:
-            request = httpx.Request("GET", client.url("/api/not-found"))
+            request = client.client.build_request("GET", client.url("/api/not-found"))
             with pytest.raises(httpx.HTTPStatusError) as excinfo:
                 with client.send(request):
                     pass
             assert excinfo.value.response.status_code == 404
 
-            request = httpx.Request("GET", client.url("/api/server-error"))
+            request = client.client.build_request("GET", client.url("/api/server-error"))
             with pytest.raises(httpx.HTTPStatusError) as excinfo:
                 with client.send(request):
                     pass
             assert excinfo.value.response.status_code == 500
 
-            request = httpx.Request("GET", client.url("/api/forbidden"))
+            request = client.client.build_request("GET", client.url("/api/forbidden"))
             with pytest.raises(httpx.HTTPStatusError) as excinfo:
                 with client.send(request):
                     pass
@@ -102,7 +102,7 @@ class TestBIHttpxClient:
 
         with BIHttpxClient(base_url="https://example.com") as client:
             params = {"q": "test", "limit": "10", "offset": "0"}
-            request = httpx.Request("GET", client.url("/api/search"), params=params)
+            request = client.client.build_request("GET", client.url("/api/search"), params=params)
             with client.send(request) as response:
                 assert response.status_code == 200
                 assert response.json() == {"results": ["item1", "item2"]}
@@ -117,12 +117,12 @@ class TestBIHttpxClient:
         cookies = {"session": "xyz789", "user_id": "123"}
 
         with BIHttpxClient(base_url="https://example.com", cookies=cookies) as client:
-            request = httpx.Request("GET", client.url("/api/profile"))
+            request = client.client.build_request("GET", client.url("/api/profile"))
             with client.send(request) as response:
                 assert response.status_code == 200
 
                 assert mock_route.called
-                request = mock_route.calls[0].request
+                request = mock_route.calls.last.request
                 assert request.headers["Cookie"].find("session=xyz789") != -1
                 assert request.headers["Cookie"].find("user_id=123") != -1
 
@@ -136,7 +136,7 @@ class TestBIHttpxClient:
         )
 
         with BIHttpxClient(base_url="https://example.com") as client:
-            request = httpx.Request("GET", client.url("/api/files/download"))
+            request = client.client.build_request("GET", client.url("/api/files/download"))
             with client.send(request) as response:
                 assert response.status_code == 200
                 assert response.content == binary_data
@@ -151,7 +151,7 @@ class TestBIHttpxClient:
         )
 
         with BIHttpxClient(base_url="https://example.com", conn_timeout_sec=0.1) as client:
-            request = httpx.Request("GET", client.url("/api/slow"))
+            request = client.client.build_request("GET", client.url("/api/slow"))
             with pytest.raises(httpx.TimeoutException):
                 with client.send(request):
                     pass
@@ -165,7 +165,7 @@ class TestBIHttpxClient:
         )
 
         with BIHttpxClient(base_url="https://example.com") as client:
-            request = httpx.Request("GET", client.url("/api/unreachable"))
+            request = client.client.build_request("GET", client.url("/api/unreachable"))
             with pytest.raises(httpx.ConnectError):
                 with client.send(request):
                     pass

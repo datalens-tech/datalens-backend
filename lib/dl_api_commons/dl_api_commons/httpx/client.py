@@ -76,7 +76,7 @@ class BIHttpxBaseClient:
 
 @attrs.define(kw_only=True)
 class BIHttpxClient(BIHttpxBaseClient):
-    _client: httpx.Client | None = attrs.field(init=False, default=None)
+    client: httpx.Client | None = attrs.field(init=False, default=None)
 
     def _make_client(self) -> httpx.Client:
         return httpx.Client(
@@ -88,13 +88,13 @@ class BIHttpxClient(BIHttpxBaseClient):
         )
 
     def close(self) -> None:
-        if self._client is not None:
-            self._client.close()
-            self._client = None
+        if self.client is not None:
+            self.client.close()
+            self.client = None
 
     def __enter__(self) -> Self:
-        if self._client is None:
-            self._client = self._make_client()
+        if self.client is None:
+            self.client = self._make_client()
         return self
 
     def __exit__(
@@ -107,24 +107,22 @@ class BIHttpxClient(BIHttpxBaseClient):
 
     @contextlib.contextmanager
     def send(self, request: httpx.Request, *args: Any, **kwargs: Any) -> Iterator[httpx.Response]:
-        try:
-            response = self.retrier.retry_request(self._send, request, *args, **kwargs)
-            if self.raise_for_status:
-                response.raise_for_status()
-            yield response
-        finally:
-            response.close()
+        response = self.retrier.retry_request(self._send, request, *args, **kwargs)
+        if self.raise_for_status:
+            response.raise_for_status()
+        yield response
+        response.close()
 
     def _send(self, request: httpx.Request) -> httpx.Response:
-        if self._client is None:
-            self._client = self._make_client()
+        if self.client is None:
+            self.client = self._make_client()
 
-        return self._client.send(request=request)
+        return self.client.send(request=request)
 
 
 @attrs.define(kw_only=True)
 class BIHttpxAsyncClient(BIHttpxBaseClient):
-    _client: httpx.AsyncClient | None = attrs.field(init=False, default=None)
+    client: httpx.AsyncClient | None = attrs.field(init=False, default=None)
 
     def _make_client(self) -> httpx.AsyncClient:
         return httpx.AsyncClient(
@@ -136,13 +134,13 @@ class BIHttpxAsyncClient(BIHttpxBaseClient):
         )
 
     async def close(self) -> None:
-        if self._client is not None:
-            await self._client.aclose()
-            self._client = None
+        if self.client is not None:
+            await self.client.aclose()
+            self.client = None
 
     async def __aenter__(self) -> Self:
-        if self._client is None:
-            self._client = self._make_client()
+        if self.client is None:
+            self.client = self._make_client()
         return self
 
     async def __aexit__(
@@ -155,19 +153,17 @@ class BIHttpxAsyncClient(BIHttpxBaseClient):
 
     @contextlib.asynccontextmanager
     async def send(self, request: httpx.Request, *args: Any, **kwargs: Any) -> AsyncGenerator[httpx.Response, None]:
-        try:
-            response = await self.retrier.retry_request_async(self._send, request, *args, **kwargs)
-            if self.raise_for_status:
-                response.raise_for_status()
-            yield response
-        finally:
-            response.close()
+        response = await self.retrier.retry_request_async(self._send, request, *args, **kwargs)
+        if self.raise_for_status:
+            response.raise_for_status()
+        yield response
+        await response.aclose()
 
     async def _send(self, request: httpx.Request) -> httpx.Response:
-        if self._client is None:
-            self._client = self._make_client()
+        if self.client is None:
+            self.client = self._make_client()
 
-        return await self._client.send(request=request)
+        return await self.client.send(request=request)
 
 
 __all__ = [
