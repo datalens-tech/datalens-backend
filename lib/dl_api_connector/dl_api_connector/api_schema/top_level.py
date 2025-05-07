@@ -323,7 +323,6 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
                 workbook_id=entry_wb_id,
             ),
             us_manager=self.us_manager,
-            entry_op_mode=self.operations_mode,
         )
 
     # TODO FIX: Find a way to specify return type
@@ -358,6 +357,7 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
 
         obj = self.TARGET_CLS.create_from_dict(  # type: ignore  # TODO: fix
             data_dict=self.create_data_model(data_attributes),
+            entry_op_mode=self.operations_mode,
             **self.default_create_from_dict_kwargs(data),
         )
         self.validate_object(obj)
@@ -365,6 +365,8 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
 
     @final
     def update_object(self, obj: _US_ENTRY_TV, data: dict[str, Any]) -> _US_ENTRY_TV:
+        obj.entry_op_mode = self.operations_mode
+
         # Assumed that only data of USEntry can be modified with schema
         assert not (data.keys() - {"data"})
 
