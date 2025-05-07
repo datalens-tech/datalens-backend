@@ -449,3 +449,25 @@ class MigrationStatus(Enum):
     migrated_up = "migrated_up"
     migrated_down = "migrated_down"
     error = "error"
+
+
+class OperationsMode(Enum):
+    pass
+
+
+class CreateMode(OperationsMode):
+    create = auto()
+    test = auto()
+
+
+class ImportMode(OperationsMode):
+    create_from_import = auto()
+
+
+class EditMode(OperationsMode):
+    edit = auto()
+    test = auto()
+
+
+class ExportMode(OperationsMode):
+    export = auto()

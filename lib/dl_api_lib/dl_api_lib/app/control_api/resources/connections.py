@@ -15,12 +15,6 @@ from marshmallow import ValidationError as MValidationError
 from dl_api_commons.flask.middlewares.logging_context import put_to_request_context
 from dl_api_commons.flask.required_resources import RequiredResourceCommon
 from dl_api_connector.api_schema.connection_base import ConnectionOptionsSchema
-from dl_api_connector.api_schema.extras import (
-    CreateMode,
-    EditMode,
-    ExportMode,
-    ImportMode,
-)
 from dl_api_lib import exc
 from dl_api_lib.api_decorators import schematic_request
 from dl_api_lib.app.control_api.resources import API
@@ -38,7 +32,13 @@ from dl_api_lib.schemas.connection import (
 )
 from dl_api_lib.schemas.main import ImportResponseSchema
 from dl_api_lib.utils import need_permission_on_entry
-from dl_constants.enums import ConnectionType
+from dl_constants.enums import (
+    ConnectionType,
+    CreateMode,
+    EditMode,
+    ExportMode,
+    ImportMode,
+)
 from dl_constants.exc import DLBaseException
 from dl_core.data_source.type_mapping import get_data_source_class
 from dl_core.data_source_merge_tools import make_spec_from_dict

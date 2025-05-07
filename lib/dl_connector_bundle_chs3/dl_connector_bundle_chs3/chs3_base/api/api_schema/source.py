@@ -17,17 +17,15 @@ from marshmallow import (
     pre_load,
 )
 
-from dl_api_connector.api_schema.extras import (
-    CreateMode,
-    FieldExtra,
-    ImportMode,
-)
+from dl_api_connector.api_schema.extras import FieldExtra
 from dl_api_connector.api_schema.source_base import (
     SQLDataSourceSchema,
     SQLDataSourceTemplateSchema,
 )
 from dl_constants.enums import (
+    CreateMode,
     FileProcessingStatus,
+    ImportMode,
     UserDataType,
 )
 from dl_model_tools.schema.base import BaseSchema

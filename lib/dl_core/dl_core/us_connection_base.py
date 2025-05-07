@@ -32,6 +32,7 @@ from dl_constants.enums import (
     DataSourceType,
     MigrationStatus,
     NotificationLevel,
+    OperationsMode,
     RawSQLLevel,
     UserDataType,
     is_raw_sql_level_dashsql_allowed,
@@ -200,6 +201,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         hidden: bool = False,
         data_strict: bool = True,
         migration_status: MigrationStatus = MigrationStatus.non_migrated,
+        entry_op_mode: Optional[OperationsMode] = None,
         *,
         us_manager: USManagerBase,
     ):
@@ -218,6 +220,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             hidden=hidden,
             data_strict=data_strict,
             migration_status=migration_status,
+            entry_op_mode=entry_op_mode,
             us_manager=us_manager,
         )
 

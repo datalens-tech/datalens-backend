@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import enum
 from typing import (
     Optional,
     Sequence,
@@ -10,27 +9,7 @@ from typing import (
 
 import attr
 
-
-class OperationsMode(enum.Enum):
-    pass
-
-
-class CreateMode(OperationsMode):
-    create = enum.auto()
-    test = enum.auto()
-
-
-class ImportMode(OperationsMode):
-    create_from_import = enum.auto()
-
-
-class EditMode(OperationsMode):
-    edit = enum.auto()
-    test = enum.auto()
-
-
-class ExportMode(OperationsMode):
-    export = enum.auto()
+from dl_constants.enums import OperationsMode
 
 
 class SchemaKWArgs(TypedDict):

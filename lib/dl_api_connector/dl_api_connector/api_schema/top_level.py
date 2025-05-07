@@ -28,13 +28,15 @@ from marshmallow import Schema
 from marshmallow import fields as ma_fields
 
 from dl_api_connector.api_schema.extras import (
+    FieldExtra,
+    SchemaKWArgs,
+)
+from dl_constants.enums import (
     CreateMode,
     EditMode,
     ExportMode,
-    FieldExtra,
     ImportMode,
     OperationsMode,
-    SchemaKWArgs,
 )
 from dl_core import exc as bi_core_exc
 from dl_core.base_models import (
@@ -355,6 +357,7 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
 
         obj = self.TARGET_CLS.create_from_dict(  # type: ignore  # TODO: fix
             data_dict=self.create_data_model(data_attributes),
+            entry_op_mode=self.operations_mode,
             **self.default_create_from_dict_kwargs(data),
         )
         self.validate_object(obj)
@@ -362,6 +365,8 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
 
     @final
     def update_object(self, obj: _US_ENTRY_TV, data: dict[str, Any]) -> _US_ENTRY_TV:
+        obj.entry_op_mode = self.operations_mode
+
         # Assumed that only data of USEntry can be modified with schema
         assert not (data.keys() - {"data"})
 
