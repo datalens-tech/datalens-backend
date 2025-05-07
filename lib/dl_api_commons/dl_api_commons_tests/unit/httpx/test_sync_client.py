@@ -50,7 +50,7 @@ class TestBIHttpxClient:
                 assert mock_route.call_count == 1
                 request = mock_route.calls.last.request
                 assert request.method == "POST"
-                assert request.content == json.dumps(payload, separators=(",", ":")).encode()
+                assert json.loads(request.content.decode()) == payload
                 assert request.headers["Content-Type"] == "application/json"
 
     @respx.mock
