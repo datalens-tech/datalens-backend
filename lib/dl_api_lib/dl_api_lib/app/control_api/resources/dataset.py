@@ -350,8 +350,18 @@ class DatasetImportCollection(DatasetResource):
 
     @classmethod
     def replace_conn_ids(cls, data: dict, conn_id_mapping: dict) -> None:
-        for sources in data["dataset"]["sources"]:
-            sources["connection_id"] = conn_id_mapping[sources["connection_id"]]
+        for source in data["dataset"]["sources"]:
+            assert isinstance(source, dict)
+            fake_conn_id = source["connection_id"]
+            if fake_conn_id not in conn_id_mapping:
+                LOGGER.info(
+                    'Can not find "%s" in conn id mapping for source with id %s, going to replace it with a fake connection',
+                    fake_conn_id,
+                    source.get("id"),
+                )
+                source["connection_id"] = "0000000000000"  # TODO which ID should we use here?
+            else:
+                source["connection_id"] = conn_id_mapping[fake_conn_id]
 
     @put_to_request_context(endpoint_code="DatasetImport")
     @schematic_request(
