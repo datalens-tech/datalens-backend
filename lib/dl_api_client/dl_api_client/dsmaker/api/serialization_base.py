@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 from functools import singledispatchmethod
-from typing import (
-    List,
-    Union,
-)
+from typing import Sequence
 
 import attr
 from marshmallow import fields as ma_fields
@@ -47,7 +44,7 @@ class ObligatoryFilterUpdateSchema(DefaultSchema[ObligatoryFilter]):
 class BaseApiV1SerializationAdapter:
     # TODO: switch to marshmallow
 
-    def dump_item(self, item: ApiProxyObject, action: Action = None) -> dict:  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "action" (default has type "None", argument has type "Action")  [assignment]
+    def dump_item(self, item: ApiProxyObject, action: Action) -> dict:
         """
         Dump item data for API request. Return dict
 
@@ -66,10 +63,11 @@ class BaseApiV1SerializationAdapter:
         if action == Action.delete:
             return dict(id=item.id)
         else:
+            assert item.source_type is not None
             return dict(
                 id=item.id,
                 connection_id=item.connection_id,
-                source_type=item.source_type.name,  # type: ignore  # 2024-01-24 # TODO: Item "None" of "DataSourceType | None" has no attribute "name"  [union-attr]
+                source_type=item.source_type.name,
                 title=item.title,
                 raw_schema=[
                     dict(
@@ -172,7 +170,7 @@ class BaseApiV1SerializationAdapter:
             return dict(guid=item.id)
 
     @_dump_item.register(ObligatoryFilter)
-    def dump_obligatory_filter(self, item: ObligatoryFilter, action: Action = None) -> dict:  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "action" (default has type "None", argument has type "Action")  [assignment]
+    def dump_obligatory_filter(self, item: ObligatoryFilter, action: Action) -> dict:
         if action == Action.delete:
             return dict(id=item.id)
         if action == Action.add:
@@ -195,7 +193,7 @@ class BaseApiV1SerializationAdapter:
         dataset_data = DatasetContentInternalSchema().dump(stripped_dataset)
         return {"dataset": dataset_data}
 
-    def generate_implicit_updates(self, dataset: Dataset) -> List[UpdateAction]:
+    def generate_implicit_updates(self, dataset: Dataset) -> list[UpdateAction]:
         updates = []
         for dsrc in dataset.sources:
             if not dsrc.created_:
@@ -225,7 +223,10 @@ class BaseApiV1SerializationAdapter:
             ObligatoryFilter: "obligatory_filter",
         }[type(item)]
 
-    def dump_updates(self, updates: List[Union[UpdateAction, dict]] = None) -> List[dict]:  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+    def dump_updates(
+        self,
+        updates: Sequence[UpdateAction | dict] | None = None,
+    ) -> list[dict]:
         result = []
         for update in updates or ():
             if isinstance(update, UpdateAction):
