@@ -131,11 +131,11 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         control_api.delete_dataset(dataset_id=import_resp.json["id"])
 
         # test import without a connection
-        import_data: dict = {
+        import_without_conn_data: dict = {
             "id_mapping": {},  # empty
             "data": {"workbook_id": None, "dataset": export_resp.json["dataset"]},
         }
-        import_resp = control_api.import_dataset(data=import_data, bi_headers=bi_headers)
-        assert import_resp.status_code == 200, f"{import_resp.json} != {export_resp.json}"
+        import_without_conn_resp = control_api.import_dataset(data=import_without_conn_data, bi_headers=bi_headers)
+        assert import_without_conn_resp.status_code == 200, f"{import_without_conn_resp.json} != {export_resp.json}"
 
-        control_api.delete_dataset(dataset_id=import_resp.json["id"])
+        control_api.delete_dataset(dataset_id=import_without_conn_resp.json["id"])
