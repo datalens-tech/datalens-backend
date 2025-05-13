@@ -85,9 +85,6 @@ class S3Model(SecretContainingMixin, metaclass=abc.ABCMeta):
 
 @attr.s
 class S3ModelManager:
-    # _s3: AioBaseClient
-    # _s3_tmp_bucket_name: str = attr.ib()
-    # _s3_persistent_bucket_name: str = attr.ib()
     _s3_service: S3Service = attr.ib()
     _tenant_id: str = attr.ib()
     _crypto_keys_config: CryptoKeysConfig = attr.ib()
