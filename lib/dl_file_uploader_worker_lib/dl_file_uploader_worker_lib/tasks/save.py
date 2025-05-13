@@ -172,6 +172,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                     conn = await usm.get_by_id(self.meta.connection_id, expected_type=BaseFileS3Connection)
                     assert isinstance(conn, BaseFileS3Connection)
 
+                    # TODO: Need to handle case when preview deleted by ttl before it is saved
                     preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=str(src_source.preview_id))
                     await preview.save(
                         persistent=True
@@ -194,8 +195,6 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                     except core_exc.SourceDoesNotExist:
                         LOGGER.info(f"Source {dst_source_id} not present in connection {conn.uuid}. Finishing task.")
                         return Success()
-
-                    s3_service = self._ctx.s3_service
 
                     raw_schema_override: Optional[list[SchemaColumn]]
                     if self.meta.exec_mode == TaskExecutionMode.UPDATE_AND_SAVE:
