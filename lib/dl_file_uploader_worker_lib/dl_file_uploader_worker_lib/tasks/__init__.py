@@ -27,7 +27,6 @@ REGISTRY: TaskRegistry = TaskRegistry.create(
         CleanS3LifecycleRulesTask,
         CleanupTenantFilePreviewsTask,
         RenameTenantFilesTask,
-        RenameTenantFilesTask,
         MigratePreviewRedisToS3Task,
     ]
 )
