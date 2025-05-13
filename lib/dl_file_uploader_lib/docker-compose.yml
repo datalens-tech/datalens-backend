@@ -8,11 +8,8 @@ services:
       - "52404:6379"
 
   s3-storage:
-    image: minio/minio:RELEASE.2025-02-07T23-21-09Z@sha256:640c22768ed5dbc92eacc14502a1b06a1c708fa60431345c78dfc22917062e93
-    environment:
-      MINIO_ROOT_USER: accessKey1
-      MINIO_ROOT_PASSWORD: verySecretKey1
-      MINIO_DOMAIN: local
-    command: server --address ":8000" /export
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: s3-storage
     ports:
       - "52222:8000"
