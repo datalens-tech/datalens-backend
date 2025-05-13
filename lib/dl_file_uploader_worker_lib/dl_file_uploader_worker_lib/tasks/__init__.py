@@ -10,9 +10,9 @@ from .delete import DeleteFileTask
 from .download_gsheets import DownloadGSheetTask
 from .download_yadocs import DownloadYaDocsTask
 from .excel import ProcessExcelTask
+from .migrate_preview import MigratePreviewRedisToS3Task
 from .parse import ParseFileTask
 from .save import SaveSourceTask
-from .migrate_preview import MigratePreviewRedisToS3Task
 
 
 REGISTRY: TaskRegistry = TaskRegistry.create(
