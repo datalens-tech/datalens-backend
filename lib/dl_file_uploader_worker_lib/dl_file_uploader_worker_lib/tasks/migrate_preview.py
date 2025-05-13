@@ -56,7 +56,7 @@ class MigratePreviewRedisToS3Task(
                     redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
                     assert isinstance(redis_preview, DataSourcePreview)
 
-                    s3_preview = S3DataSourcePreview(manager=s3mm, preview_data=redis_preview.preview_data)
+                    s3_preview = S3DataSourcePreview(manager=s3mm, preview_data=redis_preview.preview_data, id=redis_preview.id)
                     await s3_preview.save(persistent=await redis_preview.is_persistent())
 
                     await redis_preview.delete()
