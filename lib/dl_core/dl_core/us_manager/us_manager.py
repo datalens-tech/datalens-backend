@@ -26,6 +26,7 @@ from dl_api_commons.base_models import (
     RequestContextInfo,
     TenantDef,
 )
+from dl_app_tools.profiling_base import generic_profiler
 from dl_configs.crypto_keys import (
     CryptoKeysConfig,
     get_crypto_keys_config_from_env,
@@ -293,6 +294,7 @@ class USManagerBase:
             encrypted_value = self._crypto_controller.encrypt_with_actual_key(decrypted_value)
             secret_addressable.set(key, encrypted_value)
 
+    @generic_profiler("us-deserialize-dict-to-object")
     def _entry_dict_to_obj(self, us_resp: dict, expected_type: Optional[Type[USEntry]] = None) -> USEntry:
         """
         Deserialize US entry dict.

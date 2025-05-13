@@ -150,6 +150,37 @@ class AsyncUSManager(USManagerBase):
 
         return obj
 
+    @generic_profiler_async("us-fetch-entity-raw")  # type: ignore  # TODO: fix
+    async def get_by_id_raw(
+        self,
+        entry_id: str,
+        expected_type: Optional[Type[USEntry]] = None,
+        params: Optional[dict[str, str]] = None,
+    ) -> dict[str, Any]:
+        """Get raw `us_resp` from response without deserialization"""
+
+        with self._enrich_us_exception(
+            entry_id=entry_id,
+            entry_scope=expected_type.scope if expected_type is not None else None,
+        ):
+            us_resp = await self.get_migrated_entry(entry_id, params=params)
+
+        return us_resp
+
+    @generic_profiler_async("us-deserialize-entity-raw")  # type: ignore  # TODO: fix
+    async def deserialize_us_resp(
+        self,
+        us_resp: dict[str, Any],
+        expected_type: Optional[Type[USEntry]] = None,
+    ) -> USEntry:
+        """Used on result of `get_by_id_raw()` call for proper deserialization flow"""
+
+        obj = self._entry_dict_to_obj(us_resp, expected_type)
+        await self.get_lifecycle_manager(entry=obj).post_init_async_hook()
+
+        return obj
+
+    @generic_profiler_async("us-get-migrated-entity")  # type: ignore  # TODO: fix
     async def get_migrated_entry(self, entry_id: str, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
         us_resp = await self._us_client.get_entry(entry_id, params=params)
         return await self._migrate_response(us_resp)
@@ -286,6 +317,7 @@ class AsyncUSManager(USManagerBase):
             raise ValueError("Entry was in cache but it is not a connection: %s", type(conn))
 
     # TODO FIX: Think about cache control
+    @generic_profiler_async("us-load-dependencies")  # type: ignore  # TODO: fix
     async def load_dependencies(self, entry: USEntry) -> None:
         if not isinstance(entry, Dataset):
             raise NotImplementedError("Links loading is supported only for dataset")
@@ -370,7 +402,7 @@ class AsyncUSManager(USManagerBase):
         async for us_resp in us_entry_iterator:
             try:
                 us_resp = await self._migrate_response(us_resp)
-                yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)  # type: ignore  # TODO: fix
+                yield self._entry_dict_to_obj(us_resp, expected_type=entry_cls)
             except Exception:
                 LOGGER.exception("Failed to load US object: %s", us_resp)
                 if raise_on_broken_entry:
