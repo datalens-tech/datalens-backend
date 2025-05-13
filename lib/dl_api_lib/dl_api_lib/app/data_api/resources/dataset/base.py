@@ -295,6 +295,7 @@ class DatasetDataBaseView(BaseView):
             raise web.HTTPNotFound(reason="Entity not found") from e
 
         # TODO: Try using partial deserialization instead of direct dict lookup if possible
+        assert us_resp is not None
         revision_id = us_resp["data"]["revision_id"]
         permissions = us_resp.get("permissions", None)
         permissions_mode = us_resp.get("permissions_mode", None)
@@ -323,7 +324,6 @@ class DatasetDataBaseView(BaseView):
                 self.dataset.permissions = permissions
                 self.dataset.permissions_mode = permissions_mode
             else:
-                assert us_resp is not None
                 dataset = await us_manager.deserialize_us_resp(us_resp, Dataset)
                 assert isinstance(dataset, Dataset)
 
@@ -360,11 +360,10 @@ class DatasetDataBaseView(BaseView):
                 req_model=req_model,
                 allow_rls_change=allow_rls_change,
             )
-        else:
-            return await self._prepare_dataset_from_cache_with_dataset_id(
-                req_model=req_model,
-                allow_rls_change=allow_rls_change,
-            )
+        return await self._prepare_dataset_from_cache_with_dataset_id(
+            req_model=req_model,
+            allow_rls_change=allow_rls_change,
+        )
 
     @staticmethod
     def _updates_only_fields(updates: List[Action]) -> bool:
