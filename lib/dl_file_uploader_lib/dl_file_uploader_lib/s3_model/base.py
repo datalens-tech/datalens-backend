@@ -62,7 +62,7 @@ class S3Model(SecretContainingMixin, metaclass=abc.ABCMeta):
 
     @staticmethod
     def _generate_key_by_id(manager: S3ModelManager, obj_id: str) -> str:
-        return "/".join((manager._tenant_id, obj_id))
+        return "_".join((manager._tenant_id, obj_id))
 
     def generate_key(self) -> str:
         assert self._manager is not None
