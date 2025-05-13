@@ -12,6 +12,7 @@ from .download_yadocs import DownloadYaDocsTask
 from .excel import ProcessExcelTask
 from .parse import ParseFileTask
 from .save import SaveSourceTask
+from .migrate_preview import MigratePreviewRedisToS3Task
 
 
 REGISTRY: TaskRegistry = TaskRegistry.create(
@@ -26,6 +27,8 @@ REGISTRY: TaskRegistry = TaskRegistry.create(
         CleanS3LifecycleRulesTask,
         CleanupTenantFilePreviewsTask,
         RenameTenantFilesTask,
+        RenameTenantFilesTask,
+        MigratePreviewRedisToS3Task,
     ]
 )
 
