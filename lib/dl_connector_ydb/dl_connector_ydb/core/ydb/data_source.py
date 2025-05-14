@@ -38,8 +38,6 @@ class YDBTableDataSource(YDBDataSourceMixin, StandardSQLDataSource):
 
         # Unlike `super()`, not adding the database name here.
         table_name = self.table_name
-        if table_name is not None:
-            table_name = self._render_dataset_parameter_values(table_name)
         quoted_table = self.quote(table_name)
 
         if alias is None:

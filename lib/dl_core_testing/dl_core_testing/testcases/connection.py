@@ -44,7 +44,10 @@ _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 
 class BaseConnectionTestClass(
-    ServiceFixtureTextClass, DbServiceFixtureTextClass, Generic[_CONN_TV], metaclass=abc.ABCMeta
+    ServiceFixtureTextClass,
+    DbServiceFixtureTextClass,
+    Generic[_CONN_TV],
+    metaclass=abc.ABCMeta,
 ):
     raw_sql_level: ClassVar[Optional[RawSQLLevel]] = None
 
