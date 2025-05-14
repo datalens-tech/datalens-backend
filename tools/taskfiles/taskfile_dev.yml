@@ -194,10 +194,13 @@ tasks:
       - |
         {{ if .DOCKER_HOST }}DOCKER_HOST={{.DOCKER_HOST}}{{ end }} \
         docker compose \
-        -f {{.DOCKER_COMPOSE_FILE}} \
+        --file {{.DOCKER_COMPOSE_FILE}} \
+        {{if ne .DOCKER_COMPOSE_DEV_FILE ""}}--file {{.DOCKER_COMPOSE_DEV_FILE}}{{end}} \
         {{.CLI_ARGS}}
     vars:
       DOCKER_COMPOSE_FILE: '{{.DOCKER_COMPOSE_FILE | default "docker-compose.yml"}}'
+      DOCKER_COMPOSE_DEV_FILE:
+        sh: find . -type f -name docker-compose-dev.yml
       DOCKER_HOST: '{{.DOCKER_HOST | default ""}}'
 
   compose-start:
