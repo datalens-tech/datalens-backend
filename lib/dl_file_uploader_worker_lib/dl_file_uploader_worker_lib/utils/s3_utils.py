@@ -95,7 +95,7 @@ def copy_from_s3_to_s3(
     raw_schema: list[SchemaColumn],
 ) -> None:
     s3_sync_resp = s3_sync_cli.get_object(Bucket=src_file.bucket, Key=src_file.key)
-    s3_data_stream: BinaryIO = s3_sync_resp["Body"]  # type: ignore[assignment] # TODO: Incompatible types in assignment (expression has type "StreamingBody", variable has type "BinaryIO")
+    s3_data_stream: BinaryIO = s3_sync_resp["Body"]
 
     def spreadsheet_data_iter() -> Iterator[dict]:
         fieldnames = tuple(sch.name for sch in raw_schema)
