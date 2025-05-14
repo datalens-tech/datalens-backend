@@ -264,12 +264,16 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
 
         return self.handle_unknown_fields(data)
 
-    @post_dump(pass_many=False)
-    def post_dump(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
+    @post_dump(pass_many=False, pass_original=True)
+    def post_dump(self, data: dict[str, Any], obj: _TARGET_OBJECT_TV, **_: Any) -> dict[str, Any]:
         if isinstance(self.operations_mode, ExportMode):
             data = deepcopy(data)
             for secret_field in self.fieldnames_with_extra_export_fake_info():
-                data[secret_field] = "******"
+                if getattr(obj, secret_field, None) is None:
+                    export_value = None
+                else:
+                    export_value = "******"
+                data[secret_field] = export_value
             return self.delete_unknown_fields(data)
         return data
 
