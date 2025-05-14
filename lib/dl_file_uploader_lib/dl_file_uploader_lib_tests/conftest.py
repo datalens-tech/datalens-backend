@@ -60,7 +60,7 @@ def loop(event_loop: asyncio.AbstractEventLoop) -> asyncio.AbstractEventLoop:
 
 
 @pytest.fixture(scope="session")
-async def tenant_id() -> str:
+def tenant_id() -> str:
     return uuid.uuid4().hex
 
 

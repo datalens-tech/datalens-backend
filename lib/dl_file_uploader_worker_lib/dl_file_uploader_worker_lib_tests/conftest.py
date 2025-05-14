@@ -222,7 +222,7 @@ def task_state():
 
 
 @pytest.fixture(scope="session")
-async def tenant_id() -> str:
+def tenant_id() -> str:
     return uuid.uuid4().hex
 
 
