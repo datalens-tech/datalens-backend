@@ -123,7 +123,13 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         assert import_response.status_code == 200, import_response.json
         assert import_response.json["id"]
         assert import_response.json["id"] != saved_connection_id
-        assert import_response.json["notifications"]
+        conn_edit_schema_cls = GenericConnectionSchema().get_edit_schema_cls(conn)
+        if hasattr(conn_edit_schema_cls(), "password"):
+            # TODO check all secret fields according to conn.data.get_secret_keys(), not just "password"
+            assert import_response.json["notifications"]
+            assert any(
+                "CHECK_CREDENTIALS" in notification["code"] for notification in import_response.json["notifications"]
+            )
 
         export_resp = control_api_sync_client.delete(
             url=f"/api/v1/connections/{import_response.json['id']}",
