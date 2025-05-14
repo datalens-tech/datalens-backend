@@ -190,6 +190,7 @@ async def downloaded_gsheet_file_id(
     s3_client,
     redis_model_manager,
     s3_tmp_bucket,
+    tenant_id,
 ):
     df = DataFile(
         manager=redis_model_manager,
@@ -205,7 +206,7 @@ async def downloaded_gsheet_file_id(
             file_id=df.id,
             authorized=False,
             schedule_parsing=False,
-            tenant_id="common",
+            tenant_id=tenant_id,
         )
     )
     result = await wait_task(task, task_state)
@@ -228,6 +229,7 @@ async def test_download_gsheet_task(
     s3_client,
     redis_model_manager,
     s3_tmp_bucket,
+    tenant_id,
 ):
     df = DataFile(
         manager=redis_model_manager,
@@ -243,7 +245,7 @@ async def test_download_gsheet_task(
             file_id=df.id,
             authorized=False,
             schedule_parsing=False,
-            tenant_id="common",
+            tenant_id=tenant_id,
         )
     )
     result = await wait_task(task, task_state)
@@ -289,9 +291,15 @@ async def test_parse_gsheet(
     redis_model_manager,
     s3_tmp_bucket,
     downloaded_gsheet_file_id,
+    tenant_id,
 ):
     file_id = downloaded_gsheet_file_id
-    task = await task_processor_client.schedule(ParseFileTask(file_id=file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=file_id,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -415,6 +423,7 @@ async def test_parse_gsheet_with_file_settings(
     redis_model_manager,
     s3_tmp_bucket,
     downloaded_gsheet_file_id,
+    tenant_id,
 ):
     """Testing first_line_is_header override: None (which is False) -> True -> False"""
 
@@ -423,7 +432,12 @@ async def test_parse_gsheet_with_file_settings(
     sheet_len = 7
     sheet_title = "empty titles"
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=file_id,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
     empty_titles_dsrc = await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len)
@@ -431,6 +445,7 @@ async def test_parse_gsheet_with_file_settings(
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=file_id,
+            tenant_id=tenant_id,
             source_id=empty_titles_dsrc.id,
             file_settings=dict(first_line_is_header=True),
             source_settings={},
@@ -443,6 +458,7 @@ async def test_parse_gsheet_with_file_settings(
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=file_id,
+            tenant_id=tenant_id,
             source_id=empty_titles_dsrc.id,
             file_settings=dict(first_line_is_header=False),
             source_settings={},
@@ -461,6 +477,7 @@ async def test_parse_gsheet_with_file_settings_reverse(
     redis_model_manager,
     s3_tmp_bucket,
     downloaded_gsheet_file_id,
+    tenant_id,
 ):
     """Testing first_line_is_header override: None (which is True) -> False -> True"""
 
@@ -469,7 +486,12 @@ async def test_parse_gsheet_with_file_settings_reverse(
     sheet_len = 7
     sheet_title = "elaborate"
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=file_id,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
     elaborate_no_number_format_dsrc = await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len)
@@ -477,6 +499,7 @@ async def test_parse_gsheet_with_file_settings_reverse(
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=file_id,
+            tenant_id=tenant_id,
             source_id=elaborate_no_number_format_dsrc.id,
             file_settings=dict(first_line_is_header=False),
             source_settings={},
@@ -489,6 +512,7 @@ async def test_parse_gsheet_with_file_settings_reverse(
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=file_id,
+            tenant_id=tenant_id,
             source_id=elaborate_no_number_format_dsrc.id,
             file_settings=dict(first_line_is_header=True),
             source_settings={},
@@ -506,6 +530,7 @@ async def test_download_and_parse_gsheet(
     s3_client,
     redis_model_manager,
     s3_tmp_bucket,
+    tenant_id,
 ):
     df = DataFile(
         manager=redis_model_manager,
@@ -520,7 +545,7 @@ async def test_download_and_parse_gsheet(
         DownloadGSheetTask(
             file_id=df.id,
             authorized=False,
-            tenant_id="common",
+            tenant_id=tenant_id,
         )
     )
     result = await wait_task(task, task_state)
@@ -592,10 +617,16 @@ async def test_save_source_task(
     default_async_usm_per_test,
     s3_tmp_bucket,
     s3_persistent_bucket,
+    tenant_id,
 ):
     file_id = downloaded_gsheet_file_id
     usm = default_async_usm_per_test
-    task = await task_processor_client.schedule(ParseFileTask(file_id=downloaded_gsheet_file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=downloaded_gsheet_file_id,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -614,8 +645,8 @@ async def test_save_source_task(
 
         task_save = await task_processor_client.schedule(
             SaveSourceTask(
-                tenant_id="common",
                 file_id=file_id,
+                tenant_id=tenant_id,
                 src_source_id=src.id,
                 dst_source_id=src.id,
                 connection_id=conn.uuid,
@@ -642,6 +673,7 @@ async def test_download_and_parse_big_gsheets(
     expected_has_header,
     expected_headers,
     expected_user_types,
+    tenant_id,
 ):
     assert len(expected_has_header) == len(expected_headers) == len(expected_user_types), "malformed test data"
 
@@ -659,7 +691,7 @@ async def test_download_and_parse_big_gsheets(
         DownloadGSheetTask(
             file_id=df.id,
             authorized=False,
-            tenant_id="common",
+            tenant_id=tenant_id,
         )
     )
     result = await wait_task(task, task_state)
@@ -715,6 +747,7 @@ async def test_gsheets_full_pipeline(
     expected_headers,
     expected_user_types,
     default_async_usm_per_test,
+    tenant_id,
 ):
     assert len(expected_has_header) == len(expected_headers) == len(expected_user_types), "malformed test data"
 
@@ -732,7 +765,7 @@ async def test_gsheets_full_pipeline(
         DownloadGSheetTask(
             file_id=df.id,
             authorized=False,
-            tenant_id="common",
+            tenant_id=tenant_id,
         )
     )
     result = await wait_task(task, task_state)
@@ -767,7 +800,12 @@ async def test_gsheets_full_pipeline(
     # Save
     file_id = df.id
     usm = default_async_usm_per_test
-    task = await task_processor_client.schedule(ParseFileTask(file_id=file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=file_id,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -782,8 +820,8 @@ async def test_gsheets_full_pipeline(
     for src in df.sources:
         task_save = await task_processor_client.schedule(
             SaveSourceTask(
-                tenant_id="common",
                 file_id=file_id,
+                tenant_id=tenant_id,
                 src_source_id=src.id,
                 dst_source_id=src.id,
                 connection_id=conn.uuid,
@@ -826,6 +864,7 @@ async def test_too_many_columns_gsheets(
     redis_model_manager,
     s3_tmp_bucket,
     monkeypatch,
+    tenant_id,
 ):
     monkeypatch.setattr(parsing_utils, "MAX_COLUMNS_COUNT", 5)
 
@@ -842,7 +881,7 @@ async def test_too_many_columns_gsheets(
         DownloadGSheetTask(
             file_id=df.id,
             authorized=False,
-            tenant_id="common",
+            tenant_id=tenant_id,
         )
     )
     result = await wait_task(task, task_state)
@@ -885,6 +924,7 @@ async def test_too_large_sheet(
     redis_model_manager,
     s3_tmp_bucket,
     monkeypatch,
+    tenant_id,
 ):
     monkeypatch.setattr(S3JsonEachRowUntypedFileAsyncDataSink, "max_file_size_bytes", 8 * 1024**2)
 
@@ -903,7 +943,7 @@ async def test_too_large_sheet(
         DownloadGSheetTask(
             file_id=df.id,
             authorized=False,
-            tenant_id="common",
+            tenant_id=tenant_id,
         )
     )
     result = await wait_task(task, task_state)
@@ -935,6 +975,7 @@ async def test_url_params_encoding(
     redis_model_manager,
     s3_tmp_bucket,
     monkeypatch,
+    tenant_id,
 ):
     df = DataFile(
         manager=redis_model_manager,
@@ -952,7 +993,7 @@ async def test_url_params_encoding(
             file_id=df.id,
             authorized=False,
             schedule_parsing=False,
-            tenant_id="common",
+            tenant_id=tenant_id,
         )
     )
     result = await wait_task(task, task_state)

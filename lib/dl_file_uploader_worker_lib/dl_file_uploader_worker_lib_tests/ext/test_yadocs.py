@@ -19,6 +19,7 @@ async def test_download_yadocs_task(
     redis_model_manager,
     s3_tmp_bucket,
     reader_app,
+    tenant_id,
 ):
     dfile = DataFile(
         filename="",
@@ -29,7 +30,13 @@ async def test_download_yadocs_task(
     )
     await dfile.save()
 
-    task = await task_processor_client.schedule(DownloadYaDocsTask(file_id=dfile.id, authorized=False))
+    task = await task_processor_client.schedule(
+        DownloadYaDocsTask(
+            file_id=dfile.id,
+            authorized=False,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
 
     assert result[-1] == "success"

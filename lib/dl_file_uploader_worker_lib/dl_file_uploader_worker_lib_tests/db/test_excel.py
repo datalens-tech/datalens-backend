@@ -26,12 +26,18 @@ async def test_parse_excel_task(
     redis_model_manager,
     uploaded_excel_id,
     reader_app,
+    tenant_id,
 ):
     rmm = redis_model_manager
     df = await DataFile.get(manager=rmm, obj_id=uploaded_excel_id)
     assert df.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ProcessExcelTask(file_id=uploaded_excel_id))
+    task = await task_processor_client.schedule(
+        ProcessExcelTask(
+            file_id=uploaded_excel_id,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     await sleep(60)
 
@@ -166,13 +172,19 @@ async def test_parse_excel_with_one_row_task(
     redis_model_manager,
     uploaded_excel_with_one_row_id,
     reader_app,
+    tenant_id,
 ):
     uploaded_excel_id = uploaded_excel_with_one_row_id
     rmm = redis_model_manager
     df = await DataFile.get(manager=rmm, obj_id=uploaded_excel_id)
     assert df.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ProcessExcelTask(file_id=uploaded_excel_id))
+    task = await task_processor_client.schedule(
+        ProcessExcelTask(
+            file_id=uploaded_excel_id,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     await sleep(60)
 
@@ -193,12 +205,18 @@ async def test_parse_excel_non_string_header(
     redis_model_manager,
     uploaded_excel_no_header_id,
     reader_app,
+    tenant_id,
 ):
     rmm = redis_model_manager
     df = await DataFile.get(manager=rmm, obj_id=uploaded_excel_no_header_id)
     assert df.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ProcessExcelTask(file_id=uploaded_excel_no_header_id))
+    task = await task_processor_client.schedule(
+        ProcessExcelTask(
+            file_id=uploaded_excel_no_header_id,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     await sleep(60)
     assert result[-1] == "success"
@@ -232,12 +250,18 @@ async def test_parse_invalid_excel(
     redis_model_manager,
     uploaded_invalid_excel_id,
     reader_app,
+    tenant_id,
 ):
     rmm = redis_model_manager
     df = await DataFile.get(manager=rmm, obj_id=uploaded_invalid_excel_id)
     assert df.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ProcessExcelTask(file_id=uploaded_invalid_excel_id))
+    task = await task_processor_client.schedule(
+        ProcessExcelTask(
+            file_id=uploaded_invalid_excel_id,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
 
     await sleep(60)

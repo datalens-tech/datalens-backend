@@ -5,6 +5,7 @@ import logging
 import os
 import sys
 from typing import TYPE_CHECKING
+import uuid
 
 import attr
 from clickhouse_driver import connect as connect_ch
@@ -231,6 +232,11 @@ async def redis_pool(file_uploader_worker_settings):
 @pytest.fixture(scope="function")
 def task_state():
     return TaskState(BITaskStateImpl())
+
+
+@pytest.fixture(scope="session")
+async def tenant_id() -> str:
+    return uuid.uuid4().hex
 
 
 @pytest.fixture(scope="function")

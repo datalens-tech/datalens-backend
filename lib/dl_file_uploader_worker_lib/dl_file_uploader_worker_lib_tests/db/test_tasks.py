@@ -54,12 +54,18 @@ async def test_parse_file_task(
     s3_client,
     redis_model_manager,
     uploaded_file_id,
+    tenant_id,
 ):
     rmm = redis_model_manager
     df = await DataFile.get(manager=rmm, obj_id=uploaded_file_id)
     assert df.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=uploaded_file_id,
+            tenant_id=tenant_id,
+        )
+    )
     await wait_task(task, task_state)
 
     df = await DataFile.get(manager=rmm, obj_id=uploaded_file_id)
@@ -98,11 +104,17 @@ async def test_parse_file_task_with_file_settings(
     s3_client,
     redis_model_manager,
     uploaded_file_id,
+    tenant_id,
 ):
     rmm = redis_model_manager
     df = await DataFile.get(manager=rmm, obj_id=uploaded_file_id)
     assert df.status == FileProcessingStatus.in_progress
-    task = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=uploaded_file_id,
+            tenant_id=tenant_id,
+        )
+    )
     await wait_task(task, task_state)
 
     df = await DataFile.get(manager=rmm, obj_id=uploaded_file_id)
@@ -117,6 +129,7 @@ async def test_parse_file_task_with_file_settings(
             source_id=source_id,
             file_settings=dict(encoding="utf8", delimiter="tab", first_line_is_header=False),
             source_settings={},
+            tenant_id=tenant_id,
         )
     )
     await wait_task(task, task_state)
@@ -143,12 +156,18 @@ async def test_parse_10mb_file_task(
     s3_client,
     redis_model_manager,
     uploaded_10mb_file_id,
+    tenant_id,
 ):
     rmm = redis_model_manager
     df = await DataFile.get(manager=rmm, obj_id=uploaded_10mb_file_id)
     assert df.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_10mb_file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=uploaded_10mb_file_id,
+            tenant_id=tenant_id,
+        )
+    )
     await wait_task(task, task_state)
 
     df = await DataFile.get(manager=rmm, obj_id=uploaded_10mb_file_id)
@@ -164,9 +183,15 @@ async def test_save_source_task(
     uploaded_file_id,
     default_async_usm_per_test,
     read_chs3_file,
+    tenant_id,
 ):
     usm = default_async_usm_per_test
-    task = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=uploaded_file_id,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -179,7 +204,7 @@ async def test_save_source_task(
 
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
-            tenant_id="common",
+            tenant_id=tenant_id,
             file_id=uploaded_file_id,
             src_source_id=source.id,
             dst_source_id=source.id,
@@ -201,9 +226,15 @@ async def test_save_source_task_dt(
     uploaded_file_dt_id,
     default_async_usm_per_test,
     read_chs3_file,
+    tenant_id,
 ):
     usm = default_async_usm_per_test
-    task = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_file_dt_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=uploaded_file_dt_id,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -216,7 +247,7 @@ async def test_save_source_task_dt(
 
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
-            tenant_id="common",
+            tenant_id=tenant_id,
             file_id=uploaded_file_dt_id,
             src_source_id=source.id,
             dst_source_id=source.id,
@@ -249,13 +280,19 @@ async def test_save_source_task_on_replace(
     uploaded_file_id,
     another_uploaded_file_id,
     default_async_usm_per_test,
+    tenant_id,
 ):
     usm = default_async_usm_per_test
     df = []
     source = []
 
     for file_id in (uploaded_file_id, another_uploaded_file_id):
-        task = await task_processor_client.schedule(ParseFileTask(file_id=file_id))
+        task = await task_processor_client.schedule(
+            ParseFileTask(
+                file_id=file_id,
+                tenant_id=tenant_id,
+            )
+        )
         await wait_task(task, task_state)
         new_df = await DataFile.get(manager=redis_model_manager, obj_id=file_id)
         df.append(new_df)
@@ -268,7 +305,7 @@ async def test_save_source_task_on_replace(
 
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
-            tenant_id="common",
+            tenant_id=tenant_id,
             file_id=uploaded_file_id,
             src_source_id=source[0].id,
             dst_source_id=source[1].id,
@@ -289,16 +326,20 @@ async def test_delete_file_task(
     s3_persistent_bucket,
     redis_model_manager,
     uploaded_file,
+    tenant_id,
 ):
     filename = uploaded_file.filename
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_file.id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=uploaded_file.id,
+            tenant_id=tenant_id,
+        )
+    )
     await wait_task(task, task_state)
 
     df = await DataFile.get(manager=redis_model_manager, obj_id=uploaded_file.id)
     source = df.sources[0]
-
-    tenant_id = "common"
 
     task = await task_processor_client.schedule(
         DeleteFileTask(
@@ -376,7 +417,11 @@ async def test_cleanup_tenant_task(
     assert n_lc_rules == 0
 
     for tenant_id in tenant_ids:
-        task = await task_processor_client.schedule(CleanupTenantTask(tenant_id=tenant_id))
+        task = await task_processor_client.schedule(
+            CleanupTenantTask(
+                tenant_id=tenant_id,
+            )
+        )
         result = await wait_task(task, task_state)
         assert result[-1] == "success"
 
@@ -409,7 +454,11 @@ async def test_cleanup_tenant_task_no_files(
 ):
     await s3_client.delete_bucket_lifecycle(Bucket=s3_persistent_bucket)
 
-    task = await task_processor_client.schedule(CleanupTenantTask(tenant_id="there are no files in this tenant"))
+    task = await task_processor_client.schedule(
+        CleanupTenantTask(
+            tenant_id="there are no files in this tenant",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -462,6 +511,7 @@ async def test_datetime64(
     redis_model_manager,
     s3_tmp_bucket,
     default_async_usm_per_test,
+    tenant_id,
 ):
     usm = default_async_usm_per_test
     csv_data = """utc_start_dttm
@@ -491,7 +541,12 @@ async def test_datetime64(
     dfile = await DataFile.get(manager=rmm, obj_id=dfile.id)
     assert dfile.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=dfile.id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=dfile.id,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -507,8 +562,8 @@ async def test_datetime64(
 
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
-            tenant_id="common",
             file_id=dfile.id,
+            tenant_id=tenant_id,
             src_source_id=source.id,
             dst_source_id=source.id,
             connection_id=conn.uuid,
@@ -529,6 +584,7 @@ async def test_datetime_tz(
     redis_model_manager,
     s3_tmp_bucket,
     default_async_usm_per_test,
+    tenant_id,
 ):
     csv_data = """dt
 2022-07-01 13:52:07+03
@@ -558,7 +614,12 @@ async def test_datetime_tz(
     dfile = await DataFile.get(manager=rmm, obj_id=dfile.id)
     assert dfile.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=dfile.id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=dfile.id,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -574,8 +635,8 @@ async def test_datetime_tz(
 
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
-            tenant_id="common",
             file_id=dfile.id,
+            tenant_id=tenant_id,
             src_source_id=source.id,
             dst_source_id=source.id,
             connection_id=conn.uuid,
@@ -614,7 +675,11 @@ async def test_cleanup_tenant_file_previews_task(
         preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
         preview_ids.append(preview.id)
 
-    task = await task_processor_client.schedule(CleanupTenantFilePreviewsTask(tenant_id=tenant_id))
+    task = await task_processor_client.schedule(
+        CleanupTenantFilePreviewsTask(
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -634,6 +699,7 @@ async def test_too_many_columns_csv(
     redis_model_manager,
     s3_tmp_bucket,
     monkeypatch,
+    tenant_id,
 ):
     monkeypatch.setattr(parsing_utils, "MAX_COLUMNS_COUNT", 10)
     csv_data = generate_sample_csv_data_str(3, 11).encode("utf-8")
@@ -657,7 +723,12 @@ async def test_too_many_columns_csv(
     dfile = await DataFile.get(manager=rmm, obj_id=dfile.id)
     assert dfile.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=dfile.id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=dfile.id,
+            tenant_id=tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -692,7 +763,11 @@ async def test_rename_tenant_files(
     assert len(ps_vals) >= 1
 
     new_tenant_id = str(uuid.uuid4())
-    task = await task_processor_client.schedule(RenameTenantFilesTask(tenant_id=new_tenant_id))
+    task = await task_processor_client.schedule(
+        RenameTenantFilesTask(
+            tenant_id=new_tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
