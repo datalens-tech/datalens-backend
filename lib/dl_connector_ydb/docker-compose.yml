@@ -9,7 +9,6 @@ services:
       YDB_GRPC_ENABLE_TLS: 1
       GRPC_TLS_PORT: "51902"
       YDB_GRPC_TLS_DATA_PATH: "/ydb_certs"
-    # hostname: "127.0.0.1"  # you might want to uncomment this for local testing
     hostname: "db-ydb"
     ports:
       - "51900:51900"
