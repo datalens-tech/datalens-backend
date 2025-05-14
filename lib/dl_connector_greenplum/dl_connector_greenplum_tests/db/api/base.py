@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 import pytest
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
@@ -24,6 +26,7 @@ class GreenplumConnectionTestBase(ConnectionTestBase, ServiceFixtureTextClass):
     conn_type = CONNECTION_TYPE_GREENPLUM
     core_test_config = CORE_TEST_CONFIG
     compeng_enabled = False
+    raw_sql_level: ClassVar[RawSQLLevel] = RawSQLLevel.dashsql
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
@@ -35,13 +38,15 @@ class GreenplumConnectionTestBase(ConnectionTestBase, ServiceFixtureTextClass):
 
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
-        return CONNECTION_PARAMS
+        result = CONNECTION_PARAMS.copy()
+        if self.raw_sql_level is not None:
+            result["raw_sql_level"] = self.raw_sql_level.value
+
+        return result
 
 
 class GreenplumDashSQLConnectionTest(GreenplumConnectionTestBase):
-    @pytest.fixture(scope="class")
-    def connection_params(self) -> dict:
-        return CONNECTION_PARAMS | dict(raw_sql_level=RawSQLLevel.dashsql.value)
+    raw_sql_level = RawSQLLevel.dashsql
 
 
 class GreenplumDatasetTestBase(GreenplumConnectionTestBase, DatasetTestBase):

@@ -282,7 +282,8 @@ class DataSource(metaclass=abc.ABCMeta):
         if not self._dataset_template_enabled:
             return value
 
-        if self._connection is None or not self._connection.is_datasource_template_allowed:
+        connection = self._get_connection()
+        if not connection.is_datasource_template_allowed:
             raise ConnectionTemplateDisabledError
 
         renderer = DataSourceRenderer(values=self._dataset_parameter_values)
