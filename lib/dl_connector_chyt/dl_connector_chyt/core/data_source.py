@@ -238,11 +238,11 @@ class BaseCHYTTableRangeDataSource(BaseCHYTTableFuncDataSource, abc.ABC):
         directory = self._render_dataset_parameter_values(self.directory_path)
         directory = self.normalize_path(directory)
 
-        start = self._range_from
+        start = self.range_from
         if start is not None:
             start = self._render_dataset_parameter_values(start)
 
-        end = self._range_to
+        end = self.range_to
         if end is not None:
             end = self._render_dataset_parameter_values(end)
 
