@@ -13,9 +13,6 @@ from dl_testing.constants import TEST_USER_ID
 from dl_testing.containers import get_test_container_hostport
 
 
-pytest_plugins = ("aiohttp.pytest_plugin",)
-
-
 @pytest.fixture(scope="function")
 def rci() -> RequestContextInfo:
     return RequestContextInfo(user_id=TEST_USER_ID)

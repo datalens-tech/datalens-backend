@@ -8,6 +8,7 @@ import uuid
 from typing import TYPE_CHECKING, AsyncGenerator, Callable
 
 import pytest
+import pytest_asyncio
 
 from dl_testing.containers import get_test_container_hostport
 from redis_cache_lock.main import RedisCacheLock
@@ -54,7 +55,7 @@ def backgroundness_mode(request) -> bool:
     return request.param == "bg"
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def lock_mgr_gen(
     cli_acm,
     backgroundness_mode,
@@ -97,8 +98,7 @@ async def test_minimal_lock(lock_mgr_gen):
     count = 5
     key = str(uuid.uuid4())
 
-    lock_mgr_gen_func = await anext(lock_mgr_gen)
-    lock_mgr = lock_mgr_gen_func(key=key)
+    lock_mgr = lock_mgr_gen(key=key)
     gen = CounterGenerate()
 
     for idx in range(count):
@@ -124,8 +124,7 @@ async def test_sync_lock(lock_mgr_gen):
     count = 7
     key = str(uuid.uuid4())
 
-    lock_mgr_gen_func = await anext(lock_mgr_gen)
-    mgrs = [lock_mgr_gen_func(key=key) for _ in range(count)]
+    mgrs = [lock_mgr_gen(key=key) for _ in range(count)]
     gen = CounterGenerate()
 
     results = await asyncio.gather(
@@ -146,8 +145,7 @@ async def test_sync_long_lock(lock_mgr_gen):
     count = 7
     key = str(uuid.uuid4())
 
-    lock_mgr_gen_func = await anext(lock_mgr_gen)
-    mgrs = [lock_mgr_gen_func(key=key) for _ in range(count)]
+    mgrs = [lock_mgr_gen(key=key) for _ in range(count)]
     gen = CounterGenerate(sleep_time=5)
 
     results = await asyncio.gather(

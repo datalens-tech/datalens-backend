@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 
 import pytest
+import pytest_asyncio
 
 from dl_configs.enums import RedisMode
 from dl_configs.settings_submodels import RedisSettings
@@ -48,7 +49,7 @@ def redis_settings(request):
     )
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def redis_pool(loop, redis_settings):
     pool = await create_redis_pool(
         create_arq_redis_settings(redis_settings),
@@ -67,7 +68,7 @@ def worker_settings(request):
     return getattr(request, "param", WorkerSettings())
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def init_task_processor_arq_worker(task_state, redis_settings, worker_settings):
     arq_redis = create_arq_redis_settings(redis_settings)
     worker = ArqWorker(
@@ -82,7 +83,7 @@ async def init_task_processor_arq_worker(task_state, redis_settings, worker_sett
     yield worker
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def task_processor_arq_worker(loop, init_task_processor_arq_worker):
     wrapper = ArqWorkerTestWrapper(loop=loop, worker=init_task_processor_arq_worker)
     yield await wrapper.start()

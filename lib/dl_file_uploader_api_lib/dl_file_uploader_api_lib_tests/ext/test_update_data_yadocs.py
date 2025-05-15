@@ -5,6 +5,7 @@ import logging
 import uuid
 
 import pytest
+import pytest_asyncio
 
 from dl_constants.enums import (
     FileProcessingStatus,
@@ -25,7 +26,7 @@ from dl_connector_bundle_chs3.chs3_yadocs.core.us_connection import YaDocsFileS3
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def saved_yadocs_connection(loop, bi_context, default_async_usm_per_test, s3_persistent_bucket, s3_client):
     us_manager = default_async_usm_per_test
     conn_name = "yadocs test conn {}".format(uuid.uuid4())

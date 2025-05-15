@@ -3,6 +3,7 @@ import logging
 
 from aiohttp import web
 import pytest
+import pytest_asyncio
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_core.us_manager.us_manager_async import AsyncUSManager
@@ -21,7 +22,7 @@ class YaDocsFileS3ApiConnectionTestBase(
     BaseYaDocsFileS3TestClass,
     CHS3ConnectionApiTestBase[YaDocsFileS3Connection],
 ):
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def mock_file_uploader_api(
         self,
         aiohttp_server,

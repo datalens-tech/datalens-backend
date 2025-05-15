@@ -4,7 +4,7 @@ import logging
 import os
 
 import aiohttp.web
-import pytest
+import pytest_asyncio
 
 from dl_constants.enums import FileProcessingStatus
 from dl_file_secure_reader_lib.app import create_app as create_reader_app
@@ -23,7 +23,7 @@ from .utils import create_file_connection
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def upload_file(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_model_manager):
     async def uploader(csv_data: bytes) -> DataFile:
         dfile = DataFile(
@@ -46,7 +46,7 @@ async def upload_file(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_mode
     yield uploader
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_file(upload_file) -> DataFile:
     csv_data = f"""f1,f2,f3,Дата,Дата и время
 qwe,123,45.9,2021-02-04,2021-02-04 12:00:00
@@ -63,17 +63,17 @@ zxc,456,,,2021-02-06 11:59:00
 another_uploaded_file = uploaded_file
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_file_id(uploaded_file) -> str:
     yield uploaded_file.id
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def another_uploaded_file_id(another_uploaded_file) -> str:
     yield another_uploaded_file.id
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_file_dt(upload_file) -> DataFile:
     csv_data = """Date time
 13.10.2023 21:02:36
@@ -87,12 +87,12 @@ async def uploaded_file_dt(upload_file) -> DataFile:
     yield data_file_desc
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_file_dt_id(uploaded_file_dt) -> str:
     yield uploaded_file_dt.id
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_10mb_file_id(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_model_manager) -> str:
     csv_data = generate_sample_csv_data_str(row_count=10000, str_cols_count=30).encode("utf-8")
 
@@ -114,7 +114,7 @@ async def uploaded_10mb_file_id(s3_tmp_bucket, s3_persistent_bucket, s3_client, 
     yield dfile.id
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_excel_file(s3_tmp_bucket, s3_persistent_bucket, s3_client, redis_model_manager):
     async def uploader(filename: str) -> DataFile:
         dfile = DataFile(
@@ -141,55 +141,55 @@ async def uploaded_excel_file(s3_tmp_bucket, s3_persistent_bucket, s3_client, re
     yield uploader
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_excel(uploaded_excel_file) -> DataFile:
     filename = "data.xlsx"
     data_file_desc = await uploaded_excel_file(filename)
     yield data_file_desc
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_excel_id(uploaded_excel) -> str:
     yield uploaded_excel.id
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_excel_with_one_row(uploaded_excel_file) -> DataFile:
     filename = "one_row_table.xlsx"
     data_file_desc = await uploaded_excel_file(filename)
     yield data_file_desc
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_excel_with_one_row_id(uploaded_excel_with_one_row) -> str:
     yield uploaded_excel_with_one_row.id
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_excel_no_header(uploaded_excel_file) -> DataFile:
     filename = "no_header.xlsx"
     data_file_desc = await uploaded_excel_file(filename)
     yield data_file_desc
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_excel_no_header_id(uploaded_excel_no_header) -> str:
     yield uploaded_excel_no_header.id
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_invalid_excel(uploaded_excel_file) -> DataFile:
     filename = "invalid_excel.xlsx"
     data_file_desc = await uploaded_excel_file(filename)
     yield data_file_desc
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_invalid_excel_id(uploaded_invalid_excel) -> str:
     yield uploaded_invalid_excel.id
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 def reader_app(loop, secure_reader):
     current_app = create_reader_app()
     runner = aiohttp.web.AppRunner(current_app)
@@ -198,7 +198,7 @@ def reader_app(loop, secure_reader):
     return loop.run_until_complete(site.start())
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def saved_file_connection_id(
     task_processor_client,
     task_state,
