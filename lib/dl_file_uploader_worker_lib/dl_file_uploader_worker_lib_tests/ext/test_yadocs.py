@@ -29,7 +29,13 @@ async def test_download_yadocs_task(
     )
     await dfile.save()
 
-    task = await task_processor_client.schedule(DownloadYaDocsTask(file_id=dfile.id, authorized=False))
+    task = await task_processor_client.schedule(
+        DownloadYaDocsTask(
+            file_id=dfile.id,
+            authorized=False,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
 
     assert result[-1] == "success"

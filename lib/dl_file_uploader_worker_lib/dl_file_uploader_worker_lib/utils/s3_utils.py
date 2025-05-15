@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     BinaryIO,
     Iterator,
-    NamedTuple,
     Optional,
 )
 
@@ -22,6 +21,7 @@ from dl_file_uploader_lib.redis_model.models.models import (
     FileSourceSettings,
     SpreadsheetFileSourceSettings,
 )
+from dl_file_uploader_lib.utils.s3_utils import S3Object
 from dl_file_uploader_worker_lib.utils.parsing_utils import get_csv_raw_data_iterator
 from dl_s3.data_sink import S3FileDataSink
 from dl_s3.stream import SimpleDataStream
@@ -83,11 +83,6 @@ class S3JsonEachRowFileDataSink(S3FileDataSink[SimpleDataStream, dict]):
     def _process_row(self, row_data: dict) -> bytes:
         cast_row_data = [self._tt.cast_for_input(row_data[col.name], user_t=col.user_type) for col in self._bi_schema]
         return json.dumps(cast_row_data).encode("utf-8")
-
-
-class S3Object(NamedTuple):
-    bucket: str
-    key: str
 
 
 def copy_from_s3_to_s3(

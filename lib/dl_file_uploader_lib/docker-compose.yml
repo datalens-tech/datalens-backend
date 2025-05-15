@@ -6,3 +6,10 @@ services:
       ALLOW_EMPTY_PASSWORD: "yes"
     ports:
       - "52404:6379"
+
+  s3-storage:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: s3-storage
+    ports:
+      - "52222:8000"
