@@ -658,7 +658,7 @@ async def test_cleanup_tenant_file_previews_task(
     preview_set = PreviewSet(redis=rmm._redis, id=tenant_id)
     n_previews = 5
     for _ in range(n_previews):
-        preview = S3DataSourcePreview(manager=rmm, preview_data=[])
+        preview = S3DataSourcePreview(manager=s3_model_manager, preview_data=[])
         await preview.save()
         await preview_set.add(preview.id)
 
