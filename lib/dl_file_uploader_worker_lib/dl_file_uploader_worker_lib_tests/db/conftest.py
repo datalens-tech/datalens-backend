@@ -4,6 +4,7 @@ import logging
 import os
 
 import aiohttp.web
+import pytest
 import pytest_asyncio
 
 from dl_constants.enums import FileProcessingStatus
@@ -189,7 +190,7 @@ async def uploaded_invalid_excel_id(uploaded_invalid_excel) -> str:
     yield uploaded_invalid_excel.id
 
 
-@pytest_asyncio.fixture(scope="function")
+@pytest.fixture(scope="function")
 def reader_app(loop, secure_reader):
     current_app = create_reader_app()
     runner = aiohttp.web.AppRunner(current_app)
