@@ -8,6 +8,7 @@ import uuid
 
 from botocore.exceptions import ClientError
 import pytest
+import pytest_asyncio
 
 from dl_constants.enums import (
     FileProcessingStatus,
@@ -314,7 +315,7 @@ async def test_delete_file_task(
     assert result[-1] == "success"
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def files_with_tenant_prefixes(s3_persistent_bucket, s3_client) -> list[str]:
     csv_data = """f1,f2,f3,Дата,Дата и время
 qwe,123,45.9,2021-02-04,2021-02-04 12:00:00

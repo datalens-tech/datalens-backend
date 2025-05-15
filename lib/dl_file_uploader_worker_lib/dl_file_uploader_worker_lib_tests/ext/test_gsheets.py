@@ -3,6 +3,7 @@ import logging
 import uuid
 
 import pytest
+import pytest_asyncio
 
 from dl_constants.enums import (
     FileProcessingStatus,
@@ -183,7 +184,7 @@ _big_gsheets_test_params = dict(
 )
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def downloaded_gsheet_file_id(
     task_processor_client,
     task_state,

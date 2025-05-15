@@ -13,6 +13,7 @@ from aiohttp.test_utils import TestClient
 from aiohttp.typedefs import Handler
 import attr
 import pytest
+import pytest_asyncio
 import shortuuid
 
 from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
@@ -34,7 +35,7 @@ class _AppConfig:
 _AppFactory = Callable[[_AppConfig], Awaitable[TestClient]]
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def app_factory(aiohttp_client) -> _AppFactory:
     async def f(config: _AppConfig) -> TestClient:
         async def not_streamed(_):

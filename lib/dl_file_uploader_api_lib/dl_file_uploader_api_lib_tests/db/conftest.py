@@ -3,6 +3,7 @@ import logging
 import os
 
 import pytest
+import pytest_asyncio
 
 from dl_api_commons.client.common import Req
 from dl_file_uploader_api_lib_tests.req_builder import ReqBuilder
@@ -13,7 +14,7 @@ from dl_s3.utils import upload_to_s3_by_presigned
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest_asyncio.fixture(scope="function", autouse=True)
 async def use_local_task_processor_auto(use_local_task_processor):
     yield
 
@@ -64,7 +65,7 @@ def upload_file_req_12mb() -> Req:
     return ReqBuilder.upload_csv(csv_data)
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_file_id(s3_tmp_bucket, fu_client, csv_data) -> str:
     presigned_url_resp = await fu_client.make_request(ReqBuilder.presigned_url())
     assert presigned_url_resp.status == 200, presigned_url_resp.json
@@ -82,7 +83,7 @@ async def uploaded_file_id(s3_tmp_bucket, fu_client, csv_data) -> str:
     return download_resp.json["file_id"]
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def uploaded_excel_id(
     s3_tmp_bucket,
     fu_client,

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import logging
 import os
 import sys
@@ -9,12 +8,12 @@ from typing import (
     Any,
 )
 
-import aiohttp.pytest_plugin
-import aiohttp.test_utils
+from aiohttp.pytest_plugin import aiohttp_client
 from aiohttp.typedefs import Middleware
 import aiohttp.web
 import attr
 import pytest
+import pytest_asyncio
 import redis.asyncio
 
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
@@ -93,26 +92,8 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-pytest_plugins = ("aiohttp.pytest_plugin",)
-
-try:
-    del aiohttp.pytest_plugin.loop
-except AttributeError:
-    pass
-
-
 def pytest_configure(config: Any) -> None:  # noqa
     common_pytest_configure(tracing_service_name="tests_bi_file_uploader")
-
-
-@pytest.fixture(autouse=True)
-def loop(event_loop):
-    """
-    Preventing creation of new loop by `aiohttp.pytest_plugin` loop fixture in favor of pytest-asyncio one
-    And set loop pytest-asyncio created loop as default for thread
-    """
-    asyncio.set_event_loop(event_loop)
-    return event_loop
 
 
 @pytest.fixture(scope="session")
@@ -226,7 +207,7 @@ def bi_file_uploader_app(loop, aiohttp_client, app_settings):
     return loop.run_until_complete(aiohttp_client(app))
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def fu_client(bi_file_uploader_app) -> DLCommonAPIClient:
     async with get_default_aiohttp_session() as session:
         yield DLCommonAPIClient(
@@ -237,20 +218,20 @@ async def fu_client(bi_file_uploader_app) -> DLCommonAPIClient:
         )
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def s3_client(s3_settings) -> AsyncS3Client:
     async with create_s3_client(s3_settings) as client:
         yield client
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def s3_tmp_bucket(s3_client, app_settings) -> str:
     bucket_name = app_settings.S3_TMP_BUCKET_NAME
     await create_s3_bucket(s3_client, bucket_name, max_attempts=1)
     return bucket_name
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def s3_persistent_bucket(s3_client, app_settings) -> str:
     bucket_name = app_settings.S3_PERSISTENT_BUCKET_NAME
     await create_s3_bucket(s3_client, bucket_name, max_attempts=1)
@@ -355,7 +336,7 @@ def root_certificates() -> bytes:
     return get_root_certificates()
 
 
-@pytest.fixture(scope="function", params=["local"], ids=["local_tp"])
+@pytest_asyncio.fixture(scope="function", params=["local"], ids=["local_tp"])
 async def use_local_task_processor(request, monkeypatch, loop, file_uploader_worker_settings, root_certificates):
     task_state = TaskState(BITaskStateImpl())
     async with get_task_processor_client(
@@ -392,7 +373,7 @@ def prepare_us(us_config):
     return us_config
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def default_async_usm_per_test(bi_context, prepare_us, us_config, root_certificates):
     rci = RequestContextInfo.create_empty()
     return AsyncUSManager(
@@ -417,3 +398,9 @@ def reader_app(loop, secure_reader):
 @pytest.fixture(scope="session")
 def ya_docs_oauth_token(env_param_getter):
     return env_param_getter.get_str_value("YA_DOCS_API_KEY")
+
+
+# Imported fixtures
+__all__ = [
+    "aiohttp_client",
+]

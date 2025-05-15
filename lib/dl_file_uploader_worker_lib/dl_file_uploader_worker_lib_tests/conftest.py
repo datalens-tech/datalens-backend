@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import logging
 import os
 import sys
@@ -9,6 +8,7 @@ from typing import TYPE_CHECKING
 import attr
 from clickhouse_driver import connect as connect_ch
 import pytest
+import pytest_asyncio
 import redis.asyncio
 
 from dl_api_commons.base_models import (
@@ -82,23 +82,10 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-pytest_plugins = ("aiohttp.pytest_plugin",)
-
-
 def pytest_configure(config: Any) -> None:  # noqa
     common_pytest_configure(tracing_service_name="tests_bi_file_uploader_worker")
 
     os.environ["EXT_QUERY_EXECUTER_SECRET_KEY"] = "qwerty"
-
-
-@pytest.fixture(autouse=True)
-def loop(event_loop):
-    """
-    Preventing creation of new loop by `aiohttp.pytest_plugin` loop fixture in favor of pytest-asyncio one
-    And set loop pytest-asyncio created loop as default for thread
-    """
-    asyncio.set_event_loop(event_loop)
-    return event_loop
 
 
 @pytest.fixture(scope="function")
@@ -219,7 +206,7 @@ def file_uploader_worker_settings(
     yield settings
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def redis_pool(file_uploader_worker_settings):
     pool = await create_redis_pool(
         create_arq_redis_settings(file_uploader_worker_settings.REDIS_ARQ),
@@ -233,7 +220,7 @@ def task_state():
     return TaskState(BITaskStateImpl())
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def task_processor_arq_worker(
     loop,
     task_state,
@@ -258,7 +245,7 @@ def task_processor_arq_client(loop, task_processor_arq_worker, redis_pool, task_
     return p
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def task_processor_local_client(
     loop,
     task_state,
@@ -286,7 +273,7 @@ def task_processor_client(request, task_processor_arq_client, task_processor_loc
         return task_processor_local_client
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def s3_client(s3_settings) -> AsyncS3Client:
     async with create_s3_client(s3_settings) as client:
         yield client
@@ -312,14 +299,14 @@ def redis_model_manager(redis_cli, rci) -> RedisModelManager:
     return RedisModelManager(redis=redis_cli, rci=rci, crypto_keys_config=get_dummy_crypto_keys_config())
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def s3_tmp_bucket(s3_client, file_uploader_worker_settings) -> str:
     bucket_name = file_uploader_worker_settings.S3_TMP_BUCKET_NAME
     await create_s3_bucket(s3_client, bucket_name, max_attempts=1)
     return bucket_name
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def s3_persistent_bucket(s3_client, file_uploader_worker_settings) -> str:
     bucket_name = file_uploader_worker_settings.S3_PERSISTENT_BUCKET_NAME
     await create_s3_bucket(s3_client, bucket_name, max_attempts=1)
@@ -366,7 +353,7 @@ def default_sync_usm(bi_context, prepare_us, us_config):
     )
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def default_async_usm_per_test(bi_context, prepare_us, us_config, root_certificates):
     rci = RequestContextInfo.create_empty()
     return AsyncUSManager(
@@ -379,7 +366,7 @@ async def default_async_usm_per_test(bi_context, prepare_us, us_config, root_cer
     )
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def chs3_conn(connectors_settings):
     with connect_ch(
         host=get_test_container_hostport("db-clickhouse", original_port=9000).host,
@@ -391,7 +378,7 @@ async def chs3_conn(connectors_settings):
         yield ch_conn
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def read_chs3_file(chs3_conn, connectors_settings):
     def reader(s3_filename):
         c_file = connectors_settings.FILE
