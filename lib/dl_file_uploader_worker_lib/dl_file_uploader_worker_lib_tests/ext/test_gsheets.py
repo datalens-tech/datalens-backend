@@ -288,6 +288,7 @@ async def test_parse_gsheet(
     task_state,
     s3_client,
     redis_model_manager,
+    s3_model_manager,
     s3_tmp_bucket,
     downloaded_gsheet_file_id,
 ):
@@ -311,7 +312,7 @@ async def test_parse_gsheet(
     expected_user_types = [UserDataType.string] * 10
     assert actual_user_types == expected_user_types
 
-    preview = await S3DataSourcePreview.get(manager=redis_model_manager, obj_id=elaborate_source_no_types.preview_id)
+    preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=elaborate_source_no_types.preview_id)
     assert preview.id == elaborate_source_no_types.preview_id
     assert preview.preview_data == [  # No number formats specified => everything is string => no header
         [
