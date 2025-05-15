@@ -36,7 +36,12 @@ def auth_trust_middleware(
     ) -> web.StreamResponse:
         if aiohttp_wrappers.RequiredResourceCommon.SKIP_AUTH in app_request.required_resources:
             # LOGGER.info("Auth was skipped due to SKIP_AUTH flag in target view")
-            pass
+
+            # TODO BI-6257 move tenant resolution into a separate middleware
+            updated_rci = app_request.temp_rci.clone(
+                tenant=TenantCommon() if fake_tenant is None else fake_tenant,
+            )
+            app_request.replace_temp_rci(updated_rci)
         elif app_request.request.headers.get("x-unauthorized"):
             raise web.HTTPUnauthorized()
         else:

@@ -19,7 +19,6 @@ async def test_download_yadocs_task(
     redis_model_manager,
     s3_tmp_bucket,
     reader_app,
-    tenant_id,
 ):
     dfile = DataFile(
         filename="",
@@ -34,7 +33,7 @@ async def test_download_yadocs_task(
         DownloadYaDocsTask(
             file_id=dfile.id,
             authorized=False,
-            tenant_id=tenant_id,
+            tenant_id="common",
         )
     )
     result = await wait_task(task, task_state)

@@ -87,10 +87,10 @@ register_s3_model_storage_schema(SomeModel, SomeModelSchema)
     (False, True),
 )
 @pytest.mark.asyncio
-async def test_s3_model(s3_service: S3Service, persistent: bool, tenant_id) -> None:
+async def test_s3_model(s3_service: S3Service, persistent: bool) -> None:
     s3mm = S3ModelManager(
         s3_service=s3_service,
-        tenant_id=tenant_id,
+        tenant_id="common",
         crypto_keys_config=get_dummy_crypto_keys_config(),
     )
     s3_client = s3_service.get_sync_client()
