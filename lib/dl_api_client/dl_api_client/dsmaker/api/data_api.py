@@ -1,5 +1,6 @@
 from http import HTTPStatus
 import typing
+import urllib.parse
 
 import attr
 
@@ -696,8 +697,11 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
         dataset_id: str,
         raw_body: dict,
         headers: dict | None = None,
+        query_params: dict[str, str] | None = None,
     ) -> ClientResponse:
         url = f"/api/data/{self.api_v}/datasets/{dataset_id}/result"
+        if query_params:
+            url += "?" + urllib.parse.urlencode(query_params)
         return self._request(url, method="post", data=raw_body, headers=headers)
 
     def get_response_for_dataset_value_range(
@@ -770,6 +774,7 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
         ignore_nonexistent_filters: bool | None = None,
         row_count_hard_limit: int | None = None,
         fail_ok: bool = False,
+        query_params: dict[str, str] | None = None,
     ) -> HttpDataApiResponse:
         data = self.serial_adapter.make_req_data_get_result(
             dataset=dataset,
@@ -787,7 +792,7 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             row_count_hard_limit=row_count_hard_limit,
             updates=updates,
         )
-        response = self.get_response_for_dataset_result(dataset_id=dataset.id, raw_body=data)
+        response = self.get_response_for_dataset_result(dataset_id=dataset.id, raw_body=data, query_params=query_params)
         resp_data: dict | None = None
         if not fail_ok:
             assert response.status_code == HTTPStatus.OK, response.json

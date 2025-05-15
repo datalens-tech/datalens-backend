@@ -134,6 +134,10 @@ class DatasetDataBaseView(BaseView):
         assert isinstance(service_registry, ApiServiceRegistry)
         return service_registry
 
+    @property
+    def rev_id(self) -> Optional[str]:
+        return self.request.query.get("rev_id")
+
     @asynccontextmanager  # type: ignore  # TODO: fix
     async def default_query_execution_cm_stack(
         self,
@@ -181,6 +185,10 @@ class DatasetDataBaseView(BaseView):
         if self.dl_request.log_ctx_controller:
             self.dl_request.log_ctx_controller.put_to_context("dataset_id", self.dataset_id)
 
+        params: dict[str, str] | None = None
+        if self.rev_id is not None:
+            params = {"revId": self.rev_id}
+
         if self.dataset_id is None:
             if self.STORED_DATASET_REQUIRED:
                 raise ValueError(f"View {self} requires stored dataset, but no ID found in match info")
@@ -191,7 +199,7 @@ class DatasetDataBaseView(BaseView):
             )
         else:
             try:
-                dataset = await us_manager.get_by_id(self.dataset_id, Dataset)
+                dataset = await us_manager.get_by_id(self.dataset_id, Dataset, params=params)
             except USObjectNotFoundException as e:
                 raise web.HTTPNotFound(reason="Entity not found") from e
 
@@ -288,9 +296,13 @@ class DatasetDataBaseView(BaseView):
     ) -> DatasetUpdateInfo:
         us_manager = self.dl_request.us_manager
 
+        params: dict[str, str] | None = None
+        if self.rev_id is not None:
+            params = {"revId": self.rev_id}
+
         try:
             assert self.dataset_id is not None
-            us_resp = await us_manager.get_by_id_raw(self.dataset_id)
+            us_resp = await us_manager.get_by_id_raw(self.dataset_id, params=params)
         except USObjectNotFoundException as e:
             raise web.HTTPNotFound(reason="Entity not found") from e
 
