@@ -1,7 +1,6 @@
 from marshmallow import fields as ma_fields
 
 from dl_api_connector.api_schema.connection_base import ConnectionMetaMixin
-from dl_api_connector.api_schema.connection_base_fields import secret_string_field
 from dl_api_connector.api_schema.connection_mixins import (
     DataExportForbiddenMixin,
     RawSQLLevelMixin,
@@ -22,15 +21,10 @@ class TrinoConnectionSchema(
 ):
     TARGET_CLS = ConnectionTrino
 
-    password = secret_string_field(
-        attribute="data.password",
-        required=False,
-        allow_none=True,
-    )
     auth_type = ma_fields.Enum(
         TrinoAuthType,
         attribute="data.auth_type",
-        required=True,
+        required=False,
         default=TrinoAuthType.PASSWORD,
         bi_extra=FieldExtra(editable=True),
     )
