@@ -106,4 +106,5 @@ class ConnectionTrino(ConnectionSQL):
                 for table in tables
             )
 
+        print(f"@#~~!~~#@ parameter_combinations: {parameter_combinations}")
         return parameter_combinations
