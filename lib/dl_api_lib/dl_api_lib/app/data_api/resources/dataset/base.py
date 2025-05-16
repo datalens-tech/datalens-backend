@@ -389,7 +389,11 @@ class DatasetDataBaseView(BaseView):
     def try_get_mutation_key_for_dataset(
         dataset_id: Optional[str], revision_id: Optional[str], updates: List[Action]
     ) -> Optional[MutationKey]:
-        if dataset_id is not None and revision_id is not None:
+        # Cheat: replace None revision_id with empty string to allow caching
+        if revision_id is None:
+            revision_id = ""
+
+        if dataset_id is not None:
             if DatasetDataBaseView._updates_only_fields(updates):
                 return UpdateDatasetMutationKey.create(revision_id, updates)  # type: ignore  # 2024-01-30 # TODO: Argument 2 to "create" of "UpdateDatasetMutationKey" has incompatible type "list[Action]"; expected "list[FieldAction]"  [arg-type]
         return None
@@ -443,8 +447,12 @@ class DatasetDataBaseView(BaseView):
     ) -> Optional[Dataset]:
         if mutation_key is None or mutation_cache is None:
             return None
-        if dataset_id is None or revision_id is None:
+        if dataset_id is None:
             return None
+
+        # Cheat: replace None revision_id with empty string to allow caching
+        if revision_id is None:
+            revision_id = ""
 
         cached_dataset = await mutation_cache.get_mutated_entry_from_cache(
             Dataset,
