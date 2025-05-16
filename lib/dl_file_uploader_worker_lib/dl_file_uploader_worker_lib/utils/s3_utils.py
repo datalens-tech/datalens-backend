@@ -35,6 +35,7 @@ from dl_connector_clickhouse.core.clickhouse_base.ch_commons import create_colum
 
 if TYPE_CHECKING:
     from mypy_boto3_s3.client import S3Client as SyncS3Client
+    from types_aiobotocore_s3 import S3Client as AsyncS3Client
 
 
 def make_s3_table_func_sql_source(
@@ -131,3 +132,70 @@ def copy_from_s3_to_s3(
         bucket_name=dst_file.bucket,
     ) as data_sink:
         data_sink.dump_data_stream(data_stream)
+
+
+async def delete_prefix_objects(
+    s3_client: AsyncS3Client,
+    bucket: str,
+    prefix: str,
+) -> None:
+    """Delete every object from bucket by key prefix"""
+
+    paginator = s3_client.get_paginator("list_objects_v2")
+    page_iterator = paginator.paginate(
+        Bucket=bucket,
+        Prefix=prefix,
+    )
+
+    to_delete = []
+    async for page in page_iterator:
+        contents = page.get("Contents")
+        if contents is None:
+            assert page.get("KeyCount") == 0, "S3 returned no expected contents"
+            continue
+
+        for item in contents:
+            s3_key = item.get("Key")
+            if s3_key.startswith(prefix):
+                to_delete.append(dict(Key=s3_key))
+
+                if len(to_delete) >= 1000:
+                    await s3_client.delete_objects(
+                        Bucket=bucket,
+                        Delete=dict(Objects=to_delete),
+                    )
+                    to_delete.clear()
+
+        if len(to_delete):
+            await s3_client.delete_objects(
+                Bucket=bucket,
+                Delete=dict(Objects=to_delete),
+            )
+
+
+async def list_prefix_objects(
+    s3_client: AsyncS3Client,
+    bucket: str,
+    prefix: str,
+) -> list[str]:
+    """Delete every object from bucket by key prefix"""
+
+    paginator = s3_client.get_paginator("list_objects_v2")
+    page_iterator = paginator.paginate(
+        Bucket=bucket,
+        Prefix=prefix,
+    )
+
+    keys = []
+    async for page in page_iterator:
+        contents = page.get("Contents")
+        if contents is None:
+            assert page.get("KeyCount") == 0, "S3 returned no expected contents"
+            continue
+
+        for item in contents:
+            s3_key = item.get("Key")
+            if s3_key.startswith(prefix):
+                keys.append(s3_key)
+
+    return keys

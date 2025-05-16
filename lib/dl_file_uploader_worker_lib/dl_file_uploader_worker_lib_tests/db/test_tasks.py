@@ -10,6 +10,7 @@ from botocore.exceptions import ClientError
 import pytest
 import pytest_asyncio
 
+from dl_configs.crypto_keys import get_dummy_crypto_keys_config
 from dl_constants.enums import (
     FileProcessingStatus,
     UserDataType,
@@ -20,11 +21,13 @@ from dl_file_uploader_lib.enums import (
     FileType,
     RenameTenantStatus,
 )
-from dl_file_uploader_lib.redis_model.base import RedisModelNotFound
 from dl_file_uploader_lib.redis_model.models import (
     DataFile,
-    PreviewSet,
     RenameTenantStatusModel,
+)
+from dl_file_uploader_lib.s3_model.base import (
+    S3ModelManager,
+    S3ModelNotFound,
 )
 from dl_file_uploader_lib.s3_model.models import S3DataSourcePreview
 from dl_file_uploader_lib.testing.data_gen import generate_sample_csv_data_str
@@ -649,27 +652,41 @@ async def test_cleanup_tenant_file_previews_task(
     task_processor_client,
     task_state,
     s3_client,
-    s3_model_manager,
+    s3_service,
     s3_persistent_bucket,
 ):
-    rmm = redis_model_manager
-
     tenant_id = str(uuid.uuid4())[:20]
-    preview_set = PreviewSet(redis=rmm._redis, id=tenant_id)
+
+    s3_model_manager = S3ModelManager(
+        s3_service=s3_service,
+        tenant_id=tenant_id,
+        crypto_keys_config=get_dummy_crypto_keys_config(),
+    )
+
     n_previews = 5
+    preview_ids = []
+
+    # Generate tmp previews
     for _ in range(n_previews):
         preview = S3DataSourcePreview(manager=s3_model_manager, preview_data=[])
-        await preview.save()
-        await preview_set.add(preview.id)
+        await preview.save(persistent=False)
 
-    # just making sure the previews are there and saving their ids
-    set_size = await preview_set.size()
-    assert set_size == n_previews
-    preview_ids = []
-    async for preview_id in preview_set.sscan_iter():
-        preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=preview_id)
         preview_ids.append(preview.id)
 
+    # Ensure existing
+    for preview_id in preview_ids:
+        preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=preview_id)
+        assert preview
+        assert preview.id == preview_id
+
+    # Generate persistent previews
+    for _ in range(n_previews):
+        preview = S3DataSourcePreview(manager=s3_model_manager, preview_data=[])
+        await preview.save(persistent=True)
+
+        preview_ids.append(preview.id)
+
+    # Delete previews action
     task = await task_processor_client.schedule(
         CleanupTenantFilePreviewsTask(
             tenant_id=tenant_id,
@@ -678,11 +695,8 @@ async def test_cleanup_tenant_file_previews_task(
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
-    set_size = await preview_set.size()
-    assert set_size == 0
-
     for preview_id in preview_ids:
-        with pytest.raises(RedisModelNotFound):
+        with pytest.raises(S3ModelNotFound):
             await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=preview_id)
 
 
@@ -752,9 +766,6 @@ async def test_rename_tenant_files(
         Bucket=s3_persistent_bucket, Key=conn.get_full_s3_filename(source.s3_filename_suffix)
     )
     s3_data = await s3_obj["Body"].read()
-    preview_set = PreviewSet(redis=redis_model_manager._redis, id=conn.raw_tenant_id)
-    ps_vals = {_ async for _ in preview_set.sscan_iter()}
-    assert len(ps_vals) >= 1
 
     new_tenant_id = str(uuid.uuid4())
     task = await task_processor_client.schedule(
@@ -777,8 +788,3 @@ async def test_rename_tenant_files(
 
     status_obj = await RenameTenantStatusModel.get(manager=redis_model_manager, obj_id=new_tenant_id)
     assert status_obj.status == RenameTenantStatus.success
-
-    new_preview_set = PreviewSet(redis=redis_model_manager._redis, id=new_tenant_id)
-    nps_vals = {_ async for _ in new_preview_set.sscan_iter()}
-    assert nps_vals >= ps_vals
-    assert await preview_set.size() == 0

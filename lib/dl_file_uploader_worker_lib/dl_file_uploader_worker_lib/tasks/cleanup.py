@@ -32,6 +32,7 @@ from dl_file_uploader_lib.s3_model.models import S3DataSourcePreview
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
 from dl_file_uploader_worker_lib.tasks.save import make_source_s3_filename_suffix
+import dl_file_uploader_worker_lib.utils.s3_utils as s3_utils
 from dl_task_processor.task import (
     BaseExecutorTask,
     Retry,
@@ -201,6 +202,8 @@ class CleanupTenantFilePreviewsTask(
                 crypto_keys_config=self._ctx.crypto_keys_config,
                 tenant_id=tenant_id,
             )
+
+            # Delete everything from legacy preview storage (redis-based)
             preview_set = PreviewSet(redis=redis, id=tenant_id)
             async for preview_id in preview_set.sscan_iter():
                 try:
@@ -221,6 +224,24 @@ class CleanupTenantFilePreviewsTask(
                         LOGGER.info(f"Successfully deleted preview id={preview_id} for tenant {tenant_id}")
                     except RedisModelNotFound:
                         LOGGER.info(f"Preview id={preview_id} not found for tenant {tenant_id}")
+
+            # Delete previews from S3 storage
+            s3_service = self._ctx.s3_service
+            s3_client = s3_service.get_client()
+
+            # tmp
+            await s3_utils.delete_prefix_objects(
+                s3_client=s3_client,
+                bucket=s3_service.tmp_bucket_name,
+                prefix=S3DataSourcePreview.generate_key_prefix(manager=s3mm),
+            )
+
+            # persistent
+            await s3_utils.delete_prefix_objects(
+                s3_client=s3_client,
+                bucket=s3_service.persistent_bucket_name,
+                prefix=S3DataSourcePreview.generate_key_prefix(manager=s3mm),
+            )
 
             LOGGER.info(f"Done with previews for tenant {tenant_id}, going to delete Redis Set {preview_set.key}")
             await preview_set.delete()
