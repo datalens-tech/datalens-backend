@@ -186,8 +186,8 @@ class BaseCHYTTableListDataSource(BaseCHYTTableFuncDataSource, abc.ABC):
     def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
         if not self.spec.table_names:
             raise exc.TableNameNotConfiguredError
-        table_names = [self._render_dataset_parameter_values(table_name) for table_name in self.spec.table_names]
-        table_names = self.normalize_tables_paths(self.spec.table_names)
+        raw_table_names = self._render_dataset_parameter_values(self.spec.table_names)
+        table_names = self.normalize_tables_paths(raw_table_names)
         return CHYTTablesConcat(*table_names, alias=alias)
 
     @property

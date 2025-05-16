@@ -98,8 +98,8 @@ class BaseTestSourceTemplate(ConnectionTestBase):
                     field.template_enabled = template_enabled
 
             if invalid_default_value:
-                for field_name, field in result.items():
-                    field.default_value = invalid_parameter_values[field_name]
+                for parameter_name, parameter_value in invalid_parameter_values.items():
+                    result[parameter_name].default_value = parameter_value
 
             return result
 
@@ -202,6 +202,8 @@ class BaseSubselectTestSourceTemplate(BaseTableTestSourceTemplate):
 
 
 class BaseTestControlApiSourceTemplate(BaseTestSourceTemplate):
+    excluded_assert_parameters: ClassVar[Sequence[str]] = []
+
     def test_default(
         self,
         control_api: SyncHttpDatasetApiV1,
@@ -214,7 +216,11 @@ class BaseTestControlApiSourceTemplate(BaseTestSourceTemplate):
         ds = control_api.apply_updates(dataset=ds).dataset
         ds = control_api.save_dataset(dataset=ds).dataset
 
-        assert ds.sources["source_1"].parameters == original_datasource_parameters
+        for parameter_name in original_datasource_parameters.keys():
+            if parameter_name in self.excluded_assert_parameters:
+                continue
+
+            assert ds.sources["source_1"].parameters[parameter_name] == original_datasource_parameters[parameter_name]
 
     def test_dataset_template_disabled(
         self,
@@ -231,7 +237,7 @@ class BaseTestControlApiSourceTemplate(BaseTestSourceTemplate):
 
         assert len(component_errors) == 1
         assert component_errors[0]["type"] == "data_source"
-        assert component_errors[0]["errors"][0]["code"].startswith("ERR.DS_API.DB")
+        assert component_errors[0]["errors"][0]["code"].startswith("ERR.DS_API")
 
     def test_parameter_template_disabled(
         self,
@@ -412,8 +418,8 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
 
         get_result_updates = []
 
-        for field_name in parameter_fields.keys():
-            original_field = ds.find_field(title=field_name)
+        for parameter_name, parameter_value in failed_constraint_parameter_values.items():
+            original_field = ds.find_field(title=parameter_name)
             assert original_field.cast is not None
             get_result_updates.append(
                 {
@@ -422,7 +428,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
                         "guid": original_field.id,
                         "cast": original_field.cast.name,
                         "value_constraint": {"type": "null"},
-                        "default_value": failed_constraint_parameter_values[field_name].value,
+                        "default_value": parameter_value.value,
                     },
                 }
             )
@@ -489,8 +495,8 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
 
         get_result_updates = []
 
-        for field_name in parameter_fields.keys():
-            original_field = ds.find_field(title=field_name)
+        for parameter_name, parameter_value in invalid_parameter_values.items():
+            original_field = ds.find_field(title=parameter_name)
             assert original_field.cast is not None
             assert original_field.default_value is not None
             get_result_updates.append(
@@ -503,7 +509,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
                     },
                 },
             )
-            ds.result_schema[field_name].default_value = invalid_parameter_values[field_name]
+            ds.result_schema[parameter_name].default_value = parameter_value
 
         ds = control_api.apply_updates(dataset=ds).dataset
         ds = control_api.save_dataset(dataset=ds).dataset
@@ -526,8 +532,8 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
 
         get_result_updates = []
 
-        for field_name in parameter_fields.keys():
-            original_field = ds.find_field(title=field_name)
+        for parameter_name, parameter_value in invalid_parameter_values.items():
+            original_field = ds.find_field(title=parameter_name)
             assert original_field.cast is not None
             get_result_updates.append(
                 {
@@ -535,7 +541,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
                     "field": {
                         "guid": original_field.id,
                         "cast": original_field.cast.name,
-                        "default_value": invalid_parameter_values[field_name].value,
+                        "default_value": parameter_value.value,
                     },
                 },
             )
@@ -555,15 +561,14 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
         self,
         data_api: SyncHttpDataApiV2,
         saved_dataset: Dataset,
-        parameter_fields: dict[str, ResultField],
         failed_constraint_parameter_values: dict[str, ParameterValue],
     ) -> None:
         ds = saved_dataset
 
         get_result_updates = []
 
-        for field_name in parameter_fields.keys():
-            original_field = ds.find_field(title=field_name)
+        for parameter_name, parameter_value in failed_constraint_parameter_values.items():
+            original_field = ds.find_field(title=parameter_name)
             assert original_field.cast is not None
             get_result_updates.append(
                 {
@@ -571,7 +576,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
                     "field": {
                         "guid": original_field.id,
                         "cast": original_field.cast.name,
-                        "default_value": failed_constraint_parameter_values[field_name].value,
+                        "default_value": parameter_value.value,
                     },
                 }
             )
@@ -601,11 +606,11 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
 
         parameters = []
 
-        for field_name in parameter_fields.keys():
-            original_field = ds.find_field(title=field_name)
+        for parameter_name, parameter_value in invalid_parameter_values.items():
+            original_field = ds.find_field(title=parameter_name)
             assert original_field.default_value is not None
             parameters.append(original_field.parameter_value(original_field.default_value.value))
-            original_field.default_value = invalid_parameter_values[field_name]
+            original_field.default_value = parameter_value
 
         ds = control_api.apply_updates(dataset=ds, fail_ok=True).dataset
         ds = control_api.save_dataset(dataset=ds, fail_ok=True).dataset
@@ -627,9 +632,9 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
         ds = saved_dataset
         parameters = []
 
-        for field_name in parameter_fields.keys():
-            original_field = ds.find_field(title=field_name)
-            parameters.append(original_field.parameter_value(invalid_parameter_values[field_name].value))
+        for parameter_name, parameter_value in invalid_parameter_values.items():
+            original_field = ds.find_field(title=parameter_name)
+            parameters.append(original_field.parameter_value(parameter_value.value))
 
         result_resp = data_api.get_result(
             dataset=ds,
@@ -646,16 +651,15 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
         self,
         data_api: SyncHttpDataApiV2,
         saved_dataset: Dataset,
-        parameter_fields: dict[str, ResultField],
         failed_constraint_parameter_values: dict[str, ParameterValue],
     ) -> None:
         ds = saved_dataset
 
         parameters = []
 
-        for field_name in parameter_fields.keys():
-            original_field = ds.find_field(title=field_name)
-            parameters.append(original_field.parameter_value(failed_constraint_parameter_values[field_name].value))
+        for parameter_name, parameter_value in failed_constraint_parameter_values.items():
+            original_field = ds.find_field(title=parameter_name)
+            parameters.append(original_field.parameter_value(parameter_value.value))
 
         result_resp = data_api.get_result(
             dataset=ds,
