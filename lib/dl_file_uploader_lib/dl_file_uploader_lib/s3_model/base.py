@@ -7,6 +7,7 @@ import logging
 from typing import (
     Any,
     Callable,
+    ClassVar,
     Optional,
     Type,
     TypeVar,
@@ -56,13 +57,22 @@ TS3Model = TypeVar("TS3Model", bound="S3Model")
 
 @attr.s(init=True, kw_only=True)
 class S3Model(SecretContainingMixin, metaclass=abc.ABCMeta):
+    ID_PREFIX: ClassVar[str]
     _manager: Optional[S3ModelManager] = attr.ib(default=None)
 
     id: str = attr.ib(factory=lambda: str(uuid.uuid4()))
 
-    @staticmethod
-    def _generate_key_by_id(manager: S3ModelManager, obj_id: str) -> str:
-        return "_".join((manager._tenant_id, obj_id))
+    @classmethod
+    def generate_key_prefix(cls, manager: S3ModelManager) -> str:
+        assert cls.ID_PREFIX
+
+        return "_".join((manager._tenant_id, cls.ID_PREFIX))
+
+    @classmethod
+    def _generate_key_by_id(cls, manager: S3ModelManager, obj_id: str) -> str:
+        assert cls.ID_PREFIX
+
+        return "_".join((manager._tenant_id, cls.ID_PREFIX, obj_id))
 
     def generate_key(self) -> str:
         assert self._manager is not None

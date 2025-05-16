@@ -40,6 +40,8 @@ class SomeSubModelWithSecret(SecretContainingMixin):
 
 @attr.s
 class SomeModel(S3Model):
+    ID_PREFIX = "some_prefix"
+
     title: str = attr.ib()
     value: int = attr.ib()
     some_list: list[str] = attr.ib()
