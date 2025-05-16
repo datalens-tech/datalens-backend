@@ -151,6 +151,19 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
             # Apparently, this is the only way to pass something to the dialect's `__init__`.
             **self.get_engine_kwargs(),
         )
+
+        print(f"@#~~!~~#@ engine: {engine}")
+
+        connection = engine.connect()
+        print(f"@#~~!~~#@ conn: {connection}")
+
+        res = connection.execute(sa.text("SELECT 1"))
+        print(f"@#~~!~~#@ res: {res}")
+        print(f"@#~~!~~#@ res: {res.fetchall()}")
+
+        connection.close()
+
+
         engine = engine.execution_options(compiled_cache=None)
         return engine
 
