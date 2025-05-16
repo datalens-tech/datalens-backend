@@ -139,11 +139,6 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
             execution_options = execution_options.copy()
             execution_options.pop("stream_results", None)
 
-        print(f"@#~~!~~#@ connection line: {conn_line}")
-        print(f"@#~~!~~#@ connection args: {self.get_connect_args()}")
-        print(f"@#~~!~~#@ execution options: {execution_options}")
-        print(f"@#~~!~~#@ engine kwargs: {self.get_engine_kwargs()}")
-
         engine = sa.create_engine(
             conn_line,
             connect_args=self.get_connect_args(),
@@ -151,19 +146,6 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
             # Apparently, this is the only way to pass something to the dialect's `__init__`.
             **self.get_engine_kwargs(),
         )
-
-        print(f"@#~~!~~#@ engine: {engine}")
-
-        connection = engine.connect()
-        print(f"@#~~!~~#@ conn: {connection}")
-
-        res = connection.execute(sa.text("SELECT 1"))
-        print(f"@#~~!~~#@ res: {res}")
-        print(f"@#~~!~~#@ res: {res.fetchall()}")
-
-        connection.close()
-
-
         engine = engine.execution_options(compiled_cache=None)
         return engine
 
