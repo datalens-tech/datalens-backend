@@ -421,6 +421,7 @@ async def test_parse_gsheet_with_file_settings(
     task_state,
     s3_client,
     redis_model_manager,
+    s3_model_manager,
     s3_tmp_bucket,
     downloaded_gsheet_file_id,
 ):
@@ -439,7 +440,7 @@ async def test_parse_gsheet_with_file_settings(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    empty_titles_dsrc = await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len)
+    empty_titles_dsrc = await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len, s3_model_manager)
 
     task = await task_processor_client.schedule(
         ParseFileTask(
@@ -452,7 +453,7 @@ async def test_parse_gsheet_with_file_settings(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    empty_titles_dsrc = await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len)
+    empty_titles_dsrc = await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len, s3_model_manager)
 
     task = await task_processor_client.schedule(
         ParseFileTask(
@@ -465,7 +466,7 @@ async def test_parse_gsheet_with_file_settings(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len)
+    await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len, s3_model_manager)
 
 
 @pytest.mark.asyncio
@@ -474,6 +475,7 @@ async def test_parse_gsheet_with_file_settings_reverse(
     task_state,
     s3_client,
     redis_model_manager,
+    s3_model_manager,
     s3_tmp_bucket,
     downloaded_gsheet_file_id,
 ):
@@ -492,7 +494,9 @@ async def test_parse_gsheet_with_file_settings_reverse(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    elaborate_no_number_format_dsrc = await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len)
+    elaborate_no_number_format_dsrc = await assert_parsing_results(
+        file_id, True, rmm, sheet_title, sheet_len, s3_model_manager
+    )
 
     task = await task_processor_client.schedule(
         ParseFileTask(
@@ -505,7 +509,9 @@ async def test_parse_gsheet_with_file_settings_reverse(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    elaborate_no_number_format_dsrc = await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len)
+    elaborate_no_number_format_dsrc = await assert_parsing_results(
+        file_id, False, rmm, sheet_title, sheet_len, s3_model_manager
+    )
 
     task = await task_processor_client.schedule(
         ParseFileTask(
@@ -518,7 +524,7 @@ async def test_parse_gsheet_with_file_settings_reverse(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len)
+    await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len, s3_model_manager)
 
 
 @pytest.mark.asyncio
