@@ -139,6 +139,11 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
             execution_options = execution_options.copy()
             execution_options.pop("stream_results", None)
 
+        print(f"@#~~!~~#@ connection line: {conn_line}")
+        print(f"@#~~!~~#@ connection args: {self.get_connect_args()}")
+        print(f"@#~~!~~#@ execution options: {execution_options}")
+        print(f"@#~~!~~#@ engine kwargs: {self.get_engine_kwargs()}")
+
         engine = sa.create_engine(
             conn_line,
             connect_args=self.get_connect_args(),
