@@ -96,7 +96,9 @@ class ConnectionTrino(ConnectionSQL):
     ) -> list[dict]:
         parameter_combinations: list[dict] = []
         for catalog_name in self.get_catalogs(conn_executor_factory=conn_executor_factory):
+            print(f"@#~~!~~#@ catalog {catalog_name}")
             tables = self.get_tables(conn_executor_factory=conn_executor_factory, db_name=catalog_name)
+            print(f"@#~~!~~#@ tables {tables}")
             parameter_combinations.extend(
                 dict(
                     db_name=catalog_name,
@@ -106,4 +108,5 @@ class ConnectionTrino(ConnectionSQL):
                 for table in tables
             )
 
+        print(f"@#~~!~~#@ parameter_combinations: {parameter_combinations}")
         return parameter_combinations
