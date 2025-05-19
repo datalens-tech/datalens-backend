@@ -1,7 +1,7 @@
-import asyncio
 from typing import TYPE_CHECKING
 
 import pytest
+import pytest_asyncio
 import redis.asyncio
 
 from dl_api_commons.base_models import RequestContextInfo
@@ -52,13 +52,7 @@ def redis_cli(redis_app_settings: RedisSettings) -> redis.asyncio.Redis:
     )
 
 
-@pytest.fixture(autouse=True)
-def loop(event_loop: asyncio.AbstractEventLoop) -> asyncio.AbstractEventLoop:
-    asyncio.set_event_loop(event_loop)
-    return event_loop
-
-
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def s3_service() -> S3Service:
     s3_host = get_test_container_hostport("s3-storage", fallback_port=52222).host
     s3_port = get_test_container_hostport("s3-storage", fallback_port=52222).port
