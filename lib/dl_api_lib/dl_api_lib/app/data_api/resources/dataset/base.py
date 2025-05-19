@@ -308,7 +308,7 @@ class DatasetDataBaseView(BaseView):
 
         # TODO: Try using partial deserialization instead of direct dict lookup if possible
         assert us_resp is not None
-        revision_id = us_resp["data"]["revision_id"]
+        revision_id = us_resp["data"].get("revision_id", None)
         permissions = us_resp.get("permissions", None)
         permissions_mode = us_resp.get("permissions_mode", None)
 
