@@ -1,6 +1,7 @@
 import os
 
 import pytest
+import pytest_asyncio
 
 from dl_configs.settings_submodels import (
     GoogleAppSettings,
@@ -10,7 +11,7 @@ from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 from dl_testing.env_params.generic import GenericEnvParamGetter
 
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest_asyncio.fixture(scope="function", autouse=True)
 async def use_local_task_processor_auto(use_local_task_processor):
     yield
 

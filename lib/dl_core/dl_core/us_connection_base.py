@@ -417,24 +417,29 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     def get_import_warnings_list(self, localizer: Localizer) -> list[dict]:
         CODE_PREFIX = "NOTIF.WB_IMPORT.CONN."
-
-        return [
-            dict(
-                message=localizer.translate(Translatable("notif_check-creds")),
-                level=NotificationLevel.info,
-                code=CODE_PREFIX + "CHECK_CREDENTIALS",
+        warnings = []
+        if self.data.get_secret_keys():
+            warnings.append(
+                dict(
+                    message=localizer.translate(Translatable("notif_check-creds")),
+                    level=NotificationLevel.info,
+                    code=CODE_PREFIX + "CHECK_CREDENTIALS",
+                )
             )
-        ]
+        return warnings
 
     def get_export_warnings_list(self, localizer: Localizer) -> list[dict]:
         CODE_PREFIX = "NOTIF.WB_EXPORT.CONN."
-        return [
-            dict(
-                message=localizer.translate(Translatable("notif_check-creds")),
-                level=NotificationLevel.info,
-                code=CODE_PREFIX + "CHECK_CREDENTIALS",
+        warnings = []
+        if self.data.get_secret_keys():
+            warnings.append(
+                dict(
+                    message=localizer.translate(Translatable("notif_check-creds")),
+                    level=NotificationLevel.info,
+                    code=CODE_PREFIX + "CHECK_CREDENTIALS",
+                )
             )
-        ]
+        return warnings
 
     def get_cache_key_part(self) -> LocalKeyRepresentation:
         local_key_rep = LocalKeyRepresentation()

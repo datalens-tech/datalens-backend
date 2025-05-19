@@ -174,10 +174,12 @@ class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=ab
         ds: Dataset,
         data_api: SyncHttpDataApiV2,
         field_names: Iterable[str],
+        query_params: dict | None = None,
     ) -> HttpDataApiResponse:
         data_resp = data_api.get_result(
             dataset=ds,
             fields=[ds.find_field(title=field_name) for field_name in field_names],
+            query_params=query_params,
         )
         assert data_resp.status_code == HTTPStatus.OK, data_resp.response_errors
         return data_resp

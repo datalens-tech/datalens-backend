@@ -12,6 +12,7 @@ from marshmallow import (
 from dl_api_connector.api_schema.component_errors import ComponentErrorListSchema
 from dl_api_connector.api_schema.connection_base import ConnectionSchema
 from dl_api_connector.api_schema.extras import FieldExtra
+from dl_constants.enums import ExportMode
 from dl_constants.exc import (
     DEFAULT_ERR_CODE_API_PREFIX,
     GLOBAL_ERR_PREFIX,
@@ -55,6 +56,9 @@ class BaseFileS3ConnectionSchema(ConnectionSchema):
     @post_dump(pass_original=True)
     def load_preview(self, data: dict[str, Any], conn: BaseFileS3Connection, **kwargs: Any) -> dict[str, Any]:
         # TODO: read preview data from s3 if status == FileProcessingStatus.ready ???
+
+        if isinstance(self.operations_mode, ExportMode):
+            return data
 
         usm = USManagerFlaskMiddleware.get_request_service_us_manager()
         service_registry = usm.get_services_registry()

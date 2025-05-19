@@ -2,17 +2,10 @@ from __future__ import annotations
 
 import os
 
-import aiohttp.pytest_plugin
-import aiohttp.test_utils
+from aiohttp.pytest_plugin import aiohttp_client
 import pytest
 
 from dl_file_secure_reader_lib.app import create_app
-
-
-try:
-    del aiohttp.pytest_plugin.loop
-except AttributeError:
-    pass
 
 
 @pytest.fixture
@@ -29,3 +22,9 @@ def excel_data():
 
     with open(path, "rb") as fd:
         return fd.read()
+
+
+# Imported fixtures
+__all__ = [
+    "aiohttp_client",
+]

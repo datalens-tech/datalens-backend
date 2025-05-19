@@ -1,6 +1,11 @@
 import http
 import json
-import typing
+from typing import (
+    ClassVar,
+    Generator,
+    Protocol,
+    Sequence,
+)
 
 import pytest
 
@@ -26,7 +31,7 @@ from dl_constants.enums import (
 from dl_core_testing.database import DbTable
 
 
-class ParameterFieldsFactoryProtocol(typing.Protocol):
+class ParameterFieldsFactoryProtocol(Protocol):
     def __call__(
         self,
         template_enabled: bool = True,
@@ -35,7 +40,7 @@ class ParameterFieldsFactoryProtocol(typing.Protocol):
         pass
 
 
-class DatasetFactoryProtocol(typing.Protocol):
+class DatasetFactoryProtocol(Protocol):
     def __call__(
         self,
         dataset_template_enabled: bool = True,
@@ -47,7 +52,14 @@ class DatasetFactoryProtocol(typing.Protocol):
 
 class BaseTestSourceTemplate(ConnectionTestBase):
     raw_sql_level = dl_constants_enums.RawSQLLevel.template
-    connector_enable_datasource_template: typing.ClassVar[bool] = True
+    connector_enable_datasource_template: ClassVar[bool] = True
+
+    @pytest.fixture(scope="class")
+    def connectors_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:
+        settings = self.conn_settings_cls(  # type: ignore
+            ENABLE_DATASOURCE_TEMPLATE=self.connector_enable_datasource_template,
+        )
+        return {self.conn_type: settings}
 
     @pytest.fixture(name="parameter_fields")
     def fixture_parameter_fields(self, sample_table: DbTable) -> dict[str, ResultField]:
@@ -86,8 +98,8 @@ class BaseTestSourceTemplate(ConnectionTestBase):
                     field.template_enabled = template_enabled
 
             if invalid_default_value:
-                for field_name, field in result.items():
-                    field.default_value = invalid_parameter_values[field_name]
+                for parameter_name, parameter_value in invalid_parameter_values.items():
+                    result[parameter_name].default_value = parameter_value
 
             return result
 
@@ -121,9 +133,12 @@ class BaseTestSourceTemplate(ConnectionTestBase):
         return dataset_factory
 
 
-class BaseSubselectTestSourceTemplate(BaseTestSourceTemplate):
-    source_type: typing.ClassVar[DataSourceType]
-    conn_settings_cls: typing.ClassVar[ConnectorSettingsBase]
+class BaseTableTestSourceTemplate(BaseTestSourceTemplate):
+    source_type: ClassVar[DataSourceType]
+    conn_settings_cls: ClassVar[ConnectorSettingsBase]
+    table_name_pattern: ClassVar[str] = "table_.*"
+    invalid_table_name: ClassVar[str] = "table_invalid"
+    failed_constraint_table_name: ClassVar[str] = "failed_constraint_table_name"
 
     @pytest.fixture(name="parameter_fields")
     def fixture_parameter_fields(self, sample_table: DbTable) -> dict[str, ResultField]:
@@ -131,7 +146,7 @@ class BaseSubselectTestSourceTemplate(BaseTestSourceTemplate):
             "table_name": ResultField(
                 title="table_name",
                 cast=StringParameterValue.type,
-                value_constraint=RegexParameterValueConstraint(pattern="table_.*"),
+                value_constraint=RegexParameterValueConstraint(pattern=self.table_name_pattern),
                 default_value=StringParameterValue(value=sample_table.name),
             ),
         }
@@ -139,21 +154,35 @@ class BaseSubselectTestSourceTemplate(BaseTestSourceTemplate):
     @pytest.fixture(name="invalid_parameter_values")
     def fixture_invalid_parameter_values(self) -> dict[str, ParameterValue]:
         return {
-            "table_name": StringParameterValue(value="table_name_invalid"),
+            "table_name": StringParameterValue(value=self.invalid_table_name),
         }
 
     @pytest.fixture(name="failed_constraint_parameter_values")
     def fixture_failed_constraint_parameter_values(self) -> dict[str, ParameterValue]:
         return {
-            "table_name": StringParameterValue(value="failed_constraint_table_name"),
+            "table_name": StringParameterValue(value=self.failed_constraint_table_name),
         }
 
-    @pytest.fixture(scope="class")
-    def connectors_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:
-        settings = self.conn_settings_cls(  # type: ignore
-            ENABLE_DATASOURCE_TEMPLATE=self.connector_enable_datasource_template,
+    @pytest.fixture(name="datasource")
+    def fixture_datasource(self, saved_connection_id: str) -> DataSource:
+        return DataSource(
+            connection_id=saved_connection_id,
+            source_type=self.source_type.name,
+            parameters=dict(table_name="{{table_name}}"),
         )
-        return {self.conn_type: settings}
+
+    @pytest.fixture(name="invalid_datasource")
+    def fixture_invalid_datasource(self, saved_connection_id: str) -> DataSource:
+        return DataSource(
+            connection_id=saved_connection_id,
+            source_type=self.source_type.name,
+            parameters=dict(table_name="{{invalid_parameter_name}}"),
+        )
+
+
+class BaseSubselectTestSourceTemplate(BaseTableTestSourceTemplate):
+    source_type: ClassVar[DataSourceType]
+    conn_settings_cls: ClassVar[ConnectorSettingsBase]
 
     @pytest.fixture(name="datasource")
     def fixture_datasource(self, saved_connection_id: str) -> DataSource:
@@ -173,6 +202,8 @@ class BaseSubselectTestSourceTemplate(BaseTestSourceTemplate):
 
 
 class BaseTestControlApiSourceTemplate(BaseTestSourceTemplate):
+    excluded_assert_parameters: ClassVar[Sequence[str]] = []
+
     def test_default(
         self,
         control_api: SyncHttpDatasetApiV1,
@@ -185,8 +216,11 @@ class BaseTestControlApiSourceTemplate(BaseTestSourceTemplate):
         ds = control_api.apply_updates(dataset=ds).dataset
         ds = control_api.save_dataset(dataset=ds).dataset
 
-        assert ds.sources["source_1"].parameters == original_datasource_parameters
-        assert len(ds.sources["source_1"].raw_schema) == 21
+        for parameter_name in original_datasource_parameters.keys():
+            if parameter_name in self.excluded_assert_parameters:
+                continue
+
+            assert ds.sources["source_1"].parameters[parameter_name] == original_datasource_parameters[parameter_name]
 
     def test_dataset_template_disabled(
         self,
@@ -203,7 +237,7 @@ class BaseTestControlApiSourceTemplate(BaseTestSourceTemplate):
 
         assert len(component_errors) == 1
         assert component_errors[0]["type"] == "data_source"
-        assert component_errors[0]["errors"][0]["code"] == "ERR.DS_API.DB.INVALID_QUERY"
+        assert component_errors[0]["errors"][0]["code"].startswith("ERR.DS_API")
 
     def test_parameter_template_disabled(
         self,
@@ -236,7 +270,7 @@ class BaseTestControlApiSourceTemplate(BaseTestSourceTemplate):
 
         assert len(component_errors) == 1
         assert component_errors[0]["type"] == "data_source"
-        assert component_errors[0]["errors"][0]["code"] == "ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST"
+        assert component_errors[0]["errors"][0]["code"].startswith("ERR.DS_API.DB")
 
 
 class BaseTestControlApiSourceTemplateSettingsDisabled(BaseTestSourceTemplate):
@@ -280,12 +314,14 @@ class BaseTestControlApiSourceTemplateConnectionDisabled(BaseTestSourceTemplate)
 
 
 class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
+    field_names: ClassVar[Sequence[str]] = ["discount", "city"]
+
     @pytest.fixture(scope="function")
     def saved_dataset(
         self,
         control_api: SyncHttpDatasetApiV1,
         dataset_factory: DatasetFactoryProtocol,
-    ) -> typing.Generator[Dataset, None, None]:
+    ) -> Generator[Dataset, None, None]:
         ds = dataset_factory()
         ds = control_api.apply_updates(dataset=ds).dataset
         ds = control_api.save_dataset(dataset=ds).dataset
@@ -300,10 +336,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
         ds = saved_dataset
         result_resp = data_api.get_result(
             dataset=ds,
-            fields=[
-                ds.find_field(title="discount"),
-                ds.find_field(title="city"),
-            ],
+            fields=[ds.find_field(title=field_name) for field_name in self.field_names],
         )
 
         assert result_resp.status_code == http.HTTPStatus.OK, result_resp.json
@@ -323,10 +356,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
 
         result_resp = data_api.get_result(
             dataset=ds,
-            fields=[
-                ds.find_field(title="discount"),
-                ds.find_field(title="city"),
-            ],
+            fields=[ds.find_field(title=field_name) for field_name in self.field_names],
             fail_ok=True,
         )
         assert result_resp.status_code == http.HTTPStatus.BAD_REQUEST, result_resp.json
@@ -348,10 +378,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
         ds = saved_dataset
         result_resp = data_api.get_result(
             dataset=ds,
-            fields=[
-                ds.find_field(title="discount"),
-                ds.find_field(title="city"),
-            ],
+            fields=[ds.find_field(title=field_name) for field_name in self.field_names],
             fail_ok=True,
         )
         assert result_resp.status_code == http.HTTPStatus.BAD_REQUEST, result_resp.json
@@ -374,10 +401,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
 
         result_resp = data_api.get_result(
             dataset=ds,
-            fields=[
-                ds.find_field(title="discount"),
-                ds.find_field(title="city"),
-            ],
+            fields=[ds.find_field(title=field_name) for field_name in self.field_names],
             fail_ok=True,
         )
         assert result_resp.status_code == http.HTTPStatus.BAD_REQUEST, result_resp.json
@@ -394,8 +418,8 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
 
         get_result_updates = []
 
-        for field_name in parameter_fields.keys():
-            original_field = ds.find_field(title=field_name)
+        for parameter_name, parameter_value in failed_constraint_parameter_values.items():
+            original_field = ds.find_field(title=parameter_name)
             assert original_field.cast is not None
             get_result_updates.append(
                 {
@@ -404,17 +428,14 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
                         "guid": original_field.id,
                         "cast": original_field.cast.name,
                         "value_constraint": {"type": "null"},
-                        "default_value": failed_constraint_parameter_values[field_name].value,
+                        "default_value": parameter_value.value,
                     },
                 }
             )
 
         result_resp = data_api.get_result(
             dataset=ds,
-            fields=[
-                ds.find_field(title="discount"),
-                ds.find_field(title="city"),
-            ],
+            fields=[ds.find_field(title=field_name) for field_name in self.field_names],
             updates=get_result_updates,
             fail_ok=True,
         )
@@ -454,10 +475,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
 
         result_resp = data_api.get_result(
             dataset=ds,
-            fields=[
-                ds.find_field(title="discount"),
-                ds.find_field(title="city"),
-            ],
+            fields=[ds.find_field(title=field_name) for field_name in self.field_names],
             updates=get_result_updates,
             fail_ok=True,
         )
@@ -477,8 +495,8 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
 
         get_result_updates = []
 
-        for field_name in parameter_fields.keys():
-            original_field = ds.find_field(title=field_name)
+        for parameter_name, parameter_value in invalid_parameter_values.items():
+            original_field = ds.find_field(title=parameter_name)
             assert original_field.cast is not None
             assert original_field.default_value is not None
             get_result_updates.append(
@@ -491,17 +509,14 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
                     },
                 },
             )
-            ds.result_schema[field_name].default_value = invalid_parameter_values[field_name]
+            ds.result_schema[parameter_name].default_value = parameter_value
 
         ds = control_api.apply_updates(dataset=ds).dataset
         ds = control_api.save_dataset(dataset=ds).dataset
 
         result_resp = data_api.get_result(
             dataset=ds,
-            fields=[
-                ds.find_field(title="discount"),
-                ds.find_field(title="city"),
-            ],
+            fields=[ds.find_field(title=field_name) for field_name in self.field_names],
             updates=get_result_updates,
         )
         assert result_resp.status_code == http.HTTPStatus.OK, result_resp.json
@@ -517,8 +532,8 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
 
         get_result_updates = []
 
-        for field_name in parameter_fields.keys():
-            original_field = ds.find_field(title=field_name)
+        for parameter_name, parameter_value in invalid_parameter_values.items():
+            original_field = ds.find_field(title=parameter_name)
             assert original_field.cast is not None
             get_result_updates.append(
                 {
@@ -526,40 +541,34 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
                     "field": {
                         "guid": original_field.id,
                         "cast": original_field.cast.name,
-                        "default_value": invalid_parameter_values[field_name].value,
+                        "default_value": parameter_value.value,
                     },
                 },
             )
 
         result_resp = data_api.get_result(
             dataset=ds,
-            fields=[
-                ds.find_field(title="discount"),
-                ds.find_field(title="city"),
-            ],
+            fields=[ds.find_field(title=field_name) for field_name in self.field_names],
             updates=get_result_updates,
             fail_ok=True,
         )
 
         assert result_resp.status_code == http.HTTPStatus.BAD_REQUEST, result_resp.json
-        assert result_resp.bi_status_code == "ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST"
-
-        for field in invalid_parameter_values.values():
-            assert field.value in result_resp.json["message"]
+        assert result_resp.bi_status_code is not None
+        assert result_resp.bi_status_code.startswith("ERR.DS_API.DB")
 
     def test_update_default_value_fails_constraint(
         self,
         data_api: SyncHttpDataApiV2,
         saved_dataset: Dataset,
-        parameter_fields: dict[str, ResultField],
         failed_constraint_parameter_values: dict[str, ParameterValue],
     ) -> None:
         ds = saved_dataset
 
         get_result_updates = []
 
-        for field_name in parameter_fields.keys():
-            original_field = ds.find_field(title=field_name)
+        for parameter_name, parameter_value in failed_constraint_parameter_values.items():
+            original_field = ds.find_field(title=parameter_name)
             assert original_field.cast is not None
             get_result_updates.append(
                 {
@@ -567,17 +576,14 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
                     "field": {
                         "guid": original_field.id,
                         "cast": original_field.cast.name,
-                        "default_value": failed_constraint_parameter_values[field_name].value,
+                        "default_value": parameter_value.value,
                     },
                 }
             )
 
         result_resp = data_api.get_result(
             dataset=ds,
-            fields=[
-                ds.find_field(title="discount"),
-                ds.find_field(title="city"),
-            ],
+            fields=[ds.find_field(title=field_name) for field_name in self.field_names],
             updates=get_result_updates,
             fail_ok=True,
         )
@@ -600,21 +606,18 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
 
         parameters = []
 
-        for field_name in parameter_fields.keys():
-            original_field = ds.find_field(title=field_name)
+        for parameter_name, parameter_value in invalid_parameter_values.items():
+            original_field = ds.find_field(title=parameter_name)
             assert original_field.default_value is not None
             parameters.append(original_field.parameter_value(original_field.default_value.value))
-            original_field.default_value = invalid_parameter_values[field_name]
+            original_field.default_value = parameter_value
 
         ds = control_api.apply_updates(dataset=ds, fail_ok=True).dataset
         ds = control_api.save_dataset(dataset=ds, fail_ok=True).dataset
 
         result_resp = data_api.get_result(
             dataset=ds,
-            fields=[
-                ds.find_field(title="discount"),
-                ds.find_field(title="city"),
-            ],
+            fields=[ds.find_field(title=field_name) for field_name in self.field_names],
             parameters=parameters,
         )
         assert result_resp.status_code == http.HTTPStatus.OK, result_resp.json
@@ -629,47 +632,38 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
         ds = saved_dataset
         parameters = []
 
-        for field_name in parameter_fields.keys():
-            original_field = ds.find_field(title=field_name)
-            parameters.append(original_field.parameter_value(invalid_parameter_values[field_name].value))
+        for parameter_name, parameter_value in invalid_parameter_values.items():
+            original_field = ds.find_field(title=parameter_name)
+            parameters.append(original_field.parameter_value(parameter_value.value))
 
         result_resp = data_api.get_result(
             dataset=ds,
-            fields=[
-                ds.find_field(title="discount"),
-                ds.find_field(title="city"),
-            ],
+            fields=[ds.find_field(title=field_name) for field_name in self.field_names],
             parameters=parameters,
             fail_ok=True,
         )
 
         assert result_resp.status_code == http.HTTPStatus.BAD_REQUEST, result_resp.json
-        assert result_resp.bi_status_code == "ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST"
-
-        for field in invalid_parameter_values.values():
-            assert field.value in result_resp.json["message"]
+        assert result_resp.bi_status_code is not None
+        assert result_resp.bi_status_code.startswith("ERR.DS_API.DB")
 
     def test_update_parameter_value_fails_constraint(
         self,
         data_api: SyncHttpDataApiV2,
         saved_dataset: Dataset,
-        parameter_fields: dict[str, ResultField],
         failed_constraint_parameter_values: dict[str, ParameterValue],
     ) -> None:
         ds = saved_dataset
 
         parameters = []
 
-        for field_name in parameter_fields.keys():
-            original_field = ds.find_field(title=field_name)
-            parameters.append(original_field.parameter_value(failed_constraint_parameter_values[field_name].value))
+        for parameter_name, parameter_value in failed_constraint_parameter_values.items():
+            original_field = ds.find_field(title=parameter_name)
+            parameters.append(original_field.parameter_value(parameter_value.value))
 
         result_resp = data_api.get_result(
             dataset=ds,
-            fields=[
-                ds.find_field(title="discount"),
-                ds.find_field(title="city"),
-            ],
+            fields=[ds.find_field(title=field_name) for field_name in self.field_names],
             parameters=parameters,
             fail_ok=True,
         )

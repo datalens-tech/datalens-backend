@@ -304,6 +304,13 @@ class TableSQLDataSourceMixin(BaseSQLDataSource):
 
     @property
     def table_name(self) -> str | None:
+        table_name = self.raw_table_name
+        if table_name is not None:
+            table_name = self._render_dataset_parameter_values(table_name)
+        return table_name
+
+    @property
+    def raw_table_name(self) -> str | None:
         assert isinstance(self._spec, TableSQLDataSourceSpec)
         if self._spec.table_name:
             return self._spec.table_name
@@ -314,7 +321,7 @@ class TableSQLDataSourceMixin(BaseSQLDataSource):
     def get_parameters(self) -> dict:
         return dict(
             super().get_parameters(),
-            table_name=self.table_name,
+            table_name=self.raw_table_name,
         )
 
 

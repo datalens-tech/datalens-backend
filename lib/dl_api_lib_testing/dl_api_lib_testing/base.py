@@ -184,7 +184,9 @@ class ApiTestBase(abc.ABC):
 
     @pytest.fixture(scope="function")
     def client(
-        self, control_api_app: Flask, loop: AbstractEventLoop
+        self,
+        control_api_app: Flask,
+        loop: AbstractEventLoop,
     ) -> FlaskClient:  # FIXME: Rename to control_app_client
         class TestClient(FlaskTestClient):
             def get_default_headers(self) -> dict[str, Optional[str]]:

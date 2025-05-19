@@ -11,6 +11,7 @@ from typing import (
 from aiohttp import web
 from aiohttp.test_utils import TestClient
 import pytest
+import pytest_asyncio
 
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from dl_api_commons.aio.middlewares.csrf import (
@@ -44,7 +45,7 @@ class TestingCSRFMiddleware(CSRFMiddleware):
     USER_ID_COOKIES = ("user_id_cookie",)
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def csrf_app_factory(aiohttp_client) -> _AppFactory:
     async def f(authorized: Optional[bool], secrets: tuple[str, ...]) -> TestClient:
         async def non_csrf_handler(request: web.Request):

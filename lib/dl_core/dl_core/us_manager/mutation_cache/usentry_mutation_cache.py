@@ -104,11 +104,16 @@ class USEntryMutationCache:
     async def save_mutation_cache(self, entry: USEntry, mutation_key: MutationKey) -> None:
         assert entry.uuid is not None
         assert entry.scope is not None
-        assert entry.revision_id is not None
+
+        # Cheat: replace None revision_id with empty string to allow caching
+        revision_id = entry.revision_id
+        if revision_id is None:
+            revision_id = ""
+
         key = USEntryMutationCacheKey(
             scope=entry.scope,
             entry_id=entry.uuid,
-            entry_revision_id=entry.revision_id,
+            entry_revision_id=revision_id,
             mutation_key_hash=mutation_key.get_hash(),
         )
         data = self._prepare_cache_data(entry, mutation_key)

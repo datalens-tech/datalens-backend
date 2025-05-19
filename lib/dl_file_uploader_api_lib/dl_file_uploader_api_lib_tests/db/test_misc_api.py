@@ -4,13 +4,14 @@ import time
 import uuid
 
 import pytest
+import pytest_asyncio
 
 from dl_constants.api_constants import DLHeadersCommon
 from dl_file_uploader_api_lib_tests.req_builder import ReqBuilder
 from dl_testing.s3_utils import get_lc_rules_number
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def files_with_tenant_prefixes(s3_persistent_bucket, s3_client) -> list[str]:
     csv_data = """f1,f2,f3,Дата,Дата и время
 qwe,123,45.9,2021-02-04,2021-02-04 12:00:00

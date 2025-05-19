@@ -327,6 +327,14 @@ class BaseFileS3Connection(
                 self.restore_source_params_from_orig(src_id, original_version)
 
         if self.entry_op_mode == ImportMode.create_from_import:
+            # mark all sources as failed so they can be reuploaded by user
+            for src in self.data.sources:
+                self.update_data_source(
+                    src.id,
+                    role=DataSourceRole.origin,
+                    status=FileProcessingStatus.failed,
+                )
+
             # nothing else to do for an imported connection, because original `DataFile`s most certainly don't exist
             return
 

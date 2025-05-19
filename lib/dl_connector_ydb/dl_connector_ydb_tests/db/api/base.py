@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 import pytest
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
@@ -32,6 +34,7 @@ from dl_connector_ydb_tests.db.config import (
 class YDBConnectionTestBase(ConnectionTestBase):
     compeng_enabled = False
     conn_type = CONNECTION_TYPE_YDB
+    raw_sql_level: ClassVar[RawSQLLevel | None] = None
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
@@ -43,7 +46,10 @@ class YDBConnectionTestBase(ConnectionTestBase):
 
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
-        return CONNECTION_PARAMS
+        result = CONNECTION_PARAMS.copy()
+        if self.raw_sql_level is not None:
+            result["raw_sql_level"] = self.raw_sql_level.value
+        return result
 
     @pytest.fixture(scope="class")
     def sample_table(self, db: Db) -> DbTable:

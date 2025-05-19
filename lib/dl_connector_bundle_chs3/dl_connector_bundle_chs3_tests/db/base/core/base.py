@@ -13,6 +13,7 @@ import uuid
 
 import attr
 import pytest
+import pytest_asyncio
 
 from dl_api_commons.base_models import (
     RequestContextInfo,
@@ -130,12 +131,12 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
             root_certificates_data=root_certificates,
         )
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def s3_client(self, s3_settings: S3Settings) -> AsyncS3Client:
         async with create_s3_client(s3_settings) as client:
             yield client
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def s3_bucket(self, s3_client: AsyncS3Client) -> str:
         bucket_name = self.connection_settings.BUCKET
         await create_s3_bucket(s3_client, bucket_name)
@@ -154,7 +155,7 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
         tbl_schema = tbl_schema.replace("()", "")  # String() -> String: type arguments are not needed here
         return tbl_schema
 
-    @pytest.fixture(scope="function")
+    @pytest_asyncio.fixture(scope="function")
     async def sample_s3_file(
         self,
         s3_client: AsyncS3Client,

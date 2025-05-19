@@ -1082,7 +1082,9 @@ class DatasetValidator(DatasetBaseWrapper):
         def get_db_version(exists: bool) -> Optional[str]:
             db_version = None
             if exists:
-                db_version = origin_dsrc.get_db_info(conn_executor_factory=conn_executor_factory_func).version
+                with source_error_ctx():
+                    db_version = origin_dsrc.get_db_info(conn_executor_factory=conn_executor_factory_func).version
+
                 LOGGER.info(f"Got version {db_version} for data source {source_id}")
             return db_version
 
