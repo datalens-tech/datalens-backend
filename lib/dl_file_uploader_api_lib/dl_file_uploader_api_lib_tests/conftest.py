@@ -249,7 +249,7 @@ def redis_cli(redis_app_settings) -> redis.asyncio.Redis:
     )
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def s3_service(s3_settings: S3Settings, s3_tmp_bucket) -> S3Service:
     service = S3Service(
         access_key_id=s3_settings.ACCESS_KEY_ID,

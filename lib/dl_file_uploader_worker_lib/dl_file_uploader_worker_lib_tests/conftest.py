@@ -281,7 +281,7 @@ async def s3_client(s3_settings) -> AsyncS3Client:
         yield client
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def s3_service(s3_settings: S3Settings, s3_tmp_bucket, s3_persistent_bucket) -> S3Service:
     service = S3Service(
         access_key_id=s3_settings.ACCESS_KEY_ID,
