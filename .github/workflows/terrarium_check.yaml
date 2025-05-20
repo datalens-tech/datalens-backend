@@ -11,7 +11,7 @@ on:
 
 jobs:
   pytest:
-    runs-on: [ self-hosted, linux ]
+    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
     container:
       image: "ghcr.io/${{ github.repository_owner }}/docker-mirror/python:3.11.0"
       credentials:
@@ -43,7 +43,7 @@ jobs:
           poetry run pytest .
 
   mypy:
-    runs-on: [ self-hosted, linux ]
+    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
     container:
       image: "ghcr.io/${{ github.repository_owner }}/docker-mirror/python:3.11.0"
       credentials:
