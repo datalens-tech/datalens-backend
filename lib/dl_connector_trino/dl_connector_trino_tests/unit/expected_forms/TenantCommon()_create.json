@@ -50,6 +50,7 @@
                 {
                     "id": "input",
                     "name": "port",
+                    "defaultValue": "8080",
                     "width": "s",
                     "controlProps": {
                         "type": "number"
