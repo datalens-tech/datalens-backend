@@ -11,3 +11,24 @@ msgstr ""
 
 msgid "label_connector-trino"
 msgstr "Trino"
+
+msgid "field_auth-type"
+msgstr ""
+
+msgid "value_auth-type-none"
+msgstr ""
+
+msgid "value_auth-type-password"
+msgstr ""
+
+msgid "value_auth-type-jwt"
+msgstr ""
+
+msgid "field_password"
+msgstr ""
+
+msgid "field_jwt"
+msgstr ""
+
+msgid "label_ssl-ca"
+msgstr ""
