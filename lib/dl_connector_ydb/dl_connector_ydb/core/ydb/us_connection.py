@@ -16,6 +16,7 @@ from dl_core.us_connection_base import (
     ConnectionSettingsMixin,
     DataSourceTemplate,
     make_subselect_datasource_template,
+    make_table_datasource_template,
 )
 from dl_core.utils import secrepr
 from dl_i18n.localizer_base import Localizer
@@ -81,24 +82,14 @@ class YDBConnection(
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
         return [
-            DataSourceTemplate(
-                title="YDB table",
-                tab_title=localizer.translate(Translatable("source_templates-tab_title-table")),
+            make_table_datasource_template(
+                connection_id=self.uuid,  # type: ignore
                 source_type=SOURCE_TYPE_YDB_TABLE,
-                parameters=dict(),
-                form=[
-                    {
-                        "name": "table_name",
-                        "input_type": "text",
-                        "default": "",
-                        "required": True,
-                        "title": localizer.translate(Translatable("source_templates-label-ydb_table")),
-                        "field_doc_key": "YDB_TABLE/table_name",
-                        "template_enabled": self.is_datasource_template_allowed,
-                    },
-                ],
-                group=[],
-                connection_id=self.uuid,  # type: ignore  # TODO: fix
+                localizer=localizer,
+                disabled=not self.is_datasource_template_allowed,
+                form_title=localizer.translate(Translatable("source_templates-label-ydb_table")),
+                field_doc_key="YDB_TABLE/table_name",
+                template_enabled=self.is_datasource_template_allowed,
             ),
             make_subselect_datasource_template(
                 connection_id=self.uuid,  # type: ignore

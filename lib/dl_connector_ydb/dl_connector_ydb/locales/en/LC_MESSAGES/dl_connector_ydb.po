@@ -30,12 +30,9 @@ msgstr "Password"
 msgid "field_oauth_row"
 msgstr "OAuth-token"
 
-msgid "source_templates-tab_title-table"
-msgstr "Table"
-
-msgid "source_templates-label-ydb_table"
-msgstr "YDB table path"
-
 msgid "label_ydb-ssl-enabled-tooltip"
 msgstr ""
 "When the option is enabled, it ensures mandatory use of ssl for connection."
+
+msgid "source_templates-label-ydb_table"
+msgstr "YDB table path"

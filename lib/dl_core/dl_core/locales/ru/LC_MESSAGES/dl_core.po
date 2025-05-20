@@ -9,16 +9,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "notif_check-creds"
-msgstr ""
-"После импорта необходимо изменить и повторно сохранить секретные поля, "
-"например, такие как пароли и токены"
+msgid "source_templates-tab_title-table"
+msgstr "Таблица"
+
+msgid "source_templates-label-table"
+msgstr "Имя Таблицы"
 
 msgid "source_templates-tab_title-sql"
 msgstr "SQL"
 
 msgid "source_templates-label-subquery"
 msgstr "Подзапрос"
+
+msgid "notif_check-creds"
+msgstr ""
+"После импорта необходимо изменить и повторно сохранить секретные поля, "
+"например, такие как пароли и токены"
 
 msgid "notif_rls"
 msgstr ""

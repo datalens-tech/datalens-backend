@@ -24,6 +24,7 @@ from dl_core.us_connection_base import (
     DataSourceTemplate,
     RawSqlLevelConnectionMixin,
     make_subselect_datasource_template,
+    make_table_datasource_template,
 )
 from dl_core.utils import secrepr
 from dl_i18n.localizer_base import Localizer
@@ -105,22 +106,15 @@ class BaseConnectionCHYT(
             parameters={},
         )
         return [
-            DataSourceTemplate(
-                title="YTsaurus table via CHYT",
-                tab_title=localizer.translate(Translatable("source_templates-tab_title-table")),
+            make_table_datasource_template(
+                connection_id=self.uuid,  # type: ignore
                 source_type=self.chyt_table_source_type,
-                form=[
-                    {
-                        "name": "table_name",
-                        "input_type": "text",
-                        "default": "",
-                        "required": True,
-                        "title": localizer.translate(Translatable("source_templates-label-ytsaurus_table")),
-                        "field_doc_key": "YTsaurus/CHYT_TABLE/table_name",
-                        "template_enabled": self.is_datasource_template_allowed,
-                    },
-                ],
-                **common,
+                localizer=localizer,
+                disabled=not self.is_datasource_template_allowed,
+                title="YTsaurus table via CHYT",
+                field_doc_key="YTsaurus/CHYT_TABLE/table_name",
+                template_enabled=self.is_datasource_template_allowed,
+                form_title=localizer.translate(Translatable("source_templates-label-ytsaurus_table")),
             ),
             DataSourceTemplate(
                 title="List of YTsaurus tables via CHYT",
