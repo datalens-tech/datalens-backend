@@ -1,10 +1,16 @@
-from collections.abc import Sequence
+from enum import unique
+
+import attr
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_connector.form_config.models.api_schema import (
     FormActionApiSchema,
     FormApiSchema,
+    FormFieldApiAction,
+    FormFieldApiActionCondition,
     FormFieldApiSchema,
+    FormFieldConditionalApiAction,
+    FormFieldSelector,
     TFieldName,
 )
 from dl_api_connector.form_config.models.base import (
@@ -12,75 +18,205 @@ from dl_api_connector.form_config.models.base import (
     ConnectionFormFactory,
     ConnectionFormMode,
 )
-from dl_api_connector.form_config.models.common import CommonFieldName
+from dl_api_connector.form_config.models.common import (
+    CommonFieldName,
+    FormFieldName,
+)
 import dl_api_connector.form_config.models.rows as C
-from dl_api_connector.form_config.models.rows.base import FormRow
+from dl_api_connector.form_config.models.rows.base import TDisplayConditions
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_constants.enums import RawSQLLevel
+from dl_i18n.localizer_base import Localizer
 
 from dl_connector_trino.api.connection_info import TrinoConnectionInfoProvider
 from dl_connector_trino.api.i18n.localizer import Translatable
+from dl_connector_trino.core.constants import TrinoAuthType
+
+
+@unique
+class TrinoFormFieldName(FormFieldName):
+    auth_type = "auth_type"
+    jwt = "jwt"
+
+
+@attr.s
+class TrinoRowConstructor(RowConstructor):
+    _localizer: Localizer = attr.ib()
+
+    def auth_type_row(self) -> C.CustomizableRow:
+        return C.CustomizableRow(
+            items=[
+                C.LabelRowItem(
+                    text=self._localizer.translate(Translatable("field_auth-type")),
+                ),
+                C.RadioButtonRowItem(
+                    name=TrinoFormFieldName.auth_type,
+                    options=[
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_auth-type-none")),
+                            value=TrinoAuthType.NONE.value,
+                        ),
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_auth-type-password")),
+                            value=TrinoAuthType.PASSWORD.value,
+                        ),
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_auth-type-jwt")),
+                            value=TrinoAuthType.JWT.value,
+                        ),
+                    ],
+                    default_value=TrinoAuthType.PASSWORD.value,
+                ),
+            ]
+        )
+
+    def password_row(
+        self,
+        mode: ConnectionFormMode,
+        display_conditions: TDisplayConditions | None = None,
+    ) -> C.CustomizableRow:
+        display_conditions = {TrinoFormFieldName.auth_type: TrinoAuthType.PASSWORD.value}
+        label_text = self._localizer.translate(Translatable("field_password"))
+        return C.CustomizableRow(
+            items=[
+                C.LabelRowItem(text=label_text, display_conditions=display_conditions),
+                C.InputRowItem(
+                    name=CommonFieldName.password,
+                    width="m",
+                    default_value="" if mode == ConnectionFormMode.create else None,
+                    fake_value="******" if mode == ConnectionFormMode.edit else None,
+                    control_props=C.InputRowItem.Props(type="password"),
+                    display_conditions=display_conditions,
+                ),
+            ]
+        )
+
+    def jwt_row(
+        self,
+        mode: ConnectionFormMode,
+        display_conditions: TDisplayConditions | None = None,
+    ) -> C.CustomizableRow:
+        display_conditions = {TrinoFormFieldName.auth_type: TrinoAuthType.JWT.value}
+        label_text = self._localizer.translate(Translatable("field_jwt"))
+        return C.CustomizableRow(
+            items=[
+                C.LabelRowItem(text=label_text, display_conditions=display_conditions),
+                C.InputRowItem(
+                    name=TrinoFormFieldName.jwt,
+                    width="l",
+                    default_value="" if mode == ConnectionFormMode.create else None,
+                    fake_value="******" if mode == ConnectionFormMode.edit else None,
+                    control_props=C.InputRowItem.Props(multiline=True),
+                    display_conditions=display_conditions,
+                ),
+            ]
+        )
+
+    def cache_ttl_row(self) -> C.CacheTTLRow:
+        return C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec)
+
+    def _ssl_ca_row_base(
+        self,
+        display_conditions: TDisplayConditions,
+    ) -> C.CustomizableRow:
+        _display_conditions = {
+            **display_conditions,
+            CommonFieldName.advanced_settings: "opened",
+        }
+        return C.CustomizableRow(
+            items=[
+                C.LabelRowItem(
+                    text=self._localizer.translate(Translatable("label_ssl-ca")),
+                    display_conditions=_display_conditions,
+                ),
+                C.FileInputRowItem(
+                    name=CommonFieldName.ssl_ca,
+                    display_conditions=_display_conditions,
+                ),
+            ]
+        )
+
+    def password_ssl_ca_row(
+        self,
+    ) -> C.CustomizableRow:
+        return self._ssl_ca_row_base(
+            display_conditions={TrinoFormFieldName.auth_type: TrinoAuthType.PASSWORD.value},
+        )
+
+    def jwt_ssl_ca_row(
+        self,
+    ) -> C.CustomizableRow:
+        return self._ssl_ca_row_base(
+            display_conditions={TrinoFormFieldName.auth_type: TrinoAuthType.JWT.value},
+        )
 
 
 class TrinoConnectionFormFactory(ConnectionFormFactory):
-    DEFAULT_PORT = "8443"
+    # DEFAULT_HTTP_PORT = "8080"
+    # DEFAULT_HTTPS_PORT = "8443"
 
     def _get_implicit_form_fields(self) -> set[TFieldName]:
         return set()
 
-    def _get_host_section(
-        self,
-        rc: RowConstructor,
-        connector_settings: ConnectorSettingsBase | None,
-    ) -> Sequence[FormRow]:
-        return [rc.host_row()]
-
-    def _get_port_section(
-        self,
-        rc: RowConstructor,
-        connector_settings: ConnectorSettingsBase | None,
-    ) -> Sequence[FormRow]:
-        return [rc.port_row(default_value=self.DEFAULT_PORT)]
-
-    def _get_username_section(
-        self,
-        rc: RowConstructor,
-        connector_settings: ConnectorSettingsBase | None,
-    ) -> Sequence[FormRow]:
-        return [rc.username_row()]
-
-    def _get_password_section(
-        self,
-        rc: RowConstructor,
-        connector_settings: ConnectorSettingsBase | None,
-    ) -> Sequence[FormRow]:
-        return [rc.password_row(mode=self.mode)]
-
-    def _get_common_section(
-        self,
-        rc: RowConstructor,
-        connector_settings: ConnectorSettingsBase | None,
-    ) -> Sequence[FormRow]:
-        raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
-
+    def _get_schema_items(self) -> list[FormFieldApiSchema]:
         return [
-            C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-            rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
-            rc.collapse_advanced_settings_row(),
-            C.CustomizableRow(
-                items=[
-                    C.LabelRowItem(
-                        text=self._localizer.translate(Translatable("label_ssl-ca")),
-                        display_conditions={CommonFieldName.advanced_settings: "opened"},
-                    ),
-                    C.FileInputRowItem(
-                        name=CommonFieldName.ssl_ca,
-                        display_conditions={CommonFieldName.advanced_settings: "opened"},
-                    ),
-                ]
+            FormFieldApiSchema(name=TrinoFormFieldName.auth_type, required=True),
+            FormFieldApiSchema(name=CommonFieldName.host, required=True),
+            FormFieldApiSchema(name=CommonFieldName.port, required=True),
+            FormFieldApiSchema(name=CommonFieldName.username, required=True),
+            FormFieldApiSchema(
+                name=CommonFieldName.password,
+                required=self.mode == ConnectionFormMode.create,
+                default_action=FormFieldApiAction.skip,
             ),
-            rc.data_export_forbidden_row(),
+            FormFieldApiSchema(
+                name=TrinoFormFieldName.jwt,
+                required=self.mode == ConnectionFormMode.create,
+                default_action=FormFieldApiAction.skip,
+            ),
+            FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
+            FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
+            FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
+            FormFieldApiSchema(
+                name=CommonFieldName.ssl_ca,
+                required=False,
+                default_action=FormFieldApiAction.include,
+            ),
+        ]
+
+    def _get_schema_conditions(self) -> list[FormFieldApiActionCondition]:
+        return [
+            FormFieldApiActionCondition(
+                when=FormFieldSelector(name=TrinoFormFieldName.auth_type),
+                equals=TrinoAuthType.NONE.value,
+                then=[
+                    FormFieldConditionalApiAction(
+                        selector=FormFieldSelector(name=CommonFieldName.ssl_ca),
+                        action=FormFieldApiAction.skip,
+                    ),
+                ],
+            ),
+            FormFieldApiActionCondition(
+                when=FormFieldSelector(name=TrinoFormFieldName.auth_type),
+                equals=TrinoAuthType.PASSWORD.value,
+                then=[
+                    FormFieldConditionalApiAction(
+                        selector=FormFieldSelector(name=CommonFieldName.password),
+                        action=FormFieldApiAction.include,
+                    ),
+                ],
+            ),
+            FormFieldApiActionCondition(
+                when=FormFieldSelector(name=TrinoFormFieldName.auth_type),
+                equals=TrinoAuthType.JWT.value,
+                then=[
+                    FormFieldConditionalApiAction(
+                        selector=FormFieldSelector(name=TrinoFormFieldName.jwt),
+                        action=FormFieldApiAction.include,
+                    ),
+                ],
+            ),
         ]
 
     def _get_edit_api_schema(
@@ -88,16 +224,8 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
         connector_settings: ConnectorSettingsBase | None,
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
-            items=[
-                FormFieldApiSchema(name=CommonFieldName.host, required=True),
-                FormFieldApiSchema(name=CommonFieldName.port, required=True),
-                FormFieldApiSchema(name=CommonFieldName.username, required=True),
-                FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
-                FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
-                FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
-                FormFieldApiSchema(name=CommonFieldName.ssl_ca),
-                FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
-            ],
+            items=self._get_schema_items(),
+            conditions=self._get_schema_conditions(),
         )
 
     def _get_create_api_schema(
@@ -106,7 +234,10 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
         edit_api_schema: FormActionApiSchema,
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
-            items=[*edit_api_schema.items, *self._get_top_level_create_api_schema_items()],
+            items=[
+                *edit_api_schema.items,
+                *self._get_top_level_create_api_schema_items(),
+            ],
             conditions=edit_api_schema.conditions.copy(),
         )
 
@@ -116,13 +247,10 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
-                FormFieldApiSchema(name=CommonFieldName.host, required=True),
-                FormFieldApiSchema(name=CommonFieldName.port, required=True),
-                FormFieldApiSchema(name=CommonFieldName.username, required=True),
-                FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
-                FormFieldApiSchema(name=CommonFieldName.ssl_ca),
+                *self._get_schema_items(),
                 *self._get_top_level_check_api_schema_items(),
-            ]
+            ],
+            conditions=self._get_schema_conditions(),
         )
 
     def get_form_config(
@@ -130,7 +258,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
         connector_settings: ConnectorSettingsBase | None,
         tenant: TenantDef | None,
     ) -> ConnectionForm:
-        rc = RowConstructor(localizer=self._localizer)
+        rc = TrinoRowConstructor(localizer=self._localizer)
 
         edit_api_schema = self._get_edit_api_schema(connector_settings)
         create_api_schema = self._get_create_api_schema(connector_settings, edit_api_schema)
@@ -140,11 +268,18 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
             title=TrinoConnectionInfoProvider.get_title(self._localizer),
             rows=self._filter_nulls(
                 [
-                    *self._get_host_section(rc, connector_settings),
-                    *self._get_port_section(rc, connector_settings),
-                    *self._get_username_section(rc, connector_settings),
-                    *self._get_password_section(rc, connector_settings),
-                    *self._get_common_section(rc, connector_settings),
+                    rc.auth_type_row(),
+                    rc.host_row(),
+                    rc.port_row(),
+                    rc.username_row(),
+                    rc.password_row(mode=self.mode),
+                    rc.jwt_row(mode=self.mode),
+                    rc.cache_ttl_row(),
+                    rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
+                    rc.collapse_advanced_settings_row(),
+                    rc.password_ssl_ca_row(),
+                    rc.jwt_ssl_ca_row(),
+                    rc.data_export_forbidden_row(),
                 ]
             ),
             api_schema=FormApiSchema(

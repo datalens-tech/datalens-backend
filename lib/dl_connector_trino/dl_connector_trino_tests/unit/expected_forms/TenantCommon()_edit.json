@@ -5,6 +5,33 @@
             "items": [
                 {
                     "id": "label",
+                    "text": "field_auth-type"
+                },
+                {
+                    "id": "radio_button",
+                    "name": "auth_type",
+                    "defaultValue": "password",
+                    "options": [
+                        {
+                            "text": "value_auth-type-none",
+                            "value": "none"
+                        },
+                        {
+                            "text": "value_auth-type-password",
+                            "value": "password"
+                        },
+                        {
+                            "text": "value_auth-type-jwt",
+                            "value": "jwt"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
                     "text": "Hostname"
                 },
                 {
@@ -23,7 +50,6 @@
                 {
                     "id": "input",
                     "name": "port",
-                    "defaultValue": "8443",
                     "width": "s",
                     "controlProps": {
                         "type": "number"
@@ -48,15 +74,45 @@
             "items": [
                 {
                     "id": "label",
-                    "text": "Password"
+                    "displayConditions": {
+                        "auth_type": "password"
+                    },
+                    "text": "field_password"
                 },
                 {
                     "id": "input",
                     "name": "password",
+                    "displayConditions": {
+                        "auth_type": "password"
+                    },
                     "width": "m",
                     "fakeValue": "******",
                     "controlProps": {
                         "type": "password"
+                    }
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "auth_type": "jwt"
+                    },
+                    "text": "field_jwt"
+                },
+                {
+                    "id": "input",
+                    "name": "jwt",
+                    "displayConditions": {
+                        "auth_type": "jwt"
+                    },
+                    "width": "l",
+                    "fakeValue": "******",
+                    "controlProps": {
+                        "multiline": true,
+                        "type": "text"
                     }
                 }
             ]
@@ -112,6 +168,7 @@
                 {
                     "id": "label",
                     "displayConditions": {
+                        "auth_type": "password",
                         "advanced_settings": "opened"
                     },
                     "text": "label_ssl-ca"
@@ -120,6 +177,27 @@
                     "id": "file-input",
                     "name": "ssl_ca",
                     "displayConditions": {
+                        "auth_type": "password",
+                        "advanced_settings": "opened"
+                    }
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "auth_type": "jwt",
+                        "advanced_settings": "opened"
+                    },
+                    "text": "label_ssl-ca"
+                },
+                {
+                    "id": "file-input",
+                    "name": "ssl_ca",
+                    "displayConditions": {
+                        "auth_type": "jwt",
                         "advanced_settings": "opened"
                     }
                 }
@@ -160,6 +238,11 @@
         "edit": {
             "items": [
                 {
+                    "name": "auth_type",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
                     "name": "host",
                     "required": true,
                     "defaultAction": "include"
@@ -177,7 +260,12 @@
                 {
                     "name": "password",
                     "required": false,
-                    "defaultAction": "include"
+                    "defaultAction": "skip"
+                },
+                {
+                    "name": "jwt",
+                    "required": false,
+                    "defaultAction": "skip"
                 },
                 {
                     "name": "cache_ttl_sec",
@@ -191,20 +279,68 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "ssl_ca",
+                    "name": "data_export_forbidden",
                     "required": false,
                     "defaultAction": "include"
                 },
                 {
-                    "name": "data_export_forbidden",
+                    "name": "ssl_ca",
                     "required": false,
                     "defaultAction": "include"
                 }
             ],
-            "conditions": []
+            "conditions": [
+                {
+                    "when": {
+                        "name": "auth_type"
+                    },
+                    "equals": "none",
+                    "then": [
+                        {
+                            "selector": {
+                                "name": "ssl_ca"
+                            },
+                            "action": "skip"
+                        }
+                    ]
+                },
+                {
+                    "when": {
+                        "name": "auth_type"
+                    },
+                    "equals": "password",
+                    "then": [
+                        {
+                            "selector": {
+                                "name": "password"
+                            },
+                            "action": "include"
+                        }
+                    ]
+                },
+                {
+                    "when": {
+                        "name": "auth_type"
+                    },
+                    "equals": "jwt",
+                    "then": [
+                        {
+                            "selector": {
+                                "name": "jwt"
+                            },
+                            "action": "include"
+                        }
+                    ]
+                }
+            ]
         },
         "check": {
             "items": [
+                {
+                    "name": "auth_type",
+                    "required": true,
+                    "defaultAction": "include"
+                },
                 {
                     "name": "host",
                     "required": true,
@@ -223,6 +359,27 @@
                 {
                     "name": "password",
                     "required": false,
+                    "defaultAction": "skip"
+                },
+                {
+                    "name": "jwt",
+                    "required": false,
+                    "defaultAction": "skip"
+                },
+                {
+                    "name": "cache_ttl_sec",
+                    "required": false,
+                    "nullable": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "raw_sql_level",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "data_export_forbidden",
+                    "required": false,
                     "defaultAction": "include"
                 },
                 {
@@ -231,7 +388,50 @@
                     "defaultAction": "include"
                 }
             ],
-            "conditions": []
+            "conditions": [
+                {
+                    "when": {
+                        "name": "auth_type"
+                    },
+                    "equals": "none",
+                    "then": [
+                        {
+                            "selector": {
+                                "name": "ssl_ca"
+                            },
+                            "action": "skip"
+                        }
+                    ]
+                },
+                {
+                    "when": {
+                        "name": "auth_type"
+                    },
+                    "equals": "password",
+                    "then": [
+                        {
+                            "selector": {
+                                "name": "password"
+                            },
+                            "action": "include"
+                        }
+                    ]
+                },
+                {
+                    "when": {
+                        "name": "auth_type"
+                    },
+                    "equals": "jwt",
+                    "then": [
+                        {
+                            "selector": {
+                                "name": "jwt"
+                            },
+                            "action": "include"
+                        }
+                    ]
+                }
+            ]
         }
     }
 }
