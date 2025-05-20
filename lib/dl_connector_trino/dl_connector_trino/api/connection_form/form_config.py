@@ -55,18 +55,18 @@ class TrinoRowConstructor(RowConstructor):
                     options=[
                         C.SelectableOption(
                             text=self._localizer.translate(Translatable("value_auth-type-none")),
-                            value=TrinoAuthType.NONE.value,
+                            value=TrinoAuthType.none.value,
                         ),
                         C.SelectableOption(
                             text=self._localizer.translate(Translatable("value_auth-type-password")),
-                            value=TrinoAuthType.PASSWORD.value,
+                            value=TrinoAuthType.password.value,
                         ),
                         C.SelectableOption(
                             text=self._localizer.translate(Translatable("value_auth-type-jwt")),
-                            value=TrinoAuthType.JWT.value,
+                            value=TrinoAuthType.jwt.value,
                         ),
                     ],
-                    default_value=TrinoAuthType.PASSWORD.value,
+                    default_value=TrinoAuthType.password.value,
                 ),
             ]
         )
@@ -76,7 +76,7 @@ class TrinoRowConstructor(RowConstructor):
         mode: ConnectionFormMode,
         display_conditions: TDisplayConditions | None = None,
     ) -> C.CustomizableRow:
-        display_conditions = {TrinoFormFieldName.auth_type: TrinoAuthType.PASSWORD.value}
+        display_conditions = {TrinoFormFieldName.auth_type: TrinoAuthType.password.value}
         label_text = self._localizer.translate(Translatable("field_password"))
         return C.CustomizableRow(
             items=[
@@ -97,7 +97,7 @@ class TrinoRowConstructor(RowConstructor):
         mode: ConnectionFormMode,
         display_conditions: TDisplayConditions | None = None,
     ) -> C.CustomizableRow:
-        display_conditions = {TrinoFormFieldName.auth_type: TrinoAuthType.JWT.value}
+        display_conditions = {TrinoFormFieldName.auth_type: TrinoAuthType.jwt.value}
         label_text = self._localizer.translate(Translatable("field_jwt"))
         return C.CustomizableRow(
             items=[
@@ -141,14 +141,14 @@ class TrinoRowConstructor(RowConstructor):
         self,
     ) -> C.CustomizableRow:
         return self._ssl_ca_row_base(
-            display_conditions={TrinoFormFieldName.auth_type: TrinoAuthType.PASSWORD.value},
+            display_conditions={TrinoFormFieldName.auth_type: TrinoAuthType.password.value},
         )
 
     def jwt_ssl_ca_row(
         self,
     ) -> C.CustomizableRow:
         return self._ssl_ca_row_base(
-            display_conditions={TrinoFormFieldName.auth_type: TrinoAuthType.JWT.value},
+            display_conditions={TrinoFormFieldName.auth_type: TrinoAuthType.jwt.value},
         )
 
 
@@ -188,7 +188,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
         return [
             FormFieldApiActionCondition(
                 when=FormFieldSelector(name=TrinoFormFieldName.auth_type),
-                equals=TrinoAuthType.NONE.value,
+                equals=TrinoAuthType.none.value,
                 then=[
                     FormFieldConditionalApiAction(
                         selector=FormFieldSelector(name=CommonFieldName.ssl_ca),
@@ -198,7 +198,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
             ),
             FormFieldApiActionCondition(
                 when=FormFieldSelector(name=TrinoFormFieldName.auth_type),
-                equals=TrinoAuthType.PASSWORD.value,
+                equals=TrinoAuthType.password.value,
                 then=[
                     FormFieldConditionalApiAction(
                         selector=FormFieldSelector(name=CommonFieldName.password),
@@ -208,7 +208,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
             ),
             FormFieldApiActionCondition(
                 when=FormFieldSelector(name=TrinoFormFieldName.auth_type),
-                equals=TrinoAuthType.JWT.value,
+                equals=TrinoAuthType.jwt.value,
                 then=[
                     FormFieldConditionalApiAction(
                         selector=FormFieldSelector(name=TrinoFormFieldName.jwt),

@@ -60,7 +60,7 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     @pytest.fixture(scope="class", autouse=True)
     def wait_for_trino(self, connection_creation_params: dict) -> None:
         host, port = connection_creation_params["host"], connection_creation_params["port"]
-        if connection_creation_params["auth_type"] is TrinoAuthType.NONE:
+        if connection_creation_params["auth_type"] is TrinoAuthType.none:
             scheme = "http"
             auth = None
         else:
@@ -126,7 +126,7 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
             host=test_config.CoreConnectionSettings.HOST,
             port=test_config.CoreConnectionSettings.PORT,
             username=test_config.CoreConnectionSettings.USERNAME,
-            auth_type=TrinoAuthType.NONE,
+            auth_type=TrinoAuthType.none,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
 
@@ -191,7 +191,7 @@ class BaseTrinoPasswordTestClass(BaseTrinoSslTestClass):
     @pytest.fixture(scope="session")
     def connection_creation_params(self, ssl_connection_creation_params: dict) -> dict:
         return ssl_connection_creation_params | dict(
-            auth_type=TrinoAuthType.PASSWORD,
+            auth_type=TrinoAuthType.password,
             password=test_config.CorePasswordConnectionSettings.PASSWORD,
         )
 
@@ -218,6 +218,6 @@ class BaseTrinoJwtTestClass(BaseTrinoSslTestClass):
     @pytest.fixture(scope="session")
     def connection_creation_params(self, ssl_connection_creation_params: dict) -> dict:
         return ssl_connection_creation_params | dict(
-            auth_type=TrinoAuthType.JWT,
+            auth_type=TrinoAuthType.jwt,
             jwt=test_config.CoreJwtConnectionSettings.JWT,
         )

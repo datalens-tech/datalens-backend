@@ -18,16 +18,13 @@ SOURCE_TYPE_TRINO_SUBSELECT = DataSourceType.declare("TRINO_SUBSELECT")
 
 @unique
 class TrinoAuthType(Enum):
-    NONE = "none"
-    PASSWORD = "password"
-    OAUTH2 = "oauth2"
-    KERBEROS = "kerberos"
-    CERTIFICATE = "certificate"
-    JWT = "jwt"
-    HEADER = "header"
-
-    def __str__(self) -> str:
-        return self.value
+    none = "none"
+    password = "password"
+    oauth2 = "oauth2"
+    kerberos = "kerberos"
+    certificate = "certificate"
+    jwt = "jwt"
+    header = "header"
 
 
 ADAPTER_SOURCE_NAME = "datalens"
