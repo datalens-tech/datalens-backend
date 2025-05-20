@@ -5,7 +5,7 @@
             "items": [
                 {
                     "id": "label",
-                    "text": "field_auth-type"
+                    "text": "Authentication type"
                 },
                 {
                     "id": "radio_button",
@@ -13,15 +13,15 @@
                     "defaultValue": "password",
                     "options": [
                         {
-                            "text": "value_auth-type-none",
+                            "text": "No auth",
                             "value": "none"
                         },
                         {
-                            "text": "value_auth-type-password",
+                            "text": "Password",
                             "value": "password"
                         },
                         {
-                            "text": "value_auth-type-jwt",
+                            "text": "JWT",
                             "value": "jwt"
                         }
                     ]
@@ -78,7 +78,7 @@
                     "displayConditions": {
                         "auth_type": "password"
                     },
-                    "text": "field_password"
+                    "text": "Password"
                 },
                 {
                     "id": "input",
@@ -101,7 +101,7 @@
                     "displayConditions": {
                         "auth_type": "jwt"
                     },
-                    "text": "field_jwt"
+                    "text": "JWT"
                 },
                 {
                     "id": "input",
@@ -172,7 +172,7 @@
                         "auth_type": "password",
                         "advanced_settings": "opened"
                     },
-                    "text": "label_ssl-ca"
+                    "text": "CA Certificate"
                 },
                 {
                     "id": "file-input",
@@ -192,7 +192,7 @@
                         "auth_type": "jwt",
                         "advanced_settings": "opened"
                     },
-                    "text": "label_ssl-ca"
+                    "text": "CA Certificate"
                 },
                 {
                     "id": "file-input",
