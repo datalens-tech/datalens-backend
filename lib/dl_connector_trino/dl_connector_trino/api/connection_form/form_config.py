@@ -55,7 +55,7 @@ class TrinoRowConstructor(RowConstructor):
                     options=[
                         C.SelectableOption(
                             text=self._localizer.translate(Translatable("value_auth-type-none")),
-                            value=TrinoAuthType.NONE.value,
+                            value=TrinoAuthType.none.value,
                         ),
                         C.SelectableOption(
                             text=self._localizer.translate(Translatable("value_auth-type-password")),
@@ -188,7 +188,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
         return [
             FormFieldApiActionCondition(
                 when=FormFieldSelector(name=TrinoFormFieldName.auth_type),
-                equals=TrinoAuthType.NONE.value,
+                equals=TrinoAuthType.none.value,
                 then=[
                     FormFieldConditionalApiAction(
                         selector=FormFieldSelector(name=CommonFieldName.ssl_ca),

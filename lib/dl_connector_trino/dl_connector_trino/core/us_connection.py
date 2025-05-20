@@ -65,7 +65,7 @@ class ConnectionTrino(ConnectionSQL):
 
     @attr.s(kw_only=True)
     class DataModel(ConnectionSQL.DataModel):
-        auth_type: TrinoAuthType = attr.ib(default=TrinoAuthType.NONE)
+        auth_type: TrinoAuthType = attr.ib(default=TrinoAuthType.none)
         ssl_ca: Optional[str] = attr.ib(repr=secrepr, default=None)
         jwt: Optional[str] = attr.ib(repr=secrepr, default=None)
 

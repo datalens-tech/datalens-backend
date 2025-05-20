@@ -25,7 +25,7 @@ class TestTrinoConnection(
         assert conn.data.host == params["host"]
         assert conn.data.port == params["port"]
         assert conn.data.username == params["username"]
-        assert conn.data.auth_type == TrinoAuthType.NONE
+        assert conn.data.auth_type == TrinoAuthType.none
 
     def check_data_source_templates(
         self,

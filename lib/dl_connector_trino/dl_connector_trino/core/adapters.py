@@ -92,9 +92,9 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         args: dict[str, Any] = {
             **super().get_connect_args(),
             "legacy_primitive_types": True,
-            "http_scheme": "http" if self._target_dto.auth_type is TrinoAuthType.NONE else "https",
+            "http_scheme": "http" if self._target_dto.auth_type is TrinoAuthType.none else "https",
         }
-        if self._target_dto.auth_type is TrinoAuthType.NONE:
+        if self._target_dto.auth_type is TrinoAuthType.none:
             pass
         elif self._target_dto.auth_type is TrinoAuthType.PASSWORD:
             args["auth"] = BasicAuthentication(self._target_dto.username, self._target_dto.password)

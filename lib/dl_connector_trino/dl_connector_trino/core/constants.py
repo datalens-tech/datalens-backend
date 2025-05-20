@@ -18,7 +18,7 @@ SOURCE_TYPE_TRINO_SUBSELECT = DataSourceType.declare("TRINO_SUBSELECT")
 
 @unique
 class TrinoAuthType(Enum):
-    NONE = "none"
+    none = "none"
     PASSWORD = "password"
     OAUTH2 = "oauth2"
     KERBEROS = "kerberos"

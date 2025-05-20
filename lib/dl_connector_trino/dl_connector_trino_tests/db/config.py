@@ -32,7 +32,7 @@ class CoreConnectionSettings(BaseConnectionSettings):
     HOST: ClassVar[str] = get_test_container_hostport("trino-no-auth", fallback_port=21123).host
     PORT: ClassVar[int] = get_test_container_hostport("trino-no-auth", fallback_port=21123).port
     USERNAME: ClassVar[str] = "datalens"
-    AUTH_TYPE: ClassVar[TrinoAuthType] = TrinoAuthType.NONE
+    AUTH_TYPE: ClassVar[TrinoAuthType] = TrinoAuthType.none
 
 
 class CoreSslConnectionSettings(BaseConnectionSettings):

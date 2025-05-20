@@ -16,7 +16,7 @@ class TrinoConnDTO(ConnDTO):
     host: str = attr.ib(kw_only=True)
     port: int = attr.ib(kw_only=True)
     username: str = attr.ib(kw_only=True)
-    auth_type: TrinoAuthType = attr.ib(kw_only=True, default=TrinoAuthType.NONE)
+    auth_type: TrinoAuthType = attr.ib(kw_only=True, default=TrinoAuthType.none)
     password: Optional[str] = attr.ib(repr=False, kw_only=True, default=None)
     jwt: Optional[str] = attr.ib(repr=False, kw_only=True, default=None)
     ssl_ca: Optional[str] = attr.ib(repr=False, kw_only=True, default=None)
