@@ -117,7 +117,7 @@ class AsyncUSManager(USManagerBase):
     @overload
     async def get_by_id(
         self,
-        entry_id: str,
+        entry_id: str | None,
         expected_type: None = None,
         params: Optional[dict[str, str]] = None,
     ) -> USEntry:
@@ -126,7 +126,7 @@ class AsyncUSManager(USManagerBase):
     @overload
     async def get_by_id(
         self,
-        entry_id: str,
+        entry_id: str | None,
         expected_type: Optional[Type[_ENTRY_TV]] = None,
         params: Optional[dict[str, str]] = None,
     ) -> _ENTRY_TV:
@@ -135,7 +135,7 @@ class AsyncUSManager(USManagerBase):
     @generic_profiler_async("us-fetch-entity")  # type: ignore  # TODO: fix
     async def get_by_id(
         self,
-        entry_id: str,
+        entry_id: str | None,
         expected_type: Optional[Type[USEntry]] = None,
         params: Optional[dict[str, str]] = None,
     ) -> USEntry:
@@ -153,7 +153,7 @@ class AsyncUSManager(USManagerBase):
     @generic_profiler_async("us-fetch-entity-raw")  # type: ignore  # TODO: fix
     async def get_by_id_raw(
         self,
-        entry_id: str,
+        entry_id: str | None,
         expected_type: Optional[Type[USEntry]] = None,
         params: Optional[dict[str, str]] = None,
     ) -> dict[str, Any]:
@@ -181,7 +181,9 @@ class AsyncUSManager(USManagerBase):
         return obj
 
     @generic_profiler_async("us-get-migrated-entity")  # type: ignore  # TODO: fix
-    async def get_migrated_entry(self, entry_id: str, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
+    async def get_migrated_entry(self, entry_id: str | None, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
+        if entry_id is None:
+            raise exc.USObjectNotFoundException()
         us_resp = await self._us_client.get_entry(entry_id, params=params)
         return await self._migrate_response(us_resp)
 
@@ -327,6 +329,8 @@ class AsyncUSManager(USManagerBase):
         refs_to_load_queue = self._get_entry_links(
             entry,
         )
+        # always preloading null connection so that it is present as a BrokenLink later
+        refs_to_load_queue.add(DefaultConnectionRef(conn_id=None))
 
         while refs_to_load_queue:
             ref = refs_to_load_queue.pop()

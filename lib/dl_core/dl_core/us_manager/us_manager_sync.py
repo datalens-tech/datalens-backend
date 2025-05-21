@@ -181,7 +181,7 @@ class SyncUSManager(USManagerBase):
     @overload
     def get_by_id(
         self,
-        entry_id: str,
+        entry_id: str | None,
         expected_type: Optional[Type[_ENTRY_TV]] = None,
         params: Optional[dict[str, str]] = None,
     ) -> _ENTRY_TV:
@@ -190,7 +190,7 @@ class SyncUSManager(USManagerBase):
     @generic_profiler("us-fetch-entity")
     def get_by_id(
         self,
-        entry_id: str,
+        entry_id: str | None,
         expected_type: Optional[Type[USEntry]] = None,
         params: Optional[dict[str, str]] = None,
     ) -> USEntry:
@@ -208,7 +208,7 @@ class SyncUSManager(USManagerBase):
     @generic_profiler("us-fetch-entity-raw")
     def get_by_id_raw(
         self,
-        entry_id: str,
+        entry_id: str | None,
         expected_type: Optional[Type[USEntry]] = None,
         params: Optional[dict[str, str]] = None,
     ) -> dict[str, Any]:
@@ -236,7 +236,9 @@ class SyncUSManager(USManagerBase):
         return obj
 
     @generic_profiler("us-get-migrated-entity")
-    def get_migrated_entry(self, entry_id: str, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
+    def get_migrated_entry(self, entry_id: str | None, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
+        if entry_id is None:
+            raise exc.USObjectNotFoundException()
         us_resp = self._us_client.get_entry(entry_id, params=params)
         return self._migrate_response(us_resp)
 

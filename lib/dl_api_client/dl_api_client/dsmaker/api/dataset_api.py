@@ -225,16 +225,16 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
             dataset=dataset,
         )
 
-    def export_dataset(self, dataset: Dataset, data: dict, bi_headers: dict) -> HttpDatasetApiResponse:
-        response = self._request(f"/api/v1/datasets/export/{dataset.id}", method="post", data=data, headers=bi_headers)
+    def export_dataset(self, dataset: Dataset, data: dict, headers: dict) -> HttpDatasetApiResponse:
+        response = self._request(f"/api/v1/datasets/export/{dataset.id}", method="post", data=data, headers=headers)
         return HttpDatasetApiResponse(
             json=response.json,
             status_code=response.status_code,
             dataset=None,
         )
 
-    def import_dataset(self, data: dict, bi_headers: dict) -> HttpDatasetApiResponse:
-        response = self._request("/api/v1/datasets/import", method="post", data=data, headers=bi_headers)
+    def import_dataset(self, data: dict, headers: dict) -> HttpDatasetApiResponse:
+        response = self._request("/api/v1/datasets/import", method="post", data=data, headers=headers)
         return HttpDatasetApiResponse(
             json=response.json,
             status_code=response.status_code,

@@ -141,7 +141,7 @@ class DeleteObligatoryFilterAction(ObligatoryFilterActionBase):
 
 @attr.s(frozen=True, kw_only=True, auto_attribs=True)
 class ReplaceConnection:
-    id: str
+    id: str | None
     new_id: str
 
 

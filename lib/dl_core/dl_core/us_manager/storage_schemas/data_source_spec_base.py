@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Any
 
+from dl_core.base_models import DefaultConnectionRef
 import marshmallow.fields as ma_fields
 
 from dl_constants.enums import DataSourceType
-from dl_core.base_models import InternalMaterializationConnectionRef
 from dl_core.data_source.type_mapping import get_data_source_class
 from dl_core.data_source_spec.base import DataSourceSpec
 from dl_core.data_source_spec.sql import (
@@ -70,9 +70,10 @@ class DataSourceSpecStorageSchema(BaseStorageSchema):  # noqa
         self.context.pop(CtxKey.ds_conn_type, None)
 
     def constructor_kwargs(self, data: dict[str, Any]) -> dict[str, Any]:
-        data["connection_ref"] = data.pop("connection_ref", None)
-        if data["connection_ref"] is None:
-            data["connection_ref"] = InternalMaterializationConnectionRef()
+        conn_ref = data.pop("connection_ref", None)
+        if conn_ref is None:
+            conn_ref = DefaultConnectionRef(conn_id=None)
+        data["connection_ref"] = conn_ref
         return data
 
     def to_object(self, data: dict) -> Any:

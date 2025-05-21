@@ -35,6 +35,6 @@ class DataSourceCollectionSpec:
         assert self.origin is not None
         result: dict[str, str] = {}
         connection_ref = self.origin.connection_ref
-        if isinstance(connection_ref, DefaultConnectionRef):
+        if isinstance(connection_ref, DefaultConnectionRef) and connection_ref.conn_id is not None:
             result[self.id] = connection_ref.conn_id
         return result
