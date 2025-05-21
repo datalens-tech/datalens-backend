@@ -110,7 +110,7 @@ def make_table_datasource_template(
     connection_id: str,
     source_type: DataSourceType,
     localizer: Localizer,
-    disabled: bool,
+    disabled: bool = False,
     template_enabled: bool = False,
     title: str = "Table",
     field_doc_key: str = "ANY_TABLE/table_name",

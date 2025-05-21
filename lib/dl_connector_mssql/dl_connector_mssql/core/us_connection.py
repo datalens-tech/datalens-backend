@@ -61,7 +61,7 @@ class ConnectionMSSQL(
                 connection_id=self.uuid,  # type: ignore
                 source_type=SOURCE_TYPE_MSSQL_TABLE,
                 localizer=localizer,
-                disabled=False,
+                disabled=not self.is_subselect_allowed,
                 template_enabled=self.is_datasource_template_allowed,
             ),
             make_subselect_datasource_template(

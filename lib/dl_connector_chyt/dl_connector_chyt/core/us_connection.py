@@ -110,7 +110,6 @@ class BaseConnectionCHYT(
                 connection_id=self.uuid,  # type: ignore
                 source_type=self.chyt_table_source_type,
                 localizer=localizer,
-                disabled=not self.is_datasource_template_allowed,
                 title="YTsaurus table via CHYT",
                 field_doc_key="YTsaurus/CHYT_TABLE/table_name",
                 template_enabled=self.is_datasource_template_allowed,
