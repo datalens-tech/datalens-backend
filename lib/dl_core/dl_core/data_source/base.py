@@ -156,17 +156,6 @@ class DataSource(metaclass=abc.ABCMeta):
         return self._spec
 
     def _validate_connection(self) -> None:
-        if self._connection is not None and self._spec.connection_ref is None:  # type: ignore  # TODO: fix
-            # TODO CONSIDER: extraction of connection ref
-            pass
-        elif self._spec.connection_ref is not None and self._connection is None:  # type: ignore  # TODO: fix
-            pass
-        else:
-            raise ValueError(
-                f"Unexpected combination of 'connection' and 'connection_ref':"
-                f" {self._connection} and {self._spec.connection_ref}"  # type: ignore  # TODO: fix no attribute
-            )
-
         if self._connection is not None:
             self._validate_connection_cls(self._connection)
 

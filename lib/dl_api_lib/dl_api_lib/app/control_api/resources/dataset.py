@@ -28,7 +28,7 @@ from dl_api_lib.dataset.utils import (
     log_dataset_field_stats,
 )
 from dl_api_lib.enums import USPermissionKind
-from dl_api_lib.schemas import main as dl_api_main_schemas
+import dl_api_lib.schemas.main
 import dl_api_lib.schemas.data
 import dl_api_lib.schemas.dataset_base
 import dl_api_lib.schemas.validation
@@ -85,9 +85,9 @@ class DatasetCollection(DatasetResource):
     @put_to_request_context(endpoint_code="DatasetCreate")
     @schematic_request(
         ns=ns,
-        body=dl_api_main_schemas.CreateDatasetSchema(),
+        body=dl_api_lib.schemas.main.CreateDatasetSchema(),
         responses={
-            200: ("Success", dl_api_main_schemas.CreateDatasetResponseSchema()),
+            200: ("Success", dl_api_lib.schemas.main.CreateDatasetResponseSchema()),
         },
     )
     def post(self, body: dict) -> dict:
@@ -310,7 +310,6 @@ class DatasetExportItem(DatasetResource):
 
         ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
         ds_dict = ds.as_dict()
-        us_manager.load_dependencies(ds)
         ds_dict.update(
             self.make_dataset_response_data(
                 dataset=ds, us_entry_buffer=us_manager.get_entry_buffer(), conn_id_mapping=body["id_mapping"]
@@ -322,7 +321,6 @@ class DatasetExportItem(DatasetResource):
             ds_dict["dataset"]["name"] = dl_loc.entry_name
 
         ds_dict["dataset"]["revision_id"] = None
-        del ds_dict["dataset"]["rls"]
 
         notifications = []
         localizer = self.get_service_registry().get_localizer()
@@ -350,25 +348,29 @@ class DatasetImportCollection(DatasetResource):
 
     @classmethod
     def replace_conn_ids(cls, data: dict, conn_id_mapping: dict) -> None:
+        if "sources" not in data["dataset"]:
+            LOGGER.info("There are no sources in the passed dataset data, so nothing to replace")
+            return
+
         for source in data["dataset"]["sources"]:
             assert isinstance(source, dict)
             fake_conn_id = source["connection_id"]
             if fake_conn_id not in conn_id_mapping:
                 LOGGER.info(
-                    'Can not find "%s" in conn id mapping for source with id %s, going to replace it with a fake connection',
+                    'Can not find "%s" in conn id mapping for source with id %s, going to replace it with None',
                     fake_conn_id,
                     source.get("id"),
                 )
-                source["connection_id"] = "0000000000000"  # TODO which ID should we use here?
+                source["connection_id"] = None
             else:
                 source["connection_id"] = conn_id_mapping[fake_conn_id]
 
     @put_to_request_context(endpoint_code="DatasetImport")
     @schematic_request(
         ns=ns,
-        body=dl_api_main_schemas.DatasetImportRequestSchema(),
+        body=dl_api_lib.schemas.main.DatasetImportRequestSchema(),
         responses={
-            200: ("Success", dl_api_main_schemas.ImportResponseSchema()),
+            200: ("Success", dl_api_lib.schemas.main.ImportResponseSchema()),
         },
     )
     def post(self, body: dict) -> dict:

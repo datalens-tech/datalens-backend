@@ -170,7 +170,11 @@ class DashSQLRequestSchema(BaseSchema):
 
 
 class IdMappingContentSchema(BaseSchema):
-    id_mapping = ma_fields.Dict(ma_fields.String(), ma_fields.String(), required=True)
+    id_mapping = ma_fields.Dict(
+        ma_fields.String(allow_none=True),
+        ma_fields.String(allow_none=True),
+        required=True,
+    )
 
 
 class DatasetExportRequestSchema(IdMappingContentSchema):
@@ -185,6 +189,9 @@ class NotificationContentSchema(BaseSchema):
 
 class DatasetExportResponseSchema(BaseSchema):
     class DatasetContentInternalExportSchema(DatasetContentInternalSchema):
+        class Meta(DatasetContentInternalSchema.Meta):
+            exclude = ("rls",)  # not exporting rls at all, only rls2
+
         name = ma_fields.String()
 
     dataset = ma_fields.Nested(DatasetContentInternalExportSchema)

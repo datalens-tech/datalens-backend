@@ -25,8 +25,5 @@ class ConnectionRefField(Field):
     def _deserialize(
         self, value: Optional[str], attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any
     ) -> ConnectionRef:
-        """
-        Wraps connection ID with ConnRef object
-        `None` value will not be passed here, so we should handle it in `.to_object()`
-        """
-        return DefaultConnectionRef(conn_id=value)  # type: ignore  # 2024-01-30 # TODO: Argument "conn_id" to "DefaultConnectionRef" has incompatible type "str | None"; expected "str"  [arg-type]
+        """ Wraps connection ID with ConnRef object """
+        return DefaultConnectionRef(conn_id=value)

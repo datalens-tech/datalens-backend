@@ -33,17 +33,8 @@ class DefaultConnectionRef(ConnectionRef):
     conn_id: str = attr.ib(kw_only=True)
 
 
-@attr.s(frozen=True, slots=True)
-class InternalMaterializationConnectionRef(ConnectionRef):
-    pass
-
-
 def connection_ref_from_id(connection_id: Optional[str]) -> ConnectionRef:
-    if connection_id is None:
-        # TODO REMOVE: some sample source code still relies on mat con ref
-        return InternalMaterializationConnectionRef()
-    else:
-        return DefaultConnectionRef(conn_id=connection_id)
+    return DefaultConnectionRef(conn_id=connection_id)
 
 
 @attr.s()

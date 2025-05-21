@@ -1,6 +1,12 @@
+from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV1
+from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
+from dl_api_commons.base_models import DLHeadersCommon
+from dl_api_lib.app_settings import ControlApiAppSettings
+from dl_core.us_manager.us_manager_sync import SyncUSManager
 import pytest
 
 from dl_api_client.dsmaker.primitives import (
+    Dataset,
     RequestLegendItem,
     RequestLegendItemRef,
     ResultField,
@@ -163,7 +169,52 @@ class TestResultErrors(DefaultApiTestBase):
         result_resp = data_api.get_result(dataset=saved_dataset, fields=[saved_dataset.result_schema[0]], fail_ok=True)
         assert result_resp.status_code == 400
         assert result_resp.bi_status_code == "ERR.DS_API.REFERENCED_ENTRY_NOT_FOUND"
-        assert result_resp.json["message"] == f"Referenced connection {saved_connection_id} was deleted"
+        assert result_resp.json["message"] == f"Referenced connection does not exist (connection id: {saved_connection_id})"
+
+    def test_dataset_with_null_connection(
+        self,
+        saved_dataset: Dataset,
+        control_api: SyncHttpDatasetApiV1,
+        control_api_app_settings: ControlApiAppSettings,
+        data_api: SyncHttpDataApiV1,
+        sync_us_manager: SyncUSManager,
+    ) -> None:
+        # the only intended way to create such a dataset is via export-import, so let's create it that way
+        export_import_headers = {
+            DLHeadersCommon.US_MASTER_TOKEN.value: control_api_app_settings.US_MASTER_TOKEN,
+        }
+        export_req_data = {"id_mapping": {}}
+        export_resp = control_api.export_dataset(dataset=saved_dataset, data=export_req_data, headers=export_import_headers)
+        assert export_resp.status_code == 200, export_resp.json
+        assert export_resp.json["dataset"]["sources"][0]["connection_id"] == None
+
+        import_req_data: dict = {
+            "id_mapping": {},
+            "data": {"workbook_id": None, "dataset": export_resp.json["dataset"]},
+        }
+        import_resp = control_api.import_dataset(data=import_req_data, headers=export_import_headers)
+        assert import_resp.status_code == 200, f"{import_resp.json} vs {export_resp.json}"
+
+        ds = control_api.serial_adapter.load_dataset_from_response_body(Dataset(), export_resp.json)
+
+        query = data_api.serial_adapter.make_req_data_get_result(
+            dataset=None,
+            fields=[ds.result_schema[0]],
+        )
+        headers = {
+            "Content-Type": "application/json",
+        }
+        result_resp = data_api.get_response_for_dataset_result(
+            dataset_id=import_resp.json["id"],
+            raw_body=query,
+            headers=headers,
+        )
+
+        assert result_resp.status_code == 400, result_resp.json
+        assert result_resp.json["code"] == "ERR.DS_API.REFERENCED_ENTRY_NOT_FOUND"
+        assert result_resp.json["message"] == "Referenced connection does not exist (connection id: empty)"
+
+        control_api.delete_dataset(dataset_id=import_resp.json["id"])
 
 
 class TestDashSQLErrors(DefaultApiTestBase):
