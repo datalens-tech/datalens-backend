@@ -9,6 +9,7 @@ from dl_api_lib.app_settings import ControlApiAppSettings
 from dl_api_lib.schemas.connection import GenericConnectionSchema
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_constants.api_constants import DLHeadersCommon
+from dl_core.connectors.base.export_import import is_export_import_allowed
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_testing.regulated_test import RegulatedTestCase
@@ -52,7 +53,7 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
             headers=bi_headers,
         )
 
-        if not conn.allow_export:
+        if not is_export_import_allowed(self.conn_type):
             assert resp.status_code == 200, resp.json
             assert "notifications" in resp.json, resp.json
             assert resp.json["notifications"][0]["code"] == "ERR.DS_API.UNSUPPORTED", resp.json
@@ -75,7 +76,7 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
     ) -> None:
         conn = sync_us_manager.get_by_id(saved_connection_id, expected_type=ConnectionBase)
         assert isinstance(conn, ConnectionBase)
-        if not conn.allow_export:
+        if not is_export_import_allowed(self.conn_type):
             return
 
         us_master_token = control_api_app_settings.US_MASTER_TOKEN
