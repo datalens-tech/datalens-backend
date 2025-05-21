@@ -6,6 +6,7 @@ from dl_core.us_connection_base import (
     ConnectionSettingsMixin,
     DataSourceTemplate,
     make_subselect_datasource_template,
+    make_table_datasource_template,
 )
 from dl_i18n.localizer_base import Localizer
 
@@ -44,6 +45,13 @@ class GreenplumConnection(
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
         return [
+            make_table_datasource_template(
+                connection_id=self.uuid,  # type: ignore
+                source_type=SOURCE_TYPE_GP_TABLE,
+                localizer=localizer,
+                disabled=not self.is_subselect_allowed,
+                template_enabled=self.is_datasource_template_allowed,
+            ),
             make_subselect_datasource_template(
                 connection_id=self.uuid,  # type: ignore
                 source_type=SOURCE_TYPE_GP_SUBSELECT,
@@ -51,7 +59,7 @@ class GreenplumConnection(
                 disabled=not self.is_subselect_allowed,
                 field_doc_key="PG_SUBSELECT/subsql",  # shared, currently.
                 template_enabled=self.is_datasource_template_allowed,
-            )
+            ),
         ]
 
     @property

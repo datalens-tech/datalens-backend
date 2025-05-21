@@ -106,6 +106,44 @@ class DataSourceTemplate(NamedTuple):
         )
 
 
+def make_table_datasource_template(
+    connection_id: str,
+    source_type: DataSourceType,
+    localizer: Localizer,
+    disabled: bool = False,
+    template_enabled: bool = False,
+    title: str = "Table",
+    field_doc_key: str = "ANY_TABLE/table_name",
+    tab_title: str | None = None,
+    form_title: str | None = None,
+) -> DataSourceTemplate:
+    if tab_title is None:
+        tab_title = localizer.translate(Translatable("source_templates-tab_title-table"))
+    if form_title is None:
+        form_title = localizer.translate(Translatable("source_templates-label-table"))
+
+    return DataSourceTemplate(
+        title=title,
+        tab_title=tab_title,
+        source_type=source_type,
+        form=[
+            {
+                "name": "table_name",
+                "input_type": "text",
+                "default": "",
+                "required": True,
+                "title": form_title,
+                "field_doc_key": field_doc_key,
+                "template_enabled": template_enabled,
+            },
+        ],
+        disabled=disabled,
+        group=[],
+        connection_id=connection_id,
+        parameters={},
+    )
+
+
 def make_subselect_datasource_template(
     connection_id: str,
     source_type: DataSourceType,

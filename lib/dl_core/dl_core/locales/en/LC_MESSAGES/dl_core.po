@@ -9,16 +9,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "notif_check-creds"
-msgstr ""
-"After importing, it is necessary to change and re-save secret fields such as "
-"passwords and tokens"
+msgid "source_templates-tab_title-table"
+msgstr "Table"
+
+msgid "source_templates-label-table"
+msgstr "Table name"
 
 msgid "source_templates-tab_title-sql"
 msgstr "SQL"
 
 msgid "source_templates-label-subquery"
 msgstr "Subquery"
+
+msgid "notif_check-creds"
+msgstr ""
+"After importing, it is necessary to change and re-save secret fields such as "
+"passwords and tokens"
 
 msgid "notif_rls"
 msgstr ""
