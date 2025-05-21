@@ -53,7 +53,9 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         )
 
         if not conn.allow_export:
-            assert resp.status_code == 400
+            assert resp.status_code == 200, resp.json
+            assert "notifications" in resp.json, resp.json
+            assert resp.json["notifications"][0]["code"] == "ERR.DS_API.UNSUPPORTED", resp.json
             return
 
         assert resp.status_code == 200, resp.json

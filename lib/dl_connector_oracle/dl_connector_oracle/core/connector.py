@@ -40,6 +40,7 @@ class OracleCoreConnectionDefinition(CoreConnectionDefinition):
     dialect_string = "bi_oracle"
     data_source_migrator_cls = OracleDataSourceMigrator
     settings_definition = OracleSettingDefinition
+    allow_export = True
 
 
 class OracleTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):

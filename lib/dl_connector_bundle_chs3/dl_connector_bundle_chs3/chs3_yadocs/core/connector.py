@@ -37,6 +37,7 @@ class YaDocsFileS3CoreConnectionDefinition(BaseFileS3CoreConnectionDefinition):
     lifecycle_manager_cls = YaDocsFileS3ConnectionLifecycleManager
     dialect_string = "bi_clickhouse"
     settings_definition = YaDocsFileS3SettingDefinition
+    allow_export = True
 
 
 class YaDocsFileS3TableCoreSourceDefinition(BaseFileS3TableCoreSourceDefinition):

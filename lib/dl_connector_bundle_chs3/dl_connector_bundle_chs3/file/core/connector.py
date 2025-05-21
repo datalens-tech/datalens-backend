@@ -31,6 +31,7 @@ class FileS3CoreConnectionDefinition(BaseFileS3CoreConnectionDefinition):
     lifecycle_manager_cls = FileS3ConnectionLifecycleManager
     dialect_string = "bi_clickhouse"
     settings_definition = FileS3SettingDefinition
+    allow_export = True
 
 
 class FileS3TableCoreSourceDefinition(BaseFileS3TableCoreSourceDefinition):

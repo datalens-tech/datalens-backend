@@ -185,6 +185,9 @@ class NotificationContentSchema(BaseSchema):
 
 class DatasetExportResponseSchema(BaseSchema):
     class DatasetContentInternalExportSchema(DatasetContentInternalSchema):
+        class Meta(DatasetContentInternalSchema.Meta):
+            exclude = ("rls",)  # not exporting rls at all, only rls2
+
         name = ma_fields.String()
 
     dataset = ma_fields.Nested(DatasetContentInternalExportSchema)
@@ -208,4 +211,4 @@ class DatasetImportRequestSchema(IdMappingContentSchema):
 
 class ImportResponseSchema(BaseSchema):
     notifications = ma_fields.Nested(NotificationContentSchema, many=True)
-    id = ma_fields.String(required=True)
+    id = ma_fields.String()

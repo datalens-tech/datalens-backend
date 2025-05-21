@@ -38,6 +38,7 @@ class TrinoCoreConnectionDefinition(CoreConnectionDefinition):
     # lifecycle_manager_cls = TrinoConnectionLifecycleManager
     data_source_migrator_cls = TrinoDataSourceMigrator
     dialect_string = "trino"
+    allow_export = True
 
 
 class TrinoCoreTableSourceDefinition(CoreSourceDefinition):

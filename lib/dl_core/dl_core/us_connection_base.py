@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import abc
+import functools
 import logging
 from typing import (
     TYPE_CHECKING,
@@ -456,7 +457,13 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     def get_import_warnings_list(self, localizer: Localizer) -> list[dict]:
         CODE_PREFIX = "NOTIF.WB_IMPORT.CONN."
         warnings = []
-        if self.data.get_secret_keys():
+        with_fake_creds = False
+        for data_key in self.data.get_secret_keys():
+            secret_value = functools.reduce(getattr, data_key.parts, self.data)
+            if secret_value == "******":
+                with_fake_creds = True
+                break
+        if with_fake_creds:
             warnings.append(
                 dict(
                     message=localizer.translate(Translatable("notif_check-creds")),

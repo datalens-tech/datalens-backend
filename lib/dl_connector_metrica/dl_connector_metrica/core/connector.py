@@ -68,6 +68,7 @@ class MetricaApiCoreConnectionDefinition(CoreConnectionDefinition):
     dialect_string = "metrika_api"
     settings_definition = MetricaSettingDefinition
     data_source_migrator_cls = MetricaApiDataSourceMigrator
+    allow_export = False
 
 
 class MetricaApiCoreSourceDefinition(CoreSourceDefinition):
@@ -104,6 +105,7 @@ class AppMetricaApiCoreConnectionDefinition(CoreConnectionDefinition):
     dialect_string = "appmetrica_api"
     settings_definition = AppMetricaSettingDefinition
     data_source_migrator_cls = AppMetricaApiDataSourceMigrator
+    allow_export = False
 
 
 class AppMetricaApiCoreSourceDefinition(CoreSourceDefinition):

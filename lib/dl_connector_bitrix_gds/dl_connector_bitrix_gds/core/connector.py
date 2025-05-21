@@ -28,6 +28,7 @@ class BitrixGDSCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = BitrixGDSAsyncAdapterConnExecutor
     async_conn_executor_cls = BitrixGDSAsyncAdapterConnExecutor
     dialect_string = "bi_bitrix"
+    allow_export = True
 
 
 class BitrixGDSCoreSourceDefinition(CoreSourceDefinition):

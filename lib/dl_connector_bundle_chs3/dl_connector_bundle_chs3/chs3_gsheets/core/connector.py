@@ -37,6 +37,7 @@ class GSheetsFileS3CoreConnectionDefinition(BaseFileS3CoreConnectionDefinition):
     lifecycle_manager_cls = GSheetsFileS3ConnectionLifecycleManager
     dialect_string = "bi_clickhouse"
     settings_definition = GSheetsFileS3SettingDefinition
+    allow_export = True
 
 
 class GSheetsFileS3TableCoreSourceDefinition(BaseFileS3TableCoreSourceDefinition):
