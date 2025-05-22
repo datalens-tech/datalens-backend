@@ -74,6 +74,7 @@ class CoreConnectionDefinition(abc.ABC):
     data_source_migrator_cls: ClassVar[Type[DataSourceMigrator]] = DefaultDataSourceMigrator
     settings_definition: ClassVar[Optional[Type[ConnectorSettingsDefinition]]] = None
     custom_dashsql_key_names: frozenset[str] = frozenset()
+    allow_export: ClassVar[bool] = False
 
 
 class CoreBackendDefinition(abc.ABC):

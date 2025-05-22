@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import logging
 import os
 import re
 from typing import (
     Any,
+    Callable,
     ClassVar,
+    Concatenate,
     Optional,
+    Sequence,
 )
 
 import flask
@@ -14,10 +18,20 @@ from flask_restx import Resource
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from dl_api_commons.flask.required_resources import RequiredResourceCommon
-from dl_api_lib import api_decorators
+from dl_api_lib import (
+    api_decorators,
+    exc,
+)
 from dl_api_lib.schemas.tools import prepare_schema_context
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
-from dl_constants.enums import OperationsMode
+from dl_constants.enums import (
+    NotificationLevel,
+    OperationsMode,
+)
+from dl_constants.exc import (
+    DEFAULT_ERR_CODE_API_PREFIX,
+    GLOBAL_ERR_PREFIX,
+)
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 
@@ -26,6 +40,8 @@ PROFILE_REQUESTS = os.environ.get("PROFILE_REQUESTS", "")
 PROFILE_REQ_CLASSES = {v for v in set(os.environ.get("PROFILE_REQ_CLASSES", "").split(",")) if v}
 PROFILE_REQ_METHODS = {v for v in set(os.environ.get("PROFILE_REQ_METHODS", "").lower().split(",")) if v}
 PROFILE_REQ_PATH_RE = os.environ.get("PROFILE_REQ_PATH_RE")
+
+LOGGER = logging.getLogger(__name__)
 
 # When turning on the profiler try to be as specific as possible. Example:
 # PROFILE_REQUESTS="/tmp/cprofiler/"
@@ -44,6 +60,33 @@ def _profile_request_check(*args, **kwargs) -> bool:  # type: ignore  # TODO: fi
             return False
 
     return True
+
+
+def wrap_export_import_exception(
+    func: Callable[Concatenate[BIResource, ...], dict | tuple[list | dict, int]]
+) -> Callable[Concatenate[BIResource, ...], dict | tuple[list | dict, int]]:
+    def wrapper(self: BIResource, *args: Any, **kwargs: Any) -> dict | tuple[list | dict, int]:
+        export_import_errors = (  # exceptions which error codes are be covered by UI error handling
+            exc.BadConnectionType,
+            exc.UnsupportedForEntityType,
+            exc.WorkbookExportError,
+            exc.WorkbookImportError,
+        )
+
+        try:
+            return func(self, *args, **kwargs)
+        except export_import_errors as e:
+            LOGGER.error("Caught exception in import-export wrapper", exc_info=True)
+            notifications = [
+                dict(
+                    message=e.message,
+                    level=NotificationLevel.critical,
+                    code=self._make_api_err_code(e.err_code),
+                )
+            ]
+            return dict(notifications=notifications)
+
+    return wrapper
 
 
 COMMON_INFO_HEADERS = ("Referer", "X-Chart-Id")  # TODO: bi-common
@@ -97,6 +140,16 @@ class BIResource(Resource, metaclass=BIResourceMeta):
     """Base class for all BI handler classes"""
 
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset()
+
+    @classmethod
+    def _make_api_err_code(cls, raw_code: Sequence[str]) -> str:
+        return ".".join(
+            (
+                GLOBAL_ERR_PREFIX,
+                DEFAULT_ERR_CODE_API_PREFIX,
+                *raw_code,
+            )
+        )
 
     @classmethod
     def get_current_rci(cls) -> RequestContextInfo:

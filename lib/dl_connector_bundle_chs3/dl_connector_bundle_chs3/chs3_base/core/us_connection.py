@@ -53,7 +53,6 @@ class BaseFileS3Connection(
 ):
     is_always_internal_source: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
-    allow_export: ClassVar[bool] = True
     settings_type = FileS3ConnectorSettings
 
     editable_data_source_parameters: ClassVar[tuple[str, ...]] = (

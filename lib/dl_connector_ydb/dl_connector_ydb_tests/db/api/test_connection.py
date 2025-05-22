@@ -4,6 +4,7 @@ from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_lib.app_settings import ControlApiAppSettings
 from dl_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
 from dl_constants.api_constants import DLHeadersCommon
+from dl_core.connectors.base.export_import import is_export_import_allowed
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 
@@ -36,7 +37,7 @@ class TestYDBConnection(YDBConnectionTestBase, DefaultConnectorConnectionTestSui
             headers=bi_headers,
         )
 
-        if not conn.allow_export:
+        if not is_export_import_allowed(self.conn_type):
             assert resp.status_code == 400
             return
 

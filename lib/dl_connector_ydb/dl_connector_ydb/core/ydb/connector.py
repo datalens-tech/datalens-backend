@@ -43,6 +43,7 @@ class YDBCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = YDBAsyncAdapterConnExecutor
     dialect_string = "yql"
     settings_definition = YDBSettingDefinition
+    allow_export = True
 
 
 class YDBCoreSourceDefinition(CoreSourceDefinition):

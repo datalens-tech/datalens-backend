@@ -43,6 +43,7 @@ class MySQLCoreConnectionDefinition(CoreConnectionDefinition):
     dialect_string = "dl_mysql"
     data_source_migrator_cls = MySQLDataSourceMigrator
     settings_definition = MySQLSettingDefinition
+    allow_export = True
 
 
 class MySQLTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):

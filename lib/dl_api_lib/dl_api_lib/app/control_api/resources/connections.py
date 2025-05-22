@@ -18,7 +18,10 @@ from dl_api_connector.api_schema.connection_base import ConnectionOptionsSchema
 from dl_api_lib import exc
 from dl_api_lib.api_decorators import schematic_request
 from dl_api_lib.app.control_api.resources import API
-from dl_api_lib.app.control_api.resources.base import BIResource
+from dl_api_lib.app.control_api.resources.base import (
+    BIResource,
+    wrap_export_import_exception,
+)
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.schemas.connection import (
     ConnectionExportResponseSchema,
@@ -40,6 +43,7 @@ from dl_constants.enums import (
     ImportMode,
 )
 from dl_constants.exc import DLBaseException
+from dl_core.connectors.base.export_import import is_export_import_allowed
 from dl_core.data_source.type_mapping import get_data_source_class
 from dl_core.data_source_merge_tools import make_spec_from_dict
 from dl_core.exc import (
@@ -161,6 +165,7 @@ class ConnectionsImportList(BIResource):
             200: ("Success", ImportResponseSchema()),
         },
     )
+    @wrap_export_import_exception
     def post(self, body: dict) -> dict | tuple[list | dict, int]:
         us_manager = self.get_service_us_manager()
         tenant = self.get_current_rci().tenant
@@ -169,17 +174,20 @@ class ConnectionsImportList(BIResource):
 
         conn_data = body["data"]["connection"]
 
-        conn_type = self.get_from_request(conn_data, "db_type")
-        if conn_type not in ConnectionType:
-            raise exc.BadConnectionType(f"Invalid connection type value: {conn_type}")
+        conn_type_str = self.get_from_request(conn_data, "db_type")
+        if conn_type_str not in ConnectionType:
+            raise exc.BadConnectionType(f"Not a valid connection type for this environment: {conn_type_str}")
+        conn_type = ConnectionType(conn_type_str)
 
         conn_availability = self.get_service_registry().get_connector_availability()
-        conn_type_is_available = conn_availability.check_connector_is_available(ConnectionType[conn_type])
-        if not conn_type_is_available:
-            raise exc.UnsupportedForEntityType(f"Connector {conn_type} is not available in current env")
+        conn_type_is_available = conn_availability.check_connector_is_available(conn_type)
+        if not conn_type_is_available or not is_export_import_allowed(conn_type):
+            raise exc.UnsupportedForEntityType(
+                f"Connector {conn_type_str} is not available for export/import in current environment"
+            )
 
         conn_data["workbook_id"] = body["data"].get("workbook_id")
-        conn_data["type"] = conn_type
+        conn_data["type"] = conn_type_str
 
         schema = GenericConnectionSchema(
             context=self.get_schema_ctx(schema_operations_mode=ImportMode.create_from_import)
@@ -316,17 +324,25 @@ class ConnectionExportItem(BIResource):
             200: ("Success", ConnectionExportResponseSchema()),
         },
     )
+    @wrap_export_import_exception
     def get(self, connection_id: str) -> dict:
         us_manager = self.get_service_us_manager()
         tenant = self.get_current_rci().tenant
         assert tenant is not None
         us_manager.set_tenant_override(tenant)
 
-        conn = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
-        assert isinstance(conn, ConnectionBase)
+        conn_us_resp = us_manager.get_by_id_raw(connection_id, expected_type=ConnectionBase)
+        conn_type_str = conn_us_resp.get("type")
+        if conn_type_str not in ConnectionType:
+            raise exc.BadConnectionType(f"Not a valid connection type for this environment: {conn_type_str}")
+        conn_type = ConnectionType(conn_type_str)
 
-        if not conn.allow_export:
-            raise exc.UnsupportedForEntityType(f"Connector {conn.conn_type.name} does not support export")
+        if not is_export_import_allowed(conn_type):
+            raise exc.UnsupportedForEntityType(
+                f"Connector {conn_type_str} is not available for export/import in current environment"
+            )
+
+        conn: ConnectionBase = us_manager.deserialize_us_resp(conn_us_resp, expected_type=ConnectionBase)
 
         result = GenericConnectionSchema(context=self.get_schema_ctx(ExportMode.export)).dump(conn)
         result["db_type"] = conn.conn_type.value
