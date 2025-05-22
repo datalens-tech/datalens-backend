@@ -310,6 +310,7 @@ class DatasetExportItem(DatasetResource):
             ds_dict["dataset"]["name"] = dl_loc.entry_name
 
         ds_dict["dataset"]["revision_id"] = None
+        del ds_dict["dataset"]["rls"]
 
         notifications = []
         localizer = self.get_service_registry().get_localizer()
