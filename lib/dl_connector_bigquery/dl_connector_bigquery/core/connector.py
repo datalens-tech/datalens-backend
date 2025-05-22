@@ -40,6 +40,7 @@ class BigQueryCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = BigQueryAsyncConnExecutor
     async_conn_executor_cls = BigQueryAsyncConnExecutor
     dialect_string = "bigquery"
+    allow_export = True
 
 
 class BigQueryCoreTableSourceDefinition(CoreSourceDefinition):

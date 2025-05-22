@@ -146,10 +146,16 @@ class DatasetResource(BIResource):
             origin_dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
             connection_id = dsrc_coll.get_connection_id(DataSourceRole.origin)
             if conn_id_mapping is not None:
-                try:
+                if connection_id not in conn_id_mapping:
+                    LOGGER.info(
+                        'Can not find "%s" in conn id mapping for source with id %s',
+                        connection_id,
+                        source_id,
+                    )
+                    raise DatasetExportError("Can not export dataset without a connection")  # TODO BI-6296
+                else:
                     connection_id = conn_id_mapping[connection_id]
-                except KeyError:
-                    raise DatasetExportError(f"Error to find {connection_id} in connection_id_mapping")
+
             sources.append(
                 {
                     "id": source_id,

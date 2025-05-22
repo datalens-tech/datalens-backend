@@ -57,6 +57,7 @@ class CHYTCoreConnectionDefinition(CoreConnectionDefinition):
     dialect_string = "bi_chyt"
     settings_definition = CHYTSettingDefinition
     data_source_migrator_cls = CHYTDataSourceMigrator
+    allow_export = True
 
 
 class CHYTTableCoreSourceDefinition(CoreSourceDefinition):

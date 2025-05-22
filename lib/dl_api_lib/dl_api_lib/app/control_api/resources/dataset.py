@@ -6,7 +6,6 @@ from typing import (
     Any,
     ClassVar,
     Dict,
-    Sequence,
 )
 import uuid
 
@@ -19,7 +18,10 @@ from dl_api_lib import (
 )
 from dl_api_lib.api_decorators import schematic_request
 from dl_api_lib.app.control_api.resources import API
-from dl_api_lib.app.control_api.resources.base import BIResource
+from dl_api_lib.app.control_api.resources.base import (
+    BIResource,
+    wrap_export_import_exception,
+)
 from dl_api_lib.app.control_api.resources.dataset_base import DatasetResource
 from dl_api_lib.const import DEFAULT_DATASET_LOCK_WAIT_TIMEOUT
 from dl_api_lib.dataset.utils import (
@@ -28,19 +30,15 @@ from dl_api_lib.dataset.utils import (
     log_dataset_field_stats,
 )
 from dl_api_lib.enums import USPermissionKind
-from dl_api_lib.schemas import main as dl_api_main_schemas
 import dl_api_lib.schemas.data
 import dl_api_lib.schemas.dataset_base
+import dl_api_lib.schemas.main
 import dl_api_lib.schemas.validation
 from dl_constants.enums import (
     DataSourceCreatedVia,
     ManagedBy,
 )
-from dl_constants.exc import (
-    CODE_OK,
-    DEFAULT_ERR_CODE_API_PREFIX,
-    GLOBAL_ERR_PREFIX,
-)
+from dl_constants.exc import CODE_OK
 from dl_core.base_models import (
     EntryLocation,
     PathEntryLocation,
@@ -61,16 +59,6 @@ ns = API.namespace("Datasets", path="/datasets")
 VALIDATION_OK_MESSAGE = "Validation was successful"
 
 
-def _make_api_err_code(raw_code: Sequence[str]) -> str:
-    return ".".join(
-        (
-            GLOBAL_ERR_PREFIX,
-            DEFAULT_ERR_CODE_API_PREFIX,
-            *raw_code,
-        )
-    )
-
-
 @ns.route("/")
 class DatasetCollection(DatasetResource):
     @classmethod
@@ -85,9 +73,9 @@ class DatasetCollection(DatasetResource):
     @put_to_request_context(endpoint_code="DatasetCreate")
     @schematic_request(
         ns=ns,
-        body=dl_api_main_schemas.CreateDatasetSchema(),
+        body=dl_api_lib.schemas.main.CreateDatasetSchema(),
         responses={
-            200: ("Success", dl_api_main_schemas.CreateDatasetResponseSchema()),
+            200: ("Success", dl_api_lib.schemas.main.CreateDatasetResponseSchema()),
         },
     )
     def post(self, body: dict) -> dict:
@@ -300,6 +288,7 @@ class DatasetExportItem(DatasetResource):
             400: ("Failed", dl_api_lib.schemas.main.BadRequestResponseSchema()),
         },
     )
+    @wrap_export_import_exception
     def post(self, dataset_id: str, body: dict) -> dict:
         """Export dataset"""
 
@@ -310,7 +299,6 @@ class DatasetExportItem(DatasetResource):
 
         ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
         ds_dict = ds.as_dict()
-        us_manager.load_dependencies(ds)
         ds_dict.update(
             self.make_dataset_response_data(
                 dataset=ds, us_entry_buffer=us_manager.get_entry_buffer(), conn_id_mapping=body["id_mapping"]
@@ -350,17 +338,32 @@ class DatasetImportCollection(DatasetResource):
 
     @classmethod
     def replace_conn_ids(cls, data: dict, conn_id_mapping: dict) -> None:
-        for sources in data["dataset"]["sources"]:
-            sources["connection_id"] = conn_id_mapping[sources["connection_id"]]
+        if "sources" not in data["dataset"]:
+            LOGGER.info("There are no sources in the passed dataset data, so nothing to replace")
+            return
+
+        for source in data["dataset"]["sources"]:
+            assert isinstance(source, dict)
+            fake_conn_id = source["connection_id"]
+            if fake_conn_id not in conn_id_mapping:
+                LOGGER.info(
+                    'Can not find "%s" in conn id mapping for source with id %s',
+                    fake_conn_id,
+                    source.get("id"),
+                )
+                raise exc.DatasetImportError("Can not import dataset without a connection")  # TODO BI-6296
+            else:
+                source["connection_id"] = conn_id_mapping[fake_conn_id]
 
     @put_to_request_context(endpoint_code="DatasetImport")
     @schematic_request(
         ns=ns,
-        body=dl_api_main_schemas.DatasetImportRequestSchema(),
+        body=dl_api_lib.schemas.main.DatasetImportRequestSchema(),
         responses={
-            200: ("Success", dl_api_main_schemas.ImportResponseSchema()),
+            200: ("Success", dl_api_lib.schemas.main.ImportResponseSchema()),
         },
     )
+    @wrap_export_import_exception
     def post(self, body: dict) -> dict:
         """Import dataset"""
 
@@ -438,7 +441,7 @@ class DatasetVersionValidator(DatasetResource):
             ds_validator.apply_batch(action_batch=body.get("updates", ()))
         except exc.DLValidationFatal as err:
             any_errors = True
-            code = _make_api_err_code(exc.DLValidationFatal.err_code)
+            code = self._make_api_err_code(exc.DLValidationFatal.err_code)
             message = err.message
         else:
             # collect connections not found in us
@@ -447,7 +450,7 @@ class DatasetVersionValidator(DatasetResource):
 
             # check for errors
             any_errors = bool(dataset.error_registry.items)
-            code = _make_api_err_code(exc.DLValidationError.err_code) if any_errors else CODE_OK
+            code = self._make_api_err_code(exc.DLValidationError.err_code) if any_errors else CODE_OK
             message = exc.DLValidationError.default_message if any_errors else VALIDATION_OK_MESSAGE
             data.update(self.make_dataset_response_data(dataset=dataset, us_entry_buffer=us_manager.get_entry_buffer()))
 
@@ -493,7 +496,7 @@ class DatasetVersionFieldValidator(DatasetResource):
         formula = body["field"]["formula"]
         # TODO full validation (with aggregation check for this field), not just formula
         field_errors = ds_validator.get_single_formula_errors(formula)
-        code = _make_api_err_code(exc.DLValidationError.err_code) if field_errors else CODE_OK
+        code = self._make_api_err_code(exc.DLValidationError.err_code) if field_errors else CODE_OK
         message = exc.DLValidationError.default_message if field_errors else VALIDATION_OK_MESSAGE
         error_data = {
             "field_errors": [

@@ -41,6 +41,7 @@ class MSSQLCoreConnectionDefinition(CoreConnectionDefinition):
     dialect_string = "bi_mssql"
     data_source_migrator_cls = MSSQLDataSourceMigrator
     settings_definition = MSSQLSettingDefinition
+    allow_export = True
 
 
 class MSSQLTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):

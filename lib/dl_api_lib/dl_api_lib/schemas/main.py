@@ -208,4 +208,4 @@ class DatasetImportRequestSchema(IdMappingContentSchema):
 
 class ImportResponseSchema(BaseSchema):
     notifications = ma_fields.Nested(NotificationContentSchema, many=True)
-    id = ma_fields.String(required=True)
+    id = ma_fields.String()

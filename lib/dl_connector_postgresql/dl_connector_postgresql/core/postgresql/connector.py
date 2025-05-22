@@ -43,6 +43,7 @@ class PostgreSQLCoreConnectionDefinition(CoreConnectionDefinition):
     dialect_string = "bi_postgresql"
     data_source_migrator_cls = PostgreSQLDataSourceMigrator
     settings_definition = PostgreSQLSettingDefinition
+    allow_export = True
 
 
 class PostgreSQLTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):

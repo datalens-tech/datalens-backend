@@ -15,6 +15,7 @@ from dl_core.connectors.base.connector import (
 )
 from dl_core.connectors.base.dashsql import register_custom_dash_sql_key_names
 from dl_core.connectors.base.data_source_migration import register_data_source_migrator
+from dl_core.connectors.base.export_import import register_export_import_allowed
 from dl_core.connectors.settings.registry import register_connector_settings_class
 from dl_core.data_processing.query_compiler_registry import register_sa_query_compiler_cls
 from dl_core.data_source.type_mapping import register_data_source_class
@@ -89,6 +90,7 @@ class CoreConnectorRegistrator:
             )
         register_data_source_migrator(conn_type=conn_def.conn_type, migrator_cls=conn_def.data_source_migrator_cls)
         register_custom_dash_sql_key_names(conn_type=conn_def.conn_type, key_names=conn_def.custom_dashsql_key_names)
+        register_export_import_allowed(conn_type=conn_def.conn_type, value=conn_def.allow_export)
 
     @classmethod
     def register_backend_definition(cls, backend_def: Type[CoreBackendDefinition]) -> None:
