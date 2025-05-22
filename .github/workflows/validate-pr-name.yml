@@ -14,9 +14,6 @@ jobs:
     name: Ensure proper PR title
     runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Commitlint PR title
         uses: datalens-tech/commitlint-action@v1
 
