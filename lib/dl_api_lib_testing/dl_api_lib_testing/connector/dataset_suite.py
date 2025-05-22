@@ -92,6 +92,7 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
 
     @pytest.fixture(scope="function")
     def export_import_headers(self, control_api_app_settings: ControlApiAppSettings) -> dict[str, str]:
+        assert control_api_app_settings.US_MASTER_TOKEN is not None
         return {
             DLHeadersCommon.US_MASTER_TOKEN.value: control_api_app_settings.US_MASTER_TOKEN,
         }
@@ -101,12 +102,12 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         control_api: SyncHttpDatasetApiV1,
         saved_dataset: Dataset,
         export_import_headers: dict[str, str],
-    ):
-        export_data = dict()
+    ) -> None:
+        export_data: dict = dict()
         export_resp = control_api.export_dataset(dataset=saved_dataset, data=export_data, headers=export_import_headers)
         assert export_resp.status_code == 400, export_resp.json
 
-        import_data = dict()
+        import_data: dict = dict()
         import_resp = control_api.import_dataset(data=import_data, headers=export_import_headers)
         assert import_resp.status_code == 400, import_resp.json
 
@@ -144,11 +145,11 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         sync_us_manager: SyncUSManager,
         saved_dataset: Dataset,
         export_import_headers: dict[str, str],
-    ):
+    ) -> None:
         sync_us_manager.delete(sync_us_manager.get_by_id(saved_connection_id))
 
         # export with no connection
-        export_req_data = {"id_mapping": {}}
+        export_req_data: dict = {"id_mapping": {}}
         export_resp = control_api.export_dataset(
             dataset=saved_dataset, data=export_req_data, headers=export_import_headers
         )
