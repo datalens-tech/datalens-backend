@@ -212,7 +212,7 @@ class DatasetResource(BIResource):
         for item in data["component_errors"].items:
             for error in item.errors:
                 if error.code[:2] != [GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX]:
-                    error.code = cls._make_api_err_code(error.code)
+                    error.code = [GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX] + error.code
 
         data["created_via"] = dataset.created_via
 
