@@ -12,6 +12,12 @@ msgstr ""
 msgid "source_templates-tab_title-table"
 msgstr "Table"
 
+msgid "source_templates-label-db_name"
+msgstr "Database name"
+
+msgid "source_templates-label-schema_name"
+msgstr "Schema name"
+
 msgid "source_templates-label-table"
 msgstr "Table name"
 

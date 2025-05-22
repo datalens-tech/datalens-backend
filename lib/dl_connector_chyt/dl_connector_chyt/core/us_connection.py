@@ -111,9 +111,9 @@ class BaseConnectionCHYT(
                 source_type=self.chyt_table_source_type,
                 localizer=localizer,
                 title="YTsaurus table via CHYT",
-                field_doc_key="YTsaurus/CHYT_TABLE/table_name",
                 template_enabled=self.is_datasource_template_allowed,
-                form_title=localizer.translate(Translatable("source_templates-label-ytsaurus_table")),
+                table_form_title=localizer.translate(Translatable("source_templates-label-ytsaurus_table")),
+                table_form_field_doc_key="YTsaurus/CHYT_TABLE/table_name",
             ),
             DataSourceTemplate(
                 title="List of YTsaurus tables via CHYT",

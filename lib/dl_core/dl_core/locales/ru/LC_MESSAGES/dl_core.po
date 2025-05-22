@@ -12,8 +12,16 @@ msgstr ""
 msgid "source_templates-tab_title-table"
 msgstr "Таблица"
 
+#, fuzzy
+msgid "source_templates-label-db_name"
+msgstr "Имя базы данных"
+
+#, fuzzy
+msgid "source_templates-label-schema_name"
+msgstr "Имя схемы"
+
 msgid "source_templates-label-table"
-msgstr "Имя Таблицы"
+msgstr "Имя таблицы"
 
 msgid "source_templates-tab_title-sql"
 msgstr "SQL"

@@ -51,6 +51,7 @@ class DatasetFactoryProtocol(Protocol):
 
 
 class BaseTestSourceTemplate(ConnectionTestBase):
+    source_type: ClassVar[DataSourceType]
     raw_sql_level = dl_constants_enums.RawSQLLevel.template
     connector_enable_datasource_template: ClassVar[bool] = True
 
@@ -62,7 +63,7 @@ class BaseTestSourceTemplate(ConnectionTestBase):
         return {self.conn_type: settings}
 
     @pytest.fixture(name="parameter_fields")
-    def fixture_parameter_fields(self, sample_table: DbTable) -> dict[str, ResultField]:
+    def fixture_parameter_fields(self) -> dict[str, ResultField]:
         raise NotImplementedError
 
     @pytest.fixture(name="invalid_parameter_values")
@@ -73,13 +74,37 @@ class BaseTestSourceTemplate(ConnectionTestBase):
     def fixture_failed_constraint_parameter_values(self) -> dict[str, ParameterValue]:
         raise NotImplementedError
 
+    @pytest.fixture(name="datasource_parameters")
+    def fixture_datasource_parameters(self) -> dict[str, str]:
+        raise NotImplementedError
+
     @pytest.fixture(name="datasource")
-    def fixture_datasource(self, saved_connection_id: str) -> DataSource:
+    def fixture_datasource(
+        self,
+        saved_connection_id: str,
+        datasource_parameters: dict[str, str],
+    ) -> DataSource:
+        return DataSource(
+            connection_id=saved_connection_id,
+            source_type=self.source_type.name,
+            parameters=datasource_parameters,
+        )
+
+    @pytest.fixture(name="invalid_datasource_parameters")
+    def fixture_invalid_datasource_parameters(self) -> dict[str, str]:
         raise NotImplementedError
 
     @pytest.fixture(name="invalid_datasource")
-    def fixture_invalid_datasource(self, saved_connection_id: str) -> DataSource:
-        raise NotImplementedError
+    def fixture_invalid_datasource(
+        self,
+        saved_connection_id: str,
+        invalid_datasource_parameters: dict[str, str],
+    ) -> DataSource:
+        return DataSource(
+            connection_id=saved_connection_id,
+            source_type=self.source_type.name,
+            parameters=invalid_datasource_parameters,
+        )
 
     @pytest.fixture(name="parameter_fields_factory")
     def fixture_parameter_fields_factory(
@@ -134,20 +159,23 @@ class BaseTestSourceTemplate(ConnectionTestBase):
 
 
 class BaseTableTestSourceTemplate(BaseTestSourceTemplate):
-    source_type: ClassVar[DataSourceType]
     conn_settings_cls: ClassVar[ConnectorSettingsBase]
     table_name_pattern: ClassVar[str] = "table_.*"
     invalid_table_name: ClassVar[str] = "table_invalid"
     failed_constraint_table_name: ClassVar[str] = "failed_constraint_table_name"
 
+    @pytest.fixture(name="table_name")
+    def fixture_table_name(self, sample_table: DbTable) -> str:
+        return sample_table.name
+
     @pytest.fixture(name="parameter_fields")
-    def fixture_parameter_fields(self, sample_table: DbTable) -> dict[str, ResultField]:
+    def fixture_parameter_fields(self, table_name: str) -> dict[str, ResultField]:  # type: ignore  # LSP violation for fixture
         return {
             "table_name": ResultField(
                 title="table_name",
                 cast=StringParameterValue.type,
                 value_constraint=RegexParameterValueConstraint(pattern=self.table_name_pattern),
-                default_value=StringParameterValue(value=sample_table.name),
+                default_value=StringParameterValue(value=table_name),
             ),
         }
 
@@ -163,42 +191,25 @@ class BaseTableTestSourceTemplate(BaseTestSourceTemplate):
             "table_name": StringParameterValue(value=self.failed_constraint_table_name),
         }
 
-    @pytest.fixture(name="datasource")
-    def fixture_datasource(self, saved_connection_id: str) -> DataSource:
-        return DataSource(
-            connection_id=saved_connection_id,
-            source_type=self.source_type.name,
-            parameters=dict(table_name="{{table_name}}"),
-        )
+    @pytest.fixture(name="datasource_parameters")
+    def fixture_datasource_parameters(self) -> dict[str, str]:
+        return dict(table_name="{{table_name}}")
 
-    @pytest.fixture(name="invalid_datasource")
-    def fixture_invalid_datasource(self, saved_connection_id: str) -> DataSource:
-        return DataSource(
-            connection_id=saved_connection_id,
-            source_type=self.source_type.name,
-            parameters=dict(table_name="{{invalid_parameter_name}}"),
-        )
+    @pytest.fixture(name="invalid_datasource_parameters")
+    def fixture_invalid_datasource_parameters(self) -> dict[str, str]:
+        return dict(table_name="{{invalid_parameter_name}}")
 
 
 class BaseSubselectTestSourceTemplate(BaseTableTestSourceTemplate):
-    source_type: ClassVar[DataSourceType]
     conn_settings_cls: ClassVar[ConnectorSettingsBase]
 
-    @pytest.fixture(name="datasource")
-    def fixture_datasource(self, saved_connection_id: str) -> DataSource:
-        return DataSource(
-            connection_id=saved_connection_id,
-            source_type=self.source_type.name,
-            parameters=dict(subsql="SELECT * FROM {{table_name}}"),
-        )
+    @pytest.fixture(name="datasource_parameters")
+    def fixture_datasource_parameters(self) -> dict[str, str]:
+        return dict(subsql="SELECT * FROM {{table_name}}")
 
-    @pytest.fixture(name="invalid_datasource")
-    def fixture_invalid_datasource(self, saved_connection_id: str) -> DataSource:
-        return DataSource(
-            connection_id=saved_connection_id,
-            source_type=self.source_type.name,
-            parameters=dict(subsql="SELECT * FROM {{invalid_parameter_name}}"),
-        )
+    @pytest.fixture(name="invalid_datasource_parameters")
+    def fixture_invalid_datasource_parameters(self) -> dict[str, str]:
+        return dict(subsql="SELECT * FROM {{invalid_parameter_name}}")
 
 
 class BaseTestControlApiSourceTemplate(BaseTestSourceTemplate):
