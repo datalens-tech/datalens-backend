@@ -86,9 +86,9 @@ class YDBConnection(
                 source_type=SOURCE_TYPE_YDB_TABLE,
                 localizer=localizer,
                 title="YDB table",
-                form_title=localizer.translate(Translatable("source_templates-label-ydb_table")),
-                field_doc_key="YDB_TABLE/table_name",
                 template_enabled=self.is_datasource_template_allowed,
+                table_form_title=localizer.translate(Translatable("source_templates-label-ydb_table")),
+                table_form_field_doc_key="YDB_TABLE/table_name",
             ),
             make_subselect_datasource_template(
                 connection_id=self.uuid,  # type: ignore

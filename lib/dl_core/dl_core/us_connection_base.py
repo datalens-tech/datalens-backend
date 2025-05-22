@@ -114,30 +114,61 @@ def make_table_datasource_template(
     disabled: bool = False,
     template_enabled: bool = False,
     title: str = "Table",
-    field_doc_key: str = "ANY_TABLE/table_name",
     tab_title: str | None = None,
-    form_title: str | None = None,
+    db_name_form_enabled: bool = False,
+    schema_name_form_enabled: bool = False,
+    table_form_title: str | None = None,
+    table_form_field_doc_key: str = "ANY_TABLE/table_name",
 ) -> DataSourceTemplate:
     if tab_title is None:
         tab_title = localizer.translate(Translatable("source_templates-tab_title-table"))
-    if form_title is None:
-        form_title = localizer.translate(Translatable("source_templates-label-table"))
+
+    form: list[dict[str, Any]] = []
+
+    if db_name_form_enabled:
+        form.append(
+            {
+                "name": "db_name",
+                "input_type": "text",
+                "default": "",
+                "required": True,
+                "title": localizer.translate(Translatable("source_templates-label-db_name")),
+                "template_enabled": template_enabled,
+            }
+        )
+
+    if schema_name_form_enabled:
+        form.append(
+            {
+                "name": "schema_name",
+                "input_type": "text",
+                "default": "",
+                "required": True,
+                "title": localizer.translate(Translatable("source_templates-label-schema_name")),
+                "template_enabled": template_enabled,
+            }
+        )
+
+    if table_form_title is None:
+        table_form_title = localizer.translate(Translatable("source_templates-label-table"))
+
+    form.append(
+        {
+            "name": "table_name",
+            "input_type": "text",
+            "default": "",
+            "required": True,
+            "title": table_form_title,
+            "field_doc_key": table_form_field_doc_key,
+            "template_enabled": template_enabled,
+        }
+    )
 
     return DataSourceTemplate(
         title=title,
         tab_title=tab_title,
         source_type=source_type,
-        form=[
-            {
-                "name": "table_name",
-                "input_type": "text",
-                "default": "",
-                "required": True,
-                "title": form_title,
-                "field_doc_key": field_doc_key,
-                "template_enabled": template_enabled,
-            },
-        ],
+        form=form,
         disabled=disabled,
         group=[],
         connection_id=connection_id,

@@ -71,6 +71,7 @@ class ConnectionSQLOracle(
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
                 template_enabled=self.is_datasource_template_allowed,
+                schema_name_form_enabled=True,
             ),
             make_subselect_datasource_template(
                 connection_id=self.uuid,  # type: ignore

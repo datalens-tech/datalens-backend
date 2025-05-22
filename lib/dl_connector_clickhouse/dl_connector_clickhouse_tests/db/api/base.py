@@ -27,7 +27,6 @@ class ClickHouseConnectionTestBase(BaseClickHouseTestClass, ConnectionTestBase):
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
         return dict(
-            db_name=CoreConnectionSettings.DB_NAME,
             host=CoreConnectionSettings.HOST,
             port=CoreConnectionSettings.PORT,
             username=CoreConnectionSettings.USERNAME,
