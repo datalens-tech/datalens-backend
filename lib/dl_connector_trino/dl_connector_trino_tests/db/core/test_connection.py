@@ -26,6 +26,8 @@ class TestTrinoConnection(
         assert conn.data.port == params["port"]
         assert conn.data.username == params["username"]
         assert conn.data.auth_type == TrinoAuthType.none
+        assert conn.data.ssl_enable == params["ssl_enable"]
+        assert conn.data.ssl_ca == params["ssl_ca"]
 
     def check_data_source_templates(
         self,
@@ -54,6 +56,7 @@ class TestTrinoPasswordConnection(BaseTrinoPasswordTestClass, TestTrinoConnectio
         assert conn.data.username == params["username"]
         assert conn.data.password == params["password"]
         assert conn.data.auth_type == TrinoAuthType.password
+        assert conn.data.ssl_enable == params["ssl_enable"]
         assert conn.data.ssl_ca == params["ssl_ca"]
 
 
@@ -65,4 +68,5 @@ class TestTrinoJwtConnection(BaseTrinoJwtTestClass, TestTrinoConnection):
         assert conn.data.username == params["username"]
         assert conn.data.jwt == params["jwt"]
         assert conn.data.auth_type == TrinoAuthType.jwt
+        assert conn.data.ssl_enable == params["ssl_enable"]
         assert conn.data.ssl_ca == params["ssl_ca"]

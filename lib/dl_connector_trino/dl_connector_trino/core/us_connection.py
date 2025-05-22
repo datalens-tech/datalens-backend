@@ -66,6 +66,7 @@ class ConnectionTrino(ConnectionSQL):
     @attr.s(kw_only=True)
     class DataModel(ConnectionSQL.DataModel):
         auth_type: TrinoAuthType = attr.ib()
+        ssl_enable: bool = attr.ib(kw_only=True, default=False)
         ssl_ca: Optional[str] = attr.ib(repr=secrepr, default=None)
         jwt: Optional[str] = attr.ib(repr=secrepr, default=None)
 
@@ -78,6 +79,7 @@ class ConnectionTrino(ConnectionSQL):
             auth_type=self.data.auth_type,
             password=self.data.password,
             jwt=self.data.jwt,
+            ssl_enable=self.data.ssl_enable,
             ssl_ca=self.data.ssl_ca,
         )
 

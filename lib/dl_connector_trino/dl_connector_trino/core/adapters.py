@@ -12,6 +12,7 @@ from trino.auth import (
 from trino.sqlalchemy import URL as trino_url
 from trino.sqlalchemy.datatype import parse_sqltype
 
+from dl_configs.utils import get_root_certificates_path
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_models.common_models import (
@@ -92,7 +93,6 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         args: dict[str, Any] = {
             **super().get_connect_args(),
             "legacy_primitive_types": True,
-            "http_scheme": "http" if self._target_dto.auth_type is TrinoAuthType.none else "https",
         }
         if self._target_dto.auth_type is TrinoAuthType.none:
             pass
@@ -103,10 +103,17 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         else:
             raise NotImplementedError(f"{self._target_dto.auth_type.name} authentication is not supported yet")
 
+        if not self._target_dto.ssl_enable:
+            args["http_scheme"] = "http"
+            return args
+
+        args["http_scheme"] = "https"
         if self._target_dto.ssl_ca:
             session = requests.Session()
             session.mount("https://", CustomHTTPAdapter(self._target_dto.ssl_ca))
             args["http_session"] = session
+        else:
+            args["verify"] = get_root_certificates_path()
 
         return args
 

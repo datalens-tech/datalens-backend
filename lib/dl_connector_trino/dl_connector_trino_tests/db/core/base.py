@@ -127,6 +127,8 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
             port=test_config.CoreConnectionSettings.PORT,
             username=test_config.CoreConnectionSettings.USERNAME,
             auth_type=TrinoAuthType.none,
+            ssl_enable=test_config.CoreConnectionSettings.SSL_ENABLE,
+            ssl_ca=None,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
 
@@ -162,6 +164,7 @@ class BaseTrinoSslTestClass(BaseTrinoTestClass):
             host=test_config.CoreSslConnectionSettings.HOST,
             port=test_config.CoreSslConnectionSettings.PORT,
             username=test_config.CoreSslConnectionSettings.USERNAME,
+            ssl_enable=test_config.CoreSslConnectionSettings.SSL_ENABLE,
             ssl_ca=ssl_ca,
         )
 

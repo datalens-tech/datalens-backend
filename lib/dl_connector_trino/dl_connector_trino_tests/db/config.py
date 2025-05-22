@@ -33,12 +33,14 @@ class CoreConnectionSettings(BaseConnectionSettings):
     PORT: ClassVar[int] = get_test_container_hostport("trino-no-auth", fallback_port=21123).port
     USERNAME: ClassVar[str] = "datalens"
     AUTH_TYPE: ClassVar[TrinoAuthType] = TrinoAuthType.none
+    SSL_ENABLE: ClassVar[bool] = False
 
 
 class CoreSslConnectionSettings(BaseConnectionSettings):
     HOST: ClassVar[str] = get_test_container_hostport("trino-tls-nginx", fallback_port=21124).host
     PORT: ClassVar[int] = get_test_container_hostport("trino-tls-nginx", fallback_port=21124).port
     USERNAME: ClassVar[str] = "trino_user"
+    SSL_ENABLE: ClassVar[bool] = True
     CERT_PROVIDER_URL: ClassVar[
         str
     ] = f"http://{get_test_container_hostport('ssl-provider', fallback_port=26002).as_pair()}"

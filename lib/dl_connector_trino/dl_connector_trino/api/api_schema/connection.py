@@ -38,6 +38,12 @@ class TrinoConnectionSchema(
         required=False,
         allow_none=True,
     )
+    ssl_enable = core_ma_fields.OnOffField(
+        attribute="data.ssl_enable",
+        required=False,
+        load_default=False,
+        bi_extra=FieldExtra(editable=True),
+    )
     ssl_ca = core_ma_fields.Base64StringField(
         attribute="data.ssl_ca",
         required=False,

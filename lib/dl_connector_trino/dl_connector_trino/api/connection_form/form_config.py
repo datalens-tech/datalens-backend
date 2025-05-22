@@ -116,41 +116,6 @@ class TrinoRowConstructor(RowConstructor):
     def cache_ttl_row(self) -> C.CacheTTLRow:
         return C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec)
 
-    def _ssl_ca_row_base(
-        self,
-        display_conditions: TDisplayConditions,
-    ) -> C.CustomizableRow:
-        _display_conditions = {
-            **display_conditions,
-            CommonFieldName.advanced_settings: "opened",
-        }
-        return C.CustomizableRow(
-            items=[
-                C.LabelRowItem(
-                    text=self._localizer.translate(Translatable("label_ssl-ca")),
-                    display_conditions=_display_conditions,
-                ),
-                C.FileInputRowItem(
-                    name=CommonFieldName.ssl_ca,
-                    display_conditions=_display_conditions,
-                ),
-            ]
-        )
-
-    def password_ssl_ca_row(
-        self,
-    ) -> C.CustomizableRow:
-        return self._ssl_ca_row_base(
-            display_conditions={TrinoFormFieldName.auth_type: TrinoAuthType.password.value},
-        )
-
-    def jwt_ssl_ca_row(
-        self,
-    ) -> C.CustomizableRow:
-        return self._ssl_ca_row_base(
-            display_conditions={TrinoFormFieldName.auth_type: TrinoAuthType.jwt.value},
-        )
-
 
 class TrinoConnectionFormFactory(ConnectionFormFactory):
     DEFAULT_HTTP_PORT = "8080"
@@ -177,25 +142,12 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
             FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
             FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
-            FormFieldApiSchema(
-                name=CommonFieldName.ssl_ca,
-                required=False,
-                default_action=FormFieldApiAction.include,
-            ),
+            FormFieldApiSchema(name=CommonFieldName.ssl_enable),
+            FormFieldApiSchema(name=CommonFieldName.ssl_ca),
         ]
 
     def _get_schema_conditions(self) -> list[FormFieldApiActionCondition]:
         return [
-            FormFieldApiActionCondition(
-                when=FormFieldSelector(name=TrinoFormFieldName.auth_type),
-                equals=TrinoAuthType.none.value,
-                then=[
-                    FormFieldConditionalApiAction(
-                        selector=FormFieldSelector(name=CommonFieldName.ssl_ca),
-                        action=FormFieldApiAction.skip,
-                    ),
-                ],
-            ),
             FormFieldApiActionCondition(
                 when=FormFieldSelector(name=TrinoFormFieldName.auth_type),
                 equals=TrinoAuthType.password.value,
@@ -276,8 +228,11 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
                     rc.cache_ttl_row(),
                     rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
                     rc.collapse_advanced_settings_row(),
-                    rc.password_ssl_ca_row(),
-                    rc.jwt_ssl_ca_row(),
+                    *rc.ssl_rows(
+                        enabled_name=CommonFieldName.ssl_enable,
+                        enabled_help_text=self._localizer.translate(Translatable("label_trino-ssl-enabled-tooltip")),
+                        enabled_default_value=True,
+                    ),
                     rc.data_export_forbidden_row(),
                 ]
             ),
