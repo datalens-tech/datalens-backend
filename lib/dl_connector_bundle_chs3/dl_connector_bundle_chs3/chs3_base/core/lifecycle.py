@@ -49,8 +49,12 @@ class FileConnTaskScheduler:
             if s3_filename is None:
                 LOGGER.warning(f"Cannot schedule file deletion for source_id {source.id} - s3_filename not set")
                 continue
+
+            assert self._rci.tenant is not None
+
             task = DeleteFileTask(
                 s3_filename=s3_filename,
+                tenant_id=self._rci.tenant.get_tenant_id(),
                 preview_id=source.preview_id,
             )
             task_instance = await_sync(self._task_processor.schedule(task))

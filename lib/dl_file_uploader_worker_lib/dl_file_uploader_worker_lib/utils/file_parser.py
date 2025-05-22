@@ -5,11 +5,11 @@ import csv
 import logging
 from typing import (
     Any,
-    BinaryIO,
     Optional,
 )
 
 import attr
+from botocore.response import StreamingBody
 
 from dl_constants.enums import FileProcessingStatus
 from dl_core.db import SchemaColumn
@@ -17,17 +17,17 @@ from dl_file_uploader_lib.enums import (
     CSVDelimiter,
     CSVEncoding,
 )
-from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import (
     CSVFileSettings,
     CSVFileSourceSettings,
     DataFile,
     DataSource,
-    DataSourcePreview,
     FileSettings,
     FileSourceSettings,
     SpreadsheetFileSourceSettings,
 )
+from dl_file_uploader_lib.s3_model.base import S3ModelManager
+from dl_file_uploader_lib.s3_model.models import S3DataSourcePreview
 from dl_file_uploader_worker_lib.utils.parsing_utils import (
     detect_dialect,
     detect_encoding,
@@ -61,7 +61,7 @@ class FileParser(metaclass=abc.ABCMeta):
         self.sample_size = sample_size
         self.source_id = source_id
 
-    def _get_sync_s3_data_stream(self, key: str) -> BinaryIO:
+    def _get_sync_s3_data_stream(self, key: str) -> StreamingBody:
         s3_sync_cli = self.s3.get_sync_client()
         s3_sync_resp = s3_sync_cli.get_object(Bucket=self.s3.tmp_bucket_name, Key=key)
         return s3_sync_resp["Body"]
@@ -78,7 +78,7 @@ class FileParser(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def prepare_preview(self, dsrc: DataSource, rmm: RedisModelManager) -> DataSourcePreview:
+    async def prepare_preview(self, dsrc: DataSource, s3mm: S3ModelManager) -> S3DataSourcePreview:
         raise NotImplementedError
 
 
@@ -186,7 +186,7 @@ class CSVFileParser(FileParser):
 
         return has_header, raw_schema, file_settings, file_source_settings
 
-    async def prepare_preview(self, dsrc: DataSource, rmm: RedisModelManager) -> DataSourcePreview:
+    async def prepare_preview(self, dsrc: DataSource, s3mm: S3ModelManager) -> S3DataSourcePreview:
         loop = asyncio.get_running_loop()
 
         await self.ensure_sample_text_loaded()
@@ -204,7 +204,7 @@ class CSVFileParser(FileParser):
             file_settings.dialect,
             file_source_settings.first_line_is_header,
         )
-        return DataSourcePreview(manager=rmm, preview_data=preview_data)
+        return S3DataSourcePreview(manager=s3mm, preview_data=preview_data)
 
 
 class SpreadsheetFileParser(FileParser):
@@ -241,7 +241,7 @@ class SpreadsheetFileParser(FileParser):
 
         return has_header, raw_schema, file_settings, file_source_settings
 
-    async def prepare_preview(self, dsrc: DataSource, rmm: RedisModelManager) -> DataSourcePreview:
+    async def prepare_preview(self, dsrc: DataSource, s3mm: S3ModelManager) -> S3DataSourcePreview:
         loop = asyncio.get_running_loop()
 
         s3_resp = await self.s3.client.get_object(
@@ -260,4 +260,4 @@ class SpreadsheetFileParser(FileParser):
             self.tpe, prepare_preview_from_json_each_row, sample_bytes, has_header
         )
 
-        return DataSourcePreview(manager=rmm, preview_data=preview_data)
+        return S3DataSourcePreview(manager=s3mm, preview_data=preview_data)
