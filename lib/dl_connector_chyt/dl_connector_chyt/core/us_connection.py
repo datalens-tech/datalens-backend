@@ -190,7 +190,6 @@ class BaseConnectionCHYT(
 
 class ConnectionCHYTToken(BaseConnectionCHYT):
     allow_cache: ClassVar[bool] = True
-    allow_export: ClassVar[bool] = True
 
     source_type = SOURCE_TYPE_CHYT_YTSAURUS_TABLE
     allowed_source_types = frozenset(

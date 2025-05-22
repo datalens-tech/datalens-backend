@@ -41,6 +41,7 @@ class ClickHouseCoreConnectionDefinition(CoreConnectionDefinition):
     dialect_string = "bi_clickhouse"
     data_source_migrator_cls = ClickHouseDataSourceMigrator
     settings_definition = ClickHouseSettingDefinition
+    allow_export = True
 
 
 class ClickHouseTableCoreSourceDefinition(CoreSourceDefinition):

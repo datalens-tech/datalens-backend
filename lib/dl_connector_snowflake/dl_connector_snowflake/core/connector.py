@@ -40,6 +40,7 @@ class SnowFlakeCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = SnowFlakeSyncConnExecutor
     lifecycle_manager_cls = SnowFlakeConnectionLifecycleManager
     dialect_string = "snowflake"
+    allow_export = True
 
 
 class SnowFlakeCoreTableSourceDefinition(CoreSourceDefinition):

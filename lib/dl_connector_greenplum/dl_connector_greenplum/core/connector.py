@@ -45,6 +45,7 @@ class GreenplumCoreConnectionDefinition(CoreConnectionDefinition):
     dialect_string = "bi_postgresql"
     data_source_migrator_cls = GreenPlumDataSourceMigrator
     settings_definition = GreenplumSettingDefinition
+    allow_export = True
 
 
 class GreenplumTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):
