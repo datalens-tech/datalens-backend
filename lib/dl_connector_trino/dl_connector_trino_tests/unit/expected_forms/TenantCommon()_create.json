@@ -172,7 +172,7 @@
                         "advanced_settings": "opened"
                     },
                     "text": "TLS",
-                    "helpText": "When the option is enabled, the HTTPS protocol is used when interacting with the database, and when disabled \u2014 HTTP"
+                    "helpText": "When this option is enabled, connections to Trino use the HTTPS protocol; when disabled - HTTP."
                 },
                 {
                     "id": "radio_button",
