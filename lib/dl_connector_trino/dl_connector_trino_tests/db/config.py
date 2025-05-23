@@ -32,13 +32,15 @@ class CoreConnectionSettings(BaseConnectionSettings):
     HOST: ClassVar[str] = get_test_container_hostport("trino-no-auth", fallback_port=21123).host
     PORT: ClassVar[int] = get_test_container_hostport("trino-no-auth", fallback_port=21123).port
     USERNAME: ClassVar[str] = "datalens"
-    AUTH_TYPE: ClassVar[TrinoAuthType] = TrinoAuthType.NONE
+    AUTH_TYPE: ClassVar[TrinoAuthType] = TrinoAuthType.none
+    SSL_ENABLE: ClassVar[bool] = False
 
 
 class CoreSslConnectionSettings(BaseConnectionSettings):
     HOST: ClassVar[str] = get_test_container_hostport("trino-tls-nginx", fallback_port=21124).host
     PORT: ClassVar[int] = get_test_container_hostport("trino-tls-nginx", fallback_port=21124).port
     USERNAME: ClassVar[str] = "trino_user"
+    SSL_ENABLE: ClassVar[bool] = True
     CERT_PROVIDER_URL: ClassVar[
         str
     ] = f"http://{get_test_container_hostport('ssl-provider', fallback_port=26002).as_pair()}"
@@ -46,7 +48,7 @@ class CoreSslConnectionSettings(BaseConnectionSettings):
 
 class CorePasswordConnectionSettings(CoreSslConnectionSettings):
     PASSWORD: ClassVar[str] = "trino_password"
-    AUTH_TYPE: ClassVar[TrinoAuthType] = TrinoAuthType.PASSWORD
+    AUTH_TYPE: ClassVar[TrinoAuthType] = TrinoAuthType.password
 
 
 class CoreJwtConnectionSettings(CoreSslConnectionSettings):
@@ -58,7 +60,7 @@ class CoreJwtConnectionSettings(CoreSslConnectionSettings):
         "oKkShhF7QYokB2a-9nE8OUrhvfdy4Ix_9u_FnaToXZUhTomEIOV4Fut9QihslkSlKetTsZFtD5J5oZ292wa_mI8P_jE13tMP7iZl"
         "mUhNcNenmf7WsxqSP7SZDmItS-pPdfrAWSYw4EyHw"
     )
-    AUTH_TYPE: ClassVar[str] = TrinoAuthType.JWT
+    AUTH_TYPE: ClassVar[str] = TrinoAuthType.jwt
 
 
 SUBSELECT_QUERY = r"""

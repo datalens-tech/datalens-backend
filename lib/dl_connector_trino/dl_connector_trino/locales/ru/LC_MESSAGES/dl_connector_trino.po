@@ -11,3 +11,26 @@ msgstr ""
 
 msgid "label_connector-trino"
 msgstr "Trino"
+
+msgid "field_auth-type"
+msgstr "Тип аутентификации"
+
+msgid "value_auth-type-none"
+msgstr "Без аутентификации"
+
+msgid "value_auth-type-password"
+msgstr "Пароль"
+
+msgid "value_auth-type-jwt"
+msgstr "JWT"
+
+msgid "field_password"
+msgstr "Пароль"
+
+msgid "field_jwt"
+msgstr "JWT"
+
+msgid "label_trino-ssl-enabled-tooltip"
+msgstr ""
+"Когда эта опция включена, для подключения к Trino используется протокол HTTPS; "
+"когда отключена — HTTP"
