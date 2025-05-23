@@ -67,7 +67,7 @@ class ConnectionTrino(ConnectionSQL):
     class DataModel(ConnectionSQL.DataModel):
         auth_type: TrinoAuthType = attr.ib()
         ssl_enable: bool = attr.ib(kw_only=True, default=False)
-        ssl_ca: Optional[str] = attr.ib(repr=secrepr, default=None)
+        ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
         jwt: Optional[str] = attr.ib(repr=secrepr, default=None)
 
     def get_conn_dto(self) -> TrinoConnDTO:
