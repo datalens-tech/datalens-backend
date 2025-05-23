@@ -118,7 +118,7 @@ class TrinoRowConstructor(RowConstructor):
 
 
 class TrinoConnectionFormFactory(ConnectionFormFactory):
-    DEFAULT_HTTP_PORT = "8080"
+    DEFAULT_HTTPS_PORT = "8443"
 
     def _get_implicit_form_fields(self) -> set[TFieldName]:
         return set()
@@ -221,7 +221,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
                 [
                     rc.auth_type_row(),
                     rc.host_row(),
-                    rc.port_row(default_value=self.DEFAULT_HTTP_PORT),
+                    rc.port_row(default_value=self.DEFAULT_HTTPS_PORT),
                     rc.username_row(),
                     rc.password_row(mode=self.mode),
                     rc.jwt_row(mode=self.mode),
