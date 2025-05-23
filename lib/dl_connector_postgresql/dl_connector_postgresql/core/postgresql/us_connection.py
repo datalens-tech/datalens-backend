@@ -45,15 +45,21 @@ class ConnectionPostgreSQL(
         )
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
-        return [
-            make_table_datasource_template(
-                connection_id=self.uuid,  # type: ignore
-                source_type=SOURCE_TYPE_PG_TABLE,
-                localizer=localizer,
-                disabled=not self.is_subselect_allowed,
-                template_enabled=self.is_datasource_template_allowed,
-                schema_name_form_enabled=True,
-            ),
+        result: list[DataSourceTemplate] = []
+
+        if self._connector_settings.ENABLE_TABLE_DATASOURCE_FORM:
+            result.append(
+                make_table_datasource_template(
+                    connection_id=self.uuid,  # type: ignore
+                    source_type=SOURCE_TYPE_PG_TABLE,
+                    localizer=localizer,
+                    disabled=not self.is_subselect_allowed,
+                    template_enabled=self.is_datasource_template_allowed,
+                    schema_name_form_enabled=True,
+                ),
+            )
+
+        result.append(
             make_subselect_datasource_template(
                 connection_id=self.uuid,  # type: ignore
                 source_type=SOURCE_TYPE_PG_SUBSELECT,
@@ -61,8 +67,10 @@ class ConnectionPostgreSQL(
                 disabled=not self.is_subselect_allowed,
                 field_doc_key="PG_SUBSELECT/subsql",
                 template_enabled=self.is_datasource_template_allowed,
-            ),
-        ]
+            )
+        )
+
+        return result
 
     @property
     def allow_public_usage(self) -> bool:
