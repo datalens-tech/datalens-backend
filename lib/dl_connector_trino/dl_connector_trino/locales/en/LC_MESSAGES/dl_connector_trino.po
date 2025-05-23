@@ -32,6 +32,8 @@ msgstr "JWT"
 
 msgid "label_trino-ssl-enabled-tooltip"
 msgstr ""
+"When the option is enabled, the HTTPS protocol is used when interacting with "
+"the database, and when disabled — HTTP"
 
 #~ msgid "label_ssl-ca"
 #~ msgstr "CA Certificate"
