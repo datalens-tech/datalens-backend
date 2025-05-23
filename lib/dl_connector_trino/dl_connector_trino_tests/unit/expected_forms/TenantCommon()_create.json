@@ -113,7 +113,7 @@
                     "width": "l",
                     "controlProps": {
                         "multiline": true,
-                        "type": "text"
+                        "type": "password"
                     }
                 }
             ]
@@ -169,18 +169,28 @@
                 {
                     "id": "label",
                     "displayConditions": {
-                        "auth_type": "password",
                         "advanced_settings": "opened"
                     },
-                    "text": "CA Certificate"
+                    "text": "TLS",
+                    "helpText": "label_trino-ssl-enabled-tooltip"
                 },
                 {
-                    "id": "file-input",
-                    "name": "ssl_ca",
+                    "id": "radio_button",
+                    "name": "ssl_enable",
                     "displayConditions": {
-                        "auth_type": "password",
                         "advanced_settings": "opened"
-                    }
+                    },
+                    "defaultValue": "on",
+                    "options": [
+                        {
+                            "text": "Off",
+                            "value": "off"
+                        },
+                        {
+                            "text": "On",
+                            "value": "on"
+                        }
+                    ]
                 }
             ]
         },
@@ -189,7 +199,6 @@
                 {
                     "id": "label",
                     "displayConditions": {
-                        "auth_type": "jwt",
                         "advanced_settings": "opened"
                     },
                     "text": "CA Certificate"
@@ -198,7 +207,6 @@
                     "id": "file-input",
                     "name": "ssl_ca",
                     "displayConditions": {
-                        "auth_type": "jwt",
                         "advanced_settings": "opened"
                     }
                 }
@@ -285,6 +293,11 @@
                     "defaultAction": "include"
                 },
                 {
+                    "name": "ssl_enable",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
                     "name": "ssl_ca",
                     "required": false,
                     "defaultAction": "include"
@@ -296,20 +309,6 @@
                 }
             ],
             "conditions": [
-                {
-                    "when": {
-                        "name": "auth_type"
-                    },
-                    "equals": "none",
-                    "then": [
-                        {
-                            "selector": {
-                                "name": "ssl_ca"
-                            },
-                            "action": "skip"
-                        }
-                    ]
-                },
                 {
                     "when": {
                         "name": "auth_type"
@@ -389,6 +388,11 @@
                     "defaultAction": "include"
                 },
                 {
+                    "name": "ssl_enable",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
                     "name": "ssl_ca",
                     "required": false,
                     "defaultAction": "include"
@@ -400,20 +404,6 @@
                 }
             ],
             "conditions": [
-                {
-                    "when": {
-                        "name": "auth_type"
-                    },
-                    "equals": "none",
-                    "then": [
-                        {
-                            "selector": {
-                                "name": "ssl_ca"
-                            },
-                            "action": "skip"
-                        }
-                    ]
-                },
                 {
                     "when": {
                         "name": "auth_type"
