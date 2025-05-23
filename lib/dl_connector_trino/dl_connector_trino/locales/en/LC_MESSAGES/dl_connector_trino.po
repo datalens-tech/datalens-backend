@@ -34,6 +34,3 @@ msgid "label_trino-ssl-enabled-tooltip"
 msgstr ""
 "When this option is enabled, connections to Trino use the HTTPS protocol; "
 "when disabled - HTTP."
-
-#~ msgid "label_ssl-ca"
-#~ msgstr "CA Certificate"
