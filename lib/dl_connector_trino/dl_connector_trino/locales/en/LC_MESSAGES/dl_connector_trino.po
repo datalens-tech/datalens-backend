@@ -30,5 +30,8 @@ msgstr "Password"
 msgid "field_jwt"
 msgstr "JWT"
 
-msgid "label_ssl-ca"
-msgstr "CA Certificate"
+msgid "label_trino-ssl-enabled-tooltip"
+msgstr ""
+
+#~ msgid "label_ssl-ca"
+#~ msgstr "CA Certificate"
