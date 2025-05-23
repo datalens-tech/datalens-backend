@@ -133,7 +133,7 @@ def make_table_datasource_template(
                 "default": "",
                 "required": True,
                 "title": localizer.translate(Translatable("source_templates-label-db_name")),
-                "template_enabled": template_enabled,
+                "template_enabled": False,
             }
         )
 
@@ -145,7 +145,7 @@ def make_table_datasource_template(
                 "default": "",
                 "required": True,
                 "title": localizer.translate(Translatable("source_templates-label-schema_name")),
-                "template_enabled": template_enabled,
+                "template_enabled": False,
             }
         )
 
