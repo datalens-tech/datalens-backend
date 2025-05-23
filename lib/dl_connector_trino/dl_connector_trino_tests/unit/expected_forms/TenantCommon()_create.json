@@ -172,7 +172,7 @@
                         "advanced_settings": "opened"
                     },
                     "text": "TLS",
-                    "helpText": "label_trino-ssl-enabled-tooltip"
+                    "helpText": "When the option is enabled, the HTTPS protocol is used when interacting with the database, and when disabled \u2014 HTTP"
                 },
                 {
                     "id": "radio_button",
