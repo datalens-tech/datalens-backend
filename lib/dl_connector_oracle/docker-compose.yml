@@ -49,7 +49,7 @@ services:
       file: ../testenv-common/docker-compose.common.yml
       service: us
     ports:
-     - "51811:8083"
+     - "51811:8080"
 
   redis-caches:
     # image: "bitnami/redis:5.0.8"

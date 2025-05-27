@@ -104,7 +104,7 @@ services:
       AUTH_POLICY: "required"
       MASTER_TOKEN: *c-us-master-token
     ports:
-     - "50300:8083"
+     - "50300:8080"
 
   redis-caches:
     # image: "bitnami/redis:5.0.8"
