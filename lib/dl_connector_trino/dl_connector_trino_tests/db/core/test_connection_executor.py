@@ -45,17 +45,18 @@ class TestTrinoSyncConnectionExecutor(
     DefaultSyncConnectionExecutorTestSuite[ConnectionTrino],
 ):
     @pytest.mark.parametrize(
-        "layer, exception_params_key",
+        "layer, expected_error_name",
         [
-            ("table_name", "table_definition"),
-            ("schema_name", "schema_definition"),
-            ("db_name", "catalog_definition"),
+            ("table_name", "TABLE_NOT_FOUND"),
+            ("schema_name", "SCHEMA_NOT_FOUND"),
+            ("db_name", "CATALOG_NOT_FOUND"),
+            # ("column_name", "COLUMN_NOT_FOUND"),
         ],
     )
     def test_error_on_select_from_nonexistent_source(
         self,
         layer: str,
-        exception_params_key: str,
+        expected_error_name: str,
         sync_connection_executor: SyncConnExecutorBase,
         existing_table_ident: TableIdent,
     ) -> None:
@@ -70,7 +71,7 @@ class TestTrinoSyncConnectionExecutor(
         nonexistent_table = sa.Table(
             nonexistent_table_ident.table_name,
             sa.MetaData(),
-            sa.Column("some_column", sa.String),
+            sa.Column("nonexistent_column", sa.String),
             schema=nonexistent_table_ident.schema_name,
         )
         sa_query = nonexistent_table.select()
@@ -79,7 +80,7 @@ class TestTrinoSyncConnectionExecutor(
             sync_connection_executor.execute(conn_executor_query)
 
         exc_instance = exc_info.value
-        assert exception_params_key in exc_instance.params
+        assert exc_instance.details["error_name"] == expected_error_name
 
     def get_schemas_for_type_recognition(self) -> dict[str, Sequence[DefaultSyncConnectionExecutorTestSuite.CD]]:
         return {
