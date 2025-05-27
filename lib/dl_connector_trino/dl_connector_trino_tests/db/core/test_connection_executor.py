@@ -50,7 +50,7 @@ class TestTrinoSyncConnectionExecutor(
             ("table_name", "TABLE_NOT_FOUND"),
             ("schema_name", "SCHEMA_NOT_FOUND"),
             ("db_name", "CATALOG_NOT_FOUND"),
-            # ("column_name", "COLUMN_NOT_FOUND"),
+            ("column_name", "COLUMN_NOT_FOUND"),
         ],
     )
     def test_error_on_select_from_nonexistent_source(
@@ -65,7 +65,8 @@ class TestTrinoSyncConnectionExecutor(
             schema_name=existing_table_ident.schema_name,
             table_name=existing_table_ident.table_name,
         )
-        nonexistent_table_features[layer] = "nonexistent_" + nonexistent_table_features[layer]
+        if layer != "column_name":
+            nonexistent_table_features[layer] = "nonexistent_" + nonexistent_table_features[layer]
         nonexistent_table_ident = TableIdent(**nonexistent_table_features)
 
         nonexistent_table = sa.Table(
