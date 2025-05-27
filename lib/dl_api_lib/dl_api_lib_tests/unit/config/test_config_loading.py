@@ -35,7 +35,7 @@ CRYPTO_KEYS_CONFIG = CryptoKeysConfig(
     map_id_key={"1": "asd", "0": "asdasd"},
 )
 RQE_CONFIG = RQEConfig.get_default().clone(hmac_key=b"123")
-US_HOST = "http://us:8083"
+US_HOST = "http://us:8080"
 US_MASTER_TOKEN = "fake-us-master-token"
 
 EXPECTED_CONTROL_API_SETTINGS = ControlApiAppSettings(

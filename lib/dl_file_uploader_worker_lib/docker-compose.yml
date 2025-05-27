@@ -27,7 +27,7 @@ services:
       file: ../testenv-common/docker-compose.common.yml
       service: us
     ports:
-      - 51500:8083
+      - 51500:8080
 
   db-clickhouse:
     build:

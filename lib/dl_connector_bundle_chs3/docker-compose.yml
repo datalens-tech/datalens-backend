@@ -33,4 +33,4 @@ services:
       file: ../testenv-common/docker-compose.common.yml
       service: us
     ports:
-      - 52600:8083
+      - 52600:8080

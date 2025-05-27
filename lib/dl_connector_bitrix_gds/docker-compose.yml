@@ -24,4 +24,4 @@ services:
       file: ../testenv-common/docker-compose.common.yml
       service: us
     ports:
-      - "51911:8083"
+      - "51911:8080"
