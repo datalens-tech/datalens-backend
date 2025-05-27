@@ -58,6 +58,17 @@ def trino_user_error_or_none(exc: Exception) -> Optional[TrinoUserError]:
     return None
 
 
+def trino_query_error_or_none(exc: Exception) -> Optional[TrinoQueryError]:
+    if not isinstance(exc, sqlalchemy.exc.ProgrammingError):
+        return None
+
+    orig = getattr(exc, "orig", None)
+    if isinstance(orig, TrinoQueryError):
+        return orig
+
+    return None
+
+
 def is_trino_source_does_not_exist_error() -> ExcMatchCondition:
     def _(exc: Exception) -> bool:
         orig = trino_user_error_or_none(exc)
@@ -80,6 +91,25 @@ def is_trino_syntax_error() -> ExcMatchCondition:
     return _
 
 
+def is_trino_out_of_memory_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        orig = trino_query_error_or_none(exc)
+        if orig is None:
+            return False
+
+        return orig.error_type == "INSUFFICIENT_RESOURCES"
+
+    return _
+
+
+def is_trino_query_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        orig = trino_query_error_or_none(exc)
+        return orig is not None
+
+    return _
+
+
 trino_error_transformer = TrinoErrorTransformer(
     rule_chain=(
         Rule(
@@ -89,6 +119,14 @@ trino_error_transformer = TrinoErrorTransformer(
         Rule(
             when=is_trino_syntax_error(),
             then_raise=exc.InvalidQuery,
+        ),
+        Rule(
+            when=is_trino_out_of_memory_error(),
+            then_raise=exc.DbMemoryLimitExceeded,
+        ),
+        Rule(
+            when=is_trino_query_error(),
+            then_raise=exc.DatabaseQueryError,
         ),
     )
     + default_error_transformer_rules
