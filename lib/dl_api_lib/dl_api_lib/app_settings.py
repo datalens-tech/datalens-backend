@@ -389,9 +389,9 @@ class AppSettingsOS(
     }
 
 
-class ControlApiAppSettingsOS(AppSettingsOS):
+class ControlApiAppSettingsOS(AppSettingsOS, ControlApiAppSettings):
     ...
 
 
-class DataApiAppSettingsOS(AppSettingsOS):
+class DataApiAppSettingsOS(AppSettingsOS, DataApiAppSettings):
     ...
