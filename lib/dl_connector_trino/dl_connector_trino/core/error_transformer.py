@@ -1,6 +1,6 @@
 from typing import Optional
 
-import sqlalchemy
+from sqlalchemy import exc as sa_exc
 from trino.exceptions import (
     TrinoQueryError,
     TrinoUserError,
@@ -48,7 +48,7 @@ class TrinoErrorTransformer(ChainedDbErrorTransformer):
 
 
 def trino_user_error_or_none(exc: Exception) -> Optional[TrinoUserError]:
-    if not isinstance(exc, sqlalchemy.exc.ProgrammingError):
+    if not isinstance(exc, sa_exc.ProgrammingError):
         return None
 
     orig = getattr(exc, "orig", None)
@@ -59,7 +59,7 @@ def trino_user_error_or_none(exc: Exception) -> Optional[TrinoUserError]:
 
 
 def trino_query_error_or_none(exc: Exception) -> Optional[TrinoQueryError]:
-    if not isinstance(exc, sqlalchemy.exc.DBAPIError):
+    if not isinstance(exc, sa_exc.DBAPIError):
         return None
 
     orig = getattr(exc, "orig", None)
@@ -104,13 +104,7 @@ def is_trino_out_of_memory_error() -> ExcMatchCondition:
 
 def is_trino_fallback_error() -> ExcMatchCondition:
     def _(exc: Exception) -> bool:
-        return isinstance(
-            exc,
-            (
-                sqlalchemy.exc.DBAPIError,
-                sqlalchemy.exc.ProgrammingError,
-            ),
-        )
+        return isinstance(exc, sa_exc.DBAPIError)
 
     return _
 
