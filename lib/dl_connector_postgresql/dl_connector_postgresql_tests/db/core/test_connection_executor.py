@@ -121,11 +121,13 @@ class TestSslPostgreSQLAsyncConnectionExecutor(
     BaseSslPostgreSQLTestClass,
     TestPostgreSQLAsyncConnectionExecutor,
 ):
+    @pytest.mark.asyncio
     async def test_test(self, async_connection_executor: AsyncConnExecutorBase) -> None:
         await super().test_test(async_connection_executor)
         await asyncio.sleep(0.1)
         self.check_ssl_directory_is_empty()
 
+    @pytest.mark.asyncio
     async def test_multiple_connection_test(self, async_connection_executor: AsyncConnExecutorBase) -> None:
         await super().test_multiple_connection_test(async_connection_executor)
         await asyncio.sleep(0.1)

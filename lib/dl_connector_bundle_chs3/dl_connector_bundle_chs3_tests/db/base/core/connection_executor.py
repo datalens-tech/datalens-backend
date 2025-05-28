@@ -62,6 +62,7 @@ class CHS3AsyncConnectionExecutorTestBase(
     DefaultAsyncConnectionExecutorTestSuite[FILE_CONN_TV],
     metaclass=abc.ABCMeta,
 ):
+    @pytest.mark.asyncio
     async def test_select_data(
         self,
         sample_table: DbTable,

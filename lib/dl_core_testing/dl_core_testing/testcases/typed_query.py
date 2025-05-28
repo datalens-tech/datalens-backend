@@ -47,6 +47,7 @@ class DefaultTypedQueryTestSuite(BaseConnectionExecutorTestClass[_CONN_TV], Gene
     def typed_query_checker(self) -> TypedQueryChecker:
         return DefaultTypedQueryChecker()
 
+    @pytest.mark.asyncio
     async def test_typed_query(
         self,
         async_connection_executor: AsyncConnExecutorBase,

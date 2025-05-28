@@ -25,9 +25,6 @@ from dl_api_commons.aio.async_wrapper_for_sync_generator import (
 )
 
 
-pytestmark = pytest.mark.asyncio  # TODO: should work through conftest?
-
-
 @pytest.fixture()
 def service_tpe() -> ThreadPoolExecutor:
     tpe = ThreadPoolExecutor(thread_name_prefix="SERVICE_TPE_")
@@ -71,6 +68,7 @@ async def async_gen_adapter(wr: Job):
             return
 
 
+@pytest.mark.asyncio
 async def test_simple_finite_generator(wrapper_factory, caplog):
     caplog.set_level("DEBUG")
     count = int(1e3)
@@ -90,6 +88,7 @@ async def test_simple_finite_generator(wrapper_factory, caplog):
     await job.cancel()
 
 
+@pytest.mark.asyncio
 async def test_error_in_start_generator(wrapper_factory, caplog):
     caplog.set_level("DEBUG")
 
@@ -107,6 +106,7 @@ async def test_error_in_start_generator(wrapper_factory, caplog):
     assert job.state == JobState.closed
 
 
+@pytest.mark.asyncio
 async def test_error_in_generator_creation(wrapper_factory, caplog):
     caplog.set_level("DEBUG")
 
@@ -122,6 +122,7 @@ async def test_error_in_generator_creation(wrapper_factory, caplog):
         await job.run()
 
 
+@pytest.mark.asyncio
 async def test_start_confirmation_timeout(caplog):
     caplog.set_level("DEBUG")
 
@@ -177,6 +178,7 @@ async def test_start_confirmation_timeout(caplog):
         logging.info("Test clean-up done")
 
 
+@pytest.mark.asyncio
 async def test_closing_before_full_consuming(wrapper_factory, caplog):
     caplog.set_level("INFO")
 
