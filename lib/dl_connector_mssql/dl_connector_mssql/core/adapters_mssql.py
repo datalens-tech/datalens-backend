@@ -239,7 +239,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
         "HYT00": exc.SourceTimeout,
     }
 
-    EXTRA_EXC_CLS = (pyodbc.Error, sa_exc.DBAPIError)
+    EXTRA_EXC_CLS = (pyodbc.Error,)
 
     @classmethod
     def get_exc_class(cls, err_msg: str) -> Optional[Type[exc.DatabaseQueryError]]:

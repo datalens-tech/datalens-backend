@@ -41,8 +41,7 @@ class ErrorHandlerMixin:
         exc_post_processor: Optional[Callable[[exc.DatabaseQueryError], None]] = None,
     ) -> Generator[None, None, None]:
         exc_clses_to_catch: tuple[Type[Exception], ...] = (
-            sa_exc.DatabaseError,
-            sa_exc.InvalidRequestError,
+            sa_exc.DBAPIError,
         ) + self.EXTRA_EXC_CLS
 
         def post_process_exc_ignore_errors(exc_to_post_process: exc.DatabaseQueryError) -> None:
