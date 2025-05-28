@@ -115,6 +115,13 @@ def is_trino_fallback_error() -> ExcMatchCondition:
     return _
 
 
+def is_trino_query_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        return isinstance(exc, TrinoQueryError)
+
+    return _
+
+
 trino_error_transformer = TrinoErrorTransformer(
     rule_chain=(
         Rule(
@@ -131,6 +138,10 @@ trino_error_transformer = TrinoErrorTransformer(
         ),
         Rule(
             when=is_trino_fallback_error(),
+            then_raise=exc.DatabaseQueryError,
+        ),
+        Rule(
+            when=is_trino_query_error(),
             then_raise=exc.DatabaseQueryError,
         ),
     )
