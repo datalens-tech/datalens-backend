@@ -50,7 +50,6 @@ class TestTrinoSyncConnectionExecutor(
             ("table_name", "TABLE_NOT_FOUND"),
             ("schema_name", "SCHEMA_NOT_FOUND"),
             ("db_name", "CATALOG_NOT_FOUND"),
-            ("column_name", "COLUMN_NOT_FOUND"),
         ],
     )
     def test_error_on_select_from_nonexistent_source(
@@ -65,14 +64,13 @@ class TestTrinoSyncConnectionExecutor(
             schema_name=existing_table_ident.schema_name,
             table_name=existing_table_ident.table_name,
         )
-        if layer != "column_name":
-            nonexistent_table_features[layer] = "nonexistent_" + nonexistent_table_features[layer]
+        nonexistent_table_features[layer] = "nonexistent_" + nonexistent_table_features[layer]
         nonexistent_table_ident = TableIdent(**nonexistent_table_features)
 
         nonexistent_table = sa.Table(
             nonexistent_table_ident.table_name,
             sa.MetaData(),
-            sa.Column("nonexistent_column", sa.String),
+            sa.Column("some_column", sa.String),
             schema=nonexistent_table_ident.schema_name,
         )
         sa_query = nonexistent_table.select()
@@ -82,6 +80,26 @@ class TestTrinoSyncConnectionExecutor(
 
         exc_instance = exc_info.value
         assert exc_instance.details["error_name"] == expected_error_name
+
+    def test_error_on_select_from_nonexistent_column(
+        self,
+        sync_connection_executor: SyncConnExecutorBase,
+        existing_table_ident: TableIdent,
+    ) -> None:
+        table_ident = TableIdent(**existing_table_ident)
+
+        table = sa.Table(
+            table_ident.table_name,
+            sa.MetaData(),
+            sa.Column("nonexistent_column", sa.String),
+            schema=table_ident.schema_name,
+        )
+        conn_executor_query = ConnExecutorQuery(table.select(), db_name=table_ident.db_name)
+        with pytest.raises(core_exc.ColumnDoesNotExist) as exc_info:
+            sync_connection_executor.execute(conn_executor_query)
+
+        exc_instance = exc_info.value
+        assert exc_instance.details["error_name"] == "COLUMN_NOT_FOUND"
 
     def get_schemas_for_type_recognition(self) -> dict[str, Sequence[DefaultSyncConnectionExecutorTestSuite.CD]]:
         return {
