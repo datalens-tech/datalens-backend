@@ -5,6 +5,7 @@ import attr
 import requests
 from requests.adapters import HTTPAdapter
 import sqlalchemy as sa
+from sqlalchemy import exc as sa_exc
 from trino.auth import (
     BasicAuthentication,
     JWTAuthentication,
@@ -73,6 +74,8 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
     conn_type = CONNECTION_TYPE_TRINO
     _error_transformer = trino_error_transformer
     _db_version: str | None = None
+
+    EXTRA_EXC_CLS = (sa_exc.DBAPIError,)
 
     def get_conn_line(self, db_name: str | None = None, params: dict[str, Any] | None = None) -> str:
         # We do not expect to transfer any additional parameters when creating the engine.
