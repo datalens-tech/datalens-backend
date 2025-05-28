@@ -18,12 +18,11 @@ from dl_core.connectors.base.error_transformer import ErrorTransformerRule as Ru
 import dl_core.exc as exc
 
 
-TRINO_SOURCE_DOES_NOT_EXIST_ERROR_TYPES = {
+TRINO_SOURCE_DOES_NOT_EXIST_ERROR_TYPES = (
     "TABLE_NOT_FOUND",
     "SCHEMA_NOT_FOUND",
     "CATALOG_NOT_FOUND",
-    "COLUMN_NOT_FOUND",
-}
+)
 
 
 class TrinoErrorTransformer(ChainedDbErrorTransformer):
@@ -69,6 +68,17 @@ def trino_query_error_or_none(exc: Exception) -> Optional[TrinoQueryError]:
     return None
 
 
+def is_trino_column_does_not_exist_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        orig = trino_user_error_or_none(exc)
+        if orig is None:
+            return False
+
+        return orig.error_name == "COLUMN_NOT_FOUND"
+
+    return _
+
+
 def is_trino_source_does_not_exist_error() -> ExcMatchCondition:
     def _(exc: Exception) -> bool:
         orig = trino_user_error_or_none(exc)
@@ -111,6 +121,10 @@ def is_trino_fallback_error() -> ExcMatchCondition:
 
 trino_error_transformer = TrinoErrorTransformer(
     rule_chain=(
+        Rule(
+            when=is_trino_column_does_not_exist_error(),
+            then_raise=exc.ColumnDoesNotExist,
+        ),
         Rule(
             when=is_trino_source_does_not_exist_error(),
             then_raise=exc.SourceDoesNotExist,
