@@ -195,8 +195,10 @@ class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRF
             ca_data=ca_data,
         )
         usm_middleware_list = [
-            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),  # type: ignore[arg-type]
-            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw),  # type: ignore[arg-type]
+            service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),
+            service_us_manager_middleware(
+                us_master_token=self._settings.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw
+            ),
         ]
 
         result = DataApiEnvSetupResult(

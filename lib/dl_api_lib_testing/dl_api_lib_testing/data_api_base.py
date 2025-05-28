@@ -21,11 +21,13 @@ from dl_api_client.dsmaker.api.data_api import (
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib.app.data_api.app import DataApiAppFactory
-from dl_api_lib.app_settings import DeprecatedDataApiAppSettings
+from dl_api_lib.app_settings import (
+    DataApiAppSettings,
+    DeprecatedDataApiAppSettings,
+)
 from dl_api_lib_testing.app import TestingDataApiAppFactory
 from dl_api_lib_testing.base import ApiTestBase
 from dl_api_lib_testing.client import (
-    DataApiAppSettings,
     TestClientConverterAiohttpToFlask,
     WrappedAioSyncApiClient,
 )
