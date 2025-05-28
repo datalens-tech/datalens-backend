@@ -59,7 +59,7 @@ def trino_user_error_or_none(exc: Exception) -> Optional[TrinoUserError]:
 
 
 def trino_query_error_or_none(exc: Exception) -> Optional[TrinoQueryError]:
-    if not isinstance(exc, sqlalchemy.exc.ProgrammingError):
+    if not isinstance(exc, sqlalchemy.exc.DBAPIError):
         return None
 
     orig = getattr(exc, "orig", None)
@@ -102,10 +102,15 @@ def is_trino_out_of_memory_error() -> ExcMatchCondition:
     return _
 
 
-def is_trino_query_error() -> ExcMatchCondition:
+def is_trino_fallback_error() -> ExcMatchCondition:
     def _(exc: Exception) -> bool:
-        orig = trino_query_error_or_none(exc)
-        return orig is not None
+        return isinstance(
+            exc,
+            (
+                sqlalchemy.exc.DBAPIError,
+                sqlalchemy.exc.ProgrammingError,
+            ),
+        )
 
     return _
 
@@ -125,7 +130,7 @@ trino_error_transformer = TrinoErrorTransformer(
             then_raise=exc.DbMemoryLimitExceeded,
         ),
         Rule(
-            when=is_trino_query_error(),
+            when=is_trino_fallback_error(),
             then_raise=exc.DatabaseQueryError,
         ),
     )
