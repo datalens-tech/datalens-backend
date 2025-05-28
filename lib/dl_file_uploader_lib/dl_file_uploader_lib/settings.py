@@ -5,6 +5,7 @@ from typing import (
 
 import attr
 
+from dl_api_lib.app_settings import BaseSettings
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.enums import RedisMode
 from dl_configs.environments import is_setting_applicable
@@ -36,7 +37,7 @@ def _make_redis_persistent_settings(cfg: Any, db: int) -> Optional[RedisSettings
 
 
 @attr.s(frozen=True)
-class FileUploaderBaseSettings:
+class DeprecatedFileUploaderBaseSettings:
     REDIS_APP: RedisSettings = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings")  [assignment]
         "REDIS_APP",
         fallback_factory=(lambda cfg: _make_redis_persistent_settings(cfg=cfg, db=cfg.REDIS_FILE_UPLOADER_DATA_DB)),
@@ -73,3 +74,7 @@ class FileUploaderBaseSettings:
         json_converter=CryptoKeysConfig.from_json,
         sensitive=True,
     )
+
+
+class FileUploaderBaseSettings(BaseSettings):
+    ...

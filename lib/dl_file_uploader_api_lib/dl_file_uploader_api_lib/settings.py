@@ -15,11 +15,14 @@ from dl_configs.utils import (
     get_root_certificates_path,
     split_by_comma,
 )
-from dl_file_uploader_lib.settings import FileUploaderBaseSettings
+from dl_file_uploader_lib.settings import (
+    DeprecatedFileUploaderBaseSettings,
+    FileUploaderBaseSettings,
+)
 
 
 @attr.s(frozen=True)
-class FileUploaderAPISettings(FileUploaderBaseSettings):
+class DeprecatedFileUploaderAPISettings(DeprecatedFileUploaderBaseSettings):
     CORS: CorsSettings = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "CorsSettings")  [assignment]
         "CORS",
         fallback_factory=(
@@ -65,3 +68,7 @@ class FileUploaderAPISettings(FileUploaderBaseSettings):
         env_var_converter=split_by_comma,
         missing_factory=tuple,
     )
+
+
+class FileUploaderAPISettings(FileUploaderBaseSettings):
+    ...

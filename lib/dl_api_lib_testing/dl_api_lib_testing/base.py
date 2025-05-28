@@ -23,6 +23,7 @@ from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import (
     ControlApiAppSettings,
     ControlApiAppTestingsSettings,
+    DeprecatedControlApiAppSettings,
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.loader import preload_api_lib
@@ -104,13 +105,14 @@ class ApiTestBase(abc.ABC):
         cls,
         bi_test_config: ApiTestEnvironmentConfiguration,
         rqe_config_subprocess: RQEConfig,
-    ) -> ControlApiAppSettings:
+    ) -> DeprecatedControlApiAppSettings:
         core_test_config = bi_test_config.core_test_config
         us_config = core_test_config.get_us_config()
 
         redis_setting_maker = core_test_config.get_redis_setting_maker()
 
-        settings = ControlApiAppSettings(  # type: ignore  # 2024-01-29 # TODO: Unexpected keyword argument "CONNECTOR_AVAILABILITY" for "ControlApiAppSettings"  [call-arg]
+        # TODO(catsona): Deal with evolve alternative for pydantic and support new settings in create_data_api_settings and all references
+        settings = DeprecatedControlApiAppSettings(  # type: ignore  # 2024-01-29 # TODO: Unexpected keyword argument "CONNECTOR_AVAILABILITY" for "ControlApiAppSettings"  [call-arg]
             CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig.from_settings(
                 bi_test_config.connector_availability_settings,
             ),
@@ -138,10 +140,14 @@ class ApiTestBase(abc.ABC):
         bi_test_config: ApiTestEnvironmentConfiguration,
         rqe_config_subprocess: RQEConfig,
     ) -> ControlApiAppSettings:
-        return self.create_control_api_settings(
+        # TODO(catsona): Deal with evolve alternative for pydantic and support new settings in create_data_api_settings and all references
+        deprecated_settings = self.create_control_api_settings(
             bi_test_config=bi_test_config,
             rqe_config_subprocess=rqe_config_subprocess,
         )
+        settings = ControlApiAppSettings(fallback=deprecated_settings)
+
+        return settings
 
     @pytest.fixture(scope="class")
     def sample_table_schema(self) -> Optional[str]:
