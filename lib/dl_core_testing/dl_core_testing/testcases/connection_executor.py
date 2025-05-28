@@ -270,17 +270,21 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
     def conn_exec_factory_async_env(self) -> bool:
         return True
 
+    @pytest.mark.asyncio
     async def test_get_db_version(self, async_connection_executor: AsyncConnExecutorBase, db_ident: DBIdent) -> None:
         db_version = await async_connection_executor.get_db_version(db_ident)
         self.check_db_version(db_version)
 
+    @pytest.mark.asyncio
     async def test_test(self, async_connection_executor: AsyncConnExecutorBase) -> None:
         await async_connection_executor.test()
 
+    @pytest.mark.asyncio
     async def test_multiple_connection_test(self, async_connection_executor: AsyncConnExecutorBase) -> None:
         coros = (async_connection_executor.test() for _ in range(10))
         await asyncio.gather(*coros)
 
+    @pytest.mark.asyncio
     async def test_table_exists(
         self,
         async_connection_executor: AsyncConnExecutorBase,
@@ -288,6 +292,7 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
     ) -> None:
         assert await async_connection_executor.is_table_exists(existing_table_ident)
 
+    @pytest.mark.asyncio
     async def test_table_not_exists(
         self,
         async_connection_executor: AsyncConnExecutorBase,
@@ -295,12 +300,14 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
     ) -> None:
         assert not await async_connection_executor.is_table_exists(nonexistent_table_ident)
 
+    @pytest.mark.asyncio
     async def test_simple_select(self, async_connection_executor: AsyncConnExecutorBase) -> None:
         query = ConnExecutorQuery(query=sa.select([sa.literal(1)]))
         result = await anext(aiter((await async_connection_executor.execute(query)).result))
         assert len(result) == 1
         assert result[0] == (1,)
 
+    @pytest.mark.asyncio
     async def test_select_data(self, sample_table: DbTable, async_connection_executor: AsyncConnExecutorBase) -> None:
         n_rows = 3
         result = await async_connection_executor.execute(
@@ -315,6 +322,7 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
         rows = await result.get_all()
         assert len(rows) == n_rows
 
+    @pytest.mark.asyncio
     async def test_cast_row_to_output(
         self,
         sample_table: DbTable,
@@ -335,6 +343,7 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
         rows = await result.get_all()
         assert rows == [(True, 2.0, 3)], rows
 
+    @pytest.mark.asyncio
     async def test_error_on_select_from_nonexistent_source(
         self,
         db: Db,
@@ -345,6 +354,7 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
         with pytest.raises(core_exc.SourceDoesNotExist):
             await async_connection_executor.execute(query)
 
+    @pytest.mark.asyncio
     async def test_closing_sql_sessions(
         self, db: Db, async_connection_executor: AsyncConnExecutorBase, query_for_session_check: str
     ) -> None:
@@ -352,6 +362,7 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
             for _i in range(5):
                 await async_connection_executor.execute(ConnExecutorQuery(query=query_for_session_check))
 
+    @pytest.mark.asyncio
     async def test_get_table_schema_info(
         self,
         async_connection_executor: AsyncConnExecutorBase,
@@ -364,6 +375,7 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
         ).schema
         assert len(detected_columns) > 0
 
+    @pytest.mark.asyncio
     async def test_get_table_schema_info_for_nonexistent_table(
         self,
         async_connection_executor: AsyncConnExecutorBase,

@@ -71,6 +71,7 @@ class BaseAsyncAdapterTestClass(BaseConnectionExecutorTestClass, Generic[_TARGET
             (True, "select 1 from <hidden>"),
         ),
     )
+    @pytest.mark.asyncio
     async def test_pass_db_query_to_user(
         self,
         pass_db_query_to_user: bool,
@@ -83,6 +84,7 @@ class BaseAsyncAdapterTestClass(BaseConnectionExecutorTestClass, Generic[_TARGET
             pass_db_query_to_user, query_to_send, expected_query, conn_bi_context, target_conn_dto
         )
 
+    @pytest.mark.asyncio
     async def test_default_pass_db_query_to_user(
         self,
         conn_bi_context: RequestContextInfo,
@@ -96,6 +98,7 @@ class BaseAsyncAdapterTestClass(BaseConnectionExecutorTestClass, Generic[_TARGET
             target_conn_dto=target_conn_dto,
         )
 
+    @pytest.mark.asyncio
     async def test_timeout(
         self,
         conn_bi_context: RequestContextInfo,

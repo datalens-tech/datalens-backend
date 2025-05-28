@@ -65,6 +65,7 @@ async def app_factory(aiohttp_client) -> _AppFactory:
     return f
 
 
+@pytest.mark.asyncio
 async def test_no_req_id(app_factory: _AppFactory):
     app = await app_factory(_AppConfig(RequestId()))
 
@@ -84,6 +85,7 @@ async def test_no_req_id(app_factory: _AppFactory):
         assert resp.headers["X-Request-ID"]
 
 
+@pytest.mark.asyncio
 async def test_req_id_from_client_no_append(app_factory: _AppFactory):
     app = await app_factory(_AppConfig(RequestId()))
     req_id = shortuuid.uuid()
@@ -93,6 +95,7 @@ async def test_req_id_from_client_no_append(app_factory: _AppFactory):
         assert resp.headers["X-Request-ID"] == req_id
 
 
+@pytest.mark.asyncio
 async def test_req_id_from_client_append(app_factory: _AppFactory):
     app = await app_factory(_AppConfig(RequestId(append_own_req_id=True, app_prefix="sp")))
     req_id = shortuuid.uuid()
@@ -102,6 +105,7 @@ async def test_req_id_from_client_append(app_factory: _AppFactory):
         assert resp.headers["X-Request-ID"].startswith(f"{req_id}--sp.")
 
 
+@pytest.mark.asyncio
 async def test_committed_rci(app_factory: _AppFactory):
     async def ensure_rci_committed_handler(request: web.Request) -> web.Response:
         dl_request = DLRequestBase.get_for_request(request)
@@ -124,6 +128,7 @@ async def test_committed_rci(app_factory: _AppFactory):
         assert resp_json == {"request_id": req_id}
 
 
+@pytest.mark.asyncio
 async def test_uncommitted_committed_rci(app_factory: _AppFactory):
     async def ensure_rci_is_not_committed(request: web.Request) -> web.Response:
         dl_request = DLRequestBase.get_for_request(request)
@@ -148,6 +153,7 @@ async def test_uncommitted_committed_rci(app_factory: _AppFactory):
         assert resp_json == {"request_id": req_id}
 
 
+@pytest.mark.asyncio
 async def test_endpoint_code(app_factory: _AppFactory, caplog):
     caplog.set_level("INFO")
 
@@ -191,6 +197,7 @@ async def test_endpoint_code(app_factory: _AppFactory, caplog):
     assert log_rec.endpoint_code is None
 
 
+@pytest.mark.asyncio
 async def test_request_id(app_factory: _AppFactory, caplog):
     caplog.set_level("INFO")
 

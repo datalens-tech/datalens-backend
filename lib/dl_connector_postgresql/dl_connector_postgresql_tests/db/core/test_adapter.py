@@ -22,6 +22,7 @@ class TestAsyncPostgreSQLAdapter(
 
     ASYNC_ADAPTER_CLS = AsyncPostgresAdapter
 
+    @pytest.mark.asyncio
     async def test_tables_list(self, conn_bi_context: RequestContextInfo, target_conn_dto: PostgresConnTargetDTO):
         tables = await self._make_dba(target_conn_dto, conn_bi_context).get_tables(
             SchemaIdent(db_name="test_data", schema_name=None)
@@ -44,6 +45,7 @@ class TestAsyncPostgreSQLAdapter(
             ("test_data_partitions", ["sample_partition"]),
         ],
     )
+    @pytest.mark.asyncio
     async def test_tables_list_schema(
         self, conn_bi_context: RequestContextInfo, target_conn_dto: PostgresConnTargetDTO, schema, expected_tables
     ):

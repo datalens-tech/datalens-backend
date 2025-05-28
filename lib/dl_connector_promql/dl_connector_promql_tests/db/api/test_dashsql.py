@@ -47,6 +47,7 @@ class TestPromQLDashSQL(PromQLConnectionTestBase, DefaultDashSQLTestSuite):
             },
         )
 
+    @pytest.mark.asyncio
     async def test_result_with_connector_specific_params(
         self,
         data_api_lowlevel_aiohttp_client: TestClient,

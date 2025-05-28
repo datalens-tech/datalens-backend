@@ -51,6 +51,7 @@ class DefaultTypedQueryRawTestSuite(BaseConnectionExecutorTestClass[_CONN_TV], G
     def typed_query_raw_checker(self) -> TypedQueryRawChecker:
         return DefaultTypedQueryRawChecker()
 
+    @pytest.mark.asyncio
     async def test_typed_query_raw(
         self,
         async_connection_executor: AsyncConnExecutorBase,
