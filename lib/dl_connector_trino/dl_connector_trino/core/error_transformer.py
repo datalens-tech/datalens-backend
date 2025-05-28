@@ -1,7 +1,6 @@
-from enum import Enum
 from typing import Optional
 
-import sqlalchemy
+from sqlalchemy import exc as sa_exc
 from trino.exceptions import (
     TrinoQueryError,
     TrinoUserError,
@@ -18,17 +17,12 @@ from dl_core.connectors.base.error_transformer import (
 from dl_core.connectors.base.error_transformer import ErrorTransformerRule as Rule
 import dl_core.exc as exc
 
-from dl_connector_trino.core.exc import (
-    TrinoCatalogDoesNotExistError,
-    TrinoSchemaDoesNotExistError,
-    TrinoTableDoesNotExistError,
+
+TRINO_SOURCE_DOES_NOT_EXIST_ERROR_TYPES = (
+    "TABLE_NOT_FOUND",
+    "SCHEMA_NOT_FOUND",
+    "CATALOG_NOT_FOUND",
 )
-
-
-class TrinoSourceDoesNotExistErrorType(str, Enum):
-    TABLE_NOT_FOUND = "TABLE_NOT_FOUND"
-    SCHEMA_NOT_FOUND = "SCHEMA_NOT_FOUND"
-    CATALOG_NOT_FOUND = "CATALOG_NOT_FOUND"
 
 
 class TrinoErrorTransformer(ChainedDbErrorTransformer):
@@ -53,7 +47,7 @@ class TrinoErrorTransformer(ChainedDbErrorTransformer):
 
 
 def trino_user_error_or_none(exc: Exception) -> Optional[TrinoUserError]:
-    if not isinstance(exc, sqlalchemy.exc.ProgrammingError):
+    if not isinstance(exc, sa_exc.ProgrammingError):
         return None
 
     orig = getattr(exc, "orig", None)
@@ -63,35 +57,35 @@ def trino_user_error_or_none(exc: Exception) -> Optional[TrinoUserError]:
     return None
 
 
-def is_trino_table_does_not_exist_error() -> ExcMatchCondition:
+def trino_query_error_or_none(exc: Exception) -> Optional[TrinoQueryError]:
+    if not isinstance(exc, sa_exc.DBAPIError):
+        return None
+
+    orig = getattr(exc, "orig", None)
+    if isinstance(orig, TrinoQueryError):
+        return orig
+
+    return None
+
+
+def is_trino_column_does_not_exist_error() -> ExcMatchCondition:
     def _(exc: Exception) -> bool:
         orig = trino_user_error_or_none(exc)
         if orig is None:
             return False
 
-        return orig.error_name == TrinoSourceDoesNotExistErrorType.TABLE_NOT_FOUND
+        return orig.error_name == "COLUMN_NOT_FOUND"
 
     return _
 
 
-def is_trino_schema_does_not_exist_error() -> ExcMatchCondition:
+def is_trino_source_does_not_exist_error() -> ExcMatchCondition:
     def _(exc: Exception) -> bool:
         orig = trino_user_error_or_none(exc)
         if orig is None:
             return False
 
-        return orig.error_name == TrinoSourceDoesNotExistErrorType.SCHEMA_NOT_FOUND
-
-    return _
-
-
-def is_trino_catalog_does_not_exist_error() -> ExcMatchCondition:
-    def _(exc: Exception) -> bool:
-        orig = trino_user_error_or_none(exc)
-        if orig is None:
-            return False
-
-        return orig.error_name == TrinoSourceDoesNotExistErrorType.CATALOG_NOT_FOUND
+        return orig.error_name in TRINO_SOURCE_DOES_NOT_EXIST_ERROR_TYPES
 
     return _
 
@@ -107,23 +101,45 @@ def is_trino_syntax_error() -> ExcMatchCondition:
     return _
 
 
+def is_trino_out_of_memory_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        orig = trino_query_error_or_none(exc)
+        if orig is None:
+            return False
+
+        return orig.error_type == "INSUFFICIENT_RESOURCES"
+
+    return _
+
+
+def is_trino_fallback_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        return isinstance(exc, sa_exc.DBAPIError)
+
+    return _
+
+
 trino_error_transformer = TrinoErrorTransformer(
     rule_chain=(
         Rule(
-            when=is_trino_table_does_not_exist_error(),
-            then_raise=TrinoTableDoesNotExistError,
+            when=is_trino_column_does_not_exist_error(),
+            then_raise=exc.ColumnDoesNotExist,
         ),
         Rule(
-            when=is_trino_schema_does_not_exist_error(),
-            then_raise=TrinoSchemaDoesNotExistError,
-        ),
-        Rule(
-            when=is_trino_catalog_does_not_exist_error(),
-            then_raise=TrinoCatalogDoesNotExistError,
+            when=is_trino_source_does_not_exist_error(),
+            then_raise=exc.SourceDoesNotExist,
         ),
         Rule(
             when=is_trino_syntax_error(),
             then_raise=exc.InvalidQuery,
+        ),
+        Rule(
+            when=is_trino_out_of_memory_error(),
+            then_raise=exc.DbMemoryLimitExceeded,
+        ),
+        Rule(
+            when=is_trino_fallback_error(),
+            then_raise=exc.DatabaseQueryError,
         ),
     )
     + default_error_transformer_rules
