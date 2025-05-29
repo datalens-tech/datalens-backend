@@ -40,6 +40,14 @@ import dl_settings
 import dl_settings.validators as dl_settings_validators
 
 
+class BaseSettings(
+    dl_settings.WithFallbackGetAttr,
+    dl_settings.WithFallbackEnvSource,
+    dl_settings.BaseRootSettings,
+):
+    ...
+
+
 @attr.s(frozen=True)
 class CachesTTLSettings(SettingsBase):
     MATERIALIZED: Optional[int] = s_attrib("SEC_MATERIALIZED_DATASET")  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "int | None")  [assignment]
@@ -318,7 +326,7 @@ class DeprecatedDataApiAppSettingsOS(DeprecatedDataApiAppSettings):
     ...
 
 
-class BaseAuthSettingsOS(dl_settings.TypedBaseSettings):
+class BaseAuthSettingsOS(BaseSettings):
     ...
 
 
@@ -347,14 +355,6 @@ class NativeAuthSettingsOS(BaseAuthSettingsOS):
 
 
 BaseAuthSettingsOS.register("NATIVE", NativeAuthSettingsOS)
-
-
-class BaseSettings(
-    dl_settings.WithFallbackGetAttr,
-    dl_settings.WithFallbackEnvSource,
-    dl_settings.BaseRootSettings,
-):
-    ...
 
 
 class AppSettings(BaseSettings):
