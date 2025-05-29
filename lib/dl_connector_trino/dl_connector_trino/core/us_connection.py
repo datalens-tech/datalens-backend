@@ -13,8 +13,11 @@ from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.us_connection_base import (
     ConnectionBase,
     ConnectionSQL,
+    DataSourceTemplate,
+    make_subselect_datasource_template,
 )
 from dl_core.utils import secrepr
+from dl_i18n.localizer_base import Localizer
 
 from dl_connector_trino.core.constants import (
     CONNECTION_TYPE_TRINO,
@@ -68,6 +71,17 @@ class ConnectionTrino(ConnectionSQL):
         ssl_enable: bool = attr.ib(kw_only=True, default=False)
         ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
         jwt: Optional[str] = attr.ib(repr=secrepr, default=None)
+
+    def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
+        return [
+            make_subselect_datasource_template(
+                connection_id=self.uuid,  # type: ignore
+                source_type=SOURCE_TYPE_TRINO_SUBSELECT,
+                localizer=localizer,
+                disabled=not self.is_subselect_allowed,
+                title="Subselect over Trino",
+            ),
+        ]
 
     def get_conn_dto(self) -> TrinoConnDTO:
         return TrinoConnDTO(
