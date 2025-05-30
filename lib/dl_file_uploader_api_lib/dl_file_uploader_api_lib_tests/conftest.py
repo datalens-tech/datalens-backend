@@ -63,6 +63,7 @@ from dl_file_uploader_worker_lib.settings import (
     SecureReader,
 )
 from dl_file_uploader_worker_lib.testing.task_processor_client import get_task_processor_client
+from dl_s3.s3_service import S3Service
 from dl_task_processor.processor import TaskProcessor
 from dl_task_processor.state import (
     BITaskStateImpl,
@@ -248,6 +249,22 @@ def redis_cli(redis_app_settings) -> redis.asyncio.Redis:
     )
 
 
+@pytest_asyncio.fixture(scope="function")
+async def s3_service(s3_settings: S3Settings, s3_tmp_bucket) -> S3Service:
+    service = S3Service(
+        access_key_id=s3_settings.ACCESS_KEY_ID,
+        secret_access_key=s3_settings.SECRET_ACCESS_KEY,
+        endpoint_url=s3_settings.ENDPOINT_URL,
+        use_virtual_host_addressing=False,
+        tmp_bucket_name=s3_tmp_bucket,
+        persistent_bucket_name=s3_persistent_bucket,
+    )
+
+    await service.initialize()
+
+    return service
+
+
 @pytest.fixture(scope="function")
 def rci() -> RequestContextInfo:
     return RequestContextInfo(user_id=TEST_USER_ID)
@@ -277,6 +294,11 @@ def redis_model_manager(redis_cli, rci, crypto_keys_config) -> RedisModelManager
 @pytest.fixture(scope="function")
 def master_token_header(app_settings) -> dict[DLHeadersCommon, str]:
     return {DLHeadersCommon.FILE_UPLOADER_MASTER_TOKEN: app_settings.FILE_UPLOADER_MASTER_TOKEN}
+
+
+@pytest.fixture(scope="function")
+def tenant_id_header() -> dict[DLHeadersCommon, str]:
+    return {DLHeadersCommon.TENANT_ID: "common"}
 
 
 @pytest.fixture(scope="session")

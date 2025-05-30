@@ -7,10 +7,8 @@ from dl_constants.enums import (
     FileProcessingStatus,
     UserDataType,
 )
-from dl_file_uploader_lib.redis_model.models import (
-    DataFile,
-    DataSourcePreview,
-)
+from dl_file_uploader_lib.redis_model.models import DataFile
+from dl_file_uploader_lib.s3_model.models import S3DataSourcePreview
 from dl_file_uploader_task_interface.tasks import ProcessExcelTask
 from dl_task_processor.state import wait_task
 
@@ -24,6 +22,7 @@ async def test_parse_excel_task(
     task_state,
     s3_client,
     redis_model_manager,
+    s3_model_manager,
     uploaded_excel_id,
     reader_app,
 ):
@@ -31,7 +30,12 @@ async def test_parse_excel_task(
     df = await DataFile.get(manager=rmm, obj_id=uploaded_excel_id)
     assert df.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ProcessExcelTask(file_id=uploaded_excel_id))
+    task = await task_processor_client.schedule(
+        ProcessExcelTask(
+            file_id=uploaded_excel_id,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     await sleep(60)
 
@@ -127,7 +131,7 @@ async def test_parse_excel_task(
         "Ammount",
     ]
 
-    preview = await DataSourcePreview.get(manager=rmm, obj_id=dsrc.preview_id)
+    preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=dsrc.preview_id)
     assert preview.id == dsrc.preview_id
     assert preview.preview_data[0] == [
         "1",
@@ -172,7 +176,12 @@ async def test_parse_excel_with_one_row_task(
     df = await DataFile.get(manager=rmm, obj_id=uploaded_excel_id)
     assert df.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ProcessExcelTask(file_id=uploaded_excel_id))
+    task = await task_processor_client.schedule(
+        ProcessExcelTask(
+            file_id=uploaded_excel_id,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     await sleep(60)
 
@@ -190,6 +199,7 @@ async def test_parse_excel_non_string_header(
     task_processor_client,
     task_state,
     s3_client,
+    s3_model_manager,
     redis_model_manager,
     uploaded_excel_no_header_id,
     reader_app,
@@ -198,7 +208,12 @@ async def test_parse_excel_non_string_header(
     df = await DataFile.get(manager=rmm, obj_id=uploaded_excel_no_header_id)
     assert df.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ProcessExcelTask(file_id=uploaded_excel_no_header_id))
+    task = await task_processor_client.schedule(
+        ProcessExcelTask(
+            file_id=uploaded_excel_no_header_id,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     await sleep(60)
     assert result[-1] == "success"
@@ -219,7 +234,7 @@ async def test_parse_excel_non_string_header(
     assert [sch.name for sch in dsrc.raw_schema] == ["a", "b", "c"]
     assert [sch.title for sch in dsrc.raw_schema] == ["A", "B", "C"]
 
-    preview = await DataSourcePreview.get(manager=rmm, obj_id=dsrc.preview_id)
+    preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=dsrc.preview_id)
     assert preview.id == dsrc.preview_id
     assert preview.preview_data[0] == ["1", "2", "3"]
 
@@ -237,7 +252,12 @@ async def test_parse_invalid_excel(
     df = await DataFile.get(manager=rmm, obj_id=uploaded_invalid_excel_id)
     assert df.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ProcessExcelTask(file_id=uploaded_invalid_excel_id))
+    task = await task_processor_client.schedule(
+        ProcessExcelTask(
+            file_id=uploaded_invalid_excel_id,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
 
     await sleep(60)

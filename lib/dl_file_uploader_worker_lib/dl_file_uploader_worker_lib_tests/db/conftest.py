@@ -208,7 +208,12 @@ async def saved_file_connection_id(
     uploaded_file_id,
     default_async_usm_per_test,
 ) -> str:
-    task_parse = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_file_id))
+    task_parse = await task_processor_client.schedule(
+        ParseFileTask(
+            tenant_id="common",
+            file_id=uploaded_file_id,
+        )
+    )
     result = await wait_task(task_parse, task_state)
     assert result[-1] == "success"
 
