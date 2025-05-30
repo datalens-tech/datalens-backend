@@ -112,7 +112,6 @@
                     "width": "l",
                     "fakeValue": "******",
                     "controlProps": {
-                        "multiline": true,
                         "type": "password"
                     }
                 }
