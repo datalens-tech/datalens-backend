@@ -53,6 +53,7 @@ class SectionAliasMode(Enum):
     aliased = "aliased"
     unaliased = "unaliased"
     by_alias_in_section = "by_alias_in_section"
+    by_position_in_section = "by_position_in_section"
     by_alias_in_select = "by_alias_in_select"
 
 
@@ -82,7 +83,7 @@ class QueryCompiler:
         # TODO: put this separation into subclasses (if the logic proves to be correct).
         if self.groupby_alias_mode == SectionAliasMode.unaliased:
             return expr_with_alias
-        if self.groupby_alias_mode == SectionAliasMode.by_alias_in_section:
+        if self.groupby_alias_mode in (SectionAliasMode.by_alias_in_section, SectionAliasMode.by_position_in_section):
             return expr_with_alias
         if self.groupby_alias_mode == SectionAliasMode.by_alias_in_select:
             is_in_group_by = any(sel_expr_ctx.alias == expr_ctx.alias for sel_expr_ctx in bi_query.group_by_expressions)
@@ -105,6 +106,12 @@ class QueryCompiler:
             if is_selected:
                 return self.aliased_column(expr_ctx)
             return expr
+        if self.groupby_alias_mode == SectionAliasMode.by_position_in_section:
+            select_alias_list = [sel_expr_ctx.alias for sel_expr_ctx in bi_query.select_expressions]
+            if expr_ctx.alias in select_alias_list:
+                position = select_alias_list.index(expr_ctx.alias)
+                return sa.text(str(position + 1))
+            raise exc.QueryConstructorError(f"Expression {expr_ctx.alias!r} not found in select expressions")
         if self.groupby_alias_mode == SectionAliasMode.by_alias_in_select:
             return expr_with_alias
         raise Exception(f"Unexpected {self.groupby_alias_mode=!r}")
@@ -114,7 +121,7 @@ class QueryCompiler:
             return False
         if self.orderby_alias_mode == SectionAliasMode.unaliased:
             return False
-        if self.orderby_alias_mode == SectionAliasMode.by_alias_in_section:
+        if self.orderby_alias_mode in (SectionAliasMode.by_alias_in_section, SectionAliasMode.by_position_in_section):
             prior_sections = (
                 (bi_query.select_expressions, bi_query.group_by_expressions)
                 if self.groupby_alias_mode == SectionAliasMode.by_alias_in_select
