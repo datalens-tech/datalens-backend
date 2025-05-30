@@ -110,7 +110,6 @@ class QueryCompiler:
             select_alias_list = [sel_expr_ctx.alias for sel_expr_ctx in bi_query.select_expressions]
             if expr_ctx.alias in select_alias_list:
                 position = select_alias_list.index(expr_ctx.alias)
-                # return sa.literal_column(self.quote(str(position + 1)))
                 return sa.text(str(position + 1))
             raise exc.QueryConstructorError(f"Expression {expr_ctx.alias!r} not found in select expressions")
         if self.groupby_alias_mode == SectionAliasMode.by_alias_in_select:
