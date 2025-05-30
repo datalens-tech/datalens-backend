@@ -326,7 +326,7 @@ class DeprecatedDataApiAppSettingsOS(DeprecatedDataApiAppSettings):
     ...
 
 
-class BaseAuthSettingsOS(BaseSettings):
+class BaseAuthSettingsOS(dl_settings.TypedBaseSettings):
     ...
 
 
