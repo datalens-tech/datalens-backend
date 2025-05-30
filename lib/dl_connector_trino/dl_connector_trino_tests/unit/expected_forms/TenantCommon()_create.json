@@ -112,7 +112,6 @@
                     "defaultValue": "",
                     "width": "l",
                     "controlProps": {
-                        "multiline": true,
                         "type": "password"
                     }
                 }
