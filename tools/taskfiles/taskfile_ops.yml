@@ -1,0 +1,35 @@
+version: 3
+
+vars:
+  IMAGE_TAG: '{{.IMAGE_TAG | default "local"}}'
+
+tasks:
+  help:
+    desc: Show help message
+    silent: true
+    cmds:
+      - echo "Override image tag ("local" by default) by passing IMAGE_TAG argument (e.g. task ops:bake:build-control-api IMAGE_TAG=mytag)"
+      - echo "Override image name by passing IMAGE_NAME argument (e.g. task ops:bake:build-data-api IMAGE_NAME=my-awesome-app)"
+
+  _bake:
+    internal: true
+    dir: ../docker_build
+    requires:
+      vars:
+        - IMAGE_NAME
+    cmds:
+      - ./run-project-bake {{.BAKE_TARGET}} --load --set "{{.BAKE_TARGET}}.tags={{.IMAGE_NAME}}:{{.IMAGE_TAG}}" {{.CLI_ARGS}}
+
+  build-control-api:
+    cmds:
+      - task: _bake
+        vars:
+          IMAGE_NAME: '{{.IMAGE_NAME | default "datalens-control-api"}}'
+          BAKE_TARGET: "dl_control_api"
+
+  build-data-api:
+    cmds:
+      - task: _bake
+        vars:
+          IMAGE_NAME: '{{.IMAGE_NAME | default "datalens-data-api"}}'
+          BAKE_TARGET: "dl_data_api"

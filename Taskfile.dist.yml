@@ -36,3 +36,7 @@ includes:
       PYPROJECT_TOML_PATH: '{{.ROOT_DIR}}/metapkg/pyproject.toml'
       VENV_PATH: '{{.ROOT_DIR}}/metapkg/.venv'
       LINTERS_PYPROJECT_TOML_PATH: '{{.ROOT_DIR}}/pyproject.toml'
+
+  ops:
+    taskfile: tools/taskfiles/taskfile_ops.yml
+    dir: tools
