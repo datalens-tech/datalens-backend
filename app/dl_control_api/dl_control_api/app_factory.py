@@ -41,9 +41,7 @@ class AuthSetupResult:
     us_auth_mode: USAuthMode
 
 
-class StandaloneControlApiSRFactoryBuilder(
-    SRFactoryBuilder[ControlApiAppSettingsOS]  # type: ignore # ControlApiAppSettingsOS is not subtype of AppSettings due to migration to new settings
-):
+class StandaloneControlApiSRFactoryBuilder(SRFactoryBuilder[ControlApiAppSettingsOS]):
     def _get_required_services(self, settings: ControlApiAppSettingsOS) -> set[RequiredService]:
         return set()
 
@@ -74,7 +72,7 @@ class StandaloneControlApiSRFactoryBuilder(
 
 
 class StandaloneControlApiAppFactory(
-    ControlApiAppFactory[ControlApiAppSettingsOS],  # type: ignore # ControlApiAppSettingsOS is not subtype of AppSettings
+    ControlApiAppFactory[ControlApiAppSettingsOS],
     StandaloneControlApiSRFactoryBuilder,
 ):
     def set_up_environment(

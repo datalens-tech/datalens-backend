@@ -314,6 +314,7 @@ class ConnectorContainer(ConnectorBase):
         )
 
 
+# TODO(catsona): Migrate settings to new model
 @attr.s(kw_only=True)
 class ConnectorAvailabilityConfig(SettingsBase):
     uncategorized: list[Connector] = attr.ib(factory=list)

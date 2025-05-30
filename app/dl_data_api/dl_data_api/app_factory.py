@@ -77,7 +77,7 @@ class StandaloneDataApiSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
 
 
 class StandaloneDataApiAppFactory(
-    DataApiAppFactory[DataApiAppSettingsOS],  # type: ignore # DataApiAppSettingsOS is not subtype of AppSettings due to migration to new settings
+    DataApiAppFactory[DataApiAppSettingsOS],
     StandaloneDataApiSRFactoryBuilder,
 ):
     @property

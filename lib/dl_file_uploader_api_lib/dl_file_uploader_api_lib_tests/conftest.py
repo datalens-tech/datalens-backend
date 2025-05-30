@@ -50,7 +50,10 @@ from dl_core_testing.environment import (
 from dl_file_secure_reader_lib.app import create_app as create_reader_app
 from dl_file_uploader_api_lib.app import FileUploaderApiAppFactory
 from dl_file_uploader_api_lib.dl_request import FileUploaderDLRequest
-from dl_file_uploader_api_lib.settings import FileUploaderAPISettings
+from dl_file_uploader_api_lib.settings import (
+    DeprecatedFileUploaderAPISettings,
+    FileUploaderAPISettings,
+)
 from dl_file_uploader_api_lib_tests.config import (
     CONNECTOR_WHITELIST,
     TestingUSConfig,
@@ -58,6 +61,7 @@ from dl_file_uploader_api_lib_tests.config import (
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 from dl_file_uploader_worker_lib.settings import (
+    DeprecatedFileUploaderWorkerSettings,
     FileUploaderConnectorsSettings,
     FileUploaderWorkerSettings,
     SecureReader,
@@ -162,7 +166,7 @@ def crypto_keys_config() -> CryptoKeysConfig:
 def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_settings, crypto_keys_config):
     monkeypatch.setenv("EXT_QUERY_EXECUTER_SECRET_KEY", "dummy")
 
-    settings = FileUploaderAPISettings(
+    deprecated_settings = DeprecatedFileUploaderAPISettings(
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
         CORS=CorsSettings(
@@ -187,6 +191,7 @@ def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_setting
         CRYPTO_KEYS_CONFIG=crypto_keys_config,
         ALLOW_XLSX=True,
     )
+    settings = FileUploaderAPISettings(fallback=deprecated_settings)
     yield settings
 
 
@@ -306,7 +311,7 @@ def file_uploader_worker_settings(
     crypto_keys_config,
     secure_reader,
 ):
-    settings = FileUploaderWorkerSettings(
+    deprecated_settings = DeprecatedFileUploaderWorkerSettings(
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
         S3=S3Settings(
@@ -328,6 +333,7 @@ def file_uploader_worker_settings(
         CRYPTO_KEYS_CONFIG=crypto_keys_config,
         SECURE_READER=secure_reader,
     )
+    settings = FileUploaderWorkerSettings(fallback=deprecated_settings)
     yield settings
 
 

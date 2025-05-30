@@ -5,8 +5,8 @@ import pytest
 
 from dl_api_lib.app_settings import (
     CachesTTLSettings,
-    ControlApiAppSettings,
-    DataApiAppSettings,
+    DeprecatedControlApiAppSettings,
+    DeprecatedDataApiAppSettings,
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib_tests.unit import config as test_directory
@@ -38,7 +38,8 @@ RQE_CONFIG = RQEConfig.get_default().clone(hmac_key=b"123")
 US_HOST = "http://us:8080"
 US_MASTER_TOKEN = "fake-us-master-token"
 
-EXPECTED_CONTROL_API_SETTINGS = ControlApiAppSettings(
+# TODO(catsona): Fix tests to be based on new settings model
+EXPECTED_CONTROL_API_SETTINGS = DeprecatedControlApiAppSettings(
     CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig(),
     CRYPTO_KEYS_CONFIG=CRYPTO_KEYS_CONFIG,
     RQE_CONFIG=RQE_CONFIG,
@@ -46,7 +47,7 @@ EXPECTED_CONTROL_API_SETTINGS = ControlApiAppSettings(
     US_BASE_URL=US_HOST,
     US_MASTER_TOKEN=US_MASTER_TOKEN,
 )
-EXPECTED_DATA_API_SETTINGS = DataApiAppSettings(
+EXPECTED_DATA_API_SETTINGS = DeprecatedDataApiAppSettings(
     CACHES_TTL_SETTINGS=CachesTTLSettings(MATERIALIZED=3600, OTHER=300),
     CRYPTO_KEYS_CONFIG=CRYPTO_KEYS_CONFIG,
     RQE_CONFIG=RQE_CONFIG,
@@ -70,7 +71,7 @@ EXPECTED_FILE_SETTINGS = FileS3ConnectorSettings(
 
 @pytest.fixture
 def expected_settings(request):
-    if isinstance(request.param, ControlApiAppSettings):
+    if isinstance(request.param, DeprecatedControlApiAppSettings):
         # preload connectors first as ConnectorAvailabilityConfig contains connection types
         load_all_connectors()
         connector_availability = ConnectorAvailabilityConfig.from_settings(
