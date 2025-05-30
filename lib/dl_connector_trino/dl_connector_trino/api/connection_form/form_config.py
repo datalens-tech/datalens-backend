@@ -107,7 +107,7 @@ class TrinoRowConstructor(RowConstructor):
                     width="l",
                     default_value="" if mode == ConnectionFormMode.create else None,
                     fake_value="******" if mode == ConnectionFormMode.edit else None,
-                    control_props=C.InputRowItem.Props(type="password", multiline=True),
+                    control_props=C.InputRowItem.Props(type="password"),
                     display_conditions=display_conditions,
                 ),
             ]
