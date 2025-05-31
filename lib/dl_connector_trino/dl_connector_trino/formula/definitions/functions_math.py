@@ -115,7 +115,7 @@ DEFINITIONS_MATH = [
     # round
     base.FuncRound1(
         variants=[
-            V(D.TRINO, lambda num: sa.func.round(num) + 0),
+            V(D.TRINO, lambda num: sa.cast(sa.func.round(num) + 0, sa.BIGINT())),
         ],
     ),
     base.FuncRound2(
