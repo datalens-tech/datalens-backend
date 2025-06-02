@@ -45,7 +45,10 @@ class BaseSettings(
     dl_settings.WithFallbackEnvSource,
     dl_settings.BaseRootSettings,
 ):
-    ...
+    # Moved here, see https://github.com/pydantic/pydantic/issues/9992
+    model_config = pydantic_settings.SettingsConfigDict(
+        extra=pydantic.Extra.ignore,
+    )
 
 
 @attr.s(frozen=True)
@@ -358,10 +361,7 @@ BaseAuthSettingsOS.register("NATIVE", NativeAuthSettingsOS)
 
 
 class AppSettings(BaseSettings):
-    # Moved here, see https://github.com/pydantic/pydantic/issues/9992
-    model_config = pydantic_settings.SettingsConfigDict(
-        extra=pydantic.Extra.ignore,
-    )
+    ...
 
 
 class ControlApiAppSettings(AppSettings):
