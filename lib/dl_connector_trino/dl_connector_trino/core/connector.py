@@ -21,12 +21,10 @@ from dl_connector_trino.core.data_source import (
     TrinoTableDataSource,
 )
 from dl_connector_trino.core.data_source_migration import TrinoDataSourceMigrator
+from dl_connector_trino.core.query_compiler import TrinoQueryCompiler
 from dl_connector_trino.core.storage_schemas.connection import TrinoConnectionDataStorageSchema
 from dl_connector_trino.core.type_transformer import TrinoTypeTransformer
 from dl_connector_trino.core.us_connection import ConnectionTrino
-
-
-# from dl_connector_trino.core.lifecycle import TrinoConnectionLifecycleManager
 
 
 class TrinoCoreConnectionDefinition(CoreConnectionDefinition):
@@ -55,7 +53,7 @@ class TrinoCoreSubselectSourceDefinition(SQLSubselectCoreSourceDefinitionBase):
 
 class TrinoCoreBackendDefinition(CoreBackendDefinition):
     backend_type = BACKEND_TYPE_TRINO
-    # compiler_cls = ?
+    compiler_cls = TrinoQueryCompiler
 
 
 class TrinoCoreConnector(CoreConnector):
@@ -68,4 +66,3 @@ class TrinoCoreConnector(CoreConnector):
     subselect_source_definition_cls = TrinoCoreSubselectSourceDefinition
     rqe_adapter_classes = frozenset({TrinoDefaultAdapter})
     # notification_classes = ?
-    # sa_types = ?

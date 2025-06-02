@@ -55,12 +55,7 @@ class TestTrinoDataResult(TrinoDataApiTestBase, DefaultConnectorDataResultTestSu
             ("array_int_value", "int_value", True),
             ("array_str_value", "str_value", False),
             ("array_str_value", "concat_const", False),
-            pytest.param(
-                "array_str_value",
-                "concat_field",
-                False,
-                marks=pytest.mark.xfail(reason="BI-6239"),
-            ),
+            ("array_str_value", "concat_field", False),
             ("array_float_value", "float_value", True),
             ("array_float_value", "none_value", False),
         ),
@@ -91,7 +86,6 @@ class TestTrinoDataResult(TrinoDataApiTestBase, DefaultConnectorDataResultTestSu
             is_numeric=is_numeric,
         )
 
-    @pytest.mark.xfail(reason="BI-6239")
     def test_get_result_with_formula_in_where(
         self, saved_dataset: Dataset, data_api_test_params: DataApiTestParams, data_api: SyncHttpDataApiV2
     ) -> None:
