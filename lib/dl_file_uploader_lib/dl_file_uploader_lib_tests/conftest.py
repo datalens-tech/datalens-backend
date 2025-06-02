@@ -15,10 +15,11 @@ from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_s3.s3_service import S3Service
 from dl_testing.constants import TEST_USER_ID
 from dl_testing.containers import get_test_container_hostport
+import dl_testing.s3_utils as s3_utils
 
 
 if TYPE_CHECKING:
-    from mypy_boto3_s3.client import S3Client as SyncS3Client
+    from types_aiobotocore_s3 import S3Client as AsyncS3Client
 
 
 @pytest.fixture(scope="function")
@@ -68,15 +69,21 @@ async def s3_service() -> S3Service:
 
     await service.initialize()
 
-    client: SyncS3Client = service.get_sync_client()
+    client: AsyncS3Client = service.get_client()
 
     try:
-        client.create_bucket(Bucket="bucket-tmp")
+        await s3_utils.create_s3_bucket(
+            s3_client=client,
+            bucket_name="bucket-tmp",
+        )
     except client.exceptions.ClientError:
         pass
 
     try:
-        client.create_bucket(Bucket="bucket-persistent")
+        await s3_utils.create_s3_bucket(
+            s3_client=client,
+            bucket_name="bucket-persistent",
+        )
     except client.exceptions.ClientError:
         pass
 

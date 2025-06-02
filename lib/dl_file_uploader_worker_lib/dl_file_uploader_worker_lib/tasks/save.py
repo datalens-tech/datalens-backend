@@ -36,12 +36,12 @@ from dl_file_uploader_lib.s3_model.models import S3DataSourcePreview
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
 from dl_file_uploader_task_interface.tasks import TaskExecutionMode
-from dl_file_uploader_worker_lib.utils.s3_utils import (
+from dl_s3.s3_service import S3Service
+from dl_s3.utils import (
     S3Object,
     copy_from_s3_to_s3,
     make_s3_table_func_sql_source,
 )
-from dl_s3.s3_service import S3Service
 from dl_task_processor.task import (
     BaseExecutorTask,
     Fail,
@@ -172,7 +172,6 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                     conn = await usm.get_by_id(self.meta.connection_id, expected_type=BaseFileS3Connection)
                     assert isinstance(conn, BaseFileS3Connection)
 
-                    # TODO: Need to handle case when preview deleted by ttl before it is saved
                     preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=str(src_source.preview_id))
                     await preview.save(
                         persistent=True

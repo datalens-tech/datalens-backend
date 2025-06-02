@@ -20,12 +20,12 @@ import marshmallow as ma
 from dl_api_commons.base_models import RequestContextInfo
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core.us_manager.crypto.main import CryptoController
-import dl_file_uploader_lib.utils.s3_utils as s3_utils
-from dl_file_uploader_lib.utils.s3_utils import (
+from dl_s3.s3_service import S3Service
+import dl_s3.utils as s3_utils
+from dl_s3.utils import (
     S3NoSuchKey,
     S3Object,
 )
-from dl_s3.s3_service import S3Service
 from dl_utils.utils import (
     AddressableData,
     DataKey,

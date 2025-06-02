@@ -1,5 +1,6 @@
 from enum import Enum
 import json
+from typing import TYPE_CHECKING
 
 import attr
 from marshmallow import fields
@@ -17,6 +18,10 @@ from dl_file_uploader_lib.s3_model.base import (
 )
 from dl_s3.s3_service import S3Service
 from dl_utils.utils import DataKey
+
+
+if TYPE_CHECKING:
+    pass
 
 
 class SomeEnum(Enum):
@@ -82,6 +87,241 @@ class SomeModelSchema(S3BaseModelSchema):
 
 
 register_s3_model_storage_schema(SomeModel, SomeModelSchema)
+
+
+@attr.s
+class SimpleModel(S3Model):
+    ID_PREFIX = "simple"
+
+    value: str = attr.ib()
+
+
+class SimpleModelSchema(S3BaseModelSchema):
+    class Meta(S3BaseModelSchema.Meta):
+        target = SimpleModel
+
+    value = fields.String()
+
+
+register_s3_model_storage_schema(SimpleModel, SimpleModelSchema)
+
+
+@pytest.mark.asyncio
+async def test_s3_model_tmp_save_load(s3_service: S3Service) -> None:
+    """
+    Test steps:
+    - Save object as tmp
+    - Get and check values
+    - Change object values and re-save
+    - Get and check values
+    - Delete object
+    - Check not existing
+    """
+
+    s3mm = S3ModelManager(
+        s3_service=s3_service,
+        tenant_id="common",
+        crypto_keys_config=get_dummy_crypto_keys_config(),
+    )
+
+    original_obj = SimpleModel(
+        manager=s3mm,
+        value="cat",
+    )
+
+    # Check not existing
+    with pytest.raises(S3ModelNotFound):
+        await SomeModel.get(manager=s3mm, obj_id=original_obj.id)
+
+    # Save as tmp
+    await original_obj.save(persistent=False)
+
+    # After save to tmp
+    tmp_s3_obj = await SimpleModel.get(manager=s3mm, obj_id=original_obj.id)
+    assert tmp_s3_obj is not None
+    assert isinstance(tmp_s3_obj, SimpleModel)
+    assert tmp_s3_obj.value == "cat"
+
+    # Change and re-save
+    original_obj.value = "dog"
+    await original_obj.save(persistent=False)
+
+    # After save to persistent
+    tmp_s3_obj = await SimpleModel.get(manager=s3mm, obj_id=original_obj.id)
+    assert tmp_s3_obj is not None
+    assert isinstance(tmp_s3_obj, SimpleModel)
+    assert tmp_s3_obj.value == "dog"
+
+    # Delete object
+    await tmp_s3_obj.delete()
+
+    # Check deletion
+    with pytest.raises(S3ModelNotFound):
+        await SomeModel.get(manager=s3mm, obj_id=original_obj.id)
+
+
+@pytest.mark.asyncio
+async def test_s3_model_persistent_save_load(s3_service: S3Service) -> None:
+    """
+    Test steps:
+    - Save object as persistent
+    - Get and check values
+    - Change object values and re-save
+    - Get and check values
+    - Delete object
+    - Check not existing
+    """
+
+    s3mm = S3ModelManager(
+        s3_service=s3_service,
+        tenant_id="common",
+        crypto_keys_config=get_dummy_crypto_keys_config(),
+    )
+
+    original_obj = SimpleModel(
+        manager=s3mm,
+        value="bread",
+    )
+
+    # Check not existing
+    with pytest.raises(S3ModelNotFound):
+        await SomeModel.get(manager=s3mm, obj_id=original_obj.id)
+
+    # Save as persistent
+    await original_obj.save(persistent=True)
+
+    # After save to persistent
+    persistent_s3_obj = await SimpleModel.get(manager=s3mm, obj_id=original_obj.id)
+    assert persistent_s3_obj is not None
+    assert isinstance(persistent_s3_obj, SimpleModel)
+    assert persistent_s3_obj.value == "bread"
+
+    # Change and re-save
+    original_obj.value = "potato"
+    await original_obj.save(persistent=True)
+
+    # After save to persistent
+    persistent_s3_obj = await SimpleModel.get(manager=s3mm, obj_id=original_obj.id)
+    assert persistent_s3_obj is not None
+    assert isinstance(persistent_s3_obj, SimpleModel)
+    assert persistent_s3_obj.value == "potato"
+
+    # Delete object
+    await persistent_s3_obj.delete()
+
+    # Check deletion
+    with pytest.raises(S3ModelNotFound):
+        await SomeModel.get(manager=s3mm, obj_id=original_obj.id)
+
+
+@pytest.mark.asyncio
+async def test_s3_model_tmp_save_load_upgrade(s3_service: S3Service) -> None:
+    """
+    Test steps:
+    - Save object as tmp
+    - Get and check values
+    - Change object values and re-save as persistent
+    - Directly delete key from tmp S3 bucket
+    - Get and check values
+    - Delete object
+    - Check not existing
+    """
+
+    s3mm = S3ModelManager(
+        s3_service=s3_service,
+        tenant_id="common",
+        crypto_keys_config=get_dummy_crypto_keys_config(),
+    )
+
+    original_obj = SimpleModel(
+        manager=s3mm,
+        value="NaN",
+    )
+
+    # Check not existing
+    with pytest.raises(S3ModelNotFound):
+        await SomeModel.get(manager=s3mm, obj_id=original_obj.id)
+
+    # Save as tmp
+    await original_obj.save(persistent=False)
+
+    # After save to tmp
+    tmp_s3_obj = await SimpleModel.get(manager=s3mm, obj_id=original_obj.id)
+    assert tmp_s3_obj is not None
+    assert isinstance(tmp_s3_obj, SimpleModel)
+    assert tmp_s3_obj.value == "NaN"
+
+    # Change and re-save as persistent
+    original_obj.value = "undefined"
+    await original_obj.save(persistent=True)
+
+    # After save to persistent
+    persistent_s3_obj = await SimpleModel.get(manager=s3mm, obj_id=original_obj.id)
+    assert persistent_s3_obj is not None
+    assert isinstance(persistent_s3_obj, SimpleModel)
+    assert persistent_s3_obj.value == "undefined"
+
+    # Delete object
+    await persistent_s3_obj.delete()
+
+    # Check deletion
+    with pytest.raises(S3ModelNotFound):
+        await SomeModel.get(manager=s3mm, obj_id=original_obj.id)
+
+
+@pytest.mark.asyncio
+async def test_s3_model_tmp_upgrade(s3_service: S3Service) -> None:
+    """
+    Test steps:
+    - Save object as tmp
+    - Re-save as persistent
+    - Directly delete key from tmp S3 bucket
+    - Get and check values
+    - Delete object
+    - Check not existing
+    """
+
+    s3mm = S3ModelManager(
+        s3_service=s3_service,
+        tenant_id="common",
+        crypto_keys_config=get_dummy_crypto_keys_config(),
+    )
+
+    client = s3_service.get_client()
+
+    original_obj = SimpleModel(
+        manager=s3mm,
+        value="dont",
+    )
+
+    # Check not existing
+    with pytest.raises(S3ModelNotFound):
+        await SomeModel.get(manager=s3mm, obj_id=original_obj.id)
+
+    # Save as tmp
+    await original_obj.save(persistent=False)
+
+    # Re-save as persistent
+    await original_obj.save(persistent=True)
+
+    # Delete from tmp bucket
+    await client.delete_object(
+        Bucket=s3_service.tmp_bucket_name,
+        Key=original_obj.generate_key(),
+    )
+
+    # Check the objects exists
+    s3_obj = await SimpleModel.get(manager=s3mm, obj_id=original_obj.id)
+    assert s3_obj is not None
+    assert isinstance(s3_obj, SimpleModel)
+    assert s3_obj.value == "dont"
+
+    # Delete object
+    await s3_obj.delete()
+
+    # Check deletion
+    with pytest.raises(S3ModelNotFound):
+        await SomeModel.get(manager=s3mm, obj_id=original_obj.id)
 
 
 @pytest.mark.parametrize(

@@ -6,6 +6,7 @@ import uuid
 import attr
 from marshmallow import fields
 import pytest
+import redis.asyncio
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_configs.crypto_keys import get_dummy_crypto_keys_config
@@ -106,8 +107,8 @@ register_redis_model_storage_schema(SomeModel, SomeModelSchema)
 register_redis_model_storage_schema(SomeAuthorizedModel, SomeAuthorizedModelSchema)
 
 
-@pytest.mark.asyncio  # type: ignore # error: Function is missing a type annotation  [no-untyped-def]
-async def test_redis_model(redis_cli):
+@pytest.mark.asyncio
+async def test_redis_model(redis_cli: redis.asyncio.Redis) -> None:
     rmm = RedisModelManager(redis=redis_cli, crypto_keys_config=get_dummy_crypto_keys_config())
 
     with pytest.raises(RedisModelNotFound):
@@ -151,8 +152,8 @@ async def test_redis_model(redis_cli):
         await SomeModel.get(manager=rmm, obj_id=obj.id)
 
 
-@pytest.mark.asyncio  # type: ignore # error: Function is missing a type annotation  [no-untyped-def]
-async def test_authorized_redis_model(redis_cli):
+@pytest.mark.asyncio
+async def test_authorized_redis_model(redis_cli: redis.asyncio.Redis) -> None:
     crypto_keys_config = get_dummy_crypto_keys_config()
     rmm_no_auth = RedisModelManager(redis=redis_cli, crypto_keys_config=crypto_keys_config)
     rmm_auth_1 = RedisModelManager(
@@ -185,8 +186,8 @@ class SomeRedisSet(RedisSetManager):
     KEY_PREFIX = "some_set_prefix"
 
 
-@pytest.mark.asyncio  # type: ignore # error: Function is missing a type annotation  [no-untyped-def]
-async def test_redis_set(redis_cli):
+@pytest.mark.asyncio
+async def test_redis_set(redis_cli: redis.asyncio.Redis) -> None:
     some_set = SomeRedisSet(redis=redis_cli, id=str(uuid.uuid4()))
 
     expected_values = {"a", "b", "c"}

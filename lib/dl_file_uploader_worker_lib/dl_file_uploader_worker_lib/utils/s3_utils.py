@@ -21,10 +21,10 @@ from dl_file_uploader_lib.redis_model.models.models import (
     FileSourceSettings,
     SpreadsheetFileSourceSettings,
 )
-from dl_file_uploader_lib.utils.s3_utils import S3Object
 from dl_file_uploader_worker_lib.utils.parsing_utils import get_csv_raw_data_iterator
 from dl_s3.data_sink import S3FileDataSink
 from dl_s3.stream import SimpleDataStream
+from dl_s3.utils import S3Object
 from dl_type_transformer.type_transformer import get_type_transformer
 
 from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection

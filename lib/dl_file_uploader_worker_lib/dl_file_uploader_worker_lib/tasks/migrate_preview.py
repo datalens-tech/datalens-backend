@@ -38,39 +38,40 @@ class MigratePreviewRedisToS3Task(
 
             if tenant_id is None:
                 LOGGER.info(f"Unable to migrate preview since {tenant_id=}")
-            elif preview_id is None:
+                raise ValueError("tenant_id is None")
+
+            if preview_id is None:
                 LOGGER.info(f"Unable to migrate preview since {preview_id=}")
-            else:
-                redis = self._ctx.redis_service.get_redis()
-                rmm = RedisModelManager(
-                    redis=redis,
-                    crypto_keys_config=self._ctx.crypto_keys_config,
+                raise ValueError("preview_id is None")
+
+            redis = self._ctx.redis_service.get_redis()
+            rmm = RedisModelManager(
+                redis=redis,
+                crypto_keys_config=self._ctx.crypto_keys_config,
+            )
+            s3mm = S3ModelManager(
+                s3_service=self._ctx.s3_service,
+                crypto_keys_config=self._ctx.crypto_keys_config,
+                tenant_id=tenant_id,
+            )
+
+            try:
+                redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
+                assert isinstance(redis_preview, DataSourcePreview)
+
+                s3_preview = S3DataSourcePreview(
+                    manager=s3mm, preview_data=redis_preview.preview_data, id=redis_preview.id
                 )
-                s3mm = S3ModelManager(
-                    s3_service=self._ctx.s3_service,
-                    crypto_keys_config=self._ctx.crypto_keys_config,
-                    tenant_id=tenant_id,
-                )
+                await s3_preview.save(persistent=await redis_preview.is_persistent())
 
-                try:
-                    redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
-                    assert isinstance(redis_preview, DataSourcePreview)
+                await redis_preview.delete()
 
-                    s3_preview = S3DataSourcePreview(
-                        manager=s3mm, preview_data=redis_preview.preview_data, id=redis_preview.id
-                    )
-                    await s3_preview.save(persistent=await redis_preview.is_persistent())
+                preview_set = PreviewSet(redis=redis, id=tenant_id)
+                await preview_set.remove(preview_id)
 
-                    await redis_preview.delete()
-
-                    preview_set = PreviewSet(redis=redis, id=tenant_id)
-                    await preview_set.remove(preview_id)
-
-                    LOGGER.info(
-                        f"Successfully migrated preview id={preview_id} for tenant {tenant_id} from redis to s3"
-                    )
-                except RedisModelNotFound:
-                    LOGGER.info(f"Preview id={preview_id} not found in redis for tenant {tenant_id}")
+                LOGGER.info(f"Successfully migrated preview id={preview_id} for tenant {tenant_id} from redis to s3")
+            except RedisModelNotFound:
+                LOGGER.info(f"Preview id={preview_id} not found in redis for tenant {tenant_id}")
 
         except Exception as ex:
             LOGGER.exception(ex)
