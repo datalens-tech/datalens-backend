@@ -358,7 +358,10 @@ BaseAuthSettingsOS.register("NATIVE", NativeAuthSettingsOS)
 
 
 class AppSettings(BaseSettings):
-    ...
+    # Moved here, see https://github.com/pydantic/pydantic/issues/9992
+    model_config = pydantic_settings.SettingsConfigDict(
+        extra=pydantic.Extra.ignore,
+    )
 
 
 class ControlApiAppSettings(AppSettings):
@@ -372,10 +375,6 @@ class DataApiAppSettings(AppSettings):
 class AppSettingsOS(
     AppSettings,
 ):
-    model_config = pydantic_settings.SettingsConfigDict(
-        extra=pydantic.Extra.ignore,
-    )
-
     AUTH: typing.Optional[dl_settings.TypedAnnotation[BaseAuthSettingsOS]] = None
 
     fallback_env_keys = {
