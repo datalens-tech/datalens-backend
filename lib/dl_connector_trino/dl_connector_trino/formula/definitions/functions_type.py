@@ -373,4 +373,6 @@ DEFINITIONS_TYPE = [
     base.FuncStrFromString.for_dialect(D.TRINO),
     FuncStrFromArrayTrino(),
     FuncStrFromArrayFloatTrino(),
+    # tree
+    base.FuncTreeStr.for_dialect(D.TRINO),
 ]
