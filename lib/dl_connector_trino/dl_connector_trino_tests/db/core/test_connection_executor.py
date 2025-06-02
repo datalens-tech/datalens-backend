@@ -86,7 +86,7 @@ class TestTrinoSyncConnectionExecutor(
         sync_connection_executor: SyncConnExecutorBase,
         existing_table_ident: TableIdent,
     ) -> None:
-        table_ident = TableIdent(**existing_table_ident)
+        table_ident = existing_table_ident
 
         table = sa.Table(
             table_ident.table_name,
