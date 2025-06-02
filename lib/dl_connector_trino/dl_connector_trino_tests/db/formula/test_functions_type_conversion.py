@@ -10,6 +10,7 @@ from dl_formula_testing.testcases.functions_type_conversion import (
     DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
     DefaultIntTypeFunctionFormulaConnectorTestSuite,
     DefaultStrTypeFunctionFormulaConnectorTestSuite,
+    DefaultTreeTypeFunctionFormulaConnectorTestSuite,
 )
 
 from dl_connector_trino_tests.db.formula.base import TrinoFormulaTestBase
@@ -76,4 +77,11 @@ class TestGeopointTypeFunctionTrino(TrinoFormulaTestBase, DefaultGeopointTypeFun
 
 
 class TestGeopolygonTypeFunctionTrino(TrinoFormulaTestBase, DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite):
+    pass
+
+
+# TREE
+
+
+class TestTreeTypeFunctionTrino(TrinoFormulaTestBase, DefaultTreeTypeFunctionFormulaConnectorTestSuite):
     pass
