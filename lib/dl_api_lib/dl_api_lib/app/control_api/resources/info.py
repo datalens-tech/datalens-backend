@@ -14,7 +14,10 @@ from dl_api_lib.connection_forms.registry import (
     get_connection_form_factory_cls,
 )
 from dl_api_lib.enums import BI_TYPE_AGGREGATIONS
-from dl_api_lib.exc import UnsupportedForEntityType
+from dl_api_lib.exc import (
+    BadConnectionType,
+    UnsupportedForEntityType,
+)
 from dl_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
 from dl_api_lib.schemas.main import BadRequestResponseSchema
 from dl_constants.enums import (
@@ -185,10 +188,9 @@ class ConnectorForm(BIResource):
         },
     )
     def get(self, conn_type: str, form_mode: str) -> dict:
-        try:
-            ct = ConnectionType(conn_type)
-        except ValueError:
-            raise UnsupportedForEntityType(f"Unknown connector type: {conn_type}") from None
+        if not conn_type or conn_type not in ConnectionType:
+            raise BadConnectionType(f"Not a valid connection type for this environment: {conn_type}")
+        ct = ConnectionType(conn_type)
 
         try:
             mode = ConnectionFormMode(form_mode)
