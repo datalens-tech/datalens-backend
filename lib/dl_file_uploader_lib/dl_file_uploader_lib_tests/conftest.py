@@ -1,5 +1,6 @@
 import asyncio
 from typing import TYPE_CHECKING
+import uuid
 
 import pytest
 import redis.asyncio
@@ -56,6 +57,11 @@ def redis_cli(redis_app_settings: RedisSettings) -> redis.asyncio.Redis:
 def loop(event_loop: asyncio.AbstractEventLoop) -> asyncio.AbstractEventLoop:
     asyncio.set_event_loop(event_loop)
     return event_loop
+
+
+@pytest.fixture(scope="session")
+async def tenant_id() -> str:
+    return uuid.uuid4().hex
 
 
 @pytest.fixture(scope="function")

@@ -4,6 +4,7 @@ import logging
 import os
 import sys
 from typing import TYPE_CHECKING
+import uuid
 
 import attr
 from clickhouse_driver import connect as connect_ch
@@ -220,7 +221,12 @@ def task_state():
     return TaskState(BITaskStateImpl())
 
 
-@pytest_asyncio.fixture(scope="function")
+@pytest.fixture(scope="session")
+async def tenant_id() -> str:
+    return uuid.uuid4().hex
+
+
+@pytest.fixture(scope="function")
 async def task_processor_arq_worker(
     loop,
     task_state,
