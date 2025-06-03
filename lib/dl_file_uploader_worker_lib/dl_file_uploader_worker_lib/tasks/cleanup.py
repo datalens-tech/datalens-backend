@@ -191,11 +191,17 @@ class CleanupTenantFilePreviewsTask(
                 redis=self._ctx.redis_service.get_redis(),
                 crypto_keys_config=self._ctx.crypto_keys_config,
             )
+
+            # Delete everything from legacy preview storage (redis-based)
             preview_set = PreviewSet(redis=redis, id=tenant_id)
             async for preview_id in preview_set.sscan_iter():
                 try:
-                    preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
-                    await preview.delete()
+                    # Fallback to redis
+                    redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
+                    assert isinstance(redis_preview, DataSourcePreview)
+
+                    await redis_preview.delete()
+
                     LOGGER.info(f"Successfully deleted preview id={preview_id} for tenant {tenant_id}")
                 except RedisModelNotFound:
                     LOGGER.info(f"Preview id={preview_id} not found for tenant {tenant_id}")

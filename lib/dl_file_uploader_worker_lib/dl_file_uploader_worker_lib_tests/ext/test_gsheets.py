@@ -17,11 +17,12 @@ from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import (
     DataFile,
     DataSource,
-    DataSourcePreview,
     GSheetsFileSourceSettings,
     GSheetsUserSourceDataSourceProperties,
     GSheetsUserSourceProperties,
 )
+from dl_file_uploader_lib.s3_model.base import S3ModelManager
+from dl_file_uploader_lib.s3_model.models import S3DataSourcePreview
 from dl_file_uploader_task_interface.tasks import (
     DownloadGSheetTask,
     ParseFileTask,
@@ -202,7 +203,12 @@ async def downloaded_gsheet_file_id(
     await df.save()
 
     task = await task_processor_client.schedule(
-        DownloadGSheetTask(file_id=df.id, authorized=False, schedule_parsing=False)
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            schedule_parsing=False,
+            tenant_id="common",
+        )
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
@@ -235,7 +241,12 @@ async def test_download_gsheet_task(
     await df.save()
 
     task = await task_processor_client.schedule(
-        DownloadGSheetTask(file_id=df.id, authorized=False, schedule_parsing=False)
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            schedule_parsing=False,
+            tenant_id="common",
+        )
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
@@ -278,11 +289,17 @@ async def test_parse_gsheet(
     task_state,
     s3_client,
     redis_model_manager,
+    s3_model_manager,
     s3_tmp_bucket,
     downloaded_gsheet_file_id,
 ):
     file_id = downloaded_gsheet_file_id
-    task = await task_processor_client.schedule(ParseFileTask(file_id=file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=file_id,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -296,7 +313,7 @@ async def test_parse_gsheet(
     expected_user_types = [UserDataType.string] * 10
     assert actual_user_types == expected_user_types
 
-    preview = await DataSourcePreview.get(manager=redis_model_manager, obj_id=elaborate_source_no_types.preview_id)
+    preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=elaborate_source_no_types.preview_id)
     assert preview.id == elaborate_source_no_types.preview_id
     assert preview.preview_data == [  # No number formats specified => everything is string => no header
         [
@@ -370,6 +387,7 @@ async def assert_parsing_results(
     rmm: RedisModelManager,
     dsrc_title: str,
     sheet_len: int,
+    s3_model_manager: S3ModelManager,
 ) -> DataSource:
     df = await DataFile.get(manager=rmm, obj_id=file_id)
     assert df.status == FileProcessingStatus.ready
@@ -380,7 +398,7 @@ async def assert_parsing_results(
     file_source_settings = dsrc.file_source_settings
     assert isinstance(file_source_settings, GSheetsFileSourceSettings)
 
-    preview = await DataSourcePreview.get(manager=rmm, obj_id=dsrc.preview_id)
+    preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=dsrc.preview_id)
     assert preview.id == dsrc.preview_id
 
     assert file_source_settings.first_line_is_header == has_header_expected
@@ -404,6 +422,7 @@ async def test_parse_gsheet_with_file_settings(
     task_state,
     s3_client,
     redis_model_manager,
+    s3_model_manager,
     s3_tmp_bucket,
     downloaded_gsheet_file_id,
 ):
@@ -414,14 +433,20 @@ async def test_parse_gsheet_with_file_settings(
     sheet_len = 7
     sheet_title = "empty titles"
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=file_id,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    empty_titles_dsrc = await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len)
+    empty_titles_dsrc = await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len, s3_model_manager)
 
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=file_id,
+            tenant_id="common",
             source_id=empty_titles_dsrc.id,
             file_settings=dict(first_line_is_header=True),
             source_settings={},
@@ -429,11 +454,12 @@ async def test_parse_gsheet_with_file_settings(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    empty_titles_dsrc = await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len)
+    empty_titles_dsrc = await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len, s3_model_manager)
 
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=file_id,
+            tenant_id="common",
             source_id=empty_titles_dsrc.id,
             file_settings=dict(first_line_is_header=False),
             source_settings={},
@@ -441,7 +467,7 @@ async def test_parse_gsheet_with_file_settings(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len)
+    await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len, s3_model_manager)
 
 
 @pytest.mark.asyncio
@@ -450,6 +476,7 @@ async def test_parse_gsheet_with_file_settings_reverse(
     task_state,
     s3_client,
     redis_model_manager,
+    s3_model_manager,
     s3_tmp_bucket,
     downloaded_gsheet_file_id,
 ):
@@ -460,14 +487,22 @@ async def test_parse_gsheet_with_file_settings_reverse(
     sheet_len = 7
     sheet_title = "elaborate"
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=file_id,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    elaborate_no_number_format_dsrc = await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len)
+    elaborate_no_number_format_dsrc = await assert_parsing_results(
+        file_id, True, rmm, sheet_title, sheet_len, s3_model_manager
+    )
 
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=file_id,
+            tenant_id="common",
             source_id=elaborate_no_number_format_dsrc.id,
             file_settings=dict(first_line_is_header=False),
             source_settings={},
@@ -475,11 +510,14 @@ async def test_parse_gsheet_with_file_settings_reverse(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    elaborate_no_number_format_dsrc = await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len)
+    elaborate_no_number_format_dsrc = await assert_parsing_results(
+        file_id, False, rmm, sheet_title, sheet_len, s3_model_manager
+    )
 
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=file_id,
+            tenant_id="common",
             source_id=elaborate_no_number_format_dsrc.id,
             file_settings=dict(first_line_is_header=True),
             source_settings={},
@@ -487,7 +525,7 @@ async def test_parse_gsheet_with_file_settings_reverse(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len)
+    await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len, s3_model_manager)
 
 
 @pytest.mark.asyncio
@@ -507,7 +545,13 @@ async def test_download_and_parse_gsheet(
     )
     await df.save()
 
-    task = await task_processor_client.schedule(DownloadGSheetTask(file_id=df.id, authorized=False))
+    task = await task_processor_client.schedule(
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -580,7 +624,12 @@ async def test_save_source_task(
 ):
     file_id = downloaded_gsheet_file_id
     usm = default_async_usm_per_test
-    task = await task_processor_client.schedule(ParseFileTask(file_id=downloaded_gsheet_file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=downloaded_gsheet_file_id,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -599,8 +648,8 @@ async def test_save_source_task(
 
         task_save = await task_processor_client.schedule(
             SaveSourceTask(
-                tenant_id="common",
                 file_id=file_id,
+                tenant_id="common",
                 src_source_id=src.id,
                 dst_source_id=src.id,
                 connection_id=conn.uuid,
@@ -640,7 +689,13 @@ async def test_download_and_parse_big_gsheets(
     await df.save()
 
     # Download and Parse
-    task = await task_processor_client.schedule(DownloadGSheetTask(file_id=df.id, authorized=False))
+    task = await task_processor_client.schedule(
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -707,7 +762,13 @@ async def test_gsheets_full_pipeline(
     await df.save()
 
     # Download and Parse
-    task = await task_processor_client.schedule(DownloadGSheetTask(file_id=df.id, authorized=False))
+    task = await task_processor_client.schedule(
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -740,7 +801,12 @@ async def test_gsheets_full_pipeline(
     # Save
     file_id = df.id
     usm = default_async_usm_per_test
-    task = await task_processor_client.schedule(ParseFileTask(file_id=file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=file_id,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -755,8 +821,8 @@ async def test_gsheets_full_pipeline(
     for src in df.sources:
         task_save = await task_processor_client.schedule(
             SaveSourceTask(
-                tenant_id="common",
                 file_id=file_id,
+                tenant_id="common",
                 src_source_id=src.id,
                 dst_source_id=src.id,
                 connection_id=conn.uuid,
@@ -811,7 +877,13 @@ async def test_too_many_columns_gsheets(
     )
     await df.save()
 
-    task = await task_processor_client.schedule(DownloadGSheetTask(file_id=df.id, authorized=False))
+    task = await task_processor_client.schedule(
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -866,7 +938,13 @@ async def test_too_large_sheet(
     )
     await df.save()
 
-    task = await task_processor_client.schedule(DownloadGSheetTask(file_id=df.id, authorized=False))
+    task = await task_processor_client.schedule(
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -909,7 +987,12 @@ async def test_url_params_encoding(
     await df.save()
 
     task = await task_processor_client.schedule(
-        DownloadGSheetTask(file_id=df.id, authorized=False, schedule_parsing=False)
+        DownloadGSheetTask(
+            file_id=df.id,
+            authorized=False,
+            schedule_parsing=False,
+            tenant_id="common",
+        )
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"

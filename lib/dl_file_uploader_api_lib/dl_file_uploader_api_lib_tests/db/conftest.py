@@ -66,7 +66,7 @@ def upload_file_req_12mb() -> Req:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def uploaded_file_id(s3_tmp_bucket, fu_client, csv_data) -> str:
+async def uploaded_file_id(s3_tmp_bucket, s3_persistent_bucket, fu_client, csv_data) -> str:
     presigned_url_resp = await fu_client.make_request(ReqBuilder.presigned_url())
     assert presigned_url_resp.status == 200, presigned_url_resp.json
 

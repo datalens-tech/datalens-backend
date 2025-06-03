@@ -24,24 +24,24 @@ from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import (
     DataFile,
     DataSource,
-    DataSourcePreview,
     GSheetsFileSourceSettings,
     GSheetsUserSourceDataSourceProperties,
     GSheetsUserSourceProperties,
-    PreviewSet,
     YaDocsFileSourceSettings,
     YaDocsUserSourceDataSourceProperties,
     YaDocsUserSourceProperties,
 )
+from dl_file_uploader_lib.s3_model.base import S3ModelManager
+from dl_file_uploader_lib.s3_model.models import S3DataSourcePreview
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
 from dl_file_uploader_task_interface.tasks import TaskExecutionMode
 from dl_file_uploader_worker_lib.utils.s3_utils import (
-    S3Object,
     copy_from_s3_to_s3,
     make_s3_table_func_sql_source,
 )
 from dl_s3.s3_service import S3Service
+from dl_s3.utils import S3Object
 from dl_task_processor.task import (
     BaseExecutorTask,
     Fail,
@@ -146,6 +146,12 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
 
             redis = self._ctx.redis_service.get_redis()
             rmm = RedisModelManager(redis=redis, crypto_keys_config=self._ctx.crypto_keys_config)
+
+            s3_service = self._ctx.s3_service
+            s3mm = S3ModelManager(
+                s3_service=s3_service, tenant_id=self.meta.tenant_id, crypto_keys_config=self._ctx.crypto_keys_config
+            )
+
             dfile = await DataFile.get(manager=rmm, obj_id=self.meta.file_id)
 
             src_source_id, dst_source_id = self.meta.src_source_id, self.meta.dst_source_id
@@ -166,10 +172,10 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                     conn = await usm.get_by_id(self.meta.connection_id, expected_type=BaseFileS3Connection)
                     assert isinstance(conn, BaseFileS3Connection)
 
-                    preview = await DataSourcePreview.get(manager=rmm, obj_id=str(src_source.preview_id))
-                    await preview.save(ttl=None)  # now that the source is saved the preview can be saved without ttl
-                    preview_set = PreviewSet(redis=redis, id=self.meta.tenant_id)
-                    await preview_set.add(preview.id)
+                    preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=str(src_source.preview_id))
+                    await preview.save(
+                        persistent=True
+                    )  # now that the source is saved the preview can be saved as persistent
 
                     try:
                         conn_file_source = conn.get_file_source_by_id(dst_source_id)
@@ -188,8 +194,6 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                     except core_exc.SourceDoesNotExist:
                         LOGGER.info(f"Source {dst_source_id} not present in connection {conn.uuid}. Finishing task.")
                         return Success()
-
-                    s3_service = self._ctx.s3_service
 
                     raw_schema_override: Optional[list[SchemaColumn]]
                     if self.meta.exec_mode == TaskExecutionMode.UPDATE_AND_SAVE:
@@ -305,6 +309,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                         if self.meta.exec_mode == TaskExecutionMode.UPDATE_AND_SAVE:
                             delete_file_task = task_interface.DeleteFileTask(
                                 s3_filename=orig_s3_filename,
+                                tenant_id=self.meta.tenant_id,
                                 preview_id=orig_preview_id,
                             )
                             task_processor = self._ctx.make_task_processor(self._request_id)

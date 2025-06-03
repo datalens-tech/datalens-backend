@@ -19,6 +19,7 @@ async def test_yadocuments_public_file(
     fu_client,
     s3_client,
     s3_tmp_bucket,
+    s3_persistent_bucket,
     redis_model_manager,
     reader_app,
 ):
@@ -56,6 +57,7 @@ async def test_yadocuments_private_file(
     fu_client,
     s3_client,
     s3_tmp_bucket,
+    s3_persistent_bucket,
     redis_model_manager,
     reader_app,
     ya_docs_oauth_token,
@@ -88,6 +90,7 @@ async def test_yadocuments_invalid_link(
     fu_client,
     s3_client,
     s3_tmp_bucket,
+    s3_persistent_bucket,
     redis_model_manager,
     reader_app,
 ):
@@ -102,6 +105,7 @@ async def test_yadocuments_not_found(
     fu_client,
     s3_client,
     s3_tmp_bucket,
+    s3_persistent_bucket,
     redis_model_manager,
     reader_app,
 ):
@@ -124,6 +128,7 @@ async def test_documents_unsupported(
     fu_client,
     s3_client,
     s3_tmp_bucket,
+    s3_persistent_bucket,
     redis_model_manager,
     reader_app,
 ):

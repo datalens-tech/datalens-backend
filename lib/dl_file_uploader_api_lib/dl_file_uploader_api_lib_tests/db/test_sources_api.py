@@ -123,7 +123,9 @@ async def test_apply_settings(fu_client, redis_model_manager, uploaded_file_id: 
 
 
 @pytest.mark.asyncio
-async def test_source_preview(fu_client, master_token_header, uploaded_file_id: str, redis_model_manager):
+async def test_source_preview(
+    fu_client, master_token_header, tenant_id_header, uploaded_file_id: str, redis_model_manager
+):
     file_id = uploaded_file_id
 
     sources_resp = await fu_client.make_request(ReqBuilder.file_sources(file_id))
@@ -136,7 +138,7 @@ async def test_source_preview(fu_client, master_token_header, uploaded_file_id: 
         ReqBuilder.preview(
             file_id,
             source_id,
-            master_token_header,
+            {**master_token_header, **tenant_id_header},
             data_json={
                 "preview_id": preview_id,
                 "raw_schema": [
@@ -162,6 +164,7 @@ async def test_source_preview(fu_client, master_token_header, uploaded_file_id: 
 @pytest.mark.asyncio
 async def test_excel_source(
     master_token_header,
+    tenant_id_header,
     fu_client,
     uploaded_excel_id: str,
     redis_model_manager,
@@ -179,7 +182,7 @@ async def test_excel_source(
         ReqBuilder.preview(
             file_id,
             source_id,
-            master_token_header,
+            {**master_token_header, **tenant_id_header},
             data_json={
                 "preview_id": preview_id,
                 "raw_schema": [

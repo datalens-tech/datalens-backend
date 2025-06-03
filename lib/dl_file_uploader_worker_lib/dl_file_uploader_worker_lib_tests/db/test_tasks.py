@@ -27,6 +27,7 @@ from dl_file_uploader_lib.redis_model.models import (
     PreviewSet,
     RenameTenantStatusModel,
 )
+from dl_file_uploader_lib.s3_model.models import S3DataSourcePreview
 from dl_file_uploader_lib.testing.data_gen import generate_sample_csv_data_str
 from dl_file_uploader_task_interface.tasks import (
     CleanS3LifecycleRulesTask,
@@ -53,6 +54,7 @@ async def test_parse_file_task(
     task_processor_client,
     task_state,
     s3_client,
+    s3_model_manager,
     redis_model_manager,
     uploaded_file_id,
 ):
@@ -60,7 +62,12 @@ async def test_parse_file_task(
     df = await DataFile.get(manager=rmm, obj_id=uploaded_file_id)
     assert df.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=uploaded_file_id,
+            tenant_id="common",
+        )
+    )
     await wait_task(task, task_state)
 
     df = await DataFile.get(manager=rmm, obj_id=uploaded_file_id)
@@ -81,7 +88,7 @@ async def test_parse_file_task(
     assert [sch.name for sch in dsrc.raw_schema] == ["f1", "f2", "f3", "data", "data_i_vremya"]
     assert [sch.title for sch in dsrc.raw_schema] == ["f1", "f2", "f3", "Дата", "Дата и время"]
 
-    preview = await DataSourcePreview.get(manager=rmm, obj_id=dsrc.preview_id)
+    preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=dsrc.preview_id)
     assert preview.id == dsrc.preview_id
     assert preview.preview_data == [
         ["qwe", "123", "45.9", "2021-02-04", "2021-02-04 12:00:00"],
@@ -97,13 +104,19 @@ async def test_parse_file_task_with_file_settings(
     task_processor_client,
     task_state,
     s3_client,
+    s3_model_manager,
     redis_model_manager,
     uploaded_file_id,
 ):
     rmm = redis_model_manager
     df = await DataFile.get(manager=rmm, obj_id=uploaded_file_id)
     assert df.status == FileProcessingStatus.in_progress
-    task = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=uploaded_file_id,
+            tenant_id="common",
+        )
+    )
     await wait_task(task, task_state)
 
     df = await DataFile.get(manager=rmm, obj_id=uploaded_file_id)
@@ -118,6 +131,7 @@ async def test_parse_file_task_with_file_settings(
             source_id=source_id,
             file_settings=dict(encoding="utf8", delimiter="tab", first_line_is_header=False),
             source_settings={},
+            tenant_id="common",
         )
     )
     await wait_task(task, task_state)
@@ -132,7 +146,7 @@ async def test_parse_file_task_with_file_settings(
     assert df.file_settings.dialect.delimiter == "\t"
     assert df.file_settings.encoding == CSVEncoding.utf8
 
-    preview = await DataSourcePreview.get(manager=rmm, obj_id=dsrc.preview_id)
+    preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=dsrc.preview_id)
     assert preview.id == dsrc.preview_id
     assert len(preview.preview_data) == 6
 
@@ -149,7 +163,12 @@ async def test_parse_10mb_file_task(
     df = await DataFile.get(manager=rmm, obj_id=uploaded_10mb_file_id)
     assert df.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_10mb_file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=uploaded_10mb_file_id,
+            tenant_id="common",
+        )
+    )
     await wait_task(task, task_state)
 
     df = await DataFile.get(manager=rmm, obj_id=uploaded_10mb_file_id)
@@ -167,7 +186,12 @@ async def test_save_source_task(
     read_chs3_file,
 ):
     usm = default_async_usm_per_test
-    task = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_file_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=uploaded_file_id,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -204,7 +228,12 @@ async def test_save_source_task_dt(
     read_chs3_file,
 ):
     usm = default_async_usm_per_test
-    task = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_file_dt_id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=uploaded_file_dt_id,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -256,7 +285,12 @@ async def test_save_source_task_on_replace(
     source = []
 
     for file_id in (uploaded_file_id, another_uploaded_file_id):
-        task = await task_processor_client.schedule(ParseFileTask(file_id=file_id))
+        task = await task_processor_client.schedule(
+            ParseFileTask(
+                file_id=file_id,
+                tenant_id="common",
+            )
+        )
         await wait_task(task, task_state)
         new_df = await DataFile.get(manager=redis_model_manager, obj_id=file_id)
         df.append(new_df)
@@ -293,13 +327,24 @@ async def test_delete_file_task(
 ):
     filename = uploaded_file.filename
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=uploaded_file.id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=uploaded_file.id,
+            tenant_id="common",
+        )
+    )
     await wait_task(task, task_state)
 
     df = await DataFile.get(manager=redis_model_manager, obj_id=uploaded_file.id)
     source = df.sources[0]
 
-    task = await task_processor_client.schedule(DeleteFileTask(filename, source.preview_id))
+    task = await task_processor_client.schedule(
+        DeleteFileTask(
+            s3_filename=filename,
+            tenant_id="common",
+            preview_id=source.preview_id,
+        )
+    )
     await wait_task(task, task_state)
 
     with pytest.raises(ClientError) as ex:
@@ -310,7 +355,13 @@ async def test_delete_file_task(
         assert ex["ResponseMetadata"]["HTTPStatusCode"] == 404
 
     # and now try with not existing file
-    task = await task_processor_client.schedule(DeleteFileTask(filename, source.preview_id))
+    task = await task_processor_client.schedule(
+        DeleteFileTask(
+            s3_filename=filename,
+            tenant_id="common",
+            preview_id=source.preview_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -363,7 +414,11 @@ async def test_cleanup_tenant_task(
     assert n_lc_rules == 0
 
     for tenant_id in tenant_ids:
-        task = await task_processor_client.schedule(CleanupTenantTask(tenant_id=tenant_id))
+        task = await task_processor_client.schedule(
+            CleanupTenantTask(
+                tenant_id=tenant_id,
+            )
+        )
         result = await wait_task(task, task_state)
         assert result[-1] == "success"
 
@@ -396,7 +451,11 @@ async def test_cleanup_tenant_task_no_files(
 ):
     await s3_client.delete_bucket_lifecycle(Bucket=s3_persistent_bucket)
 
-    task = await task_processor_client.schedule(CleanupTenantTask(tenant_id="there are no files in this tenant"))
+    task = await task_processor_client.schedule(
+        CleanupTenantTask(
+            tenant_id="there are no files in this tenant",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -478,7 +537,12 @@ async def test_datetime64(
     dfile = await DataFile.get(manager=rmm, obj_id=dfile.id)
     assert dfile.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=dfile.id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=dfile.id,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -494,8 +558,8 @@ async def test_datetime64(
 
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
-            tenant_id="common",
             file_id=dfile.id,
+            tenant_id="common",
             src_source_id=source.id,
             dst_source_id=source.id,
             connection_id=conn.uuid,
@@ -545,7 +609,12 @@ async def test_datetime_tz(
     dfile = await DataFile.get(manager=rmm, obj_id=dfile.id)
     assert dfile.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=dfile.id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=dfile.id,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -561,8 +630,8 @@ async def test_datetime_tz(
 
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
-            tenant_id="common",
             file_id=dfile.id,
+            tenant_id="common",
             src_source_id=source.id,
             dst_source_id=source.id,
             connection_id=conn.uuid,
@@ -644,7 +713,12 @@ async def test_too_many_columns_csv(
     dfile = await DataFile.get(manager=rmm, obj_id=dfile.id)
     assert dfile.status == FileProcessingStatus.in_progress
 
-    task = await task_processor_client.schedule(ParseFileTask(file_id=dfile.id))
+    task = await task_processor_client.schedule(
+        ParseFileTask(
+            file_id=dfile.id,
+            tenant_id="common",
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -674,12 +748,13 @@ async def test_rename_tenant_files(
         Bucket=s3_persistent_bucket, Key=conn.get_full_s3_filename(source.s3_filename_suffix)
     )
     s3_data = await s3_obj["Body"].read()
-    preview_set = PreviewSet(redis=redis_model_manager._redis, id=conn.raw_tenant_id)
-    ps_vals = {_ async for _ in preview_set.sscan_iter()}
-    assert len(ps_vals) >= 1
 
     new_tenant_id = str(uuid.uuid4())
-    task = await task_processor_client.schedule(RenameTenantFilesTask(tenant_id=new_tenant_id))
+    task = await task_processor_client.schedule(
+        RenameTenantFilesTask(
+            tenant_id=new_tenant_id,
+        )
+    )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
 
@@ -695,8 +770,3 @@ async def test_rename_tenant_files(
 
     status_obj = await RenameTenantStatusModel.get(manager=redis_model_manager, obj_id=new_tenant_id)
     assert status_obj.status == RenameTenantStatus.success
-
-    new_preview_set = PreviewSet(redis=redis_model_manager._redis, id=new_tenant_id)
-    nps_vals = {_ async for _ in new_preview_set.sscan_iter()}
-    assert nps_vals >= ps_vals
-    assert await preview_set.size() == 0

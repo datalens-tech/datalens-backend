@@ -1,10 +1,12 @@
 from enum import Enum
 import json
+from typing import ClassVar
 import uuid
 
 import attr
 from marshmallow import fields
 import pytest
+import redis.asyncio
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_configs.crypto_keys import get_dummy_crypto_keys_config
@@ -51,7 +53,7 @@ class SomeModel(RedisModel):
     sub_model: SomeSubModel = attr.ib()
     sub_model_with_secret: SomeSubModelWithSecret = attr.ib()
 
-    KEY_PREFIX: str = "some"
+    KEY_PREFIX: ClassVar[str] = "some"
 
     def get_secret_keys(self) -> set[DataKey]:
         lower_level_keys = self.sub_model_with_secret.get_secret_keys()
@@ -63,7 +65,7 @@ class SomeAuthorizedModel(RedisModelUserIdAuth):
     title: str = attr.ib()
     value: int = attr.ib()
 
-    KEY_PREFIX: str = "some_auth"
+    KEY_PREFIX: ClassVar[str] = "some_auth"
 
 
 class SomeSubModelSchema(BaseSchema):
@@ -106,7 +108,7 @@ register_redis_model_storage_schema(SomeAuthorizedModel, SomeAuthorizedModelSche
 
 
 @pytest.mark.asyncio
-async def test_redis_model(redis_cli):
+async def test_redis_model(redis_cli: redis.asyncio.Redis) -> None:
     rmm = RedisModelManager(redis=redis_cli, crypto_keys_config=get_dummy_crypto_keys_config())
 
     with pytest.raises(RedisModelNotFound):
@@ -128,6 +130,8 @@ async def test_redis_model(redis_cli):
     await obj.save()
 
     redis_data = await redis_cli.get(f"some/{obj.id}")
+    assert isinstance(redis_data, (bytes, bytearray))
+
     decoded_data = json.loads(redis_data.decode())
     assert decoded_data.pop("id")
     assert "cypher_text" in json.loads(decoded_data.pop("sub_model_with_secret")["secret"])
@@ -149,7 +153,7 @@ async def test_redis_model(redis_cli):
 
 
 @pytest.mark.asyncio
-async def test_authorized_redis_model(redis_cli):
+async def test_authorized_redis_model(redis_cli: redis.asyncio.Redis) -> None:
     crypto_keys_config = get_dummy_crypto_keys_config()
     rmm_no_auth = RedisModelManager(redis=redis_cli, crypto_keys_config=crypto_keys_config)
     rmm_auth_1 = RedisModelManager(
@@ -183,7 +187,7 @@ class SomeRedisSet(RedisSetManager):
 
 
 @pytest.mark.asyncio
-async def test_redis_set(redis_cli):
+async def test_redis_set(redis_cli: redis.asyncio.Redis) -> None:
     some_set = SomeRedisSet(redis=redis_cli, id=str(uuid.uuid4()))
 
     expected_values = {"a", "b", "c"}

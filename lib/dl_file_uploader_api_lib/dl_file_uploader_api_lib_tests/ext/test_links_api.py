@@ -24,6 +24,7 @@ async def test_gsheets(
     fu_client,
     s3_client,
     s3_tmp_bucket,
+    s3_persistent_bucket,
     redis_model_manager,
 ):
     spreadsheet_id = "1rnUFa7AiSKD5O80IKCvMy2cSZvLU1kRw9dxbtZbDMWc"
@@ -91,6 +92,7 @@ async def test_big_gsheet(
     fu_client,
     s3_client,
     s3_tmp_bucket,
+    s3_persistent_bucket,
     redis_model_manager,
 ):
     spreadsheet_id = "1sPIpWUZa7wgUnUDa-MFPidJTSjQ40jS2OmD0g6V_wDw"
@@ -128,7 +130,7 @@ async def test_big_gsheet(
 
 
 @pytest.mark.asyncio
-async def test_gsheets_invalid_link(fu_client, s3_client, s3_tmp_bucket, redis_model_manager):
+async def test_gsheets_invalid_link(fu_client, s3_client, s3_tmp_bucket, s3_persistent_bucket, redis_model_manager):
     resp = await fu_client.make_request(
         ReqBuilder.upload_gsheet(
             url="https://sheets.googleapis.com/v4/spreadsheets/1vFysKzPgy7Zw09K6wShVQPe6VXIoAzpGH3g_4X8dgyw",
@@ -144,6 +146,7 @@ async def test_gsheets_no_access_to_spreadsheet(
     fu_client,
     s3_client,
     s3_tmp_bucket,
+    s3_persistent_bucket,
     redis_model_manager,
 ):
     resp = await fu_client.make_request(ReqBuilder.upload_gsheet("1vFysKzPgy7Zw09K6wShVQPe6VXIoAzpGH3g_4X8dgyw"))
@@ -164,6 +167,7 @@ async def test_gsheets_not_found(
     fu_client,
     s3_client,
     s3_tmp_bucket,
+    s3_persistent_bucket,
     redis_model_manager,
 ):
     resp = await fu_client.make_request(ReqBuilder.upload_gsheet("ffffffffffffffffffffffffffffffffffffffffffff"))
@@ -184,6 +188,7 @@ async def test_gsheets_unsupported_document(
     fu_client,
     s3_client,
     s3_tmp_bucket,
+    s3_persistent_bucket,
     redis_model_manager,
 ):
     resp = await fu_client.make_request(ReqBuilder.upload_gsheet("14wGijvJtpF6M3_S-gh-nctYsj50jfstm"))
@@ -205,6 +210,7 @@ async def test_all_types(
     fu_client,
     s3_client,
     s3_tmp_bucket,
+    s3_persistent_bucket,
     redis_model_manager,
     env_param_getter,
 ):
