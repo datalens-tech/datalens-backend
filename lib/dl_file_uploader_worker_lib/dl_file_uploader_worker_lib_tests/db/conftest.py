@@ -199,7 +199,7 @@ def reader_app(loop, secure_reader):
     return loop.run_until_complete(site.start())
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def saved_file_connection_id(
     task_processor_client,
     task_state,

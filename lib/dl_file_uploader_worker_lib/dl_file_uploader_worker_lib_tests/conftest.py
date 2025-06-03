@@ -222,7 +222,7 @@ def task_state():
     return TaskState(BITaskStateImpl())
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def task_processor_arq_worker(
     loop,
     task_state,
