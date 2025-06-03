@@ -36,12 +36,12 @@ from dl_file_uploader_lib.s3_model.models import S3DataSourcePreview
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
 from dl_file_uploader_task_interface.tasks import TaskExecutionMode
-from dl_s3.s3_service import S3Service
-from dl_s3.utils import (
-    S3Object,
+from dl_file_uploader_worker_lib.utils.s3_utils import (
     copy_from_s3_to_s3,
     make_s3_table_func_sql_source,
 )
+from dl_s3.s3_service import S3Service
+from dl_s3.utils import S3Object
 from dl_task_processor.task import (
     BaseExecutorTask,
     Fail,
