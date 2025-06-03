@@ -55,7 +55,6 @@ async def test_parse_file_task(
     s3_client,
     redis_model_manager,
     uploaded_file_id,
-    tenant_id,
 ):
     rmm = redis_model_manager
     df = await DataFile.get(manager=rmm, obj_id=uploaded_file_id)
@@ -64,7 +63,7 @@ async def test_parse_file_task(
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=uploaded_file_id,
-            tenant_id=tenant_id,
+            tenant_id="common",
         )
     )
     await wait_task(task, task_state)
@@ -105,7 +104,6 @@ async def test_parse_file_task_with_file_settings(
     s3_client,
     redis_model_manager,
     uploaded_file_id,
-    tenant_id,
 ):
     rmm = redis_model_manager
     df = await DataFile.get(manager=rmm, obj_id=uploaded_file_id)
@@ -113,7 +111,7 @@ async def test_parse_file_task_with_file_settings(
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=uploaded_file_id,
-            tenant_id=tenant_id,
+            tenant_id="common",
         )
     )
     await wait_task(task, task_state)
@@ -130,7 +128,7 @@ async def test_parse_file_task_with_file_settings(
             source_id=source_id,
             file_settings=dict(encoding="utf8", delimiter="tab", first_line_is_header=False),
             source_settings={},
-            tenant_id=tenant_id,
+            tenant_id="common",
         )
     )
     await wait_task(task, task_state)
@@ -157,7 +155,6 @@ async def test_parse_10mb_file_task(
     s3_client,
     redis_model_manager,
     uploaded_10mb_file_id,
-    tenant_id,
 ):
     rmm = redis_model_manager
     df = await DataFile.get(manager=rmm, obj_id=uploaded_10mb_file_id)
@@ -166,7 +163,7 @@ async def test_parse_10mb_file_task(
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=uploaded_10mb_file_id,
-            tenant_id=tenant_id,
+            tenant_id="common",
         )
     )
     await wait_task(task, task_state)
@@ -184,13 +181,12 @@ async def test_save_source_task(
     uploaded_file_id,
     default_async_usm_per_test,
     read_chs3_file,
-    tenant_id,
 ):
     usm = default_async_usm_per_test
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=uploaded_file_id,
-            tenant_id=tenant_id,
+            tenant_id="common",
         )
     )
     result = await wait_task(task, task_state)
@@ -205,7 +201,7 @@ async def test_save_source_task(
 
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
-            tenant_id=tenant_id,
+            tenant_id="common",
             file_id=uploaded_file_id,
             src_source_id=source.id,
             dst_source_id=source.id,
@@ -227,13 +223,12 @@ async def test_save_source_task_dt(
     uploaded_file_dt_id,
     default_async_usm_per_test,
     read_chs3_file,
-    tenant_id,
 ):
     usm = default_async_usm_per_test
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=uploaded_file_dt_id,
-            tenant_id=tenant_id,
+            tenant_id="common",
         )
     )
     result = await wait_task(task, task_state)
@@ -248,7 +243,7 @@ async def test_save_source_task_dt(
 
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
-            tenant_id=tenant_id,
+            tenant_id="common",
             file_id=uploaded_file_dt_id,
             src_source_id=source.id,
             dst_source_id=source.id,
@@ -281,7 +276,6 @@ async def test_save_source_task_on_replace(
     uploaded_file_id,
     another_uploaded_file_id,
     default_async_usm_per_test,
-    tenant_id,
 ):
     usm = default_async_usm_per_test
     df = []
@@ -291,7 +285,7 @@ async def test_save_source_task_on_replace(
         task = await task_processor_client.schedule(
             ParseFileTask(
                 file_id=file_id,
-                tenant_id=tenant_id,
+                tenant_id="common",
             )
         )
         await wait_task(task, task_state)
@@ -306,7 +300,7 @@ async def test_save_source_task_on_replace(
 
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
-            tenant_id=tenant_id,
+            tenant_id="common",
             file_id=uploaded_file_id,
             src_source_id=source[0].id,
             dst_source_id=source[1].id,
@@ -327,14 +321,13 @@ async def test_delete_file_task(
     s3_persistent_bucket,
     redis_model_manager,
     uploaded_file,
-    tenant_id,
 ):
     filename = uploaded_file.filename
 
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=uploaded_file.id,
-            tenant_id=tenant_id,
+            tenant_id="common",
         )
     )
     await wait_task(task, task_state)
@@ -345,7 +338,7 @@ async def test_delete_file_task(
     task = await task_processor_client.schedule(
         DeleteFileTask(
             s3_filename=filename,
-            tenant_id=tenant_id,
+            tenant_id="common",
             preview_id=source.preview_id,
         )
     )
@@ -362,7 +355,7 @@ async def test_delete_file_task(
     task = await task_processor_client.schedule(
         DeleteFileTask(
             s3_filename=filename,
-            tenant_id=tenant_id,
+            tenant_id="common",
             preview_id=source.preview_id,
         )
     )
@@ -512,7 +505,6 @@ async def test_datetime64(
     redis_model_manager,
     s3_tmp_bucket,
     default_async_usm_per_test,
-    tenant_id,
 ):
     usm = default_async_usm_per_test
     csv_data = """utc_start_dttm
@@ -545,7 +537,7 @@ async def test_datetime64(
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=dfile.id,
-            tenant_id=tenant_id,
+            tenant_id="common",
         )
     )
     result = await wait_task(task, task_state)
@@ -564,7 +556,7 @@ async def test_datetime64(
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
             file_id=dfile.id,
-            tenant_id=tenant_id,
+            tenant_id="common",
             src_source_id=source.id,
             dst_source_id=source.id,
             connection_id=conn.uuid,
@@ -585,7 +577,6 @@ async def test_datetime_tz(
     redis_model_manager,
     s3_tmp_bucket,
     default_async_usm_per_test,
-    tenant_id,
 ):
     csv_data = """dt
 2022-07-01 13:52:07+03
@@ -618,7 +609,7 @@ async def test_datetime_tz(
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=dfile.id,
-            tenant_id=tenant_id,
+            tenant_id="common",
         )
     )
     result = await wait_task(task, task_state)
@@ -637,7 +628,7 @@ async def test_datetime_tz(
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
             file_id=dfile.id,
-            tenant_id=tenant_id,
+            tenant_id="common",
             src_source_id=source.id,
             dst_source_id=source.id,
             connection_id=conn.uuid,
@@ -700,7 +691,6 @@ async def test_too_many_columns_csv(
     redis_model_manager,
     s3_tmp_bucket,
     monkeypatch,
-    tenant_id,
 ):
     monkeypatch.setattr(parsing_utils, "MAX_COLUMNS_COUNT", 10)
     csv_data = generate_sample_csv_data_str(3, 11).encode("utf-8")
@@ -727,7 +717,7 @@ async def test_too_many_columns_csv(
     task = await task_processor_client.schedule(
         ParseFileTask(
             file_id=dfile.id,
-            tenant_id=tenant_id,
+            tenant_id="common",
         )
     )
     result = await wait_task(task, task_state)

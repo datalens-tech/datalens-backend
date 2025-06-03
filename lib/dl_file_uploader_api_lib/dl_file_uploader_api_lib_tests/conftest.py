@@ -296,6 +296,11 @@ def master_token_header(app_settings) -> dict[DLHeadersCommon, str]:
     return {DLHeadersCommon.FILE_UPLOADER_MASTER_TOKEN: app_settings.FILE_UPLOADER_MASTER_TOKEN}
 
 
+@pytest.fixture(scope="function")
+def tenant_id_header() -> dict[DLHeadersCommon, str]:
+    return {DLHeadersCommon.TENANT_ID: "common"}
+
+
 @pytest.fixture(scope="session")
 def connectors_settings(s3_settings):
     return FileUploaderConnectorsSettings(

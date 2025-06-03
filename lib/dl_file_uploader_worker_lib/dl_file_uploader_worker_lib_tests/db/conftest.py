@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 import os
-import uuid
 
 import aiohttp.web
 import pytest
@@ -200,11 +199,6 @@ def reader_app(loop, secure_reader):
     return loop.run_until_complete(site.start())
 
 
-@pytest.fixture(scope="session")
-def tenant_id() -> str:
-    return uuid.uuid4().hex
-
-
 @pytest.fixture(scope="function")
 async def saved_file_connection_id(
     task_processor_client,
@@ -213,11 +207,10 @@ async def saved_file_connection_id(
     redis_model_manager,
     uploaded_file_id,
     default_async_usm_per_test,
-    tenant_id,
 ) -> str:
     task_parse = await task_processor_client.schedule(
         ParseFileTask(
-            tenant_id=tenant_id,
+            tenant_id="common",
             file_id=uploaded_file_id,
         )
     )
@@ -232,7 +225,7 @@ async def saved_file_connection_id(
 
     task_save = await task_processor_client.schedule(
         SaveSourceTask(
-            tenant_id=tenant_id,
+            tenant_id="common",
             file_id=uploaded_file_id,
             src_source_id=source.id,
             dst_source_id=source.id,
