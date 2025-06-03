@@ -30,6 +30,8 @@ CONNECTOR_AVAILABILITY:
       availability: free
     - conn_type: mssql
       availability: free
+    - conn_type: oracle
+      availability: free
     - conn_type: trino
       availability: hidden
     - conn_type: metrika_api
