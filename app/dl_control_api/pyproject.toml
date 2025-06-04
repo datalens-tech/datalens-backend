@@ -23,6 +23,7 @@ dl-connector-chyt = {path = "../../lib/dl_connector_chyt"}
 dl-connector-metrica = {path = "../../lib/dl_connector_metrica"}
 dl-connector-mysql = {path = "../../lib/dl_connector_mysql"}
 dl-connector-mssql = {path = "../../lib/dl_connector_mssql"}
+dl-connector-oracle = {path = "../../lib/dl_connector_oracle"}
 dl-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
 dl-connector-trino = {path = "../../lib/dl_connector_trino"}
 dl-core = {path = "../../lib/dl_core"}

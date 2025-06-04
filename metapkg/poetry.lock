@@ -2403,6 +2403,7 @@ dl-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
 dl-connector-metrica = {path = "../../lib/dl_connector_metrica"}
 dl-connector-mssql = {path = "../../lib/dl_connector_mssql"}
 dl-connector-mysql = {path = "../../lib/dl_connector_mysql"}
+dl-connector-oracle = {path = "../../lib/dl_connector_oracle"}
 dl-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 dl-connector-trino = {path = "../../lib/dl_connector_trino"}
 dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
@@ -2557,6 +2558,7 @@ dl-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
 dl-connector-metrica = {path = "../../lib/dl_connector_metrica"}
 dl-connector-mssql = {path = "../../lib/dl_connector_mssql"}
 dl-connector-mysql = {path = "../../lib/dl_connector_mysql"}
+dl-connector-oracle = {path = "../../lib/dl_connector_oracle"}
 dl-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 dl-connector-trino = {path = "../../lib/dl_connector_trino"}
 dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
