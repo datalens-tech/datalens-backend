@@ -18,7 +18,7 @@ _CONN_DATA_TV = TypeVar("_CONN_DATA_TV", bound=ConnectionDataModelBase)
 
 
 class BaseConnectionDataStorageSchema(DefaultStorageSchema[_CONN_DATA_TV], Generic[_CONN_DATA_TV]):
-    pass
+    data_export_forbidden = ma_fields.Boolean(required=False, allow_none=False, load_default=False, dump_default=False)
 
 
 _CB_DATA_TV = TypeVar("_CB_DATA_TV", bound=ConnectionBase.DataModel)
@@ -28,7 +28,6 @@ class ConnectionBaseDataStorageSchema(BaseConnectionDataStorageSchema[_CB_DATA_T
     table_name = ma_fields.String(required=False, allow_none=True, load_default=None, dump_default=None)
     sample_table_name = ma_fields.String(required=False, allow_none=True, load_default=None, dump_default=None)
     name = ma_fields.String(required=False, allow_none=True, load_default=None, dump_default=None)
-    data_export_forbidden = ma_fields.Boolean(required=False, allow_none=False, load_default=False, dump_default=False)
     schema_version = ma_fields.String(required=False, allow_none=False, load_default="1", dump_default="1")
 
 
