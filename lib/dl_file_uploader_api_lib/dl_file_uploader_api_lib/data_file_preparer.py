@@ -85,9 +85,11 @@ async def yadocs_data_file_preparer(
         if parts.scheme not in ("http", "https"):
             raise InvalidLink(f"Invalid url scheme: {parts.scheme!r}, must be 'http' or 'https'; {example_url_message}")
         host = parts.hostname
-        if not YADOCS_HOST_PATTERN.match(host):
+        if host is None or not YADOCS_HOST_PATTERN.match(host):
             raise InvalidLink(
-                f'Invalid host: {host!r}; should match the following regular expression: "{YADOCS_HOST_PATTERN_STR}"; {example_url_message}'
+                f"Invalid host: {host!r}; "
+                f'should match the following regular expression: "{YADOCS_HOST_PATTERN_STR}"; '
+                f"{example_url_message}"
             )
 
         path = parts.path
