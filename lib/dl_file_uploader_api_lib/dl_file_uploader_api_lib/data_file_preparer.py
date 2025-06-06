@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import Optional
 import urllib.parse
 
@@ -17,6 +18,11 @@ from dl_file_uploader_lib.redis_model.models.models import (
 
 
 LOGGER = logging.getLogger(__name__)
+
+YADOCS_HOST_PATTERN_STR = (
+    r"^disk(\.360)?\.yandex\.(ru|az|by|co\.il|com|com\.am|com\.ge|com\.tr|ee|fr|kg|kz|lt|lv|md|tj|tm|uz)$"
+)
+YADOCS_HOST_PATTERN = re.compile(YADOCS_HOST_PATTERN_STR)
 
 
 async def gsheets_data_file_preparer(
@@ -72,8 +78,6 @@ async def yadocs_data_file_preparer(
     public_link: Optional[str],
     redis_model_manager: RedisModelManager,
 ) -> DataFile:
-    default_host: str = "disk.yandex.ru"
-    allowed_hosts: frozenset[str] = frozenset({default_host})
     example_url: str = "https://disk.yandex.ru/i/OyzdmFI0MUEEgA"
     example_url_message: str = f"example: {example_url!r}"
     if public_link is not None:
@@ -81,8 +85,12 @@ async def yadocs_data_file_preparer(
         if parts.scheme not in ("http", "https"):
             raise InvalidLink(f"Invalid url scheme: {parts.scheme!r}, must be 'http' or 'https'; {example_url_message}")
         host = parts.hostname
-        if host not in allowed_hosts:
-            raise InvalidLink(f"Invalid host: {host!r}; should be {default_host!r}; {example_url_message}")
+        if host is None or not YADOCS_HOST_PATTERN.match(host):
+            raise InvalidLink(
+                f"Invalid host: {host!r}; "
+                f'should match the following regular expression: "{YADOCS_HOST_PATTERN_STR}"; '
+                f"{example_url_message}"
+            )
 
         path = parts.path
         prefix = "/i/"
