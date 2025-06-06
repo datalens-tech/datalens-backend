@@ -1,4 +1,5 @@
 from .base import (
+    BaseRootFallbackSettings,
     BaseRootSettings,
     BaseSettings,
     TypedAnnotation,
@@ -19,5 +20,6 @@ __all__ = [
     "TypedDictAnnotation",
     "WithFallbackGetAttr",
     "WithFallbackEnvSource",
+    "BaseRootFallbackSettings",
     "decode_multilines_validator",
 ]

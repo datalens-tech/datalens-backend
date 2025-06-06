@@ -7,6 +7,7 @@ from .settings import (
     BaseSettings,
 )
 from .typed import (
+    BaseRootFallbackSettings,
     TypedAnnotation,
     TypedBaseSettings,
     TypedDictAnnotation,
@@ -23,4 +24,5 @@ __all__ = [
     "TypedDictAnnotation",
     "WithFallbackGetAttr",
     "WithFallbackEnvSource",
+    "BaseRootFallbackSettings",
 ]

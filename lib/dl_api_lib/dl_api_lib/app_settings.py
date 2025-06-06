@@ -9,7 +9,6 @@ from typing import (
 
 import attr
 import pydantic
-import pydantic_settings
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
@@ -38,17 +37,6 @@ from dl_formula.parser.factory import ParserType
 from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 import dl_settings
 import dl_settings.validators as dl_settings_validators
-
-
-class BaseSettings(
-    dl_settings.WithFallbackGetAttr,
-    dl_settings.WithFallbackEnvSource,
-    dl_settings.BaseRootSettings,
-):
-    # Moved here, see https://github.com/pydantic/pydantic/issues/9992
-    model_config = pydantic_settings.SettingsConfigDict(
-        extra=pydantic.Extra.ignore,
-    )
 
 
 @attr.s(frozen=True)
@@ -360,7 +348,7 @@ class NativeAuthSettingsOS(BaseAuthSettingsOS):
 BaseAuthSettingsOS.register("NATIVE", NativeAuthSettingsOS)
 
 
-class AppSettings(BaseSettings):
+class AppSettings(dl_settings.BaseRootFallbackSettings):
     ...
 
 
