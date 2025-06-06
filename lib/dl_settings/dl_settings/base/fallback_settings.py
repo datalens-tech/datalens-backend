@@ -1,8 +1,8 @@
 import pydantic
 import pydantic_settings
 
-import dl_settings.base.settings as base_settings
 import dl_settings.base.fallback as base_fallback
+import dl_settings.base.settings as base_settings
 
 
 class BaseRootSettingsWithFallback(
