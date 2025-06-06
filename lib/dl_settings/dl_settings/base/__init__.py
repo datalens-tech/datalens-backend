@@ -2,12 +2,12 @@ from .fallback import (
     WithFallbackEnvSource,
     WithFallbackGetAttr,
 )
+from .fallback_settings import BaseRootFallbackSettings
 from .settings import (
     BaseRootSettings,
     BaseSettings,
 )
 from .typed import (
-    BaseRootFallbackSettings,
     TypedAnnotation,
     TypedBaseSettings,
     TypedDictAnnotation,
