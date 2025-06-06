@@ -348,7 +348,7 @@ class NativeAuthSettingsOS(BaseAuthSettingsOS):
 BaseAuthSettingsOS.register("NATIVE", NativeAuthSettingsOS)
 
 
-class AppSettings(dl_settings.BaseRootFallbackSettings):
+class AppSettings(dl_settings.BaseRootSettingsWithFallback):
     ...
 
 

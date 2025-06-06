@@ -76,5 +76,5 @@ class DeprecatedFileUploaderBaseSettings:
     )
 
 
-class FileUploaderBaseSettings(dl_settings.BaseRootFallbackSettings):
+class FileUploaderBaseSettings(dl_settings.BaseRootSettingsWithFallback):
     ...

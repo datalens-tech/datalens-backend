@@ -19,5 +19,5 @@ class DeprecatedRQESettings:
     FORBID_PRIVATE_ADDRESSES: bool = s_attrib("FORBID_PRIVATE_ADDRESSES", missing=False)  # type: ignore
 
 
-class RQESettings(dl_settings.BaseRootFallbackSettings):
+class RQESettings(dl_settings.BaseRootSettingsWithFallback):
     ...

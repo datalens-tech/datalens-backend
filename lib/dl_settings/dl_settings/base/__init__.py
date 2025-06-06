@@ -2,7 +2,7 @@ from .fallback import (
     WithFallbackEnvSource,
     WithFallbackGetAttr,
 )
-from .fallback_settings import BaseRootFallbackSettings
+from .fallback_settings import BaseRootSettingsWithFallback
 from .settings import (
     BaseRootSettings,
     BaseSettings,
@@ -24,5 +24,5 @@ __all__ = [
     "TypedDictAnnotation",
     "WithFallbackGetAttr",
     "WithFallbackEnvSource",
-    "BaseRootFallbackSettings",
+    "BaseRootSettingsWithFallback",
 ]
