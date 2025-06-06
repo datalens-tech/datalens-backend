@@ -4,8 +4,9 @@ from typing import (
 )
 
 import attr
+import pydantic
+import pydantic_settings
 
-from dl_api_lib.app_settings import BaseSettings
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.enums import RedisMode
 from dl_configs.environments import is_setting_applicable
@@ -17,6 +18,18 @@ from dl_configs.settings_submodels import (
     RedisSettings,
     S3Settings,
 )
+import dl_settings
+
+
+class FallbackSettings(
+    dl_settings.WithFallbackGetAttr,
+    dl_settings.WithFallbackEnvSource,
+    dl_settings.BaseRootSettings,
+):
+    # Moved here, see https://github.com/pydantic/pydantic/issues/9992
+    model_config = pydantic_settings.SettingsConfigDict(
+        extra=pydantic.Extra.ignore,
+    )
 
 
 def _make_redis_persistent_settings(cfg: Any, db: int) -> Optional[RedisSettings]:
@@ -76,5 +89,5 @@ class DeprecatedFileUploaderBaseSettings:
     )
 
 
-class FileUploaderBaseSettings(BaseSettings):
+class FileUploaderBaseSettings(FallbackSettings):
     ...

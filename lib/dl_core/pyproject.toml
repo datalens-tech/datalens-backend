@@ -48,7 +48,6 @@ dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-dashsql = {path = "../../lib/dl_dashsql"}
 dl-cache-engine = {path = "../dl_cache_engine"}
-dl-api-lib = {path = "../dl_api_lib"}
 dl-rls = {path = "../dl_rls"}
 dl-query-processing = {path = "../dl_query_processing"}
 

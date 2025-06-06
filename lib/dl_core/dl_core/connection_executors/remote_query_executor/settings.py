@@ -1,10 +1,23 @@
 from typing import Optional
 
 import attr
+import pydantic
+import pydantic_settings
 
-from dl_api_lib.app_settings import BaseSettings
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.utils import split_by_comma
+import dl_settings
+
+
+class FallbackSettings(
+    dl_settings.WithFallbackGetAttr,
+    dl_settings.WithFallbackEnvSource,
+    dl_settings.BaseRootSettings,
+):
+    # Moved here, see https://github.com/pydantic/pydantic/issues/9992
+    model_config = pydantic_settings.SettingsConfigDict(
+        extra=pydantic.Extra.ignore,
+    )
 
 
 @attr.s(frozen=True)
@@ -19,5 +32,5 @@ class DeprecatedRQESettings:
     FORBID_PRIVATE_ADDRESSES: bool = s_attrib("FORBID_PRIVATE_ADDRESSES", missing=False)  # type: ignore
 
 
-class RQESettings(BaseSettings):
+class RQESettings(FallbackSettings):
     ...
