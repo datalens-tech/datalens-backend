@@ -52,7 +52,10 @@ from dl_core.connection_executors.remote_query_executor.commons import (
     SUPPORTED_ADAPTER_CLS,
 )
 from dl_core.connection_executors.remote_query_executor.error_handler_rqe import RQEErrorHandler
-from dl_core.connection_executors.remote_query_executor.settings import RQESettings
+from dl_core.connection_executors.remote_query_executor.settings import (
+    DeprecatedRQESettings,
+    RQESettings,
+)
 from dl_core.enums import RQEEventType
 from dl_core.exc import SourceTimeout
 from dl_core.loader import (
@@ -337,7 +340,8 @@ def get_configured_qe_app() -> web.Application:
         jaeger_service_name=jaeger_service_name_env_aware("bi-rqe-async"),
     )
 
-    settings = load_settings_from_env_with_fallback(RQESettings)
+    deprecated_settings = load_settings_from_env_with_fallback(DeprecatedRQESettings)
+    settings = RQESettings(fallback=deprecated_settings)
     load_core_lib(core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST))
 
     hmac_key = settings.RQE_SECRET_KEY

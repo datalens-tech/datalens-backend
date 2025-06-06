@@ -6,6 +6,7 @@ from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.settings_loaders.meta_definition import s_attrib
 
 
+# TODO(catsona): Migrate settings to new model
 @attr.s(frozen=True)
 class FileS3ConnectorSettings(ConnectorSettingsBase):
     SECURE: bool = s_attrib("SECURE", missing=True)  # type: ignore

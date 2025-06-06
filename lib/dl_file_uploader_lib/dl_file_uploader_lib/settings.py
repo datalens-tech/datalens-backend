@@ -16,6 +16,7 @@ from dl_configs.settings_submodels import (
     RedisSettings,
     S3Settings,
 )
+import dl_settings
 
 
 def _make_redis_persistent_settings(cfg: Any, db: int) -> Optional[RedisSettings]:
@@ -36,7 +37,7 @@ def _make_redis_persistent_settings(cfg: Any, db: int) -> Optional[RedisSettings
 
 
 @attr.s(frozen=True)
-class FileUploaderBaseSettings:
+class DeprecatedFileUploaderBaseSettings:
     REDIS_APP: RedisSettings = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings")  [assignment]
         "REDIS_APP",
         fallback_factory=(lambda cfg: _make_redis_persistent_settings(cfg=cfg, db=cfg.REDIS_FILE_UPLOADER_DATA_DB)),
@@ -73,3 +74,7 @@ class FileUploaderBaseSettings:
         json_converter=CryptoKeysConfig.from_json,
         sensitive=True,
     )
+
+
+class FileUploaderBaseSettings(dl_settings.BaseRootSettingsWithFallback):
+    ...

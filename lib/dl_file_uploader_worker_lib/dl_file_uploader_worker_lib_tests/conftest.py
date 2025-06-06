@@ -38,6 +38,7 @@ from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.s3_model.base import S3ModelManager
 from dl_file_uploader_worker_lib.app import FileUploaderContextFab
 from dl_file_uploader_worker_lib.settings import (
+    DeprecatedFileUploaderWorkerSettings,
     FileUploaderConnectorsSettings,
     FileUploaderWorkerSettings,
     SecureReader,
@@ -183,7 +184,7 @@ def file_uploader_worker_settings(
     us_config,
     secure_reader,
 ):
-    settings = FileUploaderWorkerSettings(
+    deprecated_settings = DeprecatedFileUploaderWorkerSettings(
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
         S3=S3Settings(
@@ -205,6 +206,7 @@ def file_uploader_worker_settings(
         CRYPTO_KEYS_CONFIG=get_dummy_crypto_keys_config(),
         SECURE_READER=secure_reader,
     )
+    settings = FileUploaderWorkerSettings(fallback=deprecated_settings)
     yield settings
 
 

@@ -9,7 +9,10 @@ from dl_configs.settings_submodels import (
     S3Settings,
 )
 from dl_file_secure_reader_lib.app import create_app as create_reader_app
-from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
+from dl_file_uploader_worker_lib.settings import (
+    DeprecatedFileUploaderWorkerSettings,
+    FileUploaderWorkerSettings,
+)
 from dl_testing.env_params.generic import GenericEnvParamGetter
 
 
@@ -30,7 +33,7 @@ def file_uploader_worker_settings(
     us_config,
     secure_reader,
 ):
-    settings = FileUploaderWorkerSettings(
+    deprecated_settings = DeprecatedFileUploaderWorkerSettings(
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
         S3=S3Settings(
@@ -52,6 +55,7 @@ def file_uploader_worker_settings(
         CRYPTO_KEYS_CONFIG=get_dummy_crypto_keys_config(),
         SECURE_READER=secure_reader,
     )
+    settings = FileUploaderWorkerSettings(fallback=deprecated_settings)
     yield settings
 
 

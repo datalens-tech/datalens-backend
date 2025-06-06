@@ -9,7 +9,6 @@ from typing import (
 
 import attr
 import pydantic
-import pydantic_settings
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
@@ -53,7 +52,7 @@ def _list_to_tuple(value: Any) -> Any:
 
 
 @attr.s(frozen=True)
-class AppSettings:
+class DeprecatedAppSettings:
     BLEEDING_EDGE_USERS: tuple[str, ...] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "tuple[str, ...]")  [assignment]
         "DL_BLEEDING_EDGE_USERS",
         env_var_converter=split_by_comma,
@@ -200,7 +199,7 @@ class AppSettings:
 
 
 @attr.s(frozen=True)
-class ControlApiAppSettings(AppSettings):
+class DeprecatedControlApiAppSettings(DeprecatedAppSettings):
     DO_DSRC_IDX_FETCH: bool = s_attrib("DL_DO_DS_IDX_FETCH", missing=False)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
 
     CONNECTOR_AVAILABILITY: ConnectorAvailabilityConfig = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "ConnectorAvailabilityConfig")  [assignment]
@@ -231,7 +230,7 @@ class ControlApiAppSettings(AppSettings):
 
 
 @attr.s(frozen=True)
-class DataApiAppSettings(AppSettings):
+class DeprecatedDataApiAppSettings(DeprecatedAppSettings):
     COMMON_TIMEOUT_SEC: int = s_attrib("COMMON_TIMEOUT_SEC", missing=90)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "int")  [assignment]
 
     CACHES_ON: bool = s_attrib("CACHES_ON", missing=True)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
@@ -309,12 +308,12 @@ class ControlApiAppTestingsSettings:
 
 
 @attr.s(frozen=True)
-class DeprecatedControlApiAppSettingsOS(ControlApiAppSettings):
+class DeprecatedControlApiAppSettingsOS(DeprecatedControlApiAppSettings):
     ...
 
 
 @attr.s(frozen=True)
-class DeprecatedDataApiAppSettingsOS(DataApiAppSettings):
+class DeprecatedDataApiAppSettingsOS(DeprecatedDataApiAppSettings):
     ...
 
 
@@ -349,15 +348,21 @@ class NativeAuthSettingsOS(BaseAuthSettingsOS):
 BaseAuthSettingsOS.register("NATIVE", NativeAuthSettingsOS)
 
 
-class AppSettingsOS(
-    dl_settings.WithFallbackGetAttr,
-    dl_settings.WithFallbackEnvSource,
-    dl_settings.BaseRootSettings,
-):
-    model_config = pydantic_settings.SettingsConfigDict(
-        extra=pydantic.Extra.ignore,
-    )
+class AppSettings(dl_settings.BaseRootSettingsWithFallback):
+    ...
 
+
+class ControlApiAppSettings(AppSettings):
+    ...
+
+
+class DataApiAppSettings(AppSettings):
+    ...
+
+
+class AppSettingsOS(
+    AppSettings,
+):
     AUTH: typing.Optional[dl_settings.TypedAnnotation[BaseAuthSettingsOS]] = None
 
     fallback_env_keys = {
@@ -371,9 +376,9 @@ class AppSettingsOS(
     }
 
 
-class ControlApiAppSettingsOS(AppSettingsOS):
+class ControlApiAppSettingsOS(AppSettingsOS, ControlApiAppSettings):
     ...
 
 
-class DataApiAppSettingsOS(AppSettingsOS):
+class DataApiAppSettingsOS(AppSettingsOS, DataApiAppSettings):
     ...
