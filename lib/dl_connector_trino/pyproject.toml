@@ -42,6 +42,9 @@ trino = "dl_connector_trino.db_testing.connector:TrinoDbTestingConnector"
 [tool.poetry.plugins."dl_formula.connectors"]
 trino = "dl_connector_trino.formula.connector:TrinoFormulaConnector"
 
+[tool.poetry.plugins."dl_formula_ref.plugins"]
+trino = "dl_connector_trino.formula_ref.plugin:TrinoFormulaRefPlugin"
+
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
 pytest-asyncio = ">=0.20.3"
