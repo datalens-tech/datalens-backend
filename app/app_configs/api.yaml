@@ -33,7 +33,7 @@ CONNECTOR_AVAILABILITY:
     - conn_type: oracle
       availability: free
     - conn_type: trino
-      availability: hidden
+      availability: free
     - conn_type: metrika_api
       availability: free
     - conn_type: appmetrica_api
