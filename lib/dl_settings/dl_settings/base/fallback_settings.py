@@ -2,11 +2,12 @@ import pydantic
 import pydantic_settings
 
 import dl_settings.base.settings as base_settings
+import dl_settings.base.fallback as base_fallback
 
 
 class BaseRootSettingsWithFallback(
-    base_settings.WithFallbackGetAttr,
-    base_settings.WithFallbackEnvSource,
+    base_fallback.WithFallbackGetAttr,
+    base_fallback.WithFallbackEnvSource,
     base_settings.BaseRootSettings,
 ):
     # Moved here, see https://github.com/pydantic/pydantic/issues/9992
