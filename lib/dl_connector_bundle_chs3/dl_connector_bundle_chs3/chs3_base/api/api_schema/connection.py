@@ -11,6 +11,7 @@ from marshmallow import (
 
 from dl_api_connector.api_schema.component_errors import ComponentErrorListSchema
 from dl_api_connector.api_schema.connection_base import ConnectionSchema
+from dl_api_connector.api_schema.connection_mixins import DataExportForbiddenMixin
 from dl_api_connector.api_schema.extras import FieldExtra
 from dl_constants.enums import ExportMode
 from dl_constants.exc import (
@@ -27,7 +28,7 @@ from dl_connector_bundle_chs3.chs3_base.api.api_schema.source import (
 from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 
 
-class BaseFileS3ConnectionSchema(ConnectionSchema):
+class BaseFileS3ConnectionSchema(ConnectionSchema, DataExportForbiddenMixin):
     TARGET_CLS = BaseFileS3Connection
 
     sources = fields.Nested(
