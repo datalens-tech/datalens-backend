@@ -264,9 +264,9 @@ class RedisModelManager:
 
         obj_key = obj.generate_key()
 
-        ttl = await self._redis.getex(obj_key)
+        ttl = await self._redis.ttl(obj_key)
 
-        return ttl is None
+        return ttl == -1
 
     async def delete(self, obj: RedisModel) -> None:
         obj_key = obj.generate_key()
