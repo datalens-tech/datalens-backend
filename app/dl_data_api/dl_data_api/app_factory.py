@@ -31,6 +31,7 @@ from dl_core.aio.middlewares.us_manager import (
     service_us_manager_middleware,
     us_manager_middleware,
 )
+from dl_core.retrier.policy import SettingsRetryPolicyFactory
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
@@ -129,15 +130,26 @@ class StandaloneDataApiAppFactory(
 
         if self._settings.AUTH is not None and self._settings.AUTH == "NONE":
             usm_middleware_list = [
-                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),
                 service_us_manager_middleware(
-                    us_master_token=self._settings.US_MASTER_TOKEN, as_user_usm=True, **common_us_kw
+                    us_master_token=self._settings.US_MASTER_TOKEN,
+                    retry_policy_factory=SettingsRetryPolicyFactory(self._settings.US_CLIENT_SETTINGS.RETRY_POLICY),
+                    **common_us_kw,
+                ),
+                service_us_manager_middleware(
+                    us_master_token=self._settings.US_MASTER_TOKEN,
+                    retry_policy_factory=SettingsRetryPolicyFactory(self._settings.US_CLIENT_SETTINGS.RETRY_POLICY),
+                    as_user_usm=True,
+                    **common_us_kw,
                 ),
             ]
         else:
             usm_middleware_list = [
                 us_manager_middleware(**common_us_kw),
-                service_us_manager_middleware(us_master_token=self._settings.US_MASTER_TOKEN, **common_us_kw),
+                service_us_manager_middleware(
+                    us_master_token=self._settings.US_MASTER_TOKEN,
+                    retry_policy_factory=SettingsRetryPolicyFactory(self._settings.US_CLIENT_SETTINGS.RETRY_POLICY),
+                    **common_us_kw,
+                ),
             ]
 
         result = EnvSetupResult(
