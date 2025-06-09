@@ -89,6 +89,8 @@ msgpack = "==1.1.0"
 urllib3 = "==1.26.20"
 zipp = "==3.21.0"
 idna = "==3.10"
+httpx = "==0.28.1"
+httpcore = "==1.0.5"
 
 [tool.poetry.group.ci.dependencies]
 #
@@ -198,6 +200,7 @@ clize = "==5.0.0"
 poetry = "==1.7.1"
 deptry = "==0.16.1"
 respx = "==0.22.0"
+paramiko = "==3.1.0"
 
 [tool.poetry.group.mypy.dependencies]
 asyncpg-stubs = "==0.29.0"
