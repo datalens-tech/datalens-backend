@@ -46,7 +46,10 @@ from dl_core.connection_executors.remote_query_executor.commons import (
     DEFAULT_CHUNK_SIZE,
     SUPPORTED_ADAPTER_CLS,
 )
-from dl_core.connection_executors.remote_query_executor.settings import RQESettings
+from dl_core.connection_executors.remote_query_executor.settings import (
+    DeprecatedRQESettings,
+    RQESettings,
+)
 from dl_core.enums import RQEEventType
 from dl_core.exc import SourceTimeout
 from dl_core.loader import (
@@ -286,7 +289,8 @@ def _handle_exception(err: Exception) -> Tuple[flask.Response, int]:
 
 
 def create_sync_app() -> flask.Flask:
-    settings = load_settings_from_env_with_fallback(RQESettings)
+    deprecated_settings = load_settings_from_env_with_fallback(DeprecatedRQESettings)
+    settings = RQESettings(fallback=deprecated_settings)
     hmac_key = settings.RQE_SECRET_KEY
     if hmac_key is None:
         raise Exception("No `hmac_key` set.")

@@ -21,7 +21,10 @@ from dl_api_client.dsmaker.api.data_api import (
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib.app.data_api.app import DataApiAppFactory
-from dl_api_lib.app_settings import DataApiAppSettings
+from dl_api_lib.app_settings import (
+    DataApiAppSettings,
+    DeprecatedDataApiAppSettings,
+)
 from dl_api_lib_testing.app import TestingDataApiAppFactory
 from dl_api_lib_testing.base import ApiTestBase
 from dl_api_lib_testing.client import (
@@ -64,12 +67,13 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
         cls,
         bi_test_config: ApiTestEnvironmentConfiguration,
         rqe_config_subprocess: RQEConfig,
-    ) -> DataApiAppSettings:
+    ) -> DeprecatedDataApiAppSettings:
         core_test_config = bi_test_config.core_test_config
         us_config = core_test_config.get_us_config()
         redis_setting_maker = core_test_config.get_redis_setting_maker()
 
-        return DataApiAppSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "SENTRY_ENABLED" for "DataApiAppSettings"  [call-arg]
+        # TODO(catsona): Deal with evolve alternative for pydantic and support new settings in create_data_api_settings and all references
+        return DeprecatedDataApiAppSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "SENTRY_ENABLED" for "DataApiAppSettings"  [call-arg]
             SENTRY_ENABLED=False,
             US_BASE_URL=us_config.us_host,
             US_MASTER_TOKEN=us_config.us_master_token,
@@ -98,10 +102,14 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
         bi_test_config: ApiTestEnvironmentConfiguration,
         rqe_config_subprocess: RQEConfig,
     ) -> DataApiAppSettings:
-        return self.create_data_api_settings(
+        # TODO(catsona): Deal with evolve alternative for pydantic and support new settings in create_data_api_settings and all references
+        deprecated_settings = self.create_data_api_settings(
             bi_test_config=bi_test_config,
             rqe_config_subprocess=rqe_config_subprocess,
         )
+        settings = DataApiAppSettings(fallback=deprecated_settings)
+
+        return settings
 
     @pytest.fixture(scope="function")
     def data_api_app_factory(self, data_api_app_settings: DataApiAppSettings) -> DataApiAppFactory:
