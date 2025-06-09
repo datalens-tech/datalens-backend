@@ -8,6 +8,7 @@ from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.enums import USApiType
 from dl_core.exc import InvalidRequestError
+from dl_core.retrier.policy import RetryPolicyFactory
 from dl_core.services_registry import ServicesRegistry
 from dl_core.united_storage_client import (
     USAuthContextEmbed,
@@ -24,6 +25,7 @@ class USMFactory:
     us_base_url: str = attr.ib()
     crypto_keys_config: Optional[CryptoKeysConfig] = attr.ib()
     ca_data: bytes = attr.ib()
+    retry_policy_factory: RetryPolicyFactory = attr.ib()
     us_master_token: Optional[str] = attr.ib(default=None, repr=False)
     us_public_token: Optional[str] = attr.ib(default=None, repr=False)
 
@@ -81,6 +83,7 @@ class USMFactory:
             crypto_keys_config=self.crypto_keys_config,
             services_registry=services_registry,
             ca_data=self.get_ca_data(),
+            retry_policy_factory=self.retry_policy_factory,
         )
 
     def get_master_async_usm(
@@ -95,6 +98,7 @@ class USMFactory:
             crypto_keys_config=self.crypto_keys_config,
             services_registry=services_registry,
             ca_data=self.get_ca_data(),
+            retry_policy_factory=self.retry_policy_factory,
         )
 
     def get_public_async_usm(
@@ -113,6 +117,7 @@ class USMFactory:
             crypto_keys_config=self.crypto_keys_config,
             services_registry=services_registry,
             ca_data=self.get_ca_data(),
+            retry_policy_factory=self.retry_policy_factory,
         )
 
     # Sync
@@ -127,6 +132,7 @@ class USMFactory:
             bi_context=rci,
             crypto_keys_config=self.crypto_keys_config,
             services_registry=services_registry,
+            retry_policy_factory=self.retry_policy_factory,
         )
 
     def get_master_sync_usm(
@@ -140,6 +146,7 @@ class USMFactory:
             bi_context=rci,
             crypto_keys_config=self.crypto_keys_config,
             services_registry=services_registry,
+            retry_policy_factory=self.retry_policy_factory,
         )
 
     def get_embed_async_usm(
@@ -154,6 +161,7 @@ class USMFactory:
             crypto_keys_config=self.crypto_keys_config,
             services_registry=services_registry,
             ca_data=self.get_ca_data(),
+            retry_policy_factory=self.retry_policy_factory,
         )
 
     def get_async_usm(

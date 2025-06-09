@@ -33,6 +33,7 @@ from dl_constants.enums import (
     USAuthMode,
 )
 from dl_core.components.ids import FieldIdGeneratorType
+from dl_core.us_manager.settings import USClientSettings
 from dl_formula.parser.factory import ParserType
 from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 import dl_settings
@@ -352,11 +353,11 @@ class AppSettings(dl_settings.BaseRootSettingsWithFallback):
 
 
 class ControlApiAppSettings(AppSettings):
-    ...
+    US_CLIENT_SETTINGS: USClientSettings = USClientSettings()
 
 
 class DataApiAppSettings(AppSettings):
-    ...
+    US_CLIENT_SETTINGS: USClientSettings = USClientSettings()
 
 
 class AppSettingsOS(

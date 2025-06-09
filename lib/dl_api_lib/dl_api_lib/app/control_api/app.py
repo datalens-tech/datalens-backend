@@ -43,6 +43,7 @@ from dl_constants.enums import (
 from dl_core import profiling_middleware
 from dl_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
+from dl_core.retrier.policy import SettingsRetryPolicyFactory
 
 
 if TYPE_CHECKING:
@@ -152,6 +153,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
             us_master_token=self._settings.US_MASTER_TOKEN,
             us_auth_mode=env_setup_result.us_auth_mode,
             ca_data=ca_data,
+            retry_policy_factory=SettingsRetryPolicyFactory(self._settings.US_CLIENT_SETTINGS.RETRY_POLICY),
         ).set_up(app)
 
         _ = app.logger

@@ -10,6 +10,7 @@ from dl_configs.utils import (
     get_root_certificates_path,
     split_by_comma,
 )
+from dl_core.us_manager.settings import USClientSettings
 from dl_file_uploader_lib.settings import (
     DeprecatedFileUploaderBaseSettings,
     FileUploaderBaseSettings,
@@ -80,4 +81,4 @@ class DeprecatedFileUploaderWorkerSettings(DeprecatedFileUploaderBaseSettings):
 
 
 class FileUploaderWorkerSettings(FileUploaderBaseSettings):
-    ...
+    US_CLIENT_SETTINGS: USClientSettings = USClientSettings()

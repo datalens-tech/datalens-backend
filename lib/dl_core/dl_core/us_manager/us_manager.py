@@ -44,6 +44,7 @@ from dl_core.base_models import (
     WorkbookEntryLocation,
 )
 from dl_core.lifecycle.factory import DefaultEntryLifecycleManagerFactory
+from dl_core.retrier.policy import RetryPolicyFactory
 from dl_core.united_storage_client import (
     USAuthContextBase,
     UStorageClientBase,
@@ -117,6 +118,7 @@ class USManagerBase:
         us_api_prefix: Optional[str],
         us_auth_context: USAuthContextBase,
         services_registry: ServicesRegistry,
+        retry_policy_factory: RetryPolicyFactory,
         lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
         schema_migration_factory: Optional[EntrySchemaMigrationFactoryBase] = None,
     ):
@@ -156,6 +158,8 @@ class USManagerBase:
         schema_migration_factory = schema_migration_factory or DefaultEntrySchemaMigrationFactory()
         assert schema_migration_factory is not None
         self._schema_migration_factory = schema_migration_factory
+
+        self._retry_policy_factory = retry_policy_factory
 
     def get_entry_buffer(self) -> USEntryBuffer:
         return self._loaded_entries
