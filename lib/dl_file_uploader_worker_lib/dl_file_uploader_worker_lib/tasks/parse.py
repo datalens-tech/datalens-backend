@@ -113,13 +113,14 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
 
                 # TODO(catsona): Remove after release, fallback to old behavior
                 if self.meta.tenant_id is None:
-                    preview = await file_parser.prepare_preview_legacy(dsrc, rmm)
-                    await preview.save(
+                    redis_preview = await file_parser.prepare_preview_legacy(dsrc, rmm)
+                    await redis_preview.save(
                         ttl=12 * 12 * 60
                     )  # save preview temporarily, so it is deleted if source never gets saved
-                    dsrc.preview_id = preview.id
+                    dsrc.preview_id = redis_preview.id
 
                 else:
+                    assert s3mm is not None
                     preview = await file_parser.prepare_preview(dsrc, s3mm)
                     await preview.save(
                         persistent=False,

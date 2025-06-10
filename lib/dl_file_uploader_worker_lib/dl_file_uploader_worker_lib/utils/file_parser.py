@@ -216,7 +216,7 @@ class CSVFileParser(FileParser):
         return S3DataSourcePreview(manager=s3mm, preview_data=await self._prepare_preview_data(dsrc))
 
     async def prepare_preview_legacy(self, dsrc: DataSource, rmm: RedisModelManager) -> DataSourcePreview:
-        return RedisModelManager(manager=rmm, preview_data=await self._prepare_preview_data(dsrc))
+        return DataSourcePreview(manager=rmm, preview_data=await self._prepare_preview_data(dsrc))
 
 
 class SpreadsheetFileParser(FileParser):
@@ -274,4 +274,4 @@ class SpreadsheetFileParser(FileParser):
         return S3DataSourcePreview(manager=s3mm, preview_data=await self._prepare_preview_data(dsrc))
 
     async def prepare_preview_legacy(self, dsrc: DataSource, rmm: RedisModelManager) -> DataSourcePreview:
-        return RedisModelManager(manager=rmm, preview_data=await self._prepare_preview_data(dsrc))
+        return DataSourcePreview(manager=rmm, preview_data=await self._prepare_preview_data(dsrc))

@@ -181,8 +181,8 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
 
                     # TODO(catsona): Remove after release, fallback to old behavior
                     if self.meta.tenant_id is None:
-                        preview = await DataSourcePreview.get(manager=rmm, obj_id=str(src_source.preview_id))
-                        await preview.save(
+                        redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=str(src_source.preview_id))
+                        await redis_preview.save(
                             ttl=None
                         )  # now that the source is saved the preview can be saved as persistent
 
