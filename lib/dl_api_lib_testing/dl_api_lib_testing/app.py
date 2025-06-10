@@ -203,13 +203,13 @@ class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRF
                 us_master_token=self._settings.US_MASTER_TOKEN,
                 retry_policy_factory=retry_policy_factory,
                 **common_us_kw,
-            ),  # type: ignore[arg-type]
+            ),
             service_us_manager_middleware(
                 us_master_token=self._settings.US_MASTER_TOKEN,
                 retry_policy_factory=retry_policy_factory,
                 as_user_usm=True,
                 **common_us_kw,
-            ),  # type: ignore[arg-type]
+            ),
         ]
 
         result = DataApiEnvSetupResult(
