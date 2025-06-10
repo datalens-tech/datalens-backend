@@ -100,8 +100,8 @@ class DeleteFileTask(BaseTaskMeta):
 class MigratePreviewRedisToS3Task(BaseTaskMeta):
     name = TaskName("migrate_preview")
 
-    tenant_id: Optional[str] = attr.ib(default=None)
     preview_id: Optional[str] = attr.ib()
+    tenant_id: Optional[str] = attr.ib(default=None)
 
 
 @attr.s
