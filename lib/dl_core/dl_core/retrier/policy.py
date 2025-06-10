@@ -152,11 +152,6 @@ class SettingsRetryPolicyFactory(RetryPolicyFactory):
 
 
 class DefaultRetryPolicyFactory(RetryPolicyFactory):
-    def __init__(
-        self,
-    ):
-        super().__init__()
-
     def get_policy(self, name: Optional[str]) -> RetryPolicy:
         """
         Default factory returns single pre-defined policy for every request
