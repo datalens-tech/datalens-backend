@@ -1,6 +1,9 @@
 import logging
 import time
-from typing import Callable
+from typing import (
+    Any,
+    Callable,
+)
 
 import attr
 import requests
@@ -29,8 +32,8 @@ class RequestsPolicyRetrier:
     def retry_request(
         self,
         req_func: Callable[..., requests.Response],
-        *args,
-        **kwargs,
+        *args: Any,
+        **kwargs: Any,
     ) -> requests.Response:
         start_ts = time.time()
         rest_dt = self._retry_policy.total_timeout
