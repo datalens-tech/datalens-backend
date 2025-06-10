@@ -215,7 +215,6 @@ class CSVFileParser(FileParser):
     async def prepare_preview(self, dsrc: DataSource, s3mm: S3ModelManager) -> S3DataSourcePreview:
         return S3DataSourcePreview(manager=s3mm, preview_data=await self._prepare_preview_data(dsrc))
 
-    @abc.abstractmethod
     async def prepare_preview_legacy(self, dsrc: DataSource, rmm: RedisModelManager) -> DataSourcePreview:
         return RedisModelManager(manager=rmm, preview_data=await self._prepare_preview_data(dsrc))
 
