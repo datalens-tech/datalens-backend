@@ -66,11 +66,16 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
 
             redis = self._ctx.redis_service.get_redis()
             rmm = RedisModelManager(redis=redis, crypto_keys_config=self._ctx.crypto_keys_config)
-            s3mm = S3ModelManager(
-                s3_service=self._ctx.s3_service,
-                crypto_keys_config=self._ctx.crypto_keys_config,
-                tenant_id=self.meta.tenant_id,
-            )
+
+            # TODO(catsona): Remove after release
+            s3mm = None
+            if self.meta.tenant_id is not None:
+                s3mm = S3ModelManager(
+                    s3_service=self._ctx.s3_service,
+                    crypto_keys_config=self._ctx.crypto_keys_config,
+                    tenant_id=self.meta.tenant_id,
+                )
+
             dfile = await DataFile.get(manager=rmm, obj_id=self.meta.file_id)
             assert dfile is not None
 
@@ -106,11 +111,20 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
                 dsrc.raw_schema = raw_schema
                 dsrc.file_source_settings = dsrc_settings
 
-                preview = await file_parser.prepare_preview(dsrc, s3mm)
-                await preview.save(
-                    persistent=False,
-                )  # save preview temporarily, so it is deleted if source never gets saved
-                dsrc.preview_id = preview.id
+                # TODO(catsona): Remove after release, fallback to old behavior
+                if self.meta.tenant_id is None:
+                    preview = await file_parser.prepare_preview_legacy(dsrc, rmm)
+                    await preview.save(
+                        ttl=12 * 12 * 60
+                    )  # save preview temporarily, so it is deleted if source never gets saved
+                    dsrc.preview_id = preview.id
+
+                else:
+                    preview = await file_parser.prepare_preview(dsrc, s3mm)
+                    await preview.save(
+                        persistent=False,
+                    )  # save preview temporarily, so it is deleted if source never gets saved
+                    dsrc.preview_id = preview.id
 
                 LOGGER.info("DataSourcePreview object saved.")
 

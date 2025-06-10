@@ -242,7 +242,7 @@ class FileUploaderClient(BIAioHTTPClient):
         conn_id: str,
         sources: list[GSheetsFileSourceDesc | YaDocsFileSourceDesc],
         authorized: bool,
-        tenant_id: str,
+        tenant_id: Optional[str],
         file_type: FileType,
     ) -> None:
         path = "/api/v2/update_connection_data_internal"

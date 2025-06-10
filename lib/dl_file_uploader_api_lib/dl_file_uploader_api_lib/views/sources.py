@@ -146,7 +146,7 @@ async def get_preview_data(
     rmm: RedisModelManager,
     s3mm: S3ModelManager,
     task_processor: TaskProcessor,
-    tenant_id: str,
+    tenant_id: Optional[str],
     preview_id: Optional[str],
 ) -> list[list[Optional[str]]]:
     if preview_id is None:

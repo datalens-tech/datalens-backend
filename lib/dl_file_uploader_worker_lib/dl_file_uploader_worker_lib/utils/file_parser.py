@@ -17,11 +17,13 @@ from dl_file_uploader_lib.enums import (
     CSVDelimiter,
     CSVEncoding,
 )
+from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import (
     CSVFileSettings,
     CSVFileSourceSettings,
     DataFile,
     DataSource,
+    DataSourcePreview,
     FileSettings,
     FileSourceSettings,
     SpreadsheetFileSourceSettings,
@@ -79,6 +81,11 @@ class FileParser(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     async def prepare_preview(self, dsrc: DataSource, s3mm: S3ModelManager) -> S3DataSourcePreview:
+        raise NotImplementedError
+
+    # TODO(catsona): Remove after release, support for old behavior
+    @abc.abstractmethod
+    async def prepare_preview_legacy(self, dsrc: DataSource, rmm: RedisModelManager) -> DataSourcePreview:
         raise NotImplementedError
 
 
@@ -186,7 +193,7 @@ class CSVFileParser(FileParser):
 
         return has_header, raw_schema, file_settings, file_source_settings
 
-    async def prepare_preview(self, dsrc: DataSource, s3mm: S3ModelManager) -> S3DataSourcePreview:
+    async def _prepare_preview_data(self, dsrc: DataSource) -> Any:
         loop = asyncio.get_running_loop()
 
         await self.ensure_sample_text_loaded()
@@ -197,14 +204,20 @@ class CSVFileParser(FileParser):
         file_source_settings = dsrc.file_source_settings
         assert isinstance(file_source_settings, CSVFileSourceSettings)
 
-        preview_data = await loop.run_in_executor(
+        return await loop.run_in_executor(
             self.tpe,
             prepare_preview,
             self.sample_text,
             file_settings.dialect,
             file_source_settings.first_line_is_header,
         )
-        return S3DataSourcePreview(manager=s3mm, preview_data=preview_data)
+
+    async def prepare_preview(self, dsrc: DataSource, s3mm: S3ModelManager) -> S3DataSourcePreview:
+        return S3DataSourcePreview(manager=s3mm, preview_data=await self._prepare_preview_data(dsrc))
+
+    @abc.abstractmethod
+    async def prepare_preview_legacy(self, dsrc: DataSource, rmm: RedisModelManager) -> DataSourcePreview:
+        return RedisModelManager(manager=rmm, preview_data=await self._prepare_preview_data(dsrc))
 
 
 class SpreadsheetFileParser(FileParser):
@@ -241,7 +254,7 @@ class SpreadsheetFileParser(FileParser):
 
         return has_header, raw_schema, file_settings, file_source_settings
 
-    async def prepare_preview(self, dsrc: DataSource, s3mm: S3ModelManager) -> S3DataSourcePreview:
+    async def _prepare_preview_data(self, dsrc: DataSource) -> Any:
         loop = asyncio.get_running_loop()
 
         s3_resp = await self.s3.client.get_object(
@@ -256,8 +269,10 @@ class SpreadsheetFileParser(FileParser):
         assert isinstance(file_source_settings, SpreadsheetFileSourceSettings)
         has_header = file_source_settings.first_line_is_header
 
-        preview_data = await loop.run_in_executor(
-            self.tpe, prepare_preview_from_json_each_row, sample_bytes, has_header
-        )
+        return await loop.run_in_executor(self.tpe, prepare_preview_from_json_each_row, sample_bytes, has_header)
 
-        return S3DataSourcePreview(manager=s3mm, preview_data=preview_data)
+    async def prepare_preview(self, dsrc: DataSource, s3mm: S3ModelManager) -> S3DataSourcePreview:
+        return S3DataSourcePreview(manager=s3mm, preview_data=await self._prepare_preview_data(dsrc))
+
+    async def prepare_preview_legacy(self, dsrc: DataSource, rmm: RedisModelManager) -> DataSourcePreview:
+        return RedisModelManager(manager=rmm, preview_data=await self._prepare_preview_data(dsrc))

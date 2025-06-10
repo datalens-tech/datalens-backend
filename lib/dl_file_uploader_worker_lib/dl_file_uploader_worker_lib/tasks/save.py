@@ -24,6 +24,7 @@ from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import (
     DataFile,
     DataSource,
+    DataSourcePreview,
     GSheetsFileSourceSettings,
     GSheetsUserSourceDataSourceProperties,
     GSheetsUserSourceProperties,
@@ -148,9 +149,15 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
             rmm = RedisModelManager(redis=redis, crypto_keys_config=self._ctx.crypto_keys_config)
 
             s3_service = self._ctx.s3_service
-            s3mm = S3ModelManager(
-                s3_service=s3_service, tenant_id=self.meta.tenant_id, crypto_keys_config=self._ctx.crypto_keys_config
-            )
+
+            # TODO(catsona): Remove after release
+            s3mm = None
+            if self.meta.tenant_id is not None:
+                s3mm = S3ModelManager(
+                    s3_service=s3_service,
+                    tenant_id=self.meta.tenant_id,
+                    crypto_keys_config=self._ctx.crypto_keys_config,
+                )
 
             dfile = await DataFile.get(manager=rmm, obj_id=self.meta.file_id)
 
@@ -172,10 +179,18 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                     conn = await usm.get_by_id(self.meta.connection_id, expected_type=BaseFileS3Connection)
                     assert isinstance(conn, BaseFileS3Connection)
 
-                    preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=str(src_source.preview_id))
-                    await preview.save(
-                        persistent=True
-                    )  # now that the source is saved the preview can be saved as persistent
+                    # TODO(catsona): Remove after release, fallback to old behavior
+                    if self.meta.tenant_id is None:
+                        preview = await DataSourcePreview.get(manager=rmm, obj_id=str(src_source.preview_id))
+                        await preview.save(
+                            ttl=None
+                        )  # now that the source is saved the preview can be saved as persistent
+
+                    else:
+                        preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=str(src_source.preview_id))
+                        await preview.save(
+                            persistent=True
+                        )  # now that the source is saved the preview can be saved as persistent
 
                     try:
                         conn_file_source = conn.get_file_source_by_id(dst_source_id)
