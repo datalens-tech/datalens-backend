@@ -29,6 +29,13 @@ babel = ">=2.12.1"
 pytest = ">=7.2.2"
 psycopg2-binary = ">=2.9.9"
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+dl-connector-metrica = {path = "../dl_connector_metrica"}
+dl-connector-mssql = {path = "../dl_connector_mssql"}
+dl-connector-mysql = {path = "../dl_connector_mysql"}
+dl-connector-oracle = {path = "../dl_connector_oracle"}
+dl-connector-postgresql = {path = "../dl_connector_postgresql"}
+dl-connector-trino = {path = "../dl_connector_trino"}
+dl-connector-ydb = {path = "../dl_connector_ydb"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
