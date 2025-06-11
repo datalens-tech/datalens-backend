@@ -89,3 +89,6 @@ dl_connector_trino = [
     {path = "dl_connector_trino/api"},
     {path = "dl_connector_trino/core"},
 ]
+dl_formula_ref_dl_connector_trino = [
+    {path = "dl_connector_trino/formula_ref"},
+]
