@@ -41,34 +41,39 @@ class DeleteFileTask(BaseExecutorTask[task_interface.DeleteFileTask, FileUploade
             else:
                 tenant_id = self.meta.tenant_id
 
+                # TODO(catsona): Remove check after release
+                if tenant_id is not None:
+                    s3mm = S3ModelManager(
+                        s3_service=self._ctx.s3_service,
+                        crypto_keys_config=self._ctx.crypto_keys_config,
+                        tenant_id=tenant_id,
+                    )
+
+                    try:
+                        s3_preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=preview_id)
+                        assert isinstance(s3_preview, S3DataSourcePreview)
+
+                        await s3_preview.delete()
+
+                        LOGGER.info(f"Successfully deleted preview from S3 id={preview_id} for tenant {tenant_id}")
+                    except S3ModelNotFound:
+                        LOGGER.info(f"Preview id={preview_id} not found in S3 for tenant {tenant_id}")
+
                 rmm = RedisModelManager(
                     redis=self._ctx.redis_service.get_redis(),
                     crypto_keys_config=self._ctx.crypto_keys_config,
                 )
-                s3mm = S3ModelManager(
-                    s3_service=self._ctx.s3_service,
-                    crypto_keys_config=self._ctx.crypto_keys_config,
-                    tenant_id=tenant_id,
-                )
 
                 try:
-                    s3_preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=preview_id)
-                    assert isinstance(s3_preview, S3DataSourcePreview)
+                    # Fallback to redis
+                    redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
+                    assert isinstance(redis_preview, DataSourcePreview)
 
-                    await s3_preview.delete()
+                    await redis_preview.delete()
 
-                    LOGGER.info(f"Successfully deleted preview id={preview_id} for tenant {tenant_id}")
-                except S3ModelNotFound:
-                    try:
-                        # Fallback to redis
-                        redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
-                        assert isinstance(redis_preview, DataSourcePreview)
-
-                        await redis_preview.delete()
-
-                        LOGGER.info(f"Successfully deleted preview id={preview_id} for tenant {tenant_id}")
-                    except RedisModelNotFound:
-                        LOGGER.info(f"Preview id={preview_id} not found for tenant {tenant_id}")
+                    LOGGER.info(f"Successfully deleted preview from redis id={preview_id} for tenant {tenant_id}")
+                except RedisModelNotFound:
+                    LOGGER.info(f"Preview id={preview_id} not found in redis for tenant {tenant_id}")
 
             s3_service = self._ctx.s3_service
             s3_client = s3_service.get_client()

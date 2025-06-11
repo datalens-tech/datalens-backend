@@ -36,7 +36,7 @@ class FileConnectionDataSourceErrorTracker:
     _usm: AsyncUSManager = attr.ib()
     _task_processor: TaskProcessor = attr.ib()
     _redis: redis.asyncio.Redis = attr.ib()
-    _tenant_id: str = attr.ib()
+    _tenant_id: Optional[str] = attr.ib(default=None)
     _request_id: Optional[str] = attr.ib(default=None)
 
     _error_registry: dict[str, FileProcessingError] = attr.ib(init=False, factory=dict)

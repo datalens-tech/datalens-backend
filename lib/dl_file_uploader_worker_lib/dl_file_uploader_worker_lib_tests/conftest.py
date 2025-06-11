@@ -3,7 +3,10 @@ from __future__ import annotations
 import logging
 import os
 import sys
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+)
 
 import attr
 from clickhouse_driver import connect as connect_ch

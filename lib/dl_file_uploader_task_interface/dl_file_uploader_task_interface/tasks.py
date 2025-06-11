@@ -22,7 +22,7 @@ class DownloadGSheetTask(BaseTaskMeta):
     file_id: str = attr.ib()
     authorized: bool = attr.ib()
 
-    tenant_id: str = attr.ib()
+    tenant_id: Optional[str] = attr.ib(default=None)
     connection_id: Optional[str] = attr.ib(default=None)
     exec_mode: TaskExecutionMode = attr.ib(default=TaskExecutionMode.BASIC)
     schedule_parsing: bool = attr.ib(default=True)
@@ -35,7 +35,7 @@ class DownloadYaDocsTask(BaseTaskMeta):
     file_id: str = attr.ib()
     authorized: bool = attr.ib()
 
-    tenant_id: str = attr.ib()
+    tenant_id: Optional[str] = attr.ib(default=None)
     connection_id: Optional[str] = attr.ib(default=None)
     exec_mode: TaskExecutionMode = attr.ib(default=TaskExecutionMode.BASIC)
 
@@ -46,7 +46,7 @@ class ParseFileTask(BaseTaskMeta):
 
     file_id: str = attr.ib()
 
-    tenant_id: str = attr.ib()
+    tenant_id: Optional[str] = attr.ib(default=None)
     source_id: Optional[str] = attr.ib(default=None)
     connection_id: Optional[str] = attr.ib(default=None)
     exec_mode: TaskExecutionMode = attr.ib(default=TaskExecutionMode.BASIC)
@@ -59,7 +59,7 @@ class ProcessExcelTask(BaseTaskMeta):
     name = TaskName("process_excel")
 
     file_id: str = attr.ib()
-    tenant_id: str = attr.ib()
+    tenant_id: Optional[str] = attr.ib(default=None)
     connection_id: Optional[str] = attr.ib(default=None)
     exec_mode: Optional[TaskExecutionMode] = attr.ib(default=TaskExecutionMode.BASIC)
 
@@ -92,7 +92,7 @@ class DeleteFileTask(BaseTaskMeta):
     name = TaskName("delete_file")
 
     s3_filename: str = attr.ib()
-    tenant_id: str = attr.ib()
+    tenant_id: Optional[str] = attr.ib(default=None)
     preview_id: Optional[str] = attr.ib(default=None)
 
 
@@ -100,8 +100,8 @@ class DeleteFileTask(BaseTaskMeta):
 class MigratePreviewRedisToS3Task(BaseTaskMeta):
     name = TaskName("migrate_preview")
 
-    tenant_id: str = attr.ib()
     preview_id: Optional[str] = attr.ib()
+    tenant_id: Optional[str] = attr.ib(default=None)
 
 
 @attr.s
