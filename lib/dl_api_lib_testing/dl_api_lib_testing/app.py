@@ -194,19 +194,15 @@ class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRF
             us_base_url=self._settings.US_BASE_URL,
             crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
             ca_data=ca_data,
-        )
-
-        retry_policy_factory = SettingsRetryPolicyFactory(self._settings.US_CLIENT_SETTINGS.RETRY_POLICY)
+            retry_policy_factory=SettingsRetryPolicyFactory(self._settings.US_CLIENT_SETTINGS.RETRY_POLICY),
 
         usm_middleware_list = [
             service_us_manager_middleware(
                 us_master_token=self._settings.US_MASTER_TOKEN,
-                retry_policy_factory=retry_policy_factory,
                 **common_us_kw,
             ),
             service_us_manager_middleware(
                 us_master_token=self._settings.US_MASTER_TOKEN,
-                retry_policy_factory=retry_policy_factory,
                 as_user_usm=True,
                 **common_us_kw,
             ),
