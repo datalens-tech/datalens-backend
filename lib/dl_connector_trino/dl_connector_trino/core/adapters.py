@@ -1,3 +1,4 @@
+from collections.abc import Generator
 import ssl
 from typing import Any
 
@@ -10,12 +11,18 @@ from trino.auth import (
     BasicAuthentication,
     JWTAuthentication,
 )
+from trino.exceptions import TrinoUserError
 from trino.sqlalchemy import URL as trino_url
 from trino.sqlalchemy.datatype import parse_sqltype
+from trino.sqlalchemy.dialect import TrinoDialect
 
 from dl_configs.utils import get_root_certificates_path
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
-from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from dl_core.connection_executors.adapters.sa_utils import compile_query_for_debug
+from dl_core.connection_executors.models.db_adapter_data import (
+    DBAdapterQuery,
+    ExecutionStep,
+)
 from dl_core.connection_models.common_models import (
     DBIdent,
     SchemaIdent,
@@ -119,6 +126,21 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
             args["verify"] = get_root_certificates_path()
 
         return args
+
+    def execute_by_steps(self, db_adapter_query: DBAdapterQuery) -> Generator[ExecutionStep, None, None]:
+        try:
+            for result in super().execute_by_steps(db_adapter_query):
+                yield result
+        except sa_exc.DBAPIError as exc:
+            if not isinstance(exc.orig, TrinoUserError) or exc.orig.error_name != "EXPRESSION_NOT_AGGREGATE":
+                raise exc
+
+            query = db_adapter_query.query
+            compiled_query = query if isinstance(query, str) else compile_query_for_debug(query, TrinoDialect())
+            db_adapter_compiled_query = db_adapter_query.clone(query=compiled_query)
+
+            for result in super().execute_by_steps(db_adapter_compiled_query):
+                yield result
 
     def get_default_db_name(self) -> str:
         return ""  # Trino doesn't require db_name to connect.
