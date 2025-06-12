@@ -11,14 +11,12 @@ from trino.auth import (
     BasicAuthentication,
     JWTAuthentication,
 )
-from trino.exceptions import TrinoUserError
 from trino.sqlalchemy import URL as trino_url
 from trino.sqlalchemy.datatype import parse_sqltype
 from trino.sqlalchemy.dialect import TrinoDialect
 
 from dl_configs.utils import get_root_certificates_path
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
-from dl_core.connection_executors.adapters.sa_utils import compile_query_for_debug
 from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
     ExecutionStep,
@@ -35,7 +33,10 @@ from dl_connector_trino.core.constants import (
     CONNECTION_TYPE_TRINO,
     TrinoAuthType,
 )
-from dl_connector_trino.core.error_transformer import trino_error_transformer
+from dl_connector_trino.core.error_transformer import (
+    is_trino_expression_not_aggregate_error,
+    trino_error_transformer,
+)
 from dl_connector_trino.core.target_dto import TrinoConnTargetDTO
 
 
@@ -62,6 +63,8 @@ GET_TRINO_TABLES_QUERY = (
         TRINO_TABLES.c.table_name,
     )
 )
+
+compile_query_condition = is_trino_expression_not_aggregate_error()
 
 
 class CustomHTTPAdapter(HTTPAdapter):
@@ -128,15 +131,16 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         return args
 
     def execute_by_steps(self, db_adapter_query: DBAdapterQuery) -> Generator[ExecutionStep, None, None]:
-        # try:
-        #     for result in super().execute_by_steps(db_adapter_query):
-        #         yield result
-        # except sa_exc.DBAPIError as exc:
-        #     if not isinstance(exc.orig, TrinoUserError) or exc.orig.error_name != "EXPRESSION_NOT_AGGREGATE":
-        #         raise exc
+        try:
+            for result in super().execute_by_steps(db_adapter_query):
+                yield result
+            return
+        except sa_exc.DBAPIError as exc:
+            if not compile_query_condition(exc) or isinstance(db_adapter_query.query, str):
+                raise exc
 
         query = db_adapter_query.query
-        compiled_query = query if isinstance(query, str) else compile_query_for_debug(query, TrinoDialect())
+        compiled_query = str(query.compile(dialect=TrinoDialect(), compile_kwargs={"literal_binds": True}))
         db_adapter_compiled_query = db_adapter_query.clone(query=compiled_query)
 
         for result in super().execute_by_steps(db_adapter_compiled_query):

@@ -101,6 +101,17 @@ def is_trino_syntax_error() -> ExcMatchCondition:
     return _
 
 
+def is_trino_expression_not_aggregate_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        orig = trino_user_error_or_none(exc)
+        if orig is None:
+            return False
+
+        return orig.error_name == "EXPRESSION_NOT_AGGREGATE"
+
+    return _
+
+
 def is_trino_out_of_memory_error() -> ExcMatchCondition:
     def _(exc: Exception) -> bool:
         orig = trino_query_error_or_none(exc)
