@@ -25,6 +25,13 @@ TRINO_SOURCE_DOES_NOT_EXIST_ERROR_TYPES = (
 )
 
 
+class ExpressionNotAggregateError(exc.InvalidQuery):
+    """
+    Raised when Trino receives a SELECT statement containing multiple identical parameterized expressions with the same parameter value.
+    In this case, the query should be compiled before being sent to Trino.
+    """
+
+
 class TrinoErrorTransformer(ChainedDbErrorTransformer):
     @staticmethod
     def _get_error_kw(
@@ -147,6 +154,10 @@ trino_error_transformer = TrinoErrorTransformer(
         Rule(
             when=is_trino_out_of_memory_error(),
             then_raise=exc.DbMemoryLimitExceeded,
+        ),
+        Rule(
+            when=is_trino_expression_not_aggregate_error(),
+            then_raise=ExpressionNotAggregateError,
         ),
         Rule(
             when=is_trino_fallback_error(),

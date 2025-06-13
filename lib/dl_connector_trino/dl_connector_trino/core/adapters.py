@@ -34,7 +34,7 @@ from dl_connector_trino.core.constants import (
     TrinoAuthType,
 )
 from dl_connector_trino.core.error_transformer import (
-    is_trino_expression_not_aggregate_error,
+    ExpressionNotAggregateError,
     trino_error_transformer,
 )
 from dl_connector_trino.core.target_dto import TrinoConnTargetDTO
@@ -63,8 +63,6 @@ GET_TRINO_TABLES_QUERY = (
         TRINO_TABLES.c.table_name,
     )
 )
-
-compile_query_condition = is_trino_expression_not_aggregate_error()
 
 
 class CustomHTTPAdapter(HTTPAdapter):
@@ -134,17 +132,17 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         try:
             for result in super().execute_by_steps(db_adapter_query):
                 yield result
-            return
-        except sa_exc.DBAPIError as exc:
-            if not compile_query_condition(exc) or isinstance(db_adapter_query.query, str):
-                raise exc
+        except ExpressionNotAggregateError:
+            query = db_adapter_query.query
+            compiled_query = (
+                query
+                if isinstance(query, str)
+                else str(query.compile(dialect=TrinoDialect(), compile_kwargs={"literal_binds": True}))
+            )
+            db_adapter_compiled_query = db_adapter_query.clone(query=compiled_query)
 
-        query = db_adapter_query.query
-        compiled_query = str(query.compile(dialect=TrinoDialect(), compile_kwargs={"literal_binds": True}))
-        db_adapter_compiled_query = db_adapter_query.clone(query=compiled_query)
-
-        for result in super().execute_by_steps(db_adapter_compiled_query):
-            yield result
+            for result in super().execute_by_steps(db_adapter_compiled_query):
+                yield result
 
     def get_default_db_name(self) -> str:
         return ""  # Trino doesn't require db_name to connect.
