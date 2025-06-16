@@ -856,7 +856,7 @@ class UStorageClient(UStorageClientBase):
                     created_at_from=created_at_from_ts,
                     limit=limit,
                 ),
-                retry_policy_name="iter_entries",
+                retry_policy_name="entries_iterator",
             )
 
             # 2. Deal with pagination
@@ -944,13 +944,13 @@ class UStorageClient(UStorageClientBase):
                 page_size=100,
                 page_idx=0,
             ),
-            retry_policy_name="entries_in_path",
+            retry_policy_name="get_entries_info_in_path",
         )
         return resp["entries"]
 
     def get_entry_revisions(self, entry_id: str) -> list[dict[str, Any]]:
         resp = self._request(
             self._req_data_entry_revisions(entry_id),
-            retry_policy_name="entry_revisions",
+            retry_policy_name="get_entry_revisions",
         )
         return resp["entries"]

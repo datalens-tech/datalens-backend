@@ -93,7 +93,7 @@ class RetryPolicyFactory:
     @abstractmethod
     def get_policy(self, name: Optional[str]) -> RetryPolicy:
         """
-        Get policy by specified name.
+        Get policy by specified name (case-insensitive).
         """
 
 
