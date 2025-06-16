@@ -134,7 +134,6 @@ class ConnectionDataModelBase(BaseAttrsDataModel):
     data_export_forbidden: bool = attr.ib(default=False)
 
 
-
 @attr.s
 class ConnCacheableDataModelMixin:
     cache_ttl_sec: Optional[int] = attr.ib(kw_only=True, default=None)  # Override for default cache TTL
