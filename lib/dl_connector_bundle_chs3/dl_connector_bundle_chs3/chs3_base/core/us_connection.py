@@ -94,7 +94,6 @@ class BaseFileS3Connection(
     class DataModel(ConnectionDataModelBase):
         sources: list["BaseFileS3Connection.FileDataSource"] = attr.ib()
         replace_sources: list[dict] = attr.ib(factory=list)  # should not be saved in US
-        data_export_forbidden: bool = attr.ib(default=False)
 
         component_errors: ComponentErrorRegistry = attr.ib(factory=ComponentErrorRegistry)
 

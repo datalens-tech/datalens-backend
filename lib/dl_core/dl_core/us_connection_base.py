@@ -313,7 +313,6 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         table_name: Optional[str] = attr.ib(default=None)
         sample_table_name: Optional[str] = attr.ib(default=None)
         name: Optional[str] = attr.ib(default=None)
-        data_export_forbidden: bool = attr.ib(default=False)
         schema_version: str = attr.ib(default="1")
 
     @property
