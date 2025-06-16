@@ -49,7 +49,6 @@ class ConnectionSQLBigQuery(ConnectionSQL):
     ):
         credentials: str = attr.ib(kw_only=True)
         project_id: str = attr.ib(kw_only=True)
-        data_export_forbidden: bool = attr.ib(default=False)
 
         @classmethod
         def get_secret_keys(cls) -> set[DataKey]:
