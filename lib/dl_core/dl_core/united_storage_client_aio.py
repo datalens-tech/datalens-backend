@@ -296,7 +296,7 @@ class UStorageClientAIO(UStorageClientBase):
                     created_at_from=created_at_from_ts,
                     limit=limit,
                 ),
-                retry_policy_name="iter_entries",
+                retry_policy_name="entries_iterator",
             )
 
             # 2. Deal with pagination
@@ -377,6 +377,6 @@ class UStorageClientAIO(UStorageClientBase):
     async def get_entry_revisions(self, entry_id: str) -> list[dict[str, Any]]:
         resp = await self._request(
             self._req_data_entry_revisions(entry_id),
-            retry_policy_name="entry_revisions",
+            retry_policy_name="get_entry_revisions",
         )
         return resp["entries"]
