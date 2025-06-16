@@ -131,7 +131,7 @@ class BaseAttrsDataModel:
 
 @attr.s
 class ConnectionDataModelBase(BaseAttrsDataModel):
-    data_export_forbidden: bool = attr.ib(default=False)
+    data_export_forbidden: bool = attr.ib(default=False, kw_only=True)
 
 
 @attr.s
