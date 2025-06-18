@@ -1,3 +1,4 @@
+from collections.abc import Generator
 import ssl
 from typing import Any
 
@@ -12,10 +13,14 @@ from trino.auth import (
 )
 from trino.sqlalchemy import URL as trino_url
 from trino.sqlalchemy.datatype import parse_sqltype
+from trino.sqlalchemy.dialect import TrinoDialect
 
 from dl_configs.utils import get_root_certificates_path
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
-from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
+from dl_core.connection_executors.models.db_adapter_data import (
+    DBAdapterQuery,
+    ExecutionStep,
+)
 from dl_core.connection_models.common_models import (
     DBIdent,
     SchemaIdent,
@@ -28,7 +33,10 @@ from dl_connector_trino.core.constants import (
     CONNECTION_TYPE_TRINO,
     TrinoAuthType,
 )
-from dl_connector_trino.core.error_transformer import trino_error_transformer
+from dl_connector_trino.core.error_transformer import (
+    ExpressionNotAggregateError,
+    trino_error_transformer,
+)
 from dl_connector_trino.core.target_dto import TrinoConnTargetDTO
 
 
@@ -119,6 +127,22 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
             args["verify"] = get_root_certificates_path()
 
         return args
+
+    def execute_by_steps(self, db_adapter_query: DBAdapterQuery) -> Generator[ExecutionStep, None, None]:
+        try:
+            for result in super().execute_by_steps(db_adapter_query):
+                yield result
+        except ExpressionNotAggregateError:
+            query = db_adapter_query.query
+            compiled_query = (
+                query
+                if isinstance(query, str)
+                else str(query.compile(dialect=TrinoDialect(), compile_kwargs={"literal_binds": True}))
+            )
+            db_adapter_compiled_query = db_adapter_query.clone(query=compiled_query)
+
+            for result in super().execute_by_steps(db_adapter_compiled_query):
+                yield result
 
     def get_default_db_name(self) -> str:
         return ""  # Trino doesn't require db_name to connect.
