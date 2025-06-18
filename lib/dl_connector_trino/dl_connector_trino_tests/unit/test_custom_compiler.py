@@ -1,5 +1,6 @@
 import datetime
 
+import pytz
 import sqlalchemy as sa
 
 from dl_connector_trino.core.adapters import CustomTrinoDialect
@@ -19,6 +20,8 @@ WHERE
     AND t1.string = {}
     AND t1.date = {}
     AND t1.datetime = {}
+    AND t1.datetime_utc = {}
+    AND t1.datetime_tz = {}
     AND t1.array_int = {}
     AND t1.array_string = {}
 """
@@ -28,6 +31,8 @@ PARAMETERIZED_QUERY = QUERY_TEMPLATE.format(
     ":string_val",
     ":date_val",
     ":timestamp_val",
+    ":datetime_utc_val",
+    ":datetime_tz_val",
     ":array_int_val",
     ":array_string_val",
 )
@@ -37,6 +42,8 @@ COMPILED_QUERY = QUERY_TEMPLATE.format(
     "'test_string'",
     "DATE '2025-06-18'",
     "TIMESTAMP '2025-06-18 15:40:03.000123'",
+    "TIMESTAMP '2025-06-18 15:40:03 UTC'",
+    "TIMESTAMP '2025-06-18 15:40:03 Europe/Moscow'",
     "ARRAY[1, 2, 3]",
     "ARRAY['a', 'b', 'c']",
 )
@@ -51,6 +58,16 @@ def test_custom_trino_compiler():
         sa.bindparam("string_val", value="test_string", type_=sa.String),
         sa.bindparam("date_val", value=datetime.date(2025, 6, 18), type_=sa.Date),
         sa.bindparam("timestamp_val", value=datetime.datetime(2025, 6, 18, 15, 40, 3, 123), type_=sa.DateTime),
+        sa.bindparam(
+            "datetime_utc_val",
+            value=datetime.datetime(2025, 6, 18, 15, 40, 3, tzinfo=datetime.timezone.utc),
+            type_=sa.DateTime,
+        ),
+        sa.bindparam(
+            "datetime_tz_val",
+            value=datetime.datetime(2025, 6, 18, 15, 40, 3, tzinfo=pytz.timezone("Europe/Moscow")),
+            type_=sa.DateTime,
+        ),
         sa.bindparam("array_int_val", value=[1, 2, 3], type_=sa.ARRAY(sa.BIGINT)),
         sa.bindparam("array_string_val", value=["a", "b", "c"], type_=sa.ARRAY(sa.String)),
     )
