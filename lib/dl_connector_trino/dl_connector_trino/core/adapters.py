@@ -95,8 +95,11 @@ class CustomTrinoCompiler(compiler.SQLCompiler):
                 return f"TIMESTAMP '{datetime_repr}'"
             elif value.tzinfo == datetime.timezone.utc:
                 timezone_repr = "UTC"
+            elif hasattr(value.tzinfo, "zone"):
+                # This is a pytz timezone object
+                timezone_repr = value.tzinfo.zone
             else:
-                raise NotImplementedError("Non-UTC timezone handling is not implemented")
+                raise TypeError(f"Unsupported tzinfo type: {type(value.tzinfo)}")
 
             return f"TIMESTAMP '{datetime_repr} {timezone_repr}'"
 
