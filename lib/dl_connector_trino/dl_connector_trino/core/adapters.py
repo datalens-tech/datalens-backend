@@ -1,4 +1,5 @@
 from collections.abc import Generator
+import datetime
 import ssl
 from typing import Any
 
@@ -7,6 +8,8 @@ import requests
 from requests.adapters import HTTPAdapter
 import sqlalchemy as sa
 from sqlalchemy import exc as sa_exc
+from sqlalchemy import types as sqltypes
+from sqlalchemy.sql import compiler
 from trino.auth import (
     BasicAuthentication,
     JWTAuthentication,
@@ -77,6 +80,37 @@ class CustomHTTPAdapter(HTTPAdapter):
         super().init_poolmanager(connections, maxsize, block, ssl_context=context, **pool_kwargs)
 
 
+class CustomTrinoCompiler(compiler.SQLCompiler):
+    def render_literal_value(self, value: Any, type_: sqltypes.TypeEngine) -> str:
+        if isinstance(type_, sqltypes.Date) and isinstance(value, datetime.date):
+            return f"DATE '{value.strftime('%Y-%m-%d')}'"
+
+        if isinstance(type_, sqltypes.DateTime) and isinstance(value, datetime.datetime):
+            datetime_repr = value.strftime("%Y-%m-%d %H:%M:%S")
+
+            if value.microsecond:
+                datetime_repr += f".{value.microsecond:06}"
+
+            if value.tzinfo is None:
+                return f"TIMESTAMP '{datetime_repr}'"
+            elif value.tzinfo == datetime.timezone.utc:
+                timezone_repr = "UTC"
+            else:
+                raise NotImplementedError("Non-UTC timezone handling is not implemented")
+
+            return f"TIMESTAMP '{datetime_repr} {timezone_repr}'"
+
+        if isinstance(type_, sqltypes.ARRAY) and isinstance(value, (list, tuple)):
+            array_elements = ", ".join(self.render_literal_value(v, type_.item_type) for v in value)
+            return f"ARRAY[{array_elements}]"
+
+        return super().render_literal_value(value, type_)
+
+
+class CustomTrinoDialect(TrinoDialect):
+    statement_compiler = CustomTrinoCompiler
+
+
 @attr.s(kw_only=True)
 class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
     conn_type = CONNECTION_TYPE_TRINO
@@ -137,7 +171,7 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
             compiled_query = (
                 query
                 if isinstance(query, str)
-                else str(query.compile(dialect=TrinoDialect(), compile_kwargs={"literal_binds": True}))
+                else str(query.compile(dialect=CustomTrinoDialect(), compile_kwargs={"literal_binds": True}))
             )
             db_adapter_compiled_query = db_adapter_query.clone(query=compiled_query)
 
