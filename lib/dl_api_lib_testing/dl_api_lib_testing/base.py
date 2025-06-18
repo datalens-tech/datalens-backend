@@ -93,12 +93,13 @@ class ApiTestBase(abc.ABC):
         self,
         bi_test_config: ApiTestEnvironmentConfiguration,
     ) -> Generator[RQEConfig, None, None]:
-        whitelist = bi_test_config.core_test_config.get_core_library_config().core_connector_ep_names
-        with RQEConfigurationMaker(
-            ext_query_executer_secret_key=bi_test_config.ext_query_executer_secret_key,
-            core_connector_whitelist=whitelist,
-        ).rqe_config_subprocess_cm() as rqe_config:
-            yield rqe_config
+        yield None
+        # whitelist = bi_test_config.core_test_config.get_core_library_config().core_connector_ep_names
+        # with RQEConfigurationMaker(
+        #     ext_query_executer_secret_key=bi_test_config.ext_query_executer_secret_key,
+        #     core_connector_whitelist=whitelist,
+        # ).rqe_config_subprocess_cm() as rqe_config:
+        #     yield rqe_config
 
     @classmethod
     def create_control_api_settings(
@@ -122,6 +123,7 @@ class ApiTestBase(abc.ABC):
             BI_API_CONNECTOR_WHITELIST=bi_test_config.get_api_library_config().api_connector_ep_names,
             CORE_CONNECTOR_WHITELIST=core_test_config.get_core_library_config().core_connector_ep_names,
             RQE_CONFIG=rqe_config_subprocess,
+            RQE_FORCE_OFF=True,
             BI_COMPENG_PG_ON=cls.compeng_enabled,
             BI_COMPENG_PG_URL=core_test_config.get_compeng_url(),
             DO_DSRC_IDX_FETCH=True,

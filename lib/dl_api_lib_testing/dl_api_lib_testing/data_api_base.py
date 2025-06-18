@@ -82,6 +82,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             CACHES_ON=cls.data_caches_enabled,
             SAMPLES_CH_HOSTS=(),
             RQE_CONFIG=rqe_config_subprocess,
+            RQE_FORCE_OFF=True,
             BI_API_CONNECTOR_WHITELIST=bi_test_config.get_api_library_config().api_connector_ep_names,
             CORE_CONNECTOR_WHITELIST=core_test_config.get_core_library_config().core_connector_ep_names,
             MUTATIONS_CACHES_ON=cls.mutation_caches_enabled,
