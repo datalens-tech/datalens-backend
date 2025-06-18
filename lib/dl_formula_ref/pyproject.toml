@@ -28,7 +28,6 @@ dl-db-testing = {path = "../dl_db_testing"}
 babel = ">=2.12.1"
 pytest = ">=7.2.2"
 psycopg2-binary = ">=2.9.9"
-dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
