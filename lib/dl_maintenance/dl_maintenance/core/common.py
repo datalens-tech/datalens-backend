@@ -10,6 +10,7 @@ import attr
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_configs.utils import get_root_certificates
+from dl_core.retrier.policy import SettingsRetryPolicyFactory
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
@@ -50,12 +51,14 @@ class MaintenanceEnvironmentManagerBase:
         rci = RequestContextInfo.create_empty()
         sr_factory = self.get_sr_factory(is_async_env=is_async_env, ca_data=ca_data) if use_sr_factory else None
         service_registry = sr_factory.make_service_registry(rci) if sr_factory is not None else None
+        retry_policy_settings = self.get_app_settings().US_CLIENT_SETTINGS.RETRY_POLICY
 
         return SyncUSManager(
             us_base_url=us_config.base_url,
             us_auth_context=USAuthContextMaster(us_master_token=us_config.master_token),
             bi_context=rci,
             services_registry=service_registry,
+            retry_policy_factory=SettingsRetryPolicyFactory(retry_policy_settings),
         )
 
     def get_async_usm_from_env(self, use_sr_factory: bool = True) -> AsyncUSManager:
@@ -64,6 +67,7 @@ class MaintenanceEnvironmentManagerBase:
         rci = RequestContextInfo.create_empty()
         sr_factory = self.get_sr_factory(is_async_env=True, ca_data=ca_data) if use_sr_factory else None
         service_registry = sr_factory.make_service_registry(rci) if sr_factory is not None else None
+        retry_policy_settings = self.get_app_settings().US_CLIENT_SETTINGS.RETRY_POLICY
 
         return AsyncUSManager(
             us_base_url=us_config.base_url,
@@ -71,4 +75,5 @@ class MaintenanceEnvironmentManagerBase:
             bi_context=rci,
             services_registry=service_registry,
             ca_data=ca_data,
+            retry_policy_factory=SettingsRetryPolicyFactory(retry_policy_settings),
         )
