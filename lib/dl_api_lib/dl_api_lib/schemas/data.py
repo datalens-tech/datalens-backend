@@ -96,7 +96,7 @@ class DatasetDataRequestBaseSchema(DefaultSchema[DataRequestModel]):
 
 class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema, DatasetContentSchema):
     limit = ma_fields.Integer(load_default=100)
-    row_count_hard_limit = ma_fields.Integer(load_default=10**5)
+    row_count_hard_limit = ma_fields.Integer(load_default=DataAPILimits.PREVIEW_API_DEFAULT_ROW_COUNT_HARD_LIMIT)
     updates = ma_fields.Nested(ActionSchema, many=True, load_default=[])
     TARGET_CLS = DataRequestModel
 
