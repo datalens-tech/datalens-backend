@@ -182,12 +182,14 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                     # TODO(catsona): Remove after release, fallback to old behavior
                     if self.meta.tenant_id is None:
                         redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=str(src_source.preview_id))
+                        preview_id = redis_preview.id
                         await redis_preview.save(
                             ttl=None
                         )  # now that the source is saved the preview can be saved as persistent
 
                     else:
                         preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=str(src_source.preview_id))
+                        preview_id = preview.id
                         await preview.save(
                             persistent=True
                         )  # now that the source is saved the preview can be saved as persistent
@@ -306,7 +308,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                             s3_filename=new_s3_filename,
                             s3_filename_suffix=s3_filename_suffix,
                             status=FileProcessingStatus.ready,
-                            preview_id=preview.id,
+                            preview_id=preview_id,
                             **extra_dsrc_params,
                         )
                         conn.data.component_errors.remove_errors(id=dst_source_id)
