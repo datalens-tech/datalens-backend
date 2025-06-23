@@ -1,8 +1,11 @@
 from collections.abc import Sequence
+import datetime
 from typing import Optional
 
 import pytest
 import sqlalchemy as sa
+from sqlalchemy.exc import CompileError
+from sqlalchemy.sql import compiler
 import trino.sqlalchemy.datatype as tsa
 
 from dl_constants.enums import UserDataType
@@ -22,7 +25,10 @@ from dl_core_testing.testcases.connection_executor import (
     DefaultSyncConnectionExecutorTestSuite,
 )
 
-from dl_connector_trino.core.adapters import TrinoDefaultAdapter
+from dl_connector_trino.core.adapters import (
+    CustomTrinoDialect,
+    TrinoDefaultAdapter,
+)
 from dl_connector_trino.core.error_transformer import ExpressionNotAggregateError
 from dl_connector_trino.core.us_connection import ConnectionTrino
 import dl_connector_trino_tests.db.config as test_config
@@ -139,11 +145,13 @@ class TestTrinoSyncConnectionExecutor(
         self,
         sync_connection_executor: SyncConnExecutorBase,
         existing_table_ident: TableIdent,
+        add_complex_types: bool = False,
     ) -> SyncExecutionResult:
         table = sa.Table(
             existing_table_ident.table_name,
             sa.MetaData(),
             sa.Column("sales", sa.Integer),
+            sa.Column("order_date", sa.Date),
             schema=existing_table_ident.schema_name,
         )
 
@@ -158,6 +166,11 @@ class TestTrinoSyncConnectionExecutor(
             .select_from(table)
             .group_by(sa.text("1"))
         )
+        if add_complex_types:
+            sa_query = sa_query.where(
+                table.c.order_date >= datetime.date(1900, 1, 1),
+            )
+
         conn_executor_query = ConnExecutorQuery(sa_query, db_name=existing_table_ident.db_name)
         result = sync_connection_executor.execute(conn_executor_query)
         return result
@@ -188,4 +201,34 @@ class TestTrinoSyncConnectionExecutor(
         self.make_select_with_duplicate_parametrized_expression(
             sync_connection_executor=sync_connection_executor,
             existing_table_ident=existing_table_ident,
+        )
+
+    def test_duplicate_parametrized_expression_in_select_with_complex_types_fails(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+        sync_connection_executor: SyncConnExecutorBase,
+        existing_table_ident: TableIdent,
+    ) -> None:
+        # Reproduce SQLCompiler behavior before defining the custom rendering for complex types
+        monkeypatch.setattr(
+            CustomTrinoDialect,
+            "statement_compiler",
+            compiler.SQLCompiler,
+        )
+        with pytest.raises(CompileError):
+            self.make_select_with_duplicate_parametrized_expression(
+                sync_connection_executor=sync_connection_executor,
+                existing_table_ident=existing_table_ident,
+                add_complex_types=True,
+            )
+
+    def test_duplicate_parametrized_expression_in_select_with_complex_types(
+        self,
+        sync_connection_executor: SyncConnExecutorBase,
+        existing_table_ident: TableIdent,
+    ) -> None:
+        self.make_select_with_duplicate_parametrized_expression(
+            sync_connection_executor=sync_connection_executor,
+            existing_table_ident=existing_table_ident,
+            add_complex_types=True,
         )
