@@ -6,8 +6,12 @@ import sqlalchemy as sa
 import trino.sqlalchemy.datatype as tsa
 
 from dl_constants.enums import UserDataType
+from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_executors.common_base import ConnExecutorQuery
-from dl_core.connection_executors.sync_base import SyncConnExecutorBase
+from dl_core.connection_executors.sync_base import (
+    SyncConnExecutorBase,
+    SyncExecutionResult,
+)
 from dl_core.connection_models.common_models import (
     DBIdent,
     TableIdent,
@@ -18,6 +22,8 @@ from dl_core_testing.testcases.connection_executor import (
     DefaultSyncConnectionExecutorTestSuite,
 )
 
+from dl_connector_trino.core.adapters import TrinoDefaultAdapter
+from dl_connector_trino.core.error_transformer import ExpressionNotAggregateError
 from dl_connector_trino.core.us_connection import ConnectionTrino
 import dl_connector_trino_tests.db.config as test_config
 from dl_connector_trino_tests.db.core.base import BaseTrinoTestClass
@@ -128,3 +134,58 @@ class TestTrinoSyncConnectionExecutor(
                 self.CD(sa.ARRAY(sa.VARCHAR()), UserDataType.array_str),
             ],
         }
+
+    def make_select_with_duplicate_parametrized_expression(
+        self,
+        sync_connection_executor: SyncConnExecutorBase,
+        existing_table_ident: TableIdent,
+    ) -> SyncExecutionResult:
+        table = sa.Table(
+            existing_table_ident.table_name,
+            sa.MetaData(),
+            sa.Column("sales", sa.Integer),
+            schema=existing_table_ident.schema_name,
+        )
+
+        expr1 = (table.c.sales + 1).label("res_1")
+        expr2 = (table.c.sales + 1).label("res_2")
+
+        sa_query = (
+            sa.select(
+                expr1,
+                expr2,
+            )
+            .select_from(table)
+            .group_by(sa.text("1"))
+        )
+        conn_executor_query = ConnExecutorQuery(sa_query, db_name=existing_table_ident.db_name)
+        result = sync_connection_executor.execute(conn_executor_query)
+        return result
+
+    def test_duplicate_parametrized_expression_in_select_fails(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+        sync_connection_executor: SyncConnExecutorBase,
+        existing_table_ident: TableIdent,
+    ) -> None:
+        # Reproduce adapter behavior before the query compilation fix
+        monkeypatch.setattr(
+            TrinoDefaultAdapter,
+            "execute_by_steps",
+            BaseClassicAdapter.execute_by_steps,
+        )
+        with pytest.raises(ExpressionNotAggregateError):
+            self.make_select_with_duplicate_parametrized_expression(
+                sync_connection_executor=sync_connection_executor,
+                existing_table_ident=existing_table_ident,
+            )
+
+    def test_duplicate_parametrized_expression_in_select(
+        self,
+        sync_connection_executor: SyncConnExecutorBase,
+        existing_table_ident: TableIdent,
+    ) -> None:
+        self.make_select_with_duplicate_parametrized_expression(
+            sync_connection_executor=sync_connection_executor,
+            existing_table_ident=existing_table_ident,
+        )
