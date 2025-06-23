@@ -1,8 +1,6 @@
 from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
-from dl_api_client.dsmaker.pivot_utils import (
-    check_pivot_response,
-)
+from dl_api_client.dsmaker.pivot_utils import check_pivot_response
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_client.dsmaker.shortcuts.dataset import add_formulas_to_dataset
 from dl_api_lib_testing.connector.complex_queries import DefaultBasicComplexQueryTestSuite
