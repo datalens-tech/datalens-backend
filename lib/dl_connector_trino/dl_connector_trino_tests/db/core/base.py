@@ -1,5 +1,5 @@
 import asyncio
-from typing import Generator
+from collections.abc import Generator
 
 from frozendict import frozendict
 import pytest
@@ -59,36 +59,37 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
 
     @pytest.fixture(scope="class", autouse=True)
     def wait_for_trino(self, connection_creation_params: dict) -> None:
-        # host, port = connection_creation_params["host"], connection_creation_params["port"]
-        # if connection_creation_params["auth_type"] is TrinoAuthType.none:
-        #     scheme = "http"
-        #     auth = None
-        # else:
-        #     scheme = "https"
-        #     auth = BasicAuthentication(
-        #         test_config.CorePasswordConnectionSettings.USERNAME,
-        #         test_config.CorePasswordConnectionSettings.PASSWORD,
-        #     )
+        host, port = connection_creation_params["host"], connection_creation_params["port"]
+        https_session = None
+        if connection_creation_params["auth_type"] is TrinoAuthType.none:
+            scheme = "http"
+            auth = None
+        else:
+            scheme = "https"
+            auth = BasicAuthentication(
+                test_config.CorePasswordConnectionSettings.USERNAME,
+                test_config.CorePasswordConnectionSettings.PASSWORD,
+            )
+            if connection_creation_params["ssl_ca"]:
+                https_session = requests.Session()
+                https_session.mount("https://", CustomHTTPAdapter(ssl_ca=connection_creation_params["ssl_ca"]))
 
-        # conn = connect(
-        #     host=host,
-        #     port=port,
-        #     user=auth._username if auth else "healthcheck",
-        #     auth=auth,
-        #     http_scheme=scheme,
-        #     verify=False,
-        # )
-        # cur = conn.cursor()
+        conn = connect(
+            host=host,
+            port=port,
+            user=auth._username if auth else "healthcheck",
+            auth=auth,
+            http_scheme=scheme,
+            https_session=https_session,
+        )
+        cur = conn.cursor()
 
         def check_trino_liveness() -> bool:
-            # try:
-            #     cur.execute("SELECT 1").fetchall()
-            #     return True
-            # except TrinoQueryError:
-            #     return False
-            from time import sleep
-            sleep(30)
-            return True
+            try:
+                cur.execute("SELECT 1").fetchall()
+                return True
+            except TrinoQueryError:
+                return False
 
         wait_for(
             name="Trino readiness",
