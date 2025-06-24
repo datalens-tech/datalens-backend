@@ -76,7 +76,6 @@ class CustomHTTPAdapter(HTTPAdapter):
     def init_poolmanager(self, connections: int, maxsize: int, block: bool = False, **pool_kwargs: Any) -> None:
         # Use a secure context with the provided SSL CA
         context = ssl.create_default_context(cadata=self.ssl_ca)
-        context.check_hostname = False  # TODO: @khamitovdr Resolve "ValueError: check_hostname requires server_hostname" and enable check_hostname!!!
         super().init_poolmanager(connections, maxsize, block, ssl_context=context, **pool_kwargs)
 
 
