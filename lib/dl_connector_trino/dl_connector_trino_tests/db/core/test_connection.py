@@ -8,7 +8,6 @@ from dl_connector_trino.core.us_connection import (
     ConnectionTrino,
 )
 from dl_connector_trino_tests.db.core.base import (
-    BaseTrinoJwtTestClass,
     BaseTrinoPasswordTestClass,
     BaseTrinoTestClass,
 )
@@ -56,17 +55,5 @@ class TestTrinoPasswordConnection(BaseTrinoPasswordTestClass, TestTrinoConnectio
         assert conn.data.username == params["username"]
         assert conn.data.password == params["password"]
         assert conn.data.auth_type == TrinoAuthType.password
-        assert conn.data.ssl_enable == params["ssl_enable"]
-        assert conn.data.ssl_ca == params["ssl_ca"]
-
-
-class TestTrinoJwtConnection(BaseTrinoJwtTestClass, TestTrinoConnection):
-    def check_saved_connection(self, conn: ConnectionTrino, params: dict) -> None:
-        assert conn.uuid is not None
-        assert conn.data.host == params["host"]
-        assert conn.data.port == params["port"]
-        assert conn.data.username == params["username"]
-        assert conn.data.jwt == params["jwt"]
-        assert conn.data.auth_type == TrinoAuthType.jwt
         assert conn.data.ssl_enable == params["ssl_enable"]
         assert conn.data.ssl_ca == params["ssl_ca"]

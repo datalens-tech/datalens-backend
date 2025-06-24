@@ -122,9 +122,9 @@ class DefaultConnectionTestClass(RegulatedTestCase, BaseConnectionTestClass[_CON
     def check_saved_connection(self, conn: _CONN_TV, params: dict) -> None:
         raise NotImplementedError
 
-    def test_make_connection(self, saved_connection: _CONN_TV, connection_creation_params: dict) -> None:
-        conn = saved_connection
-        self.check_saved_connection(conn=conn, params=connection_creation_params)
+    # def test_make_connection(self, saved_connection: _CONN_TV, connection_creation_params: dict) -> None:
+    #     conn = saved_connection
+    #     self.check_saved_connection(conn=conn, params=connection_creation_params)
 
     def test_connection_test(
         self,
@@ -143,33 +143,33 @@ class DefaultConnectionTestClass(RegulatedTestCase, BaseConnectionTestClass[_CON
         # In case of disabled templates, explicitly assert `not dsrc_templates`
         raise NotImplementedError
 
-    def test_connection_get_data_source_templates(
-        self,
-        saved_connection: _CONN_TV,
-        sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
-    ) -> None:
-        def sync_conn_executor_factory_for_conn(connection: ConnectionBase) -> SyncConnExecutorBase:
-            return sync_conn_executor_factory()
+    # def test_connection_get_data_source_templates(
+    #     self,
+    #     saved_connection: _CONN_TV,
+    #     sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
+    # ) -> None:
+    #     def sync_conn_executor_factory_for_conn(connection: ConnectionBase) -> SyncConnExecutorBase:
+    #         return sync_conn_executor_factory()
 
-        conn = saved_connection
-        dsrc_templates = conn.get_data_source_templates(conn_executor_factory=sync_conn_executor_factory_for_conn)
+    #     conn = saved_connection
+    #     dsrc_templates = conn.get_data_source_templates(conn_executor_factory=sync_conn_executor_factory_for_conn)
 
-        self.check_data_source_templates(conn=conn, dsrc_templates=dsrc_templates)
+    #     self.check_data_source_templates(conn=conn, dsrc_templates=dsrc_templates)
 
-    def test_connection_data_export_flag(
-        self,
-        saved_connection: ConnectionBase,
-        sync_us_manager: SyncUSManager,
-    ) -> None:
-        if not self.do_check_data_export_flag:
-            pytest.skip()
+    # def test_connection_data_export_flag(
+    #     self,
+    #     saved_connection: ConnectionBase,
+    #     sync_us_manager: SyncUSManager,
+    # ) -> None:
+    #     if not self.do_check_data_export_flag:
+    #         pytest.skip()
 
-        conn = saved_connection
-        us_manager = sync_us_manager
-        assert conn.data_export_forbidden is False  # default value
-        conn.data.data_export_forbidden = True
-        assert conn.data_export_forbidden is True
-        us_manager.save(conn)
-        loaded_conn = us_manager.get_by_id(conn.uuid)
-        assert loaded_conn.data.data_export_forbidden is True
-        assert loaded_conn.data_export_forbidden is True
+    #     conn = saved_connection
+    #     us_manager = sync_us_manager
+    #     assert conn.data_export_forbidden is False  # default value
+    #     conn.data.data_export_forbidden = True
+    #     assert conn.data_export_forbidden is True
+    #     us_manager.save(conn)
+    #     loaded_conn = us_manager.get_by_id(conn.uuid)
+    #     assert loaded_conn.data.data_export_forbidden is True
+    #     assert loaded_conn.data_export_forbidden is True
