@@ -39,7 +39,7 @@ _USENTRY_TV = TypeVar("_USENTRY_TV", bound="USEntry")
 
 class USEntry:
     DataModel: ClassVar[Union[Type[BaseAttrsDataModel], None]] = None
-    dir_name = None
+    dir_name: str | None = None
 
     uuid: Optional[str] = None
     _data = None

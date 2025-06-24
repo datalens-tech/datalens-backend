@@ -5,7 +5,6 @@ from typing import (
     TYPE_CHECKING,
     Collection,
     Generator,
-    Optional,
 )
 
 import attr
@@ -57,16 +56,16 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Dataset(USEntry):
-    dir_name = ""  # type: ignore  # TODO: fix
+    dir_name = ""
     scope = "dataset"
 
     @attr.s
     class DataModel(BaseAttrsDataModel):
         name: str = attr.ib()
-        revision_id: Optional[str] = attr.ib(default=None)
-        load_preview_by_default: Optional[bool] = attr.ib(default=True)
+        revision_id: str | None = attr.ib(default=None)
+        load_preview_by_default: bool | None = attr.ib(default=True)
         template_enabled: bool = attr.ib(default=False)
-        data_export_forbidden: Optional[bool] = attr.ib(default=False)
+        data_export_forbidden: bool | None = attr.ib(default=False)
         schema_version: str = attr.ib(default="1")
         result_schema: ResultSchema = attr.ib(factory=ResultSchema)
         source_collections: list[DataSourceCollectionSpec] = attr.ib(factory=list)
@@ -91,7 +90,10 @@ class Dataset(USEntry):
     def error_registry(self) -> ComponentErrorRegistry:
         return self.data.component_errors
 
-    def get_single_data_source_id(self, ignore_source_ids: Optional[Collection[str]] = None) -> str:  # type: ignore  # TODO: fix
+    def get_single_data_source_id(
+        self,
+        ignore_source_ids: Collection[str] | None = None,
+    ) -> str | None:
         # FIXME: remove in the future
         ignore_source_ids = ignore_source_ids or ()
         for dsrc_coll_spec in self.data.source_collections or ():
@@ -100,7 +102,9 @@ class Dataset(USEntry):
                 continue
             return dsrc_coll_spec.id
 
-    def get_own_materialized_tables(self, source_id: Optional[str] = None) -> Generator[str, None, None]:
+        return None
+
+    def get_own_materialized_tables(self, source_id: str | None = None) -> Generator[str, None, None]:
         for dsrc_coll_spec in self.data.source_collections or ():
             if not dsrc_coll_spec or source_id and dsrc_coll_spec.id != source_id:
                 continue
@@ -114,13 +118,13 @@ class Dataset(USEntry):
                 if dsrc_spec.table_name is not None:
                     yield dsrc_spec.table_name
 
-    def find_data_source_configuration(  # type: ignore  # TODO: fix
+    def find_data_source_configuration(
         self,
-        connection_id: Optional[str],
-        created_from: Optional[DataSourceType] = None,
-        title: Optional[str] = None,
-        parameters: Optional[dict] = None,
-    ) -> Optional[str]:
+        connection_id: str | None,
+        created_from: DataSourceType | None = None,
+        title: str | None = None,
+        parameters: dict | None = None,
+    ) -> str | None:
         """
         Check whether dataset already has a source with the given configuration.
         Return ``None`` if it doesn't exist, otherwise return the corresponding ``source_id``.
@@ -154,12 +158,14 @@ class Dataset(USEntry):
                 # reference matches params
                 return dsrc_coll_spec.id
 
+        return None
+
     def create_result_schema_field(
         self,
         column: SchemaColumn,
-        field_id_generator: Optional[FieldIdGenerator] = None,
+        field_id_generator: FieldIdGenerator | None = None,
         autofix_title: bool = True,
-        avatar_id: Optional[str] = None,
+        avatar_id: str | None = None,
     ) -> dict:
         title = column.title
         if autofix_title:
@@ -202,7 +208,7 @@ class Dataset(USEntry):
     def result_schema(self) -> ResultSchema:
         return self.data.result_schema
 
-    def _dump_rls(self):  # type: ignore  # TODO: fix
+    def _dump_rls(self) -> None:
         """Remove rls entries for non-existing in result_schema fields"""
         # FIXME: this should be in the scope of result_schema management
         field_guids = [f.guid for f in self.result_schema.fields]
@@ -214,11 +220,11 @@ class Dataset(USEntry):
         return DataSourceCreatedVia[created_via_name]
 
     @property
-    def revision_id(self) -> Optional[str]:
+    def revision_id(self) -> str | None:
         return self.data.revision_id
 
     @property
-    def load_preview_by_default(self) -> Optional[bool]:
+    def load_preview_by_default(self) -> bool | None:
         return self.data.load_preview_by_default
 
     @property
@@ -226,7 +232,7 @@ class Dataset(USEntry):
         return self.data.template_enabled
 
     @property
-    def data_export_forbidden(self) -> Optional[bool]:
+    def data_export_forbidden(self) -> bool | None:
         return self.data.data_export_forbidden
 
     def rename_field_id_usages(self, old_id: str, new_id: str) -> None:
