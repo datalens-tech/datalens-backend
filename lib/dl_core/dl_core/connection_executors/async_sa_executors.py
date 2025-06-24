@@ -242,6 +242,13 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
 
     @_common_exec_wrapper
     async def _execute_query(self, query: DBAdapterQuery) -> AsyncRawExecutionResult | AsyncRawJsonExecutionResult:
+        print("#" * 1000)
+        print()
+        print()
+        print(self._target_dba._target_dto.ssl_ca)
+        print()
+        print()
+        print("#" * 1000)
         return await self._target_dba.execute(query)
 
     def _autodetect_user_types(self, raw_cursor_info: dict) -> Optional[List[UserDataType]]:
