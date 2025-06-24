@@ -23,3 +23,6 @@ class TestSettings(DefaultApiTestBase):
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
         assert getattr(saved_dataset, setting_name.value) == setting_value, "Setting should be updated"
+
+        saved_dataset = control_api.get_dataset(saved_dataset.id).dataset
+        assert getattr(saved_dataset, setting_name.value) == setting_value, "Setting should be saved"

@@ -120,6 +120,18 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
             dataset=None,
         )
 
+    def get_dataset(self, dataset_id: str) -> HttpDatasetApiResponse:
+        response = self._request(f"/api/v1/datasets/{dataset_id}/versions/draft", method="get")
+        dataset = self.serial_adapter.load_dataset_from_response_body(
+            dataset=Dataset(),
+            body=response.json["dataset"],
+        )
+        return HttpDatasetApiResponse(
+            json=response.json,
+            status_code=response.status_code,
+            dataset=dataset,
+        )
+
     def save_dataset(
         self,
         dataset: Dataset,
