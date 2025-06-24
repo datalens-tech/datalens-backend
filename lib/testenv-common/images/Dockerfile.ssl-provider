@@ -12,7 +12,7 @@ RUN mkdir -p certs certs/private certs/newcerts && \
     touch certs/index.txt && \
     echo "01" > certs/serial && \
     sed -i "s|./demoCA|./certs|g" openssl.cnf && \
-    echo -e "[SAN]\nsubjectAltName=IP:127.0.0.1,DNS:${CERTIFIED_DOMAIN}" >> openssl.cnf
+    echo -e "[SAN]\nsubjectAltName=IP:127.0.0.1,DNS:localhost,DNS:${CERTIFIED_DOMAIN}" >> openssl.cnf
 
 # Generate certificates
 RUN \
