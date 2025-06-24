@@ -44,9 +44,7 @@ from dl_file_uploader_lib.s3_model.base import (
     S3ModelNotFound,
 )
 from dl_file_uploader_lib.s3_model.models.models import S3DataSourcePreview
-from dl_file_uploader_task_interface.tasks import (
-    ParseFileTask,
-)
+from dl_file_uploader_task_interface.tasks import ParseFileTask
 from dl_task_processor.processor import TaskProcessor
 from dl_type_transformer.type_transformer import get_type_transformer
 
