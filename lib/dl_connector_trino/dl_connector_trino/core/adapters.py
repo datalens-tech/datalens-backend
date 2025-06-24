@@ -157,6 +157,13 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         args["http_scheme"] = "https"
         if self._target_dto.ssl_ca:
             session = requests.Session()
+            print("#" * 1000)
+            print()
+            print()
+            print(self._target_dto.ssl_ca)
+            print()
+            print()
+            print("#" * 1000)
             session.mount("https://", CustomHTTPAdapter(self._target_dto.ssl_ca))
             args["http_session"] = session
         else:
