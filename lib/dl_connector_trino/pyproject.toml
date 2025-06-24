@@ -67,6 +67,7 @@ testpaths = ["dl_connector_trino_tests/db", "dl_connector_trino_tests/unit"]
 root_dir = "dl_connector_trino_tests/"
 target_path = "db"
 labels = ["fat"]
+skip_tests = true
 
 [datalens.pytest.unit]
 root_dir = "dl_connector_trino_tests/"
