@@ -278,15 +278,15 @@ class DatasetBaseWrapper:
         return self._capabilities.get_backend_type(role=self.resolve_role())
 
     def _reload_sources(self) -> None:
-        self._has_sources = bool(self._ds.get_single_data_source_id())
+        source_id = self._ds.get_single_data_source_id()
+        self._has_sources = source_id is not None
         # resolve database characteristics
         # never go to database from here --> only_cache=True
-        if self._has_sources:
+        if source_id is not None:
             role = self.resolve_role()
             try:
                 backend_type = self._capabilities.get_backend_type(role=role)
                 dialect_name = resolve_dialect_name(backend_type=backend_type)
-                source_id = self._ds.get_single_data_source_id()
                 dsrc = self._get_data_source_strict(source_id=source_id, role=role)
                 db_info = dsrc.get_cached_db_info()
                 db_version = db_info.version

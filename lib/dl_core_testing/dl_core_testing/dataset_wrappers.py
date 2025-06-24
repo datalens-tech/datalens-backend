@@ -222,7 +222,9 @@ class DatasetTestWrapper:
         )
 
     def quote(self, value: str, role: DataSourceRole) -> str:
-        sql_dsrc = self.get_sql_data_source_strict(source_id=self._dataset.get_single_data_source_id(), role=role)
+        source_id = self._dataset.get_single_data_source_id()
+        assert source_id is not None
+        sql_dsrc = self.get_sql_data_source_strict(source_id=source_id, role=role)
         dialect = sql_dsrc.get_dialect()
         return dialect.identifier_preparer.quote(value)
 
