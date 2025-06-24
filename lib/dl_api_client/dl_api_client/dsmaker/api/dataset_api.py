@@ -120,6 +120,18 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
             dataset=None,
         )
 
+    def get_dataset(self, dataset_id: str) -> HttpDatasetApiResponse:
+        response = self._request(f"/api/v1/datasets/{dataset_id}/versions/draft", method="get")
+        dataset = self.serial_adapter.load_dataset_from_response_body(
+            dataset=Dataset(),
+            body=response.json,
+        )
+        return HttpDatasetApiResponse(
+            json=response.json,
+            status_code=response.status_code,
+            dataset=dataset,
+        )
+
     def save_dataset(
         self,
         dataset: Dataset,
@@ -364,3 +376,19 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
             ],
         )
         return response
+
+    def update_setting(
+        self,
+        dataset: Dataset,
+        name: str,
+        value: bool,
+    ) -> HttpDatasetApiResponse:
+        return self.apply_updates(
+            dataset=dataset,
+            updates=[
+                {
+                    "action": "update_setting",
+                    "setting": {"name": name, "value": value},
+                },
+            ],
+        )

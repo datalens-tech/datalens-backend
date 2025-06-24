@@ -202,6 +202,9 @@ class DatasetAction(Enum):
     add_obligatory_filter = "add_obligatory_filter"
     delete_obligatory_filter = "delete_obligatory_filter"
 
+    # settings
+    update_setting = "update_setting"
+
     # TODO: remove legacy:
     update = "update"
     add = "add"
@@ -214,6 +217,12 @@ class DatasetAction(Enum):
     @staticmethod
     def get_actions_whitelist_for_data_api() -> Set["DatasetAction"]:
         return {DatasetAction.add_field, DatasetAction.update_field, DatasetAction.delete_field}
+
+
+class DatasetSettingName(Enum):
+    load_preview_by_default = "load_preview_by_default"
+    template_enabled = "template_enabled"
+    data_export_forbidden = "data_export_forbidden"
 
 
 _LEGACY_ACTIONS = {

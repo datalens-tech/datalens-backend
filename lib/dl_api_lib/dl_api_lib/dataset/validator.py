@@ -26,6 +26,7 @@ from dl_api_lib.dataset.utils import check_permissions_for_origin_sources
 from dl_api_lib.enums import (
     FILTERS_BY_TYPE,
     DatasetAction,
+    DatasetSettingName,
     USPermissionKind,
 )
 from dl_api_lib.query.formalization.block_formalizer import BlockFormalizer
@@ -46,6 +47,7 @@ from dl_api_lib.request_model.data import (
     ReplaceConnectionAction,
     SourceActionBase,
     UpdateField,
+    UpdateSettingAction,
 )
 from dl_app_tools.profiling_base import generic_profiler
 from dl_constants.enums import (
@@ -230,7 +232,10 @@ class DatasetValidator(DatasetBaseWrapper):
 
         if isinstance(item_data, FieldAction):
             self.apply_field_action(
-                action=action, field_data=item_data.field, order_index=item_data.order_index or 0, by=by
+                action=action,
+                field_data=item_data.field,
+                order_index=item_data.order_index or 0,
+                by=by,
             )
         elif isinstance(item_data, SourceActionBase):
             self.apply_source_action(action=action, source_data=item_data.source, by=by)
@@ -247,6 +252,8 @@ class DatasetValidator(DatasetBaseWrapper):
             self.apply_connection_action(action=action, connection_data=item_data.connection, by=by)
         elif isinstance(item_data, ObligatoryFilterActionBase):
             self.apply_obligatory_filter_action(action=action, filter_data=item_data.obligatory_filter, by=by)
+        elif isinstance(item_data, UpdateSettingAction):
+            self.apply_setting_action(action=action, setting=item_data.setting, by=by)
 
         self.update_validity_of_affected_components()
 
@@ -1600,7 +1607,10 @@ class DatasetValidator(DatasetBaseWrapper):
 
     @generic_profiler("validator-apply-obligatory-filter-action")
     def apply_obligatory_filter_action(
-        self, action: DatasetAction, filter_data: ObligatoryFilterBase, by: Optional[ManagedBy] = ManagedBy.user
+        self,
+        action: DatasetAction,
+        filter_data: ObligatoryFilterBase,
+        by: Optional[ManagedBy] = ManagedBy.user,
     ) -> None:
         assert isinstance(filter_data, ObligatoryFilterBase)
         component_ref = DatasetComponentRef(component_type=ComponentType.obligatory_filter, component_id=filter_data.id)
@@ -1647,6 +1657,25 @@ class DatasetValidator(DatasetBaseWrapper):
         if action == DatasetAction.delete_obligatory_filter:
             assert isinstance(filter_data, DeleteObligatoryFilter)
             self._ds_editor.remove_obligatory_filter(obfilter_id=filter_data.id)
+
+    @generic_profiler("validator-apply-setting-action")
+    def apply_setting_action(
+        self,
+        action: DatasetAction,
+        setting: UpdateSettingAction.Setting,
+        by: ManagedBy | None = ManagedBy.user,
+    ) -> None:
+        if action == DatasetAction.update_setting:
+            if setting.name == DatasetSettingName.load_preview_by_default:
+                self._ds_editor.set_load_preview_by_default(setting.value)
+            elif setting.name == DatasetSettingName.template_enabled:
+                self._ds_editor.set_template_enabled(setting.value)
+            elif setting.name == DatasetSettingName.data_export_forbidden:
+                self._ds_editor.set_data_export_forbidden(setting.value)
+            else:
+                raise NotImplementedError(f"Not implemented setting name: {setting.name}")
+        else:
+            raise NotImplementedError(f"Not implemented setting action: {action}")
 
     @generic_profiler("validator-get-single-formula-errors")
     def get_single_formula_errors(self, formula: str, feature_errors: bool = False) -> list[ErrorInfo]:
