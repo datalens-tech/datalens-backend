@@ -71,6 +71,7 @@ class DatasetApiLoader:
         us_manager: USManagerBase,
         dataset_data: Optional[dict],
         allow_rls_change: bool = True,
+        allow_settings_change: bool = True,
     ) -> DatasetUpdateInfo:
         update_info = EMPTY_DS_UPDATE_INFO
 
@@ -80,6 +81,7 @@ class DatasetApiLoader:
                 us_manager=us_manager,
                 body=dataset_data,
                 allow_rls_change=allow_rls_change,
+                allow_settings_change=allow_settings_change,
             )
         return update_info
 
@@ -373,6 +375,7 @@ class DatasetApiLoader:
         us_manager: USManagerBase,
         body: dict,
         allow_rls_change: bool = True,
+        allow_settings_change: bool = True,
     ) -> DatasetUpdateInfo:
         """
         Synchronize dataset object with configuration received in ``body``.
@@ -386,9 +389,10 @@ class DatasetApiLoader:
         if dataset.revision_id != body["revision_id"]:
             raise exc.DatasetRevisionMismatch()
 
-        ds_editor.set_load_preview_by_default(body["load_preview_by_default"])
-        ds_editor.set_template_enabled(body["template_enabled"])
-        ds_editor.set_data_export_forbidden(body["data_export_forbidden"])
+        if allow_settings_change:
+            ds_editor.set_load_preview_by_default(body["load_preview_by_default"])
+            ds_editor.set_template_enabled(body["template_enabled"])
+            ds_editor.set_data_export_forbidden(body["data_export_forbidden"])
 
         # fields (result_schema)
         ds_editor.set_result_schema(body.get("result_schema", []))

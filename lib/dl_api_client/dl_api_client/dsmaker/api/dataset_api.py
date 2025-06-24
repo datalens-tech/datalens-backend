@@ -125,9 +125,9 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
         dataset: Dataset,
         preview: bool = True,
         fail_ok: bool = False,
-        dir_path: str = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "dir_path" (default has type "None", argument has type "str")  [assignment]
-        workbook_id: str = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "workbook_id" (default has type "None", argument has type "str")  [assignment]
-        created_via: str = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "created_via" (default has type "None", argument has type "str")  [assignment]
+        dir_path: str | None = None,
+        workbook_id: str | None = None,
+        created_via: str | None = None,
         lock_timeout: int = 3,
     ) -> HttpDatasetApiResponse:
         dataset.prepare()
