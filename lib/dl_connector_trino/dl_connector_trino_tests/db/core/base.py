@@ -60,7 +60,7 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
     @pytest.fixture(scope="class", autouse=True)
     def wait_for_trino(self, connection_creation_params: dict) -> None:
         host, port = connection_creation_params["host"], connection_creation_params["port"]
-        https_session = None
+        http_session = None
         if connection_creation_params["auth_type"] is TrinoAuthType.none:
             scheme = "http"
             auth = None
@@ -71,8 +71,8 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
                 test_config.CorePasswordConnectionSettings.PASSWORD,
             )
             if connection_creation_params["ssl_ca"]:
-                https_session = requests.Session()
-                https_session.mount("https://", CustomHTTPAdapter(ssl_ca=connection_creation_params["ssl_ca"]))
+                http_session = requests.Session()
+                http_session.mount("https://", CustomHTTPAdapter(ssl_ca=connection_creation_params["ssl_ca"]))
 
         conn = connect(
             host=host,
@@ -80,7 +80,7 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
             user=auth._username if auth else "healthcheck",
             auth=auth,
             http_scheme=scheme,
-            https_session=https_session,
+            http_session=http_session,
         )
         cur = conn.cursor()
 
