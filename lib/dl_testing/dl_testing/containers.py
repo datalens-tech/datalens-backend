@@ -46,7 +46,7 @@ def get_test_container_hostport(
     dc_filename: Optional[str] = None,
     use_localhost_instead_of_loopback_ip: bool = False,
 ) -> HostPort:
-    LOCALHOST = "localhost" if use_localhost_instead_of_loopback_ip else "127.0.0.1"
+    localhost = "localhost" if use_localhost_instead_of_loopback_ip else "127.0.0.1"
 
     # TODO: Turn this into a method of a class with dc_filename in self
     host: str
@@ -55,7 +55,7 @@ def get_test_container_hostport(
     file_path = _get_docker_compose_file_path(filename=dc_filename)
     if file_path is None:
         if fallback_port is not None:
-            return HostPort(host=LOCALHOST, port=fallback_port)
+            return HostPort(host=localhost, port=fallback_port)
         raise FileNotFoundError("Docker compose file not found")
     else:
         try:
@@ -63,7 +63,7 @@ def get_test_container_hostport(
                 docker_compose_yml = yaml.safe_load(dcyml)
         except FileNotFoundError:
             if fallback_port is not None:
-                return HostPort(host=LOCALHOST, port=fallback_port)
+                return HostPort(host=localhost, port=fallback_port)
             else:
                 raise
 
@@ -84,7 +84,7 @@ def get_test_container_hostport(
             port = int(port_pair[0])
     else:
         # remote test run, with containers on the same host
-        host = LOCALHOST
+        host = localhost
         port = int(port_pair[0])
 
     return HostPort(host=host, port=port)
