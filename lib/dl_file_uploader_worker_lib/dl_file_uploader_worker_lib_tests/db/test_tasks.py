@@ -27,7 +27,6 @@ from dl_file_uploader_lib.redis_model.models import (
     PreviewSet,
     RenameTenantStatusModel,
 )
-from dl_file_uploader_lib.s3_model.models import S3DataSourcePreview
 from dl_file_uploader_lib.testing.data_gen import generate_sample_csv_data_str
 from dl_file_uploader_task_interface.tasks import (
     CleanS3LifecycleRulesTask,
@@ -54,7 +53,6 @@ async def test_parse_file_task(
     task_processor_client,
     task_state,
     s3_client,
-    s3_model_manager,
     redis_model_manager,
     uploaded_file_id,
 ):
@@ -88,7 +86,7 @@ async def test_parse_file_task(
     assert [sch.name for sch in dsrc.raw_schema] == ["f1", "f2", "f3", "data", "data_i_vremya"]
     assert [sch.title for sch in dsrc.raw_schema] == ["f1", "f2", "f3", "Дата", "Дата и время"]
 
-    preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=dsrc.preview_id)
+    preview = await DataSourcePreview.get(manager=rmm, obj_id=dsrc.preview_id)
     assert preview.id == dsrc.preview_id
     assert preview.preview_data == [
         ["qwe", "123", "45.9", "2021-02-04", "2021-02-04 12:00:00"],
@@ -104,7 +102,6 @@ async def test_parse_file_task_with_file_settings(
     task_processor_client,
     task_state,
     s3_client,
-    s3_model_manager,
     redis_model_manager,
     uploaded_file_id,
 ):
@@ -146,7 +143,7 @@ async def test_parse_file_task_with_file_settings(
     assert df.file_settings.dialect.delimiter == "\t"
     assert df.file_settings.encoding == CSVEncoding.utf8
 
-    preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=dsrc.preview_id)
+    preview = await DataSourcePreview.get(manager=rmm, obj_id=dsrc.preview_id)
     assert preview.id == dsrc.preview_id
     assert len(preview.preview_data) == 6
 
@@ -748,6 +745,9 @@ async def test_rename_tenant_files(
         Bucket=s3_persistent_bucket, Key=conn.get_full_s3_filename(source.s3_filename_suffix)
     )
     s3_data = await s3_obj["Body"].read()
+    preview_set = PreviewSet(redis=redis_model_manager._redis, id=conn.raw_tenant_id)
+    ps_vals = {_ async for _ in preview_set.sscan_iter()}
+    assert len(ps_vals) >= 1
 
     new_tenant_id = str(uuid.uuid4())
     task = await task_processor_client.schedule(
@@ -770,3 +770,8 @@ async def test_rename_tenant_files(
 
     status_obj = await RenameTenantStatusModel.get(manager=redis_model_manager, obj_id=new_tenant_id)
     assert status_obj.status == RenameTenantStatus.success
+
+    new_preview_set = PreviewSet(redis=redis_model_manager._redis, id=new_tenant_id)
+    nps_vals = {_ async for _ in new_preview_set.sscan_iter()}
+    assert nps_vals >= ps_vals
+    assert await preview_set.size() == 0

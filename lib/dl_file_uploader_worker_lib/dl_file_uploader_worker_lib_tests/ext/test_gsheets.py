@@ -17,12 +17,11 @@ from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import (
     DataFile,
     DataSource,
+    DataSourcePreview,
     GSheetsFileSourceSettings,
     GSheetsUserSourceDataSourceProperties,
     GSheetsUserSourceProperties,
 )
-from dl_file_uploader_lib.s3_model.base import S3ModelManager
-from dl_file_uploader_lib.s3_model.models import S3DataSourcePreview
 from dl_file_uploader_task_interface.tasks import (
     DownloadGSheetTask,
     ParseFileTask,
@@ -289,7 +288,6 @@ async def test_parse_gsheet(
     task_state,
     s3_client,
     redis_model_manager,
-    s3_model_manager,
     s3_tmp_bucket,
     downloaded_gsheet_file_id,
 ):
@@ -313,7 +311,7 @@ async def test_parse_gsheet(
     expected_user_types = [UserDataType.string] * 10
     assert actual_user_types == expected_user_types
 
-    preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=elaborate_source_no_types.preview_id)
+    preview = await DataSourcePreview.get(manager=redis_model_manager, obj_id=elaborate_source_no_types.preview_id)
     assert preview.id == elaborate_source_no_types.preview_id
     assert preview.preview_data == [  # No number formats specified => everything is string => no header
         [
@@ -387,7 +385,6 @@ async def assert_parsing_results(
     rmm: RedisModelManager,
     dsrc_title: str,
     sheet_len: int,
-    s3_model_manager: S3ModelManager,
 ) -> DataSource:
     df = await DataFile.get(manager=rmm, obj_id=file_id)
     assert df.status == FileProcessingStatus.ready
@@ -398,7 +395,7 @@ async def assert_parsing_results(
     file_source_settings = dsrc.file_source_settings
     assert isinstance(file_source_settings, GSheetsFileSourceSettings)
 
-    preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=dsrc.preview_id)
+    preview = await DataSourcePreview.get(manager=rmm, obj_id=dsrc.preview_id)
     assert preview.id == dsrc.preview_id
 
     assert file_source_settings.first_line_is_header == has_header_expected
@@ -422,7 +419,6 @@ async def test_parse_gsheet_with_file_settings(
     task_state,
     s3_client,
     redis_model_manager,
-    s3_model_manager,
     s3_tmp_bucket,
     downloaded_gsheet_file_id,
 ):
@@ -441,7 +437,7 @@ async def test_parse_gsheet_with_file_settings(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    empty_titles_dsrc = await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len, s3_model_manager)
+    empty_titles_dsrc = await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len)
 
     task = await task_processor_client.schedule(
         ParseFileTask(
@@ -454,7 +450,7 @@ async def test_parse_gsheet_with_file_settings(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    empty_titles_dsrc = await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len, s3_model_manager)
+    empty_titles_dsrc = await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len)
 
     task = await task_processor_client.schedule(
         ParseFileTask(
@@ -467,7 +463,7 @@ async def test_parse_gsheet_with_file_settings(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len, s3_model_manager)
+    await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len)
 
 
 @pytest.mark.asyncio
@@ -476,7 +472,6 @@ async def test_parse_gsheet_with_file_settings_reverse(
     task_state,
     s3_client,
     redis_model_manager,
-    s3_model_manager,
     s3_tmp_bucket,
     downloaded_gsheet_file_id,
 ):
@@ -495,9 +490,7 @@ async def test_parse_gsheet_with_file_settings_reverse(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    elaborate_no_number_format_dsrc = await assert_parsing_results(
-        file_id, True, rmm, sheet_title, sheet_len, s3_model_manager
-    )
+    elaborate_no_number_format_dsrc = await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len)
 
     task = await task_processor_client.schedule(
         ParseFileTask(
@@ -510,9 +503,7 @@ async def test_parse_gsheet_with_file_settings_reverse(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    elaborate_no_number_format_dsrc = await assert_parsing_results(
-        file_id, False, rmm, sheet_title, sheet_len, s3_model_manager
-    )
+    elaborate_no_number_format_dsrc = await assert_parsing_results(file_id, False, rmm, sheet_title, sheet_len)
 
     task = await task_processor_client.schedule(
         ParseFileTask(
@@ -525,7 +516,7 @@ async def test_parse_gsheet_with_file_settings_reverse(
     )
     result = await wait_task(task, task_state)
     assert result[-1] == "success"
-    await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len, s3_model_manager)
+    await assert_parsing_results(file_id, True, rmm, sheet_title, sheet_len)
 
 
 @pytest.mark.asyncio

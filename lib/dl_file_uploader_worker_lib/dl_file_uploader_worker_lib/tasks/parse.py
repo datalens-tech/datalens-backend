@@ -15,7 +15,6 @@ from dl_file_uploader_lib.redis_model.models import (
     DataFile,
     FileProcessingError,
 )
-from dl_file_uploader_lib.s3_model.base import S3ModelManager
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
 from dl_file_uploader_task_interface.tasks import TaskExecutionMode
@@ -67,15 +66,6 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
             redis = self._ctx.redis_service.get_redis()
             rmm = RedisModelManager(redis=redis, crypto_keys_config=self._ctx.crypto_keys_config)
 
-            # TODO(catsona): Remove after release
-            s3mm = None
-            if self.meta.tenant_id is not None:
-                s3mm = S3ModelManager(
-                    s3_service=self._ctx.s3_service,
-                    crypto_keys_config=self._ctx.crypto_keys_config,
-                    tenant_id=self.meta.tenant_id,
-                )
-
             dfile = await DataFile.get(manager=rmm, obj_id=self.meta.file_id)
             assert dfile is not None
 
@@ -111,21 +101,12 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
                 dsrc.raw_schema = raw_schema
                 dsrc.file_source_settings = dsrc_settings
 
-                # TODO(catsona): Remove after release, fallback to old behavior
-                if self.meta.tenant_id is None:
-                    redis_preview = await file_parser.prepare_preview_legacy(dsrc, rmm)
-                    await redis_preview.save(
-                        ttl=12 * 12 * 60
-                    )  # save preview temporarily, so it is deleted if source never gets saved
-                    dsrc.preview_id = redis_preview.id
-
-                else:
-                    assert s3mm is not None
-                    preview = await file_parser.prepare_preview(dsrc, s3mm)
-                    await preview.save(
-                        persistent=False,
-                    )  # save preview temporarily, so it is deleted if source never gets saved
-                    dsrc.preview_id = preview.id
+                # TODO(catsona): Change to S3
+                redis_preview = await file_parser.prepare_preview_legacy(dsrc, rmm)
+                await redis_preview.save(
+                    ttl=12 * 12 * 60
+                )  # save preview temporarily, so it is deleted if source never gets saved
+                dsrc.preview_id = redis_preview.id
 
                 LOGGER.info("DataSourcePreview object saved.")
 
