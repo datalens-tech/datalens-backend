@@ -37,7 +37,9 @@ class CoreConnectionSettings(BaseConnectionSettings):
 
 
 class CoreSslConnectionSettings(BaseConnectionSettings):
-    HOST: ClassVar[str] = get_test_container_hostport("trino-tls-nginx", fallback_port=21124).host
+    HOST: ClassVar[str] = get_test_container_hostport(
+        "trino-tls-nginx", fallback_port=21124, use_localhost_instead_of_loopback_ip=True
+    ).host
     PORT: ClassVar[int] = get_test_container_hostport("trino-tls-nginx", fallback_port=21124).port
     USERNAME: ClassVar[str] = "trino_user"
     SSL_ENABLE: ClassVar[bool] = True
