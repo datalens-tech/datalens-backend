@@ -1166,7 +1166,7 @@ class DatasetValidator(DatasetBaseWrapper):
             connection_id=source_data.get("connection_id"),
             created_from=source_data["source_type"],
             parameters=source_data.get("parameters"),
-            # Currently ignoring: `title`
+            title=source_data.get("title"),
         )
         if existing_id:
             # such source already exists, don't add its copy to the dataset

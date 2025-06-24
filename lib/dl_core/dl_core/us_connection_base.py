@@ -430,9 +430,6 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     ) -> None:
         raise NotImplementedError(self._dsrc_error)
 
-    def get_single_data_source_id(self) -> str:
-        raise NotImplementedError(self._dsrc_error)
-
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
         """
         For user-input parametrized sources such as subselects.
