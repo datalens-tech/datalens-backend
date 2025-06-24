@@ -9,7 +9,10 @@ from typing import (
 
 import attr
 
-from dl_api_lib.enums import DatasetAction
+from dl_api_lib.enums import (
+    DatasetAction,
+    DatasetSettingName,
+)
 from dl_api_lib.query.formalization.raw_pivot_specs import RawPivotSpec
 from dl_api_lib.query.formalization.raw_specs import (
     RawFilterFieldSpec,
@@ -172,6 +175,16 @@ class SourceAvatar(SourceAvatarBase):
 class AvatarActionBase(Action):
     source_avatar: SourceAvatar
     disable_fields_update: bool
+
+
+@attr.s(frozen=True, kw_only=True, auto_attribs=True)
+class UpdateSettingAction(Action):
+    @attr.s(frozen=True, kw_only=True, auto_attribs=True)
+    class Setting:
+        name: DatasetSettingName
+        value: bool
+
+    setting: Setting
 
 
 _DRM_TV = TypeVar("_DRM_TV", bound="DataRequestModel")

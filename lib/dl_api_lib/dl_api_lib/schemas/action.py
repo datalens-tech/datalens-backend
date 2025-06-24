@@ -15,7 +15,10 @@ from dl_api_connector.api_schema.source_base import (
     AvatarRelationSchema,
     SourceAvatarSchema,
 )
-from dl_api_lib.enums import DatasetAction
+from dl_api_lib.enums import (
+    DatasetAction,
+    DatasetSettingName,
+)
 from dl_api_lib.request_model.data import (
     AddField,
     AddUpdateObligatoryFilterAction,
@@ -31,6 +34,7 @@ from dl_api_lib.request_model.data import (
     ReplaceConnectionAction,
     SourceActionBase,
     UpdateField,
+    UpdateSettingAction,
 )
 from dl_api_lib.schemas.filter import ObligatoryFilterSchema
 from dl_api_lib.schemas.parameters import ParameterValueConstraintSchema
@@ -227,6 +231,18 @@ class DeleteObligatoryFilterActionSchema(
     obligatory_filter = ma_fields.Nested(DeleteObligatoryFilterSchema, required=True)
 
 
+class UpdateSettingActionSchema(ActionBaseSchema, DefaultValidateSchema[UpdateSettingAction]):
+    TARGET_CLS = UpdateSettingAction
+
+    class SettingSchema(DefaultValidateSchema[UpdateSettingAction.Setting]):
+        TARGET_CLS = UpdateSettingAction.Setting
+
+        name = ma_fields.Enum(DatasetSettingName, allow_none=False, required=True)
+        value = ma_fields.Boolean(allow_none=False, required=True)
+
+    setting = ma_fields.Nested(SettingSchema, required=True)
+
+
 class ActionSchema(OneOfSchema):
     class Meta:
         unknown = EXCLUDE
@@ -262,6 +278,8 @@ class ActionSchema(OneOfSchema):
         DatasetAction.add_obligatory_filter.name: AddUpdateObligatoryFilterActionSchema,
         DatasetAction.update_obligatory_filter.name: AddUpdateObligatoryFilterActionSchema,
         DatasetAction.delete_obligatory_filter.name: DeleteObligatoryFilterActionSchema,
+        # settings
+        DatasetAction.update_setting.name: UpdateSettingActionSchema,
     }
 
     def get_obj_type(self, obj: Dict[str, Any]) -> str:

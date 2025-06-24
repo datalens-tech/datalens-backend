@@ -364,3 +364,19 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
             ],
         )
         return response
+
+    def update_setting(
+        self,
+        dataset: Dataset,
+        name: str,
+        value: bool,
+    ) -> HttpDatasetApiResponse:
+        return self.apply_updates(
+            dataset=dataset,
+            updates=[
+                {
+                    "action": "update_setting",
+                    "setting": {"name": name, "value": value},
+                },
+            ],
+        )
