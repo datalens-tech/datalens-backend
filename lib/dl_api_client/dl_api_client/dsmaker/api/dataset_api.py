@@ -124,7 +124,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
         response = self._request(f"/api/v1/datasets/{dataset_id}/versions/draft", method="get")
         dataset = self.serial_adapter.load_dataset_from_response_body(
             dataset=Dataset(),
-            body=response.json["dataset"],
+            body=response.json,
         )
         return HttpDatasetApiResponse(
             json=response.json,
