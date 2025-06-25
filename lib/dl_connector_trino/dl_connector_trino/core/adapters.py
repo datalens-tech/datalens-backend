@@ -9,12 +9,12 @@ from requests.adapters import HTTPAdapter
 import sqlalchemy as sa
 from sqlalchemy import exc as sa_exc
 from sqlalchemy import types as sqltypes
-from sqlalchemy.sql import compiler
 from trino.auth import (
     BasicAuthentication,
     JWTAuthentication,
 )
 from trino.sqlalchemy import URL as trino_url
+from trino.sqlalchemy.compiler import TrinoSQLCompiler
 from trino.sqlalchemy.datatype import parse_sqltype
 from trino.sqlalchemy.dialect import TrinoDialect
 
@@ -79,7 +79,7 @@ class CustomHTTPAdapter(HTTPAdapter):
         super().init_poolmanager(connections, maxsize, block, ssl_context=context, **pool_kwargs)
 
 
-class CustomTrinoCompiler(compiler.SQLCompiler):
+class CustomTrinoCompiler(TrinoSQLCompiler):
     def render_literal_value(self, value: Any, type_: sqltypes.TypeEngine) -> str:
         if isinstance(type_, sqltypes.Date) and isinstance(value, datetime.date):
             return f"DATE '{value.strftime('%Y-%m-%d')}'"
