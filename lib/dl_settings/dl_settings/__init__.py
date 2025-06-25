@@ -9,6 +9,14 @@ from .base import (
     WithFallbackEnvSource,
     WithFallbackGetAttr,
 )
+from .validators import (
+    decode_multiline,
+    decode_multiline_validator,
+    split_list,
+    split_list_validator,
+    split_tuple,
+    split_tuple_validator,
+)
 
 
 __all__ = [
@@ -21,5 +29,10 @@ __all__ = [
     "WithFallbackGetAttr",
     "WithFallbackEnvSource",
     "BaseRootSettingsWithFallback",
-    "decode_multilines_validator",
+    "decode_multiline",
+    "decode_multiline_validator",
+    "split_list",
+    "split_tuple",
+    "split_list_validator",
+    "split_tuple_validator",
 ]
