@@ -44,7 +44,10 @@ from dl_file_uploader_lib.s3_model.base import (
     S3ModelNotFound,
 )
 from dl_file_uploader_lib.s3_model.models.models import S3DataSourcePreview
-from dl_file_uploader_task_interface.tasks import ParseFileTask
+from dl_file_uploader_task_interface.tasks import (
+    MigratePreviewRedisToS3Task,
+    ParseFileTask,
+)
 from dl_task_processor.processor import TaskProcessor
 from dl_type_transformer.type_transformer import get_type_transformer
 
@@ -160,6 +163,15 @@ async def get_preview_data(
             assert isinstance(redis_preview, DataSourcePreview)
 
             preview_data = redis_preview.preview_data
+
+            # Start migration task
+            await task_processor.schedule(
+                MigratePreviewRedisToS3Task(
+                    tenant_id=tenant_id,
+                    preview_id=preview_id,
+                )
+            )
+            LOGGER.info(f"Scheduled MigratePreviewRedisToS3Task for preview id={preview_id}, tenant {tenant_id}")
 
     return preview_data
 

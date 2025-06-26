@@ -27,6 +27,7 @@ from dl_file_uploader_lib.redis_model.models import (
     PreviewSet,
     RenameTenantStatusModel,
 )
+from dl_file_uploader_lib.s3_model.models import S3DataSourcePreview
 from dl_file_uploader_lib.testing.data_gen import generate_sample_csv_data_str
 from dl_file_uploader_task_interface.tasks import (
     CleanS3LifecycleRulesTask,
@@ -53,6 +54,7 @@ async def test_parse_file_task(
     task_processor_client,
     task_state,
     s3_client,
+    s3_model_manager,
     redis_model_manager,
     uploaded_file_id,
 ):
@@ -86,7 +88,7 @@ async def test_parse_file_task(
     assert [sch.name for sch in dsrc.raw_schema] == ["f1", "f2", "f3", "data", "data_i_vremya"]
     assert [sch.title for sch in dsrc.raw_schema] == ["f1", "f2", "f3", "Дата", "Дата и время"]
 
-    preview = await DataSourcePreview.get(manager=rmm, obj_id=dsrc.preview_id)
+    preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=dsrc.preview_id)
     assert preview.id == dsrc.preview_id
     assert preview.preview_data == [
         ["qwe", "123", "45.9", "2021-02-04", "2021-02-04 12:00:00"],
@@ -102,6 +104,7 @@ async def test_parse_file_task_with_file_settings(
     task_processor_client,
     task_state,
     s3_client,
+    s3_model_manager,
     redis_model_manager,
     uploaded_file_id,
 ):
@@ -143,7 +146,7 @@ async def test_parse_file_task_with_file_settings(
     assert df.file_settings.dialect.delimiter == "\t"
     assert df.file_settings.encoding == CSVEncoding.utf8
 
-    preview = await DataSourcePreview.get(manager=rmm, obj_id=dsrc.preview_id)
+    preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=dsrc.preview_id)
     assert preview.id == dsrc.preview_id
     assert len(preview.preview_data) == 6
 
