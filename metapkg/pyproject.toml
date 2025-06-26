@@ -9,7 +9,7 @@ packages = [{include = "bi_ci_dummy"}]
 [tool.poetry.dependencies]
 python = ">=3.10, <3.13"
 antlr4-python3-runtime = "==4.11.1"
-aiohttp = "==3.10.11"
+aiohttp = "==3.11.18"
 aiopg = "==1.4.0"
 anyascii = "==0.3.2"
 attrs = "==22.2.0"
