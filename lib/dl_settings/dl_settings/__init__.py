@@ -12,6 +12,8 @@ from .base import (
 from .validators import (
     decode_multiline,
     decode_multiline_validator,
+    json_dict_validator,
+    parse_json_dict,
     split_list,
     split_list_validator,
     split_tuple,
@@ -35,4 +37,6 @@ __all__ = [
     "split_tuple",
     "split_list_validator",
     "split_tuple_validator",
+    "json_dict_validator",
+    "parse_json_dict",
 ]
