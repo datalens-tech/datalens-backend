@@ -138,23 +138,6 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         )
         return query_res_info
 
-    def get_data_key(
-        self,
-        *,
-        query: str | Select,
-        user_types: Sequence[UserDataType],
-        from_info: Optional[PreparedFromInfo] = None,
-        base_key: LocalKeyRepresentation = LocalKeyRepresentation(),  # noqa: B008
-    ) -> Optional[LocalKeyRepresentation]:
-        # TODO: Remove this method
-        query_res_info = self._make_query_res_info(query=query, user_types=user_types)
-        data_key = self._cache_options_builder.get_data_key(
-            from_info=from_info,
-            query_res_info=query_res_info,
-            base_key=base_key,
-        )
-        return data_key
-
     async def create_table(
         self,
         *,
