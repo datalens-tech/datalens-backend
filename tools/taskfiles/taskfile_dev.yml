@@ -70,10 +70,10 @@ tasks:
   poetry-lock:
     desc: Lock dependencies in metapkg
     cmds:
-      - poetry lock --no-update --directory={{.PYPROJECT_TOML_PATH}}
+      - poetry lock --no-update --directory={{.METAPKG_DIR}}
     requires:
       vars:
-        - PYPROJECT_TOML_PATH
+        - METAPKG_DIR
 
   venv-bin:
     desc: Run venv bin
