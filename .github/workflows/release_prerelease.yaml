@@ -22,7 +22,7 @@ on:
 jobs:
   get_version:
     name: "Get version"
-    runs-on: [ self-hosted, linux, light ]
+    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
     permissions:
       contents: read
     outputs:
@@ -39,7 +39,7 @@ jobs:
   build_images:
     name: "Build images"
     needs: [ get_version ]
-    runs-on: ubuntu-latest
+    runs-on: [ self-hosted, linux, k8s-runner-build ]
     permissions:
       packages: write
     outputs:
