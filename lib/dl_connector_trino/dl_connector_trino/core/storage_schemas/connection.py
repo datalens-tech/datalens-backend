@@ -1,3 +1,4 @@
+from marshmallow import Schema
 from marshmallow import fields as ma_fields
 
 from dl_core.us_manager.storage_schemas.connection import ConnectionSQLDataStorageSchema
@@ -6,9 +7,7 @@ from dl_connector_trino.core.constants import TrinoAuthType
 from dl_connector_trino.core.us_connection import ConnectionTrino
 
 
-class TrinoConnectionDataStorageSchema(ConnectionSQLDataStorageSchema[ConnectionTrino.DataModel]):
-    TARGET_CLS = ConnectionTrino.DataModel
-
+class TrinoConnectionDataStorageSchemaBase(Schema):
     auth_type = ma_fields.Enum(
         TrinoAuthType,
         required=True,
@@ -32,3 +31,10 @@ class TrinoConnectionDataStorageSchema(ConnectionSQLDataStorageSchema[Connection
         dump_default=None,
         load_default=None,
     )
+
+
+class TrinoConnectionDataStorageSchema(
+    ConnectionSQLDataStorageSchema[ConnectionTrino.DataModel],
+    TrinoConnectionDataStorageSchemaBase,
+):
+    TARGET_CLS = ConnectionTrino.DataModel
