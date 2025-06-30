@@ -1,5 +1,3 @@
-from typing import Optional
-
 import attr
 
 from dl_core.connection_models.dto_defs import ConnDTO
@@ -10,19 +8,25 @@ from dl_connector_trino.core.constants import (
 )
 
 
-@attr.s(frozen=True)
-class TrinoConnDTO(ConnDTO):
+@attr.s(frozen=True, kw_only=True)
+class TrinoConnDTOBase(ConnDTO):
     conn_type = CONNECTION_TYPE_TRINO
-    host: str = attr.ib(kw_only=True)
-    port: int = attr.ib(kw_only=True)
-    username: str = attr.ib(kw_only=True)
-    auth_type: TrinoAuthType = attr.ib(kw_only=True)
-    password: Optional[str] = attr.ib(repr=False, kw_only=True, default=None)
-    jwt: Optional[str] = attr.ib(repr=False, kw_only=True, default=None)
-    ssl_enable: bool = attr.ib(kw_only=True, default=False)
-    ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
+    password: str | None = attr.ib(repr=False, default=None)
+    jwt: str | None = attr.ib(repr=False, default=None)
+    ssl_enable: bool = attr.ib(default=False)
+    ssl_ca: str | None = attr.ib(default=None)
+
+
+@attr.s(frozen=True, kw_only=True)
+class TrinoConnDTO(TrinoConnDTOBase):
+    host: str = attr.ib()
+    port: int = attr.ib()
+    username: str = attr.ib()
+    auth_type: TrinoAuthType = attr.ib()
 
     def conn_reporting_data(self) -> dict:
         return super().conn_reporting_data() | dict(
             host=self.host,
+            port=self.port,
+            auth_type=self.auth_type.value,
         )
