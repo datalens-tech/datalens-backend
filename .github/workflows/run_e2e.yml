@@ -15,7 +15,7 @@ on:
 jobs:
   run_e2e_workflow:
     name: "Run E2E workflow and get a result"
-    runs-on: ubuntu-latest
+    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
     env:
       TIMEOUT: 1800
     steps:
