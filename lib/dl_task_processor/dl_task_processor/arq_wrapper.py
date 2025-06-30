@@ -72,7 +72,7 @@ class _BIRedisSettings(Protocol):
     MODE: RedisMode
     HOSTS: tuple[str, ...]
     PORT: int
-    PASSWORD: str
+    PASSWORD: str | None
     DB: int
     CLUSTER_NAME: str
     SSL: Optional[bool]
