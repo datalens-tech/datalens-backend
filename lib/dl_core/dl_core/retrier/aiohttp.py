@@ -13,21 +13,20 @@ from aiohttp.client_exceptions import ClientError
 import attr
 
 from dl_api_commons.aiohttp.aiohttp_client import BaseRetrier
-
-from .policy import RetryPolicy
+from dl_core.retrier.policy import RetryPolicy
 
 
 LOGGER = logging.getLogger(__name__)
 
 
-class AIORetryTimeout(aiohttp.client_exceptions.ServerTimeoutError):
+class AiohttpRetryTimeout(aiohttp.client_exceptions.ServerTimeoutError):
     """Timed out attempting to retry"""
 
 
 @attr.s(kw_only=True, frozen=True)
-class AIOPolicyRetrier(BaseRetrier):
+class AiohttpPolicyRetrier(BaseRetrier):
     """
-    Retrier for AIO client
+    Retrier for Aiohttp client
     """
 
     _retry_policy: RetryPolicy = attr.ib()
@@ -79,7 +78,7 @@ class AIOPolicyRetrier(BaseRetrier):
 
             # Can't last backoff must fit into the total timeout
             if rest_dt <= next_backoff:
-                raise AIORetryTimeout()
+                raise AiohttpRetryTimeout()
 
             await asyncio.sleep(next_backoff)
 

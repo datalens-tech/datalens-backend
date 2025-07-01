@@ -26,7 +26,7 @@ from dl_core.exc import (
     USLockUnacquiredException,
     USReqException,
 )
-from dl_core.retrier.aio import AIOPolicyRetrier
+from dl_core.retrier.aiohttp import AiohttpPolicyRetrier
 from dl_core.retrier.policy import RetryPolicyFactory
 from dl_core.united_storage_client import (
     USAuthContextBase,
@@ -160,7 +160,7 @@ class UStorageClientAIO(UStorageClientBase):
                     **self._extra_headers,
                     **tracing_headers,
                 },
-                retrier=AIOPolicyRetrier(
+                retrier=AiohttpPolicyRetrier(
                     retry_policy=retry_policy,
                 ),
             ) as response:
