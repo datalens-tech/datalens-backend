@@ -14,10 +14,7 @@ from .validators import (
     decode_multiline_validator,
     json_dict_validator,
     parse_json_dict,
-    split_list,
-    split_list_validator,
-    split_tuple,
-    split_tuple_validator,
+    split_validator,
 )
 
 
@@ -33,10 +30,7 @@ __all__ = [
     "BaseRootSettingsWithFallback",
     "decode_multiline",
     "decode_multiline_validator",
-    "split_list",
-    "split_tuple",
-    "split_list_validator",
-    "split_tuple_validator",
+    "split_validator",
     "json_dict_validator",
     "parse_json_dict",
 ]
