@@ -126,7 +126,7 @@ class StandaloneDataApiAppFactory(
             us_base_url=self._settings.US_BASE_URL,
             crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
             ca_data=ca_data,
-            retry_policy_factory=SettingsRetryPolicyFactory(self._settings.US_CLIENT_SETTINGS.RETRY_POLICY),
+            retry_policy_factory=SettingsRetryPolicyFactory(self._settings.US_CLIENT.RETRY_POLICY),
         )
 
         if self._settings.AUTH is not None and self._settings.AUTH == "NONE":

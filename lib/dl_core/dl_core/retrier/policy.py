@@ -10,7 +10,7 @@ from typing import (
 import attr
 from frozendict import frozendict
 
-from .settings import RetryPolicyFactorySettings
+from dl_core.retrier.settings import RetryPolicyFactorySettings
 
 
 ErrorCode = Union[str, int]

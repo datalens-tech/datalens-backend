@@ -9,7 +9,7 @@ import attr
 import requests
 import requests.adapters
 
-from .policy import RetryPolicy
+from dl_core.retrier.policy import RetryPolicy
 
 
 LOGGER = logging.getLogger(__name__)
@@ -27,7 +27,7 @@ class RequestsPolicyRetrier:
 
     _retry_policy: RetryPolicy = attr.ib()
 
-    # TODO: Merge with aio.AIOPolicyRetrier as sync/async-independent implementation
+    # TODO: Merge with aio.AiohttpPolicyRetrier as sync/async-independent implementation
 
     def retry_request(
         self,
