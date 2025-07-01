@@ -9,6 +9,7 @@ from typing import (
 
 import attr
 import pydantic
+from pydantic import Field
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
@@ -353,11 +354,11 @@ class AppSettings(dl_settings.BaseRootSettingsWithFallback):
 
 
 class ControlApiAppSettings(AppSettings):
-    US_CLIENT_SETTINGS: USClientSettings = USClientSettings()
+    US_CLIENT: USClientSettings = Field(default_factory=USClientSettings)
 
 
 class DataApiAppSettings(AppSettings):
-    US_CLIENT_SETTINGS: USClientSettings = USClientSettings()
+    US_CLIENT: USClientSettings = Field(default_factory=USClientSettings)
 
 
 class AppSettingsOS(

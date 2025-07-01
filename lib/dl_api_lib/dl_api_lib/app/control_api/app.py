@@ -153,7 +153,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
             us_master_token=self._settings.US_MASTER_TOKEN,
             us_auth_mode=env_setup_result.us_auth_mode,
             ca_data=ca_data,
-            retry_policy_factory=SettingsRetryPolicyFactory(self._settings.US_CLIENT_SETTINGS.RETRY_POLICY),
+            retry_policy_factory=SettingsRetryPolicyFactory(self._settings.US_CLIENT.RETRY_POLICY),
         ).set_up(app)
 
         _ = app.logger

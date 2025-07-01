@@ -1,6 +1,7 @@
 from typing import Optional
 
 import attr
+from pydantic import Field
 
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.meta_definition import s_attrib
@@ -81,4 +82,4 @@ class DeprecatedFileUploaderWorkerSettings(DeprecatedFileUploaderBaseSettings):
 
 
 class FileUploaderWorkerSettings(FileUploaderBaseSettings):
-    US_CLIENT_SETTINGS: USClientSettings = USClientSettings()
+    US_CLIENT: USClientSettings = Field(default_factory=USClientSettings)
