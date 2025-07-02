@@ -23,7 +23,7 @@ from dl_core.base_models import (
     ConnectionRef,
     DefaultConnectionRef,
 )
-from dl_core.retrier.policy import RetryPolicyFactory
+from dl_core.retrier.policy import BaseRetryPolicyFactory
 from dl_core.united_storage_client import USAuthContextBase
 from dl_core.united_storage_client_aio import UStorageClientAIO
 from dl_core.us_connection_base import ConnectionBase
@@ -59,7 +59,7 @@ class AsyncUSManager(USManagerBase):
         ca_data: bytes,
         bi_context: RequestContextInfo,
         services_registry: ServicesRegistry,
-        retry_policy_factory: RetryPolicyFactory,
+        retry_policy_factory: BaseRetryPolicyFactory,
         crypto_keys_config: Optional[CryptoKeysConfig] = None,
         us_api_prefix: Optional[str] = None,
         lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,

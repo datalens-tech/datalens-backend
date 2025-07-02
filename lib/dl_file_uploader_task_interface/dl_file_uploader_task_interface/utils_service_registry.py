@@ -14,7 +14,7 @@ from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.rqe import rqe_config_from_env
 from dl_constants.enums import ConnectionType
-from dl_core.retrier.policy import RetryPolicyFactory
+from dl_core.retrier.policy import BaseRetryPolicyFactory
 from dl_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
 from dl_core.services_registry.sr_factories import DefaultSRFactory
 from dl_core.services_registry.top_level import ServicesRegistry
@@ -75,7 +75,7 @@ def get_async_service_us_manager(
     ca_data: bytes,
     crypto_keys_config: CryptoKeysConfig,
     services_registry: ServicesRegistry,
-    retry_policy_factory: RetryPolicyFactory,
+    retry_policy_factory: BaseRetryPolicyFactory,
     bi_context: Optional[RequestContextInfo] = None,
 ) -> AsyncUSManager:
     usm = AsyncUSManager(

@@ -19,8 +19,8 @@ from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core.base_models import EntryLocation
 from dl_core.exc import USObjectNotFoundException
 from dl_core.retrier.policy import (
+    BaseRetryPolicyFactory,
     DefaultRetryPolicyFactory,
-    RetryPolicyFactory,
 )
 from dl_core.services_registry.top_level import (
     DummyServiceRegistry,
@@ -40,7 +40,7 @@ class MockedUStorageClient(UStorageClient):
         self,
         host: str,
         auth_ctx: USAuthContextBase,
-        retry_policy_factory: RetryPolicyFactory,
+        retry_policy_factory: BaseRetryPolicyFactory,
         prefix: Optional[str] = None,
         context_request_id: Optional[str] = None,
     ):

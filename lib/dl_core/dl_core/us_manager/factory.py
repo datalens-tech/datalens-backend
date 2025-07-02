@@ -8,7 +8,7 @@ from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.enums import USApiType
 from dl_core.exc import InvalidRequestError
-from dl_core.retrier.policy import RetryPolicyFactory
+from dl_core.retrier.policy import BaseRetryPolicyFactory
 from dl_core.services_registry import ServicesRegistry
 from dl_core.united_storage_client import (
     USAuthContextEmbed,
@@ -25,7 +25,7 @@ class USMFactory:
     us_base_url: str = attr.ib()
     crypto_keys_config: Optional[CryptoKeysConfig] = attr.ib()
     ca_data: bytes = attr.ib()
-    retry_policy_factory: RetryPolicyFactory = attr.ib()
+    retry_policy_factory: BaseRetryPolicyFactory = attr.ib()
     us_master_token: Optional[str] = attr.ib(default=None, repr=False)
     us_public_token: Optional[str] = attr.ib(default=None, repr=False)
 

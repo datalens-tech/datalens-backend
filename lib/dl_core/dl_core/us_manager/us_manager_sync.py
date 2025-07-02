@@ -26,7 +26,7 @@ from dl_core.base_models import (
     ConnectionRef,
     DefaultConnectionRef,
 )
-from dl_core.retrier.policy import RetryPolicyFactory
+from dl_core.retrier.policy import BaseRetryPolicyFactory
 from dl_core.united_storage_client import (
     USAuthContextBase,
     UStorageClient,
@@ -62,7 +62,7 @@ class SyncUSManager(USManagerBase):
         us_base_url: str,
         bi_context: RequestContextInfo,
         services_registry: ServicesRegistry,
-        retry_policy_factory: RetryPolicyFactory,
+        retry_policy_factory: BaseRetryPolicyFactory,
         crypto_keys_config: Optional[CryptoKeysConfig] = None,
         us_api_prefix: Optional[str] = None,
         # caches_redis: Optional[aioredis.Redis] = None,
