@@ -151,6 +151,8 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):
         data_processor_service_factory: Optional[Callable[[ProcessorType], DataProcessorService]] = None,
     ) -> SERVICE_REGISTRY_TV:
         sr_ref: FutureRef[ServicesRegistry] = FutureRef()
+        assert request_context_info.tenant is not None
+
         sr = self.service_registry_cls(  # type: ignore  # TODO: fix
             default_cache_ttl_config=self.default_cache_ttl_config,
             rci=request_context_info,
