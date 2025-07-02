@@ -140,6 +140,9 @@ class RetryPolicyFactory:
         to `DEFAULT_POLICY` options.
         """
 
+        if name is None:
+            return self._default_policy
+
         return self._policies.get(name, self._default_policy)
 
 
