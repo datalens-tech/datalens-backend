@@ -48,7 +48,7 @@ from dl_constants.api_constants import (
 from dl_core.base_models import EntryLocation
 from dl_core.enums import USApiType
 import dl_core.exc as exc
-from dl_core.retrier.policy import RetryPolicyFactory
+from dl_core.retrier.policy import BaseRetryPolicyFactory
 from dl_core.retrier.requests import RequestsPolicyRetrier
 
 
@@ -272,7 +272,7 @@ class UStorageClientBase:
         self,
         host: str,
         auth_ctx: USAuthContextBase,
-        retry_policy_factory: RetryPolicyFactory,
+        retry_policy_factory: BaseRetryPolicyFactory,
         prefix: Optional[str] = None,
         context_request_id: Optional[str] = None,
         context_forwarded_for: Optional[str] = None,
@@ -680,7 +680,7 @@ class UStorageClient(UStorageClientBase):
         self,
         host: str,
         auth_ctx: USAuthContextBase,
-        retry_policy_factory: RetryPolicyFactory,
+        retry_policy_factory: BaseRetryPolicyFactory,
         prefix: Optional[str] = None,
         context_request_id: Optional[str] = None,
         context_forwarded_for: Optional[str] = None,

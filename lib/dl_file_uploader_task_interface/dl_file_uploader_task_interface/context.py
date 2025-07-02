@@ -9,8 +9,8 @@ from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core.aio.web_app_services.gsheets import GSheetsSettings
 from dl_core.aio.web_app_services.redis import RedisBaseService
 from dl_core.retrier.policy import (
+    BaseRetryPolicyFactory,
     RetryPolicyFactory,
-    SettingsRetryPolicyFactory,
 )
 from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.us_manager.us_manager_async import AsyncUSManager
@@ -58,8 +58,8 @@ class FileUploaderTaskContext(BaseContext):
             ca_data=self.ca_data,
         ).make_service_registry(rci)
 
-    def get_retry_policy_factory(self) -> RetryPolicyFactory:
-        return SettingsRetryPolicyFactory(self.settings.US_CLIENT.RETRY_POLICY)
+    def get_retry_policy_factory(self) -> BaseRetryPolicyFactory:
+        return RetryPolicyFactory(self.settings.US_CLIENT.RETRY_POLICY)
 
     def get_async_usm(self, rci: Optional[RequestContextInfo] = None) -> AsyncUSManager:
         rci = rci or RequestContextInfo.create_empty()

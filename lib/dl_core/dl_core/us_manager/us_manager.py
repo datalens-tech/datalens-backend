@@ -44,7 +44,7 @@ from dl_core.base_models import (
     WorkbookEntryLocation,
 )
 from dl_core.lifecycle.factory import DefaultEntryLifecycleManagerFactory
-from dl_core.retrier.policy import RetryPolicyFactory
+from dl_core.retrier.policy import BaseRetryPolicyFactory
 from dl_core.united_storage_client import (
     USAuthContextBase,
     UStorageClientBase,
@@ -118,7 +118,7 @@ class USManagerBase:
         us_api_prefix: Optional[str],
         us_auth_context: USAuthContextBase,
         services_registry: ServicesRegistry,
-        retry_policy_factory: RetryPolicyFactory,
+        retry_policy_factory: BaseRetryPolicyFactory,
         lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
         schema_migration_factory: Optional[EntrySchemaMigrationFactoryBase] = None,
     ):
