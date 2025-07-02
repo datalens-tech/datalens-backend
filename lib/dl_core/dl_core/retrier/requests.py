@@ -10,6 +10,7 @@ import requests
 import requests.adapters
 
 from dl_core.retrier.policy import RetryPolicy
+from dl_core.retrier.retries import iter_retries
 
 
 LOGGER = logging.getLogger(__name__)
@@ -35,48 +36,29 @@ class RequestsPolicyRetrier:
         *args: Any,
         **kwargs: Any,
     ) -> requests.Response:
-        start_ts = time.time()
-        rest_dt = self._retry_policy.total_timeout
+        last_known_result: requests.Response | Exception | None = None
 
-        for idx in range(self._retry_policy.retries_count):
-            is_last = idx == (self._retry_policy.retries_count - 1)
+        for retry in iter_retries(self._retry_policy):
+            if retry.sleep_before_seconds > 0:
+                time.sleep(retry.sleep_before_seconds)
+
+            kwargs["timeout"] = (retry.connect_timeout, retry.request_timeout)
 
             try:
-                # Limit request time to the rest of total timeout
-                last_ts = time.time()
-                rest_dt = self._retry_policy.total_timeout - (last_ts - start_ts)
-
-                kwargs.update(
-                    dict(
-                        timeout=(
-                            min(rest_dt, self._retry_policy.connect_timeout),
-                            min(rest_dt, self._retry_policy.request_timeout),
-                        ),
-                    )
-                )
-
                 resp = req_func(*args, **kwargs)
             except requests.exceptions.RequestException as err:
-                LOGGER.warning("requests client error: %r", err)
+                LOGGER.warning("requests client error", exc_info=True)
+                last_known_result = err
 
-                if is_last:
-                    raise err
-            else:
-                if self._retry_policy.can_retry_error(resp.status_code):
-                    LOGGER.warning("HTTP error: %r, ", resp.status_code)
+            if not self._retry_policy.can_retry_error(resp.status_code):
+                return resp
 
-                if not self._retry_policy.can_retry_error(resp.status_code) or is_last:
-                    return resp
+            last_known_result = resp
 
-            # Check if we still have time to sleep
-            last_ts = time.time()
-            rest_dt = self._retry_policy.total_timeout - (last_ts - start_ts)
-            next_backoff = self._retry_policy.get_backoff_at(idx)
+        if isinstance(last_known_result, requests.Response):
+            return last_known_result
 
-            # Can't last backoff must fit into the total timeout
-            if rest_dt <= next_backoff:
-                raise RequestsRetryTimeout()
+        if isinstance(last_known_result, Exception):
+            raise RequestsRetryTimeout from last_known_result
 
-            time.sleep(next_backoff)
-
-        raise Exception("You should not be here")
+        raise RequestsRetryTimeout("Not a single retry was fired")

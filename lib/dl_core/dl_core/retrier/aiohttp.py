@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import time
 from typing import (
     Any,
     Awaitable,
@@ -14,6 +13,7 @@ import attr
 
 from dl_api_commons.aiohttp.aiohttp_client import BaseRetrier
 from dl_core.retrier.policy import RetryPolicy
+from dl_core.retrier.retries import iter_retries
 
 
 LOGGER = logging.getLogger(__name__)
@@ -40,46 +40,30 @@ class AiohttpPolicyRetrier(BaseRetrier):
         *args: Any,
         **kwargs: Any,
     ) -> aiohttp.ClientResponse:
-        start_ts = time.time()
-        rest_dt = self._retry_policy.total_timeout
+        last_known_result: Exception | aiohttp.ClientResponse | None = None
 
-        for idx in range(self._retry_policy.retries_count):
-            is_last = idx == (self._retry_policy.retries_count - 1)
+        for retry in iter_retries(self._retry_policy):
+            if retry.sleep_before_seconds > 0:
+                await asyncio.sleep(retry.sleep_before_seconds)
+
+            kwargs["read_timeout_sec"] = retry.request_timeout
+            kwargs["conn_timeout_sec"] = retry.connect_timeout
 
             try:
-                # Limit request time to the rest of total timeout
-                last_ts = time.time()
-                rest_dt = self._retry_policy.total_timeout - (last_ts - start_ts)
-
-                kwargs.update(
-                    dict(
-                        read_timeout_sec=min(rest_dt, self._retry_policy.request_timeout),
-                        conn_timeout_sec=min(rest_dt, self._retry_policy.connect_timeout),
-                    )
-                )
-
                 resp = await req_func(method, *args, **kwargs)
             except ClientError as err:
-                LOGGER.warning("aiohttp client error: %r", err)
+                LOGGER.warning("aiohttp client error", exc_info=True)
+                last_known_result = err
 
-                if is_last:
-                    raise err
-            else:
-                if self._retry_policy.can_retry_error(resp.status):
-                    LOGGER.warning("HTTP error: %r, ", resp.status)
+            if not self._retry_policy.can_retry_error(resp.status):
+                return resp
 
-                if not self._retry_policy.can_retry_error(resp.status) or is_last:
-                    return resp
+            last_known_result = resp
 
-            # Check if we still have time to sleep
-            last_ts = time.time()
-            rest_dt = self._retry_policy.total_timeout - (last_ts - start_ts)
-            next_backoff = self._retry_policy.get_backoff_at(idx)
+        if isinstance(last_known_result, Exception):
+            raise AiohttpRetryTimeout from last_known_result
 
-            # Can't last backoff must fit into the total timeout
-            if rest_dt <= next_backoff:
-                raise AiohttpRetryTimeout()
+        if isinstance(last_known_result, aiohttp.ClientResponse):
+            return last_known_result
 
-            await asyncio.sleep(next_backoff)
-
-        raise Exception("You should not be here")
+        raise AiohttpRetryTimeout("Not a single retry was fired")
