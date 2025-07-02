@@ -1,9 +1,9 @@
-from abc import abstractmethod
 import itertools
 from typing import (
     FrozenSet,
     Iterable,
     Optional,
+    Protocol,
     Union,
 )
 
@@ -89,15 +89,14 @@ DEFAULT_RETRY_POLICY = RetryPolicy(
 )
 
 
-class RetryPolicyFactory:
-    @abstractmethod
+class BaseRetryPolicyFactory(Protocol):
     def get_policy(self, name: Optional[str]) -> RetryPolicy:
         """
-        Get policy by specified name (case-insensitive).
+        Get policy by specified name (case-sensitive).
         """
 
 
-class SettingsRetryPolicyFactory(RetryPolicyFactory):
+class RetryPolicyFactory:
     _default_policy: RetryPolicy
     _policies: frozendict[str, RetryPolicy]
 
@@ -122,7 +121,7 @@ class SettingsRetryPolicyFactory(RetryPolicyFactory):
 
         policies = {}
         for key, policy_settings in settings.RETRY_POLICIES.items():
-            policies[key.upper()] = RetryPolicy(
+            policies[key] = RetryPolicy(
                 total_timeout=policy_settings.total_timeout,
                 connect_timeout=policy_settings.connect_timeout,
                 request_timeout=policy_settings.request_timeout,
@@ -141,17 +140,10 @@ class SettingsRetryPolicyFactory(RetryPolicyFactory):
         to `DEFAULT_POLICY` options.
         """
 
-        if name is None:
-            return self._default_policy
-
-        name = name.upper()
-        if name not in self._policies:
-            return self._default_policy
-
-        return self._policies[name]
+        return self._policies.get(name, self._default_policy)
 
 
-class DefaultRetryPolicyFactory(RetryPolicyFactory):
+class DefaultRetryPolicyFactory:
     def get_policy(self, name: Optional[str]) -> RetryPolicy:
         """
         Default factory returns single pre-defined policy for every request

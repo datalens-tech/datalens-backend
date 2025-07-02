@@ -27,7 +27,7 @@ from dl_core.exc import (
     USReqException,
 )
 from dl_core.retrier.aiohttp import AiohttpPolicyRetrier
-from dl_core.retrier.policy import RetryPolicyFactory
+from dl_core.retrier.policy import BaseRetryPolicyFactory
 from dl_core.united_storage_client import (
     USAuthContextBase,
     USClientHTTPExceptionWrapper,
@@ -116,7 +116,7 @@ class UStorageClientAIO(UStorageClientBase):
         prefix: Optional[str],
         auth_ctx: USAuthContextBase,
         ca_data: bytes,
-        retry_policy_factory: RetryPolicyFactory,
+        retry_policy_factory: BaseRetryPolicyFactory,
         context_request_id: Optional[str] = None,
         context_forwarded_for: Optional[str] = None,
         context_workbook_id: Optional[str] = None,
