@@ -57,7 +57,6 @@ class MaintenanceEnvironmentManagerBase:
         rci = RequestContextInfo.create_empty()
         sr_factory = self.get_sr_factory(is_async_env=is_async_env, ca_data=ca_data) if use_sr_factory else None
         service_registry = sr_factory.make_service_registry(rci) if sr_factory is not None else None
-        retry_policy_settings = self.get_app_settings().US_CLIENT.RETRY_POLICY
 
         return SyncUSManager(
             us_base_url=us_config.base_url,
