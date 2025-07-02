@@ -168,6 +168,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):
             file_uploader_client_factory=FileUploaderClientFactory(
                 self.file_uploader_settings,
                 ca_data=self.ca_data,
+                tenant_id=request_context_info.tenant.get_tenant_id(),
             )
             if self.file_uploader_settings
             else None,
