@@ -154,7 +154,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):
 
         tenant_id = None
         if request_context_info.tenant is not None:
-            renant_id = request_context_info.tenant.get_tenant_id()
+            tenant_id = request_context_info.tenant.get_tenant_id()
 
         sr = self.service_registry_cls(  # type: ignore  # TODO: fix
             default_cache_ttl_config=self.default_cache_ttl_config,
