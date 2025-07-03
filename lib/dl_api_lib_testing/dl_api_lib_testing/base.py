@@ -224,9 +224,11 @@ class ApiTestBase(abc.ABC):
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
         control_api_app_settings: ControlApiAppSettings,
         ca_data: bytes,
+        fake_tenant: TenantDef,
     ) -> SyncUSManager:
         core_test_config = bi_test_config.core_test_config
         bi_context = RequestContextInfo.create_empty()
+        bi_context = bi_context.clone(tenant=fake_tenant)
         us_config = core_test_config.get_us_config()
 
         us_manager = SyncUSManager(
