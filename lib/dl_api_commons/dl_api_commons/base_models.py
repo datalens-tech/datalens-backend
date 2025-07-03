@@ -178,7 +178,7 @@ _REQUEST_CONTEXT_INFO_TV = TypeVar("_REQUEST_CONTEXT_INFO_TV", bound="RequestCon
 @attr.s(frozen=True)
 class TenantCommon(TenantDef):
     def get_outbound_tenancy_headers(self) -> dict[DLHeaders, str]:
-        return {}
+        return {DLHeadersCommon.TENANT_ID: self.get_tenant_id()}
 
     def get_tenant_id(self) -> str:
         return "common"
