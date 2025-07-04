@@ -64,6 +64,8 @@ class CacheProcessingHelper:
             return None
         if not cache_options.cache_enabled:
             return None
+        if cache_options.ttl_sec == 0:  # ttl_sec имеет тип int, поэтому проверка на None не требуется 
+            return None
 
         cache_engine = self._cache_engine
         if cache_engine is None:
