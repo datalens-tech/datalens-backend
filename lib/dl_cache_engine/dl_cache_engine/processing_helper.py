@@ -64,7 +64,7 @@ class CacheProcessingHelper:
             return None
         if not cache_options.cache_enabled:
             return None
-        if cache_options.ttl_sec == 0: 
+        if cache_options.ttl_sec == 0:
             return None
 
         cache_engine = self._cache_engine
