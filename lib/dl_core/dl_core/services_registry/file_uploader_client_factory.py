@@ -293,6 +293,7 @@ class FileUploaderSettings:
 class FileUploaderClientFactory:
     _file_uploader_settings: FileUploaderSettings = attr.ib()
     _ca_data: bytes = attr.ib()
+    _tenant_id: Optional[str] = attr.ib()
 
     _file_uploader_client_cls: ClassVar[Type[FileUploaderClient]] = FileUploaderClient  # tests mockup point
 
@@ -303,6 +304,13 @@ class FileUploaderClientFactory:
                 DLHeadersCommon.FILE_UPLOADER_MASTER_TOKEN.value: self._file_uploader_settings.master_token,
             }
         )
+        if self._tenant_id is not None:
+            full_headers.update(
+                {
+                    DLHeadersCommon.TENANT_ID.value: self._tenant_id,
+                }
+            )
+
         client_cls = self._file_uploader_client_cls
         return client_cls(
             base_url=self._file_uploader_settings.base_url,

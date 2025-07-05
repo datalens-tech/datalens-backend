@@ -151,6 +151,11 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):
         data_processor_service_factory: Optional[Callable[[ProcessorType], DataProcessorService]] = None,
     ) -> SERVICE_REGISTRY_TV:
         sr_ref: FutureRef[ServicesRegistry] = FutureRef()
+
+        tenant_id = None
+        if request_context_info.tenant is not None:
+            tenant_id = request_context_info.tenant.get_tenant_id()
+
         sr = self.service_registry_cls(  # type: ignore  # TODO: fix
             default_cache_ttl_config=self.default_cache_ttl_config,
             rci=request_context_info,
@@ -168,6 +173,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):
             file_uploader_client_factory=FileUploaderClientFactory(
                 self.file_uploader_settings,
                 ca_data=self.ca_data,
+                tenant_id=tenant_id,
             )
             if self.file_uploader_settings
             else None,
