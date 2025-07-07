@@ -161,7 +161,7 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         table_name: str,
         names: Sequence[str],
         user_types: Sequence[UserDataType],
-    ) -> sa.sql.selectable.TableClause:
+    ) -> None:
         """Create table"""
         raise NotImplementedError  # By default DDL is not supported
 
@@ -200,5 +200,5 @@ class ProcessorDbExecAdapterBase(abc.ABC):
     def post_query_execute(self, query_id: str, exec_exception: Optional[Exception]) -> None:
         return
 
-    def post_cache_usage(self, query_id: str, cache_full_hit: bool) -> None:
+    def post_cache_usage(self, query_id: str, cache_full_hit: bool | None) -> None:
         return

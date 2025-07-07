@@ -164,7 +164,8 @@ class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
     ) -> BIQueryCacheOptions:
         """Returns cache key, TTL for new entries, refresh TTL flag"""
 
-        ttl_info = self.get_cache_ttl_info(data_source_list=joint_dsrc_info.data_source_list)  # type: ignore  # 2024-01-24 # TODO: Argument "data_source_list" to "get_cache_ttl_info" of "CacheOptionsBuilderBase" has incompatible type "tuple[DataSource, ...] | None"; expected "Collection[DataSource]"  [arg-type]
+        assert joint_dsrc_info.data_source_list is not None, "Data source list is required for cache options"
+        ttl_info = self.get_cache_ttl_info(data_source_list=joint_dsrc_info.data_source_list)
         cache_enabled = self.get_cache_enabled(joint_dsrc_info=joint_dsrc_info)
         return BIQueryCacheOptions(
             cache_enabled=cache_enabled,
