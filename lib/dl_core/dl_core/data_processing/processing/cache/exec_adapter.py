@@ -1,8 +1,6 @@
-from __future__ import annotations
-
 import time
+import typing
 from typing import (
-    TYPE_CHECKING,
     Awaitable,
     Callable,
     Collection,
@@ -12,31 +10,28 @@ from typing import (
 )
 
 import attr
+from sqlalchemy.sql.selectable import Select
 
 from dl_api_commons.reporting.models import DataProcessingCacheInfoReportingRecord
 from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_cache_engine.processing_helper import (
     CacheProcessingHelper,
     CacheSituation,
+    TJSONExtChunkStream,
 )
 from dl_constants.enums import (
     JoinType,
     UserDataType,
 )
+from dl_core.base_models import ConnectionRef
 from dl_core.connectors.base.query_compiler import QueryCompiler
+from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
 from dl_core.data_processing.processing.context import OpExecutionContext
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
 from dl_core.data_processing.processing.db_base.processor_base import ExecutorBasedOperationProcessor
+from dl_core.data_processing.types import TValuesChunkStream
+from dl_core.services_registry.cache_engine_factory import CacheEngineFactory
 from dl_utils.streaming import AsyncChunkedBase
-
-
-if TYPE_CHECKING:
-    from sqlalchemy.sql.selectable import Select
-
-    from dl_core.base_models import ConnectionRef
-    from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
-    from dl_core.data_processing.types import TValuesChunkStream
-    from dl_core.services_registry.cache_engine_factory import CacheEngineFactory
 
 
 @attr.s
@@ -47,7 +42,7 @@ class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
     _use_locked_cache: bool = attr.ib(kw_only=True)
     _cache_engine_factory: CacheEngineFactory = attr.ib(kw_only=True)
 
-    def _save_data_proc_cache_info_reporting_record(self, ctx: OpExecutionContext, cache_full_hit: bool) -> None:
+    def _save_data_proc_cache_info_reporting_record(self, ctx: OpExecutionContext, cache_full_hit: bool | None) -> None:
         data_proc_cache_record = DataProcessingCacheInfoReportingRecord(
             timestamp=time.time(),
             processing_id=ctx.processing_id,
@@ -70,8 +65,9 @@ class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         # Ignore preparation_callback - we do not need to prepare real data here
 
         # Resolve TTL info and save BIQueryCacheOptions object
+        assert joint_dsrc_info is not None, "Joint data source info is required for cache options"
         cache_options = self._cache_options_builder.get_cache_options(
-            joint_dsrc_info=joint_dsrc_info,  # type: ignore  # 2024-01-24 # TODO: Argument "joint_dsrc_info" to "get_cache_options" of "DatasetOptionsBuilder" has incompatible type "PreparedFromInfo | None"; expected "PreparedFromInfo"  [arg-type]
+            joint_dsrc_info=joint_dsrc_info,
             data_key=data_key,
         )
 
@@ -80,7 +76,7 @@ class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
 
         original_ctx = ctx.clone()
 
-        async def _get_from_source() -> Optional[TValuesChunkStream]:
+        async def _get_from_source() -> TJSONExtChunkStream:
             result_data = await self._main_processor.db_ex_adapter.fetch_data_from_select(
                 query=query,
                 user_types=user_types,
@@ -91,34 +87,33 @@ class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
                 data_key=data_key,
                 preparation_callback=preparation_callback,
             )
-            return result_data
+            return typing.cast(TJSONExtChunkStream, result_data)
 
         cache_full_hit: Optional[bool] = None
         try:
-            sit, result_iter = await cache_helper.run_with_cache(
+            situation, result_iter = await cache_helper.run_with_cache(
                 allow_cache_read=self._use_cache,
-                generate_func=_get_from_source,  # type: ignore  # TODO: fix
+                generate_func=_get_from_source,
                 cache_options=cache_options,
                 use_locked_cache=self._use_locked_cache,
             )
-            if sit == CacheSituation.full_hit:
+            if situation == CacheSituation.full_hit:
                 cache_full_hit = True
-            elif sit == CacheSituation.generated:
+            elif situation == CacheSituation.generated:
                 cache_full_hit = False
         finally:
-            self._save_data_proc_cache_info_reporting_record(ctx=ctx, cache_full_hit=cache_full_hit)  # type: ignore  # 2024-01-24 # TODO: Argument "cache_full_hit" to "_save_data_proc_cache_info_reporting_record" of "CacheExecAdapter" has incompatible type "bool | None"; expected "bool"  [arg-type]
-            self._main_processor.db_ex_adapter.post_cache_usage(query_id=query_id, cache_full_hit=cache_full_hit)  # type: ignore  # 2024-01-24 # TODO: Argument "cache_full_hit" to "post_cache_usage" of "ProcessorDbExecAdapterBase" has incompatible type "bool | None"; expected "bool"  [arg-type]
+            self._save_data_proc_cache_info_reporting_record(ctx=ctx, cache_full_hit=cache_full_hit)
+            self._main_processor.db_ex_adapter.post_cache_usage(query_id=query_id, cache_full_hit=cache_full_hit)
 
-        return result_iter  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "AsyncChunkedBase[dict[str, dict[Any, Any] | list[Any] | tuple[Any, ...] | date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None] | list[dict[Any, Any] | list[Any] | tuple[Any, ...] | date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None] | tuple[dict[Any, Any] | list[Any] | tuple[Any, ...] | date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None, ...] | date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None] | None", expected "AsyncChunkedBase[Sequence[date | datetime | time | timedelta | Decimal | UUID | bytes | str | float | int | bool | None]]")  [return-value]
+        return typing.cast(AsyncChunkedBase, result_iter)
 
-    async def create_table(  # type: ignore  # 2024-01-24 # TODO: Return type "Coroutine[Any, Any, None]" of "create_table" incompatible with return type "Coroutine[Any, Any, TableClause]" in supertype "ProcessorDbExecAdapterBase"  [override]
+    async def create_table(
         self,
         *,
         table_name: str,
         names: Sequence[str],
         user_types: Sequence[UserDataType],
     ) -> None:
-        # Proxy the action to main processor
         await self._main_processor.db_ex_adapter.create_table(
             table_name=table_name,
             names=names,
@@ -133,7 +128,6 @@ class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         user_types: Sequence[UserDataType],
         data: AsyncChunkedBase,
     ) -> None:
-        # Proxy the action to main processor
         await self._main_processor.db_ex_adapter.insert_data_into_table(
             table_name=table_name,
             names=names,

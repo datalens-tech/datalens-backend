@@ -206,7 +206,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         )
         self.add_reporting_record(record)
 
-    def _save_query_exec_cache_info_reporting_record(self, query_id: str, cache_full_hit: bool) -> None:
+    def _save_query_exec_cache_info_reporting_record(self, query_id: str, cache_full_hit: bool | None) -> None:
         query_exec_cache_record = QueryExecutionCacheInfoReportingRecord(
             query_id=query_id,
             cache_full_hit=cache_full_hit,
@@ -229,5 +229,5 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
     def post_query_execute(self, query_id: str, exec_exception: Optional[Exception]) -> None:
         self._save_end_exec_reporting_record(query_id=query_id, exec_exception=exec_exception)
 
-    def post_cache_usage(self, query_id: str, cache_full_hit: bool) -> None:
+    def post_cache_usage(self, query_id: str, cache_full_hit: bool | None) -> None:
         self._save_query_exec_cache_info_reporting_record(query_id=query_id, cache_full_hit=cache_full_hit)
