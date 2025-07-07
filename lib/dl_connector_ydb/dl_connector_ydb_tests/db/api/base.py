@@ -23,11 +23,11 @@ from dl_connector_ydb.core.ydb.constants import (
 )
 from dl_connector_ydb_tests.db.config import (
     API_TEST_CONFIG,
-    CONNECTION_PARAMS,
     DB_CORE_URL,
     TABLE_DATA,
     TABLE_NAME,
     TABLE_SCHEMA,
+    CoreConnectionSettings,
 )
 
 
@@ -46,10 +46,12 @@ class YDBConnectionTestBase(ConnectionTestBase):
 
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
-        result = CONNECTION_PARAMS.copy()
-        if self.raw_sql_level is not None:
-            result["raw_sql_level"] = self.raw_sql_level.value
-        return result
+        return dict(
+            db_name=CoreConnectionSettings.DB_NAME,
+            host=CoreConnectionSettings.HOST,
+            port=CoreConnectionSettings.PORT,
+            **(dict(raw_sql_level=self.raw_sql_level.value) if self.raw_sql_level is not None else {}),
+        )
 
     @pytest.fixture(scope="class")
     def sample_table(self, db: Db) -> DbTable:
@@ -68,7 +70,12 @@ class YDBConnectionTestBase(ConnectionTestBase):
 class YDBDashSQLConnectionTest(YDBConnectionTestBase):
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
-        return CONNECTION_PARAMS | dict(raw_sql_level=RawSQLLevel.dashsql.value)
+        return dict(
+            db_name=CoreConnectionSettings.DB_NAME,
+            host=CoreConnectionSettings.HOST,
+            port=CoreConnectionSettings.PORT,
+            raw_sql_level=RawSQLLevel.dashsql.value,
+        )
 
 
 class YDBDatasetTestBase(YDBConnectionTestBase, DatasetTestBase):
