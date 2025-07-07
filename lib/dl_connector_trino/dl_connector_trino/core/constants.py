@@ -1,6 +1,6 @@
-from enum import (
-    Enum,
-    unique,
+from dynamic_enum import (
+    AutoEnumValue,
+    DynamicEnum,
 )
 
 from dl_constants.enums import (
@@ -16,18 +16,14 @@ SOURCE_TYPE_TRINO_TABLE = DataSourceType.declare("TRINO_TABLE")
 SOURCE_TYPE_TRINO_SUBSELECT = DataSourceType.declare("TRINO_SUBSELECT")
 
 
-@unique
-class TrinoAuthType(str, Enum):
-    none = "none"
-    password = "password"
-    oauth2 = "oauth2"
-    kerberos = "kerberos"
-    certificate = "certificate"
-    jwt = "jwt"
-    header = "header"
-
-    def __str__(self) -> str:
-        return self.value
+class TrinoAuthType(DynamicEnum):
+    none = AutoEnumValue()
+    password = AutoEnumValue()
+    oauth2 = AutoEnumValue()
+    kerberos = AutoEnumValue()
+    certificate = AutoEnumValue()
+    jwt = AutoEnumValue()
+    header = AutoEnumValue()
 
 
 ADAPTER_SOURCE_NAME = "datalens"
