@@ -16,7 +16,11 @@ from dl_core.retrier.retries import iter_retries
 LOGGER = logging.getLogger(__name__)
 
 
-class RequestsRetryTimeout(requests.exceptions.Timeout):
+class RequestsRetryError(Exception):
+    """Requests retrier failed attempting to retry"""
+
+
+class RequestsRetryTimeout(requests.exceptions.Timeout, RequestsRetryError):
     """Timed out attempting to retry"""
 
 
@@ -49,6 +53,7 @@ class RequestsPolicyRetrier:
             except requests.exceptions.RequestException as err:
                 LOGGER.warning("requests client error", exc_info=True)
                 last_known_result = err
+                continue
 
             if not self._retry_policy.can_retry_error(resp.status_code):
                 return resp
@@ -58,7 +63,10 @@ class RequestsPolicyRetrier:
         if isinstance(last_known_result, requests.Response):
             return last_known_result
 
-        if isinstance(last_known_result, Exception):
-            raise RequestsRetryTimeout from last_known_result
+        if isinstance(last_known_result, requests.Timeout):
+            raise RequestsRetryTimeout() from last_known_result
 
-        raise RequestsRetryTimeout("Not a single retry was fired")
+        if isinstance(last_known_result, Exception):
+            raise RequestsRetryError() from last_known_result
+
+        raise RequestsRetryError("Not a single retry was fired")

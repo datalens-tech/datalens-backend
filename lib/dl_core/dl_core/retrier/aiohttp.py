@@ -8,7 +8,6 @@ from typing import (
 
 import aiohttp
 import aiohttp.client_exceptions
-from aiohttp.client_exceptions import ClientError
 import attr
 
 from dl_api_commons.aiohttp.aiohttp_client import BaseRetrier
@@ -19,7 +18,11 @@ from dl_core.retrier.retries import iter_retries
 LOGGER = logging.getLogger(__name__)
 
 
-class AiohttpRetryTimeout(aiohttp.client_exceptions.ServerTimeoutError):
+class AiohttpRetryError(Exception):
+    """Aiohttp retrier failed attempting to retry"""
+
+
+class AiohttpRetryTimeout(aiohttp.client_exceptions.ServerTimeoutError, AiohttpRetryError):
     """Timed out attempting to retry"""
 
 
@@ -51,19 +54,23 @@ class AiohttpPolicyRetrier(BaseRetrier):
 
             try:
                 resp = await req_func(method, *args, **kwargs)
-            except ClientError as err:
+            except aiohttp.client_exceptions.ClientError as err:
                 LOGGER.warning("aiohttp client error", exc_info=True)
                 last_known_result = err
+                continue
 
             if not self._retry_policy.can_retry_error(resp.status):
                 return resp
 
             last_known_result = resp
 
-        if isinstance(last_known_result, Exception):
-            raise AiohttpRetryTimeout from last_known_result
-
         if isinstance(last_known_result, aiohttp.ClientResponse):
             return last_known_result
 
-        raise AiohttpRetryTimeout("Not a single retry was fired")
+        if isinstance(last_known_result, aiohttp.client_exceptions.ServerTimeoutError):
+            raise AiohttpRetryTimeout() from last_known_result
+
+        if isinstance(last_known_result, Exception):
+            raise AiohttpRetryError() from last_known_result
+
+        raise AiohttpRetryError("Not a single retry was fired")
