@@ -1,19 +1,17 @@
-"""Unit tests for processing_helper module"""
-
 from typing import Optional
 
-import attr
 import pytest
+import attr
 
+from dl_cache_engine.processing_helper import (
+    CacheSituation,
+    CacheProcessingHelper,
+    TJSONExtChunkStream,
+)
 from dl_cache_engine.primitives import (
     BIQueryCacheOptions,
-    DataKeyPart,
     LocalKeyRepresentation,
-)
-from dl_cache_engine.processing_helper import (
-    CacheProcessingHelper,
-    CacheSituation,
-    TJSONExtChunkStream,
+    DataKeyPart,
 )
 from dl_utils.streaming import AsyncChunked
 
@@ -88,7 +86,6 @@ async def test_run_with_cache_disabled(
     disabled_cache_options: BIQueryCacheOptions,
 ) -> None:
     """Should handle disabled cache case"""
-
     async def generate_func() -> Optional[TJSONExtChunkStream]:
         return AsyncChunked.from_chunked_iterable([[1, 2, 3]])
 
@@ -96,7 +93,7 @@ async def test_run_with_cache_disabled(
         generate_func=generate_func,
         cache_options=disabled_cache_options,
     )
-
+    
     assert situation == CacheSituation.cache_disabled
     assert result is not None
     data = await result.all()
@@ -109,7 +106,6 @@ async def test_run_with_cache_error_handling(
     cache_options: BIQueryCacheOptions,
 ) -> None:
     """Should handle errors during generation"""
-
     async def generate_func() -> Optional[TJSONExtChunkStream]:
         raise ValueError("test error")
 
@@ -126,7 +122,6 @@ async def test_run_with_cache_none_result(
     cache_options: BIQueryCacheOptions,
 ) -> None:
     """Should handle None result from generate_func"""
-
     async def generate_func() -> Optional[TJSONExtChunkStream]:
         return None
 
@@ -134,7 +129,7 @@ async def test_run_with_cache_none_result(
         generate_func=generate_func,
         cache_options=cache_options,
     )
-
+    
     assert situation in (CacheSituation.cache_disabled, CacheSituation.generated)
     assert result is None
 
@@ -145,7 +140,6 @@ async def test_run_with_cache_locked(
     cache_options: BIQueryCacheOptions,
 ) -> None:
     """Should handle locked cache case"""
-
     async def generate_func() -> Optional[TJSONExtChunkStream]:
         return AsyncChunked.from_chunked_iterable([[1, 2, 3]])
 
@@ -154,7 +148,7 @@ async def test_run_with_cache_locked(
         cache_options=cache_options,
         use_locked_cache=True,
     )
-
+    
     assert situation in (CacheSituation.cache_disabled, CacheSituation.generated)
     assert result is not None
     data = await result.all()
@@ -167,7 +161,6 @@ async def test_run_with_cache_no_read(
     cache_options: BIQueryCacheOptions,
 ) -> None:
     """Should handle case when cache read is not allowed"""
-
     async def generate_func() -> Optional[TJSONExtChunkStream]:
         return AsyncChunked.from_chunked_iterable([[1, 2, 3]])
 
@@ -176,7 +169,7 @@ async def test_run_with_cache_no_read(
         cache_options=cache_options,
         allow_cache_read=False,
     )
-
+    
     assert situation in (CacheSituation.cache_disabled, CacheSituation.generated)
     assert result is not None
     data = await result.all()
