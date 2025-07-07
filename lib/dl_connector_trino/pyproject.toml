@@ -17,6 +17,8 @@ sqlalchemy = ">=1.4.46, <2.0"
 dl-core = { path = "../dl_core" }
 requests = ">=2.28.2"
 typing_extensions = ">=4.9.0"
+dynamic-enum = {path = "../dynamic_enum"}
+dl-model-tools = {path = "../dl_model_tools"}
 dl-constants = {path = "../dl_constants"}
 dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
