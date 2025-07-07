@@ -29,9 +29,6 @@ class TrinoConnTargetDTO(ConnTargetDTO):
         return cls(**data)
 
     def to_jsonable_dict(self) -> dict[str, TJSONLike]:
-        jsonable_dict = dict(
-            **attr.asdict(self),
-            cls_name=type(self).__qualname__,
-        )
+        jsonable_dict = super().to_jsonable_dict()
         jsonable_dict["auth_type"] = self.auth_type.value
         return jsonable_dict
