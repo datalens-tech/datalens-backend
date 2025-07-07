@@ -3,6 +3,7 @@ from typing import Optional
 import attr
 from typing_extensions import Self
 
+from dl_constants.types import TJSONLike
 from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
 
 from dl_connector_trino.core.constants import TrinoAuthType
@@ -26,3 +27,8 @@ class TrinoConnTargetDTO(ConnTargetDTO):
     def _from_jsonable_dict(cls, data: dict) -> Self:
         data["auth_type"] = TrinoAuthType(data["auth_type"])
         return cls(**data)
+
+    def to_jsonable_dict(self) -> dict[str, TJSONLike]:
+        jsonable_dict = super().to_jsonable_dict()
+        jsonable_dict["auth_type"] = self.auth_type.value
+        return jsonable_dict

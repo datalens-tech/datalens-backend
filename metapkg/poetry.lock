@@ -2373,9 +2373,11 @@ dl-db-testing = {path = "../dl_db_testing"}
 dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
+dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = ">=3.19.0"
 requests = ">=2.28.2"
 sqlalchemy = ">=1.4.46, <2.0"

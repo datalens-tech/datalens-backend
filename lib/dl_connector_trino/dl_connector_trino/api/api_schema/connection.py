@@ -1,5 +1,3 @@
-from marshmallow import fields as ma_fields
-
 from dl_api_connector.api_schema.connection_base import ConnectionMetaMixin
 from dl_api_connector.api_schema.connection_base_fields import secret_string_field
 from dl_api_connector.api_schema.connection_mixins import (
@@ -9,6 +7,7 @@ from dl_api_connector.api_schema.connection_mixins import (
 from dl_api_connector.api_schema.connection_sql import ClassicSQLConnectionSchema
 from dl_api_connector.api_schema.extras import FieldExtra
 import dl_core.marshmallow as core_ma_fields
+from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 from dl_connector_trino.core.constants import TrinoAuthType
 from dl_connector_trino.core.us_connection import ConnectionTrino
@@ -22,7 +21,7 @@ class TrinoConnectionSchema(
 ):
     TARGET_CLS = ConnectionTrino
 
-    auth_type = ma_fields.Enum(
+    auth_type = DynamicEnumField(
         TrinoAuthType,
         attribute="data.auth_type",
         required=True,
