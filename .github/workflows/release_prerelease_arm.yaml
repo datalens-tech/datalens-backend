@@ -39,7 +39,7 @@ jobs:
   build_images:
     name: "Build images"
     needs: [ get_version ]
-    runs-on: macos-latest
+    runs-on: ubuntu-24.04-arm
     permissions:
       packages: write
     outputs:
