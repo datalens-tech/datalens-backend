@@ -133,7 +133,7 @@ async def test_run_with_cache_none_result(
         cache_options=cache_options,
     )
 
-    assert situation in (CacheSituation.cache_disabled, CacheSituation.generated)
+    assert situation == CacheSituation.cache_disabled
     assert result is None
 
 
@@ -153,7 +153,7 @@ async def test_run_with_cache_locked(
         use_locked_cache=True,
     )
 
-    assert situation in (CacheSituation.cache_disabled, CacheSituation.generated)
+    assert situation == CacheSituation.cache_disabled
     assert result is not None
     data = await result.all()
     assert data == [1, 2, 3]
@@ -175,7 +175,7 @@ async def test_run_with_cache_no_read(
         allow_cache_read=False,
     )
 
-    assert situation in (CacheSituation.cache_disabled, CacheSituation.generated)
+    assert situation == CacheSituation.cache_disabled
     assert result is not None
     data = await result.all()
     assert data == [1, 2, 3]
