@@ -24,19 +24,25 @@ from dl_connector_trino.core.data_source_migration import TrinoDataSourceMigrato
 from dl_connector_trino.core.query_compiler import TrinoQueryCompiler
 from dl_connector_trino.core.storage_schemas.connection import TrinoConnectionDataStorageSchema
 from dl_connector_trino.core.type_transformer import TrinoTypeTransformer
-from dl_connector_trino.core.us_connection import ConnectionTrino
+from dl_connector_trino.core.us_connection import (
+    ConnectionTrino,
+    ConnectionTrinoBase,
+)
 
 
-class TrinoCoreConnectionDefinition(CoreConnectionDefinition):
+class TrinoCoreConnectionDefinitionBase(CoreConnectionDefinition):
     conn_type = CONNECTION_TYPE_TRINO
-    connection_cls = ConnectionTrino
+    connection_cls = ConnectionTrinoBase
     us_storage_schema_cls = TrinoConnectionDataStorageSchema
     type_transformer_cls = TrinoTypeTransformer
     sync_conn_executor_cls = TrinoConnExecutor
-    # lifecycle_manager_cls = TrinoConnectionLifecycleManager
     data_source_migrator_cls = TrinoDataSourceMigrator
     dialect_string = "trino"
     allow_export = True
+
+
+class TrinoCoreConnectionDefinition(TrinoCoreConnectionDefinitionBase):
+    connection_cls = ConnectionTrino
 
 
 class TrinoCoreTableSourceDefinition(CoreSourceDefinition):
@@ -56,13 +62,16 @@ class TrinoCoreBackendDefinition(CoreBackendDefinition):
     compiler_cls = TrinoQueryCompiler
 
 
-class TrinoCoreConnector(CoreConnector):
+class TrinoCoreConnectorBase(CoreConnector):
     backend_definition = TrinoCoreBackendDefinition
-    connection_definitions = (TrinoCoreConnectionDefinition,)
+    connection_definitions = (TrinoCoreConnectionDefinitionBase,)
     source_definitions = (
         TrinoCoreTableSourceDefinition,
         TrinoCoreSubselectSourceDefinition,
     )
     subselect_source_definition_cls = TrinoCoreSubselectSourceDefinition
     rqe_adapter_classes = frozenset({TrinoDefaultAdapter})
-    # notification_classes = ?
+
+
+class TrinoCoreConnector(TrinoCoreConnectorBase):
+    connection_definitions = (TrinoCoreConnectionDefinition,)

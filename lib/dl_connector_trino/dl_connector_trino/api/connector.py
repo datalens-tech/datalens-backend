@@ -14,7 +14,10 @@ from dl_api_connector.connector import (
 from dl_constants.enums import QueryProcessingMode
 from dl_query_processing.multi_query.factory import NoCompengMultiQueryMutatorFactory
 
-from dl_connector_trino.api.api_schema.connection import TrinoConnectionSchema
+from dl_connector_trino.api.api_schema.connection import (
+    TrinoConnectionSchema,
+    TrinoConnectionSchemaBase,
+)
 from dl_connector_trino.api.connection_form.form_config import TrinoConnectionFormFactory
 from dl_connector_trino.api.connection_info import TrinoConnectionInfoProvider
 from dl_connector_trino.api.i18n.localizer import CONFIGS
@@ -42,11 +45,15 @@ class TrinoApiSubselectSourceDefinition(ApiSourceDefinition):
     template_api_schema_cls = SubselectDataSourceTemplateSchema
 
 
-class TrinoApiConnectionDefinition(ApiConnectionDefinition):
+class TrinoApiConnectionDefinitionBase(ApiConnectionDefinition):
     core_conn_def_cls = TrinoCoreConnectionDefinition
-    api_generic_schema_cls = TrinoConnectionSchema
+    api_generic_schema_cls = TrinoConnectionSchemaBase
     info_provider_cls = TrinoConnectionInfoProvider
     form_factory_cls = TrinoConnectionFormFactory
+
+
+class TrinoApiConnectionDefinition(TrinoApiConnectionDefinitionBase):
+    api_generic_schema_cls = TrinoConnectionSchema
 
 
 class TrinoApiBackendDefinition(ApiBackendDefinition):
@@ -61,11 +68,15 @@ class TrinoApiBackendDefinition(ApiBackendDefinition):
     )
 
 
-class TrinoApiConnector(ApiConnector):
+class TrinoApiConnectorBase(ApiConnector):
     backend_definition = TrinoApiBackendDefinition
-    connection_definitions = (TrinoApiConnectionDefinition,)
+    connection_definitions = (TrinoApiConnectionDefinitionBase,)
     source_definitions = (
         TrinoApiTableSourceDefinition,
         TrinoApiSubselectSourceDefinition,
     )
     translation_configs = frozenset(CONFIGS)
+
+
+class TrinoApiConnector(TrinoApiConnectorBase):
+    connection_definitions = (TrinoApiConnectionDefinition,)
