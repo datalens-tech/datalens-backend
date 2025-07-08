@@ -9,9 +9,7 @@ from dl_core.data_source_spec.sql import StandardSchemaSQLDataSourceSpec
 from dl_core.us_manager.storage_schemas.data_source_spec_base import SchemaSQLDataSourceSpecStorageSchema
 
 from dl_connector_trino.core.adapters import TrinoDefaultAdapter
-from dl_connector_trino.core.connection_executors import (
-    TrinoConnExecutor,
-)
+from dl_connector_trino.core.connection_executors import TrinoConnExecutor
 from dl_connector_trino.core.constants import (
     BACKEND_TYPE_TRINO,
     CONNECTION_TYPE_TRINO,
