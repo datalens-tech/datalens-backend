@@ -9,7 +9,9 @@ from dl_core.data_source_spec.sql import StandardSchemaSQLDataSourceSpec
 from dl_core.us_manager.storage_schemas.data_source_spec_base import SchemaSQLDataSourceSpecStorageSchema
 
 from dl_connector_trino.core.adapters import TrinoDefaultAdapter
-from dl_connector_trino.core.connection_executors import TrinoConnExecutor
+from dl_connector_trino.core.connection_executors import (
+    TrinoConnExecutor,
+)
 from dl_connector_trino.core.constants import (
     BACKEND_TYPE_TRINO,
     CONNECTION_TYPE_TRINO,
@@ -22,7 +24,10 @@ from dl_connector_trino.core.data_source import (
 )
 from dl_connector_trino.core.data_source_migration import TrinoDataSourceMigrator
 from dl_connector_trino.core.query_compiler import TrinoQueryCompiler
-from dl_connector_trino.core.storage_schemas.connection import TrinoConnectionDataStorageSchema
+from dl_connector_trino.core.storage_schemas.connection import (
+    TrinoConnectionDataStorageSchema,
+    TrinoConnectionDataStorageSchemaBase,
+)
 from dl_connector_trino.core.type_transformer import TrinoTypeTransformer
 from dl_connector_trino.core.us_connection import (
     ConnectionTrino,
@@ -33,9 +38,8 @@ from dl_connector_trino.core.us_connection import (
 class TrinoCoreConnectionDefinitionBase(CoreConnectionDefinition):
     conn_type = CONNECTION_TYPE_TRINO
     connection_cls = ConnectionTrinoBase
-    us_storage_schema_cls = TrinoConnectionDataStorageSchema
+    us_storage_schema_cls = TrinoConnectionDataStorageSchemaBase
     type_transformer_cls = TrinoTypeTransformer
-    sync_conn_executor_cls = TrinoConnExecutor
     data_source_migrator_cls = TrinoDataSourceMigrator
     dialect_string = "trino"
     allow_export = True
@@ -43,6 +47,8 @@ class TrinoCoreConnectionDefinitionBase(CoreConnectionDefinition):
 
 class TrinoCoreConnectionDefinition(TrinoCoreConnectionDefinitionBase):
     connection_cls = ConnectionTrino
+    us_storage_schema_cls = TrinoConnectionDataStorageSchema
+    sync_conn_executor_cls = TrinoConnExecutor
 
 
 class TrinoCoreTableSourceDefinition(CoreSourceDefinition):

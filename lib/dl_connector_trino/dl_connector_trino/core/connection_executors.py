@@ -11,7 +11,7 @@ from dl_connector_trino.core.target_dto import TrinoConnTargetDTO
 
 
 @attr.s(cmp=False, hash=False)
-class BaseTrinoConnExecutor(DefaultSqlAlchemyConnExecutor[TrinoDefaultAdapter]):
+class TrinoConnExecutorBase(DefaultSqlAlchemyConnExecutor[TrinoDefaultAdapter]):
     TARGET_ADAPTER_CLS = TrinoDefaultAdapter
     _conn_dto: TrinoConnDTOBase = attr.ib()
 
@@ -34,7 +34,7 @@ class BaseTrinoConnExecutor(DefaultSqlAlchemyConnExecutor[TrinoDefaultAdapter]):
 
 
 @attr.s(cmp=False, hash=False)
-class TrinoConnExecutor(BaseTrinoConnExecutor):
+class TrinoConnExecutor(TrinoConnExecutorBase):
     _conn_dto: TrinoConnDTO = attr.ib()
 
     async def _make_target_conn_dto_pool(self) -> list[TrinoConnTargetDTO]:
