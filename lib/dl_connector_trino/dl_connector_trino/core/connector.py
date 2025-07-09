@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from dl_core.connectors.base.connector import (
     CoreBackendDefinition,
     CoreConnectionDefinition,
@@ -9,7 +11,10 @@ from dl_core.data_source_spec.sql import StandardSchemaSQLDataSourceSpec
 from dl_core.us_manager.storage_schemas.data_source_spec_base import SchemaSQLDataSourceSpecStorageSchema
 
 from dl_connector_trino.core.adapters import TrinoDefaultAdapter
-from dl_connector_trino.core.connection_executors import TrinoConnExecutor
+from dl_connector_trino.core.connection_executors import (
+    TrinoConnExecutor,
+    TrinoConnExecutorBase,
+)
 from dl_connector_trino.core.constants import (
     BACKEND_TYPE_TRINO,
     CONNECTION_TYPE_TRINO,
@@ -37,6 +42,7 @@ class TrinoCoreConnectionDefinitionBase(CoreConnectionDefinition):
     conn_type = CONNECTION_TYPE_TRINO
     connection_cls = ConnectionTrinoBase
     us_storage_schema_cls = TrinoConnectionDataStorageSchemaBase
+    sync_conn_executor_cls: ClassVar[type[TrinoConnExecutorBase]] = TrinoConnExecutorBase
     type_transformer_cls = TrinoTypeTransformer
     data_source_migrator_cls = TrinoDataSourceMigrator
     dialect_string = "trino"
