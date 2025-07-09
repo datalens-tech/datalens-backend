@@ -84,7 +84,7 @@ jobs:
           push: true
           tags: "${{ env.image_url_base }}/${{ env.image_name }}:arm"
 
-  build-mainfest:
+  build-manifest:
     name: "Create and push Docker manifest"
     runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
     needs: [ build-amd, build-arm ]
