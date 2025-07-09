@@ -15,10 +15,12 @@ class TrinoConnExecutorBase(DefaultSqlAlchemyConnExecutor[TrinoDefaultAdapter]):
     TARGET_ADAPTER_CLS = TrinoDefaultAdapter
     _conn_dto: TrinoConnDTOBase = attr.ib()
 
+
+@attr.s(cmp=False, hash=False)
+class TrinoConnExecutor(TrinoConnExecutorBase):
+    _conn_dto: TrinoConnDTO = attr.ib()
+
     async def _make_target_conn_dto_pool(self) -> list[TrinoConnTargetDTO]:
-        assert self._conn_dto.host is not None, "Host must be provided for Trino connection"
-        assert self._conn_dto.port is not None, "Port must be provided for Trino connection"
-        assert self._conn_dto.username is not None, "Username must be provided for Trino connection"
         return [
             TrinoConnTargetDTO(
                 conn_id=self._conn_dto.conn_id,
@@ -34,8 +36,3 @@ class TrinoConnExecutorBase(DefaultSqlAlchemyConnExecutor[TrinoDefaultAdapter]):
                 ssl_ca=self._conn_dto.ssl_ca,
             )
         ]
-
-
-@attr.s(cmp=False, hash=False)
-class TrinoConnExecutor(TrinoConnExecutorBase):
-    _conn_dto: TrinoConnDTO = attr.ib()
