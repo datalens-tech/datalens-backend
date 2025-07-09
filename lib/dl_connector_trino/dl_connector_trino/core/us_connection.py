@@ -55,7 +55,7 @@ GET_TRINO_CATALOGS_QUERY = str(
 )
 
 
-class ConnectionTrino(ConnectionSQL):
+class ConnectionTrinoBase(ConnectionSQL):
     conn_type = CONNECTION_TYPE_TRINO
     has_schema: ClassVar[bool] = True
     default_schema_name = None
@@ -83,19 +83,6 @@ class ConnectionTrino(ConnectionSQL):
             ),
         ]
 
-    def get_conn_dto(self) -> TrinoConnDTO:
-        return TrinoConnDTO(
-            conn_id=self.uuid,
-            host=self.data.host,
-            port=self.data.port,
-            username=self.data.username,
-            auth_type=self.data.auth_type,
-            password=self.data.password,
-            jwt=self.data.jwt,
-            ssl_enable=self.data.ssl_enable,
-            ssl_ca=self.data.ssl_ca,
-        )
-
     def get_catalogs(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
@@ -122,3 +109,18 @@ class ConnectionTrino(ConnectionSQL):
             )
 
         return parameter_combinations
+
+
+class ConnectionTrino(ConnectionTrinoBase):
+    def get_conn_dto(self) -> TrinoConnDTO:
+        return TrinoConnDTO(
+            conn_id=self.uuid,
+            host=self.data.host,
+            port=self.data.port,
+            username=self.data.username,
+            auth_type=self.data.auth_type,
+            password=self.data.password,
+            jwt=self.data.jwt,
+            ssl_enable=self.data.ssl_enable,
+            ssl_ca=self.data.ssl_ca,
+        )

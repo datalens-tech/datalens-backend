@@ -10,16 +10,19 @@ import dl_core.marshmallow as core_ma_fields
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 from dl_connector_trino.core.constants import TrinoAuthType
-from dl_connector_trino.core.us_connection import ConnectionTrino
+from dl_connector_trino.core.us_connection import (
+    ConnectionTrino,
+    ConnectionTrinoBase,
+)
 
 
-class TrinoConnectionSchema(
+class TrinoConnectionSchemaBase(
     ConnectionMetaMixin,
     DataExportForbiddenMixin,
     RawSQLLevelMixin,
     ClassicSQLConnectionSchema,
 ):
-    TARGET_CLS = ConnectionTrino
+    TARGET_CLS = ConnectionTrinoBase
 
     auth_type = DynamicEnumField(
         TrinoAuthType,
@@ -51,3 +54,7 @@ class TrinoConnectionSchema(
         load_default=None,
         bi_extra=FieldExtra(editable=True),
     )
+
+
+class TrinoConnectionSchema(TrinoConnectionSchemaBase):
+    TARGET_CLS = ConnectionTrino

@@ -11,6 +11,9 @@ from dl_connector_trino.core.constants import (
 @attr.s(frozen=True, kw_only=True)
 class TrinoConnDTOBase(ConnDTO):
     conn_type = CONNECTION_TYPE_TRINO
+    host: str | None = attr.ib(default=None)
+    port: int | None = attr.ib(default=None)
+    username: str | None = attr.ib(default=None)
     auth_type: TrinoAuthType = attr.ib()
     password: str | None = attr.ib(repr=False, default=None)
     jwt: str | None = attr.ib(repr=False, default=None)
