@@ -55,6 +55,7 @@ EXCEPTION_CODES = {
     common_exc.ResultRowCountLimitExceeded: status.BAD_REQUEST,
     common_exc.TableNameNotConfiguredError: status.BAD_REQUEST,
     common_exc.MalformedCredentialsError: status.BAD_REQUEST,
+    common_exc.ConnectionConfigurationError: status.BAD_REQUEST,
     common_exc.NotAvailableError: status.BAD_REQUEST,
     common_exc.InvalidFieldError: status.BAD_REQUEST,
     common_exc.FieldNotFound: status.BAD_REQUEST,

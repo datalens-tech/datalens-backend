@@ -56,6 +56,11 @@ class TableNameInvalidError(DataSourceConfigurationError):
     err_code = DataSourceConfigurationError.err_code + ["TABLE_NAME_INVALID"]
 
 
+class ConnectionConfigurationError(DataSourceConfigurationError):
+    err_code = DataSourceConfigurationError.err_code + ["CONNECTION_CONFIG"]
+    default_message = "Connection configuration error"
+
+
 class MalformedCredentialsError(DataSourceConfigurationError):
     err_code = DataSourceConfigurationError.err_code + ["MALFORMED_CREDS"]
     default_message = "Malformed credentials"
