@@ -15,20 +15,23 @@ class TrinoConnExecutorBase(DefaultSqlAlchemyConnExecutor[TrinoDefaultAdapter]):
     TARGET_ADAPTER_CLS = TrinoDefaultAdapter
     _conn_dto: TrinoConnDTOBase = attr.ib()
 
-    def _get_base_target_conn_dto_pool(self, conn_dto: TrinoConnDTO) -> list[TrinoConnTargetDTO]:
+    async def _make_target_conn_dto_pool(self) -> list[TrinoConnTargetDTO]:
+        assert self._conn_dto.host is not None, "Host must be provided for Trino connection"
+        assert self._conn_dto.port is not None, "Port must be provided for Trino connection"
+        assert self._conn_dto.username is not None, "Username must be provided for Trino connection"
         return [
             TrinoConnTargetDTO(
-                conn_id=conn_dto.conn_id,
+                conn_id=self._conn_dto.conn_id,
                 pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
                 pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
-                host=conn_dto.host,
-                port=conn_dto.port,
-                username=conn_dto.username,
-                auth_type=conn_dto.auth_type,
-                password=conn_dto.password,
-                jwt=conn_dto.jwt,
-                ssl_enable=conn_dto.ssl_enable,
-                ssl_ca=conn_dto.ssl_ca,
+                host=self._conn_dto.host,
+                port=self._conn_dto.port,
+                username=self._conn_dto.username,
+                auth_type=self._conn_dto.auth_type,
+                password=self._conn_dto.password,
+                jwt=self._conn_dto.jwt,
+                ssl_enable=self._conn_dto.ssl_enable,
+                ssl_ca=self._conn_dto.ssl_ca,
             )
         ]
 
@@ -36,6 +39,3 @@ class TrinoConnExecutorBase(DefaultSqlAlchemyConnExecutor[TrinoDefaultAdapter]):
 @attr.s(cmp=False, hash=False)
 class TrinoConnExecutor(TrinoConnExecutorBase):
     _conn_dto: TrinoConnDTO = attr.ib()
-
-    async def _make_target_conn_dto_pool(self) -> list[TrinoConnTargetDTO]:
-        return self._get_base_target_conn_dto_pool(self._conn_dto)
