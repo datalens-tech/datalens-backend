@@ -36,14 +36,12 @@ jobs:
           version_override: ${{ github.event.inputs.version }}
           release_filter_target_commitish: ${{ github.event.inputs.branch }}
 
-  build_images:
-    name: "Build images"
+  build_images_arm:
+    name: "Build ARM images"
     needs: [ get_version ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     permissions:
       packages: write
-    outputs:
-      image-version: ${{ steps.build_image.outputs.image-version }}
     strategy:
       matrix:
         include:
@@ -72,13 +70,60 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Set up Docker QEMU
-      uses: docker/setup-qemu-action@v3
+    - name: Checkout code
+      id: checkout
+      uses: actions/checkout@v2
       with:
-        platforms: 'arm64'
-        # fix QEMU build for arm64
-        # https://github.com/tonistiigi/binfmt/issues/245
-        image: tonistiigi/binfmt:qemu-v7.0.0
+        ref: "${{ github.event.inputs.branch }}"
+        fetch-depth: 0
+
+    - name: Build image
+      id: build_image
+      working-directory: docker_build
+      run: |
+        bake_target=${{ matrix.bake_target }}
+        version="${{ env.version }}"
+        image_version="${version#"v"}"
+        image_url_rc="${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}-arm"
+
+        ./run-project-bake "${bake_target}" \
+          --push \
+          --set "*.platform=linux/arm64" \
+          --set "${bake_target}.tags=${image_url_rc}"
+
+  build_images_amd:
+    name: "Build AMD images"
+    needs: [ get_version ]
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - image_name: "datalens-control-api"
+            bake_target: "dl_control_api"
+          - image_name: "datalens-data-api"
+            bake_target: "dl_data_api"
+    container:
+      image: "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/debian_docker:latest"
+      options: -v /var/run/docker.sock:/var/run/docker.sock
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      version: "${{ needs.get_version.outputs.version }}"
+      cr_url: "ghcr.io/${{ github.repository_owner }}"
+
+    steps:
+    - name: Log in to the Container registry
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.cr_url }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
     - name: Checkout code
       id: checkout
@@ -94,15 +139,53 @@ jobs:
         bake_target=${{ matrix.bake_target }}
         version="${{ env.version }}"
         image_version="${version#"v"}"
-        image_url_rc="${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}-rc.1"
-        image_url_release="${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}"
+        image_url_rc="${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}-amd"
 
         ./run-project-bake "${bake_target}" \
           --push \
-          --set "*.platform=linux/amd64,linux/arm64" \
+          --set "*.platform=linux/amd64" \
           --set "${bake_target}.tags=${image_url_rc}"
 
-        echo "image-version=${image_version}-rc.1" >> $GITHUB_OUTPUT
+  build_manifest:
+    name: "Create and push Docker manifest"
+    runs-on: ubuntu-latest
+    needs: [ build_images_arm, build_images_amd, get_version ]
+    permissions:
+      packages: write
+    outputs:
+      image-version: ${{ steps.merge_manifest.outputs.image-version }}
+    strategy:
+      matrix:
+        image_name:
+        - "datalens-control-api"
+        - "datalens-data-api"
+    env:
+      version: "${{ needs.get_version.outputs.version }}"
+      cr_url: "ghcr.io/${{ github.repository_owner }}"
+
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: "ghcr.io/${{ github.repository_owner }}"
+          username: ${{ github.actor }}
+          password: ${{ secrets.ROBOT_GITHUB_PACKAGES_WRITE_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Merge images into a single multiarch manifest
+        id: merge_manifest
+        run: |
+          version="${{ env.version }}"
+          image_version="${version#"v"}"
+
+          docker buildx imagetools create \
+            -t "${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}-rc.1" \
+            "${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}-amd" \
+            "${{ env.cr_url }}/${{ matrix.image_name }}:${image_version}-arm"
+
+          echo "image-version=${image_version}-rc.1" >> $GITHUB_OUTPUT
 
   release:
     name: "Create prerelease"
@@ -144,8 +227,8 @@ jobs:
 
   run_e2e_tests:
     name: "Run E2E tests"
-    needs: [ build_images, get_version ]
+    needs: [ build_manifest, get_version ]
     uses: datalens-tech/datalens-backend/.github/workflows/run_e2e.yml@main
     with:
-      image_version: ${{ needs.build_images.outputs.image-version }}
+      image_version: ${{ needs.build_manifest.outputs.image-version }}
     secrets: inherit
