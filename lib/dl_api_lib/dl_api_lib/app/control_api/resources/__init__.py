@@ -25,7 +25,9 @@ def init_apis(app: flask.Flask) -> None:
     from dl_api_lib.app.control_api.resources import connections  # noqa
     from dl_api_lib.app.control_api.resources import dataset  # noqa
     from dl_api_lib.app.control_api.resources import info  # noqa
+    from dl_api_lib.app.control_api.resources import monitoring  # noqa
 
+    API.add_namespace(monitoring.monitoring_ns)
     API.init_app(app)
 
 
