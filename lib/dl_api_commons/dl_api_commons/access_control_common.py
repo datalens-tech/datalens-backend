@@ -1,9 +1,7 @@
 import enum
-import itertools
 from typing import (
     Iterable,
     Optional,
-    Tuple,
     overload,
 )
 
@@ -40,13 +38,13 @@ class BadHeaderPrefixError(AuthFailureError):
 # )
 
 
-def match_path_prefix(prefix_list: Iterable[str], path: str) -> bool:
-    for skip_path_template in prefix_list:
-        if skip_path_template.endswith("*"):
-            return path.startswith(skip_path_template[:-1])
-        if path == skip_path_template:
-            return True
-    return False
+# def match_path_prefix(prefix_list: Iterable[str], path: str) -> bool:
+#     for skip_path_template in prefix_list:
+#         if skip_path_template.endswith("*"):
+#             return path.startswith(skip_path_template[:-1])
+#         if path == skip_path_template:
+#             return True
+#     return False
 
 
 class AuthTokenType(enum.Enum):
