@@ -12,9 +12,9 @@ class TestAsyncYDBAdapter(
 ):
     test_params = RegulatedTestParams(
         mark_tests_failed={
-            BaseAsyncAdapterTestClass.test_pass_db_query_to_user: "Error transformer not implemented",  # TODO: FIXME
-            BaseAsyncAdapterTestClass.test_default_pass_db_query_to_user: "Error transformer not implemented",  # TODO: FIXME
-            BaseAsyncAdapterTestClass.test_timeout: "Error transformer not implemented",  # TODO: FIXME
+            BaseAsyncAdapterTestClass.test_pass_db_query_to_user: "BI-5885: Error transformer not implemented",  # TODO: FIXME
+            BaseAsyncAdapterTestClass.test_default_pass_db_query_to_user: "BI-5885: Error transformer not implemented",  # TODO: FIXME
+            BaseAsyncAdapterTestClass.test_timeout: "BI-5885: Error transformer not implemented",  # TODO: FIXME
         },
     )
 
