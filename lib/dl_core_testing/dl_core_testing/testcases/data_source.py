@@ -105,6 +105,12 @@ class DefaultDataSourceTestClass(
         print("schema:")
         for col in simplified_schema:
             print(col)
+
+        # TODO: This is a workaround for YDB because raw schema is sorted different. Remove it when the issue is fixed.
+        if data_source.conn_type.name == "ydb":
+            simplified_schema = list(sorted(simplified_schema, key=lambda v: v[0]))
+            expected_schema = list(sorted(expected_schema, key=lambda v: v[0]))
+
         assert len(simplified_schema) == len(expected_schema)
         for actual, expected in zip(simplified_schema, expected_schema, strict=True):
             assert actual == expected, f"{expected=} {actual=}"

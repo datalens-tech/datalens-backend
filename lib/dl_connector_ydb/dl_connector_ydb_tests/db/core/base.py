@@ -3,11 +3,22 @@ from typing import Generator
 
 import pytest
 
+from dl_core_testing.database import (
+    C,
+    Db,
+    DbTable,
+    make_table,
+)
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 from dl_connector_ydb.core.ydb.constants import CONNECTION_TYPE_YDB
 from dl_connector_ydb.core.ydb.us_connection import YDBConnection
 import dl_connector_ydb_tests.db.config as test_config
+from dl_connector_ydb_tests.db.config import (
+    TABLE_DATA,
+    TABLE_NAME,
+    TABLE_SCHEMA,
+)
 
 
 class BaseYDBTestClass(BaseConnectionTestClass[YDBConnection]):
@@ -30,9 +41,24 @@ class BaseYDBTestClass(BaseConnectionTestClass[YDBConnection]):
     @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
         return dict(
-            **test_config.CONNECTION_PARAMS,
+            db_name=test_config.CoreConnectionSettings.DB_NAME,
+            host=test_config.CoreConnectionSettings.HOST,
+            port=test_config.CoreConnectionSettings.PORT,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
+
+    @pytest.fixture(scope="class")
+    def sample_table(self, db: Db) -> DbTable:
+        db_table = make_table(
+            db=db,
+            name=TABLE_NAME,
+            columns=[C(name=name, user_type=user_type, sa_type=sa_type) for name, user_type, sa_type in TABLE_SCHEMA],
+            data=[],  # to avoid producing a sample data
+            create_in_db=False,
+        )
+        db.create_table(db_table.table)
+        db.insert_into_table(db_table.table, TABLE_DATA)
+        return db_table
 
 
 class BaseSSLYDBTestClass(BaseYDBTestClass):
@@ -51,6 +77,10 @@ class BaseSSLYDBTestClass(BaseYDBTestClass):
     @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
         return dict(
-            **test_config.SSL_CONNECTION_PARAMS,
+            db_name=test_config.CoreSslConnectionSettings.DB_NAME,
+            host=test_config.CoreSslConnectionSettings.HOST,
+            port=test_config.CoreSslConnectionSettings.PORT,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            ssl_enable=test_config.CoreSslConnectionSettings.SSL_ENABLE,
+            ssl_ca=test_config.CoreSslConnectionSettings.SSL_CA,
         )

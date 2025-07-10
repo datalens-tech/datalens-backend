@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from frozendict import frozendict
 import requests
 import sqlalchemy as sa
@@ -43,21 +45,22 @@ def make_ssl_engine_params(ssl_ca: str) -> dict:
     return engine_params
 
 
-CONNECTION_PARAMS = dict(
-    host=get_test_container_hostport("db-ydb", fallback_port=51900).host,
-    port=51900,
-    db_name="/local",
-)
-SSL_CONNECTION_PARAMS = dict(
-    host=get_test_container_hostport("db-ydb", fallback_port=51902).host,
-    port=51902,
-    db_name="/local",
-    ssl_enable=True,
-    ssl_ca=fetch_ca_certificate(),
-)
+class CoreConnectionSettings:
+    HOST: ClassVar[str] = get_test_container_hostport("db-ydb", fallback_port=51900).host
+    PORT: ClassVar[int] = 51900
+    DB_NAME: ClassVar[str] = "/local"
 
-_DB_URL = f'yql:///?endpoint={CONNECTION_PARAMS["host"]}%3A{CONNECTION_PARAMS["port"]}&database=%2Flocal'
-_DB_URL_SSL = f'yql:///?endpoint={SSL_CONNECTION_PARAMS["host"]}%3A{SSL_CONNECTION_PARAMS["port"]}&database=%2Flocal'
+
+class CoreSslConnectionSettings:
+    HOST: ClassVar[str] = get_test_container_hostport("db-ydb", fallback_port=51902).host
+    PORT: ClassVar[int] = 51902
+    DB_NAME: ClassVar[str] = "/local"
+    SSL_ENABLE: ClassVar[bool] = True
+    SSL_CA: ClassVar[str] = fetch_ca_certificate()
+
+
+_DB_URL = f"yql:///?endpoint={CoreConnectionSettings.HOST}%3A{CoreConnectionSettings.PORT}&database=%2Flocal"
+_DB_URL_SSL = f"yql:///?endpoint={CoreSslConnectionSettings.HOST}%3A{CoreSslConnectionSettings.PORT}&database=%2Flocal"
 DB_CORE_URL = _DB_URL
 DB_CORE_URL_SSL = _DB_URL_SSL
 DB_CONFIGURATIONS = {
@@ -75,7 +78,7 @@ TABLE_SCHEMA = (
     ("some_utf8", UserDataType.string, sa.Unicode),
     ("some_date", UserDataType.date, sa.Date),
     ("some_datetime", UserDataType.genericdatetime, sa.DateTime),
-    ("some_timestamp", UserDataType.unsupported, sa.TIMESTAMP),
+    ("some_timestamp", UserDataType.genericdatetime, sa.TIMESTAMP),
 )
 TABLE_DATA = [
     {
