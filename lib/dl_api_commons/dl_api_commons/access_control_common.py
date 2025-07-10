@@ -26,18 +26,18 @@ class BadHeaderPrefixError(AuthFailureError):
     response_code: Optional[int] = 401
 
 
-_default_skip_auth_path_list_raw: Tuple[str, ...] = (
-    "/ping",
-    "/unistat",
-    "/metrics",
-)
+# _default_skip_auth_path_list_raw: Tuple[str, ...] = (
+#     "/ping",
+#     "/unistat",
+#     "/metrics",
+# )
 
-default_skip_auth_path_list: Tuple[str, ...] = tuple(
-    itertools.chain(
-        (path.rstrip("/") for path in _default_skip_auth_path_list_raw),
-        (path.rstrip("/") + "/" for path in _default_skip_auth_path_list_raw),
-    )
-)
+# default_skip_auth_path_list: Tuple[str, ...] = tuple(
+#     itertools.chain(
+#         (path.rstrip("/") for path in _default_skip_auth_path_list_raw),
+#         (path.rstrip("/") + "/" for path in _default_skip_auth_path_list_raw),
+#     )
+# )
 
 
 def match_path_prefix(prefix_list: Iterable[str], path: str) -> bool:
