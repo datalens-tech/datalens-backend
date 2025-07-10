@@ -22,7 +22,6 @@ from dl_api_commons.flask.middlewares.tracing import (
     TracingContextMiddleware,
     TracingMiddleware,
 )
-
 from dl_api_lib.app.control_api.resources import init_apis
 from dl_api_lib.app_common import SRFactoryBuilder
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
