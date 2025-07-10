@@ -28,9 +28,7 @@ def _handle_monitoring_exc(exception: Exception) -> NoReturn:
 
 
 class MonitoringResourceBase(BIResource):
-    REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
-        {RequiredResourceCommon.SKIP_AUTH}
-    )
+    REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset({RequiredResourceCommon.SKIP_AUTH})
 
 
 @ns.route("/ping")
