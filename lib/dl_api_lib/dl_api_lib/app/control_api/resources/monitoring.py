@@ -16,7 +16,7 @@ from dl_core.exc import DatabaseUnavailable
 
 LOGGER = logging.getLogger(__name__)
 
-ns = API.namespace("Monitoring", path="/monitoring", description="Monitoring endpoints")
+ns = API.namespace("Monitoring", path="/", description="Monitoring endpoints")
 
 
 def _handle_monitoring_exc(exception: Exception) -> NoReturn:
@@ -29,7 +29,7 @@ def _handle_monitoring_exc(exception: Exception) -> NoReturn:
 
 class MonitoringResourceBase(BIResource):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
-        {RequiredResourceCommon.SKIP_AUTH, RequiredResourceCommon.US_HEADERS_TOKEN}
+        {RequiredResourceCommon.SKIP_AUTH}
     )
 
 
