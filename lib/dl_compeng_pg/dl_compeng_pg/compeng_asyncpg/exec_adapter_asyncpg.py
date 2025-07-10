@@ -87,7 +87,7 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
             trans_exc = self._error_transformer.make_bi_error(wrapper_exc=wrapper_exc, debug_compiled_query=query_text)
             raise trans_exc from wrapper_exc
 
-    async def _execute_and_fetch(  # type: ignore  # TODO: fix
+    async def _execute_and_fetch(
         self,
         *,
         query: Union[str, sa.sql.selectable.Select],
@@ -98,7 +98,7 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
         ctx: OpExecutionContext,
         data_key: LocalKeyRepresentation,
         preparation_callback: Optional[Callable[[], Awaitable[None]]],
-    ) -> AsyncChunked[list[TBIDataValue]]:
+    ) -> AsyncChunked[Sequence[TBIDataValue]]:
         query_text, params = self._compile_query(query)
 
         if preparation_callback is not None:

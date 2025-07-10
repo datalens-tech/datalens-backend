@@ -36,7 +36,7 @@ class AbstractStream:
     id: str = attr.ib(kw_only=True)
     names: Sequence[str] = attr.ib(kw_only=True)
     user_types: Sequence[UserDataType] = attr.ib(kw_only=True)
-    data_key: Optional[LocalKeyRepresentation] = attr.ib(kw_only=True)
+    data_key: LocalKeyRepresentation = attr.ib(kw_only=True)
     meta: DataRequestMetaInfo = attr.ib(kw_only=True)
 
     def clone(self: _DATA_STREAM_TV, **kwargs: Any) -> _DATA_STREAM_TV:
