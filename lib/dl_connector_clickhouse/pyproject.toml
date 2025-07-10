@@ -69,8 +69,6 @@ requires = [
 ]
 
 [tool.pytest.ini_options]
-# log_cli = true
-# log_level = "DEBUG"
 minversion = "6.0"
 addopts = "-ra"
 testpaths = ["dl_connector_clickhouse_tests/db", "dl_connector_clickhouse_tests/unit"]
