@@ -75,8 +75,6 @@ minversion = "6.0"
 addopts = "-ra"
 testpaths = ["dl_core_tests/unit", "dl_core_tests/db"]
 timeout = 600
-# log_cli = true
-# log_level = "DEBUG"
 
 [datalens.pytest.unit]
 root_dir = "dl_core_tests/"
