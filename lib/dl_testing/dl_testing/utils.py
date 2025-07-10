@@ -4,6 +4,7 @@ from contextlib import contextmanager
 import http.client
 import logging
 import os
+import pathlib
 import socket
 import ssl
 import time
@@ -34,6 +35,18 @@ from dl_utils.wait import wait_for
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+def register_all_assert_rewrites(pkg: str, pkg_path: pathlib.Path) -> None:
+    for pyfile in pkg_path.glob("*.py"):
+        if pyfile.name == "__init__.py" or pyfile.name == "py.typed":
+            continue
+        modname = f"{pkg}.{pyfile.stem}"
+        pytest.register_assert_rewrite(modname)
+
+    for subdir in [d for d in pkg_path.iterdir() if d.is_dir() and (d / "__init__.py").exists()]:
+        modname = f"{pkg}.{subdir.name}"
+        pytest.register_assert_rewrite(modname)
 
 
 def skip_outside_devhost(func):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]

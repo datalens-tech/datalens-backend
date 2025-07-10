@@ -1,8 +1,9 @@
-import pytest
+import pathlib
+
+import dl_testing
 
 
-# This is needed to make assert rewriting work in child tests
-pytest.register_assert_rewrite("dl_api_lib_testing.datasource_template_base")
+dl_testing.register_all_assert_rewrites(__name__, pathlib.Path(__file__).parent)
 
 from .datasource_template_base import (
     BaseSubselectTestSourceTemplate,
