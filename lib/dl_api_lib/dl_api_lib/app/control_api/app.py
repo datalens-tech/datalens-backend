@@ -90,9 +90,9 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
 
         TracingMiddleware(
             url_prefix_exclude=(
-                "/api/v1/ping",
-                "/api/v1/unistat",
-                "/api/v1/metrics",
+                "/ping",
+                "/unistat",
+                "/metrics",
             ),
         ).wrap_flask_app(app)
         ContextVarMiddleware().wrap_flask_app(app)
