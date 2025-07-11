@@ -350,13 +350,16 @@ class RowConstructor:
         enabled_name: CommonFieldName,
         enabled_help_text: str,
         enabled_default_value: bool,
+        display_conditions: Optional[TDisplayConditions] = None,
     ) -> typing.Sequence[C.CustomizableRow]:
+        if display_conditions is None:
+            display_conditions = {}
         return [
             C.CustomizableRow(
                 items=[
                     C.LabelRowItem(
                         text=self._localizer.translate(Translatable("label_ssl-enabled")),
-                        display_conditions={CommonFieldName.advanced_settings: "opened"},
+                        display_conditions={CommonFieldName.advanced_settings: "opened"} | display_conditions,
                         help_text=enabled_help_text,
                     ),
                     C.RadioButtonRowItem(
@@ -372,7 +375,7 @@ class RowConstructor:
                             ),
                         ],
                         default_value=BooleanField.on.value if enabled_default_value else BooleanField.off.value,
-                        display_conditions={CommonFieldName.advanced_settings: "opened"},
+                        display_conditions={CommonFieldName.advanced_settings: "opened"} | display_conditions,
                     ),
                 ]
             ),
@@ -380,11 +383,11 @@ class RowConstructor:
                 items=[
                     C.LabelRowItem(
                         text=self._localizer.translate(Translatable("label_ssl-ca")),
-                        display_conditions={CommonFieldName.advanced_settings: "opened"},
+                        display_conditions={CommonFieldName.advanced_settings: "opened"} | display_conditions,
                     ),
                     C.FileInputRowItem(
                         name=CommonFieldName.ssl_ca,
-                        display_conditions={CommonFieldName.advanced_settings: "opened"},
+                        display_conditions={CommonFieldName.advanced_settings: "opened"} | display_conditions,
                     ),
                 ]
             ),
