@@ -98,6 +98,6 @@ class YDBDataApiTestBase(YDBDatasetTestBase, StandardizedDataApiTestBase):
             two_dims=("some_string", "some_int32"),
             summable_field="some_int32",
             range_field="some_int64",
-            distinct_field="id",
+            distinct_field="distinct_string",
             date_field="some_date",
         )
