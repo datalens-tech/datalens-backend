@@ -1,6 +1,5 @@
 import enum
 from typing import (
-    Iterable,
     Optional,
     overload,
 )
