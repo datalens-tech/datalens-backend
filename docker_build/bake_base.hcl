@@ -15,3 +15,7 @@ target "base_noble_db" {
 target "base_noble" {
   context = "${DL_B_PROJECT_ROOT}/docker_build/target_base_noble"
 }
+
+target "base_run" {
+  context = "${DL_B_PROJECT_ROOT}/docker_build/target_base_run"
+}

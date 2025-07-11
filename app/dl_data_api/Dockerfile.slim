@@ -1,0 +1,61 @@
+#syntax=docker/dockerfile:1.4
+FROM bake_ctx_base_img AS build
+
+ENV APP_DIR="app/dl_data_api"
+
+# Install global deps
+COPY --from=bake_ctx_metapkg / /src
+
+RUN python -m venv /venv
+ENV PATH="/venv/bin:$PATH"
+ENV VIRTUAL_ENV="/venv"
+
+ENV POETRY_VIRTUALENVS_CREATE=0 \
+    POETRY_CACHE_DIR=/tmp/poetry_cache
+
+WORKDIR /src/metapkg
+RUN --mount=type=cache,target=$POETRY_CACHE_DIR \
+    poetry install --only app_dl_os_data_api --no-root --no-directory
+
+# Install source deps
+COPY --from=bake_ctx_src_lib / /src
+RUN mkdir -p /src/$APP_DIR
+COPY /pyproject.toml /src/$APP_DIR/pyproject.toml
+COPY /dl_data_api /src/$APP_DIR/dl_data_api
+COPY /README.md /src/$APP_DIR/README.md
+
+ENV SETUPTOOLS_USE_DISTUTILS=stdlib
+RUN poetry export --only app_dl_os_data_api --without-hashes --format=requirements.txt > requirements.txt
+RUN pip install -r requirements.txt
+
+# Runtime configuration
+FROM bake_ctx_run AS runtime
+
+COPY --from=build /venv /venv
+ENV PATH="/venv/bin:$PATH"
+ENV VIRTUAL_ENV="/venv"
+
+RUN mkdir -p /code
+COPY /etc /etc
+
+ENV GUNICORN_LOG_CONFIG /code/gunicorn_logging.ini
+ENV GUNICORN_CONFIG /code/gunicorn_config.py
+COPY docker/gunicorn_logging.ini ${GUNICORN_LOG_CONFIG}
+COPY docker/gunicorn_config.py ${GUNICORN_CONFIG}
+
+# Configs
+ENV CONFIG_PATH="/etc/backend-configs/api.yaml"
+COPY --from=bake_ctx_app_configs /app_configs/api.yaml "$CONFIG_PATH"
+
+# Setting up the runtime user
+ARG USER=app
+ARG GID=1000
+ARG UID=1000
+RUN userdel -r ubuntu && \
+    groupadd -r -g ${GID} ${USER} && \
+    useradd -mr -g ${USER} -u ${UID} -s /bin/bash ${USER}
+USER ${USER}
+
+EXPOSE 8080
+
+ENTRYPOINT ["/etc/service/dl_api/run"]
