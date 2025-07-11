@@ -1,10 +1,8 @@
-from __future__ import annotations
-
-from functools import wraps
 import logging
 from typing import (
     Awaitable,
     Callable,
+    Collection,
 )
 
 import attr
@@ -57,33 +55,30 @@ class OpExecutorAsync:
     db_ex_adapter: ProcessorDbExecAdapterBase = attr.ib()
 
     async def execute(self, op: BaseOp) -> AbstractStream:
-        raise NotImplementedError
+        stream_ids: Collection[str]
 
+        if isinstance(op, SingleSourceOp):
+            stream_ids = (op.source_stream_id,)
+        elif isinstance(op, MultiSourceOp):
+            stream_ids = op.source_stream_ids
+        else:
+            raise TypeError(f"Type {type(op).__name__} is not supported as a source for OpExecutorAsync")
 
-def log_op(
-    func: Callable[[OpExecutorAsync, BaseOp], Awaitable[AbstractStream]]
-) -> Callable[[OpExecutorAsync, BaseOp], Awaitable[AbstractStream]]:
-    """Log operation calls"""
-
-    @wraps(func)
-    async def wrapper(self: OpExecutorAsync, op: BaseOp) -> AbstractStream:
-        assert isinstance(op, (SingleSourceOp, MultiSourceOp))
-        stream_ids = [op.source_stream_id] if isinstance(op, SingleSourceOp) else op.source_stream_ids
         LOGGER.info(
             f"Running {type(op).__name__} "
             f"with source streams {stream_ids} "
             f"and destination stream {op.dest_stream_id}"
         )
-        return await func(self, op)
+        return await self._execute(op)
 
-    return wrapper
+    async def _execute(self, op: BaseOp) -> AbstractStream:
+        raise NotImplementedError
 
 
 class DownloadOpExecutorAsync(OpExecutorAsync):
     """Loads data from a database table"""
 
-    @log_op  # type: ignore  # TODO: fix
-    async def execute(self, op: BaseOp) -> DataStreamAsync:
+    async def _execute(self, op: BaseOp) -> DataStreamAsync:
         assert isinstance(op, DownloadOp)
 
         source_stream = self.ctx.get_stream(op.source_stream_id)
@@ -184,8 +179,7 @@ class CalcOpExecutorAsync(OpExecutorAsync):
 
         return data_key
 
-    @log_op  # type: ignore  # TODO: fix
-    async def execute(self, op: BaseOp) -> DataSourceVS:
+    async def _execute(self, op: BaseOp) -> DataSourceVS:
         assert isinstance(op, CalcOp)
 
         source_stream = self.ctx.get_stream(op.source_stream_id)
@@ -222,7 +216,7 @@ class CalcOpExecutorAsync(OpExecutorAsync):
             target_connection_ref=from_info.target_connection_ref,
             data_key=data_key,
         )
-
+        assert prep_src_info.data_source_list is not None
         return DataSourceVS(
             id=op.dest_stream_id,
             alias=op.alias,
@@ -231,14 +225,13 @@ class CalcOpExecutorAsync(OpExecutorAsync):
             names=prep_src_info.col_names,
             user_types=user_types,
             data_key=data_key,
-            meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),  # type: ignore  # 2024-01-24 # TODO: Argument "data_source_list" to "DataRequestMetaInfo" has incompatible type "tuple[DataSource, ...] | None"; expected "Collection[DataSource]"  [arg-type]
+            meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),
             preparation_callback=source_stream.prepare,
         )
 
 
 class JoinOpExecutorAsync(OpExecutorAsync):
-    @log_op  # type: ignore  # TODO: fix
-    async def execute(self, op: BaseOp) -> JointDataSourceVS:
+    async def _execute(self, op: BaseOp) -> JointDataSourceVS:
         assert isinstance(op, JoinOp)
 
         prepared_sources: list[PreparedSingleFromInfo] = []
@@ -264,14 +257,13 @@ class JoinOpExecutorAsync(OpExecutorAsync):
             use_empty_source=op.use_empty_source,
         )
         data_key = joint_dsrc_info.data_key
+        assert joint_dsrc_info.data_source_list is not None
         return JointDataSourceVS(
             id=op.dest_stream_id,
             names=[],
             user_types=[],
             joint_dsrc_info=joint_dsrc_info,  # not used  # not used
-            meta=DataRequestMetaInfo(
-                data_source_list=joint_dsrc_info.data_source_list,  # type: ignore  # 2024-01-24 # TODO: Argument "data_source_list" to "DataRequestMetaInfo" has incompatible type "tuple[DataSource, ...] | None"; expected "Collection[DataSource]"  [arg-type]
-            ),
+            meta=DataRequestMetaInfo(data_source_list=joint_dsrc_info.data_source_list),
             data_key=data_key,
             preparation_callback=joint_preparation_callback,
         )
@@ -284,10 +276,11 @@ class UploadOpExecutorAsync(OpExecutorAsync):
         assert isinstance(op, UploadOp)
 
         source_stream = self.ctx.get_stream(op.source_stream_id)
-        return source_stream.data_key  # type: ignore  # 2024-01-24 # TODO: Item "None" of "AbstractStream | None" has no attribute "data_key"  [union-attr]
+        assert isinstance(source_stream, AbstractStream)
 
-    @log_op  # type: ignore  # TODO: fix
-    async def execute(self, op: BaseOp) -> DataSourceVS:
+        return source_stream.data_key
+
+    async def _execute(self, op: BaseOp) -> DataSourceVS:
         assert isinstance(op, UploadOp)
 
         source_stream = self.ctx.get_stream(op.source_stream_id)
@@ -338,6 +331,7 @@ class UploadOpExecutorAsync(OpExecutorAsync):
             data_key=data_key,
         )
 
+        assert prep_src_info.data_source_list is not None
         return DataSourceVS(
             id=op.dest_stream_id,
             result_id=prep_src_info.id,
@@ -346,6 +340,6 @@ class UploadOpExecutorAsync(OpExecutorAsync):
             user_types=prep_src_info.user_types,
             alias=op.alias,
             data_key=data_key,
-            meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),  # type: ignore  # 2024-01-24 # TODO: Argument "data_source_list" to "DataRequestMetaInfo" has incompatible type "tuple[DataSource, ...] | None"; expected "Collection[DataSource]"  [arg-type]
+            meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),
             preparation_callback=upload_data,
         )
