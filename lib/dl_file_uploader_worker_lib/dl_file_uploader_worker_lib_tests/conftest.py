@@ -29,6 +29,7 @@ from dl_core.loader import (
     CoreLibraryConfig,
     load_core_lib,
 )
+from dl_core.retrier.policy import DefaultRetryPolicyFactory
 from dl_core.services_registry.top_level import DummyServiceRegistry
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_async import AsyncUSManager
@@ -382,6 +383,7 @@ def default_sync_usm(bi_context, prepare_us, us_config):
         bi_context=bi_context,
         crypto_keys_config=get_dummy_crypto_keys_config(),
         services_registry=DummyServiceRegistry(rci=rci),
+        retry_policy_factory=DefaultRetryPolicyFactory(),
     )
 
 
@@ -395,6 +397,7 @@ async def default_async_usm_per_test(bi_context, prepare_us, us_config, root_cer
         bi_context=bi_context,
         services_registry=DummyServiceRegistry(rci=rci),
         ca_data=root_certificates,
+        retry_policy_factory=DefaultRetryPolicyFactory(),
     )
 
 
