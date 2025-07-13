@@ -124,19 +124,19 @@ class TrinoRowConstructor(RowConstructor):
         return C.CustomizableRow(
             items=[
                 C.LabelRowItem(
-                    text=self._localizer.translate(Translatable("field_listing-tables")),
+                    text=self._localizer.translate(Translatable("field_listing-sources")),
                     display_conditions={CommonFieldName.advanced_settings: "opened"},
-                    help_text=self._localizer.translate(Translatable("label_listing-tables-tooltip")),
+                    help_text=self._localizer.translate(Translatable("label_listing-sources-tooltip")),
                 ),
                 C.RadioButtonRowItem(
                     name=TrinoFormFieldName.listing_sources,
                     options=[
                         C.SelectableOption(
-                            text=self._localizer.translate(Translatable("value_listing-tables-off")),
+                            text=self._localizer.translate(Translatable("value_listing-sources-off")),
                             value=ListingSources.off.value,
                         ),
                         C.SelectableOption(
-                            text=self._localizer.translate(Translatable("value_listing-tables-on")),
+                            text=self._localizer.translate(Translatable("value_listing-sources-on")),
                             value=ListingSources.on.value,
                         ),
                     ],

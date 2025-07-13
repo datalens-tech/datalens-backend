@@ -30,18 +30,18 @@ msgstr "Password"
 msgid "field_jwt"
 msgstr "JWT"
 
-msgid "field_listing-tables"
+msgid "field_listing-sources"
 msgstr "Request table list"
 
-msgid "label_listing-tables-tooltip"
+msgid "label_listing-sources-tooltip"
 msgstr ""
 "Disable if loading the table list from the source takes too long or "
 "causes errors — in this case, add tables via SQL queries"
 
-msgid "value_listing-tables-off"
+msgid "value_listing-sources-off"
 msgstr "Off"
 
-msgid "value_listing-tables-on"
+msgid "value_listing-sources-on"
 msgstr "On"
 
 msgid "label_trino-ssl-enabled-tooltip"
