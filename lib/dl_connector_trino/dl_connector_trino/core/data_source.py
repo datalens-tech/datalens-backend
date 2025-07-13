@@ -1,7 +1,6 @@
 import logging
 from typing import (
     ClassVar,
-    FrozenSet,
 )
 
 from dl_constants.enums import (
@@ -25,7 +24,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class TrinoDataSourceMixin(BaseSQLDataSource):
-    supported_join_types: ClassVar[FrozenSet[JoinType]] = frozenset(
+    supported_join_types: ClassVar[frozenset] = frozenset(
         {
             JoinType.inner,
             JoinType.left,
@@ -33,7 +32,6 @@ class TrinoDataSourceMixin(BaseSQLDataSource):
             JoinType.full,
         }
     )
-
     conn_type = CONNECTION_TYPE_TRINO
 
     @classmethod
