@@ -30,6 +30,20 @@ msgstr "Password"
 msgid "field_jwt"
 msgstr "JWT"
 
+msgid "field_listing-tables"
+msgstr "Request table list"
+
+msgid "label_listing-tables-tooltip"
+msgstr ""
+"Disable if loading the table list from the source takes too long or "
+"causes errors — in this case, add tables via SQL queries"
+
+msgid "value_listing-tables-off"
+msgstr "Off"
+
+msgid "value_listing-tables-on"
+msgstr "On"
+
 msgid "label_trino-ssl-enabled-tooltip"
 msgstr ""
 "When this option is enabled, connections to Trino use the HTTPS protocol; "
