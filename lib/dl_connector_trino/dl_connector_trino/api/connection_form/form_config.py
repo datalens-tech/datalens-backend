@@ -31,13 +31,17 @@ from dl_i18n.localizer_base import Localizer
 
 from dl_connector_trino.api.connection_info import TrinoConnectionInfoProvider
 from dl_connector_trino.api.i18n.localizer import Translatable
-from dl_connector_trino.core.constants import TrinoAuthType
+from dl_connector_trino.core.constants import (
+    ListingTables,
+    TrinoAuthType,
+)
 
 
 @unique
 class TrinoFormFieldName(FormFieldName):
     auth_type = "auth_type"
     jwt = "jwt"
+    listing_tables = "listing_tables"
 
 
 @attr.s
@@ -116,6 +120,32 @@ class TrinoRowConstructor(RowConstructor):
     def cache_ttl_row(self) -> C.CacheTTLRow:
         return C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec)
 
+    def listing_tables_row(self) -> C.CustomizableRow:
+        return C.CustomizableRow(
+            items=[
+                C.LabelRowItem(
+                    text=self._localizer.translate(Translatable("field_listing-tables")),
+                    display_conditions={CommonFieldName.advanced_settings: "opened"},
+                    help_text=self._localizer.translate(Translatable("label_listing-tables-tooltip")),
+                ),
+                C.RadioButtonRowItem(
+                    name=TrinoFormFieldName.listing_tables,
+                    options=[
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_listing-tables-off")),
+                            value=ListingTables.off.value,
+                        ),
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_listing-tables-on")),
+                            value=ListingTables.on.value,
+                        ),
+                    ],
+                    default_value=ListingTables.on.value,
+                    display_conditions={CommonFieldName.advanced_settings: "opened"},
+                ),
+            ]
+        )
+
 
 class TrinoConnectionFormFactory(ConnectionFormFactory):
     DEFAULT_HTTPS_PORT = "8443"
@@ -142,6 +172,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
             FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
             FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
+            FormFieldApiSchema(name=TrinoFormFieldName.listing_tables),
             FormFieldApiSchema(name=CommonFieldName.ssl_enable),
             FormFieldApiSchema(name=CommonFieldName.ssl_ca),
         ]
@@ -234,6 +265,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
                         enabled_default_value=True,
                     ),
                     rc.data_export_forbidden_row(),
+                    rc.listing_tables_row(),
                 ]
             ),
             api_schema=FormApiSchema(
