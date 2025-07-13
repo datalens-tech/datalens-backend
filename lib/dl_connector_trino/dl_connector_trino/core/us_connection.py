@@ -22,7 +22,7 @@ from dl_connector_trino.core.constants import (
     CONNECTION_TYPE_TRINO,
     SOURCE_TYPE_TRINO_SUBSELECT,
     SOURCE_TYPE_TRINO_TABLE,
-    ListingTables,
+    ListingSources,
     TrinoAuthType,
 )
 from dl_connector_trino.core.dto import TrinoConnDTO
@@ -71,7 +71,7 @@ class ConnectionTrinoBase(ConnectionSQL):
         ssl_enable: bool = attr.ib(default=False)
         ssl_ca: str | None = attr.ib(default=None)
         jwt: str | None = attr.ib(repr=secrepr, default=None)
-        listing_tables: ListingTables = attr.ib()
+        listing_sources: ListingSources = attr.ib()
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
         return [
@@ -99,7 +99,7 @@ class ConnectionTrinoBase(ConnectionSQL):
     ) -> list[dict]:
         parameter_combinations: list[dict] = []
 
-        if self.data.listing_tables is ListingTables.off:
+        if self.data.listing_sources is ListingSources.off:
             return parameter_combinations
 
         for catalog_name in self.get_catalogs(conn_executor_factory=conn_executor_factory):

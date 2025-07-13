@@ -32,7 +32,7 @@ from dl_i18n.localizer_base import Localizer
 from dl_connector_trino.api.connection_info import TrinoConnectionInfoProvider
 from dl_connector_trino.api.i18n.localizer import Translatable
 from dl_connector_trino.core.constants import (
-    ListingTables,
+    ListingSources,
     TrinoAuthType,
 )
 
@@ -41,7 +41,7 @@ from dl_connector_trino.core.constants import (
 class TrinoFormFieldName(FormFieldName):
     auth_type = "auth_type"
     jwt = "jwt"
-    listing_tables = "listing_tables"
+    listing_sources = "listing_sources"
 
 
 @attr.s
@@ -120,7 +120,7 @@ class TrinoRowConstructor(RowConstructor):
     def cache_ttl_row(self) -> C.CacheTTLRow:
         return C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec)
 
-    def listing_tables_row(self) -> C.CustomizableRow:
+    def listing_sources_row(self) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
                 C.LabelRowItem(
@@ -129,18 +129,18 @@ class TrinoRowConstructor(RowConstructor):
                     help_text=self._localizer.translate(Translatable("label_listing-tables-tooltip")),
                 ),
                 C.RadioButtonRowItem(
-                    name=TrinoFormFieldName.listing_tables,
+                    name=TrinoFormFieldName.listing_sources,
                     options=[
                         C.SelectableOption(
                             text=self._localizer.translate(Translatable("value_listing-tables-off")),
-                            value=ListingTables.off.value,
+                            value=ListingSources.off.value,
                         ),
                         C.SelectableOption(
                             text=self._localizer.translate(Translatable("value_listing-tables-on")),
-                            value=ListingTables.on.value,
+                            value=ListingSources.on.value,
                         ),
                     ],
-                    default_value=ListingTables.on.value,
+                    default_value=ListingSources.on.value,
                     display_conditions={CommonFieldName.advanced_settings: "opened"},
                 ),
             ]
@@ -172,7 +172,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
             FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
             FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
-            FormFieldApiSchema(name=TrinoFormFieldName.listing_tables),
+            FormFieldApiSchema(name=TrinoFormFieldName.listing_sources),
             FormFieldApiSchema(name=CommonFieldName.ssl_enable),
             FormFieldApiSchema(name=CommonFieldName.ssl_ca),
         ]
@@ -265,7 +265,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
                         enabled_default_value=True,
                     ),
                     rc.data_export_forbidden_row(),
-                    rc.listing_tables_row(),
+                    rc.listing_sources_row(),
                 ]
             ),
             api_schema=FormApiSchema(

@@ -253,7 +253,7 @@
                 },
                 {
                     "id": "radio_button",
-                    "name": "listing_tables",
+                    "name": "listing_sources",
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
@@ -322,7 +322,7 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "listing_tables",
+                    "name": "listing_sources",
                     "required": false,
                     "defaultAction": "include"
                 },
@@ -417,7 +417,7 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "listing_tables",
+                    "name": "listing_sources",
                     "required": false,
                     "defaultAction": "include"
                 },

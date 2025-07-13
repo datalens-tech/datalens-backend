@@ -26,7 +26,7 @@ class TrinoAuthType(DynamicEnum):
     header = AutoEnumValue()
 
 
-class ListingTables(DynamicEnum):
+class ListingSources(DynamicEnum):
     on = AutoEnumValue()
     off = AutoEnumValue()
 
