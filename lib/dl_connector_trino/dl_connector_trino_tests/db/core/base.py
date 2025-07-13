@@ -133,6 +133,7 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
             auth_type=TrinoAuthType.none,
             ssl_enable=test_config.CoreConnectionSettings.SSL_ENABLE,
             ssl_ca=None,
+            listing_tables=test_config.CoreConnectionSettings.LISTING_TABLES,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
 
@@ -170,6 +171,7 @@ class BaseTrinoSslTestClass(BaseTrinoTestClass):
             username=test_config.CoreSslConnectionSettings.USERNAME,
             ssl_enable=test_config.CoreSslConnectionSettings.SSL_ENABLE,
             ssl_ca=ssl_ca,
+            listing_tables=test_config.CoreSslConnectionSettings.LISTING_TABLES,
         )
 
 

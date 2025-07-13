@@ -62,7 +62,6 @@ class TrinoConnectionSchemaBase(
         attribute="data.listing_tables",
         required=True,
         allow_none=False,
-        load_default=ListingTables.on,
         bi_extra=FieldExtra(editable=True),
     )
 

@@ -6,7 +6,10 @@ from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 from dl_testing.containers import get_test_container_hostport
 
-from dl_connector_trino.core.constants import TrinoAuthType
+from dl_connector_trino.core.constants import (
+    ListingTables,
+    TrinoAuthType,
+)
 from dl_connector_trino.formula.constants import TrinoDialect as D
 
 
@@ -26,6 +29,7 @@ class BaseConnectionSettings:
     CATALOG_MEMORY: ClassVar[str] = "test_memory_catalog"
     CATALOG_MYSQL: ClassVar[str] = "test_mysql_catalog"
     SCHEMA: ClassVar[str] = "default"
+    LISTING_TABLES: ClassVar[bool] = ListingTables.on
 
 
 class CoreConnectionSettings(BaseConnectionSettings):
