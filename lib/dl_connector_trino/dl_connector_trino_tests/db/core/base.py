@@ -27,6 +27,7 @@ from dl_utils.wait import wait_for
 from dl_connector_trino.core.adapters import CustomHTTPAdapter
 from dl_connector_trino.core.constants import (
     CONNECTION_TYPE_TRINO,
+    ListingSources,
     TrinoAuthType,
 )
 from dl_connector_trino.core.us_connection import ConnectionTrino
@@ -142,6 +143,20 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
         monkeypatch = pytest.MonkeyPatch()
         monkeypatch.setattr(C, "get_sa_type", avoid_get_sa_type)
         return TEST_CATALOG_SCHEMA_MAP[db.name]
+
+
+class BaseTrinoConnectionWithListingSourcesDisabled(BaseTrinoTestClass):
+    @pytest.fixture(scope="session")
+    def connection_creation_params(self) -> dict:
+        return dict(
+            host=test_config.CoreConnectionSettings.HOST,
+            port=test_config.CoreConnectionSettings.PORT,
+            username=test_config.CoreConnectionSettings.USERNAME,
+            auth_type=TrinoAuthType.none,
+            ssl_enable=test_config.CoreConnectionSettings.SSL_ENABLE,
+            ssl_ca=None,
+            listing_sources=ListingSources.off,
+        )
 
 
 class BaseTrinoSslTestClass(BaseTrinoTestClass):
