@@ -22,7 +22,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class TrinoDataSourceMixin(BaseSQLDataSource):
-    supported_join_types: ClassVar[frozenset] = frozenset(
+    supported_join_types: ClassVar[frozenset[JoinType]] = frozenset(
         {
             JoinType.inner,
             JoinType.left,
