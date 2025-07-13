@@ -38,6 +38,7 @@ class TrinoConnectionTestBase(BaseTrinoTestClass, ConnectionTestBase):
             port=CoreConnectionSettings.PORT,
             username=CoreConnectionSettings.USERNAME,
             auth_type=CoreConnectionSettings.AUTH_TYPE.name,
+            listing_sources=CoreConnectionSettings.LISTING_SOURCES.name,
             **(dict(raw_sql_level=self.raw_sql_level.value) if self.raw_sql_level is not None else {}),
         )
 
