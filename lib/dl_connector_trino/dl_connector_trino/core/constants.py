@@ -26,4 +26,9 @@ class TrinoAuthType(DynamicEnum):
     header = AutoEnumValue()
 
 
+class ListingTables(DynamicEnum):
+    on = AutoEnumValue()
+    off = AutoEnumValue()
+
+
 ADAPTER_SOURCE_NAME = "datalens"

@@ -9,7 +9,10 @@ from dl_api_connector.api_schema.extras import FieldExtra
 import dl_core.marshmallow as core_ma_fields
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
-from dl_connector_trino.core.constants import TrinoAuthType
+from dl_connector_trino.core.constants import (
+    ListingTables,
+    TrinoAuthType,
+)
 from dl_connector_trino.core.us_connection import (
     ConnectionTrino,
     ConnectionTrinoBase,
@@ -52,6 +55,14 @@ class TrinoConnectionSchemaBase(
         allow_none=True,
         load_only=True,
         load_default=None,
+        bi_extra=FieldExtra(editable=True),
+    )
+    listing_tables = DynamicEnumField(
+        ListingTables,
+        attribute="data.listing_tables",
+        required=True,
+        allow_none=False,
+        load_default=ListingTables.on,
         bi_extra=FieldExtra(editable=True),
     )
 

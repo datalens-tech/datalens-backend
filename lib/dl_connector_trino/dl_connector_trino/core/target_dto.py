@@ -6,7 +6,10 @@ from typing_extensions import Self
 from dl_constants.types import TJSONLike
 from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
 
-from dl_connector_trino.core.constants import TrinoAuthType
+from dl_connector_trino.core.constants import (
+    ListingTables,
+    TrinoAuthType,
+)
 
 
 @attr.s(frozen=True)
@@ -19,6 +22,7 @@ class TrinoConnTargetDTO(ConnTargetDTO):
     jwt: Optional[str] = attr.ib(repr=False, kw_only=True, default=None)
     ssl_enable: bool = attr.ib(kw_only=True, default=False)
     ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
+    listing_tables: ListingTables = attr.ib(kw_only=True, default=ListingTables.on)
 
     def get_effective_host(self) -> Optional[str]:
         return self.host
@@ -26,9 +30,11 @@ class TrinoConnTargetDTO(ConnTargetDTO):
     @classmethod
     def _from_jsonable_dict(cls, data: dict) -> Self:
         data["auth_type"] = TrinoAuthType(data["auth_type"])
+        data["listing_tables"] = ListingTables(data["listing_tables"])
         return cls(**data)
 
     def to_jsonable_dict(self) -> dict[str, TJSONLike]:
         jsonable_dict = super().to_jsonable_dict()
         jsonable_dict["auth_type"] = self.auth_type.value
+        jsonable_dict["listing_tables"] = self.listing_tables.value
         return jsonable_dict

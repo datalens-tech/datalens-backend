@@ -4,7 +4,10 @@ from marshmallow import fields as ma_fields
 from dl_core.us_manager.storage_schemas.connection import ConnectionSQLDataStorageSchema
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
-from dl_connector_trino.core.constants import TrinoAuthType
+from dl_connector_trino.core.constants import (
+    ListingTables,
+    TrinoAuthType,
+)
 from dl_connector_trino.core.us_connection import ConnectionTrino
 
 
@@ -31,6 +34,13 @@ class TrinoConnectionDataStorageSchemaBase(Schema):
         allow_none=True,
         dump_default=None,
         load_default=None,
+    )
+    listing_tables = DynamicEnumField(
+        ListingTables,
+        required=False,
+        allow_none=False,
+        dump_default=ListingTables.on,
+        load_default=ListingTables.on,
     )
 
 
