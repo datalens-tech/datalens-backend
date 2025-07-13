@@ -98,6 +98,10 @@ class ConnectionTrinoBase(ConnectionSQL):
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[dict]:
         parameter_combinations: list[dict] = []
+
+        if self.data.listing_tables is ListingTables.off:
+            return parameter_combinations
+
         for catalog_name in self.get_catalogs(conn_executor_factory=conn_executor_factory):
             tables = self.get_tables(conn_executor_factory=conn_executor_factory, db_name=catalog_name)
             parameter_combinations.extend(
@@ -124,5 +128,4 @@ class ConnectionTrino(ConnectionTrinoBase):
             jwt=self.data.jwt,
             ssl_enable=self.data.ssl_enable,
             ssl_ca=self.data.ssl_ca,
-            listing_tables=self.data.listing_tables,
         )

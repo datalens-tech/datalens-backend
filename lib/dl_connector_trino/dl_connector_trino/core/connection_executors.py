@@ -34,6 +34,5 @@ class TrinoConnExecutor(TrinoConnExecutorBase):
                 jwt=self._conn_dto.jwt,
                 ssl_enable=self._conn_dto.ssl_enable,
                 ssl_ca=self._conn_dto.ssl_ca,
-                listing_tables=self._conn_dto.listing_tables,
             )
         ]

@@ -4,7 +4,6 @@ from dl_core.connection_models.dto_defs import ConnDTO
 
 from dl_connector_trino.core.constants import (
     CONNECTION_TYPE_TRINO,
-    ListingTables,
     TrinoAuthType,
 )
 
@@ -20,7 +19,6 @@ class TrinoConnDTOBase(ConnDTO):
     jwt: str | None = attr.ib(repr=False, default=None)
     ssl_enable: bool = attr.ib(default=False)
     ssl_ca: str | None = attr.ib(default=None)
-    listing_tables: ListingTables = attr.ib(default=ListingTables.on)
 
     def conn_reporting_data(self) -> dict:
         return super().conn_reporting_data() | dict(
