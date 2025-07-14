@@ -27,9 +27,8 @@ COPY /dl_data_api /src/$APP_DIR/dl_data_api
 COPY /README.md /src/$APP_DIR/README.md
 
 RUN poetry export --only app_dl_os_data_api --without-hashes --format=requirements.txt > requirements.txt && \
-    pip install -r requirements.txt
-
-RUN find /venv -name "*.pyc" -delete && \
+    pip install -r requirements.txt && \
+    find /venv -name "*.pyc" -delete && \
     find /venv -name "__pycache__" -delete
 
 # Runtime configuration
