@@ -25,7 +25,7 @@ async def test_download_yadocs_task(
         file_type=FileType.yadocs,
         manager=redis_model_manager,
         status=FileProcessingStatus.in_progress,
-        user_source_properties=YaDocsUserSourceProperties(public_link="https://disk.yandex.lt/i/OyzdmFI0MUEEgA"),
+        user_source_properties=YaDocsUserSourceProperties(public_link="https://disk.yandex.lt/i/ZgabI6zyoYn8IQ"),
     )
     await dfile.save()
 
