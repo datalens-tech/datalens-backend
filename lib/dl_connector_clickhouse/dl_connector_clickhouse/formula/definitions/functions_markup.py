@@ -31,4 +31,6 @@ DEFINITIONS_MARKUP = [
     # tooltip
     base.FuncTooltip2.for_dialect(D.CLICKHOUSE),
     base.FuncTooltip3.for_dialect(D.CLICKHOUSE),
+    # user_info
+    base.FuncUserInfo.for_dialect(D.CLICKHOUSE),
 ]

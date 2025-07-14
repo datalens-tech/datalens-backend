@@ -31,4 +31,6 @@ DEFINITIONS_MARKUP = [
     # tooltip
     base.FuncTooltip2.for_dialect(D.MSSQLSRV),
     base.FuncTooltip3.for_dialect(D.MSSQLSRV),
+    # user_info
+    base.FuncUserInfo.for_dialect(D.MSSQLSRV),
 ]
