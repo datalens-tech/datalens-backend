@@ -74,7 +74,10 @@ class DataFetcher:
             us_entry_buffer=self._us_entry_buffer,
         )
         prep_src_info = prep_component_manager.get_prepared_source(
-            avatar_id=avatar_id, alias=alias, from_subquery=from_subquery, subquery_limit=subquery_limit
+            avatar_id=avatar_id,
+            alias=alias,
+            from_subquery=from_subquery,
+            subquery_limit=subquery_limit,
         )
         return DataSourceVS(
             id=stream_id,

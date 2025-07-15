@@ -8,7 +8,6 @@ from typing import (
 
 import attr
 import sqlalchemy as sa
-from sqlalchemy.sql.selectable import FromClause
 
 from dl_constants.enums import DataSourceRole
 from dl_core.backend_types import get_backend_type
@@ -22,6 +21,7 @@ from dl_core.data_source.collection import DataSourceCollectionFactory
 import dl_core.data_source.sql
 import dl_core.exc as exc
 from dl_core.multisource import SourceAvatar
+from dl_core.query.bi_query import SqlSourceType
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.local_cache import USEntryBuffer
@@ -104,7 +104,7 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
         query_compiler_cls = get_sa_query_compiler_cls(backend_type=backend_type)
         query_compiler = query_compiler_cls(dialect=sa_dialect)
 
-        sql_source: FromClause
+        sql_source: SqlSourceType
         if from_subquery:
             # Subquery mode: wrap the leftmost (root) source/table into a "SELECT ... FROM ..." subquery
             # to limit the number of entries before the GROUP BY clause is executed
@@ -116,7 +116,7 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
                 .alias(alias)
             )
         else:
-            sql_source = dsrc.get_sql_source(alias=alias)  # type: ignore  # TODO: fix
+            sql_source = dsrc.get_sql_source(alias=alias)
 
         target_connection_ref = dsrc.connection_ref
         target_connection = self._us_entry_buffer.get_entry(target_connection_ref)
