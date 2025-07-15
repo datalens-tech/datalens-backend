@@ -77,10 +77,13 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         query: str | Select,
         user_type: UserDataType,
         ctx: OpExecutionContext,
-        data_key: LocalKeyRepresentation = LocalKeyRepresentation(),  # noqa: B008
+        data_key: LocalKeyRepresentation | None = None,
         preparation_callback: Optional[Callable[[], Awaitable[None]]] = None,
     ) -> TBIDataValue:
         """Execute a statement returning a scalar value."""
+        if data_key is None:
+            data_key = LocalKeyRepresentation()
+
         data_stream = await self._execute_and_fetch(
             query_id=make_id(),
             query=query,
@@ -104,10 +107,12 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         joint_dsrc_info: Optional[PreparedFromInfo] = None,
         query_id: str,
         ctx: OpExecutionContext,
-        data_key: LocalKeyRepresentation = LocalKeyRepresentation(),  # noqa: B008
+        data_key: LocalKeyRepresentation | None = None,
         preparation_callback: Optional[Callable[[], Awaitable[None]]] = None,
     ) -> TValuesChunkStream:
         """Fetch data from a table"""
+        if data_key is None:
+            data_key = LocalKeyRepresentation()
 
         chunk_size = chunk_size or self._default_chunk_size
         self._log.info(f"Fetching data from query {query_id}")
