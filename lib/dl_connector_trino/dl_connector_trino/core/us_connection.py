@@ -1,7 +1,6 @@
 from typing import (
     Callable,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -23,6 +22,7 @@ from dl_connector_trino.core.constants import (
     CONNECTION_TYPE_TRINO,
     SOURCE_TYPE_TRINO_SUBSELECT,
     SOURCE_TYPE_TRINO_TABLE,
+    ListingSources,
     TrinoAuthType,
 )
 from dl_connector_trino.core.dto import TrinoConnDTO
@@ -68,9 +68,10 @@ class ConnectionTrinoBase(ConnectionSQL):
     @attr.s(kw_only=True)
     class DataModel(ConnectionSQL.DataModel):
         auth_type: TrinoAuthType = attr.ib()
-        ssl_enable: bool = attr.ib(kw_only=True, default=False)
-        ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
-        jwt: Optional[str] = attr.ib(repr=secrepr, default=None)
+        ssl_enable: bool = attr.ib(default=False)
+        ssl_ca: str | None = attr.ib(default=None)
+        jwt: str | None = attr.ib(repr=secrepr, default=None)
+        listing_sources: ListingSources = attr.ib()
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
         return [
@@ -97,6 +98,10 @@ class ConnectionTrinoBase(ConnectionSQL):
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[dict]:
         parameter_combinations: list[dict] = []
+
+        if self.data.listing_sources is ListingSources.off:
+            return parameter_combinations
+
         for catalog_name in self.get_catalogs(conn_executor_factory=conn_executor_factory):
             tables = self.get_tables(conn_executor_factory=conn_executor_factory, db_name=catalog_name)
             parameter_combinations.extend(

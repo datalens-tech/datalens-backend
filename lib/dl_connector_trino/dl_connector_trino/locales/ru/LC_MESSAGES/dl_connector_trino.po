@@ -30,6 +30,21 @@ msgstr "Пароль"
 msgid "field_jwt"
 msgstr "JWT"
 
+msgid "field_listing-sources"
+msgstr "Запрашивать список таблиц"
+
+msgid "label_listing-sources-tooltip"
+msgstr ""
+"Выключите, если загрузка списка таблиц из источника выполняется слишком "
+"долго или вызывает ошибки — в этом случае добавляйте таблицы через "
+"SQL-подзапросы"
+
+msgid "value_listing-sources-off"
+msgstr "Выкл"
+
+msgid "value_listing-sources-on"
+msgstr "Вкл"
+
 msgid "label_trino-ssl-enabled-tooltip"
 msgstr ""
 "Когда эта опция включена, для подключения к Trino используется протокол "
