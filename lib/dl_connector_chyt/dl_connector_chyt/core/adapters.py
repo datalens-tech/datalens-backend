@@ -144,7 +144,8 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
 
         may_be_sorting_idx = await_sync(
             self._get_yt_table_index_info(
-                table_path=table_ident.table_name, secret_auth_headers=self._get_yt_proxy_auth_headers()
+                table_path=table_ident.table_name,
+                secret_auth_headers=self._get_yt_proxy_auth_headers(),
             )
         )
         return (may_be_sorting_idx,) if may_be_sorting_idx is not None else ()
