@@ -11,13 +11,16 @@ from dl_core.connection_executors import SyncConnExecutorBase
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.us_connection_base import (
     ConnectionBase,
+    ConnectionSettingsMixin,
     ConnectionSQL,
     DataSourceTemplate,
     make_subselect_datasource_template,
+    make_table_datasource_template,
 )
 from dl_core.utils import secrepr
 from dl_i18n.localizer_base import Localizer
 
+from dl_connector_trino.api.i18n.localizer import Translatable
 from dl_connector_trino.core.constants import (
     CONNECTION_TYPE_TRINO,
     SOURCE_TYPE_TRINO_SUBSELECT,
@@ -26,6 +29,7 @@ from dl_connector_trino.core.constants import (
     TrinoAuthType,
 )
 from dl_connector_trino.core.dto import TrinoConnDTO
+from dl_connector_trino.core.settings import TrinoConnectorSettings
 
 
 TRINO_SYSTEM_CATALOGS = (
@@ -55,7 +59,10 @@ GET_TRINO_CATALOGS_QUERY = str(
 )
 
 
-class ConnectionTrinoBase(ConnectionSQL):
+class ConnectionTrinoBase(
+    ConnectionSettingsMixin[TrinoConnectorSettings],
+    ConnectionSQL,
+):
     conn_type = CONNECTION_TYPE_TRINO
     has_schema: ClassVar[bool] = True
     default_schema_name = None
@@ -64,6 +71,7 @@ class ConnectionTrinoBase(ConnectionSQL):
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
+    settings_type = TrinoConnectorSettings
 
     @attr.s(kw_only=True)
     class DataModel(ConnectionSQL.DataModel):
@@ -74,15 +82,33 @@ class ConnectionTrinoBase(ConnectionSQL):
         listing_sources: ListingSources = attr.ib()
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
-        return [
+        result: list[DataSourceTemplate] = []
+
+        if self._connector_settings.ENABLE_TABLE_DATASOURCE_FORM:
+            result.append(
+                make_table_datasource_template(
+                    connection_id=self.uuid,  # type: ignore
+                    source_type=SOURCE_TYPE_TRINO_TABLE,
+                    localizer=localizer,
+                    disabled=not self.is_subselect_allowed,
+                    template_enabled=False,  # TODO BI-6411 enable dsrc templating
+                    db_name_form_enabled=True,
+                    db_name_form_title=localizer.translate(Translatable("source_templates-label-trino_catalog")),
+                    schema_name_form_enabled=True,
+                )
+            )
+
+        result.append(
             make_subselect_datasource_template(
                 connection_id=self.uuid,  # type: ignore
                 source_type=SOURCE_TYPE_TRINO_SUBSELECT,
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
                 title="Subselect over Trino",
-            ),
-        ]
+            )
+        )
+
+        return result
 
     def get_catalogs(
         self,
