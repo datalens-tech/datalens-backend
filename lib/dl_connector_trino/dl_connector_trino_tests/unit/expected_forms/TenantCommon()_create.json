@@ -240,6 +240,36 @@
                     ]
                 }
             ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "text": "Request table list",
+                    "helpText": "Disable if loading the table list from the source takes too long or causes errors \u2014 in this case, add tables via SQL queries"
+                },
+                {
+                    "id": "radio_button",
+                    "name": "listing_sources",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "defaultValue": "on",
+                    "options": [
+                        {
+                            "text": "Off",
+                            "value": "off"
+                        },
+                        {
+                            "text": "On",
+                            "value": "on"
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "apiSchema": {
@@ -288,6 +318,11 @@
                 },
                 {
                     "name": "data_export_forbidden",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "listing_sources",
                     "required": false,
                     "defaultAction": "include"
                 },
@@ -383,6 +418,11 @@
                 },
                 {
                     "name": "data_export_forbidden",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "listing_sources",
                     "required": false,
                     "defaultAction": "include"
                 },
