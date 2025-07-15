@@ -115,6 +115,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=names_source.db_name, required=True),  # type: ignore  # 2024-01-24 # TODO: "type[Enum]" has no attribute "db_name"  [attr-defined]
             FormFieldApiSchema(name=CommonFieldName.ssl_enable),
             FormFieldApiSchema(name=CommonFieldName.ssl_ca),
+            FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
         ]
 
     def _get_default_db_section(self, rc: RowConstructor, connector_settings: YDBConnectorSettings) -> list[FormRow]:
@@ -209,6 +210,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                     enabled_help_text=self._localizer.translate(Translatable("label_ydb-ssl-enabled-tooltip")),
                     enabled_default_value=connector_settings.DEFAULT_SSL_ENABLE_VALUE,
                 ),
+                rc.data_export_forbidden_row(),
             ]
         else:
             rows = [
@@ -221,6 +223,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                     enabled_help_text=self._localizer.translate(Translatable("label_ydb-ssl-enabled-tooltip")),
                     enabled_default_value=connector_settings.DEFAULT_SSL_ENABLE_VALUE,
                 ),
+                rc.data_export_forbidden_row(),
             ]
         return ConnectionForm(
             title=YDBConnectionInfoProvider.get_title(self._localizer),
