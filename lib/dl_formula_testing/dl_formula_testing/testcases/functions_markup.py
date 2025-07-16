@@ -63,3 +63,12 @@ class DefaultMarkupFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         expected_best_case = "(c " '(i "text ""6"" ...") ' '"text ""8""" ", text ""9""")'
         expected_acceptable = "(c " '(c (i "text ""6"" ... ") "text ""8""") ' '", text ""9""")'
         assert to_str(dbe.eval(expr)) in (expected_best_case, expected_acceptable)
+
+    def test_markup_functions_user_info(self, dbe: DbEvaluator) -> None:
+        # markup value is a string, but it shouldn't normally leak to the user.
+        with pytest.raises(exc.TranslationError):
+            assert dbe.eval("user_info(123, 'email')")  # both arguments should be string
+
+        assert to_str(dbe.eval("user_info('123', 'email')")) == '(userinfo "123" "email")'
+        assert to_str(dbe.eval("user_info('333', 'name')")) == '(userinfo "333" "name")'
+        assert to_str(dbe.eval("user_info('123', 'not_supported')")) == '(c "123")'
