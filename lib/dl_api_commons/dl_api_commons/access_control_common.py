@@ -23,7 +23,6 @@ class BadHeaderPrefixError(AuthFailureError):
     response_code: Optional[int] = 401
 
 
-
 class AuthTokenType(enum.Enum):
     bearer = "Bearer"
     oauth = "OAuth"

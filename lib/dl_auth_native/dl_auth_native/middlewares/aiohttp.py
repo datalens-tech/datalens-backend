@@ -24,13 +24,12 @@ class AioHTTPMiddleware(middlewares_base.BaseMiddleware):
             app_request: dl_api_commons_aiohttp_aiohttp_wrappers.DLRequestBase,
             handler: aiohttp_typedefs.Handler,
         ) -> aiohttp_web.StreamResponse:
-            
             required_resources = get_required_resources(app_request)
-            
+
             if RequiredResourceCommon.SKIP_AUTH in required_resources:
                 LOGGER.info("Auth was skipped due to SKIP_AUTH flag in target view")
                 return await handler(app_request.request)
-            
+
             user_access_token_header = app_request.get_single_header(self._user_access_header_key)
 
             try:
