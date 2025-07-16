@@ -35,8 +35,8 @@ msgstr "Request table list"
 
 msgid "label_listing-sources-tooltip"
 msgstr ""
-"Disable if loading the table list from the source takes too long or "
-"causes errors — in this case, add tables via SQL queries"
+"Disable if loading the table list from the source takes too long or causes "
+"errors — in this case, add tables via SQL queries"
 
 msgid "value_listing-sources-off"
 msgstr "Off"
@@ -48,3 +48,6 @@ msgid "label_trino-ssl-enabled-tooltip"
 msgstr ""
 "When this option is enabled, connections to Trino use the HTTPS protocol; "
 "when disabled - HTTP."
+
+msgid "source_templates-label-trino_catalog"
+msgstr "Catalog name"

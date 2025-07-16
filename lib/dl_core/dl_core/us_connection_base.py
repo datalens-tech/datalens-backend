@@ -116,6 +116,7 @@ def make_table_datasource_template(
     title: str = "Table",
     tab_title: str | None = None,
     db_name_form_enabled: bool = False,
+    db_name_form_title: str | None = None,
     schema_name_form_enabled: bool = False,
     table_form_title: str | None = None,
     table_form_field_doc_key: str = "ANY_TABLE/table_name",
@@ -126,13 +127,16 @@ def make_table_datasource_template(
     form: list[dict[str, Any]] = []
 
     if db_name_form_enabled:
+        if db_name_form_title is None:
+            db_name_form_title = localizer.translate(Translatable("source_templates-label-db_name"))
+
         form.append(
             {
                 "name": "db_name",
                 "input_type": "text",
                 "default": "",
                 "required": True,
-                "title": localizer.translate(Translatable("source_templates-label-db_name")),
+                "title": db_name_form_title,
                 "template_enabled": False,
             }
         )

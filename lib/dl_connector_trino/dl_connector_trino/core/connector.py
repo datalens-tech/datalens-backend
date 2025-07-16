@@ -22,6 +22,7 @@ from dl_connector_trino.core.data_source import (
 )
 from dl_connector_trino.core.data_source_migration import TrinoDataSourceMigrator
 from dl_connector_trino.core.query_compiler import TrinoQueryCompiler
+from dl_connector_trino.core.settings import TrinoSettingDefinition
 from dl_connector_trino.core.storage_schemas.connection import (
     TrinoConnectionDataStorageSchema,
     TrinoConnectionDataStorageSchemaBase,
@@ -40,6 +41,7 @@ class TrinoCoreConnectionDefinitionBase(CoreConnectionDefinition):
     type_transformer_cls = TrinoTypeTransformer
     data_source_migrator_cls = TrinoDataSourceMigrator
     dialect_string = "trino"
+    settings_definition = TrinoSettingDefinition
     allow_export = True
 
 
