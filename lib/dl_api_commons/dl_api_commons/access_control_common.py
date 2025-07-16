@@ -23,28 +23,6 @@ class BadHeaderPrefixError(AuthFailureError):
     response_code: Optional[int] = 401
 
 
-# _default_skip_auth_path_list_raw: Tuple[str, ...] = (
-#     "/ping",
-#     "/unistat",
-#     "/metrics",
-# )
-
-# default_skip_auth_path_list: Tuple[str, ...] = tuple(
-#     itertools.chain(
-#         (path.rstrip("/") for path in _default_skip_auth_path_list_raw),
-#         (path.rstrip("/") + "/" for path in _default_skip_auth_path_list_raw),
-#     )
-# )
-
-
-# def match_path_prefix(prefix_list: Iterable[str], path: str) -> bool:
-#     for skip_path_template in prefix_list:
-#         if skip_path_template.endswith("*"):
-#             return path.startswith(skip_path_template[:-1])
-#         if path == skip_path_template:
-#             return True
-#     return False
-
 
 class AuthTokenType(enum.Enum):
     bearer = "Bearer"
