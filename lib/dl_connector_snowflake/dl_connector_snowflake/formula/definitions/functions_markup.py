@@ -31,4 +31,6 @@ DEFINITIONS_MARKUP = [
     # tooltip
     base.FuncTooltip2.for_dialect(D.SNOWFLAKE),
     base.FuncTooltip3.for_dialect(D.SNOWFLAKE),
+    # user_info
+    base.FuncUserInfo.for_dialect(D.SNOWFLAKE),
 ]

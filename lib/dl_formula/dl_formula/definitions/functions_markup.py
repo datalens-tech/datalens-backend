@@ -387,6 +387,24 @@ class FuncImage4(FuncImageBase):
     variants = make_variants("img")
 
 
+class FuncUserInfo(FuncMarkup):
+    name = "user_info"
+    arg_cnt = 2
+    arg_names = ["user_id", "user_info_type"]
+    argument_types = [
+        # user_info(str, str)
+        ArgTypeSequence([DataType.STRING, DataType.STRING]),
+    ]
+    variants = [
+        VW(
+            D.DUMMY | D.SQLITE,
+            lambda user_id, user_info_type: markup_node("userinfo", user_id, user_info_type)
+            if user_info_type.node.value in ["name", "email"]
+            else markup_node("c", user_id),
+        ),
+    ]
+
+
 DEFINITIONS_MARKUP = [
     # +
     BinaryPlusMarkup,
@@ -415,4 +433,6 @@ DEFINITIONS_MARKUP = [
     # tooltip
     FuncTooltip2,
     FuncTooltip3,
+    # user_info
+    FuncUserInfo,
 ]
