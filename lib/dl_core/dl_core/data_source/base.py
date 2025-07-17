@@ -12,6 +12,7 @@ from typing import (
 )
 
 import attr
+from sqlalchemy.sql import TableClause
 
 from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_constants.enums import (
@@ -336,10 +337,14 @@ class DataSource(metaclass=abc.ABCMeta):
         local_key_rep = self.connection.get_cache_key_part()
 
         sql_source = self.get_sql_source()
-        compiled_sql_source = sql_source.compile(compile_kwargs={"literal_binds": True})
+        if isinstance(sql_source, TableClause):
+            compiled_sql_source = str(sql_source)
+        else:
+            compiled_sql_source = sql_source.compile(compile_kwargs={"literal_binds": True}).string
+
         local_key_rep = local_key_rep.extend(
             part_type="data_source_sql",
-            part_content=compiled_sql_source.string,
+            part_content=compiled_sql_source,
         )
         return local_key_rep
 

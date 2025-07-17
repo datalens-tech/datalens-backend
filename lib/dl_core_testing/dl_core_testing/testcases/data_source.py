@@ -111,9 +111,7 @@ class DefaultDataSourceTestClass(
             simplified_schema = list(sorted(simplified_schema, key=lambda v: v[0]))
             expected_schema = list(sorted(expected_schema, key=lambda v: v[0]))
 
-        assert len(simplified_schema) == len(expected_schema)
-        for actual, expected in zip(simplified_schema, expected_schema, strict=True):
-            assert actual == expected, f"{expected=} {actual=}"
+        assert simplified_schema == expected_schema
 
     def _check_migration_dtos(
         self,
@@ -153,6 +151,19 @@ class DefaultDataSourceTestClass(
         source_spec = data_source.spec
         migration_dtos = migrator.export_migration_dtos(data_source_spec=source_spec)
         self._check_migration_dtos(data_source=data_source, migration_dtos=migration_dtos)
+
+    def test_get_cache_key_part(self, data_source: _SUBSELECT_DSRC_TV) -> None:
+        cache_key_part = data_source.get_cache_key_part()
+
+        data_source_sql_key_part = None
+
+        for key_part in cache_key_part.key_parts:
+            if key_part.part_type == "data_source_sql":
+                data_source_sql_key_part = key_part
+                break
+
+        assert data_source_sql_key_part is not None
+        assert data_source_sql_key_part.part_content != ""
 
 
 _SUBSELECT_DSRC_SPEC_TV = TypeVar("_SUBSELECT_DSRC_SPEC_TV", bound=SubselectDataSourceSpec)
