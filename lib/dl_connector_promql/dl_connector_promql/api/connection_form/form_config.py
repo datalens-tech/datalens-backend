@@ -39,6 +39,7 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
                 FormFieldApiSchema(name=CommonFieldName.password),
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.secure, type="boolean"),
+                FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
             ]
         )
 
@@ -75,6 +76,8 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
                         C.CheckboxRowItem(name=CommonFieldName.secure, text="HTTPS", default_value=True),
                     ]
                 ),
+                rc.collapse_advanced_settings_row(),
+                rc.data_export_forbidden_row(),
             ],
             api_schema=FormApiSchema(
                 create=create_api_schema if self.mode == ConnectionFormMode.create else None,
