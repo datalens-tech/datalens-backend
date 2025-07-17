@@ -48,6 +48,8 @@ from dl_constants.api_constants import (
 from dl_core.base_models import EntryLocation
 from dl_core.enums import USApiType
 import dl_core.exc as exc
+from dl_core.retrier.policy import BaseRetryPolicyFactory
+from dl_core.retrier.requests import RequestsPolicyRetrier
 
 
 LOGGER = logging.getLogger(__name__)
@@ -270,20 +272,20 @@ class UStorageClientBase:
         self,
         host: str,
         auth_ctx: USAuthContextBase,
+        retry_policy_factory: BaseRetryPolicyFactory,
         prefix: Optional[str] = None,
-        timeout: int = 30,
         context_request_id: Optional[str] = None,
         context_forwarded_for: Optional[str] = None,
         context_workbook_id: Optional[str] = None,
     ):
         self.host = host
         self.prefix = auth_ctx.get_default_prefix() if prefix is None else prefix
-        self.timeout = timeout
 
         self._disabled = False
         self._folder_id = auth_ctx.get_folder_id()
         self._auth_ctx = auth_ctx
         self._tenant_override: Optional[TenantDef] = None
+        self._retry_policy_factory = retry_policy_factory
 
         # Default headers for HTTP sessions
         self._default_headers = self._auth_ctx_to_default_headers(auth_ctx)
@@ -678,8 +680,8 @@ class UStorageClient(UStorageClientBase):
         self,
         host: str,
         auth_ctx: USAuthContextBase,
+        retry_policy_factory: BaseRetryPolicyFactory,
         prefix: Optional[str] = None,
-        timeout: int = 30,
         context_request_id: Optional[str] = None,
         context_forwarded_for: Optional[str] = None,
         context_workbook_id: Optional[str] = None,
@@ -688,7 +690,7 @@ class UStorageClient(UStorageClientBase):
             host=host,
             auth_ctx=auth_ctx,
             prefix=prefix,
-            timeout=timeout,
+            retry_policy_factory=retry_policy_factory,
             context_request_id=context_request_id,
             context_forwarded_for=context_forwarded_for,
             context_workbook_id=context_workbook_id,
@@ -701,7 +703,11 @@ class UStorageClient(UStorageClientBase):
     def close(self) -> None:
         self._session.close()
 
-    def _request(self, request_data: UStorageClientBase.RequestData) -> dict[str, Any]:
+    def _request(
+        self,
+        request_data: UStorageClientBase.RequestData,
+        retry_policy_name: Optional[str] = None,
+    ) -> dict[str, Any]:
         self._raise_for_disabled_interactions()
 
         url = self._get_full_url(request_data.relative_url)
@@ -711,11 +717,14 @@ class UStorageClient(UStorageClientBase):
         request_kwargs: dict[str, Any] = {"json": request_data.json} if request_data.json is not None else {}
         tracing_headers = get_current_tracing_headers()
 
-        response = self._session.request(
-            request_data.method,
-            url,
+        retry_policy = self._retry_policy_factory.get_policy(retry_policy_name)
+        retrier = RequestsPolicyRetrier(retry_policy=retry_policy)
+
+        response = retrier.retry_request(
+            self._session.request,
+            method=request_data.method,
+            url=url,
             stream=False,
-            timeout=self.timeout,
             params=request_data.params,
             headers={
                 **self._extra_headers,
@@ -750,7 +759,10 @@ class UStorageClient(UStorageClientBase):
             links=links,
             **kwargs,
         )
-        return self._request(rq_data)
+        return self._request(
+            rq_data,
+            retry_policy_name="create_entry",
+        )
 
     def get_entry(
         self,
@@ -762,11 +774,15 @@ class UStorageClient(UStorageClientBase):
         return self._request(
             self._req_data_get_entry(
                 entry_id, params=params, include_permissions=include_permissions, include_links=include_links
-            )
+            ),
+            retry_policy_name="get_entry",
         )
 
     def move_entry(self, entry_id: str, destination: str) -> dict[str, Any]:
-        return self._request(self._req_data_move_entry(entry_id, destination=destination))
+        return self._request(
+            self._req_data_move_entry(entry_id, destination=destination),
+            retry_policy_name="move_entry",
+        )
 
     def update_entry(
         self,
@@ -789,7 +805,8 @@ class UStorageClient(UStorageClientBase):
                 hidden=hidden,
                 links=links,
                 update_revision=update_revision,
-            )
+            ),
+            retry_policy_name="update_entry",
         )
 
     def entries_iterator(
@@ -838,7 +855,8 @@ class UStorageClient(UStorageClientBase):
                     page=page,
                     created_at_from=created_at_from_ts,
                     limit=limit,
-                )
+                ),
+                retry_policy_name="entries_iterator",
             )
 
             # 2. Deal with pagination
@@ -874,7 +892,10 @@ class UStorageClient(UStorageClientBase):
                 done = True
 
     def delete_entry(self, entry_id: str, lock: Optional[str] = None) -> None:
-        self._request(self._req_data_delete_entry(entry_id, lock=lock))
+        self._request(
+            self._req_data_delete_entry(entry_id, lock=lock),
+            retry_policy_name="delete_entry",
+        )
 
     def acquire_lock(
         self,
@@ -894,7 +915,10 @@ class UStorageClient(UStorageClientBase):
         start_ts = time.time()
         while True:
             try:
-                resp = self._request(req_data)
+                resp = self._request(
+                    req_data,
+                    retry_policy_name="acquire_lock",
+                )
                 lock = resp["lockToken"]
                 LOGGER.info('Acquired lock "%s" for object "%s"', lock, entry_id)
                 return lock
@@ -906,7 +930,10 @@ class UStorageClient(UStorageClientBase):
 
     def release_lock(self, entry_id: str, lock: str) -> None:
         try:
-            self._request(self._req_data_release_lock(entry_id, lock=lock))
+            self._request(
+                self._req_data_release_lock(entry_id, lock=lock),
+                retry_policy_name="release_lock",
+            )
         except exc.USReqException:
             LOGGER.exception('Unable to release lock "%s"', lock)
 
@@ -916,10 +943,14 @@ class UStorageClient(UStorageClientBase):
                 us_path=us_path,
                 page_size=100,
                 page_idx=0,
-            )
+            ),
+            retry_policy_name="get_entries_info_in_path",
         )
         return resp["entries"]
 
     def get_entry_revisions(self, entry_id: str) -> list[dict[str, Any]]:
-        resp = self._request(self._req_data_entry_revisions(entry_id))
+        resp = self._request(
+            self._req_data_entry_revisions(entry_id),
+            retry_policy_name="get_entry_revisions",
+        )
         return resp["entries"]

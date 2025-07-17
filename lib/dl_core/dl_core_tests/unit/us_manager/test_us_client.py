@@ -5,6 +5,7 @@ import pytest
 
 from dl_core.base_models import PathEntryLocation
 from dl_core.exc import USBadRequestException
+from dl_core.retrier.policy import DefaultRetryPolicyFactory
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.united_storage_client_aio import UStorageClientAIO
 
@@ -26,6 +27,7 @@ async def test_fields_masking(aiohttp_client, caplog, root_certificates):
         host=f"http://{mock.host}:{mock.port}",
         prefix="/api/private",
         ca_data=root_certificates,
+        retry_policy_factory=DefaultRetryPolicyFactory(),
     )
 
     secret_value = "some_cypher_text_898"

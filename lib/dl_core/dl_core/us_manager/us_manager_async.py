@@ -23,6 +23,7 @@ from dl_core.base_models import (
     ConnectionRef,
     DefaultConnectionRef,
 )
+from dl_core.retrier.policy import BaseRetryPolicyFactory
 from dl_core.united_storage_client import USAuthContextBase
 from dl_core.united_storage_client_aio import UStorageClientAIO
 from dl_core.us_connection_base import ConnectionBase
@@ -58,6 +59,7 @@ class AsyncUSManager(USManagerBase):
         ca_data: bytes,
         bi_context: RequestContextInfo,
         services_registry: ServicesRegistry,
+        retry_policy_factory: BaseRetryPolicyFactory,
         crypto_keys_config: Optional[CryptoKeysConfig] = None,
         us_api_prefix: Optional[str] = None,
         lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
@@ -71,6 +73,7 @@ class AsyncUSManager(USManagerBase):
             context_forwarded_for=bi_context.forwarder_for,
             context_workbook_id=bi_context.workbook_id,
             ca_data=ca_data,
+            retry_policy_factory=retry_policy_factory,
         )
         self._ca_data = ca_data
 
@@ -83,6 +86,7 @@ class AsyncUSManager(USManagerBase):
             services_registry=services_registry,
             lifecycle_manager_factory=lifecycle_manager_factory,
             schema_migration_factory=schema_migration_factory,
+            retry_policy_factory=retry_policy_factory,
         )
 
     @property
@@ -100,6 +104,7 @@ class AsyncUSManager(USManagerBase):
             lifecycle_manager_factory=self._lifecycle_manager_factory,
             schema_migration_factory=self._schema_migration_factory,
             ca_data=self._ca_data,
+            retry_policy_factory=self._retry_policy_factory,
         )
 
     async def close(self) -> None:

@@ -37,6 +37,7 @@ from dl_constants.enums import (
     QueryProcessingMode,
 )
 from dl_core.components.ids import FieldIdGeneratorType
+from dl_core.retrier.policy import DefaultRetryPolicyFactory
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.flask_utils import (
@@ -240,5 +241,6 @@ class ApiTestBase(abc.ABC):
             us_base_url=us_config.us_host,
             us_auth_context=USAuthContextMaster(us_config.us_master_token),
             crypto_keys_config=core_test_config.get_crypto_keys_config(),
+            retry_policy_factory=DefaultRetryPolicyFactory(),
         )
         return us_manager

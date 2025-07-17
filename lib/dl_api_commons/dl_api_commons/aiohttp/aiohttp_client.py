@@ -135,8 +135,16 @@ class BIAioHTTPClient:
         return "/".join(map(lambda s: s.strip("/"), (self.base_url, path)))
 
     @asynccontextmanager
-    async def request(self, method: str, *args: Any, **kwargs: Any) -> AsyncGenerator[aiohttp.ClientResponse, None]:
-        response = await self.retrier.retry_request(self._request, method, *args, **kwargs)  # type: ignore  # TODO: fix
+    async def request(
+        self,
+        method: str,
+        *args: Any,
+        retrier: Optional[BaseRetrier] = None,
+        **kwargs: Any,
+    ) -> AsyncGenerator[aiohttp.ClientResponse, None]:
+        if retrier is None:
+            retrier = self.retrier
+        response = await retrier.retry_request(self._request, method, *args, **kwargs)  # type: ignore  # TODO: fix
         if self.raise_for_status:
             response.raise_for_status()
         yield response
