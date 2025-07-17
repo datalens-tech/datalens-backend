@@ -1,9 +1,3 @@
-from __future__ import annotations
-
-from typing import Optional
-
-from sqlalchemy.sql.elements import ClauseElement
-
 from dl_constants.enums import DataSourceType
 from dl_core.connection_models import (
     TableDefinition,
@@ -16,6 +10,7 @@ from dl_core.data_source.sql import (
     TableSQLDataSourceMixin,
     require_table_name,
 )
+from dl_core.query.bi_query import SqlSourceType
 from dl_core.utils import sa_plain_text
 
 from dl_connector_bigquery.core.constants import (
@@ -55,7 +50,7 @@ class BigQueryTableDataSource(BigQueryDataSourceMixin, TableSQLDataSourceMixin, 
         return connection
 
     @property
-    def db_name(self) -> Optional[str]:
+    def db_name(self) -> str | None:
         return self.connection.project_id
 
     def get_table_definition(self) -> TableDefinition:
@@ -74,7 +69,7 @@ class BigQueryTableDataSource(BigQueryDataSourceMixin, TableSQLDataSourceMixin, 
         )
 
     @require_table_name
-    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
+    def get_sql_source(self, alias: str | None = None) -> SqlSourceType:
         q = self.quote
         alias_str = "" if alias is None else f" AS {q(alias)}"
         return sa_plain_text(f"{q(self.db_name)}" f".{q(self.spec.dataset_name)}" f".{q(self.table_name)}{alias_str}")
