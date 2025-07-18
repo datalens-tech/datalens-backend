@@ -151,4 +151,3 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         init_apis(app)
 
         return app
-    
