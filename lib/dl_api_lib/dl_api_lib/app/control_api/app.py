@@ -12,10 +12,6 @@ import attr
 import flask
 from flask import Flask
 from flask_marshmallow import Marshmallow
-from statcommons.unistat.flask import (
-    register_metrics,
-    register_unistat_hax,
-)
 
 from dl_api_commons.flask.middlewares.aio_event_loop_middleware import AIOEventLoopMiddleware
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
@@ -26,7 +22,6 @@ from dl_api_commons.flask.middlewares.tracing import (
     TracingContextMiddleware,
     TracingMiddleware,
 )
-from dl_api_commons.flask.ping import register_ping_handler_hax
 from dl_api_lib.app.control_api.resources import init_apis
 from dl_api_lib.app_common import SRFactoryBuilder
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
@@ -95,9 +90,9 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
 
         TracingMiddleware(
             url_prefix_exclude=(
-                "/ping",
-                "/unistat",
-                "/metrics",
+                "/api/v1/ping",
+                "/api/v1/unistat",
+                "/api/v1/metrics",
             ),
         ).wrap_flask_app(app)
         ContextVarMiddleware().wrap_flask_app(app)
@@ -122,12 +117,6 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
             request_id_app_prefix=self._settings.app_prefix,
         ).set_up(app)
         profiling_middleware.set_up(app, accept_outer_stages=False)
-
-        # HAX to avoid bumping into inappropriate authorization added in 'before_request'.
-        # TODO: move the inappropriate authorization to common handler wrap.
-        register_ping_handler_hax(app)
-        register_unistat_hax(app)
-        register_metrics(app)
 
         env_setup_result = self.set_up_environment(app=app, testing_app_settings=testing_app_settings)
 
@@ -162,3 +151,4 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         init_apis(app)
 
         return app
+    
