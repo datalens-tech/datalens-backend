@@ -6,7 +6,7 @@ from typing import (
     Any,
     Iterable,
     Optional,
-    Union,
+    Sequence,
 )
 
 import attr
@@ -204,7 +204,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
             # `fail_ok` should not mean `allow 5xx`
             assert response.status_code < 500, response.json
 
-    def cleanup_created_resources(self):  # type: ignore  # TODO: fix
+    def cleanup_created_resources(self) -> None:
         for dataset_id in self._created_dataset_id_list:
             try:
                 self.delete_dataset(dataset_id, fail_ok=True)
@@ -256,7 +256,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
     def apply_updates(
         self,
         dataset: Dataset,
-        updates: list[Union[UpdateAction, dict]] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "updates" (default has type "None", argument has type "list[UpdateAction | dict[Any, Any]]")  [assignment]
+        updates: Sequence[UpdateAction | dict] | None = None,
         fail_ok: bool = False,
     ) -> HttpDatasetApiResponse:
         if dataset.created_:
@@ -265,7 +265,8 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
             url = "/api/v1/datasets/validators/dataset"
 
         data = self.dump_dataset_to_request_body(dataset)
-        updates = list(updates or ()) + self.serial_adapter.generate_implicit_updates(dataset)  # type: ignore  # 2024-01-24 # TODO: Unsupported operand types for + ("list[UpdateAction | dict[Any, Any]]" and "list[UpdateAction]")  [operator]
+        updates = list(updates or ())
+        updates.extend(self.serial_adapter.generate_implicit_updates(dataset))
         data["updates"] = self.serial_adapter.dump_updates(updates)
         response = self._request(url, method="post", data=data)
 

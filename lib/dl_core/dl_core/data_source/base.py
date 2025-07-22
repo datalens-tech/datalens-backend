@@ -289,6 +289,20 @@ class DataSource(metaclass=abc.ABCMeta):
 
         return renderer.render(value)
 
+    def is_templated(self) -> bool:
+        return False
+
+    def _is_value_templated(self, value: str | None) -> bool:
+        if value is None:
+            return False
+
+        try:
+            return self._render_dataset_parameter_values(value) != value
+        except ConnectionTemplateDisabledError:
+            return False
+        except TemplateInvalidError:
+            return True
+
     def source_exists(
         self,
         conn_executor_factory: Callable[[], SyncConnExecutorBase],

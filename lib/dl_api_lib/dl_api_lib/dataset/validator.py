@@ -643,6 +643,23 @@ class DatasetValidator(DatasetBaseWrapper):
             LOGGER.warning("No field with source %s found in raw_schema", field.source)
             return None
 
+    def _refresh_templated_sources(self) -> None:
+        if self._is_data_api:
+            return
+
+        if not self._ds.template_enabled:
+            return
+
+        for source_id in self._ds_accessor.get_data_source_id_list():
+            dsrc_coll = self._get_data_source_coll_strict(source_id=source_id)
+            dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
+
+            if not dsrc.is_templated():
+                continue
+
+            LOGGER.info("Refreshing templated source %s", source_id)
+            self.apply_source_action(action=DatasetAction.refresh_source, source_data=dict(id=source_id))
+
     @generic_profiler("validator-apply-field-action")
     def apply_field_action(
         self,
@@ -684,9 +701,9 @@ class DatasetValidator(DatasetBaseWrapper):
                 field_data_dict["formula"] = ""
 
             if self._is_data_api:
-                # forbidden fields to be mutated via Data API
                 for field_name in ("value_constraint", "template_enabled"):
                     if field_name in field_data_dict:
+                        LOGGER.info("Ignoring forbidden field mutation: %s", field_name)
                         del field_data_dict[field_name]
 
         if action in (DatasetAction.update_field, DatasetAction.delete_field):
@@ -831,6 +848,12 @@ class DatasetValidator(DatasetBaseWrapper):
         # errors can be cleared or fixed by now, so revalidate the result schema length
         if action in (DatasetAction.add_field, DatasetAction.delete_field):
             self.validate_result_schema_length()
+
+        if action in (DatasetAction.update_field, DatasetAction.add_field, DatasetAction.delete_field) and (
+            (old_field is not None and old_field.calc_mode == CalcMode.parameter and old_field.template_enabled)
+            or (new_field is not None and new_field.calc_mode == CalcMode.parameter and new_field.template_enabled)
+        ):
+            self._refresh_templated_sources()
 
     def _update_direct_fields_for_updated_raw_schema(
         self,
