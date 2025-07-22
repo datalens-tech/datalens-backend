@@ -187,6 +187,9 @@ class BaseCHYTTableListDataSource(BaseCHYTTableFuncDataSource, abc.ABC):
         table_names = self.normalize_tables_paths(raw_table_names)
         return CHYTTablesConcat(*table_names, alias=alias)
 
+    def is_templated(self) -> bool:
+        return self._is_value_templated(self.spec.table_names)
+
     @property
     def default_title(self) -> str:
         if not self.spec.table_names:
@@ -251,6 +254,9 @@ class BaseCHYTTableRangeDataSource(BaseCHYTTableFuncDataSource, abc.ABC):
             end=end,
             alias=alias,
         )
+
+    def is_templated(self) -> bool:
+        return any(self._is_value_templated(value) for value in (self.directory_path, self.range_from, self.range_to))
 
     @property
     def default_title(self) -> str:
