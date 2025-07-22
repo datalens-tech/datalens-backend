@@ -330,6 +330,31 @@ class BaseTestControlApiSourceTemplate(BaseTestSourceTemplate):
 
             assert ds.sources["source_1"].parameters[parameter_name] == original_datasource_parameters[parameter_name]
 
+    def test_dataset_template_disabled_then_enabled_refreshes_templated_sources(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        dataset_factory: DatasetFactoryProtocol,
+    ) -> None:
+        ds = dataset_factory(dataset_template_enabled=False)
+        response = control_api.apply_updates(dataset=ds, fail_ok=True)
+
+        assert response.status_code == http.HTTPStatus.BAD_REQUEST
+        assert response.bi_status_code == "ERR.DS_API.VALIDATION.ERROR"
+
+        ds = response.dataset
+
+        updates = [
+            {
+                "action": DatasetAction.update_setting.value,
+                "setting": {
+                    "name": "template_enabled",
+                    "value": True,
+                },
+            }
+        ]
+        ds = control_api.apply_updates(dataset=ds, updates=updates).dataset
+        ds = control_api.save_dataset(dataset=ds).dataset
+
 
 class BaseTestControlApiSourceTemplateSettingsDisabled(BaseTestSourceTemplate):
     connector_enable_datasource_template = False
