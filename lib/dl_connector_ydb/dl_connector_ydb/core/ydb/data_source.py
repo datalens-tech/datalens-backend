@@ -1,15 +1,10 @@
-from __future__ import annotations
-
-from typing import Optional
-
-from sqlalchemy.sql.elements import ClauseElement
-
 from dl_constants.enums import DataSourceType
 from dl_core.data_source.sql import (
     StandardSQLDataSource,
     SubselectDataSource,
     require_table_name,
 )
+from dl_core.query.bi_query import SqlSourceType
 from dl_core.utils import sa_plain_text
 
 from dl_connector_ydb.core.base.data_source import YQLDataSourceMixin
@@ -32,7 +27,7 @@ class YDBTableDataSource(YDBDataSourceMixin, StandardSQLDataSource):
     """YDB table"""
 
     @require_table_name
-    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
+    def get_sql_source(self, alias: str | None = None) -> SqlSourceType:
         # cross-db joins are not supported
         assert not self.db_name or self.db_name == self.connection.db_name  # type: ignore  # 2024-01-24 # TODO: "ConnectionBase" has no attribute "db_name"; maybe "dir_name"?  [attr-defined]
 

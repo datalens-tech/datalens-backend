@@ -12,7 +12,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 Flask = ">=2.2.5"
 Werkzeug = ">=2.2.3"
-aiohttp = ">=3.9.1"
+aiohttp = ">=3.12.14"
 attrs = ">=22.2.0"
 marshmallow = ">=3.19.0"
 psycopg2-binary = ">=2.9.9"

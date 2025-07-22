@@ -11,7 +11,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 aiodns = ">=3.1.1"
-aiohttp = ">=3.9.1"
+aiohttp = ">=3.12.14"
 anyascii = ">=0.3.2"
 pydantic = ">=2.7.0"
 frozendict = ">=2.3.8"

@@ -1,15 +1,10 @@
-from __future__ import annotations
-
 from typing import (
-    TYPE_CHECKING,
     Callable,
-    Optional,
     Type,
 )
 
-from sqlalchemy.sql.elements import ClauseElement
-
 from dl_constants.enums import DataSourceType
+from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.connection_models import (
     TableDefinition,
     TableIdent,
@@ -22,6 +17,7 @@ from dl_core.data_source.sql import (
     require_table_name,
 )
 from dl_core.db import SchemaInfo
+from dl_core.query.bi_query import SqlSourceType
 from dl_core.utils import sa_plain_text
 
 from dl_connector_snowflake.core.constants import (
@@ -34,10 +30,6 @@ from dl_connector_snowflake.core.data_source_spec import (
     SnowFlakeTableDataSourceSpec,
 )
 from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
-
-
-if TYPE_CHECKING:
-    from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 
 
 class SnowFlakeDataSourceMixin(BaseSQLDataSource):
@@ -65,11 +57,11 @@ class SnowFlakeTableDataSource(SnowFlakeDataSourceMixin, TableSQLDataSourceMixin
         return connection
 
     @property
-    def db_name(self) -> Optional[str]:
+    def db_name(self) -> str | None:
         return self.connection.db_name
 
     @property
-    def schema_name(self) -> Optional[str]:
+    def schema_name(self) -> str | None:
         return self.connection.schema_name
 
     def get_parameters(self) -> dict:
@@ -93,7 +85,7 @@ class SnowFlakeTableDataSource(SnowFlakeDataSourceMixin, TableSQLDataSourceMixin
         return super(SnowFlakeTableDataSource, self).get_schema_info(conn_executor_factory=conn_executor_factory)
 
     @require_table_name
-    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
+    def get_sql_source(self, alias: str | None = None) -> SqlSourceType:
         q = self.quote
         alias_str = "" if alias is None else f" AS {q(alias)}"
         return sa_plain_text(f"{q(self.db_name)}.{q(self.schema_name)}.{q(self.table_name)}{alias_str}")
@@ -106,5 +98,5 @@ class SnowFlakeSubselectDataSource(SnowFlakeDataSourceMixin, SubselectDataSource
         return self._spec
 
     @property
-    def db_version(self) -> Optional[str]:
+    def db_version(self) -> str | None:
         return None

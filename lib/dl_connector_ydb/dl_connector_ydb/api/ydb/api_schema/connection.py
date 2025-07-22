@@ -7,7 +7,10 @@ from dl_api_connector.api_schema.connection_base_fields import (
     cache_ttl_field,
     secret_string_field,
 )
-from dl_api_connector.api_schema.connection_mixins import RawSQLLevelMixin
+from dl_api_connector.api_schema.connection_mixins import (
+    DataExportForbiddenMixin,
+    RawSQLLevelMixin,
+)
 from dl_api_connector.api_schema.connection_sql import (
     DBHostField,
     db_name_no_query_params,
@@ -19,7 +22,7 @@ from dl_connector_ydb.core.ydb.constants import YDBAuthTypeMode
 from dl_connector_ydb.core.ydb.us_connection import YDBConnection
 
 
-class YDBConnectionSchema(RawSQLLevelMixin, ConnectionSchema):
+class YDBConnectionSchema(RawSQLLevelMixin, DataExportForbiddenMixin, ConnectionSchema):
     TARGET_CLS = YDBConnection
 
     auth_type = ma_fields.Enum(

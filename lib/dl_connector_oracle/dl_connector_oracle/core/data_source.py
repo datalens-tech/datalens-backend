@@ -1,9 +1,4 @@
-from __future__ import annotations
-
 import logging
-from typing import Optional
-
-from sqlalchemy.sql.elements import ClauseElement
 
 from dl_constants.enums import DataSourceType
 from dl_core.data_source.sql import (
@@ -12,6 +7,7 @@ from dl_core.data_source.sql import (
     SubselectDataSource,
     require_table_name,
 )
+from dl_core.query.bi_query import SqlSourceType
 from dl_core.utils import sa_plain_text
 
 from dl_connector_oracle.core.constants import (
@@ -36,7 +32,7 @@ class OracleDataSource(OracleDataSourceMixin, StandardSchemaSQLDataSource):
     """Oracle table"""
 
     @require_table_name
-    def get_sql_source(self, alias: Optional[str] = None) -> ClauseElement:
+    def get_sql_source(self, alias: str | None = None) -> SqlSourceType:
         q = self.quote
         alias_str = "" if alias is None else f" {q(alias)}"
         schema_str = "" if self.schema_name is None else f"{q(self.schema_name)}."

@@ -9,7 +9,7 @@ license = "Apache 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-aiohttp = ">=3.9.1"
+aiohttp = ">=3.12.14"
 python = ">=3.10, <3.13"
 gunicorn = ">=21.2.0"
 dl-version = {path = "../../lib/dl_version"}

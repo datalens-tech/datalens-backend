@@ -12,6 +12,7 @@ from marshmallow import fields as ma_fields
 
 from dl_api_connector.api_schema.connection_base import ConnectionMetaMixin
 from dl_api_connector.api_schema.connection_base_fields import secret_string_field
+from dl_api_connector.api_schema.connection_mixins import DataExportForbiddenMixin
 from dl_api_connector.api_schema.connection_sql import ClassicSQLConnectionSchema
 from dl_api_connector.api_schema.extras import FieldExtra
 
@@ -41,7 +42,7 @@ class DBPathField(ma_fields.String):
         return user_path_str
 
 
-class PromQLConnectionSchema(ConnectionMetaMixin, ClassicSQLConnectionSchema):
+class PromQLConnectionSchema(ConnectionMetaMixin, DataExportForbiddenMixin, ClassicSQLConnectionSchema):
     TARGET_CLS = PromQLConnection
 
     secure = ma_fields.Boolean(attribute="data.secure", bi_extra=FieldExtra(editable=True))

@@ -12,12 +12,9 @@ from typing import (
 )
 
 import attr
-from sqlalchemy.sql.elements import ClauseElement
+from sqlalchemy.sql import TableClause
 
-from dl_cache_engine.primitives import (
-    DataKeyPart,
-    LocalKeyRepresentation,
-)
+from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_constants.enums import (
     ConnectionType,
     DataSourceType,
@@ -40,6 +37,7 @@ from dl_core.exc import (
     ConnectionTemplateDisabledError,
     TemplateInvalidError,
 )
+from dl_core.query.bi_query import SqlSourceType
 from dl_core.us_connection import get_connection_class
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_manager.local_cache import USEntryBuffer
@@ -156,15 +154,15 @@ class DataSource(metaclass=abc.ABCMeta):
         return self._spec
 
     def _validate_connection(self) -> None:
-        if self._connection is not None and self._spec.connection_ref is None:  # type: ignore  # TODO: fix
+        if self._connection is not None and self.spec.connection_ref is None:
             # TODO CONSIDER: extraction of connection ref
             pass
-        elif self._spec.connection_ref is not None and self._connection is None:  # type: ignore  # TODO: fix
+        elif self.spec.connection_ref is not None and self._connection is None:
             pass
         else:
             raise ValueError(
                 f"Unexpected combination of 'connection' and 'connection_ref':"
-                f" {self._connection} and {self._spec.connection_ref}"  # type: ignore  # TODO: fix no attribute
+                f" {self._connection} and {self.spec.connection_ref}"
             )
 
         if self._connection is not None:
@@ -235,7 +233,8 @@ class DataSource(metaclass=abc.ABCMeta):
     def connection_ref(self) -> ConnectionRef:
         if self.spec.connection_ref is None:
             # TODO CONSIDER: May raise exception if connection has no ref? Or raise on save attempt?
-            self.spec.connection_ref = self._connection.conn_ref  # type: ignore  # TODO: fix
+            assert self._connection is not None
+            self.spec.connection_ref = self._connection.conn_ref
 
         connection_ref = self.spec.connection_ref
         assert connection_ref is not None
@@ -268,7 +267,7 @@ class DataSource(metaclass=abc.ABCMeta):
         return None
 
     @abc.abstractmethod
-    def get_sql_source(self, alias: str | None = None) -> ClauseElement:
+    def get_sql_source(self, alias: str | None = None) -> SqlSourceType:
         """
         Return something that can be used in a ``select_from`` ``SQLAlchemy`` clause for fetching data.
         Optionally assign the source an alias that can be used in the query to refer to it.
@@ -289,6 +288,20 @@ class DataSource(metaclass=abc.ABCMeta):
         renderer = DataSourceRenderer(values=self._dataset_parameter_values)
 
         return renderer.render(value)
+
+    def is_templated(self) -> bool:
+        return False
+
+    def _is_value_templated(self, value: str | None) -> bool:
+        if value is None:
+            return False
+
+        try:
+            return self._render_dataset_parameter_values(value) != value
+        except ConnectionTemplateDisabledError:
+            return False
+        except TemplateInvalidError:
+            return True
 
     def source_exists(
         self,
@@ -336,11 +349,16 @@ class DataSource(metaclass=abc.ABCMeta):
 
     def get_cache_key_part(self) -> LocalKeyRepresentation:
         local_key_rep = self.connection.get_cache_key_part()
-        local_key_rep = local_key_rep.multi_extend(
-            DataKeyPart(
-                part_type="data_source_sql",
-                part_content=self.get_sql_source().compile(compile_kwargs={"literal_binds": True}).string,
-            ),
+
+        sql_source = self.get_sql_source()
+        if isinstance(sql_source, TableClause):
+            compiled_sql_source = str(sql_source)
+        else:
+            compiled_sql_source = sql_source.compile(compile_kwargs={"literal_binds": True}).string
+
+        local_key_rep = local_key_rep.extend(
+            part_type="data_source_sql",
+            part_content=compiled_sql_source,
         )
         return local_key_rep
 
