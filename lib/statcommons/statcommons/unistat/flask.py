@@ -42,16 +42,7 @@ def _unistat_handler_hax():
     return None  # flask: fall through
 
 
-def register_unistat_hax(app):
-    # HAX to avoid bumping into inappropriate authorization added in 'before_request'.
-    app.before_request(_unistat_handler_hax)
-
-
 def metrics_handler():
     data = uwsgi_prometheus()
     body = "".join(dump_for_prometheus(data))
     return flask.make_response(body)
-
-
-def register_metrics(app):
-    return app.route("/metrics")(metrics_handler)

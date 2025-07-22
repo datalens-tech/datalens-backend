@@ -1,10 +1,25 @@
 from __future__ import annotations
 
+from collections import OrderedDict
 import logging
+import os
 from typing import (
     Any,
     ClassVar,
     NoReturn,
+)
+
+from flask import (
+    Response,
+    make_response,
+)
+from statcommons.unistat.common import (
+    dump_for_prometheus,
+    results_to_response,
+)
+from statcommons.unistat.uwsgi import (
+    uwsgi_prometheus,
+    uwsgi_unistat,
 )
 
 from dl_api_commons.flask.required_resources import RequiredResourceCommon
@@ -46,7 +61,14 @@ class UnistatResource(MonitoringResourceBase):
     def get(self) -> Any:
         """Endpoint for service statistics"""
         try:
-            return {"status": "ok"}
+            results = OrderedDict()
+            if os.environ.get("UWSGI_STATS") and os.environ.get("QLOUD_APPLICATION"):
+                results.update(uwsgi_unistat())
+            else:
+                results["service.status"] = '"ok"'
+
+            data = "".join(results_to_response(results))
+            return Response(data, content_type="application/json; charset=utf-8")
         except Exception as e:
             _handle_monitoring_exc(e)
 
@@ -56,6 +78,12 @@ class MetricsResource(MonitoringResourceBase):
     def get(self) -> Any:
         """Prometheus metrics endpoint"""
         try:
-            return {"status": "ok"}
+            if os.environ.get("UWSGI_STATS") and os.environ.get("QLOUD_APPLICATION"):
+                data = uwsgi_prometheus()
+            else:
+                data = [("service_status", 1)]
+
+            body = "".join(dump_for_prometheus(data))
+            return make_response(body)
         except Exception as e:
             _handle_monitoring_exc(e)

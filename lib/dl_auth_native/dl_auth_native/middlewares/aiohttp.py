@@ -9,6 +9,7 @@ from dl_api_commons.aiohttp.required_resources import (
     RequiredResourceCommon,
     get_required_resources,
 )
+import dl_api_commons.base_models as dl_api_commons_base_models
 import dl_auth_native.middlewares.base as middlewares_base
 
 
@@ -24,6 +25,13 @@ class AioHTTPMiddleware(middlewares_base.BaseMiddleware):
             app_request: dl_api_commons_aiohttp_aiohttp_wrappers.DLRequestBase,
             handler: aiohttp_typedefs.Handler,
         ) -> aiohttp_web.StreamResponse:
+            # TODO BI-6257: Resolve tenant before auth
+            temp_rci = app_request.temp_rci
+            temp_rci_with_tenant = temp_rci.clone(
+                tenant=dl_api_commons_base_models.TenantCommon(),
+            )
+            app_request.replace_temp_rci(temp_rci_with_tenant)
+
             required_resources = get_required_resources(app_request)
 
             if RequiredResourceCommon.SKIP_AUTH in required_resources:
