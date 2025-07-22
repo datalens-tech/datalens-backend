@@ -9,7 +9,7 @@ license = "Apache 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-aiohttp = ">=3.9.1"
+aiohttp = ">=3.12.14"
 attrs = ">=22.2.0"
 flask = ">=2.2.5"
 flask-marshmallow = ">=1.1.0"
