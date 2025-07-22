@@ -29,6 +29,7 @@ from dl_constants.enums import (
 from dl_core.aio.web_app_services.data_processing.data_processor import DataProcessorService
 from dl_core.aio.web_app_services.data_processing.factory import make_compeng_service
 from dl_core.connections_security.base import InsecureConnectionSecurityManager
+from dl_core.retrier.policy import DefaultRetryPolicyFactory
 from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
@@ -233,6 +234,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             us_base_url=conn_us_config.us_base_url,
             us_auth_context=conn_us_config.us_auth_context,
             crypto_keys_config=conn_us_config.us_crypto_keys_config,
+            retry_policy_factory=DefaultRetryPolicyFactory(),
         )
         return us_manager
 
@@ -251,6 +253,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             us_auth_context=conn_us_config.us_auth_context,
             crypto_keys_config=conn_us_config.us_crypto_keys_config,
             ca_data=root_certificates,
+            retry_policy_factory=DefaultRetryPolicyFactory(),
         )
         return us_manager
 

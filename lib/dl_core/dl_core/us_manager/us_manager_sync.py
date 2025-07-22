@@ -26,6 +26,7 @@ from dl_core.base_models import (
     ConnectionRef,
     DefaultConnectionRef,
 )
+from dl_core.retrier.policy import BaseRetryPolicyFactory
 from dl_core.united_storage_client import (
     USAuthContextBase,
     UStorageClient,
@@ -61,10 +62,10 @@ class SyncUSManager(USManagerBase):
         us_base_url: str,
         bi_context: RequestContextInfo,
         services_registry: ServicesRegistry,
+        retry_policy_factory: BaseRetryPolicyFactory,
         crypto_keys_config: Optional[CryptoKeysConfig] = None,
         us_api_prefix: Optional[str] = None,
         # caches_redis: Optional[aioredis.Redis] = None,
-        request_timeout_sec: int = 30,  # WARNING: unused.
         lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
         schema_migration_factory: Optional[EntrySchemaMigrationFactoryBase] = None,
     ):
@@ -77,6 +78,7 @@ class SyncUSManager(USManagerBase):
             services_registry=services_registry,
             lifecycle_manager_factory=lifecycle_manager_factory,
             schema_migration_factory=schema_migration_factory,
+            retry_policy_factory=retry_policy_factory,
         )
         self._us_client = self._create_us_client()
 
@@ -88,6 +90,7 @@ class SyncUSManager(USManagerBase):
             context_request_id=self._bi_context.request_id if self._bi_context is not None else None,
             context_forwarded_for=self._bi_context.forwarder_for,
             context_workbook_id=self._bi_context.workbook_id,
+            retry_policy_factory=self._retry_policy_factory,
         )
 
     def clone(self, **kwargs: Any) -> Self:
@@ -98,10 +101,10 @@ class SyncUSManager(USManagerBase):
             bi_context=self._bi_context,
             crypto_keys_config=self._crypto_keys_config,
             us_api_prefix=self._us_api_prefix,
-            # request_timeout_sec=self._request_timeout_sec,
             services_registry=self._services_registry,
             lifecycle_manager_factory=self._lifecycle_manager_factory,
             schema_migration_factory=self._schema_migration_factory,
+            retry_policy_factory=self._retry_policy_factory,
         )
         kwargs = {
             **base_kwargs,
