@@ -208,6 +208,9 @@ class SubselectDataSource(BaseSQLDataSource):
             from_sql = "{}{}{}".format(from_sql, self._subquery_alias_joiner, self.quote(alias))
         return sa_plain_text(from_sql)
 
+    def is_templated(self) -> bool:
+        return self._is_value_templated(self.subsql)
+
     @property
     def default_title(self) -> str:
         return "(select ...)"
@@ -311,6 +314,9 @@ class TableSQLDataSourceMixin(BaseSQLDataSource):
 
         table_name = self._render_dataset_parameter_values(table_name)
         return table_name
+
+    def is_templated(self) -> bool:
+        return self._is_value_templated(self.raw_table_name)
 
     @property
     def raw_table_name(self) -> str | None:

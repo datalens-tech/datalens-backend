@@ -1,6 +1,8 @@
+import copy
 import http
 import json
 from typing import (
+    Any,
     ClassVar,
     Generator,
     Protocol,
@@ -116,7 +118,7 @@ class BaseTestSourceTemplate(ConnectionTestBase):
             template_enabled: bool = True,
             invalid_default_value: bool = False,
         ) -> dict[str, ResultField]:
-            result: dict[str, ResultField] = parameter_fields.copy()
+            result: dict[str, ResultField] = copy.deepcopy(parameter_fields)
 
             if template_enabled:
                 for field in result.values():
@@ -213,7 +215,7 @@ class BaseSubselectTestSourceTemplate(BaseTableTestSourceTemplate):
 
 
 class BaseTestControlApiSourceTemplate(BaseTestSourceTemplate):
-    excluded_assert_parameters: ClassVar[Sequence[str]] = []
+    excluded_assert_parameters: ClassVar[Sequence[str]] = ["db_version"]
 
     def test_default(
         self,
@@ -282,6 +284,51 @@ class BaseTestControlApiSourceTemplate(BaseTestSourceTemplate):
         assert len(component_errors) == 1
         assert component_errors[0]["type"] == "data_source"
         assert component_errors[0]["errors"][0]["code"].startswith("ERR.DS_API.DB")
+
+    def test_changing_invalid_default_value_fixes_datasource(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        dataset_factory: DatasetFactoryProtocol,
+        parameter_fields_factory: ParameterFieldsFactoryProtocol,
+    ) -> None:
+        ds = dataset_factory(parameters_invalid_default_value=True)
+        response = control_api.apply_updates(dataset=ds, fail_ok=True)
+
+        assert response.status_code == http.HTTPStatus.BAD_REQUEST
+        assert response.bi_status_code == "ERR.DS_API.VALIDATION.ERROR"
+        ds = response.dataset
+        parameter_fields = parameter_fields_factory(
+            template_enabled=True,
+            invalid_default_value=False,
+        )
+        updates: list[dict[str, Any]] = []
+        for parameter_name, parameter_field in parameter_fields.items():
+            original_field = ds.find_field(title=parameter_name)
+            assert original_field.cast is not None
+            assert parameter_field.default_value is not None
+
+            updates.append(
+                {
+                    "action": DatasetAction.update_field.value,
+                    "field": {
+                        "guid": original_field.id,
+                        "cast": original_field.cast.name,
+                        "default_value": parameter_field.default_value.value,
+                        "template_enabled": parameter_field.template_enabled,
+                    },
+                }
+            )
+
+        original_datasource_parameters = ds.sources["source_1"].parameters.copy()
+
+        ds = control_api.apply_updates(dataset=ds, updates=updates).dataset
+        ds = control_api.save_dataset(dataset=ds).dataset
+
+        for parameter_name in original_datasource_parameters.keys():
+            if parameter_name in self.excluded_assert_parameters:
+                continue
+
+            assert ds.sources["source_1"].parameters[parameter_name] == original_datasource_parameters[parameter_name]
 
 
 class BaseTestControlApiSourceTemplateSettingsDisabled(BaseTestSourceTemplate):
