@@ -10,7 +10,7 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-aiohttp = {version = ">=3.9.1", optional = true}
+aiohttp = {version = ">=3.12.14", optional = true}
 attrs = ">=22.2.0"
 flask = {version = ">=2.2.5", optional = true}
 pyjwt = ">=2.4.0"
