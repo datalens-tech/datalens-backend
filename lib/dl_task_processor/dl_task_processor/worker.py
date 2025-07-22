@@ -90,7 +90,7 @@ class DLArqWorker(Worker):
 class WorkerSettings:
     # we should not allow forever-fail tasks because it can stop the whole system
     # but (if you really want it) you can provide float('inf')
-    retry_hard_limit: int = attr.ib(default=20)
+    retry_hard_limit: int = attr.ib(default=4)
     max_concurrent_jobs: int = attr.ib(default=15)
     job_timeout: int = attr.ib(default=600)  # seconds
     health_check_interval: int = attr.ib(default=30)  # how often the HC record is set
