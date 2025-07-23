@@ -18,6 +18,10 @@ from dl_api_commons.base_models import RequestContextInfo
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core.base_models import EntryLocation
 from dl_core.exc import USObjectNotFoundException
+from dl_core.retrier.policy import (
+    BaseRetryPolicyFactory,
+    DefaultRetryPolicyFactory,
+)
 from dl_core.services_registry.top_level import (
     DummyServiceRegistry,
     ServicesRegistry,
@@ -36,11 +40,17 @@ class MockedUStorageClient(UStorageClient):
         self,
         host: str,
         auth_ctx: USAuthContextBase,
+        retry_policy_factory: BaseRetryPolicyFactory,
         prefix: Optional[str] = None,
-        timeout: int = 30,
         context_request_id: Optional[str] = None,
     ):
-        super().__init__(host, auth_ctx, prefix, timeout, context_request_id)
+        super().__init__(
+            host=host,
+            auth_ctx=auth_ctx,
+            retry_policy_factory=retry_policy_factory,
+            prefix=prefix,
+            context_request_id=context_request_id,
+        )
         self._saved_entries: Dict[str, Dict[str, Any]] = {}
 
     @classmethod
@@ -53,7 +63,11 @@ class MockedUStorageClient(UStorageClient):
         )
         return f"{pre_formatted}Z"
 
-    def _request(self, request_data: UStorageClientBase.RequestData) -> Dict[str, Any]:
+    def _request(
+        self,
+        request_data: UStorageClientBase.RequestData,
+        retry_policy_name: Optional[str] = None,
+    ) -> Dict[str, Any]:
         raise NotImplementedError("This is dummy US client")
 
     def create_entry(
@@ -164,6 +178,7 @@ class MockedSyncUSManager(SyncUSManager):
             else crypto_keys_config,
             us_auth_context=USAuthContextMaster("FakeKey"),
             services_registry=services_registry,
+            retry_policy_factory=DefaultRetryPolicyFactory(),
         )
 
     def _create_us_client(self) -> UStorageClient:
@@ -171,4 +186,5 @@ class MockedSyncUSManager(SyncUSManager):
             host=self._us_base_url,
             auth_ctx=self._us_auth_context,
             prefix=self._us_api_prefix,
+            retry_policy_factory=self._retry_policy_factory,
         )

@@ -647,9 +647,6 @@ class DatasetValidator(DatasetBaseWrapper):
         if self._is_data_api:
             return
 
-        if not self._ds.template_enabled:
-            return
-
         for source_id in self._ds_accessor.get_data_source_id_list():
             dsrc_coll = self._get_data_source_coll_strict(source_id=source_id)
             dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
@@ -849,9 +846,13 @@ class DatasetValidator(DatasetBaseWrapper):
         if action in (DatasetAction.add_field, DatasetAction.delete_field):
             self.validate_result_schema_length()
 
-        if action in (DatasetAction.update_field, DatasetAction.add_field, DatasetAction.delete_field) and (
-            (old_field is not None and old_field.calc_mode == CalcMode.parameter and old_field.template_enabled)
-            or (new_field is not None and new_field.calc_mode == CalcMode.parameter and new_field.template_enabled)
+        if (
+            self._ds.template_enabled
+            and action in (DatasetAction.update_field, DatasetAction.add_field, DatasetAction.delete_field)
+            and (
+                (old_field is not None and old_field.calc_mode == CalcMode.parameter and old_field.template_enabled)
+                or (new_field is not None and new_field.calc_mode == CalcMode.parameter and new_field.template_enabled)
+            )
         ):
             self._refresh_templated_sources()
 
@@ -1693,6 +1694,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 self._ds_editor.set_load_preview_by_default(setting.value)
             elif setting.name == DatasetSettingName.template_enabled:
                 self._ds_editor.set_template_enabled(setting.value)
+                self._refresh_templated_sources()
             elif setting.name == DatasetSettingName.data_export_forbidden:
                 self._ds_editor.set_data_export_forbidden(setting.value)
             else:

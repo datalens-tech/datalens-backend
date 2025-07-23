@@ -1,6 +1,7 @@
 from typing import Optional
 
 import attr
+import pydantic
 
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.meta_definition import s_attrib
@@ -10,6 +11,7 @@ from dl_configs.utils import (
     get_root_certificates_path,
     split_by_comma,
 )
+from dl_core.us_manager.settings import USClientSettings
 from dl_file_uploader_lib.settings import (
     DeprecatedFileUploaderBaseSettings,
     FileUploaderBaseSettings,
@@ -80,4 +82,4 @@ class DeprecatedFileUploaderWorkerSettings(DeprecatedFileUploaderBaseSettings):
 
 
 class FileUploaderWorkerSettings(FileUploaderBaseSettings):
-    ...
+    US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
