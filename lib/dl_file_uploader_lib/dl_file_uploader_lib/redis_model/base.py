@@ -266,6 +266,10 @@ class RedisModelManager:
 
         ttl = await self._redis.ttl(obj_key)
 
+        if ttl == -2:
+            LOGGER.info(f"RedisModel object not found: {obj_key}")
+            raise RedisModelNotFound()
+
         return ttl == -1
 
     async def delete(self, obj: RedisModel) -> None:
