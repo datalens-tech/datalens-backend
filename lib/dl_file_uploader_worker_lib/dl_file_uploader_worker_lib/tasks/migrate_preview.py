@@ -34,7 +34,7 @@ class MigratePreviewRedisToS3Task(
 
     async def run(self) -> TaskResult:
         try:
-            source_lock_key = f"MigratePreviewTask/{tenant_id}/{preview_id}"
+            source_lock_key = f"MigratePreviewRedisToS3Task/{tenant_id}/{preview_id}"
             LOGGER.info(f"Acquiring redis lock {source_lock_key}")
             async with RedisLock(redis, name=source_lock_key, timeout=120, blocking_timeout=120):
                 LOGGER.info(f"Lock {source_lock_key} acquired")
