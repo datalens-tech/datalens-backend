@@ -121,7 +121,6 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
                     LOGGER.debug(f"Saving preview {redis_preview.id} to redis")
 
                 else:
-                    LOGGER.debug("Saving preview to redis")
                     assert s3mm is not None
                     preview = await file_parser.prepare_preview(dsrc, s3mm)
                     await preview.save(
