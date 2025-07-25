@@ -32,6 +32,8 @@ from dl_file_uploader_lib.redis_model.models import (
     YaDocsUserSourceDataSourceProperties,
     YaDocsUserSourceProperties,
 )
+from dl_file_uploader_lib.s3_model.base import S3ModelManager
+from dl_file_uploader_lib.s3_model.models import S3DataSourcePreview
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 import dl_file_uploader_task_interface.tasks as task_interface
 from dl_file_uploader_task_interface.tasks import TaskExecutionMode
@@ -148,6 +150,15 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
 
             s3_service = self._ctx.s3_service
 
+            # TODO(catsona): Remove after release
+            s3mm = None
+            if self.meta.tenant_id is not None:
+                s3mm = S3ModelManager(
+                    s3_service=s3_service,
+                    tenant_id=self.meta.tenant_id,
+                    crypto_keys_config=self._ctx.crypto_keys_config,
+                )
+
             dfile = await DataFile.get(manager=rmm, obj_id=self.meta.file_id)
 
             src_source_id, dst_source_id = self.meta.src_source_id, self.meta.dst_source_id
@@ -168,12 +179,22 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                     conn = await usm.get_by_id(self.meta.connection_id, expected_type=BaseFileS3Connection)
                     assert isinstance(conn, BaseFileS3Connection)
 
-                    # TODO(catsona): Bring back S3 logic
-                    redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=str(src_source.preview_id))
-                    preview_id = redis_preview.id
-                    await redis_preview.save(
-                        ttl=None
-                    )  # now that the source is saved the preview can be saved as persistent
+                    # TODO(catsona): Remove after release, fallback to old behavior
+                    if self.meta.tenant_id is None:
+                        redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=str(src_source.preview_id))
+                        preview_id = redis_preview.id
+                        await redis_preview.save(
+                            ttl=None
+                        )  # now that the source is saved the preview can be saved as persistent
+                        LOGGER.debug(f"Saving persistent preview {preview_id} to redis")
+
+                    else:
+                        preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=str(src_source.preview_id))
+                        preview_id = preview.id
+                        await preview.save(
+                            persistent=True
+                        )  # now that the source is saved the preview can be saved as persistent
+                        LOGGER.debug(f"Saving persistent preview {preview_id} to s3")
 
                     try:
                         conn_file_source = conn.get_file_source_by_id(dst_source_id)

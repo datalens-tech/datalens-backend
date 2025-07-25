@@ -1,6 +1,7 @@
 import logging
 
 import attr
+from redis.asyncio.lock import Lock as RedisLock
 
 from dl_file_uploader_lib.redis_model.base import (
     RedisModelManager,
@@ -45,6 +46,7 @@ class MigratePreviewRedisToS3Task(
                 raise ValueError("preview_id is None")
 
             redis = self._ctx.redis_service.get_redis()
+
             rmm = RedisModelManager(
                 redis=redis,
                 crypto_keys_config=self._ctx.crypto_keys_config,
@@ -55,23 +57,29 @@ class MigratePreviewRedisToS3Task(
                 tenant_id=tenant_id,
             )
 
-            try:
-                redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
-                assert isinstance(redis_preview, DataSourcePreview)
+            source_lock_key = f"MigratePreviewRedisToS3Task/{tenant_id}/{preview_id}"
+            LOGGER.info(f"Acquiring redis lock {source_lock_key}")
+            async with RedisLock(redis, name=source_lock_key, timeout=120, blocking_timeout=120):
+                LOGGER.info(f"Lock {source_lock_key} acquired")
+                try:
+                    redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
+                    assert isinstance(redis_preview, DataSourcePreview)
 
-                s3_preview = S3DataSourcePreview(
-                    manager=s3mm, preview_data=redis_preview.preview_data, id=redis_preview.id
-                )
-                await s3_preview.save(persistent=await redis_preview.is_persistent())
+                    s3_preview = S3DataSourcePreview(
+                        manager=s3mm, preview_data=redis_preview.preview_data, id=redis_preview.id
+                    )
+                    await s3_preview.save(persistent=await redis_preview.is_persistent())
 
-                await redis_preview.delete()
+                    await redis_preview.delete()
 
-                preview_set = PreviewSet(redis=redis, id=tenant_id)
-                await preview_set.remove(preview_id)
+                    preview_set = PreviewSet(redis=redis, id=tenant_id)
+                    await preview_set.remove(preview_id)
 
-                LOGGER.info(f"Successfully migrated preview id={preview_id} for tenant {tenant_id} from redis to s3")
-            except RedisModelNotFound:
-                LOGGER.info(f"Preview id={preview_id} not found in redis for tenant {tenant_id}")
+                    LOGGER.info(
+                        f"Successfully migrated preview id={preview_id} for tenant {tenant_id} from redis to s3"
+                    )
+                except RedisModelNotFound:
+                    LOGGER.info(f"Preview id={preview_id} not found in redis for tenant {tenant_id}")
 
         except Exception as ex:
             LOGGER.exception(ex)
