@@ -118,14 +118,17 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
                         ttl=12 * 12 * 60
                     )  # save preview temporarily, so it is deleted if source never gets saved
                     dsrc.preview_id = redis_preview.id
+                    LOGGER.debug(f"Saving preview {redis_preview.id} to redis")
 
                 else:
+                    LOGGER.debug("Saving preview to redis")
                     assert s3mm is not None
                     preview = await file_parser.prepare_preview(dsrc, s3mm)
                     await preview.save(
                         persistent=False,
                     )  # save preview temporarily, so it is deleted if source never gets saved
                     dsrc.preview_id = preview.id
+                    LOGGER.debug(f"Saving preview {preview.id} to s3")
 
                 LOGGER.info("DataSourcePreview object saved.")
 

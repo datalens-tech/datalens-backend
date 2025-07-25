@@ -186,6 +186,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                         await redis_preview.save(
                             ttl=None
                         )  # now that the source is saved the preview can be saved as persistent
+                        LOGGER.debug(f"Saving persistent preview {preview_id} to redis")
 
                     else:
                         preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=str(src_source.preview_id))
@@ -193,6 +194,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                         await preview.save(
                             persistent=True
                         )  # now that the source is saved the preview can be saved as persistent
+                        LOGGER.debug(f"Saving persistent preview {preview_id} to s3")
 
                     try:
                         conn_file_source = conn.get_file_source_by_id(dst_source_id)
