@@ -34,33 +34,33 @@ class MigratePreviewRedisToS3Task(
 
     async def run(self) -> TaskResult:
         try:
+            tenant_id = self.meta.tenant_id
+            preview_id = self.meta.preview_id
+
+            if tenant_id is None:
+                LOGGER.info(f"Unable to migrate preview since {tenant_id=}")
+                raise ValueError("tenant_id is None")
+
+            if preview_id is None:
+                LOGGER.info(f"Unable to migrate preview since {preview_id=}")
+                raise ValueError("preview_id is None")
+
+            redis = self._ctx.redis_service.get_redis()
+
+            rmm = RedisModelManager(
+                redis=redis,
+                crypto_keys_config=self._ctx.crypto_keys_config,
+            )
+            s3mm = S3ModelManager(
+                s3_service=self._ctx.s3_service,
+                crypto_keys_config=self._ctx.crypto_keys_config,
+                tenant_id=tenant_id,
+            )
+
             source_lock_key = f"MigratePreviewRedisToS3Task/{tenant_id}/{preview_id}"
             LOGGER.info(f"Acquiring redis lock {source_lock_key}")
             async with RedisLock(redis, name=source_lock_key, timeout=120, blocking_timeout=120):
                 LOGGER.info(f"Lock {source_lock_key} acquired")
-
-                tenant_id = self.meta.tenant_id
-                preview_id = self.meta.preview_id
-
-                if tenant_id is None:
-                    LOGGER.info(f"Unable to migrate preview since {tenant_id=}")
-                    raise ValueError("tenant_id is None")
-
-                if preview_id is None:
-                    LOGGER.info(f"Unable to migrate preview since {preview_id=}")
-                    raise ValueError("preview_id is None")
-
-                redis = self._ctx.redis_service.get_redis()
-                rmm = RedisModelManager(
-                    redis=redis,
-                    crypto_keys_config=self._ctx.crypto_keys_config,
-                )
-                s3mm = S3ModelManager(
-                    s3_service=self._ctx.s3_service,
-                    crypto_keys_config=self._ctx.crypto_keys_config,
-                    tenant_id=tenant_id,
-                )
-
                 try:
                     redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
                     assert isinstance(redis_preview, DataSourcePreview)
