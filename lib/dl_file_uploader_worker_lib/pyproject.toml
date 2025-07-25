@@ -1,4 +1,3 @@
-
 [tool.poetry]
 name = "dl-file-uploader-worker-lib"
 version = "0.0.0"
