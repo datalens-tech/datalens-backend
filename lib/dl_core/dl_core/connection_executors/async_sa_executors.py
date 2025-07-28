@@ -129,6 +129,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
     """
 
     TARGET_ADAPTER_CLS: ClassVar[Type[_DBA_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
+    REMOTE_ADAPTER_CLS: ClassVar[Optional[Type[RemoteAsyncAdapter]]] = None
 
     # Constructor attributes
     _tpe: Optional[ContextVarExecutor] = attr.ib()
@@ -214,8 +215,10 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
         elif self._exec_mode == ExecutionMode.RQE:
             if self._remote_qe_data is None:
                 raise ValueError("Can not initialize: no remote QE data was provided")
+
+            remote_adapter_cls = self.REMOTE_ADAPTER_CLS or RemoteAsyncAdapter
             self._async_dba_pool = [
-                RemoteAsyncAdapter(
+                remote_adapter_cls(
                     target_dto=target_conn_dto,
                     rqe_data=self._remote_qe_data,
                     req_ctx_info=DBAdapterScopedRCI.from_full_rci(req_ctx_info),
