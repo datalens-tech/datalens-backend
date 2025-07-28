@@ -178,3 +178,11 @@ class TestValidationParameters(DefaultApiTestBase):
             fail_ok=True,
         )
         assert ds_resp.status_code == http.HTTPStatus.BAD_REQUEST
+
+        dataset = ds_resp.dataset
+
+        field = dataset.find_field("test_title")
+        assert field.valid is False
+        field_error = ds_resp.dataset.component_errors.items[0]
+        assert field_error.id == "test_guid"
+        assert field_error.errors[0].code == "ERR.DS_API.FORMULA.PARAMETER.INVALID_VALUE"

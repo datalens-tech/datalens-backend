@@ -83,7 +83,6 @@ EXCEPTION_CODES = {
     dl_type_transformer.exc.TypeCastFailed: status.BAD_REQUEST,
     dl_query_processing.exc.BlockSpecError: status.BAD_REQUEST,
     dl_query_processing.exc.TreeError: status.BAD_REQUEST,
-    dl_query_processing.exc.ParameterError: status.BAD_REQUEST,
     dashsql_exc.DashSQLError: status.BAD_REQUEST,
     dl_query_processing.exc.GenericInvalidRequestError: status.BAD_REQUEST,
     dl_query_processing.exc.InvalidGroupByConfiguration: status.BAD_REQUEST,

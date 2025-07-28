@@ -523,7 +523,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
             fail_ok=True,
         )
         assert result_resp.status_code == http.HTTPStatus.BAD_REQUEST, result_resp.json
-        assert result_resp.bi_status_code == "ERR.DS_API.PARAMETER.INVALID_VALUE"
+        assert result_resp.bi_status_code == "ERR.DS_API.SOURCE_CONFIG.PARAMETER_VALUE_INVALID"
 
     def test_update_template_enabled_ignored(
         self,
@@ -672,7 +672,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
         )
 
         assert result_resp.status_code == http.HTTPStatus.BAD_REQUEST, result_resp.json
-        assert result_resp.bi_status_code == "ERR.DS_API.PARAMETER.INVALID_VALUE"
+        assert result_resp.bi_status_code == "ERR.DS_API.SOURCE_CONFIG.PARAMETER_VALUE_INVALID"
 
         for field in failed_constraint_parameter_values.values():
             assert field.value in result_resp.json["message"]

@@ -218,9 +218,9 @@ class FieldProcessingStageManager:
         """Clear error cache for the given field (and type)."""
 
         if stage is not None:
-            self._errors[field.guid][stage].clear()
-            self._exprs[field.guid][stage].clear()  # type: ignore  # TODO: fix
-            self._data_types[field.guid][stage].clear()  # type: ignore  # TODO: fix
+            del self._errors[field.guid][stage]
+            del self._exprs[field.guid][stage]
+            del self._data_types[field.guid][stage]
         else:
             self._errors[field.guid].clear()
             self._exprs[field.guid].clear()
@@ -406,7 +406,7 @@ class FormulaCompiler:
 
         # initialize caches
         # node/expression caches
-        self._formula_parsed_cache: Dict[str, formula_nodes.Formula] = {}
+        self._formula_parsed_cache: Dict[str, formula_nodes.Formula | None] = {}
         self._substituted_formula_fields: NodeValueMap[formula_nodes.FormulaItem] = NodeValueMap()
         # error caches
         self._stage_manager = FieldProcessingStageManager(columns=self._columns, inspect_env=self._inspect_env)
@@ -524,7 +524,9 @@ class FormulaCompiler:
         self._order_by_specs = list(order_by_specs)
 
     def _try_parse_formula(
-        self, field: BIField, collect_errors: bool = False
+        self,
+        field: BIField,
+        collect_errors: bool = False,
     ) -> Tuple[Optional[formula_nodes.Formula], List[FormulaErrorCtx]]:
         """Attempt to parse formula. If `collect_errors`"""
 
@@ -540,7 +542,7 @@ class FormulaCompiler:
                     raise dl_query_processing.exc.FormulaHandlingError(*err.errors) from err
                 errors.extend(err.errors)
 
-            self._formula_parsed_cache[formula] = formula_obj  # type: ignore  # TODO: fix
+            self._formula_parsed_cache[formula] = formula_obj
             self._formula_error_cache[formula] = errors
 
         return formula_obj, errors
@@ -648,7 +650,9 @@ class FormulaCompiler:
         return formula_obj
 
     def _generate_formula_obj_for_formula_field(
-        self, field: BIField, collect_errors: bool = False
+        self,
+        field: BIField,
+        collect_errors: bool = False,
     ) -> formula_nodes.Formula:
         """Generate expression for field in formula mode"""
         errors: List[FormulaErrorCtx] = []
@@ -679,7 +683,7 @@ class FormulaCompiler:
     def _generate_formula_obj_for_parameter_field(self, field: BIField) -> formula_nodes.Formula:
         """Generate expression for field with parameter type"""
         if field.cast not in _ALLOWED_PARAMETER_TYPES:
-            raise dl_query_processing.exc.ParameterUnsupportedTypeError(
+            raise formula_exc.ParameterUnsupportedTypeError(
                 f"Unsupported type {field.cast} for parameter {field.title}"
             )
 
@@ -693,13 +697,11 @@ class FormulaCompiler:
             value = field.default_value.value
 
         if value is None:
-            raise dl_query_processing.exc.ParameterValueError(
-                f"No value can be found for parameter field {field.title}"
-            )
+            raise formula_exc.ParameterValueError(f"No value can be found for parameter field {field.title}")
 
         value_constraint = field.value_constraint
         if value_constraint is not None and not value_constraint.is_valid(value):
-            raise dl_query_processing.exc.ParameterValueError(
+            raise formula_exc.ParameterValueError(
                 f"Invalid parameter value {value!r} for constraint {value_constraint}"
             )
 
@@ -708,12 +710,12 @@ class FormulaCompiler:
                 expr=make_literal_node(val=value, data_type=BI_TO_FORMULA_TYPES[enum_not_none(field.cast)])
             )
         except dl_query_processing.exc.InvalidLiteralError as e:
-            raise dl_query_processing.exc.ParameterValueError(
-                f"Invalid parameter value {value!r} for type {field.cast}"
-            ) from e
+            raise formula_exc.ParameterValueError(f"Invalid parameter value {value!r} for type {field.cast}") from e
 
     def _generate_base_formula_obj_for_field(
-        self, field: BIField, collect_errors: bool = False
+        self,
+        field: BIField,
+        collect_errors: bool = False,
     ) -> formula_nodes.Formula:
         """Generate raw (without casts, aggregations, substitutions, etc.) formula object for field."""
 
