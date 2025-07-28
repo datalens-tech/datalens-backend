@@ -48,6 +48,22 @@ class TrinoFormFieldName(FormFieldName):
 class TrinoRowConstructor(RowConstructor):
     _localizer: Localizer = attr.ib()
 
+    def _auth_type_options(self) -> list[C.SelectableOption]:
+        return [
+            C.SelectableOption(
+                text=self._localizer.translate(Translatable("value_auth-type-none")),
+                value=TrinoAuthType.none.value,
+            ),
+            C.SelectableOption(
+                text=self._localizer.translate(Translatable("value_auth-type-password")),
+                value=TrinoAuthType.password.value,
+            ),
+            C.SelectableOption(
+                text=self._localizer.translate(Translatable("value_auth-type-jwt")),
+                value=TrinoAuthType.jwt.value,
+            ),
+        ]
+
     def auth_type_row(self) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
@@ -56,20 +72,7 @@ class TrinoRowConstructor(RowConstructor):
                 ),
                 C.RadioButtonRowItem(
                     name=TrinoFormFieldName.auth_type,
-                    options=[
-                        C.SelectableOption(
-                            text=self._localizer.translate(Translatable("value_auth-type-none")),
-                            value=TrinoAuthType.none.value,
-                        ),
-                        C.SelectableOption(
-                            text=self._localizer.translate(Translatable("value_auth-type-password")),
-                            value=TrinoAuthType.password.value,
-                        ),
-                        C.SelectableOption(
-                            text=self._localizer.translate(Translatable("value_auth-type-jwt")),
-                            value=TrinoAuthType.jwt.value,
-                        ),
-                    ],
+                    options=self._auth_type_options(),
                     default_value=TrinoAuthType.password.value,
                 ),
             ]
