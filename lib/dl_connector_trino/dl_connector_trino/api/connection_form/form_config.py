@@ -48,7 +48,26 @@ class TrinoFormFieldName(FormFieldName):
 class TrinoRowConstructor(RowConstructor):
     _localizer: Localizer = attr.ib()
 
-    def auth_type_row(self) -> C.CustomizableRow:
+    def _auth_type_options(self) -> list[C.SelectableOption]:
+        return [
+            C.SelectableOption(
+                text=self._localizer.translate(Translatable("value_auth-type-none")),
+                value=TrinoAuthType.none.value,
+            ),
+            C.SelectableOption(
+                text=self._localizer.translate(Translatable("value_auth-type-password")),
+                value=TrinoAuthType.password.value,
+            ),
+            C.SelectableOption(
+                text=self._localizer.translate(Translatable("value_auth-type-jwt")),
+                value=TrinoAuthType.jwt.value,
+            ),
+        ]
+
+    def auth_type_row(
+        self,
+        default_value: str = TrinoAuthType.password.value,
+    ) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
                 C.LabelRowItem(
@@ -56,21 +75,8 @@ class TrinoRowConstructor(RowConstructor):
                 ),
                 C.RadioButtonRowItem(
                     name=TrinoFormFieldName.auth_type,
-                    options=[
-                        C.SelectableOption(
-                            text=self._localizer.translate(Translatable("value_auth-type-none")),
-                            value=TrinoAuthType.none.value,
-                        ),
-                        C.SelectableOption(
-                            text=self._localizer.translate(Translatable("value_auth-type-password")),
-                            value=TrinoAuthType.password.value,
-                        ),
-                        C.SelectableOption(
-                            text=self._localizer.translate(Translatable("value_auth-type-jwt")),
-                            value=TrinoAuthType.jwt.value,
-                        ),
-                    ],
-                    default_value=TrinoAuthType.password.value,
+                    options=self._auth_type_options(),
+                    default_value=default_value,
                 ),
             ]
         )
@@ -119,6 +125,19 @@ class TrinoRowConstructor(RowConstructor):
 
     def cache_ttl_row(self) -> C.CacheTTLRow:
         return C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec)
+
+    def trino_ssl_rows(
+        self,
+        display_conditions: TDisplayConditions | None = None,
+    ) -> list[C.CustomizableRow]:
+        return list(
+            self.ssl_rows(
+                enabled_name=CommonFieldName.ssl_enable,
+                enabled_help_text=self._localizer.translate(Translatable("label_trino-ssl-enabled-tooltip")),
+                enabled_default_value=True,
+                display_conditions=display_conditions,
+            )
+        )
 
     def listing_sources_row(self) -> C.CustomizableRow:
         return C.CustomizableRow(
@@ -259,11 +278,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
                     rc.cache_ttl_row(),
                     rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
                     rc.collapse_advanced_settings_row(),
-                    *rc.ssl_rows(
-                        enabled_name=CommonFieldName.ssl_enable,
-                        enabled_help_text=self._localizer.translate(Translatable("label_trino-ssl-enabled-tooltip")),
-                        enabled_default_value=True,
-                    ),
+                    *rc.trino_ssl_rows(),
                     rc.data_export_forbidden_row(),
                     rc.listing_sources_row(),
                 ]
