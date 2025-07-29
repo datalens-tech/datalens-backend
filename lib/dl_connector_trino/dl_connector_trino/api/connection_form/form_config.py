@@ -64,7 +64,10 @@ class TrinoRowConstructor(RowConstructor):
             ),
         ]
 
-    def auth_type_row(self) -> C.CustomizableRow:
+    def auth_type_row(
+        self,
+        default_value: str = TrinoAuthType.password.value,
+    ) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
                 C.LabelRowItem(
@@ -73,7 +76,7 @@ class TrinoRowConstructor(RowConstructor):
                 C.RadioButtonRowItem(
                     name=TrinoFormFieldName.auth_type,
                     options=self._auth_type_options(),
-                    default_value=TrinoAuthType.password.value,
+                    default_value=default_value,
                 ),
             ]
         )
