@@ -247,6 +247,24 @@ class TranslationUnknownFieldError(TranslationError):
     default_code = TranslationError.default_code + ("UNKNOWN_FIELD",)
 
 
+# Parameter errors
+
+
+class ParameterError(FormulaError):
+    default_code = FormulaError.default_code + ("PARAMETER",)
+    default_message = "Invalid parameter"
+
+
+class ParameterValueError(ParameterError):
+    default_code = ParameterError.default_code + ("INVALID_VALUE",)
+    default_message = "Invalid value for parameter"
+
+
+class ParameterUnsupportedTypeError(ParameterError):
+    default_code = ParameterError.default_code + ("UNSUPPORTED",)
+    default_message = "Unsupported type for parameter"
+
+
 # Other Errors
 
 

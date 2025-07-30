@@ -65,21 +65,6 @@ class FilterArgumentCountError(FilterError):
     default_message = "Invalid argument count for filter"
 
 
-class ParameterError(DLBaseException):
-    err_code = DLBaseException.err_code + ["PARAMETER"]
-    default_message = "Invalid parameter"
-
-
-class ParameterValueError(ParameterError):
-    err_code = ParameterError.err_code + ["INVALID_VALUE"]
-    default_message = "Invalid value for parameter"
-
-
-class ParameterUnsupportedTypeError(ParameterError):
-    err_code = ParameterError.err_code + ["UNSUPPORTED"]
-    default_message = "Unsupported type for parameter"
-
-
 class InvalidQueryStructure(DLBaseException):
     err_code = DLBaseException.err_code + ["INVALID_QUERY_STRUCTURE"]
     default_message = "Failed to compile data query."

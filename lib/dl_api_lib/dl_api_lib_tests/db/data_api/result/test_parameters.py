@@ -86,7 +86,7 @@ class TestParameters(DefaultApiTestBase):
         ("default_value", "expected_status_code", "expected_bi_status_code"),
         (
             ("42", HTTPStatus.OK, None),
-            ("142", HTTPStatus.BAD_REQUEST, "ERR.DS_API.PARAMETER.INVALID_VALUE"),
+            ("142", HTTPStatus.BAD_REQUEST, "ERR.DS_API.FORMULA.PARAMETER.INVALID_VALUE"),
             ("abc", HTTPStatus.BAD_REQUEST, "ERR.DS_API"),
         ),
     )
@@ -135,8 +135,8 @@ class TestParameters(DefaultApiTestBase):
         ("param_value", "expected_status_code", "expected_bi_status_code"),
         (
             (42, HTTPStatus.OK, None),
-            (142, HTTPStatus.BAD_REQUEST, "ERR.DS_API.PARAMETER.INVALID_VALUE"),
-            ("abc", HTTPStatus.BAD_REQUEST, "ERR.DS_API.PARAMETER.INVALID_VALUE"),
+            (142, HTTPStatus.BAD_REQUEST, "ERR.DS_API.FORMULA.PARAMETER.INVALID_VALUE"),
+            ("abc", HTTPStatus.BAD_REQUEST, "ERR.DS_API.FORMULA.PARAMETER.INVALID_VALUE"),
         ),
     )
     def test_parameter_constraint_parameter_value(
