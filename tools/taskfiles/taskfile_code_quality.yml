@@ -18,7 +18,7 @@ vars:
   TARGET_TOML:
     sh: echo $(echo "{{.CHECK_TARGET}}" | tr ' ' '\n' | grep 'pyproject.toml$')
 
-  DO_RUFF_FIX: "false"
+  DO_RUFF_FIX: "true"
 
 includes:
   env:
@@ -36,7 +36,7 @@ tasks:
     shell: bash
     vars:
       FIX_FLAG:
-        sh: fix_flag=""; if [ '{{.DO_RUFF_FIX|default false}}' == 'true' ]; then fix_flag="--fix"; fi; echo $fix_flag
+        sh: fix_flag=""; if [ '{{.DO_RUFF_FIX|default false}}' == 'true' ]; then fix_flag="--fix --unsafe-fixes"; fi; echo $fix_flag
       IGNORE_ERRORS:
         sh: suffix="|| true"; if [ "{{.STRICT|default false}}" == "true" ]; then suffix=""; fi; echo $suffix
     cmds:

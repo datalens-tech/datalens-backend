@@ -2,9 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Dict,
-    FrozenSet,
-    Type,
     Union,
 )
 
@@ -32,14 +29,14 @@ class DBAdapterActionBaseSchema(BaseQEAPISchema):
     req_ctx_info = fields.Nested(DBAdapterScopedRCISchema)
 
     @property
-    def allowed_dba_classes(self) -> FrozenSet[Type[CommonBaseDirectAdapter]]:
+    def allowed_dba_classes(self) -> frozenset[type[CommonBaseDirectAdapter]]:
         # TODO FIX: Ensure no classes with same qualname or use FQDN
         return self.context["allowed_dba_classes"]
 
     def dump_dba_cls(self, act: dba_actions.ActionExecuteQuery) -> str:
         return f"{act.dba_cls.__module__}.{act.dba_cls.__qualname__}"
 
-    def load_dba_cls(self, value: str) -> Union[Type[CommonBaseDirectAdapter]]:
+    def load_dba_cls(self, value: str) -> Union[type[CommonBaseDirectAdapter]]:
         mod_name, cls_name = value.rsplit(".", 1) if "." in value else (None, value)
         candidate = next(
             filter(
@@ -52,53 +49,53 @@ class DBAdapterActionBaseSchema(BaseQEAPISchema):
             raise ValueError(f"Can not restore DBA class from string '{value}'")
         return candidate
 
-    def dump_target_conn_dto(self, act: dba_actions.ActionExecuteQuery) -> Dict:
+    def dump_target_conn_dto(self, act: dba_actions.ActionExecuteQuery) -> dict:
         return act.target_conn_dto.to_jsonable_dict()
 
-    def load_target_conn_dto(self, value: Dict) -> ConnTargetDTO:
+    def load_target_conn_dto(self, value: dict) -> ConnTargetDTO:
         return ConnTargetDTO.from_polymorphic_jsonable_dict(value)
 
-    def to_object(self, data: Dict[str, Any]) -> Any:
+    def to_object(self, data: dict[str, Any]) -> Any:
         raise NotImplementedError()
 
 
 class ActionExecuteQuerySchema(DBAdapterActionBaseSchema):
     db_adapter_query = fields.Nested(GenericDBAQuerySchema)
 
-    def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionExecuteQuery:
+    def to_object(self, data: dict[str, Any]) -> dba_actions.ActionExecuteQuery:
         return dba_actions.ActionExecuteQuery(**data)
 
 
 class ActionNonStreamExecuteQuerySchema(DBAdapterActionBaseSchema):
     db_adapter_query = fields.Nested(GenericDBAQuerySchema)
 
-    def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionNonStreamExecuteQuery:
+    def to_object(self, data: dict[str, Any]) -> dba_actions.ActionNonStreamExecuteQuery:
         return dba_actions.ActionNonStreamExecuteQuery(**data)
 
 
 class ActionGetDBVersionSchema(DBAdapterActionBaseSchema):
     db_ident = fields.Nested(DBIdentSchema)
 
-    def to_object(self, data: Dict[str, Any]) -> Any:
+    def to_object(self, data: dict[str, Any]) -> Any:
         return dba_actions.ActionGetDBVersion(**data)
 
 
 class ActionTestSchema(DBAdapterActionBaseSchema):
-    def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionTest:
+    def to_object(self, data: dict[str, Any]) -> dba_actions.ActionTest:
         return dba_actions.ActionTest(**data)
 
 
 class ActionGetSchemaNamesSchema(DBAdapterActionBaseSchema):
     db_ident = fields.Nested(DBIdentSchema)
 
-    def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionGetSchemaNames:
+    def to_object(self, data: dict[str, Any]) -> dba_actions.ActionGetSchemaNames:
         return dba_actions.ActionGetSchemaNames(**data)
 
 
 class ActionGetTablesSchema(DBAdapterActionBaseSchema):
     schema_ident = fields.Nested(SchemaIdentSchema)
 
-    def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionGetTables:
+    def to_object(self, data: dict[str, Any]) -> dba_actions.ActionGetTables:
         return dba_actions.ActionGetTables(**data)
 
 
@@ -106,14 +103,14 @@ class ActionGetTableInfoSchema(DBAdapterActionBaseSchema):
     table_def = fields.Nested(TableDefinitionSchema)
     fetch_idx_info = fields.Bool()
 
-    def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionGetTableInfo:
+    def to_object(self, data: dict[str, Any]) -> dba_actions.ActionGetTableInfo:
         return dba_actions.ActionGetTableInfo(**data)
 
 
 class ActionIsTableExistsSchema(DBAdapterActionBaseSchema):
     table_ident = fields.Nested(TableIdentSchema)
 
-    def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionIsTableExists:
+    def to_object(self, data: dict[str, Any]) -> dba_actions.ActionIsTableExists:
         return dba_actions.ActionIsTableExists(**data)
 
 
@@ -121,7 +118,7 @@ class ActionExecuteTypedQuerySchema(DBAdapterActionBaseSchema):
     query_type = DynamicEnumField(DashSQLQueryType)
     typed_query_str = fields.String()
 
-    def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionExecuteTypedQuery:
+    def to_object(self, data: dict[str, Any]) -> dba_actions.ActionExecuteTypedQuery:
         return dba_actions.ActionExecuteTypedQuery(**data)
 
 
@@ -129,5 +126,5 @@ class ActionExecuteTypedQueryRawSchema(DBAdapterActionBaseSchema):
     query_type = DynamicEnumField(DashSQLQueryType)
     typed_query_str = fields.String()
 
-    def to_object(self, data: Dict[str, Any]) -> dba_actions.ActionExecuteTypedQueryRaw:
+    def to_object(self, data: dict[str, Any]) -> dba_actions.ActionExecuteTypedQueryRaw:
         return dba_actions.ActionExecuteTypedQueryRaw(**data)

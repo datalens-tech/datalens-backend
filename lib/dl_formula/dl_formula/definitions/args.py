@@ -4,7 +4,6 @@ from typing import (
     AbstractSet,
     Optional,
     Sequence,
-    Set,
     Union,
 )
 
@@ -21,7 +20,7 @@ class ArgTypeMatcher:
     def match_arg_types(self, arg_types: Sequence[DataType]) -> bool:
         raise NotImplementedError
 
-    def get_possible_arg_types_at_pos(self, pos: int, total: int) -> Set[DataType]:
+    def get_possible_arg_types_at_pos(self, pos: int, total: int) -> set[DataType]:
         raise NotImplementedError
 
 
@@ -44,7 +43,7 @@ class ArgTypeSequence(ArgTypeMatcher):
                     return False
         return True
 
-    def get_possible_arg_types_at_pos(self, pos: int, total: int) -> Set[DataType]:
+    def get_possible_arg_types_at_pos(self, pos: int, total: int) -> set[DataType]:
         expected_arg_type = self._exp_arg_types[pos]
         if isinstance(expected_arg_type, DataType):
             return {expected_arg_type}
@@ -75,7 +74,7 @@ class ArgTypeForAll(ArgTypeMatcher):
                 return False
         return True
 
-    def get_possible_arg_types_at_pos(self, pos: int, total: int) -> Set[DataType]:
+    def get_possible_arg_types_at_pos(self, pos: int, total: int) -> set[DataType]:
         return set(self._exp_arg_types)
 
 

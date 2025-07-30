@@ -3,11 +3,8 @@
 from __future__ import annotations
 
 from typing import (
-    Dict,
-    List,
     Optional,
     Sequence,
-    Type,
 )
 
 import attr
@@ -22,7 +19,7 @@ from dl_constants.enums import (
 class ComponentError:
     level: ComponentErrorLevel = attr.ib()
     message: str = attr.ib()
-    code: List[str] = attr.ib(factory=list)
+    code: list[str] = attr.ib(factory=list)
     details: dict = attr.ib(factory=dict)
 
 
@@ -30,13 +27,13 @@ class ComponentError:
 class ComponentErrorPack:
     id: str = attr.ib()
     type: ComponentType = attr.ib()
-    errors: List[ComponentError] = attr.ib(factory=list)
+    errors: list[ComponentError] = attr.ib(factory=list)
 
     def get_errors(
         self,
         code: Optional[Sequence[str]] = None,
         code_prefix: Optional[Sequence[str]] = None,
-    ) -> List[ComponentError]:
+    ) -> list[ComponentError]:
         if code is not None and code_prefix is not None:
             raise ValueError("Cannot specify both code and code_prefix")
 
@@ -60,7 +57,7 @@ class ComponentErrorPack:
 
 
 # FIXME: switch to subclass for fields (with row, column, token)
-ERROR_CLS_BY_COMP_TYPE: Dict[ComponentType, Type[ComponentError]] = {
+ERROR_CLS_BY_COMP_TYPE: dict[ComponentType, type[ComponentError]] = {
     ComponentType.data_source: ComponentError,
     ComponentType.source_avatar: ComponentError,
     ComponentType.avatar_relation: ComponentError,
@@ -72,7 +69,7 @@ ERROR_CLS_BY_COMP_TYPE: Dict[ComponentType, Type[ComponentError]] = {
 
 @attr.s
 class ComponentErrorRegistry:
-    items: List[ComponentErrorPack] = attr.ib(factory=list)
+    items: list[ComponentErrorPack] = attr.ib(factory=list)
 
     def get_pack(self, id: str) -> Optional[ComponentErrorPack]:
         for item in self.items:
@@ -119,7 +116,7 @@ class ComponentErrorRegistry:
 
         item.errors.append(error_cls(message=message, code=list(code), level=level, details=details))
 
-    def for_type(self, type: ComponentType) -> List[ComponentErrorPack]:
+    def for_type(self, type: ComponentType) -> list[ComponentErrorPack]:
         return [item for item in self.items if item.type == type]
 
     def rename_pack(self, old_id: str, new_id: str) -> None:

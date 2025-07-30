@@ -4,9 +4,7 @@ import abc
 from typing import (
     Callable,
     ClassVar,
-    List,
     Sequence,
-    Set,
     TypeVar,
 )
 
@@ -80,9 +78,9 @@ class AtomicQueryFormulaListMutatorBase(AtomicQueryMutatorBase):
     @abc.abstractmethod
     def mutate_formula_list(
         self,
-        formula_list: List[_COMPILED_FLA_TV],
+        formula_list: list[_COMPILED_FLA_TV],
         query_part: QueryPart,
-    ) -> List[_COMPILED_FLA_TV]:
+    ) -> list[_COMPILED_FLA_TV]:
         raise NotImplementedError
 
     def mutate_query(self, compiled_query: CompiledQuery) -> CompiledQuery:
@@ -119,10 +117,10 @@ class AtomicQueryFormulaMutatorBase(AtomicQueryFormulaListMutatorBase):
 
     def mutate_formula_list(
         self,
-        formula_list: List[_COMPILED_FLA_TV],
+        formula_list: list[_COMPILED_FLA_TV],
         query_part: QueryPart,
-    ) -> List[_COMPILED_FLA_TV]:
-        new_formula_list: List[_COMPILED_FLA_TV] = []
+    ) -> list[_COMPILED_FLA_TV]:
+        new_formula_list: list[_COMPILED_FLA_TV] = []
         changed = False
         for formula in formula_list:
             new_formula = self.mutate_formula(formula)
@@ -151,9 +149,9 @@ class IgnoreFormulaAtomicQueryMutator(AtomicQueryFormulaListMutatorBase):
 
     def mutate_formula_list(
         self,
-        formula_list: List[_COMPILED_FLA_TV],
+        formula_list: list[_COMPILED_FLA_TV],
         query_part: QueryPart,
-    ) -> List[_COMPILED_FLA_TV]:
+    ) -> list[_COMPILED_FLA_TV]:
         new_formula_list = [
             formula for formula in formula_list if not self.should_ignore_formula(formula, query_part=query_part)
         ]
@@ -186,9 +184,9 @@ class NullifyFormulaAtomicQueryMutator(AtomicQueryFormulaListMutatorBase):
 
     def mutate_formula_list(
         self,
-        formula_list: List[_COMPILED_FLA_TV],
+        formula_list: list[_COMPILED_FLA_TV],
         query_part: QueryPart,
-    ) -> List[_COMPILED_FLA_TV]:
+    ) -> list[_COMPILED_FLA_TV]:
         new_formula_list = [
             self.nullify_formula(formula) if self.should_nullify_formula(formula, query_part=query_part) else formula
             for formula in formula_list
@@ -207,9 +205,9 @@ class RemoveConstFromGroupByFormulaAtomicQueryMutator(AtomicQueryFormulaListMuta
 
     def mutate_formula_list(
         self,
-        formula_list: List[_COMPILED_FLA_TV],
+        formula_list: list[_COMPILED_FLA_TV],
         query_part: QueryPart,
-    ) -> List[_COMPILED_FLA_TV]:
+    ) -> list[_COMPILED_FLA_TV]:
         if query_part != QueryPart.group_by or self._dialects not in self._applicable_dialects:
             return formula_list
 
@@ -266,9 +264,9 @@ class DefaultAtomicQueryMutator(AtomicQueryFormulaMutatorBase):
 class FiltersAtomicQueryMutator(DefaultAtomicQueryMutator):
     def mutate_formula_list(
         self,
-        formula_list: List[_COMPILED_FLA_TV],
+        formula_list: list[_COMPILED_FLA_TV],
         query_part: QueryPart,
-    ) -> List[_COMPILED_FLA_TV]:
+    ) -> list[_COMPILED_FLA_TV]:
         if query_part != QueryPart.filters:
             return formula_list
         return super().mutate_formula_list(formula_list, query_part)
@@ -382,7 +380,7 @@ class ExtendedAggregationQueryMutator(QueryMutator):
     def mutate_query(self, compiled_query: CompiledQuery) -> CompiledQuery:
         global_dimensions = [formula.formula_obj.expr for formula in compiled_query.group_by]
 
-        filter_ids: Set[FieldId] = set()
+        filter_ids: set[FieldId] = set()
         for formula in compiled_query.filters:
             if formula.original_field_id:
                 filter_ids.add(formula.original_field_id)
@@ -403,7 +401,7 @@ class ExtendedAggregationQueryMutator(QueryMutator):
         )
         will_mutate_winfuncs = has_winfuncs
 
-        fork_mutators: List[AtomicQueryMutatorBase] = []
+        fork_mutators: list[AtomicQueryMutatorBase] = []
 
         if has_lookups:
             fork_mutators += [

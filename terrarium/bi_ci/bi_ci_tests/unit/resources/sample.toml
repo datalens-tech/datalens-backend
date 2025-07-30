@@ -31,12 +31,6 @@ ipdb = "0.13.13"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-
-
-
-[tool.ruff.isort]
-split-on-trailing-comma = true
-
 [tool.black]
 line-length = 140
 target-version = ['py310']

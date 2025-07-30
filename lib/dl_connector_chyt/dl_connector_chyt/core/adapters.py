@@ -5,7 +5,6 @@ from typing import (
     Any,
     ClassVar,
     Optional,
-    Type,
 )
 
 import aiohttp
@@ -49,7 +48,7 @@ class CHYTConnLineConstructor(BaseClickHouseConnLineConstructor):
 
 class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
     ch_utils = CHYTUtils
-    conn_line_constructor_type: ClassVar[Type[CHYTConnLineConstructor]] = CHYTConnLineConstructor
+    conn_line_constructor_type: ClassVar[type[CHYTConnLineConstructor]] = CHYTConnLineConstructor
 
     _target_dto: BaseCHYTConnTargetDTO = attr.ib()
 
@@ -82,7 +81,7 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
         orig_exc: Optional[Exception],
         debug_compiled_query: Optional[str],
         **kwargs: Any,
-    ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
+    ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
         exc_cls, kw = super().make_exc(
             wrapper_exc=wrapper_exc,
             orig_exc=orig_exc,

@@ -5,7 +5,6 @@ import enum
 from typing import (
     Any,
     Optional,
-    Type,
     TypeVar,
     Union,
 )
@@ -128,12 +127,12 @@ class RequestContextInfo:
         raise TypeError(f"Unexpected type of headers: {type(headers)}")
 
     @classmethod
-    def create_empty(cls: Type[_REQUEST_CONTEXT_INFO_TV]) -> _REQUEST_CONTEXT_INFO_TV:
+    def create_empty(cls: type[_REQUEST_CONTEXT_INFO_TV]) -> _REQUEST_CONTEXT_INFO_TV:
         return cls()
 
     @classmethod
     def create(
-        cls: Type[_REQUEST_CONTEXT_INFO_TV],
+        cls: type[_REQUEST_CONTEXT_INFO_TV],
         request_id: Optional[str],
         tenant: Optional[TenantDef],
         user_id: Optional[str],

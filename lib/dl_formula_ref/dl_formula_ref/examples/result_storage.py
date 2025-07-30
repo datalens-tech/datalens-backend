@@ -3,10 +3,7 @@ from __future__ import annotations
 import datetime
 from decimal import Decimal
 import json
-from typing import (
-    Any,
-    Dict,
-)
+from typing import Any
 
 import attr
 
@@ -42,7 +39,7 @@ class CustomJSONDecoder(json.JSONDecoder):
     def __init__(self, *args, **kwargs):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         super().__init__(object_hook=self.object_hook, *args, **kwargs)  # noqa: B026
 
-    def object_hook(self, obj_dict: Dict[str, Any]) -> Any:
+    def object_hook(self, obj_dict: dict[str, Any]) -> Any:
         if obj_dict.get("__type__") == "datetime":
             return datetime.datetime.fromisoformat(obj_dict["__value__"])
         if obj_dict.get("__type__") == "date":
@@ -71,7 +68,7 @@ class WritableDataStorageBase:
 @attr.s
 class ReadableDataStorage(ReadableDataStorageBase):
     _filename: str = attr.ib(kw_only=True)
-    _data: Dict[str, DataTable] = attr.ib(factory=dict)
+    _data: dict[str, DataTable] = attr.ib(factory=dict)
 
     def _load_data_table(self, table_data: dict) -> DataTable:
         return DataTable(
@@ -94,7 +91,7 @@ class ReadableDataStorage(ReadableDataStorageBase):
 @attr.s
 class WritableDataStorage(WritableDataStorageBase):
     _filename: str = attr.ib(kw_only=True)
-    _data: Dict[str, DataTable] = attr.ib(init=False, factory=dict)
+    _data: dict[str, DataTable] = attr.ib(init=False, factory=dict)
 
     def _dump_data_table(self, data_table: DataTable) -> dict:
         return {

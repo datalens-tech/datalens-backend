@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Callable,
-    List,
     Optional,
 )
 
@@ -18,7 +17,7 @@ _T_CONN_OPTIONS_MUTATOR = Callable[["ConnectOptions", "ConnectionBase"], Optiona
 
 class ConnOptionsMutatorsFactory:
     def __init__(self) -> None:
-        self.mutators: List[_T_CONN_OPTIONS_MUTATOR] = []
+        self.mutators: list[_T_CONN_OPTIONS_MUTATOR] = []
 
     def add_mutator(self, func: _T_CONN_OPTIONS_MUTATOR) -> None:
         self.mutators.append(func)

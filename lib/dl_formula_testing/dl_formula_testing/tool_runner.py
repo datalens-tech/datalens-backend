@@ -12,7 +12,6 @@ from typing import (
     Generator,
     Optional,
     TextIO,
-    Type,
 )
 
 
@@ -35,7 +34,7 @@ def redirect_stdin(stream: Optional[TextIO] = None) -> Generator[None, None, Non
 
 
 class ToolRunner:
-    def __init__(self, parser: ArgumentParser, tool_cls: Type):
+    def __init__(self, parser: ArgumentParser, tool_cls: type):
         self.parser = parser
         self.tool_cls = tool_cls
 

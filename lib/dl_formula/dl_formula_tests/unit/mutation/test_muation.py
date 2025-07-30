@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Tuple
-
 import dl_formula.core.nodes as nodes
 from dl_formula.mutation.mutation import (
     FormulaMutation,
@@ -16,11 +14,11 @@ class PrefixFunctionMutation(FormulaMutation):
     def __init__(self, prefix: str):
         self._prefix = prefix
 
-    def match_node(self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
+    def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
         return isinstance(node, nodes.FuncCall)
 
     def make_replacement(
-        self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
+        self, old: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.FuncCall)
         return nodes.FuncCall.make(name=self._prefix + old.name, args=old.args)
@@ -32,11 +30,11 @@ class PostfixFieldMutation(FormulaMutation):
     def __init__(self, postfix: str):
         self._postfix = postfix
 
-    def match_node(self, node: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]) -> bool:
+    def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
         return isinstance(node, nodes.Field)
 
     def make_replacement(
-        self, old: nodes.FormulaItem, parent_stack: Tuple[nodes.FormulaItem, ...]
+        self, old: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]
     ) -> nodes.FormulaItem:
         assert isinstance(old, nodes.Field)
         return nodes.Field.make(name=old.name + self._postfix)

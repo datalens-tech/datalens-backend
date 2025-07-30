@@ -8,7 +8,6 @@ from typing import (
     Any,
     ClassVar,
     Optional,
-    Type,
 )
 
 import attr
@@ -117,7 +116,7 @@ class BIError:
 
     @staticmethod
     def get_default_error_code(
-        err: Exception, exc_code_mapping: Optional[dict[Type[Exception], int]] = None
+        err: Exception, exc_code_mapping: Optional[dict[type[Exception], int]] = None
     ) -> Optional[int]:
         """
         :param err: Exception to map to HTTP status code
@@ -139,7 +138,7 @@ class BIError:
         cls,
         ex: Exception,
         default_message: Optional[str] = None,
-        exc_code_mapping: Optional[dict[Type[Exception], int]] = None,
+        exc_code_mapping: Optional[dict[type[Exception], int]] = None,
     ) -> "BIError":
         """
         Creates BIError from exception

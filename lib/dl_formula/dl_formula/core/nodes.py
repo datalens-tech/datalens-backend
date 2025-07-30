@@ -15,7 +15,6 @@ from typing import (
     Mapping,
     Optional,
     Sequence,
-    Type,
     TypeVar,
     Union,
     cast,
@@ -201,7 +200,7 @@ class FormulaItem(abc.ABC):
 
         return "\n".join(lines)
 
-    def visit_node_type(self, node_type: Type[FormulaItem], visit_func: Callable[[FormulaItem], Any]) -> None:
+    def visit_node_type(self, node_type: type[FormulaItem], visit_func: Callable[[FormulaItem], Any]) -> None:
         """Walk the whole ``FormulaItem`` (sub)tree and call ``visit_func`` for all nodes of given type"""
         if isinstance(self, node_type):
             visit_func(self)
@@ -209,7 +208,7 @@ class FormulaItem(abc.ABC):
         for child in self.__children:
             child.visit_node_type(node_type=node_type, visit_func=visit_func)
 
-    def list_node_type(self, node_type: Type[_FORMULA_ITEM_TV]) -> list[_FORMULA_ITEM_TV]:
+    def list_node_type(self, node_type: type[_FORMULA_ITEM_TV]) -> list[_FORMULA_ITEM_TV]:
         res: list[_FORMULA_ITEM_TV] = []
         self.visit_node_type(node_type=node_type, visit_func=res.append)  # type: ignore  # 2024-01-30 # TODO: Argument "visit_func" to "visit_node_type" of "FormulaItem" has incompatible type "Callable[[_FORMULA_ITEM_TV], None]"; expected "Callable[[FormulaItem], Any]"  [arg-type]
         return res
@@ -217,7 +216,7 @@ class FormulaItem(abc.ABC):
     def get_by_pos(
         self,
         pos: int,
-        node_types: Optional[tuple[Type[FormulaItem], ...]] = None,
+        node_types: Optional[tuple[type[FormulaItem], ...]] = None,
     ) -> Optional[FormulaItem]:
         """
         Return the innermost node at position ``pos``.
@@ -457,7 +456,7 @@ class Child(Generic[_FORMULA_ITEM_TV]):
     def __init__(self, ind: int):
         self.ind = ind
 
-    def __get__(self, instance: FormulaItem, owner: Type[FormulaItem]) -> _FORMULA_ITEM_TV:
+    def __get__(self, instance: FormulaItem, owner: type[FormulaItem]) -> _FORMULA_ITEM_TV:
         if instance is None:
             raise TypeError("Cannot be used on class")
         return instance.children[self.ind]  # type: ignore  # Cannot validate type here
@@ -474,7 +473,7 @@ class MultiChild(Generic[_FORMULA_ITEM_TV]):
     def __init__(self, slice: slice):
         self.slice = slice
 
-    def __get__(self, instance: FormulaItem, owner: Type[FormulaItem]) -> tuple[_FORMULA_ITEM_TV, ...]:
+    def __get__(self, instance: FormulaItem, owner: type[FormulaItem]) -> tuple[_FORMULA_ITEM_TV, ...]:
         if instance is None:
             raise TypeError("Cannot be used on class")
         return instance.children[self.slice]  # type: ignore  # Cannot validate type here
@@ -504,7 +503,7 @@ class ExprWrapper(FormulaItem):
         assert len(children) == 1
 
     @classmethod
-    def make(cls: Type[_FORMULA_ITEM_TV], expr: FormulaItem, *, meta: Optional[NodeMeta] = None) -> _FORMULA_ITEM_TV:
+    def make(cls: type[_FORMULA_ITEM_TV], expr: FormulaItem, *, meta: Optional[NodeMeta] = None) -> _FORMULA_ITEM_TV:
         return cls(expr, meta=meta)
 
 
@@ -541,7 +540,7 @@ class BaseLiteral(FormulaItem):
         pass
 
     @classmethod
-    def make(cls: Type[_LITERAL_TV], value: Any, *, meta: Optional[NodeMeta] = None) -> _LITERAL_TV:
+    def make(cls: type[_LITERAL_TV], value: Any, *, meta: Optional[NodeMeta] = None) -> _LITERAL_TV:
         internal_value = (value,)
         return cls(internal_value=internal_value, meta=meta)
 
@@ -779,7 +778,7 @@ class ExpressionList(FormulaItem):
     autonomous = False
 
     @classmethod
-    def make(cls: Type[_FORMULA_ITEM_TV], *children: FormulaItem, meta: Optional[NodeMeta] = None) -> _FORMULA_ITEM_TV:
+    def make(cls: type[_FORMULA_ITEM_TV], *children: FormulaItem, meta: Optional[NodeMeta] = None) -> _FORMULA_ITEM_TV:
         return cls(*children, meta=meta)
 
 
@@ -808,7 +807,7 @@ class DimListNodeBase(FormulaItem):
 
     @classmethod
     def make(
-        cls: Type[_FORMULA_ITEM_TV],
+        cls: type[_FORMULA_ITEM_TV],
         dim_list: Optional[Sequence[FormulaItem]],
         meta: Optional[NodeMeta] = None,
     ) -> _FORMULA_ITEM_TV:
@@ -882,7 +881,7 @@ class FuncCall(OperationCall):
 
     @classmethod
     def make(
-        cls: Type[_FUNC_CALL_TV],
+        cls: type[_FUNC_CALL_TV],
         name: str,
         args: Iterable[FormulaItem],
         *,
@@ -1067,7 +1066,7 @@ class FieldNameListNode(FormulaItem):
 
     @classmethod
     def make(
-        cls: Type[_FIELD_NAME_LIST_NODE_TV],
+        cls: type[_FIELD_NAME_LIST_NODE_TV],
         field_names: Optional[Collection[str]] = None,
         meta: Optional[NodeMeta] = None,
     ) -> _FIELD_NAME_LIST_NODE_TV:

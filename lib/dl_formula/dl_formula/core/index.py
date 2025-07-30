@@ -4,12 +4,11 @@ from typing import (
     Any,
     NamedTuple,
     Optional,
-    Tuple,
 )
 
 
 class NodeHierarchyIndex(NamedTuple):
-    indices: Tuple[int, ...] = ()
+    indices: tuple[int, ...] = ()
 
     @staticmethod
     def make(*args: int) -> NodeHierarchyIndex:
@@ -27,12 +26,12 @@ class NodeHierarchyIndex(NamedTuple):
             return NodeHierarchyIndex(indices=self.indices + tuple(other))
         raise TypeError(type(other))
 
-    def lsplit(self) -> Tuple[Optional[int], NodeHierarchyIndex]:
+    def lsplit(self) -> tuple[Optional[int], NodeHierarchyIndex]:
         if not self:
             return None, NodeHierarchyIndex()
         return self.indices[0], NodeHierarchyIndex(indices=self.indices[1:])
 
-    def rsplit(self) -> Tuple[NodeHierarchyIndex, Optional[int]]:
+    def rsplit(self) -> tuple[NodeHierarchyIndex, Optional[int]]:
         if not self:
             return NodeHierarchyIndex(), None
         return NodeHierarchyIndex(indices=self.indices[:-1]), self.indices[-1]

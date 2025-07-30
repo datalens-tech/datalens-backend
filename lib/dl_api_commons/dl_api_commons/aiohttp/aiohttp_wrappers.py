@@ -8,11 +8,9 @@ from typing import (
     Any,
     Awaitable,
     Callable,
-    FrozenSet,
     Generic,
     Literal,
     Optional,
-    Type,
     TypeVar,
     Union,
     overload,
@@ -225,7 +223,7 @@ class DLRequestBase:
             ) from e
 
     @property
-    def required_resources(self) -> FrozenSet[RequiredResource]:
+    def required_resources(self) -> frozenset[RequiredResource]:
         handler = self.request.match_info.handler
 
         if hasattr(handler, self.HANDLER_ATTR_NAME_REQUIRED_RESOURCES):
@@ -237,7 +235,7 @@ class DLRequestBase:
 
     @classmethod
     def use_dl_request(
-        cls: Type[_SELF_TYPE], coro: Callable[[_SELF_TYPE, Handler], Awaitable[web.StreamResponse]]
+        cls: type[_SELF_TYPE], coro: Callable[[_SELF_TYPE, Handler], Awaitable[web.StreamResponse]]
     ) -> Middleware:
         if not inspect.iscoroutinefunction(coro):
             raise ValueError("This decorator may only be applied to a coroutine")
@@ -274,7 +272,7 @@ _DL_REQUEST_TV = TypeVar("_DL_REQUEST_TV", bound=DLRequestBase)
 
 
 class DLRequestView(web.View, Generic[_DL_REQUEST_TV]):
-    dl_request_cls: Type[_DL_REQUEST_TV] = DLRequestBase  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "type[DLRequestBase]", variable has type "type[_DL_REQUEST_TV]")  [assignment]
+    dl_request_cls: type[_DL_REQUEST_TV] = DLRequestBase  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "type[DLRequestBase]", variable has type "type[_DL_REQUEST_TV]")  [assignment]
 
     @property
     def dl_request(self) -> _DL_REQUEST_TV:

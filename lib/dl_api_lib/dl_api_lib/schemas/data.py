@@ -5,8 +5,6 @@ import json
 from typing import (
     Any,
     ClassVar,
-    Dict,
-    List,
 )
 
 from marshmallow import (
@@ -87,10 +85,10 @@ class DatasetDataRequestBaseSchema(DefaultSchema[DataRequestModel]):
         drm = self._make_drm(raw_query_spec_union=raw_query_spec_union, data=data)
         return drm
 
-    def _make_raw_query_spec_union(self, data: Dict[str, Any]) -> RawQuerySpecUnion:
+    def _make_raw_query_spec_union(self, data: dict[str, Any]) -> RawQuerySpecUnion:
         raise NotImplementedError
 
-    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
+    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: dict[str, Any]) -> DataRequestModel:
         raise NotImplementedError
 
 
@@ -100,7 +98,7 @@ class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema, DatasetContentSc
     updates = ma_fields.Nested(ActionSchema, many=True, load_default=[])
     TARGET_CLS = DataRequestModel
 
-    def _make_raw_query_spec_union(self, data: Dict[str, Any]) -> RawQuerySpecUnion:
+    def _make_raw_query_spec_union(self, data: dict[str, Any]) -> RawQuerySpecUnion:
         raw_query_spec_union = RawQuerySpecUnion(
             limit=data.get("limit"),
             group_by_policy=GroupByPolicy.if_measures,
@@ -111,7 +109,7 @@ class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema, DatasetContentSc
         )
         return raw_query_spec_union
 
-    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
+    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: dict[str, Any]) -> DataRequestModel:
         return DataRequestModel(
             raw_query_spec_union=raw_query_spec_union,
             dataset=data.get("dataset"),
@@ -171,7 +169,7 @@ class DatasetVersionResultRequestSchema(DatasetDataRequestBaseSchema):
     ignore_nonexistent_filters = ma_fields.Boolean(load_default=False)
     revision_id = ma_fields.String(load_default=None)
 
-    def _make_raw_query_spec_union(self, data: Dict[str, Any]) -> RawQuerySpecUnion:
+    def _make_raw_query_spec_union(self, data: dict[str, Any]) -> RawQuerySpecUnion:
         raw_query_spec_union = RawQuerySpecUnion(
             select_specs=[RawSelectFieldSpec(ref=IdOrTitleFieldRef(id_or_title=field)) for field in data["columns"]],
             group_by_specs=[
@@ -193,7 +191,7 @@ class DatasetVersionResultRequestSchema(DatasetDataRequestBaseSchema):
         )
         return raw_query_spec_union
 
-    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
+    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: dict[str, Any]) -> DataRequestModel:
         return DataRequestModel(
             raw_query_spec_union=raw_query_spec_union,
             updates=data["updates"],
@@ -231,10 +229,10 @@ class DatasetVersionValuesBasePostSchema(DatasetDataRequestBaseSchema):
     updates = ma_fields.Nested(ActionSchema, many=True, load_default=[])
     revision_id = ma_fields.String(load_default=None)
 
-    def _make_select_specs(self, field_id: str) -> List[RawSelectFieldSpec]:
+    def _make_select_specs(self, field_id: str) -> list[RawSelectFieldSpec]:
         return [RawSelectFieldSpec(ref=IdFieldRef(id=field_id))]
 
-    def _make_raw_query_spec_union(self, data: Dict[str, Any]) -> RawQuerySpecUnion:
+    def _make_raw_query_spec_union(self, data: dict[str, Any]) -> RawQuerySpecUnion:
         raw_query_spec_union = RawQuerySpecUnion(
             select_specs=self._make_select_specs(field_id=data["field_guid"]),
             order_by_specs=[],
@@ -264,12 +262,12 @@ class DatasetVersionValuesDistinctPostSchema(DatasetVersionValuesBasePostSchema)
     ignore_nonexistent_filters = ma_fields.Boolean(load_default=False)
     disable_rls = ma_fields.Boolean(load_default=False)
 
-    def _make_select_specs(self, field_id: str) -> List[RawSelectFieldSpec]:
+    def _make_select_specs(self, field_id: str) -> list[RawSelectFieldSpec]:
         # Right now DISTINCT is handled at query level,
         # so the expressions are compiled in the regular manner
         return [RawSelectFieldSpec(ref=IdFieldRef(id=field_id), role_spec=RawRoleSpec(role=FieldRole.distinct))]
 
-    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
+    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: dict[str, Any]) -> DataRequestModel:
         return DataRequestModel(
             raw_query_spec_union=raw_query_spec_union,
             updates=data["updates"],
@@ -284,7 +282,7 @@ class DatasetVersionValuesDistinctResponseSchema(DatasetVersionResultResponseSch
 class DatasetVersionValuesRangePostSchema(DatasetVersionValuesBasePostSchema):
     QUERY_TYPE = QueryType.value_range
 
-    def _make_select_specs(self, field_id: str) -> List[RawSelectFieldSpec]:
+    def _make_select_specs(self, field_id: str) -> list[RawSelectFieldSpec]:
         return [
             RawSelectFieldSpec(
                 ref=IdFieldRef(id=field_id),
@@ -296,7 +294,7 @@ class DatasetVersionValuesRangePostSchema(DatasetVersionValuesBasePostSchema):
             ),
         ]
 
-    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
+    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: dict[str, Any]) -> DataRequestModel:
         return DataRequestModel(
             raw_query_spec_union=raw_query_spec_union,
             updates=data["updates"],
@@ -339,7 +337,7 @@ class ItemRefSchema(OneOfSchema):
     type_field_remove = True
     type_field = "type"
 
-    type_schemas: Dict[str, Any] = {
+    type_schemas: dict[str, Any] = {
         QueryItemRefType.id.name: IdRefSchema,
         QueryItemRefType.title.name: TitleRefSchema,
         QueryItemRefType.measure_name.name: MeasureNameRefSchema,
@@ -421,10 +419,10 @@ class RoleSpecSchema(OneOfSchema):
 
 class _FlattenRefMixin(BaseSchema):
     @pre_load(pass_many=False)
-    def nest_ref_obj(self, data: Dict[str, Any], **_: Any) -> Dict[str, Any]:
+    def nest_ref_obj(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         if "ref" not in data:
             ref_type = QueryItemRefType[data["ref_type"]]
-            ref_data: Dict[str, Any] = {"type": data["ref_type"]}
+            ref_data: dict[str, Any] = {"type": data["ref_type"]}
             if ref_type == QueryItemRefType.id:
                 ref_data["id"] = data.get("id")
             elif ref_type == QueryItemRefType.title:
@@ -540,10 +538,10 @@ class NewDatasetDataRequestBaseSchema(DatasetDataRequestBaseSchema):
     # Parameters
     parameter_values = ma_fields.Nested(ParameterValueSchema, many=True, load_default=[])
 
-    def _make_select_specs(self, data: Dict[str, Any]) -> List[RawSelectFieldSpec]:
+    def _make_select_specs(self, data: dict[str, Any]) -> list[RawSelectFieldSpec]:
         return data["fields"]
 
-    def _make_raw_query_spec_union(self, data: Dict[str, Any]) -> RawQuerySpecUnion:
+    def _make_raw_query_spec_union(self, data: dict[str, Any]) -> RawQuerySpecUnion:
         raw_query_spec_union = RawQuerySpecUnion(
             select_specs=self._make_select_specs(data),
             order_by_specs=data.get("order_by", []),
@@ -561,7 +559,7 @@ class NewDatasetDataRequestBaseSchema(DatasetDataRequestBaseSchema):
         )
         return raw_query_spec_union
 
-    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
+    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: dict[str, Any]) -> DataRequestModel:
         return self.TARGET_CLS(
             raw_query_spec_union=raw_query_spec_union,
             updates=data.get("updates", []),
@@ -577,7 +575,7 @@ class ResultDataRequestV1_5Schema(NewDatasetDataRequestBaseSchema):
     add_fields_data = ma_fields.Boolean(load_default=True)
     with_totals = ma_fields.Boolean(load_default=False)
 
-    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
+    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: dict[str, Any]) -> DataRequestModel:
         return self.TARGET_CLS(
             raw_query_spec_union=raw_query_spec_union,
             updates=data.get("updates", []),
@@ -600,7 +598,7 @@ class ResultDataRequestV2Schema(NewDatasetDataRequestBaseSchema):
 
     result = ma_fields.Nested(RequestResultSpecSchema(), allow_none=True)
 
-    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> ResultDataRequestModel:
+    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: dict[str, Any]) -> ResultDataRequestModel:
         return self.TARGET_CLS(
             raw_query_spec_union=raw_query_spec_union,
             updates=data.get("updates", []),
@@ -630,7 +628,7 @@ class PivotDataRequestBaseSchema(NewDatasetDataRequestBaseSchema):
     )  # Override default
     pivot = ma_fields.Nested(RequestPivotSpecSchema(), allow_none=False, load_default=lambda: RawPivotSpec())
 
-    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: Dict[str, Any]) -> DataRequestModel:
+    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: dict[str, Any]) -> DataRequestModel:
         return self.TARGET_CLS(
             raw_query_spec_union=raw_query_spec_union,
             updates=data.get("updates", []),

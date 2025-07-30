@@ -6,13 +6,10 @@ import re
 from typing import (
     Any,
     ClassVar,
-    Dict,
     Generator,
     Iterable,
-    List,
     Optional,
     Sequence,
-    Tuple,
 )
 
 import attr
@@ -67,7 +64,7 @@ class TemplateValueRestorer(ValueRestorerBase):
     template_re: ClassVar[re.Pattern] = re.compile(r"\{\{(?P<field>[^{}]+)\}\}")
 
     template: Optional[str] = attr.ib(kw_only=True)
-    idx_by_field_id: Dict[str, int] = attr.ib(kw_only=True)
+    idx_by_field_id: dict[str, int] = attr.ib(kw_only=True)
 
     def restore_value(self, raw_row: Sequence[Any]) -> Any:
         if self.template is None:
@@ -89,12 +86,12 @@ class DataPostprocessor:
         self,
         executed_query: ExecutedQuery,
         block_spec: BlockSpec,
-    ) -> List[ValueRestorerBase]:
+    ) -> list[ValueRestorerBase]:
         # Mapping of which field corresponds to which index in the data stream
         field_order = executed_query.meta.field_order
         assert field_order is not None
         idx_by_field_id = {field_id: idx for idx, field_id in field_order}
-        result: List[ValueRestorerBase] = []
+        result: list[ValueRestorerBase] = []
         for legend_item_id in block_spec.legend_item_ids:
             legend_item = block_spec.legend.get_item(legend_item_id)
             restorer: ValueRestorerBase
@@ -119,7 +116,7 @@ class DataPostprocessor:
 
         ordered_value_restorers = self._make_value_restorers(executed_query=executed_query, block_spec=block_spec)
 
-        def restore_order(data: Iterable[Sequence[Any]]) -> Generator[Tuple[Any, ...], None, None]:
+        def restore_order(data: Iterable[Sequence[Any]]) -> Generator[tuple[Any, ...], None, None]:
             for row in data:
                 yield tuple(restorer.restore_value(row) for restorer in ordered_value_restorers)
 

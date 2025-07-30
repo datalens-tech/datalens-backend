@@ -31,12 +31,6 @@ ipdb = "0.13.13"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.ruff.isort]
-split-on-trailing-comma = true
-
-
-
-
 [tool.poetry.scripts]
 print-deps = "datalens_local_dev.get_submodules:print_project_dependencies"
 print-sync-targets = "datalens_local_dev.get_submodules:rel_path_list_for_pycham_upload"

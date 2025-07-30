@@ -5,7 +5,6 @@ from typing import (
     TYPE_CHECKING,
     ClassVar,
     Generic,
-    Type,
     TypeVar,
 )
 
@@ -34,7 +33,7 @@ class PostSaveHookResult(HookResult):
 
 @attr.s
 class EntryLifecycleManager(abc.ABC, Generic[_US_ENTRY_TV]):
-    ENTRY_CLS: ClassVar[Type[_US_ENTRY_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
+    ENTRY_CLS: ClassVar[type[_US_ENTRY_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
     _entry: _US_ENTRY_TV = attr.ib(kw_only=True)
     _us_manager: USManagerBase = attr.ib(kw_only=True)

@@ -11,10 +11,7 @@ from typing import (
     AsyncIterable,
     ClassVar,
     Collection,
-    Dict,
-    List,
     Optional,
-    Type,
 )
 
 from aiohttp import web
@@ -387,16 +384,16 @@ class DatasetDataBaseView(BaseView):
         )
 
     @staticmethod
-    def _updates_only_fields(updates: List[Action]) -> bool:
+    def _updates_only_fields(updates: list[Action]) -> bool:
         # Checks if updates has only field updates
         return all([isinstance(upd, FieldAction) for upd in updates])
 
-    def try_get_mutation_key(self, updates: List[Action]) -> Optional[MutationKey]:
+    def try_get_mutation_key(self, updates: list[Action]) -> Optional[MutationKey]:
         return self.try_get_mutation_key_for_dataset(self.dataset_id, self.dataset.revision_id, updates)
 
     @staticmethod
     def try_get_mutation_key_for_dataset(
-        dataset_id: Optional[str], revision_id: Optional[str], updates: List[Action]
+        dataset_id: Optional[str], revision_id: Optional[str], updates: list[Action]
     ) -> Optional[MutationKey]:
         # Cheat: replace None revision_id with empty string to allow caching
         if revision_id is None:
@@ -568,11 +565,11 @@ class DatasetDataBaseView(BaseView):
     def _get_parameter_value_specs(
         self,
         raw_query_spec_union: RawQuerySpecUnion,
-    ) -> List[ParameterValueSpec]:
+    ) -> list[ParameterValueSpec]:
         legend_formalizer = self.make_legend_formalizer(query_type=raw_query_spec_union.meta.query_type)
         legend = legend_formalizer.make_legend(raw_query_spec_union=raw_query_spec_union)
 
-        result: List[ParameterValueSpec] = []
+        result: list[ParameterValueSpec] = []
         for legend_parameter_spec in legend.list_for_role(FieldRole.parameter):
             parameter_role_spec = legend_parameter_spec.role_spec
             assert isinstance(parameter_role_spec, ParameterRoleSpec)
@@ -600,7 +597,7 @@ class DatasetDataBaseView(BaseView):
                     reporting_registry.save_reporting_record(notification_record)
 
     def make_legend_formalizer(self, query_type: QueryType, autofill_legend: bool = False) -> LegendFormalizer:
-        legend_formalizer_cls: Type[LegendFormalizer]
+        legend_formalizer_cls: type[LegendFormalizer]
         if query_type == QueryType.pivot:
             legend_formalizer_cls = PivotLegendFormalizer
         elif query_type == QueryType.result:
@@ -727,9 +724,9 @@ class DatasetDataBaseView(BaseView):
         merged_stream: MergedQueryDataStream,
         totals_query: Optional[str] = None,
         totals: Optional[PostprocessedRow] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         add_fields_data = req_model.add_fields_data
-        fields_data: Optional[List[Dict[str, Any]]] = None
+        fields_data: Optional[list[dict[str, Any]]] = None
         if add_fields_data:
             fields_data = get_fields_data_serializable(self.dataset, for_result=True)
             LOGGER.info("Field schema data", extra=dict(fields=fields_data))
@@ -743,7 +740,7 @@ class DatasetDataBaseView(BaseView):
         )
         return response_json
 
-    def _make_response_v2(self, merged_stream: MergedQueryDataStream) -> Dict[str, Any]:
+    def _make_response_v2(self, merged_stream: MergedQueryDataStream) -> dict[str, Any]:
         result = DataRequestResponseSerializer.make_data_response_v2(
             merged_stream=merged_stream,
             reporting_registry=self.dl_request.services_registry.get_reporting_registry()

@@ -9,7 +9,6 @@ from typing import (
     Callable,
     ClassVar,
     Optional,
-    Type,
     TypeVar,
 )
 import uuid
@@ -80,7 +79,7 @@ class S3Model(SecretContainingMixin, metaclass=abc.ABCMeta):
         return self._generate_key_by_id(self._manager, self.id)
 
     @classmethod
-    async def get(cls: Type[TS3Model], manager: S3ModelManager, obj_id: str) -> TS3Model:
+    async def get(cls: type[TS3Model], manager: S3ModelManager, obj_id: str) -> TS3Model:
         key = cls._generate_key_by_id(manager=manager, obj_id=obj_id)
         return await manager.get(key=key, target_cls=cls)  # type: ignore  # 2025-04-25 # TODO: Incompatible return value type (got "S3Model", expected "TS3Model")  [return-value]
 
@@ -130,7 +129,7 @@ class S3ModelManager:
         json_data = json.dumps(json_data_dict)
         return json_data
 
-    def _deserialize_object(self, json_data: str, target_cls: Type[S3Model]) -> S3Model:
+    def _deserialize_object(self, json_data: str, target_cls: type[S3Model]) -> S3Model:
         schema_cls = _get_model_schema_class(target_cls)
         schema = schema_cls()
         obj = schema.loads(json_data)
@@ -144,7 +143,7 @@ class S3ModelManager:
 
         return obj
 
-    async def get(self, key: str, target_cls: Type[S3Model], post_load: Optional[Callable] = None) -> S3Model:
+    async def get(self, key: str, target_cls: type[S3Model], post_load: Optional[Callable] = None) -> S3Model:
         sync_s3_client = self._s3_service.get_sync_client()
 
         # Try from persistent
@@ -238,7 +237,7 @@ class S3BaseSchema(ma.Schema):
     class Meta:
         unknown = ma.EXCLUDE
 
-        target: Type
+        target: type
 
     @ma.post_load(pass_many=False)
     def to_object(self, data: dict[str, Any], **kwargs: Any) -> Any:
@@ -250,12 +249,12 @@ class S3BaseModelSchema(S3BaseSchema):
     user_id = ma.fields.String()
 
 
-_MODEL_CLASS_TO_STORAGE_SCHEMA_MAP: dict[Type[S3Model], Type[S3BaseModelSchema]] = dict()
+_MODEL_CLASS_TO_STORAGE_SCHEMA_MAP: dict[type[S3Model], type[S3BaseModelSchema]] = dict()
 
 
-def _get_model_schema_class(model_cls: Type[S3Model]) -> Type[S3BaseModelSchema]:
+def _get_model_schema_class(model_cls: type[S3Model]) -> type[S3BaseModelSchema]:
     return _MODEL_CLASS_TO_STORAGE_SCHEMA_MAP[model_cls]
 
 
-def register_s3_model_storage_schema(model_cls: Type[S3Model], schema_cls: Type[S3BaseModelSchema]) -> None:
+def register_s3_model_storage_schema(model_cls: type[S3Model], schema_cls: type[S3BaseModelSchema]) -> None:
     _MODEL_CLASS_TO_STORAGE_SCHEMA_MAP[model_cls] = schema_cls

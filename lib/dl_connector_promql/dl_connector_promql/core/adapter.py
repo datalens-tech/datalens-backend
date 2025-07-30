@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     ClassVar,
     Optional,
-    Type,
 )
 from urllib.parse import (
     quote_plus,
@@ -77,7 +76,7 @@ class PromQLConnLineConstructor(ClassicSQLConnLineConstructor["PromQLConnTargetD
 @attr.s
 class PromQLAdapter(BaseClassicAdapter["PromQLConnTargetDTO"]):
     conn_type: ClassVar[ConnectionType] = CONNECTION_TYPE_PROMQL
-    conn_line_constructor_type: ClassVar[Type[PromQLConnLineConstructor]] = PromQLConnLineConstructor
+    conn_line_constructor_type: ClassVar[type[PromQLConnLineConstructor]] = PromQLConnLineConstructor
 
     _type_code_to_sa = {
         None: sa.TEXT,  # fallback

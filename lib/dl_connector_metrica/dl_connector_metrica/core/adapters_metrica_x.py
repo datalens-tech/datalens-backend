@@ -2,10 +2,7 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Dict,
     Optional,
-    Tuple,
-    Type,
     TypeVar,
 )
 from urllib.parse import (
@@ -47,7 +44,7 @@ class MetricaAPIDefaultAdapter(BaseSAAdapter[_M_CONN_T_DTO_TV]):
             token=quote_plus(self._target_dto.token),
             db_name=db_name,
         )
-        dsn_params: Dict[str, Any] = {}
+        dsn_params: dict[str, Any] = {}
         if self._target_dto.accuracy is not None:
             dsn_params.update(accuracy=self._target_dto.accuracy)
 
@@ -59,7 +56,7 @@ class MetricaAPIDefaultAdapter(BaseSAAdapter[_M_CONN_T_DTO_TV]):
     @classmethod
     def make_exc(  # TODO:  Move to ErrorTransformer
         cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
-    ) -> Tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
+    ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
         exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_compiled_query)
 
         if isinstance(

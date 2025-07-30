@@ -6,7 +6,6 @@ from typing import (
     Mapping,
     Optional,
     Sequence,
-    Tuple,
     Union,
 )
 
@@ -74,12 +73,12 @@ class RawColumnInfo:
 
 @attr.s(frozen=True, slots=True, auto_attribs=True)
 class RawIndexInfo:
-    columns: Tuple[str, ...]
+    columns: tuple[str, ...]
     unique: bool
     kind: Optional[IndexKind]
 
 
 @attr.s(frozen=True, slots=True, auto_attribs=True)
 class RawSchemaInfo:
-    columns: Tuple[RawColumnInfo, ...]
-    indexes: Optional[Tuple[RawIndexInfo, ...]] = None
+    columns: tuple[RawColumnInfo, ...]
+    indexes: Optional[tuple[RawIndexInfo, ...]] = None

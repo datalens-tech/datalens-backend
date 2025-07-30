@@ -3,9 +3,7 @@ from __future__ import annotations
 import abc
 from typing import (
     TYPE_CHECKING,
-    List,
     NamedTuple,
-    Set,
 )
 
 from dl_formula.core.datatype import DataType
@@ -17,7 +15,7 @@ if TYPE_CHECKING:
 
 
 class FuncArg(NamedTuple):
-    types: Set[DataType]
+    types: set[DataType]
     name: str
     optional_level: int
 
@@ -32,5 +30,5 @@ class FuncArg(NamedTuple):
 
 class ArgumentExtractorBase(abc.ABC):
     @abc.abstractmethod
-    def get_args(self, item: _registry_base.FunctionDocRegistryItem, env: GenerationEnvironment) -> List[FuncArg]:
+    def get_args(self, item: _registry_base.FunctionDocRegistryItem, env: GenerationEnvironment) -> list[FuncArg]:
         raise NotImplementedError

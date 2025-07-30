@@ -6,12 +6,8 @@ from typing import (
     TYPE_CHECKING,
     AbstractSet,
     Collection,
-    Dict,
-    List,
     Optional,
     Sequence,
-    Set,
-    Tuple,
 )
 
 import attr
@@ -107,7 +103,7 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
     _ds_accessor: DatasetComponentAccessor = attr.ib(init=False)
     _dsrc_coll_factory: DataSourceCollectionFactory = attr.ib(init=False)
     _field_resolver: FieldResolver = attr.ib(init=False)
-    _avatar_resolution_cache: Dict[str, bool] = attr.ib(init=False, factory=dict)
+    _avatar_resolution_cache: dict[str, bool] = attr.ib(init=False, factory=dict)
 
     @_ds_accessor.default
     def _make_ds_accessor(self) -> DatasetComponentAccessor:
@@ -139,7 +135,7 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
         self,
         block_spec: BlockSpec,
         order_by_specs: Sequence[OrderByFieldSpec],
-    ) -> List[FieldId]:
+    ) -> list[FieldId]:
         return []
 
     def _avatar_exists(self, avatar_id: str) -> bool:
@@ -156,10 +152,10 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
     def make_select_specs(
         self,
         block_spec: BlockSpec,
-        phantom_select_ids: List[FieldId],
-    ) -> List[SelectFieldSpec]:
-        select_specs: List[SelectFieldSpec] = []
-        select_spec_set: Set[SelectFieldSpec] = set()
+        phantom_select_ids: list[FieldId],
+    ) -> list[SelectFieldSpec]:
+        select_specs: list[SelectFieldSpec] = []
+        select_spec_set: set[SelectFieldSpec] = set()
         for legend_select_spec in block_spec.legend.list_selectable_items():
             select_role_spec = legend_select_spec.role_spec
 
@@ -198,9 +194,9 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
         self,
         block_spec: BlockSpec,
         select_specs: Sequence[SelectFieldSpec],
-    ) -> List[GroupByFieldSpec]:
-        group_by_specs: List[GroupByFieldSpec] = []
-        group_by_spec_set: Set[GroupByFieldSpec] = set()
+    ) -> list[GroupByFieldSpec]:
+        group_by_specs: list[GroupByFieldSpec] = []
+        group_by_spec_set: set[GroupByFieldSpec] = set()
         for select_spec in select_specs:
             field = self._dataset.result_schema.by_guid(select_spec.field_id)
             if field.type == FieldType.DIMENSION:
@@ -217,8 +213,8 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
     def make_filter_specs(
         self,
         block_spec: BlockSpec,
-    ) -> List[FilterFieldSpec]:
-        result: List[FilterFieldSpec] = []
+    ) -> list[FilterFieldSpec]:
+        result: list[FilterFieldSpec] = []
         for legend_filter_spec in block_spec.legend.list_for_role(FieldRole.filter):
             filter_role_spec = legend_filter_spec.role_spec
             assert isinstance(filter_role_spec, FilterRoleSpec)
@@ -247,9 +243,9 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
     def make_order_by_specs(
         self,
         block_spec: BlockSpec,
-    ) -> List[OrderByFieldSpec]:
+    ) -> list[OrderByFieldSpec]:
         selectable_items = block_spec.legend.list_selectable_items()
-        result: List[OrderByFieldSpec] = []
+        result: list[OrderByFieldSpec] = []
         for legend_order_by_spec in block_spec.legend.list_for_role(FieldRole.order_by):
             order_by_role_spec = legend_order_by_spec.role_spec
             assert isinstance(order_by_role_spec, OrderByRoleSpec)
@@ -271,20 +267,20 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
 
         return result
 
-    def make_source_column_filter_specs(self) -> List[FilterSourceColumnSpec]:
+    def make_source_column_filter_specs(self) -> list[FilterSourceColumnSpec]:
         return []
 
     def make_relation_and_avatar_specs(
         self,
         used_field_ids: Collection[FieldId],
-    ) -> Tuple[List[RelationSpec], AbstractSet[AvatarId], Optional[AvatarId]]:
+    ) -> tuple[list[RelationSpec], AbstractSet[AvatarId], Optional[AvatarId]]:
         return [], set(), None
 
     def make_parameter_value_specs(
         self,
         block_spec: BlockSpec,
-    ) -> List[ParameterValueSpec]:
-        result: List[ParameterValueSpec] = []
+    ) -> list[ParameterValueSpec]:
+        result: list[ParameterValueSpec] = []
         for legend_parameter_spec in block_spec.legend.list_for_role(FieldRole.parameter):
             parameter_role_spec = legend_parameter_spec.role_spec
             assert isinstance(parameter_role_spec, ParameterRoleSpec)
@@ -392,12 +388,12 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
         if not block_spec.allow_measure_fields:
             self._ensure_not_measure(field)
 
-    def _make_rls_filter_specs(self) -> List[FilterFieldSpec]:
+    def _make_rls_filter_specs(self) -> list[FilterFieldSpec]:
         user_id = self._rci.user_id
         if not user_id:
             raise RuntimeError("No subject to use in RLS")
 
-        result: List[FilterFieldSpec] = []
+        result: list[FilterFieldSpec] = []
         restrictions = self._dataset.rls.get_user_restrictions(user_id=user_id)
         for field_guid, values in restrictions.items():
             result.append(
@@ -415,14 +411,14 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
         self,
         block_spec: BlockSpec,
         order_by_specs: Sequence[OrderByFieldSpec],
-    ) -> List[FieldId]:
-        order_by_id_set: Set[str] = {order_by_spec.field_id for order_by_spec in order_by_specs}
+    ) -> list[FieldId]:
+        order_by_id_set: set[str] = {order_by_spec.field_id for order_by_spec in order_by_specs}
         select_id_set = {legend_select_spec.id for legend_select_spec in block_spec.legend.list_selectable_items()}
         phantom_select_ids = list(order_by_id_set - select_id_set)
         self._validate_phantom_select_ids(phantom_select_ids)
         return phantom_select_ids
 
-    def make_filter_specs(self, block_spec: BlockSpec) -> List[FilterFieldSpec]:
+    def make_filter_specs(self, block_spec: BlockSpec) -> list[FilterFieldSpec]:
         filter_specs = super().make_filter_specs(block_spec=block_spec)
 
         if block_spec.disable_rls:
@@ -436,7 +432,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
 
         return filter_specs
 
-    def make_source_column_filter_specs(self) -> List[FilterSourceColumnSpec]:
+    def make_source_column_filter_specs(self) -> list[FilterSourceColumnSpec]:
         source_column_filter_specs = super().make_source_column_filter_specs()
 
         # This is not quite right, because we collect filters from all avatars,
@@ -467,7 +463,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
         self,
         block_spec: BlockSpec,
         select_specs: Sequence[SelectFieldSpec],
-    ) -> List[GroupByFieldSpec]:
+    ) -> list[GroupByFieldSpec]:
         has_measures = any(
             self._dataset.result_schema.by_guid(spec.field_id).type == FieldType.MEASURE for spec in select_specs
         )
@@ -491,7 +487,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
     def make_relation_and_avatar_specs(
         self,
         used_field_ids: Collection[FieldId],
-    ) -> Tuple[List[RelationSpec], AbstractSet[AvatarId], Optional[AvatarId]]:
+    ) -> tuple[list[RelationSpec], AbstractSet[AvatarId], Optional[AvatarId]]:
         # Resolve avatars explicitly specified in fields
         deep_dep_mgr = self._dep_mgr_factory.get_field_deep_inter_dependency_manager()
         field_ava_dep_mgr = self._dep_mgr_factory.get_field_avatar_dependency_manager()
@@ -531,7 +527,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
         relation_specs = [RelationSpec(relation_id=relation_id) for relation_id in sorted(required_relation_ids)]
         return relation_specs, required_avatar_ids, root_avatar_id
 
-    def make_limit_offset(self, block_spec: BlockSpec) -> Tuple[Optional[int], Optional[int]]:
+    def make_limit_offset(self, block_spec: BlockSpec) -> tuple[Optional[int], Optional[int]]:
         # Make defaults
         limit, offset = super().make_limit_offset(block_spec=block_spec)
 
@@ -544,8 +540,8 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
     def make_query_meta(
         self,
         block_spec: BlockSpec,
-        phantom_select_ids: List[FieldId],
-        select_specs: List[SelectFieldSpec],
+        phantom_select_ids: list[FieldId],
+        select_specs: list[SelectFieldSpec],
         root_avatar_id: Optional[AvatarId],
     ) -> QueryMetaInfo:
         query_meta = super().make_query_meta(
@@ -578,7 +574,7 @@ class NoGroupByQuerySpecFormalizerBase(DataQuerySpecFormalizer):
         self,
         block_spec: BlockSpec,
         select_specs: Sequence[SelectFieldSpec],
-    ) -> List[GroupByFieldSpec]:
+    ) -> list[GroupByFieldSpec]:
         return []
 
 
@@ -586,8 +582,8 @@ class ValueDistinctSpecFormalizer(NoGroupByQuerySpecFormalizerBase):
     def make_select_specs(
         self,
         block_spec: BlockSpec,
-        phantom_select_ids: List[FieldId],
-    ) -> List[SelectFieldSpec]:
+        phantom_select_ids: list[FieldId],
+    ) -> list[SelectFieldSpec]:
         select_specs = super().make_select_specs(block_spec=block_spec, phantom_select_ids=phantom_select_ids)
         assert len(select_specs) == 1
         return select_specs
@@ -595,7 +591,7 @@ class ValueDistinctSpecFormalizer(NoGroupByQuerySpecFormalizerBase):
     def make_order_by_specs(
         self,
         block_spec: BlockSpec,
-    ) -> List[OrderByFieldSpec]:
+    ) -> list[OrderByFieldSpec]:
         legend_select_spec_list = block_spec.legend.list_selectable_items()
         assert len(legend_select_spec_list) == 1
         legend_select_spec = legend_select_spec_list[0]
@@ -612,10 +608,10 @@ class SingleRowQuerySpecFormalizerBase(NoGroupByQuerySpecFormalizerBase):
     def make_order_by_specs(
         self,
         block_spec: BlockSpec,
-    ) -> List[OrderByFieldSpec]:
+    ) -> list[OrderByFieldSpec]:
         return []
 
-    def make_limit_offset(self, block_spec: BlockSpec) -> Tuple[Optional[int], Optional[int]]:
+    def make_limit_offset(self, block_spec: BlockSpec) -> tuple[Optional[int], Optional[int]]:
         return (None, None)
 
 
@@ -627,8 +623,8 @@ class ValueRangeSpecFormalizer(SingleRowQuerySpecFormalizerBase):
     def make_select_specs(
         self,
         block_spec: BlockSpec,
-        phantom_select_ids: List[FieldId],
-    ) -> List[SelectFieldSpec]:
+        phantom_select_ids: list[FieldId],
+    ) -> list[SelectFieldSpec]:
         select_specs = super().make_select_specs(block_spec=block_spec, phantom_select_ids=phantom_select_ids)
         assert len(select_specs) == 2
         assert all(

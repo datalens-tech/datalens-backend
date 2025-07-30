@@ -7,7 +7,6 @@ from enum import (
 from typing import (
     Optional,
     Sequence,
-    Type,
 )
 
 import attr
@@ -108,7 +107,7 @@ class YDBRowConstructor(RowConstructor):
 
 
 class YDBConnectionFormFactory(ConnectionFormFactory):
-    def _get_base_common_api_schema_items(self, names_source: Type[Enum]) -> list[FormFieldApiSchema]:
+    def _get_base_common_api_schema_items(self, names_source: type[Enum]) -> list[FormFieldApiSchema]:
         return [
             FormFieldApiSchema(name=names_source.host, required=True),  # type: ignore  # 2024-01-24 # TODO: "type[Enum]" has no attribute "host"  [attr-defined]
             FormFieldApiSchema(name=names_source.port, required=True),  # type: ignore  # 2024-01-24 # TODO: "type[Enum]" has no attribute "port"  [attr-defined]

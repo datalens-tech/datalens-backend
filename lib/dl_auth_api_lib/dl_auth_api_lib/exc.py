@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Type
-
 from dl_api_commons.aio.middlewares.error_handling_outer import ErrorLevel
 from dl_constants.exc import (
     GLOBAL_ERR_PREFIX,
@@ -9,7 +7,7 @@ from dl_constants.exc import (
 )
 
 
-def make_err_code(exc: Type[DLAuthAPIBaseError] | DLAuthAPIBaseError) -> str:
+def make_err_code(exc: type[DLAuthAPIBaseError] | DLAuthAPIBaseError) -> str:
     return ".".join([GLOBAL_ERR_PREFIX] + exc.err_code)
 
 

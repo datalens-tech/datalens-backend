@@ -14,7 +14,6 @@ from typing import (
     ClassVar,
     Iterable,
     Optional,
-    Type,
     TypeVar,
 )
 from urllib.parse import quote
@@ -116,7 +115,7 @@ class AsyncPostgresAdapter(
     _error_transformer = make_async_pg_error_transformer()
     __dialect: Optional[AsyncBIPGDialect] = None
 
-    EXTRA_EXC_CLS: ClassVar[tuple[Type[Exception], ...]] = (
+    EXTRA_EXC_CLS: ClassVar[tuple[type[Exception], ...]] = (
         exc.DataStreamValidationError,
         # I don't have any idea why asyncpg doesn't provide common exception in public interface
         # but there are about 40 different types of exceptions for every case of error
@@ -452,7 +451,7 @@ class AsyncPostgresAdapter(
 
     @classmethod
     def create(
-        cls: Type[_DBA_ASYNC_POSTGRES_TV],
+        cls: type[_DBA_ASYNC_POSTGRES_TV],
         target_dto: PostgresConnTargetDTO,
         req_ctx_info: DBAdapterScopedRCI,
         default_chunk_size: int,

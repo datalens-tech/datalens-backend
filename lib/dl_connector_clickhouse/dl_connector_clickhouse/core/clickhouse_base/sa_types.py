@@ -4,7 +4,6 @@ from functools import partial
 from typing import (
     Callable,
     Collection,
-    Type,
 )
 
 from clickhouse_sqlalchemy import types as ch_types
@@ -45,7 +44,7 @@ def _make_ch_type(nt: GenericNativeType, typeobj: TypeEngine) -> TypeEngine:
     return result
 
 
-def ch_instantiator(typecls: Type[TypeEngine]) -> Callable:
+def ch_instantiator(typecls: type[TypeEngine]) -> Callable:
     def type_gen(nt: GenericNativeType) -> TypeEngine:
         return _make_ch_type(nt=nt, typeobj=typecls())
 
@@ -56,7 +55,7 @@ def ch_fallback_type_gen(*args, **kwargs):  # type: ignore  # TODO: fix
     return ch_types.Nullable(ch_types.String())
 
 
-def _make_ch_dtwtz(nt: GenericNativeType, typecls: Type[TypeEngine] = ch_types.DateTimeWithTZ) -> TypeEngine:
+def _make_ch_dtwtz(nt: GenericNativeType, typecls: type[TypeEngine] = ch_types.DateTimeWithTZ) -> TypeEngine:
     if isinstance(nt, ClickHouseDateTimeWithTZNativeType):
         tz = nt.timezone_name
     else:
@@ -68,7 +67,7 @@ def _make_ch_dtwtz(nt: GenericNativeType, typecls: Type[TypeEngine] = ch_types.D
 DEFAULT_DT64_PRECISION = 9
 
 
-def _make_ch_dt64(nt: GenericNativeType, typecls: Type[TypeEngine] = ch_types.DateTime64) -> TypeEngine:
+def _make_ch_dt64(nt: GenericNativeType, typecls: type[TypeEngine] = ch_types.DateTime64) -> TypeEngine:
     if isinstance(nt, ClickHouseDateTime64NativeType):
         precision = nt.precision
     else:
@@ -77,7 +76,7 @@ def _make_ch_dt64(nt: GenericNativeType, typecls: Type[TypeEngine] = ch_types.Da
     return _make_ch_type(nt=nt, typeobj=typeobj)
 
 
-def _make_ch_dt64wtz(nt: GenericNativeType, typecls: Type[TypeEngine] = ch_types.DateTime64WithTZ) -> TypeEngine:
+def _make_ch_dt64wtz(nt: GenericNativeType, typecls: type[TypeEngine] = ch_types.DateTime64WithTZ) -> TypeEngine:
     if isinstance(nt, ClickHouseDateTime64WithTZNativeType):
         tz = nt.timezone_name
         precision = nt.precision
@@ -88,7 +87,7 @@ def _make_ch_dt64wtz(nt: GenericNativeType, typecls: Type[TypeEngine] = ch_types
     return _make_ch_type(nt=nt, typeobj=typeobj)
 
 
-def _make_ch_array(nt: GenericNativeType, inner_typecls: Type[TypeEngine]) -> TypeEngine:
+def _make_ch_array(nt: GenericNativeType, inner_typecls: type[TypeEngine]) -> TypeEngine:
     ch_type_inner = _make_ch_type(nt=nt, typeobj=inner_typecls())
     return ch_types.Array(ch_type_inner)
 
@@ -107,7 +106,7 @@ SQLALCHEMY_CLICKHOUSE_BASE_TYPES = (
 
 
 def _generate_complex_ch_types(
-    base_ch_types: Collection[Type[TypeEngine]],
+    base_ch_types: Collection[type[TypeEngine]],
 ) -> dict[tuple[SourceBackendType, GenericNativeType], Callable[..., TypeEngine]]:
     return {
         **{(BACKEND_TYPE_CLICKHOUSE, make_native_type(typecls)): ch_instantiator(typecls) for typecls in base_ch_types},

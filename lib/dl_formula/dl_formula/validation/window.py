@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Collection,
-    Tuple,
-)
+from typing import Collection
 
 import attr
 
@@ -30,7 +27,7 @@ class WindowFunctionChecker(Checker):
         self,
         validator: ValidatorProxy,
         node: nodes.FormulaItem,
-        parent_stack: Tuple[nodes.FormulaItem, ...],
+        parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> None:
         if not dl_formula.inspect.expression.is_window_expression(node, env=self._inspect_env):
             # node has no window functions in it,

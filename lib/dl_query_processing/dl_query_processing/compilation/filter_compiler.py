@@ -6,7 +6,6 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Dict,
     Optional,
 )
 
@@ -88,7 +87,7 @@ class FilterFormulaCompiler:
     _formula_compiler: FormulaCompiler = attr.ib(kw_only=True)
 
     # structure: {WhereClauseOperation: (add_arg_cnt, expr_callable)}
-    FILTER_OPERATIONS: ClassVar[Dict[WhereClauseOperation, FilterDefinition]] = {
+    FILTER_OPERATIONS: ClassVar[dict[WhereClauseOperation, FilterDefinition]] = {
         # unary (arg_cnt = 0)
         WhereClauseOperation.ISNULL: FilterDefinition(arg_cnt=0, callable=n.func.ISNULL),
         WhereClauseOperation.ISNOTNULL: FilterDefinition(arg_cnt=0, callable=lambda f, *args: n.not_(n.func.ISNULL(f))),

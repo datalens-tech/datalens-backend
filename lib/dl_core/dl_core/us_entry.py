@@ -8,7 +8,6 @@ from typing import (
     Any,
     ClassVar,
     Optional,
-    Type,
     TypeVar,
     Union,
 )
@@ -38,7 +37,7 @@ _USENTRY_TV = TypeVar("_USENTRY_TV", bound="USEntry")
 
 
 class USEntry:
-    DataModel: ClassVar[Union[Type[BaseAttrsDataModel], None]] = None
+    DataModel: ClassVar[Union[type[BaseAttrsDataModel], None]] = None
     dir_name: str | None = None
 
     uuid: Optional[str] = None
@@ -63,7 +62,7 @@ class USEntry:
 
     @classmethod
     def create_from_dict(
-        cls: Type[_USENTRY_TV],
+        cls: type[_USENTRY_TV],
         data_dict: Union[dict, BaseAttrsDataModel],
         ds_key: Union[EntryLocation, str, None] = None,
         type_: Optional[str] = None,

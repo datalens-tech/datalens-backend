@@ -8,8 +8,6 @@ from typing import (
     Callable,
     ClassVar,
     Optional,
-    Tuple,
-    Type,
     TypeVar,
 )
 
@@ -76,7 +74,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         "Decimal(": sa.FLOAT,
     }
 
-    def _cursor_column_to_sa(self, cursor_col: Tuple[Any, ...], require: bool = True) -> Optional[SATypeSpec]:
+    def _cursor_column_to_sa(self, cursor_col: tuple[Any, ...], require: bool = True) -> Optional[SATypeSpec]:
         result = super()._cursor_column_to_sa(cursor_col)
         if result is not None:
             return result
@@ -99,7 +97,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
     def _convert_ts(value: int) -> datetime.datetime:
         return datetime.datetime.utcfromtimestamp(value / 1e6).replace(tzinfo=datetime.timezone.utc)
 
-    def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> Tuple[Optional[Callable[[Any], Any]], ...]:
+    def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> tuple[Optional[Callable[[Any], Any]], ...]:
         type_names_norm = [col[1].lower().strip("?") for col in cursor_info.raw_cursor_description]
         return tuple(
             self._convert_bytes
@@ -113,7 +111,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
     @classmethod
     def make_exc(  # TODO:  Move to ErrorTransformer
         cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
-    ) -> Tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
+    ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
         exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_compiled_query)
 
         try:

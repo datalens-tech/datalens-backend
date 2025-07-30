@@ -6,10 +6,7 @@ import copy
 import logging
 from typing import (
     ClassVar,
-    Dict,
     Optional,
-    Set,
-    Type,
     TypeVar,
     Union,
 )
@@ -93,7 +90,7 @@ class CryptoKeyInfo:
 class USManagerBase:
     ITER_ENTRIES_PAGE_SIZE: ClassVar[int] = 1500
 
-    _MAP_TYPE_TO_SCHEMA: ClassVar[ChainMapGeneric[Type[BaseAttrsDataModel], Type[marshmallow.Schema]]] = ChainMap(
+    _MAP_TYPE_TO_SCHEMA: ClassVar[ChainMapGeneric[type[BaseAttrsDataModel], type[marshmallow.Schema]]] = ChainMap(
         MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA,  # type: ignore  # TODO: fix
         {
             Dataset.DataModel: DatasetStorageSchema,
@@ -195,17 +192,17 @@ class USManagerBase:
         self._us_client.set_tenant_override(tenant)
 
     @classmethod
-    def get_load_storage_schema(cls, data_cls: Type[BaseAttrsDataModel]) -> marshmallow.Schema:
+    def get_load_storage_schema(cls, data_cls: type[BaseAttrsDataModel]) -> marshmallow.Schema:
         schema_cls = cls._MAP_TYPE_TO_SCHEMA.get(data_cls)
         return schema_cls()  # type: ignore  # TODO: fix
 
     @classmethod
-    def get_dump_storage_schema(cls, data_cls: Type[BaseAttrsDataModel]) -> marshmallow.Schema:
+    def get_dump_storage_schema(cls, data_cls: type[BaseAttrsDataModel]) -> marshmallow.Schema:
         schema_cls = cls._MAP_TYPE_TO_SCHEMA.get(data_cls)
         return schema_cls()  # type: ignore  # TODO: fix
 
     @classmethod
-    def get_us_entry_serializer(cls, entry_cls: Type[USEntry]) -> USEntrySerializer:
+    def get_us_entry_serializer(cls, entry_cls: type[USEntry]) -> USEntrySerializer:
         data_cls = entry_cls.DataModel
 
         if data_cls is not None:
@@ -218,7 +215,7 @@ class USManagerBase:
     @classmethod
     def _get_entry_class(
         cls, *, us_scope: str, us_type: str, entry_key: Optional[EntryLocation] = None
-    ) -> Type[USEntry]:
+    ) -> type[USEntry]:
         err_msg = (
             f"Unknown combination of scope/type: {us_scope}/{us_type}"
             f" key={'not provided' if entry_key is None else entry_key.to_short_string()}"
@@ -242,7 +239,7 @@ class USManagerBase:
         else:
             raise exc.UnexpectedUSEntryType()
 
-    def get_sensitive_fields_key_info(self, entry: USEntry) -> Dict[str, CryptoKeyInfo]:
+    def get_sensitive_fields_key_info(self, entry: USEntry) -> dict[str, CryptoKeyInfo]:
         if isinstance(entry, USMigrationEntry):
             us_resp = entry._us_resp
             assert us_resp is not None
@@ -299,7 +296,7 @@ class USManagerBase:
             secret_addressable.set(key, encrypted_value)
 
     @generic_profiler("us-deserialize-dict-to-object")
-    def _entry_dict_to_obj(self, us_resp: dict, expected_type: Optional[Type[USEntry]] = None) -> USEntry:
+    def _entry_dict_to_obj(self, us_resp: dict, expected_type: Optional[type[USEntry]] = None) -> USEntry:
         """
         Deserialize US entry dict.
         :param us_resp: US response as-is
@@ -322,7 +319,7 @@ class USManagerBase:
         else:
             entry_loc = PathEntryLocation(path=raw_entry_key)
 
-        entry_cls: Type[USEntry]
+        entry_cls: type[USEntry]
         if expected_type == USMigrationEntry:
             entry_cls = USMigrationEntry
         else:
@@ -546,10 +543,10 @@ class USManagerBase:
 
         return entry
 
-    def _get_entry_links(self, entry: Optional[USEntry]) -> Set[ConnectionRef]:
+    def _get_entry_links(self, entry: Optional[USEntry]) -> set[ConnectionRef]:
         if isinstance(entry, Dataset):
             lifecycle_manager = self.get_lifecycle_manager(entry=entry)
-            linked_entries_refs: Set[ConnectionRef] = {
+            linked_entries_refs: set[ConnectionRef] = {
                 DefaultConnectionRef(conn_id=conn_id) for conn_id in lifecycle_manager.collect_links().values()
             }
 
