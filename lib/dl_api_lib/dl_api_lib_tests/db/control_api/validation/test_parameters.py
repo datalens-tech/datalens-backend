@@ -1,5 +1,7 @@
 import http
 
+import pytest
+
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_tests.db.base import DefaultApiTestBase
@@ -186,3 +188,43 @@ class TestValidationParameters(DefaultApiTestBase):
         field_error = ds_resp.dataset.component_errors.items[0]
         assert field_error.id == "test_guid"
         assert field_error.errors[0].code == "ERR.DS_API.FORMULA.PARAMETER.INVALID_VALUE"
+
+    @pytest.mark.parametrize(
+        "value_constraint",
+        [
+            None,
+            {"type": "null"},
+        ],
+    )
+    def test_add_template_str_parameter_fails_without_constraint(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+        value_constraint: dict | None,
+    ):
+        ds_resp = control_api.apply_updates(
+            dataset=saved_dataset,
+            updates=[
+                {
+                    "action": "add_field",
+                    "field": {
+                        "guid": "test_guid",
+                        "title": "test_title",
+                        "calc_mode": dl_constants_enums.CalcMode.parameter.value,
+                        "cast": "string",
+                        "default_value": "test",
+                        "template_enabled": True,
+                        "value_constraint": value_constraint,
+                    },
+                }
+            ],
+            fail_ok=True,
+        )
+        assert ds_resp.status_code == http.HTTPStatus.BAD_REQUEST
+        assert ds_resp.bi_status_code == "ERR.DS_API.VALIDATION.ERROR"
+
+        ds = ds_resp.dataset
+        field = ds.find_field("test_title")
+        assert field.valid is False
+        error = ds.component_errors.items[0].errors[0]
+        assert error.code == "ERR.DS_API.SOURCE_CONFIG.PARAMETER_VALUE_CONSTRAINT_REQUIRED"

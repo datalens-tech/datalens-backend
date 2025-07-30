@@ -76,6 +76,11 @@ class ParameterValueInvalidError(DataSourceConfigurationError):
     default_message = "Invalid parameter value"
 
 
+class ParameterValueConstraintRequiredError(DataSourceConfigurationError):
+    err_code = DataSourceConfigurationError.err_code + ["PARAMETER_VALUE_CONSTRAINT_REQUIRED"]
+    default_message = "Value constraint is required"
+
+
 class DatasetConfigurationError(DLBaseException):
     err_code = DLBaseException.err_code + ["DS_CONFIG"]
 

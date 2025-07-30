@@ -60,7 +60,9 @@ from dl_constants.enums import (
     DataSourceRole,
     DataSourceType,
     ManagedBy,
+    ParameterValueConstraintType,
     TopLevelComponentId,
+    UserDataType,
 )
 from dl_core.base_models import (
     DefaultConnectionRef,
@@ -530,6 +532,23 @@ class DatasetValidator(DatasetBaseWrapper):
         # Clear old errors
         self._ds.error_registry.remove_errors(id=field_id)
 
+        if (
+            new_field is not None
+            and new_field.calc_mode == CalcMode.parameter
+            and new_field.cast == UserDataType.string
+            and new_field.template_enabled
+            and (
+                new_field.value_constraint is None
+                or new_field.value_constraint.type == ParameterValueConstraintType.null
+            )
+        ):
+            self._ds.error_registry.add_error(
+                id=new_field.guid,
+                type=ComponentType.field,
+                message="Value constraint is required for string parameters with template enabled",
+                code=common_exc.ParameterValueConstraintRequiredError.err_code,
+            )
+
         # Remove expression and dependency caches for field
         self.formula_compiler.uncache_field(latest_field)
 
@@ -545,14 +564,15 @@ class DatasetValidator(DatasetBaseWrapper):
             new_field = self._get_autoupdated_field(new_field, explicitly_updated=explicitly_updated)
             self.formula_compiler.update_field(new_field)
             self._ds.result_schema.add(idx=order_index, field=new_field)
-        else:
-            assert new_field is not None
+        elif new_field is not None and old_field is not None:
             # Field is being updated
             new_field = self._get_autoupdated_field(new_field, explicitly_updated=explicitly_updated)
             if new_field != old_field:
                 self.formula_compiler.update_field(new_field)
                 field_idx = self._ds.result_schema.index(field_id=field_id)
                 self._ds.result_schema.update_field(idx=field_idx, field=new_field)
+        else:
+            raise ValueError("Either new_field or old_field must be provided")
 
         self._reload_formalized_specs()
         if recursive and new_field != old_field:
@@ -607,7 +627,8 @@ class DatasetValidator(DatasetBaseWrapper):
             field_dep_mgr.clear_field_direct_references(dep_field_id=field_id)  # type: ignore  # TODO: fix
         else:
             field_dep_mgr.set_field_direct_references(
-                dep_field_id=field_id, ref_field_ids=self.formula_compiler.get_referenced_fields(new_field)
+                dep_field_id=field_id,
+                ref_field_ids=self.formula_compiler.get_referenced_fields(new_field),
             )
 
     def _get_unpatched_field_ids(self) -> list[str]:
