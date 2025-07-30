@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from contextlib import (
     contextmanager,
     redirect_stderr,
@@ -11,12 +9,19 @@ from typing import (
     TYPE_CHECKING,
     Generator,
     Optional,
+    Protocol,
     TextIO,
 )
 
 
 if TYPE_CHECKING:
-    from argparse import ArgumentParser
+    import argparse
+
+
+class Tool(Protocol):
+    @classmethod
+    def run(cls, args: argparse.Namespace) -> None:
+        raise NotImplementedError()
 
 
 @contextmanager
@@ -34,7 +39,7 @@ def redirect_stdin(stream: Optional[TextIO] = None) -> Generator[None, None, Non
 
 
 class ToolRunner:
-    def __init__(self, parser: ArgumentParser, tool_cls: type):
+    def __init__(self, parser: argparse.ArgumentParser, tool_cls: type[Tool]):
         self.parser = parser
         self.tool_cls = tool_cls
 
