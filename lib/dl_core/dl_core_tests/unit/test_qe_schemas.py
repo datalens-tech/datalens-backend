@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 import uuid
 
+import attr
 from multidict import CIMultiDict
 import pytest
 
@@ -152,7 +153,7 @@ def test_req_ctx_info_schema(req_ctx_info: DBAdapterScopedRCI):
     dumped_req_ctx_info = schema.dump(req_ctx_info)
     reloaded_req_ctx_info = schema.load(dumped_req_ctx_info)
 
-    assert reloaded_req_ctx_info == req_ctx_info
+    assert reloaded_req_ctx_info == attr.evolve(req_ctx_info, auth_data=None)
 
 
 @pytest.mark.parametrize(

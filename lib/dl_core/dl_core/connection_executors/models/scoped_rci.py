@@ -4,7 +4,10 @@ from typing import Optional
 
 import attr
 
-from dl_api_commons.base_models import RequestContextInfo
+from dl_api_commons.base_models import (
+    AuthData,
+    RequestContextInfo,
+)
 
 
 @attr.s(frozen=True)
@@ -13,6 +16,7 @@ class DBAdapterScopedRCI:
     x_dl_debug_mode: Optional[bool] = attr.ib(default=None)
     user_name: Optional[str] = attr.ib(default=None)
     client_ip: Optional[str] = attr.ib(default=None, repr=False)
+    auth_data: Optional[AuthData] = attr.ib(default=None, repr=False)
 
     @classmethod
     def from_full_rci(cls, full_rci: RequestContextInfo) -> DBAdapterScopedRCI:
@@ -21,4 +25,5 @@ class DBAdapterScopedRCI:
             x_dl_debug_mode=full_rci.x_dl_debug_mode,
             user_name=full_rci.user_name,
             client_ip=full_rci.client_ip,
+            auth_data=full_rci.auth_data,
         )
