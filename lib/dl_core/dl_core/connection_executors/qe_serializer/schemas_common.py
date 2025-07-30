@@ -163,6 +163,7 @@ class DBAdapterScopedRCISchema(BaseQEAPISchema):
     user_name = fields.String(allow_none=True)
     x_dl_debug_mode = fields.Boolean(allow_none=True)
     client_ip = fields.String(allow_none=True)
+    auth_data = fields.Raw(allow_none=True, load_only=True, dump_only=True)
 
     def to_object(self, data: Dict[str, Any]) -> DBAdapterScopedRCI:
         return DBAdapterScopedRCI(

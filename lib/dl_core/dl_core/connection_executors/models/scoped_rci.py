@@ -16,7 +16,7 @@ class DBAdapterScopedRCI:
     x_dl_debug_mode: Optional[bool] = attr.ib(default=None)
     user_name: Optional[str] = attr.ib(default=None)
     client_ip: Optional[str] = attr.ib(default=None, repr=False)
-    auth_data: Optional[AuthData] = attr.ib(repr=False, default=None)
+    auth_data: Optional[AuthData] = attr.ib(default=None, repr=False)
 
     @classmethod
     def from_full_rci(cls, full_rci: RequestContextInfo) -> DBAdapterScopedRCI:
