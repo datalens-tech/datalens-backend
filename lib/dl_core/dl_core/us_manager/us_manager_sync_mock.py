@@ -7,7 +7,6 @@ from datetime import (
 )
 from typing import (
     Any,
-    Dict,
     Optional,
 )
 
@@ -51,7 +50,7 @@ class MockedUStorageClient(UStorageClient):
             prefix=prefix,
             context_request_id=context_request_id,
         )
-        self._saved_entries: Dict[str, Dict[str, Any]] = {}
+        self._saved_entries: dict[str, dict[str, Any]] = {}
 
     @classmethod
     def format_dt(cls, dt: datetime) -> str:
@@ -67,21 +66,21 @@ class MockedUStorageClient(UStorageClient):
         self,
         request_data: UStorageClientBase.RequestData,
         retry_policy_name: Optional[str] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         raise NotImplementedError("This is dummy US client")
 
     def create_entry(
         self,
         key: EntryLocation,
         scope: str,
-        meta: Optional[Dict[str, str]] = None,
-        data: Optional[Dict[str, Any]] = None,
-        unversioned_data: Optional[Dict[str, Any]] = None,
+        meta: Optional[dict[str, str]] = None,
+        data: Optional[dict[str, Any]] = None,
+        unversioned_data: Optional[dict[str, Any]] = None,
         type_: Optional[str] = None,
         hidden: Optional[bool] = None,
-        links: Optional[Dict[str, Any]] = None,
+        links: Optional[dict[str, Any]] = None,
         **kwargs: Any,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         assert not kwargs, "Not supported by dummy"
         entry_id = shortuuid.uuid()
         rev_id = shortuuid.uuid()
@@ -116,14 +115,14 @@ class MockedUStorageClient(UStorageClient):
     def update_entry(
         self,
         entry_id: str,
-        data: Optional[Dict[str, Any]] = None,
-        unversioned_data: Optional[Dict[str, Any]] = None,
-        meta: Optional[Dict[str, str]] = None,
+        data: Optional[dict[str, Any]] = None,
+        unversioned_data: Optional[dict[str, Any]] = None,
+        meta: Optional[dict[str, str]] = None,
         lock: Optional[str] = None,
         hidden: Optional[bool] = None,
-        links: Optional[Dict[str, Any]] = None,
+        links: Optional[dict[str, Any]] = None,
         update_revision: Optional[bool] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         previous_resp = self._saved_entries[entry_id]
 
         new_revision_id = shortuuid.uuid()
@@ -146,10 +145,10 @@ class MockedUStorageClient(UStorageClient):
     def get_entry(
         self,
         entry_id: str,
-        params: Optional[Dict[str, Any]] = None,
+        params: Optional[dict[str, Any]] = None,
         include_permissions: bool = True,
         include_links: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         assert params is None
         try:
             previous_resp = self._saved_entries[entry_id]

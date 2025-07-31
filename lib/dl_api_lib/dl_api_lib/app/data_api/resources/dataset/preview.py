@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Collection,
-    Dict,
     Optional,
 )
 
@@ -117,7 +116,7 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         raise NotImplementedError()
 
 
@@ -130,7 +129,7 @@ class DatasetPreviewViewV1(DatasetPreviewView):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return self._make_response_v1(req_model=req_model, merged_stream=merged_stream)
 
 
@@ -149,5 +148,5 @@ class DatasetPreviewViewV2(DatasetPreviewView):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return self._make_response_v2(merged_stream=merged_stream)

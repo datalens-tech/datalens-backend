@@ -6,7 +6,6 @@ from typing import (
     ClassVar,
     Iterable,
     Optional,
-    Type,
     final,
 )
 
@@ -49,7 +48,7 @@ class BaseFileSourceSchema(Schema):
     class Meta:
         unknown = RAISE
 
-        target: Type[BaseFileS3Connection.FileDataSource]
+        target: type[BaseFileS3Connection.FileDataSource]
 
     @property
     def operations_mode(self) -> Optional[CreateMode | ImportMode]:

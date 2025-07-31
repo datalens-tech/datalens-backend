@@ -3,10 +3,7 @@ from __future__ import annotations
 import logging
 from typing import (
     Collection,
-    Dict,
     Optional,
-    Set,
-    Tuple,
 )
 
 import attr
@@ -36,7 +33,7 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
     def _make_ds_accessor(self) -> DatasetComponentAccessor:
         return DatasetComponentAccessor(dataset=self._dataset)
 
-    def rank_avatars(self) -> Dict[AvatarId, int]:
+    def rank_avatars(self) -> dict[AvatarId, int]:
         def populate_recursively(avatar_id: str, rank: int) -> None:
             ranks[avatar_id] = rank
             for relation in self._ds_accessor.get_avatar_relation_list(left_avatar_id=avatar_id):
@@ -48,11 +45,11 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
                     raise ValueError(f"Unsupported managed_by value in relation: {relation.managed_by}")
 
         root_avatar = self._ds_accessor.get_root_avatar_strict()
-        ranks: Dict[str, int] = {}
+        ranks: dict[str, int] = {}
         populate_recursively(avatar_id=root_avatar.id, rank=0)
         return ranks
 
-    def _get_relation_and_parent_id(self, avatar_id: AvatarId) -> Tuple[RelationId, AvatarId]:
+    def _get_relation_and_parent_id(self, avatar_id: AvatarId) -> tuple[RelationId, AvatarId]:
         relations = self._ds_accessor.get_avatar_relation_list(right_avatar_id=avatar_id)
         assert len(relations) == 1
         relation = relations[0]
@@ -60,7 +57,7 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
 
     def expand_required_avatar_ids(
         self, required_avatar_ids: Collection[str]
-    ) -> Tuple[Optional[AvatarId], Set[AvatarId], Set[RelationId]]:
+    ) -> tuple[Optional[AvatarId], set[AvatarId], set[RelationId]]:
         # TODO: this method is too big
         #  need to split it down to several methods
         if len(required_avatar_ids) == 1:
@@ -72,7 +69,7 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
         if len(required_avatar_ids) > 1:
             LOGGER.info(f"Got avatar ranks: {ranks}")
 
-        required_relation_ids: Set[RelationId] = set()
+        required_relation_ids: set[RelationId] = set()
 
         # first add avatars used by required feature-managed relations
         for iteration in range(10):

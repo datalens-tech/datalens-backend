@@ -5,7 +5,6 @@ import logging
 from typing import (
     AbstractSet,
     ClassVar,
-    Type,
 )
 
 import attr
@@ -55,10 +54,10 @@ class ConnectionSecurityManager(metaclass=abc.ABCMeta):
 
 
 class ConnectionSafetyChecker(metaclass=abc.ABCMeta):
-    _DTO_TYPES: ClassVar[set[Type[ConnDTO]]]
+    _DTO_TYPES: ClassVar[set[type[ConnDTO]]]
 
     @classmethod
-    def register_dto_types(cls, dto_classes: AbstractSet[Type[ConnDTO]]) -> None:
+    def register_dto_types(cls, dto_classes: AbstractSet[type[ConnDTO]]) -> None:
         cls._DTO_TYPES.update(dto_classes)
 
     @abc.abstractmethod
@@ -70,7 +69,7 @@ class ConnectionSafetyChecker(metaclass=abc.ABCMeta):
 class InsecureConnectionSafetyChecker(ConnectionSafetyChecker):
     """Always safe"""
 
-    _DTO_TYPES: ClassVar[set[Type[ConnDTO]]] = set()
+    _DTO_TYPES: ClassVar[set[type[ConnDTO]]] = set()
 
     def is_safe_connection(self, conn_dto: ConnDTO, conn_options: ConnectOptions) -> bool:
         return True
@@ -80,7 +79,7 @@ class InsecureConnectionSafetyChecker(ConnectionSafetyChecker):
 class NonUserInputConnectionSafetyChecker(ConnectionSafetyChecker):
     """Hosts are not entered by user"""
 
-    _DTO_TYPES: ClassVar[set[Type[ConnDTO]]] = set()
+    _DTO_TYPES: ClassVar[set[type[ConnDTO]]] = set()
 
     def is_safe_connection(self, conn_dto: ConnDTO, conn_options: ConnectOptions) -> bool:
         if type(conn_dto) in self._DTO_TYPES:
@@ -109,5 +108,5 @@ class InsecureConnectionSecurityManager(GenericConnectionSecurityManager):
 
 @attr.s(frozen=True)
 class ConnSecuritySettings:
-    security_checker_cls: Type[ConnectionSafetyChecker] = attr.ib()
-    dtos: AbstractSet[Type[ConnDTO]] = attr.ib()
+    security_checker_cls: type[ConnectionSafetyChecker] = attr.ib()
+    dtos: AbstractSet[type[ConnDTO]] = attr.ib()

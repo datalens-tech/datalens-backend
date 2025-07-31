@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    TYPE_CHECKING,
-    Dict,
-    Tuple,
-)
+from typing import TYPE_CHECKING
 
 import sqlalchemy as sa
 import ydb.sqlalchemy as ydb_sa
@@ -21,7 +17,7 @@ if TYPE_CHECKING:
 
 
 class YQLTypeTransformer(TypeTransformer):
-    _base_type_map: Dict[UserDataType, Tuple[SATypeSpec, ...]] = {
+    _base_type_map: dict[UserDataType, tuple[SATypeSpec, ...]] = {
         # Note: first SA type is used as the default.
         UserDataType.integer: (
             sa.BIGINT,
@@ -56,7 +52,7 @@ class YQLTypeTransformer(TypeTransformer):
         ),
         UserDataType.unsupported: (sa.sql.sqltypes.NullType,),  # Actually the default, so should not matter much.
     }
-    _extra_type_map: Dict[UserDataType, SATypeSpec] = {  # user-to-native only
+    _extra_type_map: dict[UserDataType, SATypeSpec] = {  # user-to-native only
         UserDataType.geopoint: sa.TEXT,
         UserDataType.geopolygon: sa.TEXT,
         UserDataType.uuid: sa.TEXT,  # see also: UUID

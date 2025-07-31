@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import List
 import uuid
 
 import pytest
@@ -67,7 +66,7 @@ class TestCompengCache(DefaultCoreTestClass):
         names = ["int_value", "str_value"]
         user_types = [UserDataType.integer, UserDataType.string]
 
-        def get_operations(coeff: int) -> List[BaseOp]:
+        def get_operations(coeff: int) -> list[BaseOp]:
             """
             Instructions for compeng.
             ``int_value`` is multiplied by ``coeff``

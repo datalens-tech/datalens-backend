@@ -11,11 +11,9 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Dict,
     Generator,
     Iterable,
     Optional,
-    Type,
     TypeVar,
     final,
 )
@@ -292,10 +290,10 @@ class TypeTransformer:
         return cls.casters[user_t].cast_for_output(value=value)
 
 
-TYPE_TRANSFORMER_MAP: Dict[ConnectionType, TypeTransformer] = {}
+TYPE_TRANSFORMER_MAP: dict[ConnectionType, TypeTransformer] = {}
 
 
-def register_type_transformer_class(conn_type: ConnectionType, tt_cls: Type[TypeTransformer]) -> None:
+def register_type_transformer_class(conn_type: ConnectionType, tt_cls: type[TypeTransformer]) -> None:
     TYPE_TRANSFORMER_MAP[conn_type] = tt_cls()
 
 

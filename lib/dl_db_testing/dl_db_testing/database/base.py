@@ -5,7 +5,6 @@ from typing import (
     Any,
     Generator,
     Generic,
-    List,
     Optional,
     Sequence,
     TypeVar,
@@ -158,7 +157,7 @@ class DbTableBase:
     def name(self) -> str:
         return self.table.name
 
-    def insert(self, data: Union[dict, List[dict]], chunk_size: Optional[int] = None) -> None:
+    def insert(self, data: Union[dict, list[dict]], chunk_size: Optional[int] = None) -> None:
         chunk_size = chunk_size or 1000
         assert chunk_size is not None
 

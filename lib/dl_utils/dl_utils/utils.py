@@ -8,14 +8,13 @@ from typing import (
     Any,
     Iterable,
     Optional,
-    Type,
     TypeVar,
 )
 
 import attr
 
 
-def get_type_full_name(t: Type) -> str:
+def get_type_full_name(t: type) -> str:
     module = t.__module__
     qual_name = t.__qualname__
 

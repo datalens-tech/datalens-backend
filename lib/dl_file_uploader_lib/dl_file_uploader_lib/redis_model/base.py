@@ -12,7 +12,6 @@ from typing import (
     Callable,
     ClassVar,
     Optional,
-    Type,
     TypeVar,
     Union,
 )
@@ -71,7 +70,7 @@ class RedisModel(SecretContainingMixin, metaclass=abc.ABCMeta):
         return self._generate_key_by_id(self.id)
 
     @classmethod
-    async def get(cls: Type[TRedisModel], manager: RedisModelManager, obj_id: str) -> TRedisModel:
+    async def get(cls: type[TRedisModel], manager: RedisModelManager, obj_id: str) -> TRedisModel:
         key = cls._generate_key_by_id(obj_id)
         return await manager.get(key=key, target_cls=cls)  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "RedisModel", expected "TRedisModel")  [return-value]
 
@@ -102,7 +101,7 @@ class RedisModelUserIdAuth(RedisModel, metaclass=abc.ABCMeta):
             self.user_id = user_id
 
     @classmethod
-    async def get_authorized(cls: Type[TRedisModel], manager: RedisModelManager, obj_id: str) -> TRedisModel:
+    async def get_authorized(cls: type[TRedisModel], manager: RedisModelManager, obj_id: str) -> TRedisModel:
         """Load entry with authorization check by user id"""
         key = cls._generate_key_by_id(obj_id)
         obj = await manager.get(key=key, target_cls=cls, post_load=_check_obj_auth)
@@ -219,7 +218,7 @@ class RedisModelManager:
         json_data = json.dumps(json_data_dict)
         return json_data
 
-    def _deserialize_object(self, json_data: str, target_cls: Type[RedisModel]) -> RedisModel:
+    def _deserialize_object(self, json_data: str, target_cls: type[RedisModel]) -> RedisModel:
         schema_cls = _get_model_schema_class(target_cls)
         schema = schema_cls()
         obj = schema.loads(json_data)
@@ -233,7 +232,7 @@ class RedisModelManager:
 
         return obj
 
-    async def get(self, key: str, target_cls: Type[RedisModel], post_load: Optional[Callable] = None) -> RedisModel:
+    async def get(self, key: str, target_cls: type[RedisModel], post_load: Optional[Callable] = None) -> RedisModel:
         json_data = await self._redis.get(key)
         if json_data is None:
             LOGGER.info(f"RedisModel object not found: {key}")
@@ -281,7 +280,7 @@ class BaseSchema(ma.Schema):
     class Meta:
         unknown = ma.EXCLUDE
 
-        target: Type
+        target: type
 
     @ma.post_load(pass_many=False)
     def to_object(self, data: dict[str, Any], **kwargs: Any) -> Any:
@@ -293,12 +292,12 @@ class BaseModelSchema(BaseSchema):
     user_id = ma.fields.String()
 
 
-_MODEL_CLASS_TO_STORAGE_SCHEMA_MAP: dict[Type[RedisModel], Type[BaseModelSchema]] = dict()
+_MODEL_CLASS_TO_STORAGE_SCHEMA_MAP: dict[type[RedisModel], type[BaseModelSchema]] = dict()
 
 
-def _get_model_schema_class(model_cls: Type[RedisModel]) -> Type[BaseModelSchema]:
+def _get_model_schema_class(model_cls: type[RedisModel]) -> type[BaseModelSchema]:
     return _MODEL_CLASS_TO_STORAGE_SCHEMA_MAP[model_cls]
 
 
-def register_redis_model_storage_schema(model_cls: Type[RedisModel], schema_cls: Type[BaseModelSchema]) -> None:
+def register_redis_model_storage_schema(model_cls: type[RedisModel], schema_cls: type[BaseModelSchema]) -> None:
     _MODEL_CLASS_TO_STORAGE_SCHEMA_MAP[model_cls] = schema_cls

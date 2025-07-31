@@ -14,7 +14,6 @@ from typing import (
     Generator,
     NamedTuple,
     Optional,
-    Type,
 )
 
 from dynamic_enum import (
@@ -278,7 +277,7 @@ def get_all_basic_dialects() -> list[DialectCombo]:
 _NAMED_DIALECT_COMBOS: dict[str, DialectCombo] = {}
 
 
-def register_dialect_namespace(dialect_ns: Type[DialectNamespace]) -> None:
+def register_dialect_namespace(dialect_ns: type[DialectNamespace]) -> None:
     for name, combo in dialect_ns.iter_named_combos():
         try:
             assert _NAMED_DIALECT_COMBOS[name] == combo

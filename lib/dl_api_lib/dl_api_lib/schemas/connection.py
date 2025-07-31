@@ -4,8 +4,6 @@ import logging
 from typing import (
     Any,
     ClassVar,
-    Dict,
-    Type,
 )
 
 from marshmallow import fields as ma_fields
@@ -73,8 +71,8 @@ class ConnectionImportRequestSchema(BaseSchema):
 
 
 class GenericConnectionSchema(OneOfSchema):
-    type_schemas: dict[str, Type[ConnectionSchema]] = {}  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[ConnectionSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
-    supported_connections: ClassVar[set[Type[ConnectionBase]]] = set()
+    type_schemas: dict[str, type[ConnectionSchema]] = {}  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[ConnectionSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
+    supported_connections: ClassVar[set[type[ConnectionBase]]] = set()
 
     def get_data_type(self, data):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         data_type = super().get_data_type(data)
@@ -92,7 +90,7 @@ class GenericConnectionSchema(OneOfSchema):
     def get_obj_type(self, obj: ConnectionBase) -> str:
         return obj.conn_type.name
 
-    def get_edit_schema_cls(self, obj: ConnectionBase) -> Type[ConnectionSchema]:
+    def get_edit_schema_cls(self, obj: ConnectionBase) -> type[ConnectionSchema]:
         """
         Returns schema for connection editing
         :param obj: connection to modify
@@ -102,13 +100,13 @@ class GenericConnectionSchema(OneOfSchema):
         return self.type_schemas[type_discriminator]
 
     # TODO FIX: remove after type discriminator key will be normalized now we use 'db_type' in GET and 'type' in POST
-    def _dump(self, obj: ConnectionBase, *, update_fields: bool = True, **kwargs: Any) -> Dict[str, Any]:
+    def _dump(self, obj: ConnectionBase, *, update_fields: bool = True, **kwargs: Any) -> dict[str, Any]:
         ret = super()._dump(obj, update_fields=update_fields, **kwargs)
         ret.pop(self.type_field)
         return ret
 
 
-def register_sub_schema_class(conn_type: CT, schema_cls: Type[ConnectionSchema]) -> None:
+def register_sub_schema_class(conn_type: CT, schema_cls: type[ConnectionSchema]) -> None:
     if conn_type.name in GenericConnectionSchema.type_schemas:
         registered_schema = GenericConnectionSchema.type_schemas[conn_type.name]
         assert (

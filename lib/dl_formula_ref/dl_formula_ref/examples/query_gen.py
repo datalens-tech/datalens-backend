@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    List,
     Optional,
 )
 
@@ -51,7 +50,7 @@ class QueryGenerator:
         select = [self._make_formula_ctx(formula, alias) for alias, formula in example.formula_fields]
         group_by = [self._make_formula_ctx(formula) for formula in example.group_by]
         order_by = [self._make_formula_ctx(formula) for formula in example.order_by]
-        result_columns: List[DataColumn] = []
+        result_columns: list[DataColumn] = []
         for ctx in select:
             alias = ctx.alias
             assert alias is not None

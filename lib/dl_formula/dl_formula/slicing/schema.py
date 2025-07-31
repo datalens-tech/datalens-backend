@@ -4,9 +4,7 @@ import abc
 from enum import Enum
 from typing import (
     Callable,
-    List,
     Optional,
-    Tuple,
 )
 import uuid
 
@@ -46,7 +44,7 @@ class LevelBoundary(abc.ABC):
         self,
         node: nodes.FormulaItem,
         inspect_env: InspectionEnvironment,
-        parent_stack: Tuple[nodes.FormulaItem, ...],
+        parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> BoundaryCheckResult:
         raise NotImplementedError
 
@@ -54,7 +52,7 @@ class LevelBoundary(abc.ABC):
         self,
         node: nodes.FormulaItem,
         inspect_env: InspectionEnvironment,
-        parent_stack: Tuple[nodes.FormulaItem, ...],
+        parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> bool:
         """Return ``True`` if the expression should be raised to the next execution level"""
         return (
@@ -70,7 +68,7 @@ class LevelBoundary(abc.ABC):
         self,
         node: nodes.FormulaItem,
         inspect_env: InspectionEnvironment,
-        parent_stack: Tuple[nodes.FormulaItem, ...],
+        parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> bool:
         """Return ``True`` if the expression should stay at the current execution level"""
         return (
@@ -93,7 +91,7 @@ class AggregateFunctionLevelBoundary(LevelBoundary):
         self,
         node: nodes.FormulaItem,
         inspect_env: InspectionEnvironment,
-        parent_stack: Tuple[nodes.FormulaItem, ...],
+        parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> BoundaryCheckResult:
         if dl_formula.inspect.node.is_aggregate_function(node):
             return BoundaryCheckResult.raise_level
@@ -115,7 +113,7 @@ class WindowFunctionLevelBoundary(LevelBoundary):
         self,
         node: nodes.FormulaItem,
         inspect_env: InspectionEnvironment,
-        parent_stack: Tuple[nodes.FormulaItem, ...],
+        parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> BoundaryCheckResult:
         if isinstance(node, nodes.WindowFuncCall):
             return BoundaryCheckResult.raise_level
@@ -134,7 +132,7 @@ class TopLevelBoundary(LevelBoundary):
         self,
         node: nodes.FormulaItem,
         inspect_env: InspectionEnvironment,
-        parent_stack: Tuple[nodes.FormulaItem, ...],
+        parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> BoundaryCheckResult:
         return BoundaryCheckResult.maintain_level
 
@@ -146,7 +144,7 @@ class NonFieldsBoundary(LevelBoundary):
         self,
         node: nodes.FormulaItem,
         inspect_env: InspectionEnvironment,
-        parent_stack: Tuple[nodes.FormulaItem, ...],
+        parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> BoundaryCheckResult:
         if isinstance(node, nodes.Field):
             return BoundaryCheckResult.maintain_level
@@ -187,8 +185,8 @@ class NestedLevelTaggedBoundary(LevelBoundary):
     def get_node_tag(
         self,
         node: nodes.FormulaItem,
-        parent_stack: Tuple[nodes.FormulaItem, ...],
-    ) -> Tuple[bool, Optional[LevelTag]]:
+        parent_stack: tuple[nodes.FormulaItem, ...],
+    ) -> tuple[bool, Optional[LevelTag]]:
         # For QueryForks the node itself is tagged
         if isinstance(node, fork_nodes.QueryFork):
             return True, node.level_tag
@@ -221,7 +219,7 @@ class NestedLevelTaggedBoundary(LevelBoundary):
         self,
         node: nodes.FormulaItem,
         inspect_env: InspectionEnvironment,
-        parent_stack: Tuple[nodes.FormulaItem, ...],
+        parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> BoundaryCheckResult:
         is_own_tag, level_tag = self.get_node_tag(node=node, parent_stack=parent_stack)
         if level_tag is not None:
@@ -236,7 +234,7 @@ class NestedLevelTaggedBoundary(LevelBoundary):
 
 @attr.s
 class SliceSchema:
-    levels: List[LevelBoundary] = attr.ib(factory=list)
+    levels: list[LevelBoundary] = attr.ib(factory=list)
 
     @property
     def max_level(self) -> int:

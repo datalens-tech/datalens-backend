@@ -12,16 +12,11 @@ from typing import (
     AbstractSet,
     Callable,
     Collection,
-    Dict,
     Generator,
     Iterable,
-    List,
     Optional,
     Protocol,
     Sequence,
-    Set,
-    Tuple,
-    Type,
     Union,
     overload,
 )
@@ -145,11 +140,11 @@ class FieldProcessingStageManager:
         self._columns = columns
         self._inspect_env = inspect_env
 
-        self._errors: Dict[str, Dict[ProcessingStage, List[FormulaErrorCtx]]] = defaultdict(lambda: defaultdict(list))
-        self._exprs: Dict[str, Dict[ProcessingStage, Optional[formula_nodes.Formula]]] = defaultdict(
+        self._errors: dict[str, dict[ProcessingStage, list[FormulaErrorCtx]]] = defaultdict(lambda: defaultdict(list))
+        self._exprs: dict[str, dict[ProcessingStage, Optional[formula_nodes.Formula]]] = defaultdict(
             lambda: defaultdict(lambda: None)
         )
-        self._data_types: Dict[str, Dict[ProcessingStage, DataType]] = defaultdict(
+        self._data_types: dict[str, dict[ProcessingStage, DataType]] = defaultdict(
             lambda: defaultdict(lambda: DEFAULT_DATA_TYPE)
         )
 
@@ -167,7 +162,7 @@ class FieldProcessingStageManager:
             return self.default_type_on_error
 
     def add_errors(self, *errors: FormulaErrorCtx, field: BIField, stage: ProcessingStage) -> None:
-        registered_errors: List[FormulaErrorCtx] = self._errors[field.guid][stage]
+        registered_errors: list[FormulaErrorCtx] = self._errors[field.guid][stage]
         for error in errors:
             if error not in registered_errors:
                 registered_errors.append(error)
@@ -176,7 +171,7 @@ class FieldProcessingStageManager:
         self,
         field: BIField,
         stage: Union[ProcessingStage, Iterable[ProcessingStage], None] = None,
-    ) -> List[FormulaErrorCtx]:
+    ) -> list[FormulaErrorCtx]:
         """Return errors from cache for the given field (and type)."""
 
         field_errors = self._errors[field.guid]
@@ -268,14 +263,14 @@ class StageProcType(Protocol):
         ...
 
     @overload
-    def __get__(self, obj: FormulaCompiler, objtype: Type[FormulaCompiler] | None = None) -> StageProcCallable:
+    def __get__(self, obj: FormulaCompiler, objtype: type[FormulaCompiler] | None = None) -> StageProcCallable:
         ...
 
     @overload
-    def __get__(self, obj: None, objtype: Type[FormulaCompiler] | None = None) -> StageProcCallable:
+    def __get__(self, obj: None, objtype: type[FormulaCompiler] | None = None) -> StageProcCallable:
         ...
 
-    def __get__(self, obj: FormulaCompiler | None, objtype: Type[FormulaCompiler] | None = None) -> StageProcCallable:
+    def __get__(self, obj: FormulaCompiler | None, objtype: type[FormulaCompiler] | None = None) -> StageProcCallable:
         ...
 
 
@@ -380,7 +375,7 @@ class FormulaCompiler:
         suppress_double_aggregations: bool = True,
         allow_nested_window_functions: bool = False,
         parameter_value_specs: Sequence[ParameterValueSpec] = (),
-        field_wrappers: Optional[Dict[str, SelectWrapperSpec]] = None,
+        field_wrappers: Optional[dict[str, SelectWrapperSpec]] = None,
         validate_aggregations: bool = True,
     ):
         self._fields = FieldRegistry()
@@ -406,15 +401,15 @@ class FormulaCompiler:
 
         # initialize caches
         # node/expression caches
-        self._formula_parsed_cache: Dict[str, formula_nodes.Formula | None] = {}
+        self._formula_parsed_cache: dict[str, formula_nodes.Formula | None] = {}
         self._substituted_formula_fields: NodeValueMap[formula_nodes.FormulaItem] = NodeValueMap()
         # error caches
         self._stage_manager = FieldProcessingStageManager(columns=self._columns, inspect_env=self._inspect_env)
-        self._formula_error_cache: Dict[str, List[FormulaErrorCtx]] = defaultdict(list)  # FIXME: ???
+        self._formula_error_cache: dict[str, list[FormulaErrorCtx]] = defaultdict(list)  # FIXME: ???
         # other caches
-        self._field_types: Dict[str, FieldType] = {}
-        self._field_dependencies: Dict[str, Set[str]] = defaultdict(set)  # fields this field depends on
-        self._field_inverse_dependencies: Dict[str, Set[str]] = defaultdict(set)  # fields that depend on this one
+        self._field_types: dict[str, FieldType] = {}
+        self._field_dependencies: dict[str, set[str]] = defaultdict(set)  # fields this field depends on
+        self._field_inverse_dependencies: dict[str, set[str]] = defaultdict(set)  # fields that depend on this one
 
         self.update_environments(group_by_ids=self._group_by_ids, order_by_specs=self._order_by_specs)
 
@@ -527,7 +522,7 @@ class FormulaCompiler:
         self,
         field: BIField,
         collect_errors: bool = False,
-    ) -> Tuple[Optional[formula_nodes.Formula], List[FormulaErrorCtx]]:
+    ) -> tuple[Optional[formula_nodes.Formula], list[FormulaErrorCtx]]:
         """Attempt to parse formula. If `collect_errors`"""
 
         formula = field.formula
@@ -597,13 +592,13 @@ class FormulaCompiler:
         for child_field in child_fields:
             self._generate_base_formula_obj_for_field(field=child_field, collect_errors=collect_errors)
 
-    def get_referenced_fields(self, field: BIField) -> Set[FieldId]:
+    def get_referenced_fields(self, field: BIField) -> set[FieldId]:
         return self._field_dependencies[field.guid]
 
     def _substitute_fields_in_formula(
         self, field: BIField, formula_obj: formula_nodes.Formula, collect_errors: bool = False
     ) -> formula_nodes.Formula:
-        to_substitute: Dict[NodeHierarchyIndex, formula_nodes.FormulaItem] = {}
+        to_substitute: dict[NodeHierarchyIndex, formula_nodes.FormulaItem] = {}
 
         sub_node: formula_nodes.FormulaItem
         for field_node_idx, child_field_node in enumerate_fields(formula_obj):
@@ -655,7 +650,7 @@ class FormulaCompiler:
         collect_errors: bool = False,
     ) -> formula_nodes.Formula:
         """Generate expression for field in formula mode"""
-        errors: List[FormulaErrorCtx] = []
+        errors: list[FormulaErrorCtx] = []
 
         formula_obj, parse_errors = self._try_parse_formula(field=field, collect_errors=collect_errors)
         errors.extend(parse_errors)
@@ -728,13 +723,13 @@ class FormulaCompiler:
 
         return formula_obj
 
-    def _get_mock_dimensions_for_among(self, formula_obj: formula_nodes.Formula) -> List[formula_nodes.FormulaItem]:
+    def _get_mock_dimensions_for_among(self, formula_obj: formula_nodes.Formula) -> list[formula_nodes.FormulaItem]:
         """
         Collect dimensions from the AMONG clauses of the formula expression.
         """
 
         func_list = used_func_calls(formula_obj)
-        required_dims: List[formula_nodes.FormulaItem] = []
+        required_dims: list[formula_nodes.FormulaItem] = []
         for func in func_list:
             if isinstance(func, formula_nodes.WindowFuncCall):
                 if isinstance(func.grouping, formula_nodes.WindowGroupingAmong):
@@ -860,7 +855,7 @@ class FormulaCompiler:
         unselected_dimension_ids = {
             f.guid for f in self._fields if f.type == FieldType.DIMENSION and f.guid not in self._group_by_ids
         }
-        checkers: List[Checker] = []
+        checkers: list[Checker] = []
         if self._field_types[field_id] != FieldType.DIMENSION and self._validate_aggregations:
             global_dimensions = []
             for dim_field_id in self._group_by_ids:
@@ -996,12 +991,12 @@ class FormulaCompiler:
         self._require_field_formula_preparation(field)
         return self._field_types.get(field.guid, FieldType.DIMENSION)
 
-    def get_field_errors(self, field: BIField) -> List[FormulaErrorCtx]:
+    def get_field_errors(self, field: BIField) -> list[FormulaErrorCtx]:
         """Return list of errors found for given field"""
         self._require_field_formula_preparation(field)
         return self._stage_manager.get_errors(field)
 
-    def _get_dependent_fields(self, field: BIField) -> Set[str]:
+    def _get_dependent_fields(self, field: BIField) -> set[str]:
         """Return GUIDs of dependent fields"""
         return (self._field_inverse_dependencies.get(field.guid) or set()).copy()
 
@@ -1154,7 +1149,7 @@ class FormulaCompiler:
         )
         return formula_info
 
-    def get_formula_errors(self, formula: str) -> List[FormulaErrorCtx]:
+    def get_formula_errors(self, formula: str) -> list[FormulaErrorCtx]:
         field = self.make_formula_field(formula=formula)
         errors = self.get_field_errors(field)
         return errors

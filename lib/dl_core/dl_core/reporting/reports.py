@@ -3,7 +3,6 @@ from __future__ import annotations
 import enum
 from typing import (
     ClassVar,
-    Dict,
     Optional,
     Union,
 )
@@ -53,7 +52,7 @@ class DbQueryExecutionReport:
         else:
             return repr(value)
 
-    def to_logging_extras(self) -> Dict[str, Union[str, int, bool]]:
+    def to_logging_extras(self) -> dict[str, Union[str, int, bool]]:
         return dict(
             {  # type: ignore  # TODO: fix
                 k: self.convert_for_logging_extras(v) for k, v in attr.asdict(self)  # type: ignore  # TODO: fix

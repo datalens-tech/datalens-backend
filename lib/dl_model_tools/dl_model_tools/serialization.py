@@ -19,7 +19,6 @@ from typing import (
     ClassVar,
     Generic,
     Optional,
-    Type,
     TypeVar,
     Union,
     get_args,
@@ -44,7 +43,7 @@ class TypeSerializer(Generic[_TS_TV]):
     typename: ClassVar[str]
 
     @classmethod
-    def typeobj(cls) -> Type[_TS_TV]:
+    def typeobj(cls) -> type[_TS_TV]:
         # https://github.com/python/typeshed/issues/7811#issuecomment-1120840824
         # TODO: replace with types.get_original_bases after switching to Python 3.12
         return get_args(cls.__orig_bases__[0])[0]  # type: ignore
@@ -287,7 +286,7 @@ class UnsupportedSerializer(TypeSerializer[object]):
         return None
 
 
-COMMON_SERIALIZERS: list[Type[TypeSerializer]] = [
+COMMON_SERIALIZERS: list[type[TypeSerializer]] = [
     DateSerializer,
     DatetimeSerializer,
     TimeSerializer,
@@ -310,7 +309,7 @@ assert len(set(cls.typename for cls in COMMON_SERIALIZERS)) == len(COMMON_SERIAL
 class DataLensJSONEncoder(json.JSONEncoder):
     JSONABLERS_MAP = {cls.typeobj(): cls for cls in COMMON_SERIALIZERS}
 
-    def _get_preprocessor(self, typeobj: type) -> Optional[Type[TypeSerializer]]:
+    def _get_preprocessor(self, typeobj: type) -> Optional[type[TypeSerializer]]:
         if issubclass(typeobj, GenericNativeType):
             return NativeTypeSerializer
         return self.JSONABLERS_MAP.get(typeobj)
@@ -325,7 +324,7 @@ class DataLensJSONEncoder(json.JSONEncoder):
 
 
 class SafeDataLensJSONEncoder(DataLensJSONEncoder):
-    def _get_preprocessor(self, typeobj: type) -> Optional[Type[TypeSerializer]]:
+    def _get_preprocessor(self, typeobj: type) -> Optional[type[TypeSerializer]]:
         if (preprocessor := super()._get_preprocessor(typeobj)) is not None:
             return preprocessor
         return UnsupportedSerializer  # don't raise a TypeError and log warning

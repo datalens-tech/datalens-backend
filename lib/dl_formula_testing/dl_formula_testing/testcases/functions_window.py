@@ -4,7 +4,6 @@ import decimal
 from typing import (
     Callable,
     ClassVar,
-    List,
     Optional,
     Sequence,
     TypeVar,
@@ -32,7 +31,7 @@ def approx(value):  # type: ignore  # 2024-01-29 # TODO: Function is missing a t
     return pytest.approx(value, rel=1e-4)
 
 
-def avg(values: List[NUMERIC]) -> NUMERIC:
+def avg(values: list[NUMERIC]) -> NUMERIC:
     return sum(values) / len(values)
 
 
@@ -197,7 +196,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         ) == pytest.approx([val / 1.0 for val in range(1, 11)] + [val for val in range(1, 11)])
 
     def _check_rfunc(
-        self, dbe: DbEvaluator, data_table: sa.Table, func_name: str, py_agg_func: Callable[[List[NUMERIC]], NUMERIC]
+        self, dbe: DbEvaluator, data_table: sa.Table, func_name: str, py_agg_func: Callable[[list[NUMERIC]], NUMERIC]
     ) -> None:
         ids = list(range(1, 21))
         values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
@@ -239,7 +238,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         self._check_rfunc(dbe, data_table, func_name="RAVG", py_agg_func=avg)
 
     def _check_mfunc(
-        self, dbe: DbEvaluator, data_table: sa.Table, func_name: str, py_agg_func: Callable[[List[NUMERIC]], NUMERIC]
+        self, dbe: DbEvaluator, data_table: sa.Table, func_name: str, py_agg_func: Callable[[list[NUMERIC]], NUMERIC]
     ) -> None:
         values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         assert values == list(range(0, 100, 10)) + list(range(0, 100, 10))

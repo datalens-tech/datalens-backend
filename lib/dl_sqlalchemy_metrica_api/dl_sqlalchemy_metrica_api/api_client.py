@@ -3,10 +3,7 @@ from __future__ import annotations
 import datetime
 from json.decoder import JSONDecodeError
 import logging
-from typing import (
-    List,
-    Optional,
-)
+from typing import Optional
 
 import requests
 from requests.exceptions import RequestException
@@ -211,7 +208,7 @@ class MetrikaApiClient(object):
             req_metrics=params.get("metrics"),
         )
 
-    def get_available_counters(self, **kwargs) -> List[dict]:
+    def get_available_counters(self, **kwargs) -> list[dict]:
         obj_name = "applications" if self._is_appmetrica else "counters"
         uri = "/management/v1/{}".format(obj_name)
         resp = self.get(uri, **kwargs)

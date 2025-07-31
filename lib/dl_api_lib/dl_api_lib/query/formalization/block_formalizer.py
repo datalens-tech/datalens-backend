@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import abc
 from typing import (
-    List,
     Optional,
-    Tuple,
     TypeVar,
 )
 
@@ -66,7 +64,7 @@ class BlockFormalizer(abc.ABC):
     def __attrs_post_init__(self) -> None:
         self._field_resolver = FieldResolver(dataset=self._dataset)
 
-    def _gen_legend_and_ids_for_block(self, legend: Legend, block_id: int) -> Tuple[Legend, List[int]]:
+    def _gen_legend_and_ids_for_block(self, legend: Legend, block_id: int) -> tuple[Legend, list[int]]:
         legend_for_block = legend.limit_to_block(block_id=block_id)
         legend_item_ids = [item.legend_item_id for item in legend_for_block.list_streamable_items()]
         return legend_for_block, legend_item_ids
@@ -77,7 +75,7 @@ class BlockFormalizer(abc.ABC):
         if isinstance(raw_block_spec.placement, RawRootBlockPlacement):
             placement = RootBlockPlacement()
         elif isinstance(raw_block_spec.placement, RawAfterBlockPlacement):
-            dimension_values: Optional[List[DimensionValueSpec]] = None
+            dimension_values: Optional[list[DimensionValueSpec]] = None
             if raw_block_spec.placement.dimension_values is not None:
                 dimension_values = [
                     DimensionValueSpec(
@@ -256,7 +254,7 @@ class BlockFormalizer(abc.ABC):
     def make_block_legend(self, raw_query_spec_union: RawQuerySpecUnion, legend: Legend) -> BlockLegend:
         used_ids = set(raw_query_spec_union.get_unique_block_ids())
         id_gen = IdGenerator(used_ids=used_ids)
-        blocks: List[BlockSpec] = []
+        blocks: list[BlockSpec] = []
 
         if not used_ids:
             # There is always at least one block.

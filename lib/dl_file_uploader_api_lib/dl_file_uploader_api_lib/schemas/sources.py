@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Any,
-    Type,
-)
+from typing import Any
 
 import marshmallow as ma
 from marshmallow_oneofschema import OneOfSchema
@@ -109,7 +106,7 @@ class SourceInfoSchemaYaDocs(SourceInfoSchemaBase):
 
 
 class SourceInfoSchema(FileTypeOneOfSchema):
-    type_schemas: dict[str, Type[SourceInfoSchemaBase]] = {  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[SourceInfoSchemaBase]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
+    type_schemas: dict[str, type[SourceInfoSchemaBase]] = {  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[SourceInfoSchemaBase]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
         FileType.csv.name: SourceInfoSchemaBase,
         FileType.gsheets.name: SourceInfoSchemaGSheets,
         FileType.xlsx.name: SourceInfoSchemaBase,

@@ -6,10 +6,7 @@ import logging
 import re
 from typing import (
     Any,
-    List,
     Optional,
-    Tuple,
-    Type,
 )
 from urllib.parse import quote_plus
 
@@ -85,7 +82,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
             EventListenerSpec("connect", set_execution_timeout),
         ]
 
-    def _get_tables(self, schema_ident: SchemaIdent) -> List[TableIdent]:
+    def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
         if schema_ident.schema_name is not None:
             # For a single schema, plug into the common SA code.
             # (might not be ever used)
@@ -242,7 +239,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
     EXTRA_EXC_CLS = (pyodbc.Error, sa_exc.DBAPIError)
 
     @classmethod
-    def get_exc_class(cls, err_msg: str) -> Optional[Type[exc.DatabaseQueryError]]:
+    def get_exc_class(cls, err_msg: str) -> Optional[type[exc.DatabaseQueryError]]:
         err_match = cls._EXC_CODE_RE.match(err_msg)
         if err_match is not None:
             code = int(err_match.group("code"))
@@ -258,7 +255,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
     @classmethod
     def make_exc(  # TODO:  Move to ErrorTransformer
         cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
-    ) -> Tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
+    ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
         exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_compiled_query)
 
         db_msg = kw["db_message"]

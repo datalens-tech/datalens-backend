@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Optional,
-    Type,
     cast,
 )
 import uuid
@@ -25,7 +24,7 @@ def make_connection(
     conn_type: ConnectionType,
     conn_name: Optional[str] = None,
     data_dict: Optional[dict] = None,
-    conn_cls: Optional[Type[ConnectionBase]] = None,
+    conn_cls: Optional[type[ConnectionBase]] = None,
 ) -> ConnectionBase:
     conn_name = conn_name or "{} test conn {}".format(conn_type.name, uuid.uuid4())
     data_dict = data_dict or {}

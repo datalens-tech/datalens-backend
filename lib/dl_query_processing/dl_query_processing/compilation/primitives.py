@@ -7,11 +7,8 @@ from typing import (
     ClassVar,
     Generator,
     Iterable,
-    List,
     Optional,
     Sequence,
-    Set,
-    Tuple,
 )
 
 import attr
@@ -34,7 +31,7 @@ from dl_query_processing.enums import (
 
 @attr.s(slots=True, frozen=True)
 class CompiledFormulaInfo:
-    show_names: ClassVar[Tuple[str, ...]] = (
+    show_names: ClassVar[tuple[str, ...]] = (
         "formula_obj",
         "alias",
         "avatar_ids",
@@ -43,7 +40,7 @@ class CompiledFormulaInfo:
 
     formula_obj: formula_nodes.Formula = attr.ib()
     alias: Optional[str] = attr.ib()
-    avatar_ids: Set[str] = attr.ib(factory=set)
+    avatar_ids: set[str] = attr.ib(factory=set)
     original_field_id: Optional[str] = attr.ib(default=None)
 
     @property
@@ -73,7 +70,7 @@ class CompiledFormulaInfo:
         initial_indent: str = "",
         do_leading_indent: bool = False,
     ) -> str:
-        content_item_strs: List[str] = []
+        content_item_strs: list[str] = []
         item_indent = f"{initial_indent}{indent}"
         for item_name in self.show_names:
             item = getattr(self, item_name)
@@ -227,11 +224,11 @@ class CompiledQuery:
     id: str = attr.ib(kw_only=True)
     level_type: ExecutionLevel = attr.ib(kw_only=True)
 
-    select: List[CompiledFormulaInfo] = attr.ib(kw_only=True, factory=list)
-    group_by: List[CompiledFormulaInfo] = attr.ib(kw_only=True, factory=list)
-    filters: List[CompiledFormulaInfo] = attr.ib(kw_only=True, factory=list)
-    order_by: List[CompiledOrderByFormulaInfo] = attr.ib(kw_only=True, factory=list)
-    join_on: List[CompiledJoinOnFormulaInfo] = attr.ib(kw_only=True, factory=list)
+    select: list[CompiledFormulaInfo] = attr.ib(kw_only=True, factory=list)
+    group_by: list[CompiledFormulaInfo] = attr.ib(kw_only=True, factory=list)
+    filters: list[CompiledFormulaInfo] = attr.ib(kw_only=True, factory=list)
+    order_by: list[CompiledOrderByFormulaInfo] = attr.ib(kw_only=True, factory=list)
+    join_on: list[CompiledJoinOnFormulaInfo] = attr.ib(kw_only=True, factory=list)
     joined_from: JoinedFromObject = attr.ib(kw_only=True, factory=JoinedFromObject)
     limit: Optional[int] = attr.ib(kw_only=True, default=None)
     offset: Optional[int] = attr.ib(kw_only=True, default=None)
@@ -267,7 +264,7 @@ class CompiledQuery:
         initial_indent: str = "",
         do_leading_indent: bool = False,
     ) -> str:
-        content_item_strs: List[str] = []
+        content_item_strs: list[str] = []
         item_indent = f"{initial_indent}{indent}"
         subitem_indent = f"{item_indent}{indent}"
         for item_name in self.show_names:

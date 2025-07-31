@@ -2,11 +2,9 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Dict,
     Generic,
     Iterable,
     Optional,
-    Set,
     TypeVar,
 )
 
@@ -27,7 +25,7 @@ class NodeSet:
     __slots__ = ("_data_set",)
 
     def __init__(self, nodes: Iterable[nodes.FormulaItem] = ()):
-        self._data_set: Set[NodeExtract] = set()
+        self._data_set: set[NodeExtract] = set()
         for node in nodes:
             self.add(node)
 
@@ -71,7 +69,7 @@ _MAP_VALUE_TV = TypeVar("_MAP_VALUE_TV")
 
 @attr.s
 class NodeValueMap(Generic[_MAP_VALUE_TV]):
-    _data: Dict[NodeExtract, _MAP_VALUE_TV] = attr.ib(factory=dict)
+    _data: dict[NodeExtract, _MAP_VALUE_TV] = attr.ib(factory=dict)
 
     def add(self, node: nodes.FormulaItem, value: _MAP_VALUE_TV) -> None:
         extract = validate_node_is_extractable(node)

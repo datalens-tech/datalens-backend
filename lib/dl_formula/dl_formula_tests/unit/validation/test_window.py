@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Tuple
-
 import pytest
 
 from dl_formula.core import (
@@ -14,7 +12,7 @@ from dl_formula.validation.validator import validate
 from dl_formula.validation.window import WindowFunctionChecker
 
 
-def get_dims() -> Tuple[nodes.FormulaItem, nodes.FormulaItem]:
+def get_dims() -> tuple[nodes.FormulaItem, nodes.FormulaItem]:
     return (
         nodes.Field.make("Dim Field"),
         nodes.FuncCall.make(

@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Dict,
-    List,
     Optional,
 )
 
@@ -22,7 +20,7 @@ class HttpApiResponse(ApiResponse):
     """
 
     _status_code: int = attr.ib(kw_only=True)
-    _json: Dict[str, Any] = attr.ib(kw_only=True)
+    _json: dict[str, Any] = attr.ib(kw_only=True)
 
     @property
     def status_code(self) -> int:
@@ -37,11 +35,11 @@ class HttpApiResponse(ApiResponse):
         return self._json
 
     @property
-    def response_errors(self) -> List[str]:
+    def response_errors(self) -> list[str]:
         return self.extract_response_errors(self._json)
 
     @classmethod
-    def extract_response_errors(cls, response_json: Dict[str, Any]) -> List[str]:
+    def extract_response_errors(cls, response_json: dict[str, Any]) -> list[str]:
         return []
 
 

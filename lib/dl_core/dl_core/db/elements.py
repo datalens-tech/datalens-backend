@@ -3,8 +3,6 @@ from __future__ import annotations
 from collections import namedtuple
 from typing import (
     Any,
-    FrozenSet,
-    List,
     Optional,
     Sequence,
     Union,
@@ -79,12 +77,12 @@ class IndexInfo:
 @attr.s(slots=True)
 class SchemaInfo:
     # TODO FIX: May be make a Tuple/Sequence instead of list
-    schema: List[SchemaColumn] = attr.ib()
-    skipped: List[SchemaColumn] = attr.ib(default=None)
-    converted: List[SchemaColumn] = attr.ib(default=None)
+    schema: list[SchemaColumn] = attr.ib()
+    skipped: list[SchemaColumn] = attr.ib(default=None)
+    converted: list[SchemaColumn] = attr.ib(default=None)
 
     # None value should be treated as "unknown/no info"
-    indexes: Optional[FrozenSet[IndexInfo]] = attr.ib(default=None)
+    indexes: Optional[frozenset[IndexInfo]] = attr.ib(default=None)
 
     @indexes.validator
     def check_indexes(self, attribute: Any, value: Any) -> None:

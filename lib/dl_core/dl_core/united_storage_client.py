@@ -18,7 +18,6 @@ from typing import (
     Iterable,
     NamedTuple,
     Optional,
-    Type,
     Union,
     cast,
 )
@@ -245,7 +244,7 @@ class UStorageClientBase:
         def json(self) -> dict:
             pass
 
-    ERROR_MAP: list[tuple[int, Optional[re.Pattern], Type[exc.USReqException]]] = [
+    ERROR_MAP: list[tuple[int, Optional[re.Pattern], type[exc.USReqException]]] = [
         (400, None, exc.USBadRequestException),
         (403, None, exc.USAccessDeniedException),
         (403, re.compile("Workbook isolation interruption"), exc.USWorkbookIsolationInterruptionException),

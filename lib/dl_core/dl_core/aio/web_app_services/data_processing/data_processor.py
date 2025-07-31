@@ -5,7 +5,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Type,
     TypeVar,
     cast,
 )
@@ -62,7 +61,7 @@ class DataProcessorService(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @classmethod
-    def get_app_instance(cls: Type[_DATA_PROC_SRV_TV], app: web.Application) -> _DATA_PROC_SRV_TV:
+    def get_app_instance(cls: type[_DATA_PROC_SRV_TV], app: web.Application) -> _DATA_PROC_SRV_TV:
         service = cast(_DATA_PROC_SRV_TV, app.get(cls.get_full_app_key(), None))
         if service is None:
             raise ValueError(f"{cls.__name__} was not initiated for application")
@@ -78,5 +77,5 @@ class DataProcessorService(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @classmethod
-    def from_config(cls: Type[_DATA_PROC_SRV_TV], config: DataProcessorConfig) -> _DATA_PROC_SRV_TV:
+    def from_config(cls: type[_DATA_PROC_SRV_TV], config: DataProcessorConfig) -> _DATA_PROC_SRV_TV:
         return cls()

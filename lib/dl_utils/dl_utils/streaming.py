@@ -9,10 +9,8 @@ from typing import (
     Callable,
     Generic,
     Iterable,
-    List,
     Optional,
     Sequence,
-    Type,
     TypeVar,
 )
 
@@ -38,13 +36,13 @@ class AsyncChunkedBase(Generic[_ENTRY_TV]):
     def chunks(self) -> AsyncIterable[TChunk[_ENTRY_TV]]:
         raise NotImplementedError
 
-    async def all(self) -> List[_ENTRY_TV]:
-        result: List[_ENTRY_TV] = []
+    async def all(self) -> list[_ENTRY_TV]:
+        result: list[_ENTRY_TV] = []
         async for chunk in self.chunks:
             result += chunk
         return result
 
-    def limit(self, max_count: int, limit_exception: Type[Exception]) -> AsyncChunkedLimited:
+    def limit(self, max_count: int, limit_exception: type[Exception]) -> AsyncChunkedLimited:
         return AsyncChunkedLimited(chunked=self, max_count=max_count, limit_exc_to_raise=limit_exception)
 
 
@@ -81,7 +79,7 @@ class AsyncChunked(AsyncChunkedBase[_ENTRY_TV]):
 class AsyncChunkedLimited(AsyncChunkedBase[_ENTRY_TV]):
     _chunked: AsyncChunkedBase = attr.ib()
     _max_count: int = attr.ib()
-    limit_exc_to_raise: Type[Exception] = attr.ib(kw_only=True)
+    limit_exc_to_raise: type[Exception] = attr.ib(kw_only=True)
 
     @property
     def items(self) -> AsyncIterable[_ENTRY_TV]:

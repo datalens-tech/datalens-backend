@@ -4,10 +4,7 @@ import abc
 from contextlib import contextmanager
 from typing import (
     Iterable,
-    List,
     Optional,
-    Tuple,
-    Type,
 )
 
 import dl_formula.core.exc as exc
@@ -25,7 +22,7 @@ class Validator:
         self._collect_errors = collect_errors
 
     @contextmanager
-    def handle_error(self, checker_cls: Type["Checker"], node: nodes.FormulaItem):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def handle_error(self, checker_cls: type["Checker"], node: nodes.FormulaItem):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         try:
             yield
         except exc.ValidationError as err:
@@ -42,16 +39,16 @@ class Validator:
             if not self._collect_errors:
                 raise err
 
-    def get_from_cache(self, checker_cls: Type["Checker"], node: nodes.FormulaItem) -> Optional[ErrInfo]:
+    def get_from_cache(self, checker_cls: type["Checker"], node: nodes.FormulaItem) -> Optional[ErrInfo]:
         return self._env.generic_cache_valid[checker_cls].get(node)
 
-    def mark_as_ok_in_cache(self, checker_cls: Type["Checker"], node: nodes.FormulaItem) -> None:
+    def mark_as_ok_in_cache(self, checker_cls: type["Checker"], node: nodes.FormulaItem) -> None:
         return self._env.generic_cache_valid[checker_cls].add(node, value=ErrInfo(is_error=False, exception=None))
 
     def proxy_for(self, checker: "Checker") -> "ValidatorProxy":
         return ValidatorProxy(validator=self, checker_cls=type(checker))
 
-    def get_all_errors(self, node: nodes.FormulaItem) -> List[FormulaErrorCtx]:
+    def get_all_errors(self, node: nodes.FormulaItem) -> list[FormulaErrorCtx]:
         errors = []
         for error_cache in self._env.generic_cache_valid.values():
             info = error_cache.get(node)
@@ -63,7 +60,7 @@ class Validator:
 
 
 class ValidatorProxy:
-    def __init__(self, validator: Validator, checker_cls: Type["Checker"]):
+    def __init__(self, validator: Validator, checker_cls: type["Checker"]):
         self._validator = validator
         self._checker_cls = checker_cls
 
@@ -84,7 +81,7 @@ class Checker(abc.ABC):
         self,
         validator: ValidatorProxy,
         node: nodes.FormulaItem,
-        parent_stack: Tuple[nodes.FormulaItem, ...],
+        parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> None:
         """
         Check the validity of a node recursively an either exit or raise an error.
@@ -114,7 +111,7 @@ class Checker(abc.ABC):
         self,
         validator: ValidatorProxy,
         node: nodes.FormulaItem,
-        parent_stack: Tuple[nodes.FormulaItem, ...],
+        parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> None:
         """Method checks the validity of a node recursively and either exits or raises an error"""
 

@@ -5,10 +5,7 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    List,
     Optional,
-    Tuple,
 )
 
 from aiohttp import web
@@ -105,7 +102,7 @@ class DatasetResultView(DatasetDataBaseView, abc.ABC):
         merged_stream: MergedQueryDataStream,
         totals_query: Optional[str],
         totals: Optional[PostprocessedRow],
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         raise NotImplementedError()
 
     async def _make_totals(
@@ -113,13 +110,13 @@ class DatasetResultView(DatasetDataBaseView, abc.ABC):
         *,
         raw_query_spec_union: RawQuerySpecUnion,
         legend: Legend,
-    ) -> Tuple[Optional[str], Optional[PostprocessedRow]]:
+    ) -> tuple[Optional[str], Optional[PostprocessedRow]]:
         block_id = 0
         assert all(item.block_id is None or item.block_id == block_id for item in legend.items)
         streamable_items = legend.list_streamable_items()
 
         # Patch legend by replacing all dimensions with placeholders
-        updated_items: List[LegendItem] = []
+        updated_items: list[LegendItem] = []
         for item in streamable_items:
             if item.field_type == FieldType.DIMENSION:
                 updated_item = item.clone(
@@ -180,7 +177,7 @@ class DatasetResultViewV1(DatasetResultView):
         merged_stream: MergedQueryDataStream,
         totals_query: Optional[str],
         totals: Optional[PostprocessedRow],
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return self._make_response_v1(
             req_model=req_model,
             merged_stream=merged_stream,
@@ -206,7 +203,7 @@ class DatasetResultViewV1_5(DatasetResultView):
         merged_stream: MergedQueryDataStream,
         totals_query: Optional[str],
         totals: Optional[PostprocessedRow],
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return self._make_response_v1(
             req_model=req_model,
             merged_stream=merged_stream,
@@ -231,5 +228,5 @@ class DatasetResultViewV2(DatasetResultView):
         merged_stream: MergedQueryDataStream,
         totals_query: Optional[str],
         totals: Optional[PostprocessedRow],
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return self._make_response_v2(merged_stream=merged_stream)

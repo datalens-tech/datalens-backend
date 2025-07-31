@@ -11,9 +11,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Dict,
     Optional,
-    Type,
 )
 
 import attr
@@ -40,14 +38,14 @@ class ConnTargetDTO(metaclass=abc.ABCMeta):
     def get_effective_host(self) -> Optional[str]:
         pass
 
-    _MAP_CLASS_NAME_CLASS: ClassVar[Dict[str, Type[ConnTargetDTO]]] = {}
+    _MAP_CLASS_NAME_CLASS: ClassVar[dict[str, type[ConnTargetDTO]]] = {}
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         cls._MAP_CLASS_NAME_CLASS[cls.__qualname__] = cls
 
     @classmethod
     @final
-    def from_polymorphic_jsonable_dict(cls, data: Dict) -> ConnTargetDTO:
+    def from_polymorphic_jsonable_dict(cls, data: dict) -> ConnTargetDTO:
         data = {**data}
         cls_name = data.pop("cls_name")
         target_cls = cls._MAP_CLASS_NAME_CLASS[cls_name]
@@ -64,7 +62,7 @@ class ConnTargetDTO(metaclass=abc.ABCMeta):
     def _from_jsonable_dict(cls, data: dict) -> Self:
         return cls(**data)
 
-    def to_jsonable_dict(self) -> Dict[str, TJSONLike]:
+    def to_jsonable_dict(self) -> dict[str, TJSONLike]:
         return dict(
             **attr.asdict(self),
             cls_name=type(self).__qualname__,

@@ -2,10 +2,7 @@ from __future__ import annotations
 
 import abc
 from typing import (
-    List,
     Optional,
-    Tuple,
-    Type,
     TypeVar,
 )
 
@@ -42,21 +39,21 @@ class ReportingRegistry(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_reporting_records(self) -> Tuple[ReportingRecord, ...]:
+    def get_reporting_records(self) -> tuple[ReportingRecord, ...]:
         pass
 
     @abc.abstractmethod
-    def get_request_result_reporting_records(self) -> Tuple[RequestResultReportingRecord, ...]:
+    def get_request_result_reporting_records(self) -> tuple[RequestResultReportingRecord, ...]:
         pass
 
     @abc.abstractmethod
-    def get_records_of_type(self, clz: Type[_RECORD_TV]) -> Tuple[_RECORD_TV, ...]:
+    def get_records_of_type(self, clz: type[_RECORD_TV]) -> tuple[_RECORD_TV, ...]:
         pass
 
 
 @attr.s
 class DefaultReportingRegistry(ReportingRegistry):
-    _reporting_records: List[ReportingRecord] = attr.ib(init=False, factory=list)
+    _reporting_records: list[ReportingRecord] = attr.ib(init=False, factory=list)
 
     def clear_records(self) -> None:
         self._reporting_records.clear()
@@ -65,11 +62,11 @@ class DefaultReportingRegistry(ReportingRegistry):
         if report is not None:
             self._reporting_records.append(report)
 
-    def get_reporting_records(self) -> Tuple[ReportingRecord, ...]:
+    def get_reporting_records(self) -> tuple[ReportingRecord, ...]:
         return tuple(self._reporting_records)
 
-    def get_request_result_reporting_records(self) -> Tuple[RequestResultReportingRecord, ...]:
+    def get_request_result_reporting_records(self) -> tuple[RequestResultReportingRecord, ...]:
         return tuple(r for r in self._reporting_records if isinstance(r, RequestResultReportingRecord))
 
-    def get_records_of_type(self, clz: Type[_RECORD_TV]) -> Tuple[_RECORD_TV, ...]:
+    def get_records_of_type(self, clz: type[_RECORD_TV]) -> tuple[_RECORD_TV, ...]:
         return tuple(r for r in self._reporting_records if isinstance(r, clz))

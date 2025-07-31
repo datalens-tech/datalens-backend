@@ -6,12 +6,9 @@ import random
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    FrozenSet,
     MutableMapping,
     Optional,
     Sequence,
-    Tuple,
-    Type,
 )
 
 import attr
@@ -58,7 +55,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
     ca_data: bytes = attr.ib()
 
     is_bleeding_edge_user: bool = attr.ib(default=False)
-    conn_cls_whitelist: Optional[FrozenSet[Type[ConnectionBase]]] = attr.ib(default=None)
+    conn_cls_whitelist: Optional[frozenset[type[ConnectionBase]]] = attr.ib(default=None)
     # User function that can override connect options.
     #  If factory returns `None` default connection connect options will be used
     connect_options_factory: Optional[ConnectOptionsFactory] = attr.ib(default=None)
@@ -67,16 +64,16 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
     connect_options_mutator: Optional[ConnectOptionsMutator] = attr.ib(default=None)
     force_non_rqe_mode: bool = attr.ib(default=False)
 
-    DEFAULT_MAP_CONN_TYPE_SYNC_CE_TYPE: dict[Type[ConnectionBase], Type[ConnExecutorBase]] = {}
+    DEFAULT_MAP_CONN_TYPE_SYNC_CE_TYPE: dict[type[ConnectionBase], type[ConnExecutorBase]] = {}
 
-    DEFAULT_MAP_CONN_TYPE_ASYNC_CE_TYPE: dict[Type[ConnectionBase], Type[AsyncConnExecutorBase]] = {}
+    DEFAULT_MAP_CONN_TYPE_ASYNC_CE_TYPE: dict[type[ConnectionBase], type[AsyncConnExecutorBase]] = {}
 
     SINGLE_HOST_RETRY_ATTEMPTS: ClassVar[int] = 3
     MAX_HOST_RETRY_ATTEMPTS: ClassVar[int] = 3
 
     # TODO FIX: Make typing/implementation more accurate
-    def get_async_conn_executor_cls(self, conn: ConnectionBase) -> Type[AsyncConnExecutorBase]:
-        map_conn_type_ce_type: MutableMapping[Type[ConnectionBase], Type[ConnExecutorBase]] = ChainMap()
+    def get_async_conn_executor_cls(self, conn: ConnectionBase) -> type[AsyncConnExecutorBase]:
+        map_conn_type_ce_type: MutableMapping[type[ConnectionBase], type[ConnExecutorBase]] = ChainMap()
 
         if self.async_env:
             map_conn_type_ce_type.update(self.DEFAULT_MAP_CONN_TYPE_SYNC_CE_TYPE)
@@ -175,8 +172,8 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
             raise CEFactoryError(f"Can not instantiate {executor_cls}")
 
     def _get_exec_mode_and_rqe_attrs(
-        self, conn: ConnectionBase, executor_cls: Type[AsyncConnExecutorBase]
-    ) -> Tuple[ExecutionMode, Optional[RemoteQueryExecutorData]]:
+        self, conn: ConnectionBase, executor_cls: type[AsyncConnExecutorBase]
+    ) -> tuple[ExecutionMode, Optional[RemoteQueryExecutorData]]:
         conn_dto = conn.get_conn_dto()
         conn_options = conn.get_conn_options()
         ce_cls = self.get_async_conn_executor_cls(conn)
@@ -235,11 +232,11 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
         return attr.evolve(self, **kwargs)
 
 
-def register_sync_conn_executor_class(conn_cls: Type[ConnectionBase], sync_ce_cls: Type[ConnExecutorBase]) -> None:
+def register_sync_conn_executor_class(conn_cls: type[ConnectionBase], sync_ce_cls: type[ConnExecutorBase]) -> None:
     DefaultConnExecutorFactory.DEFAULT_MAP_CONN_TYPE_SYNC_CE_TYPE[conn_cls] = sync_ce_cls
 
 
 def register_async_conn_executor_class(
-    conn_cls: Type[ConnectionBase], async_ce_cls: Type[AsyncConnExecutorBase]
+    conn_cls: type[ConnectionBase], async_ce_cls: type[AsyncConnExecutorBase]
 ) -> None:
     DefaultConnExecutorFactory.DEFAULT_MAP_CONN_TYPE_ASYNC_CE_TYPE[conn_cls] = async_ce_cls

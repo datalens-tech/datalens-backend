@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from functools import _CacheInfo
-from typing import Dict
 
 import antlr4
 from antlr4.Token import Token
@@ -71,5 +70,5 @@ class AntlrPyFormulaParser(FormulaParser):
                 "Failed to parse formula: maximum recursion depth exceeded",
             ) from err
 
-    def _get_global_stats(self) -> Dict[str, _CacheInfo]:
+    def _get_global_stats(self) -> dict[str, _CacheInfo]:
         return parse.cache_info()  # type: ignore  # 2024-01-30 # TODO: "Callable[..., Any]" has no attribute "cache_info"  [attr-defined]

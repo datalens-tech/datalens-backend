@@ -4,9 +4,7 @@ from itertools import chain
 from typing import (
     Any,
     Callable,
-    FrozenSet,
     Iterable,
-    List,
     Optional,
 )
 
@@ -260,7 +258,7 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
         connection_id: Optional[str] = None,
         title: Optional[str] = None,
         raw_schema: Optional[list[SchemaColumn]] = None,
-        index_info_set: FrozenSet[IndexInfo] = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "index_info_set" (default has type "None", argument has type "frozenset[IndexInfo]")  [assignment]
+        index_info_set: frozenset[IndexInfo] = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "index_info_set" (default has type "None", argument has type "frozenset[IndexInfo]")  [assignment]
         managed_by: Optional[ManagedBy] = None,
         parameters: Optional[dict[str, Any]] = None,
     ) -> None:
@@ -283,7 +281,7 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
         connection_id: Optional[str] = None,
         created_from: Optional[DataSourceType] = None,
         raw_schema: Optional[list] = None,
-        index_info_set: FrozenSet[IndexInfo] = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "index_info_set" (default has type "None", argument has type "frozenset[IndexInfo]")  [assignment]
+        index_info_set: frozenset[IndexInfo] = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "index_info_set" (default has type "None", argument has type "frozenset[IndexInfo]")  [assignment]
         **parameters: Any,
     ) -> None:
         self._ds_editor.update_data_source(
@@ -337,7 +335,7 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
         relation_id: str,
         left_avatar_id: str,
         right_avatar_id: str,
-        conditions: List[BinaryCondition],
+        conditions: list[BinaryCondition],
         join_type: JoinType = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "join_type" (default has type "None", argument has type "JoinType")  [assignment]
         managed_by: ManagedBy = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "managed_by" (default has type "None", argument has type "ManagedBy")  [assignment]
         valid: bool = True,
@@ -357,7 +355,7 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
     def update_avatar_relation(
         self,
         relation_id: str,
-        conditions: Optional[List[BinaryCondition]] = None,
+        conditions: Optional[list[BinaryCondition]] = None,
         join_type: Optional[JoinType] = None,
         valid: Optional[bool] = None,
     ) -> None:

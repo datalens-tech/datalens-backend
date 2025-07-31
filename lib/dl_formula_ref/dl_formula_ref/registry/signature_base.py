@@ -5,10 +5,7 @@ from enum import (
     Enum,
     unique,
 )
-from typing import (
-    TYPE_CHECKING,
-    List,
-)
+from typing import TYPE_CHECKING
 
 import attr
 
@@ -33,7 +30,7 @@ class SignaturePlacement(Enum):
 
 @attr.s(frozen=True)
 class FunctionSignatureCollection:
-    signatures: List[FunctionSignature] = attr.ib(kw_only=True)
+    signatures: list[FunctionSignature] = attr.ib(kw_only=True)
     placement_mode: SignaturePlacement = attr.ib(kw_only=True, default=SignaturePlacement.compact)
 
 

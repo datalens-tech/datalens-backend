@@ -3,10 +3,7 @@ from __future__ import annotations
 import abc
 from typing import (
     Collection,
-    Dict,
     Optional,
-    Set,
-    Tuple,
 )
 
 from dl_core.components.ids import (
@@ -17,7 +14,7 @@ from dl_core.components.ids import (
 
 class AvatarTreeResolverBase(abc.ABC):
     @abc.abstractmethod
-    def rank_avatars(self) -> Dict[AvatarId, int]:
+    def rank_avatars(self) -> dict[AvatarId, int]:
         """
         Return mapping: ``{avatar_id: avatar_rank}``,
         where:
@@ -33,7 +30,7 @@ class AvatarTreeResolverBase(abc.ABC):
     @abc.abstractmethod
     def expand_required_avatar_ids(
         self, required_avatar_ids: Collection[str]
-    ) -> Tuple[Optional[AvatarId], Set[AvatarId], Set[RelationId]]:
+    ) -> tuple[Optional[AvatarId], set[AvatarId], set[RelationId]]:
         """
         Complement required avatars wit ones that are required to apply JOINs of the given avatars
 

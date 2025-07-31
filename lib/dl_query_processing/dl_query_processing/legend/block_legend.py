@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     ClassVar,
-    List,
     Optional,
 )
 
@@ -36,15 +35,15 @@ class RootBlockPlacement(BlockPlacement):
 class AfterBlockPlacement(BlockPlacement):
     type = QueryBlockPlacementType.after
 
-    dimension_values: Optional[List[DimensionValueSpec]] = attr.ib(default=None)
+    dimension_values: Optional[list[DimensionValueSpec]] = attr.ib(default=None)
 
 
 @attr.s(frozen=True)
 class DispersedAfterBlockPlacement(BlockPlacement):
     type = QueryBlockPlacementType.dispersed_after
 
-    parent_dimensions: List[DimensionSpec] = attr.ib(default=None)
-    child_dimensions: List[DimensionSpec] = attr.ib(default=None)
+    parent_dimensions: list[DimensionSpec] = attr.ib(default=None)
+    child_dimensions: list[DimensionSpec] = attr.ib(default=None)
 
 
 @attr.s(frozen=True)
@@ -52,7 +51,7 @@ class BlockSpec:
     block_id: int = attr.ib(kw_only=True)
     parent_block_id: Optional[int] = attr.ib(kw_only=True)  # FIXME: Maybe remove this altogether
     placement: BlockPlacement = attr.ib(kw_only=True, factory=RootBlockPlacement)
-    legend_item_ids: List[int] = attr.ib(kw_only=True, default=None)
+    legend_item_ids: list[int] = attr.ib(kw_only=True, default=None)
     legend: Legend = attr.ib(kw_only=True)
     group_by_policy: GroupByPolicy = attr.ib(kw_only=True, default=GroupByPolicy.force)
     limit: Optional[int] = attr.ib(kw_only=True, default=None)
@@ -80,7 +79,7 @@ class BlockLegendMeta:
 
 @attr.s(frozen=True)
 class BlockLegend:
-    blocks: List[BlockSpec] = attr.ib(kw_only=True)
+    blocks: list[BlockSpec] = attr.ib(kw_only=True)
     meta: BlockLegendMeta = attr.ib(kw_only=True, factory=BlockLegendMeta)
 
     def clone(self, **updates: Any) -> BlockLegend:

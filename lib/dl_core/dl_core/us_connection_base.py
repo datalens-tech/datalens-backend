@@ -11,7 +11,6 @@ from typing import (
     Generic,
     NamedTuple,
     Optional,
-    Type,
     TypeVar,
     Union,
 )
@@ -397,7 +396,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     @classmethod
     def create_from_dict(
-        cls: Type[_CB_TV],
+        cls: type[_CB_TV],
         data_dict: Union[dict, BaseAttrsDataModel],
         ds_key: Union[EntryLocation, str, None] = None,
         type_: Optional[str] = None,
@@ -715,7 +714,7 @@ CONNECTOR_SETTINGS_TV = TypeVar("CONNECTOR_SETTINGS_TV", bound=ConnectorSettings
 def _get_connector_settings(
     usm: USManagerBase,
     conn_type: ConnectionType,
-    settings_type: Type[CONNECTOR_SETTINGS_TV],
+    settings_type: type[CONNECTOR_SETTINGS_TV],
 ) -> CONNECTOR_SETTINGS_TV:
     sr = usm.get_services_registry()
     connector_settings = sr.get_connectors_settings(conn_type)
@@ -733,7 +732,7 @@ def _get_connector_settings(
 class ConnectionSettingsMixin(ConnectionBase, Generic[CONNECTOR_SETTINGS_TV], metaclass=abc.ABCMeta):
     """Connector type specific data is loaded from dl_configs.connectors_settings"""
 
-    settings_type: Type[CONNECTOR_SETTINGS_TV]
+    settings_type: type[CONNECTOR_SETTINGS_TV]
 
     @property
     def _connector_settings(self) -> CONNECTOR_SETTINGS_TV:

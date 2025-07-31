@@ -6,7 +6,6 @@ from typing import (
     Any,
     Generic,
     Optional,
-    Type,
     TypeVar,
 )
 
@@ -45,7 +44,7 @@ class DataSink(Generic[_DATA_STREAM_TV], metaclass=abc.ABCMeta):
         self.initialize()
         return self
 
-    def __exit__(self, exc_type: Optional[Type[Exception]], exc_val: Optional[Exception], exc_tb: Any) -> None:
+    def __exit__(self, exc_type: Optional[type[Exception]], exc_val: Optional[Exception], exc_tb: Any) -> None:
         if exc_type is None:
             self.finalize()
         else:
@@ -79,7 +78,7 @@ class DataSinkAsync(Generic[_ASYNC_DATA_STREAM_TV], metaclass=abc.ABCMeta):
         await self.initialize()
         return self
 
-    async def __aexit__(self, exc_type: Optional[Type[Exception]], exc_val: Optional[Exception], exc_tb: Any) -> None:
+    async def __aexit__(self, exc_type: Optional[type[Exception]], exc_val: Optional[Exception], exc_tb: Any) -> None:
         if exc_type is None:
             await self.finalize()
         await self.cleanup()
