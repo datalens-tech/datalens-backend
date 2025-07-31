@@ -291,6 +291,9 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
     # Specified
     calc_spec: CalculationSpec
 
+    # A string field to store settings from the frontend
+    ui_settings: str
+
     @classmethod
     def make(
         cls,
@@ -308,6 +311,7 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
         has_auto_aggregation: bool = False,
         lock_aggregation: bool = False,
         managed_by: Optional[ManagedBy] = None,
+        ui_settings: str = "",
     ) -> BIField:
         """
         Normalize attributes and create a BIField object.
@@ -349,6 +353,7 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
             lock_aggregation=lock_aggregation,
             managed_by=managed_by,
             calc_spec=calc_spec,
+            ui_settings=ui_settings,
         )
 
     @property

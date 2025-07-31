@@ -296,6 +296,16 @@ class DatasetValidator(DatasetBaseWrapper):
                 code=exc.TooManyFieldsError.err_code,
             )
 
+    def validate_overall_ui_settings_length(self, field_ui_settings_len: int) -> None:
+        if self._is_data_api:
+            return
+
+        overall_ui_settings_size = (
+            sum(len(field.ui_settings) for field in self._ds.result_schema) + field_ui_settings_len
+        )
+        if overall_ui_settings_size > DatasetConstraints.OVERALL_UI_SETTINGS_MAX_SIZE:
+            raise exc.DLValidationError("Dataset exceeds the maximum size of UI settings")
+
     def get_dependent_fields(self, field: Optional[BIField]) -> list[BIField]:
         """Return list of fields directly dependent on the given one"""
 
@@ -723,6 +733,11 @@ class DatasetValidator(DatasetBaseWrapper):
                     if field_name in field_data_dict:
                         LOGGER.info("Ignoring forbidden field mutation: %s", field_name)
                         del field_data_dict[field_name]
+
+            ui_settings_len = len(field_data_dict.get("ui_settings", ""))
+            if ui_settings_len > DatasetConstraints.FIELD_UI_SETTINGS_MAX_SIZE:
+                raise exc.DLValidationError(f"Field with ID {field_id} exceeds the maximum size of UI settings")
+            self.validate_overall_ui_settings_length(field_ui_settings_len=ui_settings_len)
 
         if action in (DatasetAction.update_field, DatasetAction.delete_field):
             try:
