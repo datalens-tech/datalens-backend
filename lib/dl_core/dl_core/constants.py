@@ -13,6 +13,9 @@ class DatasetConstraints(ConstContainer):
     FIELD_COUNT_LIMIT_SOFT = 1200
     FIELD_COUNT_LIMIT_HARD = 1250
 
+    FIELD_UI_SETTINGS_MAX_SIZE = 32 * 1024
+    OVERALL_UI_SETTINGS_MAX_SIZE = 1.4 * 1024 * 1024
+
 
 class DataAPILimits(ConstContainer):
     """

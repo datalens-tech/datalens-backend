@@ -374,6 +374,7 @@ class ResultSchemaStorageSchema(DefaultStorageSchema):
         has_auto_aggregation = ma_fields.Boolean(allow_none=True)
         lock_aggregation = ma_fields.Boolean(allow_none=True)
         managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+        ui_settings = ma_fields.String(dump_default="", load_default="")
 
         # this will be flattened on dump and un-flattened before load
         # TODO: dump/load as is and migrate data in storage respectively

@@ -119,6 +119,7 @@ class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
     type = ma_fields.Enum(FieldType, readonly=True)
     data_type = ma_fields.Enum(UserDataType, allow_none=True)
     valid = ma_fields.Boolean(allow_none=True)
+    ui_settings = ma_fields.String(dump_default="", load_default="")
 
     # this will be flattened on dump and un-flattened before load
     # TODO: dump/load as is and update usage on front end respectively
