@@ -37,7 +37,7 @@ _CSRF_TIME_LIMIT = 3600 * 12
 _AppFactory = Callable[[bool, tuple[str, ...]], Awaitable[TestClient]]
 
 
-def ts_now():
+def ts_now() -> int:
     return int(time.time())
 
 
@@ -46,18 +46,18 @@ class TestingCSRFMiddleware(CSRFMiddleware):
 
 
 @pytest_asyncio.fixture(scope="function")
-async def csrf_app_factory(aiohttp_client) -> _AppFactory:
+async def csrf_app_factory(aiohttp_client: TestClient) -> _AppFactory:
     async def f(authorized: Optional[bool], secrets: tuple[str, ...]) -> TestClient:
-        async def non_csrf_handler(request: web.Request):
+        async def non_csrf_handler(request: web.Request) -> web.Response:
             return web.json_response(dict(ok="ok"), status=200)
 
-        async def csrf_handler(request: web.Request):
+        async def csrf_handler(request: web.Request) -> web.Response:
             return web.json_response(dict(ok="ok"), status=200)
 
         class SkipCSRFView(DLRequestView):
             REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResource]] = frozenset({RequiredResourceCommon.SKIP_CSRF})
 
-            async def put(self) -> web.StreamResponse:
+            async def put(self) -> web.Response:
                 return web.json_response(dict(ok="ok"), status=200)
 
         req_id_service = RequestId(
@@ -84,7 +84,7 @@ async def csrf_app_factory(aiohttp_client) -> _AppFactory:
         app.router.add_post("/", csrf_handler)
         app.router.add_put("/", SkipCSRFView)
 
-        return await aiohttp_client(app)
+        return await aiohttp_client(app)  # type: ignore[operator]
 
     return f
 
@@ -219,7 +219,7 @@ async def test_csrf_ok(
     cookies: dict[str, str],
     secrets: tuple[str, ...],
     csrf_app_factory: _AppFactory,
-):
+) -> None:
     client = await csrf_app_factory(authorized, secrets)
     resp = await client.request(
         method=method,
@@ -315,7 +315,7 @@ async def test_csrf_invalid(
     cookies: dict[str, str],
     secrets: tuple[str, ...],
     csrf_app_factory: _AppFactory,
-):
+) -> None:
     validation_failed_text = "CSRF validation failed"
     validation_failed_status = 400
 

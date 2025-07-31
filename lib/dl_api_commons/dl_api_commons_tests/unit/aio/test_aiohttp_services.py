@@ -1,6 +1,5 @@
-from __future__ import annotations
-
 from aiohttp import web
+from aiohttp.test_utils import TestClient
 from multidict import CIMultiDict
 import pytest
 
@@ -17,19 +16,19 @@ from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestView
 
 
 @pytest.mark.asyncio
-async def test_service_header_normal_case(aiohttp_client):
+async def test_service_header_normal_case(aiohttp_client: TestClient) -> None:
     server_header = "Ololo"
 
     class SimpleView(web.View):
-        async def get(self):
+        async def get(self) -> web.Response:
             return web.json_response({})
 
     class FailView(web.View):
-        async def get(self):
+        async def get(self) -> web.Response:
             raise ValueError()
 
     class StreamedView(web.View):
-        async def get(self):
+        async def get(self) -> web.StreamResponse:
             streamed_resp = web.StreamResponse()
             await streamed_resp.prepare(self.request)
             await streamed_resp.write(b"ololo")
@@ -42,7 +41,7 @@ async def test_service_header_normal_case(aiohttp_client):
 
     ServerHeader(server_header).add_signal_handlers(app)
 
-    client = await aiohttp_client(app)
+    client = await aiohttp_client(app)  # type: ignore[operator]
 
     resp = await client.get("/not_found")
     assert 404 == resp.status and [server_header] == resp.headers.getall("Server")
@@ -57,16 +56,16 @@ async def test_service_header_normal_case(aiohttp_client):
     assert 200 == resp.status and [server_header] == resp.headers.getall("Server")
 
 
-def test_service_header_validation_fail():
+def test_service_header_validation_fail() -> None:
     with pytest.raises(ValueError):
         ServerHeader("")
 
     with pytest.raises(TypeError):
-        ServerHeader(123)  # noqa
+        ServerHeader(123)  # type: ignore[arg-type]
 
 
 @pytest.mark.asyncio
-async def test_commit_rci_middleware(caplog, aiohttp_client):
+async def test_commit_rci_middleware(caplog: pytest.LogCaptureFixture, aiohttp_client: TestClient) -> None:
     caplog.set_level("INFO")
 
     app = web.Application(
@@ -81,7 +80,7 @@ async def test_commit_rci_middleware(caplog, aiohttp_client):
     )
 
     class TestView(DLRequestView):
-        async def get(self):
+        async def get(self) -> web.Response:
             rci = self.dl_request.rci
             return web.json_response(
                 {
@@ -92,9 +91,9 @@ async def test_commit_rci_middleware(caplog, aiohttp_client):
             )
 
     app.router.add_route("*", "/simple_view", TestView)
-    client = await aiohttp_client(app)
+    client = await aiohttp_client(app)  # type: ignore[operator]
 
-    async def get_headers(inbound_headers):
+    async def get_headers(inbound_headers: CIMultiDict) -> dict:
         resp = await client.get("/simple_view", headers=inbound_headers, skip_auto_headers=("User-Agent",))
         try:
             assert resp.status == 200
@@ -160,7 +159,10 @@ async def test_commit_rci_middleware(caplog, aiohttp_client):
 
 
 @pytest.mark.asyncio
-async def test_error_handling_middleware(caplog, aiohttp_client):
+async def test_error_handling_middleware(
+    caplog: pytest.LogCaptureFixture,
+    aiohttp_client: TestClient,
+) -> None:
     caplog.set_level("INFO")
     log_name = "dl_api_commons.aio.middlewares.error_handling_outer"
 
@@ -189,19 +191,19 @@ async def test_error_handling_middleware(caplog, aiohttp_client):
             else:
                 raise ValueError("Can not format exception")
 
-    async def info(request):
+    async def info(request: web.Request) -> web.Response:
         raise MyException("info_exc", "info", 400)
 
-    async def warn(request):
+    async def warn(request: web.Request) -> web.Response:
         raise MyException("warn_exc", "warning", 400)
 
-    async def error(request):
+    async def error(request: web.Request) -> web.Response:
         raise MyException("err_exc", "error", 500)
 
-    async def fmt_error(request):
+    async def fmt_error(request: web.Request) -> web.Response:
         raise ValueError()
 
-    async def ok(request):
+    async def ok(request: web.Request) -> web.Response:
         return web.json_response({})
 
     app = web.Application(
@@ -218,9 +220,9 @@ async def test_error_handling_middleware(caplog, aiohttp_client):
     app.router.add_get("/error", error)
     app.router.add_get("/fmt_error", fmt_error)
 
-    client = await aiohttp_client(app)
+    client = await aiohttp_client(app)  # type: ignore[operator]
 
-    async def get_status_and_body(url) -> tuple[int, dict]:
+    async def get_status_and_body(url: str) -> tuple[int, dict]:
         resp = await client.get(url)
         return resp.status, await resp.json()
 

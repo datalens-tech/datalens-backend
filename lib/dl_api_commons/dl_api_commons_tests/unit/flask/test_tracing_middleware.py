@@ -1,12 +1,11 @@
-from __future__ import annotations
-
 import flask
+import pytest
 
 from dl_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from dl_api_commons.flask.middlewares.tracing import TracingMiddleware
 
 
-def test_app(caplog, loop):
+def test_app(caplog: pytest.LogCaptureFixture) -> None:
     """Just to check that middleware doesn't break something"""
     caplog.set_level("DEBUG")
 
@@ -17,12 +16,12 @@ def test_app(caplog, loop):
     ContextVarMiddleware().wrap_flask_app(app)
 
     @app.route("/ok")
-    def ok():
+    def ok() -> flask.Response:
         return flask.jsonify({})
 
     @app.route("/err")
-    def err():
-        return 500, flask.jsonify({})
+    def err() -> tuple[flask.Response, int]:
+        return flask.jsonify({}), 500
 
     client = app.test_client()
 

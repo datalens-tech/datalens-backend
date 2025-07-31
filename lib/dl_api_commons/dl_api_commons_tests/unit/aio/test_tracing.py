@@ -6,6 +6,7 @@ from typing import (
 )
 
 from aiohttp import web
+from aiohttp.test_utils import TestClient
 import pytest
 
 from dl_api_commons.aio.middlewares.error_handling_outer import (
@@ -37,27 +38,29 @@ class MockErrorHandlingMW(AIOHTTPErrorHandler):
         return ErrorData(500, {}, ErrorLevel.error)
 
 
-def get_view(the_endpoint_code: Optional[str], action: Callable[[], dict]):
+def get_view(the_endpoint_code: Optional[str], action: Callable[[], dict]) -> type[web.View]:
     if the_endpoint_code is not None:
 
         class EPView(web.View):
             endpoint_code = the_endpoint_code
 
-            async def get(self):
+            async def get(self) -> web.Response:
                 return web.json_response(action())
 
         return EPView
     else:
 
         class NonEPView(web.View):
-            async def get(self):
+            async def get(self) -> web.Response:
                 return web.json_response(action())
 
         return NonEPView
 
 
-def register_view(app: web.Application, path: str, ep_code: Optional[str]):
-    def deco(func: Callable[[], dict]):
+def register_view(
+    app: web.Application, path: str, ep_code: Optional[str]
+) -> Callable[[Callable[[], dict]], Callable[[], dict]]:
+    def deco(func: Callable[[], dict]) -> Callable[[], dict]:
         app.router.add_route("*", path, get_view(ep_code, func))
         return func
 
@@ -65,7 +68,7 @@ def register_view(app: web.Application, path: str, ep_code: Optional[str]):
 
 
 @pytest.mark.asyncio
-async def test_tracing_scenarios(aiohttp_client):
+async def test_tracing_scenarios(aiohttp_client: TestClient) -> None:
     """
     At this moment only checks that tracing/error handling middleware doesn't breaks something.
     TODO: Add InMemory reporter to tests tracer to be able to check that spans got correct tags
@@ -81,26 +84,26 @@ async def test_tracing_scenarios(aiohttp_client):
     )
 
     @register_view(app, "/ok", "ok")
-    def ok():
+    def ok() -> dict:
         return dict(ok="ok")
 
     @register_view(app, "/err_err", "err")
-    def err_err():
+    def err_err() -> dict:
         raise MockError(200, ErrorLevel.error, dict(err_err=None))
 
     @register_view(app, "/err_info", "err_info")
-    def err_info():
+    def err_info() -> dict:
         raise MockError(400, ErrorLevel.info, dict(err_info=None))
 
     @register_view(app, "/no_ep_ok", None)
-    def no_ep_ok():
+    def no_ep_ok() -> dict:
         return dict(no_ep_ok=None)
 
     @register_view(app, "/no_ep_err", None)
-    def no_ep_err():
+    def no_ep_err() -> dict:
         raise MockError(401, ErrorLevel.error, dict(no_ep_err=None))
 
-    client = await aiohttp_client(app)
+    client = await aiohttp_client(app)  # type: ignore[operator]
 
     resp = await client.get("/ok")
     resp_json = await resp.json()

@@ -1,5 +1,10 @@
-from __future__ import annotations
-
+from dl_api_commons.httpx import (
+    BIHttpxAsyncClient,
+    BIHttpxBaseClient,
+    BIHttpxClientSettings,
+    BIHttpxClientT,
+    BIHttpxSyncClient,
+)
 from dl_api_commons.request_id import (
     make_uuid_from_parts,
     request_id_generator,
@@ -9,4 +14,9 @@ from dl_api_commons.request_id import (
 __all__ = (
     "make_uuid_from_parts",
     "request_id_generator",
+    "BIHttpxBaseClient",
+    "BIHttpxSyncClient",
+    "BIHttpxAsyncClient",
+    "BIHttpxClientSettings",
+    "BIHttpxClientT",
 )
