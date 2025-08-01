@@ -48,6 +48,7 @@ class ConnTargetDTO(metaclass=abc.ABCMeta):
     def from_polymorphic_jsonable_dict(cls, data: dict) -> ConnTargetDTO:
         data = {**data}
         cls_name = data.pop("cls_name")
+        raise Exception(str(cls._MAP_CLASS_NAME_CLASS))
         target_cls = cls._MAP_CLASS_NAME_CLASS[cls_name]
         return target_cls.from_jsonable_dict(data)
 
