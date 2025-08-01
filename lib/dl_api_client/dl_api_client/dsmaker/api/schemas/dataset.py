@@ -290,6 +290,7 @@ class ResultFieldSchema(DefaultSchema[ResultField]):
     default_value = ma_fields.Nested(ValueSchema, allow_none=True)
     value_constraint = ma_fields.Nested(ParameterValueConstraintSchema, allow_none=True)
     template_enabled = ma_fields.Bool(allow_none=True)
+    ui_settings = ma_fields.String()
 
     # Only locally used
     created_ = ma_fields.Boolean(load_default=True, load_only=True, attribute="created_")  # Always True
