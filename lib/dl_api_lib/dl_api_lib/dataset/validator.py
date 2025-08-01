@@ -304,7 +304,7 @@ class DatasetValidator(DatasetBaseWrapper):
             sum(len(field.ui_settings) for field in self._ds.result_schema) + field_ui_settings_len
         )
         if overall_ui_settings_size > DatasetConstraints.OVERALL_UI_SETTINGS_MAX_SIZE:
-            raise exc.DLValidationError("Dataset exceeds the maximum size of UI settings")
+            raise exc.DLValidationFatal("Dataset exceeds the maximum size of UI settings")
 
     def get_dependent_fields(self, field: Optional[BIField]) -> list[BIField]:
         """Return list of fields directly dependent on the given one"""
@@ -736,7 +736,8 @@ class DatasetValidator(DatasetBaseWrapper):
 
             ui_settings_len = len(field_data_dict.get("ui_settings", ""))
             if ui_settings_len > DatasetConstraints.FIELD_UI_SETTINGS_MAX_SIZE:
-                raise exc.DLValidationError(f"Field with ID {field_id} exceeds the maximum size of UI settings")
+                err_msg = f"Field with ID {field_id} exceeds the maximum size of UI settings"
+                raise exc.DLValidationFatal(err_msg)
             self.validate_overall_ui_settings_length(field_ui_settings_len=ui_settings_len)
 
         if action in (DatasetAction.update_field, DatasetAction.delete_field):

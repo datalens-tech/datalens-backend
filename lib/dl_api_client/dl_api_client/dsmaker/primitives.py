@@ -565,6 +565,7 @@ class _ResultField(ApiProxyObject):
     default_value: Optional[ParameterValue] = attr.ib(default=None)
     value_constraint: Optional[BaseParameterValueConstraint] = attr.ib(default=None)
     template_enabled: Optional[bool] = attr.ib(default=None)
+    ui_settings: str = attr.ib(default="")
 
     def set_name(self, name: str) -> None:
         if self.title is None:
