@@ -1,15 +1,14 @@
-from __future__ import annotations
-
 import asyncio
 import os
 import threading
 
 import flask
+import pytest
 
 from dl_api_commons.flask.middlewares.aio_event_loop_middleware import AIOEventLoopMiddleware
 
 
-def test_simulation(loop):
+def test_simulation(loop: asyncio.AbstractEventLoop) -> None:
     pre_test_count = 1000
     pre_test_ids = set()
     marker_attr_n = "_tainted_n"  # marker 'known new loop'
@@ -48,7 +47,7 @@ def test_simulation(loop):
         assert len(pre_test_ids) == pre_test_count, "did not get enough unique loops"
 
 
-def test_app(caplog, loop):
+def test_app(caplog: pytest.LogCaptureFixture) -> None:
     caplog.set_level("DEBUG")
     app = flask.Flask(__name__)
     AIOEventLoopMiddleware(debug=False).wrap_flask_app(app)
@@ -57,8 +56,8 @@ def test_app(caplog, loop):
     strict_id = False  # whether to consider id() as unique. Was supposed to be mostly so for small numbers.
 
     @app.route("/")
-    def home():
-        async def make_some_sleep():
+    def home() -> flask.Response:
+        async def make_some_sleep() -> None:
             await asyncio.sleep(0.0001)
 
         loop = asyncio.get_event_loop()
@@ -86,7 +85,7 @@ def test_app(caplog, loop):
         assert resp.status_code == 200
         resp_data = resp.json
         debug_data.append(resp_data)
-        event_loop_id_set.add(resp_data["event_loop_id"])
+        event_loop_id_set.add(resp_data["event_loop_id"])  # type: ignore
 
     if strict_id:
         assert len(event_loop_id_set) == rq_count, debug_data

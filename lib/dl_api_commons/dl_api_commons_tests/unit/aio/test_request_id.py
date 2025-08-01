@@ -35,12 +35,12 @@ _AppFactory = Callable[[_AppConfig], Awaitable[TestClient]]
 
 
 @pytest_asyncio.fixture(scope="function")
-async def app_factory(aiohttp_client) -> _AppFactory:
+async def app_factory(aiohttp_client: TestClient) -> _AppFactory:
     async def f(config: _AppConfig) -> TestClient:
-        async def not_streamed(_):
+        async def not_streamed(_: web.Request) -> web.Response:
             return web.json_response({})
 
-        async def streamed(request):
+        async def streamed(request: web.Request) -> web.StreamResponse:
             resp = web.StreamResponse()
             await resp.prepare(request)
             await resp.write_eof(b"ololo")
@@ -59,13 +59,13 @@ async def app_factory(aiohttp_client) -> _AppFactory:
         app.router.add_get("/streamed", streamed)
         for route, handler in config.extra_handlers.items():
             app.router.add_route("*", route, handler)
-        return await aiohttp_client(app)
+        return await aiohttp_client(app)  # type: ignore[operator]
 
     return f
 
 
 @pytest.mark.asyncio
-async def test_no_req_id(app_factory: _AppFactory):
+async def test_no_req_id(app_factory: _AppFactory) -> None:
     app = await app_factory(_AppConfig(RequestId()))
 
     async with app.get("/not_streamed") as resp:
@@ -85,7 +85,7 @@ async def test_no_req_id(app_factory: _AppFactory):
 
 
 @pytest.mark.asyncio
-async def test_req_id_from_client_no_append(app_factory: _AppFactory):
+async def test_req_id_from_client_no_append(app_factory: _AppFactory) -> None:
     app = await app_factory(_AppConfig(RequestId()))
     req_id = shortuuid.uuid()
 
@@ -95,7 +95,7 @@ async def test_req_id_from_client_no_append(app_factory: _AppFactory):
 
 
 @pytest.mark.asyncio
-async def test_req_id_from_client_append(app_factory: _AppFactory):
+async def test_req_id_from_client_append(app_factory: _AppFactory) -> None:
     app = await app_factory(_AppConfig(RequestId(append_own_req_id=True, app_prefix="sp")))
     req_id = shortuuid.uuid()
 
@@ -105,9 +105,10 @@ async def test_req_id_from_client_append(app_factory: _AppFactory):
 
 
 @pytest.mark.asyncio
-async def test_committed_rci(app_factory: _AppFactory):
+async def test_committed_rci(app_factory: _AppFactory) -> None:
     async def ensure_rci_committed_handler(request: web.Request) -> web.Response:
         dl_request = DLRequestBase.get_for_request(request)
+        assert dl_request is not None
         return web.json_response({"request_id": dl_request.rci.request_id})
 
     app = await app_factory(
@@ -128,9 +129,10 @@ async def test_committed_rci(app_factory: _AppFactory):
 
 
 @pytest.mark.asyncio
-async def test_uncommitted_committed_rci(app_factory: _AppFactory):
+async def test_uncommitted_committed_rci(app_factory: _AppFactory) -> None:
     async def ensure_rci_is_not_committed(request: web.Request) -> web.Response:
         dl_request = DLRequestBase.get_for_request(request)
+        assert dl_request is not None
         if dl_request.is_rci_committed():
             return web.json_response({}, status=500, reason="RCI is committed but it was not expected")
         else:
@@ -153,7 +155,7 @@ async def test_uncommitted_committed_rci(app_factory: _AppFactory):
 
 
 @pytest.mark.asyncio
-async def test_endpoint_code(app_factory: _AppFactory, caplog):
+async def test_endpoint_code(app_factory: _AppFactory, caplog: pytest.LogCaptureFixture) -> None:
     caplog.set_level("INFO")
 
     msg = "hello from dummy view"
@@ -161,12 +163,12 @@ async def test_endpoint_code(app_factory: _AppFactory, caplog):
     class SomeView(web.View):
         endpoint_code = "some_view_epc"
 
-        async def get(self):
+        async def get(self) -> web.Response:
             logging.getLogger().info(msg)
             return web.Response()
 
     class NoEpc(web.View):
-        async def get(self):
+        async def get(self) -> web.Response:
             logging.getLogger().info(msg)
             return web.Response()
 
@@ -185,7 +187,7 @@ async def test_endpoint_code(app_factory: _AppFactory, caplog):
         assert resp.status == 200, resp.reason
 
     log_rec = next(r for r in caplog.records if r.msg == msg)
-    assert log_rec.endpoint_code == SomeView.endpoint_code
+    assert log_rec.endpoint_code == SomeView.endpoint_code  # type: ignore[attr-defined]
 
     # Case 'no endpoint code (not our view)'
     caplog.clear()
@@ -193,11 +195,11 @@ async def test_endpoint_code(app_factory: _AppFactory, caplog):
         assert resp.status == 200, resp.reason
 
     log_rec = next(r for r in caplog.records if r.msg == msg)
-    assert log_rec.endpoint_code is None
+    assert log_rec.endpoint_code is None  # type: ignore[attr-defined]
 
 
 @pytest.mark.asyncio
-async def test_request_id(app_factory: _AppFactory, caplog):
+async def test_request_id(app_factory: _AppFactory, caplog: pytest.LogCaptureFixture) -> None:
     caplog.set_level("INFO")
 
     msg = "hello from dummy view"
@@ -206,18 +208,18 @@ async def test_request_id(app_factory: _AppFactory, caplog):
     class SomeView(web.View):
         endpoint_code = "some_view_epc"
 
-        async def get(self):
+        async def get(self) -> web.Response:
             logging.getLogger().info(msg)
             return web.Response()
 
     class ErrorView(web.View):
         endpoint_code = "error_view_epc"
 
-        async def get(self):
+        async def get(self) -> web.Response:
             logging.getLogger().info(err_msg)
             return web.Response(status=400)
 
-        async def post(self):
+        async def post(self) -> web.Response:
             logging.getLogger().info(err_msg)
             raise ValueError("Throwing exception on purpose cause I am evil")
 
@@ -234,8 +236,8 @@ async def test_request_id(app_factory: _AppFactory, caplog):
     async with app.get("/some_view", headers={"x-request-id": "some_req_id"}) as resp:
         assert resp.status == 200, resp.reason
     log_rec = next(r for r in caplog.records if r.msg == msg)
-    assert log_rec.request_id.startswith("some_req_id--sp.")
-    assert log_rec.parent_request_id == "some_req_id"
+    assert log_rec.request_id.startswith("some_req_id--sp.")  # type: ignore[attr-defined]
+    assert log_rec.parent_request_id == "some_req_id"  # type: ignore[attr-defined]
     log_rec = next(r for r in caplog.records if r.msg.startswith("Response"))
     assert log_rec.message == "Response. method: GET, path: /some_view, status: 200"
 
@@ -243,8 +245,8 @@ async def test_request_id(app_factory: _AppFactory, caplog):
     async with app.get("/error_view", headers={"x-request-id": "some_req_id"}) as resp:
         assert resp.status == 400, resp.reason
     log_rec = next(r for r in caplog.records if r.msg == err_msg)
-    assert log_rec.request_id.startswith("some_req_id--sp.")
-    assert log_rec.parent_request_id == "some_req_id"
+    assert log_rec.request_id.startswith("some_req_id--sp.")  # type: ignore[attr-defined]
+    assert log_rec.parent_request_id == "some_req_id"  # type: ignore[attr-defined]
     log_rec = next(r for r in caplog.records if r.msg.startswith("Response"))
     assert log_rec.message == "Response. method: GET, path: /error_view, status: 400"
 
@@ -252,7 +254,7 @@ async def test_request_id(app_factory: _AppFactory, caplog):
     async with app.post("/error_view", headers={"x-request-id": "some_req_id"}) as resp:
         assert resp.status == 500, resp.reason
     log_rec = next(r for r in caplog.records if r.msg == err_msg)
-    assert log_rec.request_id.startswith("some_req_id--sp.")
-    assert log_rec.parent_request_id == "some_req_id"
+    assert log_rec.request_id.startswith("some_req_id--sp.")  # type: ignore[attr-defined]
+    assert log_rec.parent_request_id == "some_req_id"  # type: ignore[attr-defined]
     log_rec = next(r for r in caplog.records if r.msg.startswith("Response"))
     assert log_rec.message == "Response. method: POST, path: /error_view, status: 500"

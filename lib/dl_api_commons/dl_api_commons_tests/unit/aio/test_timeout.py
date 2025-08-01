@@ -1,6 +1,7 @@
 import asyncio
 
 from aiohttp import web
+from aiohttp.test_utils import TestClient
 import pytest
 
 from dl_api_commons.aio.middlewares.error_handling_outer import (
@@ -26,7 +27,7 @@ class SleepingErrorHandler(AIOHTTPErrorHandler):
 
 
 @pytest.mark.asyncio
-async def test_request_bootstrap_timeout(aiohttp_client):
+async def test_request_bootstrap_timeout(aiohttp_client: TestClient) -> None:
     common_timeout = 0.5
 
     app = web.Application(
@@ -40,13 +41,13 @@ async def test_request_bootstrap_timeout(aiohttp_client):
     )
 
     class TestView(DLRequestView):
-        async def get(self):
+        async def get(self) -> web.Response:
             to_sleep = float(self.request.rel_url.query["time_to_sleep"])
             await asyncio.sleep(to_sleep)
             return web.json_response({})
 
     app.router.add_route("*", "/sleeping_view", TestView)
-    client = await aiohttp_client(app)
+    client = await aiohttp_client(app)  # type: ignore[operator]
 
     resp = await client.get("/sleeping_view", params={"time_to_sleep": common_timeout + 0.1})
     try:

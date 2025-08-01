@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import uuid
 
 import pytest
@@ -14,7 +12,10 @@ from dl_api_commons.reporting.models import (
     QueryExecutionStartReportingRecord,
 )
 from dl_api_commons.reporting.profiler import DefaultReportingProfiler
-from dl_api_commons.reporting.records import RequestResultReportingRecord
+from dl_api_commons.reporting.records import (
+    ReportingRecord,
+    RequestResultReportingRecord,
+)
 from dl_api_commons.reporting.registry import DefaultReportingRegistry
 from dl_constants.api_constants import DLContextKey
 from dl_constants.enums import (
@@ -208,8 +209,14 @@ _CHYT_REPORT_FIELDS_FROM_START = dict(
         ),
     ],
 )
-def test_db_query_report_generation(case_name, records_seq, expected_query_data, rci, caplog):
-    required_extras = (
+def test_db_query_report_generation(
+    case_name: str,
+    records_seq: tuple[ReportingRecord, ...],
+    expected_query_data: dict,
+    rci: RequestContextInfo,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    required_extras: tuple[str, ...] = (
         "event_code",
         "dataset_id",
         "user_id",
@@ -265,7 +272,7 @@ def test_db_query_report_generation(case_name, records_seq, expected_query_data,
     caplog.set_level("INFO")
     caplog.clear()
 
-    rep_profiler.flush_query_report(next(iter(records_seq)).query_id)
+    rep_profiler.flush_query_report(next(iter(records_seq)).query_id)  # type: ignore[attr-defined]
 
     report_log_records = [r for r in caplog.records if getattr(r, "event_code", None) == "profile_db_request"]
 

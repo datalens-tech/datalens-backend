@@ -1,6 +1,5 @@
-from __future__ import annotations
-
 import flask
+import pytest
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
@@ -9,7 +8,7 @@ from dl_api_commons.flask.middlewares.logging_context import RequestLoggingConte
 from dl_api_commons.flask.middlewares.request_id import RequestIDService
 
 
-def test_integration(caplog):
+def test_integration(caplog: pytest.LogCaptureFixture) -> None:
     caplog.set_level("DEBUG")
     caplog.clear()
     app = flask.Flask(__name__)
@@ -28,7 +27,7 @@ def test_integration(caplog):
     rci_lst = []
 
     @app.route("/test")
-    def test_connection():
+    def test_connection() -> flask.Response:
         rci_lst.append(ReqCtxInfoMiddleware.get_request_context_info())
         return flask.jsonify({})
 

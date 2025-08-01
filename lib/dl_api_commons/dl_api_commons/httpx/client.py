@@ -1,12 +1,14 @@
 import abc
 import contextlib
 import logging
-import ssl
 from types import TracebackType
 from typing import (
+    Any,
     AsyncGenerator,
+    Generic,
     Iterator,
     Protocol,
+    TypeVar,
 )
 from urllib.parse import urljoin
 
@@ -28,68 +30,85 @@ class AsyncHandler(Protocol):
         ...
 
 
-class BaseRetrier(abc.ABC):
-    @abc.abstractmethod
-    def retry_request(self, req_func: SyncHandler, request: httpx.Request) -> httpx.Response:
-        raise NotImplementedError()
-
-    @abc.abstractmethod
-    async def retry_request_async(self, req_func: AsyncHandler, request: httpx.Request) -> httpx.Response:
-        raise NotImplementedError()
-
-
-class NoRetriesRetrier(BaseRetrier):
-    def retry_request(self, req_func: SyncHandler, request: httpx.Request) -> httpx.Response:
-        return req_func(request)
-
-    async def retry_request_async(self, req_func: AsyncHandler, request: httpx.Request) -> httpx.Response:
-        return await req_func(request)
+THttpxClient = TypeVar("THttpxClient", httpx.Client, httpx.AsyncClient)
 
 
 @attrs.define(kw_only=True)
-class BIHttpxBaseClient:
+class BIHttpxClientSettings:
     base_url: str = attrs.field()
+    base_cookies: dict[str, str] = attrs.field(factory=dict)
+    base_headers: dict[str, str] = attrs.field(factory=dict)
 
-    cookies: dict[str, str] = attrs.field(factory=dict)
-    headers: dict[str, str] = attrs.field(factory=dict)
 
-    conn_timeout_sec: float = attrs.field(default=1.0)
-    read_timeout_sec: float = attrs.field(default=10.0)
-    write_timeout_sec: float = attrs.field(default=30.0)
+@attrs.define(kw_only=True)
+class BIHttpxBaseClient(Generic[THttpxClient], abc.ABC):
+    _settings: BIHttpxClientSettings
 
-    verify: str | bool | ssl.SSLContext = attrs.field(default=True)
+    _base_client: THttpxClient
 
-    raise_for_status: bool = attrs.field(default=True)
-
-    retrier: BaseRetrier = attrs.field(factory=NoRetriesRetrier)
-
-    def build_timeout(self) -> httpx.Timeout:
-        return httpx.Timeout(
-            connect=self.conn_timeout_sec,
-            read=self.read_timeout_sec,
-            write=self.write_timeout_sec,
-            pool=None,
+    @classmethod
+    def from_settings(cls, settings: BIHttpxClientSettings) -> Self:
+        return cls(
+            settings=settings,
+            base_client=cls._get_client(settings),
         )
 
-    def url(self, path: str) -> str:
-        return urljoin(self.base_url, path)
+    @classmethod
+    @abc.abstractmethod
+    def _get_client(cls, settings: BIHttpxClientSettings) -> THttpxClient:
+        ...
+
+    def _prepare_url(self, url: str) -> str:
+        return urljoin(self._settings.base_url, url)
+
+    def _prepare_headers(self, headers: dict[str, str] | None = None) -> dict[str, str]:
+        result = self._settings.base_headers.copy()
+        if headers:
+            result.update(headers)
+        return result
+
+    def _prepare_cookies(self, cookies: dict[str, str] | None = None) -> dict[str, str]:
+        result = self._settings.base_cookies.copy()
+        if cookies:
+            result.update(cookies)
+        return result
+
+    def prepare_request(
+        self,
+        method: str,
+        url: str,
+        headers: dict[str, str] | None = None,
+        cookies: dict[str, str] | None = None,
+        params: dict[str, str] | None = None,
+        json: Any = None,
+    ) -> httpx.Request:
+        return httpx.Request(
+            method=method,
+            url=self._prepare_url(url),
+            headers=self._prepare_headers(headers),
+            cookies=self._prepare_cookies(cookies),
+            params=params,
+            json=json,
+        )
+
+
+BIHttpxClientT = TypeVar("BIHttpxClientT", bound=BIHttpxBaseClient)
 
 
 @attrs.define(kw_only=True)
-class BIHttpxClient(BIHttpxBaseClient):
-    client: httpx.Client = attrs.field(init=False)
+class BIHttpxSyncClient(BIHttpxBaseClient[httpx.Client]):
+    _base_client: httpx.Client
 
-    def __attrs_post_init__(self) -> None:
-        self.client = httpx.Client(
-            base_url=self.base_url,
-            cookies=self.cookies,
-            headers=self.headers,
-            verify=self.verify,
-            timeout=self.build_timeout(),
+    @classmethod
+    def _get_client(cls, settings: BIHttpxClientSettings) -> httpx.Client:
+        return httpx.Client(
+            base_url=settings.base_url,
+            cookies=settings.base_cookies,
+            headers=settings.base_headers,
         )
 
     def close(self) -> None:
-        self.client.close()
+        self._base_client.close()
 
     def __enter__(self) -> Self:
         return self
@@ -104,31 +123,29 @@ class BIHttpxClient(BIHttpxBaseClient):
 
     @contextlib.contextmanager
     def send(self, request: httpx.Request) -> Iterator[httpx.Response]:
-        response = self.retrier.retry_request(self._send, request)
-        if self.raise_for_status:
-            response.raise_for_status()
+        response = self._send(request)
+        response.raise_for_status()
         yield response
         response.close()
 
     def _send(self, request: httpx.Request) -> httpx.Response:
-        return self.client.send(request=request)
+        return self._base_client.send(request=request)
 
 
 @attrs.define(kw_only=True)
-class BIHttpxAsyncClient(BIHttpxBaseClient):
-    client: httpx.AsyncClient = attrs.field(init=False)
+class BIHttpxAsyncClient(BIHttpxBaseClient[httpx.AsyncClient]):
+    _base_client: httpx.AsyncClient
 
-    def __attrs_post_init__(self) -> None:
-        self.client = httpx.AsyncClient(
-            base_url=self.base_url,
-            cookies=self.cookies,
-            headers=self.headers,
-            verify=self.verify,
-            timeout=self.build_timeout(),
+    @classmethod
+    def _get_client(cls, settings: BIHttpxClientSettings) -> httpx.AsyncClient:
+        return httpx.AsyncClient(
+            base_url=settings.base_url,
+            cookies=settings.base_cookies,
+            headers=settings.base_headers,
         )
 
     async def close(self) -> None:
-        await self.client.aclose()
+        await self._base_client.aclose()
 
     async def __aenter__(self) -> Self:
         return self
@@ -143,19 +160,19 @@ class BIHttpxAsyncClient(BIHttpxBaseClient):
 
     @contextlib.asynccontextmanager
     async def send(self, request: httpx.Request) -> AsyncGenerator[httpx.Response, None]:
-        response = await self.retrier.retry_request_async(self._send, request)
-        if self.raise_for_status:
-            response.raise_for_status()
+        response = await self._send(request)
+        response.raise_for_status()
         yield response
         await response.aclose()
 
     async def _send(self, request: httpx.Request) -> httpx.Response:
-        return await self.client.send(request=request)
+        return await self._base_client.send(request=request)
 
 
 __all__ = [
-    "BaseRetrier",
-    "NoRetriesRetrier",
-    "BIHttpxClient",
+    "BIHttpxBaseClient",
+    "BIHttpxSyncClient",
     "BIHttpxAsyncClient",
+    "BIHttpxClientSettings",
+    "BIHttpxClientT",
 ]

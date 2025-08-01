@@ -1,17 +1,14 @@
-from __future__ import annotations
-
 import asyncio
 from concurrent.futures.thread import ThreadPoolExecutor
-import inspect
 import logging
 import random
 import threading
 import time
 from typing import (
     Any,
+    AsyncGenerator,
     Callable,
     Generator,
-    Union,
 )
 
 import attr
@@ -26,39 +23,42 @@ from dl_api_commons.aio.async_wrapper_for_sync_generator import (
 
 
 @pytest.fixture()
-def service_tpe() -> ThreadPoolExecutor:
+def service_tpe() -> Generator[ThreadPoolExecutor, None, None]:
     tpe = ThreadPoolExecutor(thread_name_prefix="SERVICE_TPE_")
     yield tpe
     tpe.shutdown()
 
 
 @pytest.fixture()
-def worker_tpe() -> ThreadPoolExecutor:
+def worker_tpe() -> Generator[ThreadPoolExecutor, None, None]:
     tpe = ThreadPoolExecutor(thread_name_prefix="WORKER_TPE_")
     yield tpe
     tpe.shutdown()
 
 
 @pytest.fixture()
-def wrapper_factory(worker_tpe, service_tpe) -> Callable[[Generator], Job]:
-    @attr.s
+def wrapper_factory(
+    worker_tpe: ThreadPoolExecutor,
+    service_tpe: ThreadPoolExecutor,
+) -> Callable[[Callable[[], Generator[Any, None, None]]], Job]:
+    @attr.s(auto_attribs=True, kw_only=True)
     class MyGenerator(Job):
-        _generator: Union[Generator, Callable[[], Generator]] = attr.ib(default=None)
+        _generator: Callable[[], Generator[Any, None, None]]
 
-        def make_generator(self) -> Generator[Any, bool, None]:
-            if inspect.isgenerator(self._generator):
-                return self._generator
-            else:
-                return self._generator()
+        def make_generator(self) -> Generator[Any, None, None]:
+            return self._generator()
 
-    return lambda gen: MyGenerator(
-        service_tpe=service_tpe,
-        workers_tpe=worker_tpe,
-        generator=gen,
-    )
+    def wrapper(generator: Callable[[], Generator[Any, None, None]]) -> Job:
+        return MyGenerator(
+            generator=generator,
+            service_tpe=service_tpe,
+            workers_tpe=worker_tpe,
+        )
+
+    return wrapper
 
 
-async def async_gen_adapter(wr: Job):
+async def async_gen_adapter(wr: Job) -> AsyncGenerator[int, None]:
     await wr.run()
 
     while True:
@@ -69,15 +69,18 @@ async def async_gen_adapter(wr: Job):
 
 
 @pytest.mark.asyncio
-async def test_simple_finite_generator(wrapper_factory, caplog):
+async def test_simple_finite_generator(
+    wrapper_factory: Callable[[Callable[[], Generator[Any, None, None]]], Job],
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     caplog.set_level("DEBUG")
     count = int(1e3)
 
-    def test_generator():
+    def test_generator() -> Generator[Any, None, None]:
         for i in range(count):
             yield i
 
-    job = wrapper_factory(test_generator())
+    job = wrapper_factory(test_generator)
 
     result = []
     async for item in async_gen_adapter(job):
@@ -89,15 +92,18 @@ async def test_simple_finite_generator(wrapper_factory, caplog):
 
 
 @pytest.mark.asyncio
-async def test_error_in_start_generator(wrapper_factory, caplog):
+async def test_error_in_start_generator(
+    wrapper_factory: Callable[[Callable[[], Generator[Any, None, None]]], Job],
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     caplog.set_level("DEBUG")
 
-    def test_generator():
+    def test_generator() -> Generator[int, None, None]:
         raise ValueError("Error in generator")
         # noqa
         yield
 
-    job = wrapper_factory(test_generator())
+    job = wrapper_factory(test_generator)
     await job.run()
 
     with pytest.raises(ValueError, match=r"^Error in generator$"):
@@ -107,23 +113,26 @@ async def test_error_in_start_generator(wrapper_factory, caplog):
 
 
 @pytest.mark.asyncio
-async def test_error_in_generator_creation(wrapper_factory, caplog):
+async def test_error_in_generator_creation(
+    wrapper_factory: Callable[[Callable[[], Generator[Any, None, None]]], Job],
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     caplog.set_level("DEBUG")
 
     class MarkerException(Exception):
         pass
 
-    def broken_generator_factory():
+    def broken_generator_factory() -> Generator[int, None, None]:
         raise MarkerException
 
-    job = wrapper_factory(lambda: broken_generator_factory())
+    job = wrapper_factory(broken_generator_factory)
 
     with pytest.raises(MarkerException):
         await job.run()
 
 
 @pytest.mark.asyncio
-async def test_start_confirmation_timeout(caplog):
+async def test_start_confirmation_timeout(caplog: pytest.LogCaptureFixture) -> None:
     caplog.set_level("DEBUG")
 
     local_worker_tpe = ThreadPoolExecutor(max_workers=1)
@@ -131,7 +140,7 @@ async def test_start_confirmation_timeout(caplog):
 
     class LocalJob(Job):
         def make_generator(self) -> Generator[Any, None, None]:
-            def g():
+            def g() -> Generator[Any, None, None]:
                 yield None
 
             return g()
@@ -140,10 +149,10 @@ async def test_start_confirmation_timeout(caplog):
     garbage_started = asyncio.Event()
     stop_garbage = threading.Event()
 
-    def garbage():
+    def garbage() -> None:
         logging.info("Garbage thread was started")
 
-        def cb():
+        def cb() -> None:
             logging.info("Triggering event 'garbage_started'")
             garbage_started.set()
 
@@ -179,10 +188,13 @@ async def test_start_confirmation_timeout(caplog):
 
 
 @pytest.mark.asyncio
-async def test_closing_before_full_consuming(wrapper_factory, caplog):
+async def test_closing_before_full_consuming(
+    wrapper_factory: Callable[[Callable[[], Generator[Any, None, None]]], Job],
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     caplog.set_level("INFO")
 
-    def test_generator():
+    def test_generator() -> Generator[Any, None, None]:
         try:
             while True:
                 time.sleep(0.5)
@@ -190,7 +202,7 @@ async def test_closing_before_full_consuming(wrapper_factory, caplog):
         finally:
             logging.info("Generator was correctly closed")
 
-    job = wrapper_factory(test_generator())
+    job = wrapper_factory(test_generator)
     await job.run()
 
     await job.get_next()

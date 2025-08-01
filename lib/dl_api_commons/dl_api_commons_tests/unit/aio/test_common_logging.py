@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import logging
 import os
 from typing import Any
@@ -60,11 +58,11 @@ _INPUT_HEADERS = (
 )
 
 
-def test_headers_cleaning():
+def test_headers_cleaning() -> None:
     assert _EXPECTED_MASKED_HEADERS == RequestObfuscator().clean_secret_data_in_headers(_INPUT_HEADERS)
 
 
-def test_common_logging_request_start(caplog):
+def test_common_logging_request_start(caplog: pytest.LogCaptureFixture) -> None:
     caplog.set_level("INFO")
     caplog.clear()
     LOG_HELPER.log_request_start(
@@ -88,7 +86,7 @@ def test_common_logging_request_start(caplog):
     assert rec.message == expected_message
 
 
-def test_common_logging_request_end(caplog):
+def test_common_logging_request_end(caplog: pytest.LogCaptureFixture) -> None:
     caplog.set_level("INFO")
     caplog.clear()
     LOG_HELPER.log_request_end(
@@ -118,7 +116,7 @@ request_headers = (
 
 
 # TODO FIX: Request ID tests
-def test_common_logging_flask(caplog):
+def test_common_logging_flask(caplog: pytest.LogCaptureFixture) -> None:
     caplog.set_level("INFO")
     caplog.clear()
 
@@ -130,7 +128,7 @@ def test_common_logging_flask(caplog):
     RequestIDService(request_id_app_prefix=None).set_up(app)
 
     @app.route("/")
-    def home():
+    def home() -> flask.Response:
         return flask.jsonify({"msg": "Hello!"})
 
     client = app.test_client()
@@ -169,15 +167,15 @@ def test_common_logging_flask(caplog):
     assert expected_end_msg == records[1].message
 
     # Check that own request id was appended
-    internal_request_id = records[0].request_id
+    internal_request_id = records[0].request_id  # type: ignore
     assert internal_request_id and internal_request_id.startswith("parentreqid1234--")
 
-    parent_request_id = records[0].parent_request_id
+    parent_request_id = records[0].parent_request_id  # type: ignore
     assert parent_request_id and parent_request_id == "parentreqid1234"
 
 
 @pytest.mark.asyncio
-async def test_common_logging_aiohttp(caplog, aiohttp_client):
+async def test_common_logging_aiohttp(caplog: pytest.LogCaptureFixture, aiohttp_client: Any) -> None:
     caplog.set_level("INFO")
     caplog.clear()
 
@@ -189,7 +187,7 @@ async def test_common_logging_aiohttp(caplog, aiohttp_client):
         ]
     )
 
-    async def handle(_: web.Request):
+    async def handle(_: web.Request) -> web.Response:
         return web.json_response({})
 
     app.router.add_get("/", handle)
@@ -221,7 +219,7 @@ async def test_common_logging_aiohttp(caplog, aiohttp_client):
     assert expected_end_msg == req_id_records[1].message
 
     # Check that own request id was appended
-    internal_request_id = req_id_records[0].request_id
+    internal_request_id = req_id_records[0].request_id  # type: ignore
     assert internal_request_id and internal_request_id.startswith("parentreqid1234--")
 
 
@@ -261,6 +259,6 @@ async def test_common_logging_aiohttp(caplog, aiohttp_client):
         ),
     ),
 )
-def test_mask_sensitive_fields_by_name_recursive(source: dict[str, Any], expected_masked: dict[str, Any]):
+def test_mask_sensitive_fields_by_name_recursive(source: dict[str, Any], expected_masked: dict[str, Any]) -> None:
     actual_masked = RequestObfuscator().mask_sensitive_fields_by_name_in_json_recursive(source)
     assert actual_masked == expected_masked
