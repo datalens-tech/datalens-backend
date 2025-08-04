@@ -467,6 +467,25 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
         assert result_resp.status_code == http.HTTPStatus.BAD_REQUEST, result_resp.json
         assert result_resp.bi_status_code == "ERR.DS_API.SOURCE_CONFIG.CONNECTION_TEMPLATE_DISABLED"
 
+    def test_dataset_template_disabled(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ) -> None:
+        ds = saved_dataset
+        ds.template_enabled = False
+        ds = control_api.apply_updates(dataset=ds, fail_ok=True).dataset
+        ds = control_api.save_dataset(dataset=ds, fail_ok=True).dataset
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[ds.find_field(title=field_name) for field_name in self.field_names],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == http.HTTPStatus.BAD_REQUEST, result_resp.json
+        assert result_resp.bi_status_code in ("ERR.DS_API.DB.SOURCE_DOES_NOT_EXIST", "ERR.DS_API.DB.INVALID_QUERY")
+
     def test_parameter_template_disabled(
         self,
         control_api: SyncHttpDatasetApiV1,
