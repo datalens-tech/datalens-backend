@@ -38,6 +38,7 @@ class DBAdapterActionBaseSchema(BaseQEAPISchema):
 
     def load_dba_cls(self, value: str) -> Union[type[CommonBaseDirectAdapter]]:
         mod_name, cls_name = value.rsplit(".", 1) if "." in value else (None, value)
+        raise Exception(str(self.allowed_dba_classes))
         candidate = next(
             filter(
                 lambda clz: clz.__module__ == mod_name and clz.__qualname__ == cls_name or clz.__qualname__ == value,
