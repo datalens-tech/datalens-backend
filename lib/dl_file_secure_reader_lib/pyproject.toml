@@ -10,13 +10,13 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-aiohttp = ">=3.12.14"
-certifi = ">=2023.7.22"
-openpyxl = ">=3.0.10"
+aiohttp = "*"
+openpyxl = "*"
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
-pytest-asyncio = ">=0.20.3"
+pytest-asyncio = "*"
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

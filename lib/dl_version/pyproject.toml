@@ -13,7 +13,8 @@ readme = "README.md"
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
+pytest = "*"
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

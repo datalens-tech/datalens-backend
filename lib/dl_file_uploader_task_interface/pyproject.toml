@@ -10,11 +10,9 @@ readme = "README.rst"
 
 
 [tool.poetry.dependencies]
-arq = ">=0.25.0"
-attrs = ">=22.2.0"
+arq = "*"
+attrs = "*"
 python = ">=3.10, <3.13"
-# TODO FIX: Really depends. Realize how to break circular dependency
-# datalens-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 dl-api-commons = {path = "../dl_api_commons"}
 dl-utils = {path = "../dl_utils"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
@@ -26,11 +24,10 @@ dl-constants = {path = "../dl_constants"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 dl-s3 = {path = "../dl_s3"}
 
-[tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
-pytest-asyncio = ">=0.20.3"
-uwsgi = ">=2.0.23"
+pytest = "*"
+pytest-asyncio = "*"
+uwsgi = "*"
 dl-testing = {path = "../dl_testing"}
 dl-core = {path = "../dl_core"}
 

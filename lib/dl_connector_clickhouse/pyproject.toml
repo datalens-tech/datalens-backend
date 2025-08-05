@@ -10,14 +10,14 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
-marshmallow = ">=3.19.0"
+aiohttp = "*"
+attrs = "*"
+marshmallow = "*"
 python = ">=3.10, <3.13"
-requests = ">=2.28.2"
-shortuuid = ">=1.0.11"
-sqlalchemy = ">=1.4.46, <2.0"
-typing-extensions = ">=4.9.0"
+requests = "*"
+shortuuid = "*"
+sqlalchemy = "*"
+typing-extensions = "*"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 dl-api-commons = {path = "../dl_api_commons"}
@@ -37,8 +37,13 @@ dl-query-processing = {path = "../dl_query_processing"}
 dl-testing = {path = "../dl_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-pytest = ">=7.2.2"
-pytz = ">=2022.7.1"
+pytest = "*"
+pytz = "*"
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "dl-sqlalchemy-clickhouse",
+]
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
@@ -56,10 +61,9 @@ clickhouse = "dl_connector_clickhouse.formula.connector:ClickHouseFormulaConnect
 [tool.poetry.plugins."dl_formula_ref.plugins"]
 clickhouse = "dl_connector_clickhouse.formula_ref.plugin:ClickHouseFormulaRefPlugin"
 
-[tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
-frozendict = ">=2.3.8"
-pytest-asyncio = ">=0.20.3"
+frozendict = "*"
+pytest-asyncio = "*"
 dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 
 [build-system]

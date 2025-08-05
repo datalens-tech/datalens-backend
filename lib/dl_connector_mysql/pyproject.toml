@@ -10,12 +10,12 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-aiomysql = ">=0.1.1"
-attrs = ">=22.2.0"
-marshmallow = ">=3.19.0"
-pymysql = ">=1.1.1"
+aiomysql = "*"
+attrs = "*"
+marshmallow = "*"
+pymysql = "*"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-constants = {path = "../dl_constants"}
 dl-formula-ref = {path = "../dl_formula_ref"}
@@ -48,8 +48,8 @@ mysql = "dl_connector_mysql.formula_ref.plugin:MySQLFormulaRefPlugin"
 
 [tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
-pytest-asyncio = ">=0.20.3"
+pytest = "*"
+pytest-asyncio = "*"
 dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-testing = {path = "../dl_testing"}

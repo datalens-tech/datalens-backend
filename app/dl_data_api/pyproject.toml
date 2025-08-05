@@ -9,9 +9,10 @@ license = "Apache 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-aiohttp = ">=3.12.14"
 python = ">=3.10, <3.13"
-gunicorn = ">=21.2.0"
+aiohttp = "*"
+gunicorn = "*"
+httpx = "*"
 dl-version = {path = "../../lib/dl_version"}
 dl-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
 dl-utils = {path = "../../lib/dl_utils"}
@@ -37,8 +38,27 @@ dl-configs = {path = "../../lib/dl_configs"}
 dl-constants = {path = "../../lib/dl_constants"}
 dl-zitadel = {path = "../../lib/dl_zitadel", extras = ["aiohttp"]}
 dl-auth-native = {path = "../../lib/dl_auth_native", extras = ["aiohttp"]}
-httpx = ">=0.27.0"
 
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "gunicorn", # gunicorn is used in the Dockerfile
+  "dl-connector-postgresql",
+  "dl-connector-clickhouse",
+  "dl-connector-chyt",
+  "dl-connector-ydb",
+  "dl-connector-metrica",
+  "dl-connector-mysql",
+  "dl-connector-mssql",
+  "dl-connector-oracle",
+  "dl-connector-greenplum",
+  "dl-connector-trino",
+   # TODO check if it's needed
+  "dl-utils",
+  "dl-sqlalchemy-common",
+  "dl-sqlalchemy-postgres",
+  "dl-sqlalchemy-clickhouse",
+  "dl-model-tools",
+]
 
 [build-system]
 requires = ["poetry-core"]
@@ -48,8 +68,6 @@ build-backend = "poetry.core.masonry.api"
 minversion = "6.0"
 addopts = "-ra"
 testpaths = []
-
-
 
 [datalens_ci]
 skip_test = true

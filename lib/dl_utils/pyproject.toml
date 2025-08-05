@@ -9,8 +9,8 @@ license = "Apache 2.0"
 
 
 [tool.poetry.dependencies]
-async-timeout = ">=4.0.3"
-attrs = ">=22.2.0"
+async-timeout = "*"
+attrs = "*"
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]

@@ -10,10 +10,10 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-attrs = ">=22.2.0"
-pyodbc = ">=5.0.1"
+attrs = "*"
+pyodbc = "*"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-constants = {path = "../dl_constants"}
 dl-formula-ref = {path = "../dl_formula_ref"}
@@ -25,6 +25,11 @@ dl-api-connector = {path = "../dl_api_connector"}
 dl-core = {path = "../dl_core"}
 dl-db-testing = {path = "../dl_db_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "dl-sqlalchemy-mssql",
+]
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
@@ -42,12 +47,11 @@ mssql = "dl_connector_mssql.formula.connector:MSSQLFormulaConnector"
 [tool.poetry.plugins."dl_formula_ref.plugins"]
 mssql = "dl_connector_mssql.formula_ref.plugin:MSSQLFormulaRefPlugin"
 
-[tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
-aiohttp = ">=3.12.14"
-pytest = ">=7.2.2"
-pytest-asyncio = ">=0.20.3"
-pyodbc = ">=5.0.1"
+aiohttp = "*"
+pytest = "*"
+pytest-asyncio = "*"
+pyodbc = "*"
 dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-testing = {path = "../dl_testing"}

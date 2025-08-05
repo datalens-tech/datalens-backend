@@ -10,11 +10,17 @@ readme = "README.rst"
 
 
 [tool.poetry.dependencies]
-asyncpg = ">=0.29.0"
-psycopg2-binary = ">=2.9.9"
+asyncpg = "*"
+psycopg2-binary = "*"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "asyncpg",
+  "psycopg2-binary",
+]
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
 bi_postgresql = "dl_sqlalchemy_postgres.base:BIPGDialect"

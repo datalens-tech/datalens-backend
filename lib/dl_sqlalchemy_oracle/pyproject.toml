@@ -7,11 +7,10 @@ authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 packages = [{include = "dl_sqlalchemy_oracle"}]
 license = "Apache 2.0"
 
-
 [tool.poetry.dependencies]
-oracledb = ">=2.0.0"
+oracledb = "*"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 
 [tool.poetry.plugins."sqlalchemy.dialects"]

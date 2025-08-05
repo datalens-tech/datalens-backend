@@ -10,13 +10,13 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.13"
-attrs = ">=22.2.0"
-marshmallow = ">=3.19.0"
-trino = { extras = ["sqlalchemy"], version = ">=0.331.0, <0.332" }
-sqlalchemy = ">=1.4.46, <2.0"
+attrs = "*"
+marshmallow = "*"
+trino = { extras = ["sqlalchemy"], version = "*" }
+sqlalchemy = "*"
 dl-core = { path = "../dl_core" }
-requests = ">=2.28.2"
-typing_extensions = ">=4.9.0"
+requests = "*"
+typing_extensions = "*"
 dynamic-enum = {path = "../dynamic_enum"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-constants = {path = "../dl_constants"}
@@ -24,7 +24,6 @@ dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-api-commons = {path = "../dl_api_commons"}
-dl-utils = {path = "../dl_utils"}
 dl-i18n = {path = "../dl_i18n"}
 dl-configs = {path = "../dl_configs"}
 dl-api-connector = {path = "../dl_api_connector"}
@@ -48,8 +47,8 @@ trino = "dl_connector_trino.formula.connector:TrinoFormulaConnector"
 trino = "dl_connector_trino.formula_ref.plugin:TrinoFormulaRefPlugin"
 
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
-pytest-asyncio = ">=0.20.3"
+pytest = "*"
+pytest-asyncio = "*"
 dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 dl-api-client = {path = "../dl_api_client"}
 dl-core-testing = {path = "../dl_core_testing"}

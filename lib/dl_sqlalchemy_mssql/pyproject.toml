@@ -10,9 +10,9 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-pyodbc = ">=5.0.1"
+pyodbc = "*"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 
 [tool.poetry.plugins."sqlalchemy.dialects"]

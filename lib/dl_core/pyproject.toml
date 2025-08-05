@@ -10,34 +10,30 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-aiodns = ">=3.1.1"
-aiohttp = ">=3.12.14"
-anyascii = ">=0.3.2"
-pydantic = ">=2.7.0"
-frozendict = ">=2.3.8"
-arq = ">=0.25.0"
-attrs = ">=22.2.0"
-cryptography = ">=41.0.4"
-flask = ">=2.2.5"
-grpcio = ">=1.60.0"
-jaeger-client = ">=4.8.0"
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-multidict = ">=4.0"
-opentracing = ">=2.4.0"
-orjson = ">=3.9.15"
+aiodns = "*"
+aiohttp = "*"
+anyascii = "*"
+pydantic = "*"
+frozendict = "*"
+arq = "*"
+attrs = "*"
+cryptography = "*"
+flask = "*"
+jaeger-client = "*"
+marshmallow = "*"
+marshmallow-oneofschema = "*"
+multidict = "*"
+opentracing = "*"
+orjson = "*"
 python = ">=3.10, <3.13"
-python-dateutil = ">=2.8.2"
-pytz = ">=2022.7.1"
-redis = ">=5.0.1"
-requests = ">=2.28.2"
-shortuuid = ">=1.0.11"
-sqlalchemy = ">=1.4.46, <2.0"
-typing-extensions = ">=4.9.0"
-uwsgi = ">=2.0.23"
-werkzeug = ">=2.2.3"
-xxhash = ">=3.2.0"
-redis_cache_lock = {path = "../redis-cache-lock"}
+redis = "*"
+requests = "*"
+shortuuid = "*"
+sqlalchemy = "*"
+typing-extensions = "*"
+uwsgi = "*"
+werkzeug = "*"
+xxhash = "*"
 statcommons = {path = "../statcommons"}
 dl-api-commons = {path = "../dl_api_commons"}
 dl-utils = {path = "../dl_utils"}
@@ -58,9 +54,9 @@ dl-settings = {path = "../dl_settings"}
 DEP001 = ["uwsgidecorators"]
 
 [tool.poetry.group.tests.dependencies]
-flaky = "==3.8.1"
-pytest = ">=7.2.2"
-pytest-asyncio = ">=0.20.3"
+flaky = "*"
+pytest = "*"
+pytest-asyncio = "*"
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 dl-testing = {path = "../dl_testing"}
 dl-core-testing = {path = "../dl_core_testing"}

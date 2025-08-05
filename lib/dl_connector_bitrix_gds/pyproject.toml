@@ -8,10 +8,10 @@ license = "Apache 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-attrs = ">=22.2.0"
-marshmallow = ">=3.19.0"
-redis = ">=5.0.1"
-sqlalchemy = ">=1.4.46, <2.0"
+attrs = "*"
+marshmallow = "*"
+redis = "*"
+sqlalchemy = "*"
 python = ">=3.10, <3.13"
 redis_cache_lock = {path = "../redis-cache-lock"}
 dl-api-commons = {path = "../dl_api_commons"}
@@ -29,7 +29,6 @@ dl-formula = {path = "../dl_formula"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 
-[tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
 bitrix_gds = "dl_connector_bitrix_gds.api.connector:BitrixGDSApiConnector"
 
@@ -40,7 +39,7 @@ bitrix_gds = "dl_connector_bitrix_gds.core.connector:BitrixGDSCoreConnector"
 bitrix_gds = "dl_connector_bitrix_gds.formula.connector:BitrixGDSFormulaConnector"
 
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
+pytest = "*"
 dl-compeng-pg = {path = "../dl_compeng_pg"}
 
 [build-system]
