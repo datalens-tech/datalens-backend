@@ -170,7 +170,7 @@ class ConnectionFormFactory:
             else []
         )
 
-    def _get_from_params(self) -> FormConfigParams:
+    def _get_form_params(self) -> FormConfigParams:
         return self._form_params
 
     @abc.abstractmethod
