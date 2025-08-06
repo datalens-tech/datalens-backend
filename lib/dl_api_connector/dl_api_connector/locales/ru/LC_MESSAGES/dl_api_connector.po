@@ -113,3 +113,6 @@ msgstr "Выкл"
 
 msgid "value_data-export-forbidden-on"
 msgstr "Вкл"
+
+msgid "label_exports-history"
+msgstr "История экспортов"

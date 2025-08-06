@@ -164,6 +164,7 @@ class DefaultServicesRegistry(ServicesRegistry):
     _rqe_caches_settings: Optional[RQECachesSetting] = attr.ib(default=None)
     _required_services: set[RequiredService] = attr.ib(factory=set)
     _inst_specific_sr: Optional[InstallationSpecificServiceRegistry] = attr.ib(default=None)
+    _exports_history_url_path: Optional[str] = attr.ib(default=None)
 
     @_compute_executor.default  # noqa
     def _default_compute_executor(self) -> ComputeExecutor:
@@ -252,6 +253,9 @@ class DefaultServicesRegistry(ServicesRegistry):
         if isinstance(self._inst_specific_sr, issr_cls):
             return self._inst_specific_sr
         raise ValueError(f"Invalid ISST type: expected {issr_cls}, got {type(self._inst_specific_sr)}")
+
+    def get_exports_history_url_path(self) -> Optional[str]:
+        return self._exports_history_url_path
 
     def close(self) -> None:
         if self._conn_exec_factory is not None:

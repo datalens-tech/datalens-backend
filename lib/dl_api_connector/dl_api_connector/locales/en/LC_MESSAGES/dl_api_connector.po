@@ -114,3 +114,6 @@ msgstr "Off"
 
 msgid "value_data-export-forbidden-on"
 msgstr "On"
+
+msgid "label_exports-history"
+msgstr "Exports history"

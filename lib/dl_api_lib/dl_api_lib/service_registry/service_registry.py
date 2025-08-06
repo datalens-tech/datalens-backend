@@ -86,6 +86,10 @@ class ApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
     def get_typed_query_raw_processor_factory(self) -> TypedQueryRawProcessorFactory:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def get_exports_history_url_path(self) -> Optional[str]:
+        raise NotImplementedError
+
 
 @attr.s
 class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  # noqa
@@ -101,6 +105,7 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
     _pivot_transformer_factory: Optional[PivotTransformerFactory] = attr.ib(kw_only=True, default=None)
     _typed_query_processor_factory: TypedQueryProcessorFactory = attr.ib(kw_only=True)
     _typed_query_raw_processor_factory: TypedQueryRawProcessorFactory = attr.ib(kw_only=True)
+    _exports_history_url_path: Optional[str] = attr.ib(kw_only=True, default=None)
 
     _multi_query_mutator_factory_factory: SRMultiQueryMutatorFactory = attr.ib(
         init=False,
@@ -169,6 +174,9 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
 
     def get_typed_query_raw_processor_factory(self) -> TypedQueryRawProcessorFactory:
         return self._typed_query_raw_processor_factory
+
+    def get_exports_history_url_path(self) -> Optional[str]:
+        return self._exports_history_url_path
 
     def close(self) -> None:
         if self._formula_parser_factory is not None:
