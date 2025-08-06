@@ -9,10 +9,15 @@ license = "Apache 2.0"
 
 
 [tool.poetry.dependencies]
-pymysql = ">=1.1.1"
+pymysql = "*"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "pymysql",
+]
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
 dl_mysql = "dl_sqlalchemy_mysql.base:DLMYSQLDialect"

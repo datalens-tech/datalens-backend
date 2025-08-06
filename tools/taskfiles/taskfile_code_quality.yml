@@ -335,5 +335,5 @@ tasks:
         - |
           . $VENV_PATH/bin/activate
           cd /{{.TOML_DIR}}
-          deptry . --ignore DEP002 --exclude ".*test.*" {{.IGNORE_ERRORS}}
+          deptry . --exclude ".*tests" {{.IGNORE_ERRORS}}
     silent: true

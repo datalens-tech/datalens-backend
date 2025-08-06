@@ -11,8 +11,8 @@ readme = "README.rst"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.13"
-requests = ">=2.28.2"
-sqlalchemy = ">=1.4.46, <2.0"
+requests = "*"
+sqlalchemy = "*"
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
 bi_promql = "dl_sqlalchemy_promql.base:PromQLDialect"

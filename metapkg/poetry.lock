@@ -1415,11 +1415,11 @@ files = []
 develop = true
 
 [package.dependencies]
-clickhouse-driver = ">=0.2.6"
-dill = ">=0.3.6"
-pytz = ">=2022.7.1"
-requests = ">=2.28.2"
-sqlalchemy = ">=1.4.46, <2.0"
+clickhouse-driver = "*"
+dill = "*"
+pytz = "*"
+requests = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -1588,12 +1588,12 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-constants = {path = "../dl_constants"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-rls = {path = "../dl_rls"}
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
+marshmallow = "*"
+marshmallow-oneofschema = "*"
 
 [package.source]
 type = "directory"
@@ -1609,20 +1609,20 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
+aiohttp = "*"
+attrs = "*"
 dl-app-tools = {path = "../dl_app_tools"}
 dl-constants = {path = "../dl_constants"}
 dl-utils = {path = "../dl_utils"}
-flask = ">=2.2.5"
-httpx = ">=0.28.1"
-marshmallow = ">=3.19.0"
-multidict = ">=4.0"
-opentracing = ">=2.4.0"
-requests = ">=2.28.2"
-sentry-sdk = {version = ">=1.15.0", extras = ["flask"]}
-typing-extensions = ">=4.9.0"
-werkzeug = ">=2.2.3"
+flask = "*"
+httpx = "*"
+marshmallow = "*"
+multidict = "*"
+opentracing = "*"
+requests = "*"
+sentry-sdk = {version = "*", extras = ["flask"]}
+typing-extensions = "*"
+werkzeug = "*"
 
 [package.source]
 type = "directory"
@@ -1638,7 +1638,7 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
@@ -1649,8 +1649,8 @@ dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dynamic-enum = {path = "../dynamic_enum"}
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
+marshmallow = "*"
+marshmallow-oneofschema = "*"
 
 [package.source]
 type = "directory"
@@ -1666,8 +1666,8 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
+aiohttp = "*"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
@@ -1689,17 +1689,16 @@ dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 dynamic-enum = {path = "../dynamic_enum"}
-flask = ">=2.2.5"
-flask-marshmallow = ">=1.1.0"
-flask-restx = ">=1.1.0"
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-pydantic = ">=2.7.0"
-pydantic-settings = ">=2.2.1"
-requests = ">=2.28.2"
+flask = "*"
+flask-marshmallow = "*"
+flask-restx = "*"
+marshmallow = "*"
+marshmallow-oneofschema = "*"
+pydantic = "*"
+requests = "*"
 statcommons = {path = "../statcommons"}
-typing-extensions = ">=4.9.0"
-werkzeug = ">=2.2.3"
+typing-extensions = "*"
+werkzeug = "*"
 
 [package.source]
 type = "directory"
@@ -1715,8 +1714,8 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
+aiohttp = "*"
+attrs = "*"
 dl-api-client = {path = "../dl_api_client"}
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
@@ -1733,9 +1732,10 @@ dl-query-processing = {path = "../dl_query_processing"}
 dl-rls = {path = "../dl_rls"}
 dl-testing = {path = "../dl_testing"}
 dl-utils = {path = "../dl_utils"}
-flask = ">=2.2.5"
-pytest = ">=7.2.2"
-werkzeug = ">=2.2.3"
+flask = "*"
+pytest = "*"
+sqlalchemy = "*"
+werkzeug = "*"
 
 [package.source]
 type = "directory"
@@ -1751,10 +1751,10 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-utils = {path = "../dl_utils"}
-opentracing = ">=2.4.0"
-six = ">=1.9.0"
+opentracing = "*"
+six = "*"
 
 [package.source]
 type = "directory"
@@ -1770,11 +1770,11 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-model-tools = {path = "../dl_model_tools"}
 dynamic-enum = {path = "../dynamic_enum"}
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
+marshmallow = "*"
+marshmallow-oneofschema = "*"
 
 [package.source]
 type = "directory"
@@ -1790,9 +1790,9 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-attrs-model-mapper = {path = "../dl_attrs_model_mapper"}
-pyyaml = ">=5.3.1"
+pyyaml = "*"
 
 [package.source]
 type = "directory"
@@ -1808,16 +1808,15 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
+aiohttp = "*"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-settings = {path = "../dl_settings"}
-marshmallow = ">=3.19.0"
-pydantic = ">=2.7.0"
-pydantic-settings = ">=2.2.0 <2.3.4"
-typing-extensions = ">=4.9.0"
+marshmallow = "*"
+pydantic = "*"
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -1833,19 +1832,19 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = {version = ">=3.12.14", optional = true}
-attrs = ">=22.2.0"
+aiohttp = {version = "*", optional = true}
+attrs = "*"
 dl-api-commons = {path = "../../lib/dl_api_commons"}
 dl-constants = {path = "../../lib/dl_constants"}
-flask = {version = ">=2.2.5", optional = true}
-pydantic = ">=2.7.0"
-pyjwt = ">=2.4.0"
-typing-extensions = ">=4.9.0"
-werkzeug = ">=2.2.3"
+flask = {version = "*", optional = true}
+pydantic = "*"
+pyjwt = "*"
+typing-extensions = "*"
+werkzeug = "*"
 
 [package.extras]
-aiohttp = ["aiohttp (>=3.12.14)"]
-flask = ["flask (>=2.2.5)"]
+aiohttp = ["aiohttp"]
+flask = ["flask"]
 
 [package.source]
 type = "directory"
@@ -1861,15 +1860,14 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-app-tools = {path = "../dl_app_tools"}
 dl-constants = {path = "../dl_constants"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-utils = {path = "../dl_utils"}
-lz4 = "==4.3.2"
-redis = "==5.0.1"
+lz4 = "*"
 redis_cache_lock = {path = "../redis-cache-lock"}
-typing-extensions = ">=4.9.0"
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -1885,9 +1883,9 @@ files = []
 develop = true
 
 [package.dependencies]
-aiopg = ">=1.4.0"
-asyncpg = ">=0.29.0"
-attrs = ">=22.2.0"
+aiopg = "*"
+asyncpg = "*"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-cache-engine = {path = "../dl_cache_engine"}
 dl-connector-postgresql = {path = "../dl_connector_postgresql"}
@@ -1896,7 +1894,7 @@ dl-core = {path = "../dl_core"}
 dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -1912,14 +1910,14 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
-cryptography = ">=41.0.4"
+attrs = "*"
+cryptography = "*"
 dl-constants = {path = "../dl_constants"}
 dl-utils = {path = "../dl_utils"}
 dynamic-enum = {path = "../dynamic_enum"}
-pyyaml = ">=6.0.1"
-typeguard = ">=4.1.5"
-typing-extensions = ">=4.9.0"
+pyyaml = "*"
+typeguard = "*"
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -1935,7 +1933,7 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-configs = {path = "../dl_configs"}
@@ -1948,15 +1946,15 @@ dl-model-tools = {path = "../dl_model_tools"}
 dl-testing = {path = "../dl_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-google-api-core = ">=2.15.0"
-google-auth = ">=2.21.0"
-google-cloud-bigquery = "==3.14.1"
-google-cloud-bigquery-storage = {version = "==2.24.0", extras = ["pyarrow"]}
-google-cloud-core = "==2.4.1"
-google-resumable-media = "==2.5.0"
-marshmallow = ">=3.19.0"
-sqlalchemy = ">=1.4.46, <2.0"
-sqlalchemy-bigquery = "==1.9.0"
+google-api-core = "*"
+google-auth = "*"
+google-cloud-bigquery = "*"
+google-cloud-bigquery-storage = {version = "*", extras = ["pyarrow"]}
+google-cloud-core = "*"
+google-resumable-media = "*"
+marshmallow = "*"
+sqlalchemy = "*"
+sqlalchemy-bigquery = "*"
 
 [package.source]
 type = "directory"
@@ -1972,7 +1970,7 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
@@ -1987,10 +1985,10 @@ dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-bitrix = {path = "../dl_sqlalchemy_bitrix"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-marshmallow = ">=3.19.0"
-redis = ">=5.0.1"
+marshmallow = "*"
+redis = "*"
 redis_cache_lock = {path = "../redis-cache-lock"}
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -2006,8 +2004,8 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
+aiohttp = "*"
+attrs = "*"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
@@ -2019,17 +2017,14 @@ dl-core-testing = {path = "../dl_core_testing"}
 dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
 dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
-dl-formula-testing = {path = "../dl_formula_testing"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-testing = {path = "../dl_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-marshmallow = ">=3.19.0"
-pytest = ">=7.2.2"
-sqlalchemy = ">=1.4.46, <2.0"
-xxhash = ">=3.2.0"
+marshmallow = "*"
+xxhash = "*"
 
 [package.source]
 type = "directory"
@@ -2045,8 +2040,8 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
+aiohttp = "*"
+attrs = "*"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
@@ -2059,8 +2054,8 @@ dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-marshmallow = ">=3.19.0"
-sqlalchemy = ">=1.4.46, <2.0"
+marshmallow = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -2076,8 +2071,8 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
+aiohttp = "*"
+attrs = "*"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
@@ -2097,13 +2092,13 @@ dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 dl-testing = {path = "../dl_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-marshmallow = ">=3.19.0"
-pytest = ">=7.2.2"
-pytz = ">=2022.7.1"
-requests = ">=2.28.2"
-shortuuid = ">=1.0.11"
-sqlalchemy = ">=1.4.46, <2.0"
-typing-extensions = ">=4.9.0"
+marshmallow = "*"
+pytest = "*"
+pytz = "*"
+requests = "*"
+shortuuid = "*"
+sqlalchemy = "*"
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2119,8 +2114,8 @@ files = []
 develop = true
 
 [package.dependencies]
-asyncpg = ">=0.29.0"
-attrs = ">=22.2.0"
+asyncpg = "*"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-configs = {path = "../dl_configs"}
@@ -2128,8 +2123,7 @@ dl-connector-postgresql = {path = "../dl_connector_postgresql"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-i18n = {path = "../dl_i18n"}
-dl-type-transformer = {path = "../dl_type_transformer"}
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -2145,7 +2139,7 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-api-lib = {path = "../dl_api_lib"}
@@ -2161,8 +2155,8 @@ dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-metrica-api = {path = "../dl_sqlalchemy_metrica_api"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-marshmallow = ">=3.19.0"
-sqlalchemy = ">=1.4.46, <2.0"
+marshmallow = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -2178,7 +2172,7 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-configs = {path = "../dl_configs"}
@@ -2190,8 +2184,8 @@ dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-pyodbc = ">=5.0.1"
-sqlalchemy = ">=1.4.46, <2.0"
+pyodbc = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -2207,8 +2201,8 @@ files = []
 develop = true
 
 [package.dependencies]
-aiomysql = ">=0.1.1"
-attrs = ">=22.2.0"
+aiomysql = "*"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
@@ -2222,9 +2216,9 @@ dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-marshmallow = ">=3.19.0"
-pymysql = ">=1.1.1"
-sqlalchemy = ">=1.4.46, <2.0"
+marshmallow = "*"
+pymysql = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -2240,7 +2234,7 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-configs = {path = "../dl_configs"}
@@ -2253,9 +2247,9 @@ dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-marshmallow = ">=3.19.0"
-oracledb = ">=2.0.0"
-sqlalchemy = ">=1.4.46, <2.0"
+marshmallow = "*"
+oracledb = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -2271,8 +2265,8 @@ files = []
 develop = true
 
 [package.dependencies]
-asyncpg = ">=0.29.0"
-attrs = ">=22.2.0"
+asyncpg = "*"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
@@ -2287,11 +2281,11 @@ dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-marshmallow = ">=3.19.0"
-psycopg2-binary = ">=2.9.9"
-python-dateutil = ">=2.8.2"
-sqlalchemy = ">=1.4.46, <2.0"
-typing-extensions = ">=4.9.0"
+marshmallow = "*"
+psycopg2-binary = "*"
+python-dateutil = "*"
+sqlalchemy = "*"
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2307,8 +2301,8 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
+aiohttp = "*"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
@@ -2319,8 +2313,8 @@ dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-promql = {path = "../dl_sqlalchemy_promql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-marshmallow = ">=3.19.0"
-sqlalchemy = ">=1.4.46, <2.0"
+marshmallow = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -2336,7 +2330,7 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-configs = {path = "../dl_configs"}
@@ -2349,11 +2343,11 @@ dl-model-tools = {path = "../dl_model_tools"}
 dl-testing = {path = "../dl_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-marshmallow = ">=3.19.0"
-requests = ">=2.28.2"
-snowflake-connector-python = ">=3.13.1"
-snowflake-sqlalchemy = ">=1.5.1"
-sqlalchemy = ">=1.4.46, <2.0"
+marshmallow = "*"
+requests = "*"
+snowflake-connector-python = "*"
+snowflake-sqlalchemy = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -2369,7 +2363,7 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-configs = {path = "../dl_configs"}
@@ -2382,13 +2376,12 @@ dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-dl-utils = {path = "../dl_utils"}
 dynamic-enum = {path = "../dynamic_enum"}
-marshmallow = ">=3.19.0"
-requests = ">=2.28.2"
-sqlalchemy = ">=1.4.46, <2.0"
-trino = {version = ">=0.331.0, <0.332", extras = ["sqlalchemy"]}
-typing_extensions = ">=4.9.0"
+marshmallow = "*"
+requests = "*"
+sqlalchemy = "*"
+trino = {version = "*", extras = ["sqlalchemy"]}
+typing_extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2404,13 +2397,12 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
-dl-core-testing = {path = "../dl_core_testing"}
 dl-db-testing = {path = "../dl_db_testing"}
 dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
@@ -2418,11 +2410,12 @@ dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-grpcio = ">=1.60.0"
-marshmallow = ">=3.19.0"
-sqlalchemy = ">=1.4.46, <2.0"
-typing-extensions = ">=4.9.0"
-ydb = ">=3.5.1"
+grpcio = "*"
+marshmallow = "*"
+shortuuid = "*"
+sqlalchemy = "*"
+typing-extensions = "*"
+ydb = "*"
 
 [package.source]
 type = "directory"
@@ -2439,7 +2432,7 @@ develop = true
 
 [package.dependencies]
 dynamic-enum = {path = "../dynamic_enum"}
-typing-extensions = ">=4.9.0"
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2480,8 +2473,8 @@ dl-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
 dl-utils = {path = "../../lib/dl_utils"}
 dl-version = {path = "../../lib/dl_version"}
 dl-zitadel = {path = "../../lib/dl_zitadel", extras = ["flask"]}
-Flask = ">=2.2.5"
-httpx = ">=0.27.0"
+flask = "*"
+httpx = "*"
 
 [package.source]
 type = "directory"
@@ -2497,12 +2490,12 @@ files = []
 develop = true
 
 [package.dependencies]
-aiodns = ">=3.1.1"
-aiohttp = ">=3.12.14"
-anyascii = ">=0.3.2"
-arq = ">=0.25.0"
-attrs = ">=22.2.0"
-cryptography = ">=41.0.4"
+aiodns = "*"
+aiohttp = "*"
+anyascii = "*"
+arq = "*"
+attrs = "*"
+cryptography = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-app-tools = {path = "../dl_app_tools"}
 dl-cache-engine = {path = "../dl_cache_engine"}
@@ -2517,26 +2510,24 @@ dl-settings = {path = "../dl_settings"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-flask = ">=2.2.5"
-grpcio = ">=1.60.0"
-jaeger-client = ">=4.8.0"
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-multidict = ">=4.0"
-opentracing = ">=2.4.0"
-orjson = ">=3.9.15"
-python-dateutil = ">=2.8.2"
-pytz = ">=2022.7.1"
-redis = ">=5.0.1"
-redis_cache_lock = {path = "../redis-cache-lock"}
-requests = ">=2.28.2"
-shortuuid = ">=1.0.11"
-sqlalchemy = ">=1.4.46, <2.0"
+flask = "*"
+frozendict = "*"
+jaeger-client = "*"
+marshmallow = "*"
+marshmallow-oneofschema = "*"
+multidict = "*"
+opentracing = "*"
+orjson = "*"
+pydantic = "*"
+redis = "*"
+requests = "*"
+shortuuid = "*"
+sqlalchemy = "*"
 statcommons = {path = "../statcommons"}
-typing-extensions = ">=4.9.0"
-uwsgi = ">=2.0.23"
-werkzeug = ">=2.2.3"
-xxhash = ">=3.2.0"
+typing-extensions = "*"
+uwsgi = "*"
+werkzeug = "*"
+xxhash = "*"
 
 [package.source]
 type = "directory"
@@ -2552,27 +2543,33 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
+aiohttp = "*"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
-dl-app-tools = {path = "../dl_app_tools"}
+dl-cache-engine = {path = "../dl_cache_engine"}
+dl-compeng-pg = {path = "../dl_compeng_pg"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
+dl-dashsql = {path = "../dl_dashsql"}
 dl-db-testing = {path = "../dl_db_testing"}
 dl-testing = {path = "../dl_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-Flask = ">=2.2.5"
-marshmallow = ">=3.19.0"
-psycopg2-binary = ">=2.9.9"
-pytest = ">=7.2.2"
-requests = ">=2.28.2"
-shortuuid = ">=1.0.11"
-sqlalchemy = ">=1.4.46, <2.0"
+docker = "*"
+Flask = "*"
+marshmallow = "*"
+psycopg2-binary = "*"
+pytest = "*"
+pytest-asyncio = "*"
+redis = "*"
+requests = "*"
+shortuuid = "*"
+sqlalchemy = "*"
 statcommons = {path = "../statcommons"}
-uwsgi = ">=2.0.23"
-Werkzeug = ">=2.2.3"
+typing-extensions = "*"
+uwsgi = "*"
+Werkzeug = "*"
 
 [package.source]
 type = "directory"
@@ -2588,13 +2585,13 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-cache-engine = {path = "../dl_cache_engine"}
 dl-constants = {path = "../../lib/dl_constants"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-utils = {path = "../dl_utils"}
-marshmallow = ">=3.19.0"
-sqlalchemy = ">=1.4.46, <2.0"
+marshmallow = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -2610,7 +2607,7 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = ">=3.12.14"
+aiohttp = "*"
 dl-api-commons = {path = "../../lib/dl_api_commons"}
 dl-api-lib = {path = "../../lib/dl_api_lib"}
 dl-app-tools = {path = "../../lib/dl_app_tools"}
@@ -2636,8 +2633,8 @@ dl-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
 dl-utils = {path = "../../lib/dl_utils"}
 dl-version = {path = "../../lib/dl_version"}
 dl-zitadel = {path = "../../lib/dl_zitadel", extras = ["aiohttp"]}
-gunicorn = ">=21.2.0"
-httpx = ">=0.27.0"
+gunicorn = "*"
+httpx = "*"
 
 [package.source]
 type = "directory"
@@ -2653,10 +2650,12 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
-frozendict = ">=2.3.8"
-shortuuid = ">=1.0.11"
-sqlalchemy = ">=1.4.46, <2.0"
+attrs = "*"
+dl-testing = {path = "../dl_testing"}
+dl-utils = {path = "../dl_utils"}
+frozendict = "*"
+shortuuid = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -2672,9 +2671,8 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = ">=3.12.14"
-certifi = ">=2023.7.22"
-openpyxl = ">=3.0.10"
+aiohttp = "*"
+openpyxl = "*"
 
 [package.source]
 type = "directory"
@@ -2690,10 +2688,9 @@ files = []
 develop = true
 
 [package.dependencies]
-aiogoogle = ">=5.2.0"
-aiohttp = ">=3.12.14"
-arq = ">=0.25.0"
-attrs = ">=22.2.0"
+aiogoogle = "*"
+aiohttp = "*"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-configs = {path = "../dl_configs"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
@@ -2704,10 +2701,9 @@ dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
 dl-s3 = {path = "../dl_s3"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-gunicorn = ">=21.2.0"
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-redis = ">=5.0.1"
+marshmallow = "*"
+marshmallow-oneofschema = "*"
+redis = "*"
 
 [package.source]
 type = "directory"
@@ -2723,9 +2719,9 @@ files = []
 develop = true
 
 [package.dependencies]
-aiogoogle = ">=5.2.0"
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
+aiogoogle = "*"
+aiohttp = "*"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-configs = {path = "../dl_configs"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
@@ -2733,12 +2729,11 @@ dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-s3 = {path = "../dl_s3"}
 dl-settings = {path = "../dl_settings"}
-dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-redis = ">=5.0.1"
-yarl = ">=1.9.4"
+marshmallow = "*"
+marshmallow-oneofschema = "*"
+redis = "*"
+yarl = "*"
 
 [package.source]
 type = "directory"
@@ -2754,8 +2749,8 @@ files = []
 develop = true
 
 [package.dependencies]
-arq = ">=0.25.0"
-attrs = ">=22.2.0"
+arq = "*"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-configs = {path = "../dl_configs"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
@@ -2781,11 +2776,11 @@ files = []
 develop = true
 
 [package.dependencies]
-aiogoogle = ">=5.2.0"
-aiohttp = ">=3.12.14"
-arq = ">=0.25.0"
-attrs = ">=22.2.0"
-botocore = ">=1.36.0,<1.36.4"
+aiogoogle = "*"
+aiohttp = "*"
+arq = "*"
+attrs = "*"
+botocore = "*"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-api-commons = {path = "../dl_api_commons"}
 dl-app-tools = {path = "../dl_app_tools"}
@@ -2800,9 +2795,10 @@ dl-s3 = {path = "../dl_s3"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-faust-cchardet = ">=2.1.19"
-redis = ">=5.0.1"
-shortuuid = ">=1.0.11"
+faust-cchardet = "*"
+pydantic = "*"
+redis = "*"
+shortuuid = "*"
 
 [package.source]
 type = "directory"
@@ -2818,15 +2814,14 @@ files = []
 develop = true
 
 [package.dependencies]
-antlr4-python3-runtime = ">=4.11.1"
-attrs = ">=22.2.0"
-ciso8601 = ">=2.2.0"
+antlr4-python3-runtime = "*"
+attrs = "*"
+ciso8601 = "*"
 dl-utils = {path = "../dl_utils"}
 dynamic-enum = {path = "../dynamic_enum"}
-graphviz = ">=0.17"
-jinja2 = ">=3.1.2"
-pytz = ">=2022.7.1"
-sqlalchemy = ">=1.4.46, <2.0"
+graphviz = "*"
+pytz = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -2842,17 +2837,17 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-db-testing = {path = "../dl_db_testing"}
 dl-formula = {path = "../dl_formula"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-i18n = {path = "../dl_i18n"}
 dl-utils = {path = "../dl_utils"}
 dynamic-enum = {path = "../dynamic_enum"}
-jinja2 = ">=3.1.2"
-sqlalchemy = ">=1.4.46, <2.0"
-tabulate = ">=0.9.0"
-typing-extensions = ">=4.9.0"
+jinja2 = "*"
+sqlalchemy = "*"
+tabulate = "*"
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2868,7 +2863,15 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-testing = {path = "../dl_testing"}
+dl-utils = {path = "../dl_utils"}
+pytest = "*"
+python-dateutil = "*"
+pytz = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -2884,7 +2887,7 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 
 [package.source]
 type = "directory"
@@ -2900,7 +2903,7 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-lib = {path = "../dl_api_lib"}
 dl-app-tools = {path = "../dl_app_tools"}
@@ -2911,10 +2914,10 @@ dl-model-tools = {path = "../dl_model_tools"}
 dl-pivot = {path = "../dl_pivot"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-utils = {path = "../dl_utils"}
-pygments = ">=2.4.0"
-pyyaml = ">=5.3.1"
-shortuuid = ">=1.0.11"
-tabulate = ">=0.9.0"
+pygments = "*"
+pyyaml = "*"
+shortuuid = "*"
+tabulate = "*"
 
 [package.source]
 type = "directory"
@@ -2930,13 +2933,13 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-constants = {path = "../dl_constants"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dynamic-enum = {path = "../dynamic_enum"}
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-msgpack = ">=1.1.0"
+marshmallow = "*"
+marshmallow-oneofschema = "*"
+msgpack = "*"
 
 [package.source]
 type = "directory"
@@ -2950,9 +2953,6 @@ optional = false
 python-versions = ">=3.10, <3.13"
 files = []
 develop = true
-
-[package.dependencies]
-attrs = ">=22.2.0"
 
 [package.source]
 type = "directory"
@@ -2968,11 +2968,11 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-constants = {path = "../dl_constants"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-utils = {path = "../dl_utils"}
-typing-extensions = ">=4.9.0"
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2988,11 +2988,11 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-constants = {path = "../dl_constants"}
 dl-pivot = {path = "../dl_pivot"}
 dl-query-processing = {path = "../dl_query_processing"}
-pandas = ">=2.0.3"
+pandas = "*"
 
 [package.source]
 type = "directory"
@@ -3008,15 +3008,15 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
-ciso8601 = ">=2.2.0"
+attrs = "*"
+ciso8601 = "*"
 dl-app-tools = {path = "../dl_app_tools"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-formula = {path = "../dl_formula"}
 dl-utils = {path = "../dl_utils"}
-pytz = ">=2022.7.1"
-typing-extensions = ">=4.9.0"
+pytz = "*"
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -3032,15 +3032,14 @@ files = []
 develop = false
 
 [package.dependencies]
-aiohttp = {version = ">=3.12.14", optional = true}
-attrs = ">=22.2.0"
-dl-api-commons = {path = "../dl_api_commons"}
-flask = {version = ">=2.2.5", optional = true}
-redis = ">=5.0.1"
+aiohttp = {version = "*", optional = true}
+attrs = "*"
+flask = {version = "*", optional = true}
+redis = "*"
 
 [package.extras]
-aiohttp = ["aiohttp (>=3.12.14)"]
-flask = ["flask (>=2.2.5)"]
+aiohttp = ["aiohttp"]
+flask = ["flask"]
 
 [package.source]
 type = "directory"
@@ -3056,10 +3055,10 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-constants = {path = "../../lib/dl_constants"}
-marshmallow = ">=3.19.0"
+marshmallow = "*"
 
 [package.source]
 type = "directory"
@@ -3075,14 +3074,14 @@ files = []
 develop = true
 
 [package.dependencies]
-aiobotocore = ">=2.19.0"
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
-boto3 = ">=1.36.3"
-botocore = ">=1.36.3"
+aiobotocore = "*"
+aiohttp = "*"
+attrs = "*"
+boto3 = "*"
+botocore = "*"
 dl-constants = {path = "../dl_constants"}
-typing_extensions = ">=4.1.0"
-ujson = ">=1.35"
+typing_extensions = "*"
+ujson = "*"
 
 [package.source]
 type = "directory"
@@ -3098,9 +3097,8 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
-pydantic = ">=2.7.0"
-pydantic-settings = ">=2.2.0"
+pydantic = "*"
+pydantic-settings = "*"
 
 [package.source]
 type = "directory"
@@ -3116,7 +3114,7 @@ files = []
 develop = true
 
 [package.dependencies]
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -3135,7 +3133,7 @@ develop = true
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -3153,7 +3151,7 @@ develop = true
 [package.dependencies]
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -3169,7 +3167,7 @@ files = []
 develop = true
 
 [package.dependencies]
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -3185,9 +3183,9 @@ files = []
 develop = true
 
 [package.dependencies]
-python-dateutil = ">=2.8.2"
-requests = ">=2.28.2"
-SQLAlchemy = ">=1.4.46, <2.0"
+python-dateutil = "*"
+requests = "*"
+SQLAlchemy = "*"
 
 [package.source]
 type = "directory"
@@ -3204,8 +3202,8 @@ develop = true
 
 [package.dependencies]
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
-pyodbc = ">=5.0.1"
-sqlalchemy = ">=1.4.46, <2.0"
+pyodbc = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -3222,8 +3220,8 @@ develop = true
 
 [package.dependencies]
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
-pymysql = ">=1.1.1"
-sqlalchemy = ">=1.4.46, <2.0"
+pymysql = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -3240,8 +3238,8 @@ develop = true
 
 [package.dependencies]
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
-oracledb = ">=2.0.0"
-sqlalchemy = ">=1.4.46, <2.0"
+oracledb = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -3257,10 +3255,10 @@ files = []
 develop = true
 
 [package.dependencies]
-asyncpg = ">=0.29.0"
+asyncpg = "*"
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
-psycopg2-binary = ">=2.9.9"
-sqlalchemy = ">=1.4.46, <2.0"
+psycopg2-binary = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -3276,8 +3274,8 @@ files = []
 develop = true
 
 [package.dependencies]
-requests = ">=2.28.2"
-sqlalchemy = ">=1.4.46, <2.0"
+requests = "*"
+sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -3293,13 +3291,13 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = ">=3.12.14"
-arq = ">=0.25.0"
-attrs = ">=22.2.0"
+aiohttp = "*"
+arq = "*"
+attrs = "*"
 dl-app-tools = {path = "../dl_app_tools"}
 dl-configs = {path = "../dl_configs"}
 dl-utils = {path = "../dl_utils"}
-redis = ">=5.0.1"
+redis = "*"
 
 [package.source]
 type = "directory"
@@ -3315,14 +3313,17 @@ files = []
 develop = true
 
 [package.dependencies]
-aiobotocore = ">=2.19.0"
-attrs = ">=22.2.0"
+aiobotocore = "*"
+aiohttp = "*"
+attrs = "*"
+boto3 = "*"
+botocore = "*"
+dl-api-commons = {path = "../dl_api_commons"}
 dl-configs = {path = "../dl_configs"}
 dl-utils = {path = "../dl_utils"}
-psycopg2-binary = ">=2.9.9"
-pytest = ">=7.2.2"
-python-dotenv = ">=1.0.0"
-pyyaml = ">=6.0.1"
+pytest = "*"
+python-dotenv = "*"
+pyyaml = "*"
 
 [package.source]
 type = "directory"
@@ -3338,14 +3339,14 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-constants = {path = "../dl_constants"}
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-python-dateutil = ">=2.8.2"
-pytz = ">=2022.7.1"
-sqlalchemy = ">=1.4.46, <2.0"
-typing-extensions = ">=4.9.0"
+marshmallow = "*"
+marshmallow-oneofschema = "*"
+python-dateutil = "*"
+pytz = "*"
+sqlalchemy = "*"
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -3361,7 +3362,7 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 
 [package.source]
@@ -3378,8 +3379,8 @@ files = []
 develop = true
 
 [package.dependencies]
-async-timeout = ">=4.0.3"
-attrs = ">=22.2.0"
+async-timeout = "*"
+attrs = "*"
 
 [package.source]
 type = "directory"
@@ -3408,18 +3409,18 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = {version = ">=3.12.14", optional = true}
-attrs = ">=22.2.0"
+aiohttp = {version = "*", optional = true}
+attrs = "*"
 dl-api-commons = {path = "../../lib/dl_api_commons"}
 dl-constants = {path = "../../lib/dl_constants"}
-flask = {version = ">=2.2.5", optional = true}
-httpx = ">=0.27.0"
-pydantic = ">=2.7.4"
-werkzeug = ">=2.2.3"
+flask = {version = "*", optional = true}
+httpx = "*"
+pydantic = "*"
+werkzeug = "*"
 
 [package.extras]
-aiohttp = ["aiohttp (>=3.12.14)"]
-flask = ["flask (>=2.2.5)"]
+aiohttp = ["aiohttp"]
+flask = ["flask"]
 
 [package.source]
 type = "directory"
@@ -6697,9 +6698,9 @@ files = []
 develop = true
 
 [package.dependencies]
-attrs = ">=22.2.0"
-redis = ">=5.0.1"
-typing-extensions = ">=4.9.0"
+attrs = "*"
+redis = "*"
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -7284,9 +7285,6 @@ optional = false
 python-versions = ">=3.10, <3.13"
 files = []
 develop = true
-
-[package.dependencies]
-flask = ">=2.2.5"
 
 [package.source]
 type = "directory"

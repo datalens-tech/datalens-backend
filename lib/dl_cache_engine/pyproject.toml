@@ -10,19 +10,18 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-attrs = ">=22.2.0"
 python = ">=3.10, <3.13"
-typing-extensions = ">=4.9.0"
+attrs = "*"
+typing-extensions = "*"
 dl-app-tools = {path = "../dl_app_tools"}
 dl-utils = {path = "../dl_utils"}
 dl-constants = {path = "../dl_constants"}
 dl-model-tools = {path = "../dl_model_tools"}
-lz4 = "==4.3.2"
-redis = "==5.0.1"
+lz4 = "*"
 redis_cache_lock = {path = "../redis-cache-lock"}
 
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
+pytest = "*"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

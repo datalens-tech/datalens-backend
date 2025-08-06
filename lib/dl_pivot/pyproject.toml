@@ -10,15 +10,15 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 dl-constants = {path = "../dl_constants"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-utils = {path = "../dl_utils"}
 python = ">=3.10, <3.13"
-typing-extensions = ">=4.9.0"
+typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
+pytest = "*"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

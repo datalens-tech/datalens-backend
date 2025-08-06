@@ -10,24 +10,23 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-attrs = ">=22.2.0"
-jinja2 = ">=3.1.2"
+attrs = "*"
+jinja2 = "*"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
-tabulate = ">=0.9.0"
+sqlalchemy = "*"
+tabulate = "*"
 dl-formula = {path = "../dl_formula"}
 dynamic-enum = {path = "../dynamic_enum"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-utils = {path = "../dl_utils"}
 dl-i18n = {path = "../dl_i18n"}
-typing-extensions = ">=4.9.0"
+typing-extensions = "*"
 dl-db-testing = {path = "../dl_db_testing"}
 
-[tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
-babel = ">=2.12.1"
-pytest = ">=7.2.2"
-psycopg2-binary = ">=2.9.9"
+babel = "*"
+pytest = "*"
+psycopg2-binary = "*"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

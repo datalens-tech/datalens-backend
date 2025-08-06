@@ -11,10 +11,10 @@ license = "MIT"
 readme = "README.rst"
 
 [tool.poetry.dependencies]
-attrs = ">=22.2.0"
+attrs = "*"
 python = ">=3.10, <3.13"
-redis = ">=5.0.1"
-typing-extensions = ">=4.9.0"
+redis = "*"
+typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 dl-testing = {path = "../dl_testing"}

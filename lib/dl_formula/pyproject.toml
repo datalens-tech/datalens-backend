@@ -10,14 +10,13 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-antlr4-python3-runtime = ">=4.11.1"
-attrs = ">=22.2.0"
-ciso8601 = ">=2.2.0"
-graphviz = ">=0.17"
-jinja2 = ">=3.1.2"
+antlr4-python3-runtime = "*"
+attrs = "*"
+ciso8601 = "*"
+graphviz = "*"
 python = ">=3.10, <3.13"
-pytz = ">=2022.7.1"
-sqlalchemy = ">=1.4.46, <2.0"
+pytz = "*"
+sqlalchemy = "*"
 dl-utils = {path = "../dl_utils"}
 dynamic-enum = {path = "../dynamic_enum"}
 
@@ -27,11 +26,10 @@ DEP001 = ["DataLensParser"]
 [tool.deptry.package_module_name_map]
 antlr4-python3-runtime = "antlr4"
 
-[tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
-pyodbc = ">=5.0.1"
-python-dateutil = ">=2.8.2"
+pytest = "*"
+pyodbc = "*"
+python-dateutil = "*"
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 
 [[tool.mypy.overrides]]

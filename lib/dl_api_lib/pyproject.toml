@@ -9,18 +9,17 @@ license = "Apache 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
-flask = ">=2.2.5"
-flask-marshmallow = ">=1.1.0"
-flask-restx = ">=1.1.0"
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
-pydantic = ">=2.7.0"
-pydantic-settings = ">=2.2.1"
 python = ">=3.10, <3.13"
-requests = ">=2.28.2"
-werkzeug = ">=2.2.3"
+aiohttp = "*"
+attrs = "*"
+flask = "*"
+flask-marshmallow = "*"
+flask-restx = "*"
+marshmallow = "*"
+marshmallow-oneofschema = "*"
+pydantic = "*"
+requests = "*"
+werkzeug = "*"
 statcommons = {path = "../statcommons"}
 dl-api-commons = {path = "../dl_api_commons"}
 dl-utils = {path = "../dl_utils"}
@@ -40,14 +39,14 @@ dl-pivot = {path = "../dl_pivot"}
 dl-pivot-pandas = {path = "../dl_pivot_pandas"}
 dl-cache-engine = {path = "../dl_cache_engine"}
 dynamic-enum = {path = "../dynamic_enum"}
-typing-extensions = ">=4.9.0"
+typing-extensions = "*"
 dl-rls = {path = "../dl_rls"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-settings = {path = "../dl_settings"}
 
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
-pytest-asyncio = ">=0.20.3"
+pytest = "*"
+pytest-asyncio = "*"
 dl-compeng-pg = {path = "../dl_compeng_pg"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}

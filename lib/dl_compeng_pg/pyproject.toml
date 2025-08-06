@@ -10,9 +10,10 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-aiopg = ">=1.4.0"
-asyncpg = ">=0.29.0"
-attrs = ">=22.2.0"
+python = ">=3.10, <3.13"
+aiopg = "*"
+asyncpg = "*"
+attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-cache-engine = {path = "../dl_cache_engine"}
 dl-constants = {path = "../dl_constants"}
@@ -21,15 +22,14 @@ dl-core = {path = "../dl_core"}
 dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 
 [tool.poetry.plugins."dl_core.data_processor_plugins"]
 compeng_aiopg = "dl_compeng_pg.compeng_aiopg.plugin:AiopgCompengPlugin"
 compeng_asyncpg = "dl_compeng_pg.compeng_asyncpg.plugin:AsyncpgCompengPlugin"
 
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
+pytest = "*"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

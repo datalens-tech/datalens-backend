@@ -8,10 +8,10 @@ license = "Apache 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-attrs = ">=22.2.0"
-marshmallow = ">=3.19.0"
+attrs = "*"
+marshmallow = "*"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-utils = {path = "../dl_utils"}
 dl-constants = {path = "../dl_constants"}
@@ -28,7 +28,6 @@ dl-query-processing = {path = "../dl_query_processing"}
 dl-app-tools = {path = "../dl_app_tools"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 
-[tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
 appmetrica_api = "dl_connector_metrica.api.connector:AppMetricaApiApiConnector"
 metrica_api = "dl_connector_metrica.api.connector:MetricaApiApiConnector"
@@ -44,7 +43,7 @@ metrica = "dl_connector_metrica.formula.connector:MetricaFormulaConnector"
 metrica = "dl_connector_metrica.formula_ref.plugin:MetricaFormulaRefPlugin"
 
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
+pytest = "*"
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-testing = {path = "../dl_testing"}
 dl-core-testing = {path = "../dl_core_testing"}

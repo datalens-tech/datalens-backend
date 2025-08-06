@@ -11,15 +11,15 @@ readme = "README.rst"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 
-[tool.poetry.group]
 [tool.poetry.group.tests.dependencies]
 dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 dl-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
 dl-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
 dl-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

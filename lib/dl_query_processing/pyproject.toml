@@ -10,11 +10,11 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-attrs = ">=22.2.0"
-ciso8601 = ">=2.2.0"
+attrs = "*"
+ciso8601 = "*"
 python = ">=3.10, <3.13"
-pytz = ">=2022.7.1"
-typing-extensions = ">=4.9.0"
+pytz = "*"
+typing-extensions = "*"
 dl-utils = {path = "../dl_utils"}
 dl-constants = {path = "../dl_constants"}
 dl-formula = {path = "../dl_formula"}
@@ -25,7 +25,7 @@ dl-app-tools = {path = "../dl_app_tools"}
 python-dateutil = "dateutil"
 
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
+pytest = "*"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

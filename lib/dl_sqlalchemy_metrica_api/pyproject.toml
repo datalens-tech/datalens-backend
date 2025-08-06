@@ -8,10 +8,10 @@ license = "Apache 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-SQLAlchemy = ">=1.4.46, <2.0"
+SQLAlchemy = "*"
 python = ">=3.10, <3.13"
-python-dateutil = ">=2.8.2"
-requests = ">=2.28.2"
+python-dateutil = "*"
+requests = "*"
 
 [tool.deptry.package_module_name_map]
 python-dateutil = "dateutil"

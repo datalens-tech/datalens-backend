@@ -11,10 +11,15 @@ readme = "README.rst"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "dl-sqlalchemy-common",
+]
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
 bi_chyt = "dl_sqlalchemy_chyt.base:BICHYTDialect"

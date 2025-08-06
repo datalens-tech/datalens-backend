@@ -9,10 +9,10 @@ license = "Apache 2.0"
 
 
 [tool.poetry.dependencies]
-attrs = ">=22.2.0"
-opentracing = ">=2.4.0"
 python = ">=3.10, <3.13"
-six = ">=1.9.0"
+attrs = "*"
+opentracing = "*"
+six = "*"
 dl-utils = {path = "../dl_utils"}
 
 [tool.poetry.group.tests.dependencies]

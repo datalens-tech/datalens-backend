@@ -8,19 +8,19 @@ license = "Apache 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-attrs = ">=22.2.0"
-grpcio = ">=1.60.0"
-marshmallow = ">=3.19.0"
+attrs = "*"
+grpcio = "*"
+marshmallow = "*"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
-typing-extensions = ">=4.9.0"
-ydb = ">=3.5.1"
+sqlalchemy = "*"
+typing-extensions = "*"
+ydb = "*"
+shortuuid = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
-dl-core-testing = {path = "../dl_core_testing"}
 dl-db-testing = {path = "../dl_db_testing"}
 dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
@@ -52,7 +52,7 @@ yql = "dl_connector_ydb.formula.connector:YQLFormulaConnector"
 yql = "dl_connector_ydb.formula_ref.plugin:YQLFormulaRefPlugin"
 
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
+pytest = "*"
 dl-formula-testing = {path = "../dl_formula_testing"}
 
 [build-system]

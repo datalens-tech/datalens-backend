@@ -10,11 +10,11 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
-marshmallow = ">=3.19.0"
+aiohttp = "*"
+attrs = "*"
+marshmallow = "*"
 python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+sqlalchemy = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-constants = {path = "../dl_constants"}
 dl-i18n = {path = "../dl_i18n"}
@@ -26,7 +26,11 @@ dl-app-tools = {path = "../dl_app_tools"}
 dl-utils = {path = "../dl_utils"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 
-[tool.poetry.plugins]
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "dl-sqlalchemy-promql",
+]
+
 [tool.poetry.plugins."dl_api_lib.connectors"]
 promql = "dl_connector_promql.api.connector:PromQLApiConnector"
 
@@ -34,8 +38,8 @@ promql = "dl_connector_promql.api.connector:PromQLApiConnector"
 promql = "dl_connector_promql.core.connector:PromQLCoreConnector"
 
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
-pytest-asyncio = ">=0.20.3"
+pytest = "*"
+pytest-asyncio = "*"
 dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 dl-testing = {path = "../dl_testing"}
 dl-core-testing = {path = "../dl_core_testing"}

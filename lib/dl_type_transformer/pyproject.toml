@@ -10,21 +10,21 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-attrs = ">=22.2.0"
-marshmallow = ">=3.19.0"
-marshmallow-oneofschema = ">=3.0.1"
+attrs = "*"
+marshmallow = "*"
+marshmallow-oneofschema = "*"
 python = ">=3.10, <3.13"
-python-dateutil = ">=2.8.2"
-pytz = ">=2022.7.1"
-sqlalchemy = ">=1.4.46, <2.0"
-typing-extensions = ">=4.9.0"
+python-dateutil = "*"
+pytz = "*"
+sqlalchemy = "*"
+typing-extensions = "*"
 dl-constants = {path = "../dl_constants"}
 
 [tool.deptry.package_module_name_map]
 python-dateutil = "dateutil"
 
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
+pytest = "*"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

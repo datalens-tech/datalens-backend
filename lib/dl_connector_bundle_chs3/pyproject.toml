@@ -10,12 +10,11 @@ readme = "README.md"
 
 
 [tool.poetry.dependencies]
-aiohttp = ">=3.12.14"
-attrs = ">=22.2.0"
-marshmallow = ">=3.19.0"
+aiohttp = "*"
+attrs = "*"
+marshmallow = "*"
 python = ">=3.10, <3.13"
-xxhash = ">=3.2.0"
-pytest = ">=7.2.2"
+xxhash = "*"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
 dl-api-commons = {path = "../dl_api_commons"}
@@ -23,7 +22,6 @@ dl-utils = {path = "../dl_utils"}
 dl-constants = {path = "../dl_constants"}
 dl-formula-ref = {path = "../dl_formula_ref"}
 dl-formula = {path = "../dl_formula"}
-dl-formula-testing = {path = "../dl_formula_testing"}
 dl-i18n = {path = "../dl_i18n"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 dl-testing = {path = "../dl_testing"}
@@ -34,7 +32,6 @@ dl-model-tools = {path = "../dl_model_tools"}
 dl-core-testing = {path = "../dl_core_testing"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-sqlalchemy = ">=1.4.46, <2.0"
 
 [tool.poetry.plugins]
 [tool.poetry.plugins."dl_api_lib.connectors"]
@@ -60,7 +57,7 @@ yadocs = "dl_connector_bundle_chs3.chs3_yadocs.formula_ref.plugin:YaDocsFileS3Fo
 
 
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
+pytest = "*"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"

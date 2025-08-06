@@ -9,14 +9,17 @@ license = "Apache 2.0"
 
 
 [tool.poetry.dependencies]
-aiobotocore = ">=2.19.0"
-attrs = ">=22.2.0"
-python-dotenv = ">=1.0.0"
-psycopg2-binary = ">=2.9.9"
-pytest = ">=7.2.2"
 python = ">=3.10, <3.13"
-pyyaml = ">=6.0.1"
+aiobotocore = "*"
+attrs = "*"
+python-dotenv = "*"
+pytest = "*"
+pyyaml = "*"
+aiohttp = "*"
+boto3 = "*"
+botocore = "*"
 dl-utils = {path = "../dl_utils"}
+dl-api-commons = {path = "../dl_api_commons"}
 dl-configs = {path = "../dl_configs"}
 
 [tool.poetry.plugins.env_param_getters]
@@ -31,8 +34,6 @@ build-backend = "poetry.core.masonry.api"
 minversion = "6.0"
 addopts = "-ra"
 testpaths = []
-
-
 
 [datalens.pytest.unit]
 root_dir = "dl_testing_tests/"
