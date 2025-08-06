@@ -1,5 +1,7 @@
 import http
 
+import pytest
+
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_tests.db.base import DefaultApiTestBase
@@ -38,12 +40,21 @@ class TestUISettings(DefaultApiTestBase):
         assert field.id == "test_ui_settings_field"
         assert field.ui_settings == ui_settings
 
+    @pytest.mark.parametrize(
+        "data_value,data_size",
+        [
+            ("x", DatasetConstraints.FIELD_UI_SETTINGS_MAX_SIZE),
+            ("я", int(DatasetConstraints.FIELD_UI_SETTINGS_MAX_SIZE / 2)),
+        ],
+    )
     def test_field_with_ui_settings_limit(
         self,
         control_api: SyncHttpDatasetApiV1,
         saved_dataset: Dataset,
+        data_value: str,
+        data_size: int,
     ) -> None:
-        oversized_ui_settings = '{"data": "' + "x" * DatasetConstraints.FIELD_UI_SETTINGS_MAX_SIZE + '"}'
+        oversized_ui_settings = '{"data": "' + data_value * data_size + '"}'
         a_field = saved_dataset.result_schema[0]
 
         ds_resp = control_api.apply_updates(
