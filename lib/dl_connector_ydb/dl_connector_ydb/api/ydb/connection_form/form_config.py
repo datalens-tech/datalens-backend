@@ -11,10 +11,7 @@ from typing import (
 
 import attr
 
-from dl_api_commons.base_models import (
-    FormConfigParams,
-    TenantDef,
-)
+from dl_api_commons.base_models import TenantDef
 from dl_api_connector.form_config.models.api_schema import (
     FormActionApiSchema,
     FormApiSchema,
@@ -276,7 +273,6 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         self,
         connector_settings: Optional[ConnectorSettingsBase],
         tenant: Optional[TenantDef],
-        params: Optional[FormConfigParams] = None,
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)

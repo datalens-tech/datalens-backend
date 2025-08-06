@@ -1,9 +1,6 @@
 from typing import Sequence
 
-from dl_api_commons.base_models import (
-    FormConfigParams,
-    TenantDef,
-)
+from dl_api_commons.base_models import TenantDef
 from dl_api_connector.form_config.models.api_schema import (
     FormActionApiSchema,
     FormApiSchema,
@@ -141,7 +138,6 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
         self,
         connector_settings: ConnectorSettingsBase | None,
         tenant: TenantDef | None,
-        params: FormConfigParams | None = None,
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
 

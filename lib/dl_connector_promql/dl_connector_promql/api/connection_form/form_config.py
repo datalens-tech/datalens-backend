@@ -2,10 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from dl_api_commons.base_models import (
-    FormConfigParams,
-    TenantDef,
-)
+from dl_api_commons.base_models import TenantDef
 from dl_api_connector.form_config.models.api_schema import (
     FormActionApiSchema,
     FormApiSchema,
@@ -30,7 +27,6 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
         self,
         connector_settings: Optional[ConnectorSettingsBase],
         tenant: Optional[TenantDef],
-        params: Optional[FormConfigParams] = None,
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
 

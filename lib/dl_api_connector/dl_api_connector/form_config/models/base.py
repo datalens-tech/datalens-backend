@@ -148,9 +148,10 @@ class ConnectionFormMode(Enum):
 
 
 class ConnectionFormFactory:
-    def __init__(self, mode: ConnectionFormMode, localizer: Localizer):
+    def __init__(self, mode: ConnectionFormMode, localizer: Localizer, form_params: FormConfigParams):
         self.mode = mode
         self._localizer = localizer
+        self._form_params = form_params
 
     def _filter_nulls(self, coll: list[Optional[Any]]) -> list[Any]:
         return [item for item in coll if item is not None]
@@ -169,12 +170,14 @@ class ConnectionFormFactory:
             else []
         )
 
+    def _get_from_params(self) -> FormConfigParams:
+        return self._form_params
+
     @abc.abstractmethod
     def get_form_config(
         self,
         connector_settings: Optional[ConnectorSettingsBase],
         tenant: Optional[TenantDef],
-        params: Optional[FormConfigParams] = None,
     ) -> ConnectionForm:
         """Returns a form config built according to the specified settings"""
 
