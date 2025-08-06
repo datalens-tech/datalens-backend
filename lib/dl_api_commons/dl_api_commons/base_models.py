@@ -182,6 +182,7 @@ class TenantCommon(TenantDef):
     def get_tenant_id(self) -> str:
         return "common"
 
+
 @attr.s(frozen=True)
 class FormConfigParams:
     conn_id: str | None = attr.ib(default=None)
