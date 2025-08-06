@@ -12,6 +12,7 @@ import attrs
 import pytest
 
 from dl_api_commons.base_models import (
+    FormConfigParams,
     TenantCommon,
     TenantDef,
 )
@@ -64,7 +65,8 @@ class ConnectionFormTestBase:
         )
         factory = loader.load()
         localizer = factory.get_for_locale("en")
-        form_factory = self.CONN_FORM_FACTORY_CLS(mode=mode, localizer=localizer)
+        form_params = FormConfigParams()
+        form_factory = self.CONN_FORM_FACTORY_CLS(mode=mode, localizer=localizer, form_params=form_params)
         form_config = form_factory.get_form_config(connectors_settings, tenant)
         return form_config
 
