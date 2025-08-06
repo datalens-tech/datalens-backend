@@ -3,7 +3,10 @@ from __future__ import annotations
 from enum import unique
 from typing import Optional
 
-from dl_api_commons.base_models import TenantDef
+from dl_api_commons.base_models import (
+    FormConfigParams,
+    TenantDef,
+)
 from dl_api_connector.form_config.models.api_schema import (
     FormActionApiSchema,
     FormApiSchema,
@@ -35,7 +38,10 @@ class CHYTFieldName(FormFieldName):
 
 class CHYTConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
-        self, connector_settings: Optional[ConnectorSettingsBase], tenant: Optional[TenantDef]
+        self,
+        connector_settings: Optional[ConnectorSettingsBase],
+        tenant: Optional[TenantDef],
+        params: Optional[FormConfigParams] = None,
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, CHYTConnectorSettings)
 

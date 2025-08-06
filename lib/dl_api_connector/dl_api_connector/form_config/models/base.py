@@ -9,7 +9,10 @@ from typing import (
 
 import attr
 
-from dl_api_commons.base_models import TenantDef
+from dl_api_commons.base_models import (
+    FormConfigParams,
+    TenantDef,
+)
 from dl_api_connector.form_config.models.api_schema import (
     FormApiSchema,
     FormFieldApiSchema,
@@ -168,7 +171,10 @@ class ConnectionFormFactory:
 
     @abc.abstractmethod
     def get_form_config(
-        self, connector_settings: Optional[ConnectorSettingsBase], tenant: Optional[TenantDef]
+        self,
+        connector_settings: Optional[ConnectorSettingsBase],
+        tenant: Optional[TenantDef],
+        params: Optional[FormConfigParams] = None,
     ) -> ConnectionForm:
         """Returns a form config built according to the specified settings"""
 

@@ -5,7 +5,10 @@ from typing import Optional
 
 import attr
 
-from dl_api_commons.base_models import TenantDef
+from dl_api_commons.base_models import (
+    FormConfigParams,
+    TenantDef,
+)
 from dl_api_connector.form_config.models.api_schema import (
     FormActionApiSchema,
     FormApiSchema,
@@ -98,6 +101,7 @@ class SnowFlakeConnectionFormFactory(ConnectionFormFactory):
         self,
         connector_settings: Optional[ConnectorSettingsBase],
         tenant: Optional[TenantDef],
+        params: Optional[FormConfigParams] = None,
     ) -> ConnectionForm:
         on_create = self.mode == ConnectionFormMode.create
 
