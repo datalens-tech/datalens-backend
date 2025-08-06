@@ -397,7 +397,20 @@ class RowConstructor:
             ),
         ]
 
-    def data_export_forbidden_row(self) -> C.CustomizableRow:
+    def _make_data_export_forbidden_hint_text(
+        self, conn_id: str | None, exports_history_url_path: str | None, mode: Optional[ConnectionFormMode]
+    ) -> str | None:
+        if mode == ConnectionFormMode.create or not (exports_history_url_path and conn_id):
+            return None
+        export_history_text = self._localizer.translate(Translatable("label_exports-history"))
+        return f"[{export_history_text}]({exports_history_url_path}{conn_id})"
+
+    def data_export_forbidden_row(
+        self,
+        conn_id: Optional[str] = None,
+        exports_history_url_path: Optional[str] = None,
+        mode: ConnectionFormMode = ConnectionFormMode.create,
+    ) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
                 C.LabelRowItem(
@@ -419,6 +432,11 @@ class RowConstructor:
                     ],
                     default_value=BooleanField.off.value,
                     display_conditions={CommonFieldName.advanced_settings: "opened"},
+                    hint_text=make_hint_text(
+                        conn_id=conn_id,
+                        exports_history_url_path=exports_history_url_path,
+                        mode=mode,
+                    ),
                 ),
             ]
         )

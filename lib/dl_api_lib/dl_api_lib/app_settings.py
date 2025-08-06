@@ -196,6 +196,7 @@ class DeprecatedAppSettings:
         env_var_converter=lambda s: (DataPivotEngineType[s.lower()] if s is not None else PIVOT_ENGINE_TYPE_PANDAS),
         missing=PIVOT_ENGINE_TYPE_PANDAS,  # TODO: Switch to another default
     )
+    EXPORTS_HISTORY_URL_PATH: Optional[str] = s_attrib("EXPORTS_HISTORY_URL_PATH", missing=None)  # type: ignore  # 2025-08-12 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")
 
 
 @attr.s(frozen=True)

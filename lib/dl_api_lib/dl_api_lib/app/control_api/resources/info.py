@@ -20,6 +20,7 @@ from dl_api_lib.exc import (
     UnsupportedForEntityType,
 )
 from dl_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
+from dl_api_lib.schemas.connection import ConnectionFormQuerySchema
 from dl_api_lib.schemas.main import BadRequestResponseSchema
 from dl_constants.enums import (
     ConnectionType,
@@ -187,8 +188,9 @@ class ConnectorForm(BIResource):
         responses={
             400: ("Failed", BadRequestResponseSchema()),
         },
+        query=ConnectionFormQuerySchema(),
     )
-    def get(self, conn_type: str, form_mode: str) -> dict:
+    def get(self, conn_type: str, form_mode: str, query: dict) -> dict:
         if not conn_type or conn_type not in ConnectionType:
             raise BadConnectionType(f"Not a valid connection type for this environment: {conn_type}")
         ct = ConnectionType(conn_type)
@@ -205,7 +207,15 @@ class ConnectorForm(BIResource):
 
         localizer = self.get_service_registry().get_localizer()
 
-        form_params = FormConfigParams(user_id=self.get_current_rci().user_id)
+        conn_id = query.get("conn_id", None)
+        exports_history_url_path = self.get_service_registry().get_exports_history_url_path()
+        user_id = self.get_current_rci().user_id
+
+        form_params = FormConfigParams(
+            user_id=user_id,
+            conn_id=conn_id,
+            exports_history_url_path=exports_history_url_path,
+        )
 
         form_factory = form_factory_cls(mode=mode, localizer=localizer, form_params=form_params)
         form_factory.preprocess_form_params(service_registry=self.get_service_registry())
