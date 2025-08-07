@@ -7,7 +7,7 @@ import dl_zitadel
 import dl_zitadel.services as dl_zitadel_services
 
 
-def test_sync_get_token_default(mocker: pytest_mock.MockerFixture):
+def test_sync_get_token_default(mocker: pytest_mock.MockerFixture) -> None:
     client = mocker.Mock(spec=dl_zitadel_services.SyncClientProtocol)
     service = dl_zitadel_services.ZitadelSyncTokenStorage(
         client=client,
@@ -30,7 +30,7 @@ def test_sync_get_token_default(mocker: pytest_mock.MockerFixture):
 
 
 @pytest.mark.asyncio
-async def test_async_get_token_default(mocker: pytest_mock.MockerFixture):
+async def test_async_get_token_default(mocker: pytest_mock.MockerFixture) -> None:
     client = mocker.AsyncMock(spec=dl_zitadel_services.AsyncClientProtocol)
     service = dl_zitadel_services.ZitadelAsyncTokenStorage(
         client=client,
@@ -52,7 +52,7 @@ async def test_async_get_token_default(mocker: pytest_mock.MockerFixture):
     client.get_token.assert_awaited_once_with()
 
 
-def test_sync_get_token_expired(mocker: pytest_mock.MockerFixture):
+def test_sync_get_token_expired(mocker: pytest_mock.MockerFixture) -> None:
     client = mocker.Mock(spec=dl_zitadel_services.SyncClientProtocol)
     service = dl_zitadel_services.ZitadelSyncTokenStorage(
         client=client,
@@ -84,7 +84,7 @@ def test_sync_get_token_expired(mocker: pytest_mock.MockerFixture):
 
 
 @pytest.mark.asyncio
-async def test_async_get_token_expired(mocker: pytest_mock.MockerFixture):
+async def test_async_get_token_expired(mocker: pytest_mock.MockerFixture) -> None:
     client = mocker.AsyncMock(spec=dl_zitadel_services.AsyncClientProtocol)
     service = dl_zitadel_services.ZitadelAsyncTokenStorage(
         client=client,

@@ -34,9 +34,14 @@ includes:
     vars:
       PROJECT_ROOT_PATH: '{{.ROOT_DIR}}'
       PYPROJECT_TOML_PATH: '{{.ROOT_DIR}}/metapkg/pyproject.toml'
-      METAPKG_DIR: '{{.ROOT_DIR}}/metapkg/'
+      METAPKG_DIR: '{{.ROOT_DIR}}/metapkg'
       VENV_PATH: '{{.ROOT_DIR}}/metapkg/.venv'
       LINTERS_PYPROJECT_TOML_PATH: '{{.ROOT_DIR}}/pyproject.toml'
+      EXCLUDE_LIB_PATHS: |
+        {{.ROOT_DIR}}
+        {{.ROOT_DIR}}/metapkg
+        {{.ROOT_DIR}}/terrarium/dl_repmanager/dl_repmanager_tests/testrepo/lib/testing_pkg_boilerplate
+        {{.ROOT_DIR}}/terrarium/bi_ci/bi_ci_tests/unit/resources
 
   ops:
     taskfile: tools/taskfiles/taskfile_ops.yml

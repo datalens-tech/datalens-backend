@@ -24,12 +24,18 @@ license = "Apache 2.0"
 packages = [{include = "bi_ci"}]
 
 [tool.poetry.dependencies]
+attrs = ">=22.2.0"
 python = ">=3.10, <3.13"
 tomlkit = ">=0.11.8"
 clize = ">=5.0.0"
 poetry = ">=1.5.0"
 pyyaml = ">=6.0.1"
 typing-extensions = "^4.9.0"
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "poetry",
+]
 
 [tool.poetry.group.pytest.dependencies]
 pytest = ">=7.4.3"
@@ -59,7 +65,7 @@ disallow_untyped_defs = true
 check_untyped_defs = true
 strict_optional = true
 exclude = [
-    "^bi_ci_tests/",  # TOML's double-quoted strings require escaping backslashes
+    "bi_ci_tests",
 ]
 [tool.black]
 line-length = 120

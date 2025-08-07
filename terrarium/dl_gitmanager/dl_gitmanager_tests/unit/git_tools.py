@@ -6,7 +6,7 @@ from pathlib import Path
 import uuid
 
 import attr
-from git.repo.base import Repo as GitRepo
+from git.repo.base import Repo as GitRepo  # type: ignore
 
 
 @attr.s(frozen=True)

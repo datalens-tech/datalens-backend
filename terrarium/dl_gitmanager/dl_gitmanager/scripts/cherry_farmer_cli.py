@@ -10,14 +10,14 @@ from typing import (
 )
 
 import attr
-from colorama import (
+from colorama import (  # type: ignore
     Fore,
     Style,
 )
-from colorama import init as colorama_init
+from colorama import init as colorama_init  # type: ignore
 
-from dl_cli_tools.cli_base import CliToolBase
-from dl_cli_tools.logging import setup_basic_logging
+from dl_cli_tools.cli_base import CliToolBase  # type: ignore
+from dl_cli_tools.logging import setup_basic_logging  # type: ignore
 from dl_gitmanager.cherry_farmer import (
     CherryFarmer,
     CommitPickerStateIO,

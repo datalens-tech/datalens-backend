@@ -50,7 +50,7 @@ def _add_rls_restrictions(rls: RLS, field_guid: str, restrictions: list[dict]) -
         )
 
 
-def test_rls_simple():
+def test_rls_simple() -> None:
     rls = RLS()
     field_guid = "guid"
     assert not rls.has_restrictions
@@ -248,7 +248,7 @@ def test_rls_simple():
         ),
     ],
 )
-def test_rls(entrysets: dict, expected_restrictions: dict):
+def test_rls(entrysets: dict, expected_restrictions: dict) -> None:
     rls = RLS(allowed_groups={"group", "weird_group"})
     assert not rls.has_restrictions
     for field_guid, entries in entrysets.items():

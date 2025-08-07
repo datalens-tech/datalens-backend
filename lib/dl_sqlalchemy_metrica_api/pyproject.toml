@@ -37,6 +37,7 @@ labels = ["ext_public"]
 targets = []    # ignore mypy in entire module
 
 [tool.mypy]
+ignore_errors = true # ignore mypy in entire module
 warn_unused_ignores = true
 warn_redundant_casts = true
 warn_unused_configs = true

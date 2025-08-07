@@ -3,7 +3,7 @@ import shutil
 import tempfile
 from typing import Generator
 
-from git.repo.base import Repo as GitRepo
+from git.repo.base import Repo as GitRepo  # type: ignore
 import pytest
 
 from dl_gitmanager.git_manager import GitManager

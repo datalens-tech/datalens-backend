@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from git.exc import InvalidGitRepositoryError
-from git.repo.base import Repo as GitRepo
+from git.exc import InvalidGitRepositoryError  # type: ignore
+from git.repo.base import Repo as GitRepo  # type: ignore
 
 
 def discover_repo(repo_path: Path) -> GitRepo:

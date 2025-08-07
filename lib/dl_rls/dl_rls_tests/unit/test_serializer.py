@@ -1,3 +1,5 @@
+import typing
+
 import pytest
 
 from dl_constants.enums import RLSSubjectType
@@ -13,22 +15,22 @@ from dl_rls.testing.testing_data import (
 SUBJECTS = ["@sa:123", "@group:gg", "user1", "user2", "@sa:456"]
 
 
-def test_group_names_by_account_type():
+def test_group_names_by_account_type() -> None:
     account_types = FieldRLSSerializer._group_subject_names_by_type(SUBJECTS)
     assert account_types == FieldRLSSerializer.AccountGroups(["user1", "user2"], ["@sa:123", "@sa:456"], ["@group:gg"])
 
 
-def test_parse_sa_str():
+def test_parse_sa_str() -> None:
     parsed = FieldRLSSerializer._parse_sa_str("@sa:123")
     assert parsed == RLSSubject(subject_type=RLSSubjectType.user, subject_id="123", subject_name="@sa:123")
 
 
-def test_parse_group_str():
+def test_parse_group_str() -> None:
     parsed = FieldRLSSerializer._parse_group_str("@group:gg")
     assert parsed == RLSSubject(subject_type=RLSSubjectType.group, subject_id="gg", subject_name="@group:gg")
 
 
-def test_resolve_subject_names():
+def test_resolve_subject_names() -> None:
     subject_resolver = NotFoundSubjectResolver()
     resolved_subjects = FieldRLSSerializer._resolve_subject_names(SUBJECTS, subject_resolver)
     assert resolved_subjects == {
@@ -40,8 +42,8 @@ def test_resolve_subject_names():
     }
 
 
-@pytest.mark.parametrize("case", RLS_CONFIG_CASES, ids=[c["name"] for c in RLS_CONFIG_CASES])
-def test_rls_entries_to_text_config(case):
+@pytest.mark.parametrize("case", RLS_CONFIG_CASES, ids=[typing.cast(str, c["name"]) for c in RLS_CONFIG_CASES])
+def test_rls_entries_to_text_config(case: dict[str, typing.Any]) -> None:
     expected_config = case["config_to_compare"]
     rls_entries = case["rls_entries"]
 

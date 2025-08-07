@@ -8,10 +8,10 @@ from typing import (
 )
 
 import attr
-from git.diff import Diff
-from git.objects.commit import Commit
-from git.objects.submodule.base import Submodule
-from git.repo.base import Repo as GitRepo
+from git.diff import Diff  # type: ignore
+from git.objects.commit import Commit  # type: ignore
+from git.objects.submodule.base import Submodule  # type: ignore
+from git.repo.base import Repo as GitRepo  # type: ignore
 
 
 MAX_HISTORY_DEPTH = 300

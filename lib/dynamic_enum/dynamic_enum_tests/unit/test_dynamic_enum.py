@@ -7,7 +7,7 @@ from dynamic_enum import (
 import pytest
 
 
-def test_auto_value():
+def test_auto_value() -> None:
     class Color(DynamicEnum):
         blue = AutoEnumValue()
 
@@ -15,14 +15,14 @@ def test_auto_value():
     assert color.value == "blue"
 
 
-def test_deduplication():
+def test_deduplication() -> None:
     class Weight(DynamicEnum):
         heavy = AutoEnumValue()
 
     assert Weight("heavy") is Weight.heavy
 
 
-def test_declaration():
+def test_declaration() -> None:
     class Size(DynamicEnum):
         pass
 
@@ -40,7 +40,7 @@ def test_declaration():
         Size.declare("medium")  # value 'medium' has already been declared
 
 
-def test_subclassing():
+def test_subclassing() -> None:
     class Something(DynamicEnum):
         smth = AutoEnumValue()
 
@@ -50,7 +50,7 @@ def test_subclassing():
             pass
 
 
-def test_comparison():
+def test_comparison() -> None:
     class ThisWorld(DynamicEnum):
         thing = AutoEnumValue()
 
@@ -64,7 +64,7 @@ def test_comparison():
     assert OtherWorld.thing is not ThisWorld.thing
 
 
-def test_stringification():
+def test_stringification() -> None:
     class What(DynamicEnum):
         that = AutoEnumValue()
 
@@ -72,7 +72,7 @@ def test_stringification():
     assert repr(What("that")) == "What('that')"
 
 
-def test_getitem():
+def test_getitem() -> None:
     class What(DynamicEnum):
         pass
 
@@ -81,7 +81,7 @@ def test_getitem():
     assert What["that"] == What("that")
 
 
-def test_containment():
+def test_containment() -> None:
     class Galaxy(DynamicEnum):
         pass
 
@@ -93,7 +93,7 @@ def test_containment():
     assert "far_far_away" not in Galaxy
 
 
-def test_iter():
+def test_iter() -> None:
     class Everything(DynamicEnum):
         pass
 
@@ -103,7 +103,7 @@ def test_iter():
     assert set(Everything) == {Everything("this"), Everything("that")}
 
 
-def test_no_instance_dict():
+def test_no_instance_dict() -> None:
     class It(DynamicEnum):
         pass
 
@@ -111,7 +111,7 @@ def test_no_instance_dict():
     assert not hasattr(It("thing"), "__dict__")
 
 
-def test_custom_slots():
+def test_custom_slots() -> None:
     with pytest.raises(TypeError):
 
         class ExtendedEnum(DynamicEnum):
@@ -122,7 +122,7 @@ class Picklable(DynamicEnum):
     thing = AutoEnumValue()
 
 
-def test_pickle():
+def test_pickle() -> None:
     data = pickle.dumps(Picklable.thing)
     loaded = pickle.loads(data)
 

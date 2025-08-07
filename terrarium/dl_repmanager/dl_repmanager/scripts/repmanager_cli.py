@@ -10,8 +10,8 @@ from typing import Optional
 
 import attr
 
-from dl_cli_tools.cli_base import CliToolBase
-from dl_cli_tools.logging import setup_basic_logging
+from dl_cli_tools.cli_base import CliToolBase  # type: ignore
+from dl_cli_tools.logging import setup_basic_logging  # type: ignore
 from dl_repmanager.dependency_resolution import DeepIndexBuilder
 from dl_repmanager.git_manager import GitManager
 from dl_repmanager.metapkg_manager import MetaPackageManager
