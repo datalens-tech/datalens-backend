@@ -1,11 +1,10 @@
-from __future__ import annotations
-
 import aiohttp
+from aiohttp.pytest_plugin import TestClient
 import pytest
 
 
 @pytest.mark.asyncio
-async def test_reader(web_app, excel_data):
+async def test_reader(web_app: TestClient, excel_data: bytes) -> None:
     with aiohttp.MultipartWriter() as mpwriter:
         part = mpwriter.append(excel_data)
         part.set_content_disposition("form-data", name="file")

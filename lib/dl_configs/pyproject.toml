@@ -37,6 +37,7 @@ skip_compose = "true"
 labels = ["no_compose"]
 
 [tool.mypy]
+exclude = ["dl_configs_tests"]
 warn_unused_ignores = true
 warn_redundant_casts = true
 warn_unused_configs = true

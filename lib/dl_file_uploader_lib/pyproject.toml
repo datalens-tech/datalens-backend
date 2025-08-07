@@ -56,6 +56,7 @@ target_path = "ext"
 labels = ["ext_public"]
 
 [tool.mypy]
+exclude = ["dl_file_uploader_lib_tests"]
 warn_unused_ignores = true
 warn_redundant_casts = true
 warn_unused_configs = true

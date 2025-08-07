@@ -1,5 +1,5 @@
 import pytest
-from statcommons.logs import LOGMUTATORS
+from statcommons.logs import LOGMUTATORS  # type: ignore
 
 from dl_api_commons.logging_config import add_log_context
 

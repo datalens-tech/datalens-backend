@@ -18,7 +18,7 @@ from typing import (
 )
 
 import attr
-from git.objects.commit import Commit
+from git.objects.commit import Commit  # type: ignore
 
 from dl_gitmanager.git_manager import GitManager
 

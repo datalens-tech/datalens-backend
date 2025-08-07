@@ -53,3 +53,6 @@ compose_file_base = "alt_docker-compose"
 
 [datalens.meta.mypy]
 targets = []    # ignore mypy for this module
+
+[tool.mypy]
+ignore_errors = true # ignore mypy in entire module

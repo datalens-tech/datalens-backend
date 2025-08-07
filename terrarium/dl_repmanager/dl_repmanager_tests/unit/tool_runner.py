@@ -2,7 +2,7 @@ from pathlib import Path
 
 import attr
 
-from dl_cli_tools.testing.tool_runner import (
+from dl_cli_tools.testing.tool_runner import (  # type: ignore
     CliResult,
     CliRunner,
 )

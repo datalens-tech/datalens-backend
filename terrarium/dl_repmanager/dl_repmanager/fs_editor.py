@@ -17,7 +17,7 @@ from typing import (
 )
 
 import attr
-from git import Repo as GitRepo
+from git import Repo as GitRepo  # type: ignore
 
 
 @attr.s(frozen=True)

@@ -1,20 +1,23 @@
-from __future__ import annotations
-
+import asyncio
 import os
 
-from aiohttp.pytest_plugin import aiohttp_client
+from aiohttp.pytest_plugin import (
+    AiohttpClient,
+    TestClient,
+    aiohttp_client,
+)
 import pytest
 
 from dl_file_secure_reader_lib.app import create_app
 
 
 @pytest.fixture
-def web_app(loop, aiohttp_client):
+def web_app(loop: asyncio.AbstractEventLoop, aiohttp_client: AiohttpClient) -> TestClient:
     return loop.run_until_complete(aiohttp_client(create_app()))
 
 
 @pytest.fixture(scope="session")
-def excel_data():
+def excel_data() -> bytes:
     filename = "data.xlsx"
 
     dirname = os.path.dirname(os.path.abspath(__file__))

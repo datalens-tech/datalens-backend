@@ -28,6 +28,7 @@ testpaths = ["dl_utils_tests/unit"]
 
 
 [tool.mypy]
+exclude = ["dl_utils_tests"]
 warn_unused_ignores = true
 warn_redundant_casts = true
 warn_unused_configs = true

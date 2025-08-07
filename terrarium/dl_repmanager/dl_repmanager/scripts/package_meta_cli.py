@@ -8,8 +8,8 @@ from typing import cast
 
 import attr
 
-from dl_cli_tools.cli_base import CliToolBase
-from dl_cli_tools.logging import setup_basic_logging
+from dl_cli_tools.cli_base import CliToolBase  # type: ignore
+from dl_cli_tools.logging import setup_basic_logging  # type: ignore
 from dl_repmanager.exceptions import (
     InconsistentStateError,
     PackageMetaCliError,
