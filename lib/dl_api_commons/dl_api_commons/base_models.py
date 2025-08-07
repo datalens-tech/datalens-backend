@@ -183,6 +183,11 @@ class TenantCommon(TenantDef):
         return "common"
 
 
+@attr.s(frozen=True)
+class FormConfigParams:
+    conn_id: str | None = attr.ib(default=None)
+
+
 @attr.s()
 class NoAuthData(AuthData):
     def get_headers(self, target: Optional[AuthTarget] = None) -> dict[DLHeaders, str]:

@@ -5,6 +5,7 @@ import typing
 from marshmallow import Schema
 from marshmallow import fields as ma_fields
 
+from dl_api_commons.base_models import FormConfigParams
 from dl_api_connector.form_config.models.base import ConnectionFormMode
 from dl_api_lib.api_decorators import schematic_request
 from dl_api_lib.app.control_api.resources import API
@@ -204,7 +205,9 @@ class ConnectorForm(BIResource):
 
         localizer = self.get_service_registry().get_localizer()
 
-        form_factory = form_factory_cls(mode=mode, localizer=localizer)
+        form_params = FormConfigParams()
+
+        form_factory = form_factory_cls(mode=mode, localizer=localizer, form_params=form_params)
         form_config = form_factory.get_form_config(
             connector_settings=self.get_service_registry().get_connectors_settings(ct),
             tenant=self.get_current_rci().tenant,
