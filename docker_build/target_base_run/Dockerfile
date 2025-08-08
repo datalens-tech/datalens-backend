@@ -11,6 +11,7 @@ COPY install_py_310.sh /tmp/install_py_310.sh
 RUN apt-get update \
     && apt-get -y upgrade -o Dpkg::Options::="--force-confold" \
     && apt-get install -y --fix-missing \
+        curl \
         # For some python libraries
         libpcre3 \
         # For MSSQL
