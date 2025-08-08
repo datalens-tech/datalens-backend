@@ -20,10 +20,14 @@ RUN apt-get update \
     && rm -f /etc/ssh/ssh_host_*_key \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Configure libraries for MSSQL
+RUN cat /usr/share/tdsodbc/odbcinst.ini >> /etc/odbcinst.ini
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/odbc
+
 # install python 3.10
 RUN bash /tmp/install_py_310.sh
 
-# RUN curl "https://storage.yandexcloud.net/cloud-certs/CA.pem" > /usr/local/share/ca-certificates/yandex-cloud-ca.crt
+RUN curl "https://storage.yandexcloud.net/cloud-certs/CA.pem" > /usr/local/share/ca-certificates/yandex-cloud-ca.crt
 RUN update-ca-certificates
 
 ENV REQUESTS_CA_BUNDLE="/etc/ssl/certs/ca-certificates.crt"
