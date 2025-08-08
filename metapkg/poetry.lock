@@ -3098,7 +3098,7 @@ develop = true
 
 [package.dependencies]
 pydantic = "*"
-pydantic-settings = "*"
+pydantic-settings = {version = "*", extras = ["yaml"]}
 
 [package.source]
 type = "directory"
@@ -6188,6 +6188,7 @@ files = [
 [package.dependencies]
 pydantic = ">=2.7.0"
 python-dotenv = ">=0.21.0"
+pyyaml = {version = ">=6.0.1", optional = true, markers = "extra == \"yaml\""}
 
 [package.extras]
 toml = ["tomli (>=2.0.1)"]
