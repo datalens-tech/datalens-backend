@@ -62,4 +62,3 @@ DL_CRY_ACTUAL_KEY_ID: '0'
 DL_CRY_KEYMAP: {}
 SENTRY_DSN_DATASET_API: ''
 SENTRY_ENABLED: false
-EXPORTS_HISTORY_URL_PATH: '/exports?view=entry&sortBy=created_at&sortOrder=desc&entryId='
