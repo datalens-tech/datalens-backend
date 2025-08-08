@@ -168,7 +168,11 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
                 enabled_help_text=self._localizer.translate(Translatable("label_clickhouse-ssl-enabled-tooltip")),
                 enabled_default_value=True,
             ),
-            rc.data_export_forbidden_row(),
+            rc.data_export_forbidden_row(
+                conn_id=self._get_form_params().conn_id,
+                exports_history_url_path=self._get_form_params().exports_history_url_path,
+                mode=self.mode,
+            ),
             clickhouse_rc.readonly_mode_row(),
         ]
 
@@ -191,7 +195,10 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
                     *self._get_port_section(rc, connector_settings),
                     *self._get_username_section(rc, connector_settings),
                     *self._get_password_section(rc, connector_settings),
-                    *self._get_common_section(rc, connector_settings),
+                    *self._get_common_section(
+                        rc,
+                        connector_settings,
+                    ),
                 ]
             ),
             api_schema=FormApiSchema(

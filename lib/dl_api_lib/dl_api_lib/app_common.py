@@ -179,5 +179,6 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
             query_proc_mode=settings.QUERY_PROCESSING_MODE,
             ca_data=ca_data,
             pivot_transformer_factory=pivot_transformer_factory,
+            exports_history_url_path=settings.EXPORTS_HISTORY_URL_PATH,
         )
         return sr_factory

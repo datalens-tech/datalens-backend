@@ -79,7 +79,11 @@ class MSSQLConnectionFormFactory(ConnectionFormFactory):
                 C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
                 rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
                 rc.collapse_advanced_settings_row(),
-                rc.data_export_forbidden_row(),
+                rc.data_export_forbidden_row(
+                    conn_id=self._get_form_params().conn_id,
+                    exports_history_url_path=self._get_form_params().exports_history_url_path,
+                    mode=self.mode,
+                ),
             ],
             api_schema=FormApiSchema(
                 create=create_api_schema if self.mode == ConnectionFormMode.create else None,

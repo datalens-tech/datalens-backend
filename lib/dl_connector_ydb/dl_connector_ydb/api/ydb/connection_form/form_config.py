@@ -209,7 +209,11 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                     enabled_help_text=self._localizer.translate(Translatable("label_ydb-ssl-enabled-tooltip")),
                     enabled_default_value=connector_settings.DEFAULT_SSL_ENABLE_VALUE,
                 ),
-                rc.data_export_forbidden_row(),
+                rc.data_export_forbidden_row(
+                    conn_id=self._get_form_params().conn_id,
+                    exports_history_url_path=self._get_form_params().exports_history_url_path,
+                    mode=self.mode,
+                ),
             ]
         else:
             rows = [
@@ -222,7 +226,11 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                     enabled_help_text=self._localizer.translate(Translatable("label_ydb-ssl-enabled-tooltip")),
                     enabled_default_value=connector_settings.DEFAULT_SSL_ENABLE_VALUE,
                 ),
-                rc.data_export_forbidden_row(),
+                rc.data_export_forbidden_row(
+                    conn_id=self._get_form_params().conn_id,
+                    exports_history_url_path=self._get_form_params().exports_history_url_path,
+                    mode=self.mode,
+                ),
             ]
         return ConnectionForm(
             title=YDBConnectionInfoProvider.get_title(self._localizer),
