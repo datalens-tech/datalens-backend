@@ -254,8 +254,6 @@ class DefaultServicesRegistry(ServicesRegistry):
             return self._inst_specific_sr
         raise ValueError(f"Invalid ISST type: expected {issr_cls}, got {type(self._inst_specific_sr)}")
 
-    def get_exports_history_url_path(self) -> Optional[str]:
-        return self._exports_history_url_path
 
     def close(self) -> None:
         if self._conn_exec_factory is not None:
