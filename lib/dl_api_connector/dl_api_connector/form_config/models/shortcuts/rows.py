@@ -397,11 +397,12 @@ class RowConstructor:
         self,
         conn_id: Optional[str] = None,
         exports_history_url_path: Optional[str] = None,
+        mode: ConnectionFormMode = ConnectionFormMode.create,
     ) -> C.CustomizableRow:
         def make_hint_text(
-            conn_id: str | None, exports_history_url_path: str | None, localizer: Localizer
+            conn_id: str | None, exports_history_url_path: str | None, mode: Optional[ConnectionFormMode]
         ) -> str | None:
-            if not exports_history_url_path or not conn_id:
+            if not (exports_history_url_path and conn_id and mode != ConnectionFormMode.create):
                 return None
             export_history_text = self._localizer.translate(Translatable("label_exports-history"))
             return f"[{export_history_text}]({exports_history_url_path}{conn_id})"
@@ -428,7 +429,9 @@ class RowConstructor:
                     default_value=BooleanField.off.value,
                     display_conditions={CommonFieldName.advanced_settings: "opened"},
                     hint_text=make_hint_text(
-                        conn_id=conn_id, exports_history_url_path=exports_history_url_path, localizer=self._localizer
+                        conn_id=conn_id,
+                        exports_history_url_path=exports_history_url_path,
+                        mode=mode,
                     ),
                 ),
             ]

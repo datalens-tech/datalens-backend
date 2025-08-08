@@ -282,6 +282,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
                     rc.data_export_forbidden_row(
                         conn_id=self._get_form_params().conn_id,
                         exports_history_url_path=self._get_form_params().exports_history_url_path,
+                        mode=self.mode,
                     ),
                     rc.listing_sources_row(),
                 ]
