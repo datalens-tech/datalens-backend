@@ -186,6 +186,7 @@ class TenantCommon(TenantDef):
 @attr.s(frozen=True)
 class FormConfigParams:
     conn_id: str | None = attr.ib(default=None)
+    user_id: str | None = attr.ib(default=None)
 
 
 @attr.s()
