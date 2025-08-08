@@ -1,13 +1,11 @@
-
 [tool.poetry]
-name = "dl-pivot"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_pivot"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-pivot"
+packages = [{include = "dl_pivot"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = "*"
@@ -20,27 +18,27 @@ typing-extensions = "*"
 [tool.poetry.group.tests.dependencies]
 pytest = "*"
 
+[tool.poetry.plugins."dl_pivot.pivot_engine_plugins"]
+native = "dl_pivot.native.plugin:NativePivotEnginePlugin"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
   "poetry-core",
 ]
 
-[tool.poetry.plugins."dl_pivot.pivot_engine_plugins"]
-native = "dl_pivot.native.plugin:NativePivotEnginePlugin"
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
 [datalens_ci]
 skip_test = true
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true

@@ -1,63 +1,61 @@
 [tool.poetry]
-name = "datalens-repmanager"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_repmanager"}]
+description = ""
 license = "Apache 2.0"
+name = "datalens-repmanager"
+packages = [{include = "dl_repmanager"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
+datalens-cli-tools = {develop = true, path = "../dl_cli_tools"}
 frozendict = ">=2.3.8"
 gitpython = ">=3.1.41"
 python = ">=3.10, <3.13"
 pyyaml = ">=6.0.1"
-tomlkit = "==0.11.8"
 requests = ">=2.31.0"
-datalens-cli-tools = {path = "../dl_cli_tools", develop = true}
+tomlkit = "==0.11.8"
 
-[tool.deptry.package_module_name_map]
-gitpython = "git"
-datalens-cli-tools = "dl_cli_tools"
-
+[tool.poetry.group.mypy.dependencies]
+mypy = ">= 1.7.0"
+types-requests = "*"
+types_PyYAML = "*"
 
 [tool.poetry.group.pytest.dependencies]
 pytest = ">=7.4.3"
 
-[tool.poetry.group.mypy.dependencies]
-types_PyYAML = "*"
-types-requests = "*"
-mypy = ">= 1.7.0"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_repmanager_tests/unit"]
-timeout = 600
-
 [tool.poetry.scripts]
-dl-repo = "dl_repmanager.scripts.repmanager_cli:main"
-dl-package = "dl_repmanager.scripts.package_meta_cli:main"
 # Legacy names
 datalens-repmanager-cli = "dl_repmanager.scripts.repmanager_cli:main"
+dl-package = "dl_repmanager.scripts.package_meta_cli:main"
 dl-package-meta = "dl_repmanager.scripts.package_meta_cli:main"
+dl-repo = "dl_repmanager.scripts.repmanager_cli:main"
 # tmp
 scoped-metapkg-sync = "dl_repmanager.scripts.scoped_metapkg_sync:main"
 
+[tool.deptry.package_module_name_map]
+datalens-cli-tools = "dl_cli_tools"
+gitpython = "git"
+
 [tool.mypy]
-warn_unused_configs = true
-disallow_untyped_defs = true
 check_untyped_defs = true
-strict_optional = true
+disallow_untyped_defs = true
 exclude = [
-    "^dl_repmanager_tests/",
+  "^dl_repmanager_tests/",
 ]
+strict_optional = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_repmanager_tests/unit"]
+timeout = 600
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
 
 [datalens.meta.mypy]
 targets = ["dl_repmanager/"]

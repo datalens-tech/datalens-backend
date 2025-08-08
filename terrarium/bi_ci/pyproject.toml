@@ -1,7 +1,68 @@
+[tool.poetry]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+description = ""
+license = "Apache 2.0"
+name = "bi-ci"
+packages = [{include = "bi_ci"}]
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+attrs = ">=22.2.0"
+clize = ">=5.0.0"
+poetry = ">=1.5.0"
+python = ">=3.10, <3.13"
+pyyaml = ">=6.0.1"
+tomlkit = ">=0.11.8"
+typing-extensions = "^4.9.0"
+
+[tool.poetry.group.mypy.dependencies]
+mypy = ">= 1.7.0"
+types_PyYAML = "*"
+
+[tool.poetry.group.pytest.dependencies]
+pytest = ">=7.4.3"
+pytest-mock = ">=3.12.0"
+
+[tool.poetry.scripts]
+detect-affected-packages = "bi_ci.detect_affected_packages:main"
+do-we-need-compose = "bi_ci.do_we_need_compose:cmd"
+execute-mypy-multi = "bi_ci.execute_mypy_multi:cmd"
+fix-ports-in-compose = "bi_ci.fix_ports_in_compose:cmd"
+get-compose-path = "bi_ci.get_compose_path:cmd"
+run-tests = "bi_ci.run_tests:runner_cli"
+split-pytest-tasks = "bi_ci.split_pytest_tasks:cmd"
+
+[tool.black]
+line-length = 120
+target-version = ['py310']
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "poetry",
+]
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = [
+  "bi_ci_tests",
+]
+strict_optional = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = "clize.*"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["bi_ci_tests/unit"]
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
-  "poetry-core"
+  "poetry-core",
 ]
 
 [datalens.meta.mypy]
@@ -10,63 +71,3 @@ targets = ["bi_ci"]
 [datalens.pytest.unit]
 root_dir = "bi_ci_tests/"
 target_path = "unit"
-
-[[tool.mypy.overrides]]
-module = "clize.*"
-ignore_missing_imports = true
-
-[tool.poetry]
-name = "bi-ci"
-version = "0.1.0"
-description = ""
-authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-license = "Apache 2.0"
-packages = [{include = "bi_ci"}]
-
-[tool.poetry.dependencies]
-attrs = ">=22.2.0"
-python = ">=3.10, <3.13"
-tomlkit = ">=0.11.8"
-clize = ">=5.0.0"
-poetry = ">=1.5.0"
-pyyaml = ">=6.0.1"
-typing-extensions = "^4.9.0"
-
-[tool.deptry.per_rule_ignores]
-DEP002 = [
-  "poetry",
-]
-
-[tool.poetry.group.pytest.dependencies]
-pytest = ">=7.4.3"
-pytest-mock = ">=3.12.0"
-
-[tool.poetry.group.mypy.dependencies]
-types_PyYAML = "*"
-mypy = ">= 1.7.0"
-
-[tool.poetry.scripts]
-detect-affected-packages = "bi_ci.detect_affected_packages:main"
-run-tests = "bi_ci.run_tests:runner_cli"
-fix-ports-in-compose = "bi_ci.fix_ports_in_compose:cmd"
-do-we-need-compose = "bi_ci.do_we_need_compose:cmd"
-get-compose-path = "bi_ci.get_compose_path:cmd"
-split-pytest-tasks = "bi_ci.split_pytest_tasks:cmd"
-execute-mypy-multi = "bi_ci.execute_mypy_multi:cmd"
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["bi_ci_tests/unit"]
-
-[tool.mypy]
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-exclude = [
-    "bi_ci_tests",
-]
-[tool.black]
-line-length = 120
-target-version = ['py310']

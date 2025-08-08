@@ -1,58 +1,56 @@
 [tool.poetry]
-name = "datalens-local-dev-2"
-version = "0.1.0"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+description = ""
 license = "Apache 2.0"
-readme = "README.md"
+name = "datalens-local-dev-2"
 packages = [{include = "datalens_local_dev"}]
+readme = "README.md"
+version = "0.1.0"
 
 [tool.poetry.dependencies]
 attrs = "22.2.0"
-python = "^3.10"
-frozendict = "*"
-toml = "*"
-packaging = ">=23.1"
 clize = "^5.0.0"
+frozendict = "*"
+jinja2 = "^3.1.2"
+lxml = ">=4.9.2"
+packaging = ">=23.1"
+python = "^3.10"
+toml = "*"
 tomlkit = "*"
 urllib3 = "<=2.0"
-lxml = ">=4.9.2"
-jinja2 = "^3.1.2"
 
 [tool.poetry.group.dev.dependencies]
+black = "23.12.1"
+ipdb = "0.13.13"
 # jupyter = "^1.0.0"
 mypy = "1.4.0"
-black = "23.12.1"
 ruff = "0.2.1"
-ipdb = "0.13.13"
-
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
+idea-dir = "datalens_local_dev.idea:main"
 print-deps = "datalens_local_dev.get_submodules:print_project_dependencies"
 print-sync-targets = "datalens_local_dev.get_submodules:rel_path_list_for_pycham_upload"
-idea-dir = "datalens_local_dev.idea:main"
-upload-to-dev-vm = "datalens_local_dev.upload_to_dev_machine:main"
-pycharm-ensure-upload-config = "datalens_local_dev.pycharm.ensure_uploads_config:main"
 pycharm-ensure-project-structure = "datalens_local_dev.pycharm.ensure_project_structure:main"
+pycharm-ensure-upload-config = "datalens_local_dev.pycharm.ensure_uploads_config:main"
+upload-to-dev-vm = "datalens_local_dev.upload_to_dev_machine:main"
 
+[tool.mypy]
+ignore_errors = true # ignore mypy in entire module
 
-[datalens.pytest.unit]
-root_dir = "bi_core_tests/unit"
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[datalens.meta.mypy]
+targets = [] # ignore mypy for this module
+
+[datalens.pytest.db]
+compose_file_base = "alt_docker-compose"
+root_dir = "bi_core_tests/db"
 
 [datalens.pytest.snowflake]
 root_dir = "bi_core_tests/ext/"
 target_path = "snowflake"
 
-[datalens.pytest.db]
-root_dir = "bi_core_tests/db"
-compose_file_base = "alt_docker-compose"
-
-[datalens.meta.mypy]
-targets = []    # ignore mypy for this module
-
-[tool.mypy]
-ignore_errors = true # ignore mypy in entire module
+[datalens.pytest.unit]
+root_dir = "bi_core_tests/unit"

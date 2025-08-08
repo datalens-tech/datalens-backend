@@ -1,39 +1,44 @@
-
 [tool.poetry]
-name = "dl-connector-snowflake"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_connector_snowflake"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-connector-snowflake"
+packages = [{include = "dl_connector_snowflake"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = "*"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-testing = {path = "../dl_testing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
 python = ">=3.10, <3.13"
 requests = "*"
 snowflake-connector-python = "*"
 snowflake-sqlalchemy = "*"
 sqlalchemy = "*"
-dl-api-commons = {path = "../dl_api_commons"}
-dl-utils = {path = "../dl_utils"}
-dl-constants = {path = "../dl_constants"}
-dl-i18n = {path = "../dl_i18n"}
-dl-testing = {path = "../dl_testing"}
-dl-formula = {path = "../dl_formula"}
-dl-configs = {path = "../dl_configs"}
-dl-api-connector = {path = "../dl_api_connector"}
-dl-core = {path = "../dl_core"}
-dl-model-tools = {path = "../dl_model_tools"}
-dl-db-testing = {path = "../dl_db_testing"}
-dl-type-transformer = {path = "../dl_type_transformer"}
 
-[tool.deptry.per_rule_ignores]
-DEP001 = ["snowflake"]
+[tool.poetry.group.tests.dependencies]
+dl-api-client = {path = "../dl_api_client"}
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+mock = "*"
+pytest = "*"
+pytest-asyncio = "*"
 
 [tool.poetry.plugins]
+
 [tool.poetry.plugins."dl_api_lib.connectors"]
 snowflake = "dl_connector_snowflake.api.connector:SnowFlakeApiConnector"
 
@@ -46,27 +51,35 @@ snowflake = "dl_connector_snowflake.db_testing.connector:SnowFlakeDbTestingConne
 [tool.poetry.plugins."dl_formula.connectors"]
 snowflake = "dl_connector_snowflake.formula.connector:SnowFlakeFormulaConnector"
 
-[tool.poetry.group.tests.dependencies]
-mock = "*"
-pytest = "*"
-pytest-asyncio = "*"
-dl-api-lib-testing = {path = "../dl_api_lib_testing"}
-dl-api-client = {path = "../dl_api_client"}
-dl-formula-testing = {path = "../dl_formula_testing"}
-dl-core-testing = {path = "../dl_core_testing"}
+[tool.deptry.per_rule_ignores]
+DEP001 = ["snowflake"]
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_connector_snowflake_tests"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
-module = "snowflake.*"
 follow_imports = "skip"
 ignore_missing_imports = true
+module = "snowflake.*"
 
 [[tool.mypy.overrides]]
+ignore_missing_imports = true
 module = "pytest.*"
-ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = "pytz.tzinfo.*"
 ignore_missing_imports = true
+module = "pytz.tzinfo.*"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_connector_snowflake_tests/ext", "dl_connector_snowflake_tests/unit"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -74,40 +87,24 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_connector_snowflake_tests/ext", "dl_connector_snowflake_tests/unit"]
-
-
-
-[datalens.pytest.ext]
-root_dir = "dl_connector_snowflake_tests/ext"
-labels = ["ext_public"]
-skip_tests = true
-
-[datalens.pytest.unit]
-root_dir = "dl_connector_snowflake_tests/"
-target_path = "unit"
-skip_compose = "true"
-labels = ["no_compose"]
-
-[tool.mypy]
-exclude = ["dl_connector_snowflake_tests"]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
 [datalens.i18n.domains]
 dl_connector_snowflake = [
-    {path = "dl_connector_snowflake/api"},
-    {path = "dl_connector_snowflake/core"},
+  {path = "dl_connector_snowflake/api"},
+  {path = "dl_connector_snowflake/core"},
 ]
 
 [datalens.meta]
 implicit_dependencies = [
-    "snowflake-sqlalchemy",
+  "snowflake-sqlalchemy",
 ]
+
+[datalens.pytest.ext]
+labels = ["ext_public"]
+root_dir = "dl_connector_snowflake_tests/ext"
+skip_tests = true
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_connector_snowflake_tests/"
+skip_compose = "true"
+target_path = "unit"

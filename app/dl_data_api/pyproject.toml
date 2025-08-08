@@ -1,81 +1,79 @@
-
 [tool.poetry]
-name = "dl-data-api"
-version = "0.0.0"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_data_api"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-data-api"
+packages = [{include = "dl_data_api"}]
 readme = "README.md"
+version = "0.0.0"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
 aiohttp = "*"
-gunicorn = "*"
-httpx = "*"
-dl-version = {path = "../../lib/dl_version"}
-dl-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
-dl-utils = {path = "../../lib/dl_utils"}
-dl-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
-dl-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
-dl-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
-dl-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
-dl-connector-chyt = {path = "../../lib/dl_connector_chyt"}
-dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
-dl-connector-metrica = {path = "../../lib/dl_connector_metrica"}
-dl-connector-mysql = {path = "../../lib/dl_connector_mysql"}
-dl-connector-mssql = {path = "../../lib/dl_connector_mssql"}
-dl-connector-oracle = {path = "../../lib/dl_connector_oracle"}
-dl-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
-dl-connector-trino = {path = "../../lib/dl_connector_trino"}
-dl-core = {path = "../../lib/dl_core"}
-dl-app-tools = {path = "../../lib/dl_app_tools"}
-dl-model-tools = {path = "../../lib/dl_model_tools"}
-dl-api-lib = {path = "../../lib/dl_api_lib"}
 dl-api-commons = {path = "../../lib/dl_api_commons"}
+dl-api-lib = {path = "../../lib/dl_api_lib"}
+dl-app-tools = {path = "../../lib/dl_app_tools"}
+dl-auth-native = {extras = ["aiohttp"], path = "../../lib/dl_auth_native"}
 dl-cache-engine = {path = "../../lib/dl_cache_engine"}
 dl-configs = {path = "../../lib/dl_configs"}
+dl-connector-chyt = {path = "../../lib/dl_connector_chyt"}
+dl-connector-clickhouse = {path = "../../lib/dl_connector_clickhouse"}
+dl-connector-greenplum = {path = "../../lib/dl_connector_greenplum"}
+dl-connector-metrica = {path = "../../lib/dl_connector_metrica"}
+dl-connector-mssql = {path = "../../lib/dl_connector_mssql"}
+dl-connector-mysql = {path = "../../lib/dl_connector_mysql"}
+dl-connector-oracle = {path = "../../lib/dl_connector_oracle"}
+dl-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
+dl-connector-trino = {path = "../../lib/dl_connector_trino"}
+dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
 dl-constants = {path = "../../lib/dl_constants"}
-dl-zitadel = {path = "../../lib/dl_zitadel", extras = ["aiohttp"]}
-dl-auth-native = {path = "../../lib/dl_auth_native", extras = ["aiohttp"]}
+dl-core = {path = "../../lib/dl_core"}
+dl-model-tools = {path = "../../lib/dl_model_tools"}
+dl-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
+dl-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
+dl-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
+dl-utils = {path = "../../lib/dl_utils"}
+dl-version = {path = "../../lib/dl_version"}
+dl-zitadel = {extras = ["aiohttp"], path = "../../lib/dl_zitadel"}
+gunicorn = "*"
+httpx = "*"
+python = ">=3.10, <3.13"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = [
-  "gunicorn", # gunicorn is used in the Dockerfile
-  "dl-connector-postgresql",
-  "dl-connector-clickhouse",
   "dl-connector-chyt",
-  "dl-connector-ydb",
-  "dl-connector-metrica",
-  "dl-connector-mysql",
-  "dl-connector-mssql",
-  "dl-connector-oracle",
+  "dl-connector-clickhouse",
   "dl-connector-greenplum",
+  "dl-connector-metrica",
+  "dl-connector-mssql",
+  "dl-connector-mysql",
+  "dl-connector-oracle",
+  "dl-connector-postgresql",
   "dl-connector-trino",
-   # TODO check if it's needed
-  "dl-utils",
+  "dl-connector-ydb",
+  "dl-model-tools",
+  "dl-sqlalchemy-clickhouse",
   "dl-sqlalchemy-common",
   "dl-sqlalchemy-postgres",
-  "dl-sqlalchemy-clickhouse",
-  "dl-model-tools",
+  "dl-utils",
+  "gunicorn", # gunicorn is used in the Dockerfile
 ]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
 
 [tool.pytest.ini_options]
-minversion = "6.0"
 addopts = "-ra"
+minversion = "6.0"
 testpaths = []
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
 
 [datalens_ci]
 skip_test = true
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true

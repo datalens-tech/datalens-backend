@@ -1,37 +1,34 @@
-
 [tool.poetry]
-name = "statcommons"
-version = "0.28.0"
-description = "Possibly-statbox-api-related common utils and helpers and reusables."
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "statcommons"}]
+description = "Possibly-statbox-api-related common utils and helpers and reusables."
 license = "Apache 2.0"
-
+name = "statcommons"
+packages = [{include = "statcommons"}]
+version = "0.28.0"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.13"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+ignore_errors = true # ignore mypy in entire module
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
 
 [tool.pytest.ini_options]
-minversion = "6.0"
 addopts = "-ra"
+minversion = "6.0"
 testpaths = []
 
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[datalens.meta.mypy]
+targets = [] # ignore mypy in entire module
 
 [datalens_ci]
 skip_test = true
-
-[datalens.meta.mypy]
-targets = []    # ignore mypy in entire module
-
-[tool.mypy]
-ignore_errors = true # ignore mypy in entire module
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true

@@ -1,23 +1,34 @@
-
 [tool.poetry]
-name = "dl-rls"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_rls"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-rls"
+packages = [{include = "dl_rls"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = "*"
-marshmallow = "*"
-python = ">=3.10, <3.13"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-constants = {path = "../../lib/dl_constants"}
+marshmallow = "*"
+python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "*"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -25,21 +36,8 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
 [datalens.pytest.unit]
-root_dir = "dl_rls_tests/"
-target_path = "unit"
-skip_compose = "true"
 labels = ["no_compose"]
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
+root_dir = "dl_rls_tests/"
+skip_compose = "true"
+target_path = "unit"

@@ -2,6 +2,7 @@ version: '3'
 
 vars:
   VM_HOST: dl-vm
+  VENV_PATH: '{{ if eq .VENV_PATH "" }}{{ .DEFAULT_VENV_PATH }}{{ else }}{{ .VENV_PATH }}{{ end }}'
 
 tasks:
   help:
@@ -102,6 +103,23 @@ tasks:
       vars:
         - VENV_PATH
 
+  toml-sort:
+    desc: Sort toml files
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - echo "Running toml-sort checks..."
+      - task: venv-bin
+        vars:
+          CLI_ARGS: 'toml-sort {{if eq .FIX "true"}}--in-place{{else}}--check{{end}} {{.TOML_FILES}}'
+    vars:
+      FIX: '{{.FIX | default "false"}}'
+      TOML_FILES:
+        sh: |
+          find {{.CLI_ARGS | default "."}} -name 'pyproject.toml' \
+          | sort \
+          | xargs -n1 realpath \
+          | tr '\n' ' '
+
   lint:
     desc: Lint code
     dir: "{{.USER_WORKING_DIR}}"
@@ -121,6 +139,8 @@ tasks:
         vars:
           CLI_ARGS: "ruff check {{.LINT_PATH}}"
 
+      - task: toml-sort
+
       - for: { var: LIB_PATHS, as: LIB_PATH }
         task: _deptry
         vars:
@@ -138,7 +158,7 @@ tasks:
             | sort \
             | xargs -n1 realpath \
             | xargs -n1 dirname \
-            {{ if ne .EXCLUDE_LIB_PATHS "" }}{{ range $i, $path := .EXCLUDE_LIB_PATHS | splitLines }} | grep -v "^{{$path}}$" {{end}}{{end}}
+            {{ range $i, $path := .EXCLUDE_LIB_PATHS | splitLines }} | grep -v "^{{$path}}$" {{end}}
 
   lint-fix:
     desc: Lint fix code
@@ -159,6 +179,10 @@ tasks:
         vars:
           CLI_ARGS: "ruff check --fix {{.LINT_PATH}}"
 
+      - task: toml-sort
+        vars:
+          FIX: 'true'
+
       - for: { var: LIB_PATHS, as: LIB_PATH }
         task: _deptry
         vars:
@@ -176,7 +200,7 @@ tasks:
             | sort \
             | xargs -n1 realpath \
             | xargs -n1 dirname \
-            {{ if ne .EXCLUDE_LIB_PATHS "" }}{{ range $i, $path := .EXCLUDE_LIB_PATHS | splitLines }} | grep -v "^{{$path}}$" {{end}}{{end}}
+            {{ range $i, $path := .EXCLUDE_LIB_PATHS | splitLines }} | grep -v "^{{$path}}$" {{end}}
 
   _deptry:
     desc: Run deptry on package

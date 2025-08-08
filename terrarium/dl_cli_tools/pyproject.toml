@@ -1,44 +1,40 @@
-
 [tool.poetry]
-name = "datalens-cli-tools"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_cli_tools"}]
+description = ""
 license = "Apache 2.0"
+name = "datalens-cli-tools"
+packages = [{include = "dl_cli_tools"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
 python = ">=3.10, <3.13"
 
-
-[tool.poetry.group.pytest.dependencies]
-
 [tool.poetry.group.mypy.dependencies]
 mypy = ">= 1.7.0"
 
+[tool.poetry.group.pytest.dependencies]
 
 [tool.poetry.group.tests.dependencies]
 pytest = ">=7.2.2"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
-
 [datalens_ci]
 skip_test = true
-
-[tool.mypy]
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true

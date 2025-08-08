@@ -1,66 +1,88 @@
-
 [tool.poetry]
-name = "dl-core"
-version = "12.99.0"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_core"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-core"
+packages = [{include = "dl_core"}]
 readme = "README.md"
-
+version = "12.99.0"
 
 [tool.poetry.dependencies]
 aiodns = "*"
 aiohttp = "*"
 anyascii = "*"
-pydantic = "*"
-frozendict = "*"
 arq = "*"
 attrs = "*"
 cryptography = "*"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-cache-engine = {path = "../dl_cache_engine"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-dashsql = {path = "../../lib/dl_dashsql"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-rls = {path = "../dl_rls"}
+dl-settings = {path = "../dl_settings"}
+dl-task-processor = {path = "../dl_task_processor"}
+dl-type-transformer = {path = "../dl_type_transformer"}
+dl-utils = {path = "../dl_utils"}
 flask = "*"
+frozendict = "*"
 jaeger-client = "*"
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 multidict = "*"
 opentracing = "*"
 orjson = "*"
+pydantic = "*"
 python = ">=3.10, <3.13"
 redis = "*"
 requests = "*"
 shortuuid = "*"
 sqlalchemy = "*"
+statcommons = {path = "../statcommons"}
 typing-extensions = "*"
 uwsgi = "*"
 werkzeug = "*"
 xxhash = "*"
-statcommons = {path = "../statcommons"}
-dl-api-commons = {path = "../dl_api_commons"}
-dl-utils = {path = "../dl_utils"}
-dl-constants = {path = "../dl_constants"}
-dl-i18n = {path = "../dl_i18n"}
-dl-configs = {path = "../dl_configs"}
-dl-app-tools = {path = "../dl_app_tools"}
-dl-model-tools = {path = "../dl_model_tools"}
-dl-task-processor = {path = "../dl_task_processor"}
-dl-type-transformer = {path = "../dl_type_transformer"}
-dl-dashsql = {path = "../../lib/dl_dashsql"}
-dl-cache-engine = {path = "../dl_cache_engine"}
+
+[tool.poetry.group.tests.dependencies]
+dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+dl-core-testing = {path = "../dl_core_testing"}
 dl-rls = {path = "../dl_rls"}
-dl-query-processing = {path = "../dl_query_processing"}
-dl-settings = {path = "../dl_settings"}
+dl-testing = {path = "../dl_testing"}
+flaky = "*"
+pytest = "*"
+pytest-asyncio = "*"
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["uwsgidecorators"]
 
-[tool.poetry.group.tests.dependencies]
-flaky = "*"
-pytest = "*"
-pytest-asyncio = "*"
-dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
-dl-testing = {path = "../dl_testing"}
-dl-core-testing = {path = "../dl_core_testing"}
-dl-rls = {path = "../dl_rls"}
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_core_tests"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  "aiodns.*",
+  "aiogoogle.*",
+  "anyascii.*",
+  "statcommons.*",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_core_tests/db", "dl_core_tests/unit"]
+timeout = 600
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -68,41 +90,17 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_core_tests/unit", "dl_core_tests/db"]
-timeout = 600
-
-[datalens.pytest.unit]
-root_dir = "dl_core_tests/"
-target_path = "unit"
-skip_compose = "true"
-labels = ["no_compose"]
+[datalens.i18n.domains]
+dl_core = [
+  {path = "dl_core"},
+]
 
 [datalens.pytest.db]
 root_dir = "dl_core_tests/"
 target_path = "db"
 
-[tool.mypy]
-exclude = ["dl_core_tests"]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[[tool.mypy.overrides]]
-module = [
-    "aiogoogle.*",
-    "anyascii.*",
-    "statcommons.*",
-    "aiodns.*"
-]
-ignore_missing_imports = true
-
-[datalens.i18n.domains]
-dl_core = [
-    {path = "dl_core"},
-]
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_core_tests/"
+skip_compose = "true"
+target_path = "unit"

@@ -1,36 +1,47 @@
-
 [tool.poetry]
-name = "dl-auth-native"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_auth_native"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-auth-native"
+packages = [{include = "dl_auth_native"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
-aiohttp = {version = "*", optional = true}
+aiohttp = {optional = true, version = "*"}
 attrs = "*"
-flask = {version = "*", optional = true}
-pyjwt = "*"
+dl-api-commons = {path = "../../lib/dl_api_commons"}
+dl-constants = {path = "../../lib/dl_constants"}
+flask = {optional = true, version = "*"}
 pydantic = "*"
+pyjwt = "*"
+python = ">=3.10, <3.13"
 typing-extensions = "*"
 werkzeug = "*"
-dl-constants = {path = "../../lib/dl_constants"}
-dl-api-commons = {path = "../../lib/dl_api_commons"}
-
-[tool.deptry.package_module_name_map]
-pyjwt = "jwt"
 
 [tool.poetry.extras]
 aiohttp = ["aiohttp"]
 flask = ["flask"]
 
 [tool.poetry.group.tests.dependencies]
-pytest = "*"
 cryptography = "*"
+pytest = "*"
+
+[tool.deptry.package_module_name_map]
+pyjwt = "jwt"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -38,18 +49,5 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
 [datalens_ci]
 skip_test = true
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true

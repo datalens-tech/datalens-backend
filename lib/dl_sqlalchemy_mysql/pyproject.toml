@@ -1,46 +1,45 @@
-
 [tool.poetry]
-name = "dl-sqlalchemy-mysql"
-version = "0.3"
-description = "DL MySQL SQLAlchemy Dialect"
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_sqlalchemy_mysql"}]
+description = "DL MySQL SQLAlchemy Dialect"
 license = "Apache 2.0"
-
+name = "dl-sqlalchemy-mysql"
+packages = [{include = "dl_sqlalchemy_mysql"}]
+version = "0.3"
 
 [tool.poetry.dependencies]
+dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 pymysql = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
-dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+
+[tool.poetry.group.tests.dependencies]
+
+[tool.poetry.plugins."sqlalchemy.dialects"]
+dl_mysql = "dl_sqlalchemy_mysql.base:DLMYSQLDialect"
+dl_mysql_basic = "dl_sqlalchemy_mysql.base:DLMYSQLDialectBasic"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = [
   "pymysql",
 ]
 
-[tool.poetry.plugins."sqlalchemy.dialects"]
-dl_mysql = "dl_sqlalchemy_mysql.base:DLMYSQLDialect"
-dl_mysql_basic = "dl_sqlalchemy_mysql.base:DLMYSQLDialectBasic"
-
-[tool.poetry.group.tests.dependencies]
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_sqlalchemy_mysql_tests/unit"]
-
-[datalens.meta.mypy]
-targets = []    # ignore mypy in entire module
-
 [tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
 ignore_errors = true # ignore mypy in entire module
-warn_unused_ignores = true
+strict_optional = true
 warn_redundant_casts = true
 warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_sqlalchemy_mysql_tests/unit"]
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[datalens.meta.mypy]
+targets = [] # ignore mypy in entire module

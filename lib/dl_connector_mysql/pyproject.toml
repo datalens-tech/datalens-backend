@@ -1,36 +1,45 @@
-
 [tool.poetry]
-name = "dl-connector-mysql"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_connector_mysql"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-connector-mysql"
+packages = [{include = "dl_connector_mysql"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 aiomysql = "*"
 attrs = "*"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = "*"
 pymysql = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
-dl-api-commons = {path = "../dl_api_commons"}
-dl-constants = {path = "../dl_constants"}
-dl-formula-ref = {path = "../dl_formula_ref"}
-dl-i18n = {path = "../dl_i18n"}
-dl-formula = {path = "../dl_formula"}
-dl-configs = {path = "../dl_configs"}
-dl-api-connector = {path = "../dl_api_connector"}
-dl-core = {path = "../dl_core"}
-dl-app-tools = {path = "../dl_app_tools"}
-dl-db-testing = {path = "../dl_db_testing"}
-dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
-dl-query-processing = {path = "../dl_query_processing"}
-dl-type-transformer = {path = "../dl_type_transformer"}
+
+[tool.poetry.group]
+
+[tool.poetry.group.tests.dependencies]
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-testing = {path = "../dl_testing"}
+pytest = "*"
+pytest-asyncio = "*"
 
 [tool.poetry.plugins]
+
 [tool.poetry.plugins."dl_api_lib.connectors"]
 mysql = "dl_connector_mysql.api.connector:MySQLApiConnector"
 
@@ -46,14 +55,26 @@ mysql = "dl_connector_mysql.formula.connector:MySQLFormulaConnector"
 [tool.poetry.plugins."dl_formula_ref.plugins"]
 mysql = "dl_connector_mysql.formula_ref.plugin:MySQLFormulaRefPlugin"
 
-[tool.poetry.group]
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-pytest-asyncio = "*"
-dl-api-lib-testing = {path = "../dl_api_lib_testing"}
-dl-formula-testing = {path = "../dl_formula_testing"}
-dl-testing = {path = "../dl_testing"}
-dl-core-testing = {path = "../dl_core_testing"}
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_connector_mysql_tests"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  "aiomysql.*",
+  "dl_sqlalchemy_mysql.*",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_connector_mysql_tests/db", "dl_connector_mysql_tests/unit"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -61,43 +82,22 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_connector_mysql_tests/db", "dl_connector_mysql_tests/unit"]
-
-[datalens.pytest.db]
-root_dir = "dl_connector_mysql_tests/"
-target_path = "db"
-labels=["fat"]
-
-[datalens.pytest.unit]
-root_dir = "dl_connector_mysql_tests/"
-target_path = "unit"
-skip_compose = "true"
-labels = ["no_compose"]
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-exclude = ["dl_connector_mysql_tests"]
-
-[[tool.mypy.overrides]]
-module = [
-    "dl_sqlalchemy_mysql.*",
-    "aiomysql.*"
-]
-ignore_missing_imports = true
-
 [datalens.i18n.domains]
 dl_connector_mysql = [
-    {path = "dl_connector_mysql/api"},
-    {path = "dl_connector_mysql/core"},
+  {path = "dl_connector_mysql/api"},
+  {path = "dl_connector_mysql/core"},
 ]
 dl_formula_ref_dl_connector_mysql = [
-    {path = "dl_connector_mysql/formula_ref"},
+  {path = "dl_connector_mysql/formula_ref"},
 ]
+
+[datalens.pytest.db]
+labels = ["fat"]
+root_dir = "dl_connector_mysql_tests/"
+target_path = "db"
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_connector_mysql_tests/"
+skip_compose = "true"
+target_path = "unit"

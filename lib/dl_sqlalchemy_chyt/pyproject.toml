@@ -1,49 +1,47 @@
-
 [tool.poetry]
-name = "dl-sqlalchemy-chyt"
-version = "0.7"
-description = "BI CHYT SQLAlchemy Dialect"
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_sqlalchemy_chyt"}]
+description = "BI CHYT SQLAlchemy Dialect"
 license = "Apache 2.0"
+name = "dl-sqlalchemy-chyt"
+packages = [{include = "dl_sqlalchemy_chyt"}]
 readme = "README.rst"
-
+version = "0.7"
 
 [tool.poetry.dependencies]
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
+dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
-dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
+
+[tool.poetry.plugins."sqlalchemy.dialects"]
+bi_chyt = "dl_sqlalchemy_chyt.base:BICHYTDialect"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = [
   "dl-sqlalchemy-common",
 ]
 
-[tool.poetry.plugins."sqlalchemy.dialects"]
-bi_chyt = "dl_sqlalchemy_chyt.base:BICHYTDialect"
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+ignore_errors = true # ignore mypy in entire module
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
 
 [tool.pytest.ini_options]
-minversion = "6.0"
 addopts = "-ra"
+minversion = "6.0"
 testpaths = []
 
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[datalens.meta.mypy]
+targets = [] # ignore mypy in entire module
 
 [datalens_ci]
 skip_test = true
-
-[datalens.meta.mypy]
-targets = []    # ignore mypy in entire module
-
-[tool.mypy]
-ignore_errors = true # ignore mypy in entire module
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true

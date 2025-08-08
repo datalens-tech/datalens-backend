@@ -1,54 +1,52 @@
-
 [tool.poetry]
-name = "dl-testing"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_testing"}]
+description = ""
 license = "Apache 2.0"
-
+name = "dl-testing"
+packages = [{include = "dl_testing"}]
+version = "0.0.1"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
 aiobotocore = "*"
-attrs = "*"
-python-dotenv = "*"
-pytest = "*"
-pyyaml = "*"
 aiohttp = "*"
+attrs = "*"
 boto3 = "*"
 botocore = "*"
-dl-utils = {path = "../dl_utils"}
 dl-api-commons = {path = "../dl_api_commons"}
 dl-configs = {path = "../dl_configs"}
+dl-utils = {path = "../dl_utils"}
+pytest = "*"
+python = ">=3.10, <3.13"
+python-dotenv = "*"
+pyyaml = "*"
 
 [tool.poetry.plugins.env_param_getters]
 direct = "dl_testing.env_params.main:DirectEnvParamGetter"
 osenv = "dl_testing.env_params.main:OsEnvParamGetter"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
-[datalens.pytest.unit]
-root_dir = "dl_testing_tests/"
-target_path = "unit"
-skip_compose = "true"
-labels = ["no_compose"]
-
 [tool.mypy]
-warn_unused_ignores = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
 warn_redundant_casts = true
 warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
+warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
-module = ["types_aiobotocore_s3.*", "mypy_boto3_s3.*"]
 ignore_missing_imports = true
+module = ["mypy_boto3_s3.*", "types_aiobotocore_s3.*"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_testing_tests/"
+skip_compose = "true"
+target_path = "unit"

@@ -1,43 +1,46 @@
-
 [tool.poetry]
-name = "dl-connector-bigquery"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_connector_bigquery"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-connector-bigquery"
+packages = [{include = "dl_connector_bigquery"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = "*"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-testing = {path = "../dl_testing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
+dl-utils = {path = "../dl_utils"}
 google-api-core = "*"
 google-auth = "*"
+google-cloud-bigquery = "*"
+google-cloud-bigquery-storage = {extras = ["pyarrow"], version = "*"}
+google-cloud-core = "*"
+google-resumable-media = "*"
 marshmallow = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
 sqlalchemy-bigquery = "*"
-google-cloud-bigquery = "*"
-google-cloud-bigquery-storage = {version = "*", extras = ["pyarrow"]}
-google-resumable-media = "*"
-google-cloud-core = "*"
-dl-api-commons = {path = "../dl_api_commons"}
-dl-utils = {path = "../dl_utils"}
-dl-constants = {path = "../dl_constants"}
-dl-i18n = {path = "../dl_i18n"}
-dl-testing = {path = "../dl_testing"}
-dl-formula = {path = "../dl_formula"}
-dl-configs = {path = "../dl_configs"}
-dl-api-connector = {path = "../dl_api_connector"}
-dl-core = {path = "../dl_core"}
-dl-model-tools = {path = "../dl_model_tools"}
-dl-db-testing = {path = "../dl_db_testing"}
-dl-type-transformer = {path = "../dl_type_transformer"}
 
-[tool.deptry.per_rule_ignores]
-DEP001 = ["google"]
+[tool.poetry.group.tests.dependencies]
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+pytest = "*"
+pytest-asyncio = "*"
 
 [tool.poetry.plugins]
+
 [tool.poetry.plugins."dl_api_lib.connectors"]
 bigquery = "dl_connector_bigquery.api.connector:BigQueryApiConnector"
 
@@ -50,12 +53,29 @@ bigquery = "dl_connector_bigquery.db_testing.connector:BigQueryDbTestingConnecto
 [tool.poetry.plugins."dl_formula.connectors"]
 bigquery = "dl_connector_bigquery.formula.connector:BigQueryFormulaConnector"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-pytest-asyncio = "*"
-dl-api-lib-testing = {path = "../dl_api_lib_testing"}
-dl-formula-testing = {path = "../dl_formula_testing"}
-dl-core-testing = {path = "../dl_core_testing"}
+[tool.deptry.per_rule_ignores]
+DEP001 = ["google"]
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_connector_bigquery_tests"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  "google.*",
+  "sqlalchemy_bigquery.*",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_connector_bigquery_tests/ext", "dl_connector_bigquery_tests/unit"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -63,43 +83,19 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_connector_bigquery_tests/ext", "dl_connector_bigquery_tests/unit"]
-
-
-
-[datalens.pytest.unit]
-root_dir = "dl_connector_bigquery_tests/unit"
-skip_compose = "true"
-labels = ["no_compose"]
-
-[datalens.pytest.ext]
-root_dir = "dl_connector_bigquery_tests/ext"
-skip_compose = "true"
-labels = ["ext_public"]
-skip_tests = true
-
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-exclude = ["dl_connector_bigquery_tests"]
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[[tool.mypy.overrides]]
-module = [
-    "sqlalchemy_bigquery.*",
-    "google.*"
-]
-ignore_missing_imports = true
-
 [datalens.i18n.domains]
 dl_connector_bigquery = [
-    {path = "dl_connector_bigquery/api"},
-    {path = "dl_connector_bigquery/core"},
+  {path = "dl_connector_bigquery/api"},
+  {path = "dl_connector_bigquery/core"},
 ]
+
+[datalens.pytest.ext]
+labels = ["ext_public"]
+root_dir = "dl_connector_bigquery_tests/ext"
+skip_compose = "true"
+skip_tests = true
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_connector_bigquery_tests/unit"
+skip_compose = "true"

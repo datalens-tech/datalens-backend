@@ -1,33 +1,45 @@
-
 [tool.poetry]
-name = "dl-api-connector"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_api_connector"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-api-connector"
+packages = [{include = "dl_api_connector"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
 attrs = "*"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-formula = {path = "../dl_formula"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
+dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = "*"
 marshmallow-oneofschema = "*"
-dynamic-enum = {path = "../dynamic_enum"}
-dl-api-commons = {path = "../dl_api_commons"}
-dl-constants = {path = "../dl_constants"}
-dl-i18n = {path = "../dl_i18n"}
-dl-formula = {path = "../dl_formula"}
-dl-configs = {path = "../dl_configs"}
-dl-core = {path = "../dl_core"}
-dl-query-processing = {path = "../dl_query_processing"}
-dl-model-tools = {path = "../dl_model_tools"}
-dl-type-transformer = {path = "../dl_type_transformer"}
+python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
-pytest = "*"
 dl-testing = {path = "../dl_testing"}
+pytest = "*"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_api_connector_tests"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_api_connector_tests/unit"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -35,32 +47,18 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_api_connector_tests/unit"]
-
-[datalens.pytest.unit]
-root_dir = "dl_api_connector_tests/"
-target_path = "unit"
-skip_compose = "true"
-labels = ["no_compose"]
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-exclude = ["dl_api_connector_tests"]
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
 [datalens.i18n.domains]
 dl_api_connector = [
-    {path = "dl_api_connector"},
+  {path = "dl_api_connector"},
 ]
 
 [datalens.meta]
 implicit_dependencies = [
-    "pytest",
+  "pytest",
 ]
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_api_connector_tests/"
+skip_compose = "true"
+target_path = "unit"

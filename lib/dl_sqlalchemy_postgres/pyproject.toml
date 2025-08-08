@@ -1,20 +1,24 @@
-
 [tool.poetry]
-name = "dl-sqlalchemy-postgres"
-version = "0.3"
-description = "BI PostgreSQL SQLAlchemy Dialect"
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_sqlalchemy_postgres"}]
+description = "BI PostgreSQL SQLAlchemy Dialect"
 license = "Apache 2.0"
+name = "dl-sqlalchemy-postgres"
+packages = [{include = "dl_sqlalchemy_postgres"}]
 readme = "README.rst"
-
+version = "0.3"
 
 [tool.poetry.dependencies]
 asyncpg = "*"
+dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 psycopg2-binary = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
-dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+
+[tool.poetry.group.tests.dependencies]
+
+[tool.poetry.plugins."sqlalchemy.dialects"]
+bi_postgresql = "dl_sqlalchemy_postgres.base:BIPGDialect"
+bi_postgresql_basic = "dl_sqlalchemy_postgres.base:BIPGDialectBasic"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = [
@@ -22,31 +26,26 @@ DEP002 = [
   "psycopg2-binary",
 ]
 
-[tool.poetry.plugins."sqlalchemy.dialects"]
-bi_postgresql = "dl_sqlalchemy_postgres.base:BIPGDialect"
-bi_postgresql_basic = "dl_sqlalchemy_postgres.base:BIPGDialectBasic"
-
-[tool.poetry.group.tests.dependencies]
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = [
-    "dl_sqlalchemy_postgres_tests/unit",
-    "dl_sqlalchemy_postgres_tests/db",
-]
-
-[datalens.meta.mypy]
-targets = []    # ignore mypy in entire module
-
 [tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
 ignore_errors = true # ignore mypy in entire module
-warn_unused_ignores = true
+strict_optional = true
 warn_redundant_casts = true
 warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = [
+  "dl_sqlalchemy_postgres_tests/db",
+  "dl_sqlalchemy_postgres_tests/unit",
+]
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[datalens.meta.mypy]
+targets = [] # ignore mypy in entire module

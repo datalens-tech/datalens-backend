@@ -1,58 +1,83 @@
-
 [tool.poetry]
-name = "dl-api-lib"
-version = "0.0.0"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_api_lib"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-api-lib"
+packages = [{include = "dl_api_lib"}]
 readme = "README.md"
+version = "0.0.0"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
 aiohttp = "*"
 attrs = "*"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-cache-engine = {path = "../dl_cache_engine"}
+dl-compeng-pg = {path = "../dl_compeng_pg"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-dashsql = {path = "../../lib/dl_dashsql"}
+dl-formula = {path = "../dl_formula"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-pivot = {path = "../dl_pivot"}
+dl-pivot-pandas = {path = "../dl_pivot_pandas"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-rls = {path = "../dl_rls"}
+dl-settings = {path = "../dl_settings"}
+dl-task-processor = {path = "../dl_task_processor"}
+dl-type-transformer = {path = "../dl_type_transformer"}
+dl-utils = {path = "../dl_utils"}
+dynamic-enum = {path = "../dynamic_enum"}
 flask = "*"
 flask-marshmallow = "*"
 flask-restx = "*"
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 pydantic = "*"
+python = ">=3.10, <3.13"
 requests = "*"
-werkzeug = "*"
 statcommons = {path = "../statcommons"}
-dl-api-commons = {path = "../dl_api_commons"}
-dl-utils = {path = "../dl_utils"}
-dl-constants = {path = "../dl_constants"}
-dl-compeng-pg = {path = "../dl_compeng_pg"}
-dl-i18n = {path = "../dl_i18n"}
-dl-formula = {path = "../dl_formula"}
-dl-configs = {path = "../dl_configs"}
-dl-api-connector = {path = "../dl_api_connector"}
-dl-core = {path = "../dl_core"}
-dl-app-tools = {path = "../dl_app_tools"}
-dl-query-processing = {path = "../dl_query_processing"}
-dl-model-tools = {path = "../dl_model_tools"}
-dl-task-processor = {path = "../dl_task_processor"}
-dl-dashsql = {path = "../../lib/dl_dashsql"}
-dl-pivot = {path = "../dl_pivot"}
-dl-pivot-pandas = {path = "../dl_pivot_pandas"}
-dl-cache-engine = {path = "../dl_cache_engine"}
-dynamic-enum = {path = "../dynamic_enum"}
 typing-extensions = "*"
-dl-rls = {path = "../dl_rls"}
-dl-type-transformer = {path = "../dl_type_transformer"}
-dl-settings = {path = "../dl_settings"}
+werkzeug = "*"
 
 [tool.poetry.group.tests.dependencies]
-pytest = "*"
-pytest-asyncio = "*"
 dl-compeng-pg = {path = "../dl_compeng_pg"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 dl-connector-postgresql = {path = "../dl_connector_postgresql"}
-dl-testing = {path = "../dl_testing"}
 dl-core-testing = {path = "../dl_core_testing"}
+dl-testing = {path = "../dl_testing"}
+pytest = "*"
+pytest-asyncio = "*"
+
+[tool.poetry.scripts]
+bi-core-rqe-async = "dl_core.connection_executors.remote_query_executor.app_async:async_qe_main"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_api_lib_tests"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = false # TODO: investigate faulty warnings
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  "flask_marshmallow",
+  "flask_restx.*",
+  "statcommons.*",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_api_lib_tests/db", "dl_api_lib_tests/unit"]
+timeout = 600
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -60,50 +85,24 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_api_lib_tests/unit", "dl_api_lib_tests/db"]
-timeout = 600
+[datalens.i18n.domains]
+dl_api_lib = [
+  {path = "dl_api_lib"},
+]
 
-[datalens.pytest.unit]
-root_dir = "dl_api_lib_tests/"
-target_path = "unit"
-skip_compose = "true"
-labels = ["no_compose"]
+[datalens.meta.mypy]
+implicit_dependencies = [
+  "datalens-compeng-pg",
+  "datalens-connector-postgresql",
+]
+targets = ["dl_api_lib"]
 
 [datalens.pytest.db]
 root_dir = "dl_api_lib_tests/"
 target_path = "db"
 
-[tool.poetry.scripts]
-bi-core-rqe-async = "dl_core.connection_executors.remote_query_executor.app_async:async_qe_main"
-
-[datalens.meta.mypy]
-targets = ["dl_api_lib"]
-implicit_dependencies = [
-    "datalens-compeng-pg",
-    "datalens-connector-postgresql",
-]
-
-[tool.mypy]
-warn_unused_ignores = false  # TODO: investigate faulty warnings
-warn_redundant_casts = true
-exclude = ["dl_api_lib_tests"]
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[[tool.mypy.overrides]]
-module = [
-    "flask_restx.*",
-    "statcommons.*",
-    "flask_marshmallow"
-]
-ignore_missing_imports = true
-
-[datalens.i18n.domains]
-dl_api_lib = [
-    {path = "dl_api_lib"},
-]
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_api_lib_tests/"
+skip_compose = "true"
+target_path = "unit"

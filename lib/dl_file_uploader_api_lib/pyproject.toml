@@ -1,40 +1,56 @@
-
 [tool.poetry]
-name = "dl-file-uploader-api-lib"
-version = "0.0.0"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_file_uploader_api_lib"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-file-uploader-api-lib"
+packages = [{include = "dl_file_uploader_api_lib"}]
 readme = "README.md"
-
+version = "0.0.0"
 
 [tool.poetry.dependencies]
 aiogoogle = "*"
 aiohttp = "*"
 attrs = "*"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-configs = {path = "../dl_configs"}
+dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-file-uploader-lib = {path = "../dl_file_uploader_lib"}
+dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+dl-s3 = {path = "../dl_s3"}
+dl-task-processor = {path = "../dl_task_processor"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 python = ">=3.10, <3.13"
 redis = "*"
-dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
-dl-api-commons = {path = "../dl_api_commons"}
-dl-file-uploader-lib = {path = "../dl_file_uploader_lib"}
-dl-constants = {path = "../dl_constants"}
-dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
-dl-configs = {path = "../dl_configs"}
-dl-core = {path = "../dl_core"}
-dl-task-processor = {path = "../dl_task_processor"}
-dl-type-transformer = {path = "../dl_type_transformer"}
-dl-s3 = {path = "../dl_s3"}
 
 [tool.poetry.group.tests.dependencies]
+dl-core-testing = {path = "../dl_core_testing"}
+dl-file-secure-reader-lib = {path = "../dl_file_secure_reader_lib"}
+dl-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
+dl-testing = {path = "../dl_testing"}
 pytest = "*"
 pytest-asyncio = "*"
-dl-file-secure-reader-lib = {path = "../dl_file_secure_reader_lib"}
-dl-testing = {path = "../dl_testing"}
-dl-core-testing = {path = "../dl_core_testing"}
-dl-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_file_uploader_api_lib_tests"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = "aiogoogle.*"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_file_uploader_api_lib_tests/db", "dl_file_uploader_api_lib_tests/ext", "dl_file_uploader_api_lib_tests/unit"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -42,32 +58,12 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_file_uploader_api_lib_tests/db", "dl_file_uploader_api_lib_tests/ext", "dl_file_uploader_api_lib_tests/unit"]
-
-
-
-[datalens.pytest.local]
-root_dir = "dl_file_uploader_api_lib_tests/"
-target_path = "unit db"
-labels = ["fat"]
-
 [datalens.pytest.ext]
+labels = ["ext_public"]
 root_dir = "dl_file_uploader_api_lib_tests/"
 target_path = "ext"
-labels = ["ext_public"]
 
-[tool.mypy]
-exclude = ["dl_file_uploader_api_lib_tests"]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[[tool.mypy.overrides]]
-module = "aiogoogle.*"
-ignore_missing_imports = true
+[datalens.pytest.local]
+labels = ["fat"]
+root_dir = "dl_file_uploader_api_lib_tests/"
+target_path = "unit db"

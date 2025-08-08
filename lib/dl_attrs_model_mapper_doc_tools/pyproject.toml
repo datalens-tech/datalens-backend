@@ -1,22 +1,33 @@
-
 [tool.poetry]
-name = "dl-attrs-model-mapper-doc-tools"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_attrs_model_mapper_doc_tools"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-attrs-model-mapper-doc-tools"
+packages = [{include = "dl_attrs_model_mapper_doc_tools"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
 attrs = "*"
-pyyaml = "*"
 dl-attrs-model-mapper = {path = "../dl_attrs_model_mapper"}
+python = ">=3.10, <3.13"
+pyyaml = "*"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "*"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -24,18 +35,5 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
 [datalens_ci]
 skip_test = true
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true

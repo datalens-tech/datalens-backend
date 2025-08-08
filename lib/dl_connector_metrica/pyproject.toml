@@ -1,32 +1,38 @@
 [tool.poetry]
-name = "dl-connector-metrica"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_connector_metrica"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-connector-metrica"
+packages = [{include = "dl_connector_metrica"}]
 readme = "README.md"
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = "*"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-api-lib = {path = "../dl_api_lib"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-sqlalchemy-metrica-api = {path = "../dl_sqlalchemy_metrica_api"}
+dl-type-transformer = {path = "../dl_type_transformer"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
-dl-api-commons = {path = "../dl_api_commons"}
-dl-utils = {path = "../dl_utils"}
-dl-constants = {path = "../dl_constants"}
-dl-formula-ref = {path = "../dl_formula_ref"}
-dl-i18n = {path = "../dl_i18n"}
-dl-formula = {path = "../dl_formula"}
-dl-configs = {path = "../dl_configs"}
-dl-api-connector = {path = "../dl_api_connector"}
-dl-core = {path = "../dl_core"}
-dl-sqlalchemy-metrica-api = {path = "../dl_sqlalchemy_metrica_api"}
-dl-api-lib = {path = "../dl_api_lib"}
-dl-model-tools = {path = "../dl_model_tools"}
-dl-query-processing = {path = "../dl_query_processing"}
-dl-app-tools = {path = "../dl_app_tools"}
-dl-type-transformer = {path = "../dl_type_transformer"}
+
+[tool.poetry.group.tests.dependencies]
+dl-core-testing = {path = "../dl_core_testing"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-testing = {path = "../dl_testing"}
+pytest = "*"
 
 [tool.poetry.plugins."dl_api_lib.connectors"]
 appmetrica_api = "dl_connector_metrica.api.connector:AppMetricaApiApiConnector"
@@ -42,11 +48,23 @@ metrica = "dl_connector_metrica.formula.connector:MetricaFormulaConnector"
 [tool.poetry.plugins."dl_formula_ref.plugins"]
 metrica = "dl_connector_metrica.formula_ref.plugin:MetricaFormulaRefPlugin"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-dl-formula-testing = {path = "../dl_formula_testing"}
-dl-testing = {path = "../dl_testing"}
-dl-core-testing = {path = "../dl_core_testing"}
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_connector_metrica_tests/"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = "dl_sqlalchemy_metrica_api.*"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -54,40 +72,22 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
-[datalens.pytest.ext]
-root_dir = "dl_connector_metrica_tests/"
-target_path = "ext"
-labels = ["ext_public"]
-
-[datalens.pytest.unit]
-root_dir = "dl_connector_metrica_tests/"
-target_path = "unit"
-skip_compose = "true"
-labels = ["no_compose"]
-
-[tool.mypy]
-exclude = ["dl_connector_metrica_tests/"]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[[tool.mypy.overrides]]
-module = "dl_sqlalchemy_metrica_api.*"
-ignore_missing_imports = true
-
 [datalens.i18n.domains]
 dl_connector_metrica = [
-    {path = "dl_connector_metrica/api"},
-    {path = "dl_connector_metrica/core"},
+  {path = "dl_connector_metrica/api"},
+  {path = "dl_connector_metrica/core"},
 ]
 dl_formula_ref_dl_connector_metrica = [
-    {path = "dl_connector_metrica/formula_ref"},
+  {path = "dl_connector_metrica/formula_ref"},
 ]
+
+[datalens.pytest.ext]
+labels = ["ext_public"]
+root_dir = "dl_connector_metrica_tests/"
+target_path = "ext"
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_connector_metrica_tests/"
+skip_compose = "true"
+target_path = "unit"

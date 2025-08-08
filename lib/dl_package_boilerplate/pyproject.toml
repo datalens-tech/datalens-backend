@@ -1,13 +1,11 @@
-
 [tool.poetry]
-name = "dl-package-boilerplate"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_package_boilerplate"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-package-boilerplate"
+packages = [{include = "dl_package_boilerplate"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.13"
@@ -15,24 +13,24 @@ python = ">=3.10, <3.13"
 [tool.poetry.group.tests.dependencies]
 pytest = "*"
 
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
 [datalens_ci]
 skip_test = true
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true

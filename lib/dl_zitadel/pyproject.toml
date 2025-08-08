@@ -1,23 +1,21 @@
-
 [tool.poetry]
-name = "dl-zitadel"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_zitadel"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-zitadel"
+packages = [{include = "dl_zitadel"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
-aiohttp = { version = "*", optional = true }
+aiohttp = {optional = true, version = "*"}
 attrs = "*"
-httpx = "*"
-flask = { version = "*", optional = true }
-pydantic = "*"
-dl-constants = {path = "../../lib/dl_constants"}
 dl-api-commons = {path = "../../lib/dl_api_commons"}
+dl-constants = {path = "../../lib/dl_constants"}
+flask = {optional = true, version = "*"}
+httpx = "*"
+pydantic = "*"
+python = ">=3.10, <3.13"
 werkzeug = "*"
 
 [tool.poetry.extras]
@@ -29,32 +27,32 @@ pytest = "*"
 pytest-asyncio = "*"
 pytest-mock = "*"
 
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[datalens.pytest.unit]
-root_dir = "dl_zitadel_tests/unit"
-skip_compose = "true"
-labels = ["no_compose"]
-
 [datalens.pytest.db]
-root_dir = "dl_zitadel_tests/db"
 labels = ["fat"]
+root_dir = "dl_zitadel_tests/db"
 # TODO: fix for CI, not working due to mounted secrets
 skip_tests = true
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_zitadel_tests/unit"
+skip_compose = "true"

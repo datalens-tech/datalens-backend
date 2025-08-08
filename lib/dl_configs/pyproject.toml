@@ -1,46 +1,45 @@
-
 [tool.poetry]
-name = "dl-configs"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_configs"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-configs"
+packages = [{include = "dl_configs"}]
+version = "0.0.1"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
 attrs = "*"
 cryptography = "*"
+dl-constants = {path = "../dl_constants"}
+dl-utils = {path = "../dl_utils"}
 dynamic-enum = {path = "../dynamic_enum"}
+python = ">=3.10, <3.13"
 pyyaml = "*"
 typeguard = "*"
 typing-extensions = "*"
-dl-utils = {path = "../dl_utils"}
-dl-constants = {path = "../dl_constants"}
 
 [tool.poetry.group.tests.dependencies]
 shortuuid = "*"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
-[datalens.pytest.unit]
-root_dir = "dl_configs_tests/"
-target_path = "unit"
-skip_compose = "true"
-labels = ["no_compose"]
-
 [tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
 exclude = ["dl_configs_tests"]
-warn_unused_ignores = true
+strict_optional = true
 warn_redundant_casts = true
 warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_configs_tests/"
+skip_compose = "true"
+target_path = "unit"

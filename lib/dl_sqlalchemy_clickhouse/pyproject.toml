@@ -1,44 +1,43 @@
-
 [tool.poetry]
-name = "dl-sqlalchemy-clickhouse"
-version = "0.3"
-description = "BI ClickHouse SQLAlchemy Dialect Customizations"
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_sqlalchemy_clickhouse"}]
+description = "BI ClickHouse SQLAlchemy Dialect Customizations"
 license = "Apache 2.0"
+name = "dl-sqlalchemy-clickhouse"
+packages = [{include = "dl_sqlalchemy_clickhouse"}]
 readme = "README.rst"
-
+version = "0.3"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
-sqlalchemy = "*"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+python = ">=3.10, <3.13"
+sqlalchemy = "*"
+
+[tool.poetry.group.tests.dependencies]
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
 bi_clickhouse = "dl_sqlalchemy_clickhouse.base:BIClickHouseDialect"
 bi_clickhouse_basic = "dl_sqlalchemy_clickhouse.base:BIClickHouseDialectBasic"
 
-[tool.poetry.group.tests.dependencies]
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+ignore_errors = true # ignore mypy in entire module
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_sqlalchemy_clickhouse_tests/unit"]
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_sqlalchemy_clickhouse_tests/unit"]
-
 [datalens.meta.mypy]
-targets = []    # ignore mypy in entire module
-
-[tool.mypy]
-ignore_errors = true # ignore mypy in entire module
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
+targets = [] # ignore mypy in entire module

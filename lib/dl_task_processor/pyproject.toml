@@ -1,33 +1,47 @@
-
 [tool.poetry]
-name = "dl-task-processor"
-version = "0.0.0"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_task_processor"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-task-processor"
+packages = [{include = "dl_task_processor"}]
 readme = "README.rst"
-
+version = "0.0.0"
 
 [tool.poetry.dependencies]
+aiohttp = "*"
 arq = "*"
 attrs = "*"
-python = ">=3.10, <3.13"
-dl-utils = {path = "../dl_utils"}
-dl-configs = {path = "../dl_configs"}
 dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-utils = {path = "../dl_utils"}
+python = ">=3.10, <3.13"
 redis = "*"
-aiohttp = "*"
-
 
 [tool.poetry.group]
+
 [tool.poetry.group.tests.dependencies]
+dl-core = {path = "../dl_core"}
+dl-testing = {path = "../dl_testing"}
 pytest = "*"
 pytest-asyncio = "*"
 statcommons = {path = "../statcommons"}
-dl-testing = {path = "../dl_testing"}
-dl-core = {path = "../dl_core"}
 
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = [
+  "dl_task_processor_tests/",
+]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+asyncio_mode = "auto"
+minversion = "6.0"
+testpaths = []
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -35,29 +49,12 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-asyncio_mode = "auto"
-
-[datalens.pytest.unit]
-root_dir = "dl_task_processor_tests/"
-target_path = "unit"
-skip_compose = "true"
-labels = ["no_compose"]
-
 [datalens.pytest.db]
 root_dir = "dl_task_processor_tests/"
 target_path = "db"
 
-[tool.mypy]
-exclude = [
-  "dl_task_processor_tests/",
-]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_task_processor_tests/"
+skip_compose = "true"
+target_path = "unit"

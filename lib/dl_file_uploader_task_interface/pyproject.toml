@@ -1,39 +1,50 @@
-
 [tool.poetry]
-name = "dl-file-uploader-task-interface"
-version = "0.0.0"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_file_uploader_task_interface"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-file-uploader-task-interface"
+packages = [{include = "dl_file_uploader_task_interface"}]
 readme = "README.rst"
-
+version = "0.0.0"
 
 [tool.poetry.dependencies]
 arq = "*"
 attrs = "*"
-python = ">=3.10, <3.13"
 dl-api-commons = {path = "../dl_api_commons"}
-dl-utils = {path = "../dl_utils"}
-dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 dl-configs = {path = "../dl_configs"}
-dl-core = {path = "../dl_core"}
-dl-task-processor = {path = "../dl_task_processor"}
-dl-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
-dl-constants = {path = "../dl_constants"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
+dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
 dl-s3 = {path = "../dl_s3"}
+dl-task-processor = {path = "../dl_task_processor"}
+dl-utils = {path = "../dl_utils"}
+python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
+dl-core = {path = "../dl_core"}
+dl-testing = {path = "../dl_testing"}
 pytest = "*"
 pytest-asyncio = "*"
 uwsgi = "*"
-dl-testing = {path = "../dl_testing"}
-dl-core = {path = "../dl_core"}
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
-module = "aiogoogle.*"
 follow_imports = "skip"
+module = "aiogoogle.*"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -41,20 +52,5 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
-
-
 [datalens_ci]
 skip_test = true
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true

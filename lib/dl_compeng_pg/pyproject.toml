@@ -1,35 +1,50 @@
-
 [tool.poetry]
-name = "dl-compeng-pg"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_compeng_pg"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-compeng-pg"
+packages = [{include = "dl_compeng_pg"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
 aiopg = "*"
 asyncpg = "*"
 attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-cache-engine = {path = "../dl_cache_engine"}
-dl-constants = {path = "../dl_constants"}
 dl-connector-postgresql = {path = "../dl_connector_postgresql"}
+dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
+python = ">=3.10, <3.13"
 sqlalchemy = "*"
+
+[tool.poetry.group.tests.dependencies]
+pytest = "*"
 
 [tool.poetry.plugins."dl_core.data_processor_plugins"]
 compeng_aiopg = "dl_compeng_pg.compeng_aiopg.plugin:AiopgCompengPlugin"
 compeng_asyncpg = "dl_compeng_pg.compeng_asyncpg.plugin:AsyncpgCompengPlugin"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = "dl_sqlalchemy_postgres.*"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -37,24 +52,5 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
-
-
 [datalens_ci]
 skip_test = true
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[[tool.mypy.overrides]]
-module = "dl_sqlalchemy_postgres.*"
-ignore_missing_imports = true

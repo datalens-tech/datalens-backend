@@ -1,14 +1,14 @@
 [tool.poetry]
-name = "redis_cache_lock"
-version = "0.0.1"
-description = ""
 authors = [
-    "HoverHell <hoverhell@gmail.com>",
-    "DataLens Team <datalens-opensource@yandex-team.ru>",
+  "DataLens Team <datalens-opensource@yandex-team.ru>",
+  "HoverHell <hoverhell@gmail.com>",
 ]
-packages = [{include = "redis_cache_lock"}]
+description = ""
 license = "MIT"
+name = "redis_cache_lock"
+packages = [{include = "redis_cache_lock"}]
 readme = "README.rst"
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = "*"
@@ -19,26 +19,26 @@ typing-extensions = "*"
 [tool.poetry.group.tests.dependencies]
 dl-testing = {path = "../dl_testing"}
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+ignore_errors = true # ignore mypy in entire module
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
 
 [tool.pytest.ini_options]
-minversion = "6.0"
 addopts = "-ra"
+minversion = "6.0"
 testpaths = ["tests"]
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[datalens.meta.mypy]
+targets = [] # ignore mypy in entire module
 
 [datalens.pytest.db]
 root_dir = "tests/"
-
-[datalens.meta.mypy]
-targets = []    # ignore mypy in entire module
-
-[tool.mypy]
-ignore_errors = true # ignore mypy in entire module
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true

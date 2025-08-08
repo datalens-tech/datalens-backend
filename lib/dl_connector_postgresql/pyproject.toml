@@ -1,43 +1,49 @@
-
 [tool.poetry]
-name = "dl-connector-postgresql"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_connector_postgresql"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-connector-postgresql"
+packages = [{include = "dl_connector_postgresql"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 asyncpg = "*"
 attrs = "*"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = "*"
 psycopg2-binary = "*"
 python = ">=3.10, <3.13"
 python-dateutil = "*"
 sqlalchemy = "*"
-dl-api-commons = {path = "../dl_api_commons"}
-dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
-dl-constants = {path = "../dl_constants"}
-dl-formula-ref = {path = "../dl_formula_ref"}
-dl-i18n = {path = "../dl_i18n"}
-dl-formula = {path = "../dl_formula"}
-dl-configs = {path = "../dl_configs"}
-dl-api-connector = {path = "../dl_api_connector"}
-dl-core = {path = "../dl_core"}
-dl-app-tools = {path = "../dl_app_tools"}
-dl-core-testing = {path = "../dl_core_testing"}
-dl-db-testing = {path = "../dl_db_testing"}
-dl-query-processing = {path = "../dl_query_processing"}
-dl-type-transformer = {path = "../dl_type_transformer"}
 typing-extensions = "*"
 
-[tool.deptry.package_module_name_map]
-psycopg2-binary = "psycopg2"
-python-dateutil = "dateutil"
+[tool.poetry.group.tests.dependencies]
+aiohttp = "*"
+dl-api-client = {path = "../dl_api_client"}
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-testing = {path = "../dl_testing"}
+pytest = "*"
+pytest-asyncio = "*"
+pytz = "*"
+shortuuid = "*"
 
 [tool.poetry.plugins]
+
 [tool.poetry.plugins."dl_api_lib.connectors"]
 postgresql = "dl_connector_postgresql.api.connector:PostgreSQLApiConnector"
 
@@ -53,16 +59,27 @@ postgresql = "dl_connector_postgresql.formula.connector:PostgreSQLFormulaConnect
 [tool.poetry.plugins."dl_formula_ref.plugins"]
 postgresql = "dl_connector_postgresql.formula_ref.plugin:PostgresSQLFormulaRefPlugin"
 
-[tool.poetry.group.tests.dependencies]
-aiohttp = "*"
-pytest = "*"
-pytest-asyncio = "*"
-pytz = "*"
-shortuuid = "*"
-dl-api-lib-testing = {path = "../dl_api_lib_testing"}
-dl-api-client = {path = "../dl_api_client"}
-dl-formula-testing = {path = "../dl_formula_testing"}
-dl-testing = {path = "../dl_testing"}
+[tool.deptry.package_module_name_map]
+psycopg2-binary = "psycopg2"
+python-dateutil = "dateutil"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_connector_postgresql_tests"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = "dl_sqlalchemy_postgres.*"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_connector_postgresql_tests/db", "dl_connector_postgresql_tests/unit"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -70,35 +87,15 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_connector_postgresql_tests/db", "dl_connector_postgresql_tests/unit"]
-
-
+[datalens.i18n.domains]
+dl_connector_postgresql = [
+  {path = "dl_connector_postgresql/api"},
+  {path = "dl_connector_postgresql/core"},
+]
+dl_formula_ref_dl_connector_postgresql = [
+  {path = "dl_connector_postgresql/formula_ref"},
+]
 
 [datalens.pytest.local]
 root_dir = "dl_connector_postgresql_tests/"
 target_path = "db unit"
-
-[tool.mypy]
-exclude = ["dl_connector_postgresql_tests"]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[[tool.mypy.overrides]]
-module = "dl_sqlalchemy_postgres.*"
-ignore_missing_imports = true
-
-[datalens.i18n.domains]
-dl_connector_postgresql = [
-    {path = "dl_connector_postgresql/api"},
-    {path = "dl_connector_postgresql/core"},
-]
-dl_formula_ref_dl_connector_postgresql = [
-    {path = "dl_connector_postgresql/formula_ref"},
-]
