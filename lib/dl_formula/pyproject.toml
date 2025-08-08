@@ -1,51 +1,66 @@
-
 [tool.poetry]
-name = "dl-formula"
-version = "7.47.0"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_formula"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-formula"
+packages = [{include = "dl_formula"}]
 readme = "README.md"
-
+version = "7.47.0"
 
 [tool.poetry.dependencies]
 antlr4-python3-runtime = "*"
 attrs = "*"
 ciso8601 = "*"
+dl-utils = {path = "../dl_utils"}
+dynamic-enum = {path = "../dynamic_enum"}
 graphviz = "*"
 python = ">=3.10, <3.13"
 pytz = "*"
 sqlalchemy = "*"
-dl-utils = {path = "../dl_utils"}
-dynamic-enum = {path = "../dynamic_enum"}
 
-[tool.deptry.per_rule_ignores]
-DEP001 = ["DataLensParser"]
+[tool.poetry.group.tests.dependencies]
+dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+pyodbc = "*"
+pytest = "*"
+python-dateutil = "*"
+
+[tool.poetry.scripts]
+bi-formula-cli = "dl_formula.scripts.formula_cli:main"
 
 [tool.deptry.package_module_name_map]
 antlr4-python3-runtime = "antlr4"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-pyodbc = "*"
-python-dateutil = "*"
-dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+[tool.deptry.per_rule_ignores]
+DEP001 = ["DataLensParser"]
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_formula_tests/"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
-module = [
-    "ciso8601",
-    "sqlalchemy",
-    "graphviz.*",
-    "pytest.*",
-    "pytz.tzinfo.*",
-    "antlr4.*"
-]
 ignore_missing_imports = true
+module = [
+  "antlr4.*",
+  "ciso8601",
+  "graphviz.*",
+  "pytest.*",
+  "pytz.tzinfo.*",
+  "sqlalchemy",
+]
 
 [[tool.mypy.overrides]]
-module = "dl_formula.parser.antlr.gen.*"
 ignore_errors = true
+module = "dl_formula.parser.antlr.gen.*"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -53,25 +68,8 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
 [datalens.pytest.unit]
-root_dir = "dl_formula_tests/"
-target_path = "unit"
-skip_compose = "true"
 labels = ["no_compose"]
-
-[tool.poetry.scripts]
-bi-formula-cli = "dl_formula.scripts.formula_cli:main"
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-exclude = ["dl_formula_tests/"]
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
+root_dir = "dl_formula_tests/"
+skip_compose = "true"
+target_path = "unit"

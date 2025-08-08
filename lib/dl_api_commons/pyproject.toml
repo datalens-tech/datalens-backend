@@ -1,38 +1,55 @@
-
 [tool.poetry]
-name = "dl-api-commons"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_api_commons"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-api-commons"
+packages = [{include = "dl_api_commons"}]
 readme = "README.md"
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 aiohttp = "*"
 attrs = "*"
-httpx = "*"
+dl-app-tools = {path = "../dl_app_tools"}
+dl-constants = {path = "../dl_constants"}
+dl-utils = {path = "../dl_utils"}
 flask = "*"
+httpx = "*"
 marshmallow = "*"
 multidict = "*"
 opentracing = "*"
 python = ">=3.10, <3.13"
-sentry-sdk = {version = "*", extras = ["flask"]}
+requests = "*"
+sentry-sdk = {extras = ["flask"], version = "*"}
 typing-extensions = "*"
 werkzeug = "*"
-dl-utils = {path = "../dl_utils"}
-dl-constants = {path = "../dl_constants"}
-dl-app-tools = {path = "../dl_app_tools"}
-requests = "*"
+
+[tool.poetry.group.tests.dependencies]
+pytest = "*"
+respx = "*"
+shortuuid = "*"
+statcommons = {path = "../statcommons"}
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["uwsgidecorators"]
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-shortuuid = "*"
-respx = "*"
-statcommons = {path = "../statcommons"}
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = [
+  "statcommons.*",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -40,26 +57,8 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
 [datalens.pytest.unit]
-root_dir = "dl_api_commons_tests/"
-target_path = "unit"
-skip_compose = "true"
 labels = ["no_compose"]
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[[tool.mypy.overrides]]
-module = [
-    "statcommons.*",
-]
+root_dir = "dl_api_commons_tests/"
+skip_compose = "true"
+target_path = "unit"

@@ -7338,6 +7338,20 @@ tornado = ["tornado (>=4.0)"]
 twisted = ["twisted"]
 
 [[package]]
+name = "toml-sort"
+version = "0.24.2"
+description = "Toml sorting library"
+optional = false
+python-versions = "<4.0,>=3.9"
+files = [
+    {file = "toml_sort-0.24.2-py3-none-any.whl", hash = "sha256:d81d299789a1fd9dd306a4021951eab5fc0c5486599e277fcf8142c7735f3308"},
+    {file = "toml_sort-0.24.2.tar.gz", hash = "sha256:20cb7c5e9de9c871990f1594f028aaf8bd0f78d7ce37995a22289dc157a45b79"},
+]
+
+[package.dependencies]
+tomlkit = ">=0.13.2"
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -7350,13 +7364,13 @@ files = [
 
 [[package]]
 name = "tomlkit"
-version = "0.12.3"
+version = "0.13.3"
 description = "Style preserving TOML library"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "tomlkit-0.12.3-py3-none-any.whl", hash = "sha256:b0a645a9156dc7cb5d3a1f0d4bab66db287fcb8e0430bdd4664a095ea16414ba"},
-    {file = "tomlkit-0.12.3.tar.gz", hash = "sha256:75baf5012d06501f07bee5bf8e801b9f343e7aac5a92581f20f80ce632e6b5a4"},
+    {file = "tomlkit-0.13.3-py3-none-any.whl", hash = "sha256:c89c649d79ee40629a9fda55f8ace8c6a1b42deb912b2a8fd8d942ddadb606b0"},
+    {file = "tomlkit-0.13.3.tar.gz", hash = "sha256:430cf247ee57df2b94ee3fbe588e71d362a941ebb545dec29b53961d61add2a1"},
 ]
 
 [[package]]
@@ -8849,4 +8863,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "5985ad49259aabe8985cfbc7d26a257297c3c95dc729ed310cd7b301166aad26"
+content-hash = "2a7344d072d9926c29ab9ba8d0d35d14837c9d36917f72b005e0b04b30e17f9b"

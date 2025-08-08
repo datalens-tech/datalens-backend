@@ -1,53 +1,51 @@
-
 [tool.poetry]
-name = "datalens-gitmanager"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_gitmanager"}]
+description = ""
 license = "Apache 2.0"
+name = "datalens-gitmanager"
+packages = [{include = "dl_gitmanager"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = ">=22.2.0"
-python = ">=3.10, <3.13"
-gitpython = ">=3.1.41"
 colorama = ">=0.4.3"
 datalens-cli-tools = {path = "../dl_cli_tools"}
-
-[tool.deptry.package_module_name_map]
-gitpython = "git"
-colorama = "colorama"
-datalens-cli-tools = "dl_cli_tools"
-
-[tool.poetry.group.pytest.dependencies]
-pytest = ">=7.2.2"
+gitpython = ">=3.1.41"
+python = ">=3.10, <3.13"
 
 [tool.poetry.group.mypy.dependencies]
 mypy = ">= 1.7.0"
 types-colorama = "*"
 
+[tool.poetry.group.pytest.dependencies]
+pytest = ">=7.2.2"
+
+[tool.poetry.scripts]
+dl-cherry-farmer = "dl_gitmanager.scripts.cherry_farmer_cli:main"
+dl-git = "dl_gitmanager.scripts.gitmanager_cli:main"
+
+[tool.deptry.package_module_name_map]
+colorama = "colorama"
+datalens-cli-tools = "dl_cli_tools"
+gitpython = "git"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = [
+  "^dl_gitmanager_tests/",
+]
+strict_optional = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
   "poetry-core",
-]
-
-[tool.poetry.scripts]
-dl-git = "dl_gitmanager.scripts.gitmanager_cli:main"
-dl-cherry-farmer = "dl_gitmanager.scripts.cherry_farmer_cli:main"
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
-[tool.mypy]
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-exclude = [
-    "^dl_gitmanager_tests/",
 ]

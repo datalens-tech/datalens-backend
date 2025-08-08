@@ -1,39 +1,41 @@
-
 [tool.poetry]
-name = "dl-connector-bundle-chs3"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_connector_bundle_chs3"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-connector-bundle-chs3"
+packages = [{include = "dl_connector_bundle_chs3"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 aiohttp = "*"
 attrs = "*"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
+dl-task-processor = {path = "../dl_task_processor"}
+dl-testing = {path = "../dl_testing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
 python = ">=3.10, <3.13"
 xxhash = "*"
-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
-dl-api-commons = {path = "../dl_api_commons"}
-dl-utils = {path = "../dl_utils"}
-dl-constants = {path = "../dl_constants"}
-dl-formula-ref = {path = "../dl_formula_ref"}
-dl-formula = {path = "../dl_formula"}
-dl-i18n = {path = "../dl_i18n"}
-dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
-dl-testing = {path = "../dl_testing"}
-dl-configs = {path = "../dl_configs"}
-dl-api-connector = {path = "../dl_api_connector"}
-dl-core = {path = "../dl_core"}
-dl-model-tools = {path = "../dl_model_tools"}
-dl-core-testing = {path = "../dl_core_testing"}
-dl-task-processor = {path = "../dl_task_processor"}
-dl-type-transformer = {path = "../dl_type_transformer"}
+
+[tool.poetry.group.tests.dependencies]
+pytest = "*"
 
 [tool.poetry.plugins]
+
 [tool.poetry.plugins."dl_api_lib.connectors"]
 file = "dl_connector_bundle_chs3.file.api.connector:FileS3ApiConnector"
 gsheets_v2 = "dl_connector_bundle_chs3.chs3_gsheets.api.connector:GSheetsFileS3ApiConnector"
@@ -49,15 +51,28 @@ file = "dl_connector_bundle_chs3.file.formula.connector:FileS3FormulaConnector"
 gsheets_v2 = "dl_connector_bundle_chs3.chs3_gsheets.formula.connector:GSheetsFileS3FormulaConnector"
 yadocs = "dl_connector_bundle_chs3.chs3_yadocs.formula.connector:YaDocsFileS3FormulaConnector"
 
-
 [tool.poetry.plugins."dl_formula_ref.plugins"]
 file = "dl_connector_bundle_chs3.file.formula_ref.plugin:FileS3FormulaRefPlugin"
 gsheets_v2 = "dl_connector_bundle_chs3.chs3_gsheets.formula_ref.plugin:GSheetsFileS3FormulaRefPlugin"
 yadocs = "dl_connector_bundle_chs3.chs3_yadocs.formula_ref.plugin:YaDocsFileS3FormulaRefPlugin"
 
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_connector_bundle_chs3_tests"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = ["clickhouse_sqlalchemy.*"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -65,10 +80,22 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
+[datalens.i18n.domains]
+dl_connector_bundle_chs3 = [
+  {path = "dl_connector_bundle_chs3/chs3_base/api"},
+  {path = "dl_connector_bundle_chs3/chs3_base/core"},
+  {path = "dl_connector_bundle_chs3/chs3_gsheets/api"},
+  {path = "dl_connector_bundle_chs3/chs3_gsheets/core"},
+  {path = "dl_connector_bundle_chs3/chs3_yadocs/api"},
+  {path = "dl_connector_bundle_chs3/chs3_yadocs/core"},
+  {path = "dl_connector_bundle_chs3/file/api"},
+  {path = "dl_connector_bundle_chs3/file/core"},
+]
+dl_formula_ref_dl_connector_bundle_chs3 = [
+  {path = "dl_connector_bundle_chs3/chs3_gsheets/formula_ref"},
+  {path = "dl_connector_bundle_chs3/chs3_yadocs/formula_ref"},
+  {path = "dl_connector_bundle_chs3/file/formula_ref"},
+]
 
 [datalens.pytest.db_file]
 root_dir = "dl_connector_bundle_chs3_tests/db"
@@ -81,33 +108,3 @@ target_path = "gsheets_v2"
 [datalens.pytest.db_yadocs]
 root_dir = "dl_connector_bundle_chs3_tests/db"
 target_path = "yadocs"
-
-[tool.mypy]
-exclude = ["dl_connector_bundle_chs3_tests"]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[[tool.mypy.overrides]]
-module = ["clickhouse_sqlalchemy.*"]
-ignore_missing_imports = true
-
-[datalens.i18n.domains]
-dl_connector_bundle_chs3 = [
-    {path = "dl_connector_bundle_chs3/chs3_base/api"},
-    {path = "dl_connector_bundle_chs3/chs3_base/core"},
-    {path = "dl_connector_bundle_chs3/chs3_gsheets/api"},
-    {path = "dl_connector_bundle_chs3/chs3_gsheets/core"},
-    {path = "dl_connector_bundle_chs3/chs3_yadocs/api"},
-    {path = "dl_connector_bundle_chs3/chs3_yadocs/core"},
-    {path = "dl_connector_bundle_chs3/file/api"},
-    {path = "dl_connector_bundle_chs3/file/core"},
-]
-dl_formula_ref_dl_connector_bundle_chs3 = [
-    {path = "dl_connector_bundle_chs3/file/formula_ref"},
-    {path = "dl_connector_bundle_chs3/chs3_yadocs/formula_ref"},
-    {path = "dl_connector_bundle_chs3/chs3_gsheets/formula_ref"},
-]

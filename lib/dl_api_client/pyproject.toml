@@ -1,25 +1,36 @@
-
 [tool.poetry]
-name = "dl-api-client"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_api_client"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-api-client"
+packages = [{include = "dl_api_client"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
 attrs = "*"
-marshmallow = "*"
-marshmallow-oneofschema = "*"
 dl-constants = {path = "../dl_constants"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-rls = {path = "../dl_rls"}
+marshmallow = "*"
+marshmallow-oneofschema = "*"
+python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "*"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -27,26 +38,13 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
-[datalens.pytest.unit]
-root_dir = "dl_api_client_tests/"
-target_path = "unit"
-skip_compose = "true"
-labels = ["no_compose"]
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
 [datalens.meta]
 implicit_dependencies = [
-    "pytest",
+  "pytest",
 ]
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_api_client_tests/"
+skip_compose = "true"
+target_path = "unit"

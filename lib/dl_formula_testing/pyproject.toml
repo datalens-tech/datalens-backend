@@ -1,39 +1,35 @@
-
 [tool.poetry]
-name = "dl-formula-testing"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_formula_testing"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-formula-testing"
+packages = [{include = "dl_formula_testing"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = "*"
-python = ">=3.10, <3.13"
-dl-testing = {path = "../dl_testing"}
-dl-formula = {path = "../dl_formula"}
-pytz = "*"
-sqlalchemy = "*"
 dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-testing = {path = "../dl_testing"}
 dl-utils = {path = "../dl_utils"}
 pytest = "*"
+python = ">=3.10, <3.13"
 python-dateutil = "*"
-
+pytz = "*"
+sqlalchemy = "*"
 
 [tool.deptry.package_module_name_map]
 python-dateutil = "dateutil"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
 [tool.pytest.ini_options]
-minversion = "6.0"
 addopts = "-ra"
+minversion = "6.0"
 testpaths = []
 
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
 
 [datalens_ci]
 skip_test = true

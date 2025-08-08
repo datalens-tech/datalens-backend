@@ -1,39 +1,57 @@
 [tool.poetry]
-name = "dl-file-uploader-lib"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_file_uploader_lib"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-file-uploader-lib"
+packages = [{include = "dl_file_uploader_lib"}]
 readme = "README.md"
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 aiogoogle = "*"
 aiohttp = "*"
 attrs = "*"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-configs = {path = "../dl_configs"}
+dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-s3 = {path = "../dl_s3"}
+dl-settings = {path = "../dl_settings"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 python = ">=3.10, <3.13"
 redis = "*"
 yarl = "*"
-dl-api-commons = {path = "../dl_api_commons"}
-dl-utils = {path = "../dl_utils"}
-dl-constants = {path = "../dl_constants"}
-dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
-dl-configs = {path = "../dl_configs"}
-dl-core = {path = "../dl_core"}
-dl-settings = {path = "../dl_settings"}
-dl-s3 = {path = "../dl_s3"}
+
+[tool.poetry.group.tests.dependencies]
+dl-testing = {path = "../dl_testing"}
+pytest = "*"
+pytest-asyncio = "*"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = [
   "dl-connector-bundle-chs3",
 ]
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-pytest-asyncio = "*"
-dl-testing = {path = "../dl_testing"}
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_file_uploader_lib_tests"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = ["aiogoogle.*", "mypy_boto3_s3.*"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_file_uploader_lib_tests/db", "dl_file_uploader_lib_tests/ext"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -41,29 +59,11 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_file_uploader_lib_tests/db", "dl_file_uploader_lib_tests/ext"]
-
 [datalens.pytest.db]
 root_dir = "dl_file_uploader_lib_tests"
 target_path = "db"
 
 [datalens.pytest.ext]
+labels = ["ext_public"]
 root_dir = "dl_file_uploader_lib_tests"
 target_path = "ext"
-labels = ["ext_public"]
-
-[tool.mypy]
-exclude = ["dl_file_uploader_lib_tests"]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[[tool.mypy.overrides]]
-module = ["aiogoogle.*", "mypy_boto3_s3.*"]
-ignore_missing_imports = true

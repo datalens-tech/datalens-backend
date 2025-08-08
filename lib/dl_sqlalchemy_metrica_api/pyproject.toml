@@ -1,46 +1,47 @@
 [tool.poetry]
-name = "dl-sqlalchemy-metrica-api"
-version = "0.0.1"
-description = "Yandex Metrica API dialect for SQLAlchemy"
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_sqlalchemy_metrica_api"}]
+description = "Yandex Metrica API dialect for SQLAlchemy"
 license = "Apache 2.0"
+name = "dl-sqlalchemy-metrica-api"
+packages = [{include = "dl_sqlalchemy_metrica_api"}]
 readme = "README.md"
+version = "0.0.1"
 
 [tool.poetry.dependencies]
-SQLAlchemy = "*"
 python = ">=3.10, <3.13"
 python-dateutil = "*"
 requests = "*"
-
-[tool.deptry.package_module_name_map]
-python-dateutil = "dateutil"
+SQLAlchemy = "*"
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
 appmetrica_api = "dl_sqlalchemy_metrica_api.base:AppMetricaApiDialect"
 metrika_api = "dl_sqlalchemy_metrica_api.base:MetrikaApiDialect"
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
-[datalens.pytest.ext]
-root_dir = "dl_sqlalchemy_metrica_api_tests/"
-target_path = "ext"
-labels = ["ext_public"]
-
-[datalens.meta.mypy]
-targets = []    # ignore mypy in entire module
+[tool.deptry.package_module_name_map]
+python-dateutil = "dateutil"
 
 [tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
 ignore_errors = true # ignore mypy in entire module
-warn_unused_ignores = true
+strict_optional = true
 warn_redundant_casts = true
 warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[datalens.meta.mypy]
+targets = [] # ignore mypy in entire module
+
+[datalens.pytest.ext]
+labels = ["ext_public"]
+root_dir = "dl_sqlalchemy_metrica_api_tests/"
+target_path = "ext"

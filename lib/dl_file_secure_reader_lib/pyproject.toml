@@ -1,13 +1,11 @@
-
 [tool.poetry]
-name = "dl-file-secure-reader-lib"
-version = "0.1.0"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_file_secure_reader_lib"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-file-secure-reader-lib"
+packages = [{include = "dl_file_secure_reader_lib"}]
 readme = "README.md"
-
+version = "0.1.0"
 
 [tool.poetry.dependencies]
 aiohttp = "*"
@@ -17,31 +15,29 @@ python = ">=3.10, <3.13"
 [tool.poetry.group.tests.dependencies]
 pytest-asyncio = "*"
 
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = "openpyxl.*"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_file_secure_reader_lib_tests/db"]
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_file_secure_reader_lib_tests/db"]
-
-
-
 [datalens.pytest.db]
 root_dir = "dl_file_secure_reader_lib_tests/"
 target_path = "db"
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[[tool.mypy.overrides]]
-module = "openpyxl.*"
-ignore_missing_imports = true

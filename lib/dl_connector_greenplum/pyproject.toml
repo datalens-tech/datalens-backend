@@ -1,37 +1,50 @@
-
 [tool.poetry]
-name = "dl-connector-greenplum"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_connector_greenplum"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-connector-greenplum"
+packages = [{include = "dl_connector_greenplum"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
+asyncpg = "*"
 attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
-dl-constants = {path = "../dl_constants"}
-dl-i18n = {path = "../dl_i18n"}
-dl-connector-postgresql = {path = "../dl_connector_postgresql"}
-dl-configs = {path = "../dl_configs"}
 dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-connector-postgresql = {path = "../dl_connector_postgresql"}
+dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
-asyncpg = "*"
+dl-i18n = {path = "../dl_i18n"}
+python = ">=3.10, <3.13"
 sqlalchemy = "*"
 
+[tool.poetry.group.tests.dependencies]
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+pytest = "*"
+
 [tool.poetry.plugins]
+
 [tool.poetry.plugins."dl_api_lib.connectors"]
 greenplum = "dl_connector_greenplum.api.connector:GreenplumApiConnector"
 
 [tool.poetry.plugins."dl_core.connectors"]
 greenplum = "dl_connector_greenplum.core.connector:GreenplumCoreConnector"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_connector_greenplum_tests/"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -39,32 +52,18 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
+[datalens.i18n.domains]
+dl_connector_greenplum = [
+  {path = "dl_connector_greenplum/api"},
+  {path = "dl_connector_greenplum/core"},
+]
 
 [datalens.pytest.db]
 root_dir = "dl_connector_greenplum_tests/"
 target_path = "db"
 
 [datalens.pytest.unit]
-root_dir = "dl_connector_greenplum_tests/"
-target_path = "unit"
-skip_compose = "true"
 labels = ["no_compose"]
-
-[tool.mypy]
-exclude = ["dl_connector_greenplum_tests/"]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[datalens.i18n.domains]
-dl_connector_greenplum = [
-    {path = "dl_connector_greenplum/api"},
-    {path = "dl_connector_greenplum/core"},
-]
+root_dir = "dl_connector_greenplum_tests/"
+skip_compose = "true"
+target_path = "unit"
