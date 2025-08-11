@@ -579,6 +579,8 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      VENV_PATH: /venv
     steps:
       - uses: datalens-tech/cleanup-folder-action@v1
       - name: Checkout code
@@ -587,13 +589,10 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 1
+      - run: task dev:toml-sort
       - run: |
           task cq:check_dir -- .
           task cq:check_dir_strict -- .
-        env:
-          VENV_PATH: /venv
       - name: Find directories and check requirements
         run: |
           task cq:find_and_check_requirements STRICT=true
-        env:
-          VENV_PATH: /venv

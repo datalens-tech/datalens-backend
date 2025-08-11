@@ -1,38 +1,49 @@
-
 [tool.poetry]
-name = "dl-api-lib-testing"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_api_lib_testing"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-api-lib-testing"
+packages = [{include = "dl_api_lib_testing"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
 aiohttp = "*"
-sqlalchemy = "*"
 attrs = "*"
-flask = "*"
-pytest = "*"
-werkzeug = "*"
-dl-api-commons = {path = "../dl_api_commons"}
-dl-utils = {path = "../dl_utils"}
-dl-constants = {path = "../dl_constants"}
 dl-api-client = {path = "../dl_api_client"}
-dl-i18n = {path = "../dl_i18n"}
-dl-configs = {path = "../dl_configs"}
+dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
+dl-api-lib = {path = "../dl_api_lib"}
+dl-cache-engine = {path = "../dl_cache_engine"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-core-testing = {path = "../dl_core_testing"}
-dl-api-lib = {path = "../dl_api_lib"}
 dl-formula-testing = {path = "../dl_formula_testing"}
+dl-i18n = {path = "../dl_i18n"}
 dl-pivot-pandas = {path = "../dl_pivot_pandas"}
 dl-query-processing = {path = "../dl_query_processing"}
-dl-testing = {path = "../dl_testing"}
-dl-cache-engine = {path = "../dl_cache_engine"}
 dl-rls = {path = "../dl_rls"}
+dl-testing = {path = "../dl_testing"}
+dl-utils = {path = "../dl_utils"}
+flask = "*"
+pytest = "*"
+python = ">=3.10, <3.13"
+sqlalchemy = "*"
+werkzeug = "*"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -40,20 +51,5 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
-
-
 [datalens_ci]
 skip_test = true
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true

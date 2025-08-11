@@ -35,7 +35,7 @@ includes:
       PROJECT_ROOT_PATH: '{{.ROOT_DIR}}'
       PYPROJECT_TOML_PATH: '{{.ROOT_DIR}}/metapkg/pyproject.toml'
       METAPKG_DIR: '{{.ROOT_DIR}}/metapkg'
-      VENV_PATH: '{{.ROOT_DIR}}/metapkg/.venv'
+      DEFAULT_VENV_PATH: '{{.ROOT_DIR}}/metapkg/.venv'
       LINTERS_PYPROJECT_TOML_PATH: '{{.ROOT_DIR}}/pyproject.toml'
       EXCLUDE_LIB_PATHS: |
         {{.ROOT_DIR}}

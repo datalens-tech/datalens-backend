@@ -1,36 +1,45 @@
 [tool.poetry]
-name = "dl-connector-trino"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{ include = "dl_connector_trino" }]
+description = ""
 license = "Apache 2.0"
+name = "dl-connector-trino"
+packages = [{include = "dl_connector_trino"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
 attrs = "*"
-marshmallow = "*"
-trino = { extras = ["sqlalchemy"], version = "*" }
-sqlalchemy = "*"
-dl-core = { path = "../dl_core" }
-requests = "*"
-typing_extensions = "*"
-dynamic-enum = {path = "../dynamic_enum"}
-dl-model-tools = {path = "../dl_model_tools"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
 dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
-dl-type-transformer = {path = "../dl_type_transformer"}
-dl-api-commons = {path = "../dl_api_commons"}
 dl-i18n = {path = "../dl_i18n"}
-dl-configs = {path = "../dl_configs"}
-dl-api-connector = {path = "../dl_api_connector"}
-dl-db-testing = {path = "../dl_db_testing"}
+dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
+dynamic-enum = {path = "../dynamic_enum"}
+marshmallow = "*"
+python = ">=3.10, <3.13"
+requests = "*"
+sqlalchemy = "*"
+trino = {extras = ["sqlalchemy"], version = "*"}
+typing_extensions = "*"
+
+[tool.poetry.group.tests.dependencies]
+dl-api-client = {path = "../dl_api_client"}
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-testing = {path = "../dl_testing"}
+pytest = "*"
+pytest-asyncio = "*"
 
 [tool.poetry.plugins]
+
 [tool.poetry.plugins."dl_api_lib.connectors"]
 trino = "dl_connector_trino.api.connector:TrinoApiConnector"
 
@@ -46,51 +55,42 @@ trino = "dl_connector_trino.formula.connector:TrinoFormulaConnector"
 [tool.poetry.plugins."dl_formula_ref.plugins"]
 trino = "dl_connector_trino.formula_ref.plugin:TrinoFormulaRefPlugin"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-pytest-asyncio = "*"
-dl-api-lib-testing = {path = "../dl_api_lib_testing"}
-dl-api-client = {path = "../dl_api_client"}
-dl-core-testing = {path = "../dl_core_testing"}
-dl-formula-testing = {path = "../dl_formula_testing"}
-dl-testing = {path = "../dl_testing"}
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_connector_trino_tests"]
+strict_optional = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = "trino.*"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_connector_trino_tests/db", "dl_connector_trino_tests/unit"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core"]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_connector_trino_tests/db", "dl_connector_trino_tests/unit"]
-
-[datalens.pytest.db]
-root_dir = "dl_connector_trino_tests/"
-target_path = "db"
-labels = ["fat"]
-
-[datalens.pytest.unit]
-root_dir = "dl_connector_trino_tests/"
-target_path = "unit"
-skip_compose = "true"
-labels = ["no_compose"]
-
-[tool.mypy]
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-exclude = ["dl_connector_trino_tests"]
-
-[[tool.mypy.overrides]]
-module = "trino.*"
-ignore_missing_imports = true
-
 [datalens.i18n.domains]
 dl_connector_trino = [
-    {path = "dl_connector_trino/api"},
-    {path = "dl_connector_trino/core"},
+  {path = "dl_connector_trino/api"},
+  {path = "dl_connector_trino/core"},
 ]
 dl_formula_ref_dl_connector_trino = [
-    {path = "dl_connector_trino/formula_ref"},
+  {path = "dl_connector_trino/formula_ref"},
 ]
+
+[datalens.pytest.db]
+labels = ["fat"]
+root_dir = "dl_connector_trino_tests/"
+target_path = "db"
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_connector_trino_tests/"
+skip_compose = "true"
+target_path = "unit"

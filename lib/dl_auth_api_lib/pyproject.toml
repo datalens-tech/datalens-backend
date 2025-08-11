@@ -1,29 +1,48 @@
-
 [tool.poetry]
-name = "dl-auth-api-lib"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_auth_api_lib"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-auth-api-lib"
+packages = [{include = "dl_auth_api_lib"}]
 readme = "README.md"
+version = "0.0.1"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
 aiohttp = "*"
 attrs = "*"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-settings = {path = "../dl_settings"}
 marshmallow = "*"
 pydantic = "*"
+python = ">=3.10, <3.13"
 typing-extensions = "*"
-dl-api-commons = {path = "../dl_api_commons"}
-dl-core = {path = "../dl_core"}
-dl-constants = {path = "../dl_constants"}
-dl-settings = {path = "../dl_settings"}
 
 [tool.poetry.group.tests.dependencies]
+dl-testing = {path = "../dl_testing"}
 pytest = "*"
 pytest-asyncio = "*"
-dl-testing = {path = "../dl_testing"}
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_auth_api_lib_tests/"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  "pydantic_settings",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_auth_api_lib_tests/ext", "dl_auth_api_lib_tests/unit"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -31,32 +50,12 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_auth_api_lib_tests/ext", "dl_auth_api_lib_tests/unit"]
-
-[datalens.pytest.unit]
-root_dir = "dl_auth_api_lib_tests/"
-target_path = "unit"
-labels = ["no_compose"]
-
 [datalens.pytest.ext]
+labels = ["ext_public"]
 root_dir = "dl_auth_api_lib_tests/"
 target_path = "ext"
-labels = ["ext_public"]
 
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-exclude = ["dl_auth_api_lib_tests/"]
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[[tool.mypy.overrides]]
-module = [
-    "pydantic_settings",
-]
-ignore_missing_imports = true
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_auth_api_lib_tests/"
+target_path = "unit"

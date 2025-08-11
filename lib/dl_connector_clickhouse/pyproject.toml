@@ -1,51 +1,50 @@
-
 [tool.poetry]
-name = "dl-connector-clickhouse"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_connector_clickhouse"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-connector-clickhouse"
+packages = [{include = "dl_connector_clickhouse"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 aiohttp = "*"
 attrs = "*"
+clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-dashsql = {path = "../dl_dashsql"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-i18n = {path = "../dl_i18n"}
+dl-query-processing = {path = "../dl_query_processing"}
+dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
+dl-testing = {path = "../dl_testing"}
+dl-type-transformer = {path = "../dl_type_transformer"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
+pytest = "*"
 python = ">=3.10, <3.13"
+pytz = "*"
 requests = "*"
 shortuuid = "*"
 sqlalchemy = "*"
 typing-extensions = "*"
-clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
-dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
-dl-api-commons = {path = "../dl_api_commons"}
-dl-constants = {path = "../dl_constants"}
-dl-formula-ref = {path = "../dl_formula_ref"}
-dl-i18n = {path = "../dl_i18n"}
-dl-formula = {path = "../dl_formula"}
-dl-configs = {path = "../dl_configs"}
-dl-api-connector = {path = "../dl_api_connector"}
-dl-core = {path = "../dl_core"}
-dl-core-testing = {path = "../dl_core_testing"}
-dl-db-testing = {path = "../dl_db_testing"}
-dl-app-tools = {path = "../dl_app_tools"}
-dl-dashsql = {path = "../dl_dashsql"}
-dl-formula-testing = {path = "../dl_formula_testing"}
-dl-query-processing = {path = "../dl_query_processing"}
-dl-testing = {path = "../dl_testing"}
-dl-type-transformer = {path = "../dl_type_transformer"}
-dl-utils = {path = "../dl_utils"}
-pytest = "*"
-pytz = "*"
 
-[tool.deptry.per_rule_ignores]
-DEP002 = [
-  "dl-sqlalchemy-clickhouse",
-]
+[tool.poetry.group.tests.dependencies]
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+frozendict = "*"
+pytest-asyncio = "*"
 
 [tool.poetry.plugins]
+
 [tool.poetry.plugins."dl_api_lib.connectors"]
 clickhouse = "dl_connector_clickhouse.api.connector:ClickHouseApiConnector"
 
@@ -61,10 +60,28 @@ clickhouse = "dl_connector_clickhouse.formula.connector:ClickHouseFormulaConnect
 [tool.poetry.plugins."dl_formula_ref.plugins"]
 clickhouse = "dl_connector_clickhouse.formula_ref.plugin:ClickHouseFormulaRefPlugin"
 
-[tool.poetry.group.tests.dependencies]
-frozendict = "*"
-pytest-asyncio = "*"
-dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "dl-sqlalchemy-clickhouse",
+]
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_connector_clickhouse_tests"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = "clickhouse_sqlalchemy.*"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_connector_clickhouse_tests/db", "dl_connector_clickhouse_tests/unit"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -72,42 +89,22 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_connector_clickhouse_tests/db", "dl_connector_clickhouse_tests/unit"]
-
-
-
-[datalens.pytest.unit]
-root_dir = "dl_connector_clickhouse_tests/"
-target_path = "unit"
-skip_compose = "true"
-labels = ["no_compose"]
-
-[datalens.pytest.db]
-root_dir = "dl_connector_clickhouse_tests/"
-target_path = "db"
-labels = ["fat"]
-
-[tool.mypy]
-exclude = ["dl_connector_clickhouse_tests"]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[[tool.mypy.overrides]]
-module = "clickhouse_sqlalchemy.*"
-ignore_missing_imports = true
-
 [datalens.i18n.domains]
 dl_connector_clickhouse = [
-    {path = "dl_connector_clickhouse/api"},
-    {path = "dl_connector_clickhouse/core"},
+  {path = "dl_connector_clickhouse/api"},
+  {path = "dl_connector_clickhouse/core"},
 ]
 dl_formula_ref_dl_connector_clickhouse = [
-    {path = "dl_connector_clickhouse/formula_ref"},
+  {path = "dl_connector_clickhouse/formula_ref"},
 ]
+
+[datalens.pytest.db]
+labels = ["fat"]
+root_dir = "dl_connector_clickhouse_tests/"
+target_path = "db"
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_connector_clickhouse_tests/"
+skip_compose = "true"
+target_path = "unit"

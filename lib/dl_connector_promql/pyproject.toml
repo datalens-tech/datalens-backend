@@ -1,35 +1,35 @@
-
 [tool.poetry]
-name = "dl-connector-promql"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_connector_promql"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-connector-promql"
+packages = [{include = "dl_connector_promql"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 aiohttp = "*"
 attrs = "*"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-i18n = {path = "../dl_i18n"}
+dl-sqlalchemy-promql = {path = "../dl_sqlalchemy_promql"}
+dl-type-transformer = {path = "../dl_type_transformer"}
+dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
-dl-api-commons = {path = "../dl_api_commons"}
-dl-constants = {path = "../dl_constants"}
-dl-i18n = {path = "../dl_i18n"}
-dl-sqlalchemy-promql = {path = "../dl_sqlalchemy_promql"}
-dl-configs = {path = "../dl_configs"}
-dl-api-connector = {path = "../dl_api_connector"}
-dl-core = {path = "../dl_core"}
-dl-app-tools = {path = "../dl_app_tools"}
-dl-utils = {path = "../dl_utils"}
-dl-type-transformer = {path = "../dl_type_transformer"}
 
-[tool.deptry.per_rule_ignores]
-DEP002 = [
-  "dl-sqlalchemy-promql",
-]
+[tool.poetry.group.tests.dependencies]
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-testing = {path = "../dl_testing"}
+pytest = "*"
+pytest-asyncio = "*"
 
 [tool.poetry.plugins."dl_api_lib.connectors"]
 promql = "dl_connector_promql.api.connector:PromQLApiConnector"
@@ -37,12 +37,23 @@ promql = "dl_connector_promql.api.connector:PromQLApiConnector"
 [tool.poetry.plugins."dl_core.connectors"]
 promql = "dl_connector_promql.core.connector:PromQLCoreConnector"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-pytest-asyncio = "*"
-dl-api-lib-testing = {path = "../dl_api_lib_testing"}
-dl-testing = {path = "../dl_testing"}
-dl-core-testing = {path = "../dl_core_testing"}
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "dl-sqlalchemy-promql",
+]
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_connector_promql_tests/unit"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -50,33 +61,18 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_connector_promql_tests/unit"]
-
-
+[datalens.i18n.domains]
+dl_connector_promql = [
+  {path = "dl_connector_promql/api"},
+  {path = "dl_connector_promql/core"},
+]
 
 [datalens.pytest.db]
 root_dir = "dl_connector_promql_tests/"
 target_path = "db"
 
 [datalens.pytest.unit]
-root_dir = "dl_connector_promql_tests/"
-target_path = "unit"
-skip_compose = "true"
 labels = ["no_compose"]
-
-[tool.mypy]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[datalens.i18n.domains]
-dl_connector_promql = [
-    {path = "dl_connector_promql/api"},
-    {path = "dl_connector_promql/core"},
-]
+root_dir = "dl_connector_promql_tests/"
+skip_compose = "true"
+target_path = "unit"

@@ -1,33 +1,37 @@
 [tool.poetry]
-name = "dl-connector-bitrix-gds"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_connector_bitrix_gds"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-connector-bitrix-gds"
+packages = [{include = "dl_connector_bitrix_gds"}]
 readme = "README.md"
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = "*"
-marshmallow = "*"
-redis = "*"
-sqlalchemy = "*"
-python = ">=3.10, <3.13"
-redis_cache_lock = {path = "../redis-cache-lock"}
 dl-api-commons = {path = "../dl_api_commons"}
-dl-utils = {path = "../dl_utils"}
-dl-constants = {path = "../dl_constants"}
-dl-i18n = {path = "../dl_i18n"}
-dl-configs = {path = "../dl_configs"}
 dl-api-connector = {path = "../dl_api_connector"}
-dl-core = {path = "../dl_core"}
 dl-app-tools = {path = "../dl_app_tools"}
+dl-cache-engine = {path = "../dl_cache_engine"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-formula = {path = "../dl_formula"}
+dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-bitrix = {path = "../dl_sqlalchemy_bitrix"}
-dl-cache-engine = {path = "../dl_cache_engine"}
-dl-formula = {path = "../dl_formula"}
-dl-model-tools = {path = "../dl_model_tools"}
 dl-type-transformer = {path = "../dl_type_transformer"}
+dl-utils = {path = "../dl_utils"}
+marshmallow = "*"
+python = ">=3.10, <3.13"
+redis = "*"
+redis_cache_lock = {path = "../redis-cache-lock"}
+sqlalchemy = "*"
+
+[tool.poetry.group.tests.dependencies]
+dl-compeng-pg = {path = "../dl_compeng_pg"}
+pytest = "*"
 
 [tool.poetry.plugins."dl_api_lib.connectors"]
 bitrix_gds = "dl_connector_bitrix_gds.api.connector:BitrixGDSApiConnector"
@@ -38,9 +42,23 @@ bitrix_gds = "dl_connector_bitrix_gds.core.connector:BitrixGDSCoreConnector"
 [tool.poetry.plugins."dl_formula.connectors"]
 bitrix_gds = "dl_connector_bitrix_gds.formula.connector:BitrixGDSFormulaConnector"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-dl-compeng-pg = {path = "../dl_compeng_pg"}
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_connector_bitrix_gds_tests"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = "dl_sqlalchemy_bitrix.*"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -48,37 +66,19 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = []
-
-[datalens.pytest.ext]
-root_dir = "dl_connector_bitrix_gds_tests/"
-target_path = "ext"
-labels = ["ext_public"]
-
-[datalens.pytest.unit]
-root_dir = "dl_connector_bitrix_gds_tests/"
-target_path = "unit"
-skip_compose = "true"
-labels = ["no_compose"]
-
-[tool.mypy]
-exclude = ["dl_connector_bitrix_gds_tests"]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
-[[tool.mypy.overrides]]
-module = "dl_sqlalchemy_bitrix.*"
-ignore_missing_imports = true
-
 [datalens.i18n.domains]
 dl_connector_bitrix_gds = [
-    {path = "dl_connector_bitrix_gds/api"},
-    {path = "dl_connector_bitrix_gds/core"},
+  {path = "dl_connector_bitrix_gds/api"},
+  {path = "dl_connector_bitrix_gds/core"},
 ]
+
+[datalens.pytest.ext]
+labels = ["ext_public"]
+root_dir = "dl_connector_bitrix_gds_tests/"
+target_path = "ext"
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_connector_bitrix_gds_tests/"
+skip_compose = "true"
+target_path = "unit"

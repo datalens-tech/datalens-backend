@@ -1,12 +1,10 @@
-
 [tool.poetry]
-name = "dl-utils"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_utils"}]
+description = ""
 license = "Apache 2.0"
-
+name = "dl-utils"
+packages = [{include = "dl_utils"}]
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 async-timeout = "*"
@@ -14,24 +12,23 @@ attrs = "*"
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_utils_tests"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_utils_tests/unit"]
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
   "poetry-core",
 ]
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_utils_tests/unit"]
-
-
-
-[tool.mypy]
-exclude = ["dl_utils_tests"]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true

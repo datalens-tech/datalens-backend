@@ -1,39 +1,42 @@
-
 [tool.poetry]
-name = "dl-connector-oracle"
-version = "0.0.1"
-description = ""
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
-packages = [{include = "dl_connector_oracle"}]
+description = ""
 license = "Apache 2.0"
+name = "dl-connector-oracle"
+packages = [{include = "dl_connector_oracle"}]
 readme = "README.md"
-
+version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = "*"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-dashsql = {path = "../dl_dashsql"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-ref = {path = "../dl_formula_ref"}
+dl-i18n = {path = "../dl_i18n"}
+dl-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = "*"
 oracledb = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
-dl-api-commons = {path = "../dl_api_commons"}
-dl-constants = {path = "../dl_constants"}
-dl-formula-ref = {path = "../dl_formula_ref"}
-dl-i18n = {path = "../dl_i18n"}
-dl-formula = {path = "../dl_formula"}
-dl-configs = {path = "../dl_configs"}
-dl-api-connector = {path = "../dl_api_connector"}
-dl-core = {path = "../dl_core"}
-dl-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
-dl-db-testing = {path = "../dl_db_testing"}
-dl-dashsql = {path = "../dl_dashsql"}
-dl-type-transformer = {path = "../dl_type_transformer"}
 
-[tool.deptry.per_rule_ignores]
-DEP002 = [
-  "dl-sqlalchemy-oracle",
-]
+[tool.poetry.group.tests.dependencies]
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-testing = {path = "../dl_testing"}
+oracledb = "*"
+pytest = "*"
+pytest-asyncio = "*"
 
 [tool.poetry.plugins]
+
 [tool.poetry.plugins."dl_api_lib.connectors"]
 oracle = "dl_connector_oracle.api.connector:OracleApiConnector"
 
@@ -49,14 +52,24 @@ oracle = "dl_connector_oracle.formula.connector:OracleFormulaConnector"
 [tool.poetry.plugins."dl_formula_ref.plugins"]
 oracle = "dl_connector_oracle.formula_ref.plugin:OracleFormulaRefPlugin"
 
-[tool.poetry.group.tests.dependencies]
-oracledb = "*"
-pytest = "*"
-pytest-asyncio = "*"
-dl-api-lib-testing = {path = "../dl_api_lib_testing"}
-dl-formula-testing = {path = "../dl_formula_testing"}
-dl-testing = {path = "../dl_testing"}
-dl-core-testing = {path = "../dl_core_testing"}
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "dl-sqlalchemy-oracle",
+]
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["dl_connector_oracle_tests"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["dl_connector_oracle_tests/db", "dl_connector_oracle_tests/unit"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -64,36 +77,22 @@ requires = [
   "poetry-core",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra"
-testpaths = ["dl_connector_oracle_tests/db", "dl_connector_oracle_tests/unit"]
-
-[datalens.pytest.db]
-root_dir = "dl_connector_oracle_tests/"
-target_path = "db"
-labels = ["fat"]
-
-[datalens.pytest.unit]
-root_dir = "dl_connector_oracle_tests/"
-target_path = "unit"
-skip_compose = "true"
-labels = ["no_compose"]
-
-[tool.mypy]
-exclude = ["dl_connector_oracle_tests"]
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-check_untyped_defs = true
-strict_optional = true
-
 [datalens.i18n.domains]
 dl_connector_oracle = [
-    {path = "dl_connector_oracle/api"},
-    {path = "dl_connector_oracle/core"},
+  {path = "dl_connector_oracle/api"},
+  {path = "dl_connector_oracle/core"},
 ]
 dl_formula_ref_dl_connector_oracle = [
-    {path = "dl_connector_oracle/formula_ref"},
+  {path = "dl_connector_oracle/formula_ref"},
 ]
+
+[datalens.pytest.db]
+labels = ["fat"]
+root_dir = "dl_connector_oracle_tests/"
+target_path = "db"
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_connector_oracle_tests/"
+skip_compose = "true"
+target_path = "unit"
