@@ -29,6 +29,7 @@ class RowConstructor:
         default_value: Optional[str] = None,
         display_conditions: Optional[TDisplayConditions] = None,
         label_help_text: Optional[str] = None,
+        disabled: Optional[bool] = None,
     ) -> C.CustomizableRow:
         text = self._localizer.translate(Translatable("field_host"))
         return C.CustomizableRow(
@@ -37,6 +38,7 @@ class RowConstructor:
                 C.InputRowItem(
                     name=CommonFieldName.host,
                     width="l",
+                    control_props=C.InputRowItem.Props(disabled=disabled),
                     default_value=default_value,
                     display_conditions=display_conditions,
                 ),
@@ -74,6 +76,7 @@ class RowConstructor:
         default_value: Optional[str] = None,
         display_conditions: Optional[TDisplayConditions] = None,
         label_help_text: Optional[str] = None,
+        disabled: Optional[bool] = None,
     ) -> C.CustomizableRow:
         text = self._localizer.translate(Translatable("field_path"))
         return C.CustomizableRow(
@@ -82,6 +85,7 @@ class RowConstructor:
                 C.InputRowItem(
                     name=CommonFieldName.path,
                     width="l",
+                    control_props=C.InputRowItem.Props(type="number", disabled=disabled),
                     default_value=default_value,
                     display_conditions=display_conditions,
                 ),

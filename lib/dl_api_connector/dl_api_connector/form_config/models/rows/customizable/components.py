@@ -144,6 +144,7 @@ class RadioGroupRowItem(RowItem, DisplayConditionsMixin, FormFieldMixin, InnerFi
 class CheckboxRowItem(RowItem, DisplayConditionsMixin, FormFieldMixin, InnerFieldMixin, DefaultValueMixin):
     @attr.s(kw_only=True, frozen=True)
     class Props(SerializableConfig):
+        disabled: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
         size: Optional[Literal["m", "l"]] = attr.ib(default=None, metadata=skip_if_null())
         qa: Optional[str] = attr.ib(
             default=None, metadata=skip_if_null()
