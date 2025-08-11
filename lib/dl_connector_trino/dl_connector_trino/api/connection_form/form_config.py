@@ -67,16 +67,19 @@ class TrinoRowConstructor(RowConstructor):
     def auth_type_row(
         self,
         default_value: str = TrinoAuthType.password.value,
+        display_conditions: TDisplayConditions | None = None,
     ) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
                 C.LabelRowItem(
                     text=self._localizer.translate(Translatable("field_auth-type")),
+                    display_conditions=display_conditions,
                 ),
                 C.RadioButtonRowItem(
                     name=TrinoFormFieldName.auth_type,
                     options=self._auth_type_options(),
                     default_value=default_value,
+                    display_conditions=display_conditions,
                 ),
             ]
         )
@@ -86,7 +89,6 @@ class TrinoRowConstructor(RowConstructor):
         mode: ConnectionFormMode,
         display_conditions: TDisplayConditions | None = None,
     ) -> C.CustomizableRow:
-        display_conditions = {TrinoFormFieldName.auth_type: TrinoAuthType.password.value}
         label_text = self._localizer.translate(Translatable("field_password"))
         return C.CustomizableRow(
             items=[
@@ -107,7 +109,6 @@ class TrinoRowConstructor(RowConstructor):
         mode: ConnectionFormMode,
         display_conditions: TDisplayConditions | None = None,
     ) -> C.CustomizableRow:
-        display_conditions = {TrinoFormFieldName.auth_type: TrinoAuthType.jwt.value}
         label_text = self._localizer.translate(Translatable("field_jwt"))
         return C.CustomizableRow(
             items=[
@@ -273,8 +274,12 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
                     rc.host_row(),
                     rc.port_row(default_value=self.DEFAULT_HTTPS_PORT),
                     rc.username_row(),
-                    rc.password_row(mode=self.mode),
-                    rc.jwt_row(mode=self.mode),
+                    rc.password_row(
+                        mode=self.mode, display_conditions={TrinoFormFieldName.auth_type: TrinoAuthType.password.value}
+                    ),
+                    rc.jwt_row(
+                        mode=self.mode, display_conditions={TrinoFormFieldName.auth_type: TrinoAuthType.jwt.value}
+                    ),
                     rc.cache_ttl_row(),
                     rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
                     rc.collapse_advanced_settings_row(),
