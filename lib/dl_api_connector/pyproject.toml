@@ -10,7 +10,6 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
-dl-api-lib = {path = "../dl_api_lib"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
