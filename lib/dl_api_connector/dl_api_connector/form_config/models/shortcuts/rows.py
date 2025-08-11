@@ -38,7 +38,7 @@ class RowConstructor:
                 C.InputRowItem(
                     name=CommonFieldName.host,
                     width="l",
-                    control_props=C.InputRowItem.Props(disabled=disabled),
+                    control_props=C.InputRowItem.Props(disabled=disabled) if disabled else None,
                     default_value=default_value,
                     display_conditions=display_conditions,
                 ),
@@ -85,7 +85,7 @@ class RowConstructor:
                 C.InputRowItem(
                     name=CommonFieldName.path,
                     width="l",
-                    control_props=C.InputRowItem.Props(type="number", disabled=disabled),
+                    control_props=C.InputRowItem.Props(type="number", disabled=disabled) if disabled else None,
                     default_value=default_value,
                     display_conditions=display_conditions,
                 ),
