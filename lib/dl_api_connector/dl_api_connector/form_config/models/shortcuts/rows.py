@@ -85,7 +85,7 @@ class RowConstructor:
                 C.InputRowItem(
                     name=CommonFieldName.path,
                     width="l",
-                    control_props=C.InputRowItem.Props(type="number", disabled=disabled) if disabled else None,
+                    control_props=C.InputRowItem.Props(type="number", disabled=disabled),
                     default_value=default_value,
                     display_conditions=display_conditions,
                 ),
