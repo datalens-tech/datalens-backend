@@ -430,4 +430,29 @@ DEFINITIONS_ARRAY = [
             V(D.TRINO, array_intersect),
         ]
     ),
+    # arr_index_of
+    base.FuncArrayIndexOfStr(
+        variants=[
+            V(
+                D.TRINO,
+                lambda array, value: sa.func.coalesce(sa.func.array_position(array, value), 0),
+            ),
+        ]
+    ),
+    base.FuncArrayIndexOfInt(
+        variants=[
+            V(
+                D.TRINO,
+                lambda array, value: sa.func.coalesce(sa.func.array_position(array, value), 0),
+            ),
+        ]
+    ),
+    base.FuncArrayIndexOfFloat(
+        variants=[
+            V(
+                D.TRINO,
+                lambda array, value: sa.func.coalesce(sa.func.array_position(array, value), 0),
+            ),
+        ]
+    ),
 ]

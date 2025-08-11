@@ -288,4 +288,20 @@ DEFINITIONS_ARRAY = [
     ),
     # intersect
     base.FuncArrayIntersect(variants=[V(D.CLICKHOUSE, sa.func.arrayIntersect)]),
+    # arr_index_of
+    base.FuncArrayIndexOfStr(
+        variants=[
+            V(D.CLICKHOUSE, sa.func.indexOf),
+        ]
+    ),
+    base.FuncArrayIndexOfInt(
+        variants=[
+            V(D.CLICKHOUSE, sa.func.indexOf),
+        ]
+    ),
+    base.FuncArrayIndexOfFloat(
+        variants=[
+            V(D.CLICKHOUSE, sa.func.indexOf),
+        ]
+    ),
 ]
