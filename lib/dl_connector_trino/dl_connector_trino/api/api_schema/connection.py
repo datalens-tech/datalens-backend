@@ -30,7 +30,7 @@ class TrinoConnectionSchemaBase(
     auth_type = DynamicEnumField(
         TrinoAuthType,
         attribute="data.auth_type",
-        required=True,
+        required=False,
         bi_extra=FieldExtra(editable=True),
     )
     password = secret_string_field(
@@ -68,3 +68,10 @@ class TrinoConnectionSchemaBase(
 
 class TrinoConnectionSchema(TrinoConnectionSchemaBase):
     TARGET_CLS = ConnectionTrino
+
+    auth_type = DynamicEnumField(
+        TrinoAuthType,
+        attribute="data.auth_type",
+        required=True,
+        bi_extra=FieldExtra(editable=True),
+    )
