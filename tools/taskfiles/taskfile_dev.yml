@@ -2,7 +2,7 @@ version: '3'
 
 vars:
   VM_HOST: dl-vm
-  VENV_PATH: '{{ if eq .VENV_PATH "" }}{{ .DEFAULT_VENV_PATH }}{{ else }}{{ .VENV_PATH }}{{ end }}'
+  VENV_PATH: '{{ if .VENV_PATH }}{{ .VENV_PATH }}{{ else }}{{ .DEFAULT_VENV_PATH }}{{ end }}'
 
 tasks:
   help:
@@ -78,7 +78,7 @@ tasks:
 
   venv-bin:
     desc: Run venv bin
-    dir: '{{ if ne .DIR "" }}{{ .DIR }}{{ else }}{{ .USER_WORKING_DIR }}{{ end }}'
+    dir: '{{ if .DIR }}{{ .DIR }}{{ else }}{{ .USER_WORKING_DIR }}{{ end }}'
     cmds:
       - 'PATH="{{.VENV_PATH}}/bin:$PATH" {{if ne .ENVS ""}} {{.ENVS}}{{end}} {{.VENV_PATH}}/bin/{{.CLI_ARGS}}'
     requires:
@@ -110,6 +110,7 @@ tasks:
       - echo "Running toml-sort checks..."
       - task: venv-bin
         vars:
+          DIR: "{{.PROJECT_ROOT_PATH}}"
           CLI_ARGS: 'toml-sort {{if eq .FIX "true"}}--in-place{{else}}--check{{end}} {{.TOML_FILES}}'
     vars:
       FIX: '{{.FIX | default "false"}}'
