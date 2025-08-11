@@ -1,4 +1,5 @@
 from typing import (
+    Any,
     Callable,
     ClassVar,
 )
@@ -7,8 +8,11 @@ import attr
 import sqlalchemy as sa
 from trino.sqlalchemy.dialect import TrinoDialect
 
+from dl_constants.enums import RawSQLLevel
 from dl_core.connection_executors import SyncConnExecutorBase
 from dl_core.connection_executors.common_base import ConnExecutorQuery
+import dl_core.exc as exc
+from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.us_connection_base import (
     ConnectionBase,
     ConnectionSettingsMixin,
@@ -80,6 +84,26 @@ class ConnectionTrinoBase(
         ssl_ca: str | None = attr.ib(default=None)
         jwt: str | None = attr.ib(repr=secrepr, default=None)
         listing_sources: ListingSources = attr.ib()
+
+    async def validate_new_data(
+        self,
+        services_registry: ServicesRegistry,
+        changes: dict[str, Any] | None = None,
+        original_version: ConnectionBase | None = None,
+    ) -> None:
+        await super().validate_new_data(
+            services_registry=services_registry,
+            changes=changes,
+            original_version=original_version,
+        )
+
+        if self.data.auth_type is TrinoAuthType.password and not self.data.password:
+            raise exc.ConnectionConfigurationError("Password must be set for password authentication type.")
+        if self.data.auth_type is TrinoAuthType.jwt and not self.data.jwt:
+            raise exc.ConnectionConfigurationError("JWT must be set for JWT authentication type.")
+
+        if self.data.listing_sources is ListingSources.off and self.data.raw_sql_level == RawSQLLevel.off:
+            raise exc.ConnectionConfigurationError("If listing sources is off, raw SQL level must be enabled.")
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
         result: list[DataSourceTemplate] = []
