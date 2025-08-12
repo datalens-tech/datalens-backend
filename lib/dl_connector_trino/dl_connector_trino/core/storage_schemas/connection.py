@@ -14,8 +14,8 @@ from dl_connector_trino.core.us_connection import ConnectionTrino
 class TrinoConnectionDataStorageSchemaBase(Schema):
     auth_type = DynamicEnumField(
         TrinoAuthType,
-        required=True,
-        allow_none=False,
+        required=False,
+        allow_none=True,
     )
     ssl_enable = ma_fields.Boolean(
         required=False,
@@ -49,3 +49,9 @@ class TrinoConnectionDataStorageSchema(
     TrinoConnectionDataStorageSchemaBase,
 ):
     TARGET_CLS = ConnectionTrino.DataModel
+
+    auth_type = DynamicEnumField(
+        TrinoAuthType,
+        required=True,
+        allow_none=False,
+    )
