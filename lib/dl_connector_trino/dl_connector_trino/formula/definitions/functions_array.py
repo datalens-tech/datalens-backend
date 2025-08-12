@@ -74,6 +74,22 @@ def format_float(array_float: ClauseElement) -> Function:
     )
 
 
+def array_index_of(array: ColumnClause, value: BindParameter) -> Function:
+    # Find first NULL index using array_position with a special approach
+    # We'll use zip_with to create pairs of (element, index) and find first NULL
+    indices = sa.func.sequence(1, sa.func.cardinality(array))
+    return sa.func.if_(
+        value.is_(None),
+        sa.func.coalesce(
+            sa.func.element_at(
+                sa.func.filter(indices, TrinoLambda(x_col, sa.func.element_at(array, x_col).is_(None))), 1
+            ),
+            0,
+        ),
+        sa.func.coalesce(sa.func.array_position(array, value), 0),
+    )
+
+
 def array_equals(x: ColumnClause, y: ColumnClause) -> Function:
     pairwise_non_distinct = sa.func.zip_with(
         x,
@@ -449,26 +465,17 @@ DEFINITIONS_ARRAY = [
     # arr_index_of
     base.FuncArrayIndexOfStr(
         variants=[
-            V(
-                D.TRINO,
-                lambda array, value: sa.func.coalesce(sa.func.array_position(array, value), 0),
-            ),
+            V(D.TRINO, array_index_of),
         ]
     ),
     base.FuncArrayIndexOfInt(
         variants=[
-            V(
-                D.TRINO,
-                lambda array, value: sa.func.coalesce(sa.func.array_position(array, value), 0),
-            ),
+            V(D.TRINO, array_index_of),
         ]
     ),
     base.FuncArrayIndexOfFloat(
         variants=[
-            V(
-                D.TRINO,
-                lambda array, value: sa.func.coalesce(sa.func.array_position(array, value), 0),
-            ),
+            V(D.TRINO, array_index_of),
         ]
     ),
 ]

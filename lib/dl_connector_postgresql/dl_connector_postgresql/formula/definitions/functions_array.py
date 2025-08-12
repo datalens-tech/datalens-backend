@@ -1,6 +1,10 @@
+from typing import Any
+
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql as sa_postgresql
+from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql import ClauseElement
+from sqlalchemy.sql.compiler import SQLCompiler
 from sqlalchemy.sql.elements import (
     Grouping,
     Null,
@@ -20,6 +24,54 @@ from dl_connector_postgresql.formula.definitions.common import PG_INT_64_TO_CHAR
 
 
 V = TranslationVariant.make
+
+
+def _array_index_of_legacy(array: ClauseElement, value: ClauseElement) -> ClauseElement:
+    """Implementation for PostgreSQL < 9.5 without array_position function"""
+    return sa.func.coalesce(
+        sa.select(sa.func.generate_subscripts(array, 1))
+        .where(sa.type_coerce(array, sa_postgresql.ARRAY(TypeEngine))[sa.func.generate_subscripts(array, 1)] == value)
+        .order_by(sa.func.generate_subscripts(array, 1))
+        .limit(1)
+        .scalar_subquery(),
+        0,
+    )
+
+
+def _array_index_of_modern(array: ClauseElement, value: ClauseElement) -> ClauseElement:
+    """Implementation for PostgreSQL >= 9.5 with array_position function"""
+    return sa.func.coalesce(sa.func.array_position(array, value), 0)
+
+
+class ArrayIndexOf(ClauseElement):
+    """Version-aware array_index_of implementation"""
+
+    def __init__(self, array: ClauseElement, value: ClauseElement) -> None:
+        self.array = array
+        self.value = value
+        self.type = sa.Integer()
+
+
+@compiles(ArrayIndexOf)
+def visit_array_index_of_default(element: ArrayIndexOf, compiler: SQLCompiler, **kw: Any) -> str:
+    """Default compilation - use legacy for safety"""
+    return compiler.process(_array_index_of_legacy(element.array, element.value), **kw)
+
+
+@compiles(ArrayIndexOf, "postgresql")
+def visit_array_index_of_postgresql(element: ArrayIndexOf, compiler: SQLCompiler, **kw: Any) -> str:
+    """PostgreSQL-specific compilation with version detection"""
+    dialect = compiler.dialect
+
+    if hasattr(dialect, "server_version_info") and dialect.server_version_info >= (9, 5):
+        return compiler.process(_array_index_of_modern(element.array, element.value), **kw)
+    else:
+        return compiler.process(_array_index_of_legacy(element.array, element.value), **kw)
+
+
+def _array_index_of(array: ClauseElement, value: ClauseElement) -> ClauseElement:
+    """Choose implementation based on PostgreSQL version"""
+    return ArrayIndexOf(array, value)
 
 
 def _array_contains(array: ClauseElement, value: ClauseElement) -> ClauseElement:
@@ -411,7 +463,7 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.POSTGRESQL,
-                lambda array, value: sa.func.coalesce(sa.func.array_position(array, value), 0),
+                _array_index_of,
             ),
         ]
     ),
@@ -419,7 +471,7 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.POSTGRESQL,
-                lambda array, value: sa.func.coalesce(sa.func.array_position(array, value), 0),
+                _array_index_of,
             ),
         ]
     ),
@@ -427,7 +479,7 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.POSTGRESQL,
-                lambda array, value: sa.func.coalesce(sa.func.array_position(array, value), 0),
+                _array_index_of,
             ),
         ]
     ),
