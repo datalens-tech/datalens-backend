@@ -1,9 +1,7 @@
 # TODO: Remove the `ll_` prefix
 
 from itertools import chain
-from typing import (
-    Union,
-)
+from typing import Union
 
 import attr
 

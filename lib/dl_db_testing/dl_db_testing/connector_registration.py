@@ -1,4 +1,3 @@
-
 from dl_db_testing.connectors.base.connector import DbTestingConnector
 from dl_db_testing.database.engine_wrapper import register_engine_wrapper_cls
 

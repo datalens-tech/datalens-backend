@@ -1,7 +1,5 @@
 from contextlib import asynccontextmanager
-from typing import (
-    AsyncIterator,
-)
+from typing import AsyncIterator
 
 import asyncpg
 import sqlalchemy as sa

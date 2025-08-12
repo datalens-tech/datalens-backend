@@ -1,4 +1,3 @@
-
 from dl_configs.connectors_settings import (
     ConnectorSettingsBase,
     SettingsFallbackType,

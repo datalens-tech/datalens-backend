@@ -1,7 +1,5 @@
 from itertools import chain
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 

@@ -1,8 +1,6 @@
 import logging
 import re
-from typing import (
-    Optional,
-)
+from typing import Optional
 
 from dl_core import exc
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI

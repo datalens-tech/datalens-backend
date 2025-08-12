@@ -1,4 +1,3 @@
-
 from dl_api_connector.connection_info import ConnectionInfoProvider
 from dl_constants.enums import ConnectionType
 

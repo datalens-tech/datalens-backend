@@ -1,6 +1,4 @@
-from typing import (
-    Optional,
-)
+from typing import Optional
 
 from dl_formula.core.datatype import DataType
 from dl_formula_ref.registry.aliased_res import (

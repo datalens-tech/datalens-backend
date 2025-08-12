@@ -1,4 +1,3 @@
-
 from dl_formula.connectors.base.column import (
     ColumnRenderer,
     DefaultColumnRenderer,

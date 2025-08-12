@@ -1,4 +1,3 @@
-
 from dl_constants.enums import SourceBackendType
 from dl_core.connectors.base.query_compiler import QueryCompiler
 

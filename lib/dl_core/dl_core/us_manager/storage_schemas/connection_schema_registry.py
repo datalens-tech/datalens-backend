@@ -1,4 +1,3 @@
-
 from marshmallow import Schema
 
 from dl_core.us_connection_base import (

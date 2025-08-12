@@ -1,4 +1,3 @@
-
 import attr
 
 from dl_constants.enums import DataPivotEngineType

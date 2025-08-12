@@ -1,6 +1,4 @@
-from typing import (
-    Collection,
-)
+from typing import Collection
 
 from dl_formula.core.datatype import DataType
 from dl_formula_ref.texts import (

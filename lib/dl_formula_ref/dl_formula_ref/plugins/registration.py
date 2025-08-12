@@ -1,4 +1,3 @@
-
 from dl_formula_ref.config import register_config_version
 from dl_formula_ref.function_extension import register_function_extension
 from dl_formula_ref.functions.type_conversion import register_db_cast_extension

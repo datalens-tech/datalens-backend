@@ -1,6 +1,4 @@
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 from dl_db_testing.database.engine_wrapper import EngineWrapperBase
 

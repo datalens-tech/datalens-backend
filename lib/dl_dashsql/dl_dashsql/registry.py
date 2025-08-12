@@ -1,4 +1,3 @@
-
 from dl_constants.enums import SourceBackendType
 from dl_dashsql.literalizer import DashSQLParamLiteralizer
 

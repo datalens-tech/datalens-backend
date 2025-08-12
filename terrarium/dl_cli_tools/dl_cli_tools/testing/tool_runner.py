@@ -1,8 +1,6 @@
 from contextlib import redirect_stdout
 import io
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 import attr
 

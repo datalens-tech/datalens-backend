@@ -1,4 +1,3 @@
-
 from dl_formula.core.datatype import DataType
 from dl_formula.inspect.function import supports_ordering
 from dl_formula_ref.categories.window import CATEGORY_WINDOW

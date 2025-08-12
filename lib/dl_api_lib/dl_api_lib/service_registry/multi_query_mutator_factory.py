@@ -1,7 +1,5 @@
 import logging
-from typing import (
-    Sequence,
-)
+from typing import Sequence
 
 import attr
 

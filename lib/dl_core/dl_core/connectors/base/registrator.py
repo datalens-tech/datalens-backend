@@ -1,6 +1,4 @@
-from typing import (
-    TYPE_CHECKING,
-)
+from typing import TYPE_CHECKING
 
 from dl_constants.enums import SourceBackendType
 from dl_core.backend_types import register_connection_backend_type

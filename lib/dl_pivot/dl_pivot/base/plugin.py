@@ -1,6 +1,4 @@
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 from dl_constants.enums import DataPivotEngineType
 from dl_pivot.base.transformer_factory import PivotTransformerFactory

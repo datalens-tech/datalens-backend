@@ -1,6 +1,4 @@
-from typing import (
-    Optional,
-)
+from typing import Optional
 
 from dl_query_processing.legend.block_legend import RootBlockPlacement
 from dl_query_processing.merging.binary_merger import make_binary_merger

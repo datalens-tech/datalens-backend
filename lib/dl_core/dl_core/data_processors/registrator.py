@@ -1,4 +1,3 @@
-
 from dl_core.aio.web_app_services.data_processing.factory import register_data_processor_service_class
 from dl_core.data_processors.base.plugin import DataProcessorPlugin
 

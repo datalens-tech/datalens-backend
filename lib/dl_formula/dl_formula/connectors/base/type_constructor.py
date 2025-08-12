@@ -1,4 +1,3 @@
-
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 

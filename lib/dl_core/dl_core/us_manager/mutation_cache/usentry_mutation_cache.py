@@ -3,9 +3,7 @@ import datetime
 import json
 import logging
 import time
-from typing import (
-    Optional,
-)
+from typing import Optional
 
 import attr
 from redis.asyncio import Redis
