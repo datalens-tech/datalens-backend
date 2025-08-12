@@ -85,7 +85,11 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
                 enabled_help_text=self._localizer.translate(Translatable("label_mysql-ssl-enabled-tooltip")),
                 enabled_default_value=True,
             ),
-            rc.data_export_forbidden_row(),
+            rc.data_export_forbidden_row(
+                conn_id=self._get_form_params().conn_id,
+                exports_history_url_path=self._get_form_params().exports_history_url_path,
+                mode=self.mode,
+            ),
         ]
 
     def _get_edit_api_schema(

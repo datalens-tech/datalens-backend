@@ -164,6 +164,7 @@ class DefaultServicesRegistry(ServicesRegistry):
     _rqe_caches_settings: Optional[RQECachesSetting] = attr.ib(default=None)
     _required_services: set[RequiredService] = attr.ib(factory=set)
     _inst_specific_sr: Optional[InstallationSpecificServiceRegistry] = attr.ib(default=None)
+    _exports_history_url_path: Optional[str] = attr.ib(default=None)
 
     @_compute_executor.default  # noqa
     def _default_compute_executor(self) -> ComputeExecutor:

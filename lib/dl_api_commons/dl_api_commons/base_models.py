@@ -186,6 +186,7 @@ class TenantCommon(TenantDef):
 @attr.s(frozen=True)
 class FormConfigParams:
     conn_id: str | None = attr.ib(default=None)
+    exports_history_url_path: str | None = attr.ib(default=None)
     user_id: str | None = attr.ib(default=None)
 
 

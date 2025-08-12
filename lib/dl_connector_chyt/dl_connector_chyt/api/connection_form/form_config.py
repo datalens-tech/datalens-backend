@@ -115,7 +115,11 @@ class CHYTConnectionFormFactory(ConnectionFormFactory):
                 rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
                 secure_row,
                 rc.collapse_advanced_settings_row(),
-                rc.data_export_forbidden_row(),
+                rc.data_export_forbidden_row(
+                    conn_id=self._get_form_params().conn_id,
+                    exports_history_url_path=None,
+                    mode=self.mode,
+                ),
             ],
             api_schema=FormApiSchema(
                 create=create_api_schema if self.mode == ConnectionFormMode.create else None,

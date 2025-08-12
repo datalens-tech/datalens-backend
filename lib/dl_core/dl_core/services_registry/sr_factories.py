@@ -98,7 +98,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):
     rqe_caches_settings: Optional[RQECachesSetting] = attr.ib(default=None)
     required_services: set[RequiredService] = attr.ib(factory=set)
     inst_specific_sr_factory: Optional[InstallationSpecificServiceRegistryFactory] = attr.ib(default=None)
-
+    exports_history_url_path: Optional[str] = attr.ib(default=None)
     service_registry_cls: ClassVar[type[SERVICE_REGISTRY_TV]] = DefaultServicesRegistry  # type: ignore  # TODO: fix
 
     def is_bleeding_edge_user(self, request_context_info: RequestContextInfo) -> bool:
@@ -186,6 +186,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):
                 if self.inst_specific_sr_factory is not None
                 else None
             ),
+            exports_history_url_path=self.exports_history_url_path,
             **self.additional_sr_constructor_kwargs(request_context_info, sr_ref),
         )
         sr_ref.fulfill(sr)
