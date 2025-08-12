@@ -3,6 +3,7 @@ from __future__ import annotations
 import abc
 from enum import Enum
 from typing import (
+    TYPE_CHECKING,
     Any,
     Optional,
 )
@@ -33,6 +34,10 @@ from dl_api_connector.form_config.models.rows.base import (
 from dl_api_connector.form_config.models.rows.prepared.base import PreparedRow
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_i18n.localizer_base import Localizer
+
+
+if TYPE_CHECKING:
+    from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 
 
 @attr.s(kw_only=True, frozen=True)
@@ -172,6 +177,9 @@ class ConnectionFormFactory:
 
     def _get_form_params(self) -> FormConfigParams:
         return self._form_params
+
+    def preprocess_form_params(self, service_registry: ApiServiceRegistry) -> None:
+        pass
 
     @abc.abstractmethod
     def get_form_config(
