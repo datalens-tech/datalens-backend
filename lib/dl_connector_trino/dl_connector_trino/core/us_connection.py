@@ -144,7 +144,7 @@ class ConnectionTrinoBase(
 
 class ConnectionTrino(ConnectionTrinoBase):
     @attr.s(kw_only=True)
-    class DataModel(ConnectionSQL.DataModel):
+    class DataModel(ConnectionTrinoBase.DataModel):
         auth_type: TrinoAuthType = attr.ib()
 
     def get_conn_dto(self) -> TrinoConnDTO:
