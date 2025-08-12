@@ -20,7 +20,7 @@ class TypedBaseSettings(base_settings.BaseSettings, metaclass=TypedMeta):
     type: str
 
     @classmethod
-    def register(cls, name: str, class_: type) -> None:
+    def register(cls, name: str, class_: typing.Type) -> None:  # noqa: UP006
         if name in cls._classes:
             raise ValueError(f"Class with name '{name}' already registered")
 
