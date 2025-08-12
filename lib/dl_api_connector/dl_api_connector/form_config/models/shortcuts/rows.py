@@ -432,7 +432,7 @@ class RowConstructor:
                     ],
                     default_value=BooleanField.off.value,
                     display_conditions={CommonFieldName.advanced_settings: "opened"},
-                    hint_text=make_hint_text(
+                    hint_text=self._make_data_export_forbidden_hint_text(
                         conn_id=conn_id,
                         exports_history_url_path=exports_history_url_path,
                         mode=mode,
