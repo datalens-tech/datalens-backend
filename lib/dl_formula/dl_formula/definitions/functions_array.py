@@ -603,21 +603,21 @@ class FuncArrayIndexOf(ArrayFunction):
 class FuncArrayIndexOfStr(FuncArrayIndexOf):
     argument_types = [
         ArgTypeForAll(DataType.ARRAY_STR, require_type_match={DataType.ARRAY_STR, DataType.CONST_ARRAY_STR}),
-        ArgTypeSequence([DataType.STRING]),
+        ArgTypeSequence([{DataType.STRING, DataType.CONST_STRING}]),
     ]
 
 
 class FuncArrayIndexOfInt(FuncArrayIndexOf):
     argument_types = [
         ArgTypeForAll(DataType.ARRAY_INT, require_type_match={DataType.ARRAY_INT, DataType.CONST_ARRAY_INT}),
-        ArgTypeSequence([DataType.INTEGER]),
+        ArgTypeSequence([{DataType.INTEGER, DataType.CONST_INTEGER}]),
     ]
 
 
 class FuncArrayIndexOfFloat(FuncArrayIndexOf):
     argument_types = [
         ArgTypeForAll(DataType.ARRAY_FLOAT, require_type_match={DataType.ARRAY_FLOAT, DataType.CONST_ARRAY_FLOAT}),
-        ArgTypeSequence([DataType.FLOAT]),
+        ArgTypeSequence([{DataType.FLOAT, DataType.CONST_FLOAT}]),
     ]
 
 
