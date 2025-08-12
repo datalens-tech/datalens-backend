@@ -1,7 +1,6 @@
 import csv
 from typing import (
     Any,
-    Type,
 )
 
 from marshmallow import (
@@ -99,7 +98,7 @@ class ExcelFileSettingsSchema(FileSettingsBaseSchema):
 
 
 class FileSettingsSchema(FileTypeOneOfSchema):
-    type_schemas: dict[str, Type[FileSettingsBaseSchema]] = {  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[FileSettingsBaseSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
+    type_schemas: dict[str, type[FileSettingsBaseSchema]] = {  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[FileSettingsBaseSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
         FileType.csv.name: CSVFileSettingsSchema,
         FileType.xlsx.name: ExcelFileSettingsSchema,
     }
@@ -144,7 +143,7 @@ class ExcelFileSourceSettingsSchema(FileSourceSettingsBaseSchema):
 
 
 class FileSourceSettingsSchema(FileTypeOneOfSchema):
-    type_schemas: dict[str, Type[FileSourceSettingsBaseSchema]] = {  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[FileSourceSettingsBaseSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
+    type_schemas: dict[str, type[FileSourceSettingsBaseSchema]] = {  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[FileSourceSettingsBaseSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
         FileType.csv.name: CSVFileSourceSettingsSchema,
         FileType.gsheets.name: GSheetsFileSourceSettingsSchema,
         FileType.xlsx.name: ExcelFileSourceSettingsSchema,
@@ -174,7 +173,7 @@ class YaDocsUserSourcePropertiesSchema(UserSourcePropertiesBaseSchema):
 
 
 class UserSourcePropertiesSchema(FileTypeOneOfSchema):
-    type_schemas: dict[str, Type[UserSourcePropertiesBaseSchema]] = {  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[UserSourcePropertiesBaseSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
+    type_schemas: dict[str, type[UserSourcePropertiesBaseSchema]] = {  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[UserSourcePropertiesBaseSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
         FileType.gsheets.name: GSheetsUserSourcePropertiesSchema,
         FileType.yadocs.name: YaDocsUserSourcePropertiesSchema,
     }
@@ -199,7 +198,7 @@ class YaDocsUserSourceDataSourcePropertiesSchema(UserSourceDataSourcePropertiesB
 
 
 class UserSourceDataSourcePropertiesSchema(FileTypeOneOfSchema):
-    type_schemas: dict[str, Type[UserSourceDataSourcePropertiesBaseSchema]] = {  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[UserSourceDataSourcePropertiesBaseSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
+    type_schemas: dict[str, type[UserSourceDataSourcePropertiesBaseSchema]] = {  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[UserSourceDataSourcePropertiesBaseSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
         FileType.gsheets.name: GSheetsUserSourceDataSourcePropertiesSchema,
         FileType.yadocs.name: YaDocsUserSourceDataSourcePropertiesSchema,
     }

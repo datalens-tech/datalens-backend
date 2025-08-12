@@ -1,7 +1,6 @@
 import abc
 from typing import (
     Generic,
-    Type,
     TypeVar,
 )
 
@@ -43,7 +42,7 @@ class TypedQuerySerializer(abc.ABC, Generic[_TYPED_QUERY_TV]):
 
 @attr.s
 class MarshmallowTypedQuerySerializer(TypedQuerySerializer[_TYPED_QUERY_TV], Generic[_TYPED_QUERY_TV]):
-    _schema_cls: Type[Schema] = attr.ib(kw_only=True)
+    _schema_cls: type[Schema] = attr.ib(kw_only=True)
 
     def serialize(self, typed_query: _TYPED_QUERY_TV) -> str:
         schema = self._schema_cls()

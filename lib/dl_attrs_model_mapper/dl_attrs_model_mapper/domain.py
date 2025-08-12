@@ -5,7 +5,6 @@ from typing import (
     Collection,
     Optional,
     Sequence,
-    Type,
 )
 
 import attr
@@ -18,25 +17,25 @@ from dl_attrs_model_mapper.utils import (
 
 @attr.s()
 class AmmSchemaRegistry:
-    _map_type_schema: dict[Type, "AmmSchema"] = attr.ib(factory=dict)
-    _map_type_name: dict[Type, str] = attr.ib(factory=dict)
+    _map_type_schema: dict[type, "AmmSchema"] = attr.ib(factory=dict)
+    _map_type_name: dict[type, str] = attr.ib(factory=dict)
 
     def register(self, schema: "AmmSchema") -> None:
         self._map_type_schema[schema.clz] = schema
         self._map_type_name[schema.clz] = schema.clz.__name__
 
-    def is_registered(self, clz: Type) -> bool:
+    def is_registered(self, clz: type) -> bool:
         return clz in self._map_type_schema
 
-    def get_ref_for_type(self, clz: Type) -> str:
+    def get_ref_for_type(self, clz: type) -> str:
         return f"#/components/schemas/{self._map_type_name[clz]}"
 
-    def get_generic_type_schema(self, clz: Type) -> "AmmGenericSchema":
+    def get_generic_type_schema(self, clz: type) -> "AmmGenericSchema":
         ret = self._map_type_schema[clz]
         assert isinstance(ret, AmmGenericSchema)
         return ret
 
-    def get_regular_type_schema(self, clz: Type) -> "AmmRegularSchema":
+    def get_regular_type_schema(self, clz: type) -> "AmmRegularSchema":
         ret = self._map_type_schema[clz]
         assert isinstance(ret, AmmRegularSchema)
         return ret
@@ -67,10 +66,10 @@ class AmmField:
 
 @attr.s()
 class AmmScalarField(AmmField):
-    scalar_type: Type = attr.ib()
+    scalar_type: type = attr.ib()
     scalar_type_identifier: Optional[str] = attr.ib(default=None)
 
-    TYPE_MAP: ClassVar[dict[Type, str]] = {
+    TYPE_MAP: ClassVar[dict[type, str]] = {
         int: "number",
         str: "string",
         float: "number",
@@ -150,7 +149,7 @@ class AmmEnumDescriptor:
 #
 @attr.s(kw_only=True)
 class AmmSchema(metaclass=abc.ABCMeta):
-    clz: Type = attr.ib()
+    clz: type = attr.ib()
     identifier: Optional[str] = attr.ib(default=None)
 
     @abc.abstractmethod

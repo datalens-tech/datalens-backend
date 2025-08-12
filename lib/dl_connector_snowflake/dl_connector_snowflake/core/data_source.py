@@ -1,6 +1,5 @@
 from typing import (
     Callable,
-    Type,
 )
 
 from dl_constants.enums import DataSourceType
@@ -36,7 +35,7 @@ class SnowFlakeDataSourceMixin(BaseSQLDataSource):
     conn_type = CONNECTION_TYPE_SNOWFLAKE
 
     @classmethod
-    def get_connection_cls(cls) -> Type[ConnectionSQLSnowFlake]:
+    def get_connection_cls(cls) -> type[ConnectionSQLSnowFlake]:
         return ConnectionSQLSnowFlake
 
     @classmethod

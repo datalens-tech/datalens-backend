@@ -1,4 +1,3 @@
-from typing import Type
 
 from dl_formula_ref.config import register_config_version
 from dl_formula_ref.function_extension import register_function_extension
@@ -13,7 +12,7 @@ from dl_formula_ref.texts import (
 
 
 class FormulaRefPluginRegistrator:
-    def register_plugin(self, plugin_cls: Type[FormulaRefPlugin]) -> None:
+    def register_plugin(self, plugin_cls: type[FormulaRefPlugin]) -> None:
         for version, config in plugin_cls.configs.items():
             register_config_version(version=version, config=config)
 

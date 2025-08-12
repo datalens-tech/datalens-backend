@@ -4,7 +4,6 @@ import typing
 from typing import (
     ClassVar,
     Optional,
-    Type,
     final,
 )
 
@@ -29,7 +28,7 @@ from dl_i18n.localizer_base import (
 
 
 class ConnectionFormTestBase:
-    CONN_FORM_FACTORY_CLS: ClassVar[Type[ConnectionFormFactory]]
+    CONN_FORM_FACTORY_CLS: ClassVar[type[ConnectionFormFactory]]
     TRANSLATION_CONFIGS: ClassVar[list[TranslationConfig]]
     OVERWRITE_EXPECTED_FORMS: ClassVar[bool] = False
     EXPECTED_FORMS_DIR: ClassVar[str] = "expected_forms"

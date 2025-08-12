@@ -4,7 +4,6 @@ from itertools import chain
 from typing import (
     AbstractSet,
     Optional,
-    Tuple,
 )
 
 from dl_api_client.dsmaker.api.data_api import (
@@ -226,7 +225,7 @@ def check_pivot_response(
     check_totals: Optional[list[tuple[str, ...]]] = None,
     filters: Optional[list[WhereClause]] = None,
     autofill_legend: bool = False,
-    custom_pivot_legend_check: Optional[list[Tuple[str, PivotRole]]] = None,
+    custom_pivot_legend_check: Optional[list[tuple[str, PivotRole]]] = None,
     min_col_cnt: Optional[int] = None,
     max_col_cnt: Optional[int] = None,
     min_row_cnt: Optional[int] = None,
@@ -296,7 +295,7 @@ def check_pivot_response(
 
     assert pivot_resp.status_code == HTTPStatus.OK, f"Expected HTTP status 200, got {pivot_resp.status_code}"
 
-    expected_pivot_legend_tuples: list[Tuple[str, PivotRole]]
+    expected_pivot_legend_tuples: list[tuple[str, PivotRole]]
     if custom_pivot_legend_check is not None:
         # make a copy that can be appended to
         expected_pivot_legend_tuples = [item for item in custom_pivot_legend_check]

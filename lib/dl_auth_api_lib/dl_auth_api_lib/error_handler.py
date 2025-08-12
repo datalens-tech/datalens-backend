@@ -1,5 +1,4 @@
 from http import HTTPStatus
-from typing import Type
 
 from aiohttp import (
     client_exceptions,
@@ -16,7 +15,7 @@ from dl_api_commons.aio.middlewares.error_handling_outer import (
 from dl_auth_api_lib import exc
 
 
-STATUS_CODES: dict[Type[exc.DLAuthAPIBaseError], HTTPStatus] = {
+STATUS_CODES: dict[type[exc.DLAuthAPIBaseError], HTTPStatus] = {
     exc.UnexpectedResponseError: HTTPStatus.BAD_REQUEST,
 }
 

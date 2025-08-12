@@ -1,7 +1,6 @@
 from typing import (
     Any,
     Optional,
-    Type,
 )
 
 import msgpack
@@ -19,7 +18,7 @@ class DLMessagePackSerializer:
     JSONABLERS_MAP = {cls.typeobj(): cls for cls in COMMON_SERIALIZERS}
     DEJSONABLERS_MAP = {cls.typename: cls for cls in COMMON_SERIALIZERS}
 
-    def _get_preprocessor(self, typeobj: type) -> Optional[Type[TypeSerializer]]:
+    def _get_preprocessor(self, typeobj: type) -> Optional[type[TypeSerializer]]:
         if issubclass(typeobj, GenericNativeType):
             return NativeTypeSerializer
         return self.JSONABLERS_MAP.get(typeobj)
@@ -49,7 +48,7 @@ class DLMessagePackSerializer:
 
 
 class DLSafeMessagePackSerializer(DLMessagePackSerializer):
-    def _get_preprocessor(self, typeobj: type) -> Optional[Type[TypeSerializer]]:
+    def _get_preprocessor(self, typeobj: type) -> Optional[type[TypeSerializer]]:
         if (preprocessor := super()._get_preprocessor(typeobj)) is not None:
             return preprocessor
         return UnsupportedSerializer  # don't raise a TypeError and log warning

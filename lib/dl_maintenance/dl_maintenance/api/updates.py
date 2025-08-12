@@ -29,7 +29,6 @@ update_dataset(
 """
 
 from typing import (
-    List,
     Optional,
     Sequence,
 )
@@ -175,7 +174,7 @@ class SimpleDatasetUpdateGen:
         }
         return SourceActionBase(**action_data)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "SourceActionBase" has incompatible type "**dict[str, object]"; expected "DatasetAction"  [arg-type]
 
-    def refresh_all_sources(self) -> List[SourceActionBase]:
+    def refresh_all_sources(self) -> list[SourceActionBase]:
         return [self.refresh_source(source_id) for source_id in self._ds_accessor.get_data_source_id_list()]
 
 

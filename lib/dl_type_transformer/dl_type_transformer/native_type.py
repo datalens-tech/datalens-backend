@@ -4,7 +4,6 @@ from typing import (
     Any,
     ClassVar,
     Optional,
-    Type,
     Union,
 )
 
@@ -13,7 +12,7 @@ from sqlalchemy.types import TypeEngine
 from typing_extensions import Self
 
 
-SATypeSpec = Union[Type[TypeEngine], TypeEngine, str, None]
+SATypeSpec = Union[type[TypeEngine], TypeEngine, str, None]
 
 
 def norm_native_type(native_t: SATypeSpec) -> Optional[str]:

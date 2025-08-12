@@ -1,5 +1,4 @@
 from functools import lru_cache
-from typing import Type
 
 from dl_formula.connectors.base.context_processor import ContextPostprocessor
 from dl_formula.core.dialect import DialectCombo
@@ -20,7 +19,7 @@ def get_context_processor(dialect: DialectCombo) -> ContextPostprocessor:
     return ContextPostprocessor()
 
 
-def register_context_processor(dialect: DialectCombo, context_processor_cls: Type[ContextPostprocessor]) -> None:
+def register_context_processor(dialect: DialectCombo, context_processor_cls: type[ContextPostprocessor]) -> None:
     if dialect in _CONTEXT_PROCESSORS:
         assert isinstance(_CONTEXT_PROCESSORS[dialect], context_processor_cls)
         return

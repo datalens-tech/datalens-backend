@@ -5,7 +5,6 @@ from typing import (
     ClassVar,
     Generator,
     Optional,
-    Type,
 )
 
 from sqlalchemy import exc as sa_exc
@@ -22,13 +21,13 @@ LOGGER = logging.getLogger(__name__)
 
 class ErrorHandlerMixin:
     # TODO: Switch to nested mode from mixin
-    EXTRA_EXC_CLS: ClassVar[tuple[Type[Exception], ...]] = ()
+    EXTRA_EXC_CLS: ClassVar[tuple[type[Exception], ...]] = ()
 
     # TODO FIX: Try to implement overrides in more functional style
     @classmethod
     def make_exc(
         cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
-    ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
+    ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
         raise NotImplementedError()
 
     # TODO CONSIDER: Pass DBAdapterQuery to be able to add some context logging
@@ -40,7 +39,7 @@ class ErrorHandlerMixin:
         # or in case if DatabaseQueryError will be caught by this handler
         exc_post_processor: Optional[Callable[[exc.DatabaseQueryError], None]] = None,
     ) -> Generator[None, None, None]:
-        exc_clses_to_catch: tuple[Type[Exception], ...] = (
+        exc_clses_to_catch: tuple[type[Exception], ...] = (
             sa_exc.DatabaseError,
             sa_exc.InvalidRequestError,
         ) + self.EXTRA_EXC_CLS
@@ -88,7 +87,7 @@ class ETBasedExceptionMaker(ErrorHandlerMixin):
     @classmethod
     def make_exc(
         cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
-    ) -> tuple[Type[exc.DatabaseQueryError], DBExcKWArgs]:
+    ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
         trans_exc_cls, kw = cls._error_transformer.make_bi_error_parameters(
             wrapper_exc=wrapper_exc,
             debug_compiled_query=debug_compiled_query,

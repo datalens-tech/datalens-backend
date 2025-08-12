@@ -1,4 +1,3 @@
-from typing import Type
 
 from dl_api_connector.api_schema.source import (
     register_source_api_schema,
@@ -27,7 +26,7 @@ from dl_api_lib.schemas.connection import register_sub_schema_class
 
 class ApiConnectorRegistrator:
     @classmethod
-    def register_source_definition(cls, source_def: Type[ApiSourceDefinition]) -> None:
+    def register_source_definition(cls, source_def: type[ApiSourceDefinition]) -> None:
         register_source_api_schema(
             source_type=source_def.core_source_def_cls.source_type,
             schema_cls=source_def.api_schema_cls,
@@ -38,7 +37,7 @@ class ApiConnectorRegistrator:
         )
 
     @classmethod
-    def register_connection_definition(cls, conn_def: Type[ApiConnectionDefinition]) -> None:
+    def register_connection_definition(cls, conn_def: type[ApiConnectionDefinition]) -> None:
         conn_type = conn_def.core_conn_def_cls.conn_type
         register_connector_info_provider_cls(conn_type=conn_type, info_provider_cls=conn_def.info_provider_cls)
         register_connector_alias(conn_type=conn_type, alias=conn_def.alias)
@@ -47,7 +46,7 @@ class ApiConnectorRegistrator:
             register_connection_form_factory_cls(conn_type=conn_type, factory_cls=conn_def.form_factory_cls)
 
     @classmethod
-    def register_backend_definition(cls, backend_def: Type[ApiBackendDefinition]) -> None:
+    def register_backend_definition(cls, backend_def: type[ApiBackendDefinition]) -> None:
         backend_type = backend_def.core_backend_definition.backend_type
         register_dialect_name(backend_type=backend_type, dialect_name=backend_def.formula_dialect_name)
         for mqm_setting_item in backend_def.multi_query_mutation_factories:
@@ -71,7 +70,7 @@ class ApiConnectorRegistrator:
         )
 
     @classmethod
-    def register_connector(cls, connector: Type[ApiConnector]) -> None:
+    def register_connector(cls, connector: type[ApiConnector]) -> None:
         cls.register_backend_definition(backend_def=connector.backend_definition)
         for source_def in connector.source_definitions:
             cls.register_source_definition(source_def=source_def)

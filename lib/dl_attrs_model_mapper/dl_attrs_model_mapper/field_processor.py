@@ -4,7 +4,6 @@ from typing import (
     Generic,
     Optional,
     Sequence,
-    Type,
     TypeVar,
     cast,
 )
@@ -25,7 +24,7 @@ _PROCESSING_OBJECT_TV = TypeVar("_PROCESSING_OBJECT_TV")
 
 @attr.s(frozen=True)
 class FieldMeta:
-    clz: Type = attr.ib()
+    clz: type = attr.ib()
     attrib_name: str = attr.ib()
     container_stack: Sequence[Any] = attr.ib()
     attrib_descriptor: Optional[AttribDescriptor] = attr.ib()

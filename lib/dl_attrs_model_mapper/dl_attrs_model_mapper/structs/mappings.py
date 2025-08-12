@@ -5,7 +5,6 @@ from collections.abc import (
     Sequence,
 )
 from typing import (
-    Tuple,
     TypeVar,
     Union,
 )
@@ -15,7 +14,7 @@ class FrozenMappingStrToStrOrStrSeq(Mapping[str, Union[str, Sequence[str]]], Has
     _dict: dict[str, Union[str, Sequence[str]]]
 
     @staticmethod
-    def ensure_tuple_of_str(seq: Sequence[str]) -> Tuple[str, ...]:
+    def ensure_tuple_of_str(seq: Sequence[str]) -> tuple[str, ...]:
         for idx, item in enumerate(seq):
             assert isinstance(item, str), f"Item {idx=} is not a string"
         return tuple(seq)

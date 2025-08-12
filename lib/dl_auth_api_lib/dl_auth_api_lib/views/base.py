@@ -1,6 +1,5 @@
 from typing import (
     Generic,
-    Type,
     TypeVar,
 )
 
@@ -13,7 +12,7 @@ _BASE_OAUTH_TV = TypeVar("_BASE_OAUTH_TV", bound=BaseOAuth)
 
 
 class BaseView(web.View, Generic[_BASE_OAUTH_TV]):
-    client_cls: Type[_BASE_OAUTH_TV]
+    client_cls: type[_BASE_OAUTH_TV]
 
     def get_client(self, data: dict[str, str]) -> _BASE_OAUTH_TV:
         conn_type = data["conn_type"]

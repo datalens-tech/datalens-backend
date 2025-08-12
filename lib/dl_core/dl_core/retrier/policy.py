@@ -1,6 +1,5 @@
 import itertools
 from typing import (
-    FrozenSet,
     Iterable,
     Optional,
     Protocol,
@@ -39,7 +38,7 @@ class RetryPolicy:
     Total amount of retries. Total amount of attempts equals to `retries_count + 1`.
     """
 
-    retryable_codes: FrozenSet[ErrorCode] = attr.ib()
+    retryable_codes: frozenset[ErrorCode] = attr.ib()
     """
     Set of retryable error codes. If request error is within this set, request can be retried.
     """

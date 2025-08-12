@@ -4,7 +4,6 @@ from typing import (
     ClassVar,
     Generator,
     Generic,
-    Type,
     TypeVar,
 )
 
@@ -38,8 +37,8 @@ _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 
 class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV], Generic[_CONN_TV]):
-    SYNC_ADAPTER_CLS: ClassVar[Type[CommonBaseDirectAdapter]]
-    ASYNC_ADAPTER_CLS: ClassVar[Type[CommonBaseDirectAdapter]]
+    SYNC_ADAPTER_CLS: ClassVar[type[CommonBaseDirectAdapter]]
+    ASYNC_ADAPTER_CLS: ClassVar[type[CommonBaseDirectAdapter]]
 
     EXT_QUERY_EXECUTER_SECRET_KEY: ClassVar[str] = "very_secret_key"
 

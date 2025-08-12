@@ -5,7 +5,6 @@ from typing import (
     ClassVar,
     Optional,
     Sequence,
-    Type,
     Union,
 )
 from urllib.parse import urlparse
@@ -326,7 +325,7 @@ class OperationExampleDoc(CompositeDocUnit):
 
 @attr.s()
 class ClassDoc(CompositeDocUnit, metaclass=abc.ABCMeta):
-    type: Type = attr.ib()
+    type: type = attr.ib()
     header: Optional[DocHeader] = attr.ib()
     description: Optional[MText] = attr.ib()
 

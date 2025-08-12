@@ -1,6 +1,4 @@
 from typing import (
-    Dict,
-    List,
     NamedTuple,
     Sequence,
 )
@@ -25,7 +23,7 @@ class BaseTextElement:
 @attr.s(frozen=True)
 class RichText(BaseTextElement):
     text: str = attr.ib()
-    replacements: Dict[MacroReplacementKey, BaseTextElement] = attr.ib(kw_only=True, factory=dict)
+    replacements: dict[MacroReplacementKey, BaseTextElement] = attr.ib(kw_only=True, factory=dict)
 
 
 @attr.s(frozen=True)
@@ -54,7 +52,7 @@ class LinkTextElement(BaseTextElement):
 
 @attr.s(frozen=True)
 class TableTextElement(BaseTextElement):
-    table_body: List[List[RichText]] = attr.ib(kw_only=True)
+    table_body: list[list[RichText]] = attr.ib(kw_only=True)
 
 
 @attr.s(frozen=True)

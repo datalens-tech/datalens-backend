@@ -1,7 +1,5 @@
 from typing import (
     Collection,
-    List,
-    Set,
 )
 
 from dl_formula.core.datatype import DataType
@@ -21,8 +19,8 @@ HIDDEN_TYPES = {
 }
 
 
-def get_human_data_type_list(types: Collection[DataType]) -> List[str]:
-    types_set: Set[DataType] = set(t.non_const_type for t in types)
+def get_human_data_type_list(types: Collection[DataType]) -> list[str]:
+    types_set: set[DataType] = set(t.non_const_type for t in types)
     result_types = set()
     # try to find known type combinations within the given list of types
     type_combos = [type_combo for type_combo in HUMAN_DATA_TYPES if isinstance(type_combo, tuple)]

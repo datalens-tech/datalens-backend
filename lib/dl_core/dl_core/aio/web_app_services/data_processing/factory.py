@@ -1,4 +1,3 @@
-from typing import Type
 
 from dl_constants.enums import ProcessorType
 from dl_core.aio.web_app_services.data_processing.data_processor import (
@@ -12,12 +11,12 @@ def make_compeng_service(processor_type: ProcessorType, config: DataProcessorCon
     return data_proc_cls.from_config(config)
 
 
-_DATA_PROCESSOR_SERVICE_CLASSES: dict[ProcessorType, Type[DataProcessorService]] = {}
+_DATA_PROCESSOR_SERVICE_CLASSES: dict[ProcessorType, type[DataProcessorService]] = {}
 
 
 def register_data_processor_service_class(
     processor_type: ProcessorType,
-    data_processor_srv_cls: Type[DataProcessorService],
+    data_processor_srv_cls: type[DataProcessorService],
 ) -> None:
     try:
         assert _DATA_PROCESSOR_SERVICE_CLASSES[processor_type] is data_processor_srv_cls
@@ -25,7 +24,7 @@ def register_data_processor_service_class(
         _DATA_PROCESSOR_SERVICE_CLASSES[processor_type] = data_processor_srv_cls
 
 
-def get_data_processor_service_class(processor_type: ProcessorType) -> Type[DataProcessorService]:
+def get_data_processor_service_class(processor_type: ProcessorType) -> type[DataProcessorService]:
     try:
         return _DATA_PROCESSOR_SERVICE_CLASSES[processor_type]
     except KeyError:

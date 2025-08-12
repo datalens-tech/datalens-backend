@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     Optional,
-    Tuple,
     TypeVar,
     Union,
 )
@@ -19,8 +18,8 @@ from dl_query_processing.legend.field_legend import Legend
 
 
 PostprocessedValue = Union[TBIDataValue, dict]
-PostprocessedRow = Tuple[PostprocessedValue, ...]
-PostprocessedData = Tuple[PostprocessedRow, ...]
+PostprocessedRow = tuple[PostprocessedValue, ...]
+PostprocessedData = tuple[PostprocessedRow, ...]
 
 
 _META_TV = TypeVar("_META_TV", bound="ExecutedQueryMetaInfo")

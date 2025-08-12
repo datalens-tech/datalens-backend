@@ -4,7 +4,6 @@ from typing import (
     Callable,
     Optional,
     Sequence,
-    Type,
 )
 
 import attr
@@ -89,8 +88,8 @@ class MigrationKeyMappingItem:
 @attr.s(frozen=True)
 class MigrationSpec:
     source_type: DataSourceType = attr.ib(kw_only=True)
-    dto_cls: Type[DataSourceMigrationInterface] = attr.ib(kw_only=True)
-    dsrc_spec_cls: Type[DataSourceSpec] = attr.ib(kw_only=True)
+    dto_cls: type[DataSourceMigrationInterface] = attr.ib(kw_only=True)
+    dsrc_spec_cls: type[DataSourceSpec] = attr.ib(kw_only=True)
     migration_mapping_items: tuple[MigrationKeyMappingItem, ...] = attr.ib(kw_only=True)
 
 
@@ -169,12 +168,12 @@ class SpecBasedSourceMigrator(DataSourceMigrator):
         raise TypeError(f"Invalid dto class: {type(migration_dto)}")
 
 
-_SOURCE_MIGRATORS: dict[ConnectionType, Type[DataSourceMigrator]] = {
+_SOURCE_MIGRATORS: dict[ConnectionType, type[DataSourceMigrator]] = {
     ConnectionType.unknown: DefaultDataSourceMigrator,
 }
 
 
-def register_data_source_migrator(conn_type: ConnectionType, migrator_cls: Type[DataSourceMigrator]) -> None:
+def register_data_source_migrator(conn_type: ConnectionType, migrator_cls: type[DataSourceMigrator]) -> None:
     try:
         assert _SOURCE_MIGRATORS[conn_type] is migrator_cls
     except KeyError:

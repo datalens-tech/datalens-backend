@@ -2,11 +2,9 @@ import collections
 import typing
 from typing import (
     Any,
-    List,
     Literal,
     Optional,
     Sequence,
-    Type,
     Union,
 )
 
@@ -56,20 +54,20 @@ class CommonAttributeProps:
 
 
 def is_sequence(container_type: Any) -> bool:
-    return container_type in (List, Sequence, collections.abc.Sequence, list)
+    return container_type in (list, Sequence, collections.abc.Sequence, list)
 
 
 def is_str_mapping(container_type: Any) -> bool:
     return container_type is FrozenStrMapping
 
 
-def unwrap_typing_container_with_single_type(the_type: Any) -> tuple[Any, Type]:
+def unwrap_typing_container_with_single_type(the_type: Any) -> tuple[Any, type]:
     assert the_type is not None
 
     origin = typing.get_origin(the_type)
 
     effective_origin: Any
-    nested_types: set[Type]
+    nested_types: set[type]
 
     if origin == Union:
         nested_types = set(typing.get_args(the_type))
@@ -94,7 +92,7 @@ def unwrap_typing_container_with_single_type(the_type: Any) -> tuple[Any, Type]:
     return effective_origin, next(iter(nested_types))
 
 
-def unwrap_container_stack_with_single_type(the_type: Any) -> tuple[Sequence[Any], Type]:
+def unwrap_container_stack_with_single_type(the_type: Any) -> tuple[Sequence[Any], type]:
     container_stack: list[Any] = []
 
     next_type: Any = the_type

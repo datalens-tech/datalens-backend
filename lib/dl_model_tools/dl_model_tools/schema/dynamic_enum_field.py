@@ -2,7 +2,6 @@ from typing import (
     Any,
     Mapping,
     Optional,
-    Type,
 )
 
 from dynamic_enum import DynamicEnum
@@ -11,7 +10,7 @@ from marshmallow import fields as ma_fields
 
 
 class DynamicEnumField(ma_fields.Field):
-    def __init__(self, dyn_enum_cls: Type[DynamicEnum], **kwargs: Any):
+    def __init__(self, dyn_enum_cls: type[DynamicEnum], **kwargs: Any):
         super().__init__(**kwargs)
         self._dyn_enum_cls = dyn_enum_cls
 

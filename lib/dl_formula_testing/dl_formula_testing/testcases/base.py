@@ -8,7 +8,6 @@ from typing import (
     Generator,
     Optional,
     Sequence,
-    Type,
 )
 import uuid
 
@@ -43,7 +42,7 @@ from dl_formula_testing.table import (
 class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
     dialect: ClassVar[DialectCombo]
     eval_attempts: ClassVar[int] = 1
-    retry_on_exceptions: ClassVar[tuple[tuple[Type[Exception], re.Pattern], ...]] = ()
+    retry_on_exceptions: ClassVar[tuple[tuple[type[Exception], re.Pattern], ...]] = ()
 
     supports_arrays: ClassVar[bool]
     supports_uuid: ClassVar[bool]
@@ -52,7 +51,7 @@ class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
     null_casts_to_number: ClassVar[bool] = False
     null_casts_to_false: ClassVar[bool] = False
     db_dispenser: ClassVar[DbDispenserBase] = FormulaDbDispenser()
-    engine_config_cls: ClassVar[Type[DbEngineConfig]] = DbEngineConfig
+    engine_config_cls: ClassVar[type[DbEngineConfig]] = DbEngineConfig
 
     @abc.abstractmethod
     @pytest.fixture(scope="class")

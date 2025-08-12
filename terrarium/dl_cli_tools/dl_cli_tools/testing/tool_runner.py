@@ -2,7 +2,6 @@ from contextlib import redirect_stdout
 import io
 from typing import (
     ClassVar,
-    Type,
 )
 
 import attr
@@ -16,7 +15,7 @@ class CliResult:
 
 
 class CliRunner:
-    cli_cls: ClassVar[Type[CliToolBase]]
+    cli_cls: ClassVar[type[CliToolBase]]
 
     def run_with_args(self, argv: list[str]) -> CliResult:
         with redirect_stdout(io.StringIO()) as out_stream:

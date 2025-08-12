@@ -6,7 +6,6 @@ from typing import (
     Mapping,
     Optional,
     Sequence,
-    Type,
     Union,
 )
 
@@ -54,19 +53,19 @@ class _DictItem:
 @attr.s()
 class Renderer:
     _preferred_cls_name_prefixes: Mapping[Any, Optional[str]] = attr.ib()
-    _map_cls_cls_prefix: dict[Type, str] = attr.ib(init=False, factory=dict)
+    _map_cls_cls_prefix: dict[type, str] = attr.ib(init=False, factory=dict)
 
     def __attrs_post_init__(self) -> None:
         for module_obj in self._preferred_cls_name_prefixes.keys():
             module_name = module_obj.__name__.split(".")[-1]
-            declared_type_list: list[Type] = [var for var in vars(module_obj).values() if isinstance(var, type)]
+            declared_type_list: list[type] = [var for var in vars(module_obj).values() if isinstance(var, type)]
             for declared_type in declared_type_list:
                 preferred_prefix = self._preferred_cls_name_prefixes.get(module_obj)
                 effective_prefix = module_name if preferred_prefix is None else preferred_prefix
 
                 self._map_cls_cls_prefix[declared_type] = effective_prefix
 
-    def get_type_str(self, t: Type) -> str:
+    def get_type_str(self, t: type) -> str:
         if t in self._map_cls_cls_prefix:
             return f"{self._map_cls_cls_prefix[t]}.{t.__name__}"
         return t.__name__

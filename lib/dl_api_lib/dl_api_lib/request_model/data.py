@@ -1,8 +1,6 @@
 from enum import Enum
 from typing import (
     Any,
-    Dict,
-    List,
     Optional,
     TypeVar,
 )
@@ -42,7 +40,7 @@ class FieldBase:
     guid: Optional[str] = attr.ib(default=None)
     strict: Optional[bool] = attr.ib(default=None)
 
-    def as_dict(self) -> Dict:
+    def as_dict(self) -> dict:
         return attr.asdict(self, recurse=False)
 
 
@@ -51,7 +49,7 @@ class FieldAction(Action):
     field: FieldBase
 
     @property
-    def serialized(self) -> Dict[str, Any]:
+    def serialized(self) -> dict[str, Any]:
         serializer = lambda t, at, val: val.name if isinstance(val, Enum) else val  # noqa
         return attr.asdict(self, recurse=True, value_serializer=serializer)
 
@@ -118,7 +116,7 @@ class ObligatoryFilterBase:
 @attr.s(frozen=True, kw_only=True)
 class AddUpdateObligatoryFilter(ObligatoryFilterBase):
     field_guid: Optional[str] = attr.ib(default=None)
-    default_filters: List[RawFilterFieldSpec] = attr.ib(default=[])
+    default_filters: list[RawFilterFieldSpec] = attr.ib(default=[])
     managed_by: Optional[ManagedBy] = attr.ib(default=None)
     valid: Optional[bool] = attr.ib(default=None)
 
@@ -194,9 +192,9 @@ _DRM_TV = TypeVar("_DRM_TV", bound="DataRequestModel")
 @attr.s()
 class DataRequestModel:
     # Dataset state
-    dataset: Optional[Dict[str, Any]] = attr.ib(kw_only=True, default=None)  # TODO: schematize
+    dataset: Optional[dict[str, Any]] = attr.ib(kw_only=True, default=None)  # TODO: schematize
     # Updates to apply to the given dataset state
-    updates: List[Action] = attr.ib(kw_only=True, factory=list)
+    updates: list[Action] = attr.ib(kw_only=True, factory=list)
 
     # Specifies what the data query will consist of
     raw_query_spec_union: RawQuerySpecUnion = attr.ib(kw_only=True, factory=RawQuerySpecUnion)

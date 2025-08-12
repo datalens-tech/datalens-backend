@@ -1,7 +1,6 @@
 import abc
 from typing import (
     Generic,
-    Type,
     TypeVar,
 )
 
@@ -45,7 +44,7 @@ _TSettings = TypeVar("_TSettings", bound=FileUploaderAPISettings)
 
 @attr.s(kw_only=True)
 class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
-    CSRF_MIDDLEWARE_CLS: Type[CSRFMiddleware] = CSRFMiddleware
+    CSRF_MIDDLEWARE_CLS: type[CSRFMiddleware] = CSRFMiddleware
 
     _settings: _TSettings = attr.ib()
 

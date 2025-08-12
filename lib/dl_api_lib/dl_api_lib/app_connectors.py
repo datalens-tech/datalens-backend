@@ -1,7 +1,6 @@
 from typing import (
     Collection,
     Optional,
-    Type,
 )
 
 import attr
@@ -12,7 +11,7 @@ from dl_api_lib.connector_registrator import CONN_REG_BI_API
 from dl_utils.entrypoints import EntrypointClassManager
 
 
-def _register_connector(connector_cls: Type[ApiConnector]) -> None:
+def _register_connector(connector_cls: type[ApiConnector]) -> None:
     CONN_REG_BI_API.register_connector(connector_cls)
 
 

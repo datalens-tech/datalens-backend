@@ -4,10 +4,7 @@ import json
 import logging
 import time
 from typing import (
-    Dict,
     Optional,
-    Tuple,
-    Type,
 )
 
 import attr
@@ -35,7 +32,7 @@ class GenericCacheEngine(metaclass=abc.ABCMeta):
 class MemoryCacheEngine(GenericCacheEngine):
     def __init__(self) -> None:
         # Dict[ Key: (expired_time, cached value) ]
-        self._cache: Dict[str, Tuple[float, str]] = dict()
+        self._cache: dict[str, tuple[float, str]] = dict()
 
     async def save(self, key: str, data: str, ttl: float) -> None:
         self._cache[key] = (time.monotonic() + ttl, data)
@@ -123,7 +120,7 @@ class USEntryMutationCache:
             LOGGER.warning("Error saving to cache", exc_info=True)
 
     @classmethod
-    def _load_raw_cache_data(cls, data: str) -> Tuple[str, str]:
+    def _load_raw_cache_data(cls, data: str) -> tuple[str, str]:
         all_data: dict = json.loads(data)
         return (
             all_data["collision_meta"],
@@ -139,7 +136,7 @@ class USEntryMutationCache:
     # TODO FIX: Consider passing whole USEntry to decrease possibility of unauthorized access to cache
     async def get_mutated_entry_from_cache(
         self,
-        expected_type: Type[USEntry],
+        expected_type: type[USEntry],
         entry_id: str,
         revision_id: str,
         mutation_key: MutationKey,

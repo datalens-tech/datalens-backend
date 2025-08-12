@@ -1,5 +1,4 @@
 from typing import (
-    List,
     Optional,
 )
 
@@ -30,7 +29,7 @@ class DataStreamMerger:
             yield MergedQueryDataRow(data=postprocessed_row, legend_item_ids=block.legend_item_ids)
 
     def merge(self, postprocessed_query_union: PostprocessedQueryUnion) -> MergedQueryDataStream:
-        legend_item_ids: Optional[List[int]] = None
+        legend_item_ids: Optional[list[int]] = None
         if len(postprocessed_query_union.blocks) == 1:
             legend_item_ids = postprocessed_query_union.blocks[0].legend_item_ids
 

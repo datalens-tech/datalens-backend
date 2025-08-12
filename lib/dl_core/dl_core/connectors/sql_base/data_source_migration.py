@@ -1,7 +1,6 @@
 from typing import (
     ClassVar,
     Optional,
-    Type,
 )
 
 import attr
@@ -38,11 +37,11 @@ class SQLSubselectDSMI(DataSourceMigrationInterface):
 
 class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
     table_source_type: ClassVar[Optional[DataSourceType]] = None
-    table_dsrc_spec_cls: ClassVar[Optional[Type[DataSourceSpec]]] = StandardSQLDataSourceSpec
+    table_dsrc_spec_cls: ClassVar[Optional[type[DataSourceSpec]]] = StandardSQLDataSourceSpec
     with_db_name: ClassVar[bool] = False
 
     subselect_source_type: ClassVar[Optional[DataSourceType]] = None
-    subselect_dsrc_spec_cls: ClassVar[Optional[Type[DataSourceSpec]]] = SubselectDataSourceSpec
+    subselect_dsrc_spec_cls: ClassVar[Optional[type[DataSourceSpec]]] = SubselectDataSourceSpec
 
     default_schema_name: ClassVar[Optional[str]] = None
 

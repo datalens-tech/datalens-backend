@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Dict,
 )
 
 from marshmallow import (
@@ -30,7 +29,7 @@ def test_allowed_unknown_fields(caplog):
             single=True,
         )
 
-    class SampleSchema(BaseTopLevelSchema[Dict[str, Any]]):
+    class SampleSchema(BaseTopLevelSchema[dict[str, Any]]):
         TARGET_CLS = dict
 
         a = fields.String(required=True)

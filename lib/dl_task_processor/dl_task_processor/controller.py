@@ -3,7 +3,6 @@ import json
 from typing import (
     Iterable,
     Optional,
-    Type,
 )
 
 import attr
@@ -73,10 +72,10 @@ class Controller:
 class TaskController:
     _registry: TaskRegistry = attr.ib()
 
-    def filter(self, name: TaskName) -> Iterable[Type[BaseTaskMeta]]:
+    def filter(self, name: TaskName) -> Iterable[type[BaseTaskMeta]]:
         return self._registry.filter_task_meta(name)
 
-    def meta(self, name: TaskName) -> Type[BaseTaskMeta]:
+    def meta(self, name: TaskName) -> type[BaseTaskMeta]:
         return self._registry.get_task_meta(name)
 
 

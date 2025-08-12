@@ -3,7 +3,6 @@ from copy import deepcopy
 import logging
 from typing import (
     Any,
-    FrozenSet,
     Iterable,
 )
 
@@ -120,7 +119,7 @@ class DatasetComponentEditor:
         connection_id: str | None = None,
         title: str | None = None,
         raw_schema: list[SchemaColumn] | None = None,
-        index_info_set: FrozenSet[IndexInfo] | None = None,
+        index_info_set: frozenset[IndexInfo] | None = None,
         managed_by: ManagedBy | None = None,
         parameters: dict[str, Any] | None = None,
     ) -> None:
@@ -163,7 +162,7 @@ class DatasetComponentEditor:
         connection_id: str | None = None,
         created_from: DataSourceType | None = None,
         raw_schema: list | None = None,
-        index_info_set: FrozenSet[IndexInfo] | None = None,
+        index_info_set: frozenset[IndexInfo] | None = None,
         **parameters: Any,
     ) -> None:
         """Update data source config data"""

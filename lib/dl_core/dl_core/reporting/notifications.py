@@ -3,7 +3,6 @@ from typing import (
     Any,
     Callable,
     Optional,
-    Type,
 )
 
 from dl_api_commons.reporting.models import NotificationReportingRecord
@@ -40,12 +39,12 @@ class BaseNotification:
         return self.type.value
 
 
-_NOTIFICATIONS: dict[NotificationType, Type[BaseNotification]] = {}
+_NOTIFICATIONS: dict[NotificationType, type[BaseNotification]] = {}
 
 
 # TODO: add control (via config/env) over which notifications should not be displayed
-def register_notification() -> Callable[[Type[BaseNotification]], Type[BaseNotification]]:
-    def wrap(cls: Type[BaseNotification]) -> Type[BaseNotification]:
+def register_notification() -> Callable[[type[BaseNotification]], type[BaseNotification]]:
+    def wrap(cls: type[BaseNotification]) -> type[BaseNotification]:
         _NOTIFICATIONS[cls.type] = cls
         return cls
 

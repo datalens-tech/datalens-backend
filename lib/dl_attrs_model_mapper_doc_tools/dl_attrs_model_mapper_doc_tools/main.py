@@ -2,7 +2,6 @@ import os
 from typing import (
     Optional,
     Sequence,
-    Type,
 )
 import urllib.parse
 
@@ -50,7 +49,7 @@ class Docs:
     _elements_dir_name: Optional[str] = attr.ib()
     _generate_toc: bool = attr.ib(default=False)
 
-    _map_type_file_name: dict[Type, str] = attr.ib(factory=dict)
+    _map_type_file_name: dict[type, str] = attr.ib(factory=dict)
     _dedicated_class_docs: list[ClassDoc] = attr.ib(factory=list)
     _operations: list[tuple[AmmOperation, OperationDoc]] = attr.ib(factory=list)
 
@@ -209,18 +208,18 @@ class Docs:
             examples=[self.example_to_doc(s, idx + 1) for idx, s in enumerate(op.examples)],
         )
 
-    def get_file_path_for_type(self, clz: Type) -> Optional[str]:
+    def get_file_path_for_type(self, clz: type) -> Optional[str]:
         return self._map_type_file_name.get(clz)
 
-    def get_file_path_for_type_strict(self, clz: Type) -> str:
+    def get_file_path_for_type_strict(self, clz: type) -> str:
         may_be_path = self.get_file_path_for_type(clz)
         assert may_be_path is not None, f"File path fot type {clz} is not registered."
         return may_be_path
 
-    def register_file_path_for_type(self, clz: Type, file_path: str) -> None:
+    def register_file_path_for_type(self, clz: type, file_path: str) -> None:
         self._map_type_file_name[clz] = file_path
 
-    def default_file_name_for_type(self, clz: Type) -> str:
+    def default_file_name_for_type(self, clz: type) -> str:
         file_name = f"{clz.__name__}.md"
         if self._elements_dir_name:
             return os.path.join(self._elements_dir_name, file_name)

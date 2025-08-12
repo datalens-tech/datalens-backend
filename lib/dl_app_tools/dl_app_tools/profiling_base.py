@@ -11,12 +11,8 @@ from typing import (
     Any,
     Awaitable,
     Callable,
-    Dict,
     Iterable,
-    List,
     Optional,
-    Tuple,
-    Type,
     TypeVar,
     Union,
     cast,
@@ -32,9 +28,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 TTraceback = Any  # ?builtins?.?traceback?
-TExcInfo = Tuple[Type[Exception], Exception, TTraceback]
-TLogData = Dict[str, Any]
-TStageList = Union[List[str], Tuple[str, ...], str]
+TExcInfo = tuple[type[Exception], Exception, TTraceback]
+TLogData = dict[str, Any]
+TStageList = Union[list[str], tuple[str, ...], str]
 
 
 @attr.s

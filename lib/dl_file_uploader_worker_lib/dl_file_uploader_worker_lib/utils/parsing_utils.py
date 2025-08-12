@@ -8,7 +8,6 @@ from typing import (
     BinaryIO,
     Iterator,
     Optional,
-    Type,
     final,
 )
 
@@ -168,7 +167,7 @@ class YaDocsFieldIdGenerator(FileUploaderFieldIdGenerator):
 
 
 def get_field_id_generator(conn_type: ConnectionType) -> FileUploaderFieldIdGenerator:
-    field_id_gen_cls_map: dict[ConnectionType, Type[FileUploaderFieldIdGenerator]] = {
+    field_id_gen_cls_map: dict[ConnectionType, type[FileUploaderFieldIdGenerator]] = {
         CONNECTION_TYPE_FILE: FileFieldIdGenerator,
         CONNECTION_TYPE_GSHEETS_V2: GSheetsFieldIdGenerator,
         CONNECTION_TYPE_YADOCS: YaDocsFieldIdGenerator,

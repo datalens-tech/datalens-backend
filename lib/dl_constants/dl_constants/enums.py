@@ -12,7 +12,6 @@ from enum import (
 from typing import (
     Generic,
     Optional,
-    Type,
     TypeVar,
     Union,
     cast,
@@ -31,7 +30,7 @@ class _Normalizable(Generic[_ENUM_TYPE]):
     @classmethod
     def normalize(cls, value: Union[_ENUM_TYPE, str, None]) -> Optional[_ENUM_TYPE]:
         if isinstance(value, str):
-            value = cast(Type[_ENUM_TYPE], cls)[value]
+            value = cast(type[_ENUM_TYPE], cls)[value]
         return value
 
 

@@ -34,7 +34,7 @@ from datetime import datetime, timedelta, timezone
 from functools import partial
 from signal import Signals
 from time import time
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence, Set, Tuple, Union
+from typing import TYPE_CHECKING, Any, Callable, Optional, Sequence, Union
 
 from redis.exceptions import ResponseError, WatchError
 
@@ -144,7 +144,7 @@ class Worker:
         max_tries: int = 5,
         health_check_interval: "SecondsTimedelta" = 3600,
         health_check_key: Optional[str] = None,
-        ctx: Optional[Dict[Any, Any]] = None,
+        ctx: Optional[dict[Any, Any]] = None,
         retry_jobs: bool = True,
         allow_abort_jobs: bool = False,
         max_burst_jobs: int = -1,
@@ -154,14 +154,14 @@ class Worker:
         timezone: Optional[timezone] = None,
         log_results: bool = True,
     ):
-        self.functions: Dict[str, Union[Function, CronJob]] = {f.name: f for f in map(func, functions)}
+        self.functions: dict[str, Union[Function, CronJob]] = {f.name: f for f in map(func, functions)}
         if queue_name is None:
             if redis_pool is not None:
                 queue_name = redis_pool.default_queue_name
             else:
                 raise ValueError("If queue_name is absent, redis_pool must be present.")
         self.queue_name = queue_name
-        self.cron_jobs: List[CronJob] = []
+        self.cron_jobs: list[CronJob] = []
         if cron_jobs is not None:
             assert all(isinstance(cj, CronJob) for cj in cron_jobs), "cron_jobs, must be instances of CronJob"
             self.cron_jobs = list(cron_jobs)
@@ -196,9 +196,9 @@ class Worker:
         else:
             self.redis_settings = None
         # self.tasks holds references to run_job coroutines currently running
-        self.tasks: Dict[str, asyncio.Task[Any]] = {}
+        self.tasks: dict[str, asyncio.Task[Any]] = {}
         # self.job_tasks holds references the actual jobs running
-        self.job_tasks: Dict[str, asyncio.Task[Any]] = {}
+        self.job_tasks: dict[str, asyncio.Task[Any]] = {}
         self.main_task: Optional[asyncio.Task[None]] = None
         self.loop = asyncio.get_event_loop()
         self.ctx = ctx or {}
@@ -223,7 +223,7 @@ class Worker:
         self.retry_jobs = retry_jobs
         self.allow_abort_jobs = allow_abort_jobs
         self.allow_pick_jobs: bool = True
-        self.aborting_tasks: Set[str] = set()
+        self.aborting_tasks: set[str] = set()
         self.max_burst_jobs = max_burst_jobs
         self.job_serializer = job_serializer
         self.job_deserializer = job_deserializer
@@ -343,7 +343,7 @@ class Worker:
             pipe.zremrangebyscore(abort_jobs_ss, min=timestamp_ms() + abort_job_max_age, max=float("inf"))
             abort_job_ids, _ = await pipe.execute()
 
-        aborted: Set[str] = set()
+        aborted: set[str] = set()
         for job_id_bytes in abort_job_ids:
             job_id = job_id_bytes.decode()
             try:
@@ -362,7 +362,7 @@ class Worker:
         self.job_counter = self.job_counter - 1
         self.sem.release()
 
-    async def start_jobs(self, job_ids: List[bytes]) -> None:
+    async def start_jobs(self, job_ids: list[bytes]) -> None:
         """
         For each job id, get the job definition, check it's not running and start it in a task
         """
@@ -416,8 +416,8 @@ class Worker:
                 abort_job = False
 
         function_name, enqueue_time_ms = "<unknown>", 0
-        args: Tuple[Any, ...] = ()
-        kwargs: Dict[Any, Any] = {}
+        args: tuple[Any, ...] = ()
+        kwargs: dict[Any, Any] = {}
 
         async def job_failed(exc: BaseException) -> None:
             self.jobs_failed += 1

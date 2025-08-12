@@ -1,7 +1,6 @@
 from typing import (
     Collection,
     Optional,
-    Type,
 )
 
 import attr
@@ -20,12 +19,12 @@ class FormulaRefPluginEntrypointManager(EntrypointClassManager[FormulaRefPlugin]
     entrypoint_group_name = attr.ib(init=False, default=_PLUGIN_EP_GROUP)
 
 
-def get_all_formula_ref_plugins() -> dict[str, Type[FormulaRefPlugin]]:
+def get_all_formula_ref_plugins() -> dict[str, type[FormulaRefPlugin]]:
     ep_mgr = FormulaRefPluginEntrypointManager()
     return ep_mgr.get_all_ep_classes()
 
 
-def _register_plugin(plugin_cls: Type[FormulaRefPlugin]) -> None:
+def _register_plugin(plugin_cls: type[FormulaRefPlugin]) -> None:
     FORMULA_REF_PLUGIN_REG.register_plugin(plugin_cls)
 
 

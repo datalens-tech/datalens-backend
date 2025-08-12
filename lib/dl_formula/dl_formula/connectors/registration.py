@@ -1,6 +1,5 @@
 from typing import (
     Iterable,
-    Type,
 )
 
 from dl_formula.connectors.base.connector import FormulaConnector
@@ -18,7 +17,7 @@ from dl_formula.translation.context_processing import register_context_processor
 from dl_formula.translation.sa_dialects import register_sa_dialect
 
 
-_REGISTERED: set[Type[FormulaConnector]] = set()
+_REGISTERED: set[type[FormulaConnector]] = set()
 
 
 class FormulaConnectorRegistrator:
@@ -28,7 +27,7 @@ class FormulaConnectorRegistrator:
             OPERATION_REGISTRY.register(def_item)
 
     @classmethod
-    def register_connector(cls, connector: Type[FormulaConnector]) -> None:
+    def register_connector(cls, connector: type[FormulaConnector]) -> None:
         if connector in _REGISTERED:
             return
 

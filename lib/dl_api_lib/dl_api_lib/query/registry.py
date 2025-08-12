@@ -1,7 +1,6 @@
 from typing import (
     Collection,
     Optional,
-    Type,
 )
 
 from dl_api_connector.connector import MQMFactoryKey
@@ -23,17 +22,17 @@ from dl_query_processing.multi_query.factory import (
 )
 
 
-_FILTER_FORMULA_COMPILER_BY_BACKEND: dict[SourceBackendType, Type[FilterFormulaCompiler]] = {}
+_FILTER_FORMULA_COMPILER_BY_BACKEND: dict[SourceBackendType, type[FilterFormulaCompiler]] = {}
 _DEFAULT_FILTER_FORMULA_COMPILER = MainFilterFormulaCompiler
 
 
-def get_filter_formula_compiler_cls(backend_type: SourceBackendType) -> Type[FilterFormulaCompiler]:
+def get_filter_formula_compiler_cls(backend_type: SourceBackendType) -> type[FilterFormulaCompiler]:
     return _FILTER_FORMULA_COMPILER_BY_BACKEND.get(backend_type, _DEFAULT_FILTER_FORMULA_COMPILER)
 
 
 def register_filter_formula_compiler_cls(
     backend_type: SourceBackendType,
-    filter_compiler_cls: Type[FilterFormulaCompiler],
+    filter_compiler_cls: type[FilterFormulaCompiler],
 ) -> None:
     try:
         assert _FILTER_FORMULA_COMPILER_BY_BACKEND[backend_type] is filter_compiler_cls
@@ -56,10 +55,10 @@ def register_is_compeng_executable(backend_type: SourceBackendType, is_compeng_e
         _IS_COMPENG_EXECUTABLE_BACKEND_TYPE[backend_type] = is_compeng_executable
 
 
-_MQM_FACTORY_REGISTRY: dict[MQMFactoryKey, Type[MultiQueryMutatorFactoryBase]] = {}
+_MQM_FACTORY_REGISTRY: dict[MQMFactoryKey, type[MultiQueryMutatorFactoryBase]] = {}
 
 
-def _get_default_mqm_factory_cls() -> Type[MultiQueryMutatorFactoryBase]:
+def _get_default_mqm_factory_cls() -> type[MultiQueryMutatorFactoryBase]:
     return DefaultMultiQueryMutatorFactory
 
 
@@ -67,7 +66,7 @@ def get_multi_query_mutator_factory_class(
     query_proc_mode: QueryProcessingMode,
     backend_type: SourceBackendType,
     dialect: DialectCombo,
-) -> Type[MultiQueryMutatorFactoryBase]:
+) -> type[MultiQueryMutatorFactoryBase]:
     prioritized_keys = (
         # First try with exact dialect and mode (exact match)
         MQMFactoryKey(query_proc_mode=query_proc_mode, backend_type=backend_type, dialect=dialect),
@@ -82,7 +81,7 @@ def get_multi_query_mutator_factory_class(
     )
 
     # Now iterate over all of these combinations IN THAT VERY ORDER(!)
-    factory_cls: Optional[Type[MultiQueryMutatorFactoryBase]] = None
+    factory_cls: Optional[type[MultiQueryMutatorFactoryBase]] = None
     for key in prioritized_keys:
         factory_cls = _MQM_FACTORY_REGISTRY.get(key)
         if factory_cls is not None:
@@ -101,7 +100,7 @@ def register_multi_query_mutator_factory_cls(
     query_proc_mode: QueryProcessingMode,
     backend_type: SourceBackendType,
     dialects: Collection[Optional[DialectCombo]],
-    factory_cls: Type[MultiQueryMutatorFactoryBase],
+    factory_cls: type[MultiQueryMutatorFactoryBase],
 ) -> None:
     for dialect in dialects:
         key = MQMFactoryKey(query_proc_mode=query_proc_mode, backend_type=backend_type, dialect=dialect)

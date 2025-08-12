@@ -2,7 +2,6 @@ from typing import (
     Any,
     ClassVar,
     Optional,
-    Type,
 )
 
 from typing_extensions import final
@@ -68,7 +67,7 @@ class DLBaseException(Exception):
     # ##
     # Serialization logic for passing from QE
     # ##
-    _MAP_CLASS_NAME_CLASS: ClassVar[dict[str, Type["DLBaseException"]]] = {}
+    _MAP_CLASS_NAME_CLASS: ClassVar[dict[str, type["DLBaseException"]]] = {}
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         cls._MAP_CLASS_NAME_CLASS[cls.__qualname__] = cls

@@ -7,7 +7,6 @@ from datetime import (
 from typing import (
     ClassVar,
     Generic,
-    List,
     TypeVar,
     Union,
 )
@@ -67,12 +66,12 @@ class BooleanValue(BIValue[bool]):
 
 
 @attr.s(frozen=True)
-class GeoPointValue(BIValue[List[Union[int, float]]]):
+class GeoPointValue(BIValue[list[Union[int, float]]]):
     type: ClassVar[UserDataType] = UserDataType.geopoint
 
 
 @attr.s(frozen=True)
-class GeoPolygonValue(BIValue[List[List[List[Union[int, float]]]]]):
+class GeoPolygonValue(BIValue[list[list[list[Union[int, float]]]]]):
     type: ClassVar[UserDataType] = UserDataType.geopolygon
 
 
@@ -87,20 +86,20 @@ class MarkupValue(BIValue[str]):
 
 
 @attr.s(frozen=True)
-class ArrayStrValue(BIValue[List[str]]):
+class ArrayStrValue(BIValue[list[str]]):
     type: ClassVar[UserDataType] = UserDataType.array_str
 
 
 @attr.s(frozen=True)
-class TreeStrValue(BIValue[List[str]]):
+class TreeStrValue(BIValue[list[str]]):
     type: ClassVar[UserDataType] = UserDataType.tree_str
 
 
 @attr.s(frozen=True)
-class ArrayIntValue(BIValue[List[int]]):
+class ArrayIntValue(BIValue[list[int]]):
     type: ClassVar[UserDataType] = UserDataType.array_int
 
 
 @attr.s(frozen=True)
-class ArrayFloatValue(BIValue[List[float]]):
+class ArrayFloatValue(BIValue[list[float]]):
     type: ClassVar[UserDataType] = UserDataType.array_float
