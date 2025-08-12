@@ -602,22 +602,19 @@ class FuncArrayIndexOf(ArrayFunction):
 
 class FuncArrayIndexOfStr(FuncArrayIndexOf):
     argument_types = [
-        ArgTypeForAll(DataType.ARRAY_STR, require_type_match={DataType.ARRAY_STR, DataType.CONST_ARRAY_STR}),
-        ArgTypeSequence([{DataType.STRING, DataType.CONST_STRING}]),
+        ArgTypeSequence([{DataType.ARRAY_STR, DataType.CONST_ARRAY_STR}, {DataType.STRING, DataType.CONST_STRING}]),
     ]
 
 
 class FuncArrayIndexOfInt(FuncArrayIndexOf):
     argument_types = [
-        ArgTypeForAll(DataType.ARRAY_INT, require_type_match={DataType.ARRAY_INT, DataType.CONST_ARRAY_INT}),
-        ArgTypeSequence([{DataType.INTEGER, DataType.CONST_INTEGER}]),
+        ArgTypeSequence([{DataType.ARRAY_INT, DataType.CONST_ARRAY_INT}, {DataType.INTEGER, DataType.CONST_INTEGER}]),
     ]
 
 
 class FuncArrayIndexOfFloat(FuncArrayIndexOf):
     argument_types = [
-        ArgTypeForAll(DataType.ARRAY_FLOAT, require_type_match={DataType.ARRAY_FLOAT, DataType.CONST_ARRAY_FLOAT}),
-        ArgTypeSequence([{DataType.FLOAT, DataType.CONST_FLOAT}]),
+        ArgTypeSequence([{DataType.ARRAY_FLOAT, DataType.CONST_ARRAY_FLOAT}, {DataType.FLOAT, DataType.CONST_FLOAT}]),
     ]
 
 
