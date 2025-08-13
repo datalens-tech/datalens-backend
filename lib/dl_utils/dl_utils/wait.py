@@ -6,7 +6,6 @@ from typing import (
     Awaitable,
     Callable,
     Optional,
-    Tuple,
     Union,
 )
 
@@ -16,12 +15,12 @@ LOGGER = logging.getLogger(__name__)
 
 def wait_for(
     name: str,
-    condition: Callable[[], Union[bool, Tuple[bool, str]]],
+    condition: Callable[[], Union[bool, tuple[bool, str]]],
     timeout: float = 300.0,
     interval: float = 1.0,
     log_func: Optional[Callable[[str], None]] = None,
     require: bool = True,
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """
     `condition` should either return `is_done` or `(is_done, status)`.
     """
@@ -60,12 +59,12 @@ def wait_for(
 
 async def await_for(
     name: str,
-    condition: Callable[[], Awaitable[Union[bool, Tuple[bool, Any]]]],
+    condition: Callable[[], Awaitable[Union[bool, tuple[bool, Any]]]],
     timeout: float = 300.0,
     interval: float = 1.0,
     log_func: Optional[Callable[[str], None]] = None,
     require: bool = True,
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """
     `condition` should either return `is_done` or `(is_done, status)`.
     """

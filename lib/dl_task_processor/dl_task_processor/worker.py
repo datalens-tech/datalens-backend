@@ -8,7 +8,6 @@ import socket
 import time
 from typing import (
     Any,
-    Dict,
     Optional,
     Protocol,
     Sequence,
@@ -143,7 +142,7 @@ class ArqWorker:
         return bool(not await async_check_health(self._redis_settings, health_check_key=self.health_check_key))
 
     # param's name is important
-    async def start_executor(self, ctx: Dict) -> None:
+    async def start_executor(self, ctx: dict) -> None:
         context = await self._context_fab.make()
         executor = await self._executor_fab.make(
             context=context,
@@ -152,7 +151,7 @@ class ArqWorker:
         ctx[CONTEXT_KEY] = context
 
     # param's name is important
-    async def stop_executor(self, ctx: Dict) -> None:
+    async def stop_executor(self, ctx: dict) -> None:
         assert EXECUTOR_KEY in ctx, "Arq worker has not been run"
         assert CONTEXT_KEY in ctx, "Arq worker has not been run"
         await self._context_fab.tear_down(ctx[CONTEXT_KEY])

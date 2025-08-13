@@ -22,8 +22,6 @@ error_mgr.print_component_refs(phantom_refs)
 from collections import defaultdict
 from typing import (
     Any,
-    Dict,
-    List,
     Optional,
 )
 import uuid
@@ -39,7 +37,7 @@ from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
 
 
-TACTION = Dict[str, Any]
+TACTION = dict[str, Any]
 
 
 def _make_component_id() -> str:
@@ -62,12 +60,12 @@ class ComponentErrorManager:
         assert self._dataset is not None
         return self._dataset
 
-    def find_phantom_error_refs(self) -> List[DatasetComponentRef]:
+    def find_phantom_error_refs(self) -> list[DatasetComponentRef]:
         all_error_refs = [
             DatasetComponentRef(component_type=item.type, component_id=item.id)
             for item in self.dataset.error_registry.items
         ]
-        phantom_refs: List[DatasetComponentRef] = []
+        phantom_refs: list[DatasetComponentRef] = []
         for component_ref in all_error_refs:
             if self._dca.get_component(component_ref=component_ref) is None:
                 phantom_refs.append(component_ref)
@@ -75,8 +73,8 @@ class ComponentErrorManager:
         return phantom_refs
 
     @staticmethod
-    def print_component_refs(component_refs: List[DatasetComponentRef]) -> None:
-        by_comp_type: Dict[ComponentType, List[str]] = defaultdict(list)
+    def print_component_refs(component_refs: list[DatasetComponentRef]) -> None:
+        by_comp_type: dict[ComponentType, list[str]] = defaultdict(list)
         for component_ref in component_refs:
             by_comp_type[component_ref.component_type].append(component_ref.component_id)
 
@@ -85,6 +83,6 @@ class ComponentErrorManager:
             for component_id in sorted(component_id_list):
                 print(f"    {component_id}")
 
-    def remove_errors_for_refs(self, component_refs: List[DatasetComponentRef]) -> None:
+    def remove_errors_for_refs(self, component_refs: list[DatasetComponentRef]) -> None:
         for component_ref in component_refs:
             self.dataset.error_registry.remove_errors(id=component_ref.component_id)

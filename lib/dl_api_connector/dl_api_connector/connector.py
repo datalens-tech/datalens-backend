@@ -3,8 +3,6 @@ from typing import (
     ClassVar,
     Collection,
     Optional,
-    Tuple,
-    Type,
 )
 
 import attr
@@ -42,17 +40,17 @@ from dl_query_processing.multi_query.factory import (
 
 
 class ApiSourceDefinition(abc.ABC):
-    core_source_def_cls: ClassVar[Type[CoreSourceDefinition]]
-    api_schema_cls: ClassVar[Type[DataSourceBaseSchema]] = DataSourceBaseSchema
-    template_api_schema_cls: ClassVar[Type[DataSourceTemplateBaseSchema]] = DataSourceTemplateBaseSchema
+    core_source_def_cls: ClassVar[type[CoreSourceDefinition]]
+    api_schema_cls: ClassVar[type[DataSourceBaseSchema]] = DataSourceBaseSchema
+    template_api_schema_cls: ClassVar[type[DataSourceTemplateBaseSchema]] = DataSourceTemplateBaseSchema
 
 
 class ApiConnectionDefinition(abc.ABC):
-    core_conn_def_cls: ClassVar[Type[CoreConnectionDefinition]]
-    api_generic_schema_cls: ClassVar[Type[ConnectionSchema]]
+    core_conn_def_cls: ClassVar[type[CoreConnectionDefinition]]
+    api_generic_schema_cls: ClassVar[type[ConnectionSchema]]
     alias: ClassVar[Optional[str]] = None  # TODO remove in favor of info provider
-    info_provider_cls: ClassVar[Type[ConnectionInfoProvider]]
-    form_factory_cls: ClassVar[Optional[Type[ConnectionFormFactory]]] = None
+    info_provider_cls: ClassVar[type[ConnectionInfoProvider]]
+    form_factory_cls: ClassVar[Optional[type[ConnectionFormFactory]]] = None
 
 
 @attr.s(frozen=True, auto_attribs=True, kw_only=True)
@@ -65,12 +63,12 @@ class MQMFactoryKey:
 @attr.s(frozen=True, auto_attribs=True, kw_only=True)
 class MQMFactorySettingItem:
     query_proc_mode: QueryProcessingMode
-    factory_cls: Type[MultiQueryMutatorFactoryBase]
+    factory_cls: type[MultiQueryMutatorFactoryBase]
     dialects: Collection[Optional[DialectCombo]] = attr.ib(default=(None,))
 
 
 class ApiBackendDefinition(abc.ABC):
-    core_backend_definition: Type[CoreBackendDefinition]
+    core_backend_definition: type[CoreBackendDefinition]
 
     formula_dialect_name: ClassVar[DialectName] = DialectName.DUMMY
     multi_query_mutation_factories: tuple[MQMFactorySettingItem, ...] = (
@@ -85,12 +83,12 @@ class ApiBackendDefinition(abc.ABC):
     )
     is_forkable: ClassVar[bool] = True
     is_compeng_executable: ClassVar[bool] = False
-    filter_formula_compiler_cls: ClassVar[Type[FilterFormulaCompiler]] = MainFilterFormulaCompiler
+    filter_formula_compiler_cls: ClassVar[type[FilterFormulaCompiler]] = MainFilterFormulaCompiler
 
 
 class ApiConnector(abc.ABC):
-    backend_definition: Type[ApiBackendDefinition]
-    connection_definitions: ClassVar[Tuple[Type[ApiConnectionDefinition], ...]] = ()
-    source_definitions: ClassVar[Tuple[Type[ApiSourceDefinition], ...]] = ()
+    backend_definition: type[ApiBackendDefinition]
+    connection_definitions: ClassVar[tuple[type[ApiConnectionDefinition], ...]] = ()
+    source_definitions: ClassVar[tuple[type[ApiSourceDefinition], ...]] = ()
     translation_configs: ClassVar[frozenset[TranslationConfig]] = frozenset()
     compeng_dialect: Optional[DialectCombo] = None

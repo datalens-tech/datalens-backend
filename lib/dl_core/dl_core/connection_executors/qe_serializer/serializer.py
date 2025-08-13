@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     ClassVar,
-    List,
     Optional,
     Union,
 )
@@ -18,7 +17,7 @@ from dl_core.connection_executors.qe_serializer import (
 )
 
 
-ResponseTypes = Union[RawSchemaInfo, List[str], Optional[str], None, bool, int]
+ResponseTypes = Union[RawSchemaInfo, list[str], Optional[str], None, bool, int]
 
 
 class ActionSerializer:

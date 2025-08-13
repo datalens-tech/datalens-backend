@@ -9,4 +9,4 @@ from dl_api_commons.aiohttp.aiohttp_wrappers import (
 
 
 def get_required_resources(request: DLRequestBase) -> frozenset[RequiredResourceCommon]:
-    return typing.cast(typing.FrozenSet[RequiredResourceCommon], request.required_resources)
+    return typing.cast(frozenset[RequiredResourceCommon], request.required_resources)

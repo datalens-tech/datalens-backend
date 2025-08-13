@@ -4,7 +4,6 @@ from typing import (
     Generic,
     Optional,
     Sequence,
-    Type,
     TypeVar,
 )
 
@@ -53,17 +52,17 @@ class UserOperationInfo(Generic[_OPERATION_KIND_ENUM_TV]):
 
 @attr.s()
 class AmmOperationsBuilder(Generic[_OPERATION_KIND_ENUM_TV]):
-    operation_kind_enum: Type[_OPERATION_KIND_ENUM_TV] = attr.ib()
+    operation_kind_enum: type[_OPERATION_KIND_ENUM_TV] = attr.ib()
     user_op_info_list: Sequence[UserOperationInfo[_OPERATION_KIND_ENUM_TV]] = attr.ib()
-    rq_base_type: Type = attr.ib()
-    rs_base_type: Type = attr.ib()
+    rq_base_type: type = attr.ib()
+    rs_base_type: type = attr.ib()
     model_mapper: ModelMapperMarshmallow = attr.ib()
 
-    def _resolve_regular_schema(self, generic_model_type: Type, discriminator_value: str) -> AmmRegularSchema:
+    def _resolve_regular_schema(self, generic_model_type: type, discriminator_value: str) -> AmmRegularSchema:
         schema_registry = self.model_mapper.get_amm_schema_registry()
         return schema_registry.get_generic_type_schema(generic_model_type).mapping[discriminator_value]
 
-    def _get_generic_schema_for_type(self, t: Type) -> BaseOneOfSchema:
+    def _get_generic_schema_for_type(self, t: type) -> BaseOneOfSchema:
         schema_cls = self.model_mapper.get_schema_for_attrs_class(t)
         assert issubclass(schema_cls, BaseOneOfSchema)
         return schema_cls()

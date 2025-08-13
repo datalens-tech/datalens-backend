@@ -1,7 +1,6 @@
 from typing import (
     ClassVar,
     Optional,
-    Type,
 )
 
 import attr
@@ -43,10 +42,10 @@ class CHYTTableRangeDSMI(DataSourceMigrationInterface):
 
 class BaseCHYTDataSourceMigrator(DefaultSQLDataSourceMigrator):
     table_list_source_type: ClassVar[Optional[DataSourceType]]
-    table_list_dsrc_spec_cls: ClassVar[Optional[Type[DataSourceSpec]]]
+    table_list_dsrc_spec_cls: ClassVar[Optional[type[DataSourceSpec]]]
 
     table_range_source_type: ClassVar[Optional[DataSourceType]]
-    table_range_dsrc_spec_cls: ClassVar[Optional[Type[DataSourceSpec]]]
+    table_range_dsrc_spec_cls: ClassVar[Optional[type[DataSourceSpec]]]
 
     def get_migration_specs(self) -> list[MigrationSpec]:
         result = super().get_migration_specs()

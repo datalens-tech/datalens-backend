@@ -1,7 +1,6 @@
 from typing import (
     Collection,
     Optional,
-    Type,
 )
 
 import attr
@@ -20,7 +19,7 @@ class FormulaConnectorEntrypointManager(EntrypointClassManager[FormulaConnector]
     entrypoint_group_name = attr.ib(init=False, default=_CONNECTOR_EP_GROUP)
 
 
-def _get_all_ep_connectors(ep_filter: Optional[Collection[str]] = None) -> dict[str, Type[FormulaConnector]]:
+def _get_all_ep_connectors(ep_filter: Optional[Collection[str]] = None) -> dict[str, type[FormulaConnector]]:
     ep_mgr = FormulaConnectorEntrypointManager()
     return ep_mgr.get_all_ep_classes(ep_filter)
 

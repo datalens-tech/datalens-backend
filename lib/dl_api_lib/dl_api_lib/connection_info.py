@@ -1,5 +1,3 @@
-from typing import Type
-
 from dl_api_connector.connection_info import ConnectionInfoProvider
 from dl_constants.enums import ConnectionType
 
@@ -13,7 +11,7 @@ CONNECTOR_INFO_PROVIDER_CLS_BY_TYPE: dict[ConnectionType, ConnectionInfoProvider
 
 def register_connector_info_provider_cls(
     conn_type: ConnectionType,
-    info_provider_cls: Type[ConnectionInfoProvider],
+    info_provider_cls: type[ConnectionInfoProvider],
 ) -> None:
     CONNECTOR_INFO_PROVIDER_CLS_BY_TYPE[conn_type] = info_provider_cls()
 

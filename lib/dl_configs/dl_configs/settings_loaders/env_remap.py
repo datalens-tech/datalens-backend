@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 from dl_configs.settings_loaders.common import SDict
 
@@ -23,7 +22,7 @@ def remap_env(s_dict: SDict) -> SDict:
     ret = dict(s_dict)
 
     legacy_keys_to_remap_candidates = s_dict.keys() & REMAP.keys()
-    legacy_keys_to_remap: List[str] = []
+    legacy_keys_to_remap: list[str] = []
 
     for legacy_key in sorted(legacy_keys_to_remap_candidates):
         actual_key = REMAP[legacy_key]

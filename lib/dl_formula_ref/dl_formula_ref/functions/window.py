@@ -1,5 +1,3 @@
-from typing import List
-
 from dl_formula.core.datatype import DataType
 from dl_formula.inspect.function import supports_ordering
 from dl_formula_ref.categories.window import CATEGORY_WINDOW
@@ -49,7 +47,7 @@ _SOURCE_SALES_DATA_1 = ExampleSource(
 )
 
 
-def _make_standard_window_examples(func: str) -> List[DataExample]:
+def _make_standard_window_examples(func: str) -> list[DataExample]:
     order_by_str = " ORDER BY [City], [Category]" if supports_ordering(name=func.lower(), is_window=True) else ""
     func = func.upper()
     examples = [
@@ -86,7 +84,7 @@ def _make_standard_window_examples(func: str) -> List[DataExample]:
     return examples
 
 
-def _make_rank_examples(func: str) -> List[DataExample]:
+def _make_rank_examples(func: str) -> list[DataExample]:
     func = func.upper()
     examples = [
         DataExample(
@@ -118,7 +116,7 @@ def _make_rank_examples(func: str) -> List[DataExample]:
     return examples
 
 
-def _make_if_examples(func: str) -> List[DataExample]:
+def _make_if_examples(func: str) -> list[DataExample]:
     func = func.upper()
     examples = [
         DataExample(
@@ -358,7 +356,7 @@ FUNCTION_AVG_IF_WINDOW = FunctionDocRegistryItem(
 )
 
 
-def _make_simple_order_by_examples(func: str) -> List[DataExample]:
+def _make_simple_order_by_examples(func: str) -> list[DataExample]:
     func = func.upper()
     examples = [
         DataExample(
@@ -563,7 +561,7 @@ FUNCTION_RAVG = FunctionDocRegistryItem(
 )
 
 
-def _make_mfunc_examples(func: str) -> List[DataExample]:
+def _make_mfunc_examples(func: str) -> list[DataExample]:
     func = func.upper()
     examples = [
         DataExample(
@@ -770,7 +768,7 @@ FUNCTION_MAVG = FunctionDocRegistryItem(
 )
 
 
-def _make_lag_examples(func: str) -> List[DataExample]:
+def _make_lag_examples(func: str) -> list[DataExample]:
     func = func.upper()
     examples = [
         DataExample(

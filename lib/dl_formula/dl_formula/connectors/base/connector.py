@@ -3,7 +3,6 @@ from typing import (
     Iterable,
     Optional,
     Sequence,
-    Type,
 )
 
 from sqlalchemy.engine.default import DefaultDialect
@@ -28,14 +27,14 @@ from dl_formula.definitions.base import NodeTranslation
 
 
 class FormulaConnector:
-    dialect_ns_cls: ClassVar[Type[DialectNamespace]] = StandardDialect
+    dialect_ns_cls: ClassVar[type[DialectNamespace]] = StandardDialect
     dialects: ClassVar[DialectCombo]
     default_dialect: ClassVar[Optional[DialectCombo]] = None
     op_definitions: ClassVar[Iterable[NodeTranslation]] = []
-    literalizer_cls: ClassVar[Type[Literalizer]] = Literalizer
-    column_renderer_cls: ClassVar[Type[ColumnRenderer]] = DefaultColumnRenderer
-    context_processor_cls: ClassVar[Type[ContextPostprocessor]] = ContextPostprocessor
-    type_constructor_cls: ClassVar[Type[SATypeConstructor]] = DefaultSATypeConstructor
+    literalizer_cls: ClassVar[type[Literalizer]] = Literalizer
+    column_renderer_cls: ClassVar[type[ColumnRenderer]] = DefaultColumnRenderer
+    context_processor_cls: ClassVar[type[ContextPostprocessor]] = ContextPostprocessor
+    type_constructor_cls: ClassVar[type[SATypeConstructor]] = DefaultSATypeConstructor
     sa_dialect: ClassVar[DefaultDialect] = DefaultDialect()
 
     @classmethod

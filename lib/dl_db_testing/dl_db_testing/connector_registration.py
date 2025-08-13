@@ -1,15 +1,13 @@
-from typing import Type
-
 from dl_db_testing.connectors.base.connector import DbTestingConnector
 from dl_db_testing.database.engine_wrapper import register_engine_wrapper_cls
 
 
-_REGISTERED: set[Type[DbTestingConnector]] = set()
+_REGISTERED: set[type[DbTestingConnector]] = set()
 
 
 class DbTestingConnectorRegistrator:
     @classmethod
-    def register_connector(cls, connector: Type[DbTestingConnector]) -> None:
+    def register_connector(cls, connector: type[DbTestingConnector]) -> None:
         if connector in _REGISTERED:
             return
 

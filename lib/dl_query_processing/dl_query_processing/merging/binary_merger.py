@@ -2,12 +2,9 @@ import abc
 from typing import (
     Any,
     Iterable,
-    List,
     Mapping,
     Optional,
     Sequence,
-    Set,
-    Type,
 )
 
 import attr
@@ -50,20 +47,20 @@ class RowMatcher:
     Helper object for optimizing the matching of data rows to specified dimension values
     """
 
-    _dimension_values: List[DimensionValueSpec] = attr.ib(kw_only=True)
+    _dimension_values: list[DimensionValueSpec] = attr.ib(kw_only=True)
     # internal stuff
-    _required_legend_item_ids: Set[int] = attr.ib(init=False)
-    _match_dim_values: List[PostprocessedValue] = attr.ib(init=False)
+    _required_legend_item_ids: set[int] = attr.ib(init=False)
+    _match_dim_values: list[PostprocessedValue] = attr.ib(init=False)
     _prev_legend_item_ids: Optional[Iterable[int]] = attr.ib(init=False, default=None)
-    _dimension_mask: List[int] = attr.ib(init=False, factory=list)
+    _dimension_mask: list[int] = attr.ib(init=False, factory=list)
     _row_has_req_items: bool = attr.ib(init=False, default=False)
 
     @_required_legend_item_ids.default
-    def _make_required_legend_item_ids(self) -> Set[int]:
+    def _make_required_legend_item_ids(self) -> set[int]:
         return {dim_spec.legend_item_id for dim_spec in self._dimension_values}
 
     @_match_dim_values.default
-    def _make_match_dim_values(self) -> List[PostprocessedValue]:
+    def _make_match_dim_values(self) -> list[PostprocessedValue]:
         return [dim_spec.value for dim_spec in self._dimension_values]
 
     def match_row(self, row: MergedQueryDataRow) -> bool:
@@ -241,7 +238,7 @@ def make_binary_merger(placement: BlockPlacement) -> BinaryStreamMerger:
     Factory of BinaryStreamMerger instances.
     """
 
-    placement_type_map: Mapping[QueryBlockPlacementType, Type[BinaryStreamMerger]] = {
+    placement_type_map: Mapping[QueryBlockPlacementType, type[BinaryStreamMerger]] = {
         QueryBlockPlacementType.after: AfterBinaryStreamMerger,
         QueryBlockPlacementType.dispersed_after: DispersedAfterBinaryStreamMerger,
     }

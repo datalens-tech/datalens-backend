@@ -1,5 +1,3 @@
-from typing import Type
-
 import attr
 
 import dl_core as package
@@ -15,6 +13,6 @@ class DataProcessorPluginEntrypointManager(EntrypointClassManager[DataProcessorP
     entrypoint_group_name = attr.ib(init=False, default=_DATA_PROC_SRV_EP_GROUP)
 
 
-def get_all_data_processor_plugins() -> dict[str, Type[DataProcessorPlugin]]:
+def get_all_data_processor_plugins() -> dict[str, type[DataProcessorPlugin]]:
     ep_mgr = DataProcessorPluginEntrypointManager()
     return ep_mgr.get_all_ep_classes()

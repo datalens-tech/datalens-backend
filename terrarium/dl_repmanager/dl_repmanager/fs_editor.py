@@ -11,7 +11,6 @@ from typing import (
     Collection,
     Generator,
     TextIO,
-    Type,
     cast,
     final,
 )
@@ -389,7 +388,7 @@ class VirtualFilesystemEditor(FilesystemEditor):
         ) and path not in self._removed_paths
 
 
-_FS_EDITOR_CLASSES: dict[str, Type[FilesystemEditor]] = {
+_FS_EDITOR_CLASSES: dict[str, type[FilesystemEditor]] = {
     "default": DefaultFilesystemEditor,
     "git": GitFilesystemEditor,
     "virtual": VirtualFilesystemEditor,

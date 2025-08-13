@@ -3,7 +3,6 @@ from typing import (
     Mapping,
     Optional,
     Sequence,
-    Type,
     TypeVar,
 )
 
@@ -41,7 +40,7 @@ class TypedQueryParamGetter:
         return self._params_by_name[name]
 
     # typed methods
-    def get_typed_value(self, name: str, value_type: Type[_PARAM_VALUE_TV]) -> _PARAM_VALUE_TV:
+    def get_typed_value(self, name: str, value_type: type[_PARAM_VALUE_TV]) -> _PARAM_VALUE_TV:
         try:
             value = self.get_strict(name).typed_value.value
             if not isinstance(value, value_type):

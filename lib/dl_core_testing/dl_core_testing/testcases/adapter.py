@@ -3,7 +3,6 @@ from typing import (
     ClassVar,
     Generic,
     Optional,
-    Type,
     TypeVar,
 )
 
@@ -29,7 +28,7 @@ class BaseAsyncAdapterTestClass(BaseConnectionExecutorTestClass, Generic[_TARGET
     Here are the tests, that are just easier to implement at the adapter level
     """
 
-    ASYNC_ADAPTER_CLS: ClassVar[Type[AsyncDirectDBAdapter]]  # TODO add tests for other adapters
+    ASYNC_ADAPTER_CLS: ClassVar[type[AsyncDirectDBAdapter]]  # TODO add tests for other adapters
 
     @pytest_asyncio.fixture
     async def target_conn_dto(self, async_connection_executor: AsyncConnExecutorBase) -> _TARGET_DTO_TV:

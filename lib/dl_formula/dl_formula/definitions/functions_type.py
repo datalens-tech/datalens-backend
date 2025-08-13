@@ -6,7 +6,6 @@ from typing import (
     NamedTuple,
     Optional,
     Sequence,
-    Tuple,
     Union,
 )
 
@@ -661,7 +660,7 @@ class DbCastArgTypes(ArgTypeSequence):
         return set(DataType)
 
 
-DataTypeSpec = Union[DataType, Tuple[DataType, ...]]
+DataTypeSpec = Union[DataType, tuple[DataType, ...]]
 
 
 class WhitelistTypeSpec(NamedTuple):

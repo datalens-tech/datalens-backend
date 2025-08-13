@@ -2,10 +2,7 @@ from functools import singledispatchmethod
 import re
 from typing import (
     Callable,
-    Dict,
-    List,
     Optional,
-    Tuple,
 )
 
 import attr
@@ -83,9 +80,9 @@ BLOCK_TAG_RE = re.compile(r"\{\s*(?P<tag_name>" + _BLOCK_MACRO_CHOICES + r")(\s+
 @attr.s
 class MacroExpander:
     _resources: AliasedResourceRegistryBase = attr.ib(kw_only=True, factory=SimpleAliasedResourceRegistry)
-    _func_link_provider: Optional[Callable[[str, Optional[str]], Tuple[str, str]]] = attr.ib(kw_only=True, default=None)
-    _cat_link_provider: Optional[Callable[[str, Optional[str]], Tuple[str, str]]] = attr.ib(kw_only=True, default=None)
-    _args: Optional[List[FuncArg]] = attr.ib(kw_only=True, default=None)
+    _func_link_provider: Optional[Callable[[str, Optional[str]], tuple[str, str]]] = attr.ib(kw_only=True, default=None)
+    _cat_link_provider: Optional[Callable[[str, Optional[str]], tuple[str, str]]] = attr.ib(kw_only=True, default=None)
+    _args: Optional[list[FuncArg]] = attr.ib(kw_only=True, default=None)
     _translation_callable: Callable[[str | Translatable], str] = attr.ib(kw_only=True, default=lambda s: s)
 
     def _get_raw_link_url_by_alias(self, alias: str) -> Optional[str]:
@@ -100,11 +97,11 @@ class MacroExpander:
     def _get_raw_table_body_by_alias(self, alias: str) -> list[list[str | Translatable]]:
         return self._resources.get_table(alias).table_body
 
-    def _get_func_name_and_url(self, func_name: str, category_name: Optional[str] = None) -> Tuple[str, str]:
+    def _get_func_name_and_url(self, func_name: str, category_name: Optional[str] = None) -> tuple[str, str]:
         assert self._func_link_provider is not None
         return self._func_link_provider(func_name, category_name)
 
-    def _get_cat_name_and_url(self, category_name: str, anchor_name: Optional[str] = None) -> Tuple[str, str]:
+    def _get_cat_name_and_url(self, category_name: str, anchor_name: Optional[str] = None) -> tuple[str, str]:
         assert self._cat_link_provider is not None
         return self._cat_link_provider(category_name, anchor_name)
 
@@ -115,7 +112,7 @@ class MacroExpander:
 
     def expand_text(self, text: str | Translatable) -> RichText:
         trans_text = self._translate_text(text)
-        replacements: Dict[MacroReplacementKey, BaseTextElement] = {}
+        replacements: dict[MacroReplacementKey, BaseTextElement] = {}
 
         block_replacements = self._get_block_replacements(trans_text)
         replacements.update(block_replacements)
@@ -129,7 +126,7 @@ class MacroExpander:
         tag_name: str,
         block_param: Optional[str],
         block_text: str,
-        nested_replacements: Dict[MacroReplacementKey, BaseTextElement],
+        nested_replacements: dict[MacroReplacementKey, BaseTextElement],
     ) -> BaseTextElement:
         element: BaseTextElement
 
@@ -158,8 +155,8 @@ class MacroExpander:
             raise ValueError(f"Unknown block tag: {tag_name}")
         return element
 
-    def _get_block_replacements(self, text: str) -> Dict[MacroReplacementKey, BaseTextElement]:
-        block_replacements: Dict[MacroReplacementKey, BaseTextElement] = {}
+    def _get_block_replacements(self, text: str) -> dict[MacroReplacementKey, BaseTextElement]:
+        block_replacements: dict[MacroReplacementKey, BaseTextElement] = {}
 
         block_match: Optional[re.Match] = BLOCK_TAG_RE.search(text)
         while block_match is not None and block_match.group("tag_name") != END_TAG:
@@ -200,9 +197,9 @@ class MacroExpander:
     def _get_macro_replacements(
         self,
         text: str,
-        block_replacements: Dict[MacroReplacementKey, BaseTextElement],
-    ) -> Dict[MacroReplacementKey, BaseTextElement]:
-        replacements: Dict[MacroReplacementKey, BaseTextElement] = {}
+        block_replacements: dict[MacroReplacementKey, BaseTextElement],
+    ) -> dict[MacroReplacementKey, BaseTextElement]:
+        replacements: dict[MacroReplacementKey, BaseTextElement] = {}
 
         for macro_match in SIMPLE_MACRO_RE.finditer(text):
             start_pos = macro_match.start()
@@ -301,7 +298,7 @@ class MacroExpander:
 
     @expand_macro.register
     def expand_macro_type(self, macro: TypeMacro) -> ListTextElement:
-        items: List[TermTextElement] = []
+        items: list[TermTextElement] = []
         type_list = [DataType[type_name.strip().upper()] for type_name in macro.values]
         for h_type_name in get_human_data_type_list(types=type_list):
             items.append(

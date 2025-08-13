@@ -12,7 +12,6 @@ from typing import (
     Collection,
     Generator,
     Generic,
-    List,
     Optional,
     TypeVar,
     Union,
@@ -418,12 +417,12 @@ class BooleanParameterValue(ParameterValue[bool]):
 
 
 @attr.s
-class GeoPointParameterValue(ParameterValue[List[Union[int, float]]]):
+class GeoPointParameterValue(ParameterValue[list[Union[int, float]]]):
     type: UserDataType = UserDataType.geopoint
 
 
 @attr.s
-class GeoPolygonParameterValue(ParameterValue[List[List[List[Union[int, float]]]]]):
+class GeoPolygonParameterValue(ParameterValue[list[list[list[Union[int, float]]]]]):
     type: UserDataType = UserDataType.geopolygon
 
 
@@ -438,22 +437,22 @@ class MarkupParameterValue(ParameterValue[str]):
 
 
 @attr.s
-class ArrayStrParameterValue(ParameterValue[List[str]]):
+class ArrayStrParameterValue(ParameterValue[list[str]]):
     type: UserDataType = UserDataType.array_str
 
 
 @attr.s
-class ArrayIntParameterValue(ParameterValue[List[int]]):
+class ArrayIntParameterValue(ParameterValue[list[int]]):
     type: UserDataType = UserDataType.array_int
 
 
 @attr.s
-class ArrayFloatParameterValue(ParameterValue[List[float]]):
+class ArrayFloatParameterValue(ParameterValue[list[float]]):
     type: UserDataType = UserDataType.array_float
 
 
 @attr.s
-class TreeStrParameterValue(ParameterValue[List[str]]):
+class TreeStrParameterValue(ParameterValue[list[str]]):
     type: UserDataType = UserDataType.tree_str
 
 

@@ -5,7 +5,6 @@ import logging
 from typing import (
     NamedTuple,
     Optional,
-    Tuple,
 )
 
 
@@ -26,7 +25,7 @@ class DescriptionColumn(NamedTuple):
 class Cursor:
     def __init__(self, connection):
         self.connection = connection
-        self.description: Tuple[DescriptionColumn, ...] = ()
+        self.description: tuple[DescriptionColumn, ...] = ()
         self.arraysize = 1
         self.logger = LOGGER
         self.rows = None

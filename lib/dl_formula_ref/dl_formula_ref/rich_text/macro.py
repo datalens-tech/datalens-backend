@@ -1,7 +1,4 @@
-from typing import (
-    List,
-    Optional,
-)
+from typing import Optional
 
 import attr
 
@@ -23,7 +20,7 @@ class DoubleArgMacro(SingleArgMacro):
 
 @attr.s
 class ListMacro(BaseMacro):
-    values: List[str] = attr.ib(kw_only=True)
+    values: list[str] = attr.ib(kw_only=True)
 
 
 class RefMacro(DoubleArgMacro):

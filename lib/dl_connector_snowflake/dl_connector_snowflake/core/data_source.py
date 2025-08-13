@@ -1,7 +1,4 @@
-from typing import (
-    Callable,
-    Type,
-)
+from typing import Callable
 
 from dl_constants.enums import DataSourceType
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
@@ -36,7 +33,7 @@ class SnowFlakeDataSourceMixin(BaseSQLDataSource):
     conn_type = CONNECTION_TYPE_SNOWFLAKE
 
     @classmethod
-    def get_connection_cls(cls) -> Type[ConnectionSQLSnowFlake]:
+    def get_connection_cls(cls) -> type[ConnectionSQLSnowFlake]:
         return ConnectionSQLSnowFlake
 
     @classmethod

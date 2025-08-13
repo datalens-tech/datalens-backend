@@ -6,7 +6,6 @@ from typing import (
     Any,
     ClassVar,
     Generic,
-    List,
     Optional,
     Type,
     TypeVar,
@@ -56,7 +55,7 @@ _RES_SCHEMA_TV = TypeVar("_RES_SCHEMA_TV")
 
 
 class NonStreamAction(Generic[_RES_SCHEMA_TV], RemoteDBAdapterAction, metaclass=abc.ABCMeta):
-    ResultSchema = ClassVar[Type[BaseQEAPISchema]]
+    ResultSchema = ClassVar[Type[BaseQEAPISchema]]  # noqa: UP006
 
     def serialize_response(self, val: _RES_SCHEMA_TV) -> dict:
         return self.ResultSchema().dump(val)  # type: ignore  # TODO: fix
@@ -86,7 +85,7 @@ class ActionGetDBVersion(NonStreamAction[Optional[str]]):
 
 
 @attr.s(frozen=True)
-class ActionGetSchemaNames(NonStreamAction[List[str]]):
+class ActionGetSchemaNames(NonStreamAction[list[str]]):
     db_ident: DBIdent = attr.ib()
 
     class ResultSchema(PrimitivesResponseSchema):
@@ -94,7 +93,7 @@ class ActionGetSchemaNames(NonStreamAction[List[str]]):
 
 
 @attr.s(frozen=True)
-class ActionGetTables(NonStreamAction[List[TableIdent]]):
+class ActionGetTables(NonStreamAction[list[TableIdent]]):
     schema_ident: SchemaIdent = attr.ib()
 
     class ResultSchema(PrimitivesResponseSchema):

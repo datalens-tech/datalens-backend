@@ -2,9 +2,7 @@ from collections import defaultdict
 import logging
 from typing import (
     TYPE_CHECKING,
-    Dict,
     Iterable,
-    List,
     Optional,
     Sequence,
     Union,
@@ -63,7 +61,7 @@ class PdPivotTransformer(PivotTransformer):
 
         fake_measure_piid_str = str(self._pivot_legend.get_unused_pivot_item_id())
 
-        data: Dict[str, List[Optional[DataCellVector]]] = defaultdict(list)
+        data: dict[str, list[Optional[DataCellVector]]] = defaultdict(list)
         for dim_vectors, value_vector in transp_stream:
             for dim_vector in dim_vectors:
                 base_dim_cell = dim_vector.cells[0]

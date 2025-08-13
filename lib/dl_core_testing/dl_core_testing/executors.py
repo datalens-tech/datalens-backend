@@ -1,8 +1,4 @@
-from typing import (
-    Any,
-    Dict,
-    Type,
-)
+from typing import Any
 
 import attr
 
@@ -15,13 +11,13 @@ from dl_core_testing.database import Db
 class ExecutorFactoryBase:
     db: Db = attr.ib()
 
-    def get_dto_class(self) -> Type[BaseSQLConnTargetDTO]:
+    def get_dto_class(self) -> type[BaseSQLConnTargetDTO]:
         raise NotImplementedError
 
-    def get_dba_class(self) -> Type[CommonBaseDirectAdapter]:
+    def get_dba_class(self) -> type[CommonBaseDirectAdapter]:
         return CommonBaseDirectAdapter
 
-    def get_dto_kwargs(self) -> Dict[str, Any]:
+    def get_dto_kwargs(self) -> dict[str, Any]:
         return dict(
             conn_id=None,
             host=self.db.url.host,

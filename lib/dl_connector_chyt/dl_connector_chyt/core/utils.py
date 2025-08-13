@@ -1,9 +1,6 @@
 import logging
 import re
-from typing import (
-    Optional,
-    Type,
-)
+from typing import Optional
 
 from dl_core import exc
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
@@ -52,7 +49,7 @@ class CHYTUtils(ClickHouseBaseUtils):
     }
 
     @classmethod
-    def parse_clique_message(cls, err_msg: str) -> Optional[tuple[Type[exc.DatabaseQueryError], dict[str, str]]]:
+    def parse_clique_message(cls, err_msg: str) -> Optional[tuple[type[exc.DatabaseQueryError], dict[str, str]]]:
         for err_re, chyt_exc_cls in cls.clique_expr_exc.items():
             match = re.search(err_re, err_msg)
             if match:
@@ -63,7 +60,7 @@ class CHYTUtils(ClickHouseBaseUtils):
     @classmethod
     def get_exc_class_by_parsed_message(
         cls, msg: ParsedErrorMsg
-    ) -> Optional[tuple[Type[exc.DatabaseQueryError], dict[str, str]]]:
+    ) -> Optional[tuple[type[exc.DatabaseQueryError], dict[str, str]]]:
         if msg.code == 1001:
             LOGGER.info("Recognized as CHYT error code")
             for err_re, chyt_exc_cls in cls.chyt_expr_exc.items():
@@ -75,7 +72,7 @@ class CHYTUtils(ClickHouseBaseUtils):
         return super().get_exc_class_by_parsed_message(msg)
 
     @classmethod
-    def get_exc_class(cls, err_msg: str) -> Optional[tuple[Type[exc.DatabaseQueryError], dict[str, str]]]:
+    def get_exc_class(cls, err_msg: str) -> Optional[tuple[type[exc.DatabaseQueryError], dict[str, str]]]:
         # Clique exception
         not_ch_exc = cls.parse_clique_message(err_msg)
         if not_ch_exc:

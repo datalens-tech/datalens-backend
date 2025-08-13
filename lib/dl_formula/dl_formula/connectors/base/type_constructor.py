@@ -1,5 +1,3 @@
-from typing import Type
-
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
@@ -37,7 +35,7 @@ class DefaultSATypeConstructor(SATypeConstructor):
         return type_map[data_type]
 
 
-_REGISTRY: dict[DialectName, Type[SATypeConstructor]] = {}
+_REGISTRY: dict[DialectName, type[SATypeConstructor]] = {}
 
 
 def get_type_constructor(dialect_name: DialectName) -> SATypeConstructor:
@@ -47,7 +45,7 @@ def get_type_constructor(dialect_name: DialectName) -> SATypeConstructor:
 
 def register_type_constructor(
     dialect_name: DialectName,
-    type_constructor_cls: Type[SATypeConstructor],
+    type_constructor_cls: type[SATypeConstructor],
 ) -> None:
     if dialect_name in _REGISTRY:
         assert _REGISTRY[dialect_name] is type_constructor_cls

@@ -1,7 +1,4 @@
-from typing import (
-    Any,
-    Type,
-)
+from typing import Any
 
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from dl_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO
@@ -13,10 +10,10 @@ from dl_connector_clickhouse.core.clickhouse_base.target_dto import ClickHouseCo
 
 
 class ClickHouseExecutorFactory(ExecutorFactoryBase):
-    def get_dto_class(self) -> Type[BaseSQLConnTargetDTO]:
+    def get_dto_class(self) -> type[BaseSQLConnTargetDTO]:
         return ClickHouseConnTargetDTO
 
-    def get_dba_class(self) -> Type[CommonBaseDirectAdapter]:
+    def get_dba_class(self) -> type[CommonBaseDirectAdapter]:
         return ClickHouseAdapter
 
     def get_dto_kwargs(self) -> dict[str, Any]:

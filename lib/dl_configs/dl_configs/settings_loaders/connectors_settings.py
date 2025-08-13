@@ -1,7 +1,4 @@
-from typing import (
-    Optional,
-    Type,
-)
+from typing import Optional
 
 import attr
 from attr import make_class
@@ -13,8 +10,8 @@ from dl_constants.enums import ConnectionType
 
 
 def generate_connectors_settings_class(
-    settings_registry: dict[ConnectionType, Type[ConnectorSettingsBase]],
-) -> Type[attr.AttrsInstance]:
+    settings_registry: dict[ConnectionType, type[ConnectorSettingsBase]],
+) -> type[attr.AttrsInstance]:
     attrs: dict[str, attr.Attribute] = {}
     for conn_type, settings_class in settings_registry.items():
         field_name = conn_type.value.upper()

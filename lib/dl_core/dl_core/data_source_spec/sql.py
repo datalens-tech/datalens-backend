@@ -1,7 +1,4 @@
-from typing import (
-    Any,
-    FrozenSet,
-)
+from typing import Any
 
 import attr
 
@@ -36,7 +33,7 @@ class TableSQLDataSourceSpec(SQLDataSourceSpecBase):
 
 @attr.s
 class IndexedSQLDataSourceSpec(SQLDataSourceSpecBase):
-    index_info_set: FrozenSet[IndexInfo] | None = attr.ib(kw_only=True, default=None)
+    index_info_set: frozenset[IndexInfo] | None = attr.ib(kw_only=True, default=None)
 
     @index_info_set.validator
     def check_indexes(self, attribute: Any, value: Any) -> None:

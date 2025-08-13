@@ -20,7 +20,7 @@ class TypedBaseSettings(base_settings.BaseSettings, metaclass=TypedMeta):
     type: str
 
     @classmethod
-    def register(cls, name: str, class_: typing.Type) -> None:
+    def register(cls, name: str, class_: typing.Type) -> None:  # noqa: UP006
         if name in cls._classes:
             raise ValueError(f"Class with name '{name}' already registered")
 
@@ -58,14 +58,14 @@ class TypedBaseSettings(base_settings.BaseSettings, metaclass=TypedMeta):
         return class_.model_validate(data)
 
     @classmethod
-    def list_factory(cls, data: list[typing.Any]) -> typing.List[base_settings.BaseSettings]:
+    def list_factory(cls, data: list[typing.Any]) -> list[base_settings.BaseSettings]:
         if not isinstance(data, list):
             raise ValueError("Data must be sequence for list factory")
 
         return [cls.factory(item) for item in data]
 
     @classmethod
-    def dict_factory(cls, data: dict[str, typing.Any]) -> typing.Dict[str, base_settings.BaseSettings]:
+    def dict_factory(cls, data: dict[str, typing.Any]) -> dict[str, base_settings.BaseSettings]:
         if not isinstance(data, dict):
             raise ValueError("Data must be mapping for dict factory")
 

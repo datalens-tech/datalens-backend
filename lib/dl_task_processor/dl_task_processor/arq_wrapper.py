@@ -2,7 +2,6 @@ import asyncio
 import logging
 from typing import (
     Any,
-    Dict,
     Optional,
     Protocol,
     TypeAlias,
@@ -46,7 +45,7 @@ class ArqCronWrapper:
     # special asyncio marker; because of asyncio.iscoroutinefunction in the arq core
     _is_coroutine = asyncio.coroutines._is_coroutine  # type: ignore  # 2024-01-24 # TODO: Module has no attribute "_is_coroutine"; maybe "iscoroutine" or "coroutine"?  [attr-defined]
 
-    async def __call__(self, ctx: Dict[Any, Any], *args: Any, **kwargs: Any) -> Any:  # pragma: no cover
+    async def __call__(self, ctx: dict[Any, Any], *args: Any, **kwargs: Any) -> Any:  # pragma: no cover
         return await arq_base_task(
             ctx,
             # TODO: add common object for params
@@ -130,7 +129,7 @@ def make_cron_task(task: BaseTaskMeta, schedule: CronSchedule) -> CronTask:
     return cron_task
 
 
-async def arq_base_task(context: Dict, params: Dict) -> None:
+async def arq_base_task(context: dict, params: dict) -> None:
     LOGGER.info("Run arq task with params %s", params)
     task_instance = TaskInstance(
         name=params["name"],

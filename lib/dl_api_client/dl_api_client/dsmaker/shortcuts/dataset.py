@@ -3,7 +3,6 @@ import typing
 from typing import (
     Any,
     Callable,
-    Dict,
     Optional,
 )
 
@@ -47,7 +46,7 @@ def add_formulas_to_dataset(
     api_v1: SyncHttpDatasetApiV1,  # FIXME: Rename to control_api
     dataset: Optional[Dataset] = None,
     dataset_id: Optional[str] = None,
-    formulas: Dict[str, str],
+    formulas: dict[str, str],
     exp_status: int = HTTPStatus.OK,
     save: bool = True,
 ) -> Dataset:
@@ -77,7 +76,7 @@ def add_parameters_to_dataset(
     api_v1: SyncHttpDatasetApiV1,  # FIXME: Rename to control_api
     dataset: Optional[Dataset] = None,
     dataset_id: Optional[str] = None,
-    parameters: Dict[str, Parameter],
+    parameters: dict[str, Parameter],
     exp_status: int = HTTPStatus.OK,
     save: bool = True,
 ) -> Dataset:
@@ -105,8 +104,8 @@ def create_basic_dataset(
     *,
     api_v1: SyncHttpDatasetApiV1,  # FIXME: Rename to control_api
     connection_id: str,
-    data_source_settings: Dict[str, Any],
-    formulas: Optional[Dict[str, str]] = None,
+    data_source_settings: dict[str, Any],
+    formulas: Optional[dict[str, str]] = None,
     save: bool = True,
 ) -> Dataset:
     ds = Dataset()

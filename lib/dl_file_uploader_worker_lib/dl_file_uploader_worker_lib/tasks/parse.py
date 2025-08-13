@@ -1,8 +1,5 @@
 import logging
-from typing import (
-    Optional,
-    Type,
-)
+from typing import Optional
 
 import attr
 
@@ -41,7 +38,7 @@ LOGGER = logging.getLogger(__name__)
 class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderTaskContext]):
     cls_meta = task_interface.ParseFileTask
 
-    FILE_TYPE_TO_PARSER_MAP: dict[FileType, Type[FileParser]] = {
+    FILE_TYPE_TO_PARSER_MAP: dict[FileType, type[FileParser]] = {
         FileType.csv: CSVFileParser,
         FileType.gsheets: SpreadsheetFileParser,
         FileType.xlsx: SpreadsheetFileParser,

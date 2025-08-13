@@ -3,7 +3,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Optional,
-    Type,
 )
 
 import attr
@@ -35,7 +34,7 @@ class MutationCacheEngineFactory(metaclass=abc.ABCMeta):
 @attr.s
 class DefaultMutationCacheEngineFactory(MutationCacheEngineFactory):
     _services_registry_ref: FutureRef["ServicesRegistry"] = attr.ib()
-    cache_type: Type[GenericCacheEngine] = attr.ib()
+    cache_type: type[GenericCacheEngine] = attr.ib()
     _saved_inmemory_engine: Optional[MemoryCacheEngine] = None
 
     @classmethod

@@ -4,10 +4,7 @@ from typing import (
     AbstractSet,
     Callable,
     Collection,
-    Dict,
-    List,
     Optional,
-    Tuple,
 )
 
 import attr
@@ -142,14 +139,14 @@ class QueryExecutor:
         self,
         *,
         level_type: ExecutionLevel,
-        streams_by_result_id: Dict[AvatarId, AbstractStream],
+        streams_by_result_id: dict[AvatarId, AbstractStream],
         translated_multi_query: TranslatedMultiQueryBase,
-        stream_aliases: Dict[str, str],
+        stream_aliases: dict[str, str],
         upload_inputs: bool,
         distinct: bool,
         role: DataSourceRole,
         row_count_hard_limit: int,
-    ) -> Tuple[Dict[AvatarId, DataStreamAsync], Dict[AvatarId, str]]:
+    ) -> tuple[dict[AvatarId, DataStreamAsync], dict[AvatarId, str]]:
         if translated_multi_query.is_empty():
             for stream in streams_by_result_id.values():
                 assert isinstance(stream, DataStreamAsync)
@@ -161,13 +158,13 @@ class QueryExecutor:
             f"Executing level type {level_type}. " f"Got source streams with result IDs: {list(streams_by_result_id)}"
         )
 
-        streams: List[DataStreamAsync] = [stream for _, stream in sorted(streams_by_result_id.items())]  # type: ignore  # TODO: fix
-        operations: List[BaseOp] = []
+        streams: list[DataStreamAsync] = [stream for _, stream in sorted(streams_by_result_id.items())]  # type: ignore  # TODO: fix
+        operations: list[BaseOp] = []
 
         # 1. Make operations for uploading data (if necessary).
         # For every incoming data stream
         if upload_inputs:
-            result_to_stream_id_map: Dict[AvatarId, str] = {}
+            result_to_stream_id_map: dict[AvatarId, str] = {}
             for result_id, stream in sorted(streams_by_result_id.items()):
                 op = UploadOp(
                     result_id=result_id,
@@ -195,7 +192,7 @@ class QueryExecutor:
 
         top_level_query_ids = all_query_ids - selected_avatar_ids  # IDs of top-level queries (not in any FROMs)
 
-        top_calc_stream_to_result_and_alias_map: Dict[str, Tuple[AvatarId, str]] = {}
+        top_calc_stream_to_result_and_alias_map: dict[str, tuple[AvatarId, str]] = {}
         for translated_flat_query in translated_multi_query.iter_queries():
             query_froms = translated_flat_query.joined_from.froms
             is_top_level = translated_flat_query.id in top_level_query_ids
@@ -272,8 +269,8 @@ class QueryExecutor:
                 top_calc_stream_to_result_and_alias_map[op.dest_stream_id] = (op.result_id, op.alias)
 
         # 3. Operations for downloading data from the top-level queries
-        output_stream_to_result_map: Dict[str, AvatarId] = {}
-        output_stream_aliases: Dict[str, str] = {}
+        output_stream_to_result_map: dict[str, AvatarId] = {}
+        output_stream_aliases: dict[str, str] = {}
         for top_calc_stream_id, (result_id, alias) in top_calc_stream_to_result_and_alias_map.items():
             op = DownloadOp(
                 source_stream_id=top_calc_stream_id,
@@ -306,7 +303,7 @@ class QueryExecutor:
         translated_multi_query: TranslatedMultiQueryBase,
         from_subquery: bool,
         subquery_limit: Optional[int],
-    ) -> Tuple[Dict[AvatarId, AbstractStream], Dict[AvatarId, str]]:
+    ) -> tuple[dict[AvatarId, AbstractStream], dict[AvatarId, str]]:
         base_avatar_ids = translated_multi_query.get_base_root_from_ids()
         required_avatar_ids: list[str] = [from_id for from_id in translated_multi_query.get_base_froms()]
         required_avatar_ids = sorted(set(required_avatar_ids + list(base_avatar_ids)))
@@ -318,7 +315,7 @@ class QueryExecutor:
             parameter_value_specs=self._parameter_value_specs,
         )
 
-        streams_by_result_id: Dict[AvatarId, AbstractStream] = {}
+        streams_by_result_id: dict[AvatarId, AbstractStream] = {}
         stream_aliases: dict[str, str] = {}
         for avatar_id in required_avatar_ids:
             alias = self._avatar_alias_mapper(avatar_id)  # type: ignore  # TODO: fix
@@ -391,7 +388,7 @@ class QueryExecutor:
         except exc.EmptyQuery as e:
             if empty_query_mode == EmptyQueryMode.error:
                 raise
-            empty_rows: List[TBIDataRow]
+            empty_rows: list[TBIDataRow]
             if empty_query_mode == EmptyQueryMode.empty:
                 empty_rows = []
             elif empty_query_mode == EmptyQueryMode.empty_row:

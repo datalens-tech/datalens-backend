@@ -6,7 +6,6 @@ from typing import (
     Generic,
     NewType,
     Optional,
-    Type,
     TypeVar,
 )
 import uuid
@@ -33,7 +32,7 @@ class _BaseID:
         return self.to_str()
 
     @classmethod
-    def make(cls: Type[_BASE_ID_TYPE]) -> _BASE_ID_TYPE:
+    def make(cls: type[_BASE_ID_TYPE]) -> _BASE_ID_TYPE:
         return cls(uuid.uuid4().hex)
 
 
@@ -116,7 +115,7 @@ class Retry(TaskResult):
 
 @attr.s
 class BaseExecutorTask(Generic[_BASE_TASK_META_TV, _BASE_TASK_CONTEXT_TV], metaclass=abc.ABCMeta):
-    cls_meta: ClassVar[Type[_BASE_TASK_META_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
+    cls_meta: ClassVar[type[_BASE_TASK_META_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
     meta: _BASE_TASK_META_TV = attr.ib()
     _ctx: _BASE_TASK_CONTEXT_TV = attr.ib()
     _instance_id: InstanceID = attr.ib()
@@ -151,22 +150,22 @@ class BaseExecutorTask(Generic[_BASE_TASK_META_TV, _BASE_TASK_CONTEXT_TV], metac
 
 @attr.s
 class TaskRegistry:
-    _tasks: dict[TaskName, Type[BaseExecutorTask]] = attr.ib()
+    _tasks: dict[TaskName, type[BaseExecutorTask]] = attr.ib()
 
     @classmethod
-    def create(cls, tasks: Iterable[Type[BaseExecutorTask]]) -> "TaskRegistry":
+    def create(cls, tasks: Iterable[type[BaseExecutorTask]]) -> "TaskRegistry":
         assert sorted(
             [t.name() for t in tasks],
         ) == sorted(list(set([t.name() for t in tasks]))), "Some tasks has the same name"
         return cls(tasks={task.name(): task for task in tasks})
 
-    def get_task(self, name: TaskName) -> Type[BaseExecutorTask]:
+    def get_task(self, name: TaskName) -> type[BaseExecutorTask]:
         return self._tasks[name]
 
-    def get_task_meta(self, name: TaskName) -> Type[BaseTaskMeta]:
+    def get_task_meta(self, name: TaskName) -> type[BaseTaskMeta]:
         return self.get_task(name).cls_meta
 
-    def filter_task_meta(self, name: TaskName) -> Iterable[Type[BaseTaskMeta]]:
+    def filter_task_meta(self, name: TaskName) -> Iterable[type[BaseTaskMeta]]:
         return [task.cls_meta for task in self._tasks.values() if not name or name == task.name()]
 
 

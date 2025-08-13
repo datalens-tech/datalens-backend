@@ -1,5 +1,4 @@
 from functools import lru_cache
-from typing import Dict
 
 from dl_formula.inspect.registry.item import (
     BasicOpItem,
@@ -17,9 +16,9 @@ def norm_name(func_name: str) -> str:
 
 class LowlevelOpRegistry:
     def __init__(self) -> None:
-        self._basic_op_registry: Dict[BasicOpItemKey, BasicOpItem] = {}
-        self._name_is_win_op_registry: Dict[NameIsWinOpItemKey, NameIsWinOpItem] = {}
-        self._name_op_registry: Dict[str, NameOpItem] = {}
+        self._basic_op_registry: dict[BasicOpItemKey, BasicOpItem] = {}
+        self._name_is_win_op_registry: dict[NameIsWinOpItemKey, NameIsWinOpItem] = {}
+        self._name_op_registry: dict[str, NameOpItem] = {}
 
     def add(self, basic_item: BasicOpItem) -> None:
         self._add_to_basic_op_registry(basic_item)

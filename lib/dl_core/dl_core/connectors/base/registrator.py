@@ -1,7 +1,4 @@
-from typing import (
-    TYPE_CHECKING,
-    Type,
-)
+from typing import TYPE_CHECKING
 
 from dl_constants.enums import SourceBackendType
 from dl_core.backend_types import register_connection_backend_type
@@ -43,7 +40,7 @@ if TYPE_CHECKING:
 
 class CoreConnectorRegistrator:
     @classmethod
-    def register_source_definition(cls, source_def: Type[CoreSourceDefinition]) -> None:
+    def register_source_definition(cls, source_def: type[CoreSourceDefinition]) -> None:
         register_data_source_spec_class(
             source_type=source_def.source_type,
             spec_cls=source_def.source_spec_cls,
@@ -60,7 +57,7 @@ class CoreConnectorRegistrator:
     @classmethod
     def register_connection_definition(
         cls,
-        conn_def: Type[CoreConnectionDefinition],
+        conn_def: type[CoreConnectionDefinition],
         backend_type: SourceBackendType,
     ) -> None:
         register_connection_class(
@@ -93,7 +90,7 @@ class CoreConnectorRegistrator:
         register_export_import_allowed(conn_type=conn_def.conn_type, value=conn_def.allow_export)
 
     @classmethod
-    def register_backend_definition(cls, backend_def: Type[CoreBackendDefinition]) -> None:
+    def register_backend_definition(cls, backend_def: type[CoreBackendDefinition]) -> None:
         backend_type = backend_def.backend_type
         register_sa_query_cls(backend_type=backend_type, query_cls=backend_def.query_cls)
         register_sa_query_compiler_cls(
@@ -106,7 +103,7 @@ class CoreConnectorRegistrator:
         )
 
     @classmethod
-    def register_connector(cls, connector: Type[CoreConnector]) -> None:
+    def register_connector(cls, connector: type[CoreConnector]) -> None:
         backend_def = connector.backend_definition
         cls.register_backend_definition(backend_def=backend_def)
         for source_def in connector.source_definitions:

@@ -1,9 +1,5 @@
 from itertools import chain
-from typing import (
-    Any,
-    Dict,
-    List,
-)
+from typing import Any
 
 import attr
 
@@ -18,8 +14,8 @@ class DataColumn:
 
 @attr.s(frozen=True, slots=True)
 class DataTable:
-    columns: List[DataColumn] = attr.ib(kw_only=True)
-    rows: List[List[Any]] = attr.ib(kw_only=True)
+    columns: list[DataColumn] = attr.ib(kw_only=True)
+    rows: list[list[Any]] = attr.ib(kw_only=True)
 
 
 def horizontal_join(*tables: DataTable) -> DataTable:
@@ -37,7 +33,7 @@ def horizontal_join(*tables: DataTable) -> DataTable:
     )
 
 
-def rename_columns(table: DataTable, name_mapping: Dict[str, str]) -> DataTable:
+def rename_columns(table: DataTable, name_mapping: dict[str, str]) -> DataTable:
     return DataTable(
         columns=[DataColumn(name=name_mapping[col.name], data_type=col.data_type) for col in table.columns],
         rows=table.rows,

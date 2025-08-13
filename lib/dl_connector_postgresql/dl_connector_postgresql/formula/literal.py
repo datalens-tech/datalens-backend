@@ -1,6 +1,5 @@
 from typing import (
     Any,
-    Type,
     Union,
 )
 
@@ -25,7 +24,7 @@ PG_INTEGER_MIN = -2147483648
 PG_INTEGER_MAX = 2147483647
 
 
-def integer_to_pg_sa_type(value: int) -> Type[Integer]:
+def integer_to_pg_sa_type(value: int) -> type[Integer]:
     # Some operations are not supported on longer ints, so optimize
     if PG_SMALLINT_MIN <= value <= PG_SMALLINT_MAX:
         return sa.SMALLINT

@@ -3,9 +3,7 @@ from copy import deepcopy
 import enum
 from typing import (
     ClassVar,
-    List,
     Optional,
-    Type,
 )
 
 import attr
@@ -89,7 +87,7 @@ class Salmon(Fish):
 @ModelDescriptor()
 @attr.s
 class Flat:
-    aquarium: List[Fish] = attr.ib()
+    aquarium: list[Fish] = attr.ib()
     guard_animal: Animal = attr.ib()
     owner: Bio = attr.ib()
 
@@ -372,8 +370,8 @@ def test_serialization_key():
 
 @attr.s(frozen=True)
 class MAFieldProjection:
-    MA_TYPE: ClassVar[Type[fields.Field]]
-    MAP_MA_FIELD_CLS_PROJECTION_CLS: ClassVar[dict[Type[fields.Field], Type["MAFieldProjection"]]] = {}
+    MA_TYPE: ClassVar[type[fields.Field]]
+    MAP_MA_FIELD_CLS_PROJECTION_CLS: ClassVar[dict[type[fields.Field], type["MAFieldProjection"]]] = {}
 
     allow_none: bool = attr.ib()
     attribute: str = attr.ib()
@@ -464,14 +462,14 @@ class Target1:
         )
         defaulted_list = fields.List(fields.String(allow_none=True), attribute="defaulted_list", required=False)
 
-    a: List[int]
+    a: list[int]
     optional_str: Optional[str]
     defaulted_optional_str: Optional[str] = attr.ib(default=None)
     strict_bool: bool
-    list_of_lists_of_str: List[List[str]]
-    optional_list_of_str: Optional[List[str]]
-    list_of_optional_str: List[Optional[str]]
-    defaulted_list: List[Optional[str]] = attr.ib(factory=lambda: [None])
+    list_of_lists_of_str: list[list[str]]
+    optional_list_of_str: Optional[list[str]]
+    list_of_optional_str: list[Optional[str]]
+    defaulted_list: list[Optional[str]] = attr.ib(factory=lambda: [None])
 
 
 @ModelDescriptor()
@@ -502,7 +500,7 @@ class TargetVariousMappings:
         [TargetVariousMappings, []],
     ],
 )
-def test_schema_generation(main_cls: Type, extra_cls_list: list[Type]):
+def test_schema_generation(main_cls: type, extra_cls_list: list[type]):
     mapper = ModelMapperMarshmallow()
     mapper.register_models(extra_cls_list)
     mapper.register_models([main_cls])

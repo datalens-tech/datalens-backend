@@ -7,9 +7,7 @@ import tempfile
 from typing import (
     Any,
     Callable,
-    Dict,
     Optional,
-    Type,
 )
 
 import attr
@@ -31,7 +29,7 @@ from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 
 def load_settings(
     env: SDict,
-    settings_type: Type[SettingsBase],
+    settings_type: type[SettingsBase],
     key_prefix: Optional[str] = None,
     fallback_env: Any = None,
 ) -> Any:
@@ -72,7 +70,7 @@ def test_simple_scalars_loading():
         bool_true: bool = s_attrib("bool_true")
         bool_false: bool = s_attrib("bool_false")
         bool_1: bool = s_attrib("bool_1")
-        z: Dict[str, str] = s_attrib("z", env_var_converter=json.loads)
+        z: dict[str, str] = s_attrib("z", env_var_converter=json.loads)
 
     perform_loader_env_check(
         key_prefix="DL",
@@ -106,7 +104,7 @@ def test_simple_scalars_loading():
 def test_map_loading_simple():
     @attr.s
     class SettingsMapStrStr(SettingsBase):
-        m: Dict[str, str] = s_attrib("M_MAP")
+        m: dict[str, str] = s_attrib("M_MAP")
 
     perform_loader_env_check(
         dict(M_MAP_k1="val11", M_MAP_k2="val22"), expected_settings=SettingsMapStrStr(m=dict(k1="val11", k2="val22"))
@@ -116,7 +114,7 @@ def test_map_loading_simple():
 def test_map_loading_nested():
     @attr.s
     class Nested(SettingsBase):
-        m: Dict[str, str] = s_attrib("M_MAP")
+        m: dict[str, str] = s_attrib("M_MAP")
 
     @attr.s
     class SettingsMapStrStr(SettingsBase):
@@ -134,7 +132,7 @@ def test_map_loading_nested():
 def test_map_loading_int():
     @attr.s
     class SettingsMapStrStr(SettingsBase):
-        m: Dict[str, int] = s_attrib("M_MAP")
+        m: dict[str, int] = s_attrib("M_MAP")
 
     perform_loader_env_check(
         env=dict(
@@ -148,7 +146,7 @@ def test_map_loading_int():
 def test_map_loading_empty():
     @attr.s
     class SettingsMapStrStr(SettingsBase):
-        m: Dict[str, int] = s_attrib("M_MAP", missing_factory=dict)
+        m: dict[str, int] = s_attrib("M_MAP", missing_factory=dict)
 
     perform_loader_env_check(env=dict(), expected_settings=SettingsMapStrStr(m={}))
 
@@ -716,7 +714,7 @@ def test_json_value():
     @attr.s
     class Nested(SettingsBase):
         dft_key: str = s_attrib("DFT_KEY")
-        map_key_id_value: Dict[str, str] = s_attrib("MAP")
+        map_key_id_value: dict[str, str] = s_attrib("MAP")
 
     @attr.s
     class TypedSettings(SettingsBase):

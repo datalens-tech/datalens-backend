@@ -1,8 +1,5 @@
 from contextlib import asynccontextmanager
-from typing import (
-    AsyncIterator,
-    List,
-)
+from typing import AsyncIterator
 
 import asyncpg
 import sqlalchemy as sa
@@ -64,7 +61,7 @@ class GreenplumAdapter(PostgresAdapter):
     _LIST_TABLE_NAMES_QUERY = GP_LIST_TABLE_NAMES
     _LIST_SCHEMA_NAMES_QUERY = GP_LIST_SCHEMA_NAMES
 
-    def _get_schema_names(self, db_ident: DBIdent) -> List[str]:
+    def _get_schema_names(self, db_ident: DBIdent) -> list[str]:
         db_engine = self.get_db_engine(db_ident.db_name)
         table_list = [table_name for table_name, in db_engine.execute(sa.text(self._LIST_SCHEMA_NAMES_QUERY))]
         return table_list
