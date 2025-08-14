@@ -18,6 +18,7 @@ from dl_api_commons.base_models import (
     TenantCommon,
     TenantDef,
 )
+from dl_api_commons.retrier.policy import DefaultRetryPolicyFactory
 from dl_api_lib.app.control_api.app import ControlApiAppFactory
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import (
@@ -37,7 +38,6 @@ from dl_constants.enums import (
     QueryProcessingMode,
 )
 from dl_core.components.ids import FieldIdGeneratorType
-from dl_core.retrier.policy import DefaultRetryPolicyFactory
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.flask_utils import (

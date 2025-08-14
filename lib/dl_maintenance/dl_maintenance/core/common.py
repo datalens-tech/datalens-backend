@@ -9,11 +9,11 @@ from typing import (
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_configs.utils import get_root_certificates
-from dl_core.retrier.policy import (
+from dl_api_commons.retrier.policy import (
     BaseRetryPolicyFactory,
     RetryPolicyFactory,
 )
+from dl_configs.utils import get_root_certificates
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager

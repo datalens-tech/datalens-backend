@@ -16,12 +16,12 @@ from aiohttp.typedefs import (
 import attr
 
 from dl_api_commons.aiohttp import aiohttp_wrappers
+from dl_api_commons.retrier.policy import BaseRetryPolicyFactory
 from dl_api_commons.tenant_resolver import TenantResolver
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core import exc
 from dl_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
 from dl_core.enums import USApiType
-from dl_core.retrier.policy import BaseRetryPolicyFactory
 from dl_core.services_registry.top_level import DummyServiceRegistry
 from dl_core.us_manager.factory import USMFactory
 from dl_core.us_manager.us_manager_async import AsyncUSManager

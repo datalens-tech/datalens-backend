@@ -18,6 +18,7 @@ from dl_api_commons.base_models import (
     RequestContextInfo,
     TenantCommon,
 )
+from dl_api_commons.retrier.policy import DefaultRetryPolicyFactory
 from dl_configs.crypto_keys import get_dummy_crypto_keys_config
 from dl_configs.enums import RedisMode
 from dl_configs.settings_submodels import (
@@ -29,7 +30,6 @@ from dl_core.loader import (
     CoreLibraryConfig,
     load_core_lib,
 )
-from dl_core.retrier.policy import DefaultRetryPolicyFactory
 from dl_core.services_registry.top_level import DummyServiceRegistry
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_async import AsyncUSManager

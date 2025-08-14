@@ -3,7 +3,7 @@ from typing import Iterator
 
 import attr
 
-from dl_core.retrier.policy import RetryPolicy
+from dl_api_commons.retrier.policy import RetryPolicy
 
 
 @attr.s(kw_only=True, frozen=True, auto_attribs=True)

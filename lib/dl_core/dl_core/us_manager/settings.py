@@ -1,6 +1,6 @@
 from pydantic import Field
 
-from dl_core.retrier.settings import RetryPolicyFactorySettings
+from dl_api_commons.retrier.settings import RetryPolicyFactorySettings
 import dl_settings
 
 

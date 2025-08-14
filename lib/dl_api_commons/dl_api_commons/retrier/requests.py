@@ -9,8 +9,8 @@ import attr
 import requests
 import requests.adapters
 
-from dl_core.retrier.policy import RetryPolicy
-from dl_core.retrier.retries import iter_retries
+from dl_api_commons.retrier.policy import RetryPolicy
+from dl_api_commons.retrier.retries import iter_retries
 
 
 LOGGER = logging.getLogger(__name__)

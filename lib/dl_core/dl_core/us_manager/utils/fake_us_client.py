@@ -5,7 +5,7 @@ from typing import (
     Optional,
 )
 
-from dl_core.retrier.policy import DefaultRetryPolicyFactory
+from dl_api_commons.retrier.policy import DefaultRetryPolicyFactory
 from dl_core.united_storage_client import (
     USAuthContextNoAuth,
     UStorageClient,

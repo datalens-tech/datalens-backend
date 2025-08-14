@@ -33,6 +33,8 @@ from dl_api_commons.base_models import (
     TenantDef,
 )
 from dl_api_commons.logging import RequestObfuscator
+from dl_api_commons.retrier.policy import BaseRetryPolicyFactory
+from dl_api_commons.retrier.requests import RequestsPolicyRetrier
 from dl_api_commons.tracing import get_current_tracing_headers
 from dl_api_commons.utils import (
     get_retriable_requests_session,
@@ -47,8 +49,6 @@ from dl_constants.api_constants import (
 from dl_core.base_models import EntryLocation
 from dl_core.enums import USApiType
 import dl_core.exc as exc
-from dl_core.retrier.policy import BaseRetryPolicyFactory
-from dl_core.retrier.requests import RequestsPolicyRetrier
 
 
 LOGGER = logging.getLogger(__name__)

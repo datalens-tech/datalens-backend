@@ -12,12 +12,15 @@ aiohttp = "*"
 attrs = "*"
 dl-app-tools = {path = "../dl_app_tools"}
 dl-constants = {path = "../dl_constants"}
+dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}
 flask = "*"
+frozendict = "*"
 httpx = "*"
 marshmallow = "*"
 multidict = "*"
 opentracing = "*"
+pydantic = "*"
 python = ">=3.10, <3.13"
 requests = "*"
 sentry-sdk = {extras = ["flask"], version = "*"}

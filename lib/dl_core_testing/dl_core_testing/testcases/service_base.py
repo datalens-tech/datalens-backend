@@ -17,6 +17,7 @@ from redis.asyncio import Redis
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.reporting.registry import DefaultReportingRegistry
+from dl_api_commons.retrier.policy import DefaultRetryPolicyFactory
 from dl_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.crypto_keys import CryptoKeysConfig
@@ -29,7 +30,6 @@ from dl_constants.enums import (
 from dl_core.aio.web_app_services.data_processing.data_processor import DataProcessorService
 from dl_core.aio.web_app_services.data_processing.factory import make_compeng_service
 from dl_core.connections_security.base import InsecureConnectionSecurityManager
-from dl_core.retrier.policy import DefaultRetryPolicyFactory
 from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory

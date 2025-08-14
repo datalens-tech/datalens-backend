@@ -11,10 +11,10 @@ from dl_api_commons.flask.required_resources import (
     RequiredResourceCommon,
     get_required_resources,
 )
+from dl_api_commons.retrier.policy import BaseRetryPolicyFactory
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_constants.enums import USAuthMode
 from dl_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware
-from dl_core.retrier.policy import BaseRetryPolicyFactory
 from dl_core.us_manager.factory import USMFactory
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 

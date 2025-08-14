@@ -23,6 +23,7 @@ from dl_api_commons.base_models import (
     RequestContextInfo,
     TenantDef,
 )
+from dl_api_commons.retrier.policy import BaseRetryPolicyFactory
 from dl_app_tools.profiling_base import generic_profiler
 from dl_configs.crypto_keys import (
     CryptoKeysConfig,
@@ -41,7 +42,6 @@ from dl_core.base_models import (
     WorkbookEntryLocation,
 )
 from dl_core.lifecycle.factory import DefaultEntryLifecycleManagerFactory
-from dl_core.retrier.policy import BaseRetryPolicyFactory
 from dl_core.united_storage_client import (
     USAuthContextBase,
     UStorageClientBase,
