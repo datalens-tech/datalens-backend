@@ -34,6 +34,7 @@ class TrinoConnTargetDTO(ConnTargetDTO):
             self.jwt,
             self.ssl_enable,
             self.ssl_ca,
+            stack_info=True,
         )
 
     def get_effective_host(self) -> str | None:
