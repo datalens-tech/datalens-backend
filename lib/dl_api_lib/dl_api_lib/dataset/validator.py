@@ -708,6 +708,9 @@ class DatasetValidator(DatasetBaseWrapper):
 
         update_field_id = new_field_id is not None and action == DatasetAction.update_field
         if update_field_id:
+            if field_data.calc_mode != CalcMode.parameter and not self._id_validator.is_valid(new_field_id):
+                err_msg = f"Field ID must be [a-z0-9_\\-]{{1,{self._id_validator.id_length}}}: {new_field_id}"
+                raise exc.DLValidationFatal(err_msg)
             new_component_ref = DatasetComponentRef(component_type=ComponentType.field, component_id=new_field_id)
             self.perform_component_id_validation(component_ref=new_component_ref)
             # non strict option is used only for old charts. not needed for id update
@@ -1010,11 +1013,7 @@ class DatasetValidator(DatasetBaseWrapper):
         if component_ref.component_id in (toplevel_id.value for toplevel_id in TopLevelComponentId):
             raise exc.DLValidationFatal(f"Cannot use a reserved ID - {component_ref.component_id}")
 
-        if component_ref.component_type == ComponentType.field and not self._id_validator.is_valid(
-            component_ref.component_id
-        ):
-            err_msg = f"Field ID must be [a-z0-9_\\-]{{1,{self._id_validator.id_length}}}: {component_ref.component_id}"
-            raise exc.DLValidationFatal(err_msg)
+        # TODO validate component id itself: length, allowed symbols, etc.
 
         # TODO bring this back when external-api defaults are patched
         # other_types = {component_type for component_type in ComponentType} - {component_ref.component_type}
