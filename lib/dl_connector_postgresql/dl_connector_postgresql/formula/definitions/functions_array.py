@@ -1,10 +1,6 @@
-from typing import Any
-
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql as sa_postgresql
-from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql import ClauseElement
-from sqlalchemy.sql.compiler import SQLCompiler
 from sqlalchemy.sql.elements import (
     Grouping,
     Null,
@@ -27,51 +23,41 @@ V = TranslationVariant.make
 
 
 def _array_index_of_legacy(array: ClauseElement, value: ClauseElement) -> ClauseElement:
-    """Implementation for PostgreSQL < 9.5 without array_position function"""
+    """Legacy implementation for PostgreSQL < 9.5 without array_position function"""
+    # Create a subquery that unnests the array with row numbers
+    # Note: generate_series ensures correct indexing even for sparse arrays
+    unnest_with_idx = sa.select(
+        sa.func.unnest(array).label("element"), sa.func.generate_series(1, sa.func.array_length(array, 1)).label("idx")
+    ).alias("array_elements")
+
+    # Handle NULL values specially since NULL = NULL is not true in SQL
+    # Check if value is a NULL literal
+    if isinstance(value, Null):
+        condition = unnest_with_idx.c.element.is_(None)
+    else:
+        # For non-NULL values, use regular equality but also handle the case where value might be NULL at runtime
+        condition = sa.case(
+            (value == None, unnest_with_idx.c.element.is_(None)),
+            else_=unnest_with_idx.c.element == value,
+        )
+
     return sa.func.coalesce(
-        sa.select(sa.func.generate_subscripts(array, 1))
-        .where(sa.type_coerce(array, sa_postgresql.ARRAY(TypeEngine))[sa.func.generate_subscripts(array, 1)] == value)
-        .order_by(sa.func.generate_subscripts(array, 1))
-        .limit(1)
-        .scalar_subquery(),
+        sa.select(unnest_with_idx.c.idx).where(condition).order_by(unnest_with_idx.c.idx).limit(1).scalar_subquery(),
         0,
     )
 
 
 def _array_index_of_modern(array: ClauseElement, value: ClauseElement) -> ClauseElement:
     """Implementation for PostgreSQL >= 9.5 with array_position function"""
+    # array_position handles NULL values correctly, so we can use it directly
     return sa.func.coalesce(sa.func.array_position(array, value), 0)
 
 
-class ArrayIndexOf(ClauseElement):
-    """Version-aware array_index_of implementation"""
-
-    def __init__(self, array: ClauseElement, value: ClauseElement) -> None:
-        self.array = array
-        self.value = value
-        self.type = sa.Integer()
-
-
-@compiles(ArrayIndexOf)
-def visit_array_index_of_default(element: ArrayIndexOf, compiler: SQLCompiler, **kw: Any) -> str:
-    """Default compilation - use legacy for safety"""
-    return compiler.process(_array_index_of_legacy(element.array, element.value), **kw)
-
-
-@compiles(ArrayIndexOf, "postgresql")
-def visit_array_index_of_postgresql(element: ArrayIndexOf, compiler: SQLCompiler, **kw: Any) -> str:
-    """PostgreSQL-specific compilation with version detection"""
-    dialect = compiler.dialect
-
-    if hasattr(dialect, "server_version_info") and dialect.server_version_info >= (9, 5):
-        return compiler.process(_array_index_of_modern(element.array, element.value), **kw)
-    else:
-        return compiler.process(_array_index_of_legacy(element.array, element.value), **kw)
-
-
 def _array_index_of(array: ClauseElement, value: ClauseElement) -> ClauseElement:
-    """Choose implementation based on PostgreSQL version"""
-    return ArrayIndexOf(array, value)
+    """Dispatcher function for array_index_of implementation"""
+    # Currently using legacy implementation for PostgreSQL 9.3/9.4 compatibility
+    # In the future, this can be updated to choose between legacy and modern based on dialect
+    return _array_index_of_legacy(array, value)
 
 
 def _array_contains(array: ClauseElement, value: ClauseElement) -> ClauseElement:
@@ -463,7 +449,7 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.POSTGRESQL,
-                _array_index_of,
+                lambda array, value: _array_index_of(array, sa.cast(value, sa.Text)),
             ),
         ]
     ),
@@ -471,7 +457,7 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.POSTGRESQL,
-                _array_index_of,
+                lambda array, value: _array_index_of(array, sa.cast(value, sa.Integer)),
             ),
         ]
     ),
@@ -479,7 +465,7 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.POSTGRESQL,
-                _array_index_of,
+                lambda array, value: _array_index_of(array, sa.cast(value, sa_postgresql.DOUBLE_PRECISION)),
             ),
         ]
     ),
