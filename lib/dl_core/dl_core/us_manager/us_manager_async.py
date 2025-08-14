@@ -15,6 +15,7 @@ from typing import (
 )
 
 from dl_api_commons.base_models import RequestContextInfo
+from dl_api_commons.retrier.policy import BaseRetryPolicyFactory
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core import exc
@@ -22,7 +23,6 @@ from dl_core.base_models import (
     ConnectionRef,
     DefaultConnectionRef,
 )
-from dl_core.retrier.policy import BaseRetryPolicyFactory
 from dl_core.united_storage_client import USAuthContextBase
 from dl_core.united_storage_client_aio import UStorageClientAIO
 from dl_core.us_connection_base import ConnectionBase

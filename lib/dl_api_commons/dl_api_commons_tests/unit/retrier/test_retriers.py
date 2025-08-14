@@ -1,11 +1,13 @@
 import datetime
 
-import dl_core.retrier.policy
-import dl_core.retrier.retries
+from pytest import MonkeyPatch
+
+import dl_api_commons.retrier.policy
+import dl_api_commons.retrier.retries
 
 
 class FakeDatetime:
-    def __init__(self, intervals):
+    def __init__(self, intervals: list[int]) -> None:
         self.intervals = intervals
         self.position = 0
 
@@ -18,12 +20,12 @@ class FakeDatetime:
 
 
 class FakeDatetimeModule:
-    def __init__(self, intervals):
+    def __init__(self, intervals: list[int]) -> None:
         self.timedelta = datetime.timedelta
         self.datetime = FakeDatetime(intervals)
 
 
-def test_iter_retries_zero_timeout(monkeypatch):
+def test_iter_retries_zero_timeout(monkeypatch: MonkeyPatch) -> None:
     fake_datetime = FakeDatetimeModule(
         [
             0,  # enter
@@ -31,9 +33,9 @@ def test_iter_retries_zero_timeout(monkeypatch):
             1,  # 2 call
         ]
     )
-    monkeypatch.setattr(dl_core.retrier.retries, "datetime", fake_datetime)
+    monkeypatch.setattr(dl_api_commons.retrier.retries, "datetime", fake_datetime)
 
-    policy = dl_core.retrier.policy.RetryPolicy(
+    policy = dl_api_commons.retrier.policy.RetryPolicy(
         total_timeout=0,
         connect_timeout=1,
         request_timeout=1,
@@ -44,9 +46,9 @@ def test_iter_retries_zero_timeout(monkeypatch):
         backoff_max=90,
     )
 
-    retries = list(dl_core.retrier.retries.iter_retries(retry_policy=policy))
+    retries = list(dl_api_commons.retrier.retries.iter_retries(retry_policy=policy))
     expected = [
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=0,
             connect_timeout=0,
             sleep_before_seconds=0,
@@ -56,7 +58,7 @@ def test_iter_retries_zero_timeout(monkeypatch):
     assert retries == expected
 
 
-def test_iter_retries_multiple(monkeypatch):
+def test_iter_retries_multiple(monkeypatch: MonkeyPatch) -> None:
     fake_datetime = FakeDatetimeModule(
         [
             0,  # enter
@@ -71,9 +73,9 @@ def test_iter_retries_multiple(monkeypatch):
             135,  # 7 call (sleep=64 + timeout=1)
         ]
     )
-    monkeypatch.setattr(dl_core.retrier.retries, "datetime", fake_datetime)
+    monkeypatch.setattr(dl_api_commons.retrier.retries, "datetime", fake_datetime)
 
-    policy = dl_core.retrier.policy.RetryPolicy(
+    policy = dl_api_commons.retrier.policy.RetryPolicy(
         total_timeout=100,
         connect_timeout=1,
         request_timeout=1,
@@ -84,29 +86,29 @@ def test_iter_retries_multiple(monkeypatch):
         backoff_max=90,
     )
 
-    retries_iterator = dl_core.retrier.retries.iter_retries(retry_policy=policy)
+    retries_iterator = dl_api_commons.retrier.retries.iter_retries(retry_policy=policy)
     expected = [
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=0,
         ),
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=1,
         ),
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=2,
         ),
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=4,
         ),
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=8,
@@ -116,7 +118,7 @@ def test_iter_retries_multiple(monkeypatch):
     assert list(retries_iterator) == expected
 
 
-def test_iter_retries_backoff_max_limit(monkeypatch):
+def test_iter_retries_backoff_max_limit(monkeypatch: MonkeyPatch) -> None:
     fake_datetime = FakeDatetimeModule(
         [
             0,  # 1 call
@@ -130,9 +132,9 @@ def test_iter_retries_backoff_max_limit(monkeypatch):
             135,  # 7 call (sleep=12 + timeout=1)
         ]
     )
-    monkeypatch.setattr(dl_core.retrier.retries, "datetime", fake_datetime)
+    monkeypatch.setattr(dl_api_commons.retrier.retries, "datetime", fake_datetime)
 
-    policy = dl_core.retrier.policy.RetryPolicy(
+    policy = dl_api_commons.retrier.policy.RetryPolicy(
         total_timeout=100,
         connect_timeout=1,
         request_timeout=1,
@@ -143,35 +145,35 @@ def test_iter_retries_backoff_max_limit(monkeypatch):
         backoff_max=12,
     )
 
-    retries = list(dl_core.retrier.retries.iter_retries(retry_policy=policy))
+    retries = list(dl_api_commons.retrier.retries.iter_retries(retry_policy=policy))
 
     expected = [
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=0,
         ),
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=1,
         ),
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=2,
         ),
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=4,
         ),
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=8,
         ),
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=12,
@@ -181,7 +183,7 @@ def test_iter_retries_backoff_max_limit(monkeypatch):
     assert retries == expected
 
 
-def test_iter_retries_timeout_limits_request_and_connect(monkeypatch):
+def test_iter_retries_timeout_limits_request_and_connect(monkeypatch: MonkeyPatch) -> None:
     fake_datetime = FakeDatetimeModule(
         [
             0,  # enter
@@ -191,9 +193,9 @@ def test_iter_retries_timeout_limits_request_and_connect(monkeypatch):
             47,  # 4 call (sleep=2 + timeout=0)
         ]
     )
-    monkeypatch.setattr(dl_core.retrier.retries, "datetime", fake_datetime)
+    monkeypatch.setattr(dl_api_commons.retrier.retries, "datetime", fake_datetime)
 
-    policy = dl_core.retrier.policy.RetryPolicy(
+    policy = dl_api_commons.retrier.policy.RetryPolicy(
         total_timeout=45,
         connect_timeout=30,
         request_timeout=30,
@@ -204,15 +206,15 @@ def test_iter_retries_timeout_limits_request_and_connect(monkeypatch):
         backoff_max=60,
     )
 
-    retries = list(dl_core.retrier.retries.iter_retries(retry_policy=policy))
+    retries = list(dl_api_commons.retrier.retries.iter_retries(retry_policy=policy))
 
     expected = [
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=30,
             connect_timeout=30,
             sleep_before_seconds=0,
         ),
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=14,  # clipped by total time left (+ sleep=1)
             connect_timeout=14,
             sleep_before_seconds=1,
@@ -222,7 +224,7 @@ def test_iter_retries_timeout_limits_request_and_connect(monkeypatch):
     assert retries == expected
 
 
-def test_iter_retries_stops_when_sleep_exceeds_timeout(monkeypatch):
+def test_iter_retries_stops_when_sleep_exceeds_timeout(monkeypatch: MonkeyPatch) -> None:
     fake_datetime = FakeDatetimeModule(
         [
             0,  # enter
@@ -232,9 +234,9 @@ def test_iter_retries_stops_when_sleep_exceeds_timeout(monkeypatch):
             6,  # 4 call (sleep=2 + timeout=1)
         ]
     )
-    monkeypatch.setattr(dl_core.retrier.retries, "datetime", fake_datetime)
+    monkeypatch.setattr(dl_api_commons.retrier.retries, "datetime", fake_datetime)
 
-    policy = dl_core.retrier.policy.RetryPolicy(
+    policy = dl_api_commons.retrier.policy.RetryPolicy(
         total_timeout=4,
         connect_timeout=1,
         request_timeout=1,
@@ -245,15 +247,15 @@ def test_iter_retries_stops_when_sleep_exceeds_timeout(monkeypatch):
         backoff_max=60,
     )
 
-    retries = list(dl_core.retrier.retries.iter_retries(retry_policy=policy))
+    retries = list(dl_api_commons.retrier.retries.iter_retries(retry_policy=policy))
 
     expected = [
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=0,
         ),
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=1,
@@ -264,7 +266,7 @@ def test_iter_retries_stops_when_sleep_exceeds_timeout(monkeypatch):
     assert retries == expected
 
 
-def test_iter_retries_zero_retries_count(monkeypatch):
+def test_iter_retries_zero_retries_count(monkeypatch: MonkeyPatch) -> None:
     fake_datetime = FakeDatetimeModule(
         [
             0,  # enter
@@ -272,9 +274,9 @@ def test_iter_retries_zero_retries_count(monkeypatch):
             5,  # 2 call (sleep=0 + timeout=5)
         ]
     )
-    monkeypatch.setattr(dl_core.retrier.retries, "datetime", fake_datetime)
+    monkeypatch.setattr(dl_api_commons.retrier.retries, "datetime", fake_datetime)
 
-    policy = dl_core.retrier.policy.RetryPolicy(
+    policy = dl_api_commons.retrier.policy.RetryPolicy(
         total_timeout=10,
         connect_timeout=5,
         request_timeout=5,
@@ -285,11 +287,11 @@ def test_iter_retries_zero_retries_count(monkeypatch):
         backoff_max=60,
     )
 
-    retries = list(dl_core.retrier.retries.iter_retries(retry_policy=policy))
+    retries = list(dl_api_commons.retrier.retries.iter_retries(retry_policy=policy))
 
     # Should get at least single attempt
     expected = [
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=5,
             connect_timeout=5,
             sleep_before_seconds=0,
@@ -299,7 +301,7 @@ def test_iter_retries_zero_retries_count(monkeypatch):
     assert retries == expected
 
 
-def test_iter_retries_one_retry_count(monkeypatch):
+def test_iter_retries_one_retry_count(monkeypatch: MonkeyPatch) -> None:
     fake_datetime = FakeDatetimeModule(
         [
             0,  # enter
@@ -308,9 +310,9 @@ def test_iter_retries_one_retry_count(monkeypatch):
             17,  # 2 call (sleep=2 + timeout=10)
         ]
     )
-    monkeypatch.setattr(dl_core.retrier.retries, "datetime", fake_datetime)
+    monkeypatch.setattr(dl_api_commons.retrier.retries, "datetime", fake_datetime)
 
-    policy = dl_core.retrier.policy.RetryPolicy(
+    policy = dl_api_commons.retrier.policy.RetryPolicy(
         total_timeout=100,
         connect_timeout=5,
         request_timeout=5,
@@ -321,15 +323,15 @@ def test_iter_retries_one_retry_count(monkeypatch):
         backoff_max=60,
     )
 
-    retries = list(dl_core.retrier.retries.iter_retries(retry_policy=policy))
+    retries = list(dl_api_commons.retrier.retries.iter_retries(retry_policy=policy))
 
     expected = [
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=5,
             connect_timeout=5,
             sleep_before_seconds=0,
         ),
-        dl_core.retrier.retries.Retry(
+        dl_api_commons.retrier.retries.Retry(
             request_timeout=5,
             connect_timeout=5,
             sleep_before_seconds=2,

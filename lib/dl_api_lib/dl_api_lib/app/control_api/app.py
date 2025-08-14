@@ -22,6 +22,7 @@ from dl_api_commons.flask.middlewares.tracing import (
     TracingContextMiddleware,
     TracingMiddleware,
 )
+from dl_api_commons.retrier.policy import RetryPolicyFactory
 from dl_api_lib.app.control_api.resources import init_apis
 from dl_api_lib.app_common import SRFactoryBuilder
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
@@ -38,7 +39,6 @@ from dl_constants.enums import (
 from dl_core import profiling_middleware
 from dl_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
-from dl_core.retrier.policy import RetryPolicyFactory
 
 
 if TYPE_CHECKING:

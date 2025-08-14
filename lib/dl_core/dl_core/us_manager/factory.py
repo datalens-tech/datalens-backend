@@ -4,11 +4,11 @@ import attr
 import flask
 
 from dl_api_commons.base_models import RequestContextInfo
+from dl_api_commons.retrier.policy import BaseRetryPolicyFactory
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.enums import USApiType
 from dl_core.exc import InvalidRequestError
-from dl_core.retrier.policy import BaseRetryPolicyFactory
 from dl_core.services_registry import ServicesRegistry
 from dl_core.united_storage_client import (
     USAuthContextEmbed,

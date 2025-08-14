@@ -4,14 +4,14 @@ import arq
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
+from dl_api_commons.retrier.policy import (
+    BaseRetryPolicyFactory,
+    RetryPolicyFactory,
+)
 from dl_api_commons.tenant_resolver import TenantResolver
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core.aio.web_app_services.gsheets import GSheetsSettings
 from dl_core.aio.web_app_services.redis import RedisBaseService
-from dl_core.retrier.policy import (
-    BaseRetryPolicyFactory,
-    RetryPolicyFactory,
-)
 from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_file_uploader_task_interface.utils_service_registry import (

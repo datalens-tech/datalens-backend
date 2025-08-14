@@ -7,6 +7,7 @@ from typing import Optional
 from aiohttp.typedefs import Middleware
 
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
+from dl_api_commons.retrier.policy import RetryPolicyFactory
 from dl_api_lib.app.data_api.app import (
     DataApiAppFactory,
     EnvSetupResult,
@@ -31,7 +32,6 @@ from dl_core.aio.middlewares.us_manager import (
     service_us_manager_middleware,
     us_manager_middleware,
 )
-from dl_core.retrier.policy import RetryPolicyFactory
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory

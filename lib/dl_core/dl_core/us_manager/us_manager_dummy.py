@@ -1,8 +1,8 @@
 from cryptography import fernet
 
 from dl_api_commons.base_models import RequestContextInfo
+from dl_api_commons.retrier.policy import DefaultRetryPolicyFactory
 from dl_configs.crypto_keys import CryptoKeysConfig
-from dl_core.retrier.policy import DefaultRetryPolicyFactory
 from dl_core.services_registry.top_level import (
     DummyServiceRegistry,
     ServicesRegistry,

@@ -14,13 +14,13 @@ from cryptography import fernet
 import shortuuid
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_configs.crypto_keys import CryptoKeysConfig
-from dl_core.base_models import EntryLocation
-from dl_core.exc import USObjectNotFoundException
-from dl_core.retrier.policy import (
+from dl_api_commons.retrier.policy import (
     BaseRetryPolicyFactory,
     DefaultRetryPolicyFactory,
 )
+from dl_configs.crypto_keys import CryptoKeysConfig
+from dl_core.base_models import EntryLocation
+from dl_core.exc import USObjectNotFoundException
 from dl_core.services_registry.top_level import (
     DummyServiceRegistry,
     ServicesRegistry,
