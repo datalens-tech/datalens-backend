@@ -31,6 +31,8 @@ class TrinoConnectionSchemaBase(
         TrinoAuthType,
         attribute="data.auth_type",
         required=False,
+        allow_none=True,
+        dump_default=None,
         bi_extra=FieldExtra(editable=True),
     )
     password = secret_string_field(
@@ -73,5 +75,6 @@ class TrinoConnectionSchema(TrinoConnectionSchemaBase):
         TrinoAuthType,
         attribute="data.auth_type",
         required=True,
+        allow_none=False,
         bi_extra=FieldExtra(editable=True),
     )
