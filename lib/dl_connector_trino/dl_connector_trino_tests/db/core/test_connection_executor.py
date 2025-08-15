@@ -1,6 +1,5 @@
 from collections.abc import Sequence
 import datetime
-from typing import Optional
 
 import pytest
 import sqlalchemy as sa
@@ -31,7 +30,6 @@ from dl_connector_trino.core.adapters import (
 )
 from dl_connector_trino.core.error_transformer import ExpressionNotAggregateError
 from dl_connector_trino.core.us_connection import ConnectionTrino
-import dl_connector_trino_tests.db.config as test_config
 from dl_connector_trino_tests.db.core.base import BaseTrinoTestClass
 
 
@@ -43,11 +41,7 @@ class TrinoSyncConnectionExecutorBase(
     def db_ident(self) -> DBIdent:
         return None
 
-    @pytest.fixture(scope="class")
-    def db_url(self) -> str:
-        return test_config.DB_CORE_URL_MEMORY_CATALOG
-
-    def check_db_version(self, db_version: Optional[str]) -> None:
+    def check_db_version(self, db_version: str | None) -> None:
         assert db_version is not None
         assert db_version.startswith("0.") or int(db_version) >= 300
 

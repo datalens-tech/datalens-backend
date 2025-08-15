@@ -45,10 +45,10 @@ class TestTrinoConnection(
 
         assert "sample" in tmpl_titles
 
-        assert "test_data" in tmpl_schema_names  # for source MySQL server this is the database name
+        assert "default" in tmpl_schema_names
         assert len(set(tmpl_schema_names) & set(TRINO_SYSTEM_SCHEMAS)) == 0
 
-        assert "test_mysql_catalog" in tmpl_db_names
+        assert "test_memory_catalog" in tmpl_db_names
         assert len(set(tmpl_db_names) & set(TRINO_SYSTEM_CATALOGS)) == 0
 
 

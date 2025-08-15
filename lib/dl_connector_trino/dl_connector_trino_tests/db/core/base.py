@@ -17,7 +17,6 @@ from dl_constants.enums import SourceBackendType
 from dl_core_testing.database import (
     C,
     CoreDbConfig,
-    Db,
 )
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 from dl_db_testing.database.engine_wrapper import DbEngineConfig
@@ -32,12 +31,6 @@ from dl_connector_trino.core.constants import (
 )
 from dl_connector_trino.core.us_connection import ConnectionTrino
 import dl_connector_trino_tests.db.config as test_config
-
-
-TEST_CATALOG_SCHEMA_MAP = {
-    "test_memory_catalog": "default",
-    "test_mysql_catalog": "test_data",
-}
 
 
 def avoid_get_sa_type(self: C, tt: TypeTransformer, backend_type: SourceBackendType) -> TypeEngine:
@@ -99,6 +92,9 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
             require=True,
         )
 
+        # Sample table for check_data_source_templates
+        cur.execute(test_config.SAMPLE_TABLE_CREATE_QUERY)
+
     # Here only for wait_for_trino dependency
     @pytest.fixture(scope="class")
     def engine_config(self, db_url: str, engine_params: dict, wait_for_trino: None) -> DbEngineConfig:
@@ -123,7 +119,7 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
-        return test_config.DB_CORE_URL_MYSQL_CATALOG
+        return test_config.DB_CORE_URL
 
     @pytest.fixture(scope="session")
     def connection_creation_params(self) -> dict:
@@ -139,10 +135,10 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
         )
 
     @pytest.fixture(scope="class")
-    def sample_table_schema(self, db: Db) -> str:
+    def sample_table_schema(self) -> str:
         monkeypatch = pytest.MonkeyPatch()
         monkeypatch.setattr(C, "get_sa_type", avoid_get_sa_type)
-        return TEST_CATALOG_SCHEMA_MAP[db.name]
+        return test_config.BaseConnectionSettings.SCHEMA
 
 
 class BaseTrinoConnectionWithListingSourcesDisabled(BaseTrinoTestClass):
