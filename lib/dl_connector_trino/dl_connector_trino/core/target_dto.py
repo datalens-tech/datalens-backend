@@ -37,6 +37,16 @@ class TrinoConnTargetDTO(ConnTargetDTO):
             stack_info=True,
         )
 
+        try:
+            raise Exception("TrinoConnTargetDTO initialized")
+        except Exception as e:
+            LOGGER.exception(
+                "TrinoConnTargetDTO initialization exception: %s",
+                e,
+                stack_info=True,
+            )
+
+
     def get_effective_host(self) -> str | None:
         return self.host
 
