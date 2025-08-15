@@ -4,8 +4,6 @@ services:
     build:
       context: docker-compose
       dockerfile: Dockerfile.engine-trino-471
-    depends_on:
-      - db-mysql-8-0
     ports:
       - "21123:8080"
 
@@ -20,17 +18,6 @@ services:
         condition: service_healthy
     ports:
       - "21124:21124"
-
-  # SOURCES
-  db-mysql-8-0:
-    build:
-      context: docker-compose
-      dockerfile: Dockerfile.db-mysql-8.0.40
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "1"
-      MYSQL_DATABASE: "test_data"
-      MYSQL_USER: "datalens"
-      MYSQL_PASSWORD: "qwerty"
 
   # INFRA
   ssl-provider:
