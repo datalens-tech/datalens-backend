@@ -1,4 +1,4 @@
-from ydb.sqlalchemy import register_dialect as yql_register_dialect
+# from ydb_sqlalchemy.sqlalchemy import register_dialect as yql_register_dialect
 
 from dl_core.connectors.base.connector import (
     CoreBackendDefinition,
@@ -76,4 +76,5 @@ class YDBCoreConnector(CoreConnector):
 
     @classmethod
     def registration_hook(cls) -> None:
-        yql_register_dialect()
+        # TODO(catsona):
+        pass

@@ -22,7 +22,8 @@ if TYPE_CHECKING:
 
 
 DAY_SEC = 3600 * 24
-DAY_USEC = DAY_SEC * 1_000_000  # microseconds
+SEC_USEC = 1_000_000  # microseconds
+DAY_USEC = DAY_SEC * SEC_USEC  # microseconds
 
 EPOCH_START_S = "1970-01-01"
 EPOCH_START_D = datetime.date(1970, 1, 1)
