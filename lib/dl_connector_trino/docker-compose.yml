@@ -1,14 +1,4 @@
 services:
-  trino-no-auth:
-    # image: "trinodb/trino:471"
-    build:
-      context: docker-compose
-      dockerfile: Dockerfile.engine-trino-no-auth-471
-    depends_on:
-      - db-mysql-8-0
-    ports:
-      - "21123:8080"
-
   trino:
     # image: "trinodb/trino:471"
     build:
@@ -16,6 +6,8 @@ services:
       dockerfile: Dockerfile.engine-trino-471
     depends_on:
       - db-mysql-8-0
+    ports:
+      - "21123:8080"
 
   trino-tls-nginx:
     build:
