@@ -1,6 +1,5 @@
 from typing import ClassVar
 
-from frozendict import frozendict
 import requests
 import sqlalchemy as sa
 
@@ -35,16 +34,11 @@ def fetch_ca_certificate() -> str:
     return response.text
 
 
-def make_ssl_engine_params(ssl_ca: str) -> dict:
-    engine_params = {
-        "connect_args": frozendict(
-            {
-                "ca_cert": ssl_ca,
-                "root_certificates": ssl_ca.encode("ascii"),
-            }
-        ),
+def make_ssl_connect_args(ssl_ca: str) -> dict:
+    return {
+        "ca_cert": ssl_ca,
+        "root_certificates": ssl_ca.encode("ascii"),
     }
-    return engine_params
 
 
 class CoreConnectionSettings:
@@ -80,6 +74,8 @@ TABLE_SCHEMA = (
     ("some_string", UserDataType.string, sa.String),
     ("some_utf8", UserDataType.string, sa.Unicode),
     ("some_date", UserDataType.date, sa.Date),
+    # TODO(catsona): Do we need it?
+    # ("some_datetime", UserDataType.genericdatetime, sa.DATETIME),
     ("some_datetime", UserDataType.genericdatetime, sa.DateTime),
     ("some_timestamp", UserDataType.genericdatetime, sa.TIMESTAMP),
 )
