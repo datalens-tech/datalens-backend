@@ -1,4 +1,0 @@
-# FROM mysql:8.0.40
-FROM mysql:8.0.40@sha256:d58ac93387f644e4e040c636b8f50494e78e5afc27ca0a87348b2f577da2b7ff
-
-COPY db-mysql/docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
