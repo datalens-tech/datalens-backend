@@ -20,6 +20,7 @@ from dl_formula.definitions.functions_string import (
     FuncStartswith,
 )
 from dl_formula.definitions.literals import un_literal
+from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import (
     Fixed,
     FromArgs,
@@ -563,6 +564,32 @@ class FuncArrayIntersect(ArrayFunction):
     return_type = FromArgs(0)
 
 
+class FuncArrayIndexOf(ArrayFunction):
+    name = "arr_index_of"
+    arg_names = ["array", "value"]
+    arg_cnt = 2
+    return_type = Fixed(DataType.INTEGER)
+    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
+
+
+class FuncArrayIndexOfStr(FuncArrayIndexOf):
+    argument_types = [
+        ArgTypeSequence([{DataType.ARRAY_STR, DataType.CONST_ARRAY_STR}, {DataType.STRING, DataType.CONST_STRING}]),
+    ]
+
+
+class FuncArrayIndexOfInt(FuncArrayIndexOf):
+    argument_types = [
+        ArgTypeSequence([{DataType.ARRAY_INT, DataType.CONST_ARRAY_INT}, {DataType.INTEGER, DataType.CONST_INTEGER}]),
+    ]
+
+
+class FuncArrayIndexOfFloat(FuncArrayIndexOf):
+    argument_types = [
+        ArgTypeSequence([{DataType.ARRAY_FLOAT, DataType.CONST_ARRAY_FLOAT}, {DataType.FLOAT, DataType.CONST_FLOAT}]),
+    ]
+
+
 DEFINITIONS_ARRAY = [
     # arr_avg
     FuncArrayAvg,
@@ -637,4 +664,8 @@ DEFINITIONS_ARRAY = [
     FuncUnnestArrayStr,
     # intersect
     FuncArrayIntersect,
+    # indexof
+    FuncArrayIndexOfStr,
+    FuncArrayIndexOfInt,
+    FuncArrayIndexOfFloat,
 ]
