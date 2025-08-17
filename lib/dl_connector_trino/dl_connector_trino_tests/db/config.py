@@ -18,8 +18,6 @@ CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
     port_us_http=get_test_container_hostport("us", fallback_port=21133).port,
     host_us_pg=get_test_container_hostport("pg-us", fallback_port=22087).host,
     port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=22087).port,
-    redis_host=get_test_container_hostport("redis-caches", fallback_port=22569).host,
-    redis_port=get_test_container_hostport("redis-caches", fallback_port=22569).port,
     us_master_token="AC1ofiek8coB",
     core_connector_ep_names=["trino"],
 )
