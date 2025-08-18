@@ -69,7 +69,7 @@ warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
-module = ["ydb.*", "ydb_proto_stubs_import.*"]
+module = ["ydb.*", "ydb_dbapi.*", "ydb_proto_stubs_import.*", "ydb_sqlalchemy.*"]
 
 [tool.pytest.ini_options]
 addopts = "-ra"

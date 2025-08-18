@@ -1,4 +1,3 @@
-
 from dl_formula.connectors.base.connector import FormulaConnector
 from dl_query_processing.compilation.query_mutator import RemoveConstFromGroupByFormulaAtomicQueryMutator
 
