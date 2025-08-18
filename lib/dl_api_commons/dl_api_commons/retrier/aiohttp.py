@@ -12,7 +12,6 @@ import attr
 
 from dl_api_commons.aiohttp.aiohttp_client import BaseRetrier
 from dl_api_commons.retrier.policy import RetryPolicy
-from dl_api_commons.retrier.retries import iter_retries
 
 
 LOGGER = logging.getLogger(__name__)
@@ -45,7 +44,7 @@ class AiohttpPolicyRetrier(BaseRetrier):
     ) -> aiohttp.ClientResponse:
         last_known_result: Exception | aiohttp.ClientResponse | None = None
 
-        for retry in iter_retries(self._retry_policy):
+        for retry in self._retry_policy.iter_retries():
             if retry.sleep_before_seconds > 0:
                 await asyncio.sleep(retry.sleep_before_seconds)
 
