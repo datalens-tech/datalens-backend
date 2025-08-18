@@ -6,7 +6,7 @@ import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 
 class YqlTimestamp(sa.types.DateTime):
-    def result_processor(self, dialect, coltype):
+    def result_processor(self, dialect: sa.engine.Dialect, coltype: typing.Any) -> typing.Any:
         def process(value: typing.Optional[datetime.datetime]) -> typing.Optional[datetime.datetime]:
             if value is None:
                 return None
@@ -18,7 +18,7 @@ class YqlTimestamp(sa.types.DateTime):
 
 
 class YqlDateTime(YqlTimestamp, sa.types.DateTime):
-    def bind_processor(self, dialect):
+    def bind_processor(self, dialect: sa.engine.Dialect) -> typing.Any:
         def process(value: typing.Optional[datetime.datetime]) -> typing.Optional[int]:
             if value is None:
                 return None
@@ -30,29 +30,29 @@ class YqlDateTime(YqlTimestamp, sa.types.DateTime):
 
 
 class CustomYqlTypeCompiler(ydb_sa.YqlTypeCompiler):
-    def visit_datetime(self, type_: sa.DATETIME, **kw):
-        return self.visit_DATETIME(type_, **kw)
+    def visit_DATETIME(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
+        return self.visit_datetime(type_, **kw)
 
-    def visit_DATETIME(self, type_: sa.DATETIME, **kw):
+    def visit_datetime(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
         return "DateTime"
 
-    def visit_INTEGER(self, type_: sa.INTEGER, **kw):
-        return self.visit_int32(type_=type_, kw=kw)
+    def visit_INTEGER(self, type_: sa.INTEGER, **kw: typing.Any) -> typing.Any:
+        return self.visit_integer(type_, **kw)
 
-    def visit_integer(self, type_: sa.Integer, **kw):
-        return self.visit_INTEGER(type_, **kw)
+    def visit_integer(self, type_: sa.Integer, **kw: typing.Any) -> typing.Any:
+        return "int32"
 
-    def visit_SMALLINT(self, type_: sa.SMALLINT, **kw):
-        return self.visit_int16(type_=type_, kw=kw)
+    def visit_SMALLINT(self, type_: sa.SMALLINT, **kw: typing.Any) -> typing.Any:
+        return self.visit_small_integer(type_, **kw)
 
-    def visit_small_integer(self, type_: sa.SmallInteger, **kw):
-        return self.visit_SMALLINT(type_, **kw)
+    def visit_small_integer(self, type_: sa.SmallInteger, **kw: typing.Any) -> typing.Any:
+        return "int16"
 
-    def visit_BIGINT(self, type_: sa.BIGINT, **kw):
-        return self.visit_int64(type_=type_, kw=kw)
+    def visit_BIGINT(self, type_: sa.BIGINT, **kw: typing.Any) -> typing.Any:
+        return self.visit_big_integer(type_, **kw)
 
-    def visit_big_integer(self, type_: sa.BigInteger, **kw):
-        return self.visit_BIGINT(type_, **kw)
+    def visit_big_integer(self, type_: sa.BigInteger, **kw: typing.Any) -> typing.Any:
+        return "int64"
 
     def get_ydb_type(
         self, type_: sa.types.TypeEngine, is_optional: bool
@@ -98,8 +98,8 @@ class CustomYqlDialect(ydb_sa.YqlDialect):
     colspecs = {
         **ydb_sa.YqlDialect.colspecs,
         **{
-            # ???
             sa.types.INTEGER: ydb_sa.types.Int32,
+            sa.types.Integer: ydb_sa.types.Int32,
             sa.types.BIGINT: ydb_sa.types.Int64,
             sa.types.BigInteger: ydb_sa.types.Int64,
             sa.types.SMALLINT: ydb_sa.types.Int16,
@@ -110,7 +110,7 @@ class CustomYqlDialect(ydb_sa.YqlDialect):
         },
     }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: typing.Any, **kwargs: typing.Any):
         super().__init__(
             self,
             *args,
@@ -126,7 +126,7 @@ class CustomAsyncYqlDialect(CustomYqlDialect):
     is_async = True
     supports_statement_cache = True
 
-    def connect(self, *cargs, **cparams):
+    def connect(self, *cargs: typing.Any, **cparams: typing.Any) -> ydb_sa.AdaptedAsyncConnection:
         return ydb_sa.AdaptedAsyncConnection(ydb_sa.util.await_only(self.dbapi.async_connect(*cargs, **cparams)))
 
 
