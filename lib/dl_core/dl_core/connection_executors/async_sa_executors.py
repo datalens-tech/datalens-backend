@@ -142,7 +142,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
         return issubclass(cls.TARGET_ADAPTER_CLS, AsyncDirectDBAdapter)
 
     @classmethod
-    def force_ext_rqe_mode(cls) -> bool:
+    def use_custom_rqe(cls) -> bool:
         return False
 
     @property

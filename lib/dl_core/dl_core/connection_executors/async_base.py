@@ -93,7 +93,7 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
 
     @classmethod
     @abc.abstractmethod
-    def force_ext_rqe_mode(cls) -> bool:
+    def use_custom_rqe(cls) -> bool:
         pass
 
     async def initialize(self) -> None:
