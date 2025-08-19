@@ -11,7 +11,6 @@ import attr
 from dl_api_connector.form_config.models.common import (
     InnerFieldName,
     SerializableConfig,
-    skip_if_null,
 )
 from dl_api_connector.form_config.models.rows.base import FormRow
 
@@ -32,4 +31,4 @@ class PreparedRow(FormRow):
 
 @attr.s(kw_only=True, frozen=True)
 class DisabledMixin(SerializableConfig):
-    disabled: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
+    disabled: Optional[bool] = attr.ib(default=None)

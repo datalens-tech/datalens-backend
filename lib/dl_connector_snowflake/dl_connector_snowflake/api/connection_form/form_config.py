@@ -20,7 +20,7 @@ from dl_api_connector.form_config.models.common import (
     CommonFieldName,
     FormFieldName,
     MarkdownStr,
-    remap_skip_if_null,
+    remap,
 )
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import (
@@ -63,8 +63,8 @@ class OAuthSnowFlakeRow(PreparedRow, DisplayConditionsMixin):
         refresh_token = "refresh_token"
         refresh_token_expire_time = "refresh_token_expire_time"
 
-    fake_value: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null("fakeValue"))
-    button_text: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null("buttonText"))
+    fake_value: Optional[str] = attr.ib(default=None, metadata=remap("fakeValue"))
+    button_text: Optional[str] = attr.ib(default=None, metadata=remap("buttonText"))
 
 
 def _basic_input_row(

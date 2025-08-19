@@ -2,7 +2,7 @@ from typing import Optional
 
 import attr
 
-from dl_api_connector.form_config.models.common import remap_skip_if_null
+from dl_api_connector.form_config.models.common import remap
 from dl_api_connector.form_config.models.rows.base import FormFieldMixin
 from dl_api_connector.form_config.models.rows.prepared.base import (
     DisabledMixin,
@@ -12,8 +12,8 @@ from dl_api_connector.form_config.models.rows.prepared.base import (
 
 @attr.s(kw_only=True, frozen=True)
 class CounterRow(PreparedRow, FormFieldMixin, DisabledMixin):
-    label_text: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null("labelText"))
-    allow_manual_input: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("allowManualInput"))
+    label_text: Optional[str] = attr.ib(default=None, metadata=remap("labelText"))
+    allow_manual_input: Optional[bool] = attr.ib(default=None, metadata=remap("allowManualInput"))
 
     class Inner(PreparedRow.Inner):
         counter_input_method = "counter_input_method"

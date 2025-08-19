@@ -96,7 +96,6 @@ class CFGMeta:
     inner: bool = attr.ib(
         default=False
     )  # whether it is a service field involved only in inner logic and which needs to be skipped
-    skip_if_null: bool = attr.ib(default=False)  # sometimes it is more convenient for the UI to receive undefined
     key: Optional[str] = attr.ib(default=None)  # remap key
 
     def attr_meta(self) -> dict[str, CFGMeta]:
@@ -144,7 +143,7 @@ class SerializableConfig:
                 )
             meta = field.metadata[CFGMeta.METADATA_KEY]
             assert isinstance(meta, CFGMeta), f"Unexpected meta class, {CFGMeta.__name__} expected"
-            if meta.inner or meta.skip_if_null and value is None:
+            if meta.inner and value is None:
                 return cls._SKIP_SENTINEL
             if meta.key is not None:
                 inst._remap_keys_buffer[field.name] = meta.key
@@ -161,17 +160,8 @@ class SerializableConfig:
 
 
 # frequently used meta shortcuts
-def skip_if_null() -> dict[str, CFGMeta]:
-    return CFGMeta(skip_if_null=True).attr_meta()
-
-
 def remap(key: str) -> dict[str, CFGMeta]:
     return CFGMeta(key=key).attr_meta()
-
-
-def remap_skip_if_null(key: str) -> dict[str, CFGMeta]:
-    return CFGMeta(skip_if_null=True, key=key).attr_meta()
-
 
 def inner() -> dict[str, CFGMeta]:
     return CFGMeta(inner=True).attr_meta()
