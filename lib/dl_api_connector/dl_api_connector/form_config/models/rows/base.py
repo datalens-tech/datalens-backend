@@ -10,8 +10,7 @@ from dl_api_connector.form_config.models.common import (
     SerializableConfig,
     TFieldName,
     Width,
-    remap_skip_if_null,
-    skip_if_null,
+    remap,
 )
 
 
@@ -30,7 +29,7 @@ class DisplayConditionsMixin(SerializableConfig):
     """Allow to control item visibility based on form field values"""
 
     display_conditions: Optional[TDisplayConditions] = attr.ib(
-        default=None, metadata=remap_skip_if_null("displayConditions")
+        default=None, metadata=remap("displayConditions")
     )
 
 
@@ -38,12 +37,12 @@ class DisplayConditionsMixin(SerializableConfig):
 class InnerFieldMixin(SerializableConfig):
     """Inner fields are not send to the API, but can affect other fields"""
 
-    inner: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())  # false if undefined
+    inner: Optional[bool] = attr.ib(default=None)  # false if undefined
 
 
 @attr.s(kw_only=True, frozen=True)
 class WidthMixin(SerializableConfig):
-    width: Optional[Width] = attr.ib(default=None, metadata=skip_if_null())
+    width: Optional[Width] = attr.ib(default=None)
 
 
 class FormRow(SerializableConfig):

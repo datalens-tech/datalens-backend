@@ -12,8 +12,7 @@ import attr
 from dl_api_connector.form_config.models.common import (
     SerializableConfig,
     TFieldName,
-    remap_skip_if_null,
-    skip_if_null,
+    remap,
 )
 
 
@@ -34,12 +33,12 @@ class FormFieldApiAction(Enum):
 @attr.s(kw_only=True, frozen=True)
 class FormFieldApiSchema(SerializableConfig):
     name: TFieldName = attr.ib()
-    type: Optional[Literal["string", "boolean", "object"]] = attr.ib(default=None, metadata=skip_if_null())
+    type: Optional[Literal["string", "boolean", "object"]] = attr.ib(default=None)
     required: bool = attr.ib(default=False)
-    length: Optional[int] = attr.ib(default=None, metadata=skip_if_null())
-    nullable: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
+    length: Optional[int] = attr.ib(default=None)
+    nullable: Optional[bool] = attr.ib(default=None)
     default_action: FormFieldApiAction = attr.ib(
-        default=FormFieldApiAction.include, metadata=remap_skip_if_null("defaultAction")
+        default=FormFieldApiAction.include, metadata=remap("defaultAction")
     )
 
 
@@ -64,6 +63,6 @@ class FormActionApiSchema(SerializableConfig):
 
 @attr.s(kw_only=True, frozen=True)
 class FormApiSchema(SerializableConfig):
-    create: Optional[FormActionApiSchema] = attr.ib(default=None, metadata=skip_if_null())
-    edit: Optional[FormActionApiSchema] = attr.ib(default=None, metadata=skip_if_null())
-    check: Optional[FormActionApiSchema] = attr.ib(default=None, metadata=skip_if_null())
+    create: Optional[FormActionApiSchema] = attr.ib(default=None)
+    edit: Optional[FormActionApiSchema] = attr.ib(default=None)
+    check: Optional[FormActionApiSchema] = attr.ib(default=None)
