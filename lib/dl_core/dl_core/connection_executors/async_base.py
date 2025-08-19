@@ -91,6 +91,11 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
     def is_pure_async(cls) -> bool:
         pass
 
+    @classmethod
+    @abc.abstractmethod
+    def force_ext_rqe_mode(cls) -> bool:
+        pass
+
     async def initialize(self) -> None:
         pass
 

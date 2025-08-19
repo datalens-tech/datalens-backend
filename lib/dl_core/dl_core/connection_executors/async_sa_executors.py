@@ -141,6 +141,10 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
     def is_pure_async(cls) -> bool:
         return issubclass(cls.TARGET_ADAPTER_CLS, AsyncDirectDBAdapter)
 
+    @classmethod
+    def force_ext_rqe_mode(cls) -> bool:
+        return False
+
     @property
     def _target_dba(self) -> AsyncDBAdapter:
         if self._async_dba_pool is None:
