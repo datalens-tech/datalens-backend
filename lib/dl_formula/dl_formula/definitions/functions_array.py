@@ -20,6 +20,7 @@ from dl_formula.definitions.functions_string import (
     FuncStartswith,
 )
 from dl_formula.definitions.literals import un_literal
+from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import (
     Fixed,
     FromArgs,
@@ -563,6 +564,35 @@ class FuncArrayIntersect(ArrayFunction):
     return_type = FromArgs(0)
 
 
+class FuncArrayDistinct(ArrayFunction):
+    name = "arr_distinct"
+    arg_names = ["array"]
+    arg_cnt = 1
+    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
+
+
+class FuncArrayDistinctStr(FuncArrayDistinct):
+    argument_types = [
+        ArgTypeSequence([{DataType.ARRAY_STR, DataType.CONST_ARRAY_STR}]),
+    ]
+    return_type = Fixed(DataType.ARRAY_STR)
+
+
+class FuncArrayDistinctInt(FuncArrayDistinct):
+    argument_types = [
+        ArgTypeSequence([{DataType.ARRAY_INT, DataType.CONST_ARRAY_INT}]),
+    ]
+    return_type = Fixed(DataType.ARRAY_INT)
+
+
+class FuncArrayDistinctFloat(FuncArrayDistinct):
+    argument_types = [
+        ArgTypeSequence([{DataType.ARRAY_FLOAT, DataType.CONST_ARRAY_FLOAT}]),
+    ]
+    return_type = Fixed(DataType.ARRAY_FLOAT)
+
+
+
 DEFINITIONS_ARRAY = [
     # arr_avg
     FuncArrayAvg,
@@ -637,4 +667,8 @@ DEFINITIONS_ARRAY = [
     FuncUnnestArrayStr,
     # intersect
     FuncArrayIntersect,
+    # distinct
+    FuncArrayDistinctStr,
+    FuncArrayDistinctInt,
+    FuncArrayDistinctFloat,
 ]
