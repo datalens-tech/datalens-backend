@@ -178,7 +178,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
         conn_options = conn.get_conn_options()
         ce_cls = self.get_async_conn_executor_cls(conn)
 
-        if not self.conn_sec_mgr.is_safe_connection(conn_dto, conn_options):
+        if not self.conn_sec_mgr.is_safe_connection(conn_dto, conn_options) or ce_cls.use_ext_rqe():
             # Only RQE mode with external RQE supported for unsafe connection
             if ExecutionMode.RQE not in executor_cls.supported_exec_mode:
                 raise CEFactoryError(
@@ -186,8 +186,6 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
                     f" but configured executor class {executor_cls} does not support RQE exec mode"
                 )
             return ExecutionMode.RQE, self._get_rqe_data(external=True)
-        elif ce_cls.use_custom_rqe():
-            return ExecutionMode.RQE, None
         else:
             if self.force_non_rqe_mode:
                 # WARNING: debug-only flag, might not even work
