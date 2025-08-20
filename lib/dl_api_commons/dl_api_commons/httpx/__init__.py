@@ -1,16 +1,22 @@
 from .client import (
-    BIHttpxAsyncClient,
-    BIHttpxBaseClient,
-    BIHttpxClientSettings,
-    BIHttpxClientT,
-    BIHttpxSyncClient,
+    HttpStatusHttpxClientException,
+    HttpxAsyncClient,
+    HttpxBaseClient,
+    HttpxClientSettings,
+    HttpxClientT,
+    HttpxSyncClient,
+    NoRetriesHttpxClientException,
+    RequestHttpxClientException,
 )
 
 
 __all__ = [
-    "BIHttpxBaseClient",
-    "BIHttpxSyncClient",
-    "BIHttpxAsyncClient",
-    "BIHttpxClientSettings",
-    "BIHttpxClientT",
+    "HttpxBaseClient",
+    "HttpxSyncClient",
+    "HttpxAsyncClient",
+    "HttpxClientSettings",
+    "HttpxClientT",
+    "HttpStatusHttpxClientException",
+    "RequestHttpxClientException",
+    "NoRetriesHttpxClientException",
 ]
