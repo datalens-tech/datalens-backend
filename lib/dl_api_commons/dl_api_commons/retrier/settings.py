@@ -3,22 +3,6 @@ import pydantic
 import dl_settings
 
 
-# Example:
-# US_CLIENT:
-#   RETRY_POLICY:
-#     DEFAULT_POLICY:
-#       total_timeout: 30
-#       total_retries: 3
-#     RETRY_POLICIES:
-#       GET_ENTITY:
-#         connect_timeout: 1
-#         request_timeout: 1
-#         backoff_factor: 10
-#
-# When no key found in `RETRY_POLICIES`, policy from `DEFAULT_POLICY` is used.
-# If no field set in `DEFAULT_POLICY`, it defaults to field in settings class.
-
-
 class RetryPolicySettings(dl_settings.BaseSettings):
     total_timeout: float = 120
     connect_timeout: float = 30
@@ -33,3 +17,9 @@ class RetryPolicySettings(dl_settings.BaseSettings):
 class RetryPolicyFactorySettings(dl_settings.BaseSettings):
     RETRY_POLICIES: dict[str, RetryPolicySettings] = pydantic.Field(default_factory=dict)
     DEFAULT_POLICY: RetryPolicySettings = pydantic.Field(default_factory=RetryPolicySettings)
+
+
+__all__ = [
+    "RetryPolicySettings",
+    "RetryPolicyFactorySettings",
+]

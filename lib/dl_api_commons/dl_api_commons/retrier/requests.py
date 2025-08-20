@@ -10,7 +10,6 @@ import requests
 import requests.adapters
 
 from dl_api_commons.retrier.policy import RetryPolicy
-from dl_api_commons.retrier.retries import iter_retries
 
 
 LOGGER = logging.getLogger(__name__)
@@ -42,7 +41,7 @@ class RequestsPolicyRetrier:
     ) -> requests.Response:
         last_known_result: requests.Response | Exception | None = None
 
-        for retry in iter_retries(self._retry_policy):
+        for retry in self._retry_policy.iter_retries():
             if retry.sleep_before_seconds > 0:
                 time.sleep(retry.sleep_before_seconds)
 
