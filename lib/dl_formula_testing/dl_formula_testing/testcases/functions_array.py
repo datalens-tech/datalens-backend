@@ -893,13 +893,13 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert 1 in result
         assert 2 in result
         assert 3 in result
-        
+
         # Single element array
         assert dbe.eval("ARR_DISTINCT(ARRAY(42))") == [42]
-        
+
         # All same elements should return single element
         assert dbe.eval("ARR_DISTINCT(ARRAY(5, 5, 5))") == [5]
-        
+
         # With NULL values
         result = dbe.eval("ARR_DISTINCT(ARRAY(1, NULL, 1, NULL, 2))")
         assert len(result) == 3  # Should have 1, NULL, 2
@@ -915,13 +915,13 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert 1.1 in result
         assert 2.2 in result
         assert 3.3 in result
-        
+
         # Single element array
         assert dbe.eval("ARR_DISTINCT(ARRAY(42.5))") == [42.5]
-        
+
         # All same elements should return single element
         assert dbe.eval("ARR_DISTINCT(ARRAY(5.5, 5.5, 5.5))") == [5.5]
-        
+
         # With NULL values
         result = dbe.eval("ARR_DISTINCT(ARRAY(1.1, NULL, 1.1, NULL, 2.2))")
         assert len(result) == 3  # Should have 1.1, NULL, 2.2
@@ -937,20 +937,20 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert "a" in result
         assert "b" in result
         assert "c" in result
-        
+
         # Single element array
         assert dbe.eval('ARR_DISTINCT(ARRAY("hello"))') == ["hello"]
-        
+
         # All same elements should return single element
         assert dbe.eval('ARR_DISTINCT(ARRAY("test", "test", "test"))') == ["test"]
-        
+
         # With NULL values
         result = dbe.eval('ARR_DISTINCT(ARRAY("a", NULL, "a", NULL, "b"))')
         assert len(result) == 3  # Should have "a", NULL, "b"
         assert "a" in result
         assert "b" in result
         assert None in result
-        
+
         # Empty strings are distinct from NULL
         result = dbe.eval('ARR_DISTINCT(ARRAY("", "", "a", ""))')
         assert len(result) == 2  # Should have "", "a"

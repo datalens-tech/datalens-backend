@@ -72,7 +72,9 @@ class TestArrayFunctionClickHouse_21_8(ClickHouse_21_8TestBase, ArrayFunctionCli
         assert dbe.eval("ARR_DISTINCT(ARRAY(1, 2, NULL, 2, NULL))") == dbe.eval("ARRAY(1, 2)")
 
         # Test with table data - ClickHouse removes NULL values
-        assert dbe.eval("ARR_DISTINCT([arr_int_value])", from_=data_table) == dbe.eval("ARRAY(0, 23, 456)", from_=data_table)
+        assert dbe.eval("ARR_DISTINCT([arr_int_value])", from_=data_table) == dbe.eval(
+            "ARRAY(0, 23, 456)", from_=data_table
+        )
 
     def test_array_distinct_float(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         """Override for ClickHouse: compare dbe.eval results and handle ClickHouse's NULL removal behavior."""
@@ -83,7 +85,9 @@ class TestArrayFunctionClickHouse_21_8(ClickHouse_21_8TestBase, ArrayFunctionCli
         assert dbe.eval("ARR_DISTINCT(ARRAY(1.1, 2.2, NULL, 2.2, NULL))") == dbe.eval("ARRAY(1.1, 2.2)")
 
         # Test with table data - ClickHouse removes NULL values
-        assert dbe.eval("ARR_DISTINCT([arr_float_value])", from_=data_table) == dbe.eval("ARRAY(0, 45, 0.123)", from_=data_table)
+        assert dbe.eval("ARR_DISTINCT([arr_float_value])", from_=data_table) == dbe.eval(
+            "ARRAY(0, 45, 0.123)", from_=data_table
+        )
 
     def test_array_distinct_str(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         """Override for ClickHouse: compare dbe.eval results and handle ClickHouse's NULL removal behavior."""
@@ -94,4 +98,6 @@ class TestArrayFunctionClickHouse_21_8(ClickHouse_21_8TestBase, ArrayFunctionCli
         assert dbe.eval('ARR_DISTINCT(ARRAY("a", "b", NULL, "b", NULL))') == dbe.eval('ARRAY("a", "b")')
 
         # Test with table data - ClickHouse removes NULL values, and empty strings are preserved
-        assert dbe.eval("ARR_DISTINCT([arr_str_value])", from_=data_table) == dbe.eval('ARRAY("", "cde")', from_=data_table)
+        assert dbe.eval("ARR_DISTINCT([arr_str_value])", from_=data_table) == dbe.eval(
+            'ARRAY("", "cde")', from_=data_table
+        )

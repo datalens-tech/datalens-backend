@@ -592,7 +592,6 @@ class FuncArrayDistinctFloat(FuncArrayDistinct):
     return_type = Fixed(DataType.ARRAY_FLOAT)
 
 
-
 DEFINITIONS_ARRAY = [
     # arr_avg
     FuncArrayAvg,
