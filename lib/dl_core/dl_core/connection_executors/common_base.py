@@ -58,6 +58,17 @@ class ExecutionMode(enum.Enum):
     RQE = enum.auto()
 
 
+class RQEMode(enum.Enum):
+    INTERNAL = enum.auto()
+    EXTERNAL = enum.auto()
+
+
+@attr.s
+class ExecutionSettings:
+    execution_mode: ExecutionMode = attr.ib()
+    rqe_mode: RQEMode | None = attr.ib(default=None)
+
+
 @attr.s
 class ConnExecutorQuery:
     query: ClauseElement | str = attr.ib()

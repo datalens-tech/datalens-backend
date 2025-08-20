@@ -5,6 +5,8 @@ from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyCon
 from dl_core.connection_executors.common_base import (
     ConnExecutorQuery,
     ExecutionMode,
+    ExecutionSettings,
+    RQEMode,
 )
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.connection_executors.sync_executor_wrapper import SyncWrapperForAsyncConnExecutor
@@ -12,6 +14,8 @@ from dl_core.connection_executors.sync_executor_wrapper import SyncWrapperForAsy
 
 __all__ = (
     "ExecutionMode",
+    "ExecutionSettings",
+    "RQEMode",
     "ConnExecutorQuery",
     "AsyncConnExecutorBase",
     "DefaultSqlAlchemyConnExecutor",

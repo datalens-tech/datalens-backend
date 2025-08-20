@@ -18,7 +18,11 @@ from dl_configs.rqe import (
     RQEConfig,
 )
 from dl_core import connection_executors
-from dl_core.connection_executors import ExecutionMode
+from dl_core.connection_executors import (
+    ExecutionMode,
+    ExecutionSettings,
+    RQEMode,
+)
 from dl_core.connection_executors.async_base import AsyncConnExecutorBase
 from dl_core.connection_executors.models.common import RemoteQueryExecutorData
 from dl_core.connection_models import (
@@ -178,34 +182,37 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
         conn_options = conn.get_conn_options()
         ce_cls = self.get_async_conn_executor_cls(conn)
 
-        if not self.conn_sec_mgr.is_safe_connection(conn_dto, conn_options) or ce_cls.use_ext_rqe():
+        if not self.conn_sec_mgr.is_safe_connection(conn_dto, conn_options):
             # Only RQE mode with external RQE supported for unsafe connection
             if ExecutionMode.RQE not in executor_cls.supported_exec_mode:
                 raise CEFactoryError(
                     f"Connection classified as insecure,"
                     f" but configured executor class {executor_cls} does not support RQE exec mode"
                 )
-            return ExecutionMode.RQE, self._get_rqe_data(external=True)
-        else:
-            if self.force_non_rqe_mode:
-                # WARNING: debug-only flag, might not even work
-                return ExecutionMode.DIRECT, None
-            elif ce_cls.is_pure_async():
-                return ExecutionMode.DIRECT, None
-            elif self.async_env:
-                return ExecutionMode.RQE, self._get_rqe_data(external=False)
-            else:
-                return ExecutionMode.RQE, self._get_rqe_data(external=False)
+            return ExecutionMode.RQE, self._get_rqe_data(RQEMode.EXTERNAL)
 
-    def _get_rqe_data(self, external: bool) -> RemoteQueryExecutorData:
+        if self.force_non_rqe_mode:
+            # WARNING: debug-only flag, might not even work
+            return ExecutionMode.DIRECT, None
+
+        force_exec_settings: ExecutionSettings | None = ce_cls.force_execution_mode()
+        if force_exec_settings is None:
+            return ExecutionMode.RQE, self._get_rqe_data(RQEMode.INTERNAL)
+
+        if force_exec_settings.execution_mode == ExecutionMode.RQE:
+            assert force_exec_settings.rqe_mode
+            return ExecutionMode.RQE, self._get_rqe_data(force_exec_settings.rqe_mode)
+        return force_exec_settings.execution_mode, None
+
+    def _get_rqe_data(self, rqe_mode: RQEMode) -> RemoteQueryExecutorData:
         if self.rqe_config is None:
             raise CEFactoryError("RQE data was requested, but RQE config was not passed to CE factory")
 
         async_rqe_netloc: RQEBaseURL
         sync_rqe_netloc: RQEBaseURL
 
-        LOGGER.info('RQE mode is "%s"', "external" if external else "internal")
-        if external:
+        LOGGER.info('RQE mode is "%s"', "external" if rqe_mode == RQEMode.EXTERNAL else "internal")
+        if rqe_mode == RQEMode.EXTERNAL:
             async_rqe_netloc = self.rqe_config.ext_async_rqe
             sync_rqe_netloc = self.rqe_config.ext_sync_rqe
         else:

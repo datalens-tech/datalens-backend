@@ -20,6 +20,7 @@ from typing_extensions import final
 from dl_core.connection_executors.common_base import (
     ConnExecutorBase,
     ConnExecutorQuery,
+    ExecutionSettings,
 )
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.db import SchemaInfo
@@ -88,12 +89,7 @@ def init_required(wrapped: Callable[..., Awaitable[_RET_TV]]) -> Callable[..., A
 class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
     @classmethod
     @abc.abstractmethod
-    def is_pure_async(cls) -> bool:
-        pass
-
-    @classmethod
-    @abc.abstractmethod
-    def use_ext_rqe(cls) -> bool:
+    def force_execution_mode(cls) -> ExecutionSettings | None:
         pass
 
     async def initialize(self) -> None:
