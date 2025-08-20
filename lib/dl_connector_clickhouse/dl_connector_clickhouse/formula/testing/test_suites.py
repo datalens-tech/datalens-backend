@@ -71,6 +71,45 @@ class ArrayFunctionClickHouseTestSuite(DefaultArrayFunctionFormulaConnectorTestS
         assert dbe.eval("STARTSWITH([arr_str_value], [arr_str_value])", from_=data_table)
         assert not dbe.eval('STARTSWITH([arr_str_value], ARRAY("", "cde", NULL))', from_=data_table)
 
+    def test_array_distinct_int(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        """Override for ClickHouse: compare dbe.eval results and handle ClickHouse's NULL removal behavior."""
+        # Test with literal arrays
+        assert dbe.eval("ARR_DISTINCT(ARRAY(1, 2, 3, 2, 1))") == dbe.eval("ARRAY(1, 2, 3)")
+        assert dbe.eval("ARR_DISTINCT(ARRAY(5, 5, 5))") == dbe.eval("ARRAY(5)")
+        # ClickHouse arrayDistinct removes NULL values
+        assert dbe.eval("ARR_DISTINCT(ARRAY(1, 2, NULL, 2, NULL))") == dbe.eval("ARRAY(1, 2)")
+
+        # Test with table data - ClickHouse removes NULL values
+        assert dbe.eval("ARR_DISTINCT([arr_int_value])", from_=data_table) == dbe.eval(
+            "ARRAY(0, 23, 456)", from_=data_table
+        )
+
+    def test_array_distinct_float(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        """Override for ClickHouse: compare dbe.eval results and handle ClickHouse's NULL removal behavior."""
+        # Test with literal arrays
+        assert dbe.eval("ARR_DISTINCT(ARRAY(1.1, 2.2, 3.3, 2.2, 1.1))") == dbe.eval("ARRAY(1.1, 2.2, 3.3)")
+        assert dbe.eval("ARR_DISTINCT(ARRAY(5.5, 5.5, 5.5))") == dbe.eval("ARRAY(5.5)")
+        # ClickHouse arrayDistinct removes NULL values
+        assert dbe.eval("ARR_DISTINCT(ARRAY(1.1, 2.2, NULL, 2.2, NULL))") == dbe.eval("ARRAY(1.1, 2.2)")
+
+        # Test with table data - ClickHouse removes NULL values
+        assert dbe.eval("ARR_DISTINCT([arr_float_value])", from_=data_table) == dbe.eval(
+            "ARRAY(0, 45, 0.123)", from_=data_table
+        )
+
+    def test_array_distinct_str(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        """Override for ClickHouse: compare dbe.eval results and handle ClickHouse's NULL removal behavior."""
+        # Test with literal arrays
+        assert dbe.eval('ARR_DISTINCT(ARRAY("a", "b", "c", "b", "a"))') == dbe.eval('ARRAY("a", "b", "c")')
+        assert dbe.eval('ARR_DISTINCT(ARRAY("x", "x", "x"))') == dbe.eval('ARRAY("x")')
+        # ClickHouse arrayDistinct removes NULL values
+        assert dbe.eval('ARR_DISTINCT(ARRAY("a", "b", NULL, "b", NULL))') == dbe.eval('ARRAY("a", "b")')
+
+        # Test with table data - ClickHouse removes NULL values, and empty strings are preserved
+        assert dbe.eval("ARR_DISTINCT([arr_str_value])", from_=data_table) == dbe.eval(
+            'ARRAY("", "cde")', from_=data_table
+        )
+
 
 class DateTimeFunctionClickHouseTestSuite(DefaultDateTimeFunctionFormulaConnectorTestSuite):
     supports_dateadd_non_const_unit_num = True

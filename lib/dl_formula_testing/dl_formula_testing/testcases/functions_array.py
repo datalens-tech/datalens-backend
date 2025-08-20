@@ -891,9 +891,6 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         # Should contain unique values: 1, 2, 3 (order may vary)
         assert len(result) == 3
         assert set(result) == {1, 2, 3}
-        # assert 1 in result
-        # assert 2 in result
-        # assert 3 in result
 
         # Single element array
         assert dbe.eval("ARR_DISTINCT(ARRAY(42))") == [42]
@@ -905,9 +902,6 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         result = dbe.eval("ARR_DISTINCT(ARRAY(1, NULL, 1, NULL, 2))")
         assert len(result) == 3  # Should have 1, NULL, 2
         assert set(result) == {1, 2, None}
-        # assert 1 in result
-        # assert 2 in result
-        # assert None in result
 
     def test_array_distinct_float(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # Takes array input, returns array with unique values
@@ -915,9 +909,6 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         # Should contain unique values: 1.1, 2.2, 3.3 (order may vary)
         assert len(result) == 3
         assert set(result) == {1.1, 2.2, 3.3}
-        # assert 1.1 in result
-        # assert 2.2 in result
-        # assert 3.3 in result
 
         # Single element array
         assert dbe.eval("ARR_DISTINCT(ARRAY(42.5))") == [42.5]
@@ -929,9 +920,6 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         result = dbe.eval("ARR_DISTINCT(ARRAY(1.1, NULL, 1.1, NULL, 2.2))")
         assert len(result) == 3  # Should have 1.1, NULL, 2.2
         assert set(result) == {1.1, 2.2, None}
-        # assert 1.1 in result
-        # assert 2.2 in result
-        # assert None in result
 
     def test_array_distinct_str(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # Takes array input, returns array with unique values
@@ -939,9 +927,6 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         # Should contain unique values: "a", "b", "c" (order may vary)
         assert len(result) == 3
         assert set(result) == {"a", "b", "c"}
-        # assert "a" in result
-        # assert "b" in result
-        # assert "c" in result
 
         # Single element array
         assert dbe.eval('ARR_DISTINCT(ARRAY("hello"))') == ["hello"]
@@ -953,13 +938,8 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         result = dbe.eval('ARR_DISTINCT(ARRAY("a", NULL, "a", NULL, "b"))')
         assert len(result) == 3  # Should have "a", NULL, "b"
         assert set(result) == {"a", "b", None}
-        # assert "a" in result
-        # assert "b" in result
-        # assert None in result
 
         # Empty strings are distinct from NULL
         result = dbe.eval('ARR_DISTINCT(ARRAY("", "", "a", ""))')
         assert len(result) == 2  # Should have "", "a"
         assert set(result) == {"", "a"}
-        # assert "" in result
-        # assert "a" in result
