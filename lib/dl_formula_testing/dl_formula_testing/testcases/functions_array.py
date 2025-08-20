@@ -884,3 +884,82 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
             'ARR_INTERSECT(ARRAY("ab", "c", "c"), ARRAY("ab", "b", "c", "c"), ARRAY("a", "c", "c", "ab"))',
             from_=data_table,
         ) in (dbe.eval('ARRAY("ab", "c")'), dbe.eval('ARRAY("c", "ab")'))
+
+    def test_array_distinct_int(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        # Takes array input, returns array with unique values
+        result = dbe.eval("ARR_DISTINCT(ARRAY(1, 2, 2, 3, 1, 3))")
+        # Should contain unique values: 1, 2, 3 (order may vary)
+        assert len(result) == 3
+        assert set(result) == {1, 2, 3}
+        # assert 1 in result
+        # assert 2 in result
+        # assert 3 in result
+
+        # Single element array
+        assert dbe.eval("ARR_DISTINCT(ARRAY(42))") == [42]
+
+        # All same elements should return single element
+        assert dbe.eval("ARR_DISTINCT(ARRAY(5, 5, 5))") == [5]
+
+        # With NULL values
+        result = dbe.eval("ARR_DISTINCT(ARRAY(1, NULL, 1, NULL, 2))")
+        assert len(result) == 3  # Should have 1, NULL, 2
+        assert set(result) == {1, 2, None}
+        # assert 1 in result
+        # assert 2 in result
+        # assert None in result
+
+    def test_array_distinct_float(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        # Takes array input, returns array with unique values
+        result = dbe.eval("ARR_DISTINCT(ARRAY(1.1, 2.2, 2.2, 3.3, 1.1))")
+        # Should contain unique values: 1.1, 2.2, 3.3 (order may vary)
+        assert len(result) == 3
+        assert set(result) == {1.1, 2.2, 3.3}
+        # assert 1.1 in result
+        # assert 2.2 in result
+        # assert 3.3 in result
+
+        # Single element array
+        assert dbe.eval("ARR_DISTINCT(ARRAY(42.5))") == [42.5]
+
+        # All same elements should return single element
+        assert dbe.eval("ARR_DISTINCT(ARRAY(5.5, 5.5, 5.5))") == [5.5]
+
+        # With NULL values
+        result = dbe.eval("ARR_DISTINCT(ARRAY(1.1, NULL, 1.1, NULL, 2.2))")
+        assert len(result) == 3  # Should have 1.1, NULL, 2.2
+        assert set(result) == {1.1, 2.2, None}
+        # assert 1.1 in result
+        # assert 2.2 in result
+        # assert None in result
+
+    def test_array_distinct_str(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        # Takes array input, returns array with unique values
+        result = dbe.eval('ARR_DISTINCT(ARRAY("a", "b", "b", "c", "a"))')
+        # Should contain unique values: "a", "b", "c" (order may vary)
+        assert len(result) == 3
+        assert set(result) == {"a", "b", "c"}
+        # assert "a" in result
+        # assert "b" in result
+        # assert "c" in result
+
+        # Single element array
+        assert dbe.eval('ARR_DISTINCT(ARRAY("hello"))') == ["hello"]
+
+        # All same elements should return single element
+        assert dbe.eval('ARR_DISTINCT(ARRAY("test", "test", "test"))') == ["test"]
+
+        # With NULL values
+        result = dbe.eval('ARR_DISTINCT(ARRAY("a", NULL, "a", NULL, "b"))')
+        assert len(result) == 3  # Should have "a", NULL, "b"
+        assert set(result) == {"a", "b", None}
+        # assert "a" in result
+        # assert "b" in result
+        # assert None in result
+
+        # Empty strings are distinct from NULL
+        result = dbe.eval('ARR_DISTINCT(ARRAY("", "", "a", ""))')
+        assert len(result) == 2  # Should have "", "a"
+        assert set(result) == {"", "a"}
+        # assert "" in result
+        # assert "a" in result

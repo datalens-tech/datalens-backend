@@ -369,4 +369,45 @@ DEFINITIONS_ARRAY = [
             )
         ]
     ),
+    # distinct
+    base.FuncArrayDistinctStr(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                lambda array: n.func.IF(
+                    array == None,
+                    None,
+                    sa.func.array(sa.select(sa.cast(sa.func.unnest(array), sa.TEXT)).distinct().scalar_subquery()),
+                ),
+            ),
+        ]
+    ),
+    base.FuncArrayDistinctInt(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                lambda array: n.func.IF(
+                    array == None,
+                    None,
+                    sa.func.array(sa.select(sa.cast(sa.func.unnest(array), sa.BIGINT)).distinct().scalar_subquery()),
+                ),
+            ),
+        ]
+    ),
+    base.FuncArrayDistinctFloat(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                lambda array: n.func.IF(
+                    array == None,
+                    None,
+                    sa.func.array(
+                        sa.select(sa.cast(sa.func.unnest(array), sa_postgresql.DOUBLE_PRECISION))
+                        .distinct()
+                        .scalar_subquery()
+                    ),
+                ),
+            ),
+        ]
+    ),
 ]
