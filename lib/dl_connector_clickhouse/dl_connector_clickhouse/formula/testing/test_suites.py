@@ -104,8 +104,8 @@ class ArrayFunctionClickHouseTestSuite(DefaultArrayFunctionFormulaConnectorTestS
         assert dbe.eval('ARR_DISTINCT(ARRAY("x", "x", "x"))') == dbe.eval('ARRAY("x")')
         # ClickHouse arrayDistinct removes NULL values
         assert dbe.eval('ARR_DISTINCT(ARRAY("a", "b", NULL, "b", NULL))') == dbe.eval('ARRAY("a", "b")')
-        # ClickHouse arrayDistinct removes "" values
-        assert dbe.eval('ARR_DISTINCT(ARRAY("", "", "a", ""))') == dbe.eval('ARRAY("a")')
+        # Test with empty values in the array
+        assert dbe.eval('ARR_DISTINCT(ARRAY("", "", "a", ""))') == dbe.eval('ARRAY("", "a")')
 
         # Test with table data - ClickHouse removes NULL values, and empty strings are preserved
         assert dbe.eval("ARR_DISTINCT([arr_str_value])", from_=data_table) == dbe.eval(
