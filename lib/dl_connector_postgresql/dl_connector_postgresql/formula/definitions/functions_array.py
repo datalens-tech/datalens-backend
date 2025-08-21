@@ -412,7 +412,8 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.POSTGRESQL,
-                lambda array, value: _array_index_of(array, sa.cast(value, sa.Text)),
+                # lambda array, value: _array_index_of(array, sa.cast(value, sa.Text)),
+                lambda array, value: _array_index_of(array, value),
             ),
         ]
     ),
@@ -420,7 +421,8 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.POSTGRESQL,
-                lambda array, value: _array_index_of(array, sa.cast(value, sa.Integer)),
+                # lambda array, value: _array_index_of(array, sa.cast(value, sa.Integer)),
+                lambda array, value: _array_index_of(array, value),
             ),
         ]
     ),
