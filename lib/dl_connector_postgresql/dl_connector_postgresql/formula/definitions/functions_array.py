@@ -37,8 +37,7 @@ def _array_index_of_legacy(array: ClauseElement, value: ClauseElement) -> Clause
     else:
         # For non-NULL values, use regular equality but also handle the case where value might be NULL at runtime
         condition = sa.case(
-            # (value == None, unnest_with_idx.c.element.is_(None)),
-            (value.is_(None), unnest_with_idx.c.element.is_(None)),
+            (value == None, unnest_with_idx.c.element.is_(None)),
             else_=unnest_with_idx.c.element == value,
         )
 
@@ -466,7 +465,8 @@ DEFINITIONS_ARRAY = [
         variants=[
             V(
                 D.POSTGRESQL,
-                lambda array, value: _array_index_of(array, sa.cast(value, sa_postgresql.DOUBLE_PRECISION)),
+                # lambda array, value: _array_index_of(array, sa.cast(value, sa_postgresql.DOUBLE_PRECISION)),
+                lambda array, value: _array_index_of(array, value),
             ),
         ]
     ),
