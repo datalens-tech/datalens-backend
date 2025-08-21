@@ -89,7 +89,7 @@ def init_required(wrapped: Callable[..., Awaitable[_RET_TV]]) -> Callable[..., A
 class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
     @classmethod
     @abc.abstractmethod
-    def force_execution_mode(cls) -> ExecutionSettings | None:
+    def force_execution_mode(cls) -> ExecutionSettings:
         pass
 
     async def initialize(self) -> None:

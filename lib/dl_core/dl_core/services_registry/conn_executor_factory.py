@@ -195,14 +195,14 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
             # WARNING: debug-only flag, might not even work
             return ExecutionMode.DIRECT, None
 
-        force_exec_settings: ExecutionSettings | None = ce_cls.force_execution_mode()
-        if force_exec_settings is None:
+        force_exec_settings = ce_cls.force_execution_mode()
+        if force_exec_settings in (ExecutionSettings.NONE, ExecutionSettings.INT_RQE):
             return ExecutionMode.RQE, self._get_rqe_data(RQEMode.INTERNAL)
 
-        if force_exec_settings.execution_mode == ExecutionMode.RQE:
-            assert force_exec_settings.rqe_mode
-            return ExecutionMode.RQE, self._get_rqe_data(force_exec_settings.rqe_mode)
-        return force_exec_settings.execution_mode, None
+        if force_exec_settings == ExecutionSettings.EXT_RQE:
+            return ExecutionMode.RQE, self._get_rqe_data(RQEMode.EXTERNAL)
+
+        return ExecutionMode.DIRECT, None
 
     def _get_rqe_data(self, rqe_mode: RQEMode) -> RemoteQueryExecutorData:
         if self.rqe_config is None:
@@ -211,7 +211,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
         async_rqe_netloc: RQEBaseURL
         sync_rqe_netloc: RQEBaseURL
 
-        LOGGER.info('RQE mode is "%s"', "external" if rqe_mode == RQEMode.EXTERNAL else "internal")
+        LOGGER.info('RQE mode is "%s"', rqe_mode.value)
         if rqe_mode == RQEMode.EXTERNAL:
             async_rqe_netloc = self.rqe_config.ext_async_rqe
             sync_rqe_netloc = self.rqe_config.ext_sync_rqe

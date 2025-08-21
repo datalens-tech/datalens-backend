@@ -63,10 +63,11 @@ class RQEMode(enum.Enum):
     EXTERNAL = enum.auto()
 
 
-@attr.s
-class ExecutionSettings:
-    execution_mode: ExecutionMode = attr.ib()
-    rqe_mode: RQEMode | None = attr.ib(default=None)
+class ExecutionSettings(enum.Enum):
+    NONE = "none"
+    DIRECT = "direct"
+    INT_RQE = "internal RQE"
+    EXT_RQE = "external RQE"
 
 
 @attr.s

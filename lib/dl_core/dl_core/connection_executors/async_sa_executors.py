@@ -139,10 +139,10 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
     _dba_attempt_index: int = attr.ib(init=False, default=0)
 
     @classmethod
-    def force_execution_mode(cls) -> ExecutionSettings | None:
+    def force_execution_mode(cls) -> ExecutionSettings:
         if issubclass(cls.TARGET_ADAPTER_CLS, AsyncDirectDBAdapter):
-            return ExecutionSettings(execution_mode=ExecutionMode.DIRECT)
-        return None
+            return ExecutionSettings.DIRECT
+        return ExecutionSettings.NONE
 
     @property
     def _target_dba(self) -> AsyncDBAdapter:
