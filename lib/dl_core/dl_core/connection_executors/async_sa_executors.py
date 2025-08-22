@@ -38,6 +38,7 @@ from dl_core.connection_executors.async_base import (
 from dl_core.connection_executors.common_base import (
     ConnExecutorQuery,
     ExecutionMode,
+    ExecutionSettings,
 )
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
@@ -138,8 +139,10 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
     _dba_attempt_index: int = attr.ib(init=False, default=0)
 
     @classmethod
-    def is_pure_async(cls) -> bool:
-        return issubclass(cls.TARGET_ADAPTER_CLS, AsyncDirectDBAdapter)
+    def force_execution_mode(cls) -> ExecutionSettings:
+        if issubclass(cls.TARGET_ADAPTER_CLS, AsyncDirectDBAdapter):
+            return ExecutionSettings.DIRECT
+        return ExecutionSettings.NONE
 
     @property
     def _target_dba(self) -> AsyncDBAdapter:
