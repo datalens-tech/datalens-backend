@@ -45,7 +45,6 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         # TODO?: use get_columns for this.
         return True
 
-    # TODO(catsona): Should we use ydb_sa.types (Int8-64) or sa.types (INTGER/SMALLINT/BIGINT)?
     _type_code_to_sa = {
         None: sa.TEXT,  # fallback
         "Int8": ydb_sa.types.Int8,
