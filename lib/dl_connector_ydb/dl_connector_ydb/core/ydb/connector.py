@@ -1,5 +1,3 @@
-# from ydb_sqlalchemy.sqlalchemy import register_dialect as yql_register_dialect
-
 from dl_core.connectors.base.connector import (
     CoreBackendDefinition,
     CoreConnectionDefinition,

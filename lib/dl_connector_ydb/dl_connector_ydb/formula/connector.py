@@ -11,9 +11,6 @@ class YQLFormulaConnector(FormulaConnector):
     dialects = YqlDialectNS.YQL
     op_definitions = DEFINITIONS
     sa_dialect = CustomYqlDialect(_add_declare_for_yql_stmt_vars=True)
-    # sa_dialect = SAYqlDialect(_add_declare_for_yql_stmt_vars=True)
-    # TODO(catsona): Do we need it?
-    # type_constructor_cls = YDBTypeConstructor
 
     @classmethod
     def registration_hook(cls) -> None:
