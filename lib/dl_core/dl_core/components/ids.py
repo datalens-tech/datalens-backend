@@ -23,6 +23,7 @@ if TYPE_CHECKING:
 
 ID_LENGTH = 36
 ID_VALID_SYMBOLS = string.ascii_lowercase + string.digits + "_-"
+RANDOM_STR_LENGTH = 4
 
 
 FieldId = str
@@ -31,8 +32,8 @@ AvatarId = str
 RelationId = str
 
 
-def generate_random_str(length: int = 4) -> str:
-    return "".join(random.choices(string.ascii_lowercase + string.digits, k=length))
+def generate_random_str() -> str:
+    return "".join(random.choices(string.ascii_lowercase + string.digits, k=RANDOM_STR_LENGTH))
 
 
 def make_field_id() -> FieldId:
@@ -68,6 +69,10 @@ class FieldIdValidator:
             return False
         return True
 
+    @property
+    def id_length(self) -> int:
+        return self._id_length
+
 
 @attr.s
 class FieldIdGenerator(metaclass=abc.ABCMeta):
@@ -94,7 +99,6 @@ def make_readable_field_id(title: str, valid_symbols: str, max_length: int) -> s
 class ReadableFieldIdGenerator(FieldIdGenerator):
     _id_valid_symbols: str = ID_VALID_SYMBOLS
     _id_length: int = ID_LENGTH
-    _id_formatter: str = "{}_{}"
 
     def make_field_id(self, *args: Any, title: str | None = None, **kwargs: Any) -> FieldId:
         if title is None:
@@ -108,21 +112,30 @@ class ReadableFieldIdGenerator(FieldIdGenerator):
         idx = 1
         orig_item = item
         while item in existing_items:
-            item = self._id_formatter.format(orig_item, idx)
+            _idx = "_{}".format(idx)
+            item = "".join([orig_item[: self._id_length - len(_idx)], _idx])
             idx += 1
         return item
 
 
 @attr.s
 class ReadableFieldIdGeneratorWithPrefix(ReadableFieldIdGenerator):
+    _id_length: int = ID_LENGTH - (RANDOM_STR_LENGTH + 1)
+
     def make_field_id(self, *args: Any, title: str | None = None, **kwargs: Any) -> FieldId:
+        if title is None:
+            return str(uuid.uuid4())
         field_id = super().make_field_id(title=title)
         return "_".join([generate_random_str(), field_id])
 
 
 @attr.s
 class ReadableFieldIdGeneratorWithSuffix(ReadableFieldIdGenerator):
+    _id_length: int = ID_LENGTH - (RANDOM_STR_LENGTH + 1)
+
     def make_field_id(self, *args: Any, title: str | None = None, **kwargs: Any) -> FieldId:
+        if title is None:
+            return str(uuid.uuid4())
         field_id = super().make_field_id(title=title)
         return "_".join([field_id, generate_random_str()])
 

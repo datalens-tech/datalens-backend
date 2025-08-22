@@ -708,8 +708,9 @@ class DatasetValidator(DatasetBaseWrapper):
 
         update_field_id = new_field_id is not None and action == DatasetAction.update_field
         if update_field_id:
-            if not self._id_validator.is_valid(new_field_id):
-                raise exc.DLValidationFatal("Field ID must be [a-z0-9_\\-]{1,36}")
+            if field_data.calc_mode != CalcMode.parameter and not self._id_validator.is_valid(new_field_id):
+                err_msg = f"Field ID must be [a-z0-9_\\-]{{1,{self._id_validator.id_length}}}: {new_field_id}"
+                raise exc.DLValidationFatal(err_msg)
             new_component_ref = DatasetComponentRef(component_type=ComponentType.field, component_id=new_field_id)
             self.perform_component_id_validation(component_ref=new_component_ref)
             # non strict option is used only for old charts. not needed for id update
