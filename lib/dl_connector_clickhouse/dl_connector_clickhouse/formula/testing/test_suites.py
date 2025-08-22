@@ -100,16 +100,16 @@ class ArrayFunctionClickHouseTestSuite(DefaultArrayFunctionFormulaConnectorTestS
     def test_array_distinct_str(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         """Override for ClickHouse: compare dbe.eval results and handle ClickHouse's NULL removal behavior."""
         # Test with literal arrays
-        assert set(dbe.eval('ARR_DISTINCT(ARRAY("a", "b", "c", "b", "a"))')) == set(dbe.eval('ARRAY("a", "b", "c")'))
+        assert dbe.eval('ARR_DISTINCT(ARRAY("a", "b", "c", "b", "a"))') == dbe.eval('ARRAY("a", "b", "c")')
         assert dbe.eval('ARR_DISTINCT(ARRAY("x", "x", "x"))') == dbe.eval('ARRAY("x")')
         # ClickHouse arrayDistinct removes NULL values
-        assert set(dbe.eval('ARR_DISTINCT(ARRAY("a", "b", NULL, "b", NULL))')) == set(dbe.eval('ARRAY("a", "b")'))
+        assert dbe.eval('ARR_DISTINCT(ARRAY("a", "b", NULL, "b", NULL))') == dbe.eval('ARRAY("a", "b")')
         # Test with empty values in the array
-        assert set(dbe.eval('ARR_DISTINCT(ARRAY("", "", "a", ""))')) == set(dbe.eval('ARRAY("", "a")'))
+        assert dbe.eval('ARR_DISTINCT(ARRAY("", "", "a", ""))') == dbe.eval('ARRAY("", "a")')
 
         # Test with table data - ClickHouse removes NULL values, and empty strings are preserved
-        assert set(dbe.eval("ARR_DISTINCT([arr_str_value])", from_=data_table)) == set(
-            dbe.eval('ARRAY("", "cde")', from_=data_table)
+        assert dbe.eval("ARR_DISTINCT([arr_str_value])", from_=data_table) == dbe.eval(
+            'ARRAY("", "cde")', from_=data_table
         )
 
 

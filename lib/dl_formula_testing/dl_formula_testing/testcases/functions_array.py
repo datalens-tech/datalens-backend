@@ -1,6 +1,4 @@
 import abc
-from decimal import Decimal
-import logging
 from typing import (
     Any,
     ClassVar,
@@ -19,7 +17,6 @@ from dl_formula_testing.util import to_str
 
 SAMPLE_DATA_ARRAYS_LENGTH = 4
 
-LOGGER = logging.getLogger(__name__)
 
 class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
     make_decimal_cast: ClassVar[Optional[str]] = None
@@ -908,9 +905,9 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
 
     def test_array_distinct_float(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # Takes array input, returns array with unique values
-        result = set(dbe.eval(self._float_array_cast("ARR_DISTINCT(ARRAY(1.1, 2.2, 2.2, 3.3, 1.1))")))
+        result = dbe.eval("ARR_DISTINCT(ARRAY(1.1, 2.2, 2.2, 3.3, 1.1))")
         assert len(result) == 3
-        assert result == set(dbe.eval(self._float_array_cast("ARRAY(1.1, 2.2, 3.3)")))
+        assert set(result) == set(dbe.eval("ARRAY(1.1, 2.2, 3.3)"))
 
         # Single element array
         assert dbe.eval(self._float_array_cast("ARR_DISTINCT(ARRAY(42.5))")) == dbe.eval(self._float_array_cast("ARRAY(42.5)"))
@@ -919,9 +916,9 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval(self._float_array_cast("ARR_DISTINCT(ARRAY(5.5, 5.5, 5.5))")) == dbe.eval(self._float_array_cast("ARRAY(5.5)"))
 
         # With NULL values
-        result = set(dbe.eval(self._float_array_cast("ARR_DISTINCT(ARRAY(1.1, NULL, 1.1, NULL, 2.2))")))
+        result = dbe.eval("ARR_DISTINCT(ARRAY(1.1, NULL, 1.1, NULL, 2.2))")
         assert len(result) == 3
-        assert result == set(dbe.eval(self._float_array_cast("ARRAY(1.1, NULL, 2.2)")))
+        assert set(result) == set(dbe.eval("ARRAY(1.1, NULL, 2.2)"))
 
 
     def test_array_distinct_str(self, dbe: DbEvaluator, data_table: sa.Table) -> None:

@@ -377,12 +377,7 @@ DEFINITIONS_ARRAY = [
                 lambda array: n.func.IF(
                     array == None,
                     None,
-                    sa.func.array(
-                        # sa.select(sa.cast(sa.func.unnest(array), sa.TEXT))
-                        sa.select(sa.func.unnest(array))
-                        .distinct()
-                        .scalar_subquery()
-                    ),
+                    sa.func.array(sa.select(sa.func.unnest(array)).distinct().scalar_subquery()),
                 ),
             ),
         ]
@@ -394,12 +389,7 @@ DEFINITIONS_ARRAY = [
                 lambda array: n.func.IF(
                     array == None,
                     None,
-                    sa.func.array(
-                        # sa.select(sa.cast(sa.func.unnest(array), sa.BIGINT))
-                        sa.select(sa.func.unnest(array))
-                        .distinct()
-                        .scalar_subquery()
-                    ),
+                    sa.func.array(sa.select(sa.func.unnest(array)).distinct().scalar_subquery()),
                 ),
             ),
         ]
@@ -411,12 +401,7 @@ DEFINITIONS_ARRAY = [
                 lambda array: n.func.IF(
                     array == None,
                     None,
-                    sa.func.array(
-                        # sa.select(sa.cast(sa.func.unnest(array), sa_postgresql.DOUBLE_PRECISION))
-                        sa.select(sa.func.unnest(array))
-                        .distinct()
-                        .scalar_subquery()
-                    ),
+                    sa.func.array(sa.select(sa.func.unnest(array)).distinct().scalar_subquery()),
                 ),
             ),
         ]
