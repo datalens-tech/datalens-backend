@@ -130,11 +130,11 @@ class CustomAsyncYqlDialect(CustomYqlDialect):
         return ydb_sa.AdaptedAsyncConnection(ydb_sa.util.await_only(self.dbapi.async_connect(*cargs, **cparams)))
 
 
-from sqlalchemy.dialects import registry
+def register_dialect() -> None:
+    from sqlalchemy.dialects import registry
 
-
-registry.register("yql.ydb", "dl_connector_ydb.core.ydb.dialect", "CustomYqlDialect")
-registry.register("ydb", "dl_connector_ydb.core.ydb.dialect", "CustomYqlDialect")
-registry.register("yql", "dl_connector_ydb.core.ydb.dialect", "CustomYqlDialect")
-registry.register("yql.ydb_async", "dl_connector_ydb.core.ydb.dialect", "CustomAsyncYqlDialect")
-registry.register("ydb_async", "dl_connector_ydb.core.ydb.dialect", "CustomAsyncYqlDialect")
+    registry.register("yql.ydb", "dl_connector_ydb.core.ydb.dialect", "CustomYqlDialect")
+    registry.register("ydb", "dl_connector_ydb.core.ydb.dialect", "CustomYqlDialect")
+    registry.register("yql", "dl_connector_ydb.core.ydb.dialect", "CustomYqlDialect")
+    registry.register("yql.ydb_async", "dl_connector_ydb.core.ydb.dialect", "CustomAsyncYqlDialect")
+    registry.register("ydb_async", "dl_connector_ydb.core.ydb.dialect", "CustomAsyncYqlDialect")

@@ -74,9 +74,7 @@ TABLE_SCHEMA = (
     ("some_string", UserDataType.string, sa.String),
     ("some_utf8", UserDataType.string, sa.Unicode),
     ("some_date", UserDataType.date, sa.Date),
-    # TODO(catsona): Do we need it?
-    # ("some_datetime", UserDataType.genericdatetime, sa.DATETIME),
-    ("some_datetime", UserDataType.genericdatetime, sa.DateTime),
+    ("some_datetime", UserDataType.genericdatetime, sa.DATETIME),
     ("some_timestamp", UserDataType.genericdatetime, sa.TIMESTAMP),
 )
 TABLE_DATA = [
