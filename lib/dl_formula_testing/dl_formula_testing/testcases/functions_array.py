@@ -910,10 +910,10 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert set(result) == set(dbe.eval("ARRAY(1.1, 2.2, 3.3)"))
 
         # Single element array
-        assert dbe.eval(self._float_array_cast("ARR_DISTINCT(ARRAY(42.5))")) == dbe.eval(self._float_array_cast("ARRAY(42.5)"))
+        assert dbe.eval("ARR_DISTINCT(ARRAY(42.5))") == dbe.eval("ARRAY(42.5)")
   
         # All same elements should return single element
-        assert dbe.eval(self._float_array_cast("ARR_DISTINCT(ARRAY(5.5, 5.5, 5.5))")) == dbe.eval(self._float_array_cast("ARRAY(5.5)"))
+        assert dbe.eval("ARR_DISTINCT(ARRAY(5.5, 5.5, 5.5))") == dbe.eval("ARRAY(5.5)")
 
         # With NULL values
         result = dbe.eval("ARR_DISTINCT(ARRAY(1.1, NULL, 1.1, NULL, 2.2))")
