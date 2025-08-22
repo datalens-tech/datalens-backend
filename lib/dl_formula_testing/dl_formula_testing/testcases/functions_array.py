@@ -905,21 +905,30 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
 
     def test_array_distinct_float(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # Takes array input, returns array with unique values
-        result = dbe.eval("ARR_DISTINCT(ARRAY(1.1, 2.2, 2.2, 3.3, 1.1))")
+        result = dbe.eval(self._float_array_cast("ARR_DISTINCT(ARRAY(1.1, 2.2, 2.2, 3.3, 1.1))"))
+        # result = dbe.eval("ARR_DISTINCT(ARRAY(1.1, 2.2, 2.2, 3.3, 1.1))")
         assert len(result) == 3
-        assert set(result) == set(dbe.eval("ARRAY(1.1, 2.2, 3.3)"))
+        assert set(result) == set(dbe.eval(self._float_array_cast("ARRAY(1.1, 2.2, 3.3)")))
+        # assert set(result) == set(dbe.eval("ARRAY(1.1, 2.2, 3.3)"))
 
         # Single element array
-        assert dbe.eval("ARR_DISTINCT(ARRAY(42.5))") == dbe.eval("ARRAY(42.5)")
-  
+        assert dbe.eval(self._float_array_cast("ARR_DISTINCT(ARRAY(42.5))")) == dbe.eval(
+            self._float_array_cast("ARRAY(42.5)")
+        )
+        # assert dbe.eval("ARR_DISTINCT(ARRAY(42.5))") == dbe.eval("ARRAY(42.5)")
+
         # All same elements should return single element
-        assert dbe.eval("ARR_DISTINCT(ARRAY(5.5, 5.5, 5.5))") == dbe.eval("ARRAY(5.5)")
+        assert dbe.eval(self._float_array_cast("ARR_DISTINCT(ARRAY(5.5, 5.5, 5.5))")) == dbe.eval(
+            self._float_array_cast("ARRAY(5.5)")
+        )
+        # assert dbe.eval("ARR_DISTINCT(ARRAY(5.5, 5.5, 5.5))") == dbe.eval("ARRAY(5.5)")
 
         # With NULL values
-        result = dbe.eval("ARR_DISTINCT(ARRAY(1.1, NULL, 1.1, NULL, 2.2))")
+        result = dbe.eval(self._float_array_cast("ARR_DISTINCT(ARRAY(1.1, NULL, 1.1, NULL, 2.2))"))
+        # result = dbe.eval("ARR_DISTINCT(ARRAY(1.1, NULL, 1.1, NULL, 2.2))")
         assert len(result) == 3
-        assert set(result) == set(dbe.eval("ARRAY(1.1, NULL, 2.2)"))
-
+        assert set(result) == set(dbe.eval(self._float_array_cast("ARRAY(1.1, NULL, 2.2)")))
+        # assert set(result) == set(dbe.eval("ARRAY(1.1, NULL, 2.2)"))
 
     def test_array_distinct_str(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # Takes array input, returns array with unique values
