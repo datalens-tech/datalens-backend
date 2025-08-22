@@ -62,7 +62,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         "Json": sa.TEXT,
         "Yson": sa.TEXT,
         "Uuid": sa.TEXT,
-        "Date": sa.DATE,
+        "Date": dl_connector_ydb.core.ydb.dialect.YqlDate,
         "Timestamp": dl_connector_ydb.core.ydb.dialect.YqlTimestamp,
         "Datetime": dl_connector_ydb.core.ydb.dialect.YqlDateTime,
         "Interval": sa.INTEGER,

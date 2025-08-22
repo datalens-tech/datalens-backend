@@ -16,6 +16,15 @@ class YqlTimestamp(sa.types.DateTime):
 
         return process
 
+    def literal_processor(self, dialect):
+        def process(value: datetime.datetime):
+            formatted_dt = (
+                value.astimezone(datetime.timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            )
+            return f'Timestamp("{ formatted_dt }")'
+
+        return process
+
 
 class YqlDateTime(YqlTimestamp, sa.types.DateTime):
     def bind_processor(self, dialect: sa.engine.Dialect) -> typing.Any:
@@ -25,6 +34,22 @@ class YqlDateTime(YqlTimestamp, sa.types.DateTime):
             if not self.timezone:
                 value = value.replace(tzinfo=datetime.timezone.utc)
             return int(value.timestamp())
+
+        return process
+
+    def literal_processor(self, dialect):
+        def process(value: datetime.datetime):
+            formatted_dt = value.astimezone(datetime.timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%dT%H:%M:%SZ")
+            return f'Datetime("{ formatted_dt }")'
+
+        return process
+
+
+class YqlDate(sa.types.Date, sa.types.DateTime):
+    def literal_processor(self, dialect):
+        def process(value: datetime.date):
+            formatted_dt = value.strftime("%Y-%m-%d")
+            return f'Date("{ formatted_dt }")'
 
         return process
 
@@ -104,6 +129,8 @@ class CustomYqlDialect(ydb_sa.YqlDialect):
             sa.types.BigInteger: ydb_sa.types.Int64,
             sa.types.SMALLINT: ydb_sa.types.Int16,
             sa.types.SmallInteger: ydb_sa.types.Int16,
+            sa.types.Date: YqlDate,
+            sa.types.DATE: YqlDate,
             sa.types.DateTime: YqlDateTime,
             sa.types.DATETIME: YqlDateTime,
             sa.types.TIMESTAMP: YqlTimestamp,
