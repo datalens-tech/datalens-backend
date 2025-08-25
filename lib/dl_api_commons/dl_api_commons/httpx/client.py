@@ -152,11 +152,12 @@ class HttpxSyncRetrier:
             if retry.sleep_before_seconds > 0:
                 time.sleep(retry.sleep_before_seconds)
 
-            request.extensions["timeout"] = httpx.Timeout(
+            timeout = httpx.Timeout(
                 None,
                 connect=retry.connect_timeout,
                 read=retry.request_timeout,
             )
+            request.extensions["timeout"] = timeout.as_dict()
 
             try:
                 response = request_func(request)
@@ -190,11 +191,12 @@ class HttpxAsyncRetrier:
             if retry.sleep_before_seconds > 0:
                 await asyncio.sleep(retry.sleep_before_seconds)
 
-            request.extensions["timeout"] = httpx.Timeout(
+            timeout = httpx.Timeout(
                 None,
                 connect=retry.connect_timeout,
                 read=retry.request_timeout,
             )
+            request.extensions["timeout"] = timeout.as_dict()
 
             try:
                 response = await request_func(request)

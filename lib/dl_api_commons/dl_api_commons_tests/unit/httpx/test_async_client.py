@@ -211,10 +211,13 @@ async def test_retry_default(
         assert response.json() == json_data
 
     assert mock_route.call_count == 1
-    assert mock_route.calls.last.request.extensions["timeout"] == httpx.Timeout(
-        None,
-        connect=mock_retry.connect_timeout,
-        read=mock_retry.request_timeout,
+    assert (
+        mock_route.calls.last.request.extensions["timeout"]
+        == httpx.Timeout(
+            None,
+            connect=mock_retry.connect_timeout,
+            read=mock_retry.request_timeout,
+        ).as_dict()
     )
 
     mock_retry_policy_factory.get_policy.assert_called_once_with(mock_retry_policy_name)
