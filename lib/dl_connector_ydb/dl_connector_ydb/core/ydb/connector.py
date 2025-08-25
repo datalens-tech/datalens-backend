@@ -1,5 +1,3 @@
-from ydb.sqlalchemy import register_dialect as yql_register_dialect
-
 from dl_core.connectors.base.connector import (
     CoreBackendDefinition,
     CoreConnectionDefinition,
@@ -29,6 +27,7 @@ from dl_connector_ydb.core.ydb.data_source import (
     YDBSubselectDataSource,
     YDBTableDataSource,
 )
+import dl_connector_ydb.core.ydb.dialect
 from dl_connector_ydb.core.ydb.settings import YDBSettingDefinition
 from dl_connector_ydb.core.ydb.storage_schemas.connection import YDBConnectionDataStorageSchema
 from dl_connector_ydb.core.ydb.us_connection import YDBConnection
@@ -76,4 +75,4 @@ class YDBCoreConnector(CoreConnector):
 
     @classmethod
     def registration_hook(cls) -> None:
-        yql_register_dialect()
+        dl_connector_ydb.core.ydb.dialect.register_dialect()
