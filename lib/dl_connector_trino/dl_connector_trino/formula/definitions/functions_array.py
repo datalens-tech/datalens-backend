@@ -430,4 +430,20 @@ DEFINITIONS_ARRAY = [
             V(D.TRINO, array_intersect),
         ]
     ),
+    # distinct
+    base.FuncArrayDistinctStr(
+        variants=[
+            V(D.TRINO, sa.func.array_distinct),
+        ]
+    ),
+    base.FuncArrayDistinctInt(
+        variants=[
+            V(D.TRINO, sa.func.array_distinct),
+        ]
+    ),
+    base.FuncArrayDistinctFloat(
+        variants=[
+            V(D.TRINO, sa.func.array_distinct),
+        ]
+    ),
 ]
