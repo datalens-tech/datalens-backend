@@ -28,6 +28,7 @@ dl-testing = {path = "../dl_testing"}
 dl-utils = {path = "../dl_utils"}
 flask = "*"
 pytest = "*"
+pytest-mock = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
 werkzeug = "*"
