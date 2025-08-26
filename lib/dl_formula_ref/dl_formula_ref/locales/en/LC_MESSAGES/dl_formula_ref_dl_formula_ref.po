@@ -991,6 +991,13 @@ msgid "Returns the number of the {arg:0} items."
 msgstr ""
 
 msgid ""
+"Removes duplicate elements from an array {arg:0}, returning a new array with "
+"only unique elements.Returns a new array containing only the unique elements "
+"from the input array. The order of elements in the returned array is not "
+"guaranteed to be the same as the input array."
+msgstr ""
+
+msgid ""
 "Returns the date obtained by adding {arg:1} in the amount of {arg:2} to the "
 "specified date {arg:0}.\n"
 "\n"
