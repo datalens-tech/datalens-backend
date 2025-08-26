@@ -992,8 +992,7 @@ msgstr ""
 
 msgid ""
 "Removes duplicate elements from an array {arg:0}, returning a new array with "
-"only unique elements.Returns a new array containing only the unique elements "
-"from the input array. The order of elements in the returned array is not "
+"only unique elements. The order of elements in the returned array is not "
 "guaranteed to be the same as the input array."
 msgstr ""
 
