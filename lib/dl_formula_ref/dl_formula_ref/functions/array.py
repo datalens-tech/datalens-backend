@@ -576,7 +576,10 @@ FUNCTION_ARR_INDEX_OF = FunctionDocRegistryItem(
     category=CATEGORY_ARRAY,
     description=_(
         "Returns the position (index) of the first occurrence of the value {arg:1} in the array {arg:0}. "
+<<<<<<< HEAD
         "Returns the position (index) of the first occurrence of the value {arg:1} in the array {arg:0}."
+=======
+>>>>>>> 3c8135aa (add space)
         "The indexing starts from 1. If the value {arg:1} is not found in the array, the function returns 0."
     ),
     examples=[
