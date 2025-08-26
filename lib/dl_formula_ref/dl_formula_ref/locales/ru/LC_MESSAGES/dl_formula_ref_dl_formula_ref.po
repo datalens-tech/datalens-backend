@@ -1518,7 +1518,7 @@ msgstr ""
 "Returns the position (index) of the first occurrence of the value {arg:1} in "
 "the array {arg:0}. The indexing starts from 1. If the value {arg:1} is not "
 "found in the array, the function returns 0."
-msgstr ""
+msgstr "Возвращает позицию (индекс) первого вхождения значения {arg:1} в массив {arg:0}. Индексация начинается с 1. Если значение {arg:1} не найдено в массиве, функция возвращает 0."
 
 msgid ""
 "Returns the date obtained by adding {arg:1} in the amount of {arg:2} to the "
