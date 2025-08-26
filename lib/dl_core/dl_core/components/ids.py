@@ -123,9 +123,9 @@ class ReadableFieldIdGeneratorWithPrefix(ReadableFieldIdGenerator):
     _id_length: int = ID_LENGTH - (RANDOM_STR_LENGTH + 1)
 
     def make_field_id(self, *args: Any, title: str | None = None, **kwargs: Any) -> FieldId:
-        if title is None:
-            return str(uuid.uuid4())
         field_id = super().make_field_id(title=title)
+        if title is None:
+            return field_id
         return "_".join([generate_random_str(), field_id])
 
 
@@ -134,9 +134,9 @@ class ReadableFieldIdGeneratorWithSuffix(ReadableFieldIdGenerator):
     _id_length: int = ID_LENGTH - (RANDOM_STR_LENGTH + 1)
 
     def make_field_id(self, *args: Any, title: str | None = None, **kwargs: Any) -> FieldId:
-        if title is None:
-            return str(uuid.uuid4())
         field_id = super().make_field_id(title=title)
+        if title is None:
+            return field_id
         return "_".join([field_id, generate_random_str()])
 
 
