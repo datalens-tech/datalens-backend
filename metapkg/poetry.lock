@@ -1613,12 +1613,15 @@ aiohttp = "*"
 attrs = "*"
 dl-app-tools = {path = "../dl_app_tools"}
 dl-constants = {path = "../dl_constants"}
+dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}
 flask = "*"
+frozendict = "*"
 httpx = "*"
 marshmallow = "*"
 multidict = "*"
 opentracing = "*"
+pydantic = "*"
 requests = "*"
 sentry-sdk = {version = "*", extras = ["flask"]}
 typing-extensions = "*"
@@ -1734,6 +1737,7 @@ dl-testing = {path = "../dl_testing"}
 dl-utils = {path = "../dl_utils"}
 flask = "*"
 pytest = "*"
+pytest-mock = "*"
 sqlalchemy = "*"
 werkzeug = "*"
 
@@ -2511,7 +2515,6 @@ dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 flask = "*"
-frozendict = "*"
 jaeger-client = "*"
 marshmallow = "*"
 marshmallow-oneofschema = "*"
