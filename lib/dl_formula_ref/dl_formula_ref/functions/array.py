@@ -559,8 +559,7 @@ FUNCTION_ARR_DISTINCT = FunctionDocRegistryItem(
     name="arr_distinct",
     category=CATEGORY_ARRAY,
     description=_(
-        "Removes duplicate elements from an array {arg:0}, returning a new array with only unique elements."
-        "Returns a new array containing only the unique elements from the input array. "
+        "Removes duplicate elements from an array {arg:0}, returning a new array with only unique elements. "
         "The order of elements in the returned array is not guaranteed to be the same as the input array."
     ),
     examples=[
