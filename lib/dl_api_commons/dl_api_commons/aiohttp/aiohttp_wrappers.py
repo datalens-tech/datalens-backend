@@ -40,6 +40,9 @@ class RequiredResourceCommon(RequiredResource):
     MASTER_KEY = enum.auto()
     SKIP_AUTH = enum.auto()
     SKIP_CSRF = enum.auto()
+    SKIP_ADMIN_CHECK = enum.auto()
+    SKIP_BILLING_INFO = enum.auto()
+    SKIP_DLS_CLIENT = enum.auto()
 
 
 class RCINotSet(Exception):
