@@ -997,6 +997,12 @@ msgid ""
 msgstr ""
 
 msgid ""
+"Returns the position (index) of the first occurrence of the value {arg:1} in "
+"the array {arg:0}. The indexing starts from 1. If the value {arg:1} is not "
+"found in the array, the function returns 0."
+msgstr ""
+
+msgid ""
 "Returns the date obtained by adding {arg:1} in the amount of {arg:2} to the "
 "specified date {arg:0}.\n"
 "\n"

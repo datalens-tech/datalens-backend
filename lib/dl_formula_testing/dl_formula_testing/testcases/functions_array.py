@@ -952,3 +952,82 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         result = dbe.eval('ARR_DISTINCT(ARRAY("", "", "a", ""))')
         assert len(result) == 2  # Should have "", "a"
         assert set(result) == {"", "a"}
+
+    def test_array_index_of_int(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        # Basic functionality
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(10, 20, 30), 20)") == 2
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(10, 20, 30), 10)") == 1
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(10, 20, 30), 30)") == 3
+        # Element not found
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(10, 20, 30), 40)") == 0
+        # First occurrence
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(10, 20, 20, 30), 20)") == 2
+        # Single element
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(42), 42)") == 1
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(42), 99)") == 0
+        # NULL handling
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(10, NULL, 30), NULL)") == 2
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(10, 20, 30), NULL)") == 0
+        # With column data
+        assert dbe.eval("ARR_INDEX_OF([arr_int_value], 23)", from_=data_table) == 2
+        assert dbe.eval("ARR_INDEX_OF([arr_int_value], 456)", from_=data_table) == 3
+        assert dbe.eval("ARR_INDEX_OF([arr_int_value], 999)", from_=data_table) == 0
+
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
+    def test_array_index_of_int_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        # null array values
+        assert dbe.eval("ARR_INDEX_OF([arr_int_null_value], 1)", from_=data_table) is None
+
+    def test_array_index_of_float(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        # Basic functionality
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(1.1, 2.2, 3.3), 2.2)") == 2
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(1.1, 2.2, 3.3), 1.1)") == 1
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(1.1, 2.2, 3.3), 3.3)") == 3
+        # Element not found
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(1.1, 2.2, 3.3), 4.4)") == 0
+        # First occurrence
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(1.1, 2.2, 2.2, 3.3), 2.2)") == 2
+        # Single element
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(4.2), 4.2)") == 1
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(4.2), 9.9)") == 0
+        # NULL handling
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(1.1, NULL, 3.3), NULL)") == 2
+        assert dbe.eval("ARR_INDEX_OF(ARRAY(1.1, 2.2, 3.3), NULL)") == 0
+        # With column data
+        assert dbe.eval("ARR_INDEX_OF([arr_float_value], 45)", from_=data_table) == 2
+        assert dbe.eval("ARR_INDEX_OF([arr_float_value], 0.123)", from_=data_table) == 3
+        assert dbe.eval("ARR_INDEX_OF([arr_float_value], 9.99)", from_=data_table) == 0
+
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
+    def test_array_index_of_float_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        # null array values
+        assert dbe.eval("ARR_INDEX_OF([arr_float_null_value], 1.2)", from_=data_table) is None
+
+    def test_array_index_of_str(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        # Basic functionality
+        assert dbe.eval('ARR_INDEX_OF(ARRAY("a", "b", "c"), "b")') == 2
+        assert dbe.eval('ARR_INDEX_OF(ARRAY("a", "b", "c"), "a")') == 1
+        assert dbe.eval('ARR_INDEX_OF(ARRAY("a", "b", "c"), "c")') == 3
+        # Element not found
+        assert dbe.eval('ARR_INDEX_OF(ARRAY("a", "b", "c"), "d")') == 0
+        # First occurrence
+        assert dbe.eval('ARR_INDEX_OF(ARRAY("a", "b", "b", "c"), "b")') == 2
+        # Single element
+        assert dbe.eval('ARR_INDEX_OF(ARRAY("hello"), "hello")') == 1
+        assert dbe.eval('ARR_INDEX_OF(ARRAY("hello"), "world")') == 0
+        # Empty string
+        assert dbe.eval('ARR_INDEX_OF(ARRAY("", "b", "c"), "")') == 1
+        # Case sensitivity
+        assert dbe.eval('ARR_INDEX_OF(ARRAY("a", "B", "c"), "b")') == 0
+        assert dbe.eval('ARR_INDEX_OF(ARRAY("a", "B", "c"), "B")') == 2
+        # NULL handling
+        assert dbe.eval('ARR_INDEX_OF(ARRAY("a", NULL, "c"), NULL)') == 2
+        assert dbe.eval('ARR_INDEX_OF(ARRAY("a", "b", "c"), NULL)') == 0
+        # With column data
+        assert dbe.eval('ARR_INDEX_OF([arr_str_value], "cde")', from_=data_table) == 3
+        assert dbe.eval('ARR_INDEX_OF([arr_str_value], "xyz")', from_=data_table) == 0
+
+    @pytest.mark.xfail(reason="BI-6163, BI-6165")
+    def test_array_index_of_str_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        # null array values
+        assert dbe.eval('ARR_INDEX_OF([arr_str_null_value], "cat")', from_=data_table) is None

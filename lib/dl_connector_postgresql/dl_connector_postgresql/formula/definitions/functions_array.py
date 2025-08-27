@@ -22,6 +22,44 @@ from dl_connector_postgresql.formula.definitions.common import PG_INT_64_TO_CHAR
 V = TranslationVariant.make
 
 
+def _array_index_of_legacy(array: ClauseElement, value: ClauseElement) -> ClauseElement:
+    """Legacy implementation for PostgreSQL < 9.5 without array_position function"""
+    # Create a subquery that unnests the array with row numbers
+    # Note: generate_series ensures correct indexing even for sparse arrays
+    unnest_with_idx = sa.select(
+        sa.func.unnest(array).label("element"), sa.func.generate_series(1, sa.func.array_length(array, 1)).label("idx")
+    ).alias("array_elements")
+
+    # Handle NULL values specially since NULL = NULL is not true in SQL
+    # Check if value is a NULL literal
+    if isinstance(value, Null):
+        condition = unnest_with_idx.c.element.is_(None)
+    else:
+        # For non-NULL values, use regular equality but also handle the case where value might be NULL at runtime
+        condition = sa.case(
+            (value == None, unnest_with_idx.c.element.is_(None)),
+            else_=unnest_with_idx.c.element == value,
+        )
+
+    return sa.func.coalesce(
+        sa.select(unnest_with_idx.c.idx).where(condition).order_by(unnest_with_idx.c.idx).limit(1).scalar_subquery(),
+        0,
+    )
+
+
+def _array_index_of_modern(array: ClauseElement, value: ClauseElement) -> ClauseElement:
+    """Implementation for PostgreSQL >= 9.5 with array_position function"""
+    # array_position handles NULL values correctly, so we can use it directly
+    return sa.func.coalesce(sa.func.array_position(array, value), 0)
+
+
+def _array_index_of(array: ClauseElement, value: ClauseElement) -> ClauseElement:
+    """Dispatcher function for array_index_of implementation"""
+    # Currently using legacy implementation for PostgreSQL 9.3/9.4 compatibility
+    # In the future, this can be updated to choose between legacy and modern based on dialect
+    return _array_index_of_legacy(array, value)
+
+
 def _array_contains(array: ClauseElement, value: ClauseElement) -> ClauseElement:
     if isinstance(value, Null):
         return array != sa.func.array_remove(array, None)
@@ -403,6 +441,34 @@ DEFINITIONS_ARRAY = [
                     None,
                     sa.func.array(sa.select(sa.func.unnest(array)).distinct().scalar_subquery()),
                 ),
+            ),
+        ]
+    ),
+    # arr_index_of
+    base.FuncArrayIndexOfStr(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                # lambda array, value: _array_index_of(array, sa.cast(value, sa.Text)),
+                lambda array, value: _array_index_of(array, value),
+            ),
+        ]
+    ),
+    base.FuncArrayIndexOfInt(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                # lambda array, value: _array_index_of(array, sa.cast(value, sa.Integer)),
+                lambda array, value: _array_index_of(array, value),
+            ),
+        ]
+    ),
+    base.FuncArrayIndexOfFloat(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                # lambda array, value: _array_index_of(array, sa.cast(value, sa_postgresql.DOUBLE_PRECISION)),
+                lambda array, value: _array_index_of(array, value),
             ),
         ]
     ),
