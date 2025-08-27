@@ -592,6 +592,35 @@ class FuncArrayDistinctFloat(FuncArrayDistinct):
     return_type = Fixed(DataType.ARRAY_FLOAT)
 
 
+class FuncArrayIndexOf(ArrayFunction):
+    name = "arr_index_of"
+    arg_names = ["array", "value"]
+    arg_cnt = 2
+    return_type = Fixed(DataType.INTEGER)
+    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
+
+
+class FuncArrayIndexOfStr(FuncArrayIndexOf):
+    argument_types = [
+        ArgTypeForAll(DataType.ARRAY_STR, require_type_match={DataType.ARRAY_STR, DataType.CONST_ARRAY_STR}),
+        ArgTypeSequence([DataType.STRING]),
+    ]
+
+
+class FuncArrayIndexOfInt(FuncArrayIndexOf):
+    argument_types = [
+        ArgTypeForAll(DataType.ARRAY_INT, require_type_match={DataType.ARRAY_INT, DataType.CONST_ARRAY_INT}),
+        ArgTypeSequence([DataType.INTEGER]),
+    ]
+
+
+class FuncArrayIndexOfFloat(FuncArrayIndexOf):
+    argument_types = [
+        ArgTypeForAll(DataType.ARRAY_FLOAT, require_type_match={DataType.ARRAY_FLOAT, DataType.CONST_ARRAY_FLOAT}),
+        ArgTypeSequence([DataType.FLOAT]),
+    ]
+
+
 DEFINITIONS_ARRAY = [
     # arr_avg
     FuncArrayAvg,
@@ -670,4 +699,8 @@ DEFINITIONS_ARRAY = [
     FuncArrayDistinctStr,
     FuncArrayDistinctInt,
     FuncArrayDistinctFloat,
+    # indexof
+    FuncArrayIndexOfStr,
+    FuncArrayIndexOfInt,
+    FuncArrayIndexOfFloat,
 ]

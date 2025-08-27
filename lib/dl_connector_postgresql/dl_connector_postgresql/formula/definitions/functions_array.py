@@ -406,4 +406,29 @@ DEFINITIONS_ARRAY = [
             ),
         ]
     ),
+    # arr_index_of
+    base.FuncArrayIndexOfStr(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                lambda array, value: sa.func.coalesce(sa.func.array_position(array, value), 0),
+            ),
+        ]
+    ),
+    base.FuncArrayIndexOfInt(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                lambda array, value: sa.func.coalesce(sa.func.array_position(array, value), 0),
+            ),
+        ]
+    ),
+    base.FuncArrayIndexOfFloat(
+        variants=[
+            V(
+                D.POSTGRESQL,
+                lambda array, value: sa.func.coalesce(sa.func.array_position(array, value), 0),
+            ),
+        ]
+    ),
 ]
