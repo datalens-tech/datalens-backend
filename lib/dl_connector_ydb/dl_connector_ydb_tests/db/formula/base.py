@@ -1,3 +1,4 @@
+from frozendict import frozendict
 import pytest
 import sqlalchemy as sa
 
@@ -8,6 +9,7 @@ from dl_formula_testing.database import (
 from dl_formula_testing.testcases.base import FormulaConnectorTestBase
 
 from dl_connector_ydb.formula.constants import YqlDialect as D
+import dl_connector_ydb_tests.db.config as test_config
 from dl_connector_ydb_tests.db.config import DB_CONFIGURATIONS
 
 
@@ -39,3 +41,16 @@ class YQLTestBase(FormulaConnectorTestBase):
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
         return DB_CONFIGURATIONS[self.dialect]
+
+    @pytest.fixture(scope="class")
+    def engine_params(self) -> dict:
+        return dict(
+            connect_args=frozendict(
+                dict(
+                    host=test_config.CoreConnectionSettings.HOST,
+                    port=test_config.CoreConnectionSettings.PORT,
+                    protocol="grpc",
+                )
+            ),
+            _add_declare_for_yql_stmt_vars=True,
+        )

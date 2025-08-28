@@ -1,5 +1,5 @@
 import sqlalchemy as sa
-import ydb.sqlalchemy as ydb_sa
+import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_formula.definitions.base import TranslationVariant
 from dl_formula.definitions.common import (
@@ -39,9 +39,13 @@ DEFINITIONS_STRING = [
                     value,
                     # int -> List<int> -> utf8
                     sa.func.Unicode.FromCodePointList(
+                        # Note: Executing sqlalchemy statement without cast determines list type as List<Int32>,
+                        #  while directly executing query with Int32 parameters automatically produces List<Uint32>.
                         sa.func.AsList(
                             # coalesce is needed to un-Nullable the type.
-                            sa.func.COALESCE(sa.cast(value, ydb_sa.types.UInt32), 0),
+                            sa.func.COALESCE(
+                                sa.cast(value, ydb_sa.types.UInt32), sa.func.UNWRAP(sa.cast(0, ydb_sa.types.UInt32))
+                            ),
                         )
                     ),
                 ),

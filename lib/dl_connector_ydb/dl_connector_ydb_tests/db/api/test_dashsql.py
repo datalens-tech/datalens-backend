@@ -53,13 +53,13 @@ class TestYDBDashSQL(YDBDashSQLConnectionTest, DefaultDashSQLTestSuite):
             "timestamp",
         ]
         assert resp_data[0]["data"]["db_types"][:12] == [
-            "integer",
+            "int32",
             "text",
             "text",
-            "integer",
-            "integer",
-            "integer",
-            "integer",
+            "int32",
+            "uint8",
+            "int64",
+            "uint64",
             "float",
             "boolean",
             "date",

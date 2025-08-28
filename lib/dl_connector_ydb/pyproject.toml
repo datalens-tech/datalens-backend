@@ -27,7 +27,9 @@ python = ">=3.10, <3.13"
 shortuuid = "*"
 sqlalchemy = "*"
 typing-extensions = "*"
-ydb = "*"
+ydb = ">=3.21.6"
+ydb-dbapi = ">=0.1.13"
+ydb-sqlalchemy = ">=0.1.9"
 
 [tool.poetry.group.tests.dependencies]
 dl-formula-testing = {path = "../dl_formula_testing"}
@@ -67,7 +69,7 @@ warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
-module = ["ydb.*", "ydb_proto_stubs_import.*"]
+module = ["ydb.*", "ydb_dbapi.*", "ydb_proto_stubs_import.*", "ydb_sqlalchemy.*"]
 
 [tool.pytest.ini_options]
 addopts = "-ra"

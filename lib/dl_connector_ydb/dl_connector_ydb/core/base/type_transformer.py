@@ -3,13 +3,15 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import sqlalchemy as sa
-import ydb.sqlalchemy as ydb_sa
+import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_constants.enums import UserDataType
 from dl_type_transformer.type_transformer import (
     TypeTransformer,
     make_native_type,
 )
+
+import dl_connector_ydb.core.ydb.dialect
 
 
 if TYPE_CHECKING:
@@ -20,12 +22,15 @@ class YQLTypeTransformer(TypeTransformer):
     _base_type_map: dict[UserDataType, tuple[SATypeSpec, ...]] = {
         # Note: first SA type is used as the default.
         UserDataType.integer: (
-            sa.BIGINT,
-            sa.SMALLINT,
             sa.INTEGER,
+            ydb_sa.types.Int8,
+            ydb_sa.types.Int16,
+            ydb_sa.types.Int32,
+            ydb_sa.types.Int64,
+            ydb_sa.types.UInt8,
+            ydb_sa.types.UInt16,
             ydb_sa.types.UInt32,
             ydb_sa.types.UInt64,
-            ydb_sa.types.UInt8,
         ),
         UserDataType.float: (
             sa.FLOAT,
@@ -36,8 +41,11 @@ class YQLTypeTransformer(TypeTransformer):
         UserDataType.boolean: (sa.BOOLEAN,),
         UserDataType.string: (
             sa.TEXT,
+            sa.String,
             sa.CHAR,
             sa.VARCHAR,
+            sa.BINARY,
+            # TODO: ydb_sa.types.YqlJSON,
             # see also: ENUM,
         ),
         # see also: UUID
@@ -45,10 +53,14 @@ class YQLTypeTransformer(TypeTransformer):
         UserDataType.datetime: (
             sa.DATETIME,
             sa.TIMESTAMP,
+            dl_connector_ydb.core.ydb.dialect.YqlDateTime,
+            dl_connector_ydb.core.ydb.dialect.YqlTimestamp,
         ),
         UserDataType.genericdatetime: (
             sa.DATETIME,
             sa.TIMESTAMP,
+            dl_connector_ydb.core.ydb.dialect.YqlDateTime,
+            dl_connector_ydb.core.ydb.dialect.YqlTimestamp,
         ),
         UserDataType.unsupported: (sa.sql.sqltypes.NullType,),  # Actually the default, so should not matter much.
     }
