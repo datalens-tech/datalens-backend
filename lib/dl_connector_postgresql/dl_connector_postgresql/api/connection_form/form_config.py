@@ -168,6 +168,8 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
         if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
             raw_sql_levels.append(RawSQLLevel.template)
 
+        form_params = self._get_form_params()
+
         return [
             C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
             rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
@@ -179,8 +181,8 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
                 enabled_default_value=False,
             ),
             rc.data_export_forbidden_row(
-                conn_id=self._get_form_params().conn_id,
-                exports_history_url_path=self._get_form_params().exports_history_url_path,
+                conn_id=form_params.conn_id,
+                exports_history_url_path=form_params.exports_history_url_path,
                 mode=self.mode,
             ),
         ]

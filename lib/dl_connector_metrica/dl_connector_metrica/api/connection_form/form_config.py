@@ -96,6 +96,8 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
             else components.oauth_token_row(localizer=self._localizer, mode=self.mode)
         )
 
+        form_params = self._get_form_params()
+
         rows: list[FormRow] = [
             oauth_token_row,
             self._counter_row(
@@ -104,8 +106,8 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
             AccuracyRow(name=MetricaFieldName.accuracy),
             rc.collapse_advanced_settings_row(),
             rc.data_export_forbidden_row(
-                conn_id=self._get_form_params().conn_id,
-                exports_history_url_path=self._get_form_params().exports_history_url_path,
+                conn_id=form_params.conn_id,
+                exports_history_url_path=form_params.exports_history_url_path,
                 mode=self.mode,
             ),
         ]
