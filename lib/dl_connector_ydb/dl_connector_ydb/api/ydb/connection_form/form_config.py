@@ -191,6 +191,8 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
             raw_sql_levels.append(RawSQLLevel.template)
 
+        form_params = self._get_form_params()
+
         if connector_settings.ENABLE_AUTH_TYPE_PICKER:
             rows = [
                 ydb_rc.auth_type_row(mode=self.mode),
@@ -210,8 +212,8 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                     enabled_default_value=connector_settings.DEFAULT_SSL_ENABLE_VALUE,
                 ),
                 rc.data_export_forbidden_row(
-                    conn_id=self._get_form_params().conn_id,
-                    exports_history_url_path=self._get_form_params().exports_history_url_path,
+                    conn_id=form_params.conn_id,
+                    exports_history_url_path=form_params.exports_history_url_path,
                     mode=self.mode,
                 ),
             ]
@@ -227,8 +229,8 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                     enabled_default_value=connector_settings.DEFAULT_SSL_ENABLE_VALUE,
                 ),
                 rc.data_export_forbidden_row(
-                    conn_id=self._get_form_params().conn_id,
-                    exports_history_url_path=self._get_form_params().exports_history_url_path,
+                    conn_id=form_params.conn_id,
+                    exports_history_url_path=form_params.exports_history_url_path,
                     mode=self.mode,
                 ),
             ]

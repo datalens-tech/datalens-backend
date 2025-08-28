@@ -62,6 +62,8 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
             ]
         )
 
+        form_params = self._get_form_params()
+
         return ConnectionForm(
             title=PromQLConnectionInfoProvider.get_title(self._localizer),
             rows=[
@@ -78,8 +80,8 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
                 ),
                 rc.collapse_advanced_settings_row(),
                 rc.data_export_forbidden_row(
-                    conn_id=self._get_form_params().conn_id,
-                    exports_history_url_path=self._get_form_params().exports_history_url_path,
+                    conn_id=form_params.conn_id,
+                    exports_history_url_path=form_params.exports_history_url_path,
                     mode=self.mode,
                 ),
             ],

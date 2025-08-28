@@ -266,6 +266,8 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
         create_api_schema = self._get_create_api_schema(connector_settings, edit_api_schema)
         check_api_schema = self._get_check_api_schema(connector_settings)
 
+        form_params = self._get_form_params()
+
         return ConnectionForm(
             title=TrinoConnectionInfoProvider.get_title(self._localizer),
             rows=self._filter_nulls(
@@ -285,8 +287,8 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
                     rc.collapse_advanced_settings_row(),
                     *rc.trino_ssl_rows(),
                     rc.data_export_forbidden_row(
-                        conn_id=self._get_form_params().conn_id,
-                        exports_history_url_path=self._get_form_params().exports_history_url_path,
+                        conn_id=form_params.conn_id,
+                        exports_history_url_path=form_params.exports_history_url_path,
                         mode=self.mode,
                     ),
                     rc.listing_sources_row(),
