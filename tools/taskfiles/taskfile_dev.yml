@@ -367,7 +367,7 @@ tasks:
     cmds:
       - task: _compose
         vars:
-          CLI_ARGS: logs --follow
+          CLI_ARGS: logs --follow {{.CONTAINER}}
           DOCKER_HOST: '{{.DOCKER_HOST | default ""}}'
 
   compose-remote-logs:
@@ -377,6 +377,7 @@ tasks:
       - task: compose-logs
         vars:
           DOCKER_HOST: "ssh://{{.VM_HOST}}"
+          CONTAINER: '{{.CONTAINER | default ""}}'
 
   ssh-forward-start:
     desc: Forward docker ports to localhost
