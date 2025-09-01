@@ -7,11 +7,11 @@ from dl_configs.settings_loaders.meta_definition import s_attrib
 class DatasourceTemplateSettingsMixin:
     """Mixin for connector settings that enables datasource template functionality."""
 
-    ENABLE_DATASOURCE_TEMPLATE: bool = s_attrib("ENABLE_DATASOURCE_TEMPLATE", missing=False)  # type: ignore
+    ENABLE_DATASOURCE_TEMPLATE: bool = s_attrib("ENABLE_DATASOURCE_TEMPLATE", missing=True)  # type: ignore
 
 
 @attr.s(frozen=True)
 class TableDatasourceSettingsMixin:
     """Mixin for connector settings that enables table datasource functionality."""
 
-    ENABLE_TABLE_DATASOURCE_FORM: bool = s_attrib("ENABLE_TABLE_DATASOURCE_FORM", missing=False)  # type: ignore
+    ENABLE_TABLE_DATASOURCE_FORM: bool = s_attrib("ENABLE_TABLE_DATASOURCE_FORM", missing=True)  # type: ignore
