@@ -176,6 +176,7 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
             pytest.skip()
 
         assert to_str(dbe.eval('SPLIT("Lorem ipsum dolor sit amet", " ", 3)')) == "dolor"
+        assert to_str(dbe.eval('SPLIT("Lorem ipsum dolor sit amet", " ", -2)')) == "sit"
         assert to_str(dbe.eval('SPLIT([str_null_value], " ", 3)', from_=data_table)) in (None, "")
 
     def test_split_1_2(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
