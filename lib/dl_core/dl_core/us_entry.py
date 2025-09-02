@@ -196,12 +196,14 @@ class USEntry:
         return self._data is not None
 
     @property
-    def data(self):  # type: ignore  # TODO: fix
+    def data(self) -> BaseAttrsDataModel:
         assert self._data is not None
         return self._data
 
     @data.setter
-    def data(self, value):  # type: ignore  # TODO: fix
+    def data(self, value: BaseAttrsDataModel) -> None:
+        if not isinstance(value, self.DataModel):
+            raise TypeError(f"Expected {self.DataModel}, got {type(value)}")
         self._data = value
 
     @property
