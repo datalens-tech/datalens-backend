@@ -32,7 +32,7 @@ from dl_i18n.localizer_base import (
 class ConnectionFormTestBase:
     CONN_FORM_FACTORY_CLS: ClassVar[type[ConnectionFormFactory]]
     TRANSLATION_CONFIGS: ClassVar[list[TranslationConfig]]
-    OVERWRITE_EXPECTED_FORMS: ClassVar[bool] = False
+    OVERWRITE_EXPECTED_FORMS: ClassVar[bool] = True
     EXPECTED_FORMS_DIR: ClassVar[str] = "expected_forms"
 
     @pytest.fixture
