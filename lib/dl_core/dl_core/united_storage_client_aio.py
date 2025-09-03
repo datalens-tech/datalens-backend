@@ -182,10 +182,15 @@ class UStorageClientAIO(UStorageClientBase):
         params: Optional[dict[str, str]] = None,
         include_permissions: bool = True,
         include_links: bool = True,
+        include_favorite: bool = False,
     ) -> dict:
         return await self._request(
             self._req_data_get_entry(
-                entry_id=entry_id, params=params, include_permissions=include_permissions, include_links=include_links
+                entry_id=entry_id,
+                params=params,
+                include_permissions=include_permissions,
+                include_links=include_links,
+                include_favorite=include_favorite,
             ),
             retry_policy_name="get_entry",
         )

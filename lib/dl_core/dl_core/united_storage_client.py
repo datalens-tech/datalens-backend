@@ -456,12 +456,15 @@ class UStorageClientBase:
         params: Optional[dict[str, str]] = None,
         include_permissions: bool = True,
         include_links: bool = True,
+        include_favorite: bool = True,
     ) -> RequestData:
         params = params or {}
         if include_permissions:
             params["includePermissionsInfo"] = "1"
         if include_links:
             params["includeLinks"] = "1"
+        if include_favorite:
+            params["includeFavorite"] = "1"
 
         return cls.RequestData(
             method="get",
@@ -769,10 +772,15 @@ class UStorageClient(UStorageClientBase):
         params: Optional[dict[str, str]] = None,
         include_permissions: bool = True,
         include_links: bool = True,
+        include_favorite: bool = True,
     ) -> dict[str, Any]:
         return self._request(
             self._req_data_get_entry(
-                entry_id, params=params, include_permissions=include_permissions, include_links=include_links
+                entry_id,
+                params=params,
+                include_permissions=include_permissions,
+                include_links=include_links,
+                include_favorite=include_favorite,
             ),
             retry_policy_name="get_entry",
         )
