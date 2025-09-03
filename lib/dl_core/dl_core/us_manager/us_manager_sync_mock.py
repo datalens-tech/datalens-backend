@@ -148,6 +148,7 @@ class MockedUStorageClient(UStorageClient):
         params: Optional[dict[str, Any]] = None,
         include_permissions: bool = True,
         include_links: bool = True,
+        include_favorite: bool = True,
     ) -> dict[str, Any]:
         assert params is None
         try:
