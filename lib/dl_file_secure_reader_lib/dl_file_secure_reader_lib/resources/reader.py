@@ -9,25 +9,30 @@ from aiohttp import web
 from aiohttp.multipart import BodyPartReader
 import openpyxl
 
+from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
+
 
 LOGGER = logging.getLogger(__name__)
 
 
-def parse_excel_data(data: BinaryIO) -> list:
+def parse_excel_data(data: BinaryIO, settings: FileSecureReaderSettings) -> list:
     result = []
+
+    feature_excel_read_only = settings.FEATURE_EXCEL_READ_ONLY
     try:
         wb = openpyxl.load_workbook(
             data,
             data_only=True,
             keep_links=False,
-            read_only=True,
+            read_only=feature_excel_read_only,
         )
     except Exception:
         raise web.HTTPUnprocessableEntity(reason="Invalid excel file")
     for sheetname in wb.sheetnames:
         sheet = wb[sheetname]
-        sheet.reset_dimensions()
-        sheet.calculate_dimension(force=True)
+        if feature_excel_read_only:
+            sheet.reset_dimensions()
+            sheet.calculate_dimension(force=True)
 
         result.append(
             {
@@ -58,6 +63,7 @@ class ReaderView(web.View):
         data = io.BytesIO(bytes(await field.read()))
 
         tpe = self.request.app["tpe"]
-        result = await loop.run_in_executor(tpe, parse_excel_data, data)
+        settings: FileSecureReaderSettings = self.request.app["settings"]
+        result = await loop.run_in_executor(tpe, parse_excel_data, data, settings)
 
         return web.json_response(data=result)
