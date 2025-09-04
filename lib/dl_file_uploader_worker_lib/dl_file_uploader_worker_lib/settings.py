@@ -12,6 +12,7 @@ from dl_configs.utils import (
     split_by_comma,
 )
 from dl_core.us_manager.settings import USClientSettings
+from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
 from dl_file_uploader_lib.settings import (
     DeprecatedFileUploaderBaseSettings,
     FileUploaderBaseSettings,
@@ -83,3 +84,4 @@ class DeprecatedFileUploaderWorkerSettings(DeprecatedFileUploaderBaseSettings):
 
 class FileUploaderWorkerSettings(FileUploaderBaseSettings):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
+    FILE_SECURE_READER_SETTINGS: FileSecureReaderSettings = pydantic.Field(default_factory=FileSecureReaderSettings)

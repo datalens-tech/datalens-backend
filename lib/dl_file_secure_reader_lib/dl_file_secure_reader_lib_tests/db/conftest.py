@@ -14,9 +14,7 @@ from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
 
 @pytest.fixture
 def settings() -> FileSecureReaderSettings:
-    return FileSecureReaderSettings(
-        FEATURE_EXCEL_READ_ONLY=False,
-    )
+    return FileSecureReaderSettings()
 
 
 @pytest.fixture

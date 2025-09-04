@@ -15,10 +15,9 @@ from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
 LOGGER = logging.getLogger(__name__)
 
 
-def parse_excel_data(data: BinaryIO, settings: FileSecureReaderSettings) -> list:
+def parse_excel_data(data: BinaryIO, feature_excel_read_only: bool) -> list:
     result = []
 
-    feature_excel_read_only = settings.FEATURE_EXCEL_READ_ONLY
     try:
         wb = openpyxl.load_workbook(
             data,
@@ -64,6 +63,6 @@ class ReaderView(web.View):
 
         tpe = self.request.app["tpe"]
         settings: FileSecureReaderSettings = self.request.app["settings"]
-        result = await loop.run_in_executor(tpe, parse_excel_data, data, settings)
+        result = await loop.run_in_executor(tpe, parse_excel_data, data, settings.FEATURE_EXCEL_READ_ONLY)
 
         return web.json_response(data=result)

@@ -9,6 +9,7 @@ import pytest_asyncio
 
 from dl_constants.enums import FileProcessingStatus
 from dl_file_secure_reader_lib.app import create_app as create_reader_app
+from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
 from dl_file_uploader_lib.enums import FileType
 from dl_file_uploader_lib.redis_model.models import DataFile
 from dl_file_uploader_lib.testing.data_gen import generate_sample_csv_data_str
@@ -190,9 +191,14 @@ async def uploaded_invalid_excel_id(uploaded_invalid_excel) -> str:
     yield uploaded_invalid_excel.id
 
 
+@pytest.fixture(scope="class")
+def reader_app_settings() -> FileSecureReaderSettings:
+    return FileSecureReaderSettings()
+
+
 @pytest.fixture(scope="function")
-def reader_app(loop, secure_reader):
-    current_app = create_reader_app()
+def reader_app(loop, secure_reader, reader_app_settings: FileSecureReaderSettings):
+    current_app = create_reader_app(reader_app_settings)
     runner = aiohttp.web.AppRunner(current_app)
     loop.run_until_complete(runner.setup())
     site = aiohttp.web.UnixSite(runner, path=secure_reader.SOCKET)

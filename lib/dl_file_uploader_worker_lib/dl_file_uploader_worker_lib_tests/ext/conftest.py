@@ -9,6 +9,7 @@ from dl_configs.settings_submodels import (
     S3Settings,
 )
 from dl_file_secure_reader_lib.app import create_app as create_reader_app
+from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
 from dl_file_uploader_worker_lib.settings import (
     DeprecatedFileUploaderWorkerSettings,
     FileUploaderWorkerSettings,
@@ -59,9 +60,14 @@ def file_uploader_worker_settings(
     yield settings
 
 
+@pytest.fixture(scope="class")
+def reader_app_settings() -> FileSecureReaderSettings:
+    return FileSecureReaderSettings()
+
+
 @pytest.fixture(scope="function")
-def reader_app(loop, secure_reader):
-    current_app = create_reader_app()
+def reader_app(loop, secure_reader, reader_app_settings: FileSecureReaderSettings):
+    current_app = create_reader_app(reader_app_settings)
     runner = aiohttp.web.AppRunner(current_app)
     loop.run_until_complete(runner.setup())
     site = aiohttp.web.UnixSite(runner, path=secure_reader.SOCKET)
