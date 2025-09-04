@@ -30,10 +30,12 @@ class TrinoConnectionSchemaBase(
     password = secret_string_field(
         attribute="data.password",
         required=False,
+        allow_none=True,
     )
     jwt = secret_string_field(
         attribute="data.jwt",
         required=False,
+        allow_none=True,
     )
     ssl_enable = core_ma_fields.OnOffField(
         attribute="data.ssl_enable",
