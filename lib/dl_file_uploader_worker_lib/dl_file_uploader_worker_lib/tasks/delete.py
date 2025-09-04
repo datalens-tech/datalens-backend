@@ -65,7 +65,6 @@ class DeleteFileTask(BaseExecutorTask[task_interface.DeleteFileTask, FileUploade
                 )
 
                 try:
-                    # Fallback to redis
                     redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
                     assert isinstance(redis_preview, DataSourcePreview)
 

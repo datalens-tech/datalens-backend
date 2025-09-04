@@ -115,7 +115,7 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
                 dsrc.preview_id = preview.id
                 LOGGER.debug(f"Saving preview {preview.id} to s3")
 
-                LOGGER.info("DataSourcePreview object saved.")
+                LOGGER.info("S3DataSourcePreview object saved.")
 
                 dsrc.status = FileProcessingStatus.ready
 

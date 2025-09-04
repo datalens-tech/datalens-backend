@@ -24,7 +24,6 @@ from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.redis_model.models import (
     DataFile,
     DataSource,
-    DataSourcePreview,
     GSheetsFileSourceSettings,
     GSheetsUserSourceDataSourceProperties,
     GSheetsUserSourceProperties,
@@ -177,22 +176,12 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                     conn = await usm.get_by_id(self.meta.connection_id, expected_type=BaseFileS3Connection)
                     assert isinstance(conn, BaseFileS3Connection)
 
-                    # TODO(catsona): Remove after release, fallback to old behavior
-                    if self.meta.tenant_id is None:
-                        redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=str(src_source.preview_id))
-                        preview_id = redis_preview.id
-                        await redis_preview.save(
-                            ttl=None
-                        )  # now that the source is saved the preview can be saved as persistent
-                        LOGGER.debug(f"Saving persistent preview {preview_id} to redis")
-
-                    else:
-                        preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=str(src_source.preview_id))
-                        preview_id = preview.id
-                        await preview.save(
-                            persistent=True
-                        )  # now that the source is saved the preview can be saved as persistent
-                        LOGGER.debug(f"Saving persistent preview {preview_id} to s3")
+                    preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=str(src_source.preview_id))
+                    preview_id = preview.id
+                    await preview.save(
+                        persistent=True
+                    )  # now that the source is saved the preview can be saved as persistent
+                    LOGGER.debug(f"Saving persistent preview {preview_id} to s3")
 
                     try:
                         conn_file_source = conn.get_file_source_by_id(dst_source_id)
