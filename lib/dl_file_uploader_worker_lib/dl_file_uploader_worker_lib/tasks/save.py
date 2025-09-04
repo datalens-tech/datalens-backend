@@ -146,18 +146,16 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                 return Fail()
 
             redis = self._ctx.redis_service.get_redis()
-            rmm = RedisModelManager(redis=redis, crypto_keys_config=self._ctx.crypto_keys_config)
-
             s3_service = self._ctx.s3_service
-
-            # TODO(catsona): Remove after release
-            s3mm = None
-            if self.meta.tenant_id is not None:
-                s3mm = S3ModelManager(
-                    s3_service=s3_service,
-                    tenant_id=self.meta.tenant_id,
-                    crypto_keys_config=self._ctx.crypto_keys_config,
-                )
+            rmm = RedisModelManager(
+                redis=redis,
+                crypto_keys_config=self._ctx.crypto_keys_config,
+            )
+            s3mm = S3ModelManager(
+                s3_service=s3_service,
+                tenant_id=self.meta.tenant_id,
+                crypto_keys_config=self._ctx.crypto_keys_config,
+            )
 
             dfile = await DataFile.get(manager=rmm, obj_id=self.meta.file_id)
 

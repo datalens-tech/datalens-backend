@@ -62,16 +62,15 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
             LOGGER.info(f"ParseFileTask. Mode: {self.meta.exec_mode.name}. File: {self.meta.file_id}")
 
             redis = self._ctx.redis_service.get_redis()
-            rmm = RedisModelManager(redis=redis, crypto_keys_config=self._ctx.crypto_keys_config)
-
-            # TODO(catsona): Remove after release
-            s3mm = None
-            if self.meta.tenant_id is not None:
-                s3mm = S3ModelManager(
-                    s3_service=self._ctx.s3_service,
-                    crypto_keys_config=self._ctx.crypto_keys_config,
-                    tenant_id=self.meta.tenant_id,
-                )
+            rmm = RedisModelManager(
+                redis=redis,
+                crypto_keys_config=self._ctx.crypto_keys_config,
+            )
+            s3mm = S3ModelManager(
+                s3_service=self._ctx.s3_service,
+                crypto_keys_config=self._ctx.crypto_keys_config,
+                tenant_id=self.meta.tenant_id,
+            )
 
             dfile = await DataFile.get(manager=rmm, obj_id=self.meta.file_id)
             assert dfile is not None
@@ -108,23 +107,13 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
                 dsrc.raw_schema = raw_schema
                 dsrc.file_source_settings = dsrc_settings
 
-                # TODO(catsona): Remove after release, fallback to old behavior
-                if self.meta.tenant_id is None:
-                    redis_preview = await file_parser.prepare_preview_legacy(dsrc, rmm)
-                    await redis_preview.save(
-                        ttl=12 * 12 * 60
-                    )  # save preview temporarily, so it is deleted if source never gets saved
-                    dsrc.preview_id = redis_preview.id
-                    LOGGER.debug(f"Saving preview {redis_preview.id} to redis")
-
-                else:
-                    assert s3mm is not None
-                    preview = await file_parser.prepare_preview(dsrc, s3mm)
-                    await preview.save(
-                        persistent=False,
-                    )  # save preview temporarily, so it is deleted if source never gets saved
-                    dsrc.preview_id = preview.id
-                    LOGGER.debug(f"Saving preview {preview.id} to s3")
+                assert s3mm is not None
+                preview = await file_parser.prepare_preview(dsrc, s3mm)
+                await preview.save(
+                    persistent=False,
+                )  # save preview temporarily, so it is deleted if source never gets saved
+                dsrc.preview_id = preview.id
+                LOGGER.debug(f"Saving preview {preview.id} to s3")
 
                 LOGGER.info("DataSourcePreview object saved.")
 
@@ -145,7 +134,7 @@ class ParseFileTask(BaseExecutorTask[task_interface.ParseFileTask, FileUploaderT
                     if not dsrc.is_applicable:
                         continue
 
-                    assert self.meta.tenant_id is not None and self.meta.connection_id is not None
+                    assert self.meta.connection_id is not None
                     save_source_task = task_interface.SaveSourceTask(
                         tenant_id=self.meta.tenant_id,
                         file_id=dfile.id,
