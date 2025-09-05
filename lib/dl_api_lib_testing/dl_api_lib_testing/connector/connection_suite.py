@@ -59,6 +59,10 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
                 continue
             assert resp.json[param_name] == val, resp.json
 
+        for field_name in edit_connection_params_case.check_absence_of_fields:
+            if field_name in resp.json:
+                assert resp.json[field_name] is None, resp.json
+
     def test_export_connection(
         self,
         control_api_sync_client: SyncHttpClientBase,

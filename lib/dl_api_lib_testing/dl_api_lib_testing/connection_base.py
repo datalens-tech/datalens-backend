@@ -25,8 +25,13 @@ from dl_core_testing.testcases.service_base import DbServiceFixtureTextClass
 
 @attr.s(kw_only=True, frozen=True)
 class EditConnectionParamsCase:
-    params: dict[str, Any] = attr.ib(factory=dict)
-    load_only_field_names: list[str] = attr.ib(factory=list)
+    params: dict[str, Any] = attr.ib(factory=dict)  # params that will be sent in the edit request
+    load_only_field_names: list[str] = attr.ib(
+        factory=list
+    )  # fields that will be sent in the edit request, but will not be present in the response (passwords, etc)
+    check_absence_of_fields: list[str] = attr.ib(
+        factory=list
+    )  # fields that must be absent in the response after the edit
 
 
 class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
