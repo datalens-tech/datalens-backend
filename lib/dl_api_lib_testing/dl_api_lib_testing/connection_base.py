@@ -2,12 +2,13 @@ import abc
 import contextlib
 import json
 from typing import (
+    Any,
     ClassVar,
     Generator,
-    Optional,
 )
 import uuid
 
+import attr
 import pytest
 
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
@@ -22,6 +23,20 @@ from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
 from dl_core_testing.testcases.service_base import DbServiceFixtureTextClass
 
 
+@attr.s(kw_only=True, frozen=True)
+class EditConnectionParamsCase:
+    params: dict[str, Any] = attr.ib(factory=dict)  # params that will be sent in the edit request
+    load_only_field_names: list[str] = attr.ib(
+        factory=list
+    )  # fields that will be sent in the edit request, but will not be present in the response (passwords, etc)
+    additional_fields_to_check: dict[str, Any] = attr.ib(
+        factory=dict
+    )  # fields that must be present in the response after the edit in addition to params. Values from params can be overridden here.
+    check_absence_of_fields: list[str] = attr.ib(
+        factory=list
+    )  # fields that must be absent or `None` in the response after the edit
+
+
 class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
     conn_type: ClassVar[ConnectionType]
 
@@ -32,12 +47,16 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
     def connection_params(self) -> dict:
         raise NotImplementedError
 
+    @pytest.fixture(scope="class")
+    def edit_connection_params_case(self) -> EditConnectionParamsCase | None:
+        return None
+
     @pytest.fixture(scope="function")
     def saved_connection_id(
         self,
         control_api_sync_client: SyncHttpClientBase,
         connection_params: dict,
-        bi_headers: Optional[dict[str, str]],
+        bi_headers: dict[str, str] | None = None,
     ) -> Generator[str, None, None]:
         with self.create_connection(
             control_api_sync_client=control_api_sync_client,
@@ -51,7 +70,7 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
         self,
         control_api_sync_client: SyncHttpClientBase,
         connection_params: dict,
-        bi_headers: Optional[dict[str, str]],
+        bi_headers: dict[str, str] | None = None,
     ) -> Generator[str, None, None]:
         data = dict(
             name=f"{self.conn_type.name} conn {uuid.uuid4()}",
