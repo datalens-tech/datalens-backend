@@ -2418,9 +2418,9 @@ marshmallow = "*"
 shortuuid = "*"
 sqlalchemy = "*"
 typing-extensions = "*"
-ydb = ">=3.21.6"
-ydb-dbapi = ">=0.1.13"
-ydb-sqlalchemy = ">=0.1.9"
+ydb = "*"
+ydb-dbapi = "*"
+ydb-sqlalchemy = "*"
 
 [package.source]
 type = "directory"
