@@ -27,9 +27,9 @@ python = ">=3.10, <3.13"
 shortuuid = "*"
 sqlalchemy = "*"
 typing-extensions = "*"
-ydb = ">=3.21.6"
-ydb-dbapi = ">=0.1.13"
-ydb-sqlalchemy = ">=0.1.9"
+ydb = "*"
+ydb-dbapi = "*"
+ydb-sqlalchemy = "*"
 
 [tool.poetry.group.tests.dependencies]
 dl-formula-testing = {path = "../dl_formula_testing"}
