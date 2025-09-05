@@ -196,7 +196,6 @@ class CleanupTenantFilePreviewsTask(
             preview_set = PreviewSet(redis=redis, id=tenant_id)
             async for preview_id in preview_set.sscan_iter():
                 try:
-                    # Fallback to redis
                     redis_preview = await DataSourcePreview.get(manager=rmm, obj_id=preview_id)
                     assert isinstance(redis_preview, DataSourcePreview)
 
