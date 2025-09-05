@@ -10,7 +10,10 @@ from typing import (
 import attr
 import pydantic
 
-from dl_api_commons.base_models import TenantDef
+from dl_api_commons.base_models import (
+    AuthData,
+    TenantDef,
+)
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.enums import RedisMode
@@ -306,6 +309,7 @@ class DeprecatedDataApiAppSettings(DeprecatedAppSettings):
 class ControlApiAppTestingsSettings:
     us_auth_mode_override: Optional[USAuthMode] = attr.ib(default=None)
     fake_tenant: Optional[TenantDef] = attr.ib(default=None)
+    fake_auth_data: Optional[AuthData] = attr.ib(default=None)
 
 
 @attr.s(frozen=True)
