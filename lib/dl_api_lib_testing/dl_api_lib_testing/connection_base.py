@@ -29,9 +29,12 @@ class EditConnectionParamsCase:
     load_only_field_names: list[str] = attr.ib(
         factory=list
     )  # fields that will be sent in the edit request, but will not be present in the response (passwords, etc)
+    additional_fields_to_check: dict[str, Any] = attr.ib(
+        factory=dict
+    )  # fields that must be present in the response after the edit in addition to params. Values from params can be overridden here.
     check_absence_of_fields: list[str] = attr.ib(
         factory=list
-    )  # fields that must be absent in the response after the edit
+    )  # fields that must be absent or `None` in the response after the edit
 
 
 class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):

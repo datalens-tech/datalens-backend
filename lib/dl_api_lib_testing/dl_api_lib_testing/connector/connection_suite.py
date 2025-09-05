@@ -54,7 +54,9 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
             headers=bi_headers,
         )
         assert resp.status_code == 200, resp.json
-        for param_name, val in edit_connection_params_case.params.items():
+        for param_name, val in (
+            edit_connection_params_case.params | edit_connection_params_case.additional_fields_to_check
+        ).items():
             if param_name in edit_connection_params_case.load_only_field_names:
                 continue
             assert resp.json[param_name] == val, resp.json
