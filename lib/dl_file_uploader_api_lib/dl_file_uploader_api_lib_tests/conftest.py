@@ -49,6 +49,7 @@ from dl_core_testing.environment import (
     prepare_united_storage,
 )
 from dl_file_secure_reader_lib.app import create_app as create_reader_app
+from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
 from dl_file_uploader_api_lib.app import FileUploaderApiAppFactory
 from dl_file_uploader_api_lib.dl_request import FileUploaderDLRequest
 from dl_file_uploader_api_lib.settings import (
@@ -147,7 +148,7 @@ def s3_settings() -> S3Settings:
 
 
 @pytest.fixture(scope="session")
-def secure_reader():
+def secure_reader() -> SecureReader:
     socket_name = "reader.sock"
     if sys.platform == "darwin":
         path = "/var/tmp"
@@ -416,9 +417,14 @@ async def default_async_usm_per_test(bi_context, prepare_us, us_config, root_cer
     )
 
 
+@pytest.fixture(scope="class")
+def reader_app_settings() -> FileSecureReaderSettings:
+    return FileSecureReaderSettings()
+
+
 @pytest.fixture(scope="function")
-def reader_app(loop, secure_reader):
-    current_app = create_reader_app()
+def reader_app(loop, secure_reader: SecureReader, reader_app_settings: FileSecureReaderSettings):
+    current_app = create_reader_app(reader_app_settings)
     runner = aiohttp.web.AppRunner(current_app)
     loop.run_until_complete(runner.setup())
     site = aiohttp.web.UnixSite(runner, path=secure_reader.SOCKET)

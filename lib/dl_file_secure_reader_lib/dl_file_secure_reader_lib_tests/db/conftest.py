@@ -9,11 +9,21 @@ from aiohttp.pytest_plugin import (
 import pytest
 
 from dl_file_secure_reader_lib.app import create_app
+from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
 
 
 @pytest.fixture
-def web_app(loop: asyncio.AbstractEventLoop, aiohttp_client: AiohttpClient) -> TestClient:
-    return loop.run_until_complete(aiohttp_client(create_app()))
+def settings() -> FileSecureReaderSettings:
+    return FileSecureReaderSettings()
+
+
+@pytest.fixture
+def web_app(
+    loop: asyncio.AbstractEventLoop,
+    aiohttp_client: AiohttpClient,
+    settings: FileSecureReaderSettings,
+) -> TestClient:
+    return loop.run_until_complete(aiohttp_client(create_app(settings)))
 
 
 @pytest.fixture(scope="session")
