@@ -65,6 +65,27 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
             if field_name in resp.json:
                 assert resp.json[field_name] is None, resp.json
 
+    def test_test_on_edit_connection(
+        self,
+        control_api_sync_client: SyncHttpClientBase,
+        saved_connection_id: str,
+        bi_headers: dict[str, str] | None,
+        edit_connection_params_case: EditConnectionParamsCase | None,
+    ) -> None:
+        if edit_connection_params_case is None:
+            pytest.skip("No edit_connection_params_case fixture provided")
+
+        if not edit_connection_params_case.supports_connection_test:
+            pytest.skip("Connection test is not supported for this connection type")
+
+        resp = control_api_sync_client.post(
+            f"/api/v1/connections/test_connection/{saved_connection_id}",
+            content_type="application/json",
+            data=json.dumps(edit_connection_params_case.params),
+            headers=bi_headers,
+        )
+        assert resp.status_code == 200, resp.json
+
     def test_export_connection(
         self,
         control_api_sync_client: SyncHttpClientBase,

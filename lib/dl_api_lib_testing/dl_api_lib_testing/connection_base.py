@@ -35,6 +35,7 @@ class EditConnectionParamsCase:
     check_absence_of_fields: list[str] = attr.ib(
         factory=list
     )  # fields that must be absent or `None` in the response after the edit
+    supports_connection_test: bool = attr.ib(default=True)
 
 
 class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
