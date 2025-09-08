@@ -134,6 +134,7 @@ class YQLTestBase(FormulaConnectorTestBase):
 
         return ydb_field_types
 
+    @pytest.fixture(scope="class")
     def engine_params(self) -> dict:
         return dict(
             connect_args=frozendict(
