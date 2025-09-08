@@ -4,7 +4,6 @@ import attr
 import flask
 
 from dl_api_commons.base_models import (
-    AuthData,
     NoAuthData,
     TenantCommon,
     TenantDef,
@@ -22,7 +21,6 @@ class TrustAuthService:
     fake_user_id: Optional[str] = None
     fake_user_name: Optional[str] = None
     fake_tenant: Optional[TenantDef] = None
-    fake_auth_data: Optional[AuthData] = None
 
     def _before_request(self) -> None:
         fake_user_id = self.fake_user_id
@@ -30,7 +28,7 @@ class TrustAuthService:
         fake_tenant = self.fake_tenant
 
         temp_rci = ReqCtxInfoMiddleware.get_temp_rci().clone(
-            auth_data=NoAuthData() if self.fake_auth_data is None else self.fake_auth_data,
+            auth_data=NoAuthData(),
             tenant=TenantCommon() if fake_tenant is None else fake_tenant,
         )
         if fake_user_id is not None:

@@ -140,7 +140,6 @@ class TestingControlApiAppFactory(ControlApiAppFactory[ControlApiAppSettings], T
             fake_user_id=TEST_USER_ID,
             fake_user_name=TEST_USER_NAME,
             fake_tenant=None if testing_app_settings is None else testing_app_settings.fake_tenant,
-            fake_auth_data=None if testing_app_settings is None else testing_app_settings.fake_auth_data,
         ).set_up(app)
 
         us_auth_mode_override = None if testing_app_settings is None else testing_app_settings.us_auth_mode_override
