@@ -21,7 +21,6 @@ dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
-dl-file-secure-reader-lib = {path = "../dl_file_secure_reader_lib"}
 dl-file-uploader-lib = {path = "../dl_file_uploader_lib"}
 dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
 dl-s3 = {path = "../dl_s3"}
