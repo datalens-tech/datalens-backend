@@ -57,7 +57,7 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
         self,
         control_api_sync_client: SyncHttpClientBase,
         connection_params: dict,
-        bi_headers: dict[str, str] | None = None,
+        bi_headers: dict[str, str] | None,
     ) -> Generator[str, None, None]:
         with self.create_connection(
             control_api_sync_client=control_api_sync_client,
@@ -71,7 +71,7 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
         self,
         control_api_sync_client: SyncHttpClientBase,
         connection_params: dict,
-        bi_headers: dict[str, str] | None = None,
+        bi_headers: dict[str, str] | None,
     ) -> Generator[str, None, None]:
         data = dict(
             name=f"{self.conn_type.name} conn {uuid.uuid4()}",
