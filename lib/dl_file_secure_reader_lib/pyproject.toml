@@ -9,7 +9,7 @@ version = "0.1.0"
 
 [tool.poetry.dependencies]
 aiohttp = "*"
-dl-settings = {path = "../../mainrepo/lib/dl_settings"}
+dl-settings = {path = "../dl_settings"}
 openpyxl = "*"
 pydantic = "*"
 python = ">=3.10, <3.13"
