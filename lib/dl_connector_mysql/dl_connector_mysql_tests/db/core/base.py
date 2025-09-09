@@ -79,3 +79,15 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
             ssl_enable=True,
             ssl_ca=ssl_ca,
         )
+
+
+class BaseRogueMySQLTestClass(BaseMySQLTestClass):
+    @pytest.fixture(scope="function")
+    def connection_creation_params(self) -> dict:
+        return dict(
+            db_name=test_config.CoreRogueConnectionSettings.DB_NAME,
+            host=test_config.CoreRogueConnectionSettings.HOST,
+            port=test_config.CoreRogueConnectionSettings.PORT,
+            username=test_config.CoreRogueConnectionSettings.USERNAME,
+            password=test_config.CoreRogueConnectionSettings.PASSWORD,
+        )

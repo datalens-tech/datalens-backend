@@ -1,3 +1,7 @@
+import typing
+
+import aiomysql.connection
+
 from dl_core.connectors.base.connector import (
     CoreBackendDefinition,
     CoreConnectionDefinition,
@@ -61,6 +65,11 @@ class MySQLCoreBackendDefinition(CoreBackendDefinition):
     compiler_cls = MySQLQueryCompiler
 
 
+async def _read_load_local_packet_patched(*args: typing.Any, **kwargs: typing.Any) -> None:
+    # TODO BI-6548 remove this patch after aiomysql is updated
+    raise RuntimeError("**WARN**: Received LOAD_LOCAL packet but local_infile option is false.")
+
+
 class MySQLCoreConnector(CoreConnector):
     backend_definition = MySQLCoreBackendDefinition
     connection_definitions = (MySQLCoreConnectionDefinition,)
@@ -70,3 +79,8 @@ class MySQLCoreConnector(CoreConnector):
     )
     rqe_adapter_classes = frozenset({MySQLAdapter, AsyncMySQLAdapter})
     sa_types = SQLALCHEMY_MYSQL_TYPES
+
+    @classmethod
+    def registration_hook(cls) -> None:
+        super().registration_hook()
+        aiomysql.connection.MySQLResult._read_load_local_packet = _read_load_local_packet_patched

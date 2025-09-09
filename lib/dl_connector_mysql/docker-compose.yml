@@ -10,6 +10,16 @@ services:
       MYSQL_PASSWORD: "qwerty"
     ports:
       - "52000:3306"
+  db-mysql-rogue:
+    # build from ./docker-compose/rogue_mysql_server
+    image: "ghcr.io/datalens-tech/datalens-backend/rogue-mysql-server@sha256:df05bed72334ca3b8e04c7fd8b74c2834f59a0e0501a98311a4c29443cfeff9d"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+      MYSQL_DATABASE: "test_data"
+      MYSQL_USER: "datalens"
+      MYSQL_PASSWORD: "qwerty"
+    ports:
+      - "52003:3306"
   db-mysql-8-0:
     # image: "mysql:8.0.40"
     build:

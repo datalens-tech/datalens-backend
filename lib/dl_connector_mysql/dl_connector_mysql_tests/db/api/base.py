@@ -13,6 +13,7 @@ from dl_connector_mysql.core.constants import (
 from dl_connector_mysql_tests.db.config import (
     API_TEST_CONFIG,
     CoreConnectionSettings,
+    CoreRogueConnectionSettings,
 )
 from dl_connector_mysql_tests.db.core.base import BaseMySQLTestClass
 
@@ -55,3 +56,20 @@ class MySQLDatasetTestBase(MySQLConnectionTestBase, DatasetTestBase):
 
 class MySQLDataApiTestBase(MySQLDatasetTestBase, StandardizedDataApiTestBase):
     mutation_caches_enabled = False
+
+
+class RogueMySQLConnectionTestBase(MySQLConnectionTestBase):
+    @pytest.fixture(scope="class")
+    def connection_params(self) -> dict:
+        return dict(
+            db_name=CoreRogueConnectionSettings.DB_NAME,
+            host=CoreRogueConnectionSettings.HOST,
+            port=CoreRogueConnectionSettings.PORT,
+            username=CoreRogueConnectionSettings.USERNAME,
+            password=CoreRogueConnectionSettings.PASSWORD,
+            **(dict(raw_sql_level=self.raw_sql_level.value) if self.raw_sql_level is not None else {}),
+        )
+
+
+class RogueMySQLDashSQLConnectionTest(RogueMySQLConnectionTestBase, MySQLDashSQLConnectionTest):
+    raw_sql_level = RawSQLLevel.dashsql
