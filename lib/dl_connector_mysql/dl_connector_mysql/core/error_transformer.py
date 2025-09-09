@@ -108,6 +108,13 @@ async_mysql_db_error_transformer: DbErrorTransformer = AsyncMysqlChainedDbErrorT
             when=is_sql_syntax_error_async_error(),
             then_raise=exc.InvalidQuery,
         ),
+        Rule(
+            when=wrapper_exc_is_and_matches_re(
+                wrapper_exc_cls=RuntimeError,
+                err_regex_str=".*Received LOAD_LOCAL.*",
+            ),
+            then_raise=exc.SourceProtocolError,
+        ),
     )
     + error_transformer.default_error_transformer_rules
 )
@@ -121,5 +128,12 @@ sync_mysql_db_error_transformer: DbErrorTransformer = error_transformer.make_def
     Rule(
         when=is_sql_syntax_error_sync_error(),
         then_raise=exc.InvalidQuery,
+    ),
+    Rule(
+        when=wrapper_exc_is_and_matches_re(
+            wrapper_exc_cls=RuntimeError,
+            err_regex_str=".*Received LOAD_LOCAL.*",
+        ),
+        then_raise=exc.SourceProtocolError,
     ),
 )

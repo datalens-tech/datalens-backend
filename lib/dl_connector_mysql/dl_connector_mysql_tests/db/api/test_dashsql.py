@@ -2,9 +2,13 @@ from aiohttp.test_utils import TestClient
 import pytest
 
 from dl_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
+from dl_api_lib_testing.dashsql_base import DashSQLTestBase
 from dl_testing.test_data.sql_queries import DASHSQL_EXAMPLE_PARAMS
 
-from dl_connector_mysql_tests.db.api.base import MySQLDashSQLConnectionTest
+from dl_connector_mysql_tests.db.api.base import (
+    MySQLDashSQLConnectionTest,
+    RogueMySQLDashSQLConnectionTest,
+)
 from dl_connector_mysql_tests.db.config import (
     QUERY_WITH_PARAMS,
     SUBSELECT_QUERY_FULL,
@@ -157,3 +161,19 @@ class TestMySQLDashSQL(MySQLDashSQLConnectionTest, DefaultDashSQLTestSuite):
         assert resp_data[1]["data"] == [
             "0%",
         ]
+
+
+class TestRogueMySQLDashSQL(RogueMySQLDashSQLConnectionTest, DashSQLTestBase):
+    @pytest.mark.asyncio
+    async def test_rogue_result(
+        self,
+        data_api_lowlevel_aiohttp_client: TestClient,
+        saved_connection_id: str,
+    ) -> None:
+        resp = await self.get_dashsql_response(
+            data_api_aio=data_api_lowlevel_aiohttp_client, conn_id=saved_connection_id, query="SELECT 1", fail_ok=True
+        )
+
+        resp_data = await resp.json()
+        assert resp.status == 400, resp_data
+        print(resp_data)
