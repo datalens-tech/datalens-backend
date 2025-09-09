@@ -176,4 +176,3 @@ class TestRogueMySQLDashSQL(RogueMySQLDashSQLConnectionTest, DashSQLTestBase):
 
         resp_data = await resp.json()
         assert resp.status == 400, resp_data
-        print(resp_data)
