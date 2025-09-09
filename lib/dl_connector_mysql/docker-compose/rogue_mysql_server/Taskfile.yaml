@@ -1,0 +1,32 @@
+version: 3
+
+vars:
+  TARGET_PLATFORM: '{{.TARGET_PLATFORM | default "linux/amd64,linux/arm64"}}'
+  REPO_OWNER: '{{.REPO_OWNER | default "datalens-tech"}}'
+  REPO_NAME: '{{.REPO_NAME | default "datalens-backend"}}'
+  IMG_REPO: '{{.IMG_REPO | default "rogue-mysql-server"}}'
+  IMG_TAG: '{{.IMG_TAG | default "latest"}}'
+  PUSH: '{{.PUSH | default "0"}}'
+
+tasks:
+  build:
+    requires:
+      vars:
+        - ROGUE_MYSQL_SERVER_SOURCE
+        - PUSH
+    desc: "Build a docker image with an option to push"
+    summary: |
+      Build a docker image with an option to push.
+      Example usage: task build ROGUE_MYSQL_SERVER_SOURCE=\"/tmp/rogue_mysql_server\" PUSH=1.
+      ROGUE_MYSQL_SERVER_SOURCE is the path to the https://github.com/rmb122/rogue_mysql_server repository.
+      Note that you may need to specify a single (your) platform to build locally without pushing.
+    cmds:
+      - docker buildx build
+        --build-context sources="{{.ROGUE_MYSQL_SERVER_SOURCE}}"
+        --build-arg REPO_OWNER="{{.REPO_OWNER}}"
+        --build-arg REPO_NAME="{{.REPO_NAME}}"
+        --tag "ghcr.io/{{.REPO_OWNER}}/{{.REPO_NAME}}/{{.IMG_REPO}}:{{.IMG_TAG}}"
+        --platform "{{.TARGET_PLATFORM}}"
+        --annotation="org.opencontainers.image.source=https://github.com/{{.REPO_OWNER}}/{{.REPO_NAME}}"
+        {{if eq .PUSH "1"}}--push{{else}}--load{{end}}
+        .
