@@ -23,8 +23,6 @@ tasks:
     cmds:
       - docker buildx build
         --build-context sources="{{.ROGUE_MYSQL_SERVER_SOURCE}}"
-        --build-arg REPO_OWNER="{{.REPO_OWNER}}"
-        --build-arg REPO_NAME="{{.REPO_NAME}}"
         --tag "ghcr.io/{{.REPO_OWNER}}/{{.REPO_NAME}}/{{.IMG_REPO}}:{{.IMG_TAG}}"
         --platform "{{.TARGET_PLATFORM}}"
         --annotation="org.opencontainers.image.source=https://github.com/{{.REPO_OWNER}}/{{.REPO_NAME}}"
