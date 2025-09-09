@@ -244,7 +244,7 @@ DEFINITIONS_DATETIME = [
     # today
     base.FuncToday(
         variants=[
-            V(D.POSTGRESQL, lambda: sa.type_coerce(raw_sql("CURRENT_DATE"), sa.Date)),
+            V(D.POSTGRESQL, lambda: sa.cast(raw_sql("CURRENT_DATE"), sa.Date)),
         ]
     ),
     # week
