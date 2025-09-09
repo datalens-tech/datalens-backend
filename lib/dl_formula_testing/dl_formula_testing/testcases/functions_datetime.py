@@ -34,17 +34,26 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
     supports_datetrunc_3: ClassVar[bool] = False
     supports_datetimetz: ClassVar[bool] = False
 
-    @pytest.mark.parametrize("func_name", ("NOW", "GENERICNOW"))
-    def test_now(self, dbe: DbEvaluator, func_name: str) -> None:
-        assert dt_strip(dbe.eval(f"{func_name}()")) == approx_datetime(
-            now().replace(tzinfo=pytz.UTC).astimezone(dbe.db.tzinfo).replace(tzinfo=None)
-        )
+    @pytest.fixture(name="now")
+    def fixture_now(self, dbe: DbEvaluator) -> datetime.datetime:
+        return now().replace(tzinfo=pytz.UTC).astimezone(dbe.db.tzinfo).replace(tzinfo=None)
 
-    def test_today(self, dbe: DbEvaluator) -> None:
-        assert (
-            dbe.eval("TODAY()")
-            == (now().replace(tzinfo=pytz.UTC).astimezone(dbe.db.tzinfo).replace(tzinfo=None)).date()
-        )
+    @pytest.fixture(name="today")
+    def fixture_today(self, now: datetime.datetime) -> datetime.date:
+        return now.date()
+
+    @pytest.mark.parametrize("func_name", ("NOW", "GENERICNOW"))
+    def test_now(self, dbe: DbEvaluator, func_name: str, now: datetime.datetime) -> None:
+        assert dt_strip(dbe.eval(f"{func_name}()")) == approx_datetime(now)
+
+    def test_today(self, dbe: DbEvaluator, today: datetime.date) -> None:
+        assert dbe.eval("TODAY()") == today
+
+    def test_dateadd_to_now(self, dbe: DbEvaluator, now: datetime.datetime) -> None:
+        assert dt_strip(dbe.eval('DATEADD(NOW(), "day", 1)')) == approx_datetime(now + datetime.timedelta(days=1))
+
+    def test_dateadd_to_today(self, dbe: DbEvaluator, today: datetime.date) -> None:
+        assert dbe.eval('DATEADD(TODAY(), "day", 1)') == today + datetime.timedelta(days=1)
 
     def test_datetime_dateadd_with_uneven_month_lengths(self, dbe: DbEvaluator) -> None:
         if not self.supports_addition_to_feb_29:
