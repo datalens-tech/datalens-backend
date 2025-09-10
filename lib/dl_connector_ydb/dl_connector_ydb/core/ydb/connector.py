@@ -12,6 +12,7 @@ from dl_core.us_manager.storage_schemas.data_source_spec_base import (
     SQLDataSourceSpecStorageSchema,
     SubselectDataSourceSpecStorageSchema,
 )
+import dl_sqlalchemy_ydb.dialect
 
 from dl_connector_ydb.core.base.query_compiler import YQLQueryCompiler
 from dl_connector_ydb.core.base.type_transformer import YQLTypeTransformer
@@ -27,7 +28,6 @@ from dl_connector_ydb.core.ydb.data_source import (
     YDBSubselectDataSource,
     YDBTableDataSource,
 )
-import dl_connector_ydb.core.ydb.dialect
 from dl_connector_ydb.core.ydb.settings import YDBSettingDefinition
 from dl_connector_ydb.core.ydb.storage_schemas.connection import YDBConnectionDataStorageSchema
 from dl_connector_ydb.core.ydb.us_connection import YDBConnection
@@ -75,4 +75,4 @@ class YDBCoreConnector(CoreConnector):
 
     @classmethod
     def registration_hook(cls) -> None:
-        dl_connector_ydb.core.ydb.dialect.register_dialect()
+        dl_sqlalchemy_ydb.dialect.register_dialect()

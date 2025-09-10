@@ -18,8 +18,7 @@ import ydb_sqlalchemy as ydb_sa
 from dl_core import exc
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_models import TableIdent
-
-import dl_connector_ydb.core.ydb.dialect
+import dl_sqlalchemy_ydb.dialect
 
 
 if TYPE_CHECKING:
@@ -63,8 +62,8 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         "Yson": sa.TEXT,
         "Uuid": sa.TEXT,
         "Date": sa.DATE,
-        "Timestamp": dl_connector_ydb.core.ydb.dialect.YqlTimestamp,
-        "Datetime": dl_connector_ydb.core.ydb.dialect.YqlDateTime,
+        "Timestamp": dl_sqlalchemy_ydb.dialect.YqlTimestamp,
+        "Datetime": dl_sqlalchemy_ydb.dialect.YqlDateTime,
         "Interval": sa.INTEGER,
         "Bool": sa.BOOLEAN,
     }

@@ -133,8 +133,8 @@ class CustomAsyncYqlDialect(CustomYqlDialect):
 def register_dialect() -> None:
     from sqlalchemy.dialects import registry
 
-    registry.register("yql.ydb", "dl_connector_ydb.core.ydb.dialect", "CustomYqlDialect")
-    registry.register("ydb", "dl_connector_ydb.core.ydb.dialect", "CustomYqlDialect")
-    registry.register("yql", "dl_connector_ydb.core.ydb.dialect", "CustomYqlDialect")
-    registry.register("yql.ydb_async", "dl_connector_ydb.core.ydb.dialect", "CustomAsyncYqlDialect")
-    registry.register("ydb_async", "dl_connector_ydb.core.ydb.dialect", "CustomAsyncYqlDialect")
+    registry.register("yql.ydb", "dl_sqlalchemy_ydb.dialect", "CustomYqlDialect")
+    registry.register("ydb", "dl_sqlalchemy_ydb.dialect", "CustomYqlDialect")
+    registry.register("yql", "dl_sqlalchemy_ydb.dialect", "CustomYqlDialect")
+    registry.register("yql.ydb_async", "dl_sqlalchemy_ydb.dialect", "CustomAsyncYqlDialect")
+    registry.register("ydb_async", "dl_sqlalchemy_ydb.dialect", "CustomAsyncYqlDialect")

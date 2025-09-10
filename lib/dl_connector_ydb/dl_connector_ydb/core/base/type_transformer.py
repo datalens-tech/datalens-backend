@@ -6,12 +6,11 @@ import sqlalchemy as sa
 import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_constants.enums import UserDataType
+import dl_sqlalchemy_ydb.dialect
 from dl_type_transformer.type_transformer import (
     TypeTransformer,
     make_native_type,
 )
-
-import dl_connector_ydb.core.ydb.dialect
 
 
 if TYPE_CHECKING:
@@ -53,14 +52,14 @@ class YQLTypeTransformer(TypeTransformer):
         UserDataType.datetime: (
             sa.DATETIME,
             sa.TIMESTAMP,
-            dl_connector_ydb.core.ydb.dialect.YqlDateTime,
-            dl_connector_ydb.core.ydb.dialect.YqlTimestamp,
+            dl_sqlalchemy_ydb.dialect.YqlDateTime,
+            dl_sqlalchemy_ydb.dialect.YqlTimestamp,
         ),
         UserDataType.genericdatetime: (
             sa.DATETIME,
             sa.TIMESTAMP,
-            dl_connector_ydb.core.ydb.dialect.YqlDateTime,
-            dl_connector_ydb.core.ydb.dialect.YqlTimestamp,
+            dl_sqlalchemy_ydb.dialect.YqlDateTime,
+            dl_sqlalchemy_ydb.dialect.YqlTimestamp,
         ),
         UserDataType.unsupported: (sa.sql.sqltypes.NullType,),  # Actually the default, so should not matter much.
     }

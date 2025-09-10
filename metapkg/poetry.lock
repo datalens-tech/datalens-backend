@@ -2412,6 +2412,7 @@ dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
+dl-sqlalchemy-ydb = {path = "../../lib/dl_sqlalchemy_ydb"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 grpcio = "*"
@@ -3349,6 +3350,23 @@ sqlalchemy = "*"
 [package.source]
 type = "directory"
 url = "../lib/dl_sqlalchemy_promql"
+
+[[package]]
+name = "dl-sqlalchemy-ydb"
+version = "0.1"
+description = "BI YDB SQLAlchemy Dialect"
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+sqlalchemy = "*"
+ydb-sqlalchemy = "*"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_sqlalchemy_ydb"
 
 [[package]]
 name = "dl-task-processor"

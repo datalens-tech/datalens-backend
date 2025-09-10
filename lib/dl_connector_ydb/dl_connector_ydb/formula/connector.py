@@ -1,7 +1,7 @@
 from dl_formula.connectors.base.connector import FormulaConnector
 from dl_query_processing.compilation.query_mutator import RemoveConstFromGroupByFormulaAtomicQueryMutator
+from dl_sqlalchemy_ydb.dialect import CustomYqlDialect
 
-from dl_connector_ydb.core.ydb.dialect import CustomYqlDialect
 from dl_connector_ydb.formula.constants import YqlDialect as YqlDialectNS
 from dl_connector_ydb.formula.definitions.all import DEFINITIONS
 
