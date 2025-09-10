@@ -9,7 +9,7 @@ import attr
 import requests
 import requests.adapters
 
-from dl_api_commons.retrier.policy import RetryPolicy
+import dl_retrier
 
 
 LOGGER = logging.getLogger(__name__)
@@ -29,7 +29,7 @@ class RequestsPolicyRetrier:
     Retrier for requests session
     """
 
-    _retry_policy: RetryPolicy = attr.ib()
+    _retry_policy: dl_retrier.RetryPolicy = attr.ib()
 
     # TODO: Merge with aio.AiohttpPolicyRetrier as sync/async-independent implementation
 

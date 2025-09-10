@@ -4,7 +4,6 @@ import attr
 import flask
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_api_commons.retrier.policy import BaseRetryPolicyFactory
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.enums import USApiType
@@ -18,6 +17,7 @@ from dl_core.united_storage_client import (
 )
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
+import dl_retrier
 
 
 @attr.s(frozen=True)
@@ -25,7 +25,7 @@ class USMFactory:
     us_base_url: str = attr.ib()
     crypto_keys_config: Optional[CryptoKeysConfig] = attr.ib()
     ca_data: bytes = attr.ib()
-    retry_policy_factory: BaseRetryPolicyFactory = attr.ib()
+    retry_policy_factory: dl_retrier.BaseRetryPolicyFactory = attr.ib()
     us_master_token: Optional[str] = attr.ib(default=None, repr=False)
     us_public_token: Optional[str] = attr.ib(default=None, repr=False)
 

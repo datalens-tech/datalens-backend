@@ -18,11 +18,7 @@ import attrs
 import httpx
 import typing_extensions
 
-from dl_api_commons.retrier import (
-    RetryPolicy,
-    RetryPolicyFactory,
-    RetryPolicyFactorySettings,
-)
+import dl_retrier
 
 
 LOGGER = logging.getLogger(__name__)
@@ -66,7 +62,9 @@ class HttpxClientSettings:
     base_url: str
     base_cookies: dict[str, str] = attrs.field(factory=dict)
     base_headers: dict[str, str] = attrs.field(factory=dict)
-    retry_policy_factory: RetryPolicyFactorySettings = attrs.field(factory=RetryPolicyFactorySettings)
+    retry_policy_factory: dl_retrier.RetryPolicyFactorySettings = attrs.field(
+        factory=dl_retrier.RetryPolicyFactorySettings
+    )
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
@@ -74,7 +72,7 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
     _base_url: str = attrs.field()
     _base_cookies: dict[str, str]
     _base_headers: dict[str, str]
-    _retry_policy_factory: RetryPolicyFactory
+    _retry_policy_factory: dl_retrier.RetryPolicyFactory
 
     _base_client: THttpxClient
 
@@ -84,7 +82,7 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
             base_url=settings.base_url,
             base_cookies=settings.base_cookies,
             base_headers=settings.base_headers,
-            retry_policy_factory=RetryPolicyFactory.from_settings(settings.retry_policy_factory),
+            retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(settings.retry_policy_factory),
             base_client=cls._get_client(),
         )
 
@@ -143,7 +141,7 @@ HttpxClientT = TypeVar("HttpxClientT", bound=HttpxBaseClient)
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
 class HttpxSyncRetrier:
-    _retry_policy: RetryPolicy
+    _retry_policy: dl_retrier.RetryPolicy
 
     def send(self, request_func: SyncRequestFunction, request: httpx.Request) -> httpx.Response:
         last_known_result: httpx.Response | Exception | None = None
@@ -182,7 +180,7 @@ class HttpxSyncRetrier:
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
 class HttpxAsyncRetrier:
-    _retry_policy: RetryPolicy
+    _retry_policy: dl_retrier.RetryPolicy
 
     async def send(self, request_func: AsyncRequestFunction, request: httpx.Request) -> httpx.Response:
         last_known_result: httpx.Response | Exception | None = None

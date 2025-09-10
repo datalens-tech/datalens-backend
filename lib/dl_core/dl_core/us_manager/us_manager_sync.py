@@ -16,7 +16,6 @@ from typing import (
 from typing_extensions import Self
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_api_commons.retrier.policy import BaseRetryPolicyFactory
 from dl_app_tools.profiling_base import generic_profiler
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core import exc
@@ -37,6 +36,7 @@ from dl_core.us_manager.broken_link import (
 )
 from dl_core.us_manager.schema_migration.factory_base import EntrySchemaMigrationFactoryBase
 from dl_core.us_manager.us_manager import USManagerBase
+import dl_retrier
 from dl_utils.aio import await_sync
 
 
@@ -59,7 +59,7 @@ class SyncUSManager(USManagerBase):
         us_base_url: str,
         bi_context: RequestContextInfo,
         services_registry: ServicesRegistry,
-        retry_policy_factory: BaseRetryPolicyFactory,
+        retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
         crypto_keys_config: Optional[CryptoKeysConfig] = None,
         us_api_prefix: Optional[str] = None,
         # caches_redis: Optional[aioredis.Redis] = None,

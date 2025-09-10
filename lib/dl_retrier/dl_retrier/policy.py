@@ -11,7 +11,7 @@ import attr
 import frozendict
 import typing_extensions
 
-from dl_api_commons.retrier.settings import RetryPolicyFactorySettings
+from dl_retrier.settings import RetryPolicyFactorySettings
 
 
 @attr.s(kw_only=True, frozen=True, auto_attribs=True)

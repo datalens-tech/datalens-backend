@@ -1,10 +1,10 @@
 import itertools
 
-import dl_api_commons.retrier.policy
+import dl_retrier
 
 
 def test_backoff_at() -> None:
-    policy = dl_api_commons.retrier.policy.RetryPolicy(
+    policy = dl_retrier.RetryPolicy(
         total_timeout=10,
         connect_timeout=10,
         request_timeout=10,
@@ -33,7 +33,7 @@ def test_backoff_at() -> None:
 
 
 def test_backoff() -> None:
-    policy = dl_api_commons.retrier.policy.RetryPolicy(
+    policy = dl_retrier.RetryPolicy(
         total_timeout=10,
         connect_timeout=10,
         request_timeout=10,

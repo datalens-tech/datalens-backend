@@ -7,7 +7,6 @@ from typing import Optional
 from aiohttp.typedefs import Middleware
 
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
-from dl_api_commons.retrier.policy import RetryPolicyFactory
 from dl_api_lib.app.data_api.app import (
     DataApiAppFactory,
     EnvSetupResult,
@@ -38,6 +37,7 @@ from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from dl_core.services_registry.rqe_caches import RQECachesSetting
 from dl_data_api import app_version
+import dl_retrier
 
 
 LOGGER = logging.getLogger(__name__)
@@ -126,7 +126,7 @@ class StandaloneDataApiAppFactory(
             us_base_url=self._settings.US_BASE_URL,
             crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
             ca_data=ca_data,
-            retry_policy_factory=RetryPolicyFactory(self._settings.US_CLIENT.RETRY_POLICY),
+            retry_policy_factory=dl_retrier.RetryPolicyFactory(self._settings.US_CLIENT.RETRY_POLICY),
         )
 
         if self._settings.AUTH is not None and self._settings.AUTH == "NONE":

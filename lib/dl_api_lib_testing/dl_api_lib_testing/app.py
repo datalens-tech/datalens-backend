@@ -6,7 +6,6 @@ import flask
 from dl_api_commons.aio.middlewares.auth_trust_middleware import auth_trust_middleware
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.flask.middlewares.trust_auth import TrustAuthService
-from dl_api_commons.retrier.policy import RetryPolicyFactory
 from dl_api_lib.app.control_api.app import ControlApiAppFactory
 from dl_api_lib.app.control_api.app import EnvSetupResult as ControlApiEnvSetupResult
 from dl_api_lib.app.data_api.app import DataApiAppFactory
@@ -40,6 +39,7 @@ from dl_core.services_registry.inst_specific_sr import (
 from dl_core.services_registry.rqe_caches import RQECachesSetting
 from dl_core.utils import FutureRef
 from dl_core_testing.app_test_workarounds import TestEnvManagerFactory
+import dl_retrier
 from dl_rls.models import (
     RLS_FAILED_USER_NAME_PREFIX,
     RLSSubject,
@@ -195,7 +195,7 @@ class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRF
             us_base_url=self._settings.US_BASE_URL,
             crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
             ca_data=ca_data,
-            retry_policy_factory=RetryPolicyFactory(self._settings.US_CLIENT.RETRY_POLICY),
+            retry_policy_factory=dl_retrier.RetryPolicyFactory(self._settings.US_CLIENT.RETRY_POLICY),
         )
 
         usm_middleware_list = [

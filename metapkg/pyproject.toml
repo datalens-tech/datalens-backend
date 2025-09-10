@@ -141,6 +141,7 @@ dl-file-uploader-worker-lib = {develop = true, path = "../lib/dl_file_uploader_w
 dl-formula = {develop = true, path = "../lib/dl_formula"}
 dl-formula-ref = {develop = true, path = "../lib/dl_formula_ref"}
 dl-formula-testing = {develop = true, path = "../lib/dl_formula_testing"}
+dl-httpx = {develop = true, path = "../lib/dl_httpx"}
 dl-i18n = {develop = true, path = "../lib/dl_i18n"}
 dl-maintenance = {develop = true, path = "../lib/dl_maintenance"}
 dl-model-tools = {develop = true, path = "../lib/dl_model_tools"}
@@ -149,6 +150,7 @@ dl-pivot = {develop = true, path = "../lib/dl_pivot"}
 dl-pivot-pandas = {develop = true, path = "../lib/dl_pivot_pandas"}
 dl-query-processing = {develop = true, path = "../lib/dl_query_processing"}
 dl-rate-limiter = {extras = ["aiohttp", "flask"], path = "../lib/dl_rate_limiter"}
+dl-retrier = {develop = true, path = "../lib/dl_retrier"}
 dl-rls = {develop = true, path = "../lib/dl_rls"}
 dl-s3 = {develop = true, path = "../lib/dl_s3"}
 dl-settings = {develop = true, path = "../lib/dl_settings"}

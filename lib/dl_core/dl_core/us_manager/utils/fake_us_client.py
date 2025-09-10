@@ -5,12 +5,12 @@ from typing import (
     Optional,
 )
 
-from dl_api_commons.retrier.policy import DefaultRetryPolicyFactory
 from dl_core.united_storage_client import (
     USAuthContextNoAuth,
     UStorageClient,
     UStorageClientBase,
 )
+import dl_retrier
 
 
 # TODO FIX: Remove it
@@ -23,7 +23,7 @@ class FakeUSClient(UStorageClient):
         super().__init__(
             host="http://127.0.0.1:3030",
             auth_ctx=USAuthContextNoAuth(),
-            retry_policy_factory=DefaultRetryPolicyFactory(),
+            retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
         )
 
     def _request(

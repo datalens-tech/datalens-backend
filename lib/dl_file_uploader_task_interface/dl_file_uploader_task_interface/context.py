@@ -4,10 +4,6 @@ import arq
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_api_commons.retrier.policy import (
-    BaseRetryPolicyFactory,
-    RetryPolicyFactory,
-)
 from dl_api_commons.tenant_resolver import TenantResolver
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core.aio.web_app_services.gsheets import GSheetsSettings
@@ -19,6 +15,7 @@ from dl_file_uploader_task_interface.utils_service_registry import (
     get_async_service_us_manager,
 )
 from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
+import dl_retrier
 from dl_s3.s3_service import S3Service
 from dl_task_processor.context import BaseContext
 from dl_task_processor.processor import (
@@ -58,8 +55,8 @@ class FileUploaderTaskContext(BaseContext):
             ca_data=self.ca_data,
         ).make_service_registry(rci)
 
-    def get_retry_policy_factory(self) -> BaseRetryPolicyFactory:
-        return RetryPolicyFactory(self.settings.US_CLIENT.RETRY_POLICY)
+    def get_retry_policy_factory(self) -> dl_retrier.BaseRetryPolicyFactory:
+        return dl_retrier.RetryPolicyFactory(self.settings.US_CLIENT.RETRY_POLICY)
 
     def get_async_usm(self, rci: Optional[RequestContextInfo] = None) -> AsyncUSManager:
         rci = rci or RequestContextInfo.create_empty()

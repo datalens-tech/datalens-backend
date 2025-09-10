@@ -2,36 +2,21 @@
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 description = ""
 license = "Apache 2.0"
-name = "dl-api-commons"
-packages = [{include = "dl_api_commons"}]
+name = "dl-httpx"
+packages = [{include = "dl_httpx"}]
 readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
-aiohttp = "*"
 attrs = "*"
-dl-app-tools = {path = "../dl_app_tools"}
-dl-constants = {path = "../dl_constants"}
 dl-retrier = {path = "../dl_retrier"}
-dl-utils = {path = "../dl_utils"}
-flask = "*"
-marshmallow = "*"
-multidict = "*"
-opentracing = "*"
+httpx = "*"
 python = ">=3.10, <3.13"
-requests = "*"
-sentry-sdk = {extras = ["flask"], version = "*"}
 typing-extensions = "*"
-werkzeug = "*"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "*"
 respx = "*"
-shortuuid = "*"
-statcommons = {path = "../statcommons"}
-
-[tool.deptry.per_rule_ignores]
-DEP001 = ["uwsgidecorators"]
 
 [tool.mypy]
 check_untyped_defs = true
@@ -40,11 +25,6 @@ strict_optional = true
 warn_redundant_casts = true
 warn_unused_configs = true
 warn_unused_ignores = true
-
-[[tool.mypy.overrides]]
-module = [
-  "statcommons.*",
-]
 
 [tool.pytest.ini_options]
 addopts = "-ra"
@@ -59,6 +39,6 @@ requires = [
 
 [datalens.pytest.unit]
 labels = ["no_compose"]
-root_dir = "dl_api_commons_tests/"
+root_dir = "dl_httpx_tests/"
 skip_compose = "true"
 target_path = "unit"
