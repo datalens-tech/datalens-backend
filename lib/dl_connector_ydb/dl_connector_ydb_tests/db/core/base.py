@@ -49,7 +49,6 @@ class BaseYDBTestClass(BaseConnectionTestClass[YDBConnection]):
                     protocol="grpc",
                 )
             ),
-            _add_declare_for_yql_stmt_vars=True,
         )
 
     @pytest.fixture(scope="function")
@@ -91,7 +90,6 @@ class BaseSSLYDBTestClass(BaseYDBTestClass):
                     **test_config.make_ssl_connect_args(ssl_ca),
                 ),
             ),
-            _add_declare_for_yql_stmt_vars=True,
         )
 
     @pytest.fixture(scope="class")

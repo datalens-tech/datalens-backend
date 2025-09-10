@@ -51,7 +51,6 @@ class YDBConnectionTestBase(ConnectionTestBase):
                     protocol="grpc",
                 )
             ),
-            _add_declare_for_yql_stmt_vars=True,
         )
 
     @pytest.fixture(scope="class")

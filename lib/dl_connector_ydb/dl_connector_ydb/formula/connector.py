@@ -10,7 +10,7 @@ class YQLFormulaConnector(FormulaConnector):
     dialect_ns_cls = YqlDialectNS
     dialects = YqlDialectNS.YQL
     op_definitions = DEFINITIONS
-    sa_dialect = CustomYqlDialect(_add_declare_for_yql_stmt_vars=True)
+    sa_dialect = CustomYqlDialect()
 
     @classmethod
     def registration_hook(cls) -> None:

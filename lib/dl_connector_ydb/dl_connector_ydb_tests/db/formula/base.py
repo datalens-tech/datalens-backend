@@ -144,5 +144,4 @@ class YQLTestBase(FormulaConnectorTestBase):
                     protocol="grpc",
                 )
             ),
-            _add_declare_for_yql_stmt_vars=True,
         )
