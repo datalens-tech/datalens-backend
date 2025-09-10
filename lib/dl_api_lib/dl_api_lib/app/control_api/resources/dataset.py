@@ -203,7 +203,7 @@ class DatasetVersionItem(DatasetResource):
             # raw entry to avoid double deserialization
             ds_raw = us_manager.get_migrated_entry(dataset_id)
             # latest data revision_id for concurrent edit checks
-            revision_id = ds_raw["data"]["revision_id"]
+            revision_id = ds_raw["data"].get("revision_id")
         else:
             ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
             utils.need_permission_on_entry(ds, USPermissionKind.read)
