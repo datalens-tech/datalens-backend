@@ -8,14 +8,17 @@ readme = "README.rst"
 version = "0.1"
 
 [tool.poetry.dependencies]
+packaging = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
+ydb = "*"
 ydb-sqlalchemy = "*"
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
 bi_ydb = "dl_sqlalchemy_ydb.dialect:CustomYqlDialect"
 
 [tool.deptry.per_rule_ignores]
+DEP001 = ["google"]
 DEP002 = [
   "dl-sqlalchemy-common",
 ]
