@@ -68,6 +68,17 @@ GET_TRINO_TABLES_QUERY = (
 )
 
 
+class SessionWithTimeout(requests.Session):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        self.timeout: float | tuple[float, float] | None = kwargs.pop("timeout", None)
+        super().__init__(*args, **kwargs)
+
+    def request(self, *args: Any, **kwargs: Any) -> requests.Response:
+        if self.timeout and "timeout" not in kwargs:
+            kwargs["timeout"] = self.timeout
+        return super().request(*args, **kwargs)
+
+
 class CustomHTTPAdapter(HTTPAdapter):
     def __init__(self, ssl_ca: str, *args: Any, **kwargs: Any) -> None:
         self.ssl_ca = ssl_ca
@@ -133,10 +144,11 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         )
 
     def get_connect_args(self) -> dict[str, Any]:
-        args: dict[str, Any] = {
-            **super().get_connect_args(),
-            "legacy_primitive_types": True,
-        }
+        args: dict[str, Any] = super().get_connect_args() | dict(
+            http_scheme="https" if self._target_dto.ssl_enable else "http",
+            legacy_primitive_types=True,
+            request_timeout=self._target_dto.total_timeout,
+        )
         if self._target_dto.auth_type is TrinoAuthType.none:
             pass
         elif self._target_dto.auth_type is TrinoAuthType.password:
@@ -146,18 +158,13 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         else:
             raise NotImplementedError(f"{self._target_dto.auth_type.name} authentication is not supported yet")
 
-        if not self._target_dto.ssl_enable:
-            args["http_scheme"] = "http"
-            return args
-
-        args["http_scheme"] = "https"
+        session = SessionWithTimeout(timeout=(self._target_dto.connect_timeout, self._target_dto.max_execution_time))
         if self._target_dto.ssl_ca:
-            session = requests.Session()
             session.mount("https://", CustomHTTPAdapter(self._target_dto.ssl_ca))
-            args["http_session"] = session
         else:
             args["verify"] = get_root_certificates_path()
 
+        args["http_session"] = session
         return args
 
     def execute_by_steps(self, db_adapter_query: DBAdapterQuery) -> Generator[ExecutionStep, None, None]:
