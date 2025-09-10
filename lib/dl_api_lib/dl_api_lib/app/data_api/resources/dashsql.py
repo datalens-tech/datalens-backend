@@ -20,9 +20,14 @@ from dl_api_lib.app.data_api.resources.base import (
     RequiredResourceDSAPI,
     requires,
 )
+from dl_api_lib.common_models.data_export import DataExportInfo
 from dl_api_lib.enums import USPermissionKind
 import dl_api_lib.schemas.main
-from dl_api_lib.utils.base import need_permission_on_entry
+from dl_api_lib.utils.base import (
+    enrich_resp_dict_with_data_export_info,
+    get_data_export_base_result,
+    need_permission_on_entry,
+)
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_constants.enums import UserDataType
 from dl_core.data_processing.dashsql import (
@@ -130,6 +135,17 @@ class DashSQLView(BaseView):
         ce_cls_str = sr.get_conn_executor_factory().get_async_conn_executor_cls(conn).__qualname__
         self.dl_request.log_ctx_controller.put_to_context("conn_exec_cls", ce_cls_str)
 
+    def get_data_export_info(self, conn: ConnectionBase) -> DataExportInfo:
+        tenant = self.dl_request.rci.tenant
+        assert tenant
+        return DataExportInfo(
+            enabled_in_conn=not conn.data.data_export_forbidden,
+            enabled_in_ds=True,
+            enabled_in_tenant=tenant.is_data_export_enabled,
+            allowed_in_conn_type=conn.allow_background_data_export_for_conn_type,
+            background_allowed_in_tenant=tenant.is_background_data_export_allowed,
+        )
+
     @staticmethod
     def _json_default(value: Any) -> TJSONLike:
         if isinstance(value, bytes):
@@ -205,6 +221,24 @@ class DashSQLView(BaseView):
         )
         return response
 
+    async def collect_dashsql_response(self, result_events: TResultEvents, conn: ConnectionBase) -> web.Response:
+        events: list = []
+        async for event_name, event_data in result_events:
+            events.append(dict(event=event_name, data=event_data))
+
+        resp_data = dict(events=events)
+
+        data_export_info = self.get_data_export_info(conn)
+        data_export_result = get_data_export_base_result(data_export_info)
+        enrich_resp_dict_with_data_export_info(resp_data, data_export_result)
+
+        data = json.dumps(resp_data, default=self._json_default)
+        response = web.Response(
+            body=data.encode(),
+            content_type="application/json",
+        )
+        return response
+
     @generic_profiler_async("dashsql-result")
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> web.Response:
@@ -258,4 +292,10 @@ class DashSQLView(BaseView):
         # but for now, unroll them into `row` events.
         result_events = self._flatten_chunk_events(result_events)
 
-        return await self.collect_result_events_into_response(result_events)
+        with_export_info = self.request.query.get("with_export_info", False)
+        if with_export_info:
+            resp = await self.collect_dashsql_response(result_events=result_events, conn=conn)
+        else:
+            resp = await self.collect_result_events_into_response(result_events=result_events)
+
+        return resp

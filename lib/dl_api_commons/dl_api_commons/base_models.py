@@ -22,7 +22,11 @@ from dl_constants.api_constants import (
 )
 
 
+@attr.s()
 class TenantDef(metaclass=abc.ABCMeta):
+    is_data_export_enabled: bool = attr.ib(default=False, kw_only=True)
+    is_background_data_export_allowed: bool = attr.ib(default=False, kw_only=True)
+
     @abc.abstractmethod
     def get_outbound_tenancy_headers(self) -> dict[DLHeaders, str]:
         raise NotImplementedError()

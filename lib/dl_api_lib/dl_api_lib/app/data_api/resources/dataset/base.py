@@ -32,6 +32,7 @@ from dl_api_lib.app.data_api.resources.base import (
     BaseView,
     requires,
 )
+import dl_api_lib.common_models.data_export as data_export_models
 from dl_api_lib.dataset.view import DatasetView
 from dl_api_lib.query.formalization.block_formalizer import BlockFormalizer
 from dl_api_lib.query.formalization.legend_formalizer import (
@@ -731,26 +732,47 @@ class DatasetDataBaseView(BaseView):
             fields_data = get_fields_data_serializable(self.dataset, for_result=True)
             LOGGER.info("Field schema data", extra=dict(fields=fields_data))
 
+        data_export_info = self.get_data_export_info()
+
         response_json = DataRequestResponseSerializer.make_data_response_v1(
             merged_stream=merged_stream,
             totals=totals,
             totals_query=totals_query,
-            data_export_forbidden=self.get_data_export_forbidden_flag(),
+            data_export_info=data_export_info,
             fields_data=fields_data,
         )
         return response_json
 
     def _make_response_v2(self, merged_stream: MergedQueryDataStream) -> dict[str, Any]:
+        data_export_info = self.get_data_export_info()
+
         result = DataRequestResponseSerializer.make_data_response_v2(
             merged_stream=merged_stream,
             reporting_registry=self.dl_request.services_registry.get_reporting_registry()
             if self.allow_notifications
             else None,
-            data_export_forbidden=self.get_data_export_forbidden_flag(),
+            data_export_info=data_export_info,
         )
         return result
 
-    def get_data_export_forbidden_flag(self) -> bool:
+    def get_data_export_info(self) -> data_export_models.DataExportInfo:
+        tenant = self.dl_request.rci.tenant
+        assert tenant
+
+        data_export_conn_info = self.get_data_export_info_for_connection()
+
+        return data_export_models.DataExportInfo(
+            enabled_in_conn=data_export_conn_info.enabled_in_conn,
+            enabled_in_ds=not self.dataset.data_export_forbidden,
+            enabled_in_tenant=tenant.is_data_export_enabled,
+            allowed_in_conn_type=data_export_conn_info.allowed_in_conn_type,
+            background_allowed_in_tenant=tenant.is_background_data_export_allowed,
+        )
+
+    def get_data_export_info_for_connection(self) -> data_export_models.DataExportConnInfo:
+        is_data_export_allowed_in_conn = True
+        is_data_export_allowed_in_conn_type = True
+
         role = self.resolve_dataset_source_role(dataset=self.dataset)
         avatar_ids = [avatar.id for avatar in self.ds_accessor.get_avatar_list()]
         dsrc_coll_factory = DataSourceCollectionFactory(us_entry_buffer=self.dl_request.us_manager.get_entry_buffer())
@@ -773,9 +795,15 @@ class DatasetDataBaseView(BaseView):
                 dsrc = dsrc_coll.get_strict(role)
 
             if dsrc.data_export_forbidden:
-                return True
+                is_data_export_allowed_in_conn = False
 
-        return False
+            if not dsrc.data_export_allowed_for_conn_type:
+                is_data_export_allowed_in_conn_type = False
+
+        return data_export_models.DataExportConnInfo(
+            enabled_in_conn=is_data_export_allowed_in_conn,
+            allowed_in_conn_type=is_data_export_allowed_in_conn_type,
+        )
 
     def check_dataset_revision_id(self, req_model: DataRequestModel) -> None:
         self._check_dataset_revision_id(

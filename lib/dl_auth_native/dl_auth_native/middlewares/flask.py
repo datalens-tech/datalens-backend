@@ -26,7 +26,7 @@ class FlaskMiddleware(middlewares_base.BaseMiddleware):
         temp_rci = dl_api_commons_flask_rci.ReqCtxInfoMiddleware.get_temp_rci()
         dl_api_commons_flask_rci.ReqCtxInfoMiddleware.replace_temp_rci(
             temp_rci.clone(
-                tenant=dl_api_commons_base_models.TenantCommon(),
+                tenant=dl_api_commons_base_models.TenantCommon(is_data_export_enabled=True),
             )
         )
 

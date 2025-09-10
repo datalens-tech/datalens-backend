@@ -24,6 +24,7 @@ class DashSQLTestBase(DataApiTestBase, ConnectionTestBase, metaclass=abc.ABCMeta
         params: Optional[dict] = None,
         connector_specific_params: Optional[Mapping] = None,
         headers: Optional[dict[str, str]] = None,
+        with_export_info: bool = False,
     ) -> ClientResponse:
         request_body: dict[str, Any] = {"sql_query": query}
         if params:
@@ -31,7 +32,15 @@ class DashSQLTestBase(DataApiTestBase, ConnectionTestBase, metaclass=abc.ABCMeta
         if connector_specific_params:
             request_body["connector_specific_params"] = connector_specific_params
 
-        resp = await data_api_aio.post(f"api/data/v1/connections/{conn_id}/dashsql", json=request_body, headers=headers)
+        if with_export_info:
+            resp = await data_api_aio.post(
+                f"api/data/v1/connections/{conn_id}/dashsql?with_export_info=true", json=request_body, headers=headers
+            )
+        else:
+            resp = await data_api_aio.post(
+                f"api/data/v1/connections/{conn_id}/dashsql", json=request_body, headers=headers
+            )
+
         resp_data = await resp.json()
         if not fail_ok:
             assert resp.status == 200, resp_data
