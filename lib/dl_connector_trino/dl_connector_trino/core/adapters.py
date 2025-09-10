@@ -122,10 +122,6 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
     EXTRA_EXC_CLS = (sa_exc.DBAPIError,)
 
     def get_conn_line(self, db_name: str | None = None, params: dict[str, Any] | None = None) -> str:
-        # We do not expect to transfer any additional parameters when creating the engine.
-        # This check is needed to track if it still passed.
-        assert params is None
-
         params = params or {}
         return trino_url(
             host=self._target_dto.host,
