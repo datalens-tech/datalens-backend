@@ -94,6 +94,7 @@ EXCEPTION_CODES = {
     common_exc.InvalidRequestError: status.BAD_REQUEST,
     exc.WorkbookImportError: status.BAD_REQUEST,
     exc.WorkbookExportError: status.BAD_REQUEST,
+    common_exc.DataSourceNotFound: status.BAD_REQUEST,
 }
 
 
