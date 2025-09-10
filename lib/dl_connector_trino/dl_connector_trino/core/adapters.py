@@ -76,7 +76,7 @@ GET_TRINO_TABLES_QUERY = (
 
 
 class CustomHTTPAdapter(HTTPAdapter):
-    def __init__(self, timeout: tuple[float, float], ssl_ca: str | None, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, timeout: tuple[float, float] | None, ssl_ca: str | None, *args: Any, **kwargs: Any) -> None:
         self.timeout = timeout
         self.ssl_ca = ssl_ca
         super().__init__(*args, **kwargs)
@@ -95,7 +95,7 @@ class CustomHTTPAdapter(HTTPAdapter):
         cert: bytes | str | tuple[bytes | str, bytes | str] | None = None,
         proxies: Mapping[str, str] | None = None,
     ) -> Response:
-        if timeout is None:
+        if timeout is None and self.timeout is not None:
             timeout = self.timeout
         return super().send(
             request,
