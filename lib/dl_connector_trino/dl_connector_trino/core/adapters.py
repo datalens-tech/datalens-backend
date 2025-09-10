@@ -82,7 +82,9 @@ class CustomHTTPAdapter(HTTPAdapter):
     2. To create an SSL context with a custom CA certificate provided as a string instead of a file path.
     """
 
-    def __init__(self, timeout: tuple[float, float] | None, ssl_ca: str | None, *args: Any, **kwargs: Any) -> None:
+    def __init__(
+        self, timeout: tuple[float, float] | None = None, ssl_ca: str | None = None, *args: Any, **kwargs: Any
+    ) -> None:
         self.timeout = timeout
         self.ssl_ca = ssl_ca
         super().__init__(*args, **kwargs)
