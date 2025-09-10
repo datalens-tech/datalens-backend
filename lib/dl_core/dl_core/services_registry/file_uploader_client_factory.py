@@ -241,7 +241,7 @@ class FileUploaderClient(BIAioHTTPClient):
         conn_id: str,
         sources: list[GSheetsFileSourceDesc | YaDocsFileSourceDesc],
         authorized: bool,
-        tenant_id: Optional[str],
+        tenant_id: str,
         file_type: FileType,
     ) -> None:
         path = "/api/v2/update_connection_data_internal"
@@ -292,23 +292,22 @@ class FileUploaderSettings:
 class FileUploaderClientFactory:
     _file_uploader_settings: FileUploaderSettings = attr.ib()
     _ca_data: bytes = attr.ib()
+    # TODO: Make tenant_id non-optional
     _tenant_id: Optional[str] = attr.ib()
 
     _file_uploader_client_cls: ClassVar[type[FileUploaderClient]] = FileUploaderClient  # tests mockup point
 
     def get_client(self, headers: Optional[THeaders] = None, cookies: Optional[TCookies] = None) -> FileUploaderClient:
+        # Expect tenant to be set here
+        assert self._tenant_id is not None
+
         full_headers = headers.copy() if headers is not None else {}
         full_headers.update(
             {
                 DLHeadersCommon.FILE_UPLOADER_MASTER_TOKEN.value: self._file_uploader_settings.master_token,
+                DLHeadersCommon.TENANT_ID.value: self._tenant_id,
             }
         )
-        if self._tenant_id is not None:
-            full_headers.update(
-                {
-                    DLHeadersCommon.TENANT_ID.value: self._tenant_id,
-                }
-            )
 
         client_cls = self._file_uploader_client_cls
         return client_cls(
