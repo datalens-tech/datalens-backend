@@ -76,6 +76,12 @@ GET_TRINO_TABLES_QUERY = (
 
 
 class CustomHTTPAdapter(HTTPAdapter):
+    """
+    This custom adapter is here due to two reasons:
+    1. To set a default timeout for requests (both connect and read timeouts) https://github.com/psf/requests/issues/1130
+    2. To create an SSL context with a custom CA certificate provided as a string instead of a file path.
+    """
+
     def __init__(self, timeout: tuple[float, float] | None, ssl_ca: str | None, *args: Any, **kwargs: Any) -> None:
         self.timeout = timeout
         self.ssl_ca = ssl_ca
