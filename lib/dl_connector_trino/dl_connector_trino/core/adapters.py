@@ -1,11 +1,18 @@
 from collections.abc import Generator
 import datetime
 import ssl
-from typing import Any
+from typing import (
+    Any,
+    Mapping,
+)
 
 import attr
 import requests
 from requests.adapters import HTTPAdapter
+from requests.models import (
+    PreparedRequest,
+    Response,
+)
 import sqlalchemy as sa
 from sqlalchemy import exc as sa_exc
 from sqlalchemy import types as sqltypes
@@ -68,26 +75,36 @@ GET_TRINO_TABLES_QUERY = (
 )
 
 
-class SessionWithTimeout(requests.Session):
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        self.timeout: float | tuple[float, float] | None = kwargs.pop("timeout", None)
-        super().__init__(*args, **kwargs)
-
-    def request(self, *args: Any, **kwargs: Any) -> requests.Response:
-        if self.timeout and "timeout" not in kwargs:
-            kwargs["timeout"] = self.timeout
-        return super().request(*args, **kwargs)
-
-
 class CustomHTTPAdapter(HTTPAdapter):
-    def __init__(self, ssl_ca: str, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, timeout: tuple[float, float], ssl_ca: str | None, *args: Any, **kwargs: Any) -> None:
+        self.timeout = timeout
         self.ssl_ca = ssl_ca
         super().__init__(*args, **kwargs)
 
     def init_poolmanager(self, connections: int, maxsize: int, block: bool = False, **pool_kwargs: Any) -> None:
-        # Use a secure context with the provided SSL CA
-        context = ssl.create_default_context(cadata=self.ssl_ca)
+        ca_path = get_root_certificates_path() if self.ssl_ca is None else None
+        context = ssl.create_default_context(cadata=self.ssl_ca, capath=ca_path)
         super().init_poolmanager(connections, maxsize, block, ssl_context=context, **pool_kwargs)
+
+    def send(
+        self,
+        request: PreparedRequest,
+        stream: bool = False,
+        timeout: float | tuple[float, float] | tuple[float, None] | None = None,
+        verify: bool | str = True,
+        cert: bytes | str | tuple[bytes | str, bytes | str] | None = None,
+        proxies: Mapping[str, str] | None = None,
+    ) -> Response:
+        if timeout is None:
+            timeout = self.timeout
+        return super().send(
+            request,
+            stream=stream,
+            timeout=timeout,
+            verify=verify,
+            cert=cert,
+            proxies=proxies,
+        )
 
 
 class CustomTrinoCompiler(TrinoSQLCompiler):
@@ -143,9 +160,25 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
             **params,
         )
 
+    def _get_http_session(self) -> requests.Session:
+        session = requests.Session()
+
+        connect_timeout = self._target_dto.connect_timeout
+        max_execution_time = self._target_dto.max_execution_time
+        assert connect_timeout is not None and max_execution_time is not None
+
+        adapter = CustomHTTPAdapter(
+            timeout=(connect_timeout, max_execution_time),
+            ssl_ca=self._target_dto.ssl_ca,
+        )
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+        return session
+
     def get_connect_args(self) -> dict[str, Any]:
         args: dict[str, Any] = super().get_connect_args() | dict(
             http_scheme="https" if self._target_dto.ssl_enable else "http",
+            http_session=self._get_http_session(),
             legacy_primitive_types=True,
             request_timeout=self._target_dto.total_timeout,
         )
@@ -158,13 +191,6 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         else:
             raise NotImplementedError(f"{self._target_dto.auth_type.name} authentication is not supported yet")
 
-        session = SessionWithTimeout(timeout=(self._target_dto.connect_timeout, self._target_dto.max_execution_time))
-        if self._target_dto.ssl_ca:
-            session.mount("https://", CustomHTTPAdapter(self._target_dto.ssl_ca))
-        else:
-            args["verify"] = get_root_certificates_path()
-
-        args["http_session"] = session
         return args
 
     def execute_by_steps(self, db_adapter_query: DBAdapterQuery) -> Generator[ExecutionStep, None, None]:
