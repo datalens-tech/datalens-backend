@@ -589,7 +589,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 1
-      - run: task dev:toml-sort
+      - run: task dev:toml-sort FIX=false
       - run: |
           task cq:check_dir -- .
           task cq:check_dir_strict -- .
