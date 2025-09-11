@@ -83,9 +83,9 @@ class CustomHTTPAdapter(HTTPAdapter):
     """
 
     def __init__(
-        self, timeout: tuple[float, float] | None = None, ssl_ca: str | None = None, *args: Any, **kwargs: Any
+        self, default_timeout: tuple[float, float] | None = None, ssl_ca: str | None = None, *args: Any, **kwargs: Any
     ) -> None:
-        self.timeout = timeout
+        self.default_timeout = default_timeout
         self.ssl_ca = ssl_ca
         super().__init__(*args, **kwargs)
 
@@ -103,8 +103,8 @@ class CustomHTTPAdapter(HTTPAdapter):
         cert: bytes | str | tuple[bytes | str, bytes | str] | None = None,
         proxies: Mapping[str, str] | None = None,
     ) -> Response:
-        if timeout is None and self.timeout is not None:
-            timeout = self.timeout
+        if timeout is None and self.default_timeout is not None:
+            timeout = self.default_timeout
         return super().send(
             request,
             stream=stream,
