@@ -10,14 +10,14 @@ from dl_api_commons.crypto import get_hmac_hex_digest
 
 
 def body_signature_validation_middleware(hmac_keys: typing.Sequence[bytes], header: str) -> Middleware:
-    if not hmac_keys:
-        raise Exception("body_signature_validation_middleware: no hmac_keys passed")
-
-    if any(not key for key in hmac_keys):
-        raise Exception("body_signature_validation_middleware: empty hmac_key passed")
-
     @web.middleware
     async def actual_middleware(request: web.Request, handler: Handler) -> web.StreamResponse:
+        if not hmac_keys:
+            raise Exception("body_signature_validation_middleware: no hmac_keys passed")
+
+        if any(not key for key in hmac_keys):
+            raise Exception("body_signature_validation_middleware: empty hmac_key passed")
+
         if request.method in ("HEAD", "OPTIONS", "GET"):
             return await handler(request)
 
