@@ -3361,7 +3361,9 @@ files = []
 develop = false
 
 [package.dependencies]
+packaging = "*"
 sqlalchemy = "*"
+ydb = "*"
 ydb-sqlalchemy = "*"
 
 [package.source]
