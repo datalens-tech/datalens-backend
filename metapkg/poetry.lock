@@ -2675,7 +2675,9 @@ develop = true
 
 [package.dependencies]
 aiohttp = "*"
+dl-settings = {path = "../dl_settings"}
 openpyxl = "*"
+pydantic = "*"
 
 [package.source]
 type = "directory"

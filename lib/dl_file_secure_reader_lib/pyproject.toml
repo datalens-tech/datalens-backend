@@ -9,7 +9,9 @@ version = "0.1.0"
 
 [tool.poetry.dependencies]
 aiohttp = "*"
+dl-settings = {path = "../dl_settings"}
 openpyxl = "*"
+pydantic = "*"
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
@@ -18,6 +20,7 @@ pytest-asyncio = "*"
 [tool.mypy]
 check_untyped_defs = true
 disallow_untyped_defs = true
+plugins = ['pydantic.mypy']
 strict_optional = true
 warn_redundant_casts = true
 warn_unused_configs = true
