@@ -23,7 +23,6 @@ from dl_api_commons.base_models import (
     TenantCommon,
 )
 from dl_api_commons.client.common import DLCommonAPIClient
-from dl_api_commons.retrier.policy import DefaultRetryPolicyFactory
 from dl_configs.crypto_keys import (
     CryptoKeysConfig,
     get_dummy_crypto_keys_config,
@@ -69,6 +68,7 @@ from dl_file_uploader_worker_lib.settings import (
     SecureReader,
 )
 from dl_file_uploader_worker_lib.testing.task_processor_client import get_task_processor_client
+import dl_retrier
 from dl_s3.s3_service import S3Service
 from dl_task_processor.processor import TaskProcessor
 from dl_task_processor.state import (
@@ -413,7 +413,7 @@ async def default_async_usm_per_test(bi_context, prepare_us, us_config, root_cer
         bi_context=bi_context,
         services_registry=DummyServiceRegistry(rci=rci),
         ca_data=root_certificates,
-        retry_policy_factory=DefaultRetryPolicyFactory(),
+        retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
     )
 
 

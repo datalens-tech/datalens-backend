@@ -28,6 +28,7 @@ dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
 dl-constants = {path = "../../lib/dl_constants"}
 dl-core = {path = "../../lib/dl_core"}
 dl-model-tools = {path = "../../lib/dl_model_tools"}
+dl-retrier = {path = "../../lib/dl_retrier"}
 dl-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
 dl-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
 dl-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}

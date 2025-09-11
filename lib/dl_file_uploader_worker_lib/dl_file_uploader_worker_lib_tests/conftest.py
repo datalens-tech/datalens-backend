@@ -18,7 +18,6 @@ from dl_api_commons.base_models import (
     RequestContextInfo,
     TenantCommon,
 )
-from dl_api_commons.retrier.policy import DefaultRetryPolicyFactory
 from dl_configs.crypto_keys import get_dummy_crypto_keys_config
 from dl_configs.enums import RedisMode
 from dl_configs.settings_submodels import (
@@ -53,6 +52,7 @@ from dl_file_uploader_worker_lib_tests.config import (
     CONNECTOR_WHITELIST,
     TestingUSConfig,
 )
+import dl_retrier
 from dl_s3.s3_service import S3Service
 from dl_task_processor.arq_wrapper import (
     create_arq_redis_settings,
@@ -383,7 +383,7 @@ def default_sync_usm(bi_context, prepare_us, us_config):
         bi_context=bi_context,
         crypto_keys_config=get_dummy_crypto_keys_config(),
         services_registry=DummyServiceRegistry(rci=rci),
-        retry_policy_factory=DefaultRetryPolicyFactory(),
+        retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
     )
 
 
@@ -397,7 +397,7 @@ async def default_async_usm_per_test(bi_context, prepare_us, us_config, root_cer
         bi_context=bi_context,
         services_registry=DummyServiceRegistry(rci=rci),
         ca_data=root_certificates,
-        retry_policy_factory=DefaultRetryPolicyFactory(),
+        retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
     )
 
 

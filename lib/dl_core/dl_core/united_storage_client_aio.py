@@ -20,7 +20,6 @@ import aiohttp
 
 from dl_api_commons.aiohttp.aiohttp_client import BIAioHTTPClient
 from dl_api_commons.retrier.aiohttp import AiohttpPolicyRetrier
-from dl_api_commons.retrier.policy import BaseRetryPolicyFactory
 from dl_api_commons.tracing import get_current_tracing_headers
 from dl_app_tools.profiling_base import GenericProfiler
 from dl_core.base_models import EntryLocation
@@ -33,6 +32,7 @@ from dl_core.united_storage_client import (
     USClientHTTPExceptionWrapper,
     UStorageClientBase,
 )
+import dl_retrier
 
 
 LOGGER = logging.getLogger(__name__)
@@ -116,7 +116,7 @@ class UStorageClientAIO(UStorageClientBase):
         prefix: Optional[str],
         auth_ctx: USAuthContextBase,
         ca_data: bytes,
-        retry_policy_factory: BaseRetryPolicyFactory,
+        retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
         context_request_id: Optional[str] = None,
         context_forwarded_for: Optional[str] = None,
         context_workbook_id: Optional[str] = None,

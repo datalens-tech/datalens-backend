@@ -10,7 +10,6 @@ from typing import (
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_api_commons.retrier.policy import BaseRetryPolicyFactory
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.rqe import rqe_config_from_env
@@ -21,6 +20,7 @@ from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_file_uploader_worker_lib.settings import FileUploaderConnectorsSettings
+import dl_retrier
 
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
 from dl_connector_bundle_chs3.chs3_yadocs.core.constants import CONNECTION_TYPE_YADOCS
@@ -75,7 +75,7 @@ def get_async_service_us_manager(
     ca_data: bytes,
     crypto_keys_config: CryptoKeysConfig,
     services_registry: ServicesRegistry,
-    retry_policy_factory: BaseRetryPolicyFactory,
+    retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
     bi_context: Optional[RequestContextInfo] = None,
 ) -> AsyncUSManager:
     usm = AsyncUSManager(

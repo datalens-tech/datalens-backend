@@ -19,7 +19,6 @@ from dl_api_commons.base_models import (
     TenantCommon,
     TenantDef,
 )
-from dl_api_commons.retrier.policy import DefaultRetryPolicyFactory
 from dl_api_lib.app.control_api.app import ControlApiAppFactory
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import (
@@ -46,6 +45,7 @@ from dl_core_testing.flask_utils import (
     FlaskTestResponse,
 )
 from dl_core_testing.rqe import RQEConfigurationMaker
+import dl_retrier
 from dl_testing.utils import (
     get_root_certificates,
     get_root_certificates_path,
@@ -250,6 +250,6 @@ class ApiTestBase(abc.ABC):
             us_base_url=us_config.us_host,
             us_auth_context=USAuthContextMaster(us_config.us_master_token),
             crypto_keys_config=core_test_config.get_crypto_keys_config(),
-            retry_policy_factory=DefaultRetryPolicyFactory(),
+            retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
         )
         return us_manager

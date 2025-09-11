@@ -1,7 +1,6 @@
 from cryptography import fernet
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_api_commons.retrier.policy import DefaultRetryPolicyFactory
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core.services_registry.top_level import (
     DummyServiceRegistry,
@@ -9,6 +8,7 @@ from dl_core.services_registry.top_level import (
 )
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager import USManagerBase
+import dl_retrier
 
 
 class DummyUSManager(USManagerBase):
@@ -27,5 +27,5 @@ class DummyUSManager(USManagerBase):
             ),
             us_auth_context=USAuthContextMaster("FakeKey"),
             services_registry=services_registry,
-            retry_policy_factory=DefaultRetryPolicyFactory(),
+            retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
         )

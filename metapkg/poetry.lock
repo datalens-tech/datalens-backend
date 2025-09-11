@@ -1613,15 +1613,12 @@ aiohttp = "*"
 attrs = "*"
 dl-app-tools = {path = "../dl_app_tools"}
 dl-constants = {path = "../dl_constants"}
-dl-settings = {path = "../dl_settings"}
+dl-retrier = {path = "../dl_retrier"}
 dl-utils = {path = "../dl_utils"}
 flask = "*"
-frozendict = "*"
-httpx = "*"
 marshmallow = "*"
 multidict = "*"
 opentracing = "*"
-pydantic = "*"
 requests = "*"
 sentry-sdk = {version = "*", extras = ["flask"]}
 typing-extensions = "*"
@@ -1686,6 +1683,7 @@ dl-model-tools = {path = "../dl_model_tools"}
 dl-pivot = {path = "../dl_pivot"}
 dl-pivot-pandas = {path = "../dl_pivot_pandas"}
 dl-query-processing = {path = "../dl_query_processing"}
+dl-retrier = {path = "../dl_retrier"}
 dl-rls = {path = "../dl_rls"}
 dl-settings = {path = "../dl_settings"}
 dl-task-processor = {path = "../dl_task_processor"}
@@ -1732,6 +1730,7 @@ dl-formula-testing = {path = "../dl_formula_testing"}
 dl-i18n = {path = "../dl_i18n"}
 dl-pivot-pandas = {path = "../dl_pivot_pandas"}
 dl-query-processing = {path = "../dl_query_processing"}
+dl-retrier = {path = "../dl_retrier"}
 dl-rls = {path = "../dl_rls"}
 dl-testing = {path = "../dl_testing"}
 dl-utils = {path = "../dl_utils"}
@@ -2509,6 +2508,7 @@ dl-dashsql = {path = "../../lib/dl_dashsql"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
+dl-retrier = {path = "../dl_retrier"}
 dl-rls = {path = "../dl_rls"}
 dl-settings = {path = "../dl_settings"}
 dl-task-processor = {path = "../dl_task_processor"}
@@ -2556,6 +2556,7 @@ dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-dashsql = {path = "../dl_dashsql"}
 dl-db-testing = {path = "../dl_db_testing"}
+dl-retrier = {path = "../dl_retrier"}
 dl-testing = {path = "../dl_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
@@ -2630,6 +2631,7 @@ dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
 dl-constants = {path = "../../lib/dl_constants"}
 dl-core = {path = "../../lib/dl_core"}
 dl-model-tools = {path = "../../lib/dl_model_tools"}
+dl-retrier = {path = "../../lib/dl_retrier"}
 dl-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
 dl-sqlalchemy-common = {path = "../../lib/dl_sqlalchemy_common"}
 dl-sqlalchemy-postgres = {path = "../../lib/dl_sqlalchemy_postgres"}
@@ -2763,6 +2765,7 @@ dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
+dl-retrier = {path = "../dl_retrier"}
 dl-s3 = {path = "../dl_s3"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-utils = {path = "../dl_utils"}
@@ -2883,6 +2886,25 @@ type = "directory"
 url = "../lib/dl_formula_testing"
 
 [[package]]
+name = "dl-httpx"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.dependencies]
+attrs = "*"
+dl-retrier = {path = "../dl_retrier"}
+httpx = "*"
+typing-extensions = "*"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_httpx"
+
+[[package]]
 name = "dl-i18n"
 version = "0.0.1"
 description = ""
@@ -2918,6 +2940,7 @@ dl-core = {path = "../dl_core"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-pivot = {path = "../dl_pivot"}
 dl-query-processing = {path = "../dl_query_processing"}
+dl-retrier = {path = "../dl_retrier"}
 dl-utils = {path = "../dl_utils"}
 pygments = "*"
 pyyaml = "*"
@@ -3049,6 +3072,26 @@ flask = ["flask"]
 [package.source]
 type = "directory"
 url = "../lib/dl_rate_limiter"
+
+[[package]]
+name = "dl-retrier"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.dependencies]
+attrs = "*"
+dl-settings = {path = "../dl_settings"}
+frozendict = "*"
+pydantic = "*"
+typing-extensions = "*"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_retrier"
 
 [[package]]
 name = "dl-rls"
@@ -8868,4 +8911,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "2a7344d072d9926c29ab9ba8d0d35d14837c9d36917f72b005e0b04b30e17f9b"
+content-hash = "769b0ca5043869a49617d8e5ab05dfc086491f0cdcd850f610dbef41c209a6d5"

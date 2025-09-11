@@ -23,6 +23,7 @@ dl-formula-testing = {path = "../dl_formula_testing"}
 dl-i18n = {path = "../dl_i18n"}
 dl-pivot-pandas = {path = "../dl_pivot_pandas"}
 dl-query-processing = {path = "../dl_query_processing"}
+dl-retrier = {path = "../dl_retrier"}
 dl-rls = {path = "../dl_rls"}
 dl-testing = {path = "../dl_testing"}
 dl-utils = {path = "../dl_utils"}

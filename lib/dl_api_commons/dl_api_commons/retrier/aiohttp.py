@@ -11,7 +11,7 @@ import aiohttp.client_exceptions
 import attr
 
 from dl_api_commons.aiohttp.aiohttp_client import BaseRetrier
-from dl_api_commons.retrier.policy import RetryPolicy
+import dl_retrier
 
 
 LOGGER = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ class AiohttpPolicyRetrier(BaseRetrier):
     Retrier for Aiohttp client
     """
 
-    _retry_policy: RetryPolicy = attr.ib()
+    _retry_policy: dl_retrier.RetryPolicy = attr.ib()
 
     # TODO: Merge with requests.RequestsPolicyRetrier as sync/async-independent implementation
 

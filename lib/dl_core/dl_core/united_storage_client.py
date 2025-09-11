@@ -33,7 +33,6 @@ from dl_api_commons.base_models import (
     TenantDef,
 )
 from dl_api_commons.logging import RequestObfuscator
-from dl_api_commons.retrier.policy import BaseRetryPolicyFactory
 from dl_api_commons.retrier.requests import RequestsPolicyRetrier
 from dl_api_commons.tracing import get_current_tracing_headers
 from dl_api_commons.utils import (
@@ -49,6 +48,7 @@ from dl_constants.api_constants import (
 from dl_core.base_models import EntryLocation
 from dl_core.enums import USApiType
 import dl_core.exc as exc
+import dl_retrier
 
 
 LOGGER = logging.getLogger(__name__)
@@ -271,7 +271,7 @@ class UStorageClientBase:
         self,
         host: str,
         auth_ctx: USAuthContextBase,
-        retry_policy_factory: BaseRetryPolicyFactory,
+        retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
         prefix: Optional[str] = None,
         context_request_id: Optional[str] = None,
         context_forwarded_for: Optional[str] = None,
@@ -682,7 +682,7 @@ class UStorageClient(UStorageClientBase):
         self,
         host: str,
         auth_ctx: USAuthContextBase,
-        retry_policy_factory: BaseRetryPolicyFactory,
+        retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
         prefix: Optional[str] = None,
         context_request_id: Optional[str] = None,
         context_forwarded_for: Optional[str] = None,

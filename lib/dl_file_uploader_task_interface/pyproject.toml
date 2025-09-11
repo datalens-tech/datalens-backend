@@ -17,6 +17,7 @@ dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
+dl-retrier = {path = "../dl_retrier"}
 dl-s3 = {path = "../dl_s3"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-utils = {path = "../dl_utils"}

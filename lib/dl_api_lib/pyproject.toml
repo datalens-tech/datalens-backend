@@ -25,6 +25,7 @@ dl-model-tools = {path = "../dl_model_tools"}
 dl-pivot = {path = "../dl_pivot"}
 dl-pivot-pandas = {path = "../dl_pivot_pandas"}
 dl-query-processing = {path = "../dl_query_processing"}
+dl-retrier = {path = "../dl_retrier"}
 dl-rls = {path = "../dl_rls"}
 dl-settings = {path = "../dl_settings"}
 dl-task-processor = {path = "../dl_task_processor"}

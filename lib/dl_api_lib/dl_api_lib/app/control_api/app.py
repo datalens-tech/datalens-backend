@@ -22,7 +22,6 @@ from dl_api_commons.flask.middlewares.tracing import (
     TracingContextMiddleware,
     TracingMiddleware,
 )
-from dl_api_commons.retrier.policy import RetryPolicyFactory
 from dl_api_lib.app.control_api.resources import init_apis
 from dl_api_lib.app_common import SRFactoryBuilder
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
@@ -39,6 +38,7 @@ from dl_constants.enums import (
 from dl_core import profiling_middleware
 from dl_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
+import dl_retrier
 
 
 if TYPE_CHECKING:
@@ -142,7 +142,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
             us_master_token=self._settings.US_MASTER_TOKEN,
             us_auth_mode=env_setup_result.us_auth_mode,
             ca_data=ca_data,
-            retry_policy_factory=RetryPolicyFactory(self._settings.US_CLIENT.RETRY_POLICY),
+            retry_policy_factory=dl_retrier.RetryPolicyFactory(self._settings.US_CLIENT.RETRY_POLICY),
         ).set_up(app)
 
         _ = app.logger

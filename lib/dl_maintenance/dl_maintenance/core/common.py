@@ -9,14 +9,11 @@ from typing import (
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_api_commons.retrier.policy import (
-    BaseRetryPolicyFactory,
-    RetryPolicyFactory,
-)
 from dl_configs.utils import get_root_certificates
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
+import dl_retrier
 
 
 if TYPE_CHECKING:
@@ -43,8 +40,8 @@ class MaintenanceEnvironmentManagerBase:
     def get_sr_factory(self, ca_data: bytes, is_async_env: bool) -> Optional[SRFactory]:
         return None
 
-    def get_retry_policy_factory(self) -> BaseRetryPolicyFactory:
-        return RetryPolicyFactory(self.get_app_settings().US_CLIENT.RETRY_POLICY)
+    def get_retry_policy_factory(self) -> dl_retrier.BaseRetryPolicyFactory:
+        return dl_retrier.RetryPolicyFactory(self.get_app_settings().US_CLIENT.RETRY_POLICY)
 
     def get_ca_data(self) -> bytes:
         settings = self.get_app_settings()

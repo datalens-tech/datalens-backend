@@ -14,10 +14,6 @@ from cryptography import fernet
 import shortuuid
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_api_commons.retrier.policy import (
-    BaseRetryPolicyFactory,
-    DefaultRetryPolicyFactory,
-)
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core.base_models import EntryLocation
 from dl_core.exc import USObjectNotFoundException
@@ -32,6 +28,7 @@ from dl_core.united_storage_client import (
     UStorageClientBase,
 )
 from dl_core.us_manager.us_manager_sync import SyncUSManager
+import dl_retrier
 
 
 class MockedUStorageClient(UStorageClient):
@@ -39,7 +36,7 @@ class MockedUStorageClient(UStorageClient):
         self,
         host: str,
         auth_ctx: USAuthContextBase,
-        retry_policy_factory: BaseRetryPolicyFactory,
+        retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
         prefix: Optional[str] = None,
         context_request_id: Optional[str] = None,
     ):
@@ -178,7 +175,7 @@ class MockedSyncUSManager(SyncUSManager):
             else crypto_keys_config,
             us_auth_context=USAuthContextMaster("FakeKey"),
             services_registry=services_registry,
-            retry_policy_factory=DefaultRetryPolicyFactory(),
+            retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
         )
 
     def _create_us_client(self) -> UStorageClient:

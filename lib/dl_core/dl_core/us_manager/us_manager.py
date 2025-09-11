@@ -23,7 +23,6 @@ from dl_api_commons.base_models import (
     RequestContextInfo,
     TenantDef,
 )
-from dl_api_commons.retrier.policy import BaseRetryPolicyFactory
 from dl_app_tools.profiling_base import generic_profiler
 from dl_configs.crypto_keys import (
     CryptoKeysConfig,
@@ -67,6 +66,7 @@ from dl_core.us_manager.us_entry_serializer import (
     USEntrySerializerMarshmallow,
 )
 from dl_core.us_manager.utils.fake_us_client import FakeUSClient
+import dl_retrier
 from dl_utils.utils import AddressableData
 
 
@@ -115,7 +115,7 @@ class USManagerBase:
         us_api_prefix: Optional[str],
         us_auth_context: USAuthContextBase,
         services_registry: ServicesRegistry,
-        retry_policy_factory: BaseRetryPolicyFactory,
+        retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
         lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
         schema_migration_factory: Optional[EntrySchemaMigrationFactoryBase] = None,
     ):

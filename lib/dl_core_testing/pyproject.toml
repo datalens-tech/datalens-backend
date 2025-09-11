@@ -18,6 +18,7 @@ dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-dashsql = {path = "../dl_dashsql"}
 dl-db-testing = {path = "../dl_db_testing"}
+dl-retrier = {path = "../dl_retrier"}
 dl-testing = {path = "../dl_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}

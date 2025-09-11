@@ -1,8 +1,8 @@
 from pydantic import Field
 
-from dl_api_commons.retrier.settings import RetryPolicyFactorySettings
+import dl_retrier
 import dl_settings
 
 
 class USClientSettings(dl_settings.BaseSettings):
-    RETRY_POLICY: RetryPolicyFactorySettings = Field(default_factory=RetryPolicyFactorySettings)
+    RETRY_POLICY: dl_retrier.RetryPolicyFactorySettings = Field(default_factory=dl_retrier.RetryPolicyFactorySettings)
