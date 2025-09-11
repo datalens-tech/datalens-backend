@@ -41,6 +41,7 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
     ASYNC_ADAPTER_CLS: ClassVar[type[CommonBaseDirectAdapter]]
 
     EXT_QUERY_EXECUTER_SECRET_KEY: ClassVar[str] = "very_secret_key"
+    EXT_QUERY_EXECUTER_SECRET_KEY_ALT: ClassVar[str] = "very_secret_key_alt"
 
     @pytest.fixture(scope="function")
     def forbid_private_addr(self) -> bool:
@@ -55,7 +56,11 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
         self, loop: asyncio.AbstractEventLoop, aiohttp_client: AiohttpClient, forbid_private_addr: bool
     ) -> TestClient:
         app = create_async_qe_app(
-            hmac_key=self.EXT_QUERY_EXECUTER_SECRET_KEY.encode(), forbid_private_addr=forbid_private_addr
+            hmac_keys=(
+                self.EXT_QUERY_EXECUTER_SECRET_KEY.encode(),
+                self.EXT_QUERY_EXECUTER_SECRET_KEY_ALT.encode(),
+            ),
+            forbid_private_addr=forbid_private_addr,
         )
         return loop.run_until_complete(aiohttp_client(app))
 

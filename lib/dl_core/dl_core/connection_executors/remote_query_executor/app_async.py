@@ -11,6 +11,7 @@ import sys
 from typing import (
     TYPE_CHECKING,
     Any,
+    Sequence,
     Union,
 )
 
@@ -300,7 +301,7 @@ class ActionHandlingView(BaseView):
             raise NotImplementedError(f"Action {action} is not implemented in QE")
 
 
-def create_async_qe_app(hmac_key: bytes, forbid_private_addr: bool = False) -> web.Application:
+def create_async_qe_app(hmac_keys: Sequence[bytes], forbid_private_addr: bool = False) -> web.Application:
     req_id_service = RequestId(
         header_name=HEADER_REQUEST_ID,
         accept_logging_ctx=True,
@@ -315,7 +316,7 @@ def create_async_qe_app(hmac_key: bytes, forbid_private_addr: bool = False) -> w
                 error_handler=error_handler,
             ).middleware,
             # TODO FIX: Add profiling middleware.
-            body_signature_validation_middleware(hmac_key=hmac_key, header=HEADER_BODY_SIGNATURE),
+            body_signature_validation_middleware(hmac_keys=hmac_keys, header=HEADER_BODY_SIGNATURE),
         ]
     )
     app.on_response_prepare.append(req_id_service.on_response_prepare)
@@ -343,11 +344,14 @@ def get_configured_qe_app() -> web.Application:
     settings = RQESettings(fallback=deprecated_settings)
     load_core_lib(core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST))
 
-    hmac_key = settings.RQE_SECRET_KEY
-    if hmac_key is None:
-        raise Exception("No `hmac_key` set.")
+    hmac_keys = settings.RQE_SECRET_KEY
+    if hmac_keys is None:
+        raise Exception("No `hmac_keys` set.")
 
-    return create_async_qe_app(hmac_key.encode(), forbid_private_addr=settings.FORBID_PRIVATE_ADDRESSES)
+    return create_async_qe_app(
+        hmac_keys=tuple(hmac_key.encode() for hmac_key in hmac_keys),
+        forbid_private_addr=settings.FORBID_PRIVATE_ADDRESSES,
+    )
 
 
 def async_qe_main() -> None:
