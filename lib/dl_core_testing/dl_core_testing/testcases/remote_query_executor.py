@@ -67,7 +67,12 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
     @pytest.fixture(scope="function")
     def sync_rqe_netloc_subprocess(self, forbid_private_addr: bool) -> Generator[RQEBaseURL, None, None]:
         with RQEConfigurationMaker(
-            ext_query_executer_secret_key=self.EXT_QUERY_EXECUTER_SECRET_KEY,
+            ext_query_executer_secret_key=",".join(
+                (
+                    self.EXT_QUERY_EXECUTER_SECRET_KEY,
+                    self.EXT_QUERY_EXECUTER_SECRET_KEY_ALT,
+                )
+            ),
             core_connector_whitelist=self.core_test_config.core_connector_ep_names,
             forbid_private_addr="1" if forbid_private_addr else "0",
         ).sync_rqe_netloc_subprocess_cm() as sync_rqe_config:
