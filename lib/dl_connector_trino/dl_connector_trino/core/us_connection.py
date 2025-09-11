@@ -87,7 +87,6 @@ class ConnectionTrinoBase(
         return base.to_subclass(
             TrinoConnectOptions,
             connect_timeout=1,
-            max_execution_time=70,
             total_timeout=80,
         )
 

@@ -29,7 +29,6 @@ class TrinoConnExecutor(DefaultSqlAlchemyConnExecutor[TrinoDefaultAdapter]):
                 ssl_enable=self._conn_dto.ssl_enable,
                 ssl_ca=self._conn_dto.ssl_ca,
                 connect_timeout=self._conn_options.connect_timeout,
-                max_execution_time=self._conn_options.max_execution_time,
                 total_timeout=self._conn_options.total_timeout,
             )
         ]

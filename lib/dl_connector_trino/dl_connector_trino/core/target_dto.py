@@ -18,7 +18,6 @@ class TrinoConnTargetDTO(ConnTargetDTO):
     ssl_enable: bool = attr.ib(default=False)
     ssl_ca: str | None = attr.ib(default=None)
     connect_timeout: int | None = attr.ib(default=None)
-    max_execution_time: int | None = attr.ib(default=None)
     total_timeout: int | None = attr.ib(default=None)
 
     def get_effective_host(self) -> str | None:
