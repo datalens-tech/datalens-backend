@@ -1,9 +1,7 @@
 from collections.abc import Generator
 import datetime
 import ssl
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 import requests
