@@ -74,8 +74,8 @@ class CustomHTTPAdapter(HTTPAdapter):
     """
 
     def __init__(self, ssl_ca: str | None = None, *args: Any, **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
         self.ssl_ca = ssl_ca
+        super().__init__(*args, **kwargs)
 
     def init_poolmanager(self, connections: int, maxsize: int, block: bool = False, **pool_kwargs: Any) -> None:
         if self.ssl_ca is None:
