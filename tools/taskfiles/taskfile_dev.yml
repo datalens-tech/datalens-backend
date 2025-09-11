@@ -183,6 +183,8 @@ tasks:
           CLI_ARGS: "ruff check --fix {{.LINT_PATH}}"
 
       - task: toml-sort
+        vars:
+          FIX: 'true'
 
       - for: { var: LIB_PATHS, as: LIB_PATH }
         task: _deptry
