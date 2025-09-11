@@ -1,9 +1,7 @@
 from collections.abc import Generator
 import datetime
 import ssl
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 import requests
@@ -80,8 +78,10 @@ class CustomHTTPAdapter(HTTPAdapter):
         self.ssl_ca = ssl_ca
 
     def init_poolmanager(self, connections: int, maxsize: int, block: bool = False, **pool_kwargs: Any) -> None:
-        ca_path = get_root_certificates_path() if self.ssl_ca is None else None
-        context = ssl.create_default_context(cadata=self.ssl_ca, capath=ca_path)
+        if self.ssl_ca is None:
+            context = ssl.create_default_context(cafile=get_root_certificates_path())
+        else:
+            context = ssl.create_default_context(cadata=self.ssl_ca)
         super().init_poolmanager(connections, maxsize, block, ssl_context=context, **pool_kwargs)
 
 
