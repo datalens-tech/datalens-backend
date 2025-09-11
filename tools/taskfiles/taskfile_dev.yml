@@ -113,7 +113,7 @@ tasks:
           DIR: "{{.PROJECT_ROOT_PATH}}"
           CLI_ARGS: 'toml-sort {{if eq .FIX "true"}}--in-place{{else}}--check{{end}} {{.TOML_FILES}}'
     vars:
-      FIX: '{{.FIX | default "false"}}'
+      FIX: '{{.FIX | default "true"}}'
       TOML_FILES:
         sh: |
           find {{.CLI_ARGS | default "."}} -name 'pyproject.toml' \
@@ -141,6 +141,8 @@ tasks:
           CLI_ARGS: "ruff check {{.LINT_PATH}}"
 
       - task: toml-sort
+        vars:
+          FIX: 'false'
 
       - for: { var: LIB_PATHS, as: LIB_PATH }
         task: _deptry
