@@ -15,7 +15,7 @@ class DeprecatedRQESettings:
         missing=None,
         fallback_cfg_key="CORE_CONNECTOR_WHITELIST",
     )
-    RQE_SECRET_KEY: Optional[tuple[str]] = s_attrib(  # type: ignore  # 2025-09-11 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "tuple[str] | None")  [assignment]
+    RQE_SECRET_KEY: Optional[tuple[str, ...]] = s_attrib(  # type: ignore  # 2025-09-11 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "tuple[str] | None")  [assignment]
         "RQE_SECRET_KEY",
         missing=None,
         sensitive=True,
