@@ -22,6 +22,23 @@ class TestPromQLDashSQL(PromQLConnectionTestBase, DefaultDashSQLTestSuite):
         assert resp_data["details"]["db_message"] == "'step', 'from', 'to' must be in parameters"
 
     @pytest.mark.asyncio
+    async def test_basic_select_with_new_resp_schema(
+        self, data_api_lowlevel_aiohttp_client: TestClient, saved_connection_id: str
+    ) -> None:
+        resp = await self.get_dashsql_response(
+            data_api_aio=data_api_lowlevel_aiohttp_client,
+            conn_id=saved_connection_id,
+            query="select 1, 2, 3",
+            fail_ok=True,
+            with_export_info=True,
+        )
+
+        assert resp.status == 400
+        resp_data = await resp.json()
+        assert resp_data["code"] == "ERR.DS_API.DB"
+        assert resp_data["details"]["db_message"] == "'step', 'from', 'to' must be in parameters"
+
+    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "dashsql_params_type",
         [

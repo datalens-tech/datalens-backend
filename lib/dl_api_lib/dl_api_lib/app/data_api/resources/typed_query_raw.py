@@ -17,6 +17,11 @@ from dl_api_lib.app.data_api.resources.base import (
     RequiredResourceDSAPI,
     requires,
 )
+from dl_api_lib.common_models.data_export import (
+    DataExportForbiddenReason,
+    DataExportInfo,
+    DataExportResult,
+)
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.schemas.typed_query_raw import (
     RawTypedQueryRaw,
@@ -24,7 +29,11 @@ from dl_api_lib.schemas.typed_query_raw import (
     TypedQueryRawSchema,
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
-from dl_api_lib.utils.base import need_permission_on_entry
+from dl_api_lib.utils.base import (
+    enrich_resp_dict_with_data_export_info,
+    get_data_export_base_result,
+    need_permission_on_entry,
+)
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_core.base_models import WorkbookEntryLocation
 import dl_core.exc as core_exc
@@ -137,9 +146,24 @@ class DashSQLTypedQueryRawView(BaseView):
                 )
             )
 
-    def make_response_data(self, typed_query_raw_result: TypedQueryRawResult) -> dict:
+    def make_response_data(
+        self, typed_query_raw_result: TypedQueryRawResult, data_export_result: DataExportResult
+    ) -> dict:
         """Serialize output"""
-        return TypedQueryRawResultSchema().dump(typed_query_raw_result)
+        typed_query_result_dict = TypedQueryRawResultSchema().dump(typed_query_raw_result)
+        enrich_resp_dict_with_data_export_info(typed_query_result_dict, data_export_result)
+        return typed_query_result_dict
+
+    def get_data_export_info(self, conn: ConnectionBase) -> DataExportInfo:
+        tenant = self.dl_request.rci.tenant
+        assert tenant
+        return DataExportInfo(
+            enabled_in_conn=not conn.data.data_export_forbidden,
+            enabled_in_ds=True,
+            enabled_in_tenant=tenant.is_data_export_enabled,
+            allowed_in_conn_type=conn.allow_background_data_export_for_conn_type,
+            background_allowed_in_tenant=tenant.is_background_data_export_allowed,
+        )
 
     @generic_profiler_async("dashsql-typed-query-raw")
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
@@ -154,5 +178,10 @@ class DashSQLTypedQueryRawView(BaseView):
         # Execute
         typed_query_raw_result = await self.execute_query(connection=connection, typed_query_raw=typed_query_raw)
 
+        data_export_info = self.get_data_export_info(conn=connection)
+        data_export_result = get_data_export_base_result(data_export_info)
+        data_export_result.background.allowed = False
+        data_export_result.background.reason.append(DataExportForbiddenReason.prohibited_in_typed_query.value)
+
         # Prepare and return output
-        return web.json_response(self.make_response_data(typed_query_raw_result))
+        return web.json_response(self.make_response_data(typed_query_raw_result, data_export_result))

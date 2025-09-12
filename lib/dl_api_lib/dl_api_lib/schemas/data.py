@@ -653,9 +653,22 @@ class NotificationSchema(BaseSchema):
     locator = ma_fields.String()
 
 
-class DataApiV2ResponseSchema(BaseSchema):
+class DataExportInfoSchema(BaseSchema):
+    class DataExportInfoInternal(BaseSchema):
+        allowed = ma_fields.Boolean(required=True, allow_none=False)
+        reason = ma_fields.List(ma_fields.String(), required=True, allow_none=True)
+
+    background = ma_fields.Nested(DataExportInfoInternal, required=True, allow_none=False)
+    basic = ma_fields.Nested(DataExportInfoInternal, required=True, allow_none=False)
+
+
+class DataExportSchemaMixin(BaseSchema):
+    data_export = ma_fields.Nested(DataExportInfoSchema, required=True, allow_none=False)
+
+
+class DataApiV2ResponseSchema(DataExportSchemaMixin):
     fields_ = ma_fields.Nested(LegendItemSchema, attribute="fields", data_key="fields", many=True, allow_none=False)
     result_data = ma_fields.Nested(V2DataStreamResponseSchema, many=True, allow_none=False)
-    data_export_forbidden = ma_fields.Boolean(allow_none=False)
+    data_export_forbidden = ma_fields.Boolean(allow_none=False)  # TODO: remove after switch to data_export field
     blocks = ma_fields.Nested(ResponseBlockInfoSchema, many=True)
     notifications = ma_fields.Nested(NotificationSchema, many=True)

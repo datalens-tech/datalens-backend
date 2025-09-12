@@ -14,6 +14,10 @@ from dl_api_lib.app.data_api.resources.base import (
     RequiredResourceDSAPI,
     requires,
 )
+from dl_api_lib.common_models.data_export import (
+    DataExportForbiddenReason,
+    DataExportInfo,
+)
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.schemas.typed_query import (
     PlainTypedQueryContentSchema,
@@ -23,7 +27,10 @@ from dl_api_lib.schemas.typed_query import (
     TypedQuerySchema,
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
-from dl_api_lib.utils.base import need_permission_on_entry
+from dl_api_lib.utils.base import (
+    get_data_export_base_result,
+    need_permission_on_entry,
+)
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_constants.enums import DashSQLQueryType
 import dl_core.exc as core_exc
@@ -145,6 +152,17 @@ class DashSQLTypedQueryView(BaseView):
         response_data = result_serializer.serialize_typed_query_result(typed_query_result)
         return response_data
 
+    def get_data_export_info(self, conn: ConnectionBase) -> DataExportInfo:
+        tenant = self.dl_request.rci.tenant
+        assert tenant
+        return DataExportInfo(
+            enabled_in_conn=not conn.data.data_export_forbidden,
+            enabled_in_ds=True,
+            enabled_in_tenant=tenant.is_data_export_enabled,
+            allowed_in_conn_type=conn.allow_background_data_export_for_conn_type,
+            background_allowed_in_tenant=tenant.is_background_data_export_allowed,
+        )
+
     @generic_profiler_async("dashsql-typed-query")
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> web.Response:
@@ -157,6 +175,11 @@ class DashSQLTypedQueryView(BaseView):
 
         # Execute
         typed_query_result = await self.execute_query(connection=connection, typed_query=typed_query)
+
+        data_export_info = self.get_data_export_info(conn=connection)
+        data_export_result = get_data_export_base_result(data_export_info)
+        data_export_result.background.allowed = False
+        data_export_result.background.reason.append(DataExportForbiddenReason.prohibited_in_typed_query.value)
 
         # Prepare and return output
         return web.json_response(self.make_response_data(typed_query_result))

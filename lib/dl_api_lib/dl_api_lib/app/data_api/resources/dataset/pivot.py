@@ -141,8 +141,10 @@ class DatasetPivotView(DatasetDataBaseView):
         reporting_registry = (
             self.dl_request.services_registry.get_reporting_registry() if self.allow_notifications else None
         )
+        data_export_info = self.get_data_export_info()
         return PivotDataRequestResponseSerializer.make_pivot_response(
             merged_stream=merged_stream,
             pivot_table=pivot_table,
             reporting_registry=reporting_registry,
+            data_export_info=data_export_info,
         )

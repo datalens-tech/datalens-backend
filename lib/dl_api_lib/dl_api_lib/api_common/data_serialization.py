@@ -11,6 +11,11 @@ from typing import (
 from dl_api_commons.reporting.models import NotificationReportingRecord
 from dl_api_commons.reporting.registry import ReportingRegistry
 from dl_api_lib.api_common.data_types import bi_to_yql
+from dl_api_lib.common_models.data_export import (
+    DataExportForbiddenReason,
+    DataExportInfo,
+    DataExportResult,
+)
 from dl_api_lib.schemas.data import (
     DataApiV2ResponseSchema,
     DatasetFieldsResponseSchema,
@@ -20,6 +25,10 @@ from dl_api_lib.schemas.legend import LegendSchema
 from dl_api_lib.schemas.pivot import (
     PivotHeaderInfoSchema,
     PivotItemSchema,
+)
+from dl_api_lib.utils.base import (
+    enrich_resp_dict_with_data_export_info,
+    get_data_export_base_result,
 )
 from dl_constants.enums import ManagedBy
 from dl_core.us_dataset import Dataset
@@ -85,10 +94,10 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
     @classmethod
     def make_data_response_v1(
         cls,
+        data_export_info: DataExportInfo,
         merged_stream: MergedQueryDataStream,
         totals: Optional[Sequence] = None,
         totals_query: Optional[str] = None,
-        data_export_forbidden: Optional[bool] = None,
         fields_data: Optional[list[dict[str, Any]]] = None,
     ) -> dict[str, Any]:
         legend_item_ids = merged_stream.legend_item_ids
@@ -112,8 +121,14 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
             # Note: `totals is None` also happens when everything was filtered out.
             data["result"]["totals"] = totals
             data["result"]["totals_query"] = totals_query
-        if data_export_forbidden is not None:
-            data["result"]["data_export_forbidden"] = data_export_forbidden
+
+        data[
+            "data_export_forbidden"
+        ] = not data_export_info.enabled_in_conn  # TODO: BI-6539 remove after switch to new schema
+
+        data_export_result = get_data_export_base_result(data_export_info)
+        enrich_resp_dict_with_data_export_info(data, data_export_result)
+
         if fields_data is not None:
             data["result"]["fields"] = fields_data
 
@@ -122,14 +137,18 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
     @classmethod
     def make_data_response_v2(
         cls,
+        data_export_info: DataExportInfo,
         merged_stream: MergedQueryDataStream,
         reporting_registry: Optional[ReportingRegistry] = None,
-        data_export_forbidden: Optional[bool] = None,
     ) -> dict[str, Any]:
         data: dict[str, Any] = {}
 
-        if data_export_forbidden is not None:
-            data["data_export_forbidden"] = data_export_forbidden
+        data[
+            "data_export_forbidden"
+        ] = not data_export_info.enabled_in_conn  # TODO: BI-6539 remove after switch to new schema
+
+        data_export_result = get_data_export_base_result(data_export_info)
+        enrich_resp_dict_with_data_export_info(data, data_export_result)
 
         data["fields"] = merged_stream.legend.items
 
@@ -174,6 +193,7 @@ class PivotDataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
     @classmethod
     def make_pivot_response(
         cls,
+        data_export_info: DataExportInfo,
         merged_stream: MergedQueryDataStream,
         pivot_table: PivotTable,
         reporting_registry: Optional[ReportingRegistry] = None,
@@ -229,6 +249,11 @@ class PivotDataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
             "pivot_data": table_data,
             "blocks": block_meta_list,
         }
+
+        data_export_result: DataExportResult = get_data_export_base_result(data_export_info)
+        data_export_result.background.allowed = False
+        data_export_result.background.reason.append(DataExportForbiddenReason.prohibited_in_pivot.value)
+        enrich_resp_dict_with_data_export_info(response_data, data_export_result)
 
         if reporting_registry is not None:
             response_data["notifications"] = [

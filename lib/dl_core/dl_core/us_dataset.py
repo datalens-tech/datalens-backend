@@ -65,7 +65,7 @@ class Dataset(USEntry):
         revision_id: str | None = attr.ib(default=None)
         load_preview_by_default: bool | None = attr.ib(default=True)
         template_enabled: bool = attr.ib(default=False)
-        data_export_forbidden: bool | None = attr.ib(default=False)
+        data_export_forbidden: bool = attr.ib(default=False)
         schema_version: str = attr.ib(default="1")
         result_schema: ResultSchema = attr.ib(factory=ResultSchema)
         source_collections: list[DataSourceCollectionSpec] = attr.ib(factory=list)
@@ -232,7 +232,7 @@ class Dataset(USEntry):
         return self.data.template_enabled
 
     @property
-    def data_export_forbidden(self) -> bool | None:
+    def data_export_forbidden(self) -> bool:
         return self.data.data_export_forbidden
 
     def rename_field_id_usages(self, old_id: str, new_id: str) -> None:

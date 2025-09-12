@@ -13,6 +13,11 @@ from dl_api_client.dsmaker.primitives import (
     WhereClause,
 )
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
+from dl_api_lib.common_models.data_export import DataExportForbiddenReason
+from dl_api_lib.request_model.data import (
+    DatasetAction,
+    DatasetSettingName,
+)
 from dl_api_lib_testing.data_api_base import (
     DataApiTestParams,
     StandardizedDataApiTestBase,
@@ -60,6 +65,55 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         total_sum_2 = sum(float(row[0]) for row in rows_2)
 
         assert pytest.approx(total_sum_1) == total_sum_2
+
+    def test_data_export(
+        self,
+        saved_dataset: Dataset,
+        data_api: SyncHttpDataApiV2,
+        data_api_test_params: DataApiTestParams,
+        control_api: SyncHttpDatasetApiV1,
+    ) -> None:
+        updates = [
+            {
+                "action": DatasetAction.update_setting.value,
+                "setting": {
+                    "name": DatasetSettingName.data_export_forbidden.value,
+                    "value": True,
+                },
+            },
+        ]
+        saved_dataset = control_api.apply_updates(dataset=saved_dataset, fail_ok=False, updates=updates).dataset
+        saved_dataset = control_api.save_dataset(saved_dataset).dataset
+        result_resp = self.get_result(saved_dataset, data_api, field_names=(data_api_test_params.two_dims[0],))
+
+        resp_data = result_resp.json
+
+        assert not resp_data["data_export"]["basic"]["allowed"]
+        assert DataExportForbiddenReason.disabled_in_ds.value in resp_data["data_export"]["basic"]["reason"]
+        assert not resp_data["data_export"]["background"]["allowed"]
+        assert DataExportForbiddenReason.disabled_in_ds.value in resp_data["data_export"]["background"]["reason"]
+
+        updates = [
+            {
+                "action": DatasetAction.update_setting.value,
+                "setting": {
+                    "name": DatasetSettingName.data_export_forbidden.value,
+                    "value": False,
+                },
+            },
+        ]
+        saved_dataset = control_api.apply_updates(dataset=saved_dataset, fail_ok=False, updates=updates).dataset
+        saved_dataset = control_api.save_dataset(saved_dataset).dataset
+
+        result_resp = self.get_result(saved_dataset, data_api, field_names=(data_api_test_params.two_dims[0],))
+
+        resp_data = result_resp.json
+        if resp_data["data_export"]["basic"]["allowed"]:
+            assert resp_data["data_export"]["basic"]["reason"] is None
+            assert not resp_data["data_export_forbidden"]
+
+        if resp_data["data_export"]["background"]["allowed"]:
+            assert resp_data["data_export"]["basic"]["reason"] is None
 
     def test_duplicated_expressions(
         self,

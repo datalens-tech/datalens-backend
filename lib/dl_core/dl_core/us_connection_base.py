@@ -255,6 +255,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     allow_export: ClassVar[bool] = False
     is_always_internal_source: ClassVar[bool] = False
     is_always_user_source: ClassVar[bool] = False
+    allow_background_data_export_for_conn_type: ClassVar[bool] = False
 
     _preview_conn = None
 

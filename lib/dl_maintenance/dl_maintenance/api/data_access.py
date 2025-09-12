@@ -34,6 +34,7 @@ from dl_api_lib.api_common.data_serialization import (
     DataRequestResponseSerializer,
     PivotDataRequestResponseSerializer,
 )
+from dl_api_lib.common_models.data_export import DataExportInfo
 from dl_api_lib.dataset.view import DatasetView
 from dl_api_lib.query.formalization.block_formalizer import BlockFormalizer
 from dl_api_lib.query.formalization.legend_formalizer import ResultLegendFormalizer
@@ -199,7 +200,10 @@ async def get_result_data(
         raw_query_spec_union=raw_query_spec_union,
         allow_query_cache_usage=allow_query_cache_usage,
     )
-    response_json = DataRequestResponseSerializer.make_data_response_v1(merged_stream=merged_stream)
+    data_export_info = DataExportInfo()  # TODO: enrich if it needed
+    response_json = DataRequestResponseSerializer.make_data_response_v1(
+        merged_stream=merged_stream, data_export_info=data_export_info
+    )
     return response_json
 
 
@@ -222,10 +226,12 @@ async def get_pivot_data(
     pivot_legend = pivot_formalizer.make_pivot_legend(raw_pivot_spec=raw_pivot_spec)
     pivot_transformer = NativePivotTransformer(legend=merged_stream.legend, pivot_legend=pivot_legend)
     pivot_table = pivot_transformer.pivot(rows=merged_stream.rows)
+    data_export_info = DataExportInfo()  # TODO: enrich if it needed
     response_json = PivotDataRequestResponseSerializer.make_pivot_response(
         merged_stream=merged_stream,
         pivot_table=pivot_table,
         reporting_registry=reporting_registry,
+        data_export_info=data_export_info,
     )
     return response_json
 
