@@ -49,4 +49,4 @@ class DefaultDashSQLTestSuite(DashSQLTestBase, RegulatedTestCase, metaclass=abc.
         data = await resp.json()
         assert data["events"][1]["data"] == [1, 2, 3]
         assert not data["data_export"]["background"]["allowed"]
-        assert DataExportForbiddenReason.prohibited_in_dashsql in data["data_export"]["background"]["reason"]
+        assert DataExportForbiddenReason.prohibited_in_dashsql.value in data["data_export"]["background"]["reason"]
