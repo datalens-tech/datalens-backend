@@ -1,4 +1,4 @@
-import typing
+from typing import Sequence
 
 import attr
 import flask
@@ -9,7 +9,7 @@ from dl_api_commons.crypto import get_hmac_hex_digest
 
 @attr.s
 class BodySignatureValidator:
-    hmac_keys: typing.Sequence[bytes] = attr.ib()
+    hmac_keys: Sequence[bytes] = attr.ib()
     header: str = attr.ib()
 
     def validate_request_body(self) -> None:

@@ -1,4 +1,4 @@
-import typing
+from typing import Sequence
 
 from aiohttp import web
 from aiohttp.typedefs import (
@@ -9,7 +9,7 @@ from aiohttp.typedefs import (
 from dl_api_commons.crypto import get_hmac_hex_digest
 
 
-def body_signature_validation_middleware(hmac_keys: typing.Sequence[bytes], header: str) -> Middleware:
+def body_signature_validation_middleware(hmac_keys: Sequence[bytes], header: str) -> Middleware:
     @web.middleware
     async def actual_middleware(request: web.Request, handler: Handler) -> web.StreamResponse:
         if not hmac_keys:
