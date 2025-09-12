@@ -1,10 +1,11 @@
 import os
 
-import pydantic
 import pydantic_settings
 
+import dl_pydantic
 
-class BaseSettings(pydantic.BaseModel):
+
+class BaseSettings(dl_pydantic.BaseModel):
     """
     Base settings class that should be used for sub-models and mixins.
     """

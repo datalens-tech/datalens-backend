@@ -4,7 +4,8 @@ import typing
 
 import attr
 import httpx
-import pydantic
+
+import dl_httpx
 
 
 LOGGER = logging.getLogger(__name__)
@@ -33,7 +34,7 @@ class RefreshedToken(Token):
     refresh_token: str
 
 
-class IntrospectPostResponse(pydantic.BaseModel):
+class IntrospectPostResponse(dl_httpx.BaseResponseModel):
     active: bool
     username: str | None = None
     sub: str | None = None
@@ -46,7 +47,7 @@ class IntrospectPostResponse(pydantic.BaseModel):
         )
 
 
-class TokenPostResponse(pydantic.BaseModel):
+class TokenPostResponse(dl_httpx.BaseResponseModel):
     access_token: str
     token_type: str
     expires_in: int

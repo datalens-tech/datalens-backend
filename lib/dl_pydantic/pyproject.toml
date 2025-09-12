@@ -2,19 +2,14 @@
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 description = ""
 license = "Apache 2.0"
-name = "dl-settings"
-packages = [{include = "dl_settings"}]
+name = "dl-pydantic"
+packages = [{include = "dl_pydantic"}]
 readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
-dl-pydantic = {path = "../dl_pydantic"}
 pydantic = "*"
-pydantic-settings = {extras = ["yaml"], version = "*"}
 python = ">=3.10, <3.13"
-
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
 
 [tool.mypy]
 check_untyped_defs = true
@@ -35,5 +30,8 @@ requires = [
   "poetry-core",
 ]
 
-[datalens_ci]
-skip_test = true
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_pydantic_tests/"
+skip_compose = "true"
+target_path = "unit"

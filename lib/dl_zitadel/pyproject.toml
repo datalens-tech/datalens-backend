@@ -12,9 +12,9 @@ aiohttp = {optional = true, version = "*"}
 attrs = "*"
 dl-api-commons = {path = "../../lib/dl_api_commons"}
 dl-constants = {path = "../../lib/dl_constants"}
+dl-httpx = {path = "../dl_httpx"}
 flask = {optional = true, version = "*"}
 httpx = "*"
-pydantic = "*"
 python = ">=3.10, <3.13"
 werkzeug = "*"
 

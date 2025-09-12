@@ -6,6 +6,7 @@ import jwt
 import pydantic
 
 import dl_auth_native.exc as dl_auth_native_exc
+import dl_pydantic
 
 
 @attr.s(frozen=True)
@@ -14,7 +15,7 @@ class Payload:
     expires_at: datetime.datetime = attr.ib()
 
 
-class PayloadSchema(pydantic.BaseModel):
+class PayloadSchema(dl_pydantic.BaseModel):
     user_id: str = pydantic.Field(alias="userId")
     exp: int
 
