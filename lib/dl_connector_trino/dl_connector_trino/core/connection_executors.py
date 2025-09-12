@@ -3,6 +3,7 @@ import attr
 from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
 
 from dl_connector_trino.core.adapters import TrinoDefaultAdapter
+from dl_connector_trino.core.conn_options import TrinoConnectOptions
 from dl_connector_trino.core.dto import TrinoConnDTO
 from dl_connector_trino.core.target_dto import TrinoConnTargetDTO
 
@@ -11,6 +12,7 @@ from dl_connector_trino.core.target_dto import TrinoConnTargetDTO
 class TrinoConnExecutor(DefaultSqlAlchemyConnExecutor[TrinoDefaultAdapter]):
     TARGET_ADAPTER_CLS = TrinoDefaultAdapter
     _conn_dto: TrinoConnDTO = attr.ib()
+    _conn_options: TrinoConnectOptions = attr.ib()
 
     async def _make_target_conn_dto_pool(self) -> list[TrinoConnTargetDTO]:
         return [
@@ -26,5 +28,7 @@ class TrinoConnExecutor(DefaultSqlAlchemyConnExecutor[TrinoDefaultAdapter]):
                 jwt=self._conn_dto.jwt,
                 ssl_enable=self._conn_dto.ssl_enable,
                 ssl_ca=self._conn_dto.ssl_ca,
+                connect_timeout=self._conn_options.connect_timeout,
+                total_timeout=self._conn_options.total_timeout,
             )
         ]

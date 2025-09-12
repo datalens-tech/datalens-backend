@@ -1,5 +1,3 @@
-from typing import Optional
-
 import attr
 from typing_extensions import Self
 
@@ -9,18 +7,20 @@ from dl_core.connection_executors.models.connection_target_dto_base import ConnT
 from dl_connector_trino.core.constants import TrinoAuthType
 
 
-@attr.s(frozen=True)
+@attr.s(frozen=True, kw_only=True)
 class TrinoConnTargetDTO(ConnTargetDTO):
     host: str = attr.ib()
     port: int = attr.ib()
     username: str = attr.ib()
-    auth_type: TrinoAuthType = attr.ib(kw_only=True)
-    password: Optional[str] = attr.ib(repr=False, kw_only=True, default=None)
-    jwt: Optional[str] = attr.ib(repr=False, kw_only=True, default=None)
-    ssl_enable: bool = attr.ib(kw_only=True, default=False)
-    ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
+    auth_type: TrinoAuthType = attr.ib()
+    password: str | None = attr.ib(repr=False, default=None)
+    jwt: str | None = attr.ib(repr=False, default=None)
+    ssl_enable: bool = attr.ib(default=False)
+    ssl_ca: str | None = attr.ib(default=None)
+    connect_timeout: int | None = attr.ib(default=None)
+    total_timeout: int | None = attr.ib(default=None)
 
-    def get_effective_host(self) -> Optional[str]:
+    def get_effective_host(self) -> str | None:
         return self.host
 
     @classmethod

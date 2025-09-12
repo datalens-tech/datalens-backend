@@ -21,6 +21,7 @@ from dl_core.utils import secrepr
 from dl_i18n.localizer_base import Localizer
 
 from dl_connector_trino.api.i18n.localizer import Translatable
+from dl_connector_trino.core.conn_options import TrinoConnectOptions
 from dl_connector_trino.core.constants import (
     CONNECTION_TYPE_TRINO,
     SOURCE_TYPE_TRINO_SUBSELECT,
@@ -80,6 +81,14 @@ class ConnectionTrinoBase(
         ssl_ca: str | None = attr.ib(default=None)
         jwt: str | None = attr.ib(repr=secrepr, default=None)
         listing_sources: ListingSources = attr.ib()
+
+    def get_conn_options(self) -> TrinoConnectOptions:
+        base = super().get_conn_options()
+        return base.to_subclass(
+            TrinoConnectOptions,
+            connect_timeout=1,
+            total_timeout=80,
+        )
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
         result: list[DataSourceTemplate] = []
