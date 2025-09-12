@@ -290,9 +290,9 @@ def _handle_exception(err: Exception) -> tuple[flask.Response, int]:
 def create_sync_app() -> flask.Flask:
     deprecated_settings = load_settings_from_env_with_fallback(DeprecatedRQESettings)
     settings = RQESettings(fallback=deprecated_settings)
-    hmac_key = settings.RQE_SECRET_KEY
-    if hmac_key is None:
-        raise Exception("No `hmac_key` set.")
+    hmac_keys = settings.RQE_SECRET_KEY
+    if hmac_keys is None:
+        raise Exception("No `hmac_keys` set.")
 
     load_core_lib(core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST))
 
@@ -315,7 +315,7 @@ def create_sync_app() -> flask.Flask:
     ).set_up(app)
     profiling_middleware.set_up(app, accept_outer_stages=True)
     BodySignatureValidator(
-        hmac_key=hmac_key.encode(),
+        hmac_keys=tuple(hmac_key.encode() for hmac_key in hmac_keys),
         header=HEADER_BODY_SIGNATURE,
     ).set_up(app)
 

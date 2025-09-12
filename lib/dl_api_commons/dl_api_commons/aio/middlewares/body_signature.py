@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from aiohttp import web
 from aiohttp.typedefs import (
     Handler,
@@ -7,22 +9,26 @@ from aiohttp.typedefs import (
 from dl_api_commons.crypto import get_hmac_hex_digest
 
 
-def body_signature_validation_middleware(hmac_key: bytes, header: str) -> Middleware:
+def body_signature_validation_middleware(hmac_keys: Sequence[bytes], header: str) -> Middleware:
     @web.middleware
     async def actual_middleware(request: web.Request, handler: Handler) -> web.StreamResponse:
-        if not hmac_key:  # do not consider an empty hmac key as valid.
-            raise Exception("body_signature_validation_middleware: no hmac_key.")
+        if not hmac_keys:
+            raise Exception("body_signature_validation_middleware: no hmac_keys passed")
+
+        if any(not key for key in hmac_keys):
+            raise Exception("body_signature_validation_middleware: empty hmac_key passed")
 
         if request.method in ("HEAD", "OPTIONS", "GET"):
             return await handler(request)
 
         body_bytes = await request.read()
-        expected_signature = get_hmac_hex_digest(body_bytes, secret_key=hmac_key)
         signature_str_from_header = request.headers.get(header)
+        for hmac_key in hmac_keys:
+            expected_signature = get_hmac_hex_digest(body_bytes, secret_key=hmac_key)
 
-        if expected_signature != signature_str_from_header:
-            raise web.HTTPForbidden(reason="Invalid signature")
+            if expected_signature == signature_str_from_header:
+                return await handler(request)
 
-        return await handler(request)
+        raise web.HTTPForbidden(reason="Invalid signature")
 
     return actual_middleware

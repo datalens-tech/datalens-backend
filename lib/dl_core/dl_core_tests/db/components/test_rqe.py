@@ -19,6 +19,14 @@ class TestRQE(DefaultCoreTestClass, BaseRemoteQueryExecutorTestClass):
         result = await self.execute_request(remote_adapter, query="select 1")
         assert result[0][0] == 1
 
+        # OK case, alternative secret key
+        remote_adapter = attr.evolve(
+            remote_adapter,
+            rqe_data=attr.evolve(query_executor_options, hmac_key=self.EXT_QUERY_EXECUTER_SECRET_KEY_ALT.encode()),
+        )
+        result = await self.execute_request(remote_adapter, query="select 1")
+        assert result[0][0] == 1
+
         # Not OK case
         remote_adapter = attr.evolve(
             remote_adapter,
