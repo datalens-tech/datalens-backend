@@ -1839,6 +1839,7 @@ aiohttp = {version = "*", optional = true}
 attrs = "*"
 dl-api-commons = {path = "../../lib/dl_api_commons"}
 dl-constants = {path = "../../lib/dl_constants"}
+dl-pydantic = {path = "../../lib/dl_pydantic"}
 flask = {version = "*", optional = true}
 pydantic = "*"
 pyjwt = "*"
@@ -2896,6 +2897,7 @@ develop = true
 
 [package.dependencies]
 attrs = "*"
+dl-pydantic = {path = "../dl_pydantic"}
 dl-retrier = {path = "../dl_retrier"}
 httpx = "*"
 typing-extensions = "*"
@@ -3027,6 +3029,22 @@ type = "directory"
 url = "../lib/dl_pivot_pandas"
 
 [[package]]
+name = "dl-pydantic"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.dependencies]
+pydantic = "*"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_pydantic"
+
+[[package]]
 name = "dl-query-processing"
 version = "0.0.1"
 description = ""
@@ -3145,6 +3163,7 @@ files = []
 develop = true
 
 [package.dependencies]
+dl-pydantic = {path = "../dl_pydantic"}
 pydantic = "*"
 pydantic-settings = {version = "*", extras = ["yaml"]}
 
@@ -3461,9 +3480,9 @@ aiohttp = {version = "*", optional = true}
 attrs = "*"
 dl-api-commons = {path = "../../lib/dl_api_commons"}
 dl-constants = {path = "../../lib/dl_constants"}
+dl-httpx = {path = "../dl_httpx"}
 flask = {version = "*", optional = true}
 httpx = "*"
-pydantic = "*"
 werkzeug = "*"
 
 [package.extras]
@@ -8911,4 +8930,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "769b0ca5043869a49617d8e5ab05dfc086491f0cdcd850f610dbef41c209a6d5"
+content-hash = "21151d834ee8178be8c0ecc0da5cf0ebdd3c2e5416f2d5f4542a1f8fd083664d"

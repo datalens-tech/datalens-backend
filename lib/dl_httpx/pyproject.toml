@@ -9,6 +9,7 @@ version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = "*"
+dl-pydantic = {path = "../dl_pydantic"}
 dl-retrier = {path = "../dl_retrier"}
 httpx = "*"
 python = ">=3.10, <3.13"

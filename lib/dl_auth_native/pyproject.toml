@@ -12,6 +12,7 @@ aiohttp = {optional = true, version = "*"}
 attrs = "*"
 dl-api-commons = {path = "../../lib/dl_api_commons"}
 dl-constants = {path = "../../lib/dl_constants"}
+dl-pydantic = {path = "../../lib/dl_pydantic"}
 flask = {optional = true, version = "*"}
 pydantic = "*"
 pyjwt = "*"

@@ -148,6 +148,7 @@ dl-model-tools = {develop = true, path = "../lib/dl_model_tools"}
 dl-package-boilerplate = {develop = true, path = "../lib/dl_package_boilerplate"}
 dl-pivot = {develop = true, path = "../lib/dl_pivot"}
 dl-pivot-pandas = {develop = true, path = "../lib/dl_pivot_pandas"}
+dl-pydantic = {develop = true, path = "../lib/dl_pydantic"}
 dl-query-processing = {develop = true, path = "../lib/dl_query_processing"}
 dl-rate-limiter = {extras = ["aiohttp", "flask"], path = "../lib/dl_rate_limiter"}
 dl-retrier = {develop = true, path = "../lib/dl_retrier"}
