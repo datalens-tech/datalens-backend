@@ -20,7 +20,10 @@ from dl_api_lib.app.data_api.resources.base import (
     RequiredResourceDSAPI,
     requires,
 )
-from dl_api_lib.common_models.data_export import DataExportInfo
+from dl_api_lib.common_models.data_export import (
+    DataExportForbiddenReason,
+    DataExportInfo,
+)
 from dl_api_lib.enums import USPermissionKind
 import dl_api_lib.schemas.main
 from dl_api_lib.utils.base import (
@@ -230,6 +233,8 @@ class DashSQLView(BaseView):
 
         data_export_info = self.get_data_export_info(conn)
         data_export_result = get_data_export_base_result(data_export_info)
+        data_export_result.background.allowed = False
+        data_export_result.background.reason.append(DataExportForbiddenReason.prohibited_in_dashsql.value)
         enrich_resp_dict_with_data_export_info(resp_data, data_export_result)
 
         data = json.dumps(resp_data, default=self._json_default)
