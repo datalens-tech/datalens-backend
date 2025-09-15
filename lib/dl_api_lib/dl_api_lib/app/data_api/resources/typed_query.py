@@ -17,6 +17,7 @@ from dl_api_lib.app.data_api.resources.base import (
 from dl_api_lib.common_models.data_export import (
     DataExportForbiddenReason,
     DataExportInfo,
+    DataExportResult,
 )
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.schemas.typed_query import (
@@ -28,6 +29,7 @@ from dl_api_lib.schemas.typed_query import (
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_api_lib.utils.base import (
+    enrich_resp_dict_with_data_export_info,
     get_data_export_base_result,
     need_permission_on_entry,
 )
@@ -146,10 +148,11 @@ class DashSQLTypedQueryView(BaseView):
         typed_query_result = await tq_processor.process_typed_query(typed_query=typed_query)
         return typed_query_result
 
-    def make_response_data(self, typed_query_result: TypedQueryResult) -> dict:
+    def make_response_data(self, typed_query_result: TypedQueryResult, data_export_result: DataExportResult) -> dict:
         """Serialize output"""
         result_serializer = TypedQueryResultSerializer()  # TODO: Get serializer from somewhere
         response_data = result_serializer.serialize_typed_query_result(typed_query_result)
+        enrich_resp_dict_with_data_export_info(response_data, data_export_result)
         return response_data
 
     def get_data_export_info(self, conn: ConnectionBase) -> DataExportInfo:
@@ -182,4 +185,4 @@ class DashSQLTypedQueryView(BaseView):
         data_export_result.background.reason.append(DataExportForbiddenReason.prohibited_in_typed_query.value)
 
         # Prepare and return output
-        return web.json_response(self.make_response_data(typed_query_result))
+        return web.json_response(self.make_response_data(typed_query_result, data_export_result))
