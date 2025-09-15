@@ -39,7 +39,9 @@ def auth_trust_middleware(
 
             # TODO BI-6257 move tenant resolution into a separate middleware
             updated_rci = app_request.temp_rci.clone(
-                tenant=TenantCommon() if fake_tenant is None else fake_tenant,
+                tenant=TenantCommon(is_background_data_export_allowed=True, is_data_export_enabled=True)
+                if fake_tenant is None
+                else fake_tenant,
             )
             app_request.replace_temp_rci(updated_rci)
         elif app_request.request.headers.get("x-unauthorized"):
@@ -47,7 +49,9 @@ def auth_trust_middleware(
         else:
             updated_rci = app_request.temp_rci.clone(
                 auth_data=NoAuthData() if fake_auth is None else fake_auth,
-                tenant=TenantCommon() if fake_tenant is None else fake_tenant,
+                tenant=TenantCommon(is_background_data_export_allowed=True, is_data_export_enabled=True)
+                if fake_tenant is None
+                else fake_tenant,
             )
             if fake_user_id is not None:
                 updated_rci = updated_rci.clone(user_id=fake_user_id)
