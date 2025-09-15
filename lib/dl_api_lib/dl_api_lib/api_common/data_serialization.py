@@ -122,7 +122,7 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
             data["result"]["totals"] = totals
             data["result"]["totals_query"] = totals_query
 
-        data[
+        data["result"][
             "data_export_forbidden"
         ] = not data_export_info.enabled_in_conn  # TODO: BI-6539 remove after switch to new schema
 
