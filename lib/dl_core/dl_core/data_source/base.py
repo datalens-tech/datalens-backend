@@ -347,6 +347,10 @@ class DataSource(metaclass=abc.ABCMeta):
     def data_export_forbidden(self) -> bool:
         return self.connection.data_export_forbidden
 
+    @property
+    def data_export_allowed_for_conn_type(self) -> bool:
+        return self.connection.allow_background_data_export_for_conn_type
+
     def get_cache_key_part(self) -> LocalKeyRepresentation:
         local_key_rep = self.connection.get_cache_key_part()
 

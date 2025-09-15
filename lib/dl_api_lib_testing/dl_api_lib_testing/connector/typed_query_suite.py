@@ -4,6 +4,7 @@ from typing import Optional
 from aiohttp.test_utils import TestClient
 import pytest
 
+from dl_api_lib.common_models.data_export import DataExportForbiddenReason
 from dl_api_lib_testing.typed_query_base import (
     DashSQLTypedQueryTestBase,
     TypedQueryInfo,
@@ -22,6 +23,13 @@ class DefaultDashSQLTypedQueryTestSuite(DashSQLTypedQueryTestBase, RegulatedTest
             query_type=DashSQLQueryType.generic_query,
             query_content={"query": "select 1 as q, 2 as w, 'zxc' as e"},
             params=[],
+        )
+
+    def check_data_export_result(self, result_data: dict) -> None:
+        assert result_data["data_export"]["background"]["allowed"] == False
+        assert (
+            DataExportForbiddenReason.prohibited_in_typed_query.value
+            in result_data["data_export"]["background"]["reason"]
         )
 
     def check_result(self, result_data: dict) -> None:
@@ -51,3 +59,4 @@ class DefaultDashSQLTypedQueryTestSuite(DashSQLTypedQueryTestBase, RegulatedTest
         )
         result_data = await resp.json()
         self.check_result(result_data)
+        self.check_data_export_result(result_data)
