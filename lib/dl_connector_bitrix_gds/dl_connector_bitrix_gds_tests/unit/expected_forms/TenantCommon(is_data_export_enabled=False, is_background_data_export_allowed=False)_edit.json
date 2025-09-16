@@ -1,0 +1,103 @@
+{
+    "title": "Bitrix24",
+    "rows": [
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Portal"
+                },
+                {
+                    "id": "input",
+                    "name": "portal"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Token"
+                },
+                {
+                    "id": "input",
+                    "name": "token",
+                    "width": "l",
+                    "fakeValue": "******",
+                    "controlProps": {
+                        "type": "password"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "collapse",
+            "name": "advanced_settings",
+            "inner": true,
+            "text": "Advanced connection settings"
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "text": "Disable data export",
+                    "helpText": "Disabling data export will hide the data export button in the charts, though you will still be able to extract data from charts and take screenshots."
+                },
+                {
+                    "id": "radio_button",
+                    "name": "data_export_forbidden",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "defaultValue": "off",
+                    "options": [
+                        {
+                            "text": "Off",
+                            "value": "off"
+                        },
+                        {
+                            "text": "On",
+                            "value": "on"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "apiSchema": {
+        "edit": {
+            "items": [
+                {
+                    "name": "portal",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "token",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        },
+        "check": {
+            "items": [
+                {
+                    "name": "portal",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "token",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        }
+    },
+    "templateName": "bitrix24"
+}

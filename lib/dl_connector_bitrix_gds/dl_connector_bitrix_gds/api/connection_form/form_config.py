@@ -60,9 +60,17 @@ class BitrixGDSConnectionFormFactory(ConnectionFormFactory):
             ]
         )
 
+        form_params = self._get_form_params()
+
         rows: list[FormRow] = [
             portal_row,
             token_row,
+            rc.collapse_advanced_settings_row(),
+            rc.data_export_forbidden_row(
+                conn_id=form_params.conn_id,
+                exports_history_url_path=form_params.exports_history_url_path,
+                mode=self.mode,
+            ),
         ]
         if self.mode == ConnectionFormMode.create:
             rows.append(rc.auto_create_dash_row())
