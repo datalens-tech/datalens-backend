@@ -8,11 +8,15 @@ from .client import (
     NoRetriesHttpxClientException,
     RequestHttpxClientException,
 )
-from .models import BaseResponseModel
+from .models import (
+    BaseRequest,
+    BaseResponseModel,
+)
 
 
 __all__ = [
     "BaseResponseModel",
+    "BaseRequest",
     "HttpxBaseClient",
     "HttpxSyncClient",
     "HttpxAsyncClient",
