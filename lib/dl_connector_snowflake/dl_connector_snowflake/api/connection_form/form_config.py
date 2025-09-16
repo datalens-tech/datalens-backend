@@ -29,6 +29,7 @@ from dl_api_connector.form_config.models.rows.base import (
     TDisplayConditions,
 )
 from dl_api_connector.form_config.models.rows.prepared.base import PreparedRow
+from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_configs.connectors_settings import ConnectorSettingsBase
 
 from dl_connector_snowflake.api.connection_info import SnowflakeConnectionInfoProvider
@@ -99,6 +100,7 @@ class SnowFlakeConnectionFormFactory(ConnectionFormFactory):
         connector_settings: Optional[ConnectorSettingsBase],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
+        rc = RowConstructor(localizer=self._localizer)
         on_create = self.mode == ConnectionFormMode.create
 
         common_api_schema_items: list[FormFieldApiSchema] = [
@@ -110,6 +112,7 @@ class SnowFlakeConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=CommonFieldName.db_name, required=True),
             FormFieldApiSchema(name=SnowFlakeFieldName.schema, required=True),
             FormFieldApiSchema(name=SnowFlakeFieldName.warehouse, required=True),
+            FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
         ]
 
         edit_api_schema = FormActionApiSchema(
@@ -222,6 +225,8 @@ class SnowFlakeConnectionFormFactory(ConnectionFormFactory):
             ),
         ]
 
+        form_params = self._get_form_params()
+
         return ConnectionForm(
             title=SnowflakeConnectionInfoProvider.get_title(self._localizer),
             rows=[
@@ -237,6 +242,12 @@ class SnowFlakeConnectionFormFactory(ConnectionFormFactory):
                     component_props=C.CollapseRow.Props(default_expanded=self.mode == ConnectionFormMode.edit),
                 ),
                 *db_section,
+                rc.collapse_advanced_settings_row(),
+                rc.data_export_forbidden_row(
+                    conn_id=form_params.conn_id,
+                    exports_history_url_path=form_params.exports_history_url_path,
+                    mode=self.mode,
+                ),
             ],
             api_schema=FormApiSchema(
                 create=create_api_schema if self.mode == ConnectionFormMode.create else None,
