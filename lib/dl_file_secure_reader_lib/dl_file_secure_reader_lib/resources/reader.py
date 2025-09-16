@@ -8,6 +8,7 @@ from typing import BinaryIO
 from aiohttp import web
 from aiohttp.multipart import BodyPartReader
 import openpyxl
+import openpyxl.cell.cell
 
 from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
 
@@ -17,6 +18,12 @@ LOGGER = logging.getLogger(__name__)
 
 def parse_excel_data(data: BinaryIO, feature_excel_read_only: bool) -> list:
     result = []
+
+    # Reuse null value
+    null_value = {
+        "value": None,
+        "data_type": openpyxl.cell.cell.TYPE_NULL,
+    }
 
     try:
         wb = openpyxl.load_workbook(
@@ -38,7 +45,9 @@ def parse_excel_data(data: BinaryIO, feature_excel_read_only: bool) -> list:
                 "sheetname": sheetname,
                 "data": [
                     [
-                        {
+                        null_value
+                        if cell.value is None
+                        else {
                             "value": str(cell.value) if cell.data_type == "d" else cell.value,
                             "data_type": "i" if isinstance(cell.value, int) else cell.data_type,
                         }
