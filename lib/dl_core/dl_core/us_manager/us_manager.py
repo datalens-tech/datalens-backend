@@ -472,12 +472,14 @@ class USManagerBase:
 
         save_params.update(
             meta=entry.meta,
-            annotation=entry.annotation,
             hidden=entry.hidden,
             links=entry.links,
             scope=entry.scope,
             type=us_type,
         )
+
+        if entry.annotation is not None:
+            save_params.update(annotation=entry.annotation)
 
         return save_params
 
