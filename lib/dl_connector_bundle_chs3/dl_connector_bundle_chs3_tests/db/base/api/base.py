@@ -92,7 +92,7 @@ class CHS3ConnectionApiTestBase(BaseCHS3TestClass[FILE_CONN_TV], ConnectionTestB
     def saved_connection_id(
         self,
         control_api_sync_client: SyncHttpClientBase,
-        full_connection_params: dict,
+        enriched_connection_params: dict,
         bi_headers: Optional[dict[str, str]],
         sync_us_manager: SyncUSManager,
         sample_file_data_source: BaseFileS3Connection.FileDataSource,
@@ -104,7 +104,7 @@ class CHS3ConnectionApiTestBase(BaseCHS3TestClass[FILE_CONN_TV], ConnectionTestB
 
         with super().create_connection(
             control_api_sync_client=control_api_sync_client,
-            full_connection_params=full_connection_params,
+            enriched_connection_params=enriched_connection_params,
             bi_headers=bi_headers,
         ) as conn_id:
             conn = sync_us_manager.get_by_id(conn_id, BaseFileS3Connection)

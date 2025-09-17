@@ -69,13 +69,13 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         saved_dataset: Dataset,
         saved_connection_id: str,
         control_api_sync_client: SyncHttpClientBase,
-        full_connection_params: dict,
+        enriched_connection_params: dict,
         bi_headers: Optional[dict[str, str]],
         control_api: SyncHttpDatasetApiV1,
     ) -> None:
         with self.create_connection(
             control_api_sync_client=control_api_sync_client,
-            full_connection_params=full_connection_params,
+            enriched_connection_params=enriched_connection_params,
             bi_headers=bi_headers,
         ) as new_connection_id:
             dataset = control_api.apply_updates(
