@@ -426,7 +426,6 @@ class UStorageClientBase:
         **kwargs: Any,
     ) -> RequestData:
         meta = meta or {}
-        annotation = annotation or {}
         data = data or {}
         unversioned_data = unversioned_data or {}
         type_ = type_ or ""
@@ -502,7 +501,6 @@ class UStorageClientBase:
         data = data or {}
         unversioned_data = unversioned_data or {}
         meta = meta or {}
-        annotation = annotation or {}
         links = links or {}
 
         json_data: dict[str, Any] = {
