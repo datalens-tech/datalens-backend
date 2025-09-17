@@ -6,6 +6,7 @@ import sqlalchemy as sa
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_constants.enums import UserDataType
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
+import dl_sqlalchemy_ydb.dialect
 from dl_testing.containers import get_test_container_hostport
 
 from dl_connector_ydb.formula.constants import YqlDialect as D
@@ -76,6 +77,7 @@ TABLE_SCHEMA = (
     ("some_date", UserDataType.date, sa.Date),
     ("some_datetime", UserDataType.genericdatetime, sa.DATETIME),
     ("some_timestamp", UserDataType.genericdatetime, sa.TIMESTAMP),
+    ("some_interval", UserDataType.integer, dl_sqlalchemy_ydb.dialect.YqlInterval),
 )
 TABLE_DATA = [
     {
@@ -91,6 +93,7 @@ TABLE_DATA = [
         "some_date": None,
         "some_datetime": None,
         "some_timestamp": None,
+        "some_interval": 9,
     },
     {
         "id": 2,
@@ -105,6 +108,7 @@ TABLE_DATA = [
         "some_date": None,
         "some_datetime": None,
         "some_timestamp": None,
+        "some_interval": None,
     },
     {
         "id": 3,
@@ -119,6 +123,7 @@ TABLE_DATA = [
         "some_date": None,
         "some_datetime": None,
         "some_timestamp": None,
+        "some_interval": 1337,
     },
     {
         "id": 4,
@@ -133,6 +138,7 @@ TABLE_DATA = [
         "some_date": None,
         "some_datetime": None,
         "some_timestamp": None,
+        "some_interval": 42,
     },
     {
         "id": 5,
@@ -147,6 +153,7 @@ TABLE_DATA = [
         "some_date": None,
         "some_datetime": None,
         "some_timestamp": None,
+        "some_interval": None,
     },
     {
         "id": 6,
@@ -161,6 +168,7 @@ TABLE_DATA = [
         "some_date": "2021-06-07",
         "some_datetime": "2021-06-07T18:19:20Z",
         "some_timestamp": "2021-06-07T18:19:20Z",
+        "some_interval": None,
     },
     {
         "id": 7,
@@ -175,6 +183,7 @@ TABLE_DATA = [
         "some_date": "1970-12-31",
         "some_datetime": "1970-12-31T23:58:57Z",
         "some_timestamp": "1970-12-31T23:58:57Z",
+        "some_interval": 0,
     },
     {
         "id": 8,
@@ -189,6 +198,7 @@ TABLE_DATA = [
         "some_date": "1972-03-28",
         "some_datetime": "1972-03-28T17:11:02Z",
         "some_timestamp": "1972-03-28T17:11:02Z",
+        "some_interval": 1,
     },
     {
         "id": 9,
@@ -203,6 +213,7 @@ TABLE_DATA = [
         "some_date": None,
         "some_datetime": None,
         "some_timestamp": None,
+        "some_interval": None,
     },
     {
         "id": 10,
@@ -217,6 +228,7 @@ TABLE_DATA = [
         "some_date": "2026-07-08",
         "some_datetime": None,
         "some_timestamp": None,
+        "some_interval": None,
     },
     {
         "id": 11,
@@ -231,6 +243,7 @@ TABLE_DATA = [
         "some_date": "2029-11-04",
         "some_datetime": None,
         "some_timestamp": None,
+        "some_interval": 1234,
     },
 ]
 TABLE_NAME = "test_table_h"
@@ -249,6 +262,7 @@ select
     MAX(Date('2021-06-09')) as some_date,
     MAX(Datetime('2021-06-09T20:50:47Z')) as some_datetime,
     MAX(Timestamp('2021-07-10T21:51:48.841512Z')) as some_timestamp,
+    CAST(1 AS Interval) as some_interval,
 
     MAX(ListHead(ListSkip(Unicode::SplitToList(CAST(some_string AS UTF8), ''), 3))) as str_split,
     MAX(ListConcat(ListReplicate(CAST(' ' AS UTF8), 5))) as num_space_by_lst,

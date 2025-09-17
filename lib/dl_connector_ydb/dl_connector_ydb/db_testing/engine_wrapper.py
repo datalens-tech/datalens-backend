@@ -16,6 +16,7 @@ import ydb
 import ydb_sqlalchemy as ydb_sa
 
 from dl_db_testing.database.engine_wrapper import EngineWrapperBase
+import dl_sqlalchemy_ydb.dialect
 
 
 class YdbTypeSpec(NamedTuple):
@@ -51,6 +52,9 @@ SA_TYPE_TO_YDB_TYPE: dict[type[TypeEngine], YdbTypeSpec] = {
     ),
     sa.TIMESTAMP: YdbTypeSpec(
         ydb.PrimitiveType.Timestamp, to_sql_str=lambda x: f'DateTime::MakeTimestamp($datetime_parse("{x}"))'
+    ),
+    dl_sqlalchemy_ydb.dialect.YqlInterval: YdbTypeSpec(
+        ydb.PrimitiveType.Interval, to_sql_str=lambda x: f"CAST({x} as Interval)"
     ),
 }
 

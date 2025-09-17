@@ -64,7 +64,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         "Date": sa.DATE,
         "Timestamp": dl_sqlalchemy_ydb.dialect.YqlTimestamp,
         "Datetime": dl_sqlalchemy_ydb.dialect.YqlDateTime,
-        "Interval": sa.INTEGER,
+        "Interval": dl_sqlalchemy_ydb.dialect.YqlInterval,
         "Bool": sa.BOOLEAN,
     }
     _type_code_to_sa = {

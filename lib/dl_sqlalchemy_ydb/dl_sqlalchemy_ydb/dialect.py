@@ -29,6 +29,18 @@ class YqlDateTime(YqlTimestamp, sa.types.DateTime):
         return process
 
 
+class YqlInterval(sa.types.Interval):
+    __visit_name__ = "interval"
+
+    def result_processor(self, dialect: sa.engine.Dialect, coltype: typing.Any) -> typing.Any:
+        def process(value: typing.Optional[datetime.timedelta]) -> typing.Optional[int]:
+            if value is None:
+                return None
+            return int(value.total_seconds())
+
+        return process
+
+
 class CustomYqlTypeCompiler(ydb_sa.YqlTypeCompiler):
     def visit_DATETIME(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
         return self.visit_datetime(type_, **kw)
@@ -107,6 +119,7 @@ class CustomYqlDialect(ydb_sa.YqlDialect):
             sa.types.DateTime: YqlDateTime,
             sa.types.DATETIME: YqlDateTime,
             sa.types.TIMESTAMP: YqlTimestamp,
+            sa.types.Interval: YqlInterval,
         },
     }
 

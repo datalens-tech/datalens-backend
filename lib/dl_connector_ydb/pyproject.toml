@@ -34,6 +34,7 @@ ydb-sqlalchemy = "*"
 
 [tool.poetry.group.tests.dependencies]
 dl-formula-testing = {path = "../dl_formula_testing"}
+dl-sqlalchemy-ydb = {path = "../../lib/dl_sqlalchemy_ydb"}
 pytest = "*"
 
 [tool.poetry.plugins]
