@@ -67,7 +67,7 @@ class TestYDBDashSQL(YDBDashSQLConnectionTest, DefaultDashSQLTestSuite):
             "date",
             "datetime",
             "datetime",
-            "integer",
+            "interval",
         ]
         assert resp_data[0]["data"]["bi_types"][:13] == [
             "integer",
