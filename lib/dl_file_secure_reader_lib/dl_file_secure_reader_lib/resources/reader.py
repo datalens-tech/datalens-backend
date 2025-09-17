@@ -3,7 +3,10 @@ from __future__ import annotations
 import asyncio
 import io
 import logging
-from typing import BinaryIO
+from typing import (
+    Any,
+    BinaryIO,
+)
 
 from aiohttp import web
 from aiohttp.multipart import BodyPartReader
@@ -19,11 +22,32 @@ LOGGER = logging.getLogger(__name__)
 def parse_excel_data(data: BinaryIO, feature_excel_read_only: bool) -> list:
     result = []
 
-    # Reuse null value
-    null_value = {
-        "value": None,
-        "data_type": openpyxl.cell.cell.TYPE_NULL,
-    }
+    # Cache wrappers for cell values to prevent excessive memory usage when
+    #  excel file is made of duplicate values.
+    cache_values: dict[tuple[str, Any], Any] = {}
+
+    def process_cell(cell: openpyxl.cell.cell.Cell) -> dict:
+        if cell.data_type == "d":
+            cell_value = str(cell.value)
+        else:
+            cell_value = cell.value
+
+        if isinstance(cell.value, int):
+            cell_type = "i"
+        else:
+            cell_type = cell.data_type
+
+        cache_key = (cell_type, cell_value)
+
+        if cache_key in cache_values:
+            cache_value = cache_values[cache_key]
+        else:
+            cache_values[cache_key] = {
+                "data_type": cell_type,
+                "value": cell_value,
+            }
+
+        return cache_value
 
     try:
         wb = openpyxl.load_workbook(
@@ -43,18 +67,7 @@ def parse_excel_data(data: BinaryIO, feature_excel_read_only: bool) -> list:
         result.append(
             {
                 "sheetname": sheetname,
-                "data": [
-                    [
-                        null_value
-                        if cell.value is None
-                        else {
-                            "value": str(cell.value) if cell.data_type == "d" else cell.value,
-                            "data_type": "i" if isinstance(cell.value, int) else cell.data_type,
-                        }
-                        for cell in row
-                    ]
-                    for row in sheet.rows
-                ],
+                "data": [[process_cell(cell) for cell in row] for row in sheet.rows],
             }
         )
     return result
