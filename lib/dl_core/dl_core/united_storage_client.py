@@ -416,6 +416,7 @@ class UStorageClientBase:
         key: EntryLocation,
         scope: str,
         meta: Optional[dict[str, str]] = None,
+        annotation: Optional[dict[str, str]] = None,
         data: Optional[dict[str, Any]] = None,
         type_: Optional[str] = None,
         hidden: Optional[bool] = None,
@@ -425,6 +426,7 @@ class UStorageClientBase:
         **kwargs: Any,
     ) -> RequestData:
         meta = meta or {}
+        annotation = annotation or {}
         data = data or {}
         unversioned_data = unversioned_data or {}
         type_ = type_ or ""
@@ -438,6 +440,7 @@ class UStorageClientBase:
                 "scope": scope,
                 **key.to_us_req_api_params(),
                 "meta": meta,
+                "annotation": annotation,
                 "data": data,
                 "unversionedData": unversioned_data,
                 "type": type_,
@@ -489,6 +492,7 @@ class UStorageClientBase:
         data: Optional[dict[str, Any]] = None,
         unversioned_data: Optional[dict[str, Any]] = None,
         meta: Optional[dict[str, str]] = None,
+        annotation: Optional[dict[str, str]] = None,
         mode: str = "publish",
         lock: Optional[str] = None,
         hidden: Optional[bool] = None,
@@ -498,12 +502,14 @@ class UStorageClientBase:
         data = data or {}
         unversioned_data = unversioned_data or {}
         meta = meta or {}
+        annotation = annotation or {}
         links = links or {}
 
         json_data: dict[str, Any] = {
             "data": data,
             "unversionedData": unversioned_data,
             "meta": meta,
+            "annotation": annotation,
             "mode": mode,
             "links": links,
         }
@@ -743,6 +749,7 @@ class UStorageClient(UStorageClientBase):
         key: EntryLocation,
         scope: str,
         meta: Optional[dict[str, str]] = None,
+        annotation: Optional[dict[str, str]] = None,
         data: Optional[dict[str, Any]] = None,
         unversioned_data: Optional[dict[str, Any]] = None,
         type_: Optional[str] = None,
@@ -754,6 +761,7 @@ class UStorageClient(UStorageClientBase):
             key=key,
             scope=scope,
             meta=meta,
+            annotation=annotation,
             data=data,
             unversioned_data=unversioned_data,
             type_=type_,
@@ -797,6 +805,7 @@ class UStorageClient(UStorageClientBase):
         data: Optional[dict[str, Any]] = None,
         unversioned_data: Optional[dict[str, Any]] = None,
         meta: Optional[dict[str, str]] = None,
+        annotation: Optional[dict[str, str]] = None,
         lock: Optional[str] = None,
         hidden: Optional[bool] = None,
         links: Optional[dict[str, Any]] = None,
@@ -808,6 +817,7 @@ class UStorageClient(UStorageClientBase):
                 data=data,
                 unversioned_data=unversioned_data,
                 meta=meta,
+                annotation=annotation,
                 lock=lock,
                 hidden=hidden,
                 links=links,

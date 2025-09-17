@@ -471,6 +471,7 @@ class USManagerBase:
 
         save_params.update(
             meta=entry.meta,
+            annotation=entry.annotation,
             hidden=entry.hidden,
             links=entry.links,
             scope=entry.scope,
