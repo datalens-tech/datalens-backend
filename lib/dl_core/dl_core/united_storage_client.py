@@ -431,24 +431,28 @@ class UStorageClientBase:
         type_ = type_ or ""
         links = links or {}
 
+        request_body: dict[str, Any] = {
+            "scope": scope,
+            **key.to_us_req_api_params(),
+            "meta": meta,
+            "data": data,
+            "unversionedData": unversioned_data,
+            "type": type_,
+            "recursion": True,
+            "hidden": hidden,
+            "links": links,
+            "mode": mode,
+            **kwargs,
+        }
+
+        if annotation is not None:
+            request_body["annotation"] = annotation
+
         return cls.RequestData(
             method="post",
             relative_url="/entries",
             params=None,
-            json={
-                "scope": scope,
-                **key.to_us_req_api_params(),
-                "meta": meta,
-                "annotation": annotation,
-                "data": data,
-                "unversionedData": unversioned_data,
-                "type": type_,
-                "recursion": True,
-                "hidden": hidden,
-                "links": links,
-                "mode": mode,
-                **kwargs,
-            },
+            json=request_body,
         )
 
     @classmethod
@@ -507,7 +511,6 @@ class UStorageClientBase:
             "data": data,
             "unversionedData": unversioned_data,
             "meta": meta,
-            "annotation": annotation,
             "mode": mode,
             "links": links,
         }
@@ -517,6 +520,8 @@ class UStorageClientBase:
             json_data["lockToken"] = lock
         if update_revision is not None:
             json_data["updateRevision"] = update_revision
+        if annotation is not None:
+            json_data["annotation"] = annotation
         return cls.RequestData(
             method="post",
             relative_url="/entries/{}".format(entry_id),
