@@ -58,8 +58,8 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
             description=test_description,
         )
 
-    @pytest.fixture(scope="class")
-    def full_connection_params(self, connection_params: dict, common_connection_params: dict) -> dict:
+    @pytest.fixture(scope="function")
+    def enriched_connection_params(self, connection_params: dict, common_connection_params: dict) -> dict:
         return common_connection_params | connection_params
 
     @pytest.fixture(scope="class")
@@ -70,12 +70,12 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
     def saved_connection_id(
         self,
         control_api_sync_client: SyncHttpClientBase,
-        full_connection_params: dict,
+        enriched_connection_params: dict,
         bi_headers: dict[str, str] | None,
     ) -> Generator[str, None, None]:
         with self.create_connection(
             control_api_sync_client=control_api_sync_client,
-            full_connection_params=full_connection_params,
+            enriched_connection_params=enriched_connection_params,
             bi_headers=bi_headers,
         ) as conn_id:
             yield conn_id
@@ -84,13 +84,13 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
     def create_connection(
         self,
         control_api_sync_client: SyncHttpClientBase,
-        full_connection_params: dict,
+        enriched_connection_params: dict,
         bi_headers: dict[str, str] | None,
     ) -> Generator[str, None, None]:
         data = dict(
             name=f"{self.conn_type.name} conn {uuid.uuid4()}",
             type=self.conn_type.name,
-            **full_connection_params,
+            **enriched_connection_params,
         )
         resp = control_api_sync_client.post(
             "/api/v1/connections",
