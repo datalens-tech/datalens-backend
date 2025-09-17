@@ -136,7 +136,7 @@ class USEntry:
         self.entry_key = entry_key
         self.type_ = type_
         self.meta = dict(meta or {})
-        self.annotation = annotation or {}
+        self.annotation = annotation
         self.is_locked = is_locked
         self.is_favorite = is_favorite
         self.permissions_mode = permissions_mode
