@@ -42,10 +42,11 @@ def parse_excel_data(data: BinaryIO, feature_excel_read_only: bool) -> list:
         if cache_key in cache_values:
             cache_value = cache_values[cache_key]
         else:
-            cache_values[cache_key] = {
+            cache_value = {
                 "data_type": cell_type,
                 "value": cell_value,
             }
+            cache_values[cache_key] = cache_value
 
         return cache_value
 
