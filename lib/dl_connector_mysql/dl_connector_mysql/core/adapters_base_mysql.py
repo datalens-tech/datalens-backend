@@ -9,7 +9,7 @@ from typing import (
 import attr
 import sqlalchemy.dialects.mysql as sa_mysql
 
-from dl_configs.utils import get_root_certificates_path
+import dl_configs
 from dl_type_transformer.native_type import SATypeSpec
 
 from dl_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
@@ -85,4 +85,4 @@ class BaseMySQLAdapter:
         if self._target_dto.ssl_ca:
             return ssl.create_default_context(cadata=self._target_dto.ssl_ca)
 
-        return ssl.create_default_context(cafile=get_root_certificates_path())
+        return dl_configs.get_default_ssl_context()

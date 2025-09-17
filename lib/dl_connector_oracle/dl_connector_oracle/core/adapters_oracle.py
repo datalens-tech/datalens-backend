@@ -12,7 +12,7 @@ import sqlalchemy as sa
 import sqlalchemy.dialects.oracle.base as sa_ora  # not all data types are imported in init in older SA versions
 from sqlalchemy.sql.type_api import TypeEngine
 
-from dl_configs.utils import get_root_certificates_path
+import dl_configs
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import (
     BaseClassicAdapter,
     ClassicSQLConnLineConstructor,
@@ -219,7 +219,7 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
         if self._target_dto.ssl_ca:
             return ssl.create_default_context(cadata=self._target_dto.ssl_ca)
 
-        return ssl.create_default_context(cafile=get_root_certificates_path())
+        return dl_configs.get_default_ssl_context()
 
     def get_connect_args(self) -> dict:
         return dict(

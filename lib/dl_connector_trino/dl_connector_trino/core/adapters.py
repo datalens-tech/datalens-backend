@@ -18,7 +18,7 @@ from trino.sqlalchemy.compiler import TrinoSQLCompiler
 from trino.sqlalchemy.datatype import parse_sqltype
 from trino.sqlalchemy.dialect import TrinoDialect
 
-from dl_configs.utils import get_root_certificates_path
+import dl_configs
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
@@ -79,7 +79,7 @@ class CustomHTTPAdapter(HTTPAdapter):
 
     def init_poolmanager(self, connections: int, maxsize: int, block: bool = False, **pool_kwargs: Any) -> None:
         if self.ssl_ca is None:
-            context = ssl.create_default_context(capath=get_root_certificates_path())
+            context = dl_configs.get_default_ssl_context()
         else:
             context = ssl.create_default_context(cadata=self.ssl_ca)
         super().init_poolmanager(connections, maxsize, block, ssl_context=context, **pool_kwargs)
