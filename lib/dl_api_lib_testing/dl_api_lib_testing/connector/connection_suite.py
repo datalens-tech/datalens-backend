@@ -125,6 +125,7 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
 
         # check description presence in export response
         assert "description" in resp.json["connection"]
+        assert conn.annotation is not None
         assert resp.json["connection"]["description"] == conn.annotation.get("description")
 
     def test_import_connection(
@@ -201,6 +202,7 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
             headers=bi_headers,
         )
         assert resp.status_code == 200, resp.json
+        assert conn.annotation is not None
         assert resp.json["description"] == conn.annotation.get("description")
 
         # cleanup
