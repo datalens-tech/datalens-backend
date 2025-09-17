@@ -96,6 +96,10 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         return value.decode("utf-8", errors="replace")
 
     @staticmethod
+    def _convert_interval(value: datetime.timedelta) -> int:
+        return int(value.total_seconds())
+
+    @staticmethod
     def _convert_ts(value: int | datetime.datetime) -> datetime.datetime:
         if isinstance(value, datetime.datetime):
             return value.replace(tzinfo=datetime.timezone.utc)
@@ -108,6 +112,8 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
             if type_name_norm == "string"
             else self._convert_ts
             if type_name_norm == "timestamp"
+            else self._convert_interval
+            if type_name_norm == "interval"
             else None
             for type_name_norm in type_names_norm
         )
