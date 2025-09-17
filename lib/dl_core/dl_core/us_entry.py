@@ -113,7 +113,7 @@ class USEntry:
         entry_key: Optional[EntryLocation] = None,
         type_: Optional[str] = None,
         meta: Optional[dict] = None,
-        annotation: Optional[dict[str, str]] = None,
+        annotation: Optional[dict[str, Any]] = None,
         is_locked: Optional[bool] = None,
         is_favorite: Optional[bool] = None,
         permissions_mode: Optional[str] = None,
