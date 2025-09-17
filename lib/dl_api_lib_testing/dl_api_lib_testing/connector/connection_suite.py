@@ -123,6 +123,11 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
             password = resp.json["connection"]["password"]
             assert password == "******"
 
+        # check description presence in export response
+        assert "description" in resp.json["connection"]
+        assert conn.annotation is not None
+        assert resp.json["connection"]["description"] == conn.annotation.get("description")
+
     def test_import_connection(
         self,
         control_api_sync_client: SyncHttpClientBase,
@@ -191,7 +196,17 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
                 "CHECK_CREDENTIALS" in notification["code"] for notification in import_response.json["notifications"]
             )
 
-        export_resp = control_api_sync_client.delete(
+        # check description presence in import response
+        resp = control_api_sync_client.get(
+            url=f"/api/v1/connections/{import_response.json['id']}",
+            headers=bi_headers,
+        )
+        assert resp.status_code == 200, resp.json
+        assert conn.annotation is not None
+        assert resp.json["description"] == conn.annotation.get("description")
+
+        # cleanup
+        control_api_sync_client.delete(
             url=f"/api/v1/connections/{import_response.json['id']}",
             headers=bi_headers,
         )
@@ -270,6 +285,28 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         resp_data = resp.json
         assert "sources" in resp_data, resp_data
         assert isinstance(resp_data["sources"], list), resp_data
+
+    def test_connection_description(
+        self,
+        control_api_sync_client: SyncHttpClientBase,
+        saved_connection_id: str,
+        bi_headers: dict[str, str] | None,
+        sync_us_manager: SyncUSManager,
+    ) -> None:
+        description = f"Test {self.conn_type.name} connection"
+
+        # test Connection object
+        conn = sync_us_manager.get_by_id(saved_connection_id, expected_type=ConnectionBase)
+        assert isinstance(conn, ConnectionBase)
+        assert conn.annotation == {"description": description}
+
+        # test API
+        resp = control_api_sync_client.get(
+            url=f"/api/v1/connections/{saved_connection_id}",
+            headers=bi_headers,
+        )
+        assert resp.status_code == 200, resp.json
+        assert resp.json["description"] == description
 
     def test_create_connections__query_params_in_db_name__error(
         self,

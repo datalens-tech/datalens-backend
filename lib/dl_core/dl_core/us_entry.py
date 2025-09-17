@@ -113,6 +113,7 @@ class USEntry:
         entry_key: Optional[EntryLocation] = None,
         type_: Optional[str] = None,
         meta: Optional[dict] = None,
+        annotation: Optional[dict[str, Any]] = None,
         is_locked: Optional[bool] = None,
         is_favorite: Optional[bool] = None,
         permissions_mode: Optional[str] = None,
@@ -135,6 +136,7 @@ class USEntry:
         self.entry_key = entry_key
         self.type_ = type_
         self.meta = dict(meta or {})
+        self.annotation = annotation
         self.is_locked = is_locked
         self.is_favorite = is_favorite
         self.permissions_mode = permissions_mode
@@ -299,6 +301,7 @@ class USMigrationEntry(USEntry):
         entry_key: Optional[EntryLocation] = None,
         type_: Optional[str] = None,
         meta: Optional[dict] = None,
+        annotation: Optional[dict] = None,
         is_locked: Optional[bool] = None,
         is_favorite: Optional[bool] = None,
         permissions_mode: Optional[str] = None,
@@ -319,6 +322,7 @@ class USMigrationEntry(USEntry):
             entry_key=entry_key,
             type_=type_,
             meta=meta,
+            annotation=annotation,
             is_locked=is_locked,
             is_favorite=is_favorite,
             permissions_mode=permissions_mode,
