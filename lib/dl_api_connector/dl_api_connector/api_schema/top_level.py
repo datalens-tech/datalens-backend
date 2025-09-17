@@ -266,6 +266,7 @@ class USEntryAnnotationMixin(Schema):
         required=False,
         allow_none=True,
         load_default="",
+        dump_default="",
         bi_extra=FieldExtra(editable=True),
         attribute="annotation.description",
     )
