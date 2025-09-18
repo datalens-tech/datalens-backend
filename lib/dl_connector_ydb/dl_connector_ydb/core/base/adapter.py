@@ -97,7 +97,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
 
     @staticmethod
     def _convert_interval(value: datetime.timedelta) -> int:
-        return int(value.total_seconds())
+        return int(value.total_seconds() * 1_000_000)
 
     @staticmethod
     def _convert_ts(value: int | datetime.datetime) -> datetime.datetime:

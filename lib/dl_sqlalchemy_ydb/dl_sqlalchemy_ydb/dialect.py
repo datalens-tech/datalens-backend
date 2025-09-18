@@ -36,7 +36,7 @@ class YqlInterval(sa.types.Interval):
         def process(value: typing.Optional[datetime.timedelta]) -> typing.Optional[int]:
             if value is None:
                 return None
-            return int(value.total_seconds())
+            return int(value.total_seconds() * 1_000_000)
 
         return process
 
