@@ -180,6 +180,8 @@ _REQUEST_CONTEXT_INFO_TV = TypeVar("_REQUEST_CONTEXT_INFO_TV", bound="RequestCon
 
 @attr.s(frozen=True)
 class TenantCommon(TenantDef):
+    is_data_export_enabled: bool = attr.ib(default=True, kw_only=True)
+
     def get_outbound_tenancy_headers(self) -> dict[DLHeaders, str]:
         return {}
 
