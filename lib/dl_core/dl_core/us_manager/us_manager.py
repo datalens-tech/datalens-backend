@@ -338,7 +338,6 @@ class USManagerBase:
             entry_key=entry_loc,
             type_=us_resp["type"],
             meta=us_resp["meta"],
-            annotation=us_resp.get("annotation"),
             is_locked=us_resp.get("isLocked"),
             is_favorite=us_resp.get("isFavorite"),
             permissions=us_resp.get("permissions") or {},
@@ -477,9 +476,6 @@ class USManagerBase:
             scope=entry.scope,
             type=us_type,
         )
-
-        if entry.annotation is not None:
-            save_params.update(annotation=entry.annotation)
 
         return save_params
 
