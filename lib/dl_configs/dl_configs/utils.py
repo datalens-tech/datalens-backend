@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import ssl
 import typing
 from typing import (
     Callable,
@@ -48,6 +49,12 @@ def get_root_certificates(path: str = DEFAULT_ROOT_CERTIFICATES_FILENAME) -> byt
         LOGGER.exception("Looks like the certificates are not in PEM format")
         raise
     return ca_data
+
+
+def get_default_ssl_context() -> ssl.SSLContext:
+    return ssl.create_default_context(
+        cafile=get_root_certificates_path(),
+    )
 
 
 def get_multiple_root_certificates(*paths: str) -> bytes:

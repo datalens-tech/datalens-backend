@@ -166,6 +166,12 @@ def get_root_certificates_path() -> str:
     return CA_BUNDLE_FILE
 
 
+def get_default_ssl_context() -> ssl.SSLContext:
+    return ssl.create_default_context(
+        cafile=get_root_certificates_path(),
+    )
+
+
 def get_root_certificates() -> bytes:
     with open(get_root_certificates_path(), "rb") as f:
         return f.read()
@@ -174,8 +180,6 @@ def get_root_certificates() -> bytes:
 def get_default_aiohttp_session() -> aiohttp.ClientSession:
     return aiohttp.ClientSession(
         connector=aiohttp.TCPConnector(
-            ssl_context=ssl.create_default_context(
-                cafile=get_root_certificates_path(),
-            ),
+            ssl_context=get_default_ssl_context(),
         ),
     )

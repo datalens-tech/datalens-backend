@@ -2,6 +2,7 @@ import abc
 import asyncio
 import contextlib
 import logging
+import ssl
 import time
 import types
 from typing import (
@@ -18,6 +19,7 @@ import attrs
 import httpx
 import typing_extensions
 
+import dl_configs
 import dl_retrier
 
 
@@ -62,6 +64,8 @@ class HttpxClientSettings:
     base_url: str
     base_cookies: dict[str, str] = attrs.field(factory=dict)
     base_headers: dict[str, str] = attrs.field(factory=dict)
+
+    ssl_context: ssl.SSLContext = attrs.field(factory=dl_configs.get_default_ssl_context)
     retry_policy_factory: dl_retrier.RetryPolicyFactorySettings = attrs.field(
         factory=dl_retrier.RetryPolicyFactorySettings
     )
@@ -82,13 +86,17 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
             base_url=settings.base_url,
             base_cookies=settings.base_cookies,
             base_headers=settings.base_headers,
-            retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(settings.retry_policy_factory),
-            base_client=cls._get_client(),
+            retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(
+                settings.retry_policy_factory,
+            ),
+            base_client=cls._get_client(
+                ssl_context=settings.ssl_context,
+            ),
         )
 
     @classmethod
     @abc.abstractmethod
-    def _get_client(cls) -> THttpxClient:
+    def _get_client(cls, ssl_context: ssl.SSLContext) -> THttpxClient:
         ...
 
     def _prepare_url(self, url: str) -> str:
@@ -222,8 +230,8 @@ class HttpxSyncClient(HttpxBaseClient[httpx.Client]):
     _base_client: httpx.Client
 
     @classmethod
-    def _get_client(cls) -> httpx.Client:
-        return httpx.Client()
+    def _get_client(cls, ssl_context: ssl.SSLContext) -> httpx.Client:
+        return httpx.Client(verify=ssl_context)
 
     def close(self) -> None:
         self._base_client.close()
@@ -267,8 +275,8 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
     _base_client: httpx.AsyncClient
 
     @classmethod
-    def _get_client(cls) -> httpx.AsyncClient:
-        return httpx.AsyncClient()
+    def _get_client(cls, ssl_context: ssl.SSLContext) -> httpx.AsyncClient:
+        return httpx.AsyncClient(verify=ssl_context)
 
     async def close(self) -> None:
         await self._base_client.aclose()
