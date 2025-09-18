@@ -43,24 +43,10 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
 
     db_table_dispenser = DbCsvTableDispenser()
 
-    @pytest.fixture(scope="class")
-    def test_description(self) -> str:
-        return f"Test {self.conn_type.name} connection"
-
     @abc.abstractmethod
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
         raise NotImplementedError
-
-    @pytest.fixture(scope="class")
-    def common_connection_params(self, test_description: str) -> dict:
-        return dict(
-            description=test_description,
-        )
-
-    @pytest.fixture(scope="function")
-    def enriched_connection_params(self, connection_params: dict, common_connection_params: dict) -> dict:
-        return common_connection_params | connection_params
 
     @pytest.fixture(scope="class")
     def edit_connection_params_case(self) -> EditConnectionParamsCase | None:
@@ -70,12 +56,12 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
     def saved_connection_id(
         self,
         control_api_sync_client: SyncHttpClientBase,
-        enriched_connection_params: dict,
+        connection_params: dict,
         bi_headers: dict[str, str] | None,
     ) -> Generator[str, None, None]:
         with self.create_connection(
             control_api_sync_client=control_api_sync_client,
-            enriched_connection_params=enriched_connection_params,
+            connection_params=connection_params,
             bi_headers=bi_headers,
         ) as conn_id:
             yield conn_id
@@ -84,13 +70,13 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
     def create_connection(
         self,
         control_api_sync_client: SyncHttpClientBase,
-        enriched_connection_params: dict,
+        connection_params: dict,
         bi_headers: dict[str, str] | None,
     ) -> Generator[str, None, None]:
         data = dict(
             name=f"{self.conn_type.name} conn {uuid.uuid4()}",
             type=self.conn_type.name,
-            **enriched_connection_params,
+            **connection_params,
         )
         resp = control_api_sync_client.post(
             "/api/v1/connections",
