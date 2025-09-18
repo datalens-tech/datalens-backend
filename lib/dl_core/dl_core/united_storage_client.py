@@ -416,6 +416,7 @@ class UStorageClientBase:
         key: EntryLocation,
         scope: str,
         meta: Optional[dict[str, str]] = None,
+        annotation: Optional[dict[str, Any]] = None,
         data: Optional[dict[str, Any]] = None,
         type_: Optional[str] = None,
         hidden: Optional[bool] = None,
@@ -430,23 +431,28 @@ class UStorageClientBase:
         type_ = type_ or ""
         links = links or {}
 
+        request_body: dict[str, Any] = {
+            "scope": scope,
+            **key.to_us_req_api_params(),
+            "meta": meta,
+            "data": data,
+            "unversionedData": unversioned_data,
+            "type": type_,
+            "recursion": True,
+            "hidden": hidden,
+            "links": links,
+            "mode": mode,
+            **kwargs,
+        }
+
+        if annotation is not None:
+            request_body["annotation"] = annotation
+
         return cls.RequestData(
             method="post",
             relative_url="/entries",
             params=None,
-            json={
-                "scope": scope,
-                **key.to_us_req_api_params(),
-                "meta": meta,
-                "data": data,
-                "unversionedData": unversioned_data,
-                "type": type_,
-                "recursion": True,
-                "hidden": hidden,
-                "links": links,
-                "mode": mode,
-                **kwargs,
-            },
+            json=request_body,
         )
 
     @classmethod
@@ -489,6 +495,7 @@ class UStorageClientBase:
         data: Optional[dict[str, Any]] = None,
         unversioned_data: Optional[dict[str, Any]] = None,
         meta: Optional[dict[str, str]] = None,
+        annotation: Optional[dict[str, Any]] = None,
         mode: str = "publish",
         lock: Optional[str] = None,
         hidden: Optional[bool] = None,
@@ -513,6 +520,8 @@ class UStorageClientBase:
             json_data["lockToken"] = lock
         if update_revision is not None:
             json_data["updateRevision"] = update_revision
+        if annotation is not None:
+            json_data["annotation"] = annotation
         return cls.RequestData(
             method="post",
             relative_url="/entries/{}".format(entry_id),
@@ -743,6 +752,7 @@ class UStorageClient(UStorageClientBase):
         key: EntryLocation,
         scope: str,
         meta: Optional[dict[str, str]] = None,
+        annotation: Optional[dict[str, Any]] = None,
         data: Optional[dict[str, Any]] = None,
         unversioned_data: Optional[dict[str, Any]] = None,
         type_: Optional[str] = None,
@@ -754,6 +764,7 @@ class UStorageClient(UStorageClientBase):
             key=key,
             scope=scope,
             meta=meta,
+            annotation=annotation,
             data=data,
             unversioned_data=unversioned_data,
             type_=type_,
@@ -797,6 +808,7 @@ class UStorageClient(UStorageClientBase):
         data: Optional[dict[str, Any]] = None,
         unversioned_data: Optional[dict[str, Any]] = None,
         meta: Optional[dict[str, str]] = None,
+        annotation: Optional[dict[str, Any]] = None,
         lock: Optional[str] = None,
         hidden: Optional[bool] = None,
         links: Optional[dict[str, Any]] = None,
@@ -808,6 +820,7 @@ class UStorageClient(UStorageClientBase):
                 data=data,
                 unversioned_data=unversioned_data,
                 meta=meta,
+                annotation=annotation,
                 lock=lock,
                 hidden=hidden,
                 links=links,

@@ -261,7 +261,18 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
 _US_ENTRY_TV = TypeVar("_US_ENTRY_TV", bound=USEntry)
 
 
-class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
+class USEntryAnnotationMixin(Schema):
+    description = ma_fields.String(
+        required=False,
+        allow_none=True,
+        load_default="",
+        dump_default="",
+        bi_extra=FieldExtra(editable=True),
+        attribute="annotation.description",
+    )
+
+
+class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV], USEntryAnnotationMixin):
     CTX_KEY_USM: ClassVar[str] = "us_manager"
 
     id = ma_fields.String(dump_only=True, attribute="uuid")
@@ -328,6 +339,7 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV]):
                 workbook_id=entry_wb_id,
             ),
             us_manager=self.us_manager,
+            annotation=data["annotation"],
         )
 
     # TODO FIX: Find a way to specify return type

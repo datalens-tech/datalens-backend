@@ -25,6 +25,7 @@ def make_connection(
     conn_name: Optional[str] = None,
     data_dict: Optional[dict] = None,
     conn_cls: Optional[type[ConnectionBase]] = None,
+    annotation: Optional[dict] = None,
 ) -> ConnectionBase:
     conn_name = conn_name or "{} test conn {}".format(conn_type.name, uuid.uuid4())
     data_dict = data_dict or {}
@@ -45,6 +46,7 @@ def make_connection(
         type_=conn_type.name,
         meta={"title": conn_name, "state": "saved"},
         us_manager=us_manager,
+        annotation=annotation,
     )
 
 
@@ -73,8 +75,15 @@ def make_saved_connection(
     conn_type: ConnectionType,
     conn_name: Optional[str] = None,
     data_dict: Optional[dict] = None,
+    annotation: Optional[dict] = None,
 ) -> ConnectionBase:
-    conn = make_connection(us_manager=sync_usm, conn_type=conn_type, conn_name=conn_name, data_dict=data_dict)
+    conn = make_connection(
+        us_manager=sync_usm,
+        conn_type=conn_type,
+        conn_name=conn_name,
+        data_dict=data_dict,
+        annotation=annotation,
+    )
     sync_usm.save(conn)
     conn_id = conn.uuid
     if conn_id is None:
