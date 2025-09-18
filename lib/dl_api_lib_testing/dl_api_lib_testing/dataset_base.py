@@ -14,13 +14,18 @@ class DatasetTestBase(ConnectionTestBase, metaclass=abc.ABCMeta):
     def dataset_params(self) -> dict:
         raise NotImplementedError
 
+    @pytest.fixture(scope="session")
+    def annotation(self) -> dict:
+        return {"description": "This is a test dataset"}
+
     def make_basic_dataset(
         self,
         control_api: SyncHttpDatasetApiV1,
         connection_id: str,
         dataset_params: dict,
+        annotation: dict | None = None,
     ) -> Dataset:
-        ds = Dataset()
+        ds = Dataset(annotation=annotation)
         ds.sources["source_1"] = ds.source(
             connection_id=connection_id,
             **dataset_params,
@@ -37,11 +42,13 @@ class DatasetTestBase(ConnectionTestBase, metaclass=abc.ABCMeta):
         control_api: SyncHttpDatasetApiV1,
         saved_connection_id: str,
         dataset_params: dict,
+        annotation: dict,
     ) -> Generator[Dataset, None, None]:
         ds = self.make_basic_dataset(
             control_api=control_api,
             connection_id=saved_connection_id,
             dataset_params=dataset_params,
+            annotation=annotation,
         )
         yield ds
         control_api.delete_dataset(dataset_id=ds.id, fail_ok=False)

@@ -77,6 +77,7 @@ class DatasetApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
             obligatory_filters=[
                 ObligatoryFilterSchema().load(filter_info) for filter_info in body["obligatory_filters"]
             ],
+            annotation=dict(description=body["description"]),
         )
 
         for dsrc_data in body["sources"]:
