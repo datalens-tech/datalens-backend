@@ -112,7 +112,7 @@ class TestYDBDashSQL(YDBDashSQLConnectionTest, DefaultDashSQLTestSuite):
         ]
 
         assert resp_data[1]["event"] == "row", resp_data
-        assert resp_data[1]["data"] == [ 1_000_000 ]
+        assert resp_data[1]["data"] == [1_000_000]
 
     @pytest.mark.asyncio
     async def test_result_with_error(self, data_api_lowlevel_aiohttp_client: TestClient, saved_connection_id: str):
