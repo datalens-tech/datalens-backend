@@ -17,9 +17,11 @@ class TestBitrixDataset(BitrixDatasetTestBase, DefaultConnectorDatasetTestSuite)
 
 
 class TestBitrixSmartTablesDataset(BitrixSmartTablesDatasetTestBase, DefaultConnectorDatasetTestSuite):
-    def check_basic_dataset(self, ds: Dataset) -> None:
+    def check_basic_dataset(self, ds: Dataset, annotation: dict) -> None:
         assert ds.id
         assert len(ds.result_schema)
 
         field_names = {field.title for field in ds.result_schema}
         assert {"ID", "UF_CRM_5_1694020695771", "ASSIGNED_BY_NAME"}.issubset(field_names)
+
+        assert ds.annotation == annotation
