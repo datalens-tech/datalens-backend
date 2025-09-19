@@ -384,6 +384,11 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV], USEntryAnnotationMixin
     def update_object(self, obj: _US_ENTRY_TV, data: dict[str, Any]) -> _US_ENTRY_TV:
         obj.entry_op_mode = self.operations_mode
 
+        # Update annotation
+        if "annotation" in data:
+            assert obj.annotation is not None
+            obj.annotation.update(data.pop("annotation"))
+
         # Assumed that only data of USEntry can be modified with schema
         assert not (data.keys() - {"data"})
 
