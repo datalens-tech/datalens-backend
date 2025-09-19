@@ -8,12 +8,14 @@ from dl_connector_bitrix_gds_tests.ext.api.base import (
 
 
 class TestBitrixDataset(BitrixDatasetTestBase, DefaultConnectorDatasetTestSuite):
-    def check_basic_dataset(self, ds: Dataset) -> None:
+    def check_basic_dataset(self, ds: Dataset, annotation: dict) -> None:
         assert ds.id
         assert len(ds.result_schema)
 
         field_names = {field.title for field in ds.result_schema}
         assert {"ID", "DATE_CREATE", "DATE_MODIFY", "ASSIGNED_BY_NAME"}.issubset(field_names)
+
+        assert ds.annotation == annotation
 
 
 class TestBitrixSmartTablesDataset(BitrixSmartTablesDatasetTestBase, DefaultConnectorDatasetTestSuite):
