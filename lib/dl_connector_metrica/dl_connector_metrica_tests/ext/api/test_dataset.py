@@ -22,7 +22,7 @@ from dl_connector_metrica_tests.ext.api.base import (
 class MetricaDatasetChecker(DefaultConnectorDatasetTestSuite, metaclass=abc.ABCMeta):
     expected_fields: ClassVar[dict]
 
-    def check_basic_dataset(self, ds: Dataset) -> None:
+    def check_basic_dataset(self, ds: Dataset, annotation: dict) -> None:
         assert ds.id
         assert len(ds.result_schema)
         assert all(field.aggregation == AggregationFunction.none for field in ds.result_schema)
@@ -46,6 +46,8 @@ class MetricaDatasetChecker(DefaultConnectorDatasetTestSuite, metaclass=abc.ABCM
             elem.pop("description")
             elem.pop("src_key", None)
         assert fields == expected
+
+        assert ds.annotation == annotation
 
 
 class TestMetricaDataset(MetricaDatasetTestBase, MetricaDatasetChecker):

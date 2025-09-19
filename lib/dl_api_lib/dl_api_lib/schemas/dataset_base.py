@@ -21,6 +21,7 @@ from dl_api_connector.api_schema.source_base import (
     SourceAvatarStrictSchema,
     VirtualFlagField,
 )
+from dl_api_connector.api_schema.top_level import USEntryAnnotationMixin
 from dl_api_lib.schemas.fields import ResultSchemaAuxSchema
 from dl_api_lib.schemas.filter import ObligatoryFilterSchema
 from dl_api_lib.schemas.options import OptionsMixin
@@ -166,7 +167,7 @@ class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
         return BIField.make(**data)
 
 
-class DatasetContentInternalSchema(BaseSchema):
+class DatasetContentInternalSchema(BaseSchema, USEntryAnnotationMixin):
     """
     A base class for schemas that need to contain the full dataset description
     """

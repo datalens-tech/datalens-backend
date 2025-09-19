@@ -954,6 +954,7 @@ class Dataset(ApiProxyObject):
     rls2: dict[str, list[RLSEntry]] = attr.ib(factory=dict)
     component_errors: ComponentErrorRegistry = attr.ib(factory=ComponentErrorRegistry)
     obligatory_filters: list[ObligatoryFilter] = attr.ib(default=attr.Factory(list))
+    annotation: Optional[dict] = attr.ib(default=None)
 
     def prepare(self) -> None:
         super().prepare()

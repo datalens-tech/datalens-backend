@@ -435,6 +435,9 @@ class DatasetComponentEditor:
     def set_created_via(self, created_via: DataSourceCreatedVia) -> None:
         self._dataset.meta["created_via"] = created_via.name
 
+    def set_annotation(self, annotation: dict[str, Any]) -> None:
+        self._dataset.annotation = annotation
+
     def replace_connection(self, old_connection: ConnectionBase, new_connection: ConnectionBase) -> None:
         old_migrator = get_data_source_migrator(old_connection.conn_type)
         new_migrator = get_data_source_migrator(new_connection.conn_type)

@@ -15,7 +15,7 @@ from dl_testing.regulated_test import RegulatedTestCase
 
 
 class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metaclass=abc.ABCMeta):
-    def check_basic_dataset(self, ds: Dataset) -> None:
+    def check_basic_dataset(self, ds: Dataset, annotation: dict) -> None:
         """Additional dataset checks can be defined here"""
         assert ds.id
         assert ds.load_preview_by_default
@@ -26,11 +26,14 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         field_names = {field.title for field in ds.result_schema}
         assert {"category", "city"}.issubset(field_names)
 
+        assert ds.annotation == annotation
+
     def test_create_basic_dataset(
         self,
         saved_dataset: Dataset,
+        annotation: dict,
     ) -> None:
-        self.check_basic_dataset(saved_dataset)
+        self.check_basic_dataset(saved_dataset, annotation)
 
     def test_remove_connection(
         self,
@@ -121,12 +124,14 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         saved_connection_id: str,
         saved_dataset: Dataset,
         export_import_headers: dict[str, str],
+        annotation: dict,
     ) -> None:
         # test common export
         export_data = {"id_mapping": {saved_connection_id: "conn_id_1"}}
         export_resp = control_api.export_dataset(dataset=saved_dataset, data=export_data, headers=export_import_headers)
         assert export_resp.status_code == 200
         assert export_resp.json["dataset"]["sources"][0]["connection_id"] == "conn_id_1"
+        assert export_resp.json["dataset"]["description"] == annotation["description"]
 
         # test common import
         import_data: dict = {
@@ -135,6 +140,10 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         }
         import_resp = control_api.import_dataset(data=import_data, headers=export_import_headers)
         assert import_resp.status_code == 200, f"{import_resp.json} vs {export_resp.json}"
+
+        resp = control_api.get_dataset(import_resp.json["id"])
+        assert resp.status_code == 200, resp.json
+        assert resp.dataset.annotation == annotation
 
         control_api.delete_dataset(dataset_id=import_resp.json["id"])
 

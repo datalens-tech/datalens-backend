@@ -394,6 +394,10 @@ class DatasetApiLoader:
             ds_editor.set_template_enabled(body["template_enabled"])
             ds_editor.set_data_export_forbidden(body["data_export_forbidden"])
 
+        # description
+        if "annotation" in body:
+            ds_editor.set_annotation(body["annotation"])
+
         # fields (result_schema)
         ds_editor.set_result_schema(body.get("result_schema", []))
         if body.get("result_schema_aux"):

@@ -63,6 +63,7 @@ from dl_api_client.dsmaker.primitives import (
     UuidParameterValue,
     WhereClause,
 )
+from dl_api_connector.api_schema.top_level import USEntryAnnotationMixin
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
@@ -464,7 +465,7 @@ class RLS2ConfigEntrySchema(DefaultSchema[RLSEntry]):
     subject = ma_fields.Nested(RLSSubjectSchema, required=True)
 
 
-class DatasetContentInternalSchema(DefaultSchema[Dataset]):
+class DatasetContentInternalSchema(DefaultSchema[Dataset], USEntryAnnotationMixin):
     """
     A base class for schemas that need to contain the full dataset description
     """

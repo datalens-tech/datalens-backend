@@ -223,6 +223,9 @@ class DatasetResource(BIResource):
         data["template_enabled"] = dataset.template_enabled
         data["data_export_forbidden"] = dataset.data_export_forbidden
 
+        # annotation
+        data["annotation"] = dataset.annotation
+
         return {"dataset": data}
 
     @classmethod
