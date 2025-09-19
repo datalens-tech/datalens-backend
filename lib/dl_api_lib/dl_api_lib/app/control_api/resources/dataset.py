@@ -84,6 +84,7 @@ class DatasetCollection(DatasetResource):
             Dataset.DataModel(name=""),  # TODO: Remove name - it's not used, but is required
             ds_key=self.generate_dataset_location(body),
             us_manager=us_manager,
+            annotation=body.get("annotation"),
         )
         ds_editor = DatasetComponentEditor(dataset=dataset)
 
