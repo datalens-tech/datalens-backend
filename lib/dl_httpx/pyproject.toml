@@ -13,6 +13,7 @@ dl-configs = {path = "../dl_configs"}
 dl-pydantic = {path = "../dl_pydantic"}
 dl-retrier = {path = "../dl_retrier"}
 httpx = "*"
+pydantic = "*"
 python = ">=3.10, <3.13"
 typing-extensions = "*"
 
