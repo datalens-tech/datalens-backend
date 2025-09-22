@@ -186,6 +186,15 @@ class UpdateSettingAction(Action):
     setting: Setting
 
 
+@attr.s(frozen=True, kw_only=True, auto_attribs=True)
+class UpdateAnnotationAction(Action):
+    @attr.s(frozen=True, kw_only=True, auto_attribs=True)
+    class Annotation:
+        description: str
+
+    annotation: Annotation
+
+
 _DRM_TV = TypeVar("_DRM_TV", bound="DataRequestModel")
 
 

@@ -204,6 +204,9 @@ class DatasetAction(Enum):
     # settings
     update_setting = "update_setting"
 
+    # annotation
+    update_annotation = "update_annotation"
+
     # TODO: remove legacy:
     update = "update"
     add = "add"
