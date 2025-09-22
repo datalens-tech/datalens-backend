@@ -19,14 +19,16 @@ from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
 LOGGER = logging.getLogger(__name__)
 
 
-def parse_excel_data(data: BinaryIO, feature_excel_read_only: bool) -> list:
-    result = []
+class CachedCellProcessor:
+    """
+    Cache wrappers for cell values to prevent excessive memory usage when excel
+    file is made of duplicate values.
+    """
 
-    # Cache wrappers for cell values to prevent excessive memory usage when
-    #  excel file is made of duplicate values.
-    cache_values: dict[tuple[str, Any], Any] = {}
+    def __init__(self):
+        self.cache_values: dict[tuple[str, Any], Any] = {}
 
-    def process_cell(cell: openpyxl.cell.cell.Cell) -> dict:
+    def process_cell(self, cell: openpyxl.cell.cell.Cell) -> dict:
         if cell.data_type == "d":
             cell_value = str(cell.value)
         else:
@@ -39,16 +41,22 @@ def parse_excel_data(data: BinaryIO, feature_excel_read_only: bool) -> list:
 
         cache_key = (cell_type, cell_value)
 
-        if cache_key in cache_values:
-            cache_value = cache_values[cache_key]
+        if cache_key in self.cache_values:
+            cache_value = self.cache_values[cache_key]
         else:
             cache_value = {
                 "data_type": cell_type,
                 "value": cell_value,
             }
-            cache_values[cache_key] = cache_value
+            self.cache_values[cache_key] = cache_value
 
         return cache_value
+
+
+def parse_excel_data(data: BinaryIO, feature_excel_read_only: bool) -> list:
+    result = []
+
+    cell_processor = CachedCellProcessor()
 
     try:
         wb = openpyxl.load_workbook(
@@ -68,7 +76,7 @@ def parse_excel_data(data: BinaryIO, feature_excel_read_only: bool) -> list:
         result.append(
             {
                 "sheetname": sheetname,
-                "data": [[process_cell(cell) for cell in row] for row in sheet.rows],
+                "data": [[cell_processor.process_cell(cell) for cell in row] for row in sheet.rows],
             }
         )
     return result
