@@ -25,7 +25,7 @@ class CachedCellProcessor:
     file is made of duplicate values.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.cache_values: dict[tuple[str, Any], Any] = {}
 
     def process_cell(self, cell: openpyxl.cell.cell.Cell) -> dict:
