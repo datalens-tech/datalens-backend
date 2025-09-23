@@ -35,7 +35,7 @@ def test_type_field_name_alias() -> None:
     assert isinstance(Base.factory({"test_type_field_name": "child"}), Child)
 
 
-def test_already_deseialized() -> None:
+def test_already_deserialized() -> None:
     class Base(dl_httpx.TypedBaseResponseModel):
         ...
 
