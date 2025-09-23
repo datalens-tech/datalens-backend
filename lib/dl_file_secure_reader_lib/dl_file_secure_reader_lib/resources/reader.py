@@ -42,16 +42,13 @@ class CachedCellProcessor:
 
         cache_key = (cell_type, cell_value)
 
-        if cache_key in self.cache_values:
-            cache_value = self.cache_values[cache_key]
-        else:
-            cache_value = frozendict.frozendict(
+        if cache_key not in self.cache_values:
+            self.cache_values[cache_key] = frozendict.frozendict(
                 data_type=cell_type,
                 value=cell_value,
             )
-            self.cache_values[cache_key] = cache_value
 
-        return cache_value
+        return self.cache_values[cache_key]
 
 
 def parse_excel_data(data: BinaryIO, feature_excel_read_only: bool) -> list:
