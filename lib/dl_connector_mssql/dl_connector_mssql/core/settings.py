@@ -27,8 +27,8 @@ def mssql_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSe
         settings = MSSQLConnectorSettings()
     else:
         settings = MSSQLConnectorSettings(  # type: ignore
-            ENABLE_DATASOURCE_TEMPLATE=cfg.get("ENABLE_DATASOURCE_TEMPLATE", False),
-            ENABLE_TABLE_DATASOURCE_FORM=cfg.get("ENABLE_TABLE_DATASOURCE_FORM", False),
+            ENABLE_DATASOURCE_TEMPLATE=cfg.get("ENABLE_DATASOURCE_TEMPLATE", True),
+            ENABLE_TABLE_DATASOURCE_FORM=cfg.get("ENABLE_TABLE_DATASOURCE_FORM", True),
         )
     return dict(MSSQL=settings)
 

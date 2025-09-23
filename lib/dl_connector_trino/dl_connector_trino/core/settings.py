@@ -23,7 +23,7 @@ def trino_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSe
         settings = TrinoConnectorSettings()
     else:
         settings = TrinoConnectorSettings(  # type: ignore
-            ENABLE_TABLE_DATASOURCE_FORM=cfg.get("ENABLE_TABLE_DATASOURCE_FORM", False),
+            ENABLE_TABLE_DATASOURCE_FORM=cfg.get("ENABLE_TABLE_DATASOURCE_FORM", True),
         )
 
     return dict(TRINO=settings)
