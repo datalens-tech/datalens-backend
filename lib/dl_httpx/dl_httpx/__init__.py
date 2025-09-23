@@ -11,11 +11,19 @@ from .client import (
 from .models import (
     BaseRequest,
     BaseResponseModel,
+    TypedBaseResponseModel,
+    TypedResponseAnnotation,
+    TypedResponseDictAnnotation,
+    TypedResponseListAnnotation,
 )
 
 
 __all__ = [
     "BaseResponseModel",
+    "TypedBaseResponseModel",
+    "TypedResponseAnnotation",
+    "TypedResponseListAnnotation",
+    "TypedResponseDictAnnotation",
     "BaseRequest",
     "HttpxBaseClient",
     "HttpxSyncClient",

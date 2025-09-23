@@ -1,9 +1,11 @@
 import json
-from typing import Generator
+import ssl
+from typing import AsyncGenerator
 import unittest.mock
 
 import httpx
 import pytest
+import pytest_asyncio
 import pytest_mock
 import respx
 
@@ -11,8 +13,10 @@ import dl_httpx
 import dl_retrier
 
 
-def test_get_request(
+@pytest.mark.asyncio
+async def test_get_request(
     respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
 ) -> None:
     mock_route = respx_mock.get("https://example.com/api/data").respond(
         status_code=200,
@@ -20,20 +24,25 @@ def test_get_request(
         headers={"Content-Type": "application/json"},
     )
 
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(base_url="https://example.com"),
+    async with dl_httpx.HttpxAsyncClient.from_settings(
+        dl_httpx.HttpxClientSettings(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+        ),
     ) as client:
         request = client.prepare_request("GET", "/api/data")
-        with client.send(request) as response:
+        async with client.send(request) as response:
             assert response.status_code == 200
             assert response.json() == {"message": "Success", "data": [1, 2, 3]}
             assert response.headers["Content-Type"] == "application/json"
 
-        assert mock_route.call_count == 1
+    assert mock_route.call_count == 1
 
 
-def test_post_request(
+@pytest.mark.asyncio
+async def test_post_request(
     respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
 ) -> None:
     mock_route = respx_mock.post("https://example.com/api/items").respond(
         status_code=201,
@@ -41,8 +50,11 @@ def test_post_request(
         headers={"Content-Type": "application/json"},
     )
 
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(base_url="https://example.com"),
+    async with dl_httpx.HttpxAsyncClient.from_settings(
+        dl_httpx.HttpxClientSettings(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+        ),
     ) as client:
         payload = {"name": "New Item", "description": "A new item"}
         request = client.prepare_request(
@@ -51,7 +63,7 @@ def test_post_request(
             json=payload,
             headers={"Content-Type": "application/json"},
         )
-        with client.send(request) as response:
+        async with client.send(request) as response:
             assert response.status_code == 201
             assert response.json() == {"id": 123, "name": "New Item"}
 
@@ -62,17 +74,23 @@ def test_post_request(
     assert request.headers["Content-Type"] == "application/json"
 
 
-def test_custom_headers(
+@pytest.mark.asyncio
+async def test_custom_headers(
     respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
 ) -> None:
     mock_route = respx_mock.get("https://example.com/api/secure").respond(status_code=200)
     headers = {"Authorization": "Bearer token123", "X-API-Key": "abc456"}
 
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(base_url="https://example.com", base_headers=headers),
+    async with dl_httpx.HttpxAsyncClient.from_settings(
+        dl_httpx.HttpxClientSettings(
+            base_url="https://example.com",
+            base_headers=headers,
+            ssl_context=ssl_context,
+        ),
     ) as client:
         request = client.prepare_request("GET", "/api/secure")
-        with client.send(request) as response:
+        async with client.send(request) as response:
             assert response.status_code == 200
 
     assert mock_route.call_count == 1
@@ -81,42 +99,52 @@ def test_custom_headers(
     assert request.headers["X-API-Key"] == "abc456"
 
 
-def test_error_handling(
+@pytest.mark.asyncio
+async def test_error_handling(
     respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
 ) -> None:
     respx_mock.get("https://example.com/api/not-found").respond(status_code=404)
     respx_mock.get("https://example.com/api/forbidden").respond(status_code=403)
 
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(base_url="https://example.com"),
+    async with dl_httpx.HttpxAsyncClient.from_settings(
+        dl_httpx.HttpxClientSettings(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+        ),
     ) as client:
         request = client.prepare_request("GET", "/api/not-found")
         with pytest.raises(dl_httpx.HttpStatusHttpxClientException) as excinfo:
-            with client.send(request):
+            async with client.send(request):
                 pass
         assert excinfo.value.response.status_code == 404
 
         request = client.prepare_request("GET", "/api/forbidden")
         with pytest.raises(dl_httpx.HttpStatusHttpxClientException) as excinfo:
-            with client.send(request):
+            async with client.send(request):
                 pass
         assert excinfo.value.response.status_code == 403
 
 
-def test_request_with_params(
+@pytest.mark.asyncio
+async def test_request_with_params(
     respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
 ) -> None:
     mock_route = respx_mock.get("https://example.com/api/search").respond(
         status_code=200,
         json={"results": ["item1", "item2"]},
     )
 
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(base_url="https://example.com"),
+    async with dl_httpx.HttpxAsyncClient.from_settings(
+        dl_httpx.HttpxClientSettings(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+        ),
     ) as client:
         params = {"q": "test", "limit": "10", "offset": "0"}
         request = client.prepare_request("GET", "/api/search", params=params)
-        with client.send(request) as response:
+        async with client.send(request) as response:
             assert response.status_code == 200
             assert response.json() == {"results": ["item1", "item2"]}
 
@@ -125,17 +153,23 @@ def test_request_with_params(
     assert dict(request.url.params) == params
 
 
-def test_cookies_handling(
+@pytest.mark.asyncio
+async def test_cookies_handling(
     respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
 ) -> None:
     mock_route = respx_mock.get("https://example.com/api/profile").respond(status_code=200)
     cookies = {"session": "xyz789", "user_id": "123"}
 
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(base_url="https://example.com", base_cookies=cookies),
+    async with dl_httpx.HttpxAsyncClient.from_settings(
+        dl_httpx.HttpxClientSettings(
+            base_url="https://example.com",
+            base_cookies=cookies,
+            ssl_context=ssl_context,
+        ),
     ) as client:
         request = client.prepare_request("GET", "/api/profile")
-        with client.send(request) as response:
+        async with client.send(request) as response:
             assert response.status_code == 200
 
     assert mock_route.call_count == 1
@@ -144,8 +178,10 @@ def test_cookies_handling(
     assert request.headers["Cookie"].find("user_id=123") != -1
 
 
-def test_binary_response(
+@pytest.mark.asyncio
+async def test_binary_response(
     respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
 ) -> None:
     binary_data = b"binary file content"
     mock_route = respx_mock.get("https://example.com/api/files/download").respond(
@@ -154,11 +190,14 @@ def test_binary_response(
         headers={"Content-Type": "application/octet-stream"},
     )
 
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(base_url="https://example.com"),
+    async with dl_httpx.HttpxAsyncClient.from_settings(
+        dl_httpx.HttpxClientSettings(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+        ),
     ) as client:
         request = client.prepare_request("GET", "/api/files/download")
-        with client.send(request) as response:
+        async with client.send(request) as response:
             assert response.status_code == 200
             assert response.content == binary_data
             assert response.headers["Content-Type"] == "application/octet-stream"
@@ -166,23 +205,24 @@ def test_binary_response(
     assert mock_route.call_count == 1
 
 
-@pytest.fixture(name="mocked_client")
-def fixture_client_with_mocks(
+@pytest_asyncio.fixture(name="mocked_client")
+async def fixture_client_with_mocks(
     mock_retry_policy_factory: unittest.mock.Mock,
-) -> Generator[dl_httpx.HttpxSyncClient, None, None]:
-    with dl_httpx.HttpxSyncClient(
+) -> AsyncGenerator[dl_httpx.HttpxAsyncClient, None]:
+    async with dl_httpx.HttpxAsyncClient(
         base_url="https://example.com",
         base_cookies={},
         base_headers={},
         retry_policy_factory=mock_retry_policy_factory,
-        base_client=httpx.Client(base_url="https://example.com"),
+        base_client=httpx.AsyncClient(base_url="https://example.com"),
     ) as client:
         yield client
 
 
-def test_retry_default(
+@pytest.mark.asyncio
+async def test_retry_default(
     respx_mock: respx.MockRouter,
-    mocked_client: dl_httpx.HttpxSyncClient,
+    mocked_client: dl_httpx.HttpxAsyncClient,
     mocker: pytest_mock.MockerFixture,
     mock_retry: dl_retrier.Retry,
     mock_retry_policy: unittest.mock.Mock,
@@ -198,7 +238,7 @@ def test_retry_default(
     )
 
     request = mocked_client.prepare_request("GET", "/api/data")
-    with mocked_client.send(request, retry_policy_name=mock_retry_policy_name) as response:
+    async with mocked_client.send(request, retry_policy_name=mock_retry_policy_name) as response:
         assert response.status_code == status_code
         assert response.json() == json_data
 
@@ -217,9 +257,10 @@ def test_retry_default(
     mock_retry_policy.can_retry_error.assert_called_once_with(status_code)
 
 
-def test_retry_retriable_code(
+@pytest.mark.asyncio
+async def test_retry_retriable_code(
     respx_mock: respx.MockRouter,
-    mocked_client: dl_httpx.HttpxSyncClient,
+    mocked_client: dl_httpx.HttpxAsyncClient,
     mock_retry_policy: unittest.mock.Mock,
 ) -> None:
     status_code = 200
@@ -232,23 +273,24 @@ def test_retry_retriable_code(
     mock_retry_policy.can_retry_error.return_value = True
 
     request = mocked_client.prepare_request("GET", "/api/data")
-    with mocked_client.send(request) as response:
+    async with mocked_client.send(request) as response:
         assert response.status_code == status_code
         assert response.json() == json_data
 
     assert mock_route.call_count == 3
 
 
-def test_retry_client_error(
+@pytest.mark.asyncio
+async def test_retry_client_error(
     respx_mock: respx.MockRouter,
-    mocked_client: dl_httpx.HttpxSyncClient,
+    mocked_client: dl_httpx.HttpxAsyncClient,
 ) -> None:
     base_client_error = httpx.ConnectError("Connection refused")
     mock_route = respx_mock.get("https://example.com/api/data").mock(side_effect=base_client_error)
 
     request = mocked_client.prepare_request("GET", "/api/data")
     with pytest.raises(dl_httpx.RequestHttpxClientException) as excinfo:
-        with mocked_client.send(request):
+        async with mocked_client.send(request):
             pass
 
         assert excinfo.value.original_exception, base_client_error
@@ -256,9 +298,10 @@ def test_retry_client_error(
     assert mock_route.call_count == 3
 
 
-def test_retry_no_retries(
+@pytest.mark.asyncio
+async def test_retry_no_retries(
     respx_mock: respx.MockRouter,
-    mocked_client: dl_httpx.HttpxSyncClient,
+    mocked_client: dl_httpx.HttpxAsyncClient,
     mock_retry_policy: unittest.mock.Mock,
 ) -> None:
     status_code = 200
@@ -273,7 +316,7 @@ def test_retry_no_retries(
     request = mocked_client.prepare_request("GET", "/api/data")
 
     with pytest.raises(dl_httpx.NoRetriesHttpxClientException):
-        with mocked_client.send(request):
+        async with mocked_client.send(request):
             pass
 
     assert mock_route.call_count == 0
