@@ -10,6 +10,7 @@ version = "0.1.0"
 [tool.poetry.dependencies]
 aiohttp = "*"
 dl-settings = {path = "../dl_settings"}
+frozendict = "*"
 openpyxl = "*"
 pydantic = "*"
 python = ">=3.10, <3.13"

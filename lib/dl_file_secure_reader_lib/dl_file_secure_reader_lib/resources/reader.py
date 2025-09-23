@@ -10,6 +10,7 @@ from typing import (
 
 from aiohttp import web
 from aiohttp.multipart import BodyPartReader
+import frozendict
 import openpyxl
 import openpyxl.cell.cell
 
@@ -44,10 +45,10 @@ class CachedCellProcessor:
         if cache_key in self.cache_values:
             cache_value = self.cache_values[cache_key]
         else:
-            cache_value = {
-                "data_type": cell_type,
-                "value": cell_value,
-            }
+            cache_value = frozendict.frozendict(
+                data_type=cell_type,
+                value=cell_value,
+            )
             self.cache_values[cache_key] = cache_value
 
         return cache_value
