@@ -84,6 +84,37 @@ class TestYDBDashSQL(YDBDashSQLConnectionTest, DefaultDashSQLTestSuite):
         assert resp_data[-1]["event"] == "footer", resp_data[-1]
 
     @pytest.mark.asyncio
+    async def test_interval(
+        self,
+        data_api_lowlevel_aiohttp_client: TestClient,
+        saved_connection_id: str,
+        sample_table: DbTable,
+    ):
+        resp = await self.get_dashsql_response(
+            data_api_aio=data_api_lowlevel_aiohttp_client,
+            conn_id=saved_connection_id,
+            query='SELECT Interval("P0DT1.0S") as interval_value',
+        )
+
+        resp_data = await resp.json()
+        assert resp_data[0]["event"] == "metadata", resp_data
+        assert resp_data[0]["data"]["names"] == [
+            "interval_value",
+        ]
+        assert resp_data[0]["data"]["driver_types"] == [
+            "interval",
+        ]
+        assert resp_data[0]["data"]["db_types"] == [
+            "integer",
+        ]
+        assert resp_data[0]["data"]["bi_types"] == [
+            "integer",
+        ]
+
+        assert resp_data[1]["event"] == "row", resp_data
+        assert resp_data[1]["data"] == [1_000_000]
+
+    @pytest.mark.asyncio
     async def test_result_with_error(self, data_api_lowlevel_aiohttp_client: TestClient, saved_connection_id: str):
         resp = await self.get_dashsql_response(
             data_api_aio=data_api_lowlevel_aiohttp_client,
