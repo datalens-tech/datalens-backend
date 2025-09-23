@@ -31,6 +31,7 @@ if TYPE_CHECKING:
     from dl_constants.types import TBIDataTable
     from dl_core.connection_models.common_models import (
         DBIdent,
+        PageIdent,
         SchemaIdent,
         TableDefinition,
         TableIdent,
@@ -147,8 +148,8 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
 
     @final
     @init_required
-    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-        return await self._get_tables(schema_ident)
+    async def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
+        return await self._get_tables(schema_ident, page_ident)
 
     @final
     @init_required
@@ -191,7 +192,7 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    async def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    async def _get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         pass
 
     @abc.abstractmethod

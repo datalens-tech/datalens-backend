@@ -28,6 +28,7 @@ from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from dl_core.connection_executors.qe_serializer.schema_base import BaseQEAPISchema
 from dl_core.connection_models import (
     DBIdent,
+    PageIdent,
     SATextTableDefinition,
     SchemaIdent,
     TableDefinition,
@@ -183,6 +184,15 @@ class SchemaIdentSchema(BaseQEAPISchema):
 
     def to_object(self, data: dict[str, Any]) -> Any:
         return SchemaIdent(**data)
+
+
+class PageIdentSchema(BaseQEAPISchema):
+    search_text = fields.String(allow_none=True)
+    limit = fields.String(allow_none=True)
+    offset = fields.String(allow_none=True)
+
+    def to_object(self, data: dict[str, Any]) -> Any:
+        return PageIdent(**data)
 
 
 class TableIdentSchema(BaseQEAPISchema):

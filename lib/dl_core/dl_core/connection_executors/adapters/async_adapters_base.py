@@ -50,6 +50,7 @@ if TYPE_CHECKING:
     )
     from dl_core.connection_models.common_models import (
         DBIdent,
+        PageIdent,
         SchemaIdent,
         TableDefinition,
         TableIdent,
@@ -189,8 +190,10 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
     async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
         return await self._async_schema_names_action.run_schema_names_action(db_ident=db_ident)
 
-    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-        return await self._async_table_names_action.run_table_names_action(schema_ident=schema_ident)
+    async def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
+        return await self._async_table_names_action.run_table_names_action(
+            schema_ident=schema_ident, page_ident=page_ident
+        )
 
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
         return await self._async_table_info_action.run_table_info_action(

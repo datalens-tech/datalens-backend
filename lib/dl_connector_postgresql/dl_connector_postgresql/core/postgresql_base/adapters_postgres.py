@@ -28,7 +28,10 @@ from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConn
 
 if TYPE_CHECKING:
     from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo
-    from dl_core.connection_models.common_models import SchemaIdent
+    from dl_core.connection_models.common_models import (
+        PageIdent,
+        SchemaIdent,
+    )
 
 
 @attr.s()
@@ -71,7 +74,7 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
             finally:
                 stack.close()
 
-    def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    def _get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         db_name = schema_ident.db_name
         db_engine = self.get_db_engine(db_name)
 

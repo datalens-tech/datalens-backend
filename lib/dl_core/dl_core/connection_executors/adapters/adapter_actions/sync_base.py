@@ -6,6 +6,7 @@ import attr
 from dl_core.connection_executors.models.db_adapter_data import RawSchemaInfo
 from dl_core.connection_models import (
     DBIdent,
+    PageIdent,
     SchemaIdent,
     TableDefinition,
     TableIdent,
@@ -43,7 +44,9 @@ class SyncSchemaNamesAdapterAction(SyncAdapterAction):
 @attr.s(frozen=True)
 class SyncTableNamesAdapterAction(SyncAdapterAction):
     @abc.abstractmethod
-    def run_table_names_action(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    def run_table_names_action(
+        self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None
+    ) -> list[TableIdent]:
         raise NotImplementedError
 
 
@@ -92,7 +95,9 @@ class SyncSchemaNamesAdapterActionNotImplemented(SyncSchemaNamesAdapterAction):
 
 @attr.s(frozen=True)
 class SyncTableNamesAdapterActionNotImplemented(SyncTableNamesAdapterAction):
-    def run_table_names_action(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    def run_table_names_action(
+        self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None
+    ) -> list[TableIdent]:
         raise NotImplementedError
 
 

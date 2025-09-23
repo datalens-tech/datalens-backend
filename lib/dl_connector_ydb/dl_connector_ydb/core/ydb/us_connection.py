@@ -105,6 +105,9 @@ class YDBConnection(
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
         db_name: Optional[str] = None,
         schema_name: Optional[str] = None,
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
     ) -> list[TableIdent]:
         if db_name is None:
             # Only current-database listing is feasible here.
@@ -113,6 +116,9 @@ class YDBConnection(
             conn_executor_factory=conn_executor_factory,
             db_name=db_name,
             schema_name=schema_name,
+            search_text=search_text,
+            limit=limit,
+            offset=offset,
         )
 
     @property

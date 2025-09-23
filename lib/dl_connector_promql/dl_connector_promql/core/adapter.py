@@ -40,6 +40,7 @@ if TYPE_CHECKING:
         RawSchemaInfo,
     )
     from dl_core.connection_models import (
+        PageIdent,
         SchemaIdent,
         TableDefinition,
         TableIdent,
@@ -239,7 +240,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
             allow_redirects=False,
         )
 
-    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    async def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         raise NotImplementedError()
 
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:

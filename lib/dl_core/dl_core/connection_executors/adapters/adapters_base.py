@@ -40,6 +40,7 @@ from dl_core.connection_executors.models.db_adapter_data import (
 )
 from dl_core.connection_models import (
     DBIdent,
+    PageIdent,
     SchemaIdent,
     TableDefinition,
     TableIdent,
@@ -172,8 +173,8 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
     def get_schema_names(self, db_ident: DBIdent) -> list[str]:
         return self._sync_schema_names_action.run_schema_names_action(db_ident=db_ident)
 
-    def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-        return self._sync_table_names_action.run_table_names_action(schema_ident=schema_ident)
+    def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
+        return self._sync_table_names_action.run_table_names_action(schema_ident=schema_ident, page_ident=page_ident)
 
     def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
         return self._sync_table_info_action.run_table_info_action(

@@ -19,6 +19,7 @@ from dl_core.db import SchemaInfo
 if TYPE_CHECKING:
     from dl_core.connection_models.common_models import (
         DBIdent,
+        PageIdent,
         SchemaIdent,
         TableDefinition,
         TableIdent,
@@ -79,7 +80,7 @@ class SyncConnExecutorBase(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         pass
 
     @abc.abstractmethod

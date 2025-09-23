@@ -32,6 +32,16 @@ class SchemaIdent:
         return attr.evolve(self, **kwargs)
 
 
+@attr.s(frozen=True, auto_attribs=True)
+class PageIdent:
+    search_text: str | None = None
+    limit: int | None = None
+    offset: int | None = None
+
+    def __str__(self) -> str:
+        return f"%{self.search_text or ''}%.[{self.offset or ''}:{self.offset + self.limit if self.offset and self.limit else ''}]"
+
+
 class TableDefinition:
     def_type: ClassVar[TableDefinitionType]
 

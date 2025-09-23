@@ -119,7 +119,7 @@ class ConnectionTrinoBase(
 
         return result
 
-    def get_catalogs(
+    def get_db_names(  # db names - catalogs in the case of trino
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
     ) -> list[str]:
@@ -131,13 +131,17 @@ class ConnectionTrinoBase(
     def get_parameter_combinations(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
     ) -> list[dict]:
         parameter_combinations: list[dict] = []
 
         if self.data.listing_sources is ListingSources.off:
             return parameter_combinations
 
-        for catalog_name in self.get_catalogs(conn_executor_factory=conn_executor_factory):
+        for catalog_name in self.get_db_names(conn_executor_factory=conn_executor_factory):
             tables = self.get_tables(conn_executor_factory=conn_executor_factory, db_name=catalog_name)
             parameter_combinations.extend(
                 dict(

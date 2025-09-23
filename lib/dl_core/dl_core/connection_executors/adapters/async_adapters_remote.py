@@ -83,6 +83,7 @@ if TYPE_CHECKING:
     from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
     from dl_core.connection_models.common_models import (
         DBIdent,
+        PageIdent,
         SchemaIdent,
         TableDefinition,
         TableIdent,
@@ -404,13 +405,14 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             ),
         )
 
-    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    async def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         return await self._make_request_parse_response(  # type: ignore  # TODO: fix
             dba_actions.ActionGetTables(
                 target_conn_dto=self._target_dto,
                 dba_cls=self._dba_cls,
                 req_ctx_info=self._req_ctx_info,
                 schema_ident=schema_ident,
+                page_ident=page_ident,
             ),
         )
 
