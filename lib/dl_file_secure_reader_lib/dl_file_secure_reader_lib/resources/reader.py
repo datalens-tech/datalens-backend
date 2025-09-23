@@ -10,6 +10,7 @@ from typing import (
 
 from aiohttp import web
 from aiohttp.multipart import BodyPartReader
+import attr
 import frozendict
 import openpyxl
 import openpyxl.cell.cell
@@ -20,14 +21,14 @@ from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
 LOGGER = logging.getLogger(__name__)
 
 
+@attr.s(frozen=True)
 class CachedCellProcessor:
     """
     Cache wrappers for cell values to prevent excessive memory usage when excel
     file is made of duplicate values.
     """
 
-    def __init__(self) -> None:
-        self.cache_values: dict[tuple[str, Any], Any] = {}
+    cache_values: dict[tuple[str, Any], Any] = attr.ib(factory=dict, init=False)
 
     def process_cell(self, cell: openpyxl.cell.cell.Cell) -> dict:
         if cell.data_type == "d":

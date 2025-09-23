@@ -2679,6 +2679,7 @@ develop = true
 [package.dependencies]
 aiohttp = "*"
 dl-settings = {path = "../dl_settings"}
+frozendict = "*"
 openpyxl = "*"
 pydantic = "*"
 
