@@ -28,7 +28,7 @@ def ydb_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSett
             ENABLE_AUTH_TYPE_PICKER=cfg.get("ENABLE_AUTH_TYPE_PICKER", False),
             DEFAULT_HOST_VALUE=cfg.get("DEFAULT_HOST_VALUE", None),
             DEFAULT_SSL_ENABLE_VALUE=cfg.get("DEFAULT_SSL_ENABLE_VALUE", True),
-            ENABLE_DATASOURCE_TEMPLATE=cfg.get("ENABLE_DATASOURCE_TEMPLATE", False),
+            ENABLE_DATASOURCE_TEMPLATE=cfg.get("ENABLE_DATASOURCE_TEMPLATE", True),
         )
     return dict(YDB=settings)
 
