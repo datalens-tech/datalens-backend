@@ -5,10 +5,12 @@ from typing import (
     Any,
     Type,
     TypeVar,
+    cast,
 )
 
 import pydantic
 import pydantic._internal._model_construction as pydantic_model_construction
+from typing_extensions import Self
 
 import dl_pydantic.base as base
 
@@ -52,8 +54,8 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         return data[type_key]
 
     @classmethod
-    def factory(cls, data: Any) -> base.BaseModel:
-        if isinstance(data, base.BaseModel):
+    def factory(cls, data: Any) -> Self:
+        if isinstance(data, cls):
             return data
 
         if not isinstance(data, dict):
@@ -66,7 +68,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
 
         data = class_._prepare_data(data)
 
-        return class_.model_validate(data)
+        return cast(Self, class_.model_validate(data))
 
     @classmethod
     def list_factory(cls, data: list[Any]) -> list[base.BaseModel]:
