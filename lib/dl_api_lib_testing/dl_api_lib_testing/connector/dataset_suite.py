@@ -1,5 +1,6 @@
 import abc
 from typing import Optional
+import uuid
 
 import pytest
 
@@ -41,7 +42,8 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         saved_dataset: Dataset,
         annotation: dict,
     ) -> None:
-        resp = control_api.copy_dataset(saved_dataset, new_key="copy")
+        new_key = f"Dataset copy {str(uuid.uuid4())}"
+        resp = control_api.copy_dataset(saved_dataset, new_key=new_key)
         assert resp.status_code == 200, resp.json
         dataset_copy = resp.dataset
         self.check_basic_dataset(dataset_copy, annotation)
