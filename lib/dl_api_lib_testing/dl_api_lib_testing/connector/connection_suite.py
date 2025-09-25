@@ -292,12 +292,12 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         saved_connection_id: str,
         bi_headers: dict[str, str] | None,
         sync_us_manager: SyncUSManager,
-        test_description: str,
+        description: str,
     ) -> None:
         # test Connection object
         conn = sync_us_manager.get_by_id(saved_connection_id, expected_type=ConnectionBase)
         assert isinstance(conn, ConnectionBase)
-        assert conn.annotation == {"description": test_description}
+        assert conn.annotation == {"description": description}
 
         # test API
         resp = control_api_sync_client.get(
@@ -305,7 +305,7 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
             headers=bi_headers,
         )
         assert resp.status_code == 200, resp.json
-        assert resp.json["description"] == test_description
+        assert resp.json["description"] == description
 
     def test_create_connections__query_params_in_db_name__error(
         self,
