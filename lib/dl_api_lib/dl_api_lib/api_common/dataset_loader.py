@@ -4,9 +4,9 @@ from copy import deepcopy
 import logging
 from typing import (
     TYPE_CHECKING,
+    Any,
     NamedTuple,
     Optional,
-    Any,
 )
 
 import attr
@@ -397,7 +397,7 @@ class DatasetApiLoader:
 
         # annotation
         if "annotation" in body:
-            annotation: dict[str: Any] = body["annotation"]
+            annotation: dict[str, Any] = body["annotation"]
             ds_editor.set_description(annotation.get("description", ""))
 
         # fields (result_schema)
