@@ -1,5 +1,4 @@
 import asyncio
-import types
 from typing import (
     Any,
     Awaitable,
@@ -7,28 +6,12 @@ from typing import (
 )
 
 import attrs
-import typing_extensions
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
 class TestingHttpxClient:
     sync_client: Any
     async_client: Any
-
-    async def __aenter__(self) -> typing_extensions.Self:
-        return self
-
-    async def __aexit__(
-        self,
-        exc_type: type[BaseException] | None = None,
-        exc_value: BaseException | None = None,
-        traceback: types.TracebackType | None = None,
-    ) -> None:
-        await self.close()
-
-    async def close(self) -> None:
-        self.sync_client.close()
-        await self.async_client.close()
 
     def _sync_method_wrapper(
         self,
