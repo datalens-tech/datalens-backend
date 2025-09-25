@@ -35,6 +35,22 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
     ) -> None:
         self.check_basic_dataset(saved_dataset, annotation)
 
+    def test_copy_dataset(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+        annotation: dict,
+    ) -> None:
+        resp = control_api.copy_dataset(saved_dataset, new_key="copy")
+        assert resp.status_code == 200, resp.json
+        dataset_copy = resp.dataset
+        self.check_basic_dataset(dataset_copy, annotation)
+
+        assert dataset_copy.id != saved_dataset.id
+        assert dataset_copy.sources == saved_dataset.sources
+        assert dataset_copy.result_schema == saved_dataset.result_schema
+        assert dataset_copy.annotation == saved_dataset.annotation
+
     def test_remove_connection(
         self,
         control_api: SyncHttpDatasetApiV1,
