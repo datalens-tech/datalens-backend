@@ -7,7 +7,6 @@ from dl_api_connector.form_config.models.common import (
     SerializableConfig,
     inner,
     remap,
-    skip_if_null,
 )
 
 
@@ -24,7 +23,7 @@ class SomeItemConfig(SerializableConfig):
 class SomeConfig(SerializableConfig):
     basic_field: str = attr.ib()
     enum_field: MyEnum = attr.ib()
-    undefined: Optional[int] = attr.ib(default=None, metadata=skip_if_null())
+    undefined: Optional[int] = attr.ib(default=None)
     remapped: str = attr.ib(default="orig_value", metadata=remap("remapped_2"))
     list_field: list[SomeItemConfig] = attr.ib()
     dict_field: dict[MyEnum, list[SomeItemConfig]] = attr.ib()
