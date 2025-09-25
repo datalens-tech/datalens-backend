@@ -17,6 +17,7 @@ from .models import (
     TypedSchemaDictAnnotation,
     TypedSchemaListAnnotation,
 )
+from .testing import TestingHttpxClient
 
 
 __all__ = [
@@ -35,4 +36,5 @@ __all__ = [
     "HttpStatusHttpxClientException",
     "RequestHttpxClientException",
     "NoRetriesHttpxClientException",
+    "TestingHttpxClient",
 ]
