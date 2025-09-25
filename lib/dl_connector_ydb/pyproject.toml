@@ -41,6 +41,7 @@ dl-core-testing = {path = "../dl_core_testing"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-testing = {path = "../dl_testing"}
 frozendict = "*"
+dl-sqlalchemy-ydb = {path = "../../lib/dl_sqlalchemy_ydb"}
 pytest = "*"
 requests = "*"
 
