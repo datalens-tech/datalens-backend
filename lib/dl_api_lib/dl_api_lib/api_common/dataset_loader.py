@@ -6,6 +6,7 @@ from typing import (
     TYPE_CHECKING,
     NamedTuple,
     Optional,
+    Any,
 )
 
 import attr
@@ -394,9 +395,10 @@ class DatasetApiLoader:
             ds_editor.set_template_enabled(body["template_enabled"])
             ds_editor.set_data_export_forbidden(body["data_export_forbidden"])
 
-        # description
+        # annotation
         if "annotation" in body:
-            ds_editor.set_annotation(body["annotation"])
+            annotation: dict[str: Any] = body["annotation"]
+            ds_editor.set_description(annotation.get("description", ""))
 
         # fields (result_schema)
         ds_editor.set_result_schema(body.get("result_schema", []))

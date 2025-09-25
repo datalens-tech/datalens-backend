@@ -67,6 +67,7 @@ class USEntry:
         ds_key: Union[EntryLocation, str, None] = None,
         type_: Optional[str] = None,
         meta: Any = None,
+        annotation: Optional[dict[str, Any]] = None,
         *,
         us_manager: SyncUSManager,
         **kwargs: Any,
@@ -101,6 +102,7 @@ class USEntry:
             entry_key=effective_entry_key,
             type_=type_,
             meta=meta,
+            annotation=annotation,
             us_manager=us_manager,
             **kwargs,
         )

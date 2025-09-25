@@ -404,6 +404,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         ds_key: Union[EntryLocation, str, None] = None,
         type_: Optional[str] = None,
         meta: Optional[dict] = None,
+        annotation: Optional[dict[str, Any]] = None,
         **kwargs: Any,
     ) -> _CB_TV:
         if meta is None:
@@ -413,6 +414,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             ds_key,
             type_,
             meta,
+            annotation,
             **kwargs,
         )
 

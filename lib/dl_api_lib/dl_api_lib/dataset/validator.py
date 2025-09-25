@@ -46,7 +46,7 @@ from dl_api_lib.request_model.data import (
     ReplaceConnection,
     ReplaceConnectionAction,
     SourceActionBase,
-    UpdateAnnotationAction,
+    UpdateDescriptionAction,
     UpdateField,
     UpdateSettingAction,
 )
@@ -257,8 +257,8 @@ class DatasetValidator(DatasetBaseWrapper):
             self.apply_obligatory_filter_action(action=action, filter_data=item_data.obligatory_filter, by=by)
         elif isinstance(item_data, UpdateSettingAction):
             self.apply_setting_action(action=action, setting=item_data.setting, by=by)
-        elif isinstance(item_data, UpdateAnnotationAction):
-            self.apply_annotation_action(action=action, annotation=item_data.annotation, by=by)
+        elif isinstance(item_data, UpdateDescriptionAction):
+            self.apply_description_action(action=action, description=item_data.description, by=by)
 
         self.update_validity_of_affected_components()
 
@@ -1743,15 +1743,15 @@ class DatasetValidator(DatasetBaseWrapper):
         else:
             raise NotImplementedError(f"Not implemented setting action: {action}")
 
-    @generic_profiler("validator-apply-annotation-action")
-    def apply_annotation_action(
+    @generic_profiler("validator-apply-description-action")
+    def apply_description_action(
         self,
         action: DatasetAction,
-        annotation: UpdateAnnotationAction.Annotation,
+        description: str,
         by: ManagedBy | None = ManagedBy.user,
     ) -> None:
-        if action == DatasetAction.update_annotation:
-            self._ds_editor.set_annotation(attr.asdict(annotation))
+        if action == DatasetAction.update_description:
+            self._ds_editor.set_description(description=description)
         else:
             raise NotImplementedError(f"Not implemented annotation action: {action}")
 
