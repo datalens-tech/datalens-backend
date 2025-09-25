@@ -504,6 +504,7 @@ class USManagerBase:
         copied_entry = type(source)(
             uuid=None,
             data=source_save_params["data"],
+            annotation=source_save_params["annotation"],
             entry_key=key,
             type_=source.type_,
             is_locked=source.is_locked,
