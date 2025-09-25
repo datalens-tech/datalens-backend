@@ -1,6 +1,7 @@
 import asyncio
 from typing import Generator
 
+from frozendict import frozendict
 import pytest
 
 from dl_core_testing.database import (
@@ -38,6 +39,18 @@ class BaseYDBTestClass(BaseConnectionTestClass[YDBConnection]):
     def db_url(self) -> str:
         return test_config.DB_CORE_URL
 
+    @pytest.fixture(scope="class")
+    def engine_params(self) -> dict:
+        return dict(
+            connect_args=frozendict(
+                dict(
+                    host=test_config.CoreConnectionSettings.HOST,
+                    port=test_config.CoreConnectionSettings.PORT,
+                    protocol="grpc",
+                )
+            ),
+        )
+
     @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
         return dict(
@@ -68,7 +81,16 @@ class BaseSSLYDBTestClass(BaseYDBTestClass):
 
     @pytest.fixture(scope="class")
     def engine_params(self, ssl_ca: str) -> dict:
-        return test_config.make_ssl_engine_params(ssl_ca)
+        return dict(
+            connect_args=frozendict(
+                dict(
+                    host=test_config.CoreSslConnectionSettings.HOST,
+                    port=test_config.CoreSslConnectionSettings.PORT,
+                    protocol="grpcs",
+                    **test_config.make_ssl_connect_args(ssl_ca),
+                ),
+            ),
+        )
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:

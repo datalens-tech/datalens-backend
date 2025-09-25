@@ -1,5 +1,6 @@
 from typing import ClassVar
 
+from frozendict import frozendict
 import pytest
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
@@ -39,6 +40,18 @@ class YDBConnectionTestBase(ConnectionTestBase):
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
         return DB_CORE_URL
+
+    @pytest.fixture(scope="class")
+    def engine_params(self) -> dict:
+        return dict(
+            connect_args=frozendict(
+                dict(
+                    host=CoreConnectionSettings.HOST,
+                    port=CoreConnectionSettings.PORT,
+                    protocol="grpc",
+                )
+            ),
+        )
 
     @pytest.fixture(scope="class")
     def bi_test_config(self) -> ApiTestEnvironmentConfiguration:

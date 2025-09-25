@@ -5,6 +5,7 @@ from typing import (
     Optional,
 )
 
+from frozendict import frozendict
 import pytest
 import sqlalchemy as sa
 
@@ -18,6 +19,7 @@ from dl_formula_testing.evaluator import (
 from dl_formula_testing.testcases.base import FormulaConnectorTestBase
 
 from dl_connector_ydb.formula.constants import YqlDialect as D
+import dl_connector_ydb_tests.db.config as test_config
 from dl_connector_ydb_tests.db.config import DB_CONFIGURATIONS
 
 
@@ -130,3 +132,15 @@ class YQLTestBase(FormulaConnectorTestBase):
         monkeypatch.setattr("dl_formula_testing.evaluator.FIELD_TYPES", ydb_field_types)
 
         return ydb_field_types
+
+    @pytest.fixture(scope="class")
+    def engine_params(self) -> dict:
+        return dict(
+            connect_args=frozendict(
+                dict(
+                    host=test_config.CoreConnectionSettings.HOST,
+                    port=test_config.CoreConnectionSettings.PORT,
+                    protocol="grpc",
+                )
+            ),
+        )

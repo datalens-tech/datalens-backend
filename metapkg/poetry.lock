@@ -2565,6 +2565,7 @@ dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
+dl-sqlalchemy-ydb = {path = "../../lib/dl_sqlalchemy_ydb"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 grpcio = "*"
@@ -2573,6 +2574,8 @@ shortuuid = "*"
 sqlalchemy = "*"
 typing-extensions = "*"
 ydb = "*"
+ydb-dbapi = "*"
+ydb-sqlalchemy = "*"
 
 [package.source]
 type = "directory"
@@ -3514,6 +3517,25 @@ sqlalchemy = "*"
 [package.source]
 type = "directory"
 url = "../lib/dl_sqlalchemy_promql"
+
+[[package]]
+name = "dl-sqlalchemy-ydb"
+version = "0.1"
+description = "BI YDB SQLAlchemy Dialect"
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = false
+
+[package.dependencies]
+packaging = "*"
+sqlalchemy = "*"
+ydb = "*"
+ydb-sqlalchemy = "*"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_sqlalchemy_ydb"
 
 [[package]]
 name = "dl-task-processor"
@@ -9235,20 +9257,53 @@ propcache = ">=0.2.0"
 
 [[package]]
 name = "ydb"
-version = "3.5.2"
+version = "3.21.12"
 description = "YDB Python SDK"
 optional = false
 python-versions = "*"
 files = [
-    {file = "ydb-3.5.2-py2.py3-none-any.whl", hash = "sha256:0ef3ae929c8267e18ce56a6a8979b3712a953fe2254e12909aa422b89637902a"},
-    {file = "ydb-3.5.2.tar.gz", hash = "sha256:7e698843468a81976e5dd8b3d4324e02bf41a763a18eab2648d4401c95481c67"},
+    {file = "ydb-3.21.12-py2.py3-none-any.whl", hash = "sha256:a1c685a9f88b0b6407c4c0a4803ee07f527cb7c17c346de9935dee920ab40122"},
+    {file = "ydb-3.21.12.tar.gz", hash = "sha256:612b1a81ab011b40120f187a249b919e85cfbea07de0db7b7664fbd566b83bab"},
 ]
 
 [package.dependencies]
 aiohttp = "<4"
 grpcio = ">=1.42.0"
 packaging = "*"
-protobuf = ">=3.13.0,<5.0.0"
+protobuf = ">=3.13.0,<6.0.0"
+
+[package.extras]
+yc = ["yandexcloud"]
+
+[[package]]
+name = "ydb-dbapi"
+version = "0.1.14"
+description = "YDB Python DBAPI which complies with PEP 249"
+optional = false
+python-versions = "<4.0,>=3.8"
+files = [
+    {file = "ydb_dbapi-0.1.14-py3-none-any.whl", hash = "sha256:f8f144ce98e2f2c0378ea389656a3faafb73cea93840da7e6f8a81ccb0b1f775"},
+    {file = "ydb_dbapi-0.1.14.tar.gz", hash = "sha256:17b17ad7d4c9fecfd8018fc43c7b4b143e7bba02d98d36dd53640087149e299b"},
+]
+
+[package.dependencies]
+ydb = ">=3.21.6,<4.0.0"
+
+[[package]]
+name = "ydb-sqlalchemy"
+version = "0.1.9"
+description = "YDB Dialect for SQLAlchemy"
+optional = false
+python-versions = "*"
+files = [
+    {file = "ydb_sqlalchemy-0.1.9-py2.py3-none-any.whl", hash = "sha256:e9149e4ad98758a1a6c5290bda4a5f595a14e1cef1ee65e76c92fc45edc688aa"},
+    {file = "ydb_sqlalchemy-0.1.9.tar.gz", hash = "sha256:8bfd18ffaf8f6945e489ab57fe49950ae2e25c51f992484c7c3ce9e56a224fd2"},
+]
+
+[package.dependencies]
+sqlalchemy = ">=1.4.0,<3.0.0"
+ydb = ">=3.18.8"
+ydb-dbapi = ">=0.1.10"
 
 [package.extras]
 yc = ["yandexcloud"]
