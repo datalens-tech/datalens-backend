@@ -44,7 +44,7 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
     db_table_dispenser = DbCsvTableDispenser()
 
     @pytest.fixture(scope="class")
-    def test_description(self) -> str:
+    def description(self) -> str:
         return f"Test {self.conn_type.name} connection"
 
     @abc.abstractmethod
@@ -53,9 +53,9 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
         raise NotImplementedError
 
     @pytest.fixture(scope="class")
-    def common_connection_params(self, test_description: str) -> dict:
+    def common_connection_params(self, description: str) -> dict:
         return dict(
-            description=test_description,
+            description=description,
         )
 
     @pytest.fixture(scope="function")
