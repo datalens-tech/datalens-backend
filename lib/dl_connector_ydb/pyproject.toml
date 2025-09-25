@@ -19,6 +19,7 @@ dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
+dl-sqlalchemy-ydb = {path = "../../lib/dl_sqlalchemy_ydb"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 grpcio = "*"
@@ -28,6 +29,8 @@ shortuuid = "*"
 sqlalchemy = "*"
 typing-extensions = "*"
 ydb = "*"
+ydb-dbapi = "*"
+ydb-sqlalchemy = "*"
 
 [tool.poetry.group.tests.dependencies]
 aiohttp = "*"
@@ -38,6 +41,7 @@ dl-core-testing = {path = "../dl_core_testing"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-testing = {path = "../dl_testing"}
 frozendict = "*"
+dl-sqlalchemy-ydb = {path = "../../lib/dl_sqlalchemy_ydb"}
 pytest = "*"
 requests = "*"
 
@@ -61,9 +65,6 @@ yql = "dl_connector_ydb.formula_ref.plugin:YQLFormulaRefPlugin"
 [tool.deptry.package_module_name_map]
 grpcio = "grpc"
 
-[tool.deptry.per_rule_ignores]
-DEP001 = ["ydb_proto_stubs_import"]
-
 [tool.mypy]
 check_untyped_defs = true
 disallow_untyped_defs = true
@@ -75,7 +76,7 @@ warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
-module = ["ydb.*", "ydb_proto_stubs_import.*"]
+module = ["ydb.*", "ydb_dbapi.*", "ydb_sqlalchemy.*"]
 
 [tool.pytest.ini_options]
 addopts = "-ra"
