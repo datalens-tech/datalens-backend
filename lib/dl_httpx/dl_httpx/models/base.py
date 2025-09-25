@@ -24,11 +24,17 @@ class BaseRequest:
         return None
 
 
-class BaseResponseModel(dl_pydantic.BaseModel):
+class BaseSchema(dl_pydantic.BaseModel):
+    def model_get_body(self) -> dict[str, Any]:
+        return self.model_dump(mode="json", by_alias=True)
+
+
+class BaseResponseSchema(BaseSchema):
     ...
 
 
 __all__ = [
-    "BaseResponseModel",
+    "BaseResponseSchema",
+    "BaseSchema",
     "BaseRequest",
 ]

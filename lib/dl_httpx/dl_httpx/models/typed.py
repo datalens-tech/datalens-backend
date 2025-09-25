@@ -7,40 +7,39 @@ from typing import (
 
 import pydantic
 
+from dl_httpx.models import base
 from dl_pydantic import TypedBaseModel
 
-from .base import BaseResponseModel
 
-
-class TypedBaseResponseModel(TypedBaseModel, BaseResponseModel):
+class TypedBaseSchema(TypedBaseModel, base.BaseSchema):
     ...
 
 
-TypedBaseResponseModelT = TypeVar("TypedBaseResponseModelT", bound=TypedBaseResponseModel)
+TypedBaseSchemaT = TypeVar("TypedBaseSchemaT", bound=TypedBaseSchema)
 
 
 if TYPE_CHECKING:
-    TypedResponseAnnotation = Annotated[TypedBaseResponseModelT, ...]
-    TypedResponseListAnnotation = Annotated[list[TypedBaseResponseModelT], ...]
-    TypedResponseDictAnnotation = Annotated[dict[str, TypedBaseResponseModelT], ...]
+    TypedSchemaAnnotation = Annotated[TypedBaseSchemaT, ...]
+    TypedSchemaListAnnotation = Annotated[list[TypedBaseSchemaT], ...]
+    TypedSchemaDictAnnotation = Annotated[dict[str, TypedBaseSchemaT], ...]
 else:
 
-    class TypedResponseAnnotation:
-        def __class_getitem__(cls, base_class: TypedBaseResponseModelT) -> Any:
+    class TypedSchemaAnnotation:
+        def __class_getitem__(cls, base_class: TypedBaseSchemaT) -> Any:
             return Annotated[
                 base_class,
                 pydantic.BeforeValidator(base_class.factory),
             ]
 
-    class TypedResponseListAnnotation:
-        def __class_getitem__(cls, base_class: TypedBaseResponseModelT) -> Any:
+    class TypedSchemaListAnnotation:
+        def __class_getitem__(cls, base_class: TypedBaseSchemaT) -> Any:
             return Annotated[
                 list[base_class],
                 pydantic.BeforeValidator(base_class.list_factory),
             ]
 
-    class TypedResponseDictAnnotation:
-        def __class_getitem__(cls, base_class: TypedBaseResponseModelT) -> Any:
+    class TypedSchemaDictAnnotation:
+        def __class_getitem__(cls, base_class: TypedBaseSchemaT) -> Any:
             return Annotated[
                 dict[str, base_class],
                 pydantic.BeforeValidator(base_class.dict_factory),
@@ -48,8 +47,8 @@ else:
 
 
 __all__ = [
-    "TypedBaseResponseModel",
-    "TypedResponseAnnotation",
-    "TypedResponseListAnnotation",
-    "TypedResponseDictAnnotation",
+    "TypedBaseSchema",
+    "TypedSchemaAnnotation",
+    "TypedSchemaListAnnotation",
+    "TypedSchemaDictAnnotation",
 ]
