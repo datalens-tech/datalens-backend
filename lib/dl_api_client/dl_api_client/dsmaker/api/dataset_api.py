@@ -394,3 +394,18 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
                 },
             ],
         )
+
+    def update_description(
+        self,
+        dataset: Dataset,
+        description: str,
+    ) -> HttpDatasetApiResponse:
+        return self.apply_updates(
+            dataset=dataset,
+            updates=[
+                {
+                    "action": "update_description",
+                    "description": description,
+                },
+            ],
+        )
