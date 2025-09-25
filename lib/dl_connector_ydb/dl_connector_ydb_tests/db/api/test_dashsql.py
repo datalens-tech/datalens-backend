@@ -24,7 +24,7 @@ class TestYDBDashSQL(YDBDashSQLConnectionTest, DefaultDashSQLTestSuite):
 
         resp_data = await resp.json()
         assert resp_data[0]["event"] == "metadata", resp_data
-        assert resp_data[0]["data"]["names"][:12] == [
+        assert resp_data[0]["data"]["names"][:13] == [
             "id",
             "some_str",
             "some_utf8",
@@ -37,8 +37,9 @@ class TestYDBDashSQL(YDBDashSQLConnectionTest, DefaultDashSQLTestSuite):
             "some_date",
             "some_datetime",
             "some_timestamp",
+            "some_interval",
         ]
-        assert resp_data[0]["data"]["driver_types"][:12] == [
+        assert resp_data[0]["data"]["driver_types"][:13] == [
             "int32?",
             "string",
             "utf8?",
@@ -51,22 +52,24 @@ class TestYDBDashSQL(YDBDashSQLConnectionTest, DefaultDashSQLTestSuite):
             "date",
             "datetime",
             "timestamp",
+            "interval",
         ]
-        assert resp_data[0]["data"]["db_types"][:12] == [
-            "integer",
+        assert resp_data[0]["data"]["db_types"][:13] == [
+            "int32",
             "text",
             "text",
-            "integer",
-            "integer",
-            "integer",
-            "integer",
+            "int32",
+            "uint8",
+            "int64",
+            "uint64",
             "float",
             "boolean",
             "date",
             "datetime",
             "datetime",
+            "interval",
         ]
-        assert resp_data[0]["data"]["bi_types"][:12] == [
+        assert resp_data[0]["data"]["bi_types"][:13] == [
             "integer",
             "string",
             "string",
@@ -79,6 +82,7 @@ class TestYDBDashSQL(YDBDashSQLConnectionTest, DefaultDashSQLTestSuite):
             "date",
             "genericdatetime",
             "genericdatetime",
+            "integer",
         ]
 
         assert resp_data[-1]["event"] == "footer", resp_data[-1]
