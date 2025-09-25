@@ -44,13 +44,13 @@ class TestingHttpxClient:
         return wrapper
 
     def __getattr__(self, name: str) -> Callable[..., Any]:
-        sync_method = getattr(self.sync_client, name)
-        async_method = getattr(self.async_client, name)
+        sync_client_method = getattr(self.sync_client, name)
+        async_client_method = getattr(self.async_client, name)
 
-        if asyncio.iscoroutinefunction(async_method):
-            return self._async_method_wrapper(sync_method, async_method)
+        if asyncio.iscoroutinefunction(async_client_method):
+            return self._async_method_wrapper(sync_client_method, async_client_method)
 
-        return self._sync_method_wrapper(sync_method, async_method)
+        return self._sync_method_wrapper(sync_client_method, async_client_method)
 
 
 __all__ = [
