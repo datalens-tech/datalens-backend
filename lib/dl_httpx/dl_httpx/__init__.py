@@ -10,20 +10,22 @@ from .client import (
 )
 from .models import (
     BaseRequest,
-    BaseResponseModel,
-    TypedBaseResponseModel,
-    TypedResponseAnnotation,
-    TypedResponseDictAnnotation,
-    TypedResponseListAnnotation,
+    BaseResponseSchema,
+    BaseSchema,
+    TypedBaseSchema,
+    TypedSchemaAnnotation,
+    TypedSchemaDictAnnotation,
+    TypedSchemaListAnnotation,
 )
 
 
 __all__ = [
-    "BaseResponseModel",
-    "TypedBaseResponseModel",
-    "TypedResponseAnnotation",
-    "TypedResponseListAnnotation",
-    "TypedResponseDictAnnotation",
+    "BaseSchema",
+    "BaseResponseSchema",
+    "TypedBaseSchema",
+    "TypedSchemaAnnotation",
+    "TypedSchemaListAnnotation",
+    "TypedSchemaDictAnnotation",
     "BaseRequest",
     "HttpxBaseClient",
     "HttpxSyncClient",

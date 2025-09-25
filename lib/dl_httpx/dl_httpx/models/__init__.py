@@ -1,20 +1,22 @@
 from .base import (
     BaseRequest,
-    BaseResponseModel,
+    BaseResponseSchema,
+    BaseSchema,
 )
 from .typed import (
-    TypedBaseResponseModel,
-    TypedResponseAnnotation,
-    TypedResponseDictAnnotation,
-    TypedResponseListAnnotation,
+    TypedBaseSchema,
+    TypedSchemaAnnotation,
+    TypedSchemaDictAnnotation,
+    TypedSchemaListAnnotation,
 )
 
 
 __all__ = [
     "BaseRequest",
-    "BaseResponseModel",
-    "TypedBaseResponseModel",
-    "TypedResponseAnnotation",
-    "TypedResponseListAnnotation",
-    "TypedResponseDictAnnotation",
+    "BaseResponseSchema",
+    "BaseSchema",
+    "TypedBaseSchema",
+    "TypedSchemaAnnotation",
+    "TypedSchemaListAnnotation",
+    "TypedSchemaDictAnnotation",
 ]

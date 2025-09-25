@@ -34,7 +34,7 @@ class RefreshedToken(Token):
     refresh_token: str
 
 
-class IntrospectPostResponse(dl_httpx.BaseResponseModel):
+class IntrospectPostResponse(dl_httpx.BaseResponseSchema):
     active: bool
     username: str | None = None
     sub: str | None = None
@@ -47,7 +47,7 @@ class IntrospectPostResponse(dl_httpx.BaseResponseModel):
         )
 
 
-class TokenPostResponse(dl_httpx.BaseResponseModel):
+class TokenPostResponse(dl_httpx.BaseResponseSchema):
     access_token: str
     token_type: str
     expires_in: int
