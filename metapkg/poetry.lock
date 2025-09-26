@@ -2906,7 +2906,9 @@ attrs = "*"
 dl-configs = {path = "../dl_configs"}
 dl-pydantic = {path = "../dl_pydantic"}
 dl-retrier = {path = "../dl_retrier"}
+dl-testing = {path = "../dl_testing"}
 httpx = "*"
+pydantic = "*"
 typing-extensions = "*"
 
 [package.source]
@@ -3046,6 +3048,7 @@ develop = true
 
 [package.dependencies]
 pydantic = "*"
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
