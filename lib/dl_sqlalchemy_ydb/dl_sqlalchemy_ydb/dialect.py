@@ -33,7 +33,7 @@ class YqlInterval(sa.types.Interval):
     __visit_name__ = "interval"
 
     def result_processor(self, dialect: sa.engine.Dialect, coltype: typing.Any) -> typing.Any:
-        def process(value: typing.Optional[datetime.timedelta]) -> typing.Optional[int]:
+        def process(value: typing.Optional[datetime.timedelta] | int) -> typing.Optional[int]:
             if value is None:
                 return None
             if isinstance(value, datetime.timedelta):

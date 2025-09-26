@@ -102,6 +102,36 @@ class YDBDatasetTestBase(YDBConnectionTestBase, DatasetTestBase):
         )
 
 
+class YDBViewDatasetTestBase(YDBConnectionTestBase, DatasetTestBase):
+    @pytest.fixture(scope="class")
+    def sample_view_name(
+        self,
+        db: Db,
+        sample_table: DbTable,
+    ) -> str:
+        view_name = sample_table.name + "_view"
+
+        db.get_current_connection().connection.cursor().execute_scheme(
+            f"CREATE VIEW `{view_name}` WITH (security_invoker = TRUE) AS SELECT * FROM `{sample_table.name}`;"
+        )
+
+        yield view_name
+
+        db.get_current_connection().connection.cursor().execute_scheme(f"DROP VIEW `{view_name}`;")
+
+    @pytest.fixture(scope="class")
+    def dataset_params(
+        self,
+        sample_view_name: str,
+    ) -> dict:
+        return dict(
+            source_type=SOURCE_TYPE_YDB_TABLE.name,
+            parameters=dict(
+                table_name=sample_view_name,
+            ),
+        )
+
+
 class YDBDataApiTestBase(YDBDatasetTestBase, StandardizedDataApiTestBase):
     mutation_caches_enabled = False
 

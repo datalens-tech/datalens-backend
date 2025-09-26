@@ -16,7 +16,14 @@ import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_core import exc
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
-from dl_core.connection_models import TableIdent
+from dl_core.connection_executors.models.db_adapter_data import RawColumnInfo
+from dl_core.connection_models import (
+    DBIdent,
+    SATextTableDefinition,
+    TableDefinition,
+    TableIdent,
+)
+from dl_core.utils import sa_plain_text
 import dl_sqlalchemy_ydb.dialect
 
 import dl_connector_ydb.core.base.row_converters
@@ -116,3 +123,44 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
 
     def get_engine_kwargs(self) -> dict:
         return {}
+
+    def _get_raw_columns_info(self, table_def: TableDefinition) -> tuple[RawColumnInfo, ...]:
+        # Check if target path is view
+        if isinstance(table_def, TableIdent):
+            assert table_def.table_name is not None
+
+            db_engine = self.get_db_engine(table_def.db_name)
+            connection = db_engine.connect()
+
+            try:
+                # SA db_engine -> SA connection -> DBAPI connection -> YDB driver
+                driver = connection.connection._driver  # type: ignore  # 2024-01-24 # TODO: "DBAPIConnection" has no attribute "_driver"  [attr-defined]
+                assert driver
+
+                # TODO: I think this is very bad
+                #   User can gain access to tables by absolute path instead of relative to db_name root.
+                #   Possible solution: require prefix be equal to db_name
+                if table_def.db_name is None:
+                    table_path = table_def.table_name
+                elif table_def.table_name.startswith("/"):
+                    if table_def.table_name.startswith(table_def.db_name + "/"):
+                        table_path = table_def.table_name
+                    else:
+                        # Not ok?
+                        raise ValueError("absolute table path is not subpath of database path")
+                else:
+                    table_path = table_def.db_name.rstrip("/") + "/" + table_def.table_name
+
+                response = driver.scheme_client.async_describe_path(table_path)
+                result = response.result()
+
+                if result.is_view():
+                    return self._get_subselect_table_info(
+                        SATextTableDefinition(
+                            sa_plain_text(f"(SELECT * FROM `{table_path}` LIMIT 1)"),
+                        ),
+                    ).columns
+            finally:
+                connection.close()
+
+        return super()._get_raw_columns_info(table_def)

@@ -9,6 +9,7 @@ services:
       YDB_GRPC_ENABLE_TLS: 1
       GRPC_TLS_PORT: "51902"
       YDB_GRPC_TLS_DATA_PATH: "/ydb_certs"
+      YDB_FEATURE_FLAGS: "enable_views"
     hostname: "db-ydb"
     ports:
       - "51900:51900"
