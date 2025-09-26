@@ -82,6 +82,36 @@ TABLE_SCHEMA = (
     ("some_interval", UserDataType.integer, dl_sqlalchemy_ydb.dialect.YqlInterval),
     ("some_uuid", UserDataType.uuid, dl_sqlalchemy_ydb.dialect.YqlUuid),
 )
+
+COLUMN_TABLE_SCHEMA = (
+    ("id", UserDataType.integer, sa.Integer),
+    ("distinct_string", UserDataType.string, sa.String),
+    ("some_int32", UserDataType.integer, sa.Integer),
+    ("some_int64", UserDataType.integer, sa.BigInteger),
+    ("some_uint8", UserDataType.integer, sa.SmallInteger),
+    ("some_double", UserDataType.float, sa.Float),
+    ("some_string", UserDataType.string, sa.String),
+    ("some_utf8", UserDataType.string, sa.Unicode),
+    ("some_date", UserDataType.date, sa.Date),
+    ("some_datetime", UserDataType.genericdatetime, sa.DATETIME),
+    ("some_timestamp", UserDataType.genericdatetime, sa.TIMESTAMP),
+    ("some_interval", UserDataType.integer, dl_sqlalchemy_ydb.dialect.YqlInterval),
+)
+
+SA_TYPE_TO_YDB_TYPE_NAME = {
+    sa.Integer: "Int32",
+    sa.String: "String",
+    sa.BigInteger: "Int64",
+    sa.SmallInteger: "Int8",
+    sa.Boolean: "Bool",
+    sa.Float: "Double",
+    sa.Unicode: "Utf8",
+    sa.Date: "Date",
+    sa.DATETIME: "Datetime",
+    sa.TIMESTAMP: "Timestamp",
+    dl_sqlalchemy_ydb.dialect.YqlInterval: "Interval",
+}
+
 TABLE_DATA = [
     {
         "id": 1,
@@ -260,7 +290,12 @@ TABLE_DATA = [
         "some_uuid": uuid.UUID("a68da475-4850-4a15-8b08-b5bd95edaadb"),
     },
 ]
+
+# Leave only values in COLUMN_TABLE_SCHEMA
+COLUMN_TABLE_DATA = [{key: value for key, value in row.items() if key in COLUMN_TABLE_SCHEMA} for row in TABLE_DATA]
+
 TABLE_NAME = "test_table_h"
+
 
 DASHSQL_QUERY = r"""
 select
