@@ -115,4 +115,6 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         return exc_cls, kw
 
     def get_engine_kwargs(self) -> dict:
-        return {}
+        return dict(
+            _add_declare_for_yql_stmt_vars=True,
+        )
