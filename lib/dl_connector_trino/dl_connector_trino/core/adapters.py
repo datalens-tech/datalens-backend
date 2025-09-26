@@ -26,6 +26,7 @@ from dl_core.connection_executors.models.db_adapter_data import (
 )
 from dl_core.connection_models.common_models import (
     DBIdent,
+    PageIdent,
     SchemaIdent,
     TableIdent,
 )
@@ -193,7 +194,7 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
 
         return self._db_version
 
-    def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    def _get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         """
         Regardless accepting schema_ident, this method returns all tables from the catalog (schema_ident.db_name).
         schema_ident.schema_name is ignored.

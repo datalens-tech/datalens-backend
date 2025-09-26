@@ -20,6 +20,7 @@ from dl_core.connection_executors.adapters.adapters_base_sa_classic import (
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_models.common_models import (
     DBIdent,
+    PageIdent,
     SchemaIdent,
     TableIdent,
 )
@@ -86,7 +87,7 @@ class BigQueryDefaultAdapter(BaseClassicAdapter[BigQueryConnTargetDTO]):
         client = BQClient(credentials=self._get_bq_credentials())
         return client
 
-    def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    def _get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         client = self.get_bq_client()
         bq_datasets = list(client.list_datasets())
         project_id = self._target_dto.project_id

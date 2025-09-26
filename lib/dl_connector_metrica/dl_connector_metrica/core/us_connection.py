@@ -186,12 +186,20 @@ class MetrikaApiConnection(MetrikaBaseMixin, ConnectionBase):
     def get_parameter_combinations(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
     ) -> list[dict]:
         return [dict(db_name=item.name) for item in MetrikaApiCounterSource]
 
     def get_data_source_templates(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
     ) -> list[DataSourceTemplate]:
         return [
             DataSourceTemplate(
@@ -229,6 +237,10 @@ class AppMetricaApiConnection(MetrikaApiConnection):
     def get_parameter_combinations(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
     ) -> list[dict]:
         return [dict(db_name=item.name) for item in AppMetricaFieldsNamespaces]
 

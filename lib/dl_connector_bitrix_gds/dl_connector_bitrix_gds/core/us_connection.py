@@ -65,6 +65,10 @@ class BitrixGDSConnection(ConnectionBase):
     def get_parameter_combinations(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
     ) -> list[dict]:
         return [
             dict(db_name=DEFAULT_DB, table_name=item.table_name)
@@ -78,6 +82,10 @@ class BitrixGDSConnection(ConnectionBase):
     def get_data_source_templates(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
     ) -> list[DataSourceTemplate]:
         return [
             DataSourceTemplate(

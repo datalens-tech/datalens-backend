@@ -24,6 +24,7 @@ from dl_core.connection_executors.models.db_adapter_data import (
 )
 from dl_core.connection_models import (
     DBIdent,
+    PageIdent,
     SATextTableDefinition,
     SchemaIdent,
     TableIdent,
@@ -82,11 +83,11 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
             EventListenerSpec("connect", set_execution_timeout),
         ]
 
-    def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    def _get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         if schema_ident.schema_name is not None:
             # For a single schema, plug into the common SA code.
             # (might not be ever used)
-            return super()._get_tables(schema_ident)
+            return super()._get_tables(schema_ident, page_ident)
 
         db_name = schema_ident.db_name
         db_engine = self.get_db_engine(db_name)

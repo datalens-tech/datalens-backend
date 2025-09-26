@@ -49,6 +49,7 @@ from dl_core.connection_executors.models.db_adapter_data import (
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from dl_core.connection_models import (
     DBIdent,
+    PageIdent,
     SATextTableDefinition,
     SchemaIdent,
     TableDefinition,
@@ -224,12 +225,12 @@ class BaseSAAdapter(
             return self._get_schema_names(db_ident)
 
     @final
-    def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         with (
             self.handle_execution_error(debug_compiled_query=f"<get_tables({schema_ident})>"),
             self.execution_context(),
         ):
-            return self._get_tables(schema_ident)
+            return self._get_tables(schema_ident, page_ident)
 
     @final
     def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
@@ -304,7 +305,7 @@ class BaseSAAdapter(
         db_engine = self.get_db_engine(db_ident.db_name)
         return sa.inspect(db_engine).get_schema_names()
 
-    def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    def _get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         db_name = schema_ident.db_name
         schema_name = schema_ident.schema_name
 

@@ -107,7 +107,7 @@ class ActionHandlingView(flask.views.View):
             return dba.get_schema_names(db_ident=action.db_ident)
 
         elif isinstance(action, act.ActionGetTables):
-            return dba.get_tables(schema_ident=action.schema_ident)  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "list[TableIdent]", expected "RawSchemaInfo | list[str] | str | bool | int | None")  [return-value]
+            return dba.get_tables(schema_ident=action.schema_ident, page_ident=action.page_ident)  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "list[TableIdent]", expected "RawSchemaInfo | list[str] | str | bool | int | None")  [return-value]
 
         elif isinstance(action, act.ActionGetTableInfo):
             return dba.get_table_info(table_def=action.table_def, fetch_idx_info=action.fetch_idx_info)

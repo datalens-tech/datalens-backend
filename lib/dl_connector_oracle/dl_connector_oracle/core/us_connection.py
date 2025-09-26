@@ -91,7 +91,12 @@ class ConnectionSQLOracle(
         return result
 
     def get_parameter_combinations(
-        self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase]
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
     ) -> list[dict]:
         if not self.db_name:
             return []

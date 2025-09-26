@@ -71,6 +71,10 @@ class ConnectionSQLBigQuery(ConnectionSQL):
     def get_parameter_combinations(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
     ) -> list[dict]:
         tables = self.get_tables(conn_executor_factory)
         return [

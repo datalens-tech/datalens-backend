@@ -53,6 +53,7 @@ if TYPE_CHECKING:
     from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
     from dl_core.connection_models.common_models import (
         DBIdent,
+        PageIdent,
         SchemaIdent,
         TableIdent,
     )
@@ -306,8 +307,8 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
         return await self._target_dba.get_schema_names(db_ident)
 
     @_common_exec_wrapper
-    async def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-        return await self._target_dba.get_tables(schema_ident)
+    async def _get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
+        return await self._target_dba.get_tables(schema_ident, page_ident)
 
     @_common_exec_wrapper
     async def _get_table_schema_info(self, table_def: TableDefinition) -> SchemaInfo:

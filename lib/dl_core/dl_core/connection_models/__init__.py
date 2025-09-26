@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dl_core.connection_models.common_models import (
     DBIdent,
+    PageIdent,
     SATextTableDefinition,
     SchemaIdent,
     TableDefinition,
@@ -18,6 +19,7 @@ __all__ = (
     "DBIdent",
     "TableIdent",
     "SchemaIdent",
+    "PageIdent",
     "TableDefinition",
     "SATextTableDefinition",
     "ConnectOptions",

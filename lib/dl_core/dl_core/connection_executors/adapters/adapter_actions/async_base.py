@@ -6,6 +6,7 @@ import attr
 from dl_core.connection_executors.models.db_adapter_data import RawSchemaInfo
 from dl_core.connection_models import (
     DBIdent,
+    PageIdent,
     SchemaIdent,
     TableDefinition,
     TableIdent,
@@ -45,7 +46,9 @@ class AsyncSchemaNamesAdapterAction(AsyncAdapterAction):
 @attr.s(frozen=True)
 class AsyncTableNamesAdapterAction(AsyncAdapterAction):
     @abc.abstractmethod
-    async def run_table_names_action(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    async def run_table_names_action(
+        self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None
+    ) -> list[TableIdent]:
         raise NotImplementedError
 
 
@@ -101,7 +104,9 @@ class AsyncSchemaNamesAdapterActionNotImplemented(AsyncSchemaNamesAdapterAction)
 
 @attr.s(frozen=True)
 class AsyncTableNamesAdapterActionNotImplemented(AsyncTableNamesAdapterAction):
-    async def run_table_names_action(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    async def run_table_names_action(
+        self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None
+    ) -> list[TableIdent]:
         raise NotImplementedError
 
 

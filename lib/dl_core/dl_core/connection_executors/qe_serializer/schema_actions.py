@@ -16,6 +16,7 @@ from dl_core.connection_executors.qe_serializer.schemas_common import (
     DBAdapterScopedRCISchema,
     DBIdentSchema,
     GenericDBAQuerySchema,
+    PageIdentSchema,
     SchemaIdentSchema,
     TableDefinitionSchema,
     TableIdentSchema,
@@ -94,6 +95,7 @@ class ActionGetSchemaNamesSchema(DBAdapterActionBaseSchema):
 
 class ActionGetTablesSchema(DBAdapterActionBaseSchema):
     schema_ident = fields.Nested(SchemaIdentSchema)
+    page_ident = fields.Nested(PageIdentSchema, allow_none=True)
 
     def to_object(self, data: dict[str, Any]) -> dba_actions.ActionGetTables:
         return dba_actions.ActionGetTables(**data)

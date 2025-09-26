@@ -34,6 +34,7 @@ if TYPE_CHECKING:
     from dl_constants.types import TBIChunksGen
     from dl_core.connection_models.common_models import (
         DBIdent,
+        PageIdent,
         SchemaIdent,
         TableDefinition,
         TableIdent,
@@ -110,8 +111,8 @@ class AsyncWrapperForSyncAdapter(AsyncDBAdapter):
     async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
         return await self._loop.run_in_executor(self._tpe, self._sync_adapter.get_schema_names, db_ident)
 
-    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-        return await self._loop.run_in_executor(self._tpe, self._sync_adapter.get_tables, schema_ident)
+    async def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
+        return await self._loop.run_in_executor(self._tpe, self._sync_adapter.get_tables, schema_ident, page_ident)
 
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
         return await self._loop.run_in_executor(

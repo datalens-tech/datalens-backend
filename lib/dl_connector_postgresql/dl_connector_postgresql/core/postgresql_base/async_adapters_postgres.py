@@ -54,6 +54,7 @@ from dl_core.connection_executors.models.db_adapter_data import (
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from dl_core.connection_models import (
     DBIdent,
+    PageIdent,
     TableDefinition,
 )
 from dl_core.connection_models.common_models import TableIdent
@@ -376,7 +377,7 @@ class AsyncPostgresAdapter(
         view_list = await self._get_view_names(schema_ident)
         return table_list + view_list
 
-    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    async def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         if schema_ident.schema_name is not None:
             # For a single schema, plug into the common SA code.
             # (might not be ever used)

@@ -29,6 +29,7 @@ from dl_core.connection_executors.qe_serializer.schemas_responses import (
 )
 from dl_core.connection_models import (
     DBIdent,
+    PageIdent,
     SchemaIdent,
     TableDefinition,
     TableIdent,
@@ -95,6 +96,7 @@ class ActionGetSchemaNames(NonStreamAction[list[str]]):
 @attr.s(frozen=True)
 class ActionGetTables(NonStreamAction[list[TableIdent]]):
     schema_ident: SchemaIdent = attr.ib()
+    page_ident: PageIdent | None = attr.ib(default=None)
 
     class ResultSchema(PrimitivesResponseSchema):
         value = fields.Nested(TableIdentSchema, many=True)  # type: ignore  # TODO: fix
