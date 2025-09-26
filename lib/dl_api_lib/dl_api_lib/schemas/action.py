@@ -30,6 +30,7 @@ from dl_api_lib.request_model.data import (
     ReplaceConnection,
     ReplaceConnectionAction,
     SourceActionBase,
+    UpdateDescriptionAction,
     UpdateField,
     UpdateSettingAction,
 )
@@ -241,6 +242,11 @@ class UpdateSettingActionSchema(ActionBaseSchema, DefaultValidateSchema[UpdateSe
     setting = ma_fields.Nested(SettingSchema, required=True)
 
 
+class UpdateDescriptionActionSchema(ActionBaseSchema, DefaultValidateSchema[UpdateDescriptionAction]):
+    TARGET_CLS = UpdateDescriptionAction
+    description = ma_fields.String(allow_none=False, required=True)
+
+
 class ActionSchema(OneOfSchema):
     class Meta:
         unknown = EXCLUDE
@@ -278,6 +284,8 @@ class ActionSchema(OneOfSchema):
         DatasetAction.delete_obligatory_filter.name: DeleteObligatoryFilterActionSchema,
         # settings
         DatasetAction.update_setting.name: UpdateSettingActionSchema,
+        # description
+        DatasetAction.update_description.name: UpdateDescriptionActionSchema,
     }
 
     def get_obj_type(self, obj: dict[str, Any]) -> str:

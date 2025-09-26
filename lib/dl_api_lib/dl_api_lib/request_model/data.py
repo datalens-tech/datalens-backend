@@ -186,6 +186,11 @@ class UpdateSettingAction(Action):
     setting: Setting
 
 
+@attr.s(frozen=True, kw_only=True, auto_attribs=True)
+class UpdateDescriptionAction(Action):
+    description: str
+
+
 _DRM_TV = TypeVar("_DRM_TV", bound="DataRequestModel")
 
 
