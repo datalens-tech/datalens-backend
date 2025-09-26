@@ -109,7 +109,7 @@ class TestYDBDashSQL(YDBDashSQLConnectionTest, DefaultDashSQLTestSuite):
             "interval",
         ]
         assert resp_data[0]["data"]["db_types"] == [
-            "integer",
+            "interval",
         ]
         assert resp_data[0]["data"]["bi_types"] == [
             "integer",
