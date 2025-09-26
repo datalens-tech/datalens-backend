@@ -10,7 +10,7 @@ import dl_settings.base.settings as base_settings
 LOGGER = logging.getLogger(__name__)
 
 
-class WithFallbackGetAttr(base_settings.BaseSettings):
+class WithFallbackGetAttr(base_settings.BaseRootSettings):
     """
     Mixin to add fallback to deprecated settings from dl-configs
     """
