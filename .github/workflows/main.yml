@@ -525,7 +525,7 @@ jobs:
           COMPOSE_PROJECT: "${{ steps.get_compose_prj.outputs.result }}"
 
   mypy:
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: [ self-hosted, linux, k8s-runner-fat ]
     needs: gh_build_image
     container:
       image: ${{ needs.gh_build_image.outputs.IMAGE }}
@@ -547,7 +547,7 @@ jobs:
       - name: run mypy
         run: |
           . /venv/bin/activate
-          execute-mypy-multi /src --processes=5
+          execute-mypy-multi /src --processes=4
         env:
           PYTHONUNBUFFERED: "1"
 
