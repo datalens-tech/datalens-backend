@@ -413,8 +413,8 @@ tasks:
         - parent_branch
         - child_branch
     cmds:
-      - git fetch {{.remote}} {{.parent_branch}}
-      - git fetch {{.remote}} {{.child_branch}}
+      - git fetch {{.remote}} {{.parent_branch}}:{{.parent_branch}}
+      - git fetch {{.remote}} {{.child_branch}}:{{.child_branch}}
       - git switch {{.child_branch}}
       - git reset --soft $(git merge-base {{.parent_branch}} HEAD)
       - echo 'Now you can commit merged changes with "git commit -m "commit message"'
