@@ -1,0 +1,320 @@
+{
+    "title": "MySQL",
+    "rows": [
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Hostname"
+                },
+                {
+                    "id": "input",
+                    "name": "host",
+                    "width": "l",
+                    "controlProps": {
+                        "type": "text"
+                    }
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Port"
+                },
+                {
+                    "id": "input",
+                    "name": "port",
+                    "defaultValue": "3306",
+                    "width": "s",
+                    "controlProps": {
+                        "type": "number"
+                    }
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Path to database"
+                },
+                {
+                    "id": "input",
+                    "name": "db_name",
+                    "width": "l"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Username"
+                },
+                {
+                    "id": "input",
+                    "name": "username",
+                    "width": "m"
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Password"
+                },
+                {
+                    "id": "input",
+                    "name": "password",
+                    "defaultValue": "",
+                    "width": "m",
+                    "controlProps": {
+                        "type": "password"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "cache_ttl_sec",
+            "name": "cache_ttl_sec"
+        },
+        {
+            "type": "raw_sql_level",
+            "name": "raw_sql_level",
+            "defaultValue": "off",
+            "switchOffValue": "off",
+            "label": {
+                "id": "label",
+                "text": "Raw SQL level",
+                "align": "start",
+                "helpText": "- We do not recommend combining subqueries in datasets with RLS or restrictions on viewing tables.\n- SQL queries from charts enter the connection directly and do not take into account the RLS configured in the datasets."
+            },
+            "radioGroup": {
+                "id": "radio_group",
+                "name": "raw_sql_level",
+                "options": [
+                    {
+                        "content": {
+                            "text": "Allow subselects in datasets",
+                            "hintText": "This option allows you to describe dataset sources using SQL queries"
+                        },
+                        "value": "subselect"
+                    },
+                    {
+                        "content": {
+                            "text": "Allow subselects in datasets and source parametrization",
+                            "hintText": "This option allows you to describe dataset sources using SQL queries and use templates in dataset sources"
+                        },
+                        "value": "template"
+                    },
+                    {
+                        "content": {
+                            "text": "Allow subselects in datasets, source parametrization and QL-charts",
+                            "hintText": "This option allows you to describe dataset sources using SQL queries, use templates in dataset sources and create QL charts",
+                            "textEndIcon": {
+                                "name": "CircleExclamation",
+                                "view": "error"
+                            }
+                        },
+                        "value": "dashsql"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "collapse",
+            "name": "advanced_settings",
+            "inner": true,
+            "text": "Advanced connection settings"
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "text": "TLS",
+                    "helpText": "When the option is enabled, it ensures mandatory use of ssl for connection."
+                },
+                {
+                    "id": "radio_button",
+                    "name": "ssl_enable",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "defaultValue": "on",
+                    "options": [
+                        {
+                            "text": "Off",
+                            "value": "off"
+                        },
+                        {
+                            "text": "On",
+                            "value": "on"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "text": "CA Certificate"
+                },
+                {
+                    "id": "file-input",
+                    "name": "ssl_ca",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    }
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "text": "Disable data export",
+                    "helpText": "Disabling data export will hide the data export button in the charts, though you will still be able to extract data from charts and take screenshots."
+                },
+                {
+                    "id": "radio_button",
+                    "name": "data_export_forbidden",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "defaultValue": "off",
+                    "options": [
+                        {
+                            "text": "Off",
+                            "value": "off"
+                        },
+                        {
+                            "text": "On",
+                            "value": "on"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "apiSchema": {
+        "create": {
+            "items": [
+                {
+                    "name": "host",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "port",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "username",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "db_name",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "password",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "cache_ttl_sec",
+                    "required": false,
+                    "nullable": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "raw_sql_level",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "ssl_enable",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "ssl_ca",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "data_export_forbidden",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "type",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        },
+        "check": {
+            "items": [
+                {
+                    "name": "host",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "port",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "db_name",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "username",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "password",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "ssl_enable",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "ssl_ca",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "type",
+                    "required": false,
+                    "defaultAction": "include"
+                }
+            ],
+            "conditions": []
+        }
+    }
+}
