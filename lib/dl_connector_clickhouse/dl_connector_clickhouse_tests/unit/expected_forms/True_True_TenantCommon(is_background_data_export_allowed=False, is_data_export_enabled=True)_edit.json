@@ -232,6 +232,15 @@
                     }
                 }
             ]
+        },
+        {
+            "items": [
+                {
+                    "id": "hidden",
+                    "name": "description",
+                    "defaultValue": ""
+                }
+            ]
         }
     ],
     "apiSchema": {
@@ -286,6 +295,13 @@
                 {
                     "name": "raw_sql_level",
                     "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "description",
+                    "type": "string",
+                    "required": true,
+                    "nullable": false,
                     "defaultAction": "include"
                 }
             ],
