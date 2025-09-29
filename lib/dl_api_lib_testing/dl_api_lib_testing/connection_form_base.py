@@ -109,9 +109,12 @@ class ConnectionFormTestBase:
         expected_form_config_file: str,
         form_config: ConnectionForm,
     ) -> dict[str, typing.Any]:
-        if not os.path.exists(expected_form_config_file) or self.OVERWRITE_EXPECTED_FORMS:
+        if self.OVERWRITE_EXPECTED_FORMS:
             with open(expected_form_config_file, mode="w") as f:
                 f.write(json.dumps(form_config.as_dict(), indent=4))
+
+        if not os.path.exists(expected_form_config_file):
+            pytest.fail(f"Expected form config file does not exist: {expected_form_config_file}")
 
         with open(expected_form_config_file, mode="r") as f:
             return json.load(f)
