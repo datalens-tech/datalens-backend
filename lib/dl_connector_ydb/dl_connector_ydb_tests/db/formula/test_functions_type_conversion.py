@@ -157,6 +157,9 @@ class DbCastTypeFunctionYQLTestSuite(
                 dbe.eval(query_string, from_=ydb_type_test_data_table)
 
     @pytest.mark.parametrize(
+        # target - target type for cast
+        # cast_args - type arguments (for decimal)
+        # ok - if no exception should occur
         "target,cast_args,ok",
         [
             # Bool
@@ -186,7 +189,6 @@ class DbCastTypeFunctionYQLTestSuite(
     def test_db_cast_ydb_bool(
         self,
         dbe: DbEvaluator,
-        # data_table: sa.Table,
         ydb_type_test_data_table: sa.Table,
         target: str,
         cast_args: tuple[int, int] | None,
@@ -204,6 +206,9 @@ class DbCastTypeFunctionYQLTestSuite(
         )
 
     @pytest.mark.parametrize(
+        # target - target type for cast
+        # cast_args - type arguments (for decimal)
+        # ok - if no exception should occur
         "target,cast_args,ok",
         [
             # Bool
@@ -233,7 +238,6 @@ class DbCastTypeFunctionYQLTestSuite(
     def test_db_cast_ydb_integer(
         self,
         dbe: DbEvaluator,
-        # data_table: sa.Table,
         ydb_type_test_data_table: sa.Table,
         target: str,
         cast_args: tuple[int, int] | None,
@@ -251,6 +255,9 @@ class DbCastTypeFunctionYQLTestSuite(
         )
 
     @pytest.mark.parametrize(
+        # target - target type for cast
+        # cast_args - type arguments (for decimal)
+        # ok - if no exception should occur
         "target,cast_args,ok",
         [
             # Bool
@@ -280,7 +287,6 @@ class DbCastTypeFunctionYQLTestSuite(
     def test_db_cast_ydb_float(
         self,
         dbe: DbEvaluator,
-        # data_table: sa.Table,
         ydb_type_test_data_table: sa.Table,
         target: str,
         cast_args: tuple[int, int] | None,
@@ -298,6 +304,9 @@ class DbCastTypeFunctionYQLTestSuite(
         )
 
     @pytest.mark.parametrize(
+        # target - target type for cast
+        # cast_args - type arguments (for decimal)
+        # ok - if no exception should occur
         "target,cast_args,ok",
         [
             # Bool
@@ -327,7 +336,6 @@ class DbCastTypeFunctionYQLTestSuite(
     def test_db_cast_ydb_string(
         self,
         dbe: DbEvaluator,
-        # data_table: sa.Table,
         ydb_type_test_data_table: sa.Table,
         target: str,
         cast_args: tuple[int, int] | None,
@@ -345,6 +353,9 @@ class DbCastTypeFunctionYQLTestSuite(
         )
 
     @pytest.mark.parametrize(
+        # target - target type for cast
+        # cast_args - type arguments (for decimal)
+        # ok - if no exception should occur
         "target,cast_args,ok",
         [
             # Bool
@@ -374,7 +385,6 @@ class DbCastTypeFunctionYQLTestSuite(
     def test_db_cast_ydb_date(
         self,
         dbe: DbEvaluator,
-        # data_table: sa.Table,
         ydb_type_test_data_table: sa.Table,
         target: str,
         cast_args: tuple[int, int] | None,
