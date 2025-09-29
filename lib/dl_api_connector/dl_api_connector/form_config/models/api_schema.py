@@ -10,6 +10,7 @@ from typing import (
 import attr
 
 from dl_api_connector.form_config.models.common import (
+    AnnotationFieldName,
     SerializableConfig,
     TFieldName,
     remap_skip_if_null,
@@ -56,9 +57,24 @@ class FormFieldApiActionCondition(SerializableConfig):
     then: list[FormFieldConditionalApiAction] = attr.ib()
 
 
+def form_field_api_schema_converter(items: list[FormFieldApiSchema]) -> list[FormFieldApiSchema]:
+    return items + FormActionApiSchema._get_common_api_schema_items()
+
+
 @attr.s(kw_only=True, frozen=True)
 class FormActionApiSchema(SerializableConfig):
-    items: list[FormFieldApiSchema] = attr.ib()
+    @staticmethod
+    def _get_common_api_schema_items() -> list[FormFieldApiSchema]:
+        return [
+            FormFieldApiSchema(
+                name=AnnotationFieldName.description,
+                type="string",
+                required=True,
+                nullable=False,
+            ),
+        ]
+
+    items: list[FormFieldApiSchema] = attr.ib(converter=form_field_api_schema_converter)
     conditions: list[FormFieldApiActionCondition] = attr.ib(factory=list)
 
 
