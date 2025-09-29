@@ -480,7 +480,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     ) -> list[DataSourceTemplate]:
         raise NotImplementedError
 
-    def get_data_source_templates_with_capabilities(
+    def get_data_source_templates_paginated(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
         search_text: str | None = None,
@@ -490,43 +490,33 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     ) -> list[DataSourceTemplate]:
         """
         Get data source templates handling search and pagination based on connection capabilities.
-        This method automatically determines whether to perform operations db-side or code-side.
+        Raises 400 errors for unsupported operations instead of executing them code-side.
         """
+        # Raise 400 error if search_text is provided but not supported
+        if search_text and not self.supports_source_search:  # search_text = '' is OK with any flag value
+            raise InvalidRequestError("search_text parameter is not supported for this connection type")
+
+        # Raise 400 error if offset is provided but pagination is not supported
+        if offset and not self.supports_source_pagination:  # offset = 0 is OK with any flag value
+            raise InvalidRequestError("offset parameter is not supported for this connection type")
+
         # Determine parameters for db-side operations
-        db_search_text = search_text if self.supports_source_search else None
         db_limit = limit if self.supports_source_pagination else None
-        db_offset = offset if self.supports_source_pagination else None
 
         # Get templates from database with appropriate parameters
         templates = self.get_data_source_templates(
             conn_executor_factory=conn_executor_factory,
-            search_text=db_search_text,
+            search_text=search_text,
             limit=db_limit,
-            offset=db_offset,
+            offset=offset,
             db_name=db_name,
         )
 
-        # Apply code-side operations if not supported db-side
-        if not self.supports_source_search and search_text is not None:
-            templates = self._filter_templates_by_search(templates, search_text)
-
+        # Apply code-side limit if not supported db-side
         if not self.supports_source_pagination and limit is not None:
-            templates = self._apply_pagination(templates, limit, offset)
+            return templates[:limit]
 
         return templates
-
-    def _filter_templates_by_search(
-        self, templates: list[DataSourceTemplate], search_text: str
-    ) -> list[DataSourceTemplate]:
-        search_text_lower = search_text.lower()
-        return [template for template in templates if search_text_lower in template.title.lower()]
-
-    def _apply_pagination(
-        self, templates: list[DataSourceTemplate], limit: int, offset: int | None
-    ) -> list[DataSourceTemplate]:
-        start_idx = offset or 0
-        end_idx = start_idx + limit
-        return templates[start_idx:end_idx]
 
     def validate_source_listing_parameters(
         self,
@@ -707,7 +697,9 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         conn_executor = conn_executor_factory(self)
         return conn_executor.get_tables(
             SchemaIdent(db_name=db_name, schema_name=schema_name),
-            PageIdent(search_text=search_text, limit=limit, offset=offset) if search_text or limit or offset else None,
+            PageIdent(search_text=search_text, limit=limit, offset=offset)
+            if search_text or offset or limit is not None
+            else None,
         )
 
 

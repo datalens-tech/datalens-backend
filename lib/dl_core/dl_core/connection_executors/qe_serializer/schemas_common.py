@@ -191,7 +191,7 @@ class PageIdentSchema(BaseQEAPISchema):
     limit = fields.String(allow_none=True)
     offset = fields.String(allow_none=True)
 
-    def to_object(self, data: dict[str, Any]) -> Any:
+    def to_object(self, data: dict[str, Any]) -> PageIdent:
         return PageIdent(**data)
 
 
