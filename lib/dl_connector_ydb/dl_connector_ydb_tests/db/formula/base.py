@@ -119,8 +119,7 @@ class YQLTestBase(FormulaConnectorTestBase):
         try:
             yield table
         finally:
-            # dbe.db.drop_table(table)
-            pass
+            dbe.db.drop_table(table)
 
     @pytest.fixture(scope="function")
     def ydb_data_table_field_types_patch(self, monkeypatch):
