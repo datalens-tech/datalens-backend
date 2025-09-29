@@ -60,6 +60,26 @@ class YQLDbCastArgTypes(base.DbCastArgTypes):
         )
 
 
+class YQLDbCastArgTypes(base.DbCastArgTypes):
+    def __init__(self) -> None:
+        # See DbCastArgTypes.__init__
+        super(base.DbCastArgTypes, self).__init__(
+            arg_types=[
+                {
+                    DataType.BOOLEAN,
+                    DataType.INTEGER,
+                    DataType.FLOAT,
+                    DataType.STRING,
+                    DataType.DATE,
+                    DataType.ARRAY_INT,
+                    DataType.ARRAY_FLOAT,
+                    DataType.ARRAY_STR,
+                },
+                DataType.CONST_STRING,
+            ]
+        )
+
+
 class FuncDbCastYQLBase(base.FuncDbCastBase):
     # For numeric types see: https://ydb.tech/docs/en/yql/reference/types/primitive#casting-to-numeric-types
     # Type cast tables date: 2026-01-28.
