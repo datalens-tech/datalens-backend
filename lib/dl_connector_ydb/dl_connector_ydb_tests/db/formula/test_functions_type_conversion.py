@@ -134,7 +134,7 @@ class DbCastTypeFunctionYQLTestSuite(
         with pytest.raises(exc.TranslationError):
             assert dbe.eval('DB_CAST([int_value], "meow")', from_=data_table) == value
 
-    def _test_db_cast_ydb_bool(
+    def _test_db_cast_ydb_func(
         self,
         dbe: DbEvaluator,
         ydb_type_test_data_table: sa.Table,
@@ -174,13 +174,13 @@ class DbCastTypeFunctionYQLTestSuite(
             ("Double", None, True),
             # String
             ("String", None, True),
-            ("Utf8", None, True),
+            ("Utf8", None, False),
             # Date
-            ("Date", None, True),
-            ("Datetime", None, True),
-            ("Timestamp", None, True),
+            ("Date", None, False),
+            ("Datetime", None, False),
+            ("Timestamp", None, False),
             # Uuid
-            ("Uuid", None, True),
+            ("Uuid", None, False),
         ],
     )
     def test_db_cast_ydb_bool(
@@ -193,7 +193,7 @@ class DbCastTypeFunctionYQLTestSuite(
         ok: bool,
         ydb_data_test_table_field_types_patch,
     ) -> None:
-        self._test_db_cast_ydb_bool(
+        self._test_db_cast_ydb_func(
             dbe=dbe,
             ydb_type_test_data_table=ydb_type_test_data_table,
             target=target,
@@ -201,6 +201,194 @@ class DbCastTypeFunctionYQLTestSuite(
             ok=ok,
             ydb_data_test_table_field_types_patch=ydb_data_test_table_field_types_patch,
             source_column="bool_value",
+        )
+
+    @pytest.mark.parametrize(
+        "target,cast_args,ok",
+        [
+            # Bool
+            ("Bool", None, True),
+            # Int
+            ("Int8", None, True),
+            ("Int16", None, True),
+            ("Int32", None, True),
+            ("Int64", None, True),
+            ("UInt8", None, True),
+            ("UInt16", None, True),
+            ("UInt32", None, True),
+            # Float
+            ("Float", None, True),
+            ("Double", None, True),
+            # String
+            ("String", None, True),
+            ("Utf8", None, False),
+            # Date
+            ("Date", None, True),
+            ("Datetime", None, True),
+            ("Timestamp", None, True),
+            # Uuid
+            ("Uuid", None, False),
+        ],
+    )
+    def test_db_cast_ydb_integer(
+        self,
+        dbe: DbEvaluator,
+        # data_table: sa.Table,
+        ydb_type_test_data_table: sa.Table,
+        target: str,
+        cast_args: tuple[int, int] | None,
+        ok: bool,
+        ydb_data_test_table_field_types_patch,
+    ) -> None:
+        self._test_db_cast_ydb_func(
+            dbe=dbe,
+            ydb_type_test_data_table=ydb_type_test_data_table,
+            target=target,
+            cast_args=cast_args,
+            ok=ok,
+            ydb_data_test_table_field_types_patch=ydb_data_test_table_field_types_patch,
+            source_column="int64_value",
+        )
+
+    @pytest.mark.parametrize(
+        "target,cast_args,ok",
+        [
+            # Bool
+            ("Bool", None, True),
+            # Int
+            ("Int8", None, True),
+            ("Int16", None, True),
+            ("Int32", None, True),
+            ("Int64", None, True),
+            ("UInt8", None, True),
+            ("UInt16", None, True),
+            ("UInt32", None, True),
+            # Float
+            ("Float", None, True),
+            ("Double", None, True),
+            # String
+            ("String", None, True),
+            ("Utf8", None, False),
+            # Date
+            ("Date", None, False),
+            ("Datetime", None, False),
+            ("Timestamp", None, False),
+            # Uuid
+            ("Uuid", None, False),
+        ],
+    )
+    def test_db_cast_ydb_float(
+        self,
+        dbe: DbEvaluator,
+        # data_table: sa.Table,
+        ydb_type_test_data_table: sa.Table,
+        target: str,
+        cast_args: tuple[int, int] | None,
+        ok: bool,
+        ydb_data_test_table_field_types_patch,
+    ) -> None:
+        self._test_db_cast_ydb_func(
+            dbe=dbe,
+            ydb_type_test_data_table=ydb_type_test_data_table,
+            target=target,
+            cast_args=cast_args,
+            ok=ok,
+            ydb_data_test_table_field_types_patch=ydb_data_test_table_field_types_patch,
+            source_column="float_value",
+        )
+
+    @pytest.mark.parametrize(
+        "target,cast_args,ok",
+        [
+            # Bool
+            ("Bool", None, True),
+            # Int
+            ("Int8", None, True),
+            ("Int16", None, True),
+            ("Int32", None, True),
+            ("Int64", None, True),
+            ("UInt8", None, True),
+            ("UInt16", None, True),
+            ("UInt32", None, True),
+            # Float
+            ("Float", None, True),
+            ("Double", None, True),
+            # String
+            ("String", None, True),
+            ("Utf8", None, True),
+            # Date
+            ("Date", None, True),
+            ("Datetime", None, True),
+            ("Timestamp", None, True),
+            # Uuid
+            ("Uuid", None, True),
+        ],
+    )
+    def test_db_cast_ydb_string(
+        self,
+        dbe: DbEvaluator,
+        # data_table: sa.Table,
+        ydb_type_test_data_table: sa.Table,
+        target: str,
+        cast_args: tuple[int, int] | None,
+        ok: bool,
+        ydb_data_test_table_field_types_patch,
+    ) -> None:
+        self._test_db_cast_ydb_func(
+            dbe=dbe,
+            ydb_type_test_data_table=ydb_type_test_data_table,
+            target=target,
+            cast_args=cast_args,
+            ok=ok,
+            ydb_data_test_table_field_types_patch=ydb_data_test_table_field_types_patch,
+            source_column="string_value",
+        )
+
+    @pytest.mark.parametrize(
+        "target,cast_args,ok",
+        [
+            # Bool
+            ("Bool", None, False),
+            # Int
+            ("Int8", None, True),
+            ("Int16", None, True),
+            ("Int32", None, True),
+            ("Int64", None, True),
+            ("UInt8", None, True),
+            ("UInt16", None, True),
+            ("UInt32", None, True),
+            # Float
+            ("Float", None, True),
+            ("Double", None, True),
+            # String
+            ("String", None, True),
+            ("Utf8", None, True),
+            # Date
+            ("Date", None, True),
+            ("Datetime", None, True),
+            ("Timestamp", None, True),
+            # Uuid
+            ("Uuid", None, False),
+        ],
+    )
+    def test_db_cast_ydb_date(
+        self,
+        dbe: DbEvaluator,
+        # data_table: sa.Table,
+        ydb_type_test_data_table: sa.Table,
+        target: str,
+        cast_args: tuple[int, int] | None,
+        ok: bool,
+        ydb_data_test_table_field_types_patch,
+    ) -> None:
+        self._test_db_cast_ydb_func(
+            dbe=dbe,
+            ydb_type_test_data_table=ydb_type_test_data_table,
+            target=target,
+            cast_args=cast_args,
+            ok=ok,
+            ydb_data_test_table_field_types_patch=ydb_data_test_table_field_types_patch,
+            source_column="date_value",
         )
 
 
@@ -218,7 +406,6 @@ class DbCastYQLTestSuiteBase(YQLTestBase):
             sa.Column("float_value", sa.Float()),
             sa.Column("string_value", sa.Text()),
             sa.Column("date_value", sa.Date()),
-            sa.Column("datetime_value", sa.DateTime()),
         ]
 
         table = self.lowlevel_make_sa_table(
@@ -234,7 +421,6 @@ class DbCastYQLTestSuiteBase(YQLTestBase):
                 "float_value": 0.1 + 0.2,
                 "string_value": "lobster",
                 "date_value": datetime.date(2000, 1, 2),
-                "datetime_value": datetime.datetime(2000, 1, 2, 4, 5, 6, 7),
             },
         ]
 

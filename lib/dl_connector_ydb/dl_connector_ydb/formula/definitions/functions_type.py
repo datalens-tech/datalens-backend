@@ -65,6 +65,26 @@ FLOAT_TYPES_SPEC = [
 ]
 
 
+class YQLDbCastArgTypes(base.DbCastArgTypes):
+    def __init__(self) -> None:
+        # See DbCastArgTypes.__init__
+        super(base.DbCastArgTypes, self).__init__(
+            arg_types=[
+                {
+                    DataType.BOOLEAN,
+                    DataType.INTEGER,
+                    DataType.FLOAT,
+                    DataType.STRING,
+                    DataType.DATE,
+                    DataType.ARRAY_INT,
+                    DataType.ARRAY_FLOAT,
+                    DataType.ARRAY_STR,
+                },
+                DataType.CONST_STRING,
+            ]
+        )
+
+
 class FuncDbCastYQLBase(base.FuncDbCastBase):
     # For numeric types see: https://ydb.tech/docs/en/yql/reference/types/primitive#casting-to-numeric-types
     # Type cast tables date: 2025-09-29.
@@ -134,6 +154,10 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
     # [3] - Possible only in case of a non-negative value.
     # [4] - Possible only within the valid range.
     # [5] - Using the built-in function Yson::ConvertTo.
+
+    argument_types = [
+        YQLDbCastArgTypes(),
+    ]
 
     WHITELISTS = {
         yql_dialect: {
@@ -307,147 +331,11 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 # > UUID
                 # TYPES_SPEC["Uuid"],
             ],
-            DataType.DATETIME: [
-                # > Bool
-                # TYPES_SPEC["Bool"],
-                # > INT
-                TYPES_SPEC["Int8"],
-                TYPES_SPEC["Int16"],
-                TYPES_SPEC["Int32"],
-                TYPES_SPEC["Int64"],
-                # > UINT
-                TYPES_SPEC["UInt8"],
-                TYPES_SPEC["UInt16"],
-                TYPES_SPEC["UInt32"],
-                TYPES_SPEC["UInt64"],
-                # > Float
-                TYPES_SPEC["Float"],
-                # > Double
-                TYPES_SPEC["Double"],
-                # > Decimal
-                # TYPES_SPEC["Decimal"],
-                # > String
-                TYPES_SPEC["String"],
-                # > Utf8
-                TYPES_SPEC["Utf8"],
-                # > Date
-                TYPES_SPEC["Date"],
-                # > Datetime
-                TYPES_SPEC["Datetime"],
-                # > Timestamp
-                TYPES_SPEC["Timestamp"],
-                # > UUID
-                # TYPES_SPEC["Uuid"],
-            ],
-            DataType.DATETIMETZ: [
-                # > Bool
-                # TYPES_SPEC["Bool"],
-                # > INT
-                TYPES_SPEC["Int8"],
-                TYPES_SPEC["Int16"],
-                TYPES_SPEC["Int32"],
-                TYPES_SPEC["Int64"],
-                # > UINT
-                TYPES_SPEC["UInt8"],
-                TYPES_SPEC["UInt16"],
-                TYPES_SPEC["UInt32"],
-                TYPES_SPEC["UInt64"],
-                # > Float
-                TYPES_SPEC["Float"],
-                # > Double
-                TYPES_SPEC["Double"],
-                # > Decimal
-                # TYPES_SPEC["Decimal"],
-                # > String
-                TYPES_SPEC["String"],
-                # > Utf8
-                TYPES_SPEC["Utf8"],
-                # > Date
-                TYPES_SPEC["Date"],
-                # > Datetime
-                TYPES_SPEC["Datetime"],
-                # > Timestamp
-                TYPES_SPEC["Timestamp"],
-                # > UUID
-                # TYPES_SPEC["Uuid"],
-            ],
-            DataType.GENERICDATETIME: [
-                # > Bool
-                # TYPES_SPEC["Bool"],
-                # > INT
-                TYPES_SPEC["Int8"],
-                TYPES_SPEC["Int16"],
-                TYPES_SPEC["Int32"],
-                TYPES_SPEC["Int64"],
-                # > UINT
-                TYPES_SPEC["UInt8"],
-                TYPES_SPEC["UInt16"],
-                TYPES_SPEC["UInt32"],
-                TYPES_SPEC["UInt64"],
-                # > Float
-                TYPES_SPEC["Float"],
-                # > Double
-                TYPES_SPEC["Double"],
-                # > Decimal
-                # TYPES_SPEC["Decimal"],
-                # > String
-                TYPES_SPEC["String"],
-                # > Utf8
-                TYPES_SPEC["Utf8"],
-                # > Date
-                TYPES_SPEC["Date"],
-                # > Datetime
-                TYPES_SPEC["Datetime"],
-                # > Timestamp
-                TYPES_SPEC["Timestamp"],
-                # > UUID
-                # TYPES_SPEC["Uuid"],
-            ],
-            DataType.UUID: [
-                # > Bool
-                # TYPES_SPEC["Bool"],
-                # > INT
-                # TYPES_SPEC["Int8"],
-                # TYPES_SPEC["Int16"],
-                # TYPES_SPEC["Int32"],
-                # TYPES_SPEC["Int64"],
-                # > UINT
-                # TYPES_SPEC["UInt8"],
-                # TYPES_SPEC["UInt16"],
-                # TYPES_SPEC["UInt32"],
-                # TYPES_SPEC["UInt64"],
-                # > Float
-                # TYPES_SPEC["Float"],
-                # > Double
-                # TYPES_SPEC["Double"],
-                # > Decimal
-                # TYPES_SPEC["Decimal"],
-                # > String
-                TYPES_SPEC["String"],
-                # > Utf8
-                TYPES_SPEC["Utf8"],
-                # > Date
-                # TYPES_SPEC["Date"],
-                # > Datetime
-                # TYPES_SPEC["Datetime"],
-                # > Timestamp
-                # TYPES_SPEC["Timestamp"],
-                # > UUID
-                # TYPES_SPEC["Uuid"],
-            ],
             DataType.ARRAY_STR: [],
             DataType.ARRAY_INT: [],
             DataType.ARRAY_FLOAT: [],
-            # DataType.GEOPOINT: [
-            # ],
-            # DataType.GEOPOLYGON: [
-            # ],
-            # DataType.MARKUP: [
-            # ],
-            # DataType.TREE_STR: [
-            # ],
         }
-        for yql_dialect in (D.YQL,)
+        for yql_dialect in (D.YQL, D.YQ, D.YDB)
     }
 
 
