@@ -1,7 +1,20 @@
+import contextlib
+import datetime
+from typing import (
+    Generator,
+    Optional,
+)
+
+import pytest
+import sqlalchemy as sa
+
+from dl_formula.core.datatype import DataType
+import dl_formula.core.exc as exc
 from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.functions_type_conversion import (
     DefaultBoolTypeFunctionFormulaConnectorTestSuite,
     DefaultDateTypeFunctionFormulaConnectorTestSuite,
+    DefaultDbCastTypeFunctionFormulaConnectorTestSuite,
     DefaultFloatTypeFunctionFormulaConnectorTestSuite,
     DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
     DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
@@ -74,4 +87,191 @@ class TestGeopointTypeFunctionYQL(YQLTestBase, DefaultGeopointTypeFunctionFormul
 
 
 class TestGeopolygonTypeFunctionYQL(YQLTestBase, DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite):
+    pass
+
+
+# DB_CAST
+
+
+class DbCastTypeFunctionYQLTestSuite(
+    DefaultDbCastTypeFunctionFormulaConnectorTestSuite,
+):
+    def test_db_cast_ydb(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        # Valid cast
+        value = dbe.eval("[int_value]", from_=data_table)
+        assert dbe.eval('DB_CAST(FLOAT([int_value]), "Double")', from_=data_table) == pytest.approx(float(value))
+
+        # # Test that it works with bool
+        dbe.eval('DB_CAST(BOOL([int_value]), "Double")', from_=data_table)
+        # Test that it works with int
+        dbe.eval('DB_CAST(INT([int_value]), "Int64")', from_=data_table)
+        # Test that it works with float
+        dbe.eval('DB_CAST(FLOAT([int_value]), "Double")', from_=data_table)
+        # Test that it works with string
+        dbe.eval('DB_CAST(STR([int_value]), "Utf8")', from_=data_table)
+
+        # Cast to decimal with correct arguments
+        assert dbe.eval('DB_CAST([int_value], "Decimal", 5, 0)', from_=data_table) == value
+
+        # Invalid number of arguments for Decimal
+        with pytest.raises(exc.TranslationError):
+            dbe.eval('DB_CAST([int_value], "Decimal", 5)', from_=data_table)
+
+        with pytest.raises(exc.TranslationError):
+            dbe.eval('DB_CAST([int_value], "Decimal", "5", "3")', from_=data_table)
+
+        # Invalid cast from Integer to Uuid
+        with pytest.raises(exc.TranslationError):
+            dbe.eval('DB_CAST([int_value], "Uuid")', from_=data_table)
+
+        # Cast into itself
+        assert dbe.eval('DB_CAST(DB_CAST([int_value], "Int64"), "Int64")', from_=data_table) == value
+
+        # Cast and cast back
+        assert dbe.eval('DB_CAST(DB_CAST(DB_CAST([int_value], "Int64"), "UInt64"), "Int64")', from_=data_table) == value
+
+        # Castn't
+        with pytest.raises(exc.TranslationError):
+            assert dbe.eval('DB_CAST([int_value], "meow")', from_=data_table) == value
+
+    @contextlib.contextmanager
+    def make_ydb_type_test_data_table(
+        self, dbe: DbEvaluator, table_schema_name: Optional[str]
+    ) -> Generator[sa.Table, None, None]:
+        db = dbe.db
+        table_spec = self.generate_table_spec(table_name_prefix="ydb_type_test_table")
+
+        columns = [
+            sa.Column("bool_value", sa.Boolean()),
+            sa.Column("int64_value", sa.Integer(), primary_key=True),
+            sa.Column("float_value", sa.Float()),
+            sa.Column("string_value", sa.Text()),
+            sa.Column("date_value", sa.Date()),
+            sa.Column("datetime_value", sa.DateTime()),
+        ]
+
+        table = self.lowlevel_make_sa_table(
+            db=db, table_spec=table_spec, table_schema_name=table_schema_name, columns=columns
+        )
+
+        db.create_table(table)
+
+        table_data = [
+            {
+                "bool_value": True,
+                "int64_value": 42,
+                "float_value": 0.1 + 0.2,
+                "string_value": "lobster",
+                "date_value": datetime.date(2000, 1, 2),
+                "datetime_value": datetime.datetime(2000, 1, 2, 4, 5, 6, 7),
+            },
+        ]
+
+        db.insert_into_table(table, table_data)
+
+        try:
+            yield table
+        finally:
+            dbe.db.drop_table(table)
+
+    @pytest.fixture(scope="class")
+    def ydb_type_test_data_table(
+        self, dbe: DbEvaluator, table_schema_name: Optional[str]
+    ) -> Generator[sa.Table, None, None]:
+        with self.make_ydb_type_test_data_table(dbe=dbe, table_schema_name=table_schema_name) as table:
+            yield table
+
+    # YDB-specific field types for formula testing
+    YDB_TYPE_FIELD_TYPES = {
+        "bool_value": DataType.BOOLEAN,
+        "int64_value": DataType.INTEGER,
+        "float_value": DataType.FLOAT,
+        "string_value": DataType.STRING,
+        "timestamp_value": DataType.DATETIME,  # YDB TIMESTAMP maps to DATETIME in formula system
+        "date_value": DataType.DATE,
+        "datetime_value": DataType.DATETIME,
+    }
+
+    @pytest.fixture(scope="function")
+    def ydb_data_test_table_field_types_patch(self, monkeypatch) -> None:
+        ydb_field_types = {**self.YDB_TYPE_FIELD_TYPES}
+
+        monkeypatch.setattr("dl_formula_testing.evaluator.FIELD_TYPES", ydb_field_types)
+
+        return ydb_field_types
+
+    def _test_db_cast_ydb_bool(
+        self,
+        dbe: DbEvaluator,
+        ydb_type_test_data_table: sa.Table,
+        target: str,
+        cast_args: tuple[int, int] | None,
+        ok: bool,
+        ydb_data_test_table_field_types_patch,
+        source_column: str,
+    ) -> None:
+        if cast_args:
+            cast_args_str = ", ".join(cast_args)
+            query_string = f'DB_CAST([{source_column}], "{target}", {cast_args_str})'
+        else:
+            query_string = f'DB_CAST([{source_column}], "{target}")'
+
+        if ok:
+            dbe.eval(query_string, from_=ydb_type_test_data_table)
+        else:
+            with pytest.raises(exc.TranslationError):
+                dbe.eval(query_string, from_=ydb_type_test_data_table)
+
+    @pytest.mark.parametrize(
+        "target,cast_args,ok",
+        [
+            # Bool
+            ("Bool", None, True),
+            # Int
+            ("Int8", None, True),
+            ("Int16", None, True),
+            ("Int32", None, True),
+            ("Int64", None, True),
+            ("UInt8", None, True),
+            ("UInt16", None, True),
+            ("UInt32", None, True),
+            # Float
+            ("Float", None, True),
+            ("Double", None, True),
+            # String
+            ("String", None, True),
+            ("Utf8", None, True),
+            # Date
+            ("Date", None, True),
+            ("Datetime", None, True),
+            ("Timestamp", None, True),
+            # Uuid
+            ("Uuid", None, True),
+        ],
+    )
+    def test_db_cast_ydb_bool(
+        self,
+        dbe: DbEvaluator,
+        # data_table: sa.Table,
+        ydb_type_test_data_table: sa.Table,
+        target: str,
+        cast_args: tuple[int, int] | None,
+        ok: bool,
+        ydb_data_test_table_field_types_patch,
+    ) -> None:
+        self._test_db_cast_ydb_bool(
+            dbe=dbe,
+            ydb_type_test_data_table=ydb_type_test_data_table,
+            target=target,
+            cast_args=cast_args,
+            ok=ok,
+            ydb_data_test_table_field_types_patch=ydb_data_test_table_field_types_patch,
+            source_column="bool_value",
+        )
+
+
+class TestDbCastTypeFunctionYQL(
+    YQLTestBase,
+    DbCastTypeFunctionYQLTestSuite,
+):
     pass
