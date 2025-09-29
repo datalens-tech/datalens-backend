@@ -1,5 +1,5 @@
 {
-    "title": "PostgreSQL",
+    "title": "MySQL",
     "rows": [
         {
             "items": [
@@ -10,7 +10,10 @@
                 {
                     "id": "input",
                     "name": "host",
-                    "width": "l"
+                    "width": "l",
+                    "controlProps": {
+                        "type": "text"
+                    }
                 }
             ]
         },
@@ -23,7 +26,7 @@
                 {
                     "id": "input",
                     "name": "port",
-                    "defaultValue": "6432",
+                    "defaultValue": "3306",
                     "width": "s",
                     "controlProps": {
                         "type": "number"
@@ -102,15 +105,8 @@
                     },
                     {
                         "content": {
-                            "text": "Allow subselects in datasets and source parametrization",
-                            "hintText": "This option allows you to describe dataset sources using SQL queries and use templates in dataset sources"
-                        },
-                        "value": "template"
-                    },
-                    {
-                        "content": {
-                            "text": "Allow subselects in datasets, source parametrization and QL-charts",
-                            "hintText": "This option allows you to describe dataset sources using SQL queries, use templates in dataset sources and create QL charts",
+                            "text": "Allow subselects in datasets and QL-charts",
+                            "hintText": "This option allows you to describe dataset sources using SQL queries and create QL charts",
                             "textEndIcon": {
                                 "name": "CircleExclamation",
                                 "view": "error"
@@ -134,41 +130,8 @@
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
-                    "text": "Specifying collate in the request"
-                },
-                {
-                    "id": "radio_button",
-                    "name": "enforce_collate",
-                    "displayConditions": {
-                        "advanced_settings": "opened"
-                    },
-                    "defaultValue": "auto",
-                    "options": [
-                        {
-                            "text": "Auto",
-                            "value": "auto"
-                        },
-                        {
-                            "text": "Off",
-                            "value": "off"
-                        },
-                        {
-                            "text": "On",
-                            "value": "on"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "items": [
-                {
-                    "id": "label",
-                    "displayConditions": {
-                        "advanced_settings": "opened"
-                    },
                     "text": "TLS",
-                    "helpText": "When the option is enabled, the sslmode parameter takes the value required, and when disabled \u2014 prefer"
+                    "helpText": "When the option is enabled, it ensures mandatory use of ssl for connection."
                 },
                 {
                     "id": "radio_button",
@@ -176,7 +139,7 @@
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
-                    "defaultValue": "off",
+                    "defaultValue": "on",
                     "options": [
                         {
                             "text": "Off",
@@ -275,11 +238,6 @@
                 },
                 {
                     "name": "raw_sql_level",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "enforce_collate",
                     "required": false,
                     "defaultAction": "include"
                 },

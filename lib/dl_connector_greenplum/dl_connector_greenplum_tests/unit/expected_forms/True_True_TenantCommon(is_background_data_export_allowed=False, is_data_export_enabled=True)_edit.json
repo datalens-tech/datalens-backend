@@ -1,5 +1,5 @@
 {
-    "title": "MS SQL Server",
+    "title": "Greenplum",
     "rows": [
         {
             "items": [
@@ -10,7 +10,10 @@
                 {
                     "id": "input",
                     "name": "host",
-                    "width": "l"
+                    "width": "l",
+                    "controlProps": {
+                        "type": "text"
+                    }
                 }
             ]
         },
@@ -23,7 +26,7 @@
                 {
                     "id": "input",
                     "name": "port",
-                    "defaultValue": "1433",
+                    "defaultValue": "5432",
                     "width": "s",
                     "controlProps": {
                         "type": "number"
@@ -66,8 +69,8 @@
                 {
                     "id": "input",
                     "name": "password",
-                    "defaultValue": "",
                     "width": "m",
+                    "fakeValue": "******",
                     "controlProps": {
                         "type": "password"
                     }
@@ -134,6 +137,39 @@
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
+                    "text": "Specifying collate in the request"
+                },
+                {
+                    "id": "radio_button",
+                    "name": "enforce_collate",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "defaultValue": "auto",
+                    "options": [
+                        {
+                            "text": "Auto",
+                            "value": "auto"
+                        },
+                        {
+                            "text": "Off",
+                            "value": "off"
+                        },
+                        {
+                            "text": "On",
+                            "value": "on"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
                     "text": "Disable data export",
                     "helpText": "Disabling data export will hide the data export button in the charts, though you will still be able to extract data from charts and take screenshots."
                 },
@@ -159,7 +195,7 @@
         }
     ],
     "apiSchema": {
-        "create": {
+        "edit": {
             "items": [
                 {
                     "name": "host",
@@ -172,18 +208,18 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "db_name",
-                    "required": true,
-                    "defaultAction": "include"
-                },
-                {
                     "name": "username",
                     "required": true,
                     "defaultAction": "include"
                 },
                 {
-                    "name": "password",
+                    "name": "db_name",
                     "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "password",
+                    "required": false,
                     "defaultAction": "include"
                 },
                 {
@@ -198,12 +234,12 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "data_export_forbidden",
+                    "name": "enforce_collate",
                     "required": false,
                     "defaultAction": "include"
                 },
                 {
-                    "name": "type",
+                    "name": "data_export_forbidden",
                     "required": false,
                     "defaultAction": "include"
                 }
@@ -234,11 +270,6 @@
                 },
                 {
                     "name": "password",
-                    "required": true,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "type",
                     "required": false,
                     "defaultAction": "include"
                 }

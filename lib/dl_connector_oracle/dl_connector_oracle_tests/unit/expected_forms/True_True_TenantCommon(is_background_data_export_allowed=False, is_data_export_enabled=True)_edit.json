@@ -1,5 +1,5 @@
 {
-    "title": "Greenplum",
+    "title": "Oracle Database",
     "rows": [
         {
             "items": [
@@ -10,7 +10,10 @@
                 {
                     "id": "input",
                     "name": "host",
-                    "width": "l"
+                    "width": "l",
+                    "controlProps": {
+                        "type": "text"
+                    }
                 }
             ]
         },
@@ -23,7 +26,7 @@
                 {
                     "id": "input",
                     "name": "port",
-                    "defaultValue": "5432",
+                    "defaultValue": "1521",
                     "width": "s",
                     "controlProps": {
                         "type": "number"
@@ -41,6 +44,21 @@
                     "id": "input",
                     "name": "db_name",
                     "width": "l"
+                },
+                {
+                    "id": "radio_button",
+                    "name": "db_connect_method",
+                    "defaultValue": "service_name",
+                    "options": [
+                        {
+                            "text": "Service name",
+                            "value": "service_name"
+                        },
+                        {
+                            "text": "SID",
+                            "value": "sid"
+                        }
+                    ]
                 }
             ]
         },
@@ -102,8 +120,15 @@
                     },
                     {
                         "content": {
-                            "text": "Allow subselects in datasets and QL-charts",
-                            "hintText": "This option allows you to describe dataset sources using SQL queries and create QL charts",
+                            "text": "Allow subselects in datasets and source parametrization",
+                            "hintText": "This option allows you to describe dataset sources using SQL queries and use templates in dataset sources"
+                        },
+                        "value": "template"
+                    },
+                    {
+                        "content": {
+                            "text": "Allow subselects in datasets, source parametrization and QL-charts",
+                            "hintText": "This option allows you to describe dataset sources using SQL queries, use templates in dataset sources and create QL charts",
                             "textEndIcon": {
                                 "name": "CircleExclamation",
                                 "view": "error"
@@ -127,20 +152,17 @@
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
-                    "text": "Specifying collate in the request"
+                    "text": "TLS",
+                    "helpText": "When the option is enabled, the TCPS protocol is used when interacting with the database, and when disabled \u2014 TCP"
                 },
                 {
                     "id": "radio_button",
-                    "name": "enforce_collate",
+                    "name": "ssl_enable",
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
-                    "defaultValue": "auto",
+                    "defaultValue": "off",
                     "options": [
-                        {
-                            "text": "Auto",
-                            "value": "auto"
-                        },
                         {
                             "text": "Off",
                             "value": "off"
@@ -150,6 +172,24 @@
                             "value": "on"
                         }
                     ]
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "text": "CA Certificate"
+                },
+                {
+                    "id": "file-input",
+                    "name": "ssl_ca",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    }
                 }
             ]
         },
@@ -198,7 +238,7 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "username",
+                    "name": "db_connect_method",
                     "required": true,
                     "defaultAction": "include"
                 },
@@ -208,7 +248,22 @@
                     "defaultAction": "include"
                 },
                 {
+                    "name": "username",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
                     "name": "password",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "ssl_enable",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "ssl_ca",
                     "required": false,
                     "defaultAction": "include"
                 },
@@ -220,11 +275,6 @@
                 },
                 {
                     "name": "raw_sql_level",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "enforce_collate",
                     "required": false,
                     "defaultAction": "include"
                 },
@@ -249,6 +299,11 @@
                     "defaultAction": "include"
                 },
                 {
+                    "name": "db_connect_method",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
                     "name": "db_name",
                     "required": true,
                     "defaultAction": "include"
@@ -260,6 +315,16 @@
                 },
                 {
                     "name": "password",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "ssl_enable",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "ssl_ca",
                     "required": false,
                     "defaultAction": "include"
                 }

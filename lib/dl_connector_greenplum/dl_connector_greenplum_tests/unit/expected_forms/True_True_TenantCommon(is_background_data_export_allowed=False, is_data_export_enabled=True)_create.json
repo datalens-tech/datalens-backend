@@ -1,5 +1,5 @@
 {
-    "title": "PostgreSQL",
+    "title": "Greenplum",
     "rows": [
         {
             "items": [
@@ -10,7 +10,10 @@
                 {
                     "id": "input",
                     "name": "host",
-                    "width": "l"
+                    "width": "l",
+                    "controlProps": {
+                        "type": "text"
+                    }
                 }
             ]
         },
@@ -23,7 +26,7 @@
                 {
                     "id": "input",
                     "name": "port",
-                    "defaultValue": "6432",
+                    "defaultValue": "5432",
                     "width": "s",
                     "controlProps": {
                         "type": "number"
@@ -66,8 +69,8 @@
                 {
                     "id": "input",
                     "name": "password",
+                    "defaultValue": "",
                     "width": "m",
-                    "fakeValue": "******",
                     "controlProps": {
                         "type": "password"
                     }
@@ -167,54 +170,6 @@
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
-                    "text": "TLS",
-                    "helpText": "When the option is enabled, the sslmode parameter takes the value required, and when disabled \u2014 prefer"
-                },
-                {
-                    "id": "radio_button",
-                    "name": "ssl_enable",
-                    "displayConditions": {
-                        "advanced_settings": "opened"
-                    },
-                    "defaultValue": "off",
-                    "options": [
-                        {
-                            "text": "Off",
-                            "value": "off"
-                        },
-                        {
-                            "text": "On",
-                            "value": "on"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "items": [
-                {
-                    "id": "label",
-                    "displayConditions": {
-                        "advanced_settings": "opened"
-                    },
-                    "text": "CA Certificate"
-                },
-                {
-                    "id": "file-input",
-                    "name": "ssl_ca",
-                    "displayConditions": {
-                        "advanced_settings": "opened"
-                    }
-                }
-            ]
-        },
-        {
-            "items": [
-                {
-                    "id": "label",
-                    "displayConditions": {
-                        "advanced_settings": "opened"
-                    },
                     "text": "Disable data export",
                     "helpText": "Disabling data export will hide the data export button in the charts, though you will still be able to extract data from charts and take screenshots."
                 },
@@ -240,7 +195,7 @@
         }
     ],
     "apiSchema": {
-        "edit": {
+        "create": {
             "items": [
                 {
                     "name": "host",
@@ -264,7 +219,7 @@
                 },
                 {
                     "name": "password",
-                    "required": false,
+                    "required": true,
                     "defaultAction": "include"
                 },
                 {
@@ -284,17 +239,12 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "ssl_enable",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "ssl_ca",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
                     "name": "data_export_forbidden",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "type",
                     "required": false,
                     "defaultAction": "include"
                 }
@@ -325,16 +275,11 @@
                 },
                 {
                     "name": "password",
-                    "required": false,
+                    "required": true,
                     "defaultAction": "include"
                 },
                 {
-                    "name": "ssl_enable",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "ssl_ca",
+                    "name": "type",
                     "required": false,
                     "defaultAction": "include"
                 }

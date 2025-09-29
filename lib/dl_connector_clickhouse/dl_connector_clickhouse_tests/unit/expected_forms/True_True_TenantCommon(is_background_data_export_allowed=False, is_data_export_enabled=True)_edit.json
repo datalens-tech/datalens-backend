@@ -1,5 +1,5 @@
 {
-    "title": "Oracle Database",
+    "title": "ClickHouse",
     "rows": [
         {
             "items": [
@@ -10,23 +10,9 @@
                 {
                     "id": "input",
                     "name": "host",
-                    "width": "l"
-                }
-            ]
-        },
-        {
-            "items": [
-                {
-                    "id": "label",
-                    "text": "Port"
-                },
-                {
-                    "id": "input",
-                    "name": "port",
-                    "defaultValue": "1521",
-                    "width": "s",
+                    "width": "l",
                     "controlProps": {
-                        "type": "number"
+                        "type": "text"
                     }
                 }
             ]
@@ -35,27 +21,16 @@
             "items": [
                 {
                     "id": "label",
-                    "text": "Path to database"
+                    "text": "HTTP interface port"
                 },
                 {
                     "id": "input",
-                    "name": "db_name",
-                    "width": "l"
-                },
-                {
-                    "id": "radio_button",
-                    "name": "db_connect_method",
-                    "defaultValue": "service_name",
-                    "options": [
-                        {
-                            "text": "Service name",
-                            "value": "service_name"
-                        },
-                        {
-                            "text": "SID",
-                            "value": "sid"
-                        }
-                    ]
+                    "name": "port",
+                    "defaultValue": "8443",
+                    "width": "s",
+                    "controlProps": {
+                        "type": "number"
+                    }
                 }
             ]
         },
@@ -117,8 +92,15 @@
                     },
                     {
                         "content": {
-                            "text": "Allow subselects in datasets and QL-charts",
-                            "hintText": "This option allows you to describe dataset sources using SQL queries and create QL charts",
+                            "text": "Allow subselects in datasets and source parametrization",
+                            "hintText": "This option allows you to describe dataset sources using SQL queries and use templates in dataset sources"
+                        },
+                        "value": "template"
+                    },
+                    {
+                        "content": {
+                            "text": "Allow subselects in datasets, source parametrization and QL-charts",
+                            "hintText": "This option allows you to describe dataset sources using SQL queries, use templates in dataset sources and create QL charts",
                             "textEndIcon": {
                                 "name": "CircleExclamation",
                                 "view": "error"
@@ -143,15 +125,15 @@
                         "advanced_settings": "opened"
                     },
                     "text": "TLS",
-                    "helpText": "When the option is enabled, the TCPS protocol is used when interacting with the database, and when disabled \u2014 TCP"
+                    "helpText": "When the option is enabled, the HTTPS protocol is used when interacting with the database, and when disabled \u2014 HTTP"
                 },
                 {
                     "id": "radio_button",
-                    "name": "ssl_enable",
+                    "name": "secure",
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
-                    "defaultValue": "off",
+                    "defaultValue": "on",
                     "options": [
                         {
                             "text": "Off",
@@ -212,6 +194,44 @@
                     ]
                 }
             ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "text": "Readonly",
+                    "align": "start"
+                },
+                {
+                    "id": "select",
+                    "name": "readonly",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "defaultValue": "2",
+                    "width": "s",
+                    "availableValues": [
+                        {
+                            "content": "0",
+                            "value": "0"
+                        },
+                        {
+                            "content": "1",
+                            "value": "1"
+                        },
+                        {
+                            "content": "2",
+                            "value": "2"
+                        }
+                    ],
+                    "controlProps": {
+                        "showSearch": false
+                    }
+                }
+            ]
         }
     ],
     "apiSchema": {
@@ -228,18 +248,8 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "db_connect_method",
-                    "required": true,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "db_name",
-                    "required": true,
-                    "defaultAction": "include"
-                },
-                {
                     "name": "username",
-                    "required": true,
+                    "required": false,
                     "defaultAction": "include"
                 },
                 {
@@ -248,12 +258,22 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "ssl_enable",
+                    "name": "secure",
                     "required": false,
                     "defaultAction": "include"
                 },
                 {
                     "name": "ssl_ca",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "data_export_forbidden",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "readonly",
                     "required": false,
                     "defaultAction": "include"
                 },
@@ -265,11 +285,6 @@
                 },
                 {
                     "name": "raw_sql_level",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "data_export_forbidden",
                     "required": false,
                     "defaultAction": "include"
                 }
@@ -289,18 +304,8 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "db_connect_method",
-                    "required": true,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "db_name",
-                    "required": true,
-                    "defaultAction": "include"
-                },
-                {
                     "name": "username",
-                    "required": true,
+                    "required": false,
                     "defaultAction": "include"
                 },
                 {
@@ -309,12 +314,22 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "ssl_enable",
+                    "name": "secure",
                     "required": false,
                     "defaultAction": "include"
                 },
                 {
                     "name": "ssl_ca",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "data_export_forbidden",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "readonly",
                     "required": false,
                     "defaultAction": "include"
                 }

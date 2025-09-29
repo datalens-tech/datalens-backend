@@ -1,5 +1,5 @@
 {
-    "title": "ClickHouse",
+    "title": "MySQL",
     "rows": [
         {
             "items": [
@@ -10,7 +10,10 @@
                 {
                     "id": "input",
                     "name": "host",
-                    "width": "l"
+                    "width": "l",
+                    "controlProps": {
+                        "type": "text"
+                    }
                 }
             ]
         },
@@ -18,16 +21,29 @@
             "items": [
                 {
                     "id": "label",
-                    "text": "HTTP interface port"
+                    "text": "Port"
                 },
                 {
                     "id": "input",
                     "name": "port",
-                    "defaultValue": "8443",
+                    "defaultValue": "3306",
                     "width": "s",
                     "controlProps": {
                         "type": "number"
                     }
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "text": "Path to database"
+                },
+                {
+                    "id": "input",
+                    "name": "db_name",
+                    "width": "l"
                 }
             ]
         },
@@ -122,11 +138,11 @@
                         "advanced_settings": "opened"
                     },
                     "text": "TLS",
-                    "helpText": "When the option is enabled, the HTTPS protocol is used when interacting with the database, and when disabled \u2014 HTTP"
+                    "helpText": "When the option is enabled, it ensures mandatory use of ssl for connection."
                 },
                 {
                     "id": "radio_button",
-                    "name": "secure",
+                    "name": "ssl_enable",
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
@@ -191,44 +207,6 @@
                     ]
                 }
             ]
-        },
-        {
-            "items": [
-                {
-                    "id": "label",
-                    "displayConditions": {
-                        "advanced_settings": "opened"
-                    },
-                    "text": "Readonly",
-                    "align": "start"
-                },
-                {
-                    "id": "select",
-                    "name": "readonly",
-                    "displayConditions": {
-                        "advanced_settings": "opened"
-                    },
-                    "defaultValue": "2",
-                    "width": "s",
-                    "availableValues": [
-                        {
-                            "content": "0",
-                            "value": "0"
-                        },
-                        {
-                            "content": "1",
-                            "value": "1"
-                        },
-                        {
-                            "content": "2",
-                            "value": "2"
-                        }
-                    ],
-                    "controlProps": {
-                        "showSearch": false
-                    }
-                }
-            ]
         }
     ],
     "apiSchema": {
@@ -246,31 +224,16 @@
                 },
                 {
                     "name": "username",
-                    "required": false,
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "db_name",
+                    "required": true,
                     "defaultAction": "include"
                 },
                 {
                     "name": "password",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "secure",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "ssl_ca",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "data_export_forbidden",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "readonly",
                     "required": false,
                     "defaultAction": "include"
                 },
@@ -282,6 +245,21 @@
                 },
                 {
                     "name": "raw_sql_level",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "ssl_enable",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "ssl_ca",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "data_export_forbidden",
                     "required": false,
                     "defaultAction": "include"
                 }
@@ -301,8 +279,13 @@
                     "defaultAction": "include"
                 },
                 {
+                    "name": "db_name",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
                     "name": "username",
-                    "required": false,
+                    "required": true,
                     "defaultAction": "include"
                 },
                 {
@@ -311,22 +294,12 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "secure",
+                    "name": "ssl_enable",
                     "required": false,
                     "defaultAction": "include"
                 },
                 {
                     "name": "ssl_ca",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "data_export_forbidden",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "readonly",
                     "required": false,
                     "defaultAction": "include"
                 }

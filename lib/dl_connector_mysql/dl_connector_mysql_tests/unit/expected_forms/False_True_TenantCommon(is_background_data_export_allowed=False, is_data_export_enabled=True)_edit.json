@@ -1,5 +1,5 @@
 {
-    "title": "Greenplum",
+    "title": "MySQL",
     "rows": [
         {
             "items": [
@@ -10,7 +10,10 @@
                 {
                     "id": "input",
                     "name": "host",
-                    "width": "l"
+                    "width": "l",
+                    "controlProps": {
+                        "type": "text"
+                    }
                 }
             ]
         },
@@ -23,7 +26,7 @@
                 {
                     "id": "input",
                     "name": "port",
-                    "defaultValue": "5432",
+                    "defaultValue": "3306",
                     "width": "s",
                     "controlProps": {
                         "type": "number"
@@ -66,8 +69,8 @@
                 {
                     "id": "input",
                     "name": "password",
-                    "defaultValue": "",
                     "width": "m",
+                    "fakeValue": "******",
                     "controlProps": {
                         "type": "password"
                     }
@@ -102,15 +105,8 @@
                     },
                     {
                         "content": {
-                            "text": "Allow subselects in datasets and source parametrization",
-                            "hintText": "This option allows you to describe dataset sources using SQL queries and use templates in dataset sources"
-                        },
-                        "value": "template"
-                    },
-                    {
-                        "content": {
-                            "text": "Allow subselects in datasets, source parametrization and QL-charts",
-                            "hintText": "This option allows you to describe dataset sources using SQL queries, use templates in dataset sources and create QL charts",
+                            "text": "Allow subselects in datasets and QL-charts",
+                            "hintText": "This option allows you to describe dataset sources using SQL queries and create QL charts",
                             "textEndIcon": {
                                 "name": "CircleExclamation",
                                 "view": "error"
@@ -134,20 +130,17 @@
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
-                    "text": "Specifying collate in the request"
+                    "text": "TLS",
+                    "helpText": "When the option is enabled, it ensures mandatory use of ssl for connection."
                 },
                 {
                     "id": "radio_button",
-                    "name": "enforce_collate",
+                    "name": "ssl_enable",
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
-                    "defaultValue": "auto",
+                    "defaultValue": "on",
                     "options": [
-                        {
-                            "text": "Auto",
-                            "value": "auto"
-                        },
                         {
                             "text": "Off",
                             "value": "off"
@@ -157,6 +150,24 @@
                             "value": "on"
                         }
                     ]
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "text": "CA Certificate"
+                },
+                {
+                    "id": "file-input",
+                    "name": "ssl_ca",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    }
                 }
             ]
         },
@@ -192,7 +203,7 @@
         }
     ],
     "apiSchema": {
-        "create": {
+        "edit": {
             "items": [
                 {
                     "name": "host",
@@ -216,7 +227,7 @@
                 },
                 {
                     "name": "password",
-                    "required": true,
+                    "required": false,
                     "defaultAction": "include"
                 },
                 {
@@ -231,17 +242,17 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "enforce_collate",
+                    "name": "ssl_enable",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "ssl_ca",
                     "required": false,
                     "defaultAction": "include"
                 },
                 {
                     "name": "data_export_forbidden",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "type",
                     "required": false,
                     "defaultAction": "include"
                 }
@@ -272,11 +283,16 @@
                 },
                 {
                     "name": "password",
-                    "required": true,
+                    "required": false,
                     "defaultAction": "include"
                 },
                 {
-                    "name": "type",
+                    "name": "ssl_enable",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "ssl_ca",
                     "required": false,
                     "defaultAction": "include"
                 }

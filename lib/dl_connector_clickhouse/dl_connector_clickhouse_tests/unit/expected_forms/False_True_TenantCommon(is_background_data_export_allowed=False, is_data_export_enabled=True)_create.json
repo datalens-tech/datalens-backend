@@ -1,33 +1,6 @@
 {
-    "title": "Trino",
+    "title": "ClickHouse",
     "rows": [
-        {
-            "items": [
-                {
-                    "id": "label",
-                    "text": "Authentication type"
-                },
-                {
-                    "id": "radio_button",
-                    "name": "auth_type",
-                    "defaultValue": "password",
-                    "options": [
-                        {
-                            "text": "No auth",
-                            "value": "none"
-                        },
-                        {
-                            "text": "Password",
-                            "value": "password"
-                        },
-                        {
-                            "text": "JWT",
-                            "value": "jwt"
-                        }
-                    ]
-                }
-            ]
-        },
         {
             "items": [
                 {
@@ -48,7 +21,7 @@
             "items": [
                 {
                     "id": "label",
-                    "text": "Port"
+                    "text": "HTTP interface port"
                 },
                 {
                     "id": "input",
@@ -78,42 +51,13 @@
             "items": [
                 {
                     "id": "label",
-                    "displayConditions": {
-                        "auth_type": "password"
-                    },
                     "text": "Password"
                 },
                 {
                     "id": "input",
                     "name": "password",
-                    "displayConditions": {
-                        "auth_type": "password"
-                    },
+                    "defaultValue": "",
                     "width": "m",
-                    "fakeValue": "******",
-                    "controlProps": {
-                        "type": "password"
-                    }
-                }
-            ]
-        },
-        {
-            "items": [
-                {
-                    "id": "label",
-                    "displayConditions": {
-                        "auth_type": "jwt"
-                    },
-                    "text": "JWT"
-                },
-                {
-                    "id": "input",
-                    "name": "jwt",
-                    "displayConditions": {
-                        "auth_type": "jwt"
-                    },
-                    "width": "l",
-                    "fakeValue": "******",
                     "controlProps": {
                         "type": "password"
                     }
@@ -174,11 +118,11 @@
                         "advanced_settings": "opened"
                     },
                     "text": "TLS",
-                    "helpText": "When this option is enabled, connections to Trino use the HTTPS protocol; when disabled - HTTP."
+                    "helpText": "When the option is enabled, the HTTPS protocol is used when interacting with the database, and when disabled \u2014 HTTP"
                 },
                 {
                     "id": "radio_button",
-                    "name": "ssl_enable",
+                    "name": "secure",
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
@@ -251,38 +195,41 @@
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
-                    "text": "Request table list",
-                    "helpText": "Disable if loading the table list from the source takes too long or causes errors \u2014 in this case, add tables via SQL queries"
+                    "text": "Readonly",
+                    "align": "start"
                 },
                 {
-                    "id": "radio_button",
-                    "name": "listing_sources",
+                    "id": "select",
+                    "name": "readonly",
                     "displayConditions": {
                         "advanced_settings": "opened"
                     },
-                    "defaultValue": "on",
-                    "options": [
+                    "defaultValue": "2",
+                    "width": "s",
+                    "availableValues": [
                         {
-                            "text": "Off",
-                            "value": "off"
+                            "content": "0",
+                            "value": "0"
                         },
                         {
-                            "text": "On",
-                            "value": "on"
+                            "content": "1",
+                            "value": "1"
+                        },
+                        {
+                            "content": "2",
+                            "value": "2"
                         }
-                    ]
+                    ],
+                    "controlProps": {
+                        "showSearch": false
+                    }
                 }
             ]
         }
     ],
     "apiSchema": {
-        "edit": {
+        "create": {
             "items": [
-                {
-                    "name": "auth_type",
-                    "required": true,
-                    "defaultAction": "include"
-                },
                 {
                     "name": "host",
                     "required": true,
@@ -295,18 +242,33 @@
                 },
                 {
                     "name": "username",
-                    "required": true,
+                    "required": false,
                     "defaultAction": "include"
                 },
                 {
                     "name": "password",
                     "required": false,
-                    "defaultAction": "skip"
+                    "defaultAction": "include"
                 },
                 {
-                    "name": "jwt",
+                    "name": "secure",
                     "required": false,
-                    "defaultAction": "skip"
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "ssl_ca",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "data_export_forbidden",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "readonly",
+                    "required": false,
+                    "defaultAction": "include"
                 },
                 {
                     "name": "cache_ttl_sec",
@@ -320,65 +282,16 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "data_export_forbidden",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "listing_sources",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "ssl_enable",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "ssl_ca",
+                    "name": "type",
                     "required": false,
                     "defaultAction": "include"
                 }
             ],
-            "conditions": [
-                {
-                    "when": {
-                        "name": "auth_type"
-                    },
-                    "equals": "password",
-                    "then": [
-                        {
-                            "selector": {
-                                "name": "password"
-                            },
-                            "action": "include"
-                        }
-                    ]
-                },
-                {
-                    "when": {
-                        "name": "auth_type"
-                    },
-                    "equals": "jwt",
-                    "then": [
-                        {
-                            "selector": {
-                                "name": "jwt"
-                            },
-                            "action": "include"
-                        }
-                    ]
-                }
-            ]
+            "conditions": []
         },
         "check": {
             "items": [
                 {
-                    "name": "auth_type",
-                    "required": true,
-                    "defaultAction": "include"
-                },
-                {
                     "name": "host",
                     "required": true,
                     "defaultAction": "include"
@@ -390,27 +303,21 @@
                 },
                 {
                     "name": "username",
-                    "required": true,
+                    "required": false,
                     "defaultAction": "include"
                 },
                 {
                     "name": "password",
                     "required": false,
-                    "defaultAction": "skip"
-                },
-                {
-                    "name": "jwt",
-                    "required": false,
-                    "defaultAction": "skip"
-                },
-                {
-                    "name": "cache_ttl_sec",
-                    "required": false,
-                    "nullable": true,
                     "defaultAction": "include"
                 },
                 {
-                    "name": "raw_sql_level",
+                    "name": "secure",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "ssl_ca",
                     "required": false,
                     "defaultAction": "include"
                 },
@@ -420,51 +327,17 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "listing_sources",
+                    "name": "readonly",
                     "required": false,
                     "defaultAction": "include"
                 },
                 {
-                    "name": "ssl_enable",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "ssl_ca",
+                    "name": "type",
                     "required": false,
                     "defaultAction": "include"
                 }
             ],
-            "conditions": [
-                {
-                    "when": {
-                        "name": "auth_type"
-                    },
-                    "equals": "password",
-                    "then": [
-                        {
-                            "selector": {
-                                "name": "password"
-                            },
-                            "action": "include"
-                        }
-                    ]
-                },
-                {
-                    "when": {
-                        "name": "auth_type"
-                    },
-                    "equals": "jwt",
-                    "then": [
-                        {
-                            "selector": {
-                                "name": "jwt"
-                            },
-                            "action": "include"
-                        }
-                    ]
-                }
-            ]
+            "conditions": []
         }
     }
 }

@@ -10,7 +10,10 @@
                 {
                     "id": "input",
                     "name": "host",
-                    "width": "l"
+                    "width": "l",
+                    "controlProps": {
+                        "type": "text"
+                    }
                 }
             ]
         },
@@ -102,15 +105,8 @@
                     },
                     {
                         "content": {
-                            "text": "Allow subselects in datasets and source parametrization",
-                            "hintText": "This option allows you to describe dataset sources using SQL queries and use templates in dataset sources"
-                        },
-                        "value": "template"
-                    },
-                    {
-                        "content": {
-                            "text": "Allow subselects in datasets, source parametrization and QL-charts",
-                            "hintText": "This option allows you to describe dataset sources using SQL queries, use templates in dataset sources and create QL charts",
+                            "text": "Allow subselects in datasets and QL-charts",
+                            "hintText": "This option allows you to describe dataset sources using SQL queries and create QL charts",
                             "textEndIcon": {
                                 "name": "CircleExclamation",
                                 "view": "error"

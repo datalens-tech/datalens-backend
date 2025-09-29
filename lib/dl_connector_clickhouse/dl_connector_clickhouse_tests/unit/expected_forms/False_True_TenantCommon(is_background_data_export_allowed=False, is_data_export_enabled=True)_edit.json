@@ -10,7 +10,10 @@
                 {
                     "id": "input",
                     "name": "host",
-                    "width": "l"
+                    "width": "l",
+                    "controlProps": {
+                        "type": "text"
+                    }
                 }
             ]
         },
@@ -53,8 +56,8 @@
                 {
                     "id": "input",
                     "name": "password",
-                    "defaultValue": "",
                     "width": "m",
+                    "fakeValue": "******",
                     "controlProps": {
                         "type": "password"
                     }
@@ -225,7 +228,7 @@
         }
     ],
     "apiSchema": {
-        "create": {
+        "edit": {
             "items": [
                 {
                     "name": "host",
@@ -277,11 +280,6 @@
                     "name": "raw_sql_level",
                     "required": false,
                     "defaultAction": "include"
-                },
-                {
-                    "name": "type",
-                    "required": false,
-                    "defaultAction": "include"
                 }
             ],
             "conditions": []
@@ -325,11 +323,6 @@
                 },
                 {
                     "name": "readonly",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "type",
                     "required": false,
                     "defaultAction": "include"
                 }
