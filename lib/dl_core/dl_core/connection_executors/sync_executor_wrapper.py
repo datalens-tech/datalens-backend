@@ -39,6 +39,7 @@ if TYPE_CHECKING:
     from dl_constants.types import TBIDataTable
     from dl_core.connection_models.common_models import (
         DBIdent,
+        PageIdent,
         SchemaIdent,
         TableDefinition,
         TableIdent,
@@ -199,11 +200,11 @@ class SyncWrapperForAsyncConnExecutor(SyncConnExecutorBase):
         return self._await_sync(self._async_conn_executor.get_schema_names(db_ident))
 
     @init_required
-    def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         sa_adapter = self._extract_sync_sa_adapter(raise_on_not_exists=False)
         if sa_adapter is not None:
-            return sa_adapter.get_tables(schema_ident)
-        return self._await_sync(self._async_conn_executor.get_tables(schema_ident))
+            return sa_adapter.get_tables(schema_ident, page_ident)
+        return self._await_sync(self._async_conn_executor.get_tables(schema_ident, page_ident))
 
     @init_required
     def get_table_schema_info(self, table_def: TableDefinition) -> SchemaInfo:

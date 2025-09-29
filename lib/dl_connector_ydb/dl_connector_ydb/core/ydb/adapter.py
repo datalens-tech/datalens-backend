@@ -30,7 +30,10 @@ from dl_connector_ydb.core.ydb.target_dto import YDBConnTargetDTO
 
 
 if TYPE_CHECKING:
-    from dl_core.connection_models import SchemaIdent
+    from dl_core.connection_models import (
+        PageIdent,
+        SchemaIdent,
+    )
 
 
 LOGGER = logging.getLogger(__name__)
@@ -133,7 +136,7 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
         except driver_excs as err:
             raise exc.DatabaseQueryError(db_message=str(err), query="list_directory()") from None
 
-    def _get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    def _get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         db_name = schema_ident.db_name
         assert db_name is not None
         return [

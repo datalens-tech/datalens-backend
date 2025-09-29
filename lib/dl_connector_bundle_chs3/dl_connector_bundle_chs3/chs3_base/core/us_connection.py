@@ -157,6 +157,10 @@ class BaseFileS3Connection(
     def get_data_source_templates(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
     ) -> list[DataSourceTemplate]:
         assert self.source_type is not None
         return [

@@ -52,8 +52,10 @@ from dl_core.base_models import (
 from dl_core.connection_executors.adapters.common_base import get_dialect_for_conn_type
 from dl_core.connection_models import (
     DBIdent,
+    PageIdent,
     SchemaIdent,
 )
+from dl_core.exc import InvalidRequestError
 from dl_core.i18n.localizer import Translatable
 from dl_core.us_entry import (
     BaseAttrsDataModel,
@@ -241,6 +243,15 @@ class ConnectionOptions:
     query_types: list[QueryTypeInfo] = attr.ib(kw_only=True)
 
 
+@attr.s(frozen=True)
+class ListingOptions:
+    supports_source_search: bool = attr.ib(kw_only=True)
+    supports_source_pagination: bool = attr.ib(kw_only=True)
+    supports_db_name_listing: bool = attr.ib(kw_only=True)
+    db_name_required_for_search: bool = attr.ib(kw_only=True)
+    db_name_label: str | None = attr.ib(kw_only=True, default=None)
+
+
 _CB_TV = TypeVar("_CB_TV", bound="ConnectionBase")
 
 
@@ -256,6 +267,10 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     is_always_internal_source: ClassVar[bool] = False
     is_always_user_source: ClassVar[bool] = False
     allow_background_data_export_for_conn_type: ClassVar[bool] = True
+    supports_source_search: ClassVar[bool] = False
+    supports_source_pagination: ClassVar[bool] = False
+    supports_db_name_listing: ClassVar[bool] = False
+    db_name_required_for_search: ClassVar[bool] = False
 
     _preview_conn = None
 
@@ -460,7 +475,88 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     def get_data_source_templates(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
     ) -> list[DataSourceTemplate]:
+        raise NotImplementedError
+
+    def get_data_source_templates_paginated(
+        self,
+        conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
+    ) -> list[DataSourceTemplate]:
+        """
+        Get data source templates handling search and pagination based on connection capabilities.
+        Raises 400 errors for unsupported operations instead of executing them code-side.
+        """
+        # Raise 400 error if search_text is provided but not supported
+        if search_text and not self.supports_source_search:  # search_text = '' is OK with any flag value
+            raise InvalidRequestError("search_text parameter is not supported for this connection type")
+
+        # Raise 400 error if offset is provided but pagination is not supported
+        if offset and not self.supports_source_pagination:  # offset = 0 is OK with any flag value
+            raise InvalidRequestError("offset parameter is not supported for this connection type")
+
+        # Determine parameters for db-side operations
+        db_limit = limit if self.supports_source_pagination else None
+
+        # Get templates from database with appropriate parameters
+        templates = self.get_data_source_templates(
+            conn_executor_factory=conn_executor_factory,
+            search_text=search_text,
+            limit=db_limit,
+            offset=offset,
+            db_name=db_name,
+        )
+
+        # Apply code-side limit if not supported db-side
+        if not self.supports_source_pagination and limit is not None:
+            return templates[:limit]
+
+        return templates
+
+    def validate_source_listing_parameters(
+        self,
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
+    ) -> None:
+        """Validate parameter combinations based on connection capabilities."""
+
+        # If db_name is provided but connection doesn't support db name listing
+        if db_name is not None and not self.supports_db_name_listing:
+            raise InvalidRequestError("db_name parameter is not supported for this connection type")
+
+        # If search is requested with db_name requirement
+        if (
+            search_text is not None
+            and self.supports_source_search
+            and self.db_name_required_for_search
+            and db_name is None
+        ):
+            raise InvalidRequestError(
+                "db_name parameter is required when search_text is provided for this connection type"
+            )
+
+    def get_listing_options(self, localizer: Localizer) -> ListingOptions:
+        return ListingOptions(
+            supports_source_search=self.supports_source_search,
+            supports_source_pagination=self.supports_source_pagination,
+            supports_db_name_listing=self.supports_db_name_listing,
+            db_name_required_for_search=self.db_name_required_for_search,
+            db_name_label=self.get_db_name_label(localizer=localizer),
+        )
+
+    def get_db_name_label(self, localizer: Localizer) -> str | None:
+        return None
+
+    def get_db_names(self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase]) -> list[str]:
         raise NotImplementedError
 
     async def validate_new_data(
@@ -594,11 +690,19 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     def get_tables(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
-        db_name: Optional[str] = None,
-        schema_name: Optional[str] = None,
+        db_name: str | None = None,
+        schema_name: str | None = None,
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
     ) -> list[TableIdent]:
         conn_executor = conn_executor_factory(self)
-        return conn_executor.get_tables(SchemaIdent(db_name=db_name, schema_name=schema_name))
+        return conn_executor.get_tables(
+            SchemaIdent(db_name=db_name, schema_name=schema_name),
+            PageIdent(search_text=search_text, limit=limit, offset=offset)
+            if search_text or offset or limit is not None
+            else None,
+        )
 
 
 class RawSqlLevelConnectionMixin(ConnectionBase):
@@ -660,6 +764,10 @@ class ConnectionSQL(RawSqlLevelConnectionMixin, ConnectionBase):
     def get_parameter_combinations(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
     ) -> list[dict]:
         if not self.db_name:
             return []
@@ -687,6 +795,10 @@ class ConnectionSQL(RawSqlLevelConnectionMixin, ConnectionBase):
     def get_data_source_templates(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
     ) -> list[DataSourceTemplate]:
         """For listed sources such as db tables"""
         return [
@@ -697,7 +809,13 @@ class ConnectionSQL(RawSqlLevelConnectionMixin, ConnectionBase):
                 connection_id=self.uuid,  # type: ignore  # TODO: fix
                 parameters=parameters,
             )
-            for parameters in self.get_parameter_combinations(conn_executor_factory=conn_executor_factory)
+            for parameters in self.get_parameter_combinations(
+                conn_executor_factory=conn_executor_factory,
+                search_text=search_text,
+                limit=limit,
+                offset=offset,
+                db_name=db_name,
+            )
         ]
 
     def validate(self) -> None:
@@ -754,6 +872,10 @@ class HiddenDatabaseNameMixin(ConnectionSQL):
     def get_parameter_combinations(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        db_name: str | None = None,
     ) -> list[dict]:
         return [
             dict(combination, db_name=None)  # don't expose db name

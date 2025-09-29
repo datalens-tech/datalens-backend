@@ -34,6 +34,7 @@ from dl_core.connection_executors.models.db_adapter_data import (
     RawSchemaInfo,
 )
 from dl_core.connection_models import (
+    PageIdent,
     SchemaIdent,
     TableDefinition,
     TableIdent,
@@ -275,7 +276,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             raw_chunk_generator=chunk_gen(),
         )
 
-    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    async def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         known_general_tables = BITRIX_TABLES_MAP.keys()
         user_tables = await self._get_user_tables(schema_ident)
         tables = [

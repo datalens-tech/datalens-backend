@@ -43,6 +43,7 @@ from dl_core.connection_executors.models.db_adapter_data import (
 )
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from dl_core.connection_models import (
+    PageIdent,
     SchemaIdent,
     TableDefinition,
     TableIdent,
@@ -227,7 +228,7 @@ class AsyncMySQLAdapter(
     async def test(self) -> None:
         await self.execute(DBAdapterQuery("SELECT 1"))
 
-    async def get_tables(self, schema_ident: SchemaIdent) -> list[TableIdent]:
+    async def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         raise NotImplementedError()
 
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
