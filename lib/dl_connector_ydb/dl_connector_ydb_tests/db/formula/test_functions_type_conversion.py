@@ -134,72 +134,6 @@ class DbCastTypeFunctionYQLTestSuite(
         with pytest.raises(exc.TranslationError):
             assert dbe.eval('DB_CAST([int_value], "meow")', from_=data_table) == value
 
-    @contextlib.contextmanager
-    def make_ydb_type_test_data_table(
-        self, dbe: DbEvaluator, table_schema_name: Optional[str]
-    ) -> Generator[sa.Table, None, None]:
-        db = dbe.db
-        table_spec = self.generate_table_spec(table_name_prefix="ydb_type_test_table")
-
-        columns = [
-            sa.Column("bool_value", sa.Boolean()),
-            sa.Column("int64_value", sa.Integer(), primary_key=True),
-            sa.Column("float_value", sa.Float()),
-            sa.Column("string_value", sa.Text()),
-            sa.Column("date_value", sa.Date()),
-            sa.Column("datetime_value", sa.DateTime()),
-        ]
-
-        table = self.lowlevel_make_sa_table(
-            db=db, table_spec=table_spec, table_schema_name=table_schema_name, columns=columns
-        )
-
-        db.create_table(table)
-
-        table_data = [
-            {
-                "bool_value": True,
-                "int64_value": 42,
-                "float_value": 0.1 + 0.2,
-                "string_value": "lobster",
-                "date_value": datetime.date(2000, 1, 2),
-                "datetime_value": datetime.datetime(2000, 1, 2, 4, 5, 6, 7),
-            },
-        ]
-
-        db.insert_into_table(table, table_data)
-
-        try:
-            yield table
-        finally:
-            dbe.db.drop_table(table)
-
-    @pytest.fixture(scope="class")
-    def ydb_type_test_data_table(
-        self, dbe: DbEvaluator, table_schema_name: Optional[str]
-    ) -> Generator[sa.Table, None, None]:
-        with self.make_ydb_type_test_data_table(dbe=dbe, table_schema_name=table_schema_name) as table:
-            yield table
-
-    # YDB-specific field types for formula testing
-    YDB_TYPE_FIELD_TYPES = {
-        "bool_value": DataType.BOOLEAN,
-        "int64_value": DataType.INTEGER,
-        "float_value": DataType.FLOAT,
-        "string_value": DataType.STRING,
-        "timestamp_value": DataType.DATETIME,  # YDB TIMESTAMP maps to DATETIME in formula system
-        "date_value": DataType.DATE,
-        "datetime_value": DataType.DATETIME,
-    }
-
-    @pytest.fixture(scope="function")
-    def ydb_data_test_table_field_types_patch(self, monkeypatch) -> None:
-        ydb_field_types = {**self.YDB_TYPE_FIELD_TYPES}
-
-        monkeypatch.setattr("dl_formula_testing.evaluator.FIELD_TYPES", ydb_field_types)
-
-        return ydb_field_types
-
     def _test_db_cast_ydb_bool(
         self,
         dbe: DbEvaluator,
@@ -270,8 +204,76 @@ class DbCastTypeFunctionYQLTestSuite(
         )
 
 
+class DbCastYQLTestSuiteBase(YQLTestBase):
+    @contextlib.contextmanager
+    def make_ydb_type_test_data_table(
+        self, dbe: DbEvaluator, table_schema_name: Optional[str]
+    ) -> Generator[sa.Table, None, None]:
+        db = dbe.db
+        table_spec = self.generate_table_spec(table_name_prefix="ydb_type_test_table")
+
+        columns = [
+            sa.Column("bool_value", sa.Boolean()),
+            sa.Column("int64_value", sa.Integer(), primary_key=True),
+            sa.Column("float_value", sa.Float()),
+            sa.Column("string_value", sa.Text()),
+            sa.Column("date_value", sa.Date()),
+            sa.Column("datetime_value", sa.DateTime()),
+        ]
+
+        table = self.lowlevel_make_sa_table(
+            db=db, table_spec=table_spec, table_schema_name=table_schema_name, columns=columns
+        )
+
+        db.create_table(table)
+
+        table_data = [
+            {
+                "bool_value": True,
+                "int64_value": 42,
+                "float_value": 0.1 + 0.2,
+                "string_value": "lobster",
+                "date_value": datetime.date(2000, 1, 2),
+                "datetime_value": datetime.datetime(2000, 1, 2, 4, 5, 6, 7),
+            },
+        ]
+
+        db.insert_into_table(table, table_data)
+
+        try:
+            yield table
+        finally:
+            dbe.db.drop_table(table)
+
+    @pytest.fixture(scope="class")
+    def ydb_type_test_data_table(
+        self, dbe: DbEvaluator, table_schema_name: Optional[str]
+    ) -> Generator[sa.Table, None, None]:
+        with self.make_ydb_type_test_data_table(dbe=dbe, table_schema_name=table_schema_name) as table:
+            yield table
+
+    # YDB-specific field types for formula testing
+    YDB_TYPE_FIELD_TYPES = {
+        "bool_value": DataType.BOOLEAN,
+        "int64_value": DataType.INTEGER,
+        "float_value": DataType.FLOAT,
+        "string_value": DataType.STRING,
+        "timestamp_value": DataType.DATETIME,  # YDB TIMESTAMP maps to DATETIME in formula system
+        "date_value": DataType.DATE,
+        "datetime_value": DataType.DATETIME,
+    }
+
+    @pytest.fixture(scope="function")
+    def ydb_data_test_table_field_types_patch(self, monkeypatch) -> None:
+        ydb_field_types = {**self.YDB_TYPE_FIELD_TYPES}
+
+        monkeypatch.setattr("dl_formula_testing.evaluator.FIELD_TYPES", ydb_field_types)
+
+        return ydb_field_types
+
+
 class TestDbCastTypeFunctionYQL(
-    YQLTestBase,
+    DbCastYQLTestSuiteBase,
     DbCastTypeFunctionYQLTestSuite,
 ):
     pass
