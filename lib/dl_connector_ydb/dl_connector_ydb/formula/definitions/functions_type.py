@@ -365,6 +365,12 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 TYPES_SPEC["Timestamp"],
                 TYPES_SPEC["Timestamp64"],
             ],
+            DataType.UUID: [
+                # > String
+                TYPES_SPEC["String"],
+                # > Utf8
+                TYPES_SPEC["Utf8"],
+            ],
             DataType.ARRAY_STR: [],
             DataType.ARRAY_INT: [],
             DataType.ARRAY_FLOAT: [],
