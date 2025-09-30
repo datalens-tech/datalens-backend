@@ -405,16 +405,16 @@ tasks:
       - pkill -f "ssh -f -N -L"
 
   squash:
-    desc: Squash all commits made on child_branch relative to parent_branch into single one (using git reset --soft)
+    desc: Squash all commits made on CHILD_BRANCH relative to PARENT_BRANCH into single one (using git reset --soft)
     vars:
-      remote: '{{.remote | default "origin"}}'
+      REMOTE: '{{.REMOTE | default "origin"}}'
     requires:
       vars:
-        - parent_branch
-        - child_branch
+        - PARENT_BRANCH
+        - CHILD_BRANCH
     cmds:
-      - git fetch {{.remote}} -f {{.parent_branch}}:{{.parent_branch}}
-      - git switch {{.child_branch}}
-      - git fetch {{.remote}} {{.child_branch}}
-      - git reset --soft $(git merge-base {{.parent_branch}} HEAD)
+      - git fetch {{.REMOTE}} -f {{.PARENT_BRANCH}}:{{.PARENT_BRANCH}}
+      - git switch {{.CHILD_BRANCH}}
+      - git fetch {{.REMOTE}} {{.CHILD_BRANCH}}
+      - git reset --soft $(git merge-base {{.PARENT_BRANCH}} HEAD)
       - echo 'Now you can commit merged changes with "git commit -m "commit message"'
