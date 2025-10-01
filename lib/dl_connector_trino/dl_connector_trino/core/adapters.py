@@ -149,7 +149,7 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
     def get_connect_args(self) -> dict[str, Any]:
         timeout = (
             self._target_dto.connect_timeout,
-            None,
+            None,  # read timeout is handled by trino with query_max_run_time
         )
         args: dict[str, Any] = super().get_connect_args() | dict(
             http_scheme="https" if self._target_dto.ssl_enable else "http",
