@@ -42,6 +42,7 @@ includes:
         {{.ROOT_DIR}}/metapkg
         {{.ROOT_DIR}}/terrarium/dl_repmanager/dl_repmanager_tests/testrepo/lib/testing_pkg_boilerplate
         {{.ROOT_DIR}}/terrarium/bi_ci/bi_ci_tests/unit/resources
+      PARENT_BRANCH: '{{.PARENT_BRANCH | default "main"}}'
 
   ops:
     taskfile: tools/taskfiles/taskfile_ops.yml

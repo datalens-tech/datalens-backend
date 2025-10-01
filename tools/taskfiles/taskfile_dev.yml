@@ -403,3 +403,18 @@ tasks:
       - echo "Next processes will be killed:"
       - ps -ef | grep "ssh -f -N -L" | grep --invert-match "grep"
       - pkill -f "ssh -f -N -L"
+
+  squash:
+    desc: Squash all commits made on CHILD_BRANCH relative to PARENT_BRANCH into single one (using git reset --soft)
+    vars:
+      REMOTE: '{{.REMOTE | default "origin"}}'
+    requires:
+      vars:
+        - PARENT_BRANCH
+        - CHILD_BRANCH
+    cmds:
+      - git fetch {{.REMOTE}} -f {{.PARENT_BRANCH}}:{{.PARENT_BRANCH}}
+      - git switch {{.CHILD_BRANCH}}
+      - git fetch {{.REMOTE}} {{.CHILD_BRANCH}}
+      - git reset --soft $(git merge-base {{.PARENT_BRANCH}} HEAD)
+      - echo 'Now you can commit merged changes with "git commit -m "commit message"'
