@@ -1,5 +1,9 @@
 from collections.abc import Sequence
 import datetime
+from typing import (
+    Callable,
+    Generator,
+)
 
 import pytest
 import sqlalchemy as sa
@@ -28,8 +32,12 @@ from dl_connector_trino.core.adapters import (
     CustomTrinoDialect,
     TrinoDefaultAdapter,
 )
+from dl_connector_trino.core.conn_options import TrinoConnectOptions
 from dl_connector_trino.core.error_transformer import ExpressionNotAggregateError
-from dl_connector_trino.core.us_connection import ConnectionTrino
+from dl_connector_trino.core.us_connection import (
+    ConnectionTrino,
+    ConnectionTrinoBase,
+)
 from dl_connector_trino_tests.db.core.base import BaseTrinoTestClass
 
 
@@ -226,3 +234,42 @@ class TestTrinoSyncConnectionExecutor(
             existing_table_ident=existing_table_ident,
             add_complex_types=True,
         )
+
+
+class TestTrinoSyncConnectionExecutorTimeout(TrinoSyncConnectionExecutorBase):
+    @pytest.fixture(scope="function")
+    def sync_connection_executor(
+        self,
+        sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> Generator[SyncConnExecutorBase, None, None]:
+        original_method = ConnectionTrinoBase.get_conn_options
+
+        def get_conn_options_timeout_1s(self_instance: ConnectionTrinoBase) -> TrinoConnectOptions:
+            base = original_method(self_instance)
+            return base.to_subclass(
+                TrinoConnectOptions,
+                connect_timeout=1,
+                total_timeout=1,
+            )
+
+        monkeypatch.setattr(
+            ConnectionTrinoBase,
+            "get_conn_options",
+            get_conn_options_timeout_1s,
+        )
+
+        sync_conn_executor = sync_conn_executor_factory()
+        try:
+            yield sync_conn_executor
+        finally:
+            sync_conn_executor.close()
+
+    def test_query_timeout(
+        self,
+        sync_connection_executor: SyncConnExecutorBase,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        conn_executor_query = ConnExecutorQuery("SELECT count(*) FROM blackhole.default.sleeper3")
+        with pytest.raises(core_exc.SourceTimeout):
+            sync_connection_executor.execute(conn_executor_query)

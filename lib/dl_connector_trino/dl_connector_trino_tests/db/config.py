@@ -164,6 +164,18 @@ newlines' as v2_ext_string,
     1 as stuff
 """
 
+BLACKHOLE_TABLE_CREATE_QUERY = """
+CREATE TABLE IF NOT EXISTS blackhole.default.sleeper3 (
+    dummy BIGINT
+)
+WITH (
+    split_count = 1,
+    pages_per_split = 1,
+    rows_per_page = 1,
+    page_processing_delay = '3s'
+)
+"""
+
 DB_URLS = {
     D.TRINO: URL(
         host=CoreConnectionSettings.HOST,

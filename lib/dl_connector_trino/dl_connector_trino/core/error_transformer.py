@@ -1,5 +1,3 @@
-from typing import Optional
-
 from sqlalchemy import exc as sa_exc
 from trino.exceptions import (
     TrinoQueryError,
@@ -18,13 +16,6 @@ from dl_core.connectors.base.error_transformer import ErrorTransformerRule as Ru
 import dl_core.exc as exc
 
 
-TRINO_SOURCE_DOES_NOT_EXIST_ERROR_TYPES = (
-    "TABLE_NOT_FOUND",
-    "SCHEMA_NOT_FOUND",
-    "CATALOG_NOT_FOUND",
-)
-
-
 class ExpressionNotAggregateError(exc.InvalidQuery):
     """
     Raised when Trino receives a SELECT statement containing multiple identical parameterized expressions with the same parameter value.
@@ -35,7 +26,7 @@ class ExpressionNotAggregateError(exc.InvalidQuery):
 class TrinoErrorTransformer(ChainedDbErrorTransformer):
     @staticmethod
     def _get_error_kw(
-        debug_compiled_query: Optional[str], orig_exc: Optional[Exception], wrapper_exc: Exception
+        debug_compiled_query: str | None, orig_exc: Exception | None, wrapper_exc: Exception
     ) -> DBExcKWArgs:
         if isinstance(orig_exc, TrinoQueryError):
             return dict(
@@ -53,7 +44,7 @@ class TrinoErrorTransformer(ChainedDbErrorTransformer):
         return ChainedDbErrorTransformer._get_error_kw(debug_compiled_query, orig_exc, wrapper_exc)
 
 
-def trino_user_error_or_none(exc: Exception) -> Optional[TrinoUserError]:
+def trino_user_error_or_none(exc: Exception) -> TrinoUserError | None:
     if not isinstance(exc, sa_exc.ProgrammingError):
         return None
 
@@ -64,12 +55,23 @@ def trino_user_error_or_none(exc: Exception) -> Optional[TrinoUserError]:
     return None
 
 
-def trino_query_error_or_none(exc: Exception) -> Optional[TrinoQueryError]:
+def trino_query_error_or_none(exc: Exception) -> TrinoQueryError | None:
     if not isinstance(exc, sa_exc.DBAPIError):
         return None
 
     orig = getattr(exc, "orig", None)
     if isinstance(orig, TrinoQueryError):
+        return orig
+
+    return None
+
+
+def trino_insufficient_resources_error_or_none(exc: Exception) -> TrinoQueryError | None:
+    orig = trino_query_error_or_none(exc)
+    if orig is None:
+        return None
+
+    if orig.error_type == "INSUFFICIENT_RESOURCES":
         return orig
 
     return None
@@ -92,7 +94,11 @@ def is_trino_source_does_not_exist_error() -> ExcMatchCondition:
         if orig is None:
             return False
 
-        return orig.error_name in TRINO_SOURCE_DOES_NOT_EXIST_ERROR_TYPES
+        return orig.error_name in (
+            "TABLE_NOT_FOUND",
+            "SCHEMA_NOT_FOUND",
+            "CATALOG_NOT_FOUND",
+        )
 
     return _
 
@@ -119,13 +125,28 @@ def is_trino_expression_not_aggregate_error() -> ExcMatchCondition:
     return _
 
 
-def is_trino_out_of_memory_error() -> ExcMatchCondition:
+def is_trino_timeout_error() -> ExcMatchCondition:
     def _(exc: Exception) -> bool:
-        orig = trino_query_error_or_none(exc)
+        orig = trino_insufficient_resources_error_or_none(exc)
         if orig is None:
             return False
 
-        return orig.error_type == "INSUFFICIENT_RESOURCES"
+        return orig.error_name == "EXCEEDED_TIME_LIMIT"
+
+    return _
+
+
+def is_trino_out_of_memory_error() -> ExcMatchCondition:
+    def _(exc: Exception) -> bool:
+        orig = trino_insufficient_resources_error_or_none(exc)
+        if orig is None:
+            return False
+
+        return orig.error_name in (
+            "CLUSTER_OUT_OF_MEMORY",
+            "EXCEEDED_LOCAL_MEMORY_LIMIT",
+            "EXCEEDED_GLOBAL_MEMORY_LIMIT",
+        )
 
     return _
 
@@ -150,6 +171,10 @@ trino_error_transformer = TrinoErrorTransformer(
         Rule(
             when=is_trino_syntax_error(),
             then_raise=exc.InvalidQuery,
+        ),
+        Rule(
+            when=is_trino_timeout_error(),
+            then_raise=exc.SourceTimeout,
         ),
         Rule(
             when=is_trino_out_of_memory_error(),

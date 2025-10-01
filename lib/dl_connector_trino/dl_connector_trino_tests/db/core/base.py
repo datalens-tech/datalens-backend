@@ -95,6 +95,9 @@ class BaseTrinoTestClass(BaseConnectionTestClass[ConnectionTrino]):
         # Sample table for check_data_source_templates
         cur.execute(test_config.SAMPLE_TABLE_CREATE_QUERY)
 
+        # Blackhole table for test_query_timeout
+        cur.execute(test_config.BLACKHOLE_TABLE_CREATE_QUERY)
+
     # Here only for wait_for_trino dependency
     @pytest.fixture(scope="class")
     def engine_config(self, db_url: str, engine_params: dict, wait_for_trino: None) -> DbEngineConfig:
