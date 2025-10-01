@@ -260,8 +260,10 @@ class TestTrinoSyncConnectionExecutorTimeout(TrinoSyncConnectionExecutorBase):
         )
 
         sync_conn_executor = sync_conn_executor_factory()
-        yield sync_conn_executor_factory()
-        sync_conn_executor.close()
+        try:
+            yield sync_conn_executor
+        finally:
+            sync_conn_executor.close()
 
     def test_query_timeout(
         self,

@@ -63,8 +63,10 @@ class BaseConnectionExecutorTestClass(RegulatedTestCase, BaseConnectionTestClass
         sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
     ) -> Generator[SyncConnExecutorBase, None, None]:
         sync_conn_executor = sync_conn_executor_factory()
-        yield sync_conn_executor_factory()
-        sync_conn_executor.close()
+        try:
+            yield sync_conn_executor
+        finally:
+            sync_conn_executor.close()
 
     @pytest_asyncio.fixture(scope="function")
     async def async_connection_executor(
@@ -72,8 +74,10 @@ class BaseConnectionExecutorTestClass(RegulatedTestCase, BaseConnectionTestClass
         async_conn_executor_factory: Callable[[], AsyncConnExecutorBase],
     ) -> AsyncGenerator[AsyncConnExecutorBase, None]:
         async_conn_executor = async_conn_executor_factory()
-        yield async_conn_executor_factory()
-        await async_conn_executor.close()
+        try:
+            yield async_conn_executor
+        finally:
+            await async_conn_executor.close()
 
 
 class DefaultSyncAsyncConnectionExecutorCheckBase(BaseConnectionExecutorTestClass[_CONN_TV], Generic[_CONN_TV]):
