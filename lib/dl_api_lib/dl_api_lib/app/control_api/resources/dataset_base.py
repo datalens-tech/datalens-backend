@@ -7,6 +7,7 @@ from typing import (
     Optional,
 )
 
+
 from dl_api_commons.flask.required_resources import RequiredResourceCommon
 from dl_api_lib.api_common.dataset_loader import (
     DatasetApiLoader,
@@ -50,6 +51,7 @@ from dl_core.exc import (
     USObjectNotFoundException,
 )
 from dl_core.services_registry.top_level import ServicesRegistry
+from dl_core.us_connection import get_connection_class
 from dl_core.us_dataset import (
     Dataset,
     DataSourceRole,
@@ -407,6 +409,18 @@ class DatasetResource(BIResource):
                     aggregations=aggregations,
                 )
             )
+
+        # Add source_listing field with connection listing options
+        if connection_types:
+            # Use the first available connection type to get listing options
+            first_conn_type = next(iter(connection_types))
+            if first_conn_type is not None:
+                conn_cls = get_connection_class(first_conn_type)
+                localizer = service_registry.get_localizer()
+
+                listing_options = conn_cls.get_listing_options(localizer)
+
+        opt_data["source_listing"] = listing_options
 
         return {"options": opt_data}
 
