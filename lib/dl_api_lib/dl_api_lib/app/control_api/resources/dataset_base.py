@@ -416,10 +416,8 @@ class DatasetResource(BIResource):
             if first_conn_type is not None:
                 conn_cls = get_connection_class(first_conn_type)
                 localizer = service_registry.get_localizer()
-
                 listing_options = conn_cls.get_listing_options(localizer)
-
-        opt_data["source_listing"] = listing_options
+                opt_data["source_listing"] = listing_options
 
         return {"options": opt_data}
 
