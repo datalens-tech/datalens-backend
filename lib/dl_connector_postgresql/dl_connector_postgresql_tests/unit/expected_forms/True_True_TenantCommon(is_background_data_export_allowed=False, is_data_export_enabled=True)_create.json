@@ -240,6 +240,15 @@
                     ]
                 }
             ]
+        },
+        {
+            "items": [
+                {
+                    "id": "hidden",
+                    "name": "description",
+                    "defaultValue": ""
+                }
+            ]
         }
     ],
     "apiSchema": {
@@ -304,6 +313,13 @@
                 {
                     "name": "type",
                     "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "description",
+                    "type": "string",
+                    "required": true,
+                    "nullable": false,
                     "defaultAction": "include"
                 }
             ],

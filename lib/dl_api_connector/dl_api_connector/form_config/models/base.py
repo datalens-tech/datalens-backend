@@ -19,17 +19,21 @@ from dl_api_connector.form_config.models.api_schema import (
     FormFieldApiSchema,
 )
 from dl_api_connector.form_config.models.common import (
+    AnnotationFieldName,
     SerializableConfig,
     TFieldName,
     TopLevelFieldName,
     inner,
     remap_skip_if_null,
 )
-from dl_api_connector.form_config.models.rows import CustomizableRow
 from dl_api_connector.form_config.models.rows.base import (
     DisplayConditionsMixin,
     FormFieldMixin,
     FormRow,
+)
+from dl_api_connector.form_config.models.rows.customizable import (
+    CustomizableRow,
+    HiddenRowItem,
 )
 from dl_api_connector.form_config.models.rows.prepared.base import PreparedRow
 from dl_configs.connectors_settings import ConnectorSettingsBase
@@ -56,6 +60,10 @@ class FormUIOverride(SerializableConfig):
 TOP_LEVEL_NON_CONFIG_FIELDS: set[TopLevelFieldName] = {field_name for field_name in TopLevelFieldName}
 
 
+def rows_converter(rows: list[FormRow]) -> list[FormRow]:
+    return rows + ConnectionForm._get_common_rows()
+
+
 @attr.s(kw_only=True, frozen=True)
 class ConnectionForm(SerializableConfig):
     """
@@ -69,8 +77,21 @@ class ConnectionForm(SerializableConfig):
     so either use it in field names or remap keys using SerializableConfig features where it is needed
     """
 
+    @staticmethod
+    def _get_common_rows() -> list[FormRow]:
+        return [
+            CustomizableRow(
+                items=[
+                    HiddenRowItem(
+                        name=AnnotationFieldName.description,
+                        default_value="",
+                    ),
+                ],
+            )
+        ]
+
     title: str = attr.ib()
-    rows: list[FormRow] = attr.ib()
+    rows: list[FormRow] = attr.ib(converter=rows_converter)
     api_schema: Optional[FormApiSchema] = attr.ib(default=None, metadata=remap_skip_if_null("apiSchema"))
     template_name: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null("templateName"))
     form_ui_override: Optional[FormUIOverride] = attr.ib(default=None, metadata=remap_skip_if_null("uiSchema"))
