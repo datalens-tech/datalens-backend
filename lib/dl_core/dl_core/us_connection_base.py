@@ -492,15 +492,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     ) -> list[DataSourceTemplate]:
         """
         Get data source templates handling search and pagination based on connection capabilities.
-        Raises 400 errors for unsupported operations instead of executing them code-side.
         """
-        # Raise 400 error if search_text is provided but not supported
-        if search_text and not self.supports_source_search:  # search_text = '' is OK with any flag value
-            raise InvalidRequestError("search_text parameter is not supported for this connection type")
-
-        # Raise 400 error if offset is provided but pagination is not supported
-        if offset and not self.supports_source_pagination:  # offset = 0 is OK with any flag value
-            raise InvalidRequestError("offset parameter is not supported for this connection type")
 
         # Determine parameters for db-side operations
         db_limit = limit if self.supports_source_pagination else None
@@ -533,6 +525,14 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         if db_name is not None and not self.supports_db_name_listing:
             raise InvalidRequestError("db_name parameter is not supported for this connection type")
 
+        # If search_text is provided but not supported
+        if search_text and not self.supports_source_search:  # search_text = '' is OK with any flag value
+            raise InvalidRequestError("search_text parameter is not supported for this connection type")
+
+        # If offset is provided but pagination is not supported
+        if offset and not self.supports_source_pagination:  # offset = 0 is OK with any flag value
+            raise InvalidRequestError("offset parameter is not supported for this connection type")
+
         # If search is requested with db_name requirement
         if (
             search_text is not None
@@ -544,16 +544,19 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
                 "db_name parameter is required when search_text is provided for this connection type"
             )
 
-    def get_listing_options(self, localizer: Localizer) -> ListingOptions:
+    @classmethod
+    def get_listing_options(cls, localizer: Localizer) -> ListingOptions:
         return ListingOptions(
-            supports_source_search=self.supports_source_search,
-            supports_source_pagination=self.supports_source_pagination,
-            supports_db_name_listing=self.supports_db_name_listing,
-            db_name_required_for_search=self.db_name_required_for_search,
-            db_name_label=self.get_db_name_label(localizer=localizer),
+            supports_source_search=cls.supports_source_search,
+            supports_source_pagination=cls.supports_source_pagination,
+            supports_db_name_listing=cls.supports_db_name_listing,
+            db_name_required_for_search=cls.db_name_required_for_search,
+            db_name_label=cls.get_db_name_label(localizer=localizer),
         )
 
-    def get_db_name_label(self, localizer: Localizer) -> str | None:
+    @classmethod
+    def get_db_name_label(cls, localizer: Localizer) -> str | None:
+        """Get db_name_label from class without requiring an instance"""
         return None
 
     def get_db_names(self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase]) -> list[str]:

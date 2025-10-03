@@ -85,6 +85,14 @@ class AvatarsSchema(BaseSchema):
     items = ma_fields.List(ma_fields.Nested(SourceListItemSchema))
 
 
+class SourceListingSchema(BaseSchema):
+    supports_source_search = ma_fields.Boolean()
+    supports_source_pagination = ma_fields.Boolean()
+    supports_db_name_listing = ma_fields.Boolean()
+    db_name_label = ma_fields.String(dump_default=None)
+    db_name_required_for_search = ma_fields.Boolean()
+
+
 class OptionsSchema(BaseSchema):
     join = ma_fields.Nested(JoinSchema)
     schema_update_enabled = ma_fields.Boolean()
@@ -96,6 +104,7 @@ class OptionsSchema(BaseSchema):
     source_avatars = ma_fields.Nested(AvatarsSchema)
     supports_offset = ma_fields.Boolean()
     supported_functions = ma_fields.List(ma_fields.String())
+    source_listing = ma_fields.Nested(SourceListingSchema)
 
 
 class OptionsMixin(BaseSchema):
