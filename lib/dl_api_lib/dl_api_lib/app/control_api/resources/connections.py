@@ -24,6 +24,8 @@ from dl_api_lib.app.control_api.resources.base import (
 )
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.schemas.connection import (
+    BadRequestResponseSchema,
+    ConnectionDBNamesResponseSchema,
     ConnectionExportResponseSchema,
     ConnectionImportRequestSchema,
     ConnectionInfoSourceSchemaQuerySchema,
@@ -385,38 +387,65 @@ class ConnectionInfoMetadataSources(BIResource):
         }
 
 
+@ns.route("/<connection_id>/db_names")
+class ConnectionDBNames(BIResource):
+    @schematic_request(
+        ns=ns,
+        responses={200: ("Success", ConnectionDBNamesResponseSchema()), 400: ("Failed", BadRequestResponseSchema())},
+    )
+    def get(self, connection_id: str) -> dict[str, list[str]]:
+        connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+
+        service_registry = self.get_service_registry()
+        if not connection.supports_db_name_listing:
+            raise exc.UnsupportedForEntityType("DB names listing is not supported for current connection type")
+        return {
+            "db_names": connection.get_db_names(
+                conn_executor_factory=service_registry.get_conn_executor_factory().get_sync_conn_executor
+            )
+        }
+
+
 @ns.route("/<connection_id>/info/sources")
 class ConnectionInfoSources(BIResource):
     @schematic_request(
         ns=ns,
         query=ConnectionSourcesQuerySchema(),
-        responses={200: ("Success", ConnectionSourceTemplatesResponseSchema())},
+        responses={
+            200: ("Success", ConnectionSourceTemplatesResponseSchema()),
+            400: ("Failed", BadRequestResponseSchema()),
+        },
     )
     def get(self, connection_id: str, query: dict) -> dict:
         connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
 
         service_registry = self.get_service_registry()
         localizer = service_registry.get_localizer()
+
+        # Extract query parameters
+        search_text = query.get("search_text")
+        limit = query.get("limit")
+        offset = query.get("offset")
+        db_name = query.get("db_name")
+
+        # Get template sources (always available, no DB query needed)
         source_template_templates = connection.get_data_source_template_templates(localizer=localizer)
 
+        # Get actual data source templates (requires DB access)
         source_templates = []
         try:
             need_permission_on_entry(connection, USPermissionKind.read)
         except USPermissionRequired:
             pass
         else:
-            source_templates = connection.get_data_source_templates(
+            source_templates = connection.get_data_source_templates_paginated(
                 conn_executor_factory=service_registry.get_conn_executor_factory().get_sync_conn_executor,
+                search_text=search_text,
+                limit=limit,
+                offset=offset,
+                db_name=db_name,
             )
 
-        search_text = query.get("search_text")
-        if search_text is not None:
-            # TODO: for some connections, do the filtering in the database.
-            search_text = search_text.lower()
-            source_templates = [item for item in source_templates if search_text in item.title.lower()]
-        limit = query.get("limit")
-        if limit is not None:  # Note that `load_default=1000` in the schema, so it should always be defined.
-            source_templates = source_templates[:limit]
         return {
             "sources": _dump_source_templates(source_templates),
             "freeform_sources": _dump_source_templates(source_template_templates),
