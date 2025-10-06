@@ -4,8 +4,7 @@ x-constants:
 services:
   pg-us:
     build:
-      context: ./images
-      dockerfile: Dockerfile.pg-us
+      context: ./images/pg-us
     environment:
       POSTGRES_DB: us-db-ci_purgeable
       POSTGRES_USER: us
@@ -20,8 +19,7 @@ services:
     labels:
       datalens.ci.service: united-storage
     build:
-      context: ./images
-      dockerfile: Dockerfile.us
+      context: ./images/us
     depends_on:
       pg-us:
         condition: service_healthy
@@ -38,3 +36,8 @@ services:
       MINIO_ROOT_PASSWORD: verySecretKey1
       MINIO_DOMAIN: local
     command: server --address ":8000" /export
+
+  ssl-provider:
+    build:
+      context: ./images/ssl-provider
+      dockerfile: Dockerfile

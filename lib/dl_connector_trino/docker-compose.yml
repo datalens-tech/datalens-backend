@@ -21,9 +21,10 @@ services:
 
   # INFRA
   ssl-provider:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: ssl-provider
     build:
-      context: ../testenv-common/images
-      dockerfile: Dockerfile.ssl-provider
       args:
         CERTIFIED_DOMAIN: "trino-tls-nginx"
     ports:

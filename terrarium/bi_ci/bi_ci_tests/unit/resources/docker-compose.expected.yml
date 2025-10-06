@@ -40,8 +40,7 @@ services:
     - db-mssql
   pg-us:
     build:
-      context: ../../lib/testenv-common/images
-      dockerfile: Dockerfile.pg-us
+      context: ../../lib/testenv-common/images/pg-us
     environment:
       POSTGRES_DB: us-db-ci_purgeable
       POSTGRES_PASSWORD: us
@@ -56,8 +55,7 @@ services:
       service: s3-storage
   us:
     build:
-      context: ../../lib/testenv-common/images
-      dockerfile: Dockerfile.us
+      context: ../../lib/testenv-common/images/us
     depends_on:
     - pg-us
     environment:
