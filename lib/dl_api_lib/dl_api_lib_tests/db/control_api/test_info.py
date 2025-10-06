@@ -81,6 +81,29 @@ class TestInfo(DefaultApiTestBase):
             for conn_info in all_connectors
         )
 
+    def test_get_connectors_history_property(self, client):
+        """Test that all connectors in the response have the history property"""
+        resp = client.get("/api/v1/info/connectors")
+        assert resp.status_code == 200, resp.json
+        connector_info = resp.json
+
+        uncategorized = connector_info.get("uncategorized", [])
+        sections = connector_info.get("sections", [])
+
+        all_connectors = itertools.chain(
+            uncategorized,
+            itertools.chain.from_iterable(
+                connector["includes"] if "includes" in connector else (connector,)  # type: ignore
+                for connector in itertools.chain.from_iterable(section["connectors"] for section in sections)
+            ),
+        )
+
+        for conn_info in all_connectors:
+            assert "history" in conn_info
+            assert isinstance(conn_info["history"], bool)
+            if not conn_info["history"]:
+                assert conn_info["alias"] in ("file", "gsheets", "yadocs")
+
     @pytest.mark.parametrize("mode_name", [mode.name for mode in ConnectionFormMode])
     @pytest.mark.parametrize("conn_type_name", [conn_type.name for conn_type in ConnectionType])
     def test_get_connector_form(self, client, conn_type_name, mode_name):
