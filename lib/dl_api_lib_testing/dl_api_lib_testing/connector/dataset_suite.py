@@ -200,3 +200,50 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         assert "notifications" in import_resp.json, import_resp.json
         assert import_resp.json["notifications"][0]["code"] == "ERR.DS_API.WB_IMPORT.DS", import_resp.json
         assert "without a connection" in import_resp.json["notifications"][0]["message"], import_resp.json
+
+    @pytest.fixture(scope="function")
+    def source_listing_values(self) -> dict[str, bool | str | None]:
+        return {
+            "supports_source_search": False,
+            "supports_source_pagination": False,
+            "supports_db_name_listing": False,
+            "db_name_required_for_search": False,
+        }
+
+    def test_dataset_options_source_listing(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+        source_listing_values: dict[str, bool | str | None],
+    ) -> None:
+        dataset_resp = control_api.load_dataset(saved_dataset)
+        assert dataset_resp.status_code == 200, dataset_resp.json
+
+        assert "options" in dataset_resp.json
+        options = dataset_resp.json["options"]
+
+        # Check that source_listing field is present
+        assert "source_listing" in options
+        source_listing = options["source_listing"]
+
+        # Verify the structure of source_listing
+        expected_fields = {
+            "supports_source_search",
+            "supports_source_pagination",
+            "supports_db_name_listing",
+            "db_name_required_for_search",
+            "db_name_label",
+        }
+
+        assert isinstance(source_listing, dict)
+        actual_fields = set(source_listing.keys())
+        assert expected_fields == actual_fields
+
+        # Verify field types
+        assert isinstance(source_listing["supports_source_search"], bool)
+        assert isinstance(source_listing["supports_source_pagination"], bool)
+        assert isinstance(source_listing["supports_db_name_listing"], bool)
+        assert isinstance(source_listing["db_name_required_for_search"], bool)
+        assert source_listing["db_name_label"] is None or isinstance(source_listing["db_name_label"], str)
+
+        assert source_listing_values.items() <= source_listing.items()
