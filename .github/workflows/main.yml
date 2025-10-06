@@ -206,18 +206,27 @@ jobs:
         fi
         echo "result=$result" >> $GITHUB_OUTPUT
       id: extract_head_commit
+
+    - name: Get changed files
+      uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62
+      id: git-changed-files
+      with:
+        base_sha: ${{ steps.extract_base_commit.outputs.result }}
+        sha: ${{ steps.extract_head_commit.outputs.result }}
+        write_output_files: true
+        separator: "\n"
+
     - name: Get packages affected by changes in the current commit
       id: get_affected
       run: |
-        TARGET_DATA=$(. /venv/bin/activate && dl-git range-diff-paths --only-added-commits --base ${{ steps.extract_base_commit.outputs.result }} --head ${{ steps.extract_head_commit.outputs.result }})
-        echo "$TARGET_DATA" > /tmp/targets.json
-        cat /tmp/targets.json
+        echo "All changed files: $CHANGED_FILES"
         . /venv/bin/activate && detect-affected-packages \
           --repo=/src \
-          --changes_file="/tmp/targets.json" \
+          --changes_file=".github/outputs/all_changed_files.txt" \
           --root_pkgs="lib,app" | tee -a  >> "$GITHUB_OUTPUT"
       env:
         TEST_TARGET_OVERRIDE: ${{ github.event.inputs.test_targets }}
+        CHANGED_FILES: ${{ steps.git-changed-files.outputs.all_changed_files }}
     - name: Print affected packages
       run: |
         echo "Affected packages: ${{ steps.get_affected.outputs.affected }}"
