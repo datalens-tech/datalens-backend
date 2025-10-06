@@ -85,6 +85,12 @@ tasks:
       vars:
         - VENV_PATH
 
+  poetry:
+    desc: Run poetry command
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - poetry --directory={{.PYPROJECT_TOML_PATH}} {{.CLI_ARGS}}
+
   venv-python:
     desc: Run poetry command
     dir: "{{.USER_WORKING_DIR}}"
