@@ -17,6 +17,7 @@ from .models import (
     TypedSchemaDictAnnotation,
     TypedSchemaListAnnotation,
 )
+from .serializers import serialize_datetime
 from .testing import TestingHttpxClient
 
 
@@ -37,4 +38,5 @@ __all__ = [
     "RequestHttpxClientException",
     "NoRetriesHttpxClientException",
     "TestingHttpxClient",
+    "serialize_datetime",
 ]
