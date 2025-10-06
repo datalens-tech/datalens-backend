@@ -8,6 +8,7 @@ readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
+deepdiff = "*"
 pydantic = "*"
 python = ">=3.10, <3.13"
 typing-extensions = "*"
