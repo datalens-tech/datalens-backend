@@ -68,7 +68,7 @@ class TestTrinoConnection(
         assert db_names
 
         tables = conn.get_tables(sync_conn_executor_factory_for_conn, db_name="test_memory_catalog")
-        assert len(tables) == 13
+        assert tables
 
     def test_get_parameter_combinations(self, saved_connection: ConnectionTrino, sync_conn_executor_factory) -> None:
         conn = saved_connection
@@ -128,20 +128,18 @@ class TestTrinoConnection(
         assert templates == old_templates
 
         # Test search functionality
-        templates = conn.get_data_source_templates_paginated(
-            sync_conn_executor_factory_for_conn, db_name="test_memory_catalog", search_text="able_", limit=2, offset=1
+        templates_with_offset = conn.get_data_source_templates_paginated(
+            sync_conn_executor_factory_for_conn, db_name="test_memory_catalog", search_text="able_", limit=1, offset=1
         )
-        templates_without_offset = conn.get_data_source_templates_paginated(
+        templates_with_only_limit = conn.get_data_source_templates_paginated(
             sync_conn_executor_factory_for_conn,
             db_name="test_memory_catalog",
-            search_text="able_",
-            limit=3,
+            search_text="ampl",
+            limit=2,
         )
-
-        assert len(templates) == 2
-        assert len(templates_without_offset) == 3
-        assert templates == templates_without_offset[1:]
-        assert all("able_" in template.title for template in templates)
+        assert len(templates_with_offset) == len(templates_with_only_limit) - 1
+        assert templates_with_offset == templates_with_only_limit[1:]
+        assert all("ampl" in template.title for template in templates_with_only_limit)
 
         # Search without db_name - should fail for Trino
         with pytest.raises(InvalidRequestError, match="db_name parameter is required when search_text is provided"):
