@@ -93,6 +93,11 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
+    def history(self) -> bool:
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
     def visibility_mode(self) -> ConnectorAvailability:
         raise NotImplementedError
 
@@ -123,6 +128,7 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
             conn_type=self.conn_type_str,
             title=self.get_title(localizer),
             backend_driven_form=self.backend_driven_form,
+            history=self.history,
         )
 
 
@@ -245,8 +251,12 @@ class Connector(ConnectorBase):
         return self.availability
 
     @property
+    def history(self) -> bool:
+        return self.connector_info_provider.history
+
+    @property
     def alias(self) -> str:
-        return get_connector_info_provider(self.conn_type).alias or self.conn_type_str
+        return self.connector_info_provider.alias or self.conn_type_str
 
     @property
     def connector_info_provider(self) -> ConnectionInfoProvider:
@@ -283,6 +293,10 @@ class ConnectorContainer(ConnectorBase):
     @property
     def visibility_mode(self) -> ConnectorAvailability:
         return ConnectorAvailability.free
+
+    @property
+    def history(self) -> bool:
+        return True
 
     @property
     def alias(self) -> str:
