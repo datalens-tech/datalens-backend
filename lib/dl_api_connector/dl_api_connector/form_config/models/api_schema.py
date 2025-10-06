@@ -1,13 +1,15 @@
+from __future__ import annotations
+
 from enum import Enum
 from typing import (
     Any,
     Literal,
+    Optional,
 )
 
 import attr
 
 from dl_api_connector.form_config.models.common import (
-    AnnotationFieldName,
     SerializableConfig,
     TFieldName,
     remap_skip_if_null,
@@ -32,10 +34,10 @@ class FormFieldApiAction(Enum):
 @attr.s(kw_only=True, frozen=True)
 class FormFieldApiSchema(SerializableConfig):
     name: TFieldName = attr.ib()
-    type: Literal["string", "boolean", "object"] | None = attr.ib(default=None, metadata=skip_if_null())
+    type: Optional[Literal["string", "boolean", "object"]] = attr.ib(default=None, metadata=skip_if_null())
     required: bool = attr.ib(default=False)
-    length: int | None = attr.ib(default=None, metadata=skip_if_null())
-    nullable: bool | None = attr.ib(default=None, metadata=skip_if_null())
+    length: Optional[int] = attr.ib(default=None, metadata=skip_if_null())
+    nullable: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
     default_action: FormFieldApiAction = attr.ib(
         default=FormFieldApiAction.include, metadata=remap_skip_if_null("defaultAction")
     )
@@ -60,35 +62,8 @@ class FormActionApiSchema(SerializableConfig):
     conditions: list[FormFieldApiActionCondition] = attr.ib(factory=list)
 
 
-ANNOTATION_API_SCHEMA_ITEMS: list[FormFieldApiSchema] = [
-    FormFieldApiSchema(name=AnnotationFieldName.description, type="string", required=True, nullable=False),
-]
-
-
-def enrich_api_schema_with_annotation_fields(
-    api_schema: FormActionApiSchema | None,
-) -> FormActionApiSchema | None:
-    if api_schema is None:
-        return None
-
-    existing_field_names = {item.name for item in api_schema.items}
-    enriched_items = api_schema.items + [
-        item for item in ANNOTATION_API_SCHEMA_ITEMS if item.name not in existing_field_names
-    ]
-
-    return FormActionApiSchema(items=enriched_items, conditions=api_schema.conditions)
-
-
 @attr.s(kw_only=True, frozen=True)
 class FormApiSchema(SerializableConfig):
-    create: FormActionApiSchema | None = attr.ib(
-        default=None,
-        metadata=skip_if_null(),
-        converter=enrich_api_schema_with_annotation_fields,
-    )
-    edit: FormActionApiSchema | None = attr.ib(
-        default=None,
-        metadata=skip_if_null(),
-        converter=enrich_api_schema_with_annotation_fields,
-    )
-    check: FormActionApiSchema | None = attr.ib(default=None, metadata=skip_if_null())
+    create: Optional[FormActionApiSchema] = attr.ib(default=None, metadata=skip_if_null())
+    edit: Optional[FormActionApiSchema] = attr.ib(default=None, metadata=skip_if_null())
+    check: Optional[FormActionApiSchema] = attr.ib(default=None, metadata=skip_if_null())

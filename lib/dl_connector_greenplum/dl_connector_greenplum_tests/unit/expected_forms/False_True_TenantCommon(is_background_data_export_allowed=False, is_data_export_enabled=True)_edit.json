@@ -185,15 +185,6 @@
                     ]
                 }
             ]
-        },
-        {
-            "items": [
-                {
-                    "id": "hidden",
-                    "name": "description",
-                    "defaultValue": ""
-                }
-            ]
         }
     ],
     "apiSchema": {
@@ -243,13 +234,6 @@
                 {
                     "name": "data_export_forbidden",
                     "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "description",
-                    "type": "string",
-                    "required": true,
-                    "nullable": false,
                     "defaultAction": "include"
                 }
             ],
