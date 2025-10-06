@@ -493,6 +493,8 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         """
         Get data source templates handling search and pagination based on connection capabilities.
         """
+        # Validate input args
+        self.validate_source_listing_parameters(search_text, limit, offset, db_name)
 
         # Determine parameters for db-side operations
         db_limit = limit if self.supports_source_pagination else None
