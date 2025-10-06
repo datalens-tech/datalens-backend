@@ -45,6 +45,7 @@ from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.base import DbInfo
 from dl_core.dataset_capabilities import DatasetCapabilities
 from dl_core.exc import (
+    DatasetConfigurationError,
     ReferencedUSEntryNotFound,
     UnexpectedUSEntryType,
     USObjectNotFoundException,
@@ -411,7 +412,11 @@ class DatasetResource(BIResource):
 
         # Add source_listing field with connection listing options
         if connection_types:
-            # Use the first available connection type to get listing options
+            if len(connection_types) > 1:
+                raise DatasetConfigurationError(
+                    "Dataset contains multiple connection types. "
+                    "There must be only one connection related to the dataset."
+                )
             first_conn_type = next(iter(connection_types))
             if first_conn_type is not None:
                 conn_cls = get_connection_class(first_conn_type)

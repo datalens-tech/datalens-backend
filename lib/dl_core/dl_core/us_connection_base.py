@@ -558,7 +558,6 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     @classmethod
     def get_db_name_label(cls, localizer: Localizer) -> str | None:
-        """Get db_name_label from class without requiring an instance"""
         return None
 
     def get_db_names(self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase]) -> list[str]:
