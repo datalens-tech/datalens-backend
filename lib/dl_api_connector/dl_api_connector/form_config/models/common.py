@@ -71,11 +71,6 @@ class TopLevelFieldName(Enum):
 
 
 @unique
-class AnnotationFieldName(FormFieldName):
-    description = "description"
-
-
-@unique
 class InnerFieldName(Enum):
     """
     Prepared rows/components can have inner fields that can' be controlled by the config,
