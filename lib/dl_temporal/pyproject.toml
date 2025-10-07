@@ -1,0 +1,37 @@
+[tool.poetry]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+description = ""
+license = "Apache 2.0"
+name = "dl-temporal"
+packages = [{include = "dl_temporal"}]
+readme = "README.md"
+version = "0.0.1"
+
+[tool.poetry.dependencies]
+attrs = "*"
+python = ">=3.10, <3.13"
+temporalio = "*"
+typing-extensions = "*"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[datalens.pytest.db]
+root_dir = "dl_temporal_tests/"
+target_path = "db"

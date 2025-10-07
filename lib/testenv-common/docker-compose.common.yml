@@ -41,3 +41,40 @@ services:
     build:
       context: ./images/ssl-provider
       dockerfile: Dockerfile
+
+  temporal-postgresql:
+    image: postgres:13-alpine3.20
+    hostname: temporal-postgresql
+    environment:
+      POSTGRES_DB: temporal-db
+      POSTGRES_USER: temporal-username
+      POSTGRES_PASSWORD: temporal-password
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "temporal-db"]
+      interval: 5s
+      retries: 10
+      start_period: 3s
+
+  temporal:
+    build:
+      context: ./images/temporal
+    hostname: temporal
+    environment:
+      - DEFAULT_NAMESPACE=temporal-namespace
+      - POSTGRES_SEEDS=temporal-postgresql
+      - DB_PORT=5432
+      - DB=postgres12
+      - POSTGRES_USER=temporal-username
+      - POSTGRES_PWD=temporal-password
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
+    depends_on:
+      - temporal-postgresql
+
+  temporal-ui: # Use in dev environment only, not in CI
+    image: temporalio/ui:2.31.2
+    hostname: temporal-ui
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:3000 # TODO: change to proper port
+    depends_on:
+      - temporal

@@ -1,0 +1,9 @@
+services:
+  temporal-ui:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: temporal-ui
+    environment:
+      - TEMPORAL_CORS_ORIGINS=http://localhost:53012
+    ports:
+      - "53012:8080"

@@ -3402,6 +3402,23 @@ type = "directory"
 url = "../lib/dl_task_processor"
 
 [[package]]
+name = "dl-temporal"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.dependencies]
+attrs = "*"
+temporalio = "*"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_temporal"
+
+[[package]]
 name = "dl-testing"
 version = "0.0.1"
 description = ""
@@ -7422,6 +7439,33 @@ files = [
 widechars = ["wcwidth"]
 
 [[package]]
+name = "temporalio"
+version = "1.13.0"
+description = "Temporal.io Python SDK"
+optional = false
+python-versions = "~=3.9"
+files = [
+    {file = "temporalio-1.13.0-cp39-abi3-macosx_10_12_x86_64.whl", hash = "sha256:7ee14cab581352e77171d1e4ce01a899231abfe75c5f7233e3e260f361a344cc"},
+    {file = "temporalio-1.13.0-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:575a0c57dbb089298b4775f3aca86ebaf8d58d5ba155e7fc5509877c25e6bb44"},
+    {file = "temporalio-1.13.0-cp39-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6bf099a27f22c0dbc22f3d86dba76d59be5da812ff044ba3fa183e3e14bd5e9a"},
+    {file = "temporalio-1.13.0-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f7e20c711f41c66877b9d54ab33c79a14ccaac9ed498a174274f6129110f4d84"},
+    {file = "temporalio-1.13.0-cp39-abi3-win_amd64.whl", hash = "sha256:9286cb84c1e078b2bcc6e8c6bd0be878d8ed395be991ac0d7cff555e3a82ac0b"},
+    {file = "temporalio-1.13.0.tar.gz", hash = "sha256:5a979eee5433da6ab5d8a2bcde25a1e7d454e91920acb0bf7ca93d415750828b"},
+]
+
+[package.dependencies]
+protobuf = ">=3.20,<6"
+python-dateutil = {version = ">=2.8.2,<3", markers = "python_full_version < \"3.11\""}
+types-protobuf = ">=3.20"
+typing-extensions = ">=4.2.0,<5"
+
+[package.extras]
+grpc = ["grpcio (>=1.48.2,<2)"]
+openai-agents = ["openai-agents (>=0.0.19)"]
+opentelemetry = ["opentelemetry-api (>=1.11.1,<2)", "opentelemetry-sdk (>=1.11.1,<2)"]
+pydantic = ["pydantic (>=2.0.0,<3)"]
+
+[[package]]
 name = "threadloop"
 version = "1.0.2"
 description = "Tornado IOLoop Backed Concurrent Futures"
@@ -8979,4 +9023,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "474eb9a1b66e0c65c8bebc0ceacb2060ae814650f16d7107f3c34e5bffa5f783"
+content-hash = "696ad8e8acc42d70be8b084f6f015210d4b552830da4dc66d8885ab2f84596d7"
