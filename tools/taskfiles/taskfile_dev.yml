@@ -70,7 +70,11 @@ tasks:
 
   poetry-lock:
     desc: Lock dependencies in metapkg
+    vars:
+      POETRY_VERSION:
+        sh: cat .poetry-version
     cmds:
+      - poetry self update {{.POETRY_VERSION}}
       - poetry lock --no-update --directory={{.METAPKG_DIR}}
     requires:
       vars:
