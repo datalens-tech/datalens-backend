@@ -1,0 +1,6 @@
+# FROM postgres:13-alpine3.20
+FROM postgres:13-alpine3.20
+
+COPY docker-entrypoint-initdb.d/extensions.sql /docker-entrypoint-initdb.d/extensions.sql
+
+CMD ["postgres"]

@@ -82,8 +82,7 @@ services:
   # INFRA
   pg-us:
     build:
-      context: ../../lib/testenv-common/images
-      dockerfile: Dockerfile.pg-us
+      context: ../../lib/testenv-common/images/pg-us
     environment:
       POSTGRES_DB: us-db-ci_purgeable
       POSTGRES_USER: us
@@ -95,8 +94,7 @@ services:
     labels:
       datalens.ci.service: united-storage
     build:
-      context: ../../lib/testenv-common/images
-      dockerfile: Dockerfile.us
+      context: ../../lib/testenv-common/images/us
     depends_on:
       - pg-us
     environment:
