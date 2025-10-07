@@ -167,6 +167,7 @@ dl-sqlalchemy-oracle = {develop = true, path = "../lib/dl_sqlalchemy_oracle"}
 dl-sqlalchemy-postgres = {develop = true, path = "../lib/dl_sqlalchemy_postgres"}
 dl-sqlalchemy-promql = {develop = true, path = "../lib/dl_sqlalchemy_promql"}
 dl-task-processor = {develop = true, path = "../lib/dl_task_processor"}
+dl-temporal = {develop = true, path = "../lib/dl_temporal"}
 dl-testing = {develop = true, path = "../lib/dl_testing"}
 dl-type-transformer = {develop = true, path = "../lib/dl_type_transformer"}
 dl-us-client = {develop = true, path = "../lib/dl_us_client"}
