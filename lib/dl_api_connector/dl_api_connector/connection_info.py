@@ -4,7 +4,6 @@ from importlib.resources import as_file
 import logging
 from typing import (
     ClassVar,
-    Optional,
     final,
 )
 
@@ -22,11 +21,12 @@ LOGGER = logging.getLogger(__name__)
 @attr.s
 class ConnectionInfoProvider:
     title_translatable: ClassVar[Translatable]
-    alias: ClassVar[Optional[str]] = None
-    icon_data_standard: Optional[str] = attr.ib(default=None)
-    icon_data_nav: Optional[str] = attr.ib(default=None)
-    icon_data_standard_filepath: Optional[Traversable] = attr.ib(default=None)
-    icon_data_nav_filepath: Optional[Traversable] = attr.ib(default=None)
+    alias: ClassVar[str | None] = None
+    history: ClassVar[bool] = True
+    icon_data_standard: str | None = attr.ib(default=None)
+    icon_data_nav: str | None = attr.ib(default=None)
+    icon_data_standard_filepath: Traversable | None = attr.ib(default=None)
+    icon_data_nav_filepath: Traversable | None = attr.ib(default=None)
 
     @classmethod
     @final

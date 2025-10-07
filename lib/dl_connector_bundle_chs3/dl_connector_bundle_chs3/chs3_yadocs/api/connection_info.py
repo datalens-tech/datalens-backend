@@ -13,6 +13,7 @@ from dl_connector_bundle_chs3.chs3_yadocs.assets.icons import (
 
 class YaDocsFileS3ConnectionInfoProvider(ConnectionInfoProvider):
     title_translatable = Translatable("label_connector-yadocs")
+    history = False
 
     def __attrs_post_init__(self) -> None:
         self.icon_data_standard_filepath = files(standard).joinpath("yadocs.svg")

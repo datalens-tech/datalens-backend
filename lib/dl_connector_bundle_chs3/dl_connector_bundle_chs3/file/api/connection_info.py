@@ -13,6 +13,7 @@ from dl_connector_bundle_chs3.file.assets.icons import (
 
 class FileS3ConnectionInfoProvider(ConnectionInfoProvider):
     title_translatable = Translatable("label_connector-file")
+    history = False
 
     def __attrs_post_init__(self) -> None:
         self.icon_data_standard_filepath = files(standard).joinpath("file.svg")
