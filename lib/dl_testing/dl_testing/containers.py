@@ -88,3 +88,9 @@ def get_test_container_hostport(
         port = int(port_pair[0])
 
     return HostPort(host=host, port=port)
+
+
+__all__ = [
+    "get_test_container_hostport",
+    "HostPort",
+]

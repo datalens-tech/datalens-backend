@@ -7,13 +7,21 @@ import dl_temporal
 import dl_testing
 
 
-@pytest.fixture(name="temporal_client_settings")
-def temporal_client_settings() -> dl_temporal.TemporalClientSettings:
+@pytest.fixture(name="temporal_hostport")
+def temporal_hostport() -> dl_testing.HostPort:
     hostport = dl_testing.get_test_container_hostport("temporal")
+    dl_testing.wait_for_port(hostport.host, hostport.port)
 
+    return hostport
+
+
+@pytest.fixture(name="temporal_client_settings")
+def temporal_client_settings(
+    temporal_hostport: dl_testing.HostPort,
+) -> dl_temporal.TemporalClientSettings:
     return dl_temporal.TemporalClientSettings(
-        host=hostport.host,
-        port=hostport.port,
+        host=temporal_hostport.host,
+        port=temporal_hostport.port,
         namespace="dl_temporal_tests",
     )
 
