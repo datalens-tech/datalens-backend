@@ -1,39 +1,18 @@
-import abc
 import asyncio
 import datetime
 import logging
-from typing import Mapping
 
 import attrs
-import temporalio.client as temporalio_client
+import temporalio.api.workflowservice.v1
+import temporalio.client
+import temporalio.service
 from typing_extensions import Self
+
+import dl_temporal.client.exc as exc
+import dl_temporal.client.metadata as metadata
 
 
 LOGGER = logging.getLogger(__name__)
-
-
-@attrs.define(kw_only=True, frozen=True)
-class MetadataProvider(abc.ABC):
-    """
-    Metadata provider.
-    ttl:
-        TTL of the metadata. If None, the metadata will be set once and then never updated.
-    error_retry_delay:
-        Error retry delay. If an error occurs, the client will wait for this duration before retrying.
-    """
-
-    ttl: datetime.timedelta | None = None
-    error_retry_delay: datetime.timedelta = attrs.field(default=datetime.timedelta(seconds=30))
-
-    @abc.abstractmethod
-    async def get_metadata(self) -> Mapping[str, str]:
-        pass
-
-
-@attrs.define(kw_only=True, frozen=True)
-class EmptyMetadataProvider(MetadataProvider):
-    async def get_metadata(self) -> Mapping[str, str]:
-        return {}
 
 
 @attrs.define(kw_only=True, frozen=True)
@@ -42,7 +21,7 @@ class TemporalClientSettings:
     host: str
     port: int = 7233
     tls: bool = False
-    metadata_provider: MetadataProvider = attrs.field(factory=EmptyMetadataProvider)
+    metadata_provider: metadata.MetadataProvider = attrs.field(factory=metadata.EmptyMetadataProvider)
 
     @property
     def target_host(self) -> str:
@@ -51,8 +30,8 @@ class TemporalClientSettings:
 
 @attrs.define(kw_only=True)
 class TemporalClient:
-    base_client: temporalio_client.Client
-    metadata_provider: MetadataProvider
+    base_client: temporalio.client.Client
+    metadata_provider: metadata.MetadataProvider
 
     _update_metadata_task: asyncio.Task = attrs.field(init=False)
 
@@ -61,7 +40,7 @@ class TemporalClient:
         metadata_provider = settings.metadata_provider
         rpc_metadata = await metadata_provider.get_metadata()
 
-        temporal_client = await temporalio_client.Client.connect(
+        temporal_client = await temporalio.client.Client.connect(
             target_host=settings.target_host,
             namespace=settings.namespace,
             lazy=True,
@@ -96,6 +75,10 @@ class TemporalClient:
         if self._update_metadata_task.done():
             return
         self._update_metadata_task.cancel()
+        try:
+            await self._update_metadata_task
+        except asyncio.CancelledError:
+            pass
 
     async def check_health(self) -> bool:
         try:
@@ -104,3 +87,35 @@ class TemporalClient:
             )
         except Exception:
             return False
+
+    async def check_auth(self) -> bool:
+        try:
+            # Can be replaced with any other RPC call that requires auth
+            await self.base_client.workflow_service.describe_namespace(
+                req=temporalio.api.workflowservice.v1.DescribeNamespaceRequest(
+                    namespace=self.base_client.namespace,
+                ),
+            )
+        except temporalio.service.RPCError as e:
+            try:
+                exc.wrap_temporal_error(e)
+            except exc.PermissionDenied:
+                return False
+
+        return True
+
+    async def register_namespace(
+        self,
+        namespace: str,
+        workflow_execution_retention_period: datetime.timedelta,
+    ) -> None:
+        period: dict[str, int] = {"seconds": int(workflow_execution_retention_period.total_seconds())}
+        try:
+            await self.base_client.workflow_service.register_namespace(
+                req=temporalio.api.workflowservice.v1.RegisterNamespaceRequest(
+                    namespace=namespace,
+                    workflow_execution_retention_period=period,  # type: ignore # so we don't need to import protobuf
+                ),
+            )
+        except temporalio.service.RPCError as e:
+            exc.wrap_temporal_error(e)

@@ -1,20 +1,24 @@
 from .client import (
+    TemporalClient,
+    TemporalClientSettings,
+)
+from .exc import (
     AlreadyExists,
+    PermissionDenied,
+    TemporalClientError,
+)
+from .metadata import (
     EmptyMetadataProvider,
     MetadataProvider,
-    PermissionDenied,
-    TemporalClient,
-    TemporalClientError,
-    TemporalClientSettings,
 )
 
 
 __all__ = [
     "MetadataProvider",
     "EmptyMetadataProvider",
-    "TemporalClientError",
     "TemporalClient",
     "TemporalClientSettings",
-    "AlreadyExists",
+    "TemporalClientError",
     "PermissionDenied",
+    "AlreadyExists",
 ]
