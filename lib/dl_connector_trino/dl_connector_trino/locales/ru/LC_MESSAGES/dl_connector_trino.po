@@ -52,3 +52,6 @@ msgstr ""
 
 msgid "source_templates-label-trino_catalog"
 msgstr "Имя каталога"
+
+msgid "db_name-label"
+msgstr "Каталог"

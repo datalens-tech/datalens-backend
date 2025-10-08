@@ -54,19 +54,36 @@ TRINO_TABLES = sa.Table(
     sa.Column("table_name", sa.String),
     schema="information_schema",
 )
-GET_TRINO_TABLES_QUERY = (
-    sa.select(
+
+
+def get_trino_tables_query(
+    search_text: str | None = None,
+    limit: int | None = None,
+    offset: int | None = None,
+) -> sa.sql.Select:
+    """Build a dynamic query to get Trino tables with optional filtering and pagination."""
+
+    query = sa.select(
         TRINO_TABLES.c.table_schema,
         TRINO_TABLES.c.table_name,
-    )
-    .where(
+    ).where(
         ~TRINO_TABLES.c.table_schema.in_(TRINO_SYSTEM_SCHEMAS),
     )
-    .order_by(
+
+    if search_text is not None:
+        query = query.where(TRINO_TABLES.c.table_name.like(f"%{search_text}%"))
+
+    query = query.order_by(
         TRINO_TABLES.c.table_schema,
         TRINO_TABLES.c.table_name,
     )
-)
+
+    if limit is not None:
+        query = query.limit(limit)
+    if offset is not None:
+        query = query.offset(offset)
+
+    return query
 
 
 class CustomHTTPAdapter(HTTPAdapter):
@@ -202,7 +219,13 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
         Regardless accepting schema_ident, this method returns all tables from the catalog (schema_ident.db_name).
         schema_ident.schema_name is ignored.
         """
-        result = self.execute(DBAdapterQuery(GET_TRINO_TABLES_QUERY, db_name=schema_ident.db_name))
+        query = (
+            get_trino_tables_query(search_text=page_ident.search_text, limit=page_ident.limit, offset=page_ident.offset)
+            if page_ident
+            else get_trino_tables_query()
+        )
+
+        result = self.execute(DBAdapterQuery(query, db_name=schema_ident.db_name))
         return [
             TableIdent(
                 db_name=schema_ident.db_name,
