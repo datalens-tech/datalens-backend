@@ -39,7 +39,7 @@ class TestTrinoConnection(TrinoConnectionTestBase, DefaultConnectorConnectionTes
         if expected_status == 200:
             assert "sources" in resp_data, resp_data
             assert isinstance(resp_data["sources"], list), resp_data
-            assert resp_data
+            assert resp_data["sources"], resp_data["sources"]
         else:
             assert resp_data.get("code") == "ERR.DS_API.INVALID_REQUEST"
             assert resp_data.get("message")
