@@ -175,22 +175,16 @@ class DefaultConnectionTestClass(RegulatedTestCase, BaseConnectionTestClass[_CON
         assert loaded_conn.data.data_export_forbidden is True
         assert loaded_conn.data_export_forbidden is True
 
-    def test_get_source_templates_paginated_failures(
+    def test_get_source_templates_paginated_fail_when_db_name_is_required(
         self,
         saved_connection: _CONN_TV,
         sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
     ) -> None:
-        """Test failure scenarios for get_data_source_templates_paginated method.
-        This is a general case, meaning that no advanced listing parameters are supported by default.
-        It tests only possible validation failures.
-        """
-
         conn = saved_connection
 
         def sync_conn_executor_factory_for_conn(connection: ConnectionBase) -> SyncConnExecutorBase:
             return sync_conn_executor_factory()
 
-        # Test 1: Search without db_name when db_name is required for search
         # This will only fail for connections that have db_name_required_for_search = True
         if conn.supports_source_search is True and conn.db_name_required_for_search is True:
             with pytest.raises(InvalidRequestError, match="db_name parameter is required when search_text is provided"):
@@ -200,7 +194,16 @@ class DefaultConnectionTestClass(RegulatedTestCase, BaseConnectionTestClass[_CON
                     # db_name is intentionally omitted
                 )
 
-        # Test 2: Search when search is not supported
+    def test_get_source_templates_paginated_fail_when_search_is_not_supported(
+        self,
+        saved_connection: _CONN_TV,
+        sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
+    ) -> None:
+        conn = saved_connection
+
+        def sync_conn_executor_factory_for_conn(connection: ConnectionBase) -> SyncConnExecutorBase:
+            return sync_conn_executor_factory()
+
         # This will only fail for connections that have supports_source_search = False
         if conn.supports_source_search is False:
             with pytest.raises(InvalidRequestError, match="search_text parameter is not supported"):
@@ -208,13 +211,31 @@ class DefaultConnectionTestClass(RegulatedTestCase, BaseConnectionTestClass[_CON
                     sync_conn_executor_factory_for_conn, search_text="some_search_term"
                 )
 
-        # Test 3: Offset when pagination is not supported
+    def test_get_source_templates_paginated_fail_with_unsupported_offset(
+        self,
+        saved_connection: _CONN_TV,
+        sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
+    ) -> None:
+        conn = saved_connection
+
+        def sync_conn_executor_factory_for_conn(connection: ConnectionBase) -> SyncConnExecutorBase:
+            return sync_conn_executor_factory()
+
         # This will only fail for connections that have supports_source_pagination = False
         if conn.supports_source_pagination is False:
             with pytest.raises(InvalidRequestError, match="offset parameter is not supported"):
                 conn.get_data_source_templates_paginated(sync_conn_executor_factory_for_conn, offset=1)
 
-        # Test 4: db_name when db name listing is not supported
+    def test_get_source_templates_paginated_fail_with_unsupported_db_names(
+        self,
+        saved_connection: _CONN_TV,
+        sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
+    ) -> None:
+        conn = saved_connection
+
+        def sync_conn_executor_factory_for_conn(connection: ConnectionBase) -> SyncConnExecutorBase:
+            return sync_conn_executor_factory()
+
         # This will only fail for connections that have supports_db_name_listing = False
         if conn.supports_db_name_listing is False:
             with pytest.raises(InvalidRequestError, match="db_name parameter is not supported"):
