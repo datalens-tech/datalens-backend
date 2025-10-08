@@ -3413,6 +3413,7 @@ develop = true
 [package.dependencies]
 attrs = "*"
 temporalio = "*"
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
