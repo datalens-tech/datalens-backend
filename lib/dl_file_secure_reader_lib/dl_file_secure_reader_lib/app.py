@@ -4,6 +4,7 @@ import os
 
 from aiohttp import web
 
+from dl_file_secure_reader_lib.patches.patch_openpyxl import patch_openpyxl
 from dl_file_secure_reader_lib.resources import (
     ping,
     reader,
@@ -15,6 +16,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 def create_app(settings: FileSecureReaderSettings) -> web.Application:
+    patch_openpyxl()
+
     app = web.Application()
 
     app.router.add_route("*", "/reader/ping", ping.PingView)
