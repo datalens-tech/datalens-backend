@@ -8,7 +8,7 @@ from dl_connector_trino_tests.db.api.base import TrinoConnectionTestBase
 
 class TestTrinoConnection(TrinoConnectionTestBase, DefaultConnectorConnectionTestSuite):
     @pytest.mark.parametrize(
-        "search_text,limit,offset,db_name,expected_status_code",
+        "args,expected_status_code",
         [
             ("", 200),
             ("?search_text=ampl&db_name=test_memory_catalog", 200),
