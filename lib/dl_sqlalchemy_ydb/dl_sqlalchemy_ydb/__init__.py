@@ -25,3 +25,10 @@ else:
 
     sys.modules["ydb._grpc.common.draft"] = sys.modules["ydb._grpc.v5.draft"]
     sys.modules["ydb._grpc.common.draft.protos"] = sys.modules["ydb._grpc.v5.draft.protos"]
+
+
+import dl_sqlalchemy_ydb.dialect
+import dl_sqlalchemy_ydb.compilers as _
+
+
+dl_sqlalchemy_ydb.dialect.register_dialect()

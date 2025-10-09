@@ -36,6 +36,28 @@ TYPES_SPEC = {
         base.WhitelistTypeSpec(name="Timestamp64", sa_type=ydb_dialect.YqlTimestamp64),
         base.WhitelistTypeSpec(name="Interval", sa_type=ydb_dialect.YqlInterval),
         base.WhitelistTypeSpec(name="Interval64", sa_type=ydb_dialect.YqlInterval64),
+        # TODO: Support all possible Optional/non-Optional and types as List items
+        base.WhitelistTypeSpec(name="List<Float>", sa_type=ydb_dialect.YqlListType, nested_sa_type=sa.types.FLOAT),
+        base.WhitelistTypeSpec(name="List<Double>", sa_type=ydb_dialect.YqlListType, nested_sa_type=ydb_cast_types.Double),
+        base.WhitelistTypeSpec(name="List<Int64>", sa_type=ydb_dialect.YqlListType, nested_sa_type=ydb_sa.types.Int64),
+        base.WhitelistTypeSpec(name="List<String>", sa_type=ydb_dialect.YqlListType, nested_sa_type=sa.types.TEXT),
+        base.WhitelistTypeSpec(name="List<Utf8>", sa_type=ydb_dialect.YqlListType, nested_sa_type=ydb_cast_types.Utf8),
+        base.WhitelistTypeSpec(
+            name="List<Float?>", sa_type=ydb_dialect.YqlOptionalItemListType, nested_sa_type=sa.types.FLOAT
+        ),
+        base.WhitelistTypeSpec(
+            name="List<Double?>", sa_type=ydb_dialect.YqlOptionalItemListType, nested_sa_type=ydb_cast_types.Double
+        ),
+        base.WhitelistTypeSpec(
+            name="List<Int64?>", sa_type=ydb_dialect.YqlOptionalItemListType, nested_sa_type=ydb_sa.types.Int64
+        ),
+        base.WhitelistTypeSpec(
+            name="List<String?>", sa_type=ydb_dialect.YqlOptionalItemListType, nested_sa_type=sa.types.TEXT
+        ),
+        base.WhitelistTypeSpec(
+            name="List<Utf8?>", sa_type=ydb_dialect.YqlOptionalItemListType, nested_sa_type=ydb_cast_types.Utf8
+        ),
+        # TODO: Add cast to Utf8 and UInt (including List)
     ]
 }
 
@@ -371,9 +393,18 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 # > Utf8
                 TYPES_SPEC["Utf8"],
             ],
-            DataType.ARRAY_STR: [],
-            DataType.ARRAY_INT: [],
-            DataType.ARRAY_FLOAT: [],
+            DataType.ARRAY_STR: [
+                TYPES_SPEC["List<String>"],
+                TYPES_SPEC["List<String?>"],
+            ],
+            DataType.ARRAY_INT: [
+                TYPES_SPEC["List<Int64>"],
+                TYPES_SPEC["List<Int64?>"],
+            ],
+            DataType.ARRAY_FLOAT: [
+                TYPES_SPEC["List<Double>"],
+                TYPES_SPEC["List<Double?>"],
+            ],
         }
         for yql_dialect in (D.YQL, D.YQ, D.YDB)
     }
