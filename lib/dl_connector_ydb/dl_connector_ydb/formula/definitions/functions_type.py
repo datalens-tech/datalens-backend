@@ -32,6 +32,20 @@ TYPES_SPEC = {
         base.WhitelistTypeSpec(name="Datetime", sa_type=ydb_dialect.YqlDateTime),
         base.WhitelistTypeSpec(name="Timestamp", sa_type=ydb_dialect.YqlTimestamp),
         base.WhitelistTypeSpec(name="Uuid", sa_type=sa.types.TEXT),
+        # TODO: Support all possible Optional/non-Optional and types as List items
+        base.WhitelistTypeSpec(name="List<Double>", sa_type=ydb_dialect.YqlListType, nested_sa_type=sa.types.FLOAT),
+        base.WhitelistTypeSpec(name="List<Int64>", sa_type=ydb_dialect.YqlListType, nested_sa_type=ydb_sa.types.Int64),
+        base.WhitelistTypeSpec(name="List<String>", sa_type=ydb_dialect.YqlListType, nested_sa_type=sa.types.TEXT),
+        base.WhitelistTypeSpec(
+            name="List<Double?>", sa_type=ydb_dialect.YqlOptionalItemListType, nested_sa_type=sa.types.FLOAT
+        ),
+        base.WhitelistTypeSpec(
+            name="List<Int64?>", sa_type=ydb_dialect.YqlOptionalItemListType, nested_sa_type=ydb_sa.types.Int64
+        ),
+        base.WhitelistTypeSpec(
+            name="List<String?>", sa_type=ydb_dialect.YqlOptionalItemListType, nested_sa_type=sa.types.TEXT
+        ),
+        # TODO: Add cast to Utf8 and UInt (including List)
     ]
 }
 
@@ -331,9 +345,18 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 # > UUID
                 # TYPES_SPEC["Uuid"],
             ],
-            DataType.ARRAY_STR: [],
-            DataType.ARRAY_INT: [],
-            DataType.ARRAY_FLOAT: [],
+            DataType.ARRAY_STR: [
+                TYPES_SPEC["List<String>"],
+                TYPES_SPEC["List<String?>"],
+            ],
+            DataType.ARRAY_INT: [
+                TYPES_SPEC["List<Int64>"],
+                TYPES_SPEC["List<Int64?>"],
+            ],
+            DataType.ARRAY_FLOAT: [
+                TYPES_SPEC["List<Double>"],
+                TYPES_SPEC["List<Double?>"],
+            ],
         }
         for yql_dialect in (D.YQL, D.YQ, D.YDB)
     }
