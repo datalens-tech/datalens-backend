@@ -37,6 +37,17 @@ def excel_data() -> bytes:
         return fd.read()
 
 
+@pytest.fixture(scope="session")
+def yadocs_corrupted_excel_data() -> bytes:
+    filename = "data_yadocs_corrupted.xlsx"
+
+    dirname = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(dirname, filename)
+
+    with open(path, "rb") as fd:
+        return fd.read()
+
+
 # Imported fixtures
 __all__ = [
     "aiohttp_client",
