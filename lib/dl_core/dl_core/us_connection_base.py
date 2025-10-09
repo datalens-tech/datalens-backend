@@ -536,14 +536,15 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             raise InvalidRequestError("offset parameter is not supported for this connection type")
 
         # If search is requested with db_name requirement
-        if (
-            search_text is not None
-            and self.supports_source_search
-            and self.db_name_required_for_search
-            and db_name is None
-        ):
+        if search_text and self.db_name_required_for_search and not db_name:
             raise InvalidRequestError(
                 "db_name parameter is required when search_text is provided for this connection type"
+            )
+
+        # If offset is requested with db_name requirement
+        if offset and self.db_name_required_for_search and not db_name:
+            raise InvalidRequestError(
+                "db_name parameter is required when offset > 0 is provided for this connection type"
             )
 
     @classmethod

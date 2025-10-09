@@ -33,6 +33,8 @@ LOGGER = logging.getLogger(__name__)
 class ConnectionSourcesQuerySchema(BaseSchema):
     search_text = ma_fields.String(required=False, load_default=None)
     limit = ma_fields.Integer(required=False, load_default=10_000)
+    offset = ma_fields.Integer(required=False, load_default=0)
+    db_name = ma_fields.String(required=False, load_default=None)
 
 
 class ConnectionItemQuerySchema(BaseSchema):
@@ -50,6 +52,10 @@ class ConnectionSourceTemplatesResponseSchema(BaseSchema):
     # # Minimal processing:
     sources = ma_fields.List(DataSourceTemplateResponseField)
     freeform_sources = ma_fields.List(DataSourceTemplateResponseField)
+
+
+class ConnectionDBNamesResponseSchema(BaseSchema):
+    db_names = ma_fields.List(ma_fields.String())
 
 
 class ConnectionInfoSourceSchemaResponseSchema(BaseSchema):
@@ -72,6 +78,10 @@ class ConnectionImportRequestSchema(BaseSchema):
 
 class ConnectionFormQuerySchema(BaseSchema):
     conn_id = ma_fields.String(default=None)
+
+
+class BadRequestResponseSchema(BaseSchema):
+    message = ma_fields.String()
 
 
 class GenericConnectionSchema(OneOfSchema):
