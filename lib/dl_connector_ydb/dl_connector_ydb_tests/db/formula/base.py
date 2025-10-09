@@ -3,15 +3,22 @@ import datetime
 from typing import (
     Generator,
     Optional,
+    Union,
 )
 
 from frozendict import frozendict
 import pytest
 import sqlalchemy as sa
+from sqlalchemy.sql.elements import ClauseElement
 
 from dl_core_testing.database import Db
 from dl_formula.core.datatype import DataType
-from dl_formula_testing.database import FormulaDbDispenser
+from dl_formula.core.nodes import Formula
+from dl_formula.definitions.scope import Scope
+from dl_formula_testing.database import (
+    FormulaDbConfig,
+    FormulaDbDispenser,
+)
 from dl_formula_testing.evaluator import (
     FIELD_TYPES,
     DbEvaluator,
@@ -40,6 +47,37 @@ class YqlDbDispenser(FormulaDbDispenser):
             return True, ""
         except Exception as exc:
             return False, str(exc)
+
+
+class YQLDbEvaluator(DbEvaluator):
+    def eval(  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
+        self,
+        formula: Union[str, Formula],
+        from_: Optional[ClauseElement] = None,
+        where: str | Formula | None = None,
+        many: bool = False,
+        other_fields: Optional[dict] = None,
+        order_by: Optional[list[str | Formula]] = None,
+        group_by: Optional[list[str | Formula]] = None,
+        first: bool = False,
+        required_scopes: int = Scope.EXPLICIT_USAGE,
+    ):
+        result = super().eval(
+            formula=formula,
+            from_=from_,
+            where=where,
+            many=many,
+            other_fields=other_fields,
+            order_by=order_by,
+            group_by=group_by,
+            first=first,
+            required_scopes=required_scopes,
+        )
+
+        if isinstance(result, list):
+            return [value.decode("utf-8", errors="replace") if isinstance(value, bytes) else value for value in result]
+
+        return result
 
 
 class YQLTestBase(FormulaConnectorTestBase):
@@ -138,3 +176,13 @@ class YQLTestBase(FormulaConnectorTestBase):
                 )
             ),
         )
+
+    @pytest.fixture(scope="class")
+    def dbe(self, db_config: FormulaDbConfig) -> DbEvaluator:
+        db = self.db_dispenser.get_database(db_config)
+        dbe = YQLDbEvaluator(
+            db=db,
+            attempts=self.eval_attempts,
+            retry_on_exceptions=self.retry_on_exceptions,
+        )
+        return dbe
