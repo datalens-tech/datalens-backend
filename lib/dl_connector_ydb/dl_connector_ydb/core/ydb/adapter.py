@@ -15,6 +15,7 @@ from ydb import DriverConfig
 from ydb.driver import credentials_impl
 import ydb.issues as ydb_cli_err
 import ydb_dbapi
+import ydb_dbapi.connections
 
 from dl_configs.utils import get_root_certificates
 from dl_constants.enums import ConnectionType
@@ -99,7 +100,8 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
         connection = db_engine.connect()
         try:
             # SA db_engine -> SA connection -> DBAPI connection -> YDB driver
-            driver = connection.connection._driver  # type: ignore  # 2024-01-24 # TODO: "DBAPIConnection" has no attribute "_driver"  [attr-defined]
+            dbapi_connection: ydb_dbapi.connections.BaseConnection = connection.connection
+            driver = dbapi_connection._driver
             assert driver
 
             queue = [db_name]
