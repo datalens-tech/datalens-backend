@@ -7,10 +7,14 @@ import sqlalchemy as sa
 from sqlalchemy import __version__ as sa_version
 from sqlalchemy.engine import reflection
 from sqlalchemy.exc import CompileError
+from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql import literal_column
+from sqlalchemy.sql.compiler import SQLCompiler
 from sqlalchemy.util.compat import inspect_getfullargspec
 import ydb
 import ydb_sqlalchemy.sqlalchemy as ydb_sa
+
+import dl_sqlalchemy_ydb.dialect as ydb_dialect
 
 
 if sa_version.startswith("2."):
@@ -252,6 +256,11 @@ class YqlListLiteral(FunctionElement):
 
     name = "list_literal"
     inherit_cache = True
+
+
+@compiles(ydb_dialect.YqlListLiteral)
+def _compile_list_literal(element: ydb_dialect.YqlListLiteral, compiler: SQLCompiler, **kw: Any) -> str:
+    return compiler.process(sa.func.AsList(*element.clauses), **kw)
 
 
 class CustomYqlTypeCompiler(ydb_sa.YqlTypeCompiler):
