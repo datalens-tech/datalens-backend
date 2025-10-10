@@ -18,7 +18,7 @@ LOGGER = logging.getLogger(__name__)
 def create_app(settings: FileSecureReaderSettings) -> web.Application:
     patch_openpyxl()
 
-    app = web.Application(logger=LOGGER)
+    app = web.Application()
 
     app.router.add_route("*", "/reader/ping", ping.PingView)
     app.router.add_route("*", "/reader/excel", reader.ReaderView)
