@@ -28,7 +28,6 @@ else:
 
 
 import dl_sqlalchemy_ydb.dialect
-import dl_sqlalchemy_ydb.compilers as _
 
 
 dl_sqlalchemy_ydb.dialect.register_dialect()
