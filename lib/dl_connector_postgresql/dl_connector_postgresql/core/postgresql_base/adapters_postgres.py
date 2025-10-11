@@ -25,13 +25,12 @@ from dl_connector_postgresql.core.postgresql_base.adapters_base_postgres import 
 from dl_connector_postgresql.core.postgresql_base.error_transformer import sync_pg_db_error_transformer
 from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
 
-
-if TYPE_CHECKING:
-    from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo
-    from dl_core.connection_models.common_models import (
-        PageIdent,
-        SchemaIdent,
-    )
+# if TYPE_CHECKING:
+from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo
+from dl_core.connection_models.common_models import (
+    PageIdent,
+    SchemaIdent,
+)
 
 
 @attr.s()
@@ -41,9 +40,6 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
     execution_options = {
         "stream_results": True,
     }
-
-    _LIST_ALL_TABLES_QUERY = PG_LIST_SOURCES_ALL_SCHEMAS_SQL
-    _LIST_TABLE_NAMES_QUERY = PG_LIST_TABLE_NAMES
 
     def get_connect_args(self) -> dict:
         return dict(
@@ -78,18 +74,27 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
         db_name = schema_ident.db_name
         db_engine = self.get_db_engine(db_name)
 
+        if not page_ident:
+            page_ident = PageIdent()
+
         if schema_ident.schema_name is not None:
-            # For a single schema, plug into the common SA code.
-            # (might not be ever used)
-
-            db_engine = self.get_db_engine(schema_ident.db_name)
-            table_list = db_engine.execute(sa.text(self._LIST_TABLE_NAMES_QUERY))
-            view_list = sa.inspect(db_engine).get_view_names(schema=schema_ident.schema_name)
-
-            result = ((schema_ident.schema_name, name) for name in itertools.chain(table_list, view_list))
+            table_and_view_query = self.get_list_table_and_view_names_query(
+                schema_name=schema_ident.schema_name,
+                search_text=page_ident.search_text,
+                limit=page_ident.limit,
+                offset=page_ident.offset
+            )
+            result_rows = db_engine.execute(table_and_view_query, {'schema': schema_ident.schema_name})
+            table_and_view_names = [row[0] for row in result_rows]
+            result = ((schema_ident.schema_name, name) for name in table_and_view_names)
         else:
             assert schema_ident.schema_name is None
-            result = db_engine.execute(sa.text(self._LIST_ALL_TABLES_QUERY))  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "CursorResult", variable has type "Generator[tuple[str, Any], None, None]")  [assignment]
+            all_tables_query = self.get_list_all_tables_query(
+                search_text=page_ident.search_text,
+                limit=page_ident.limit,
+                offset=page_ident.offset
+            )
+            result = ((row[0], row[1]) for row in db_engine.execute(all_tables_query))
 
         return [
             TableIdent(
