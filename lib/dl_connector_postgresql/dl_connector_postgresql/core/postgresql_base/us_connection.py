@@ -19,6 +19,8 @@ from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceColl
 class ConnectionPostgreSQLBase(ClassicConnectionSQL):
     has_schema = True
     default_schema_name = "public"
+    supports_source_search = True
+    supports_source_pagination = True
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
@@ -40,5 +42,10 @@ class ConnectionPostgreSQLBase(ClassicConnectionSQL):
         assert self.has_schema
         return [
             dict(schema_name=tid.schema_name, table_name=tid.table_name)
-            for tid in self.get_tables(conn_executor_factory=conn_executor_factory, schema_name=None)
+            for tid in self.get_tables(
+                conn_executor_factory=conn_executor_factory,
+                search_text=search_text,
+                limit=limit,
+                offset=offset
+            )
         ]
