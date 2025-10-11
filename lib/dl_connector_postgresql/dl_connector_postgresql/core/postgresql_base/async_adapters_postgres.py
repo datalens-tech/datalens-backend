@@ -71,26 +71,9 @@ from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConn
 from dl_connector_postgresql.core.postgresql_base.utils import compile_pg_query
 
 
-# if TYPE_CHECKING:
-#     from dl_core.connection_models.common_models import SchemaIdent
-
 _DBA_ASYNC_POSTGRES_TV = TypeVar("_DBA_ASYNC_POSTGRES_TV", bound="AsyncPostgresAdapter")
 
 LOGGER = logging.getLogger(__name__)
-
-
-PG_LIST_SCHEMA_NAMES = """
-SELECT nspname FROM pg_namespace
-WHERE nspname NOT LIKE 'pg_%'
-ORDER BY nspname
-"""
-
-# https://github.com/sqlalchemy/sqlalchemy/blob/rel_1_4/lib/sqlalchemy/dialects/postgresql/base.py#L3802
-PG_LIST_VIEW_NAMES = """
-SELECT c.relname FROM pg_class c
-JOIN pg_namespace n ON n.oid = c.relnamespace
-WHERE n.nspname = :schema AND c.relkind IN ('v', 'm')
-"""
 
 
 # native SA asyncpg dialect is beta now
@@ -125,11 +108,6 @@ class AsyncPostgresAdapter(
         # not connection/timeout error
         OSError,
     )
-
-    # _LIST_ALL_TABLES_QUERY = PG_LIST_SOURCES_ALL_SCHEMAS_SQL
-    # _LIST_SCHEMA_NAMES_QUERY = PG_LIST_SCHEMA_NAMES
-    # _LIST_TABLE_NAMES_QUERY = PG_LIST_TABLE_NAMES
-    # _LIST_VIEW_NAMES_QUERY = PG_LIST_VIEW_NAMES
 
     def _make_async_db_version_action(self) -> AsyncDBVersionAdapterAction:
         return AsyncDBVersionAdapterActionViaFunctionQuery(async_adapter=self)
@@ -363,12 +341,6 @@ class AsyncPostgresAdapter(
             )
             for rel in relations
         ]
-
-    # async def _get_view_names(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-    #     return await self._get_relation_names(schema_ident, self._LIST_VIEW_NAMES_QUERY)
-
-    # async def _get_table_names(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-    #     return await self._get_relation_names(schema_ident, self._LIST_TABLE_NAMES_QUERY)
 
     async def _get_tables_single_schema(
         self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None
