@@ -23,7 +23,7 @@ from dl_api_connector.form_config.models.common import (
     TFieldName,
     TopLevelFieldName,
     inner,
-    remap_skip_if_null,
+    remap,
 )
 from dl_api_connector.form_config.models.rows import CustomizableRow
 from dl_api_connector.form_config.models.rows.base import (
@@ -43,13 +43,13 @@ if TYPE_CHECKING:
 @attr.s(kw_only=True, frozen=True)
 class FormUIOverride(SerializableConfig):
     show_create_dataset_btn: Optional[bool] = attr.ib(
-        default=None, metadata=remap_skip_if_null("showCreateDatasetButton")
+        default=None, metadata=remap("showCreateDatasetButton")
     )
     show_create_ql_chart_btn: Optional[bool] = attr.ib(
-        default=None, metadata=remap_skip_if_null("showCreateQlChartButton")
+        default=None, metadata=remap("showCreateQlChartButton")
     )
     show_create_editor_chart_btn: Optional[bool] = attr.ib(
-        default=None, metadata=remap_skip_if_null("showCreateEditorChartButton")
+        default=None, metadata=remap("showCreateEditorChartButton")
     )
 
 
@@ -71,9 +71,9 @@ class ConnectionForm(SerializableConfig):
 
     title: str = attr.ib()
     rows: list[FormRow] = attr.ib()
-    api_schema: Optional[FormApiSchema] = attr.ib(default=None, metadata=remap_skip_if_null("apiSchema"))
-    template_name: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null("templateName"))
-    form_ui_override: Optional[FormUIOverride] = attr.ib(default=None, metadata=remap_skip_if_null("uiSchema"))
+    api_schema: Optional[FormApiSchema] = attr.ib(default=None, metadata=remap("apiSchema"))
+    template_name: Optional[str] = attr.ib(default=None, metadata=remap("templateName"))
+    form_ui_override: Optional[FormUIOverride] = attr.ib(default=None, metadata=remap("uiSchema"))
 
     implicit_form_fields: set[TFieldName] = attr.ib(factory=set, metadata=inner())
 
