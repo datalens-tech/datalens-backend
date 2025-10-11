@@ -7,7 +7,6 @@ from datetime import datetime
 import logging
 import typing
 from typing import (
-    TYPE_CHECKING,
     Any,
     AsyncIterator,
     Callable,
@@ -65,8 +64,6 @@ from dl_sqlalchemy_postgres.asyncpg import DBAPIMock
 
 from dl_connector_postgresql.core.postgresql_base.adapters_base_postgres import (
     OID_KNOWLEDGE,
-    PG_LIST_SOURCES_ALL_SCHEMAS_SQL,
-    PG_LIST_TABLE_NAMES,
     BasePostgresAdapter,
 )
 from dl_connector_postgresql.core.postgresql_base.error_transformer import make_async_pg_error_transformer
@@ -373,7 +370,9 @@ class AsyncPostgresAdapter(
     # async def _get_table_names(self, schema_ident: SchemaIdent) -> list[TableIdent]:
     #     return await self._get_relation_names(schema_ident, self._LIST_TABLE_NAMES_QUERY)
 
-    async def _get_tables_single_schema(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
+    async def _get_tables_single_schema(
+        self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None
+    ) -> list[TableIdent]:
         if not page_ident:
             page_ident = PageIdent()
         assert schema_ident.schema_name
@@ -381,7 +380,7 @@ class AsyncPostgresAdapter(
             schema_name=schema_ident.schema_name,
             search_text=page_ident.search_text,
             limit=page_ident.limit,
-            offset=page_ident.offset
+            offset=page_ident.offset,
         )
         result = await self.execute(DBAdapterQuery(table_and_view_query))
         table_and_view_names = []
@@ -408,9 +407,7 @@ class AsyncPostgresAdapter(
             page_ident = PageIdent()
 
         all_tables_query = self.get_list_all_tables_query(
-            search_text=page_ident.search_text,
-            limit=page_ident.limit,
-            offset=page_ident.offset
+            search_text=page_ident.search_text, limit=page_ident.limit, offset=page_ident.offset
         )
         result = await self.execute(DBAdapterQuery(all_tables_query))
         return [

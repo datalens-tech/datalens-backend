@@ -1,4 +1,5 @@
 from typing import Optional
+
 import pytest
 
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase

@@ -57,9 +57,7 @@ class TestPostgreSQLConnection(
         # # To reconsider later:
         # assert pg_partitioned_table + '_01' not in names
 
-    def test_get_tables(
-        self, saved_connection: ConnectionPostgreSQL, sync_conn_executor_factory
-    ) -> None:
+    def test_get_tables(self, saved_connection: ConnectionPostgreSQL, sync_conn_executor_factory) -> None:
         conn = saved_connection
 
         def sync_conn_executor_factory_for_conn(connection):
@@ -77,9 +75,7 @@ class TestPostgreSQLConnection(
             return sync_conn_executor_factory()
 
         # test search
-        param_combinations = conn.get_parameter_combinations(
-            sync_conn_executor_factory_for_conn, search_text="ampl"
-        )
+        param_combinations = conn.get_parameter_combinations(sync_conn_executor_factory_for_conn, search_text="ampl")
         assert param_combinations
         assert all("ampl" in i["table_name"] for i in param_combinations)
 
@@ -138,12 +134,8 @@ class TestPostgreSQLConnection(
         assert len(templates) == 0
 
         # Test with None and empty search_text (should be equivalent to no search)
-        templates_none = conn.get_data_source_templates_paginated(
-            sync_conn_executor_factory_for_conn, search_text=None
-        )
-        templates_no_search = conn.get_data_source_templates_paginated(
-            sync_conn_executor_factory_for_conn
-        )
+        templates_none = conn.get_data_source_templates_paginated(sync_conn_executor_factory_for_conn, search_text=None)
+        templates_no_search = conn.get_data_source_templates_paginated(sync_conn_executor_factory_for_conn)
         templates_empty_search = conn.get_data_source_templates_paginated(
             sync_conn_executor_factory_for_conn, search_text=""
         )

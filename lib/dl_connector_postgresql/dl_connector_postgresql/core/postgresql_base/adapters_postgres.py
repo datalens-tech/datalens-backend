@@ -1,36 +1,31 @@
 from __future__ import annotations
 
 import contextlib
-import itertools
 import typing
 from typing import (
-    TYPE_CHECKING,
     Any,
     Callable,
     Optional,
 )
 
 import attr
-import sqlalchemy as sa
 
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
-from dl_core.connection_models.common_models import TableIdent
-
-from dl_connector_postgresql.core.postgresql_base.adapters_base_postgres import (
-    OID_KNOWLEDGE,
-    PG_LIST_SOURCES_ALL_SCHEMAS_SQL,
-    PG_LIST_TABLE_NAMES,
-    BasePostgresAdapter,
-)
-from dl_connector_postgresql.core.postgresql_base.error_transformer import sync_pg_db_error_transformer
-from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
 
 # if TYPE_CHECKING:
 from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo
 from dl_core.connection_models.common_models import (
     PageIdent,
     SchemaIdent,
+    TableIdent,
 )
+
+from dl_connector_postgresql.core.postgresql_base.adapters_base_postgres import (
+    OID_KNOWLEDGE,
+    BasePostgresAdapter,
+)
+from dl_connector_postgresql.core.postgresql_base.error_transformer import sync_pg_db_error_transformer
+from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
 
 
 @attr.s()
@@ -82,17 +77,15 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
                 schema_name=schema_ident.schema_name,
                 search_text=page_ident.search_text,
                 limit=page_ident.limit,
-                offset=page_ident.offset
+                offset=page_ident.offset,
             )
-            result_rows = db_engine.execute(table_and_view_query, {'schema': schema_ident.schema_name})
+            result_rows = db_engine.execute(table_and_view_query, {"schema": schema_ident.schema_name})
             table_and_view_names = [row[0] for row in result_rows]
             result = ((schema_ident.schema_name, name) for name in table_and_view_names)
         else:
             assert schema_ident.schema_name is None
             all_tables_query = self.get_list_all_tables_query(
-                search_text=page_ident.search_text,
-                limit=page_ident.limit,
-                offset=page_ident.offset
+                search_text=page_ident.search_text, limit=page_ident.limit, offset=page_ident.offset
             )
             result = ((row[0], row[1]) for row in db_engine.execute(all_tables_query))
 
