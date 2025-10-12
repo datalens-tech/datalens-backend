@@ -18,7 +18,6 @@ HORIZONTAL_ALIGNMENTS_CORRECTION_MAP = {
 
 class HorizontalAlignmentSelfCorrectionSet(NoneSet):
     def __set__(self, instance: Any, value: Any) -> None:
-        LOGGER.debug("Setting horizontal alignment value to %s", value)
         if value in HORIZONTAL_ALIGNMENTS_CORRECTION_MAP:
             LOGGER.debug(
                 "Patching horizontal alignment value %s to %s", value, HORIZONTAL_ALIGNMENTS_CORRECTION_MAP[value]
@@ -28,5 +27,5 @@ class HorizontalAlignmentSelfCorrectionSet(NoneSet):
 
 
 def patch_openpyxl() -> None:
-    LOGGER.debug("Patching openpyxl library")
+    LOGGER.debug("Patching openpyxl library BI-6635")
     Alignment.horizontal = HorizontalAlignmentSelfCorrectionSet(values=horizontal_alignments)

@@ -65,7 +65,7 @@ def parse_excel_data(data: BinaryIO, feature_excel_read_only: bool) -> list:
             read_only=feature_excel_read_only,
         )
     except Exception as e:
-        LOGGER.exception("Failed to parse excel file: %s\n\nTraceback:\n", e, exc_info=True)
+        LOGGER.exception("Failed to parse excel file: %s", e)
         raise web.HTTPUnprocessableEntity(reason="Invalid excel file")
     for sheetname in wb.sheetnames:
         sheet = wb[sheetname]
