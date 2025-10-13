@@ -9,6 +9,8 @@ version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = "*"
+dl-pydantic = {path = "../../dl_pydantic"}
+dl-utils = {path = "../../dl_utils"}
 python = ">=3.10, <3.13"
 temporalio = "*"
 typing-extensions = "*"

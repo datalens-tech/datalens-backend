@@ -8,6 +8,7 @@ import temporalio.client
 import temporalio.service
 from typing_extensions import Self
 
+import dl_temporal.base as base
 import dl_temporal.client.exc as exc
 import dl_temporal.client.metadata as metadata
 
@@ -21,6 +22,7 @@ class TemporalClientSettings:
     host: str
     port: int = 7233
     tls: bool = False
+    lazy: bool = True
     metadata_provider: metadata.MetadataProvider = attrs.field(factory=metadata.EmptyMetadataProvider)
 
     @property
@@ -43,9 +45,10 @@ class TemporalClient:
         temporal_client = await temporalio.client.Client.connect(
             target_host=settings.target_host,
             namespace=settings.namespace,
-            lazy=True,
+            lazy=settings.lazy,
             tls=settings.tls,
             rpc_metadata=rpc_metadata,
+            data_converter=base.DataConverter(),
         )
 
         return cls(
@@ -119,3 +122,19 @@ class TemporalClient:
             )
         except temporalio.service.RPCError as e:
             exc.wrap_temporal_error(e)
+
+    async def start_workflow(
+        self,
+        workflow: type[base.WorkflowProtocol[base.SelfType, base.WorkflowParamsT, base.WorkflowResultT]],
+        params: base.WorkflowParamsT,
+        id: str,
+        task_queue: str,
+    ) -> temporalio.client.WorkflowHandle[base.SelfType, base.WorkflowResultT]:
+        return await self.base_client.start_workflow(
+            workflow=workflow.name,
+            arg=params,
+            id=id,
+            task_queue=task_queue,
+            result_type=workflow.Result,
+            execution_timeout=params.execution_timeout,
+        )
