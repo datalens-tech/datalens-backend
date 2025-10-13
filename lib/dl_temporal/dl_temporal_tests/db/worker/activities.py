@@ -43,6 +43,6 @@ class Activity(dl_temporal.BaseActivity):
             activity_dict_result=params.activity_dict_param,
             activity_timedelta_result=params.activity_timedelta_param,
             activity_uuid_result=params.activity_uuid_param,
-            activity_datetime_result=params.activity_datetime_param,
             activity_date_result=params.activity_date_param,
+            activity_datetime_result=params.activity_datetime_param,
         )
