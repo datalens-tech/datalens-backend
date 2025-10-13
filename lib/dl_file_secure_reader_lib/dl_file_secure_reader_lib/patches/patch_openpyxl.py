@@ -27,4 +27,5 @@ class HorizontalAlignmentSelfCorrectionSet(NoneSet):
 
 
 def patch_openpyxl() -> None:
+    LOGGER.debug("Patching openpyxl library BI-6635")
     Alignment.horizontal = HorizontalAlignmentSelfCorrectionSet(values=horizontal_alignments)
