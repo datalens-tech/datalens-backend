@@ -1,5 +1,4 @@
 import dataclasses
-import datetime
 from typing import (
     Any,
     ClassVar,
@@ -13,7 +12,9 @@ import temporalio.api.common.v1
 import temporalio.converter
 import temporalio.workflow
 
-import dl_pydantic
+
+with temporalio.workflow.unsafe.imports_passed_through():
+    import dl_pydantic
 
 
 class BaseModel(dl_pydantic.BaseModel):
@@ -63,7 +64,7 @@ class DataConverter(temporalio.converter.DataConverter):
 
 
 class BaseActivityParams(BaseModel):
-    start_to_close_timeout: datetime.timedelta = datetime.timedelta(minutes=10)
+    start_to_close_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(minutes=10)
 
 
 class BaseActivityResult(BaseModel):
@@ -91,7 +92,7 @@ class BaseActivity(ActivityProtocol):
 
 
 class BaseWorkflowParams(BaseModel):
-    execution_timeout: datetime.timedelta = datetime.timedelta(minutes=10)
+    execution_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(minutes=10)
 
 
 class BaseWorkflowResult(BaseModel):
