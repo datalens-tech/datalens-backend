@@ -1,4 +1,10 @@
 from .base import BaseModel
+from .jsonable import (
+    JsonableDate,
+    JsonableDatetime,
+    JsonableTimedelta,
+    JsonableUUID,
+)
 from .typed import (
     TypedAnnotation,
     TypedBaseModel,
@@ -9,6 +15,10 @@ from .typed import (
 
 __all__ = [
     "BaseModel",
+    "JsonableDate",
+    "JsonableDatetime",
+    "JsonableTimedelta",
+    "JsonableUUID",
     "TypedBaseModel",
     "TypedAnnotation",
     "TypedListAnnotation",
