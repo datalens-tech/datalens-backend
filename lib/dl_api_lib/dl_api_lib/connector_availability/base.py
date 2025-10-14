@@ -88,11 +88,6 @@ class Section(LocalizedSerializable):
 class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
     @property
     @abc.abstractmethod
-    def hidden(self) -> bool:
-        raise NotImplementedError
-
-    @property
-    @abc.abstractmethod
     def history(self) -> bool:
         raise NotImplementedError
 
@@ -122,7 +117,6 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
 
     def as_dict(self, localizer: Localizer) -> dict[str, Any]:
         return dict(
-            hidden=self.hidden,
             visibility_mode=self.visibility_mode.value,
             alias=self.alias,
             conn_type=self.conn_type_str,
@@ -231,7 +225,6 @@ def connector_icon_src_config_factory(icon_data: ConnectorIconSrc | ObjectLikeCo
 class Connector(ConnectorBase):
     """Represents an actual connection type"""
 
-    _hidden: bool = attr.ib(init=False, default=False)
     conn_type: ConnectionType = attr.ib(converter=_conn_type_converter)
     availability: ConnectorAvailability = attr.ib(default=ConnectorAvailability.free, converter=_availability_converter)
 
@@ -241,10 +234,6 @@ class Connector(ConnectorBase):
             conn_type=ConnectionType(settings.conn_type),
             availability=settings.availability,
         )
-
-    @property
-    def hidden(self) -> bool:
-        return self._hidden
 
     @property
     def visibility_mode(self) -> ConnectorAvailability:
@@ -285,10 +274,6 @@ class ConnectorContainer(ConnectorBase):
     _alias: str = attr.ib()
     includes: list[Connector] = attr.ib(validator=attr.validators.min_len(1))
     title_translatable: Translatable = attr.ib()
-
-    @property
-    def hidden(self) -> bool:
-        return all(connector.hidden for connector in self.includes)
 
     @property
     def visibility_mode(self) -> ConnectorAvailability:
@@ -360,10 +345,6 @@ class ConnectorAvailabilityConfig(SettingsBase):
         if conn_type not in self._icon_by_conn_type:
             raise ConnectorIconNotFoundException()
         return self._icon_by_conn_type[conn_type]
-
-    def __attrs_post_init__(self) -> None:
-        for connector in self._iter_connectors():
-            connector._hidden = connector.conn_type not in self.visible_connectors
 
     @classmethod
     def from_settings(
