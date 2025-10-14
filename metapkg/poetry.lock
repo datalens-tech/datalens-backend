@@ -3412,6 +3412,8 @@ develop = true
 
 [package.dependencies]
 attrs = "*"
+dl-pydantic = {path = "../dl_pydantic"}
+dl-utils = {path = "../dl_utils"}
 temporalio = "*"
 typing-extensions = "*"
 
