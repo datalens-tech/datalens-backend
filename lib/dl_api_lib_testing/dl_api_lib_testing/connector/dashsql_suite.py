@@ -35,7 +35,6 @@ class DefaultDashSQLTestSuite(DashSQLTestBase, RegulatedTestCase, metaclass=abc.
         assert not metadata["data_export"]["background"]["allowed"]
         assert DataExportForbiddenReason.prohibited_in_dashsql.value in metadata["data_export"]["background"]["reason"]
 
-
     @pytest.mark.asyncio
     async def test_basic_select_with_new_resp_schema(
         self,
