@@ -91,7 +91,7 @@ class ApiTestBase(abc.ABC):
         return
 
     @pytest.fixture(scope="session")
-    def monkeysession(self)  -> Generator[pytest.MonkeyPatch, None, None]:
+    def monkeysession(self) -> Generator[pytest.MonkeyPatch, None, None]:
         with pytest.MonkeyPatch.context() as mp:
             yield mp
 
@@ -99,7 +99,7 @@ class ApiTestBase(abc.ABC):
     def rqe_config_subprocess(
         self,
         bi_test_config: ApiTestEnvironmentConfiguration,
-        monkeysession: pytest.MonkeyPatch
+        monkeysession: pytest.MonkeyPatch,
     ) -> Generator[RQEConfig, None, None]:
         whitelist = bi_test_config.core_test_config.get_core_library_config().core_connector_ep_names
         monkeysession.setenv("no_proxy", "*")  # https://github.com/python/cpython/issues/74570#issuecomment-1093748531

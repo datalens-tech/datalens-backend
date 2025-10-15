@@ -65,7 +65,7 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
         return loop.run_until_complete(aiohttp_client(app))
 
     @pytest.fixture(scope="session")
-    def monkeysession(self)  -> Generator[pytest.MonkeyPatch, None, None]:
+    def monkeysession(self) -> Generator[pytest.MonkeyPatch, None, None]:
         with pytest.MonkeyPatch.context() as mp:
             yield mp
 
