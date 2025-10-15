@@ -64,8 +64,18 @@ class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV]
         )
         return loop.run_until_complete(aiohttp_client(app))
 
+    @pytest.fixture(scope="session")
+    def monkeysession(self)  -> Generator[pytest.MonkeyPatch, None, None]:
+        with pytest.MonkeyPatch.context() as mp:
+            yield mp
+
     @pytest.fixture(scope="function")
-    def sync_rqe_netloc_subprocess(self, forbid_private_addr: bool) -> Generator[RQEBaseURL, None, None]:
+    def sync_rqe_netloc_subprocess(
+        self,
+        forbid_private_addr: bool,
+        monkeysession: pytest.MonkeyPatch,
+    ) -> Generator[RQEBaseURL, None, None]:
+        monkeysession.setenv("no_proxy", "*")  # https://github.com/python/cpython/issues/74570#issuecomment-1093748531
         with RQEConfigurationMaker(
             ext_query_executer_secret_key=",".join(
                 (
