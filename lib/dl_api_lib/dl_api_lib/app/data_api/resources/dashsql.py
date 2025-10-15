@@ -212,9 +212,20 @@ class DashSQLView(BaseView):
             else:
                 yield event_name, event_data
 
-    async def collect_result_events_into_response(self, result_events: TResultEvents) -> web.Response:
+    async def collect_result_events_into_response(
+        self, result_events: TResultEvents, conn: ConnectionBase
+    ) -> web.Response:
         events: list = []
+        data_export_info = self.get_data_export_info(conn)
+        data_export_result = get_data_export_base_result(data_export_info)
+        data_export_result.background.allowed = False
+        data_export_result.background.reason.append(DataExportForbiddenReason.prohibited_in_dashsql.value)
+
         async for event_name, event_data in result_events:
+            if event_name == DashSQLEvent.metadata.value:
+                assert isinstance(event_data, dict)
+                enrich_resp_dict_with_data_export_info(event_data, data_export_result)
+
             events.append(dict(event=event_name, data=event_data))
 
         data = json.dumps(events, default=self._json_default)
@@ -299,8 +310,8 @@ class DashSQLView(BaseView):
 
         with_export_info = self.request.query.get("with_export_info", False)
         if with_export_info:
-            resp = await self.collect_dashsql_response(result_events=result_events, conn=conn)
+            resp = await self.collect_dashsql_response(result_events=result_events, conn=conn)  # TODO: remove
         else:
-            resp = await self.collect_result_events_into_response(result_events=result_events)
+            resp = await self.collect_result_events_into_response(result_events=result_events, conn=conn)
 
         return resp
