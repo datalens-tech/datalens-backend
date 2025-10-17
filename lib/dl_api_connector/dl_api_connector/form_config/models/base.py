@@ -1,11 +1,8 @@
-from __future__ import annotations
-
 import abc
 from enum import Enum
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
 )
 
 import attr
@@ -46,13 +43,11 @@ if TYPE_CHECKING:
 
 @attr.s(kw_only=True, frozen=True)
 class FormUIOverride(SerializableConfig):
-    show_create_dataset_btn: Optional[bool] = attr.ib(
-        default=None, metadata=remap_skip_if_null("showCreateDatasetButton")
-    )
-    show_create_ql_chart_btn: Optional[bool] = attr.ib(
+    show_create_dataset_btn: bool | None = attr.ib(default=None, metadata=remap_skip_if_null("showCreateDatasetButton"))
+    show_create_ql_chart_btn: bool | None = attr.ib(
         default=None, metadata=remap_skip_if_null("showCreateQlChartButton")
     )
-    show_create_editor_chart_btn: Optional[bool] = attr.ib(
+    show_create_editor_chart_btn: bool | None = attr.ib(
         default=None, metadata=remap_skip_if_null("showCreateEditorChartButton")
     )
 
@@ -61,7 +56,7 @@ TOP_LEVEL_NON_CONFIG_FIELDS: set[TopLevelFieldName] = {field_name for field_name
 
 
 def rows_converter(rows: list[FormRow]) -> list[FormRow]:
-    return rows + ConnectionForm._get_common_rows()
+    return rows + ConnectionForm.get_common_rows()
 
 
 @attr.s(kw_only=True, frozen=True)
@@ -78,7 +73,7 @@ class ConnectionForm(SerializableConfig):
     """
 
     @staticmethod
-    def _get_common_rows() -> list[FormRow]:
+    def get_common_rows() -> list[FormRow]:
         return [
             CustomizableRow(
                 items=[
@@ -92,9 +87,9 @@ class ConnectionForm(SerializableConfig):
 
     title: str = attr.ib()
     rows: list[FormRow] = attr.ib(converter=rows_converter)
-    api_schema: Optional[FormApiSchema] = attr.ib(default=None, metadata=remap_skip_if_null("apiSchema"))
-    template_name: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null("templateName"))
-    form_ui_override: Optional[FormUIOverride] = attr.ib(default=None, metadata=remap_skip_if_null("uiSchema"))
+    api_schema: FormApiSchema | None = attr.ib(default=None, metadata=remap_skip_if_null("apiSchema"))
+    template_name: str | None = attr.ib(default=None, metadata=remap_skip_if_null("templateName"))
+    form_ui_override: FormUIOverride | None = attr.ib(default=None, metadata=remap_skip_if_null("uiSchema"))
 
     implicit_form_fields: set[TFieldName] = attr.ib(factory=set, metadata=inner())
 
@@ -179,7 +174,7 @@ class ConnectionFormFactory:
         self._localizer = localizer
         self._form_params = form_params
 
-    def _filter_nulls(self, coll: list[Optional[Any]]) -> list[Any]:
+    def _filter_nulls(self, coll: list[Any | None]) -> list[Any]:
         return [item for item in coll if item is not None]
 
     def _get_top_level_create_api_schema_items(self) -> list[FormFieldApiSchema]:
@@ -205,8 +200,8 @@ class ConnectionFormFactory:
     @abc.abstractmethod
     def get_form_config(
         self,
-        connector_settings: Optional[ConnectorSettingsBase],
-        tenant: Optional[TenantDef],
+        connector_settings: ConnectorSettingsBase | None,
+        tenant: TenantDef | None,
     ) -> ConnectionForm:
         """Returns a form config built according to the specified settings"""
 
