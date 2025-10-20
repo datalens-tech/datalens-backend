@@ -409,7 +409,7 @@ class ConnectionDBNames(BIResource):
 
 
 @ns.route("/<connection_id>/info/source_listing_options")
-class ConnectionInfoSources(BIResource):
+class ConnectionInfoSourceListingOptions(BIResource):
     @schematic_request(
         ns=ns,
         responses={
@@ -444,7 +444,7 @@ class ConnectionInfoSources(BIResource):
 
 
 @ns.route("/<connection_id>/info/sources")
-class ConnectionInfoSourceListingOptions(BIResource):
+class ConnectionInfoSources(BIResource):
     @schematic_request(
         ns=ns,
         query=ConnectionSourcesQuerySchema(),
