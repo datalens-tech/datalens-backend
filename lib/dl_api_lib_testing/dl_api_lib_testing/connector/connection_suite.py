@@ -298,8 +298,8 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         )
         assert resp.status_code == 200, resp.json
         resp_data = resp.json
-        assert "sources" in resp_data, resp_data
-        assert isinstance(resp_data["sources"], list), resp_data
+        assert "source_listing" in resp_data, resp_data
+        assert isinstance(resp_data["source_listing"], dict), resp_data
 
     def test_connection_description(
         self,
