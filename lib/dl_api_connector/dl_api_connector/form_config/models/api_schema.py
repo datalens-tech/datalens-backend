@@ -61,7 +61,7 @@ class FormActionApiSchema(SerializableConfig):
 
 
 ANNOTATION_API_SCHEMA_ITEMS: list[FormFieldApiSchema] = [
-    FormFieldApiSchema(name=AnnotationFieldName.description, type="string", required=True, nullable=False),
+    FormFieldApiSchema(name=AnnotationFieldName.description, type="string", required=False, nullable=False),
 ]
 
 
