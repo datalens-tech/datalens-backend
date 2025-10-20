@@ -37,7 +37,10 @@ from dl_api_lib.schemas.connection import (
     GenericConnectionSchema,
 )
 from dl_api_lib.schemas.main import ImportResponseSchema
-from dl_api_lib.utils import need_permission_on_entry
+from dl_api_lib.utils import (
+    check_permission_on_entry,
+    need_permission_on_entry,
+)
 from dl_constants.enums import (
     ConnectionType,
     CreateMode,
@@ -52,7 +55,6 @@ from dl_core.data_source_merge_tools import make_spec_from_dict
 from dl_core.exc import (
     DatabaseUnavailable,
     InvalidRequestError,
-    USPermissionRequired,
 )
 from dl_core.us_connection_base import (
     ConnectionBase,
@@ -376,10 +378,8 @@ class ConnectionInfoMetadataSources(BIResource):
         source_template_templates = connection.get_data_source_template_templates(localizer=localizer)
 
         source_templates: list[DataSourceTemplate] | None = []
-        try:
-            need_permission_on_entry(connection, USPermissionKind.read)
-        except USPermissionRequired:
-            pass
+        if not check_permission_on_entry(connection, USPermissionKind.read):
+            source_templates = []
         else:
             source_templates = connection.get_data_source_local_templates()
 
@@ -423,19 +423,16 @@ class ConnectionInfoSourceListingOptions(BIResource):
         service_registry = self.get_service_registry()
         localizer = service_registry.get_localizer()
 
-        # It does not matter what options we provide if the user does not have sufficient permissions,
-        # because the listing itself will not attempt to list actual DB sources, see `/info/sources`
-        listing_options = ListingOptions(
-            supports_source_search=False,
-            supports_source_pagination=False,
-            supports_db_name_listing=False,
-            db_name_required_for_search=False,
-            db_name_label=None,
-        )
-        try:
-            need_permission_on_entry(connection, USPermissionKind.read)
-        except USPermissionRequired:
-            pass
+        if not check_permission_on_entry(connection, USPermissionKind.read):
+            # It does not matter what options we provide if the user does not have sufficient permissions,
+            # because the listing itself will not attempt to list actual DB sources, see `/info/sources`
+            listing_options = ListingOptions(
+                supports_source_search=False,
+                supports_source_pagination=False,
+                supports_db_name_listing=False,
+                db_name_required_for_search=False,
+                db_name_label=None,
+            )
         else:
             localizer = service_registry.get_localizer()
             listing_options = connection.get_listing_options(localizer)
@@ -469,11 +466,9 @@ class ConnectionInfoSources(BIResource):
         source_template_templates = connection.get_data_source_template_templates(localizer=localizer)
 
         # Get actual data source templates (requires DB access)
-        source_templates = []
-        try:
-            need_permission_on_entry(connection, USPermissionKind.read)
-        except USPermissionRequired:
-            pass
+        source_templates: list[DataSourceTemplate]
+        if not check_permission_on_entry(connection, USPermissionKind.read):
+            source_templates = []
         else:
             source_templates = connection.get_data_source_templates_paginated(
                 conn_executor_factory=service_registry.get_conn_executor_factory().get_sync_conn_executor,
