@@ -19,6 +19,7 @@ from dl_api_connector.api_schema.source_base import (
     RawSchemaColumnSchema,
 )
 from dl_api_lib.schemas.main import NotificationContentSchema
+from dl_api_lib.schemas.options import SourceListingSchema
 from dl_constants.enums import ConnectionType as CT
 from dl_core.us_connection_base import (
     ConnectionBase,
@@ -43,6 +44,10 @@ class ConnectionItemQuerySchema(BaseSchema):
 
 class ConnectionInfoSourceSchemaQuerySchema(BaseSchema):
     source = ma_fields.Nested(DataSourceSchema, required=True)
+
+
+class ConnectionInfoSourceListingOptionsResponseSchema(BaseSchema):
+    source_listing = ma_fields.Nested(SourceListingSchema)
 
 
 class ConnectionSourceTemplatesResponseSchema(BaseSchema):
