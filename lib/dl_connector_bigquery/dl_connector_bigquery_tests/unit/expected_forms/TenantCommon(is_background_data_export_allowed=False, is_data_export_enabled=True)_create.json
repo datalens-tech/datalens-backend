@@ -97,7 +97,7 @@
                 {
                     "name": "description",
                     "type": "string",
-                    "required": true,
+                    "required": false,
                     "nullable": false,
                     "defaultAction": "include"
                 }
