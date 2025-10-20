@@ -293,7 +293,7 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         bi_headers: dict[str, str] | None,
     ) -> None:
         resp = control_api_sync_client.get(
-            url=f"/api/v1/connections/{saved_connection_id}/info/source_",
+            url=f"/api/v1/connections/{saved_connection_id}/info/source_listing_options",
             headers=bi_headers,
         )
         assert resp.status_code == 200, resp.json
