@@ -28,6 +28,7 @@ from dl_api_lib.schemas.connection import (
     ConnectionDBNamesResponseSchema,
     ConnectionExportResponseSchema,
     ConnectionImportRequestSchema,
+    ConnectionInfoSourceListingOptionsResponseSchema,
     ConnectionInfoSourceSchemaQuerySchema,
     ConnectionInfoSourceSchemaResponseSchema,
     ConnectionItemQuerySchema,
@@ -56,6 +57,7 @@ from dl_core.exc import (
 from dl_core.us_connection_base import (
     ConnectionBase,
     DataSourceTemplate,
+    ListingOptions,
 )
 
 
@@ -406,8 +408,43 @@ class ConnectionDBNames(BIResource):
         }
 
 
-@ns.route("/<connection_id>/info/sources")
+@ns.route("/<connection_id>/info/source_listing_options")
 class ConnectionInfoSources(BIResource):
+    @schematic_request(
+        ns=ns,
+        responses={
+            200: ("Success", ConnectionInfoSourceListingOptionsResponseSchema()),
+            400: ("Failed", BadRequestResponseSchema()),
+        },
+    )
+    def get(self, connection_id: str) -> dict:
+        connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+
+        service_registry = self.get_service_registry()
+        localizer = service_registry.get_localizer()
+
+        # It does not matter what options we provide if the user does not have sufficient permissions,
+        # because the listing itself will not attempt to list actual DB sources, see `/info/sources`
+        listing_options = ListingOptions(
+            supports_source_search=False,
+            supports_source_pagination=False,
+            supports_db_name_listing=False,
+            db_name_required_for_search=False,
+            db_name_label=None,
+        )
+        try:
+            need_permission_on_entry(connection, USPermissionKind.read)
+        except USPermissionRequired:
+            pass
+        else:
+            localizer = service_registry.get_localizer()
+            listing_options = connection.get_listing_options(localizer)
+
+        return {"source_listing": listing_options}
+
+
+@ns.route("/<connection_id>/info/sources")
+class ConnectionInfoSourceListingOptions(BIResource):
     @schematic_request(
         ns=ns,
         query=ConnectionSourcesQuerySchema(),

@@ -286,6 +286,21 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         assert "sources" in resp_data, resp_data
         assert isinstance(resp_data["sources"], list), resp_data
 
+    def test_connection_source_listing_options(
+        self,
+        control_api_sync_client: SyncHttpClientBase,
+        saved_connection_id: str,
+        bi_headers: dict[str, str] | None,
+    ) -> None:
+        resp = control_api_sync_client.get(
+            url=f"/api/v1/connections/{saved_connection_id}/info/source_",
+            headers=bi_headers,
+        )
+        assert resp.status_code == 200, resp.json
+        resp_data = resp.json
+        assert "sources" in resp_data, resp_data
+        assert isinstance(resp_data["sources"], list), resp_data
+
     def test_connection_description(
         self,
         control_api_sync_client: SyncHttpClientBase,
