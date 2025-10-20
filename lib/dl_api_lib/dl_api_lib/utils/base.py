@@ -80,7 +80,7 @@ def check_permission_on_entry(us_entry: USEntry, permission: USPermissionKind) -
 
 
 def need_permission_on_entry(us_entry: USEntry, permission: USPermissionKind) -> None:
-    if check_permission_on_entry(us_entry, permission):
+    if not check_permission_on_entry(us_entry, permission):
         raise common_exc.USPermissionRequired(us_entry.uuid, permission.name)
 
 
