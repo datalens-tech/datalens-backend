@@ -13,7 +13,7 @@ import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 import ydb
-import ydb_sqlalchemy as ydb_sa
+import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_db_testing.database.engine_wrapper import EngineWrapperBase
 import dl_sqlalchemy_ydb.dialect
