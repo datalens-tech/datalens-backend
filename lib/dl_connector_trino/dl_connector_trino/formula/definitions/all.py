@@ -5,6 +5,7 @@ from dl_connector_trino.formula.definitions.functions_datetime import DEFINITION
 from dl_connector_trino.formula.definitions.functions_logical import DEFINITIONS_LOGICAL
 from dl_connector_trino.formula.definitions.functions_markup import DEFINITIONS_MARKUP
 from dl_connector_trino.formula.definitions.functions_math import DEFINITIONS_MATH
+from dl_connector_trino.formula.definitions.functions_native import DEFINITIONS_NATIVE
 from dl_connector_trino.formula.definitions.functions_special import DEFINITIONS_SPECIAL
 from dl_connector_trino.formula.definitions.functions_string import DEFINITIONS_STRING
 from dl_connector_trino.formula.definitions.functions_type import DEFINITIONS_TYPE
@@ -29,4 +30,5 @@ DEFINITIONS = [
     *DEFINITIONS_TERNARY,
     *DEFINITIONS_SPECIAL,
     *DEFINITIONS_ARRAY,
+    *DEFINITIONS_NATIVE,
 ]
