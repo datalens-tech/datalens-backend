@@ -1,6 +1,6 @@
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
-import ydb_sqlalchemy as ydb_sa
+import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_formula.connectors.base.literal import Literal
 from dl_formula.definitions.base import (
