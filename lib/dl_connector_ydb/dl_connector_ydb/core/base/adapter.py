@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime
 import logging
 from typing import (
     TYPE_CHECKING,
@@ -13,12 +12,14 @@ from typing import (
 
 import attr
 import sqlalchemy as sa
-import ydb_sqlalchemy as ydb_sa
+import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_core import exc
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_models import TableIdent
 import dl_sqlalchemy_ydb.dialect
+
+import dl_connector_ydb.core.base.row_converters
 
 
 if TYPE_CHECKING:
@@ -91,34 +92,10 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
 
     _subselect_cursor_info_where_false: ClassVar[bool] = False
 
-    @staticmethod
-    def _convert_bytes(value: bytes) -> str:
-        return value.decode("utf-8", errors="replace")
-
-    @staticmethod
-    def _convert_interval(value: datetime.timedelta | int) -> int:
-        if value is None:
-            return None
-        if isinstance(value, datetime.timedelta):
-            return int(value.total_seconds() * 1_000_000)
-        return value
-
-    @staticmethod
-    def _convert_ts(value: int | datetime.datetime) -> datetime.datetime:
-        if isinstance(value, datetime.datetime):
-            return value.replace(tzinfo=datetime.timezone.utc)
-        return datetime.datetime.utcfromtimestamp(value / 1e6).replace(tzinfo=datetime.timezone.utc)
-
     def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> tuple[Optional[Callable[[Any], Any]], ...]:
-        type_names_norm = [col[1].lower().strip("?") for col in cursor_info.raw_cursor_description]
+        type_names_norm = [col[1].lower().replace("?", "") for col in cursor_info.raw_cursor_description]
         return tuple(
-            self._convert_bytes
-            if type_name_norm == "string"
-            else self._convert_ts
-            if type_name_norm == "timestamp"
-            else self._convert_interval
-            if type_name_norm == "interval"
-            else None
+            dl_connector_ydb.core.base.row_converters.ROW_CONVERTERS.get(type_name_norm, None)
             for type_name_norm in type_names_norm
         )
 
