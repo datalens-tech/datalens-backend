@@ -1,12 +1,14 @@
 import pytest
 
 from dl_formula_testing.evaluator import DbEvaluator
+from dl_formula_testing.testcases.functions_native import DefaultNativeFunctionFormulaConnectorTestSuite
 
 from dl_connector_trino_tests.db.formula.base import TrinoFormulaTestBase
 
 
 class TestNativeFunctionTrino(
     TrinoFormulaTestBase,
+    DefaultNativeFunctionFormulaConnectorTestSuite,
 ):
     def test_native_functions(self, dbe: DbEvaluator) -> None:
         # DB_CALL_INT
