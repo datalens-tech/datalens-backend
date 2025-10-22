@@ -28,7 +28,7 @@ class TestNativeFunctionMySQL_5_7(
         assert dbe.eval('DB_CALL_STRING("REVERSE", "hello")') == "olleh"
 
         # DB_CALL_BOOL
-        assert dbe.eval('DB_CALL_BOOL("ISNULL", 5)') == True
+        assert dbe.eval('DB_CALL_BOOL("ISNULL", 5)') == False
 
         # DB_CALL_ARRAY_INT
         assert dbe.eval('DB_CALL_ARRAY_INT("JSON_ARRAY", 1, 2, 3, 4, 5)') == [1, 2, 3, 4, 5]
@@ -62,7 +62,7 @@ class TestNativeFunctionMySQL_8_0_12(
         assert dbe.eval('DB_CALL_STRING("REVERSE", "hello")') == "olleh"
 
         # DB_CALL_BOOL
-        assert dbe.eval('DB_CALL_BOOL("ISNULL", 5)') == True
+        assert dbe.eval('DB_CALL_BOOL("ISNULL", 5)') == False
 
         # DB_CALL_ARRAY_INT
         assert dbe.eval('DB_CALL_ARRAY_INT("JSON_ARRAY", 1, 2, 3, 4, 5)') == [1, 2, 3, 4, 5]
