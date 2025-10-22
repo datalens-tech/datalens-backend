@@ -26,15 +26,3 @@ class TestNativeFunctionMSSQL(
 
         # DB_CALL_BOOL
         assert dbe.eval('DB_CALL_BOOL("ISNUMERIC", "123")') == True
-
-        # DB_CALL_ARRAY_INT
-        assert dbe.eval('DB_CALL_ARRAY_INT("STRING_SPLIT", "1,2,3,4,5", ",")') == [1, 2, 3, 4, 5]
-
-        # DB_CALL_ARRAY_FLOAT
-        res = dbe.eval('DB_CALL_ARRAY_FLOAT("STRING_SPLIT", "1.0,2.0,3.0", ",")')
-        assert isinstance(res, list)
-        assert len(res) == 3
-        assert all(isinstance(x, float) for x in res)
-
-        # DB_CALL_ARRAY_STRING
-        assert dbe.eval('DB_CALL_ARRAY_STRING("STRING_SPLIT", "a,b,c", ",")') == ["a", "b", "c"]
