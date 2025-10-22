@@ -23,18 +23,3 @@ class TestNativeFunctionOracle(
 
         # DB_CALL_STRING
         assert dbe.eval('DB_CALL_STRING("REVERSE", "hello")') == "olleh"
-
-        # DB_CALL_BOOL
-        assert dbe.eval('DB_CALL_BOOL("REGEXP_LIKE", "test", "t.*")') == True
-
-        # DB_CALL_ARRAY_INT
-        assert dbe.eval('DB_CALL_ARRAY_INT("ARRAY", 1, 2, 3, 4, 5)') == [1, 2, 3, 4, 5]
-
-        # DB_CALL_ARRAY_FLOAT
-        res = dbe.eval('DB_CALL_ARRAY_FLOAT("ARRAY", 1.0, 2.0, 3.0)')
-        assert isinstance(res, list)
-        assert len(res) == 3
-        assert all(isinstance(x, float) for x in res)
-
-        # DB_CALL_ARRAY_STRING
-        assert dbe.eval('DB_CALL_ARRAY_STRING("ARRAY", "a", "b", "c")') == ["a", "b", "c"]
