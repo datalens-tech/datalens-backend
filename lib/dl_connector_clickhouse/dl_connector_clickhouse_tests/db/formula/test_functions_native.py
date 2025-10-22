@@ -32,16 +32,13 @@ class TestNativeFunctionClickHouse_21_8(
         assert dbe.eval('DB_CALL_BOOL("isInfinite", 5)') == False
 
         # DB_CALL_ARRAY_INT
-        assert dbe.eval('DB_CALL_ARRAY_INT("range", 5)') == [0, 1, 2, 3, 4]
+        assert dbe.eval('DB_CALL_ARRAY_INT("range", 5)') == "[0,1,2,3,4]"
 
         # DB_CALL_ARRAY_FLOAT
-        res = dbe.eval('DB_CALL_ARRAY_FLOAT("arrayMap", "x -> x * 1.5", ARRAY(1.0, 2.0, 3.0))')
-        assert isinstance(res, list)
-        assert len(res) == 3
-        assert all(isinstance(x, float) for x in res)
+        assert dbe.eval('DB_CALL_ARRAY_FLOAT("arrayMap", "x -> x * 1.5", ARRAY(1.0, 2.0, 3.0))') == "[1.5,3.0,4.5]"
 
         # DB_CALL_ARRAY_STRING
-        assert dbe.eval('DB_CALL_ARRAY_STRING("splitByChar", ",", "a,b,c")') == ["a", "b", "c"]
+        assert dbe.eval('DB_CALL_ARRAY_STRING("splitByChar", ",", "a,b,c")') == '["a","b","c"]'
 
 
 class TestNativeFunctionClickHouse_22_10(
@@ -67,13 +64,10 @@ class TestNativeFunctionClickHouse_22_10(
         assert dbe.eval('DB_CALL_BOOL("isInfinite", 5)') == False
 
         # DB_CALL_ARRAY_INT
-        assert dbe.eval('DB_CALL_ARRAY_INT("range", 5)') == [0, 1, 2, 3, 4]
+        assert dbe.eval('DB_CALL_ARRAY_INT("range", 5)') == "[0,1,2,3,4]"
 
         # DB_CALL_ARRAY_FLOAT
-        res = dbe.eval('DB_CALL_ARRAY_FLOAT("arrayMap", "x -> x * 1.5", ARRAY(1.0, 2.0, 3.0))')
-        assert isinstance(res, list)
-        assert len(res) == 3
-        assert all(isinstance(x, float) for x in res)
+        assert dbe.eval('DB_CALL_ARRAY_FLOAT("arrayMap", "x -> x * 1.5", ARRAY(1.0, 2.0, 3.0))') == "[1.5,3.0,4.5]"
 
         # DB_CALL_ARRAY_STRING
-        assert dbe.eval('DB_CALL_ARRAY_STRING("splitByChar", ",", "a,b,c")') == ["a", "b", "c"]
+        assert dbe.eval('DB_CALL_ARRAY_STRING("splitByChar", ",", "a,b,c")') == '["a","b","c"]'
