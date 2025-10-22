@@ -211,7 +211,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
         async_rqe_netloc: RQEBaseURL
         sync_rqe_netloc: RQEBaseURL
 
-        LOGGER.info('RQE mode is "%s"', rqe_mode.value)
+        LOGGER.info('RQE mode is "%s"', rqe_mode.name)
         if rqe_mode == RQEMode.EXTERNAL:
             async_rqe_netloc = self.rqe_config.ext_async_rqe
             sync_rqe_netloc = self.rqe_config.ext_sync_rqe
