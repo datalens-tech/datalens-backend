@@ -62,7 +62,7 @@ class TestNativeFunctionPostgreSQL_9_4(
         assert dbe.eval('DB_CALL_STRING("reverse", "hello")') == "olleh"
 
         # DB_CALL_BOOL
-        assert dbe.eval('DB_CALL_BOOL("isfinite", 5.0)') == True
+        assert dbe.eval('DB_CALL_BOOL("starts_with", "hello", "he")') == True
 
         # DB_CALL_ARRAY_INT
         assert dbe.eval('DB_CALL_ARRAY_INT("array_append", ARRAY(1, 2, 3), 4)') == [1, 2, 3, 4]
