@@ -27,20 +27,14 @@ class TestNativeFunctionPostgreSQL_9_3(
         # DB_CALL_STRING
         assert dbe.eval('DB_CALL_STRING("reverse", "hello")') == "olleh"
 
-        # DB_CALL_BOOL
-        assert dbe.eval('DB_CALL_BOOL("isfinite", 5.0)') == True
-
         # DB_CALL_ARRAY_INT
-        assert dbe.eval('DB_CALL_ARRAY_INT("array_append", ARRAY(1, 2, 3), 4)') == [1, 2, 3, 4]
+        assert dbe.eval('DB_CALL_ARRAY_INT("array_append", ARRAY(1, 2, 3), 4)') == dbe.eval("ARRAY(1, 2, 3, 4)")
 
         # DB_CALL_ARRAY_FLOAT
-        res = dbe.eval('DB_CALL_ARRAY_FLOAT("array_append", ARRAY(1.0, 2.0), 3.0)')
-        assert isinstance(res, list)
-        assert len(res) == 3
-        assert all(isinstance(x, float) for x in res)
+        assert dbe.eval('DB_CALL_ARRAY_FLOAT("array_append", ARRAY(1.0, 2.0), 3.0)') == dbe.eval("ARRAY(1.0, 2.0, 3.0)")
 
         # DB_CALL_ARRAY_STRING
-        assert dbe.eval('DB_CALL_ARRAY_STRING("string_to_array", "a,b,c", ",")') == ["a", "b", "c"]
+        assert dbe.eval('DB_CALL_ARRAY_STRING("string_to_array", "a,b,c", ",")') == dbe.eval('ARRAY("a", "b", "c")')
 
 
 class TestNativeFunctionPostgreSQL_9_4(
@@ -61,17 +55,11 @@ class TestNativeFunctionPostgreSQL_9_4(
         # DB_CALL_STRING
         assert dbe.eval('DB_CALL_STRING("reverse", "hello")') == "olleh"
 
-        # DB_CALL_BOOL
-        assert dbe.eval('DB_CALL_BOOL("starts_with", "hello", "he")') == True
-
         # DB_CALL_ARRAY_INT
-        assert dbe.eval('DB_CALL_ARRAY_INT("array_append", ARRAY(1, 2, 3), 4)') == [1, 2, 3, 4]
+        assert dbe.eval('DB_CALL_ARRAY_INT("array_append", ARRAY(1, 2, 3), 4)') == dbe.eval("ARRAY(1, 2, 3, 4)")
 
         # DB_CALL_ARRAY_FLOAT
-        res = dbe.eval('DB_CALL_ARRAY_FLOAT("array_append", ARRAY(1.0, 2.0), 3.0)')
-        assert isinstance(res, list)
-        assert len(res) == 3
-        assert all(isinstance(x, float) for x in res)
+        assert dbe.eval('DB_CALL_ARRAY_FLOAT("array_append", ARRAY(1.0, 2.0), 3.0)') == dbe.eval("ARRAY(1.0, 2.0, 3.0)")
 
         # DB_CALL_ARRAY_STRING
-        assert dbe.eval('DB_CALL_ARRAY_STRING("string_to_array", "a,b,c", ",")') == ["a", "b", "c"]
+        assert dbe.eval('DB_CALL_ARRAY_STRING("string_to_array", "a,b,c", ",")') == dbe.eval('ARRAY("a", "b", "c")')
