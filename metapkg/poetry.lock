@@ -3072,6 +3072,7 @@ develop = true
 [package.dependencies]
 deepdiff = "*"
 pydantic = "*"
+pydantic-core = "*"
 typing-extensions = "*"
 
 [package.source]
