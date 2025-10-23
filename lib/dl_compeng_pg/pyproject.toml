@@ -22,9 +22,6 @@ dl-utils = {path = "../dl_utils"}
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-
 [tool.poetry.plugins."dl_core.data_processor_plugins"]
 compeng_aiopg = "dl_compeng_pg.compeng_aiopg.plugin:AiopgCompengPlugin"
 compeng_asyncpg = "dl_compeng_pg.compeng_asyncpg.plugin:AsyncpgCompengPlugin"

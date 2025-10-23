@@ -17,7 +17,7 @@ pydantic = "*"
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
-pytest-asyncio = "*"
+pytest = "*"
 
 [tool.mypy]
 check_untyped_defs = true

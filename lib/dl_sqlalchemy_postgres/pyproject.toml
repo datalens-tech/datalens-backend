@@ -15,6 +15,10 @@ python = ">=3.10, <3.13"
 sqlalchemy = "*"
 
 [tool.poetry.group.tests.dependencies]
+dl-testing = {path = "../dl_testing"}
+mock = "*"
+pytest = "*"
+pytz = "*"
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
 bi_postgresql = "dl_sqlalchemy_postgres.base:BIPGDialect"

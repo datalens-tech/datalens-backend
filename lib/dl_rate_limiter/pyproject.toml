@@ -14,10 +14,6 @@ flask = {optional = true, version = "*"}
 python = ">=3.10, <3.13"
 redis = "*"
 
-[tool.poetry.extras]
-aiohttp = ["aiohttp"]
-flask = ["flask"]
-
 [tool.poetry.group.tests.dependencies]
 dl-testing = {path = "../dl_testing"}
 flaky = "*"
@@ -25,6 +21,10 @@ pytest = "*"
 pytest-aiohttp = "*"
 pytest-asyncio = "*"
 pytest-mock = "*"
+
+[tool.poetry.extras]
+aiohttp = ["aiohttp"]
+flask = ["flask"]
 
 [tool.mypy]
 check_untyped_defs = true

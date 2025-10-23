@@ -15,9 +15,6 @@ dl-query-processing = {path = "../dl_query_processing"}
 pandas = "*"
 python = ">=3.10, <3.13"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-
 [tool.poetry.plugins."dl_pivot.pivot_engine_plugins"]
 pandas = "dl_pivot_pandas.pandas.plugin:PandasPivotEnginePlugin"
 

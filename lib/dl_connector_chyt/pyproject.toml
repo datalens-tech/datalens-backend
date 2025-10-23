@@ -26,9 +26,6 @@ marshmallow = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-
 [tool.poetry.plugins]
 
 [tool.poetry.plugins."dl_api_lib.connectors"]
