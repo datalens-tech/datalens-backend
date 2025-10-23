@@ -4,6 +4,7 @@ from dl_connector_mysql.formula.definitions.functions_datetime import DEFINITION
 from dl_connector_mysql.formula.definitions.functions_logical import DEFINITIONS_LOGICAL
 from dl_connector_mysql.formula.definitions.functions_markup import DEFINITIONS_MARKUP
 from dl_connector_mysql.formula.definitions.functions_math import DEFINITIONS_MATH
+from dl_connector_mysql.formula.definitions.functions_native import DEFINITIONS_NATIVE
 from dl_connector_mysql.formula.definitions.functions_string import DEFINITIONS_STRING
 from dl_connector_mysql.formula.definitions.functions_type import DEFINITIONS_TYPE
 from dl_connector_mysql.formula.definitions.functions_window import DEFINITIONS_WINDOW
@@ -19,6 +20,7 @@ DEFINITIONS = [
     *DEFINITIONS_LOGICAL,
     *DEFINITIONS_MARKUP,
     *DEFINITIONS_MATH,
+    *DEFINITIONS_NATIVE,
     *DEFINITIONS_STRING,
     *DEFINITIONS_TYPE,
     *DEFINITIONS_WINDOW,
