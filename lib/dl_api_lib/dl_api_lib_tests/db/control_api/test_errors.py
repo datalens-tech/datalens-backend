@@ -8,6 +8,7 @@ from dl_api_client.dsmaker.primitives import (
 )
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 from dl_core.base_models import PathEntryLocation
+from dl_core.us_dataset import DataSourceCreatedVia
 
 
 class TestControlApiErrors(DefaultApiTestBase):
@@ -58,6 +59,26 @@ class TestControlApiErrors(DefaultApiTestBase):
         assert resp.status_code == 400
         assert resp.json["message"] == "Invalid connection type value: None"
         assert resp.json["code"] == "ERR.DS_API.BAD_CONN_TYPE"
+
+    def test_create_dataset_invalid_request(self, control_api):
+        resp = control_api.client.post(
+            "/api/v1/datasets",
+            data=json.dumps(
+                {
+                    "type": None,
+                    "name": shortuuid.uuid(),
+                    "dir_path": "/",
+                    "workbook_id": "dummy",
+                    "preview": False,
+                    "created_via": DataSourceCreatedVia.user.name,
+                }
+            ),
+            content_type="application/json",
+        )
+
+        assert resp.status_code == 400
+        # assert resp.json["message"] == "Invalid connection type value: None"
+        # assert resp.json["code"] == "ERR.DS_API.BAD_CONN_TYPE"
 
     def test_validate_formula_recursion_error(self, saved_dataset, control_api):
         # Create large code that will cause RecursionError
