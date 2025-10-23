@@ -11,5 +11,4 @@ def dumps_str(obj: json_types.JsonSerializable) -> str:
     return dumps_bytes(obj).decode("utf-8")
 
 
-def loads_str(s: str) -> json_types.JsonSerializable:
-    return loads_bytes(s.encode("utf-8"))
+loads_str = orjson.loads
