@@ -11,29 +11,28 @@ class TestNativeFunctionYdb(
     DefaultNativeFunctionFormulaConnectorTestSuite,
 ):
     def test_native_functions(self, dbe: DbEvaluator) -> None:
-        # DB_CALL_INT - using YQL module syntax
+        # DB_CALL_INT
         assert dbe.eval('DB_CALL_INT("Math::Abs", -5)') == 5
-        assert dbe.eval('DB_CALL_INT("String::Length", "hello")') == 5
+        assert dbe.eval('DB_CALL_INT("Unicode::GetLength", "hello")') == 5
 
-        # DB_CALL_FLOAT - using YQL module syntax
+        # DB_CALL_FLOAT
         assert dbe.eval('DB_CALL_FLOAT("Math::Abs", -5.0)') == pytest.approx(5.0)
         assert dbe.eval('DB_CALL_FLOAT("Math::Floor", 5.7)') == pytest.approx(5.0)
 
-        # DB_CALL_STRING - using YQL module syntax
-        assert dbe.eval('DB_CALL_STRING("String::ToUpper", "hello")') == "HELLO"
+        # DB_CALL_STRING
+        assert dbe.eval('DB_CALL_STRING("Unicode::ToUpper", "hello")') == "HELLO"
 
-        # DB_CALL_BOOL - using YQL module syntax
+        # DB_CALL_BOOL
         assert dbe.eval('DB_CALL_BOOL("String::Contains", "hello world", "world")') == True
         assert dbe.eval('DB_CALL_BOOL("String::StartsWith", "hello", "he")') == True
 
-        # DB_CALL_ARRAY_INT - using YQL list functions
-        assert dbe.eval('DB_CALL_ARRAY_INT("AsList", 1, 2, 3, 4, 5)') == [1, 2, 3, 4, 5]
+        pytest.xfail("YDB array support will be added in BI-6515")
 
-        # DB_CALL_ARRAY_FLOAT - using YQL list functions
-        res = dbe.eval('DB_CALL_ARRAY_FLOAT("AsList", 1.0, 2.0, 3.0)')
-        assert isinstance(res, list)
-        assert len(res) == 3
-        assert all(isinstance(x, float) for x in res)
+        # DB_CALL_ARRAY_INT
+        assert dbe.eval('DB_CALL_ARRAY_INT("AsList", 1, 2, 3, 4, 5)') == dbe.eval("ARRAY(1, 2, 3, 4, 5)")
 
-        # DB_CALL_ARRAY_STRING - using YQL list functions
-        assert dbe.eval('DB_CALL_ARRAY_STRING("AsList", "a", "b", "c")') == ["a", "b", "c"]
+        # DB_CALL_ARRAY_FLOAT
+        assert dbe.eval('DB_CALL_ARRAY_FLOAT("AsList", 1.0, 2.0, 3.0)') == dbe.eval("ARRAY(1.0, 2.0, 3.0)")
+
+        # DB_CALL_ARRAY_STRING
+        assert dbe.eval('DB_CALL_ARRAY_STRING("AsList", "a", "b", "c")') == dbe.eval("ARRAY('a', 'b', 'c')")

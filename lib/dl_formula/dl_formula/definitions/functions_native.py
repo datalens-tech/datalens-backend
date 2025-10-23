@@ -24,7 +24,7 @@ def _call_native_impl(func_name_ctx: TranslationCtx, *args: TranslationCtx) -> C
     func_name = func_name_ctx.node.value
 
     # Validate function name
-    if not re.match(r"^[a-zA-Z0-9_:]+$", func_name):
+    if not re.match(r"^[a-zA-Z0-9_]+$", func_name):
         raise exc.NativeFunctionForbiddenInputError(func_name)
 
     return getattr(sa.func, func_name)(*(arg.expression for arg in args))
