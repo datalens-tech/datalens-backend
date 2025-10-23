@@ -21,6 +21,7 @@ dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-dashsql = {path = "../../lib/dl_dashsql"}
 dl-i18n = {path = "../dl_i18n"}
+dl-json = {path = "../dl_json"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-retrier = {path = "../dl_retrier"}
@@ -35,7 +36,6 @@ marshmallow = "*"
 marshmallow-oneofschema = "*"
 multidict = "*"
 opentracing = "*"
-orjson = "*"
 pydantic = "*"
 python = ">=3.10, <3.13"
 redis = "*"

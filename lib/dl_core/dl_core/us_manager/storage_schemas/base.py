@@ -17,7 +17,8 @@ from marshmallow import (
     post_load,
     pre_load,
 )
-import orjson
+
+import dl_json
 
 
 if TYPE_CHECKING:
@@ -94,9 +95,14 @@ class BaseStorageSchema(Schema, Generic[_TARGET_TV]):
         return normalized_data
 
 
+class RenderModule:
+    dumps = dl_json.dumps_bytes
+    loads = dl_json.loads_bytes
+
+
 class DefaultStorageSchema(BaseStorageSchema[_TARGET_TV], Generic[_TARGET_TV]):
     class Meta:
-        render_module = orjson
+        render_module = RenderModule
 
     def to_object(self, data: dict) -> _TARGET_TV:
         return self.get_target_cls()(**data)

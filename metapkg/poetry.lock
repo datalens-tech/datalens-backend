@@ -2952,6 +2952,22 @@ type = "directory"
 url = "../lib/dl_i18n"
 
 [[package]]
+name = "dl-json"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.dependencies]
+orjson = "*"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_json"
+
+[[package]]
 name = "dl-maintenance"
 version = "0.0.1"
 description = ""
@@ -3069,6 +3085,7 @@ develop = true
 [package.dependencies]
 deepdiff = "*"
 pydantic = "*"
+pydantic-core = "*"
 typing-extensions = "*"
 
 [package.source]
@@ -9026,4 +9043,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "696ad8e8acc42d70be8b084f6f015210d4b552830da4dc66d8885ab2f84596d7"
+content-hash = "56a00550a384f86c064637a80b91fb99f25072463adcc86b941fbfd55bbfe917"
