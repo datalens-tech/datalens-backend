@@ -225,4 +225,4 @@ class DatasetContentInternalSchema(BaseSchema, USEntryAnnotationMixin):
 
 
 class DatasetContentSchema(OptionsMixin):
-    dataset = ma_fields.Nested(DatasetContentInternalSchema, required=False)
+    dataset = ma_fields.Nested(DatasetContentInternalSchema, required=True)
