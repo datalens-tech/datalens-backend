@@ -13,6 +13,7 @@ from dl_formula.definitions.functions_datetime import DEFINITIONS_DATETIME
 from dl_formula.definitions.functions_logical import DEFINITIONS_LOGICAL
 from dl_formula.definitions.functions_markup import DEFINITIONS_MARKUP
 from dl_formula.definitions.functions_math import DEFINITIONS_MATH
+from dl_formula.definitions.functions_native import DEFINITIONS_NATIVE
 from dl_formula.definitions.functions_special import DEFINITIONS_SPECIAL
 from dl_formula.definitions.functions_string import DEFINITIONS_STRING
 from dl_formula.definitions.functions_time_series import DEFINITIONS_TIME_SERIES
@@ -58,6 +59,7 @@ def populate_translation_registry() -> None:
         DEFINITIONS_BINARY,
         DEFINITIONS_TERNARY,
         DEFINITIONS_UNARY,
+        DEFINITIONS_NATIVE,
     )
     def_item: Union[NodeTranslation, type[NodeTranslation]]
     # TODO: Load defs from connectors here
