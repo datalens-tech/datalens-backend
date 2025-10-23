@@ -71,14 +71,14 @@ class TestControlApiErrors(DefaultApiTestBase):
                     "workbook_id": "dummy",
                     "preview": False,
                     "created_via": DataSourceCreatedVia.user.name,
+                    # "dataset" field is not provided
                 }
             ),
             content_type="application/json",
         )
 
         assert resp.status_code == 400
-        # assert resp.json["message"] == "Invalid connection type value: None"
-        # assert resp.json["code"] == "ERR.DS_API.BAD_CONN_TYPE"
+        assert resp.json["message"] == "{'dataset': ['Missing data for required field.']}", resp.json
 
     def test_validate_formula_recursion_error(self, saved_dataset, control_api):
         # Create large code that will cause RecursionError
