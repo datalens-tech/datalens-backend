@@ -19,10 +19,8 @@ pytz = "*"
 sqlalchemy = "*"
 
 [tool.poetry.group.tests.dependencies]
-dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
-pyodbc = "*"
+dl-formula-testing = {path = "../dl_formula_testing"}
 pytest = "*"
-python-dateutil = "*"
 
 [tool.poetry.scripts]
 bi-formula-cli = "dl_formula.scripts.formula_cli:main"

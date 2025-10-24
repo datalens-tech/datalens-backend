@@ -12,9 +12,6 @@ attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 python = ">=3.10, <3.13"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-
 [tool.mypy]
 check_untyped_defs = true
 disallow_untyped_defs = true

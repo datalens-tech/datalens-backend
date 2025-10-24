@@ -13,6 +13,7 @@ requests = "*"
 sqlalchemy = "*"
 
 [tool.poetry.group.tests.dependencies]
+pytest = "*"
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
 bi_promql = "dl_sqlalchemy_promql.base:PromQLDialect"

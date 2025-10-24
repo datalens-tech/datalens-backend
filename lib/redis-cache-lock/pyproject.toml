@@ -16,9 +16,6 @@ python = ">=3.10, <3.13"
 redis = "*"
 typing-extensions = "*"
 
-[tool.poetry.group.tests.dependencies]
-dl-testing = {path = "../dl_testing"}
-
 [tool.mypy]
 check_untyped_defs = true
 disallow_untyped_defs = true

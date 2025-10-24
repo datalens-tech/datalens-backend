@@ -15,9 +15,6 @@ dl-utils = {path = "../dl_utils"}
 python = ">=3.10, <3.13"
 typing-extensions = "*"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-
 [tool.poetry.plugins."dl_pivot.pivot_engine_plugins"]
 native = "dl_pivot.native.plugin:NativePivotEnginePlugin"
 

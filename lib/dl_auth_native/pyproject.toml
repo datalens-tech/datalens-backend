@@ -20,13 +20,15 @@ python = ">=3.10, <3.13"
 typing-extensions = "*"
 werkzeug = "*"
 
-[tool.poetry.extras]
-aiohttp = ["aiohttp"]
-flask = ["flask"]
-
 [tool.poetry.group.tests.dependencies]
 cryptography = "*"
 pytest = "*"
+pytest-asyncio = "*"
+pytest-mock = "*"
+
+[tool.poetry.extras]
+aiohttp = ["aiohttp"]
+flask = ["flask"]
 
 [tool.deptry.package_module_name_map]
 pyjwt = "jwt"

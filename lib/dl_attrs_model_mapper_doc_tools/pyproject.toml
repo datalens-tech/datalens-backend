@@ -13,9 +13,6 @@ dl-attrs-model-mapper = {path = "../dl_attrs_model_mapper"}
 python = ">=3.10, <3.13"
 pyyaml = "*"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-
 [tool.mypy]
 check_untyped_defs = true
 disallow_untyped_defs = true

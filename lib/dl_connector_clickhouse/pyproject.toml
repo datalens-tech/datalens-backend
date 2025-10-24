@@ -39,9 +39,9 @@ sqlalchemy = "*"
 typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
+dl-api-client = {path = "../dl_api_client"}
 dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 frozendict = "*"
-pytest-asyncio = "*"
 
 [tool.poetry.plugins]
 

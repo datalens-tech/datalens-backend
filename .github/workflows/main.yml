@@ -599,9 +599,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 1
       - run: task dev:toml-sort FIX=false
+      - run: task dev:deptry FAIL_FAST=false
       - run: |
           task cq:check_dir -- .
           task cq:check_dir_strict -- .
-      - name: Find directories and check requirements
-        run: |
-          task cq:find_and_check_requirements STRICT=true

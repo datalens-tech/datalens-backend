@@ -33,11 +33,11 @@ sqlalchemy = "*"
 sqlalchemy-bigquery = "*"
 
 [tool.poetry.group.tests.dependencies]
+dl-api-client = {path = "../dl_api_client"}
 dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 dl-core-testing = {path = "../dl_core_testing"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 pytest = "*"
-pytest-asyncio = "*"
 
 [tool.poetry.plugins]
 

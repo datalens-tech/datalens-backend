@@ -14,7 +14,10 @@ pydantic-settings = {extras = ["yaml"], version = "*"}
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
+attrs = "*"
 pytest = "*"
+pyyaml = "*"
+typing-extensions = "*"
 
 [tool.mypy]
 check_untyped_defs = true

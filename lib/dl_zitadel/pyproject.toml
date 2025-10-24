@@ -18,14 +18,13 @@ httpx = "*"
 python = ">=3.10, <3.13"
 werkzeug = "*"
 
+[tool.poetry.group.tests.dependencies]
+pytest = "*"
+pytest-mock = "*"
+
 [tool.poetry.extras]
 aiohttp = ["aiohttp"]
 flask = ["flask"]
-
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-pytest-asyncio = "*"
-pytest-mock = "*"
 
 [tool.mypy]
 check_untyped_defs = true

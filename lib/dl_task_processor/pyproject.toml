@@ -17,10 +17,8 @@ dl-utils = {path = "../dl_utils"}
 python = ">=3.10, <3.13"
 redis = "*"
 
-[tool.poetry.group]
-
 [tool.poetry.group.tests.dependencies]
-dl-core = {path = "../dl_core"}
+dl-api-commons = {path = "../dl_api_commons"}
 dl-testing = {path = "../dl_testing"}
 pytest = "*"
 pytest-asyncio = "*"
