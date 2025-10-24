@@ -33,7 +33,6 @@ import dl_api_lib.schemas.data
 import dl_api_lib.schemas.dataset_base
 import dl_api_lib.schemas.main
 import dl_api_lib.schemas.validation
-from dl_constants.api_constants import DLHeadersCommon
 from dl_constants.enums import (
     DataSourceCreatedVia,
     ManagedBy,
