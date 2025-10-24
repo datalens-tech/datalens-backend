@@ -322,6 +322,15 @@ class UStorageClientBase:
                 f"US client folder ID is immutable with auth context {type(self._auth_ctx).__qualname__}"
             )
 
+    def set_dataset_context(self, dataset_id: Optional[str]) -> None:
+        """
+        Set `X-DL-DatasetId` header for requests or delete if None
+        """
+        if dataset_id is not None:
+            self._extra_headers[DLHeadersCommon.DATASET_ID.value] = dataset_id
+        else:
+            self._extra_headers.pop(DLHeadersCommon.DATASET_ID.value, None)
+
     @staticmethod
     def parse_datetime(dt: str) -> datetime:
         # TODO: remove after migrating to python 3.11 or above

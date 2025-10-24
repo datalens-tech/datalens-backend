@@ -41,6 +41,7 @@ from dl_api_lib.utils import (
     check_permission_on_entry,
     need_permission_on_entry,
 )
+from dl_constants.api_constants import DLHeadersCommon
 from dl_constants.enums import (
     ConnectionType,
     CreateMode,
@@ -259,6 +260,8 @@ class ConnectionItem(BIResource):
     )
     def get(self, connection_id: str, query: dict) -> dict:
         us_manager = self.get_us_manager()
+        dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
+        us_manager.set_dataset_context(dataset_id)
 
         if "rev_id" in query:
             conn = us_manager.get_by_id(
@@ -281,6 +284,9 @@ class ConnectionItem(BIResource):
     @schematic_request(ns=ns)
     def delete(self, connection_id: str) -> None:
         us_manager = self.get_us_manager()
+        dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
+        us_manager.set_dataset_context(dataset_id)
+
         conn = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
         need_permission_on_entry(conn, USPermissionKind.admin)
 
@@ -290,6 +296,8 @@ class ConnectionItem(BIResource):
     @schematic_request(ns=ns)
     def put(self, connection_id: str) -> None | tuple[list | dict, int]:
         us_manager = self.get_us_manager()
+        dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
+        us_manager.set_dataset_context(dataset_id)
 
         with us_manager.get_locked_entry_cm(ConnectionBase, connection_id) as conn:  # type: ignore  # TODO: fix
             need_permission_on_entry(conn, USPermissionKind.edit)
@@ -454,7 +462,11 @@ class ConnectionInfoSources(BIResource):
         },
     )
     def get(self, connection_id: str, query: dict) -> dict:
-        connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+        us_manager = self.get_us_manager()
+        dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
+        us_manager.set_dataset_context(dataset_id)
+
+        connection = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
 
         service_registry = self.get_service_registry()
         localizer = service_registry.get_localizer()

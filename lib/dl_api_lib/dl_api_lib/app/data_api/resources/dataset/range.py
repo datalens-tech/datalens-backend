@@ -89,6 +89,7 @@ class DatasetRangeView(DatasetDataBaseView, abc.ABC):
         parameter_value_specs: list[ParameterValueSpec] | None = None,
     ) -> PostprocessedQuery:
         us_manager = self.dl_request.us_manager
+        us_manager.set_dataset_context(self.dataset_id)
 
         ds_view = DatasetView(
             ds=self.dataset,

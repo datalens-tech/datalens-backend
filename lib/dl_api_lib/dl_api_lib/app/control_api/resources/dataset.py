@@ -85,6 +85,8 @@ class DatasetCollection(DatasetResource):
             ds_key=self.generate_dataset_location(body),
             us_manager=us_manager,
         )
+        us_manager.set_dataset_context(dataset.uuid)
+
         ds_editor = DatasetComponentEditor(dataset=dataset)
 
         if "created_via" in body:
@@ -116,6 +118,8 @@ class DatasetItem(BIResource):
     def delete(self, dataset_id: str) -> None:
         """Delete dataset"""
         us_manager = self.get_us_manager()
+        us_manager.set_dataset_context(dataset_id)
+
         ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={}, load_dependencies=False)
         utils.need_permission_on_entry(ds, USPermissionKind.admin)
 
@@ -163,6 +167,8 @@ class DatasetCopy(DatasetResource):
     def post(self, dataset_id: str, body: dict) -> dict:
         copy_us_key = body["new_key"]
         us_manager = self.get_us_manager()
+        us_manager.set_dataset_context(dataset_id)
+
         ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
         orig_ds_loc = ds.entry_key
         copy_ds_loc: PathEntryLocation
@@ -196,6 +202,7 @@ class DatasetVersionItem(DatasetResource):
     def get(self, dataset_id: str, version: str, query: dict) -> dict:
         """Get dataset version"""
         us_manager = self.get_us_manager()
+        us_manager.set_dataset_context(dataset_id)
 
         if "rev_id" in query:
             ds, _ = self.get_dataset(dataset_id=dataset_id, body={}, params={"revId": query["rev_id"]})
@@ -236,6 +243,8 @@ class DatasetVersionItem(DatasetResource):
     def put(self, dataset_id: str, version: str, body: dict[str, Any]) -> dict:
         """Update dataset version"""
         us_manager = self.get_us_manager()
+        us_manager.set_dataset_context(dataset_id)
+
         with us_manager.get_locked_entry_cm(Dataset, dataset_id, wait_timeout=DEFAULT_DATASET_LOCK_WAIT_TIMEOUT) as ds:
             utils.need_permission_on_entry(ds, USPermissionKind.edit)
             us_manager.load_dependencies(ds)
@@ -292,6 +301,8 @@ class DatasetExportItem(DatasetResource):
         """Export dataset"""
 
         us_manager = self.get_service_us_manager()
+        us_manager.set_dataset_context(dataset_id)
+
         tenant = self.get_current_rci().tenant
         assert tenant is not None
         us_manager.set_tenant_override(tenant)
@@ -386,6 +397,8 @@ class DatasetImportCollection(DatasetResource):
             ds_key=self.generate_dataset_location(data),
             us_manager=us_manager,
         )
+        us_manager.set_dataset_context(dataset.uuid)
+
         ds_editor = DatasetComponentEditor(dataset=dataset)
 
         ds_editor.set_created_via(created_via=DataSourceCreatedVia.workbook_copy)
@@ -429,6 +442,8 @@ class DatasetVersionValidator(DatasetResource):
     ) -> tuple[dict, HTTPStatus]:
         """Validate dataset version schema"""
         us_manager = self.get_us_manager()
+        us_manager.set_dataset_context(dataset_id)
+
         assert body is not None
         dataset, _ = self.get_dataset(dataset_id=dataset_id, body=body)
         dataset_validator_factory = self.get_service_registry().get_dataset_validator_factory()
@@ -488,6 +503,8 @@ class DatasetVersionFieldValidator(DatasetResource):
     ) -> tuple[dict, HTTPStatus]:
         """Validate formula field of dataset version"""
         us_manager = self.get_us_manager()
+        us_manager.set_dataset_context(dataset_id)
+
         assert body is not None
         dataset, _ = self.get_dataset(dataset_id=dataset_id, body=body)
         dataset_validator_factory = self.get_service_registry().get_dataset_validator_factory()
