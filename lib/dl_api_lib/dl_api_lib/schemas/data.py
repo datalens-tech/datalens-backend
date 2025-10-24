@@ -48,7 +48,7 @@ from dl_api_lib.request_model.data import (
     ResultDataRequestModel,
 )
 from dl_api_lib.schemas.action import ActionSchema
-from dl_api_lib.schemas.dataset_base import DatasetContentSchema
+from dl_api_lib.schemas.dataset_base import DatasetContentInternalSchema
 from dl_api_lib.schemas.filter import WhereSchema
 from dl_api_lib.schemas.legend import LegendItemSchema
 from dl_api_lib.schemas.pivot import RequestPivotSpecSchema
@@ -92,7 +92,8 @@ class DatasetDataRequestBaseSchema(DefaultSchema[DataRequestModel]):
         raise NotImplementedError
 
 
-class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema, DatasetContentSchema):
+class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema):
+    dataset = ma_fields.Nested(DatasetContentInternalSchema, required=False)
     limit = ma_fields.Integer(load_default=100)
     row_count_hard_limit = ma_fields.Integer(load_default=DataAPILimits.PREVIEW_API_DEFAULT_ROW_COUNT_HARD_LIMIT)
     updates = ma_fields.Nested(ActionSchema, many=True, load_default=[])
