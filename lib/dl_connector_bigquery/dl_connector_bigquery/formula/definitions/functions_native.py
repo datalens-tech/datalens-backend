@@ -11,4 +11,7 @@ DEFINITIONS_NATIVE = [
     base.DBCallArrayInt.for_dialect(D.BIGQUERY),
     base.DBCallArrayFloat.for_dialect(D.BIGQUERY),
     base.DBCallArrayString.for_dialect(D.BIGQUERY),
+    base.DBCallAggInt.for_dialect(D.BIGQUERY),
+    base.DBCallAggFloat.for_dialect(D.BIGQUERY),
+    base.DBCallAggString.for_dialect(D.BIGQUERY),
 ]

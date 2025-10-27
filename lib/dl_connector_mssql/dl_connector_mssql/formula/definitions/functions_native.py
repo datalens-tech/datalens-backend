@@ -11,4 +11,7 @@ DEFINITIONS_NATIVE = [
     base.DBCallArrayInt.for_dialect(D.MSSQLSRV),
     base.DBCallArrayFloat.for_dialect(D.MSSQLSRV),
     base.DBCallArrayString.for_dialect(D.MSSQLSRV),
+    base.DBCallAggInt.for_dialect(D.MSSQLSRV),
+    base.DBCallAggFloat.for_dialect(D.MSSQLSRV),
+    base.DBCallAggString.for_dialect(D.MSSQLSRV),
 ]

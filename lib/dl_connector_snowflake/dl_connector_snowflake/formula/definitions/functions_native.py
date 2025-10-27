@@ -11,4 +11,7 @@ DEFINITIONS_NATIVE = [
     base.DBCallArrayInt.for_dialect(D.SNOWFLAKE),
     base.DBCallArrayFloat.for_dialect(D.SNOWFLAKE),
     base.DBCallArrayString.for_dialect(D.SNOWFLAKE),
+    base.DBCallAggInt.for_dialect(D.SNOWFLAKE),
+    base.DBCallAggFloat.for_dialect(D.SNOWFLAKE),
+    base.DBCallAggString.for_dialect(D.SNOWFLAKE),
 ]

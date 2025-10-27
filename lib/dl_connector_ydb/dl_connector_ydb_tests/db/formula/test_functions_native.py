@@ -1,7 +1,10 @@
 import pytest
 
 from dl_formula_testing.evaluator import DbEvaluator
-from dl_formula_testing.testcases.functions_native import DefaultNativeFunctionFormulaConnectorTestSuite
+from dl_formula_testing.testcases.functions_native import (
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+    DefaultNativeFunctionFormulaConnectorTestSuite,
+)
 
 from dl_connector_ydb_tests.db.formula.base import YQLTestBase
 
@@ -36,3 +39,10 @@ class TestNativeFunctionYdb(
 
         # DB_CALL_ARRAY_STRING
         assert dbe.eval('DB_CALL_ARRAY_STRING("AsList", "a", "b", "c")') == dbe.eval("ARRAY('a', 'b', 'c')")
+
+
+class TestNativeAggregationFunctionYdb(
+    YQLTestBase,
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+):
+    pass

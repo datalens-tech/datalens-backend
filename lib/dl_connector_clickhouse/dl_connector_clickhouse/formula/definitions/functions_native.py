@@ -11,4 +11,7 @@ DEFINITIONS_NATIVE = [
     base.DBCallArrayInt.for_dialect(D.CLICKHOUSE),
     base.DBCallArrayFloat.for_dialect(D.CLICKHOUSE),
     base.DBCallArrayString.for_dialect(D.CLICKHOUSE),
+    base.DBCallAggInt.for_dialect(D.CLICKHOUSE),
+    base.DBCallAggFloat.for_dialect(D.CLICKHOUSE),
+    base.DBCallAggString.for_dialect(D.CLICKHOUSE),
 ]

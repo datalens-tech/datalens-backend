@@ -1,7 +1,10 @@
 import pytest
 
 from dl_formula_testing.evaluator import DbEvaluator
-from dl_formula_testing.testcases.functions_native import DefaultNativeFunctionFormulaConnectorTestSuite
+from dl_formula_testing.testcases.functions_native import (
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+    DefaultNativeFunctionFormulaConnectorTestSuite,
+)
 
 from dl_connector_clickhouse_tests.db.formula.base import (
     ClickHouse_21_8TestBase,
@@ -75,3 +78,17 @@ class TestNativeFunctionClickHouse_22_10(
 
         # DB_CALL_ARRAY_STRING
         assert dbe.eval('DB_CALL_ARRAY_STRING("splitByChar", ",", "a,b,c")') == dbe.eval('ARRAY("a", "b", "c")')
+
+
+class TestNativeAggregationFunctionClickHouse_21_8(
+    ClickHouse_21_8TestBase,
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+):
+    pass
+
+
+class TestNativeAggregationFunctionClickHouse_22_10(
+    ClickHouse_22_10TestBase,
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+):
+    pass
