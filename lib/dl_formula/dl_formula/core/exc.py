@@ -239,6 +239,11 @@ class TranslationUnknownFunctionError(TranslationError):
     default_code = TranslationError.default_code + ("UNKNOWN_FUNCTION",)
 
 
+class NativeFunctionForbiddenInputError(TranslationError):
+    default_code = TranslationError.default_code + ("FORBIDDEN_INPUT",)
+    default_message = "Forbidden input for native function"
+
+
 class TranslationUnknownFieldError(TranslationError):
     # An internal error, should not appear to users.
     # If it does, investigate.
