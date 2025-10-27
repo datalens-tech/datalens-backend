@@ -612,15 +612,16 @@ class DefaultBasicNativeFunctionTestSuite(
         control_api: SyncHttpDatasetApiV1,
         data_api: SyncHttpDataApiV2,
         saved_dataset: Dataset,
-        native_agg_sum_function: str,
+        native_agg_function_names: dict[str, str],
     ) -> None:
+        native_sum = native_agg_function_names["sum"]
         ds = add_formulas_to_dataset(
             api_v1=control_api,
             dataset=saved_dataset,
             formulas={
-                "sales sum": f"DB_CALL_AGG_FLOAT('{native_agg_sum_function}', [sales])",
-                "sales sum fx city": f"DB_CALL_AGG_FLOAT('{native_agg_sum_function}', [sales] FIXED [city])",
-                "sales sum fx category": f"DB_CALL_AGG_FLOAT('{native_agg_sum_function}', [sales] FIXED [category])",
+                "sales sum": f"DB_CALL_AGG_FLOAT('{native_sum}', [sales])",
+                "sales sum fx city": f"DB_CALL_AGG_FLOAT('{native_sum}', [sales] FIXED [city])",
+                "sales sum fx category": f"DB_CALL_AGG_FLOAT('{native_sum}', [sales] FIXED [category])",
             },
         )
 
