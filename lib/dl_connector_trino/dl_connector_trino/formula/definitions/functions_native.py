@@ -11,4 +11,7 @@ DEFINITIONS_NATIVE = [
     base.DBCallArrayInt.for_dialect(D.TRINO),
     base.DBCallArrayFloat.for_dialect(D.TRINO),
     base.DBCallArrayString.for_dialect(D.TRINO),
+    base.DBCallAggInt.for_dialect(D.TRINO),
+    base.DBCallAggFloat.for_dialect(D.TRINO),
+    base.DBCallAggString.for_dialect(D.TRINO),
 ]

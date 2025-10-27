@@ -1,7 +1,11 @@
 import pytest
+import sqlalchemy as sa
 
 from dl_formula_testing.evaluator import DbEvaluator
-from dl_formula_testing.testcases.functions_native import DefaultNativeFunctionFormulaConnectorTestSuite
+from dl_formula_testing.testcases.functions_native import (
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+    DefaultNativeFunctionFormulaConnectorTestSuite,
+)
 
 from dl_connector_trino_tests.db.formula.base import TrinoFormulaTestBase
 
@@ -38,3 +42,16 @@ class TestNativeFunctionTrino(
 
         # DB_CALL_ARRAY_STRING
         assert dbe.eval('DB_CALL_ARRAY_STRING("repeat", "a", 5)') == ["a", "a", "a", "a", "a"]
+
+
+class TestNativeAggregationFunctionTrino(
+    TrinoFormulaTestBase,
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+):
+    def test_basic_aggregation_functions(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        int_values = data_table.int_values
+        str_values = data_table.str_values
+
+        assert dbe.eval('DB_CALL_AGG_INT("sum", [int_value])', from_=data_table) == sum(int_values)
+        assert dbe.eval('DB_CALL_AGG_FLOAT("avg", [int_value])', from_=data_table) == sum(int_values) / len(int_values)
+        assert dbe.eval('DB_CALL_AGG_STRING("max", [str_value])', from_=data_table) == max(str_values)
