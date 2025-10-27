@@ -180,7 +180,6 @@ class DatasetDataBaseView(BaseView):
     @generic_profiler_async("resolve-entities")  # type: ignore  # TODO: fix
     async def resolve_entities(self) -> None:
         us_manager = self.dl_request.us_manager
-        us_manager.set_dataset_context(self.dataset_id)
 
         if self.dl_request.log_ctx_controller:
             self.dl_request.log_ctx_controller.put_to_context("dataset_id", self.dataset_id)
@@ -253,7 +252,6 @@ class DatasetDataBaseView(BaseView):
         allow_settings_change: bool = False,
     ) -> DatasetUpdateInfo:
         us_manager = self.dl_request.us_manager
-        us_manager.set_dataset_context(self.dataset_id)
 
         if self.STORED_DATASET_REQUIRED:
             raise ValueError(f"View {self} requires stored dataset, but no ID found in match info")
@@ -301,7 +299,6 @@ class DatasetDataBaseView(BaseView):
         allow_settings_change: bool = False,
     ) -> DatasetUpdateInfo:
         us_manager = self.dl_request.us_manager
-        us_manager.set_dataset_context(self.dataset_id)
 
         params: dict[str, str] | None = None
         if self.rev_id is not None:
@@ -520,7 +517,6 @@ class DatasetDataBaseView(BaseView):
         enable_mutation_caching: bool = False,
     ) -> DatasetUpdateInfo:
         us_manager = self.dl_request.us_manager
-        us_manager.set_dataset_context(self.dataset_id)
 
         services_registry = self.dl_request.services_registry
         assert isinstance(services_registry, ApiServiceRegistry)
@@ -647,7 +643,6 @@ class DatasetDataBaseView(BaseView):
         # TODO: Move to a separate class
 
         us_manager = self.dl_request.us_manager
-        us_manager.set_dataset_context(self.dataset_id)
 
         ds_view = DatasetView(
             ds=self.dataset,

@@ -97,6 +97,7 @@ class DatasetResource(BIResource):
             if RequiredResourceCommon.US_HEADERS_TOKEN in cls.REQUIRED_RESOURCES
             else cls.get_us_manager()
         )
+        us_manager.set_dataset_context(dataset_id)
         if dataset_id:
             try:
                 dataset = us_manager.get_by_id(dataset_id, expected_type=Dataset, params=params)

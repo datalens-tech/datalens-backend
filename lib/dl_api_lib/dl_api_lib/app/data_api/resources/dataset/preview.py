@@ -67,6 +67,9 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
     @DatasetDataBaseView.with_resolved_entities
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> Response:
+        # Pass dataset_id to US from URL
+        self.dl_request.us_manager.set_dataset_context(self.dataset_id)
+
         req_model = self.load_req_model()
 
         update_info = await self.prepare_dataset_for_request(

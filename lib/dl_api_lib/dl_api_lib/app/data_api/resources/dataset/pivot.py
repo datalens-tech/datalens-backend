@@ -50,6 +50,9 @@ class DatasetPivotView(DatasetDataBaseView):
     @generic_profiler_async("ds-pivot-full")
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> Response:
+        # Pass dataset_id to US from URL
+        self.dl_request.us_manager.set_dataset_context(self.dataset_id)
+
         schema = dl_api_lib.schemas.data.PivotDataRequestBaseSchema()
         req_model: PivotDataRequestModel = schema.load(self.dl_request.json)
 

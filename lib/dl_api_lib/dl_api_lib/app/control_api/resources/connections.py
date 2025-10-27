@@ -284,8 +284,6 @@ class ConnectionItem(BIResource):
     @schematic_request(ns=ns)
     def delete(self, connection_id: str) -> None:
         us_manager = self.get_us_manager()
-        dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
-        us_manager.set_dataset_context(dataset_id)
 
         conn = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
         need_permission_on_entry(conn, USPermissionKind.admin)
@@ -296,8 +294,6 @@ class ConnectionItem(BIResource):
     @schematic_request(ns=ns)
     def put(self, connection_id: str) -> None | tuple[list | dict, int]:
         us_manager = self.get_us_manager()
-        dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
-        us_manager.set_dataset_context(dataset_id)
 
         with us_manager.get_locked_entry_cm(ConnectionBase, connection_id) as conn:  # type: ignore  # TODO: fix
             need_permission_on_entry(conn, USPermissionKind.edit)
