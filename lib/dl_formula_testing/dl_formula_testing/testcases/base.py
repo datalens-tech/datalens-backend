@@ -194,3 +194,11 @@ class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
             yield table
         finally:
             dbe.db.drop_table(table)
+
+    @pytest.fixture(scope="class")
+    def native_agg_function_names(self) -> dict[str, str]:
+        return {
+            "sum": "sum",
+            "avg": "avg",
+            "max": "max",
+        }
