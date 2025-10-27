@@ -28,13 +28,13 @@ from dl_core.loader import (
 )
 from dl_file_uploader_api_lib.aiohttp_services.crypto import CryptoService
 from dl_file_uploader_api_lib.aiohttp_services.error_handler import FileUploaderErrorHandler
+from dl_file_uploader_api_lib.aiohttp_services.s3_service import FileUploaderAPIS3Service
 from dl_file_uploader_api_lib.dl_request import FileUploaderDLRequest
 from dl_file_uploader_api_lib.settings import FileUploaderAPISettings
 from dl_file_uploader_api_lib.views import files as files_views
 from dl_file_uploader_api_lib.views import misc as misc_views
 from dl_file_uploader_api_lib.views import sources as sources_views
 from dl_file_uploader_lib.settings_utils import init_redis_service
-from dl_s3.s3_service import S3Service
 from dl_task_processor.arq_redis import ArqRedisService
 from dl_task_processor.arq_wrapper import create_arq_redis_settings
 
@@ -115,7 +115,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
         app.on_startup.append(redis_service.init_hook)
         app.on_shutdown.append(redis_service.tear_down_hook)
 
-        s3_service = S3Service(
+        s3_service = FileUploaderAPIS3Service(
             access_key_id=self._settings.S3.ACCESS_KEY_ID,
             secret_access_key=self._settings.S3.SECRET_ACCESS_KEY,
             endpoint_url=self._settings.S3.ENDPOINT_URL,

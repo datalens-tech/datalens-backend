@@ -49,6 +49,7 @@ from dl_core_testing.environment import (
 )
 from dl_file_secure_reader_lib.app import create_app as create_reader_app
 from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
+from dl_file_uploader_api_lib.aiohttp_services.s3_service import FileUploaderAPIS3Service
 from dl_file_uploader_api_lib.app import FileUploaderApiAppFactory
 from dl_file_uploader_api_lib.dl_request import FileUploaderDLRequest
 from dl_file_uploader_api_lib.settings import (
@@ -69,7 +70,6 @@ from dl_file_uploader_worker_lib.settings import (
 )
 from dl_file_uploader_worker_lib.testing.task_processor_client import get_task_processor_client
 import dl_retrier
-from dl_s3.s3_service import S3Service
 from dl_task_processor.processor import TaskProcessor
 from dl_task_processor.state import (
     BITaskStateImpl,
@@ -257,12 +257,12 @@ def redis_cli(redis_app_settings) -> redis.asyncio.Redis:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def s3_service(s3_settings: S3Settings, s3_tmp_bucket) -> S3Service:
-    service = S3Service(
+async def s3_service(s3_settings: S3Settings, s3_tmp_bucket) -> FileUploaderAPIS3Service:
+    service = FileUploaderAPIS3Service(
         access_key_id=s3_settings.ACCESS_KEY_ID,
         secret_access_key=s3_settings.SECRET_ACCESS_KEY,
         endpoint_url=s3_settings.ENDPOINT_URL,
-        use_virtual_host_addressing=False,
+        use_virtual_host_addressing=True,
         tmp_bucket_name=s3_tmp_bucket,
         persistent_bucket_name=s3_persistent_bucket,
     )

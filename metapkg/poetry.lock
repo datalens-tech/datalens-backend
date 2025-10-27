@@ -690,6 +690,7 @@ files = [
 
 [package.dependencies]
 botocore-stubs = "*"
+mypy-boto3-s3 = {version = ">=1.36.0,<1.37.0", optional = true, markers = "extra == \"s3\""}
 types-s3transfer = "*"
 typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.12\""}
 
@@ -2787,6 +2788,7 @@ files = []
 develop = true
 
 [package.dependencies]
+aiobotocore = "*"
 aiogoogle = "*"
 aiohttp = "*"
 attrs = "*"
@@ -5416,6 +5418,20 @@ mypyc = ["setuptools (>=50)"]
 reports = ["lxml"]
 
 [[package]]
+name = "mypy-boto3-s3"
+version = "1.36.21"
+description = "Type annotations for boto3 S3 1.36.21 service generated with mypy-boto3-builder 8.9.1"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "mypy_boto3_s3-1.36.21-py3-none-any.whl", hash = "sha256:bfda17f51efafc2cdcefad7a13f5ac35bd721291476d8558c2d3a21758442be5"},
+    {file = "mypy_boto3_s3-1.36.21.tar.gz", hash = "sha256:9c6143c0dabfbd98e6c741e7cc65a33c7f87b8c28eeb373a2bc3e2c923af8283"},
+]
+
+[package.dependencies]
+typing-extensions = {version = "*", markers = "python_version < \"3.12\""}
+
+[[package]]
 name = "mypy-extensions"
 version = "1.0.0"
 description = "Type system extensions for programs checked with the mypy type checker."
@@ -7798,6 +7814,7 @@ files = [
 
 [package.dependencies]
 botocore-stubs = "*"
+types-aiobotocore-s3 = {version = ">=2.19.0,<2.20.0", optional = true, markers = "extra == \"s3\""}
 typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.12\""}
 
 [package.extras]
@@ -8208,6 +8225,20 @@ workspaces = ["types-aiobotocore-workspaces (>=2.19.0,<2.20.0)"]
 workspaces-thin-client = ["types-aiobotocore-workspaces-thin-client (>=2.19.0,<2.20.0)"]
 workspaces-web = ["types-aiobotocore-workspaces-web (>=2.19.0,<2.20.0)"]
 xray = ["types-aiobotocore-xray (>=2.19.0,<2.20.0)"]
+
+[[package]]
+name = "types-aiobotocore-s3"
+version = "2.19.0.post1"
+description = "Type annotations for aiobotocore S3 2.19.0 service generated with mypy-boto3-builder 8.9.0"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "types_aiobotocore_s3-2.19.0.post1-py3-none-any.whl", hash = "sha256:7c22957716d5349df75537c8f46e926f867880e7901281bce1bd59c1f6f10ddb"},
+    {file = "types_aiobotocore_s3-2.19.0.post1.tar.gz", hash = "sha256:0e9954b5f69f6bf61baa223ba7038f41d4fe970cc8ef06fd23233a2046bcc2fd"},
+]
+
+[package.dependencies]
+typing-extensions = {version = "*", markers = "python_version < \"3.12\""}
 
 [[package]]
 name = "types-aiofiles"
@@ -9175,4 +9206,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "1c9b8894dfe3926c1e427d2c3a774465ac5922cf643276cd93c0103eb709737c"
+content-hash = "bc856a63eff1e65ea53dc810b5a87c484bce8f6a086c02ec940dc11cdebfba79"

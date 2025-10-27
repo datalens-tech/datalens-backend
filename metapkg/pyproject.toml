@@ -211,12 +211,12 @@ virtualenv = "==20.30.0"
 
 [tool.poetry.group.mypy.dependencies]
 asyncpg-stubs = "==0.29.0"
-boto3-stubs = "==1.36.3"
+boto3-stubs = {version = "==1.36.3", extras = ["s3"]}
 botocore-stubs = "==1.36.3"
 grpc-stubs = "==1.53.0.5"
 mypy = "==1.7.0"
 pandas-stubs = "==2.1.4.231227"
-types-aiobotocore = "==2.19.0"
+types-aiobotocore = {version = "==2.19.0", extras = ["s3"]}
 types-aiofiles = "==23.1.0"
 types-cffi = "==1.16.0"
 types-colorama = "==0.4.6"
