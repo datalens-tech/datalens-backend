@@ -12,6 +12,7 @@ from dl_formula.definitions.base import (
     Function,
     TranslationVariantWrapped,
 )
+from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import Fixed
 from dl_formula.translation.context import TranslationCtx
 
@@ -37,6 +38,7 @@ class DBCall(Function):
         ArgTypeSequence([DataType.CONST_STRING]),
     ]
     variants = [VW(D.DUMMY, _call_native_impl)]
+    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class DBCallInt(DBCall):
