@@ -410,6 +410,11 @@ class ConnectionDBNames(BIResource):
 
 @ns.route("/<connection_id>/info/source_listing_options")
 class ConnectionInfoSourceListingOptions(BIResource):
+    def _prepare_response(self, listing_options: ListingOptions) -> dict[str, ListingOptions]:
+        return {
+            "source_listing": listing_options,
+        }
+
     @schematic_request(
         ns=ns,
         responses={
@@ -419,9 +424,6 @@ class ConnectionInfoSourceListingOptions(BIResource):
     )
     def get(self, connection_id: str) -> dict:
         connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
-
-        service_registry = self.get_service_registry()
-        localizer = service_registry.get_localizer()
 
         if not check_permission_on_entry(connection, USPermissionKind.read):
             # It does not matter what options we provide if the user does not have sufficient permissions,
@@ -433,11 +435,12 @@ class ConnectionInfoSourceListingOptions(BIResource):
                 db_name_required_for_search=False,
                 db_name_label=None,
             )
-        else:
-            localizer = service_registry.get_localizer()
-            listing_options = connection.get_listing_options(localizer)
+            return self._prepare_response(listing_options)
 
-        return {"source_listing": listing_options}
+        service_registry = self.get_service_registry()
+        localizer = service_registry.get_localizer()
+        listing_options = connection.get_listing_options(localizer)
+        return self._prepare_response(listing_options)
 
 
 @ns.route("/<connection_id>/info/sources")
