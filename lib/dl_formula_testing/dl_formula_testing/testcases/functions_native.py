@@ -32,3 +32,7 @@ class DefaultNativeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
             dbe.eval(f"{func_name}([str_value])", from_=data_table)
 
         assert f"Invalid argument types for function {func_name}" in str(exc_info.value)
+
+
+class DefaultNativeAggregationFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
+    pass
