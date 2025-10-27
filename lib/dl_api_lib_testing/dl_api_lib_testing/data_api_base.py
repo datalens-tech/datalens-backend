@@ -155,6 +155,10 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
     ) -> SyncHttpDataApiV2:
         return SyncHttpDataApiV2(client=data_api_sync_client, headers=bi_headers or {})
 
+    @pytest.fixture(scope="function")
+    def native_agg_sum_function(self) -> str:
+        return "sum"
+
 
 class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=abc.ABCMeta):
     @pytest.fixture(scope="class")
