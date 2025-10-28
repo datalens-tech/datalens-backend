@@ -377,7 +377,7 @@ class ConnectionInfoMetadataSources(BIResource):
         localizer = self.get_service_registry().get_localizer()
         source_template_templates = connection.get_data_source_template_templates(localizer=localizer)
 
-        source_templates: list[DataSourceTemplate] | None = []
+        source_templates: list[DataSourceTemplate] | None
         if not check_permission_on_entry(connection, USPermissionKind.read):
             source_templates = []
         else:
