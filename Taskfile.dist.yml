@@ -40,10 +40,17 @@ includes:
       EXCLUDE_LIB_PATHS: |
         {{.ROOT_DIR}}
         {{.ROOT_DIR}}/metapkg
-        {{.ROOT_DIR}}/terrarium/dl_repmanager/dl_repmanager_tests/testrepo/lib/testing_pkg_boilerplate
         {{.ROOT_DIR}}/terrarium/bi_ci/bi_ci_tests/unit/resources
+        {{.ROOT_DIR}}/tools/cookiecutter/templates/.*
       PARENT_BRANCH: '{{.PARENT_BRANCH | default "main"}}'
 
+  сс:
+    taskfile: tools/cookiecutter/Taskfile.yaml
+    optional: true
+    vars:
+      VENV_PATH: '{{.ROOT_DIR}}/metapkg/.venv'
+      PROJECT_ROOT_PATH: '{{.ROOT_DIR}}'
+      METAPKG_FILE: '{{.ROOT_DIR}}/metapkg/pyproject.toml'
   ops:
     taskfile: tools/taskfiles/taskfile_ops.yml
     dir: tools
