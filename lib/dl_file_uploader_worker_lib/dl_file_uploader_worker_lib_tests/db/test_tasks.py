@@ -3,10 +3,13 @@ from datetime import (
     timedelta,
 )
 import logging
-from typing import Any
+from typing import (
+    TYPE_CHECKING,
+    Any,
+)
 import uuid
 
-from botocore.exceptions import ClientError
+import botocore.exceptions
 import pytest
 import pytest_asyncio
 
@@ -44,6 +47,11 @@ from dl_task_processor.state import wait_task
 from dl_connector_bundle_chs3.chs3_base.core.us_connection import BaseFileS3Connection
 
 from .utils import create_file_connection
+
+
+if TYPE_CHECKING:
+    from types_aiobotocore_s3 import S3Client as AsyncS3Client
+    from types_aiobotocore_s3.type_defs import LifecycleRuleOutputTypeDef
 
 
 LOGGER = logging.getLogger(__name__)
@@ -347,7 +355,7 @@ async def test_delete_file_task(
     )
     await wait_task(task, task_state)
 
-    with pytest.raises(ClientError) as ex:
+    with pytest.raises(botocore.exceptions.ClientError) as ex:
         await s3_client.head_object(
             Bucket=s3_persistent_bucket,
             Key=filename,
@@ -388,15 +396,17 @@ asd,345,47.9,2021-02-05,2021-02-05 14:01:00""".encode(
     return tenant_ids
 
 
-async def get_lc_rules_number(s3_client, bucket) -> int:
+async def get_lc_rules_number(s3_client: AsyncS3Client, bucket: str) -> int:
+    lc_rules: list[LifecycleRuleOutputTypeDef]
     try:
         lc_config = await s3_client.get_bucket_lifecycle_configuration(Bucket=bucket)
-    except ClientError as ex:
+        lc_rules = lc_config["Rules"]
+    except botocore.exceptions.ClientError as ex:
         if ex.response["Error"]["Code"] == "NoSuchLifecycleConfiguration":
-            lc_config = {"Rules": []}
+            lc_rules = []
         else:
             raise
-    return len(lc_config["Rules"])
+    return len(lc_rules)
 
 
 @pytest.mark.asyncio

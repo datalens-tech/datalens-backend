@@ -7,17 +7,15 @@ from typing import (
     Callable,
 )
 
-import aiobotocore.client
 import aiobotocore.session
 import boto3
-import botocore.client
 import botocore.exceptions
-import botocore.session
 
 
 if TYPE_CHECKING:
     from mypy_boto3_s3.client import S3Client as SyncS3Client
     from types_aiobotocore_s3 import S3Client as AsyncS3Client
+    from types_aiobotocore_s3.type_defs import LifecycleRuleOutputTypeDef
 
     from dl_configs.settings_submodels import S3Settings
 
@@ -73,14 +71,16 @@ async def create_s3_bucket(
 
 
 async def get_lc_rules_number(s3_client: AsyncS3Client, bucket: str) -> int:
+    lc_rules: list[LifecycleRuleOutputTypeDef]
     try:
         lc_config = await s3_client.get_bucket_lifecycle_configuration(Bucket=bucket)
+        lc_rules = lc_config["Rules"]
     except botocore.exceptions.ClientError as ex:
         if ex.response["Error"]["Code"] == "NoSuchLifecycleConfiguration":
-            lc_config = {"Rules": []}  # type: ignore[typeddict-item]
+            lc_rules = []
         else:
             raise
-    return len(lc_config["Rules"])
+    return len(lc_rules)
 
 
 S3_TBL_FUNC_TEMPLATE = """s3(
