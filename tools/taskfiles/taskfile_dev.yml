@@ -105,7 +105,10 @@ tasks:
             echo "Command failed with exit status $command_status";
             exit_code=$command_status;
           fi;
-          if [ $FAIL_FAST -eq "true" ] && [ $exit_code -ne 0 ]; then break; fi
+          if [ $FAIL_FAST == "true" ] && [ $exit_code -ne 0 ]; then
+            echo "FAIL_FAST is true and command failed, breaking";
+            break;
+          fi
         done;
         exit $exit_code;
     env:
