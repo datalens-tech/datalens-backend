@@ -34,8 +34,10 @@ redis = "*"
 shortuuid = "*"
 
 [tool.poetry.group.tests.dependencies]
+clickhouse-driver = "*"
 dl-core-testing = {path = "../dl_core_testing"}
 dl-file-secure-reader-lib = {path = "../dl_file_secure_reader_lib"}
+dl-retrier = {path = "../dl_retrier"}
 dl-testing = {path = "../dl_testing"}
 pytest = "*"
 pytest-asyncio = "*"

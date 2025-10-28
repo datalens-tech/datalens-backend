@@ -35,7 +35,6 @@ dl-core-testing = {path = "../dl_core_testing"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 mock = "*"
 pytest = "*"
-pytest-asyncio = "*"
 
 [tool.poetry.plugins]
 

@@ -17,6 +17,7 @@ dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 dl-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
 dl-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
 dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
+pytest = "*"
 
 [tool.mypy]
 check_untyped_defs = true

@@ -16,9 +16,6 @@ python = ">=3.10, <3.13"
 shortuuid = "*"
 sqlalchemy = "*"
 
-[tool.poetry.group.tests.dependencies]
-pytest = "*"
-
 [tool.mypy]
 check_untyped_defs = true
 disallow_untyped_defs = true

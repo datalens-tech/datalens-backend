@@ -13,6 +13,9 @@ python-dateutil = "*"
 requests = "*"
 SQLAlchemy = "*"
 
+[tool.poetry.group.tests.dependencies]
+pytest = "*"
+
 [tool.poetry.plugins."sqlalchemy.dialects"]
 appmetrica_api = "dl_sqlalchemy_metrica_api.base:AppMetricaApiDialect"
 metrika_api = "dl_sqlalchemy_metrica_api.base:MetrikaApiDialect"

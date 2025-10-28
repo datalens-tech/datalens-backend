@@ -34,11 +34,11 @@ jobs:
       - name: Setup common tools
         run: pip install --no-input poetry
       - name: Install dependencies
-        run: | 
+        run: |
           cd "terrarium/${{ matrix.value }}"
-          poetry -v install --with pytest --without mypy
+          poetry -v install --with tests --without mypy
       - name: Pytest
-        run: | 
+        run: |
           cd "terrarium/${{ matrix.value }}"
           poetry run pytest .
 
@@ -66,10 +66,10 @@ jobs:
       - name: Setup common tools
         run: pip install --no-input poetry
       - name: Install dependencies
-        run: | 
+        run: |
           cd "terrarium/${{ matrix.value }}"
-          poetry -v install --with mypy --without pytest
+          poetry -v install --with mypy --without tests
       - name: Mypy
-        run: | 
+        run: |
           cd "terrarium/${{ matrix.value }}"
           poetry run mypy .

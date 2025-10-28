@@ -32,7 +32,14 @@ python = ">=3.10, <3.13"
 xxhash = "*"
 
 [tool.poetry.group.tests.dependencies]
+dl-api-client = {path = "../dl_api_client"}
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+flask = "*"
 pytest = "*"
+pytest-asyncio = "*"
+sqlalchemy = "*"
 
 [tool.poetry.plugins]
 

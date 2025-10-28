@@ -18,6 +18,7 @@ msgpack = "*"
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
+dl-testing = {path = "../dl_testing"}
 flaky = "*"
 pytest = "*"
 

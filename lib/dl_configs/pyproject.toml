@@ -18,6 +18,7 @@ typeguard = "*"
 typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
+pytest = "*"
 shortuuid = "*"
 
 [tool.mypy]

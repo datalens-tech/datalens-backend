@@ -20,6 +20,8 @@ typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "*"
+pytest-asyncio = "*"
+pytest-mock = "*"
 respx = "*"
 
 [tool.mypy]

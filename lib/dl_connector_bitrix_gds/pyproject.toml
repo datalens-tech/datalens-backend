@@ -30,7 +30,10 @@ redis_cache_lock = {path = "../redis-cache-lock"}
 sqlalchemy = "*"
 
 [tool.poetry.group.tests.dependencies]
-dl-compeng-pg = {path = "../dl_compeng_pg"}
+dl-api-client = {path = "../dl_api_client"}
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-testing = {path = "../dl_testing"}
 pytest = "*"
 
 [tool.poetry.plugins."dl_api_lib.connectors"]

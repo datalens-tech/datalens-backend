@@ -14,6 +14,7 @@ python = ">=3.10, <3.13"
 sqlalchemy = "*"
 
 [tool.poetry.group.tests.dependencies]
+pytest = "*"
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
 bi_clickhouse = "dl_sqlalchemy_clickhouse.base:BIClickHouseDialect"

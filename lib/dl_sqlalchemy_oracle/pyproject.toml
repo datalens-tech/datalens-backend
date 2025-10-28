@@ -13,6 +13,7 @@ python = ">=3.10, <3.13"
 sqlalchemy = "*"
 
 [tool.poetry.group.tests.dependencies]
+pytest = "*"
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
 bi_oracle = "dl_sqlalchemy_oracle.base:BIOracleDialect"

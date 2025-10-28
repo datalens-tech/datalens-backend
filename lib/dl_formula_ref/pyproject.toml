@@ -22,8 +22,8 @@ tabulate = "*"
 typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
-babel = "*"
-psycopg2-binary = "*"
+dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+dl-testing = {path = "../dl_testing"}
 pytest = "*"
 
 [tool.poetry.plugins]

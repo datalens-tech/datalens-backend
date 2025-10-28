@@ -29,7 +29,6 @@ dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 dl-core-testing = {path = "../dl_core_testing"}
 dl-testing = {path = "../dl_testing"}
 pytest = "*"
-pytest-asyncio = "*"
 
 [tool.poetry.plugins."dl_api_lib.connectors"]
 promql = "dl_connector_promql.api.connector:PromQLApiConnector"

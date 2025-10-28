@@ -13,6 +13,7 @@ python = ">=3.10, <3.13"
 sqlalchemy = "*"
 
 [tool.poetry.group.tests.dependencies]
+pytest = "*"
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
 dl_mysql = "dl_sqlalchemy_mysql.base:DLMYSQLDialect"
