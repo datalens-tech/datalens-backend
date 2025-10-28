@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-def create_s3_client(s3_settings: S3Settings) -> AsyncS3Client:
+def create_s3_client(s3_settings: S3Settings) -> aiobotocore.session.ClientCreatorContext:
     session = aiobotocore.session.get_session()
     return session.create_client(
         service_name="s3",
@@ -77,7 +77,7 @@ async def get_lc_rules_number(s3_client: AsyncS3Client, bucket: str) -> int:
         lc_config = await s3_client.get_bucket_lifecycle_configuration(Bucket=bucket)
     except botocore.exceptions.ClientError as ex:
         if ex.response["Error"]["Code"] == "NoSuchLifecycleConfiguration":
-            lc_config = {"Rules": []}
+            lc_config = {"Rules": []}  # type: ignore[typeddict-item]
         else:
             raise
     return len(lc_config["Rules"])

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from typing import (
     TYPE_CHECKING,
@@ -5,7 +7,6 @@ from typing import (
     ClassVar,
 )
 
-from aiobotocore.client import AioBaseClient
 from aiobotocore.config import AioConfig
 from aiobotocore.session import (
     AioSession,
@@ -34,7 +35,7 @@ class FileUploaderAPIS3Service(S3Service):
 
     APP_KEY: ClassVar[str] = "S3_SERVICE_FILE_UPLOADER_API"
 
-    _client_for_presigned: AioBaseClient = attr.ib(init=False, repr=False, hash=False, cmp=False)
+    _client_for_presigned: AsyncS3Client = attr.ib(init=False, repr=False, hash=False, cmp=False)
     _client_init_params_for_presigned: dict[str, Any] = attr.ib(init=False, repr=False, hash=False, cmp=False)
 
     async def _initialize_basic_client(self, session: AioSession) -> None:

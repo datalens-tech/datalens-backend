@@ -7,7 +7,6 @@ from typing import (
     ClassVar,
 )
 
-from aiobotocore.client import AioBaseClient
 from aiobotocore.config import AioConfig
 from aiobotocore.session import get_session
 from aiohttp import web
@@ -36,7 +35,7 @@ class S3Service:
     tmp_bucket_name: str = attr.ib()
     persistent_bucket_name: str = attr.ib()
 
-    _client: AioBaseClient = attr.ib(init=False, repr=False, hash=False, cmp=False)
+    _client: AsyncS3Client = attr.ib(init=False, repr=False, hash=False, cmp=False)
     _client_init_params: dict[str, Any] = attr.ib(init=False, repr=False, hash=False, cmp=False)
 
     @property
