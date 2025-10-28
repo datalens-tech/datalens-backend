@@ -73,6 +73,11 @@ def profile_stats(stats_dir: Optional[str] = None) -> Iterator[None]:
         pr.dump_stats(filename)
 
 
+def check_permission_on_entry(us_entry: USEntry, permission: USPermissionKind) -> bool:
+    assert us_entry.permissions is not None
+    return us_entry.permissions[permission.name]
+
+
 def need_permission_on_entry(us_entry: USEntry, permission: USPermissionKind) -> None:
     assert us_entry.permissions is not None
     assert us_entry.uuid is not None
