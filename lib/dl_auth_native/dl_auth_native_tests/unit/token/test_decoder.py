@@ -81,7 +81,11 @@ def test_decode_default(
     user_id = "test-user-id"
     roles_list = ["datalens.creator", "datalens.admin"]
 
-    raw_payload = {"userId": user_id, "exp": expires_at.timestamp(), "roles": roles_list}
+    raw_payload = {
+        "userId": user_id,
+        "exp": expires_at.timestamp(),
+        "roles": roles_list,
+    }
 
     encoded = encoder(raw_payload)
     payload = decoder.decode(encoded)
