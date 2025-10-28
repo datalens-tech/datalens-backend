@@ -29,6 +29,7 @@ clickhouse = "clickhouse_sqlalchemy.drivers.http.base:ClickHouseDialect_http"
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["ConfigParser", "cStringIO"]
+DEP003 = ["ConfigParser"]
 
 [tool.mypy]
 check_untyped_defs = true
