@@ -49,7 +49,6 @@ from dl_core_testing.environment import (
 )
 from dl_file_secure_reader_lib.app import create_app as create_reader_app
 from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
-from dl_file_uploader_api_lib.aiohttp_services.s3_service import FileUploaderAPIS3Service
 from dl_file_uploader_api_lib.app import FileUploaderApiAppFactory
 from dl_file_uploader_api_lib.dl_request import FileUploaderDLRequest
 from dl_file_uploader_api_lib.settings import (
@@ -254,22 +253,6 @@ def redis_cli(redis_app_settings) -> redis.asyncio.Redis:
         db=redis_app_settings.DB,
         password=redis_app_settings.PASSWORD,
     )
-
-
-@pytest_asyncio.fixture(scope="function")
-async def s3_service(s3_settings: S3Settings, s3_tmp_bucket) -> FileUploaderAPIS3Service:
-    service = FileUploaderAPIS3Service(
-        access_key_id=s3_settings.ACCESS_KEY_ID,
-        secret_access_key=s3_settings.SECRET_ACCESS_KEY,
-        endpoint_url=s3_settings.ENDPOINT_URL,
-        use_virtual_host_addressing=True,
-        tmp_bucket_name=s3_tmp_bucket,
-        persistent_bucket_name=s3_persistent_bucket,
-    )
-
-    await service.initialize()
-
-    return service
 
 
 @pytest.fixture(scope="function")

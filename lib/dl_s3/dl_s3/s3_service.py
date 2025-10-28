@@ -5,6 +5,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
+    TypedDict,
 )
 
 from aiobotocore.config import AioConfig
@@ -23,6 +24,14 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
+class S3ClientInitParams(TypedDict):
+    service_name: str
+    aws_access_key_id: str
+    aws_secret_access_key: str
+    endpoint_url: str
+    config: AioConfig
+
+
 @attr.s(kw_only=True)
 class S3Service:
     APP_KEY: ClassVar[str] = "S3_SERVICE"
@@ -36,7 +45,7 @@ class S3Service:
     persistent_bucket_name: str = attr.ib()
 
     _client: AsyncS3Client = attr.ib(init=False, repr=False, hash=False, cmp=False)
-    _client_init_params: dict[str, Any] = attr.ib(init=False, repr=False, hash=False, cmp=False)
+    _client_init_params: S3ClientInitParams = attr.ib(init=False, repr=False, hash=False, cmp=False)
 
     @property
     def client(self) -> AsyncS3Client:
@@ -53,8 +62,7 @@ class S3Service:
     async def tear_down_hook(self, target_app: web.Application) -> None:
         await self.tear_down()
 
-    async def initialize(self) -> None:
-        LOGGER.info("Initializing S3 service")
+    def _init_client_config(self) -> None:
         self._client_init_params = dict(
             service_name="s3",
             aws_access_key_id=self._access_key_id,
@@ -65,6 +73,11 @@ class S3Service:
                 s3={"addressing_style": "virtual" if self._use_virtual_host_addressing else "auto"},
             ),
         )
+
+    async def initialize(self) -> None:
+        LOGGER.info("Initializing S3 service")
+
+        self._init_client_config()
 
         session = get_session()
         client = session.create_client(**self._client_init_params)

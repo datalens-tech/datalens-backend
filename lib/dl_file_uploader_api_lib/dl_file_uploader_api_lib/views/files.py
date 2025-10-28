@@ -84,7 +84,7 @@ class FilesView(FileUploaderBaseView):
         filename = field.filename
         file_type = get_file_type_from_name(filename=filename, allow_xlsx=self.request.app["ALLOW_XLSX"])
 
-        s3 = self.dl_request.get_s3_service()
+        s3 = self.dl_request.get_internal_s3_service()
 
         rmm = self.dl_request.get_redis_model_manager()
         dfile = DataFile(
@@ -142,7 +142,7 @@ class MakePresignedUrlView(FileUploaderBaseView):
     PRESIGNED_URL_MAX_BYTES: ClassVar[int] = 200 * 1024**2  # 200 MB
 
     async def get(self) -> web.StreamResponse:
-        s3 = self.dl_request.get_s3_service()
+        s3 = self.dl_request.get_s3_service_for_uploads()
         s3_key = S3_KEY_PARTS_SEPARATOR.join(
             (
                 self.dl_request.rci.user_id or "unknown",
@@ -177,7 +177,7 @@ class DownloadPresignedUrlView(FileUploaderBaseView):
         if len(s3_key_parts) != 2 or s3_key_parts[0] != self.dl_request.rci.user_id:
             raise exc.PermissionDenied()
 
-        s3 = self.dl_request.get_s3_service()
+        s3 = self.dl_request.get_internal_s3_service()
         # sometimes after uploading to s3 the object is not accessible immediately, so we do a few seconds worth of retries
         max_attempts = 6
         retry_delay = 0.5
