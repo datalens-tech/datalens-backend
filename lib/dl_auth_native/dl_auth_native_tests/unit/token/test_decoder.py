@@ -79,16 +79,14 @@ def test_decode_default(
 ) -> None:
     expires_at = datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(seconds=60)
     user_id = "test-user-id"
+    roles_list = ["datalens.creator", "datalens.admin"]
 
-    raw_payload = {
-        "userId": user_id,
-        "exp": expires_at.timestamp(),
-    }
+    raw_payload = {"userId": user_id, "exp": expires_at.timestamp(), "roles": roles_list}
 
     encoded = encoder(raw_payload)
     payload = decoder.decode(encoded)
 
-    assert payload == token.Payload(user_id=user_id, expires_at=expires_at)
+    assert payload == token.Payload(user_id=user_id, expires_at=expires_at, roles=roles_list)
 
 
 def test_decode_invalid_key(
