@@ -9291,18 +9291,18 @@ ydb = ">=3.21.6,<4.0.0"
 
 [[package]]
 name = "ydb-sqlalchemy"
-version = "0.1.9"
+version = "0.1.12"
 description = "YDB Dialect for SQLAlchemy"
 optional = false
 python-versions = "*"
 files = [
-    {file = "ydb_sqlalchemy-0.1.9-py2.py3-none-any.whl", hash = "sha256:e9149e4ad98758a1a6c5290bda4a5f595a14e1cef1ee65e76c92fc45edc688aa"},
-    {file = "ydb_sqlalchemy-0.1.9.tar.gz", hash = "sha256:8bfd18ffaf8f6945e489ab57fe49950ae2e25c51f992484c7c3ce9e56a224fd2"},
+    {file = "ydb_sqlalchemy-0.1.12-py2.py3-none-any.whl", hash = "sha256:bf988e32fb6f86cbb09db395bb51067c125a88fc804e81cb754b6212aaeec7c7"},
+    {file = "ydb_sqlalchemy-0.1.12.tar.gz", hash = "sha256:8d990a9652e62642c9034d19a1ef8e0de46e080c8cb605e72158b2b7e4568dda"},
 ]
 
 [package.dependencies]
 sqlalchemy = ">=1.4.0,<3.0.0"
-ydb = ">=3.18.8"
+ydb = ">=3.21.6"
 ydb-dbapi = ">=0.1.10"
 
 [package.extras]
