@@ -12,6 +12,7 @@ import dl_constants.api_constants as dl_constants_api_constants
 class AuthData(dl_api_commons_base_models.AuthData):
     _user_access_token: str = attr.ib()
     _token_type: str = attr.ib()
+    _roles: list[str] = attr.ib(factory=list)
 
     def get_headers(
         self,
@@ -82,6 +83,7 @@ class BaseMiddleware:
             auth_data=AuthData(
                 user_access_token=user_access_token,
                 token_type=self._token_type,
+                roles=payload.roles,
             ),
         )
 
