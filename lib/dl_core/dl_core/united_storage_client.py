@@ -303,10 +303,13 @@ class UStorageClientBase:
         self._ensure_extra_headers()
 
     def _ensure_extra_headers(self) -> None:
+        # Check presence of tenant headers and add of missing
         effective_tenant = self.get_effective_tenant()
         expected_extra_headers = stringify_dl_headers(effective_tenant.get_outbound_tenancy_headers())
-        if self._extra_headers != expected_extra_headers:
-            self._extra_headers = expected_extra_headers
+
+        for key, value in expected_extra_headers.items():
+            if key not in self._extra_headers:
+                self._extra_headers[key] = value
 
     def get_effective_tenant(self) -> TenantDef:
         if self._tenant_override is not None:

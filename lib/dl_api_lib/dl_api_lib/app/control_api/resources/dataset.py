@@ -85,7 +85,6 @@ class DatasetCollection(DatasetResource):
             ds_key=self.generate_dataset_location(body),
             us_manager=us_manager,
         )
-        us_manager.set_dataset_context(dataset.uuid)
 
         ds_editor = DatasetComponentEditor(dataset=dataset)
 
@@ -119,6 +118,8 @@ class DatasetItem(BIResource):
         """Delete dataset"""
         us_manager = self.get_us_manager()
         us_manager.set_dataset_context(dataset_id)
+        service_us_manager = self.get_service_us_manager()
+        service_us_manager.set_dataset_context(dataset_id)
 
         ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={}, load_dependencies=False)
         utils.need_permission_on_entry(ds, USPermissionKind.admin)
@@ -137,6 +138,11 @@ class DatasetItemFields(BIResource):
         },
     )
     def get(self, dataset_id: str) -> dict:
+        us_manager = self.get_us_manager()
+        us_manager.set_dataset_context(dataset_id)
+        service_us_manager = self.get_service_us_manager()
+        service_us_manager.set_dataset_context(dataset_id)
+
         ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={}, load_dependencies=False)
         fields = [
             {
