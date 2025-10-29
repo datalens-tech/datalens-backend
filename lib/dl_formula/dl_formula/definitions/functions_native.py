@@ -12,7 +12,7 @@ from dl_formula.definitions.base import (
     Function,
     TranslationVariantWrapped,
 )
-from dl_formula.definitions.functions_aggregation import AggregationFunction
+from dl_formula.definitions.functions_aggregation import AggregationFunctionBase
 from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import Fixed
 from dl_formula.translation.context import TranslationCtx
@@ -77,8 +77,8 @@ class DBCallArrayString(DBCall):
     return_type = Fixed(DataType.ARRAY_STR)
 
 
-class DBCallAgg(AggregationFunction):
-    arg_cnt = 2
+class DBCallAgg(AggregationFunctionBase):
+    arg_cnt = None
     arg_names = ["db_agg_function_name"]
     argument_types = [
         ArgTypeSequence([DataType.CONST_STRING]),

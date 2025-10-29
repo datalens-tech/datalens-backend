@@ -26,10 +26,13 @@ V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 
 
-class AggregationFunction(Function):
+class AggregationFunctionBase(Function):
     is_aggregation = True
     supports_lod = True
     supports_bfb = True
+
+
+class AggregationFunction(AggregationFunctionBase):
     arg_cnt = 1
 
 

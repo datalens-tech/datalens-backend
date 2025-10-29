@@ -1,4 +1,6 @@
+
 import pytest
+import sqlalchemy as sa
 
 from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.functions_native import (
@@ -91,4 +93,19 @@ class TestNativeAggregationFunctionClickHouse_22_10(
     ClickHouse_22_10TestBase,
     DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
 ):
-    pass
+    def test_native_aggregation_functions(
+        self,
+        dbe: DbEvaluator,
+        data_table: sa.Table,
+        native_agg_function_names: dict[str, str],
+    ) -> None:
+        int_values = data_table.int_values  # type: ignore  # 2025-10-27 # TODO: "Table" has no attribute "int_values"  [attr-defined]
+        str_values = data_table.str_values  # type: ignore  # 2025-10-27 # TODO: "Table" has no attribute "str_values"  [attr-defined]
+
+        assert (
+            dbe.eval('DB_CALL_AGG_INT("argMax", [str_value], [int_value])', from_=data_table)
+            == max(list(zip(int_values, str_values)))[1]
+        )
+        assert dbe.eval('DB_CALL_AGG_INT("sumIf", [int_value], [str_value] = "qqqqq")', from_=data_table) == sum(
+            next(zip(*filter(lambda x: x[1] == "qqqqq", zip(int_values, str_values))))
+        )
