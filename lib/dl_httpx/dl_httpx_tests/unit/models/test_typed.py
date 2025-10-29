@@ -10,17 +10,23 @@ def test_default() -> None:
     class Base(dl_httpx.TypedBaseSchema):
         ...
 
-    class Child(Base):
-        ...
+    class Child1(Base):
+        value1: str
 
     class Child2(Base):
-        ...
+        value2: str
 
-    Base.register("child", Child)
+    Base.register("child1", Child1)
     Base.register("child2", Child2)
 
-    assert isinstance(Base.factory({"type": "child"}), Child)
-    assert isinstance(Base.factory({"type": "child2"}), Child2)
+    child1 = Base.factory({"type": "child1", "value1": "test"})
+    child2 = Base.factory({"type": "child2", "value2": "test"})
+
+    assert isinstance(child1, Child1)
+    assert isinstance(child2, Child2)
+
+    assert child1.model_dump() == {"type": "child1", "value1": "test"}
+    assert child2.model_dump() == {"type": "child2", "value2": "test"}
 
 
 def test_type_field_name_alias() -> None:
@@ -177,16 +183,18 @@ def test_annotation() -> None:
         ...
 
     class Child(Base):
-        ...
+        value: str
 
     Base.register("child", Child)
 
     class Root(dl_httpx.BaseResponseSchema):
         child: dl_httpx.TypedSchemaAnnotation[Base]
 
-    root = Root.model_validate({"child": {"type": "child"}})
+    root = Root.model_validate({"child": {"type": "child", "value": "test"}})
 
     assert isinstance(root.child, Child)
+
+    assert root.model_dump() == {"child": {"type": "child", "value": "test"}}
 
 
 def test_optional_annotation() -> None:
@@ -194,21 +202,24 @@ def test_optional_annotation() -> None:
         ...
 
     class Child(Base):
-        ...
+        value: str
 
     Base.register("child", Child)
 
     class Root(dl_httpx.BaseResponseSchema):
         child: typing.Optional[dl_httpx.TypedSchemaAnnotation[Base]] = None
 
-    root = Root.model_validate({"child": {"type": "child"}})
+    root = Root.model_validate({"child": {"type": "child", "value": "test"}})
     assert isinstance(root.child, Child)
+    assert root.model_dump() == {"child": {"type": "child", "value": "test"}}
 
     root = Root.model_validate({"child": None})
     assert root.child is None
+    assert root.model_dump() == {"child": None}
 
     root = Root.model_validate({})
     assert root.child is None
+    assert root.model_dump() == {"child": None}
 
 
 def test_list_annotation() -> None:
@@ -216,16 +227,18 @@ def test_list_annotation() -> None:
         ...
 
     class Child(Base):
-        ...
+        value: str
 
     Base.register("child", Child)
 
     class Root(dl_httpx.BaseResponseSchema):
         children: dl_httpx.TypedSchemaListAnnotation[Base] = pydantic.Field(default_factory=list)
 
-    root = Root.model_validate({"children": [{"type": "child"}]})
+    root = Root.model_validate({"children": [{"type": "child", "value": "test"}]})
 
     assert isinstance(root.children[0], Child)
+
+    assert root.model_dump() == {"children": [{"type": "child", "value": "test"}]}
 
 
 def test_dict_annotation() -> None:
@@ -233,13 +246,15 @@ def test_dict_annotation() -> None:
         ...
 
     class Child(Base):
-        ...
+        value: str
 
     Base.register("child", Child)
 
     class Root(dl_httpx.BaseResponseSchema):
         children: dl_httpx.TypedSchemaDictAnnotation[Base] = pydantic.Field(default_factory=dict)
 
-    root = Root.model_validate({"children": {"child": {"type": "child"}}})
+    root = Root.model_validate({"children": {"child": {"type": "child", "value": "test"}}})
 
     assert isinstance(root.children["child"], Child)
+
+    assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}

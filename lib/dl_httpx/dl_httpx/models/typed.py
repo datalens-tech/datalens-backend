@@ -29,6 +29,7 @@ else:
             return Annotated[
                 base_class,
                 pydantic.BeforeValidator(base_class.factory),
+                pydantic.SerializeAsAny(),
             ]
 
     class TypedSchemaListAnnotation:
@@ -36,6 +37,7 @@ else:
             return Annotated[
                 list[base_class],
                 pydantic.BeforeValidator(base_class.list_factory),
+                pydantic.SerializeAsAny(),
             ]
 
     class TypedSchemaDictAnnotation:
@@ -43,6 +45,7 @@ else:
             return Annotated[
                 dict[str, base_class],
                 pydantic.BeforeValidator(base_class.dict_factory),
+                pydantic.SerializeAsAny(),
             ]
 
 
