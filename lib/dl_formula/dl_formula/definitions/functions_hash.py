@@ -6,14 +6,12 @@ from dl_formula.definitions.args import ArgTypeSequence
 from dl_formula.definitions.base import (
     Function,
     TranslationVariant,
-    TranslationVariantWrapped,
 )
 from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import Fixed
 
 
 V = TranslationVariant.make
-VW = TranslationVariantWrapped.make
 
 
 class HashFunction(Function):
@@ -94,7 +92,6 @@ class IntHash64(HashFunction):
 
 class CityHash64(HashFunction):
     name = "cityhash64"
-    arg_names = ["value"]
     return_type = Fixed(DataType.INTEGER)
     variants = [
         V(D.DUMMY, sa.func.cityHash64),
