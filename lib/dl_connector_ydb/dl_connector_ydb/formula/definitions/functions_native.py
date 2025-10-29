@@ -48,4 +48,7 @@ DEFINITIONS_NATIVE = [
     base.DBCallArrayInt(variants=yql_variants),
     base.DBCallArrayFloat(variants=yql_variants),
     base.DBCallArrayString(variants=yql_variants),
+    base.DBCallAggInt(variants=yql_variants),
+    base.DBCallAggFloat(variants=yql_variants),
+    base.DBCallAggString(variants=yql_variants),
 ]

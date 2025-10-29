@@ -1,7 +1,10 @@
 import pytest
 
 from dl_formula_testing.evaluator import DbEvaluator
-from dl_formula_testing.testcases.functions_native import DefaultNativeFunctionFormulaConnectorTestSuite
+from dl_formula_testing.testcases.functions_native import (
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+    DefaultNativeFunctionFormulaConnectorTestSuite,
+)
 
 from dl_connector_mysql_tests.db.formula.base import (
     MySQL_5_7TestBase,
@@ -51,3 +54,17 @@ class TestNativeFunctionMySQL_8_0_12(
 
         # DB_CALL_BOOL
         assert dbe.eval('DB_CALL_BOOL("ISNULL", 5)') == False
+
+
+class TestNativeAggregationFunctionMySQL_5_7(
+    MySQL_5_7TestBase,
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+):
+    pass
+
+
+class TestNativeAggregationFunctionMySQL_8_0_12(
+    MySQL_8_0_12TestBase,
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+):
+    pass

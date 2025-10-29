@@ -141,6 +141,7 @@ class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
         db.insert_into_table(table, table_data)
 
         table.int_values = [row["int_value"] for row in table_data]  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
+        table.str_values = [row["str_value"] for row in table_data]  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "string_values"  [attr-defined]
         table.date_values = [row["date_value"] for row in table_data]  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "date_values"  [attr-defined]
         table.datetime_values = [row["datetime_value"] for row in table_data]  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "datetime_values"  [attr-defined]
 
@@ -193,3 +194,11 @@ class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
             yield table
         finally:
             dbe.db.drop_table(table)
+
+    @pytest.fixture(scope="class")
+    def native_agg_function_names(self) -> dict[str, str]:
+        return {
+            "sum": "sum",
+            "avg": "avg",
+            "max": "max",
+        }

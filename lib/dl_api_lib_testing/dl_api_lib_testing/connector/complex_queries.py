@@ -604,10 +604,58 @@ class DefaultBasicWindowFunctionTestSuite(
             assert pytest.approx(float(data_rows[i][9])) == float(data_rows[i - 1][9]) + float(data_rows[i][2])
 
 
+class DefaultBasicNativeFunctionTestSuite(
+    RegulatedTestCase, DataApiTestBase, DatasetTestBase, DbServiceFixtureTextClass
+):
+    def test_lod_for_native_functions(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+        native_agg_function_names: dict[str, str],
+    ) -> None:
+        native_sum = native_agg_function_names["sum"]
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            formulas={
+                "sales sum": f"DB_CALL_AGG_FLOAT('{native_sum}', [sales])",
+                "sales sum fx city": f"DB_CALL_AGG_FLOAT('{native_sum}', [sales] FIXED [city])",
+                "sales sum fx category": f"DB_CALL_AGG_FLOAT('{native_sum}', [sales] FIXED [category])",
+            },
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[
+                ds.find_field(title="city"),
+                ds.find_field(title="category"),
+                ds.find_field(title="sales sum"),
+                ds.find_field(title="sales sum fx city"),
+                ds.find_field(title="sales sum fx category"),
+            ],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+        data_rows = get_data_rows(result_resp)
+
+        sum_by_city: dict[Any, float] = defaultdict(lambda: 0)
+        for row in data_rows:
+            sum_by_city[row[0]] += float(row[2])
+        sum_by_category: dict[Any, float] = defaultdict(lambda: 0)
+        for row in data_rows:
+            sum_by_category[row[1]] += float(row[2])
+
+        for row in data_rows:
+            assert float(row[3]) == pytest.approx(sum_by_city[row[0]])
+            assert float(row[4]) == pytest.approx(sum_by_category[row[1]])
+
+
 class DefaultBasicComplexQueryTestSuite(
     DefaultBasicExtAggregationTestSuite,
     DefaultBasicLookupFunctionTestSuite,
     DefaultBasicWindowFunctionTestSuite,
+    DefaultBasicNativeFunctionTestSuite,
 ):
     """Put them all together"""
 

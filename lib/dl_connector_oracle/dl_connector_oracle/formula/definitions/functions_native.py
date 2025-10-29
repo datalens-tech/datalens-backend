@@ -11,4 +11,7 @@ DEFINITIONS_NATIVE = [
     base.DBCallArrayInt.for_dialect(D.ORACLE),
     base.DBCallArrayFloat.for_dialect(D.ORACLE),
     base.DBCallArrayString.for_dialect(D.ORACLE),
+    base.DBCallAggInt.for_dialect(D.ORACLE),
+    base.DBCallAggFloat.for_dialect(D.ORACLE),
+    base.DBCallAggString.for_dialect(D.ORACLE),
 ]

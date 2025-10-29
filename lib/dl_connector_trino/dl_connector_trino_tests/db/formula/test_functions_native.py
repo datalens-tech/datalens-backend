@@ -1,7 +1,10 @@
 import pytest
 
 from dl_formula_testing.evaluator import DbEvaluator
-from dl_formula_testing.testcases.functions_native import DefaultNativeFunctionFormulaConnectorTestSuite
+from dl_formula_testing.testcases.functions_native import (
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+    DefaultNativeFunctionFormulaConnectorTestSuite,
+)
 
 from dl_connector_trino_tests.db.formula.base import TrinoFormulaTestBase
 
@@ -38,3 +41,10 @@ class TestNativeFunctionTrino(
 
         # DB_CALL_ARRAY_STRING
         assert dbe.eval('DB_CALL_ARRAY_STRING("repeat", "a", 5)') == ["a", "a", "a", "a", "a"]
+
+
+class TestNativeAggregationFunctionTrino(
+    TrinoFormulaTestBase,
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+):
+    pass

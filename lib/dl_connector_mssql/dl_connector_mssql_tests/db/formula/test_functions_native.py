@@ -1,7 +1,10 @@
 import pytest
 
 from dl_formula_testing.evaluator import DbEvaluator
-from dl_formula_testing.testcases.functions_native import DefaultNativeFunctionFormulaConnectorTestSuite
+from dl_formula_testing.testcases.functions_native import (
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+    DefaultNativeFunctionFormulaConnectorTestSuite,
+)
 
 from dl_connector_mssql_tests.db.formula.base import MSSQLTestBase
 
@@ -26,3 +29,10 @@ class TestNativeFunctionMSSQL(
 
         # DB_CALL_BOOL
         assert dbe.eval('DB_CALL_BOOL("ISNUMERIC", "123")') == True
+
+
+class TestNativeAggregationFunctionMSSQL(
+    MSSQLTestBase,
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+):
+    pass

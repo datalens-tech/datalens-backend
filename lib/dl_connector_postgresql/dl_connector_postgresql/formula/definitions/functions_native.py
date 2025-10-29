@@ -11,4 +11,7 @@ DEFINITIONS_NATIVE = [
     base.DBCallArrayInt.for_dialect(D.POSTGRESQL),
     base.DBCallArrayFloat.for_dialect(D.POSTGRESQL),
     base.DBCallArrayString.for_dialect(D.POSTGRESQL),
+    base.DBCallAggInt.for_dialect(D.POSTGRESQL),
+    base.DBCallAggFloat.for_dialect(D.POSTGRESQL),
+    base.DBCallAggString.for_dialect(D.POSTGRESQL),
 ]

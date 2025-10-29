@@ -1,7 +1,10 @@
 import pytest
 
 from dl_formula_testing.evaluator import DbEvaluator
-from dl_formula_testing.testcases.functions_native import DefaultNativeFunctionFormulaConnectorTestSuite
+from dl_formula_testing.testcases.functions_native import (
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+    DefaultNativeFunctionFormulaConnectorTestSuite,
+)
 
 from dl_connector_bigquery_tests.ext.formula.base import BigQueryTestBase
 
@@ -39,3 +42,10 @@ class TestNativeFunctionBigQuery(
 
         # DB_CALL_ARRAY_STRING
         assert dbe.eval('DB_CALL_ARRAY_STRING("SPLIT", "a,b,c", ",")') == ["a", "b", "c"]
+
+
+class TestNativeAggregationFunctionBigQuery(
+    BigQueryTestBase,
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+):
+    pass

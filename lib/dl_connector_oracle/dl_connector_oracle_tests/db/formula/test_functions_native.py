@@ -1,7 +1,10 @@
 import pytest
 
 from dl_formula_testing.evaluator import DbEvaluator
-from dl_formula_testing.testcases.functions_native import DefaultNativeFunctionFormulaConnectorTestSuite
+from dl_formula_testing.testcases.functions_native import (
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+    DefaultNativeFunctionFormulaConnectorTestSuite,
+)
 
 from dl_connector_oracle_tests.db.formula.base import OracleTestBase
 
@@ -23,3 +26,10 @@ class TestNativeFunctionOracle(
 
         # DB_CALL_STRING
         assert dbe.eval('DB_CALL_STRING("REVERSE", "hello")') == "olleh"
+
+
+class TestNativeAggregationFunctionOracle(
+    OracleTestBase,
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+):
+    pass

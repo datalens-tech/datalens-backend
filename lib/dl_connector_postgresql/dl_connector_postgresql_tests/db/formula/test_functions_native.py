@@ -1,7 +1,10 @@
 import pytest
 
 from dl_formula_testing.evaluator import DbEvaluator
-from dl_formula_testing.testcases.functions_native import DefaultNativeFunctionFormulaConnectorTestSuite
+from dl_formula_testing.testcases.functions_native import (
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+    DefaultNativeFunctionFormulaConnectorTestSuite,
+)
 
 from dl_connector_postgresql_tests.db.formula.base import (
     PostgreSQL_9_3TestBase,
@@ -63,3 +66,17 @@ class TestNativeFunctionPostgreSQL_9_4(
 
         # DB_CALL_ARRAY_STRING
         assert dbe.eval('DB_CALL_ARRAY_STRING("string_to_array", "a,b,c", ",")') == dbe.eval('ARRAY("a", "b", "c")')
+
+
+class TestNativeAggregationFunctionPostgreSQL_9_3(
+    PostgreSQL_9_3TestBase,
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+):
+    pass
+
+
+class TestNativeAggregationFunctionPostgreSQL_9_4(
+    PostgreSQL_9_4TestBase,
+    DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
+):
+    pass
