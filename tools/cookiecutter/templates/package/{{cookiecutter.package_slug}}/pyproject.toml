@@ -2,8 +2,8 @@
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 description = ""
 license = "Apache 2.0"
-name = "testing-pkg-boilerplate"
-packages = [{include = "testing_pkg_boilerplate"}]
+name = "{{cookiecutter.package_name}}"
+packages = [{include = "{{cookiecutter.package_slug}}"}]
 readme = "README.md"
 version = "0.0.1"
 
@@ -11,13 +11,15 @@ version = "0.0.1"
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
-pytest = ">=7.2.2"
+pytest = "*"
 
 [tool.mypy]
 check_untyped_defs = true
 disallow_untyped_defs = true
 strict_optional = true
+warn_redundant_casts = true
 warn_unused_configs = true
+warn_unused_ignores = true
 
 [tool.pytest.ini_options]
 addopts = "-ra"
@@ -30,5 +32,8 @@ requires = [
   "poetry-core",
 ]
 
-[datalens_ci]
-skip_test = true
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "{{cookiecutter.package_slug}}_tests/"
+skip_compose = "true"
+target_path = "unit"

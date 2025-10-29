@@ -1,0 +1,30 @@
+version: '3'
+
+tasks:
+  _cookiecutter:
+    cmds:
+      - |
+        {{.VENV_PATH}}/bin/cookiecutter \
+          '{{.TEMPLATE_PATH}}' \
+          --output-dir='{{.OUTPUT_PATH}}' \
+          --overwrite-if-exists
+    env:
+      METAPKG_FILE: '{{.METAPKG_FILE}}'
+    requires:
+      vars:
+        - VENV_PATH
+        - TEMPLATE_PATH
+        - OUTPUT_PATH
+        - METAPKG_FILE
+
+  add-package:
+    desc: Add a new package to the project
+    requires:
+      vars:
+        - PROJECT_ROOT_PATH
+    cmds:
+      - task: _cookiecutter
+        vars:
+          TEMPLATE_PATH: '{{.TASKFILE_DIR}}/templates/package'
+          OUTPUT_PATH: '{{.PROJECT_ROOT_PATH}}/lib'
+      - echo "Don't forget to dev:lint-fix and dev:poetry-lock"

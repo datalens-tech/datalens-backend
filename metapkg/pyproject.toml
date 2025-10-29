@@ -97,9 +97,6 @@ dl-control-api = {develop = true, path = "../app/dl_control_api"}
 dl-data-api = {develop = true, path = "../app/dl_data_api"}
 
 [tool.poetry.group.ci.dependencies]
-#
-# All apps should be listed here. This group is installed for CI & local development
-#
 clickhouse-sqlalchemy = {develop = true, path = "../lib/clickhouse-sqlalchemy"}
 dl-api-client = {develop = true, path = "../lib/dl_api_client"}
 dl-api-commons = {develop = true, path = "../lib/dl_api_commons"}
@@ -147,7 +144,6 @@ dl-i18n = {develop = true, path = "../lib/dl_i18n"}
 dl-json = {develop = true, path = "../lib/dl_json"}
 dl-maintenance = {develop = true, path = "../lib/dl_maintenance"}
 dl-model-tools = {develop = true, path = "../lib/dl_model_tools"}
-dl-package-boilerplate = {develop = true, path = "../lib/dl_package_boilerplate"}
 dl-pivot = {develop = true, path = "../lib/dl_pivot"}
 dl-pivot-pandas = {develop = true, path = "../lib/dl_pivot_pandas"}
 dl-pydantic = {develop = true, path = "../lib/dl_pydantic"}
@@ -183,6 +179,7 @@ statcommons = {develop = true, path = "../lib/statcommons"}
 babel = "==2.12.1"
 black = "==23.12.1"
 clize = "==5.0.0"
+cookiecutter = "==2.6.0"
 deptry = "==0.16.1"
 docker = "==7.1.0"
 flaky = "==3.8.1"
