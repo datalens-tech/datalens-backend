@@ -13,16 +13,19 @@ import dl_pydantic
 class Payload:
     user_id: str = attr.ib()
     expires_at: datetime.datetime = attr.ib()
+    roles: list[str] = attr.ib(factory=list)
 
 
 class PayloadSchema(dl_pydantic.BaseModel):
     user_id: str = pydantic.Field(alias="userId")
     exp: int
+    roles: list[str] = pydantic.Field(default_factory=list)
 
     def to_dataclass(self) -> Payload:
         return Payload(
             user_id=self.user_id,
             expires_at=datetime.datetime.fromtimestamp(self.exp),
+            roles=self.roles,
         )
 
 
