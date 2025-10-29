@@ -88,6 +88,9 @@ urllib3 = "==1.26.20"
 werkzeug = "==3.0.6"
 xxhash = "==3.2.0"
 yarl = "==1.18.3"
+ydb = ">=3.21.12"
+ydb-dbapi = ">=0.1.14"
+ydb-sqlalchemy = ">=0.1.12"
 zipp = "==3.21.0"
 
 [tool.poetry.group.app_dl_os_control_api.dependencies]
