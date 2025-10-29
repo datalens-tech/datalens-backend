@@ -197,6 +197,8 @@ tasks:
       - |
         if grep -q '\[tool\.poetry\.group\.tests\.dependencies\]' {{.LIB_PATH}}/pyproject.toml; then
           sed -i.backup '/^\[tool\.poetry\.group\.tests\.dependencies\]/d' {{.LIB_PATH}}/pyproject.toml
+        else
+          echo "No tests dependencies found in {{.LIB_PATH}}/pyproject.toml";
         fi
       - defer: |
           if [ -f {{.LIB_PATH}}/pyproject.toml.backup ]; then
