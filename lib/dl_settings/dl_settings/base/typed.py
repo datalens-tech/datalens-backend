@@ -37,6 +37,7 @@ else:
             return Annotated[
                 pydantic.SerializeAsAny[base_class],
                 pydantic.BeforeValidator(base_class.factory),
+                pydantic.SerializeAsAny(),
             ]
 
     class TypedListAnnotation:
@@ -44,6 +45,7 @@ else:
             return Annotated[
                 list[pydantic.SerializeAsAny[base_class]],
                 pydantic.BeforeValidator(base_class.list_factory),
+                pydantic.SerializeAsAny(),
             ]
 
     class TypedDictAnnotation:
@@ -51,6 +53,7 @@ else:
             return Annotated[
                 dict[str, pydantic.SerializeAsAny[base_class]],
                 pydantic.BeforeValidator(base_class.dict_factory),
+                pydantic.SerializeAsAny(),
             ]
 
 

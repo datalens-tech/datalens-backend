@@ -199,16 +199,16 @@ def test_annotation() -> None:
         ...
 
     class Child(Base):
-        ...
+        value: str
 
     Base.register("child", Child)
 
     class Root(dl_settings.BaseSettings):
         child: dl_settings.TypedAnnotation[Base]
 
-    root = Root.model_validate({"child": {"type": "child"}})
-
+    root = Root.model_validate({"child": {"type": "child", "value": "test"}})
     assert isinstance(root.child, Child)
+    assert root.model_dump() == {"child": {"type": "child", "value": "test"}}
 
 
 def test_optional_annotation() -> None:
@@ -216,21 +216,24 @@ def test_optional_annotation() -> None:
         ...
 
     class Child(Base):
-        ...
+        value: str
 
     Base.register("child", Child)
 
     class Root(dl_settings.BaseSettings):
         child: typing.Optional[dl_settings.TypedAnnotation[Base]] = None
 
-    root = Root.model_validate({"child": {"type": "child"}})
+    root = Root.model_validate({"child": {"type": "child", "value": "test"}})
     assert isinstance(root.child, Child)
+    assert root.model_dump() == {"child": {"type": "child", "value": "test"}}
 
     root = Root.model_validate({"child": None})
     assert root.child is None
+    assert root.model_dump() == {"child": None}
 
     root = Root.model_validate({})
     assert root.child is None
+    assert root.model_dump() == {"child": None}
 
 
 def test_list_annotation() -> None:
@@ -238,16 +241,16 @@ def test_list_annotation() -> None:
         ...
 
     class Child(Base):
-        ...
+        value: str
 
     Base.register("child", Child)
 
     class Root(dl_settings.BaseSettings):
         children: dl_settings.TypedListAnnotation[Base] = pydantic.Field(default_factory=list)
 
-    root = Root.model_validate({"children": [{"type": "child"}]})
-
+    root = Root.model_validate({"children": [{"type": "child", "value": "test"}]})
     assert isinstance(root.children[0], Child)
+    assert root.model_dump() == {"children": [{"type": "child", "value": "test"}]}
 
 
 def test_dict_annotation() -> None:
@@ -255,16 +258,16 @@ def test_dict_annotation() -> None:
         ...
 
     class Child(Base):
-        ...
+        value: str
 
     Base.register("child", Child)
 
     class Root(dl_settings.BaseSettings):
         children: dl_settings.TypedDictAnnotation[Base] = pydantic.Field(default_factory=dict)
 
-    root = Root.model_validate({"children": {"child": {"type": "child"}}})
-
+    root = Root.model_validate({"children": {"child": {"type": "child", "value": "test"}}})
     assert isinstance(root.children["child"], Child)
+    assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
 
 
 def test_dict_annotation_with_env(
