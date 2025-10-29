@@ -5,7 +5,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    TypedDict,
 )
 
 from aiobotocore.config import AioConfig
@@ -24,14 +23,6 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-class S3ClientInitParams(TypedDict):
-    service_name: str
-    aws_access_key_id: str
-    aws_secret_access_key: str
-    endpoint_url: str
-    config: AioConfig
-
-
 @attr.s(kw_only=True)
 class S3Service:
     APP_KEY: ClassVar[str] = "S3_SERVICE"
@@ -45,7 +36,7 @@ class S3Service:
     persistent_bucket_name: str = attr.ib()
 
     _client: AsyncS3Client = attr.ib(init=False, repr=False, hash=False, cmp=False)
-    _client_init_params: S3ClientInitParams = attr.ib(init=False, repr=False, hash=False, cmp=False)
+    _client_init_params: dict[str, Any] = attr.ib(init=False, repr=False, hash=False, cmp=False)
 
     @property
     def client(self) -> AsyncS3Client:

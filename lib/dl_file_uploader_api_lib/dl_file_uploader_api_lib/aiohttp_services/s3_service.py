@@ -29,4 +29,6 @@ class InternalS3Service(S3Service):
 
         new_config = AioConfig(s3={"addressing_style": "auto"})
 
+        assert isinstance(self._client_init_params["config"], AioConfig)
+
         self._client_init_params["config"] = self._client_init_params["config"].merge(new_config)
