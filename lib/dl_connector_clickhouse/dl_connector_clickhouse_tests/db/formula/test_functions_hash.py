@@ -1,7 +1,3 @@
-# import pytest
-# import sqlalchemy as sa
-
-# from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.functions_hash import DefaultHashFunctionFormulaConnectorTestSuite
 
 from dl_connector_clickhouse_tests.db.formula.base import (
