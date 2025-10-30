@@ -15,9 +15,10 @@ on:
       - unlabeled
   workflow_dispatch:
     inputs:
-      test_targets:
-        default: "__ALL__"
-        description: "Comma separated list to run pytest on, e.g.: `lib/dl_api_lib,lib/dl_core`. Use __ALL__ to run all tests"
+      run_all_tests:
+        type: boolean
+        default: false
+        description: "Run all tests"
       run_mypy_only:
         type: boolean
         default: false
@@ -175,8 +176,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     outputs:
-      affected: ${{ steps.get_affected.outputs.affected }}
-      all_affected_with_skips: ${{ steps.get_affected.outputs.all_affected_with_skips }}
+      changed-packages: ${{ steps.changed-packages.outputs.changed-packages }}
     env:
       PULL_REQUEST_BASE_SHA: ${{ github.event.pull_request.base.sha }}
       PULL_REQUEST_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -206,7 +206,6 @@ jobs:
         fi
         echo "result=$result" >> $GITHUB_OUTPUT
       id: extract_head_commit
-
     - name: Get changed files
       uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62
       id: git-changed-files
@@ -215,22 +214,20 @@ jobs:
         sha: ${{ steps.extract_head_commit.outputs.result }}
         write_output_files: true
         separator: "\n"
-
-    - name: Get packages affected by changes in the current commit
-      id: get_affected
-      run: |
-        echo "All changed files: $CHANGED_FILES"
-        . /venv/bin/activate && detect-affected-packages \
-          --repo=/src \
-          --changes_file=".github/outputs/all_changed_files.txt" \
-          --root_pkgs="lib,app" | tee -a  >> "$GITHUB_OUTPUT"
-      env:
-        TEST_TARGET_OVERRIDE: ${{ github.event.inputs.test_targets }}
-        CHANGED_FILES: ${{ steps.git-changed-files.outputs.all_changed_files }}
-    - name: Print affected packages
-      run: |
-        echo "Affected packages: ${{ steps.get_affected.outputs.affected }}"
-        echo "Affected packages, including skipped in CI: ${{ steps.get_affected.outputs.all_affected_with_skips }}"
+    - name: Get changed packages
+      uses: ovsds/get-changed-packages-action@v1
+      id: changed-packages
+      with:
+        changed-files: ${{ steps.git-changed-files.outputs.all_changed_files }}
+        all-packages: |
+          ./lib/*
+          ./app/*
+        package-dependencies-resolution-method: ${{ github.event.inputs.run_all_tests == 'true' && 'all' || 'poetry-path' }}
+        poetry-path-dependencies-groups: |
+          tool.poetry.dependencies
+          tool.poetry.group.tests.dependencies
+        changed-packages-format: json
+        changed-packages-relative-path: true
 
   check-skip-tests-label:
     name: Check PR skip tests label
@@ -293,8 +290,10 @@ jobs:
       - name: Run python script to split job for general and fat runners
         id: get_split
         run: |
-          . /venv/bin/activate && echo '${{ needs.router.outputs.affected }}' >> /tmp/dl_test_targets.json
+          . /venv/bin/activate && echo $CHANGED_PACKAGES >> /tmp/dl_test_targets.json
           split-pytest-tasks base,fat,ext_public,no_compose /src /tmp/dl_test_targets.json true true >> "$GITHUB_OUTPUT"
+        env:
+          CHANGED_PACKAGES: ${{ needs.router.outputs.changed-packages }}
 
   run_tests_base:
     name: "🐍[pytest]${{ matrix.value }}"
