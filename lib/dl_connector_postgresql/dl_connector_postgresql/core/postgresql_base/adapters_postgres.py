@@ -11,8 +11,6 @@ from typing import (
 import attr
 
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
-
-# if TYPE_CHECKING:
 from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo
 from dl_core.connection_models.common_models import (
     PageIdent,

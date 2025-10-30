@@ -354,16 +354,17 @@ class PostgresQueryConstructorMixin:
     NOTE: pg_class.relispartition` field exists only for postgresql>=10, so for postgresql<10 support json is used here
     """
 
-    def _bind_pagination_params(
-        self, query: sa.sql.elements.TextClause, search_text: str | None, limit: int | None, offset: int | None
-    ) -> sa.sql.elements.TextClause:
+    def _compile_pagination_params(
+        self, search_text: str | None, limit: int | None, offset: int | None
+    ) -> list[sa.sql.expression.BindParameter]:
+        params = []
         if search_text:
-            query = query.bindparams(sa.bindparam("search_text", f"%{search_text}%", type_=sa.String))  # type: ignore # "bindparams" of "TextClause" does not return a value (it only ever returns None)
+            params.append(sa.bindparam("search_text", f"%{search_text}%", type_=sa.String))
         if offset:
-            query = query.bindparams(sa.bindparam("offset", offset, type_=sa.Integer))  # type: ignore # "bindparams" of "TextClause" does not return a value (it only ever returns None)
+            params.append(sa.bindparam("offset", offset, type_=sa.Integer))
         if limit is not None:
-            query = query.bindparams(sa.bindparam("limit", limit, type_=sa.Integer))  # type: ignore # "bindparams" of "TextClause" does not return a value (it only ever returns None)
-        return query
+            params.append(sa.bindparam("limit", limit, type_=sa.Integer))
+        return params
 
     def _get_pagination_sql_parts(self, limit: int | None, offset: int | None) -> list[str]:
         sql_parts = []
@@ -400,7 +401,8 @@ class PostgresQueryConstructorMixin:
         sql_parts.extend(self._get_pagination_sql_parts(limit, offset))
         sql = " ".join(sql_parts)
         query = sa.text(sql)
-        query = self._bind_pagination_params(query, search_text, limit, offset)
+        params = self._compile_pagination_params(search_text, limit, offset)
+        query = query.bindparams(*params)
 
         return query
 
@@ -421,7 +423,8 @@ class PostgresQueryConstructorMixin:
         sql_parts.extend(self._get_pagination_sql_parts(limit, offset))
         sql = " ".join(sql_parts)
         query = sa.text(sql)
-        query = self._bind_pagination_params(query, search_text, limit, offset)
+        params = self._compile_pagination_params(search_text, limit, offset)
+        query = query.bindparams(*params)
 
         return query
 
@@ -447,7 +450,8 @@ class PostgresQueryConstructorMixin:
         query = sa.text(sql)
 
         query = query.bindparams(sa.bindparam("schema", schema_name, type_=sa.String))
-        query = self._bind_pagination_params(query, search_text, limit, offset)
+        params = self._compile_pagination_params(search_text, limit, offset)
+        query = query.bindparams(*params)
 
         return query
 
