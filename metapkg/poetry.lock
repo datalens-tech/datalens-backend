@@ -3086,19 +3086,6 @@ type = "directory"
 url = "../lib/dl_model_tools"
 
 [[package]]
-name = "dl-package-boilerplate"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.13"
-files = []
-develop = true
-
-[package.source]
-type = "directory"
-url = "../lib/dl_package_boilerplate"
-
-[[package]]
 name = "dl-pivot"
 version = "0.0.1"
 description = ""
@@ -9188,4 +9175,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "5cd67513f5668d1d4935c937da776b7137a44642ffe5f67c4eb16e450f291004"
+content-hash = "1c9b8894dfe3926c1e427d2c3a774465ac5922cf643276cd93c0103eb709737c"
