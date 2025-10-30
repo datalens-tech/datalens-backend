@@ -290,7 +290,7 @@ jobs:
       - name: Run python script to split job for general and fat runners
         id: get_split
         run: |
-          . /venv/bin/activate && echo $CHANGED_PACKAGES >> /tmp/dl_test_targets.json
+          . /venv/bin/activate && echo "$CHANGED_PACKAGES" >> /tmp/dl_test_targets.json
           split-pytest-tasks base,fat,ext_public,no_compose /src /tmp/dl_test_targets.json true true >> "$GITHUB_OUTPUT"
         env:
           CHANGED_PACKAGES: ${{ needs.router.outputs.changed-packages }}
