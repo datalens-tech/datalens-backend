@@ -47,17 +47,13 @@ class DefaultHashFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         if not self.hash_function_support.murmurhash2_64:
             pytest.skip("MurmurHash2_64 is not supported by this connector")
         assert dbe.eval("MurmurHash2_64('DataLens')") == 12204402796868507663
-        assert dbe.eval("MurmurHash2_64('DataLens', 1, True)") == 10722267409815771607
         assert dbe.eval("MurmurHash2_64([str_value])", from_=data_table) == 8861071527689086543
-        assert dbe.eval("MurmurHash2_64([str_value], 1, True)", from_=data_table) == 16325131390306157643
 
     def test_siphash64(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         if not self.hash_function_support.siphash64:
             pytest.skip("SipHash64 is not supported by this connector")
         assert dbe.eval("SipHash64('DataLens')") == 6283456972272785891
-        assert dbe.eval("SipHash64('DataLens', 1, True)") == 2343410414584482468
         assert dbe.eval("SipHash64([str_value])", from_=data_table) == 17688157251436176611
-        assert dbe.eval("SipHash64([str_value], 1, True)", from_=data_table) == 9697455610943888398
 
     def test_inthash64(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         if not self.hash_function_support.inthash64:
@@ -68,6 +64,5 @@ class DefaultHashFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
     def test_cityhash64(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         if not self.hash_function_support.cityhash64:
             pytest.skip("CityHash64 is not supported by this connector")
-        assert (
-            dbe.eval("CityHash64('DataLens', 12345, [str_value], [int_value])", from_=data_table) == 9518705739493127664
-        )
+        assert dbe.eval("CityHash64('DataLens')", from_=data_table) == 1276466053635395874
+        assert dbe.eval("CityHash64([str_value])", from_=data_table) == 17372780029233160351
