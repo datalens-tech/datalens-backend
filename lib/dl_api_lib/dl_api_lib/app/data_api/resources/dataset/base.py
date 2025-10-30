@@ -4,13 +4,16 @@ from contextlib import (
     AsyncExitStack,
     asynccontextmanager,
 )
+import functools
 import logging
 from typing import (
     TYPE_CHECKING,
     Any,
     AsyncIterable,
+    Callable,
     ClassVar,
     Collection,
+    Coroutine,
     Optional,
 )
 
@@ -821,3 +824,14 @@ class DatasetDataBaseView(BaseView):
                 f"Dataset revision id mismatch: got {req_dataset_revision_id} from the request, "
                 f"but found {dataset_revision_id} in the current dataset"
             )
+
+    @staticmethod
+    def with_dataset_us_context(
+        coro: Callable[..., Coroutine[Any, Any, Any]]
+    ) -> Callable[..., Coroutine[Any, Any, Any]]:
+        @functools.wraps(coro)
+        async def wrapper(self: "DatasetDataBaseView", *args: Any, **kwargs: Any) -> Any:
+            self.dl_request.us_manager.set_dataset_context(self.dataset_id)
+            return await coro(self, *args, **kwargs)
+
+        return wrapper

@@ -564,3 +564,7 @@ class USManagerBase:
         if self._services_registry is not None:
             return self._services_registry
         raise ValueError("Services registry was not passed to US manager")
+
+    def set_dataset_context(self, dataset_id: Optional[str]) -> None:
+        """Set or clear dataset context for US requests."""
+        self._us_client.set_dataset_context(dataset_id)

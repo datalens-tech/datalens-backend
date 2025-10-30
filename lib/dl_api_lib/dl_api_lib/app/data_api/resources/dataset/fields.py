@@ -10,10 +10,8 @@ from dl_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
 class DatasetFieldsView(DatasetDataBaseView):
     endpoint_code = "DatasetFieldsGet"
 
+    @DatasetDataBaseView.with_dataset_us_context
     @DatasetDataBaseView.with_resolved_entities
     async def get(self) -> web.Response:
-        # Pass dataset_id to US from URL
-        self.dl_request.us_manager.set_dataset_context(self.dataset_id)
-
         fields = get_fields_data_serializable(self.dataset)
         return web.json_response(dict(fields=fields, revision_id=self.dataset.revision_id))

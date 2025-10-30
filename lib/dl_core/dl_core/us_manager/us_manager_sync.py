@@ -90,10 +90,6 @@ class SyncUSManager(USManagerBase):
             retry_policy_factory=self._retry_policy_factory,
         )
 
-    def set_dataset_context(self, dataset_id: Optional[str]) -> None:
-        """Set or clear dataset context for US requests."""
-        self._us_client.set_dataset_context(dataset_id)
-
     def clone(self, **kwargs: Any) -> Self:
         """This should've been an `attr.evolve` wrapper"""
         base_kwargs = dict(

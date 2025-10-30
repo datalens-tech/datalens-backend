@@ -92,10 +92,6 @@ class AsyncUSManager(USManagerBase):
     def us_client(self) -> UStorageClientAIO:
         return self._us_client
 
-    def set_dataset_context(self, dataset_id: Optional[str]) -> None:
-        """Set or clear dataset context for US requests."""
-        self._us_client.set_dataset_context(dataset_id)
-
     def clone(self) -> AsyncUSManager:
         return AsyncUSManager(
             crypto_keys_config=self._crypto_keys_config,
