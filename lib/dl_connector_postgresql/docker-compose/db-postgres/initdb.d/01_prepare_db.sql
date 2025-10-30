@@ -1,4 +1,3 @@
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE SCHEMA IF NOT EXISTS test_data;
 DROP TABLE IF EXISTS test_data.sample;
 CREATE TABLE test_data.sample (
