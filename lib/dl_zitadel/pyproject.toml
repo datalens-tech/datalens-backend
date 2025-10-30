@@ -48,8 +48,7 @@ requires = [
 [datalens.pytest.db]
 labels = ["fat"]
 root_dir = "dl_zitadel_tests/db"
-# TODO: fix for CI, not working due to mounted secrets
-skip_tests = true
+skip_tests = true # won't fix until deleted from repository
 
 [datalens.pytest.unit]
 labels = ["no_compose"]

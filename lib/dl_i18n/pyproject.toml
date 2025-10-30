@@ -31,4 +31,4 @@ requires = [
 ]
 
 [datalens_ci]
-skip_test = true
+skip_test = true # no tests in package

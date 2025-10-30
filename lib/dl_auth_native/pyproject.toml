@@ -52,5 +52,7 @@ requires = [
   "poetry-core",
 ]
 
-[datalens_ci]
-skip_test = true
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_auth_native_tests"
+target_path = "unit"

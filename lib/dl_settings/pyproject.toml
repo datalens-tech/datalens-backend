@@ -38,5 +38,7 @@ requires = [
   "poetry-core",
 ]
 
-[datalens_ci]
-skip_test = true
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_settings_tests/unit"
+skip_compose = "true"
