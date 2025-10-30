@@ -118,6 +118,10 @@ def read_pytest_targets(absolute_path: pathlib.Path, relative_path: str) -> list
     with open(pyproject_path, "r") as file:
         toml_data = tomlkit.parse(file.read())
 
+    if toml_data.get("datalens_ci", {}).get("skip_test", False):
+        print_stderr(f"Skipping tests for {relative_path}", PrintLevel.WARNING)
+        return []
+
     raw_targets = toml_data.get("datalens", {}).get("pytest", {})
 
     if len(raw_targets) == 0:
@@ -240,6 +244,9 @@ def get_package_tests(
     try:
         pytest_targets = read_pytest_targets(absolute_path=absolute_path, relative_path=relative_path)
     except FileNotFoundError:
+        return
+
+    if len(pytest_targets) == 0:
         return
 
     validate_test_coverage(
