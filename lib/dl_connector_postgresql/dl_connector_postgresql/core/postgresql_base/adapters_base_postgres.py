@@ -449,8 +449,10 @@ class PostgresQueryConstructorMixin:
         sql = " ".join(sql_parts)
         query = sa.text(sql)
 
-        query = query.bindparams(sa.bindparam("schema", schema_name, type_=sa.String))
-        params = self._compile_pagination_params(search_text, limit, offset)
+        params = [
+            sa.bindparam("schema", schema_name, type_=sa.String),
+            *self._compile_pagination_params(search_text, limit, offset),
+        ]
         query = query.bindparams(*params)
 
         return query

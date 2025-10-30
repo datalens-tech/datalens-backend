@@ -45,7 +45,8 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
         sql_parts.extend(self._get_pagination_sql_parts(limit, offset))
         sql = " ".join(sql_parts)
         query = sa.text(sql)
-        query = self._bind_pagination_params(query, search_text, limit, offset)
+        params = self._compile_pagination_params(search_text, limit, offset)
+        query = query.bindparams(*params)
 
         return query
 
@@ -69,7 +70,8 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
         sql_parts.extend(self._get_pagination_sql_parts(limit, offset))
         sql = " ".join(sql_parts)
         query = sa.text(sql)
-        query = self._bind_pagination_params(query, search_text, limit, offset)
+        params = self._compile_pagination_params(search_text, limit, offset)
+        query = query.bindparams(*params)
 
         return query
 
@@ -98,8 +100,11 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
         sql = " ".join(sql_parts)
         query = sa.text(sql)
 
-        query = query.bindparams(sa.bindparam("schema", schema_name, type_=sa.String))
-        query = self._bind_pagination_params(query, search_text, limit, offset)
+        params = [
+            sa.bindparam("schema", schema_name, type_=sa.String),
+            *self._compile_pagination_params(search_text, limit, offset),
+        ]
+        query = query.bindparams(*params)
 
         return query
 
