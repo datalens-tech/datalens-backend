@@ -75,4 +75,4 @@ build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core"]
 
 [datalens_ci]
-skip_test = true
+skip_test = true # no tests in application

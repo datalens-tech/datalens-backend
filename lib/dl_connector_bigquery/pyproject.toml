@@ -93,7 +93,7 @@ dl_connector_bigquery = [
 labels = ["ext_public"]
 root_dir = "dl_connector_bigquery_tests/ext"
 skip_compose = "true"
-skip_tests = true
+skip_tests = true # TODO: BI-5317
 
 [datalens.pytest.unit]
 labels = ["no_compose"]
