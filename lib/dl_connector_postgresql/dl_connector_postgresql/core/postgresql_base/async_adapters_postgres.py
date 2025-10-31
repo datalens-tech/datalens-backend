@@ -7,7 +7,6 @@ from datetime import datetime
 import logging
 import typing
 from typing import (
-    TYPE_CHECKING,
     Any,
     AsyncIterator,
     Callable,
@@ -55,6 +54,7 @@ from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from dl_core.connection_models import (
     DBIdent,
     PageIdent,
+    SchemaIdent,
     TableDefinition,
 )
 from dl_core.connection_models.common_models import TableIdent
@@ -64,8 +64,6 @@ from dl_sqlalchemy_postgres.asyncpg import DBAPIMock
 
 from dl_connector_postgresql.core.postgresql_base.adapters_base_postgres import (
     OID_KNOWLEDGE,
-    PG_LIST_SOURCES_ALL_SCHEMAS_SQL,
-    PG_LIST_TABLE_NAMES,
     BasePostgresAdapter,
 )
 from dl_connector_postgresql.core.postgresql_base.error_transformer import make_async_pg_error_transformer
@@ -73,26 +71,9 @@ from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConn
 from dl_connector_postgresql.core.postgresql_base.utils import compile_pg_query
 
 
-if TYPE_CHECKING:
-    from dl_core.connection_models.common_models import SchemaIdent
-
 _DBA_ASYNC_POSTGRES_TV = TypeVar("_DBA_ASYNC_POSTGRES_TV", bound="AsyncPostgresAdapter")
 
 LOGGER = logging.getLogger(__name__)
-
-
-PG_LIST_SCHEMA_NAMES = """
-SELECT nspname FROM pg_namespace
-WHERE nspname NOT LIKE 'pg_%'
-ORDER BY nspname
-"""
-
-# https://github.com/sqlalchemy/sqlalchemy/blob/rel_1_4/lib/sqlalchemy/dialects/postgresql/base.py#L3802
-PG_LIST_VIEW_NAMES = """
-SELECT c.relname FROM pg_class c
-JOIN pg_namespace n ON n.oid = c.relnamespace
-WHERE n.nspname = :schema AND c.relkind IN ('v', 'm')
-"""
 
 
 # native SA asyncpg dialect is beta now
@@ -127,11 +108,6 @@ class AsyncPostgresAdapter(
         # not connection/timeout error
         OSError,
     )
-
-    _LIST_ALL_TABLES_QUERY = PG_LIST_SOURCES_ALL_SCHEMAS_SQL
-    _LIST_SCHEMA_NAMES_QUERY = PG_LIST_SCHEMA_NAMES
-    _LIST_TABLE_NAMES_QUERY = PG_LIST_TABLE_NAMES
-    _LIST_VIEW_NAMES_QUERY = PG_LIST_VIEW_NAMES
 
     def _make_async_db_version_action(self) -> AsyncDBVersionAdapterAction:
         return AsyncDBVersionAdapterActionViaFunctionQuery(async_adapter=self)
@@ -338,7 +314,7 @@ class AsyncPostgresAdapter(
         )
 
     async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
-        result = await self.execute(DBAdapterQuery(self._LIST_SCHEMA_NAMES_QUERY))
+        result = await self.execute(DBAdapterQuery(self.get_list_schema_names_query()))
         schema_names = []
         async for row in result.get_all_rows():
             for value in row:
@@ -366,26 +342,46 @@ class AsyncPostgresAdapter(
             for rel in relations
         ]
 
-    async def _get_view_names(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-        return await self._get_relation_names(schema_ident, self._LIST_VIEW_NAMES_QUERY)
-
-    async def _get_table_names(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-        return await self._get_relation_names(schema_ident, self._LIST_TABLE_NAMES_QUERY)
-
-    async def _get_tables_single_schema(self, schema_ident: SchemaIdent) -> list[TableIdent]:
-        table_list = await self._get_table_names(schema_ident)
-        view_list = await self._get_view_names(schema_ident)
-        return table_list + view_list
+    async def _get_tables_single_schema(
+        self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None
+    ) -> list[TableIdent]:
+        if not page_ident:
+            page_ident = PageIdent()
+        assert schema_ident.schema_name
+        table_and_view_query = self.get_list_table_and_view_names_query(
+            schema_name=schema_ident.schema_name,
+            search_text=page_ident.search_text,
+            limit=page_ident.limit,
+            offset=page_ident.offset,
+        )
+        result = await self.execute(DBAdapterQuery(table_and_view_query))
+        table_and_view_names = []
+        async for row in result.get_all_rows():
+            table_and_view_names.append(str(row[0]))
+        return [
+            TableIdent(
+                db_name=schema_ident.db_name,
+                schema_name=schema_ident.schema_name,
+                table_name=name,
+            )
+            for name in table_and_view_names
+        ]
 
     async def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         if schema_ident.schema_name is not None:
             # For a single schema, plug into the common SA code.
             # (might not be ever used)
-            return await self._get_tables_single_schema(schema_ident)
+            return await self._get_tables_single_schema(schema_ident, page_ident)
 
         assert schema_ident.schema_name is None
         db_name = schema_ident.db_name
-        result = await self.execute(DBAdapterQuery(self._LIST_ALL_TABLES_QUERY))
+        if not page_ident:
+            page_ident = PageIdent()
+
+        all_tables_query = self.get_list_all_tables_query(
+            search_text=page_ident.search_text, limit=page_ident.limit, offset=page_ident.offset
+        )
+        result = await self.execute(DBAdapterQuery(all_tables_query))
         return [
             TableIdent(
                 db_name=db_name,

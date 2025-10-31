@@ -6,6 +6,7 @@ from typing import (
 )
 
 import attr
+import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as sa_pg
 
 from dl_core.connectors.ssl_common.adapter import BaseSSLCertAdapter
@@ -340,41 +341,125 @@ OID_KNOWLEDGE = {
     int(oid): typname for oid, typname in (item.split(",", 1) for item in OID_KNOWLEDGE_RAW.strip().splitlines())
 }
 
-# `relkind`:
-# https://www.postgresql.org/docs/12/catalog-pg-class.html
-# r = ordinary table, i = index, S = sequence, t = TOAST table, v = view, m =
-# materialized view, c = composite type, f = foreign table, p = partitioned
-# table, I = partitioned index
-# The `nspname` filter matches sqlalchemy's `get_schema_names` method.
-# TODO?: skip `information_schema` tables here already?
-PG_LIST_SOURCES_ALL_SCHEMAS_SQL = """
-SELECT
-    pg_namespace.nspname as schema,
-    pg_class.relname as name
-FROM
-    pg_class
-    JOIN pg_namespace
-    ON pg_namespace.oid = pg_class.relnamespace
-WHERE
-    pg_namespace.nspname not like 'pg_%'
-    AND pg_namespace.nspname != 'information_schema'
-    AND pg_class.relkind in ('m', 'p', 'r', 'v')
-    AND NOT COALESCE((row_to_json(pg_class)->>'relispartition')::boolean, false)
-ORDER BY schema, name
-""".strip().replace(
-    "\n", "  "
-)
-# NOTE: pg_class.relispartition` field exists only for postgresql>=10, so for postgresql<10 support json is used here
-PG_LIST_TABLE_NAMES = """
-SELECT c.relname FROM pg_class c
-JOIN pg_namespace n ON n.oid = c.relnamespace
-WHERE n.nspname = :schema  AND c.relkind in ('r', 'p')
-AND NOT COALESCE((row_to_json(c)->>'relispartition')::boolean, false);
-"""
+
+class PostgresQueryConstructorMixin:
+    """
+    `relkind`:
+    https://www.postgresql.org/docs/12/catalog-pg-class.html
+    r = ordinary table, i = index, S = sequence, t = TOAST table, v = view, m =
+    materialized view, c = composite type, f = foreign table, p = partitioned
+    table, I = partitioned index
+    The `nspname` filter matches sqlalchemy's `get_schema_names` method.
+    TODO?: skip `information_schema` tables here already?
+    NOTE: pg_class.relispartition` field exists only for postgresql>=10, so for postgresql<10 support json is used here
+    """
+
+    def _compile_pagination_params(
+        self, search_text: str | None, limit: int | None, offset: int | None
+    ) -> list[sa.sql.expression.BindParameter]:
+        params = []
+        if search_text:
+            params.append(sa.bindparam("search_text", f"%{search_text}%", type_=sa.String))
+        if offset:
+            params.append(sa.bindparam("offset", offset, type_=sa.Integer))
+        if limit is not None:
+            params.append(sa.bindparam("limit", limit, type_=sa.Integer))
+        return params
+
+    def _get_pagination_sql_parts(self, limit: int | None, offset: int | None) -> list[str]:
+        sql_parts = []
+        if offset:
+            sql_parts.append("OFFSET :offset")
+        if limit is not None:
+            sql_parts.append("LIMIT :limit")
+        return sql_parts
+
+    def get_list_all_tables_query(
+        self, search_text: str | None = None, limit: int | None = None, offset: int | None = None
+    ) -> sa.sql.elements.TextClause:
+        sql_parts = [
+            """
+        SELECT
+            pg_namespace.nspname as schema,
+            pg_class.relname as name
+        FROM
+            pg_class
+            JOIN pg_namespace
+            ON pg_namespace.oid = pg_class.relnamespace
+        WHERE
+            pg_namespace.nspname not like 'pg_%'
+            AND pg_namespace.nspname != 'information_schema'
+            AND pg_class.relkind in ('m', 'p', 'r', 'v')
+            AND NOT COALESCE((row_to_json(pg_class)->>'relispartition')::boolean, false)
+        """
+        ]
+
+        if search_text:
+            sql_parts.append("AND (pg_namespace.nspname || '.' || pg_class.relname) ILIKE :search_text")
+
+        sql_parts.append("ORDER BY schema, name")
+        sql_parts.extend(self._get_pagination_sql_parts(limit, offset))
+        sql = " ".join(sql_parts)
+        query = sa.text(sql)
+        params = self._compile_pagination_params(search_text, limit, offset)
+        query = query.bindparams(*params)
+
+        return query
+
+    def get_list_schema_names_query(
+        self, search_text: str | None = None, limit: int | None = None, offset: int | None = None
+    ) -> sa.sql.elements.TextClause:
+        sql_parts = [
+            """
+        SELECT nspname FROM pg_namespace
+        WHERE nspname NOT LIKE 'pg_%'
+        """
+        ]
+
+        if search_text:
+            sql_parts.append("AND nspname ILIKE :search_text")
+
+        sql_parts.append("ORDER BY nspname")
+        sql_parts.extend(self._get_pagination_sql_parts(limit, offset))
+        sql = " ".join(sql_parts)
+        query = sa.text(sql)
+        params = self._compile_pagination_params(search_text, limit, offset)
+        query = query.bindparams(*params)
+
+        return query
+
+    def get_list_table_and_view_names_query(
+        self, schema_name: str, search_text: str | None = None, limit: int | None = None, offset: int | None = None
+    ) -> sa.sql.elements.TextClause:
+        sql_parts = [
+            """
+        SELECT c.relname FROM pg_class c
+        JOIN pg_namespace n ON n.oid = c.relnamespace
+        WHERE n.nspname = :schema
+        AND c.relkind in ('r', 'p', 'v', 'm')
+        AND NOT COALESCE((row_to_json(c)->>'relispartition')::boolean, false)
+        """
+        ]
+
+        if search_text:
+            sql_parts.append("AND c.relname ILIKE :search_text")
+
+        sql_parts.append("ORDER BY c.relname")
+        sql_parts.extend(self._get_pagination_sql_parts(limit, offset))
+        sql = " ".join(sql_parts)
+        query = sa.text(sql)
+
+        params = [
+            sa.bindparam("schema", schema_name, type_=sa.String),
+            *self._compile_pagination_params(search_text, limit, offset),
+        ]
+        query = query.bindparams(*params)
+
+        return query
 
 
 @attr.s(cmp=False)
-class BasePostgresAdapter(BaseSSLCertAdapter):
+class BasePostgresAdapter(BaseSSLCertAdapter, PostgresQueryConstructorMixin):
     conn_type = CONNECTION_TYPE_POSTGRES
 
     # The cursor description returns type `oid` values.
