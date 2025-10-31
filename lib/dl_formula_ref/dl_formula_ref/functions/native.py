@@ -20,6 +20,11 @@ _COMMON_EXECUTION_NOTE = _(
     "Parameters are passed in the same type as written in the formula."
 )
 
+_COMMON_AGG_EXECUTION_NOTE = _(
+    "The function is executed as an aggregation across grouped rows. "
+    "Parameters are passed in the same type as written in the formula."
+)
+
 _COMMON_NAME_CONSTRAINT = _(
     "The function name must contain only alphanumeric characters, underscore and colon characters."
 )
@@ -38,6 +43,18 @@ def _db_call_description(return_type: str) -> str:
     return _(
         f"Calls a native database function by name. Native function should return {return_type}. "
         f"{_COMMON_EXECUTION_NOTE}"
+        "\n\n"
+        f"{_COMMON_ARG_DESCRIPTION}\n"
+        "\n"
+        f"{_COMMON_NAME_CONSTRAINT}"
+    )
+
+
+def _db_call_agg_description(return_type: str) -> str:
+    """Generate description for DB_CALL_AGG_* functions."""
+    return _(
+        f"Calls a native database aggregate function by name. Native function should return {return_type}. "
+        f"{_COMMON_AGG_EXECUTION_NOTE}"
         "\n\n"
         f"{_COMMON_ARG_DESCRIPTION}\n"
         "\n"
@@ -160,6 +177,48 @@ FUNCTION_DB_CALL_ARRAY_STRING = FunctionDocRegistryItem(
     ],
 )
 
+FUNCTION_DB_CALL_AGG_INT = FunctionDocRegistryItem(
+    name="db_call_agg_int",
+    category=CATEGORY_NATIVE,
+    description=_db_call_agg_description("an integer result"),
+    notes=[_COMMON_NOTE],
+    examples=[
+        SimpleExample(
+            'DB_CALL_AGG_INT("uniqMerge", [uniqStateField]) '
+            "-- ClickHouse: merge uniqState aggregations to get unique count"
+        ),
+    ],
+)
+
+FUNCTION_DB_CALL_AGG_FLOAT = FunctionDocRegistryItem(
+    name="db_call_agg_float",
+    category=CATEGORY_NATIVE,
+    description=_db_call_agg_description("a float result"),
+    notes=[_COMMON_NOTE],
+    examples=[
+        SimpleExample(
+            'DB_CALL_AGG_FLOAT("avgWeighted", [amount], [weight_field]) '
+            "-- ClickHouse: calculate weighted average of amount by weight"
+        ),
+        SimpleExample(
+            'DB_CALL_AGG_FLOAT("corr", [x], [y]) -- ClickHouse: calculate correlation coefficient between x and y'
+        ),
+    ],
+)
+
+FUNCTION_DB_CALL_AGG_STRING = FunctionDocRegistryItem(
+    name="db_call_agg_string",
+    category=CATEGORY_NATIVE,
+    description=_db_call_agg_description("a string result"),
+    notes=[_COMMON_NOTE],
+    examples=[
+        SimpleExample(
+            'DB_CALL_AGG_STRING("anyHeavy", [str_field]) '
+            "-- ClickHouse: select a frequently occurring value (more intelligent than random any)"
+        ),
+    ],
+)
+
 FUNCTIONS_NATIVE = [
     FUNCTION_DB_CALL_INT,
     FUNCTION_DB_CALL_FLOAT,
@@ -168,4 +227,7 @@ FUNCTIONS_NATIVE = [
     FUNCTION_DB_CALL_ARRAY_INT,
     FUNCTION_DB_CALL_ARRAY_FLOAT,
     FUNCTION_DB_CALL_ARRAY_STRING,
+    FUNCTION_DB_CALL_AGG_INT,
+    FUNCTION_DB_CALL_AGG_FLOAT,
+    FUNCTION_DB_CALL_AGG_STRING,
 ]
