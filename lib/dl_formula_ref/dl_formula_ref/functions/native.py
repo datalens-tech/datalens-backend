@@ -9,16 +9,19 @@ from dl_formula_ref.registry.note import Note
 _ = get_gettext()
 
 
-# Common text templates
 _COMMON_ARG_DESCRIPTION = _(
     "The first argument {arg:0} must be a constant string with the name of the "
     "database function to call. All subsequent arguments are passed to the "
-    "native function and can be of any type."
+    "native function and can be of any type, including types that are not currently supported by DataLens."
+)
+
+_COMMON_EXECUTION_NOTE = _(
+    "The function is executed for every row in the dataset (non-aggregated). "
+    "Parameters are passed in the same type as written in the formula."
 )
 
 _COMMON_NAME_CONSTRAINT = _(
-    "The function name must contain only alphanumeric characters, underscore "
-    "and colon characters."
+    "The function name must contain only alphanumeric characters, underscore and colon characters."
 )
 
 _COMMON_NOTE = Note(
@@ -33,8 +36,9 @@ _COMMON_NOTE = Note(
 def _db_call_description(return_type: str) -> str:
     """Generate description for DB_CALL_* functions."""
     return _(
-        f"Calls a native database function by name. Native function should return {return_type}."
-        "\n"
+        f"Calls a native database function by name. Native function should return {return_type}. "
+        f"{_COMMON_EXECUTION_NOTE}"
+        "\n\n"
         f"{_COMMON_ARG_DESCRIPTION}\n"
         "\n"
         f"{_COMMON_NAME_CONSTRAINT}"
@@ -47,9 +51,13 @@ FUNCTION_DB_CALL_INT = FunctionDocRegistryItem(
     description=_db_call_description("an integer result"),
     notes=[_COMMON_NOTE],
     examples=[
-        SimpleExample('DB_CALL_INT("sign", -5) = -1'),
-        SimpleExample('DB_CALL_INT("sign", 5) = 1'),
-        SimpleExample('DB_CALL_INT("positionCaseInsensitive", "Hello", "l") = 3'),
+        SimpleExample(
+            'DB_CALL_INT("positionCaseInsensitive", "Hello", "l") = 3 '
+            '-- ClickHouse: find first occurrence of "l" in "Hello" ignoring case'
+        ),
+        SimpleExample(
+            'DB_CALL_INT("JSON_VALUE", [json_field], "$.age") -- PostgreSQL: extract age attribute from JSON'
+        ),
     ],
 )
 
@@ -59,9 +67,9 @@ FUNCTION_DB_CALL_FLOAT = FunctionDocRegistryItem(
     description=_db_call_description("a float result"),
     notes=[_COMMON_NOTE],
     examples=[
-        SimpleExample('DB_CALL_FLOAT("sign", -5.0) = -1.0'),
-        SimpleExample('DB_CALL_FLOAT("sign", 5.0) = 1.0'),
-        SimpleExample('DB_CALL_FLOAT("log10", 100.0) = 2.0'),
+        SimpleExample('DB_CALL_FLOAT("sign", -5.0) = -1.0 -- ClickHouse: sign of -5.0 is -1.0'),
+        SimpleExample('DB_CALL_FLOAT("sign", 5.0) = 1.0 -- ClickHouse: sign of 5.0 is 1.0'),
+        SimpleExample('DB_CALL_FLOAT("log10", 100.0) = 2.0 -- ClickHouse: log10 of 100.0 is 2.0'),
     ],
 )
 
@@ -71,7 +79,18 @@ FUNCTION_DB_CALL_STRING = FunctionDocRegistryItem(
     description=_db_call_description("a string result"),
     notes=[_COMMON_NOTE],
     examples=[
-        SimpleExample('DB_CALL_STRING("reverse", "hello") = "olleh"'),
+        SimpleExample(
+            'DB_CALL_STRING("dictGetStringOrDefault", "categories", "category_name", [category_id], "other") '
+            "-- ClickHouse: read from dictionary with default value"
+        ),
+        SimpleExample(
+            'DB_CALL_STRING("JSONExtractString", [json_field], "category", "last_order_date") '
+            "-- ClickHouse: extract nested JSON attribute"
+        ),
+        SimpleExample(
+            'DB_CALL_STRING("hex", DB_CALL_STRING("SHA1", [salt_param] + [some_id])) '
+            "-- ClickHouse: calculate hash with salt"
+        ),
     ],
 )
 
@@ -81,8 +100,12 @@ FUNCTION_DB_CALL_BOOL = FunctionDocRegistryItem(
     description=_db_call_description("a boolean result"),
     notes=[_COMMON_NOTE],
     examples=[
-        SimpleExample('DB_CALL_BOOL("isFinite", 5) = TRUE'),
-        SimpleExample('DB_CALL_BOOL("isInfinite", 5) = FALSE'),
+        SimpleExample('DB_CALL_BOOL("isFinite", 5) = TRUE -- ClickHouse: check if 5 is a finite number'),
+        SimpleExample('DB_CALL_BOOL("isInfinite", 5) = FALSE -- ClickHouse: check if 5 is an infinite number'),
+        SimpleExample(
+            'DB_CALL_BOOL("bitTest", [int_field], 4) '
+            "-- ClickHouse: check if the 4th bit equals 1, useful when multiple values are encoded in one field"
+        ),
     ],
 )
 
@@ -92,7 +115,14 @@ FUNCTION_DB_CALL_ARRAY_INT = FunctionDocRegistryItem(
     description=_db_call_description("an array of integers"),
     notes=[_COMMON_NOTE],
     examples=[
-        SimpleExample('DB_CALL_ARRAY_INT("range", 5) = ARRAY(0, 1, 2, 3, 4)'),
+        SimpleExample(
+            'DB_CALL_ARRAY_INT("range", 5) = ARRAY(0, 1, 2, 3, 4) '
+            "-- ClickHouse: generate array of integers from 0 to 4"
+        ),
+        SimpleExample(
+            'DB_CALL_ARRAY_INT("arrayCompact", [int_arr_field]) '
+            "-- ClickHouse: remove duplicate consecutive values from array of integers"
+        ),
     ],
 )
 
@@ -102,7 +132,14 @@ FUNCTION_DB_CALL_ARRAY_FLOAT = FunctionDocRegistryItem(
     description=_db_call_description("an array of floats"),
     notes=[_COMMON_NOTE],
     examples=[
-        SimpleExample('DB_CALL_ARRAY_FLOAT("arrayConcat", ARRAY(1.0, 2.0), ARRAY(3.0)) = ARRAY(1.0, 2.0, 3.0)'),
+        SimpleExample(
+            'DB_CALL_ARRAY_FLOAT("arrayConcat", ARRAY(1.0, 2.0), ARRAY(3.0)) = ARRAY(1.0, 2.0, 3.0) '
+            "-- ClickHouse: concatenate arrays of floats"
+        ),
+        SimpleExample(
+            'DB_CALL_ARRAY_FLOAT("arrayCompact", [float_arr_field]) '
+            "-- ClickHouse: remove duplicate consecutive values from array of floats"
+        ),
     ],
 )
 
@@ -112,7 +149,14 @@ FUNCTION_DB_CALL_ARRAY_STRING = FunctionDocRegistryItem(
     description=_db_call_description("an array of strings"),
     notes=[_COMMON_NOTE],
     examples=[
-        SimpleExample('DB_CALL_ARRAY_STRING("splitByChar", ",", "a,b,c") = ARRAY("a", "b", "c")'),
+        SimpleExample(
+            'DB_CALL_ARRAY_STRING("splitByChar", ",", "a,b,c") = ARRAY("a", "b", "c") '
+            "-- ClickHouse: split string by comma"
+        ),
+        SimpleExample(
+            'DB_CALL_ARRAY_STRING("arrayCompact", [string_arr_field]) '
+            "-- ClickHouse: remove duplicate consecutive values from array of strings"
+        ),
     ],
 )
 
