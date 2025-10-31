@@ -2,6 +2,8 @@ from clickhouse_sqlalchemy import types as ch_types
 from clickhouse_sqlalchemy.ext.clauses import Lambda
 import sqlalchemy as sa
 
+from dl_formula.core.datatype import DataType
+from dl_formula.definitions.args import ArgTypeSequence
 from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_array as base
 from dl_formula.definitions.literals import un_literal
@@ -10,6 +12,32 @@ from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
 
 V = TranslationVariant.make
+
+
+class FuncArrayContainsCHConst(base.FuncArrayContains):
+    argument_types = [
+        ArgTypeSequence([DataType.CONST_ARRAY_INT, DataType.CONST_INTEGER]),
+        ArgTypeSequence([DataType.CONST_ARRAY_FLOAT, DataType.CONST_FLOAT]),
+        ArgTypeSequence([DataType.CONST_ARRAY_STR, DataType.CONST_STRING]),
+    ]
+    variants = [
+        V(D.CLICKHOUSE, sa.func.has),
+    ]
+
+
+class FuncArrayContainsCHIndexed(base.FuncArrayContains):
+    """
+    Optimized version of FuncArrayContains for indexed columns.
+    """
+
+    argument_types = [
+        ArgTypeSequence([DataType.CONST_ARRAY_INT, DataType.INTEGER]),
+        ArgTypeSequence([DataType.CONST_ARRAY_FLOAT, DataType.FLOAT]),
+        ArgTypeSequence([DataType.CONST_ARRAY_STR, DataType.STRING]),
+    ]
+    variants = [
+        V(D.CLICKHOUSE, lambda array, value: value.op("IN")(array)),
+    ]
 
 
 DEFINITIONS_ARRAY = [
@@ -176,6 +204,8 @@ DEFINITIONS_ARRAY = [
     ),
     base.FuncStringArrayFromStringArray.for_dialect(D.CLICKHOUSE),
     # contains
+    FuncArrayContainsCHConst(),
+    FuncArrayContainsCHIndexed(),
     base.FuncArrayContains(
         variants=[
             V(D.CLICKHOUSE, sa.func.has),

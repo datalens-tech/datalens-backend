@@ -212,6 +212,12 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("CONTAINS(ARRAY(1, NULL, NULL), NULL)")
         assert dbe.eval("CONTAINS(ARRAY(1, 1, NULL, NULL), NULL)")
 
+
+        # print(dbe.eval("CONTAINS(ARRAY(1, 2, 3), 1)"))
+        # print(dbe.eval("CONTAINS([arr_int_null_value], 1)", from_=data_table))
+        # print(dbe.eval("CONTAINS(ARRAY(1, 2, 3), [int_value])", from_=data_table))
+        # print(dbe.eval("CONTAINS([arr_int_null_value], [int_value])", from_=data_table))
+
     @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_contains_int_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         # null array values
