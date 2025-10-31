@@ -438,7 +438,11 @@ class ConnectionInfoSourceListingOptions(BIResource):
         },
     )
     def get(self, connection_id: str) -> dict:
-        connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+        us_manager = self.get_us_manager()
+        dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
+        us_manager.set_dataset_context(dataset_id)
+
+        connection = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
 
         if not check_permission_on_entry(connection, USPermissionKind.read):
             # It does not matter what options we provide if the user does not have sufficient permissions,
