@@ -12,7 +12,7 @@ on:
 jobs:
   protect-release-branches:
     name: "Protect Release Branches"
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
