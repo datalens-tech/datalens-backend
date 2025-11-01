@@ -2,6 +2,7 @@ from dl_connector_postgresql.formula.definitions.conditional_blocks import DEFIN
 from dl_connector_postgresql.formula.definitions.functions_aggregation import DEFINITIONS_AGG
 from dl_connector_postgresql.formula.definitions.functions_array import DEFINITIONS_ARRAY
 from dl_connector_postgresql.formula.definitions.functions_datetime import DEFINITIONS_DATETIME
+from dl_connector_postgresql.formula.definitions.functions_hash import DEFINITIONS_HASH
 from dl_connector_postgresql.formula.definitions.functions_logical import DEFINITIONS_LOGICAL
 from dl_connector_postgresql.formula.definitions.functions_markup import DEFINITIONS_MARKUP
 from dl_connector_postgresql.formula.definitions.functions_math import DEFINITIONS_MATH
@@ -31,4 +32,5 @@ DEFINITIONS = [
     *DEFINITIONS_BINARY,
     *DEFINITIONS_TERNARY,
     *DEFINITIONS_ARRAY,
+    *DEFINITIONS_HASH,
 ]

@@ -10,6 +10,7 @@ from dl_formula.definitions.conditional_blocks import DEFINITIONS_COND_BLOCKS
 from dl_formula.definitions.functions_aggregation import DEFINITIONS_AGGREGATION
 from dl_formula.definitions.functions_array import DEFINITIONS_ARRAY
 from dl_formula.definitions.functions_datetime import DEFINITIONS_DATETIME
+from dl_formula.definitions.functions_hash import DEFINITIONS_HASH
 from dl_formula.definitions.functions_logical import DEFINITIONS_LOGICAL
 from dl_formula.definitions.functions_markup import DEFINITIONS_MARKUP
 from dl_formula.definitions.functions_math import DEFINITIONS_MATH
@@ -60,6 +61,7 @@ def populate_translation_registry() -> None:
         DEFINITIONS_TERNARY,
         DEFINITIONS_UNARY,
         DEFINITIONS_NATIVE,
+        DEFINITIONS_HASH,
     )
     def_item: Union[NodeTranslation, type[NodeTranslation]]
     # TODO: Load defs from connectors here
