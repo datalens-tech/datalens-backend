@@ -7,6 +7,11 @@ import functools
 import inspect
 import itertools
 import typing
+from typing import (
+    Any,
+    Callable,
+    Coroutine,
+)
 
 from dl_api_commons.aiohttp.aiohttp_wrappers import (
     DLRequestView,
@@ -43,9 +48,11 @@ class BaseView(DLRequestView[aiohttp_wrappers.DSAPIRequest]):
         return frozenset()
 
     @staticmethod
-    def with_resolved_entities(coro):  # type: ignore  # TODO: fix
+    def with_resolved_entities(
+        coro: Callable[..., Coroutine[Any, Any, Any]]
+    ) -> Callable[..., Coroutine[Any, Any, Any]]:
         @functools.wraps(coro)
-        async def wrapper(self, *args, **kwargs):  # type: ignore  # TODO: fix
+        async def wrapper(self: "BaseView", *args: Any, **kwargs: Any) -> Any:
             await self.resolve_entities()
             return await coro(self, *args, **kwargs)
 

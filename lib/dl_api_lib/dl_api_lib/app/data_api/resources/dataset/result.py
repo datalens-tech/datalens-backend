@@ -66,6 +66,9 @@ class DatasetResultView(DatasetDataBaseView, abc.ABC):
     @generic_profiler_async("ds-result-full")
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> Response:
+        # Pass dataset_id to US from URL
+        self.dl_request.us_manager.set_dataset_context(self.dataset_id)
+
         req_model = self.load_req_model()
 
         await self.prepare_dataset_with_mutation_cache(req_model=req_model)

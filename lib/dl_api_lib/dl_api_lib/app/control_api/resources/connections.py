@@ -41,6 +41,7 @@ from dl_api_lib.utils import (
     check_permission_on_entry,
     need_permission_on_entry,
 )
+from dl_constants.api_constants import DLHeadersCommon
 from dl_constants.enums import (
     ConnectionType,
     CreateMode,
@@ -113,6 +114,9 @@ class ConnectionTester(BIResource):
     @schematic_request(ns=ns)
     def post(self, connection_id: str) -> None | tuple[list | dict, int]:
         usm = self.get_us_manager()
+        dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
+        usm.set_dataset_context(dataset_id)
+
         service_registry = self.get_service_registry()
         conn = usm.get_by_id(connection_id, expected_type=ConnectionBase)
         conn_orig = usm.clone_entry_instance(conn)
@@ -259,6 +263,8 @@ class ConnectionItem(BIResource):
     )
     def get(self, connection_id: str, query: dict) -> dict:
         us_manager = self.get_us_manager()
+        dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
+        us_manager.set_dataset_context(dataset_id)
 
         if "rev_id" in query:
             conn = us_manager.get_by_id(
@@ -281,6 +287,7 @@ class ConnectionItem(BIResource):
     @schematic_request(ns=ns)
     def delete(self, connection_id: str) -> None:
         us_manager = self.get_us_manager()
+
         conn = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
         need_permission_on_entry(conn, USPermissionKind.admin)
 
@@ -372,7 +379,11 @@ def _dump_source_templates(tpls: list[DataSourceTemplate] | None) -> list[dict[s
 class ConnectionInfoMetadataSources(BIResource):
     @schematic_request(ns=ns, responses={200: ("Success", ConnectionSourceTemplatesResponseSchema())})
     def get(self, connection_id: str) -> dict[str, list[dict[str, Any]] | None]:
-        connection: ConnectionBase = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+        us_manager = self.get_us_manager()
+        dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
+        us_manager.set_dataset_context(dataset_id)
+
+        connection: ConnectionBase = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
 
         localizer = self.get_service_registry().get_localizer()
         source_template_templates = connection.get_data_source_template_templates(localizer=localizer)
@@ -396,7 +407,11 @@ class ConnectionDBNames(BIResource):
         responses={200: ("Success", ConnectionDBNamesResponseSchema()), 400: ("Failed", BadRequestResponseSchema())},
     )
     def get(self, connection_id: str) -> dict[str, list[str]]:
-        connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+        us_manager = self.get_us_manager()
+        dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
+        us_manager.set_dataset_context(dataset_id)
+
+        connection = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
 
         service_registry = self.get_service_registry()
         if not connection.supports_db_name_listing:
@@ -423,7 +438,11 @@ class ConnectionInfoSourceListingOptions(BIResource):
         },
     )
     def get(self, connection_id: str) -> dict:
-        connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+        us_manager = self.get_us_manager()
+        dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
+        us_manager.set_dataset_context(dataset_id)
+
+        connection = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
 
         if not check_permission_on_entry(connection, USPermissionKind.read):
             # It does not matter what options we provide if the user does not have sufficient permissions,
@@ -454,7 +473,11 @@ class ConnectionInfoSources(BIResource):
         },
     )
     def get(self, connection_id: str, query: dict) -> dict:
-        connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+        us_manager = self.get_us_manager()
+        dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
+        us_manager.set_dataset_context(dataset_id)
+
+        connection = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
 
         service_registry = self.get_service_registry()
         localizer = service_registry.get_localizer()

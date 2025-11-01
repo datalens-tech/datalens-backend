@@ -52,6 +52,7 @@ class DLHeadersCommon(DLHeaders):
     US_PUBLIC_TOKEN = "X-US-Public-API-Token"
 
     EMBED_TOKEN = "X-DL-Embed-Token"
+    DATASET_ID = "X-DL-DatasetId"
 
     # TODO: BI-4918 drop after all usages moved to bi_api_commons_ya_cloud.constants.DLHeadersYC
     IAM_TOKEN = "X-YaCloud-SubjectToken"

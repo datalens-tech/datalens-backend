@@ -64,6 +64,7 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
     #     responses={200: ('Success', dl_api_lib.schemas.data.DatasetVersionResultResponseSchema())}
     # )
     @generic_profiler_async("ds-preview-full")
+    @DatasetDataBaseView.with_dataset_us_context
     @DatasetDataBaseView.with_resolved_entities
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> Response:

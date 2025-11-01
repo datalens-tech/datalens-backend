@@ -10,6 +10,7 @@ from dl_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
 class DatasetFieldsView(DatasetDataBaseView):
     endpoint_code = "DatasetFieldsGet"
 
+    @DatasetDataBaseView.with_dataset_us_context
     @DatasetDataBaseView.with_resolved_entities
     async def get(self) -> web.Response:
         fields = get_fields_data_serializable(self.dataset)
