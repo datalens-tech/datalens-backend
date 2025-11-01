@@ -89,6 +89,7 @@ def get_api_model(
 class CreateDatasetSchema(DatasetContentSchema):
     name = ma_fields.String()
     dir_path = ma_fields.String()
+    collection_id = ma_fields.String()
     workbook_id = ma_fields.String()
     # TODO FIX: Ensure that not used and remove
     preview = ma_fields.Boolean(load_default=False, required=False)
@@ -147,6 +148,7 @@ class GetDatasetVersionQuerySchema(BaseSchema):
 
 class GetDatasetVersionResponseSchema(GetDatasetResponseSchema):
     key = ma_fields.String()
+    collection_id = ma_fields.String()
     workbook_id = ma_fields.String()
 
 
@@ -198,7 +200,8 @@ class DatasetContentImportSchema(BaseSchema):
         name = ma_fields.String()
 
     dataset = ma_fields.Nested(DatasetContentInternalImportSchema, required=True)
-    workbook_id = ma_fields.String(allow_none=True, required=True)
+    collection_id = ma_fields.String(allow_none=True, required=False)
+    workbook_id = ma_fields.String(allow_none=True, required=False)
 
 
 class DatasetImportRequestSchema(IdMappingContentSchema):

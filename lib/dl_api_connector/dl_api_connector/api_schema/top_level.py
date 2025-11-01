@@ -40,6 +40,7 @@ from dl_constants.enums import (
 )
 from dl_core import exc as bi_core_exc
 from dl_core.base_models import (
+    CollectionEntryLocation,
     EntryLocation,
     PathEntryLocation,
     WorkbookEntryLocation,
@@ -285,6 +286,13 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV], USEntryAnnotationMixin
         bi_extra=FieldExtra(exclude_in=[CreateMode.test]),
         attribute="entry_key.dir_path",
     )
+    collection_id = ma_fields.String(
+        required=False,
+        allow_none=True,
+        load_default=None,
+        bi_extra=FieldExtra(exclude_in=[CreateMode.test]),
+        attribute="entry_key.collection_id",
+    )
     workbook_id = ma_fields.String(
         required=False,
         allow_none=True,
@@ -328,14 +336,18 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV], USEntryAnnotationMixin
         entry_name = data["entry_key"]["entry_name"]
         entry_dir_path = data["entry_key"]["dir_path"]
         entry_wb_id = data["entry_key"]["workbook_id"]
+        entry_coll_id = data["entry_key"].get("collection_id")
 
-        if entry_wb_id is None and entry_dir_path is None:
-            raise marshmallow.ValidationError("dir_path can not be null if workbook_id is null", field_name="dir_path")
+        if entry_coll_id is None and entry_wb_id is None and entry_dir_path is None:
+            raise marshmallow.ValidationError(
+                "dir_path can not be null if collection_id and workbook_id are null", field_name="dir_path"
+            )
 
         return dict(
             ds_key=resolve_entry_loc_from_api_req_body(
                 name=entry_name,
                 dir_path=entry_dir_path,
+                collection_id=entry_coll_id,
                 workbook_id=entry_wb_id,
             ),
             us_manager=self.us_manager,
@@ -409,15 +421,23 @@ def resolve_entry_loc_from_api_req_body(
     *,
     name: str,
     dir_path: Optional[str],
+    collection_id: Optional[str],
     workbook_id: Optional[str],
 ) -> EntryLocation:
     assert name is not None, "name can not be None"
 
-    if workbook_id is None:
-        assert dir_path is not None, "dir_path can not be None"
-        return PathEntryLocation(os.path.join(dir_path, name))
-    else:
+    assert (collection_id is None) or (workbook_id is None), "collection_id and workbook_id can not both be set"
+
+    if collection_id is not None:
+        return CollectionEntryLocation(
+            collection_id=collection_id,
+            entry_name=name,
+        )
+    elif workbook_id is not None:
         return WorkbookEntryLocation(
             workbook_id=workbook_id,
             entry_name=name,
         )
+    else:
+        assert dir_path is not None, "dir_path can not be None"
+        return PathEntryLocation(os.path.join(dir_path, name))

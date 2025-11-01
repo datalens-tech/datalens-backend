@@ -196,6 +196,7 @@ class ConnectionsImportList(BIResource):
                 f"Connector {conn_type_str} is not available for export/import in current environment"
             )
 
+        conn_data["collection_id"] = body["data"].get("collection_id")
         conn_data["workbook_id"] = body["data"].get("workbook_id")
         conn_data["type"] = conn_type_str
 

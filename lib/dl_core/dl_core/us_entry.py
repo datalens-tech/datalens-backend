@@ -19,6 +19,7 @@ from dl_constants.enums import (
 )
 from dl_core.base_models import (
     BaseAttrsDataModel,
+    CollectionEntryLocation,
     EntryLocation,
     PathEntryLocation,
     WorkbookEntryLocation,
@@ -248,6 +249,12 @@ class USEntry:
         if isinstance(self.entry_key, WorkbookEntryLocation):
             ret.update(
                 workbook_id=self.entry_key.workbook_id,
+                name=self.entry_key.entry_name,
+                key=self.raw_us_key,
+            )
+        elif isinstance(self.entry_key, CollectionEntryLocation):
+            ret.update(
+                collection_id=self.entry_key.collection_id,
                 name=self.entry_key.entry_name,
                 key=self.raw_us_key,
             )

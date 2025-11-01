@@ -41,6 +41,7 @@ from dl_constants.enums import (
 )
 from dl_core import connection_models
 from dl_core.base_models import (
+    CollectionEntryLocation,
     ConnCacheableDataModelMixin,
     ConnectionDataModelBase,
     ConnectionRef,
@@ -405,7 +406,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
                 }
             )
 
-        if not isinstance(self.entry_key, WorkbookEntryLocation):
+        if not isinstance(self.entry_key, (CollectionEntryLocation, WorkbookEntryLocation)):
             resp.pop("name", None)
         resp.pop("is_favorite", None)
         resp.pop("table_name", None)

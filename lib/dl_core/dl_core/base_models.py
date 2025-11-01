@@ -120,6 +120,30 @@ class WorkbookEntryLocation(EntryLocation):
         return {"key": restored_key, "workbookId": self.workbook_id}
 
 
+@attr.s(frozen=True)
+class CollectionEntryLocation(EntryLocation):
+    collection_id: str = attr.ib()
+    entry_name: str = attr.ib()
+
+    def to_short_string(self) -> str:
+        return f"COLL({self.collection_id}/{self.entry_name})"
+
+    def to_us_req_api_params(self) -> dict[str, Any]:
+        return {
+            "collectionId": self.collection_id,
+            "name": self.entry_name,
+        }
+
+    def to_us_resp_api_params(self, key_from_us_resp: Optional[str]) -> dict[str, str]:
+        restored_key: str
+        if key_from_us_resp is None:
+            restored_key = f"dummy_collection_path_repr/{self.entry_name}"
+        else:
+            restored_key = key_from_us_resp
+
+        return {"key": restored_key, "collectionId": self.collection_id}
+
+
 @attr.s
 class BaseAttrsDataModel:
     """Marker class for attrs-based data"""
