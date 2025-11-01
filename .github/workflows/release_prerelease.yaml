@@ -22,7 +22,7 @@ on:
 jobs:
   get_version:
     name: "Get version"
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: [ self-hosted, linux, light ]
     permissions:
       contents: read
     outputs:
@@ -190,7 +190,7 @@ jobs:
   release:
     name: "Create prerelease"
     needs: [ get_version ]
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     env:

@@ -18,7 +18,7 @@ on:
 jobs:
   push_images:
     name: "Pull candidate images and push to release"
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: ubuntu-latest
     permissions:
       packages: write
     outputs:
@@ -69,7 +69,7 @@ jobs:
   release:
     name: "Create release"
     needs: [ push_images, run_e2e_tests ]
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     env:
