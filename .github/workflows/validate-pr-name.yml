@@ -2,7 +2,7 @@ name: 🏷️ Validate PR Name
 
 on:
   pull_request:
-    types: [opened, reopened, edited, synchronize]
+    types: [opened, reopened, edited]
     branches: [main]
 
 concurrency:
