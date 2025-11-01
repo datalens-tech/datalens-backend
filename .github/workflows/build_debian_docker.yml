@@ -28,7 +28,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          path: lalalala
+          path: ${{ github.sha }}
           fetch-depth: 0
 
       - name: Login to GitHub Container Registry
