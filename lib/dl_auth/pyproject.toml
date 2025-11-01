@@ -8,6 +8,8 @@ readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
+attrs = "*"
+dl-constants = {path = "../dl_constants"}
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]

@@ -6,11 +6,9 @@ from aiohttp.typedefs import Middleware
 import pytest
 import pytest_asyncio
 
-from dl_api_commons.base_models import (
-    NoAuthData,
-    TenantCommon,
-)
+import dl_api_commons
 from dl_api_commons.client.common import DLCommonAPIClient
+import dl_auth
 from dl_auth_api_lib.app import OAuthApiAppFactory
 from dl_auth_api_lib.oauth.yandex import YandexOAuthClient
 from dl_auth_api_lib.settings import AuthAPISettings
@@ -89,8 +87,8 @@ async def oauth_app_client(oauth_app) -> DLCommonAPIClient:
     async with get_default_aiohttp_session() as session:
         yield DLCommonAPIClient(
             base_url=f"http://{oauth_app.host}:{oauth_app.port}",
-            tenant=TenantCommon(),
-            auth_data=NoAuthData(),
+            tenant=dl_api_commons.TenantCommon(),
+            auth_data=dl_auth.NoAuthData(),
             session=session,
         )
 

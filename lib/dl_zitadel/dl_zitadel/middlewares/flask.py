@@ -4,12 +4,13 @@ import attr
 import flask
 import werkzeug.exceptions as werkzeug_exceptions
 
-import dl_api_commons.base_models as dl_api_commons_base_models
+import dl_api_commons
 import dl_api_commons.flask.middlewares.commit_rci_middleware as dl_api_commons_flask_rci
 from dl_api_commons.flask.required_resources import (
     RequiredResourceCommon,
     get_required_resources,
 )
+import dl_constants
 import dl_zitadel.clients as clients
 import dl_zitadel.middlewares.models as middlewares_models
 import dl_zitadel.services as services
@@ -35,7 +36,7 @@ class FlaskMiddleware:
         temp_rci = dl_api_commons_flask_rci.ReqCtxInfoMiddleware.get_temp_rci()
         dl_api_commons_flask_rci.ReqCtxInfoMiddleware.replace_temp_rci(
             temp_rci.clone(
-                tenant=dl_api_commons_base_models.TenantCommon(),
+                tenant=dl_api_commons.TenantCommon(),
             )
         )
 
@@ -110,7 +111,7 @@ class FlaskMiddleware:
 
     def auth_service(self) -> middlewares_models.AuthResult | None:
         service_access_token = flask.request.headers.get(middlewares_models.ZitadelHeaders.SERVICE_ACCESS_TOKEN)
-        user_access_token = flask.request.headers.get(dl_api_commons_base_models.DLHeadersCommon.AUTHORIZATION_TOKEN)
+        user_access_token = flask.request.headers.get(dl_constants.DLHeadersCommon.AUTHORIZATION_TOKEN)
 
         if service_access_token is None:
             LOGGER.info("Service access token is missing")

@@ -28,6 +28,7 @@ python = ">=3.10, <3.13"
 redis = "*"
 
 [tool.poetry.group.tests.dependencies]
+dl-auth = {path = "../dl_auth"}
 dl-core-testing = {path = "../dl_core_testing"}
 dl-file-secure-reader-lib = {path = "../dl_file_secure_reader_lib"}
 dl-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
