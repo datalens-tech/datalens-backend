@@ -39,6 +39,7 @@ from dl_constants.enums import (
 )
 from dl_constants.exc import CODE_OK
 from dl_core.base_models import (
+    CollectionEntryLocation,
     EntryLocation,
     PathEntryLocation,
     WorkbookEntryLocation,
@@ -65,6 +66,7 @@ class DatasetCollection(DatasetResource):
         name = body.get("name", "Dataset {}".format(str(uuid.uuid4())))
         return resolve_entry_loc_from_api_req_body(
             name=name,
+            collection_id=body.get("collection_id"),
             workbook_id=body.get("workbook_id"),
             dir_path=body.get("dir_path", "datasets"),
         )
@@ -227,7 +229,9 @@ class DatasetVersionItem(DatasetResource):
         ds_dict["key"] = ds.raw_us_key
 
         dl_loc = ds.entry_key
-        if isinstance(dl_loc, WorkbookEntryLocation):
+        if isinstance(dl_loc, CollectionEntryLocation):
+            ds_dict["collection_id"] = dl_loc.collection_id
+        elif isinstance(dl_loc, WorkbookEntryLocation):
             ds_dict["workbook_id"] = dl_loc.workbook_id
 
         ds_dict["is_favorite"] = ds.is_favorite
@@ -324,6 +328,8 @@ class DatasetExportItem(DatasetResource):
         dl_loc = ds.entry_key
         if isinstance(dl_loc, WorkbookEntryLocation):
             ds_dict["dataset"]["name"] = dl_loc.entry_name
+        elif isinstance(dl_loc, CollectionEntryLocation):
+            ds_dict["dataset"]["name"] = dl_loc.entry_name
 
         ds_dict["dataset"]["revision_id"] = None
         del ds_dict["dataset"]["rls"]
@@ -348,6 +354,7 @@ class DatasetImportCollection(DatasetResource):
         name = body.get("name", "Dataset {}".format(str(uuid.uuid4())))
         return resolve_entry_loc_from_api_req_body(
             name=name,
+            collection_id=body.get("collection_id"),
             workbook_id=body.get("workbook_id"),
             dir_path=body.get("dir_path", "datasets"),
         )

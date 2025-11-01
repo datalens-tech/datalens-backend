@@ -34,6 +34,7 @@ from dl_constants.enums import (
 )
 from dl_core import exc
 from dl_core.base_models import (
+    CollectionEntryLocation,
     ConnectionRef,
     DefaultConnectionRef,
     EntryLocation,
@@ -314,6 +315,12 @@ class USManagerBase:
             entry_name = raw_entry_key.split("/")[-1]
             entry_loc = WorkbookEntryLocation(
                 workbook_id=us_resp["workbookId"],
+                entry_name=entry_name,
+            )
+        elif us_resp.get("collectionId") is not None:
+            entry_name = raw_entry_key.split("/")[-1]
+            entry_loc = CollectionEntryLocation(
+                collection_id=us_resp["collectionId"],
                 entry_name=entry_name,
             )
         else:

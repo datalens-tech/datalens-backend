@@ -74,6 +74,7 @@ class ConnectionExportResponseSchema(BaseSchema):
 
 class ConnectionDataContentImportSchema(BaseSchema):
     connection = ma_fields.Raw(required=True)
+    collection_id = ma_fields.String()
     workbook_id = ma_fields.String()
 
 
