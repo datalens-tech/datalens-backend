@@ -27,9 +27,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          path: ${{ env.job_path }}
-          fetch-depth: 0
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
