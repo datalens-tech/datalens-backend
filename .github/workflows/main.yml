@@ -73,6 +73,11 @@ jobs:
       REPO: ${{ github.event.repository.name }}
 
     steps:
+      - name: Add permissions before checkout
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          sudo chown -R runner:runner ${{ github.workspace }} || true
+          sudo chmod -R 777 ${{ github.workspace }} || true
       - name: Checkout code
         uses: actions/checkout@v4
 

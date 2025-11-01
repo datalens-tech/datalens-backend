@@ -12,16 +12,14 @@ concurrency:
 jobs:
   commitlint-pr-title:
     name: Ensure proper PR title
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
 
+    steps:
       - name: Commitlint PR title
         uses: datalens-tech/commitlint-action@v1
 
   add_labels:
-    runs-on: ubuntu-22.04
+    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
     needs: commitlint-pr-title
     permissions:
       pull-requests: write
