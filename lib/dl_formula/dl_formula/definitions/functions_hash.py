@@ -59,6 +59,8 @@ class SHA256(HashFunction):
 
 class MurmurHash2_64(HashFunction):
     name = "murmurhash2_64"
+    arg_names = ["value"]
+    arg_cnt = 1
     return_type = Fixed(DataType.INTEGER)
     variants = [
         V(D.DUMMY, sa.func.murmurHash2_64),
@@ -66,8 +68,9 @@ class MurmurHash2_64(HashFunction):
 
 
 class SipHash64(HashFunction):
-    # sipHash64Keyed((k0, k1), arg1[,arg2, ...]) ???
     name = "siphash64"
+    arg_names = ["value"]
+    arg_cnt = 1
     return_type = Fixed(DataType.INTEGER)
     argument_types = [
         ArgTypeSequence([DataType.STRING]),
@@ -92,6 +95,8 @@ class IntHash64(HashFunction):
 
 class CityHash64(HashFunction):
     name = "cityhash64"
+    arg_names = ["value"]
+    arg_cnt = 1
     return_type = Fixed(DataType.INTEGER)
     variants = [
         V(D.DUMMY, sa.func.cityHash64),

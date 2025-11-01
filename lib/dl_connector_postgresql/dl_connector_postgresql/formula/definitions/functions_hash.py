@@ -24,7 +24,6 @@ DEFINITIONS_HASH = [
         variants=[
             V(
                 D.POSTGRESQL,
-                # _pgcrypto_hash_factory("md5"),
                 lambda value: sa.func.upper(sa.func.md5(value)),
             ),
         ]
