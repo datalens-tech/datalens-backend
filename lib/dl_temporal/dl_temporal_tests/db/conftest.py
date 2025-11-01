@@ -13,7 +13,11 @@ import dl_utils
 @pytest.fixture(name="temporal_hostport")
 def fixture_temporal_hostport() -> dl_testing.HostPort:
     hostport = dl_testing.get_test_container_hostport("temporal")
-    dl_testing.wait_for_port(hostport.host, hostport.port)
+    dl_testing.wait_for_port(
+        host=hostport.host,
+        port=hostport.port,
+        timeout_seconds=30,
+    )
 
     return hostport
 
