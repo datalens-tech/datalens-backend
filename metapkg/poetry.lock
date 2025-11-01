@@ -1898,7 +1898,7 @@ description = ""
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.source]
 type = "directory"
@@ -9219,4 +9219,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "5396ff590138ca635ec43ab394e7493106011be3b53903c85d8a96a053a4c076"
+content-hash = "288570b628ff21707a20974fd2f181f451c48ccb9d5d3d6031808fba0776ef8a"

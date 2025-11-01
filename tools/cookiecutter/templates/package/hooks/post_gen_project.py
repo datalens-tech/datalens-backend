@@ -12,6 +12,7 @@ def get_metapkg_file() -> str:
 
 
 def add_package_to_metapkg(
+    package_name: str,
     package_slug: str,
 ) -> None:
     package_table = tomlkit.inline_table()
@@ -25,10 +26,13 @@ def add_package_to_metapkg(
     dependencies = metapkg["tool"]["poetry"]["group"]["ci"]["dependencies"]
     assert isinstance(dependencies, tomlkit.items.Table)
 
-    dependencies.append(tomlkit.string(package_slug), package_table)
+    dependencies.append(tomlkit.string(package_name), package_table)
     with open(metapkg_file, "w") as f:
         tomlkit.dump(metapkg, f)
 
 
 if __name__ == "__main__":
-    add_package_to_metapkg("{{ cookiecutter.package_slug }}")
+    add_package_to_metapkg(
+        package_name="{{ cookiecutter.package_name }}",
+        package_slug="{{ cookiecutter.package_slug }}",
+    )
