@@ -1892,6 +1892,19 @@ type = "directory"
 url = "../lib/dl_attrs_model_mapper_doc_tools"
 
 [[package]]
+name = "dl-auth"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = false
+
+[package.source]
+type = "directory"
+url = "../lib/dl_auth"
+
+[[package]]
 name = "dl-auth-api-lib"
 version = "0.0.1"
 description = ""
@@ -9206,4 +9219,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "bc856a63eff1e65ea53dc810b5a87c484bce8f6a086c02ec940dc11cdebfba79"
+content-hash = "6680324d110adfa8c193d0c6b75537729083d29554f79a7589460373f6d52a03"
