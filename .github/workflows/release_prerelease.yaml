@@ -22,7 +22,7 @@ on:
 jobs:
   get_version:
     name: "Get version"
-    runs-on: [ self-hosted, linux, light ]
+    runs-on: ubuntu-latest
     permissions:
       contents: read
     outputs:
