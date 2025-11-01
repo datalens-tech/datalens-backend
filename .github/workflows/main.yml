@@ -5,8 +5,7 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  # Subject to change back to pull_request when we have a better solution for the CI with forked PRs
-  pull_request_target: # zizmor: ignore[dangerous-triggers]
+  pull_request:
     types:
       - opened
       - reopened
@@ -46,8 +45,6 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           EVENT_ACTION: ${{ github.event.action }}
         run: |
-          [[ $EVENT_NAME != "pull_request_target" ]] && exit 0
-
           action=$EVENT_ACTION
           [[ $action == "labeled" || $action == "unlabeled" || $action == "opened" ]] && exit 0
 
@@ -164,8 +161,7 @@ jobs:
         env:
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
-          # if pull_request_target use head sha, otherwise use github.sha
-          GIT_SHA: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
+          GIT_SHA: ${{ github.sha }}
 
   router:
     runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
