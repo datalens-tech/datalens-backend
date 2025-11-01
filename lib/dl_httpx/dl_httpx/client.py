@@ -20,6 +20,7 @@ import httpx
 import typing_extensions
 
 import dl_configs
+import dl_httpx.auth_providers as auth_providers
 import dl_retrier
 
 
@@ -69,6 +70,7 @@ class HttpxClientSettings:
     retry_policy_factory: dl_retrier.RetryPolicyFactorySettings = attrs.field(
         factory=dl_retrier.RetryPolicyFactorySettings
     )
+    auth_provider: auth_providers.AuthProviderProtocol = attrs.field(factory=auth_providers.NoAuthProvider)
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
@@ -77,6 +79,7 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
     _base_cookies: dict[str, str]
     _base_headers: dict[str, str]
     _retry_policy_factory: dl_retrier.RetryPolicyFactory
+    _auth_provider: auth_providers.AuthProviderProtocol
 
     _base_client: THttpxClient
 
@@ -89,6 +92,7 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
             retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(
                 settings.retry_policy_factory,
             ),
+            auth_provider=settings.auth_provider,
             base_client=cls._get_client(
                 ssl_context=settings.ssl_context,
             ),
@@ -104,12 +108,14 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
 
     def _prepare_headers(self, headers: dict[str, str] | None = None) -> dict[str, str]:
         result = self._base_headers.copy()
+        result.update(self._auth_provider.get_headers())
         if headers:
             result.update(headers)
         return result
 
     def _prepare_cookies(self, cookies: dict[str, str] | None = None) -> dict[str, str]:
         result = self._base_cookies.copy()
+        result.update(self._auth_provider.get_cookies())
         if cookies:
             result.update(cookies)
         return result
