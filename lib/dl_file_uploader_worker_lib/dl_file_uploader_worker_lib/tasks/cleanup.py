@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 from datetime import (
     datetime,
     timedelta,
 )
 import logging
 from typing import (
-    Any,
+    TYPE_CHECKING,
     cast,
 )
 
@@ -40,6 +42,10 @@ from dl_connector_bundle_chs3.chs3_yadocs.core.constants import CONNECTION_TYPE_
 from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
+if TYPE_CHECKING:
+    from types_aiobotocore_s3.type_defs import LifecycleRuleOutputTypeDef
+
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -66,18 +72,19 @@ class CleanupTenantTask(BaseExecutorTask[task_interface.CleanupTenantTask, FileU
             async with RedisLock(redis, name=lock_key, timeout=120, blocking_timeout=120):
                 LOGGER.info(f"Lock {lock_key} acquired")
                 # lc == lifecycle
+                lc_rules: list[LifecycleRuleOutputTypeDef]
                 try:
                     lc_config = await s3_client.get_bucket_lifecycle_configuration(
                         Bucket=s3_service.persistent_bucket_name,
                     )
+                    lc_rules = lc_config["Rules"]
                 except ClientError as ex:
                     if ex.response["Error"]["Code"] == "NoSuchLifecycleConfiguration":
-                        lc_config = {"Rules": []}
+                        lc_rules = []
                     else:
                         raise
-                lc_rules = lc_config["Rules"]
 
-                new_rule = {
+                new_rule: LifecycleRuleOutputTypeDef = {
                     "ID": obj_prefix,  # note: currently unused
                     "Expiration": {
                         "Date": datetime.today().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=2),
@@ -123,7 +130,7 @@ class CleanS3LifecycleRulesTask(BaseExecutorTask[task_interface.CleanS3Lifecycle
                 )
                 return bool(list_resp.get("Contents"))
 
-            async def remove_old_rules(rules: list[dict[str, Any]]) -> list[dict[str, Any]]:
+            async def remove_old_rules(rules: list[LifecycleRuleOutputTypeDef]) -> list[LifecycleRuleOutputTypeDef]:
                 indices_to_remove = set()
                 for idx, rule in enumerate(rules):
                     rule_prefix = rule["Filter"]["Prefix"]
@@ -138,16 +145,17 @@ class CleanS3LifecycleRulesTask(BaseExecutorTask[task_interface.CleanS3Lifecycle
             async with RedisLock(redis, name=lock_key, timeout=120, blocking_timeout=120):
                 LOGGER.info(f"Lock {lock_key} acquired")
                 # lc == lifecycle
+                lc_rules: list[LifecycleRuleOutputTypeDef]
                 try:
                     lc_config = await s3_client.get_bucket_lifecycle_configuration(
                         Bucket=s3_service.persistent_bucket_name
                     )
+                    lc_rules = lc_config["Rules"]
                 except ClientError as ex:
                     if ex.response["Error"]["Code"] == "NoSuchLifecycleConfiguration":
-                        lc_config = {"Rules": []}
+                        lc_rules = []
                     else:
                         raise
-                lc_rules = lc_config["Rules"]
 
                 new_lc_rules = await remove_old_rules(lc_rules)
 

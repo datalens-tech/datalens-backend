@@ -7,7 +7,6 @@ from typing import (
     ClassVar,
 )
 
-from aiobotocore.client import AioBaseClient
 from aiobotocore.config import AioConfig
 from aiobotocore.session import get_session
 from aiohttp import web
@@ -36,7 +35,7 @@ class S3Service:
     tmp_bucket_name: str = attr.ib()
     persistent_bucket_name: str = attr.ib()
 
-    _client: AioBaseClient = attr.ib(init=False, repr=False, hash=False, cmp=False)
+    _client: AsyncS3Client = attr.ib(init=False, repr=False, hash=False, cmp=False)
     _client_init_params: dict[str, Any] = attr.ib(init=False, repr=False, hash=False, cmp=False)
 
     @property
@@ -54,8 +53,7 @@ class S3Service:
     async def tear_down_hook(self, target_app: web.Application) -> None:
         await self.tear_down()
 
-    async def initialize(self) -> None:
-        LOGGER.info("Initializing S3 service")
+    def _init_client_config(self) -> None:
         self._client_init_params = dict(
             service_name="s3",
             aws_access_key_id=self._access_key_id,
@@ -66,6 +64,11 @@ class S3Service:
                 s3={"addressing_style": "virtual" if self._use_virtual_host_addressing else "auto"},
             ),
         )
+
+    async def initialize(self) -> None:
+        LOGGER.info("Initializing S3 service")
+
+        self._init_client_config()
 
         session = get_session()
         client = session.create_client(**self._client_init_params)
