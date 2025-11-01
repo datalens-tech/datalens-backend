@@ -2,8 +2,8 @@
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 description = ""
 license = "Apache 2.0"
-name = "{{cookiecutter.package_name}}"
-packages = [{include = "{{cookiecutter.package_slug}}"}]
+name = "dl-auth"
+packages = [{include = "dl_auth"}]
 readme = "README.md"
 version = "0.0.1"
 
@@ -33,6 +33,6 @@ requires = [
 
 [datalens.pytest.unit]
 labels = ["no_compose"]
-root_dir = "{{cookiecutter.package_slug}}_tests/"
+root_dir = "dl_auth_tests/"
 skip_compose = "true"
 target_path = "unit"
