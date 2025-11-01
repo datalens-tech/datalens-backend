@@ -44,7 +44,7 @@ includes:
         {{.ROOT_DIR}}/tools/cookiecutter/templates/.*
       PARENT_BRANCH: '{{.PARENT_BRANCH | default "main"}}'
 
-  сс:
+  cc:
     taskfile: tools/cookiecutter/Taskfile.yaml
     optional: true
     vars:

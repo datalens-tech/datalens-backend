@@ -171,7 +171,7 @@ dl-us-client = {develop = true, path = "../lib/dl_us_client"}
 dl-utils = {develop = true, path = "../lib/dl_utils"}
 dl-version = {develop = true, path = "../lib/dl_version"}
 dl-zitadel = {develop = true, path = "../lib/dl_zitadel"}
-dl_auth = {develop = false, path = "../lib/dl_auth"}
+dl_auth = {develop = true, path = "../lib/dl_auth"}
 dynamic-enum = {develop = true, path = "../lib/dynamic_enum"}
 redis_cache_lock = {develop = true, path = "../lib/redis-cache-lock"}
 statcommons = {develop = true, path = "../lib/statcommons"}
