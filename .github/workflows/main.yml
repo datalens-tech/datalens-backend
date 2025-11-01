@@ -31,7 +31,7 @@ on:
 jobs:
   drop-ci-approved-label:
     name: Drop CI Allowed label if PR branch changed
-    runs-on: ubuntu-22.04
+    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
 
     permissions:
       contents: read
@@ -59,7 +59,7 @@ jobs:
 
   check-ci-allowed:
     name: Check if CI allowed for PR
-    runs-on: ubuntu-22.04
+    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
 
     needs: [ drop-ci-approved-label ]
 
@@ -231,7 +231,7 @@ jobs:
 
   check-skip-tests-label:
     name: Check PR skip tests label
-    runs-on: ubuntu-22.04
+    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
 
     needs: [ check-ci-allowed ]
 
@@ -561,7 +561,7 @@ jobs:
 
   test-results:
     name: Test results
-    runs-on: ubuntu-22.04
+    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
 
     needs:
       - check-skip-tests-label
