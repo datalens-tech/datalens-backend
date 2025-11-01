@@ -4,8 +4,9 @@ import aiohttp.typedefs as aiohttp_typedefs
 import aiohttp.web as aiohttp_web
 import attr
 
+import dl_api_commons
 import dl_api_commons.aiohttp.aiohttp_wrappers as dl_api_commons_aiohttp_aiohttp_wrappers
-import dl_api_commons.base_models as dl_api_commons_base_models
+import dl_constants
 import dl_zitadel.clients as clients
 import dl_zitadel.middlewares.models as middlewares_models
 import dl_zitadel.services as services
@@ -69,9 +70,7 @@ class AioHTTPMiddleware:
         app_request: dl_api_commons_aiohttp_aiohttp_wrappers.DLRequestBase,
     ) -> middlewares_models.AuthResult | None:
         service_access_token = app_request.get_single_header(middlewares_models.ZitadelHeaders.SERVICE_ACCESS_TOKEN)
-        user_access_token = app_request.get_single_header(
-            dl_api_commons_base_models.DLHeadersCommon.AUTHORIZATION_TOKEN
-        )
+        user_access_token = app_request.get_single_header(dl_constants.DLHeadersCommon.AUTHORIZATION_TOKEN)
         if service_access_token is None:
             LOGGER.info("Service access token is missing")
             return None
@@ -137,7 +136,7 @@ class AioHTTPMiddleware:
                     app_request.temp_rci,
                     user_id=auth_result.user_id,
                     user_name=auth_result.user_name,
-                    tenant=dl_api_commons_base_models.TenantCommon(),
+                    tenant=dl_api_commons.TenantCommon(),
                     auth_data=auth_result.data,
                 )
             )

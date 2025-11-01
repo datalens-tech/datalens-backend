@@ -20,6 +20,7 @@ python = ">=3.10, <3.13"
 typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
+dl-auth = {path = "../dl_auth"}
 dl-testing = {path = "../dl_testing"}
 pytest = "*"
 pytest-asyncio = "*"

@@ -13,6 +13,7 @@ attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
+dl-auth = {path = "../dl_auth"}
 dl-cache-engine = {path = "../dl_cache_engine"}
 dl-compeng-pg = {path = "../dl_compeng_pg"}
 dl-configs = {path = "../dl_configs"}

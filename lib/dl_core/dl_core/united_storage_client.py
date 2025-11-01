@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import abc
 from contextlib import contextmanager
 from datetime import (
@@ -17,8 +15,6 @@ from typing import (
     Generator,
     Iterable,
     NamedTuple,
-    Optional,
-    Union,
     cast,
 )
 
@@ -27,8 +23,6 @@ import requests
 from requests.exceptions import HTTPError
 
 from dl_api_commons.base_models import (
-    AuthData,
-    AuthTarget,
     TenantCommon,
     TenantDef,
 )
@@ -40,6 +34,7 @@ from dl_api_commons.utils import (
     stringify_dl_cookies,
     stringify_dl_headers,
 )
+import dl_auth
 from dl_constants.api_constants import (
     DLCookies,
     DLHeaders,
@@ -68,7 +63,7 @@ class USAuthContextBase:
     def is_tenant_id_mutable(self) -> bool:
         return self.IS_TENANT_ID_MUTABLE
 
-    def get_folder_id(self) -> Optional[str]:
+    def get_folder_id(self) -> str | None:
         return None
 
     def get_default_prefix(self) -> str:
@@ -93,30 +88,30 @@ class USAuthContextBase:
 
 @attr.s
 class USAuthContextRegular(USAuthContextBase):
-    auth_data: AuthData = attr.ib(kw_only=True)
+    auth_data: dl_auth.AuthData = attr.ib(kw_only=True)
     tenant: TenantDef = attr.ib(kw_only=True)
     # Raw header value. None is interpreted as no header
-    dl_sudo: Optional[str] = attr.ib(kw_only=True)
+    dl_sudo: str | None = attr.ib(kw_only=True)
     # Raw header value. None is interpreted as no header
-    dl_allow_super_user: Optional[str] = attr.ib(kw_only=True)
+    dl_allow_super_user: str | None = attr.ib(kw_only=True)
 
     def get_tenant(self) -> TenantDef:
         return self.tenant
 
     def get_outbound_headers(self, include_tenancy: bool = True) -> dict[DLHeaders, str]:
-        flags: dict[DLHeaders, Optional[str]] = {
+        flags: dict[DLHeaders, str | None] = {
             DLHeadersCommon.SUDO: self.dl_sudo,
             DLHeadersCommon.ALLOW_SUPERUSER: self.dl_allow_super_user,
         }
 
         return {
             **(self.tenant.get_outbound_tenancy_headers() if include_tenancy else {}),
-            **self.auth_data.get_headers(AuthTarget.UNITED_STORAGE),
+            **self.auth_data.get_headers(dl_auth.AuthTarget.UNITED_STORAGE),
             **{name: val for name, val in flags.items() if val is not None},
         }
 
     def get_outbound_cookies(self) -> dict[DLCookies, str]:
-        return self.auth_data.get_cookies(AuthTarget.UNITED_STORAGE)
+        return self.auth_data.get_cookies(dl_auth.AuthTarget.UNITED_STORAGE)
 
 
 @attr.s(frozen=True)
@@ -174,7 +169,7 @@ class USAuthContextNoAuth(USAuthContextBase):
 class USAuthContextEmbed(USAuthContextBase):
     DEFAULT_US_PREFIX = USApiType.embeds
 
-    auth_data: AuthData = attr.ib(kw_only=True)
+    auth_data: dl_auth.AuthData = attr.ib(kw_only=True)
     tenant: TenantDef = attr.ib(kw_only=True)
 
     def get_tenant(self) -> TenantDef:
@@ -183,11 +178,11 @@ class USAuthContextEmbed(USAuthContextBase):
     def get_outbound_headers(self, include_tenancy: bool = True) -> dict[DLHeaders, str]:
         return {
             **(self.tenant.get_outbound_tenancy_headers() if include_tenancy else {}),
-            **self.auth_data.get_headers(AuthTarget.UNITED_STORAGE),
+            **self.auth_data.get_headers(dl_auth.AuthTarget.UNITED_STORAGE),
         }
 
     def get_outbound_cookies(self) -> dict[DLCookies, str]:
-        return self.auth_data.get_cookies(AuthTarget.UNITED_STORAGE)
+        return self.auth_data.get_cookies(dl_auth.AuthTarget.UNITED_STORAGE)
 
 
 class UStorageClientBase:
@@ -203,12 +198,12 @@ class UStorageClientBase:
             pass
 
         @abc.abstractmethod
-        def get_header(self, name: str) -> Optional[str]:
+        def get_header(self, name: str) -> str | None:
             pass
 
         @property
         @abc.abstractmethod
-        def json(self) -> Optional[dict]:
+        def json(self) -> dict | None:
             pass
 
     class ResponseAdapter(metaclass=abc.ABCMeta):
@@ -218,7 +213,7 @@ class UStorageClientBase:
             pass
 
         @abc.abstractmethod
-        def get_header(self, name: str) -> Optional[str]:
+        def get_header(self, name: str) -> str | None:
             pass
 
         @property
@@ -244,7 +239,7 @@ class UStorageClientBase:
         def json(self) -> dict:
             pass
 
-    ERROR_MAP: list[tuple[int, Optional[re.Pattern], type[exc.USReqException]]] = [
+    ERROR_MAP: list[tuple[int, re.Pattern | None, type[exc.USReqException]]] = [
         (400, None, exc.USBadRequestException),
         (403, None, exc.USAccessDeniedException),
         (403, re.compile("Workbook isolation interruption"), exc.USWorkbookIsolationInterruptionException),
@@ -262,8 +257,8 @@ class UStorageClientBase:
         [
             ("method", str),
             ("relative_url", str),
-            ("params", Optional[dict[str, str]]),
-            ("json", Optional[dict]),
+            ("params", dict[str, str] | None),
+            ("json", dict | None),
         ],
     )
 
@@ -272,10 +267,10 @@ class UStorageClientBase:
         host: str,
         auth_ctx: USAuthContextBase,
         retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
-        prefix: Optional[str] = None,
-        context_request_id: Optional[str] = None,
-        context_forwarded_for: Optional[str] = None,
-        context_workbook_id: Optional[str] = None,
+        prefix: str | None = None,
+        context_request_id: str | None = None,
+        context_forwarded_for: str | None = None,
+        context_workbook_id: str | None = None,
     ):
         self.host = host
         self.prefix = auth_ctx.get_default_prefix() if prefix is None else prefix
@@ -283,7 +278,7 @@ class UStorageClientBase:
         self._disabled = False
         self._folder_id = auth_ctx.get_folder_id()
         self._auth_ctx = auth_ctx
-        self._tenant_override: Optional[TenantDef] = None
+        self._tenant_override: TenantDef | None = None
         self._retry_policy_factory = retry_policy_factory
 
         # Default headers for HTTP sessions
@@ -325,7 +320,7 @@ class UStorageClientBase:
                 f"US client folder ID is immutable with auth context {type(self._auth_ctx).__qualname__}"
             )
 
-    def set_dataset_context(self, dataset_id: Optional[str]) -> None:
+    def set_dataset_context(self, dataset_id: str | None) -> None:
         """
         Set `X-DL-DatasetId` header for requests or delete if None
         """
@@ -391,9 +386,9 @@ class UStorageClientBase:
         try:
             response.raise_for_status()
         except USClientHTTPExceptionWrapper as http_err_ex_wrapper:
-            http_err_ex = cast(Optional[Exception], http_err_ex_wrapper.__cause__)
+            http_err_ex = cast(Exception | None, http_err_ex_wrapper.__cause__)
 
-            message: Optional[str] = response.json().get("message")
+            message: str | None = response.json().get("message")
             for status_code, error_regex, exc_cls in cls.ERROR_MAP:
                 if response.status_code == status_code:
                     if error_regex is None or message is not None and error_regex.match(message):
@@ -427,14 +422,14 @@ class UStorageClientBase:
         cls,
         key: EntryLocation,
         scope: str,
-        meta: Optional[dict[str, str]] = None,
-        annotation: Optional[dict[str, Any]] = None,
-        data: Optional[dict[str, Any]] = None,
-        type_: Optional[str] = None,
-        hidden: Optional[bool] = None,
-        links: Optional[dict[str, Any]] = None,
+        meta: dict[str, str] | None = None,
+        annotation: dict[str, Any] | None = None,
+        data: dict[str, Any] | None = None,
+        type_: str | None = None,
+        hidden: bool | None = None,
+        links: dict[str, Any] | None = None,
         mode: str = "publish",
-        unversioned_data: Optional[dict[str, Any]] = None,
+        unversioned_data: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> RequestData:
         meta = meta or {}
@@ -471,7 +466,7 @@ class UStorageClientBase:
     def _req_data_get_entry(
         cls,
         entry_id: str,
-        params: Optional[dict[str, str]] = None,
+        params: dict[str, str] | None = None,
         include_permissions: bool = True,
         include_links: bool = True,
         include_favorite: bool = True,
@@ -504,15 +499,15 @@ class UStorageClientBase:
     def _req_data_update_entry(
         cls,
         entry_id: str,
-        data: Optional[dict[str, Any]] = None,
-        unversioned_data: Optional[dict[str, Any]] = None,
-        meta: Optional[dict[str, str]] = None,
-        annotation: Optional[dict[str, Any]] = None,
+        data: dict[str, Any] | None = None,
+        unversioned_data: dict[str, Any] | None = None,
+        meta: dict[str, str] | None = None,
+        annotation: dict[str, Any] | None = None,
         mode: str = "publish",
-        lock: Optional[str] = None,
-        hidden: Optional[bool] = None,
-        links: Optional[dict[str, Any]] = None,
-        update_revision: Optional[bool] = None,
+        lock: str | None = None,
+        hidden: bool | None = None,
+        links: dict[str, Any] | None = None,
+        update_revision: bool | None = None,
     ) -> RequestData:
         data = data or {}
         unversioned_data = unversioned_data or {}
@@ -542,7 +537,7 @@ class UStorageClientBase:
         )
 
     @classmethod
-    def _req_data_delete_entry(cls, entry_id: str, lock: Optional[str] = None) -> RequestData:
+    def _req_data_delete_entry(cls, entry_id: str, lock: str | None = None) -> RequestData:
         params = None
         if lock is not None:
             params = {"lockToken": lock}
@@ -552,15 +547,15 @@ class UStorageClientBase:
     def _req_data_iter_entries(
         cls,
         scope: str,
-        entry_type: Optional[str] = None,
-        meta: Optional[dict[str, str]] = None,
+        entry_type: str | None = None,
+        meta: dict[str, str] | None = None,
         all_tenants: bool = False,
         include_data: bool = False,
-        ids: Optional[Iterable[str]] = None,
-        creation_time: Optional[dict[str, Union[str, int, None]]] = None,
+        ids: Iterable[str] | None = None,
+        creation_time: dict[str, str | int | None] | None = None,
         page: int = 0,
         created_at_from: float = 0,
-        limit: Optional[int] = None,
+        limit: int | None = None,
     ) -> RequestData:
         req_params: dict[Any, Any] = dict(scope=scope, includeData=int(include_data))
         if entry_type:
@@ -595,8 +590,8 @@ class UStorageClientBase:
     def _req_data_acquire_lock(
         cls,
         entry_id: str,
-        duration: Optional[int] = None,
-        force: Optional[bool] = None,
+        duration: int | None = None,
+        force: bool | None = None,
     ) -> RequestData:
         """
         :param duration: in seconds. Default = 300 (5min)
@@ -659,11 +654,11 @@ class UStorageClient(UStorageClientBase):
             assert self.req.method is not None
             return self.req.method.lower()
 
-        def get_header(self, name: str) -> Optional[str]:
+        def get_header(self, name: str) -> str | None:
             return self.req.headers.get(name)
 
         @property
-        def json(self) -> Optional[dict]:
+        def json(self) -> dict | None:
             return self._request_data.json
 
     class ResponseAdapter(UStorageClientBase.ResponseAdapter):
@@ -675,7 +670,7 @@ class UStorageClient(UStorageClientBase):
         def status_code(self) -> int:
             return self.resp.status_code
 
-        def get_header(self, name: str) -> Optional[str]:
+        def get_header(self, name: str) -> str | None:
             return self.resp.headers.get(name)
 
         @property
@@ -704,10 +699,10 @@ class UStorageClient(UStorageClientBase):
         host: str,
         auth_ctx: USAuthContextBase,
         retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
-        prefix: Optional[str] = None,
-        context_request_id: Optional[str] = None,
-        context_forwarded_for: Optional[str] = None,
-        context_workbook_id: Optional[str] = None,
+        prefix: str | None = None,
+        context_request_id: str | None = None,
+        context_forwarded_for: str | None = None,
+        context_workbook_id: str | None = None,
     ):
         super().__init__(
             host=host,
@@ -729,7 +724,7 @@ class UStorageClient(UStorageClientBase):
     def _request(
         self,
         request_data: UStorageClientBase.RequestData,
-        retry_policy_name: Optional[str] = None,
+        retry_policy_name: str | None = None,
     ) -> dict[str, Any]:
         self._raise_for_disabled_interactions()
 
@@ -763,13 +758,13 @@ class UStorageClient(UStorageClientBase):
         self,
         key: EntryLocation,
         scope: str,
-        meta: Optional[dict[str, str]] = None,
-        annotation: Optional[dict[str, Any]] = None,
-        data: Optional[dict[str, Any]] = None,
-        unversioned_data: Optional[dict[str, Any]] = None,
-        type_: Optional[str] = None,
-        hidden: Optional[bool] = None,
-        links: Optional[dict[str, Any]] = None,
+        meta: dict[str, str] | None = None,
+        annotation: dict[str, Any] | None = None,
+        data: dict[str, Any] | None = None,
+        unversioned_data: dict[str, Any] | None = None,
+        type_: str | None = None,
+        hidden: bool | None = None,
+        links: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> dict[str, Any]:
         rq_data = self._req_data_create_entry(
@@ -792,7 +787,7 @@ class UStorageClient(UStorageClientBase):
     def get_entry(
         self,
         entry_id: str,
-        params: Optional[dict[str, str]] = None,
+        params: dict[str, str] | None = None,
         include_permissions: bool = True,
         include_links: bool = True,
         include_favorite: bool = True,
@@ -817,14 +812,14 @@ class UStorageClient(UStorageClientBase):
     def update_entry(
         self,
         entry_id: str,
-        data: Optional[dict[str, Any]] = None,
-        unversioned_data: Optional[dict[str, Any]] = None,
-        meta: Optional[dict[str, str]] = None,
-        annotation: Optional[dict[str, Any]] = None,
-        lock: Optional[str] = None,
-        hidden: Optional[bool] = None,
-        links: Optional[dict[str, Any]] = None,
-        update_revision: Optional[bool] = None,
+        data: dict[str, Any] | None = None,
+        unversioned_data: dict[str, Any] | None = None,
+        meta: dict[str, str] | None = None,
+        annotation: dict[str, Any] | None = None,
+        lock: str | None = None,
+        hidden: bool | None = None,
+        links: dict[str, Any] | None = None,
+        update_revision: bool | None = None,
     ) -> dict[str, Any]:
         return self._request(
             self._req_data_update_entry(
@@ -844,13 +839,13 @@ class UStorageClient(UStorageClientBase):
     def entries_iterator(
         self,
         scope: str,
-        entry_type: Optional[str] = None,
-        meta: Optional[dict] = None,
+        entry_type: str | None = None,
+        meta: dict | None = None,
         all_tenants: bool = False,
         include_data: bool = False,
-        ids: Optional[Iterable[str]] = None,
-        creation_time: Optional[dict[str, Union[str, int, None]]] = None,
-        limit: Optional[int] = None,
+        ids: Iterable[str] | None = None,
+        creation_time: dict[str, str | int | None] | None = None,
+        limit: int | None = None,
     ) -> Generator[dict, None, None]:
         """
         implements 2-in-1 pagination:
@@ -923,7 +918,7 @@ class UStorageClient(UStorageClientBase):
                 LOGGER.info("US response is not empty, but we got no unseen entries, assuming the listing is completed")
                 done = True
 
-    def delete_entry(self, entry_id: str, lock: Optional[str] = None) -> None:
+    def delete_entry(self, entry_id: str, lock: str | None = None) -> None:
         self._request(
             self._req_data_delete_entry(entry_id, lock=lock),
             retry_policy_name="delete_entry",
@@ -932,9 +927,9 @@ class UStorageClient(UStorageClientBase):
     def acquire_lock(
         self,
         entry_id: str,
-        duration: Optional[int] = None,
-        wait_timeout: Optional[int] = None,
-        force: Optional[bool] = None,
+        duration: int | None = None,
+        wait_timeout: int | None = None,
+        force: bool | None = None,
     ) -> str:
         """
         :param entry_id:
