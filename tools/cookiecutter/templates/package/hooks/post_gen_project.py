@@ -15,7 +15,7 @@ def add_package_to_metapkg(
     package_slug: str,
 ) -> None:
     package_table = tomlkit.inline_table()
-    package_table.add("develop", tomlkit.boolean(True))
+    package_table.add("develop", True)
     package_table.add("path", tomlkit.string(f"../lib/{package_slug}"))
 
     metapkg_file = get_metapkg_file()
