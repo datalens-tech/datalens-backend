@@ -166,8 +166,8 @@ tasks:
           find {{.CLI_ARGS | default "."}} -name 'pyproject.toml' \
           | sort \
           | xargs -n1 realpath \
-          {{ if .EXCLUDE_LIB_PATHS -}}
-            {{- range $i, $path := .EXCLUDE_LIB_PATHS | splitLines -}}
+          {{ if .EXCLUDE_TOML_SORT -}}
+            {{- range $i, $path := .EXCLUDE_TOML_SORT | splitLines -}}
               {{- if ne $path "" }} | grep -v "^{{$path}}$" {{ end -}}
             {{- end -}}
           {{- end -}}

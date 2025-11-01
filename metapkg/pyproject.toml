@@ -106,6 +106,7 @@ dl-api-lib-testing = {develop = true, path = "../lib/dl_api_lib_testing"}
 dl-app-tools = {develop = true, path = "../lib/dl_app_tools"}
 dl-attrs-model-mapper = {develop = true, path = "../lib/dl_attrs_model_mapper"}
 dl-attrs-model-mapper-doc-tools = {develop = true, path = "../lib/dl_attrs_model_mapper_doc_tools"}
+dl-auth = {develop = true, path = "../lib/dl_auth"}
 dl-auth-api-lib = {develop = true, path = "../lib/dl_auth_api_lib"}
 dl-auth-native = {develop = true, path = "../lib/dl_auth_native"}
 dl-cache-engine = {develop = true, path = "../lib/dl_cache_engine"}
@@ -171,7 +172,6 @@ dl-us-client = {develop = true, path = "../lib/dl_us_client"}
 dl-utils = {develop = true, path = "../lib/dl_utils"}
 dl-version = {develop = true, path = "../lib/dl_version"}
 dl-zitadel = {develop = true, path = "../lib/dl_zitadel"}
-dl_auth = {develop = true, path = "../lib/dl_auth"}
 dynamic-enum = {develop = true, path = "../lib/dynamic_enum"}
 redis_cache_lock = {develop = true, path = "../lib/redis-cache-lock"}
 statcommons = {develop = true, path = "../lib/statcommons"}
