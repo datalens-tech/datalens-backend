@@ -1,7 +1,5 @@
-from __future__ import annotations
-
-import typing
 from typing import (
+    Annotated,
     Any,
     ClassVar,
     Optional,
@@ -10,11 +8,9 @@ from typing import (
 import attr
 import pydantic
 
-from dl_api_commons.base_models import (
-    AuthData,
-    TenantDef,
-)
+import dl_api_commons
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
+import dl_auth
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.enums import RedisMode
 from dl_configs.environments import is_setting_applicable
@@ -308,8 +304,8 @@ class DeprecatedDataApiAppSettings(DeprecatedAppSettings):
 @attr.s(frozen=True, kw_only=True)
 class ControlApiAppTestingsSettings:
     us_auth_mode_override: Optional[USAuthMode] = attr.ib(default=None)
-    fake_tenant: Optional[TenantDef] = attr.ib(default=None)
-    fake_auth_data: Optional[AuthData] = attr.ib(default=None)
+    fake_tenant: Optional[dl_api_commons.TenantDef] = attr.ib(default=None)
+    fake_auth_data: Optional[dl_auth.AuthData] = attr.ib(default=None)
 
 
 @attr.s(frozen=True)
@@ -346,7 +342,7 @@ BaseAuthSettingsOS.register("ZITADEL", ZitadelAuthSettingsOS)
 
 
 class NativeAuthSettingsOS(BaseAuthSettingsOS):
-    JWT_KEY: typing.Annotated[str, dl_settings.decode_multiline_validator]
+    JWT_KEY: Annotated[str, dl_settings.decode_multiline_validator]
     JWT_ALGORITHM: str
 
 
@@ -368,7 +364,7 @@ class DataApiAppSettings(AppSettings):
 class AppSettingsOS(
     AppSettings,
 ):
-    AUTH: typing.Optional[dl_settings.TypedAnnotation[BaseAuthSettingsOS]] = None
+    AUTH: dl_settings.TypedAnnotation[BaseAuthSettingsOS] | None = None
 
     fallback_env_keys = {
         "AUTH__TYPE": "AUTH_TYPE",

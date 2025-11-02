@@ -7,15 +7,9 @@ import attr
 from multidict import CIMultiDict
 import pytest
 
-from dl_api_commons.base_models import (
-    NoAuthData,
-    RequestContextInfo,
-    TenantCommon,
-)
-from dl_constants.api_constants import (
-    DLContextKey,
-    DLHeadersCommon,
-)
+import dl_api_commons
+import dl_auth
+import dl_constants
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from dl_core.connection_executors.qe_serializer.schemas_common import (
@@ -27,7 +21,7 @@ from dl_core.connection_executors.qe_serializer.schemas_common import (
 # Full RCI is used in test-cases to prevent extra work when scope of DBAdapterScopedRCI will be extended
 _TEST_REQ_CTX_INFO = (
     DBAdapterScopedRCI.from_full_rci(
-        RequestContextInfo.create(
+        dl_api_commons.RequestContextInfo.create(
             request_id=None,
             tenant=None,
             user_id=None,
@@ -41,9 +35,9 @@ _TEST_REQ_CTX_INFO = (
         )
     ),
     DBAdapterScopedRCI.from_full_rci(
-        RequestContextInfo.create(
+        dl_api_commons.RequestContextInfo.create(
             request_id=str(uuid.uuid4()),
-            tenant=TenantCommon(),
+            tenant=dl_api_commons.TenantCommon(),
             user_id=str(uuid.uuid4()),
             user_name="vasya",
             x_dl_debug_mode=False,
@@ -57,37 +51,37 @@ _TEST_REQ_CTX_INFO = (
         )
     ),
     DBAdapterScopedRCI.from_full_rci(
-        RequestContextInfo.create(
+        dl_api_commons.RequestContextInfo.create(
             request_id=str(uuid.uuid4()),
-            tenant=TenantCommon(),
+            tenant=dl_api_commons.TenantCommon(),
             user_id=str(uuid.uuid4()),
             user_name="vasya",
             x_dl_debug_mode=True,
             endpoint_code="some_endpoint",
-            x_dl_context={DLContextKey.CHART_ID.value: str(uuid.uuid4())},
-            plain_headers={"a": "b", DLHeadersCommon.FORWARDED_FOR.value: "1.1.1.1,2.2.2.2,3.3.3.3"},
+            x_dl_context={dl_constants.DLContextKey.CHART_ID.value: str(uuid.uuid4())},
+            plain_headers={"a": "b", dl_constants.DLHeadersCommon.FORWARDED_FOR.value: "1.1.1.1,2.2.2.2,3.3.3.3"},
             secret_headers={"c": "d"},
-            auth_data=NoAuthData(),
+            auth_data=dl_auth.NoAuthData(),
         )
     ),
     DBAdapterScopedRCI.from_full_rci(
-        RequestContextInfo.create(
+        dl_api_commons.RequestContextInfo.create(
             request_id=str(uuid.uuid4()),
-            tenant=TenantCommon(),
+            tenant=dl_api_commons.TenantCommon(),
             user_id=str(uuid.uuid4()),
             user_name="vasya",
             x_dl_debug_mode=True,
             endpoint_code="some_endpoint",
-            x_dl_context={k.value: str(uuid.uuid4()) for k in DLContextKey},
+            x_dl_context={k.value: str(uuid.uuid4()) for k in dl_constants.DLContextKey},
             plain_headers={"a": "b"},
             secret_headers={"c": "d"},
-            auth_data=NoAuthData(),
+            auth_data=dl_auth.NoAuthData(),
         )
     ),
     DBAdapterScopedRCI.from_full_rci(
-        RequestContextInfo.create(
+        dl_api_commons.RequestContextInfo.create(
             request_id=str(uuid.uuid4()),
-            tenant=TenantCommon(),
+            tenant=dl_api_commons.TenantCommon(),
             user_id=str(uuid.uuid4()),
             user_name="vasya",
             x_dl_debug_mode=True,
@@ -95,35 +89,35 @@ _TEST_REQ_CTX_INFO = (
             x_dl_context={"asdf": "qwer", "None": None},
             plain_headers={"a": "b"},
             secret_headers={"c": "d"},
-            auth_data=NoAuthData(),
+            auth_data=dl_auth.NoAuthData(),
         )
     ),
     DBAdapterScopedRCI.from_full_rci(
-        RequestContextInfo.create(
+        dl_api_commons.RequestContextInfo.create(
             request_id=str(uuid.uuid4()),
-            tenant=TenantCommon(),
+            tenant=dl_api_commons.TenantCommon(),
             user_id=str(uuid.uuid4()),
             user_name="vasya",
             x_dl_debug_mode=True,
             endpoint_code="some_endpoint",
-            x_dl_context={DLContextKey.CHART_ID.value: str(uuid.uuid4())},
+            x_dl_context={dl_constants.DLContextKey.CHART_ID.value: str(uuid.uuid4())},
             plain_headers=CIMultiDict([("a", "a1"), ("a", "a2")]),
             secret_headers=None,
             auth_data=None,
         )
     ),
     DBAdapterScopedRCI.from_full_rci(
-        RequestContextInfo.create(
+        dl_api_commons.RequestContextInfo.create(
             request_id=str(uuid.uuid4()),
-            tenant=TenantCommon(),
+            tenant=dl_api_commons.TenantCommon(),
             user_id=str(uuid.uuid4()),
             user_name="vasya",
             x_dl_debug_mode=True,
             endpoint_code="some_endpoint",
-            x_dl_context={DLContextKey.CHART_ID.value: str(uuid.uuid4()), "other": None},
+            x_dl_context={dl_constants.DLContextKey.CHART_ID.value: str(uuid.uuid4()), "other": None},
             plain_headers=CIMultiDict([("a", "a1"), ("a", "a2")]),
             secret_headers=None,
-            auth_data=None,
+            auth_data=dl_auth.NoAuthData(),
         )
     ),
 )

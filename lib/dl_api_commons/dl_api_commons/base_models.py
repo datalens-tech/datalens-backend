@@ -1,25 +1,15 @@
-from __future__ import annotations
-
 import abc
-import enum
-from typing import (
-    Any,
-    Optional,
-    TypeVar,
-    Union,
-)
+from typing import Any
 
 import attr
 from multidict import (
     CIMultiDict,
     CIMultiDictProxy,
 )
+from typing_extensions import Self
 
-from dl_constants.api_constants import (
-    DLCookies,
-    DLHeaders,
-    DLHeadersCommon,
-)
+import dl_auth
+import dl_constants
 
 
 @attr.s()
@@ -28,46 +18,32 @@ class TenantDef(metaclass=abc.ABCMeta):
     is_background_data_export_allowed: bool = attr.ib(default=False, kw_only=True)
 
     @abc.abstractmethod
-    def get_outbound_tenancy_headers(self) -> dict[DLHeaders, str]:
+    def get_outbound_tenancy_headers(self) -> dict[dl_constants.DLHeaders, str]:
         raise NotImplementedError()
 
     @abc.abstractmethod
     def get_tenant_id(self) -> str:
         raise NotImplementedError()
 
-    def get_reporting_extra(self) -> dict[str, Union[str, int, None]]:
+    def get_reporting_extra(self) -> dict[str, str | int | None]:
         return dict(
             billing_folder_id=self.get_tenant_id(),
         )
 
 
-class AuthTarget(str, enum.Enum):
-    UNITED_STORAGE = "united_storage"
-
-
-class AuthData(metaclass=abc.ABCMeta):
-    @abc.abstractmethod
-    def get_headers(self, target: Optional[AuthTarget] = None) -> dict[DLHeaders, str]:
-        raise NotImplementedError()
-
-    @abc.abstractmethod
-    def get_cookies(self, target: Optional[AuthTarget] = None) -> dict[DLCookies, str]:
-        raise NotImplementedError()
-
-
 @attr.s(frozen=True)
 class RequestContextInfo:
-    request_id: Optional[str] = attr.ib(default=None)
-    tenant: Optional[TenantDef] = attr.ib(default=None)
-    user_id: Optional[str] = attr.ib(default=None)
-    user_name: Optional[str] = attr.ib(default=None)
-    x_dl_debug_mode: Optional[bool] = attr.ib(default=None)
-    endpoint_code: Optional[str] = attr.ib(default=None)
+    request_id: str | None = attr.ib(default=None)
+    tenant: TenantDef | None = attr.ib(default=None)
+    user_id: str | None = attr.ib(default=None)
+    user_name: str | None = attr.ib(default=None)
+    x_dl_debug_mode: bool | None = attr.ib(default=None)
+    endpoint_code: str | None = attr.ib(default=None)
 
     _x_dl_context: dict[str, str] = attr.ib(factory=dict)
     _plain_headers: CIMultiDict = attr.ib(factory=CIMultiDict)
     _secret_headers: CIMultiDict = attr.ib(repr=False, factory=CIMultiDict)
-    auth_data: Optional[AuthData] = attr.ib(repr=False, default=None)
+    auth_data: dl_auth.AuthData | None = attr.ib(repr=False, default=None)
 
     @property
     def x_dl_context(self) -> dict[str, str]:
@@ -82,12 +58,12 @@ class RequestContextInfo:
         return CIMultiDictProxy(self._secret_headers)
 
     @property
-    def forwarder_for(self) -> Optional[str]:
-        return self.plain_headers.get(DLHeadersCommon.FORWARDED_FOR.value)
+    def forwarder_for(self) -> str | None:
+        return self.plain_headers.get(dl_constants.DLHeadersCommon.FORWARDED_FOR.value)
 
     @property
-    def workbook_id(self) -> Optional[str]:
-        return self.plain_headers.get(DLHeadersCommon.WORKBOOK_ID.value)
+    def workbook_id(self) -> str | None:
+        return self.plain_headers.get(dl_constants.DLHeadersCommon.WORKBOOK_ID.value)
 
     @property
     def is_embedded(self) -> bool:
@@ -102,7 +78,7 @@ class RequestContextInfo:
         return "PUBLIC" in self.user_id
 
     @property
-    def client_ip(self) -> Optional[str]:
+    def client_ip(self) -> str | None:
         if self.forwarder_for is not None:
             ip_list = [ip.strip() for ip in self.forwarder_for.split(",")]
             if len(ip_list) > 1:
@@ -113,15 +89,15 @@ class RequestContextInfo:
         return None
 
     @property
-    def host(self) -> Optional[str]:
+    def host(self) -> str | None:
         return self.plain_headers.get("Host")
 
     @property
-    def locale(self) -> Optional[str]:
-        return self.plain_headers.get(DLHeadersCommon.ACCEPT_LANGUAGE.value)
+    def locale(self) -> str | None:
+        return self.plain_headers.get(dl_constants.DLHeadersCommon.ACCEPT_LANGUAGE.value)
 
     @staticmethod
-    def normalize_headers_dict(headers: Union[CIMultiDict, dict, None]) -> CIMultiDict:
+    def normalize_headers_dict(headers: CIMultiDict | dict | None) -> CIMultiDict:
         if headers is None:
             return CIMultiDict()
         if isinstance(headers, dict):
@@ -131,23 +107,23 @@ class RequestContextInfo:
         raise TypeError(f"Unexpected type of headers: {type(headers)}")
 
     @classmethod
-    def create_empty(cls: type[_REQUEST_CONTEXT_INFO_TV]) -> _REQUEST_CONTEXT_INFO_TV:
+    def create_empty(cls) -> Self:
         return cls()
 
     @classmethod
     def create(
-        cls: type[_REQUEST_CONTEXT_INFO_TV],
-        request_id: Optional[str],
-        tenant: Optional[TenantDef],
-        user_id: Optional[str],
-        user_name: Optional[str],
-        x_dl_debug_mode: Optional[bool],
-        endpoint_code: Optional[str],
-        x_dl_context: Optional[dict],
-        plain_headers: Union[CIMultiDict, dict, None],
-        secret_headers: Union[CIMultiDict, dict, None],
-        auth_data: Optional[AuthData] = None,
-    ) -> _REQUEST_CONTEXT_INFO_TV:
+        cls,
+        request_id: str | None,
+        tenant: TenantDef | None,
+        user_id: str | None,
+        user_name: str | None,
+        x_dl_debug_mode: bool | None,
+        endpoint_code: str | None,
+        x_dl_context: dict | None,
+        plain_headers: CIMultiDict | dict | None,
+        secret_headers: CIMultiDict | dict | None,
+        auth_data: dl_auth.AuthData | None = None,
+    ) -> Self:
         return cls(
             request_id=request_id,
             tenant=tenant,
@@ -161,11 +137,11 @@ class RequestContextInfo:
             auth_data=auth_data,
         )
 
-    def clone(self: _REQUEST_CONTEXT_INFO_TV, **kwargs: Any) -> _REQUEST_CONTEXT_INFO_TV:
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
 
-    def get_reporting_extra(self) -> dict[str, Union[str, int, None]]:
-        reporting_extra: dict[str, Union[str, int, None]] = dict(
+    def get_reporting_extra(self) -> dict[str, str | int | None]:
+        reporting_extra: dict[str, str | int | None] = dict(
             user_id=self.user_id,
             source=self.endpoint_code,
             username=self.user_name,
@@ -175,14 +151,11 @@ class RequestContextInfo:
         return reporting_extra
 
 
-_REQUEST_CONTEXT_INFO_TV = TypeVar("_REQUEST_CONTEXT_INFO_TV", bound="RequestContextInfo")
-
-
 @attr.s(frozen=True)
 class TenantCommon(TenantDef):
     is_data_export_enabled: bool = attr.ib(default=True, kw_only=True)
 
-    def get_outbound_tenancy_headers(self) -> dict[DLHeaders, str]:
+    def get_outbound_tenancy_headers(self) -> dict[dl_constants.DLHeaders, str]:
         return {}
 
     def get_tenant_id(self) -> str:
@@ -194,12 +167,3 @@ class FormConfigParams:
     conn_id: str | None = attr.ib(default=None)
     exports_history_url_path: str | None = attr.ib(default=None)
     user_id: str | None = attr.ib(default=None)
-
-
-@attr.s()
-class NoAuthData(AuthData):
-    def get_headers(self, target: Optional[AuthTarget] = None) -> dict[DLHeaders, str]:
-        return {}
-
-    def get_cookies(self, target: Optional[AuthTarget] = None) -> dict[DLCookies, str]:
-        return {}

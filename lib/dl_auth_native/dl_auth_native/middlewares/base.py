@@ -1,38 +1,37 @@
-import typing
-
 import attr
-import typing_extensions
+from typing_extensions import Self
 
-import dl_api_commons.base_models as dl_api_commons_base_models
+import dl_api_commons
+import dl_auth
 import dl_auth_native.token as token
-import dl_constants.api_constants as dl_constants_api_constants
+import dl_constants
 
 
 @attr.s(frozen=True)
-class AuthData(dl_api_commons_base_models.AuthData):
+class AuthData(dl_auth.AuthData):
     _user_access_token: str = attr.ib()
     _token_type: str = attr.ib()
     _roles: list[str] = attr.ib(factory=list)
 
     def get_headers(
         self,
-        target: typing.Optional[dl_api_commons_base_models.AuthTarget] = None,
-    ) -> dict[dl_constants_api_constants.DLHeaders, str]:
+        target: dl_auth.AuthTarget | None = None,
+    ) -> dict[dl_constants.DLHeaders, str]:
         return {
-            dl_constants_api_constants.DLHeadersCommon.AUTHORIZATION_TOKEN: f"{self._token_type} {self._user_access_token}",
+            dl_constants.DLHeadersCommon.AUTHORIZATION_TOKEN: f"{self._token_type} {self._user_access_token}",
         }
 
     def get_cookies(
         self,
-        target: typing.Optional[dl_api_commons_base_models.AuthTarget] = None,
-    ) -> dict[dl_constants_api_constants.DLCookies, str]:
+        target: dl_auth.AuthTarget | None = None,
+    ) -> dict[dl_constants.DLCookies, str]:
         return {}
 
 
 @attr.s(frozen=True)
 class AuthResult:
     user_id: str = attr.ib()
-    tenant: dl_api_commons_base_models.TenantCommon = attr.ib()
+    tenant: dl_api_commons.TenantCommon = attr.ib()
     auth_data: AuthData = attr.ib()
 
 
@@ -45,11 +44,11 @@ class MiddlewareSettings:
 @attr.s()
 class BaseMiddleware:
     _token_decoder: token.DecoderProtocol = attr.ib()
-    _user_access_header_key: str = attr.ib(default=dl_api_commons_base_models.DLHeadersCommon.AUTHORIZATION_TOKEN)
+    _user_access_header_key: str = attr.ib(default=dl_constants.DLHeadersCommon.AUTHORIZATION_TOKEN)
     _token_type: str = attr.ib(default="Bearer")
 
     @classmethod
-    def from_settings(cls, settings: MiddlewareSettings) -> typing_extensions.Self:
+    def from_settings(cls, settings: MiddlewareSettings) -> Self:
         token_decoder = token.Decoder(
             key=settings.decoder_key,
             algorithms=settings.decoder_algorithms,
@@ -63,7 +62,7 @@ class BaseMiddleware:
     class Unauthorized(Exception):
         message: str = attr.ib()
 
-    def _auth(self, user_access_header: typing.Optional[str]) -> AuthResult:
+    def _auth(self, user_access_header: str | None) -> AuthResult:
         if user_access_header is None:
             raise self.Unauthorized("User access token header is missing")
 
@@ -79,7 +78,7 @@ class BaseMiddleware:
 
         return AuthResult(
             user_id=payload.user_id,
-            tenant=dl_api_commons_base_models.TenantCommon(),
+            tenant=dl_api_commons.TenantCommon(),
             auth_data=AuthData(
                 user_access_token=user_access_token,
                 token_type=self._token_type,
