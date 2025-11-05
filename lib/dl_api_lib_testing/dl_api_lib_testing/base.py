@@ -4,7 +4,6 @@ from typing import (
     Any,
     ClassVar,
     Generator,
-    Optional,
 )
 
 from flask.app import Flask
@@ -13,12 +12,7 @@ import pytest
 
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
-from dl_api_commons.base_models import (
-    AuthData,
-    RequestContextInfo,
-    TenantCommon,
-    TenantDef,
-)
+import dl_api_commons
 from dl_api_lib.app.control_api.app import ControlApiAppFactory
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import (
@@ -31,6 +25,7 @@ from dl_api_lib.loader import preload_api_lib
 from dl_api_lib_testing.app import TestingControlApiAppFactory
 from dl_api_lib_testing.client import FlaskSyncApiClient
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
+import dl_auth
 from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.rqe import RQEConfig
 from dl_constants.enums import (
@@ -74,7 +69,7 @@ class ApiTestBase(abc.ABC):
         return {}
 
     @pytest.fixture(scope="class")
-    def bi_headers(self) -> Optional[dict[str, str]]:
+    def bi_headers(self) -> dict[str, str] | None:
         """Additional headers for api requests, e.g. authentication, cookies, etc"""
         return None
 
@@ -159,7 +154,7 @@ class ApiTestBase(abc.ABC):
         return settings
 
     @pytest.fixture(scope="class")
-    def sample_table_schema(self) -> Optional[str]:
+    def sample_table_schema(self) -> str | None:
         return None
 
     @pytest.fixture(scope="session")
@@ -171,11 +166,11 @@ class ApiTestBase(abc.ABC):
         return TestingControlApiAppFactory(settings=control_api_app_settings)
 
     @pytest.fixture(scope="function")
-    def fake_tenant(self) -> TenantDef:
-        return TenantCommon()
+    def fake_tenant(self) -> dl_api_commons.TenantDef:
+        return dl_api_commons.TenantCommon()
 
     @pytest.fixture(scope="function")
-    def fake_auth_data(self) -> Optional[AuthData]:
+    def fake_auth_data(self) -> dl_auth.AuthData | None:
         return None
 
     @pytest.fixture(scope="function")
@@ -184,8 +179,8 @@ class ApiTestBase(abc.ABC):
         environment_readiness: None,
         control_api_app_factory: ControlApiAppFactory,
         connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
-        fake_tenant: TenantDef,
-        fake_auth_data: Optional[AuthData],
+        fake_tenant: dl_api_commons.TenantDef,
+        fake_auth_data: dl_auth.AuthData | None,
     ) -> Generator[Flask, None, None]:
         """Session-wide test `Flask` application."""
 
@@ -212,7 +207,7 @@ class ApiTestBase(abc.ABC):
         loop: AbstractEventLoop,
     ) -> FlaskClient:  # FIXME: Rename to control_app_client
         class TestClient(FlaskTestClient):
-            def get_default_headers(self) -> dict[str, Optional[str]]:
+            def get_default_headers(self) -> dict[str, str | None]:
                 return {}
 
         control_api_app.test_client_class = TestClient
@@ -229,7 +224,7 @@ class ApiTestBase(abc.ABC):
     def control_api(
         self,
         control_api_sync_client: SyncHttpClientBase,
-        bi_headers: Optional[dict[str, str]],
+        bi_headers: dict[str, str] | None,
     ) -> SyncHttpDatasetApiV1:
         return SyncHttpDatasetApiV1(client=control_api_sync_client, headers=bi_headers or {})
 
@@ -243,7 +238,7 @@ class ApiTestBase(abc.ABC):
         ca_data: bytes,
     ) -> SyncUSManager:
         core_test_config = bi_test_config.core_test_config
-        bi_context = RequestContextInfo.create_empty()
+        bi_context = dl_api_commons.RequestContextInfo.create_empty()
         us_config = core_test_config.get_us_config()
 
         us_manager = SyncUSManager(

@@ -220,6 +220,26 @@ tasks:
         vars:
           COMMAND: 'task dev:_deptry-tests-dependencies LIB_PATH=%s'
 
+  _mypy:
+    desc: Run mypy on package
+    requires:
+      vars:
+        - LIB_PATH
+    cmds:
+      - echo "Running mypy checks for {{.LIB_PATH}}"
+      - task: venv-python
+        vars:
+          DIR: "{{.LIB_PATH}}"
+          CLI_ARGS: |
+            mypy .
+
+  mypy:
+    desc: Run mypy
+    cmds:
+      - task: _run-for-each-lib
+        vars:
+          COMMAND: 'task dev:_mypy LIB_PATH=%s'
+
   lint:
     desc: Lint code
     dir: "{{.USER_WORKING_DIR}}"
@@ -245,9 +265,7 @@ tasks:
 
       - task: deptry
 
-      - task: _run-for-each-lib
-        vars:
-          COMMAND: 'task dev:_mypy LIB_PATH=%s'
+      - task: mypy
     vars:
       LINT_PATH: '{{.CLI_ARGS | default "."}}'
 
@@ -276,24 +294,9 @@ tasks:
 
       - task: deptry
 
-      - task: _run-for-each-lib
-        vars:
-          COMMAND: 'task dev:_mypy LIB_PATH=%s'
+      - task: mypy
     vars:
       LINT_PATH: '{{.CLI_ARGS | default "."}}'
-
-  _mypy:
-    desc: Run mypy on package
-    requires:
-      vars:
-        - LIB_PATH
-    cmds:
-      - echo "Running mypy checks for {{.LIB_PATH}}"
-      - task: venv-python
-        vars:
-          DIR: "{{.LIB_PATH}}"
-          CLI_ARGS: |
-            mypy .
 
   test:
     desc: Run tests

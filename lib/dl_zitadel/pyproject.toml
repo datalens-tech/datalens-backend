@@ -11,6 +11,7 @@ version = "0.0.1"
 aiohttp = {optional = true, version = "*"}
 attrs = "*"
 dl-api-commons = {path = "../../lib/dl_api_commons"}
+dl-auth = {path = "../../mainrepo/lib/dl_auth"}
 dl-constants = {path = "../../lib/dl_constants"}
 dl-httpx = {path = "../dl_httpx"}
 flask = {optional = true, version = "*"}

@@ -16,6 +16,7 @@ attrs = "*"
 cryptography = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-app-tools = {path = "../dl_app_tools"}
+dl-auth = {path = "../dl_auth"}
 dl-cache-engine = {path = "../dl_cache_engine"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}

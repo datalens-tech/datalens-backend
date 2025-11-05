@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import ipaddress
 import logging
 import re
@@ -7,7 +5,6 @@ from typing import (
     Any,
     Generic,
     Iterable,
-    Optional,
     TypeVar,
 )
 from urllib.parse import urlparse
@@ -28,42 +25,35 @@ import opentracing
 import shortuuid
 import sqlalchemy as sa
 
-from dl_api_commons.base_models import (
-    AuthData,
-    RequestContextInfo,
-)
-from dl_api_commons.logging import RequestObfuscator
-from dl_api_commons.utils import (
-    stringify_dl_cookies,
-    stringify_dl_headers,
-)
-from dl_constants.api_constants import DLHeadersCommon
+import dl_api_commons
+import dl_auth
+import dl_constants
 
 
 LOGGER = logging.getLogger(__name__)
 
 
 def make_user_auth_headers(
-    rci: RequestContextInfo,
-    auth_data_override: Optional[AuthData] = None,
-    sudo_override: Optional[bool] = None,
-    allow_superuser_override: Optional[bool] = None,
+    rci: dl_api_commons.RequestContextInfo,
+    auth_data_override: dl_auth.AuthData | None = None,
+    sudo_override: bool | None = None,
+    allow_superuser_override: bool | None = None,
 ) -> dict[str, str]:
     headers: dict[str, str] = {}
 
-    effective_auth_data: Optional[AuthData] = rci.auth_data if auth_data_override is None else auth_data_override
+    effective_auth_data: dl_auth.AuthData | None = rci.auth_data if auth_data_override is None else auth_data_override
     if effective_auth_data is not None:
-        headers.update(stringify_dl_headers(effective_auth_data.get_headers()))
+        headers.update(dl_api_commons.stringify_dl_headers(effective_auth_data.get_headers()))
 
     req_id = rci.request_id
     if req_id is not None:
-        headers.update({DLHeadersCommon.REQUEST_ID.value: req_id})
+        headers.update({dl_constants.DLHeadersCommon.REQUEST_ID.value: req_id})
 
     tenant = rci.tenant
     assert tenant is not None
-    headers.update(stringify_dl_headers(tenant.get_outbound_tenancy_headers()))
+    headers.update(dl_api_commons.stringify_dl_headers(tenant.get_outbound_tenancy_headers()))
 
-    def may_be_add_extra_header(header: DLHeadersCommon, override_value: Optional[Any]) -> None:
+    def may_be_add_extra_header(header: dl_constants.DLHeadersCommon, override_value: Any | None) -> None:
         incoming_value = rci.plain_headers.get(header.value)
         if override_value is not None:
             if isinstance(override_value, str):
@@ -77,20 +67,20 @@ def make_user_auth_headers(
             if incoming_value is not None:
                 headers[header.value] = incoming_value
 
-    may_be_add_extra_header(DLHeadersCommon.SUDO, sudo_override)
-    may_be_add_extra_header(DLHeadersCommon.ALLOW_SUPERUSER, allow_superuser_override)
-    may_be_add_extra_header(DLHeadersCommon.DL_CONTEXT, None)
+    may_be_add_extra_header(dl_constants.DLHeadersCommon.SUDO, sudo_override)
+    may_be_add_extra_header(dl_constants.DLHeadersCommon.ALLOW_SUPERUSER, allow_superuser_override)
+    may_be_add_extra_header(dl_constants.DLHeadersCommon.DL_CONTEXT, None)
 
     return headers
 
 
 def make_user_auth_cookies(
-    rci: RequestContextInfo,
-    auth_data_override: Optional[AuthData] = None,
+    rci: dl_api_commons.RequestContextInfo,
+    auth_data_override: dl_auth.AuthData | None = None,
 ) -> dict[str, str]:
-    effective_auth_data: Optional[AuthData] = rci.auth_data if auth_data_override is None else auth_data_override
+    effective_auth_data: dl_auth.AuthData | None = rci.auth_data if auth_data_override is None else auth_data_override
     if effective_auth_data is not None:
-        return stringify_dl_cookies(effective_auth_data.get_cookies())
+        return dl_api_commons.stringify_dl_cookies(effective_auth_data.get_cookies())
     return {}
 
 
@@ -112,7 +102,7 @@ def compile_query_for_debug(query, dialect):  # type: ignore  # TODO: fix
         return "-"
 
 
-def parse_comma_separated_hosts(host: Optional[str]) -> tuple[str, ...]:
+def parse_comma_separated_hosts(host: str | None) -> tuple[str, ...]:
     if not host:
         return tuple()
     return tuple(h.strip() for h in host.split(","))
@@ -158,7 +148,7 @@ _FUTURE_REF_TV = TypeVar("_FUTURE_REF_TV")
 
 @attr.s(eq=False, hash=False, order=False)
 class FutureRef(Generic[_FUTURE_REF_TV]):
-    __ref: Optional[_FUTURE_REF_TV] = attr.ib(init=False, default=None)
+    __ref: _FUTURE_REF_TV | None = attr.ib(init=False, default=None)
 
     @property
     def ref(self) -> "_FUTURE_REF_TV":
@@ -222,9 +212,9 @@ def attrs_evolve_to_superclass(cls: type[_MODEL_TYPE_TV], inst: Any, **kwargs) -
 
 
 def get_current_w3c_tracing_headers(
-    tracer: Optional[opentracing.Tracer] = None,
-    req_id: Optional[str] = None,
-    override_sampled: Optional[bool] = None,
+    tracer: opentracing.Tracer | None = None,
+    req_id: str | None = None,
+    override_sampled: bool | None = None,
 ) -> dict[str, str]:
     actual_tracer = opentracing.global_tracer() if tracer is None else tracer
     tracing_headers: dict[str, str] = {}
@@ -268,7 +258,7 @@ def sa_plain_text(query: str) -> sa.sql.elements.TextClause:
 SECREPR_SIDE_SIZE = 0
 
 
-def secrepr(value: Optional[str]) -> str:
+def secrepr(value: str | None) -> str:
     """Convenience function for attrs-repr of secrets"""
     if not value:
         return repr(value)
@@ -282,7 +272,7 @@ def secrepr(value: Optional[str]) -> str:
     return repr(f"{value[:side_size]}...{value[-side_size:]}")
 
 
-def secrepr_dict(d: Optional[dict[str, Optional[str]]]) -> str:
+def secrepr_dict(d: dict[str, str | None]) -> str:
     if not d:
         return repr(d)
     return repr({key: secrepr(value) for key, value in d.items()})
@@ -298,7 +288,7 @@ def raise_for_status_and_hide_secret_headers(response: ClientResponse) -> None:
     but hides secret data in headers for exception
     """
     if not response.ok:
-        obfuscator = RequestObfuscator()
+        obfuscator = dl_api_commons.RequestObfuscator()
         # reason should always be not None for a started response
         assert response.reason is not None
         response.release()

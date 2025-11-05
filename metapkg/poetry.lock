@@ -1702,6 +1702,7 @@ develop = true
 aiohttp = "*"
 attrs = "*"
 dl-app-tools = {path = "../dl_app_tools"}
+dl-auth = {path = "../dl_auth"}
 dl-constants = {path = "../dl_constants"}
 dl-retrier = {path = "../dl_retrier"}
 dl-utils = {path = "../dl_utils"}
@@ -1899,6 +1900,10 @@ optional = false
 python-versions = ">=3.10, <3.13"
 files = []
 develop = true
+
+[package.dependencies]
+attrs = "*"
+dl-constants = {path = "../dl_constants"}
 
 [package.source]
 type = "directory"
