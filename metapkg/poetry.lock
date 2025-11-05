@@ -1762,6 +1762,7 @@ attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
+dl-auth = {path = "../dl_auth"}
 dl-cache-engine = {path = "../dl_cache_engine"}
 dl-compeng-pg = {path = "../dl_compeng_pg"}
 dl-configs = {path = "../dl_configs"}
@@ -1812,6 +1813,7 @@ dl-api-client = {path = "../dl_api_client"}
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-api-lib = {path = "../dl_api_lib"}
+dl-auth = {path = "../dl_auth"}
 dl-cache-engine = {path = "../dl_cache_engine"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
@@ -1945,9 +1947,10 @@ develop = true
 [package.dependencies]
 aiohttp = {version = "*", optional = true}
 attrs = "*"
-dl-api-commons = {path = "../../lib/dl_api_commons"}
-dl-constants = {path = "../../lib/dl_constants"}
-dl-pydantic = {path = "../../lib/dl_pydantic"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-auth = {path = "../dl_auth"}
+dl-constants = {path = "../dl_constants"}
+dl-pydantic = {path = "../dl_pydantic"}
 flask = {version = "*", optional = true}
 pydantic = "*"
 pyjwt = "*"
@@ -2610,6 +2613,7 @@ attrs = "*"
 cryptography = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-app-tools = {path = "../dl_app_tools"}
+dl-auth = {path = "../dl_auth"}
 dl-cache-engine = {path = "../dl_cache_engine"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
@@ -3618,8 +3622,9 @@ develop = true
 [package.dependencies]
 aiohttp = {version = "*", optional = true}
 attrs = "*"
-dl-api-commons = {path = "../../lib/dl_api_commons"}
-dl-constants = {path = "../../lib/dl_constants"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-auth = {path = "../dl_auth"}
+dl-constants = {path = "../dl_constants"}
 dl-httpx = {path = "../dl_httpx"}
 flask = {version = "*", optional = true}
 httpx = "*"

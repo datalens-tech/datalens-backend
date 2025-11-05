@@ -10,10 +10,10 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 aiohttp = {optional = true, version = "*"}
 attrs = "*"
-dl-api-commons = {path = "../../lib/dl_api_commons"}
-dl-auth = {path = "../../lib/dl_auth"}
-dl-constants = {path = "../../lib/dl_constants"}
-dl-pydantic = {path = "../../lib/dl_pydantic"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-auth = {path = "../dl_auth"}
+dl-constants = {path = "../dl_constants"}
+dl-pydantic = {path = "../dl_pydantic"}
 flask = {optional = true, version = "*"}
 pydantic = "*"
 pyjwt = "*"

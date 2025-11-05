@@ -10,9 +10,9 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 aiohttp = {optional = true, version = "*"}
 attrs = "*"
-dl-api-commons = {path = "../../lib/dl_api_commons"}
-dl-auth = {path = "../../mainrepo/lib/dl_auth"}
-dl-constants = {path = "../../lib/dl_constants"}
+dl-api-commons = {path = "../dl_api_commons"}
+dl-auth = {path = "../dl_auth"}
+dl-constants = {path = "../dl_constants"}
 dl-httpx = {path = "../dl_httpx"}
 flask = {optional = true, version = "*"}
 httpx = "*"
