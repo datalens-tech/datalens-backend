@@ -4,6 +4,7 @@ from typing import AsyncGenerator
 import unittest.mock
 
 import httpx
+import mock
 import pytest
 import pytest_asyncio
 import pytest_mock
@@ -215,6 +216,7 @@ async def fixture_client_with_mocks(
         base_headers={},
         retry_policy_factory=mock_retry_policy_factory,
         base_client=httpx.AsyncClient(base_url="https://example.com"),
+        auth_provider=dl_httpx.NoAuthProvider(),
     ) as client:
         yield client
 
@@ -320,3 +322,40 @@ async def test_retry_no_retries(
             pass
 
     assert mock_route.call_count == 0
+
+
+@pytest.mark.asyncio
+async def test_auth_provider(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+    mock_auth_provider: mock.AsyncMock,
+) -> None:
+    mock_auth_provider.get_headers.return_value = {
+        "test-header-key1": "test-header-value1",
+        "test-header-key2": "test-header-value2",
+    }
+    mock_auth_provider.get_cookies.return_value = {
+        "test-cookie-key1": "test-cookie-value1",
+        "test-cookie-key2": "test-cookie-value2",
+    }
+
+    mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
+    async with dl_httpx.HttpxAsyncClient.from_settings(
+        dl_httpx.HttpxClientSettings(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+            auth_provider=mock_auth_provider,
+        ),
+    ) as client:
+        request = client.prepare_request("GET", "/api/data")
+        async with client.send(request) as response:
+            assert response.status_code == 200
+
+    assert mock_route.call_count == 1
+    request = mock_route.calls.last.request
+    assert request.headers == {
+        "host": "example.com",
+        "test-header-key1": "test-header-value1",
+        "test-header-key2": "test-header-value2",
+        "cookie": "test-cookie-key1=test-cookie-value1; test-cookie-key2=test-cookie-value2",
+    }

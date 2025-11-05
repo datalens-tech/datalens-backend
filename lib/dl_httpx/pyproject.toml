@@ -19,6 +19,7 @@ python = ">=3.10, <3.13"
 typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
+mock = "*"
 pytest = "*"
 pytest-asyncio = "*"
 pytest-mock = "*"
