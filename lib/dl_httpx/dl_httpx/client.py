@@ -19,8 +19,8 @@ import attrs
 import httpx
 import typing_extensions
 
+import dl_auth
 import dl_configs
-import dl_httpx.auth_providers as auth_providers
 import dl_retrier
 
 
@@ -70,7 +70,7 @@ class HttpxClientSettings:
     retry_policy_factory: dl_retrier.RetryPolicyFactorySettings = attrs.field(
         factory=dl_retrier.RetryPolicyFactorySettings
     )
-    auth_provider: auth_providers.AuthProviderProtocol = attrs.field(factory=auth_providers.NoAuthProvider)
+    auth_provider: dl_auth.AuthProviderProtocol = attrs.field(factory=dl_auth.NoAuthProvider)
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
@@ -79,7 +79,7 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
     _base_cookies: dict[str, str]
     _base_headers: dict[str, str]
     _retry_policy_factory: dl_retrier.RetryPolicyFactory
-    _auth_provider: auth_providers.AuthProviderProtocol
+    _auth_provider: dl_auth.AuthProviderProtocol
 
     _base_client: THttpxClient
 

@@ -3,7 +3,7 @@ import ssl
 import pytest
 import pytest_mock
 
-import dl_httpx
+import dl_auth
 import dl_retrier
 import dl_testing
 
@@ -47,6 +47,6 @@ def fixture_mock_retry_policy_factory(
 @pytest.fixture(name="mock_auth_provider")
 def fixture_mock_auth_provider(
     mocker: pytest_mock.MockerFixture,
-) -> dl_httpx.AuthProviderProtocol:
-    auth_provider = mocker.MagicMock(spec=dl_httpx.AuthProviderProtocol)
+) -> dl_auth.AuthProviderProtocol:
+    auth_provider = mocker.MagicMock(spec=dl_auth.AuthProviderProtocol)
     return auth_provider
