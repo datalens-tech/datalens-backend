@@ -7,7 +7,8 @@ tasks:
         {{.VENV_PATH}}/bin/cookiecutter \
           '{{.TEMPLATE_PATH}}' \
           --output-dir='{{.OUTPUT_PATH}}' \
-          --overwrite-if-exists
+          --overwrite-if-exists \
+          {{.EXTRA_CONTEXT}}
     env:
       METAPKG_FILE: '{{.METAPKG_FILE}}'
     requires:
