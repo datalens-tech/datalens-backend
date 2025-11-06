@@ -9,6 +9,7 @@ import pytest
 import pytest_mock
 import respx
 
+import dl_auth
 import dl_httpx
 import dl_retrier
 
@@ -208,7 +209,7 @@ def fixture_client_with_mocks(
         base_headers={},
         retry_policy_factory=mock_retry_policy_factory,
         base_client=httpx.Client(base_url="https://example.com"),
-        auth_provider=dl_httpx.NoAuthProvider(),
+        auth_provider=dl_auth.NoAuthProvider(),
     ) as client:
         yield client
 

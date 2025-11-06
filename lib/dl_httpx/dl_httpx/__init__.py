@@ -1,8 +1,3 @@
-from .auth_providers import (
-    AuthProviderProtocol,
-    NoAuthProvider,
-    OauthAuthProvider,
-)
 from .client import (
     HttpStatusHttpxClientException,
     HttpxAsyncClient,
@@ -43,7 +38,4 @@ __all__ = [
     "NoRetriesHttpxClientException",
     "TestingHttpxClient",
     "serialize_datetime",
-    "OauthAuthProvider",
-    "NoAuthProvider",
-    "AuthProviderProtocol",
 ]
