@@ -1,6 +1,7 @@
 import datetime
 
 import pydantic
+import pytest
 
 import dl_pydantic
 
@@ -28,6 +29,14 @@ def test_model_validate_json() -> None:
     model = Model.model_validate_json(f'{{"value": {JSON_VALUE}}}')
 
     assert model.value == DATE_VALUE
+
+
+def test_raises_validation_error_on_none() -> None:
+    class Model(dl_pydantic.BaseModel):
+        value: dl_pydantic.JsonableDate
+
+    with pytest.raises(pydantic.ValidationError):
+        Model.model_validate({"value": None})
 
 
 def test_model_dump_json() -> None:
