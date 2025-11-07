@@ -32,7 +32,6 @@ known_connectors = [
 ]
 known_first_party = [
   "bi_*",
-  "dc_*",
   "dl_*",
 ]
 line_length = 120
