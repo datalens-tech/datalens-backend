@@ -80,6 +80,7 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
     _base_headers: dict[str, str]
     _retry_policy_factory: dl_retrier.RetryPolicyFactory
     _auth_provider: dl_auth.AuthProviderProtocol
+    _logger: logging.Logger = attrs.field(default=LOGGER)
 
     _base_client: THttpxClient
 
@@ -142,6 +143,11 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
         try:
             response.raise_for_status()
         except httpx.HTTPStatusError as e:
+            self._logger.error(
+                "HTTP status error: code=%s, text=%s",
+                e.response.status_code,
+                e.response.text,
+            )
             raise HttpStatusHttpxClientException(
                 request=e.request,
                 response=e.response,
@@ -157,7 +163,12 @@ HttpxClientT = TypeVar("HttpxClientT", bound=HttpxBaseClient)
 class HttpxSyncRetrier:
     _retry_policy: dl_retrier.RetryPolicy
 
-    def send(self, request_func: SyncRequestFunction, request: httpx.Request) -> httpx.Response:
+    def send(
+        self,
+        request_func: SyncRequestFunction,
+        request: httpx.Request,
+        logger: logging.Logger,
+    ) -> httpx.Response:
         last_known_result: httpx.Response | Exception | None = None
 
         for retry in self._retry_policy.iter_retries():
@@ -174,7 +185,7 @@ class HttpxSyncRetrier:
             try:
                 response = request_func(request)
             except Exception as e:
-                LOGGER.warning("httpx client error", exc_info=True)
+                logger.exception("httpx client error")
                 last_known_result = e
                 continue
 
@@ -196,7 +207,12 @@ class HttpxSyncRetrier:
 class HttpxAsyncRetrier:
     _retry_policy: dl_retrier.RetryPolicy
 
-    async def send(self, request_func: AsyncRequestFunction, request: httpx.Request) -> httpx.Response:
+    async def send(
+        self,
+        request_func: AsyncRequestFunction,
+        request: httpx.Request,
+        logger: logging.Logger,
+    ) -> httpx.Response:
         last_known_result: httpx.Response | Exception | None = None
 
         for retry in self._retry_policy.iter_retries():
@@ -213,7 +229,7 @@ class HttpxAsyncRetrier:
             try:
                 response = await request_func(request)
             except Exception as e:
-                LOGGER.warning("httpx client error", exc_info=True)
+                logger.exception("httpx client error")
                 last_known_result = e
                 continue
 
@@ -261,7 +277,7 @@ class HttpxSyncClient(HttpxBaseClient[httpx.Client]):
     ) -> Iterator[httpx.Response]:
         retry_policy = self._retry_policy_factory.get_policy(retry_policy_name)
         retrier = HttpxSyncRetrier(retry_policy=retry_policy)
-        response = retrier.send(self._send, request)
+        response = retrier.send(self._send, request, logger=self._logger)
         response = self._process_response(response)
 
         try:
@@ -306,7 +322,7 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
     ) -> AsyncGenerator[httpx.Response, None]:
         retry_policy = self._retry_policy_factory.get_policy(retry_policy_name)
         retrier = HttpxAsyncRetrier(retry_policy=retry_policy)
-        response = await retrier.send(self._send, request)
+        response = await retrier.send(self._send, request, logger=self._logger)
         response = self._process_response(response)
 
         try:
