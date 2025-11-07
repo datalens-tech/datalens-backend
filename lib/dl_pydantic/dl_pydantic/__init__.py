@@ -2,6 +2,7 @@ from .base import BaseModel
 from .jsonable import (
     JsonableDate,
     JsonableDatetime,
+    JsonableDatetimeWithTimeZone,
     JsonableTimedelta,
     JsonableUUID,
 )
@@ -17,6 +18,7 @@ __all__ = [
     "BaseModel",
     "JsonableDate",
     "JsonableDatetime",
+    "JsonableDatetimeWithTimeZone",
     "JsonableTimedelta",
     "JsonableUUID",
     "TypedBaseModel",

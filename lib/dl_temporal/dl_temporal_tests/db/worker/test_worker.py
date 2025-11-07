@@ -55,6 +55,7 @@ async def test_default(
         workflow_uuid_param=dl_pydantic.JsonableUUID(str(uuid.uuid4())),
         workflow_date_param=dl_pydantic.JsonableDate.today(),
         workflow_datetime_param=dl_pydantic.JsonableDatetime.now(tz=datetime.timezone.utc),
+        workflow_datetime_with_timezone_param=dl_pydantic.JsonableDatetimeWithTimeZone.now(tz=datetime.timezone.utc),
     )
     workflow_handler = await temporal_client.start_workflow(
         workflows.Workflow,
@@ -72,3 +73,4 @@ async def test_default(
     assert result.workflow_timedelta_result == params.workflow_timedelta_param
     assert result.workflow_uuid_result == params.workflow_uuid_param
     assert result.workflow_datetime_result == params.workflow_datetime_param
+    assert result.workflow_datetime_with_timezone_result == params.workflow_datetime_with_timezone_param

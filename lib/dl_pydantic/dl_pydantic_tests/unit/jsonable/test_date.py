@@ -6,19 +6,21 @@ import dl_pydantic
 
 
 JSON_VALUE = '"2025-01-02"'
-DATE_VALUE = dl_pydantic.JsonableDate(2025, 1, 2)
+ORIGINAL = datetime.date(2025, 1, 2)
+EXPECTED = dl_pydantic.JsonableDate(2025, 1, 2)
+
+
+def test_from_original() -> None:
+    assert dl_pydantic.JsonableDate.from_original(ORIGINAL) == EXPECTED
 
 
 def test_model_validate_with_original_type() -> None:
     class Model(dl_pydantic.BaseModel):
         value: dl_pydantic.JsonableDate
 
-    original_value = datetime.date(2025, 1, 2)
-    expected_value = DATE_VALUE
+    model = Model.model_validate({"value": ORIGINAL})
 
-    model = Model.model_validate({"value": original_value})
-
-    assert model.value == expected_value
+    assert model.value == EXPECTED
 
 
 def test_model_validate_json() -> None:
@@ -27,14 +29,14 @@ def test_model_validate_json() -> None:
 
     model = Model.model_validate_json(f'{{"value": {JSON_VALUE}}}')
 
-    assert model.value == DATE_VALUE
+    assert model.value == EXPECTED
 
 
 def test_model_dump_json() -> None:
     class Model(dl_pydantic.BaseModel):
         value: dl_pydantic.JsonableDate
 
-    model = Model(value=DATE_VALUE)
+    model = Model(value=EXPECTED)
 
     assert model.model_dump_json() == f'{{"value":{JSON_VALUE}}}'
 
