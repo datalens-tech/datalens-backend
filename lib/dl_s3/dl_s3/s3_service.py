@@ -57,15 +57,18 @@ class S3Service:
 
     def _init_client_config(self) -> None:
         ssl_context = ssl.create_default_context(cadata=self._ca_data.decode("ascii"))
+
         self._client_init_params = dict(
             service_name="s3",
             aws_access_key_id=self._access_key_id,
             aws_secret_access_key=self._secret_access_key,
             endpoint_url=self._endpoint_url,
-            verify=ssl_context,
             config=AioConfig(
                 signature_version="s3v4",  # v4 signature is required to generate presigned URLs with restriction policies
                 s3={"addressing_style": "virtual" if self._use_virtual_host_addressing else "auto"},
+            ),
+            connector_args=dict(
+                ssl=ssl_context,
             ),
         )
 
