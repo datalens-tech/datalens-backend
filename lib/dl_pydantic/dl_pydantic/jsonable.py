@@ -100,3 +100,13 @@ class JsonableDatetime(datetime.datetime, StringJsonableTypeMixin):
     @classmethod
     def from_original(cls, value: datetime.datetime) -> Self:
         return cls.fromisoformat(value.isoformat())
+
+
+class JsonableDatetimeWithTimeZone(JsonableDatetime):
+    def __new__(cls, *args: Any, **kwargs: Any) -> Self:
+        result = super().__new__(cls, *args, **kwargs)
+
+        if result.tzinfo is None:
+            raise ValueError("tzinfo is required")
+
+        return result

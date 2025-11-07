@@ -12,6 +12,7 @@ class ActivityParams(dl_temporal.BaseActivityParams):
     activity_uuid_param: dl_pydantic.JsonableUUID
     activity_date_param: dl_pydantic.JsonableDate
     activity_datetime_param: dl_pydantic.JsonableDatetime
+    activity_datetime_with_timezone_param: dl_pydantic.JsonableDatetimeWithTimeZone
 
     start_to_close_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(seconds=30)
 
@@ -26,6 +27,7 @@ class ActivityResult(dl_temporal.BaseActivityResult):
     activity_uuid_result: dl_pydantic.JsonableUUID
     activity_date_result: dl_pydantic.JsonableDate
     activity_datetime_result: dl_pydantic.JsonableDatetime
+    activity_datetime_with_timezone_result: dl_pydantic.JsonableDatetimeWithTimeZone
 
 
 @dl_temporal.define_activity
@@ -45,4 +47,5 @@ class Activity(dl_temporal.BaseActivity):
             activity_uuid_result=params.activity_uuid_param,
             activity_date_result=params.activity_date_param,
             activity_datetime_result=params.activity_datetime_param,
+            activity_datetime_with_timezone_result=params.activity_datetime_with_timezone_param,
         )

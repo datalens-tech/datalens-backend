@@ -18,6 +18,7 @@ class WorkflowParams(dl_temporal.BaseWorkflowParams):
     workflow_uuid_param: dl_pydantic.JsonableUUID
     workflow_date_param: dl_pydantic.JsonableDate
     workflow_datetime_param: dl_pydantic.JsonableDatetime
+    workflow_datetime_with_timezone_param: dl_pydantic.JsonableDatetimeWithTimeZone
 
     execution_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(seconds=1)
 
@@ -32,6 +33,7 @@ class WorkflowResult(dl_temporal.BaseWorkflowResult):
     workflow_uuid_result: dl_pydantic.JsonableUUID
     workflow_date_result: dl_pydantic.JsonableDate
     workflow_datetime_result: dl_pydantic.JsonableDatetime
+    workflow_datetime_with_timezone_result: dl_pydantic.JsonableDatetimeWithTimeZone
 
 
 @dl_temporal.define_workflow
@@ -53,6 +55,7 @@ class Workflow(dl_temporal.BaseWorkflow):
                 activity_uuid_param=params.workflow_uuid_param,
                 activity_date_param=params.workflow_date_param,
                 activity_datetime_param=params.workflow_datetime_param,
+                activity_datetime_with_timezone_param=params.workflow_datetime_with_timezone_param,
             ),
         )
         return self.Result(
@@ -65,4 +68,5 @@ class Workflow(dl_temporal.BaseWorkflow):
             workflow_uuid_result=result.activity_uuid_result,
             workflow_date_result=result.activity_date_result,
             workflow_datetime_result=result.activity_datetime_result,
+            workflow_datetime_with_timezone_result=result.activity_datetime_with_timezone_result,
         )
