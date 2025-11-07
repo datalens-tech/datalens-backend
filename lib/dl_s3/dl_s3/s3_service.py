@@ -10,7 +10,10 @@ from typing import (
 
 from aiobotocore.config import AioConfig
 from aiobotocore.session import get_session
-from aiohttp import web
+from aiohttp import (
+    TCPConnector,
+    web,
+)
 import attr
 import boto3
 import typing_extensions
@@ -39,6 +42,7 @@ class S3Service:
 
     _client: AsyncS3Client = attr.ib(init=False, repr=False, hash=False, cmp=False)
     _client_init_params: dict[str, Any] = attr.ib(init=False, repr=False, hash=False, cmp=False)
+    _connector: TCPConnector = attr.ib(init=False, repr=False, hash=False, cmp=False)
 
     @property
     def client(self) -> AsyncS3Client:
@@ -57,16 +61,15 @@ class S3Service:
 
     def _init_client_config(self) -> None:
         ssl_context = ssl.create_default_context(cadata=self._ca_data.decode("ascii"))
+        self._connector = TCPConnector(ssl=ssl_context)
 
         self._client_init_params = dict(
             service_name="s3",
             aws_access_key_id=self._access_key_id,
             aws_secret_access_key=self._secret_access_key,
             endpoint_url=self._endpoint_url,
+            connector=self._connector,
             config=AioConfig(
-                connector_args=dict(
-                    ssl_context=ssl_context,
-                ),
                 signature_version="s3v4",  # v4 signature is required to generate presigned URLs with restriction policies
                 s3={"addressing_style": "virtual" if self._use_virtual_host_addressing else "auto"},
             ),
@@ -84,6 +87,7 @@ class S3Service:
     async def tear_down(self) -> None:
         LOGGER.info("Tear down S3 service")
         await self._client.close()
+        await self._connector.close()
 
     @classmethod
     def get_app_instance(cls, app: web.Application) -> typing_extensions.Self:
