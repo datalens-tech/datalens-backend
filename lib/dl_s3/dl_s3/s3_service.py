@@ -64,11 +64,11 @@ class S3Service:
             aws_secret_access_key=self._secret_access_key,
             endpoint_url=self._endpoint_url,
             config=AioConfig(
+                connector_args=dict(
+                    ssl=ssl_context,
+                ),
                 signature_version="s3v4",  # v4 signature is required to generate presigned URLs with restriction policies
                 s3={"addressing_style": "virtual" if self._use_virtual_host_addressing else "auto"},
-            ),
-            connector_args=dict(
-                ssl=ssl_context,
             ),
         )
 
