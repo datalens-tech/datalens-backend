@@ -1,4 +1,5 @@
 import json
+import logging
 import ssl
 from typing import AsyncGenerator
 import unittest.mock
@@ -13,6 +14,9 @@ import respx
 import dl_auth
 import dl_httpx
 import dl_retrier
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 @pytest.mark.asyncio
@@ -218,6 +222,8 @@ async def fixture_client_with_mocks(
         retry_policy_factory=mock_retry_policy_factory,
         base_client=httpx.AsyncClient(base_url="https://example.com"),
         auth_provider=dl_auth.NoAuthProvider(),
+        logger=LOGGER,
+        debug_logging=True,
     ) as client:
         yield client
 

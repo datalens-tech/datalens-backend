@@ -71,6 +71,8 @@ class HttpxClientSettings:
         factory=dl_retrier.RetryPolicyFactorySettings
     )
     auth_provider: dl_auth.AuthProviderProtocol = attrs.field(factory=dl_auth.NoAuthProvider)
+    logger: logging.Logger = attrs.field(default=LOGGER)
+    debug_logging: bool = attrs.field(default=False)
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
@@ -80,7 +82,8 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
     _base_headers: dict[str, str]
     _retry_policy_factory: dl_retrier.RetryPolicyFactory
     _auth_provider: dl_auth.AuthProviderProtocol
-    _logger: logging.Logger = attrs.field(default=LOGGER)
+    _logger: logging.Logger
+    _debug_logging: bool
 
     _base_client: THttpxClient
 
@@ -94,6 +97,8 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
                 settings.retry_policy_factory,
             ),
             auth_provider=settings.auth_provider,
+            logger=settings.logger,
+            debug_logging=settings.debug_logging,
             base_client=cls._get_client(
                 ssl_context=settings.ssl_context,
             ),
@@ -130,7 +135,7 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
         params: dict[str, str] | None = None,
         json: Any = None,
     ) -> httpx.Request:
-        return httpx.Request(
+        request = httpx.Request(
             method=method,
             url=self._prepare_url(url),
             headers=self._prepare_headers(headers),
@@ -139,7 +144,26 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
             json=json,
         )
 
+        if self._debug_logging:
+            self._logger.debug(
+                "Prepared request: Request(method=%s, url=%s, headers=%s, stream=%s)",
+                request.method,
+                request.url,
+                request.headers,
+                request.read(),
+            )
+
+        return request
+
     def _process_response(self, response: httpx.Response) -> httpx.Response:
+        if self._debug_logging:
+            self._logger.debug(
+                "Processing response: Response(status_code=%s, headers=%s, content=%s)",
+                response.status_code,
+                response.headers,
+                response.content,
+            )
+
         try:
             response.raise_for_status()
         except httpx.HTTPStatusError as e:
