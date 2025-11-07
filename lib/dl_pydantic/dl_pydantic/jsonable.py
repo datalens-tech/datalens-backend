@@ -1,6 +1,10 @@
 import abc
 import datetime
-from typing import Any
+from typing import (
+    Any,
+    Generic,
+    TypeVar,
+)
 import uuid
 
 import pydantic
@@ -12,7 +16,12 @@ JsonableTimedelta = datetime.timedelta
 JsonableUUID = uuid.UUID
 
 
-class StringJsonableTypeMixin:
+T = TypeVar("T")
+
+
+class StringJsonableTypeMixin(Generic[T]):
+    original_type: type[T]
+
     @classmethod
     @abc.abstractmethod
     def from_string(cls, value: str) -> Self:
@@ -44,7 +53,12 @@ class StringJsonableTypeMixin:
                 pydantic_core.core_schema.no_info_plain_validator_function(cls.from_string),
             ]
         )
-        from_original_schema = pydantic_core.core_schema.no_info_plain_validator_function(cls.from_original)
+        from_original_schema = pydantic_core.core_schema.chain_schema(
+            [
+                pydantic_core.core_schema.is_instance_schema(cls.original_type),
+                pydantic_core.core_schema.no_info_plain_validator_function(cls.from_original),
+            ]
+        )
 
         return pydantic_core.core_schema.json_or_python_schema(
             json_schema=from_str_schema,
@@ -68,6 +82,8 @@ class StringJsonableTypeMixin:
 
 
 class JsonableDate(datetime.date, StringJsonableTypeMixin):
+    original_type = datetime.date
+
     @classmethod
     def from_string(cls, value: str) -> Self:
         return cls.fromisoformat(value)
@@ -81,6 +97,8 @@ class JsonableDate(datetime.date, StringJsonableTypeMixin):
 
 
 class JsonableDatetime(datetime.datetime, StringJsonableTypeMixin):
+    original_type = datetime.datetime
+
     @classmethod
     def from_string(cls, value: str) -> Self:
         if value.endswith("Z"):

@@ -67,6 +67,14 @@ def test_model_validate_json(
     assert model.value == expected_value
 
 
+def test_raises_validation_error_on_none() -> None:
+    class Model(dl_pydantic.BaseModel):
+        value: dl_pydantic.JsonableDatetime
+
+    with pytest.raises(pydantic.ValidationError):
+        Model.model_validate({"value": None})
+
+
 @pytest.mark.parametrize(
     "value,expected_json",
     [
