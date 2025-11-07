@@ -206,23 +206,40 @@ jobs:
         fi
         echo "result=$result" >> $GITHUB_OUTPUT
       id: extract_head_commit
-    - name: Get changed files
-      uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62
-      id: git-changed-files
+
+    - uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62
+      id: changed-files-base
+      if: ${{ steps.extract_base_commit.outputs.result != steps.extract_head_commit.outputs.result }}
       with:
         base_sha: ${{ steps.extract_base_commit.outputs.result }}
         sha: ${{ steps.extract_head_commit.outputs.result }}
         write_output_files: true
         separator: "\n"
+    # if base and head commit are the same tj-actions/changed-files action raises an error, so we need to handle it
+    # https://github.com/tj-actions/changed-files/issues/2708
+    - name: Get changed files
+      id: changed-files
+      run: |
+        if [ "$base_sha" != "$sha" ]; then
+          {
+            echo "all_changed_files<<EOF"
+            echo "${changed_files_base}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+        fi
+      env:
+        sha: ${{ steps.extract_head_commit.outputs.result }}
+        base_sha: ${{ steps.extract_base_commit.outputs.result }}
+        changed_files_base: ${{ steps.changed-files-base.outputs.all_changed_files }}
     - name: Get changed packages
       uses: ovsds/get-changed-packages-action@v1
       id: changed-packages
       with:
-        changed-files: ${{ steps.git-changed-files.outputs.all_changed_files }}
+        changed-files: ${{ steps.changed-files.outputs.all_changed_files }}
         all-packages: |
           ./lib/*
           ./app/*
-        package-dependencies-resolution-method: ${{ github.event.inputs.run_all_tests == 'true' && 'all' || 'poetry-path' }}
+        package-dependencies-resolution-method: ${{ github.event.inputs.run_all_tests == 'true' && 'poetry-all' || 'poetry-path' }}
         poetry-path-dependencies-groups: |
           tool.poetry.dependencies
           tool.poetry.group.tests.dependencies
