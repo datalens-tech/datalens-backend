@@ -16,10 +16,16 @@ from dl_s3.s3_service import S3Service
 from dl_testing.constants import TEST_USER_ID
 from dl_testing.containers import get_test_container_hostport
 import dl_testing.s3_utils as s3_utils
+from dl_testing.utils import get_root_certificates
 
 
 if TYPE_CHECKING:
     from types_aiobotocore_s3 import S3Client as AsyncS3Client
+
+
+@pytest.fixture(scope="session")
+def root_certificates() -> bytes:
+    return get_root_certificates()
 
 
 @pytest.fixture(scope="function")
@@ -54,7 +60,7 @@ def redis_cli(redis_app_settings: RedisSettings) -> redis.asyncio.Redis:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def s3_service() -> S3Service:
+async def s3_service(root_certificates: bytes) -> S3Service:
     s3_host = get_test_container_hostport("s3-storage", fallback_port=52222).host
     s3_port = get_test_container_hostport("s3-storage", fallback_port=52222).port
 
@@ -63,6 +69,7 @@ async def s3_service() -> S3Service:
         secret_access_key="verySecretKey1",
         endpoint_url=f"http://{s3_host}:{s3_port}",
         use_virtual_host_addressing=False,
+        ca_data=root_certificates,
         tmp_bucket_name="bucket-tmp",
         persistent_bucket_name="bucket-persistent",
     )

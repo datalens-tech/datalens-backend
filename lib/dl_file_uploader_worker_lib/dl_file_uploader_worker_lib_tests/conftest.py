@@ -288,12 +288,13 @@ async def s3_client(s3_settings) -> AsyncS3Client:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def s3_service(s3_settings: S3Settings, s3_tmp_bucket, s3_persistent_bucket) -> S3Service:
+async def s3_service(s3_settings: S3Settings, s3_tmp_bucket, s3_persistent_bucket, root_certificates) -> S3Service:
     service = S3Service(
         access_key_id=s3_settings.ACCESS_KEY_ID,
         secret_access_key=s3_settings.SECRET_ACCESS_KEY,
         endpoint_url=s3_settings.ENDPOINT_URL,
         use_virtual_host_addressing=False,
+        ca_data=root_certificates,
         tmp_bucket_name=s3_tmp_bucket,
         persistent_bucket_name=s3_persistent_bucket,
     )

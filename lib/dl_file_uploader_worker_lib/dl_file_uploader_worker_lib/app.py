@@ -65,6 +65,7 @@ class FileUploaderContextFab(BaseContextFabric):
             secret_access_key=self._settings.S3.SECRET_ACCESS_KEY,
             endpoint_url=self._settings.S3.ENDPOINT_URL,
             use_virtual_host_addressing=self._settings.S3.USE_VIRTUAL_HOST_ADDRESSING,
+            ca_data=self._ca_data,
             tmp_bucket_name=self._settings.S3_TMP_BUCKET_NAME,
             persistent_bucket_name=self._settings.S3_PERSISTENT_BUCKET_NAME,
         )
