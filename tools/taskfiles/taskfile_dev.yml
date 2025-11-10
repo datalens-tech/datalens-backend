@@ -308,7 +308,7 @@ tasks:
             {{ if .LOG_LEVEL }}--log-cli-level={{.LOG_LEVEL}}{{ end }}
           ENVS: '{{.ENVS | default ""}}'
     vars:
-      LOG_LEVEL: '{{.LOG_LEVEL | default ""}}'
+      LOG_LEVEL: '{{.LOG_LEVEL | default "DEBUG"}}'
       CLI_ARGS: '{{.CLI_ARGS | default "."}}'
 
   test-remote:
