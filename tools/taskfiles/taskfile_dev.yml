@@ -435,8 +435,12 @@ tasks:
     cmds:
       - task: _compose
         vars:
-          CLI_ARGS: logs --follow {{.CONTAINER}}
+          CLI_ARGS: |
+            logs --follow {{.CONTAINER}} \
+            {{ if .TAIL }}--tail {{.TAIL}}{{ end }}
           DOCKER_HOST: '{{.DOCKER_HOST | default ""}}'
+    vars:
+      TAIL: '{{.TAIL | default "10000"}}'
 
   compose-remote-logs:
     desc: Show docker-compose logs remotely
