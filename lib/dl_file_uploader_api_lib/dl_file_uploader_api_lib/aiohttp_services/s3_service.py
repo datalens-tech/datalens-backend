@@ -27,7 +27,11 @@ class InternalS3Service(S3Service):
     def _init_client_config(self) -> None:
         super()._init_client_config()
 
-        new_config = AioConfig(s3={"addressing_style": "auto"})
+        new_config = AioConfig(
+            # for some reason connector_args are not merged like every other config setting - see AioConfig.merge
+            connector_args=self._connector_args,
+            s3={"addressing_style": "auto"},
+        )
 
         assert isinstance(self._client_init_params["config"], AioConfig)
 
