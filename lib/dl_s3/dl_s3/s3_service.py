@@ -8,8 +8,8 @@ from typing import (
     ClassVar,
 )
 
-import aiobotocore.httpsession
 from aiobotocore.config import AioConfig
+import aiobotocore.httpsession
 from aiobotocore.session import get_session
 import aiohttp
 import attr
@@ -30,7 +30,7 @@ class _AIOHTTPSession(aiobotocore.httpsession.AIOHTTPSession):
     def _get_ssl_context(self) -> ssl.SSLContext:
         return self._connector_args["ssl_context"]
 
-    def _create_connector(self, proxy_url) -> TCPConnector:
+    def _create_connector(self, proxy_url) -> aiohttp.TCPConnector:
         ssl_context = None
         if bool(self._verify):
             if proxy_url:
@@ -75,6 +75,7 @@ class S3Service:
 
     _client: AsyncS3Client = attr.ib(init=False, repr=False, hash=False, cmp=False)
     _client_init_params: dict[str, Any] = attr.ib(init=False, repr=False, hash=False, cmp=False)
+    _connector_args: dict[str, Any] = attr.ib(init=False, repr=False, hash=False, cmp=False)
 
     @property
     def client(self) -> AsyncS3Client:
@@ -93,6 +94,9 @@ class S3Service:
 
     def _init_client_config(self) -> None:
         ssl_context = ssl.create_default_context(cadata=self._ca_data.decode("ascii"))
+        self._connector_args = dict(
+            ssl_context=ssl_context,
+        )
 
         self._client_init_params = dict(
             service_name="s3",
@@ -100,10 +104,8 @@ class S3Service:
             aws_secret_access_key=self._secret_access_key,
             endpoint_url=self._endpoint_url,
             config=AioConfig(
+                connector_args=self._connector_args,
                 http_session_cls=_AIOHTTPSession,
-                connector_args=dict(
-                    ssl_context=ssl_context,
-                ),
                 signature_version="s3v4",  # v4 signature is required to generate presigned URLs with restriction policies
                 s3={"addressing_style": "virtual" if self._use_virtual_host_addressing else "auto"},
             ),
