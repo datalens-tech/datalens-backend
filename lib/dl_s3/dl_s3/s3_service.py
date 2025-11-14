@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-class _AIOHTTPSession(aiobotocore.httpsession.AIOHTTPSession):
+class S3AIOHTTPSessionWithSSL(aiobotocore.httpsession.AIOHTTPSession):
     """
     Overrides ssl_context handling from upstream to allow passing it from the outside all the way into the aiohttp.TCPConnector
     Ignoring some typing because aiobotocore makes mypy mad
@@ -106,7 +106,7 @@ class S3Service:
             endpoint_url=self._endpoint_url,
             config=AioConfig(
                 connector_args=self._connector_args,
-                http_session_cls=_AIOHTTPSession,
+                http_session_cls=S3AIOHTTPSessionWithSSL,
                 signature_version="s3v4",  # v4 signature is required to generate presigned URLs with restriction policies
                 s3={"addressing_style": "virtual" if self._use_virtual_host_addressing else "auto"},
             ),

@@ -5,7 +5,10 @@ from typing import ClassVar
 
 from aiobotocore.config import AioConfig
 
-from dl_s3.s3_service import S3Service
+from dl_s3.s3_service import (
+    S3AIOHTTPSessionWithSSL,
+    S3Service,
+)
 
 
 LOGGER = logging.getLogger(__name__)
@@ -28,8 +31,9 @@ class InternalS3Service(S3Service):
         super()._init_client_config()
 
         new_config = AioConfig(
-            # for some reason connector_args are not merged like every other config setting - see AioConfig.merge
+            # not all settings are merged with AioConfig.merge - see AioConfig.merge implementation
             connector_args=self._connector_args,
+            http_session_cls=S3AIOHTTPSessionWithSSL,
             s3={"addressing_style": "auto"},
         )
 
