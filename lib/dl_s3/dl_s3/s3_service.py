@@ -8,11 +8,13 @@ from typing import (
     ClassVar,
 )
 
+import aiobotocore.httpsession
 from aiobotocore.config import AioConfig
 from aiobotocore.session import get_session
-from aiohttp import TCPConnector, web
+import aiohttp
 import attr
 import boto3
+from botocore.httpsession import get_cert_path
 import typing_extensions
 
 
@@ -22,6 +24,40 @@ if TYPE_CHECKING:
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+class _AIOHTTPSession(aiobotocore.httpsession.AIOHTTPSession):
+    def _get_ssl_context(self) -> ssl.SSLContext:
+        return self._connector_args["ssl_context"]
+
+    def _create_connector(self, proxy_url) -> TCPConnector:
+        ssl_context = None
+        if bool(self._verify):
+            if proxy_url:
+                ssl_context = self._setup_proxy_ssl_context(proxy_url)
+                # TODO: add support for
+                #    proxies_settings.get('proxy_use_forwarding_for_https')
+            else:
+                ssl_context = self._get_ssl_context()
+
+            if ssl_context:
+                if self._cert_file:
+                    ssl_context.load_cert_chain(
+                        self._cert_file,
+                        self._key_file,
+                    )
+
+                # inline self._setup_ssl_cert
+                ca_certs = get_cert_path(self._verify)
+                if ca_certs:
+                    ssl_context.load_verify_locations(ca_certs, None, None)
+
+        self._connector_args.pop("ssl_context", None)
+        return aiohttp.TCPConnector(
+            limit=self._max_pool_connections,
+            ssl=ssl_context or False,
+            **self._connector_args,
+        )
 
 
 @attr.s(kw_only=True)
@@ -48,11 +84,11 @@ class S3Service:
     def get_full_app_key(cls) -> str:
         return cls.APP_KEY
 
-    async def init_hook(self, target_app: web.Application) -> None:
+    async def init_hook(self, target_app: aiohttp.web.Application) -> None:
         target_app[self.APP_KEY] = self
         await self.initialize()
 
-    async def tear_down_hook(self, target_app: web.Application) -> None:
+    async def tear_down_hook(self, target_app: aiohttp.web.Application) -> None:
         await self.tear_down()
 
     def _init_client_config(self) -> None:
@@ -64,6 +100,7 @@ class S3Service:
             aws_secret_access_key=self._secret_access_key,
             endpoint_url=self._endpoint_url,
             config=AioConfig(
+                http_session_cls=_AIOHTTPSession,
                 connector_args=dict(
                     ssl_context=ssl_context,
                 ),
@@ -86,7 +123,7 @@ class S3Service:
         await self._client.close()
 
     @classmethod
-    def get_app_instance(cls, app: web.Application) -> typing_extensions.Self:
+    def get_app_instance(cls, app: aiohttp.web.Application) -> typing_extensions.Self:
         service = app.get(cls.APP_KEY, None)
         if service is None:
             raise ValueError("S3BucketService was not initiated for application")
