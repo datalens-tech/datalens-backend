@@ -27,36 +27,37 @@ LOGGER = logging.getLogger(__name__)
 
 
 class _AIOHTTPSession(aiobotocore.httpsession.AIOHTTPSession):
-    def _get_ssl_context(self) -> ssl.SSLContext:
-        return self._connector_args["ssl_context"]
+    """
+    Overrides ssl_context handling from upstream to allow passing it from the outside all the way into the aiohttp.TCPConnector
+    Ignoring some typing because aiobotocore makes mypy mad
+    """
 
-    def _create_connector(self, proxy_url) -> aiohttp.TCPConnector:
+    def _get_ssl_context(self) -> ssl.SSLContext:
+        return self._connector_args["ssl_context"]  # type: ignore[attr-defined]
+
+    def _create_connector(self, proxy_url: str) -> aiohttp.TCPConnector:
         ssl_context = None
-        if bool(self._verify):
+        if bool(self._verify):  # type: ignore[attr-defined]
             if proxy_url:
-                ssl_context = self._setup_proxy_ssl_context(proxy_url)
-                # TODO: add support for
-                #    proxies_settings.get('proxy_use_forwarding_for_https')
+                ssl_context = self._setup_proxy_ssl_context(proxy_url)  # type: ignore[attr-defined]
             else:
                 ssl_context = self._get_ssl_context()
 
             if ssl_context:
-                if self._cert_file:
+                if self._cert_file:  # type: ignore[attr-defined]
                     ssl_context.load_cert_chain(
-                        self._cert_file,
-                        self._key_file,
+                        self._cert_file,  # type: ignore[attr-defined]
+                        self._key_file,  # type: ignore[attr-defined]
                     )
-
-                # inline self._setup_ssl_cert
-                ca_certs = get_cert_path(self._verify)
+                ca_certs = get_cert_path(self._verify)  # type: ignore[attr-defined]
                 if ca_certs:
                     ssl_context.load_verify_locations(ca_certs, None, None)
 
-        self._connector_args.pop("ssl_context", None)
+        self._connector_args["ssl_context"] = ssl_context  # type: ignore[attr-defined]
+
         return aiohttp.TCPConnector(
-            limit=self._max_pool_connections,
-            ssl=ssl_context or False,
-            **self._connector_args,
+            limit=self._max_pool_connections,  # type: ignore[attr-defined]
+            **self._connector_args,  # type: ignore[attr-defined]
         )
 
 
