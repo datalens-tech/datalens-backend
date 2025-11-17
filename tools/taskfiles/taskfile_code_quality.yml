@@ -1,5 +1,7 @@
 version: '3'
 
+silent: true
+
 vars:
   THIS_DIR:
     sh: realpath "."
@@ -45,8 +47,7 @@ tasks:
         if [ "$SKIP_RUFF" == "true" ]; then exit 0; fi
         . $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}
-        ruff {{.FIX_FLAG}}  {{.TARGET}} {{.IGNORE_ERRORS}}
-    silent: true
+        ruff check {{.FIX_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
 
@@ -80,7 +81,6 @@ tasks:
             exit 0
           fi
         fi
-    silent: true
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
 
@@ -103,7 +103,6 @@ tasks:
         . $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}
         black --config={{.ROOT_DIR}}/pyproject.toml {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
-    silent: true
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
 
@@ -123,13 +122,11 @@ tasks:
         . $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}
         toml-sort {{.CHECK_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
-    silent: true
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
 
   _run_tools:
     internal: true
-    silent: true
     cmds:
       - task: isort_run
         vars:
@@ -150,7 +147,6 @@ tasks:
 
   _run_tools_changed:
     internal: true
-    silent: true
     cmds:
       - task: _run_tools
         vars:
@@ -184,7 +180,6 @@ tasks:
 
   _run_tool_on_cli_target:
     internal: true
-    silent: true
     cmds:
       - task: _run_tools
         vars:
@@ -194,7 +189,6 @@ tasks:
           STRICT: "{{.STRICT}}"
 
   check_target:
-    silent: true
     cmds:
       - task: _run_tool_on_cli_target
         vars:
@@ -202,7 +196,6 @@ tasks:
           STRICT: "false"
 
   check_target_strict:
-    silent: true
     cmds:
       - task: _run_tool_on_cli_target
         vars:
@@ -210,7 +203,6 @@ tasks:
           STRICT: "true"
 
   fix_target:
-    silent: true
     cmds:
       - task: _run_tool_on_cli_target
         vars:
@@ -219,7 +211,6 @@ tasks:
 
   _run_tool_on_cli_target_dir:
     internal: true
-    silent: true
     cmds:
       - task: _run_tools
         vars:
@@ -230,7 +221,6 @@ tasks:
           STRICT: "{{.STRICT}}"
 
   check_dir:
-    silent: true
     cmds:
       - task: _run_tool_on_cli_target_dir
         vars:
@@ -238,7 +228,6 @@ tasks:
           STRICT: "false"
 
   check_dir_strict:
-    silent: true
     cmds:
       - task: _run_tool_on_cli_target_dir
         vars:
@@ -246,7 +235,6 @@ tasks:
           STRICT: "true"
 
   fix_dir:
-    silent: true
     cmds:
       - task: _run_tool_on_cli_target_dir
         vars:
@@ -267,7 +255,6 @@ tasks:
 
         " > {{.ROOT_DIR}}/.git/hooks/pre-commit
       - chmod +x {{.ROOT_DIR}}/.git/hooks/pre-commit
-    silent: true
 
   install_pre_commit_codestyle_checks_non_blocking:
     deps: [ common_deps ]
@@ -281,7 +268,6 @@ tasks:
 
         " > {{.ROOT_DIR}}/.git/hooks/pre-commit
       - chmod +x {{.ROOT_DIR}}/.git/hooks/pre-commit
-    silent: true
 
   install_pre_commit_codestyle_autofix:
     deps: [ common_deps ]
@@ -301,7 +287,6 @@ tasks:
         exit 1
         " > {{.ROOT_DIR}}/.git/hooks/pre-commit
       - chmod +x {{.ROOT_DIR}}/.git/hooks/pre-commit
-    silent: true
 
   find_and_check_requirements:
     shell: bash
@@ -336,4 +321,3 @@ tasks:
           . $VENV_PATH/bin/activate
           cd /{{.TOML_DIR}}
           deptry . --exclude ".*tests" {{.IGNORE_ERRORS}}
-    silent: true
