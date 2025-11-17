@@ -93,6 +93,10 @@ class S3Service:
     async def tear_down_hook(self, target_app: aiohttp.web.Application) -> None:
         await self.tear_down()
 
+    @property
+    def _s3_addressing_style(self) -> str:
+        return "virtual" if self._use_virtual_host_addressing else "auto"
+
     def _init_client_config(self) -> None:
         ssl_context = ssl.create_default_context(cadata=self._ca_data.decode("ascii"))
         self._connector_args = dict(
@@ -108,7 +112,7 @@ class S3Service:
                 connector_args=self._connector_args,
                 http_session_cls=S3AIOHTTPSessionWithSSL,
                 signature_version="s3v4",  # v4 signature is required to generate presigned URLs with restriction policies
-                s3={"addressing_style": "virtual" if self._use_virtual_host_addressing else "auto"},
+                s3={"addressing_style": self._s3_addressing_style},
             ),
         )
 
