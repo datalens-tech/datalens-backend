@@ -86,6 +86,10 @@ class ConnectionTrinoBase(
         jwt: str | None = attr.ib(repr=secrepr, default=None)
         listing_sources: ListingSources = attr.ib()
 
+    @property
+    def allow_public_usage(self) -> bool:
+        return True
+
     def get_conn_options(self) -> TrinoConnectOptions:
         base = super().get_conn_options()
         return base.to_subclass(
