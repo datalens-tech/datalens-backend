@@ -45,7 +45,7 @@ tasks:
         if [ "$SKIP_RUFF" == "true" ]; then exit 0; fi
         . $VENV_PATH/bin/activate
         cd {{.ROOT_DIR}}
-        ruff {{.FIX_FLAG}}  {{.TARGET}} {{.IGNORE_ERRORS}}
+        ruff check {{.FIX_FLAG}} {{.TARGET}} {{.IGNORE_ERRORS}}
     silent: true
     status:
       - '[ {{.TARGET | default "__missing__" }} == "__missing__" ]'
