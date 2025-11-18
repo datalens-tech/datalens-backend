@@ -19,6 +19,7 @@ from dl_api_commons.sentry_config import (
     SentryConfig,
     configure_sentry_for_aiohttp,
 )
+from dl_configs.utils import get_multiple_root_certificates
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.aio.metrics_view import MetricsView
 from dl_core.aio.ping_view import PingView
@@ -67,6 +68,11 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
 
         if (secret_sentry_dsn := self._settings.SENTRY_DSN) is not None:
             self.set_up_sentry(secret_sentry_dsn, app_version)
+
+        ca_data = get_multiple_root_certificates(
+            self._settings.CA_FILE_PATH,
+            *self._settings.EXTRA_CA_FILE_PATHS,
+        )
 
         req_id_service = RequestId(
             append_own_req_id=True,
@@ -121,6 +127,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
             secret_access_key=self._settings.S3.SECRET_ACCESS_KEY,
             endpoint_url=self._settings.S3.ENDPOINT_URL,
             use_virtual_host_addressing=self._settings.S3.USE_VIRTUAL_HOST_ADDRESSING,
+            ca_data=ca_data,
             tmp_bucket_name=self._settings.S3_TMP_BUCKET_NAME,
             persistent_bucket_name=self._settings.S3_PERSISTENT_BUCKET_NAME,
         )
@@ -131,6 +138,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
             access_key_id=self._settings.S3.ACCESS_KEY_ID,
             secret_access_key=self._settings.S3.SECRET_ACCESS_KEY,
             endpoint_url=self._settings.S3.ENDPOINT_URL,
+            ca_data=ca_data,
             tmp_bucket_name=self._settings.S3_TMP_BUCKET_NAME,
             persistent_bucket_name=self._settings.S3_PERSISTENT_BUCKET_NAME,
             # InternalS3Service ignores virtual_host_addressing parameter, so not passing it at all
