@@ -39,22 +39,14 @@ async def fixture_temporal_client(
     temporal_namespace: str,
     temporal_hostport: dl_testing.HostPort,
 ) -> AsyncGenerator[dl_temporal.TemporalClient, None]:
-    client = await dl_temporal.TemporalClient.from_settings(
-        dl_temporal.TemporalClientSettings(
+    client = await dl_temporal.TemporalClient.from_dependencies(
+        dl_temporal.TemporalClientDependencies(
             host=temporal_hostport.host,
             port=temporal_hostport.port,
             namespace=temporal_namespace,
             lazy=False,
         )
     )
-
-    try:
-        await client.register_namespace(
-            namespace=temporal_namespace,
-            workflow_execution_retention_period=datetime.timedelta(days=1),
-        )
-    except dl_temporal.AlreadyExists:
-        pass
 
     await dl_utils.await_for(
         name="temporal client",
@@ -68,3 +60,17 @@ async def fixture_temporal_client(
         yield client
     finally:
         await client.close()
+
+
+@pytest_asyncio.fixture(name="register_namespace", autouse=True)
+async def fixture_register_namespace(
+    temporal_client: dl_temporal.TemporalClient,
+    temporal_namespace: str,
+) -> None:
+    try:
+        await temporal_client.register_namespace(
+            namespace=temporal_namespace,
+            workflow_execution_retention_period=datetime.timedelta(days=1),
+        )
+    except dl_temporal.AlreadyExists:
+        pass

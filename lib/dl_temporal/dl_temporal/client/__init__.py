@@ -1,5 +1,6 @@
 from .client import (
     TemporalClient,
+    TemporalClientDependencies,
     TemporalClientSettings,
 )
 from .exc import (
@@ -9,14 +10,19 @@ from .exc import (
 )
 from .metadata import (
     EmptyMetadataProvider,
+    EmptyMetadataProviderSettings,
     MetadataProvider,
+    MetadataProviderSettings,
 )
 
 
 __all__ = [
-    "MetadataProvider",
     "EmptyMetadataProvider",
+    "EmptyMetadataProviderSettings",
+    "MetadataProvider",
+    "MetadataProviderSettings",
     "TemporalClient",
+    "TemporalClientDependencies",
     "TemporalClientSettings",
     "TemporalClientError",
     "PermissionDenied",

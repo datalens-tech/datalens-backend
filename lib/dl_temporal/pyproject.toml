@@ -8,8 +8,11 @@ readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
+aiohttp = "*"
 attrs = "*"
+dl-json = {path = "../dl_json"}
 dl-pydantic = {path = "../dl_pydantic"}
+dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}
 python = ">=3.10, <3.13"
 temporalio = "*"
@@ -43,3 +46,8 @@ requires = [
 [datalens.pytest.db]
 root_dir = "dl_temporal_tests/"
 target_path = "db"
+
+[datalens.pytest.unit]
+root_dir = "dl_temporal_tests/"
+skip_compose = "true"
+target_path = "unit"
