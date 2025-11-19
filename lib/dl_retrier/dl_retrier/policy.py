@@ -121,30 +121,14 @@ class BaseRetryPolicyFactory(Protocol):
         """
 
 
+@attr.s(kw_only=True, frozen=True, auto_attribs=True)
 class RetryPolicyFactory:
     _default_policy: RetryPolicy
     _policies: frozendict.frozendict[str, RetryPolicy]
 
-    def __init__(
-        self,
-        settings: RetryPolicyFactorySettings,
-    ):
-        # Populate bucket of kitten
-        if settings.DEFAULT_POLICY is not None:
-            self._default_policy = RetryPolicy(
-                total_timeout=settings.DEFAULT_POLICY.total_timeout,
-                connect_timeout=settings.DEFAULT_POLICY.connect_timeout,
-                request_timeout=settings.DEFAULT_POLICY.request_timeout,
-                retries_count=settings.DEFAULT_POLICY.retries_count,
-                retryable_codes=frozenset(settings.DEFAULT_POLICY.retryable_codes),
-                backoff_initial=settings.DEFAULT_POLICY.backoff_initial,
-                backoff_factor=settings.DEFAULT_POLICY.backoff_factor,
-                backoff_max=settings.DEFAULT_POLICY.backoff_max,
-            )
-        else:
-            self._default_policy = DEFAULT_RETRY_POLICY
-
-        policies = {}
+    @classmethod
+    def from_settings(cls, settings: RetryPolicyFactorySettings) -> typing_extensions.Self:
+        policies: dict[str, RetryPolicy] = {}
         for key, policy_settings in settings.RETRY_POLICIES.items():
             policies[key] = RetryPolicy(
                 total_timeout=policy_settings.total_timeout,
@@ -157,11 +141,19 @@ class RetryPolicyFactory:
                 backoff_max=policy_settings.backoff_max,
             )
 
-        self._policies = frozendict.frozendict(policies)
-
-    @classmethod
-    def from_settings(cls, settings: RetryPolicyFactorySettings) -> typing_extensions.Self:
-        return cls(settings=settings)
+        return cls(
+            default_policy=RetryPolicy(
+                total_timeout=settings.DEFAULT_POLICY.total_timeout,
+                connect_timeout=settings.DEFAULT_POLICY.connect_timeout,
+                request_timeout=settings.DEFAULT_POLICY.request_timeout,
+                retries_count=settings.DEFAULT_POLICY.retries_count,
+                retryable_codes=frozenset(settings.DEFAULT_POLICY.retryable_codes),
+                backoff_initial=settings.DEFAULT_POLICY.backoff_initial,
+                backoff_factor=settings.DEFAULT_POLICY.backoff_factor,
+                backoff_max=settings.DEFAULT_POLICY.backoff_max,
+            ),
+            policies=frozendict.frozendict(policies),
+        )
 
     def get_policy(self, name: str | None = None) -> RetryPolicy:
         """

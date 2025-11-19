@@ -41,7 +41,7 @@ class MaintenanceEnvironmentManagerBase:
         return None
 
     def get_retry_policy_factory(self) -> dl_retrier.BaseRetryPolicyFactory:
-        return dl_retrier.RetryPolicyFactory(self.get_app_settings().US_CLIENT.RETRY_POLICY)
+        return dl_retrier.RetryPolicyFactory.from_settings(self.get_app_settings().US_CLIENT.RETRY_POLICY)
 
     def get_ca_data(self) -> bytes:
         settings = self.get_app_settings()

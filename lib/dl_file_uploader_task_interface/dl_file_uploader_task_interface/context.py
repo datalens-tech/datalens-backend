@@ -56,7 +56,7 @@ class FileUploaderTaskContext(BaseContext):
         ).make_service_registry(rci)
 
     def get_retry_policy_factory(self) -> dl_retrier.BaseRetryPolicyFactory:
-        return dl_retrier.RetryPolicyFactory(self.settings.US_CLIENT.RETRY_POLICY)
+        return dl_retrier.RetryPolicyFactory.from_settings(self.settings.US_CLIENT.RETRY_POLICY)
 
     def get_async_usm(self, rci: Optional[RequestContextInfo] = None) -> AsyncUSManager:
         rci = rci or RequestContextInfo.create_empty()
