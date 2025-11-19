@@ -61,15 +61,13 @@ class NoRetriesHttpxClientException(BaseHttpxClientException):
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class HttpxClientSettings:
+class HttpxClientDependencies:
     base_url: str
     base_cookies: dict[str, str] = attrs.field(factory=dict)
     base_headers: dict[str, str] = attrs.field(factory=dict)
 
     ssl_context: ssl.SSLContext = attrs.field(factory=dl_configs.get_default_ssl_context)
-    retry_policy_factory: dl_retrier.RetryPolicyFactorySettings = attrs.field(
-        factory=dl_retrier.RetryPolicyFactorySettings
-    )
+    retry_policy_factory: dl_retrier.BaseRetryPolicyFactory = attrs.field(factory=dl_retrier.DefaultRetryPolicyFactory)
     auth_provider: dl_auth.AuthProviderProtocol = attrs.field(factory=dl_auth.NoAuthProvider)
     logger: logging.Logger = attrs.field(default=LOGGER)
     debug_logging: bool = attrs.field(default=False)
@@ -80,7 +78,7 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
     _base_url: str = attrs.field()
     _base_cookies: dict[str, str]
     _base_headers: dict[str, str]
-    _retry_policy_factory: dl_retrier.RetryPolicyFactory
+    _retry_policy_factory: dl_retrier.BaseRetryPolicyFactory
     _auth_provider: dl_auth.AuthProviderProtocol
     _logger: logging.Logger
     _debug_logging: bool
@@ -88,19 +86,17 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
     _base_client: THttpxClient
 
     @classmethod
-    def from_settings(cls, settings: HttpxClientSettings) -> typing_extensions.Self:
+    def from_dependencies(cls, dependencies: HttpxClientDependencies) -> typing_extensions.Self:
         return cls(
-            base_url=settings.base_url,
-            base_cookies=settings.base_cookies,
-            base_headers=settings.base_headers,
-            retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(
-                settings.retry_policy_factory,
-            ),
-            auth_provider=settings.auth_provider,
-            logger=settings.logger,
-            debug_logging=settings.debug_logging,
+            base_url=dependencies.base_url,
+            base_cookies=dependencies.base_cookies,
+            base_headers=dependencies.base_headers,
+            retry_policy_factory=dependencies.retry_policy_factory,
+            auth_provider=dependencies.auth_provider,
+            logger=dependencies.logger,
+            debug_logging=dependencies.debug_logging,
             base_client=cls._get_client(
-                ssl_context=settings.ssl_context,
+                ssl_context=dependencies.ssl_context,
             ),
         )
 
@@ -362,7 +358,7 @@ __all__ = [
     "HttpxBaseClient",
     "HttpxSyncClient",
     "HttpxAsyncClient",
-    "HttpxClientSettings",
+    "HttpxClientDependencies",
     "HttpxClientT",
     "HttpStatusHttpxClientException",
     "RequestHttpxClientException",

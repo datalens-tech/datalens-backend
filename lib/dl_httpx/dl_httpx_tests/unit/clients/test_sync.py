@@ -28,8 +28,8 @@ def test_get_request(
         headers={"Content-Type": "application/json"},
     )
 
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -53,8 +53,8 @@ def test_post_request(
         headers={"Content-Type": "application/json"},
     )
 
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -84,8 +84,8 @@ def test_custom_headers(
     mock_route = respx_mock.get("https://example.com/api/secure").respond(status_code=200)
     headers = {"Authorization": "Bearer token123", "X-API-Key": "abc456"}
 
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
             base_url="https://example.com",
             base_headers=headers,
             ssl_context=ssl_context,
@@ -108,8 +108,8 @@ def test_error_handling(
     respx_mock.get("https://example.com/api/not-found").respond(status_code=404)
     respx_mock.get("https://example.com/api/forbidden").respond(status_code=403)
 
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -136,8 +136,8 @@ def test_request_with_params(
         json={"results": ["item1", "item2"]},
     )
 
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -160,8 +160,8 @@ def test_cookies_handling(
     mock_route = respx_mock.get("https://example.com/api/profile").respond(status_code=200)
     cookies = {"session": "xyz789", "user_id": "123"}
 
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
             base_url="https://example.com",
             base_cookies=cookies,
             ssl_context=ssl_context,
@@ -188,8 +188,8 @@ def test_binary_response(
         headers={"Content-Type": "application/octet-stream"},
     )
 
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -334,8 +334,8 @@ def test_auth_provider(
     }
 
     mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
-    with dl_httpx.HttpxSyncClient.from_settings(
-        dl_httpx.HttpxClientSettings(
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
             base_url="https://example.com",
             ssl_context=ssl_context,
             auth_provider=mock_auth_provider,
