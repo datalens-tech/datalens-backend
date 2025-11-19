@@ -1,7 +1,12 @@
 import sqlalchemy as sa
+import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_formula.definitions.base import TranslationVariant
-from dl_formula.definitions.common_datetime import DAY_USEC
+from dl_formula.definitions.common_datetime import (
+    DAY_SEC,
+    DAY_USEC,
+    SEC_USEC,
+)
 import dl_formula.definitions.operators_binary as base
 
 from dl_connector_ydb.formula.constants import YqlDialect as D
@@ -24,19 +29,24 @@ DEFINITIONS_BINARY = [
     base.BinaryPlusStrings.for_dialect(D.YQL),
     base.BinaryPlusDateInt(
         variants=[
-            V(D.YQL, lambda date, days: date + sa.func.DateTime.IntervalFromDays(days)),
+            V(D.YQL, lambda date, days: date + sa.func.DateTime.IntervalFromDays(sa.cast(days, ydb_sa.types.Int32))),
         ]
     ),
     base.BinaryPlusDateFloat(
         variants=[
-            V(D.YQL, lambda date, days: date + sa.func.DateTime.IntervalFromDays(sa.cast(days, sa.INTEGER))),
+            V(D.YQL, lambda date, days: date + sa.func.DateTime.IntervalFromDays(sa.cast(days, ydb_sa.types.Int32))),
         ]
     ),
     base.BinaryPlusDatetimeNumber(
         variants=[
             V(
                 D.YQL,
-                lambda date, days: (date + sa.func.DateTime.IntervalFromMicroseconds(base.as_bigint(days * DAY_USEC))),
+                lambda date, days: (
+                    date
+                    + sa.func.DateTime.IntervalFromMicroseconds(
+                        base.as_bigint(days * base.as_bigint(DAY_SEC) * base.as_bigint(SEC_USEC))
+                    )
+                ),
             ),
         ]
     ),
@@ -44,7 +54,12 @@ DEFINITIONS_BINARY = [
         variants=[
             V(
                 D.YQL,
-                lambda dt, days: (dt + sa.func.DateTime.IntervalFromMicroseconds(base.as_bigint(days * DAY_USEC))),
+                lambda dt, days: (
+                    dt
+                    + sa.func.DateTime.IntervalFromMicroseconds(
+                        base.as_bigint(days * base.as_bigint(DAY_SEC) * base.as_bigint(SEC_USEC))
+                    )
+                ),
             ),
         ]
     ),
@@ -57,7 +72,7 @@ DEFINITIONS_BINARY = [
     base.BinaryMinusNumbers.for_dialect(D.YQL),
     base.BinaryMinusDateInt(
         variants=[
-            V(D.YQL, lambda date, days: date - sa.func.DateTime.IntervalFromDays(days)),
+            V(D.YQL, lambda date, days: date - sa.func.DateTime.IntervalFromDays(sa.cast(days, ydb_sa.types.Int32))),
         ]
     ),
     base.BinaryMinusDateFloat(
@@ -65,7 +80,7 @@ DEFINITIONS_BINARY = [
             V(
                 D.YQL,
                 lambda date, days: (
-                    date - sa.func.DateTime.IntervalFromDays(sa.cast(sa.func.Math.Ceil(days), sa.INTEGER))
+                    date - sa.func.DateTime.IntervalFromDays(sa.cast(sa.func.Math.Ceil(days), ydb_sa.types.Int32))
                 ),
             ),
         ]
@@ -74,7 +89,12 @@ DEFINITIONS_BINARY = [
         variants=[
             V(
                 D.YQL,
-                lambda date, days: (date - sa.func.DateTime.IntervalFromMicroseconds(base.as_bigint(days * DAY_USEC))),
+                lambda date, days: (
+                    date
+                    - sa.func.DateTime.IntervalFromMicroseconds(
+                        base.as_bigint(days * base.as_bigint(DAY_SEC) * base.as_bigint(SEC_USEC))
+                    )
+                ),
             ),
         ]
     ),
@@ -82,7 +102,12 @@ DEFINITIONS_BINARY = [
         variants=[
             V(
                 D.YQL,
-                lambda dt, days: (dt - sa.func.DateTime.IntervalFromMicroseconds(base.as_bigint(days * DAY_USEC))),
+                lambda dt, days: (
+                    dt
+                    - sa.func.DateTime.IntervalFromMicroseconds(
+                        base.as_bigint(days * base.as_bigint(DAY_SEC) * base.as_bigint(SEC_USEC))
+                    )
+                ),
             ),
         ]
     ),
