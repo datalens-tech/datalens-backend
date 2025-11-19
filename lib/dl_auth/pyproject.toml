@@ -10,9 +10,9 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 attrs = "*"
 dl-constants = {path = "../dl_constants"}
+dl-settings = {path = "../dl_settings"}
 python = ">=3.10, <3.13"
-
-[tool.poetry.group.tests.dependencies]
+typing-extensions = "*"
 
 [tool.mypy]
 check_untyped_defs = true
