@@ -13,5 +13,5 @@ class DatasetFieldsView(DatasetDataBaseView):
     @DatasetDataBaseView.with_dataset_us_context
     @DatasetDataBaseView.with_resolved_entities
     async def get(self) -> web.Response:
-        fields = get_fields_data_serializable(self.dataset)
+        fields = get_fields_data_serializable(self.dataset, for_result=False)
         return web.json_response(dict(fields=fields, revision_id=self.dataset.revision_id))
