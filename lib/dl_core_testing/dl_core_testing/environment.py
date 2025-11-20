@@ -23,10 +23,6 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-DEFAULT_US_MIGRATIONS = [
-    # TODO change to a more pretty command when it is wrapped in US
-    ["node", "/opt/app/dist/server/platform/src/db/scripts/migrate.js"],
-]
 US_SERVICE_DOCKER_COMPOSE_LABEL = "united-storage"
 
 
@@ -108,13 +104,10 @@ def prepare_united_storage(
     tenant_id: str = "common",
     us_pg_dsn: Optional[str] = None,
     force: bool = False,
-    us_migrations: Optional[list[list[str]]] = None,
 ) -> None:
     if not force and not os.environ.get("CLEAR_US_DATABASE", ""):
         LOGGER.debug("prepare_united_storage: CLEAR_US_DATABASE env is disabled, skipping.")
         return
-    if us_migrations is None:
-        us_migrations = DEFAULT_US_MIGRATIONS
 
     if us_pg_dsn is not None:
         LOGGER.debug("prepare_united_storage: wait for pg-us to be up...")
@@ -130,8 +123,7 @@ def prepare_united_storage(
             with requests.Session() as reqr:
                 resp = reqr.get(f"{us_host}/ping-db", headers=headers)
                 resp.raise_for_status()
-                for migration in us_migrations:
-                    run_cmd_in_containers_by_label(US_SERVICE_DOCKER_COMPOSE_LABEL, migration)
+
                 return True, ""
         except Exception as e:
             logging.exception("_wait_for_us failed with exception")
@@ -151,7 +143,6 @@ def prepare_united_storage_from_config(us_config: UnitedStorageConfiguration) ->
         us_master_token=us_config.us_master_token,
         us_pg_dsn=us_config.us_pg_dsn,
         force=us_config.force,
-        us_migrations=us_config.migrations,
     )
 
 
