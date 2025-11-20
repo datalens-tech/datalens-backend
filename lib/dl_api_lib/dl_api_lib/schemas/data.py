@@ -125,6 +125,7 @@ class FieldsResponseFieldSchema(BaseSchema):
     hidden = ma_fields.Boolean()
     type = ma_fields.Enum(FieldType)
     calc_mode = ma_fields.Enum(CalcMode)
+    ui_settings = ma_fields.String()
 
 
 class DatasetFieldsResponseSchema(BaseSchema):

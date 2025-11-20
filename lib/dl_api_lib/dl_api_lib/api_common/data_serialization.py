@@ -174,6 +174,7 @@ def get_fields_data_raw(dataset: Dataset, for_result: bool = False) -> list[dict
                 {
                     "hidden": fld.hidden,
                     "type": fld.type,
+                    "ui_settings": fld.ui_settings,
                 }
                 if not for_result
                 else {}
