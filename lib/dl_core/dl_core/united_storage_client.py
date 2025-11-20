@@ -240,6 +240,7 @@ class UStorageClientBase:
             pass
 
     ERROR_MAP: list[tuple[int, re.Pattern | None, type[exc.USReqException]]] = [
+        (400, re.compile("Validation error"), exc.USValidationException),
         (400, None, exc.USBadRequestException),
         (403, None, exc.USAccessDeniedException),
         (403, re.compile("Workbook isolation interruption"), exc.USWorkbookIsolationInterruptionException),

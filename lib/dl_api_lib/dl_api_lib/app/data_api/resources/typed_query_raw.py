@@ -71,7 +71,14 @@ class DashSQLTypedQueryRawView(BaseView):
         """Get connection object from the ID in the URL"""
         connection_id = self.connection_id
         assert connection_id
-        connection = await self.dl_request.us_manager.get_by_id(connection_id, ConnectionBase)
+        try:
+            connection = await self.dl_request.us_manager.get_by_id(connection_id, ConnectionBase)
+        except core_exc.USValidationException:
+            raise core_exc.USInvalidConnectionID(params={"entry_id": connection_id})
+        except core_exc.USObjectNotFoundException:
+            raise core_exc.USConnectionNotFound(params={"entry_id": connection_id})
+        except core_exc.USAccessDeniedException:
+            raise core_exc.USConnectionAccessDenied(params={"entry_id": connection_id})
         assert isinstance(connection, ConnectionBase)
         return connection
 

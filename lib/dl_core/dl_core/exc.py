@@ -5,6 +5,7 @@ from typing import (
     Optional,
 )
 
+import aiohttp
 import requests
 
 from dl_constants.exc import DLBaseException
@@ -237,23 +238,50 @@ class USReqException(DLBaseException):
 
 
 class USObjectNotFoundException(USReqException):
-    default_message = "Object not found"
     err_code = USReqException.err_code + ["OBJ_NOT_FOUND"]
+    default_message = "Object not found"
 
 
 class USAccessDeniedException(USReqException):
-    default_message = "Access denied"
     err_code = USReqException.err_code + ["ACCESS_DENIED"]
+    default_message = "Access denied"
+
+
+class USValidationException(USReqException):
+    err_code = USReqException.err_code + ["VALIDATION_FAILED"]
+    default_message = "Invalid input data: validation failed"
+
+
+class USConnectionNotFound(USObjectNotFoundException):
+    err_code = USObjectNotFoundException.err_code + ["CONNECTION"]
+    default_message = "Connection not found"
+    formatting_messages = {
+        frozenset(
+            {"entry_id"}
+        ): "Connection with ID `{entry_id}` not found. Please check that the connection ID is correct."
+    }
+
+
+class USConnectionAccessDenied(USAccessDeniedException):
+    err_code = USAccessDeniedException.err_code + ["CONNECTION"]
+    default_message = "Access to the connection was denied"
+    formatting_messages = {frozenset({"entry_id"}): "Access to the connection with ID `{entry_id}` was denied."}
+
+
+class USInvalidConnectionID(USValidationException):
+    err_code = USValidationException.err_code + ["CONNECTION"]
+    default_message = "Invalid connection ID"
+    formatting_messages = {frozenset({"entry_id"}): "Invalid connection ID: `{entry_id}`."}
 
 
 class USWorkbookIsolationInterruptionException(USReqException):
-    default_message = "Workbook isolation interruption"
     err_code = USReqException.err_code + ["WORKBOOK_ISOLATION_INTERRUPTION"]
+    default_message = "Workbook isolation interruption"
 
 
 class USLockUnacquiredException(USReqException):
-    default_message = "Object locked"
     err_code = USReqException.err_code + ["ENTRY_LOCKED"]
+    default_message = "Object locked"
 
 
 class USPermissionCheckError(USReqException):
@@ -281,7 +309,8 @@ class USBadRequestException(USReqException):
             if self.orig_exc and isinstance(self.orig_exc.response, requests.Response):  # type: ignore  # 2024-01-24 # TODO: "Exception" has no attribute "response"  [attr-defined]
                 return self.orig_exc.response.json()["message"]  # type: ignore  # 2024-01-24 # TODO: "Exception" has no attribute "response"  [attr-defined]
         except (ValueError, KeyError, AttributeError):
-            pass
+            if isinstance(self.orig_exc, aiohttp.ClientResponseError):
+                return self.orig_exc.message
         return super().message
 
 
