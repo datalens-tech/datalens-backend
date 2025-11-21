@@ -52,6 +52,18 @@ class TemporalWorkerAppFactoryMixin(
 
         return result
 
+    @override
+    @singleton_utils.singleton_class_method_result
+    async def _get_shutdown_callbacks(
+        self,
+    ) -> list[app_utils.Callback]:
+        result = await super()._get_shutdown_callbacks()
+
+        temporal_client = await self._get_temporal_client()
+        result.append(app_utils.Callback(name="temporal_client", coroutine=temporal_client.close()))
+
+        return result
+
     @singleton_utils.singleton_class_method_result
     async def _get_temporal_client(
         self,
