@@ -21,6 +21,7 @@ import typing_extensions
 
 import dl_auth
 import dl_configs
+from dl_httpx.models import BaseRequest
 import dl_retrier
 
 
@@ -122,7 +123,17 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
             result.update(cookies)
         return result
 
-    def prepare_request(
+    def prepare_request(self, request: BaseRequest) -> httpx.Request:
+        return self.prepare_raw_request(
+            method=request.method,
+            url=request.path,
+            headers=request.headers,
+            cookies=request.cookies,
+            params=request.query_params,
+            json=request.body,
+        )
+
+    def prepare_raw_request(
         self,
         method: str,
         url: str,

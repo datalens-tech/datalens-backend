@@ -36,7 +36,7 @@ async def test_get_request(
             ssl_context=ssl_context,
         ),
     ) as client:
-        request = client.prepare_request("GET", "/api/data")
+        request = client.prepare_raw_request("GET", "/api/data")
         async with client.send(request) as response:
             assert response.status_code == 200
             assert response.json() == {"message": "Success", "data": [1, 2, 3]}
@@ -63,7 +63,7 @@ async def test_post_request(
         ),
     ) as client:
         payload = {"name": "New Item", "description": "A new item"}
-        request = client.prepare_request(
+        request = client.prepare_raw_request(
             "POST",
             "/api/items",
             json=payload,
@@ -95,7 +95,7 @@ async def test_custom_headers(
             ssl_context=ssl_context,
         ),
     ) as client:
-        request = client.prepare_request("GET", "/api/secure")
+        request = client.prepare_raw_request("GET", "/api/secure")
         async with client.send(request) as response:
             assert response.status_code == 200
 
@@ -119,13 +119,13 @@ async def test_error_handling(
             ssl_context=ssl_context,
         ),
     ) as client:
-        request = client.prepare_request("GET", "/api/not-found")
+        request = client.prepare_raw_request("GET", "/api/not-found")
         with pytest.raises(dl_httpx.HttpStatusHttpxClientException) as excinfo:
             async with client.send(request):
                 pass
         assert excinfo.value.response.status_code == 404
 
-        request = client.prepare_request("GET", "/api/forbidden")
+        request = client.prepare_raw_request("GET", "/api/forbidden")
         with pytest.raises(dl_httpx.HttpStatusHttpxClientException) as excinfo:
             async with client.send(request):
                 pass
@@ -149,7 +149,7 @@ async def test_request_with_params(
         ),
     ) as client:
         params = {"q": "test", "limit": "10", "offset": "0"}
-        request = client.prepare_request("GET", "/api/search", params=params)
+        request = client.prepare_raw_request("GET", "/api/search", params=params)
         async with client.send(request) as response:
             assert response.status_code == 200
             assert response.json() == {"results": ["item1", "item2"]}
@@ -174,7 +174,7 @@ async def test_cookies_handling(
             ssl_context=ssl_context,
         ),
     ) as client:
-        request = client.prepare_request("GET", "/api/profile")
+        request = client.prepare_raw_request("GET", "/api/profile")
         async with client.send(request) as response:
             assert response.status_code == 200
 
@@ -202,7 +202,7 @@ async def test_binary_response(
             ssl_context=ssl_context,
         ),
     ) as client:
-        request = client.prepare_request("GET", "/api/files/download")
+        request = client.prepare_raw_request("GET", "/api/files/download")
         async with client.send(request) as response:
             assert response.status_code == 200
             assert response.content == binary_data
@@ -246,7 +246,7 @@ async def test_retry_default(
         json=json_data,
     )
 
-    request = mocked_client.prepare_request("GET", "/api/data")
+    request = mocked_client.prepare_raw_request("GET", "/api/data")
     async with mocked_client.send(request, retry_policy_name=mock_retry_policy_name) as response:
         assert response.status_code == status_code
         assert response.json() == json_data
@@ -281,7 +281,7 @@ async def test_retry_retriable_code(
     )
     mock_retry_policy.can_retry_error.return_value = True
 
-    request = mocked_client.prepare_request("GET", "/api/data")
+    request = mocked_client.prepare_raw_request("GET", "/api/data")
     async with mocked_client.send(request) as response:
         assert response.status_code == status_code
         assert response.json() == json_data
@@ -297,7 +297,7 @@ async def test_retry_client_error(
     base_client_error = httpx.ConnectError("Connection refused")
     mock_route = respx_mock.get("https://example.com/api/data").mock(side_effect=base_client_error)
 
-    request = mocked_client.prepare_request("GET", "/api/data")
+    request = mocked_client.prepare_raw_request("GET", "/api/data")
     with pytest.raises(dl_httpx.RequestHttpxClientException) as excinfo:
         async with mocked_client.send(request):
             pass
@@ -322,7 +322,7 @@ async def test_retry_no_retries(
 
     mock_retry_policy.iter_retries.return_value = iter([])
 
-    request = mocked_client.prepare_request("GET", "/api/data")
+    request = mocked_client.prepare_raw_request("GET", "/api/data")
 
     with pytest.raises(dl_httpx.NoRetriesHttpxClientException):
         async with mocked_client.send(request):
@@ -354,7 +354,7 @@ async def test_auth_provider(
             auth_provider=mock_auth_provider,
         ),
     ) as client:
-        request = client.prepare_request("GET", "/api/data")
+        request = client.prepare_raw_request("GET", "/api/data")
         async with client.send(request) as response:
             assert response.status_code == 200
 
