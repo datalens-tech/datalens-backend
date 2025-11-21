@@ -1906,6 +1906,8 @@ develop = true
 [package.dependencies]
 attrs = "*"
 dl-constants = {path = "../dl_constants"}
+dl-settings = {path = "../dl_settings"}
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -3013,6 +3015,7 @@ develop = true
 attrs = "*"
 dl-auth = {path = "../dl_auth"}
 dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
 dl-pydantic = {path = "../dl_pydantic"}
 dl-retrier = {path = "../dl_retrier"}
 dl-testing = {path = "../dl_testing"}
