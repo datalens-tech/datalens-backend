@@ -8,6 +8,7 @@ import temporalio.client
 import temporalio.service
 from typing_extensions import Self
 
+import dl_settings
 import dl_temporal.base as base
 import dl_temporal.client.exc as exc
 import dl_temporal.client.metadata as metadata
@@ -16,8 +17,16 @@ import dl_temporal.client.metadata as metadata
 LOGGER = logging.getLogger(__name__)
 
 
+class TemporalClientSettings(dl_settings.BaseSettings):
+    host: str
+    port: int
+    tls: bool
+    namespace: str
+    metadata_provider: dl_settings.TypedAnnotation[metadata.MetadataProviderSettings]
+
+
 @attrs.define(kw_only=True, frozen=True)
-class TemporalClientSettings:
+class TemporalClientDependencies:
     namespace: str
     host: str
     port: int = 7233
@@ -38,15 +47,15 @@ class TemporalClient:
     _update_metadata_task: asyncio.Task = attrs.field(init=False)
 
     @classmethod
-    async def from_settings(cls, settings: TemporalClientSettings) -> Self:
-        metadata_provider = settings.metadata_provider
+    async def from_dependencies(cls, dependencies: TemporalClientDependencies) -> Self:
+        metadata_provider = dependencies.metadata_provider
         rpc_metadata = await metadata_provider.get_metadata()
 
         temporal_client = await temporalio.client.Client.connect(
-            target_host=settings.target_host,
-            namespace=settings.namespace,
-            lazy=settings.lazy,
-            tls=settings.tls,
+            target_host=dependencies.target_host,
+            namespace=dependencies.namespace,
+            lazy=dependencies.lazy,
+            tls=dependencies.tls,
             rpc_metadata=rpc_metadata,
             data_converter=base.DataConverter(),
         )
@@ -89,6 +98,7 @@ class TemporalClient:
                 timeout=datetime.timedelta(seconds=1),
             )
         except Exception:
+            LOGGER.exception("Temporal client health check failed")
             return False
 
     async def check_auth(self) -> bool:

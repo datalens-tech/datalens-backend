@@ -1,47 +1,22 @@
 import datetime
-import logging
-from typing import AsyncGenerator
 import uuid
 
 import pytest
-import pytest_asyncio
-import temporalio.worker
 
 import dl_pydantic
 import dl_temporal
-import dl_temporal.testing as dl_temporal_testing
-import dl_temporal_tests.db.worker.activities as activities
-import dl_temporal_tests.db.worker.workflows as workflows
-import dl_testing
+import dl_temporal_tests.db.workflows as workflows
 
 
-@pytest.fixture(name="temporal_queue_name")
-def fixture_temporal_queue_name() -> str:
-    return "test_queue_name"
-
-
-@pytest_asyncio.fixture(name="temporal_worker", autouse=True)
-async def fixture_temporal_worker(
-    temporal_client: dl_temporal.TemporalClient,
-    temporal_queue_name: str,
-    temporal_ui_hostport: dl_testing.HostPort,
-) -> AsyncGenerator[temporalio.worker.Worker, None]:
-    worker = dl_temporal.create_worker(
-        task_queue=temporal_queue_name,
-        client=temporal_client,
-        workflows=[workflows.Workflow],
-        activities=[activities.Activity()],
-    )
-    logging.info(f"Temporal UI URL: http://{temporal_ui_hostport.host}:{temporal_ui_hostport.port}")
-
-    async with dl_temporal_testing.worker_run_context(worker=worker) as worker:
-        yield worker
+@pytest.fixture(name="temporal_task_queue")
+def fixture_temporal_task_queue() -> str:
+    return "tests/db/app/test_worker"
 
 
 @pytest.mark.asyncio
 async def test_default(
     temporal_client: dl_temporal.TemporalClient,
-    temporal_queue_name: str,
+    temporal_task_queue: str,
 ) -> None:
     random_id = uuid.uuid4()
 
@@ -61,7 +36,7 @@ async def test_default(
         workflows.Workflow,
         params,
         id=str(random_id),
-        task_queue=temporal_queue_name,
+        task_queue=temporal_task_queue,
     )
 
     result: workflows.WorkflowResult = await workflow_handler.result()

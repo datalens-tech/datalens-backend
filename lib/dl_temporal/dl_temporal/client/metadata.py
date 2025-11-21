@@ -5,6 +5,8 @@ from typing import Mapping
 
 import attrs
 
+import dl_settings
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -27,7 +29,22 @@ class MetadataProvider(abc.ABC):
         pass
 
 
+class MetadataProviderSettings(dl_settings.TypedBaseSettings):
+    ...
+
+
+class EmptyMetadataProviderSettings(MetadataProviderSettings):
+    ...
+
+
+MetadataProviderSettings.register("empty", EmptyMetadataProviderSettings)
+
+
 @attrs.define(kw_only=True, frozen=True)
 class EmptyMetadataProvider(MetadataProvider):
+    @classmethod
+    def from_settings(cls, settings: MetadataProviderSettings) -> "EmptyMetadataProvider":
+        return cls()
+
     async def get_metadata(self) -> Mapping[str, str]:
         return {}
