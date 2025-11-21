@@ -35,7 +35,7 @@ class BaseRequest:
         return None
 
     @property
-    def headers(self) -> dict[str, str] | None:
+    def headers(self) -> dict[str, str]:
         return {
             dl_constants.DLHeadersCommon.REQUEST_ID.value: self.request_id,
         }
