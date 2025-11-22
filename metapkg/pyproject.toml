@@ -103,6 +103,8 @@ dl-api-commons = {develop = true, path = "../lib/dl_api_commons"}
 dl-api-connector = {develop = true, path = "../lib/dl_api_connector"}
 dl-api-lib = {develop = true, path = "../lib/dl_api_lib"}
 dl-api-lib-testing = {develop = true, path = "../lib/dl_api_lib_testing"}
+dl-app-api-base = {develop = true, path = "../lib/dl_app_api_base"}
+dl-app-base = {develop = true, path = "../lib/dl_app_base"}
 dl-app-tools = {develop = true, path = "../lib/dl_app_tools"}
 dl-attrs-model-mapper = {develop = true, path = "../lib/dl_attrs_model_mapper"}
 dl-attrs-model-mapper-doc-tools = {develop = true, path = "../lib/dl_attrs_model_mapper_doc_tools"}
