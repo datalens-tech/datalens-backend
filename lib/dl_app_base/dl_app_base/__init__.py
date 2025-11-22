@@ -11,6 +11,10 @@ from .exceptions import (
     UnexpectedFinishError,
 )
 from .models import Callback
+from .singleton import (
+    singleton_class_method_result,
+    singleton_function_result,
+)
 
 
 __all__ = [
@@ -23,4 +27,6 @@ __all__ = [
     "ShutdownError",
     "RunError",
     "UnexpectedFinishError",
+    "singleton_function_result",
+    "singleton_class_method_result",
 ]

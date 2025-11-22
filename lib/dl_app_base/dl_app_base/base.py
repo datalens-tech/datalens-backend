@@ -15,10 +15,10 @@ from typing import (
 import attr
 from typing_extensions import Self
 
+import dl_app_base.exceptions as exceptions
+import dl_app_base.models as models
+import dl_app_base.singleton as singleton
 import dl_settings
-import dl_temporal.utils.app.exceptions as app_exceptions
-import dl_temporal.utils.app.models as app_models
-import dl_temporal.utils.singleton as singleton_utils
 
 
 class BaseAppSettings(dl_settings.BaseRootSettings):
@@ -40,24 +40,24 @@ class AppState:
 
 @attr.define(frozen=True, kw_only=True)
 class BaseApp:
-    _startup_callbacks: list[app_models.Callback] = attr.field(factory=list)
-    _shutdown_callbacks: list[app_models.Callback] = attr.field(factory=list)
-    _main_callbacks: list[app_models.Callback] = attr.field(factory=list)
+    _startup_callbacks: list[models.Callback] = attr.field(factory=list)
+    _shutdown_callbacks: list[models.Callback] = attr.field(factory=list)
+    _main_callbacks: list[models.Callback] = attr.field(factory=list)
 
     logger: logging.Logger
 
     _state: AppState = attr.field(factory=AppState)
 
     @property
-    def startup_callbacks(self) -> Iterator[app_models.Callback]:
+    def startup_callbacks(self) -> Iterator[models.Callback]:
         yield from self._startup_callbacks
 
     @property
-    def shutdown_callbacks(self) -> Iterator[app_models.Callback]:
+    def shutdown_callbacks(self) -> Iterator[models.Callback]:
         yield from self._shutdown_callbacks
 
     @property
-    def main_callbacks(self) -> Iterator[app_models.Callback]:
+    def main_callbacks(self) -> Iterator[models.Callback]:
         yield from self._main_callbacks
 
     async def on_startup(self) -> None:
@@ -70,7 +70,7 @@ class BaseApp:
                 message = f"Failed to startup due to failed StartupCallback({callback.name})"
                 if callback.exception:
                     self.logger.exception(message)
-                    raise app_exceptions.StartupError(message) from e
+                    raise exceptions.StartupError(message) from e
                 else:
                     self.logger.warning(message)
             else:
@@ -86,7 +86,7 @@ class BaseApp:
                 message = f"Failed to shutdown due to failed ShutdownCallback({callback.name})"
                 if callback.exception:
                     self.logger.exception(message)
-                    raise app_exceptions.ShutdownError(message) from e
+                    raise exceptions.ShutdownError(message) from e
                 else:
                     self.logger.warning(message)
             else:
@@ -114,10 +114,10 @@ class BaseApp:
             raise
         except Exception as e:
             self.logger.exception("An error occurred during the main tasks execution")
-            raise app_exceptions.RunError from e
+            raise exceptions.RunError from e
         else:
             self.logger.error("Some tasks finished unexpectedly")
-            raise app_exceptions.UnexpectedFinishError
+            raise exceptions.UnexpectedFinishError
         finally:
             finished_unexpectedly: list[asyncio.Task[None]] = []
             finished_with_exception: list[asyncio.Task[None]] = []
@@ -204,26 +204,26 @@ class BaseAppFactory(Generic[AppType]):
             logger=await self._get_logger(),
         )
 
-    @singleton_utils.singleton_class_method_result
+    @singleton.singleton_class_method_result
     async def _get_startup_callbacks(
         self,
-    ) -> list[app_models.Callback]:
+    ) -> list[models.Callback]:
         return []
 
-    @singleton_utils.singleton_class_method_result
+    @singleton.singleton_class_method_result
     async def _get_shutdown_callbacks(
         self,
-    ) -> list[app_models.Callback]:
+    ) -> list[models.Callback]:
         return []
 
-    @singleton_utils.singleton_class_method_result
+    @singleton.singleton_class_method_result
     async def _get_main_callbacks(
         self,
-    ) -> list[app_models.Callback]:
+    ) -> list[models.Callback]:
         return []
 
     @abc.abstractmethod
-    @singleton_utils.singleton_class_method_result
+    @singleton.singleton_class_method_result
     async def _get_logger(
         self,
     ) -> logging.Logger:

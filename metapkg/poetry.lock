@@ -1838,6 +1838,32 @@ type = "directory"
 url = "../lib/dl_api_lib_testing"
 
 [[package]]
+name = "dl-app-api-base"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.source]
+type = "directory"
+url = "../lib/dl_app_api_base"
+
+[[package]]
+name = "dl-app-base"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.source]
+type = "directory"
+url = "../lib/dl_app_base"
+
+[[package]]
 name = "dl-app-tools"
 version = "0.0.1"
 description = ""
@@ -3507,8 +3533,11 @@ files = []
 develop = true
 
 [package.dependencies]
+aiohttp = "*"
 attrs = "*"
+dl-json = {path = "../dl_json"}
 dl-pydantic = {path = "../dl_pydantic"}
+dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}
 temporalio = "*"
 typing-extensions = "*"
@@ -9232,4 +9261,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "288570b628ff21707a20974fd2f181f451c48ccb9d5d3d6031808fba0776ef8a"
+content-hash = "35579164b6eb953541075ce563513fbc1c91b373a4d7cacef1ae5e60787a3f6d"
