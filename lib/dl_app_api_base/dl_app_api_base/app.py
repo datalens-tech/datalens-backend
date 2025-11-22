@@ -7,11 +7,10 @@ import aiohttp.web
 import attr
 from typing_extensions import override
 
+import dl_app_api_base.handlers as handlers
+import dl_app_api_base.printer as printer
+import dl_app_base
 import dl_settings
-import dl_temporal.utils.aiohttp.handlers as aiohttp_handlers
-import dl_temporal.utils.aiohttp.printer as aiohttp_printer
-import dl_temporal.utils.app as app_utils
-import dl_temporal.utils.singleton as singleton_utils
 
 
 class HttpServerSettings(dl_settings.BaseSettings):
@@ -19,12 +18,12 @@ class HttpServerSettings(dl_settings.BaseSettings):
     port: int
 
 
-class HttpServerAppSettingsMixin(app_utils.BaseAppSettings):
+class HttpServerAppSettingsMixin(dl_app_base.BaseAppSettings):
     http_server: HttpServerSettings = NotImplemented
 
 
 @attr.define(frozen=True, kw_only=True)
-class HttpServerAppMixin(app_utils.BaseApp):
+class HttpServerAppMixin(dl_app_base.BaseApp):
     ...
 
 
@@ -33,25 +32,25 @@ AppType = TypeVar("AppType", bound=HttpServerAppMixin)
 
 @attr.define(kw_only=True, slots=False)
 class HttpServerAppFactoryMixin(
-    app_utils.BaseAppFactory[AppType],
+    dl_app_base.BaseAppFactory[AppType],
     Generic[AppType],
 ):
     settings: HttpServerAppSettingsMixin
 
     @override
-    @singleton_utils.singleton_class_method_result
+    @dl_app_base.singleton_class_method_result
     async def _get_main_callbacks(
         self,
-    ) -> list[app_utils.Callback]:
+    ) -> list[dl_app_base.Callback]:
         result = await super()._get_main_callbacks()
 
         result.append(
-            app_utils.Callback(
+            dl_app_base.Callback(
                 coroutine=aiohttp.web._run_app(
                     app=await self._get_aiohttp_app(),
                     host=self.settings.http_server.host,
                     port=self.settings.http_server.port,
-                    print=aiohttp_printer.PrintLogger(),
+                    print=printer.PrintLogger(),
                 ),
                 name="run_http_server",
             ),
@@ -59,7 +58,7 @@ class HttpServerAppFactoryMixin(
 
         return result
 
-    @singleton_utils.singleton_class_method_result
+    @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_app(
         self,
     ) -> aiohttp.web.Application:
@@ -69,7 +68,7 @@ class HttpServerAppFactoryMixin(
         )
         return app
 
-    @singleton_utils.singleton_class_method_result
+    @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_app_routes(
         self,
     ) -> list[aiohttp.web.RouteDef]:
@@ -95,24 +94,24 @@ class HttpServerAppFactoryMixin(
 
         return result
 
-    @singleton_utils.singleton_class_method_result
+    @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_liveness_probe_handler(
         self,
-    ) -> aiohttp_handlers.LivenessProbeHandler:
-        return aiohttp_handlers.LivenessProbeHandler()
+    ) -> handlers.LivenessProbeHandler:
+        return handlers.LivenessProbeHandler()
 
-    @singleton_utils.singleton_class_method_result
+    @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_readiness_probe_handler(
         self,
-    ) -> aiohttp_handlers.ReadinessProbeHandler:
+    ) -> handlers.ReadinessProbeHandler:
         subsystems = await self._get_aiohttp_subsystem_readiness_callbacks()
 
-        return aiohttp_handlers.ReadinessProbeHandler(
+        return handlers.ReadinessProbeHandler(
             subsystems=subsystems,
         )
 
-    @singleton_utils.singleton_class_method_result
+    @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_subsystem_readiness_callbacks(
         self,
-    ) -> list[aiohttp_handlers.SubsystemReadinessCallback]:
+    ) -> list[handlers.SubsystemReadinessCallback]:
         return []

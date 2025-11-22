@@ -8,11 +8,10 @@ import attr
 import temporalio.worker
 from typing_extensions import override
 
+import dl_app_base
 import dl_settings
 import dl_temporal.base as base
 import dl_temporal.client as client
-import dl_temporal.utils.app as app_utils
-import dl_temporal.utils.singleton as singleton_utils
 import dl_temporal.worker as worker
 
 
@@ -20,13 +19,13 @@ class TemporalWorkerSettings(dl_settings.BaseSettings):
     task_queue: str
 
 
-class TemporalWorkerAppSettingsMixin(app_utils.BaseAppSettings):
+class TemporalWorkerAppSettingsMixin(dl_app_base.BaseAppSettings):
     temporal_client: client.TemporalClientSettings = NotImplemented
     temporal_worker: TemporalWorkerSettings = NotImplemented
 
 
 @attr.define(frozen=True, kw_only=True)
-class TemporalWorkerAppMixin(app_utils.BaseApp):
+class TemporalWorkerAppMixin(dl_app_base.BaseApp):
     ...
 
 
@@ -35,36 +34,36 @@ AppType = TypeVar("AppType", bound=TemporalWorkerAppMixin)
 
 @attr.define(kw_only=True, slots=False)
 class TemporalWorkerAppFactoryMixin(
-    app_utils.BaseAppFactory[AppType],
+    dl_app_base.BaseAppFactory[AppType],
     Generic[AppType],
 ):
     settings: TemporalWorkerAppSettingsMixin
 
     @override
-    @singleton_utils.singleton_class_method_result
+    @dl_app_base.singleton_class_method_result
     async def _get_main_callbacks(
         self,
-    ) -> list[app_utils.Callback]:
+    ) -> list[dl_app_base.Callback]:
         result = await super()._get_main_callbacks()
 
         temporal_worker = await self._get_temporal_worker()
-        result.append(app_utils.Callback(name="temporal_worker", coroutine=temporal_worker.run()))
+        result.append(dl_app_base.Callback(name="temporal_worker", coroutine=temporal_worker.run()))
 
         return result
 
     @override
-    @singleton_utils.singleton_class_method_result
+    @dl_app_base.singleton_class_method_result
     async def _get_shutdown_callbacks(
         self,
-    ) -> list[app_utils.Callback]:
+    ) -> list[dl_app_base.Callback]:
         result = await super()._get_shutdown_callbacks()
 
         temporal_client = await self._get_temporal_client()
-        result.append(app_utils.Callback(name="temporal_client", coroutine=temporal_client.close()))
+        result.append(dl_app_base.Callback(name="temporal_client", coroutine=temporal_client.close()))
 
         return result
 
-    @singleton_utils.singleton_class_method_result
+    @dl_app_base.singleton_class_method_result
     async def _get_temporal_client(
         self,
     ) -> client.TemporalClient:
@@ -79,7 +78,7 @@ class TemporalWorkerAppFactoryMixin(
             ),
         )
 
-    @singleton_utils.singleton_class_method_result
+    @dl_app_base.singleton_class_method_result
     async def _get_temporal_worker(
         self,
     ) -> temporalio.worker.Worker:
@@ -91,21 +90,21 @@ class TemporalWorkerAppFactoryMixin(
         )
 
     @abc.abstractmethod
-    @singleton_utils.singleton_class_method_result
+    @dl_app_base.singleton_class_method_result
     async def _get_temporal_workflows(
         self,
     ) -> list[type[base.WorkflowProtocol]]:
         ...
 
     @abc.abstractmethod
-    @singleton_utils.singleton_class_method_result
+    @dl_app_base.singleton_class_method_result
     async def _get_temporal_activities(
         self,
     ) -> list[base.ActivityProtocol]:
         ...
 
     @abc.abstractmethod
-    @singleton_utils.singleton_class_method_result
+    @dl_app_base.singleton_class_method_result
     async def _get_temporal_client_metadata_provider(
         self,
     ) -> client.MetadataProvider:
