@@ -1,10 +1,10 @@
 import pytest
 
-import dl_temporal.utils.singleton as singleton_utils
+import dl_app_base
 
 
 def test_sync_function_same_result() -> None:
-    @singleton_utils.singleton_function_result
+    @dl_app_base.singleton_function_result
     def test_func() -> object:
         return object()
 
@@ -17,7 +17,7 @@ def test_sync_function_same_result() -> None:
 def test_sync_function_result() -> None:
     value = object()
 
-    @singleton_utils.singleton_function_result
+    @dl_app_base.singleton_function_result
     def test_func() -> object:
         return value
 
@@ -25,7 +25,7 @@ def test_sync_function_result() -> None:
 
 
 def test_sync_function_with_args() -> None:
-    @singleton_utils.singleton_function_result
+    @dl_app_base.singleton_function_result
     def test_func(arg: int) -> int:
         return arg
 
@@ -34,7 +34,7 @@ def test_sync_function_with_args() -> None:
 
 
 def test_sync_function_with_kwargs() -> None:
-    @singleton_utils.singleton_function_result
+    @dl_app_base.singleton_function_result
     def test_func(arg: int) -> int:
         return arg
 
@@ -44,7 +44,7 @@ def test_sync_function_with_kwargs() -> None:
 
 @pytest.mark.asyncio
 async def test_async_function_same_result() -> None:
-    @singleton_utils.singleton_function_result
+    @dl_app_base.singleton_function_result
     async def test_func() -> object:
         return object()
 
@@ -58,7 +58,7 @@ async def test_async_function_same_result() -> None:
 async def test_async_function_result() -> None:
     value = object()
 
-    @singleton_utils.singleton_function_result
+    @dl_app_base.singleton_function_result
     async def test_func() -> object:
         return value
 
@@ -67,7 +67,7 @@ async def test_async_function_result() -> None:
 
 @pytest.mark.asyncio
 async def test_async_function_with_args() -> None:
-    @singleton_utils.singleton_function_result
+    @dl_app_base.singleton_function_result
     async def test_func(arg: int) -> int:
         return arg
 
@@ -77,7 +77,7 @@ async def test_async_function_with_args() -> None:
 
 @pytest.mark.asyncio
 async def test_async_function_with_kwargs() -> None:
-    @singleton_utils.singleton_function_result
+    @dl_app_base.singleton_function_result
     async def test_func(arg: int) -> int:
         return arg
 
@@ -87,7 +87,7 @@ async def test_async_function_with_kwargs() -> None:
 
 def test_sync_class_method_same_result() -> None:
     class TestClass:
-        @singleton_utils.singleton_class_method_result
+        @dl_app_base.singleton_class_method_result
         def test_func(self) -> object:
             return object()
 
@@ -100,7 +100,7 @@ def test_sync_class_method_same_result() -> None:
 
 def test_sync_class_method_unique_per_instance() -> None:
     class TestClass:
-        @singleton_utils.singleton_class_method_result
+        @dl_app_base.singleton_class_method_result
         def test_func(self) -> object:
             return object()
 
@@ -117,7 +117,7 @@ def test_sync_class_method_result() -> None:
     value = object()
 
     class TestClass:
-        @singleton_utils.singleton_class_method_result
+        @dl_app_base.singleton_class_method_result
         def test_func(self) -> object:
             return value
 
@@ -128,7 +128,7 @@ def test_sync_class_method_result() -> None:
 
 def test_sync_class_method_with_args() -> None:
     class TestClass:
-        @singleton_utils.singleton_class_method_result
+        @dl_app_base.singleton_class_method_result
         def test_func(self, arg: int) -> int:
             return arg
 
@@ -140,7 +140,7 @@ def test_sync_class_method_with_args() -> None:
 
 def test_sync_class_method_with_kwargs() -> None:
     class TestClass:
-        @singleton_utils.singleton_class_method_result
+        @dl_app_base.singleton_class_method_result
         def test_func(self, arg: int) -> int:
             return arg
 
@@ -153,7 +153,7 @@ def test_sync_class_method_with_kwargs() -> None:
 @pytest.mark.asyncio
 async def test_async_class_method_same_result() -> None:
     class TestClass:
-        @singleton_utils.singleton_class_method_result
+        @dl_app_base.singleton_class_method_result
         async def test_func(self) -> object:
             return object()
 
@@ -167,7 +167,7 @@ async def test_async_class_method_same_result() -> None:
 @pytest.mark.asyncio
 async def test_async_class_method_unique_per_instance() -> None:
     class TestClass:
-        @singleton_utils.singleton_class_method_result
+        @dl_app_base.singleton_class_method_result
         async def test_func(self) -> object:
             return object()
 
@@ -185,7 +185,7 @@ async def test_async_class_method_result() -> None:
     value = object()
 
     class TestClass:
-        @singleton_utils.singleton_class_method_result
+        @dl_app_base.singleton_class_method_result
         async def test_func(self) -> object:
             return value
 
@@ -197,7 +197,7 @@ async def test_async_class_method_result() -> None:
 @pytest.mark.asyncio
 async def test_async_class_method_with_args() -> None:
     class TestClass:
-        @singleton_utils.singleton_class_method_result
+        @dl_app_base.singleton_class_method_result
         async def test_func(self, arg: int) -> int:
             return arg
 
@@ -210,7 +210,7 @@ async def test_async_class_method_with_args() -> None:
 @pytest.mark.asyncio
 async def test_async_class_method_with_kwargs() -> None:
     class TestClass:
-        @singleton_utils.singleton_class_method_result
+        @dl_app_base.singleton_class_method_result
         async def test_func(self, arg: int) -> int:
             return arg
 

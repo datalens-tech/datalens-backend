@@ -8,9 +8,13 @@ readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
+attrs = "*"
+dl-settings = {path = "../dl_settings"}
 python = ">=3.10, <3.13"
+typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
+pytest = "*"
 
 [tool.mypy]
 check_untyped_defs = true

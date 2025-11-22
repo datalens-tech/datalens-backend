@@ -8,9 +8,9 @@ readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
-aiohttp = "*"
 attrs = "*"
-dl-json = {path = "../dl_json"}
+dl-app-api-base = {path = "../dl_app_api_base"}
+dl-app-base = {path = "../dl_app_base"}
 dl-pydantic = {path = "../dl_pydantic"}
 dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}
@@ -19,6 +19,7 @@ temporalio = "*"
 typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
+aiohttp = "*"
 dl-testing = {path = "../dl_testing"}
 pytest = "*"
 pytest-asyncio = "*"
@@ -46,8 +47,3 @@ requires = [
 [datalens.pytest.db]
 root_dir = "dl_temporal_tests/"
 target_path = "db"
-
-[datalens.pytest.unit]
-root_dir = "dl_temporal_tests/"
-skip_compose = "true"
-target_path = "unit"
