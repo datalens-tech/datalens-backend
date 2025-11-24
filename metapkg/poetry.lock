@@ -1846,6 +1846,15 @@ python-versions = ">=3.10, <3.13"
 files = []
 develop = true
 
+[package.dependencies]
+aiohttp = "*"
+attrs = "*"
+dl-app-base = {path = "../dl_app_base"}
+dl-json = {path = "../dl_json"}
+dl-pydantic = {path = "../dl_pydantic"}
+dl-settings = {path = "../dl_settings"}
+typing-extensions = "*"
+
 [package.source]
 type = "directory"
 url = "../lib/dl_app_api_base"
@@ -1858,6 +1867,11 @@ optional = false
 python-versions = ">=3.10, <3.13"
 files = []
 develop = true
+
+[package.dependencies]
+attrs = "*"
+dl-settings = {path = "../dl_settings"}
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -3533,9 +3547,9 @@ files = []
 develop = true
 
 [package.dependencies]
-aiohttp = "*"
 attrs = "*"
-dl-json = {path = "../dl_json"}
+dl-app-api-base = {path = "../dl_app_api_base"}
+dl-app-base = {path = "../dl_app_base"}
 dl-pydantic = {path = "../dl_pydantic"}
 dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}
