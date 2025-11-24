@@ -1,4 +1,3 @@
-
 from dl_formula_testing.testcases.functions_hash import (
     DefaultHashFunctionFormulaConnectorTestSuite,
     HashFunctionSupport,
