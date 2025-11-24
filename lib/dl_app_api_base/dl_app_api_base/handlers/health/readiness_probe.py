@@ -5,7 +5,7 @@ import typing
 import aiohttp.web as aiohttp_web
 import attr
 
-import dl_temporal.utils.aiohttp.handlers as aiohttp_handlers
+import dl_app_api_base.handlers as handlers
 
 
 logger = logging.getLogger(__name__)
@@ -44,14 +44,14 @@ class ReadinessProbeHandler:
         }
 
         if all(subsystems_status.values()):
-            return aiohttp_handlers.Response.with_data(
+            return handlers.Response.with_data(
                 status=http.HTTPStatus.OK,
                 data={"status": "healthy", "subsystems_status": subsystems_status},
             )
 
         logger.error("Not all subsystems are healthy!", extra=subsystems_status)
 
-        return aiohttp_handlers.Response.with_data(
+        return handlers.Response.with_data(
             status=http.HTTPStatus.INTERNAL_SERVER_ERROR,
             data={"status": "unhealthy", "subsystems_status": subsystems_status},
         )

@@ -2,28 +2,22 @@
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 description = ""
 license = "Apache 2.0"
-name = "dl-temporal"
-packages = [{include = "dl_temporal"}]
+name = "dl-app-api-base"
+packages = [{include = "dl_app_api_base"}]
 readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
+aiohttp = "*"
 attrs = "*"
-dl-app-api-base = {path = "../dl_app_api_base"}
 dl-app-base = {path = "../dl_app_base"}
-dl-pydantic = {path = "../dl_pydantic"}
+dl-json = {path = "../dl_json"}
+dl-pydantic = {path = "../dl-pydantic"}
 dl-settings = {path = "../dl_settings"}
-dl-utils = {path = "../dl_utils"}
 python = ">=3.10, <3.13"
-temporalio = "*"
 typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
-aiohttp = "*"
-dl-testing = {path = "../dl_testing"}
-pytest = "*"
-pytest-asyncio = "*"
-pytest-mock = "*"
 
 [tool.mypy]
 check_untyped_defs = true
@@ -44,6 +38,8 @@ requires = [
   "poetry-core",
 ]
 
-[datalens.pytest.db]
-root_dir = "dl_temporal_tests/"
-target_path = "db"
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_app_api_base_tests/"
+skip_compose = "true"
+target_path = "unit"
