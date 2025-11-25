@@ -1870,7 +1870,9 @@ develop = true
 
 [package.dependencies]
 attrs = "*"
+dl-configs = {path = "../dl_configs"}
 dl-settings = {path = "../dl_settings"}
+pydantic = "*"
 typing-extensions = "*"
 
 [package.source]
@@ -9330,4 +9332,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "35579164b6eb953541075ce563513fbc1c91b373a4d7cacef1ae5e60787a3f6d"
+content-hash = "de6030b48196b932711ab753e819d39ffda6a11e9ee1e38180382adb628095b3"
