@@ -9,11 +9,14 @@ version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = "*"
+dl-configs = {path = "../dl_configs"}
 dl-settings = {path = "../dl_settings"}
+pydantic = "*"
 python = ">=3.10, <3.13"
 typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
+dl-testing = {path = "../dl_testing"}
 pytest = "*"
 
 [tool.mypy]
