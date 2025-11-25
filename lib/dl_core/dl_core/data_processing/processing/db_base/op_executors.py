@@ -15,6 +15,7 @@ from sqlalchemy.sql.selectable import (
 )
 
 from dl_cache_engine.primitives import LocalKeyRepresentation
+from dl_core.connection_executors.adapters.sa_utils import compile_query_for_debug
 from dl_core.data_processing.prepared_components.primitives import (
     PreparedFromInfo,
     PreparedSingleFromInfo,
@@ -40,10 +41,7 @@ from dl_core.data_processing.stream_base import (
     JointDataSourceVS,
 )
 import dl_core.exc as exc
-from dl_core.utils import (
-    compile_query_for_debug,
-    make_id,
-)
+from dl_core.utils import make_id
 
 
 LOGGER = logging.getLogger(__name__)

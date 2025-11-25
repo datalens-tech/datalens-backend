@@ -21,12 +21,14 @@ def get_db_version_query(db_ident: DBIdent) -> DBAdapterQuery:
     return DBAdapterQuery(sa.select([sa.func.version()]), db_name=db_ident.db_name)
 
 
-def compile_query_for_debug(query: ClauseElement, dialect: Dialect) -> str:
+def compile_query_for_debug(query: ClauseElement | str, dialect: Dialect) -> str:
     """
     Compile query to string.
     This function is only suitable for logging and not execution of the result.
     Its result might not be valid SQL if query contains date/datetime literals.
     """
+    if isinstance(query, str):
+        return query
     try:
         try:
             return str(query.compile(dialect=dialect, compile_kwargs={"literal_binds": True}))
@@ -34,6 +36,7 @@ def compile_query_for_debug(query: ClauseElement, dialect: Dialect) -> str:
             compiled = query.compile(dialect=dialect)
             return make_debug_query(str(query), compiled.params)
     except Exception:
+        LOGGER.exception("Failed to compile query for debug")
         return "-"
 
 
