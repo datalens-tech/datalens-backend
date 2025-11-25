@@ -1,9 +1,9 @@
-http_server:
-  host: "0.0.0.0"
-  port: 8080
+HTTP_SERVER:
+  HOST: "0.0.0.0"
+  PORT: 8080
 
-temporal_client:
-  namespace: "test"
-  tls: false
-  metadata_provider:
-    type: "empty"
+TEMPORAL_CLIENT:
+  NAMESPACE: "test"
+  TLS: false
+  METADATA_PROVIDER:
+    TYPE: "empty"

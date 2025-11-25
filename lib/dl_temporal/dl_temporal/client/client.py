@@ -18,11 +18,11 @@ LOGGER = logging.getLogger(__name__)
 
 
 class TemporalClientSettings(dl_settings.BaseSettings):
-    host: str
-    port: int
-    tls: bool
-    namespace: str
-    metadata_provider: dl_settings.TypedAnnotation[metadata.MetadataProviderSettings]
+    HOST: str
+    PORT: int
+    TLS: bool
+    NAMESPACE: str
+    METADATA_PROVIDER: dl_settings.TypedAnnotation[metadata.MetadataProviderSettings]
 
 
 @attrs.define(kw_only=True, frozen=True)

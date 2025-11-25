@@ -14,12 +14,12 @@ import dl_settings
 
 
 class HttpServerSettings(dl_settings.BaseSettings):
-    host: str
-    port: int
+    HOST: str
+    PORT: int
 
 
 class HttpServerAppSettingsMixin(dl_app_base.BaseAppSettings):
-    http_server: HttpServerSettings = NotImplemented
+    HTTP_SERVER: HttpServerSettings = NotImplemented
 
 
 @attr.define(frozen=True, kw_only=True)
@@ -48,8 +48,8 @@ class HttpServerAppFactoryMixin(
             dl_app_base.Callback(
                 coroutine=aiohttp.web._run_app(
                     app=await self._get_aiohttp_app(),
-                    host=self.settings.http_server.host,
-                    port=self.settings.http_server.port,
+                    host=self.settings.HTTP_SERVER.HOST,
+                    port=self.settings.HTTP_SERVER.PORT,
                     print=printer.PrintLogger(),
                 ),
                 name="run_http_server",

@@ -16,12 +16,12 @@ import dl_temporal.worker as worker
 
 
 class TemporalWorkerSettings(dl_settings.BaseSettings):
-    task_queue: str
+    TASK_QUEUE: str
 
 
 class TemporalWorkerAppSettingsMixin(dl_app_base.BaseAppSettings):
-    temporal_client: client.TemporalClientSettings = NotImplemented
-    temporal_worker: TemporalWorkerSettings = NotImplemented
+    TEMPORAL_CLIENT: client.TemporalClientSettings = NotImplemented
+    TEMPORAL_WORKER: TemporalWorkerSettings = NotImplemented
 
 
 @attr.define(frozen=True, kw_only=True)
@@ -69,10 +69,10 @@ class TemporalWorkerAppFactoryMixin(
     ) -> client.TemporalClient:
         return await client.TemporalClient.from_dependencies(
             dependencies=client.TemporalClientDependencies(
-                namespace=self.settings.temporal_client.namespace,
-                host=self.settings.temporal_client.host,
-                port=self.settings.temporal_client.port,
-                tls=self.settings.temporal_client.tls,
+                namespace=self.settings.TEMPORAL_CLIENT.NAMESPACE,
+                host=self.settings.TEMPORAL_CLIENT.HOST,
+                port=self.settings.TEMPORAL_CLIENT.PORT,
+                tls=self.settings.TEMPORAL_CLIENT.TLS,
                 lazy=False,
                 metadata_provider=await self._get_temporal_client_metadata_provider(),
             ),
@@ -83,7 +83,7 @@ class TemporalWorkerAppFactoryMixin(
         self,
     ) -> temporalio.worker.Worker:
         return worker.create_worker(
-            task_queue=self.settings.temporal_worker.task_queue,
+            task_queue=self.settings.TEMPORAL_WORKER.TASK_QUEUE,
             client=await self._get_temporal_client(),
             workflows=await self._get_temporal_workflows(),
             activities=await self._get_temporal_activities(),

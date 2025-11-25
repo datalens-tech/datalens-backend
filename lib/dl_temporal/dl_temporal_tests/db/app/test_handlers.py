@@ -16,7 +16,7 @@ async def test_liveness_probe_handler(
 ) -> None:
     async with aiohttp.ClientSession() as session:
         response = await session.get(
-            f"http://{app_settings.http_server.host}:{app_settings.http_server.port}/api/v1/health/liveness"
+            f"http://{app_settings.HTTP_SERVER.HOST}:{app_settings.HTTP_SERVER.PORT}/api/v1/health/liveness"
         )
         assert response.status == 200
         assert await response.json() == {"status": "healthy"}
@@ -28,7 +28,7 @@ async def test_readiness_probe_handler(
 ) -> None:
     async with aiohttp.ClientSession() as session:
         response = await session.get(
-            f"http://{app_settings.http_server.host}:{app_settings.http_server.port}/api/v1/health/readiness"
+            f"http://{app_settings.HTTP_SERVER.HOST}:{app_settings.HTTP_SERVER.PORT}/api/v1/health/readiness"
         )
         assert response.status == 200
         assert await response.json() == {
