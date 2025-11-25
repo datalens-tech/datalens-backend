@@ -148,3 +148,71 @@ class TemporalClient:
             result_type=workflow.Result,
             execution_timeout=params.execution_timeout,
         )
+
+    async def create_schedule(
+        self,
+        schedule_id: str,
+        workflow: type[base.WorkflowProtocol[base.SelfType, base.WorkflowParamsT, base.WorkflowResultT]],
+        params: base.WorkflowParamsT,
+        task_queue: str,
+        spec: temporalio.client.ScheduleSpec,
+        workflow_id: str | None = None,
+    ) -> temporalio.client.ScheduleHandle:
+        action = temporalio.client.ScheduleActionStartWorkflow(
+            workflow=workflow.name,
+            arg=params,
+            id=workflow_id or schedule_id,
+            task_queue=task_queue,
+            execution_timeout=params.execution_timeout,
+        )
+        schedule = temporalio.client.Schedule(
+            action=action,
+            spec=spec,
+        )
+        return await self.base_client.create_schedule(
+            id=schedule_id,
+            schedule=schedule,
+        )
+
+    async def update_schedule_spec(
+        self,
+        schedule_id: str,
+        spec: temporalio.client.ScheduleSpec,
+    ) -> None:
+        handle = self.base_client.get_schedule_handle(id=schedule_id)
+
+        async def _update_schedule_spec(
+            input: temporalio.client.ScheduleUpdateInput,
+        ) -> temporalio.client.ScheduleUpdate:
+            schedule = input.description.schedule
+            schedule.spec = spec
+            return temporalio.client.ScheduleUpdate(schedule=input.description.schedule)
+
+        await handle.update(_update_schedule_spec)
+
+    async def get_schedule(
+        self,
+        schedule_id: str,
+    ) -> temporalio.client.ScheduleHandle:
+        return self.base_client.get_schedule_handle(id=schedule_id)
+
+    async def delete_schedule(
+        self,
+        schedule_id: str,
+    ) -> None:
+        handle = self.base_client.get_schedule_handle(id=schedule_id)
+        await handle.delete()
+
+    async def pause_schedule(
+        self,
+        schedule_id: str,
+    ) -> None:
+        handle = self.base_client.get_schedule_handle(id=schedule_id)
+        await handle.pause()
+
+    async def unpause_schedule(
+        self,
+        schedule_id: str,
+    ) -> None:
+        handle = self.base_client.get_schedule_handle(id=schedule_id)
+        await handle.unpause()
