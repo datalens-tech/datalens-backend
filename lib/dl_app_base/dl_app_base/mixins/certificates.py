@@ -18,7 +18,7 @@ class CertificatesSettings(dl_settings.BaseSettings):
 
 
 class CertificatesAppSettingsMixin(base.BaseAppSettings):
-    CERTIFICATES: CertificatesSettings = NotImplemented
+    CERTIFICATES: CertificatesSettings = pydantic.Field(default_factory=CertificatesSettings)
 
 
 class CertificatesAppMixin(base.BaseApp):
