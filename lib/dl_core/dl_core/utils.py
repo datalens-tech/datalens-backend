@@ -84,24 +84,6 @@ def make_user_auth_cookies(
     return {}
 
 
-# TODO FIX: Remove after migration to Connection Executors
-def compile_query_for_debug(query, dialect):  # type: ignore  # TODO: fix
-    """
-    Compile query to string.
-    This function is only suitable for logging and not execution of the result.
-    Its result might not be valid SQL if query contains date/datetime literals.
-    """
-    try:
-        try:
-            return str(query.compile(dialect=dialect, compile_kwargs={"literal_binds": True}))
-        except NotImplementedError:
-            compiled = query.compile(dialect=dialect)
-            return "{0}; {1!r}".format(str(query), compiled.params)
-    except Exception:
-        LOGGER.exception("Failed to compile query for debug")
-        return "-"
-
-
 def parse_comma_separated_hosts(host: str | None) -> tuple[str, ...]:
     if not host:
         return tuple()

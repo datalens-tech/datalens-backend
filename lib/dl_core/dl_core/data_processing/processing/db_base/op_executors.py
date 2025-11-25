@@ -40,9 +40,9 @@ from dl_core.data_processing.stream_base import (
     JointDataSourceVS,
 )
 import dl_core.exc as exc
+from dl_core.connection_executors.adapters.sa_utils import compile_query_for_debug
 from dl_core.utils import (
-    compile_query_for_debug,
-    make_id,
+    make_id
 )
 
 

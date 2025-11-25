@@ -22,7 +22,7 @@ from dl_constants.enums import (
     ReportingQueryType,
     UserDataType,
 )
-from dl_core import utils
+from dl_core.connection_executors.adapters.sa_utils import compile_query_for_debug
 from dl_core.base_models import WorkbookEntryLocation
 from dl_core.connection_executors import ConnExecutorQuery
 from dl_core.data_processing.prepared_components.default_manager import DefaultPreparedComponentManager
@@ -103,7 +103,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
     ) -> TValuesChunkStream:
         """Generate data stream from a data source"""
 
-        compiled_query = utils.compile_query_for_debug(query_res_info.query, joint_dsrc_info.query_compiler.dialect)
+        compiled_query = compile_query_for_debug(query_res_info.query, joint_dsrc_info.query_compiler.dialect)
         LOGGER.info(f"SQL query for dataset: {compiled_query}")
 
         assert joint_dsrc_info.target_connection_ref is not None
