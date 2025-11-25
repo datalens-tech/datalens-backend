@@ -30,7 +30,6 @@ def compile_query_for_debug(query: ClauseElement | str, dialect: Dialect) -> str
     if isinstance(query, str):
         return query
     try:
-        assert isinstance(query, ClauseElement)
         try:
             return str(query.compile(dialect=dialect, compile_kwargs={"literal_binds": True}))
         except NotImplementedError:
