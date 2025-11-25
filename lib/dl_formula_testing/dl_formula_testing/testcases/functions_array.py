@@ -212,11 +212,22 @@ class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert dbe.eval("CONTAINS(ARRAY(1, NULL, NULL), NULL)")
         assert dbe.eval("CONTAINS(ARRAY(1, 1, NULL, NULL), NULL)")
 
+    def test_array_contains_optimization(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        has_cases = [
+            dbe.compile_formula("CONTAINS(ARRAY(1, 2, 3), NULL)"),
+            dbe.compile_formula("CONTAINS(ARRAY(1, 2, 3), 1)"),
+            dbe.compile_formula("CONTAINS([arr_int_value], NULL)", from_=data_table),
+            dbe.compile_formula("CONTAINS([arr_int_value], 1)", from_=data_table),
+            dbe.compile_formula("CONTAINS([arr_int_value], [int_value])", from_=data_table),
+        ]
+        for case in has_cases:
+            assert case.startswith("SELECT has(")
 
-        # print(dbe.eval("CONTAINS(ARRAY(1, 2, 3), 1)"))
-        # print(dbe.eval("CONTAINS([arr_int_null_value], 1)", from_=data_table))
-        # print(dbe.eval("CONTAINS(ARRAY(1, 2, 3), [int_value])", from_=data_table))
-        # print(dbe.eval("CONTAINS([arr_int_null_value], [int_value])", from_=data_table))
+        in_cases = [
+            dbe.compile_formula("CONTAINS(ARRAY(1, 2, 3), [int_value])", from_=data_table),
+        ]
+        for case in in_cases:
+            assert case.find("value IN array") != -1
 
     @pytest.mark.xfail(reason="BI-6163, BI-6165")
     def test_array_contains_int_null(self, dbe: DbEvaluator, data_table: sa.Table) -> None:

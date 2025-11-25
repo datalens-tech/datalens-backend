@@ -16,6 +16,9 @@ V = TranslationVariant.make
 
 class FuncArrayContainsCHConst(base.FuncArrayContains):
     argument_types = [
+        ArgTypeSequence([DataType.CONST_ARRAY_INT, DataType.NULL]),
+        ArgTypeSequence([DataType.CONST_ARRAY_FLOAT, DataType.NULL]),
+        ArgTypeSequence([DataType.CONST_ARRAY_STR, DataType.NULL]),
         ArgTypeSequence([DataType.CONST_ARRAY_INT, DataType.CONST_INTEGER]),
         ArgTypeSequence([DataType.CONST_ARRAY_FLOAT, DataType.CONST_FLOAT]),
         ArgTypeSequence([DataType.CONST_ARRAY_STR, DataType.CONST_STRING]),
@@ -36,7 +39,14 @@ class FuncArrayContainsCHIndexed(base.FuncArrayContains):
         ArgTypeSequence([DataType.CONST_ARRAY_STR, DataType.STRING]),
     ]
     variants = [
-        V(D.CLICKHOUSE, lambda array, value: value.op("IN")(array)),
+        V(
+            D.CLICKHOUSE,
+            lambda array, value: sa.func.if_(
+                sa.func.has(array, None),
+                (value.op("IN")(array)).op("OR")(sa.func.isNull(value)),
+                (value.op("IN")(array)).op("AND")(sa.func.isNotNull(value)),
+            ),
+        ),
     ]
 
 
