@@ -4,6 +4,7 @@ import pydantic
 import pytest
 
 import dl_settings
+import dl_settings_tests.utils.tmp_configs as tmp_configs_utils
 
 
 def test_default_settings() -> None:
@@ -192,6 +193,27 @@ def test_factory_ignores_case(
     root = RootSettings()  # type: ignore
 
     assert isinstance(root.child, Child)
+
+
+def test_factory_ignores_case_in_config(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Base(dl_settings.TypedBaseSettings):
+        ...
+
+    class Child(Base):
+        ...
+
+    Base.register("child", Child)
+
+    class Root(dl_settings.BaseRootSettings):
+        CHILD: dl_settings.TypedAnnotation[Base] = NotImplemented
+
+    with tmp_configs_utils.TmpConfigs() as tmp_configs:
+        config_path = tmp_configs.add({"CHILD": {"TYPE": "child"}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        root = Root()
+        assert isinstance(root.CHILD, Child)
 
 
 def test_annotation() -> None:

@@ -13,6 +13,15 @@ import dl_settings.base.settings as base_settings
 
 class TypedBaseSettings(base_settings.BaseSettings, dl_pydantic.TypedBaseModel):
     @classmethod
+    def _get_class_name(cls, data: dict[str, Any]) -> str:
+        type_key = cls.type_key()
+        for key, value in data.items():
+            if key.lower() == type_key.lower():
+                return value
+
+        raise ValueError(f"Data must contain '{type_key}' key")
+
+    @classmethod
     def _prepare_data(cls, data: dict[str, Any]) -> dict[str, Any]:
         field_names: dict[str, str] = {}
 

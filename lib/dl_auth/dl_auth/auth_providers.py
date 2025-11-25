@@ -42,7 +42,7 @@ class NoAuthProvider(AuthProviderProtocol):
 
 
 class OauthAuthProviderSettings(AuthProviderSettings):
-    token: str
+    TOKEN: str
 
 
 AuthProviderSettings.register("OAUTH", OauthAuthProviderSettings)
@@ -54,7 +54,7 @@ class OauthAuthProvider(AuthProviderProtocol):
 
     @classmethod
     def from_settings(cls, settings: OauthAuthProviderSettings) -> Self:
-        return cls(token=settings.token)
+        return cls(token=settings.TOKEN)
 
     def get_headers(self) -> dict[str, str]:
         return {"Authorization": f"OAuth {self.token}"}
@@ -64,7 +64,7 @@ class OauthAuthProvider(AuthProviderProtocol):
 
 
 class USMasterTokenAuthProviderSettings(AuthProviderSettings):
-    token: str
+    TOKEN: str
 
 
 AuthProviderSettings.register("US_MASTER_TOKEN", USMasterTokenAuthProviderSettings)
@@ -76,7 +76,7 @@ class USMasterTokenAuthProvider(AuthProviderProtocol):
 
     @classmethod
     def from_settings(cls, settings: USMasterTokenAuthProviderSettings) -> Self:
-        return cls(token=settings.token)
+        return cls(token=settings.TOKEN)
 
     def get_headers(self) -> dict[str, str]:
         return {dl_constants.DLHeadersCommon.US_MASTER_TOKEN.value: self.token}
