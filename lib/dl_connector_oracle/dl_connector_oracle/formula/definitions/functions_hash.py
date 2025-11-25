@@ -14,7 +14,9 @@ DEFINITIONS_HASH = [
         variants=[
             V(
                 D.ORACLE,
-                lambda value: sa.func.RAWTOHEX(sa.func.STANDARD_HASH(sa.func.UTL_RAW.CAST_TO_RAW(value), sa.literal("MD5"))),
+                lambda value: sa.func.RAWTOHEX(
+                    sa.func.STANDARD_HASH(sa.func.UTL_RAW.CAST_TO_RAW(value), sa.literal("MD5"))
+                ),
             ),
         ]
     ),
@@ -22,14 +24,19 @@ DEFINITIONS_HASH = [
         variants=[
             V(
                 D.ORACLE,
-                lambda value: sa.func.RAWTOHEX(sa.func.STANDARD_HASH(sa.func.UTL_RAW.CAST_TO_RAW(value), sa.literal("SHA1")))),
+                lambda value: sa.func.RAWTOHEX(
+                    sa.func.STANDARD_HASH(sa.func.UTL_RAW.CAST_TO_RAW(value), sa.literal("SHA1"))
+                ),
+            ),
         ]
     ),
     base.SHA256(
         variants=[
             V(
                 D.ORACLE,
-                lambda value: sa.func.RAWTOHEX(sa.func.STANDARD_HASH(sa.func.UTL_RAW.CAST_TO_RAW(value), sa.literal("SHA256"))),
+                lambda value: sa.func.RAWTOHEX(
+                    sa.func.STANDARD_HASH(sa.func.UTL_RAW.CAST_TO_RAW(value), sa.literal("SHA256"))
+                ),
             ),
         ]
     ),
