@@ -62,6 +62,9 @@ class MurmurHash2_64(HashFunction):
     arg_names = ["value"]
     arg_cnt = 1
     return_type = Fixed(DataType.INTEGER)
+    argument_types = [
+        ArgTypeSequence([DataType.STRING]),
+    ]
     variants = [
         V(D.DUMMY, sa.func.murmurHash2_64),
     ]
@@ -98,6 +101,9 @@ class CityHash64(HashFunction):
     arg_names = ["value"]
     arg_cnt = 1
     return_type = Fixed(DataType.INTEGER)
+    argument_types = [
+        ArgTypeSequence([DataType.STRING]),
+    ]
     variants = [
         V(D.DUMMY, sa.func.cityHash64),
     ]
