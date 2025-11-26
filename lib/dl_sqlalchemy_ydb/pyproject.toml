@@ -1,0 +1,48 @@
+[tool.poetry]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+description = "BI YDB SQLAlchemy Dialect"
+license = "Apache 2.0"
+name = "dl-sqlalchemy-ydb"
+packages = [{include = "dl_sqlalchemy_ydb"}]
+readme = "README.rst"
+version = "0.1"
+
+[tool.poetry.dependencies]
+packaging = "*"
+python = ">=3.10, <3.13"
+sqlalchemy = "*"
+ydb = "*"
+ydb-sqlalchemy = "*"
+
+[tool.poetry.plugins."sqlalchemy.dialects"]
+bi_ydb = "dl_sqlalchemy_ydb.dialect:CustomYqlDialect"
+
+[tool.deptry.per_rule_ignores]
+DEP001 = ["google"]
+DEP002 = [
+  "dl-sqlalchemy-common",
+]
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+ignore_errors = true # ignore mypy in entire module
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[datalens.meta.mypy]
+targets = [] # ignore mypy in entire module
+
+[datalens_ci]
+skip_test = true

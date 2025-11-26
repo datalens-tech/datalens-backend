@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime
 import logging
 from typing import (
     TYPE_CHECKING,
@@ -13,10 +12,14 @@ from typing import (
 
 import attr
 import sqlalchemy as sa
+import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_core import exc
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_models import TableIdent
+import dl_sqlalchemy_ydb.dialect
+
+import dl_connector_ydb.core.base.row_converters
 
 
 if TYPE_CHECKING:
@@ -44,14 +47,14 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
 
     _type_code_to_sa = {
         None: sa.TEXT,  # fallback
-        "Int8": sa.INTEGER,
-        "Int16": sa.INTEGER,
-        "Int32": sa.INTEGER,
-        "Int64": sa.INTEGER,
-        "Uint8": sa.INTEGER,
-        "Uint16": sa.INTEGER,
-        "Uint32": sa.INTEGER,
-        "Uint64": sa.INTEGER,
+        "Int8": ydb_sa.types.Int8,
+        "Int16": ydb_sa.types.Int16,
+        "Int32": ydb_sa.types.Int32,
+        "Int64": ydb_sa.types.Int64,
+        "Uint8": ydb_sa.types.UInt8,
+        "Uint16": ydb_sa.types.UInt16,
+        "Uint32": ydb_sa.types.UInt32,
+        "Uint64": ydb_sa.types.UInt64,
         "Float": sa.FLOAT,
         "Double": sa.FLOAT,
         "String": sa.TEXT,
@@ -60,9 +63,9 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         "Yson": sa.TEXT,
         "Uuid": sa.TEXT,
         "Date": sa.DATE,
-        "Datetime": sa.DATETIME,
-        "Timestamp": sa.DATETIME,
-        "Interval": sa.INTEGER,
+        "Timestamp": dl_sqlalchemy_ydb.dialect.YqlTimestamp,
+        "Datetime": dl_sqlalchemy_ydb.dialect.YqlDateTime,
+        "Interval": dl_sqlalchemy_ydb.dialect.YqlInterval,
         "Bool": sa.BOOLEAN,
     }
     _type_code_to_sa = {
@@ -89,22 +92,10 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
 
     _subselect_cursor_info_where_false: ClassVar[bool] = False
 
-    @staticmethod
-    def _convert_bytes(value: bytes) -> str:
-        return value.decode("utf-8", errors="replace")
-
-    @staticmethod
-    def _convert_ts(value: int) -> datetime.datetime:
-        return datetime.datetime.utcfromtimestamp(value / 1e6).replace(tzinfo=datetime.timezone.utc)
-
     def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> tuple[Optional[Callable[[Any], Any]], ...]:
-        type_names_norm = [col[1].lower().strip("?") for col in cursor_info.raw_cursor_description]
+        type_names_norm = [col[1].lower().replace("?", "") for col in cursor_info.raw_cursor_description]
         return tuple(
-            self._convert_bytes
-            if type_name_norm == "string"
-            else self._convert_ts
-            if type_name_norm == "timestamp"
-            else None
+            dl_connector_ydb.core.base.row_converters.ROW_CONVERTERS.get(type_name_norm, None)
             for type_name_norm in type_names_norm
         )
 
@@ -122,3 +113,6 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
             kw["db_message"] = kw.get("db_message") or message
 
         return exc_cls, kw
+
+    def get_engine_kwargs(self) -> dict:
+        return {}
