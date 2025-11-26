@@ -4,6 +4,9 @@ from .app import (
     HttpServerAppSettingsMixin,
 )
 from .handlers import (
+    BaseRequestSchema,
+    BaseResponseSchema,
+    BaseSchema,
     LivenessProbeHandler,
     ReadinessProbeHandler,
     Response,
@@ -11,9 +14,10 @@ from .handlers import (
     SubsystemReadinessCallback,
     SubsystemReadinessSyncCallback,
 )
-from .models import (
-    BaseRequestSchema,
-    BaseSchema,
+from .openapi import (
+    OpenApiHandler,
+    OpenApiSettings,
+    OpenApiSpec,
 )
 from .printer import PrintLogger
 
@@ -31,4 +35,8 @@ __all__ = [
     "HttpServerAppFactoryMixin",
     "BaseSchema",
     "BaseRequestSchema",
+    "BaseResponseSchema",
+    "OpenApiHandler",
+    "OpenApiSpec",
+    "OpenApiSettings",
 ]

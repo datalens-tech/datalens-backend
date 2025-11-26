@@ -5,7 +5,7 @@ import aiohttp.typedefs as aiohttp_typedefs
 import aiohttp.web as aiohttp_web
 from typing_extensions import Self
 
-import dl_app_api_base.models as models
+import dl_app_api_base.handlers.base as handlers_base
 import dl_json
 
 
@@ -47,7 +47,7 @@ class Response(aiohttp_web.Response):
     @classmethod
     def with_model(
         cls,
-        schema: models.BaseSchema,
+        schema: handlers_base.BaseSchema,
         status: int = http.HTTPStatus.OK,
         reason: str | None = None,
         headers: aiohttp_typedefs.LooseHeaders | None = None,
