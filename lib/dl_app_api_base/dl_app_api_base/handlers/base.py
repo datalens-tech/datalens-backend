@@ -1,5 +1,6 @@
 import abc
 import http
+import logging
 from typing import (
     Any,
     ClassVar,
@@ -13,19 +14,46 @@ import dl_json
 import dl_pydantic
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 class BaseSchema(dl_pydantic.BaseModel):
     ...
 
 
+class BaseResponseSchema(BaseSchema):
+    ...
+
+
+class HttpError(aiohttp.web.HTTPError):
+    def __init__(
+        self,
+        status: int,
+        text: str,
+    ):
+        self.status_code = status
+        super().__init__(text=text)
+
+
+class ErrorResponseSchema(BaseResponseSchema):
+    message: str
+    code: str
+
+    def http_error(self, status: int) -> HttpError:
+        json_data = self.model_dump(mode="json")
+        raw_data = dl_json.dumps_str(json_data)
+        return HttpError(text=raw_data, status=status)
+
+
+class BadRequestResponseSchema(ErrorResponseSchema):
+    message: str = "Bad request"
+    code: str = "ERR.API.BAD_REQUEST"
+
+
 class BaseRequestSchema(BaseSchema):
-    class MatchInfo(BaseSchema):
-        ...
-
-    class Params(BaseSchema):
-        ...
-
-    class Body(BaseSchema):
-        ...
+    path: BaseSchema
+    query: BaseSchema
+    body: BaseSchema
 
     @classmethod
     async def _get_body(cls, request: aiohttp.web.Request) -> dict[str, Any] | None:
@@ -37,24 +65,32 @@ class BaseRequestSchema(BaseSchema):
 
     @classmethod
     async def from_request(cls, request: aiohttp.web.Request) -> Self:
+        body = await cls._get_body(request)
+        body = body or {}
+
         return cls.model_validate(
             {
-                "match_info": request.match_info,
+                "path": request.match_info,
                 "query": request.query,
-                "body": await cls._get_body(request),
+                "body": body,
             }
         )
 
-
-class BaseResponseSchema(BaseSchema):
-    ...
+    @classmethod
+    async def try_from_request(cls, request: aiohttp.web.Request) -> Self:
+        try:
+            return await cls.from_request(request)
+        except ValueError:
+            LOGGER.exception(f"Bad request: {request.text}")
+            response = BadRequestResponseSchema()
+            raise response.http_error(status=http.HTTPStatus.BAD_REQUEST)
 
 
 class BaseHandler(abc.ABC):
-    class ResponseSchema(BaseResponseSchema):
+    class RequestSchema(BaseRequestSchema):
         ...
 
-    class RequestSchema(BaseRequestSchema):
+    class ResponseSchema(BaseResponseSchema):
         ...
 
     TAGS: ClassVar[list[str]] = []
@@ -64,6 +100,7 @@ class BaseHandler(abc.ABC):
     def _response_schemas(self) -> dict[http.HTTPStatus, type[BaseResponseSchema]]:
         return {
             http.HTTPStatus.OK: self.ResponseSchema,
+            http.HTTPStatus.BAD_REQUEST: BadRequestResponseSchema,
         }
 
     @abc.abstractmethod
