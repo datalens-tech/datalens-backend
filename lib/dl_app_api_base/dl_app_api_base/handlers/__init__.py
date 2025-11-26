@@ -1,8 +1,10 @@
 from .base import (
+    BadRequestResponseSchema,
     BaseHandler,
     BaseRequestSchema,
     BaseResponseSchema,
     BaseSchema,
+    ErrorResponseSchema,
     Route,
 )
 from .health import (
@@ -27,4 +29,6 @@ __all__ = [
     "BaseSchema",
     "BaseRequestSchema",
     "BaseResponseSchema",
+    "ErrorResponseSchema",
+    "BadRequestResponseSchema",
 ]

@@ -31,10 +31,59 @@ class OpenApiSpec:
         if self.info:
             result["info"] = attrs.asdict(self.info)
 
+        defs: dict = {}
+
         paths: dict = collections.defaultdict(lambda: collections.defaultdict(dict))
         for route in self.routes:
             responses: dict = {}
+
+            parameters: list[dict] = []
+
+            path_type = route.handler.RequestSchema.model_fields["path"].annotation
+            assert path_type is not None and issubclass(path_type, handlers_base.BaseSchema)
+            path_schema = path_type.model_json_schema()
+            for property_name, property_schema in path_schema.get("properties", {}).items():
+                parameters.append(
+                    {
+                        "name": property_name,
+                        "in": "path",
+                        "required": "default" not in property_schema,
+                        "schema": property_schema,
+                    }
+                )
+
+            query_type = route.handler.RequestSchema.model_fields["query"].annotation
+            assert query_type is not None and issubclass(query_type, handlers_base.BaseSchema)
+            query_schema = query_type.model_json_schema()
+            for property_name, property_schema in query_schema.get("properties", {}).items():
+                parameters.append(
+                    {
+                        "name": property_name,
+                        "in": "query",
+                        "required": "default" not in property_schema,
+                        "schema": property_schema,
+                    }
+                )
+
+            body_type = route.handler.RequestSchema.model_fields["body"].annotation
+            assert body_type is not None and issubclass(body_type, handlers_base.BaseSchema)
+            body_schema = body_type.model_json_schema()
+            if len(body_schema.get("properties", {})) > 0:
+                parameters.append(
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": True,
+                        "schema": body_schema,
+                    }
+                )
+
             for status, response_schema in route.handler._response_schemas.items():
+                response_schema_dict = response_schema.model_json_schema()
+
+                for key, value in response_schema_dict.get("$defs", {}).items():
+                    defs[key] = value
+
                 responses[str(status.value)] = {
                     "content": {
                         "application/json": {"schema": response_schema.model_json_schema()},
@@ -43,9 +92,11 @@ class OpenApiSpec:
             paths[route.path][route.method.lower()] = {
                 "tags": route.handler.TAGS,
                 "summary": route.handler.DESCRIPTION,
+                "parameters": parameters,
                 "responses": responses,
             }
 
         result["paths"] = paths
+        result["$defs"] = defs
 
         return result
