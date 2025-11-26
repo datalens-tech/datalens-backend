@@ -14,6 +14,8 @@ dl-app-base = {path = "../dl_app_base"}
 dl-json = {path = "../dl_json"}
 dl-pydantic = {path = "../dl_pydantic"}
 dl-settings = {path = "../dl_settings"}
+jinja2 = "*"
+pydantic = "*"
 python = ">=3.10, <3.13"
 typing-extensions = "*"
 

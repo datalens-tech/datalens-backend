@@ -5,9 +5,11 @@ from typing import (
 
 import aiohttp.web
 import attr
+import pydantic
 from typing_extensions import override
 
 import dl_app_api_base.handlers as handlers
+import dl_app_api_base.openapi as openapi
 import dl_app_api_base.printer as printer
 import dl_app_base
 import dl_settings
@@ -20,6 +22,7 @@ class HttpServerSettings(dl_settings.BaseSettings):
 
 class HttpServerAppSettingsMixin(dl_app_base.BaseAppSettings):
     HTTP_SERVER: HttpServerSettings = NotImplemented
+    OPEN_API: openapi.OpenApiSettings = pydantic.Field(default_factory=openapi.OpenApiSettings)
 
 
 @attr.define(frozen=True, kw_only=True)
@@ -62,37 +65,62 @@ class HttpServerAppFactoryMixin(
     async def _get_aiohttp_app(
         self,
     ) -> aiohttp.web.Application:
+        routes = await self._get_aiohttp_app_routes()
+
         app = aiohttp.web.Application()
-        app.add_routes(
-            routes=await self._get_aiohttp_app_routes(),
-        )
+        for route in routes:
+            app.router.add_route(route.method, route.path, route.handler.process)
+
+        open_api_spec = await self._get_aiohttp_open_api_spec()
+        open_api_handler = openapi.OpenApiHandler(raw_spec=open_api_spec.raw)
+        app.router.add_route("GET", self.settings.OPEN_API.spec_path, open_api_handler.process)
+
+        if self.settings.OPEN_API.SWAGGER_UI_ENABLED:
+            swagger_handler = openapi.SwaggerHandler.from_dependencies(
+                openapi.SwaggerHandlerDependencies(
+                    url_prefix=self.settings.OPEN_API.DOCS_PATH,
+                    config_url=self.settings.OPEN_API.SPEC_REL_URL,
+                )
+            )
+
+            app.router.add_route("GET", self.settings.OPEN_API.DOCS_PATH, swagger_handler.process)
+            app.router.add_static(f"{self.settings.OPEN_API.DOCS_PATH}/static/", path=swagger_handler.static_dir)
+
         return app
 
     @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_app_routes(
         self,
-    ) -> list[aiohttp.web.RouteDef]:
-        result: list[aiohttp.web.RouteDef] = []
+    ) -> list[handlers.Route]:
+        result: list[handlers.Route] = []
 
         aiohttp_liveness_probe_handler = await self._get_aiohttp_liveness_probe_handler()
         result.append(
-            aiohttp.web.route(
+            handlers.Route(
                 method="GET",
                 path="/api/v1/health/liveness",
-                handler=aiohttp_liveness_probe_handler.process,
+                handler=aiohttp_liveness_probe_handler,
             ),
         )
 
         aiohttp_readiness_probe_handler = await self._get_aiohttp_readiness_probe_handler()
         result.append(
-            aiohttp.web.route(
+            handlers.Route(
                 method="GET",
                 path="/api/v1/health/readiness",
-                handler=aiohttp_readiness_probe_handler.process,
+                handler=aiohttp_readiness_probe_handler,
             ),
         )
 
         return result
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_aiohttp_open_api_spec(
+        self,
+    ) -> openapi.OpenApiSpec:
+        return openapi.OpenApiSpec(
+            routes=await self._get_aiohttp_app_routes(),
+        )
 
     @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_liveness_probe_handler(

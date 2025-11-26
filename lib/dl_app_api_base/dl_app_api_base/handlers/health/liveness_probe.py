@@ -1,20 +1,24 @@
-import http
 import logging
+from typing import Literal
 
-import aiohttp.web as aiohttp_web
+import aiohttp.web
 
-import dl_app_api_base.handlers as handlers
+import dl_app_api_base.handlers.base as base
+import dl_app_api_base.handlers.responses as responses
 
 
 logger = logging.getLogger(__name__)
 
 
-class LivenessProbeHandler:
-    async def process(self, request: aiohttp_web.Request) -> aiohttp_web.Response:
-        return handlers.Response.with_data(
-            status=http.HTTPStatus.OK,
-            data={"status": "healthy"},
-        )
+class LivenessProbeHandler(base.BaseHandler):
+    TAGS = ["health"]
+    DESCRIPTION = "Liveness probe, checks if the system is alive"
+
+    class ResponseSchema(base.BaseResponseSchema):
+        status: Literal["healthy"] = "healthy"
+
+    async def process(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
+        return responses.Response.with_model(self.ResponseSchema())
 
 
 __all__ = [

@@ -1,6 +1,7 @@
 import http
 import logging
 import typing
+from typing import Literal
 
 import aiohttp.web as aiohttp_web
 import attr
@@ -27,7 +28,21 @@ SubsystemReadinessCallback = SubsystemReadinessAsyncCallback | SubsystemReadines
 
 
 @attr.define(frozen=True, kw_only=True)
-class ReadinessProbeHandler:
+class ReadinessProbeHandler(handlers.BaseHandler):
+    TAGS = ["health"]
+    DESCRIPTION = "Readiness probe, checks if the system is ready to serve requests"
+
+    class ResponseSchema(handlers.BaseResponseSchema):
+        status: Literal["healthy", "unhealthy"]
+        subsystems_status: dict[str, bool]
+
+    @property
+    def _response_schemas(self) -> dict[http.HTTPStatus, type[handlers.BaseResponseSchema]]:
+        return {
+            **super()._response_schemas,
+            http.HTTPStatus.INTERNAL_SERVER_ERROR: self.ResponseSchema,
+        }
+
     subsystems: typing.Sequence[SubsystemReadinessCallback]
 
     async def _check_subsystem_readiness(self, subsystem: SubsystemReadinessCallback) -> bool:
@@ -44,16 +59,16 @@ class ReadinessProbeHandler:
         }
 
         if all(subsystems_status.values()):
-            return handlers.Response.with_data(
+            return handlers.Response.with_model(
+                schema=self.ResponseSchema(status="healthy", subsystems_status=subsystems_status),
                 status=http.HTTPStatus.OK,
-                data={"status": "healthy", "subsystems_status": subsystems_status},
             )
 
         logger.error("Not all subsystems are healthy!", extra=subsystems_status)
 
-        return handlers.Response.with_data(
+        return handlers.Response.with_model(
+            schema=self.ResponseSchema(status="unhealthy", subsystems_status=subsystems_status),
             status=http.HTTPStatus.INTERNAL_SERVER_ERROR,
-            data={"status": "unhealthy", "subsystems_status": subsystems_status},
         )
 
 
