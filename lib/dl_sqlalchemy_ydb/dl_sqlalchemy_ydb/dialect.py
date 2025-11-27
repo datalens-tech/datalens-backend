@@ -127,7 +127,6 @@ class CustomYqlDialect(ydb_sa.YqlDialect):
 
     def __init__(self, *args: typing.Any, **kwargs: typing.Any):
         super().__init__(
-            self,
             *args,
             **{
                 **kwargs,
