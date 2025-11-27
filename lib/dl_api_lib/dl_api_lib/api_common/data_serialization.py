@@ -55,7 +55,7 @@ class DataRequestResponseSerializerV2Mixin:
         return [
             {
                 "block_id": block.block_id,
-                "query": block.debug_query,
+                "query": f"[[[IM HERE {block.debug_query}]]]",
             }
             for block in merged_stream.meta.blocks
         ]
