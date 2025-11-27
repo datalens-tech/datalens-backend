@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 
 
 class LivenessProbeHandler(base.BaseHandler):
-    TAGS = ["health"]
-    DESCRIPTION = "Liveness probe, checks if the system is alive"
+    OPENAPI_TAGS = ["health"]
+    OPENAPI_DESCRIPTION = "Liveness probe, checks if the system is alive"
 
     class ResponseSchema(base.BaseResponseSchema):
         status: Literal["healthy"] = "healthy"
