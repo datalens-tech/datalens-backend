@@ -111,7 +111,7 @@ class DbCastTypeFunctionYQLTestSuite(
         dbe.eval('DB_CAST(STR([int_value]), "Utf8")', from_=data_table)
 
         # Cast to decimal with correct arguments
-        assert dbe.eval('DB_CAST([int_value], "Decimal", 5, 0)', from_=data_table) == value
+        assert dbe.eval('DB_CAST([int_value], "Decimal", 5, 1)', from_=data_table) == value
 
         # Invalid number of arguments for Decimal
         with pytest.raises(exc.TranslationError):
