@@ -95,7 +95,6 @@ COLUMN_TABLE_SCHEMA = (
     ("some_date", UserDataType.date, sa.Date),
     ("some_datetime", UserDataType.genericdatetime, sa.DATETIME),
     ("some_timestamp", UserDataType.genericdatetime, sa.TIMESTAMP),
-    ("some_interval", UserDataType.integer, dl_sqlalchemy_ydb.dialect.YqlInterval),
 )
 
 SA_TYPE_TO_YDB_TYPE_NAME = {
