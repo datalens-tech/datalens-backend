@@ -42,6 +42,7 @@ class DBAdapterQuery:
     query: Union[ClauseElement, str] = attr.ib()
     db_name: Optional[str] = attr.ib(default=None)
     debug_compiled_query: Optional[str] = attr.ib(default=None)
+    inspector_query: Optional[str] = attr.ib(default=None)
     chunk_size: Optional[int] = attr.ib(default=None)
     connector_specific_params: Optional[Mapping[str, TJSONExt]] = attr.ib(default=None)
     # Use-case: `explain ...` queries are incompatible with streaming (and

@@ -78,14 +78,16 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
     def make_exc(  # TODO:  Move to ErrorTransformer
         cls,
         wrapper_exc: Exception,
-        orig_exc: Optional[Exception],
-        debug_compiled_query: Optional[str],
+        orig_exc: Exception | None,
+        debug_query: str | None,
+        inspector_query: str | None,
         **kwargs: Any,
     ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
         exc_cls, kw = super().make_exc(
             wrapper_exc=wrapper_exc,
             orig_exc=orig_exc,
-            debug_compiled_query=debug_compiled_query,
+            debug_query=debug_query,
+            inspector_query=inspector_query,
             **kwargs,
         )
         return ensure_db_message(exc_cls, kw)

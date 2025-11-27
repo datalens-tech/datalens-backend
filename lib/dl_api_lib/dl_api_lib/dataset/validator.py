@@ -1178,6 +1178,7 @@ class DatasetValidator(DatasetBaseWrapper):
                     raise common_exc.SourceDoesNotExist(
                         db_message="",
                         query="",
+                        inspector_query="",
                         params=params,
                     )
             return None

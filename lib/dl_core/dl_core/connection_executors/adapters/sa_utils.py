@@ -28,16 +28,31 @@ def compile_query_for_debug(query: ClauseElement | str, dialect: Dialect) -> str
     Its result might not be valid SQL if query contains date/datetime literals.
     """
     if isinstance(query, str):
-        return query
+        return f"[[[DEBUG ::: {query}]]]"
     try:
         try:
-            return str(query.compile(dialect=dialect, compile_kwargs={"literal_binds": True}))
+            return f'[[[DEBUG ::: {str(query.compile(dialect=dialect, compile_kwargs={"literal_binds": True}))}]]]'
         except NotImplementedError:
             compiled = query.compile(dialect=dialect)
-            return make_debug_query(str(query), compiled.params)
+            return f"[[[DEBUG ::: {make_debug_query(str(compiled), compiled.params)}]]]"
     except Exception:
-        LOGGER.exception("Failed to compile query for debug")
-        return "-"
+        LOGGER.exception("Failed to compile query for inspector")
+        return "[[[DEBUG ::: -]]]"
+
+
+def compile_query_for_inspector(query: ClauseElement | str, dialect: Dialect) -> str:
+    # TODO: BI-6448
+    if isinstance(query, str):
+        return f"[[[INSPECTOR ::: {query}]]]"
+    try:
+        try:
+            return f'[[[INSPECTOR ::: {str(query.compile(dialect=dialect, compile_kwargs={"literal_binds": True}))}]]]'
+        except NotImplementedError:
+            compiled = query.compile(dialect=dialect)
+            return f"[[[INSPECTOR ::: {make_debug_query(str(compiled), compiled.params)}]]]"
+    except Exception:
+        LOGGER.exception("Failed to compile query for inspector")
+        return "[[[INSPECTOR ::: -]]]"
 
 
 def make_debug_query(query: str, params: Union[list, dict]) -> str:

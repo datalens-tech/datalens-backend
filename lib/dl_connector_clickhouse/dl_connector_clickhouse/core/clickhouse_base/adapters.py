@@ -183,9 +183,13 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
 
     @classmethod
     def make_exc(  # TODO:  Move to ErrorTransformer
-        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
+        cls,
+        wrapper_exc: Exception,
+        orig_exc: Exception | None,
+        debug_query: str | None,
+        inspector_query: str | None,
     ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
-        exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_compiled_query)
+        exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_query, inspector_query)
 
         ch_exc_cls: Optional[type[exc.DatabaseQueryError]] = None
         if isinstance(wrapper_exc, ch_exc.DatabaseException):
@@ -542,7 +546,9 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         if resp.status != 200:
             bytes_body = await resp.read()
             body = bytes_body.decode(errors="replace")
-            db_exc = self.make_exc(resp.status, body, debug_compiled_query=query.debug_compiled_query)
+            db_exc = self.make_exc(
+                resp.status, body, debug_query=query.debug_compiled_query, inspector_query=query.inspector_query
+            )
             raise db_exc
 
         # Primarily for DashSQL
@@ -642,7 +648,8 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         self,
         status_code: int,  # noqa
         err_body: str,
-        debug_compiled_query: Optional[str] = None,
+        debug_query: str | None = None,
+        inspector_query: str | None = None,
     ) -> exc.DatabaseQueryError:
         exc_cls: type[exc.DatabaseQueryError]
         try:
@@ -652,7 +659,8 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
 
         return exc_cls(
             db_message=err_body,
-            query=debug_compiled_query,
+            query=debug_query,
+            inspector_query=inspector_query,
             orig=None,
             details={},
             params=exc_params,

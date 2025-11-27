@@ -163,7 +163,9 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
         if limit is not None:
             request_params["limit"] = limit
 
-        with self.handle_execution_error(query_text):
+        # TODO: BI-6448 check it works and replace
+        # debug_query = compile_query_for_debug(dba_query.query, self.get_dialect())
+        with self.handle_execution_error(debug_query=query_text, inspector_query=query_text):
             resp = await self._session.post(
                 url=api_url,
                 params=request_params,
@@ -250,6 +252,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
                 message=f"Unexpected API response body: {err.args[0]}",
                 db_message="",
                 query=dba_query.debug_compiled_query,
+                inspector_query=dba_query.inspector_query,
                 orig=None,
                 details={},
             ) from err
@@ -297,9 +300,12 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
         body: dict[str, Any] = {
             "key": self._target_dto.token,
         }
+        # TODO: BI-6448 example if we want hide portal (want we? don't know)
+        # base_url = "https://{portal}/bitrix/tools/biconnector/gds.php?show_tables"
+        # api_url = base_url.format(portal=self._target_dto.portal)
         api_url: str = f"https://{self._target_dto.portal}/bitrix/tools/biconnector/gds.php?show_tables"
 
-        with self.handle_execution_error(api_url):
+        with self.handle_execution_error(debug_query=api_url, inspector_query=api_url):
             resp = await self._session.post(
                 url=api_url,
                 json=body,

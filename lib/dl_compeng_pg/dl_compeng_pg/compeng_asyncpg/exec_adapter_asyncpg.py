@@ -84,7 +84,7 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
         try:
             yield
         except Exception as wrapper_exc:
-            trans_exc = self._error_transformer.make_bi_error(wrapper_exc=wrapper_exc, debug_compiled_query=query_text)
+            trans_exc = self._error_transformer.make_bi_error(wrapper_exc=wrapper_exc, debug_query=query_text)
             raise trans_exc from wrapper_exc
 
     async def _execute_and_fetch(
