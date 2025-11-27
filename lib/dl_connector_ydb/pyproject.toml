@@ -19,7 +19,7 @@ dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
-dl-sqlalchemy-ydb = {path = "../../lib/dl_sqlalchemy_ydb"}
+dl-sqlalchemy-ydb = {path = "../dl_sqlalchemy_ydb"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 grpcio = "*"
@@ -41,7 +41,6 @@ dl-core-testing = {path = "../dl_core_testing"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-testing = {path = "../dl_testing"}
 frozendict = "*"
-dl-sqlalchemy-ydb = {path = "../../lib/dl_sqlalchemy_ydb"}
 pytest = "*"
 requests = "*"
 
