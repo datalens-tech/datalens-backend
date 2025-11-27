@@ -24,7 +24,10 @@ from dl_constants.enums import (
 )
 from dl_core.base_models import WorkbookEntryLocation
 from dl_core.connection_executors import ConnExecutorQuery
-from dl_core.connection_executors.adapters.sa_utils import compile_query_for_debug
+from dl_core.connection_executors.adapters.sa_utils import (
+    compile_query_for_debug,
+    compile_query_for_inspector,
+)
 from dl_core.data_processing.prepared_components.default_manager import DefaultPreparedComponentManager
 from dl_core.data_processing.processing.context import OpExecutionContext
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
@@ -103,8 +106,9 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
     ) -> TValuesChunkStream:
         """Generate data stream from a data source"""
 
-        compiled_query = compile_query_for_debug(query_res_info.query, joint_dsrc_info.query_compiler.dialect)
-        LOGGER.info(f"SQL query for dataset: {compiled_query}")
+        debug_query = compile_query_for_debug(query_res_info.query, joint_dsrc_info.query_compiler.dialect)
+        inspector_query = compile_query_for_inspector(query_res_info.query, joint_dsrc_info.query_compiler.dialect)
+        LOGGER.info(f"SQL query for dataset: {debug_query}")
 
         assert joint_dsrc_info.target_connection_ref is not None
         target_connection = self._us_entry_buffer.get_entry(joint_dsrc_info.target_connection_ref)
@@ -117,7 +121,8 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
                 query=query_res_info.query,
                 db_name=joint_dsrc_info.db_name,
                 user_types=query_res_info.user_types,
-                debug_compiled_query=compiled_query,
+                debug_compiled_query=debug_query,
+                inspector_query=inspector_query,
                 chunk_size=None,
             )
         )

@@ -283,9 +283,11 @@ class ActionHandlingView(BaseView):
                     if host is None or ipaddress.ip_address(host).is_private:
                         await asyncio.sleep(random.uniform(5, 20))
                         query = None
+                        inspector_query = None
                         if isinstance(action, (act.ActionExecuteQuery, act.ActionNonStreamExecuteQuery)):
                             query = action.db_adapter_query.debug_compiled_query
-                        raise SourceTimeout(db_message="Source timed out", query=query)
+                            inspector_query = action.db_adapter_query.inspector_query
+                        raise SourceTimeout(db_message="Source timed out", query=query, inspector_query=inspector_query)
 
             if isinstance(action, act.ActionExecuteQuery):
                 return await self.handle_query_action(adapter, action.db_adapter_query)

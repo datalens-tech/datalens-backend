@@ -75,6 +75,7 @@ class ConnExecutorQuery:
     query: ClauseElement | str = attr.ib()
     user_types: Optional[list[UserDataType]] = attr.ib(default=None)
     debug_compiled_query: Optional[str] = attr.ib(default=None)
+    inspector_query: Optional[str] = attr.ib(default=None)
     chunk_size: Optional[int] = attr.ib(default=None)
     connector_specific_params: Optional[Mapping[str, TJSONExt]] = attr.ib(default=None)
     # TODO FIX: We really need it in query?

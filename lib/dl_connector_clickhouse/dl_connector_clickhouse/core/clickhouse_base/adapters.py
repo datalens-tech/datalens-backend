@@ -521,6 +521,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
                     debug_info=dict(msg="Unexpected last event", event=event, data=data, chunk=decoded_chunk),
                     # TODO: provide the actual query
                     query="",
+                    inspector_query="",
                     # TODO?: show the chunk here for the user databases?
                     db_message="",
                 )
@@ -569,7 +570,9 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             try:
                 return col_conv(val)
             except ValueError as err:
-                raise exc.DataParseError(f"Cannot convert {val!r}", query=query.debug_compiled_query) from err
+                raise exc.DataParseError(
+                    f"Cannot convert {val!r}", query=query.debug_compiled_query, inspector_query=query.inspector_query
+                ) from err
 
         events_generator = self._parse_response_body(resp)
         with self.wrap_execute_excs(query=query, stage="meta"):

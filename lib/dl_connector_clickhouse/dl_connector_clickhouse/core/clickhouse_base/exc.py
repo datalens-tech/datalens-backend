@@ -16,6 +16,7 @@ class ClickHouseSourceDoesNotExistError(exc.SourceDoesNotExist):
         self,
         db_message: Optional[str] = None,
         query: Optional[str] = None,
+        inspector_query: Optional[str] = None,
         message: Optional[str] = None,
         details: Optional[dict[str, Any]] = None,
         orig: Optional[Exception] = None,
@@ -25,6 +26,7 @@ class ClickHouseSourceDoesNotExistError(exc.SourceDoesNotExist):
         super(ClickHouseSourceDoesNotExistError, self).__init__(
             db_message=db_message,
             query=query,
+            inspector_query=inspector_query,
             message=message,
             details=details,
             orig=orig,

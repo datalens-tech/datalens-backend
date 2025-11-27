@@ -31,7 +31,10 @@ from dl_constants.types import TJSONExt  # not under `TYPE_CHECKING`, need to de
 from dl_core import exc
 from dl_core.backend_types import get_backend_type
 from dl_core.base_models import WorkbookEntryLocation
-from dl_core.connection_executors.adapters.sa_utils import compile_query_for_debug
+from dl_core.connection_executors.adapters.sa_utils import (
+    compile_query_for_debug,
+    compile_query_for_inspector,
+)
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.connectors.base.dashsql import get_custom_dash_sql_key_names
 from dl_core.data_processing.cache.utils import DashSQLCacheOptionsBuilder
@@ -139,11 +142,11 @@ class DashSQLSelector:
 
         return sa_text
 
-    def _make_sa_query(self) -> tuple[TextClause, str]:
+    def _make_sa_query(self) -> tuple[TextClause, str, str]:
         query = self.sql_query
         if self.incoming_parameters is None:
             # No parameters substitution
-            return sa_plain_text(query), query
+            return sa_plain_text(query), query, query
 
         formatter_factory = DBAPIQueryFormatterFactory()  # TODO: Connectorize
         formatter = formatter_factory.get_query_formatter()
@@ -154,15 +157,17 @@ class DashSQLSelector:
         conn = self.conn
         dialect = conn.get_dialect()
         debug_text = compile_query_for_debug(self.sql_query, dialect=dialect)
-        return sa_query, debug_text
+        inspector_text = compile_query_for_inspector(self.sql_query, dialect=dialect)
+        return sa_query, debug_text, inspector_text
 
     def make_ce_query(self) -> ConnExecutorQuery:
-        sa_text, debug_compiled_query = self._make_sa_query()
+        sa_text, debug_query, inspector_query = self._make_sa_query()
         return ConnExecutorQuery(
             query=sa_text,
             # # TODO: try:
             # query=sql_query,
-            debug_compiled_query=debug_compiled_query,
+            debug_compiled_query=debug_query,
+            inspector_query=inspector_query,
             connector_specific_params=self.connector_specific_params,
             autodetect_user_types=True,
             # connect_args=...,  # TODO: pass db_params to e.g. CH query arguments

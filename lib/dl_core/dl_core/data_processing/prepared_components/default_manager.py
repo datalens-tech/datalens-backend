@@ -58,6 +58,7 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
                 raise exc.MaterializationNotFinished(
                     message="Materialization is not yet finished",
                     query="<get_from_clause>",
+                    inspector_query="<get_from_clause>",
                     db_message="",
                     details={"avatar_id": avatar.id, "avatar_title": avatar.title},
                 ) from err
