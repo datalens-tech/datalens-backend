@@ -93,8 +93,9 @@ class BaseHandler(abc.ABC):
     class ResponseSchema(BaseResponseSchema):
         ...
 
-    TAGS: ClassVar[list[str]] = []
-    DESCRIPTION: ClassVar[str] = ""
+    OPENAPI_TAGS: ClassVar[list[str]] = []
+    OPENAPI_DESCRIPTION: ClassVar[str] = ""
+    OPENAPI_INCLUDE: ClassVar[bool] = True
 
     @property
     def _response_schemas(self) -> dict[http.HTTPStatus, type[BaseResponseSchema]]:

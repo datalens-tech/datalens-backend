@@ -35,6 +35,9 @@ class OpenApiSpec:
 
         paths: dict = collections.defaultdict(lambda: collections.defaultdict(dict))
         for route in self.routes:
+            if not route.handler.OPENAPI_INCLUDE:
+                continue
+
             responses: dict = {}
 
             parameters: list[dict] = []
@@ -90,8 +93,8 @@ class OpenApiSpec:
                     },
                 }
             paths[route.path][route.method.lower()] = {
-                "tags": route.handler.TAGS,
-                "summary": route.handler.DESCRIPTION,
+                "tags": route.handler.OPENAPI_TAGS,
+                "summary": route.handler.OPENAPI_DESCRIPTION,
                 "parameters": parameters,
                 "responses": responses,
             }

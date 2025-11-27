@@ -29,8 +29,8 @@ SubsystemReadinessCallback = SubsystemReadinessAsyncCallback | SubsystemReadines
 
 @attr.define(frozen=True, kw_only=True)
 class ReadinessProbeHandler(handlers.BaseHandler):
-    TAGS = ["health"]
-    DESCRIPTION = "Readiness probe, checks if the system is ready to serve requests"
+    OPENAPI_TAGS = ["health"]
+    OPENAPI_DESCRIPTION = "Readiness probe, checks if the system is ready to serve requests"
 
     class ResponseSchema(handlers.BaseResponseSchema):
         status: Literal["healthy", "unhealthy"]
