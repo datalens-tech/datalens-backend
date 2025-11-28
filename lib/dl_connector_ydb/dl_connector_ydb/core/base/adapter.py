@@ -137,9 +137,8 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
                 driver = connection.connection._driver  # type: ignore  # 2024-01-24 # TODO: "DBAPIConnection" has no attribute "_driver"  [attr-defined]
                 assert driver
 
-                # TODO: I think this is very bad
-                #   User can gain access to tables by absolute path instead of relative to db_name root.
-                #   Possible solution: require prefix be equal to db_name
+                # User can gain access to tables by absolute path instead of relative to db_name root.
+                # Possible solution: require prefix be equal to db_name/
                 if table_def.db_name is None:
                     table_path = table_def.table_name
                 elif table_def.table_name.startswith("/"):
