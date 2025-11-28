@@ -35,35 +35,6 @@ TYPES_SPEC = {
     ]
 }
 
-BOOL_TYPES_SPEC = [
-    TYPES_SPEC["Bool"],
-]
-
-INT_TYPES_SPEC = [
-    TYPES_SPEC["Int8"],
-    TYPES_SPEC["Int16"],
-    TYPES_SPEC["Int32"],
-    TYPES_SPEC["Int64"],
-    TYPES_SPEC["UInt8"],
-    TYPES_SPEC["UInt16"],
-    TYPES_SPEC["UInt32"],
-    TYPES_SPEC["UInt64"],
-]
-
-DECIMAL_TYPES_SPEC = [
-    TYPES_SPEC["Decimal"],
-]
-
-STRING_TYPES_SPEC = [
-    TYPES_SPEC["Utf8"],
-    TYPES_SPEC["String"],
-]
-
-FLOAT_TYPES_SPEC = [
-    TYPES_SPEC["Double"],
-    TYPES_SPEC["Float"],
-]
-
 
 class YQLDbCastArgTypes(base.DbCastArgTypes):
     def __init__(self) -> None:
