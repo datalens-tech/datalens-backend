@@ -3107,6 +3107,19 @@ type = "directory"
 url = "../lib/dl_json"
 
 [[package]]
+name = "dl-logging"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.source]
+type = "directory"
+url = "../lib/dl_logging"
+
+[[package]]
 name = "dl-maintenance"
 version = "0.0.1"
 description = ""
@@ -9334,4 +9347,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "de6030b48196b932711ab753e819d39ffda6a11e9ee1e38180382adb628095b3"
+content-hash = "dfd01b7af2348932cc39b88546a3fc7c56a2aca2aed8a7f96c9e0cf740d80e2d"
