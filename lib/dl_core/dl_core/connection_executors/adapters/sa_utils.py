@@ -36,7 +36,7 @@ def compile_query_for_debug(query: ClauseElement | str, dialect: Dialect) -> str
             compiled = query.compile(dialect=dialect)
             return make_debug_query(str(compiled), compiled.params)
     except Exception:
-        LOGGER.exception("Failed to compile query for inspector")
+        LOGGER.exception("Failed to compile query for debug")
         return "-"
 
 
