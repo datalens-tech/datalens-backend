@@ -33,6 +33,7 @@ TYPES_SPEC = {
         base.WhitelistTypeSpec(name="Timestamp", sa_type=ydb_dialect.YqlTimestamp),
         base.WhitelistTypeSpec(name="Uuid", sa_type=sa.types.TEXT),
         # TODO: Support all possible Optional/non-Optional and types as List items
+        # TODO: Support Utf8, UInt*, Int* and other types as array types
         base.WhitelistTypeSpec(name="List<Double>", sa_type=ydb_dialect.YqlListType, nested_sa_type=sa.types.FLOAT),
         base.WhitelistTypeSpec(name="List<Int64>", sa_type=ydb_dialect.YqlListType, nested_sa_type=ydb_sa.types.Int64),
         base.WhitelistTypeSpec(name="List<String>", sa_type=ydb_dialect.YqlListType, nested_sa_type=sa.types.TEXT),
@@ -45,7 +46,6 @@ TYPES_SPEC = {
         base.WhitelistTypeSpec(
             name="List<String?>", sa_type=ydb_dialect.YqlOptionalItemListType, nested_sa_type=sa.types.TEXT
         ),
-        # TODO: Add cast to Utf8 and UInt (including List)
     ]
 }
 

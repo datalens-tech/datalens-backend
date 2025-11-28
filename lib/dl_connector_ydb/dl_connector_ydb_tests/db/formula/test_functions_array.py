@@ -19,21 +19,20 @@ class ArrayFunctionYDBTestSuite(DefaultArrayFunctionFormulaConnectorTestSuite):
     make_float_cast = "Double"
     make_float_array_cast = "List<Double?>"
     make_str_array_cast = "List<String?>"
+
+    # Using VIEW instead of TABLE
     # supports_array_columns = False
 
     def test_startswith_string_array(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        # TODO: Add test for DB_CAST to Utf8
         assert dbe.eval("STARTSWITH([arr_str_value], [arr_str_value])", from_=data_table)
         assert not dbe.eval('STARTSWITH([arr_str_value], ARRAY("", "cde", NULL))', from_=data_table)
 
     def test_array_contains_all_string_array(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        # TODO: Add test for DB_CAST to Utf8
         assert dbe.eval('CONTAINS_ALL([arr_str_value], ARRAY("cde"))', from_=data_table)
         assert dbe.eval('CONTAINS_ALL([arr_str_value], ARRAY("cde", NULL))', from_=data_table)
         assert not dbe.eval('CONTAINS_ALL(ARRAY("cde"), [arr_str_value])', from_=data_table)
 
     def test_array_contains_any_string_array(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        # TODO: Add test for DB_CAST to Utf8
         assert dbe.eval('CONTAINS_ANY([arr_str_value], ARRAY("cde"))', from_=data_table)
         assert dbe.eval('CONTAINS_ANY([arr_str_value], ARRAY("123", NULL))', from_=data_table)
         assert dbe.eval('CONTAINS_ANY(ARRAY("cde"), [arr_str_value])', from_=data_table)
