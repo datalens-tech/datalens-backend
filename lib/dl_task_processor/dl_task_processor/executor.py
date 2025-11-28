@@ -2,8 +2,8 @@ import logging
 
 import attr
 
-from dl_app_tools.log.context import log_context
 from dl_app_tools.profiling_base import GenericProfiler
+import dl_logging
 from dl_task_processor.context import BaseContext
 from dl_task_processor.state import TaskState
 from dl_task_processor.task import (
@@ -50,7 +50,7 @@ class Executor:
             LoggerFields.task_run_id.name: run_id.to_str(),
             LoggerFields.request_id.name: task.request_id,
         }
-        with log_context(**logger_extra_info):
+        with dl_logging.LogContext(**logger_extra_info):
             LOGGER.info("Init task %s", task.instance_id.to_str())
             task_cls = self._registry.get_task(TaskName(task.name))
             executor_task = task_cls.from_params(

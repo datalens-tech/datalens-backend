@@ -10,8 +10,8 @@ from flask import (
 )
 
 from dl_api_commons import headers
-from dl_app_tools.log import context
 from dl_app_tools.profiling_base import GenericProfiler
+import dl_logging
 
 
 def set_up(app: Flask, accept_outer_stages=False, **kwargs):  # type: ignore  # TODO: fix
@@ -23,7 +23,7 @@ def set_up(app: Flask, accept_outer_stages=False, **kwargs):  # type: ignore  # 
             GenericProfiler.reset_all()
 
     def post_cleanup_context(exception=None):  # type: ignore  # TODO: fix
-        context.pop_from_context("folder_id")
+        dl_logging.pop_from_context("folder_id")
 
     app.before_request(pre_log_profiling_stack)
     app.teardown_request(post_cleanup_context)

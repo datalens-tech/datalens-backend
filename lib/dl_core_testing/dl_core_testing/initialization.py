@@ -2,10 +2,10 @@ from pytest import Config
 from statcommons.logs import LOGMUTATORS
 
 from dl_core.loader import load_core_lib
-from dl_core.logging_config import add_log_context_scoped
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 from dl_core_testing.environment import prepare_united_storage_from_config
 from dl_db_testing.loader import load_db_testing_lib
+import dl_logging
 
 
 def initialize_core_test(pytest_config: Config, core_test_config: CoreTestEnvironmentConfiguration) -> None:
@@ -16,7 +16,7 @@ def initialize_core_test(pytest_config: Config, core_test_config: CoreTestEnviro
     # Add Log context to logging records (not only in format phase)
     LOGMUTATORS.apply(require=False)
     # TODO FIX: Replace with add_log_context after all tests will be refactored to use unscoped log context
-    LOGMUTATORS.add_mutator("log_context_scoped", add_log_context_scoped)
+    LOGMUTATORS.add_mutator("log_context_scoped", dl_logging.add_log_context_scoped)
 
     # Prepare US
     prepare_united_storage_from_config(core_test_config.get_us_config())

@@ -10,9 +10,9 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 aiohttp = "*"
 attrs = "*"
-dl-app-tools = {path = "../dl_app_tools"}
 dl-auth = {path = "../dl_auth"}
 dl-constants = {path = "../dl_constants"}
+dl-logging = {path = "../dl_logging"}
 dl-retrier = {path = "../dl_retrier"}
 dl-utils = {path = "../dl_utils"}
 flask = "*"
@@ -43,6 +43,7 @@ warn_unused_configs = true
 warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
+ignore_missing_imports = true
 module = [
   "statcommons.*",
 ]

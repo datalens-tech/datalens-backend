@@ -1,10 +1,7 @@
-from __future__ import annotations
-
 import logging
-from typing import Optional
 
-from dl_app_tools import log
 from dl_core.us_manager.us_manager_async import AsyncUSManager
+import dl_logging
 from dl_maintenance.api.common import MaintenanceEnvironmentManager
 from dl_maintenance.core.logging_config import configure_logging_for_shell
 from dl_maintenance.core.us_crawler_base import USEntryCrawler
@@ -16,7 +13,7 @@ LOGGER = logging.getLogger(__name__)
 async def run_crawler(
     m_manager: MaintenanceEnvironmentManager,
     crawler: USEntryCrawler,
-    usm: Optional[AsyncUSManager] = None,
+    usm: AsyncUSManager | None = None,
     configure_logging: bool = True,
     use_sr_factory: bool = False,
 ) -> None:
@@ -33,12 +30,12 @@ async def run_crawler(
         req_id = "__".join(
             req_id
             for req_id in (
-                log.context.get_log_context().get("request_id"),
+                dl_logging.get_log_context().get("request_id", None),
                 f"cr.{crawler.run_id}",
             )
             if req_id is not None
         )
-        with log.context.log_context(request_id=req_id):
+        with dl_logging.LogContext(request_id=req_id):
             await crawler.run()
     finally:
         if configure_logging:

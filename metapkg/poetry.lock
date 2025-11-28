@@ -1701,9 +1701,9 @@ develop = true
 [package.dependencies]
 aiohttp = "*"
 attrs = "*"
-dl-app-tools = {path = "../dl_app_tools"}
 dl-auth = {path = "../dl_auth"}
 dl-constants = {path = "../dl_constants"}
+dl-logging = {path = "../dl_logging"}
 dl-retrier = {path = "../dl_retrier"}
 dl-utils = {path = "../dl_utils"}
 flask = "*"
@@ -1894,7 +1894,6 @@ develop = true
 attrs = "*"
 dl-utils = {path = "../dl_utils"}
 opentracing = "*"
-six = "*"
 
 [package.source]
 type = "directory"
@@ -2669,6 +2668,7 @@ dl-constants = {path = "../dl_constants"}
 dl-dashsql = {path = "../../lib/dl_dashsql"}
 dl-i18n = {path = "../dl_i18n"}
 dl-json = {path = "../dl_json"}
+dl-logging = {path = "../dl_logging"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-retrier = {path = "../dl_retrier"}
@@ -2718,6 +2718,7 @@ dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-dashsql = {path = "../dl_dashsql"}
 dl-db-testing = {path = "../dl_db_testing"}
+dl-logging = {path = "../dl_logging"}
 dl-retrier = {path = "../dl_retrier"}
 dl-testing = {path = "../dl_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
@@ -2792,6 +2793,7 @@ dl-connector-trino = {path = "../../lib/dl_connector_trino"}
 dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
 dl-constants = {path = "../../lib/dl_constants"}
 dl-core = {path = "../../lib/dl_core"}
+dl-logging = {path = "../../lib/dl_logging"}
 dl-model-tools = {path = "../../lib/dl_model_tools"}
 dl-retrier = {path = "../../lib/dl_retrier"}
 dl-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
@@ -3115,6 +3117,12 @@ python-versions = ">=3.10, <3.13"
 files = []
 develop = true
 
+[package.dependencies]
+jaeger-client = "*"
+opentracing = "*"
+statcommons = {path = "../statcommons"}
+typing-extensions = "*"
+
 [package.source]
 type = "directory"
 url = "../lib/dl_logging"
@@ -3136,6 +3144,7 @@ dl-app-tools = {path = "../dl_app_tools"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
+dl-logging = {path = "../dl_logging"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-pivot = {path = "../dl_pivot"}
 dl-query-processing = {path = "../dl_query_processing"}
@@ -3569,6 +3578,7 @@ arq = "*"
 attrs = "*"
 dl-app-tools = {path = "../dl_app_tools"}
 dl-configs = {path = "../dl_configs"}
+dl-logging = {path = "../dl_logging"}
 dl-utils = {path = "../dl_utils"}
 redis = "*"
 

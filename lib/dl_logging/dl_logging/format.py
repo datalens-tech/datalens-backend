@@ -1,15 +1,14 @@
-# coding:utf-8
-
-from __future__ import annotations
-
 import json
 import logging
 import os
+from typing import Any
 
-from .context import get_log_context
+import dl_logging.context as context
 
 
-IS_DEPLOY = "DEPLOY_BOX_ID" in os.environ
+def is_deploy() -> bool:
+    return "DEPLOY_BOX_ID" in os.environ
+
 
 # To catch the 'extra'-added attributes.
 DEFAULT_RECORD_ATTRS = frozenset(
@@ -43,7 +42,7 @@ DEFAULT_RECORD_ATTRS = frozenset(
 )
 
 
-def get_record_extra(record):  # type: ignore  # TODO: fix
+def get_record_extra(record: logging.LogRecord) -> dict[str, Any]:
     return {key: value for key, value in vars(record).items() if key not in DEFAULT_RECORD_ATTRS}
 
 
@@ -74,14 +73,14 @@ class JsonFormatter(logging.Formatter):
 
     LOG_RECORD_USEFUL_FIELDS = ("funcName", "lineno", "name")
 
-    def format(self, record):  # type: ignore  # TODO: fix
+    def format(self, record: logging.LogRecord) -> str:
         record.message = record.getMessage()
 
-        log_data = {
+        log_data: dict[str, Any] = {
             "message": record.message,
             "level": record.levelname,
         }
-        if IS_DEPLOY:
+        if is_deploy():
             log_data["levelStr"] = record.levelname
             log_data["loggerName"] = record.name
             log_data["level"] = record.levelno
@@ -96,17 +95,17 @@ class JsonFormatter(logging.Formatter):
         if standard_fields:
             fields["std"] = standard_fields
 
-        context = {}
-        log_context_fields = record.log_context if hasattr(record, "log_context") else get_log_context()
-        context.update(log_context_fields)
-        context.update(get_record_extra(record))
-        if context:
-            fields["context"] = context
+        context_data = {}
+        log_context_fields = record.log_context if hasattr(record, "log_context") else context.get_log_context()
+        context_data.update(log_context_fields)
+        context_data.update(get_record_extra(record))
+        if context_data:
+            fields["context"] = context_data
 
         if fields:
             log_data["@fields"] = fields
 
         return json.dumps(log_data, default=repr)
 
-    def _get_standard_fields(self, record):  # type: ignore  # TODO: fix
+    def _get_standard_fields(self, record: logging.LogRecord) -> dict[str, Any]:
         return {field: getattr(record, field) for field in self.LOG_RECORD_USEFUL_FIELDS if hasattr(record, field)}

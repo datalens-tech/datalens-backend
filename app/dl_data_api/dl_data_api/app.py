@@ -30,8 +30,8 @@ from dl_core.connectors.settings.registry import (
     CONNECTORS_SETTINGS_FALLBACKS,
 )
 from dl_core.loader import CoreLibraryConfig
-from dl_core.logging_config import configure_logging
 from dl_data_api.app_factory import StandaloneDataApiAppFactory
+import dl_logging
 
 
 LOGGER = logging.getLogger(__name__)
@@ -61,7 +61,7 @@ async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
         settings_registry=CONNECTORS_SETTINGS_CLASSES,
         fallbacks=CONNECTORS_SETTINGS_FALLBACKS,
     )
-    configure_logging(
+    dl_logging.configure_logging(
         app_name=settings.app_name,
         app_prefix=settings.app_prefix,
         use_jaeger_tracer=use_jaeger_tracer(),

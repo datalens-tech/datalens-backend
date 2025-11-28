@@ -65,6 +65,13 @@ warn_redundant_casts = true
 warn_unused_configs = true
 warn_unused_ignores = true
 
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  "argcomplete.*",
+  "uvloop.*",
+]
+
 [tool.pytest.ini_options]
 addopts = "-ra"
 minversion = "6.0"
