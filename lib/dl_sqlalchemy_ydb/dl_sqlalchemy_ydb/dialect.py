@@ -18,9 +18,10 @@ class YqlTimestamp(sa.types.DateTime):
 
     def literal_processor(self, dialect: sa.engine.Dialect) -> typing.Any:
         def process(value: datetime.datetime) -> str:
-            formatted_dt = (
-                value.astimezone(datetime.timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-            )
+            dt = value.astimezone(datetime.timezone.utc)
+            dt = dt.replace(tzinfo=None)
+            formatted_dt = dt.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
             return f'Timestamp("{ formatted_dt }")'
 
         return process
@@ -39,7 +40,10 @@ class YqlDateTime(YqlTimestamp, sa.types.DateTime):
 
     def literal_processor(self, dialect: sa.engine.Dialect) -> typing.Any:
         def process(value: datetime.datetime) -> str:
-            formatted_dt = value.astimezone(datetime.timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%dT%H:%M:%SZ")
+            dt = value.astimezone(datetime.timezone.utc)
+            dt = dt.replace(tzinfo=None)
+            formatted_dt = dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+
             return f'Datetime("{ formatted_dt }")'
 
         return process
