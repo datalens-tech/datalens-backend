@@ -72,8 +72,6 @@ def make_datetime(value: Any) -> Optional[datetime.datetime]:
 def make_int(value: Any) -> Optional[int]:
     if value is None:
         return None
-    # if isinstance(value, datetime.timedelta):
-    #     return int(value.total_seconds())
     if isinstance(value, float) and (math.isinf(value) or math.isnan(value)):
         return None
     return int(value)

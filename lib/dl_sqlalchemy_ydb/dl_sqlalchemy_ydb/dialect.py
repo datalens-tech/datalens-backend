@@ -49,7 +49,6 @@ class YqlListType(ydb_sa.types.ListType):
         return process
 
 
-# TODO: Try use ydb.Optional?
 class YqlOptionalItemListType(YqlListType):
     """
     :class:`ListType` with optional item types
@@ -550,11 +549,8 @@ class CustomAsyncYqlDialect(CustomYqlDialect):
 def register_dialect() -> None:
     from sqlalchemy.dialects import registry
 
-    registry.register("yql.ydb", __name__, "CustomYqlDialect")
-    registry.register("ydb", __name__, "CustomYqlDialect")
-    registry.register("yql", __name__, "CustomYqlDialect")
-    registry.register("yql.ydb_async", __name__, "CustomAsyncYqlDialect")
-    registry.register("ydb_async", __name__, "CustomAsyncYqlDialect")
-
-
-# TODO: Refactor: move classes into separate files
+    registry.register("yql.ydb", "dl_sqlalchemy_ydb.dialect", "CustomYqlDialect")
+    registry.register("ydb", "dl_sqlalchemy_ydb.dialect", "CustomYqlDialect")
+    registry.register("yql", "dl_sqlalchemy_ydb.dialect", "CustomYqlDialect")
+    registry.register("yql.ydb_async", "dl_sqlalchemy_ydb.dialect", "CustomAsyncYqlDialect")
+    registry.register("ydb_async", "dl_sqlalchemy_ydb.dialect", "CustomAsyncYqlDialect")
