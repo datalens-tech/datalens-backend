@@ -42,9 +42,7 @@ from dl_core.connection_executors.adapters.mixins import (
     SATypeTransformer,
     WithDatabaseNameOverride,
 )
-from dl_core.connection_executors.adapters.sa_utils import (
-    make_debug_query,
-)
+from dl_core.connection_executors.adapters.sa_utils import make_debug_query
 from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
     ExecutionStep,
