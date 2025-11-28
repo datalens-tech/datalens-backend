@@ -148,6 +148,7 @@ dl-formula-testing = {develop = true, path = "../lib/dl_formula_testing"}
 dl-httpx = {develop = true, path = "../lib/dl_httpx"}
 dl-i18n = {develop = true, path = "../lib/dl_i18n"}
 dl-json = {develop = true, path = "../lib/dl_json"}
+dl-logging = {develop = true, path = "../lib/dl_logging"}
 dl-maintenance = {develop = true, path = "../lib/dl_maintenance"}
 dl-model-tools = {develop = true, path = "../lib/dl_model_tools"}
 dl-pivot = {develop = true, path = "../lib/dl_pivot"}
