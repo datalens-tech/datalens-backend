@@ -8,7 +8,11 @@ readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
+jaeger-client = "*"
+opentracing = "*"
 python = ">=3.10, <3.13"
+statcommons = {path = "../statcommons"}
+typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 
@@ -19,6 +23,12 @@ strict_optional = true
 warn_redundant_casts = true
 warn_unused_configs = true
 warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  "statcommons.*",
+]
 
 [tool.pytest.ini_options]
 addopts = "-ra"

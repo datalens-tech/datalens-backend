@@ -62,12 +62,12 @@ from dl_core.loader import (
     CoreLibraryConfig,
     load_core_lib,
 )
-from dl_core.logging_config import configure_logging
 from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
 from dl_dashsql.typed_query.result_serialization import (
     DefaultTypedQueryRawResultSerializer,
     get_typed_query_result_serializer,
 )
+import dl_logging
 from dl_model_tools.msgpack import DLSafeMessagePackSerializer
 from dl_utils.aio import ContextVarExecutor
 
@@ -333,7 +333,7 @@ def create_async_qe_app(hmac_keys: Sequence[bytes], forbid_private_addr: bool = 
 
 
 def get_configured_qe_app() -> web.Application:
-    configure_logging(
+    dl_logging.configure_logging(
         app_name="rqe-async",
         app_prefix=None,  # not useful with `append_local_req_id=False`.
         use_jaeger_tracer=use_jaeger_tracer(),

@@ -67,7 +67,7 @@ BASE_LOGGING_CONFIG = {
     "disable_existing_loggers": False,
     "filters": {
         "events": {"()": "logging.Filter", "name": "events"},
-        "fastlogs": {"()": "logging.Filter", "name": "fastlogs"},
+        "fast_logs": {"()": "logging.Filter", "name": "fast_logs"},
     },
     "formatters": {
         "verbose": {"format": "[%(asctime)s] %(levelname)s: %(name)s: %(message)s"},
@@ -105,9 +105,9 @@ BASE_LOGGING_CONFIG = {
             formatter="jsonext",
             level="DEBUG",
             # Ways to use these:
-            #  * Use logging.getLogger('fastlogs')
+            #  * Use logging.getLogger('fast_logs')
             #  * Replace the `filters` setting with your own.
-            filters=["fastlogs"],
+            filters=["fast_logs"],
         ),
         "event_log": make_file_logger_syslog(
             "event",
