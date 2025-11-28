@@ -49,7 +49,7 @@ class YQLTypeTransformer(TypeTransformer):
             # see also: ENUM,
         ),
         # see also: UUID
-        UserDataType.date: (sa.DATE,),
+        UserDataType.date: (dl_sqlalchemy_ydb.dialect.YqlDate,),
         UserDataType.datetime: (
             sa.DATETIME,
             sa.TIMESTAMP,
