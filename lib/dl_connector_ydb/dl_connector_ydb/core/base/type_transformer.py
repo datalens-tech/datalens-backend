@@ -30,7 +30,7 @@ class YQLTypeTransformer(TypeTransformer):
             ydb_sa.types.UInt16,
             ydb_sa.types.UInt32,
             ydb_sa.types.UInt64,
-            ydb_sa.types.YqlInterval,
+            dl_sqlalchemy_ydb.dialect.YqlInterval,
         ),
         UserDataType.float: (
             sa.FLOAT,
