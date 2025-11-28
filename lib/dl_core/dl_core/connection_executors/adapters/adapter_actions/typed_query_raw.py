@@ -37,6 +37,7 @@ class TypedQueryRawToDBAQueryConverter:
                 body=params.body,
             ),
             debug_compiled_query=f"{params.method} {hide_url_args(params.path)} [Content-Type: {params.content_type}]",
+            inspector_query=f"{params.method} {hide_url_args(params.path)} [Content-Type: {params.content_type}]",  # TODO: BI-6448
         )
         return dba_query
 

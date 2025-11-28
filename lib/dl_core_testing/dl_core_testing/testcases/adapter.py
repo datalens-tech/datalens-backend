@@ -59,7 +59,9 @@ class BaseAsyncAdapterTestClass(BaseConnectionExecutorTestClass, Generic[_TARGET
         dba = self._make_dba(target_conn_dto, conn_bi_context)
 
         with pytest.raises(exc.SourceConnectError) as exception_info:
-            await dba.execute(DBAdapterQuery(query=query_to_send, debug_compiled_query=debug_query))
+            await dba.execute(
+                DBAdapterQuery(query=query_to_send, debug_compiled_query=debug_query, inspector_query=debug_query)
+            )  # TODO: BI-6448
 
         assert exception_info.value.query == expected_query, exception_info.value.query
 

@@ -15,7 +15,10 @@ from sqlalchemy.sql.selectable import (
 )
 
 from dl_cache_engine.primitives import LocalKeyRepresentation
-from dl_core.connection_executors.adapters.sa_utils import compile_query_for_debug
+from dl_core.connection_executors.adapters.sa_utils import (
+    compile_query_for_debug,
+    compile_query_for_inspector,
+)
 from dl_core.data_processing.prepared_components.primitives import (
     PreparedFromInfo,
     PreparedSingleFromInfo,
@@ -99,6 +102,7 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
         joint_dsrc_info = source_stream.prep_src_info.clone(sql_source=query)
 
         query_debug_str = compile_query_for_debug(query=query, dialect=query_compiler.dialect)
+        query_inspector_str = compile_query_for_inspector(query=query, dialect=query_compiler.dialect)
         LOGGER.info(f"Going to database with SQL query:\n{query_debug_str}")
 
         query_id = make_id()
@@ -141,7 +145,7 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
             user_types=source_stream.user_types,
             data=data,
             meta=DataRequestMetaInfo(
-                query=query_debug_str,
+                query=query_inspector_str,
                 data_source_list=data_source_list,
                 query_id=query_id,
                 pass_db_query_to_user=pass_db_query_to_user,

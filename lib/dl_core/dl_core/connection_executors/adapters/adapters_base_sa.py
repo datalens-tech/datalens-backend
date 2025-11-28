@@ -35,6 +35,7 @@ from dl_core.connection_executors.adapters.mixins import (
 from dl_core.connection_executors.adapters.sa_utils import (
     CursorLogger,
     compile_query_for_debug,
+    compile_query_for_inspector,
     get_db_version_query,
 )
 from dl_core.connection_executors.models.db_adapter_data import (
@@ -162,12 +163,12 @@ class BaseSAAdapter(
             disable_streaming=db_adapter_query.disable_streaming,
         )
 
-        # TODO FIX: Delegate query compilation for debug to error handler or make method of debug compilation
-        compiled_query = query if isinstance(query, str) else compile_query_for_debug(query, engine.dialect)
+        debug_query = compile_query_for_debug(query, engine.dialect)
+        inspector_query = compile_query_for_inspector(query, engine.dialect)
 
         with (
             db_session_context(backend_type=self.get_backend_type(), db_engine=engine) as db_session,
-            self.handle_execution_error(compiled_query),
+            self.handle_execution_error(debug_query=debug_query, inspector_query=inspector_query),
             self.execution_context(),
         ):
             with GenericProfiler("db-exec"):
@@ -208,18 +209,22 @@ class BaseSAAdapter(
 
     @final
     def test(self) -> None:
-        with self.handle_execution_error(debug_compiled_query="<test()>"):
+        with self.handle_execution_error(debug_query="<test()>", inspector_query="<test()>"):
             self._test()
 
     @final
     def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
-        with self.handle_execution_error(debug_compiled_query=f"<get_db_version({db_ident})>"):
+        with self.handle_execution_error(
+            debug_query=f"<get_db_version({db_ident})>", inspector_query=f"<get_db_version({db_ident})>"
+        ):  # TODO: BI-6448
             return self._get_db_version(db_ident)
 
     @final
     def get_schema_names(self, db_ident: DBIdent) -> list[str]:
         with (
-            self.handle_execution_error(debug_compiled_query=f"<get_schema_names({db_ident})>"),
+            self.handle_execution_error(
+                debug_query=f"<get_schema_names({db_ident})>", inspector_query=f"<get_schema_names({db_ident})>"
+            ),  # TODO: BI-6448
             self.execution_context(),
         ):
             return self._get_schema_names(db_ident)
@@ -227,7 +232,9 @@ class BaseSAAdapter(
     @final
     def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         with (
-            self.handle_execution_error(debug_compiled_query=f"<get_tables({schema_ident})>"),
+            self.handle_execution_error(
+                debug_query=f"<get_tables({schema_ident})>", inspector_query=f"<get_tables({schema_ident})>"
+            ),  # TODO: BI-6448
             self.execution_context(),
         ):
             return self._get_tables(schema_ident, page_ident)
@@ -248,7 +255,7 @@ class BaseSAAdapter(
             #  fill details at bi-api level
             # A catch-point intended for adding `query` and `db_message` only for subselect-schema errors.
             def exc_post_processor(db_exc: exc.DatabaseQueryError) -> None:
-                assert isinstance(db_exc, exc.DatabaseQueryError)
+                assert isinstance(db_exc, exc.DatabaseQueryError)  # TODO: BI-6448 is any transformations needed?
                 db_exc.query = "SELECT * FROM {}".format(table_def.text)
                 db_exc.details.setdefault("query", db_exc.query)
                 db_exc.details.setdefault("db_message", db_exc.db_message)
@@ -260,7 +267,8 @@ class BaseSAAdapter(
 
         with (
             self.handle_execution_error(
-                debug_compiled_query=debug_compiled_query,
+                debug_query=debug_compiled_query,
+                inspector_query=debug_compiled_query,  # TODO: BI-6448
                 exc_post_processor=exc_post_processor,
             ),
             self.execution_context(),
@@ -291,7 +299,9 @@ class BaseSAAdapter(
 
     @final
     def is_table_exists(self, table_ident: TableIdent) -> bool:
-        with self.handle_execution_error(f"<exists({table_ident})>"), self.execution_context():
+        with self.handle_execution_error(
+            debug_query=f"<exists({table_ident})>", inspector_query=f"<exists({table_ident})>"
+        ), self.execution_context():  # TODO: BI-6448
             return self._is_table_exists(table_ident)
 
     def _test(self) -> None:

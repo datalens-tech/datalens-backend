@@ -26,12 +26,13 @@ class ExpressionNotAggregateError(exc.InvalidQuery):
 class TrinoErrorTransformer(ChainedDbErrorTransformer):
     @staticmethod
     def _get_error_kw(
-        debug_compiled_query: str | None, orig_exc: Exception | None, wrapper_exc: Exception
+        debug_query: str | None, orig_exc: Exception | None, wrapper_exc: Exception, inspector_query: str | None
     ) -> DBExcKWArgs:
         if isinstance(orig_exc, TrinoQueryError):
             return dict(
                 db_message=orig_exc.message,
-                query=debug_compiled_query,
+                query=debug_query,
+                inspector_query=inspector_query,
                 orig=orig_exc,
                 details={
                     "error_name": orig_exc.error_name,
@@ -41,7 +42,7 @@ class TrinoErrorTransformer(ChainedDbErrorTransformer):
                 },
             )
 
-        return ChainedDbErrorTransformer._get_error_kw(debug_compiled_query, orig_exc, wrapper_exc)
+        return ChainedDbErrorTransformer._get_error_kw(debug_query, orig_exc, wrapper_exc, inspector_query)
 
 
 def trino_user_error_or_none(exc: Exception) -> TrinoUserError | None:

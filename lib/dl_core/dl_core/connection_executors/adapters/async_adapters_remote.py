@@ -195,12 +195,14 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             if str(err).startswith("Connection timeout"):
                 raise
 
-            query = (
-                req_obj.db_adapter_query.debug_compiled_query
+            query, inspector_query = (
+                (req_obj.db_adapter_query.debug_compiled_query, req_obj.db_adapter_query.inspector_query)
                 if isinstance(req_obj, dba_actions.ActionExecuteQuery)
-                else ""
+                else ("", "")
             )
-            raise common_exc.SourceTimeout(db_message="Source timed out", query=query) from err
+            raise common_exc.SourceTimeout(
+                db_message="Source timed out", query=query, inspector_query=inspector_query
+            ) from err
         return resp
 
     @staticmethod
@@ -322,7 +324,9 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
                     raw_chunk, end_of_chunk = await resp.content.readchunk()
                 except asyncio.CancelledError as err:
                     raise common_exc.SourceTimeout(
-                        db_message="Source timed out", query=query.debug_compiled_query
+                        db_message="Source timed out",
+                        query=query.debug_compiled_query,
+                        inspector_query=query.inspector_query,
                     ) from err
                 buf += raw_chunk
 

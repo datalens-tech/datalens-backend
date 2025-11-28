@@ -6,7 +6,6 @@ from typing import (
     Callable,
     ClassVar,
     Iterable,
-    Optional,
     TypedDict,
 )
 
@@ -18,9 +17,10 @@ from dl_core.exc import DatabaseQueryError
 
 
 class DBExcKWArgs(TypedDict, total=False):
-    db_message: Optional[str]
-    query: Optional[str]
-    orig: Optional[Exception]
+    db_message: str | None
+    query: str | None
+    inspector_query: str | None
+    orig: Exception | None
     details: dict[str, Any]
 
 
@@ -30,11 +30,13 @@ class DbErrorTransformer(abc.ABC):
     def make_bi_error_parameters(
         self,
         wrapper_exc: Exception,
-        debug_compiled_query: Optional[str] = None,
+        debug_query: str | None = None,
+        inspector_query: str | None = None,
     ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
         kw: DBExcKWArgs = DBExcKWArgs(
             db_message=str(wrapper_exc),
-            query=debug_compiled_query,
+            query=debug_query,
+            inspector_query=inspector_query,
             orig=wrapper_exc,
             details={},
         )
@@ -44,12 +46,12 @@ class DbErrorTransformer(abc.ABC):
     def make_bi_error(
         self,
         wrapper_exc: Exception,
-        orig_exc: Optional[Exception] = None,
-        debug_compiled_query: Optional[str] = None,
+        orig_exc: Exception | None = None,
+        debug_query: str | None = None,
+        inspector_query: str | None = None,
     ) -> exc.DatabaseQueryError:
         trans_exc_cls, kw = self.make_bi_error_parameters(
-            wrapper_exc=wrapper_exc,
-            debug_compiled_query=debug_compiled_query,
+            wrapper_exc=wrapper_exc, debug_query=debug_query, inspector_query=inspector_query
         )
         return trans_exc_cls(**kw)
 
@@ -74,7 +76,7 @@ class ErrorTransformerRule(abc.ABC):
     def get_bi_error_class(
         self,
         wrapper_exc: Exception,
-    ) -> Optional[type[exc.DatabaseQueryError]]:
+    ) -> type[exc.DatabaseQueryError] | None:
         if self.when(wrapper_exc):
             return self.then_raise
         else:
@@ -126,21 +128,23 @@ class ChainedDbErrorTransformer(DbErrorTransformer):
     def make_bi_error(
         self,
         wrapper_exc: Exception,
-        orig_exc: Optional[Exception] = None,
-        debug_compiled_query: Optional[str] = None,
+        orig_exc: Exception | None = None,
+        debug_query: str | None = None,
+        inspector_query: str | None = None,
     ) -> DatabaseQueryError:
         transformed_exc_cls: type[DatabaseQueryError] = self._get_bi_error_cls(wrapper_exc)
-        kw: DBExcKWArgs = self._get_error_kw(debug_compiled_query, orig_exc, wrapper_exc)
+        kw: DBExcKWArgs = self._get_error_kw(debug_query, orig_exc, wrapper_exc, inspector_query)
         return transformed_exc_cls(**kw)
 
     def make_bi_error_parameters(
         self,
         wrapper_exc: Exception,
-        debug_compiled_query: Optional[str] = None,
+        debug_query: str | None = None,
+        inspector_query: str | None = None,
     ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
         transformed_exc_cls: type[DatabaseQueryError] = self._get_bi_error_cls(wrapper_exc)
         orig_exc = getattr(wrapper_exc, "orig", None)
-        kw: DBExcKWArgs = self._get_error_kw(debug_compiled_query, orig_exc, wrapper_exc)
+        kw: DBExcKWArgs = self._get_error_kw(debug_query, orig_exc, wrapper_exc, inspector_query)
 
         return transformed_exc_cls, kw
 
@@ -156,11 +160,15 @@ class ChainedDbErrorTransformer(DbErrorTransformer):
 
     @staticmethod
     def _get_error_kw(
-        debug_compiled_query: Optional[str], orig_exc: Optional[Exception], wrapper_exc: Exception
+        debug_query: str | None,
+        orig_exc: Exception | None,
+        wrapper_exc: Exception,
+        inspector_query: str | None,
     ) -> DBExcKWArgs:
         return dict(
             db_message=str(orig_exc) if orig_exc else str(wrapper_exc),
-            query=debug_compiled_query,
+            query=debug_query,
+            inspector_query=inspector_query,
             orig=orig_exc,
             details={},
         )
@@ -182,7 +190,7 @@ def make_default_transformer_with_custom_rules(*custom_rules: ErrorTransformerRu
 
 def make_rule_from_descr(
     descr: tuple[
-        tuple[type[Exception], Optional[str]],
+        tuple[type[Exception], str | None],
         type[exc.DatabaseQueryError],
     ]
 ) -> ErrorTransformerRule:

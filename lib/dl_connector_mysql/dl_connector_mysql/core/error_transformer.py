@@ -1,5 +1,3 @@
-from typing import Optional
-
 import pymysql
 import sqlalchemy
 
@@ -75,16 +73,22 @@ def is_sql_syntax_error_sync_error() -> ExcMatchCondition:
 class AsyncMysqlChainedDbErrorTransformer(error_transformer.ChainedDbErrorTransformer):
     @staticmethod
     def _get_error_kw(
-        debug_compiled_query: Optional[str], orig_exc: Optional[Exception], wrapper_exc: Exception
+        debug_query: str | None,
+        orig_exc: Exception | None,
+        wrapper_exc: Exception,
+        inspector_query: str | None,
     ) -> error_transformer.DBExcKWArgs:
         if isinstance(wrapper_exc, pymysql.ProgrammingError):
             return dict(
                 db_message=str(orig_exc) if orig_exc else str(wrapper_exc),
-                query=debug_compiled_query,
+                query=debug_query,
+                inspector_query=inspector_query,
                 orig=wrapper_exc,  # keep orig exception for .args
                 details={},
             )
-        return error_transformer.ChainedDbErrorTransformer._get_error_kw(debug_compiled_query, orig_exc, wrapper_exc)
+        return error_transformer.ChainedDbErrorTransformer._get_error_kw(
+            debug_query, orig_exc, wrapper_exc, inspector_query
+        )
 
 
 async_mysql_db_error_transformer: DbErrorTransformer = AsyncMysqlChainedDbErrorTransformer(

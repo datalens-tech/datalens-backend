@@ -244,6 +244,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                     ce_query = ConnExecutorQuery(
                         query=_construct_insert_from_select_query(),
                         debug_compiled_query=_construct_insert_from_select_query(for_debug=True),
+                        inspector_query=_construct_insert_from_select_query(for_debug=True),  # TODO: BI-6448
                         trusted_query=True,
                         is_ddl_dml_query=True,
                     )
