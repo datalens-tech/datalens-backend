@@ -12,8 +12,6 @@ from dl_type_transformer.type_transformer import (
     make_native_type,
 )
 
-import dl_connector_ydb.core.ydb.dialect
-
 
 if TYPE_CHECKING:
     from dl_type_transformer.native_type import SATypeSpec
@@ -32,7 +30,7 @@ class YQLTypeTransformer(TypeTransformer):
             ydb_sa.types.UInt16,
             ydb_sa.types.UInt32,
             ydb_sa.types.UInt64,
-            dl_sqlalchemy_ydb.dialect.YqlInterval,
+            ydb_sa.types.YqlInterval,
         ),
         UserDataType.float: (
             sa.FLOAT,
@@ -51,7 +49,7 @@ class YQLTypeTransformer(TypeTransformer):
             # see also: ENUM,
         ),
         # see also: UUID
-        UserDataType.date: (dl_connector_ydb.core.ydb.dialect.YqlDate,),
+        UserDataType.date: (dl_sqlalchemy_ydb.dialect.YqlDate,),
         UserDataType.datetime: (
             sa.DATETIME,
             sa.TIMESTAMP,
