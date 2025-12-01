@@ -214,7 +214,7 @@ DEFINITIONS_ARRAY = [
     ),
     base.FuncStringArrayFromStringArray.for_dialect(D.CLICKHOUSE),
     # contains
-    FuncArrayContainsCHConst(),
+    FuncArrayContainsCHConst(),  # Here to handle simple constant cases with straightforward `has` implementation instead of FuncArrayContainsCHIndexed optimization
     FuncArrayContainsCHIndexed(),
     base.FuncArrayContains(
         variants=[
