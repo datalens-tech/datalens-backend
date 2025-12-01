@@ -25,8 +25,8 @@ from dl_api_commons.logging import (
     NON_TRANSITIVE_LOGGING_CTX_KEYS,
     RequestLogHelper,
 )
-from dl_app_tools.log.context import put_to_context
 from dl_constants.api_constants import DLHeadersCommon
+import dl_logging
 
 
 LOGGER = logging.getLogger(__name__)
@@ -71,7 +71,7 @@ class RequestIDService:
                     logging_ctx_from_header.pop(ctx_key, None)
 
                 for ctx_key, ctx_val in logging_ctx_from_header.items():
-                    put_to_context(ctx_key, ctx_val)
+                    dl_logging.put_to_context(ctx_key, ctx_val)
 
             except Exception:  # noqa
                 LOGGER.exception("Can not parse logging context: %s", logging_ctx_header)

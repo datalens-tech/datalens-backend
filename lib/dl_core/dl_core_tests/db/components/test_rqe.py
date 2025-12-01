@@ -1,10 +1,10 @@
 import attr
 import pytest
 
-from dl_app_tools.log.context import log_context
 from dl_core.connection_executors.models.exc import QueryExecutorException
 from dl_core_testing.testcases.remote_query_executor import BaseRemoteQueryExecutorTestClass
 from dl_core_tests.db.base import DefaultCoreTestClass
+import dl_logging
 
 from dl_connector_clickhouse.core.clickhouse.adapters import DLClickHouseAdapter
 
@@ -49,7 +49,7 @@ class TestRQE(DefaultCoreTestClass, BaseRemoteQueryExecutorTestClass):
         caplog.set_level("INFO")
         outer_logging_ctx = dict(some_str_key="some_val", some_int_key=123)
 
-        with log_context(**outer_logging_ctx):
+        with dl_logging.LogContext(**outer_logging_ctx):
             result = await self.execute_request(remote_adapter, query="select 1")
             assert result[0][0] == 1
 

@@ -1,8 +1,9 @@
-from statcommons.logs import LOGMUTATORS
+import pytest
+import statcommons.logs
 
-from dl_api_commons.logging_config import add_log_context
+import dl_logging
 
 
-def pytest_configure(config):  # noqa
-    LOGMUTATORS.apply(require=False)
-    LOGMUTATORS.add_mutator("log_context", add_log_context)
+def pytest_configure(config: pytest.Config) -> None:
+    statcommons.logs.LOGMUTATORS.apply(require=False)
+    statcommons.logs.LOGMUTATORS.add_mutator("log_context", dl_logging.add_log_context)
