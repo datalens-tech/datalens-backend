@@ -124,6 +124,7 @@ class AsyncUSManager(USManagerBase):
         entry_id: str,
         expected_type: None = None,
         params: Optional[dict[str, str]] = None,
+        context_name: Optional[str] = None,
     ) -> USEntry:
         pass
 
@@ -133,6 +134,7 @@ class AsyncUSManager(USManagerBase):
         entry_id: str,
         expected_type: Optional[type[_ENTRY_TV]] = None,
         params: Optional[dict[str, str]] = None,
+        context_name: Optional[str] = None,
     ) -> _ENTRY_TV:
         pass
 

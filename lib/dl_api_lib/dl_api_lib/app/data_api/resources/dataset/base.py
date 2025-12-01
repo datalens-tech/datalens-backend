@@ -837,10 +837,11 @@ class DatasetDataBaseView(BaseView):
     ) -> Callable[..., Coroutine[Any, Any, Any]]:
         @functools.wraps(coro)
         async def wrapper(self: "DatasetDataBaseView", *args: Any, **kwargs: Any) -> Any:
-            connection_headers = {
-                DLHeadersCommon.DATASET_ID.value: self.dataset_id,
-            }
-            self.dl_request.us_manager.set_context("connection", connection_headers)
+            if self.dataset_id is not None:
+                connection_headers = {
+                    DLHeadersCommon.DATASET_ID.value: self.dataset_id,
+                }
+                self.dl_request.us_manager.set_context("connection", connection_headers)
 
             return await coro(self, *args, **kwargs)
 

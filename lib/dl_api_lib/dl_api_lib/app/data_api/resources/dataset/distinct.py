@@ -45,10 +45,11 @@ class DatasetDistinctView(DatasetDataBaseView, abc.ABC):
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> Response:
         # Pass dataset_id to US from URL
-        connection_headers = {
-            DLHeadersCommon.DATASET_ID.value: self.dataset_id,
-        }
-        self.dl_request.us_manager.set_context("connection", connection_headers)
+        if self.dataset_id is not None:
+            connection_headers = {
+                DLHeadersCommon.DATASET_ID.value: self.dataset_id,
+            }
+            self.dl_request.us_manager.set_context("connection", connection_headers)
 
         req_model: DataRequestModel = self.load_req_model()
 

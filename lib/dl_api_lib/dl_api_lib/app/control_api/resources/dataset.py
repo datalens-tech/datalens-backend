@@ -429,10 +429,13 @@ class DatasetImportCollection(DatasetResource):
             ds_key=self.generate_dataset_location(data),
             us_manager=us_manager,
         )
-        connection_headers = {
-            DLHeadersCommon.DATASET_ID.value: dataset.uuid,
-        }
-        us_manager.set_context("connection", connection_headers)
+
+        # Pass dataset_id to US from URL
+        if dataset.uuid is not None:
+            connection_headers = {
+                DLHeadersCommon.DATASET_ID.value: dataset.uuid,
+            }
+            us_manager.set_context("connection", connection_headers)
 
         ds_editor = DatasetComponentEditor(dataset=dataset)
 
@@ -476,11 +479,14 @@ class DatasetVersionValidator(DatasetResource):
         body: dict | None = None,
     ) -> tuple[dict, HTTPStatus]:
         """Validate dataset version schema"""
-        connection_headers = {
-            DLHeadersCommon.DATASET_ID.value: dataset_id,
-        }
         us_manager = self.get_us_manager()
-        us_manager.set_context("connection", connection_headers)
+
+        # Pass dataset_id to US from URL
+        if dataset_id is not None:
+            connection_headers = {
+                DLHeadersCommon.DATASET_ID.value: dataset_id,
+            }
+            us_manager.set_context("connection", connection_headers)
 
         assert body is not None
         dataset, _ = self.get_dataset(dataset_id=dataset_id, body=body)
@@ -540,11 +546,14 @@ class DatasetVersionFieldValidator(DatasetResource):
         body: dict | None = None,
     ) -> tuple[dict, HTTPStatus]:
         """Validate formula field of dataset version"""
-        connection_headers = {
-            DLHeadersCommon.DATASET_ID.value: dataset_id,
-        }
         us_manager = self.get_us_manager()
-        us_manager.set_context("connection", connection_headers)
+
+        # Pass dataset_id to US from URL
+        if dataset_id is not None:
+            connection_headers = {
+                DLHeadersCommon.DATASET_ID.value: dataset_id,
+            }
+            us_manager.set_context("connection", connection_headers)
 
         assert body is not None
         dataset, _ = self.get_dataset(dataset_id=dataset_id, body=body)

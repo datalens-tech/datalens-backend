@@ -63,6 +63,7 @@ class MockedUStorageClient(UStorageClient):
         self,
         request_data: UStorageClientBase.RequestData,
         retry_policy_name: Optional[str] = None,
+        context_name: Optional[str] = None,
     ) -> dict[str, Any]:
         raise NotImplementedError("This is dummy US client")
 
@@ -148,6 +149,7 @@ class MockedUStorageClient(UStorageClient):
         include_permissions: bool = True,
         include_links: bool = True,
         include_favorite: bool = True,
+        context_name: Optional[str] = None,
     ) -> dict[str, Any]:
         assert params is None
         try:

@@ -52,10 +52,12 @@ class DatasetPivotView(DatasetDataBaseView):
     @generic_profiler_async("ds-pivot-full")
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> Response:
-        connection_headers = {
-            DLHeadersCommon.DATASET_ID.value: self.dataset_id,
-        }
-        self.dl_request.us_manager.set_context("connection", connection_headers)
+        # Pass dataset_id to US from URL
+        if self.dataset_id is not None:
+            connection_headers = {
+                DLHeadersCommon.DATASET_ID.value: self.dataset_id,
+            }
+            self.dl_request.us_manager.set_context("connection", connection_headers)
 
         schema = dl_api_lib.schemas.data.PivotDataRequestBaseSchema()
         req_model: PivotDataRequestModel = schema.load(self.dl_request.json)

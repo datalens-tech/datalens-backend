@@ -744,7 +744,7 @@ class UStorageClient(UStorageClientBase):
         request_kwargs: dict[str, Any] = {"json": request_data.json} if request_data.json is not None else {}
         tracing_headers = get_current_tracing_headers()
 
-        context_headers = self._named_contexts.get(context_name, {})
+        context_headers = self._named_contexts.get(context_name, {}) if context_name else {}
 
         retry_policy = self._retry_policy_factory.get_policy(retry_policy_name)
         retrier = RequestsPolicyRetrier(retry_policy=retry_policy)

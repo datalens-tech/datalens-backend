@@ -150,7 +150,7 @@ class UStorageClientAIO(UStorageClientBase):
         tracing_headers = get_current_tracing_headers()
         start = time.monotonic()
 
-        context_headers = self._named_contexts.get(context_name, {})
+        context_headers = self._named_contexts.get(context_name, {}) if context_name else {}
 
         with GenericProfiler("us-client-request"):
             retry_policy = self._retry_policy_factory.get_policy(retry_policy_name)
