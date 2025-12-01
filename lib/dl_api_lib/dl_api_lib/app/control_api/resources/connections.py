@@ -115,7 +115,10 @@ class ConnectionTester(BIResource):
     def post(self, connection_id: str) -> None | tuple[list | dict, int]:
         usm = self.get_us_manager()
         dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
-        usm.set_dataset_context(dataset_id)
+        connection_headers = {
+            DLHeadersCommon.DATASET_ID.value: dataset_id,
+        }
+        usm.set_context("connection", connection_headers)
 
         service_registry = self.get_service_registry()
         conn = usm.get_by_id(connection_id, expected_type=ConnectionBase)
@@ -265,7 +268,10 @@ class ConnectionItem(BIResource):
     def get(self, connection_id: str, query: dict) -> dict:
         us_manager = self.get_us_manager()
         dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
-        us_manager.set_dataset_context(dataset_id)
+        connection_headers = {
+            DLHeadersCommon.DATASET_ID.value: dataset_id,
+        }
+        us_manager.set_context("connection", connection_headers)
 
         if "rev_id" in query:
             conn = us_manager.get_by_id(
@@ -382,7 +388,10 @@ class ConnectionInfoMetadataSources(BIResource):
     def get(self, connection_id: str) -> dict[str, list[dict[str, Any]] | None]:
         us_manager = self.get_us_manager()
         dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
-        us_manager.set_dataset_context(dataset_id)
+        connection_headers = {
+            DLHeadersCommon.DATASET_ID.value: dataset_id,
+        }
+        us_manager.set_context("connection", connection_headers)
 
         connection: ConnectionBase = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
 
@@ -410,7 +419,10 @@ class ConnectionDBNames(BIResource):
     def get(self, connection_id: str) -> dict[str, list[str]]:
         us_manager = self.get_us_manager()
         dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
-        us_manager.set_dataset_context(dataset_id)
+        connection_headers = {
+            DLHeadersCommon.DATASET_ID.value: dataset_id,
+        }
+        us_manager.set_context("connection", connection_headers)
 
         connection = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
 
@@ -441,7 +453,10 @@ class ConnectionInfoSourceListingOptions(BIResource):
     def get(self, connection_id: str) -> dict:
         us_manager = self.get_us_manager()
         dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
-        us_manager.set_dataset_context(dataset_id)
+        connection_headers = {
+            DLHeadersCommon.DATASET_ID.value: dataset_id,
+        }
+        us_manager.set_context("connection", connection_headers)
 
         connection = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
 
@@ -476,7 +491,10 @@ class ConnectionInfoSources(BIResource):
     def get(self, connection_id: str, query: dict) -> dict:
         us_manager = self.get_us_manager()
         dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
-        us_manager.set_dataset_context(dataset_id)
+        connection_headers = {
+            DLHeadersCommon.DATASET_ID.value: dataset_id,
+        }
+        us_manager.set_context("connection", connection_headers)
 
         connection = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
 

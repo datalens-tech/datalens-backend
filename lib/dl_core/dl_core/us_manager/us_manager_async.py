@@ -142,12 +142,17 @@ class AsyncUSManager(USManagerBase):
         entry_id: str,
         expected_type: Optional[type[USEntry]] = None,
         params: Optional[dict[str, str]] = None,
+        context_name: Optional[str] = None,
     ) -> USEntry:
         with self._enrich_us_exception(
             entry_id=entry_id,
             entry_scope=expected_type.scope if expected_type is not None else None,
         ):
-            us_resp = await self.get_migrated_entry(entry_id, params=params)
+            us_resp = await self.get_migrated_entry(
+                entry_id,
+                params=params,
+                context_name=context_name,
+            )
 
         obj = self._entry_dict_to_obj(us_resp, expected_type)
         await self.get_lifecycle_manager(entry=obj).post_init_async_hook()
@@ -185,8 +190,17 @@ class AsyncUSManager(USManagerBase):
         return obj
 
     @generic_profiler_async("us-get-migrated-entity")  # type: ignore  # TODO: fix
-    async def get_migrated_entry(self, entry_id: str, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
-        us_resp = await self._us_client.get_entry(entry_id, params=params)
+    async def get_migrated_entry(
+        self,
+        entry_id: str,
+        params: Optional[dict[str, str]] = None,
+        context_name: Optional[str] = None,
+    ) -> dict[str, Any]:
+        us_resp = await self._us_client.get_entry(
+            entry_id,
+            params=params,
+            context_name=context_name,
+        )
         return await self._migrate_response(us_resp)
 
     async def _migrate_response(self, us_resp: dict) -> dict:
@@ -292,7 +306,11 @@ class AsyncUSManager(USManagerBase):
         else:
             try:
                 assert isinstance(conn_ref, DefaultConnectionRef)
-                conn = await self.get_by_id(conn_ref.conn_id, ConnectionBase)
+                conn = await self.get_by_id(
+                    conn_ref.conn_id,
+                    ConnectionBase,
+                    context_name="connection",
+                )
             except (exc.USObjectNotFoundException, exc.USAccessDeniedException) as err:
                 r_scope = referrer.scope if referrer is not None else "unk"
                 r_uuid = referrer.uuid if referrer is not None else "unk"

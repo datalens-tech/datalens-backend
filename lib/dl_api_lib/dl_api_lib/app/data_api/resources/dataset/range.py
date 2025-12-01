@@ -20,6 +20,7 @@ from dl_api_lib.dataset.view import DatasetView
 import dl_api_lib.schemas.data
 import dl_api_lib.schemas.main
 from dl_app_tools.profiling_base import generic_profiler_async
+from dl_constants.api_constants import DLHeadersCommon
 from dl_query_processing.compilation.specs import ParameterValueSpec
 from dl_query_processing.execution.primitives import (
     ExecutedQuery,
@@ -56,8 +57,10 @@ class DatasetRangeView(DatasetDataBaseView, abc.ABC):
     @generic_profiler_async("ds-values-range-full")
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> Response:
-        # Pass dataset_id to US from URL
-        self.dl_request.us_manager.set_dataset_context(self.dataset_id)
+        connection_headers = {
+            DLHeadersCommon.DATASET_ID.value: self.dataset_id,
+        }
+        self.dl_request.us_manager.set_context("connection", connection_headers)
 
         req_model = self.load_req_model()
 

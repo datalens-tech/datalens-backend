@@ -57,6 +57,7 @@ from dl_app_tools.profiling_base import (
     generic_profiler,
     generic_profiler_async,
 )
+from dl_constants.api_constants import DLHeadersCommon
 from dl_constants.enums import (
     DataSourceRole,
     FieldRole,
@@ -201,7 +202,12 @@ class DatasetDataBaseView(BaseView):
             )
         else:
             try:
-                dataset = await us_manager.get_by_id(self.dataset_id, Dataset, params=params)
+                dataset = await us_manager.get_by_id(
+                    self.dataset_id,
+                    Dataset,
+                    params=params,
+                    context_name="dataset",
+                )
             except USObjectNotFoundException as e:
                 raise web.HTTPNotFound(reason="Entity not found") from e
 
@@ -831,7 +837,11 @@ class DatasetDataBaseView(BaseView):
     ) -> Callable[..., Coroutine[Any, Any, Any]]:
         @functools.wraps(coro)
         async def wrapper(self: "DatasetDataBaseView", *args: Any, **kwargs: Any) -> Any:
-            self.dl_request.us_manager.set_dataset_context(self.dataset_id)
+            connection_headers = {
+                DLHeadersCommon.DATASET_ID.value: self.dataset_id,
+            }
+            self.dl_request.us_manager.set_context("connection", connection_headers)
+
             return await coro(self, *args, **kwargs)
 
         return wrapper
