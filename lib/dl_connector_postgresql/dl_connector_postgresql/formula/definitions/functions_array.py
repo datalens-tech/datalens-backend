@@ -408,31 +408,7 @@ DEFINITIONS_ARRAY = [
         ]
     ),
     # distinct
-    base.FuncArrayDistinctStr(
-        variants=[
-            V(
-                D.POSTGRESQL,
-                lambda array: n.func.IF(
-                    array == None,
-                    None,
-                    sa.func.array(sa.select(sa.func.unnest(array)).distinct().scalar_subquery()),
-                ),
-            ),
-        ]
-    ),
-    base.FuncArrayDistinctInt(
-        variants=[
-            V(
-                D.POSTGRESQL,
-                lambda array: n.func.IF(
-                    array == None,
-                    None,
-                    sa.func.array(sa.select(sa.func.unnest(array)).distinct().scalar_subquery()),
-                ),
-            ),
-        ]
-    ),
-    base.FuncArrayDistinctFloat(
+    base.FuncArrayDistinct(
         variants=[
             V(
                 D.POSTGRESQL,
@@ -445,29 +421,11 @@ DEFINITIONS_ARRAY = [
         ]
     ),
     # arr_index_of
-    base.FuncArrayIndexOfStr(
+    base.FuncArrayIndexOf(
         variants=[
             V(
                 D.POSTGRESQL,
                 # lambda array, value: _array_index_of(array, sa.cast(value, sa.Text)),
-                lambda array, value: _array_index_of(array, value),
-            ),
-        ]
-    ),
-    base.FuncArrayIndexOfInt(
-        variants=[
-            V(
-                D.POSTGRESQL,
-                # lambda array, value: _array_index_of(array, sa.cast(value, sa.Integer)),
-                lambda array, value: _array_index_of(array, value),
-            ),
-        ]
-    ),
-    base.FuncArrayIndexOfFloat(
-        variants=[
-            V(
-                D.POSTGRESQL,
-                # lambda array, value: _array_index_of(array, sa.cast(value, sa_postgresql.DOUBLE_PRECISION)),
                 lambda array, value: _array_index_of(array, value),
             ),
         ]
