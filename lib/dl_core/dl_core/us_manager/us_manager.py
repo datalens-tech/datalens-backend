@@ -572,6 +572,16 @@ class USManagerBase:
             return self._services_registry
         raise ValueError("Services registry was not passed to US manager")
 
-    def set_dataset_context(self, dataset_id: Optional[str]) -> None:
-        """Set or clear dataset context for US requests."""
-        self._us_client.set_dataset_context(dataset_id)
+    def set_context(
+        self,
+        context_name: str,
+        headers: dict[str, str],
+    ) -> None:
+        """
+        Set custom headers for named context. Headers will be added to US request with corresponding context_name
+
+        :param context_name: Name of the context (e.g., "dataset", "connection")
+        :param headers: Dictionary of headers to set for this context
+        """
+
+        self._us_client.set_context(context_name, headers)
