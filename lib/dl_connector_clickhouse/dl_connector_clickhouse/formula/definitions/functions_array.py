@@ -329,33 +329,13 @@ DEFINITIONS_ARRAY = [
     # intersect
     base.FuncArrayIntersect(variants=[V(D.CLICKHOUSE, sa.func.arrayIntersect)]),
     # distinct
-    base.FuncArrayDistinctStr(
-        variants=[
-            V(D.CLICKHOUSE, sa.func.arrayDistinct),
-        ]
-    ),
-    base.FuncArrayDistinctInt(
-        variants=[
-            V(D.CLICKHOUSE, sa.func.arrayDistinct),
-        ]
-    ),
-    base.FuncArrayDistinctFloat(
+    base.FuncArrayDistinct(
         variants=[
             V(D.CLICKHOUSE, sa.func.arrayDistinct),
         ]
     ),
     # arr_index_of
-    base.FuncArrayIndexOfStr(
-        variants=[
-            V(D.CLICKHOUSE, sa.func.indexOf),
-        ]
-    ),
-    base.FuncArrayIndexOfInt(
-        variants=[
-            V(D.CLICKHOUSE, sa.func.indexOf),
-        ]
-    ),
-    base.FuncArrayIndexOfFloat(
+    base.FuncArrayIndexOf(
         variants=[
             V(D.CLICKHOUSE, sa.func.indexOf),
         ]

@@ -447,33 +447,13 @@ DEFINITIONS_ARRAY = [
         ]
     ),
     # distinct
-    base.FuncArrayDistinctStr(
-        variants=[
-            V(D.TRINO, sa.func.array_distinct),
-        ]
-    ),
-    base.FuncArrayDistinctInt(
-        variants=[
-            V(D.TRINO, sa.func.array_distinct),
-        ]
-    ),
-    base.FuncArrayDistinctFloat(
+    base.FuncArrayDistinct(
         variants=[
             V(D.TRINO, sa.func.array_distinct),
         ]
     ),
     # arr_index_of
-    base.FuncArrayIndexOfStr(
-        variants=[
-            V(D.TRINO, array_index_of),
-        ]
-    ),
-    base.FuncArrayIndexOfInt(
-        variants=[
-            V(D.TRINO, array_index_of),
-        ]
-    ),
-    base.FuncArrayIndexOfFloat(
+    base.FuncArrayIndexOf(
         variants=[
             V(D.TRINO, array_index_of),
         ]
