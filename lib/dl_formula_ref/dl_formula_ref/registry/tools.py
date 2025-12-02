@@ -3,6 +3,7 @@ from __future__ import annotations
 from dl_formula_ref.functions.aggregation import FUNCTIONS_AGGREGATION
 from dl_formula_ref.functions.array import FUNCTIONS_ARRAY
 from dl_formula_ref.functions.date import FUNCTIONS_DATE
+from dl_formula_ref.functions.hash import FUNCTIONS_HASH
 from dl_formula_ref.functions.logical import FUNCTIONS_LOGICAL
 from dl_formula_ref.functions.markup import FUNCTIONS_MARKUP
 from dl_formula_ref.functions.mathematical import FUNCTIONS_MATHEMATICAL
@@ -20,6 +21,7 @@ EXPLICITLY_DEFINED_FUNCTIONS: list[FunctionDocRegistryItem] = [
     *FUNCTIONS_AGGREGATION,
     *FUNCTIONS_ARRAY,
     *FUNCTIONS_DATE,
+    *FUNCTIONS_HASH,
     *FUNCTIONS_LOGICAL,
     *FUNCTIONS_MARKUP,
     *FUNCTIONS_MATHEMATICAL,
