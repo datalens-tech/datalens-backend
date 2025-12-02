@@ -20,7 +20,6 @@ from dl_formula.definitions.functions_string import (
     FuncStartswith,
 )
 from dl_formula.definitions.literals import un_literal
-from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import (
     Fixed,
     FromArgs,
@@ -568,7 +567,6 @@ class FuncArrayDistinct(ArrayFunction):
     name = "arr_distinct"
     arg_names = ["array"]
     arg_cnt = 1
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class FuncArrayDistinctStr(FuncArrayDistinct):
@@ -597,7 +595,6 @@ class FuncArrayIndexOf(ArrayFunction):
     arg_names = ["array", "value"]
     arg_cnt = 2
     return_type = Fixed(DataType.INTEGER)
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class FuncArrayIndexOfStr(FuncArrayIndexOf):
