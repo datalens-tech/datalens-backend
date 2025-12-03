@@ -88,6 +88,8 @@ class DefaultArgumentExtractor(ArgumentExtractorBase):
                 arg_names = ["value"]
             else:  # multiple anonymous args
                 arg_names = ["arg_{}".format(i + 1) for i in range(max_arg_cnt)]
+        elif len(arg_names) < max_arg_cnt:
+            arg_names = list(arg_names) + ["arg_{}".format(i + 1) for i in range(max_arg_cnt - len(arg_names))]
 
         # patch all type sets with implicit INTEGERs if FLOAT is accepted
         for types in arg_type_lists.values():
