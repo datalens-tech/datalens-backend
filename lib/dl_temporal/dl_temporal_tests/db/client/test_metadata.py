@@ -21,6 +21,7 @@ async def test_ttl(
         dependencies=dl_temporal.TemporalClientDependencies(
             host="test-host",
             port=1234,
+            tls=False,
             namespace="test-namespace",
             metadata_provider=metadata_provider,
         ),

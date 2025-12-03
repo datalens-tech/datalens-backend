@@ -19,8 +19,8 @@ LOGGER = logging.getLogger(__name__)
 
 class TemporalClientSettings(dl_settings.BaseSettings):
     HOST: str
-    PORT: int
-    TLS: bool
+    PORT: int = 7233
+    TLS: bool = True
     NAMESPACE: str
     METADATA_PROVIDER: dl_settings.TypedAnnotation[metadata.MetadataProviderSettings]
 
@@ -30,7 +30,7 @@ class TemporalClientDependencies:
     namespace: str
     host: str
     port: int = 7233
-    tls: bool = False
+    tls: bool = True
     lazy: bool = True
     metadata_provider: metadata.MetadataProvider = attrs.field(factory=metadata.EmptyMetadataProvider)
 

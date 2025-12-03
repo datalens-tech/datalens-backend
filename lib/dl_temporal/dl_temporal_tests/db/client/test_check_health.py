@@ -15,6 +15,7 @@ async def test_unavailable() -> None:
         dependencies=dl_temporal.TemporalClientDependencies(
             host="unavailable_host",
             port=8080,
+            tls=False,
             namespace="dl_temporal_tests",
         ),
     )
