@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import (
     AbstractSet,
     Optional,
@@ -76,6 +74,53 @@ class ArgTypeForAll(ArgTypeMatcher):
 
     def get_possible_arg_types_at_pos(self, pos: int, total: int) -> set[DataType]:
         return set(self._exp_arg_types)
+
+
+class ArgTypeSequenceThenForAll(ArgTypeMatcher):
+    """Matches fixed types for first N arguments, then applies 'for all' type matching for the rest"""
+
+    __slots__ = ("_fixed_arg_types", "_for_all_types")
+
+    def __init__(
+        self,
+        fixed_arg_types: Sequence[Union[DataType, AbstractSet[DataType]]],
+        for_all_types: Union[DataType, AbstractSet[DataType]],
+    ):
+        self._fixed_arg_types = fixed_arg_types
+        self._for_all_types = {for_all_types} if isinstance(for_all_types, DataType) else for_all_types
+
+    def match_arg_types(self, arg_types: Sequence[DataType]) -> bool:
+        # Check fixed types for first N arguments
+        for expected_arg_type, real_arg_type in zip(self._fixed_arg_types, arg_types, strict=False):
+            if isinstance(expected_arg_type, DataType):
+                # a single type
+                if not real_arg_type.casts_to(expected_arg_type):
+                    return False
+            else:  # set, frozenset
+                if not any(
+                    real_arg_type.casts_to(expected_arg_sub_type) for expected_arg_sub_type in expected_arg_type
+                ):
+                    return False
+
+        # Check 'for all' types for all remaining arguments
+        remaining_args = arg_types[len(self._fixed_arg_types) :]
+        for real_arg_type in remaining_args:
+            if not any(real_arg_type.casts_to(expected_arg_sub_type) for expected_arg_sub_type in self._for_all_types):
+                return False
+
+        return True
+
+    def get_possible_arg_types_at_pos(self, pos: int, total: int) -> set[DataType]:
+        if pos < len(self._fixed_arg_types):
+            # Return fixed type for this position
+            expected_arg_type = self._fixed_arg_types[pos]
+            if isinstance(expected_arg_type, DataType):
+                return {expected_arg_type}
+            else:  # set, frozenset
+                return set(expected_arg_type)
+        else:
+            # Return 'for all' types for positions beyond fixed types
+            return set(self._for_all_types)
 
 
 class ArgFlagDispenser:
