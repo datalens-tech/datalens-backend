@@ -44,6 +44,7 @@ async def fixture_temporal_client(
             host=temporal_hostport.host,
             port=temporal_hostport.port,
             namespace=temporal_namespace,
+            tls=False,
             lazy=False,
         )
     )
