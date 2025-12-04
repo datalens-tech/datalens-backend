@@ -17,6 +17,7 @@ from dl_formula.core import exc
 
 @unique
 class DataType(Enum):
+    ANY = "any"
     NULL = "null"
     INTEGER = "integer"
     CONST_INTEGER = "const_integer"
@@ -85,7 +86,7 @@ class DataType(Enum):
     @property
     def const_type(self) -> DataType:
         """Return a constant version of the type"""
-        if self.is_const or self is DataType.NULL or self is DataType.UNSUPPORTED:
+        if self.is_const or self is DataType.ANY or self is DataType.NULL or self is DataType.UNSUPPORTED:
             return self
         return DataType["CONST_" + self.name]
 
@@ -155,5 +156,6 @@ _AUTOCAST_FROM_TYPES = OrderedDict(
             },
         ),
         (DataType.UNSUPPORTED, {DataType.UNSUPPORTED}),
+        (DataType.ANY, set(DataType)),
     )
 )

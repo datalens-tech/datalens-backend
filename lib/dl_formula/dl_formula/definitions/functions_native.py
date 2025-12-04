@@ -35,7 +35,7 @@ class DBCall(Function):
     arg_cnt = None
     arg_names = ["db_function_name"]
     argument_types = [
-        ArgTypeSequenceThenForAll(fixed_arg_types=[DataType.CONST_STRING], for_all_types=DataType.UNSUPPORTED),
+        ArgTypeSequenceThenForAll(fixed_arg_types=[DataType.CONST_STRING], for_all_types=DataType.ANY),
     ]
     variants = [VW(D.DUMMY, _call_native_impl)]
 
@@ -79,7 +79,7 @@ class DBCallAgg(AggregationFunctionBase):
     arg_cnt = None
     arg_names = ["db_agg_function_name"]
     argument_types = [
-        ArgTypeSequenceThenForAll(fixed_arg_types=[DataType.CONST_STRING], for_all_types=DataType.UNSUPPORTED),
+        ArgTypeSequenceThenForAll(fixed_arg_types=[DataType.CONST_STRING], for_all_types=DataType.ANY),
     ]
     variants = [VW(D.DUMMY, _call_native_impl)]
 
