@@ -2177,10 +2177,34 @@ msgstr ""
 "зависит от типа и версии вашей базы данных."
 
 msgid ""
-"\n"
-"\n"
-"\n"
+"Calls a native database function by name. Native function should return "
 msgstr ""
+
+msgid ""
+"Calls a native database aggregate function by name. Native function should "
+"return "
+msgstr ""
+
+msgid "an integer result"
+msgstr ""
+
+msgid "a float result"
+msgstr ""
+
+msgid "a string result"
+msgstr ""
+
+msgid "a boolean result"
+msgstr ""
+
+msgid "an array of integers"
+msgstr "Массив целых чисел"
+
+msgid "an array of floats"
+msgstr ""
+
+msgid "an array of strings"
+msgstr "Массив строк"
 
 msgid "Inverts a Boolean value."
 msgstr "Инвертирует логическое значение."
