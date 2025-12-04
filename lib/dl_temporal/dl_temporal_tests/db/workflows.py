@@ -1,3 +1,5 @@
+import logging
+
 import temporalio.workflow
 
 
@@ -6,6 +8,9 @@ with temporalio.workflow.unsafe.imports_passed_through():
     import dl_temporal_tests.db.activities as activities
 
 import dl_temporal
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class WorkflowParams(dl_temporal.BaseWorkflowParams):
@@ -39,6 +44,7 @@ class WorkflowResult(dl_temporal.BaseWorkflowResult):
 @dl_temporal.define_workflow
 class Workflow(dl_temporal.BaseWorkflow):
     name = "test_workflow"
+    logger = LOGGER
     Params = WorkflowParams
     Result = WorkflowResult
 

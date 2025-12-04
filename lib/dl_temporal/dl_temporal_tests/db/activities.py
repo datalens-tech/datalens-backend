@@ -1,5 +1,10 @@
+import logging
+
 import dl_pydantic
 import dl_temporal
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class ActivityParams(dl_temporal.BaseActivityParams):
@@ -35,6 +40,7 @@ class Activity(dl_temporal.BaseActivity):
     name = "test_activity"
     Params = ActivityParams
     Result = ActivityResult
+    logger = LOGGER
 
     async def run(self, params: ActivityParams) -> ActivityResult:
         return self.Result(
