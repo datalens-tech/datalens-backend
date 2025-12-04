@@ -78,6 +78,12 @@ msgstr ""
 msgid "Array functions"
 msgstr ""
 
+msgid "Native functions"
+msgstr ""
+
+msgid "Hash functions"
+msgstr ""
+
 msgid "aggregation"
 msgstr ""
 
@@ -112,6 +118,12 @@ msgid "time series"
 msgstr ""
 
 msgid "array"
+msgstr ""
+
+msgid "native"
+msgstr ""
+
+msgid "hash"
 msgstr ""
 
 msgid "Integer"
@@ -160,6 +172,15 @@ msgid "Array of strings"
 msgstr ""
 
 msgid "Tree"
+msgstr ""
+
+msgid "Null"
+msgstr ""
+
+msgid "Unsupported"
+msgstr ""
+
+msgid "Any (including unsupported by DataLens)"
 msgstr ""
 
 msgid "Standard"
@@ -401,15 +422,7 @@ msgid ""
 "(see the pricing {link: storage_prices_link: here}).\n"
 msgstr ""
 
-msgid ""
-"Functions for calling native database functions.\n"
-"\n"
-"The first argument {arg:0} must be a constant string with the name of the "
-"database function to call. All subsequent arguments are passed to the native "
-"function and can be of any type.\n"
-"\n"
-"The function name must contain only alphanumeric characters, underscore and "
-"colon characters."
+msgid "Functions for calling native database functions by name."
 msgstr ""
 
 msgid "native, database, function, call"
