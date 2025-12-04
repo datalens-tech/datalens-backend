@@ -41,31 +41,35 @@ _COMMON_NOTE = Note(
 def _db_call_description(return_type: str) -> str:
     """Generate description for DB_CALL_* functions."""
     return (
-        f"Calls a native database function by name. Native function should return {return_type}. "
-        f"{_COMMON_EXECUTION_NOTE}"
-        "\n\n"
-        f"{_COMMON_ARG_DESCRIPTION}\n"
-        "\n"
-        f"{_COMMON_NAME_CONSTRAINT}"
+        _("Calls a native database function by name. Native function should return ")
+        + return_type
+        + "."
+        + _COMMON_EXECUTION_NOTE
+        + "\n\n"
+        + _COMMON_ARG_DESCRIPTION
+        + "\n"
+        + _COMMON_NAME_CONSTRAINT
     )
 
 
 def _db_call_agg_description(return_type: str) -> str:
     """Generate description for DB_CALL_AGG_* functions."""
     return (
-        f"Calls a native database aggregate function by name. Native function should return {return_type}. "
-        f"{_COMMON_AGG_EXECUTION_NOTE}"
-        "\n\n"
-        f"{_COMMON_ARG_DESCRIPTION}\n"
-        "\n"
-        f"{_COMMON_NAME_CONSTRAINT}"
+        _("Calls a native database aggregate function by name. Native function should return ")
+        + return_type
+        + "."
+        + _COMMON_AGG_EXECUTION_NOTE
+        + "\n\n"
+        + _COMMON_ARG_DESCRIPTION
+        + "\n"
+        + _COMMON_NAME_CONSTRAINT
     )
 
 
 FUNCTION_DB_CALL_INT = FunctionDocRegistryItem(
     name="db_call_int",
     category=CATEGORY_NATIVE,
-    description=_(_db_call_description("an integer result")),
+    description=_db_call_description(_("an integer result")),
     notes=[_COMMON_NOTE],
     examples=[
         SimpleExample(
@@ -81,7 +85,7 @@ FUNCTION_DB_CALL_INT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_FLOAT = FunctionDocRegistryItem(
     name="db_call_float",
     category=CATEGORY_NATIVE,
-    description=_(_db_call_description("a float result")),
+    description=_db_call_description(_("a float result")),
     notes=[_COMMON_NOTE],
     examples=[
         SimpleExample('DB_CALL_FLOAT("sign", -5.0) = -1.0 -- ClickHouse: sign of -5.0 is -1.0'),
@@ -93,7 +97,7 @@ FUNCTION_DB_CALL_FLOAT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_STRING = FunctionDocRegistryItem(
     name="db_call_string",
     category=CATEGORY_NATIVE,
-    description=_(_db_call_description("a string result")),
+    description=_db_call_description(_("a string result")),
     notes=[_COMMON_NOTE],
     examples=[
         SimpleExample(
@@ -114,7 +118,7 @@ FUNCTION_DB_CALL_STRING = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_BOOL = FunctionDocRegistryItem(
     name="db_call_bool",
     category=CATEGORY_NATIVE,
-    description=_(_db_call_description("a boolean result")),
+    description=_db_call_description(_("a boolean result")),
     notes=[_COMMON_NOTE],
     examples=[
         SimpleExample('DB_CALL_BOOL("isFinite", 5) = TRUE -- ClickHouse: check if 5 is a finite number'),
@@ -129,7 +133,7 @@ FUNCTION_DB_CALL_BOOL = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_ARRAY_INT = FunctionDocRegistryItem(
     name="db_call_array_int",
     category=CATEGORY_NATIVE,
-    description=_(_db_call_description("an array of integers")),
+    description=_db_call_description(_("an array of integers")),
     notes=[_COMMON_NOTE],
     examples=[
         SimpleExample(
@@ -146,7 +150,7 @@ FUNCTION_DB_CALL_ARRAY_INT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_ARRAY_FLOAT = FunctionDocRegistryItem(
     name="db_call_array_float",
     category=CATEGORY_NATIVE,
-    description=_(_db_call_description("an array of floats")),
+    description=_db_call_description(_("an array of floats")),
     notes=[_COMMON_NOTE],
     examples=[
         SimpleExample(
@@ -163,7 +167,7 @@ FUNCTION_DB_CALL_ARRAY_FLOAT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_ARRAY_STRING = FunctionDocRegistryItem(
     name="db_call_array_string",
     category=CATEGORY_NATIVE,
-    description=_(_db_call_description("an array of strings")),
+    description=_db_call_description(_("an array of strings")),
     notes=[_COMMON_NOTE],
     examples=[
         SimpleExample(
@@ -180,7 +184,7 @@ FUNCTION_DB_CALL_ARRAY_STRING = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_AGG_INT = FunctionDocRegistryItem(
     name="db_call_agg_int",
     category=CATEGORY_NATIVE,
-    description=_(_db_call_agg_description("an integer result")),
+    description=_db_call_agg_description(_("an integer result")),
     notes=[_COMMON_NOTE],
     examples=[
         SimpleExample(
@@ -193,7 +197,7 @@ FUNCTION_DB_CALL_AGG_INT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_AGG_FLOAT = FunctionDocRegistryItem(
     name="db_call_agg_float",
     category=CATEGORY_NATIVE,
-    description=_(_db_call_agg_description("a float result")),
+    description=_db_call_agg_description(_("a float result")),
     notes=[_COMMON_NOTE],
     examples=[
         SimpleExample(
@@ -209,7 +213,7 @@ FUNCTION_DB_CALL_AGG_FLOAT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_AGG_STRING = FunctionDocRegistryItem(
     name="db_call_agg_string",
     category=CATEGORY_NATIVE,
-    description=_(_db_call_agg_description("a string result")),
+    description=_db_call_agg_description(_("a string result")),
     notes=[_COMMON_NOTE],
     examples=[
         SimpleExample(
