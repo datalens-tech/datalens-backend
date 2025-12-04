@@ -2178,33 +2178,41 @@ msgstr ""
 
 msgid ""
 "Calls a native database function by name. Native function should return "
-msgstr ""
+msgstr "Вызывает нативную функцию базы данных по имени. Нативная функция должна возвращать "
 
 msgid ""
 "Calls a native database aggregate function by name. Native function should "
 "return "
 msgstr ""
+"Вызывает нативную агрегатную функцию базы данных по имени. Нативная функция должна возвращать "
 
 msgid "an integer result"
 msgstr ""
+"целое число"
 
 msgid "a float result"
 msgstr ""
+"вещественное число"
 
 msgid "a string result"
 msgstr ""
+"строку"
 
 msgid "a boolean result"
 msgstr ""
+"логическое значение"
 
 msgid "an array of integers"
-msgstr "Массив целых чисел"
+msgstr ""
+"массив целых чисел"
 
 msgid "an array of floats"
 msgstr ""
+"массив вещественных чисел"
 
 msgid "an array of strings"
-msgstr "Массив строк"
+msgstr ""
+"массив строк"
 
 msgid "Inverts a Boolean value."
 msgstr "Инвертирует логическое значение."
