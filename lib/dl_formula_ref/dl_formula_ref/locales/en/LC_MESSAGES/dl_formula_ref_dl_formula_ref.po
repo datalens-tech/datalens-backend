@@ -1432,40 +1432,29 @@ msgid ""
 msgstr ""
 
 msgid ""
-"The first argument {arg:0} must be a constant string with the name of the "
-"database function to call. All subsequent arguments are passed to the native "
-"function and can be of any type, including types that are not currently "
-"supported by DataLens."
-msgstr ""
-
-msgid ""
-"The function is executed for every row in the dataset (non-aggregated). "
-"Parameters are passed in the same type as written in the formula."
-msgstr ""
-
-msgid ""
-"The function is executed as an aggregation across grouped rows. Parameters "
-"are passed in the same type as written in the formula."
-msgstr ""
-
-msgid ""
-"The function name must contain only alphanumeric characters, underscore and "
-"colon characters."
-msgstr ""
-
-msgid ""
 "This function allows you to call database-specific functions that are not "
 "available as standard functions in DataLens. The availability and behavior "
 "of native functions depends on your database type and version."
 msgstr ""
 
 msgid ""
-"Calls a native database function by name. Native function should return "
+"Calls a native database {function_type} by name. Native function should "
+"return {return_type}. {execution_type} Parameters are passed in the same "
+"order as written in the formula.\n"
+"\n"
+"The first argument {arg:0} must be a constant string with the name of the "
+"database function to call. All subsequent arguments are passed to the native "
+"function and can be of any type, including types that are not currently "
+"supported by DataLens.\n"
+"\n"
+"The function name must contain only alphanumeric characters, underscore and "
+"colon characters."
 msgstr ""
 
-msgid ""
-"Calls a native database aggregate function by name. Native function should "
-"return "
+msgid "function"
+msgstr ""
+
+msgid "The function is executed for every row in the dataset (non-aggregated)."
 msgstr ""
 
 msgid "an integer result"
@@ -1487,6 +1476,12 @@ msgid "an array of floats"
 msgstr ""
 
 msgid "an array of strings"
+msgstr ""
+
+msgid "aggregate function"
+msgstr ""
+
+msgid "The function is executed as an aggregation across grouped rows."
 msgstr ""
 
 msgid "Inverts a Boolean value."
