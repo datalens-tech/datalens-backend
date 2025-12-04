@@ -48,6 +48,7 @@ def test_iter_retries_zero_timeout(monkeypatch: MonkeyPatch) -> None:
     retries = list(policy.iter_retries())
     expected = [
         dl_retrier.Retry(
+            attempt_number=1,
             request_timeout=0,
             connect_timeout=0,
             sleep_before_seconds=0,
@@ -88,26 +89,31 @@ def test_iter_retries_multiple(monkeypatch: MonkeyPatch) -> None:
     retries_iterator = policy.iter_retries()
     expected = [
         dl_retrier.Retry(
+            attempt_number=1,
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=0,
         ),
         dl_retrier.Retry(
+            attempt_number=2,
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=1,
         ),
         dl_retrier.Retry(
+            attempt_number=3,
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=2,
         ),
         dl_retrier.Retry(
+            attempt_number=4,
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=4,
         ),
         dl_retrier.Retry(
+            attempt_number=5,
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=8,
@@ -148,31 +154,37 @@ def test_iter_retries_backoff_max_limit(monkeypatch: MonkeyPatch) -> None:
 
     expected = [
         dl_retrier.Retry(
+            attempt_number=1,
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=0,
         ),
         dl_retrier.Retry(
+            attempt_number=2,
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=1,
         ),
         dl_retrier.Retry(
+            attempt_number=3,
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=2,
         ),
         dl_retrier.Retry(
+            attempt_number=4,
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=4,
         ),
         dl_retrier.Retry(
+            attempt_number=5,
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=8,
         ),
         dl_retrier.Retry(
+            attempt_number=6,
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=12,
@@ -209,11 +221,13 @@ def test_iter_retries_timeout_limits_request_and_connect(monkeypatch: MonkeyPatc
 
     expected = [
         dl_retrier.Retry(
+            attempt_number=1,
             request_timeout=30,
             connect_timeout=30,
             sleep_before_seconds=0,
         ),
         dl_retrier.Retry(
+            attempt_number=2,
             request_timeout=14,  # clipped by total time left (+ sleep=1)
             connect_timeout=14,
             sleep_before_seconds=1,
@@ -250,11 +264,13 @@ def test_iter_retries_stops_when_sleep_exceeds_timeout(monkeypatch: MonkeyPatch)
 
     expected = [
         dl_retrier.Retry(
+            attempt_number=1,
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=0,
         ),
         dl_retrier.Retry(
+            attempt_number=2,
             request_timeout=1,
             connect_timeout=1,
             sleep_before_seconds=1,
@@ -291,6 +307,7 @@ def test_iter_retries_zero_retries_count(monkeypatch: MonkeyPatch) -> None:
     # Should get at least single attempt
     expected = [
         dl_retrier.Retry(
+            attempt_number=1,
             request_timeout=5,
             connect_timeout=5,
             sleep_before_seconds=0,
@@ -326,11 +343,13 @@ def test_iter_retries_one_retry_count(monkeypatch: MonkeyPatch) -> None:
 
     expected = [
         dl_retrier.Retry(
+            attempt_number=1,
             request_timeout=5,
             connect_timeout=5,
             sleep_before_seconds=0,
         ),
         dl_retrier.Retry(
+            attempt_number=2,
             request_timeout=5,
             connect_timeout=5,
             sleep_before_seconds=2,
