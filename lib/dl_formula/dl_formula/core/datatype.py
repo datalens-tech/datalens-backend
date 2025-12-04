@@ -17,7 +17,7 @@ from dl_formula.core import exc
 
 @unique
 class DataType(Enum):
-    ANY = "any"
+    ANY = "any"  # Any type including unsupported by DataLens
     NULL = "null"
     INTEGER = "integer"
     CONST_INTEGER = "const_integer"
