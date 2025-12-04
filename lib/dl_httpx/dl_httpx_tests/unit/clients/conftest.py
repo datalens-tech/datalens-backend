@@ -16,6 +16,7 @@ def fixture_ssl_context() -> ssl.SSLContext:
 @pytest.fixture(name="mock_retry")
 def fixture_mock_retry() -> dl_retrier.Retry:
     return dl_retrier.Retry(
+        attempt_number=1,
         request_timeout=10,
         connect_timeout=30,
         sleep_before_seconds=0,
