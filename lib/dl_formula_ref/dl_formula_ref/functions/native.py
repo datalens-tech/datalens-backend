@@ -9,23 +9,23 @@ from dl_formula_ref.registry.note import Note
 _ = get_gettext()
 
 
-_COMMON_ARG_DESCRIPTION = (
+_COMMON_ARG_DESCRIPTION = _(
     "The first argument {arg:0} must be a constant string with the name of the "
     "database function to call. All subsequent arguments are passed to the "
     "native function and can be of any type, including types that are not currently supported by DataLens."
 )
 
-_COMMON_EXECUTION_NOTE = (
+_COMMON_EXECUTION_NOTE = _(
     "The function is executed for every row in the dataset (non-aggregated). "
     "Parameters are passed in the same type as written in the formula."
 )
 
-_COMMON_AGG_EXECUTION_NOTE = (
+_COMMON_AGG_EXECUTION_NOTE = _(
     "The function is executed as an aggregation across grouped rows. "
     "Parameters are passed in the same type as written in the formula."
 )
 
-_COMMON_NAME_CONSTRAINT = (
+_COMMON_NAME_CONSTRAINT = _(
     "The function name must contain only alphanumeric characters, underscore and colon characters."
 )
 
