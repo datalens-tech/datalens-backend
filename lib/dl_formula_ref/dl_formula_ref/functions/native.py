@@ -9,27 +9,7 @@ from dl_formula_ref.registry.note import Note
 _ = get_gettext()
 
 
-_COMMON_ARG_DESCRIPTION = _(
-    "The first argument {arg:0} must be a constant string with the name of the "
-    "database function to call. All subsequent arguments are passed to the "
-    "native function and can be of any type, including types that are not currently supported by DataLens."
-)
-
-_COMMON_EXECUTION_NOTE = _(
-    "The function is executed for every row in the dataset (non-aggregated). "
-    "Parameters are passed in the same type as written in the formula."
-)
-
-_COMMON_AGG_EXECUTION_NOTE = _(
-    "The function is executed as an aggregation across grouped rows. "
-    "Parameters are passed in the same type as written in the formula."
-)
-
-_COMMON_NAME_CONSTRAINT = _(
-    "The function name must contain only alphanumeric characters, underscore and colon characters."
-)
-
-_COMMON_NOTE = Note(
+NATIVE_FUNCTION_NOTE = Note(
     Translatable(
         "This function allows you to call database-specific functions that are not available "
         "as standard functions in DataLens. The availability and behavior of native functions "
@@ -37,46 +17,30 @@ _COMMON_NOTE = Note(
     )
 )
 
+DESCRIPTION_TEMPLATE = _(
+    "Calls a native database {function_type} by name. Native function should return {return_type}. "
+    "{execution_type} Parameters are passed in the same order as written in the formula."
+    "\n\n"
+    "The first argument {arg:0} must be a constant string with the name of the "
+    "database function to call. All subsequent arguments are passed to the "
+    "native function and can be of any type, including types that are not currently supported by DataLens."
+    "\n\n"
+    "The function name must contain only alphanumeric characters, underscore and colon characters."
+)
 
-def _db_call_description(return_type: str) -> str:
-    """Generate description for DB_CALL_* functions."""
-    return _(
-        "Calls a native database function by name. Native function should return {return_type}. "
-        "{common_execution_note}"
-        "\n\n"
-        "{common_arg_description}\n"
-        "\n"
-        "{common_name_constraint}"
-    ).format(
-        return_type=return_type,
-        common_execution_note=_COMMON_EXECUTION_NOTE,
-        common_arg_description=_COMMON_ARG_DESCRIPTION,
-        common_name_constraint=_COMMON_NAME_CONSTRAINT,
-    )
+SIMPLE_FUNCTION_TYPE = _("function")
 
-
-def _db_call_agg_description(return_type: str) -> str:
-    """Generate description for DB_CALL_AGG_* functions."""
-    return _(
-        "Calls a native database aggregate function by name. Native function should return {return_type}. "
-        "{common_agg_execution_note}"
-        "\n\n"
-        "{common_arg_description}\n"
-        "\n"
-        "{common_name_constraint}"
-    ).format(
-        return_type=return_type,
-        common_agg_execution_note=_COMMON_AGG_EXECUTION_NOTE,
-        common_arg_description=_COMMON_ARG_DESCRIPTION,
-        common_name_constraint=_COMMON_NAME_CONSTRAINT,
-    )
-
+SIMPLE_EXECUTION_TYPE = _("The function is executed for every row in the dataset (non-aggregated).")
 
 FUNCTION_DB_CALL_INT = FunctionDocRegistryItem(
     name="db_call_int",
     category=CATEGORY_NATIVE,
-    description=_db_call_description("an integer result"),
-    notes=[_COMMON_NOTE],
+    description=DESCRIPTION_TEMPLATE.format(
+        function_type=SIMPLE_FUNCTION_TYPE,
+        return_type=_("an integer result"),
+        execution_type=SIMPLE_EXECUTION_TYPE,
+    ),
+    notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
             'DB_CALL_INT("positionCaseInsensitive", "Hello", "l") = 3 '
@@ -91,8 +55,12 @@ FUNCTION_DB_CALL_INT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_FLOAT = FunctionDocRegistryItem(
     name="db_call_float",
     category=CATEGORY_NATIVE,
-    description=_db_call_description("a float result"),
-    notes=[_COMMON_NOTE],
+    description=DESCRIPTION_TEMPLATE.format(
+        function_type=SIMPLE_FUNCTION_TYPE,
+        return_type=_("a float result"),
+        execution_type=SIMPLE_EXECUTION_TYPE,
+    ),
+    notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample('DB_CALL_FLOAT("sign", -5.0) = -1.0 -- ClickHouse: sign of -5.0 is -1.0'),
         SimpleExample('DB_CALL_FLOAT("sign", 5.0) = 1.0 -- ClickHouse: sign of 5.0 is 1.0'),
@@ -103,8 +71,12 @@ FUNCTION_DB_CALL_FLOAT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_STRING = FunctionDocRegistryItem(
     name="db_call_string",
     category=CATEGORY_NATIVE,
-    description=_db_call_description("a string result"),
-    notes=[_COMMON_NOTE],
+    description=DESCRIPTION_TEMPLATE.format(
+        function_type=SIMPLE_FUNCTION_TYPE,
+        return_type=_("a string result"),
+        execution_type=SIMPLE_EXECUTION_TYPE,
+    ),
+    notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
             'DB_CALL_STRING("dictGetStringOrDefault", "categories", "category_name", [category_id], "other") '
@@ -124,8 +96,12 @@ FUNCTION_DB_CALL_STRING = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_BOOL = FunctionDocRegistryItem(
     name="db_call_bool",
     category=CATEGORY_NATIVE,
-    description=_db_call_description("a boolean result"),
-    notes=[_COMMON_NOTE],
+    description=DESCRIPTION_TEMPLATE.format(
+        function_type=SIMPLE_FUNCTION_TYPE,
+        return_type=_("a boolean result"),
+        execution_type=SIMPLE_EXECUTION_TYPE,
+    ),
+    notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample('DB_CALL_BOOL("isFinite", 5) = TRUE -- ClickHouse: check if 5 is a finite number'),
         SimpleExample('DB_CALL_BOOL("isInfinite", 5) = FALSE -- ClickHouse: check if 5 is an infinite number'),
@@ -139,8 +115,12 @@ FUNCTION_DB_CALL_BOOL = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_ARRAY_INT = FunctionDocRegistryItem(
     name="db_call_array_int",
     category=CATEGORY_NATIVE,
-    description=_db_call_description("an array of integers"),
-    notes=[_COMMON_NOTE],
+    description=DESCRIPTION_TEMPLATE.format(
+        function_type=SIMPLE_FUNCTION_TYPE,
+        return_type=_("an array of integers"),
+        execution_type=SIMPLE_EXECUTION_TYPE,
+    ),
+    notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
             'DB_CALL_ARRAY_INT("range", 5) = ARRAY(0, 1, 2, 3, 4) '
@@ -156,8 +136,12 @@ FUNCTION_DB_CALL_ARRAY_INT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_ARRAY_FLOAT = FunctionDocRegistryItem(
     name="db_call_array_float",
     category=CATEGORY_NATIVE,
-    description=_db_call_description("an array of floats"),
-    notes=[_COMMON_NOTE],
+    description=DESCRIPTION_TEMPLATE.format(
+        function_type=SIMPLE_FUNCTION_TYPE,
+        return_type=_("an array of floats"),
+        execution_type=SIMPLE_EXECUTION_TYPE,
+    ),
+    notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
             'DB_CALL_ARRAY_FLOAT("arrayConcat", ARRAY(1.0, 2.0), ARRAY(3.0)) = ARRAY(1.0, 2.0, 3.0) '
@@ -173,8 +157,12 @@ FUNCTION_DB_CALL_ARRAY_FLOAT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_ARRAY_STRING = FunctionDocRegistryItem(
     name="db_call_array_string",
     category=CATEGORY_NATIVE,
-    description=_db_call_description("an array of strings"),
-    notes=[_COMMON_NOTE],
+    description=DESCRIPTION_TEMPLATE.format(
+        function_type=SIMPLE_FUNCTION_TYPE,
+        return_type=_("an array of strings"),
+        execution_type=SIMPLE_EXECUTION_TYPE,
+    ),
+    notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
             'DB_CALL_ARRAY_STRING("splitByChar", ",", "a,b,c") = ARRAY("a", "b", "c") '
@@ -187,11 +175,19 @@ FUNCTION_DB_CALL_ARRAY_STRING = FunctionDocRegistryItem(
     ],
 )
 
+AGGREGATE_FUNCTION_TYPE = _("aggregate function")
+
+AGGREGATE_EXECUTION_TYPE = _("The function is executed as an aggregation across grouped rows.")
+
 FUNCTION_DB_CALL_AGG_INT = FunctionDocRegistryItem(
     name="db_call_agg_int",
     category=CATEGORY_NATIVE,
-    description=_db_call_agg_description("an integer result"),
-    notes=[_COMMON_NOTE],
+    description=DESCRIPTION_TEMPLATE.format(
+        function_type=AGGREGATE_FUNCTION_TYPE,
+        return_type=_("an integer result"),
+        execution_type=AGGREGATE_EXECUTION_TYPE,
+    ),
+    notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
             'DB_CALL_AGG_INT("uniqMerge", [uniqStateField]) '
@@ -203,8 +199,12 @@ FUNCTION_DB_CALL_AGG_INT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_AGG_FLOAT = FunctionDocRegistryItem(
     name="db_call_agg_float",
     category=CATEGORY_NATIVE,
-    description=_db_call_agg_description("a float result"),
-    notes=[_COMMON_NOTE],
+    description=DESCRIPTION_TEMPLATE.format(
+        function_type=AGGREGATE_FUNCTION_TYPE,
+        return_type=_("a float result"),
+        execution_type=AGGREGATE_EXECUTION_TYPE,
+    ),
+    notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
             'DB_CALL_AGG_FLOAT("avgWeighted", [amount], [weight_field]) '
@@ -219,8 +219,12 @@ FUNCTION_DB_CALL_AGG_FLOAT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_AGG_STRING = FunctionDocRegistryItem(
     name="db_call_agg_string",
     category=CATEGORY_NATIVE,
-    description=_db_call_agg_description("a string result"),
-    notes=[_COMMON_NOTE],
+    description=DESCRIPTION_TEMPLATE.format(
+        function_type=AGGREGATE_FUNCTION_TYPE,
+        return_type=_("a string result"),
+        execution_type=AGGREGATE_EXECUTION_TYPE,
+    ),
+    notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
             'DB_CALL_AGG_STRING("anyHeavy", [str_field]) '
