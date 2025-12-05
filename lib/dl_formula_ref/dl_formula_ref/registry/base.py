@@ -72,7 +72,6 @@ class FunctionDocRegistryItem:
     _name: str = attr.ib(kw_only=True)
     _is_window: bool = attr.ib(kw_only=True, default=False)
     _description: str = attr.ib(kw_only=True)
-    _attributes: dict[str, str] = attr.ib(kw_only=True, factory=dict)
     _scopes: int = attr.ib(kw_only=True, default=SCOPES_DEFAULT)
     _notes: list[Note] = attr.ib(kw_only=True, factory=list)
     _examples: Sequence[ExampleBase] = attr.ib(kw_only=True, factory=list)
@@ -116,10 +115,6 @@ class FunctionDocRegistryItem:
     @property
     def description(self) -> str:
         return self._description
-
-    @property
-    def attributes(self) -> dict[str, str]:
-        return self._attributes
 
     @property
     def resources(self) -> AliasedResourceRegistryBase:

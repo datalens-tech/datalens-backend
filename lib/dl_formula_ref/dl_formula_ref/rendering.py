@@ -128,7 +128,6 @@ class FuncRenderer:
         expander = MacroExpander(
             resources=param_text.resources + resources,
             args=self._raw_func.args,
-            attributes=self._raw_func.attributes,
             translation_callable=translation_callable,
             func_link_provider=relative_path_renderer.get_func_link,
             cat_link_provider=relative_path_renderer.get_cat_link,

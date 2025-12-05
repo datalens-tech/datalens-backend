@@ -1,7 +1,5 @@
 from typing import Optional
 
-import pytest
-
 from dl_formula.core.datatype import DataType
 from dl_formula_ref.registry.aliased_res import (
     AliasedLinkResource,
@@ -114,26 +112,6 @@ def test_expand_macro_link():
         },
     )
     assert actual_res == exp_res
-
-
-def test_expand_macro_attribute():
-    expander = MacroExpander(attributes={"foo": "bar"})
-    text = "qwerty {attribute: foo} uiop"
-    actual_res = expander.expand_text(text)
-    exp_res = RichText(
-        text=text,
-        replacements={
-            MRK(7, 23): RichText(text="bar"),
-        },
-    )
-    assert actual_res == exp_res
-
-
-def test_expand_macro_attribute_missing():
-    expander = MacroExpander(attributes={"foo": "bar"})
-    text = "qwerty {attribute: missing} uiop"
-    with pytest.raises(KeyError, match='Attribute "missing" is not defined'):
-        expander.expand_text(text)
 
 
 def test_expand_macro_table():
