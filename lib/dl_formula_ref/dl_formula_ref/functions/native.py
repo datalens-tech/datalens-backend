@@ -51,7 +51,7 @@ FUNCTION_DB_CALL_INT = FunctionDocRegistryItem(
     notes=[NATIVE_FUNCTION_NOTE],
     resources=SimpleAliasedResourceRegistry(
         resources={
-            "return_type": AliasedTextResource(body=_("an integer result")),
+            "return_type": AliasedTextResource(body="{type:INTEGER}"),
             **SIMPLE_FUNCTION_BASE_RESOURCES,
         }
     ),
@@ -73,7 +73,7 @@ FUNCTION_DB_CALL_FLOAT = FunctionDocRegistryItem(
     notes=[NATIVE_FUNCTION_NOTE],
     resources=SimpleAliasedResourceRegistry(
         resources={
-            "return_type": AliasedTextResource(body=_("a float result")),
+            "return_type": AliasedTextResource(body="{type:FLOAT}"),
             **SIMPLE_FUNCTION_BASE_RESOURCES,
         }
     ),
@@ -91,7 +91,7 @@ FUNCTION_DB_CALL_STRING = FunctionDocRegistryItem(
     notes=[NATIVE_FUNCTION_NOTE],
     resources=SimpleAliasedResourceRegistry(
         resources={
-            "return_type": AliasedTextResource(body=_("a string result")),
+            "return_type": AliasedTextResource(body="{type:STRING}"),
             **SIMPLE_FUNCTION_BASE_RESOURCES,
         }
     ),
@@ -118,7 +118,7 @@ FUNCTION_DB_CALL_BOOL = FunctionDocRegistryItem(
     notes=[NATIVE_FUNCTION_NOTE],
     resources=SimpleAliasedResourceRegistry(
         resources={
-            "return_type": AliasedTextResource(body=_("a boolean result")),
+            "return_type": AliasedTextResource(body="{type:BOOLEAN}"),
             **SIMPLE_FUNCTION_BASE_RESOURCES,
         }
     ),
@@ -139,7 +139,7 @@ FUNCTION_DB_CALL_ARRAY_INT = FunctionDocRegistryItem(
     notes=[NATIVE_FUNCTION_NOTE],
     resources=SimpleAliasedResourceRegistry(
         resources={
-            "return_type": AliasedTextResource(body=_("an array of integers")),
+            "return_type": AliasedTextResource(body="{type:ARRAY_INT}"),
             **SIMPLE_FUNCTION_BASE_RESOURCES,
         }
     ),
@@ -161,7 +161,7 @@ FUNCTION_DB_CALL_ARRAY_FLOAT = FunctionDocRegistryItem(
     description=DESCRIPTION_TEMPLATE,
     resources=SimpleAliasedResourceRegistry(
         resources={
-            "return_type": AliasedTextResource(body=_("an array of floats")),
+            "return_type": AliasedTextResource(body="{type:ARRAY_FLOAT}"),
             **SIMPLE_FUNCTION_BASE_RESOURCES,
         }
     ),
@@ -184,7 +184,7 @@ FUNCTION_DB_CALL_ARRAY_STRING = FunctionDocRegistryItem(
     description=DESCRIPTION_TEMPLATE,
     resources=SimpleAliasedResourceRegistry(
         resources={
-            "return_type": AliasedTextResource(body=_("an array of strings")),
+            "return_type": AliasedTextResource(body="{type:ARRAY_STRING}"),
             **SIMPLE_FUNCTION_BASE_RESOURCES,
         }
     ),
@@ -213,7 +213,7 @@ FUNCTION_DB_CALL_AGG_INT = FunctionDocRegistryItem(
     description=DESCRIPTION_TEMPLATE,
     resources=SimpleAliasedResourceRegistry(
         resources={
-            "return_type": AliasedTextResource(body=_("an integer result")),
+            "return_type": AliasedTextResource(body="{type:INTEGER}"),
             **AGGREGATE_FUNCTION_BASE_RESOURCES,
         }
     ),
@@ -232,7 +232,7 @@ FUNCTION_DB_CALL_AGG_FLOAT = FunctionDocRegistryItem(
     description=DESCRIPTION_TEMPLATE,
     resources=SimpleAliasedResourceRegistry(
         resources={
-            "return_type": AliasedTextResource(body=_("a float result")),
+            "return_type": AliasedTextResource(body="{type:FLOAT}"),
             **AGGREGATE_FUNCTION_BASE_RESOURCES,
         }
     ),
@@ -254,7 +254,7 @@ FUNCTION_DB_CALL_AGG_STRING = FunctionDocRegistryItem(
     description=DESCRIPTION_TEMPLATE,
     resources=SimpleAliasedResourceRegistry(
         resources={
-            "return_type": AliasedTextResource(body=_("a string result")),
+            "return_type": AliasedTextResource(body="{type:STRING}"),
             **AGGREGATE_FUNCTION_BASE_RESOURCES,
         }
     ),
